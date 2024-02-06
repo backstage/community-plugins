@@ -1,0 +1,10 @@
+{
+  "name": "community-plugins",
+  "version": "0.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:backstage/community-plugins.git",
+  "scripts": {
+    "create-workspace": "sh ./scripts/create.sh"
+  },
+  "packageManager": "yarn@3.2.3"
+}
