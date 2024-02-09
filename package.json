@@ -1,10 +1,15 @@
 {
   "name": "community-plugins",
+  "private": true,
   "version": "0.0.0",
-  "main": "index.js",
   "repository": "git@github.com:backstage/community-plugins.git",
   "scripts": {
-    "create-workspace": "sh ./scripts/create.sh"
+    "create-workspace": "node ./scripts/create/create.js"
   },
-  "packageManager": "yarn@3.2.3"
+  "type": "module",
+  "packageManager": "yarn@3.2.3",
+  "devDependencies": {
+    "chalk": "^5.3.0",
+    "inquirer": "^9.2.14"
+  }
 }
