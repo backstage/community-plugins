@@ -16,7 +16,7 @@ Changesets have proven to be a reliable method for managing different versions o
 Each plugin workspace has its own changesets and isolated releases. Plugins that depend on other plugins via regular NPM dependencies, regardless of whether the other plugins are core plugins, other plugins within the community repo, or external plugins.
 Although the community repository isn't technically a "yarn workspace", it functions as a repository with multiple sub yarn workspaces, with each workspace possessing its unique .changesets directory.
 
-Whenever a new changeset is introduced, a fresh "Version packages ($workspace_name)" PR is produced. Merging a Version packages PR will trigger the release of all the plugins in the workspaces (provided changesets have been added), and also update the CHANGELOGS.
+Whenever a new changeset is introduced, a fresh "Version packages ($workspace_name)" PR is produced. Merging a Version packages PR will trigger the release of all the plugins in the workspaces (provided changesets have been added), and also update the `CHANGELOG` files.
 
 ## How to create a new workspace
 
