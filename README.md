@@ -7,7 +7,7 @@ By creating community-plugins we give to plugin maintainers all the tools to eas
 
 ## Repository layout
 
-`community-plugins` is formed by a set of workspaces. A workspace holds a plugin or a set of plugins based on a specific topic. For example, catalog, k8s, TechDocs can be referred to as workspaces.
+`community-plugins` is formed by a set of workspaces. A workspace holds a plugin or a set of plugins based on a specific topic. For example, catalog, kubernetes, and TechDocs can be referred to as workspaces.
 Each plugin belongs to a workspace and workspaces are portable enough to be moved to its own repo if desired.
 
 ## Release Management
