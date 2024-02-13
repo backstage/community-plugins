@@ -1,0 +1,56 @@
+name: Release workspace
+
+on:
+  workflow_call:
+    inputs:
+      workspace:
+        required: true
+        type: string
+
+defaults:
+  run:
+    working-directory: ./workspaces/${{ inputs.workspace }}
+
+jobs:
+  release:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+
+    env:
+      CI: true
+      NODE_OPTIONS: --max-old-space-size=4096
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_branch }}
+
+      - name: Set up Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org/ # Needed for auth
+
+      - name: yarn install
+        uses: backstage/actions/yarn-install@v0.6.5
+        with:
+          cache-prefix: ${{ runner.os }}-v18.x
+
+      - name: Compile TypeScript
+        run: yarn tsc:full
+
+      - name: Build all packages
+        run: yarn build
+
+      # Creates a changesets PR if there are changesets on master; otherwise publishes packages
+      # (once the changesets PR is merged and removes all changesets).
+      - name: Changesets PR or publish
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          publish: npm publish --access public --tolerate-republish
+          title: Version Packages (${{ inputs.workspace }})
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
