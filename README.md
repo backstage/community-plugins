@@ -5,6 +5,14 @@
 The `community-plugins` repository is a place where members of the community can host a plugin or a set of plugins. The goal of community-plugins is to reduce the amount of pull requests and issues from `backstage/backstage`, which has become too big with the time.
 By creating community-plugins we give to plugin maintainers all the tools to easily manage and publish their plugins.
 
+## Contributing a plugin
+
+Plugins created by the wider Backstage community are welcome to be published in the `community-plugins` repository. When you contribute a plugin to this repository, you agree to follow specific guidelines, including a standardized release process. This allows plugin owners to leverage established processes and the collective knowledge of the Backstage `community-plugins` community.
+
+For those seeking full autonomy over their plugin's development and release lifecycle, self-hosting remains a supported and valid option. The decision to either contribute to the community repository or self-host will depend on whether you prefer to manage the development of the plugin independently or develop the plugin as part of a community-driven process. Both approaches are valued within the Backstage ecosystem and contribute to its growth.
+
+Plugins that are key to the functionality and operation of Backstage will continue to reside in the `backstage/backstage` repository - ensuring the central components that underpin the platform are centrally managed and maintained.
+
 ## Repository layout
 
 `community-plugins` is formed by a set of workspaces. A workspace holds a plugin or a set of plugins based on a specific topic. For example, catalog, kubernetes, and TechDocs can be referred to as workspaces.
