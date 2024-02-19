@@ -4,12 +4,17 @@
   "version": "0.0.0",
   "repository": "git@github.com:backstage/community-plugins.git",
   "scripts": {
-    "create-workspace": "node ./scripts/create/create.js"
+    "create-workspace": "node ./scripts/create/create.js",
+    "detect-workspace": "node ./scripts/ci/changes.js"
   },
   "type": "module",
   "packageManager": "yarn@3.2.3",
   "devDependencies": {
     "chalk": "^5.3.0",
     "inquirer": "^9.2.14"
+  },
+  "dependencies": {
+    "@backstage/cli-node": "^0.2.2",
+    "@manypkg/get-packages": "^2.2.0"
   }
 }
