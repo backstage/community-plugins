@@ -1,0 +1,124 @@
+name: CI
+
+on:
+  workflow_call:
+    inputs:
+      workspace:
+        required: true
+        type: string
+
+defaults:
+  run:
+    working-directory: ./workspaces/${{ inputs.workspace }}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # This step only runs yarn install to make sure that an exact match is available
+  # in the cache. The two following verify and tests jobs then always install from cache.
+  install:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [18.x, 20.x]
+
+    env:
+      CI: true
+      NODE_OPTIONS: --max-old-space-size=8192
+
+    name: Install ${{ matrix.node-version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_branch }}
+
+      - name: Set up Node ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          registry-url: https://registry.npmjs.org/ # Needed for auth
+
+      - name: yarn install
+        uses: backstage/actions/yarn-install@v0.6.5
+        with:
+          cache-prefix: ${{ runner.os }}-v${{ matrix.node-version }}
+
+  # The verify jobs runs all the verification that doesn't require a
+  # diff towards master, since it takes some time to fetch that.
+  verify:
+    runs-on: ubuntu-latest
+
+    needs: install
+
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [18.x, 20.x]
+
+    env:
+      CI: true
+      NODE_OPTIONS: --max-old-space-size=8192
+
+    name: Verify ${{ matrix.node-version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_branch }}
+
+      - name: Set up Node ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          registry-url: https://registry.npmjs.org/ # Needed for auth
+
+      - name: yarn install
+        uses: backstage/actions/yarn-install@v0.6.5
+        with:
+          cache-prefix: ${{ runner.os }}-v${{ matrix.node-version }}
+
+      - name: verify yarn dependency duplicates
+        run: node scripts/verify-lockfile-duplicates.js
+
+      - name: verify changesets
+        run: node scripts/verify-changesets.js
+
+      - name: check for missing repo fixes
+        run: yarn fix --check
+
+      - name: validate config
+        run: yarn backstage-cli config:check --lax
+
+      - name: type checking and declarations
+        run: yarn tsc:full
+
+      - name: prettier
+        run: yarn prettier:check
+
+        # We need to generate the API references as well, so that we can verify the doc links
+      - name: check api reports and generate API reference
+        run: yarn build:api-reports:only --ci --docs
+
+      - name: build all packages
+        run: yarn backstage-cli repo build --all
+
+      - name: verify type dependencies
+        run: yarn lint:type-deps
+
+      - name: ensure clean working directory
+        run: |
+          if files=$(git ls-files --exclude-standard --others --modified) && [[ -z "$files" ]]; then
+            exit 0
+          else
+            echo ""
+            echo "Working directory has been modified:"
+            echo ""
+            git status --short
+            echo ""
+            exit 1
+          fi
