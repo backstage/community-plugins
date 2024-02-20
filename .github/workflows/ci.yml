@@ -86,7 +86,7 @@ jobs:
         run: yarn backstage-cli repo build --all
 
       - name: lint
-        run: yarn lint
+        run: yarn backstage-cli repo lint
 
       - name: ensure clean working directory
         run: |
