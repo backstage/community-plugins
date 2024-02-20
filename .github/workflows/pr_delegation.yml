@@ -6,7 +6,7 @@ on:
       - "workspaces/**"
 
 jobs:
-  call-ci:
+  run-script:
     runs-on: ubuntu-latest
     outputs:
       workspace: ${{ steps.detect-workspace.outputs.out }}
@@ -21,6 +21,8 @@ jobs:
       - name: Run workspace detection
         id: detect-workspace
         run: yarn run detect-workspace >> $GITHUB_OUTPUT
-      - uses: backstage/community-plugins/.github/workflows/ci.yml@main
-        with:
-          workspace: ${{ steps.detect-workspace.outputs.out }}
+  call-ci:
+    needs: run-script
+    uses: backstage/community-plugins/.github/workflows/ci.yml@main
+    with:
+      workspace: ${{ needs.run-script.outputs.workspace }}
