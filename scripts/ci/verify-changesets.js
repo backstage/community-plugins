@@ -19,8 +19,8 @@ import { default as parseChangeset } from "@changesets/parse";
 import fs from "fs-extra";
 
 const privatePackages = new Set([
-  "example-app",
-  "example-backend",
+  "app",
+  "backend",
   "e2e-test",
   "storybook",
   "techdocs-cli-embedded-app",
