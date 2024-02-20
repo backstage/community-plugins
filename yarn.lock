@@ -54,27 +54,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@changesets/parse@npm:^0.4.0":
-  version: 0.4.0
-  resolution: "@changesets/parse@npm:0.4.0"
-  dependencies:
-    "@changesets/types": ^6.0.0
-    js-yaml: ^3.13.1
-  checksum: 3dd970b244479746233ebd357cfff3816cf9f344ebf2cf0c7c55ce8579adfd3f506978e86ad61222dc3acf1548a2105ffdd8b3e940b3f82b225741315cee2bf0
-  languageName: node
-  linkType: hard
-
 "@changesets/types@npm:^4.0.1":
   version: 4.1.0
   resolution: "@changesets/types@npm:4.1.0"
   checksum: 72c1f58044178ca867dd9349ecc4b7c233ce3781bb03b5b72a70c3166fbbab54a2f2cb19a81f96b4649ba004442c8734569fba238be4dd737fb4624a135c6098
-  languageName: node
-  linkType: hard
-
-"@changesets/types@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "@changesets/types@npm:6.0.0"
-  checksum: d528b5d712f62c26ea422c7d34ccf6eac57a353c0733d96716db3c796ecd9bba5d496d48b37d5d46b784dc45b69c06ce3345fa3515df981bb68456cad68e6465
   languageName: node
   linkType: hard
 
@@ -355,10 +338,8 @@ __metadata:
   resolution: "community-plugins@workspace:."
   dependencies:
     "@backstage/cli-node": ^0.2.2
-    "@changesets/parse": ^0.4.0
     "@manypkg/get-packages": ^2.2.0
     chalk: ^5.3.0
-    fs-extra: ^11.2.0
     inquirer: ^9.2.14
   languageName: unknown
   linkType: soft
@@ -493,17 +474,6 @@ __metadata:
     jsonfile: ^6.0.1
     universalify: ^2.0.0
   checksum: dc94ab37096f813cc3ca12f0f1b5ad6744dfed9ed21e953d72530d103cea193c2f81584a39e9dee1bea36de5ee66805678c0dddc048e8af1427ac19c00fffc50
-  languageName: node
-  linkType: hard
-
-"fs-extra@npm:^11.2.0":
-  version: 11.2.0
-  resolution: "fs-extra@npm:11.2.0"
-  dependencies:
-    graceful-fs: ^4.2.0
-    jsonfile: ^6.0.1
-    universalify: ^2.0.0
-  checksum: b12e42fa40ba47104202f57b8480dd098aa931c2724565e5e70779ab87605665594e76ee5fb00545f772ab9ace167fe06d2ab009c416dc8c842c5ae6df7aa7e8
   languageName: node
   linkType: hard
 
@@ -720,7 +690,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"js-yaml@npm:^3.10.0, js-yaml@npm:^3.13.1, js-yaml@npm:^3.6.1":
+"js-yaml@npm:^3.10.0, js-yaml@npm:^3.6.1":
   version: 3.14.1
   resolution: "js-yaml@npm:3.14.1"
   dependencies:
