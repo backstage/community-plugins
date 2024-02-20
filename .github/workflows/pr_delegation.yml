@@ -8,7 +8,8 @@ on:
 jobs:
   call-ci:
     runs-on: ubuntu-latest
-
+    outputs:
+      workspace: ${{ steps.detect-workspace.outputs.out }}
     steps:
       - uses: actions/checkout@v4
       - name: Use Node.js
@@ -18,7 +19,8 @@ jobs:
       - name: Install dependencies
         run: yarn install
       - name: Run workspace detection
-        run: yarn run detect-workspace
+        id: detect-workspace
+        run: yarn run detect-workspace >> $GITHUB_OUTPUT
       - uses: backstage/community-plugins/.github/workflows/ci.yml@main
-        # with:
-        #  workspace: { steps.detect-workspace.output }
+        with:
+          workspace: ${{ steps.detect-workspace.outputs.out }}
