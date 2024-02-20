@@ -102,10 +102,10 @@ jobs:
       #          cache-prefix: ${{ runner.os }}-v${{ matrix.node-version }}
 
       - name: verify yarn dependency duplicates
-        run: node scripts/verify-lockfile-duplicates.js
+        run: node scripts/ci/verify-lockfile-duplicates.js
 
       - name: verify changesets
-        run: node scripts/verify-changesets.js
+        run: node scripts/ci/verify-changesets.js
 
       - name: check for missing repo fixes
         run: yarn fix --check
