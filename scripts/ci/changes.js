@@ -1,6 +1,6 @@
 import { GitUtils } from "@backstage/cli-node";
 
-const changedFiles = await GitUtils.listChangedFiles("main");
+const changedFiles = await GitUtils.listChangedFiles("origin/main");
 const workspaces = new Set();
 
 changedFiles.forEach((name) => {
