@@ -15,6 +15,8 @@
   },
   "dependencies": {
     "@backstage/cli-node": "^0.2.2",
-    "@manypkg/get-packages": "^2.2.0"
+    "@changesets/parse": "^0.4.0",
+    "@manypkg/get-packages": "^2.2.0",
+    "fs-extra": "^11.2.0"
   }
 }

@@ -15,44 +15,42 @@
  * limitations under the License.
  */
 
-/* eslint-disable @backstage/no-undeclared-imports */
-
-const { resolve: resolvePath } = require('path');
-const fs = require('fs-extra');
-const { default: parseChangeset } = require('@changesets/parse');
+import { default as parseChangeset } from "@changesets/parse";
+import fs from "fs-extra";
 
 const privatePackages = new Set([
-  'example-app',
-  'example-backend',
-  'e2e-test',
-  'storybook',
-  'techdocs-cli-embedded-app',
+  "example-app",
+  "example-backend",
+  "e2e-test",
+  "storybook",
+  "techdocs-cli-embedded-app",
 ]);
 
 async function main() {
-  process.chdir(resolvePath(__dirname, '../.changeset'));
+  //  Not using relative paths as this should be run inside a workspace folder
+  process.chdir(".changeset");
 
-  const fileNames = await fs.readdir('.');
+  const fileNames = await fs.readdir(".");
   const changesetNames = fileNames.filter(
-    name => name.endsWith('.md') && name !== 'README.md',
+    (name) => name.endsWith(".md") && name !== "README.md"
   );
 
   const changesets = await Promise.all(
-    changesetNames.map(async name => {
-      const content = await fs.readFile(name, 'utf8');
+    changesetNames.map(async (name) => {
+      const content = await fs.readFile(name, "utf8");
       return { name, ...parseChangeset(content) };
-    }),
+    })
   );
 
   const errors = [];
   for (const changeset of changesets) {
-    const privateReleases = changeset.releases.filter(release =>
-      privatePackages.has(release.name),
+    const privateReleases = changeset.releases.filter((release) =>
+      privatePackages.has(release.name)
     );
     if (privateReleases.length > 0) {
       const names = privateReleases
-        .map(release => `'${release.name}'`)
-        .join(', ');
+        .map((release) => `'${release.name}'`)
+        .join(", ");
       errors.push({
         name: changeset.name,
         messages: [
@@ -64,9 +62,9 @@ async function main() {
 
   if (errors.length) {
     console.log();
-    console.log('***********************************************************');
-    console.log('*             Changeset verification failed!              *');
-    console.log('***********************************************************');
+    console.log("***********************************************************");
+    console.log("*             Changeset verification failed!              *");
+    console.log("***********************************************************");
     console.log();
     for (const error of errors) {
       console.error(`Changeset '${error.name}' is invalid:`);
@@ -76,13 +74,13 @@ async function main() {
       }
     }
     console.log();
-    console.log('***********************************************************');
+    console.log("***********************************************************");
     console.log();
     process.exit(1);
   }
 }
 
-main().catch(error => {
+main().catch((error) => {
   console.error(error.stack);
   process.exit(1);
 });
