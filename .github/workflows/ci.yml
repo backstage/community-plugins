@@ -29,7 +29,7 @@ jobs:
         with:
           node-version: "20.x"
       - name: Install root dependencies
-        run: yarn install
+        run: yarn install --immutable
       - name: Set workspaces with changes as output
         id: detect-workspace
         run: echo "out=$(yarn run detect-workspace)" >> $GITHUB_OUTPUT
@@ -50,6 +50,10 @@ jobs:
       NODE_OPTIONS: --max-old-space-size=8192
 
     steps:
+      - name: Checkout main branch for tests purposes
+        uses: actions/checkout@v4
+        with:
+          ref: main
       - name: Checkout
         uses: actions/checkout@v4
         with:
@@ -62,9 +66,7 @@ jobs:
           registry-url: https://registry.npmjs.org/ # Needed for auth
 
       - name: yarn install
-        run: yarn install --frozen-lockfile
-        # with:
-        #  cache-prefix: ${{ runner.os }}-v${{ matrix.node-version }}
+        run: yarn install --immutable
 
       - name: verify yarn dependency duplicates
         run: node ../../scripts/ci/verify-lockfile-duplicates.js
@@ -89,7 +91,11 @@ jobs:
         run: yarn backstage-cli repo build --all
 
       - name: lint
-        run: yarn backstage-cli repo lint
+        run: yarn backstage-cli repo lint --since origin/main
+
+      - name: test changed packages
+        # Should this use --coverage instead?
+        run: yarn backstage-cli repo test --maxWorkers=3 --workerIdleMemoryLimit=1300M --since origin/main
 
       - name: ensure clean working directory
         run: |
