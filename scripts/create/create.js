@@ -19,7 +19,7 @@ const answers = await inquirer.prompt([
   {
     type: "input",
     name: "owners",
-    message: chalk.blue("Name of the owners of the workspace"),
+    message: chalk.blue("Name of the owner(s) of the workspace"),
     validate(value) {
       return (
         !!value.match(/@[a-zA-Z0-9_-]+/) ||
