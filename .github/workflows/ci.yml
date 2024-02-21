@@ -81,9 +81,9 @@ jobs:
       - name: prettier
         run: yarn prettier:check
 
-      # We need to generate the API references as well, so that we can verify the doc links
-      # - name: check api reports and generate API reference
-      #   run: yarn build:api-reports:only --ci --docs
+      - name: check api reports and generate API reference
+        # check flags
+        run: yarn backstage-repo-tools api-reports --allow-warnings -o ae-wrong-input-file-type --validate-release-tags build:api-reports:only --ci
 
       - name: build all packages
         run: yarn backstage-cli repo build --all
