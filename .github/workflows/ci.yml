@@ -21,7 +21,7 @@ jobs:
         with:
           ref: main
       - name: Checkout head branch
-      - uses: actions/checkout@v4
+        uses: actions/checkout@v4
         with:
           ref: ${{ github.event.workflow_run.head_branch }}
       - name: Setup node
