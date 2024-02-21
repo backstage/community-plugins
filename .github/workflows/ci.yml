@@ -33,6 +33,7 @@ jobs:
       - name: Set workspaces with changes as output
         id: detect-workspace
         run: echo "out=$(yarn run detect-workspace)" >> $GITHUB_OUTPUT
+
   ci:
     name: Run CI for workspace ${{ matrix.workspace }} using node ${{ matrix.node-version }}
     runs-on: ubuntu-latest
@@ -67,9 +68,6 @@ jobs:
 
       - name: yarn install
         run: yarn install --immutable
-
-      - name: verify yarn dependency duplicates
-        run: node ../../scripts/ci/verify-lockfile-duplicates.js
 
       - name: check for missing repo fixes
         run: yarn fix --check
@@ -109,3 +107,25 @@ jobs:
             echo ""
             exit 1
           fi
+
+  verify:
+    name: Verify ${{ matrix.workspace }} workspace
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        workspace: ${{ fromJSON(needs.detect-workspaces-with-changes.outputs.workspaces) }}
+    steps:
+      - name: Checkout head branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_branch }}
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+      - name: Install root dependencies
+        run: yarn install --immutable
+      - name: Verify lockfile duplicates
+        run: node scripts/ci/verify-lockfile-duplicates.js workspaces/${{ matrix.workspace }}/yarn.lock
+      - name: Verify changesets
+        run: node scripts/ci/verify-changesets.js ${{ matrix.workspace }}
