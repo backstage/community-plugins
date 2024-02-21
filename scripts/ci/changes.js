@@ -11,4 +11,4 @@ changedFiles.forEach((name) => {
   }
 });
 
-console.log(`out=${workspaces.values().next().value}`);
+console.log(JSON.stringify(Array.from(workspaces)));
