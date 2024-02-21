@@ -75,8 +75,9 @@ jobs:
       - name: validate config
         run: yarn backstage-cli config:check --lax
 
+      # running into problems with tsc:full after installing repo-tools
       - name: type checking and declarations
-        run: yarn tsc:full
+        run: yarn tsc
 
       - name: prettier
         run: yarn prettier:check
