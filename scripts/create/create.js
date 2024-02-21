@@ -41,9 +41,19 @@ try {
     encoding: "utf8",
   });
   const content = JSON.parse(file);
-  const version = execSync("npm show @changesets/cli version").toString();
 
-  content.devDependencies["@changesets/cli"] = `^${version.trim()}`;
+  const additionalDevDependencies = [
+    "@changesets/cli",
+    "@backstage/repo-tools",
+  ];
+
+  for (const additionalDependency of additionalDevDependencies) {
+    const version = execSync(
+      `npm show ${additionalDependency} version`
+    ).toString();
+    content.devDependencies[additionalDependency] = `^${version.trim()}`;
+  }
+
   content.name = answers.name;
 
   await writeFile(
