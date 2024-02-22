@@ -7,8 +7,7 @@
     "node": "18 || 20"
   },
   "scripts": {
-    "create-workspace": "node ./scripts/create/create.js",
-    "detect-workspace": "node ./scripts/ci/changes.js"
+    "create-workspace": "node ./scripts/create/create.js"
   },
   "type": "module",
   "packageManager": "yarn@3.2.3",

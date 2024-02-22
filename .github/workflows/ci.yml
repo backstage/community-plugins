@@ -31,8 +31,8 @@ jobs:
       - name: Install root dependencies
         run: yarn install --immutable
       - name: Set workspaces with changes as output
-        id: detect-workspace
-        run: echo "out=$(yarn run detect-workspace)" >> $GITHUB_OUTPUT
+        id: detect-workspaces
+        run: echo "out=$(node scripts/ci/list-workspaces-with-changes.js)" >> $GITHUB_OUTPUT
 
   ci:
     name: Workspace ${{ matrix.workspace }}, CI step for node ${{ matrix.node-version }}
