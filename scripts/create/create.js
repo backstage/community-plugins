@@ -47,6 +47,8 @@ try {
     "@backstage/repo-tools",
   ];
 
+  content.devDependencies ??= {};
+
   for (const additionalDependency of additionalDevDependencies) {
     const version = execSync(
       `npm show ${additionalDependency} version`
