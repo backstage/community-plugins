@@ -19,7 +19,7 @@ const answers = await inquirer.prompt([
   {
     type: "input",
     name: "owners",
-    message: chalk.blue("Name of the owners of the workspace"),
+    message: chalk.blue("Name of the owner(s) of the workspace"),
     validate(value) {
       return (
         !!value.match(/@[a-zA-Z0-9_-]+/) ||
@@ -41,9 +41,21 @@ try {
     encoding: "utf8",
   });
   const content = JSON.parse(file);
-  const version = execSync("npm show @changesets/cli version").toString();
 
-  content.devDependencies["@changesets/cli"] = `^${version.trim()}`;
+  const additionalDevDependencies = [
+    "@changesets/cli",
+    "@backstage/repo-tools",
+  ];
+
+  content.devDependencies ??= {};
+
+  for (const additionalDependency of additionalDevDependencies) {
+    const version = execSync(
+      `npm show ${additionalDependency} version`
+    ).toString();
+    content.devDependencies[additionalDependency] = `^${version.trim()}`;
+  }
+
   content.name = answers.name;
 
   await writeFile(
