@@ -6,7 +6,7 @@ import { screen } from '@testing-library/react';
 import {
   setupRequestMockHandlers,
   renderInTestApp,
-} from "@backstage/test-utils";
+} from '@backstage/test-utils';
 
 describe('ExampleComponent', () => {
   const server = setupServer();
