@@ -5,7 +5,7 @@ const workspaces = new Set();
 
 changedFiles.forEach((name) => {
   // First match starting with prefix = "workspaces/" & suffix = "/"
-  const match = name.match("^workspaces/([^/]+)/");
+  const match = name.match("(?<=workspaces/)([^/]+)(?=/)");
   if (match && match[0]) {
     workspaces.add(match[0]);
   }
