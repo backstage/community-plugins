@@ -7,6 +7,6 @@ createDevApp()
   .addPage({
     element: <Frontend1Page />,
     title: 'Root Page',
-    path: '/frontend-1'
+    path: '/frontend-1',
   })
   .render();
