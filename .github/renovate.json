@@ -1,0 +1,23 @@
+{
+  "extends": [
+    "config:best-practices",
+    ":gitSignOff",
+    ":rebaseStalePrs",
+    "group:allNonMajor",
+    "group:linters",
+    "group:test",
+    ":preserveSemverRanges",
+    ":pinOnlyDevDependencies"
+  ],
+  "labels": ["kind/dependency upgrade"],
+  "npm": {
+    "minimumReleaseAge": "3 days"
+  },
+  "packageRules": [
+    {
+      "matchManagers": ["github-actions"],
+      "groupName": "GitHub Actions"
+    }
+  ],
+  "ignorePaths": ["**/dist-dynamic/**"]
+}
