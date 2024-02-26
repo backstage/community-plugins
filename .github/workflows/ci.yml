@@ -14,7 +14,7 @@ jobs:
     name: Detect workspaces with changes
     runs-on: ubuntu-latest
     outputs:
-      workspaces: ${{ steps.detect-workspace.outputs.out }}
+      workspaces: ${{ steps.detect-workspaces.outputs.out }}
     steps:
       - name: Checkout main branch for diff purposes
         uses: actions/checkout@v4
@@ -32,8 +32,7 @@ jobs:
         run: yarn install --immutable
       - name: Set workspaces with changes as output
         id: detect-workspaces
-        run: echo "out=$(node scripts/ci/list-workspaces-with-changes.js | jq -r 'tostring')" >> $GITHUB_OUTPUT
-
+        run: echo "out=$(node scripts/ci/list-workspaces-with-changes.js)" >> $GITHUB_OUTPUT
   ci:
     name: Workspace ${{ matrix.workspace }}, CI step for node ${{ matrix.node-version }}
     runs-on: ubuntu-latest
