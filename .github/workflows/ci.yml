@@ -32,7 +32,7 @@ jobs:
         run: yarn install --immutable
       - name: Set workspaces with changes as output
         id: detect-workspaces
-        run: echo "out=$(node scripts/ci/list-workspaces-with-changes.js)" >> $GITHUB_OUTPUT
+        run: echo "out=$(node scripts/ci/list-workspaces-with-changes.js | jq -r 'tostring')" >> $GITHUB_OUTPUT
 
   ci:
     name: Workspace ${{ matrix.workspace }}, CI step for node ${{ matrix.node-version }}
