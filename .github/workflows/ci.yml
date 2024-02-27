@@ -130,3 +130,16 @@ jobs:
         run: node scripts/ci/verify-lockfile-duplicates.js workspaces/${{ matrix.workspace }}/yarn.lock
       - name: Verify changesets
         run: node scripts/ci/verify-changesets.js ${{ matrix.workspace }}
+  result:
+    if: ${{ always() }}
+    name: ci and verify jobs succeeded
+    runs-on: ubuntu-latest
+    needs: [ci, verify]
+    steps:
+      - run: exit 1
+        if: >-
+          ${{
+               contains(needs.*.result, 'failure')
+            || contains(needs.*.result, 'cancelled')
+            || contains(needs.*.result, 'skipped')
+          }}
