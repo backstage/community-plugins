@@ -92,8 +92,7 @@ jobs:
         run: yarn backstage-cli repo lint --since origin/main
 
       - name: test changed packages
-        # Should this use --coverage instead?
-        run: yarn backstage-cli repo test --maxWorkers=3 --workerIdleMemoryLimit=1300M --since origin/main
+        run: yarn backstage-cli repo test --coverage --maxWorkers=3
 
       - name: ensure clean working directory
         run: |
@@ -132,7 +131,7 @@ jobs:
         run: node scripts/ci/verify-changesets.js ${{ matrix.workspace }}
   result:
     if: ${{ always() }}
-    name: ci and verify jobs succeeded
+    name: check all required jobs
     runs-on: ubuntu-latest
     needs: [ci, verify]
     steps:
