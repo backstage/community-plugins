@@ -1,6 +1,7 @@
-import path from "path";
+import path, { dirname } from "path";
 import fs from "fs/promises";
 import { spawnSync } from "child_process";
+import { fileURLToPath } from "url";
 
 if (process.argv.length < 3) {
   throw new Error(`Usage: node publishing-needed.js <name-of-the-workspace>`);
@@ -9,7 +10,7 @@ const workspace = process.argv[2];
 
 (async function main() {
   const pluginsFolderPath = path.join(
-    import.meta.dirname,
+    dirname(fileURLToPath(import.meta.url)),
     "..",
     "..",
     "workspaces",
@@ -39,14 +40,9 @@ const workspace = process.argv[2];
     }
   }
   if (packagesToBePublished.length === 0) {
-    console.log("All packages are present on npm, skipping publishing");
-    process.exit(0);
+    console.log(false);
   }
-  console.log(
-    `Publishing needed as the following packages are missing.\n ${packagesToBePublished.join(
-      ","
-    )}`
-  );
+  console.log(true);
 })().catch((error) => {
   console.error(error.stack);
   process.exit(1);
