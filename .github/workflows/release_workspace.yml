@@ -51,21 +51,22 @@ jobs:
           # PR. cf. https://github.community/t/push-doesnt-trigger-workflow-action-in-an-open-pr/118675
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Exit with success if plugins has changesets
-        if: steps.changesets-pr.outputs.hasChangesets == 'true'
-        run: exit 0
-
-      - name: Exit with success if publishing is not needed
-        run: node ../../scripts/ci/publishing-needed.js ${{ inputs.workspace }}
+        id: shouldPublish
+        if: steps.changesets-pr.outputs.hasChangesets == 'false'
+        run: echo "out=$(node ../../scripts/ci/publishing-needed.js ${{ inputs.workspace }})" >> $GITHUB_OUTPUT
 
       - name: Compile TypeScript
+        if: steps.shouldPublish.outputs.out == 'true'
         run: yarn tsc:full
 
       - name: Build all packages
+        if: steps.shouldPublish.outputs.out == 'true'
         run: yarn build:all
 
       # Creates a changesets PR if there are changesets on master; otherwise publishes packages
       # (once the changesets PR is merged and removes all changesets).
       - name: Changesets PR or publish
+        if: steps.shouldPublish.outputs.out == 'true'
         id: changesets-publish
         uses: changesets/action@v1
         with:
