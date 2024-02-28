@@ -36,9 +36,6 @@ jobs:
           node-version: 20
           registry-url: https://registry.npmjs.org/ # Needed for auth
 
-      # - name: Install changesets cli
-      #   run: mkdir ${{ runner.temp }}/changesets-temp && pushd ${{ runner.temp }}/changesets-temp && yarn add @changesets/cli && popd && mv ${{ runner.temp }}/changesets-temp/node_modules .
-
       - name: yarn install
         run: yarn install --immutable
 
@@ -53,16 +50,12 @@ jobs:
           # TODO(vinzscam): If we use secrets.GITHUB_TOKEN here, checks won't trigger in the version packages
           # PR. cf. https://github.community/t/push-doesnt-trigger-workflow-action-in-an-open-pr/118675
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Do not continue if changesets are detected
+      - name: Exit with success if plugins has changesets
         if: steps.changesets-pr.outputs.hasChangesets == 'true'
-        run: exit 1
-      - name: Exit if publishing is not needed
-        run: node ../../scripts/ci/publishing-needed.js ${{ inputs.workspace }}
+        run: exit 0
 
-      - name: yarn install
-        uses: backstage/actions/yarn-install@a674369920067381b450d398b27df7039b7ef635 # v0.6.5
-        with:
-          cache-prefix: ${{ runner.os }}-20.x
+      - name: Exit with success if publishing is not needed
+        run: node ../../scripts/ci/publishing-needed.js ${{ inputs.workspace }}
 
       - name: Compile TypeScript
         run: yarn tsc:full

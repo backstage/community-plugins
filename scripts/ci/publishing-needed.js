@@ -40,7 +40,7 @@ const workspace = process.argv[2];
   }
   if (packagesToBePublished.length === 0) {
     console.log("All packages are present on npm, skipping publishing");
-    process.exit(1);
+    process.exit(0);
   }
   console.log(
     `Publishing needed as the following packages are missing.\n ${packagesToBePublished.join(
