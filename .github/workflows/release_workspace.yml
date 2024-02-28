@@ -1,11 +1,20 @@
 name: Release workspace
 
 on:
+  workflow_dispatch:
+    inputs:
+      workspace:
+        description: "Name of the Workspace"
+        required: true
+        type: string
   workflow_call:
     inputs:
       workspace:
         required: true
         type: string
+
+concurrency:
+  group: ${{ github.workflow }}-${{ inputs.workspace }}
 
 defaults:
   run:
@@ -13,7 +22,6 @@ defaults:
 
 jobs:
   release:
-    timeout-minutes: 10
     runs-on: ubuntu-latest
 
     env:
@@ -27,10 +35,24 @@ jobs:
           ref: ${{ github.event.workflow_run.head_branch }}
 
       - name: Set up Node
-        uses: actions/setup-node@1a4442cacd436585916779262731d5b162bc6ec7 # v3
+        uses: actions/setup-node@v4
         with:
           node-version: 20
           registry-url: https://registry.npmjs.org/ # Needed for auth
+
+      - name: Install changesets cli
+        run: mkdir __changesets-temp && pushd __changesets-temp && yarn add @changesets/cli && mv node_modules .. && popd
+
+      - name: Changesets detect changes
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          title: Version Packages (${{ inputs.workspace }})
+      - name: Do not continue if changesets are detected
+        if: steps.changesets.outputs.hasChangesets == 'true'
+        run: exit 1
+      - name: Exit if publishing is not needed
+        run: node ../../scripts/ci/publishing-needed.js ${{ inputs.workspace }}
 
       - name: yarn install
         uses: backstage/actions/yarn-install@a674369920067381b450d398b27df7039b7ef635 # v0.6.5
@@ -49,7 +71,7 @@ jobs:
         id: changesets
         uses: changesets/action@v1
         with:
-          publish: npm publish --access public --tolerate-republish
+          publish: yarn workspaces foreach npm publish --access public
           title: Version Packages (${{ inputs.workspace }})
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
