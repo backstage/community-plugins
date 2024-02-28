@@ -26,7 +26,7 @@ jobs:
           ref: ${{ github.event.workflow_run.head_branch }}
       - name: Find all workspaces
         id: find-all-workspaces
-        run: echo "out=$(ls -1 workspaces | jq -R . | jq -s .)" >> $GITHUB_OUTPUT
+        run: echo "out=$(ls -1 workspaces | jq -R . | jq -s . -c)" >> $GITHUB_OUTPUT
 
   maybe-release-workspace:
     name: Maybe release ${{ matrix.workspace }}
