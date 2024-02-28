@@ -17,14 +17,12 @@ on:
 # concurrency:
 #   group: ${{ github.workflow }}-${{ inputs.workspace }}
 
-defaults:
-  run:
-    working-directory: ./workspaces/${{ inputs.workspace }}
-
 jobs:
   release:
     runs-on: ubuntu-latest
-
+    defaults:
+      run:
+        working-directory: ./workspaces/${{ inputs.workspace }}
     env:
       CI: true
       NODE_OPTIONS: --max-old-space-size=4096
