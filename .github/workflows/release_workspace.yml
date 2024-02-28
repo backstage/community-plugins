@@ -47,6 +47,10 @@ jobs:
         uses: changesets/action@v1
         with:
           title: Version Packages (${{ inputs.workspace }})
+        env:
+          # TODO(vinzscam): If we use secrets.GITHUB_TOKEN here, checks won't trigger in the version packages
+          # PR. cf. https://github.community/t/push-doesnt-trigger-workflow-action-in-an-open-pr/118675
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Do not continue if changesets are detected
         if: steps.changesets-pr.outputs.hasChangesets == 'true'
         run: exit 1
