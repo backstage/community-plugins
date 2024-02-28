@@ -44,6 +44,7 @@ jobs:
         uses: changesets/action@v1
         with:
           title: Version Packages (${{ inputs.workspace }})
+          cwd: workspaces/${{ inputs.workspace }}
         env:
           # TODO(vinzscam): If we use secrets.GITHUB_TOKEN here, checks won't trigger in the version packages
           # PR. cf. https://github.community/t/push-doesnt-trigger-workflow-action-in-an-open-pr/118675
@@ -73,6 +74,7 @@ jobs:
         with:
           publish: yarn workspaces foreach npm publish --access public
           title: Version Packages (${{ inputs.workspace }})
+          cwd: workspaces/${{ inputs.workspace }}
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
