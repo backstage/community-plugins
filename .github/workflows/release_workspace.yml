@@ -61,7 +61,7 @@ jobs:
         run: yarn tsc:full
 
       - name: Build all packages
-        run: yarn build
+        run: yarn build:all
 
       # Creates a changesets PR if there are changesets on master; otherwise publishes packages
       # (once the changesets PR is merged and removes all changesets).
