@@ -30,6 +30,7 @@ jobs:
     name: Maybe release ${{ matrix.workspace }}
     needs: find-all-workspaces
     strategy:
+      fail-fast: false
       matrix:
         workspace: ${{ fromJSON(needs.find-all-workspaces.outputs.workspaces) }}
     uses: ./.github/workflows/release_workspace.yml
