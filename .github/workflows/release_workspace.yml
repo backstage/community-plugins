@@ -40,7 +40,7 @@ jobs:
           registry-url: https://registry.npmjs.org/ # Needed for auth
 
       - name: Install changesets cli
-        run: mkdir __changesets-temp && pushd __changesets-temp && yarn add @changesets/cli && mv node_modules .. && popd
+        run: mkdir ${{ runner.temp }}/changesets-temp && pushd ${{ runner.temp }}/changesets-temp && yarn add @changesets/cli && popd && mv ${{ runner.temp }}/changesets-temp/node_modules .
 
       - name: Changesets detect changes
         id: changesets-pr
