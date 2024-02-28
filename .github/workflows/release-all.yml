@@ -1,0 +1,42 @@
+name: Detect packages with changesets
+
+on:
+  push:
+    branches:
+      - main
+      - test-branch
+  workflow_dispatch:
+
+jobs:
+  find-all-workspaces:
+    name: Find all workspaces
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    outputs:
+      workspaces: ${{ steps.find-all-workspaces.outputs.out }}
+
+    env:
+      CI: true
+      NODE_OPTIONS: --max-old-space-size=4096
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_branch }}
+      - name: Find all workspaces
+        id: find-all-workspaces
+        run: echo "out=$(ls -1 workspaces | jq -R . | jq -s .)" >> $GITHUB_OUTPUT
+
+  maybe-release-workspace:
+    name: Maybe release ${{ matrix.workspace }}
+    runs-on: ubuntu-latest
+    environment: production
+    needs: find-all-workspaces
+    strategy:
+      matrix:
+        workspace: ${{ fromJSON(needs.find-all-workspaces.outputs.workspaces) }}
+    steps:
+      - uses: ./.github/workflows/release_workspace.yml
+        with:
+          workspace: ${{ matrix.workspace }}
