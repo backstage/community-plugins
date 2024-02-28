@@ -36,8 +36,11 @@ jobs:
           node-version: 20
           registry-url: https://registry.npmjs.org/ # Needed for auth
 
-      - name: Install changesets cli
-        run: mkdir ${{ runner.temp }}/changesets-temp && pushd ${{ runner.temp }}/changesets-temp && yarn add @changesets/cli && popd && mv ${{ runner.temp }}/changesets-temp/node_modules .
+      # - name: Install changesets cli
+      #   run: mkdir ${{ runner.temp }}/changesets-temp && pushd ${{ runner.temp }}/changesets-temp && yarn add @changesets/cli && popd && mv ${{ runner.temp }}/changesets-temp/node_modules .
+
+      - name: yarn install
+        run: yarn install --immutable
 
       - name: Changesets detect changes
         id: changesets-pr
@@ -59,7 +62,7 @@ jobs:
       - name: yarn install
         uses: backstage/actions/yarn-install@v0.6.5
         with:
-          cache-prefix: ${{ runner.os }}-v18.x
+          cache-prefix: ${{ runner.os }}-20.x
 
       - name: Compile TypeScript
         run: yarn tsc:full
