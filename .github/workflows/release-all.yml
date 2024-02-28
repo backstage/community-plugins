@@ -29,7 +29,6 @@ jobs:
   maybe-release-workspace:
     name: Maybe release ${{ matrix.workspace }}
     runs-on: ubuntu-latest
-    environment: production
     needs: find-all-workspaces
     strategy:
       matrix:
@@ -37,6 +36,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
       - uses: ./.github/workflows/release_workspace.yml
         with:
           workspace: ${{ matrix.workspace }}
