@@ -43,12 +43,12 @@ jobs:
         run: mkdir __changesets-temp && pushd __changesets-temp && yarn add @changesets/cli && mv node_modules .. && popd
 
       - name: Changesets detect changes
-        id: changesets
+        id: changesets-pr
         uses: changesets/action@v1
         with:
           title: Version Packages (${{ inputs.workspace }})
       - name: Do not continue if changesets are detected
-        if: steps.changesets.outputs.hasChangesets == 'true'
+        if: steps.changesets-pr.outputs.hasChangesets == 'true'
         run: exit 1
       - name: Exit if publishing is not needed
         run: node ../../scripts/ci/publishing-needed.js ${{ inputs.workspace }}
@@ -67,7 +67,7 @@ jobs:
       # Creates a changesets PR if there are changesets on master; otherwise publishes packages
       # (once the changesets PR is merged and removes all changesets).
       - name: Changesets PR or publish
-        id: changesets
+        id: changesets-publish
         uses: changesets/action@v1
         with:
           publish: yarn workspaces foreach npm publish --access public
