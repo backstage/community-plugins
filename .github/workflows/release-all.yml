@@ -37,6 +37,10 @@ jobs:
       matrix:
         workspace: ${{ fromJSON(needs.find-all-workspaces.outputs.workspaces) }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_branch }}
       - uses: ./.github/workflows/release_workspace.yml
         with:
           workspace: ${{ matrix.workspace }}
