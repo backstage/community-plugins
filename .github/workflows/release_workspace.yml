@@ -36,6 +36,17 @@ jobs:
           node-version: 20
           registry-url: https://registry.npmjs.org/ # Needed for auth
 
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
+
+      - uses: actions/cache@v3
+        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles(format('workspaces/${0}/**/yarn.lock', inputs.workspace)) }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
       - name: yarn install
         run: yarn install --immutable
 
