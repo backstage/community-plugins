@@ -1,12 +1,12 @@
 name: Release workspace
 
 on:
-  # workflow_dispatch:
-  #   inputs:
-  #     workspace:
-  #       description: "Name of the Workspace"
-  #       required: true
-  #       type: string
+  workflow_dispatch:
+    inputs:
+      workspace:
+        description: "Name of the Workspace"
+        required: true
+        type: string
   workflow_call:
     inputs:
       workspace:
@@ -14,8 +14,8 @@ on:
         required: true
         type: string
 
-# concurrency:
-#   group: ${{ github.workflow }}-${{ inputs.workspace }}
+concurrency:
+  group: ${{ github.workflow }}-${{ inputs.workspace }}
 
 jobs:
   release:
@@ -39,7 +39,7 @@ jobs:
       - name: yarn install
         run: yarn install --immutable
 
-      - name: Changesets detect changes
+      - name: Detect changesets and eventually update Version Packages (${{ inputs.workspace }}) PR
         id: changesets-pr
         uses: changesets/action@v1
         with:
@@ -50,23 +50,21 @@ jobs:
           # TODO(vinzscam): If we use secrets.GITHUB_TOKEN here, checks won't trigger in the version packages
           # PR. cf. https://github.community/t/push-doesnt-trigger-workflow-action-in-an-open-pr/118675
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Exit with success if plugins has changesets
-        id: shouldPublish
+      - name: Early check whether publishing is needed
+        id: should-publish
         if: steps.changesets-pr.outputs.hasChangesets == 'false'
         run: echo "out=$(node ../../scripts/ci/publishing-needed.js ${{ inputs.workspace }})" >> $GITHUB_OUTPUT
 
       - name: Compile TypeScript
-        if: steps.shouldPublish.outputs.out == 'true'
+        if: steps.should-publish.outputs.out == 'true'
         run: yarn tsc:full
 
       - name: Build all packages
-        if: steps.shouldPublish.outputs.out == 'true'
+        if: steps.should-publish.outputs.out == 'true'
         run: yarn build:all
 
-      # Creates a changesets PR if there are changesets on master; otherwise publishes packages
-      # (once the changesets PR is merged and removes all changesets).
-      - name: Changesets PR or publish
-        if: steps.shouldPublish.outputs.out == 'true'
+      - name: Publish packages
+        if: steps.should-publish.outputs.out == 'true'
         id: changesets-publish
         uses: changesets/action@v1
         with:
