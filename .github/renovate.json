@@ -3,7 +3,6 @@
     "config:best-practices",
     ":gitSignOff",
     ":rebaseStalePrs",
-    "group:allNonMajor",
     "group:linters",
     "group:test",
     ":preserveSemverRanges",
