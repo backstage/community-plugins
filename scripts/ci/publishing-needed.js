@@ -3,7 +3,7 @@ import fs from "fs/promises";
 import { spawnSync } from "child_process";
 import { fileURLToPath } from "url";
 
-if (process.argv.length < 3) {
+if (process.argv.length !== 3) {
   throw new Error(`Usage: node publishing-needed.js <name-of-the-workspace>`);
 }
 const workspace = process.argv[2];

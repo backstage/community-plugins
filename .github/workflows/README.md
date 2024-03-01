@@ -7,9 +7,9 @@ Once all the checks succeed, the pull request can be merged.
 
 2. [release_workspace.yml](./release_workspace.yml)
 
-This workflow takes the name of a workspace as input and it is responsible for either creating a Version package PR in case there are changesets or performing a release of the packages in the specified workspace, in case some of them haven't been published.
+This workflow takes the name of a workspace as input and it is responsible for either creating a Version Packages PR in case there are changesets, or performing a release of the packages in the specified workspace in case some of them haven't been published.
 
-Please refer to the [Changesets' documentation](https://github.com/changesets/changesets) to dig more into the details about how changesets work.
+Please refer to the [Changesets documentation](https://github.com/changesets/changesets) to dig more into the details about how changesets work.
 
 3. [release-all.yml](./release-all.yml)
 
