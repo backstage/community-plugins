@@ -8,10 +8,10 @@ body:
     attributes:
       value: We value your time and effort to submit this bug report. 🙏
   - type: input
-    id: workspace
+    id: plugin-name
     attributes:
-      label: Plugin Workspace
-      description: "Specify the name of the workspace folder (https://github.com/backstage/community-plugins/tree/main/workspaces) this issue refers to"
+      label: Plugin Name
+      description: "Specify the name of the [plugin name](https://github.com/backstage/community-plugins/tree/main/workspaces) this issue refers to"
       placeholder: "Example: catalog"
     validations:
       required: true
