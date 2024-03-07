@@ -11,7 +11,7 @@ body:
     id: plugin-name
     attributes:
       label: Plugin Name
-      description: "Specify the name of the [plugin name](https://github.com/backstage/community-plugins/tree/main/workspaces) this issue refers to"
+      description: "Specify the name of the [plugin name](https://www.npmjs.com/search?q=%40backstage-community) this issue refers to"
       placeholder: "Example: catalog"
     validations:
       required: true
