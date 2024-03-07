@@ -113,7 +113,7 @@ jobs:
         id: changesets-publish
         uses: changesets/action@v1
         with:
-          publish: yarn workspaces foreach npm publish --access public
+          publish: yarn workspaces foreach npm publish --dry-run --access public
           title: Version Packages (${{ inputs.workspace }})
           cwd: workspaces/${{ inputs.workspace }}
           version: yarn changeset version
