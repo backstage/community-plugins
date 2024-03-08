@@ -1,0 +1,31 @@
+name: Release all workspaces
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  find-all-workspaces:
+    name: Find all workspaces
+    runs-on: ubuntu-latest
+    outputs:
+      workspaces: ${{ steps.find-all-workspaces.outputs.out }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Find all workspaces
+        id: find-all-workspaces
+        run: echo "out=$(ls -1 workspaces | jq -R . | jq -s . -c)" >> $GITHUB_OUTPUT
+
+  maybe-release-workspace:
+    name: Maybe release ${{ matrix.workspace }}
+    needs: find-all-workspaces
+    strategy:
+      fail-fast: false
+      matrix:
+        workspace: ${{ fromJSON(needs.find-all-workspaces.outputs.workspaces) }}
+    uses: ./.github/workflows/release_workspace.yml
+    with:
+      workspace: ${{ matrix.workspace }}

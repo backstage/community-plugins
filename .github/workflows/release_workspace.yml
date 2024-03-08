@@ -1,56 +1,123 @@
 name: Release workspace
 
 on:
+  workflow_dispatch:
+    inputs:
+      workspace:
+        description: "Name of the Workspace"
+        required: true
+        type: string
   workflow_call:
     inputs:
       workspace:
+        description: "Name of the Workspace"
         required: true
         type: string
 
-defaults:
-  run:
-    working-directory: ./workspaces/${{ inputs.workspace }}
+concurrency:
+  group: ${{ github.workflow }}-${{ inputs.workspace }}
 
 jobs:
-  release:
-    timeout-minutes: 10
+  changesets-pr:
+    name: Update Version Packages PR for ${{ inputs.workspace }}
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./workspaces/${{ inputs.workspace }}
+    env:
+      CI: true
+      NODE_OPTIONS: --max-old-space-size=4096
+    outputs:
+      publishing-needed: ${{ steps.should-publish.outputs.out }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org/ # Needed for auth
 
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
+
+      - uses: actions/cache@v3
+        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles(format('workspaces/${0}/**/yarn.lock', inputs.workspace)) }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      - name: yarn install
+        run: yarn install --immutable
+
+      - name: Detect changesets and eventually update Version Packages (${{ inputs.workspace }}) PR
+        id: changesets-pr
+        uses: changesets/action@v1
+        with:
+          title: Version Packages (${{ inputs.workspace }})
+          cwd: workspaces/${{ inputs.workspace }}
+          version: yarn changeset version
+        env:
+          # TODO(vinzscam): If we use secrets.GITHUB_TOKEN here, checks won't trigger in the version packages
+          # PR. cf. https://github.community/t/push-doesnt-trigger-workflow-action-in-an-open-pr/118675
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Early check whether publishing is needed
+        id: should-publish
+        if: steps.changesets-pr.outputs.hasChangesets == 'false'
+        run: echo "out=$(node ../../scripts/ci/publishing-needed.js ${{ inputs.workspace }})" >> $GITHUB_OUTPUT
+
+  release:
+    name: Release workspace ${{ inputs.workspace }}
+    runs-on: ubuntu-latest
+    needs: changesets-pr
+    if: needs.changesets-pr.outputs.publishing-needed
+    defaults:
+      run:
+        working-directory: ./workspaces/${{ inputs.workspace }}
     env:
       CI: true
       NODE_OPTIONS: --max-old-space-size=4096
 
     steps:
       - name: Checkout
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
-        with:
-          ref: ${{ github.event.workflow_run.head_branch }}
-
+        uses: actions/checkout@v4
       - name: Set up Node
-        uses: actions/setup-node@1a4442cacd436585916779262731d5b162bc6ec7 # v3
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
         with:
           node-version: 20
           registry-url: https://registry.npmjs.org/ # Needed for auth
 
-      - name: yarn install
-        uses: backstage/actions/yarn-install@a674369920067381b450d398b27df7039b7ef635 # v0.6.5
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
+
+      - uses: actions/cache@v3
+        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
         with:
-          cache-prefix: ${{ runner.os }}-v18.x
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles(format('workspaces/${0}/**/yarn.lock', inputs.workspace)) }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      - name: yarn install
+        run: yarn install --immutable
 
       - name: Compile TypeScript
         run: yarn tsc:full
 
       - name: Build all packages
-        run: yarn build
+        run: yarn build:all
 
-      # Creates a changesets PR if there are changesets on master; otherwise publishes packages
-      # (once the changesets PR is merged and removes all changesets).
-      - name: Changesets PR or publish
-        id: changesets
+      - name: Publish packages
+        id: changesets-publish
         uses: changesets/action@v1
         with:
-          publish: npm publish --access public --tolerate-republish
+          publish: yarn workspaces foreach npm publish --dry-run --access public
           title: Version Packages (${{ inputs.workspace }})
+          cwd: workspaces/${{ inputs.workspace }}
+          version: yarn changeset version
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
