@@ -1,12 +1,12 @@
 > Deprecated smth.smth.
 
-# @backstage/plugin-todo-backend
+# @backstage-community/plugin-todo-backend
 
-Backend for the `@backstage/plugin-todo` plugin. Assists in scanning for and listing `// TODO` comments in source code repositories.
+Backend for the `@backstage-community/plugin-todo` plugin. Assists in scanning for and listing `// TODO` comments in source code repositories.
 
 ## Installation
 
-Install the `@backstage/plugin-todo-backend` package in your backend packages, and then integrate the plugin using the following default setup for `src/plugins/todo.ts`:
+Install the `@backstage-community/plugin-todo-backend` package in your backend packages, and then integrate the plugin using the following default setup for `src/plugins/todo.ts`:
 
 ```ts
 import { Router } from 'express';
@@ -15,7 +15,7 @@ import {
   createRouter,
   TodoReaderService,
   TodoScmReader,
-} from '@backstage/plugin-todo-backend';
+} from '@backstage-community/plugin-todo-backend';
 import { PluginEnvironment } from '../types';
 
 export default async function createPlugin(
@@ -66,7 +66,7 @@ The `TodoScmReader` accepts a `TodoParser` option, which can be used to configur
 import {
   TodoScmReader,
   createTodoParser,
-} from '@backstage/plugin-todo-backend';
+} from '@backstage-community/plugin-todo-backend';
 
 // ...
 

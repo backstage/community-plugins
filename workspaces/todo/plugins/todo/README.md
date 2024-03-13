@@ -1,6 +1,6 @@
 > This plugin is deprecated & moved to `@backstage-community/todo`
 
-# @backstage/plugin-todo
+# @backstage-community/plugin-todo
 
 This plugin lists `// TODO` comments in source code. It currently exports a single component extension for use on entity pages.
 
@@ -10,8 +10,8 @@ This plugin lists `// TODO` comments in source code. It currently exports a sing
 
 ```bash
 # From your Backstage root directory
-yarn --cwd packages/app add @backstage/plugin-todo
-yarn --cwd packages/backend add @backstage/plugin-todo-backend
+yarn --cwd packages/app add @backstage-community/plugin-todo
+yarn --cwd packages/backend add @backstage-community/plugin-todo-backend
 ```
 
 2. Add the plugin backend:
@@ -25,7 +25,7 @@ import {
   createRouter,
   TodoReaderService,
   TodoScmReader,
-} from '@backstage/plugin-todo-backend';
+} from '@backstage-community/plugin-todo-backend';
 import { PluginEnvironment } from '../types';
 
 export default async function createPlugin(
@@ -66,7 +66,7 @@ async function main() {
 
 ```jsx
 // In packages/app/src/components/catalog/EntityPage.tsx
-import { EntityTodoContent } from '@backstage/plugin-todo';
+import { EntityTodoContent } from '@backstage-community/plugin-todo';
 
 const serviceEntityPage = (
   <EntityLayout>
@@ -78,7 +78,7 @@ const serviceEntityPage = (
 
 ## Format
 
-The default parser uses [Leasot](https://github.com/pgilad/leasot), which supports a wide range of languages. By default it supports the `TODO` and `FIXME` tags, along with `@` prefix and author reference through with either a `(<name>)` suffix or trailing `/<name>`. For more information on how to configure the parser, see `@backstage/plugin-todo-backend`.
+The default parser uses [Leasot](https://github.com/pgilad/leasot), which supports a wide range of languages. By default it supports the `TODO` and `FIXME` tags, along with `@` prefix and author reference through with either a `(<name>)` suffix or trailing `/<name>`. For more information on how to configure the parser, see `@backstage-community/plugin-todo-backend`.
 
 Below are some examples of formats that are supported by default:
 

@@ -1,4 +1,4 @@
-# @backstage/plugin-todo-backend
+# @backstage-community/plugin-todo-backend
 
 ## 0.3.12-next.2
 
@@ -1318,7 +1318,7 @@ Skipped due to publishing issues.
   import {
     TodoScmReader,
     createTodoParser,
-  } from '@backstage/plugin-todo-backend';
+  } from '@backstage-community/plugin-todo-backend';
 
   // ...
 
