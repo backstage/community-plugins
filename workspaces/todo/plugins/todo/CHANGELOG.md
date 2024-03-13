@@ -1,4 +1,4 @@
-# @backstage/plugin-todo
+# @backstage-community/plugin-todo
 
 ## 0.2.35-next.2
 

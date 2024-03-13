@@ -2,7 +2,7 @@ apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: backstage-plugin-todo
-  title: '@backstage/plugin-todo'
+  title: '@backstage-community/plugin-todo'
   description: A Backstage plugin that lets you browse TODO comments in your source code
 spec:
   lifecycle: experimental
