@@ -114,7 +114,7 @@ export const TodoList = () => {
             page: Math.floor(result.offset / result.limit),
           };
         } catch (loadingError) {
-          setError(loadingError);
+          setError(loadingError as Error);
           return { data: [], totalCount: 0, page: 0 };
         }
       }}
