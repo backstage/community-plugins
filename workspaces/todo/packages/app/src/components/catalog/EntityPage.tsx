@@ -57,6 +57,7 @@ import {
 
 import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
 import { ReportIssue } from '@backstage/plugin-techdocs-module-addons-contrib';
+import { EntityTodoContent } from '@backstage-community/plugin-todo';
 
 const techdocsContent = (
   <EntityTechdocsContent>
@@ -146,6 +147,10 @@ const serviceEntityPage = (
       {overviewContent}
     </EntityLayout.Route>
 
+    <EntityLayout.Route path="/todo" title="TODO">
+      <EntityTodoContent />
+    </EntityLayout.Route>
+
     <EntityLayout.Route path="/ci-cd" title="CI/CD">
       {cicdContent}
     </EntityLayout.Route>
@@ -184,6 +189,10 @@ const websiteEntityPage = (
       {overviewContent}
     </EntityLayout.Route>
 
+    <EntityLayout.Route path="/todo" title="TODO">
+      <EntityTodoContent />
+    </EntityLayout.Route>
+
     <EntityLayout.Route path="/ci-cd" title="CI/CD">
       {cicdContent}
     </EntityLayout.Route>
@@ -216,6 +225,10 @@ const defaultEntityPage = (
   <EntityLayout>
     <EntityLayout.Route path="/" title="Overview">
       {overviewContent}
+    </EntityLayout.Route>
+
+    <EntityLayout.Route path="/todo" title="TODO">
+      <EntityTodoContent />
     </EntityLayout.Route>
 
     <EntityLayout.Route path="/docs" title="Docs">
