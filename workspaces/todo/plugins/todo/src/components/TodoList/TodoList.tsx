@@ -18,11 +18,11 @@ import { useEntity } from '@backstage/plugin-catalog-react';
 import React, { useState } from 'react';
 import { todoApiRef } from '../../api';
 import { TodoItem, TodoListOptions } from '../../api/types';
+import { Tooltip, Typography } from '@material-ui/core';
 
 import {
   Table,
   TableColumn,
-  OverflowTooltip,
   Link,
   ResponseErrorPanel,
 } from '@backstage/core-components';
@@ -42,7 +42,11 @@ const columns: TableColumn<TodoItem>[] = [
     field: 'text',
     width: '55%',
     highlight: true,
-    render: ({ text }) => <OverflowTooltip text={text} />,
+    render: ({ text }) => (
+      <Tooltip title={text}>
+        <Typography>{text}</Typography>
+      </Tooltip>
+    ),
   },
   {
     title: 'File',
@@ -51,17 +55,25 @@ const columns: TableColumn<TodoItem>[] = [
     render: ({ viewUrl, repoFilePath }) =>
       viewUrl ? (
         <Link to={viewUrl} target="_blank">
-          <OverflowTooltip text={repoFilePath} />
+          <Tooltip title={repoFilePath ?? ''}>
+            <Typography>{repoFilePath}</Typography>
+          </Tooltip>
         </Link>
       ) : (
-        <OverflowTooltip text={repoFilePath} />
+        <Tooltip title={repoFilePath ?? ''}>
+          <Typography>{repoFilePath}</Typography>
+        </Tooltip>
       ),
   },
   {
     title: 'Author',
     field: 'author',
     width: '10%',
-    render: ({ author }) => <OverflowTooltip text={author} />,
+    render: ({ author }) => (
+      <Tooltip title={author ?? ''}>
+        <Typography>{author}</Typography>
+      </Tooltip>
+    ),
   },
 ];
 
