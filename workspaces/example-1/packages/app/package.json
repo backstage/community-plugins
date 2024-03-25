@@ -50,14 +50,14 @@
     "react-use": "^17.2.4"
   },
   "devDependencies": {
-    "@backstage/test-utils": "^1.5.0",
-    "@playwright/test": "^1.32.3",
+    "@backstage/test-utils": "1.5.0",
+    "@playwright/test": "1.41.2",
     "@testing-library/dom": "^9.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^14.0.0",
     "@testing-library/user-event": "^14.0.0",
     "@types/react-dom": "*",
-    "cross-env": "^7.0.0"
+    "cross-env": "7.0.3"
   },
   "browserslist": {
     "production": [

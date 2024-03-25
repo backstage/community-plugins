@@ -9,7 +9,7 @@
 #
 # Once the commands have been run, you can build the image using `yarn build-image`
 
-FROM node:18-bookworm-slim
+FROM node:18-bookworm-slim@sha256:246bf34b0c7cf8d9ff7cbe0c1ff44b178051f06c432c8e7df1645f1bd20b0352
 
 # Install isolate-vm dependencies, these are needed by the @backstage/plugin-scaffolder-backend.
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
