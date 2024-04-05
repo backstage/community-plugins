@@ -1,0 +1,24 @@
+{
+  "name": "repo-tools",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": "18 || 20"
+  },
+  "workspaces": {
+    "packages": [
+      "packages/*",
+      "plugins/*"
+    ]
+  },
+  "prettier": "@spotify/prettier-config",
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,mjs,cjs}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ]
+  }
+}
