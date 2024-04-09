@@ -1,0 +1,42 @@
+{
+  "name": "@backstage-commnunity/cli",
+  "description": "CLI for the Community Plugins Repository",
+  "version": "0.0.1",
+  "backstage": {
+    "role": "cli"
+  },
+  "private": true,
+  "homepage": "https://backstage.io",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/repo-tools/packages/cli"
+  },
+  "keywords": [
+    "backstage"
+  ],
+  "license": "Apache-2.0",
+  "main": "dist/index.cjs.js",
+  "scripts": {
+    "build": "backstage-cli package build",
+    "lint": "backstage-cli package lint",
+    "test": "backstage-cli package test",
+    "clean": "backstage-cli package clean",
+    "start": "nodemon --"
+  },
+  "bin": {
+    "community-cli": "bin/community-cli"
+  },
+  "files": [
+    "bin",
+    "dist/**/*.js"
+  ],
+  "dependencies": {
+    "@backstage/cli": "^0.26.2"
+  },
+  "nodemonConfig": {
+    "watch": "./src",
+    "exec": "bin/community-cli",
+    "ext": "ts"
+  }
+}
