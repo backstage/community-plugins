@@ -4,7 +4,7 @@ import chalk from 'chalk';
 import { OptionValues } from 'commander';
 import { createWorkspace } from '../../lib/createWorkspace';
 
-export default async (opts: OptionValues) => {
+export default async (_: OptionValues) => {
   const answers = await inquirer.prompt([
     {
       type: 'input',

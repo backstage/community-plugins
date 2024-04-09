@@ -1629,6 +1629,7 @@ __metadata:
   dependencies:
     "@backstage/cli": ^0.26.2
     "@backstage/errors": ^1.2.4
+    "@types/inquirer": ^9.0.7
     chalk: ^4.1.2
     commander: ^12.0.0
     inquirer: ^8.0.0
@@ -4254,6 +4255,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/inquirer@npm:^9.0.7":
+  version: 9.0.7
+  resolution: "@types/inquirer@npm:9.0.7"
+  dependencies:
+    "@types/through": "*"
+    rxjs: ^7.2.0
+  checksum: c14c7a52797606a08ca7450d9263c01518b30e0b7610d0817fb530bc4fae7b3ffdcc9d50bb9f7befc2b220bb54195507cc423de3c8f320bbe9f7e5e8881a0226
+  languageName: node
+  linkType: hard
+
 "@types/istanbul-lib-coverage@npm:*, @types/istanbul-lib-coverage@npm:^2.0.0, @types/istanbul-lib-coverage@npm:^2.0.1":
   version: 2.0.6
   resolution: "@types/istanbul-lib-coverage@npm:2.0.6"
@@ -4461,6 +4472,15 @@ __metadata:
   version: 2.0.3
   resolution: "@types/stack-utils@npm:2.0.3"
   checksum: 72576cc1522090fe497337c2b99d9838e320659ac57fa5560fcbdcbafcf5d0216c6b3a0a8a4ee4fdb3b1f5e3420aa4f6223ab57b82fef3578bec3206425c6cf5
+  languageName: node
+  linkType: hard
+
+"@types/through@npm:*":
+  version: 0.0.33
+  resolution: "@types/through@npm:0.0.33"
+  dependencies:
+    "@types/node": "*"
+  checksum: fd0b73f873a64ed5366d1d757c42e5dbbb2201002667c8958eda7ca02fff09d73de91360572db465ee00240c32d50c6039ea736d8eca374300f9664f93e8da39
   languageName: node
   linkType: hard
 
@@ -13777,7 +13797,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rxjs@npm:^7.5.5":
+"rxjs@npm:^7.2.0, rxjs@npm:^7.5.5":
   version: 7.8.1
   resolution: "rxjs@npm:7.8.1"
   dependencies:
