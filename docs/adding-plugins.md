@@ -1,6 +1,6 @@
 ## License
 
-The community plugins repository is under _“Apache 2.0”_ license. All plugins added & moved to the repository will be kept under the same license. If you are moving a plugin over make sure that no other license file is in the plugin workspace & all `package.json` files either have no version defined or explicitly use _“Apache 2.0”_.
+The community plugins repository is under [Apache 2.0](../LICENSE) license. All plugins added & moved to the repository will be kept under the same license. If you are moving a plugin over make sure that no other license file is in the plugin workspace & all `package.json` files either have no version defined or explicitly use _“Apache 2.0”_.
 
 ## Naming
 
