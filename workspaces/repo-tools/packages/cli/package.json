@@ -42,5 +42,8 @@
     "watch": "./src",
     "exec": "bin/community-cli",
     "ext": "ts"
+  },
+  "devDependencies": {
+    "@types/inquirer": "^9.0.7"
   }
 }
