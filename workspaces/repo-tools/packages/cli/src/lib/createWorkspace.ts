@@ -1,9 +1,6 @@
-import { promisify } from 'util';
 import { join } from 'path';
 import { readFile, writeFile, cp } from 'fs/promises';
-import { exec as execCb, execSync } from 'child_process';
-
-const exec = promisify(execCb);
+import { execSync } from 'child_process';
 
 export const createWorkspace = async (opts: { name: string }) => {
   const workspacePath = join('workspaces', opts.name);
