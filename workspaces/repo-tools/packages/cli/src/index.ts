@@ -4,7 +4,7 @@ import { exitWithError } from './lib/errors';
 import { registerCommands } from './commands';
 
 const main = (argv: string[]) => {
-  program.name('community-cli')
+  program.name('community-cli');
 
   registerCommands(program);
 

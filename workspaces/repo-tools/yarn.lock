@@ -1628,8 +1628,10 @@ __metadata:
   resolution: "@backstage-commnunity/cli@workspace:packages/cli"
   dependencies:
     "@backstage/cli": ^0.26.2
+    "@backstage/errors": ^1.2.4
     chalk: ^4.1.2
     commander: ^12.0.0
+    inquirer: ^8.0.0
   bin:
     community-cli: bin/community-cli
   languageName: unknown
@@ -9469,7 +9471,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"inquirer@npm:^8.2.0":
+"inquirer@npm:^8.0.0, inquirer@npm:^8.2.0":
   version: 8.2.6
   resolution: "inquirer@npm:8.2.6"
   dependencies:
