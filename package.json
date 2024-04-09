@@ -7,7 +7,7 @@
     "node": "18 || 20"
   },
   "scripts": {
-    "create-workspace": "node ./scripts/create/create.js"
+    "create-workspace": "community-cli workspace create"
   },
   "type": "module",
   "packageManager": "yarn@3.2.3",
