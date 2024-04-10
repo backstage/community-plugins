@@ -2,7 +2,7 @@ import chalk from 'chalk';
 import fs from 'fs-extra';
 import { OptionValues } from 'commander';
 import findUp from 'find-up';
-import path, { basename, dirname } from 'path';
+import path, { basename } from 'path';
 import { getPackages, Package } from '@manypkg/get-packages';
 import { createWorkspace } from '../../lib/workspaces/createWorkspace';
 import { ExitCodeError } from '../../lib/errors';
