@@ -2,8 +2,12 @@ import { join } from 'path';
 import { readFile, writeFile, cp } from 'fs/promises';
 import { execSync } from 'child_process';
 
-export const createWorkspace = async (opts: { name: string }) => {
-  const workspacePath = join('workspaces', opts.name);
+export const createWorkspace = async (opts: { name: string; cwd?: string }) => {
+  const workspacePath = join(
+    opts.cwd ?? process.cwd(),
+    'workspaces',
+    opts.name,
+  );
 
   execSync(
     `npx --yes @backstage/create-app --path ${workspacePath} --skip-install`,
@@ -22,6 +26,15 @@ export const createWorkspace = async (opts: { name: string }) => {
   ];
 
   workspacePackageJson.devDependencies ??= {};
+  workspacePackageJson.workspaces.packages = [
+    'example-backend',
+    'example-frontend',
+    'node',
+    'backend',
+    'frontend',
+    'react',
+    'common',
+  ];
 
   for (const additionalDependency of additionalDevDependencies) {
     const version = execSync(

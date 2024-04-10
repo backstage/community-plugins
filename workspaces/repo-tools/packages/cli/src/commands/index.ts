@@ -24,7 +24,10 @@ export const registerCommands = (program: Command) => {
     .command('plugin')
     .command('migrate')
     .requiredOption('--monorepo-path [path]', 'Path to the monorepo')
-    .requiredOption('--plugin-name [name]', 'Name of the plugin')
+    .requiredOption(
+      '--workspace-name [name]',
+      'Name of the workspace that will be created, the plugins will be pulled automatically from the monorepo',
+    )
     .action(lazy(() => import('./plugin/migrate').then(m => m.default)));
 
   program

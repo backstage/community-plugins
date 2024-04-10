@@ -2,7 +2,7 @@ import inquirer from 'inquirer';
 import chalk from 'chalk';
 
 import { OptionValues } from 'commander';
-import { createWorkspace } from '../../lib/createWorkspace';
+import { createWorkspace } from '../../lib/workspaces/createWorkspace';
 
 export default async (_: OptionValues) => {
   const answers = await inquirer.prompt([
