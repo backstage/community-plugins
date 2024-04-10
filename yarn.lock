@@ -1632,18 +1632,32 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage-community/cli@portal:./workspaces/repo-tools/packages/cli::locator=community-plugins%40workspace%3A.":
+"@backstage-community/cli@portal:./workspaces/repo-tools/packages/cli::locator=%40backstage-community%2Fplugins%40workspace%3A.":
   version: 0.0.0-use.local
-  resolution: "@backstage-community/cli@portal:./workspaces/repo-tools/packages/cli::locator=community-plugins%40workspace%3A."
+  resolution: "@backstage-community/cli@portal:./workspaces/repo-tools/packages/cli::locator=%40backstage-community%2Fplugins%40workspace%3A."
   dependencies:
     "@backstage/cli": ^0.26.2
     "@backstage/errors": ^1.2.4
+    "@manypkg/get-packages": ^2.2.1
     chalk: ^4.1.2
     commander: ^12.0.0
+    find-up: ^5.0.0
+    fs-extra: ^11.2.0
     inquirer: ^8.0.0
+    replace-in-file: ^7.1.0
   bin:
     community-cli: bin/community-cli
   languageName: node
+  linkType: soft
+
+"@backstage-community/plugins@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "@backstage-community/plugins@workspace:."
+  dependencies:
+    "@backstage-community/cli": "portal:./workspaces/repo-tools/packages/cli"
+    "@backstage/cli-node": ^0.2.2
+    "@changesets/parse": ^0.4.0
+  languageName: unknown
   linkType: soft
 
 "@backstage/catalog-model@npm:^1.4.5":
@@ -2550,6 +2564,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@manypkg/find-root@npm:^2.2.0":
+  version: 2.2.1
+  resolution: "@manypkg/find-root@npm:2.2.1"
+  dependencies:
+    "@manypkg/tools": ^1.1.0
+    find-up: ^4.1.0
+    fs-extra: ^8.1.0
+  checksum: 7f31120c3ef0711f6e65857ea232fb4f7caf4db388080e738f82d979d7f72572dae60519c8fcd45c431a8e94095b6628257fbf7373b34401359def00687bab13
+  languageName: node
+  linkType: hard
+
 "@manypkg/get-packages@npm:^1.1.3":
   version: 1.1.3
   resolution: "@manypkg/get-packages@npm:1.1.3"
@@ -2561,6 +2586,28 @@ __metadata:
     globby: ^11.0.0
     read-yaml-file: ^1.1.0
   checksum: f5a756e5a659e0e1c33f48852d56826d170d5b10a3cdea89ce4fcaa77678d8799aa4004b30e1985c87b73dbc390b95bb6411b78336dd1e0db87c08c74b5c0e74
+  languageName: node
+  linkType: hard
+
+"@manypkg/get-packages@npm:^2.2.1":
+  version: 2.2.1
+  resolution: "@manypkg/get-packages@npm:2.2.1"
+  dependencies:
+    "@manypkg/find-root": ^2.2.0
+    "@manypkg/tools": ^1.1.0
+  checksum: 648da51cf0bf301cfb133b51b816f04f7caf3c29c386c7fb38a106e6ffdc00823e6aa54b3f72eca49c7a64a1fdf00d55c85095ca9ebcbadfa02b89f6acd4fcdb
+  languageName: node
+  linkType: hard
+
+"@manypkg/tools@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "@manypkg/tools@npm:1.1.0"
+  dependencies:
+    fs-extra: ^8.1.0
+    globby: ^11.0.0
+    jju: ^1.4.0
+    read-yaml-file: ^1.1.0
+  checksum: f0228435c0b12b4dec59a57c683f1431a3a0dea71640c73b231de27742ccaf5bb2f48d425184bdf330d24e940cb9ea7ecfc8b4ed5d3d6031f8132e251e728e80
   languageName: node
   linkType: hard
 
@@ -5651,17 +5698,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"community-plugins@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "community-plugins@workspace:."
-  dependencies:
-    "@backstage-community/cli": "portal:./workspaces/repo-tools/packages/cli"
-    "@backstage/cli-node": ^0.2.2
-    "@changesets/parse": ^0.4.0
-    commander: ^12.0.0
-  languageName: unknown
-  linkType: soft
-
 "compressible@npm:~2.0.16":
   version: 2.0.18
   resolution: "compressible@npm:2.0.18"
@@ -8014,7 +8050,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"glob@npm:^8.0.1, glob@npm:^8.0.3":
+"glob@npm:^8.0.1, glob@npm:^8.0.3, glob@npm:^8.1.0":
   version: 8.1.0
   resolution: "glob@npm:8.1.0"
   dependencies:
@@ -9724,6 +9760,13 @@ __metadata:
   bin:
     jest: bin/jest.js
   checksum: 17ca8d67504a7dbb1998cf3c3077ec9031ba3eb512da8d71cb91bcabb2b8995c4e4b292b740cb9bf1cbff5ce3e110b3f7c777b0cefb6f41ab05445f248d0ee0b
+  languageName: node
+  linkType: hard
+
+"jju@npm:^1.4.0":
+  version: 1.4.0
+  resolution: "jju@npm:1.4.0"
+  checksum: 3790481bd2b7827dd6336e6e3dc2dcc6d425679ba7ebde7b679f61dceb4457ea0cda330972494de608571f4973c6dfb5f70fab6f3c5037dbab19ac449a60424f
   languageName: node
   linkType: hard
 
@@ -12345,6 +12388,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"replace-in-file@npm:^7.1.0":
+  version: 7.1.0
+  resolution: "replace-in-file@npm:7.1.0"
+  dependencies:
+    chalk: ^4.1.2
+    glob: ^8.1.0
+    yargs: ^17.7.2
+  bin:
+    replace-in-file: bin/cli.js
+  checksum: 2ed61bd0cf0752b18775b52342ad36f4ee6c806f7eca0b0d085c23bafe0cb4828e4ec8f59058bde6b67d2ed5ac51e1681284f586089b58b966e2489712830db0
+  languageName: node
+  linkType: hard
+
 "require-directory@npm:^2.1.1":
   version: 2.1.1
   resolution: "require-directory@npm:2.1.1"
@@ -14766,7 +14822,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yargs@npm:^17.1.1, yargs@npm:^17.3.1":
+"yargs@npm:^17.1.1, yargs@npm:^17.3.1, yargs@npm:^17.7.2":
   version: 17.7.2
   resolution: "yargs@npm:17.7.2"
   dependencies:

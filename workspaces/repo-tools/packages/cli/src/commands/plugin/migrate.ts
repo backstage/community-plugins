@@ -7,6 +7,9 @@ import { getPackages, Package } from '@manypkg/get-packages';
 import { createWorkspace } from '../../lib/workspaces/createWorkspace';
 import { ExitCodeError } from '../../lib/errors';
 
+const replace = require('replace-in-file');
+
+// Do some magic to get the right paths, that are idempotent regardless of where the command is run from
 const getPaths = async (options: {
   monorepoPath: string;
   workspaceName: string;
@@ -79,6 +82,10 @@ const findNewFolderName = ({
     '',
   );
 };
+
+export const generateNewPackageName = (name: string) =>
+  name.replace(`@backstage/`, `@backstage-community/`);
+
 const ensureWorkspaceExists = async (options: {
   workspacePath: string;
   workspaceName: string;
@@ -112,12 +119,17 @@ const ensureWorkspaceExists = async (options: {
 
 const fixWorkspaceDependencies = async (options: {
   dependencies: Record<string, string>;
-  monorepoRoot: string;
+  monorepoPackages: Package[];
+  packagesToBeMoved: Package[];
 }) => {
-  const allBackstageMonorepoPackages = await getPackages(options.monorepoRoot);
   for (const [key, value] of Object.entries(options.dependencies)) {
-    if (value.includes('workspace:')) {
-      const currentVersion = allBackstageMonorepoPackages.packages.find(
+    // If the package is not being moved into the workspace, and it's a workspace dep then we need to change
+    // the version to the one published at the time.
+    if (
+      value.includes('workspace:') &&
+      !options.packagesToBeMoved.some(p => p.packageJson.name === key)
+    ) {
+      const currentVersion = options.monorepoPackages.find(
         p => p.packageJson.name === key,
       );
       if (!currentVersion) {
@@ -127,6 +139,43 @@ const fixWorkspaceDependencies = async (options: {
     }
   }
 };
+
+export const fixSourceCodeReferences = async (options: {
+  packagesToBeMoved: Package[];
+  workspacePath: string;
+}) => {
+  return await replace({
+    files: path.join(options.workspacePath, '**', '*'),
+    processor: (input: string) =>
+      options.packagesToBeMoved.reduce((acc, { packageJson }) => {
+        const newPackageName = generateNewPackageName(packageJson.name);
+        return acc.replace(new RegExp(packageJson.name, 'g'), newPackageName);
+      }, input),
+  });
+};
+
+export const createChangeset = async (options: {
+  packages: string[];
+  workspacePath: string;
+  message: string;
+}) => {
+  const changesetFile = path.join(
+    options.workspacePath,
+    '.changeset',
+    `migrate-${new Date().getTime()}.md`,
+  );
+
+  const changesetContents = `
+---
+${options.packages.map(p => `'${p}': patch`).join('\n')}
+---
+
+${options.message}
+`;
+
+  await fs.writeFile(changesetFile, changesetContents.trim());
+};
+
 export default async (opts: OptionValues) => {
   const { monorepoPath, workspaceName, force } = opts as {
     monorepoPath: string;
@@ -156,6 +205,10 @@ export default async (opts: OptionValues) => {
       .join(', ')}`,
   );
 
+  const monorepoPackages = await getPackages(monorepoRoot).then(
+    ({ packages }) => packages,
+  );
+
   // Create new workspace in community plugins repository
   await ensureWorkspaceExists({
     workspacePath,
@@ -179,28 +232,44 @@ export default async (opts: OptionValues) => {
     // Move the code
     await fs.copy(packageToBeMoved.dir, newPathForPackage);
 
-    // Update the package.jsons
+    // Update the package.json versions to the latest published versions if not being moved across.
     const packageJsonPath = path.join(newPathForPackage, 'package.json');
     const packageJson = await fs.readJson(packageJsonPath);
-    packageJson.name = packageJson.name.replace(
-      `@backstage/plugin-${workspaceName}`,
-      `@backstage-community/${workspaceName}`,
-    );
 
     await fixWorkspaceDependencies({
       dependencies: packageJson.dependencies,
-      monorepoRoot,
+      monorepoPackages,
+      packagesToBeMoved,
     });
 
     await fixWorkspaceDependencies({
       dependencies: packageJson.devDependencies,
-      monorepoRoot,
+      monorepoPackages,
+      packagesToBeMoved,
     });
 
     await fs.writeJson(packageJsonPath, packageJson, { spaces: 2 });
   }
 
-  // mark copied packages as deprecated and add changeset.
+  // Fix source code references for outdated package names
+  await fixSourceCodeReferences({
+    packagesToBeMoved,
+    workspacePath,
+  });
 
-  console.log({ communityPluginsRoot });
+  console.log(chalk.green`Code migration complete`);
+
+  // Create changeset for the new packages
+  await createChangeset({
+    packages: packagesToBeMoved.map(p =>
+      generateNewPackageName(p.packageJson.name),
+    ),
+    workspacePath,
+    message:
+      'Migrated from the [backstage/backstage](https://github.com/backstage/backstage) monorepo',
+  });
+
+  console.log(chalk.green`Changeset created`);
+
+  // mark copied packages as deprecated and add changeset.
 };
