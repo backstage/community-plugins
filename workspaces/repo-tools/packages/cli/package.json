@@ -34,8 +34,11 @@
   "dependencies": {
     "@backstage/cli": "^0.26.2",
     "@backstage/errors": "^1.2.4",
+    "@manypkg/get-packages": "^2.2.1",
     "chalk": "^4.1.2",
     "commander": "^12.0.0",
+    "find-up": "^5.0.0",
+    "fs-extra": "^11.2.0",
     "inquirer": "^8.0.0"
   },
   "nodemonConfig": {
@@ -44,6 +47,7 @@
     "ext": "ts"
   },
   "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
     "@types/inquirer": "^9.0.7"
   }
 }
