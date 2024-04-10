@@ -1,5 +1,5 @@
 {
-  "name": "community-plugins",
+  "name": "@backstage-community/plugins",
   "private": true,
   "version": "0.0.0",
   "repository": "git@github.com:backstage/community-plugins.git",
@@ -15,8 +15,5 @@
     "@backstage-community/cli": "portal:./workspaces/repo-tools/packages/cli",
     "@backstage/cli-node": "^0.2.2",
     "@changesets/parse": "^0.4.0"
-  },
-  "devDependencies": {
-    "commander": "^12.0.0"
   }
 }
