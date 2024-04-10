@@ -36,6 +36,13 @@ export const createWorkspace = async (opts: { name: string; cwd?: string }) => {
   }
 
   workspacePackageJson.name = opts.name;
+  workspacePackageJson.repository = {
+    repository: {
+      type: 'git',
+      url: 'https://github.com/backstage/community-plugins',
+      directory: `workspaces/${opts.name}`,
+    },
+  };
 
   await writeJson(join(workspacePath, 'package.json'), workspacePackageJson, {
     spaces: 2,
