@@ -64,7 +64,7 @@ const getMonorepoPackagesForWorkspace = async (options: {
   return workspacePackages;
 };
 
-export const generateNewPackageName = (name: string) =>
+const generateNewPackageName = (name: string) =>
   name.replace(`@backstage/`, `@backstage-community/`);
 
 const ensureWorkspaceExists = async (options: {
@@ -121,7 +121,7 @@ const fixWorkspaceDependencies = async (options: {
   }
 };
 
-export const fixSourceCodeReferences = async (options: {
+const fixSourceCodeReferences = async (options: {
   packagesToBeMoved: Package[];
   workspacePath: string;
 }) => {
@@ -135,7 +135,7 @@ export const fixSourceCodeReferences = async (options: {
   });
 };
 
-export const createChangeset = async (options: {
+const createChangeset = async (options: {
   packages: string[];
   workspacePath: string;
   message: string;
@@ -155,6 +155,10 @@ ${options.message}
 `;
 
   await fs.writeFile(changesetFile, changesetContents.trim());
+};
+
+const deprecatePackage = async (options: { package: Package }) => {
+  // TODO: Implement this function
 };
 
 export default async (opts: OptionValues) => {
@@ -213,22 +217,26 @@ export default async (opts: OptionValues) => {
     });
 
     // Update the package.json versions to the latest published versions if not being moved across.
-    const packageJsonPath = path.join(newPathForPackage, 'package.json');
-    const packageJson = await fs.readJson(packageJsonPath);
+    const movedPackageJsonPath = path.join(newPathForPackage, 'package.json');
+    const movedPackageJson = await fs.readJson(movedPackageJsonPath);
 
     await fixWorkspaceDependencies({
-      dependencies: packageJson.dependencies,
+      dependencies: movedPackageJson.dependencies,
       monorepoPackages,
       packagesToBeMoved,
     });
 
     await fixWorkspaceDependencies({
-      dependencies: packageJson.devDependencies,
+      dependencies: movedPackageJson.devDependencies,
       monorepoPackages,
       packagesToBeMoved,
     });
 
-    await fs.writeJson(packageJsonPath, packageJson, { spaces: 2 });
+    await fs.writeJson(movedPackageJsonPath, movedPackageJson, { spaces: 2 });
+
+    await deprecatePackage({
+      package: packageToBeMoved,
+    });
   }
 
   // Fix source code references for outdated package names
@@ -246,10 +254,18 @@ export default async (opts: OptionValues) => {
     ),
     workspacePath,
     message:
-      'Migrated from the [backstage/backstage](https://github.com/backstage/backstage) monorepo',
+      'Migrated from the [backstage/backstage](https://github.com/backstage/backstage) monorepo.',
   });
 
-  console.log(chalk.green`Changeset created`);
+  // Create changeset for the old packages
+  await createChangeset({
+    packages: packagesToBeMoved.map(p => p.packageJson.name),
+    workspacePath: monorepoRoot,
+    message:
+      'These packages have been migrated to the [backstage/community-plugins](https://github.com/backstage/community-plugins) repository.',
+  });
+
+  console.log(chalk.green`Changesets created`);
 
   // mark copied packages as deprecated and add changeset.
 };
