@@ -2,7 +2,7 @@ import chalk from 'chalk';
 import fs from 'fs-extra';
 import { OptionValues } from 'commander';
 import findUp from 'find-up';
-import path, { dirname } from 'path';
+import path, { basename, dirname } from 'path';
 import { getPackages, Package } from '@manypkg/get-packages';
 import { createWorkspace } from '../../lib/workspaces/createWorkspace';
 import { ExitCodeError } from '../../lib/errors';
@@ -207,8 +207,10 @@ export default async (opts: OptionValues) => {
       chalk.blue`Moving package ${packageToBeMoved.packageJson.name} to ${newPathForPackage}`,
     );
 
-    // Move the code
-    await fs.copy(packageToBeMoved.dir, newPathForPackage);
+    // Move the code, excluding the knip-report.md file
+    await fs.copy(packageToBeMoved.dir, newPathForPackage, {
+      filter: sourcePath => !['knip-report.md'].includes(basename(sourcePath)),
+    });
 
     // Update the package.json versions to the latest published versions if not being moved across.
     const packageJsonPath = path.join(newPathForPackage, 'package.json');
