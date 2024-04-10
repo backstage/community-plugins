@@ -158,7 +158,23 @@ ${options.message}
 };
 
 const deprecatePackage = async (options: { package: Package }) => {
-  // TODO: Implement this function
+  const newPackageName = generateNewPackageName(
+    options.package.packageJson.name,
+  );
+
+  // first update the readme
+  await fs.writeFile(
+    path.join(options.package.dir, 'README.md'),
+    `# Deprecated\n\nThis package has been moved to the [backstage-community/plugins](https://github.com/backstage/community-plugins) repository. Migrate to using \`${newPackageName}\` instead.\n`,
+  );
+
+  // then update package.json
+  const packageJsonPath = path.join(options.package.dir, 'package.json');
+  const packageJson = await fs.readJson(packageJsonPath);
+  packageJson.deprecated = `This package has been moved to the backstage/community-plugins repository. You should migrate to using ${newPackageName} instead.`;
+  packageJson.backstage ??= {};
+  packageJson.backstage.moved = newPackageName;
+  await fs.writeJson(packageJsonPath, packageJson);
 };
 
 export default async (opts: OptionValues) => {
@@ -232,6 +248,15 @@ export default async (opts: OptionValues) => {
       packagesToBeMoved,
     });
 
+    // Fix the repositories field in the new rrepo
+    movedPackageJson.repository = {
+      repository: {
+        type: 'git',
+        url: 'https://github.com/backstage/community-plugins',
+        directory: `workspaces/${workspaceName}/${packageToBeMoved.relativeDir}`,
+      },
+    };
+
     await fs.writeJson(movedPackageJsonPath, movedPackageJson, { spaces: 2 });
 
     await deprecatePackage({
@@ -265,7 +290,7 @@ export default async (opts: OptionValues) => {
       'These packages have been migrated to the [backstage/community-plugins](https://github.com/backstage/community-plugins) repository.',
   });
 
-  console.log(chalk.green`Changesets created`);
-
-  // mark copied packages as deprecated and add changeset.
+  console.log(
+    chalk.green`Changesets created, please commit and push both repositories.`,
+  );
 };
