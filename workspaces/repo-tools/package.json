@@ -35,6 +35,7 @@
   },
   "dependencies": {
     "@backstage/cli": "^0.25.2",
+    "@backstage/repo-tools": "^0.6.2",
     "@changesets/cli": "^2.27.1",
     "@playwright/test": "^1.32.3",
     "@spotify/prettier-config": "^12.0.0",
