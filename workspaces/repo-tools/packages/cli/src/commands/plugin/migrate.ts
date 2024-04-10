@@ -2,7 +2,7 @@ import chalk from 'chalk';
 import fs from 'fs-extra';
 import { OptionValues } from 'commander';
 import findUp from 'find-up';
-import path from 'path';
+import path, { dirname } from 'path';
 import { getPackages, Package } from '@manypkg/get-packages';
 import { createWorkspace } from '../../lib/workspaces/createWorkspace';
 import { ExitCodeError } from '../../lib/errors';
@@ -62,25 +62,6 @@ const getMonorepoPackagesForWorkspace = async (options: {
   );
 
   return workspacePackages;
-};
-
-const findNewFolderName = ({
-  packageToBeMoved,
-  workspaceName,
-}: {
-  packageToBeMoved: Package;
-  workspaceName: string;
-}) => {
-  if (
-    packageToBeMoved.packageJson.name === `@backstage/plugin-${workspaceName}`
-  ) {
-    return 'frontend';
-  }
-
-  return packageToBeMoved.packageJson.name.replace(
-    `@backstage/plugin-${workspaceName}-`,
-    '',
-  );
 };
 
 export const generateNewPackageName = (name: string) =>
@@ -218,13 +199,10 @@ export default async (opts: OptionValues) => {
   });
 
   for (const packageToBeMoved of packagesToBeMoved) {
-    // copy the contents to the new folders
-    const newFolderName = findNewFolderName({
-      packageToBeMoved,
-      workspaceName,
-    });
-
-    const newPathForPackage = path.join(workspacePath, newFolderName);
+    const newPathForPackage = path.join(
+      workspacePath,
+      packageToBeMoved.relativeDir,
+    );
     console.log(
       chalk.blue`Moving package ${packageToBeMoved.packageJson.name} to ${newPathForPackage}`,
     );
