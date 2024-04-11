@@ -1,10 +1,3 @@
-# [Backstage](https://backstage.io)
+# Community Plugins Repo Tooling
 
-This is your newly scaffolded Backstage App, Good Luck!
-
-To start the app, run:
-
-```sh
-yarn install
-yarn dev
-```
+This repository contains the tools and scripts used to manage the community plugins repository.
