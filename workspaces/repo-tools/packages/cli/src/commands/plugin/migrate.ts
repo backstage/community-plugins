@@ -11,6 +11,7 @@ import { execFile } from 'child_process';
 import semver from 'semver';
 
 const replace = require('replace-in-file');
+
 const exec = promisify(execFile);
 
 // Do some magic to get the right paths, that are idempotent regardless of where the command is run from
