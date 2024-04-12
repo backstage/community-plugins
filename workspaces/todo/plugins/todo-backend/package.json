@@ -12,11 +12,9 @@
   },
   "homepage": "https://backstage.io",
   "repository": {
-    "repository": {
-      "type": "git",
-      "url": "https://github.com/backstage/community-plugins",
-      "directory": "workspaces/todo/plugins/todo-backend"
-    }
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/todo/plugins/todo-backend"
   },
   "license": "Apache-2.0",
   "main": "src/index.ts",
