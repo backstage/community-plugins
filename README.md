@@ -31,3 +31,83 @@ Whenever a new changeset is introduced, a fresh "Version packages ($workspace_na
 ```bash
 $ yarn create-workspace
 ```
+
+
+## The migration of plugins from the `backstage/backstage` monorepo
+
+The migration of plugins from the `backstage/backstage` monorepo to the `community-plugins` repository has been automated under the `community-cli` tool.
+
+You provide it with a path to the `monorepo` which should be cloned locally, and a plugin ID. It will then create a new workspace in the `community-plugins` repository with all of the plugins and modules that surround that workspace. For instance, if I use the `todo` plugin as an ID, It will automatically move over `@backstage/plugin-todo` as well as `@backstage/plugin-todo-backend` and any other `-common`, `-node` or `-modules` that are related.
+
+Once the code is copied over, the npm scopes and all code references are updated to reflect the new scopes of `@backstage-community/plugin-*`, and a changeset is created for the package to be published. The versions are kept the same for now, but the resulting changeset will publish the next version along, so if the package released at `1.25.0` was `0.10.0` then the new version will be `@backstage-community/plugin-todo` `0.10.1`.
+
+There is a commit that is created in the `monorepo` on either a specified branch as `--branch` or on a new branch that is created for the migration. In this commit is a deprecation and a changeset for this package to go out, so `0.10.1` in `@backstage/plugin-todo` will be marked as deprecated and replaced with `@backstage-community/plugin-todo` as the same version.
+
+### Workspaces that will be created
+
+Looking through the `monorepo` we can expect the following workspaces:
+
+- `adr`
+- `airbreak`
+- `allure`
+- `analytics`
+- `apache-airflow`
+- `apollo-explorer`
+- `azure-devops`
+- `azure-sites`
+- `badges`
+- `bazaar`
+- `bitrise`
+- `cicd-statistics`
+- `circleci`
+- `cloudbuild`
+- `code-climate`
+- `code-coverage`
+- `codescene`
+- `cost-insights`
+- `devtools`
+- `dynatrace`
+- `entity-feedback`
+- `entity-validation`
+- `example-todo-list`
+- `explore`
+- `firehydrant`
+- `fossa`
+- `gcalendar`
+- `gcp-projects`
+- `git-release-manager`
+- `github-actions`
+- `github-deployments`
+- `github-issues`
+- `github-pull-requests-board`
+- `gitops-profiles`
+- `gocd`
+- `graphiql`
+- `graphql-voyager`
+- `ilert`
+- `jenkins`
+- `kafka`
+- `lighthouse`
+- `microsoft-calendar`
+- `newrelic`
+- `newrelic-dashboard`
+- `octopus-deploy`
+- `opencost`
+- `org`
+- `periskop`
+- `playlist`
+- `puppetdb`
+- `rollbar`
+- `sentry`
+- `shortcuts`
+- `sonarqube`
+- `splunk`
+- `stack-overflow`
+- `stackstorm`
+- `tech-insights`
+- `todo`
+- `user-settings`
+- `vault`
+- `xcmetrics`
+
+Of course, there could be simplifcations to this workspace list and some workspaces will be merged into one, like for example the `github-` workspaces could become one `github` workspace instead, but for the inital migration, we will keep them separate.

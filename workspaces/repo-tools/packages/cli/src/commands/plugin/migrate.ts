@@ -6,8 +6,13 @@ import path, { basename } from 'path';
 import { getPackages, Package } from '@manypkg/get-packages';
 import { createWorkspace } from '../../lib/workspaces/createWorkspace';
 import { ExitCodeError } from '../../lib/errors';
+import { promisify } from 'util';
+import { execFile } from 'child_process';
+import semver from 'semver';
 
 const replace = require('replace-in-file');
+
+const exec = promisify(execFile);
 
 // Do some magic to get the right paths, that are idempotent regardless of where the command is run from
 const getPaths = async (options: {
@@ -135,6 +140,38 @@ const fixSourceCodeReferences = async (options: {
   });
 };
 
+const findCurrentReleaseVersion = async (options: { monorepoRoot: string }) => {
+  const rootPkgPath = path.resolve(options.monorepoRoot, 'package.json');
+  const pkg = await fs.readJson(rootPkgPath);
+
+  if (!semver.prerelease(pkg.version)) {
+    return pkg.version;
+  }
+
+  const { stdout: revListStr } = await exec(
+    'git',
+    ['rev-list', 'HEAD', '--', 'package.json'],
+    { cwd: options.monorepoRoot },
+  );
+  const revList = revListStr.trim().split(/\r?\n/);
+
+  for (const rev of revList) {
+    const { stdout: pkgJsonStr } = await exec(
+      'git',
+      ['show', `${rev}:package.json`],
+      { cwd: options.monorepoRoot },
+    );
+    if (pkgJsonStr) {
+      const pkgJson = JSON.parse(pkgJsonStr);
+      if (!semver.prerelease(pkgJson.version)) {
+        return pkgJson.version;
+      }
+    }
+  }
+
+  throw new Error('No stable release found');
+};
+
 const createChangeset = async (options: {
   packages: string[];
   workspacePath: string;
@@ -178,11 +215,35 @@ const deprecatePackage = async (options: { package: Package }) => {
 };
 
 export default async (opts: OptionValues) => {
-  const { monorepoPath, workspaceName, force } = opts as {
+  const { monorepoPath, workspaceName, force, branch } = opts as {
     monorepoPath: string;
     workspaceName: string;
     force: boolean;
+    branch?: string;
   };
+
+  try {
+    await exec('git', ['status', '--porcelain'], { cwd: monorepoPath });
+  } catch {
+    console.error(
+      chalk.red`The provided monorepo path is either not a git repository or not clean, please provide a valid monorepo path.`,
+    );
+    process.exit(1);
+  }
+
+  const latestBackstageRelease = await findCurrentReleaseVersion({
+    monorepoRoot: monorepoPath,
+  });
+
+  console.log(
+    chalk.blueBright`Found latest release version in monorepo: ${chalk.blue`${latestBackstageRelease}`}`,
+  );
+
+  // checkout that the latest release tag
+  await exec('git', ['fetch', '--tags'], { cwd: monorepoPath });
+  await exec('git', ['checkout', `v${latestBackstageRelease}`], {
+    cwd: monorepoPath,
+  });
 
   const { communityPluginsRoot, monorepoRoot, workspacePath } = await getPaths({
     monorepoPath,
@@ -258,10 +319,6 @@ export default async (opts: OptionValues) => {
     };
 
     await fs.writeJson(movedPackageJsonPath, movedPackageJson, { spaces: 2 });
-
-    await deprecatePackage({
-      package: packageToBeMoved,
-    });
   }
 
   // Fix source code references for outdated package names
@@ -269,8 +326,6 @@ export default async (opts: OptionValues) => {
     packagesToBeMoved,
     workspacePath,
   });
-
-  console.log(chalk.green`Code migration complete`);
 
   // Create changeset for the new packages
   await createChangeset({
@@ -281,13 +336,33 @@ export default async (opts: OptionValues) => {
     message:
       'Migrated from the [backstage/backstage](https://github.com/backstage/backstage) monorepo.',
   });
-
   // Create changeset for the old packages
   await createChangeset({
     packages: packagesToBeMoved.map(p => p.packageJson.name),
     workspacePath: monorepoRoot,
     message:
       'These packages have been migrated to the [backstage/community-plugins](https://github.com/backstage/community-plugins) repository.',
+  });
+
+  // reset monorepo
+  await exec('git', ['checkout', 'master'], { cwd: monorepoPath });
+  if (branch) {
+    await exec('git', ['checkout', branch], { cwd: monorepoPath });
+  } else {
+    await exec('git', ['checkout', '-b', `migrate-${new Date().getTime()}`], {
+      cwd: monorepoPath,
+    });
+  }
+
+  // deprecate package in monorepo on new branch
+  for (const packageToBeMoved of packagesToBeMoved) {
+    await deprecatePackage({ package: packageToBeMoved });
+  }
+
+  // add files and commit
+  await exec('git', ['add', '.'], { cwd: monorepoPath });
+  await exec('git', ['commit', '-m', 'Deprecate packages', '-s'], {
+    cwd: monorepoPath,
   });
 
   console.log(
