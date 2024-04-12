@@ -342,6 +342,9 @@ export default async (opts: OptionValues) => {
       'These packages have been migrated to the [backstage/community-plugins](https://github.com/backstage/community-plugins) repository.',
   });
 
+  // run yarn install in the new workspace
+  await exec('yarn', ['install'], { cwd: workspacePath });
+
   // reset monorepo
   await exec('git', ['checkout', 'master'], { cwd: monorepoPath });
   if (branch) {
