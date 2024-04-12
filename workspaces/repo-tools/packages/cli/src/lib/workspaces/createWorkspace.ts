@@ -1,5 +1,5 @@
 import { join } from 'path';
-import { readJson, writeJson, copy } from 'fs-extra';
+import { copy } from 'fs-extra';
 import { execSync } from 'child_process';
 
 // TODO: might be worth shipping our our template for create-app, especially if we decide
@@ -11,42 +11,13 @@ export const createWorkspace = async (opts: { name: string; cwd?: string }) => {
     opts.name,
   );
 
+  // eslint-disable-next-line no-restricted-syntax
+  const templatePath = join(__dirname, 'templates', 'workspace');
+
   execSync(
-    `npx --yes @backstage/create-app --path ${workspacePath} --skip-install`,
+    `npx --yes @backstage/create-app --path ${workspacePath} --skip-install --template-path=${templatePath}`,
     { input: opts.name },
   );
-
-  const workspacePackageJson = await readJson(
-    join(workspacePath, 'package.json'),
-  );
-  const additionalDevDependencies = [
-    '@changesets/cli',
-    '@backstage/repo-tools',
-  ];
-
-  workspacePackageJson.devDependencies ??= {};
-
-  for (const additionalDependency of additionalDevDependencies) {
-    const version = execSync(
-      `npm show ${additionalDependency} version`,
-    ).toString();
-    workspacePackageJson.devDependencies[
-      additionalDependency
-    ] = `^${version.trim()}`;
-  }
-
-  workspacePackageJson.name = opts.name;
-  workspacePackageJson.repository = {
-    repository: {
-      type: 'git',
-      url: 'https://github.com/backstage/community-plugins',
-      directory: `workspaces/${opts.name}`,
-    },
-  };
-
-  await writeJson(join(workspacePath, 'package.json'), workspacePackageJson, {
-    spaces: 2,
-  });
 
   // experimental
   // eslint-disable-next-line no-restricted-syntax
