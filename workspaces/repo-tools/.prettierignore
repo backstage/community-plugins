@@ -2,3 +2,4 @@ dist
 dist-types
 coverage
 .vscode
+packages/cli/src/lib/workspaces/templates

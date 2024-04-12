@@ -11,6 +11,7 @@ export const createWorkspace = async (opts: { name: string; cwd?: string }) => {
     opts.name,
   );
 
+  // eslint-disable-next-line no-restricted-syntax
   const templatePath = join(__dirname, 'templates', 'workspace');
 
   execSync(
