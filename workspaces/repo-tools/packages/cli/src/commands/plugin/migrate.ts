@@ -311,11 +311,9 @@ export default async (opts: OptionValues) => {
 
     // Fix the repositories field in the new rrepo
     movedPackageJson.repository = {
-      repository: {
-        type: 'git',
-        url: 'https://github.com/backstage/community-plugins',
-        directory: `workspaces/${workspaceName}/${packageToBeMoved.relativeDir}`,
-      },
+      type: 'git',
+      url: 'https://github.com/backstage/community-plugins',
+      directory: `workspaces/${workspaceName}/${packageToBeMoved.relativeDir}`,
     };
 
     await fs.writeJson(movedPackageJsonPath, movedPackageJson, { spaces: 2 });
