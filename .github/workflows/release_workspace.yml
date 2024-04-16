@@ -54,7 +54,7 @@ jobs:
 
       - name: Detect changesets and eventually update Version Packages (${{ inputs.workspace }}) PR
         id: changesets-pr
-        uses: backstage/changesets-action@v2.2.0
+        uses: backstage/changesets-action@v2.3.0
         with:
           title: Version Packages (${{ inputs.workspace }})
           cwd: workspaces/${{ inputs.workspace }}
