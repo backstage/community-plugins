@@ -1,12 +1,7 @@
 {
   "name": "@backstage-community/plugin-todo",
-  "version": "0.2.35",
+  "version": "0.2.37",
   "description": "A Backstage plugin that lets you browse TODO comments in your source code",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/backstage/community-plugins",
-    "directory": "workspaces/todo/plugins/todo"
-  },
   "backstage": {
     "role": "frontend-plugin"
   },
@@ -16,6 +11,11 @@
     "types": "dist/index.d.ts"
   },
   "homepage": "https://backstage.io",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/todo/plugins/todo"
+  },
   "license": "Apache-2.0",
   "sideEffects": false,
   "main": "src/index.ts",
@@ -34,22 +34,25 @@
     "test": "backstage-cli package test"
   },
   "dependencies": {
-    "@backstage/catalog-model": "^1.4.4",
-    "@backstage/core-components": "^0.14.0",
-    "@backstage/core-plugin-api": "^1.9.0",
-    "@backstage/errors": "^1.2.3",
-    "@backstage/plugin-catalog-react": "^1.10.0",
-    "@material-ui/core": "^4.12.4",
+    "@backstage/catalog-model": "^1.4.5",
+    "@backstage/core-components": "^0.14.3",
+    "@backstage/core-plugin-api": "^1.9.1",
+    "@backstage/errors": "^1.2.4",
+    "@backstage/plugin-catalog-react": "^1.11.2",
     "@material-ui/icons": "^4.9.1",
     "@types/react": "^16.13.1 || ^17.0.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.25.2",
-    "@backstage/dev-utils": "^1.0.27",
-    "@backstage/test-utils": "^1.5.0",
+    "@backstage/cli": "^0.26.2",
+    "@backstage/dev-utils": "^1.0.30",
+    "@backstage/test-utils": "^1.5.3",
     "@testing-library/dom": "^9.0.0",
     "@testing-library/jest-dom": "^6.0.0",
-    "@testing-library/react": "^14.0.0"
+    "@testing-library/react": "^14.0.0",
+    "canvas": "^2.11.2",
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-router-dom": "6.0.0-beta.0 || ^6.3.0"
   },
   "peerDependencies": {
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0",

@@ -1,5 +1,3 @@
-> Deprecated smth.smth.
-
 # @backstage-community/plugin-todo-backend
 
 Backend for the `@backstage-community/plugin-todo` plugin. Assists in scanning for and listing `// TODO` comments in source code repositories.
