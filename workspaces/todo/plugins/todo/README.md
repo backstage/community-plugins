@@ -1,5 +1,3 @@
-> This plugin is deprecated & moved to `@backstage-community/todo`
-
 # @backstage-community/plugin-todo
 
 This plugin lists `// TODO` comments in source code. It currently exports a single component extension for use on entity pages.

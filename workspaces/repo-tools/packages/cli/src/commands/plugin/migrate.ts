@@ -86,7 +86,7 @@ const ensureWorkspaceExists = async (options: {
 
   if (workspaceExists) {
     if (options.force) {
-      await fs.rmdir(options.workspacePath, { recursive: true });
+      await fs.rm(options.workspacePath, { recursive: true });
     } else {
       console.error(
         chalk.red`Workspace already exists at ${options.workspacePath}, use --force to overwrite`,
@@ -95,7 +95,7 @@ const ensureWorkspaceExists = async (options: {
     }
   }
 
-  console.log(chalk.blue`Creating workspace at ${options.workspacePath}`);
+  console.log(chalk.yellow`Creating workspace at ${options.workspacePath}`);
 
   await createWorkspace({
     cwd: options.communityPluginsRoot,
@@ -236,11 +236,13 @@ export default async (opts: OptionValues) => {
   });
 
   console.log(
-    chalk.blueBright`Found latest release version in monorepo: ${chalk.blue`${latestBackstageRelease}`}`,
+    chalk.blueBright`Found latest release version in monorepo: ${chalk.yellow`${latestBackstageRelease}`}`,
   );
 
   // checkout that the latest release tag
-  await exec('git', ['fetch', '--tags'], { cwd: monorepoPath });
+  if (!process.env.SKIP_FETCH_TAGS) {
+    await exec('git', ['fetch', '--tags'], { cwd: monorepoPath });
+  }
   await exec('git', ['checkout', `v${latestBackstageRelease}`], {
     cwd: monorepoPath,
   });
@@ -285,7 +287,7 @@ export default async (opts: OptionValues) => {
       packageToBeMoved.relativeDir,
     );
     console.log(
-      chalk.blue`Moving package ${packageToBeMoved.packageJson.name} to ${newPathForPackage}`,
+      chalk.yellow`Moving package ${packageToBeMoved.packageJson.name} to ${newPathForPackage}`,
     );
 
     // Move the code, excluding the knip-report.md file
@@ -311,11 +313,9 @@ export default async (opts: OptionValues) => {
 
     // Fix the repositories field in the new rrepo
     movedPackageJson.repository = {
-      repository: {
-        type: 'git',
-        url: 'https://github.com/backstage/community-plugins',
-        directory: `workspaces/${workspaceName}/${packageToBeMoved.relativeDir}`,
-      },
+      type: 'git',
+      url: 'https://github.com/backstage/community-plugins',
+      directory: `workspaces/${workspaceName}/${packageToBeMoved.relativeDir}`,
     };
 
     await fs.writeJson(movedPackageJsonPath, movedPackageJson, { spaces: 2 });
@@ -344,12 +344,25 @@ export default async (opts: OptionValues) => {
       'These packages have been migrated to the [backstage/community-plugins](https://github.com/backstage/community-plugins) repository.',
   });
 
+  console.log(chalk.yellow`Running yarn install in new repository`);
+  await exec('yarn', ['install'], { cwd: workspacePath });
+
+  console.log(chalk.yellow`Running prettier in new repository`);
+  await exec('yarn', ['prettier', '--write', '.'], { cwd: workspacePath });
+
   // reset monorepo
   await exec('git', ['checkout', 'master'], { cwd: monorepoPath });
+  const defaultBranchName = `migrate-${new Date().getTime()}`;
+
+  console.log(
+    chalk.yellow`Using ${
+      branch ?? defaultBranchName
+    } branch in monorepo to apply changes`,
+  );
   if (branch) {
     await exec('git', ['checkout', branch], { cwd: monorepoPath });
   } else {
-    await exec('git', ['checkout', '-b', `migrate-${new Date().getTime()}`], {
+    await exec('git', ['checkout', '-b', defaultBranchName], {
       cwd: monorepoPath,
     });
   }
@@ -359,6 +372,7 @@ export default async (opts: OptionValues) => {
     await deprecatePackage({ package: packageToBeMoved });
   }
 
+  console.log(chalk.yellow`Committing changes to monorepo`);
   // add files and commit
   await exec('git', ['add', '.'], { cwd: monorepoPath });
   await exec('git', ['commit', '-m', 'Deprecate packages', '-s'], {
