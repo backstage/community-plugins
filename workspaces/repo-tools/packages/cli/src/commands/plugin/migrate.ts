@@ -189,7 +189,7 @@ ${options.packages.map(p => `'${p}': patch`).join('\n')}
 ---
 
 ${options.message}
-\n`;
+`;
 
   await fs.writeFile(changesetFile, changesetContents.trim());
 };
@@ -345,9 +345,10 @@ export default async (opts: OptionValues) => {
   });
 
   console.log(chalk.yellow`Running yarn install in new repository`);
-  // run yarn install in the new workspace
   await exec('yarn', ['install'], { cwd: workspacePath });
-  console.log(chalk.green`Done!`);
+
+  console.log(chalk.yellow`Running prettier in new repository`);
+  await exec('yarn', ['prettier', '--write', '.'], { cwd: workspacePath });
 
   // reset monorepo
   await exec('git', ['checkout', 'master'], { cwd: monorepoPath });
