@@ -60,6 +60,7 @@ jobs:
           cwd: workspaces/${{ inputs.workspace }}
           version: yarn changeset version
           versionBranch: changesets-release/${{ inputs.workspace }}
+          skipRootChangelogUpdate: true
         env:
           # TODO(vinzscam): If we use secrets.GITHUB_TOKEN here, checks won't trigger in the version packages
           # PR. cf. https://github.community/t/push-doesnt-trigger-workflow-action-in-an-open-pr/118675
