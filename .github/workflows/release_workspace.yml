@@ -54,11 +54,12 @@ jobs:
 
       - name: Detect changesets and eventually update Version Packages (${{ inputs.workspace }}) PR
         id: changesets-pr
-        uses: changesets/action@v1
+        uses: backstage/changesets-action@v2.2.0
         with:
           title: Version Packages (${{ inputs.workspace }})
           cwd: workspaces/${{ inputs.workspace }}
           version: yarn changeset version
+          versionBranch: changesets-release/${{ inputs.workspace }}
         env:
           # TODO(vinzscam): If we use secrets.GITHUB_TOKEN here, checks won't trigger in the version packages
           # PR. cf. https://github.community/t/push-doesnt-trigger-workflow-action-in-an-open-pr/118675
