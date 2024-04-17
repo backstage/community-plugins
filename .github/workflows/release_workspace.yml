@@ -57,11 +57,24 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles(format('workspaces/${0}/**/yarn.lock', inputs.workspace)) }}
           restore-keys: |
             ${{ runner.os }}-yarn-
+
       - name: yarn install
         run: yarn install --immutable
 
-      - name: Detect changesets and eventually update Version Packages (${{ inputs.workspace }}) PR
+      - name: Fetch previous commit for release check
+        run: git fetch origin '${{ github.event.before }}'
+
+      - name: Check if release
+        id: release_check
+        if: inputs.force_release != true
+        run: node ../../scripts/ci/check-if-release.js
+        env:
+          WORKSPACE_NAME: ${{ inputs.workspace }}
+          COMMIT_SHA_BEFORE: '${{ github.event.before }}'
+
+      - name: Update Version Packages (${{ inputs.workspace }}) PR
         id: changesets-pr
+        if: steps.release_check.outputs.needs_release != 'true' || inputs.force_release != true
         uses: backstage/changesets-action@v2.3.1
         with:
           title: Version Packages (${{ inputs.workspace }})
@@ -74,16 +87,7 @@ jobs:
           # PR. cf. https://github.community/t/push-doesnt-trigger-workflow-action-in-an-open-pr/118675
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Fetch previous commit for release check
-        run: git fetch origin '${{ github.event.before }}'
 
-      - name: Check if release
-        id: release_check
-        if: inputs.force_release != true
-        run: node ../../scripts/ci/check-if-release.js
-        env:
-          WORKSPACE_NAME: ${{ inputs.workspace }}
-          COMMIT_SHA_BEFORE: '${{ github.event.before }}'
 
   release:
     name: Release workspace ${{ inputs.workspace }}
