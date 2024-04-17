@@ -1,11 +1,5 @@
 # @backstage-community/plugin-todo-backend
 
-## 0.3.16
-
-### Patch Changes
-
-- 4ab2804: Migrated from the [backstage/backstage](https://github.com/backstage/backstage) monorepo.
-
 ## 0.3.15
 
 ### Patch Changes
