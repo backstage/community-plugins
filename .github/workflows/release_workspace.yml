@@ -7,8 +7,16 @@ on:
         description: "Name of the Workspace"
         required: true
         type: string
+      force_release:
+        description: "Force release even if no changesets are present"
+        required: false
+        type: boolean
   workflow_call:
     inputs:
+      force_release:
+        description: "Force release even if no changesets are present"
+        required: false
+        type: boolean
       workspace:
         description: "Name of the Workspace"
         required: true
@@ -28,7 +36,7 @@ jobs:
       CI: true
       NODE_OPTIONS: --max-old-space-size=4096
     outputs:
-      publishing-needed: ${{ steps.should-publish.outputs.out }}
+      needs_release: ${{ steps.release_check.outputs.needs_release }}
     steps:
       - name: Checkout
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
@@ -54,7 +62,7 @@ jobs:
 
       - name: Detect changesets and eventually update Version Packages (${{ inputs.workspace }}) PR
         id: changesets-pr
-        uses: backstage/changesets-action@v2.3.0
+        uses: backstage/changesets-action@v2.3.1
         with:
           title: Version Packages (${{ inputs.workspace }})
           cwd: workspaces/${{ inputs.workspace }}
@@ -65,16 +73,20 @@ jobs:
           # TODO(vinzscam): If we use secrets.GITHUB_TOKEN here, checks won't trigger in the version packages
           # PR. cf. https://github.community/t/push-doesnt-trigger-workflow-action-in-an-open-pr/118675
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Early check whether publishing is needed
-        id: should-publish
-        if: steps.changesets-pr.outputs.hasChangesets == 'false'
-        run: echo "out=$(node ../../scripts/ci/publishing-needed.js ${{ inputs.workspace }})" >> $GITHUB_OUTPUT
+    
+      - name: Check if release
+        id: release_check
+        if: inputs.force_release != true
+        run: node scripts/ci/check-if-release.js
+        env:
+          WORKSPACE_NAME: ${{ inputs.workspace }}
+          COMMIT_SHA_BEFORE: '${{ github.event.before }}'
 
   release:
     name: Release workspace ${{ inputs.workspace }}
     runs-on: ubuntu-latest
     needs: changesets-pr
-    if: needs.changesets-pr.outputs.publishing-needed
+    if: needs.changesets-pr.outputs.needs_release == 'true' || inputs.force_release == true
     defaults:
       run:
         working-directory: ./workspaces/${{ inputs.workspace }}
@@ -111,15 +123,9 @@ jobs:
       - name: Build all packages
         run: yarn build:all
 
-      - name: Publish packages
-        id: changesets-publish
-        uses: changesets/action@v1
-        with:
-          publish: yarn workspaces foreach npm publish --access public
-          title: Version Packages (${{ inputs.workspace }})
-          cwd: workspaces/${{ inputs.workspace }}
-          version: yarn changeset version
+      - name: publish
+        run: |
+          yarn config set -H 'npmAuthToken' "${{secrets.NPM_TOKEN}}"
+          yarn workspaces foreach -v --no-private npm publish --access public --tolerate-republish
         env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
