@@ -24,11 +24,14 @@
 //
 // needs_release = 'true' | 'false'
 
-const { execFile: execFileCb } = require('child_process');
-const { resolve: resolvePath } = require('path');
-const { promises: fs } = require('fs');
-const { promisify } = require('util');
-const { EOL } = require('os');
+import { execFile as execFileCb } from 'child_process';
+import { promises as fs } from 'fs';
+import { promisify } from 'util';
+import { resolve as resolvePath } from 'path';
+import { EOL } from 'os';
+
+import * as url from 'url';
+const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
 const parentRef = process.env.COMMIT_SHA_BEFORE || 'HEAD^';
 
