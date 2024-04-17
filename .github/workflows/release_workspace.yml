@@ -77,7 +77,7 @@ jobs:
       - name: Check if release
         id: release_check
         if: inputs.force_release != true
-        run: node scripts/ci/check-if-release.js
+        run: node ../../scripts/ci/check-if-release.js
         env:
           WORKSPACE_NAME: ${{ inputs.workspace }}
           COMMIT_SHA_BEFORE: '${{ github.event.before }}'
