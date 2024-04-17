@@ -58,8 +58,9 @@ async function main() {
   if (!process.env.WORKSPACE_NAME) {
     throw new Error('WORKSPACE_NAME environment variable not set');
   }
-  
-  process.cwd(resolvePath(__dirname, '..', '..', 'workspaces', process.env.WORKSPACE_NAME));
+
+  const repoRoot = resolvePath(__dirname, '..', '..');
+  process.cwd(resolvePath(repoRoot, 'workspaces', process.env.WORKSPACE_NAME));
 
   if (!process.env.GITHUB_OUTPUT) {
     throw new Error('GITHUB_OUTPUT environment variable not set');
@@ -74,7 +75,6 @@ async function main() {
   );
 
   const workspacePackageJsonRegex = new RegExp(`^workspaces\/${process.env.WORKSPACE_NAME}\/(packages|plugins)\/[^/]+\/package\.json$`);
-
   const packageList = diff
     .split('\n')
     .filter(path => path.match(workspacePackageJsonRegex));
@@ -96,7 +96,7 @@ async function main() {
       }
 
       try {
-        const data = JSON.parse(await fs.readFile(path, 'utf8'));
+        const data = JSON.parse(await fs.readFile(resolvePath(repoRoot, path), 'utf8'));
         name = data.name;
         newVersion = data.version;
       } catch (error) {
@@ -114,8 +114,9 @@ async function main() {
       oldVersion !== newVersion &&
       oldVersion !== '<none>' &&
       newVersion !== '<none>',
-  );
+  ); 
 
+  
   if (newVersions.length === 0) {
     console.log('No package version bumps detected, no release needed');
     await fs.appendFile(process.env.GITHUB_OUTPUT, `needs_release=false${EOL}`);
