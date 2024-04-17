@@ -73,7 +73,10 @@ jobs:
           # TODO(vinzscam): If we use secrets.GITHUB_TOKEN here, checks won't trigger in the version packages
           # PR. cf. https://github.community/t/push-doesnt-trigger-workflow-action-in-an-open-pr/118675
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    
+
+      - name: Fetch previous commit for release check
+        run: git fetch origin '${{ github.event.before }}'
+
       - name: Check if release
         id: release_check
         if: inputs.force_release != true
