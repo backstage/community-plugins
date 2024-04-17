@@ -72,9 +72,10 @@ async function main() {
     parentRef,
     "'*/package.json'", // Git treats this as what would usually be **/package.json
   );
+
   const packageList = diff
     .split('\n')
-    .filter(path => path.match(/^(packages|plugins)\/[^/]+\/package\.json$/));
+    .filter(path => path.match(new RegExp(`^workspaces\/${process.env.WORKSPACE_NAME}\/(packages|plugins)\/[^/]+\/package\.json$`)));
 
   const packageVersions = await Promise.all(
     packageList.map(async path => {
