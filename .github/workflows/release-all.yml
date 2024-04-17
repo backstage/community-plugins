@@ -29,3 +29,4 @@ jobs:
     uses: ./.github/workflows/release_workspace.yml
     with:
       workspace: ${{ matrix.workspace }}
+    secrets: inherit
