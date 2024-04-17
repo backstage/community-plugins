@@ -1,11 +1,5 @@
 # @backstage-community/plugin-todo
 
-## 0.2.38
-
-### Patch Changes
-
-- 93b39ae: Migrated from the [backstage/backstage](https://github.com/backstage/backstage) monorepo.
-
 ## 0.2.37
 
 ### Patch Changes
