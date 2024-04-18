@@ -183,7 +183,7 @@ const createChangeset = async (options: {
     `migrate-${new Date().getTime()}.md`,
   );
 
-  const changesetContents = `
+  const changesetContents = `\
 ---
 ${options.packages.map(p => `'${p}': patch`).join('\n')}
 ---
@@ -191,7 +191,7 @@ ${options.packages.map(p => `'${p}': patch`).join('\n')}
 ${options.message}
 `;
 
-  await fs.writeFile(changesetFile, changesetContents.trim());
+  await fs.appendFile(changesetFile, changesetContents);
 };
 
 const deprecatePackage = async (options: { package: Package }) => {
@@ -300,13 +300,19 @@ export default async (opts: OptionValues) => {
     const movedPackageJson = await fs.readJson(movedPackageJsonPath);
 
     await fixWorkspaceDependencies({
-      dependencies: movedPackageJson.dependencies,
+      dependencies: movedPackageJson.dependencies ?? {},
       monorepoPackages,
       packagesToBeMoved,
     });
 
     await fixWorkspaceDependencies({
-      dependencies: movedPackageJson.devDependencies,
+      dependencies: movedPackageJson.peerDependencies ?? {},
+      monorepoPackages,
+      packagesToBeMoved,
+    });
+
+    await fixWorkspaceDependencies({
+      dependencies: movedPackageJson.devDependencies ?? {},
       monorepoPackages,
       packagesToBeMoved,
     });
@@ -367,10 +373,9 @@ export default async (opts: OptionValues) => {
   });
 
   console.log(chalk.yellow`Running yarn install in new repository`);
-  await exec('yarn', ['install'], { cwd: workspacePath });
-
-  console.log(chalk.yellow`Running prettier in new repository`);
-  await exec('yarn', ['prettier', '--write', '.'], { cwd: workspacePath });
+  await exec('yarn', ['install', '--mode=update-lockfile'], {
+    cwd: workspacePath,
+  });
 
   // reset monorepo
   await exec('git', ['checkout', 'master'], { cwd: monorepoPath });
