@@ -19,7 +19,7 @@ export const createWorkspace = async (opts: { name: string; cwd?: string }) => {
     { input: opts.name },
   );
 
-  // experimental
+  // experimental test
   // eslint-disable-next-line no-restricted-syntax
   await copy(join(__dirname, '.changeset'), join(workspacePath, '.changeset'));
 };
