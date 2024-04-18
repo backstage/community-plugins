@@ -1,5 +1,11 @@
 # @backstage-community/plugin-todo-backend
 
+## 0.3.17
+
+### Patch Changes
+
+- ef7522c: Migrated from the [backstage/backstage](https://github.com/backstage/backstage) monorepo.
+
 ## 0.3.16
 
 ### Patch Changes
