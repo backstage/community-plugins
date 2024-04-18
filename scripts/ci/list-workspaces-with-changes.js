@@ -43,6 +43,8 @@ async function main() {
     parentRef
   )
 
+  console.log(diff);
+  
   const packageList = diff.split('\n');
 
   const workspaces = new Set();
