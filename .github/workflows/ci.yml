@@ -26,7 +26,7 @@ jobs:
           registry-url: https://registry.npmjs.org/ # Needed for auth
       
       - name: Fetch previous commit for check
-        run: git fetch origin ''${{ github.event.payload.pull_request.base.sha }}'
+        run: git fetch origin ''${{ github.event.pull_request.base.sha }}'
 
       - name: debug
         run: echo ${{ github.event }}
@@ -35,7 +35,7 @@ jobs:
         id: find-changed-workspaces
         run: node ./scripts/ci/list-workspaces-with-changes.js
         env:
-          COMMIT_SHA_BEFORE: '${{ github.event.payload.pull_request.base.sha }}'
+          COMMIT_SHA_BEFORE: '${{ github.event.pull_request.base.sha }}'
 
   ci:
     name: Workspace ${{ matrix.workspace }}, CI step for node ${{ matrix.node-version }}
