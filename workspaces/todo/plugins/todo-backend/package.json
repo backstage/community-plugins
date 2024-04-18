@@ -25,6 +25,7 @@
   "scripts": {
     "build": "backstage-cli package build",
     "clean": "backstage-cli package clean",
+    "fuzz": "backstage-repo-tools package schema openapi fuzz",
     "generate": "backstage-repo-tools package schema openapi generate --server",
     "lint": "backstage-cli package lint",
     "prepack": "backstage-cli package prepack",
@@ -33,24 +34,23 @@
     "test": "backstage-cli package test"
   },
   "dependencies": {
-    "@backstage/backend-common": "^0.21.6",
-    "@backstage/backend-openapi-utils": "^0.1.9",
-    "@backstage/backend-plugin-api": "^0.6.16",
-    "@backstage/catalog-client": "^1.6.3",
+    "@backstage/backend-common": "^0.21.7",
+    "@backstage/backend-openapi-utils": "^0.1.10",
+    "@backstage/backend-plugin-api": "^0.6.17",
+    "@backstage/catalog-client": "^1.6.4",
     "@backstage/catalog-model": "^1.4.5",
     "@backstage/config": "^1.2.0",
     "@backstage/errors": "^1.2.4",
-    "@backstage/integration": "^1.9.1",
-    "@backstage/plugin-catalog-node": "^1.11.0",
+    "@backstage/integration": "^1.10.0",
+    "@backstage/plugin-catalog-node": "^1.11.1",
     "@types/express": "^4.17.6",
     "express": "^4.17.1",
     "leasot": "^12.0.0",
-    "winston": "^3.2.1",
     "yn": "^4.0.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.26.2",
-    "@backstage/repo-tools": "^0.7.2",
+    "@backstage/cli": "^0.26.3",
+    "@backstage/repo-tools": "^0.8.0",
     "@types/supertest": "^2.0.8",
     "supertest": "^6.1.3"
   }
