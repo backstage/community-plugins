@@ -216,6 +216,7 @@ const deprecatePackage = async (options: { package: Package }) => {
 
 const packageAndTypeMap = {
   lodash: { name: '@types/lodash', version: '^4.14.151' },
+  recharts: { name: '@types/lodash', version: '^4.14.151' },
   uuid: { name: '@types/uuid', version: '^9.0.0' },
   'humanize-duration': { name: '@types/humanize-duration', version: '^3.18.1' },
   'mime-types': { name: '@types/mime-types', version: '^2.1.0' },
@@ -361,6 +362,74 @@ export default async (opts: OptionValues) => {
       ) {
         movedPackageJson.devDependencies[value.name] = value.version;
       }
+    }
+
+    // If it's a frontend package do some magic
+    const frontendDevDeps = {
+      '@testing-library/dom': '^10.0.0',
+      '@testing-library/jest-dom': '^6.0.0',
+      '@testing-library/react': '^15.0.0',
+    };
+
+    if (movedPackageJson.backstage.role === 'frontend-plugin') {
+      for (const [key, value] of Object.entries(frontendDevDeps)) {
+        movedPackageJson.devDependencies[key] = value;
+      }
+    }
+
+    // if it's got material-ui pickers as a dep we need some other magic
+    const materialUiPickersDep =
+      movedPackageJson.dependencies['@material-ui/pickers'] ||
+      movedPackageJson.devDependencies['@material-ui/pickers'];
+    if (materialUiPickersDep) {
+      // copy the patch
+      await fs.mkdirp(path.join(workspacePath, '.yarn', 'patches'));
+      await fs.copyFile(
+        path.join(
+          __dirname,
+          '..',
+          '..',
+          'lib',
+          'workspaces',
+          'patches',
+          '@material-ui-pickers-npm-3.3.11-1c8f68ea20.patch',
+        ),
+        path.join(
+          workspacePath,
+          '.yarn',
+          'patches',
+          '@material-ui-pickers-npm-3.3.11-1c8f68ea20.patch',
+        ),
+      );
+
+      const rootPackageJson = await fs.readJson(
+        path.join(workspacePath, 'package.json'),
+      );
+
+      rootPackageJson.resolutions ??= {};
+      rootPackageJson.resolutions[
+        `@material-ui/pickers@${materialUiPickersDep}`
+      ] =
+        'patch:@material-ui/pickers@npm%3A3.3.11#./.yarn/patches/@material-ui-pickers-npm-3.3.11-1c8f68ea20.patch';
+
+      await fs.writeJson(
+        path.join(workspacePath, 'package.json'),
+        rootPackageJson,
+        { spaces: 2 },
+      );
+    }
+
+    // Fix for some packages without react/react-dom deps
+    if (movedPackageJson.peerDependencies?.['react']) {
+      movedPackageJson.devDependencies['react'] =
+        movedPackageJson.peerDependencies['react'];
+      movedPackageJson.devDependencies['react-dom'] =
+        movedPackageJson.peerDependencies['react'];
+    }
+
+    // Fix for graphqiql package
+    if (movedPackageJson.name === '@backstage/plugin-graphiql') {
+      movedPackageJson.dependencies['graphql-config'] = '^5.0.2';
     }
 
     await fs.writeJson(movedPackageJsonPath, movedPackageJson, { spaces: 2 });
