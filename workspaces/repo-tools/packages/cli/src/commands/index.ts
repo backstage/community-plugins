@@ -28,6 +28,7 @@ export const registerCommands = (program: Command) => {
       '--workspace-name [name]',
       'Name of the workspace that will be created, the plugins will be pulled automatically from the monorepo',
     )
+    .option('--branch [branch]', 'use a branch for deprecation commits')
     .option('--force', 'Overwrite existing workspace', false)
     .action(lazy(() => import('./plugin/migrate').then(m => m.default)));
 
