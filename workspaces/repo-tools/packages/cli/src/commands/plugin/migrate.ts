@@ -225,6 +225,8 @@ const packageAndTypeMap = {
   'git-url-parse': { name: '@types/git-url-parse', version: '^9.0.0' },
   'node-fetch': { name: '@types/node-fetch', version: '^2.5.12' },
   dompurify: { name: '@types/dompurify', version: '^3.0.0' },
+  'react-dom': { name: '@types/react-dom', version: '^18.2.19' },
+  react: { name: '@types/react', version: '^18.2.58' },
 };
 
 export default async (opts: OptionValues) => {
