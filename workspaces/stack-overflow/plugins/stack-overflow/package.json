@@ -1,0 +1,86 @@
+{
+  "name": "@backstage-community/plugin-stack-overflow",
+  "version": "0.1.29",
+  "backstage": {
+    "role": "frontend-plugin"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "homepage": "https://backstage.io",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/stack-overflow/plugins/stack-overflow"
+  },
+  "license": "Apache-2.0",
+  "sideEffects": false,
+  "exports": {
+    ".": "./src/index.ts",
+    "./alpha": "./src/alpha.tsx",
+    "./package.json": "./package.json"
+  },
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "typesVersions": {
+    "*": {
+      "alpha": [
+        "src/alpha.tsx"
+      ],
+      "package.json": [
+        "package.json"
+      ]
+    }
+  },
+  "files": [
+    "dist",
+    "config.d.ts"
+  ],
+  "scripts": {
+    "build": "backstage-cli package build",
+    "clean": "backstage-cli package clean",
+    "lint": "backstage-cli package lint",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack",
+    "start": "backstage-cli package start",
+    "test": "backstage-cli package test"
+  },
+  "dependencies": {
+    "@backstage/config": "^1.2.0",
+    "@backstage/core-components": "^0.14.4",
+    "@backstage/core-plugin-api": "^1.9.2",
+    "@backstage/frontend-plugin-api": "^0.6.4",
+    "@backstage/plugin-home-react": "^0.1.12",
+    "@backstage/plugin-search-common": "^1.2.11",
+    "@backstage/plugin-search-react": "^1.7.10",
+    "@material-ui/core": "^4.12.2",
+    "@material-ui/icons": "^4.9.1",
+    "@testing-library/jest-dom": "^6.0.0",
+    "@types/react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "cross-fetch": "^4.0.0",
+    "lodash": "^4.17.21",
+    "qs": "^6.9.4",
+    "react-use": "^17.2.4"
+  },
+  "devDependencies": {
+    "@backstage/cli": "^0.26.3",
+    "@backstage/test-utils": "^1.5.4",
+    "@testing-library/dom": "^10.0.0",
+    "@testing-library/jest-dom": "^6.0.0",
+    "@testing-library/react": "^15.0.0",
+    "@testing-library/user-event": "^14.0.0",
+    "@types/lodash": "^4.14.151",
+    "@types/react-dom": "^18.2.19",
+    "canvas": "^2.11.2",
+    "msw": "^1.0.0",
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-router-dom": "6.0.0-beta.0 || ^6.3.0"
+  },
+  "peerDependencies": {
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-router-dom": "6.0.0-beta.0 || ^6.3.0"
+  },
+  "configSchema": "config.d.ts"
+}
