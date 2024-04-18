@@ -1,5 +1,5 @@
 import { join } from 'path';
-import { copy } from 'fs-extra';
+import { copy, readJson, writeJson } from 'fs-extra';
 import { execSync } from 'child_process';
 
 // TODO: might be worth shipping our our template for create-app, especially if we decide
