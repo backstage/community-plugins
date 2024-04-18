@@ -15,7 +15,7 @@ export const createWorkspace = async (opts: { name: string; cwd?: string }) => {
   const templatePath = join(__dirname, 'templates', 'workspace');
 
   execSync(
-    `npx --yes @backstage/create-app --path ${workspacePath} --skip-install --template-path=${templatePath}`,
+    `npx @backstage/create-app --path ${workspacePath} --skip-install --template-path=${templatePath}`,
     { input: opts.name },
   );
 
