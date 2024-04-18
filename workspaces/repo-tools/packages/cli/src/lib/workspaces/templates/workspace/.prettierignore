@@ -2,3 +2,4 @@ dist
 dist-types
 coverage
 .vscode
+.eslintrc.js

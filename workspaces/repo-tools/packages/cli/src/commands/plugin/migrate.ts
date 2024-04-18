@@ -9,6 +9,7 @@ import { ExitCodeError } from '../../lib/errors';
 import { promisify } from 'util';
 import { execFile } from 'child_process';
 import semver from 'semver';
+import { version } from 'typescript';
 
 const replace = require('replace-in-file');
 
@@ -214,6 +215,15 @@ const deprecatePackage = async (options: { package: Package }) => {
   await fs.writeJson(packageJsonPath, packageJson);
 };
 
+const packageAndTypeMap = {
+  lodash: { name: '@types/lodash', version: '^4.14.151' },
+  uuid: { name: '@types/uuid', version: '^9.0.0' },
+  'humanize-duration': { name: '@types/humanize-duration', version: '^3.18.1' },
+  'mime-types': { name: '@types/mime-types', version: '^2.1.0' },
+  supertest: { name: '@types/supertest', version: '^2.0.8' },
+  '@backstage/core-components': { name: 'canvas', version: '^2.11.2' },
+};
+
 export default async (opts: OptionValues) => {
   const { monorepoPath, workspaceName, force, branch } = opts as {
     monorepoPath: string;
@@ -336,14 +346,16 @@ export default async (opts: OptionValues) => {
       }
     }
 
-    // also add canvas as a dependency to anything that has core-components because reasons
-    if (
-      (movedPackageJson.dependencies['@backstage/core-components'] ||
-        movedPackageJson.devDependencies['@backstage/core-components']) &&
-      !movedPackageJson.devDependencies.canvas &&
-      !movedPackageJson.dependencies.canvas
-    ) {
-      movedPackageJson.devDependencies.canvas = '^2.11.2';
+    // Add additional types that could come from elsewhere
+    for (const [key, value] of Object.entries(packageAndTypeMap)) {
+      if (
+        (movedPackageJson.dependencies[key] ||
+          movedPackageJson.devDependencies[key]) &&
+        !movedPackageJson.devDependencies[value.name] &&
+        !movedPackageJson.dependencies[value.name]
+      ) {
+        movedPackageJson.devDependencies[value.name] = value.version;
+      }
     }
 
     await fs.writeJson(movedPackageJsonPath, movedPackageJson, { spaces: 2 });
@@ -373,6 +385,13 @@ export default async (opts: OptionValues) => {
   });
 
   console.log(chalk.yellow`Running yarn install in new repository`);
+
+  // Copy current yarn lock from backstage monorepo to workspace to keep deps where possible
+  await fs.copyFile(
+    path.join(monorepoPath, 'yarn.lock'),
+    path.join(workspacePath, 'yarn.lock'),
+  );
+
   await exec('yarn', ['install', '--mode=update-lockfile'], {
     cwd: workspacePath,
   });
