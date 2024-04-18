@@ -77,9 +77,8 @@ jobs:
         if: ${{ hashFiles('app-config.yaml') != '' }}
         run: yarn backstage-cli config:check --lax
 
-      # running into problems with tsc:full after installing repo-tools
       - name: type checking and declarations
-        run: yarn tsc
+        run: yarn tsc:full
 
       - name: prettier
         run: yarn prettier:check
