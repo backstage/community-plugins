@@ -2672,7 +2672,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/backend-common@npm:^0.21.3, @backstage/backend-common@npm:^0.21.7":
+"@backstage/backend-common@npm:^0.21.7":
   version: 0.21.7
   resolution: "@backstage/backend-common@npm:0.21.7"
   dependencies:
@@ -2817,7 +2817,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/catalog-model@npm:^1.4.4, @backstage/catalog-model@npm:^1.4.5":
+"@backstage/catalog-model@npm:^1.4.5":
   version: 1.4.5
   resolution: "@backstage/catalog-model@npm:1.4.5"
   dependencies:
@@ -2836,7 +2836,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/cli-node@npm:^0.2.3, @backstage/cli-node@npm:^0.2.5":
+"@backstage/cli-node@npm:^0.2.5":
   version: 0.2.5
   resolution: "@backstage/cli-node@npm:0.2.5"
   dependencies:
@@ -3153,7 +3153,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/errors@npm:^1.2.3, @backstage/errors@npm:^1.2.4":
+"@backstage/errors@npm:^1.2.4":
   version: 1.2.4
   resolution: "@backstage/errors@npm:1.2.4"
   dependencies:
@@ -3397,57 +3397,6 @@ __metadata:
   dependencies:
     cross-fetch: ^4.0.0
   checksum: c03a21524436f1e423a40ac15f685b7f13ce3205e2684ce859571db3b70c78d783b3e1702ba3ffb2ba2d446f7444e8c592c6696b7c618fbf6648e91cb4c4fe07
-  languageName: node
-  linkType: hard
-
-"@backstage/repo-tools@npm:^0.6.2":
-  version: 0.6.3
-  resolution: "@backstage/repo-tools@npm:0.6.3"
-  dependencies:
-    "@apidevtools/swagger-parser": ^10.1.0
-    "@apisyouwonthate/style-guide": ^1.4.0
-    "@backstage/backend-common": ^0.21.3
-    "@backstage/catalog-model": ^1.4.4
-    "@backstage/cli-common": ^0.1.13
-    "@backstage/cli-node": ^0.2.3
-    "@backstage/errors": ^1.2.3
-    "@manypkg/get-packages": ^1.1.3
-    "@microsoft/api-documenter": ^7.22.33
-    "@microsoft/api-extractor": ^7.36.4
-    "@openapitools/openapi-generator-cli": ^2.7.0
-    "@stoplight/spectral-core": ^1.18.0
-    "@stoplight/spectral-formatters": ^1.1.0
-    "@stoplight/spectral-functions": ^1.7.2
-    "@stoplight/spectral-parsers": ^1.0.2
-    "@stoplight/spectral-rulesets": ^1.18.0
-    "@stoplight/spectral-runtime": ^1.1.2
-    "@stoplight/types": ^14.0.0
-    chalk: ^4.0.0
-    codeowners-utils: ^1.0.2
-    commander: ^12.0.0
-    fs-extra: ^11.2.0
-    glob: ^8.0.3
-    is-glob: ^4.0.3
-    js-yaml: ^4.1.0
-    lodash: ^4.17.21
-    minimatch: ^5.1.1
-    p-limit: ^3.0.2
-    portfinder: ^1.0.32
-    ts-node: ^10.0.0
-    yaml-diff-patch: ^2.0.0
-  peerDependencies:
-    "@microsoft/api-extractor-model": "*"
-    "@microsoft/tsdoc": "*"
-    "@microsoft/tsdoc-config": "*"
-    "@useoptic/optic": ^0.50.7
-    prettier: ^2.8.1
-    typescript: "> 3.0.0"
-  peerDependenciesMeta:
-    prettier:
-      optional: true
-  bin:
-    backstage-repo-tools: bin/backstage-repo-tools
-  checksum: 52414eb69c3be09ad222121f5d5610e2a5367aac4c96b9fe39b22c9643509fab80e9395dd9fbad21cda685a608fb30351a3bbee86a8798266a52ce1b5a5ac38f
   languageName: node
   linkType: hard
 
@@ -17794,7 +17743,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimatch@npm:^5.0.1, minimatch@npm:^5.1.0, minimatch@npm:^5.1.1":
+"minimatch@npm:^5.0.1, minimatch@npm:^5.1.0":
   version: 5.1.6
   resolution: "minimatch@npm:5.1.6"
   dependencies:
@@ -22836,7 +22785,7 @@ __metadata:
   dependencies:
     "@backstage/cli": ^0.26.3
     "@backstage/e2e-test-utils": ^0.1.1
-    "@backstage/repo-tools": ^0.6.2
+    "@backstage/repo-tools": ^0.8.0
     "@changesets/cli": ^2.27.1
     "@spotify/prettier-config": ^12.0.0
     node-gyp: ^9.0.0
@@ -22985,7 +22934,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-node@npm:^10.0.0, ts-node@npm:^10.9.1":
+"ts-node@npm:^10.9.1":
   version: 10.9.2
   resolution: "ts-node@npm:10.9.2"
   dependencies:
