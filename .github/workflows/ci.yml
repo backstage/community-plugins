@@ -10,36 +10,37 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  detect-workspaces-with-changes:
-    name: Detect workspaces with changes
+  find-changed-workspaces:
+    name: Detect workspace changes
     runs-on: ubuntu-latest
     outputs:
-      workspaces: ${{ steps.detect-workspaces.outputs.out }}
+      workspaces: ${{ steps.find-changed-workspaces.outputs.workspaces }}
     steps:
-      - name: Checkout main branch for diff purposes
+      - name: Checkout
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
-        with:
-          ref: main
-      - name: Checkout head branch
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
-        with:
-          ref: ${{ github.event.workflow_run.head_branch }}
-      - name: Setup node
+
+      - name: Set up Node
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
         with:
-          node-version: "20.x"
-      - name: Install root dependencies
-        run: yarn install --immutable
-      - name: Set workspaces with changes as output
-        id: detect-workspaces
-        run: echo "out=$(node scripts/ci/list-workspaces-with-changes.js)" >> $GITHUB_OUTPUT
+          node-version: 20
+          registry-url: https://registry.npmjs.org/ # Needed for auth
+      
+      - name: Fetch previous commit for check
+        run: git fetch origin '${{ github.event.before }}'
+
+      - name: Find changed workspaces
+        id: find-changed-workspaces
+        run: node ../../scripts/ci/check-if-release.js
+        env:
+          COMMIT_SHA_BEFORE: '${{ github.event.before }}'
+
   ci:
     name: Workspace ${{ matrix.workspace }}, CI step for node ${{ matrix.node-version }}
     runs-on: ubuntu-latest
-    needs: detect-workspaces-with-changes
+    needs: find-changed-workspaces
     strategy:
       matrix:
-        workspace: ${{ fromJSON(needs.detect-workspaces-with-changes.outputs.workspaces) }}
+        workspace: ${{ fromJSON(needs.find-changed-workspaces.outputs.workspaces) }}
         node-version: [18.x, 20.x]
     defaults:
       run:
@@ -111,10 +112,10 @@ jobs:
   verify:
     name: Workspace ${{ matrix.workspace }}, Verify step
     runs-on: ubuntu-latest
-    needs: detect-workspaces-with-changes
+    needs: find-changed-workspaces
     strategy:
       matrix:
-        workspace: ${{ fromJSON(needs.detect-workspaces-with-changes.outputs.workspaces) }}
+        workspace: ${{ fromJSON(needs.find-changed-workspaces.outputs.workspaces) }}
     steps:
       - name: Checkout head branch
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
