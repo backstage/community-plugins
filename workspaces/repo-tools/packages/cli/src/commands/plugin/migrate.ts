@@ -9,7 +9,6 @@ import { ExitCodeError } from '../../lib/errors';
 import { promisify } from 'util';
 import { execFile } from 'child_process';
 import semver from 'semver';
-import { version } from 'typescript';
 
 const replace = require('replace-in-file');
 
@@ -222,6 +221,10 @@ const packageAndTypeMap = {
   'mime-types': { name: '@types/mime-types', version: '^2.1.0' },
   supertest: { name: '@types/supertest', version: '^2.0.8' },
   '@backstage/core-components': { name: 'canvas', version: '^2.11.2' },
+  pluralize: { name: '@types/pluralize', version: '^0.0.33' },
+  'git-url-parse': { name: '@types/git-url-parse', version: '^9.0.0' },
+  'node-fetch': { name: '@types/node-fetch', version: '^2.5.12' },
+  dompurify: { name: '@types/dompurify', version: '^3.0.0' },
 };
 
 export default async (opts: OptionValues) => {
