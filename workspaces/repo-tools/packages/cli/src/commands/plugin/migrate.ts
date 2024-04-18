@@ -318,9 +318,12 @@ export default async (opts: OptionValues) => {
       directory: `workspaces/${workspaceName}/${packageToBeMoved.relativeDir}`,
     };
 
+    movedPackageJson.devDependencies ??= {};
+    movedPackageJson.dependencies ??= {};
+
     // make sure to add all peerDependencies as devDeps as these won't be installed in the app any longer and tests might fail
     for (const [key, value] of Object.entries(
-      movedPackageJson.peerDependencies,
+      movedPackageJson.peerDependencies ?? {},
     )) {
       if (!movedPackageJson.devDependencies[key]) {
         movedPackageJson.devDependencies[key] = value;
