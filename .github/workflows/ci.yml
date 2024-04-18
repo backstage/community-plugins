@@ -30,7 +30,7 @@ jobs:
 
       - name: Find changed workspaces
         id: find-changed-workspaces
-        run: node ../../scripts/ci/check-if-release.js
+        run: node ./scripts/ci/check-if-release.js
         env:
           COMMIT_SHA_BEFORE: '${{ github.event.before }}'
 
