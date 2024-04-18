@@ -318,6 +318,25 @@ export default async (opts: OptionValues) => {
       directory: `workspaces/${workspaceName}/${packageToBeMoved.relativeDir}`,
     };
 
+    // make sure to add all peerDependencies as devDeps as these won't be installed in the app any longer and tests might fail
+    for (const [key, value] of Object.entries(
+      movedPackageJson.peerDependencies,
+    )) {
+      if (!movedPackageJson.devDependencies[key]) {
+        movedPackageJson.devDependencies[key] = value;
+      }
+    }
+
+    // also add canvas as a dependency to anything that has core-components because reasons
+    if (
+      (movedPackageJson.dependencies['@backstage/core-components'] ||
+        movedPackageJson.devDependencies['@backstage/core-components']) &&
+      !movedPackageJson.devDependencies.canvas &&
+      !movedPackageJson.dependencies.canvas
+    ) {
+      movedPackageJson.devDependencies.canvas = '^2.11.2';
+    }
+
     await fs.writeJson(movedPackageJsonPath, movedPackageJson, { spaces: 2 });
   }
 
