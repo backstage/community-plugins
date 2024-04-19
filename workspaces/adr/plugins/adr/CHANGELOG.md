@@ -1,5 +1,13 @@
 # @backstage-community/plugin-adr
 
+## 0.6.18
+
+### Patch Changes
+
+- 193a2a3: Migrated from the [backstage/backstage](https://github.com/backstage/backstage) monorepo.
+- Updated dependencies [193a2a3]
+  - @backstage-community/plugin-adr-common@0.2.23
+
 ## 0.6.17
 
 ### Patch Changes
