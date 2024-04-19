@@ -1,5 +1,13 @@
 # @backstage-community/plugin-explore-react
 
+## 0.0.39
+
+### Patch Changes
+
+- 193a2a3: Migrated from the [backstage/backstage](https://github.com/backstage/backstage) monorepo.
+- Updated dependencies [193a2a3]
+  - @backstage-community/plugin-explore-common@0.0.3
+
 ## 0.0.38
 
 ### Patch Changes
