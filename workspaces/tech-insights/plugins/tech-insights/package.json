@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-tech-insights",
-  "version": "0.3.26",
+  "version": "0.3.27",
   "backstage": {
     "role": "frontend-plugin"
   },
