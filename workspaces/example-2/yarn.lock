@@ -3282,7 +3282,7 @@ __metadata:
     "@testing-library/jest-dom": ^6.0.0
     "@testing-library/react": ^14.0.0
     "@testing-library/user-event": ^14.0.0
-    msw: ^1.0.0
+    msw: ^1.3.2
     react-use: ^17.2.4
   peerDependencies:
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
@@ -24547,9 +24547,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"msw@npm:^1.0.0":
-  version: 1.3.2
-  resolution: "msw@npm:1.3.2"
+"msw@npm:^1.3.2":
+  version: 1.3.3
+  resolution: "msw@npm:1.3.3"
   dependencies:
     "@mswjs/cookies": ^0.2.2
     "@mswjs/interceptors": ^0.17.10
@@ -24571,13 +24571,13 @@ __metadata:
     type-fest: ^2.19.0
     yargs: ^17.3.1
   peerDependencies:
-    typescript: ">= 4.4.x <= 5.2.x"
+    typescript: ">= 4.4.x"
   peerDependenciesMeta:
     typescript:
       optional: true
   bin:
     msw: cli/index.js
-  checksum: c2d4f7747f5806f0fd8d8cc3ca250ee1c2a7a6cd608de43f95bd072ba1fb13cdce0b52932ce9bf8f4a21b194d2815db535501e224ec8f7052593447fe1c0cb70
+  checksum: cb3fda1519485f219d36c4e5ac1e1190ffe77dab66121c88cb9db0bace1ecb5a45c83db49e68e7c688b330ce43eed17d00939e09812dc710c0d4b3e59925730c
   languageName: node
   linkType: hard
 
