@@ -1,5 +1,11 @@
 # @backstage-community/plugin-firehydrant
 
+## 0.2.19
+
+### Patch Changes
+
+- 193a2a3: Migrated from the [backstage/backstage](https://github.com/backstage/backstage) monorepo.
+
 ## 0.2.18
 
 ### Patch Changes
