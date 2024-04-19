@@ -1,5 +1,11 @@
 # @backstage-community/plugin-stack-overflow
 
+## 0.1.30
+
+### Patch Changes
+
+- 193a2a3: Migrated from the [backstage/backstage](https://github.com/backstage/backstage) monorepo.
+
 ## 0.1.29
 
 ### Patch Changes
