@@ -1,5 +1,13 @@
 # @backstage-community/plugin-cost-insights
 
+## 0.12.24
+
+### Patch Changes
+
+- 193a2a3: Migrated from the [backstage/backstage](https://github.com/backstage/backstage) monorepo.
+- Updated dependencies [193a2a3]
+  - @backstage-community/plugin-cost-insights-common@0.1.3
+
 ## 0.12.23
 
 ### Patch Changes
