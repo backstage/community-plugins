@@ -1,5 +1,11 @@
 # @backstage-community/plugin-ilert
 
+## 0.2.24
+
+### Patch Changes
+
+- 193a2a3: Migrated from the [backstage/backstage](https://github.com/backstage/backstage) monorepo.
+
 ## 0.2.23
 
 ### Patch Changes
