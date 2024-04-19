@@ -20,6 +20,10 @@ import {
 } from '@backstage/backend-plugin-api';
 import { createRouter } from './service';
 import { StaticExploreToolProvider } from './tools';
+import {
+  ExploreToolProvider,
+  toolProviderExtensionPoint,
+} from '@backstage-community/plugin-explore-node';
 
 /**
  * The explore backend plugin.
@@ -29,6 +33,17 @@ import { StaticExploreToolProvider } from './tools';
 export const explorePlugin = createBackendPlugin({
   pluginId: 'explore',
   register(env) {
+    let toolProvider: ExploreToolProvider | undefined;
+
+    env.registerExtensionPoint(toolProviderExtensionPoint, {
+      setToolProvider(provider) {
+        if (provider) {
+          throw new Error('The tool provider has been already set');
+        }
+        toolProvider = provider;
+      },
+    });
+
     env.registerInit({
       deps: {
         config: coreServices.rootConfig,
@@ -39,7 +54,8 @@ export const explorePlugin = createBackendPlugin({
         httpRouter.use(
           await createRouter({
             logger,
-            toolProvider: StaticExploreToolProvider.fromConfig(config),
+            toolProvider:
+              toolProvider ?? StaticExploreToolProvider.fromConfig(config),
           }),
         );
       },

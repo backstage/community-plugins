@@ -33,6 +33,7 @@
   },
   "dependencies": {
     "@backstage-community/plugin-explore-common": "workspace:^",
+    "@backstage-community/plugin-explore-node": "workspace:^",
     "@backstage/backend-common": "^0.21.7",
     "@backstage/backend-plugin-api": "^0.6.17",
     "@backstage/config": "^1.2.0",
