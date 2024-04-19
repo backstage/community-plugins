@@ -1,0 +1,49 @@
+{
+  "name": "@backstage-community/plugin-tech-insights-node",
+  "version": "0.6.0",
+  "backstage": {
+    "role": "node-library"
+  },
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.cjs.js",
+    "types": "dist/index.d.ts"
+  },
+  "keywords": [
+    "backstage",
+    "tech-insights"
+  ],
+  "homepage": "https://backstage.io",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/tech-insights/plugins/tech-insights-node"
+  },
+  "license": "Apache-2.0",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "backstage-cli package build",
+    "clean": "backstage-cli package clean",
+    "lint": "backstage-cli package lint",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack",
+    "start": "backstage-cli package start",
+    "test": "backstage-cli package test"
+  },
+  "dependencies": {
+    "@backstage-community/plugin-tech-insights-common": "workspace:^",
+    "@backstage/backend-common": "^0.21.7",
+    "@backstage/backend-plugin-api": "^0.6.17",
+    "@backstage/config": "^1.2.0",
+    "@backstage/types": "^1.1.1",
+    "@types/luxon": "^3.0.0",
+    "luxon": "^3.0.0"
+  },
+  "devDependencies": {
+    "@backstage/cli": "^0.26.3"
+  }
+}
