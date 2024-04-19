@@ -11529,6 +11529,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/dockerode@npm:^3.3.24":
+  version: 3.3.28
+  resolution: "@types/dockerode@npm:3.3.28"
+  dependencies:
+    "@types/docker-modem": "*"
+    "@types/node": "*"
+    "@types/ssh2": "*"
+  checksum: d354d790a970b20f7e6b65554eaf851a931adb6fdce831408797b660ff58bf46e87c625ae56c8f7eb902437515cc2286a7cb171ca4e54fbc1262f2d08ab93b78
+  languageName: node
+  linkType: hard
+
 "@types/dompurify@npm:^2.1.0":
   version: 2.4.0
   resolution: "@types/dompurify@npm:2.4.0"
@@ -13871,7 +13882,7 @@ __metadata:
     "@backstage/plugin-search-backend-module-techdocs": ^0.1.14
     "@backstage/plugin-search-backend-node": ^1.2.14
     "@backstage/plugin-techdocs-backend": ^1.9.3
-    "@types/dockerode": ^3.3.0
+    "@types/dockerode": ^3.3.24
     "@types/express": ^4.17.6
     "@types/express-serve-static-core": ^4.17.5
     "@types/luxon": ^2.0.4
