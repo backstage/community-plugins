@@ -1,5 +1,13 @@
 # @backstage-community/plugin-explore-backend
 
+## 0.0.28
+
+### Patch Changes
+
+- 193a2a3: Migrated from the [backstage/backstage](https://github.com/backstage/backstage) monorepo.
+- Updated dependencies [193a2a3]
+  - @backstage-community/plugin-explore-common@0.0.3
+
 ## 0.0.27
 
 ### Patch Changes
