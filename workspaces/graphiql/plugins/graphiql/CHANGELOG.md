@@ -1,5 +1,11 @@
 # @backstage-community/plugin-graphiql
 
+## 0.3.8
+
+### Patch Changes
+
+- 193a2a3: Migrated from the [backstage/backstage](https://github.com/backstage/backstage) monorepo.
+
 ## 0.3.7
 
 ### Patch Changes
