@@ -23,7 +23,7 @@ async function runPlain(cmd, ...args) {
       throw error;
     }
     throw new Error(
-      `Command '${[cmd, ...args].join(' ')}' failed with code ${error.code}`,
+      `Command '${[cmd, ...args].join(' ')}' failed with code ${error.code}`
     );
   }
 }
@@ -36,12 +36,7 @@ async function main() {
   const repoRoot = resolvePath(__dirname, '..', '..');
   process.chdir(repoRoot);
 
-  const diff = await runPlain(
-    'git',
-    'diff',
-    '--name-only',
-    parentRef
-  )
+  const diff = await runPlain('git', 'diff', '--name-only', parentRef);
 
   const packageList = diff.split('\n');
 
@@ -55,10 +50,25 @@ async function main() {
 
   console.log('workspaces found with changes:', Array.from(workspaces));
 
-  await fs.appendFile(process.env.GITHUB_OUTPUT, `workspaces=${JSON.stringify(Array.from(workspaces))}${EOL}`);
+  for (const workspace of workspaces) {
+    if (
+      !(await fs
+        .stat(`workspaces/${workspace}/package.json`)
+        .catch(() => false))
+    ) {
+      workspaces.delete(workspace);
+    }
+  }
+
+  console.log('workspaces that exist:', Array.from(workspaces));
+
+  await fs.appendFile(
+    process.env.GITHUB_OUTPUT,
+    `workspaces=${JSON.stringify(Array.from(workspaces))}${EOL}`
+  );
 }
 
-main().catch(error => {
+main().catch((error) => {
   console.error(error.stack);
   process.exit(1);
 });
