@@ -1,5 +1,13 @@
 # @backstage-community/plugin-azure-devops-backend
 
+## 0.6.5
+
+### Patch Changes
+
+- 193a2a3: Migrated from the [backstage/backstage](https://github.com/backstage/backstage) monorepo.
+- Updated dependencies [193a2a3]
+  - @backstage-community/plugin-azure-devops-common@0.4.2
+
 ## 0.6.4
 
 ### Patch Changes
