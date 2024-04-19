@@ -1,5 +1,13 @@
 # @backstage-community/plugin-linguist
 
+## 0.1.20
+
+### Patch Changes
+
+- afff3cf: Migrated from the [backstage/backstage](https://github.com/backstage/backstage) monorepo.
+- Updated dependencies [afff3cf]
+  - @backstage-community/plugin-linguist-common@0.1.3
+
 ## 0.1.19
 
 ### Patch Changes
