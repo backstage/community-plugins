@@ -1,5 +1,11 @@
 # @backstage-community/plugin-jenkins-common
 
+## 0.1.26
+
+### Patch Changes
+
+- 193a2a3: Migrated from the [backstage/backstage](https://github.com/backstage/backstage) monorepo.
+
 ## 0.1.25
 
 ### Patch Changes
