@@ -1,5 +1,11 @@
 # @backstage-community/plugin-dynatrace
 
+## 10.0.4
+
+### Patch Changes
+
+- 193a2a3: Migrated from the [backstage/backstage](https://github.com/backstage/backstage) monorepo.
+
 ## 10.0.3
 
 ### Patch Changes
