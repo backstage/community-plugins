@@ -1,5 +1,11 @@
 # @backstage-community/plugin-org
 
+## 0.6.25
+
+### Patch Changes
+
+- 193a2a3: Migrated from the [backstage/backstage](https://github.com/backstage/backstage) monorepo.
+
 ## 0.6.24
 
 ### Patch Changes
