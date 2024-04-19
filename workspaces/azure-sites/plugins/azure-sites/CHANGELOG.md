@@ -1,5 +1,13 @@
 # @backstage-community/plugin-azure-sites
 
+## 0.1.24
+
+### Patch Changes
+
+- 193a2a3: Migrated from the [backstage/backstage](https://github.com/backstage/backstage) monorepo.
+- Updated dependencies [193a2a3]
+  - @backstage-community/plugin-azure-sites-common@0.1.4
+
 ## 0.1.23
 
 ### Patch Changes
