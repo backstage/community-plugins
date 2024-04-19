@@ -1,5 +1,13 @@
 # @backstage-community/plugin-entity-feedback-backend
 
+## 0.2.15
+
+### Patch Changes
+
+- 193a2a3: Migrated from the [backstage/backstage](https://github.com/backstage/backstage) monorepo.
+- Updated dependencies [193a2a3]
+  - @backstage-community/plugin-entity-feedback-common@0.1.4
+
 ## 0.2.14
 
 ### Patch Changes
