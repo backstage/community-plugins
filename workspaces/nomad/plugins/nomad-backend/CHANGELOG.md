@@ -1,5 +1,11 @@
 # @backstage-community/plugin-nomad-backend
 
+## 0.1.20
+
+### Patch Changes
+
+- afff3cf: Migrated from the [backstage/backstage](https://github.com/backstage/backstage) monorepo.
+
 ## 0.1.19
 
 ### Patch Changes
