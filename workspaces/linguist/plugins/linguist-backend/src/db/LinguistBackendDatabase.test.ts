@@ -20,7 +20,10 @@ import {
   LinguistBackendDatabase,
   LinguistBackendStore,
 } from './LinguistBackendDatabase';
-import { Languages, ProcessedEntity } from '@backstage-community/plugin-linguist-common';
+import {
+  Languages,
+  ProcessedEntity,
+} from '@backstage-community/plugin-linguist-common';
 
 function createDatabaseManager(
   client: KnexType,
