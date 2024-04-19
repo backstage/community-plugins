@@ -20,7 +20,10 @@ import {
   CatalogProcessorCache,
 } from '@backstage/plugin-catalog-node';
 import { DiscoveryService, LoggerService } from '@backstage/backend-plugin-api';
-import { Languages, LanguageType } from '@backstage-community/plugin-linguist-common';
+import {
+  Languages,
+  LanguageType,
+} from '@backstage-community/plugin-linguist-common';
 import fetch from 'node-fetch';
 import { durationToMilliseconds, HumanDuration } from '@backstage/types';
 import { Config } from '@backstage/config';
