@@ -1,5 +1,13 @@
 # @backstage-community/plugin-cicd-statistics-module-gitlab
 
+## 0.1.31
+
+### Patch Changes
+
+- 193a2a3: Migrated from the [backstage/backstage](https://github.com/backstage/backstage) monorepo.
+- Updated dependencies [193a2a3]
+  - @backstage-community/plugin-cicd-statistics@0.1.37
+
 ## 0.1.30
 
 ### Patch Changes
