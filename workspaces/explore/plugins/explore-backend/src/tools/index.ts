@@ -15,4 +15,3 @@
  */
 
 export { StaticExploreToolProvider } from './providers/StaticExploreToolProvider';
-export * from './types';
