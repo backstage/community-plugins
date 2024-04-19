@@ -42,6 +42,7 @@ jobs:
       matrix:
         workspace: ${{ fromJSON(needs.find-changed-workspaces.outputs.workspaces) }}
         node-version: [18.x, 20.x]
+      fail-fast: false
     defaults:
       run:
         working-directory: ./workspaces/${{ matrix.workspace }}
@@ -76,9 +77,8 @@ jobs:
         if: ${{ hashFiles('app-config.yaml') != '' }}
         run: yarn backstage-cli config:check --lax
 
-      # running into problems with tsc:full after installing repo-tools
       - name: type checking and declarations
-        run: yarn tsc
+        run: yarn tsc:full
 
       - name: prettier
         run: yarn prettier:check
@@ -116,6 +116,7 @@ jobs:
     strategy:
       matrix:
         workspace: ${{ fromJSON(needs.find-changed-workspaces.outputs.workspaces) }}
+      fail-fast: false
     steps:
       - name: Checkout head branch
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
