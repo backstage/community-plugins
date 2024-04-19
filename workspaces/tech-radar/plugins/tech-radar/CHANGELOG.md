@@ -1,5 +1,11 @@
 # @backstage-community/plugin-tech-radar
 
+## 0.7.4
+
+### Patch Changes
+
+- ab65c45: Migrated from the [backstage/backstage](https://github.com/backstage/backstage) monorepo.
+
 ## 0.7.3
 
 ### Patch Changes
