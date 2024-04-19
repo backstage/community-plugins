@@ -1,5 +1,11 @@
 # @backstage-community/plugin-gitops-profiles
 
+## 0.3.50
+
+### Patch Changes
+
+- 193a2a3: Migrated from the [backstage/backstage](https://github.com/backstage/backstage) monorepo.
+
 ## 0.3.49
 
 ### Patch Changes
