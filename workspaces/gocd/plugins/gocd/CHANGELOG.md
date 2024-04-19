@@ -1,5 +1,11 @@
 # @backstage-community/plugin-gocd
 
+## 0.1.41
+
+### Patch Changes
+
+- 193a2a3: Migrated from the [backstage/backstage](https://github.com/backstage/backstage) monorepo.
+
 ## 0.1.40
 
 ### Patch Changes
