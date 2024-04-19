@@ -1,5 +1,14 @@
 # @backstage-community/plugin-tech-insights-backend
 
+## 0.5.32
+
+### Patch Changes
+
+- 193a2a3: Migrated from the [backstage/backstage](https://github.com/backstage/backstage) monorepo.
+- Updated dependencies [193a2a3]
+  - @backstage-community/plugin-tech-insights-common@0.2.13
+  - @backstage-community/plugin-tech-insights-node@0.6.1
+
 ## 0.5.31
 
 ### Patch Changes
