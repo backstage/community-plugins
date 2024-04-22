@@ -1,8 +1,44 @@
 # This file registers ownership for certain parts of the backstage code.
+
 # Review from a member of the corresponding code owner is required to merge pull requests.
+
 #
+
 # The last matching pattern takes precedence.
+
 # https://help.github.com/articles/about-codeowners/
 
-*                                                 @backstage/community-plugins-maintainers
-/workspaces/example-1                             @vinzscam @tudi2d
+-                                                 @backstage/community-plugins-maintainers
+  yarn.lock @backstage/community-plugins-maintainers @backstage-service
+  \*/yarn.lock @backstage/community-plugins-maintainers @backstage-service
+
+/workspaces/adr @backstage/community-plugins-maintainers @kuangp
+/workspaces/azure-devops @backstage/community-plugins-maintainers @awanlin
+/workspaces/analytics @backstage/community-plugins-maintainers @jmezach
+
+/workspaces/bitrise @backstage/community-plugins-maintainers @backstage/sda-se-reviewers
+
+/workspaces/code-coverage @backstage/community-plugins-maintainers @alde
+/workspaces/cost-insights @backstage/community-plugins-maintainers @backstage/silver-lining
+/workspaces/entity-feedback @backstage/community-plugins-maintainers @kuangp
+/workspaces/explore @backstage/community-plugins-maintainers @backstage/sda-se-reviewers
+/workspaces/fossa @backstage/community-plugins-maintainers @backstage/sda-se-reviewers
+/workspaces/git-release-manager @backstage/community-plugins-maintainers @erikengervall
+
+/workspaces/kafka @backstage/community-plugins-maintainers @andrewthauer
+
+/workspaces/linguist @backstage/community-plugins-maintainers @awanlin
+
+workspacesoctopus-deploy @backstage/community-plugins-maintainers @jmezach
+
+workspacesplaylist @backstage/community-plugins-maintainers @kuangp
+workspacesplaylist-\* @backstage/community-plugins-maintainers @kuangp
+workspacesrollbar @backstage/community-plugins-maintainers @andrewthauer
+workspacesrollbar-backend @backstage/community-plugins-maintainers @andrewthauer
+
+workspacessonarqube @backstage/community-plugins-maintainers @backstage/sda-se-reviewers
+workspacesstack-overflow @backstage/discoverability-maintainers
+workspacesstack-overflow-backend @backstage/discoverability-maintainers
+
+/workspaces/user-settings @backstage/community-plugins-maintainers @backstage/sda-se-reviewers
+/workspaces/tech-insights @backstage/community-plugins-maintainers @xantier
