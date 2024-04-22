@@ -17,10 +17,40 @@ permissions:
   statuses: none
 
 jobs:
+  find-changed-workspaces:
+    name: Detect workspace changes
+    runs-on: ubuntu-latest
+    outputs:
+      workspaces: ${{ steps.find-changed-workspaces.outputs.workspaces }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+
+      - name: Set up Node
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org/ # Needed for auth
+      
+      - name: Fetch previous commit for check
+        run: git fetch origin '${{ github.event.pull_request.base.sha }}'
+
+      - name: Find changed workspaces
+        id: find-changed-workspaces
+        run: node ./scripts/ci/list-workspaces-with-changes.js
+        env:
+          COMMIT_SHA_BEFORE: '${{ github.event.pull_request.base.sha }}'
+
   feedback:
     # prevent running towards forks and version packages
-    if: github.repository == 'backstage/community-plugins' && github.event.pull_request.user.login != 'backstage-service'
+    if: github.repository == 'backstage/community-plugins' && github.event.pull_request.user.login != 'backstage-service' && needs.find-changed-workspaces.outputs.workspaces != '[]'
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        workspace: ${{ fromJSON(needs.find-changed-workspaces.outputs.workspaces) }}
+    defaults:
+      run:
+        working-directory: ./workspaces/${{ matrix.workspace }}
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@63c24ba6bd7ba022e95695ff85de572c04a18142 # v2.7.0
@@ -38,7 +68,7 @@ jobs:
         name: Generate feedback
         with:
           diff-ref: 'origin/main'
-          marker: <!-- changeset-feedback -->
+          marker: <!-- changeset-feedback-${{ matrix.workspace }} -->
           issue-number: ${{ github.event.pull_request.number }}
           bot-username: backstage-goalie[bot]
           app-id: ${{ secrets.BACKSTAGE_GOALIE_APPLICATION_ID }}
