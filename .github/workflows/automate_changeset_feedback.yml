@@ -23,8 +23,11 @@ jobs:
     outputs:
       workspaces: ${{ steps.find-changed-workspaces.outputs.workspaces }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        with:
+          # Fetch the commit that's merged into the base rather than the target ref
+          # This will let us diff only the contents of the PR, without fetching more history
+          ref: 'refs/pull/${{ github.event.pull_request.number }}/merge'
 
       - name: Set up Node
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
@@ -33,13 +36,13 @@ jobs:
           registry-url: https://registry.npmjs.org/ # Needed for auth
       
       - name: Fetch previous commit for check
-        run: git fetch origin '${{ github.event.pull_request.base.sha }}'
+        run: git fetch origin '${{ github.base_ref }}'
 
       - name: Find changed workspaces
         id: find-changed-workspaces
         run: node ./scripts/ci/list-workspaces-with-changes.js
         env:
-          COMMIT_SHA_BEFORE: '${{ github.event.pull_request.base.sha }}'
+          COMMIT_SHA_BEFORE: '${{ github.base_ref }}'
 
   feedback:
     # prevent running towards forks and version packages
