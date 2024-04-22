@@ -2541,8 +2541,8 @@ __metadata:
     "@backstage/catalog-model": ^1.4.5
     "@backstage/cli": ^0.26.3
     "@backstage/core-plugin-api": ^1.9.2
-    "@types/react": ^16.13.1 || ^17.0.0
-    "@types/react-dom": ^18.2.19
+    "@types/react": 17.0.80
+    "@types/react-dom": 18.2.25
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-router-dom: 6.0.0-beta.0 || ^6.3.0
@@ -2573,7 +2573,7 @@ __metadata:
     "@testing-library/jest-dom": ^6.0.0
     "@testing-library/react": ^15.0.0
     "@types/react": ^16.13.1 || ^17.0.0 || ^18.0.0
-    "@types/react-dom": ^18.2.19
+    "@types/react-dom": 18.2.25
     canvas: ^2.11.2
     cross-fetch: ^4.0.0
     luxon: ^3.0.0

@@ -43,7 +43,7 @@
     "@backstage/dev-utils": "^1.0.31",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^15.0.0",
-    "@types/react": "^18.2.58",
+    "@types/react": "18.2.79",
     "canvas": "^2.11.2",
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0"

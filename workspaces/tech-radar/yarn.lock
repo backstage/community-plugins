@@ -2533,7 +2533,7 @@ __metadata:
     "@types/color": ^3.0.1
     "@types/d3-force": ^3.0.0
     "@types/react": ^16.13.1 || ^17.0.0 || ^18.0.0
-    "@types/react-dom": ^18.2.19
+    "@types/react-dom": 18.2.25
     canvas: ^2.11.2
     color: ^4.0.1
     d3-force: ^3.0.0

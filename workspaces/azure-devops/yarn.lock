@@ -2577,7 +2577,7 @@ __metadata:
     "@testing-library/react": ^15.0.0
     "@types/humanize-duration": ^3.18.1
     "@types/react": ^16.13.1 || ^17.0.0 || ^18.0.0
-    "@types/react-dom": ^18.2.19
+    "@types/react-dom": 18.2.25
     canvas: ^2.11.2
     humanize-duration: ^3.27.0
     luxon: ^3.0.0
