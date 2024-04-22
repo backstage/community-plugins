@@ -48,6 +48,7 @@ jobs:
     # prevent running towards forks and version packages
     if: github.repository == 'backstage/community-plugins' && github.event.pull_request.user.login != 'backstage-service' && needs.find-changed-workspaces.outputs.workspaces != '[]'
     runs-on: ubuntu-latest
+    needs: find-changed-workspaces
     strategy:
       matrix:
         workspace: ${{ fromJSON(needs.find-changed-workspaces.outputs.workspaces) }}
