@@ -32,7 +32,6 @@ Whenever a new changeset is introduced, a fresh "Version packages ($workspace_na
 $ yarn create-workspace
 ```
 
-
 ## The migration of plugins from the `backstage/backstage` monorepo
 
 The migration of plugins from the `backstage/backstage` monorepo to the `community-plugins` repository has been automated under the `community-cli` tool.
@@ -59,13 +58,11 @@ Looking through the `monorepo` we can expect the following workspaces:
 - `bazaar`
 - `bitrise`
 - `cicd-statistics`
-- `circleci`
 - `cloudbuild`
 - `code-climate`
 - `code-coverage`
 - `codescene`
 - `cost-insights`
-- `devtools`
 - `dynatrace`
 - `entity-feedback`
 - `entity-validation`
@@ -93,7 +90,6 @@ Looking through the `monorepo` we can expect the following workspaces:
 - `newrelic-dashboard`
 - `octopus-deploy`
 - `opencost`
-- `org`
 - `periskop`
 - `playlist`
 - `puppetdb`
@@ -105,8 +101,8 @@ Looking through the `monorepo` we can expect the following workspaces:
 - `stack-overflow`
 - `stackstorm`
 - `tech-insights`
+- `tech-radar`
 - `todo`
-- `user-settings`
 - `vault`
 - `xcmetrics`
 
