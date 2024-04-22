@@ -43,9 +43,9 @@
     "winston": "^3.2.1"
   },
   "devDependencies": {
-    "@backstage/backend-test-utils": "^0.3.7",
-    "@backstage/cli": "^0.26.3",
-    "@types/node-fetch": "^2.5.12"
+    "@backstage/backend-test-utils": "0.3.7",
+    "@backstage/cli": "0.26.3",
+    "@types/node-fetch": "2.6.11"
   },
   "configSchema": "config.d.ts"
 }

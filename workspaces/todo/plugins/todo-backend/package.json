@@ -49,8 +49,8 @@
     "yn": "^4.0.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.26.3",
-    "@backstage/repo-tools": "^0.8.0",
+    "@backstage/cli": "0.26.3",
+    "@backstage/repo-tools": "0.8.0",
     "@types/supertest": "^2.0.8",
     "supertest": "^6.1.3"
   }

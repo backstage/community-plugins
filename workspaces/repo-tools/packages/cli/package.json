@@ -49,7 +49,7 @@
     "ext": "ts"
   },
   "devDependencies": {
-    "@types/fs-extra": "^11.0.4",
-    "@types/inquirer": "^9.0.7"
+    "@types/fs-extra": "11.0.4",
+    "@types/inquirer": "9.0.7"
   }
 }

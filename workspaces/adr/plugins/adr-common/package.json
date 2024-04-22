@@ -40,6 +40,6 @@
     "luxon": "^3.0.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.26.3"
+    "@backstage/cli": "0.26.3"
   }
 }

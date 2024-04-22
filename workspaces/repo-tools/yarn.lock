@@ -2496,8 +2496,8 @@ __metadata:
     "@backstage/cli": ^0.26.2
     "@backstage/errors": ^1.2.4
     "@manypkg/get-packages": ^2.2.1
-    "@types/fs-extra": ^11.0.4
-    "@types/inquirer": ^9.0.7
+    "@types/fs-extra": 11.0.4
+    "@types/inquirer": 9.0.7
     chalk: ^4.1.2
     commander: ^12.0.0
     find-up: ^5.0.0
@@ -6704,7 +6704,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/fs-extra@npm:^11.0.4":
+"@types/fs-extra@npm:11.0.4":
   version: 11.0.4
   resolution: "@types/fs-extra@npm:11.0.4"
   dependencies:
@@ -6746,7 +6746,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/inquirer@npm:^9.0.7":
+"@types/inquirer@npm:9.0.7":
   version: 9.0.7
   resolution: "@types/inquirer@npm:9.0.7"
   dependencies:

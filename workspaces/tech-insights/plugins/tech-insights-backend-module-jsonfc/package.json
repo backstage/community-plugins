@@ -50,9 +50,9 @@
     "luxon": "^3.0.0"
   },
   "devDependencies": {
-    "@backstage/backend-test-utils": "^0.3.7",
-    "@backstage/cli": "^0.26.3",
-    "@types/lodash": "^4.14.151"
+    "@backstage/backend-test-utils": "0.3.7",
+    "@backstage/cli": "0.26.3",
+    "@types/lodash": "4.17.0"
   },
   "configSchema": "config.json"
 }
