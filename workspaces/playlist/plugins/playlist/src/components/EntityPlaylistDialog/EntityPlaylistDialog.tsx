@@ -41,6 +41,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import ClearButton from '@material-ui/icons/Clear';
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
