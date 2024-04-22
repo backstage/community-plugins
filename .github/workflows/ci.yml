@@ -38,6 +38,7 @@ jobs:
     name: Workspace ${{ matrix.workspace }}, CI step for node ${{ matrix.node-version }}
     runs-on: ubuntu-latest
     needs: find-changed-workspaces
+    if: ${{ needs.find-changed-workspaces.outputs.workspaces != '[]' }}
     strategy:
       matrix:
         workspace: ${{ fromJSON(needs.find-changed-workspaces.outputs.workspaces) }}
