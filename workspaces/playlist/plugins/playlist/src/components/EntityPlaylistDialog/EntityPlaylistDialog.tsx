@@ -20,6 +20,7 @@ import { alertApiRef, useApi, useRouteRef } from '@backstage/core-plugin-api';
 import {
   entityPresentationApiRef,
   useAsyncEntity,
+  EntityDisplayName,
 } from '@backstage/plugin-catalog-react';
 import { usePermission } from '@backstage/plugin-permission-react';
 import {
@@ -257,14 +258,20 @@ export const EntityPlaylistDialog = (props: EntityPlaylistDialogProps) => {
                     >
                       <ListItemText
                         primary={list.name}
-                        secondary={`by ${
-                          entityPresentationApi.forEntity(
-                            stringifyEntityRef(parseEntityRef(list.owner)),
-                            { defaultKind: 'group' },
-                          ).snapshot.primaryTitle
-                        } · ${list.entities} entities ${
-                          !list.public ? '· Private' : ''
-                        }`}
+                        secondary={
+                          <Typography variant="body2" color="textSecondary">
+                            by{' '}
+                            <EntityDisplayName
+                              hideIcon
+                              disableTooltip
+                              defaultKind="group"
+                              entityRef={parseEntityRef(list.owner)}
+                            />
+                            {' · '}
+                            {list.entities} entities{' '}
+                            {!list.public ? '· Private' : ''}
+                          </Typography>
+                        }
                       />
                     </ListItem>
                   </React.Fragment>
