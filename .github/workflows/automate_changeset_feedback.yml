@@ -37,7 +37,7 @@ jobs:
       - uses: backstage/actions/changeset-feedback@v0.6.7
         name: Generate feedback
         with:
-          diff-ref: 'origin/master'
+          diff-ref: 'origin/main'
           marker: <!-- changeset-feedback -->
           issue-number: ${{ github.event.pull_request.number }}
           bot-username: backstage-goalie[bot]
