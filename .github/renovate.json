@@ -5,9 +5,9 @@
     ":rebaseStalePrs",
     "group:linters",
     "group:test",
-    ":preserveSemverRanges",
-    ":pinOnlyDevDependencies"
+    ":preserveSemverRanges"
   ],
+  "ignorePresets": [":pinDevDependencies", ":pinDigest", "docker:pinDigests"],
   "labels": ["kind/dependency upgrade"],
   "npm": {
     "minimumReleaseAge": "3 days"
