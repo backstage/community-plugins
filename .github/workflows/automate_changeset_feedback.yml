@@ -42,7 +42,7 @@ jobs:
         id: find-changed-workspaces
         run: node ./scripts/ci/list-workspaces-with-changes.js
         env:
-          COMMIT_SHA_BEFORE: '${{ github.base_ref }}'
+          COMMIT_SHA_BEFORE: 'origin/${{ github.base_ref }}'
 
   feedback:
     # prevent running towards forks and version packages
