@@ -2527,14 +2527,14 @@ __metadata:
     "@backstage/integration": ^1.10.0
     "@types/body-parser-xml": ^2.0.2
     "@types/express": ^4.17.6
-    "@types/supertest": ^2.0.8
+    "@types/supertest": 2.0.16
     "@types/uuid": ^9.0.0
     body-parser: ^1.20.0
     body-parser-xml: ^2.0.5
     express: ^4.17.1
     express-promise-router: ^4.1.0
     knex: ^3.0.0
-    supertest: ^6.1.6
+    supertest: 6.3.4
     uuid: ^9.0.0
     xml2js: ^0.6.0
     yn: ^4.0.0
@@ -2556,9 +2556,9 @@ __metadata:
     "@material-ui/icons": ^4.9.1
     "@material-ui/lab": 4.0.0-alpha.61
     "@material-ui/styles": ^4.11.0
-    "@testing-library/dom": ^10.0.0
-    "@testing-library/jest-dom": ^6.0.0
-    "@testing-library/react": ^15.0.0
+    "@testing-library/dom": 10.0.0
+    "@testing-library/jest-dom": 6.4.2
+    "@testing-library/react": 15.0.2
     "@types/highlightjs": ^10.1.0
     "@types/lodash": ^4.14.151
     "@types/react": ^16.13.1 || ^17.0.0 || ^18.0.0
@@ -7268,7 +7268,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/dom@npm:^10.0.0":
+"@testing-library/dom@npm:10.0.0, @testing-library/dom@npm:^10.0.0":
   version: 10.0.0
   resolution: "@testing-library/dom@npm:10.0.0"
   dependencies:
@@ -7284,7 +7284,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/jest-dom@npm:^6.0.0":
+"@testing-library/jest-dom@npm:6.4.2":
   version: 6.4.2
   resolution: "@testing-library/jest-dom@npm:6.4.2"
   dependencies:
@@ -7317,7 +7317,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/react@npm:^15.0.0":
+"@testing-library/react@npm:15.0.2":
   version: 15.0.2
   resolution: "@testing-library/react@npm:15.0.2"
   dependencies:
@@ -8191,7 +8191,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/supertest@npm:^2.0.8":
+"@types/supertest@npm:2.0.16":
   version: 2.0.16
   resolution: "@types/supertest@npm:2.0.16"
   dependencies:
@@ -23015,7 +23015,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"supertest@npm:^6.1.6":
+"supertest@npm:6.3.4":
   version: 6.3.4
   resolution: "supertest@npm:6.3.4"
   dependencies:

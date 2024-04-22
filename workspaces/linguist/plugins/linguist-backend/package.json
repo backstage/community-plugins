@@ -59,10 +59,10 @@
     "@backstage/cli": "^0.26.3",
     "@types/fs-extra": "^11.0.0",
     "@types/node-fetch": "^2.5.12",
-    "@types/supertest": "^2.0.8",
+    "@types/supertest": "2.0.16",
     "@types/uuid": "^9.0.0",
     "js-yaml": "^4.1.0",
-    "supertest": "^6.2.4"
+    "supertest": "6.3.4"
   },
   "configSchema": "config.d.ts"
 }

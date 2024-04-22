@@ -2522,10 +2522,10 @@ __metadata:
     "@backstage/core-plugin-api": ^1.9.2
     "@backstage/dev-utils": ^1.0.31
     "@backstage/frontend-plugin-api": ^0.6.4
-    "@testing-library/dom": ^10.0.0
-    "@testing-library/jest-dom": ^6.0.0
-    "@testing-library/react": ^15.0.0
-    "@types/jest": ^29.0.0
+    "@testing-library/dom": 10.0.0
+    "@testing-library/jest-dom": 6.4.2
+    "@testing-library/react": 15.0.2
+    "@types/jest": 29.5.12
     "@types/react": ^16.13.1 || ^17.0.0
     "@types/react-dom": ^18.2.19
     canvas: ^2.11.2
@@ -2550,9 +2550,9 @@ __metadata:
     "@backstage/core-plugin-api": ^1.9.2
     "@backstage/dev-utils": ^1.0.31
     "@backstage/frontend-plugin-api": ^0.6.4
-    "@testing-library/dom": ^10.0.0
-    "@testing-library/jest-dom": ^6.0.0
-    "@testing-library/react": ^15.0.0
+    "@testing-library/dom": 10.0.0
+    "@testing-library/jest-dom": 6.4.2
+    "@testing-library/react": 15.0.2
     "@types/react": ^16.13.1 || ^17.0.0
     "@types/react-dom": ^18.2.19
     canvas: ^2.11.2
@@ -2578,8 +2578,8 @@ __metadata:
     "@backstage/dev-utils": ^1.0.31
     "@backstage/frontend-plugin-api": ^0.6.4
     "@newrelic/browser-agent": ^1.236.0
-    "@testing-library/jest-dom": ^6.0.0
-    "@testing-library/react": ^15.0.0
+    "@testing-library/jest-dom": 6.4.2
+    "@testing-library/react": 15.0.2
     "@types/react": ^18.2.58
     canvas: ^2.11.2
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
@@ -7238,7 +7238,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/dom@npm:^10.0.0":
+"@testing-library/dom@npm:10.0.0, @testing-library/dom@npm:^10.0.0":
   version: 10.0.0
   resolution: "@testing-library/dom@npm:10.0.0"
   dependencies:
@@ -7254,7 +7254,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/jest-dom@npm:^6.0.0":
+"@testing-library/jest-dom@npm:6.4.2":
   version: 6.4.2
   resolution: "@testing-library/jest-dom@npm:6.4.2"
   dependencies:
@@ -7287,7 +7287,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/react@npm:^15.0.0":
+"@testing-library/react@npm:15.0.2":
   version: 15.0.2
   resolution: "@testing-library/react@npm:15.0.2"
   dependencies:
@@ -7639,7 +7639,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jest@npm:^29.0.0, @types/jest@npm:^29.5.11":
+"@types/jest@npm:29.5.12, @types/jest@npm:^29.5.11":
   version: 29.5.12
   resolution: "@types/jest@npm:29.5.12"
   dependencies:

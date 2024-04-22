@@ -2523,11 +2523,11 @@ __metadata:
     "@backstage/errors": ^1.2.4
     "@types/express": "*"
     "@types/node-fetch": ^2.5.12
-    "@types/supertest": ^2.0.8
+    "@types/supertest": 2.0.16
     express: ^4.17.1
     express-promise-router: ^4.1.0
     node-fetch: ^2.6.7
-    supertest: ^6.2.4
+    supertest: 6.3.4
     yn: ^4.0.0
   languageName: unknown
   linkType: soft
@@ -2544,9 +2544,9 @@ __metadata:
     "@backstage/plugin-catalog-react": ^1.11.3
     "@material-ui/core": ^4.9.13
     "@material-ui/icons": ^4.9.1
-    "@testing-library/dom": ^10.0.0
-    "@testing-library/jest-dom": ^6.0.0
-    "@testing-library/react": ^15.0.0
+    "@testing-library/dom": 10.0.0
+    "@testing-library/jest-dom": 6.4.2
+    "@testing-library/react": 15.0.2
     "@types/react": ^16.13.1 || ^17.0.0 || ^18.0.0
     "@types/react-dom": ^18.2.19
     canvas: ^2.11.2
@@ -7192,7 +7192,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/dom@npm:^10.0.0":
+"@testing-library/dom@npm:10.0.0, @testing-library/dom@npm:^10.0.0":
   version: 10.0.0
   resolution: "@testing-library/dom@npm:10.0.0"
   dependencies:
@@ -7208,7 +7208,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/jest-dom@npm:^6.0.0":
+"@testing-library/jest-dom@npm:6.4.2":
   version: 6.4.2
   resolution: "@testing-library/jest-dom@npm:6.4.2"
   dependencies:
@@ -7241,7 +7241,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/react@npm:^15.0.0":
+"@testing-library/react@npm:15.0.2":
   version: 15.0.2
   resolution: "@testing-library/react@npm:15.0.2"
   dependencies:
@@ -7978,7 +7978,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/supertest@npm:^2.0.8":
+"@types/supertest@npm:2.0.16":
   version: 2.0.16
   resolution: "@types/supertest@npm:2.0.16"
   dependencies:
@@ -22280,7 +22280,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"supertest@npm:^6.2.4":
+"supertest@npm:6.3.4":
   version: 6.3.4
   resolution: "supertest@npm:6.3.4"
   dependencies:
