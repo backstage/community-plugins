@@ -89,7 +89,7 @@ export type AdrCollatorFactoryOptions = {
   /**
    * Token Manager
    */
-  tokenManager: TokenManager;
+  tokenManager?: TokenManager;
   /**
    * Auth Service
    */

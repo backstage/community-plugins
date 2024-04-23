@@ -32,7 +32,7 @@ export type AdrCollatorFactoryOptions = {
   logger: LoggerService;
   parser?: AdrParser;
   reader: UrlReader;
-  tokenManager: TokenManager;
+  tokenManager?: TokenManager;
   auth?: AuthService;
 };
 
