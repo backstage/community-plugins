@@ -1,5 +1,11 @@
 # @backstage-community/plugin-adr-backend
 
+## 0.4.16
+
+### Patch Changes
+
+- 6b9305e: Allow the `tokenManager` parameter to be optional when instantiating collator
+
 ## 0.4.15
 
 ### Patch Changes
