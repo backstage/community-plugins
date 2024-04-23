@@ -34,6 +34,7 @@ export const codescenePlugin: BackstagePlugin<
       projectId: string;
     }>;
   },
+  {},
   {}
 >;
 

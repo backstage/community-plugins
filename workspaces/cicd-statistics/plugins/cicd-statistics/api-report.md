@@ -85,6 +85,7 @@ export const cicdStatisticsPlugin: BackstagePlugin<
   {
     entityContent: RouteRef<undefined>;
   },
+  {},
   {}
 >;
 

@@ -327,6 +327,7 @@ const costInsightsPlugin: BackstagePlugin<
     growthAlerts: RouteRef<undefined>;
     unlabeledDataflowAlerts: RouteRef<undefined>;
   },
+  {},
   {}
 >;
 export { costInsightsPlugin };

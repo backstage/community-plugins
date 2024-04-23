@@ -41,6 +41,7 @@ export const newRelicDashboardPlugin: BackstagePlugin<
   {
     root: RouteRef<undefined>;
   },
+  {},
   {}
 >;
 
