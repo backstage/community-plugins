@@ -31,6 +31,7 @@ export const fossaPlugin: BackstagePlugin<
   {
     fossaOverview: RouteRef<undefined>;
   },
+  {},
   {}
 >;
 ```

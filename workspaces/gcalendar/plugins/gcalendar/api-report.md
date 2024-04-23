@@ -51,6 +51,7 @@ export const gcalendarPlugin: BackstagePlugin<
   {
     root: RouteRef<undefined>;
   },
+  {},
   {}
 >;
 

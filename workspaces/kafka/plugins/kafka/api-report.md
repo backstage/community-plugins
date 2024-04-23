@@ -28,6 +28,7 @@ const kafkaPlugin: BackstagePlugin<
   {
     entityContent: RouteRef<undefined>;
   },
+  {},
   {}
 >;
 export { kafkaPlugin };

@@ -18,6 +18,7 @@ export const allurePlugin: BackstagePlugin<
   {
     root: RouteRef<undefined>;
   },
+  {},
   {}
 >;
 

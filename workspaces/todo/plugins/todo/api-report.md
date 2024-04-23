@@ -85,6 +85,7 @@ export const todoPlugin: BackstagePlugin<
   {
     entityContent: RouteRef<undefined>;
   },
+  {},
   {}
 >;
 ```
