@@ -49,6 +49,7 @@ const lighthousePlugin: BackstagePlugin<
     root: RouteRef<undefined>;
     entityContent: RouteRef<undefined>;
   },
+  {},
   {}
 >;
 export { lighthousePlugin };

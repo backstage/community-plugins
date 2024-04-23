@@ -85,8 +85,7 @@ jobs:
         run: yarn prettier:check
 
       - name: check api reports and generate API reference
-        # check flags
-        run: yarn backstage-repo-tools api-reports --allow-warnings -o ae-wrong-input-file-type --validate-release-tags build:api-reports:only --ci
+        run: yarn build:api-reports:only --ci
 
       - name: build all packages
         run: yarn backstage-cli repo build --all

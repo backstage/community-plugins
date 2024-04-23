@@ -22,6 +22,7 @@ export const apacheAirflowPlugin: BackstagePlugin<
   {
     root: RouteRef<undefined>;
   },
+  {},
   {}
 >;
 ```
