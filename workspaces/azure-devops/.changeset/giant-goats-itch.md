@@ -2,4 +2,4 @@
 '@backstage-community/plugin-azure-devops-backend': minor
 ---
 
-Fixed bug in plugin-azure-devops-backend where proper error was not thrown when gitRepository was not found.
+Fixed a bug where proper error was not thrown when the repository was not found.
