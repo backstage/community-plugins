@@ -9,6 +9,11 @@
   ],
   "ignorePresets": [":pinDevDependencies", ":pinDigest", "docker:pinDigests"],
   "labels": ["dependencies"],
+  "osvVulnerabilityAlerts": true,
+  "vulnerabilityAlerts": {
+    "enabled":true,
+    "labels": ["dependencies", "security"]
+  },
   "npm": {
     "minimumReleaseAge": "3 days"
   },
