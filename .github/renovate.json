@@ -8,7 +8,7 @@
     ":preserveSemverRanges"
   ],
   "ignorePresets": [":pinDevDependencies", ":pinDigest", "docker:pinDigests"],
-  "labels": ["kind/dependency upgrade"],
+  "labels": ["dependencies"],
   "npm": {
     "minimumReleaseAge": "3 days"
   },
