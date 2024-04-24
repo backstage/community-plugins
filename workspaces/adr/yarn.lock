@@ -2517,6 +2517,7 @@ __metadata:
   resolution: "@backstage-community/plugin-adr-backend@workspace:plugins/adr-backend"
   dependencies:
     "@backstage-community/plugin-adr-common": "workspace:^"
+    "@backstage-community/search-backend-module-adr": "workspace:^"
     "@backstage/backend-common": ^0.23.3
     "@backstage/backend-plugin-api": ^0.7.0
     "@backstage/catalog-client": ^1.6.5
@@ -2532,7 +2533,6 @@ __metadata:
     express: ^4.17.1
     express-promise-router: ^4.1.0
     luxon: ^3.0.0
-    marked: ^12.0.0
     node-fetch: ^2.6.5
     supertest: ^6.1.3
     yn: ^4.0.0
@@ -2549,6 +2549,7 @@ __metadata:
     "@backstage/plugin-search-common": ^1.2.13
     front-matter: ^4.0.2
     luxon: ^3.0.0
+    marked: ^12.0.0
   languageName: unknown
   linkType: soft
 
@@ -2588,7 +2589,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@backstage-community/search-backend-module-adr@workspace:plugins/search-backend-module-adr":
+"@backstage-community/search-backend-module-adr@workspace:^, @backstage-community/search-backend-module-adr@workspace:plugins/search-backend-module-adr":
   version: 0.0.0-use.local
   resolution: "@backstage-community/search-backend-module-adr@workspace:plugins/search-backend-module-adr"
   dependencies:
