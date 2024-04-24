@@ -11,7 +11,7 @@
   "labels": ["dependencies"],
   "osvVulnerabilityAlerts": true,
   "vulnerabilityAlerts": {
-    "enabled":true,
+    "enabled": true,
     "labels": ["dependencies", "security"]
   },
   "npm": {
