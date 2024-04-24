@@ -34,7 +34,7 @@
   "dependencies": {
     "@backstage/core-components": "^0.14.4",
     "@backstage/core-plugin-api": "^1.9.2",
-    "@date-io/luxon": "1.x",
+    "@date-io/luxon": "3.x",
     "@material-ui/core": "^4.9.13",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/pickers": "^3.3.10",
