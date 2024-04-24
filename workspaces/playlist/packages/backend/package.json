@@ -1,0 +1,43 @@
+{
+  "name": "backend",
+  "version": "0.0.0",
+  "main": "dist/index.cjs.js",
+  "types": "src/index.ts",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/playlist/packages/backend"
+  },
+  "backstage": {
+    "role": "backend"
+  },
+  "scripts": {
+    "start": "backstage-cli package start",
+    "build": "backstage-cli package build",
+    "lint": "backstage-cli package lint",
+    "test": "backstage-cli package test",
+    "clean": "backstage-cli package clean"
+  },
+  "dependencies": {
+    "@backstage-community/plugin-playlist-backend": "workspace:^",
+    "@backstage/backend-defaults": "^0.2.17",
+    "@backstage/backend-plugin-api": "^0.6.17",
+    "@backstage/plugin-app-backend": "^0.3.65",
+    "@backstage/plugin-auth-backend": "^0.22.4",
+    "@backstage/plugin-auth-backend-module-guest-provider": "^0.1.3",
+    "@backstage/plugin-auth-node": "^0.4.12",
+    "@backstage/plugin-catalog-backend": "^1.21.1",
+    "@backstage/plugin-permission-backend": "^0.5.41",
+    "@backstage/plugin-permission-common": "^0.7.13",
+    "@backstage/plugin-permission-node": "^0.7.28",
+    "@backstage/plugin-search-backend": "^1.5.7",
+    "@backstage/plugin-search-backend-module-catalog": "^0.1.22"
+  },
+  "devDependencies": {
+    "@backstage/cli": "^0.26.3"
+  },
+  "files": [
+    "dist"
+  ]
+}
