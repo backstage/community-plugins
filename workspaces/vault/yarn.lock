@@ -2518,6 +2518,7 @@ __metadata:
   dependencies:
     "@backstage-community/plugin-vault-node": "workspace:^"
     "@backstage/backend-common": ^0.23.3
+    "@backstage/backend-defaults": ^0.4.1
     "@backstage/backend-plugin-api": ^0.7.0
     "@backstage/backend-tasks": ^0.5.27
     "@backstage/backend-test-utils": ^0.4.4
@@ -2726,7 +2727,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/backend-defaults@npm:^0.4.0":
+"@backstage/backend-defaults@npm:^0.4.0, @backstage/backend-defaults@npm:^0.4.1":
   version: 0.4.1
   resolution: "@backstage/backend-defaults@npm:0.4.1"
   dependencies:

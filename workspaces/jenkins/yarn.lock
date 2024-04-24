@@ -2761,6 +2761,7 @@ __metadata:
   dependencies:
     "@backstage-community/plugin-jenkins-common": "workspace:^"
     "@backstage/backend-common": ^0.23.3
+    "@backstage/backend-defaults": ^0.4.1
     "@backstage/backend-plugin-api": ^0.7.0
     "@backstage/backend-test-utils": ^0.4.4
     "@backstage/catalog-client": ^1.6.5
