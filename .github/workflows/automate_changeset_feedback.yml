@@ -19,9 +19,9 @@ permissions:
 jobs:
   changeset-feedback:
     name: Generate Changeset Feedback
+      # prevent running towards forks and version packages
+    if: github.repository == 'backstage/community-plugins' && github.event.pull_request.user.login != 'backstage-service'
     runs-on: ubuntu-latest
-    outputs:
-      workspaces: ${{ steps.find-changed-workspaces.outputs.workspaces }}
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@63c24ba6bd7ba022e95695ff85de572c04a18142 # v2.7.0
@@ -33,14 +33,13 @@ jobs:
           # Fetch the commit that's merged into the base rather than the target ref
           # This will let us diff only the contents of the PR, without fetching more history
           ref: 'refs/pull/${{ github.event.pull_request.number }}/merge'
+      - name: fetch base
+        run: git fetch --depth 1 origin ${{ github.base_ref }}
 
-      - name: Fetch previous commit for check
-        run: git fetch origin '${{ github.base_ref }}'
-
-      - uses: backstage/actions/changeset-feedback@v0.6.8 # v0.6.7
+      - uses: backstage/actions/changeset-feedback@v0.6.8
         name: Generate feedback
         with:
-          diff-ref: ${{ github.base_ref }}
+          diff-ref: 'origin/main'
           marker: <!-- changeset-feedback -->
           issue-number: ${{ github.event.pull_request.number }}
           bot-username: backstage-goalie[bot]
