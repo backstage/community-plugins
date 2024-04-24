@@ -2,7 +2,7 @@
 
 The `backstage/community-plugins` repository is designed as a collaborative space for Backstage community members to host and manage their plugins for Backstage. This repository will provide plugin maintainers with tools for plugin management and publication. By contributing a plugin to this repository, maintainers agree to adhere to specific guidelines and a standardized release process detailed in this guide.
 
-If you have questions or feedback regarding Community Plugins, you can visit the [Community Plugins #general channel][(](https://discord.com/channels/687207715902193673/1211692810294788126)) in the Backstage [Discord](https://discord.gg/backstage-687207715902193673).
+If you have questions or feedback regarding Community Plugins, you can visit the [Community Plugins #general channel](https://discord.com/channels/687207715902193673/1211692810294788126) in the Backstage [Discord](https://discord.gg/backstage-687207715902193673).
 
 ## Table of Contents
 
