@@ -7,26 +7,41 @@
     "group:test",
     ":preserveSemverRanges"
   ],
-  "ignorePresets": [":pinDevDependencies", ":pinDigest", "docker:pinDigests"],
-  "labels": ["dependencies"],
-  "postUpdateOptions": ["yarnDedupeHighest"],
+  "ignorePresets": [
+    ":pinDevDependencies",
+    ":pinDigest",
+    "docker:pinDigests"
+  ],
+  "labels": [
+    "dependencies"
+  ],
+  "postUpdateOptions": [
+    "yarnDedupeHighest"
+  ],
   "osvVulnerabilityAlerts": true,
   "vulnerabilityAlerts": {
     "enabled": true,
-    "labels": ["dependencies", "security"]
+    "labels": [
+      "dependencies",
+      "security"
+    ]
   },
   "npm": {
     "minimumReleaseAge": "3 days"
   },
   "packageRules": [
     {
-      "matchManagers": ["github-actions"],
+      "matchManagers": [
+        "github-actions"
+      ],
       "groupName": "GitHub Actions"
     }
   ],
-  "ignorePaths": ["**/dist-dynamic/**"],
+  "ignorePaths": [
+    "**/dist-dynamic/**"
+  ],
   "platform": "github",
-  "includeForks": false,
+  "forkProcessing": "disabled",
   "repositories": [
     "backstage/community-plugins"
   ]
