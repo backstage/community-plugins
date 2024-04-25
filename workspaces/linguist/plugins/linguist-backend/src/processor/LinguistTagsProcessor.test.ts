@@ -110,6 +110,25 @@ describe('LinguistTagsProcessor', () => {
     });
   });
 
+  test('Should use tag prefix if provided', async () => {
+    const processor = buildProcessor({ tagPrefix: 'lang:' });
+
+    mockFetchImplementation();
+    const entity = baseEntity();
+    await processor.preProcessEntity(entity, null, null, null, cache);
+    expect(mockedFetch).toHaveBeenCalledTimes(1);
+    expect(entity.metadata.tags).toStrictEqual([
+      'lang:c++',
+      'lang:asp-dot-net',
+      'lang:java',
+      'lang:common-lisp',
+    ]);
+
+    entity.metadata.tags?.forEach(tag => {
+      expect(isValidTag(tag)).toBeTruthy();
+    });
+  });
+
   test('Should not duplicate existing tags', async () => {
     const processor = buildProcessor({});
 
@@ -332,6 +351,7 @@ function buildProcessor(options: Partial<LinguistTagsProcessorOptions>) {
         languageTypes: options.languageTypes,
         languageMap: options.languageMap,
         cacheTTL: options.cacheTTL,
+        tagPrefix: options.tagPrefix,
       },
     },
   });
