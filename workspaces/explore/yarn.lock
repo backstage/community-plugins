@@ -2512,11 +2512,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage-community/plugin-explore-backend@workspace:plugins/explore-backend":
+"@backstage-community/plugin-explore-backend@workspace:^, @backstage-community/plugin-explore-backend@workspace:plugins/explore-backend":
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-explore-backend@workspace:plugins/explore-backend"
   dependencies:
     "@backstage-community/plugin-explore-common": "workspace:^"
+    "@backstage-community/plugin-explore-node": "workspace:^"
     "@backstage/backend-common": ^0.21.7
     "@backstage/backend-plugin-api": ^0.6.17
     "@backstage/backend-test-utils": ^0.3.7
@@ -2541,6 +2542,16 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-explore-common@workspace:plugins/explore-common"
   dependencies:
+    "@backstage/cli": ^0.26.3
+  languageName: unknown
+  linkType: soft
+
+"@backstage-community/plugin-explore-node@workspace:^, @backstage-community/plugin-explore-node@workspace:plugins/explore-node":
+  version: 0.0.0-use.local
+  resolution: "@backstage-community/plugin-explore-node@workspace:plugins/explore-node"
+  dependencies:
+    "@backstage-community/plugin-explore-backend": "workspace:^"
+    "@backstage/backend-plugin-api": ^0.6.17
     "@backstage/cli": ^0.26.3
   languageName: unknown
   linkType: soft
