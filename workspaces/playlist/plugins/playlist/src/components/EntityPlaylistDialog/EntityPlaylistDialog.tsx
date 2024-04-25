@@ -18,7 +18,6 @@ import { parseEntityRef, stringifyEntityRef } from '@backstage/catalog-model';
 import { ResponseErrorPanel } from '@backstage/core-components';
 import { alertApiRef, useApi, useRouteRef } from '@backstage/core-plugin-api';
 import {
-  entityPresentationApiRef,
   useAsyncEntity,
   EntityDisplayName,
 } from '@backstage/plugin-catalog-react';
@@ -87,7 +86,6 @@ export const EntityPlaylistDialog = (props: EntityPlaylistDialogProps) => {
   const { entity } = useAsyncEntity();
   const alertApi = useApi(alertApiRef);
   const playlistApi = useApi(playlistApiRef);
-  const entityPresentationApi = useApi(entityPresentationApiRef);
   const playlistRoute = useRouteRef(playlistRouteRef);
   const [search, setSearch] = useState('');
   const [openEditDialog, setOpenEditDialog] = useState(false);
