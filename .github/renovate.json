@@ -9,6 +9,7 @@
   ],
   "ignorePresets": [":pinDevDependencies", ":pinDigest", "docker:pinDigests"],
   "labels": ["dependencies"],
+  "postUpdateOptions": ["yarnDedupeHighest"],
   "osvVulnerabilityAlerts": true,
   "vulnerabilityAlerts": {
     "enabled": true,
