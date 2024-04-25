@@ -24,5 +24,10 @@
       "groupName": "GitHub Actions"
     }
   ],
-  "ignorePaths": ["**/dist-dynamic/**"]
+  "ignorePaths": ["**/dist-dynamic/**"],
+  "platform": "github",
+  "includeForks": false,
+  "repositories": [
+    "backstage/community-plugins"
+  ]
 }
