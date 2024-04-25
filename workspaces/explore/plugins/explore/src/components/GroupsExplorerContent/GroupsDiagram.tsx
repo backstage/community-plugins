@@ -168,6 +168,7 @@ function RenderNode(props: DependencyGraphTypes.RenderNodeProps<any>) {
  */
 export function GroupsDiagram(props: {
   direction?: DependencyGraphTypes.Direction;
+  hideChildren?: boolean;
 }) {
   const nodes = new Array<{
     id: string;
@@ -209,17 +210,19 @@ export function GroupsDiagram(props: {
   for (const catalogItem of catalogResponse?.items || []) {
     const currentItemId = stringifyEntityRef(catalogItem);
 
-    nodes.push({
-      id: stringifyEntityRef(catalogItem),
-      kind: catalogItem.kind,
-      name: '',
-    });
-
     // Edge to parent
     const catalogItemRelations_childOf = getEntityRelations(
       catalogItem,
       RELATION_CHILD_OF,
     );
+
+    if (props.hideChildren && catalogItemRelations_childOf.length) continue;
+
+    nodes.push({
+      id: stringifyEntityRef(catalogItem),
+      kind: catalogItem.kind,
+      name: '',
+    });
 
     // if no parent is found, link the node to the root
     if (catalogItemRelations_childOf.length === 0) {
