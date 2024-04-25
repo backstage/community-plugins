@@ -1,0 +1,32 @@
+name: Automate Renovate changeset
+on:
+  pull_request_target:
+    paths:
+      - '.github/workflows/automate_renovate_changesets.yml'
+      - '**/yarn.lock'
+
+jobs:
+  generate-changeset:
+    runs-on: ubuntu-latest
+    if: github.actor == 'renovate[bot]' && github.repository == 'backstage/community-plugins'
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@63c24ba6bd7ba022e95695ff85de572c04a18142 # v2.7.0
+        with:
+          egress-policy: audit
+
+      - name: Checkout
+        uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f # v4.1.3
+        with:
+          fetch-depth: 2
+          ref: ${{ github.head_ref }}
+          token: ${{ secrets.GH_SERVICE_ACCOUNT_TOKEN }}
+      - name: Configure Git
+        run: |
+          git config --global user.email noreply@backstage.io
+          git config --global user.name 'Github changeset workflow'
+
+      - name: Generate feedback
+        uses: backstage/actions/renovate-changesets@v0.6.9
+        with:
+          multiple-workspaces: true
