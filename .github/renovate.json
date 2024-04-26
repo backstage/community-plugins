@@ -27,6 +27,7 @@
   "ignorePaths": ["**/dist-dynamic/**"],
   "platform": "github",
   "includeForks": false,
+  "dryRun": "full",  
   "repositories": [
     "backstage/community-plugins"
   ]
