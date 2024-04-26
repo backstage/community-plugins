@@ -19,7 +19,7 @@ permissions:
 jobs:
   changeset-feedback:
     name: Generate Changeset Feedback
-      # prevent running towards forks and version packages
+    # prevent running towards forks and version packages
     if: github.repository == 'backstage/community-plugins' && github.event.pull_request.user.login != 'backstage-service'
     runs-on: ubuntu-latest
     steps:
