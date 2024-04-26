@@ -1,0 +1,5 @@
+{
+  "platform": "github",
+  "includeForks": false,
+  "repositories": ["backstage/community-plugins"]
+}

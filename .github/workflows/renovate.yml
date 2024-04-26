@@ -69,7 +69,7 @@ jobs:
 
       - uses: renovatebot/github-action@v40.1.10
         with:
-          configurationFile: .github/renovate.json
+          configurationFile: .github/renovate-action.json
           renovate-version: full
           token: ${{ secrets.GH_SERVICE_ACCOUNT_TOKEN }}
         env:
