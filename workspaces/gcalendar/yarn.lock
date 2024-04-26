@@ -2539,7 +2539,7 @@ __metadata:
     dompurify: ^3.0.0
     lodash: ^4.17.21
     luxon: ^3.0.0
-    material-ui-popup-state: ^1.9.3
+    material-ui-popup-state: ^5.0.0
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-router-dom: 6.0.0-beta.0 || ^6.3.0
@@ -16825,6 +16825,22 @@ __metadata:
     "@material-ui/core": ^4.0.0 || ^5.0.0-beta
     react: ^15.0.0 || ^16.0.0 || ^17.0.0
   checksum: 0acd73b54afec02072e9b401738eb1c8832fd90771efe9894220778cc6f6d89f60f3902fdeb109a4c037b19a26bcf5b77a60a79fcaa024ddf67224bbee466530
+  languageName: node
+  linkType: hard
+
+"material-ui-popup-state@npm:^5.0.0":
+  version: 5.1.0
+  resolution: "material-ui-popup-state@npm:5.1.0"
+  dependencies:
+    "@babel/runtime": ^7.20.6
+    "@types/prop-types": ^15.7.3
+    "@types/react": ^18.0.26
+    classnames: ^2.2.6
+    prop-types: ^15.7.2
+  peerDependencies:
+    "@mui/material": ^5.0.0
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0
+  checksum: b19dc78b680949f03191d68845ba81196e54d16f5f0d06d285b3d96610a80d917238ea923f96a041610cb17614568283b6c68d7f54ec6ff8fa500d47fef5c8aa
   languageName: node
   linkType: hard
 
