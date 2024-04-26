@@ -53,7 +53,7 @@ jobs:
           app-id: ${{ secrets.BACKSTAGE_GOALIE_APPLICATION_ID }}
           private-key: ${{ secrets.BACKSTAGE_GOALIE_PRIVATE_KEY }}
           owner: ${{ github.repository_owner }}
-          repository: ${{ github.event.repository.name }}
+          repositories: ${{ github.event.repository.name }}
         
       # Using tar to compress and extract the archive isn't strictly necessary, but it can improve
       # performance significantly when uploading artifacts with lots of files.
