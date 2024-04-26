@@ -22,23 +22,7 @@
     {
       "matchManagers": ["github-actions"],
       "groupName": "GitHub Actions"
-    },
-    {
-      "description": "lockFileMaintenance",
-      "matchUpdateTypes": [
-        "pin",
-        "digest",
-        "patch",
-        "minor",
-        "major",
-        "lockFileMaintenance"
-      ],
-      "dependencyDashboardApproval": false,
-      "stabilityDays": 0
     }
   ],
-  "ignorePaths": ["**/dist-dynamic/**"],
-  "platform": "github",
-  "includeForks": false,
-  "repositories": ["backstage/community-plugins"]
+  "ignorePaths": ["**/dist-dynamic/**"]
 }
