@@ -2,4 +2,4 @@
 '@backstage-community/plugin-playlist': patch
 ---
 
-`EntityPlaylistDialog` now uses `EntityDisplayName` to display playlist owner Entity
+`EntityPlaylistDialog` now uses `EntityDisplayName` to display playlist owner Entity.
