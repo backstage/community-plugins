@@ -184,6 +184,8 @@ can be customized to provide tools from any source. For example you could create
 a `CustomExploreToolProvider` that queries an internal for tools in your
 `packages/backend/src/plugins/explore.ts` file.
 
+Old Backend system:
+
 ```ts
 import {
   createRouter,
@@ -222,4 +224,42 @@ export default async function createPlugin(
     toolProvider: new CustomExploreToolProvider(),
   });
 }
+```
+
+New Backend system:
+
+```ts
+// packages/backend/src/modules/exploreToolProvider.ts
+
+import { createBackendModule } from '@backstage/backend-plugin-api';
+import { exploreToolProviderExtensionPoint } from '@backstage-community/plugin-explore-node';
+import { ExploreTool } from '@backstage-community/plugin-explore-common';
+import { StaticExploreToolProvider } from '@backstage-community/plugin-explore-backend';
+
+const exploreTools: ExploreTool[] = [
+  {
+    title: 'New Relic',
+    description: 'new relic plugin',
+    url: '/newrelic',
+    image: 'https://i.imgur.com/L37ikrX.jpg',
+    tags: ['newrelic', 'proxy', 'nerdGraph'],
+  },
+];
+
+export default createBackendModule({
+  pluginId: 'explore',
+  moduleId: 'exploreModuleToolProvider',
+  register(env) {
+    env.registerInit({
+      deps: {
+        exploreToolProvider: exploreToolProviderExtensionPoint,
+      },
+      async init({ exploreToolProvider }) {
+        exploreToolProvider.setToolProvider(
+          StaticExploreToolProvider.fromData(exploreTools),
+        );
+      },
+    });
+  },
+});
 ```
