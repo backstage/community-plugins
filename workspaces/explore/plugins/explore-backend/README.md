@@ -229,7 +229,7 @@ export default async function createPlugin(
 New Backend system:
 
 ```ts
-// packages/backend/src/modules/exploreToolProvider.ts
+// packages/backend/src/modules/exploreToolProviderModule.ts
 
 import { createBackendModule } from '@backstage/backend-plugin-api';
 import { exploreToolProviderExtensionPoint } from '@backstage-community/plugin-explore-node';
@@ -262,4 +262,12 @@ export default createBackendModule({
     });
   },
 });
+```
+
+```ts
+// packages/backend/src/index.ts
+
+import exploreToolProviderModule from './modules/exploreToolProviderModule';
+
+backend.add(exploreToolProviderModule);
 ```
