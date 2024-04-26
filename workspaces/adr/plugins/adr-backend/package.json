@@ -42,7 +42,7 @@
     "express-promise-router": "^4.1.0",
     "luxon": "^3.0.0",
     "marked": "^12.0.0",
-    "node-fetch": "^2.6.5",
+    "node-fetch": "^3.0.0",
     "yn": "^4.0.0"
   },
   "devDependencies": {
