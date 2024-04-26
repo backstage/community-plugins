@@ -57,7 +57,7 @@
     "luxon": "^3.0.0",
     "semver": "^7.5.3",
     "uuid": "^9.0.0",
-    "yn": "^4.0.0"
+    "yn": "^5.0.0"
   },
   "devDependencies": {
     "@backstage/backend-test-utils": "^0.3.7",
