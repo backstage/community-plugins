@@ -19,6 +19,7 @@ import { Knex as KnexType, Knex } from 'knex';
 import { TestDatabases } from '@backstage/backend-test-utils';
 import { getVoidLogger } from '@backstage/backend-common';
 import { initializePersistenceContext } from './persistenceContext';
+import { parseEntityRef } from '@backstage/catalog-model';
 
 const factSchemas = [
   {
@@ -618,5 +619,37 @@ describe('Tech Insights database', () => {
       ...oldStaledOutFact(additionalFacts[0]),
       entity: 'b:b/b',
     });
+  });
+
+  it('should return an array of distinct compoundEntityRef for all entities with facts', async () => {
+    await testDbClient.batchInsert('facts', facts);
+    await testDbClient.batchInsert('facts', [
+      {
+        timestamp: now,
+        id: 'test-fact',
+        version: '0.0.1-test',
+        entity: 'a:a/b',
+        facts: JSON.stringify({
+          testNumberFact: 1,
+        }),
+      },
+      {
+        timestamp: shortlyInTheFuture,
+        id: 'test-fact',
+        version: '0.0.1-test',
+        entity: 'a:a/c',
+        facts: JSON.stringify({
+          testNumberFact: 2,
+        }),
+      },
+    ]);
+
+    const returnedEntities = await store.getEntities();
+
+    expect(returnedEntities).toMatchObject([
+      parseEntityRef('a:a/a'),
+      parseEntityRef('a:a/b'),
+      parseEntityRef('a:a/c'),
+    ]);
   });
 });

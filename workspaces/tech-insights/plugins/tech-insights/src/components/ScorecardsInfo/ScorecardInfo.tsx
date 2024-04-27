@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import React, { ReactNode } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
@@ -31,7 +31,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const infoCard = (
-  title: string,
+  title: ReactNode,
   description: string | undefined,
   className: string,
   element: JSX.Element,
@@ -52,7 +52,7 @@ const infoCard = (
 
 export const ScorecardInfo = (props: {
   checkResults: CheckResult[];
-  title: string;
+  title: ReactNode;
   description?: string;
   noWarning?: boolean;
 }) => {

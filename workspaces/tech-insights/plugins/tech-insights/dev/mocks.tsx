@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 import React from 'react';
-import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
+import {
+  BulkCheckResponse,
+  CheckResult,
+} from '@backstage-community/plugin-tech-insights-common';
 import { BooleanCheck, CheckResultRenderer } from '../src';
 
 export const runChecksResponse = [
@@ -44,3 +47,304 @@ export const checkResultRenderers = [
     component: (check: CheckResult) => <BooleanCheck checkResult={check} />,
   } as CheckResultRenderer,
 ];
+
+export const bulkCheckResponse = [
+  {
+    entity: 'api:default/hello-world',
+    results: [
+      {
+        facts: {
+          hasDescription: {
+            id: 'factId',
+            value: true,
+            type: 'boolean',
+            description: 'The entity has a description in metadata',
+          },
+        },
+        result: true,
+        check: {
+          id: 'descriptionCheck',
+          type: 'json-rules-engine',
+          name: 'Description Check',
+          description:
+            'Verifies that a Description, used to improve readability, has been set for this entity',
+          factIds: ['entityMetadataFactRetriever'],
+          rule: {
+            conditions: {
+              priority: 1,
+              all: [
+                {
+                  operator: 'equal',
+                  value: true,
+                  fact: 'hasDescription',
+                  factResult: true,
+                  result: true,
+                },
+              ],
+            },
+          },
+        },
+      },
+      {
+        facts: {
+          hasTitle: {
+            id: 'factId',
+            value: false,
+            type: 'boolean',
+            description: 'The entity has a title in metadata',
+          },
+        },
+        result: false,
+        check: {
+          id: 'titleCheck',
+          type: 'json-rules-engine',
+          name: 'Title Check',
+          description:
+            'Verifies that a Title, used to improve readability, has been set for this entity',
+          factIds: ['entityMetadataFactRetriever'],
+          rule: {
+            conditions: {
+              priority: 1,
+              all: [
+                {
+                  operator: 'equal',
+                  value: true,
+                  fact: 'hasTitle',
+                  factResult: false,
+                  result: false,
+                },
+              ],
+            },
+          },
+        },
+      },
+      {
+        facts: {
+          hasAnnotationBackstageIoTechdocsRef: {
+            id: 'factId',
+            value: false,
+            type: 'boolean',
+            description: 'The entity has a TechDocs reference annotation',
+          },
+        },
+        result: false,
+        check: {
+          id: 'techDocsCheck',
+          type: 'json-rules-engine',
+          name: 'TechDocs Check',
+          description:
+            'Verifies that TechDocs has been enabled for this entity',
+          factIds: ['techdocsFactRetriever'],
+        },
+      },
+    ],
+  },
+  {
+    entity: 'api:default/hello-world-trpc',
+    results: [
+      {
+        facts: {
+          hasDescription: {
+            id: 'factId',
+            value: true,
+            type: 'boolean',
+            description: 'The entity has a description in metadata',
+          },
+        },
+        result: true,
+        check: {
+          id: 'descriptionCheck',
+          type: 'json-rules-engine',
+          name: 'Description Check',
+          description:
+            'Verifies that a Description, used to improve readability, has been set for this entity',
+          factIds: ['entityMetadataFactRetriever'],
+          rule: {
+            conditions: {
+              priority: 1,
+              all: [
+                {
+                  operator: 'equal',
+                  value: true,
+                  fact: 'hasDescription',
+                  factResult: true,
+                  result: true,
+                },
+              ],
+            },
+          },
+        },
+      },
+      {
+        facts: {
+          hasTitle: {
+            id: 'factId',
+            value: false,
+            type: 'boolean',
+            description: 'The entity has a title in metadata',
+          },
+        },
+        result: false,
+        check: {
+          id: 'titleCheck',
+          type: 'json-rules-engine',
+          name: 'Title Check',
+          description:
+            'Verifies that a Title, used to improve readability, has been set for this entity',
+          factIds: ['entityMetadataFactRetriever'],
+          rule: {
+            conditions: {
+              priority: 1,
+              all: [
+                {
+                  operator: 'equal',
+                  value: true,
+                  fact: 'hasTitle',
+                  factResult: false,
+                  result: false,
+                },
+              ],
+            },
+          },
+        },
+      },
+      {
+        facts: {
+          hasAnnotationBackstageIoTechdocsRef: {
+            id: 'factId',
+            value: false,
+            type: 'boolean',
+            description: 'The entity has a TechDocs reference annotation',
+          },
+        },
+        result: false,
+        check: {
+          id: 'techDocsCheck',
+          type: 'json-rules-engine',
+          name: 'TechDocs Check',
+          description:
+            'Verifies that TechDocs has been enabled for this entity',
+          factIds: ['techdocsFactRetriever'],
+          rule: {
+            conditions: {
+              priority: 1,
+              all: [
+                {
+                  operator: 'equal',
+                  value: true,
+                  fact: 'hasAnnotationBackstageIoTechdocsRef',
+                  factResult: false,
+                  result: false,
+                },
+              ],
+            },
+          },
+        },
+      },
+    ],
+  },
+  {
+    entity: 'api:default/spotify',
+    results: [
+      {
+        facts: {
+          hasDescription: {
+            id: 'factId',
+            value: true,
+            type: 'boolean',
+            description: 'The entity has a description in metadata',
+          },
+        },
+        result: true,
+        check: {
+          id: 'descriptionCheck',
+          type: 'json-rules-engine',
+          name: 'Description Check',
+          description:
+            'Verifies that a Description, used to improve readability, has been set for this entity',
+          factIds: ['entityMetadataFactRetriever'],
+          rule: {
+            conditions: {
+              priority: 1,
+              all: [
+                {
+                  operator: 'equal',
+                  value: true,
+                  fact: 'hasDescription',
+                  factResult: true,
+                  result: true,
+                },
+              ],
+            },
+          },
+        },
+      },
+      {
+        facts: {
+          hasTitle: {
+            id: 'factId',
+            value: false,
+            type: 'boolean',
+            description: 'The entity has a title in metadata',
+          },
+        },
+        result: false,
+        check: {
+          id: 'titleCheck',
+          type: 'json-rules-engine',
+          name: 'Title Check',
+          description:
+            'Verifies that a Title, used to improve readability, has been set for this entity',
+          factIds: ['entityMetadataFactRetriever'],
+          rule: {
+            conditions: {
+              priority: 1,
+              all: [
+                {
+                  operator: 'equal',
+                  value: true,
+                  fact: 'hasTitle',
+                  factResult: false,
+                  result: false,
+                },
+              ],
+            },
+          },
+        },
+      },
+      {
+        facts: {
+          hasAnnotationBackstageIoTechdocsRef: {
+            id: 'factId',
+            value: false,
+            type: 'boolean',
+            description: 'The entity has a TechDocs reference annotation',
+          },
+        },
+        result: false,
+        check: {
+          id: 'techDocsCheck',
+          type: 'json-rules-engine',
+          name: 'TechDocs Check',
+          description:
+            'Verifies that TechDocs has been enabled for this entity',
+          factIds: ['techdocsFactRetriever'],
+          rule: {
+            conditions: {
+              priority: 1,
+              all: [
+                {
+                  operator: 'equal',
+                  value: true,
+                  fact: 'hasAnnotationBackstageIoTechdocsRef',
+                  factResult: false,
+                  result: false,
+                },
+              ],
+            },
+          },
+        },
+      },
+    ],
+  },
+] as BulkCheckResponse;

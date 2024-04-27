@@ -100,10 +100,11 @@ export async function createRouter<
     });
 
     router.post('/checks/run', async (req, res) => {
-      const {
-        checks,
-        entities,
-      }: { checks: string[]; entities: CompoundEntityRef[] } = req.body;
+      const checks: string[] = req.body.checks;
+      let entities: CompoundEntityRef[] = req.body.entities;
+      if (entities.length === 0) {
+        entities = await techInsightsStore.getEntities();
+      }
       const tasks = entities.map(async entity => {
         const entityTriplet =
           typeof entity === 'string' ? entity : stringifyEntityRef(entity);
