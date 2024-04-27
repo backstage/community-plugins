@@ -48,7 +48,7 @@
     "@backstage-community/plugin-linguist-common": "workspace:^",
     "@backstage/catalog-model": "^1.4.5",
     "@backstage/core-compat-api": "^0.2.4",
-    "@backstage/core-components": "^0.14.4",
+    "@backstage/core-components": "^0.14.5",
     "@backstage/core-plugin-api": "^1.9.2",
     "@backstage/errors": "^1.2.4",
     "@backstage/frontend-plugin-api": "^0.6.4",
@@ -61,7 +61,7 @@
     "slugify": "^1.6.4"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.26.3",
+    "@backstage/cli": "^0.26.4",
     "@backstage/dev-utils": "^1.0.31",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",

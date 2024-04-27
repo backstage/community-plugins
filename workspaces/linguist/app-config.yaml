@@ -1,0 +1,66 @@
+app:
+  title: Linguist Example App
+  baseUrl: http://localhost:3000
+
+organization:
+  name: Linguist Example
+
+backend:
+  baseUrl: http://localhost:7007
+  listen:
+    port: 7007
+  csp:
+    connect-src: ["'self'", 'http:', 'https:']
+  cors:
+    origin: http://localhost:3000
+    methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
+    credentials: true
+  database:
+    client: better-sqlite3
+    connection: ':memory:'
+
+integrations:
+  github:
+    - host: github.com
+      token: ${GITHUB_TOKEN}
+
+techdocs:
+  builder: 'local'
+  generator:
+    runIn: 'local'
+  publisher:
+    type: 'local'
+
+auth:
+  providers:
+    guest: {}
+
+catalog:
+  import:
+    entityFilename: catalog-info.yaml
+    pullRequestBranchName: backstage-integration
+  rules:
+    - allow: [Component, System, API, Resource, Location]
+  locations:
+    # Local example data, file locations are relative to the backend process, typically `packages/backend`
+    - type: file
+      target: ../../examples/entities.yaml
+
+    # Local example organizational data
+    - type: file
+      target: ../../examples/org.yaml
+      rules:
+        - allow: [User, Group]
+
+linguist:
+  schedule:
+    frequency:
+      minutes: 2
+    timeout:
+      minutes: 2
+    initialDelay:
+      seconds: 15
+  age:
+    days: 30
+  batchSize: 2
+  useSourceLocation: false
