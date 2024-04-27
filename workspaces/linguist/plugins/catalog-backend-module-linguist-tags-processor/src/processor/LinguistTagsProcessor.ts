@@ -19,7 +19,11 @@ import {
   CatalogProcessor,
   CatalogProcessorCache,
 } from '@backstage/plugin-catalog-node';
-import { DiscoveryService, LoggerService } from '@backstage/backend-plugin-api';
+import {
+  AuthService,
+  DiscoveryService,
+  LoggerService,
+} from '@backstage/backend-plugin-api';
 import {
   Languages,
   LanguageType,
@@ -47,6 +51,7 @@ interface CachedData {
 export interface LinguistTagsProcessorOptions {
   logger: LoggerService;
   discovery: DiscoveryService;
+  auth: AuthService;
   /**
    * Optional map that gives full control over which linguist languages should be included as tags and
    * how they should be represented. The keys should be exact matches to languages in the linguist
@@ -88,13 +93,11 @@ export interface LinguistTagsProcessorOptions {
  * add the languages to the entity as searchable tags.
  *
  * @public
- *
- * @deprecated Use `@backstage-community/plugin-catalog-backend-module-linguist-tags-processor` instead,
- * see {@link https://github.com/backstage/community-plugins/tree/main/workspaces/linguist/plugins/catalog-backend-module-linguist-tags-processor}
- */
+ * */
 export class LinguistTagsProcessor implements CatalogProcessor {
   private logger: LoggerService;
   private discovery: DiscoveryService;
+  private auth: AuthService;
   private loggerMeta = { plugin: 'LinguistTagsProcessor' };
   private languageMap: Record<string, string | undefined> = {};
   private tagPrefix: string = '';
@@ -112,6 +115,7 @@ export class LinguistTagsProcessor implements CatalogProcessor {
   constructor(options: LinguistTagsProcessorOptions) {
     this.logger = options.logger;
     this.discovery = options.discovery;
+    this.auth = options.auth;
     if (options.shouldProcessEntity) {
       this.shouldProcessEntity = options.shouldProcessEntity;
     }
@@ -162,13 +166,19 @@ export class LinguistTagsProcessor implements CatalogProcessor {
       ...this.loggerMeta,
       entityRef,
     });
-
+    const { token } = await this.auth.getPluginRequestToken({
+      onBehalfOf: await this.auth.getOwnServiceCredentials(),
+      targetPluginId: 'linguist',
+    });
     const baseUrl = await this.discovery.getBaseUrl('linguist');
     const linguistApi = new URL(`${baseUrl}/entity-languages`);
     linguistApi.searchParams.append('entityRef', entityRef);
-    const linguistData = await fetch(linguistApi).then(
-      res => res.json() as Promise<Languages>,
-    );
+    const linguistData = await fetch(linguistApi, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    }).then(res => res.json() as Promise<Languages>);
     if (!linguistData || !linguistData.processedDate) {
       return [];
     }
