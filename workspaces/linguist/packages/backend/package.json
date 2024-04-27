@@ -21,6 +21,7 @@
     "build-image": "docker build ../.. -f Dockerfile --tag backstage"
   },
   "dependencies": {
+    "@backstage-community/plugin-catalog-backend-module-linguist-tags-processor": "workspace:^",
     "@backstage-community/plugin-linguist-backend": "workspace:^",
     "@backstage/backend-common": "^0.23.2",
     "@backstage/backend-defaults": "^0.3.3",
