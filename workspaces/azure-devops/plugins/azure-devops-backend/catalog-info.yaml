@@ -1,9 +1,9 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: backstage-plugin-azure-devops-backend
-  title: '@backstage-community/plugin-azure-devops-backend'
+  name: backstage-plugin-catalog-backend-module-azure-devops-annotator-processor
+  title: '@backstage-community/plugin-catalog-backend-module-azure-devops-annotator-processor'
 spec:
   lifecycle: experimental
-  type: backstage-backend-plugin
+  type: backstage-backend-plugin-module
   owner: awanlin
