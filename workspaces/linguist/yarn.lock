@@ -2729,6 +2729,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@backstage-community/plugin-catalog-backend-module-linguist-tags-processor@workspace:^, @backstage-community/plugin-catalog-backend-module-linguist-tags-processor@workspace:plugins/catalog-backend-module-linguist-tags-processor":
+  version: 0.0.0-use.local
+  resolution: "@backstage-community/plugin-catalog-backend-module-linguist-tags-processor@workspace:plugins/catalog-backend-module-linguist-tags-processor"
+  dependencies:
+    "@backstage-community/plugin-linguist-common": "workspace:^"
+    "@backstage/backend-common": ^0.21.7
+    "@backstage/backend-plugin-api": ^0.6.17
+    "@backstage/backend-tasks": ^0.5.22
+    "@backstage/backend-test-utils": ^0.3.7
+    "@backstage/catalog-model": ^1.4.5
+    "@backstage/cli": ^0.26.3
+    "@backstage/config": ^1.2.0
+    "@backstage/plugin-catalog-node": ^1.11.1
+    "@backstage/types": ^1.1.1
+    js-yaml: ^4.1.0
+    linguist-js: ^2.5.3
+    node-fetch: ^2.6.7
+  languageName: unknown
+  linkType: soft
+
 "@backstage-community/plugin-github-actions@npm:^0.6.16":
   version: 0.6.16
   resolution: "@backstage-community/plugin-github-actions@npm:0.6.16"
@@ -3101,15 +3121,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/catalog-model@npm:^1.4.5":
-  version: 1.4.5
-  resolution: "@backstage/catalog-model@npm:1.4.5"
+"@backstage/catalog-model@npm:^1.4.5, @backstage/catalog-model@npm:^1.5.0":
+  version: 1.5.0
+  resolution: "@backstage/catalog-model@npm:1.5.0"
   dependencies:
     "@backstage/errors": ^1.2.4
     "@backstage/types": ^1.1.1
     ajv: ^8.10.0
     lodash: ^4.17.21
-  checksum: 34aaa4b82d29bf3b0a4b52552f8eb8189041df826f87a7bbdef5107a1efb8ce1f7eb1c1a343868718ca2af9be76d9f5184f6a92076d893d3a3951d16881647b7
+  checksum: 545873625afbb25a2142af9f8c701547b448fe8b822c9ed699c86a9c385571014115a2c3105a3dca2bc2ac63b837b093dba39a973c2f9e23521d427a0328ba12
   languageName: node
   linkType: hard
 
@@ -3136,18 +3156,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/cli@npm:^0.26.4":
-  version: 0.26.4
-  resolution: "@backstage/cli@npm:0.26.4"
+"@backstage/cli@npm:^0.26.3, @backstage/cli@npm:^0.26.4":
+  version: 0.26.5
+  resolution: "@backstage/cli@npm:0.26.5"
   dependencies:
-    "@backstage/catalog-model": ^1.4.5
+    "@backstage/catalog-model": ^1.5.0
     "@backstage/cli-common": ^0.1.13
     "@backstage/cli-node": ^0.2.5
     "@backstage/config": ^1.2.0
     "@backstage/config-loader": ^1.8.0
     "@backstage/errors": ^1.2.4
-    "@backstage/eslint-plugin": ^0.1.7
-    "@backstage/integration": ^1.10.0
+    "@backstage/eslint-plugin": ^0.1.8
+    "@backstage/integration": ^1.11.0
     "@backstage/release-manifests": ^0.0.11
     "@backstage/types": ^1.1.1
     "@manypkg/get-packages": ^1.1.3
@@ -3267,7 +3287,7 @@ __metadata:
       optional: true
   bin:
     backstage-cli: bin/backstage-cli
-  checksum: 0ae97290d34a201a06631f49ecd7003d074d2749d87441a2122c5446f18b17f2d528ac68622fc21cbb157ed2816a14253824a85c65a28ecde96bc61d152f9d34
+  checksum: 9cf4ff219347becd11ed3060083fa42b6c11b98dcb05c6db5ae6527624cfa30304344968e245ccce855979c7926908ecf921a1e137fb68173b2aab025433f5ab
   languageName: node
   linkType: hard
 
@@ -3463,13 +3483,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/eslint-plugin@npm:^0.1.7":
-  version: 0.1.7
-  resolution: "@backstage/eslint-plugin@npm:0.1.7"
+"@backstage/eslint-plugin@npm:^0.1.8":
+  version: 0.1.8
+  resolution: "@backstage/eslint-plugin@npm:0.1.8"
   dependencies:
     "@manypkg/get-packages": ^1.1.3
     minimatch: ^9.0.0
-  checksum: 84d8b75503484477f4f4cf456dd59794dee0e98a1d46bf1cd1f2eb284c4acb5346d7080392cff35a5115774fb44e8b30cd1a97f73c161dc468cd2825b4260d23
+  checksum: 1b6bfd77894e41dcb4e7570e38854258bc3fc6726d8567eba7c740fe91e8552eb73c4a703882eabb6e4ed8792c0d940be1bc8b38381a96aacb43675b43f4bb8e
   languageName: node
   linkType: hard
 
@@ -3526,9 +3546,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/integration@npm:^1.10.0":
-  version: 1.10.0
-  resolution: "@backstage/integration@npm:1.10.0"
+"@backstage/integration@npm:^1.10.0, @backstage/integration@npm:^1.11.0":
+  version: 1.11.0
+  resolution: "@backstage/integration@npm:1.11.0"
   dependencies:
     "@azure/identity": ^4.0.0
     "@backstage/config": ^1.2.0
@@ -3539,7 +3559,7 @@ __metadata:
     git-url-parse: ^14.0.0
     lodash: ^4.17.21
     luxon: ^3.0.0
-  checksum: 86324df95b30ff6ae92fcc605bd21d0f12cdc0553d555ebe8977a1be6554819ad8723eabcd99d1574c7c244b4822a6628d01273557040c89360394ba3198f6b9
+  checksum: 57ea46e57da004cdab41e82f558105f78f84f65d58163e93363dc775d42ab29401d3a38390ace012bf388eec57350d432a415d8fed27e57419e21522044fcc33
   languageName: node
   linkType: hard
 
@@ -13883,6 +13903,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "backend@workspace:packages/backend"
   dependencies:
+    "@backstage-community/plugin-catalog-backend-module-linguist-tags-processor": "workspace:^"
     "@backstage-community/plugin-linguist-backend": "workspace:^"
     "@backstage/backend-common": ^0.21.7
     "@backstage/backend-defaults": ^0.2.17

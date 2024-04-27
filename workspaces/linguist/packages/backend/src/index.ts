@@ -26,6 +26,11 @@ backend.add(import('@backstage/plugin-catalog-backend/alpha'));
 backend.add(
   import('@backstage/plugin-catalog-backend-module-scaffolder-entity-model'),
 );
+backend.add(
+  import(
+    '@backstage-community/plugin-catalog-backend-module-linguist-tags-processor'
+  ),
+);
 
 // permission plugin
 backend.add(import('@backstage/plugin-permission-backend/alpha'));
