@@ -186,6 +186,7 @@ linguist:
     languageMap:
       Dockerfile: ''
       TSX: 'react'
+    tagPrefix: 'lang:'
     cacheTTL:
       hours: 24
 ```
@@ -208,6 +209,18 @@ linguist:
       HCL: terraform
       # A more casual tag for a formal name
       Protocol Buffer: protobuf
+```
+
+#### `tagPrefix`
+
+The `tagPrefix` option allows you to provide a prefix to all tags created by linguist. Keep in mind that backstage has [character requirements for tags](https://backstage.io/docs/features/software-catalog/descriptor-format#tags-optional). If your prefix emits an invalid tag, it will cause an error during processing and your entity will not be processed.
+
+As an example, use the following config to get tags like `lang:java` instead of just `java`.
+
+```yaml
+linguist:
+  tagsProcessor:
+    tagPrefix: 'lang:'
 ```
 
 #### `cacheTTL`

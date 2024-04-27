@@ -76,6 +76,7 @@ export interface LinguistTagsProcessorOptions {
   // (undocumented)
   logger: LoggerService;
   shouldProcessEntity?: ShouldProcessEntity;
+  tagPrefix?: string;
 }
 
 // @public (undocumented)

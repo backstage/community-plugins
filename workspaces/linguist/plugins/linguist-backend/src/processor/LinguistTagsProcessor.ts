@@ -77,6 +77,10 @@ export interface LinguistTagsProcessorOptions {
    * Which linguist file types to process tags for.
    */
   languageTypes?: LanguageType[];
+  /**
+   * An optional prefix to apply to all created tags from linguist
+   */
+  tagPrefix?: string;
 }
 
 /**
@@ -90,6 +94,7 @@ export class LinguistTagsProcessor implements CatalogProcessor {
   private discovery: DiscoveryService;
   private loggerMeta = { plugin: 'LinguistTagsProcessor' };
   private languageMap: Record<string, string | undefined> = {};
+  private tagPrefix: string = '';
   private shouldProcessEntity: ShouldProcessEntity = (entity: Entity) => {
     return entity.kind === 'Component';
   };
@@ -119,6 +124,9 @@ export class LinguistTagsProcessor implements CatalogProcessor {
     if (options.languageMap) {
       this.languageMap = options.languageMap;
     }
+    if (options.tagPrefix) {
+      this.tagPrefix = options.tagPrefix;
+    }
   }
 
   static fromConfig(
@@ -133,6 +141,7 @@ export class LinguistTagsProcessor implements CatalogProcessor {
       ) as LanguageType[];
       options.languageMap ??= c.getOptional('languageMap');
       options.cacheTTL ??= c.getOptional('cacheTTL');
+      options.tagPrefix ??= c.getOptional('tagPrefix');
     }
 
     return new LinguistTagsProcessor(options);
@@ -236,7 +245,8 @@ export class LinguistTagsProcessor implements CatalogProcessor {
 
     languages.forEach(lang => {
       const cleanedUpLangTag =
-        lang in this.languageMap ? this.languageMap[lang] : sanitizeTag(lang);
+        this.tagPrefix +
+        (lang in this.languageMap ? this.languageMap[lang] : sanitizeTag(lang));
       if (cleanedUpLangTag && !tags.includes(cleanedUpLangTag)) {
         tags.push(cleanedUpLangTag);
       }
