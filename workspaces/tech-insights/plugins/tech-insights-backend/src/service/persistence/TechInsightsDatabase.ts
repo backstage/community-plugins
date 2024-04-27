@@ -26,7 +26,11 @@ import { FactSchema } from '@backstage-community/plugin-tech-insights-common';
 import { rsort } from 'semver';
 import { groupBy, omit } from 'lodash';
 import { DateTime } from 'luxon';
-import { parseEntityRef, stringifyEntityRef } from '@backstage/catalog-model';
+import {
+  CompoundEntityRef,
+  parseEntityRef,
+  stringifyEntityRef,
+} from '@backstage/catalog-model';
 import { isMaxItems, isTtl } from '../fact/factRetrievers/utils';
 import { LoggerService } from '@backstage/backend-plugin-api';
 
@@ -153,6 +157,11 @@ export class TechInsightsDatabase implements TechInsightsStore {
         },
       );
     return this.dbFactRowsToTechInsightFacts(results);
+  }
+
+  async getEntities(): Promise<CompoundEntityRef[]> {
+    const results = await this.db<RawDbFactRow>('facts').distinct('entity');
+    return results.map(row => parseEntityRef(row.entity));
   }
 
   async getFactsBetweenTimestampsByIds(
