@@ -67,6 +67,10 @@ export interface Config {
        * processing. Defaults to 30 minutes.
        */
       cacheTTL?: HumanDuration;
+      /**
+       * An optional prefix to apply to all created tags from linguist
+       */
+      tagPrefix?: string;
     };
   };
 }
