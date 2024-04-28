@@ -96,10 +96,7 @@ const routes = (
     </Route>
     <Route path="/settings" element={<UserSettingsPage />} />
     <Route path="/catalog-graph" element={<CatalogGraphPage />} />
-    <Route
-      path="/azure-pull-requests"
-      element={<AzurePullRequestsPage />}
-    />
+    <Route path="/azure-pull-requests" element={<AzurePullRequestsPage />} />
   </FlatRoutes>
 );
 

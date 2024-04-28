@@ -152,7 +152,11 @@ const serviceEntityPage = (
       {cicdContent}
     </EntityLayout.Route>
 
-    <EntityLayout.Route if={isAzureDevOpsAvailable} path="/pull-requests" title="Pull Requests">
+    <EntityLayout.Route
+      if={isAzureDevOpsAvailable}
+      path="/pull-requests"
+      title="Pull Requests"
+    >
       <EntityAzurePullRequestsContent defaultLimit={25} />
     </EntityLayout.Route>
 
@@ -194,7 +198,11 @@ const websiteEntityPage = (
       {cicdContent}
     </EntityLayout.Route>
 
-    <EntityLayout.Route if={isAzureDevOpsAvailable} path="/pull-requests" title="Pull Requests">
+    <EntityLayout.Route
+      if={isAzureDevOpsAvailable}
+      path="/pull-requests"
+      title="Pull Requests"
+    >
       <EntityAzurePullRequestsContent defaultLimit={25} />
     </EntityLayout.Route>
 
