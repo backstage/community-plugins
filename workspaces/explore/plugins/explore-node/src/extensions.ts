@@ -15,7 +15,7 @@
  */
 
 import { createExtensionPoint } from '@backstage/backend-plugin-api';
-import { ExploreToolProvider } from '@backstage-community/plugin-explore-backend';
+import { ExploreToolProvider } from './types';
 
 /**
  * Extension point for choosing tool provider in Explore plugin.

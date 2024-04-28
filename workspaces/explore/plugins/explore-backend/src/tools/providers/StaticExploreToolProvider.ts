@@ -21,7 +21,7 @@ import {
   GetExploreToolsResponse,
 } from '@backstage-community/plugin-explore-common';
 import { intersection, isEmpty } from 'lodash';
-import { ExploreToolProvider } from '../types';
+import { ExploreToolProvider } from '@backstage-community/plugin-explore-node';
 
 const anyOf = <T>(prop: T | T[], matches: T[]) =>
   isEmpty(matches)

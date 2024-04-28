@@ -19,8 +19,11 @@ import {
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
 import { createRouter } from './service';
-import { ExploreToolProvider, StaticExploreToolProvider } from './tools';
-import { exploreToolProviderExtensionPoint } from '@backstage-community/plugin-explore-node';
+import { StaticExploreToolProvider } from './tools';
+import {
+  ExploreToolProvider,
+  exploreToolProviderExtensionPoint,
+} from '@backstage-community/plugin-explore-node';
 
 /**
  * The explore backend plugin.
@@ -52,8 +55,7 @@ export const explorePlugin = createBackendPlugin({
           await createRouter({
             logger,
             toolProvider: customToolProvider
-              ? customToolProvider
-              : StaticExploreToolProvider.fromConfig(config),
+              ?? StaticExploreToolProvider.fromConfig(config),
           }),
         );
       },

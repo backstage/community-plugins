@@ -15,3 +15,4 @@
  */
 
 export { type ExploreToolProviderExtensionPoint, exploreToolProviderExtensionPoint } from './extensions';
+export type * from './types';
