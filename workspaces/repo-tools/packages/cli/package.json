@@ -35,7 +35,7 @@
     "@backstage/cli": "^0.26.2",
     "@backstage/errors": "^1.2.4",
     "@manypkg/get-packages": "^2.2.1",
-    "chalk": "^4.1.2",
+    "chalk": "^5.0.0",
     "commander": "^12.0.0",
     "find-up": "^5.0.0",
     "fs-extra": "^11.2.0",
