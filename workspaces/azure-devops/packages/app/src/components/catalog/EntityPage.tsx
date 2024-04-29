@@ -55,8 +55,10 @@ import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
 import { ReportIssue } from '@backstage/plugin-techdocs-module-addons-contrib';
 
 import {
+  EntityAzureGitTagsContent,
   EntityAzurePipelinesContent,
   EntityAzurePullRequestsContent,
+  EntityAzureReadmeCard,
   isAzureDevOpsAvailable,
 } from '@backstage-community/plugin-azure-devops';
 
@@ -133,6 +135,14 @@ const overviewContent = (
       <EntityCatalogGraphCard variant="gridItem" height={400} />
     </Grid>
 
+    <EntitySwitch>
+      <EntitySwitch.Case if={isAzureDevOpsAvailable}>
+        <Grid item md={6}>
+          <EntityAzureReadmeCard maxHeight={350} />
+        </Grid>
+      </EntitySwitch.Case>
+    </EntitySwitch>
+
     <Grid item md={4} xs={12}>
       <EntityLinksCard />
     </Grid>
@@ -158,6 +168,14 @@ const serviceEntityPage = (
       title="Pull Requests"
     >
       <EntityAzurePullRequestsContent defaultLimit={25} />
+    </EntityLayout.Route>
+
+    <EntityLayout.Route
+      if={isAzureDevOpsAvailable}
+      path="/git-tags"
+      title="Git Tags"
+    >
+      <EntityAzureGitTagsContent />
     </EntityLayout.Route>
 
     <EntityLayout.Route path="/api" title="API">
@@ -204,6 +222,14 @@ const websiteEntityPage = (
       title="Pull Requests"
     >
       <EntityAzurePullRequestsContent defaultLimit={25} />
+    </EntityLayout.Route>
+
+    <EntityLayout.Route
+      if={isAzureDevOpsAvailable}
+      path="/git-tags"
+      title="Git Tags"
+    >
+      <EntityAzureGitTagsContent />
     </EntityLayout.Route>
 
     <EntityLayout.Route path="/dependencies" title="Dependencies">
