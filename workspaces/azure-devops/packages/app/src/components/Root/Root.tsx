@@ -75,7 +75,7 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
           <SidebarItem
             icon={AzurePullRequestsIcon}
             to="azure-pull-requests"
-            text="Azure Pull Requests"
+            text="Azure PRs"
           />
         </SidebarScrollWrapper>
       </SidebarGroup>
