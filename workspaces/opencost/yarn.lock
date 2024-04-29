@@ -2521,10 +2521,10 @@ __metadata:
     "@backstage/core-plugin-api": ^1.9.2
     "@backstage/dev-utils": ^1.0.31
     "@date-io/luxon": 1.x
-    "@material-ui/core": ^4.9.13
     "@material-ui/icons": ^4.9.1
     "@material-ui/pickers": ^3.3.10
     "@material-ui/styles": ^4.11.5
+    "@mui/material": ^5.0.0
     "@testing-library/dom": ^10.0.0
     "@testing-library/jest-dom": ^6.0.0
     "@testing-library/react": ^15.0.0
@@ -4671,7 +4671,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@material-ui/core@npm:^4.12.2, @material-ui/core@npm:^4.12.4, @material-ui/core@npm:^4.9.13":
+"@material-ui/core@npm:^4.12.2, @material-ui/core@npm:^4.12.4":
   version: 4.12.4
   resolution: "@material-ui/core@npm:4.12.4"
   dependencies:
@@ -4962,7 +4962,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mui/material@npm:^5.12.2":
+"@mui/material@npm:^5.0.0, @mui/material@npm:^5.12.2":
   version: 5.15.15
   resolution: "@mui/material@npm:5.15.15"
   dependencies:

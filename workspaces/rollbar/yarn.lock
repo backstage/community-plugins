@@ -2550,8 +2550,8 @@ __metadata:
     "@backstage/dev-utils": ^1.0.31
     "@backstage/plugin-catalog-react": ^1.11.3
     "@backstage/test-utils": ^1.5.4
-    "@material-ui/core": ^4.12.2
     "@material-ui/lab": 4.0.0-alpha.61
+    "@mui/material": ^5.0.0
     "@testing-library/dom": ^10.0.0
     "@testing-library/jest-dom": ^6.0.0
     "@testing-library/react": ^15.0.0
@@ -5039,7 +5039,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mui/material@npm:^5.12.2":
+"@mui/material@npm:^5.0.0, @mui/material@npm:^5.12.2":
   version: 5.15.15
   resolution: "@mui/material@npm:5.15.15"
   dependencies:
