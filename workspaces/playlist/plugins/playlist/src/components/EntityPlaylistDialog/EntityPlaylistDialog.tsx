@@ -18,8 +18,8 @@ import { parseEntityRef, stringifyEntityRef } from '@backstage/catalog-model';
 import { ResponseErrorPanel } from '@backstage/core-components';
 import { alertApiRef, useApi, useRouteRef } from '@backstage/core-plugin-api';
 import {
-  humanizeEntityRef,
   useAsyncEntity,
+  EntityDisplayName,
 } from '@backstage/plugin-catalog-react';
 import { usePermission } from '@backstage/plugin-permission-react';
 import {
@@ -40,6 +40,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import ClearButton from '@material-ui/icons/Clear';
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
@@ -256,12 +257,20 @@ export const EntityPlaylistDialog = (props: EntityPlaylistDialogProps) => {
                     >
                       <ListItemText
                         primary={list.name}
-                        secondary={`by ${humanizeEntityRef(
-                          parseEntityRef(list.owner),
-                          { defaultKind: 'group' },
-                        )} · ${list.entities} entities ${
-                          !list.public ? '· Private' : ''
-                        }`}
+                        secondary={
+                          <Typography variant="body2" color="textSecondary">
+                            by{' '}
+                            <EntityDisplayName
+                              hideIcon
+                              disableTooltip
+                              defaultKind="group"
+                              entityRef={parseEntityRef(list.owner)}
+                            />
+                            {' · '}
+                            {list.entities} entities{' '}
+                            {!list.public ? '· Private' : ''}
+                          </Typography>
+                        }
                       />
                     </ListItem>
                   </React.Fragment>
