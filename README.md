@@ -1,5 +1,9 @@
 # Backstage Community Plugins
 
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![CNCF Status](https://img.shields.io/badge/cncf%20status-incubation-blue.svg)](https://www.cncf.io/projects)
+[![Discord](https://img.shields.io/discord/687207715902193673?logo=discord&label=Discord&color=5865F2&logoColor=white)](https://discord.gg/backstage-687207715902193673)
+
 ## What is the community-plugins repository?
 
 The `community-plugins` repository is a place where members of the community can host a plugin or a set of plugins. The goal of community-plugins is to reduce the amount of pull requests and issues from `backstage/backstage`, which has become too big with the time.
