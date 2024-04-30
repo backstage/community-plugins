@@ -64,7 +64,7 @@ yarn install
 
 ### Developing Plugins in Workspaces
 
-Frontend and Backend plugins come with a standalone runner that you should be able to utilize in order to develop on your plugins in isolation. You can navigate to a workspace and a plugin inside the plugin folder and run `yarn start` which should kick off the development standalone server for that plugin.
+Frontend and Backend plugins come with a standalone runner that you should be able to utilize in order to develop on your plugins in isolation. You can navigate to a workspace and a plugin inside the plugin folder and run `yarn start` which should kick off the development standalone server for that plugin. It's also possible that this might not be setup for plugins that were migrated from the `backstage/backstage` repository, in which case you can set them up following some prior art in the `backstage/backstage` repository. [backend plugin dev](https://github.com/backstage/backstage/blob/e46d3fe011fe19821b2556f0164442cc0b825363/plugins/auth-backend/dev/index.ts#L4) and [frontend plugin dev](https://github.com/backstage/backstage/blob/e46d3fe011fe19821b2556f0164442cc0b825363/plugins/home/dev/index.tsx) examples.
 
 There could be times when there is a need for a more rich development environment for a workspace. Say that the workspace and it's plugin depend on a full catalog, and maybe the kubernetes plugin already running too, that could be a bit of a pain to set up. In that case, there might be a full Backstage environment that you can run with `yarn dev` in the workspace root, which will start up a full Backstage environment located in `$WORKSPACE_ROOT/packages/app` and `$WORKSPACE_ROOT/packages/backend`.
 
