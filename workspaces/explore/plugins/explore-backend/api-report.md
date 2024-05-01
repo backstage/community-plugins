@@ -10,9 +10,6 @@ import express from 'express';
 import { GetExploreToolsRequest } from '@backstage-community/plugin-explore-common';
 import { GetExploreToolsResponse } from '@backstage-community/plugin-explore-common';
 import { LoggerService } from '@backstage/backend-plugin-api';
-import type { ToolDocument as ToolDocument_2 } from '@backstage/plugin-search-backend-module-explore';
-import { ToolDocumentCollatorFactory as ToolDocumentCollatorFactory_2 } from '@backstage/plugin-search-backend-module-explore';
-import type { ToolDocumentCollatorFactoryOptions as ToolDocumentCollatorFactoryOptions_2 } from '@backstage/plugin-search-backend-module-explore';
 
 // @public (undocumented)
 export function createRouter(options: RouterOptions): Promise<express.Router>;
@@ -43,14 +40,4 @@ export class StaticExploreToolProvider implements ExploreToolProvider {
   // (undocumented)
   getTools(request: GetExploreToolsRequest): Promise<GetExploreToolsResponse>;
 }
-
-// @public @deprecated (undocumented)
-export type ToolDocument = ToolDocument_2;
-
-// @public @deprecated (undocumented)
-export const ToolDocumentCollatorFactory: typeof ToolDocumentCollatorFactory_2;
-
-// @public @deprecated (undocumented)
-export type ToolDocumentCollatorFactoryOptions =
-  ToolDocumentCollatorFactoryOptions_2;
 ```
