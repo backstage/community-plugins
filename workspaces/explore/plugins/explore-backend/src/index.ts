@@ -28,28 +28,3 @@ export * from './tools';
  * @internal Example only - do not use in production
  */
 export { exampleTools } from './example/exampleTools';
-
-import { ToolDocumentCollatorFactory as _ToolDocumentCollatorFactory } from '@backstage/plugin-search-backend-module-explore';
-import type {
-  ToolDocument as _ToolDocument,
-  ToolDocumentCollatorFactoryOptions as _ToolDocumentCollatorFactoryOptions,
-} from '@backstage/plugin-search-backend-module-explore';
-
-/**
- * @public
- * @deprecated import from `@backstage/plugin-search-backend-module-explore` instead
- */
-export const ToolDocumentCollatorFactory = _ToolDocumentCollatorFactory;
-
-/**
- * @public
- * @deprecated import from `@backstage/plugin-search-backend-module-explore` instead
- */
-export type ToolDocument = _ToolDocument;
-
-/**
- * @public
- * @deprecated import from `@backstage/plugin-search-backend-module-explore` instead
- */
-export type ToolDocumentCollatorFactoryOptions =
-  _ToolDocumentCollatorFactoryOptions;
