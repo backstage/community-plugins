@@ -31,6 +31,7 @@ export interface ExploreToolProviderExtensionPoint {
  *
  * @public
  */
-export const exploreToolProviderExtensionPoint = createExtensionPoint<ExploreToolProviderExtensionPoint>({
-  id: 'explore.tool.provider',
-});
+export const exploreToolProviderExtensionPoint =
+  createExtensionPoint<ExploreToolProviderExtensionPoint>({
+    id: 'explore.tool.provider',
+  });

@@ -54,8 +54,9 @@ export const explorePlugin = createBackendPlugin({
         httpRouter.use(
           await createRouter({
             logger,
-            toolProvider: customToolProvider
-              ?? StaticExploreToolProvider.fromConfig(config),
+            toolProvider:
+              customToolProvider ??
+              StaticExploreToolProvider.fromConfig(config),
           }),
         );
       },

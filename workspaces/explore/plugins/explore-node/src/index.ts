@@ -14,5 +14,8 @@
  * limitations under the License.
  */
 
-export { type ExploreToolProviderExtensionPoint, exploreToolProviderExtensionPoint } from './extensions';
+export {
+  type ExploreToolProviderExtensionPoint,
+  exploreToolProviderExtensionPoint,
+} from './extensions';
 export type * from './types';
