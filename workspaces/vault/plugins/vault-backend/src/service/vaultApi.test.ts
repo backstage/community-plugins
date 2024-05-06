@@ -17,11 +17,16 @@
 import { setupRequestMockHandlers } from '@backstage/backend-test-utils';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
-import { VaultSecret, VaultClient, VaultSecretList } from './vaultApi';
+import {
+  VaultSecret,
+  VaultClient,
+  VaultApi,
+  VaultSecretList,
+} from './vaultApi';
 import { ConfigReader } from '@backstage/config';
 
 describe('VaultApi', () => {
-  let api: VaultClient;
+  let api: VaultApi;
 
   const server = setupServer();
   setupRequestMockHandlers(server);
@@ -30,7 +35,10 @@ describe('VaultApi', () => {
   const config = new ConfigReader({
     vault: {
       baseUrl: mockBaseUrl,
-      token: '1234567890',
+      auth: {
+        type: 'static',
+        secret: '1234567890',
+      },
     },
   });
 
@@ -110,7 +118,7 @@ describe('VaultApi', () => {
   });
 
   it('should return success token renew', async () => {
-    expect(await api.renewToken()).toBe(undefined);
+    expect(await api.renewToken?.()).toBe(undefined);
   });
 
   it('should render frontend url', () => {
