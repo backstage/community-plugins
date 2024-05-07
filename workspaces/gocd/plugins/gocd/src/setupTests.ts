@@ -13,4 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import '@testing-library/jest-dom';
+
+Object.defineProperty(global, 'TextEncoder', {
+  value: require('util').TextEncoder,
+});
+
+Object.defineProperty(global, 'TextDecoder', {
+  value: require('util').TextDecoder,
+});

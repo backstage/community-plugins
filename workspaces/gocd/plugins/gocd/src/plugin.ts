@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import { GoCdClientApi } from './api/gocdApi.client';
 import { GoCdApi } from './api/gocdApi';
 import {
@@ -20,6 +21,7 @@ import {
   createApiRef,
   createApiFactory,
   createPlugin,
+  fetchApiRef,
 } from '@backstage/core-plugin-api';
 
 export const gocdApiRef = createApiRef<GoCdApi>({
@@ -36,9 +38,9 @@ export const gocdPlugin = createPlugin({
   apis: [
     createApiFactory({
       api: gocdApiRef,
-      deps: { discoveryApi: discoveryApiRef },
-      factory: ({ discoveryApi }) => {
-        return new GoCdClientApi(discoveryApi);
+      deps: { discoveryApi: discoveryApiRef, fetchApi: fetchApiRef },
+      factory: ({ discoveryApi, fetchApi }) => {
+        return new GoCdClientApi(discoveryApi, fetchApi);
       },
     }),
   ],

@@ -13,19 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import { GoCdApi } from './gocdApi';
 import { GoCdApiError, PipelineHistory } from './gocdApi.model';
-import { DiscoveryApi } from '@backstage/core-plugin-api';
+import { DiscoveryApi, FetchApi } from '@backstage/core-plugin-api';
 import { ResponseError } from '@backstage/errors';
 
 const DEFAULT_PAGE_SIZE = 100;
 
 export class GoCdClientApi implements GoCdApi {
-  constructor(private readonly discoveryApi: DiscoveryApi) {}
+  constructor(
+    private readonly discoveryApi: DiscoveryApi,
+    private readonly fetchApi: FetchApi,
+  ) {}
 
   async getPipelineHistory(
     pipelineName: string,
   ): Promise<PipelineHistory | GoCdApiError> {
+    const { fetch } = this.fetchApi;
+
     const baseUrl = await this.discoveryApi.getBaseUrl('proxy');
     const pipelineHistoryResponse = await fetch(
       `${baseUrl}/gocd/pipelines/${pipelineName}/history?page_size=${DEFAULT_PAGE_SIZE}`,
