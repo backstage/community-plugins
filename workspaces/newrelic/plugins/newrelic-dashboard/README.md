@@ -24,7 +24,14 @@ proxy:
       X-Api-Key: ${NEW_RELIC_USER_KEY}
 ```
 
-2. Add the following to `EntityPage.tsx` to display New Relic Dashboard Tab
+2. Add a dependency to your packages/app/package.json:
+
+```
+# From your Backstage root directory
+yarn --cwd packages/app add @backstage-community/plugin-newrelic-dashboard
+```
+
+3. Add the following to `EntityPage.tsx` to display New Relic Dashboard Tab:
 
 ```
 // In packages/app/src/components/catalog/EntityPage.tsx
@@ -46,7 +53,7 @@ const serviceEntityPage = (
     </EntityLayout.Route>
 ```
 
-3. Add the following in `EntityPage.tsx` to display dashboard links in overview page
+4. Add the following in `EntityPage.tsx` to display dashboard links in overview page:
 
 ```
 const overviewContent = (
@@ -60,7 +67,7 @@ const overviewContent = (
     </EntitySwitch>
 ```
 
-4. Add `newrelic.com/dashboard-guid` annotation in catalog descriptor file
+5. Add `newrelic.com/dashboard-guid` annotation in catalog descriptor file:
 
 To Obtain the dashboard's GUID: Click the info icon by the dashboard's name to access the See metadata and manage tags modal and see the dashboard's GUID.
 
