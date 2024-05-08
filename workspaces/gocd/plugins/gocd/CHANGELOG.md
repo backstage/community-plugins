@@ -1,5 +1,11 @@
 # @backstage-community/plugin-gocd
 
+## 0.1.42
+
+### Patch Changes
+
+- 636a1cd: use the `fetchApi` instead of native `fetch`
+
 ## 0.1.41
 
 ### Patch Changes
