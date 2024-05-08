@@ -43,7 +43,7 @@ describe('EntityValidatorPage', () => {
 
   const contentHead = <MarkdownContent content="Content Head" />;
 
-  it('should show loation text field', async () => {
+  it('should show location text field', async () => {
     const { getByText, getByTestId } = await renderInTestApp(
       <TestApiProvider apis={[[catalogApiRef, catalogApi]]}>
         <EntityValidationPage />
@@ -55,7 +55,7 @@ describe('EntityValidatorPage', () => {
     expect(getByText('File Location')).toBeInTheDocument();
   });
 
-  it('should not show loation text field', async () => {
+  it('should not show location text field', async () => {
     const { queryByText, getByTestId } = await renderInTestApp(
       <TestApiProvider apis={[[catalogApiRef, catalogApi]]}>
         <EntityValidationPage hideFileLocationField />
