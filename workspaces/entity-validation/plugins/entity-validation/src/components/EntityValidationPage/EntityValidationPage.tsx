@@ -24,7 +24,7 @@ import { CatalogProcessorResult } from '../../types';
 import { parseEntityYaml } from '../../utils';
 import { EntityValidationOutput } from '../EntityValidationOutput';
 
-const EXAMPLE_CATALOG_INFO_YAML = `# Put your catalog-info.yaml below and validate it
+const EXAMPLE_CATALOG_INFO_YAML = `# Provide your entity descriptor YAML to validate its structure
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
@@ -70,7 +70,7 @@ export const EntityValidationPage = (props: {
     <Page themeId="tool">
       <Header
         title="Entity Validator"
-        subtitle="Tool to validate catalog-info.yaml files"
+        subtitle="Validate Backstage catalog entity descriptor YAML files"
       />
       <Content>
         <Grid
@@ -91,7 +91,7 @@ export const EntityValidationPage = (props: {
               required
               value={locationUrl}
               placeholder={defaultLocation}
-              helperText="Location where you catalog-info.yaml file is, or will be, located. This is not the file that is being validated - it only adds location annotations to the entity that is going to be validated."
+              helperText="Present or future location of your entity descriptor YAML file. This is not the file being validated; this merely adds location annotations to the entity descriptor file being validated."
               onChange={e => setLocationUrl(e.target.value)}
             />
           )}

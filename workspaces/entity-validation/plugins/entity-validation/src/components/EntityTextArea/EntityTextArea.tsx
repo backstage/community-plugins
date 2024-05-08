@@ -65,7 +65,7 @@ export const EntityTextArea = ({
     const dom = document.createElement('div');
     dom.classList.add(classes.infoPanel);
     dom.textContent =
-      'To validate your catalog-info.yaml click on the "Validate" button or use "Ctrl + S" or "Ctrl + Enter"';
+      'To validate the provided entity descriptor YAML, click the "Validate" button or use "Ctrl + S" or "Ctrl + Enter"';
     dom.onclick = () => setClose(true);
     return showPanel.of(() => ({ dom, top: true }));
   }, [classes, close]);
