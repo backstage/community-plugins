@@ -16,7 +16,7 @@
 
 import { setupRequestMockHandlers } from '@backstage/test-utils';
 import { GoCdClientApi } from './gocdApi.client';
-import { rest } from 'msw';
+import { HttpResponse, http } from 'msw';
 import { setupServer } from 'msw/node';
 import { PipelineHistory } from './gocdApi.model';
 
@@ -31,11 +31,13 @@ describe('GoCdClientApi', () => {
     };
 
     server.use(
-      rest.get(
+      http.get(
         'http://example.com/api/proxy/gocd/pipelines/my-pipeline/history',
-        (req, res, ctx) => {
-          expect(new URL(req.url).searchParams.get('page_size')).toBe('100');
-          return res(ctx.json(response));
+        ({ request }) => {
+          expect(new URL(request.url).searchParams.get('page_size')).toBe(
+            '100',
+          );
+          return HttpResponse.json(response);
         },
       ),
     );
