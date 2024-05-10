@@ -13,7 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { createApiRef, DiscoveryApi } from '@backstage/core-plugin-api';
+
+import {
+  createApiRef,
+  DiscoveryApi,
+  FetchApi,
+} from '@backstage/core-plugin-api';
 import { ResponseError } from '@backstage/errors';
 import {
   FetchProjectsResponse,
@@ -35,13 +40,16 @@ export interface CodeSceneApi {
 
 type Options = {
   discoveryApi: DiscoveryApi;
+  fetchApi: FetchApi;
 };
 
 export class CodeSceneClient implements CodeSceneApi {
   private readonly discoveryApi: DiscoveryApi;
+  private readonly fetchApi: FetchApi;
 
   constructor(options: Options) {
     this.discoveryApi = options.discoveryApi;
+    this.fetchApi = options.fetchApi;
   }
 
   async fetchProjects(): Promise<FetchProjectsResponse> {
@@ -62,7 +70,7 @@ export class CodeSceneClient implements CodeSceneApi {
 
   private async fetchFromApi(path: string): Promise<any> {
     const apiUrl = await this.getApiUrl();
-    const res = await fetch(`${apiUrl}/${path}`);
+    const res = await this.fetchApi.fetch(`${apiUrl}/${path}`);
     if (!res.ok) {
       throw await ResponseError.fromResponse(res);
     }

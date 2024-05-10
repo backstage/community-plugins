@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import React from 'react';
 import { CodeScenePageComponent } from './CodeScenePageComponent';
 import { rest } from 'msw';
@@ -43,9 +44,10 @@ describe('CodeScenePageComponent', () => {
         return `http://base.com/${pluginId}`;
       },
     };
+    const fetchApi = { fetch };
     apis = TestApiRegistry.from([
       codesceneApiRef,
-      new CodeSceneClient({ discoveryApi }),
+      new CodeSceneClient({ discoveryApi, fetchApi }),
     ]);
   });
 

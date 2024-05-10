@@ -35,6 +35,8 @@ const server = setupServer();
 
 describe('BitriseBuildsFetchComponent', () => {
   setupRequestMockHandlers(server);
+
+  const fetchApi = { fetch: jest.fn() };
   const mockBaseUrl = 'http://backstage:9191';
   const discoveryApi = UrlPatternDiscovery.compile(mockBaseUrl);
   let apis: TestApiRegistry;
@@ -42,7 +44,7 @@ describe('BitriseBuildsFetchComponent', () => {
   beforeEach(() => {
     apis = TestApiRegistry.from([
       bitriseApiRef,
-      new BitriseClientApi(discoveryApi),
+      new BitriseClientApi(discoveryApi, fetchApi),
     ]);
   });
 

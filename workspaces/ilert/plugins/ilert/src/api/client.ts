@@ -13,10 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import {
   ConfigApi,
   createApiRef,
   DiscoveryApi,
+  FetchApi,
 } from '@backstage/core-plugin-api';
 import { AuthenticationError, ResponseError } from '@backstage/errors';
 import { DateTime as dt } from 'luxon';
@@ -55,15 +57,21 @@ const JSON_HEADERS = {
 /** @public */
 export class ILertClient implements ILertApi {
   private readonly discoveryApi: DiscoveryApi;
+  private readonly fetchApi: FetchApi;
   private readonly proxyPath: string;
   private readonly baseUrl: string;
 
-  static fromConfig(configApi: ConfigApi, discoveryApi: DiscoveryApi) {
+  static fromConfig(
+    configApi: ConfigApi,
+    discoveryApi: DiscoveryApi,
+    fetchApi: FetchApi,
+  ) {
     const baseUrl: string =
       configApi.getOptionalString('ilert.baseUrl') ?? 'https://app.ilert.com';
 
     return new ILertClient({
-      discoveryApi: discoveryApi,
+      discoveryApi,
+      fetchApi,
       baseUrl,
       proxyPath:
         configApi.getOptionalString('ilert.proxyPath') ?? DEFAULT_PROXY_PATH,
@@ -72,6 +80,7 @@ export class ILertClient implements ILertApi {
 
   constructor(opts: {
     discoveryApi: DiscoveryApi;
+    fetchApi: FetchApi;
 
     /**
      * URL used by users to access iLert web UI.
@@ -85,6 +94,7 @@ export class ILertClient implements ILertApi {
     proxyPath: string;
   }) {
     this.discoveryApi = opts.discoveryApi;
+    this.fetchApi = opts.fetchApi;
     this.baseUrl = opts.baseUrl;
     this.proxyPath = opts.proxyPath;
   }
@@ -92,7 +102,7 @@ export class ILertClient implements ILertApi {
   private async fetch<T = any>(input: string, init?: RequestInit): Promise<T> {
     const apiUrl = await this.apiUrl();
 
-    const response = await fetch(`${apiUrl}${input}`, init);
+    const response = await this.fetchApi.fetch(`${apiUrl}${input}`, init);
     if (response.status === 401) {
       throw new AuthenticationError(
         'This request requires HTTP authentication.',

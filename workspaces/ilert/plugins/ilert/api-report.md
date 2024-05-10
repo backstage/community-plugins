@@ -10,6 +10,7 @@ import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { ConfigApi } from '@backstage/core-plugin-api';
 import { DiscoveryApi } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
+import { FetchApi } from '@backstage/core-plugin-api';
 import { IconComponent } from '@backstage/core-plugin-api';
 import { JSX as JSX_2 } from 'react';
 import { default as React_2 } from 'react';
@@ -450,6 +451,7 @@ export const ILertCard: () => React_2.JSX.Element;
 export class ILertClient implements ILertApi {
   constructor(opts: {
     discoveryApi: DiscoveryApi;
+    fetchApi: FetchApi;
     baseUrl: string;
     proxyPath: string;
   });
@@ -496,6 +498,7 @@ export class ILertClient implements ILertApi {
   static fromConfig(
     configApi: ConfigApi,
     discoveryApi: DiscoveryApi,
+    fetchApi: FetchApi,
   ): ILertClient;
   // (undocumented)
   getAlertDetailsURL(alert: Alert): string;

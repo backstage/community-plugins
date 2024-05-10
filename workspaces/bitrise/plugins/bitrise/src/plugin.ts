@@ -22,6 +22,7 @@ import {
   createApiRef,
   createApiFactory,
   createPlugin,
+  fetchApiRef,
 } from '@backstage/core-plugin-api';
 
 export const bitriseApiRef = createApiRef<BitriseApi>({
@@ -34,9 +35,12 @@ export const bitrisePlugin = createPlugin({
   apis: [
     createApiFactory({
       api: bitriseApiRef,
-      deps: { discoveryApi: discoveryApiRef },
-      factory: ({ discoveryApi }) => {
-        return new BitriseClientApi(discoveryApi);
+      deps: {
+        discoveryApi: discoveryApiRef,
+        fetchApi: fetchApiRef,
+      },
+      factory: ({ discoveryApi, fetchApi }) => {
+        return new BitriseClientApi(discoveryApi, fetchApi);
       },
     }),
   ],

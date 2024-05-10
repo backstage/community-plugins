@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { DiscoveryApi } from '@backstage/core-plugin-api';
+import { DiscoveryApi, FetchApi } from '@backstage/core-plugin-api';
 import { ResponseError } from '@backstage/errors';
 import { DateTime } from 'luxon';
 import {
@@ -34,13 +34,16 @@ import {
 
 interface Options {
   discoveryApi: DiscoveryApi;
+  fetchApi: FetchApi;
 }
 
 export class XcmetricsClient implements XcmetricsApi {
   private readonly discoveryApi: DiscoveryApi;
+  private readonly fetchApi: FetchApi;
 
   constructor(options: Options) {
     this.discoveryApi = options.discoveryApi;
+    this.fetchApi = options.fetchApi;
   }
 
   async getBuild(id: string): Promise<BuildResponse> {
@@ -120,7 +123,7 @@ export class XcmetricsClient implements XcmetricsApi {
 
   private async get(path: string): Promise<Response> {
     const baseUrl = `${await this.discoveryApi.getBaseUrl('proxy')}/xcmetrics`;
-    const response = await fetch(`${baseUrl}${path}`);
+    const response = await this.fetchApi.fetch(`${baseUrl}${path}`);
 
     if (!response.ok) {
       throw await ResponseError.fromResponse(response);
@@ -131,7 +134,7 @@ export class XcmetricsClient implements XcmetricsApi {
 
   private async post(path: string, body: Object): Promise<Response> {
     const baseUrl = `${await this.discoveryApi.getBaseUrl('proxy')}/xcmetrics`;
-    const response = await fetch(`${baseUrl}${path}`, {
+    const response = await this.fetchApi.fetch(`${baseUrl}${path}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
