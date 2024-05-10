@@ -1,0 +1,57 @@
+# This file contains some sample data to model the services which are deployed with the emojivoto demo
+# from linkerd into the Backstage Software Catalog.
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: web
+  description: The web frontend from the emoji service
+  namespace: emojivoto
+  annotations:
+    backstage.io/kubernetes-id: web
+    backstage.io/kubernetes-namespace: emojivoto
+spec:
+  type: website
+  lifecycle: production
+  owner: guest
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: vote-bot
+  description: Vote bot to generate traffic
+  namespace: emojivoto
+  annotations:
+    backstage.io/kubernetes-id: vote-bot
+    backstage.io/kubernetes-namespace: emojivoto
+spec:
+  type: service
+  lifecycle: production
+  owner: guest
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: voting
+  description: the voting service
+  namespace: emojivoto
+  annotations:
+    backstage.io/kubernetes-id: voting
+    backstage.io/kubernetes-namespace: emojivoto
+spec:
+  type: service
+  lifecycle: production
+  owner: guest
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: emoji
+  description: The emoji service which returns an emoji
+  namespace: emojivoto
+  annotations:
+    backstage.io/kubernetes-id: emoji
+    backstage.io/kubernetes-namespace: emojivoto
+spec:
+  type: service
+  lifecycle: production
+  owner: guest
