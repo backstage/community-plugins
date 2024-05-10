@@ -27,10 +27,13 @@ import {
 import qs from 'qs';
 import { DateTime, Interval } from 'luxon';
 import { pickBy, identity } from 'lodash';
-import { DiscoveryApi } from '@backstage/core-plugin-api';
+import { DiscoveryApi, FetchApi } from '@backstage/core-plugin-api';
 
 export class BitriseClientApi implements BitriseApi {
-  constructor(private readonly discoveryApi: DiscoveryApi) {}
+  constructor(
+    private readonly discoveryApi: DiscoveryApi,
+    private readonly fetchApi: FetchApi,
+  ) {}
 
   async getArtifactDetails(
     appSlug: string,
@@ -38,7 +41,7 @@ export class BitriseClientApi implements BitriseApi {
     artifactSlug: string,
   ): Promise<BitriseBuildArtifactDetails | undefined> {
     const baseUrl = await this.discoveryApi.getBaseUrl('proxy');
-    const artifactResponse = await fetch(
+    const artifactResponse = await this.fetchApi.fetch(
       `${baseUrl}/bitrise/apps/${appSlug}/builds/${buildSlug}/artifacts/${artifactSlug}`,
     );
 
@@ -52,7 +55,7 @@ export class BitriseClientApi implements BitriseApi {
     buildSlug: string,
   ): Promise<BitriseBuildArtifact[]> {
     const baseUrl = await this.discoveryApi.getBaseUrl('proxy');
-    const response = await fetch(
+    const response = await this.fetchApi.fetch(
       `${baseUrl}/bitrise/apps/${appSlug}/builds/${buildSlug}/artifacts`,
     );
 
@@ -63,7 +66,9 @@ export class BitriseClientApi implements BitriseApi {
 
   async getAppsPaginated(from: string): Promise<BitriseApp[]> {
     const baseUrl = await this.discoveryApi.getBaseUrl('proxy');
-    const appsResponse = await fetch(`${baseUrl}/bitrise/apps?next=${from}`);
+    const appsResponse = await this.fetchApi.fetch(
+      `${baseUrl}/bitrise/apps?next=${from}`,
+    );
 
     const appsData = await appsResponse.json();
 
@@ -88,7 +93,7 @@ export class BitriseClientApi implements BitriseApi {
 
   async getBuildWorkflows(appSlug: string): Promise<string[]> {
     const baseUrl = await this.discoveryApi.getBaseUrl('proxy');
-    const response = await fetch(
+    const response = await this.fetchApi.fetch(
       `${baseUrl}/bitrise/apps/${appSlug}/build-workflows`,
     );
     const data = await response.json();
@@ -106,7 +111,7 @@ export class BitriseClientApi implements BitriseApi {
       url = `${url}?${qs.stringify(pickBy(params, identity))}`;
     }
 
-    const response = await fetch(url);
+    const response = await this.fetchApi.fetch(url);
     const data = await response.json();
     const builds: BitriseBuildResponseItem[] = data.data;
 

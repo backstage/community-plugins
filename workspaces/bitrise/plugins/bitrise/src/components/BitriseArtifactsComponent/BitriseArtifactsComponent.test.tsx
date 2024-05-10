@@ -69,8 +69,8 @@ describe('BitriseArtifactsComponent', () => {
   it('should display a table if there are artifacts', async () => {
     (useBitriseArtifacts as jest.Mock).mockReturnValue({
       value: [
-        { title: 'some-title-1', slug: 'some-slug' },
-        { title: 'some-title-2', slug: 'some-slug' },
+        { title: 'some-title-1', slug: 'some-slug-1' },
+        { title: 'some-title-2', slug: 'some-slug-2' },
       ],
     });
 

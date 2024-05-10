@@ -2531,7 +2531,6 @@ __metadata:
     "@types/react": ^16.13.1 || ^17.0.0 || ^18.0.0
     "@types/react-dom": ^18.2.19
     canvas: ^2.11.2
-    cross-fetch: ^4.0.0
     msw: ^1.0.0
     qs: ^6.10.1
     react: ^16.13.1 || ^17.0.0 || ^18.0.0

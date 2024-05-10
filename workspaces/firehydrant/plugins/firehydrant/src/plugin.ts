@@ -13,12 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import { fireHydrantApiRef, FireHydrantAPIClient } from './api';
 import {
   createApiFactory,
   createPlugin,
   discoveryApiRef,
   createComponentExtension,
+  fetchApiRef,
 } from '@backstage/core-plugin-api';
 
 import { rootRouteRef } from './routes';
@@ -29,8 +31,9 @@ export const firehydrantPlugin = createPlugin({
   apis: [
     createApiFactory({
       api: fireHydrantApiRef,
-      deps: { discoveryApi: discoveryApiRef },
-      factory: ({ discoveryApi }) => new FireHydrantAPIClient({ discoveryApi }),
+      deps: { discoveryApi: discoveryApiRef, fetchApi: fetchApiRef },
+      factory: ({ discoveryApi, fetchApi }) =>
+        new FireHydrantAPIClient({ discoveryApi, fetchApi }),
     }),
   ],
   routes: {

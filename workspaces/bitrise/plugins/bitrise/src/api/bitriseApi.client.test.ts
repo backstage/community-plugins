@@ -26,12 +26,13 @@ const server = setupServer();
 describe('BitriseClientApi', () => {
   setupRequestMockHandlers(server);
 
+  const fetchApi = { fetch };
   const mockBaseUrl = 'http://backstage:9191/api/proxy';
   const discoveryApi = UrlPatternDiscovery.compile(mockBaseUrl);
   let client: BitriseApi;
 
   beforeEach(() => {
-    client = new BitriseClientApi(discoveryApi);
+    client = new BitriseClientApi(discoveryApi, fetchApi);
   });
 
   describe('getBuilds()', () => {
@@ -82,32 +83,29 @@ describe('BitriseClientApi', () => {
   describe('getApp()', () => {
     it('should get all apps', async () => {
       server.use(
-        rest.get(
-          `${mockBaseUrl}/bitrise/apps?next=slug-2-1`,
-          (_req, res, ctx) => {
-            const next = _req.url.searchParams.get('next');
-            if (next === 'slug-2-1') {
-              return res(
-                ctx.json({
-                  data: [{ title: 'app21', slug: 'slug-2-1' }],
-                }),
-              );
-            }
+        rest.get(`${mockBaseUrl}/bitrise/apps`, (_req, res, ctx) => {
+          const next = _req.url.searchParams.get('next');
+          if (next === 'slug-2-1') {
             return res(
               ctx.json({
-                data: [
-                  { title: 'app11', slug: 'slug-1-1' },
-                  { title: 'app12', slug: 'slug-1-2' },
-                ],
-                paging: {
-                  next: 'slug-2-1',
-                  page_item_limit: 0,
-                  total_item_count: 0,
-                },
+                data: [{ title: 'app21', slug: 'slug-2-1' }],
               }),
             );
-          },
-        ),
+          }
+          return res(
+            ctx.json({
+              data: [
+                { title: 'app11', slug: 'slug-1-1' },
+                { title: 'app12', slug: 'slug-1-2' },
+              ],
+              paging: {
+                next: 'slug-2-1',
+                page_item_limit: 0,
+                total_item_count: 0,
+              },
+            }),
+          );
+        }),
       );
 
       const apps = await client.getApps();
