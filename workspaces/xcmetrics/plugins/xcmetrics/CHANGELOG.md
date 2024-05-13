@@ -1,5 +1,11 @@
 # @backstage-community/plugin-xcmetrics
 
+## 0.2.54
+
+### Patch Changes
+
+- 1255628: Use the `fetchApi` instead of native fetch
+
 ## 0.2.53
 
 ### Patch Changes
