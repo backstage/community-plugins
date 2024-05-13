@@ -71,4 +71,72 @@ describe('<GroupsDiagram />', () => {
       screen.getByRole('link', { name: 'my-namespace/group-a' }),
     ).toBeInTheDocument();
   });
+
+  it('hide children', async () => {
+    const catalogApi: Partial<CatalogApi> = {
+      getEntities: () =>
+        Promise.resolve({
+          items: [
+            {
+              apiVersion: 'backstage.io/v1alpha1',
+              kind: 'Group',
+              metadata: {
+                name: 'parent-a',
+                namespace: 'my-namespace',
+              },
+              spec: {
+                profile: {
+                  displayName: 'Parent A',
+                },
+                type: 'organization',
+              },
+            },
+            {
+              apiVersion: 'backstage.io/v1alpha1',
+              kind: 'Group',
+              metadata: {
+                name: 'child-a',
+                namespace: 'my-namespace',
+              },
+              spec: {
+                profile: {
+                  displayName: 'Child A',
+                },
+                type: 'organization',
+              },
+              relations: [
+                {
+                  type: 'childOf',
+                  targetRef: 'group:default/parent-a',
+                  target: {
+                    kind: 'group',
+                    namespace: 'default',
+                    name: 'parent-a',
+                  },
+                },
+              ],
+            },
+          ] as Entity[],
+        }),
+    };
+
+    await renderInTestApp(
+      <TestApiProvider apis={[[catalogApiRef, catalogApi]]}>
+        <GroupsDiagram hideChildren />
+      </TestApiProvider>,
+      {
+        mountedRoutes: {
+          '/catalog/:namespace/:kind/:name': entityRouteRef,
+        },
+      },
+    );
+
+    expect(
+      screen.getByRole('link', { name: 'my-namespace/parent-a' }),
+    ).toBeInTheDocument();
+
+    expect(
+      screen.queryByRole('link', { name: 'my-namespace/child-a' }),
+    ).not.toBeInTheDocument();
+  });
 });
