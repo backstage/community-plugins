@@ -1,4 +1,5 @@
-import { Entity } from '@backstage/catalog-model';
+import { DEFAULT_NAMESPACE, Entity } from '@backstage/catalog-model';
+import { ResponseError } from '@backstage/errors';
 import { DiscoveryApi, FetchApi } from '@backstage/core-plugin-api';
 import { DeploymentResponse } from './types';
 
@@ -12,12 +13,15 @@ export class L5dClient {
   }
 
   async getStatsForEntity(entity: Entity): Promise<DeploymentResponse> {
-    return await this.fetchApi
-      .fetch(
-        `${await this.discoveryApi.getBaseUrl('linkerd')}/namespace/${
-          entity.metadata.namespace
-        }/deployment/${entity.metadata.name}/stats`,
-      )
-      .then(r => r.json());
+    const baseUrl = await this.discoveryApi.getBaseUrl('linkerd');
+    const url = `/namespace/${encodeURIComponent(
+      entity.metadata.namespace ?? DEFAULT_NAMESPACE,
+    )}/deployment/${encodeURIComponent(entity.metadata.name)}/stats`;
+
+    const response = await this.fetchApi.fetch(`${baseUrl}${url}`);
+    if (!response.ok) {
+      throw await ResponseError.fromResponse(response);
+    }
+    return response.json();
   }
 }

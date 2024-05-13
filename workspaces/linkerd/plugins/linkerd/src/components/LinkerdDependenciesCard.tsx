@@ -4,6 +4,7 @@ import {
   CardContent,
   CardHeader,
   Divider,
+  Typography,
   makeStyles,
 } from '@material-ui/core';
 import { linkerdPluginRef } from '../plugin';
@@ -40,7 +41,7 @@ export const LinkerdDependenciesCard = () => {
 
   const content = () => {
     if (!stats) {
-      return <p>Loading...</p>;
+      return <Typography paragraph>Loading...</Typography>;
     }
     if (stats) {
       if (
@@ -48,10 +49,10 @@ export const LinkerdDependenciesCard = () => {
         !Object.values(stats.outgoing).length
       ) {
         return (
-          <p>
+          <Typography paragraph>
             This service doesn't look like it's tagged with the right service,
             or linkerd is not injected.
-          </p>
+          </Typography>
         );
       }
     }

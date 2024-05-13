@@ -5,7 +5,7 @@ import {
 import { createRouter } from './service/router';
 
 /**
- * linkerdPlugin backend plugin
+ * linkerd backend plugin
  *
  * @public
  */
