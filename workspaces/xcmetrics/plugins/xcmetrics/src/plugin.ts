@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import {
   createApiFactory,
   createPlugin,
   createRoutableExtension,
   discoveryApiRef,
+  fetchApiRef,
 } from '@backstage/core-plugin-api';
 import { xcmetricsApiRef, XcmetricsClient } from './api';
 import { rootRouteRef } from './routes';
@@ -33,9 +35,10 @@ export const xcmetricsPlugin = createPlugin({
       api: xcmetricsApiRef,
       deps: {
         discoveryApi: discoveryApiRef,
+        fetchApi: fetchApiRef,
       },
-      factory({ discoveryApi }) {
-        return new XcmetricsClient({ discoveryApi });
+      factory({ discoveryApi, fetchApi }) {
+        return new XcmetricsClient({ discoveryApi, fetchApi });
       },
     }),
   ],

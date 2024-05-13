@@ -105,6 +105,7 @@ describe('ApacheAirflowClient', () => {
 
   const mockBaseUrl = 'http://backstage:9191/api/proxy';
   const discoveryApi = UrlPatternDiscovery.compile(mockBaseUrl);
+  const fetchApi = { fetch };
   let client: ApacheAirflowClient;
   const setupHandlers = () => {
     server.use(
@@ -199,7 +200,8 @@ describe('ApacheAirflowClient', () => {
   beforeEach(() => {
     setupHandlers();
     client = new ApacheAirflowClient({
-      discoveryApi: discoveryApi,
+      discoveryApi,
+      fetchApi,
       baseUrl: 'localhost:8080/',
     });
   });
