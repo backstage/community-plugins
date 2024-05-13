@@ -1,5 +1,11 @@
 # @backstage-community/plugin-firehydrant
 
+## 0.2.20
+
+### Patch Changes
+
+- 1255628: Use the `fetchApi` instead of native fetch
+
 ## 0.2.19
 
 ### Patch Changes
