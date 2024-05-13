@@ -1,5 +1,11 @@
 # @backstage-community/plugin-codescene
 
+## 0.1.28
+
+### Patch Changes
+
+- 1255628: Use the `fetchApi` instead of native fetch
+
 ## 0.1.27
 
 ### Patch Changes
