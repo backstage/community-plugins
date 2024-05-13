@@ -1,5 +1,11 @@
 # @backstage-community/plugin-entity-validation
 
+## 0.1.21
+
+### Patch Changes
+
+- fb7f04c: Fine-tune the language used throughout the plugin copy to be a bit more file name agnostic, given that not all Backstage entity descriptor YAML files are named catalog-info.yaml.
+
 ## 0.1.20
 
 ### Patch Changes
