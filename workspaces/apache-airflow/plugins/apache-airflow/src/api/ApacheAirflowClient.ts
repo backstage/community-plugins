@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-import { DiscoveryApi } from '@backstage/core-plugin-api';
-import fetch from 'cross-fetch';
+import { DiscoveryApi, FetchApi } from '@backstage/core-plugin-api';
 import qs from 'qs';
 import { ApacheAirflowApi } from './ApacheAirflowApi';
 import {
@@ -28,17 +27,21 @@ import {
 import { DagRun } from './types/Dags';
 
 export class ApacheAirflowClient implements ApacheAirflowApi {
-  discoveryApi: DiscoveryApi;
+  private readonly discoveryApi: DiscoveryApi;
+  private readonly fetchApi: FetchApi;
   baseUrl: string;
 
   constructor({
     discoveryApi,
+    fetchApi,
     baseUrl = 'http://localhost:8080',
   }: {
     discoveryApi: DiscoveryApi;
+    fetchApi: FetchApi;
     baseUrl: string;
   }) {
     this.discoveryApi = discoveryApi;
+    this.fetchApi = fetchApi;
     this.baseUrl = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
   }
 
@@ -158,7 +161,7 @@ export class ApacheAirflowClient implements ApacheAirflowApi {
 
   private async fetch<T = any>(input: string, init?: RequestInit): Promise<T> {
     const proxyUri = `${await this.discoveryApi.getBaseUrl('proxy')}/airflow`;
-    const response = await fetch(`${proxyUri}${input}`, init);
+    const response = await this.fetchApi.fetch(`${proxyUri}${input}`, init);
     if (!response.ok) throw new Error(response.statusText);
     return await response.json();
   }

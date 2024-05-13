@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import { ILertClient, ilertApiRef } from './api';
 import { iLertRouteRef } from './route-refs';
 import {
@@ -20,9 +21,9 @@ import {
   createApiFactory,
   createPlugin,
   discoveryApiRef,
-  identityApiRef,
   createRoutableExtension,
   createComponentExtension,
+  fetchApiRef,
 } from '@backstage/core-plugin-api';
 
 /** @public */
@@ -33,11 +34,11 @@ export const ilertPlugin = createPlugin({
       api: ilertApiRef,
       deps: {
         discoveryApi: discoveryApiRef,
-        identityApi: identityApiRef,
         configApi: configApiRef,
+        fetchApi: fetchApiRef,
       },
-      factory: ({ discoveryApi, configApi }) =>
-        ILertClient.fromConfig(configApi, discoveryApi),
+      factory: ({ discoveryApi, configApi, fetchApi }) =>
+        ILertClient.fromConfig(configApi, discoveryApi, fetchApi),
     }),
   ],
   routes: {

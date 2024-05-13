@@ -13,13 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import {
   ServiceAnalyticsResponse,
   ServiceDetailsResponse,
   ServiceIncidentsResponse,
 } from './types';
 import { Incident, Service } from '../components/types';
-import { createApiRef, DiscoveryApi } from '@backstage/core-plugin-api';
+import {
+  createApiRef,
+  DiscoveryApi,
+  FetchApi,
+} from '@backstage/core-plugin-api';
 
 export interface FireHydrantAPI {
   getServiceAnalytics(options: {
@@ -44,6 +49,7 @@ export const fireHydrantApiRef = createApiRef<FireHydrantAPI>({
 
 export type Options = {
   discoveryApi: DiscoveryApi;
+  fetchApi: FetchApi;
   proxyPath?: string;
 };
 
@@ -51,10 +57,12 @@ const DEFAULT_PROXY_PATH = '/firehydrant/api';
 
 export class FireHydrantAPIClient implements FireHydrantAPI {
   private readonly discoveryApi: DiscoveryApi;
+  private readonly fetchApi: FetchApi;
   private readonly proxyPath: string;
 
   constructor(options: Options) {
     this.discoveryApi = options.discoveryApi;
+    this.fetchApi = options.fetchApi;
     this.proxyPath = options.proxyPath ?? DEFAULT_PROXY_PATH;
   }
 
@@ -64,7 +72,7 @@ export class FireHydrantAPIClient implements FireHydrantAPI {
     endDate: string;
   }): Promise<ServiceAnalyticsResponse> {
     const proxyUrl = await this.getApiUrl();
-    const response = await fetch(
+    const response = await this.fetchApi.fetch(
       `${proxyUrl}/metrics/services/${options.serviceId}?start_date=${options.startDate}&end_date=${options.endDate}`,
     );
     if (!response.ok) {
@@ -84,7 +92,7 @@ export class FireHydrantAPIClient implements FireHydrantAPI {
     const query = new URLSearchParams();
     query.set(queryOpt, options.serviceName);
     const proxyUrl = await this.getApiUrl();
-    const response = await fetch(`${proxyUrl}/services?${query}`);
+    const response = await this.fetchApi.fetch(`${proxyUrl}/services?${query}`);
 
     if (!response.ok) {
       throw new Error(
@@ -118,7 +126,7 @@ export class FireHydrantAPIClient implements FireHydrantAPI {
     serviceId: string;
   }): Promise<ServiceIncidentsResponse> {
     const proxyUrl = await this.getApiUrl();
-    const response = await fetch(
+    const response = await this.fetchApi.fetch(
       `${proxyUrl}/incidents?services=${options.serviceId}&active=true`,
     );
     if (!response.ok) {

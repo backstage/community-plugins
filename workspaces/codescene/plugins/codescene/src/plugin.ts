@@ -19,6 +19,7 @@ import {
   createApiFactory,
   discoveryApiRef,
   createComponentExtension,
+  fetchApiRef,
 } from '@backstage/core-plugin-api';
 import { codesceneApiRef, CodeSceneClient } from './api/api';
 import { rootRouteRef, projectDetailsRouteRef } from './routes';
@@ -31,8 +32,12 @@ export const codescenePlugin = createPlugin({
   apis: [
     createApiFactory({
       api: codesceneApiRef,
-      deps: { discoveryApi: discoveryApiRef },
-      factory: ({ discoveryApi }) => new CodeSceneClient({ discoveryApi }),
+      deps: {
+        discoveryApi: discoveryApiRef,
+        fetchApi: fetchApiRef,
+      },
+      factory: ({ discoveryApi, fetchApi }) =>
+        new CodeSceneClient({ discoveryApi, fetchApi }),
     }),
   ],
   routes: {

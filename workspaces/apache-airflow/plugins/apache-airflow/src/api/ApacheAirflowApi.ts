@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { createApiRef, DiscoveryApi } from '@backstage/core-plugin-api';
+import { createApiRef } from '@backstage/core-plugin-api';
 import { Dag, InstanceStatus, InstanceVersion } from './types';
 import { DagRun } from './types/Dags';
 
@@ -23,7 +23,6 @@ export const apacheAirflowApiRef = createApiRef<ApacheAirflowApi>({
 });
 
 export type ApacheAirflowApi = {
-  discoveryApi: DiscoveryApi;
   baseUrl: string;
   listDags(options?: { objectsPerRequest: number }): Promise<Dag[]>;
   getDags(dagIds: string[]): Promise<{ dags: Dag[]; dagsNotFound: string[] }>;

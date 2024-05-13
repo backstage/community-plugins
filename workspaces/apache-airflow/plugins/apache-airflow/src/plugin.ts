@@ -23,6 +23,7 @@ import {
   createPlugin,
   createRoutableExtension,
   discoveryApiRef,
+  fetchApiRef,
 } from '@backstage/core-plugin-api';
 
 /** @public */
@@ -34,10 +35,15 @@ export const apacheAirflowPlugin = createPlugin({
   apis: [
     createApiFactory({
       api: apacheAirflowApiRef,
-      deps: { configApi: configApiRef, discoveryApi: discoveryApiRef },
-      factory: ({ configApi, discoveryApi }) =>
+      deps: {
+        configApi: configApiRef,
+        discoveryApi: discoveryApiRef,
+        fetchApi: fetchApiRef,
+      },
+      factory: ({ configApi, discoveryApi, fetchApi }) =>
         new ApacheAirflowClient({
           discoveryApi,
+          fetchApi,
           baseUrl: configApi.getString('apacheAirflow.baseUrl'),
         }),
     }),
