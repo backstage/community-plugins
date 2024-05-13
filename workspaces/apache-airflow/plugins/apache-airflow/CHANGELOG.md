@@ -1,5 +1,11 @@
 # @backstage-community/plugin-apache-airflow
 
+## 0.2.26
+
+### Patch Changes
+
+- 1255628: Use the `fetchApi` instead of native fetch
+
 ## 0.2.25
 
 ### Patch Changes
