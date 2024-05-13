@@ -1,5 +1,11 @@
 # @backstage-community/plugin-bitrise
 
+## 0.1.63
+
+### Patch Changes
+
+- 1255628: Use the `fetchApi` instead of native fetch
+
 ## 0.1.62
 
 ### Patch Changes
