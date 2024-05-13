@@ -50,7 +50,7 @@ kubernetes:
     type: 'multiTenant'
   clusterLocatorMethods:
     - type: 'config'
-      clusters: 
+      clusters:
         # taken from kubeconfig, might need to be changed for you. Run `kubectl config view --minify --output json` to find the server URL
         - name: 'kind'
           authProvider: 'serviceAccount'
