@@ -3,7 +3,7 @@ import { ResponseError } from '@backstage/errors';
 import { DiscoveryApi, FetchApi } from '@backstage/core-plugin-api';
 import { DeploymentResponse } from './types';
 
-export class L5dClient {
+export class LinkerdClient {
   private readonly discoveryApi: DiscoveryApi;
   private readonly fetchApi: FetchApi;
 

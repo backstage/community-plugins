@@ -8,9 +8,9 @@ import {
 } from '@backstage/core-plugin-api';
 
 import { rootRouteRef } from './routes';
-import { L5dClient } from './api/client';
+import { LinkerdClient } from './api/client';
 
-export const linkerdPluginRef = createApiRef<L5dClient>({
+export const linkerdPluginRef = createApiRef<LinkerdClient>({
   id: 'plugin.linkerd.service',
 });
 
@@ -28,7 +28,7 @@ export const linkerdPlugin = createPlugin({
       api: linkerdPluginRef,
       deps: { discoveryApi: discoveryApiRef, fetchApi: fetchApiRef },
       factory: ({ discoveryApi, fetchApi }) =>
-        new L5dClient({ discoveryApi, fetchApi }),
+        new LinkerdClient({ discoveryApi, fetchApi }),
     }),
   ],
 });
