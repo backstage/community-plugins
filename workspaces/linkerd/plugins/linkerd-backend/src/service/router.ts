@@ -6,8 +6,10 @@ import {
   HttpAuthService,
   LoggerService,
 } from '@backstage/backend-plugin-api';
+import { ResponseError } from '@backstage/errors';
 import express, { Request } from 'express';
 import Router from 'express-promise-router';
+import fetch from 'node-fetch';
 import qs from 'qs';
 import ms from 'ms';
 
@@ -30,7 +32,7 @@ export async function createRouter(
     response.json({ status: 'ok' });
   });
 
-  const makeProxyRequest = async (
+  const makeProxyRequest = async <T = any>(
     url: string,
     options: { credentials: BackstageCredentials },
   ) => {
@@ -42,11 +44,17 @@ export async function createRouter(
       targetPluginId: 'kubernetes',
     });
 
-    return fetch(targetUrl, {
+    const response = await fetch(targetUrl, {
       headers: {
         Authorization: `Bearer ${credentials.token}`,
       },
-    }).then(response => response.json());
+    });
+
+    if (!response.ok) {
+      throw ResponseError.fromResponse(response);
+    }
+
+    return response.json() as Promise<T>;
   };
 
   const generateTpsStats = async (
