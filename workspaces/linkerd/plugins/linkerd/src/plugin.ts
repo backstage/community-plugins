@@ -14,6 +14,10 @@ export const linkerdPluginRef = createApiRef<L5dClient>({
   id: 'plugin.linkerd.service',
 });
 
+/**
+ * @public
+ * The linkerd plugin
+ */
 export const linkerdPlugin = createPlugin({
   id: 'linkerd',
   routes: {
@@ -29,6 +33,10 @@ export const linkerdPlugin = createPlugin({
   ],
 });
 
+/**
+ * @public
+ * A card that displays the dependencies of a Linkerd deployment
+ */
 export const LinkerdDependenciesCard = linkerdPlugin.provide(
   createComponentExtension({
     name: 'LinkerdDependenciesCard',
