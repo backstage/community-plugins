@@ -134,7 +134,7 @@ export async function createRouter(
   });
 
   router.get(
-    '/namespace/:namespace/deployment/:deployment/stats',
+    '/namespace/:namespace/deployments/:deployment/stats',
     async (request, response) => {
       const {
         params: { namespace, deployment },

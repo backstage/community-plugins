@@ -16,7 +16,7 @@ export class LinkerdClient {
     const baseUrl = await this.discoveryApi.getBaseUrl('linkerd');
     const url = `/namespace/${encodeURIComponent(
       entity.metadata.namespace ?? DEFAULT_NAMESPACE,
-    )}/deployment/${encodeURIComponent(entity.metadata.name)}/stats`;
+    )}/deployments/${encodeURIComponent(entity.metadata.name)}/stats`;
 
     const response = await this.fetchApi.fetch(`${baseUrl}${url}`);
     if (!response.ok) {
