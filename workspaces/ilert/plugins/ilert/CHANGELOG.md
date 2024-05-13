@@ -1,5 +1,11 @@
 # @backstage-community/plugin-ilert
 
+## 0.3.0
+
+### Minor Changes
+
+- 1255628: **BREAKING**: `ILertClient` now requires the `fetchApi` to be passed in. This lets the plugin work safely with the upcoming `proxy-backend` [security changes](https://github.com/backstage/backstage/pull/24643).
+
 ## 0.2.24
 
 ### Patch Changes
