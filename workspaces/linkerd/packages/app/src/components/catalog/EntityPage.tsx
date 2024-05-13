@@ -28,17 +28,6 @@ import {
   hasRelationWarnings,
   EntityRelationWarning,
 } from '@backstage/plugin-catalog';
-import {
-  isGithubActionsAvailable,
-  EntityGithubActionsContent,
-} from '@backstage/plugin-github-actions';
-import {
-  EntityUserProfileCard,
-  EntityGroupProfileCard,
-  EntityMembersListCard,
-  EntityOwnershipCard,
-} from '@backstage/plugin-org';
-import { EntityTechdocsContent } from '@backstage/plugin-techdocs';
 import { EmptyState } from '@backstage/core-components';
 import {
   Direction,
@@ -59,27 +48,12 @@ import {
   isKubernetesAvailable,
 } from '@backstage/plugin-kubernetes';
 
-import { LinkerdDependenciesCard } from '@internal/linkerd';
-
-import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
-import { ReportIssue } from '@backstage/plugin-techdocs-module-addons-contrib';
-
-const techdocsContent = (
-  <EntityTechdocsContent>
-    <TechDocsAddons>
-      <ReportIssue />
-    </TechDocsAddons>
-  </EntityTechdocsContent>
-);
+import { LinkerdDependenciesCard } from '@backstage-community/plugin-linkerd';
 
 const cicdContent = (
   // This is an example of how you can implement your company's logic in entity page.
   // You can for example enforce that all components of type 'service' should use GitHubActions
   <EntitySwitch>
-    <EntitySwitch.Case if={isGithubActionsAvailable}>
-      <EntityGithubActionsContent />
-    </EntitySwitch.Case>
-
     <EntitySwitch.Case>
       <EmptyState
         title="No CI/CD available for this entity"
@@ -192,10 +166,6 @@ const serviceEntityPage = (
         </Grid>
       </Grid>
     </EntityLayout.Route>
-
-    <EntityLayout.Route path="/docs" title="Docs">
-      {techdocsContent}
-    </EntityLayout.Route>
   </EntityLayout>
 );
 
@@ -236,10 +206,6 @@ const websiteEntityPage = (
         </Grid>
       </Grid>
     </EntityLayout.Route>
-
-    <EntityLayout.Route path="/docs" title="Docs">
-      {techdocsContent}
-    </EntityLayout.Route>
   </EntityLayout>
 );
 
@@ -254,10 +220,6 @@ const defaultEntityPage = (
   <EntityLayout>
     <EntityLayout.Route path="/" title="Overview">
       {overviewContent}
-    </EntityLayout.Route>
-
-    <EntityLayout.Route path="/docs" title="Docs">
-      {techdocsContent}
     </EntityLayout.Route>
   </EntityLayout>
 );
@@ -305,44 +267,6 @@ const apiPage = (
       <Grid container spacing={3}>
         <Grid item xs={12}>
           <EntityApiDefinitionCard />
-        </Grid>
-      </Grid>
-    </EntityLayout.Route>
-  </EntityLayout>
-);
-
-const userPage = (
-  <EntityLayout>
-    <EntityLayout.Route path="/" title="Overview">
-      <Grid container spacing={3}>
-        {entityWarningContent}
-        <Grid item xs={12} md={6}>
-          <EntityUserProfileCard variant="gridItem" />
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <EntityOwnershipCard variant="gridItem" />
-        </Grid>
-      </Grid>
-    </EntityLayout.Route>
-  </EntityLayout>
-);
-
-const groupPage = (
-  <EntityLayout>
-    <EntityLayout.Route path="/" title="Overview">
-      <Grid container spacing={3}>
-        {entityWarningContent}
-        <Grid item xs={12} md={6}>
-          <EntityGroupProfileCard variant="gridItem" />
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <EntityOwnershipCard variant="gridItem" />
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <EntityMembersListCard />
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <EntityLinksCard />
         </Grid>
       </Grid>
     </EntityLayout.Route>
@@ -419,8 +343,6 @@ export const entityPage = (
   <EntitySwitch>
     <EntitySwitch.Case if={isKind('component')} children={componentPage} />
     <EntitySwitch.Case if={isKind('api')} children={apiPage} />
-    <EntitySwitch.Case if={isKind('group')} children={groupPage} />
-    <EntitySwitch.Case if={isKind('user')} children={userPage} />
     <EntitySwitch.Case if={isKind('system')} children={systemPage} />
     <EntitySwitch.Case if={isKind('domain')} children={domainPage} />
 
