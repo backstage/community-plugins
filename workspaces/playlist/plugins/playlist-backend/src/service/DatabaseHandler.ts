@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-import { resolvePackagePath } from '@backstage/backend-common';
-import { BackstageUserPrincipal } from '@backstage/backend-plugin-api';
+import {
+  BackstageUserPrincipal,
+  resolvePackagePath,
+} from '@backstage/backend-plugin-api';
 import {
   Playlist,
   PlaylistMetadata,
