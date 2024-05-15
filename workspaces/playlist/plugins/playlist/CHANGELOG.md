@@ -1,5 +1,13 @@
 # @backstage-community/plugin-playlist
 
+## 0.2.11
+
+### Patch Changes
+
+- 0df16be: Update dependencies to Backstage version 1.27
+- Updated dependencies [0df16be]
+  - @backstage-community/plugin-playlist-common@0.1.17
+
 ## 0.2.10
 
 ### Patch Changes
