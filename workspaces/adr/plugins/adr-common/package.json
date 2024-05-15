@@ -33,13 +33,13 @@
     "test": "backstage-cli package test"
   },
   "dependencies": {
-    "@backstage/catalog-model": "^1.4.5",
-    "@backstage/integration": "^1.10.0",
+    "@backstage/catalog-model": "^1.5.0",
+    "@backstage/integration": "^1.11.0",
     "@backstage/plugin-search-common": "^1.2.11",
     "front-matter": "^4.0.2",
     "luxon": "^3.0.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.26.3"
+    "@backstage/cli": "^0.26.5"
   }
 }
