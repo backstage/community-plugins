@@ -10,8 +10,7 @@ import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { JSX as JSX_2 } from 'react';
 import { default as React_2 } from 'react';
 import { RouteRef } from '@backstage/core-plugin-api';
-import { VoyagerDisplayOptions } from 'graphql-voyager/typings/components/Voyager';
-import { WorkerCallback } from 'graphql-voyager/typings/utils/types';
+import { VoyagerProps } from 'graphql-voyager';
 
 // @public (undocumented)
 export type GraphQLVoyagerApi = {
@@ -27,13 +26,7 @@ export type GraphQLVoyagerEndpoint = {
   title: string;
   introspection: (body: any) => Promise<any>;
   introspectionErrorMessage: string;
-  voyagerProps?: {
-    displayOptions?: VoyagerDisplayOptions;
-    hideDocs?: boolean;
-    hideSettings?: boolean;
-    workerURI?: string;
-    loadWorker?: WorkerCallback;
-  };
+  voyagerProps?: VoyagerProps;
 };
 
 // @public (undocumented)
