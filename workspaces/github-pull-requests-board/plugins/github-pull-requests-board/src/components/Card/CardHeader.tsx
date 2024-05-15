@@ -91,10 +91,7 @@ const CardHeader: FunctionComponent<Props> = (props: Props) => {
       {status && (
         <Box display="flex" alignItems="center" flexWrap="wrap" paddingTop={1}>
           <Typography variant="body2" component="p">
-            Commit Status:{' '}
-            <strong>
-              {decorateCommitStatus(status)}
-            </strong>
+            Commit Status: <strong>{decorateCommitStatus(status)}</strong>
           </Typography>
         </Box>
       )}

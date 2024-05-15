@@ -23,7 +23,7 @@ import {
   Author,
   PRCardFormating,
   Repository,
-  Status
+  Status,
 } from './types';
 import { COLUMNS } from './constants';
 
@@ -160,16 +160,17 @@ export const shouldDisplayCard = (
 };
 
 export const decorateCommitStatus = (status: Status[]) => {
-  var statusString = status[0]?.commit.statusCheckRollup?.state || 'N/A';
-  if (statusString === 'SUCCESS') {
-    return '🟢 SUCCESS';
-  } else if (statusString === 'FAILURE') {
-    return '🔴 FAILURE';
-  } else if (statusString === 'PENDING') {
-    return '🟡 PENDING';
-  } else if (statusString === 'EXPECTED') {
-    return '🔵 EXPECTED';
-  } else {
-    return 'statusString';
+  const statusString = status[0]?.commit.statusCheckRollup?.state || 'N/A';
+  switch (statusString) {
+    case 'SUCCESS':
+      return '🟢 SUCCESS';
+    case 'FAILURE':
+      return '🔴 FAILURE';
+    case 'PENDING':
+      return '🟡 PENDING';
+    case 'EXPECTED':
+      return '🔵 EXPECTED';
+    default:
+      return 'statusString';
   }
 };
