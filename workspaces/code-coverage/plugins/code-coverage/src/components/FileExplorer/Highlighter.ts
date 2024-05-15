@@ -15,7 +15,7 @@
  */
 
 import 'highlight.js/styles/mono-blue.css';
-import { highlight } from 'highlight.js';
+import hljs from 'highlight.js';
 
 /*
  * Given a file extension, repo name, and array of code lines, return a Promise resolving
@@ -45,7 +45,7 @@ export const highlightLines = (fileExtension: string, lines: Array<string>) => {
   }
 
   lines.forEach(line => {
-    const result = highlight(line, {
+    const result = hljs.highlight(line, {
       language: fileformat,
       ignoreIllegals: true,
     });
