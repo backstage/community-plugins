@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 import { createApiRef } from '@backstage/core-plugin-api';
-import { VoyagerDisplayOptions } from 'graphql-voyager/typings/components/Voyager';
-import { WorkerCallback } from 'graphql-voyager/typings/utils/types';
+import { VoyagerProps } from 'graphql-voyager';
 
 /** @public */
 export type GraphQLVoyagerEndpoint = {
@@ -23,13 +22,7 @@ export type GraphQLVoyagerEndpoint = {
   title: string;
   introspection: (body: any) => Promise<any>;
   introspectionErrorMessage: string;
-  voyagerProps?: {
-    displayOptions?: VoyagerDisplayOptions;
-    hideDocs?: boolean;
-    hideSettings?: boolean;
-    workerURI?: string;
-    loadWorker?: WorkerCallback;
-  };
+  voyagerProps?: VoyagerProps;
 };
 
 /** @public */
