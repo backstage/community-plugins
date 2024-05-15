@@ -1,5 +1,13 @@
 # @backstage-community/plugin-entity-feedback-backend
 
+## 0.2.16
+
+### Patch Changes
+
+- 063687c: Update dependencies to Backstage version 1.27
+- Updated dependencies [063687c]
+  - @backstage-community/plugin-entity-feedback-common@0.1.5
+
 ## 0.2.15
 
 ### Patch Changes
