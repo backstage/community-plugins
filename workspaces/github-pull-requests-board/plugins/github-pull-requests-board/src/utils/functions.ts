@@ -171,6 +171,6 @@ export const decorateCommitStatus = (status: Status[]) => {
     case 'EXPECTED':
       return '🔵 EXPECTED';
     default:
-      return 'statusString';
+      return statusString;
   }
 };
