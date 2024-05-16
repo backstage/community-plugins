@@ -12,6 +12,8 @@ import Router from 'express-promise-router';
 import fetch from 'node-fetch';
 import qs from 'qs';
 import ms from 'ms';
+import { processStats } from '../lib/metricsUtils';
+import { StatsResponse } from '../types';
 
 export interface RouterOptions {
   logger: LoggerService;
@@ -79,43 +81,38 @@ export async function createRouter(
       window: '30s',
     };
 
-    const requests = await makeProxyRequest(
+    const requests = await makeProxyRequest<StatsResponse>(
       `/api/tps-reports?${qs.stringify(actualOptions)}`,
       { credentials: await httpAuth.credentials(req) },
     );
 
-    return requests.ok.statTables
-      .filter((table: any) => table.podGroup.rows.length)
-      .map((table: any) =>
-        table.podGroup.rows.reduce(
-          (prev: any[], current: any) => [...prev, current],
-          [],
-        ),
-      )
-      .flat()
-      .reduce((prev: any, current: any) => {
-        prev[current.resource.type] = prev[current.resource.type] || {};
-        prev[current.resource.type][current.resource.name] =
-          prev[current.resource.type][current.resource.name] || {};
+    return processStats(requests);
+  };
 
-        const timeWindowSeconds = Number(ms(current.timeWindow ?? 0)) / 1000;
-        const successCount = parseInt(current.stats?.successCount, 10);
-        const failureCount = parseInt(current.stats?.failureCount, 10);
-        const totalRequests = successCount + failureCount;
+  const getDeploymentStats = async (
+    {
+      namespace,
+      deployment,
+    }: {
+      namespace: string;
+      deployment: string;
+    },
+    req: Request,
+  ) => {
+    const actualOptions = {
+      resource_type: 'deployment',
+      resource_name: deployment,
+      namespace,
+      tcp_stats: true,
+      window: '1m',
+    };
 
-        const b7e = {
-          totalRequests,
-          rps: totalRequests / timeWindowSeconds,
-          successRate: (successCount / totalRequests) * 100,
-          failureRate: (failureCount / totalRequests) * 100,
-        };
+    const requests = await makeProxyRequest<StatsResponse>(
+      `/api/tps-reports?${qs.stringify(actualOptions)}`,
+      { credentials: await httpAuth.credentials(req) },
+    );
 
-        prev[current.resource.type][current.resource.name] = {
-          ...current,
-          b7e,
-        };
-        return prev;
-      }, {});
+    return processStats(requests);
   };
 
   router.get('/namespace/:namespace/deployments', async (req, response) => {
@@ -152,6 +149,7 @@ export async function createRouter(
       };
 
       response.send({
+        current: await getDeploymentStats({ namespace, deployment }, request),
         incoming: await generateTpsStats(toOptions, request),
         outgoing: await generateTpsStats(fromOptions, request),
       });

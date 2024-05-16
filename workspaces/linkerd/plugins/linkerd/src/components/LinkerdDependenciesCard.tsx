@@ -37,7 +37,7 @@ export const LinkerdDependenciesCard = () => {
 
   useInterval(async () => {
     setStats(await l5d.getStatsForEntity(entity));
-  }, 1000);
+  }, 10000);
 
   const content = () => {
     if (!stats) {
