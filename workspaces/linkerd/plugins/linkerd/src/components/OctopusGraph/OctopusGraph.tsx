@@ -1,7 +1,7 @@
 import { DeploymentResponse } from '../../api/types';
 import { Entity } from '@backstage/catalog-model';
 import 'reactflow/dist/style.css';
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback } from 'react';
 import ReactFlow, {
   useNodesState,
   useEdgesState,
