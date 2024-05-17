@@ -1,41 +1,35 @@
-interface Resource {
-  namespace: string;
-  type: string;
+export interface Metric {
   name: string;
-}
-interface Stats {
-  successCount: string;
-  failureCount: string;
-  latencyMsP50: string;
-  latencyMsP95: string;
-  latencyMsP99: string;
-  actualSuccessCount: string;
-  actualFailureCount: string;
-}
-
-interface BackstageMetrics {
+  namespace: string;
+  type: MetricType;
   totalRequests: number;
-  rps: number;
+  requestRate: number;
   successRate: number;
-  failureRate: number;
-}
-
-export interface Metrics {
-  resource: Resource;
-  timeWindow: string;
-  status: string;
-  meshedPodCount: string;
-  runningPodCount: string;
-  failedPodCount: string;
-  stats: Stats;
-  b7e: BackstageMetrics;
+  pods: {
+    totalPods: number;
+    meshedPods: number;
+    meshedPodsPercentage: number;
+  };
+  tcpStats?: {
+    openConnections: number;
+    readBytes: number;
+    writeBytes: number;
+    readRate: number;
+    writeRate: number;
+  };
+  latency?: {
+    p50: number;
+    p95: number;
+    p99: number;
+  };
 }
 
 type MetricType = Partial<'deployment' | 'service' | 'authority' | 'pod'>;
 
 export interface DeploymentResponse {
-  incoming: Record<MetricType, Metrics>;
-  outgoing: Record<MetricType, Metrics>;
+  incoming: Metric[];
+  outgoing: Metric[];
+  current: Metric;
 }
 
 export interface L5dClient {

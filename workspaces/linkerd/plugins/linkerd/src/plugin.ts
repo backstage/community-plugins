@@ -48,3 +48,17 @@ export const LinkerdDependenciesCard = linkerdPlugin.provide(
     },
   }),
 );
+
+/**
+ * @public
+ * A banner that displays whether a component is meshed with Linkerd
+ */
+export const LinkerdIsMeshedBanner = linkerdPlugin.provide(
+  createComponentExtension({
+    name: 'LinkerdIsMeshedBanner',
+    component: {
+      lazy: () =>
+        import('./components/IsMeshedBanner').then(m => m.IsMeshedBanner),
+    },
+  }),
+);
