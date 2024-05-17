@@ -36,6 +36,28 @@ const getSuccessRate = (row: StatRow) => {
   return Number(row.stats.successCount) / total;
 };
 
+const getTcpStats = (row: StatRow) => {
+  if (!row.tcpStats) {
+    return undefined;
+  }
+
+  const seconds = parse(row.timeWindow, 's');
+
+  if (!seconds) {
+    return undefined;
+  }
+
+  const readBytes = Number(row.tcpStats.readBytesTotal);
+  const writeBytes = Number(row.tcpStats.writeBytesTotal);
+
+  return {
+    openConnections: Number(row.tcpStats.openConnections),
+    readBytes,
+    writeBytes,
+    readRate: readBytes / seconds,
+    writeRate: writeBytes / seconds,
+  };
+};
 export const processStats = (stats: StatsResponse) => {
   if (!stats.ok) {
     throw new Error('Failed to fetch stats');
@@ -58,6 +80,7 @@ export const processStats = (stats: StatsResponse) => {
           (Number(row.meshedPodCount) / Number(row.runningPodCount)) * 100,
         )}%`,
       },
+      tcpStats: getTcpStats(row),
       latency: row.stats
         ? {
             p50: Number(row.stats.latencyMsP50),
