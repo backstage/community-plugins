@@ -34,3 +34,23 @@ export interface StatsResponse {
     }[];
   };
 }
+
+export interface EdgesResponse {
+  ok: {
+    edges: {
+      src: {
+        namespace: string;
+        resource: string;
+        type: string;
+      };
+      dst: {
+        namespace: string;
+        resource: string;
+        type: string;
+      };
+      clientId: string;
+      serverId: string;
+      noIdentityMsg: string;
+    }[];
+  };
+}

@@ -42,9 +42,7 @@ export const LinkerdDependenciesCard = linkerdPlugin.provide(
     name: 'LinkerdDependenciesCard',
     component: {
       lazy: () =>
-        import('./components/LinkerdDependenciesCard').then(
-          m => m.LinkerdDependenciesCard,
-        ),
+        import('./components/DependenciesCard').then(m => m.DependenciesCard),
     },
   }),
 );
