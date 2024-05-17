@@ -51,6 +51,7 @@ import {
 import {
   LinkerdDependenciesCard,
   LinkerdIsMeshedBanner,
+  LinkerdEdgesTable,
 } from '@backstage-community/plugin-linkerd';
 
 const cicdContent = (
@@ -112,16 +113,20 @@ const overviewContent = (
       <EntityAboutCard variant="gridItem" />
     </Grid>
     <Grid item md={6} xs={12}>
-      <EntitySwitch>
-        <EntitySwitch.Case if={isKubernetesAvailable}>
-          <LinkerdDependenciesCard />
-        </EntitySwitch.Case>
-        <EntitySwitch.Case>
-          <EntityCatalogGraphCard variant="gridItem" height={400} />
-        </EntitySwitch.Case>
-      </EntitySwitch>
+      <EntityCatalogGraphCard variant="gridItem" height={400} />
     </Grid>
-
+    <EntitySwitch>
+      <EntitySwitch.Case if={isKubernetesAvailable}>
+        <>
+          <Grid item md={6} xs={12}>
+            <LinkerdDependenciesCard />
+          </Grid>
+          <Grid item md={6} xs={12}>
+            <LinkerdEdgesTable />
+          </Grid>
+        </>
+      </EntitySwitch.Case>
+    </EntitySwitch>
     <Grid item md={4} xs={12}>
       <EntityLinksCard />
     </Grid>
