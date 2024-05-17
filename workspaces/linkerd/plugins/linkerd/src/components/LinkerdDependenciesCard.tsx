@@ -1,18 +1,20 @@
 import React, { useState } from 'react';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  Divider,
-  Typography,
-  makeStyles,
-} from '@material-ui/core';
+
 import { linkerdPluginRef } from '../plugin';
 import { useApi } from '@backstage/core-plugin-api';
 import { DeploymentResponse } from '../api/types';
 import useInterval from 'react-use/lib/useInterval';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { OctopusGraph } from './OctopusGraph/OctopusGraph';
+
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  Divider,
+  makeStyles,
+  Typography,
+} from '@material-ui/core';
 
 const useStyles = makeStyles({
   gridItemCard: {
@@ -29,6 +31,7 @@ const useStyles = makeStyles({
     padding: 16,
   },
 });
+
 export const LinkerdDependenciesCard = () => {
   const styles = useStyles();
   const l5d = useApi(linkerdPluginRef);
@@ -44,10 +47,7 @@ export const LinkerdDependenciesCard = () => {
       return <Typography paragraph>Loading...</Typography>;
     }
     if (stats) {
-      if (
-        !Object.values(stats.incoming).length &&
-        !Object.values(stats.outgoing).length
-      ) {
+      if (!stats.incoming.length && !stats.outgoing.length) {
         return (
           <Typography paragraph>
             This service doesn't look like it's tagged with the right service,
