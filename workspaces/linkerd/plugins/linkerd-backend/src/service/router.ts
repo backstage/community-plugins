@@ -11,7 +11,6 @@ import express, { Request } from 'express';
 import Router from 'express-promise-router';
 import fetch from 'node-fetch';
 import qs from 'qs';
-import ms from 'ms';
 import { processStats } from '../lib/metricsUtils';
 import { StatsResponse } from '../types';
 
@@ -104,7 +103,7 @@ export async function createRouter(
       resource_name: deployment,
       namespace,
       tcp_stats: true,
-      window: '1m',
+      window: '30s',
     };
 
     const requests = await makeProxyRequest<StatsResponse>(
