@@ -32,12 +32,9 @@ const useStyles = makeStyles({
 export const DependenciesCard = () => {
   const styles = useStyles();
   const { entity } = useEntity();
-  const { stats, loading } = useStatsForEntity(entity);
-  const content = () => {
-    if (loading && !stats) {
-      return <Typography paragraph>Loading...</Typography>;
-    }
+  const { stats } = useStatsForEntity(entity);
 
+  const content = () => {
     if (!stats?.incoming.length && !stats?.outgoing.length) {
       return (
         <Typography paragraph>
@@ -46,6 +43,7 @@ export const DependenciesCard = () => {
         </Typography>
       );
     }
+
     return <OctopusGraph stats={stats} entity={entity} />;
   };
 

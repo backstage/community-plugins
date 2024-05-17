@@ -60,3 +60,15 @@ export const LinkerdIsMeshedBanner = linkerdPlugin.provide(
     },
   }),
 );
+
+/**
+ * @public
+ */
+export const LinkerdEdgesTable = linkerdPlugin.provide(
+  createComponentExtension({
+    name: 'LinkerdEdgesTable',
+    component: {
+      lazy: () => import('./components/EdgesTable').then(m => m.EdgesTable),
+    },
+  }),
+);
