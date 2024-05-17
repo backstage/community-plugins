@@ -1,9 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-import { linkerdPluginRef } from '../plugin';
-import { useApi } from '@backstage/core-plugin-api';
-import { DeploymentResponse } from '../api/types';
-import useInterval from 'react-use/lib/useInterval';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { OctopusGraph } from './OctopusGraph/OctopusGraph';
 
@@ -15,6 +11,7 @@ import {
   makeStyles,
   Typography,
 } from '@material-ui/core';
+import { useStatsForEntity } from '../hooks/useStatsForEntity';
 
 const useStyles = makeStyles({
   gridItemCard: {
@@ -32,29 +29,22 @@ const useStyles = makeStyles({
   },
 });
 
-export const LinkerdDependenciesCard = () => {
+export const DependenciesCard = () => {
   const styles = useStyles();
-  const l5d = useApi(linkerdPluginRef);
   const { entity } = useEntity();
-  const [stats, setStats] = useState<null | DeploymentResponse>(null);
-
-  useInterval(async () => {
-    setStats(await l5d.getStatsForEntity(entity));
-  }, 10000);
-
+  const { stats, loading } = useStatsForEntity(entity);
   const content = () => {
-    if (!stats) {
+    if (loading && !stats) {
       return <Typography paragraph>Loading...</Typography>;
     }
-    if (stats) {
-      if (!stats.incoming.length && !stats.outgoing.length) {
-        return (
-          <Typography paragraph>
-            This service doesn't look like it's tagged with the right service,
-            or linkerd is not injected.
-          </Typography>
-        );
-      }
+
+    if (!stats?.incoming.length && !stats?.outgoing.length) {
+      return (
+        <Typography paragraph>
+          This service doesn't look like it's tagged with the right service, or
+          linkerd is not injected.
+        </Typography>
+      );
     }
     return <OctopusGraph stats={stats} entity={entity} />;
   };

@@ -155,12 +155,12 @@ export const OctopusGraph = ({
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       onConnect={onConnect}
-      // This isn't ready yet, but it will display RPS and other metrics in the cards
-      // nodeTypes={nodeTypes}
       connectionLineType={ConnectionLineType.SmoothStep}
       fitView
-      panOnDrag
-      zoomOnScroll
+      panOnDrag={false}
+      zoomOnScroll={false}
+      nodesDraggable={false}
+      zoomOnDoubleClick={false}
       attributionPosition="bottom-left"
     />
   );
