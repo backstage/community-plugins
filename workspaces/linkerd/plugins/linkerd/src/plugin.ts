@@ -63,6 +63,7 @@ export const LinkerdIsMeshedBanner = linkerdPlugin.provide(
 
 /**
  * @public
+ * A table providing information on the upstream and downstream requests for a component in Linkerd
  */
 export const LinkerdEdgesTable = linkerdPlugin.provide(
   createComponentExtension({
