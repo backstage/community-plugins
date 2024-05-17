@@ -31,7 +31,7 @@ import {
   readTaskScheduleDefinitionFromConfig,
   TaskScheduleDefinition,
 } from '@backstage/backend-tasks';
-import { HumanDuration } from '@backstage/types';
+import { HumanDuration, JsonObject } from '@backstage/types';
 import { CatalogClient } from '@backstage/catalog-client';
 import { LinguistBackendClient } from '../api/LinguistBackendClient';
 import { Config } from '@backstage/config';
@@ -165,7 +165,7 @@ export async function createRouterFromConfig(routerOptions: RouterOptions) {
     pluginOptions.batchSize = config.getOptionalNumber('linguist.batchSize');
     pluginOptions.useSourceLocation =
       config.getOptionalBoolean('linguist.useSourceLocation') ?? false;
-    pluginOptions.age = config.getOptionalConfig('linguist.age') as
+    pluginOptions.age = config.getOptional<JsonObject>('linguist.age') as
       | HumanDuration
       | undefined;
     pluginOptions.kind = config.getOptionalStringArray('linguist.kind');
