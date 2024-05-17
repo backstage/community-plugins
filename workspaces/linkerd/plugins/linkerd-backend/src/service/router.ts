@@ -147,8 +147,13 @@ export async function createRouter(
         from_type: 'deployment',
       };
 
+      const [current] = await getDeploymentStats(
+        { namespace, deployment },
+        request,
+      );
+
       response.send({
-        current: await getDeploymentStats({ namespace, deployment }, request),
+        current,
         incoming: await generateTpsStats(toOptions, request),
         outgoing: await generateTpsStats(fromOptions, request),
       });

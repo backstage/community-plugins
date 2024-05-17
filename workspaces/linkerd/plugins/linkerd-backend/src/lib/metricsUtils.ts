@@ -58,6 +58,7 @@ const getTcpStats = (row: StatRow) => {
     writeRate: writeBytes / seconds,
   };
 };
+
 export const processStats = (stats: StatsResponse) => {
   if (!stats.ok) {
     throw new Error('Failed to fetch stats');
@@ -76,9 +77,9 @@ export const processStats = (stats: StatsResponse) => {
       pods: {
         totalPods: Number(row.runningPodCount ?? 0),
         meshedPods: Number(row.meshedPodCount ?? 0),
-        meshedPodsPercentage: `${Math.round(
-          (Number(row.meshedPodCount) / Number(row.runningPodCount)) * 100,
-        )}%`,
+        meshedPodsPercentage: isNaN(Number(row.meshedPodCount))
+          ? 0
+          : Number(row.meshedPodCount) / Number(row.runningPodCount),
       },
       tcpStats: getTcpStats(row),
       latency: row.stats
