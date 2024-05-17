@@ -2894,14 +2894,13 @@ __metadata:
     "@backstage/catalog-model": ^1.4.5
     "@backstage/cli": ^0.26.4
     "@backstage/core-app-api": ^1.12.4
-    "@backstage/core-components": ^0.14.6
     "@backstage/core-plugin-api": ^1.9.2
     "@backstage/dev-utils": ^1.0.31
     "@backstage/errors": ^1.2.4
     "@backstage/plugin-catalog-react": ^1.11.3
     "@backstage/test-utils": ^1.5.4
     "@backstage/theme": ^0.5.3
-    "@material-ui/core": ^4.9.13
+    "@material-ui/core": ^4.12.2
     "@material-ui/icons": ^4.9.1
     "@material-ui/lab": ^4.0.0-alpha.61
     "@testing-library/jest-dom": ^6.0.0
