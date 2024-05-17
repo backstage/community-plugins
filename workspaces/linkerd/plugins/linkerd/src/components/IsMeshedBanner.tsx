@@ -9,13 +9,19 @@ import { useStatsForEntity } from '../hooks/useStatsForEntity';
 
 export const IsMeshedBanner = () => {
   const { entity } = useEntity();
-  const { stats, loading } = useStatsForEntity(entity);
+  const { stats } = useStatsForEntity(entity);
 
-  if (loading || !stats) {
-    return null;
+  if (!stats) {
+    return (
+      <Grid item xs={12}>
+        <Alert icon={<ErrorIcon fontSize="inherit" />} severity="error">
+          Looks like this component is not currently meshed with Linkerd
+        </Alert>
+      </Grid>
+    );
   }
 
-  if (stats.current) {
+  if (stats?.current) {
     if (stats.current.pods.meshedPodsPercentage === 0) {
       return (
         <Grid item xs={12}>

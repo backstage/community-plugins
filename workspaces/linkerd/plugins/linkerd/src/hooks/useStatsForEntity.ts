@@ -10,7 +10,7 @@ export const useStatsForEntity = (entity: Entity) => {
   const [counter, setCounter] = useState(0);
   const { value, loading } = useAsync(
     () => l5d.getStatsForEntity(entity),
-    [counter],
+    [counter, entity],
   );
   useInterval(() => {
     setCounter(counter + 1);
