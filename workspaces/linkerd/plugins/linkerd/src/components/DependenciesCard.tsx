@@ -7,6 +7,7 @@ import {
   Card,
   CardContent,
   CardHeader,
+  CircularProgress,
   Divider,
   makeStyles,
   Typography,
@@ -32,9 +33,22 @@ const useStyles = makeStyles({
 export const DependenciesCard = () => {
   const styles = useStyles();
   const { entity } = useEntity();
-  const { stats } = useStatsForEntity(entity);
+  const { stats, loading } = useStatsForEntity(entity);
 
   const content = () => {
+    if (!stats && loading) {
+      return <CircularProgress />;
+    }
+
+    if (!stats || !stats.current || !stats.current.pods.meshedPodsPercentage) {
+      return (
+        <Typography paragraph>
+          This service doesn't look like it's tagged with the right service, or
+          linkerd is not injected.
+        </Typography>
+      );
+    }
+
     if (!stats?.incoming.length && !stats?.outgoing.length) {
       return (
         <Typography paragraph>
