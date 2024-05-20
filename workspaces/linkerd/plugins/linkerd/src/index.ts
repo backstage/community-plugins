@@ -1,1 +1,6 @@
-export { linkerdPlugin, LinkerdDependenciesCard } from './plugin';
+export {
+  linkerdPlugin,
+  LinkerdDependenciesCard,
+  LinkerdIsMeshedBanner,
+  LinkerdEdgesTable,
+} from './plugin';

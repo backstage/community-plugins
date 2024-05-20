@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Grid } from '@material-ui/core';
+import { Grid, Button } from '@material-ui/core';
 import {
   EntityApiDefinitionCard,
   EntityConsumedApisCard,
@@ -48,7 +48,11 @@ import {
   isKubernetesAvailable,
 } from '@backstage/plugin-kubernetes';
 
-import { LinkerdDependenciesCard } from '@backstage-community/plugin-linkerd';
+import {
+  LinkerdDependenciesCard,
+  LinkerdIsMeshedBanner,
+  LinkerdEdgesTable,
+} from '@backstage-community/plugin-linkerd';
 
 const cicdContent = (
   // This is an example of how you can implement your company's logic in entity page.
@@ -104,20 +108,25 @@ const entityWarningContent = (
 const overviewContent = (
   <Grid container spacing={3} alignItems="stretch">
     {entityWarningContent}
+    <LinkerdIsMeshedBanner />
     <Grid item md={6}>
       <EntityAboutCard variant="gridItem" />
     </Grid>
     <Grid item md={6} xs={12}>
-      <EntitySwitch>
-        <EntitySwitch.Case if={isKubernetesAvailable}>
-          <LinkerdDependenciesCard />
-        </EntitySwitch.Case>
-        <EntitySwitch.Case>
-          <EntityCatalogGraphCard variant="gridItem" height={400} />
-        </EntitySwitch.Case>
-      </EntitySwitch>
+      <EntityCatalogGraphCard variant="gridItem" height={400} />
     </Grid>
-
+    <EntitySwitch>
+      <EntitySwitch.Case if={isKubernetesAvailable}>
+        <>
+          <Grid item md={6} xs={12}>
+            <LinkerdDependenciesCard />
+          </Grid>
+          <Grid item md={6} xs={12}>
+            <LinkerdEdgesTable />
+          </Grid>
+        </>
+      </EntitySwitch.Case>
+    </EntitySwitch>
     <Grid item md={4} xs={12}>
       <EntityLinksCard />
     </Grid>
@@ -172,16 +181,7 @@ const serviceEntityPage = (
 const websiteEntityPage = (
   <EntityLayout>
     <EntityLayout.Route path="/" title="Overview">
-      <>
-        {overviewContent}
-        <EntitySwitch>
-          <EntitySwitch.Case if={isKubernetesAvailable}>
-            <Grid container spacing={3} alignItems="stretch">
-              <LinkerdDependenciesCard />
-            </Grid>
-          </EntitySwitch.Case>
-        </EntitySwitch>
-      </>
+      {overviewContent}
     </EntityLayout.Route>
 
     <EntityLayout.Route path="/ci-cd" title="CI/CD">

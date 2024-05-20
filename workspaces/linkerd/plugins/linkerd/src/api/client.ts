@@ -22,6 +22,7 @@ export class LinkerdClient {
     if (!response.ok) {
       throw await ResponseError.fromResponse(response);
     }
+
     return response.json();
   }
 }

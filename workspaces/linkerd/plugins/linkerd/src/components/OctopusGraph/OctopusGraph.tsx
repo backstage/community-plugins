@@ -83,38 +83,36 @@ export const OctopusGraph = ({
 
   const initialEdges: Edge[] = [];
 
-  for (const [key, data] of Object.entries(stats.incoming?.deployment ?? {})) {
+  for (const node of stats.incoming.filter(t => t.type === 'deployment')) {
     initialNodes.push({
-      id: key,
+      id: node.name,
       sourcePosition: Position.Right,
       targetPosition: Position.Left,
       type: 'node',
       data: {
-        name: key,
+        name: node.name,
         header: 'upstream',
-        label: key,
-        l5d: data,
+        label: node.name,
         isSource: true,
       },
       position: { x: 0, y: 0 },
     });
     initialEdges.push({
-      id: `${key}-to-current`,
+      id: `${node.name}-to-current`,
       type: 'smoothstep',
-      source: key,
+      source: node.name,
       target: 'current',
       animated: true,
     });
   }
 
-  for (const [key, data] of Object.entries(stats.outgoing?.deployment ?? {})) {
+  for (const node of stats.outgoing.filter(t => t.type === 'deployment')) {
     initialNodes.push({
-      id: key,
+      id: node.name,
       data: {
-        name: key,
+        name: node.name,
         header: 'downstream',
-        l5d: data,
-        label: key,
+        label: node.name,
         isTarget: true,
       },
       sourcePosition: Position.Left,
@@ -123,10 +121,10 @@ export const OctopusGraph = ({
       position: { x: 0, y: 0 },
     });
     initialEdges.push({
-      id: `current-to-${key}`,
+      id: `current-to-${node.name}`,
       type: 'smoothstep',
       source: 'current',
-      target: key,
+      target: node.name,
       animated: true,
     });
   }
@@ -157,12 +155,12 @@ export const OctopusGraph = ({
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       onConnect={onConnect}
-      // This isn't ready yet, but it will display RPS and other metrics in the cards
-      // nodeTypes={nodeTypes}
       connectionLineType={ConnectionLineType.SmoothStep}
       fitView
-      panOnDrag
-      zoomOnScroll
+      panOnDrag={false}
+      zoomOnScroll={false}
+      nodesDraggable={false}
+      zoomOnDoubleClick={false}
       attributionPosition="bottom-left"
     />
   );

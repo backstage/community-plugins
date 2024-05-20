@@ -42,9 +42,34 @@ export const LinkerdDependenciesCard = linkerdPlugin.provide(
     name: 'LinkerdDependenciesCard',
     component: {
       lazy: () =>
-        import('./components/LinkerdDependenciesCard').then(
-          m => m.LinkerdDependenciesCard,
-        ),
+        import('./components/DependenciesCard').then(m => m.DependenciesCard),
+    },
+  }),
+);
+
+/**
+ * @public
+ * A banner that displays whether a component is meshed with Linkerd
+ */
+export const LinkerdIsMeshedBanner = linkerdPlugin.provide(
+  createComponentExtension({
+    name: 'LinkerdIsMeshedBanner',
+    component: {
+      lazy: () =>
+        import('./components/IsMeshedBanner').then(m => m.IsMeshedBanner),
+    },
+  }),
+);
+
+/**
+ * @public
+ * A table providing information on the upstream and downstream requests for a component in Linkerd
+ */
+export const LinkerdEdgesTable = linkerdPlugin.provide(
+  createComponentExtension({
+    name: 'LinkerdEdgesTable',
+    component: {
+      lazy: () => import('./components/EdgesTable').then(m => m.EdgesTable),
     },
   }),
 );

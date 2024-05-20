@@ -13,6 +13,12 @@ import { RouteRef } from '@backstage/core-plugin-api';
 export const LinkerdDependenciesCard: () => JSX_2.Element;
 
 // @public
+export const LinkerdEdgesTable: () => JSX_2.Element;
+
+// @public
+export const LinkerdIsMeshedBanner: () => JSX_2.Element | null;
+
+// @public
 export const linkerdPlugin: BackstagePlugin<
   {
     root: RouteRef<undefined>;
