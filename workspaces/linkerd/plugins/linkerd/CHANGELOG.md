@@ -1,5 +1,11 @@
 # @backstage-community/plugin-linkerd
 
+## 0.2.0
+
+### Minor Changes
+
+- a708efd: Added `LinkerdIsMeshedBanner` and `LinkerdEdgesTable` for use in the Entity pages
+
 ## 0.1.0
 
 ### Minor Changes
