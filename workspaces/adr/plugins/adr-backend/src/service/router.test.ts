@@ -28,6 +28,7 @@ import { LoggerService } from '@backstage/backend-plugin-api';
 
 const listEndpointName = '/list';
 const fileEndpointName = '/file';
+const imageEndpointName = '/image';
 
 const makeBufferFromString = (string: string) => async () =>
   Buffer.from(string);
@@ -57,6 +58,7 @@ const makeFileContent = async (fileContent: string) => {
 const testFileOneContent = 'testFileOne content';
 const testFileTwoContent = 'testFileTwo content';
 const genericFileContent = 'file content';
+const testImageContent = 'image content';
 
 const mockUrlReader: UrlReader = {
   readUrl(url: string) {
@@ -65,6 +67,8 @@ const mockUrlReader: UrlReader = {
         return makeFileContent(testFileOneContent);
       case 'testFileTwo':
         return makeFileContent(testFileTwoContent);
+      case 'testImage.png':
+        return makeFileContent(testImageContent);
       default:
         return makeFileContent(genericFileContent);
     }
@@ -226,6 +230,74 @@ describe('createRouter', () => {
       expect(fileTwoError).toBeFalsy();
       expect(fileTwoStatus).toBe(expectedStatusCode);
       expect(fileTwoBody.data).toBe(testFileTwoContent);
+    });
+  });
+
+  describe(`GET ${imageEndpointName}`, () => {
+    it('returns bad request (400) when no url is provided', async () => {
+      const urlNotSpecifiedRequest = await request(app).get(imageEndpointName);
+      const urlNotSpecifiedStatus = urlNotSpecifiedRequest.status;
+      const urlNotSpecifiedMessage = urlNotSpecifiedRequest.body.message;
+
+      const urlNotFilledRequest = await request(app).get(
+        `${imageEndpointName}?url=`,
+      );
+      const urlNotFilledStatus = urlNotFilledRequest.status;
+      const urlNotFilledMessage = urlNotFilledRequest.body.message;
+
+      const expectedStatusCode = 400;
+      const expectedErrorMessage = 'No URL provided';
+
+      expect(urlNotSpecifiedStatus).toBe(expectedStatusCode);
+      expect(urlNotSpecifiedMessage).toBe(expectedErrorMessage);
+
+      expect(urlNotFilledStatus).toBe(expectedStatusCode);
+      expect(urlNotFilledMessage).toBe(expectedErrorMessage);
+    });
+
+    it('returns bad request (400) when unsupported image format is provided', async () => {
+      const urlNotFilledRequest = await request(app).get(
+        `${imageEndpointName}?url=testImage.txt`,
+      );
+      const urlNotFilledStatus = urlNotFilledRequest.status;
+      const urlNotFilledMessage = urlNotFilledRequest.body.message;
+
+      const expectedStatusCode = 400;
+      const expectedErrorMessage = 'Image type txt is not supported';
+
+      expect(urlNotFilledStatus).toBe(expectedStatusCode);
+      expect(urlNotFilledMessage).toBe(expectedErrorMessage);
+    });
+
+    it('returns the correct image when reading a url', async () => {
+      const urlToProcess = 'testImage.png';
+      const imageTypeMap: Record<string, string> = {
+        png: 'image/png',
+        jpg: 'image/jpeg',
+        jpeg: 'image/jpeg',
+        gif: 'image/gif',
+        svg: 'image/svg+xml',
+        webp: 'image/webp',
+      };
+      const imageResponse = await request(app).get(
+        `${imageEndpointName}?url=${urlToProcess}`,
+      );
+      const imageStatus = imageResponse.status;
+      const imageData = imageResponse.body;
+      const imageError = imageResponse.error;
+      const imageType = urlToProcess.match(/\.([a-z0-9]+)(\?.*)?$/i);
+      let contentType;
+      if (imageType) {
+        contentType = imageTypeMap[imageType[1].toLowerCase()];
+      }
+
+      const expectedStatusCode = 200;
+
+      expect(imageError).toBeFalsy();
+      expect(imageStatus).toBe(expectedStatusCode);
+      expect(imageData.data).toBe(
+        `data:${contentType};base64,${btoa(testImageContent)}`,
+      );
     });
   });
 });

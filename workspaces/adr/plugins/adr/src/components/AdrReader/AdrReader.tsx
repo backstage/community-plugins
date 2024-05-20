@@ -31,6 +31,8 @@ import { AdrContentDecorator } from './types';
 import { adrApiRef } from '../../api';
 import useAsync from 'react-use/esm/useAsync';
 
+const imageUrlsRegExp =
+  /(!\[[^\[\]]*\])\((https?:\/\/.*?\.png|\.jpg|\.jpeg|\.gif|\.webp.*)\)/gim;
 /**
  * Component to fetch and render an ADR.
  *
@@ -52,9 +54,13 @@ export const AdrReader = (props: {
     [adrFileLocationUrl],
   );
 
-  const adrContent = useMemo(() => {
+  const adrElements = useMemo(() => {
+    const elements: { reducedAdrContent: string; imageUrls: string[] } = {
+      reducedAdrContent: '',
+      imageUrls: [],
+    };
     if (!value?.data) {
-      return '';
+      return elements;
     }
     const adrDecorators = decorators ?? [
       adrDecoratorFactories.createRewriteRelativeLinksDecorator(),
@@ -62,24 +68,67 @@ export const AdrReader = (props: {
       adrDecoratorFactories.createFrontMatterFormatterDecorator(),
     ];
 
-    return adrDecorators.reduce(
+    elements.reducedAdrContent = adrDecorators.reduce(
       (content, decorator) =>
         decorator({ baseUrl: adrLocationUrl, content }).content,
       value.data,
     );
+    let imageUrlsArray = imageUrlsRegExp.exec(elements.reducedAdrContent);
+    while (imageUrlsArray !== null) {
+      elements.imageUrls.push(imageUrlsArray[2]);
+      imageUrlsArray = imageUrlsRegExp.exec(elements.reducedAdrContent);
+    }
+
+    return elements;
   }, [adrLocationUrl, decorators, value]);
+
+  const {
+    value: adrImagesBase64,
+    loading: adrImagesBase64Loading,
+    error: adrImagesBase64Error,
+  } = useAsync(async () => {
+    if (!adrElements?.imageUrls) {
+      return [];
+    }
+    const adrBase64Images = adrElements.imageUrls.map(imageUrl => {
+      return adrApi.imageAdr(imageUrl);
+    });
+    return await Promise.all(adrBase64Images);
+  }, [adrElements.imageUrls]);
+
+  const adrContent = useMemo(() => {
+    if (typeof adrImagesBase64 === 'undefined') {
+      return '';
+    }
+    let imageIterator = -1;
+    return adrElements.reducedAdrContent.replace(imageUrlsRegExp, (_, p1) => {
+      imageIterator += 1;
+      return `${p1}(${adrImagesBase64[imageIterator]?.data})`;
+    });
+  }, [adrImagesBase64, adrElements.reducedAdrContent]);
 
   return (
     <InfoCard>
-      {loading && <Progress />}
+      {loading && adrImagesBase64Loading && <Progress />}
 
       {!loading && error && (
         <WarningPanel title="Failed to fetch ADR" message={error?.message} />
       )}
 
-      {!loading && !error && value?.data && (
-        <MarkdownContent content={adrContent} linkTarget="_blank" />
+      {!adrImagesBase64Loading && adrImagesBase64Error && (
+        <WarningPanel
+          title="Failed to fetch ADR images"
+          message={adrImagesBase64Error?.message}
+        />
       )}
+
+      {!loading &&
+        !adrImagesBase64Loading &&
+        !error &&
+        !adrImagesBase64Error &&
+        value?.data && (
+          <MarkdownContent content={adrContent} linkTarget="_blank" />
+        )}
     </InfoCard>
   );
 };
