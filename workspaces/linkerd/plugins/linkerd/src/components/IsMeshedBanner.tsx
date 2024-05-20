@@ -11,7 +11,7 @@ export const IsMeshedBanner = () => {
   const { entity } = useEntity();
   const { stats } = useStatsForEntity(entity);
 
-  if (!stats) {
+  if (!stats || !stats.current.pods.meshedPodsPercentage) {
     return (
       <Grid item xs={12}>
         <Alert icon={<ErrorIcon fontSize="inherit" />} severity="error">
