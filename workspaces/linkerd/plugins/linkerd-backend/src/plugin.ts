@@ -19,14 +19,16 @@ export const linkerdPlugin = createBackendPlugin({
         auth: coreServices.auth,
         httpAuth: coreServices.httpAuth,
         discovery: coreServices.discovery,
+        config: coreServices.rootConfig,
       },
-      async init({ httpRouter, logger, auth, httpAuth, discovery }) {
+      async init({ httpRouter, logger, auth, httpAuth, discovery, config }) {
         httpRouter.use(
           await createRouter({
             logger,
             auth,
             httpAuth,
             discovery,
+            config,
           }),
         );
         httpRouter.addAuthPolicy({
