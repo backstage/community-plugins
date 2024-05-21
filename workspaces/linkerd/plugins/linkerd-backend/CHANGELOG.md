@@ -1,5 +1,11 @@
 # @backstage-community/plugin-linkerd-backend
 
+## 0.2.1
+
+### Patch Changes
+
+- ecb0e86: Fix issue with logging errors, and native in cluster API calls to control plane
+
 ## 0.2.0
 
 ### Minor Changes
