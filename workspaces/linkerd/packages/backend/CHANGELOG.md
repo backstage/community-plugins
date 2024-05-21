@@ -1,5 +1,12 @@
 # backend
 
+## 0.0.3
+
+### Patch Changes
+
+- Updated dependencies [ecb0e86]
+  - @backstage-community/plugin-linkerd-backend@0.2.1
+
 ## 0.0.2
 
 ### Patch Changes
