@@ -38,7 +38,7 @@ export class LinkerdVizClient {
     const targetUrl = this.configApi.getOptionalBoolean(
       'linkerd.deployedWithControlPlane',
     )
-      ? 'http://web.linkerd-viz.svc.cluster.local:8084/proxy'
+      ? `http://web.linkerd-viz.svc.cluster.local:8084/proxy${url}`
       : `${k8sBase}/proxy/api/v1/namespaces/linkerd-viz/services/web:8084/proxy${url}`;
 
     const { token } = await this.authApi.getPluginRequestToken({
