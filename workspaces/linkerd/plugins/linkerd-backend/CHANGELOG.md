@@ -1,5 +1,11 @@
 # @backstage-community/plugin-linkerd-backend
 
+## 0.2.2
+
+### Patch Changes
+
+- d53fa3d: Fix endpoint URL for in cluster API
+
 ## 0.2.1
 
 ### Patch Changes
