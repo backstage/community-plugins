@@ -1,5 +1,11 @@
 # @backstage-community/plugin-linkerd-backend
 
+## 0.3.0
+
+### Minor Changes
+
+- 04499cd: Small fixes and bump to later version of Backstage
+
 ## 0.2.2
 
 ### Patch Changes
