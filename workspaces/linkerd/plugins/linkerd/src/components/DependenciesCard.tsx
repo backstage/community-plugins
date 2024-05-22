@@ -24,6 +24,10 @@ const useStyles = makeStyles({
 
   gridItemCardContent: {
     flex: 1,
+    minHeight: 400,
+    alignItems: 'center',
+    justifyContent: 'center',
+    display: 'flex',
   },
   header: {
     padding: 16,

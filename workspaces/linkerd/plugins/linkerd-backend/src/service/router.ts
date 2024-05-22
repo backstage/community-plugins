@@ -82,7 +82,7 @@ export async function createRouter(
           edges,
         });
       } catch (ex) {
-        console.log(await ex, ex.stack);
+        response.status(500).send({ error: ex.message });
       }
     },
   );
