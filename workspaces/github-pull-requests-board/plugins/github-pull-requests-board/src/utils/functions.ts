@@ -23,6 +23,7 @@ import {
   Author,
   PRCardFormating,
   Repository,
+  Status,
 } from './types';
 import { COLUMNS } from './constants';
 
@@ -156,4 +157,20 @@ export const shouldDisplayCard = (
 
   // when "team" filter is toggled off, only shows PR on team repos
   return repositories.includes(fullRepoName);
+};
+
+export const decorateCommitStatus = (status: Status[]) => {
+  const statusString = status[0]?.commit.statusCheckRollup?.state || 'N/A';
+  switch (statusString) {
+    case 'SUCCESS':
+      return '🟢 SUCCESS';
+    case 'FAILURE':
+      return '🔴 FAILURE';
+    case 'PENDING':
+      return '🟡 PENDING';
+    case 'EXPECTED':
+      return '🔵 EXPECTED';
+    default:
+      return statusString;
+  }
 };
