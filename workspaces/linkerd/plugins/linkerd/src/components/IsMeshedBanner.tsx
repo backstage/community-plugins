@@ -9,7 +9,11 @@ import { useStatsForEntity } from '../hooks/useStatsForEntity';
 
 export const IsMeshedBanner = () => {
   const { entity } = useEntity();
-  const { stats } = useStatsForEntity(entity);
+  const { stats, loading, error } = useStatsForEntity(entity);
+
+  if (loading && !stats && !error) {
+    return null;
+  }
 
   if (!stats || !stats.current.pods.meshedPodsPercentage) {
     return (
