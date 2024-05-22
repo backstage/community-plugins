@@ -14,7 +14,7 @@ export const useStatsForEntity = (entity: Entity) => {
   );
   useInterval(() => {
     setCounter(counter + 1);
-  }, 1000);
+  }, 5000);
 
   return { stats: value, loading };
 };
