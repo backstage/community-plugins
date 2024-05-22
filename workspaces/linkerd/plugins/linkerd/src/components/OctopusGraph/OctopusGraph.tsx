@@ -1,5 +1,5 @@
 import { DeploymentResponse } from '../../api/types';
-import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
+import { Entity } from '@backstage/catalog-model';
 import 'reactflow/dist/style.css';
 import React, { useCallback } from 'react';
 import ReactFlow, {
@@ -11,11 +11,8 @@ import ReactFlow, {
   ConnectionLineType,
   addEdge,
   Connection,
-  NodeProps,
-  Handle,
 } from 'reactflow';
 import dagre from 'dagre';
-import { EntityRefLink } from '@backstage/plugin-catalog-react';
 
 const dagreGraph = new dagre.graphlib.Graph();
 dagreGraph.setDefaultEdgeLabel(() => ({}));
@@ -76,7 +73,6 @@ export const OctopusGraph = ({
       selected: true,
       type: 'default',
       data: {
-        entityRef: entity,
         name: entity.metadata.name,
         isSource: true,
         isTarget: true,
