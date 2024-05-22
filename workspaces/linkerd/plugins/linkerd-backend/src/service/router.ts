@@ -42,48 +42,44 @@ export async function createRouter(
       const {
         params: { namespace, deployment },
       } = request;
-      try {
-        const [current] = await linkerdVizClient.stats(
-          { resourceType: 'deployment', namespace, resourceName: deployment },
-          { credentials: await httpAuth.credentials(request) },
-        );
+      const [current] = await linkerdVizClient.stats(
+        { resourceType: 'deployment', namespace, resourceName: deployment },
+        { credentials: await httpAuth.credentials(request) },
+      );
 
-        const incoming = await linkerdVizClient.stats(
-          {
-            allNamespaces: true,
-            toName: deployment,
-            toNamespace: namespace,
-            toType: 'deployment',
-            resourceType: 'all',
-          },
-          { credentials: await httpAuth.credentials(request) },
-        );
+      const incoming = await linkerdVizClient.stats(
+        {
+          allNamespaces: true,
+          toName: deployment,
+          toNamespace: namespace,
+          toType: 'deployment',
+          resourceType: 'all',
+        },
+        { credentials: await httpAuth.credentials(request) },
+      );
 
-        const outgoing = await linkerdVizClient.stats(
-          {
-            allNamespaces: true,
-            fromName: deployment,
-            fromNamespace: namespace,
-            fromType: 'deployment',
-            resourceType: 'all',
-          },
-          { credentials: await httpAuth.credentials(request) },
-        );
+      const outgoing = await linkerdVizClient.stats(
+        {
+          allNamespaces: true,
+          fromName: deployment,
+          fromNamespace: namespace,
+          fromType: 'deployment',
+          resourceType: 'all',
+        },
+        { credentials: await httpAuth.credentials(request) },
+      );
 
-        const edges = await linkerdVizClient.edges(
-          { namespace, resourceType: 'deployment' },
-          { credentials: await httpAuth.credentials(request) },
-        );
+      const edges = await linkerdVizClient.edges(
+        { namespace, resourceType: 'deployment' },
+        { credentials: await httpAuth.credentials(request) },
+      );
 
-        response.send({
-          current,
-          incoming,
-          outgoing,
-          edges,
-        });
-      } catch (ex) {
-        response.status(500).send({ error: ex.message });
-      }
+      response.send({
+        current,
+        incoming,
+        outgoing,
+        edges,
+      });
     },
   );
 

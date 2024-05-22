@@ -13,7 +13,6 @@ import ReactFlow, {
   Connection,
 } from 'reactflow';
 import dagre from 'dagre';
-import { makeStyles } from '@material-ui/core';
 
 const dagreGraph = new dagre.graphlib.Graph();
 dagreGraph.setDefaultEdgeLabel(() => ({}));
@@ -58,15 +57,6 @@ const getLayoutedElements = (
   return { nodes, edges };
 };
 
-const useStyles = makeStyles(theme => ({
-  incoming: {
-    borderColor: `${theme.palette.primary.main}`,
-  },
-  outgoing: {
-    borderColor: `${theme.palette.secondary.main}`,
-  },
-}));
-
 export const OctopusGraph = ({
   stats,
   entity,
@@ -74,8 +64,6 @@ export const OctopusGraph = ({
   stats: DeploymentResponse;
   entity: Entity;
 }) => {
-  const classes = useStyles();
-
   const initialNodes: Node[] = [
     {
       id: 'current',
@@ -101,7 +89,6 @@ export const OctopusGraph = ({
       sourcePosition: Position.Right,
       targetPosition: Position.Left,
       type: 'node',
-      className: classes.incoming,
       data: {
         name: node.name,
         header: 'upstream',
@@ -128,7 +115,6 @@ export const OctopusGraph = ({
         label: node.name,
         isTarget: true,
       },
-      className: classes.outgoing,
       sourcePosition: Position.Left,
       targetPosition: Position.Right,
       type: 'node',
