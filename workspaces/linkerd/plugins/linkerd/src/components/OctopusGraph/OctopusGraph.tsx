@@ -91,11 +91,6 @@ export const OctopusGraph = ({
       targetPosition: Position.Left,
       type: 'input',
       data: {
-        entityRef: {
-          kind: 'component',
-          name: node.name,
-          namespace: node.namespace,
-        },
         name: node.name,
         header: 'upstream',
         label: node.name,
