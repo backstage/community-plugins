@@ -20,7 +20,7 @@ import {
   createComponentExtension,
   createPlugin,
   discoveryApiRef,
-  identityApiRef,
+  fetchApiRef,
 } from '@backstage/core-plugin-api';
 import {
   UnifiedAlertingGrafanaApiClient,
@@ -28,6 +28,10 @@ import {
   GrafanaApiClient,
 } from './api';
 
+/**
+ * The grafana plugin.
+ * @public
+ */
 export const grafanaPlugin = createPlugin({
   id: 'grafana',
   apis: [
@@ -35,25 +39,25 @@ export const grafanaPlugin = createPlugin({
       api: grafanaApiRef,
       deps: {
         discoveryApi: discoveryApiRef,
-        identityApi: identityApiRef,
+        fetchApi: fetchApiRef,
         configApi: configApiRef,
       },
-      factory: ({ discoveryApi, identityApi, configApi }) => {
+      factory: ({ discoveryApi, fetchApi, configApi }) => {
         const unifiedAlertingEnabled =
           configApi.getOptionalBoolean('grafana.unifiedAlerting') || false;
 
         if (!unifiedAlertingEnabled) {
           return new GrafanaApiClient({
-            discoveryApi: discoveryApi,
-            identityApi: identityApi,
+            discoveryApi,
+            fetchApi,
             domain: configApi.getString('grafana.domain'),
             proxyPath: configApi.getOptionalString('grafana.proxyPath'),
           });
         }
 
         return new UnifiedAlertingGrafanaApiClient({
-          discoveryApi: discoveryApi,
-          identityApi: identityApi,
+          discoveryApi,
+          fetchApi,
           domain: configApi.getString('grafana.domain'),
           proxyPath: configApi.getOptionalString('grafana.proxyPath'),
         });
@@ -62,6 +66,10 @@ export const grafanaPlugin = createPlugin({
   ],
 });
 
+/**
+ * Component which displays the grafana dashboards found for an entity
+ * @public
+ */
 export const EntityGrafanaDashboardsCard = grafanaPlugin.provide(
   createComponentExtension({
     name: 'EntityGrafanaDashboardsCard',
@@ -72,6 +80,10 @@ export const EntityGrafanaDashboardsCard = grafanaPlugin.provide(
   }),
 );
 
+/**
+ * Component which displays the grafana alerts found for an entity
+ * @public
+ */
 export const EntityGrafanaAlertsCard = grafanaPlugin.provide(
   createComponentExtension({
     name: 'EntityGrafanaAlertsCard',
@@ -81,6 +93,10 @@ export const EntityGrafanaAlertsCard = grafanaPlugin.provide(
   }),
 );
 
+/**
+ * Component which displays the defined grafana dashboard for an entity
+ * @public
+ */
 export const EntityOverviewDashboardViewer = grafanaPlugin.provide(
   createComponentExtension({
     name: 'EntityOverviewDashboardViewer',

@@ -26,12 +26,12 @@ import { grafanaApiRef } from '../../api';
 import useAsync from 'react-use/lib/useAsync';
 import { Alert } from '@material-ui/lab';
 import { Tooltip } from '@material-ui/core';
-import { Dashboard } from '../../types';
+import { Dashboard, DashboardCardOpts } from '../../types';
 import {
   dashboardSelectorFromEntity,
   GRAFANA_ANNOTATION_DASHBOARD_SELECTOR,
   isDashboardSelectorAvailable,
-} from '../grafanaData';
+} from '../../constants';
 
 export const DashboardsTable = ({
   entity,
@@ -118,15 +118,6 @@ const Dashboards = ({
   return (
     <DashboardsTable entity={entity} dashboards={value || []} opts={opts} />
   );
-};
-
-export type DashboardCardOpts = {
-  paged?: boolean;
-  searchable?: boolean;
-  pageSize?: number;
-  sortable?: boolean;
-  title?: string;
-  additionalDashboards?: (entity: Entity) => Dashboard[];
 };
 
 export const DashboardsCard = (opts?: DashboardCardOpts) => {

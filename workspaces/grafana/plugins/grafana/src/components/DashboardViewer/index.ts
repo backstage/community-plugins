@@ -14,4 +14,4 @@
  * limitations under the License.
  */
 
-export { DashboardViewer, EntityDashboardViewer } from './DashboardViewer';
+export * from './DashboardViewer';
