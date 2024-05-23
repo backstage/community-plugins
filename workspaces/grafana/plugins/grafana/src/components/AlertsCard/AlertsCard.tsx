@@ -35,7 +35,7 @@ import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { grafanaApiRef } from '../../api';
 import useAsync from 'react-use/lib/useAsync';
 import { Alert } from '@material-ui/lab';
-import { Alert as GrafanaAlert } from '../../types';
+import { AlertsCardOpts, Alert as GrafanaAlert } from '../../types';
 import {
   GRAFANA_ANNOTATION_TAG_SELECTOR,
   GRAFANA_ANNOTATION_ALERT_LABEL_SELECTOR,
@@ -43,7 +43,7 @@ import {
   isDashboardSelectorAvailable,
   tagSelectorFromEntity,
   alertSelectorFromEntity,
-} from '../grafanaData';
+} from '../../constants';
 
 const AlertStatusBadge = ({ alert }: { alert: GrafanaAlert }) => {
   let statusElmt: React.ReactElement;
@@ -141,15 +141,6 @@ const Alerts = ({ entity, opts }: { entity: Entity; opts: AlertsCardOpts }) => {
   }
 
   return <AlertsTable alerts={value || []} opts={opts} />;
-};
-
-export type AlertsCardOpts = {
-  paged?: boolean;
-  searchable?: boolean;
-  pageSize?: number;
-  sortable?: boolean;
-  title?: string;
-  showState?: boolean;
 };
 
 export const AlertsCard = (opts?: AlertsCardOpts) => {

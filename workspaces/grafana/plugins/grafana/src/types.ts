@@ -14,17 +14,89 @@
  * limitations under the License.
  */
 
+import { Entity } from '@backstage/catalog-model';
+
+/**
+ * Grafana daashboard parameters
+ * @public
+ */
 export interface Dashboard {
+  /**
+   * The dashboard title
+   * @public
+   */
   title: string;
+  /**
+   * The endpoint to the dashboard
+   * @public
+   */
   url: string;
+  /**
+   * The folder title, if any
+   * @public
+   */
   folderTitle: string;
+  /**
+   * The endpoint to the folder
+   * @public
+   */
   folderUrl: string;
+  /**
+   * A list of tags assigned to the dashboard
+   * @public
+   */
   tags: string[];
 }
 
+/**
+ * Grafana alert parameters
+ * @public
+ */
 export interface Alert {
+  /**
+   * The alert name
+   * @public
+   */
   name: string;
+  /**
+   * The alert state
+   * @public
+   */
   state: string;
+  /**
+   * The matching selector for the alert
+   * @public
+   */
   matchingSelector: string;
+  /**
+   * The endpoint to the alert
+   * @public
+   */
   url: string;
 }
+
+/**
+ * Parameters used to display the alert card
+ * @public
+ */
+export type AlertsCardOpts = {
+  paged?: boolean;
+  searchable?: boolean;
+  pageSize?: number;
+  sortable?: boolean;
+  title?: string;
+  showState?: boolean;
+};
+
+/**
+ * Parameters used to display the dashboard card
+ * @public
+ */
+export type DashboardCardOpts = {
+  paged?: boolean;
+  searchable?: boolean;
+  pageSize?: number;
+  sortable?: boolean;
+  title?: string;
+  additionalDashboards?: (entity: Entity) => Dashboard[];
+};

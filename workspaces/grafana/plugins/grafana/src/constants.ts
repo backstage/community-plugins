@@ -16,35 +16,85 @@
 
 import { Entity } from '@backstage/catalog-model';
 
-// @deprecated Use GRAFANA_ANNOTATION_DASHBOARD_SELECTOR instead.
+/**
+ * Grafana tag selector annotation
+ * @public
+ * @deprecated Use GRAFANA_ANNOTATION_DASHBOARD_SELECTOR instead.
+ */
 export const GRAFANA_ANNOTATION_TAG_SELECTOR = 'grafana/tag-selector';
+
+/**
+ * Grafana dashboard selector annotation
+ * @public
+ */
 export const GRAFANA_ANNOTATION_DASHBOARD_SELECTOR =
   'grafana/dashboard-selector';
+
+/**
+ * Grafana alert selector annotation
+ * @public
+ */
 export const GRAFANA_ANNOTATION_ALERT_LABEL_SELECTOR =
   'grafana/alert-label-selector';
+
+/**
+ * Grafana dashboard overview annotation
+ * @public
+ */
 export const GRAFANA_ANNOTATION_OVERVIEW_DASHBOARD =
   'grafana/overview-dashboard';
 
+/**
+ * Returns if the dashboard selector annotation for an entity is set
+ * @public
+ */
 export const isDashboardSelectorAvailable = (entity: Entity) =>
   entity?.metadata.annotations?.[GRAFANA_ANNOTATION_DASHBOARD_SELECTOR] ||
   entity?.metadata.annotations?.[GRAFANA_ANNOTATION_TAG_SELECTOR];
+
+/**
+ * Returns if the alert selector annotation for an entity is set
+ * @public
+ */
 export const isAlertSelectorAvailable = (entity: Entity) =>
   Boolean(
     entity?.metadata.annotations?.[GRAFANA_ANNOTATION_ALERT_LABEL_SELECTOR],
   );
+
+/**
+ * Returns if the overview dashboard annotation for an entity is set
+ * @public
+ */
 export const isOverviewDashboardAvailable = (entity: Entity) =>
   Boolean(
     entity?.metadata.annotations?.[GRAFANA_ANNOTATION_OVERVIEW_DASHBOARD],
   );
 
+/**
+ * Returns the dashboard selector annotation for an entity
+ * @public
+ */
 export const dashboardSelectorFromEntity = (entity: Entity) =>
   entity?.metadata.annotations?.[GRAFANA_ANNOTATION_DASHBOARD_SELECTOR] ??
   entity?.metadata.annotations?.[GRAFANA_ANNOTATION_TAG_SELECTOR] ??
   '';
+/**
+ * Returns the alert selector annotation for an entity
+ * @public
+ */
 export const alertSelectorFromEntity = (entity: Entity) =>
   entity?.metadata.annotations?.[GRAFANA_ANNOTATION_ALERT_LABEL_SELECTOR] ?? '';
+
+/**
+ * Returns the overview dashboard annotation for an entity
+ * @public
+ */
 export const overviewDashboardFromEntity = (entity: Entity) =>
   entity?.metadata.annotations?.[GRAFANA_ANNOTATION_OVERVIEW_DASHBOARD] ?? '';
 
-// @deprecated Use dashboardSelectorFromEntity instead
+/**
+ * Returns the dashboard selector annotation for an entity
+ * @public
+ * @deprecated Use dashboardSelectorFromEntity instead
+ */
 export const tagSelectorFromEntity = dashboardSelectorFromEntity;
