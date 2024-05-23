@@ -17,13 +17,25 @@
 import {
   createApiRef,
   DiscoveryApi,
-  IdentityApi,
+  FetchApi,
 } from '@backstage/core-plugin-api';
 import { QueryEvaluator } from './query';
 import { Alert, Dashboard } from './types';
 
+/**
+ * Interface for the Grafana API
+ * @public
+ */
 export interface GrafanaApi {
+  /**
+   * Returns the found dashboards in Grafana with the defined query
+   * @param query - The query used to list the dashboards
+   */
   listDashboards(query: string): Promise<Dashboard[]>;
+  /**
+   * Returns a list of alerts found in Grafana that have any of the defined alert selectors
+   * @param selectors - One or multiple alert selectors
+   */
   alertsForSelector(selectors: string | string[]): Promise<Alert[]>;
 }
 
@@ -76,13 +88,17 @@ interface AlertRule {
   grafana_alert: UnifiedGrafanaAlert;
 }
 
+/**
+ * The grafana API reference
+ * @public
+ */
 export const grafanaApiRef = createApiRef<GrafanaApi>({
   id: 'plugin.grafana.service',
 });
 
 export type Options = {
   discoveryApi: DiscoveryApi;
-  identityApi: IdentityApi;
+  fetchApi: FetchApi;
 
   /**
    * Domain used by users to access Grafana web UI.
@@ -104,22 +120,20 @@ const isSingleWord = (input: string): boolean => {
 
 class Client {
   private readonly discoveryApi: DiscoveryApi;
-  private readonly identityApi: IdentityApi;
+  private readonly fetchApi: FetchApi;
   private readonly proxyPath: string;
   private readonly queryEvaluator: QueryEvaluator;
 
   constructor(opts: Options) {
     this.discoveryApi = opts.discoveryApi;
-    this.identityApi = opts.identityApi;
+    this.fetchApi = opts.fetchApi;
     this.proxyPath = opts.proxyPath ?? DEFAULT_PROXY_PATH;
     this.queryEvaluator = new QueryEvaluator();
   }
 
   public async fetch<T = any>(input: string, init?: RequestInit): Promise<T> {
     const apiUrl = await this.apiUrl();
-    const authedInit = await this.addAuthHeaders(init || {});
-
-    const resp = await fetch(`${apiUrl}${input}`, authedInit);
+    const resp = await this.fetchApi.fetch(`${apiUrl}${input}`, init);
     if (!resp.ok) {
       throw new Error(`Request failed with ${resp.status} ${resp.statusText}`);
     }
@@ -170,19 +184,6 @@ class Client {
   private async apiUrl() {
     const proxyUrl = await this.discoveryApi.getBaseUrl('proxy');
     return proxyUrl + this.proxyPath;
-  }
-
-  private async addAuthHeaders(init: RequestInit): Promise<RequestInit> {
-    const { token } = await this.identityApi.getCredentials();
-    const headers = init.headers || {};
-
-    return {
-      ...init,
-      headers: {
-        ...headers,
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
-    };
   }
 }
 

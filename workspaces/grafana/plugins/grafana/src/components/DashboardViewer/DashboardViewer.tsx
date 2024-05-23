@@ -23,8 +23,12 @@ import {
   GRAFANA_ANNOTATION_OVERVIEW_DASHBOARD,
   isOverviewDashboardAvailable,
   overviewDashboardFromEntity,
-} from '../grafanaData';
+} from '../../constants';
 
+/**
+ * Component which embeds the defined URL contents
+ * @public
+ */
 export const DashboardViewer = ({ embedUrl }: { embedUrl: string }) => {
   return (
     <iframe
@@ -37,6 +41,10 @@ export const DashboardViewer = ({ embedUrl }: { embedUrl: string }) => {
   );
 };
 
+/**
+ * Component which embeds the dashboard overview for an entity
+ * @public
+ */
 export const EntityDashboardViewer = () => {
   const { entity } = useEntity();
 
