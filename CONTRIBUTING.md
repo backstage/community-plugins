@@ -20,6 +20,8 @@ If you have questions or feedback regarding Community Plugins, you can visit the
   - [Release](#release)
   - [Creating a new Workspace](#creating-a-new-workspace)
   - [Creating new plugins or packages in a Workspace](#creating-new-plugins-or-packages-in-a-workspace)
+  - [Migrating a plugin](#migrating-a-plugin)
+    - [Manual migration steps](#manual-migration-steps)
   - [Developer Certificate of Origin](#developer-certificate-of-origin)
 
 ## Code of Conduct
@@ -140,6 +142,55 @@ Once you have a workspace setup, the creation of new plugins and packages is jus
 cd workspaces/adr
 yarn new
 ```
+
+## Migrating a plugin
+
+Before proceeding with migrating a plugin, please review the following sections of the `README`:
+
+- [What is the community plugins repository](https://github.com/backstage/community-plugins?tab=readme-ov-file#what-is-the-community-plugins-repository)
+- [Community Plugins Workflow](https://github.com/backstage/community-plugins#community-plugins-workflow)
+
+By migrating a plugin to this repository you will need to ensure you can meet certain requirements and adhere to some specific guidelines:
+
+- Agree to publish the plugin to the `@backstage-community` npm scope.
+- Adopt the Changesets workflow for releasing new plugin versions.
+- Adhere to the repository security process for handling security-related issues.
+- Plugins moved to the repository should be licensed under Apache 2.0.
+
+### Manual migration steps
+
+1. Prepare your environment by cloning both the repository you are migrating from and the `backstage/community-plugins` repository:
+
+```sh
+git clone https://github.com/source-repo/existing-plugins.git
+git clone https://github.com/backstage/community-plugins.git
+```
+
+2. Identify the plugin(s) you wish to migrate. If you're migrating multiple plugins, is recommended to group the migration of these by workspace.
+
+3. Within the `backstage/community-plugins` repository create a new branch for your changes:
+
+```sh
+git checkout -b migrate-workspace
+```
+
+3. Create a new workspace in the community plugins repository.
+
+4. Copy the plugin files from the source repository to the `backstage/community-plugins` repository.
+
+```sh
+cp -r ../existing-plugins/plugins/plugin-name plugins/
+```
+
+5. Ensure all metadata files (`package.json`) are updated to reflect the new repository. This includes updating repository URLs, issues URLs, and other references.
+
+6. Add maintainers to the `CODEOWNERS` file for the new workspace.
+
+7. Create a new pull request from your branch.
+
+8. Update external references to the old plugin location such as documentation to point to the new location in the `backstage/community-plugins` repository.
+
+9. In the original repository, update the plugin to indicate that it has been moved to the `backstage/community-plugins` repository. You may wish to deprecate the old version on npm.
 
 ## Developer Certificate of Origin
 
