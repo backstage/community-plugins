@@ -1,5 +1,11 @@
 # @backstage-community/plugin-bazaar-backend
 
+## 0.3.17-next.0
+
+### Patch Changes
+
+- Update the bazaar-backend plugin ReadMe to have guide on integrating with the new backend system.
+
 ## 0.3.16
 
 ### Patch Changes

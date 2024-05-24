@@ -32,6 +32,8 @@ export default async function createPlugin(
 }
 ```
 
+### Old Backend System
+
 With the `bazaar.ts` router setup in place, add the router to `packages/backend/src/index.ts`:
 
 ```diff
@@ -49,4 +51,16 @@ async function main() {
   ...
   apiRouter.use(notFoundHandler());
 
+```
+
+### New Backend System
+
+With the `bazaar.ts` file created under the plugin directory, unfortunately, the plugin doesn't support the new backend system yet.
+
+So, you will have to import it as a `legacyPlugin()`
+```diff
+
+const backend = createBackend();
+
+backend.add(legacyPlugin('bazaar', import('./plugins/bazaar')));
 ```
