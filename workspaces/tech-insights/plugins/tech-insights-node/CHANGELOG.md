@@ -1,5 +1,11 @@
 # @backstage-community/plugin-tech-insights-node
 
+## 0.6.2
+
+### Patch Changes
+
+- d4a8be1: Provide an overview page about checks for entities.
+
 ## 0.6.1
 
 ### Patch Changes
