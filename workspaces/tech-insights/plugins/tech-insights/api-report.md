@@ -16,6 +16,7 @@ import { IdentityApi } from '@backstage/core-plugin-api';
 import { JsonValue } from '@backstage/types';
 import { JSX as JSX_2 } from 'react';
 import { default as React_2 } from 'react';
+import { ReactNode } from 'react';
 import { RouteRef } from '@backstage/core-plugin-api';
 
 // @public (undocumented)
@@ -73,7 +74,7 @@ export const jsonRulesEngineCheckResultRenderer: CheckResultRenderer;
 // @public (undocumented)
 export const ScorecardInfo: (props: {
   checkResults: CheckResult[];
-  title: string;
+  title: ReactNode;
   description?: string | undefined;
   noWarning?: boolean | undefined;
 }) => JSX_2.Element;
@@ -143,6 +144,9 @@ export const techInsightsPlugin: BackstagePlugin<
   {},
   {}
 >;
+
+// @public (undocumented)
+export const TechInsightsScorecardPage: () => JSX_2.Element;
 
 // (No @packageDocumentation comment for this package)
 ```

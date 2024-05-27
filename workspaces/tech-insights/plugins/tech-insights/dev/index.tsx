@@ -21,10 +21,15 @@ import {
   techInsightsApiRef,
   TechInsightsApi,
   Check,
+  TechInsightsScorecardPage,
 } from '../src';
 import { CompoundEntityRef, Entity } from '@backstage/catalog-model';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
-import { checkResultRenderers, runChecksResponse } from './mocks';
+import {
+  bulkCheckResponse,
+  checkResultRenderers,
+  runChecksResponse,
+} from './mocks';
 
 const entity = {
   apiVersion: 'backstage.io/v1alpha1',
@@ -46,7 +51,7 @@ createDevApp()
         runChecks: async (_: CompoundEntityRef, __?: string[]) =>
           runChecksResponse,
         runBulkChecks: async (_: CompoundEntityRef[], __?: Check[]) =>
-          '' as any,
+          bulkCheckResponse,
         getFacts: async (_: CompoundEntityRef, __: string[]) => '' as any,
         getFactSchemas: async () => [],
       } as TechInsightsApi),
@@ -57,7 +62,12 @@ createDevApp()
         <EntityTechInsightsScorecardContent title="Test scorecard" />
       </EntityProvider>
     ),
-    title: 'Root Page',
+    title: 'Tech insights card',
     path: '/tech-insight-scorecard',
+  })
+  .addPage({
+    element: <TechInsightsScorecardPage />,
+    title: 'Tech insights page',
+    path: '/tech-insight-page',
   })
   .render();

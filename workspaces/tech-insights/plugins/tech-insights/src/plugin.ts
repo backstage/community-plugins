@@ -89,3 +89,15 @@ export const EntityTechInsightsScorecardCard = techInsightsPlugin.provide(
     mountPoint: rootRouteRef,
   }),
 );
+
+/**
+ * @public
+ */
+export const TechInsightsScorecardPage = techInsightsPlugin.provide(
+  createRoutableExtension({
+    name: 'TechInsightsScorecardPage',
+    component: () =>
+      import('./components/ScorecardsPage').then(m => m.ScorecardsPage),
+    mountPoint: rootRouteRef,
+  }),
+);

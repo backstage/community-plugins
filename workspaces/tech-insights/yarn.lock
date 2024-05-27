@@ -2586,6 +2586,7 @@ __metadata:
     "@backstage-community/plugin-tech-insights-common": "workspace:^"
     "@backstage/backend-common": ^0.21.7
     "@backstage/backend-plugin-api": ^0.6.17
+    "@backstage/catalog-model": ^1.4.5
     "@backstage/cli": ^0.26.3
     "@backstage/config": ^1.2.0
     "@backstage/types": ^1.1.1
