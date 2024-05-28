@@ -24,7 +24,7 @@ yarn --cwd packages/app add @backstage-community/plugin-cost-insights
 
 1. Configure `app-config.yaml`. See [Configuration](#configuration).
 
-2. Create a CostInsights client. Clients must implement the [CostInsightsApi](https://github.com/backstage/backstage/blob/master/plugins/cost-insights/src/api/CostInsightsApi.ts) interface. Create your own or [use a template](https://github.com/backstage/backstage/blob/master/plugins/cost-insights/src/example/templates/CostInsightsClient.ts) to get started.
+2. Create a CostInsights client. Clients must implement the [CostInsightsApi](https://github.com/backstage/community-plugins/blob/main/workspaces/cost-insights/plugins/cost-insights/src/api/CostInsightsApi.ts) interface. Create your own or [use a template](https://github.com/backstage/community-plugins/blob/main/workspaces/cost-insights/plugins/cost-insights/src/example/templates/CostInsightsClient.ts) to get started.
 
 Tip: You can also use the `ExampleCostInsightsClient` from `@backstage-community/plugin-cost-insights` to see how the plugin looks with some mock data.
 
@@ -35,7 +35,7 @@ import { CostInsightsApi } from '@backstage-community/plugin-cost-insights';
 export class CostInsightsClient implements CostInsightsApi { ... }
 ```
 
-**Note:** We've briefly explored using the AWS Cost Explorer API to implement a Cost Insights client. Learn more about our findings [here](https://github.com/backstage/backstage/blob/master/plugins/cost-insights/contrib/aws-cost-explorer-api.md).
+**Note:** We've briefly explored using the AWS Cost Explorer API to implement a Cost Insights client. Learn more about our findings [here](https://github.com/backstage/community-plugins/blob/main/workspaces/cost-insights/plugins/cost-insights/contrib/aws-cost-explorer-api.md).
 
 3. Import the client and the Cost Insights plugin API to your Backstage instance.
 
@@ -134,7 +134,7 @@ costInsights:
 
 For showing cost breakdowns you can define a map of cloud products. They must be defined as keys on the `products` field. A user-friendly name is **required**.
 
-You can optionally supply a product `icon` to display in Cost Insights navigation. See the [type file](https://github.com/backstage/backstage/blob/master/plugins/cost-insights/src/types/Icon.ts) for supported types and Material UI icon [mappings](https://github.com/backstage/backstage/blob/master/plugins/cost-insights/src/utils/navigation.tsx).
+You can optionally supply a product `icon` to display in Cost Insights navigation. See the [type file](https://github.com/backstage/community-plugins/blob/main/workspaces/cost-insights/plugins/cost-insights/src/types/Icon.ts) for supported types and Material UI icon [mappings](https://github.com/backstage/community-plugins/blob/main/workspaces/cost-insights/plugins/cost-insights/src/utils/navigation.tsx).
 
 **Note:** Product keys should be unique and on `camelCase` form. Backstage does not support underscores in configuration keys.
 
@@ -237,8 +237,8 @@ costInsights:
 
 ## Alerts
 
-The CostInsightsApi `getAlerts` method may return any type of alert or recommendation (called collectively "Action Items" in Cost Insights) that implements the [Alert type](https://github.com/backstage/backstage/blob/master/plugins/cost-insights/src/types/Alert.ts). This allows you to deliver any alerts or recommendations specific to your infrastructure or company migrations.
+The CostInsightsApi `getAlerts` method may return any type of alert or recommendation (called collectively "Action Items" in Cost Insights) that implements the [Alert type](https://github.com/backstage/community-plugins/blob/main/workspaces/cost-insights/plugins/cost-insights/src/types/Alert.ts). This allows you to deliver any alerts or recommendations specific to your infrastructure or company migrations.
 
-To learn more about using Cost Insights' ready-to-use alerts, see the alerts [README](https://github.com/backstage/backstage/blob/master/plugins/cost-insights/src/alerts/README.md).
+To learn more about using Cost Insights' ready-to-use alerts, see the alerts [README](https://github.com/backstage/community-plugins/blob/main/workspaces/cost-insights/plugins/cost-insights/src/alerts/README.md).
 
-Example implementations of custom alerts, forms and components can be found in the [examples](https://github.com/backstage/backstage/tree/master/plugins/cost-insights/src/example) directory.
+Example implementations of custom alerts, forms and components can be found in the [examples](https://github.com/backstage/community-plugins/tree/main/workspaces/cost-insights/plugins/cost-insights/src/example) directory.
