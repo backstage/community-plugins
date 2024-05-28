@@ -39,14 +39,14 @@ body:
     attributes:
       label: "✍️ Are you willing to maintain the plugin?"
       options:
-        - label: "I understand the responsibilities as a [Plugin Maintainer Governance](https://github.com/backstage/backstage/blob/master/GOVERNANCE.md#plugin-maintainer) & will maintain the plugin"
+        - label: "I understand the responsibilities as a [Plugin Maintainer Governance](https://github.com/backstage/community/blob/main/GOVERNANCE.md#plugin-maintainer) & will maintain the plugin"
           required: true
   - type: checkboxes
     id: read-code-of-conduct
     attributes:
       label: "🏢 Have you read the Code of Conduct?"
       options:
-        - label: "I have read the [Code of Conduct](https://github.com/backstage/community-repository/blob/master/CODE_OF_CONDUCT.md)"
+        - label: "I have read the [Code of Conduct](https://github.com/backstage/community-plugins/blob/main/CODE_OF_CONDUCT.md)"
           required: true
   - type: dropdown
     id: willing-to-submit-pr
