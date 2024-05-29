@@ -26,6 +26,10 @@
     {
       "matchPackageNames": ["node-fetch"],
       "allowedVersions": "<3.0.0"
+    },
+    {
+      "matchPackageNames": ["yn"],
+      "allowedVersions": "<5.0.0"
     }
   ],
   "ignorePaths": ["**/dist-dynamic/**"]
