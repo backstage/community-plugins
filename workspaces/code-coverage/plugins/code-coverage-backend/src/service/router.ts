@@ -86,7 +86,7 @@ export const makeRouter = async (
       limit: bodySizeLimit,
     }),
   );
-  router.use(express.json());
+  router.use(express.json({ limit: '10MB' }));
 
   const utils = new CoverageUtils(scm, urlReader);
 
