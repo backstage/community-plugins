@@ -244,14 +244,14 @@ export class DefaultJenkinsInfoProvider implements JenkinsInfoProvider {
     const splitIndex = jenkinsAndJobName.indexOf(':');
     if (splitIndex === -1) {
       // no jenkinsName specified, use default
-      jobFullName = jenkinsAndJobName;
+      jobFullName = decodeURIComponent(jenkinsAndJobName);
     } else {
       // There is a jenkinsName specified
       jenkinsName = jenkinsAndJobName.substring(0, splitIndex);
-      jobFullName = jenkinsAndJobName.substring(
+      jobFullName = decodeURIComponent(jenkinsAndJobName.substring(
         splitIndex + 1,
         jenkinsAndJobName.length,
-      );
+      ));
     }
 
     // lookup baseURL + creds from config
