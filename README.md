@@ -110,4 +110,4 @@ Looking through the `monorepo` we can expect the following workspaces:
 - `vault`
 - `xcmetrics`
 
-Of course, there could be simplifcations to this workspace list and some workspaces will be merged into one, like for example the `github-` workspaces could become one `github` workspace instead, but for the inital migration, we will keep them separate.
+Of course, there could be simplifications to this workspace list and some workspaces will be merged into one, like for example the `github-` workspaces could become one `github` workspace instead, but for the initial migration, we will keep them separate.
