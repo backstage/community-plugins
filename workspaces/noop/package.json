@@ -1,0 +1,8 @@
+{
+  "name": "@internal/noop",
+  "private": true,
+  "engines": {
+    "node": "18 || 20"
+  },
+  "packageManager": "yarn@3.2.3"
+}
