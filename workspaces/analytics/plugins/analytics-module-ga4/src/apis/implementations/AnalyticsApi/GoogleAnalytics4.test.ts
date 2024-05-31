@@ -257,6 +257,8 @@ describe('GoogleAnalytics4', () => {
         value: expectedValue,
         c_pluginId: context.pluginId,
         c_releaseNum: context.releaseNum,
+        a_extraDimension: false,
+        a_extraMetric: 0,
         search_term: expectedLabel,
       });
     });
