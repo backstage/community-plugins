@@ -25,6 +25,7 @@ import express from 'express';
 import request from 'supertest';
 import { createRouter } from './router';
 import { LoggerService } from '@backstage/backend-plugin-api';
+import { Config, ConfigReader } from '@backstage/config';
 
 const listEndpointName = '/list';
 const fileEndpointName = '/file';
@@ -113,11 +114,19 @@ class MockCacheClient implements CacheClient {
 
 describe('createRouter', () => {
   let app: express.Express;
+  let config: Config;
 
   beforeEach(async () => {
     jest.resetAllMocks();
 
+    config = new ConfigReader({
+      adrs: {
+        cache: { timeout: 30 },
+      },
+    });
+
     const router = await createRouter({
+      config: config,
       reader: mockUrlReader,
       cacheClient: new MockCacheClient(),
       logger: {

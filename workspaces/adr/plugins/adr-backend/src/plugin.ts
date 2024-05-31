@@ -29,16 +29,18 @@ export const adrPlugin = createBackendPlugin({
   register(env) {
     env.registerInit({
       deps: {
+        config: coreServices.rootConfig,
         logger: coreServices.logger,
         reader: coreServices.urlReader,
         cache: coreServices.cache,
         httpRouter: coreServices.httpRouter,
       },
-      async init({ httpRouter, logger, reader, cache }) {
+      async init({ httpRouter, logger, reader, cache, config }) {
         httpRouter.use(
           await createRouter({
             logger,
             reader,
+            config,
             cacheClient: cache,
           }),
         );

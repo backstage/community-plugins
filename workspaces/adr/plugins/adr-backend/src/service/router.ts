@@ -20,19 +20,24 @@ import express from 'express';
 import Router from 'express-promise-router';
 import { madrParser } from '../search/madrParser';
 import { LoggerService } from '@backstage/backend-plugin-api';
+import { Config } from '@backstage/config';
 
 /** @public */
 export type AdrRouterOptions = {
   reader: UrlReader;
   cacheClient: CacheClient;
   logger: LoggerService;
+  config: Config;
 };
 
 /** @public */
 export async function createRouter(
   options: AdrRouterOptions,
 ): Promise<express.Router> {
-  const { reader, cacheClient, logger } = options;
+  const { reader, cacheClient, logger, config } = options;
+
+  const timeout = config.getOptionalNumber('adrs.cache.readTimeout');
+  const readTimeout = timeout === undefined ? 1000 : timeout;
 
   const router = Router();
   router.use(express.json());
@@ -45,14 +50,21 @@ export async function createRouter(
       return;
     }
 
-    const cachedTree = (await cacheClient.get(urlToProcess)) as {
-      data: {
-        type: string;
-        name: string;
-        path: string;
-      }[];
-      etag: string;
-    };
+    // Promise.race ensures we don't hang the client for long if the cache is unreachable
+    const cachedTree = (await Promise.race([
+      cacheClient.get(urlToProcess),
+      new Promise(cancelAfter => setTimeout(cancelAfter, readTimeout)),
+    ])) as
+      | {
+          data: {
+            type: string;
+            name: string;
+            path: string;
+          }[];
+          etag: string;
+        }
+      | undefined;
+
     const cachedData = cachedTree?.data;
 
     try {
@@ -102,10 +114,16 @@ export async function createRouter(
       return;
     }
 
-    const cachedFileContent = (await cacheClient.get(urlToProcess)) as {
-      data: string;
-      etag: string;
-    };
+    // Promise.race ensures we don't hang the client for long if the cache is unreachable
+    const cachedFileContent = (await Promise.race([
+      cacheClient.get(urlToProcess),
+      new Promise(cancelAfter => setTimeout(cancelAfter, readTimeout)),
+    ])) as
+      | {
+          data: string;
+          etag: string;
+        }
+      | undefined;
 
     try {
       const fileGetResponse = await reader.readUrl(urlToProcess, {
