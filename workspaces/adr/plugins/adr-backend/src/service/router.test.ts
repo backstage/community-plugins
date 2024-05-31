@@ -121,7 +121,7 @@ describe('createRouter', () => {
 
     config = new ConfigReader({
       adrs: {
-        cache: { timeout: 30 },
+        cache: { readTimeout: 30 },
       },
     });
 
