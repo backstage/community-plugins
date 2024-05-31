@@ -4,5 +4,14 @@
   "engines": {
     "node": "18 || 20"
   },
+  "devDependencies": {
+    "@backstage/cli": "^0.26.3"
+  },
+  "scripts": {
+    "build:api-reports:only": "exit 0",
+    "fix": "exit 0",
+    "prettier:check": "exit 0",
+    "tsc:full": "exit 0"
+  },
   "packageManager": "yarn@3.2.3"
 }
