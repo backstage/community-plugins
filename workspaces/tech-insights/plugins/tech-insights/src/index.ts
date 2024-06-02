@@ -17,6 +17,7 @@ export {
   techInsightsPlugin,
   EntityTechInsightsScorecardContent,
   EntityTechInsightsScorecardCard,
+  TechInsightsScorecardPage,
   ScorecardInfo,
   ScorecardsList,
 } from './plugin';

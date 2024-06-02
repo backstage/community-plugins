@@ -8,13 +8,13 @@ import { Entity } from '@backstage/catalog-model';
 export const useStatsForEntity = (entity: Entity) => {
   const l5d = useApi(linkerdPluginRef);
   const [counter, setCounter] = useState(0);
-  const { value, loading } = useAsync(
+  const { value, loading, error } = useAsync(
     () => l5d.getStatsForEntity(entity),
     [counter, entity],
   );
   useInterval(() => {
     setCounter(counter + 1);
-  }, 1000);
+  }, 5000);
 
-  return { stats: value, loading };
+  return { stats: value, loading, error };
 };

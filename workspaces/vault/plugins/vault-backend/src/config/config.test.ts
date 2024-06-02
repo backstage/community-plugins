@@ -29,7 +29,8 @@ describe('GetVaultConfig', () => {
     ).toThrow();
   });
 
-  it('loads default params', () => {
+  // FIXME: Remove this test once we remove support to the old configuration
+  it('retro compatibility', () => {
     const config = new ConfigReader({
       vault: {
         baseUrl: 'http://www.example.com',
@@ -41,7 +42,28 @@ describe('GetVaultConfig', () => {
     expect(vaultConfig).toStrictEqual({
       baseUrl: 'http://www.example.com',
       publicUrl: undefined,
-      token: '123',
+      token: { type: 'static', config: { secret: '123' } },
+      kvVersion: 2,
+      secretEngine: 'secrets',
+    });
+  });
+
+  it('loads default params', () => {
+    const config = new ConfigReader({
+      vault: {
+        baseUrl: 'http://www.example.com',
+        auth: {
+          type: 'static',
+          secret: '123',
+        },
+      },
+    });
+
+    const vaultConfig = getVaultConfig(config);
+    expect(vaultConfig).toStrictEqual({
+      baseUrl: 'http://www.example.com',
+      publicUrl: undefined,
+      token: { type: 'static', config: { secret: '123' } },
       kvVersion: 2,
       secretEngine: 'secrets',
     });
@@ -51,7 +73,10 @@ describe('GetVaultConfig', () => {
     const config = new ConfigReader({
       vault: {
         baseUrl: 'http://www.example.com',
-        token: '123',
+        auth: {
+          type: 'static',
+          secret: '123',
+        },
         kvVersion: 1,
         secretEngine: 'test',
       },
@@ -61,9 +86,68 @@ describe('GetVaultConfig', () => {
     expect(vaultConfig).toStrictEqual({
       baseUrl: 'http://www.example.com',
       publicUrl: undefined,
-      token: '123',
+      token: { type: 'static', config: { secret: '123' } },
       kvVersion: 1,
       secretEngine: 'test',
+    });
+  });
+
+  it('loads kubernetes default params', () => {
+    const config = new ConfigReader({
+      vault: {
+        baseUrl: 'http://www.example.com',
+        auth: {
+          type: 'kubernetes',
+          role: 'test',
+        },
+      },
+    });
+
+    const vaultConfig = getVaultConfig(config);
+    expect(vaultConfig).toStrictEqual({
+      baseUrl: 'http://www.example.com',
+      publicUrl: undefined,
+      token: {
+        type: 'kubernetes',
+        config: {
+          role: 'test',
+          authPath: 'kubernetes',
+          serviceAccountTokenPath:
+            '/var/run/secrets/kubernetes.io/serviceaccount/token',
+        },
+      },
+      kvVersion: 2,
+      secretEngine: 'secrets',
+    });
+  });
+
+  it('loads kubernetes custom params', () => {
+    const config = new ConfigReader({
+      vault: {
+        baseUrl: 'http://www.example.com',
+        auth: {
+          type: 'kubernetes',
+          role: 'test',
+          authPath: 'test',
+          serviceAccountTokenPath: 'test',
+        },
+      },
+    });
+
+    const vaultConfig = getVaultConfig(config);
+    expect(vaultConfig).toStrictEqual({
+      baseUrl: 'http://www.example.com',
+      publicUrl: undefined,
+      token: {
+        type: 'kubernetes',
+        config: {
+          role: 'test',
+          authPath: 'test',
+          serviceAccountTokenPath: 'test',
+        },
+      },
+      kvVersion: 2,
+      secretEngine: 'secrets',
     });
   });
 });

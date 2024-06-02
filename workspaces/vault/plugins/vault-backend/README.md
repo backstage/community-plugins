@@ -65,7 +65,9 @@ To get started, first you need a running instance of Vault. You can follow [this
    vault:
      baseUrl: http://your-internal-vault-url.svc
      publicUrl: https://your-vault-url.example.com
-     token: <VAULT_TOKEN>
+     auth:
+       type: static
+       secret: <VAULT_TOKEN>
      secretEngine: 'customSecretEngine' # Optional. By default it uses 'secrets'. Can be overwritten by the annotation of the entity
      kvVersion: <kv-version> # Optional. The K/V version that your instance is using. The available options are '1' or '2'
      schedule: # Optional. If the token renewal is enabled this schedule will be used instead of the hourly one
@@ -82,6 +84,25 @@ To get started, first you need a running instance of Vault. You can follow [this
        capabilities = ["update"]
      }
    ```
+
+## Login via Kubernetes Auth Method
+
+Alternatively, it's also possible to make Backstage use the [Kubernetes auth method](https://developer.hashicorp.com/vault/docs/auth/kubernetes) to login into Vault. For that, the configuration should look like this:
+
+```yaml
+vault:
+  baseUrl: http://your-internal-vault-url.svc
+  publicUrl: https://your-vault-url.example.com
+  token:
+    type: kubernetes
+    role: <KUBERNETES_ROLE>
+    authPath: <KUBERNETES_AUTH_PATH> # Optional. It defaults to 'kubernetes', but you could set a different authPath if needed
+    serviceAccountTokenPath: <PATH_TO_JWT> # Optional. It defaults to '/var/run/secrets/kubernetes.io/serviceaccount/token'. Where the JWT token is located
+  secretEngine: 'customSecretEngine' # Optional. By default it uses 'secrets'. Can be overwritten by the annotation of the entity
+  kvVersion: <kv-version> # Optional. The K/V version that your instance is using. The available options are '1' or '2'
+```
+
+In these cases the token renewal is not needed. The backend will automatically fetch the token for each request.
 
 ## New Backend System
 

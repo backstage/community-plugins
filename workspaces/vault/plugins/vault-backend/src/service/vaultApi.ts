@@ -18,7 +18,12 @@ import { Config } from '@backstage/config';
 import { NotAllowedError, NotFoundError } from '@backstage/errors';
 import fetch from 'node-fetch';
 import plimit from 'p-limit';
-import { getVaultConfig, VaultConfig } from '../config';
+import {
+  getVaultConfig,
+  VaultConfig,
+  VaultKubernetesAuthConfig,
+} from '../config';
+import { readFile } from 'fs/promises';
 
 /**
  * Object received as a response from the Vault API when fetching secrets
@@ -93,11 +98,53 @@ export class VaultClient implements VaultApi {
     this.vaultConfig = getVaultConfig(options.config);
   }
 
+  private async kubernetesLogin(
+    baseUrl: string,
+    kubernetesCfg: VaultKubernetesAuthConfig,
+  ): Promise<string> {
+    const jwt = await readFile(kubernetesCfg.serviceAccountTokenPath, 'utf-8');
+
+    const resp = await fetch(
+      `${baseUrl}/v1/auth/${kubernetesCfg.authPath}/login`,
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          role: kubernetesCfg.role,
+          jwt: jwt,
+        }),
+      },
+    );
+
+    if (!resp.ok) {
+      throw Error(
+        `Error while login to vault. ${resp.status}: ${resp.statusText}`,
+      );
+    }
+
+    const result: { auth: { client_token: string } } = await resp.json();
+    return result.auth.client_token;
+  }
+
+  private async loadToken(): Promise<string> {
+    switch (this.vaultConfig.token.type) {
+      case 'static':
+        return this.vaultConfig.token.config.secret;
+      case 'kubernetes':
+        return await this.kubernetesLogin(
+          this.vaultConfig.baseUrl,
+          this.vaultConfig.token.config,
+        );
+      default:
+        throw new Error('Unknown token type');
+    }
+  }
+
   private async callApi<T>(
     path: string,
     query: { [key in string]: any },
     method: string = 'GET',
   ): Promise<T> {
+    const token = await this.loadToken();
     const url = new URL(path, this.vaultConfig.baseUrl);
     const response = await fetch(
       `${url.toString()}?${new URLSearchParams(query).toString()}`,
@@ -105,7 +152,7 @@ export class VaultClient implements VaultApi {
         method,
         headers: {
           Accept: 'application/json',
-          'X-Vault-Token': this.vaultConfig.token,
+          'X-Vault-Token': token,
         },
       },
     );
@@ -172,12 +219,15 @@ export class VaultClient implements VaultApi {
   }
 
   async renewToken(): Promise<void> {
+    if (this.vaultConfig.token.type === 'kubernetes') {
+      return;
+    }
     const result = await this.callApi<RenewTokenResponse>(
       'v1/auth/token/renew-self',
       {},
       'POST',
     );
 
-    this.vaultConfig.token = result.auth.client_token;
+    this.vaultConfig.token.config.secret = result.auth.client_token;
   }
 }

@@ -5,6 +5,7 @@
 ```ts
 import { AuthService } from '@backstage/backend-plugin-api';
 import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
+import { CompoundEntityRef } from '@backstage/catalog-model';
 import { Config } from '@backstage/config';
 import { DateTime } from 'luxon';
 import { Duration } from 'luxon';
@@ -202,6 +203,8 @@ export const techInsightsPersistenceContextExtensionPoint: ExtensionPoint<TechIn
 
 // @public
 export interface TechInsightsStore {
+  // (undocumented)
+  getEntities(): Promise<CompoundEntityRef[]>;
   getFactsBetweenTimestampsByIds(
     ids: string[],
     entity: string,

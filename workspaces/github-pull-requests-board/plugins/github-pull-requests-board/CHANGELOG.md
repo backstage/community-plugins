@@ -1,5 +1,11 @@
 # @backstage-community/plugin-github-pull-requests-board
 
+## 0.2.2
+
+### Patch Changes
+
+- 8786247: Add color decorators to commit statuses
+
 ## 0.2.1
 
 ### Patch Changes

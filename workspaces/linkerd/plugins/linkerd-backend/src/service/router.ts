@@ -4,6 +4,7 @@ import {
   DiscoveryService,
   HttpAuthService,
   LoggerService,
+  RootConfigService,
 } from '@backstage/backend-plugin-api';
 import express from 'express';
 import Router from 'express-promise-router';
@@ -13,17 +14,19 @@ export interface RouterOptions {
   logger: LoggerService;
   discovery: DiscoveryService;
   auth: AuthService;
+  config: RootConfigService;
   httpAuth: HttpAuthService;
 }
 
 export async function createRouter(
   opts: RouterOptions,
 ): Promise<express.Router> {
-  const { discovery, auth, httpAuth } = opts;
+  const { discovery, auth, httpAuth, config } = opts;
 
   const linkerdVizClient = LinkerdVizClient.fromConfig({
     discovery,
     auth,
+    config,
   });
 
   const router = Router();
@@ -39,7 +42,6 @@ export async function createRouter(
       const {
         params: { namespace, deployment },
       } = request;
-
       const [current] = await linkerdVizClient.stats(
         { resourceType: 'deployment', namespace, resourceName: deployment },
         { credentials: await httpAuth.credentials(request) },

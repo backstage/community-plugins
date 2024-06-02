@@ -150,3 +150,36 @@ export const myCustomBooleanRenderer: CheckResultRenderer = {
   ),
 };
 ```
+
+### Add overview (Scorecards) page:
+
+![Scorecard Overview](./docs/scorecard-overview.png)
+
+First make the Scorecard page available as route
+
+```tsx
+// packages/app/src/App.tsx
+
+import { TechInsightsScorecardPage } from '@backstage/plugin-tech-insights';
+
+const routes = (
+  <FlatRoutes>
+    ...
+    <Route path="/tech-insights" element={<TechInsightsScorecardPage />} />
+  </FlatRoutes>
+);
+```
+
+Then add it to the navigation menu
+
+```tsx
+// packages/app/src/components/Root/Root.tsx
+
+import EmojiObjectsIcon from '@material-ui/icons/EmojiObjects';
+
+export const Root = ({ children }: PropsWithChildren<{}>) => (
+  ...
+  <SidebarItem icon={EmojiObjectsIcon} to="tech-insights" text="Tech insight" />
+  ...
+);
+```
