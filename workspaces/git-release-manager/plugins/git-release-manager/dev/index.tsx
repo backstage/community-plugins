@@ -68,8 +68,8 @@ createDevApp()
 
         <GitReleaseManagerPage
           project={{
-            owner: 'eengervall-playground',
-            repo: 'RMaaS-semver',
+            owner: 'goodreleaser',
+            repo: 'repo-semantic-versioned',
             versioningStrategy: 'semver',
           }}
         />
@@ -91,8 +91,8 @@ createDevApp()
 
         <GitReleaseManagerPage
           project={{
-            owner: 'eengervall-playground',
-            repo: 'playground-semver',
+            owner: 'goodreleaser',
+            repo: 'repo-semantic-versioned',
             versioningStrategy: 'semver',
           }}
           features={{
@@ -131,8 +131,8 @@ createDevApp()
 
         <GitReleaseManagerPage
           project={{
-            owner: 'eengervall-playground',
-            repo: 'playground-semver',
+            owner: 'goodreleaser',
+            repo: 'repo-semantic-versioned',
             versioningStrategy: 'semver',
           }}
           features={{
