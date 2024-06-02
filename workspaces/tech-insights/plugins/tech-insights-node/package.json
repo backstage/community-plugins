@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-tech-insights-node",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "backstage": {
     "role": "node-library"
   },
@@ -38,6 +38,7 @@
     "@backstage-community/plugin-tech-insights-common": "workspace:^",
     "@backstage/backend-common": "^0.21.7",
     "@backstage/backend-plugin-api": "^0.6.17",
+    "@backstage/catalog-model": "^1.4.5",
     "@backstage/config": "^1.2.0",
     "@backstage/types": "^1.1.1",
     "@types/luxon": "^3.0.0",

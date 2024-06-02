@@ -1,0 +1,14 @@
+{
+  "name": "@internal/noop",
+  "private": true,
+  "engines": {
+    "node": "18 || 20"
+  },
+  "scripts": {
+    "backstage-cli": "exit 0",
+    "build:api-reports:only": "exit 0",
+    "fix": "exit 0",
+    "prettier:check": "exit 0",
+    "tsc:full": "exit 0"
+  }
+}

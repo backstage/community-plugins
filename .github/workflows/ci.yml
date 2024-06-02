@@ -24,7 +24,7 @@ jobs:
         with:
           node-version: 20
           registry-url: https://registry.npmjs.org/ # Needed for auth
-      
+
       - name: Fetch previous commit for check
         run: git fetch origin '${{ github.event.pull_request.base.sha }}'
 
@@ -32,13 +32,12 @@ jobs:
         id: find-changed-workspaces
         run: node ./scripts/ci/list-workspaces-with-changes.js
         env:
-          COMMIT_SHA_BEFORE: '${{ github.event.pull_request.base.sha }}'
+          COMMIT_SHA_BEFORE: "${{ github.event.pull_request.base.sha }}"
 
   ci:
     name: Workspace ${{ matrix.workspace }}, CI step for node ${{ matrix.node-version }}
     runs-on: ubuntu-latest
     needs: find-changed-workspaces
-    if: ${{ needs.find-changed-workspaces.outputs.workspaces != '[]' }}
     strategy:
       matrix:
         workspace: ${{ fromJSON(needs.find-changed-workspaces.outputs.workspaces) }}

@@ -21,6 +21,7 @@ import {
 } from './facts';
 import { DateTime } from 'luxon';
 import { FactSchema } from '@backstage-community/plugin-tech-insights-common';
+import { CompoundEntityRef } from '@backstage/catalog-model';
 
 /**
  * A Container for persistence related components in TechInsights
@@ -63,6 +64,11 @@ export interface TechInsightsStore {
     ids: string[],
     entity: string,
   ): Promise<{ [factRef: string]: FlatTechInsightFact }>;
+
+  /**
+   * @returns - An array containing CompoundEntityRef for entities having facts
+   */
+  getEntities(): Promise<CompoundEntityRef[]>;
 
   /**
    * Retrieves fact values identified by fact row references for an individual entity.

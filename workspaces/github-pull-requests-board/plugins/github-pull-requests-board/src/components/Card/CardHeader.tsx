@@ -15,7 +15,7 @@
  */
 import React, { FunctionComponent } from 'react';
 import { Typography, Box, Tooltip, Chip } from '@material-ui/core';
-import { getElapsedTime } from '../../utils/functions';
+import { getElapsedTime, decorateCommitStatus } from '../../utils/functions';
 import { UserHeader } from '../UserHeader';
 import { DraftPrIcon } from '../icons/DraftPr';
 import UnarchiveIcon from '@material-ui/icons/Unarchive';
@@ -80,7 +80,7 @@ const CardHeader: FunctionComponent<Props> = (props: Props) => {
       </Typography>
       <Box display="flex" justifyContent="space-between" marginY={1}>
         <Typography variant="body2" component="p">
-          Created at: <strong>{getElapsedTime(createdAt)}</strong>
+          Created: <strong>{getElapsedTime(createdAt)}</strong>
         </Typography>
         {updatedAt && (
           <Typography variant="body2" component="p">
@@ -91,10 +91,7 @@ const CardHeader: FunctionComponent<Props> = (props: Props) => {
       {status && (
         <Box display="flex" alignItems="center" flexWrap="wrap" paddingTop={1}>
           <Typography variant="body2" component="p">
-            Commit Status:{' '}
-            <strong>
-              {status[0]?.commit.statusCheckRollup?.state || 'N/A'}
-            </strong>
+            Commit Status: <strong>{decorateCommitStatus(status)}</strong>
           </Typography>
         </Box>
       )}

@@ -2,6 +2,7 @@ import {
   AuthService,
   BackstageCredentials,
   DiscoveryService,
+  RootConfigService,
 } from '@backstage/backend-plugin-api';
 import { ResponseError } from '@backstage/errors';
 import qs from 'qs';
@@ -13,16 +14,19 @@ export class LinkerdVizClient {
   private constructor(
     private readonly discoveryApi: DiscoveryService,
     private readonly authApi: AuthService,
+    private readonly configApi: RootConfigService,
   ) {}
 
   static fromConfig({
     discovery,
     auth,
+    config,
   }: {
     discovery: DiscoveryService;
     auth: AuthService;
+    config: RootConfigService;
   }) {
-    return new LinkerdVizClient(discovery, auth);
+    return new LinkerdVizClient(discovery, auth, config);
   }
 
   async request<T = any>(
@@ -31,7 +35,11 @@ export class LinkerdVizClient {
   ) {
     const k8sBase = await this.discoveryApi.getBaseUrl('kubernetes');
 
-    const targetUrl = `${k8sBase}/proxy/api/v1/namespaces/linkerd-viz/services/web:8084/proxy${url}`;
+    const targetUrl = this.configApi.getOptionalBoolean(
+      'linkerd.deployedWithControlPlane',
+    )
+      ? `http://web.linkerd-viz.svc.cluster.local:8084${url}`
+      : `${k8sBase}/proxy/api/v1/namespaces/linkerd-viz/services/web:8084/proxy${url}`;
 
     const { token } = await this.authApi.getPluginRequestToken({
       onBehalfOf: options.credentials,
@@ -45,7 +53,7 @@ export class LinkerdVizClient {
     });
 
     if (!response.ok) {
-      throw ResponseError.fromResponse(response);
+      throw await ResponseError.fromResponse(response);
     }
 
     return response.json() as Promise<T>;
