@@ -553,7 +553,7 @@ export class GitReleaseClient implements GitReleaseApi {
   };
 }
 
-type OwnerRepo = {
+export type OwnerRepo = {
   owner: Project['owner'];
   repo: Project['repo'];
 };

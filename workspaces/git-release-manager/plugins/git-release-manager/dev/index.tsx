@@ -18,10 +18,20 @@ import React from 'react';
 import { createDevApp } from '@backstage/dev-utils';
 import { Box, Button, Typography } from '@material-ui/core';
 
-import { gitReleaseManagerPlugin, GitReleaseManagerPage } from '../src/plugin';
+import {
+  gitReleaseManagerPlugin,
+  GitReleaseManagerPage,
+  gitReleaseManagerApiRef,
+} from '../src/plugin';
 import { InfoCardPlus } from '../src/components/InfoCardPlus';
+import { mockGitReleaseManagerApi } from './mock/github/client';
 
 createDevApp()
+  .registerApi({
+    api: gitReleaseManagerApiRef,
+    deps: {},
+    factory: () => mockGitReleaseManagerApi,
+  })
   .registerPlugin(gitReleaseManagerPlugin)
   .addPage({
     title: 'Dynamic',
