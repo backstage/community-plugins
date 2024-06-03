@@ -43,11 +43,18 @@ export type CheckResultRenderer = {
   isFailed?: (check: CheckResult) => boolean;
 };
 
+// @public
+export type CommonCheck = Pick<
+  Check,
+  'id' | 'type' | 'name' | 'description' | 'factIds'
+>;
+
 // @public (undocumented)
 export const EntityTechInsightsScorecardCard: (props: {
   title: string;
   description?: string | undefined;
   checksId?: string[] | undefined;
+  filter?: ((check: CommonCheck) => boolean) | undefined;
   onlyFailed?: boolean | undefined;
 }) => JSX_2.Element;
 
@@ -56,6 +63,7 @@ export const EntityTechInsightsScorecardContent: (props: {
   title: string;
   description?: string | undefined;
   checksId?: string[] | undefined;
+  filter?: ((check: CommonCheck) => boolean) | undefined;
 }) => JSX_2.Element;
 
 // @public

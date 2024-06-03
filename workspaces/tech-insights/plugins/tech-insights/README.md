@@ -57,6 +57,10 @@ You can pass an array `checksId` as a prop with the [Fact Retrievers ids](../tec
 />
 ```
 
+You can also pass a `filter` function to both `EntityTechInsightsScorecardContent` and `EntityTechInsightsScorecardCard` which filters in/out check result after they have been fetched. This can be useful to filter by more logical conditions on fields like `id` or `name`, e.g. the first characters in a name.
+
+To only show failed checks, you can pass the boolan `onlyFailed` to these components.
+
 If you want to show checks in the overview of an entity use `EntityTechInsightsScorecardCard`.
 
 ```tsx

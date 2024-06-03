@@ -39,6 +39,7 @@ export class TechInsightsClient implements TechInsightsApi {
   private readonly discoveryApi: DiscoveryApi;
   private readonly identityApi: IdentityApi;
   private readonly renderers?: CheckResultRenderer[];
+  private readonly apiCache = new Map<string, Promise<any>>();
 
   constructor(options: {
     discoveryApi: DiscoveryApi;
@@ -106,9 +107,19 @@ export class TechInsightsClient implements TechInsightsApi {
     });
   }
 
+  private getCacheKey(path: string, init?: RequestInit): string {
+    return `${path} ${JSON.stringify(init ?? {})}`;
+  }
+
   private async api<T>(path: string, init?: RequestInit): Promise<T> {
     const url = await this.discoveryApi.getBaseUrl('tech-insights');
     const { token } = await this.identityApi.getCredentials();
+
+    const cacheKey = this.getCacheKey(`${url}${path}`, init);
+    const cached = this.apiCache.get(cacheKey);
+    if (cached) {
+      return cached;
+    }
 
     const headers: HeadersInit = new Headers(init?.headers);
     if (!headers.has('content-type'))
@@ -122,11 +133,19 @@ export class TechInsightsClient implements TechInsightsApi {
       headers,
     });
 
-    return fetch(request).then(async response => {
+    const result = fetch(request).then(async response => {
       if (!response.ok) {
         throw await ResponseError.fromResponse(response);
       }
       return response.json() as Promise<T>;
     });
+
+    // Fill cache, and clear after 2 seconds
+    this.apiCache.set(cacheKey, result);
+    setTimeout(() => {
+      this.apiCache.delete(cacheKey);
+    }, 2000);
+
+    return result;
   }
 }
