@@ -225,7 +225,7 @@ export class GoogleAnalytics4 implements AnalyticsApi, NewAnalyticsApi {
         : this.allowedContexts;
 
     contextKeys?.forEach(ctx => {
-      if (context[ctx] !== undefined && context[ctx] !== null) {
+      if (context[ctx] !== undefined && context[ctx] !== null && context[ctx] !== '') {
         customEventParameters[`c_${ctx}`] = context[ctx];
       }
     });
@@ -235,7 +235,7 @@ export class GoogleAnalytics4 implements AnalyticsApi, NewAnalyticsApi {
         ? Object.keys(attributes)
         : this.allowedAttributes;
     attrKeys?.forEach(attr => {
-      if (attributes[attr] !== undefined && attributes[attr] !== null) {
+      if (attributes[attr] !== undefined && attributes[attr] !== null && attributes[attr] !== '') {
         customEventParameters[`a_${attr}`] = attributes[attr];
       }
     });
