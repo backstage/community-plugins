@@ -43,7 +43,7 @@
     "luxon": "^3.0.0",
     "marked": "^12.0.0",
     "node-fetch": "^2.6.5",
-    "yn": "^4.0.0"
+    "yn": "^5.0.0"
   },
   "devDependencies": {
     "@backstage/cli": "^0.26.5",
