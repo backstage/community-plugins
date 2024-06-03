@@ -62,6 +62,7 @@
     "@backstage/errors": "^1.2.4",
     "@backstage/types": "^1.1.1",
     "@types/luxon": "^3.0.0",
+    "fast-json-stable-stringify": "^2.1.0",
     "luxon": "^3.0.0",
     "qs": "^6.12.3"
   },
