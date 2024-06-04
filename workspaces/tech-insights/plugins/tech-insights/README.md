@@ -87,7 +87,7 @@ const overviewContent = (
 
 ## Boolean Scorecard Example
 
-If you follow the [Backend Example](https://github.com/backstage/backstage/tree/master/plugins/tech-insights-backend#backend-example), once the needed facts have been generated the default boolean scorecard will look like this:
+If you follow the [Backend Example](../tech-insights-backend#backend-example), once the needed facts have been generated the default boolean scorecard will look like this:
 
 ![Boolean Scorecard Example](./docs/boolean-scorecard-example.png)
 
@@ -160,7 +160,7 @@ First make the Scorecard page available as route
 ```tsx
 // packages/app/src/App.tsx
 
-import { TechInsightsScorecardPage } from '@backstage/plugin-tech-insights';
+import { TechInsightsScorecardPage } from '@backstage-community/plugin-tech-insights';
 
 const routes = (
   <FlatRoutes>

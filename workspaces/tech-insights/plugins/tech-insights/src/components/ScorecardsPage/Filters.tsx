@@ -81,13 +81,19 @@ function RenderOptionLabel(props: { check: Check; isSelected: boolean }) {
   );
 }
 
+const withResultsOptions = [
+  { label: 'Yes', value: true },
+  { label: 'No', value: false },
+];
+
 /** public **/
 export type FiltersProps = {
   checksChanged: (checks: Check[]) => void;
+  withResultsChanged: (withResults: boolean) => void;
 };
 
 export const Filters = (props: FiltersProps) => {
-  const { checksChanged } = props;
+  const { checksChanged, withResultsChanged } = props;
   const api = useApi(techInsightsApiRef);
 
   const { value, loading, error } = useAsync(async () => {
@@ -99,27 +105,48 @@ export const Filters = (props: FiltersProps) => {
   }
 
   return (
-    <Box pb={1} pt={1}>
-      <Typography variant="button" component="label">
-        Checks
-        <Autocomplete
-          multiple
-          disableCloseOnSelect
-          options={value ?? []}
-          loading={loading}
-          getOptionLabel={o => o.name}
-          onChange={(_: object, changedChecks) => {
-            checksChanged(changedChecks);
-          }}
-          filterOptions={x => x}
-          renderOption={(check, { selected }) => {
-            return <RenderOptionLabel check={check} isSelected={selected} />;
-          }}
-          size="small"
-          popupIcon={<ExpandMoreIcon />}
-          renderInput={params => <TextField {...params} variant="outlined" />}
-        />
-      </Typography>
-    </Box>
+    <>
+      <Box pb={1} pt={1}>
+        <Typography variant="button" component="label">
+          Checks
+          <Autocomplete
+            multiple
+            disableCloseOnSelect
+            options={value ?? []}
+            loading={loading}
+            getOptionLabel={o => o.name}
+            onChange={(_: object, changedChecks) => {
+              checksChanged(changedChecks);
+            }}
+            filterOptions={x => x}
+            renderOption={(check, { selected }) => {
+              return <RenderOptionLabel check={check} isSelected={selected} />;
+            }}
+            size="small"
+            popupIcon={<ExpandMoreIcon />}
+            renderInput={params => <TextField {...params} variant="outlined" />}
+          />
+        </Typography>
+      </Box>
+      <Box pb={1} pt={1}>
+        <Typography variant="button" component="label">
+          Only with results
+          <Autocomplete
+            defaultValue={withResultsOptions[0]}
+            options={withResultsOptions}
+            getOptionLabel={o => o.label}
+            onChange={(_: object, selectedItem) => {
+              if (selectedItem) {
+                withResultsChanged(selectedItem.value);
+              }
+            }}
+            disableClearable
+            size="small"
+            popupIcon={<ExpandMoreIcon />}
+            renderInput={params => <TextField {...params} variant="outlined" />}
+          />
+        </Typography>
+      </Box>
+    </>
   );
 };
