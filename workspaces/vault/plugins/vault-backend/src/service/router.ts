@@ -19,6 +19,9 @@ import { Config } from '@backstage/config';
 import express from 'express';
 import { Logger } from 'winston';
 import { VaultBuilder } from './VaultBuilder';
+import {AuthService, DiscoveryService, HttpAuthService, PermissionsService} from "@backstage/backend-plugin-api";
+import {VaultApi} from "./vaultApi";
+import { CatalogApi } from '@backstage/catalog-client';
 
 /**
  * Options for the router creation.
@@ -26,8 +29,14 @@ import { VaultBuilder } from './VaultBuilder';
  */
 export interface RouterOptions {
   logger: Logger;
+  vaultApi: VaultApi;
   config: Config;
   scheduler: PluginTaskScheduler;
+  catalogApi: CatalogApi;
+  permissions: PermissionsService;
+  auth?: AuthService;
+  httpAuth?: HttpAuthService;
+  discovery: DiscoveryService;
 }
 
 /**
