@@ -1,0 +1,11 @@
+.yarn
+dist
+coverage
+*.hbs
+api-report.md
+api-report-*.md
+knip-report.md
+cli-report.md
+.vscode
+dist-types
+.eslintrc.cjs
