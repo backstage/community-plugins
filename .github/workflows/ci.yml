@@ -30,6 +30,13 @@ jobs:
         with:
           node-version: 20
           registry-url: https://registry.npmjs.org/ # Needed for auth
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Lint files
+        run: yarn backstage-cli repo lint
+      - name: Prettier check
+        run: yarn prettier:check
 
       - name: Find changed workspaces
         id: find-changed-workspaces
