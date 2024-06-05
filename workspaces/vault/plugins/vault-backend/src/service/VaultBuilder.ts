@@ -86,6 +86,12 @@ export class VaultBuilder {
       };
     }
 
+    if (config.has('vault.token')) {
+      logger.warn(
+        "The 'vault.token' configuration has been deprecated, use 'vault.auth' instead",
+      );
+    }
+
     this.vaultApi = this.vaultApi ?? new VaultClient(this.env);
 
     const router = this.buildRouter(this.vaultApi);
@@ -108,11 +114,23 @@ export class VaultBuilder {
 
   /**
    * Enables the token renewal for Vault. The schedule if configured in the app-config.yaml file.
-   * If not set, the renewal is executed hourly
+   * If not set, the renewal is executed hourly.
+   *
+   * The token renewal is only needed for the static secret authentication.
    *
    * @returns
    */
   public async enableTokenRenew(schedule?: TaskRunner) {
+    if (
+      this.env.config.has('vault.auth') && // FIXME: Needed to allow retro-compatibility to work. Remove in future release
+      this.env.config.getString('vault.auth.type') === 'kubernetes'
+    ) {
+      this.env.logger.warn(
+        'Token renewal not supported for Kubernetes authentication',
+      );
+      return this;
+    }
+
     const taskRunner = schedule
       ? schedule
       : this.env.scheduler.createScheduledTaskRunner(this.getConfigSchedule());

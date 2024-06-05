@@ -44,7 +44,10 @@ describe('createRouter', () => {
       config: new ConfigReader({
         vault: {
           baseUrl: 'https://www.example.com',
-          token: '1234567890',
+          auth: {
+            type: 'static',
+            secret: '1234567890',
+          },
         },
       }),
       scheduler: scheduler.forPlugin('vault'),
