@@ -9,3 +9,4 @@ cli-report.md
 .vscode
 dist-types
 .eslintrc.cjs
+.eslintrc.js
