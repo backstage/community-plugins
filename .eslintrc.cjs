@@ -15,10 +15,15 @@
  */
 
 var path = require('path');
+const { parserOptions } = require('./workspaces/repo-tools/packages/cli/.eslintrc');
 
 module.exports = {
   root: true,
-  plugins: ['@spotify', 'notice', 'react', 'testing-library'],
+  plugins: ['@spotify', '@backstage', 'notice', 'react', 'testing-library'],
+  parserOptions: {
+    sourceType: 'module',
+    ecmaVersion: 'latest',
+  },
   rules: {
     'notice/notice': [
       'error',
