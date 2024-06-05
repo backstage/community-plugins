@@ -9,7 +9,7 @@ concurrency:
 
 jobs:
   find-changed-workspaces:
-    name: Detect workspace changes
+    name: Run linters and find workspaces with changes
     runs-on: ubuntu-latest
     outputs:
       workspaces: ${{ steps.find-changed-workspaces.outputs.workspaces }}
