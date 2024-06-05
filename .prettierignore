@@ -10,3 +10,4 @@ cli-report.md
 dist-types
 .eslintrc.cjs
 .eslintrc.js
+workspaces
