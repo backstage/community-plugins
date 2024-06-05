@@ -46,7 +46,7 @@ export interface LinguistBackendApi {
 const linguistPlugin: () => BackendFeature;
 export default linguistPlugin;
 
-// @public
+// @public @deprecated
 export class LinguistTagsProcessor implements CatalogProcessor {
   constructor(options: LinguistTagsProcessorOptions);
   // (undocumented)
