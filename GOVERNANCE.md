@@ -4,5 +4,5 @@ The Backstage Community Plugins project area is governed according to the model 
 
 The governance of this repository is managed by specific roles:
 
-* [Community Plugins Area Owners](https://github.com/backstage/backstage/blob/master/OWNERS.md#community-plugins)
-* [Plugin Maintainers](https://github.com/backstage/backstage/blob/master/GOVERNANCE.md#plugin-maintainer)
+- [Community Plugins Area Owners](https://github.com/backstage/backstage/blob/master/OWNERS.md#community-plugins)
+- [Plugin Maintainers](https://github.com/backstage/backstage/blob/master/GOVERNANCE.md#plugin-maintainer)

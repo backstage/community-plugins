@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       repoCache:
-        description: 'Reset or disable the cache?'
+        description: "Reset or disable the cache?"
         type: choice
         default: enabled
         options:
@@ -13,7 +13,7 @@ on:
           - reset
   schedule:
     # Run every 60 minutes:
-    - cron: '0 * * * *'
+    - cron: "0 * * * *"
 
 # Adding these as env variables makes it easy to re-use them in different steps and in bash.
 env:
@@ -44,7 +44,7 @@ jobs:
         with:
           name: ${{ env.cache_key }}
           path: cache-download
-      
+
       # Generate an access token for the backstage-goalie[bot] account.
       - name: Get token
         id: get_token
@@ -54,7 +54,7 @@ jobs:
           private-key: ${{ secrets.BACKSTAGE_GOALIE_PRIVATE_KEY }}
           owner: ${{ github.repository_owner }}
           repositories: ${{ github.event.repository.name }}
-        
+
       # Using tar to compress and extract the archive isn't strictly necessary, but it can improve
       # performance significantly when uploading artifacts with lots of files.
       - name: Extract renovate cache
@@ -86,7 +86,6 @@ jobs:
           # This enables the cache -- if this is set, it's not necessary to add it to renovate.json.
           RENOVATE_REPOSITORY_CACHE: ${{ github.event.inputs.repoCache || 'enabled' }}
           LOG_LEVEL: DEBUG
-      
 
       # Compression helps performance in the upload step!
       - name: Compress renovate cache

@@ -70,7 +70,7 @@ jobs:
         run: node ../../scripts/ci/check-if-release.js
         env:
           WORKSPACE_NAME: ${{ inputs.workspace }}
-          COMMIT_SHA_BEFORE: '${{ github.event.before }}'
+          COMMIT_SHA_BEFORE: "${{ github.event.before }}"
 
       - name: Update Version Packages (${{ inputs.workspace }}) PR
         id: changesets-pr
@@ -84,8 +84,6 @@ jobs:
           skipRootChangelogUpdate: true
         env:
           GITHUB_TOKEN: ${{ secrets.GH_SERVICE_ACCOUNT_TOKEN }}
-
-
 
   release:
     name: Release workspace ${{ inputs.workspace }}
