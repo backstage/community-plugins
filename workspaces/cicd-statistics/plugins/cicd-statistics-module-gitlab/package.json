@@ -43,7 +43,7 @@
     "@gitbeaker/browser": "^35.6.0",
     "@gitbeaker/core": "^35.6.0",
     "luxon": "^3.0.0",
-    "p-limit": "^3.1.0"
+    "p-limit": "^5.0.0"
   },
   "devDependencies": {
     "@backstage/cli": "^0.26.3",
