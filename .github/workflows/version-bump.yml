@@ -10,10 +10,10 @@ on:
         options:
           - next
           - main
-
-  # Run Weekly on Wednesday at 10:00 UTC time
-  schedule:
-    - cron: '0 10 * * 3'
+      workspace_input:
+        description: 'Workspace'
+        required: true
+        type: string
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -26,7 +26,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        workspace: ['azure-devops', 'linguist']
+        workspace: ${{ inputs.workspace_input }}
 
     name: ${{ matrix.workspace }} version:bump
     steps:
