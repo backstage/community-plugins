@@ -132,7 +132,7 @@ export const AddEntitiesDrawer = ({
   const singularTitle = useTitle({
     pluralize: false,
     lowerCase: true,
-  })
+  });
 
   const addEntity = useCallback(
     (entityResult: SearchDocument) => {
