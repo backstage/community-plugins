@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 
-const { Octokit } = require("@octokit/rest");
-const path = require('path');
-const fs = require("fs-extra");
-const { EOL } = require("os");
+import { Octokit } from "@octokit/rest";
+import { resolve as resolvePath } from "path";
+import fs from "fs-extra";
+import * as url from "url";
+
+const __dirname = url.fileURLToPath(new URL(".", import.meta.url));
 
 const baseOptions = {
   owner: "backstage",
@@ -11,11 +13,13 @@ const baseOptions = {
 };
 
 async function getCurrentTagVersion(filePath) {
-  return fs.readJson(path.join(filePath,package.json)).then((_) => _.version);
+  return fs
+    .readJson(resolvePath(filePath, "package.json"))
+    .then((_) => _.version);
 }
 
 async function getCurrentTagName(filePath) {
-  return fs.readJson(path.join(filePath,package.json)).then((_) => _.name);
+  return fs.readJson(resolvePath(filePath, "package.json")).then((_) => _.name);
 }
 
 async function createGitTag(octokit, commitSha, tagName) {
@@ -46,34 +50,43 @@ async function createGitTag(octokit, commitSha, tagName) {
 }
 
 async function main() {
+  if (!process.env.WORKSPACE_NAME) {
+    throw new Error("WORKSPACE_NAME environment variable not set");
+  }
   if (!process.env.GITHUB_SHA) {
     throw new Error("GITHUB_SHA is not set");
   }
   if (!process.env.GITHUB_TOKEN) {
     throw new Error("GITHUB_TOKEN is not set");
   }
-  if (!process.env.GITHUB_OUTPUT) {
-    throw new Error("GITHUB_OUTPUT environment variable not set");
-  }
 
   const commitSha = process.env.GITHUB_SHA;
   const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 
-  const dirContents = await fs.readdir(path.join(__dirname,plugins), { withFileTypes: true });
+  const repoRoot = resolvePath(__dirname, "..", "..");
+  process.chdir(
+    resolvePath(repoRoot, "workspaces", process.env.WORKSPACE_NAME)
+  );
+
+  const dirContents = await fs.readdir("./plugins", {
+    withFileTypes: true,
+  });
 
   for (const item of dirContents) {
     if (item.isDirectory()) {
-      const pluginName = await getCurrentTagName(path.join(__dirname,plugins,item.name));
-      const pluginVersion = await getCurrentTagVersion(path.join(__dirname,plugins,item.name));
-      const tagName = `plugin_${pluginName}@${pluginVersion}`;
-
-      console.log(`Creating release tag ${tagName} at ${commitSha}`);
-      await createGitTag(octokit, commitSha, tagName);
-
-      await fs.appendFile(
-        process.env.GITHUB_OUTPUT,
-        `tag_name=${tagName}${EOL}`
-      );
+      try {
+        const pluginName = await getCurrentTagName(
+          resolvePath("./plugins", item.name)
+        );
+        const pluginVersion = await getCurrentTagVersion(
+          resolvePath("./plugins", item.name)
+        );
+        const tagName = `${pluginName}@${pluginVersion}`;
+        console.log(`Creating release tag ${tagName} at ${commitSha}`);
+        await createGitTag(octokit, commitSha, tagName);
+      } catch (error) {
+        console.error(`Failed to create tag for ${item.name}:${error.message}`);
+      }
     }
   }
 }
