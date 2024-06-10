@@ -1,5 +1,11 @@
 # @backstage-community/plugin-playlist
 
+## 0.2.12
+
+### Patch Changes
+
+- 71ec18e: Ensure 'add entity' drawer title displays the configured value.
+
 ## 0.2.11
 
 ### Patch Changes
