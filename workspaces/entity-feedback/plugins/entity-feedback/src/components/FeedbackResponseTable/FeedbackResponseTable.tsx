@@ -92,7 +92,7 @@ export const FeedbackResponseTable = (props: FeedbackResponseTableProps) => {
         <>
           {(response.response || '')
             .split(',')
-            .map((v:string) => v.trim()) // removes whitespace
+            .map((v: string) => v.trim()) // removes whitespace
             .filter(Boolean) // removes accidental empty entries
             .map((res: string) => (
               <Chip key={res} size="small" label={res} />

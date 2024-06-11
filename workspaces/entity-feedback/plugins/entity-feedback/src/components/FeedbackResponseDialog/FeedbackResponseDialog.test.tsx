@@ -104,7 +104,8 @@ describe('FeedbackResponseDialog', () => {
       expect(feedbackApi.recordResponse).toHaveBeenCalledWith(
         'component:default/test',
         {
-          comments: "{\"responseComments\":{},\"additionalComments\":\"test comments\"}",
+          comments:
+            '{"responseComments":{},"additionalComments":"test comments"}',
           consent: true,
           response: 'incorrect,other',
         },

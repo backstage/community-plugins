@@ -39,7 +39,7 @@ describe('FeedbackResponseTable', () => {
       consent: false,
       response: 'resp5,resp6',
       comments:
-        "{\"responseComments\":{\"incorrect\":\"incorrect link\",\"missing\":\"missing contact\"},\"additionalComments\":\"some comment\"}"
+        '{"responseComments":{"incorrect":"incorrect link","missing":"missing contact"},"additionalComments":"some comment"}',
     },
   ];
 
