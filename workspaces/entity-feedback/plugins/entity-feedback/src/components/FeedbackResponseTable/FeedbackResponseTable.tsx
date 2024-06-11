@@ -26,6 +26,7 @@ import React from 'react';
 import useAsync from 'react-use/esm/useAsync';
 
 import { entityFeedbackApiRef } from '../../api';
+import { Comments } from '../FeedbackResponseDialog';
 
 type ResponseRow = Omit<FeedbackResponse, 'entityRef'>;
 
@@ -107,7 +108,8 @@ export const FeedbackResponseTable = (props: FeedbackResponseTableProps) => {
         // Check if comment is a stringified object
         let parsedComment;
         try {
-          parsedComment = response?.comments && JSON.parse(response.comments);
+          parsedComment =
+            response?.comments && (JSON.parse(response.comments) as Comments);
         } catch (e) {
           // If parsing fails, assume it's a regular string
           parsedComment = response.comments;
@@ -116,11 +118,19 @@ export const FeedbackResponseTable = (props: FeedbackResponseTableProps) => {
           <div>
             {typeof parsedComment === 'object' ? (
               <ul className={classes.list}>
-                {Object.entries<string>(parsedComment)?.map(([key, value]) => (
-                  <li key={key} className={classes.listItem}>
-                    <strong>{key}:</strong> {value}
+                {Object.entries<string>(parsedComment.responseComments)?.map(
+                  ([key, value]) => (
+                    <li key={key} className={classes.listItem}>
+                      <strong>{key}:</strong> {value}
+                    </li>
+                  ),
+                )}
+                {parsedComment.additionalComments && (
+                  <li className={classes.listItem}>
+                    <strong>additional:</strong>{' '}
+                    {parsedComment.additionalComments}
                   </li>
-                ))}
+                )}
               </ul>
             ) : (
               <Typography>{parsedComment}</Typography>

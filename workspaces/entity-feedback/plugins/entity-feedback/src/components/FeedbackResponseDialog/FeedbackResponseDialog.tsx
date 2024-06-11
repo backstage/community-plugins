@@ -46,7 +46,10 @@ export interface EntityFeedbackResponse {
   label: string;
 }
 export interface Comments {
-  [key: string]: string;
+  responseComments: {
+    [key: string]: string;
+  };
+  additionalComments?: string;
 }
 
 const defaultFeedbackResponses: EntityFeedbackResponse[] = [
@@ -104,7 +107,10 @@ export const FeedbackResponseDialog = (props: FeedbackResponseDialogProps) => {
   const [responseSelections, setResponseSelections] = useState(
     Object.fromEntries(feedbackDialogResponses.map(r => [r.id, false])),
   );
-  const [comments, setComments] = useState<Comments>({});
+  const [comments, setComments] = useState<Comments>({
+    responseComments: {},
+    additionalComments: '',
+  });
   const [consent, setConsent] = useState(true);
 
   const [{ loading: saving }, saveResponse] = useAsyncFn(async () => {
@@ -160,11 +166,14 @@ export const FeedbackResponseDialog = (props: FeedbackResponseDialogProps) => {
                     minRows={2}
                     fullWidth
                     variant="outlined"
-                    value={comments[response.id] || ''}
+                    value={comments.responseComments[response.id] || ''}
                     onChange={e =>
                       setComments(prevComments => ({
-                        ...prevComments,
-                        [response.id]: e.target.value,
+                        responseComments: {
+                          ...prevComments.responseComments,
+                          [response.id]: e.target.value,
+                        },
+                        additionalComments: prevComments.additionalComments,
                       }))
                     }
                   />
@@ -184,12 +193,14 @@ export const FeedbackResponseDialog = (props: FeedbackResponseDialogProps) => {
             minRows={2}
             onChange={e =>
               setComments(prevComments => ({
-                ...prevComments,
-                ['additional']: e.target.value,
+                responseComments: {
+                  ...prevComments.responseComments,
+                },
+                additionalComments: e.target.value,
               }))
             }
             variant="outlined"
-            value={comments.additional || ''}
+            value={comments.additionalComments || ''}
           />
         </FormControl>
         <Typography className={classes.contactConsent}>
