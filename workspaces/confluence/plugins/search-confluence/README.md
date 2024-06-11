@@ -44,3 +44,8 @@ import {
     />
   );
 ```
+
+## Special thanks & Disclaimer
+
+Thanks to K-Phoen for creating the grafana plugin found [here](https://github.com/K-Phoen/backstage-plugin-confluence). As an outcome 
+of [this discussion](https://github.com/K-Phoen/backstage-plugin-confluence/issues/193), he gave us permission to keep working on this plugin.
