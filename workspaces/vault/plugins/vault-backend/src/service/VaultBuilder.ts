@@ -15,13 +15,11 @@
  */
 
 import { Config } from '@backstage/config';
-import {InputError, NotAllowedError, NotFoundError} from '@backstage/errors';
+import { InputError } from '@backstage/errors';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import express from 'express';
 import Router from 'express-promise-router';
-import { createPermissionIntegrationRouter } from '@backstage/plugin-permission-node';
 import { VaultApi, VaultClient } from './vaultApi';
-import { RouterOptions } from './router'
 import {
   PluginTaskScheduler,
   TaskRunner,
@@ -29,12 +27,7 @@ import {
   TaskScheduleDefinitionConfig,
   readTaskScheduleDefinitionFromConfig,
 } from '@backstage/backend-tasks';
-import {createLegacyAuthAdapters, errorHandler} from '@backstage/backend-common';
-import {
-  vaultEntityPermissions,
-  vaultEntityReadPermission
-} from "@backstage-community/plugin-vault-node/src/permissions";
-import { AuthorizeResult } from '@backstage/plugin-permission-common';
+import { errorHandler } from '@backstage/backend-common';
 
 /**
  * Environment values needed by the VaultBuilder
@@ -93,7 +86,12 @@ export class VaultBuilder {
       };
     }
 
-    // TODO: Properly build a set of options to pass into buildRouter
+    if (config.has('vault.token')) {
+      logger.warn(
+        "The 'vault.token' configuration has been deprecated, use 'vault.auth' instead",
+      );
+    }
+
     this.vaultApi = this.vaultApi ?? new VaultClient(this.env);
 
     const router = this.buildRouter(this.vaultApi);
@@ -116,11 +114,23 @@ export class VaultBuilder {
 
   /**
    * Enables the token renewal for Vault. The schedule if configured in the app-config.yaml file.
-   * If not set, the renewal is executed hourly
+   * If not set, the renewal is executed hourly.
+   *
+   * The token renewal is only needed for the static secret authentication.
    *
    * @returns
    */
   public async enableTokenRenew(schedule?: TaskRunner) {
+    if (
+      this.env.config.has('vault.auth') && // FIXME: Needed to allow retro-compatibility to work. Remove in future release
+      this.env.config.getString('vault.auth.type') === 'kubernetes'
+    ) {
+      this.env.logger.warn(
+        'Token renewal not supported for Kubernetes authentication',
+      );
+      return this;
+    }
+
     const taskRunner = schedule
       ? schedule
       : this.env.scheduler.createScheduledTaskRunner(this.getConfigSchedule());
@@ -158,22 +168,11 @@ export class VaultBuilder {
    * Builds the backend routes for Vault.
    *
    * @param vaultApi - The Vault client used to list the secrets.
-   * @param options
    * @returns The generated backend router
    */
-  private buildRouter(options: RouterOptions): express.Router {
-    const { vaultApi, permissions, catalogApi } = options;
-    const { auth, httpAuth } = createLegacyAuthAdapters(options);
-
-
-    // Connect permissions to the router
-    const permissionIntegrationRouter = createPermissionIntegrationRouter({
-      permissions: vaultEntityPermissions,
-    });
-
+  private buildRouter(vaultApi: VaultApi): express.Router {
     const router = Router();
     router.use(express.json());
-    router.use(permissionIntegrationRouter);
 
     router.get('/health', (_, res) => {
       res.json({ status: 'ok' });
@@ -182,37 +181,6 @@ export class VaultBuilder {
     router.get('/v1/secrets/:path', async (req, res) => {
       const { path } = req.params;
       const { engine } = req.query;
-      const credentials = await httpAuth.credentials(req);
-
-      const entityRef = req.body.entityRef;
-      if (typeof entityRef !== 'string') {
-        throw new InputError('Invalid entityRef, not a string');
-      }
-      const { token } = await auth.getPluginRequestToken({
-        onBehalfOf: credentials,
-        targetPluginId: 'catalog',
-      });
-      const entity = await catalogApi.getEntityByRef(entityRef, { token });
-      if (!entity) {
-        throw new NotFoundError()
-      }
-
-      const decision = permissions
-          ? (
-              await permissions.authorize(
-                  [
-                    {
-                      permission: vaultEntityReadPermission,
-                      resourceRef: entityRef,
-                    },
-                  ],
-                  { credentials },
-              )
-          )[0]
-          : undefined;
-      if (decision && decision.result === AuthorizeResult.DENY) {
-        throw new NotAllowedError('Unauthorized');
-      }
 
       if (typeof path !== 'string') {
         throw new InputError(`Invalid path: ${path}`);

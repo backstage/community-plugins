@@ -10,13 +10,15 @@ import { BuildRun } from '@backstage-community/plugin-azure-devops-common';
 import { CatalogProcessor } from '@backstage/plugin-catalog-node';
 import { Config } from '@backstage/config';
 import { DashboardPullRequest } from '@backstage-community/plugin-azure-devops-common';
+import { DiscoveryService } from '@backstage/backend-plugin-api';
 import { Entity } from '@backstage/catalog-model';
 import express from 'express';
 import { GitRepository } from 'azure-devops-node-api/interfaces/GitInterfaces';
 import { GitTag } from '@backstage-community/plugin-azure-devops-common';
+import { HttpAuthService } from '@backstage/backend-plugin-api';
 import { LocationSpec } from '@backstage/plugin-catalog-common';
 import { LoggerService } from '@backstage/backend-plugin-api';
-import { PermissionEvaluator } from '@backstage/plugin-permission-common';
+import { PermissionsService } from '@backstage/backend-plugin-api';
 import { Project } from '@backstage-community/plugin-azure-devops-common';
 import { PullRequest } from '@backstage-community/plugin-azure-devops-common';
 import { PullRequestOptions } from '@backstage-community/plugin-azure-devops-common';
@@ -159,9 +161,13 @@ export interface RouterOptions {
   // (undocumented)
   config: Config;
   // (undocumented)
+  discovery: DiscoveryService;
+  // (undocumented)
+  httpAuth?: HttpAuthService;
+  // (undocumented)
   logger: LoggerService;
   // (undocumented)
-  permissions: PermissionEvaluator;
+  permissions: PermissionsService;
   // (undocumented)
   reader: UrlReader;
 }

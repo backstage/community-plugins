@@ -33,8 +33,47 @@ export interface Config {
     /**
      * The token used by Backstage to access Vault.
      * @visibility secret
+     * @deprecated Use `auth` instead.
      */
-    token: string;
+    token?: string;
+
+    /**
+     * The authentication used to connect to vault. Currently a static token and
+     * kubernetes authentication are supported.
+     * @visibility backend
+     */
+    auth:
+      | {
+          type: 'static';
+
+          /**
+           * The token used by Backstage to access Vault.
+           * @visibility secret
+           */
+          secret: string;
+        }
+      | {
+          type: 'kubernetes';
+
+          /**
+           * The role used to login to Vault
+           * @visibility backend
+           */
+          role: string;
+
+          /**
+           * The authPath used to login to Vault. If not set, it defaults to 'kubernetes'.
+           * @visibility backend
+           */
+          authPath?: string;
+
+          /**
+           * The path where the service account token is. If not set,
+           * it defaults to '/var/run/secrets/kubernetes.io/serviceaccount/token'.
+           * @visibility secret
+           */
+          serviceAccountTokenPath?: string;
+        };
 
     /**
      * The secret engine name where in vault. Defaults to `secrets`.
