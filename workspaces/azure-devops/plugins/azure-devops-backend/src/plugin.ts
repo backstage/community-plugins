@@ -35,14 +35,26 @@ export const azureDevOpsPlugin = createBackendPlugin({
         reader: coreServices.urlReader,
         permissions: coreServices.permissions,
         httpRouter: coreServices.httpRouter,
+        discovery: coreServices.discovery,
+        httpAuth: coreServices.httpAuth,
       },
-      async init({ config, logger, reader, permissions, httpRouter }) {
+      async init({
+        config,
+        logger,
+        reader,
+        permissions,
+        httpRouter,
+        discovery,
+        httpAuth,
+      }) {
         httpRouter.use(
           await createRouter({
             config,
             logger,
             reader,
             permissions,
+            discovery,
+            httpAuth,
           }),
         );
         httpRouter.addAuthPolicy({
