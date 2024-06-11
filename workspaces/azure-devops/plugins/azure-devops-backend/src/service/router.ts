@@ -32,16 +32,21 @@ import {
   PullRequestsDashboardProvider,
 } from '../api/PullRequestsDashboardProvider';
 import Router from 'express-promise-router';
-import { errorHandler, UrlReader } from '@backstage/backend-common';
+import {
+  createLegacyAuthAdapters,
+  errorHandler,
+  UrlReader,
+} from '@backstage/backend-common';
 import express from 'express';
 import { InputError, NotAllowedError } from '@backstage/errors';
-import { getBearerTokenFromAuthorizationHeader } from '@backstage/plugin-auth-node';
-import {
-  AuthorizeResult,
-  PermissionEvaluator,
-} from '@backstage/plugin-permission-common';
+import { AuthorizeResult } from '@backstage/plugin-permission-common';
 import { createPermissionIntegrationRouter } from '@backstage/plugin-permission-node';
-import { LoggerService } from '@backstage/backend-plugin-api';
+import {
+  DiscoveryService,
+  HttpAuthService,
+  LoggerService,
+  PermissionsService,
+} from '@backstage/backend-plugin-api';
 
 const DEFAULT_TOP = 10;
 
@@ -51,7 +56,9 @@ export interface RouterOptions {
   logger: LoggerService;
   config: Config;
   reader: UrlReader;
-  permissions: PermissionEvaluator;
+  permissions: PermissionsService;
+  discovery: DiscoveryService;
+  httpAuth?: HttpAuthService;
 }
 
 /** @public */
@@ -59,6 +66,8 @@ export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
   const { logger, reader, config, permissions } = options;
+
+  const { httpAuth } = createLegacyAuthAdapters(options);
 
   if (config.getOptionalString('azureDevOps.token')) {
     logger.warn(
@@ -142,9 +151,6 @@ export async function createRouter(
       throw new InputError('Invalid entityRef, not a string');
     }
 
-    const token = getBearerTokenFromAuthorizationHeader(
-      req.header('authorization'),
-    );
     const decision = (
       await permissions.authorize(
         [
@@ -153,9 +159,7 @@ export async function createRouter(
             resourceRef: entityRef,
           },
         ],
-        {
-          token,
-        },
+        { credentials: await httpAuth.credentials(req) },
       )
     )[0];
 
@@ -196,9 +200,6 @@ export async function createRouter(
       throw new InputError('Invalid entityRef, not a string');
     }
 
-    const token = getBearerTokenFromAuthorizationHeader(
-      req.header('authorization'),
-    );
     const decision = (
       await permissions.authorize(
         [
@@ -207,9 +208,7 @@ export async function createRouter(
             resourceRef: entityRef,
           },
         ],
-        {
-          token,
-        },
+        { credentials: await httpAuth.credentials(req) },
       )
     )[0];
 
@@ -246,9 +245,6 @@ export async function createRouter(
       teamsLimit: teamsLimit,
     };
 
-    const token = getBearerTokenFromAuthorizationHeader(
-      req.header('authorization'),
-    );
     const decision = (
       await permissions.authorize(
         [
@@ -256,9 +252,7 @@ export async function createRouter(
             permission: azureDevOpsPullRequestDashboardReadPermission,
           },
         ],
-        {
-          token,
-        },
+        { credentials: await httpAuth.credentials(req) },
       )
     )[0];
 
@@ -310,9 +304,6 @@ export async function createRouter(
       throw new InputError('Invalid entityRef, not a string');
     }
 
-    const token = getBearerTokenFromAuthorizationHeader(
-      req.header('authorization'),
-    );
     const decision = (
       await permissions.authorize(
         [
@@ -321,9 +312,7 @@ export async function createRouter(
             resourceRef: entityRef,
           },
         ],
-        {
-          token,
-        },
+        { credentials: await httpAuth.credentials(req) },
       )
     )[0];
 
@@ -375,9 +364,6 @@ export async function createRouter(
       throw new InputError('Invalid entityRef, not a string');
     }
 
-    const token = getBearerTokenFromAuthorizationHeader(
-      req.header('authorization'),
-    );
     const decision = (
       await permissions.authorize(
         [
@@ -386,9 +372,7 @@ export async function createRouter(
             resourceRef: entityRef,
           },
         ],
-        {
-          token,
-        },
+        { credentials: await httpAuth.credentials(req) },
       )
     )[0];
 
