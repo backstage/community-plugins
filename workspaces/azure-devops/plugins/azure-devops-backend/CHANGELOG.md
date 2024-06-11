@@ -1,5 +1,17 @@
 # @backstage-community/plugin-azure-devops-backend
 
+## 0.6.6
+
+### Patch Changes
+
+- 82b799b: Fixed a bug where proper error was not thrown when the repository was not found.
+- fef765e: Updated dependency `azure-devops-node-api` to `^13.0.0`.
+- 0a6bae4: Backstage `1.27.6` version bump
+- 0032b05: Updated dependencies
+- Updated dependencies [0a6bae4]
+- Updated dependencies [0032b05]
+  - @backstage-community/plugin-azure-devops-common@0.4.3
+
 ## 0.6.5
 
 ### Patch Changes
