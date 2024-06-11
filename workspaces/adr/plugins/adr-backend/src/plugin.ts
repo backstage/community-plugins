@@ -33,15 +33,34 @@ export const adrPlugin = createBackendPlugin({
         reader: coreServices.urlReader,
         cache: coreServices.cache,
         httpRouter: coreServices.httpRouter,
+        discovery: coreServices.discovery,
+        httpAuth: coreServices.httpAuth,
+        auth: coreServices.auth,
       },
-      async init({ httpRouter, logger, reader, cache }) {
+      async init({
+        httpRouter,
+        logger,
+        reader,
+        cache,
+        discovery,
+        httpAuth,
+        auth,
+      }) {
         httpRouter.use(
           await createRouter({
             logger,
             reader,
             cacheClient: cache,
+            discovery,
+            httpAuth,
+            auth,
           }),
         );
+
+        httpRouter.addAuthPolicy({
+          path: '/image',
+          allow: 'user-cookie',
+        });
       },
     });
   },

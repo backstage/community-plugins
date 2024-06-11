@@ -16,6 +16,7 @@
 
 import {
   CacheClient,
+  PluginEndpointDiscovery,
   ReadTreeResponse,
   ReadTreeResponseFile,
   ReadUrlResponse,
@@ -118,6 +119,11 @@ class MockCacheClient implements CacheClient {
 describe('createRouter', () => {
   let app: express.Express;
 
+  const discovery: jest.Mocked<PluginEndpointDiscovery> = {
+    getBaseUrl: jest.fn(),
+    getExternalBaseUrl: jest.fn(),
+  };
+
   beforeEach(async () => {
     jest.resetAllMocks();
 
@@ -127,6 +133,7 @@ describe('createRouter', () => {
       logger: {
         error: (message: any) => message,
       } as LoggerService,
+      discovery,
     });
     app = express().use(router);
   });
@@ -271,33 +278,18 @@ describe('createRouter', () => {
 
     it('returns the correct image when reading a url', async () => {
       const urlToProcess = 'testImage.png';
-      const imageTypeMap: Record<string, string> = {
-        png: 'image/png',
-        jpg: 'image/jpeg',
-        jpeg: 'image/jpeg',
-        gif: 'image/gif',
-        svg: 'image/svg+xml',
-        webp: 'image/webp',
-      };
       const imageResponse = await request(app).get(
         `${imageEndpointName}?url=${urlToProcess}`,
       );
       const imageStatus = imageResponse.status;
       const imageData = imageResponse.body;
       const imageError = imageResponse.error;
-      const imageType = urlToProcess.match(/\.([a-z0-9]+)(\?.*)?$/i);
-      let contentType;
-      if (imageType) {
-        contentType = imageTypeMap[imageType[1].toLowerCase()];
-      }
-
+      const responseBody = 'aW1hZ2UgY29udGVudA==';
       const expectedStatusCode = 200;
 
       expect(imageError).toBeFalsy();
       expect(imageStatus).toBe(expectedStatusCode);
-      expect(imageData.data).toBe(
-        `data:${contentType};base64,${btoa(testImageContent)}`,
-      );
+      expect(imageData.toString('base64')).toBe(responseBody);
     });
   });
 });

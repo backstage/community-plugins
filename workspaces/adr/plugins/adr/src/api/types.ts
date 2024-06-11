@@ -59,16 +59,6 @@ export type AdrReadResult = {
   /** The contents of the read ADR file. */
   data: string;
 };
-
-/**
- * The result of fetching an ADR image.
- *
- * @public
- */
-export type AdrImageResult = {
-  data: string;
-};
-
 /**
  * The API used by the adr plugin to list and read ADRs.
  *
@@ -80,9 +70,6 @@ export interface AdrApi {
 
   /** Reads the contents of the ADR at the provided url. */
   readAdr(url: string): Promise<AdrReadResult>;
-
-  /** Reads the images from contents of the ADR at the provided url. */
-  imageAdr(url: string): Promise<AdrImageResult>;
 }
 
 /**

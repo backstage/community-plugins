@@ -27,7 +27,6 @@ export type {
   AdrFileInfo,
   AdrListResult,
   AdrReadResult,
-  AdrImageResult,
 } from './api';
 export { isAdrAvailable } from '@backstage-community/plugin-adr-common';
 export * from './components/AdrReader';

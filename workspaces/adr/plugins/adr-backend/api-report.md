@@ -15,6 +15,7 @@ import { Config } from '@backstage/config';
 import { DocumentCollatorFactory } from '@backstage/plugin-search-common';
 import { Entity } from '@backstage/catalog-model';
 import express from 'express';
+import { HttpAuthService } from '@backstage/backend-plugin-api';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { PluginCacheManager } from '@backstage/backend-common';
 import { PluginEndpointDiscovery } from '@backstage/backend-common';
@@ -55,6 +56,9 @@ export type AdrRouterOptions = {
   reader: UrlReader;
   cacheClient: CacheClient;
   logger: LoggerService;
+  discovery: PluginEndpointDiscovery;
+  httpAuth?: HttpAuthService;
+  auth?: AuthService;
 };
 
 // @public

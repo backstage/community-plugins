@@ -21,18 +21,17 @@ import {
   Progress,
   WarningPanel,
 } from '@backstage/core-components';
-import { useApi } from '@backstage/core-plugin-api';
+import { discoveryApiRef, useApi } from '@backstage/core-plugin-api';
 import { scmIntegrationsApiRef } from '@backstage/integration-react';
 import { getAdrLocationUrl } from '@backstage-community/plugin-adr-common';
 import { useEntity } from '@backstage/plugin-catalog-react';
+import { CookieAuthRefreshProvider } from '@backstage/plugin-auth-react';
 
 import { adrDecoratorFactories } from './decorators';
 import { AdrContentDecorator } from './types';
 import { adrApiRef } from '../../api';
 import useAsync from 'react-use/esm/useAsync';
 
-const imageUrlsRegExp =
-  /(!\[[^\[\]]*\])\((https?:\/\/.*?\.png|\.jpg|\.jpeg|\.gif|\.webp.*)\)/gim;
 /**
  * Component to fetch and render an ADR.
  *
@@ -48,19 +47,21 @@ export const AdrReader = (props: {
   const adrApi = useApi(adrApiRef);
   const adrLocationUrl = getAdrLocationUrl(entity, scmIntegrations);
   const adrFileLocationUrl = getAdrLocationUrl(entity, scmIntegrations, adr);
+  const discoveryApi = useApi(discoveryApiRef);
 
   const { value, loading, error } = useAsync(
     async () => adrApi.readAdr(adrFileLocationUrl),
     [adrFileLocationUrl],
   );
 
-  const adrElements = useMemo(() => {
-    const elements: { reducedAdrContent: string; imageUrls: string[] } = {
-      reducedAdrContent: '',
-      imageUrls: [],
-    };
+  const {
+    value: backendUrl,
+    loading: backendUrlLoading,
+    error: backendUrlError,
+  } = useAsync(async () => discoveryApi.getBaseUrl('adr'), []);
+  const adrContent = useMemo(() => {
     if (!value?.data) {
-      return elements;
+      return '';
     }
     const adrDecorators = decorators ?? [
       adrDecoratorFactories.createRewriteRelativeLinksDecorator(),
@@ -68,68 +69,45 @@ export const AdrReader = (props: {
       adrDecoratorFactories.createFrontMatterFormatterDecorator(),
     ];
 
-    elements.reducedAdrContent = adrDecorators.reduce(
+    return adrDecorators.reduce(
       (content, decorator) =>
         decorator({ baseUrl: adrLocationUrl, content }).content,
       value.data,
     );
-    let imageUrlsArray = imageUrlsRegExp.exec(elements.reducedAdrContent);
-    while (imageUrlsArray !== null) {
-      elements.imageUrls.push(imageUrlsArray[2]);
-      imageUrlsArray = imageUrlsRegExp.exec(elements.reducedAdrContent);
-    }
-
-    return elements;
   }, [adrLocationUrl, decorators, value]);
 
-  const {
-    value: adrImagesBase64,
-    loading: adrImagesBase64Loading,
-    error: adrImagesBase64Error,
-  } = useAsync(async () => {
-    if (!adrElements?.imageUrls) {
-      return [];
-    }
-    const adrBase64Images = adrElements.imageUrls.map(imageUrl => {
-      return adrApi.imageAdr(imageUrl);
-    });
-    return await Promise.all(adrBase64Images);
-  }, [adrElements.imageUrls]);
-
-  const adrContent = useMemo(() => {
-    if (typeof adrImagesBase64 === 'undefined') {
-      return '';
-    }
-    let imageIterator = -1;
-    return adrElements.reducedAdrContent.replace(imageUrlsRegExp, (_, p1) => {
-      imageIterator += 1;
-      return `${p1}(${adrImagesBase64[imageIterator]?.data})`;
-    });
-  }, [adrImagesBase64, adrElements.reducedAdrContent]);
-
   return (
-    <InfoCard>
-      {loading && adrImagesBase64Loading && <Progress />}
+    <CookieAuthRefreshProvider pluginId="adr">
+      <InfoCard>
+        {loading && <Progress />}
 
-      {!loading && error && (
-        <WarningPanel title="Failed to fetch ADR" message={error?.message} />
-      )}
-
-      {!adrImagesBase64Loading && adrImagesBase64Error && (
-        <WarningPanel
-          title="Failed to fetch ADR images"
-          message={adrImagesBase64Error?.message}
-        />
-      )}
-
-      {!loading &&
-        !adrImagesBase64Loading &&
-        !error &&
-        !adrImagesBase64Error &&
-        value?.data && (
-          <MarkdownContent content={adrContent} linkTarget="_blank" />
+        {!loading && error && (
+          <WarningPanel title="Failed to fetch ADR" message={error?.message} />
         )}
-    </InfoCard>
+
+        {!backendUrlLoading && backendUrlError && (
+          <WarningPanel
+            title="Failed to fetch ADR images"
+            message={backendUrlError?.message}
+          />
+        )}
+
+        {!loading &&
+          !backendUrlLoading &&
+          !error &&
+          !backendUrlError &&
+          value?.data && (
+            // <MarkdownContent content={adrContent} linkTarget="_blank" />
+            <MarkdownContent
+              content={adrContent}
+              linkTarget="_blank"
+              transformImageUri={href => {
+                return `${backendUrl}/image?url=${href}`;
+              }}
+            />
+          )}
+      </InfoCard>
+    </CookieAuthRefreshProvider>
   );
 };
 

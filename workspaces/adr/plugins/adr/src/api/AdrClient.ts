@@ -29,7 +29,6 @@ export interface AdrClientOptions {
 
 const readEndpoint = 'file';
 const listEndpoint = 'list';
-const imageEndpoint = 'image';
 
 /**
  * An implementation of the AdrApi that communicates with the ADR backend plugin.
@@ -66,9 +65,5 @@ export class AdrClient implements AdrApi {
 
   async readAdr(url: string): Promise<AdrReadResult> {
     return this.fetchAdrApi<AdrReadResult>(readEndpoint, url);
-  }
-
-  async imageAdr(url: string): Promise<AdrReadResult> {
-    return this.fetchAdrApi<AdrReadResult>(imageEndpoint, url);
   }
 }
