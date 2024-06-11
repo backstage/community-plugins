@@ -17,7 +17,7 @@
 import { ErrorPanel, Table } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
-import { FeedbackResponse } from '@backstage/plugin-entity-feedback-common';
+import { FeedbackResponse } from '@backstage-community/plugin-entity-feedback-common';
 import Chip from '@material-ui/core/Chip';
 import { makeStyles } from '@material-ui/core/styles';
 import CheckIcon from '@material-ui/icons/Check';
@@ -92,9 +92,9 @@ export const FeedbackResponseTable = (props: FeedbackResponseTableProps) => {
         <>
           {(response.response || '')
             .split(',')
-            .map(v => v.trim()) // removes whitespace
+            .map((v:string) => v.trim()) // removes whitespace
             .filter(Boolean) // removes accidental empty entries
-            .map(res => (
+            .map((res: string) => (
               <Chip key={res} size="small" label={res} />
             ))}
         </>
