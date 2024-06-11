@@ -20,15 +20,15 @@ export const ConfluenceResultListItem: ({
 // @public
 export const ConfluenceSearchIcon: () => React_2.JSX.Element;
 
-// Warning: (ae-missing-release-tag) "confluenceFrontendPlugin" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-missing-release-tag) "confluencePlugin" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export const confluenceFrontendPlugin: BackstagePlugin<{}, {}, {}>;
+export const confluencePlugin: BackstagePlugin<{}, {}, {}>;
 
 // Warnings were encountered during analysis:
 //
 // src/components/ConfluenceResultListItem/ConfluenceResultListItem.d.ts:18:22 - (ae-undocumented) Missing documentation for "ConfluenceResultListItem".
-// src/plugin.d.ts:1:22 - (ae-undocumented) Missing documentation for "confluenceFrontendPlugin".
+// src/plugin.d.ts:1:22 - (ae-undocumented) Missing documentation for "confluencePlugin".
 
 // (No @packageDocumentation comment for this package)
 ```
