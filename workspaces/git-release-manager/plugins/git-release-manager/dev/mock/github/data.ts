@@ -1,4 +1,4 @@
-import { OwnerData } from './OwnerData';
+import { OwnerData } from './types';
 
 const DATA: Record<string, OwnerData> = {
   goodreleaser: {
