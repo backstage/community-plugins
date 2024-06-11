@@ -14,6 +14,7 @@
     "lint": "backstage-cli package lint"
   },
   "dependencies": {
+    "@backstage-community/plugin-vault": "workspace:^",
     "@backstage/app-defaults": "^1.5.5",
     "@backstage/catalog-model": "^1.5.0",
     "@backstage/cli": "^0.26.5",

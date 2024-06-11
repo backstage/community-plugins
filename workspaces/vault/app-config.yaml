@@ -5,6 +5,16 @@ app:
 organization:
   name: My Company
 
+vault:
+  baseUrl: http://your-internal-vault-url.svc
+  publicUrl: https://your-vault-url.example.com
+  auth:
+    type: static
+    secret: <VAULT_TOKEN>
+  schedule: true
+#  secretEngine: 'customSecretEngine' # Optional. By default it uses 'secrets'. Can be overwritten by the annotation of the entity
+#  kvVersion: <kv-version> # Optional. The K/V version that your instance is using. The available options are '1' or '2'
+
 backend:
   # Used for enabling authentication, secret is shared by all backend plugins
   # See https://backstage.io/docs/auth/service-to-service-auth for

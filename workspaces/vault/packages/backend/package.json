@@ -16,6 +16,7 @@
     "build-image": "docker build ../.. -f Dockerfile --tag backstage"
   },
   "dependencies": {
+    "@backstage-community/plugin-vault-backend": "workspace:^",
     "@backstage/backend-common": "^0.22.0",
     "@backstage/backend-defaults": "^0.2.18",
     "@backstage/backend-tasks": "^0.5.23",
