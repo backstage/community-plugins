@@ -2563,6 +2563,7 @@ __metadata:
     "@backstage/core-plugin-api": ^1.9.2
     "@backstage/frontend-plugin-api": ^0.6.5
     "@backstage/integration-react": ^1.1.27
+    "@backstage/plugin-auth-react": ^0.1.2
     "@backstage/plugin-catalog-react": ^1.12.0
     "@backstage/plugin-search-common": ^1.2.11
     "@backstage/plugin-search-react": ^1.7.11
@@ -3157,6 +3158,22 @@ __metadata:
     zod: ^3.22.4
     zod-to-json-schema: ^3.21.4
   checksum: 29e3a08ddb9fe82890ebaf08b9b38c03638135f16657fb463cc1687b3744a0e20a5854cc73177c0bc8f69cc38ff96f172bcdc2724577bdba7c56adf391f2098c
+  languageName: node
+  linkType: hard
+
+"@backstage/plugin-auth-react@npm:^0.1.2":
+  version: 0.1.2
+  resolution: "@backstage/plugin-auth-react@npm:0.1.2"
+  dependencies:
+    "@backstage/core-components": ^0.14.7
+    "@backstage/core-plugin-api": ^1.9.2
+    "@backstage/errors": ^1.2.4
+    "@material-ui/core": ^4.9.13
+    "@react-hookz/web": ^24.0.0
+    "@types/react": ^16.13.1 || ^17.0.0 || ^18.0.0
+  peerDependencies:
+    react: ^16.13.1 || ^17.0.0 || ^18.0.0
+  checksum: bafa4d7cbd14755593181d63cb56f539c7b9754cb78ba9a665b04ece4d9292c78c99e490ddb5ecfe3179e2b0e62c45b70764e429e423b4c77f01efa697e8dfd3
   languageName: node
   linkType: hard
 
@@ -4663,7 +4680,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@material-ui/core@npm:^4.12.2, @material-ui/core@npm:^4.12.4":
+"@material-ui/core@npm:^4.12.2, @material-ui/core@npm:^4.12.4, @material-ui/core@npm:^4.9.13":
   version: 4.12.4
   resolution: "@material-ui/core@npm:4.12.4"
   dependencies:

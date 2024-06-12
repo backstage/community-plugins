@@ -25,12 +25,19 @@ import express from 'express';
 import request from 'supertest';
 import { createRouter } from './router';
 import { LoggerService } from '@backstage/backend-plugin-api';
+import { NotModifiedError } from '@backstage/errors';
 
 const listEndpointName = '/list';
 const fileEndpointName = '/file';
+const imageEndpointName = '/image';
 
 const makeBufferFromString = (string: string) => async () =>
   Buffer.from(string);
+
+const makeEtagFromString = (string: string) => {
+  const crypto = require('crypto');
+  return crypto.createHash('md5', string).digest('hex');
+};
 
 const testingUrlFakeFileTree: ReadTreeResponseFile[] = [
   {
@@ -50,6 +57,7 @@ const testingUrlFakeFileTree: ReadTreeResponseFile[] = [
 const makeFileContent = async (fileContent: string) => {
   const result: ReadUrlResponse = {
     buffer: makeBufferFromString(fileContent),
+    etag: makeEtagFromString(fileContent),
   };
   return result;
 };
@@ -57,6 +65,7 @@ const makeFileContent = async (fileContent: string) => {
 const testFileOneContent = 'testFileOne content';
 const testFileTwoContent = 'testFileTwo content';
 const genericFileContent = 'file content';
+const testImageContent = 'image content';
 
 const mockUrlReader: UrlReader = {
   readUrl(url: string) {
@@ -65,6 +74,8 @@ const mockUrlReader: UrlReader = {
         return makeFileContent(testFileOneContent);
       case 'testFileTwo':
         return makeFileContent(testFileTwoContent);
+      case 'testImage.png':
+        return makeFileContent(testImageContent);
       default:
         return makeFileContent(genericFileContent);
     }
@@ -226,6 +237,90 @@ describe('createRouter', () => {
       expect(fileTwoError).toBeFalsy();
       expect(fileTwoStatus).toBe(expectedStatusCode);
       expect(fileTwoBody.data).toBe(testFileTwoContent);
+    });
+  });
+
+  describe(`GET ${imageEndpointName}`, () => {
+    it('returns bad request (400) when no url is provided', async () => {
+      const urlNotSpecifiedRequest = await request(app).get(imageEndpointName);
+      const urlNotSpecifiedStatus = urlNotSpecifiedRequest.status;
+      const urlNotSpecifiedMessage = urlNotSpecifiedRequest.body.message;
+
+      const urlNotFilledRequest = await request(app).get(
+        `${imageEndpointName}?url=`,
+      );
+      const urlNotFilledStatus = urlNotFilledRequest.status;
+      const urlNotFilledMessage = urlNotFilledRequest.body.message;
+
+      const expectedStatusCode = 400;
+      const expectedErrorMessage = 'No URL provided';
+
+      expect(urlNotSpecifiedStatus).toBe(expectedStatusCode);
+      expect(urlNotSpecifiedMessage).toBe(expectedErrorMessage);
+
+      expect(urlNotFilledStatus).toBe(expectedStatusCode);
+      expect(urlNotFilledMessage).toBe(expectedErrorMessage);
+    });
+
+    it('returns bad request (400) when unsupported image format is provided', async () => {
+      const urlNotFilledRequest = await request(app).get(
+        `${imageEndpointName}?url=testImage.txt`,
+      );
+      const urlNotFilledStatus = urlNotFilledRequest.status;
+      const urlNotFilledMessage = urlNotFilledRequest.body.message;
+
+      const expectedStatusCode = 400;
+      const expectedErrorMessage = 'Image type txt is not supported';
+
+      expect(urlNotFilledStatus).toBe(expectedStatusCode);
+      expect(urlNotFilledMessage).toBe(expectedErrorMessage);
+    });
+
+    it('returns the correct image when reading a url', async () => {
+      const urlToProcess = 'testImage.png';
+      const imageResponse = await request(app).get(
+        `${imageEndpointName}?url=${urlToProcess}`,
+      );
+      const imageStatus = imageResponse.status;
+      const imageData = imageResponse.body;
+      const imageError = imageResponse.error;
+      const responseBody = 'aW1hZ2UgY29udGVudA==';
+      const expectedStatusCode = 200;
+
+      expect(imageError).toBeFalsy();
+      expect(imageStatus).toBe(expectedStatusCode);
+      expect(imageData.toString('base64')).toBe(responseBody);
+    });
+
+    it('returns the image from cache', async () => {
+      const urlToProcess = 'testImage.png';
+      const cacheSpy = jest.spyOn(MockCacheClient.prototype, 'get');
+      cacheSpy.mockImplementation(() => {
+        return new Promise(resolve => {
+          resolve({
+            data: 'aW1hZ2UgY29udGVudA==',
+            etag: 'd41d8cd98f00b204e9800998ecf8427e',
+          });
+        });
+      });
+      jest.spyOn(mockUrlReader, 'readUrl').mockImplementation(() => {
+        throw new NotModifiedError();
+      });
+
+      const imageResponse = await request(app).get(
+        `${imageEndpointName}?url=${urlToProcess}`,
+      );
+      const imageStatus = imageResponse.status;
+      const imageData = imageResponse.body;
+      const imageError = imageResponse.error;
+      const responseBody = 'aW1hZ2UgY29udGVudA==';
+      const expectedStatusCode = 200;
+
+      expect(imageError).toBeFalsy();
+      expect(cacheSpy).toHaveBeenCalledTimes(1);
+      expect(cacheSpy).toHaveBeenCalledWith(urlToProcess);
+      expect(imageStatus).toBe(expectedStatusCode);
+      expect(imageData.toString('base64')).toBe(responseBody);
     });
   });
 });
