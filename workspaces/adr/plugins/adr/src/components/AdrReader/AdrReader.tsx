@@ -97,7 +97,6 @@ export const AdrReader = (props: {
           !error &&
           !backendUrlError &&
           value?.data && (
-            // <MarkdownContent content={adrContent} linkTarget="_blank" />
             <MarkdownContent
               content={adrContent}
               linkTarget="_blank"

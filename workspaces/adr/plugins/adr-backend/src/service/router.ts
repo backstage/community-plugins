@@ -14,30 +14,18 @@
  * limitations under the License.
  */
 
-import {
-  CacheClient,
-  createLegacyAuthAdapters,
-  PluginEndpointDiscovery,
-  UrlReader,
-} from '@backstage/backend-common';
+import { CacheClient, UrlReader } from '@backstage/backend-common';
 import { NotModifiedError, stringifyError } from '@backstage/errors';
 import express from 'express';
 import Router from 'express-promise-router';
 import { madrParser } from '../search/madrParser';
-import {
-  AuthService,
-  HttpAuthService,
-  LoggerService,
-} from '@backstage/backend-plugin-api';
+import { LoggerService } from '@backstage/backend-plugin-api';
 
 /** @public */
 export type AdrRouterOptions = {
   reader: UrlReader;
   cacheClient: CacheClient;
   logger: LoggerService;
-  discovery: PluginEndpointDiscovery;
-  httpAuth?: HttpAuthService;
-  auth?: AuthService;
 };
 
 /** @public */
@@ -47,8 +35,6 @@ export async function createRouter(
   const { reader, cacheClient, logger } = options;
 
   const router = Router();
-
-  const { auth } = createLegacyAuthAdapters(options);
   router.use(express.json());
 
   router.get('/list', async (req, res) => {
@@ -148,11 +134,6 @@ export async function createRouter(
   });
 
   router.get('/image', async (req, res) => {
-    const { token } = await auth.getPluginRequestToken({
-      onBehalfOf: await auth.getOwnServiceCredentials(),
-      targetPluginId: 'adr',
-    });
-
     const urlToProcess = req.query.url as string;
     if (!urlToProcess) {
       res.statusCode = 400;
@@ -186,11 +167,9 @@ export async function createRouter(
       data: string;
       etag: string;
     };
-
     try {
       const fileGetResponse = await reader.readUrl(urlToProcess, {
         etag: cachedFileContent?.etag,
-        token: token,
       });
       const fileBuffer = await fileGetResponse.buffer();
       const data = fileBuffer.toString('base64');
