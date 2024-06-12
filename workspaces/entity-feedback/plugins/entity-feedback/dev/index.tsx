@@ -47,8 +47,8 @@ createDevApp()
       getOwnedRatings: async () => [],
       recordRating: async () => {},
       getRatings: async () => [],
-      getRatingAggregates: async (): Promise<Ratings> => ({}), // Change the return type and provide an empty object
-      recordResponse: async () => {}, // Add this line
+      getRatingAggregates: async (): Promise<Ratings> => ({}),
+      recordResponse: async () => {},
     }),
   })
   .addPage({
