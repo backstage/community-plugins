@@ -1,5 +1,11 @@
 # @backstage-community/plugin-adr
 
+## 0.6.20
+
+### Patch Changes
+
+- 7ebbafb: Fixed bug where images from private repositories weren't accessible by the ADR plugin. Added `/image` API endpoint to adr-backend plugin which allows frontend to fetch images via backend with auth.
+
 ## 0.6.19
 
 ### Patch Changes
