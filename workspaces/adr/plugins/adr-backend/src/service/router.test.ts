@@ -16,7 +16,6 @@
 
 import {
   CacheClient,
-  PluginEndpointDiscovery,
   ReadTreeResponse,
   ReadTreeResponseFile,
   ReadUrlResponse,
@@ -26,6 +25,7 @@ import express from 'express';
 import request from 'supertest';
 import { createRouter } from './router';
 import { LoggerService } from '@backstage/backend-plugin-api';
+import { NotModifiedError } from '@backstage/errors';
 
 const listEndpointName = '/list';
 const fileEndpointName = '/file';
@@ -33,6 +33,11 @@ const imageEndpointName = '/image';
 
 const makeBufferFromString = (string: string) => async () =>
   Buffer.from(string);
+
+const makeEtagFromString = (string: string) => {
+  const crypto = require('crypto');
+  return crypto.createHash('md5', string).digest('hex');
+};
 
 const testingUrlFakeFileTree: ReadTreeResponseFile[] = [
   {
@@ -52,6 +57,7 @@ const testingUrlFakeFileTree: ReadTreeResponseFile[] = [
 const makeFileContent = async (fileContent: string) => {
   const result: ReadUrlResponse = {
     buffer: makeBufferFromString(fileContent),
+    etag: makeEtagFromString(fileContent),
   };
   return result;
 };
@@ -119,11 +125,6 @@ class MockCacheClient implements CacheClient {
 describe('createRouter', () => {
   let app: express.Express;
 
-  const discovery: jest.Mocked<PluginEndpointDiscovery> = {
-    getBaseUrl: jest.fn(),
-    getExternalBaseUrl: jest.fn(),
-  };
-
   beforeEach(async () => {
     jest.resetAllMocks();
 
@@ -133,7 +134,6 @@ describe('createRouter', () => {
       logger: {
         error: (message: any) => message,
       } as LoggerService,
-      discovery,
     });
     app = express().use(router);
   });
@@ -288,6 +288,37 @@ describe('createRouter', () => {
       const expectedStatusCode = 200;
 
       expect(imageError).toBeFalsy();
+      expect(imageStatus).toBe(expectedStatusCode);
+      expect(imageData.toString('base64')).toBe(responseBody);
+    });
+
+    it('returns the image from cache', async () => {
+      const urlToProcess = 'testImage.png';
+      const cacheSpy = jest.spyOn(MockCacheClient.prototype, 'get');
+      cacheSpy.mockImplementation(() => {
+        return new Promise(resolve => {
+          resolve({
+            data: 'aW1hZ2UgY29udGVudA==',
+            etag: 'd41d8cd98f00b204e9800998ecf8427e',
+          });
+        });
+      });
+      jest.spyOn(mockUrlReader, 'readUrl').mockImplementation(() => {
+        throw new NotModifiedError();
+      });
+
+      const imageResponse = await request(app).get(
+        `${imageEndpointName}?url=${urlToProcess}`,
+      );
+      const imageStatus = imageResponse.status;
+      const imageData = imageResponse.body;
+      const imageError = imageResponse.error;
+      const responseBody = 'aW1hZ2UgY29udGVudA==';
+      const expectedStatusCode = 200;
+
+      expect(imageError).toBeFalsy();
+      expect(cacheSpy).toHaveBeenCalledTimes(1);
+      expect(cacheSpy).toHaveBeenCalledWith(urlToProcess);
       expect(imageStatus).toBe(expectedStatusCode);
       expect(imageData.toString('base64')).toBe(responseBody);
     });
