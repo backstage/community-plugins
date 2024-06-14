@@ -38,6 +38,7 @@ const useStyles = makeStyles(
 export const GroupsExplorerContent = (props: {
   title?: string;
   direction?: DependencyGraphTypes.Direction;
+  hideChildren?: boolean;
 }) => {
   const classes = useStyles();
 
@@ -46,7 +47,10 @@ export const GroupsExplorerContent = (props: {
       <ContentHeader title={props.title ?? 'Groups'}>
         <SupportButton>Explore your groups.</SupportButton>
       </ContentHeader>
-      <GroupsDiagram direction={props.direction} />
+      <GroupsDiagram
+        direction={props.direction}
+        hideChildren={props.hideChildren}
+      />
     </Content>
   );
 };
