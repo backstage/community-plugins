@@ -1,5 +1,11 @@
 # @backstage-community/plugin-explore
 
+## 0.4.22
+
+### Patch Changes
+
+- 443fc24: Added property `hideChildren` to `GroupsDiagram` and `GroupsExplorerContent` components
+
 ## 0.4.21
 
 ### Patch Changes
