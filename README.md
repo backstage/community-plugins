@@ -7,6 +7,7 @@
 ## What is the community-plugins repository?
 
 The `community-plugins` repository is a place where members of the community can host a plugin or a set of plugins. The goal of community-plugins is to reduce the amount of pull requests and issues from `backstage/backstage`, which has become too big with the time.
+
 By creating community-plugins we give to plugin maintainers all the tools to easily manage and publish their plugins.
 
 ## Contributing a plugin
@@ -17,45 +18,19 @@ For those seeking full autonomy over their plugin's development and release life
 
 Plugins that are key to the functionality and operation of Backstage will continue to reside in the `backstage/backstage` repository - ensuring the central components that underpin the platform are centrally managed and maintained.
 
-## Repository layout
+To get started with creating a new plugin, follow the guidance in [CONTRIBUTING.md](https://github.com/backstage/community-plugins/blob/main/CONTRIBUTING.md#creating-a-new-workspace).
 
-`community-plugins` is formed by a set of workspaces. A workspace holds a plugin or a set of plugins based on a specific topic. For example, catalog, kubernetes, and TechDocs can be referred to as workspaces.
-Each plugin belongs to a workspace and workspaces are portable enough to be moved to its own repo if desired.
+## Community Plugins Workflow
 
-## Release Management
+The `community-plugins` repository is formed by a set of workspaces. A workspace holds a plugin or a set of plugins based on a specific topic. For example, catalog, kubernetes, and TechDocs can be referred to as workspaces.
 
-Changesets have proven to be a reliable method for managing different versions of packages.
-Each plugin workspace has its own changesets and isolated releases. Plugins that depend on other plugins via regular NPM dependencies, regardless of whether the other plugins are core plugins, other plugins within the community repo, or external plugins.
-Although the community repository isn't technically a "yarn workspace", it functions as a repository with multiple sub yarn workspaces, with each workspace possessing its unique .changesets directory.
+Each plugin belongs to a workspace and workspaces are portable enough to be moved to its own repository if desired. Each plugin workspace has its own changesets and isolated releases.
+
+Plugins depend on other plugins via regular npm dependencies, regardless of whether the other plugins are core plugins, other plugins within the repository, or external plugins.
+
+Although the community repository isn't technically a yarn workspace", it functions as a repository with multiple yarn workspaces, with each workspace possessing its unique `.changesets` directory.
 
 Whenever a new changeset is introduced, a fresh "Version packages ($workspace_name)" PR is produced. Merging a Version packages PR will trigger the release of all the plugins in the workspaces (provided changesets have been added), and also update the `CHANGELOG` files.
-
-To create a changeset, follow these steps:
-
-1. Make sure you are in the root directory of the workspace for the plugin you want to create a changeset for. For ex: if you are making changes on the `adr` plugin then you should be on `workspaces/adr` dir
-
-2. Run the following command to create a new changeset:
-    ```bash
-    $ yarn changeset
-    ```
-
-3. You will be prompted to select the packages and the type of change you are making. 
-
-4. Enter a short description of the change when prompted. 
-
-5. Review the changeset file that was created. It should be located in the `.changeset` directory of your plugin's workspace.
-
-6. Commit the changeset file to your branch/PR.
-
-Once the changeset is merged, it will trigger the release process for the plugin and create a "Version packages ($workspace_name)" PR. Once the PR is merged, a new version of the plugin will be published based on the type of change made.
-
-Note: It's important to create a changeset for each individual change you make to a plugin. This ensures that the release process is properly managed and that dependencies between plugins are correctly updated.
-
-## How to create a new workspace
-
-```bash
-$ yarn create-workspace
-```
 
 ## Plugins migrated from `backstage/backstage`
 
