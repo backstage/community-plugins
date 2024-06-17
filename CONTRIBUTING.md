@@ -12,12 +12,14 @@ If you have questions or feedback regarding Community Plugins, you can visit the
   - [License](#license)
   - [Security Issues](#security-issues)
   - [Get Started!](#get-started)
+    - [Cloning the Repository](#cloning-the-repository)
+    - [Developing Plugins in Workspaces](#developing-plugins-in-workspaces)
   - [Coding Guidelines](#coding-guidelines)
   - [Versioning](#versioning)
   - [Creating Changesets](#creating-changesets)
+  - [Release](#release)
   - [Creating a new Workspace](#creating-a-new-workspace)
   - [Creating new plugins or packages in a Workspace](#creating-new-plugins-or-packages-in-a-workspace)
-  - [Release](#release)
   - [Developer Certificate of Origin](#developer-certificate-of-origin)
 
 ## Code of Conduct
@@ -81,13 +83,29 @@ For the versioning all packages in this repository are following the semantic ve
 
 ## Creating Changesets
 
-We use [changesets](https://github.com/atlassian/changesets) to help us prepare releases. They help us make sure that every package affected by a change gets a proper version number and an entry in its `CHANGELOG.md`. To make the process of generating releases easy, it helps when contributors include changesets with their pull requests. These changesets can be created by going into a `workspace` directory and running `yarn changeset` and following the prompts.
+We use [changesets](https://github.com/atlassian/changesets) to help us prepare releases. They help us make sure that every package affected by a change gets a proper version number and an entry in its `CHANGELOG.md`. To make the process of generating releases easy, it helps when contributors include changesets with their pull requests.
+
+To create a changeset, follow these steps:
+
+1. Make sure you are in the root directory of the workspace for the plugin you want to create a changeset for. For ex: if you are making changes on the `adr` plugin then you should be on `workspaces/adr` dir
+
++2. Run the following command to create a new changeset:
 
 ```bash
-cd community-plugins
-cd workspaces/linguist
-yarn changeset # follow the prompts
+$ yarn changeset
 ```
+
+3. You will be prompted to select the packages and the type of change you are making.
+
+4. Enter a short description of the change when prompted.
+
+5. Review the changeset file that was created. It should be located in the `.changeset` directory of your plugin's workspace.
+
+6. Commit the changeset file to your branch/PR.
+
+Once the changeset is merged, it will trigger the release process for the plugin and create a "Version packages ($workspace_name)" PR. Once the PR is merged, a new version of the plugin will be published based on the type of change made.
+
++Note: It's important to create a changeset for each individual change you make to a plugin. This ensures that the release process is properly managed and that dependencies between plugins are correctly updated.
 
 ## Release
 
