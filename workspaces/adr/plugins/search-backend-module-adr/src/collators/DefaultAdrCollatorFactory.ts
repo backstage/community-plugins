@@ -1,0 +1,232 @@
+/*
+ * Copyright 2022 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import { Readable } from 'stream';
+import { createLegacyAuthAdapters } from '@backstage/backend-common';
+import {
+  CATALOG_FILTER_EXISTS,
+  CatalogApi,
+  CatalogClient,
+} from '@backstage/catalog-client';
+import { stringifyEntityRef } from '@backstage/catalog-model';
+import { NotModifiedError, stringifyError } from '@backstage/errors';
+import {
+  ScmIntegrationRegistry,
+  ScmIntegrations,
+} from '@backstage/integration';
+import {
+  AdrDocument,
+  AdrFilePathFilterFn,
+  ANNOTATION_ADR_LOCATION,
+  getAdrLocationUrl,
+  madrFilePathFilter,
+} from '@backstage-community/plugin-adr-common';
+import { DocumentCollatorFactory } from '@backstage/plugin-search-common';
+
+import {
+  AdrParser,
+  createMadrParser,
+} from '@backstage-community/plugin-adr-common';
+import {
+  AuthService,
+  CacheService,
+  DiscoveryService,
+  LoggerService,
+  RootConfigService,
+  TokenManagerService,
+  UrlReaderService,
+} from '@backstage/backend-plugin-api';
+
+/**
+ * Options to configure the AdrCollatorFactory
+ * @public
+ */
+export type AdrCollatorFactoryOptions = {
+  /**
+   * Function used to filter ADR file paths.
+   * Defaults to filtering paths following MADR filename format.
+   */
+  adrFilePathFilterFn?: AdrFilePathFilterFn;
+  /**
+   * Plugin cache manager
+   */
+  cache: CacheService;
+  /**
+   * App Config
+   */
+  config: RootConfigService;
+  /**
+   * Catalog API client. Defaults to CatalogClient.
+   */
+  catalogClient?: CatalogApi;
+  /**
+   * Plugin Endpoint Discovery client
+   */
+  discovery: DiscoveryService;
+  /**
+   * Logger
+   */
+  logger: LoggerService;
+  /**
+   * ADR content parser. Defaults to built in MADR parser.
+   */
+  parser?: AdrParser;
+  /**
+   * URL Reader
+   */
+  reader: UrlReaderService;
+  /**
+   * Token Manager
+   */
+  tokenManager?: TokenManagerService;
+  /**
+   * Auth Service
+   */
+  auth?: AuthService;
+};
+
+/**
+ * Default collator to index ADR documents for Backstage search.
+ * @public
+ */
+export class DefaultAdrCollatorFactory implements DocumentCollatorFactory {
+  public readonly type: string = 'adr';
+  private readonly adrFilePathFilterFn: AdrFilePathFilterFn;
+  private readonly cacheClient: CacheService;
+  private readonly catalogClient: CatalogApi;
+  private readonly logger: LoggerService;
+  private readonly parser: AdrParser;
+  private readonly reader: UrlReaderService;
+  private readonly auth: AuthService;
+  private readonly scmIntegrations: ScmIntegrationRegistry;
+
+  private constructor(options: AdrCollatorFactoryOptions) {
+    this.adrFilePathFilterFn =
+      options.adrFilePathFilterFn ?? madrFilePathFilter;
+    this.cacheClient = options.cache;
+    this.catalogClient =
+      options.catalogClient ??
+      new CatalogClient({ discoveryApi: options.discovery });
+    this.logger = options.logger.child({ documentType: this.type });
+    this.parser = options.parser ?? createMadrParser();
+    this.reader = options.reader;
+    this.scmIntegrations = ScmIntegrations.fromConfig(options.config);
+
+    this.auth = createLegacyAuthAdapters(options).auth;
+  }
+
+  static fromConfig(options: AdrCollatorFactoryOptions) {
+    return new DefaultAdrCollatorFactory(options);
+  }
+
+  async getCollator() {
+    return Readable.from(this.execute());
+  }
+
+  async *execute(): AsyncGenerator<AdrDocument> {
+    const { token } = await this.auth.getPluginRequestToken({
+      onBehalfOf: await this.auth.getOwnServiceCredentials(),
+      targetPluginId: 'catalog',
+    });
+
+    const entities = (
+      await this.catalogClient.getEntities(
+        {
+          filter: {
+            [`metadata.annotations.${ANNOTATION_ADR_LOCATION}`]:
+              CATALOG_FILTER_EXISTS,
+          },
+          fields: [
+            'kind',
+            'metadata.annotations',
+            'metadata.name',
+            'metadata.namespace',
+            'metadata.title',
+          ],
+        },
+        { token },
+      )
+    ).items;
+
+    for (const ent of entities) {
+      let adrsUrl: string;
+      try {
+        adrsUrl = getAdrLocationUrl(ent, this.scmIntegrations);
+      } catch (e: any) {
+        this.logger.error(
+          `Unable to get ADR location URL for ${stringifyEntityRef(
+            ent,
+          )}: ${stringifyError(e)}`,
+        );
+        continue;
+      }
+
+      const cacheItem = (await this.cacheClient.get(adrsUrl)) as {
+        adrFiles: {
+          path: string;
+          content: string;
+        }[];
+        etag: string;
+      };
+
+      let adrFiles = cacheItem?.adrFiles;
+      try {
+        const tree = await this.reader.readTree(adrsUrl, {
+          etag: cacheItem?.etag,
+          filter: filePath => this.adrFilePathFilterFn(filePath),
+        });
+
+        adrFiles = await Promise.all(
+          (
+            await tree.files()
+          ).map(async f => ({
+            path: f.path,
+            content: (await f.content()).toString('utf8'),
+          })),
+        );
+
+        await this.cacheClient.set(adrsUrl, { adrFiles, etag: tree.etag });
+      } catch (error: any) {
+        // Ignore error if we're able to use cached response
+        if (!cacheItem || error.name !== NotModifiedError.name) {
+          this.logger.error(
+            `Unable to fetch ADRs from ${adrsUrl}: ${stringifyError(error)}`,
+          );
+          continue;
+        }
+      }
+
+      let indexedCount = 0;
+      for (const { content, path } of adrFiles) {
+        try {
+          const adrDoc = await this.parser({
+            entity: ent,
+            path,
+            content,
+          });
+          indexedCount++;
+          yield adrDoc;
+        } catch (e: any) {
+          this.logger.error(
+            `Unable to parse ADR ${path}: ${stringifyError(e)}`,
+          );
+        }
+      }
+
+      this.logger.info(`Indexed ${indexedCount} ADRs from ${adrsUrl}`);
+    }
+  }
+}
