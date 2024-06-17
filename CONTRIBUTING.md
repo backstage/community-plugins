@@ -97,7 +97,7 @@ $ yarn changeset
 
 3. You will be prompted to select the packages and the type of change you are making.
 
-4. Enter a short description of the change when prompted.
+4. Enter a short description of the change when prompted. Refer to [backstage/backstage CONTRIBUTING.md#writing-changesets](https://github.com/backstage/backstage/blob/master/CONTRIBUTING.md#writing-changesets) for additional guidance on writing changesets.
 
 5. Review the changeset file that was created. It should be located in the `.changeset` directory of your plugin's workspace.
 
