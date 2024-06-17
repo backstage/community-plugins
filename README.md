@@ -30,6 +30,27 @@ Although the community repository isn't technically a "yarn workspace", it funct
 
 Whenever a new changeset is introduced, a fresh "Version packages ($workspace_name)" PR is produced. Merging a Version packages PR will trigger the release of all the plugins in the workspaces (provided changesets have been added), and also update the `CHANGELOG` files.
 
+To create a changeset, follow these steps:
+
+1. Make sure you are in the root directory of the workspace for the plugin you want to create a changeset for. For ex: if you are making changes on the `adr` plugin then you should be on `workspaces/adr` dir
+
+2. Run the following command to create a new changeset:
+    ```bash
+    $ yarn changeset
+    ```
+
+3. You will be prompted to select the packages and the type of change you are making. 
+
+4. Enter a short description of the change when prompted. 
+
+5. Review the changeset file that was created. It should be located in the `.changeset` directory of your plugin's workspace.
+
+6. Commit the changeset file to your branch/PR.
+
+Once the changeset is merged, it will trigger the release process for the plugin and create a "Version packages ($workspace_name)" PR. Once the PR is merged, a new version of the plugin will be published based on the type of change made.
+
+Note: It's important to create a changeset for each individual change you make to a plugin. This ensures that the release process is properly managed and that dependencies between plugins are correctly updated.
+
 ## How to create a new workspace
 
 ```bash
