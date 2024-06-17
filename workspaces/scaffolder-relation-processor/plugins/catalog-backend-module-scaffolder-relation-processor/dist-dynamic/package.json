@@ -1,0 +1,50 @@
+{
+  "name": "@backstage-community/plugin-catalog-backend-module-scaffolder-relation-processor-dynamic",
+  "description": "The scaffolder-relation-processor backend module for the catalog plugin.",
+  "version": "0.0.0",
+  "main": "dist/index.cjs.js",
+  "types": "dist/index.d.ts",
+  "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.cjs.js",
+    "types": "dist/index.d.ts"
+  },
+  "backstage": {
+    "role": "backend-plugin-module"
+  },
+  "exports": {
+    ".": {
+      "require": "./dist/index.cjs.js",
+      "default": "./dist/index.cjs.js"
+    },
+    "./alpha": {
+      "require": "./dist/alpha.cjs.js",
+      "default": "./dist/alpha.cjs.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "config.d.ts",
+    "app-config.janus-idp.yaml",
+    "alpha"
+  ],
+  "bundleDependencies": true,
+  "peerDependencies": {
+    "@backstage/backend-common": "^0.21.6",
+    "@backstage/backend-dynamic-feature-service": "^0.2.8",
+    "@backstage/backend-plugin-api": "^0.6.16",
+    "@backstage/catalog-model": "^1.4.5",
+    "@backstage/plugin-catalog-common": "^1.0.22",
+    "@backstage/plugin-catalog-node": "^1.11.1"
+  },
+  "overrides": {
+    "@aws-sdk/util-utf8-browser": {
+      "@smithy/util-utf8": "^2.0.0"
+    }
+  },
+  "resolutions": {
+    "@aws-sdk/util-utf8-browser": "npm:@smithy/util-utf8@~2"
+  }
+}
