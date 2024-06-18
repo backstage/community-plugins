@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-tech-insights-common",
-  "version": "0.2.13",
+  "version": "0.2.14",
   "backstage": {
     "role": "common-library"
   },
