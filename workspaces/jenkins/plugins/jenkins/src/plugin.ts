@@ -15,14 +15,14 @@
  */
 
 import {
-    createApiFactory,
-    createComponentExtension,
-    createPlugin,
-    createRoutableExtension,
-    createRouteRef,
-    createSubRouteRef,
-    discoveryApiRef,
-    fetchApiRef,
+  createApiFactory,
+  createComponentExtension,
+  createPlugin,
+  createRoutableExtension,
+  createRouteRef,
+  createSubRouteRef,
+  discoveryApiRef,
+  fetchApiRef,
 } from '@backstage/core-plugin-api';
 import { JenkinsClient, jenkinsApiRef } from './api';
 
@@ -52,8 +52,8 @@ export const jenkinsPlugin = createPlugin({
     createApiFactory({
       api: jenkinsApiRef,
       deps: { discoveryApi: discoveryApiRef, fetchApi: fetchApiRef },
-      factory: ({ discoveryApi, fetchApi}) =>
-        new JenkinsClient({discoveryApi, fetchApi, }),
+      factory: ({ discoveryApi, fetchApi }) =>
+        new JenkinsClient({ discoveryApi, fetchApi }),
     }),
   ],
   routes: {

@@ -139,10 +139,7 @@ export class JenkinsClient implements JenkinsApi {
   private readonly discoveryApi: DiscoveryApi;
   private readonly fetchApi: FetchApi;
 
-  constructor(options: {
-    discoveryApi: DiscoveryApi;
-    fetchApi: FetchApi;
-  }) {
+  constructor(options: { discoveryApi: DiscoveryApi; fetchApi: FetchApi }) {
     this.discoveryApi = options.discoveryApi;
     this.fetchApi = options.fetchApi;
   }
