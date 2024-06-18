@@ -86,7 +86,7 @@ export const mockGitReleaseManagerApi: GitReleaseApi = {
   },
   // WRITE
 
-  getCommit: function (args: { ref: string } & OwnerRepo): Promise<{
+  getCommit: function (_args: { ref: string } & OwnerRepo): Promise<{
     commit: {
       sha: string;
       htmlUrl: string;
@@ -98,22 +98,22 @@ export const mockGitReleaseManagerApi: GitReleaseApi = {
   },
 
   createRef: function (
-    args: { ref: string; sha: string } & OwnerRepo,
+    _args: { ref: string; sha: string } & OwnerRepo,
   ): Promise<{ reference: { ref: string; objectSha: string } }> {
     throw new Error('Function createRef not implemented.');
   },
   deleteRef: function (
-    args: { ref: string } & OwnerRepo,
+    _args: { ref: string } & OwnerRepo,
   ): Promise<{ success: boolean }> {
     throw new Error('Function deleteRef not implemented.');
   },
   getComparison: function (
-    args: { base: string; head: string } & OwnerRepo,
+    _args: { base: string; head: string } & OwnerRepo,
   ): Promise<{ comparison: { htmlUrl: string; aheadBy: number } }> {
     throw new Error('Function getComparison not implemented.');
   },
   createRelease: function (
-    args: {
+    _args: {
       tagName: string;
       name: string;
       targetCommitish: string;
@@ -125,7 +125,7 @@ export const mockGitReleaseManagerApi: GitReleaseApi = {
     throw new Error('Function createRelease not implemented.');
   },
   createTagObject: function (
-    args: {
+    _args: {
       tag: string;
       taggerEmail?: string | undefined;
       message: string;
@@ -136,16 +136,16 @@ export const mockGitReleaseManagerApi: GitReleaseApi = {
     throw new Error('Function createTagObject not implemented.');
   },
   createCommit: function (
-    args: { message: string; tree: string; parents: string[] } & OwnerRepo,
+    _args: { message: string; tree: string; parents: string[] } & OwnerRepo,
   ): Promise<{ commit: { message: string; sha: string } }> {
     throw new Error('Function createCommit not implemented.');
   },
   updateRef: function (
-    args: { sha: string; ref: string; force: boolean } & OwnerRepo,
+    _args: { sha: string; ref: string; force: boolean } & OwnerRepo,
   ): Promise<{ reference: { ref: string; object: { sha: string } } }> {
     throw new Error('Function updateRef not implemented.');
   },
-  merge: function (args: { base: string; head: string } & OwnerRepo): Promise<{
+  merge: function (_args: { base: string; head: string } & OwnerRepo): Promise<{
     merge: {
       htmlUrl: string;
       commit: { message: string; tree: { sha: string } };
@@ -154,7 +154,7 @@ export const mockGitReleaseManagerApi: GitReleaseApi = {
     throw new Error('Function merge not implemented.');
   },
   updateRelease: function (
-    args: {
+    _args: {
       releaseId: number;
       tagName: string;
       body?: string | undefined;
