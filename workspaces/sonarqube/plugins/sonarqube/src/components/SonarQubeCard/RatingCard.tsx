@@ -57,7 +57,7 @@ export const RatingCard = ({
 }: {
   leftSlot: ReactNode;
   rightSlot: ReactNode;
-  title: string;
+  title?: string;
   titleIcon?: ReactNode;
   link: string;
 }) => {
