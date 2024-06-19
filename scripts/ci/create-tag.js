@@ -73,6 +73,7 @@ async function main() {
           resolvePath("./plugins", item.name)
         );
         const tagName = `${name}@${version}`;
+        
         console.log(`Creating release tag ${tagName} at ${commitSha}`);
         await createGitTag(octokit, commitSha, tagName);
       } catch (error) {
