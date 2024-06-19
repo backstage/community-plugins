@@ -12,14 +12,8 @@ const baseOptions = {
   repo: "community-plugins",
 };
 
-async function getCurrentTagVersion(filePath) {
-  return fs
-    .readJson(resolvePath(filePath, "package.json"))
-    .then((_) => _.version);
-}
-
-async function getCurrentTagName(filePath) {
-  return fs.readJson(resolvePath(filePath, "package.json")).then((_) => _.name);
+async function getPackageJson(filePath) {
+  return await fs.readJson(resolvePath(filePath, "package.json"));
 }
 
 async function createGitTag(octokit, commitSha, tagName) {
@@ -75,13 +69,10 @@ async function main() {
   for (const item of dirContents) {
     if (item.isDirectory()) {
       try {
-        const pluginName = await getCurrentTagName(
+        const { name, version } = await getPackageJson(
           resolvePath("./plugins", item.name)
         );
-        const pluginVersion = await getCurrentTagVersion(
-          resolvePath("./plugins", item.name)
-        );
-        const tagName = `${pluginName}@${pluginVersion}`;
+        const tagName = `${name}@${version}`;
         console.log(`Creating release tag ${tagName} at ${commitSha}`);
         await createGitTag(octokit, commitSha, tagName);
       } catch (error) {
