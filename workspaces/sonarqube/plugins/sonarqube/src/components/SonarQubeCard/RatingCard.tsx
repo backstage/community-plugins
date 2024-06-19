@@ -57,14 +57,14 @@ export const RatingCard = ({
 }: {
   leftSlot: ReactNode;
   rightSlot: ReactNode;
-  title: string;
+  title?: string;
   titleIcon?: ReactNode;
   link: string;
 }) => {
   const classes = useStyles();
 
   return (
-    <Link to={link} color="inherit" underline="none">
+    <Link to={link} color="inherit" underline="none" target="_blank">
       <Grid item className={classes.root}>
         <Grid item className={classes.upper}>
           <Grid item className={classes.left}>

@@ -113,6 +113,7 @@ export class SonarQubeClient implements SonarQubeApi {
     });
 
     return {
+      title: componentKey,
       lastAnalysis: findings.analysisDate,
       metrics,
       projectUrl: `${baseUrl}dashboard?id=${encodeURIComponent(componentKey)}`,
@@ -131,5 +132,37 @@ export class SonarQubeClient implements SonarQubeApi {
           baseUrl === 'https://sonarcloud.io/' ? 'project/' : ''
         }security_hotspots?id=${encodeURIComponent(componentKey)}`,
     };
+  }
+  settledResponseOf(responses: PromiseSettledResult<any>[]): Array<any> {
+    return responses.map(response =>
+      response.status === 'fulfilled' ? response.value : null,
+    );
+  }
+
+  async getFindingSummaries(
+    components: Array<{
+      projectInstance: string | undefined;
+      componentKey: string;
+    }>,
+  ): Promise<Map<string, FindingSummary>> {
+    const map = new Map<string, FindingSummary>();
+    if (components.length === 0) {
+      return map;
+    }
+    const promises = components.map(({ projectInstance, componentKey }) =>
+      this.getFindingSummary({ componentKey, projectInstance }),
+    );
+    const summaries: any = await Promise.allSettled(promises).then(results => {
+      return results
+        .map(result => result as PromiseFulfilledResult<FindingSummary>)
+        .map(result => result.value);
+    });
+
+    for await (const summary of summaries) {
+      if (!map.has(summary.title)) {
+        map.set(summary.title, summary);
+      }
+    }
+    return map;
   }
 }
