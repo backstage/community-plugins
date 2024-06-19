@@ -5850,6 +5850,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@spotify/eslint-plugin@npm:^15.0.0":
+  version: 15.0.0
+  resolution: "@spotify/eslint-plugin@npm:15.0.0"
+  peerDependencies:
+    "@typescript-eslint/parser": ^5.13.0
+    eslint: ">=8.x"
+  checksum: 899166abb108f1f53867729a35fb711d89dc70d5fc0a725a80386adb85805149008f7226262619044680264c64c0a8a0e9703059f64d0b390650bcae86727ed6
+  languageName: node
+  linkType: hard
+
 "@spotify/prettier-config@npm:^15.0.0":
   version: 15.0.0
   resolution: "@spotify/prettier-config@npm:15.0.0"
@@ -7245,7 +7255,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/utils@npm:^5.10.0":
+"@typescript-eslint/utils@npm:^5.10.0, @typescript-eslint/utils@npm:^5.58.0":
   version: 5.62.0
   resolution: "@typescript-eslint/utils@npm:5.62.0"
   dependencies:
@@ -11022,6 +11032,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"eslint-plugin-notice@npm:^0.9.10":
+  version: 0.9.10
+  resolution: "eslint-plugin-notice@npm:0.9.10"
+  dependencies:
+    find-root: ^1.1.0
+    lodash: ^4.17.15
+    metric-lcs: ^0.1.2
+  peerDependencies:
+    eslint: ">=3.0.0"
+  checksum: 0892ea3da8f31f57390941b6ae3472a34fe4037a21dfe73763c2e5011a08859bff4be6af50d1c54b04e16e43b10342458acb83874b806fcd5e2839be9f99c92e
+  languageName: node
+  linkType: hard
+
 "eslint-plugin-react-hooks@npm:^4.3.0":
   version: 4.6.0
   resolution: "eslint-plugin-react-hooks@npm:4.6.0"
@@ -11056,6 +11079,17 @@ __metadata:
   peerDependencies:
     eslint: ^3 || ^4 || ^5 || ^6 || ^7 || ^8
   checksum: 82f391c5a093235c3bc2f664c54e009c49460778ee7d1b86c1536df9ac4d2a80d1dedc9241ac797df4a9dced936e955d9c89042fb3ac8d017b5359d1320d3c0f
+  languageName: node
+  linkType: hard
+
+"eslint-plugin-testing-library@npm:^6.2.2":
+  version: 6.2.2
+  resolution: "eslint-plugin-testing-library@npm:6.2.2"
+  dependencies:
+    "@typescript-eslint/utils": ^5.58.0
+  peerDependencies:
+    eslint: ^7.5.0 || ^8.0.0
+  checksum: df55ca98415bad3e7d6b21adcd0f817d7c6df59cb32099528e45b39e8d7edf95e040334106fc7574fd402ed624ca65215ccf37745e1da1a9c90cfe00b99c5be4
   languageName: node
   linkType: hard
 
@@ -11605,6 +11639,13 @@ __metadata:
     statuses: 2.0.1
     unpipe: ~1.0.0
   checksum: 92effbfd32e22a7dff2994acedbd9bcc3aa646a3e919ea6a53238090e87097f8ef07cced90aa2cc421abdf993aefbdd5b00104d55c7c5479a8d00ed105b45716
+  languageName: node
+  linkType: hard
+
+"find-root@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "find-root@npm:1.1.0"
+  checksum: b2a59fe4b6c932eef36c45a048ae8f93c85640212ebe8363164814990ee20f154197505965f3f4f102efc33bfb1cbc26fd17c4a2fc739ebc51b886b137cbefaf
   languageName: node
   linkType: hard
 
@@ -15130,6 +15171,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"metric-lcs@npm:^0.1.2":
+  version: 0.1.2
+  resolution: "metric-lcs@npm:0.1.2"
+  checksum: 9dbdedb904da1a4c0a21024df781427f7b23d7469fdf55275c790fef3471634ee64a7bde0813c6b035c7eff021957833249172180f4ca59e7b4c7b5e587950bc
+  languageName: node
+  linkType: hard
+
 "micromatch@npm:^4.0.2, micromatch@npm:^4.0.4, micromatch@npm:^4.0.5":
   version: 4.0.5
   resolution: "micromatch@npm:4.0.5"
@@ -17654,7 +17702,10 @@ __metadata:
     "@backstage/repo-tools": ^0.6.2
     "@changesets/cli": ^2.27.1
     "@playwright/test": ^1.32.3
+    "@spotify/eslint-plugin": ^15.0.0
     "@spotify/prettier-config": ^15.0.0
+    eslint-plugin-notice: ^0.9.10
+    eslint-plugin-testing-library: ^6.2.2
     prettier: ^2.3.2
     typescript: ~5.3.0
   languageName: unknown

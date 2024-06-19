@@ -2,8 +2,8 @@ name: Automate Renovate changeset
 on:
   pull_request_target:
     paths:
-      - '.github/workflows/automate_renovate_changesets.yml'
-      - '**/yarn.lock'
+      - ".github/workflows/automate_renovate_changesets.yml"
+      - "**/yarn.lock"
 
 jobs:
   generate-changeset:
@@ -21,7 +21,7 @@ jobs:
           fetch-depth: 2
           ref: ${{ github.head_ref }}
           token: ${{ secrets.GH_SERVICE_ACCOUNT_TOKEN }}
-          
+
       - name: Configure Git
         run: |
           git config --global user.email noreply@backstage.io

@@ -1,7 +1,7 @@
 name: Automate changeset feedback
 on:
   pull_request_target:
-    branches: ['main']
+    branches: ["main"]
 
 permissions:
   pull-requests: write
@@ -32,14 +32,14 @@ jobs:
         with:
           # Fetch the commit that's merged into the base rather than the target ref
           # This will let us diff only the contents of the PR, without fetching more history
-          ref: 'refs/pull/${{ github.event.pull_request.number }}/merge'
+          ref: "refs/pull/${{ github.event.pull_request.number }}/merge"
       - name: fetch base
         run: git fetch --depth 1 origin ${{ github.base_ref }}
 
       - uses: backstage/actions/changeset-feedback@v0.6.10
         name: Generate feedback
         with:
-          diff-ref: 'origin/main'
+          diff-ref: "origin/main"
           marker: <!-- changeset-feedback -->
           issue-number: ${{ github.event.pull_request.number }}
           bot-username: backstage-goalie[bot]

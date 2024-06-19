@@ -7,13 +7,36 @@
     "node": "18 || 20"
   },
   "scripts": {
-    "create-workspace": "community-cli workspace create"
+    "create-workspace": "community-cli workspace create",
+    "prettier:check": "prettier --check .",
+    "prettier:fix": "prettier --write ."
   },
   "type": "module",
   "packageManager": "yarn@3.2.3",
-  "dependencies": {
+  "devDependencies": {
     "@backstage-community/cli": "portal:./workspaces/repo-tools/packages/cli",
+    "@backstage/cli": "^0.26.6",
     "@backstage/cli-node": "^0.2.2",
-    "@changesets/parse": "^0.4.0"
+    "@backstage/eslint-plugin": "^0.1.8",
+    "@changesets/parse": "^0.4.0",
+    "@spotify/eslint-plugin": "^15.0.0",
+    "@spotify/prettier-config": "^15.0.0",
+    "eslint": "^8.6.0",
+    "eslint-plugin-notice": "^0.9.10",
+    "eslint-plugin-testing-library": "^6.2.2",
+    "lint-staged": "^15.0.0",
+    "prettier": "^2.2.1"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,mjs,cjs}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.json": [
+      "prettier --write"
+    ],
+    "*.md": [
+      "prettier --write"
+    ]
   }
 }
