@@ -10,40 +10,36 @@ import { BackstagePlugin } from '@backstage/core-plugin-api';
 import type { CompoundEntityRef } from '@backstage/catalog-model';
 import { DiscoveryApi } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
-import { IdentityApi } from '@backstage/core-plugin-api';
+import { FetchApi } from '@backstage/core-plugin-api';
 import { InfoCardVariants } from '@backstage/core-components';
 import { JSX as JSX_2 } from 'react';
 import { default as React_2 } from 'react';
 import { RouteRef } from '@backstage/core-plugin-api';
 import { TableColumn } from '@backstage/core-components';
 
-// @public (undocumented)
+/** @public */
 export const EntityJenkinsContent: (props: {
   columns?: TableColumn<Project>[] | undefined;
 }) => JSX_2.Element;
 
-// @public (undocumented)
+/** @public */
 export const EntityJobRunsTable: () => JSX_2.Element;
 
-// @public (undocumented)
+/** @public */
 export const EntityLatestJenkinsRunCard: (props: {
   branch: string;
   variant?: InfoCardVariants | undefined;
 }) => JSX_2.Element;
 
-// @public (undocumented)
+/** @public */
 const isJenkinsAvailable: (entity: Entity) => boolean;
 export { isJenkinsAvailable };
 export { isJenkinsAvailable as isPluginApplicableToEntity };
 
-// Warning: (ae-missing-release-tag) "JENKINS_ANNOTATION" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+/** @public */
 export const JENKINS_ANNOTATION = 'jenkins.io/job-full-name';
 
-// Warning: (ae-missing-release-tag) "JenkinsApi" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+/** @public */
 export interface JenkinsApi {
   // Warning: (ae-forgotten-export) The symbol "Build" needs to be exported by the entry point index.d.ts
   getBuild(options: {
@@ -72,19 +68,12 @@ export interface JenkinsApi {
   }): Promise<void>;
 }
 
-// Warning: (ae-missing-release-tag) "jenkinsApiRef" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+/** @public */
 export const jenkinsApiRef: ApiRef<JenkinsApi>;
 
-// Warning: (ae-missing-release-tag) "JenkinsClient" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+/** @public */
 export class JenkinsClient implements JenkinsApi {
-  constructor(options: {
-    discoveryApi: DiscoveryApi;
-    identityApi: IdentityApi;
-  });
+  constructor(options: { discoveryApi: DiscoveryApi; fetchApi: FetchApi });
   // (undocumented)
   getBuild(options: {
     entity: CompoundEntityRef;
@@ -111,7 +100,7 @@ export class JenkinsClient implements JenkinsApi {
   }): Promise<void>;
 }
 
-// @public (undocumented)
+/** @public */
 const jenkinsPlugin: BackstagePlugin<
   {
     entityContent: RouteRef<undefined>;
@@ -122,20 +111,16 @@ const jenkinsPlugin: BackstagePlugin<
 export { jenkinsPlugin };
 export { jenkinsPlugin as plugin };
 
-// Warning: (ae-missing-release-tag) "LatestRunCard" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+/** @public */
 export const LatestRunCard: (props: {
   branch: string;
   variant?: InfoCardVariants;
 }) => React_2.JSX.Element;
 
-// Warning: (ae-missing-release-tag) "LEGACY_JENKINS_ANNOTATION" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+/** @public */
 export const LEGACY_JENKINS_ANNOTATION = 'jenkins.io/github-folder';
 
-// @public (undocumented)
+/** @public */
 export interface Project {
   // (undocumented)
   displayName: string;
@@ -153,9 +138,7 @@ export interface Project {
   status: string;
 }
 
-// Warning: (ae-missing-release-tag) "Router" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+/** @public */
 export const Router: (props: {
   columns?: TableColumn<Project>[];
 }) => React_2.JSX.Element;
