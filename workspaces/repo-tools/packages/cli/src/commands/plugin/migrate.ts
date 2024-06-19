@@ -333,7 +333,7 @@ export default async (opts: OptionValues) => {
       packagesToBeMoved,
     });
 
-    // Fix the repositories field in the new rrepo
+    // Fix the repositories field in the new repo
     movedPackageJson.repository = {
       type: 'git',
       url: 'https://github.com/backstage/community-plugins',
