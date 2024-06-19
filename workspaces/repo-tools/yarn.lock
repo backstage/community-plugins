@@ -2489,9 +2489,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage-commnunity/cli@workspace:packages/cli":
+"@backstage-community/cli@workspace:packages/cli":
   version: 0.0.0-use.local
-  resolution: "@backstage-commnunity/cli@workspace:packages/cli"
+  resolution: "@backstage-community/cli@workspace:packages/cli"
   dependencies:
     "@backstage/cli": ^0.26.2
     "@backstage/errors": ^1.2.4
