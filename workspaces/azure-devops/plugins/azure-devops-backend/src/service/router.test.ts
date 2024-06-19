@@ -36,6 +36,7 @@ import express from 'express';
 import { getVoidLogger, UrlReaders } from '@backstage/backend-common';
 import request from 'supertest';
 import { AuthorizeResult } from '@backstage/plugin-permission-common';
+import { mockServices } from '@backstage/backend-test-utils';
 
 describe('createRouter', () => {
   let azureDevOpsApi: jest.Mocked<AzureDevOpsApi>;
@@ -92,6 +93,7 @@ describe('createRouter', () => {
         logger,
       }),
       permissions: mockPermissionEvaluator,
+      discovery: mockServices.discovery(),
     });
 
     app = express().use(router);

@@ -46,6 +46,7 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React, { useCallback, useEffect, useMemo } from 'react';
+import { useTitle } from '../../hooks/useTitle';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -128,6 +129,11 @@ export const AddEntitiesDrawer = ({
     ).facets.kind.map(f => f.value);
   };
 
+  const singularTitle = useTitle({
+    pluralize: false,
+    lowerCase: true,
+  });
+
   const addEntity = useCallback(
     (entityResult: SearchDocument) => {
       // TODO(kuangp): this parsing of the location is not great. Ideally `CatalogEntityDocument`
@@ -160,7 +166,7 @@ export const AddEntitiesDrawer = ({
         <Grid container direction="column" className={classes.gridContainer}>
           <Grid item>
             <Typography variant="h5">
-              Let's find something for your playlist
+              Let's find something for your {singularTitle}
             </Typography>
           </Grid>
           <Grid item>

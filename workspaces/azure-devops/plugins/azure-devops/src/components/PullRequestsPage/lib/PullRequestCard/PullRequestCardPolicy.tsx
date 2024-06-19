@@ -54,7 +54,7 @@ const PolicyInProgressIcon = withStyles(
   { name: 'PolicyInProgressIcon' },
 )(GroupWorkIcon);
 
-function getPolicyIcon(policy: Policy): JSX.Element | null {
+function getPolicyIcon(policy: Policy): React.JSX.Element | null {
   switch (policy.type) {
     case PolicyType.Build:
       switch (policy.status) {

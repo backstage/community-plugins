@@ -42,6 +42,11 @@ export const adrPlugin = createBackendPlugin({
             cacheClient: cache,
           }),
         );
+
+        httpRouter.addAuthPolicy({
+          path: '/image',
+          allow: 'user-cookie',
+        });
       },
     });
   },
