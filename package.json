@@ -14,6 +14,7 @@
   "dependencies": {
     "@backstage-community/cli": "portal:./workspaces/repo-tools/packages/cli",
     "@backstage/cli-node": "^0.2.2",
-    "@changesets/parse": "^0.4.0"
+    "@changesets/parse": "^0.4.0",
+    "@octokit/rest": "^20.1.1"
   }
 }
