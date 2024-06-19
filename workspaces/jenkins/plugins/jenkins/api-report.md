@@ -17,29 +17,33 @@ import { default as React_2 } from 'react';
 import { RouteRef } from '@backstage/core-plugin-api';
 import { TableColumn } from '@backstage/core-components';
 
-/** @public */
+// @public (undocumented)
 export const EntityJenkinsContent: (props: {
   columns?: TableColumn<Project>[] | undefined;
 }) => JSX_2.Element;
 
-/** @public */
+// @public (undocumented)
 export const EntityJobRunsTable: () => JSX_2.Element;
 
-/** @public */
+// @public (undocumented)
 export const EntityLatestJenkinsRunCard: (props: {
   branch: string;
   variant?: InfoCardVariants | undefined;
 }) => JSX_2.Element;
 
-/** @public */
+// @public (undocumented)
 const isJenkinsAvailable: (entity: Entity) => boolean;
 export { isJenkinsAvailable };
 export { isJenkinsAvailable as isPluginApplicableToEntity };
 
-/** @public */
+// Warning: (ae-missing-release-tag) "JENKINS_ANNOTATION" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
 export const JENKINS_ANNOTATION = 'jenkins.io/job-full-name';
 
-/** @public */
+// Warning: (ae-missing-release-tag) "JenkinsApi" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
 export interface JenkinsApi {
   // Warning: (ae-forgotten-export) The symbol "Build" needs to be exported by the entry point index.d.ts
   getBuild(options: {
@@ -68,10 +72,14 @@ export interface JenkinsApi {
   }): Promise<void>;
 }
 
-/** @public */
+// Warning: (ae-missing-release-tag) "jenkinsApiRef" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
 export const jenkinsApiRef: ApiRef<JenkinsApi>;
 
-/** @public */
+// Warning: (ae-missing-release-tag) "JenkinsClient" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
 export class JenkinsClient implements JenkinsApi {
   constructor(options: { discoveryApi: DiscoveryApi; fetchApi: FetchApi });
   // (undocumented)
@@ -100,7 +108,7 @@ export class JenkinsClient implements JenkinsApi {
   }): Promise<void>;
 }
 
-/** @public */
+// @public (undocumented)
 const jenkinsPlugin: BackstagePlugin<
   {
     entityContent: RouteRef<undefined>;
@@ -111,16 +119,20 @@ const jenkinsPlugin: BackstagePlugin<
 export { jenkinsPlugin };
 export { jenkinsPlugin as plugin };
 
-/** @public */
+// Warning: (ae-missing-release-tag) "LatestRunCard" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
 export const LatestRunCard: (props: {
   branch: string;
   variant?: InfoCardVariants;
 }) => React_2.JSX.Element;
 
-/** @public */
+// Warning: (ae-missing-release-tag) "LEGACY_JENKINS_ANNOTATION" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
 export const LEGACY_JENKINS_ANNOTATION = 'jenkins.io/github-folder';
 
-/** @public */
+// @public (undocumented)
 export interface Project {
   // (undocumented)
   displayName: string;
@@ -138,7 +150,9 @@ export interface Project {
   status: string;
 }
 
-/** @public */
+// Warning: (ae-missing-release-tag) "Router" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
 export const Router: (props: {
   columns?: TableColumn<Project>[];
 }) => React_2.JSX.Element;
