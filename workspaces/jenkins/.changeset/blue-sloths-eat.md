@@ -1,5 +1,5 @@
 ---
-'@backstage-community/plugin-jenkins': patch
+'@backstage-community/plugin-jenkins': minor
 ---
 
 Migrate from identityApi to fetchApi in frontend plugin jenkins
