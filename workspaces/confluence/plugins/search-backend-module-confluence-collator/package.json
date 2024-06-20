@@ -1,6 +1,6 @@
 {
-  "name": "@internal/backstage-plugin-search-backend-module-confluence-collator",
-  "version": "0.1.0",
+  "name": "@backstage-community/plugin-search-backend-module-confluence-collator",
+  "version": "0.0.0",
   "description": "The confluence-collator backend module for the search plugin.",
   "backstage": {
     "role": "backend-plugin-module"
@@ -17,7 +17,6 @@
   "license": "Apache-2.0",
   "main": "src/index.ts",
   "types": "src/index.ts",
-  "private": true,
   "scripts": {
     "start": "backstage-cli package start",
     "build": "backstage-cli package build",
@@ -28,18 +27,19 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
-    "@backstage/backend-common": "^0.22.0",
-    "@backstage/backend-plugin-api": "^0.6.18",
-    "@backstage/backend-tasks": "^0.5.23",
+    "@backstage/backend-common": "^0.23.2",
+    "@backstage/backend-plugin-api": "^0.6.21",
+    "@backstage/backend-tasks": "^0.5.26",
     "@backstage/config": "^1.2.0",
-    "@backstage/plugin-search-backend-node": "^1.2.23",
-    "@backstage/plugin-search-common": "^1.2.11",
+    "@backstage/plugin-search-backend-node": "^1.2.26",
+    "@backstage/plugin-search-common": "^1.2.12",
     "node-fetch": "^2.6.7",
     "p-limit": "^3.1.0"
   },
   "devDependencies": {
-    "@backstage/backend-test-utils": "^0.3.8",
-    "@backstage/cli": "^0.26.6",
+    "@backstage/backend-test-utils": "^0.4.3",
+    "@backstage/cli": "^0.26.10",
+    "@types/node-fetch": "^2.6.11",
     "msw": "^1.0.0"
   },
   "files": [
