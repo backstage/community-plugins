@@ -29,23 +29,33 @@ This confluence frontend plugin is primarily responsible for the following:
 
 > Note: For Confluence specific search results to be returned, it needs to be indexed. Use the [search-backend-module-confluence-collator](../search-backend-module-confluence-collator/README.md) to index Confluence documents to search.
 
-When you have you `packages/app/src/components/search/SearchPage.tsx` file ready to make modifications, add the following code snippet to add the `ConfluenceResultListItem` web the type of search results are `confluence`.
+When you have you `packages/app/src/components/search/SearchPage.tsx` file ready to make modifications, add the following code snippet to add the `ConfluenceSearchResultListItem` web the type of search results are `confluence`.
 
 ```tsx
-import { 
+import {
   ConfluenceSearchResultListItem,
-  ConfluenceSearchIcon } from '@internal/plugin-search-confluence-frontend';
+  ConfluenceSearchIcon } from '@backstage-community/plugin-confluence';
 ...
- case 'stack-overflow':
-  return (
-    <ConfluenceSearchResultListItem
-      key={document.location}
-      result={document}
-    />
-  );
+            <SearchType.Accordion
+              name="Result Type"
+              defaultValue="software-catalog"
+              types={[
+...
+                {
+                  value: 'confluence',
+                  name: 'Confluence',
+                  icon: <ConfluenceSearchIcon />,
+                },
+              ]}
+            />
+...
+            <SearchResult>
+...
+              <ConfluenceSearchResultListItem icon={<ConfluenceSearchIcon />} />
+            </SearchResult>
 ```
 
 ## Special thanks & Disclaimer
 
-Thanks to K-Phoen for creating the grafana plugin found [here](https://github.com/K-Phoen/backstage-plugin-confluence). As an outcome 
+Thanks to K-Phoen for creating the grafana plugin found [here](https://github.com/K-Phoen/backstage-plugin-confluence). As an outcome
 of [this discussion](https://github.com/K-Phoen/backstage-plugin-confluence/issues/193), he gave us permission to keep working on this plugin.

@@ -9,10 +9,10 @@ import { default as React_2 } from 'react';
 import { ResultHighlight } from '@backstage/plugin-search-common';
 
 // Warning: (ae-forgotten-export) The symbol "ConfluenceResultItemProps" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "ConfluenceResultListItem" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-missing-release-tag) "ConfluenceSearchResultListItem" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export const ConfluenceResultListItem: ({
+export const ConfluenceSearchResultListItem: ({
   result,
   highlight,
 }: ConfluenceResultItemProps) => React_2.JSX.Element | null;
@@ -27,7 +27,7 @@ export const confluencePlugin: BackstagePlugin<{}, {}, {}>;
 
 // Warnings were encountered during analysis:
 //
-// src/components/ConfluenceResultListItem/ConfluenceResultListItem.d.ts:18:22 - (ae-undocumented) Missing documentation for "ConfluenceResultListItem".
+// src/components/ConfluenceSearchResultListItem/ConfluenceSearchResultListItem.d.ts:18:22 - (ae-undocumented) Missing documentation for "ConfluenceSearchResultListItem".
 // src/plugin.d.ts:1:22 - (ae-undocumented) Missing documentation for "confluencePlugin".
 
 // (No @packageDocumentation comment for this package)

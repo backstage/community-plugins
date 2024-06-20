@@ -1,7 +1,7 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
 import { renderInTestApp } from '@backstage/test-utils';
-import { ConfluenceResultListItem } from './ConfluenceResultListItem';
+import { ConfluenceSearchResultListItem } from './ConfluenceSearchResultListItem';
 
 const mockResult = {
   location: '/test-location',
@@ -19,9 +19,9 @@ const mockResult = {
   ],
 };
 
-describe('<ConfluenceResultListItem/>', () => {
+describe('<ConfluenceSearchResultListItem/>', () => {
   it('should render without exploding', async () => {
-    await renderInTestApp(<ConfluenceResultListItem result={mockResult} />);
+    await renderInTestApp(<ConfluenceSearchResultListItem result={mockResult} />);
     expect(
       screen.getByText(/Getting Started Developer Portal/i),
     ).toBeInTheDocument();
@@ -32,20 +32,20 @@ describe('<ConfluenceResultListItem/>', () => {
   });
 
   it('should render last modified details', async () => {
-    await renderInTestApp(<ConfluenceResultListItem result={mockResult} />);
+    await renderInTestApp(<ConfluenceSearchResultListItem result={mockResult} />);
     expect(
       screen.getByText(/Last Updated: 22 Feb 2024 by Test User/i),
     ).toBeInTheDocument();
   });
 
   it('should render text', async () => {
-    await renderInTestApp(<ConfluenceResultListItem result={mockResult} />);
+    await renderInTestApp(<ConfluenceSearchResultListItem result={mockResult} />);
     expect(screen.getByText(/Developer Portal/i)).toBeInTheDocument();
   });
 
   it('should not render if result is not provided', async () => {
     const { container } = await renderInTestApp(
-      <ConfluenceResultListItem result={undefined} />,
+      <ConfluenceSearchResultListItem result={undefined} />,
     );
     expect(container.firstChild).toBeNull();
   });
@@ -61,7 +61,7 @@ describe('<ConfluenceResultListItem/>', () => {
     };
 
     await renderInTestApp(
-      <ConfluenceResultListItem result={mockResult} highlight={highlight} />,
+      <ConfluenceSearchResultListItem result={mockResult} highlight={highlight} />,
     );
 
     expect(screen.getByText(/Highlighted Title/i)).toBeInTheDocument();

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { Link } from '@backstage/core-components';
 import {
   IndexableDocument,
@@ -16,7 +16,7 @@ import {
   makeStyles,
 } from '@material-ui/core';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
-import { ConfluenceSearchIcon } from '../../icons';
+import { ConfluenceSearchIcon } from '../icons';
 
 const useStyles = makeStyles({
   lastUpdated: {
@@ -51,9 +51,10 @@ export type IndexableConfluenceDocument = IndexableDocument & {
 export interface ConfluenceResultItemProps {
   result?: IndexableDocument;
   highlight?: ResultHighlight;
+  icon?: ReactNode;
 }
 
-export const ConfluenceResultListItem = ({
+export const ConfluenceSearchResultListItem = ({
   result,
   highlight,
 }: ConfluenceResultItemProps) => {

@@ -6,13 +6,9 @@
     "plugins/*/dev",
     "plugins/*/migrations"
   ],
-  "files": ["node_modules/@backstage/cli/asset-types/asset-types.d.ts"],
   "exclude": ["node_modules"],
   "compilerOptions": {
     "outDir": "dist-types",
-    "rootDir": ".",
-    "lib": ["DOM", "DOM.Iterable", "ScriptHost", "ES2022"],
-    "target": "ES2022",
-    "useUnknownInCatchVariables": false
+    "rootDir": "."
   }
 }
