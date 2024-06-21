@@ -164,6 +164,7 @@ export class AzureDevOpsClient implements AzureDevOpsApi {
     options?: BuildRunOptions,
   ): Promise<{ items: BuildRun[] }> {
     const queryString = new URLSearchParams();
+    queryString.append('entityRef', entityRef);
     if (repoName) {
       queryString.append('repoName', repoName);
     }
@@ -182,7 +183,6 @@ export class AzureDevOpsClient implements AzureDevOpsApi {
           if (options?.top) {
             queryString.set('top', options.top.toString());
           }
-          queryString.append('entityRef', entityRef);
           const urlSegment = `builds/${encodeURIComponent(
             projectName,
           )}?${queryString}`;
@@ -196,7 +196,6 @@ export class AzureDevOpsClient implements AzureDevOpsApi {
     if (options?.top) {
       queryString.append('top', options.top.toString());
     }
-    queryString.append('entityRef', entityRef);
     const urlSegment = `builds/${encodeURIComponent(
       projectName,
     )}?${queryString}`;
