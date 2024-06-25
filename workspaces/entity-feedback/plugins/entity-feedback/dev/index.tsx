@@ -29,9 +29,10 @@ const feedbackApi: Partial<EntityFeedbackApi> = {
   getResponses: async () => [
     {
       userRef: 'user:test',
-      comments: '{"responseComments":{},"additionalComments":"test comments"}',
+      comments:
+        '{"responseComments":{"incorrect":"incorrect link","missing":"missing contact"},"additionalComments":"some comment"}',
       consent: true,
-      response: 'incorrect,other',
+      response: 'incorrect,missing',
     },
   ],
   getAllRatings: async () => [],
