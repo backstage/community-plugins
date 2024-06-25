@@ -36,7 +36,7 @@
     ]
   },
   "devDependencies": {
-    "@backstage/cli": "^0.25.2",
+    "@backstage/cli": "^0.26.6",
     "@backstage/repo-tools": "^0.6.2",
     "@changesets/cli": "^2.27.1",
     "@playwright/test": "^1.32.3",

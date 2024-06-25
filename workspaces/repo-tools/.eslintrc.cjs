@@ -30,7 +30,7 @@ module.exports = {
         templateFile: path.resolve(
           // eslint-disable-next-line no-restricted-syntax
           __dirname,
-          "./scripts/templates/copyright-header.txt"
+          "../../scripts/templates/copyright-header.txt"
         ),
         onNonMatchingHeader: "replace",
       },

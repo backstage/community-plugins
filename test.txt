@@ -1,0 +1,2 @@
+workspaces=["noop","adr","apache-airflow","bitrise","codescene","entity-feedback","entity-validation","firehydrant","gocd","ilert","playlist","vault","xcmetrics"]
+workspaces=["noop"]
