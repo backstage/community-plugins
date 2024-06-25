@@ -197,7 +197,7 @@ The TS example can be found [here](src/sample.ts).
 
 ### How do I load in my own data?
 
-The `TechRadar` plugin uses the `techRadarApiRef` to get a client which implements the `TechRadarApi` interface. The default sample one is located [here](https://github.com/backstage/backstage/blob/master/plugins/tech-radar/src/sample.ts). To load your own data, you'll need to provide a class that implements the `TechRadarApi` and override the `techRadarApiRef` in the `app/src/apis.ts`.
+The `TechRadar` plugin uses the `techRadarApiRef` to get a client which implements the `TechRadarApi` interface. The default sample one is located [here](https://github.com/backstage/community-plugins/blob/main/workspaces/tech-radar/plugins/tech-radar/src/sample.ts). To load your own data, you'll need to provide a class that implements the `TechRadarApi` and override the `techRadarApiRef` in the `app/src/apis.ts`.
 
 ```ts
 // app/src/lib/MyClient.ts
