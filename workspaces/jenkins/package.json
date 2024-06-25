@@ -6,6 +6,10 @@
     "node": "18 || 20"
   },
   "scripts": {
+    "dev": "concurrently \"yarn start\" \"yarn start-backend\"",
+    "start": "yarn workspace app start",
+    "start-backend": "yarn workspace backend start",
+    "build:backend": "yarn workspace backend build",
     "tsc": "tsc",
     "tsc:full": "tsc --skipLibCheck false --incremental false",
     "build:all": "backstage-cli repo build --all",
@@ -32,11 +36,12 @@
     "directory": "workspaces/jenkins"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.26.3",
+    "@backstage/cli": "^0.26.9",
     "@backstage/e2e-test-utils": "^0.1.1",
-    "@backstage/repo-tools": "^0.8.0",
+    "@backstage/repo-tools": "^0.9.2",
     "@changesets/cli": "^2.27.1",
     "@spotify/prettier-config": "^15.0.0",
+    "concurrently": "^8.0.0",
     "node-gyp": "^10.0.0",
     "prettier": "^2.3.2",
     "typescript": "~5.3.0"
@@ -54,5 +59,9 @@
     "*.{json,md}": [
       "prettier --write"
     ]
+  },
+  "dependencies": {
+    "@backstage-community/plugin-jenkins": "workspace:^",
+    "@backstage-community/plugin-jenkins-backend": "workspace:^"
   }
 }
