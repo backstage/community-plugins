@@ -44,7 +44,6 @@
     "react-use": "^17.2.4"
   },
   "devDependencies": {
-    "@backstage/catalog-model": "^1.5.0",
     "@backstage/cli": "^0.26.5",
     "@backstage/dev-utils": "^1.0.32",
     "@backstage/plugin-catalog": "^1.20.0",
