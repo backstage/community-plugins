@@ -1,5 +1,11 @@
 # @backstage-community/plugin-jenkins
 
+## 0.10.0
+
+### Minor Changes
+
+- 0129544: Migrate from identityApi to fetchApi in frontend plugin jenkins
+
 ## 0.9.10
 
 ### Patch Changes
