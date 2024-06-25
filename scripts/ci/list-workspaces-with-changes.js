@@ -36,7 +36,7 @@ async function main() {
   const repoRoot = resolvePath(__dirname, "..", "..");
   process.chdir(repoRoot);
 
-  const diff = await runPlain("git", "diff", "--name-only", parentRef);
+  const diff = await runPlain("git", "diff", "--name-only", `${parentRef}...`);
 
   const packageList = diff.split("\n");
 
