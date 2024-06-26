@@ -1,5 +1,11 @@
 # @backstage-community/plugin-cost-insights
 
+## 0.12.25
+
+### Patch Changes
+
+- aff1a3c: Fix broken links in README.md
+
 ## 0.12.24
 
 ### Patch Changes
