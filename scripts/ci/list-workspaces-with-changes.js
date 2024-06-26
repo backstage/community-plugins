@@ -7,7 +7,8 @@ import { EOL } from "os";
 import * as url from "url";
 const __dirname = url.fileURLToPath(new URL(".", import.meta.url));
 
-const parentRef = process.env.COMMIT_SHA_BEFORE || "origin/main";
+const commitShaBefore = process.env.COMMIT_SHA_BEFORE;
+const baseRef = process.env.BASE_REF || "origin/main";
 
 const execFile = promisify(execFileCb);
 
@@ -36,7 +37,9 @@ async function main() {
   const repoRoot = resolvePath(__dirname, "..", "..");
   process.chdir(repoRoot);
 
-  const diff = await runPlain("git", "diff", "--name-only", `${parentRef}...`);
+  const diff = process.env.COMMIT_SHA_BEFORE
+    ? await runPlain("git", "diff", "--name-only", commitShaBefore)
+    : await runPlain("git", "diff", "--name-only", `${baseRef}...`);
 
   const packageList = diff.split("\n");
 
