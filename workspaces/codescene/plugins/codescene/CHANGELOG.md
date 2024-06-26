@@ -1,5 +1,11 @@
 # @backstage-community/plugin-codescene
 
+## 0.1.29
+
+### Patch Changes
+
+- 842559f: Updated dependency `rc-progress` to `4.0.0`.
+
 ## 0.1.28
 
 ### Patch Changes
