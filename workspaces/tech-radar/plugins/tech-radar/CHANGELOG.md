@@ -1,5 +1,11 @@
 # @backstage-community/plugin-tech-radar
 
+## 0.7.5
+
+### Patch Changes
+
+- 4b7e5f9: Updates link in readme
+
 ## 0.7.4
 
 ### Patch Changes
