@@ -47,19 +47,6 @@ const errorApi: Partial<ErrorApi> = { post: () => {} };
 createDevApp()
   .registerPlugin(entityFeedbackPlugin)
   .registerPlugin(catalogPlugin)
-  .registerApi({
-    api: entityFeedbackApiRef,
-    deps: {},
-    factory: () => ({
-      getResponses: async () => [],
-      getAllRatings: async () => [],
-      getOwnedRatings: async () => [],
-      recordRating: async () => {},
-      getRatings: async () => [],
-      getRatingAggregates: async (): Promise<Ratings> => ({}),
-      recordResponse: async () => {},
-    }),
-  })
   .addPage({
     title: 'Feedback',
     path: '/feedback',

@@ -114,9 +114,23 @@ export const FeedbackResponseDialog = (props: FeedbackResponseDialogProps) => {
   const [consent, setConsent] = useState(true);
 
   const [{ loading: saving }, saveResponse] = useAsyncFn(async () => {
+    // filter out responses that were not selected
+    const filteredResponseComments = Object.entries(
+      comments.responseComments,
+    ).reduce((entry, [key, value]) => {
+      if (responseSelections[key]) {
+        entry[key] = value;
+      }
+      return entry;
+    }, {} as { [key: string]: string });
+
+    const filteredComments = {
+      ...comments,
+      responseComments: filteredResponseComments,
+    };
     try {
       await feedbackApi.recordResponse(stringifyEntityRef(entity), {
-        comments: JSON.stringify(comments),
+        comments: JSON.stringify(filteredComments),
         consent,
         response: Object.keys(responseSelections)
           .filter(id => responseSelections[id])
