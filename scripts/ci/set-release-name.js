@@ -20,6 +20,7 @@ import path from 'path';
 import fs from 'fs-extra';
 import fetch from 'node-fetch';
 import { EOL } from 'os';
+import * as url from 'url';
 
 async function getBackstageVersion() {
   const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
