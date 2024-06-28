@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-import path from 'pat';
+import path from 'path';
 import fs from 'fs-extra';
 import fetch from 'node-fetch';
 import { EOL } from 'os';
