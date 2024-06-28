@@ -1,5 +1,11 @@
 # @backstage-community/plugin-entity-feedback
 
+## 0.3.0
+
+### Minor Changes
+
+- f4e4277: Add comment boxes for each checked option in the Feedback Dialog box. Display those option responses as bullet points in the Feedback Response table.
+
 ## 0.2.19
 
 ### Patch Changes
