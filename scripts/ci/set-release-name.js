@@ -22,9 +22,12 @@ import fetch from 'node-fetch';
 import { EOL } from 'os';
 import * as url from 'url';
 
-async function getBackstageVersion() {
+async function getBackstageVersion(workspace) {
   const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
-  const rootPath = path.resolve(__dirname, '../backstage.json');
+  const rootPath = path.resolve(__dirname, `..${workspace}/backstage.json`);
+  if (!fs.exists(rootPath)) {
+    return 'N/A';
+  }
   return fs.readJson(rootPath).then((_) => _.version);
 }
 
@@ -54,8 +57,14 @@ async function getLatestPreRelease() {
 }
 
 async function main() {
+  // Get the workspace
+  const [script, workspace] = process.argv.slice(1);
+  if (!workspace) {
+    throw new Error(`Argument must be ${script} <workspace>`);
+  }
+
   // Get the current Backstage version from the backstage.json file
-  const backstageVersion = await getBackstageVersion();
+  const backstageVersion = await getBackstageVersion(workspace);
   // Get the latest Backstage Release from the GitHub API
   const latestRelease = await getLatestRelease();
   // Get the latest Backstage Pre-release from the GitHub API
