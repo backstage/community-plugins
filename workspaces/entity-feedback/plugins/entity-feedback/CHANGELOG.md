@@ -1,5 +1,13 @@
 # @backstage-community/plugin-entity-feedback
 
+## 0.3.1
+
+### Patch Changes
+
+- c2cc0b9: Update dependencies to Backstage v1.28.3
+- Updated dependencies [c2cc0b9]
+  - @backstage-community/plugin-entity-feedback-common@0.1.6
+
 ## 0.3.0
 
 ### Minor Changes
