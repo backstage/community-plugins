@@ -61,6 +61,8 @@ jobs:
             ${{ runner.os }}-yarn-
       - name: yarn install
         run: yarn install --immutable
+      - name: workspace yarn install
+        run: yarn --cwd workspaces/${{ matrix.workspace }} install --immutable
       # End of yarn setup
 
       - name: 'Set release name'
@@ -79,7 +81,7 @@ jobs:
           fi
           git checkout -b ${{ matrix.workspace }}/v${{ steps.set_release_name.outputs.release_version }}
       - name: Run backstage-cli versions:bump --release ${{ inputs.release_line || 'next' }} command
-        run: yarn backstage-cli versions:bump --release ${{ inputs.release_line || 'next' }}
+        run: yarn --cwd workspaces/${{ matrix.workspace }} backstage-cli versions:bump --release ${{ inputs.release_line || 'next' }}
         env:
           YARN_ENABLE_IMMUTABLE_INSTALLS: false
       - name: 'Check for changes'
