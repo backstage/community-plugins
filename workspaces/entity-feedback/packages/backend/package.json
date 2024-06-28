@@ -1,0 +1,37 @@
+{
+  "name": "backend",
+  "version": "0.0.0",
+  "main": "dist/index.cjs.js",
+  "types": "src/index.ts",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/entity-feedback/packages/backend"
+  },
+  "backstage": {
+    "role": "backend"
+  },
+  "scripts": {
+    "start": "backstage-cli package start",
+    "build": "backstage-cli package build",
+    "lint": "backstage-cli package lint",
+    "test": "backstage-cli package test",
+    "clean": "backstage-cli package clean"
+  },
+  "dependencies": {
+    "@backstage-community/plugin-entity-feedback-backend": "workspace:^",
+    "@backstage/backend-defaults": "^0.3.3",
+    "@backstage/backend-plugin-api": "^0.6.21",
+    "@backstage/plugin-app-backend": "^0.3.70",
+    "@backstage/plugin-auth-backend": "^0.22.8",
+    "@backstage/plugin-auth-backend-module-guest-provider": "^0.1.7",
+    "@backstage/plugin-catalog-backend": "^1.23.2"
+  },
+  "devDependencies": {
+    "@backstage/cli": "^0.26.10"
+  },
+  "files": [
+    "dist"
+  ]
+}
