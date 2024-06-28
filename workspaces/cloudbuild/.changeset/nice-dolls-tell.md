@@ -2,4 +2,4 @@
 '@backstage-community/plugin-cloudbuild': patch
 ---
 
-Remove check for process.env.NODE_ENV X-Goog-Api-Client HTTP Header
+Fixed an issue preventing the `X-Goog-Api-Client` header from being passed.
