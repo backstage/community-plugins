@@ -4,7 +4,7 @@
 
 ```ts
 import { AuthService } from '@backstage/backend-plugin-api';
-import { BackendFeature } from '@backstage/backend-plugin-api';
+import { BackendFeatureCompat } from '@backstage/backend-plugin-api';
 import express from 'express';
 import { HttpAuthService } from '@backstage/backend-plugin-api';
 import { IdentityApi } from '@backstage/plugin-auth-node';
@@ -16,7 +16,7 @@ import { PluginEndpointDiscovery } from '@backstage/backend-common';
 export function createRouter(options: RouterOptions): Promise<express.Router>;
 
 // @public
-const entityFeedbackPlugin: () => BackendFeature;
+const entityFeedbackPlugin: BackendFeatureCompat;
 export default entityFeedbackPlugin;
 
 // @public (undocumented)

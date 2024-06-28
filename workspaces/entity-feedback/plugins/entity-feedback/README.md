@@ -138,3 +138,22 @@ const groupPage = (
 ```
 
 Note: For a full example of this you can look at [this EntityPage](../../packages/app/src/components/catalog/EntityPage.tsx).
+
+## Local Development
+
+To start the mocked example you need to run the front and backend.
+Start the backend from `workspaces/entity-feedback/plugins/entity-feedback-backend`
+
+```sh
+yarn install
+yarn start
+```
+
+Then start the frontend example from `workspaces/entity-feedback/plugins/entity-feedback`
+
+```sh
+yarn install
+yarn start
+```
+
+Once that is running you can navigate to `http://localhost:3000/feedback`
