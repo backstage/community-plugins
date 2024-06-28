@@ -3,7 +3,13 @@
   "version": "0.1.6",
   "description": "Common functionalities for the entity-feedback plugin",
   "backstage": {
-    "role": "common-library"
+    "role": "common-library",
+    "pluginId": "entity-feedback",
+    "pluginPackages": [
+      "@backstage-community/plugin-entity-feedback",
+      "@backstage-community/plugin-entity-feedback-backend",
+      "@backstage-community/plugin-entity-feedback-common"
+    ]
   },
   "publishConfig": {
     "access": "public",
