@@ -22,6 +22,7 @@ import fetch from 'node-fetch';
 import { EOL } from 'os';
 
 async function getBackstageVersion() {
+  const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
   const rootPath = path.resolve(__dirname, '../backstage.json');
   return fs.readJson(rootPath).then((_) => _.version);
 }
