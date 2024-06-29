@@ -22,14 +22,16 @@ import { ScorecardInfo } from '../ScorecardsInfo';
 import { techInsightsApiRef } from '../../api/TechInsightsApi';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { getCompoundEntityRef } from '@backstage/catalog-model';
+import { CommonCheck } from '../../api';
 
 export const ScorecardsCard = (props: {
   title: string;
   description?: string;
   checksId?: string[];
+  filter?: (check: CommonCheck) => boolean;
   onlyFailed?: boolean;
 }) => {
-  const { title, description, checksId, onlyFailed } = props;
+  const { title, description, checksId, filter, onlyFailed } = props;
   const api = useApi(techInsightsApiRef);
   const { entity } = useEntity();
   const { value, loading, error } = useAsync(
@@ -37,15 +39,18 @@ export const ScorecardsCard = (props: {
     [api, entity, JSON.stringify(checksId)],
   );
 
-  const checkResultRenderers = useMemo(() => {
-    if (!onlyFailed || !value) return {};
+  const filteredValues =
+    !filter || !value ? value : value.filter(val => filter(val.check));
 
-    const types = [...new Set(value.map(({ check }) => check.type))];
+  const checkResultRenderers = useMemo(() => {
+    if (!onlyFailed || !filteredValues) return {};
+
+    const types = [...new Set(filteredValues.map(({ check }) => check.type))];
     const renderers = api.getCheckResultRenderers(types);
     return Object.fromEntries(
       renderers.map(renderer => [renderer.type, renderer]),
     );
-  }, [api, value, onlyFailed]);
+  }, [api, filteredValues, onlyFailed]);
 
   if (loading) {
     return <Progress />;
@@ -54,8 +59,8 @@ export const ScorecardsCard = (props: {
   }
 
   const filteredValue = !onlyFailed
-    ? value || []
-    : (value || []).filter(val =>
+    ? filteredValues || []
+    : (filteredValues || []).filter(val =>
         checkResultRenderers[val.check.type]?.isFailed?.(val),
       );
 

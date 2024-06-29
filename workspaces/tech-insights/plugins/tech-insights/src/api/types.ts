@@ -67,6 +67,20 @@ export type Check = {
 };
 
 /**
+ * Represents a check type common for both Check and the CheckResponse type
+ * from `@backstage-community/plugin-tech-insights-common`.
+ *
+ * Is used for filtering check results, but can also be used in the app
+ * for various purposes.
+ *
+ * @public
+ */
+export type CommonCheck = Pick<
+  Check,
+  'id' | 'type' | 'name' | 'description' | 'factIds'
+>;
+
+/**
  * Represents a Fact defined on the TechInsights backend.
  *
  * @public
