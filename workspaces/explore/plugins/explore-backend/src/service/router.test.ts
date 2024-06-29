@@ -20,7 +20,7 @@ import {
 } from '@backstage-community/plugin-explore-common';
 import express from 'express';
 import request from 'supertest';
-import { ExploreToolProvider } from '../tools';
+import { ExploreToolProvider } from '@backstage-community/plugin-explore-node';
 import { createRouter } from './router';
 import { mockServices } from '@backstage/backend-test-utils';
 

@@ -18,7 +18,7 @@ import { errorHandler } from '@backstage/backend-common';
 import { GetExploreToolsRequest } from '@backstage-community/plugin-explore-common';
 import express from 'express';
 import Router from 'express-promise-router';
-import { ExploreToolProvider } from '../tools';
+import { ExploreToolProvider } from '@backstage-community/plugin-explore-node';
 import { LoggerService } from '@backstage/backend-plugin-api';
 
 /**
