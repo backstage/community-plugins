@@ -214,6 +214,7 @@ export async function createRouter(
       targetPluginId: 'catalog',
     });
 
+    console.log(responses);
     // Filter responses via user refs to only expose entity refs accessible by current user
     const accessibleEntityRefs = (
       await catalogClient.getEntitiesByRefs(
