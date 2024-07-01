@@ -2,7 +2,13 @@
   "name": "@backstage-community/plugin-jenkins-common",
   "version": "0.1.26",
   "backstage": {
-    "role": "common-library"
+    "role": "common-library",
+    "pluginId": "jenkins",
+    "pluginPackages": [
+      "@backstage-community/plugin-jenkins",
+      "@backstage-community/plugin-jenkins-backend",
+      "@backstage-community/plugin-jenkins-common"
+    ]
   },
   "publishConfig": {
     "access": "public",
