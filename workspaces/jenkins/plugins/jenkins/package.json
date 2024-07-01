@@ -3,7 +3,13 @@
   "version": "0.10.0",
   "description": "A Backstage plugin that integrates towards Jenkins",
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "jenkins",
+    "pluginPackages": [
+      "@backstage-community/plugin-jenkins",
+      "@backstage-community/plugin-jenkins-backend",
+      "@backstage-community/plugin-jenkins-common"
+    ]
   },
   "publishConfig": {
     "access": "public",
