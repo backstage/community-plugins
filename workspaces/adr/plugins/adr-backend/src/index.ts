@@ -20,6 +20,6 @@
  * @packageDocumentation
  */
 
-export * from './search';
 export * from './service';
 export { adrPlugin as default } from './plugin';
+export * from './deprecated';
