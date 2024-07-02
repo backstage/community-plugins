@@ -1,5 +1,13 @@
 # @backstage-community/plugin-entity-feedback-backend
 
+## 0.2.18
+
+### Patch Changes
+
+- 804a245: Fix package metadata
+- Updated dependencies [804a245]
+  - @backstage-community/plugin-entity-feedback-common@0.1.7
+
 ## 0.2.17
 
 ### Patch Changes
