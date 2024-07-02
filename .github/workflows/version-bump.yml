@@ -11,7 +11,7 @@ on:
           - next
           - main
       workspace_input:
-        description: 'Workspace'
+        description: 'Workspace (this must be a JSON array)'
         required: true
         type: string
 
@@ -26,11 +26,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        workspace: ${{ inputs.workspace_input }}
+        workspace: ${{ fromJSON(inputs.workspace_input) }}
 
     name: ${{ matrix.workspace }} version:bump
     steps:
-      - name: 'Checkout backstage'
+      - name: 'Checkout community-plugins'
         uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4
         with:
           fetch-depth: 1
@@ -61,11 +61,14 @@ jobs:
             ${{ runner.os }}-yarn-
       - name: yarn install
         run: yarn install --immutable
+      - name: workspace yarn install
+        working-directory: ./workspaces/${{ matrix.workspace }}
+        run: yarn install --immutable
       # End of yarn setup
 
       - name: 'Set release name'
         id: set_release_name
-        run: node scripts/ci/set-release-name.js
+        run: node scripts/ci/set-release-name.js ${{ matrix.workspace }}
       - name: 'Configure git'
         run: |
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -79,6 +82,7 @@ jobs:
           fi
           git checkout -b ${{ matrix.workspace }}/v${{ steps.set_release_name.outputs.release_version }}
       - name: Run backstage-cli versions:bump --release ${{ inputs.release_line || 'next' }} command
+        working-directory: ./workspaces/${{ matrix.workspace }}
         run: yarn backstage-cli versions:bump --release ${{ inputs.release_line || 'next' }}
         env:
           YARN_ENABLE_IMMUTABLE_INSTALLS: false
@@ -107,15 +111,15 @@ jobs:
           github-token: ${{secrets.GH_SERVICE_ACCOUNT_TOKEN}}
           script: |
             await github.rest.pulls.create({
-              title: '${{ matrix.workspace }} - Example App version:bump to v${{ steps.set_release_name.outputs.release_version }}',
+              title: '${{ matrix.workspace }} - version:bump to v${{ steps.set_release_name.outputs.release_version }}',
               owner: context.repo.owner,
               repo: context.repo.repo,
               head: '${{ matrix.workspace }}/v${{ steps.set_release_name.outputs.release_version }}',
               base: 'main',
               body: [
-                'Backstage release v${{ steps.set_release_name.outputs.release_version }} has been published, this Pull Request contains the changes to upgrade to this new release',
+                'Backstage release v${{ steps.set_release_name.outputs.release_version }} has been published, this Pull Request contains the changes to upgrade ${{ matrix.workspace }} to this new release',
                 ' ',
-                'Please review the changelog before approving, there may be manual changes needed to enable new features:',
+                'Please review the changelog before approving, there may be manual changes needed:',
                 ' ',
                 '- Changelog: [v${{ steps.set_release_name.outputs.release_version }}](https://github.com/backstage/backstage/blob/master/docs/releases/v${{ steps.set_release_name.outputs.release_version }}-changelog.md)',
                 '- Upgrade Helper: [From ${{ steps.set_release_name.outputs.current_version }} to ${{ steps.set_release_name.outputs.release_version }}](https://backstage.github.io/upgrade-helper/?from=${{ steps.set_release_name.outputs.current_version }}&to=${{ steps.set_release_name.outputs.release_version }})',
