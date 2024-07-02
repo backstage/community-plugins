@@ -25,6 +25,7 @@ export type DuplicationRating = {
 export const EntitySonarQubeCard: (props: {
   variant?: InfoCardVariants | undefined;
   duplicationRatings?: DuplicationRating[] | undefined;
+  missingAnnotationReadMoreUrl?: string | undefined;
 }) => JSX_2.Element;
 
 // @public (undocumented)
@@ -42,6 +43,7 @@ export const SONARQUBE_PROJECT_KEY_ANNOTATION = 'sonarqube.org/project-key';
 export const SonarQubeCard: (props: {
   variant?: InfoCardVariants;
   duplicationRatings?: DuplicationRating[];
+  missingAnnotationReadMoreUrl?: string;
 }) => React_2.JSX.Element;
 
 // @public (undocumented)
@@ -68,6 +70,7 @@ export class SonarQubeClient implements SonarQubeApi {
 export type SonarQubeContentPageProps = {
   title?: string;
   supportTitle?: string;
+  missingAnnotationReadMoreUrl?: string;
 };
 
 // @public (undocumented)

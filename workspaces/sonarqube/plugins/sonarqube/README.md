@@ -33,6 +33,28 @@ yarn --cwd packages/app add @backstage-community/plugin-sonarqube
  );
 ```
 
+The "Read more" link that shows in the MissingAnnotationEmptyState is also configurable.
+
+```diff
+  // packages/app/src/components/catalog/EntityPage.tsx
++ import { EntitySonarQubeCard } from '@backstage-community/plugin-sonarqube';
+
++ const MISSING_ANNOTATION_READ_MORE_URL = 'https://backstage.io/docs/features/software-catalog/descriptor';
+
+ ...
+
+ const overviewContent = (
+   <Grid container spacing={3} alignItems="stretch">
+     <Grid item md={6}>
+       <EntityAboutCard variant="gridItem" />
+     </Grid>
++    <Grid item md={6}>
++      <EntitySonarQubeCard variant="gridItem" readMoreUrl={MISSING_ANNOTATION_READ_MORE_URL} />
++    </Grid>
+   </Grid>
+ );
+```
+
 3. Run the following commands in the root folder of the project to install and compile the changes.
 
 ```yaml

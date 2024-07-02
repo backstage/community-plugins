@@ -87,4 +87,18 @@ describe('<SonarQubeContentPage />', () => {
         .length,
     ).toBe(2);
   }, 15000);
+
+  it('renders MissingAnnotationEmptyState Read more link url if missingAnnotationReadMoreUrl is passed', async () => {
+    const { SonarQubeContentPage } = require('./SonarQubeContentPage');
+    const docsUrl =
+      'https://github.com/backstage/community-plugins/blob/main/workspaces/sonarqube/plugins/sonarqube/README.md';
+
+    const rendered = await renderInTestApp(
+      <Providers annotation="foo">
+        <SonarQubeContentPage missingAnnotationReadMoreUrl={docsUrl} />
+      </Providers>,
+    );
+
+    expect(rendered.getByRole('button')).toHaveAttribute('href', docsUrl);
+  }, 15000);
 });
