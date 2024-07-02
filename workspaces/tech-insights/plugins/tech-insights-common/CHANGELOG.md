@@ -1,5 +1,11 @@
 # @backstage-community/plugin-tech-insights-common
 
+## 0.2.14
+
+### Patch Changes
+
+- cbad35a: Updated dependencies.
+
 ## 0.2.13
 
 ### Patch Changes
