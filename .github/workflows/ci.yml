@@ -19,11 +19,16 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.base.ref }}
 
+      - name: Calculate number of commits in PR
+        id: calculate-commits
+        env:
+          COMMITS: ${{ github.event.pull_request.commits }}
+        run: echo "NUMBER_OF_COMMITS=$(($COMMITS + 1))" >> $GITHUB_ENV
       - name: Checkout head branch
         uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f # v4
         with:
           # Needed for diff
-          fetch-depth: ${{ github.event.pull_request.commits }}
+          fetch-depth: ${{ env.NUMBER_OF_COMMITS }}
 
       - name: Set up Node
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
