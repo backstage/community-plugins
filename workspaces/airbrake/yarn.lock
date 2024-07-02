@@ -2526,7 +2526,7 @@ __metadata:
     "@types/supertest": ^2.0.8
     express: ^4.17.1
     express-promise-router: ^4.1.0
-    http-proxy-middleware: ^2.0.0
+    http-proxy-middleware: ^3.0.0
     supertest: ^6.1.6
     yn: ^4.0.0
   languageName: unknown
@@ -14459,7 +14459,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"http-proxy-middleware@npm:*":
+"http-proxy-middleware@npm:*, http-proxy-middleware@npm:^3.0.0":
   version: 3.0.0
   resolution: "http-proxy-middleware@npm:3.0.0"
   dependencies:
@@ -14473,7 +14473,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"http-proxy-middleware@npm:^2.0.0, http-proxy-middleware@npm:^2.0.3":
+"http-proxy-middleware@npm:^2.0.3":
   version: 2.0.6
   resolution: "http-proxy-middleware@npm:2.0.6"
   dependencies:
