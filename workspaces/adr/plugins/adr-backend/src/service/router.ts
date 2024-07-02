@@ -18,7 +18,7 @@ import { CacheClient, UrlReader } from '@backstage/backend-common';
 import { NotModifiedError, stringifyError } from '@backstage/errors';
 import express from 'express';
 import Router from 'express-promise-router';
-import { madrParser } from '../search/madrParser';
+import { madrParser } from '@backstage-community/plugin-adr-common';
 import { LoggerService } from '@backstage/backend-plugin-api';
 
 /** @public */

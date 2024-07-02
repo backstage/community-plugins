@@ -23,6 +23,8 @@ import { ScmIntegrationRegistry } from '@backstage/integration';
 import frontMatter from 'front-matter';
 import { DateTime } from 'luxon';
 
+export * from './search';
+
 /**
  * ADR plugin annotation.
  * @public
