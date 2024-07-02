@@ -1,5 +1,11 @@
 # @backstage-community/plugin-cloudbuild
 
+## 0.5.3
+
+### Patch Changes
+
+- e790e9f: Fixed an issue preventing the `X-Goog-Api-Client` header from being passed.
+
 ## 0.5.2
 
 ### Patch Changes
