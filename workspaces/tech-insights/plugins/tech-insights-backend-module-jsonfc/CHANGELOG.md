@@ -1,5 +1,14 @@
 # @backstage-community/plugin-tech-insights-backend-module-jsonfc
 
+## 0.1.52
+
+### Patch Changes
+
+- cbad35a: Updated dependencies.
+- Updated dependencies [cbad35a]
+  - @backstage-community/plugin-tech-insights-common@0.2.14
+  - @backstage-community/plugin-tech-insights-node@0.6.3
+
 ## 0.1.51
 
 ### Patch Changes
