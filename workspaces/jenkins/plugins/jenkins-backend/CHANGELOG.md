@@ -1,5 +1,13 @@
 # @backstage-community/plugin-jenkins-backend
 
+## 0.4.7
+
+### Patch Changes
+
+- 7d67a9b: Update to backstage version 1.28.3
+- Updated dependencies [7d67a9b]
+  - @backstage-community/plugin-jenkins-common@0.1.27
+
 ## 0.4.6
 
 ### Patch Changes
