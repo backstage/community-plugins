@@ -1,5 +1,12 @@
 # @backstage-community/plugin-sonarqube
 
+## 0.7.18
+
+### Patch Changes
+
+- c9ceb6e: Added optional `missingAnnotationReadMoreUrl` prop to `SonarQubeContentPage` and `SonarQubeCard` to allow configurable links to documentation.
+- 842559f: Updated dependency `rc-progress` to `4.0.0`.
+
 ## 0.7.17
 
 ### Patch Changes
