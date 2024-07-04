@@ -34,22 +34,26 @@ import {
 export type SonarQubeContentPageProps = {
   title?: string;
   supportTitle?: string;
+  missingAnnotationReadMoreUrl?: string;
 };
 
 export const SonarQubeContentPage = (props: SonarQubeContentPageProps) => {
   const { entity } = useEntity();
-  const { title, supportTitle } = props;
+  const { title, supportTitle, missingAnnotationReadMoreUrl } = props;
 
   return isSonarQubeAvailable(entity) ? (
     <Content>
       <ContentHeader title={title ?? 'SonarQube Dashboard'}>
         {supportTitle && <SupportButton>{supportTitle}</SupportButton>}
       </ContentHeader>
-      <SonarQubeCard />
+      <SonarQubeCard
+        missingAnnotationReadMoreUrl={missingAnnotationReadMoreUrl}
+      />
     </Content>
   ) : (
     <MissingAnnotationEmptyState
       annotation={SONARQUBE_PROJECT_KEY_ANNOTATION}
+      readMoreUrl={missingAnnotationReadMoreUrl}
     />
   );
 };
