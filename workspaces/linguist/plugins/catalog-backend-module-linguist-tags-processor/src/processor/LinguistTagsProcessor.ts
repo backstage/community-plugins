@@ -19,7 +19,11 @@ import {
   CatalogProcessor,
   CatalogProcessorCache,
 } from '@backstage/plugin-catalog-node';
-import { DiscoveryService, LoggerService } from '@backstage/backend-plugin-api';
+import {
+  AuthService,
+  DiscoveryService,
+  LoggerService,
+} from '@backstage/backend-plugin-api';
 import {
   Languages,
   LanguageType,
@@ -47,6 +51,7 @@ interface CachedData {
 export interface LinguistTagsProcessorOptions {
   logger: LoggerService;
   discovery: DiscoveryService;
+  auth: AuthService;
   /**
    * Optional map that gives full control over which linguist languages should be included as tags and
    * how they should be represented. The keys should be exact matches to languages in the linguist
@@ -54,12 +59,6 @@ export interface LinguistTagsProcessorOptions {
    * requirements for tags. If you map a key to a falsey value, it will not be emitted as a tag.
    */
   languageMap?: Record<string, string | undefined>;
-  /**
-   * A function which determines which entities should be processed by the LinguistTagProcessor.
-   *
-   * The default is to process all entities of kind=Component
-   */
-  shouldProcessEntity?: ShouldProcessEntity;
   /**
    * Determines how long to cache language breakdowns for entities in the processor. Considering
    * how often this processor runs, caching can help move some read traffic off of the linguist DB.
@@ -88,13 +87,11 @@ export interface LinguistTagsProcessorOptions {
  * add the languages to the entity as searchable tags.
  *
  * @public
- *
- * @deprecated Use `@backstage-community/plugin-catalog-backend-module-linguist-tags-processor` instead,
- * see {@link https://github.com/backstage/community-plugins/tree/main/workspaces/linguist/plugins/catalog-backend-module-linguist-tags-processor}
- */
+ * */
 export class LinguistTagsProcessor implements CatalogProcessor {
   private logger: LoggerService;
   private discovery: DiscoveryService;
+  private auth: AuthService;
   private loggerMeta = { plugin: 'LinguistTagsProcessor' };
   private languageMap: Record<string, string | undefined> = {};
   private tagPrefix: string = '';
@@ -112,9 +109,7 @@ export class LinguistTagsProcessor implements CatalogProcessor {
   constructor(options: LinguistTagsProcessorOptions) {
     this.logger = options.logger;
     this.discovery = options.discovery;
-    if (options.shouldProcessEntity) {
-      this.shouldProcessEntity = options.shouldProcessEntity;
-    }
+    this.auth = options.auth;
     this.cacheTTLMilliseconds = durationToMilliseconds(
       options.cacheTTL || { minutes: 30 },
     );
@@ -162,13 +157,19 @@ export class LinguistTagsProcessor implements CatalogProcessor {
       ...this.loggerMeta,
       entityRef,
     });
-
+    const { token } = await this.auth.getPluginRequestToken({
+      onBehalfOf: await this.auth.getOwnServiceCredentials(),
+      targetPluginId: 'linguist',
+    });
     const baseUrl = await this.discovery.getBaseUrl('linguist');
     const linguistApi = new URL(`${baseUrl}/entity-languages`);
     linguistApi.searchParams.append('entityRef', entityRef);
-    const linguistData = await fetch(linguistApi).then(
-      res => res.json() as Promise<Languages>,
-    );
+    const linguistData = await fetch(linguistApi, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    }).then(res => res.json() as Promise<Languages>);
     if (!linguistData || !linguistData.processedDate) {
       return [];
     }
