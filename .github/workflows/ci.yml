@@ -99,6 +99,9 @@ jobs:
 
       - name: lint
         run: yarn backstage-cli repo lint --since origin/main
+       
+      - name: deprecations
+        run: yarn backstage-cli repo list-deprecations
 
       - name: test changed packages
         run: yarn backstage-cli repo test --coverage --maxWorkers=3
