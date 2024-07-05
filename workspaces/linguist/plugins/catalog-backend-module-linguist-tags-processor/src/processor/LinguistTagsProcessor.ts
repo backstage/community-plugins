@@ -60,12 +60,6 @@ export interface LinguistTagsProcessorOptions {
    */
   languageMap?: Record<string, string | undefined>;
   /**
-   * A function which determines which entities should be processed by the LinguistTagProcessor.
-   *
-   * The default is to process all entities of kind=Component
-   */
-  shouldProcessEntity?: ShouldProcessEntity;
-  /**
    * Determines how long to cache language breakdowns for entities in the processor. Considering
    * how often this processor runs, caching can help move some read traffic off of the linguist DB.
    *
@@ -116,9 +110,6 @@ export class LinguistTagsProcessor implements CatalogProcessor {
     this.logger = options.logger;
     this.discovery = options.discovery;
     this.auth = options.auth;
-    if (options.shouldProcessEntity) {
-      this.shouldProcessEntity = options.shouldProcessEntity;
-    }
     this.cacheTTLMilliseconds = durationToMilliseconds(
       options.cacheTTL || { minutes: 30 },
     );

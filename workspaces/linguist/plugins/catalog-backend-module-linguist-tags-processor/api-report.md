@@ -4,7 +4,7 @@
 
 ```ts
 import { AuthService } from '@backstage/backend-plugin-api';
-import { BackendFeature } from '@backstage/backend-plugin-api';
+import { BackendFeatureCompat } from '@backstage/backend-plugin-api';
 import { CatalogProcessor } from '@backstage/plugin-catalog-node';
 import { CatalogProcessorCache } from '@backstage/plugin-catalog-node';
 import { Config } from '@backstage/config';
@@ -15,7 +15,7 @@ import { LanguageType } from '@backstage-community/plugin-linguist-common';
 import { LoggerService } from '@backstage/backend-plugin-api';
 
 // @public (undocumented)
-const catalogModuleLinguistTagsProcessor: () => BackendFeature;
+const catalogModuleLinguistTagsProcessor: BackendFeatureCompat;
 export default catalogModuleLinguistTagsProcessor;
 
 // @public
@@ -49,7 +49,6 @@ export interface LinguistTagsProcessorOptions {
   languageTypes?: LanguageType[];
   // (undocumented)
   logger: LoggerService;
-  shouldProcessEntity?: ShouldProcessEntity;
   tagPrefix?: string;
 }
 
