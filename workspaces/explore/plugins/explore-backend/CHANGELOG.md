@@ -1,5 +1,14 @@
 # @backstage-community/plugin-explore-backend
 
+## 0.1.1
+
+### Patch Changes
+
+- d84243a: Add ToolProviderExtensionPoint to allow setting other tool providers
+- Updated dependencies [d84243a]
+- Updated dependencies [d84243a]
+  - @backstage-community/plugin-explore-node@0.1.1
+
 ## 0.1.0
 
 ### Minor Changes
