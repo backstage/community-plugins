@@ -2,7 +2,13 @@
   "name": "@backstage-community/plugin-azure-devops-common",
   "version": "0.4.4",
   "backstage": {
-    "role": "common-library"
+    "role": "common-library",
+    "pluginId": "azure-devops",
+    "pluginPackages": [
+      "@backstage-community/plugin-azure-devops",
+      "@backstage-community/plugin-azure-devops-backend",
+      "@backstage-community/plugin-azure-devops-common"
+    ]
   },
   "publishConfig": {
     "access": "public",
