@@ -1,5 +1,13 @@
 # @backstage-community/plugin-linguist-backend
 
+## 0.5.18
+
+### Patch Changes
+
+- fa1553e: Backstage v1.28.4 version bump
+- Updated dependencies [fa1553e]
+  - @backstage-community/plugin-linguist-common@0.1.5
+
 ## 0.5.17
 
 ### Patch Changes
