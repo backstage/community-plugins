@@ -108,6 +108,10 @@ jobs:
           node-version: 20
           registry-url: https://registry.npmjs.org/ # Needed for auth
 
+      - name: Install root dependencies
+        run: yarn install --immutable
+        working-directory: ${{ github.workspace }}
+
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
