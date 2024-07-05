@@ -61,9 +61,5 @@
     "*.{json,md}": [
       "prettier --write"
     ]
-  },
-  "dependencies": {
-    "@backstage-community/plugin-confluence": "workspace:^",
-    "@backstage-community/plugin-search-backend-module-confluence-collator": "workspace:^"
   }
 }
