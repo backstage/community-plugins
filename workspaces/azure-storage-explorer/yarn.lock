@@ -2663,10 +2663,16 @@ __metadata:
     "@testing-library/jest-dom": ^5.10.1
     "@testing-library/react": ^12.1.3
     "@testing-library/user-event": ^14.0.0
+    "@types/react-dom": ^18.2.19
     msw: ^1.0.0
+    react: ^16.13.1 || ^17.0.0 || ^18.0.0
+    react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
+    react-router-dom: 6.0.0-beta.0 || ^6.3.0
     react-use: ^17.2.4
   peerDependencies:
-    react: ^18.0.2
+    react: ^16.13.1 || ^17.0.0 || ^18.0.0
+    react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
+    react-router-dom: 6.0.0-beta.0 || ^6.3.0
   languageName: unknown
   linkType: soft
 
@@ -5872,6 +5878,13 @@ __metadata:
     js-cookie:
       optional: true
   checksum: 842dd51a2c875814c7468632315d756e79fcdff2882d7224e8e06c630f95ab788b6a59c29c0318cb049a18be97537803be8e3dbae12de34b2ae1290ababe266a
+  languageName: node
+  linkType: hard
+
+"@remix-run/router@npm:1.17.1":
+  version: 1.17.1
+  resolution: "@remix-run/router@npm:1.17.1"
+  checksum: f6ab2498d0b29ea76e3ddf6c6fec78c99f7c8739b2d413217fa569fca3de2256ecfd71385c78ea9d323fd9787614b25fc13db3aaa2e5d5673c9a698d448e710a
   languageName: node
   linkType: hard
 
@@ -16975,7 +16988,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"loose-envify@npm:^1.4.0":
+"loose-envify@npm:^1.1.0, loose-envify@npm:^1.4.0":
   version: 1.4.0
   resolution: "loose-envify@npm:1.4.0"
   dependencies:
@@ -20257,6 +20270,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-dom@npm:^16.13.1 || ^17.0.0 || ^18.0.0":
+  version: 18.3.1
+  resolution: "react-dom@npm:18.3.1"
+  dependencies:
+    loose-envify: ^1.1.0
+    scheduler: ^0.23.2
+  peerDependencies:
+    react: ^18.3.1
+  checksum: 298954ecd8f78288dcaece05e88b570014d8f6dce5db6f66e6ee91448debeb59dcd31561dddb354eee47e6c1bb234669459060deb238ed0213497146e555a0b9
+  languageName: node
+  linkType: hard
+
 "react-double-scrollbar@npm:0.0.15":
   version: 0.0.15
   resolution: "react-double-scrollbar@npm:0.0.15"
@@ -20388,6 +20413,30 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-router-dom@npm:6.0.0-beta.0 || ^6.3.0":
+  version: 6.24.1
+  resolution: "react-router-dom@npm:6.24.1"
+  dependencies:
+    "@remix-run/router": 1.17.1
+    react-router: 6.24.1
+  peerDependencies:
+    react: ">=16.8"
+    react-dom: ">=16.8"
+  checksum: 95d9183524075aeec222b8e3181c47a6f58118a82d8d83dd85bf9f94a6cd69856c71f8f5d9788e50f442b9ea694209db7a96727a394de08c828bbc212328dc95
+  languageName: node
+  linkType: hard
+
+"react-router@npm:6.24.1":
+  version: 6.24.1
+  resolution: "react-router@npm:6.24.1"
+  dependencies:
+    "@remix-run/router": 1.17.1
+  peerDependencies:
+    react: ">=16.8"
+  checksum: 18acd84a4fc19ef63316a0ed73a549d1d83b48458ca4c90e14b9f59d259984062928f4427307b68f504452eb30dfd373edda826dd21b7f75a4bc2801b7336489
+  languageName: node
+  linkType: hard
+
 "react-side-effect@npm:^2.1.0":
   version: 2.1.2
   resolution: "react-side-effect@npm:2.1.2"
@@ -20494,6 +20543,15 @@ __metadata:
     react: ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
     react-dom: ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
   checksum: e8830f32e3ad4bf91af9cdc5cead84148c7694ce6abd9fdb447fb609da6cd4bbd0bbc75ff985f78828f4bbbd3ba4cbc98235cc9c056b5e5787578518f7fafbb9
+  languageName: node
+  linkType: hard
+
+"react@npm:^16.13.1 || ^17.0.0 || ^18.0.0":
+  version: 18.3.1
+  resolution: "react@npm:18.3.1"
+  dependencies:
+    loose-envify: ^1.1.0
+  checksum: a27bcfa8ff7c15a1e50244ad0d0c1cb2ad4375eeffefd266a64889beea6f6b64c4966c9b37d14ee32d6c9fcd5aa6ba183b6988167ab4d127d13e7cb5b386a376
   languageName: node
   linkType: hard
 
@@ -21297,6 +21355,15 @@ __metadata:
   dependencies:
     xmlchars: ^2.2.0
   checksum: d3fa3e2aaf6c65ed52ee993aff1891fc47d5e47d515164b5449cbf5da2cbdc396137e55590472e64c5c436c14ae64a8a03c29b9e7389fc6f14035cf4e982ef3b
+  languageName: node
+  linkType: hard
+
+"scheduler@npm:^0.23.2":
+  version: 0.23.2
+  resolution: "scheduler@npm:0.23.2"
+  dependencies:
+    loose-envify: ^1.1.0
+  checksum: 3e82d1f419e240ef6219d794ff29c7ee415fbdc19e038f680a10c067108e06284f1847450a210b29bbaf97b9d8a97ced5f624c31c681248ac84c80d56ad5a2c4
   languageName: node
   linkType: hard
 
