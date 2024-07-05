@@ -136,7 +136,8 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       
       - name: Create tag
-        run: node ../../scripts/ci/create-tag.js
+        working-directory: ${{ github.workspace }}/scripts/ci
+        run: node create-tag.js
         env:
           WORKSPACE_NAME: ${{ inputs.workspace }}
           GITHUB_TOKEN: ${{ secrets.GH_SERVICE_ACCOUNT_TOKEN }}
