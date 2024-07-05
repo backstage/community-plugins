@@ -166,27 +166,6 @@ describe('LinguistTagsProcessor', () => {
     expect(entity.metadata.tags).toStrictEqual(undefined);
   });
 
-  test('Can process Resource entities by overriding shouldProcessEntity', async () => {
-    const processor = buildProcessor({
-      shouldProcessEntity: (entity: Entity) => {
-        return entity.kind === 'Resource';
-      },
-    });
-
-    mockFetchImplementation();
-    const entity = baseEntity();
-    entity.kind = 'Resource';
-
-    await processor.preProcessEntity(entity, null, null, null, cache);
-    expect(mockedFetch).toHaveBeenCalledTimes(1);
-    expect(entity.metadata.tags).toStrictEqual([
-      'c++',
-      'asp-dot-net',
-      'java',
-      'common-lisp',
-    ]);
-  });
-
   test('Can omit languages using languageMap', async () => {
     const processor = buildProcessor({
       languageMap: {
@@ -365,6 +344,5 @@ function buildProcessor(options: Partial<LinguistTagsProcessorOptions>) {
     logger: getVoidLogger(),
     discovery,
     auth,
-    shouldProcessEntity: options.shouldProcessEntity,
   });
 }

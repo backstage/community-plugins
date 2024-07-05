@@ -27,49 +27,6 @@ Then in your `/packages/backend/src/index.ts` file you simply add the following 
    backend.start();
 ```
 
-### Legacy Setup
-
-To setup the Linguist Tags Processor when using the legacy backend you'll first need to run this command to add the package:
-
-```sh
-# From your Backstage root directory
-yarn --cwd packages/backend add @backstage-community/plugin-catalog-backend-module-linguist-tags-processor
-```
-
-Then you will need to make the following changes in your `/packages/backend/src/plugins/catalog.ts` file:
-
-```ts
-import { LinguistTagsProcessor } from '@backstage-community/plugin-linguist-backend';
-// ...
-export default async function createPlugin(
-  // ...
-  builder.addProcessor(
-    LinguistTagsProcessor.fromConfig(env.config, {
-      logger: env.logger,
-      discovery: env.discovery,
-    })
-  );
-```
-
-```diff
-  import { CatalogBuilder } from '@backstage/plugin-catalog-backend';
-  import { ScaffolderEntitiesProcessor } from '@backstage/plugin-catalog-backend-module-scaffolder-entity-model';
-  import { Router } from 'express';
-  import { PluginEnvironment } from '../types';
-+ import { LinguistTagsProcessor } from '@backstage-community/plugin-catalog-backend-module-linguist-tags-processor';
-
-  export default async function createPlugin(
-    env: PluginEnvironment,
-  ): Promise<Router> {
-    const builder = await CatalogBuilder.create(env);
-    builder.addProcessor(new ScaffolderEntitiesProcessor());
-+   builder.addProcessor(LinguistTagsProcessor.fromConfig(env.config, { logger: env.logger, discovery: env.discovery });
-    const { processingEngine, router } = await builder.build();
-    await processingEngine.start();
-    return router;
-  }
-```
-
 ### Processor Options
 
 The processor can be configured in `app-config.yaml`, here is an example Linguist Tag Processor configuration:
@@ -158,30 +115,4 @@ linguist:
     languageTypes:
       - programming
       - data
-```
-
-#### `shouldProcessEntity`
-
-The `shouldProcessEntity` is a function you can pass into the processor which determines which entities should have language tags fetched from linguist and added to the entity. By default, this will only run on entities of `kind: Component`, however this function let's you fully customize which entities should be processed.
-
-> Note: this is not currently supported with the new backend system
-
-As an example, you may choose to extend this to support both `Component` and `Resource` kinds along with allowing an opt-in annotation on the entity which entity authors can use.
-
-As this option is a function, it cannot be configured in `app-config.yaml`. You must pass this as an option within typescript.
-
-```ts
-LinguistLanguageTagsProcessor.fromConfig(env.config, {
-  logger: env.logger,
-  discovery: env.discovery,
-  shouldProcessEntity: (entity: Entity) => {
-    if (
-      ['Component', 'Resource'].includes(entity.kind) &&
-      entity.metadata.annotations?.['some-custom-annotation']
-    ) {
-      return true;
-    }
-    return false;
-  },
-});
 ```

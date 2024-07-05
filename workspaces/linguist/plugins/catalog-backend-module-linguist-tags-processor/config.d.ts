@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-import { TaskScheduleDefinition } from '@backstage/backend-tasks';
+
 import { HumanDuration } from '@backstage/types';
-import { Options as LinguistJsOptions } from 'linguist-js/dist/types';
 
 export interface Config {
   /** Configuration options for the linguist plugin */
