@@ -1,5 +1,11 @@
 # @backstage-community/plugin-grafana
 
+## 0.1.1
+
+### Patch Changes
+
+- fa113b1: Backstage v1.28.4 version bump
+
 ## 0.1.0
 
 ### Minor Changes
