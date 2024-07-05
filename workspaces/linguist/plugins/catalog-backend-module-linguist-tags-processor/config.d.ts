@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import { HumanDuration } from '@backstage/types';
 
 export interface Config {
