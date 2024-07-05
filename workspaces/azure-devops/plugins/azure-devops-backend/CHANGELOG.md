@@ -1,5 +1,14 @@
 # @backstage-community/plugin-azure-devops-backend
 
+## 0.6.7
+
+### Patch Changes
+
+- 2deaaa0: Backstage v1.28.4 version bump
+- f31e04a: Added new dedicated module for the Azure DevOps Annotator Processor and deprecated the version in the Azure DevOps Backend
+- Updated dependencies [2deaaa0]
+  - @backstage-community/plugin-azure-devops-common@0.4.4
+
 ## 0.6.6
 
 ### Patch Changes
