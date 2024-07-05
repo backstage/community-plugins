@@ -1,5 +1,12 @@
 # app
 
+## 0.0.2
+
+### Patch Changes
+
+- Updated dependencies [fa1553e]
+  - @backstage-community/plugin-linguist@0.1.22
+
 ## 0.0.1
 
 ### Patch Changes
