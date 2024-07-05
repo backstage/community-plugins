@@ -2,7 +2,13 @@
   "name": "@backstage-community/plugin-linguist-backend",
   "version": "0.5.18",
   "backstage": {
-    "role": "backend-plugin"
+    "role": "backend-plugin",
+    "pluginId": "linguist",
+    "pluginPackages": [
+      "@backstage-community/plugin-linguist",
+      "@backstage-community/plugin-linguist-backend",
+      "@backstage-community/plugin-linguist-common"
+    ]
   },
   "publishConfig": {
     "access": "public",
