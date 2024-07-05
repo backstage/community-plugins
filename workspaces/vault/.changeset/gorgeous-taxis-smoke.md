@@ -4,4 +4,4 @@
 '@backstage-community/plugin-vault': patch
 ---
 
-Backstage v1.28.4 version bump
+Backstage v1.28.4 version bump. Also addressed some of the upstream deprecations
