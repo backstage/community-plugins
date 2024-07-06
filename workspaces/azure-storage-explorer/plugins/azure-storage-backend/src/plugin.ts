@@ -12,9 +12,9 @@ export const azureStoragePlugin = createBackendPlugin({
       deps: {
         config: coreServices.rootConfig,
         logger: coreServices.logger,
-        httpRouter: coreServices.httpRouter
+        httpRouter: coreServices.httpRouter,
       },
-      async init({ config, logger, httpRouter }) {        
+      async init({ config, logger, httpRouter }) {
         httpRouter.use(
           await createRouter({
             logger: loggerToWinstonLogger(logger),

@@ -12,10 +12,8 @@ describe('createRouter', () => {
     const router = await createRouter({
       logger: getVoidLogger(),
       config: new ConfigReader({
-        azureStorage: {
-          
-        }
-      })
+        azureStorage: {},
+      }),
     });
     app = express().use(router);
   });
