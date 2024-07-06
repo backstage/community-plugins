@@ -12,7 +12,17 @@ describe('createRouter', () => {
     const router = await createRouter({
       logger: getVoidLogger(),
       config: new ConfigReader({
-        azureStorage: {},
+        azureStorage: {
+          blobContainers: [
+            {
+              accountName: 'storageAccount',
+              authType: 'accessToken',
+              auth: {
+                accessToken: 'secret',
+              },
+            },
+          ],
+        },
       }),
     });
     app = express().use(router);
