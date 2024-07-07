@@ -6,10 +6,10 @@ export const mockGitReleaseManagerApi: GitReleaseApi = {
     Promise.resolve({
       user: { username: 'goodreleaser' },
     }),
-  getHost: function (): string {
+  getHost(): string {
     return 'github.com';
   },
-  getRepoPath: function (args: OwnerRepo): string {
+  getRepoPath(args: OwnerRepo): string {
     return `${args.owner}/${args.repo}`;
   },
   getOwners: () =>
@@ -72,7 +72,7 @@ export const mockGitReleaseManagerApi: GitReleaseApi = {
     return Promise.resolve({ recentCommits });
   },
 
-  getTag: function (args: { tagSha: string } & OwnerRepo): Promise<{
+  getTag(args: { tagSha: string } & OwnerRepo): Promise<{
     tag: {
       date: string;
       username: string;
@@ -86,7 +86,7 @@ export const mockGitReleaseManagerApi: GitReleaseApi = {
   },
   // WRITE
 
-  getCommit: function (_args: { ref: string } & OwnerRepo): Promise<{
+  getCommit(_args: { ref: string } & OwnerRepo): Promise<{
     commit: {
       sha: string;
       htmlUrl: string;
@@ -97,22 +97,20 @@ export const mockGitReleaseManagerApi: GitReleaseApi = {
     throw new Error('Function getCommit not implemented.');
   },
 
-  createRef: function (
+  createRef(
     _args: { ref: string; sha: string } & OwnerRepo,
   ): Promise<{ reference: { ref: string; objectSha: string } }> {
     throw new Error('Function createRef not implemented.');
   },
-  deleteRef: function (
-    _args: { ref: string } & OwnerRepo,
-  ): Promise<{ success: boolean }> {
+  deleteRef(_args: { ref: string } & OwnerRepo): Promise<{ success: boolean }> {
     throw new Error('Function deleteRef not implemented.');
   },
-  getComparison: function (
+  getComparison(
     _args: { base: string; head: string } & OwnerRepo,
   ): Promise<{ comparison: { htmlUrl: string; aheadBy: number } }> {
     throw new Error('Function getComparison not implemented.');
   },
-  createRelease: function (
+  createRelease(
     _args: {
       tagName: string;
       name: string;
@@ -124,7 +122,7 @@ export const mockGitReleaseManagerApi: GitReleaseApi = {
   }> {
     throw new Error('Function createRelease not implemented.');
   },
-  createTagObject: function (
+  createTagObject(
     _args: {
       tag: string;
       taggerEmail?: string | undefined;
@@ -135,17 +133,17 @@ export const mockGitReleaseManagerApi: GitReleaseApi = {
   ): Promise<{ tagObject: { tagName: string; tagSha: string } }> {
     throw new Error('Function createTagObject not implemented.');
   },
-  createCommit: function (
+  createCommit(
     _args: { message: string; tree: string; parents: string[] } & OwnerRepo,
   ): Promise<{ commit: { message: string; sha: string } }> {
     throw new Error('Function createCommit not implemented.');
   },
-  updateRef: function (
+  updateRef(
     _args: { sha: string; ref: string; force: boolean } & OwnerRepo,
   ): Promise<{ reference: { ref: string; object: { sha: string } } }> {
     throw new Error('Function updateRef not implemented.');
   },
-  merge: function (_args: { base: string; head: string } & OwnerRepo): Promise<{
+  merge(_args: { base: string; head: string } & OwnerRepo): Promise<{
     merge: {
       htmlUrl: string;
       commit: { message: string; tree: { sha: string } };
@@ -153,7 +151,7 @@ export const mockGitReleaseManagerApi: GitReleaseApi = {
   }> {
     throw new Error('Function merge not implemented.');
   },
-  updateRelease: function (
+  updateRelease(
     _args: {
       releaseId: number;
       tagName: string;
