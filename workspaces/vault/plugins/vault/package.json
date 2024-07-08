@@ -3,7 +3,13 @@
   "version": "0.1.31",
   "description": "A Backstage plugin that integrates towards Vault",
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "vault",
+    "pluginPackages": [
+      "@backstage-community/plugin-vault",
+      "@backstage-community/plugin-vault-backend",
+      "@backstage-community/plugin-vault-node"
+    ]
   },
   "publishConfig": {
     "access": "public",
