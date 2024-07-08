@@ -3,7 +3,13 @@
   "version": "0.1.12",
   "description": "Node.js library for the vault plugin",
   "backstage": {
-    "role": "node-library"
+    "role": "node-library",
+    "pluginId": "vault",
+    "pluginPackages": [
+      "@backstage-community/plugin-vault",
+      "@backstage-community/plugin-vault-backend",
+      "@backstage-community/plugin-vault-node"
+    ]
   },
   "publishConfig": {
     "access": "public",
