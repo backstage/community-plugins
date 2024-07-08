@@ -1,5 +1,11 @@
 # @backstage-community/plugin-vault-node
 
+## 0.1.13
+
+### Patch Changes
+
+- 6f59d18: Fix package metadata
+
 ## 0.1.12
 
 ### Patch Changes
