@@ -20,7 +20,11 @@
     "directory": "workspaces/grafana/plugins/grafana"
   },
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "grafana",
+    "pluginPackages": [
+      "@backstage-community/plugin-grafana"
+    ]
   },
   "sideEffects": false,
   "scripts": {
