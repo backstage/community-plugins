@@ -1,5 +1,11 @@
 # @backstage-community/plugin-grafana
 
+## 0.1.2
+
+### Patch Changes
+
+- 98a518a: Fix package metadata
+
 ## 0.1.1
 
 ### Patch Changes
