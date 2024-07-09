@@ -83,9 +83,8 @@
     "@redhat-developer/red-hat-developer-hub-theme": "0.0.54",
     "@storybook/preview-api": "7.6.19",
     "@storybook/react": "7.6.19",
-    "@testing-library/react": "14.2.1"
-  },
-  "peerDependencies": {
+    "@testing-library/react": "14.2.1",
+    "@types/uuid": "^10.0.0",
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-router-dom": "^6.0.0"
