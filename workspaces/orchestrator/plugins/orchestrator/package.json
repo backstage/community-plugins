@@ -16,7 +16,7 @@
   "homepage": "https://github.com/backstage/community-plugins/tree/main/workspaces/orchestrator",
   "repository": {
     "type": "git",
-    "url": "https://github.com/backstage/community-plugins", 
+    "url": "https://github.com/backstage/community-plugins",
     "directory": "workspaces/orchestrator"
   },
   "bugs": "https://github.com/backstage/community-plugins",
@@ -45,13 +45,13 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
+    "@backstage-community/plugin-orchestrator-common": "1.10.0",
     "@backstage/core-components": "^0.14.7",
     "@backstage/core-plugin-api": "^1.9.2",
     "@backstage/errors": "^1.2.4",
     "@backstage/plugin-catalog": "^1.20.0",
     "@backstage/plugin-permission-react": "^0.4.22",
     "@backstage/types": "^1.1.1",
-    "@backstage-community/plugin-orchestrator-common": "1.10.0",
     "@kie-tools-core/editor": "^0.32.0",
     "@kie-tools-core/notifications": "^0.32.0",
     "@kie-tools-core/react-hooks": "^0.32.0",

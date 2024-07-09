@@ -64,6 +64,7 @@
     "export-dynamic": "janus-cli package export-dynamic-plugin --no-embed-as-dependencies"
   },
   "dependencies": {
+    "@backstage-community/plugin-orchestrator-common": "1.10.0",
     "@backstage/backend-app-api": "^0.7.5",
     "@backstage/backend-common": "^0.22.0",
     "@backstage/backend-dynamic-feature-service": "^0.2.10",
@@ -84,7 +85,6 @@
     "@backstage/plugin-scaffolder-node": "^0.4.4",
     "@backstage/types": "^1.1.1",
     "@janus-idp/backstage-plugin-audit-log-node": "1.2.0",
-    "@backstage-community/plugin-orchestrator-common": "1.10.0",
     "@janus-idp/backstage-plugin-rbac-common": "1.6.1",
     "@urql/core": "^4.1.4",
     "ajv-formats": "^2.1.1",
