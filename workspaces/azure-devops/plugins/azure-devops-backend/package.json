@@ -10,7 +10,13 @@
     "types": "dist/index.d.ts"
   },
   "backstage": {
-    "role": "backend-plugin"
+    "role": "backend-plugin",
+    "pluginId": "azure-devops",
+    "pluginPackages": [
+      "@backstage-community/plugin-azure-devops",
+      "@backstage-community/plugin-azure-devops-backend",
+      "@backstage-community/plugin-azure-devops-common"
+    ]
   },
   "homepage": "https://backstage.io",
   "repository": {
