@@ -1,5 +1,11 @@
 # @backstage-community/plugin-explore
 
+## 0.5.1
+
+### Patch Changes
+
+- 14c4184: Fix filtering of GroupDiagram
+
 ## 0.5.0
 
 ### Minor Changes
