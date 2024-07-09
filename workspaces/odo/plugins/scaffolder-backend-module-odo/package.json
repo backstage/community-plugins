@@ -1,0 +1,64 @@
+{
+  "name": "@backstage-community/plugin-scaffolder-backend-module-odo",
+  "version": "0.21.0",
+  "description": "The odo module for @backstage/plugin-scaffolder-backend",
+  "author": "Red Hat",
+  "homepage": "https://odo.dev",
+  "backstage": {
+    "role": "backend-plugin-module",
+    "pluginId": "scaffolder",
+    "pluginPackage": "@backstage/plugin-scaffolder-backend"
+  },
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.cjs.js",
+    "types": "dist/index.d.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/odo/plugins/scaffolder-backend-module-odo"
+  },
+  "license": "Apache-2.0",
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "start": "backstage-cli package start",
+    "build": "backstage-cli package build",
+    "lint": "backstage-cli package lint",
+    "test": "backstage-cli package test",
+    "clean": "backstage-cli package clean",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack",
+    "postinstall": "node scripts/post-install.js"
+  },
+  "dependencies": {
+    "@backstage/backend-plugin-api": "^0.6.21",
+    "@backstage/plugin-scaffolder-node": "^0.4.7",
+    "cachedir": "^2.4.0",
+    "fs-extra": "^11.2.0",
+    "got": "^11.7.0",
+    "gunzip-maybe": "^1.4.2",
+    "hasha": "^5.2.2",
+    "pkg-conf": "^3.1.0",
+    "tar-fs": "^2.1.0",
+    "unzip-stream": "^0.3.1"
+  },
+  "devDependencies": {
+    "@backstage/cli": "^0.26.10",
+    "@backstage/config": "^1.2.0",
+    "@types/fs-extra": "^11.0.4"
+  },
+  "files": [
+    "scripts",
+    "dist",
+    "package.json",
+    "README.md",
+    "config.d.ts"
+  ],
+  "configSchema": "config.d.ts"
+}
