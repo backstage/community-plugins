@@ -1,0 +1,14 @@
+dynamicPlugins:
+  frontend:
+    janus-idp.backstage-plugin-orchestrator:
+      appIcons:
+        - name: orchestratorIcon
+          module: OrchestratorPlugin
+          importName: OrchestratorIcon
+      dynamicRoutes:
+        - path: /orchestrator
+          importName: OrchestratorPage
+          module: OrchestratorPlugin
+          menuItem:
+            icon: orchestratorIcon
+            text: Orchestrator

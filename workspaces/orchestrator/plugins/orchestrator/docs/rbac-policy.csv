@@ -1,0 +1,11 @@
+p, role:default/workflowViewer, orchestrator.workflowInstances.read, read, allow
+p, role:default/workflowViewer, orchestrator.workflowInstance.read, read, allow
+
+p, role:default/workflowAdmin, orchestrator.workflow.read, read, allow
+p, role:default/workflowAdmin, orchestrator.workflow.execute, use, allow
+p, role:default/workflowAdmin, orchestrator.workflowInstance.abort, use, allow
+p, role:default/workflowAdmin, orchestrator.workflowInstances.read, read, allow
+p, role:default/workflowAdmin, orchestrator.workflowInstance.read, read, allow
+
+g, user:default/guest, role:default/workflowViewer
+g, user:default/rgolangh, role:default/workflowAdmin
