@@ -193,7 +193,7 @@ export function GroupsDiagram(props: {
     if (props.namespace) {
       filter['metadata.namespace'] = props.namespace;
     }
-    return catalogApi.getEntities(filter);
+    return catalogApi.getEntities({ filter });
   }, [catalogApi, props.namespace]);
 
   if (loading) {
