@@ -1,5 +1,11 @@
 # @backstage-community/plugin-azure-devops-common
 
+## 0.4.5
+
+### Patch Changes
+
+- 31aba58: Added package metadata
+
 ## 0.4.4
 
 ### Patch Changes
