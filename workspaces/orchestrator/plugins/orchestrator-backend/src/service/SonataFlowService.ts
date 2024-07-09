@@ -52,8 +52,9 @@ export class SonataFlowService {
     definitionId: string,
   ): Promise<WorkflowDefinition | undefined> {
     try {
-      const source =
-        await this.dataIndexService.fetchWorkflowSource(definitionId);
+      const source = await this.dataIndexService.fetchWorkflowSource(
+        definitionId,
+      );
       if (source) {
         return fromWorkflowSource(source);
       }
@@ -119,8 +120,9 @@ export class SonataFlowService {
   public async fetchWorkflowOverview(
     definitionId: string,
   ): Promise<WorkflowOverview | undefined> {
-    const source =
-      await this.dataIndexService.fetchWorkflowSource(definitionId);
+    const source = await this.dataIndexService.fetchWorkflowSource(
+      definitionId,
+    );
     if (!source) {
       this.logger.debug(`Workflow source not found: ${definitionId}`);
       return undefined;

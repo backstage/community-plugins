@@ -219,8 +219,9 @@ describe('getWorkflowOverviewById', () => {
     ).mockResolvedValue(mockOverviewsV1);
 
     // Act
-    const result: WorkflowOverviewDTO =
-      await v2.getWorkflowOverviewById('test_workflowId');
+    const result: WorkflowOverviewDTO = await v2.getWorkflowOverviewById(
+      'test_workflowId',
+    );
 
     // Assert
     expect(result).toEqual(mapToWorkflowOverviewDTO(mockOverviewsV1));
@@ -440,8 +441,9 @@ describe('getWorkflowResults', () => {
     );
 
     // Act
-    const actualResultV2: WorkflowDataDTO =
-      await v2.getWorkflowResults('testInstanceId');
+    const actualResultV2: WorkflowDataDTO = await v2.getWorkflowResults(
+      'testInstanceId',
+    );
 
     // Assert
     expect(actualResultV2).toBeDefined();

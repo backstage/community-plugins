@@ -3,3 +3,8 @@ dist-types
 coverage
 .vscode
 .eslintrc.js
+CHANGELOG.md
+generated
+templates
+*.hbs
+renovate.json
