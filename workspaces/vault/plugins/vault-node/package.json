@@ -1,9 +1,15 @@
 {
   "name": "@backstage-community/plugin-vault-node",
-  "version": "0.1.11",
+  "version": "0.1.12",
   "description": "Node.js library for the vault plugin",
   "backstage": {
-    "role": "node-library"
+    "role": "node-library",
+    "pluginId": "vault",
+    "pluginPackages": [
+      "@backstage-community/plugin-vault",
+      "@backstage-community/plugin-vault-backend",
+      "@backstage-community/plugin-vault-node"
+    ]
   },
   "publishConfig": {
     "access": "public",
@@ -30,9 +36,9 @@
     "test": "backstage-cli package test"
   },
   "dependencies": {
-    "@backstage/backend-plugin-api": "^0.6.17"
+    "@backstage/backend-plugin-api": "^0.6.21"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.26.3"
+    "@backstage/cli": "^0.26.10"
   }
 }

@@ -88,7 +88,10 @@ export interface LinguistTagsProcessorOptions {
  * add the languages to the entity as searchable tags.
  *
  * @public
- * */
+ *
+ * @deprecated Use `@backstage-community/plugin-catalog-backend-module-linguist-tags-processor` instead,
+ * see {@link https://github.com/backstage/community-plugins/tree/main/workspaces/linguist/plugins/catalog-backend-module-linguist-tags-processor}
+ */
 export class LinguistTagsProcessor implements CatalogProcessor {
   private logger: LoggerService;
   private discovery: DiscoveryService;

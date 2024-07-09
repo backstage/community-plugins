@@ -1,5 +1,19 @@
 # @backstage-community/plugin-jenkins
 
+## 0.10.1
+
+### Patch Changes
+
+- 7d67a9b: Update to backstage version 1.28.3
+- Updated dependencies [7d67a9b]
+  - @backstage-community/plugin-jenkins-common@0.1.27
+
+## 0.10.0
+
+### Minor Changes
+
+- 0129544: Migrate from identityApi to fetchApi in frontend plugin jenkins
+
 ## 0.9.10
 
 ### Patch Changes

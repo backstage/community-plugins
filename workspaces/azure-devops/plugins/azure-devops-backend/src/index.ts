@@ -23,4 +23,8 @@
 export { AzureDevOpsApi } from './api';
 export * from './service/router';
 export { azureDevOpsPlugin as default } from './plugin';
+/**
+ * @deprecated Use `@backstage-community/plugin-catalog-backend-module-azure-devops-annotator-processor` instead,
+ * see {@link https://github.com/awanlin/community-plugins/tree/main/workspaces/azure-devops/plugins/catalog-backend-module-azure-devops-annotator-processor}
+ */
 export { AzureDevOpsAnnotatorProcessor } from './processor';

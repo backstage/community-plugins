@@ -17,13 +17,13 @@
 import {
   coreServices,
   createBackendPlugin,
+  SchedulerServiceTaskScheduleDefinitionConfig,
 } from '@backstage/backend-plugin-api';
 import {
   VaultApi,
   vaultExtensionPoint,
 } from '@backstage-community/plugin-vault-node';
 import { VaultBuilder } from './VaultBuilder';
-import { TaskScheduleDefinitionConfig } from '@backstage/backend-tasks';
 
 /**
  * Vault backend plugin
@@ -63,7 +63,7 @@ export const vaultPlugin = createBackendPlugin({
         }
 
         const scheduleCfg = config.getOptional<
-          boolean | TaskScheduleDefinitionConfig
+          boolean | SchedulerServiceTaskScheduleDefinitionConfig
         >('vault.schedule');
         if (scheduleCfg !== undefined && scheduleCfg !== false) {
           builder = await builder.enableTokenRenew();

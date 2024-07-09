@@ -112,11 +112,7 @@ export class CloudbuildClient implements CloudbuildApi {
     const requestHeaders = {
       Accept: '*/*',
       Authorization: `Bearer ${await this.getToken()}`,
-      ...(process.env.NODE_ENV === 'production'
-        ? {
-            'X-Goog-Api-Client': `backstage/cloudbuild/${packageinfo.version}`,
-          }
-        : {}),
+      'X-Goog-Api-Client': `backstage/cloudbuild/${packageinfo.version}`,
     };
     return fetch(url, {
       method,
