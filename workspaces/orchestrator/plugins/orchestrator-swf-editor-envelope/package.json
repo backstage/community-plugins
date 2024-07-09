@@ -16,6 +16,7 @@
     "role": "web-library",
     "supported-versions": "1.26.5"
   },
+  "sideEffects": false,
   "scripts": {
     "build": "scripts/build",
     "postbuild": "scripts/postbuild copy",

@@ -34,6 +34,7 @@
     "dist"
   ],
   "configSchema": "config.d.ts",
+  "sideEffects": false,
   "scripts": {
     "build": "yarn openapi:check && backstage-cli package build",
     "tsc": "tsc",
