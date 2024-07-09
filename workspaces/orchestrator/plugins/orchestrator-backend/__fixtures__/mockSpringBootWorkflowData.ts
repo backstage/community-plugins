@@ -1,6 +1,6 @@
 import { JSONSchema7 } from 'json-schema';
 
-import { WorkflowDefinition } from '@janus-idp/backstage-plugin-orchestrator-common';
+import { WorkflowDefinition } from '@backstage-community/plugin-orchestrator-common';
 
 const schema = {
   $id: 'classpath:/schemas/spring-boot-backend__main-schema.json',

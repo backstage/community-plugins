@@ -5,7 +5,7 @@ import {
   WorkflowExecutionResponse,
   WorkflowInfo,
   WorkflowOverview,
-} from '@janus-idp/backstage-plugin-orchestrator-common';
+} from '@backstage-community/plugin-orchestrator-common';
 
 import { DataIndexService } from './DataIndexService';
 import { OrchestratorService } from './OrchestratorService';

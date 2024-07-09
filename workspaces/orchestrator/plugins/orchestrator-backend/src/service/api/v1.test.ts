@@ -1,4 +1,4 @@
-import { ProcessInstance } from '@janus-idp/backstage-plugin-orchestrator-common';
+import { ProcessInstance } from '@backstage-community/plugin-orchestrator-common';
 
 import { OrchestratorService } from '../OrchestratorService';
 import { V1 } from './v1';

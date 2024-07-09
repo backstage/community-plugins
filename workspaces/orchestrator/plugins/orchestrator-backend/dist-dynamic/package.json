@@ -1,5 +1,5 @@
 {
-  "name": "@janus-idp/backstage-plugin-orchestrator-backend-dynamic",
+  "name": "@backstage-community/plugin-orchestrator-backend-dynamic",
   "version": "1.13.1",
   "license": "Apache-2.0",
   "main": "dist/index.cjs.js",
@@ -27,10 +27,10 @@
   "homepage": "https://red.ht/rhdh",
   "repository": {
     "type": "git",
-    "url": "https://github.com/janus-idp/backstage-plugins",
+    "url": "https://github.com/backstage/community-plugins",
     "directory": "plugins/orchestrator-backend"
   },
-  "bugs": "https://github.com/janus-idp/backstage-plugins/issues",
+  "bugs": "https://github.com/backstage/community-plugins/issues",
   "keywords": [
     "support:tech-preview",
     "lifecycle:active",
@@ -40,7 +40,7 @@
     "workflows"
   ],
   "files": [
-    "app-config.janus-idp.yaml",
+    "app-config.orchestrator.yaml",
     "dist",
     "static",
     "alpha"
@@ -64,8 +64,7 @@
   },
   "devDependencies": {},
   "maintainers": [
-    "@janus-idp/maintainers-plugins",
-    "@janus-idp/orchestrator-codeowners"
+    "mareklibra"
   ],
   "author": "The Backstage Community",
   "bundleDependencies": true,

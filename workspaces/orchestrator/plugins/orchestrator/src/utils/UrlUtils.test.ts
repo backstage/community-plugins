@@ -1,4 +1,4 @@
-import { QUERY_PARAM_BUSINESS_KEY } from '@janus-idp/backstage-plugin-orchestrator-common';
+import { QUERY_PARAM_BUSINESS_KEY } from '@backstage-community/plugin-orchestrator-common';
 
 import { buildUrl } from './UrlUtils';
 

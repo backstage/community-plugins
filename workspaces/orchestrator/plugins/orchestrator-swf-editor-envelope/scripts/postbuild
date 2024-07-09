@@ -40,7 +40,7 @@ async function validateSourceAndDestination(source, destination) {
 async function main([op]) {
   const source = `${dirname(__dirname)}/dist`;
   const destination = `${locatePkg(
-    '@janus-idp/backstage-plugin-orchestrator-backend',
+    '@backstage-community/plugin-orchestrator-backend',
   )}/static/generated`;
   await validateSourceAndDestination(source, destination);
 

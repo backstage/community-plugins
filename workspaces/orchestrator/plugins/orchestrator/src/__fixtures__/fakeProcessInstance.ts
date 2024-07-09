@@ -4,7 +4,7 @@ import {
   ProcessInstance,
   ProcessInstanceState,
   WorkflowCategory,
-} from '@janus-idp/backstage-plugin-orchestrator-common';
+} from '@backstage-community/plugin-orchestrator-common';
 
 import { fakeWorkflowOverviewList } from './fakeWorkflowOverviewList';
 

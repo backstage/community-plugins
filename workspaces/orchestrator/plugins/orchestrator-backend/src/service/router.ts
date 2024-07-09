@@ -41,7 +41,7 @@ import {
   QUERY_PARAM_INCLUDE_ASSESSMENT,
   QUERY_PARAM_INSTANCE_ID,
   WorkflowInputSchemaResponse,
-} from '@janus-idp/backstage-plugin-orchestrator-common';
+} from '@backstage-community/plugin-orchestrator-common';
 import { UnauthorizedError } from '@janus-idp/backstage-plugin-rbac-common';
 
 import * as pkg from '../../package.json';

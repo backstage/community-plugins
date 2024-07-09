@@ -3,7 +3,7 @@ import moment from 'moment';
 import {
   WorkflowFormat,
   WorkflowOverview,
-} from '@janus-idp/backstage-plugin-orchestrator-common';
+} from '@backstage-community/plugin-orchestrator-common';
 
 import { VALUE_UNAVAILABLE } from '../constants';
 import DataFormatter from './DataFormatter';

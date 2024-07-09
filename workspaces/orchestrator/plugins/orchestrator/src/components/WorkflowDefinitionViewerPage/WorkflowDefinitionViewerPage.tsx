@@ -15,7 +15,7 @@ import Grid from '@mui/material/Grid';
 import Skeleton from '@mui/material/Skeleton';
 import Tooltip from '@mui/material/Tooltip';
 
-import { orchestratorWorkflowExecutePermission } from '@janus-idp/backstage-plugin-orchestrator-common';
+import { orchestratorWorkflowExecutePermission } from '@backstage-community/plugin-orchestrator-common';
 
 import { orchestratorApiRef } from '../../api';
 import {

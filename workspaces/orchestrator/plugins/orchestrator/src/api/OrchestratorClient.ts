@@ -14,7 +14,7 @@ import {
   WorkflowInputSchemaResponse,
   WorkflowOverview,
   WorkflowOverviewListResult,
-} from '@janus-idp/backstage-plugin-orchestrator-common';
+} from '@backstage-community/plugin-orchestrator-common';
 
 import { buildUrl } from '../utils/UrlUtils';
 import { OrchestratorApi } from './api';

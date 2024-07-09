@@ -8,7 +8,7 @@ import {
   DEFAULT_SONATAFLOW_CONTAINER_IMAGE,
   DEFAULT_SONATAFLOW_PERSISTENCE_PATH,
   DEFAULT_WORKFLOWS_PATH,
-} from '@janus-idp/backstage-plugin-orchestrator-common';
+} from '@backstage-community/plugin-orchestrator-common';
 
 import { spawn } from 'child_process';
 import { join, resolve } from 'path';

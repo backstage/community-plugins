@@ -1,6 +1,6 @@
 dynamicPlugins:
   frontend:
-    janus-idp.backstage-plugin-orchestrator:
+    backstage-community.plugin-orchestrator:
       appIcons:
         - name: orchestratorIcon
           module: OrchestratorPlugin

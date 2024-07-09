@@ -1,4 +1,4 @@
-# @janus-idp/backstage-plugin-orchestrator-swf-editor-envelope
+# @backstage-community/plugin-orchestrator-swf-editor-envelope
 
 ## Description
 
@@ -11,14 +11,14 @@ The Orchestrator plugin uses these assets when it renders the Serverless Workflo
 1. Build the project using `yarn build`. The `postbuild` script updates the `orchestrator-backend`'s static directory with your changes.
 1. Serve the files in the `dist` directroy
 
-- Either use `@janus-idp/backstage-plugin-orchestrator-backend` internal `static` directory (files under `plugins/orchestrator-backend/static/*` are served statically).
+- Either use `@backstage-community/plugin-orchestrator-backend` internal `static` directory (files under `plugins/orchestrator-backend/static/*` are served statically).
 - Or, serve the files directly with:
   ```sh
   yarn dlx serve \
       --port 8080 \
       --cors \
       --debug \
-      node_modules/@janus-idp/backstage-plugin-orchestrator-swf-editor-envelope/dist
+      node_modules/@backstage-community/plugin-orchestrator-swf-editor-envelope/dist
   ```
 
 3. Add this configuration to the `app-config.yaml`:

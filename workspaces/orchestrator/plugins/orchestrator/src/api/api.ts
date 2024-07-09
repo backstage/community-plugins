@@ -9,7 +9,7 @@ import {
   WorkflowInputSchemaResponse,
   WorkflowOverview,
   WorkflowOverviewListResult,
-} from '@janus-idp/backstage-plugin-orchestrator-common';
+} from '@backstage-community/plugin-orchestrator-common';
 
 export interface OrchestratorApi {
   abortWorkflowInstance(instanceId: string): Promise<void>;

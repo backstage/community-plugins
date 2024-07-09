@@ -24,7 +24,7 @@ import {
   QUERY_PARAM_ASSESSMENT_INSTANCE_ID,
   QUERY_PARAM_INSTANCE_ID,
   QUERY_PARAM_INSTANCE_STATE,
-} from '@janus-idp/backstage-plugin-orchestrator-common';
+} from '@backstage-community/plugin-orchestrator-common';
 
 import { orchestratorApiRef } from '../api';
 import { SHORT_REFRESH_INTERVAL } from '../constants';

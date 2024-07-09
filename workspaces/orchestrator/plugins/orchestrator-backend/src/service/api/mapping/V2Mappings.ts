@@ -20,7 +20,7 @@ import {
   WorkflowOverview,
   WorkflowOverviewDTO,
   WorkflowRunStatusDTO,
-} from '@janus-idp/backstage-plugin-orchestrator-common';
+} from '@backstage-community/plugin-orchestrator-common';
 
 // Mapping functions
 export function mapToWorkflowOverviewDTO(

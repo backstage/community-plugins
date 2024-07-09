@@ -47,9 +47,9 @@ The orchestrator controls the flow orchestrating operations/tasks that may be ex
 
 The Orchestrator plugin is composed of the following packages:
 
-- `@janus-idp/backstage-plugin-orchestrator-backend` package connects the Backstage server to the Orchestrator. For setup process, see [Backend Setup](#setting-up-the-orchestrator-backend-package)
-- `@janus-idp/backstage-plugin-orchestrator` package contains frontend components for the Orchestrator plugin. For setup process, see [Frontend Setup](#setting-up-the-orchestrator-frontend-package)
-- `@janus-idp/backstage-plugin-orchestrator-common` package contains shared code between the Orchestrator plugin packages.
+- `@backstage-community/plugin-orchestrator-backend` package connects the Backstage server to the Orchestrator. For setup process, see [Backend Setup](#setting-up-the-orchestrator-backend-package)
+- `@backstage-community/plugin-orchestrator` package contains frontend components for the Orchestrator plugin. For setup process, see [Frontend Setup](#setting-up-the-orchestrator-frontend-package)
+- `@backstage-community/plugin-orchestrator-common` package contains shared code between the Orchestrator plugin packages.
 
 #### Prerequisites for running the plugins locally in development mode
 
@@ -91,7 +91,7 @@ For more information about the configuration options, including other optional p
 1. Install the Orchestrator backend plugin using the following command:
 
    ```console
-   yarn workspace backend add @janus-idp/backstage-plugin-orchestrator-backend
+   yarn workspace backend add @backstage-community/plugin-orchestrator-backend
    ```
 
 1. Create a new plugin instance in `packages/backend/src/plugins/orchestrator.ts` file:
@@ -99,7 +99,7 @@ For more information about the configuration options, including other optional p
    ```ts title="packages/backend/src/plugins/orchestrator.ts"
    import { Router } from 'express';
 
-   import { createRouter } from '@janus-idp/backstage-plugin-orchestrator-backend';
+   import { createRouter } from '@backstage-community/plugin-orchestrator-backend';
 
    import { PluginEnvironment } from '../types';
 
@@ -145,7 +145,7 @@ For more information about the configuration options, including other optional p
 1. Install the Orchestrator backend plugin using the following command:
 
    ```console
-   yarn workspace backend add @janus-idp/backstage-plugin-orchestrator-backend
+   yarn workspace backend add @backstage-community/plugin-orchestrator-backend
    ```
 
 1. Add the following code to the `packages/backend/src/index.ts` file:
@@ -155,7 +155,7 @@ For more information about the configuration options, including other optional p
 
    /* highlight-add-next-line */
    backend.add(
-     import('@janus-idp/backstage-plugin-orchestrator-backend/alpha'),
+     import('@backstage-community/plugin-orchestrator-backend/alpha'),
    );
 
    backend.start();
@@ -166,14 +166,14 @@ For more information about the configuration options, including other optional p
 1. Install the Orchestrator frontend plugin using the following command:
 
    ```console
-   yarn workspace app add @janus-idp/backstage-plugin-orchestrator
+   yarn workspace app add @backstage-community/plugin-orchestrator
    ```
 
 1. Add a route to the `OrchestratorPage` and the customized template card component to Backstage App (`packages/app/src/App.tsx`):
 
    ```tsx title="packages/app/src/App.tsx"
    /* highlight-add-next-line */
-   import { OrchestratorPage } from '@janus-idp/backstage-plugin-orchestrator';
+   import { OrchestratorPage } from '@backstage-community/plugin-orchestrator';
 
    const routes = (
      <FlatRoutes>
@@ -188,7 +188,7 @@ For more information about the configuration options, including other optional p
 
    ```tsx title="packages/app/src/components/Root/Root.tsx"
    /* highlight-add-next-line */
-   import { OrchestratorIcon } from '@janus-idp/backstage-plugin-orchestrator';
+   import { OrchestratorIcon } from '@backstage-community/plugin-orchestrator';
 
    export const Root = ({ children }: PropsWithChildren<{}>) => (
      <SidebarPage>
@@ -216,7 +216,7 @@ For more information about the configuration options, including other optional p
 
 The Orchestrator plugin enhances the Backstage with the execution of developer self-service flows. It provides a graphical editor to visualize workflow definitions, and a dashboard to monitor the execution of the workflows.
 
-Refer to the [Quick start](https://github.com/janus-idp/backstage-plugins/blob/main/plugins/orchestrator/docs/quickstart.md) to install the Orchestrator using the helm chart and execute a sample workflow through the Red Hat Developer Hub orchestrator plugin UI.
+Refer to the [Quick start](https://github.com/backstage/backstage-community/blob/main/workspaces/orchestrator/plugins/orchestrator/docs/quickstart.md) to install the Orchestrator using the helm chart and execute a sample workflow through the Red Hat Developer Hub orchestrator plugin UI.
 
 ## OpenAPI
 
@@ -224,7 +224,7 @@ The plugin provides OpenAPI `v2` endpoints definition to facilitate communicatio
 
 In addition, by leveraging on OpenAPI spec, it is possible to generate clients and create CI steps.
 
-OpenAPI specification [file](https://github.com/janus-idp/backstage-plugins/blob/main/plugins/orchestrator-common/src/openapi/openapi.yaml) is available in [orchestrator-common](https://github.com/janus-idp/backstage-plugins/blob/main/plugins/orchestrator-common).
+OpenAPI specification [file](https://github.com/backstage/backstage-community/blob/main/workspaces/orchestrator/plugins/orchestrator-common/src/openapi/openapi.yaml) is available in [orchestrator-common](https://github.com/backstage/backstage-community/blob/main/workspaces/orchestrator/plugins/orchestrator-common).
 
 > **NOTE:**\
 > While the OpenAPI specification is available in the Orchestrator plugin, the UI currently does not rely on this spec. \
@@ -232,7 +232,7 @@ OpenAPI specification [file](https://github.com/janus-idp/backstage-plugins/blob
 
 ### orchestrator-common
 
-The typescript schema is generated in [auto-generated](https://github.com/janus-idp/backstage-plugins/blob/main/plugins/orchestrator-common/src/auto-generated/api/models/schema.ts) folder from openapi.yaml specification file.
+The typescript schema is generated in [auto-generated](https://github.com/backstage/backstage-community/blob/main/workspaces/orchestrator/plugins/orchestrator-common/src/auto-generated/api/models/schema.ts) folder from openapi.yaml specification file.
 
 ### orchestrator-backend
 
@@ -242,19 +242,21 @@ The orchestrator backend can use the generated schema to validate the HTTP reque
 
 #### Development instruction
 
+TODO: following instructions are outdated, we need to update them for the new backstage-community home.
+
 Checkout the backstage-plugin
 
 `git clone git@github.com:janus-idp/backstage-plugins.git`
 
-If you need to change the OpenAPI spec, edit the [openapi.yaml](https://github.com/janus-idp/backstage-plugins/blob/main/plugins/orchestrator-common/src/openapi/openapi.yaml) according to your needs and then execute from the project root folder:
+If you need to change the OpenAPI spec, edit the [openapi.yaml](https://github.com/backstage/community-plugins/blob/main/plugins/orchestrator-common/src/openapi/openapi.yaml) according to your needs and then execute from the project root folder:
 
 `yarn --cwd plugins/orchestrator-common openapi`
 
-This command updates the [auto-generated files](https://github.com/janus-idp/backstage-plugins/blob/main/plugins/orchestrator-common/src/auto-generated/api/) and the [auto-generated docs](https://github.com/janus-idp/backstage-plugins/tree/main/plugins/orchestrator-common/src/auto-generated/docs).
+This command updates the [auto-generated files](https://github.com/backstage/community-plugins/blob/main/plugins/orchestrator-common/src/auto-generated/api/) and the [auto-generated docs](https://github.com/backstage/community-plugins/tree/main/plugins/orchestrator-common/src/auto-generated/docs).
 
 > NOTE: Do not manually edit auto-generated files
 
-If you add a new component in the spec, then you need to export the generated typescript object [here](https://github.com/janus-idp/backstage-plugins/blob/main/plugins/orchestrator-common/src/openapi/types.ts). For example, if you define
+If you add a new component in the spec, then you need to export the generated typescript object [here](https://github.com/backstage/community-plugins/blob/main/plugins/orchestrator-common/src/openapi/types.ts). For example, if you define
 
 ```yaml
 components:
@@ -296,7 +298,7 @@ paths:
                   $ref: '#/components/schemas/Person'
 ```
 
-Then you can implement the endpoint in [router.ts](https://github.com/janus-idp/backstage-plugins/blob/main/plugins/orchestrator-backend/src/service/router.ts) referring the operationId `getNames`:
+Then you can implement the endpoint in [router.ts](https://github.com/backstage/community-plugins/blob/main/plugins/orchestrator-backend/src/service/router.ts) referring the operationId `getNames`:
 
 ```typescript
 api.register('getNames', async (_c, _req, res: express.Response, next) => {

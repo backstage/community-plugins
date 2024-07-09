@@ -20,7 +20,7 @@ import {
   ProcessInstance,
   QUERY_PARAM_ASSESSMENT_INSTANCE_ID,
   WorkflowOverview,
-} from '@janus-idp/backstage-plugin-orchestrator-common';
+} from '@backstage-community/plugin-orchestrator-common';
 
 import { orchestratorApiRef } from '../api';
 import { VALUE_UNAVAILABLE } from '../constants';

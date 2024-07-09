@@ -1,5 +1,5 @@
 {
-  "name": "@janus-idp/backstage-plugin-orchestrator-backend",
+  "name": "@backstage-community/plugin-orchestrator-backend",
   "version": "1.13.1",
   "license": "Apache-2.0",
   "main": "src/index.ts",
@@ -31,10 +31,10 @@
   "homepage": "https://red.ht/rhdh",
   "repository": {
     "type": "git",
-    "url": "https://github.com/janus-idp/backstage-plugins",
+    "url": "https://github.com/backstage/community-plugins",
     "directory": "plugins/orchestrator-backend"
   },
-  "bugs": "https://github.com/janus-idp/backstage-plugins/issues",
+  "bugs": "https://github.com/backstage/community-plugins/issues",
   "keywords": [
     "support:tech-preview",
     "lifecycle:active",
@@ -44,7 +44,7 @@
     "workflows"
   ],
   "files": [
-    "app-config.janus-idp.yaml",
+    "app-config.orchestrator.yaml",
     "dist",
     "dist-dynamic/*.*",
     "dist-dynamic/dist/**",
@@ -84,7 +84,7 @@
     "@backstage/plugin-scaffolder-node": "^0.4.4",
     "@backstage/types": "^1.1.1",
     "@janus-idp/backstage-plugin-audit-log-node": "1.2.0",
-    "@janus-idp/backstage-plugin-orchestrator-common": "1.10.0",
+    "@backstage-community/plugin-orchestrator-common": "1.10.0",
     "@janus-idp/backstage-plugin-rbac-common": "1.6.1",
     "@urql/core": "^4.1.4",
     "ajv-formats": "^2.1.1",
@@ -106,8 +106,7 @@
     "@types/json-schema": "7.0.15"
   },
   "maintainers": [
-    "@janus-idp/maintainers-plugins",
-    "@janus-idp/orchestrator-codeowners"
+    "mareklibra"
   ],
   "author": "The Backstage Community"
 }

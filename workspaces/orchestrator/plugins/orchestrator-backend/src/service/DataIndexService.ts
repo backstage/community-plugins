@@ -10,7 +10,7 @@ import {
   ProcessInstanceVariables,
   WorkflowDefinition,
   WorkflowInfo,
-} from '@janus-idp/backstage-plugin-orchestrator-common';
+} from '@backstage-community/plugin-orchestrator-common';
 
 import { ErrorBuilder } from '../helpers/errorBuilder';
 import { buildGraphQlQuery } from '../helpers/queryBuilder';

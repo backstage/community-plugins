@@ -8,7 +8,7 @@ import DotIcon from '@mui/icons-material/FiberManualRecord';
 import {
   capitalize,
   ProcessInstanceStateValues,
-} from '@janus-idp/backstage-plugin-orchestrator-common';
+} from '@backstage-community/plugin-orchestrator-common';
 
 import { VALUE_UNAVAILABLE } from '../constants';
 import { useWorkflowInstanceStateColors } from '../hooks/useWorkflowInstanceStatusColors';

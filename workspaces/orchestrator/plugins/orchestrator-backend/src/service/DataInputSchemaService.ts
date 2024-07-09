@@ -11,7 +11,7 @@ import {
   WorkflowDefinition,
   WorkflowInputSchemaResponse,
   WorkflowInputSchemaStep,
-} from '@janus-idp/backstage-plugin-orchestrator-common';
+} from '@backstage-community/plugin-orchestrator-common';
 
 import { WORKFLOW_DATA_KEY } from './constants';
 

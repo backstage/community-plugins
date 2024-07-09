@@ -1,5 +1,5 @@
 {
-  "name": "@janus-idp/backstage-plugin-orchestrator",
+  "name": "@backstage-community/plugin-orchestrator",
   "version": "1.16.0",
   "license": "Apache-2.0",
   "main": "src/index.ts",
@@ -13,13 +13,13 @@
     "role": "frontend-plugin",
     "supported-versions": "1.26.5"
   },
-  "homepage": "https://red.ht/rhdh",
+  "homepage": "https://github.com/backstage/community-plugins/tree/main/workspaces/orchestrator",
   "repository": {
     "type": "git",
-    "url": "https://github.com/janus-idp/backstage-plugins",
-    "directory": "plugins/orchestrator"
+    "url": "https://github.com/backstage/community-plugins", 
+    "directory": "workspaces/orchestrator"
   },
-  "bugs": "https://github.com/janus-idp/backstage-plugins/issues",
+  "bugs": "https://github.com/backstage/community-plugins",
   "keywords": [
     "support:tech-preview",
     "lifecycle:active",
@@ -29,7 +29,7 @@
     "workflows"
   ],
   "files": [
-    "app-config.janus-idp.yaml",
+    "app-config.orchestrator.yaml",
     "dist",
     "dist-scalprum"
   ],
@@ -51,7 +51,7 @@
     "@backstage/plugin-catalog": "^1.20.0",
     "@backstage/plugin-permission-react": "^0.4.22",
     "@backstage/types": "^1.1.1",
-    "@janus-idp/backstage-plugin-orchestrator-common": "1.10.0",
+    "@backstage-community/plugin-orchestrator-common": "1.10.0",
     "@kie-tools-core/editor": "^0.32.0",
     "@kie-tools-core/notifications": "^0.32.0",
     "@kie-tools-core/react-hooks": "^0.32.0",
@@ -90,14 +90,13 @@
     "react-router-dom": "^6.0.0"
   },
   "scalprum": {
-    "name": "janus-idp.backstage-plugin-orchestrator",
+    "name": "backstage-community.plugin-orchestrator",
     "exposedModules": {
       "OrchestratorPlugin": "./src/index.ts"
     }
   },
   "maintainers": [
-    "@janus-idp/maintainers-plugins",
-    "@janus-idp/orchestrator-codeowners"
+    "@mareklibra"
   ],
   "author": "The Backstage Community"
 }

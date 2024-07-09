@@ -9,7 +9,7 @@ import { useApi } from '@backstage/core-plugin-api';
 
 import Grid from '@mui/material/Grid';
 
-import { WorkflowOverview } from '@janus-idp/backstage-plugin-orchestrator-common';
+import { WorkflowOverview } from '@backstage-community/plugin-orchestrator-common';
 
 import { orchestratorApiRef } from '../api';
 import usePolling from '../hooks/usePolling';

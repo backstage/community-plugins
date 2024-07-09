@@ -1,4 +1,4 @@
-import { WorkflowDefinition } from '@janus-idp/backstage-plugin-orchestrator-common';
+import { WorkflowDefinition } from '@backstage-community/plugin-orchestrator-common';
 
 export const fakeWorkflowDefinition: WorkflowDefinition = {
   id: 'quarkus-backend-workflow-ci-switch',

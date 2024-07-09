@@ -1,7 +1,7 @@
 import { DiscoveryApi, IdentityApi } from '@backstage/core-plugin-api';
 import { JsonObject } from '@backstage/types';
 
-import { WorkflowExecutionResponse } from '@janus-idp/backstage-plugin-orchestrator-common';
+import { WorkflowExecutionResponse } from '@backstage-community/plugin-orchestrator-common';
 
 import {
   OrchestratorClient,

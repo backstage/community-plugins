@@ -1,4 +1,4 @@
-import { NodeInstance } from '@janus-idp/backstage-plugin-orchestrator-common';
+import { NodeInstance } from '@backstage-community/plugin-orchestrator-common';
 
 import { compareNodes } from './NodeInstanceUtils';
 

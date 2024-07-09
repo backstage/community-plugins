@@ -12,7 +12,7 @@ import {
   WorkflowOverviewDTO,
   WorkflowOverviewListResultDTO,
   WorkflowRunStatusDTO,
-} from '@janus-idp/backstage-plugin-orchestrator-common';
+} from '@backstage-community/plugin-orchestrator-common';
 
 import { Pagination } from '../../types/pagination';
 import { OrchestratorService } from '../OrchestratorService';

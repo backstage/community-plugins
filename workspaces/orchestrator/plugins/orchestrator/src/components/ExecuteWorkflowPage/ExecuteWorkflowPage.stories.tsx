@@ -4,7 +4,7 @@ import { TestApiProvider, wrapInTestApp } from '@backstage/test-utils';
 
 import { Meta, StoryObj } from '@storybook/react';
 
-import { WorkflowInputSchemaResponse } from '@janus-idp/backstage-plugin-orchestrator-common';
+import { WorkflowInputSchemaResponse } from '@backstage-community/plugin-orchestrator-common';
 
 import { fakeDataInputSchemaDifferentTypes } from '../../__fixtures__/fakeWorkflowDataInputSchemaDifferentTypes';
 import { fakeDataInputSchemaMultiStepResponse } from '../../__fixtures__/fakeWorkflowDataInputSchemaResponseMultiStep';

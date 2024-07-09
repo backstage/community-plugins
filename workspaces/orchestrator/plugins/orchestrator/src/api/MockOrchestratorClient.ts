@@ -8,7 +8,7 @@ import {
   WorkflowInputSchemaResponse,
   WorkflowOverview,
   WorkflowOverviewListResult,
-} from '@janus-idp/backstage-plugin-orchestrator-common';
+} from '@backstage-community/plugin-orchestrator-common';
 
 import { hasOwnProp, isNonNullable } from '../utils/TypeGuards';
 import { OrchestratorApi } from './api';

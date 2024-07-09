@@ -1,4 +1,4 @@
-import { WorkflowInputSchemaResponse } from '@janus-idp/backstage-plugin-orchestrator-common';
+import { WorkflowInputSchemaResponse } from '@backstage-community/plugin-orchestrator-common';
 
 export const fakeDataInputSchemaResponse: WorkflowInputSchemaResponse = {
   definition: {

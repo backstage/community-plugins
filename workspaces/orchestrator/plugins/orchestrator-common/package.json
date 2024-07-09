@@ -1,5 +1,5 @@
 {
-  "name": "@janus-idp/backstage-plugin-orchestrator-common",
+  "name": "@backstage-community/plugin-orchestrator-common",
   "version": "1.10.0",
   "license": "Apache-2.0",
   "main": "src/index.ts",
@@ -17,10 +17,10 @@
   "homepage": "https://red.ht/rhdh",
   "repository": {
     "type": "git",
-    "url": "https://github.com/janus-idp/backstage-plugins",
+    "url": "https://github.com/backstage/community-plugins",
     "directory": "plugins/orchestrator-common"
   },
-  "bugs": "https://github.com/janus-idp/backstage-plugins/issues",
+  "bugs": "https://github.com/backstage/community-plugins/issues",
   "keywords": [
     "support:tech-preview",
     "lifecycle:active",
@@ -60,8 +60,7 @@
     "js-yaml-cli": "0.6.0"
   },
   "maintainers": [
-    "@janus-idp/maintainers-plugins",
-    "@janus-idp/orchestrator-codeowners"
+    "mareklibra"
   ],
   "author": "The Backstage Community"
 }

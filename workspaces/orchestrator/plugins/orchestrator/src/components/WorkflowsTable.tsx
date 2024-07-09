@@ -13,7 +13,7 @@ import {
   orchestratorWorkflowExecutePermission,
   ProcessInstanceStateValues,
   WorkflowOverview,
-} from '@janus-idp/backstage-plugin-orchestrator-common';
+} from '@backstage-community/plugin-orchestrator-common';
 
 import { VALUE_UNAVAILABLE } from '../constants';
 import WorkflowOverviewFormatter, {

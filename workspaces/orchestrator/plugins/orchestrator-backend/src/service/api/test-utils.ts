@@ -11,7 +11,7 @@ import {
   WorkflowInfo,
   WorkflowOverview,
   WorkflowOverviewListResult,
-} from '@janus-idp/backstage-plugin-orchestrator-common';
+} from '@backstage-community/plugin-orchestrator-common';
 
 const BASE_DATE = '2023-02-19T11:45:21.123Z';
 

@@ -22,7 +22,7 @@ import {
   QUERY_PARAM_INSTANCE_ID,
   QUERY_PARAM_INSTANCE_STATE,
   WorkflowInputSchemaResponse,
-} from '@janus-idp/backstage-plugin-orchestrator-common';
+} from '@backstage-community/plugin-orchestrator-common';
 
 import { orchestratorApiRef } from '../../api';
 import {

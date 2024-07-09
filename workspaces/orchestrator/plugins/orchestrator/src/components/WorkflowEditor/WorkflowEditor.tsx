@@ -43,7 +43,7 @@ import {
   toWorkflowString,
   WorkflowDefinition,
   WorkflowFormat,
-} from '@janus-idp/backstage-plugin-orchestrator-common';
+} from '@backstage-community/plugin-orchestrator-common';
 
 import { orchestratorApiRef } from '../../api';
 import { workflowDefinitionsRouteRef } from '../../routes';

@@ -5,7 +5,7 @@ import {
   ProcessInstanceState,
   WorkflowOverview,
   WorkflowRunStatusDTO,
-} from '@janus-idp/backstage-plugin-orchestrator-common';
+} from '@backstage-community/plugin-orchestrator-common';
 
 import {
   generateProcessInstance,

@@ -10,7 +10,7 @@ import { styled } from '@mui/material/styles';
 import {
   ProcessInstanceStateValues,
   WorkflowOverview,
-} from '@janus-idp/backstage-plugin-orchestrator-common';
+} from '@backstage-community/plugin-orchestrator-common';
 
 import { VALUE_UNAVAILABLE } from '../../constants';
 import WorkflowOverviewFormatter from '../../dataFormatters/WorkflowOverviewFormatter';

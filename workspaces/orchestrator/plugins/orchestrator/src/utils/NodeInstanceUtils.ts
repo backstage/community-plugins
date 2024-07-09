@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-import { NodeInstance } from '@janus-idp/backstage-plugin-orchestrator-common';
+import { NodeInstance } from '@backstage-community/plugin-orchestrator-common';
 
 import { isNonNullable } from './TypeGuards';
 

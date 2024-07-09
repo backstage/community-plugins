@@ -8,7 +8,7 @@ import {
   WorkflowExecutionResponse,
   WorkflowOverview,
   WorkflowOverviewListResult,
-} from '@janus-idp/backstage-plugin-orchestrator-common';
+} from '@backstage-community/plugin-orchestrator-common';
 
 import { retryAsyncFunction } from '../Helper';
 import { OrchestratorService } from '../OrchestratorService';

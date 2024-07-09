@@ -16,7 +16,7 @@ import Form from '@rjsf/mui';
 import { RJSFSchema, UiSchema } from '@rjsf/utils';
 import validator from '@rjsf/validator-ajv8';
 
-import { WorkflowInputSchemaStep } from '@janus-idp/backstage-plugin-orchestrator-common';
+import { WorkflowInputSchemaStep } from '@backstage-community/plugin-orchestrator-common';
 
 import SubmitButton from '../SubmitButton';
 

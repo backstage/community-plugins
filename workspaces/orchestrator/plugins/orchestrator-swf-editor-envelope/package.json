@@ -1,5 +1,5 @@
 {
-  "name": "@janus-idp/backstage-plugin-orchestrator-swf-editor-envelope",
+  "name": "@backstage-community/plugin-orchestrator-swf-editor-envelope",
   "description": "Serverless workflow editor envelope for the Orchestrator plugin",
   "version": "1.0.0",
   "license": "Apache-2.0",
@@ -57,7 +57,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/janus-idp/backstage-plugins",
+    "url": "https://github.com/backstage/community-plugins",
     "directory": "plugins/orchestrator-swf-editor-envelope"
   },
   "keywords": [
@@ -67,10 +67,9 @@
     "plugin"
   ],
   "homepage": "https://red.ht/rhdh",
-  "bugs": "https://github.com/janus-idp/backstage-plugins/issues",
+  "bugs": "https://github.com/backstage/community-plugins/issues",
   "maintainers": [
-    "@janus-idp/maintainers-plugins",
-    "@janus-idp/orchestrator-codeowners"
+    "mareklibra"
   ],
   "author": "The Backstage Community"
 }

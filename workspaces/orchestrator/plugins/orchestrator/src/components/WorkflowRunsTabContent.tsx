@@ -16,7 +16,7 @@ import {
   ellipsis,
   ProcessInstanceState,
   ProcessInstanceStateValues,
-} from '@janus-idp/backstage-plugin-orchestrator-common';
+} from '@backstage-community/plugin-orchestrator-common';
 
 import { orchestratorApiRef } from '../api';
 import { DEFAULT_TABLE_PAGE_SIZE, VALUE_UNAVAILABLE } from '../constants';

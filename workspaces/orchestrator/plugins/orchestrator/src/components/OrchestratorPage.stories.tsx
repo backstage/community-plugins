@@ -5,7 +5,7 @@ import { TestApiProvider, wrapInTestApp } from '@backstage/test-utils';
 
 import { Meta, StoryObj } from '@storybook/react';
 
-import { WorkflowOverview } from '@janus-idp/backstage-plugin-orchestrator-common';
+import { WorkflowOverview } from '@backstage-community/plugin-orchestrator-common';
 
 import { fakeProcessInstances } from '../__fixtures__/fakeProcessInstance';
 import { fakeWorkflowDefinition } from '../__fixtures__/fakeWorkflowDefinition';

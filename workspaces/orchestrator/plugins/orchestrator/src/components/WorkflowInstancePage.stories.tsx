@@ -8,7 +8,7 @@ import {
   AssessedProcessInstance,
   ProcessInstance,
   WorkflowDefinition,
-} from '@janus-idp/backstage-plugin-orchestrator-common';
+} from '@backstage-community/plugin-orchestrator-common';
 
 import {
   fakeActiveInstance,

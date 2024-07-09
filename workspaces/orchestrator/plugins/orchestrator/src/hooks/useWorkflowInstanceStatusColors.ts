@@ -3,7 +3,7 @@ import { useTheme } from '@mui/material/styles';
 import {
   ProcessInstanceState,
   ProcessInstanceStateValues,
-} from '@janus-idp/backstage-plugin-orchestrator-common';
+} from '@backstage-community/plugin-orchestrator-common';
 
 export const useWorkflowInstanceStateColors = (
   value?: ProcessInstanceStateValues,

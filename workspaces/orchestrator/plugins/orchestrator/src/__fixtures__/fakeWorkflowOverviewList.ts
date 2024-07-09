@@ -1,4 +1,4 @@
-import { WorkflowOverview } from '@janus-idp/backstage-plugin-orchestrator-common';
+import { WorkflowOverview } from '@backstage-community/plugin-orchestrator-common';
 
 export const fakeWorkflowOverviewList: WorkflowOverview[] = [
   {

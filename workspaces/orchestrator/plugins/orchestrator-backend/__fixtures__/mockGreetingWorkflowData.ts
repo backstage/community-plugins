@@ -2,7 +2,7 @@ import { JsonObject } from '@backstage/types';
 
 import { JSONSchema7 } from 'json-schema';
 
-import { WorkflowDefinition } from '@janus-idp/backstage-plugin-orchestrator-common';
+import { WorkflowDefinition } from '@backstage-community/plugin-orchestrator-common';
 
 const schema = {
   $id: 'classpath:/schemas/yamlgreet__main-schema.json',
