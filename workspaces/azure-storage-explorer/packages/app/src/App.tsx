@@ -103,7 +103,6 @@ const routes = (
     <Route path="/settings" element={<UserSettingsPage />} />
     <Route path="/catalog-graph" element={<CatalogGraphPage />} />
     <Route path="/azure-storage" element={<AzureStoragePage />} />
-    
   </FlatRoutes>
 );
 
