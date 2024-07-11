@@ -19,7 +19,24 @@ export interface AdrDocument extends IndexableDocument {
 export type AdrFilePathFilterFn = (path: string) => boolean;
 
 // @public
+export type AdrParser = (ctx: AdrParserContext) => Promise<AdrDocument>;
+
+// @public
+export type AdrParserContext = {
+  entity: Entity;
+  content: string;
+  path: string;
+};
+
+// @public
 export const ANNOTATION_ADR_LOCATION = 'backstage.io/adr-location';
+
+// @public
+export const createMadrParser: (options?: MadrParserOptions) => AdrParser;
+
+// @public
+export const DEFAULT_LOCATION_TEMPLATE =
+  '/catalog/:namespace/:kind/:name/adrs?record=:record';
 
 // @public
 export const getAdrLocationUrl: (
@@ -36,6 +53,22 @@ export const MADR_DATE_FORMAT = 'yyyy-MM-dd';
 
 // @public
 export const madrFilePathFilter: AdrFilePathFilterFn;
+
+// @public
+export const madrParser: (
+  content: string,
+  dateFormat?: string,
+) => {
+  title: string | undefined;
+  status: string | undefined;
+  date: string | undefined;
+};
+
+// @public
+export type MadrParserOptions = {
+  locationTemplate?: string;
+  dateFormat?: string;
+};
 
 // @public
 export interface ParsedMadr {

@@ -15,5 +15,4 @@
  */
 
 export * from './DefaultAdrCollatorFactory';
-export * from './createMadrParser';
-export * from './types';
+export * from './config';
