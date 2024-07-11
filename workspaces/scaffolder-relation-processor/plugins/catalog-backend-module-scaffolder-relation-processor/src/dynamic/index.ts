@@ -3,6 +3,7 @@ import { BackendDynamicPluginInstaller } from '@backstage/backend-dynamic-featur
 import { ScaffolderRelationEntityProcessor } from '../ScaffolderRelationEntityProcessor';
 
 /**
+ * 
  * @public
  */
 export const dynamicPluginInstaller: BackendDynamicPluginInstaller = {
