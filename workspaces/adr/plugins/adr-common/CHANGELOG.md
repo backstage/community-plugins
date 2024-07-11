@@ -1,5 +1,11 @@
 # @backstage-community/plugin-adr-common
 
+## 0.2.25
+
+### Patch Changes
+
+- 7ba08a5: Add some methods and types used for the search-collator as part of the common package
+
 ## 0.2.24
 
 ### Patch Changes
