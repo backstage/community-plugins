@@ -15,21 +15,13 @@
  */
 
 import { Readable } from 'stream';
-import {
-  CacheClient,
-  createLegacyAuthAdapters,
-  PluginCacheManager,
-  PluginEndpointDiscovery,
-  TokenManager,
-  UrlReader,
-} from '@backstage/backend-common';
+import { createLegacyAuthAdapters } from '@backstage/backend-common';
 import {
   CATALOG_FILTER_EXISTS,
   CatalogApi,
   CatalogClient,
 } from '@backstage/catalog-client';
 import { stringifyEntityRef } from '@backstage/catalog-model';
-import { Config } from '@backstage/config';
 import { NotModifiedError, stringifyError } from '@backstage/errors';
 import {
   ScmIntegrationRegistry,
@@ -44,9 +36,19 @@ import {
 } from '@backstage-community/plugin-adr-common';
 import { DocumentCollatorFactory } from '@backstage/plugin-search-common';
 
-import { createMadrParser } from './createMadrParser';
-import { AdrParser } from './types';
-import { AuthService, LoggerService } from '@backstage/backend-plugin-api';
+import {
+  AdrParser,
+  createMadrParser,
+} from '@backstage-community/plugin-adr-common';
+import {
+  AuthService,
+  CacheService,
+  DiscoveryService,
+  LoggerService,
+  RootConfigService,
+  TokenManagerService,
+  UrlReaderService,
+} from '@backstage/backend-plugin-api';
 
 /**
  * Options to configure the AdrCollatorFactory
@@ -61,11 +63,11 @@ export type AdrCollatorFactoryOptions = {
   /**
    * Plugin cache manager
    */
-  cache: PluginCacheManager;
+  cache: CacheService;
   /**
    * App Config
    */
-  config: Config;
+  config: RootConfigService;
   /**
    * Catalog API client. Defaults to CatalogClient.
    */
@@ -73,7 +75,7 @@ export type AdrCollatorFactoryOptions = {
   /**
    * Plugin Endpoint Discovery client
    */
-  discovery: PluginEndpointDiscovery;
+  discovery: DiscoveryService;
   /**
    * Logger
    */
@@ -85,11 +87,11 @@ export type AdrCollatorFactoryOptions = {
   /**
    * URL Reader
    */
-  reader: UrlReader;
+  reader: UrlReaderService;
   /**
    * Token Manager
    */
-  tokenManager?: TokenManager;
+  tokenManager?: TokenManagerService;
   /**
    * Auth Service
    */
@@ -103,18 +105,18 @@ export type AdrCollatorFactoryOptions = {
 export class DefaultAdrCollatorFactory implements DocumentCollatorFactory {
   public readonly type: string = 'adr';
   private readonly adrFilePathFilterFn: AdrFilePathFilterFn;
-  private readonly cacheClient: CacheClient;
+  private readonly cacheClient: CacheService;
   private readonly catalogClient: CatalogApi;
   private readonly logger: LoggerService;
   private readonly parser: AdrParser;
-  private readonly reader: UrlReader;
+  private readonly reader: UrlReaderService;
   private readonly auth: AuthService;
   private readonly scmIntegrations: ScmIntegrationRegistry;
 
   private constructor(options: AdrCollatorFactoryOptions) {
     this.adrFilePathFilterFn =
       options.adrFilePathFilterFn ?? madrFilePathFilter;
-    this.cacheClient = options.cache.getClient();
+    this.cacheClient = options.cache;
     this.catalogClient =
       options.catalogClient ??
       new CatalogClient({ discoveryApi: options.discovery });
@@ -207,6 +209,7 @@ export class DefaultAdrCollatorFactory implements DocumentCollatorFactory {
         }
       }
 
+      let indexedCount = 0;
       for (const { content, path } of adrFiles) {
         try {
           const adrDoc = await this.parser({
@@ -214,6 +217,7 @@ export class DefaultAdrCollatorFactory implements DocumentCollatorFactory {
             path,
             content,
           });
+          indexedCount++;
           yield adrDoc;
         } catch (e: any) {
           this.logger.error(
@@ -222,7 +226,7 @@ export class DefaultAdrCollatorFactory implements DocumentCollatorFactory {
         }
       }
 
-      this.logger.info(`Indexed ${adrFiles.length} ADRs from ${adrsUrl}`);
+      this.logger.info(`Indexed ${indexedCount} ADRs from ${adrsUrl}`);
     }
   }
 }

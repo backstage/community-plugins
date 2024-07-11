@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 The Backstage Authors
+ * Copyright 2023 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,30 +14,20 @@
  * limitations under the License.
  */
 
-import { Entity } from '@backstage/catalog-model';
-import { AdrDocument } from '@backstage-community/plugin-adr-common';
+import { TaskScheduleDefinitionConfig } from '@backstage/backend-tasks';
 
-/**
- * Context passed to a AdrParser.
- * @public
- */
-export type AdrParserContext = {
-  /**
-   * The entity associated with the ADR.
-   */
-  entity: Entity;
-  /**
-   * The ADR content string.
-   */
-  content: string;
-  /**
-   * The ADR file path.
-   */
-  path: string;
-};
-
-/**
- * ADR parser function type.
- * @public
- */
-export type AdrParser = (ctx: AdrParserContext) => Promise<AdrDocument>;
+export interface Config {
+  search?: {
+    collators?: {
+      /**
+       * Configuration options for `@backstage-community/search-backend-module-adr`
+       */
+      adr?: {
+        /**
+         * The schedule for how often to run the collation job.
+         */
+        schedule?: TaskScheduleDefinitionConfig;
+      };
+    };
+  };
+}
