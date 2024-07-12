@@ -10,9 +10,7 @@
     "pluginPackage": "@backstage/plugin-scaffolder-backend"
   },
   "publishConfig": {
-    "access": "public",
-    "main": "dist/index.cjs.js",
-    "types": "dist/index.d.ts"
+    "access": "public"
   },
   "repository": {
     "type": "git",
@@ -23,6 +21,13 @@
   "exports": {
     ".": "./src/index.ts",
     "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "package.json": [
+        "package.json"
+      ]
+    }
   },
   "main": "src/index.ts",
   "types": "src/index.ts",
