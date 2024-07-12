@@ -1,5 +1,13 @@
 # @backstage-community/plugin-linguist
 
+## 0.1.23
+
+### Patch Changes
+
+- dd19841: Added package metadata
+- Updated dependencies [dd19841]
+  - @backstage-community/plugin-linguist-common@0.1.6
+
 ## 0.1.22
 
 ### Patch Changes

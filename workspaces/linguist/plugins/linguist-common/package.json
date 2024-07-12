@@ -1,9 +1,15 @@
 {
   "name": "@backstage-community/plugin-linguist-common",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Common functionalities for the linguist plugin",
   "backstage": {
-    "role": "common-library"
+    "role": "common-library",
+    "pluginId": "linguist",
+    "pluginPackages": [
+      "@backstage-community/plugin-linguist",
+      "@backstage-community/plugin-linguist-backend",
+      "@backstage-community/plugin-linguist-common"
+    ]
   },
   "publishConfig": {
     "access": "public",
