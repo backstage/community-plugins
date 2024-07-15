@@ -8,6 +8,7 @@
 import { ApiRef } from '@backstage/core-plugin-api';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { BulkCheckResponse } from '@backstage-community/plugin-tech-insights-common';
+import { Check as Check_2 } from '@backstage-community/plugin-tech-insights-client';
 import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
 import { CompoundEntityRef } from '@backstage/catalog-model';
 import { DiscoveryApi } from '@backstage/core-plugin-api';
@@ -18,22 +19,17 @@ import { JSX as JSX_2 } from 'react';
 import { default as React_2 } from 'react';
 import { ReactNode } from 'react';
 import { RouteRef } from '@backstage/core-plugin-api';
+import { TechInsightsClient as TechInsightsClient_2 } from '@backstage-community/plugin-tech-insights-client';
 
 // @public (undocumented)
 export const BooleanCheck: (props: {
   checkResult: CheckResult;
 }) => React_2.JSX.Element;
 
-// @public
-export type Check = {
-  id: string;
-  type: string;
-  name: string;
-  description: string;
-  factIds: string[];
-  successMetadata?: Record<string, unknown>;
-  failureMetadata?: Record<string, unknown>;
-};
+// Warning: (tsdoc-characters-after-block-tag) The token "@backstage" looks like a TSDoc tag but contains an invalid character "-"; if it is not a tag, use a backslash to escape the "@"
+//
+// @public @deprecated
+export type Check = Check_2;
 
 // @public
 export type CheckResultRenderer = {
@@ -58,7 +54,9 @@ export const EntityTechInsightsScorecardContent: (props: {
   checksId?: string[] | undefined;
 }) => JSX_2.Element;
 
-// @public
+// Warning: (tsdoc-characters-after-block-tag) The token "@backstage" looks like a TSDoc tag but contains an invalid character "-"; if it is not a tag, use a backslash to escape the "@"
+//
+// @public @deprecated
 export interface InsightFacts {
   // (undocumented)
   [factId: string]: {
@@ -110,30 +108,17 @@ export interface TechInsightsApi {
 export const techInsightsApiRef: ApiRef<TechInsightsApi>;
 
 // @public (undocumented)
-export class TechInsightsClient implements TechInsightsApi {
+export class TechInsightsClient
+  extends TechInsightsClient_2
+  implements TechInsightsApi
+{
   constructor(options: {
     discoveryApi: DiscoveryApi;
     identityApi: IdentityApi;
     renderers?: CheckResultRenderer[];
   });
   // (undocumented)
-  getAllChecks(): Promise<Check[]>;
-  // (undocumented)
   getCheckResultRenderers(types: string[]): CheckResultRenderer[];
-  // (undocumented)
-  getFacts(entity: CompoundEntityRef, facts: string[]): Promise<InsightFacts>;
-  // (undocumented)
-  getFactSchemas(): Promise<FactSchema[]>;
-  // (undocumented)
-  runBulkChecks(
-    entities: CompoundEntityRef[],
-    checks?: Check[],
-  ): Promise<BulkCheckResponse>;
-  // (undocumented)
-  runChecks(
-    entityParams: CompoundEntityRef,
-    checks?: string[],
-  ): Promise<CheckResult[]>;
 }
 
 // @public (undocumented)
@@ -156,14 +141,9 @@ export const TechInsightsScorecardPage: () => JSX_2.Element;
 // src/api/TechInsightsApi.d.ts:20:5 - (ae-undocumented) Missing documentation for "runBulkChecks".
 // src/api/TechInsightsApi.d.ts:21:5 - (ae-undocumented) Missing documentation for "getFacts".
 // src/api/TechInsightsApi.d.ts:22:5 - (ae-undocumented) Missing documentation for "getFactSchemas".
-// src/api/TechInsightsClient.d.ts:8:1 - (ae-undocumented) Missing documentation for "TechInsightsClient".
-// src/api/TechInsightsClient.d.ts:17:5 - (ae-undocumented) Missing documentation for "getFacts".
-// src/api/TechInsightsClient.d.ts:18:5 - (ae-undocumented) Missing documentation for "getCheckResultRenderers".
-// src/api/TechInsightsClient.d.ts:19:5 - (ae-undocumented) Missing documentation for "getAllChecks".
-// src/api/TechInsightsClient.d.ts:20:5 - (ae-undocumented) Missing documentation for "getFactSchemas".
-// src/api/TechInsightsClient.d.ts:21:5 - (ae-undocumented) Missing documentation for "runChecks".
-// src/api/TechInsightsClient.d.ts:22:5 - (ae-undocumented) Missing documentation for "runBulkChecks".
-// src/api/types.d.ts:51:5 - (ae-undocumented) Missing documentation for "__index".
+// src/api/TechInsightsClient.d.ts:6:1 - (ae-undocumented) Missing documentation for "TechInsightsClient".
+// src/api/TechInsightsClient.d.ts:13:5 - (ae-undocumented) Missing documentation for "getCheckResultRenderers".
+// src/api/types.d.ts:17:5 - (ae-undocumented) Missing documentation for "__index".
 // src/components/BooleanCheck/BooleanCheck.d.ts:6:22 - (ae-undocumented) Missing documentation for "BooleanCheck".
 // src/plugin.d.ts:5:22 - (ae-undocumented) Missing documentation for "techInsightsPlugin".
 // src/plugin.d.ts:11:22 - (ae-undocumented) Missing documentation for "ScorecardInfo".

@@ -2834,6 +2834,21 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@backstage-community/plugin-tech-insights-client@workspace:^, @backstage-community/plugin-tech-insights-client@workspace:plugins/tech-insights-client":
+  version: 0.0.0-use.local
+  resolution: "@backstage-community/plugin-tech-insights-client@workspace:plugins/tech-insights-client"
+  dependencies:
+    "@backstage-community/plugin-tech-insights-common": "workspace:^"
+    "@backstage/backend-plugin-api": ^0.6.18
+    "@backstage/catalog-model": ^1.5.0
+    "@backstage/cli": ^0.26.6
+    "@backstage/core-plugin-api": ^1.9.2
+    "@backstage/errors": ^1.2.4
+    "@backstage/types": ^1.1.1
+    qs: ^6.9.4
+  languageName: unknown
+  linkType: soft
+
 "@backstage-community/plugin-tech-insights-common@workspace:^, @backstage-community/plugin-tech-insights-common@workspace:plugins/tech-insights-common":
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-tech-insights-common@workspace:plugins/tech-insights-common"
@@ -2865,6 +2880,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-tech-insights@workspace:plugins/tech-insights"
   dependencies:
+    "@backstage-community/plugin-tech-insights-client": "workspace:^"
     "@backstage-community/plugin-tech-insights-common": "workspace:^"
     "@backstage/catalog-model": ^1.5.0
     "@backstage/cli": ^0.26.6
@@ -2883,7 +2899,6 @@ __metadata:
     "@types/react": ^16.13.1 || ^17.0.0 || ^18.0.0
     "@types/react-dom": ^18.2.19
     canvas: ^2.11.2
-    qs: ^6.9.4
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-router-dom: 6.0.0-beta.0 || ^6.3.0
@@ -14079,9 +14094,13 @@ __metadata:
   dependencies:
     "@backstage-community/plugin-tech-insights-backend": "workspace:^"
     "@backstage-community/plugin-tech-insights-backend-module-jsonfc": "workspace:^"
+    "@backstage-community/plugin-tech-insights-node": "workspace:^"
     "@backstage/backend-common": ^0.22.0
     "@backstage/backend-defaults": ^0.2.18
+    "@backstage/backend-plugin-api": ^0.6.18
     "@backstage/backend-tasks": ^0.5.23
+    "@backstage/catalog-client": ^1.6.5
+    "@backstage/catalog-model": ^1.5.0
     "@backstage/cli": ^0.26.6
     "@backstage/config": ^1.2.0
     "@backstage/plugin-app-backend": ^0.3.67
