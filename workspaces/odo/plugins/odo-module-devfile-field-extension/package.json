@@ -36,15 +36,20 @@
     "@backstage/plugin-scaffolder-react": "^1.9.0",
     "@material-ui/core": "^4.12.4",
     "@material-ui/lab": "^4.0.0-alpha.61",
-    "react-use": "^17.5.0",
+    "@react-hookz/web": "^24.0.4",
     "zod": "^3.23.8"
   },
   "peerDependencies": {
-    "react": "^16.13.1 || ^17.0.0 || ^18.0.0"
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-router-dom": "^6.3.0"
   },
   "devDependencies": {
     "@backstage/cli": "^0.26.10",
-    "@backstage/dev-utils": "^1.0.34"
+    "@backstage/dev-utils": "^1.0.34",
+    "@types/react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "@types/react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-router-dom": "^6.3.0"
   },
   "files": [
     "dist",
