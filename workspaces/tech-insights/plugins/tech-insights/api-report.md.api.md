@@ -8,7 +8,7 @@
 import { ApiRef } from '@backstage/core-plugin-api';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { BulkCheckResponse } from '@backstage-community/plugin-tech-insights-common';
-import { Check as Check_2 } from '@backstage-community/plugin-tech-insights-client';
+import { Check as Check_2 } from '@backstage-community/plugin-tech-insights-common/client';
 import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
 import { CompoundEntityRef } from '@backstage/catalog-model';
 import { DiscoveryApi } from '@backstage/core-plugin-api';
@@ -19,7 +19,7 @@ import { JSX as JSX_2 } from 'react';
 import { default as React_2 } from 'react';
 import { ReactNode } from 'react';
 import { RouteRef } from '@backstage/core-plugin-api';
-import { TechInsightsClient as TechInsightsClient_2 } from '@backstage-community/plugin-tech-insights-client';
+import { TechInsightsClient as TechInsightsClient_2 } from '@backstage-community/plugin-tech-insights-common/client';
 
 // @public (undocumented)
 export const BooleanCheck: (props: {
