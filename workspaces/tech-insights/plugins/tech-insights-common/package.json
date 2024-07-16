@@ -9,6 +9,21 @@
     "main": "dist/index.cjs.js",
     "types": "dist/index.d.ts"
   },
+  "exports": {
+    ".": "./src/index.ts",
+    "./client": "./src/client/index.ts",
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "client": [
+        "src/client/index.ts"
+      ],
+      "package.json": [
+        "package.json"
+      ]
+    }
+  },
   "keywords": [
     "backstage",
     "tech-insights"
@@ -36,9 +51,14 @@
     "test": "backstage-cli package test"
   },
   "dependencies": {
+    "@backstage/backend-plugin-api": "^0.6.18",
+    "@backstage/catalog-model": "^1.5.0",
+    "@backstage/core-plugin-api": "^1.9.2",
+    "@backstage/errors": "^1.2.4",
     "@backstage/types": "^1.1.1",
     "@types/luxon": "^3.0.0",
-    "luxon": "^3.0.0"
+    "luxon": "^3.0.0",
+    "qs": "^6.12.3"
   },
   "devDependencies": {
     "@backstage/cli": "^0.26.6"

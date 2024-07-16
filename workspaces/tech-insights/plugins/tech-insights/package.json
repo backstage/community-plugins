@@ -32,7 +32,6 @@
     "test": "backstage-cli package test"
   },
   "dependencies": {
-    "@backstage-community/plugin-tech-insights-client": "workspace:^",
     "@backstage-community/plugin-tech-insights-common": "workspace:^",
     "@backstage/catalog-model": "^1.5.0",
     "@backstage/core-components": "^0.14.7",

@@ -16,7 +16,7 @@
 
 import { TechInsightsApi } from './TechInsightsApi';
 import { DiscoveryApi, IdentityApi } from '@backstage/core-plugin-api';
-import { TechInsightsClient as TechInsightsClientBase } from '@backstage-community/plugin-tech-insights-client';
+import { TechInsightsClient as TechInsightsClientBase } from '@backstage-community/plugin-tech-insights-common/client';
 
 import {
   CheckResultRenderer,
