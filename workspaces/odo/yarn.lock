@@ -2914,10 +2914,15 @@ __metadata:
     "@backstage/plugin-scaffolder-react": ^1.9.0
     "@material-ui/core": ^4.12.4
     "@material-ui/lab": ^4.0.0-alpha.61
-    react-use: ^17.5.0
+    "@react-hookz/web": ^24.0.4
+    "@types/react": ^16.13.1 || ^17.0.0 || ^18.0.0
+    "@types/react-dom": ^16.13.1 || ^17.0.0 || ^18.0.0
+    react-router-dom: ^6.3.0
     zod: ^3.23.8
   peerDependencies:
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
+    react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
+    react-router-dom: ^6.3.0
   languageName: unknown
   linkType: soft
 
@@ -6534,7 +6539,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-hookz/web@npm:^24.0.0":
+"@react-hookz/web@npm:^24.0.0, @react-hookz/web@npm:^24.0.4":
   version: 24.0.4
   resolution: "@react-hookz/web@npm:24.0.4"
   dependencies:
@@ -6547,6 +6552,13 @@ __metadata:
     js-cookie:
       optional: true
   checksum: 842dd51a2c875814c7468632315d756e79fcdff2882d7224e8e06c630f95ab788b6a59c29c0318cb049a18be97537803be8e3dbae12de34b2ae1290ababe266a
+  languageName: node
+  linkType: hard
+
+"@remix-run/router@npm:1.17.1":
+  version: 1.17.1
+  resolution: "@remix-run/router@npm:1.17.1"
+  checksum: f6ab2498d0b29ea76e3ddf6c6fec78c99f7c8739b2d413217fa569fca3de2256ecfd71385c78ea9d323fd9787614b25fc13db3aaa2e5d5673c9a698d448e710a
   languageName: node
   linkType: hard
 
@@ -9104,6 +9116,15 @@ __metadata:
   version: 1.2.5
   resolution: "@types/range-parser@npm:1.2.5"
   checksum: db9aaa04a02d019395a9a4346475669a2864a32a6477ad0fc457bd2ef39a167cabe742f55a8a3fa8bc90abac795b716c22b37348bc3e19313ebe6c9310815233
+  languageName: node
+  linkType: hard
+
+"@types/react-dom@npm:^18":
+  version: 18.3.0
+  resolution: "@types/react-dom@npm:18.3.0"
+  dependencies:
+    "@types/react": "*"
+  checksum: a0cd9b1b815a6abd2a367a9eabdd8df8dd8f13f95897b2f9e1359ea3ac6619f957c1432ece004af7d95e2a7caddbba19faa045f831f32d6263483fc5404a7596
   languageName: node
   linkType: hard
 
@@ -21561,6 +21582,30 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-router-dom@npm:^6.3.0":
+  version: 6.24.1
+  resolution: "react-router-dom@npm:6.24.1"
+  dependencies:
+    "@remix-run/router": 1.17.1
+    react-router: 6.24.1
+  peerDependencies:
+    react: ">=16.8"
+    react-dom: ">=16.8"
+  checksum: 95d9183524075aeec222b8e3181c47a6f58118a82d8d83dd85bf9f94a6cd69856c71f8f5d9788e50f442b9ea694209db7a96727a394de08c828bbc212328dc95
+  languageName: node
+  linkType: hard
+
+"react-router@npm:6.24.1":
+  version: 6.24.1
+  resolution: "react-router@npm:6.24.1"
+  dependencies:
+    "@remix-run/router": 1.17.1
+  peerDependencies:
+    react: ">=16.8"
+  checksum: 18acd84a4fc19ef63316a0ed73a549d1d83b48458ca4c90e14b9f59d259984062928f4427307b68f504452eb30dfd373edda826dd21b7f75a4bc2801b7336489
+  languageName: node
+  linkType: hard
+
 "react-side-effect@npm:^2.1.0":
   version: 2.1.2
   resolution: "react-side-effect@npm:2.1.2"
@@ -21622,7 +21667,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-use@npm:^17.2.4, react-use@npm:^17.3.2, react-use@npm:^17.5.0":
+"react-use@npm:^17.2.4, react-use@npm:^17.3.2":
   version: 17.5.0
   resolution: "react-use@npm:17.5.0"
   dependencies:
