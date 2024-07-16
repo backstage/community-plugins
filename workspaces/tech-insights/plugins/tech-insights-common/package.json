@@ -59,6 +59,6 @@
     "qs": "^6.12.3"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.26.6"
+    "@backstage/cli": "^0.26.10"
   }
 }

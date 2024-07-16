@@ -13,5 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * API client for tech-insights
+ * @packageDocumentation
+ */
 export * from './TechInsightsClient';
 export type * from './types';

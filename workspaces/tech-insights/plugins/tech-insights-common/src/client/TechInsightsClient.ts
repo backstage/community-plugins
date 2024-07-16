@@ -29,7 +29,10 @@ import {
 import qs from 'qs';
 import { AuthService } from '@backstage/backend-plugin-api';
 
-/** @public */
+/**
+ * Client to fetch data from tech-insights backend
+ *
+ * @public */
 export class TechInsightsClient {
   private readonly discoveryApi: DiscoveryApi;
   private readonly identityApi: IdentityApi | AuthService;
@@ -42,6 +45,12 @@ export class TechInsightsClient {
     this.identityApi = options.identityApi;
   }
 
+  /**
+   * Get facts for a specific entity
+   * @param entity - a component reference
+   * @param facts - a list fact ids to fetch
+   * @public
+   */
   async getFacts(
     entity: CompoundEntityRef,
     facts: string[],
@@ -53,14 +62,30 @@ export class TechInsightsClient {
     return await this.api<InsightFacts>(`/facts/latest?${query}`);
   }
 
+  /**
+   * Get all checks.
+   * This will not return the actual status, but only metadata. To get the status use the /run endpoint
+   * @public
+   */
   async getAllChecks(): Promise<Check[]> {
     return this.api('/checks');
   }
 
+  /**
+   * Get schemas of facts.
+   * Use this for example to understand what the return values will be
+   * @public
+   */
   async getFactSchemas(): Promise<FactSchema[]> {
     return this.api('/fact-schemas');
   }
 
+  /**
+   * Run checks for a specific entity
+   * @param entityParams - reference to an entity
+   * @param checks - IDs of checks to run
+   * @public
+   */
   async runChecks(
     entityParams: CompoundEntityRef,
     checks?: string[],
@@ -78,6 +103,12 @@ export class TechInsightsClient {
     );
   }
 
+  /**
+   * Return checks for multiple entities
+   * @param entities - list of entity references
+   * @param checks - list of check IDs
+   * @public
+   */
   async runBulkChecks(
     entities: CompoundEntityRef[],
     checks?: Check[],

@@ -72,6 +72,9 @@ export type Check = {
  * @public
  */
 export interface InsightFacts {
+  /**
+   * a single fact in the backend
+   */
   [factId: string]: {
     timestamp: string;
     version: string;
