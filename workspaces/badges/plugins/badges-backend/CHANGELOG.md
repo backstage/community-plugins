@@ -1,5 +1,11 @@
 # @backstage-community/plugin-badges-backend
 
+## 0.4.2
+
+### Patch Changes
+
+- 68ab360: Fix: move test dependency `supertest` to `devDependencies`.
+
 ## 0.4.1
 
 ### Patch Changes

@@ -49,12 +49,19 @@ const tableColumns: TableColumn<BulkCheckResponse[0]>[] = [
 export const ScorecardsPage = () => {
   const api = useApi(techInsightsApiRef);
   const [filterSelectedChecks, setFilterSelectedChecks] = useState<Check[]>([]);
+  const [filterWithResults, setFilterWithResults] = useState<boolean>(true);
 
   const { value, loading, error } = useAsync(async () => {
     const checks = await api.getAllChecks();
     const result = await api.runBulkChecks([], filterSelectedChecks);
-    return { checks, result };
-  }, [api, filterSelectedChecks]);
+
+    return {
+      checks,
+      result: filterWithResults
+        ? result.filter(response => response.results.length > 0)
+        : result,
+    };
+  }, [api, filterSelectedChecks, filterWithResults]);
 
   if (error) {
     return <ErrorPanel error={error} />;
@@ -71,6 +78,9 @@ export const ScorecardsPage = () => {
           <Grid item style={{ width: '300px' }}>
             <Filters
               checksChanged={checks => setFilterSelectedChecks(checks)}
+              withResultsChanged={withResults =>
+                setFilterWithResults(withResults)
+              }
             />
           </Grid>
           <Grid item xs>

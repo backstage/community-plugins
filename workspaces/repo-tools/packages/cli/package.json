@@ -1,5 +1,5 @@
 {
-  "name": "@backstage-commnunity/cli",
+  "name": "@backstage-community/cli",
   "description": "CLI for the Community Plugins Repository",
   "version": "0.0.1",
   "backstage": {

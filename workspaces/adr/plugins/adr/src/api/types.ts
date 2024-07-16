@@ -59,7 +59,6 @@ export type AdrReadResult = {
   /** The contents of the read ADR file. */
   data: string;
 };
-
 /**
  * The API used by the adr plugin to list and read ADRs.
  *

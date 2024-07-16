@@ -1,5 +1,34 @@
 # @backstage-community/plugin-linguist-backend
 
+## 0.5.19
+
+### Patch Changes
+
+- dd19841: Added package metadata
+- 3651de6: Added new dedicated module for the Linguist Tags Processor and deprecated the version in the Linguist Backend
+- Updated dependencies [dd19841]
+  - @backstage-community/plugin-linguist-common@0.1.6
+
+## 0.5.18
+
+### Patch Changes
+
+- fa1553e: Backstage v1.28.4 version bump
+- Updated dependencies [fa1553e]
+  - @backstage-community/plugin-linguist-common@0.1.5
+
+## 0.5.17
+
+### Patch Changes
+
+- 7b77065: Backstage `1.27.6` version bump
+- 468799c: Fixed how the `age` config value was being pulled in the router when using the new backend system
+- 9bff05a: adds support for supplying a prefix to tags created by the LinguistTagsProcessor
+- 295c71a: Updated dependencies
+- Updated dependencies [7b77065]
+- Updated dependencies [295c71a]
+  - @backstage-community/plugin-linguist-common@0.1.4
+
 ## 0.5.16
 
 ### Patch Changes

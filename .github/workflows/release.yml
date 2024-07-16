@@ -21,7 +21,7 @@ jobs:
         with:
           node-version: 20
           registry-url: https://registry.npmjs.org/ # Needed for auth
-      
+
       - name: Fetch previous commit for check
         run: git fetch origin '${{ github.event.before }}'
 
@@ -29,7 +29,7 @@ jobs:
         id: find-changed-workspaces
         run: node ./scripts/ci/list-workspaces-with-changes.js
         env:
-          COMMIT_SHA_BEFORE: '${{ github.event.before }}'
+          COMMIT_SHA_BEFORE: "${{ github.event.before }}"
 
   maybe-release-workspace:
     name: Maybe release ${{ matrix.workspace }}

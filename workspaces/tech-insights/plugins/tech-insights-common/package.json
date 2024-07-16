@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-tech-insights-common",
-  "version": "0.2.13",
+  "version": "0.2.14",
   "backstage": {
     "role": "common-library"
   },
@@ -41,6 +41,6 @@
     "luxon": "^3.0.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.26.3"
+    "@backstage/cli": "^0.26.6"
   }
 }

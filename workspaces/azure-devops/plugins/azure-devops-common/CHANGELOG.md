@@ -1,5 +1,24 @@
 # @backstage-community/plugin-azure-devops-common
 
+## 0.4.5
+
+### Patch Changes
+
+- 31aba58: Added package metadata
+
+## 0.4.4
+
+### Patch Changes
+
+- 2deaaa0: Backstage v1.28.4 version bump
+
+## 0.4.3
+
+### Patch Changes
+
+- 0a6bae4: Backstage `1.27.6` version bump
+- 0032b05: Updated dependencies
+
 ## 0.4.2
 
 ### Patch Changes

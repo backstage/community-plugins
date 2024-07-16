@@ -1,8 +1,14 @@
 {
   "name": "@backstage-community/plugin-azure-devops-common",
-  "version": "0.4.2",
+  "version": "0.4.5",
   "backstage": {
-    "role": "common-library"
+    "role": "common-library",
+    "pluginId": "azure-devops",
+    "pluginPackages": [
+      "@backstage-community/plugin-azure-devops",
+      "@backstage-community/plugin-azure-devops-backend",
+      "@backstage-community/plugin-azure-devops-common"
+    ]
   },
   "publishConfig": {
     "access": "public",
@@ -35,10 +41,10 @@
     "test": "backstage-cli package test"
   },
   "dependencies": {
-    "@backstage/plugin-catalog-common": "^1.0.22",
-    "@backstage/plugin-permission-common": "^0.7.13"
+    "@backstage/plugin-catalog-common": "^1.0.24",
+    "@backstage/plugin-permission-common": "^0.7.14"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.26.4"
+    "@backstage/cli": "^0.26.10"
   }
 }

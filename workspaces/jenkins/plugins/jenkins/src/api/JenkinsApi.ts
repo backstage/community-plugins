@@ -17,7 +17,7 @@
 import {
   createApiRef,
   DiscoveryApi,
-  IdentityApi,
+  FetchApi,
 } from '@backstage/core-plugin-api';
 import type { CompoundEntityRef } from '@backstage/catalog-model';
 import { ResponseError } from '@backstage/errors';
@@ -137,14 +137,11 @@ export interface JenkinsApi {
 
 export class JenkinsClient implements JenkinsApi {
   private readonly discoveryApi: DiscoveryApi;
-  private readonly identityApi: IdentityApi;
+  private readonly fetchApi: FetchApi;
 
-  constructor(options: {
-    discoveryApi: DiscoveryApi;
-    identityApi: IdentityApi;
-  }) {
+  constructor(options: { discoveryApi: DiscoveryApi; fetchApi: FetchApi }) {
     this.discoveryApi = options.discoveryApi;
-    this.identityApi = options.identityApi;
+    this.fetchApi = options.fetchApi;
   }
 
   async getProjects(options: {
@@ -164,13 +161,7 @@ export class JenkinsClient implements JenkinsApi {
       url.searchParams.append('branch', filter.branch);
     }
 
-    const idToken = await this.getToken();
-    const response = await fetch(url.href, {
-      method: 'GET',
-      headers: {
-        ...(idToken && { Authorization: `Bearer ${idToken}` }),
-      },
-    });
+    const response = await this.fetchApi.fetch(url);
 
     return (
       (await response.json()).projects?.map((p: Project) => ({
@@ -200,13 +191,7 @@ export class JenkinsClient implements JenkinsApi {
       jobFullName,
     )}/${encodeURIComponent(buildNumber)}`;
 
-    const idToken = await this.getToken();
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        ...(idToken && { Authorization: `Bearer ${idToken}` }),
-      },
-    });
+    const response = await this.fetchApi.fetch(url);
 
     return (await response.json()).build;
   }
@@ -225,22 +210,11 @@ export class JenkinsClient implements JenkinsApi {
       jobFullName,
     )}/${encodeURIComponent(buildNumber)}:rebuild`;
 
-    const idToken = await this.getToken();
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        ...(idToken && { Authorization: `Bearer ${idToken}` }),
-      },
-    });
+    const response = await this.fetchApi.fetch(url);
 
     if (!response.ok) {
       throw await ResponseError.fromResponse(response);
     }
-  }
-
-  private async getToken() {
-    const { token } = await this.identityApi.getCredentials();
-    return token;
   }
 
   async getJobBuilds(options: {
@@ -256,13 +230,7 @@ export class JenkinsClient implements JenkinsApi {
       jobFullName,
     )}`;
 
-    const idToken = await this.getToken();
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        ...(idToken && { Authorization: `Bearer ${idToken}` }),
-      },
-    });
+    const response = await this.fetchApi.fetch(url);
 
     return (await response.json()).build;
   }

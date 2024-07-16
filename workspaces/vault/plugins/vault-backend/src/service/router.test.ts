@@ -14,33 +14,19 @@
  * limitations under the License.
  */
 
-import { getVoidLogger, DatabaseManager } from '@backstage/backend-common';
 import { ConfigReader } from '@backstage/config';
 import express from 'express';
 import request from 'supertest';
-import { TestDatabases } from '@backstage/backend-test-utils';
-import { TaskScheduler } from '@backstage/backend-tasks';
+import { mockServices } from '@backstage/backend-test-utils';
 
 import { createRouter } from './router';
 
 describe('createRouter', () => {
   let app: express.Express;
-  const databases = TestDatabases.create({
-    ids: ['POSTGRES_16', 'POSTGRES_12', 'SQLITE_3'],
-  });
 
   beforeAll(async () => {
-    const knex = await databases.init('SQLITE_3');
-    const databaseManager: Partial<DatabaseManager> = {
-      forPlugin: (_: string) => ({
-        getClient: async () => knex,
-      }),
-    };
-    const manager = databaseManager as DatabaseManager;
-    const scheduler = new TaskScheduler(manager, getVoidLogger());
-
     const router = createRouter({
-      logger: getVoidLogger(),
+      logger: mockServices.logger.mock(),
       config: new ConfigReader({
         vault: {
           baseUrl: 'https://www.example.com',
@@ -50,7 +36,7 @@ describe('createRouter', () => {
           },
         },
       }),
-      scheduler: scheduler.forPlugin('vault'),
+      scheduler: mockServices.scheduler.mock(),
     });
     app = express().use(router);
   });

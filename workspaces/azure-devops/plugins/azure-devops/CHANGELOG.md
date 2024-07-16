@@ -1,5 +1,32 @@
 # @backstage-community/plugin-azure-devops
 
+## 0.4.7
+
+### Patch Changes
+
+- 31aba58: Added package metadata
+- Updated dependencies [31aba58]
+  - @backstage-community/plugin-azure-devops-common@0.4.5
+
+## 0.4.6
+
+### Patch Changes
+
+- 8276458: Fixed bug in AzureDevOpsClient where multiple entityRef query parameters were appended in case of multiple build definitions, which caused 400 Bad Request error.
+- 2deaaa0: Backstage v1.28.4 version bump
+- Updated dependencies [2deaaa0]
+  - @backstage-community/plugin-azure-devops-common@0.4.4
+
+## 0.4.5
+
+### Patch Changes
+
+- 0a6bae4: Backstage `1.27.6` version bump
+- 0032b05: Updated dependencies
+- Updated dependencies [0a6bae4]
+- Updated dependencies [0032b05]
+  - @backstage-community/plugin-azure-devops-common@0.4.3
+
 ## 0.4.4
 
 ### Patch Changes

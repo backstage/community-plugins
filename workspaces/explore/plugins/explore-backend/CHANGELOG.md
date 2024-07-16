@@ -1,5 +1,24 @@
 # @backstage-community/plugin-explore-backend
 
+## 0.1.1
+
+### Patch Changes
+
+- d84243a: Add ToolProviderExtensionPoint to allow setting other tool providers
+- Updated dependencies [d84243a]
+- Updated dependencies [d84243a]
+  - @backstage-community/plugin-explore-node@0.1.1
+
+## 0.1.0
+
+### Minor Changes
+
+- 07f73d7: **BREAKING** Removed the deprecated `ToolDocument`, `ToolDocumentCollatorFactory`, and `ToolDocumentCollatorFactoryOptions`. These were deprecated with the `1.13.0` release of Backstage. They should be import from `@backstage/plugin-search-backend-module-explore` instead.
+
+### Patch Changes
+
+- 617f575: Add reference to search module to explore-backend installation steps.
+
 ## 0.0.28
 
 ### Patch Changes

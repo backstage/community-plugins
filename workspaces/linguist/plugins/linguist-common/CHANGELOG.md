@@ -1,5 +1,24 @@
 # @backstage-community/plugin-linguist-common
 
+## 0.1.6
+
+### Patch Changes
+
+- dd19841: Added package metadata
+
+## 0.1.5
+
+### Patch Changes
+
+- fa1553e: Backstage v1.28.4 version bump
+
+## 0.1.4
+
+### Patch Changes
+
+- 7b77065: Backstage `1.27.6` version bump
+- 295c71a: Updated dependencies
+
 ## 0.1.3
 
 ### Patch Changes

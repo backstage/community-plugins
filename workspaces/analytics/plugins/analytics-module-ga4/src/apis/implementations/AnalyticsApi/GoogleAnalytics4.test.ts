@@ -257,6 +257,37 @@ describe('GoogleAnalytics4', () => {
         value: expectedValue,
         c_pluginId: context.pluginId,
         c_releaseNum: context.releaseNum,
+        a_extraDimension: false,
+        a_extraMetric: 0,
+        search_term: expectedLabel,
+      });
+    });
+
+    it('filters out custom dimenstions with empty string value', () => {
+      const api = GoogleAnalytics4.fromConfig(advancedConfig);
+
+      const expectedAction = 'search';
+      const expectedLabel = 'some query';
+      const expectedValue = 5;
+      api.captureEvent({
+        action: expectedAction,
+        subject: expectedLabel,
+        value: expectedValue,
+        attributes: {
+          extraDimension: '',
+          extraMetric: 0,
+        },
+        context,
+      });
+
+      expect(fnEvent).toHaveBeenCalledWith('search', {
+        action: 'search',
+        category: context.extension,
+        label: expectedLabel,
+        value: expectedValue,
+        c_pluginId: context.pluginId,
+        c_releaseNum: context.releaseNum,
+        a_extraMetric: 0,
         search_term: expectedLabel,
       });
     });

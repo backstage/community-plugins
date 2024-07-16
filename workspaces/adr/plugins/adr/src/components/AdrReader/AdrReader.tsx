@@ -21,10 +21,11 @@ import {
   Progress,
   WarningPanel,
 } from '@backstage/core-components';
-import { useApi } from '@backstage/core-plugin-api';
+import { discoveryApiRef, useApi } from '@backstage/core-plugin-api';
 import { scmIntegrationsApiRef } from '@backstage/integration-react';
 import { getAdrLocationUrl } from '@backstage-community/plugin-adr-common';
 import { useEntity } from '@backstage/plugin-catalog-react';
+import { CookieAuthRefreshProvider } from '@backstage/plugin-auth-react';
 
 import { adrDecoratorFactories } from './decorators';
 import { AdrContentDecorator } from './types';
@@ -46,12 +47,18 @@ export const AdrReader = (props: {
   const adrApi = useApi(adrApiRef);
   const adrLocationUrl = getAdrLocationUrl(entity, scmIntegrations);
   const adrFileLocationUrl = getAdrLocationUrl(entity, scmIntegrations, adr);
+  const discoveryApi = useApi(discoveryApiRef);
 
   const { value, loading, error } = useAsync(
     async () => adrApi.readAdr(adrFileLocationUrl),
     [adrFileLocationUrl],
   );
 
+  const {
+    value: backendUrl,
+    loading: backendUrlLoading,
+    error: backendUrlError,
+  } = useAsync(async () => discoveryApi.getBaseUrl('adr'), []);
   const adrContent = useMemo(() => {
     if (!value?.data) {
       return '';
@@ -70,17 +77,36 @@ export const AdrReader = (props: {
   }, [adrLocationUrl, decorators, value]);
 
   return (
-    <InfoCard>
-      {loading && <Progress />}
+    <CookieAuthRefreshProvider pluginId="adr">
+      <InfoCard>
+        {loading && <Progress />}
 
-      {!loading && error && (
-        <WarningPanel title="Failed to fetch ADR" message={error?.message} />
-      )}
+        {!loading && error && (
+          <WarningPanel title="Failed to fetch ADR" message={error?.message} />
+        )}
 
-      {!loading && !error && value?.data && (
-        <MarkdownContent content={adrContent} linkTarget="_blank" />
-      )}
-    </InfoCard>
+        {!backendUrlLoading && backendUrlError && (
+          <WarningPanel
+            title="Failed to fetch ADR images"
+            message={backendUrlError?.message}
+          />
+        )}
+
+        {!loading &&
+          !backendUrlLoading &&
+          !error &&
+          !backendUrlError &&
+          value?.data && (
+            <MarkdownContent
+              content={adrContent}
+              linkTarget="_blank"
+              transformImageUri={href => {
+                return `${backendUrl}/image?url=${href}`;
+              }}
+            />
+          )}
+      </InfoCard>
+    </CookieAuthRefreshProvider>
   );
 };
 

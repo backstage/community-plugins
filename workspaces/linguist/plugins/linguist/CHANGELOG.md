@@ -1,5 +1,31 @@
 # @backstage-community/plugin-linguist
 
+## 0.1.23
+
+### Patch Changes
+
+- dd19841: Added package metadata
+- Updated dependencies [dd19841]
+  - @backstage-community/plugin-linguist-common@0.1.6
+
+## 0.1.22
+
+### Patch Changes
+
+- fa1553e: Backstage v1.28.4 version bump
+- Updated dependencies [fa1553e]
+  - @backstage-community/plugin-linguist-common@0.1.5
+
+## 0.1.21
+
+### Patch Changes
+
+- 7b77065: Backstage `1.27.6` version bump
+- 295c71a: Updated dependencies
+- Updated dependencies [7b77065]
+- Updated dependencies [295c71a]
+  - @backstage-community/plugin-linguist-common@0.1.4
+
 ## 0.1.20
 
 ### Patch Changes

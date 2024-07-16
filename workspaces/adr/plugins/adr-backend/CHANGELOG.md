@@ -1,5 +1,27 @@
 # @backstage-community/plugin-adr-backend
 
+## 0.4.19
+
+### Patch Changes
+
+- 4d1426a: The `DefaultAdrCollatorFactory` and `AdrCollatorFactoryOptions` have been deprecated in favour of using the
+  new `@backstage-community/search-backend-module-adr` module.
+
+  The `search` types (`MadrParserOptions`, `createMadrParser`, `AdrParserContext`, `AdrParser`) have been moved
+  to `@backstage-community/search-backend-module-adr`. If you were using any of these, please import them now
+  from the dedicated search module package instead.
+
+  All these types are now re-exported from the new locations, ensuring no diverged types.
+
+- Updated dependencies [7ba08a5]
+  - @backstage-community/plugin-adr-common@0.2.25
+
+## 0.4.18
+
+### Patch Changes
+
+- 7ebbafb: Fixed bug where images from private repositories weren't accessible by the ADR plugin. Added `/image` API endpoint to adr-backend plugin which allows frontend to fetch images via backend with auth.
+
 ## 0.4.17
 
 ### Patch Changes

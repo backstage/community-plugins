@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-sonarqube",
-  "version": "0.7.17",
+  "version": "0.7.18",
   "description": "",
   "backstage": {
     "role": "frontend-plugin"
@@ -51,7 +51,7 @@
     "@types/react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "cross-fetch": "^4.0.0",
     "luxon": "^3.0.0",
-    "rc-progress": "3.5.1",
+    "rc-progress": "4.0.0",
     "react-use": "^17.2.4"
   },
   "devDependencies": {

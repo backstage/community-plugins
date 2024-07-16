@@ -7,6 +7,7 @@
 ## What is the community-plugins repository?
 
 The `community-plugins` repository is a place where members of the community can host a plugin or a set of plugins. The goal of community-plugins is to reduce the amount of pull requests and issues from `backstage/backstage`, which has become too big with the time.
+
 By creating community-plugins we give to plugin maintainers all the tools to easily manage and publish their plugins.
 
 ## Contributing a plugin
@@ -17,38 +18,26 @@ For those seeking full autonomy over their plugin's development and release life
 
 Plugins that are key to the functionality and operation of Backstage will continue to reside in the `backstage/backstage` repository - ensuring the central components that underpin the platform are centrally managed and maintained.
 
-## Repository layout
+To get started with creating a new plugin, follow the guidance in [CONTRIBUTING.md](https://github.com/backstage/community-plugins/blob/main/CONTRIBUTING.md#creating-a-new-workspace).
 
-`community-plugins` is formed by a set of workspaces. A workspace holds a plugin or a set of plugins based on a specific topic. For example, catalog, kubernetes, and TechDocs can be referred to as workspaces.
-Each plugin belongs to a workspace and workspaces are portable enough to be moved to its own repo if desired.
+## Community Plugins Workflow
 
-## Release Management
+The `community-plugins` repository is formed by a set of workspaces. A workspace holds a plugin or a set of plugins based on a specific topic. For example, catalog, kubernetes, and TechDocs can be referred to as workspaces.
 
-Changesets have proven to be a reliable method for managing different versions of packages.
-Each plugin workspace has its own changesets and isolated releases. Plugins that depend on other plugins via regular NPM dependencies, regardless of whether the other plugins are core plugins, other plugins within the community repo, or external plugins.
-Although the community repository isn't technically a "yarn workspace", it functions as a repository with multiple sub yarn workspaces, with each workspace possessing its unique .changesets directory.
+Each plugin belongs to a workspace and workspaces are portable enough to be moved to its own repository if desired. Each plugin workspace has its own changesets and isolated releases.
+
+Plugins depend on other plugins via regular npm dependencies, regardless of whether the other plugins are core plugins, other plugins within the repository, or external plugins.
+
+Although the community repository isn't technically a yarn workspace", it functions as a repository with multiple yarn workspaces, with each workspace possessing its unique `.changesets` directory.
 
 Whenever a new changeset is introduced, a fresh "Version packages ($workspace_name)" PR is produced. Merging a Version packages PR will trigger the release of all the plugins in the workspaces (provided changesets have been added), and also update the `CHANGELOG` files.
 
-## How to create a new workspace
+## Plugins migrated from `backstage/backstage`
 
-```bash
-$ yarn create-workspace
-```
+A number of plugins that originally resided in `backstage/backstage` monorepo have moved to this `backstage/community-plugins` repository.
 
-## The migration of plugins from the `backstage/backstage` monorepo
-
-The migration of plugins from the `backstage/backstage` monorepo to the `community-plugins` repository has been automated under the `community-cli` tool.
-
-You provide it with a path to the `monorepo` which should be cloned locally, and a plugin ID. It will then create a new workspace in the `community-plugins` repository with all of the plugins and modules that surround that workspace. For instance, if I use the `todo` plugin as an ID, It will automatically move over `@backstage/plugin-todo` as well as `@backstage/plugin-todo-backend` and any other `-common`, `-node` or `-modules` that are related.
-
-Once the code is copied over, the npm scopes and all code references are updated to reflect the new scopes of `@backstage-community/plugin-*`, and a changeset is created for the package to be published. The versions are kept the same for now, but the resulting changeset will publish the next version along, so if the package released at `1.25.0` was `0.10.0` then the new version will be `@backstage-community/plugin-todo` `0.10.1`.
-
-There is a commit that is created in the `monorepo` on either a specified branch as `--branch` or on a new branch that is created for the migration. In this commit is a deprecation and a changeset for this package to go out, so `0.10.1` in `@backstage/plugin-todo` will be marked as deprecated and replaced with `@backstage-community/plugin-todo` as the same version.
-
-### Workspaces that will be created
-
-Looking through the `monorepo` we can expect the following workspaces:
+<details>
+<summary>List of migrated plugins</summary>
 
 - `adr`
 - `airbreak`
@@ -109,5 +98,14 @@ Looking through the `monorepo` we can expect the following workspaces:
 - `todo`
 - `vault`
 - `xcmetrics`
+</details>
 
-Of course, there could be simplifcations to this workspace list and some workspaces will be merged into one, like for example the `github-` workspaces could become one `github` workspace instead, but for the inital migration, we will keep them separate.
+### Migration process
+
+The migration of plugins from the `backstage/backstage` monorepo to the `community-plugins` repository was automated under the `community-cli` tool.
+
+You provide it with a path to the `monorepo` which should be cloned locally, and a plugin ID. It will then create a new workspace in the `community-plugins` repository with all of the plugins and modules that surround that workspace. For instance, if I use the `todo` plugin as an ID, It will automatically move over `@backstage/plugin-todo` as well as `@backstage/plugin-todo-backend` and any other `-common`, `-node` or `-modules` that are related.
+
+Once the code is copied over, the npm scopes and all code references are updated to reflect the new scopes of `@backstage-community/plugin-*`, and a changeset is created for the package to be published. The versions are kept the same for now, but the resulting changeset will publish the next version along, so if the package released at `1.25.0` was `0.10.0` then the new version will be `@backstage-community/plugin-todo` `0.10.1`.
+
+There is a commit that is created in the `monorepo` on either a specified branch as `--branch` or on a new branch that is created for the migration. In this commit is a deprecation and a changeset for this package to go out, so `0.10.1` in `@backstage/plugin-todo` will be marked as deprecated and replaced with `@backstage-community/plugin-todo` as the same version.

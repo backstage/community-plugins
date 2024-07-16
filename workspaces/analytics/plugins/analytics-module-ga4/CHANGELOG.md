@@ -1,5 +1,17 @@
 # @backstage-community/plugin-analytics-module-ga4
 
+## 0.2.7
+
+### Patch Changes
+
+- 347a5eb: Filter out custom dimenstion keys with empty string values
+
+## 0.2.6
+
+### Patch Changes
+
+- ef2028c: Allow custom dimension context and attributes with falsy values
+
 ## 0.2.5
 
 ### Patch Changes

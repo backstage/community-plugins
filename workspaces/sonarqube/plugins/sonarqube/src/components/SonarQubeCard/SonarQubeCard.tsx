@@ -91,10 +91,12 @@ const defaultDuplicationRatings: DuplicationRating[] = [
 export const SonarQubeCard = (props: {
   variant?: InfoCardVariants;
   duplicationRatings?: DuplicationRating[];
+  missingAnnotationReadMoreUrl?: string;
 }) => {
   const {
     variant = 'gridItem',
     duplicationRatings = defaultDuplicationRatings,
+    missingAnnotationReadMoreUrl,
   } = props;
   const { entity } = useEntity();
   const sonarQubeApi = useApi(sonarQubeApiRef);
@@ -169,6 +171,7 @@ export const SonarQubeCard = (props: {
       {!loading && !projectTitle && (
         <MissingAnnotationEmptyState
           annotation={SONARQUBE_PROJECT_KEY_ANNOTATION}
+          readMoreUrl={missingAnnotationReadMoreUrl}
         />
       )}
 

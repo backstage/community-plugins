@@ -1,13 +1,14 @@
-import { execFile as execFileCb } from 'child_process';
-import { promises as fs } from 'fs';
-import { promisify } from 'util';
-import { resolve as resolvePath } from 'path';
-import { EOL } from 'os';
+import { execFile as execFileCb } from "child_process";
+import { promises as fs } from "fs";
+import { promisify } from "util";
+import { resolve as resolvePath } from "path";
+import { EOL } from "os";
 
-import * as url from 'url';
-const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
+import * as url from "url";
+const __dirname = url.fileURLToPath(new URL(".", import.meta.url));
 
-const parentRef = process.env.COMMIT_SHA_BEFORE || 'origin/main';
+const commitShaBefore = process.env.COMMIT_SHA_BEFORE;
+const baseRef = process.env.BASE_REF || "origin/main";
 
 const execFile = promisify(execFileCb);
 
@@ -23,24 +24,26 @@ async function runPlain(cmd, ...args) {
       throw error;
     }
     throw new Error(
-      `Command '${[cmd, ...args].join(' ')}' failed with code ${error.code}`
+      `Command '${[cmd, ...args].join(" ")}' failed with code ${error.code}`
     );
   }
 }
 
 async function main() {
   if (!process.env.GITHUB_OUTPUT) {
-    throw new Error('GITHUB_OUTPUT environment variable not set');
+    throw new Error("GITHUB_OUTPUT environment variable not set");
   }
 
-  const repoRoot = resolvePath(__dirname, '..', '..');
+  const repoRoot = resolvePath(__dirname, "..", "..");
   process.chdir(repoRoot);
 
-  const diff = await runPlain('git', 'diff', '--name-only', parentRef);
+  const diff = process.env.COMMIT_SHA_BEFORE
+    ? await runPlain("git", "diff", "--name-only", commitShaBefore)
+    : await runPlain("git", "diff", "--name-only", `${baseRef}...`);
 
-  const packageList = diff.split('\n');
+  const packageList = diff.split("\n");
 
-  const workspaces = new Set();
+  const workspaces = new Set(["noop"]);
   for (const path of packageList) {
     const match = path.match(/^workspaces\/([^/]+)\//);
     if (match) {
@@ -48,7 +51,7 @@ async function main() {
     }
   }
 
-  console.log('workspaces found with changes:', Array.from(workspaces));
+  console.log("workspaces found with changes:", Array.from(workspaces));
 
   for (const workspace of workspaces) {
     if (
@@ -60,7 +63,7 @@ async function main() {
     }
   }
 
-  console.log('workspaces that exist:', Array.from(workspaces));
+  console.log("workspaces that exist:", Array.from(workspaces));
 
   await fs.appendFile(
     process.env.GITHUB_OUTPUT,

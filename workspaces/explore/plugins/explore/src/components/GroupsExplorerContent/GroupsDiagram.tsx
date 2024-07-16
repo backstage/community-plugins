@@ -39,6 +39,7 @@ import ZoomOutMap from '@material-ui/icons/ZoomOutMap';
 import classNames from 'classnames';
 import React from 'react';
 import useAsync from 'react-use/esm/useAsync';
+import { EntityFilterQuery } from '@backstage/catalog-client';
 
 const useStyles = makeStyles(
   theme => ({
@@ -168,6 +169,8 @@ function RenderNode(props: DependencyGraphTypes.RenderNodeProps<any>) {
  */
 export function GroupsDiagram(props: {
   direction?: DependencyGraphTypes.Direction;
+  hideChildren?: boolean;
+  namespace?: string;
 }) {
   const nodes = new Array<{
     id: string;
@@ -186,12 +189,12 @@ export function GroupsDiagram(props: {
     error,
     value: catalogResponse,
   } = useAsync(() => {
-    return catalogApi.getEntities({
-      filter: {
-        kind: ['Group'],
-      },
-    });
-  }, [catalogApi]);
+    let filter: EntityFilterQuery = { kind: ['Group'] };
+    if (props.namespace) {
+      filter['metadata.namespace'] = props.namespace;
+    }
+    return catalogApi.getEntities({ filter });
+  }, [catalogApi, props.namespace]);
 
   if (loading) {
     return <Progress />;
@@ -209,17 +212,19 @@ export function GroupsDiagram(props: {
   for (const catalogItem of catalogResponse?.items || []) {
     const currentItemId = stringifyEntityRef(catalogItem);
 
-    nodes.push({
-      id: stringifyEntityRef(catalogItem),
-      kind: catalogItem.kind,
-      name: '',
-    });
-
     // Edge to parent
     const catalogItemRelations_childOf = getEntityRelations(
       catalogItem,
       RELATION_CHILD_OF,
     );
+
+    if (props.hideChildren && catalogItemRelations_childOf.length) continue;
+
+    nodes.push({
+      id: stringifyEntityRef(catalogItem),
+      kind: catalogItem.kind,
+      name: '',
+    });
 
     // if no parent is found, link the node to the root
     if (catalogItemRelations_childOf.length === 0) {

@@ -1,0 +1,130 @@
+name: 'Version Bump'
+on:
+  workflow_dispatch:
+    inputs:
+      release_line:
+        description: 'Release Line'
+        required: true
+        default: next
+        type: choice
+        options:
+          - next
+          - main
+      workspace_input:
+        description: 'Workspace (this must be a JSON array)'
+        required: true
+        type: string
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  version-bump:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        workspace: ${{ fromJSON(inputs.workspace_input) }}
+
+    name: ${{ matrix.workspace }} version:bump
+    steps:
+      - name: 'Checkout community-plugins'
+        uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4
+        with:
+          fetch-depth: 1
+
+      # Beginning of yarn setup
+      - name: use node.js 20.x
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
+        with:
+          node-version: 20.x
+          registry-url: https://registry.npmjs.org/ # Needed for auth
+      - name: cache all node_modules
+        id: cache-modules
+        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-node_modules-${{ hashFiles('yarn.lock', '**/package.json') }}
+      - name: find location of global yarn cache
+        id: yarn-cache
+        if: steps.cache-modules.outputs.cache-hit != 'true'
+        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
+      - name: cache global yarn cache
+        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4
+        if: steps.cache-modules.outputs.cache-hit != 'true'
+        with:
+          path: ${{ steps.yarn-cache.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      - name: yarn install
+        run: yarn install --immutable
+      - name: workspace yarn install
+        working-directory: ./workspaces/${{ matrix.workspace }}
+        run: yarn install --immutable
+      # End of yarn setup
+
+      - name: 'Set release name'
+        id: set_release_name
+        run: node scripts/ci/set-release-name.js ${{ matrix.workspace }}
+      - name: 'Configure git'
+        run: |
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+      - name: 'Create workspace branch'
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          BRANCH=$(git branch --list ${{ matrix.workspace }}/v${{ steps.set_release_name.outputs.release_version }})
+          if [ ! -z "$BRANCH" ]; then
+              git branch -D ${{ matrix.workspace }}/v${{ steps.set_release_name.outputs.release_version }}
+          fi
+          git checkout -b ${{ matrix.workspace }}/v${{ steps.set_release_name.outputs.release_version }}
+      - name: Run backstage-cli versions:bump --release ${{ inputs.release_line || 'next' }} command
+        working-directory: ./workspaces/${{ matrix.workspace }}
+        run: yarn backstage-cli versions:bump --release ${{ inputs.release_line || 'next' }}
+        env:
+          YARN_ENABLE_IMMUTABLE_INSTALLS: false
+      - name: 'Check for changes'
+        id: check_for_changes
+        run: |
+          CHANGES=$(git status --porcelain)
+          if [ -z "$CHANGES" ]; then
+              echo "No changes"
+              echo "HAS_CHANGES=0" >> $GITHUB_OUTPUT
+          else
+              echo "Has changes"
+              echo "HAS_CHANGES=1" >> $GITHUB_OUTPUT
+          fi
+      - name: 'Commit changes'
+        if: ${{ steps.check_for_changes.outputs.HAS_CHANGES == 1 }}
+        run: |
+          git status
+          git add -A -- :!.npmrc
+          git commit -m "v${{ steps.set_release_name.outputs.release_version }} version bump"
+          git push origin ${{ matrix.workspace }}/v${{ steps.set_release_name.outputs.release_version }}
+      - name: 'Create Pull Request'
+        if: ${{ steps.check_for_changes.outputs.HAS_CHANGES == 1 }}
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7
+        with:
+          github-token: ${{secrets.GH_SERVICE_ACCOUNT_TOKEN}}
+          script: |
+            await github.rest.pulls.create({
+              title: '${{ matrix.workspace }} - version:bump to v${{ steps.set_release_name.outputs.release_version }}',
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              head: '${{ matrix.workspace }}/v${{ steps.set_release_name.outputs.release_version }}',
+              base: 'main',
+              body: [
+                'Backstage release v${{ steps.set_release_name.outputs.release_version }} has been published, this Pull Request contains the changes to upgrade ${{ matrix.workspace }} to this new release',
+                ' ',
+                'Please review the changelog before approving, there may be manual changes needed:',
+                ' ',
+                '- Changelog: [v${{ steps.set_release_name.outputs.release_version }}](https://github.com/backstage/backstage/blob/master/docs/releases/v${{ steps.set_release_name.outputs.release_version }}-changelog.md)',
+                '- Upgrade Helper: [From ${{ steps.set_release_name.outputs.current_version }} to ${{ steps.set_release_name.outputs.release_version }}](https://backstage.github.io/upgrade-helper/?from=${{ steps.set_release_name.outputs.current_version }}&to=${{ steps.set_release_name.outputs.release_version }})',
+                ' ',
+                'Created by [Version Bump ${{ github.run_id }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})',
+                ' '
+              ].join('\n')
+            });

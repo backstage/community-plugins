@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-tech-insights-backend-module-jsonfc",
-  "version": "0.1.51",
+  "version": "0.1.52",
   "backstage": {
     "role": "backend-plugin-module"
   },
@@ -39,8 +39,8 @@
   "dependencies": {
     "@backstage-community/plugin-tech-insights-common": "workspace:^",
     "@backstage-community/plugin-tech-insights-node": "workspace:^",
-    "@backstage/backend-common": "^0.21.7",
-    "@backstage/backend-plugin-api": "^0.6.17",
+    "@backstage/backend-common": "^0.22.0",
+    "@backstage/backend-plugin-api": "^0.6.18",
     "@backstage/config": "^1.2.0",
     "@backstage/errors": "^1.2.4",
     "@backstage/types": "^1.1.1",
@@ -50,8 +50,8 @@
     "luxon": "^3.0.0"
   },
   "devDependencies": {
-    "@backstage/backend-test-utils": "^0.3.7",
-    "@backstage/cli": "^0.26.3",
+    "@backstage/backend-test-utils": "^0.3.8",
+    "@backstage/cli": "^0.26.6",
     "@types/lodash": "^4.14.151"
   },
   "configSchema": "config.json"

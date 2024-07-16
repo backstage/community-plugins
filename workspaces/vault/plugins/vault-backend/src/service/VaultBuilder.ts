@@ -16,18 +16,18 @@
 
 import { Config } from '@backstage/config';
 import { InputError } from '@backstage/errors';
-import { LoggerService } from '@backstage/backend-plugin-api';
+import {
+  LoggerService,
+  readSchedulerServiceTaskScheduleDefinitionFromConfig,
+  SchedulerService,
+  SchedulerServiceTaskRunner,
+  SchedulerServiceTaskScheduleDefinition,
+  SchedulerServiceTaskScheduleDefinitionConfig,
+} from '@backstage/backend-plugin-api';
 import express from 'express';
 import Router from 'express-promise-router';
 import { VaultApi, VaultClient } from './vaultApi';
-import {
-  PluginTaskScheduler,
-  TaskRunner,
-  TaskScheduleDefinition,
-  TaskScheduleDefinitionConfig,
-  readTaskScheduleDefinitionFromConfig,
-} from '@backstage/backend-tasks';
-import { errorHandler } from '@backstage/backend-common';
+import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 
 /**
  * Environment values needed by the VaultBuilder
@@ -36,7 +36,7 @@ import { errorHandler } from '@backstage/backend-common';
 export interface VaultEnvironment {
   logger: LoggerService;
   config: Config;
-  scheduler: PluginTaskScheduler;
+  scheduler: SchedulerService;
 }
 
 /**
@@ -120,7 +120,7 @@ export class VaultBuilder {
    *
    * @returns
    */
-  public async enableTokenRenew(schedule?: TaskRunner) {
+  public async enableTokenRenew(schedule?: SchedulerServiceTaskRunner) {
     if (
       this.env.config.has('vault.auth') && // FIXME: Needed to allow retro-compatibility to work. Remove in future release
       this.env.config.getString('vault.auth.type') === 'kubernetes'
@@ -146,9 +146,9 @@ export class VaultBuilder {
     return this;
   }
 
-  private getConfigSchedule(): TaskScheduleDefinition {
+  private getConfigSchedule(): SchedulerServiceTaskScheduleDefinition {
     const schedule = this.env.config.getOptional<
-      TaskScheduleDefinitionConfig | boolean
+      SchedulerServiceTaskScheduleDefinitionConfig | boolean
     >('vault.schedule');
 
     const scheduleCfg =
@@ -157,7 +157,7 @@ export class VaultBuilder {
             frequency: { hours: 1 },
             timeout: { hours: 1 },
           }
-        : readTaskScheduleDefinitionFromConfig(
+        : readSchedulerServiceTaskScheduleDefinitionFromConfig(
             this.env.config.getConfig('vault.schedule'),
           );
 
@@ -195,7 +195,7 @@ export class VaultBuilder {
       res.json({ items: secrets });
     });
 
-    router.use(errorHandler());
+    router.use(MiddlewareFactory.create(this.env).error());
     return router;
   }
 }

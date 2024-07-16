@@ -4,7 +4,7 @@
 
 ```ts
 import { AuthService } from '@backstage/backend-plugin-api';
-import { BackendFeature } from '@backstage/backend-plugin-api';
+import { BackendFeatureCompat } from '@backstage/backend-plugin-api';
 import { CatalogProcessor } from '@backstage/plugin-catalog-node';
 import { CatalogProcessorCache } from '@backstage/plugin-catalog-node';
 import { Config } from '@backstage/config';
@@ -43,10 +43,10 @@ export interface LinguistBackendApi {
 }
 
 // @public
-const linguistPlugin: () => BackendFeature;
+const linguistPlugin: BackendFeatureCompat;
 export default linguistPlugin;
 
-// @public
+// @public @deprecated
 export class LinguistTagsProcessor implements CatalogProcessor {
   constructor(options: LinguistTagsProcessorOptions);
   // (undocumented)

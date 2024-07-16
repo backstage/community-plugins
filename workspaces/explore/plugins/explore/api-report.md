@@ -113,6 +113,8 @@ export const exploreRouteRef: RouteRef<undefined>;
 export const GroupsExplorerContent: (props: {
   title?: string | undefined;
   direction?: DependencyGraphTypes.Direction | undefined;
+  hideChildren?: boolean | undefined;
+  namespace?: string | undefined;
 }) => JSX_2.Element;
 
 // @public (undocumented)
