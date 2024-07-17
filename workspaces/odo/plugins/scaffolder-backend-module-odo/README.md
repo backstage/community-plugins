@@ -37,7 +37,8 @@ This behavior can be customized by adding a new `"odo"` field in your `packages/
 ```
 
 Note that the custom actions here do require an `odo` binary to work properly.
-So if you choose to skip the download (using the `odo.skipDownload`  property above), you need to make sure to meet any of the requirements below:
+So if you choose to skip the download (using the `odo.skipDownload` property above), you need to make sure to meet any of the requirements below:
+
 - either you can explicitly set the path to the `odo` binary in your `app-config.yaml` (see [below](#app-configyaml));
 - or `odo` is already [installed](https://odo.dev/docs/overview/installation) and available globally in the system paths of the environment the Backstage instance is running in.
 
@@ -50,7 +51,9 @@ Import the module by modifying the `packages/backend/src/index.ts` file on your 
 ```ts
 // packages/backend/src/index.ts
 
-backend.add(import('@backstage-community/plugin-scaffolder-backend-module-odo'))
+backend.add(
+  import('@backstage-community/plugin-scaffolder-backend-module-odo'),
+);
 ```
 
 ### app-config.yaml
@@ -92,7 +95,6 @@ This action can be used in conjunction with the [odo-module-devfile-field-extens
 ```yaml
 spec:
   parameters:
-
     - title: Provide details about the Devfile
       required:
         - devfile_data
