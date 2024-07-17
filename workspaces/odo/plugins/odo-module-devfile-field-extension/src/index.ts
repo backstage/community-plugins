@@ -1,4 +1,4 @@
 export {
   devfileSelectorExtensionPlugin,
   DevfileSelectorFieldExtension,
-} from "./plugin";
+} from './plugin';

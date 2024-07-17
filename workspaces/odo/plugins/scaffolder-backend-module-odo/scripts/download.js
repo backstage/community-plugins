@@ -1,33 +1,34 @@
-"use strict";
+'use strict';
 
 // Inspired from https://github.com/ipfs/npm-kubo
 
-const goenv = require("./go-platform");
-const gunzip = require("gunzip-maybe");
-const got = require("got").default;
-const path = require("path");
-const tarFS = require("tar-fs");
-const unzip = require("unzip-stream");
-const pkgConf = require("pkg-conf");
-const cachedir = require("cachedir");
-const fs = require("fs");
-const hasha = require("hasha");
+const goenv = require('./go-platform');
+const gunzip = require('gunzip-maybe');
+const got = require('got').default;
+const path = require('path');
+const tarFS = require('tar-fs');
+const unzip = require('unzip-stream');
+const pkgConf = require('pkg-conf');
+const cachedir = require('cachedir');
+const fs = require('fs');
+const hasha = require('hasha');
 
 // Version of odo to install. This is known to be working with this plugin.
 // Can be overridden by clients either via the BACKSTAGE_ODO_PLUGIN__ODO_VERSION environment variable
 // or via the 'odo.version' field in their 'package.json' file.
-const ODO_VERSION = "3.15.0";
+const ODO_VERSION = '3.15.0';
 const ODO_DIST_URL =
-  "https://developers.redhat.com/content-gateway/rest/mirror/pub/openshift-v4/clients/odo";
-  const ODO_DIST_URL_NIGHTLY = "https://s3.eu-de.cloud-object-storage.appdomain.cloud/odo-nightly-builds";
+  'https://developers.redhat.com/content-gateway/rest/mirror/pub/openshift-v4/clients/odo';
+const ODO_DIST_URL_NIGHTLY =
+  'https://s3.eu-de.cloud-object-storage.appdomain.cloud/odo-nightly-builds';
 
 // Map of all architectures that can be donwloaded on the odo distribution URL.
 const SUPPORTED_ARCHITECTURES_BY_PLATFORM = new Map(
   Object.entries({
-    darwin: ["amd64", "arm64"],
-    linux: ["amd64", "arm64", "ppc64le", "s390x"],
-    windows: ["amd64"],
-  })
+    darwin: ['amd64', 'arm64'],
+    linux: ['amd64', 'arm64', 'ppc64le', 's390x'],
+    windows: ['amd64'],
+  }),
 );
 
 /**
@@ -39,9 +40,9 @@ const SUPPORTED_ARCHITECTURES_BY_PLATFORM = new Map(
  * @param {string} version
  */
 async function cachingFetchAndVerify(url, platform, arch, version) {
-  const parentCacheDir = cachedir("odo");
+  const parentCacheDir = cachedir('odo');
   const cacheDir = path.join(parentCacheDir, version);
-  const filename = url.split("/").pop();
+  const filename = url.split('/').pop();
 
   if (!filename) {
     throw new Error(`Invalid URL: ${url}`);
@@ -54,7 +55,11 @@ async function cachingFetchAndVerify(url, platform, arch, version) {
     fs.mkdirSync(cacheDir, { recursive: true });
   }
 
-  if (version === "latest" || version === "nightly" || !fs.existsSync(cachedFilePath)) {
+  if (
+    version === 'latest' ||
+    version === 'nightly' ||
+    !fs.existsSync(cachedFilePath)
+  ) {
     console.info(`Downloading ${url} to ${cacheDir}`);
     // download file
     fs.writeFileSync(cachedFilePath, await got(url).buffer(), {
@@ -75,20 +80,20 @@ async function cachingFetchAndVerify(url, platform, arch, version) {
   console.info(`Verifying ${filename}.sha256`);
 
   const digest = Buffer.alloc(64);
-  const fd = fs.openSync(cachedHashPath, "r");
+  const fd = fs.openSync(cachedHashPath, 'r');
   fs.readSync(fd, digest, 0, digest.length, 0);
   fs.closeSync(fd);
-  const expectedSha = digest.toString("utf8");
+  const expectedSha = digest.toString('utf8');
   const calculatedSha = await hasha.fromFile(cachedFilePath, {
-    encoding: "hex",
-    algorithm: "sha256",
+    encoding: 'hex',
+    algorithm: 'sha256',
   });
   if (calculatedSha !== expectedSha) {
     console.log(`calculatedSha: ${calculatedSha.length}`);
     console.log(`expectedSha: ${expectedSha.length}`);
     throw new Error(
       `sha256 mismatch for file ${cachedFilePath}. Expected '${expectedSha}', but calculated '${calculatedSha}'.
-  Maybe the file downloaded was incomplete? Try to delete the file to force a re-download: ${cachedFilePath}`
+  Maybe the file downloaded was incomplete? Try to delete the file to force a re-download: ${cachedFilePath}`,
     );
   }
   console.log(`OK (${expectedSha})`);
@@ -99,25 +104,34 @@ async function cachingFetchAndVerify(url, platform, arch, version) {
   console.info(`Unpacked into ${parentCacheDir}`);
 
   // Rename file if needed
-  let resultingFileName = "odo";
+  let resultingFileName = 'odo';
   switch (platform) {
-    case "windows":
-      resultingFileName = "odo.exe";
-      fs.renameSync(path.join(parentCacheDir, `odo-${platform}-${arch}.exe`), path.join(parentCacheDir, resultingFileName));
+    case 'windows':
+      resultingFileName = 'odo.exe';
+      fs.renameSync(
+        path.join(parentCacheDir, `odo-${platform}-${arch}.exe`),
+        path.join(parentCacheDir, resultingFileName),
+      );
       break;
-    case "darwin":
-      fs.renameSync(path.join(parentCacheDir, `odo-${platform}-${arch}`), path.join(parentCacheDir, resultingFileName));
+    case 'darwin':
+      fs.renameSync(
+        path.join(parentCacheDir, `odo-${platform}-${arch}`),
+        path.join(parentCacheDir, resultingFileName),
+      );
       break;
-    case "linux":
+    case 'linux':
       if (fs.existsSync(path.join(parentCacheDir, `odo-${platform}-${arch}`))) {
-        fs.renameSync(path.join(parentCacheDir, `odo-${platform}-${arch}`), path.join(parentCacheDir, resultingFileName));
+        fs.renameSync(
+          path.join(parentCacheDir, `odo-${platform}-${arch}`),
+          path.join(parentCacheDir, resultingFileName),
+        );
       }
       break;
     default:
       break;
   }
 
-  const  p = path.join(parentCacheDir, resultingFileName);
+  const p = path.join(parentCacheDir, resultingFileName);
   console.log(`odo binary (${version}) available at '${p}'`);
   return p;
 }
@@ -129,19 +143,19 @@ async function cachingFetchAndVerify(url, platform, arch, version) {
  */
 function unpack(url, installPath, stream) {
   return new Promise((resolve, reject) => {
-    if (url.endsWith(".zip")) {
+    if (url.endsWith('.zip')) {
       return stream.pipe(
         unzip
           .Extract({ path: installPath })
-          .on("close", resolve)
-          .on("error", reject)
+          .on('close', resolve)
+          .on('error', reject),
       );
     }
 
     return stream
       .pipe(gunzip())
       .pipe(
-        tarFS.extract(installPath).on("finish", resolve).on("error", reject)
+        tarFS.extract(installPath).on('finish', resolve).on('error', reject),
       );
   });
 }
@@ -154,14 +168,20 @@ function unpack(url, installPath, stream) {
  */
 async function download({ version, platform, arch }) {
   let versionToDl = version;
-  if (versionToDl !== "latest" && versionToDl !== "nightly" && !versionToDl.startsWith("v")) {
+  if (
+    versionToDl !== 'latest' &&
+    versionToDl !== 'nightly' &&
+    !versionToDl.startsWith('v')
+  ) {
     versionToDl = `v${version}`;
   }
   let url = `${ODO_DIST_URL}/${versionToDl}`;
-  if (versionToDl === "nightly") {
+  if (versionToDl === 'nightly') {
     url = ODO_DIST_URL_NIGHTLY;
   }
-  url += `/odo-${platform}-${arch}.${platform === "windows" ? "exe.zip" : "tar.gz"}`;
+  url += `/odo-${platform}-${arch}.${
+    platform === 'windows' ? 'exe.zip' : 'tar.gz'
+  }`;
   return await cachingFetchAndVerify(url, platform, arch, version);
 }
 
@@ -173,8 +193,8 @@ function enforcePlatformAndArch(platform, arch) {
   if (!SUPPORTED_ARCHITECTURES_BY_PLATFORM.has(platform)) {
     throw new Error(
       `No binary available for platform: ${platform}. Supported platforms: ${Array.from(
-        SUPPORTED_ARCHITECTURES_BY_PLATFORM.keys()
-      ).join(", ")}`
+        SUPPORTED_ARCHITECTURES_BY_PLATFORM.keys(),
+      ).join(', ')}`,
     );
   }
 
@@ -182,8 +202,8 @@ function enforcePlatformAndArch(platform, arch) {
   if (!archs?.includes(arch)) {
     throw new Error(
       `No binary available for platform/arch: ${platform}/${arch}. Supported architectures for ${platform}: ${archs.join(
-        ", "
-      )}`
+        ', ',
+      )}`,
     );
   }
 }
@@ -194,7 +214,7 @@ function enforcePlatformAndArch(platform, arch) {
  * @param {string} [arch]
  */
 function buildArguments(version, platform, arch) {
-  const conf = pkgConf.sync("odo", {
+  const conf = pkgConf.sync('odo', {
     cwd: process.cwd(),
     defaults: {
       version: ODO_VERSION,
