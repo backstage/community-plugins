@@ -7,7 +7,7 @@ This is an extension module to the catalog-backend plugin, providing an addition
 1. Install the scaffolder relation catalog processor module using the following command:
 
    ```console
-   yarn workspace backend add @backstage-community/backstage-plugin-catalog-backend-module-scaffolder-relation-processor
+   yarn workspace backend add @backstage-community/plugin-catalog-backend-module-scaffolder-relation-processor
    ```
 
 ### Installing on the new backend system
@@ -20,7 +20,7 @@ const backend = createBackend();
 // highlight-add-start
 backend.add(
   import(
-    '@backstage-community/backstage-plugin-catalog-backend-module-scaffolder-relation-processor/alpha'
+    '@backstage-community/plugin-catalog-backend-module-scaffolder-relation-processor/alpha'
   ),
 );
 // highlight-add-end
@@ -34,7 +34,7 @@ To install this module into the legacy backend system, add the following to the 
 
 ```ts title=packages/backend/src/plugins/catalog.ts
 // highlight-add-start
-import { ScaffolderRelationEntityProcessor } from '@backstage-community/backstage-plugin-catalog-backend-module-scaffolder-relation-processor';
+import { ScaffolderRelationEntityProcessor } from '@backstage-community/plugin-catalog-backend-module-scaffolder-relation-processor';
 
 // highlight-add-end
 
