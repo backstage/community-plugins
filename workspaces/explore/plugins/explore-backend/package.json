@@ -2,7 +2,15 @@
   "name": "@backstage-community/plugin-explore-backend",
   "version": "0.1.1",
   "backstage": {
-    "role": "backend-plugin"
+    "role": "backend-plugin",
+    "pluginId": "explore",
+    "pluginPackages": [
+      "@backstage-community/plugin-explore",
+      "@backstage-community/plugin-explore-backend",
+      "@backstage-community/plugin-explore-common",
+      "@backstage-community/plugin-explore-node",
+      "@backstage-community/plugin-explore-react"
+    ]
   },
   "publishConfig": {
     "access": "public",
