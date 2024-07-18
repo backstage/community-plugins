@@ -3,7 +3,12 @@
   "version": "0.2.39",
   "description": "A Backstage plugin that lets you browse TODO comments in your source code",
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "todo",
+    "pluginPackages": [
+      "@backstage-community/plugin-todo",
+      "@backstage-community/plugin-todo-backend"
+    ]
   },
   "publishConfig": {
     "access": "public",
