@@ -3,7 +3,12 @@
   "version": "0.2.59",
   "description": "A Backstage plugin that generates README badges for your entities",
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "badges",
+    "pluginPackages": [
+      "@backstage-community/plugin-badges",
+      "@backstage-community/plugin-badges-backend"
+    ]
   },
   "publishConfig": {
     "access": "public",
