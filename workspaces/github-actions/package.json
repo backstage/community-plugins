@@ -6,6 +6,10 @@
     "node": "18 || 20"
   },
   "scripts": {
+    "dev": "concurrently \"yarn start\" \"yarn start-backend\"",
+    "start": "yarn workspace app start",
+    "start-backend": "yarn workspace backend start",
+    "build:backend": "yarn workspace backend build",
     "tsc": "tsc",
     "tsc:full": "tsc --skipLibCheck false --incremental false",
     "build:all": "backstage-cli repo build --all",
@@ -37,9 +41,13 @@
     "@backstage/repo-tools": "^0.8.0",
     "@changesets/cli": "^2.27.1",
     "@spotify/prettier-config": "^15.0.0",
+    "concurrently": "^8.0.0",
     "node-gyp": "^10.0.0",
     "prettier": "^2.3.2",
     "typescript": "~5.3.0"
+  },
+  "dependencies": {
+    "@backstage-community/plugin-github-actions": "workspace:^"
   },
   "resolutions": {
     "@types/react": "^18",
