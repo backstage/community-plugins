@@ -3,7 +3,15 @@
   "version": "0.0.39",
   "description": "A frontend library for Backstage plugins that want to interact with the explore plugin",
   "backstage": {
-    "role": "web-library"
+    "role": "web-library",
+    "pluginId": "explore",
+    "pluginPackages": [
+      "@backstage-community/plugin-explore",
+      "@backstage-community/plugin-explore-backend",
+      "@backstage-community/plugin-explore-common",
+      "@backstage-community/plugin-explore-node",
+      "@backstage-community/plugin-explore-react"
+    ]
   },
   "publishConfig": {
     "access": "public",
