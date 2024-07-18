@@ -27,13 +27,13 @@
     "postpack": "backstage-cli package postpack"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.26.3"
+    "@backstage/cli": "^0.26.11"
   },
   "files": [
     "dist"
   ],
   "dependencies": {
     "@backstage-community/plugin-explore-common": "workspace:^",
-    "@backstage/backend-plugin-api": "^0.6.17"
+    "@backstage/backend-plugin-api": "^0.7.0"
   }
 }
