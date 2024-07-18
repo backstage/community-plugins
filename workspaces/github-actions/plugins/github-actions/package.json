@@ -28,6 +28,21 @@
   "files": [
     "dist"
   ],
+  "exports": {
+    ".": "./src/index.ts",
+    "./alpha": "./src/alpha.tsx",
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "alpha": [
+        "src/alpha.tsx"
+      ],
+      "package.json": [
+        "package.json"
+      ]
+    }
+  },
   "scripts": {
     "build": "backstage-cli package build",
     "clean": "backstage-cli package clean",
@@ -39,8 +54,10 @@
   },
   "dependencies": {
     "@backstage/catalog-model": "^1.4.5",
+    "@backstage/core-compat-api": "^0.2.7",
     "@backstage/core-components": "^0.14.4",
     "@backstage/core-plugin-api": "^1.9.2",
+    "@backstage/frontend-plugin-api": "^0.6.5",
     "@backstage/integration": "^1.10.0",
     "@backstage/integration-react": "^1.1.26",
     "@backstage/plugin-catalog-react": "^1.11.3",
