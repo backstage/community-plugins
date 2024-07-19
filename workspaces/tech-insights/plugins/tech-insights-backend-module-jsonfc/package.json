@@ -51,7 +51,7 @@
   },
   "devDependencies": {
     "@backstage/backend-test-utils": "^0.3.8",
-    "@backstage/cli": "^0.26.6",
+    "@backstage/cli": "^0.26.11",
     "@types/lodash": "^4.14.151"
   },
   "configSchema": "config.json"
