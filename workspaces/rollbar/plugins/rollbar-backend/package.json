@@ -3,7 +3,12 @@
   "version": "0.1.63",
   "description": "A Backstage backend plugin that integrates towards Rollbar",
   "backstage": {
-    "role": "backend-plugin"
+    "role": "backend-plugin",
+    "pluginId": "rollbar",
+    "pluginPackages": [
+      "@backstage-community/plugin-rollbar",
+      "@backstage-community/plugin-rollbar-backend"
+    ]
   },
   "publishConfig": {
     "access": "public",
