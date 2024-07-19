@@ -8,7 +8,7 @@ import { customGithubSignInResolver } from './github';
 
 export default createBackendModule({
   pluginId: 'auth',
-  moduleId: '@spotify/auth-module',
+  moduleId: 'github-auth-module',
   register(reg) {
     reg.registerInit({
       deps: {
