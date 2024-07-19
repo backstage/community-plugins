@@ -1,5 +1,11 @@
 # @backstage-community/plugin-github-actions
 
+## 0.6.17
+
+### Patch Changes
+
+- 61d5aff: version:bump to v1.29.1
+
 ## 0.6.16
 
 ### Patch Changes
