@@ -15,7 +15,12 @@
     "directory": "workspaces/linkerd/plugins/linkerd-backend"
   },
   "backstage": {
-    "role": "backend-plugin"
+    "role": "backend-plugin",
+    "pluginId": "linkerd",
+    "pluginPackages": [
+      "@backstage-community/plugin-linkerd",
+      "@backstage-community/plugin-linkerd-backend"
+    ]
   },
   "scripts": {
     "start": "backstage-cli package start",
