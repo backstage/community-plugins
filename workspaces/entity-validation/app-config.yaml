@@ -1,0 +1,22 @@
+app:
+  title: Backstage Example App
+  baseUrl: http://localhost:3000
+
+backend:
+  baseUrl: http://localhost:7007
+  listen:
+    port: 7007
+  cors:
+    origin: http://localhost:3001
+    methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
+    credentials: true
+  csp:
+    connect-src: ["'self'", 'http:', 'https:']
+
+auth:
+  environment: development
+  providers:
+    guest: {}
+
+permission:
+  enabled: true
