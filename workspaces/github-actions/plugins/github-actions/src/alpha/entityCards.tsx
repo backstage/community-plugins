@@ -12,13 +12,16 @@ export const entityLatestGithubActionRunCard = createEntityCardExtension({
   name: 'latest-workflow-run',
   configSchema: createSchemaFromZod(z =>
     z.object({
-      branch: z.string().default('master'),
+      props: z.object({
+        branch: z.string().default('master'),
+        variant: z.enum(['flex', 'fullHeight', 'gridItem']),
+      }),
       filter: z.string().default(''),
     }),
   ),
   loader: ({ config }) =>
     import('../components/Cards').then(m => (
-      <m.LatestWorkflowRunCard branch={config.branch} />
+      <m.LatestWorkflowRunCard {...config.props} />
     )),
 });
 
@@ -27,13 +30,16 @@ export const entityLatestGithubActionsForBranchCard = createEntityCardExtension(
     name: 'latest-branch-workflow-runs',
     configSchema: createSchemaFromZod(z =>
       z.object({
-        branch: z.string().default('master'),
+        props: z.object({
+          branch: z.string().default('master'),
+          variant: z.enum(['flex', 'fullHeight', 'gridItem']),
+        }),
         filter: z.string().default(''),
       }),
     ),
     loader: ({ config }) =>
       import('../components/Cards').then(m => (
-        <m.LatestWorkflowsForBranchCard branch={config.branch} />
+        <m.LatestWorkflowsForBranchCard {...config.props} />
       )),
   },
 );
@@ -42,12 +48,17 @@ export const entityRecentGithubActionsRunsCard = createEntityCardExtension({
   name: 'recent-workflow-runs',
   configSchema: createSchemaFromZod(z =>
     z.object({
-      branch: z.string().default('master'),
+      props: z.object({
+        branch: z.string().default('master'),
+        dense: z.boolean().default(false),
+        limit: z.number().default(5),
+        variant: z.enum(['flex', 'fullHeight', 'gridItem']),
+      }),
       filter: z.string().default(''),
     }),
   ),
   loader: ({ config }) =>
     import('../components/Cards').then(m => (
-      <m.RecentWorkflowRunsCard branch={config.branch} />
+      <m.RecentWorkflowRunsCard {...config.props} />
     )),
 });
