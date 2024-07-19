@@ -6,6 +6,9 @@ import {
 import { scmAuthApiRef } from '@backstage/integration-react';
 import { githubActionsApiRef, GithubActionsClient } from '../api';
 
+/**
+ * @alpha
+ */
 export const githubActionsApi = createApiExtension({
   factory: createApiFactory({
     api: githubActionsApiRef,

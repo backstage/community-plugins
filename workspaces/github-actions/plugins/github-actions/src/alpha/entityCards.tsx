@@ -2,12 +2,18 @@ import React from 'react';
 import { createSchemaFromZod } from '@backstage/frontend-plugin-api';
 import { createEntityCardExtension } from '@backstage/plugin-catalog-react/alpha';
 
+/**
+ * @alpha
+ */
 export const entityGithubActionsCard = createEntityCardExtension({
   name: 'workflow-runs',
   loader: () =>
     import('../components/Router').then(m => <m.Router view="cards" />),
 });
 
+/**
+ * @alpha
+ */
 export const entityLatestGithubActionRunCard = createEntityCardExtension({
   name: 'latest-workflow-run',
   configSchema: createSchemaFromZod(z =>
@@ -25,6 +31,9 @@ export const entityLatestGithubActionRunCard = createEntityCardExtension({
     )),
 });
 
+/**
+ * @alpha
+ */
 export const entityLatestGithubActionsForBranchCard = createEntityCardExtension(
   {
     name: 'latest-branch-workflow-runs',
@@ -44,6 +53,9 @@ export const entityLatestGithubActionsForBranchCard = createEntityCardExtension(
   },
 );
 
+/**
+ * @alpha
+ */
 export const entityRecentGithubActionsRunsCard = createEntityCardExtension({
   name: 'recent-workflow-runs',
   configSchema: createSchemaFromZod(z =>
