@@ -3,7 +3,13 @@
   "version": "0.7.18",
   "description": "",
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "sonarqube",
+    "pluginPackages": [
+      "@backstage-community/plugin-sonarqube",
+      "@backstage-community/plugin-sonarqube-backend",
+      "@backstage-community/plugin-sonarqube-react"
+    ]
   },
   "publishConfig": {
     "access": "public",
