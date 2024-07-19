@@ -3,7 +3,12 @@
   "version": "0.2.22",
   "description": "Deprecated, consider using @backstage/plugin-search-backend-module-stack-overflow-collator instead",
   "backstage": {
-    "role": "backend-plugin"
+    "role": "backend-plugin",
+    "pluginId": "stack-overflow",
+    "pluginPackages": [
+      "@backstage-community/plugin-stack-overflow",
+      "@backstage-community/plugin-stack-overflow-backend"
+    ]
   },
   "publishConfig": {
     "access": "public",
