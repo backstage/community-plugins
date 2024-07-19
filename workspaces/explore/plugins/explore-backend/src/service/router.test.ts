@@ -20,9 +20,9 @@ import {
 } from '@backstage-community/plugin-explore-common';
 import express from 'express';
 import request from 'supertest';
-import { ExploreToolProvider } from '../tools';
 import { createRouter } from './router';
 import { mockServices } from '@backstage/backend-test-utils';
+import { ExploreToolProvider } from '@backstage-community/plugin-explore-node';
 
 const mockTools: ExploreTool[] = [
   { title: 'Tool 1', url: 'https://example.com/tool1', image: '' },

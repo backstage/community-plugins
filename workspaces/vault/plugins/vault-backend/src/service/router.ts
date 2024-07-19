@@ -14,20 +14,22 @@
  * limitations under the License.
  */
 
-import { PluginTaskScheduler } from '@backstage/backend-tasks';
-import { Config } from '@backstage/config';
 import express from 'express';
-import { Logger } from 'winston';
 import { VaultBuilder } from './VaultBuilder';
+import {
+  LoggerService,
+  RootConfigService,
+  SchedulerService,
+} from '@backstage/backend-plugin-api';
 
 /**
  * Options for the router creation.
  * @public
  */
 export interface RouterOptions {
-  logger: Logger;
-  config: Config;
-  scheduler: PluginTaskScheduler;
+  logger: LoggerService;
+  config: RootConfigService;
+  scheduler: SchedulerService;
 }
 
 /**

@@ -1,5 +1,11 @@
 # @backstage-community/plugin-graphql-voyager
 
+## 0.1.18
+
+### Patch Changes
+
+- 75158bc: Updated dependency `graphql-voyager` to `^2.0.0`.
+
 ## 0.1.17
 
 ### Patch Changes

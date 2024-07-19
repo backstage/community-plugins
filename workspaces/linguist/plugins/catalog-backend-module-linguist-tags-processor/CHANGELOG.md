@@ -1,0 +1,9 @@
+# @backstage-community/plugin-catalog-backend-module-linguist-tags-processor
+
+## 0.1.1
+
+### Patch Changes
+
+- 3651de6: Added new dedicated module for the Linguist Tags Processor and deprecated the version in the Linguist Backend
+- Updated dependencies [dd19841]
+  - @backstage-community/plugin-linguist-common@0.1.6

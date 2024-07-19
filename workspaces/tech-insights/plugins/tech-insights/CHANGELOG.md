@@ -1,5 +1,14 @@
 # @backstage-community/plugin-tech-insights
 
+## 0.3.29
+
+### Patch Changes
+
+- cbad35a: Updated dependencies.
+- cbad35a: Added a filter to `ScorecardsPage` to only shows entities with results.
+- Updated dependencies [cbad35a]
+  - @backstage-community/plugin-tech-insights-common@0.2.14
+
 ## 0.3.28
 
 ### Patch Changes

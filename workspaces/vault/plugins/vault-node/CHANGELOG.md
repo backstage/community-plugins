@@ -1,5 +1,17 @@
 # @backstage-community/plugin-vault-node
 
+## 0.1.13
+
+### Patch Changes
+
+- 6f59d18: Fix package metadata
+
+## 0.1.12
+
+### Patch Changes
+
+- 6757373: Backstage v1.28.4 version bump. Also addressed some of the upstream deprecations
+
 ## 0.1.11
 
 ### Patch Changes

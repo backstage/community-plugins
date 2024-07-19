@@ -29,7 +29,12 @@ import {
 } from '@backstage-community/plugin-azure-devops-common';
 import { parseAzureDevOpsUrl } from '../utils';
 
-/** @public */
+/**
+ * @public
+ *
+ * @deprecated Use `@backstage-community/plugin-catalog-backend-module-azure-devops-annotator-processor` instead,
+ * see {@link https://github.com/backstage/community-plugins/tree/main/workspaces/azure-devops/plugins/catalog-backend-module-azure-devops-annotator-processor}
+ */
 export class AzureDevOpsAnnotatorProcessor implements CatalogProcessor {
   constructor(
     private readonly opts: {

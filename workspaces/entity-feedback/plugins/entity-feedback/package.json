@@ -1,8 +1,14 @@
 {
   "name": "@backstage-community/plugin-entity-feedback",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "entity-feedback",
+    "pluginPackages": [
+      "@backstage-community/plugin-entity-feedback",
+      "@backstage-community/plugin-entity-feedback-backend",
+      "@backstage-community/plugin-entity-feedback-common"
+    ]
   },
   "publishConfig": {
     "access": "public",

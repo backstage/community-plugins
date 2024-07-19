@@ -39,6 +39,7 @@ export const GroupsExplorerContent = (props: {
   title?: string;
   direction?: DependencyGraphTypes.Direction;
   hideChildren?: boolean;
+  namespace?: string;
 }) => {
   const classes = useStyles();
 
@@ -50,6 +51,7 @@ export const GroupsExplorerContent = (props: {
       <GroupsDiagram
         direction={props.direction}
         hideChildren={props.hideChildren}
+        namespace={props.namespace}
       />
     </Content>
   );
