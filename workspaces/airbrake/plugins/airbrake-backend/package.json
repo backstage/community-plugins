@@ -10,7 +10,12 @@
     "types": "dist/index.d.ts"
   },
   "backstage": {
-    "role": "backend-plugin"
+    "role": "backend-plugin",
+    "pluginId": "airbrake",
+    "pluginPackages": [
+      "@backstage-community/plugin-airbrake",
+      "@backstage-community/plugin-airbrake-backend"
+    ]
   },
   "homepage": "https://backstage.io",
   "repository": {
@@ -28,8 +33,8 @@
     "clean": "backstage-cli package clean"
   },
   "dependencies": {
-    "@backstage/backend-common": "^0.21.7",
-    "@backstage/backend-plugin-api": "^0.6.17",
+    "@backstage/backend-common": "^0.23.3",
+    "@backstage/backend-plugin-api": "^0.7.0",
     "@backstage/config": "^1.2.0",
     "@types/express": "*",
     "express": "^4.17.1",
@@ -38,8 +43,8 @@
     "yn": "^4.0.0"
   },
   "devDependencies": {
-    "@backstage/backend-test-utils": "^0.3.7",
-    "@backstage/cli": "^0.26.3",
+    "@backstage/backend-test-utils": "^0.4.4",
+    "@backstage/cli": "^0.26.11",
     "@types/http-proxy-middleware": "^1.0.0",
     "@types/supertest": "^2.0.8",
     "supertest": "^6.1.6"
