@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
+import { ConfigApi } from '@backstage/core-plugin-api';
 import { readGithubIntegrationConfigs } from '@backstage/integration';
 import { ScmAuthApi } from '@backstage/integration-react';
-import { GithubActionsApi } from './GithubActionsApi';
 import { Octokit, RestEndpointMethodTypes } from '@octokit/rest';
-import { ConfigApi } from '@backstage/core-plugin-api';
+import { GithubActionsApi } from './GithubActionsApi';
 
 /**
  * A client for fetching information about GitHub actions.

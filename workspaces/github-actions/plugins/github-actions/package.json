@@ -61,7 +61,7 @@
     "@backstage/core-compat-api": "^0.2.7",
     "@backstage/core-components": "^0.14.9",
     "@backstage/core-plugin-api": "^1.9.3",
-    "@backstage/frontend-plugin-api": "^0.6.5",
+    "@backstage/frontend-plugin-api": "^0.6.7",
     "@backstage/integration": "^1.13.0",
     "@backstage/integration-react": "^1.1.29",
     "@backstage/plugin-catalog-react": "^1.12.2",

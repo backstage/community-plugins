@@ -18,10 +18,12 @@ export const entityLatestGithubActionRunCard = createEntityCardExtension({
   name: 'latest-workflow-run',
   configSchema: createSchemaFromZod(z =>
     z.object({
-      props: z.object({
-        branch: z.string().default('master'),
-        variant: z.enum(['flex', 'fullHeight', 'gridItem']),
-      }),
+      props: z
+        .object({
+          branch: z.string().default('master'),
+          variant: z.enum(['flex', 'fullHeight', 'gridItem']).optional(),
+        })
+        .default({}),
       filter: z.string().default(''),
     }),
   ),
@@ -39,10 +41,12 @@ export const entityLatestGithubActionsForBranchCard = createEntityCardExtension(
     name: 'latest-branch-workflow-runs',
     configSchema: createSchemaFromZod(z =>
       z.object({
-        props: z.object({
-          branch: z.string().default('master'),
-          variant: z.enum(['flex', 'fullHeight', 'gridItem']),
-        }),
+        props: z
+          .object({
+            branch: z.string().default('master'),
+            variant: z.enum(['flex', 'fullHeight', 'gridItem']).optional(),
+          })
+          .default({}),
         filter: z.string().default(''),
       }),
     ),
@@ -60,12 +64,14 @@ export const entityRecentGithubActionsRunsCard = createEntityCardExtension({
   name: 'recent-workflow-runs',
   configSchema: createSchemaFromZod(z =>
     z.object({
-      props: z.object({
-        branch: z.string().default('master'),
-        dense: z.boolean().default(false),
-        limit: z.number().default(5),
-        variant: z.enum(['flex', 'fullHeight', 'gridItem']),
-      }),
+      props: z
+        .object({
+          branch: z.string().default('master'),
+          dense: z.boolean().default(false),
+          limit: z.number().default(5).optional(),
+          variant: z.enum(['flex', 'fullHeight', 'gridItem']).optional(),
+        })
+        .default({}),
       filter: z.string().default(''),
     }),
   ),

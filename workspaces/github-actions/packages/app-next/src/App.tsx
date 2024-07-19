@@ -36,6 +36,8 @@ import { Navigate, Route } from 'react-router';
 import { navigationExtension } from './components/Sidebar';
 import { SignInPage } from './components/auth/SignInPage';
 
+import githubActions from '@backstage-community/plugin-github-actions/alpha';
+
 const pageTheme = {
   ...defaultPageThemes,
   dataset: genPageTheme({
@@ -109,6 +111,7 @@ export const app = createApp({
     catalogPlugin,
     catalogImportPlugin,
     userSettingsPlugin,
+    githubActions,
     ...collectedLegacyPlugins,
     createExtensionOverrides({
       extensions: [

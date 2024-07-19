@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { errorApiRef, useApi } from '@backstage/core-plugin-api';
 import { useState } from 'react';
 import useAsyncRetry from 'react-use/esm/useAsyncRetry';
-import { githubActionsApiRef } from '../api/GithubActionsApi';
-import { useApi, errorApiRef } from '@backstage/core-plugin-api';
 import { Branch } from '../api';
+import { githubActionsApiRef } from '../api/GithubActionsApi';
 
 export type WorkflowRun = {
   workflowName?: string;
