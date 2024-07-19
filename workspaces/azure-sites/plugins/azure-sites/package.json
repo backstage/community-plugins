@@ -2,7 +2,13 @@
   "name": "@backstage-community/plugin-azure-sites",
   "version": "0.1.24",
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "azure-sites",
+    "pluginPackages": [
+      "@backstage-community/plugin-azure-sites",
+      "@backstage-community/plugin-azure-sites-backend",
+      "@backstage-community/plugin-azure-sites-common"
+    ]
   },
   "publishConfig": {
     "access": "public",
