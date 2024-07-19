@@ -2,7 +2,11 @@
   "name": "@backstage-community/plugin-github-issues",
   "version": "0.4.2",
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "github-issues",
+    "pluginPackages": [
+      "@backstage-community/plugin-github-issues"
+    ]
   },
   "publishConfig": {
     "access": "public",
