@@ -10,7 +10,13 @@
     "types": "dist/index.d.ts"
   },
   "backstage": {
-    "role": "backend-plugin"
+    "role": "backend-plugin",
+    "pluginId": "azure-sites",
+    "pluginPackages": [
+      "@backstage-community/plugin-azure-sites",
+      "@backstage-community/plugin-azure-sites-backend",
+      "@backstage-community/plugin-azure-sites-common"
+    ]
   },
   "homepage": "https://backstage.io",
   "repository": {
