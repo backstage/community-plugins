@@ -40,18 +40,18 @@
   },
   "dependencies": {
     "@backstage-community/plugin-lighthouse-common": "workspace:^",
-    "@backstage/backend-common": "^0.21.7",
-    "@backstage/backend-plugin-api": "^0.6.17",
-    "@backstage/backend-tasks": "^0.5.22",
-    "@backstage/catalog-client": "^1.6.4",
-    "@backstage/catalog-model": "^1.4.5",
+    "@backstage/backend-common": "^0.23.3",
+    "@backstage/backend-plugin-api": "^0.7.0",
+    "@backstage/backend-tasks": "^0.5.27",
+    "@backstage/catalog-client": "^1.6.5",
+    "@backstage/catalog-model": "^1.5.0",
     "@backstage/config": "^1.2.0",
-    "@backstage/plugin-catalog-node": "^1.11.1",
+    "@backstage/plugin-catalog-node": "^1.12.4",
     "@backstage/types": "^1.1.1",
     "winston": "^3.2.1"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.26.3"
+    "@backstage/cli": "^0.26.11"
   },
   "configSchema": "config.d.ts"
 }
