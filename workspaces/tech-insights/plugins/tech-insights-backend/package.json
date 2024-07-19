@@ -2,7 +2,14 @@
   "name": "@backstage-community/plugin-tech-insights-backend",
   "version": "0.5.34",
   "backstage": {
-    "role": "backend-plugin"
+    "role": "backend-plugin",
+    "pluginId": "tech-insights",
+    "pluginPackages": [
+      "@backstage-community/plugin-tech-insights",
+      "@backstage-community/plugin-tech-insights-backend",
+      "@backstage-community/plugin-tech-insights-common",
+      "@backstage-community/plugin-tech-insights-node"
+    ]
   },
   "publishConfig": {
     "access": "public",
