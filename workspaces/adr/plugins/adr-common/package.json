@@ -3,7 +3,13 @@
   "version": "0.2.25",
   "description": "Common functionalities for the adr plugin",
   "backstage": {
-    "role": "common-library"
+    "role": "common-library",
+    "pluginId": "adr",
+    "pluginPackages": [
+      "@backstage-community/plugin-adr",
+      "@backstage-community/plugin-adr-backend",
+      "@backstage-community/plugin-adr-common"
+    ]
   },
   "publishConfig": {
     "access": "public",
