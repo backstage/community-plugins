@@ -2,7 +2,13 @@
   "name": "@backstage-community/plugin-sonarqube-backend",
   "version": "0.2.20",
   "backstage": {
-    "role": "backend-plugin"
+    "role": "backend-plugin",
+    "pluginId": "sonarqube",
+    "pluginPackages": [
+      "@backstage-community/plugin-sonarqube",
+      "@backstage-community/plugin-sonarqube-backend",
+      "@backstage-community/plugin-sonarqube-react"
+    ]
   },
   "publishConfig": {
     "access": "public",
