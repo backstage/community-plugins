@@ -2,7 +2,13 @@
   "name": "@backstage-community/plugin-playlist-backend",
   "version": "0.3.23",
   "backstage": {
-    "role": "backend-plugin"
+    "role": "backend-plugin",
+    "pluginId": "playlist",
+    "pluginPackages": [
+      "@backstage-community/plugin-playlist",
+      "@backstage-community/plugin-playlist-backend",
+      "@backstage-community/plugin-playlist-common"
+    ]
   },
   "publishConfig": {
     "access": "public",
