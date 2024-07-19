@@ -52,3 +52,29 @@ To add the new page to your sidebar, you must include these lines in your `Root.
       </SidebarPage>
     );
 ```
+
+## Embedding inside other pages
+
+The plugin can also be embedded inside other pages.
+
+### Devtools
+
+Here's how to add Entity Validation to the [DevTools](https://github.com/backstage/backstage/tree/master/plugins/devtools) plugin:
+
+1. Install the Entity Validation plugin and add the route to your app as per the [Getting Started](#getting-started) section.
+
+2. Add the following import to your `CustomDevToolsPage.tsx`:
+
+   `import { EntityValidationContent } from '@backstage-community/plugin-entity-validation';`
+
+3. Then add a new `DevToolsLayout.Route` to the end of your `DevToolsLayout` like this:
+
+   ```diff
+     <DevToolsLayout>
+       ...
+   +   <DevToolsLayout.Route path="entity-validation" title="Entity Validation">
+   +     <EntityValidationContent
+   +      contentHead={<Typography variant="h6">Entity Validation</Typography>} />
+   +   </DevToolsLayout.Route>
+     </DevToolsLayout>
+   ```
