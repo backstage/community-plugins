@@ -2,7 +2,12 @@
   "name": "@backstage-community/plugin-bazaar",
   "version": "0.2.27",
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "bazaar",
+    "pluginPackages": [
+      "@backstage-community/plugin-bazaar",
+      "@backstage-community/plugin-bazaar-backend"
+    ]
   },
   "publishConfig": {
     "access": "public",
