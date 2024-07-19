@@ -5,7 +5,6 @@ import {
   configApiRef,
   createApiExtension,
   createApiFactory,
-  createAppRootWrapperExtension,
   createExtensionOverrides,
   createPageExtension,
   createSignInPageExtension,
@@ -19,9 +18,6 @@ import {
 import { ApiExplorerPage } from '@backstage/plugin-api-docs';
 import catalogPlugin from '@backstage/plugin-catalog/alpha';
 import catalogImportPlugin from '@backstage/plugin-catalog-import/alpha';
-import scaffolderPlugin from '@backstage/plugin-scaffolder/alpha';
-import searchPlugin from '@backstage/plugin-search/alpha';
-import techdocsPlugin from '@backstage/plugin-techdocs/alpha';
 import userSettingsPlugin from '@backstage/plugin-user-settings/alpha';
 import {
   createUnifiedTheme,
@@ -34,22 +30,11 @@ import {
   UnifiedTheme,
   UnifiedThemeProvider,
 } from '@backstage/theme';
-import techRadarPlugin from '@backstage-community/plugin-tech-radar/alpha';
 import React from 'react';
 import { Navigate, Route } from 'react-router';
-import { createGlobalStyle } from 'styled-components';
 
-import AppHeader from './components/AppHeader';
 import { navigationExtension } from './components/Sidebar';
 import { SignInPage } from './components/auth/SignInPage';
-
-export const BACKSTAGE_HEADER_HEIGHT = 65;
-
-export const GlobalStyle = createGlobalStyle`
-  body {
-    padding-top: ${BACKSTAGE_HEADER_HEIGHT}px;
-  }
-`;
 
 const pageTheme = {
   ...defaultPageThemes,
@@ -119,30 +104,14 @@ const scmIntegrationApi = createApiExtension({
   }),
 });
 
-const appRootWrapper = createAppRootWrapperExtension({
-  name: 'AppRootWrapper',
-  Component: ({ children }) => (
-    <>
-      <GlobalStyle />
-      <AppHeader />
-      {children}
-    </>
-  ),
-});
-
 export const app = createApp({
   features: [
     catalogPlugin,
     catalogImportPlugin,
-    techdocsPlugin,
     userSettingsPlugin,
-    searchPlugin,
-    techRadarPlugin,
-    scaffolderPlugin,
     ...collectedLegacyPlugins,
     createExtensionOverrides({
       extensions: [
-        appRootWrapper,
         signInPage,
         darkThemeExtension,
         lightThemeExtension,
