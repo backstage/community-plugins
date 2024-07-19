@@ -2,7 +2,9 @@
   "name": "@backstage-community/plugin-tech-insights-backend-module-jsonfc",
   "version": "0.1.52",
   "backstage": {
-    "role": "backend-plugin-module"
+    "role": "backend-plugin-module",
+    "pluginId": "tech-insights",
+    "pluginPackage": "@backstage-community/plugin-tech-insights-backend"
   },
   "publishConfig": {
     "access": "public",
