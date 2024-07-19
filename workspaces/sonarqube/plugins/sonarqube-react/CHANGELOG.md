@@ -1,5 +1,11 @@
 # @backstage-community/plugin-sonarqube-react
 
+## 0.1.17
+
+### Patch Changes
+
+- eabcfbf: version:bump to v1.29.1
+
 ## 0.1.16
 
 ### Patch Changes

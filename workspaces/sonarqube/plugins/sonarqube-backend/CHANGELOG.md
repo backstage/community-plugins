@@ -1,5 +1,11 @@
 # @backstage-community/plugin-sonarqube-backend
 
+## 0.2.21
+
+### Patch Changes
+
+- eabcfbf: version:bump to v1.29.1
+
 ## 0.2.20
 
 ### Patch Changes
