@@ -1,8 +1,12 @@
 {
   "name": "@backstage-community/plugin-github-issues",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "github-issues",
+    "pluginPackages": [
+      "@backstage-community/plugin-github-issues"
+    ]
   },
   "publishConfig": {
     "access": "public",
@@ -32,12 +36,12 @@
     "test": "backstage-cli package test"
   },
   "dependencies": {
-    "@backstage/catalog-model": "^1.4.5",
-    "@backstage/core-components": "^0.14.4",
-    "@backstage/core-plugin-api": "^1.9.2",
+    "@backstage/catalog-model": "^1.5.0",
+    "@backstage/core-components": "^0.14.9",
+    "@backstage/core-plugin-api": "^1.9.3",
     "@backstage/errors": "^1.2.4",
-    "@backstage/integration": "^1.10.0",
-    "@backstage/plugin-catalog-react": "^1.11.3",
+    "@backstage/integration": "^1.13.0",
+    "@backstage/plugin-catalog-react": "^1.12.2",
     "@material-ui/core": "^4.12.4",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "4.0.0-alpha.61",
@@ -47,9 +51,9 @@
     "react-use": "^17.4.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.26.3",
-    "@backstage/dev-utils": "^1.0.31",
-    "@backstage/test-utils": "^1.5.4",
+    "@backstage/cli": "^0.26.11",
+    "@backstage/dev-utils": "^1.0.35",
+    "@backstage/test-utils": "^1.5.8",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^15.0.0",

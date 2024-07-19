@@ -1,5 +1,11 @@
 # @backstage-community/plugin-badges
 
+## 0.2.60
+
+### Patch Changes
+
+- b17bd5d: version:bump to v1.29.1
+
 ## 0.2.59
 
 ### Patch Changes

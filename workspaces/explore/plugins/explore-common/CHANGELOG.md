@@ -1,5 +1,11 @@
 # @backstage-community/plugin-explore-common
 
+## 0.0.4
+
+### Patch Changes
+
+- 2173f7d: version:bump to v1.29.1
+
 ## 0.0.3
 
 ### Patch Changes
