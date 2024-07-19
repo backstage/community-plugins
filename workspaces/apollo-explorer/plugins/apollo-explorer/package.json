@@ -2,7 +2,11 @@
   "name": "@backstage-community/plugin-apollo-explorer",
   "version": "0.2.1",
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "apollo-explorer",
+    "pluginPackages": [
+      "@backstage-community/plugin-apollo-explorer"
+    ]
   },
   "publishConfig": {
     "access": "public",
