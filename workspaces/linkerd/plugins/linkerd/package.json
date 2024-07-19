@@ -15,7 +15,12 @@
     "directory": "workspaces/linkerd/plugins/linkerd"
   },
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "linkerd",
+    "pluginPackages": [
+      "@backstage-community/plugin-linkerd",
+      "@backstage-community/plugin-linkerd-backend"
+    ]
   },
   "sideEffects": false,
   "scripts": {
