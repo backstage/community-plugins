@@ -4,7 +4,7 @@
 
 ```ts
 import { AuthService } from '@backstage/backend-plugin-api';
-import { BackendFeature } from '@backstage/backend-plugin-api';
+import { BackendFeatureCompat } from '@backstage/backend-plugin-api';
 import { CatalogApi } from '@backstage/catalog-client';
 import { Config } from '@backstage/config';
 import express from 'express';
@@ -15,7 +15,7 @@ import { PluginEndpointDiscovery } from '@backstage/backend-common';
 import { UrlReader } from '@backstage/backend-common';
 
 // @public
-const codeCoveragePlugin: () => BackendFeature;
+const codeCoveragePlugin: BackendFeatureCompat;
 export default codeCoveragePlugin;
 
 // @public

@@ -3,7 +3,12 @@
   "version": "0.2.32",
   "description": "A Backstage backend plugin that helps you keep track of your code coverage",
   "backstage": {
-    "role": "backend-plugin"
+    "role": "backend-plugin",
+    "pluginId": "code-coverage",
+    "pluginPackages": [
+      "@backstage-community/plugin-code-coverage",
+      "@backstage-community/plugin-code-coverage-backend"
+    ]
   },
   "publishConfig": {
     "access": "public",
