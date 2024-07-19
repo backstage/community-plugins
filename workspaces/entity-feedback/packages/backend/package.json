@@ -21,15 +21,15 @@
   },
   "dependencies": {
     "@backstage-community/plugin-entity-feedback-backend": "workspace:^",
-    "@backstage/backend-defaults": "^0.3.3",
-    "@backstage/backend-plugin-api": "^0.6.21",
-    "@backstage/plugin-app-backend": "^0.3.70",
-    "@backstage/plugin-auth-backend": "^0.22.8",
-    "@backstage/plugin-auth-backend-module-guest-provider": "^0.1.7",
-    "@backstage/plugin-catalog-backend": "^1.23.2"
+    "@backstage/backend-defaults": "^0.4.1",
+    "@backstage/backend-plugin-api": "^0.7.0",
+    "@backstage/plugin-app-backend": "^0.3.71",
+    "@backstage/plugin-auth-backend": "^0.22.9",
+    "@backstage/plugin-auth-backend-module-guest-provider": "^0.1.8",
+    "@backstage/plugin-catalog-backend": "^1.24.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.26.10"
+    "@backstage/cli": "^0.26.11"
   },
   "files": [
     "dist"
