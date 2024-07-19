@@ -3,7 +3,15 @@
   "version": "0.0.3",
   "description": "Common functionalities for the explore plugin",
   "backstage": {
-    "role": "common-library"
+    "role": "common-library",
+    "pluginId": "explore",
+    "pluginPackages": [
+      "@backstage-community/plugin-explore",
+      "@backstage-community/plugin-explore-backend",
+      "@backstage-community/plugin-explore-common",
+      "@backstage-community/plugin-explore-node",
+      "@backstage-community/plugin-explore-react"
+    ]
   },
   "publishConfig": {
     "access": "public",
@@ -35,6 +43,6 @@
     "test": "backstage-cli package test"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.26.3"
+    "@backstage/cli": "^0.26.11"
   }
 }

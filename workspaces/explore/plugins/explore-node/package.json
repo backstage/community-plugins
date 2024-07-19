@@ -16,7 +16,15 @@
     "directory": "workspaces/explore/plugins/explore-node"
   },
   "backstage": {
-    "role": "node-library"
+    "role": "node-library",
+    "pluginId": "explore",
+    "pluginPackages": [
+      "@backstage-community/plugin-explore",
+      "@backstage-community/plugin-explore-backend",
+      "@backstage-community/plugin-explore-common",
+      "@backstage-community/plugin-explore-node",
+      "@backstage-community/plugin-explore-react"
+    ]
   },
   "scripts": {
     "build": "backstage-cli package build",
@@ -27,13 +35,13 @@
     "postpack": "backstage-cli package postpack"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.26.3"
+    "@backstage/cli": "^0.26.11"
   },
   "files": [
     "dist"
   ],
   "dependencies": {
     "@backstage-community/plugin-explore-common": "workspace:^",
-    "@backstage/backend-plugin-api": "^0.6.17"
+    "@backstage/backend-plugin-api": "^0.7.0"
   }
 }

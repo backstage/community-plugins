@@ -2,7 +2,15 @@
   "name": "@backstage-community/plugin-explore-backend",
   "version": "0.1.1",
   "backstage": {
-    "role": "backend-plugin"
+    "role": "backend-plugin",
+    "pluginId": "explore",
+    "pluginPackages": [
+      "@backstage-community/plugin-explore",
+      "@backstage-community/plugin-explore-backend",
+      "@backstage-community/plugin-explore-common",
+      "@backstage-community/plugin-explore-node",
+      "@backstage-community/plugin-explore-react"
+    ]
   },
   "publishConfig": {
     "access": "public",
@@ -34,8 +42,8 @@
   "dependencies": {
     "@backstage-community/plugin-explore-common": "workspace:^",
     "@backstage-community/plugin-explore-node": "workspace:^",
-    "@backstage/backend-common": "^0.21.7",
-    "@backstage/backend-plugin-api": "^0.6.17",
+    "@backstage/backend-common": "^0.23.3",
+    "@backstage/backend-plugin-api": "^0.7.0",
     "@backstage/config": "^1.2.0",
     "@backstage/types": "^1.1.1",
     "@types/express": "*",
@@ -46,8 +54,8 @@
     "yn": "^4.0.0"
   },
   "devDependencies": {
-    "@backstage/backend-test-utils": "^0.3.7",
-    "@backstage/cli": "^0.26.3",
+    "@backstage/backend-test-utils": "^0.4.4",
+    "@backstage/cli": "^0.26.11",
     "@types/lodash": "^4.14.151",
     "@types/node-fetch": "^2.5.12",
     "@types/supertest": "^2.0.8",
