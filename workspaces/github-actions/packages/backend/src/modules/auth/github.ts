@@ -6,6 +6,12 @@ import {
 } from '@backstage/plugin-auth-node';
 import { issueToken } from './issueToken';
 
+declare module 'passport' {
+  interface Profile {
+    profileUrl: string;
+  }
+}
+
 export const customGithubSignInResolver = createSignInResolverFactory({
   create() {
     return async (
