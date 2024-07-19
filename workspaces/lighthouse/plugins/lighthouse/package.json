@@ -3,7 +3,13 @@
   "version": "0.4.20",
   "description": "A Backstage plugin that integrates towards Lighthouse",
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "lighthouse",
+    "pluginPackages": [
+      "@backstage-community/plugin-lighthouse",
+      "@backstage-community/plugin-lighthouse-backend",
+      "@backstage-community/plugin-lighthouse-common"
+    ]
   },
   "publishConfig": {
     "access": "public",
