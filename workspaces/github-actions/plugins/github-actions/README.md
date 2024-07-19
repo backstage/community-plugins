@@ -2,6 +2,21 @@
 
 Website: [https://github.com/actions](https://github.com/actions)
 
+## Table of Contents
+- [GitHub Actions Plugin](#github-actions-plugin)
+  - [Table of Contents](#table-of-contents)
+  - [Screenshots](#screenshots)
+  - [Setup](#setup)
+    - [Generic Requirements](#generic-requirements)
+    - [Installation](#installation)
+    - [Integrating with `EntityPage`](#integrating-with-entitypage)
+    - [Integrating with `EntityPage` (New Frontend System)](#integrating-with-entitypage-new-frontend-system)
+    - [Self-hosted / Enterprise GitHub](#self-hosted--enterprise-github)
+  - [Features](#features)
+  - [Limitations](#limitations)
+  - [Optional Workflow Runs Card View](#optional-workflow-runs-card-view)
+
+
 ## Screenshots
 
 TBD
@@ -33,7 +48,7 @@ TBD
      owner: user:guest
    ```
 
-### Standalone app requirements
+### Installation
 
 1. Install the plugin dependency in your Backstage app package:
 
@@ -42,7 +57,8 @@ TBD
 yarn --cwd packages/app add @backstage-community/plugin-github-actions
 ```
 
-2. Add to the app `EntityPage` component:
+### Integrating with `EntityPage`
+1. Add to the app `EntityPage` component:
 
 ```tsx
 // In packages/app/src/components/catalog/EntityPage.tsx
@@ -63,6 +79,36 @@ const serviceEntityPage = (
 
 3. Run the app with `yarn start` and the backend with `yarn start-backend`.
    Then navigate to `/github-actions/` under any entity.
+
+### Integrating with `EntityPage` (New Frontend System)
+Follow this section if you are using Backstage's [new frontend system](https://backstage.io/docs/frontend-system/).
+
+1. Import `githubActionsPlugin` in your `App.tsx` and add it to your app's `features` array:
+```typescript
+import githubActionsPlugin from '@backstage-community/plugin-github-actions/alpha';
+
+// ...
+
+export const app = createApp({
+  features: [
+    // ...
+    githubActionsPlugin,
+    // ...
+  ],
+});
+```
+
+2. Next, enable your desired extensions in `app-config.yaml`
+```yaml
+app:
+  extensions:
+    - entity-content:github-actions/entity
+    - entity-card:github-actions/latest-workflow-run
+    - entity-card:github-actions/latest-branch-workflow-runs
+    - entity-card:github-actions/recent-workflow-runs
+```
+
+3. Whichever extensions you've enabled should now appear in your entity page.
 
 ### Self-hosted / Enterprise GitHub
 
