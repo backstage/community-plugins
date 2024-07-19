@@ -2,7 +2,11 @@
   "name": "@backstage-community/plugin-apache-airflow",
   "version": "0.2.26",
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "apache-airflow",
+    "pluginPackages": [
+      "@backstage-community/plugin-apache-airflow"
+    ]
   },
   "publishConfig": {
     "access": "public",
