@@ -1,6 +1,6 @@
 ## Backstage Compatibility
 
-The following table list what version of Backstage each workspace is currently compatible with.
+The following table lists what version of Backstage each workspace is currently compatible with.
 
 | Workspace                                                                                                                          | Version Compatibility                                                                                                                                                                                                                                         |
 | ---------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
