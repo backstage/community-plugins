@@ -1,5 +1,13 @@
 # @backstage-community/plugin-azure-sites-backend
 
+## 0.3.6
+
+### Patch Changes
+
+- 833451a: version:bump to v1.29.1
+- Updated dependencies [833451a]
+  - @backstage-community/plugin-azure-sites-common@0.1.5
+
 ## 0.3.5
 
 ### Patch Changes
