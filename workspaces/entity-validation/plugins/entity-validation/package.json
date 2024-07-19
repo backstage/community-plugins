@@ -2,7 +2,11 @@
   "name": "@backstage-community/plugin-entity-validation",
   "version": "0.1.21",
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "entity-validation",
+    "pluginPackages": [
+      "@backstage-community/plugin-entity-validation"
+    ]
   },
   "publishConfig": {
     "access": "public",
