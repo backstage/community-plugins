@@ -2,7 +2,12 @@
   "name": "@backstage-community/plugin-airbrake",
   "version": "0.3.35",
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "airbrake",
+    "pluginPackages": [
+      "@backstage-community/plugin-airbrake",
+      "@backstage-community/plugin-airbrake-backend"
+    ]
   },
   "publishConfig": {
     "access": "public",

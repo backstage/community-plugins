@@ -10,7 +10,12 @@
     "types": "dist/index.d.ts"
   },
   "backstage": {
-    "role": "backend-plugin"
+    "role": "backend-plugin",
+    "pluginId": "airbrake",
+    "pluginPackages": [
+      "@backstage-community/plugin-airbrake",
+      "@backstage-community/plugin-airbrake-backend"
+    ]
   },
   "homepage": "https://backstage.io",
   "repository": {
