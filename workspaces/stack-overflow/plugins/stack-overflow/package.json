@@ -2,7 +2,12 @@
   "name": "@backstage-community/plugin-stack-overflow",
   "version": "0.1.30",
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "stack-overflow",
+    "pluginPackages": [
+      "@backstage-community/plugin-stack-overflow",
+      "@backstage-community/plugin-stack-overflow-backend"
+    ]
   },
   "publishConfig": {
     "access": "public"
