@@ -1,5 +1,11 @@
 # @backstage-community/plugin-todo
 
+## 0.2.40
+
+### Patch Changes
+
+- 4a8dbaa: version:bump to v1.29.1
+
 ## 0.2.39
 
 ### Patch Changes

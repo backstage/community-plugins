@@ -1,5 +1,11 @@
 # @backstage-community/plugin-catalog-backend-module-scaffolder-relation-processor
 
+## 1.2.2
+
+### Patch Changes
+
+- b3615da: update README.md to reference the correct package name
+
 ## 1.2.1
 
 ### Patch Changes
