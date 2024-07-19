@@ -2,7 +2,14 @@
   "name": "@backstage-community/plugin-tech-insights-node",
   "version": "0.6.3",
   "backstage": {
-    "role": "node-library"
+    "role": "node-library",
+    "pluginId": "tech-insights",
+    "pluginPackages": [
+      "@backstage-community/plugin-tech-insights",
+      "@backstage-community/plugin-tech-insights-backend",
+      "@backstage-community/plugin-tech-insights-common",
+      "@backstage-community/plugin-tech-insights-node"
+    ]
   },
   "publishConfig": {
     "access": "public",
@@ -45,6 +52,6 @@
     "luxon": "^3.0.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.26.6"
+    "@backstage/cli": "^0.26.11"
   }
 }
