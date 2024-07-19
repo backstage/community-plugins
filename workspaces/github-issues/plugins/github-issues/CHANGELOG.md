@@ -1,5 +1,11 @@
 # @backstage-community/plugin-github-issues
 
+## 0.4.3
+
+### Patch Changes
+
+- 3bad3d2: version:bump to v1.29.1
+
 ## 0.4.2
 
 ### Patch Changes
