@@ -3,7 +3,13 @@
   "version": "0.1.6",
   "description": "Common functionalities for lighthouse, to be shared between lighthouse and lighthouse-backend plugin",
   "backstage": {
-    "role": "common-library"
+    "role": "common-library",
+    "pluginId": "lighthouse",
+    "pluginPackages": [
+      "@backstage-community/plugin-lighthouse",
+      "@backstage-community/plugin-lighthouse-backend",
+      "@backstage-community/plugin-lighthouse-common"
+    ]
   },
   "publishConfig": {
     "access": "public",
@@ -42,6 +48,6 @@
     "@backstage/config": "^1.2.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.26.3"
+    "@backstage/cli": "^0.26.11"
   }
 }
