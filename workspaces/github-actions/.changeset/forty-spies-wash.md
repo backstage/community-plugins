@@ -2,4 +2,4 @@
 '@backstage-community/plugin-github-actions': patch
 ---
 
-Upgraded to Backstage 1.28.0
+version:bump to v1.29.1
