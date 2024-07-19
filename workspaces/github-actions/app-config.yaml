@@ -32,13 +32,6 @@ integrations:
     - host: github.com
       token: ${GITHUB_TOKEN} # Replace with personal access token
 
-techdocs:
-  builder: 'local'
-  generator:
-    runIn: 'local'
-  publisher:
-    type: 'local'
-
 auth:
   providers:
     github:
