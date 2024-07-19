@@ -1,6 +1,14 @@
 app:
   title: Github Actions Example App
   baseUrl: http://localhost:3000
+  experimental:
+    packages: all
+  extensions:
+    - entity-card:catalog/about
+    - entity-card:catalog/labels
+    - entity-card:catalog/links:
+        config:
+          filter: kind:component has:links
 
 organization:
   name: Github Actions Example

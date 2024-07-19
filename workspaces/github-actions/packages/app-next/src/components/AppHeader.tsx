@@ -1,5 +1,7 @@
 import { Box, makeStyles } from '@material-ui/core';
 import React from 'react';
+import { BACKSTAGE_HEADER_HEIGHT } from '../App';
+import Logo from './Logo/Logo';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -9,7 +11,7 @@ const useStyles = makeStyles(theme => ({
     right: 0,
     display: 'flex',
     alignItems: 'center',
-    height: 65,
+    height: BACKSTAGE_HEADER_HEIGHT,
     borderBottom: `1px solid ${theme.palette.divider}`,
     padding: theme.spacing(0, 2),
     backgroundColor: theme.palette.background.paper,
@@ -20,5 +22,5 @@ const useStyles = makeStyles(theme => ({
 export default function AppHeader() {
   const classes = useStyles();
 
-  return <Box className={classes.root}>{/* <Logo /> */}</Box>;
+  return <Box className={classes.root}>{<Logo />}</Box>;
 }

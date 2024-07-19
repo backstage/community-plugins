@@ -43,9 +43,11 @@ import AppHeader from './components/AppHeader';
 import { navigationExtension } from './components/Sidebar';
 import { SignInPage } from './components/auth/SignInPage';
 
+export const BACKSTAGE_HEADER_HEIGHT = 65;
+
 export const GlobalStyle = createGlobalStyle`
   body {
-    padding-top: ${65}px;
+    padding-top: ${BACKSTAGE_HEADER_HEIGHT}px;
   }
 `;
 
