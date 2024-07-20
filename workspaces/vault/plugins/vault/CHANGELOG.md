@@ -1,5 +1,11 @@
 # @backstage-community/plugin-vault
 
+## 0.1.33
+
+### Patch Changes
+
+- 4f3003b: version:bump to v1.29.1
+
 ## 0.1.32
 
 ### Patch Changes
