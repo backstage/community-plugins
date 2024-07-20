@@ -1,5 +1,13 @@
 # @backstage-community/plugin-vault-backend
 
+## 0.4.15
+
+### Patch Changes
+
+- 4f3003b: version:bump to v1.29.1
+- Updated dependencies [4f3003b]
+  - @backstage-community/plugin-vault-node@0.1.14
+
 ## 0.4.14
 
 ### Patch Changes
