@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-jenkins-common",
-  "version": "0.1.27",
+  "version": "0.1.28",
   "backstage": {
     "role": "common-library",
     "pluginId": "jenkins",
