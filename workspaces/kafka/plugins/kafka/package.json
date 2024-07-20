@@ -3,7 +3,12 @@
   "version": "0.3.35",
   "description": "A Backstage plugin that integrates towards Kafka",
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "kafka",
+    "pluginPackages": [
+      "@backstage-community/plugin-kafka",
+      "@backstage-community/plugin-kafka-backend"
+    ]
   },
   "publishConfig": {
     "access": "public",
