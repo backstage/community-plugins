@@ -1,5 +1,11 @@
 # @backstage-community/plugin-periskop-backend
 
+## 0.2.17
+
+### Patch Changes
+
+- 219f28a: version:bump to v1.29.1
+
 ## 0.2.16
 
 ### Patch Changes
