@@ -2,7 +2,13 @@
   "name": "@backstage-community/plugin-playlist",
   "version": "0.2.12",
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "playlist",
+    "pluginPackages": [
+      "@backstage-community/plugin-playlist",
+      "@backstage-community/plugin-playlist-backend",
+      "@backstage-community/plugin-playlist-common"
+    ]
   },
   "publishConfig": {
     "access": "public",
@@ -35,14 +41,14 @@
   "dependencies": {
     "@backstage-community/plugin-playlist-common": "workspace:^",
     "@backstage/catalog-model": "^1.5.0",
-    "@backstage/core-components": "^0.14.7",
-    "@backstage/core-plugin-api": "^1.9.2",
+    "@backstage/core-components": "^0.14.9",
+    "@backstage/core-plugin-api": "^1.9.3",
     "@backstage/errors": "^1.2.4",
-    "@backstage/plugin-catalog-common": "^1.0.23",
-    "@backstage/plugin-catalog-react": "^1.12.0",
-    "@backstage/plugin-permission-common": "^0.7.13",
-    "@backstage/plugin-permission-react": "^0.4.22",
-    "@backstage/plugin-search-react": "^1.7.11",
+    "@backstage/plugin-catalog-common": "^1.0.25",
+    "@backstage/plugin-catalog-react": "^1.12.2",
+    "@backstage/plugin-permission-common": "^0.8.0",
+    "@backstage/plugin-permission-react": "^0.4.24",
+    "@backstage/plugin-search-react": "^1.7.13",
     "@material-ui/core": "^4.12.2",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "4.0.0-alpha.61",
@@ -54,11 +60,11 @@
     "react-use": "^17.2.4"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.26.5",
-    "@backstage/core-app-api": "^1.12.5",
-    "@backstage/dev-utils": "^1.0.32",
-    "@backstage/plugin-search-common": "^1.2.11",
-    "@backstage/test-utils": "^1.5.5",
+    "@backstage/cli": "^0.26.11",
+    "@backstage/core-app-api": "^1.14.0",
+    "@backstage/dev-utils": "^1.0.35",
+    "@backstage/plugin-search-common": "^1.2.13",
+    "@backstage/test-utils": "^1.5.8",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^15.0.0",
