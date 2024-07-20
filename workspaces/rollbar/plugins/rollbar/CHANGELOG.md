@@ -1,5 +1,11 @@
 # @backstage-community/plugin-rollbar
 
+## 0.4.36
+
+### Patch Changes
+
+- cf4ccc1: version:bump to v1.29.1
+
 ## 0.4.35
 
 ### Patch Changes
