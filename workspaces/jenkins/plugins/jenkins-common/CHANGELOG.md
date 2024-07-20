@@ -1,5 +1,11 @@
 # @backstage-community/plugin-jenkins-common
 
+## 0.1.28
+
+### Patch Changes
+
+- adfc3bb: version:bump to v1.29.1
+
 ## 0.1.27
 
 ### Patch Changes
