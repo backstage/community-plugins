@@ -2,7 +2,12 @@
   "name": "@backstage-community/plugin-periskop-backend",
   "version": "0.2.16",
   "backstage": {
-    "role": "backend-plugin"
+    "role": "backend-plugin",
+    "pluginId": "periskop",
+    "pluginPackages": [
+      "@backstage-community/plugin-periskop",
+      "@backstage-community/plugin-periskop-backend"
+    ]
   },
   "publishConfig": {
     "access": "public"

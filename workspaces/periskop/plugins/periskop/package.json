@@ -2,7 +2,12 @@
   "name": "@backstage-community/plugin-periskop",
   "version": "0.1.33",
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "periskop",
+    "pluginPackages": [
+      "@backstage-community/plugin-periskop",
+      "@backstage-community/plugin-periskop-backend"
+    ]
   },
   "publishConfig": {
     "access": "public",
