@@ -33,6 +33,7 @@ import {
 import { errorHandler } from '@backstage/backend-common';
 import { serializeError } from '@backstage/errors';
 import { LoggerService } from '@backstage/backend-plugin-api';
+import pLimit from 'p-limit';
 
 /**
  * @public
@@ -82,7 +83,7 @@ export async function createRouter<
 >(options: RouterOptions<CheckType, CheckResultType>): Promise<express.Router> {
   const router = Router();
   router.use(express.json());
-  const { persistenceContext, factChecker, logger } = options;
+  const { persistenceContext, factChecker, logger, config } = options;
   const { techInsightsStore } = persistenceContext;
 
   if (factChecker) {
@@ -99,31 +100,36 @@ export async function createRouter<
       return res.json(checkResult);
     });
 
+    const checksRunConcurrency =
+      config.getOptionalNumber('techInsights.checksRunConcurrency') || 100;
     router.post('/checks/run', async (req, res) => {
       const checks: string[] = req.body.checks;
       let entities: CompoundEntityRef[] = req.body.entities;
       if (entities.length === 0) {
         entities = await techInsightsStore.getEntities();
       }
-      const tasks = entities.map(async entity => {
-        const entityTriplet =
-          typeof entity === 'string' ? entity : stringifyEntityRef(entity);
-        try {
-          const results = await factChecker.runChecks(entityTriplet, checks);
-          return {
-            entity: entityTriplet,
-            results,
-          };
-        } catch (e: any) {
-          const error = serializeError(e);
-          logger.error(`${error.name}: ${error.message}`);
-          return {
-            entity: entityTriplet,
-            error: error,
-            results: [],
-          };
-        }
-      });
+      const limit = pLimit(checksRunConcurrency);
+      const tasks = entities.map(async entity =>
+        limit(async () => {
+          const entityTriplet =
+            typeof entity === 'string' ? entity : stringifyEntityRef(entity);
+          try {
+            const results = await factChecker.runChecks(entityTriplet, checks);
+            return {
+              entity: entityTriplet,
+              results,
+            };
+          } catch (e: any) {
+            const error = serializeError(e);
+            logger.error(`${error.name}: ${error.message}`);
+            return {
+              entity: entityTriplet,
+              error: error,
+              results: [],
+            };
+          }
+        }),
+      );
       const results = await Promise.all(tasks);
       return res.json(results);
     });
