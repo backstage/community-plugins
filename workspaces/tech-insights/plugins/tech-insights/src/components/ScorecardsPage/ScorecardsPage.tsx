@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   Content,
   ErrorPanel,
@@ -23,6 +23,7 @@ import {
   Page,
   TableColumn,
   Table,
+  TableOptions,
 } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { Check, techInsightsApiRef } from '../../api';
@@ -32,24 +33,21 @@ import { EntityRefLink } from '@backstage/plugin-catalog-react';
 import { ScorecardsList } from '../ScorecardsList';
 import Grid from '@material-ui/core/Grid';
 import { Filters } from './Filters';
-
-const tableColumns: TableColumn<BulkCheckResponse[0]>[] = [
-  {
-    field: 'entity',
-    title: 'Entity',
-    render: row => <EntityRefLink entityRef={row.entity} />,
-  },
-  {
-    field: 'results',
-    title: 'Results',
-    render: row => <ScorecardsList checkResults={row.results} />,
-  },
-];
+import { ExportCsv as exportCsv } from '@material-table/exporters';
 
 export const ScorecardsPage = () => {
   const api = useApi(techInsightsApiRef);
   const [filterSelectedChecks, setFilterSelectedChecks] = useState<Check[]>([]);
   const [filterWithResults, setFilterWithResults] = useState<boolean>(true);
+  const tableOptions: TableOptions = {
+    exportAllData: true,
+    exportMenu: [
+      {
+        label: 'Export CSV',
+        exportFunc: (cols, datas) => exportCsv(cols, datas, 'tech-insights'),
+      },
+    ],
+  };
 
   const { value, loading, error } = useAsync(async () => {
     const checks = await api.getAllChecks();
@@ -62,6 +60,42 @@ export const ScorecardsPage = () => {
         : result,
     };
   }, [api, filterSelectedChecks, filterWithResults]);
+
+  const tableColumns = useMemo(() => {
+    const columns: TableColumn<BulkCheckResponse[0]>[] = [
+      {
+        field: 'entity',
+        title: 'Entity',
+        render: row => <EntityRefLink entityRef={row.entity} />,
+      },
+      {
+        field: 'results',
+        title: 'Results',
+        render: row => <ScorecardsList checkResults={row.results} />,
+        export: false,
+      },
+    ];
+
+    (filterSelectedChecks.length === 0
+      ? value?.checks || []
+      : filterSelectedChecks
+    ).forEach(check => {
+      columns.push({
+        field: check.id,
+        title: check.name,
+        customExport: row =>
+          `${
+            row.results.filter(
+              result => result && result.check && result.check.id === check.id,
+            )[0]?.result
+          }`,
+        hidden: true,
+        export: true,
+      });
+    });
+
+    return columns;
+  }, [value, filterSelectedChecks]);
 
   if (error) {
     return <ErrorPanel error={error} />;
@@ -88,6 +122,7 @@ export const ScorecardsPage = () => {
               columns={tableColumns}
               data={value?.result ?? []}
               isLoading={loading}
+              options={tableOptions}
             />
           </Grid>
         </Grid>
