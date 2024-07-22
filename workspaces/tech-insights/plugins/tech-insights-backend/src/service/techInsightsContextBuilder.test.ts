@@ -15,15 +15,15 @@
  */
 import { buildTechInsightsContext } from './techInsightsContextBuilder';
 import {
-  DatabaseManager,
-  getVoidLogger,
-  PluginDatabaseManager,
   ServerTokenManager,
 } from '@backstage/backend-common';
+import {DatabaseManager} from '@backstage/backend-defaults/database'
 import { ConfigReader } from '@backstage/config';
-import { TaskScheduler } from '@backstage/backend-tasks';
+import { DefaultSchedulerService } from '@backstage/backend-defaults/scheduler';
 import { DefaultFactRetrieverRegistry } from './fact/FactRetrieverRegistry';
 import { Knex } from 'knex';
+import {mockServices} from "@backstage/backend-test-utils";
+import {DatabaseService} from "@backstage/backend-plugin-api";
 
 jest.mock('./fact/FactRetrieverRegistry');
 jest.mock('./fact/FactRetrieverEngine', () => ({
@@ -35,7 +35,8 @@ jest.mock('./fact/FactRetrieverEngine', () => ({
 }));
 
 describe('buildTechInsightsContext', () => {
-  const pluginDatabase: PluginDatabaseManager = {
+  const logger = mockServices.logger.mock()
+  const pluginDatabase: DatabaseService = {
     getClient: () => {
       return Promise.resolve({
         migrate: {
@@ -48,13 +49,12 @@ describe('buildTechInsightsContext', () => {
     forPlugin: () => pluginDatabase,
   };
   const manager = databaseManager as DatabaseManager;
+  const database = manager.forPlugin('tech-insights');
   const discoveryMock = {
     getBaseUrl: (_: string) => Promise.resolve('http://mock.url'),
     getExternalBaseUrl: (_: string) => Promise.resolve('http://mock.url'),
   };
-  const scheduler = new TaskScheduler(manager, getVoidLogger()).forPlugin(
-    'tech-insights',
-  );
+  const scheduler = DefaultSchedulerService.create({database, logger})
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -63,7 +63,7 @@ describe('buildTechInsightsContext', () => {
   it('constructs the default FactRetrieverRegistry if factRetrievers but no factRetrieverRegistry are passed', () => {
     buildTechInsightsContext({
       database: pluginDatabase,
-      logger: getVoidLogger(),
+      logger,
       factRetrievers: [],
       scheduler: scheduler,
       config: ConfigReader.fromConfigs([]),
@@ -78,7 +78,7 @@ describe('buildTechInsightsContext', () => {
 
     buildTechInsightsContext({
       database: pluginDatabase,
-      logger: getVoidLogger(),
+      logger,
       factRetrievers: [],
       factRetrieverRegistry: factRetrieverRegistryMock,
       scheduler: scheduler,
