@@ -25,6 +25,7 @@
     "@backstage/backend-common": "^0.23.3",
     "@backstage/backend-defaults": "^0.4.1",
     "@backstage/backend-tasks": "^0.5.27",
+    "@backstage/catalog-client": "^1.6.5",
     "@backstage/config": "^1.2.0",
     "@backstage/plugin-app-backend": "^0.3.71",
     "@backstage/plugin-auth-backend": "^0.22.9",
@@ -47,6 +48,7 @@
     "app": "link:../app",
     "better-sqlite3": "^9.0.0",
     "dockerode": "^3.3.1",
+    "express": "^4.17.1",
     "node-gyp": "^9.0.0",
     "pg": "^8.11.3",
     "winston": "^3.2.1"
