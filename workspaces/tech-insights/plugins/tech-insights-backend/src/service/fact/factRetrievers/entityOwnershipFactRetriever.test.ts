@@ -16,13 +16,11 @@
 
 import { entityOwnershipFactRetriever } from './entityOwnershipFactRetriever';
 import { RELATION_OWNED_BY } from '@backstage/catalog-model';
-import {
-  ServerTokenManager,
-} from '@backstage/backend-common';
+import { ServerTokenManager } from '@backstage/backend-common';
 import { ConfigReader } from '@backstage/config';
 import { GetEntitiesResponse } from '@backstage/catalog-client';
 import { mockServices } from '@backstage/backend-test-utils';
-import {DiscoveryService} from "@backstage/backend-plugin-api";
+import { DiscoveryService } from '@backstage/backend-plugin-api';
 
 const getEntitiesMock = jest.fn();
 jest.mock('@backstage/catalog-client', () => {

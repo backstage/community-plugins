@@ -15,8 +15,12 @@
  */
 import { TechInsightsDatabase } from './TechInsightsDatabase';
 import { PersistenceContext } from '@backstage-community/plugin-tech-insights-node';
-import {DatabaseService, LoggerService, resolvePackagePath} from '@backstage/backend-plugin-api';
-import {mockServices} from "@backstage/backend-test-utils";
+import {
+  DatabaseService,
+  LoggerService,
+  resolvePackagePath,
+} from '@backstage/backend-plugin-api';
+import { mockServices } from '@backstage/backend-test-utils';
 
 const migrationsDir = resolvePackagePath(
   '@backstage-community/plugin-tech-insights-backend',

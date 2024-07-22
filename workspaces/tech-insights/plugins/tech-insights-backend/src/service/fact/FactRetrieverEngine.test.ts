@@ -26,10 +26,8 @@ import {
   DefaultFactRetrieverEngine,
   FactRetrieverEngine,
 } from './FactRetrieverEngine';
-import {
-  ServerTokenManager,
-} from '@backstage/backend-common';
-import {DatabaseManager} from '@backstage/backend-defaults/database';
+import { ServerTokenManager } from '@backstage/backend-common';
+import { DatabaseManager } from '@backstage/backend-defaults/database';
 import { ConfigReader } from '@backstage/config';
 import {
   TestDatabaseId,
@@ -139,7 +137,7 @@ describe('FactRetrieverEngine', () => {
     const manager = databaseManager as DatabaseManager;
     const database = manager.forPlugin('tech-insights');
     const logger = mockServices.logger.mock();
-    const scheduler = DefaultSchedulerService.create({database, logger});
+    const scheduler = DefaultSchedulerService.create({ database, logger });
     return await DefaultFactRetrieverEngine.create({
       factRetrieverContext: {
         logger,

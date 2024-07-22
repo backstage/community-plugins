@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 import { buildTechInsightsContext } from './techInsightsContextBuilder';
-import {
-  ServerTokenManager,
-} from '@backstage/backend-common';
-import {DatabaseManager} from '@backstage/backend-defaults/database'
+import { ServerTokenManager } from '@backstage/backend-common';
+import { DatabaseManager } from '@backstage/backend-defaults/database';
 import { ConfigReader } from '@backstage/config';
 import { DefaultSchedulerService } from '@backstage/backend-defaults/scheduler';
 import { DefaultFactRetrieverRegistry } from './fact/FactRetrieverRegistry';
 import { Knex } from 'knex';
-import {mockServices} from "@backstage/backend-test-utils";
-import {DatabaseService} from "@backstage/backend-plugin-api";
+import { mockServices } from '@backstage/backend-test-utils';
+import { DatabaseService } from '@backstage/backend-plugin-api';
 
 jest.mock('./fact/FactRetrieverRegistry');
 jest.mock('./fact/FactRetrieverEngine', () => ({
@@ -35,7 +33,7 @@ jest.mock('./fact/FactRetrieverEngine', () => ({
 }));
 
 describe('buildTechInsightsContext', () => {
-  const logger = mockServices.logger.mock()
+  const logger = mockServices.logger.mock();
   const pluginDatabase: DatabaseService = {
     getClient: () => {
       return Promise.resolve({
@@ -54,7 +52,7 @@ describe('buildTechInsightsContext', () => {
     getBaseUrl: (_: string) => Promise.resolve('http://mock.url'),
     getExternalBaseUrl: (_: string) => Promise.resolve('http://mock.url'),
   };
-  const scheduler = DefaultSchedulerService.create({database, logger})
+  const scheduler = DefaultSchedulerService.create({ database, logger });
 
   beforeEach(() => {
     jest.clearAllMocks();

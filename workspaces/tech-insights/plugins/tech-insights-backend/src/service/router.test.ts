@@ -15,9 +15,7 @@
  */
 import { buildTechInsightsContext } from './techInsightsContextBuilder';
 import { createRouter } from './router';
-import {
-  ServerTokenManager,
-} from '@backstage/backend-common';
+import { ServerTokenManager } from '@backstage/backend-common';
 import { ConfigReader } from '@backstage/config';
 import request from 'supertest';
 import express from 'express';
@@ -27,10 +25,10 @@ import {
 } from '@backstage-community/plugin-tech-insights-node';
 import { DateTime } from 'luxon';
 import { Knex } from 'knex';
-import {mockServices} from "@backstage/backend-test-utils";
-import {DatabaseManager} from "@backstage/backend-defaults/database";
-import {DefaultSchedulerService} from "@backstage/backend-defaults/scheduler";
-import {DatabaseService} from "@backstage/backend-plugin-api";
+import { mockServices } from '@backstage/backend-test-utils';
+import { DatabaseManager } from '@backstage/backend-defaults/database';
+import { DefaultSchedulerService } from '@backstage/backend-defaults/scheduler';
+import { DatabaseService } from '@backstage/backend-plugin-api';
 
 describe('Tech Insights router tests', () => {
   let app: express.Express;
@@ -66,12 +64,12 @@ describe('Tech Insights router tests', () => {
     };
     const manager = databaseManager as DatabaseManager;
     const database = manager.forPlugin('tech-insights');
-    const logger = mockServices.logger.mock()
+    const logger = mockServices.logger.mock();
     const techInsightsContext = await buildTechInsightsContext({
       database: pluginDatabase,
       logger,
       factRetrievers: [],
-      scheduler:  DefaultSchedulerService.create({database, logger}),
+      scheduler: DefaultSchedulerService.create({ database, logger }),
       config: ConfigReader.fromConfigs([]),
       discovery: {
         getBaseUrl: (_: string) => Promise.resolve('http://mock.url'),

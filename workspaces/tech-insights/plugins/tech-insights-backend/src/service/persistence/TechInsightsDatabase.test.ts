@@ -16,7 +16,7 @@
 import { DateTime, Duration } from 'luxon';
 import { TechInsightsStore } from '@backstage-community/plugin-tech-insights-node';
 import { Knex as KnexType, Knex } from 'knex';
-import {mockServices, TestDatabases} from '@backstage/backend-test-utils';
+import { mockServices, TestDatabases } from '@backstage/backend-test-utils';
 import { initializePersistenceContext } from './persistenceContext';
 import { parseEntityRef } from '@backstage/catalog-model';
 
