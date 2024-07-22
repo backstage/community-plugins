@@ -22,9 +22,9 @@ import {
   JSON_RULE_ENGINE_CHECK_TYPE,
   JsonRulesEngineFactCheckerFactory,
 } from '../index';
-import { getVoidLogger } from '@backstage/backend-common';
 import { TechInsightJsonRuleCheck } from '../types';
 import { Operator } from 'json-rules-engine';
+import {mockServices} from "@backstage/backend-test-utils";
 
 const testChecks: Record<string, TechInsightJsonRuleCheck[]> = {
   broken: [
@@ -364,7 +364,7 @@ describe('JsonRulesEngineFactChecker', () => {
     operators: [
       new Operator<number, number>('isDivisibleBy', (a, b) => a % b === 0),
     ],
-    logger: getVoidLogger(),
+    logger: mockServices.logger.mock(),
   }).construct(mockRepository);
 
   describe('when running checks', () => {

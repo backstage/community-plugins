@@ -17,11 +17,10 @@ import { DateTime, Duration, DurationLike } from 'luxon';
 import { Config } from '@backstage/config';
 import { HumanDuration, JsonValue } from '@backstage/types';
 import {
-  PluginEndpointDiscovery,
   TokenManager,
 } from '@backstage/backend-common';
 import { FactSchema } from '@backstage-community/plugin-tech-insights-common';
-import { AuthService, LoggerService } from '@backstage/backend-plugin-api';
+import {AuthService, DiscoveryService, LoggerService} from '@backstage/backend-plugin-api';
 
 /**
  * A container for facts. The shape of the fact records needs to correspond to the FactSchema with same `ref` value.
@@ -89,7 +88,7 @@ export type FlatTechInsightFact = TechInsightFact & {
  */
 export type FactRetrieverContext = {
   config: Config;
-  discovery: PluginEndpointDiscovery;
+  discovery: DiscoveryService;
   logger: LoggerService;
   tokenManager: TokenManager;
   auth: AuthService;
