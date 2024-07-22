@@ -1,0 +1,1 @@
+export { BlackDuckPageComponent } from './BlackDuckPage';
