@@ -32,7 +32,7 @@ import {
 } from '@backstage/catalog-model';
 import { serializeError } from '@backstage/errors';
 import { LoggerService } from '@backstage/backend-plugin-api';
-import {MiddlewareFactory} from '@backstage/backend-defaults/rootHttpRouter'
+import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 import pLimit from 'p-limit';
 
 /**
@@ -86,7 +86,7 @@ export async function createRouter<
   const { persistenceContext, factChecker, logger, config } = options;
   const { techInsightsStore } = persistenceContext;
 
-  const factory = MiddlewareFactory.create({logger, config})
+  const factory = MiddlewareFactory.create({ logger, config });
 
   if (factChecker) {
     logger.info('Fact checker configured. Enabling fact checking endpoints.');

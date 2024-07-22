@@ -39,7 +39,7 @@ import {
   DatabaseService,
   DiscoveryService,
   LoggerService,
-  SchedulerService
+  SchedulerService,
 } from '@backstage/backend-plugin-api';
 
 /**

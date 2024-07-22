@@ -24,7 +24,7 @@ import {
 } from '../index';
 import { TechInsightJsonRuleCheck } from '../types';
 import { Operator } from 'json-rules-engine';
-import {mockServices} from "@backstage/backend-test-utils";
+import { mockServices } from '@backstage/backend-test-utils';
 
 const testChecks: Record<string, TechInsightJsonRuleCheck[]> = {
   broken: [

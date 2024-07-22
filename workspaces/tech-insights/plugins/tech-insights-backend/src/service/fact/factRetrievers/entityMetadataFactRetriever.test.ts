@@ -19,8 +19,8 @@ import { ConfigReader } from '@backstage/config';
 import { GetEntitiesResponse } from '@backstage/catalog-client';
 import { entityMetadataFactRetriever } from './entityMetadataFactRetriever';
 import { mockServices } from '@backstage/backend-test-utils';
-import {DiscoveryService} from "@backstage/backend-plugin-api";
-import {ServerTokenManager} from "@backstage/backend-common";
+import { DiscoveryService } from '@backstage/backend-plugin-api';
+import { ServerTokenManager } from '@backstage/backend-common';
 
 const getEntitiesMock = jest.fn();
 jest.mock('@backstage/catalog-client', () => {

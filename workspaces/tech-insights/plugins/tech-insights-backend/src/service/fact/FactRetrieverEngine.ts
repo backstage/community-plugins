@@ -23,7 +23,7 @@ import {
   TechInsightsStore,
 } from '@backstage-community/plugin-tech-insights-node';
 import { Duration } from 'luxon';
-import {LoggerService, SchedulerService} from '@backstage/backend-plugin-api';
+import { LoggerService, SchedulerService } from '@backstage/backend-plugin-api';
 
 function randomDailyCron() {
   const rand = (min: number, max: number) =>
