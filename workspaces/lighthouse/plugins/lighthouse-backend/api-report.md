@@ -4,7 +4,7 @@
 
 ```ts
 import { AuthService } from '@backstage/backend-plugin-api';
-import { BackendFeature } from '@backstage/backend-plugin-api';
+import { BackendFeatureCompat } from '@backstage/backend-plugin-api';
 import { CatalogApi } from '@backstage/catalog-client';
 import { Config } from '@backstage/config';
 import { DiscoveryService } from '@backstage/backend-plugin-api';
@@ -36,7 +36,7 @@ export function createScheduler(
 ): Promise<void>;
 
 // @public
-const lighthousePlugin: () => BackendFeature;
+const lighthousePlugin: BackendFeatureCompat;
 export default lighthousePlugin;
 
 // (No @packageDocumentation comment for this package)

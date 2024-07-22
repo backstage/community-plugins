@@ -1,5 +1,12 @@
 # backend
 
+## 0.0.3
+
+### Patch Changes
+
+- Updated dependencies [a9b673e]
+  - @backstage-community/plugin-entity-feedback-backend@0.2.19
+
 ## 0.0.2
 
 ### Patch Changes

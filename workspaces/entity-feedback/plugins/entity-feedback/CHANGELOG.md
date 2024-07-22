@@ -1,5 +1,13 @@
 # @backstage-community/plugin-entity-feedback
 
+## 0.3.3
+
+### Patch Changes
+
+- a9b673e: version:bump to v1.29.1
+- Updated dependencies [a9b673e]
+  - @backstage-community/plugin-entity-feedback-common@0.1.8
+
 ## 0.3.2
 
 ### Patch Changes

@@ -2,7 +2,14 @@
   "name": "@backstage-community/plugin-tech-insights-backend",
   "version": "0.5.34",
   "backstage": {
-    "role": "backend-plugin"
+    "role": "backend-plugin",
+    "pluginId": "tech-insights",
+    "pluginPackages": [
+      "@backstage-community/plugin-tech-insights",
+      "@backstage-community/plugin-tech-insights-backend",
+      "@backstage-community/plugin-tech-insights-common",
+      "@backstage-community/plugin-tech-insights-node"
+    ]
   },
   "publishConfig": {
     "access": "public",
@@ -55,13 +62,14 @@
     "knex": "^3.0.0",
     "lodash": "^4.17.21",
     "luxon": "^3.0.0",
+    "p-limit": "^3.1.0",
     "semver": "^7.5.3",
     "uuid": "^9.0.0",
     "yn": "^4.0.0"
   },
   "devDependencies": {
     "@backstage/backend-test-utils": "^0.3.8",
-    "@backstage/cli": "^0.26.6",
+    "@backstage/cli": "^0.26.11",
     "@types/lodash": "^4.14.151",
     "@types/semver": "^7.3.8",
     "@types/supertest": "^2.0.8",
