@@ -1,5 +1,13 @@
 # @backstage-community/plugin-catalog-backend-module-linguist-tags-processor
 
+## 0.1.2
+
+### Patch Changes
+
+- fced742: version:bump to v1.29.1
+- Updated dependencies [fced742]
+  - @backstage-community/plugin-linguist-common@0.1.7
+
 ## 0.1.1
 
 ### Patch Changes
