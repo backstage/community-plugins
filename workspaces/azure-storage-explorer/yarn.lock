@@ -2810,6 +2810,7 @@ __metadata:
     "@azure/identity": 4.0.0
     "@azure/storage-blob": 12.17.0
     "@backstage/backend-common": ^0.23.3
+    "@backstage/backend-plugin-api": ^0.7.0
     "@backstage/cli": ^0.26.11
     "@backstage/config": ^1.2.0
     "@backstage/errors": ^1.2.4
@@ -14195,6 +14196,7 @@ __metadata:
     "@backstage/backend-common": ^0.23.3
     "@backstage/backend-defaults": ^0.4.1
     "@backstage/backend-tasks": ^0.5.27
+    "@backstage/catalog-client": ^1.6.5
     "@backstage/cli": ^0.26.11
     "@backstage/config": ^1.2.0
     "@backstage/plugin-app-backend": ^0.3.71
@@ -14222,6 +14224,7 @@ __metadata:
     app: "link:../app"
     better-sqlite3: ^9.0.0
     dockerode: ^3.3.1
+    express: ^4.17.1
     node-gyp: ^9.0.0
     pg: ^8.11.3
     winston: ^3.2.1

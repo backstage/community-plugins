@@ -80,7 +80,7 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
         icon={FolderIcon}
         to="azure-storage"
         text="Azure Storage Explorer"
-      ></SidebarItem>
+      />
       <SidebarSpace />
       <SidebarDivider />
       <SidebarGroup
