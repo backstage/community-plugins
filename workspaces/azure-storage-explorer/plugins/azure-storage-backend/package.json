@@ -8,7 +8,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/backstage/community-plugins",
-    "directory": "workspaces/azure-sites/plugins/azure-sites"
+    "directory": "workspaces/azure-storage-explorer/plugins/azure-storage-backend"
   },
   "keywords": [
     "Azure",
@@ -21,7 +21,12 @@
     "types": "dist/index.d.ts"
   },
   "backstage": {
-    "role": "backend-plugin"
+    "role": "backend-plugin",
+    "pluginId": "azure-storage-explorer",
+    "pluginPackages": [
+      "@backstage-community/plugin-azure-storage-explorer",
+      "@backstage-community/plugin-azure-storage-explorer-backend"
+    ]
   },
   "scripts": {
     "start": "backstage-cli package start",
@@ -35,7 +40,7 @@
   "dependencies": {
     "@azure/identity": "4.0.0",
     "@azure/storage-blob": "12.17.0",
-    "@backstage/backend-common": "^0.23.2",
+    "@backstage/backend-common": "^0.23.3",
     "@backstage/config": "^1.2.0",
     "@backstage/errors": "^1.2.4",
     "@types/express": "*",
@@ -46,7 +51,7 @@
     "yn": "^4.0.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.26.10",
+    "@backstage/cli": "^0.26.11",
     "@types/supertest": "^2.0.12",
     "msw": "^1.0.0",
     "supertest": "^6.2.4"
