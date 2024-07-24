@@ -37,7 +37,7 @@
     "directory": "workspaces/tech-insights"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.26.6",
+    "@backstage/cli": "^0.26.11",
     "@backstage/e2e-test-utils": "^0.1.1",
     "@backstage/repo-tools": "^0.9.0",
     "@changesets/cli": "^2.27.1",
@@ -49,7 +49,8 @@
   },
   "resolutions": {
     "@types/react": "^18",
-    "@types/react-dom": "^18"
+    "@types/react-dom": "^18",
+    "@microsoft/api-extractor": "7.36.4"
   },
   "prettier": "@spotify/prettier-config",
   "lint-staged": {

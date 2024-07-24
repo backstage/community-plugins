@@ -1,8 +1,13 @@
 {
   "name": "@backstage-community/plugin-bazaar-backend",
-  "version": "0.3.16",
+  "version": "0.3.17",
   "backstage": {
-    "role": "backend-plugin"
+    "role": "backend-plugin",
+    "pluginId": "bazaar",
+    "pluginPackages": [
+      "@backstage-community/plugin-bazaar",
+      "@backstage-community/plugin-bazaar-backend"
+    ]
   },
   "publishConfig": {
     "access": "public"
@@ -46,10 +51,10 @@
     "test": "backstage-cli package test"
   },
   "dependencies": {
-    "@backstage/backend-common": "^0.21.7",
-    "@backstage/backend-plugin-api": "^0.6.17",
+    "@backstage/backend-common": "^0.23.3",
+    "@backstage/backend-plugin-api": "^0.7.0",
     "@backstage/config": "^1.2.0",
-    "@backstage/plugin-auth-node": "^0.4.12",
+    "@backstage/plugin-auth-node": "^0.4.17",
     "@types/express": "^4.17.6",
     "express": "^4.17.1",
     "express-promise-router": "^4.1.0",
@@ -57,7 +62,7 @@
     "yn": "^4.0.0"
   },
   "devDependencies": {
-    "@backstage/backend-test-utils": "^0.3.7",
-    "@backstage/cli": "^0.26.3"
+    "@backstage/backend-test-utils": "^0.4.4",
+    "@backstage/cli": "^0.26.11"
   }
 }

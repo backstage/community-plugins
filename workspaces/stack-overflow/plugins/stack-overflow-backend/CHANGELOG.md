@@ -1,5 +1,11 @@
 # @backstage-community/plugin-stack-overflow-backend
 
+## 0.2.23
+
+### Patch Changes
+
+- aeaa815: version:bump to v1.29.1
+
 ## 0.2.22
 
 ### Patch Changes

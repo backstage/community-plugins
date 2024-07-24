@@ -1,5 +1,11 @@
 # @backstage-community/plugin-git-release-manager
 
+## 0.3.48
+
+### Patch Changes
+
+- 006a4c1: Add mock to github api
+
 ## 0.3.47
 
 ### Patch Changes
