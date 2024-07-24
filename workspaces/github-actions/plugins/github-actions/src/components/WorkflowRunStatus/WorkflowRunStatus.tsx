@@ -23,16 +23,20 @@ import {
   StatusAborted,
   StatusError,
 } from '@backstage/core-components';
+import Box from '@material-ui/core/Box';
+import Typography from '@material-ui/core/Typography';
 
 export const WorkflowRunStatus = (props: {
   status?: string;
   conclusion?: string;
 }) => {
   return (
-    <>
+    <Box display="flex" justifyContent="center">
       <WorkflowIcon {...props} />
-      {getStatusDescription(props)}
-    </>
+      <Typography style={{ fontSize: 'small' }}>
+        {getStatusDescription(props)}
+      </Typography>
+    </Box>
   );
 };
 
