@@ -21,10 +21,9 @@ export const entityLatestGithubActionRunCard = createEntityCardExtension({
       props: z
         .object({
           branch: z.string().default('master'),
-          variant: z.enum(['flex', 'fullHeight', 'gridItem']).optional(),
         })
         .default({}),
-      filter: z.string().default(''),
+      filter: z.string().optional(),
     }),
   ),
   loader: ({ config }) =>
@@ -44,10 +43,9 @@ export const entityLatestGithubActionsForBranchCard = createEntityCardExtension(
         props: z
           .object({
             branch: z.string().default('master'),
-            variant: z.enum(['flex', 'fullHeight', 'gridItem']).optional(),
           })
           .default({}),
-        filter: z.string().default(''),
+        filter: z.string().optional(),
       }),
     ),
     loader: ({ config }) =>
@@ -69,10 +67,9 @@ export const entityRecentGithubActionsRunsCard = createEntityCardExtension({
           branch: z.string().default('master'),
           dense: z.boolean().default(false),
           limit: z.number().default(5).optional(),
-          variant: z.enum(['flex', 'fullHeight', 'gridItem']).optional(),
         })
         .default({}),
-      filter: z.string().default(''),
+      filter: z.string().optional(),
     }),
   ),
   loader: ({ config }) =>

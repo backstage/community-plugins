@@ -10,22 +10,10 @@ app:
         config:
           filter: kind:component has:links
     - entity-content:github-actions/entity
-    - entity-card:github-actions/workflow-runs:
-        config:
-          props:
-            variant: gridItem
-    - entity-card:github-actions/latest-workflow-run:
-        config:
-          props:
-            variant: gridItem
-    - entity-card:github-actions/latest-branch-workflow-runs:
-        config:
-          props:
-            variant: gridItem
-    - entity-card:github-actions/recent-workflow-runs:
-        config:
-          props:
-            variant: gridItem
+    - entity-card:github-actions/workflow-runs
+    - entity-card:github-actions/latest-workflow-run
+    - entity-card:github-actions/latest-branch-workflow-runs
+    - entity-card:github-actions/recent-workflow-runs
 
 organization:
   name: Github Actions Example
