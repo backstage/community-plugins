@@ -1,9 +1,15 @@
 {
   "name": "@backstage-community/plugin-azure-sites-common",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Common functionalities for the azure plugin",
   "backstage": {
-    "role": "common-library"
+    "role": "common-library",
+    "pluginId": "azure-sites",
+    "pluginPackages": [
+      "@backstage-community/plugin-azure-sites",
+      "@backstage-community/plugin-azure-sites-backend",
+      "@backstage-community/plugin-azure-sites-common"
+    ]
   },
   "publishConfig": {
     "access": "public",
@@ -36,11 +42,11 @@
     "test": "backstage-cli package test"
   },
   "dependencies": {
-    "@backstage/catalog-model": "^1.4.5",
-    "@backstage/plugin-catalog-common": "^1.0.22",
-    "@backstage/plugin-permission-common": "^0.7.13"
+    "@backstage/catalog-model": "^1.5.0",
+    "@backstage/plugin-catalog-common": "^1.0.25",
+    "@backstage/plugin-permission-common": "^0.8.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.26.3"
+    "@backstage/cli": "^0.26.11"
   }
 }

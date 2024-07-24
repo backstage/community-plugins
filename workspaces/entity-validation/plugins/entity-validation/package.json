@@ -1,8 +1,12 @@
 {
   "name": "@backstage-community/plugin-entity-validation",
-  "version": "0.1.21",
+  "version": "0.1.22",
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "entity-validation",
+    "pluginPackages": [
+      "@backstage-community/plugin-entity-validation"
+    ]
   },
   "publishConfig": {
     "access": "public",
@@ -32,13 +36,13 @@
     "test": "backstage-cli package test"
   },
   "dependencies": {
-    "@backstage/catalog-client": "^1.6.4",
-    "@backstage/catalog-model": "^1.4.5",
-    "@backstage/core-components": "^0.14.4",
-    "@backstage/core-plugin-api": "^1.9.2",
+    "@backstage/catalog-client": "^1.6.5",
+    "@backstage/catalog-model": "^1.5.0",
+    "@backstage/core-components": "^0.14.9",
+    "@backstage/core-plugin-api": "^1.9.3",
     "@backstage/errors": "^1.2.4",
-    "@backstage/plugin-catalog-common": "^1.0.22",
-    "@backstage/plugin-catalog-react": "^1.11.3",
+    "@backstage/plugin-catalog-common": "^1.0.25",
+    "@backstage/plugin-catalog-react": "^1.12.2",
     "@codemirror/language": "^6.0.0",
     "@codemirror/legacy-modes": "^6.1.0",
     "@codemirror/view": "^6.0.0",
@@ -53,9 +57,9 @@
     "yaml": "^2.0.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.26.3",
-    "@backstage/dev-utils": "^1.0.31",
-    "@backstage/test-utils": "^1.5.4",
+    "@backstage/cli": "^0.26.11",
+    "@backstage/dev-utils": "^1.0.35",
+    "@backstage/test-utils": "^1.5.8",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^15.0.0",
