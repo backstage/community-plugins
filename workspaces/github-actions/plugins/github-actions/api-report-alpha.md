@@ -6,7 +6,7 @@
 import { BackstagePlugin } from '@backstage/frontend-plugin-api';
 import { RouteRef } from '@backstage/frontend-plugin-api';
 
-// @public (undocumented)
+// @alpha (undocumented)
 const _default: BackstagePlugin<
   {
     entityContent: RouteRef<undefined>;
