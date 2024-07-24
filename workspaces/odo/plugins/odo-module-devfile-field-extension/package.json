@@ -5,7 +5,11 @@
   "author": "Red Hat",
   "homepage": "https://odo.dev",
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "odo-module-devfile-field-extension",
+    "pluginPackages": [
+      "@backstage-community/plugin-odo-module-devfile-field-extension"
+    ]
   },
   "publishConfig": {
     "access": "public",
