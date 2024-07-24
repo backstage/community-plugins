@@ -63,7 +63,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/backstage/community-plugins",
-    "directory": "plugins/orchestrator-swf-editor-envelope"
+    "directory": "workspaces/orchestrator/plugins/orchestrator-swf-editor-envelope"
   },
   "keywords": [
     "support:tech-preview",
@@ -72,7 +72,7 @@
     "plugin"
   ],
   "homepage": "https://red.ht/rhdh",
-  "bugs": "https://github.com/janus-idp/backstage-plugins/issues",
+  "bugs": "https://github.com/backstage/community-plugins/issues",
   "maintainers": [
     "mareklibra"
   ],

@@ -23,9 +23,9 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/backstage/community-plugins",
-    "directory": "plugins/orchestrator"
+    "directory": "workspaces/orchestrator/plugins/orchestrator"
   },
-  "bugs": "https://github.com/janus-idp/backstage-plugins/issues",
+  "bugs": "https://github.com/backstage/community-plugins/issues",
   "keywords": [
     "support:tech-preview",
     "lifecycle:active",

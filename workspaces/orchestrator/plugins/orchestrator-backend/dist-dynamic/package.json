@@ -34,7 +34,7 @@
     "url": "https://github.com/backstage/community-plugins",
     "directory": "plugins/orchestrator-backend"
   },
-  "bugs": "https://github.com/janus-idp/backstage-plugins/issues",
+  "bugs": "https://github.com/backstage/community-plugins/issues",
   "keywords": [
     "support:tech-preview",
     "lifecycle:active",
