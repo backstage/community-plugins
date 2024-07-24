@@ -27,7 +27,6 @@ app:
           props:
             variant: gridItem
 
-
 organization:
   name: Github Actions Example
 

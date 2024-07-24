@@ -3,6 +3,7 @@
 Website: [https://github.com/actions](https://github.com/actions)
 
 ## Table of Contents
+
 - [GitHub Actions Plugin](#github-actions-plugin)
   - [Table of Contents](#table-of-contents)
   - [Screenshots](#screenshots)
@@ -15,7 +16,6 @@ Website: [https://github.com/actions](https://github.com/actions)
   - [Features](#features)
   - [Limitations](#limitations)
   - [Optional Workflow Runs Card View](#optional-workflow-runs-card-view)
-
 
 ## Screenshots
 
@@ -58,6 +58,7 @@ yarn --cwd packages/app add @backstage-community/plugin-github-actions
 ```
 
 ### Integrating with `EntityPage`
+
 1. Add to the app `EntityPage` component:
 
 ```tsx
@@ -81,9 +82,11 @@ const serviceEntityPage = (
    Then navigate to `/github-actions/` under any entity.
 
 ### Integrating with `EntityPage` (New Frontend System)
+
 Follow this section if you are using Backstage's [new frontend system](https://backstage.io/docs/frontend-system/).
 
 1. Import `githubActionsPlugin` in your `App.tsx` and add it to your app's `features` array:
+
 ```typescript
 import githubActionsPlugin from '@backstage-community/plugin-github-actions/alpha';
 
@@ -99,6 +102,7 @@ export const app = createApp({
 ```
 
 2. Next, enable your desired extensions in `app-config.yaml`
+
 ```yaml
 app:
   extensions:
