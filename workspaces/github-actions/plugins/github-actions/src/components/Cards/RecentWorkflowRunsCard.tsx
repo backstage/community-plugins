@@ -31,6 +31,7 @@ import {
 } from '@backstage/core-components';
 import { buildRouteRef } from '../../routes';
 import { getHostnameFromEntity } from '../getHostnameFromEntity';
+import Box from '@material-ui/core/Box';
 
 const firstLine = (message: string): string => message.split('\n')[0];
 
@@ -112,7 +113,15 @@ export const RecentWorkflowRunsCard = (props: {
               ),
             },
             { title: 'Branch', field: 'source.branchName' },
-            { title: 'Status', field: 'status', render: WorkflowRunStatus },
+            {
+              title: 'Status',
+              field: 'status',
+              render: p => (
+                <Box display="flex">
+                  <WorkflowRunStatus {...p} />
+                </Box>
+              ),
+            },
           ]}
           data={runs}
         />
