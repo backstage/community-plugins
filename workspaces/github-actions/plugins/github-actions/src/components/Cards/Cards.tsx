@@ -32,7 +32,6 @@ import {
   StructuredMetadataTable,
 } from '@backstage/core-components';
 import { getHostnameFromEntity } from '../getHostnameFromEntity';
-import Box from '@material-ui/core/Box';
 
 const useStyles = makeStyles({
   externalLinkIcon: {
@@ -57,12 +56,12 @@ const WidgetContent = (props: {
     <StructuredMetadataTable
       metadata={{
         status: (
-          <Box display="flex">
+          <>
             <WorkflowRunStatus
               status={lastRun.status}
               conclusion={lastRun.conclusion}
             />
-          </Box>
+          </>
         ),
         message: lastRun.message,
         url: (

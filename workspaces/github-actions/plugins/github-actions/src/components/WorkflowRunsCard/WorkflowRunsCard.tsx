@@ -18,6 +18,8 @@ import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
+import Button from '@material-ui/core/Button';
+import Chip from '@material-ui/core/Chip';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Grid from '@material-ui/core/Grid';
 import TablePagination from '@material-ui/core/TablePagination';
@@ -27,9 +29,9 @@ import TextField from '@material-ui/core/TextField';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import {
-  LinkButton,
   EmptyState,
   Link,
+  MarkdownContent,
   InfoCard,
 } from '@backstage/core-components';
 import GitHubIcon from '@material-ui/icons/GitHub';
@@ -45,7 +47,6 @@ import { getHostnameFromEntity } from '../getHostnameFromEntity';
 
 import Alert, { Color } from '@material-ui/lab/Alert';
 import { Entity } from '@backstage/catalog-model';
-import Button from '@material-ui/core/Button';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -62,6 +63,12 @@ const useStyles = makeStyles((theme: Theme) =>
     externalLinkIcon: {
       fontSize: 'inherit',
       verticalAlign: 'middle',
+    },
+    bottomline: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginTop: '-5px',
     },
     pagination: {
       width: '100%',
@@ -118,22 +125,16 @@ export const WorkflowRunsCardView = ({
     <Grid container spacing={3}>
       {filteredRuns && runs?.length !== 0 ? (
         filteredRuns.map(run => (
-          <Grid key={run.id} item container xs={12} lg={6} xl={4}>
+          <Grid key={run.id} item container xs={12} sm={4} md={4} xl={4}>
             <Box className={classes.card}>
               <Box
                 display="flex"
                 flexDirection="column"
-                p={2}
-                height="100%"
+                m={3}
                 alignItems="center"
+                justifyContent="center"
               >
-                <Box
-                  sx={{ width: '100%' }}
-                  textAlign="center"
-                  display="flex"
-                  flexDirection="column"
-                  height="100%"
-                >
+                <Box pt={2} sx={{ width: '100%' }} textAlign="center">
                   <Tooltip
                     title={run.status ?? 'No Status'}
                     placement="top-start"
@@ -149,7 +150,7 @@ export const WorkflowRunsCardView = ({
                     >
                       <Typography variant="h6">
                         <Link to={routeLink({ id: run.id })}>
-                          <Typography variant="h6">
+                          <Typography color="primary" variant="h6">
                             {run.workflowName}
                           </Typography>
                         </Link>
@@ -157,90 +158,58 @@ export const WorkflowRunsCardView = ({
                     </Alert>
                   </Tooltip>
                   <Tooltip title={run.message ?? 'No run message'}>
-                    <Box display="flex" flexDirection="column" marginY={1}>
-                      <Typography
-                        variant="body2"
-                        component="span"
-                        style={{ fontSize: 'smaller', fontWeight: 'bold' }}
-                      >
-                        Commit
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        component="span"
-                        style={{ overflowWrap: 'break-word' }}
-                      >
-                        {run.source.commit.hash!}
-                      </Typography>
-                    </Box>
+                    <Typography
+                      variant="body2"
+                      component="span"
+                      style={{ fontSize: 'smaller' }}
+                    >
+                      <MarkdownContent
+                        content={`Commit ID : ${run.source.commit.hash!}`}
+                      />
+                    </Typography>
                   </Tooltip>
 
                   {run.source.branchName && (
-                    <Box display="flex" flexDirection="column" marginY={1}>
-                      <Typography
-                        variant="body2"
-                        component="span"
-                        style={{ fontSize: 'smaller', fontWeight: 'bold' }}
-                      >
-                        Branch
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        component="span"
-                        style={{ overflowWrap: 'break-word' }}
-                      >
-                        {run.source.branchName}
-                      </Typography>
-                    </Box>
+                    <MarkdownContent
+                      content={`Branch : ${run.source.branchName}`}
+                    />
                   )}
-                  <Box display="flex" flexDirection="column" marginY={1}>
-                    <Typography
-                      variant="body2"
-                      component="span"
-                      style={{ fontSize: 'smaller', fontWeight: 'bold' }}
-                    >
-                      Workflow ID
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      component="span"
-                      style={{ overflowWrap: 'break-word' }}
-                    >
-                      {run.id}
-                    </Typography>
-                  </Box>
-                  <WorkflowRunStatus
-                    status={run.status}
-                    conclusion={run.conclusion}
+                  <Chip
+                    key={run.id}
+                    size="small"
+                    label={`Workflow ID : ${run.id}`}
                   />
-                  <Box
-                    display="flex"
-                    flexDirection="column"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    mt="auto"
-                  >
-                    <Box marginTop={2} marginBottom={1}>
-                      <Button
-                        endIcon={<RetryIcon />}
-                        onClick={run.onReRunClick}
-                        variant="outlined"
-                      >
-                        Rerun workflow
-                      </Button>
-                    </Box>
-
-                    {run.githubUrl && (
-                      <Box>
-                        <LinkButton
-                          to={run.githubUrl}
-                          endIcon={<ExternalLinkIcon />}
-                        >
-                          View on GitHub
-                        </LinkButton>
+                  <Chip
+                    size="small"
+                    label={
+                      <Box display="flex" alignItems="center">
+                        <WorkflowRunStatus
+                          status={run.status}
+                          conclusion={run.conclusion}
+                        />
                       </Box>
+                    }
+                  />
+                  <div className={classes.bottomline}>
+                    {run.githubUrl && (
+                      <Link to={run.githubUrl}>
+                        Workflow runs on GitHub{' '}
+                        <ExternalLinkIcon
+                          className={classes.externalLinkIcon}
+                        />
+                      </Link>
                     )}
-                  </Box>
+                    <ButtonGroup>
+                      <Tooltip title="Rerun workflow">
+                        <IconButton
+                          onClick={run.onReRunClick}
+                          style={{ fontSize: '12px' }}
+                        >
+                          <RetryIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </ButtonGroup>
+                  </div>
                 </Box>
               </Box>
             </Box>
