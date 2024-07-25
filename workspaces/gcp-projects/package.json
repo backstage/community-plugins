@@ -32,9 +32,9 @@
     "directory": "workspaces/gcp-projects"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.26.3",
+    "@backstage/cli": "^0.26.11",
     "@backstage/e2e-test-utils": "^0.1.1",
-    "@backstage/repo-tools": "^0.8.0",
+    "@backstage/repo-tools": "^0.9.4",
     "@changesets/cli": "^2.27.1",
     "@spotify/prettier-config": "^15.0.0",
     "node-gyp": "^10.0.0",
