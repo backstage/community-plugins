@@ -2,7 +2,9 @@
   "name": "@backstage-community/plugin-analytics-module-ga4",
   "version": "0.2.7",
   "backstage": {
-    "role": "frontend-plugin-module"
+    "role": "frontend-plugin-module",
+    "pluginId": "app",
+    "pluginPackage": "@backstage/plugin-app-backend"
   },
   "publishConfig": {
     "access": "public",
