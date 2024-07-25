@@ -3,7 +3,11 @@
   "version": "0.1.42",
   "description": "A Backstage plugin that integrates towards GoCD",
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "gocd",
+    "pluginPackages": [
+      "@backstage-community/plugin-gocd"
+    ]
   },
   "publishConfig": {
     "access": "public",
