@@ -38,6 +38,7 @@
     "@changesets/cli": "^2.27.1",
     "@spotify/prettier-config": "^12.0.0",
     "@testing-library/jest-dom": "^6.4.8",
+    "@types/aria-query": "^5.0.4",
     "node-gyp": "^9.0.0",
     "prettier": "^2.3.2",
     "react": "^18.3.1",
