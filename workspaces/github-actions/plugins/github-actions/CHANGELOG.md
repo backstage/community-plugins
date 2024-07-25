@@ -1,5 +1,11 @@
 # @backstage-community/plugin-github-actions
 
+## 0.6.18
+
+### Patch Changes
+
+- 9c52968: Adds support for Backstage's new frontend system, available via the `/alpha` sub-path export.
+
 ## 0.6.17
 
 ### Patch Changes
