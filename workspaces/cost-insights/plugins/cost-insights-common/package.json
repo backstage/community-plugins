@@ -3,7 +3,12 @@
   "version": "0.1.3",
   "description": "Common functionalities for the cost-insights plugin",
   "backstage": {
-    "role": "common-library"
+    "role": "common-library",
+    "pluginId": "cost-insights",
+    "pluginPackages": [
+      "@backstage-community/plugin-cost-insights",
+      "@backstage-community/plugin-cost-insights-common"
+    ]
   },
   "publishConfig": {
     "access": "public",
@@ -36,6 +41,6 @@
     "test": "backstage-cli package test"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.26.3"
+    "@backstage/cli": "^0.26.11"
   }
 }
