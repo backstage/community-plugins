@@ -44,13 +44,13 @@ export const EntityGithubActionsContent: (props: RouterProps) => JSX_2.Element;
 
 // @public (undocumented)
 export const EntityLatestGithubActionRunCard: (props: {
-  branch: string;
+  branch?: string | undefined;
   variant?: InfoCardVariants | undefined;
 }) => JSX_2.Element;
 
 // @public (undocumented)
 export const EntityLatestGithubActionsForBranchCard: (props: {
-  branch: string;
+  branch?: string | undefined;
   variant?: InfoCardVariants | undefined;
 }) => JSX_2.Element;
 
@@ -251,13 +251,13 @@ export type Jobs = {
 
 // @public (undocumented)
 export const LatestWorkflowRunCard: (props: {
-  branch: string;
+  branch?: string;
   variant?: InfoCardVariants;
 }) => React_2.JSX.Element;
 
 // @public (undocumented)
 export const LatestWorkflowsForBranchCard: (props: {
-  branch: string;
+  branch?: string;
   variant?: InfoCardVariants;
 }) => React_2.JSX.Element;
 
