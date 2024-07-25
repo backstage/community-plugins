@@ -3,7 +3,11 @@
   "version": "0.3.48",
   "description": "A Backstage plugin that helps you manage releases in git",
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "git-release-manager",
+    "pluginPackages": [
+      "@backstage-community/plugin-git-release-manager"
+    ]
   },
   "publishConfig": {
     "access": "public",
