@@ -26,18 +26,15 @@ import {
   DefaultFactRetrieverEngine,
   FactRetrieverEngine,
 } from './FactRetrieverEngine';
-import {
-  DatabaseManager,
-  getVoidLogger,
-  ServerTokenManager,
-} from '@backstage/backend-common';
+import { ServerTokenManager } from '@backstage/backend-common';
+import { DatabaseManager } from '@backstage/backend-defaults/database';
 import { ConfigReader } from '@backstage/config';
 import {
   TestDatabaseId,
   TestDatabases,
   mockServices,
 } from '@backstage/backend-test-utils';
-import { TaskScheduler } from '@backstage/backend-tasks';
+import { DefaultSchedulerService } from '@backstage/backend-defaults/scheduler';
 
 jest.setTimeout(60_000);
 
@@ -138,10 +135,12 @@ describe('FactRetrieverEngine', () => {
       }),
     };
     const manager = databaseManager as DatabaseManager;
-    const scheduler = new TaskScheduler(manager, getVoidLogger());
+    const database = manager.forPlugin('tech-insights');
+    const logger = mockServices.logger.mock();
+    const scheduler = DefaultSchedulerService.create({ database, logger });
     return await DefaultFactRetrieverEngine.create({
       factRetrieverContext: {
-        logger: getVoidLogger(),
+        logger,
         config: ConfigReader.fromConfigs([]),
         tokenManager: ServerTokenManager.noop(),
         auth: mockServices.auth(),
@@ -155,7 +154,7 @@ describe('FactRetrieverEngine', () => {
         factRetriever,
       ),
       repository: createMockRepository(insert, schema),
-      scheduler: scheduler.forPlugin('tech-insights'),
+      scheduler,
     });
   }
 

@@ -8,6 +8,7 @@ import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
 import { CompoundEntityRef } from '@backstage/catalog-model';
 import { Config } from '@backstage/config';
 import { DateTime } from 'luxon';
+import { DiscoveryService } from '@backstage/backend-plugin-api';
 import { Duration } from 'luxon';
 import { DurationLike } from 'luxon';
 import { ExtensionPoint } from '@backstage/backend-plugin-api';
@@ -15,7 +16,6 @@ import { FactSchema } from '@backstage-community/plugin-tech-insights-common';
 import { HumanDuration } from '@backstage/types';
 import { JsonValue } from '@backstage/types';
 import { LoggerService } from '@backstage/backend-plugin-api';
-import { PluginEndpointDiscovery } from '@backstage/backend-common';
 import { TokenManager } from '@backstage/backend-common';
 
 // @public
@@ -65,7 +65,7 @@ export interface FactRetriever {
 // @public
 export type FactRetrieverContext = {
   config: Config;
-  discovery: PluginEndpointDiscovery;
+  discovery: DiscoveryService;
   logger: LoggerService;
   tokenManager: TokenManager;
   auth: AuthService;
