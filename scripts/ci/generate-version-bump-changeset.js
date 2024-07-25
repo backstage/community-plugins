@@ -53,7 +53,7 @@ async function main() {
 ${packageEntries.join('\n')}
 ---
 
-Backstage version bump to v${releaseVersion}`;
+Backstage version bump to v${releaseVersion}\n`;
 
   // Write the changeset file to the workspace's `.changeset` folder
   await fs.writeFile(workspaceChangeset, changeset);
