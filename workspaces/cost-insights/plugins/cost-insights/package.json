@@ -3,7 +3,12 @@
   "version": "0.12.25",
   "description": "A Backstage plugin that helps you keep track of your cloud spend",
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "cost-insights",
+    "pluginPackages": [
+      "@backstage-community/plugin-cost-insights",
+      "@backstage-community/plugin-cost-insights-common"
+    ]
   },
   "publishConfig": {
     "access": "public",
