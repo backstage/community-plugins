@@ -5,4 +5,5 @@
 '@backstage-community/plugin-tech-insights': patch
 ---
 
+Update Backstage to 1.29.1  
 Remove usage of deprecated API endpoints except tokenManager
