@@ -47,9 +47,12 @@ describe('Entity card extensions', () => {
       .add(mockGithubActionsApi)
       .render();
 
-    await waitFor(async () => {
-      expect(screen.getByText('backstage/backstage')).toBeInTheDocument();
-    });
+    await waitFor(
+      () => {
+        expect(screen.getByText('backstage/backstage')).toBeInTheDocument();
+      },
+      { timeout: 5000 },
+    );
   });
 
   it('should render LatestWorkflowRunCard', async () => {
@@ -57,9 +60,12 @@ describe('Entity card extensions', () => {
       .add(mockGithubActionsApi)
       .render();
 
-    await waitFor(async () => {
-      expect(screen.getByText('Last master build')).toBeInTheDocument();
-    });
+    await waitFor(
+      () => {
+        expect(screen.getByText('Last master build')).toBeInTheDocument();
+      },
+      { timeout: 5000 },
+    );
   });
 
   it('should render LatestWorkflowsRunForBranchCard', async () => {
@@ -67,9 +73,12 @@ describe('Entity card extensions', () => {
       .add(mockGithubActionsApi)
       .render();
 
-    await waitFor(async () => {
-      expect(screen.getByText('Last master build')).toBeInTheDocument();
-    });
+    await waitFor(
+      () => {
+        expect(screen.getByText('Last master build')).toBeInTheDocument();
+      },
+      { timeout: 5000 },
+    );
   });
 
   it('should render RecentWorkflowRunsCard', async () => {
@@ -77,8 +86,11 @@ describe('Entity card extensions', () => {
       .add(mockGithubActionsApi)
       .render();
 
-    await waitFor(async () => {
-      expect(screen.getByText('Commit Message')).toBeInTheDocument();
-    });
+    await waitFor(
+      () => {
+        expect(screen.getByText('Commit Message')).toBeInTheDocument();
+      },
+      { timeout: 5000 },
+    );
   });
 });

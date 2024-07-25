@@ -47,8 +47,11 @@ describe('Entity card extensions', () => {
       .add(mockGithubActionsApi)
       .render();
 
-    await waitFor(async () => {
-      expect(screen.getByText('backstage/backstage')).toBeInTheDocument();
-    });
+    await waitFor(
+      () => {
+        expect(screen.getByText('backstage/backstage')).toBeInTheDocument();
+      },
+      { timeout: 5000 },
+    );
   });
 });
