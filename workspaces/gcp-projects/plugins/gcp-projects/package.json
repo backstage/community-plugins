@@ -3,7 +3,11 @@
   "version": "0.3.51",
   "description": "A Backstage plugin that helps you manage projects in GCP",
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "gcp-projects",
+    "pluginPackages": [
+      "@backstage-community/plugin-gcp-projects"
+    ]
   },
   "publishConfig": {
     "access": "public",
