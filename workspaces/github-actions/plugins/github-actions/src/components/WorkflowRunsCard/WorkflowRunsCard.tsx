@@ -158,11 +158,7 @@ export const WorkflowRunsCardView = ({
                   </Tooltip>
                   <Tooltip title={run.message ?? 'No run message'}>
                     <Box display="flex" flexDirection="column" marginY={1}>
-                      <Typography
-                        variant="body2"
-                        component="span"
-                        style={{ fontSize: 'smaller', fontWeight: 'bold' }}
-                      >
+                      <Typography variant="subtitle2" component="span">
                         Commit
                       </Typography>
                       <Typography
@@ -177,11 +173,7 @@ export const WorkflowRunsCardView = ({
 
                   {run.source.branchName && (
                     <Box display="flex" flexDirection="column" marginY={1}>
-                      <Typography
-                        variant="body2"
-                        component="span"
-                        style={{ fontSize: 'smaller', fontWeight: 'bold' }}
-                      >
+                      <Typography variant="subtitle2" component="span">
                         Branch
                       </Typography>
                       <Typography
@@ -194,11 +186,7 @@ export const WorkflowRunsCardView = ({
                     </Box>
                   )}
                   <Box display="flex" flexDirection="column" marginY={1}>
-                    <Typography
-                      variant="body2"
-                      component="span"
-                      style={{ fontSize: 'smaller', fontWeight: 'bold' }}
-                    >
+                    <Typography variant="subtitle2" component="span">
                       Workflow ID
                     </Typography>
                     <Typography
