@@ -2,7 +2,11 @@
   "name": "@backstage-community/plugin-dynatrace",
   "version": "10.0.4",
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "dynatrace",
+    "pluginPackages": [
+      "@backstage-community/plugin-dynatrace"
+    ]
   },
   "publishConfig": {
     "access": "public",
