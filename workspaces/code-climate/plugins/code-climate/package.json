@@ -2,7 +2,11 @@
   "name": "@backstage-community/plugin-code-climate",
   "version": "0.1.35",
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "code-climate",
+    "pluginPackages": [
+      "@backstage-community/plugin-code-climate"
+    ]
   },
   "publishConfig": {
     "access": "public",
