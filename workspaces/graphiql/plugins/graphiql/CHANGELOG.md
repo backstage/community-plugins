@@ -1,5 +1,11 @@
 # @backstage-community/plugin-graphiql
 
+## 0.3.9
+
+### Patch Changes
+
+- 0c53302: Backstage version bump to v1.29.2
+
 ## 0.3.8
 
 ### Patch Changes
