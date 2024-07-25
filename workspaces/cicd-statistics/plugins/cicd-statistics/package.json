@@ -3,7 +3,11 @@
   "version": "0.1.37",
   "description": "A frontend plugin visualizing CI/CD pipeline statistics (build time)",
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "cicd-statistics",
+    "pluginPackages": [
+      "@backstage-community/plugin-cicd-statistics"
+    ]
   },
   "publishConfig": {
     "access": "public",
