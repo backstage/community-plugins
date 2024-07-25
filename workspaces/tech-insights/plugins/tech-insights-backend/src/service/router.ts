@@ -30,9 +30,9 @@ import {
   parseEntityRef,
   stringifyEntityRef,
 } from '@backstage/catalog-model';
-import { errorHandler } from '@backstage/backend-common';
 import { serializeError } from '@backstage/errors';
 import { LoggerService } from '@backstage/backend-plugin-api';
+import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 import pLimit from 'p-limit';
 
 /**
@@ -85,6 +85,8 @@ export async function createRouter<
   router.use(express.json());
   const { persistenceContext, factChecker, logger, config } = options;
   const { techInsightsStore } = persistenceContext;
+
+  const factory = MiddlewareFactory.create({ logger, config });
 
   if (factChecker) {
     logger.info('Fact checker configured. Enabling fact checking endpoints.');
@@ -198,6 +200,6 @@ export async function createRouter<
     );
   });
 
-  router.use(errorHandler());
+  router.use(factory.error());
   return router;
 }

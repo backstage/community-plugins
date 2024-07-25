@@ -22,8 +22,6 @@ import { DefaultFactRetrieverRegistry } from './fact/FactRetrieverRegistry';
 import { Config } from '@backstage/config';
 import {
   createLegacyAuthAdapters,
-  PluginDatabaseManager,
-  PluginEndpointDiscovery,
   TokenManager,
 } from '@backstage/backend-common';
 import {
@@ -36,8 +34,13 @@ import {
 } from '@backstage-community/plugin-tech-insights-node';
 import { initializePersistenceContext } from './persistence';
 import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
-import { PluginTaskScheduler } from '@backstage/backend-tasks';
-import { AuthService, LoggerService } from '@backstage/backend-plugin-api';
+import {
+  AuthService,
+  DatabaseService,
+  DiscoveryService,
+  LoggerService,
+  SchedulerService,
+} from '@backstage/backend-plugin-api';
 
 /**
  * @public
@@ -79,9 +82,9 @@ export interface TechInsightsOptions<
 
   logger: LoggerService;
   config: Config;
-  discovery: PluginEndpointDiscovery;
-  database: PluginDatabaseManager;
-  scheduler: PluginTaskScheduler;
+  discovery: DiscoveryService;
+  database: DatabaseService;
+  scheduler: SchedulerService;
   tokenManager: TokenManager;
   auth?: AuthService;
 }
