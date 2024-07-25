@@ -2,7 +2,11 @@
   "name": "@backstage-community/plugin-codescene",
   "version": "0.1.29",
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "codescene",
+    "pluginPackages": [
+      "@backstage-community/plugin-codescene"
+    ]
   },
   "publishConfig": {
     "access": "public",
