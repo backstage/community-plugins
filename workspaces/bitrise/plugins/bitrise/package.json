@@ -3,7 +3,11 @@
   "version": "0.1.63",
   "description": "A Backstage plugin that integrates towards Bitrise",
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "bitrise",
+    "pluginPackages": [
+      "@backstage-community/plugin-bitrise"
+    ]
   },
   "publishConfig": {
     "access": "public",
