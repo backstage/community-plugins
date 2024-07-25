@@ -4,7 +4,7 @@ A plugin that provide Confluence specific functionality that can be used in diff
 
 # Getting Started
 
-before we begin make sure:
+Before we begin make sure:
 
 * You have created your own standalone Backstage app using @backstage/create-app and not using a fork of the bastage repository. if you haven't setup Backstage already, start [here](https://backstage.io/docs/getting-started/).
 
