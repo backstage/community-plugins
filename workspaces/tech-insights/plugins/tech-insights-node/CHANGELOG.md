@@ -1,5 +1,17 @@
 # @backstage-community/plugin-tech-insights-node
 
+## 0.6.4
+
+### Patch Changes
+
+- 7ac338c: Update Backstage to 1.29.1
+  Remove usage of deprecated API endpoints except tokenManager
+- 794cc8b: Fix api reports generated with the wrong name
+  Update @backstage/cli to 0.26.11
+  Add missing Backstage fields in `package.json`
+- Updated dependencies [794cc8b]
+  - @backstage-community/plugin-tech-insights-common@0.2.15
+
 ## 0.6.3
 
 ### Patch Changes
