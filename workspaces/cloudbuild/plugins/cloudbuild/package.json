@@ -3,7 +3,11 @@
   "version": "0.5.3",
   "description": "A Backstage plugin that integrates towards Google Cloud Build",
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "cloudbuild",
+    "pluginPackages": [
+      "@backstage-community/plugin-cloudbuild"
+    ]
   },
   "publishConfig": {
     "access": "public",
