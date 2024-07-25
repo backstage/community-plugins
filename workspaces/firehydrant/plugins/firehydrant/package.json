@@ -3,7 +3,11 @@
   "version": "0.2.20",
   "description": "A Backstage plugin that integrates towards FireHydrant",
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "firehydrant",
+    "pluginPackages": [
+      "@backstage-community/plugin-firehydrant"
+    ]
   },
   "publishConfig": {
     "access": "public",
