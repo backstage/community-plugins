@@ -3,7 +3,11 @@
   "version": "0.3.8",
   "description": "Backstage plugin for browsing GraphQL APIs",
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "graphiql",
+    "pluginPackages": [
+      "@backstage-community/plugin-graphiql"
+    ]
   },
   "publishConfig": {
     "access": "public"
