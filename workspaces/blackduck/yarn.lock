@@ -2735,11 +2735,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage-community/plugin-blackduck-backend@0.1.0, @backstage-community/plugin-blackduck-backend@workspace:^, @backstage-community/plugin-blackduck-backend@workspace:plugins/blackduck-backend":
+"@backstage-community/plugin-blackduck-backend@workspace:^, @backstage-community/plugin-blackduck-backend@workspace:plugins/blackduck-backend":
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-blackduck-backend@workspace:plugins/blackduck-backend"
   dependencies:
-    "@backstage-community/plugin-blackduck-common": ^0.1.0
+    "@backstage-community/plugin-blackduck-common": "workspace:^"
     "@backstage/backend-common": ^0.23.3
     "@backstage/backend-defaults": ^0.4.0
     "@backstage/backend-plugin-api": ^0.7.0
@@ -2761,7 +2761,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@backstage-community/plugin-blackduck-common@^0.1.0, @backstage-community/plugin-blackduck-common@workspace:plugins/blackduck-common":
+"@backstage-community/plugin-blackduck-common@workspace:^, @backstage-community/plugin-blackduck-common@workspace:plugins/blackduck-common":
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-blackduck-common@workspace:plugins/blackduck-common"
   dependencies:
@@ -2771,11 +2771,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@backstage-community/plugin-blackduck@0.1.0, @backstage-community/plugin-blackduck@workspace:^, @backstage-community/plugin-blackduck@workspace:plugins/blackduck":
+"@backstage-community/plugin-blackduck@workspace:^, @backstage-community/plugin-blackduck@workspace:plugins/blackduck":
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-blackduck@workspace:plugins/blackduck"
   dependencies:
-    "@backstage-community/plugin-blackduck-common": ^0.1.0
+    "@backstage-community/plugin-blackduck-common": "workspace:^"
     "@backstage/backend-common": ^0.23.3
     "@backstage/backend-plugin-api": ^0.7.0
     "@backstage/catalog-model": ^1.5.0
@@ -13737,7 +13737,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "app@workspace:packages/app"
   dependencies:
-    "@backstage-community/plugin-blackduck": 0.1.0
+    "@backstage-community/plugin-blackduck": "workspace:^"
     "@backstage-community/plugin-github-actions": ^0.6.16
     "@backstage-community/plugin-tech-radar": ^0.7.4
     "@backstage/app-defaults": ^1.5.8
@@ -14460,7 +14460,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "backend@workspace:packages/backend"
   dependencies:
-    "@backstage-community/plugin-blackduck-backend": 0.1.0
+    "@backstage-community/plugin-blackduck-backend": "workspace:^"
     "@backstage/backend-common": ^0.23.3
     "@backstage/backend-defaults": ^0.4.1
     "@backstage/backend-tasks": ^0.5.27
