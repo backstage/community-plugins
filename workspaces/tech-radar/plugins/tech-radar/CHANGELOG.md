@@ -1,5 +1,11 @@
 # @backstage-community/plugin-tech-radar
 
+## 0.7.6
+
+### Patch Changes
+
+- 760b617: Backstage version bump to v1.29.2
+
 ## 0.7.5
 
 ### Patch Changes
