@@ -1,5 +1,12 @@
 # app
 
+## 0.0.4
+
+### Patch Changes
+
+- Updated dependencies [d33c708]
+  - @backstage-community/plugin-azure-devops@0.4.8
+
 ## 0.0.3
 
 ### Patch Changes
