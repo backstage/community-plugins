@@ -17,7 +17,6 @@ export interface AzureStorageApi {
     storageAccount: string,
     containerName: string,
     blobName: string,
-    contentType: string,
     prefix?: string,
   ): Promise<any>;
 }

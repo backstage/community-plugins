@@ -3,7 +3,7 @@ import {
   createPlugin,
   createRoutableExtension,
   discoveryApiRef,
-  identityApiRef,
+  fetchApiRef,
 } from '@backstage/core-plugin-api';
 
 import { rootRouteRef } from './routes';
@@ -16,12 +16,12 @@ export const azureStoragePlugin = createPlugin({
       api: azureStorageApiRef,
       deps: {
         discoveryApi: discoveryApiRef,
-        identityApi: identityApiRef,
+        fetchApi: fetchApiRef,
       },
-      factory: ({ discoveryApi, identityApi }) =>
+      factory: ({ discoveryApi, fetchApi }) =>
         new AzureStorageClient({
           discoveryApi,
-          identityApi,
+          fetchApi,
         }),
     }),
   ],

@@ -116,12 +116,11 @@ export const AzureStorageContent = () => {
     },
   ];
 
-  const downloadBlob = async (blobName: string, blobType: string) => {
+  const downloadBlob = async (blobName: string) => {
     azureStorageApi.downloadBlob(
       accountName,
       containerName,
       blobName,
-      blobType,
       folderStack.join(),
     );
   };
@@ -192,7 +191,7 @@ export const AzureStorageContent = () => {
                   tooltip: 'Download',
                   isFreeAction: false,
                   onClick: () => {
-                    downloadBlob(rowData.filename, rowData.contentType);
+                    downloadBlob(rowData.filename);
                   },
                   hidden: rowData.contentType === 'Folder' ? true : false,
                 };
