@@ -86,6 +86,8 @@ jobs:
         run: yarn backstage-cli versions:bump --release ${{ inputs.release_line || 'next' }}
         env:
           YARN_ENABLE_IMMUTABLE_INSTALLS: false
+      - name: Run dedupe
+        run: yarn dedupe
       - name: 'Check for changes'
         id: check_for_changes
         run: |
