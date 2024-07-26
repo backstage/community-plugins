@@ -1,5 +1,11 @@
 # @backstage-community/plugin-newrelic
 
+## 0.3.51
+
+### Patch Changes
+
+- bed3488: Backstage version bump to v1.29.2
+
 ## 0.3.50
 
 ### Patch Changes
