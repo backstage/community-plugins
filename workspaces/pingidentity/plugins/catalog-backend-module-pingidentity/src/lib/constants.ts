@@ -1,0 +1,1 @@
+export const PING_IDENTITY_ID_ANNOTATION = 'pingidentity.org/id';
