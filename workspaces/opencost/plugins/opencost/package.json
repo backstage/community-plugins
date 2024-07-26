@@ -2,7 +2,11 @@
   "name": "@backstage-community/plugin-opencost",
   "version": "0.2.10",
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "opencost",
+    "pluginPackages": [
+      "@backstage-community/plugin-opencost"
+    ]
   },
   "publishConfig": {
     "access": "public",
