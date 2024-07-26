@@ -3,7 +3,11 @@
   "version": "0.2.54",
   "description": "A Backstage plugin that shows XCode build metrics for your components",
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "xcmetrics",
+    "pluginPackages": [
+      "@backstage-community/plugin-xcmetrics"
+    ]
   },
   "publishConfig": {
     "access": "public",
