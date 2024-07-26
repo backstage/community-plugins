@@ -1647,7 +1647,9 @@ __metadata:
   resolution: "@backstage-community/plugins@workspace:."
   dependencies:
     "@backstage-community/cli": "portal:./workspaces/repo-tools/packages/cli"
+    "@backstage/catalog-model": ^1.5.0
     "@backstage/cli-node": ^0.2.2
+    "@backstage/config": ^1.2.0
     "@changesets/parse": ^0.4.0
     "@manypkg/get-packages": ^2.2.2
     "@octokit/rest": ^20.1.1
@@ -1678,12 +1680,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@backstage/catalog-model@npm:^1.5.0":
+  version: 1.5.0
+  resolution: "@backstage/catalog-model@npm:1.5.0"
+  dependencies:
+    "@backstage/errors": ^1.2.4
+    "@backstage/types": ^1.1.1
+    ajv: ^8.10.0
+    lodash: ^4.17.21
+  checksum: 545873625afbb25a2142af9f8c701547b448fe8b822c9ed699c86a9c385571014115a2c3105a3dca2bc2ac63b837b093dba39a973c2f9e23521d427a0328ba12
+  languageName: node
+  linkType: hard
+
 "@backstage/cli-common@npm:^0.1.14":
   version: 0.1.14
   resolution: "@backstage/cli-common@npm:0.1.14"
   checksum: 6c5031ae31f08b405e5e59105d98e43dc6d865f960e5d016067267ecabccd5a892ab65d59d5b9e31850dccddb9eb29e06bf360ab6be8f7949991561ddb163fcb
-  languageName: node
-  linkType: hard
 
 "@backstage/cli-node@npm:^0.2.2, @backstage/cli-node@npm:^0.2.7":
   version: 0.2.7
