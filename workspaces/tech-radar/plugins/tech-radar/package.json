@@ -3,7 +3,11 @@
   "version": "0.7.5",
   "description": "A Backstage plugin that lets you display a Tech Radar for your organization",
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "tech-radar",
+    "pluginPackages": [
+      "@backstage-community/plugin-tech-radar"
+    ]
   },
   "publishConfig": {
     "access": "public"
