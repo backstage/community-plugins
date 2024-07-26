@@ -1,5 +1,11 @@
 # @backstage-community/plugin-xcmetrics
 
+## 0.2.55
+
+### Patch Changes
+
+- 6d1ba9d: Backstage version bump to v1.29.2
+
 ## 0.2.54
 
 ### Patch Changes
