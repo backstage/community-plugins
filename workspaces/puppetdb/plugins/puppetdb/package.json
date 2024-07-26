@@ -3,7 +3,11 @@
   "version": "0.1.18",
   "description": "Backstage plugin to visualize resource information and Puppet facts from PuppetDB.",
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "puppetdb",
+    "pluginPackages": [
+      "@backstage-community/plugin-puppetdb"
+    ]
   },
   "publishConfig": {
     "access": "public",
