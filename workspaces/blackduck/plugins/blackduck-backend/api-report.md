@@ -32,15 +32,5 @@ export interface RouterOptions {
   permissions: PermissionsService;
 }
 
-// Warnings were encountered during analysis:
-//
-// src/service/router.d.ts:5:1 - (ae-undocumented) Missing documentation for "RouterOptions".
-// src/service/router.d.ts:6:5 - (ae-undocumented) Missing documentation for "logger".
-// src/service/router.d.ts:7:5 - (ae-undocumented) Missing documentation for "config".
-// src/service/router.d.ts:8:5 - (ae-undocumented) Missing documentation for "permissions".
-// src/service/router.d.ts:9:5 - (ae-undocumented) Missing documentation for "discovery".
-// src/service/router.d.ts:10:5 - (ae-undocumented) Missing documentation for "httpAuth".
-// src/service/router.d.ts:13:1 - (ae-undocumented) Missing documentation for "createRouter".
-
 // (No @packageDocumentation comment for this package)
 ```

@@ -78,18 +78,12 @@ export const blackduckRiskProfileReadPermission: ResourcePermission<'catalog-ent
 // @public (undocumented)
 export const blackduckVulnerabilitiesReadPermission: ResourcePermission<'catalog-entity'>;
 
-// Warnings were encountered during analysis:
-//
-// src/constants.d.ts:2:22 - (ae-undocumented) Missing documentation for "BLACKDUCK_PROJECT_ANNOTATION".
-// src/permissions.d.ts:4:22 - (ae-undocumented) Missing documentation for "blackduckRiskProfileReadPermission".
-// src/permissions.d.ts:8:22 - (ae-undocumented) Missing documentation for "blackduckVulnerabilitiesReadPermission".
-// src/permissions.d.ts:12:22 - (ae-undocumented) Missing documentation for "blackduckPermissions".
-// src/types.d.ts:9:1 - (ae-undocumented) Missing documentation for "BD_PROJECT_DETAIL".
-// src/types.d.ts:26:5 - (ae-forgotten-export) The symbol "META" needs to be exported by the entry point index.d.ts
-// src/types.d.ts:31:1 - (ae-undocumented) Missing documentation for "BD_VERISON_DETAIL".
-// src/types.d.ts:48:1 - (ae-undocumented) Missing documentation for "BD_REST_API_RESPONSE".
-// src/types.d.ts:57:1 - (ae-undocumented) Missing documentation for "BD_PROJECTS_API_RESPONSE".
-// src/types.d.ts:66:1 - (ae-undocumented) Missing documentation for "BD_VERSIONS_API_RESPONSE".
+// @public (undocumented)
+export type META = {
+  allow: [];
+  href: string;
+  links: [];
+};
 
 // (No @packageDocumentation comment for this package)
 ```

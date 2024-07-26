@@ -1,4 +1,7 @@
-type META = {
+/**
+ * @public
+ */
+export type META = {
   allow: [];
   href: string;
   links: [];
