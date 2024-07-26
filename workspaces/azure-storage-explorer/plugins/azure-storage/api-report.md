@@ -9,13 +9,9 @@ import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { JSX as JSX_2 } from 'react';
 import { RouteRef } from '@backstage/core-plugin-api';
 
-// Warning: (ae-missing-release-tag) "AzureStoragePage" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const AzureStoragePage: () => JSX_2.Element;
 
-// Warning: (ae-missing-release-tag) "azureStoragePlugin" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const azureStoragePlugin: BackstagePlugin<
   {
@@ -24,11 +20,6 @@ export const azureStoragePlugin: BackstagePlugin<
   {},
   {}
 >;
-
-// Warnings were encountered during analysis:
-//
-// src/plugin.d.ts:2:22 - (ae-undocumented) Missing documentation for "azureStoragePlugin".
-// src/plugin.d.ts:5:22 - (ae-undocumented) Missing documentation for "AzureStoragePage".
 
 // (No @packageDocumentation comment for this package)
 ```
