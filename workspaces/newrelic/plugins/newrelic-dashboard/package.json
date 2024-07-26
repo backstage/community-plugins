@@ -2,7 +2,11 @@
   "name": "@backstage-community/plugin-newrelic-dashboard",
   "version": "0.3.10",
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "newrelic-dashboard",
+    "pluginPackages": [
+      "@backstage-community/plugin-newrelic-dashboard"
+    ]
   },
   "publishConfig": {
     "access": "public",
