@@ -3,7 +3,11 @@
   "version": "0.3.24",
   "description": "A Backstage plugin that provides a shortcuts feature to the sidebar",
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "shortcuts",
+    "pluginPackages": [
+      "@backstage-community/plugin-shortcuts"
+    ]
   },
   "publishConfig": {
     "access": "public",
