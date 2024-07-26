@@ -5,6 +5,7 @@ import {
 } from '@backstage/backend-plugin-api';
 import { createRouter } from './service/router';
 
+/** @public */
 export const azureStoragePlugin = createBackendPlugin({
   pluginId: 'azurestorage',
   register(env) {

@@ -9,6 +9,7 @@ import {
 import { rootRouteRef } from './routes';
 import { AzureStorageClient, azureStorageApiRef } from './api';
 
+/** @public */
 export const azureStoragePlugin = createPlugin({
   id: 'azure-storage',
   apis: [
@@ -30,6 +31,7 @@ export const azureStoragePlugin = createPlugin({
   },
 });
 
+/** @public */
 export const AzureStoragePage = azureStoragePlugin.provide(
   createRoutableExtension({
     name: 'AzureStoragePage',
