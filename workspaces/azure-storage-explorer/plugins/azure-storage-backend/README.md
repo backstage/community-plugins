@@ -13,6 +13,26 @@ This plugin needs to be added to an existing backstage instance.
 yarn --cwd packages/backend add @backstage-community/plugin-azure-storage-explorer-backend
 ```
 
+### New Backend System
+
+The Azure Storage Explorer backend plugin has support for the [new backend system](https://backstage.io/docs/backend-system/), here's how you can set that up:
+
+In your `packages/backend/src/index.ts` make the following changes:
+
+```diff
+  import { createBackend } from '@backstage/backend-defaults';
+
+  const backend = createBackend();
+
+  // ... other feature additions
+
++ backend.add(import('@backstage-community/plugin-azure-storage-explorer-backend'));
+
+  backend.start();
+```
+
+### Legacy Backend System
+
 Create a file called `azure-storage.ts` inside `packages/backend/src/plugins/` and add the following
 
 #### azure-storage.ts
