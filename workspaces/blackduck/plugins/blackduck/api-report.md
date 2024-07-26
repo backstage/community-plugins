@@ -36,12 +36,5 @@ export const isBlackDuckAvailable: (entity: Entity) => boolean;
 // @public (undocumented)
 export const RiskCard: () => JSX_2.Element;
 
-// Warnings were encountered during analysis:
-//
-// src/plugin.d.ts:5:22 - (ae-undocumented) Missing documentation for "blackduckPlugin".
-// src/plugin.d.ts:11:22 - (ae-undocumented) Missing documentation for "BlackDuckPage".
-// src/plugin.d.ts:18:22 - (ae-undocumented) Missing documentation for "RiskCard".
-// src/utils/commonUtil.d.ts:5:22 - (ae-undocumented) Missing documentation for "isBlackDuckAvailable".
-
 // (No @packageDocumentation comment for this package)
 ```
