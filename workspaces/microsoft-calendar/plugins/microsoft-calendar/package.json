@@ -10,7 +10,11 @@
     "types": "dist/index.d.ts"
   },
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "microsoft-calendar",
+    "pluginPackages": [
+      "@backstage-community/plugin-microsoft-calendar"
+    ]
   },
   "homepage": "https://backstage.io",
   "repository": {
