@@ -40,6 +40,7 @@ export type ConfluenceCollatorFactoryOptions = {
   baseUrl?: string;
   auth?: string;
   token?: string;
+  email?: string;
   username?: string;
   password?: string;
   spaces?: string[];
@@ -102,6 +103,7 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
   private readonly baseUrl: string | undefined;
   private readonly auth: string | undefined;
   private readonly token: string | undefined;
+  private readonly email: string | undefined;
   private readonly username: string | undefined;
   private readonly password: string | undefined;
   private readonly spaces: string[] | undefined;
@@ -113,6 +115,7 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
     this.baseUrl = options.baseUrl;
     this.auth = options.auth;
     this.token = options.token;
+    this.email = options.email;
     this.username = options.username;
     this.password = options.password;
     this.spaces = options.spaces;
@@ -123,18 +126,25 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
   static fromConfig(config: Config, options: ConfluenceCollatorFactoryOptions) {
     const baseUrl = config.getString('confluence.baseUrl');
     const auth =
-      config.getOptionalString('confluence.auth.auth.type') || 'bearer';
+      config.getOptionalString('confluence.auth.auth.type') ?? 'bearer';
     const token = config.getOptionalString('confluence.auth.token');
+    const email = config.getOptionalString('confluence.auth.email');
     const username = config.getOptionalString('confluence.auth.username');
     const password = config.getOptionalString('confluence.auth.password');
-    const spaces = config.getOptionalStringArray('confluence.spaces') || [];
+    const spaces = config.getOptionalStringArray('confluence.spaces') ?? [];
     const parallelismLimit = config.getOptionalNumber(
       'confluence.parallelismLimit',
     );
 
-    if (auth === 'bearer' && !token) {
+    if ((auth === 'basic' || auth === 'bearer') && !token) {
       throw new Error(
         `No token provided for the configured '${auth}' auth method`,
+      );
+    }
+
+    if (auth === 'basic' && !email) {
+      throw new Error(
+        `No email provided for the configured '${auth}' auth method`,
       );
     }
 
@@ -143,11 +153,13 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
         `No username/password provided for the configured '${auth}' auth method`,
       );
     }
+
     return new ConfluenceCollatorFactory({
       ...options,
       baseUrl,
       auth,
       token,
+      email,
       username,
       password,
       spaces,
@@ -317,6 +329,10 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
     switch (this.auth) {
       case 'bearer':
         return `Bearer ${this.token}`;
+      case 'basic': {
+        const buffer = Buffer.from(`${this.email}:${this.token}`, 'utf8');
+        return `Basic ${buffer.toString('base64')}`;
+      }
       case 'userpass': {
         const buffer = Buffer.from(`${this.username}:${this.password}`, 'utf8');
         return `Basic ${buffer.toString('base64')}`;
