@@ -1,6 +1,6 @@
 # Confluence Search Backend Module
 
-A plugin that provides confluence specific functionality that can be used in different ways (e.g. for search) to compose your Backstage App.
+This plugin provides the `ConfluenceCollatorFactory`, which can be used in the search backend to index Confluence space documents to your Backstage Search.
 
 ## Getting started
 
@@ -19,13 +19,37 @@ confluence:
   spaces: []  # Warning, it is highly recommended to safely list the spaces that you want to index, either all documents will be indexed.
 ```
 
-## Areas of Responsibility
+You may also want to add configuration parameters to your app-config, for example for controlling the scheduled indexing interval. These parameters should be placed under the `search.collators.confluence` key. See [the config definition file](./config.d.ts) for more details.
 
-This confluence backend plugin is primarily responsible for the following:
+## Installation
 
-- Provides a `ConfluenceCollatorFactory`, which can be used in the search backend to index confluence space documents to your Backstage Search
+Add the module package as dependency:
 
-### Index Confluence Spaces to search
+```bash
+# From your Backstage root directory
+yarn --cwd packages/backend add @backstage-community/plugin-search-backend-module-confluence-collator
+```
+
+### New Backend System
+
+This backend plugin has support for the [new backend system](https://backstage.io/docs/backend-system/), here's how you can set that up:
+
+In your `packages/backend/src/index.ts`, Add the collator to your backend instance, along with the search plugin itself:
+
+```tsx
+import { createBackend } from '@backstage/backend-defaults';
+
+const backend = createBackend();
+backend.add(import('@backstage/plugin-search-backend/alpha'));
+backend.add(
+  import('@backstage-community/plugin-search-backend-module-confluence-collator'),
+);
+backend.start();
+```
+
+### Legacy backend
+
+#### Index Confluence Spaces to search
 
 Before you are able to start index confluence spaces to search, you need to go through the [search getting started guide](https://backstage.io/docs/features/search/getting-started).
 
@@ -44,35 +68,6 @@ indexBuilder.addCollator({
   }),
 });
 ```
-
-## New Backend System
-
-This package exports a module that extends the search backend to also indexing the questions exposed by the [`Confluence` API](https://developer.atlassian.com/cloud/confluence/rest/v1).
-
-### Installation
-
-Add the module package as a dependency:
-
-```bash
-# From your Backstage root directory
-yarn --cwd packages/backend add @backstage-community/plugin-search-backend-module-confluence-collator
-```
-
-Add the collator to your backend instance, along with the search plugin itself:
-
-```tsx
-// packages/backend/src/index.ts
-import { createBackend } from '@backstage/backend-defaults';
-
-const backend = createBackend();
-backend.add(import('@backstage/plugin-search-backend/alpha'));
-backend.add(
-  import('@backstage-community/plugin-search-backend-module-confluence-collator'),
-);
-backend.start();
-```
-
-You may also want to add configuration parameters to your app-config, for example for controlling the scheduled indexing interval. These parameters should be placed under the `search.collators.confluence` key. See [the config definition file](./config.d.ts) for more details.
 
 ## Special thanks & Disclaimer
 
