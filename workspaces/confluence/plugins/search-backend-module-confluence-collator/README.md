@@ -2,25 +2,6 @@
 
 This plugin provides the `ConfluenceCollatorFactory`, which can be used in the search backend to index Confluence space documents to your Backstage Search.
 
-## Getting started
-
-Before we begin, make sure:
-
-- You have created your own standalone Backstage app using @backstage/create-app and not using a fork of the backstage repository. If you haven't setup Backstage already, start [here](https://backstage.io/docs/getting-started/).
-
-To use any of the functionality this plugin provides, you need to start by configuring your App with the following config:
-
-```yaml
-confluence:
-  baseUrl: http://confluence.example.com
-  auth:
-    type: bearer
-    token: youApiToken
-  spaces: []  # Warning, it is highly recommended to safely list the spaces that you want to index, either all documents will be indexed.
-```
-
-You may also want to add configuration parameters to your app-config, for example for controlling the scheduled indexing interval. These parameters should be placed under the `search.collators.confluence` key. See [the config definition file](./config.d.ts) for more details.
-
 ## Installation
 
 Add the module package as dependency:
@@ -67,6 +48,80 @@ indexBuilder.addCollator({
     },
   }),
 });
+```
+
+## Configuration
+
+There is some configuration that needs to be setup to use this action, these are the base parameters:
+
+```yaml
+confluence:
+  baseUrl: 'http://confluence.example.com'
+  auth:
+    token: '${CONFLUENCE_TOKEN}'
+  spaces: []  # Warning, it is highly recommended to safely list the spaces that you want to index, either all documents will be indexed.
+```
+
+The sections below will go into more details about the Base URL and Auth Methods.
+
+#### Base URL
+
+The `baseUrl` for Confluence Cloud should include the product name which is `wiki` by default but can be something else if your Org has changed it. An example `baseUrl` for Confluence Cloud would look like this: `https://example.atlassian.net/wiki`
+
+If you are using a self-hosted Confluence instance this does not apply to you. Your `baseUrl` would look something like this: `https://confluence.example.com`
+
+#### Auth Methods
+
+The default authorization method is `bearer` but `basic` and `userpass` are also supported. Here's how you would configure each of these:
+
+For `bearer`:
+
+```yaml
+confluence:
+  baseUrl: 'https://confluence.example.com'
+  auth:
+    type: 'bearer'
+    token: '${CONFLUENCE_TOKEN}'
+```
+
+For `basic`:
+
+```yaml
+confluence:
+  baseUrl: 'https://confluence.example.com'
+  auth:
+    type: 'basic'
+    token: '${CONFLUENCE_TOKEN}'
+    email: 'example@company.org'
+```
+
+For `userpass`
+
+```yaml
+confluence:
+  baseUrl: 'https://confluence.example.com'
+  auth:
+    type: 'userpass'
+    username: 'your-username'
+    password: 'your-password'
+```
+
+**Note:** For `basic` and `bearer` authorization methods you will need an access token for authorization with `Read` permissions. You can create a Personal Access Token (PAT) in Confluence. The value used should be the raw token as it will be encoded for you by the action.
+
+#### Search Schedule
+
+By default the Confluence documents indexing will run every two hours. Here's how to configure the schedule:
+
+```yaml
+search:
+  collators:
+    confluence:
+      frequency:
+        minutes: 45
+      timeout:
+        minutes: 3
+      initialDelay:
+        minutes: 3
 ```
 
 ## Special thanks & Disclaimer
