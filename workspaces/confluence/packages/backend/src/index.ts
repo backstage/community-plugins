@@ -41,4 +41,7 @@ backend.add(import('@backstage/plugin-search-backend-module-techdocs/alpha'));
 // confluence search plugin
 backend.add(import('@backstage-community/plugin-search-backend-module-confluence-collator'))
 
+// confluence to markdown scaffolder action
+backend.add(import('@backstage-community/plugin-scaffolder-backend-module-confluence-to-markdown'));
+
 backend.start();
