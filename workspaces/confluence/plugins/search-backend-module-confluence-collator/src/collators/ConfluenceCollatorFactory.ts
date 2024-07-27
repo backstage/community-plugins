@@ -126,7 +126,7 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
   static fromConfig(config: Config, options: ConfluenceCollatorFactoryOptions) {
     const baseUrl = config.getString('confluence.baseUrl');
     const auth =
-      config.getOptionalString('confluence.auth.auth.type') ?? 'bearer';
+      config.getOptionalString('confluence.auth.type') ?? 'bearer';
     const token = config.getOptionalString('confluence.auth.token');
     const email = config.getOptionalString('confluence.auth.email');
     const username = config.getOptionalString('confluence.auth.username');
