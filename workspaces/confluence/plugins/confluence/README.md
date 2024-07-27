@@ -1,6 +1,6 @@
 # Confluence
 
-A plugin that provide Confluence specific functionality that can be used in different ways (e.g. for homepage and search) to compose your Backstage App.
+This plugin adds capability to retrieve Confluence documents from the Backstage Search engine.
 
 # Getting Started
 
