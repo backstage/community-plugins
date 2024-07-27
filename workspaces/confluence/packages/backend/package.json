@@ -16,6 +16,7 @@
     "build-image": "docker build ../.. -f Dockerfile --tag backstage"
   },
   "dependencies": {
+    "@backstage-community/plugin-scaffolder-backend-module-confluence-to-markdown": "workspace:^",
     "@backstage-community/plugin-search-backend-module-confluence-collator": "workspace:^",
     "@backstage/backend-common": "^0.23.3",
     "@backstage/backend-defaults": "^0.4.1",

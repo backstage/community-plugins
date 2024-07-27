@@ -1,0 +1,68 @@
+{
+  "name": "@backstage-community/plugin-scaffolder-backend-module-confluence-to-markdown",
+  "version": "0.2.23",
+  "description": "The confluence-to-markdown module for @backstage/plugin-scaffolder-backend",
+  "backstage": {
+    "role": "backend-plugin-module",
+    "pluginId": "scaffolder",
+    "pluginPackage": "@backstage/plugin-scaffolder-backend"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "homepage": "https://backstage.io",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/backstage",
+    "directory": "plugins/scaffolder-backend-module-confluence-to-markdown"
+  },
+  "license": "Apache-2.0",
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "typesVersions": {
+    "*": {
+      "package.json": [
+        "package.json"
+      ]
+    }
+  },
+  "files": [
+    "dist",
+    "config.d.ts"
+  ],
+  "scripts": {
+    "build": "backstage-cli package build",
+    "clean": "backstage-cli package clean",
+    "help": "backstage-cli help",
+    "lint": "backstage-cli package lint",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack",
+    "start": "backstage-cli package start",
+    "test": "backstage-cli package test"
+  },
+  "dependencies": {
+    "@backstage/backend-common": "^0.23.3",
+    "@backstage/backend-plugin-api": "^0.7.0",
+    "@backstage/backend-tasks": "^0.5.27",
+    "@backstage/config": "^1.2.0",
+    "@backstage/errors": "^1.2.4",
+    "@backstage/integration": "^1.13.0",
+    "@backstage/plugin-scaffolder-node": "^0.4.8",
+    "fs-extra": "^11.2.0",
+    "git-url-parse": "^14.0.0",
+    "node-fetch": "^2.6.7",
+    "node-html-markdown": "^1.3.0",
+    "yaml": "^2.0.0"
+  },
+  "devDependencies": {
+    "@backstage/backend-test-utils": "^0.4.4",
+    "@backstage/cli": "^0.26.11",
+    "@backstage/plugin-scaffolder-node-test-utils": "^0.1.9",
+    "msw": "^1.0.0"
+  },
+  "configSchema": "config.d.ts"
+}
