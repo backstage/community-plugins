@@ -20,7 +20,6 @@ import {
   LoggerService,
   resolvePackagePath,
 } from '@backstage/backend-plugin-api';
-import { mockServices } from '@backstage/backend-test-utils';
 
 const migrationsDir = resolvePackagePath(
   '@backstage-community/plugin-tech-insights-backend',
@@ -36,10 +35,6 @@ export type PersistenceContextOptions = {
   logger: LoggerService;
 };
 
-const defaultOptions: PersistenceContextOptions = {
-  logger: mockServices.logger.mock(),
-};
-
 /**
  * A factory function to construct persistence context for running implementation.
  *
@@ -47,7 +42,7 @@ const defaultOptions: PersistenceContextOptions = {
  */
 export const initializePersistenceContext = async (
   database: DatabaseService,
-  options: PersistenceContextOptions = defaultOptions,
+  options: PersistenceContextOptions,
 ): Promise<PersistenceContext> => {
   const client = await database.getClient();
 
