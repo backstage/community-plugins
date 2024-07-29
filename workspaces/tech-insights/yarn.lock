@@ -2872,7 +2872,7 @@ __metadata:
     "@backstage/cli": ^0.26.11
     "@backstage/core-components": ^0.14.9
     "@backstage/core-plugin-api": ^1.9.3
-    "@backstage/dev-utils": ^1.0.35
+    "@backstage/dev-utils": ^1.0.36
     "@backstage/errors": ^1.2.4
     "@backstage/plugin-catalog-react": ^1.12.2
     "@backstage/types": ^1.1.1
@@ -2920,11 +2920,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/app-defaults@npm:^1.5.8":
-  version: 1.5.8
-  resolution: "@backstage/app-defaults@npm:1.5.8"
+"@backstage/app-defaults@npm:^1.5.9":
+  version: 1.5.9
+  resolution: "@backstage/app-defaults@npm:1.5.9"
   dependencies:
-    "@backstage/core-app-api": ^1.14.0
+    "@backstage/core-app-api": ^1.14.1
     "@backstage/core-components": ^0.14.9
     "@backstage/core-plugin-api": ^1.9.3
     "@backstage/plugin-permission-react": ^0.4.24
@@ -2935,7 +2935,7 @@ __metadata:
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-router-dom: 6.0.0-beta.0 || ^6.3.0
-  checksum: a6de9684bbce9662e8b907be8fc344ae12f771dba012ff4e49a3349d49d0a027e3d8fed21cc1c66dafcb341180c37ebe9b14b308cc02b2abc612e5184743b4ac
+  checksum: 7c99d7d63a63501a85bb0bbdfa4cf3910197f8c3a30d37d099668de3eeed774d000fc89b6700f0a1d5b4940d5121afb71b1e00f6e851049de76189581ef14dd0
   languageName: node
   linkType: hard
 
@@ -3455,9 +3455,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/core-app-api@npm:^1.14.0":
-  version: 1.14.0
-  resolution: "@backstage/core-app-api@npm:1.14.0"
+"@backstage/core-app-api@npm:^1.14.1":
+  version: 1.14.1
+  resolution: "@backstage/core-app-api@npm:1.14.1"
   dependencies:
     "@backstage/config": ^1.2.0
     "@backstage/core-plugin-api": ^1.9.3
@@ -3476,7 +3476,7 @@ __metadata:
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-router-dom: 6.0.0-beta.0 || ^6.3.0
-  checksum: 40c517e43908c070c2bcff5c27e1fabd68bd50df2da3befd9f6e3b6b8e4627484bd53a9ed7ab41a19b706830afba0d82799621dadc96aa3946b601ddcdca019e
+  checksum: ee0c817a65826e0760dc067aafc3622980d7fa5520373c93d12099f844fd1ab55214580b5447fb45b0cd97cace752c98d6166e28b0d8f083711d209eab19d21b
   languageName: node
   linkType: hard
 
@@ -3562,13 +3562,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/dev-utils@npm:^1.0.35":
-  version: 1.0.35
-  resolution: "@backstage/dev-utils@npm:1.0.35"
+"@backstage/dev-utils@npm:^1.0.36":
+  version: 1.0.36
+  resolution: "@backstage/dev-utils@npm:1.0.36"
   dependencies:
-    "@backstage/app-defaults": ^1.5.8
+    "@backstage/app-defaults": ^1.5.9
     "@backstage/catalog-model": ^1.5.0
-    "@backstage/core-app-api": ^1.14.0
+    "@backstage/core-app-api": ^1.14.1
     "@backstage/core-components": ^0.14.9
     "@backstage/core-plugin-api": ^1.9.3
     "@backstage/integration-react": ^1.1.29
@@ -3582,7 +3582,7 @@ __metadata:
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-router-dom: 6.0.0-beta.0 || ^6.3.0
-  checksum: ee0f09611c419468c8b4580cdfda580c36119a6a29291fb9d15592a9f4aa0c8d8a5a764c77f8b05c4a8b895f04dd0db96468f4394817ef19e54cb0dae4b6025c
+  checksum: 2e8d32041c87f7a1aed741eb78027d43ec6ba1f662f1f9405cdfea8d2d4e6f391640902f118a6bb00ddb2e01f8b6fb7e1abbac2730a66f7e1c5b32381734d125
   languageName: node
   linkType: hard
 
@@ -5117,11 +5117,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-user-settings@npm:^0.8.9":
-  version: 0.8.9
-  resolution: "@backstage/plugin-user-settings@npm:0.8.9"
+"@backstage/plugin-user-settings@npm:^0.8.10":
+  version: 0.8.10
+  resolution: "@backstage/plugin-user-settings@npm:0.8.10"
   dependencies:
-    "@backstage/core-app-api": ^1.14.0
+    "@backstage/core-app-api": ^1.14.1
     "@backstage/core-compat-api": ^0.2.7
     "@backstage/core-components": ^0.14.9
     "@backstage/core-plugin-api": ^1.9.3
@@ -5142,7 +5142,7 @@ __metadata:
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-router-dom: 6.0.0-beta.0 || ^6.3.0
-  checksum: 114039bc0836d75c016ddcac5af0549a74d52c8e221ae2cbb328f05489868fd1f8363e5e845a7a6597a18b4da8bad361e6d55c1da695eca948bb372bee4d3234
+  checksum: 41c859d091199220eed0939042c470ffbe004e368228814011985eb1c690204978a6d85380f37145ee50a6ed94e5b019052c724ab1adb1d49fe0d466b264e07d
   languageName: node
   linkType: hard
 
@@ -5208,12 +5208,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/test-utils@npm:^1.5.8":
-  version: 1.5.8
-  resolution: "@backstage/test-utils@npm:1.5.8"
+"@backstage/test-utils@npm:^1.5.9":
+  version: 1.5.9
+  resolution: "@backstage/test-utils@npm:1.5.9"
   dependencies:
     "@backstage/config": ^1.2.0
-    "@backstage/core-app-api": ^1.14.0
+    "@backstage/core-app-api": ^1.14.1
     "@backstage/core-plugin-api": ^1.9.3
     "@backstage/plugin-permission-common": ^0.8.0
     "@backstage/plugin-permission-react": ^0.4.24
@@ -5230,7 +5230,7 @@ __metadata:
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-router-dom: 6.0.0-beta.0 || ^6.3.0
-  checksum: a2b3e1de152f0fd5b1faf0a67b6c90f53d8d87a98d262d1a1b6fd64aeac08e84b4a1b9f4c92b0822199df3eae8a27df7eaec5e91ebc9f4698a5d4b71e6a3fa4e
+  checksum: 96881dbd5fe126d866cdb648218ec374454110c207bc78e6713a9db34d716aaed1c5fdd30ceb621a345540a1642078803156652ef281981c89f485684282453b
   languageName: node
   linkType: hard
 
@@ -13876,10 +13876,10 @@ __metadata:
     "@backstage-community/plugin-github-actions": ^0.6.16
     "@backstage-community/plugin-tech-insights": "workspace:^"
     "@backstage-community/plugin-tech-radar": ^0.7.4
-    "@backstage/app-defaults": ^1.5.8
+    "@backstage/app-defaults": ^1.5.9
     "@backstage/catalog-model": ^1.5.0
     "@backstage/cli": ^0.26.11
-    "@backstage/core-app-api": ^1.14.0
+    "@backstage/core-app-api": ^1.14.1
     "@backstage/core-components": ^0.14.9
     "@backstage/core-plugin-api": ^1.9.3
     "@backstage/integration-react": ^1.1.29
@@ -13897,8 +13897,8 @@ __metadata:
     "@backstage/plugin-techdocs": ^1.10.7
     "@backstage/plugin-techdocs-module-addons-contrib": ^1.1.12
     "@backstage/plugin-techdocs-react": ^1.2.6
-    "@backstage/plugin-user-settings": ^0.8.9
-    "@backstage/test-utils": ^1.5.8
+    "@backstage/plugin-user-settings": ^0.8.10
+    "@backstage/test-utils": ^1.5.9
     "@backstage/theme": ^0.5.6
     "@material-ui/core": ^4.12.2
     "@material-ui/icons": ^4.9.1
