@@ -2,7 +2,6 @@
   "name": "@backstage-community/plugin-github-actions",
   "version": "0.6.17",
   "description": "A Backstage plugin that integrates towards GitHub Actions",
-  "configSchema": "config.d.ts",
   "backstage": {
     "role": "frontend-plugin",
     "pluginId": "github-actions",
