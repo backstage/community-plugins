@@ -27,19 +27,22 @@ TBD
 
 1. Provide OAuth credentials:
    1. [Create an OAuth App](https://developer.github.com/apps/building-oauth-apps/creating-an-oauth-app/) in the GitHub organization with the callback URL set to `http://localhost:7007/api/auth/github/handler/frame`.
-2. Take the Client ID and Client Secret from the newly created app's settings page and you can do either:
+      **Note**: This can be done with a user account also. Depending on if you use a personal account or an organization account will change the repositories this is functional with
+1. Take the Client ID and Client Secret from the newly created app's settings page and you can do either:
+
    1. Put them into `AUTH_GITHUB_CLIENT_ID` and `AUTH_GITHUB_CLIENT_SECRET` environment variables.
    2. Add them to the app-config like below:
 
    ```yaml
    auth:
-    providers:
-      github:
-        development:
-          clientId: ${AUTH_GITHUB_CLIENT_ID} 
-          clientSecret: ${AUTH_GITHUB_CLIENT_SECRET}
+     providers:
+       github:
+         development:
+           clientId: ${AUTH_GITHUB_CLIENT_ID}
+           clientSecret: ${AUTH_GITHUB_CLIENT_SECRET}
    ```
-3. Annotate your component with a correct GitHub Actions repository and owner:
+
+1. Annotate your component with a correct GitHub Actions repository and owner:
 
    The annotation key is `github.com/project-slug`.
 
@@ -58,17 +61,6 @@ TBD
      lifecycle: production
      owner: user:guest
    ```
-
-For testing:
-1. Generate a personal access token - you can generate a personal access token from your GitHub settings. It will need the repo and workflow scopes. It also can either go in the environment variable `GITHUB_TOKEN` or your app-config like such:
-   ```yaml
-   integrations:
-     github:
-       - host: github.com
-         token: ${GITHUB_TOKEN}
-   ```
-
-The [backstage example entity](./examples/entities.yaml) has a populated `github.com/project-slug` annotation, but you can modify this to point anywhere your credentials have access to for testing purposes.
 
 ### Installation
 
