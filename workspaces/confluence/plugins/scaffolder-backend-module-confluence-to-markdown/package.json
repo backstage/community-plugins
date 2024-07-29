@@ -62,6 +62,8 @@
     "@backstage/backend-test-utils": "^0.4.4",
     "@backstage/cli": "^0.26.11",
     "@backstage/plugin-scaffolder-node-test-utils": "^0.1.9",
+    "@types/fs-extra": "^11.0.4",
+    "@types/git-url-parse": "^9.0.3",
     "msw": "^1.0.0"
   },
   "configSchema": "config.d.ts"
