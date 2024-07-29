@@ -27,8 +27,19 @@ TBD
 
 1. Provide OAuth credentials:
    1. [Create an OAuth App](https://developer.github.com/apps/building-oauth-apps/creating-an-oauth-app/) in the GitHub organization with the callback URL set to `http://localhost:7007/api/auth/github/handler/frame`.
-   2. Take the Client ID and Client Secret from the newly created app's settings page and put them into `AUTH_GITHUB_CLIENT_ID` and `AUTH_GITHUB_CLIENT_SECRET` environment variables.
-2. Annotate your component with a correct GitHub Actions repository and owner:
+2. Take the Client ID and Client Secret from the newly created app's settings page and you can do either:
+   1. Put them into `AUTH_GITHUB_CLIENT_ID` and `AUTH_GITHUB_CLIENT_SECRET` environment variables.
+   2. Add them to the app-config like below:
+
+   ```yaml
+   auth:
+    providers:
+      github:
+        development:
+          clientId: ${AUTH_GITHUB_CLIENT_ID} 
+          clientSecret: ${AUTH_GITHUB_CLIENT_SECRET}
+   ```
+3. Annotate your component with a correct GitHub Actions repository and owner:
 
    The annotation key is `github.com/project-slug`.
 
@@ -47,6 +58,17 @@ TBD
      lifecycle: production
      owner: user:guest
    ```
+
+For testing:
+1. Generate a personal access token - you can generate a personal access token from your GitHub settings. It will need the repo and workflow scopes. It also can either go in the environment variable `GITHUB_TOKEN` or your app-config like such:
+   ```yaml
+   integrations:
+     github:
+       - host: github.com
+         token: ${GITHUB_TOKEN}
+   ```
+
+The [backstage example entity](./examples/entities.yaml) has a populated `github.com/project-slug` annotation, but you can modify this to point anywhere your credentials have access to for testing purposes.
 
 ### Installation
 
@@ -140,8 +162,6 @@ integrations:
 ## Limitations
 
 - There is a limit of 100 apps for one OAuth client/token pair
-- The OAuth application must be at the GitHub organization level in order to display the workflows. If you do
-  not see any workflows, confirm the OAuth application was created in the organization and not a specific user account.
 
 ## Optional Workflow Runs Card View
 
