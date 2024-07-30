@@ -2,4 +2,4 @@
 '@backstage-community/plugin-github-actions': patch
 ---
 
-Updating readmes based on work done for github actions to work in portal
+Updating readmes in github actions to add configuration steps and removed incorrect limitations
