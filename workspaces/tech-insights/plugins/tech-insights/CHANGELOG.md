@@ -1,5 +1,11 @@
 # @backstage-community/plugin-tech-insights
 
+## 0.3.31
+
+### Patch Changes
+
+- 0265767: Update to latest backstage versions.
+
 ## 0.3.30
 
 ### Patch Changes
