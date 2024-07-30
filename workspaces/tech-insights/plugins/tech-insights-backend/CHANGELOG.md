@@ -1,5 +1,13 @@
 # @backstage-community/plugin-tech-insights-backend
 
+## 0.6.0
+
+### Minor Changes
+
+- e49b4eb: Remove dependency to `backend-test-utils` in none test code.
+
+  **BREAKING**: From now on the `logger` must be provided, when using `initializePersistenceContext`.
+
 ## 0.5.35
 
 ### Patch Changes

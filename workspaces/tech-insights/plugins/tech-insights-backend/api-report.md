@@ -71,7 +71,7 @@ export type FactRetrieverRegistry = FactRetrieverRegistry_2;
 // @public
 export const initializePersistenceContext: (
   database: DatabaseService,
-  options?: PersistenceContextOptions,
+  options: PersistenceContextOptions,
 ) => Promise<PersistenceContext_2>;
 
 // @public @deprecated (undocumented)
