@@ -103,6 +103,7 @@ Config
 jenkins:
   baseUrl: https://jenkins.example.com
   username: backstage-bot
+  projectCountLimit: 100
   apiKey: 123456789abcdef0123456789abcedf012
   # optionally add extra headers
   # extraRequestHeaders:
@@ -120,6 +121,7 @@ metadata:
     'jenkins.io/job-full-name': teamA/artistLookup-build
 ```
 
+The projectCountLimit is optional and if not set, the default limit is 50.
 The old annotation name of `jenkins.io/github-folder` is equivalent to `jenkins.io/job-full-name`
 
 #### Example - Multiple global instances
@@ -134,10 +136,12 @@ jenkins:
     - name: default
       baseUrl: https://jenkins.example.com
       username: backstage-bot
+      projectCountLimit: 100
       apiKey: 123456789abcdef0123456789abcedf012
     - name: departmentFoo
       baseUrl: https://jenkins-foo.example.com
       username: backstage-bot
+      projectCountLimit: 100
       apiKey: 123456789abcdef0123456789abcedf012
 ```
 
@@ -165,6 +169,7 @@ jenkins:
     - name: departmentFoo
       baseUrl: https://jenkins-foo.example.com
       username: backstage-bot
+      projectCountLimit: 100
       apiKey: 123456789abcdef0123456789abcedf012
 ```
 
@@ -205,6 +210,7 @@ class AcmeJenkinsInfoProvider implements JenkinsInfoProvider {
     const baseUrl = `https://jenkins-${dept}.example.com/`;
     const jobFullName = `${team}/${paasProjectName}`;
     const username = 'backstage-bot';
+    const projectCountLimit = 100;
     const apiKey = this.getJenkinsApiKey(paasProjectName);
     const creds = btoa(`${username}:${apiKey}`);
 
