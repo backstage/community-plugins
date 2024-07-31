@@ -18,7 +18,8 @@
     "lint": "backstage-cli repo lint --since origin/main",
     "lint:all": "backstage-cli repo lint",
     "prettier:check": "prettier --check .",
-    "new": "backstage-cli new --scope @backstage-community"
+    "new": "backstage-cli new --scope @backstage-community",
+    "versions:bump": "backstage-cli versions:bump"
   },
   "workspaces": {
     "packages": [
@@ -32,9 +33,9 @@
     "directory": "workspaces/odo"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.26.7",
+    "@backstage/cli": "^0.26.11",
     "@backstage/e2e-test-utils": "^0.1.1",
-    "@backstage/repo-tools": "^0.8.0",
+    "@backstage/repo-tools": "^0.9.4",
     "@changesets/cli": "^2.27.1",
     "@spotify/prettier-config": "^12.0.0",
     "@testing-library/jest-dom": "^6.4.8",
