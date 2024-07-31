@@ -55,7 +55,6 @@ A number of plugins that originally resided in `backstage/backstage` monorepo ha
 - `code-climate`
 - `code-coverage`
 - `codescene`
-- `confluence-to-markdown`
 - `cost-insights`
 - `dynatrace`
 - `entity-feedback`

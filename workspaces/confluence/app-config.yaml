@@ -51,9 +51,3 @@ catalog:
       target: ../../examples/org.yaml
       rules:
         - allow: [User, Group]
-
-    # Local confluence to markdown example
-    - type: file
-      target: ../../examples/template/confluence-to-markdown.yaml
-      rules:
-        - allow: [Template]
