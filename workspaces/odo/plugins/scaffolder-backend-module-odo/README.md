@@ -9,7 +9,7 @@ It contains the following actions:
 
 ## Preview
 
-![Preview](https://github.com/rm3l/backstage-odo-devfile-plugin/assets/593208/ee3192cd-b44b-4d7f-9b27-451574e8cf8c)
+![Preview](../../images/preview.png)
 
 ## Installation
 
@@ -81,7 +81,7 @@ odo:
 
 You should now see the custom `devfile:odo:*` actions if you navigate to the Actions page at <http://localhost:3000/create/actions>.
 
-![List of Actions](https://github.com/rm3l/backstage-odo-devfile-plugin/assets/593208/850437d3-f5a8-4544-b93e-95e3de218b90)
+![List of Actions](../../images/list-of-actions.png)
 
 ## Usage
 
