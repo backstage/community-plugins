@@ -5,7 +5,7 @@ It interacts with the configured [Devfile registry](https://registry.devfile.io/
 
 ## Preview
 
-![Devfile Custom Field Extension Preview](https://github.com/rm3l/backstage-odo-devfile-plugin/assets/593208/e7fcc998-dc87-4603-977b-76f510fed3aa)
+![Devfile Custom Field Extension Preview](../../images/devfile-custom-field-extension-preview.png)
 
 ## Installation
 
