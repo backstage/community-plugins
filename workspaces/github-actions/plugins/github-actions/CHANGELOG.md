@@ -1,5 +1,11 @@
 # @backstage-community/plugin-github-actions
 
+## 0.6.19
+
+### Patch Changes
+
+- af13ef6: Improves responsiveness and theme compatibility of entity cards
+
 ## 0.6.18
 
 ### Patch Changes
