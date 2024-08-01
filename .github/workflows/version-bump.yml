@@ -5,7 +5,7 @@ on:
       release_line:
         description: 'Release Line'
         required: true
-        default: next
+        default: main
         type: choice
         options:
           - next
@@ -81,9 +81,9 @@ jobs:
               git branch -D ${{ matrix.workspace }}/v${{ steps.set_release_name.outputs.release_version }}
           fi
           git checkout -b ${{ matrix.workspace }}/v${{ steps.set_release_name.outputs.release_version }}
-      - name: Run backstage-cli versions:bump --release ${{ inputs.release_line || 'next' }} command
+      - name: Run backstage-cli versions:bump --release ${{ inputs.release_line || 'main' }} command
         working-directory: ./workspaces/${{ matrix.workspace }}
-        run: yarn backstage-cli versions:bump --release ${{ inputs.release_line || 'next' }}
+        run: yarn backstage-cli versions:bump --release ${{ inputs.release_line || 'main' }}
         env:
           YARN_ENABLE_IMMUTABLE_INSTALLS: false
       - name: Run dedupe
@@ -101,8 +101,8 @@ jobs:
           fi
       - name: 'Add changeset'
         if: ${{ steps.check_for_changes.outputs.HAS_CHANGES == 1 }}
-        working-directory: ./workspaces/${{ matrix.workspace }}  
-        run: node ../../scripts/ci/generate-version-bump-changeset.js ${{ steps.set_release_name.outputs.release_version }}  
+        working-directory: ./workspaces/${{ matrix.workspace }}
+        run: node ../../scripts/ci/generate-version-bump-changeset.js ${{ steps.set_release_name.outputs.release_version }}
       - name: 'Commit changes'
         if: ${{ steps.check_for_changes.outputs.HAS_CHANGES == 1 }}
         run: |
