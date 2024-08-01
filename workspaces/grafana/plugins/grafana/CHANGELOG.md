@@ -1,5 +1,11 @@
 # @backstage-community/plugin-grafana
 
+## 0.1.4
+
+### Patch Changes
+
+- 81b18d0: Adds support for Backstage's new frontend system, available via the `/alpha` sub-path export.
+
 ## 0.1.3
 
 ### Patch Changes
