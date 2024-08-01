@@ -121,7 +121,7 @@ metadata:
     'jenkins.io/job-full-name': teamA/artistLookup-build
 ```
 
-The projectCountLimit is optional and if not set, the default limit is 50.
+The `projectCountLimit` is optional and if not set, the default limit is 50.
 The old annotation name of `jenkins.io/github-folder` is equivalent to `jenkins.io/job-full-name`
 
 #### Example - Multiple global instances
