@@ -50,7 +50,7 @@ export interface JenkinsInfo {
   baseUrl: string;
   headers?: Record<string, string | string[]>;
   jobFullName: string; // TODO: make this an array
-  projectCountLimit?: number;
+  projectCountLimit: number;
   crumbIssuer?: boolean;
 }
 
