@@ -87,6 +87,7 @@ jobs:
         env:
           YARN_ENABLE_IMMUTABLE_INSTALLS: false
       - name: Run dedupe
+        working-directory: ./workspaces/${{ matrix.workspace }}
         run: yarn dedupe    
       - name: 'Check for changes'
         id: check_for_changes
