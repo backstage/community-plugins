@@ -2546,6 +2546,7 @@ __metadata:
     "@material-ui/core": ^4.12.4
     "@material-ui/lab": ^4.0.0-alpha.61
     "@react-hookz/web": ^24.0.4
+    "@testing-library/jest-dom": ^6.0.0
     "@types/react": ^16.13.1 || ^17.0.0 || ^18.0.0
     "@types/react-dom": ^16.13.1 || ^17.0.0 || ^18.0.0
     react-router-dom: ^6.3.0
@@ -7629,7 +7630,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/jest-dom@npm:^6.4.8":
+"@testing-library/jest-dom@npm:^6.0.0, @testing-library/jest-dom@npm:^6.4.8":
   version: 6.4.8
   resolution: "@testing-library/jest-dom@npm:6.4.8"
   dependencies:
