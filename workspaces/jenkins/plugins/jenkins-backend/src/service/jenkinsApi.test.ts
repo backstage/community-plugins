@@ -749,9 +749,12 @@ describe('JenkinsApi', () => {
         },
       ]);
 
-      mockFetch.mockResolvedValueOnce({ status: 200 , json: () => {
-        return {}
-      },} as Response);
+      mockFetch.mockResolvedValueOnce({
+        status: 200,
+        json: () => {
+          return {};
+        },
+      } as Response);
       const status = await jenkinsApi.rebuildProject(
         jenkinsInfo,
         jobFullName,
@@ -762,26 +765,30 @@ describe('JenkinsApi', () => {
       expect(status).toEqual(401);
     });
   });
-  describe('getJobBuilds', ()=>{
-    it('should return all the builds for a project on root', async ()=>{
-      mockFetch.mockResolvedValueOnce({ status: 200, json :async () => {} } as Response);
-      await jenkinsApi.getJobBuilds(
-        jenkinsInfo,
-        jobFullName,
+  describe('getJobBuilds', () => {
+    it('should return all the builds for a project on root', async () => {
+      mockFetch.mockResolvedValueOnce({
+        status: 200,
+        json: async () => {},
+      } as Response);
+      await jenkinsApi.getJobBuilds(jenkinsInfo, jobFullName);
+      expect(mockFetch).toHaveBeenCalledWith(
+        'https://jenkins.example.com/job/example-jobName/job/foo/api/json?tree=name,description,url,fullName,displayName,fullDisplayName,inQueue,builds[*]',
+        { headers: { headerName: 'headerValue' }, method: 'get' },
       );
-      expect(mockFetch).toHaveBeenCalledWith("https://jenkins.example.com/job/example-jobName/job/foo/api/json?tree=name,description,url,fullName,displayName,fullDisplayName,inQueue,builds[*]", {"headers": {"headerName": "headerValue"}, "method": "get"})
-      
     });
 
-    it('should return all the builds for a project on depth', async ()=>{
-      mockFetch.mockResolvedValueOnce({ status: 200, json :async () => {} } as Response);
-      const jobFullName = 'test/folder/depth/foo'
-      await jenkinsApi.getJobBuilds(
-        jenkinsInfo,
-        jobFullName,
+    it('should return all the builds for a project on depth', async () => {
+      mockFetch.mockResolvedValueOnce({
+        status: 200,
+        json: async () => {},
+      } as Response);
+      const jobFullName = 'test/folder/depth/foo';
+      await jenkinsApi.getJobBuilds(jenkinsInfo, jobFullName);
+      expect(mockFetch).toHaveBeenCalledWith(
+        'https://jenkins.example.com/job/test/job/folder/job/depth/job/foo/api/json?tree=name,description,url,fullName,displayName,fullDisplayName,inQueue,builds[*]',
+        { headers: { headerName: 'headerValue' }, method: 'get' },
       );
-      expect(mockFetch).toHaveBeenCalledWith("https://jenkins.example.com/job/test/job/folder/job/depth/job/foo/api/json?tree=name,description,url,fullName,displayName,fullDisplayName,inQueue,builds[*]", {"headers": {"headerName": "headerValue"}, "method": "get"})
-      
     });
   });
 });
