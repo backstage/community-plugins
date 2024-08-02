@@ -1,11 +1,11 @@
-## Backstage Compatibility
+# Backstage Compatibility
 
 ![Dynamic JSON Badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fversions.backstage.io%2Fv1%2Ftags%2Fmain%2Fmanifest.json&query=%24.releaseVersion&label=Latest%20Backstage%20Version)
 
 The following table lists what version of Backstage each workspace is currently compatible with. The Backstage version listed for each workspace is determined by looking at the `backstage.json` file at the root of each workspace. The badges are using the [Shields.io Dynamic JSON Badge](https://shields.io/badges/dynamic-json-badge) feature and are kept up to date automatically.
 
 > [!NOTE]
-> This table was built manually, if new workspaces are added they need added here as well. 
+> This table was built manually, if new workspaces are added they need added here as well.
 
 | Workspace                                                                                                                          | Version Compatibility                                                                                                                                                                                                                                         |
 | ---------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

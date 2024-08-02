@@ -6,10 +6,12 @@ import { createScaffolderFieldExtension } from '@backstage/plugin-scaffolder-rea
 import { DevfileSelectorExtension } from './components/DevfileSelectorExtension';
 import { DevfileSelectorExtensionWithOptionsSchema } from './components/schema';
 
+/** @public */
 export const devfileSelectorExtensionPlugin = createPlugin({
   id: 'devfile-selector-extension',
 });
 
+/** @public */
 export const DevfileSelectorFieldExtension = scaffolderPlugin.provide(
   createScaffolderFieldExtension({
     name: 'DevfileSelectorExtension',
