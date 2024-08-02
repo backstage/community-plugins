@@ -210,7 +210,7 @@ export class JenkinsClient implements JenkinsApi {
       jobFullName,
     )}/${encodeURIComponent(buildNumber)}`;
 
-    const response = await this.fetchApi.fetch(url, {method: "POST"});
+    const response = await this.fetchApi.fetch(url, { method: 'POST' });
 
     if (!response.ok) {
       throw await ResponseError.fromResponse(response);
