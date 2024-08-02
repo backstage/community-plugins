@@ -2,8 +2,6 @@
 
 Welcome to the blackduck backend plugin!
 
-## Getting started
-
 ## Installation
 
 This plugin needs to be added to an existing backstage instance.
@@ -19,7 +17,7 @@ This backend plugin has support for the [new backend system](https://backstage.i
 
 In your `packages/backend/src/index.ts` make the following changes:
 
-```typescript
+```diff
 import { createBackend } from '@backstage/backend-defaults';
 
 const backend = createBackend();
@@ -92,15 +90,64 @@ index c4736a5..5822302 100644
 
 ```
 
+## Configuration
+
+### Integrate Permission Framework
+
+BlackDuck plugin supports permission framework.
+
+```bash
+# From your Backstage root directory
+yarn --cwd packages/backend add @backstage-community/plugin-blackduck-common
+```
+
+In your `packages/backend/src/index.ts` make the following changes:
+
+```diff
+import { createBackend } from '@backstage/backend-defaults';
+const backend = createBackend();
+// ... other feature additions
++backend.add(import('@backstage-community/plugin-blackduck-common'));
+// ...
+```
+
+### Configure Permission
+
+To apply the permission rules add the following in `packages/backend/src/plugins/permissions.ts`
+
+```diff
+...
++ import {
++  blackduckRiskProfileReadPermission
++  blackduckVulnerabilitiesReadPermission } from '@backstage-community/plugin-blackduck-common';
+...
+async handle(
+  request: PolicyQuery,
+  user?: BackstageIdentityResponse,
+): Promise<PolicyDecision> {
++ if ( isPermission(request.permission, blackduckRiskProfileReadPermission) ||
++      isPermission(request.permission, blackduckVulnerabilitiesReadPermission)) {
++    return createCatalogConditionalDecision(
++      request.permission,
++      catalogConditions.isEntityOwner({
++          claims: user?.identity.ownershipEntityRefs ?? [],
++       }),
++    );
++  }
+...
+  return {
+    result: AuthorizeResult.ALLOW,
+  };
+}
+```
+
 ## Continue with Frontend Plugin
 
 Follow the Docs from [README.md](https://github.com/backstage/community-plugins/blob/main/workspaces/blackduck/plugins/blackduck/README.md)
 
-## Configuration
+### Global Config
 
 Add the following into your `app-config.yaml`
-
-### Config
 
 ```yaml
 blackduck:
@@ -108,9 +155,9 @@ blackduck:
   token: YOUR_API_TOKEN
 ```
 
-Add the following into your catalog
-
 ### Catalog
+
+Add the following into your catalog
 
 ```yaml
 apiVersion: backstage.io/v1alpha1

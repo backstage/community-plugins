@@ -4,6 +4,8 @@ Welcome to the blackduck plugin!
 
 ## Getting started
 
+### Overview
+
 #### Overview Page - BlackDuck Risk Profile Chart
 
 ![BlackDuck Chart Example](./docs/blackduck-risk-profile.png)
@@ -14,7 +16,7 @@ Welcome to the blackduck plugin!
 
 The following sections will help you get the BlackDuck plugin setup.
 
-### BlackDuck Backend
+## BlackDuck Backend
 
 You need to setup the [BlackDuck backend plugin](https://github.com/backstage/community-plugins/blob/main/workspaces/blackduck/plugins/blackduck-backend) before you move forward with any of these steps if you haven't already
 
@@ -91,34 +93,9 @@ import {
 <EntityLayout.Route
   if={isBlackDuckAvailable}
   path="/blackduck"
-  title="Security"
+  title="BlackDuck"
 >
   <BlackDuckPage />
 </EntityLayout.Route>;
 // ...
-```
-
-## Configuration
-
-Add the following into `app-config.yaml`
-
-### Config
-
-```yaml
-blackduck:
-  host: https://blackduck.yourcompany.com/api
-  token: YOUR_API_TOKEN
-```
-
-Add the following into catalog
-
-### Catalog
-
-```yaml
-apiVersion: backstage.io/v1alpha1
-kind: Component
-metadata:
-  name: backstage
-  annotations:
-    blackduck/project: YOUR_PROJECT_NAME/YOUR_PROJECT_VERSION
 ```
