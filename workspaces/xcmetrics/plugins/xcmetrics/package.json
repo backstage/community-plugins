@@ -1,9 +1,13 @@
 {
   "name": "@backstage-community/plugin-xcmetrics",
-  "version": "0.2.54",
+  "version": "0.2.55",
   "description": "A Backstage plugin that shows XCode build metrics for your components",
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "xcmetrics",
+    "pluginPackages": [
+      "@backstage-community/plugin-xcmetrics"
+    ]
   },
   "publishConfig": {
     "access": "public",
@@ -33,8 +37,8 @@
     "test": "backstage-cli package test"
   },
   "dependencies": {
-    "@backstage/core-components": "^0.14.4",
-    "@backstage/core-plugin-api": "^1.9.2",
+    "@backstage/core-components": "^0.14.9",
+    "@backstage/core-plugin-api": "^1.9.3",
     "@backstage/errors": "^1.2.4",
     "@material-ui/core": "^4.12.2",
     "@material-ui/icons": "^4.9.1",
@@ -46,9 +50,9 @@
     "recharts": "^2.5.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.26.3",
-    "@backstage/dev-utils": "^1.0.31",
-    "@backstage/test-utils": "^1.5.4",
+    "@backstage/cli": "^0.26.11",
+    "@backstage/dev-utils": "^1.0.36",
+    "@backstage/test-utils": "^1.5.9",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^15.0.0",

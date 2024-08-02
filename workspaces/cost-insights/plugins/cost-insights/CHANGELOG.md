@@ -1,5 +1,13 @@
 # @backstage-community/plugin-cost-insights
 
+## 0.12.26
+
+### Patch Changes
+
+- 22de2f8: Backstage version bump to v1.29.2
+- Updated dependencies [22de2f8]
+  - @backstage-community/plugin-cost-insights-common@0.1.4
+
 ## 0.12.25
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @backstage-community/plugin-vault-node
 
+## 0.1.14
+
+### Patch Changes
+
+- 4f3003b: version:bump to v1.29.1
+
 ## 0.1.13
 
 ### Patch Changes

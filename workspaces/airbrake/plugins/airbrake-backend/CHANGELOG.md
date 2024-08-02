@@ -1,5 +1,11 @@
 # @backstage-community/plugin-airbrake-backend
 
+## 0.3.16
+
+### Patch Changes
+
+- a855826: version:bump to v1.29.1
+
 ## 0.3.15
 
 ### Patch Changes

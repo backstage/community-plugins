@@ -1,5 +1,14 @@
 # @backstage-community/plugin-explore
 
+## 0.5.2
+
+### Patch Changes
+
+- 2173f7d: version:bump to v1.29.1
+- Updated dependencies [2173f7d]
+  - @backstage-community/plugin-explore-common@0.0.4
+  - @backstage-community/plugin-explore-react@0.0.40
+
 ## 0.5.1
 
 ### Patch Changes

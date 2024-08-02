@@ -19,6 +19,8 @@ import { HumanDuration } from '@backstage/types';
 export interface Config {
   /** Configuration options for the tech-insights plugin */
   techInsights?: {
+    /** The max checksRun tasks executed concurrency, useful with DB connection pools in big catalogs */
+    checksRunConcurrency?: number;
     /** Configuration options for fact retrievers */
     factRetrievers?: {
       /** Configuration for a fact retriever and its registration identified by its name. */

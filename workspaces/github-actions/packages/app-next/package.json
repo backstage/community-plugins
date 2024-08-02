@@ -1,0 +1,76 @@
+{
+  "name": "app-next",
+  "version": "0.0.2",
+  "private": true,
+  "bundled": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/github-actions/packages/app-next"
+  },
+  "backstage": {
+    "role": "frontend"
+  },
+  "scripts": {
+    "start": "backstage-cli package start",
+    "build": "backstage-cli package build",
+    "clean": "backstage-cli package clean",
+    "test": "backstage-cli package test",
+    "lint": "backstage-cli package lint"
+  },
+  "dependencies": {
+    "@backstage-community/plugin-github-actions": "workspace:^",
+    "@backstage/app-defaults": "^1.5.6",
+    "@backstage/catalog-model": "^1.5.0",
+    "@backstage/cli": "^0.26.9",
+    "@backstage/core-app-api": "^1.12.6",
+    "@backstage/core-components": "^0.14.8",
+    "@backstage/core-plugin-api": "^1.9.3",
+    "@backstage/frontend-app-api": "^0.7.1",
+    "@backstage/frontend-plugin-api": "^0.6.6",
+    "@backstage/integration-react": "^1.1.28",
+    "@backstage/plugin-api-docs": "^0.11.6",
+    "@backstage/plugin-catalog": "^1.21.0",
+    "@backstage/plugin-catalog-common": "^1.0.24",
+    "@backstage/plugin-catalog-graph": "^0.4.6",
+    "@backstage/plugin-catalog-import": "^0.12.0",
+    "@backstage/plugin-catalog-react": "^1.12.1",
+    "@backstage/plugin-org": "^0.6.26",
+    "@backstage/plugin-user-settings": "^0.8.7",
+    "@backstage/theme": "^0.5.6",
+    "@material-ui/core": "^4.12.2",
+    "@material-ui/icons": "^4.9.1",
+    "history": "^5.0.0",
+    "react": "^18.0.2",
+    "react-dom": "^18.0.2",
+    "react-router": "^6.3.0",
+    "react-router-dom": "^6.3.0",
+    "react-use": "^17.2.4",
+    "styled-components": "^6.1.8"
+  },
+  "devDependencies": {
+    "@backstage/test-utils": "^1.5.6",
+    "@playwright/test": "^1.32.3",
+    "@testing-library/dom": "^9.0.0",
+    "@testing-library/jest-dom": "^6.0.0",
+    "@testing-library/react": "^14.0.0",
+    "@testing-library/user-event": "^14.0.0",
+    "@types/react-dom": "*",
+    "cross-env": "^7.0.0"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "files": [
+    "dist"
+  ]
+}

@@ -6,6 +6,12 @@
     "node": "18 || 20"
   },
   "scripts": {
+    "dev": "concurrently \"yarn start\" \"yarn start-backend\"",
+    "dev-next": "concurrently \"yarn start-next\" \"yarn start-backend\"",
+    "start": "yarn workspace app start",
+    "start-next": "yarn workspace app-next start",
+    "start-backend": "yarn workspace backend start",
+    "build:backend": "yarn workspace backend build",
     "tsc": "tsc",
     "tsc:full": "tsc --skipLibCheck false --incremental false",
     "build:all": "backstage-cli repo build --all",
@@ -32,18 +38,20 @@
     "directory": "workspaces/github-actions"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.26.3",
+    "@backstage/cli": "^0.26.11",
     "@backstage/e2e-test-utils": "^0.1.1",
-    "@backstage/repo-tools": "^0.8.0",
+    "@backstage/repo-tools": "^0.9.4",
     "@changesets/cli": "^2.27.1",
     "@spotify/prettier-config": "^15.0.0",
+    "concurrently": "^8.0.0",
     "node-gyp": "^10.0.0",
     "prettier": "^2.3.2",
     "typescript": "~5.3.0"
   },
   "resolutions": {
     "@types/react": "^18",
-    "@types/react-dom": "^18"
+    "@types/react-dom": "^18",
+    "@microsoft/api-extractor": "7.36.4"
   },
   "prettier": "@spotify/prettier-config",
   "lint-staged": {

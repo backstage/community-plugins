@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { ReactNode } from 'react';
+import React, { ReactElement, ReactNode } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
@@ -34,7 +34,7 @@ const infoCard = (
   title: ReactNode,
   description: string | undefined,
   className: string,
-  element: JSX.Element,
+  element: ReactElement,
 ) => (
   <Grid item xs={12}>
     <InfoCard title={title}>

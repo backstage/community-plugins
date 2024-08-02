@@ -1,5 +1,11 @@
 # @backstage-community/plugin-gocd
 
+## 0.1.43
+
+### Patch Changes
+
+- 1edd3db: Backstage version bump to v1.29.2
+
 ## 0.1.42
 
 ### Patch Changes

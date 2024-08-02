@@ -1,5 +1,28 @@
 # @backstage-community/plugin-tech-insights-backend
 
+## 0.6.0
+
+### Minor Changes
+
+- e49b4eb: Remove dependency to `backend-test-utils` in none test code.
+
+  **BREAKING**: From now on the `logger` must be provided, when using `initializePersistenceContext`.
+
+## 0.5.35
+
+### Patch Changes
+
+- 7ac338c: Update Backstage to 1.29.1
+  Remove usage of deprecated API endpoints except tokenManager
+- a8d8d44: Introduce a concurrency limit for running checks in parallel to avoid limits like the DB connection pool.
+- 794cc8b: Fix api reports generated with the wrong name
+  Update @backstage/cli to 0.26.11
+  Add missing Backstage fields in `package.json`
+- Updated dependencies [7ac338c]
+- Updated dependencies [794cc8b]
+  - @backstage-community/plugin-tech-insights-node@0.6.4
+  - @backstage-community/plugin-tech-insights-common@0.2.15
+
 ## 0.5.34
 
 ### Patch Changes

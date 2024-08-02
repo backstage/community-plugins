@@ -1,8 +1,15 @@
 {
   "name": "@backstage-community/plugin-tech-insights-backend",
-  "version": "0.5.34",
+  "version": "0.6.0",
   "backstage": {
-    "role": "backend-plugin"
+    "role": "backend-plugin",
+    "pluginId": "tech-insights",
+    "pluginPackages": [
+      "@backstage-community/plugin-tech-insights",
+      "@backstage-community/plugin-tech-insights-backend",
+      "@backstage-community/plugin-tech-insights-common",
+      "@backstage-community/plugin-tech-insights-node"
+    ]
   },
   "publishConfig": {
     "access": "public",
@@ -40,9 +47,11 @@
   "dependencies": {
     "@backstage-community/plugin-tech-insights-common": "workspace:^",
     "@backstage-community/plugin-tech-insights-node": "workspace:^",
-    "@backstage/backend-common": "^0.22.0",
-    "@backstage/backend-plugin-api": "^0.6.18",
-    "@backstage/backend-tasks": "^0.5.23",
+    "@backstage/backend-common": "^0.23.3",
+    "@backstage/backend-defaults": "^0.4.1",
+    "@backstage/backend-plugin-api": "^0.7.0",
+    "@backstage/backend-tasks": "^0.5.27",
+    "@backstage/backend-test-utils": "^0.4.4",
     "@backstage/catalog-client": "^1.6.5",
     "@backstage/catalog-model": "^1.5.0",
     "@backstage/config": "^1.2.0",
@@ -55,13 +64,13 @@
     "knex": "^3.0.0",
     "lodash": "^4.17.21",
     "luxon": "^3.0.0",
+    "p-limit": "^3.1.0",
     "semver": "^7.5.3",
     "uuid": "^9.0.0",
     "yn": "^4.0.0"
   },
   "devDependencies": {
-    "@backstage/backend-test-utils": "^0.3.8",
-    "@backstage/cli": "^0.26.6",
+    "@backstage/cli": "^0.26.11",
     "@types/lodash": "^4.14.151",
     "@types/semver": "^7.3.8",
     "@types/supertest": "^2.0.8",

@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  getVoidLogger,
-  PluginDatabaseManager,
-  resolvePackagePath,
-} from '@backstage/backend-common';
 import { TechInsightsDatabase } from './TechInsightsDatabase';
 import { PersistenceContext } from '@backstage-community/plugin-tech-insights-node';
-import { LoggerService } from '@backstage/backend-plugin-api';
+import {
+  DatabaseService,
+  LoggerService,
+  resolvePackagePath,
+} from '@backstage/backend-plugin-api';
 
 const migrationsDir = resolvePackagePath(
   '@backstage-community/plugin-tech-insights-backend',
@@ -36,18 +35,14 @@ export type PersistenceContextOptions = {
   logger: LoggerService;
 };
 
-const defaultOptions: PersistenceContextOptions = {
-  logger: getVoidLogger(),
-};
-
 /**
  * A factory function to construct persistence context for running implementation.
  *
  * @public
  */
 export const initializePersistenceContext = async (
-  database: PluginDatabaseManager,
-  options: PersistenceContextOptions = defaultOptions,
+  database: DatabaseService,
+  options: PersistenceContextOptions,
 ): Promise<PersistenceContext> => {
   const client = await database.getClient();
 

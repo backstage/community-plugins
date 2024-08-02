@@ -23,16 +23,30 @@ import {
   StatusAborted,
   StatusError,
 } from '@backstage/core-components';
+import Box from '@material-ui/core/Box';
+import Typography from '@material-ui/core/Typography';
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles(() => ({
+  statusIcon: {
+    '& svg': {
+      position: 'static',
+    },
+  },
+}));
 
 export const WorkflowRunStatus = (props: {
   status?: string;
   conclusion?: string;
 }) => {
+  const classes = useStyles();
   return (
-    <>
-      <WorkflowIcon {...props} />
-      {getStatusDescription(props)}
-    </>
+    <Box display="flex" justifyContent="center" alignItems="center">
+      <Box className={classes.statusIcon}>
+        <WorkflowIcon {...props} />
+      </Box>
+      <Typography variant="body2">{getStatusDescription(props)}</Typography>
+    </Box>
   );
 };
 

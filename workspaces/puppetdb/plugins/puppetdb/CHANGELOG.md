@@ -1,5 +1,11 @@
 # @backstage-community/plugin-puppetdb
 
+## 0.1.19
+
+### Patch Changes
+
+- 091dcfa: Backstage version bump to v1.29.2
+
 ## 0.1.18
 
 ### Patch Changes
