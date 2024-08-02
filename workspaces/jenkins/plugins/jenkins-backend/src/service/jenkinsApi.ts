@@ -345,7 +345,10 @@ export class JenkinsApiImpl {
   async getJobBuilds(jenkinsInfo: JenkinsInfo, jobFullName: string) {
     let jobName = jobFullName;
     if (jobFullName.includes('/')) {
-      jobName = jobFullName.split('/').map((s: string) => `${encodeURIComponent(s)}`).join('/job/');
+      jobName = jobFullName
+        .split('/')
+        .map((s: string) => `${encodeURIComponent(s)}`)
+        .join('/job/');
     }
 
     const response = await fetch(
