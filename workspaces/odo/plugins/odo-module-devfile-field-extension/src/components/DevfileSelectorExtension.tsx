@@ -22,6 +22,7 @@ const useStyles = makeStyles({
   },
 });
 
+/** @public */
 export const DevfileSelectorExtension = ({
   onChange,
   rawErrors,
