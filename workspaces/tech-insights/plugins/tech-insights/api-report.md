@@ -8,6 +8,7 @@
 import { ApiRef } from '@backstage/core-plugin-api';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { BulkCheckResponse } from '@backstage-community/plugin-tech-insights-common';
+import { Check as Check_2 } from '@backstage-community/plugin-tech-insights-common/client';
 import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
 import { CompoundEntityRef } from '@backstage/catalog-model';
 import { DiscoveryApi } from '@backstage/core-plugin-api';
@@ -18,22 +19,15 @@ import { JSX as JSX_2 } from 'react';
 import { default as React_2 } from 'react';
 import { ReactNode } from 'react';
 import { RouteRef } from '@backstage/core-plugin-api';
+import { TechInsightsClient as TechInsightsClient_2 } from '@backstage-community/plugin-tech-insights-common/client';
 
 // @public (undocumented)
 export const BooleanCheck: (props: {
   checkResult: CheckResult;
 }) => React_2.JSX.Element;
 
-// @public
-export type Check = {
-  id: string;
-  type: string;
-  name: string;
-  description: string;
-  factIds: string[];
-  successMetadata?: Record<string, unknown>;
-  failureMetadata?: Record<string, unknown>;
-};
+// @public @deprecated
+export type Check = Check_2;
 
 // @public
 export type CheckResultRenderer = {
@@ -58,7 +52,7 @@ export const EntityTechInsightsScorecardContent: (props: {
   checksId?: string[] | undefined;
 }) => JSX_2.Element;
 
-// @public
+// @public @deprecated
 export interface InsightFacts {
   // (undocumented)
   [factId: string]: {
@@ -110,30 +104,17 @@ export interface TechInsightsApi {
 export const techInsightsApiRef: ApiRef<TechInsightsApi>;
 
 // @public (undocumented)
-export class TechInsightsClient implements TechInsightsApi {
+export class TechInsightsClient
+  extends TechInsightsClient_2
+  implements TechInsightsApi
+{
   constructor(options: {
     discoveryApi: DiscoveryApi;
     identityApi: IdentityApi;
     renderers?: CheckResultRenderer[];
   });
   // (undocumented)
-  getAllChecks(): Promise<Check[]>;
-  // (undocumented)
   getCheckResultRenderers(types: string[]): CheckResultRenderer[];
-  // (undocumented)
-  getFacts(entity: CompoundEntityRef, facts: string[]): Promise<InsightFacts>;
-  // (undocumented)
-  getFactSchemas(): Promise<FactSchema[]>;
-  // (undocumented)
-  runBulkChecks(
-    entities: CompoundEntityRef[],
-    checks?: Check[],
-  ): Promise<BulkCheckResponse>;
-  // (undocumented)
-  runChecks(
-    entityParams: CompoundEntityRef,
-    checks?: string[],
-  ): Promise<CheckResult[]>;
 }
 
 // @public (undocumented)
