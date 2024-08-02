@@ -1,5 +1,11 @@
 # @backstage-community/plugin-nomad-backend
 
+## 0.1.21
+
+### Patch Changes
+
+- 0d2009e: version:bump to v1.29.1
+
 ## 0.1.20
 
 ### Patch Changes

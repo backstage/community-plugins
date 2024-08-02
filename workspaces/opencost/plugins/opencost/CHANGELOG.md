@@ -1,5 +1,11 @@
 # @backstage-community/plugin-opencost
 
+## 0.2.11
+
+### Patch Changes
+
+- fb017ef: Backstage version bump to v1.29.2
+
 ## 0.2.10
 
 ### Patch Changes

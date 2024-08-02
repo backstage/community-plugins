@@ -9,7 +9,7 @@ import { AdrDocument } from '@backstage-community/plugin-adr-common';
 import { AdrFilePathFilterFn } from '@backstage-community/plugin-adr-common';
 import { AdrParser } from '@backstage-community/plugin-adr-common';
 import { AuthService } from '@backstage/backend-plugin-api';
-import { BackendFeature } from '@backstage/backend-plugin-api';
+import { BackendFeatureCompat } from '@backstage/backend-plugin-api';
 import { CacheService } from '@backstage/backend-plugin-api';
 import { CatalogApi } from '@backstage/catalog-client';
 import { DiscoveryService } from '@backstage/backend-plugin-api';
@@ -45,7 +45,7 @@ export type AdrsCollatorExtensionPoint = {
 export const adrsCollatorExtensionPoint: ExtensionPoint<AdrsCollatorExtensionPoint>;
 
 // @public
-const _default: () => BackendFeature;
+const _default: BackendFeatureCompat;
 export default _default;
 
 // @public

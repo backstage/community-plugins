@@ -1,5 +1,13 @@
 # @backstage-community/plugin-azure-devops
 
+## 0.4.8
+
+### Patch Changes
+
+- d33c708: version:bump to v1.29.1
+- Updated dependencies [d33c708]
+  - @backstage-community/plugin-azure-devops-common@0.4.6
+
 ## 0.4.7
 
 ### Patch Changes

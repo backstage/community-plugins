@@ -1,5 +1,11 @@
 # @backstage-community/plugin-analytics-module-newrelic-browser
 
+## 0.1.6
+
+### Patch Changes
+
+- fa9e4f4: version:bump to v1.29.1
+
 ## 0.1.5
 
 ### Patch Changes

@@ -24,7 +24,7 @@ export type DuplicationRating = {
 // @public (undocumented)
 export const EntitySonarQubeCard: (props: {
   variant?: InfoCardVariants | undefined;
-  duplicationRatings?: DuplicationRating[] | undefined;
+  duplicationRatings?: DuplicationRating_2[] | undefined;
   missingAnnotationReadMoreUrl?: string | undefined;
 }) => JSX_2.Element;
 
@@ -42,7 +42,7 @@ export const SONARQUBE_PROJECT_KEY_ANNOTATION = 'sonarqube.org/project-key';
 // @public (undocumented)
 export const SonarQubeCard: (props: {
   variant?: InfoCardVariants;
-  duplicationRatings?: DuplicationRating[];
+  duplicationRatings?: DuplicationRating_2[];
   missingAnnotationReadMoreUrl?: string;
 }) => React_2.JSX.Element;
 
@@ -96,4 +96,8 @@ export const SonarQubeTable: ({
   emptyContent,
   localization,
 }: SonarQubeTableProps) => React_2.JSX.Element;
+
+// Warnings were encountered during analysis:
+//
+// src/plugin.d.ts:7:5 - (ae-forgotten-export) The symbol "DuplicationRating_2" needs to be exported by the entry point index.d.ts
 ```

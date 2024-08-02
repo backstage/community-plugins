@@ -16,8 +16,7 @@
 import { DateTime, Duration } from 'luxon';
 import { TechInsightsStore } from '@backstage-community/plugin-tech-insights-node';
 import { Knex as KnexType, Knex } from 'knex';
-import { TestDatabases } from '@backstage/backend-test-utils';
-import { getVoidLogger } from '@backstage/backend-common';
+import { mockServices, TestDatabases } from '@backstage/backend-test-utils';
 import { initializePersistenceContext } from './persistenceContext';
 import { parseEntityRef } from '@backstage/catalog-model';
 
@@ -188,7 +187,7 @@ describe('Tech Insights database', () => {
 
     store = (
       await initializePersistenceContext(database, {
-        logger: getVoidLogger(),
+        logger: mockServices.logger.mock(),
       })
     ).techInsightsStore;
   });

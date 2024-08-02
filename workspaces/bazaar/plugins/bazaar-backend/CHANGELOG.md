@@ -1,5 +1,11 @@
 # @backstage-community/plugin-bazaar-backend
 
+## 0.3.17
+
+### Patch Changes
+
+- 7a429ff: version:bump to v1.29.1
+
 ## 0.3.16
 
 ### Patch Changes

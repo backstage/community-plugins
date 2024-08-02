@@ -1,5 +1,13 @@
 # @backstage-community/plugin-catalog-backend-module-azure-devops-annotator-processor
 
+## 0.0.3
+
+### Patch Changes
+
+- d33c708: version:bump to v1.29.1
+- Updated dependencies [d33c708]
+  - @backstage-community/plugin-azure-devops-common@0.4.6
+
 ## 0.0.2
 
 ### Patch Changes

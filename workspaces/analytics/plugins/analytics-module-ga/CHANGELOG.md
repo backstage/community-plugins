@@ -1,5 +1,11 @@
 # @backstage-community/plugin-analytics-module-ga
 
+## 0.2.6
+
+### Patch Changes
+
+- fa9e4f4: version:bump to v1.29.1
+
 ## 0.2.5
 
 ### Patch Changes

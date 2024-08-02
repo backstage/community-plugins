@@ -1,5 +1,11 @@
 # @backstage-community/plugin-shortcuts
 
+## 0.3.25
+
+### Patch Changes
+
+- 5ca8c52: Backstage version bump to v1.29.2
+
 ## 0.3.24
 
 ### Patch Changes

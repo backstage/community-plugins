@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
+import { createApiRef } from '@backstage/frontend-plugin-api';
 import { RestEndpointMethodTypes } from '@octokit/rest';
-import { createApiRef } from '@backstage/core-plugin-api';
 
 /** @public */
 export const githubActionsApiRef = createApiRef<GithubActionsApi>({

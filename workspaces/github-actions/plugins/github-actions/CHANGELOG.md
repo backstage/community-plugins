@@ -1,5 +1,23 @@
 # @backstage-community/plugin-github-actions
 
+## 0.6.19
+
+### Patch Changes
+
+- af13ef6: Improves responsiveness and theme compatibility of entity cards
+
+## 0.6.18
+
+### Patch Changes
+
+- 9c52968: Adds support for Backstage's new frontend system, available via the `/alpha` sub-path export.
+
+## 0.6.17
+
+### Patch Changes
+
+- 61d5aff: version:bump to v1.29.1
+
 ## 0.6.16
 
 ### Patch Changes

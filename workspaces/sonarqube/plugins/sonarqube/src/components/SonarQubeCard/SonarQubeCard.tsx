@@ -21,8 +21,8 @@ import {
 import {
   sonarQubeApiRef,
   useProjectInfo,
+  SONARQUBE_PROJECT_KEY_ANNOTATION,
 } from '@backstage-community/plugin-sonarqube-react';
-import { SONARQUBE_PROJECT_KEY_ANNOTATION } from '@backstage-community/plugin-sonarqube-react';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import React from 'react';
@@ -63,25 +63,13 @@ export type DuplicationRating = {
   rating: '1.0' | '2.0' | '3.0' | '4.0' | '5.0';
 };
 
-const defaultDuplicationRatings: DuplicationRating[] = [
-  { greaterThan: 0, rating: '1.0' },
-  { greaterThan: 3, rating: '2.0' },
-  { greaterThan: 5, rating: '3.0' },
-  { greaterThan: 10, rating: '4.0' },
-  { greaterThan: 20, rating: '5.0' },
-];
-
 /** @public */
 export const SonarQubeCard = (props: {
   variant?: InfoCardVariants;
   duplicationRatings?: DuplicationRating[];
   missingAnnotationReadMoreUrl?: string;
 }) => {
-  const {
-    variant = 'gridItem',
-    duplicationRatings = defaultDuplicationRatings,
-    missingAnnotationReadMoreUrl,
-  } = props;
+  const { variant = 'gridItem', missingAnnotationReadMoreUrl } = props;
   const { entity } = useEntity();
   const sonarQubeApi = useApi(sonarQubeApiRef);
 
