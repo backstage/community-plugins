@@ -32,9 +32,7 @@ import {
   PullRequestsDashboardProvider,
 } from '../api/PullRequestsDashboardProvider';
 import Router from 'express-promise-router';
-import {
-  createLegacyAuthAdapters,
-} from '@backstage/backend-common';
+import { createLegacyAuthAdapters } from '@backstage/backend-common';
 import { UrlReaderService } from '@backstage/backend-plugin-api';
 import express from 'express';
 import { InputError, NotAllowedError } from '@backstage/errors';
