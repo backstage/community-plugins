@@ -19,7 +19,7 @@ jest.mock('azure-devops-node-api', () => ({
   getHandlerFromToken: jest.fn().mockReturnValue(() => {}),
 }));
 
-import { UrlReader, getVoidLogger } from '@backstage/backend-common';
+import { UrlReaderService } from '@backstage/backend-plugin-api';
 import { ConfigReader } from '@backstage/config';
 import { AzureDevOpsApi } from './AzureDevOpsApi';
 import { WebApi } from 'azure-devops-node-api';
@@ -36,6 +36,7 @@ import {
   PullRequestStatus,
 } from 'azure-devops-node-api/interfaces/GitInterfaces';
 import { PullRequestOptions } from '@backstage-community/plugin-azure-devops-common';
+import { mockServices } from '@backstage/backend-test-utils';
 
 describe('AzureDevOpsApi', () => {
   beforeEach(() => {
@@ -62,9 +63,9 @@ describe('AzureDevOpsApi', () => {
     },
   });
 
-  const mockLogger = getVoidLogger();
+  const mockLogger = mockServices.logger.mock();
 
-  const mockUrlReader: UrlReader = {
+  const mockUrlReader: UrlReaderService = {
     readUrl: url =>
       Promise.resolve({
         buffer: async () => Buffer.from(url),
