@@ -1,7 +1,8 @@
 # Tech Insights Backend
 
-This is the backend for the default Backstage Tech Insights feature.
-This provides the API for the frontend tech insights, scorecards and fact visualization functionality,
+The backend plugin for Tech Insights.
+
+It provides the API for the frontend tech insights, scorecards and fact visualization functionality,
 as well as a framework to run fact retrievers and store fact values in to a data store.
 
 ## Installation
@@ -13,22 +14,31 @@ as well as a framework to run fact retrievers and store fact values in to a data
 yarn --cwd packages/backend add @backstage-community/plugin-tech-insights-backend
 ```
 
-### Adding the plugin to your `packages/backend`
+### Adding the plugin to your backend
 
 ```ts title="packages/backend/src/index.ts"
+// Add the following import to `packages/backend/src/index.ts`
 backend.add(import('@backstage-community/plugin-tech-insights-backend'));
 ```
 
-You can use the extension points [@backstage-community/plugin-tech-insights-node](../tech-insights-node)
-to add your `FactRetriever` or set a `FactCheckerFactory`.
+## Included FactRetrievers
 
-The built-in `FactRetrievers`:
+At this point the Tech Insights backend is installed in your backend package, but
+you will not have any fact retrievers present in your application.
 
-- `entityMetadataFactRetriever`
-- `entityOwnershipFactRetriever`
-- `techdocsFactRetriever`
+There are three built-in FactRetrievers that come with Tech Insights:
 
-`FactRetrievers` only get registered if they get configured:
+- `entityMetadataFactRetriever`: Generates facts which indicate the completeness of entity metadata
+- `entityOwnershipFactRetriever`: Generates facts which indicate the quality of data in the `spec.owner` field
+- `techdocsFactRetriever`: Generates facts related to the completeness of techdocs configuration for entities
+
+The [@backstage-community/plugin-tech-insights-node](../tech-insights-node/README.md) library provides extension points to add your own `FactRetriever` or set a custom `FactCheckerFactory`.
+
+### Registering a FactRetriever
+
+`FactRetrievers` only get registered if configured in the `app-config.yaml`.
+
+The following example registers the `entityOwnershipFactRetriever` to run every 6 hours, while retaining the latest two weeks of fact data.
 
 ```yaml title="app-config.yaml"
 techInsights:
@@ -38,83 +48,9 @@ techInsights:
       lifecycle: { timeToLive: { weeks: 2 } }
 ```
 
-### Adding the plugin to your `packages/backend` (old)
+The `lifecycle` configuration value is optional that will limit the lifetime of fact data. This can be either MaxItems or TTL (time to live). Valid options for this value are either a number for MaxItems or a Luxon duration like object for TTL. 
 
-You'll need to add the plugin to the router in your `backend` package. You can
-do this by creating a file called `packages/backend/src/plugins/techInsights.ts`. An example content for `techInsights.ts` could be something like this.
-
-```ts
-import {
-  createRouter,
-  buildTechInsightsContext,
-} from '@backstage-community/plugin-tech-insights-backend';
-import { Router } from 'express';
-import { PluginEnvironment } from '../types';
-
-export default async function createPlugin(
-  env: PluginEnvironment,
-): Promise<Router> {
-  const builder = buildTechInsightsContext({
-    logger: env.logger,
-    config: env.config,
-    database: env.database,
-    discovery: env.discovery,
-    scheduler: env.scheduler,
-    tokenManager: env.tokenManager,
-    factRetrievers: [], // Fact retrievers registrations you want tech insights to use
-  });
-
-  return await createRouter({
-    ...(await builder),
-    logger: env.logger,
-    config: env.config,
-  });
-}
-```
-
-With the `techInsights.ts` router setup in place, add the router to
-`packages/backend/src/index.ts`:
-
-```diff
-+import techInsights from './plugins/techInsights';
-
- async function main() {
-   ...
-   const createEnv = makeCreateEnv(config);
-
-   const catalogEnv = useHotMemoize(module, () => createEnv('catalog'));
-+  const techInsightsEnv = useHotMemoize(module, () => createEnv('tech_insights'));
-
-   const apiRouter = Router();
-+  apiRouter.use('/tech-insights', await techInsights(techInsightsEnv));
-   ...
-   apiRouter.use(notFoundHandler());
- }
-```
-
-### Adding fact retrievers
-
-At this point the Tech Insights backend is installed in your backend package, but
-you will not have any fact retrievers present in your application. To have the implemented FactRetrieverEngine within this package to be able to retrieve and store fact data into the database, you need to add these.
-
-To create factRetrieverRegistration you need to implement `FactRetriever` interface defined in `@backstage-community/plugin-tech-insights-node` package (see [Creating fact retrievers](#creating-fact-retrievers) for details). After you have implemented this interface you can wrap that into a registration object like follows:
-
-```ts
-import { createFactRetrieverRegistration } from '@backstage-community/plugin-tech-insights-backend';
-
-const myFactRetriever = {
-  /**
-   * snip
-   */
-};
-
-const myFactRetrieverRegistration = createFactRetrieverRegistration({
-  cadence: '1 * 2 * * ', // On the first minute of the second day of the month
-  factRetriever: myFactRetriever,
-});
-```
-
-FactRetrieverRegistration also accepts an optional `lifecycle` configuration value. This can be either MaxItems or TTL (time to live). Valid options for this value are either a number for MaxItems or a Luxon duration like object for TTL. For example:
+For example:
 
 ```ts
 const maxItems = { maxItems: 7 }; // Deletes all but 7 latest facts for each id/entity pair
@@ -122,25 +58,35 @@ const ttl = { timeToLive: 1209600000 }; // (2 weeks) Deletes items older than 2 
 const ttlWithAHumanReadableValue = { timeToLive: { weeks: 2 } }; // Deletes items older than 2 weeks
 ```
 
-To register these fact retrievers to your application you can modify the example `techInsights.ts` file shown above like this:
+### Adding fact retrievers
 
-```diff
-const builder = buildTechInsightsContext({
-  logger: env.logger,
-  config: env.config,
-  database: env.database,
-  discovery: env.discovery,
-  tokenManager: env.tokenManager,
-  scheduler: env.scheduler,
-- factRetrievers: [],
-+ factRetrievers: [myFactRetrieverRegistration],
-});
-```
+To have the implemented FactRetrieverEngine within this package to be able to retrieve and store fact data into the database, you need to add these.
 
-#### Running fact retrievers in a multi-instance installation
+### Running fact retrievers in a multi-instance installation
 
 The Tech Insights plugin utilizes the `PluginTaskScheduler` for scheduling tasks and coordinating the task invocation across instances. See [the PluginTaskScheduler documentation](https://backstage.io/docs/reference/backend-tasks.plugintaskscheduler) for more information.
 
+## Adding a fact checker
+
+There is a default FactChecker implementation provided in module [@backstage-community/plugin-tech-insights-backend-module-jsonfc](../tech-insights-backend-module-jsonfc/README.md). This implementation uses `json-rules-engine` as the underlying functionality to run checks.
+
+If you want to implement your own FactChecker, for example to be able to handle other than `boolean` result types, you can do so by implementing `FactCheckerFactory` and `FactChecker` interfaces from [@backstage-community/plugin-tech-insights-common](../tech-insights-common/README.md) package.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Customization
 ### Creating Fact Retrievers
 
 A Fact Retriever consist of four required and one optional parts:
@@ -256,15 +202,9 @@ const myFactCheckerFactory = new JsonRulesEngineFactCheckerFactory({
 
 ```
 
-## Included FactRetrievers
+## Backend example
 
-There are three FactRetrievers that come out of the box with Tech Insights:
-
-- `entityMetadataFactRetriever`: Generates facts which indicate the completeness of entity metadata
-- `entityOwnershipFactRetriever`: Generates facts which indicate the quality of data in the spec.owner field
-- `techdocsFactRetriever`: Generates facts related to the completeness of techdocs configuration for entities
-
-## Backend Example
+## Old backend example
 
 Here's an example backend setup that will use the three included fact retrievers so you can get an idea of how this all works. This will be the entire contents of your `techInsights.ts` file found at `\packages\backend\src\plugins` as per [Adding the plugin to your `packages/backend`](#adding-the-plugin-to-your-packagesbackend)
 
