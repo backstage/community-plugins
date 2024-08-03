@@ -19,7 +19,7 @@ import request from 'supertest';
 import { ConfigReader } from '@backstage/config';
 import { createRouter, createRouterFromConfig } from './router';
 import { LinguistBackendApi } from '../api';
-import { mockServices } from '@backstage/backend-test-utils';
+import { mockServices, TestDatabases } from '@backstage/backend-test-utils';
 import {
   SchedulerServiceTaskScheduleDefinition,
   UrlReaderService,
@@ -35,6 +35,8 @@ const mockUrlReader: UrlReaderService = {
   readTree: jest.fn(),
   search: jest.fn(),
 };
+
+const databases = TestDatabases.create();
 
 const schedule: SchedulerServiceTaskScheduleDefinition = {
   frequency: { minutes: 2 },
@@ -52,12 +54,14 @@ describe('createRouter', () => {
 
   describe('GET /health', () => {
     beforeAll(async () => {
+      const knex = await databases.init('SQLITE_3');
+      const getClient = jest.fn(async () => knex);
       const router = await createRouter(
         { schedule: schedule, age: { days: 30 }, useSourceLocation: false },
         {
           linguistBackendApi: linguistBackendApi,
           discovery: mockServices.discovery.mock(),
-          database: mockServices.database.mock(),
+          database: mockServices.database.mock({ getClient }),
           reader: mockUrlReader,
           logger: mockServices.logger.mock(),
           config: mockServices.rootConfig(),
@@ -86,10 +90,12 @@ describe('createRouter', () => {
           useSourceLocation: false,
         },
       });
+      const knex = await databases.init('SQLITE_3');
+      const getClient = jest.fn(async () => knex);
       const router = await createRouterFromConfig({
         linguistBackendApi: linguistBackendApi,
         discovery: mockServices.discovery.mock(),
-        database: mockServices.database.mock(),
+        database: mockServices.database.mock({ getClient }),
         reader: mockUrlReader,
         logger: mockServices.logger.mock(),
         config,
