@@ -19,6 +19,11 @@ backend:
     client: better-sqlite3
     connection: ':memory:'
 
+  reading:
+    allow:
+      - host: dac-static.atlassian.com
+      - host: developer.atlassian.com
+
 integrations:
   github:
     - host: github.com
