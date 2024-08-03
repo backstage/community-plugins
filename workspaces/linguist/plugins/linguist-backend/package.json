@@ -41,6 +41,7 @@
   "dependencies": {
     "@backstage-community/plugin-linguist-common": "workspace:^",
     "@backstage/backend-common": "^0.23.3",
+    "@backstage/backend-defaults": "^0.4.1",
     "@backstage/backend-plugin-api": "^0.7.0",
     "@backstage/backend-tasks": "^0.5.27",
     "@backstage/catalog-client": "^1.6.5",
