@@ -4,9 +4,7 @@ import { makeStyles, Theme, Grid, Paper } from '@material-ui/core';
 import { CatalogSearchResultListItem } from '@backstage/plugin-catalog';
 import {
   catalogApiRef,
-  CATALOG_FILTER_EXISTS,
 } from '@backstage/plugin-catalog-react';
-import { TechDocsSearchResultListItem } from '@backstage/plugin-techdocs';
 
 import { SearchType } from '@backstage/plugin-search';
 import {
@@ -19,7 +17,6 @@ import {
 import {
   CatalogIcon,
   Content,
-  DocsIcon,
   Header,
   Page,
 } from '@backstage/core-components';
@@ -45,8 +42,6 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const SearchPage = () => {
   const classes = useStyles();
-  const { types } = useSearch();
-  const catalogApi = useApi(catalogApiRef);
 
   return (
     <Page themeId="home">
@@ -69,11 +64,6 @@ const SearchPage = () => {
                   icon: <CatalogIcon />,
                 },
                 {
-                  value: 'techdocs',
-                  name: 'Documentation',
-                  icon: <DocsIcon />,
-                },
-                {
                   value: 'confluence',
                   name: 'Confluence',
                   icon: <ConfluenceSearchIcon />,
@@ -81,27 +71,6 @@ const SearchPage = () => {
               ]}
             />
             <Paper className={classes.filters}>
-              {types.includes('techdocs') && (
-                <SearchFilter.Select
-                  className={classes.filter}
-                  label="Entity"
-                  name="name"
-                  values={async () => {
-                    // Return a list of entities which are documented.
-                    const { items } = await catalogApi.getEntities({
-                      fields: ['metadata.name'],
-                      filter: {
-                        'metadata.annotations.backstage.io/techdocs-ref':
-                          CATALOG_FILTER_EXISTS,
-                      },
-                    });
-
-                    const names = items.map(entity => entity.metadata.name);
-                    names.sort();
-                    return names;
-                  }}
-                />
-              )}
               <SearchFilter.Select
                 className={classes.filter}
                 label="Kind"
@@ -120,7 +89,6 @@ const SearchPage = () => {
             <SearchPagination />
             <SearchResult>
               <CatalogSearchResultListItem icon={<CatalogIcon />} />
-              <TechDocsSearchResultListItem icon={<DocsIcon />} />
               <ConfluenceSearchResultListItem icon={<ConfluenceSearchIcon />} />
             </SearchResult>
           </Grid>
