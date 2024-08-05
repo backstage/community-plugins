@@ -1,5 +1,11 @@
 # @backstage-community/plugin-tech-insights
 
+## 0.3.32
+
+### Patch Changes
+
+- 83a5e80: Refactor `ScorecardInfo` to accordion to display categories and fail counts.
+
 ## 0.3.31
 
 ### Patch Changes
