@@ -66,6 +66,16 @@ export class TechInsightsClient implements TechInsightsApi {
     return renderers.filter(d => types.includes(d.type));
   }
 
+  isCheckResultFailed(check: CheckResult) {
+    const checkResultRenderers = this.getCheckResultRenderers([
+      check.check.type,
+    ]);
+    if (checkResultRenderers[0] && checkResultRenderers[0].isFailed) {
+      return checkResultRenderers[0].isFailed(check);
+    }
+    return true;
+  }
+
   async getAllChecks(): Promise<Check[]> {
     return this.api('/checks');
   }
