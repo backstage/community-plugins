@@ -10,15 +10,11 @@ import {
   SearchResult,
   SearchPagination,
 } from '@backstage/plugin-search-react';
-import {
-  CatalogIcon,
-  Content,
-  Header,
-  Page,
-} from '@backstage/core-components';
+import { CatalogIcon, Content, Header, Page } from '@backstage/core-components';
 import {
   ConfluenceSearchResultListItem,
-  ConfluenceSearchIcon } from '@backstage-community/plugin-confluence';
+  ConfluenceSearchIcon,
+} from '@backstage-community/plugin-confluence';
 
 const useStyles = makeStyles((theme: Theme) => ({
   bar: {
