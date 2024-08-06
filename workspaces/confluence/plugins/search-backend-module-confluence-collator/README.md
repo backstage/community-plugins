@@ -23,7 +23,9 @@ import { createBackend } from '@backstage/backend-defaults';
 const backend = createBackend();
 backend.add(import('@backstage/plugin-search-backend/alpha'));
 backend.add(
-  import('@backstage-community/plugin-search-backend-module-confluence-collator'),
+  import(
+    '@backstage-community/plugin-search-backend-module-confluence-collator'
+  ),
 );
 backend.start();
 ```
@@ -59,7 +61,7 @@ confluence:
   baseUrl: 'http://confluence.example.com'
   auth:
     token: '${CONFLUENCE_TOKEN}'
-  spaces: []  # Warning, it is highly recommended to safely list the spaces that you want to index, either all documents will be indexed.
+  spaces: [] # Warning, it is highly recommended to safely list the spaces that you want to index, either all documents will be indexed.
 ```
 
 The sections below will go into more details about the Base URL and Auth Methods.
@@ -126,5 +128,5 @@ search:
 
 ## Special thanks & Disclaimer
 
-Thanks to K-Phoen for creating the grafana plugin found [here](https://github.com/K-Phoen/backstage-plugin-confluence). As an outcome 
+Thanks to K-Phoen for creating the grafana plugin found [here](https://github.com/K-Phoen/backstage-plugin-confluence). As an outcome
 of [this discussion](https://github.com/K-Phoen/backstage-plugin-confluence/issues/193), he gave us permission to keep working on this plugin.

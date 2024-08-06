@@ -30,7 +30,11 @@ export const searchModuleConfluenceCollator = createBackendModule({
             )
           : defaultSchedule;
 
-        logger.info(`Indexing Confluence instance: "${config.getString('confluence.baseUrl')}"`);
+        logger.info(
+          `Indexing Confluence instance: "${config.getString(
+            'confluence.baseUrl',
+          )}"`,
+        );
         logger.info(`Confluence indexing schedule ${JSON.stringify(schedule)}`);
         indexRegistry.addCollator({
           schedule: scheduler.createScheduledTaskRunner(schedule),
