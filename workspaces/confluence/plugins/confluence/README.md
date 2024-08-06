@@ -2,11 +2,11 @@
 
 This plugin adds capability to retrieve Confluence documents from the Backstage Search engine.
 
-# Getting Started
+## Getting Started
 
 Before we begin make sure:
 
-* You have created your own standalone Backstage app using @backstage/create-app and not using a fork of the Backstage repository. If you haven't setup Backstage already, start [here](https://backstage.io/docs/getting-started/).
+- You have created your own standalone Backstage app using @backstage/create-app and not using a fork of the Backstage repository. If you haven't setup Backstage already, start [here](https://backstage.io/docs/getting-started/).
 
 To use any of the functionality this plugin provides, you need to start by configuring your App with the following config:
 
@@ -16,7 +16,7 @@ confluence:
   auth:
     type: bearer
     token: youApiToken
-  spaces: []  # Warning, it is highly recommended to safely list the spaces that you want to index, either all documents will be indexed.
+  spaces: [] # Warning, it is highly recommended to safely list the spaces that you want to index, either all documents will be indexed.
 ```
 
 ## Areas of Responsibility
