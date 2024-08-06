@@ -2,9 +2,6 @@ import React from 'react';
 import { makeStyles, Theme, Grid, Paper } from '@material-ui/core';
 
 import { CatalogSearchResultListItem } from '@backstage/plugin-catalog';
-import {
-  catalogApiRef,
-} from '@backstage/plugin-catalog-react';
 
 import { SearchType } from '@backstage/plugin-search';
 import {
@@ -12,7 +9,6 @@ import {
   SearchFilter,
   SearchResult,
   SearchPagination,
-  useSearch,
 } from '@backstage/plugin-search-react';
 import {
   CatalogIcon,
@@ -20,7 +16,6 @@ import {
   Header,
   Page,
 } from '@backstage/core-components';
-import { useApi } from '@backstage/core-plugin-api';
 import {
   ConfluenceSearchResultListItem,
   ConfluenceSearchIcon } from '@backstage-community/plugin-confluence';
