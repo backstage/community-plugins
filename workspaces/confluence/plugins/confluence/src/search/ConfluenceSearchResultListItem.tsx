@@ -36,6 +36,9 @@ const useStyles = makeStyles({
   },
 });
 
+/**
+ * @public
+ */
 export type IndexableConfluenceDocument = IndexableDocument & {
   spaceName: string;
   lastModified: string;
@@ -48,12 +51,20 @@ export type IndexableConfluenceDocument = IndexableDocument & {
   }[];
 };
 
+/**
+ * @public
+ */
 export interface ConfluenceResultItemProps {
   result?: IndexableDocument;
   highlight?: ResultHighlight;
   icon?: ReactNode;
 }
 
+/**
+ * A component to display an Confluence search result.
+ * 
+ * @public
+ */
 export const ConfluenceSearchResultListItem = ({
   result,
   highlight,
