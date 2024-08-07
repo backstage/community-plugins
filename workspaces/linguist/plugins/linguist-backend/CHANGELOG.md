@@ -1,5 +1,11 @@
 # @backstage-community/plugin-linguist-backend
 
+## 0.5.21
+
+### Patch Changes
+
+- 78129a3: Removed code marked as deprecated in the upstream Backstage project
+
 ## 0.5.20
 
 ### Patch Changes
