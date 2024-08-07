@@ -12,7 +12,7 @@ If you have questions or feedback regarding Community Plugins, you can visit the
   - [License](#license)
   - [Security Issues](#security-issues)
   - [Get Started!](#get-started)
-    - [Cloning the Repository](#cloning-the-repository)
+    - [Forking the Repository](#forking-the-repository)
     - [Developing Plugins in Workspaces](#developing-plugins-in-workspaces)
   - [Coding Guidelines](#coding-guidelines)
   - [Versioning](#versioning)
@@ -23,6 +23,10 @@ If you have questions or feedback regarding Community Plugins, you can visit the
   - [Migrating a plugin](#migrating-a-plugin)
     - [Manual migration steps](#manual-migration-steps)
   - [Developer Certificate of Origin](#developer-certificate-of-origin)
+  - [API Reports](#api-reports)
+  - [Submitting a Pull Request](#submitting-a-pull-request)
+  - [Review Process](#review-process)
+    - [Review Tips](#review-tips)
 
 ## Code of Conduct
 
@@ -42,7 +46,7 @@ See [SECURITY](SECURITY.md).
 
 So...feel ready to jump in? Let's do this. 👏🏻 💯
 
-### Cloning the Repository
+### Forking the Repository
 
 Ok. So you're gonna want some code right? Go ahead and fork the repository into your own GitHub account and clone that code to your local machine. GitHub's [Fork a repo](https://docs.github.com/en/get-started/quickstart/fork-a-repo) documentation has a great step by step guide if you are not sure how to do this.
 
@@ -91,11 +95,11 @@ To create a changeset, follow these steps:
 
 1. Make sure you are in the root directory of the workspace for the plugin you want to create a changeset for. For ex: if you are making changes on the `adr` plugin then you should be on `workspaces/adr` dir
 
-+2. Run the following command to create a new changeset:
+2. Run the following command to create a new changeset:
 
-```bash
-$ yarn changeset
-```
+    ```bash
+    $ yarn changeset
+    ```
 
 3. You will be prompted to select the packages and the type of change you are making.
 
@@ -107,7 +111,8 @@ $ yarn changeset
 
 Once the changeset is merged, it will trigger the release process for the plugin and create a "Version packages ($workspace_name)" PR. Once the PR is merged, a new version of the plugin will be published based on the type of change made.
 
-+Note: It's important to create a changeset for each individual change you make to a plugin. This ensures that the release process is properly managed and that dependencies between plugins are correctly updated.
+> [!NOTE]  
+> It's important to create a changeset for each individual change you make to a plugin. This ensures that the release process is properly managed and that dependencies between plugins are correctly updated.
 
 ## Release
 
@@ -195,3 +200,67 @@ cp -r ../existing-plugins/plugins/plugin-name plugins/
 ## Developer Certificate of Origin
 
 Backstage Community Plugins has adopted a [Developers Certificate of Origin (DCO)](https://developercertificate.org/) - refer to the Backstage [CONTRIBUTING.md#developer-certificate-of-origin](https://github.com/backstage/backstage/blob/master/CONTRIBUTING.md#developer-certificate-of-origin) for more information on the DCO and guidance on signing commits.
+
+## API Reports
+
+Backstage uses [API Extractor](https://api-extractor.com/) and TSDoc comments to generate API Reports in Markdown format. These reports are what drive the [API Reference documentation](https://backstage.io/docs/reference/). What this means is that if you are making changes to the API or adding a new plugin then you will need either generate a new API Report or update an existing API Report. If you don't do this the CI build will fail when you create your Pull Request.
+
+There are two ways you can do this:
+
+1. You can run `yarn build:api-reports` from the root of the project and it will go through all of the existing API Reports and update them or create new ones as needed. This may take a while but is generally the best method if you are new to this.
+2. You can run `yarn build:api-reports plugins/<your-plugin-with-changes>` from the workspace root and it will update the existing API Report or create a new one.
+
+> Note: the above commands assume you've run `yarn install` before hand or recently
+
+Each plugin/package has its own API Report which means you might see more then one file updated or created depending on your changes. These changes will then need to be committed as well.
+
+## Submitting a Pull Request
+
+When you've got your contribution working, tested, and committed to your branch it's time to create a Pull Request (PR). If you are unsure how to do this GitHub's [Creating a pull request from a fork](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork) documentation will help you with that. Once you create your PR you will be presented with a template in the PR's description that looks like this:
+
+```md
+## Hey, I just made a Pull Request!
+
+<!-- Please describe what you added, and add a screenshot if possible.
+     That makes it easier to understand the change so we can :shipit: faster. -->
+
+#### :heavy_check_mark: Checklist
+
+<!--- Please include the following in your Pull Request when applicable: -->
+
+- [ ] A changeset describing the change and affected packages. ([more info](https://github.com/backstage/backstage/blob/master/CONTRIBUTING.md#creating-changesets))
+- [ ] Added or updated documentation
+- [ ] Tests for new functionality and regression tests for bug fixes
+- [ ] Screenshots attached (for UI changes)
+- [ ] All your commits have a `Signed-off-by` line in the message. ([more info](https://github.com/backstage/backstage/blob/master/CONTRIBUTING.md#developer-certificate-of-origin))
+```
+
+From here all you need to do is fill in the information as requested by the template. Please do not remove this as it helps both you and the reviewers confirm that the various tasks have been completed.
+
+Here are some examples of good PR descriptions:
+
+- <https://github.com/backstage/backstage/pull/19473>
+- <https://github.com/backstage/backstage/pull/19623>
+- <https://github.com/backstage/backstage/pull/15881>
+- <https://github.com/backstage/backstage/pull/16401>
+
+## Review Process
+
+Once you've submitted a Pull Request (PR) the various bots will come out and do their work:
+
+- assigning reviewers from the various areas impacted by changes in your PR
+- adding labels to help make reviewing PRs easier
+- checking for missing changesets or confirming them
+- checking for commits for their DCO (Developer Certificate of Origin)
+- kick off the various CI builds
+
+Once these have been completed it's just a matter of being patient as the reviewers have time they will begin to review your PR. When the review begins there may be a few layers to this but the general rule is that you need approval from one of the core maintainers and one from the specific area impacted by your PR. You may also have someone from the community review your changes, this can really help speed things up as they may catch some early items making the review for the maintainers simpler. Once you have the two (2) approvals it's ready to be merged, this task is also done by the maintainers.
+
+### Review Tips
+
+Here are a few things that can help as you go through the review process:
+
+- You'll want to make sure all the automated checks are passing as generally the PR won't get a review if something like the CI build is failing
+- PRs get automatically assigned so you don't need to ping people, they will be notified and have a process of their own for this
+- If you are waiting for a review or mid-review and your PR goes stale one of the easiest ways to clear the stale bot is by simply rebasing your PR
+- There are times where you might run into conflict with the `yarn.lock` during a rebase, to help with that make sure your `main` branch is up to date and then in your branch run `git checkout master yarn.lock` from the workspace too and then run `yarn install`, this will get you a conflict free `yarn.lock` file you can commit

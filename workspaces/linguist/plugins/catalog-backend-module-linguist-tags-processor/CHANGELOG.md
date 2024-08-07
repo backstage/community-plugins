@@ -1,5 +1,11 @@
 # @backstage-community/plugin-catalog-backend-module-linguist-tags-processor
 
+## 0.1.3
+
+### Patch Changes
+
+- 78129a3: Removed code marked as deprecated in the upstream Backstage project
+
 ## 0.1.2
 
 ### Patch Changes

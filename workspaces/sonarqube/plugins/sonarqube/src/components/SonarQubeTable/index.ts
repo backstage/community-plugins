@@ -1,1 +1,1 @@
-export { SonarQubeTable } from './SonarQubeTable';
+export * from './SonarQubeTable';

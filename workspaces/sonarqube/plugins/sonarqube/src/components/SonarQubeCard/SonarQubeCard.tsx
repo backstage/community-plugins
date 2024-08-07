@@ -44,6 +44,7 @@ import {
   QualityBadge,
   VulnerabilitiesRatingCard,
 } from './MetricInsights';
+import { DuplicationRating } from '../SonarQubeTable/types';
 
 const useStyles = makeStyles(theme => ({
   header: {
@@ -56,12 +57,6 @@ const useStyles = makeStyles(theme => ({
     color: theme.palette.text.secondary,
   },
 }));
-
-/** @public */
-export type DuplicationRating = {
-  greaterThan: number;
-  rating: '1.0' | '2.0' | '3.0' | '4.0' | '5.0';
-};
 
 /** @public */
 export const SonarQubeCard = (props: {
