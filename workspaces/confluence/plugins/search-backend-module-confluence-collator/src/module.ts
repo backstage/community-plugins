@@ -6,6 +6,11 @@ import { readSchedulerServiceTaskScheduleDefinitionFromConfig } from '@backstage
 import { searchIndexRegistryExtensionPoint } from '@backstage/plugin-search-backend-node/alpha';
 import { ConfluenceCollatorFactory } from './collators';
 
+/**
+ * Search backend module for the Confluence index.
+ * 
+ * @public
+ */
 export const searchModuleConfluenceCollator = createBackendModule({
   pluginId: 'search',
   moduleId: 'confluence-collator',
