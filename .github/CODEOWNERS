@@ -28,3 +28,4 @@ yarn.lock                                           @backstage/community-plugins
 /workspaces/sonarqube                               @backstage/community-plugins-maintainers  @backstage/sda-se-reviewers
 /workspaces/user-settings                           @backstage/community-plugins-maintainers  @backstage/sda-se-reviewers
 /workspaces/tech-insights                           @backstage/community-plugins-maintainers  @xantier
+/workspaces/report-portal                           @backstage/community-plugins-maintainers  @yashoswalyo
