@@ -9,7 +9,7 @@ concurrency:
 
 jobs:
   find-changed-workspaces:
-    name: Detect workspace changes
+    name: Run linters and find workspaces with changes
     runs-on: ubuntu-latest
     outputs:
       workspaces: ${{ steps.find-changed-workspaces.outputs.workspaces }}
@@ -35,6 +35,13 @@ jobs:
         with:
           node-version: 20
           registry-url: https://registry.npmjs.org/ # Needed for auth
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      # - name: Lint files
+      #   run: yarn backstage-cli repo lint
+      # - name: Prettier check
+      #   run: yarn prettier:check
 
       - name: Find changed workspaces
         id: find-changed-workspaces
@@ -120,7 +127,7 @@ jobs:
           fi
 
   verify:
-    name: Workspace ${{ matrix.workspace }}, Verify step
+    name: Workspace ${{ matrix.workspace }}, Verify step for node ${{ matrix.node-version }}
     runs-on: ubuntu-latest
     needs: find-changed-workspaces
     strategy:

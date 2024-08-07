@@ -1,5 +1,5 @@
 {
-  "name": "@internal/{{name}}",
+  "name": "@internal/test",
   "version": "1.0.0",
   "private": true,
   "engines": {
@@ -29,11 +29,11 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/backstage/community-plugins",
-    "directory": "workspaces/{{name}}"
+    "directory": "workspaces/test"
   },
   "devDependencies": {
-    "@backstage/cli": "^{{version '@backstage/cli'}}",
-    "@backstage/e2e-test-utils": "^{{version '@backstage/e2e-test-utils'}}",
+    "@backstage/cli": "^0.26.7",
+    "@backstage/e2e-test-utils": "^0.1.1",
     "@backstage/repo-tools": "^0.8.0",
     "@changesets/cli": "^2.27.1",
     "@spotify/eslint-plugin": "^15.0.0",

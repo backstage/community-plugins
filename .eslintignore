@@ -1,0 +1,10 @@
+**/node_modules/**
+**/dist/**
+**/dist-types/**
+**/storybook-static/**
+**/coverage/**
+**/build/**
+**/.git/**
+**/public/**
+playwright.config.ts
+.eslintrc.js
