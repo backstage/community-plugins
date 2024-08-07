@@ -1,5 +1,11 @@
 # @backstage-community/plugin-scaffolder-backend-module-odo
 
+## 0.21.1
+
+### Patch Changes
+
+- a3eeb53: Updated API Reports
+
 ## 0.21.0
 
 ### Minor Changes
