@@ -8,8 +8,6 @@ import type { Config } from '@backstage/config';
 import { JsonObject } from '@backstage/types';
 import { TemplateAction } from '@backstage/plugin-scaffolder-node';
 
-// Warning: (ae-missing-release-tag) "createOdoAction" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const createOdoAction: ({
   odoConfig,
@@ -24,8 +22,6 @@ export const createOdoAction: ({
   JsonObject
 >;
 
-// Warning: (ae-missing-release-tag) "createOdoInitAction" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const createOdoInitAction: ({
   odoConfig,
@@ -44,11 +40,6 @@ export const createOdoInitAction: ({
 // @public
 const odoModule: BackendFeatureCompat;
 export default odoModule;
-
-// Warnings were encountered during analysis:
-//
-// src/actions/odo-init.d.ts:2:22 - (ae-undocumented) Missing documentation for "createOdoInitAction".
-// src/actions/odo.d.ts:2:22 - (ae-undocumented) Missing documentation for "createOdoAction".
 
 // (No @packageDocumentation comment for this package)
 ```
