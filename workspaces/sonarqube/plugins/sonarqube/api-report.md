@@ -24,7 +24,7 @@ export type DuplicationRating = {
 // @public (undocumented)
 export const EntitySonarQubeCard: (props: {
   variant?: InfoCardVariants | undefined;
-  duplicationRatings?: DuplicationRating_2[] | undefined;
+  duplicationRatings?: DuplicationRating[] | undefined;
   missingAnnotationReadMoreUrl?: string | undefined;
 }) => JSX_2.Element;
 
@@ -42,7 +42,7 @@ export const SONARQUBE_PROJECT_KEY_ANNOTATION = 'sonarqube.org/project-key';
 // @public (undocumented)
 export const SonarQubeCard: (props: {
   variant?: InfoCardVariants;
-  duplicationRatings?: DuplicationRating_2[];
+  duplicationRatings?: DuplicationRating[];
   missingAnnotationReadMoreUrl?: string;
 }) => React_2.JSX.Element;
 
@@ -85,9 +85,6 @@ export type SonarQubeContentPageProps = {
 // @public (undocumented)
 export const sonarQubePlugin: BackstagePlugin<{}, {}, {}>;
 
-// Warning: (ae-forgotten-export) The symbol "SonarQubeTableProps" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "SonarQubeTable" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const SonarQubeTable: ({
   tableContent,
@@ -97,7 +94,12 @@ export const SonarQubeTable: ({
   localization,
 }: SonarQubeTableProps) => React_2.JSX.Element;
 
-// Warnings were encountered during analysis:
-//
-// src/plugin.d.ts:7:5 - (ae-forgotten-export) The symbol "DuplicationRating_2" needs to be exported by the entry point index.d.ts
+// @public (undocumented)
+export type SonarQubeTableProps = {
+  tableContent: any[] | undefined;
+  title?: string;
+  options?: any | undefined;
+  emptyContent?: React_2.ReactNode;
+  localization?: any;
+};
 ```

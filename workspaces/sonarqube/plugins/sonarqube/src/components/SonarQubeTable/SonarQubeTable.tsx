@@ -3,14 +3,19 @@ import Box from '@material-ui/core/Box';
 import { ErrorPanel, Table } from '@backstage/core-components';
 import { getColumns } from './Columns';
 
-type SonarQubeTableProps = {
+/**
+ * @public
+ */
+export type SonarQubeTableProps = {
   tableContent: any[] | undefined;
   title?: string;
   options?: any | undefined;
   emptyContent?: React.ReactNode;
   localization?: any;
 };
-
+/**
+ * @public
+ */
 export const SonarQubeTable = ({
   tableContent,
   title,
