@@ -10,6 +10,8 @@ import { LoggerService } from '@backstage/backend-plugin-api';
 
 /**
  * Document metadata
+ * 
+ * @public
  */
 export type ConfluenceDocumentMetadata = {
   title: string;
@@ -23,6 +25,8 @@ export type ConfluenceDocumentMetadata = {
 
 /**
  * List of documents
+ * 
+ * @public
  */
 export type ConfluenceDocumentList = {
   results: ConfluenceDocumentMetadata[];
@@ -32,7 +36,7 @@ export type ConfluenceDocumentList = {
 };
 
 /**
- * Options for {@link ConfluenceFactory}
+ * Options for {@link ConfluenceCollatorFactory}
  *
  * @public
  */
@@ -50,6 +54,8 @@ export type ConfluenceCollatorFactoryOptions = {
 
 /**
  * Document
+ * 
+ * @public
  */
 export type ConfluenceDocument = ConfluenceDocumentMetadata & {
   body: {
@@ -99,6 +105,11 @@ export interface IndexableConfluenceDocument extends IndexableDocument {
   lastModifiedBy: string;
 }
 
+/**
+ * Search collator responsible for collecting confluence documents to index.
+ *
+ * @public
+ */
 export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
   private readonly baseUrl: string | undefined;
   private readonly auth: string | undefined;
