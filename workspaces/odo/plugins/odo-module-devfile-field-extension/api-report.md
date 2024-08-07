@@ -6,13 +6,9 @@
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { FieldExtensionComponent } from '@backstage/plugin-scaffolder-react';
 
-// Warning: (ae-missing-release-tag) "devfileSelectorExtensionPlugin" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const devfileSelectorExtensionPlugin: BackstagePlugin<{}, {}, {}>;
 
-// Warning: (ae-missing-release-tag) "DevfileSelectorFieldExtension" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const DevfileSelectorFieldExtension: FieldExtensionComponent<
   {
@@ -22,11 +18,6 @@ export const DevfileSelectorFieldExtension: FieldExtensionComponent<
   },
   {}
 >;
-
-// Warnings were encountered during analysis:
-//
-// src/plugin.d.ts:1:22 - (ae-undocumented) Missing documentation for "devfileSelectorExtensionPlugin".
-// src/plugin.d.ts:2:22 - (ae-undocumented) Missing documentation for "DevfileSelectorFieldExtension".
 
 // (No @packageDocumentation comment for this package)
 ```
