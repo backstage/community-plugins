@@ -12,9 +12,7 @@ import { IndexableDocument } from '@backstage/plugin-search-common';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { Readable } from 'stream';
 
-// Warning: (ae-missing-release-tag) "ConfluenceCollatorFactory" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
   // (undocumented)
   execute(): AsyncGenerator<IndexableConfluenceDocument>;
@@ -29,8 +27,6 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
   readonly type: string;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@backstage-community/plugin-search-backend-module-confluence-collator" does not have an export "ConfluenceFactory"
-//
 // @public
 export type ConfluenceCollatorFactoryOptions = {
   baseUrl?: string;
@@ -44,8 +40,6 @@ export type ConfluenceCollatorFactoryOptions = {
   logger: LoggerService;
 };
 
-// Warning: (ae-missing-release-tag) "ConfluenceDocument" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export type ConfluenceDocument = ConfluenceDocumentMetadata & {
   body: {
@@ -70,8 +64,6 @@ export type ConfluenceDocument = ConfluenceDocumentMetadata & {
   ancestors: ConfluenceDocumentMetadata[];
 };
 
-// Warning: (ae-missing-release-tag) "ConfluenceDocumentList" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export type ConfluenceDocumentList = {
   results: ConfluenceDocumentMetadata[];
@@ -80,8 +72,6 @@ export type ConfluenceDocumentList = {
   };
 };
 
-// Warning: (ae-missing-release-tag) "ConfluenceDocumentMetadata" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export type ConfluenceDocumentMetadata = {
   title: string;
@@ -115,15 +105,7 @@ export interface IndexableConfluenceDocument extends IndexableDocument {
   spaceName: string;
 }
 
-// Warning: (ae-missing-release-tag) "searchModuleConfluenceCollator" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 const searchModuleConfluenceCollator: BackendFeatureCompat;
 export default searchModuleConfluenceCollator;
-
-// Warnings were encountered during analysis:
-//
-// src/index.d.ts:2:1 - (ae-misplaced-package-tag) The @packageDocumentation comment must appear at the top of entry point *.d.ts file
-
-// (No @packageDocumentation comment for this package)
 ```

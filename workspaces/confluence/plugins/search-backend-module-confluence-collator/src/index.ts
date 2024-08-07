@@ -1,8 +1,6 @@
-/***/
 /**
- * The confluence-collator backend module for the search plugin.
- *
  * @packageDocumentation
+ * A module for the search backend that exports Confluence modules.
  */
 
 export { searchModuleConfluenceCollator as default } from './module';
