@@ -26,7 +26,7 @@ import {
   CatalogApi,
   GetEntitiesRequest,
 } from '@backstage/catalog-client';
-import { UrlReader } from '@backstage/backend-common';
+import { UrlReaderService } from '@backstage/backend-plugin-api';
 
 import { DateTime } from 'luxon';
 import { LinguistBackendStore } from '../db';
@@ -51,7 +51,7 @@ export interface LinguistBackendApi {
 export class LinguistBackendClient implements LinguistBackendApi {
   private readonly logger: LoggerService;
   private readonly store: LinguistBackendStore;
-  private readonly urlReader: UrlReader;
+  private readonly urlReader: UrlReaderService;
   private readonly auth: AuthService;
 
   private readonly catalogApi: CatalogApi;
@@ -63,7 +63,7 @@ export class LinguistBackendClient implements LinguistBackendApi {
   public constructor(
     logger: LoggerService,
     store: LinguistBackendStore,
-    urlReader: UrlReader,
+    urlReader: UrlReaderService,
     auth: AuthService,
     catalogApi: CatalogApi,
     age?: HumanDuration,

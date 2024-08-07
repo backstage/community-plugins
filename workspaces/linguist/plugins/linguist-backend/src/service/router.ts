@@ -14,23 +14,19 @@
  * limitations under the License.
  */
 
+import { createLegacyAuthAdapters } from '@backstage/backend-common';
 import {
-  createLegacyAuthAdapters,
-  errorHandler,
-  PluginDatabaseManager,
-  PluginEndpointDiscovery,
-  TokenManager,
-  UrlReader,
-} from '@backstage/backend-common';
+  DatabaseService,
+  DiscoveryService,
+  readSchedulerServiceTaskScheduleDefinitionFromConfig,
+  SchedulerService,
+  SchedulerServiceTaskScheduleDefinition,
+  UrlReaderService,
+} from '@backstage/backend-plugin-api';
 import express from 'express';
 import Router from 'express-promise-router';
 import { LinguistBackendApi } from '../api';
 import { LinguistBackendDatabase } from '../db';
-import {
-  PluginTaskScheduler,
-  readTaskScheduleDefinitionFromConfig,
-  TaskScheduleDefinition,
-} from '@backstage/backend-tasks';
 import { HumanDuration, JsonObject } from '@backstage/types';
 import { CatalogClient } from '@backstage/catalog-client';
 import { LinguistBackendClient } from '../api/LinguistBackendClient';
@@ -40,10 +36,11 @@ import {
   HttpAuthService,
   LoggerService,
 } from '@backstage/backend-plugin-api';
+import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 
 /** @public */
 export interface PluginOptions {
-  schedule?: TaskScheduleDefinition;
+  schedule?: SchedulerServiceTaskScheduleDefinition;
   age?: HumanDuration;
   batchSize?: number;
   useSourceLocation?: boolean;
@@ -55,12 +52,11 @@ export interface PluginOptions {
 export interface RouterOptions {
   linguistBackendApi?: LinguistBackendApi;
   logger: LoggerService;
-  reader: UrlReader;
-  tokenManager: TokenManager;
-  database: PluginDatabaseManager;
-  discovery: PluginEndpointDiscovery;
-  scheduler?: PluginTaskScheduler;
-  config?: Config;
+  reader: UrlReaderService;
+  database: DatabaseService;
+  discovery: DiscoveryService;
+  config: Config;
+  scheduler?: SchedulerService;
   auth?: AuthService;
   httpAuth?: HttpAuthService;
 }
@@ -70,7 +66,7 @@ export async function createRouter(
   pluginOptions: PluginOptions,
   routerOptions: RouterOptions,
 ): Promise<express.Router> {
-  const { logger, reader, database, discovery, scheduler, tokenManager, auth } =
+  const { logger, reader, database, discovery, scheduler, auth, config } =
     routerOptions;
 
   const {
@@ -90,7 +86,6 @@ export async function createRouter(
 
   const { auth: adaptedAuth } = createLegacyAuthAdapters({
     auth,
-    tokenManager: tokenManager,
     discovery: discovery,
   });
 
@@ -148,7 +143,9 @@ export async function createRouter(
     res.status(200).json(entityLanguages);
   });
 
-  router.use(errorHandler());
+  const middleware = MiddlewareFactory.create({ logger, config });
+
+  router.use(middleware.error());
   return router;
 }
 
@@ -158,9 +155,10 @@ export async function createRouterFromConfig(routerOptions: RouterOptions) {
   const pluginOptions: PluginOptions = {};
   if (config) {
     if (config.has('linguist.schedule')) {
-      pluginOptions.schedule = readTaskScheduleDefinitionFromConfig(
-        config.getConfig('linguist.schedule'),
-      );
+      pluginOptions.schedule =
+        readSchedulerServiceTaskScheduleDefinitionFromConfig(
+          config.getConfig('linguist.schedule'),
+        );
     }
     pluginOptions.batchSize = config.getOptionalNumber('linguist.batchSize');
     pluginOptions.useSourceLocation =
