@@ -39,7 +39,6 @@ export const linguistPlugin = createBackendPlugin({
         database: coreServices.database,
         discovery: coreServices.discovery,
         scheduler: coreServices.scheduler,
-        tokenManager: coreServices.tokenManager,
         httpRouter: coreServices.httpRouter,
       },
       async init({
@@ -51,7 +50,6 @@ export const linguistPlugin = createBackendPlugin({
         database,
         discovery,
         scheduler,
-        tokenManager,
         httpRouter,
       }) {
         httpRouter.use(
@@ -64,7 +62,6 @@ export const linguistPlugin = createBackendPlugin({
             database,
             discovery,
             scheduler,
-            tokenManager,
           }),
         );
         httpRouter.addAuthPolicy({
