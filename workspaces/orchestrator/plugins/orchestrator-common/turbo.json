@@ -1,0 +1,9 @@
+{
+  "extends": ["//"],
+  "pipeline": {
+    "tsc": {
+      "outputs": ["../../dist-types/plugins/orchestrator-common/**"],
+      "dependsOn": ["^tsc"]
+    }
+  }
+}
