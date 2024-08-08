@@ -15,7 +15,11 @@
     "directory": "workspaces/confluence/plugins/confluence"
   },
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "confluence",
+    "pluginPackages": [
+      "@backstage-community/plugin-confluence"
+    ]
   },
   "sideEffects": false,
   "scripts": {
