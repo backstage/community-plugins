@@ -8,6 +8,7 @@ import {
 import * as uuid from 'uuid';
 import { PingIdentityProviderConfig, readProviderConfigs } from '../lib/config';
 import { readPingIdentity } from '../lib/read';
+import { UserTransformer, GroupTransformer } from '../lib/types';
 
 
 /**
@@ -48,6 +49,15 @@ export interface PingIdentityEntityProviderOptions {
    * The logger to use.
    */
   logger: LoggerService;
+  /**
+ * The function that transforms a user entry in LDAP to an entity.
+ */
+  userTransformer?: UserTransformer;
+
+  /**
+   * The function that transforms a group entry in LDAP to an entity.
+   */
+  groupTransformer?: GroupTransformer;
 }
 
 /**
@@ -83,6 +93,8 @@ export class PingIdentityEntityProvider implements EntityProvider {
         id: providerConfig.id,
         provider: providerConfig,
         logger: options.logger,
+        userTransformer: options.userTransformer,
+        groupTransformer: options.groupTransformer,
       });
 
       if (taskRunner !== 'manual') {
@@ -98,6 +110,8 @@ export class PingIdentityEntityProvider implements EntityProvider {
       id: string;
       provider: PingIdentityProviderConfig;
       logger: LoggerService;
+      userTransformer?: UserTransformer,
+      groupTransformer?: GroupTransformer,
     },
   ) { }
 
@@ -124,7 +138,12 @@ export class PingIdentityEntityProvider implements EntityProvider {
 
     const { markReadComplete } = trackProgress(logger);
 
-    const { users, groups } = await readPingIdentity(provider);
+    const { users, groups } = await readPingIdentity(provider,
+      {
+        userTransformer: this.options.userTransformer,
+        groupTransformer: this.options.groupTransformer,
+      }
+    );
 
     await this.connection.applyMutation({
       type: 'full',
