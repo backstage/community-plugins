@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "description": "The confluence-collator backend module for the search plugin.",
   "backstage": {
-    "role": "backend-plugin-module"
+    "role": "backend-plugin-module",
+    "pluginId": "search",
+    "pluginPackage": "@backstage/plugin-search-backend"
   },
   "publishConfig": {
     "access": "public"
