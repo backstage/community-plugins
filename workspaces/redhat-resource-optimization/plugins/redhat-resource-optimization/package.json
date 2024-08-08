@@ -32,7 +32,7 @@
     "@backstage/dev-utils": "^1.0.36",
     "@backstage/plugin-search-react": "^1.7.13",
     "@backstage/test-utils": "^1.5.9",
-    "@testing-library/dom": "7.21.4",
+    "@testing-library/dom": "7.31.2",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^15.0.0",
     "@testing-library/user-event": "^14.0.0",
