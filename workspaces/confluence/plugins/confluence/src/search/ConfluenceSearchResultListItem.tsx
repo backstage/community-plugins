@@ -62,7 +62,7 @@ export interface ConfluenceResultItemProps {
 
 /**
  * A component to display an Confluence search result.
- * 
+ *
  * @public
  */
 export const ConfluenceSearchResultListItem = ({

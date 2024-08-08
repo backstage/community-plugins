@@ -8,7 +8,7 @@ import { ConfluenceCollatorFactory } from './collators';
 
 /**
  * Search backend module for the Confluence index.
- * 
+ *
  * @public
  */
 export const searchModuleConfluenceCollator = createBackendModule({
