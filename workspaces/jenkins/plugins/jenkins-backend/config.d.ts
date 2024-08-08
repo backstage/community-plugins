@@ -25,6 +25,10 @@ export interface Config {
      */
     username?: string;
     /**
+     * Default instance projectCountLimit, can be specified on a named instance called "default"
+     */
+    projectCountLimit?: number;
+    /**
      * Default Instance apiKey, can be specified on a named instance called "default"
      * @visibility secret
      */
@@ -40,6 +44,7 @@ export interface Config {
       name: string;
       baseUrl: string;
       username: string;
+      projectCountLimit?: number;
       /** @visibility secret */
       apiKey: string;
       extraRequestHeaders?: {
