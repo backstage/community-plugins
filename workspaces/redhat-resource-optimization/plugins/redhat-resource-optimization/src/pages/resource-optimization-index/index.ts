@@ -1,0 +1,1 @@
+export { ResourceOptimizationIndexPage } from './ResourceOptimizationIndexPage';
