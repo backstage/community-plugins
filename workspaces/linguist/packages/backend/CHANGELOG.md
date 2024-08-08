@@ -1,5 +1,12 @@
 # backend
 
+## 0.0.6
+
+### Patch Changes
+
+- Updated dependencies [ee627fb]
+  - @backstage-community/plugin-catalog-backend-module-linguist-tags-processor@0.1.4
+
 ## 0.0.5
 
 ### Patch Changes
