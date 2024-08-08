@@ -7,6 +7,8 @@ import {
   ANNOTATION_ORIGIN_LOCATION,
 } from '@backstage/catalog-model';
 import { PING_IDENTITY_ID_ANNOTATION } from './constants';
+import { UserTransformer, GroupTransformer } from './types';
+import { defaultGroupTransformer, defaultUserTransformer } from './defaultTransformers';
 
 const readChildGroups = (
   group: GroupEntity,
@@ -21,11 +23,14 @@ const readChildGroups = (
 
 const findGroupMemberships = (
   userId: string,
-  groups: GroupEntity[]
+  groups: GroupEntity[],
+  groupMembersMap: Map<string, Set<string>>
+
 ): string[] => {
   const groupMemberships: string[] = [];
   groups.forEach(group => {
-    if (group.spec.members?.includes(userId)) {
+    const groupId = group.metadata.annotations ? group.metadata.annotations[PING_IDENTITY_ID_ANNOTATION] : undefined;
+    if (groupId && groupMembersMap.has(groupId) && groupMembersMap.get(groupId)?.has(userId)) {
       groupMemberships.push(group.metadata.name);
     }
   });
@@ -42,14 +47,17 @@ const getEntityLocation = (
 
 const parsePingIdentityUsers = async (
   config: PingIdentityProviderConfig,
-  groups: GroupEntity[]
+  groups: GroupEntity[],
+  groupMembersMap: Map<string, Set<string>>,
+  userTransformer?: UserTransformer
 ): Promise<UserEntity[]> => {
+  const transformer = userTransformer ?? defaultUserTransformer;
   const response = await requestApi(config, 'users');
   const data = await response.json();
   const users: UserEntity[] = data._embedded.users;
-  return Promise.all(users.map(async (user: any) => {
+  const transformedUsers: (UserEntity | undefined)[] = await Promise.all(users.map(async (user: any) => {
     const userLocation = getEntityLocation(config, 'users', user.id);
-    return {
+    return await transformer({
       apiVersion: 'backstage.io/v1beta1',
       kind: 'User',
       metadata: {
@@ -71,20 +79,23 @@ const parsePingIdentityUsers = async (
             }
             : {}),
         },
-        memberOf: findGroupMemberships(user.id, groups)
+        memberOf: findGroupMemberships(user.id, groups, groupMembersMap)
       }
-    };
+    }, config.envId, groups);
   }));
+  return transformedUsers.filter(user => user !== undefined) as UserEntity[];
 }
 
-const getUsersInGroup = async (
+const addUserIdsInGroup = async (
   groupId: string,
+  groupMembersMap: Map<string, Set<string>>,
   config: PingIdentityProviderConfig,
-): Promise<string[]> => {
-  // only show the first 100 responses and only include direct groups
+): Promise<void> => {
   const response = await requestApi(config, `users?filter=memberOfGroups[id%20eq%20%22${groupId}%22]`);
   const data = await response.json();
-  return data.count > 0 ? data._embedded.users.map((users: { username: string; }) => users.username) : [];
+  const members = data.count > 0 ? data._embedded.users.map((users: { id: string; }) => users.id) : [];
+  groupMembersMap.set(groupId, new Set(members));
+  return;
 }
 
 const getParentGroup = async (
@@ -100,13 +111,17 @@ const getParentGroup = async (
 
 const parsePingIdentityGroups = async (
   config: PingIdentityProviderConfig,
+  groupMembersMap: Map<string, Set<string>>,
+  groupTransformer?: GroupTransformer
 ): Promise<GroupEntity[]> => {
+  const transformer = groupTransformer ?? defaultGroupTransformer;
   const response = await requestApi(config, 'groups');
   const data = await response.json();
   const groups: GroupEntity[] = data._embedded.groups;
-  return Promise.all(groups.map(async (group: any) => {
+  const transformedGroups: (GroupEntity | undefined)[] = await Promise.all(groups.map(async (group: any) => {
     const groupLocation = getEntityLocation(config, 'groups', group.id);
-    return {
+    addUserIdsInGroup(group.id, groupMembersMap, config);
+    return await transformer({
       apiVersion: 'backstage.io/v1beta1',
       kind: 'Group',
       metadata: {
@@ -125,20 +140,26 @@ const parsePingIdentityGroups = async (
         },
         children: [],
         parent: await getParentGroup(group.id, config),
-        members: await getUsersInGroup(group.id, config),
+        members: [],
       }
-    };
+    }, config.envId);
   }));
-}
+  return transformedGroups.filter(group => group !== undefined) as GroupEntity[];
+};
 
 export const readPingIdentity = async (
   config: PingIdentityProviderConfig,
+  options?: {
+    userTransformer?: UserTransformer;
+    groupTransformer?: GroupTransformer;
+  },
 ): Promise<{
   users: UserEntity[];
   groups: GroupEntity[];
 }> => {
-  const groups: GroupEntity[] = await parsePingIdentityGroups(config);
-  const users: UserEntity[] = await parsePingIdentityUsers(config, groups);
+  const groupMembersMap = new Map<string, Set<string>>();
+  const groups: GroupEntity[] = await parsePingIdentityGroups(config, groupMembersMap, options?.groupTransformer);
+  const users: UserEntity[] = await parsePingIdentityUsers(config, groups, groupMembersMap, options?.userTransformer);
   groups.forEach(group => readChildGroups(group, groups));
   return { users, groups };
 };

@@ -8,3 +8,6 @@ To start the app, run:
 yarn install
 yarn dev
 ```
+
+### To learn more about the plugins included:
+* [Ping Identity Backend Plugin](./plugins/catalog-backend-module-pingidentity/README.md)
