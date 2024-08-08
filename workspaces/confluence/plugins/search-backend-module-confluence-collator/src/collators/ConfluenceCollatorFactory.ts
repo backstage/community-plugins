@@ -10,7 +10,7 @@ import { LoggerService } from '@backstage/backend-plugin-api';
 
 /**
  * Document metadata
- * 
+ *
  * @public
  */
 export type ConfluenceDocumentMetadata = {
@@ -25,7 +25,7 @@ export type ConfluenceDocumentMetadata = {
 
 /**
  * List of documents
- * 
+ *
  * @public
  */
 export type ConfluenceDocumentList = {
@@ -54,7 +54,7 @@ export type ConfluenceCollatorFactoryOptions = {
 
 /**
  * Document
- * 
+ *
  * @public
  */
 export type ConfluenceDocument = ConfluenceDocumentMetadata & {
