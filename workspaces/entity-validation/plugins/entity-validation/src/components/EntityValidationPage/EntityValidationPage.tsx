@@ -39,7 +39,7 @@ spec:
   owner: owner
 `;
 
-export const EntityValidationPage = (props: {
+export const EntityValidationContent = (props: {
   defaultYaml?: string;
   defaultLocation?: string;
   hideFileLocationField?: boolean;
@@ -67,74 +67,93 @@ export const EntityValidationPage = (props: {
   };
 
   return (
+    <Grid
+      container
+      direction="column"
+      style={{ height: '100%' }}
+      wrap="nowrap"
+      data-testid="main-grid"
+    >
+      {contentHead}
+
+      {!hideFileLocationField && (
+        <TextField
+          fullWidth
+          label="File Location"
+          margin="normal"
+          variant="outlined"
+          required
+          value={locationUrl}
+          placeholder={defaultLocation}
+          helperText="Present or future location of your entity descriptor YAML file. This is not the file being validated; this merely adds location annotations to the entity descriptor file being validated."
+          onChange={e => setLocationUrl(e.target.value)}
+        />
+      )}
+
+      <Grid container direction="row" style={{ height: '100%' }}>
+        <Grid item md={6} xs={12}>
+          <Grid
+            container
+            direction="column"
+            alignItems="flex-end"
+            style={{ height: '100%' }}
+            wrap="nowrap"
+          >
+            <Grid item style={{ width: '100%', flex: '1 1 auto' }}>
+              <EntityTextArea
+                onValidate={parseYaml}
+                onChange={(value: string) => setCatalogYaml(value)}
+                catalogYaml={catalogYaml}
+              />
+            </Grid>
+            <Grid item>
+              <Button variant="contained" color="primary" onClick={parseYaml}>
+                Validate
+              </Button>
+            </Grid>
+          </Grid>
+        </Grid>
+        <Grid item md={6} xs={12}>
+          <Grid container spacing={3}>
+            <Grid item xs={12}>
+              <EntityValidationOutput
+                processorResults={yamlFiles}
+                locationUrl={locationUrl}
+              />
+            </Grid>
+          </Grid>
+        </Grid>
+      </Grid>
+    </Grid>
+  );
+};
+
+export const EntityValidationPage = (props: {
+  defaultYaml?: string;
+  defaultLocation?: string;
+  hideFileLocationField?: boolean;
+  contentHead?: React.ReactNode;
+}) => {
+  const {
+    defaultYaml = EXAMPLE_CATALOG_INFO_YAML,
+    defaultLocation = 'https://github.com/backstage/backstage/blob/master/catalog-info.yaml',
+    hideFileLocationField = false,
+    contentHead,
+  } = props;
+
+  return (
     <Page themeId="tool">
       <Header
         title="Entity Validator"
         subtitle="Validate Backstage catalog entity descriptor YAML files"
       />
       <Content>
-        <Grid
-          container
-          direction="column"
-          style={{ height: '100%' }}
-          wrap="nowrap"
-          data-testid="main-grid"
-        >
-          {contentHead}
-
-          {!hideFileLocationField && (
-            <TextField
-              fullWidth
-              label="File Location"
-              margin="normal"
-              variant="outlined"
-              required
-              value={locationUrl}
-              placeholder={defaultLocation}
-              helperText="Present or future location of your entity descriptor YAML file. This is not the file being validated; this merely adds location annotations to the entity descriptor file being validated."
-              onChange={e => setLocationUrl(e.target.value)}
-            />
-          )}
-
-          <Grid container direction="row" style={{ height: '100%' }}>
-            <Grid item md={6} xs={12}>
-              <Grid
-                container
-                direction="column"
-                alignItems="flex-end"
-                style={{ height: '100%' }}
-                wrap="nowrap"
-              >
-                <Grid item style={{ width: '100%', flex: '1 1 auto' }}>
-                  <EntityTextArea
-                    onValidate={parseYaml}
-                    onChange={(value: string) => setCatalogYaml(value)}
-                    catalogYaml={catalogYaml}
-                  />
-                </Grid>
-                <Grid item>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={parseYaml}
-                  >
-                    Validate
-                  </Button>
-                </Grid>
-              </Grid>
-            </Grid>
-            <Grid item md={6} xs={12}>
-              <Grid container spacing={3}>
-                <Grid item xs={12}>
-                  <EntityValidationOutput
-                    processorResults={yamlFiles}
-                    locationUrl={locationUrl}
-                  />
-                </Grid>
-              </Grid>
-            </Grid>
-          </Grid>
-        </Grid>
+        <EntityValidationContent
+          defaultYaml={defaultYaml}
+          defaultLocation={defaultLocation}
+          hideFileLocationField={hideFileLocationField}
+          contentHead={contentHead}
+        />
       </Content>
     </Page>
   );

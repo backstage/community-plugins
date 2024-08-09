@@ -16,37 +16,40 @@
 
 import React from 'react';
 import { TestApiProvider, renderInTestApp } from '@backstage/test-utils';
-import { EntityValidationPage } from './EntityValidationPage';
+import {
+  EntityValidationPage,
+  EntityValidationContent,
+} from './EntityValidationPage';
 import { CatalogApi, catalogApiRef } from '@backstage/plugin-catalog-react';
 import { MarkdownContent } from '@backstage/core-components';
 
-describe('EntityValidatorPage', () => {
-  const catalogApi: Partial<CatalogApi> = {
-    getEntities: () =>
-      Promise.resolve({
-        items: [
-          {
-            apiVersion: 'backstage.io/v1alpha1',
-            kind: 'API',
-            metadata: {
-              name: 'Entity1',
-              annotations: {
-                'backstage.io/view-url': 'viewurl',
-                'backstage.io/edit-url': 'editurl',
-              },
+const catalogApi: Partial<CatalogApi> = {
+  getEntities: () =>
+    Promise.resolve({
+      items: [
+        {
+          apiVersion: 'backstage.io/v1alpha1',
+          kind: 'API',
+          metadata: {
+            name: 'Entity1',
+            annotations: {
+              'backstage.io/view-url': 'viewurl',
+              'backstage.io/edit-url': 'editurl',
             },
-            spec: { type: 'openapi' },
           },
-        ],
-      }),
-  };
+          spec: { type: 'openapi' },
+        },
+      ],
+    }),
+};
 
+describe('EntityValidatorContent', () => {
   const contentHead = <MarkdownContent content="Content Head" />;
 
   it('should show location text field', async () => {
     const { getByText, getByTestId } = await renderInTestApp(
       <TestApiProvider apis={[[catalogApiRef, catalogApi]]}>
-        <EntityValidationPage />
+        <EntityValidationContent />
       </TestApiProvider>,
     );
     const mainGrid = getByTestId('main-grid');
@@ -58,7 +61,7 @@ describe('EntityValidatorPage', () => {
   it('should not show location text field', async () => {
     const { queryByText, getByTestId } = await renderInTestApp(
       <TestApiProvider apis={[[catalogApiRef, catalogApi]]}>
-        <EntityValidationPage hideFileLocationField />
+        <EntityValidationContent hideFileLocationField />
       </TestApiProvider>,
     );
     const mainGrid = getByTestId('main-grid');
@@ -70,7 +73,7 @@ describe('EntityValidatorPage', () => {
   it('should not show content head', async () => {
     const { getByTestId } = await renderInTestApp(
       <TestApiProvider apis={[[catalogApiRef, catalogApi]]}>
-        <EntityValidationPage />
+        <EntityValidationContent />
       </TestApiProvider>,
     );
     const mainGrid = getByTestId('main-grid');
@@ -81,11 +84,26 @@ describe('EntityValidatorPage', () => {
   it('should show content head', async () => {
     const { getByTestId } = await renderInTestApp(
       <TestApiProvider apis={[[catalogApiRef, catalogApi]]}>
-        <EntityValidationPage contentHead={contentHead} />
+        <EntityValidationContent contentHead={contentHead} />
       </TestApiProvider>,
     );
     const mainGrid = getByTestId('main-grid');
 
     expect(mainGrid.children.length).toBe(3);
+  });
+});
+
+describe('EntityValidatorPage', () => {
+  it('should load the Content element', async () => {
+    const { getByText, getByTestId } = await renderInTestApp(
+      <TestApiProvider apis={[[catalogApiRef, catalogApi]]}>
+        <EntityValidationPage />
+      </TestApiProvider>,
+    );
+
+    const mainGrid = getByTestId('main-grid');
+
+    expect(mainGrid.children.length).toBe(2);
+    expect(getByText('File Location')).toBeInTheDocument();
   });
 });
