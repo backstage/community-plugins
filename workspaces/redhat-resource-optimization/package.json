@@ -49,7 +49,7 @@
     "@microsoft/api-extractor-model": "^7.29.2",
     "@microsoft/tsdoc": "^0.15.0",
     "@microsoft/tsdoc-config": "^0.17.0",
-    "@spotify/prettier-config": "^12.0.0",
+    "@spotify/prettier-config": "^15.0.0",
     "@useoptic/optic": "^0.55.0",
     "concurrently": "^8.2.2",
     "node-gyp": "^9.0.0",
