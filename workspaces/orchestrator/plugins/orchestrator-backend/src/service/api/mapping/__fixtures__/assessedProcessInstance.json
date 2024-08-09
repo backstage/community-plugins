@@ -1,0 +1,143 @@
+{
+  "instance": {
+    "id": "026f38fc-6121-46c7-9fa8-3f4b8207bab9",
+    "processName": "Assessment",
+    "processId": "assessment",
+    "businessKey": null,
+    "state": "COMPLETED",
+    "start": "2024-02-15T16:11:35.829Z",
+    "lastUpdate": "2024-02-15T16:11:35.829Z",
+    "end": "2024-02-15T16:11:35.822Z",
+    "nodes": [
+      {
+        "id": "3290d3c5-c7c0-4920-a1dc-7a37d98d22b7",
+        "nodeId": "_jbpm-unique-51",
+        "definitionId": "_jbpm-unique-51",
+        "type": "WorkItemNode",
+        "name": "execute",
+        "enter": "2024-02-15T16:11:33.485Z",
+        "exit": "2024-02-15T16:11:35.828Z"
+      },
+      {
+        "id": "2813e81e-0c38-424f-a505-639b1d33341b",
+        "nodeId": "_jbpm-unique-50",
+        "definitionId": "_jbpm-unique-50",
+        "type": "StartNode",
+        "name": "EmbeddedStart",
+        "enter": "2024-02-15T16:11:33.477Z",
+        "exit": "2024-02-15T16:11:35.829Z"
+      },
+      {
+        "id": "f15d5540-0df7-401c-991e-3c45755b1302",
+        "nodeId": "_jbpm-unique-47",
+        "definitionId": "_jbpm-unique-47",
+        "type": "StartNode",
+        "name": "Start",
+        "enter": "2024-02-15T16:11:33.472Z",
+        "exit": "2024-02-15T16:11:35.829Z"
+      },
+      {
+        "id": "142fcd3a-64e6-4539-a6b9-5ba2064623a1",
+        "nodeId": "_jbpm-unique-48",
+        "definitionId": "_jbpm-unique-48",
+        "type": "EndNode",
+        "name": "End",
+        "enter": "2024-02-15T16:11:35.821Z",
+        "exit": "2024-02-15T16:11:35.827Z"
+      },
+      {
+        "id": "97e209c4-ae0a-4d09-8b00-4bd9ca062126",
+        "nodeId": "_jbpm-unique-59",
+        "definitionId": "_jbpm-unique-59",
+        "type": "ActionNode",
+        "name": "Script",
+        "enter": "2024-02-15T16:11:35.812Z",
+        "exit": "2024-02-15T16:11:35.827Z"
+      },
+      {
+        "id": "f415ddd5-ba25-4e0a-be93-797b5f0ae6f3",
+        "nodeId": "_jbpm-unique-49",
+        "definitionId": "_jbpm-unique-49",
+        "type": "CompositeContextNode",
+        "name": "AssessRepository",
+        "enter": "2024-02-15T16:11:33.476Z",
+        "exit": "2024-02-15T16:11:35.827Z"
+      },
+      {
+        "id": "10879e09-12c0-4770-be2b-d2fd27858edc",
+        "nodeId": "_jbpm-unique-58",
+        "definitionId": "_jbpm-unique-58",
+        "type": "EndNode",
+        "name": "EmbeddedEnd",
+        "enter": "2024-02-15T16:11:35.812Z",
+        "exit": "2024-02-15T16:11:35.827Z"
+      },
+      {
+        "id": "96bb3b01-2a4a-44b2-b29c-da6dc7448450",
+        "nodeId": "_jbpm-unique-57",
+        "definitionId": "_jbpm-unique-57",
+        "type": "ActionNode",
+        "name": "Script",
+        "enter": "2024-02-15T16:11:35.811Z",
+        "exit": "2024-02-15T16:11:35.827Z"
+      },
+      {
+        "id": "491975f5-4d6a-4a43-ac00-1e305bfcd97a",
+        "nodeId": "_jbpm-unique-56",
+        "definitionId": "_jbpm-unique-56",
+        "type": "ActionNode",
+        "name": "logOuput",
+        "enter": "2024-02-15T16:11:35.809Z",
+        "exit": "2024-02-15T16:11:35.828Z"
+      },
+      {
+        "id": "bc4ddb8a-f551-442a-a0d9-7f96a8332a09",
+        "nodeId": "_jbpm-unique-55",
+        "definitionId": "_jbpm-unique-55",
+        "type": "ActionNode",
+        "name": "Script",
+        "enter": "2024-02-15T16:11:35.807Z",
+        "exit": "2024-02-15T16:11:35.828Z"
+      },
+      {
+        "id": "effbf2d7-8201-48de-8f81-3983fb26d591",
+        "nodeId": "_jbpm-unique-54",
+        "definitionId": "_jbpm-unique-54",
+        "type": "WorkItemNode",
+        "name": "preCheck",
+        "enter": "2024-02-15T16:11:33.896Z",
+        "exit": "2024-02-15T16:11:35.828Z"
+      },
+      {
+        "id": "54c7da48-de5c-4e62-868b-ad6c7ef25ad3",
+        "nodeId": "_jbpm-unique-53",
+        "definitionId": "_jbpm-unique-53",
+        "type": "ActionNode",
+        "name": "Script",
+        "enter": "2024-02-15T16:11:33.894Z",
+        "exit": "2024-02-15T16:11:35.828Z"
+      },
+      {
+        "id": "bfc5796c-8aa7-4c4f-aa11-dc91aee24ea2",
+        "nodeId": "_jbpm-unique-52",
+        "definitionId": "_jbpm-unique-52",
+        "type": "ActionNode",
+        "name": "Script",
+        "enter": "2024-02-15T16:11:33.826Z",
+        "exit": "2024-02-15T16:11:35.828Z"
+      }
+    ],
+    "variables": {
+      "workflowdata": {
+        "result": "[Object]",
+        "preCheck": "[Object]",
+        "repositoryUrl": "https://java.com",
+        "workflowOptions": "[Object]"
+      }
+    },
+    "parentProcessInstance": null,
+    "error": null,
+    "category": "assessment",
+    "description": "undefined"
+  }
+}

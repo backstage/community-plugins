@@ -1,0 +1,5 @@
+{
+  "name": "@backstage-community/plugin-orchestrator-backend-dynamic",
+  "version": "1.6.8",
+  "main": "../dist/alpha.cjs.js"
+}

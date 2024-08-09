@@ -1,0 +1,80 @@
+{
+  "name": "@backstage-community/plugin-orchestrator-swf-editor-envelope",
+  "description": "Serverless workflow editor envelope for the Orchestrator plugin",
+  "version": "1.0.0",
+  "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "private": true,
+  "workspaces": {
+    "nohoist": [
+      "@kie-tools/**"
+    ]
+  },
+  "backstage": {
+    "role": "web-library",
+    "supported-versions": "1.28.4",
+    "pluginId": "orchestrator-swf-editor-envelope",
+    "pluginPackages": [
+      "@backstage-community/plugin-orchestrator-swf-editor-envelope"
+    ]
+  },
+  "sideEffects": false,
+  "scripts": {
+    "build": "scripts/build",
+    "postbuild": "scripts/postbuild copy",
+    "clean": "backstage-cli package clean",
+    "lint": "backstage-cli package lint",
+    "postpack": "backstage-cli package postpack",
+    "prepack": "backstage-cli package prepack",
+    "test": "backstage-cli package test --passWithNoTests --coverage"
+  },
+  "dependencies": {
+    "@kie-tools-core/editor": "^0.32.0",
+    "@kie-tools-core/keyboard-shortcuts": "^0.32.0",
+    "@kie-tools/serverless-workflow-combined-editor": "^0.32.0",
+    "@kie-tools/serverless-workflow-diagram-editor-assets": "^0.32.0",
+    "@kie-tools/serverless-workflow-diagram-editor-envelope": "^0.32.0",
+    "@kie-tools/serverless-workflow-text-editor": "^0.32.0"
+  },
+  "devDependencies": {
+    "@backstage/cli": "0.26.11",
+    "clean-webpack-plugin": "4.0.0",
+    "css-loader": "6.11.0",
+    "filemanager-webpack-plugin": "8.0.0",
+    "html-webpack-plugin": "5.6.0",
+    "monaco-editor": "0.50.0",
+    "monaco-editor-webpack-plugin": "7.1.0",
+    "monaco-yaml": "5.1.1",
+    "node-polyfill-webpack-plugin": "3.0.0",
+    "sass": "1.77.2",
+    "sass-loader": "14.2.1",
+    "style-loader": "3.3.4",
+    "terser-webpack-plugin": "5.3.10",
+    "ts-loader": "9.5.1",
+    "typescript": "5.4.5",
+    "webpack": "5.91.0",
+    "webpack-cli": "5.1.4"
+  },
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "plugins/orchestrator-swf-editor-envelope"
+  },
+  "keywords": [
+    "support:tech-preview",
+    "lifecycle:active",
+    "backstage",
+    "plugin"
+  ],
+  "homepage": "https://red.ht/rhdh",
+  "bugs": "https://github.com/janus-idp/backstage-plugins/issues",
+  "maintainers": [
+    "mareklibra"
+  ],
+  "author": "The Backstage Community"
+}

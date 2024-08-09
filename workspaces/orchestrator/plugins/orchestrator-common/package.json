@@ -1,0 +1,73 @@
+{
+  "name": "@backstage-community/plugin-orchestrator-common",
+  "version": "1.14.0",
+  "license": "Apache-2.0",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.cjs.js",
+    "module": "dist/index.esm.js",
+    "types": "dist/index.d.ts"
+  },
+  "backstage": {
+    "role": "common-library",
+    "supported-versions": "1.28.4",
+    "pluginId": "orchestrator",
+    "pluginPackages": [
+      "@backstage-community/plugin-orchestrator",
+      "@backstage-community/plugin-orchestrator-backend",
+      "@backstage-community/plugin-orchestrator-common"
+    ]
+  },
+  "homepage": "https://red.ht/rhdh",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "plugins/orchestrator-common"
+  },
+  "bugs": "https://github.com/janus-idp/backstage-plugins/issues",
+  "keywords": [
+    "support:tech-preview",
+    "lifecycle:active",
+    "backstage",
+    "plugin",
+    "orchestrator",
+    "workflows"
+  ],
+  "files": [
+    "config.d.ts",
+    "dist"
+  ],
+  "configSchema": "config.d.ts",
+  "sideEffects": false,
+  "scripts": {
+    "build": "yarn openapi:check && backstage-cli package build",
+    "tsc": "tsc",
+    "lint": "backstage-cli package lint",
+    "test": "backstage-cli package test --passWithNoTests --coverage",
+    "clean": "backstage-cli package clean",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack",
+    "openapi:generate": "./scripts/openapi.sh generate",
+    "openapi:check": "./scripts/openapi.sh check",
+    "openapi:prettier:fix": "prettier --ignore-unknown --write ./src/generated/api"
+  },
+  "dependencies": {
+    "@backstage/plugin-permission-common": "^0.8.0",
+    "@backstage/types": "^1.1.1",
+    "@severlessworkflow/sdk-typescript": "^3.0.3",
+    "axios": "1.6.8",
+    "js-yaml": "^4.1.0",
+    "json-schema": "^0.4.0"
+  },
+  "devDependencies": {
+    "@backstage/cli": "0.26.11",
+    "@openapitools/openapi-generator-cli": "2.13.4",
+    "js-yaml-cli": "0.6.0"
+  },
+  "maintainers": [
+    "mareklibra"
+  ],
+  "author": "The Backstage Community"
+}

@@ -1,0 +1,5 @@
+orchestrator:
+  dataIndexService:
+    url: http://sonataflow-platform-data-index-service.sonataflow-infra
+  editor:
+    path: https://sandbox.kie.org/swf-chrome-extension/0.32.0

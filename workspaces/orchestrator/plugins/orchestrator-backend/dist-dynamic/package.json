@@ -1,0 +1,104 @@
+{
+  "name": "@backstage-community/plugin-orchestrator-backend-dynamic",
+  "version": "1.18.0",
+  "license": "Apache-2.0",
+  "main": "./dist/index.cjs.js",
+  "types": "src/index.ts",
+  "publishConfig": {
+    "access": "public"
+  },
+  "backstage": {
+    "role": "backend-plugin",
+    "supported-versions": "1.28.4",
+    "pluginId": "orchestrator",
+    "pluginPackages": [
+      "@backstage-community/plugin-orchestrator",
+      "@backstage-community/plugin-orchestrator-backend",
+      "@backstage-community/plugin-orchestrator-common"
+    ]
+  },
+  "exports": {
+    ".": {
+      "require": "./dist/index.cjs.js",
+      "default": "./dist/index.cjs.js"
+    },
+    "./alpha": {
+      "require": "./dist/alpha.cjs.js",
+      "default": "./dist/alpha.cjs.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "homepage": "https://red.ht/rhdh",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "plugins/orchestrator-backend"
+  },
+  "bugs": "https://github.com/janus-idp/backstage-plugins/issues",
+  "keywords": [
+    "support:tech-preview",
+    "lifecycle:active",
+    "backstage",
+    "plugin",
+    "orchestrator",
+    "workflows"
+  ],
+  "files": [
+    "app-config.orchestrator.yaml",
+    "dist",
+    "static",
+    "alpha"
+  ],
+  "scripts": {},
+  "dependencies": {
+    "@urql/core": "^4.1.4",
+    "ajv-formats": "^2.1.1",
+    "cloudevents": "^8.0.0",
+    "express": "^4.18.2",
+    "express-promise-router": "^4.1.1",
+    "fs-extra": "^10.1.0",
+    "json-schema": "^0.4.0",
+    "moment": "^2.29.4",
+    "openapi-backend": "^5.10.5",
+    "yn": "^5.0.0",
+    "@severlessworkflow/sdk-typescript": "^3.0.3",
+    "js-yaml": "^4.1.0"
+  },
+  "devDependencies": {},
+  "peerDependencies": {
+    "@janus-idp/backstage-plugin-rbac-common": "1.8.2",
+    "@janus-idp/backstage-plugin-audit-log-node": "1.4.0",
+    "@backstage/backend-app-api": "^0.8.0",
+    "@backstage/backend-common": "^0.23.3",
+    "@backstage/backend-dynamic-feature-service": "^0.2.15",
+    "@backstage/backend-plugin-api": "^0.7.0",
+    "@backstage/backend-tasks": "^0.5.27",
+    "@backstage/catalog-client": "^1.6.5",
+    "@backstage/config": "^1.2.0",
+    "@backstage/core-plugin-api": "^1.9.3",
+    "@backstage/errors": "^1.2.4",
+    "@backstage/integration": "^1.13.0",
+    "@backstage/plugin-auth-node": "^0.4.17",
+    "@backstage/plugin-catalog-node": "^1.12.4",
+    "@backstage/plugin-events-backend": "^0.3.9",
+    "@backstage/plugin-events-node": "^0.3.8",
+    "@backstage/plugin-permission-common": "^0.8.0",
+    "@backstage/plugin-permission-node": "^0.8.0",
+    "@backstage/plugin-scaffolder-backend": "^1.23.0",
+    "@backstage/plugin-scaffolder-node": "^0.4.8",
+    "@backstage/types": "^1.1.1"
+  },
+  "maintainers": [
+"mareklibra"
+  ],
+  "author": "The Backstage Community",
+  "bundleDependencies": true,
+  "overrides": {
+    "@aws-sdk/util-utf8-browser": {
+      "@smithy/util-utf8": "^2.0.0"
+    }
+  },
+  "resolutions": {
+    "@aws-sdk/util-utf8-browser": "npm:@smithy/util-utf8@~2"
+  }
+}
