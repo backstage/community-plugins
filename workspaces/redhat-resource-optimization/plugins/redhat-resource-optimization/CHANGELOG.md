@@ -1,5 +1,11 @@
 # @backstage-community/plugin-redhat-resource-optimization
 
+## 1.0.1
+
+### Patch Changes
+
+- 2d73580: Updated dependency `@testing-library/dom` to `7.31.2`.
+
 ## 1.0.0
 
 ### Major Changes
