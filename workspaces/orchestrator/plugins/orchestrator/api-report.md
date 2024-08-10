@@ -6,15 +6,20 @@
 /// <reference types="react" />
 
 import { ApiRef } from '@backstage/core-plugin-api';
-import { AssessedProcessInstance } from '@backstage-community/plugin-orchestrator-common';
+import { AssessedProcessInstanceDTO } from '@backstage-community/plugin-orchestrator-common';
+import { AxiosResponse } from 'axios';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
+import { DefaultApi } from '@backstage-community/plugin-orchestrator-common';
 import { DiscoveryApi } from '@backstage/core-plugin-api';
+import { FilterInfo } from '@backstage-community/plugin-orchestrator-common';
 import { IdentityApi } from '@backstage/core-plugin-api';
 import { JsonObject } from '@backstage/types';
 import { JSX as JSX_2 } from 'react';
 import { Notification as Notification_2 } from '@kie-tools-core/notifications/dist/api';
+import { PaginationInfoDTO } from '@backstage-community/plugin-orchestrator-common';
 import { PathParams } from '@backstage/core-plugin-api';
 import { ProcessInstance } from '@backstage-community/plugin-orchestrator-common';
+import { ProcessInstanceListResultDTO } from '@backstage-community/plugin-orchestrator-common';
 import { default as React_2 } from 'react';
 import { RouteRef } from '@backstage/core-plugin-api';
 import { SubRouteRef } from '@backstage/core-plugin-api';
@@ -22,8 +27,8 @@ import { SvgIconProps } from '@mui/material/SvgIcon';
 import { WorkflowDefinition } from '@backstage-community/plugin-orchestrator-common';
 import { WorkflowExecutionResponse } from '@backstage-community/plugin-orchestrator-common';
 import { WorkflowInputSchemaResponse } from '@backstage-community/plugin-orchestrator-common';
-import { WorkflowOverview } from '@backstage-community/plugin-orchestrator-common';
-import { WorkflowOverviewListResult } from '@backstage-community/plugin-orchestrator-common';
+import { WorkflowOverviewDTO } from '@backstage-community/plugin-orchestrator-common';
+import { WorkflowOverviewListResultDTO } from '@backstage-community/plugin-orchestrator-common';
 
 // Warning: (ae-missing-release-tag) "EditorViewKind" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -57,10 +62,12 @@ export class OrchestratorClient implements OrchestratorApi {
     businessKey?: string;
   }): Promise<WorkflowExecutionResponse>;
   // (undocumented)
+  getDefaultAPI(): Promise<DefaultApi>;
+  // (undocumented)
   getInstance(
     instanceId: string,
     includeAssessment?: boolean,
-  ): Promise<AssessedProcessInstance>;
+  ): Promise<AxiosResponse<AssessedProcessInstanceDTO>>;
   // (undocumented)
   getWorkflowDataInputSchema(args: {
     workflowId: string;
@@ -70,13 +77,21 @@ export class OrchestratorClient implements OrchestratorApi {
   // (undocumented)
   getWorkflowDefinition(workflowId: string): Promise<WorkflowDefinition>;
   // (undocumented)
-  getWorkflowOverview(workflowId: string): Promise<WorkflowOverview>;
+  getWorkflowOverview(
+    workflowId: string,
+  ): Promise<AxiosResponse<WorkflowOverviewDTO>>;
   // (undocumented)
   getWorkflowSource(workflowId: string): Promise<string>;
   // (undocumented)
-  listInstances(): Promise<ProcessInstance[]>;
+  listInstances(args: {
+    paginationInfo?: PaginationInfoDTO;
+    filterInfo?: FilterInfo;
+  }): Promise<AxiosResponse<ProcessInstanceListResultDTO>>;
   // (undocumented)
-  listWorkflowOverviews(): Promise<WorkflowOverviewListResult>;
+  listWorkflowOverviews(
+    paginationInfo?: PaginationInfoDTO,
+    filterInfo?: FilterInfo,
+  ): Promise<AxiosResponse<WorkflowOverviewListResultDTO>>;
   // (undocumented)
   retriggerInstanceInError(args: {
     instanceId: string;
