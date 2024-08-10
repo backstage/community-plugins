@@ -35,7 +35,9 @@ function buildPaginationClause(pagination?: Pagination): string {
 
   if (pagination.sortField !== undefined) {
     parts.push(
-      `orderBy: {${pagination.sortField}: ${pagination.order !== undefined ? pagination.order?.toUpperCase() : 'ASC'}}`,
+      `orderBy: {${pagination.sortField}: ${
+        pagination.order !== undefined ? pagination.order?.toUpperCase() : 'ASC'
+      }}`,
     );
   }
 

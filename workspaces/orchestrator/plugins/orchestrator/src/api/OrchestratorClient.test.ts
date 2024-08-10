@@ -126,8 +126,9 @@ describe('OrchestratorClient', () => {
 
       // When
       const client = new OrchestratorClient(orchestratorClientOptions);
-      const result: WorkflowExecutionResponse =
-        await client.executeWorkflow(args);
+      const result: WorkflowExecutionResponse = await client.executeWorkflow(
+        args,
+      );
 
       // Then
       expect(fetch).toHaveBeenCalledWith(
@@ -172,8 +173,9 @@ describe('OrchestratorClient', () => {
 
       // When
       const client = new OrchestratorClient(orchestratorClientOptions);
-      const result: WorkflowExecutionResponse =
-        await client.executeWorkflow(args);
+      const result: WorkflowExecutionResponse = await client.executeWorkflow(
+        args,
+      );
 
       // Then
       expect(fetch).toHaveBeenCalledWith(
@@ -358,8 +360,9 @@ describe('OrchestratorClient', () => {
       axios.request = jest.fn().mockResolvedValueOnce(mockResponse);
 
       // When
-      const result =
-        await orchestratorClient.listWorkflowOverviews(paginationInfo);
+      const result = await orchestratorClient.listWorkflowOverviews(
+        paginationInfo,
+      );
 
       // Then
       expect(result).toBeDefined();

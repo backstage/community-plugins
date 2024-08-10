@@ -89,7 +89,7 @@
     "@backstage/types": "^1.1.1"
   },
   "maintainers": [
-"mareklibra"
+    "mareklibra"
   ],
   "author": "The Backstage Community",
   "bundleDependencies": true,
