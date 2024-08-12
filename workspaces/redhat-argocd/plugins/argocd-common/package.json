@@ -1,5 +1,5 @@
 {
-  "name": "@janus-idp/backstage-plugin-argocd-common",
+  "name": "@community-plugins/backstage-plugin-argocd-common",
   "version": "1.0.1",
   "main": "src/index.ts",
   "types": "src/index.ts",
@@ -14,10 +14,10 @@
     "role": "common-library",
     "supported-versions": "1.28.4",
     "pluginId": "argocd",
-    "pluginPackage": "@janus-idp/backstage-plugin-argocd-common",
+    "pluginPackage": "@community-plugins/backstage-plugin-argocd-common",
     "pluginPackages": [
-      "@janus-idp/backstage-plugin-argocd",
-      "@janus-idp/backstage-plugin-argocd-common"
+      "@community-plugins/backstage-plugin-argocd",
+      "@community-plugins/backstage-plugin-argocd-common"
     ]
   },
   "sideEffects": false,
@@ -41,8 +41,8 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/janus-idp/backstage-plugins.git",
-    "directory": "plugins/argocd-common"
+    "url": "git+https://github.com/backstage/community-plugins.git",
+    "directory": "workspaces/redhat-argocd/plugins/argocd-common"
   },
   "keywords": [
     "support:production",
@@ -51,9 +51,11 @@
     "plugin"
   ],
   "homepage": "https://red.ht/rhdh",
-  "bugs": "https://github.com/janus-idp/backstage-plugins/issues",
+  "bugs": "https://github.com/backstage/community-plugins/issues",
   "maintainers": [
-    "@janus-idp/rhtap"
+    "karthikjeeyar",
+    "rohitkrai03",
+    "Eswaraiahsapram"
   ],
   "author": "Red Hat"
 }
