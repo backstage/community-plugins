@@ -1,5 +1,5 @@
 {
-  "name": "@janus-idp/backstage-plugin-argocd",
+  "name": "@community-plugins/backstage-plugin-argocd",
   "version": "1.6.0",
   "main": "src/index.ts",
   "types": "src/index.ts",
@@ -13,10 +13,10 @@
     "role": "frontend-plugin",
     "supported-versions": "1.28.4",
     "pluginId": "argocd",
-    "pluginPackage": "@janus-idp/backstage-plugin-argocd",
+    "pluginPackage": "@community-plugins/backstage-plugin-argocd",
     "pluginPackages": [
-      "@janus-idp/backstage-plugin-argocd",
-      "@janus-idp/backstage-plugin-argocd-common"
+      "@community-plugins/backstage-plugin-argocd",
+      "@community-plugins/backstage-plugin-argocd-common"
     ]
   },
   "sideEffects": false,
@@ -78,7 +78,7 @@
     "app-config.janus-idp.yaml"
   ],
   "scalprum": {
-    "name": "janus-idp.backstage-plugin-argocd",
+    "name": "community-plugins.backstage-plugin-argocd",
     "exposedModules": {
       "PluginRoot": "./src/index.ts"
     }
@@ -86,8 +86,8 @@
   "configSchema": "config.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/janus-idp/backstage-plugins",
-    "directory": "plugins/argocd"
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/argocd/plugins/argocd"
   },
   "keywords": [
     "support:production",
@@ -96,7 +96,7 @@
     "plugin"
   ],
   "homepage": "https://red.ht/rhdh",
-  "bugs": "https://github.com/janus-idp/backstage-plugins/issues",
+  "bugs": "https://github.com/backstage/community-plugins/issues",
   "maintainers": [
     "@janus-idp/rhtap"
   ],
