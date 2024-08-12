@@ -40,7 +40,7 @@ export async function startStandaloneServer(
       async getInstance(_: {
         entityRef: CompoundEntityRef;
       }): Promise<JenkinsInfo> {
-        return { baseUrl: 'https://example.com/', jobFullName: 'build-foo' };
+        return { baseUrl: 'https://example.com/', jobFullName: 'build-foo', projectCountLimit: 60 };
       },
     },
     discovery: HostDiscovery.fromConfig(options.config),
