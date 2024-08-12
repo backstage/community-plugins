@@ -344,15 +344,11 @@ export class JenkinsApiImpl {
 
   async getJobBuilds(jenkinsInfo: JenkinsInfo, jobFullName: string) {
     let jobName = jobFullName;
-
     if (jobFullName.includes('/')) {
-      const arr = jobFullName.split('/');
-      const multibranchJobName = arr.shift();
-      jobName = [
-        multibranchJobName,
-        'job',
-        encodeURIComponent(arr.join('/')),
-      ].join('/');
+      jobName = jobFullName
+        .split('/')
+        .map((s: string) => `${encodeURIComponent(s)}`)
+        .join('/job/');
     }
 
     const response = await fetch(
@@ -369,7 +365,6 @@ export class JenkinsApiImpl {
     );
 
     const jobBuilds = await response.json();
-
     return jobBuilds;
   }
 }
