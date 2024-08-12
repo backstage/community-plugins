@@ -2,6 +2,30 @@
 
 This plugin integrates mend.io functionality seamlessly into your Backstage application.
 
+### Plugin Compatibility
+
+The plugin has been successfully tested with Backstage v1.28. If you are using a newer version of Backstage, please file an issue, and we will provide guidance on the best integration practices for your specific version.
+
+### Features
+
+This plugin provides views to display:
+
+- Collections of integrated projects
+- Collection of project security findings
+
+Use these views to visualize your data.
+
+### Project Overview
+
+This view showcases a project list along with statistics derived from these projects.
+
+![Project Overview](../../assets/overview.png)
+
+### Findings Overview
+
+This view presents the project's security findings and detailed statistics derived from these findings.
+
+![Findings Overview](../../assets/tab.png)
 
 ### Installation
 
@@ -28,6 +52,8 @@ yarn --cwd packages/backend add @backstage-community/plugin-mend-backend
 3. Click on the "Backstage" card.
 
 4. Click "Get Activation Key" to generate key.
+
+![Activation Key](../../assets/key.png)
 
 **Configure your mend.io Activation Key** in your local app-config.yaml or production app-config.production.yaml file:
 
