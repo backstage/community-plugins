@@ -1,9 +1,0 @@
-{
-  "extends": ["//"],
-  "pipeline": {
-    "tsc": {
-      "outputs": ["../../dist-types/plugins/argocd-common/**"],
-      "dependsOn": ["^tsc"]
-    }
-  }
-}
