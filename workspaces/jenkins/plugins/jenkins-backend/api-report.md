@@ -60,6 +60,8 @@ export interface JenkinsInfo {
   headers?: Record<string, string | string[]>;
   // (undocumented)
   jobFullName: string;
+  // (undocumented)
+  projectCountLimit: number;
 }
 
 // @public (undocumented)
@@ -83,6 +85,8 @@ export interface JenkinsInstanceConfig {
   extraRequestHeaders?: Record<string, string>;
   // (undocumented)
   name: string;
+  // (undocumented)
+  projectCountLimit?: number;
   // (undocumented)
   username: string;
 }
