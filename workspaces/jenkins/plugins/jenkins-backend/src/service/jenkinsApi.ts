@@ -103,7 +103,7 @@ export class JenkinsApiImpl {
       // Assume jenkinsInfo.jobFullName is either
       // a MultiBranch Pipeline (folder with one job per branch) project
       // a Pipeline (standalone) project
-      
+
       // Add count limit to projects
       // If limit is set in the config, use it, otherwise use the default limit of 50
       const limitedJobsTreeSpec: string = `${JenkinsApiImpl.jobsTreeSpec}{0,${jenkinsInfo.projectCountLimit}}`;
