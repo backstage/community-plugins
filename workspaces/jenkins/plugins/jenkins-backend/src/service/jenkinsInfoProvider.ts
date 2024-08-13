@@ -218,7 +218,7 @@ export class DefaultJenkinsInfoProvider implements JenkinsInfoProvider {
   }): Promise<JenkinsInfo> {
     // default limitation of projects
     const DEFAULT_LIMITATION_OF_PROJECTS = 50;
-    
+
     // load entity
     const entity = await this.catalog.getEntityByRef(
       opt.entityRef,
