@@ -14,10 +14,10 @@
     "role": "common-library",
     "supported-versions": "1.28.4",
     "pluginId": "argocd",
-    "pluginPackage": "@community-plugins/backstage-plugin-argocd-common",
+    "pluginPackage": "@backstage-community/plugin-redhat-argocd-common",
     "pluginPackages": [
-      "@community-plugins/backstage-plugin-argocd",
-      "@community-plugins/backstage-plugin-argocd-common"
+      "@backstage-community/plugin-redhat-argocd",
+      "@backstage-community/plugin-redhat-argocd-common"
     ]
   },
   "sideEffects": false,
