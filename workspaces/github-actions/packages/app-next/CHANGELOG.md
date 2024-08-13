@@ -1,5 +1,12 @@
 # app-next
 
+## 0.0.3
+
+### Patch Changes
+
+- Updated dependencies [8711599]
+  - @backstage-community/plugin-github-actions@0.6.20
+
 ## 0.0.2
 
 ### Patch Changes
