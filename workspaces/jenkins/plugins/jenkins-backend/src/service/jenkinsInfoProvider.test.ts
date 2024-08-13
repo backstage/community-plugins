@@ -235,6 +235,7 @@ describe('DefaultJenkinsInfoProvider', () => {
         'extra-header': 'extra-value',
       },
       jobFullName: 'teamA/artistLookup-build',
+      projectCountLimit: 50,
     });
   });
 
