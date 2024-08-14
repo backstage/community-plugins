@@ -74,6 +74,7 @@
     "@patternfly/react-core": "latest",
     "@swc/core": "^1.7.11",
     "core-js": "latest",
+    "react-router-dom": "latest",
     "react-use": "latest"
   }
 }
