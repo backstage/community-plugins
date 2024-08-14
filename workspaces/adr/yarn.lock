@@ -2550,6 +2550,7 @@ __metadata:
     "@backstage/plugin-search-common": ^1.2.13
     front-matter: ^4.0.2
     luxon: ^3.0.0
+    marked: ^12.0.0
   languageName: unknown
   linkType: soft
 
