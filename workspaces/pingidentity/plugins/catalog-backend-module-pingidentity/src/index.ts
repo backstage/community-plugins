@@ -5,4 +5,4 @@
  * @packageDocumentation
  */
 
-export { catalogModulePingidentityEntityProvider as default } from './module/catalogModulePingidentityEntityProvider';
+export { catalogModulePingIdentityEntityProvider as default } from './module/catalogModulePingIdentityEntityProvider';
