@@ -2517,6 +2517,7 @@ __metadata:
   resolution: "@backstage-community/plugin-adr-backend@workspace:plugins/adr-backend"
   dependencies:
     "@backstage-community/plugin-adr-common": "workspace:^"
+    "@backstage-community/search-backend-module-adr": "workspace:^"
     "@backstage/backend-common": ^0.23.3
     "@backstage/backend-plugin-api": ^0.7.0
     "@backstage/catalog-client": ^1.6.5
@@ -2588,7 +2589,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@backstage-community/search-backend-module-adr@workspace:plugins/search-backend-module-adr":
+"@backstage-community/search-backend-module-adr@workspace:^, @backstage-community/search-backend-module-adr@workspace:plugins/search-backend-module-adr":
   version: 0.0.0-use.local
   resolution: "@backstage-community/search-backend-module-adr@workspace:plugins/search-backend-module-adr"
   dependencies:
