@@ -2828,9 +2828,20 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@backstage/app-defaults@npm:^1.5.12":
-  version: 1.5.12
-  resolution: "@backstage/app-defaults@npm:1.5.12"
+"@backstage-community/plugin-scaffolder-backend-module-azure-pipeline-actions@workspace:plugins/scaffolder-backend-module-azure-pipeline-actions":
+  version: 0.0.0-use.local
+  resolution: "@backstage-community/plugin-scaffolder-backend-module-azure-pipeline-actions@workspace:plugins/scaffolder-backend-module-azure-pipeline-actions"
+  dependencies:
+    "@backstage/backend-common": ^0.23.3
+    "@backstage/backend-plugin-api": ^0.7.0
+    "@backstage/cli": ^0.26.11
+    "@backstage/plugin-scaffolder-node": ^0.4.8
+  languageName: unknown
+  linkType: soft
+
+"@backstage/app-defaults@npm:^1.5.11":
+  version: 1.5.11
+  resolution: "@backstage/app-defaults@npm:1.5.11"
   dependencies:
     "@backstage/core-app-api": ^1.15.1
     "@backstage/core-components": ^0.15.1
