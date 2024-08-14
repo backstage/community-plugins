@@ -31,8 +31,8 @@ export interface Config {
      */
     enterprise?: string;
     /**
-     * The token for GitHub Copilot authentication.
+     * The host for GitHub Copilot integration.
      */
-    token?: string;
+    host?: string;
   };
 }

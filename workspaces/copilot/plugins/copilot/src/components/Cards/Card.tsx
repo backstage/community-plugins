@@ -14,8 +14,12 @@
  * limitations under the License.
  */
 import React, { ElementType, ReactNode, useMemo } from 'react';
-import { Box, Divider, Icon, Typography, makeStyles } from '@material-ui/core';
-import dayjs from 'dayjs';
+import Box from '@mui/material/Box';
+import Divider from '@mui/material/Divider';
+import Icon from '@mui/material/Icon';
+import Typography from '@mui/material/Typography';
+import { styled } from '@mui/material/styles';
+import { DateTime } from 'luxon';
 
 type CardItemProps = {
   title: string;
@@ -25,27 +29,27 @@ type CardItemProps = {
   icon: ElementType<ReactNode>;
 };
 
-const useStyles = makeStyles(theme => ({
-  main: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    borderRadius: 25,
-    minWidth: 256,
-    minHeight: 138,
-    backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing(2, 2, 2, 2),
-  },
-  textGroup: {
-    padding: theme.spacing(1, 1, 1, 1),
-  },
-  footer: {
-    padding: theme.spacing(1, 0, 0, 0),
-    justifyContent: 'center',
-  },
+const format = 'dd/MM/yyyy';
+
+const MainBox = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  borderRadius: 25,
+  minWidth: 256,
+  minHeight: 138,
+  backgroundColor: theme.palette.background.paper,
+  padding: theme.spacing(2),
 }));
 
-const format = 'DD/MM/YYYY';
+const TextGroup = styled(Box)(({ theme }) => ({
+  padding: theme.spacing(1),
+}));
+
+const FooterText = styled(Typography)(({ theme }) => ({
+  padding: theme.spacing(1, 0, 0, 0),
+  justifyContent: 'center',
+}));
 
 export const Card = ({
   title,
@@ -54,50 +58,46 @@ export const Card = ({
   endDate,
   icon,
 }: CardItemProps) => {
-  const classes = useStyles();
-
   const message = useMemo(() => {
     if (value === 'N/A') return `No data available`;
 
-    const isYesterday = dayjs(endDate).isSame(dayjs().add(-1, 'day'), 'day');
+    const endDateTime = DateTime.fromJSDate(endDate);
+    const now = DateTime.now();
+    const isYesterday = endDateTime.hasSame(now.minus({ days: 1 }), 'day');
 
     if (isYesterday) {
-      const daysDifference = dayjs(endDate).diff(dayjs(startDate), 'day') + 1;
+      const startDateTime = DateTime.fromJSDate(startDate);
+      const daysDifference = endDateTime.diff(startDateTime, 'days').days + 1;
 
       return daysDifference > 1
-        ? `Over the last ${daysDifference} days`
+        ? `Over the last ${Math.round(daysDifference)} days`
         : 'Over the last day';
     }
 
-    return `From ${dayjs(startDate).format(format)} to ${dayjs(endDate).format(
+    return `From ${DateTime.fromJSDate(startDate).toFormat(
       format,
-    )}`;
+    )} to ${endDateTime.toFormat(format)}`;
   }, [value, startDate, endDate]);
 
   return (
-    <Box className={classes.main}>
+    <MainBox>
       <Box display="flex" alignItems="center">
         <Icon component={icon} />
-        <Box className={classes.textGroup}>
+        <TextGroup>
           <Typography color="textSecondary" variant="subtitle2" component="h2">
             {title}
           </Typography>
           <Typography variant="h3" component="h2">
             {value}
           </Typography>
-        </Box>
+        </TextGroup>
       </Box>
       <Divider />
       <Box>
-        <Typography
-          color="textSecondary"
-          variant="caption"
-          component="span"
-          className={classes.footer}
-        >
+        <FooterText color="textSecondary" variant="caption">
           {message}
-        </Typography>
+        </FooterText>
       </Box>
-    </Box>
+    </MainBox>
   );
 };

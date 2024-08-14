@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 The Backstage Authors
+ * Copyright 2024 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,11 @@
 import { DiscoveryApi, FetchApi } from '@backstage/core-plugin-api';
 import { ResponseError } from '@backstage/errors';
 import { CopilotApi } from './CopilotApi';
-import { Metric, PeriodRange } from '@backstage-community/plugin-copilot-common';
-import dayjs from 'dayjs';
+import {
+  Metric,
+  PeriodRange,
+} from '@backstage-community/plugin-copilot-common';
+import { DateTime } from 'luxon';
 
 export class CopilotClient implements CopilotApi {
   public constructor(
@@ -31,8 +34,11 @@ export class CopilotClient implements CopilotApi {
   public async getMetrics(startDate: Date, endDate: Date): Promise<Metric[]> {
     const queryString = new URLSearchParams();
 
-    queryString.append('startDate', dayjs(startDate).format('YYYY-MM-DD'));
-    queryString.append('endDate', dayjs(endDate).format('YYYY-MM-DD'));
+    queryString.append(
+      'startDate',
+      DateTime.fromJSDate(startDate).toFormat('yyyy-MM-dd'),
+    );
+    queryString.append('endDate', DateTime.fromJSDate(endDate).toFormat('yyyy-MM-dd'));
 
     const urlSegment = `metrics?${queryString}`;
 

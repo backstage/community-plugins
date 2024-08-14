@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 import React, { PropsWithChildren } from 'react';
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import AssessmentIcon from '@material-ui/icons/Assessment';
-import ThumbUpIcon from '@material-ui/icons/ThumbUp';
-import CodeIcon from '@material-ui/icons/Code';
-import { Grid } from '@material-ui/core';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import AssessmentIcon from '@mui/icons-material/Assessment';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import CodeIcon from '@mui/icons-material/Code';
+import Grid from '@mui/material/Grid';
 import { Card } from './Card';
 import { CardsProps } from '../../types';
 
@@ -48,7 +48,7 @@ export const EnterpriseCards = ({
   }, 0);
 
   return (
-    <Grid container justifyContent="space-between">
+    <Grid container spacing={2}>
       <Grid xs={6} item>
         <Card
           title="Acceptance Rate Average"

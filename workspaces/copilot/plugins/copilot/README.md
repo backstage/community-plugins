@@ -2,6 +2,14 @@
 
 Welcome to the GitHub Copilot Plugin!
 
+## Layout
+
+![home](media/demo.gif)
+
+![enterprise](media/enterprise.png)
+
+![language](media/language.png)
+
 ## Overview
 
 The GitHub Copilot Plugin enhances your Backstage experience by providing features tailored to enterprise management.
@@ -41,12 +49,9 @@ To start using the GitHub Copilot Plugin, follow these steps:
    **Root.tsx**:
 
    ```tsx
-   import GithubIcon from '@material-ui/icons/GitHub';
+   import GithubIcon from '@mui/icons-material/GitHub';
    // Add sidebar item
    <SidebarScrollWrapper>
      <SidebarItem icon={GithubIcon} to="copilot" text="Copilot" />
    </SidebarScrollWrapper>;
    ```
-
-### Layout
-![home](media/demo.gif)

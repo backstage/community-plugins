@@ -13,50 +13,74 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import React from 'react';
-import { Header, Page, Content } from '@backstage/core-components';
+import {
+  Header,
+  Page,
+  Content,
+  TabbedCard,
+  CardTab,
+} from '@backstage/core-components';
 import { Metrics } from '../Metrics';
-import { CopilotTabs } from '../Tabs';
 import { LanguageCards, EnterpriseCards } from '../Cards';
 import { LanguageCharts, EnterpriseCharts } from '../Charts';
-import { createStateContext } from 'react-use';
-import dayjs from 'dayjs';
+import { createStateContext, useObservable } from 'react-use';
+import { DateTime } from 'luxon';
+import { themes } from '@backstage/theme';
+import { appThemeApiRef, useApi } from '@backstage/core-plugin-api';
+import { ThemeProvider } from '@emotion/react';
+import { styled } from '@mui/material/styles';
 
+// Contexto para o intervalo de datas compartilhadas
 export const [useSharedDateRange, SharedDateRangeProvider] = createStateContext(
   {
-    startDate: dayjs().add(-28, 'day').toDate(),
-    endDate: dayjs().add(-1, 'day').toDate(),
+    startDate: DateTime.now().minus({ days: 28 }).toJSDate(),
+    endDate: DateTime.now().minus({ days: 1 }).toJSDate(),
   },
 );
 
-export const CopilotPage = () => (
-  <Page themeId="tool">
-    <Header
-      title="Copilot Adoption"
-      subtitle="Exploring the Impact and Integration of AI Assistance in Development Workflows"
-    />
-    <Content>
-      <SharedDateRangeProvider>
-        <CopilotTabs
-          tabs={[
-            {
-              label: 'Enterprise',
-              children: (
-                <Metrics
-                  Cards={EnterpriseCards}
-                  Charts={EnterpriseCharts}
-                />
-              ),
-            },
-            {
-              label: 'Languages',
-              children: (
-                <Metrics Cards={LanguageCards} Charts={LanguageCharts} />
-              ),
-            },
-          ]}
+// Estilização do conteúdo da página
+const StyledContent = styled(Content)(({ theme }) => ({
+  margin: theme.spacing(0),
+  padding: theme.spacing(0),
+  '& > div': {
+    backgroundColor: theme.palette.background.default,
+  },
+}));
+
+export const CopilotPage = () => {
+  const appThemeApi = useApi(appThemeApiRef);
+  const activeThemeId = useObservable(
+    appThemeApi.activeThemeId$(),
+    appThemeApi.getActiveThemeId(),
+  );
+  const prefersDarkMode = window.matchMedia(
+    '(prefers-color-scheme: dark)',
+  ).matches;
+  const mode = activeThemeId ?? (prefersDarkMode ? 'dark' : 'light');
+  const theme = (mode === 'dark' ? themes.dark : themes.light).getTheme('v5')!;
+
+  return (
+    <ThemeProvider theme={theme}>
+      <Page themeId="tool">
+        <Header
+          title="Copilot Adoption"
+          subtitle="Exploring the Impact and Integration of AI Assistance in Development Workflows"
         />
-      </SharedDateRangeProvider>
-    </Content>
-  </Page>
-);
+        <StyledContent>
+          <SharedDateRangeProvider>
+            <TabbedCard>
+              <CardTab label="Enterprise">
+                <Metrics Cards={EnterpriseCards} Charts={EnterpriseCharts} />
+              </CardTab>
+              <CardTab label="Languages">
+                <Metrics Cards={LanguageCards} Charts={LanguageCharts} />
+              </CardTab>
+            </TabbedCard>
+          </SharedDateRangeProvider>
+        </StyledContent>
+      </Page>
+    </ThemeProvider>
+  );
+};

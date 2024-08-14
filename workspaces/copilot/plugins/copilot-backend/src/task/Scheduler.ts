@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import dayjs from 'dayjs';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { GithubClient } from '../client/GithubClient';
 import { DatabaseHandler, MetricDbRow } from '../db/DatabaseHandler';
 import { Config } from '@backstage/config';
+import { DateTime } from 'luxon';
 
 type Options = {
   api: GithubClient;
@@ -46,8 +46,16 @@ export default class Scheduler {
       this.options.logger.info(`Found last day: ${lastDay}`);
 
       const diff = copilotMetrics
-        .sort((a, b) => a.day.localeCompare(b.day))
-        .filter(metric => !lastDay || dayjs(metric.day).isAfter(lastDay))
+        .sort(
+          (a, b) =>
+            DateTime.fromISO(a.day).toMillis() -
+            DateTime.fromISO(b.day).toMillis(),
+        )
+        .filter(metric => {
+          const metricDate = DateTime.fromISO(metric.day);
+          const lastDayDate = lastDay ? DateTime.fromISO(lastDay) : null;
+          return !lastDayDate || metricDate > lastDayDate;
+        })
         .map(({ breakdown, ...rest }) => ({
           ...rest,
           breakdown: JSON.stringify(breakdown),
@@ -60,7 +68,6 @@ export default class Scheduler {
           diff,
           30,
           async (chunk: MetricDbRow[]) => {
-            console.log('Inserting chunk of size:', chunk.length);
             await this.options.db.batchInsert(chunk);
           },
         );

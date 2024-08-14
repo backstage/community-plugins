@@ -15,10 +15,9 @@
  */
 import express from 'express';
 import Router from 'express-promise-router';
-import dayjs from 'dayjs';
-import { PluginDatabaseManager } from '@backstage/backend-common';
-import { MiddlewareFactory } from '@backstage/backend-app-api';
+import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 import {
+  DatabaseService,
   LoggerService,
   readSchedulerServiceTaskScheduleDefinitionFromConfig,
   SchedulerService,
@@ -29,6 +28,7 @@ import { Metric } from '@backstage-community/plugin-copilot-common';
 import { DatabaseHandler } from '../db/DatabaseHandler';
 import Scheduler from '../task/Scheduler';
 import { GithubClient } from '../client/GithubClient';
+import { DateTime } from 'luxon';
 
 /** @public */
 export interface PluginOptions {
@@ -38,7 +38,7 @@ export interface PluginOptions {
 /** @public */
 export interface RouterOptions {
   logger: LoggerService;
-  database: PluginDatabaseManager;
+  database: DatabaseService;
   scheduler: SchedulerService;
   config: Config;
 }
@@ -51,7 +51,22 @@ const defaultSchedule: SchedulerServiceTaskScheduleDefinition = {
 };
 
 /** @public */
-export async function createRouter(
+export async function createRouterFromConfig(routerOptions: RouterOptions) {
+  const { config } = routerOptions;
+  const pluginOptions: PluginOptions = {
+    schedule: defaultSchedule,
+  };
+  if (config && config.has('copilot.schedule')) {
+    pluginOptions.schedule =
+      readSchedulerServiceTaskScheduleDefinitionFromConfig(
+        config.getConfig('copilot.schedule'),
+      );
+  }
+  return createRouter(routerOptions, pluginOptions);
+}
+
+/** @private */
+async function createRouter(
   routerOptions: RouterOptions,
   pluginOptions: PluginOptions,
 ): Promise<express.Router> {
@@ -82,10 +97,10 @@ export async function createRouter(
       return response.status(400).json('Invalid query parameters');
     }
 
-    const parsedStartDate = dayjs(startDate);
-    const parsedEndDate = dayjs(endDate);
+    const parsedStartDate = DateTime.fromISO(startDate);
+    const parsedEndDate = DateTime.fromISO(endDate);
 
-    if (!parsedStartDate.isValid() || !parsedEndDate.isValid()) {
+    if (!parsedStartDate.isValid || !parsedEndDate.isValid) {
       return response.status(400).json('Invalid date format');
     }
 
@@ -111,19 +126,4 @@ export async function createRouter(
 
   router.use(MiddlewareFactory.create({ config, logger }).error);
   return router;
-}
-
-/** @public */
-export async function createRouterFromConfig(routerOptions: RouterOptions) {
-  const { config } = routerOptions;
-  const pluginOptions: PluginOptions = {
-    schedule: defaultSchedule,
-  };
-  if (config && config.has('copilot.schedule')) {
-    pluginOptions.schedule =
-      readSchedulerServiceTaskScheduleDefinitionFromConfig(
-        config.getConfig('copilot.schedule'),
-      );
-  }
-  return createRouter(routerOptions, pluginOptions);
 }

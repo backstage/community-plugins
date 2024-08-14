@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 The Backstage Authors
+ * Copyright 2024 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,48 +18,30 @@ import { ResponseError } from '@backstage/errors';
 import { Config } from '@backstage/config';
 import { Metric } from '@backstage-community/plugin-copilot-common';
 import fetch from 'node-fetch';
+import { getGithubInfo, GithubInfo } from '../utils/GithubUtils';
 
 interface GithubApi {
   getCopilotUsageDataForEnterprise: () => Promise<Metric[]>;
 }
 
-type CustomConfig = {
-  baseUrl: string;
-  enterprise: string;
-  token: string;
-};
-
 export class GithubClient implements GithubApi {
-  private baseUrl: string;
-  private enterprise: string;
-  private token: string;
+  constructor(private readonly props: GithubInfo) {}
 
-  private constructor({ baseUrl, enterprise, token }: CustomConfig) {
-    this.baseUrl = baseUrl;
-    this.enterprise = enterprise;
-    this.token = token;
-  }
-
-  static fromConfig(config: Config) {
-    return new GithubClient({
-      baseUrl:
-        config.getOptionalString('copilot.baseUrl') || 'https://api.github.com',
-      enterprise: config.getString('copilot.enterprise'),
-      token: config.getString('copilot.token'),
-    });
+  static async fromConfig(config: Config) {
+    const info = await getGithubInfo(config);
+    return new GithubClient(info);
   }
 
   async getCopilotUsageDataForEnterprise(): Promise<Metric[]> {
-    const path = `/enterprises/${this.enterprise}/copilot/usage`;
-
+    const path = `/enterprises/${this.props.enterprise}/copilot/usage`;
     return this.get(path);
   }
 
   private async get<T>(path: string): Promise<T> {
-    const response = await fetch(`${this.baseUrl}${path}`, {
+    const response = await fetch(`${this.props.apiBaseUrl}${path}`, {
       headers: {
+        ...this.props.credentials.headers,
         Accept: 'application/vnd.github+json',
-        Authorization: `Bearer ${this.token}`,
         'X-GitHub-Api-Version': '2022-11-28',
       },
     });

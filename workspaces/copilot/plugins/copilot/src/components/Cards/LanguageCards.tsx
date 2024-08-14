@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 import React, { PropsWithChildren } from 'react';
-import LanguageIcon from '@material-ui/icons/Language';
-import { Grid } from '@material-ui/core';
+import LanguageIcon from '@mui/icons-material/Language';
+import Grid from '@mui/material/Grid';
 import { Card } from './Card';
 import { getLanguageStats } from '../../utils';
 import { CardsProps } from '../../types';

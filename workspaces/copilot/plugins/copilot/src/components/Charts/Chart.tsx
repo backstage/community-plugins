@@ -14,28 +14,27 @@
  * limitations under the License.
  */
 import React, { PropsWithChildren } from 'react';
-import { Box, Divider, Typography, makeStyles } from '@material-ui/core';
+import Box from '@mui/material/Box';
+import Divider from '@mui/material/Divider';
+import Typography from '@mui/material/Typography';
+import { styled } from '@mui/material/styles';
 
 type ChartProps = {
   title: string;
 };
 
-const useStyles = makeStyles(theme => ({
-  main: {
-    display: 'flex',
-    flexDirection: 'column',
-    borderRadius: 25,
-    backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing(2, 2, 2, 2),
-    width: '100%',
-  },
+const MainBox = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  borderRadius: 25,
+  backgroundColor: theme.palette.background.paper,
+  padding: theme.spacing(2),
+  width: '100%',
 }));
 
 export const Chart = ({ title, children }: PropsWithChildren<ChartProps>) => {
-  const classes = useStyles();
-
   return (
-    <Box className={classes.main}>
+    <MainBox>
       <Box display="flex" alignItems="center">
         <Typography variant="h3" component="h2">
           {title}
@@ -43,6 +42,6 @@ export const Chart = ({ title, children }: PropsWithChildren<ChartProps>) => {
       </Box>
       <Divider />
       {children}
-    </Box>
+    </MainBox>
   );
 };
