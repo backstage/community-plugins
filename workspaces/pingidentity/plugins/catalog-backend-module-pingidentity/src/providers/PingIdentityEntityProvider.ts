@@ -9,6 +9,7 @@ import * as uuid from 'uuid';
 import { PingIdentityProviderConfig, readProviderConfigs } from '../lib/config';
 import { readPingIdentity } from '../lib/read';
 import { UserTransformer, GroupTransformer } from '../lib/types';
+import { PingIdentityClient } from '../lib/client';
 
 
 /**
@@ -137,8 +138,8 @@ export class PingIdentityEntityProvider implements EntityProvider {
     const provider = this.options.provider;
 
     const { markReadComplete } = trackProgress(logger);
-
-    const { users, groups } = await readPingIdentity(provider,
+    const client = new PingIdentityClient(provider);
+    const { users, groups } = await readPingIdentity(client,
       {
         userTransformer: this.options.userTransformer,
         groupTransformer: this.options.groupTransformer,

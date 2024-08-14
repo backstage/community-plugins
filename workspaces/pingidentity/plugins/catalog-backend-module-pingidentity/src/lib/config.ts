@@ -55,8 +55,8 @@ const readProviderConfig = (
   const apiPath = providerConfigInstance.getString('apiPath');
   const authPath = providerConfigInstance.getString('authPath');
   const envId = providerConfigInstance.getString('envId');
-  const clientId = providerConfigInstance.getString('clientId');
-  const clientSecret = providerConfigInstance.getString('clientSecret');
+  const clientId = providerConfigInstance.getOptionalString('clientId');
+  const clientSecret = providerConfigInstance.getOptionalString('clientSecret');
 
   if (clientId && !clientSecret) {
     throw new Error(`clientSecret must be provided when clientId is defined.`);

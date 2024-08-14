@@ -11,7 +11,6 @@ The Ping Identity backend plugin has the following capabilities:
 ### Default User Transformer
 By default, any illegal characters in an entity reference in Backstage will be normalized to `_` by the default user transformer. Backstage can only accept sequences composed of `[a-z0-9A-Z]`, possibly separated by one of `[-_.]`.
 
-
 The user and group transformers can be customized by leveraging the `pingIdentityTransformerExtensionPoint`. More details on this extension point can be found in the configuration section.
 
 # Getting Started

@@ -1,10 +1,25 @@
 import { GroupTransformer, UserTransformer } from './types';
 
+/**
+ * The default group transformer if none is provided
+ * 
+ * @param entity 
+ * @param _envId 
+ * @returns the transformed group entity with no transformations done
+ */
 export const defaultGroupTransformer: GroupTransformer = async (
   entity,
   _envId,
 ) => entity;
 
+/**
+ * The default user transformer if none is provided
+ * 
+ * @param entity 
+ * @param _envId 
+ * @param _groups 
+ * @returns the transformed user entity with the special characters in its username normalized to `_`
+ */
 export const defaultUserTransformer: UserTransformer = async (
   entity,
   _envId,

@@ -12,7 +12,7 @@ import { pingIdentityTransformerExtensionPoint } from '../extensions';
  *
  * @alpha
  */
-export const catalogModulePingidentityEntityProvider = createBackendModule({
+export const catalogModulePingIdentityEntityProvider = createBackendModule({
   pluginId: 'catalog',
   moduleId: 'pingidentity',
   register(reg) {
