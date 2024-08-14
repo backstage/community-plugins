@@ -4623,22 +4623,25 @@ __metadata:
     "@backstage/e2e-test-utils": ^0.1.1
     "@backstage/repo-tools": ^0.8.0
     "@changesets/cli": ^2.27.1
+    "@material-ui/core": ^4.12.4
     "@material-ui/icons": ^4.11.3
     "@mui/icons-material": ^5.16.7
     "@mui/material": ^5.16.7
     "@mui/styles": ^5.16.7
+    "@patternfly/react-core": latest
     "@spotify/prettier-config": ^12.0.0
     "@swc/core": ^1.7.11
     "@types/express": ^4.17.21
     "@types/lodash": ^4.17.7
-    "@types/react": ^18.3.3
-    "@types/react-dom": ^18.3.0
+    "@types/react": latest
+    "@types/react-dom": latest
     core-js: latest
     node-gyp: ^9.0.0
     prettier: ^2.3.2
-    react: ^18.3.1
-    react-dom: ^18.3.1
-    typescript: ^5.5.4
+    react: latest
+    react-dom: latest
+    react-use: latest
+    typescript: latest
   languageName: unknown
   linkType: soft
 
@@ -6324,7 +6327,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@patternfly/react-core@npm:^5.1.2":
+"@patternfly/react-core@npm:^5.1.2, @patternfly/react-core@npm:latest":
   version: 5.3.4
   resolution: "@patternfly/react-core@npm:5.3.4"
   dependencies:
@@ -21985,7 +21988,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-dom@npm:^18.0.0, react-dom@npm:^18.3.1":
+"react-dom@npm:^18.0.0, react-dom@npm:latest":
   version: 18.3.1
   resolution: "react-dom@npm:18.3.1"
   dependencies:
@@ -22238,7 +22241,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-use@npm:^17.2.4, react-use@npm:^17.3.2":
+"react-use@npm:^17.2.4, react-use@npm:^17.3.2, react-use@npm:latest":
   version: 17.5.1
   resolution: "react-use@npm:17.5.1"
   dependencies:
@@ -22286,7 +22289,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react@npm:^16.13.1 || ^17.0.0 || ^18.0.0, react@npm:^18.3.1":
+"react@npm:^16.13.1 || ^17.0.0 || ^18.0.0, react@npm:latest":
   version: 18.3.1
   resolution: "react@npm:18.3.1"
   dependencies:
@@ -25123,7 +25126,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^5.5.4":
+"typescript@npm:latest":
   version: 5.5.4
   resolution: "typescript@npm:5.5.4"
   bin:
@@ -25163,7 +25166,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@^5.5.4#~builtin<compat/typescript>":
+"typescript@patch:typescript@latest#~builtin<compat/typescript>":
   version: 5.5.4
   resolution: "typescript@patch:typescript@npm%3A5.5.4#~builtin<compat/typescript>::version=5.5.4&hash=a1c5e5"
   bin:
