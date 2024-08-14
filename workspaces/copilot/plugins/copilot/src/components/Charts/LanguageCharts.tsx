@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 import React, { PropsWithChildren } from 'react';
-import { Box, makeStyles } from '@material-ui/core';
+import Box from '@mui/material/Box';
+import { styled } from '@mui/material/styles';
 import { PieChart } from '@mui/x-charts';
 import { Chart } from './Chart';
 import { LanguagesBreakdownTable } from '../Table/LanguagesBreakdownTable';
@@ -25,22 +26,19 @@ import {
 } from '../../utils';
 import { ChartsProps } from '../../types';
 
-const useStyles = makeStyles(theme => ({
-  main: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: theme.spacing(3),
-  },
-  row: {
-    display: 'flex',
-    flexDirection: 'row',
-    gap: theme.spacing(3),
-  },
+const MainBox = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: theme.spacing(2),
+}));
+
+const RowBox = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'row',
+  gap: theme.spacing(2),
 }));
 
 export const LanguageCharts = ({ metrics }: PropsWithChildren<ChartsProps>) => {
-  const classes = useStyles();
-
   const languageStats = getLanguageStats(metrics);
 
   const topFiveLanguagesByAcceptedPrompts = getTopLanguagesByAcceptedPrompts(
@@ -53,8 +51,8 @@ export const LanguageCharts = ({ metrics }: PropsWithChildren<ChartsProps>) => {
   );
 
   return (
-    <Box className={classes.main}>
-      <Box className={classes.row}>
+    <MainBox>
+      <RowBox>
         <Chart title="Top 5 Languages By Accepted Prompts">
           <PieChart
             series={[
@@ -78,18 +76,16 @@ export const LanguageCharts = ({ metrics }: PropsWithChildren<ChartsProps>) => {
                   value: lan.acceptanceRate * 100,
                   label: lan.language,
                 })),
-                valueFormatter: item => {
-                  return `${item.value.toFixed(2)}%`;
-                },
+                valueFormatter: item => `${item.value.toFixed(2)}%`,
               },
             ]}
             height={300}
           />
         </Chart>
-      </Box>
+      </RowBox>
       <Chart title="Languages Breakdown">
         <LanguagesBreakdownTable rows={languageStats} />
       </Chart>
-    </Box>
+    </MainBox>
   );
 };

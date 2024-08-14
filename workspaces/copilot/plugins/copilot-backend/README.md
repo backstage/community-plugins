@@ -4,6 +4,22 @@ This GitHub Copilot plugin integrates with Backstage to provide metrics and insi
 
 ## Installation
 
+### New Backend System
+
+To configure the plugin using the new backend system:
+
+1. In the `packages/backend/src/index.ts` file, add the following:
+
+   ```typescript
+   import { createBackend } from '@backstage/backend-defaults';
+
+   const backend = createBackend();
+
+   backend.add(import('@backstage-community/plugin-copilot'));
+
+   backend.start();
+   ```
+
 ### Old System
 
 To install the plugin using the old method:
@@ -34,47 +50,32 @@ To install the plugin using the old method:
 3. Integrate the plugin into the main backend router in `packages/backend/src/index.ts`:
 
    ```typescript
-   import { createRouter } from './plugins/copilot';
+   import { createRouterFromConfig } from './plugins/copilot';
 
    async function main() {
      // Backend setup
      const env = createEnv('copilot');
      // Plugin registration
-     apiRouter.use('/copilot', await createRouter(env));
+     apiRouter.use('/copilot', await createRouterFromConfig(env));
    }
    ```
 
-4. Start the backend:
+## Configuration
 
-   ```sh
-   yarn start-backend
-   ```
+### Environment Variables
 
-5. Verify the plugin is running by accessing `http://localhost:7007/api/copilot/health`.
+To configure the GitHub Copilot plugin, you need to set the following environment variables:
 
-### New Backend System
+- **`copilot.host`**: The host URL for your GitHub Copilot instance (e.g., `github.com` or `github.enterprise.com`).
+- **`copilot.enterprise`**: The name of your GitHub Enterprise instance (e.g., `my-enterprise`).
 
-To configure the plugin using the new backend system:
+These variables are used to configure the plugin and ensure it communicates with the correct GitHub instance.
 
-1. In the `packages/backend/src/index.ts` file, add the following:
+### GitHub Credentials
 
-   ```typescript
-   import { createBackend } from '@backstage/backend-defaults';
+**Important:** The GitHub token, which is necessary for authentication, should be managed within your Backstage integrations configuration. The token must be added to your GitHub integration settings, and the plugin will retrieve it through the `GithubCredentialsProvider`.
 
-   const backend = createBackend();
-
-   backend.add(import('@backstage-community/plugin-copilot'));
-
-   backend.start();
-   ```
-
-## Plugin Configuration
-
-This plugin supports multiple configuration methods:
-
-- **Default**: Uses predefined default settings.
-- **Via Code**: Passes configurations directly in the code.
-- **Via YAML**: Reads configurations from an `app-config.yaml` file.
+Ensure that your GitHub integration in the Backstage configuration includes the necessary token for the `GithubCredentialsProvider` to work correctly. 
 
 ### YAML Configuration Example
 
@@ -87,8 +88,8 @@ copilot:
       minutes: 2
     initialDelay:
       seconds: 15
+  host: YOUR_GITHUB_HOST_HERE
   enterprise: YOUR_ENTERPRISE_NAME_HERE
-  token: YOUR_GITHUB_COPILOT_TOKEN_HERE
 ```
 
 ### Generating GitHub Copilot Token
@@ -103,6 +104,16 @@ To generate an access token for using GitHub Copilot:
 For more details on using the GitHub Copilot API:
 
 - Refer to the [API documentation](https://docs.github.com/en/rest/copilot/copilot-usage?apiVersion=2022-11-28) for comprehensive information on available functionalities.
+
+## Run
+
+1. Start the backend:
+
+   ```sh
+   yarn start-backend
+   ```
+
+2. Verify the plugin is running by accessing `http://localhost:7007/api/copilot/health`.
 
 ## Links
 

@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 import React from 'react';
-import { Box, Grid, makeStyles, useTheme } from '@material-ui/core';
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
+import { styled, useTheme } from '@mui/material/styles';
 import { Calendar } from 'simple-date-range-calendar';
 import { useMetrics } from '../../hooks';
 import { CardsProps, ChartsProps } from '../../types';
 import { useSharedDateRange } from '../Pages/CopilotPage';
 import { Progress } from '@backstage/core-components';
 
-const useStyles = makeStyles(theme => ({
-  main: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: theme.spacing(3),
-  },
+const MainBox = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: theme.spacing(2),
 }));
 
 type MetricsProps = {
@@ -34,11 +34,8 @@ type MetricsProps = {
   Charts: React.ElementType<ChartsProps>;
 };
 
-export const RenderCharts = ({
-  Charts,
-}: Omit<MetricsProps, 'Cards'>) => {
+export const RenderCharts = ({ Charts }: Omit<MetricsProps, 'Cards'>) => {
   const [state] = useSharedDateRange();
-
   const { items, loading } = useMetrics(state.startDate, state.endDate);
 
   if (loading) {
@@ -48,11 +45,8 @@ export const RenderCharts = ({
   return <Charts metrics={items || []} />;
 };
 
-export const RenderCards = ({
-  Cards,
-}: Omit<MetricsProps, 'Charts'>) => {
+export const RenderCards = ({ Cards }: Omit<MetricsProps, 'Charts'>) => {
   const [state] = useSharedDateRange();
-
   const { items, loading } = useMetrics(state.startDate, state.endDate);
 
   if (loading) {
@@ -68,25 +62,20 @@ export const RenderCards = ({
   );
 };
 
-export const Metrics = ({
-  Cards,
-  Charts,
-}: MetricsProps) => {
+export const Metrics = ({ Cards, Charts }: MetricsProps) => {
   const [state, setState] = useSharedDateRange();
-
-  const classes = useStyles();
+  const theme = useTheme();
 
   const onDateRangeIsSelected = (start: Date, end: Date) => {
     setState({ startDate: start, endDate: end });
   };
 
-  const theme = useTheme();
   return (
-    <Box className={classes.main}>
+    <MainBox>
       <Grid container spacing={2}>
         <Grid item>
           <Calendar
-            theme={theme.palette.type}
+            theme={theme.palette.mode}
             startDate={state.startDate}
             endDate={state.endDate}
             onDateRangeIsSelected={onDateRangeIsSelected}
@@ -97,6 +86,6 @@ export const Metrics = ({
         </Grid>
       </Grid>
       <RenderCharts Charts={Charts} />
-    </Box>
+    </MainBox>
   );
 };

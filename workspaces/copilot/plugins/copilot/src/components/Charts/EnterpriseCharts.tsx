@@ -14,32 +14,24 @@
  * limitations under the License.
  */
 import React, { PropsWithChildren } from 'react';
-import { Box, makeStyles } from '@material-ui/core';
+import Box from '@mui/material/Box';
+import { styled } from '@mui/material/styles';
 import { BarChart, LineChart } from '@mui/x-charts';
 import { Chart } from './Chart';
 import { ChartsProps } from '../../types';
-import dayjs from 'dayjs';
+import { DateTime } from 'luxon';
 
-const useStyles = makeStyles(theme => ({
-  main: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: theme.spacing(3),
-  },
-  row: {
-    display: 'flex',
-    flexDirection: 'row',
-    gap: theme.spacing(3),
-  },
+const MainBox = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: theme.spacing(2),
 }));
 
 export const EnterpriseCharts = ({
   metrics,
 }: PropsWithChildren<ChartsProps>) => {
-  const classes = useStyles();
-
   return (
-    <Box className={classes.main}>
+    <MainBox>
       <Chart title="Acceptance Rate %">
         <LineChart
           xAxis={[
@@ -47,9 +39,7 @@ export const EnterpriseCharts = ({
               id: 'days',
               data: metrics.map(x => new Date(x.day)),
               scaleType: 'point',
-              valueFormatter: date => {
-                return dayjs(date).format('DD-MM-YY');
-              },
+              valueFormatter: date => DateTime.fromJSDate(date).toFormat('dd-MM-yy'),
             },
           ]}
           bottomAxis={{
@@ -78,9 +68,7 @@ export const EnterpriseCharts = ({
               id: 'days',
               data: metrics.map(x => new Date(x.day)),
               scaleType: 'point',
-              valueFormatter: date => {
-                return dayjs(date).format('DD-MM-YY');
-              },
+              valueFormatter: date => DateTime.fromJSDate(date).toFormat('dd-MM-yy'),
             },
           ]}
           bottomAxis={{
@@ -111,9 +99,7 @@ export const EnterpriseCharts = ({
               id: 'days',
               data: metrics.map(x => new Date(x.day)),
               scaleType: 'point',
-              valueFormatter: date => {
-                return dayjs(date).format('DD-MM-YY');
-              },
+              valueFormatter: date => DateTime.fromJSDate(date).toFormat('dd-MM-yy'),
             },
           ]}
           bottomAxis={{
@@ -143,9 +129,7 @@ export const EnterpriseCharts = ({
             {
               data: metrics.map(x => new Date(x.day)),
               scaleType: 'band',
-              valueFormatter: date => {
-                return dayjs(date).format('DD-MM-YY');
-              },
+              valueFormatter: date => DateTime.fromJSDate(date).toFormat('dd-MM-yy'),
             },
           ]}
           bottomAxis={{
@@ -163,6 +147,6 @@ export const EnterpriseCharts = ({
           height={300}
         />
       </Chart>
-    </Box>
+    </MainBox>
   );
 };

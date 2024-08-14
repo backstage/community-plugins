@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-import { PluginDatabaseManager } from '@backstage/backend-common';
-import { resolvePackagePath } from '@backstage/backend-plugin-api';
+import { resolvePackagePath, DatabaseService } from '@backstage/backend-plugin-api';
 import { Metric, PeriodRange } from '@backstage-community/plugin-copilot-common';
 import { Knex } from 'knex';
 
@@ -25,7 +24,7 @@ const migrationsDir = resolvePackagePath(
 );
 
 type Options = {
-  database: PluginDatabaseManager;
+  database: DatabaseService;
 };
 
 export type MetricDbRow = Omit<Metric, 'breakdown'> & {
@@ -87,7 +86,6 @@ export class DatabaseHandler {
 
       return mostRecent ? mostRecent.day : undefined;
     } catch (e) {
-      console.log('getMostRecentDayFromMetrics - error', e);
       return undefined;
     }
   }

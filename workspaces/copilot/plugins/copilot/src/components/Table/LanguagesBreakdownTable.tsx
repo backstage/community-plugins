@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 import React from 'react';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TablePagination from '@material-ui/core/TablePagination';
-import TableRow from '@material-ui/core/TableRow';
-import TableSortLabel from '@material-ui/core/TableSortLabel';
-import Typography from '@material-ui/core/Typography';
+
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TablePagination from '@mui/material/TablePagination';
+import TableRow from '@mui/material/TableRow';
+import TableSortLabel from '@mui/material/TableSortLabel';
+import Typography from '@mui/material/Typography';
+import { styled } from '@mui/material/styles';
 
 type LanguageStats = {
   language: string;
@@ -101,17 +102,17 @@ const headCells: HeadCell[] = [
 ];
 
 interface EnhancedTableProps {
-  classes: ReturnType<typeof useStyles>;
+  order: Order;
+  orderBy: string;
   onRequestSort: (
     event: React.MouseEvent<unknown>,
     property: keyof LanguageStats,
   ) => void;
-  order: Order;
-  orderBy: string;
 }
 
-function EnhancedTableHead(props: EnhancedTableProps) {
-  const { classes, order, orderBy, onRequestSort } = props;
+const EnhancedTableHead = (props: EnhancedTableProps) => {
+  const { order, orderBy, onRequestSort } = props;
+
   const createSortHandler =
     (property: keyof LanguageStats) => (event: React.MouseEvent<unknown>) => {
       onRequestSort(event, property);
@@ -134,7 +135,19 @@ function EnhancedTableHead(props: EnhancedTableProps) {
             >
               {headCell.label}
               {orderBy === headCell.id ? (
-                <Typography className={classes.visuallyHidden}>
+                <Typography
+                  sx={{
+                    border: 0,
+                    clip: 'rect(0 0 0 0)',
+                    height: 1,
+                    margin: -1,
+                    overflow: 'hidden',
+                    padding: 0,
+                    position: 'absolute',
+                    top: 20,
+                    width: 1,
+                  }}
+                >
                   {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
                 </Typography>
               ) : null}
@@ -144,36 +157,18 @@ function EnhancedTableHead(props: EnhancedTableProps) {
       </TableRow>
     </TableHead>
   );
-}
+};
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      width: '100%',
-    },
-    paper: {
-      width: '100%',
-      marginBottom: theme.spacing(2),
-    },
-    table: {
-      minWidth: 750,
-    },
-    visuallyHidden: {
-      border: 0,
-      clip: 'rect(0 0 0 0)',
-      height: 1,
-      margin: -1,
-      overflow: 'hidden',
-      padding: 0,
-      position: 'absolute',
-      top: 20,
-      width: 1,
-    },
-  }),
-);
+const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
+  width: '100%',
+  marginBottom: theme.spacing(2),
+}));
+
+const StyledTable = styled(Table)(() => ({
+  minWidth: 750,
+}));
 
 export function LanguagesBreakdownTable({ rows }: { rows: LanguageStats[] }) {
-  const classes = useStyles();
   const [order, setOrder] = React.useState<Order>('desc');
   const [orderBy, setOrderBy] =
     React.useState<keyof LanguageStats>('totalAcceptances');
@@ -205,15 +200,13 @@ export function LanguagesBreakdownTable({ rows }: { rows: LanguageStats[] }) {
 
   return (
     <>
-      <TableContainer>
-        <Table
-          className={classes.table}
+      <StyledTableContainer>
+        <StyledTable
           aria-labelledby="tableTitle"
           size="medium"
           aria-label="enhanced table"
         >
           <EnhancedTableHead
-            classes={classes}
             order={order}
             orderBy={orderBy}
             onRequestSort={handleRequestSort}
@@ -221,28 +214,26 @@ export function LanguagesBreakdownTable({ rows }: { rows: LanguageStats[] }) {
           <TableBody>
             {stableSort(rows, getComparator(order, orderBy))
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map(row => {
-                return (
-                  <TableRow hover tabIndex={-1} key={row.language}>
-                    <TableCell component="th" scope="row" padding="none">
-                      {row.language}
-                    </TableCell>
-                    <TableCell align="right">{row.totalAcceptances}</TableCell>
-                    <TableCell align="right">{row.totalSuggestions}</TableCell>
-                    <TableCell align="right">
-                      {(row.acceptanceRate * 100).toFixed(2)}%
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
+              .map(row => (
+                <TableRow hover tabIndex={-1} key={row.language}>
+                  <TableCell component="th" scope="row" padding="none">
+                    {row.language}
+                  </TableCell>
+                  <TableCell align="right">{row.totalAcceptances}</TableCell>
+                  <TableCell align="right">{row.totalSuggestions}</TableCell>
+                  <TableCell align="right">
+                    {(row.acceptanceRate * 100).toFixed(2)}%
+                  </TableCell>
+                </TableRow>
+              ))}
             {emptyRows > 0 && (
               <TableRow style={{ height: 53 * emptyRows }}>
-                <TableCell colSpan={6} />
+                <TableCell colSpan={headCells.length} />
               </TableRow>
             )}
           </TableBody>
-        </Table>
-      </TableContainer>
+        </StyledTable>
+      </StyledTableContainer>
       <TablePagination
         rowsPerPageOptions={[10, 15, 25]}
         component="div"
