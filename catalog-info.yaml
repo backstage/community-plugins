@@ -1,0 +1,10 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: community-plugins
+  annotations:
+    github.com/project-slug: 'backstage/community-plugins'
+spec:
+  type: library
+  lifecycle: production
+  owner: search-maintainers
