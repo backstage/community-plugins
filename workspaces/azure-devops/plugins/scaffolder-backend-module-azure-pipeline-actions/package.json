@@ -25,7 +25,10 @@
   },
   "dependencies": {
     "@backstage/backend-plugin-api": "^0.7.0",
-    "@backstage/plugin-scaffolder-node": "^0.4.8"
+    "@backstage/errors": "^1.2.4",
+    "@backstage/integration": "^1.13.0",
+    "@backstage/plugin-scaffolder-node": "^0.4.8",
+    "azure-devops-node-api": "^14.0.0"
   },
   "devDependencies": {
     "@backstage/backend-common": "^0.23.3",

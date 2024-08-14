@@ -1,4 +1,11 @@
 import { createTemplateAction } from '@backstage/plugin-scaffolder-node';
+import {
+  DefaultAzureDevOpsCredentialsProvider,
+  ScmIntegrationRegistry,
+} from '@backstage/integration';
+
+import { InputError } from '@backstage/errors';
+import { getBearerHandler, getPersonalAccessTokenHandler, WebApi } from 'azure-devops-node-api';
 
 /**
  * Creates an `acme:example` Scaffolder action.
@@ -9,31 +16,97 @@ import { createTemplateAction } from '@backstage/plugin-scaffolder-node';
  *
  * @public
  */
-export function createAcmeExampleAction() {
+export function runAzurePipelineAction(options: {
+  integrations: ScmIntegrationRegistry;
+  config: Config;
+}) {
+  const { integrations, config } = options;
+
   // For more information on how to define custom actions, see
   //   https://backstage.io/docs/features/software-templates/writing-custom-actions
   return createTemplateAction<{
-    myParameter: string;
+    host: string;
+    organization: string;
+    pipelineId: string;
+    project: string;
+    branch?: string;
+    token?: string;
+    pipelineParameters?: object;
+    pipelineVariables?: object;
   }>({
-    id: 'acme:example',
-    description: 'Runs Yeoman on an installed Yeoman generator',
+    id: "azure:pipeline:run",
     schema: {
       input: {
-        type: 'object',
-        required: ['myParameter'],
+        required: [
+          "organization",
+          "pipelineId",
+          "project"
+        ],
+        type: "object",
         properties: {
-          myParameter: {
-            title: 'An example parameter',
-            description: 'This is the schema for our example parameter',
-            type: 'string',
+          server: {
+            type: "string",
+            title: "Host",
+            description: "The host of Azure DevOps. Defaults to dev.azure.com",
+          },
+          organization: {
+            type: "string",
+            title: "Organization",
+            description: "The name of the Azure DevOps organization.",
+          },
+          pipelineId: {
+            type: "string",
+            title: "Pipeline ID",
+            description: "The pipeline ID.",
+          },
+          project: {
+            type: "string",
+            title: "Project",
+            description: "The name of the Azure project.",
+          },
+          branch: {
+            title: "Repository Branch",
+            type: "string",
+            description: "The branch of the pipeline's repository.",
+          },
+          pipelineParameters: {
+            title: "Pipeline Parameters",
+            type: "object",
+            description: "The values you need as parameters on the request to start a build.",
           },
         },
       },
     },
     async handler(ctx) {
-      ctx.logger.info(
-        `Running example template with parameters: ${ctx.input.myParameter}`,
-      );
+      const {
+        host = "dev.azure.com",
+        organization,
+        pipelineId,
+        project,
+        branch,
+        pipelineParameters
+      } = ctx.input;
+     
+
+      const url = `https://${host}/${organization}`;
+      const credentialProvider =
+        DefaultAzureDevOpsCredentialsProvider.fromIntegrations(integrations);
+      const credentials = await credentialProvider.getCredentials({ url: url });
+
+      if (credentials === undefined && ctx.input.token === undefined) {
+        throw new InputError(
+          `No credentials provided ${url}, please check your integrations config`,
+        );
+      }
+
+      const authHandler =
+        ctx.input.token || credentials?.type === 'pat'
+          ? getPersonalAccessTokenHandler(ctx.input.token ?? credentials!.token)
+          : getBearerHandler(credentials!.token);
+
+      const webApi = new WebApi(url, authHandler);
+
+      webApi.getPipelinesApi();
 
       await new Promise(resolve => setTimeout(resolve, 1000));
     },
