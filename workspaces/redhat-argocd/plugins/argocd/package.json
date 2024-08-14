@@ -16,7 +16,7 @@
     "pluginPackage": "@backstage-community/plugin-redhat-argocd",
     "pluginPackages": [
       "@backstage-community/plugin-redhat-argocd",
-      "@backstage-community/plugin-redhat-argocd-common"    
+      "@backstage-community/plugin-redhat-argocd-common"
     ]
   },
   "sideEffects": false,
@@ -34,28 +34,35 @@
     "ui-test": "yarn playwright test"
   },
   "dependencies": {
+    "@aws-sdk/client-sso-oidc": "^3.629.0",
+    "@aws-sdk/client-sts": "^3.621.0",
     "@backstage/catalog-model": "^1.5.0",
     "@backstage/core-components": "^0.14.9",
     "@backstage/core-plugin-api": "^1.9.3",
     "@backstage/plugin-catalog-react": "^1.12.2",
     "@backstage/plugin-permission-react": "^0.4.24",
     "@backstage/theme": "^0.5.6",
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
     "@janus-idp/backstage-plugin-argocd-common": "1.0.1",
     "@kubernetes/client-node": "^0.20.0",
     "@material-ui/core": "^4.9.13",
-    "@material-ui/icons": "^4.9.1",
-    "@material-ui/lab": "^4.0.0-alpha.61",
+    "@mui/icons-material": "^5.15.21",
+    "@mui/material": "^5.15.21",
+    "@mui/styles": "^5.16.7",
     "@patternfly/patternfly": "^5.1.0",
     "@patternfly/react-charts": "^7.1.1",
     "@patternfly/react-core": "^5.1.2",
     "@patternfly/react-icons": "^5.1.1",
     "@patternfly/react-tokens": "^5.1.2",
+    "@testing-library/dom": ">=7.21.4",
+    "luxon": "^3.4.4",
     "moment": "^2.30.1",
-    "react-use": "17.5.1"
-  },
-  "peerDependencies": {
-    "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
-    "react-router-dom": "^6.3.0"
+    "react": "^18.3.1",
+    "react-dom": "^18.0.0",
+    "react-multi-progress": "^1.3.0",
+    "react-use": "^17.2.4",
+    "typescript": "^4.9.0"
   },
   "devDependencies": {
     "@backstage/cli": "0.26.11",
@@ -67,9 +74,11 @@
     "@playwright/test": "1.45.3",
     "@redhat-developer/red-hat-developer-hub-theme": "0.0.54",
     "@testing-library/jest-dom": "6.4.8",
-    "@testing-library/react": "14.3.1",
+    "@testing-library/react": "^15.0.0",
     "@testing-library/user-event": "14.5.2",
-    "msw": "1.3.3"
+    "msw": "1.3.3",
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-router-dom": "^6.3.0"
   },
   "files": [
     "dist",
