@@ -2,8 +2,7 @@ import React from 'react';
 
 import { configApiRef } from '@backstage/core-plugin-api';
 import { MockConfigApi, TestApiProvider } from '@backstage/test-utils';
-
-import { renderHook } from '@testing-library/react';
+import { renderHook } from '@testing-library/react-hooks';
 
 import { useArgocdConfig } from '../useArgocdConfig';
 

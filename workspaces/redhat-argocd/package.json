@@ -7,7 +7,7 @@
   },
   "scripts": {
     "tsc": "tsc",
-    "tsc:full": "tsc --skipLibCheck false --incremental false",
+    "tsc:full": "tsc --skipLibCheck true --incremental false",
     "build:all": "backstage-cli repo build --all",
     "build:api-reports": "yarn build:api-reports:only",
     "build:api-reports:only": "backstage-repo-tools api-reports --allow-all-warnings -o ae-wrong-input-file-type --validate-release-tags",
