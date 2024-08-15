@@ -1,6 +1,16 @@
 app:
   title: Jenkins Example App
   baseUrl: http://localhost:3000
+  experimental:
+    packages: 'all'
+  extensions:
+    - entity-card:catalog/about
+    - entity-card:catalog/labels
+    - entity-card:catalog/links:
+        config:
+          filter: kind:component has:links
+    - entity-content:jenkins/projects
+    - entity-card:jenkins/latest-run
 
 organization:
   name: Jenkins Example
@@ -33,7 +43,13 @@ techdocs:
 
 auth:
   providers:
-    guest: {}
+    github:
+      development:
+        clientId: ${AUTH_GITHUB_CLIENT_ID}
+        clientSecret: ${AUTH_GITHUB_CLIENT_SECRET}
+        signIn:
+          resolvers:
+            - resolver: customGithubSignInResolver
 
 catalog:
   import:
@@ -51,3 +67,10 @@ catalog:
       target: ../../examples/org.yaml
       rules:
         - allow: [User, Group]
+
+jenkins:
+  instances:
+    - name: default
+      baseUrl: https://jenkins.example.com
+      username: backstage-bot
+      apiKey: 123456789abcdef0123456789abcedf012
