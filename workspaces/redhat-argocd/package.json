@@ -32,8 +32,8 @@
     "directory": "workspaces/redhat-argocd"
   },
   "devDependencies": {
-    "@aws-sdk/client-sso-oidc": "^3.629.0",
-    "@aws-sdk/client-sts": "^3.629.0",
+    "@aws-sdk/client-sso-oidc": "^3.631.0",
+    "@aws-sdk/client-sts": "^3.631.0",
     "@backstage/cli": "^0.26.11",
     "@backstage/e2e-test-utils": "^0.1.1",
     "@backstage/repo-tools": "^0.8.0",
@@ -41,13 +41,13 @@
     "@spotify/prettier-config": "^12.0.0",
     "@types/express": "^4.17.21",
     "@types/lodash": "^4.17.7",
-    "@types/react": "latest",
+    "@types/react": "17.0.38",
     "@types/react-dom": "latest",
     "node-gyp": "^9.0.0",
     "prettier": "^2.3.2",
     "react": "latest",
-    "react-dom": "latest",
-    "typescript": "latest"
+    "react-dom": "^18.3.1",
+    "typescript": "^5.5.4"
   },
   "resolutions": {
     "@types/react": "^18",
@@ -68,11 +68,16 @@
   "dependencies": {
     "@material-ui/core": "^4.12.4",
     "@material-ui/icons": "^4.11.3",
+    "@microsoft/api-extractor-model": "^7.29.5",
+    "@microsoft/tsdoc": "^0.15.0",
     "@mui/icons-material": "^5.16.7",
     "@mui/material": "^5.16.7",
     "@mui/styles": "^5.16.7",
-    "@patternfly/react-core": "latest",
+    "@patternfly/react-core": "^5.3.4",
+    "@patternfly/react-icons": "^5.3.2",
     "@swc/core": "^1.7.11",
+    "@testing-library/react-hooks": "^8.0.1",
+    "@useoptic/optic": "^1.0.0",
     "core-js": "latest",
     "react-router-dom": "latest",
     "react-use": "latest"
