@@ -14,8 +14,4 @@ export const argocdPermissions: BasicPermission[];
 //
 // @public (undocumented)
 export const argocdViewPermission: BasicPermission;
-
-// Warnings were encountered during analysis:
-//
-// src/permissions.d.ts:1:22 - (ae-undocumented) Missing documentation for "argocdViewPermission".
 ```

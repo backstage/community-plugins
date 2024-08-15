@@ -36,12 +36,5 @@ export const argocdPlugin: BackstagePlugin<
 // @public (undocumented)
 export const isArgocdConfigured: (entity: Entity) => boolean;
 
-// Warnings were encountered during analysis:
-//
-// src/plugin.d.ts:4:22 - (ae-undocumented) Missing documentation for "argocdPlugin".
-// src/plugin.d.ts:7:22 - (ae-undocumented) Missing documentation for "ArgocdDeploymentLifecycle".
-// src/plugin.d.ts:8:22 - (ae-undocumented) Missing documentation for "ArgocdDeploymentSummary".
-// src/utils/isArgocdConfigured.d.ts:2:22 - (ae-undocumented) Missing documentation for "isArgocdConfigured".
-
 // (No @packageDocumentation comment for this package)
 ```
