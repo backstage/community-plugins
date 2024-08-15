@@ -60,7 +60,3 @@ catalog:
       target: ../../examples/org.yaml
       rules:
         - allow: [User, Group]
-
-sonarqube:
-  baseUrl: http://localhost:9000
-  apiKey: sqp_cca438f99aad5ac043ef39b8b2b794a409852313
