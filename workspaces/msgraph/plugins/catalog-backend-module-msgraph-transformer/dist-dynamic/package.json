@@ -1,0 +1,35 @@
+{
+  "name": "@internal/backstage-plugin-catalog-backend-module-msgraph-transformer-dynamic",
+  "description": "The msgraph-transformer backend module for the catalog plugin.",
+  "version": "0.1.0",
+  "main": "dist/index.cjs.js",
+  "types": "dist/index.d.ts",
+  "license": "Apache-2.0",
+  "private": true,
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.cjs.js",
+    "types": "dist/index.d.ts"
+  },
+  "backstage": {
+    "role": "backend-plugin-module"
+  },
+  "files": [
+    "dist"
+  ],
+  "bundleDependencies": true,
+  "peerDependencies": {
+    "@backstage/backend-common": "^0.22.0",
+    "@backstage/backend-plugin-api": "^0.6.9",
+    "@backstage/catalog-model": "1.5.0",
+    "@backstage/plugin-catalog-backend-module-msgraph": "0.5.25"
+  },
+  "overrides": {
+    "@aws-sdk/util-utf8-browser": {
+      "@smithy/util-utf8": "^2.0.0"
+    }
+  },
+  "resolutions": {
+    "@aws-sdk/util-utf8-browser": "npm:@smithy/util-utf8@~2"
+  }
+}
