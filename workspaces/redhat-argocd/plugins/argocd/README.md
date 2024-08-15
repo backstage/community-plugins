@@ -98,19 +98,18 @@ const overviewContent = (
   </Grid>
 );
 
-
 const cicdcontent = (
-    <EntitySwitch>
-        {/* ... */}
-        {/* highlight-add-start */}
-        ...
-          <EntitySwitch.Case if={e => Boolean(isArgocdConfigured(e))}>
-            <Grid item sm={12}>
-              <ArgocdDeploymentLifecycle />
-            </Grid>
-          </EntitySwitch.Case>
-        {/* highlight-add-end */}
-    </EntitySwitch>
+  <EntitySwitch>
+    {/* ... */}
+    {/* highlight-add-start */}
+    ...
+    <EntitySwitch.Case if={e => Boolean(isArgocdConfigured(e))}>
+      <Grid item sm={12}>
+        <ArgocdDeploymentLifecycle />
+      </Grid>
+    </EntitySwitch.Case>
+    {/* highlight-add-end */}
+  </EntitySwitch>
 );
 ```
 
