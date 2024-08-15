@@ -16,7 +16,7 @@
   "backstage": {
     "role": "backend-plugin-module",
     "pluginId": "catalog",
-    "pluginPackage": "@backstage/plugin-catalog-backend"
+    "pluginPackage": "@backstage-community/plugin-catalog-backend-module-scaffolder-relation-processor"
   },
   "exports": {
     ".": "./src/index.ts",
