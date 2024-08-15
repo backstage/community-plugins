@@ -2669,7 +2669,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@backstage-community/plugin-sonarqube@workspace:plugins/sonarqube":
+"@backstage-community/plugin-sonarqube@workspace:^, @backstage-community/plugin-sonarqube@workspace:plugins/sonarqube":
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-sonarqube@workspace:plugins/sonarqube"
   dependencies:
@@ -12029,6 +12029,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "app@workspace:packages/app"
   dependencies:
+    "@backstage-community/plugin-sonarqube": "workspace:^"
     "@backstage/app-defaults": ^1.5.7
     "@backstage/catalog-model": ^1.5.0
     "@backstage/cli": ^0.26.9

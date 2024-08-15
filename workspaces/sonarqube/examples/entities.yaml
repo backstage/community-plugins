@@ -7,6 +7,7 @@ metadata:
     backstage.io/managed-by-location: url:https://github.com/backstage/backstage
     backstage.io/managed-by-origin-location: url:https://github.com/backstage/backstage
     backstage.io/techdocs-ref: url:https://github.com/backstage/backstage
+    sonarqube.org/project-key: backstage
 spec:
   type: website
   lifecycle: production
@@ -27,7 +28,8 @@ kind: Component
 metadata:
   name: example-website
   annotations:
-    'jenkins.io/job-full-name': folder/job
+    jenkins.io/job-full-name: folder/job
+    sonarqube.org/project-key: backstage
 spec:
   type: website
   lifecycle: experimental

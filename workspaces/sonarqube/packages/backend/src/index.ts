@@ -22,4 +22,6 @@ backend.add(import('./modules/auth'));
 // catalog plugin
 backend.add(import('@backstage/plugin-catalog-backend/alpha'));
 
+backend.add(import('@backstage-community/plugin-sonarqube-backend'));
+
 backend.start();
