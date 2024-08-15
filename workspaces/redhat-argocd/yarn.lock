@@ -2507,6 +2507,58 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@backstage-community/plugin-redhat-argocd-common@workspace:plugins/argocd-common":
+  version: 0.0.0-use.local
+  resolution: "@backstage-community/plugin-redhat-argocd-common@workspace:plugins/argocd-common"
+  dependencies:
+    "@backstage/cli": 0.26.11
+    "@backstage/plugin-permission-common": ^0.8.0
+  languageName: unknown
+  linkType: soft
+
+"@backstage-community/plugin-redhat-argocd@workspace:plugins/argocd":
+  version: 0.0.0-use.local
+  resolution: "@backstage-community/plugin-redhat-argocd@workspace:plugins/argocd"
+  dependencies:
+    "@backstage/catalog-model": ^1.5.0
+    "@backstage/cli": 0.26.11
+    "@backstage/config": 1.2.0
+    "@backstage/core-app-api": 1.14.1
+    "@backstage/core-components": ^0.14.9
+    "@backstage/core-plugin-api": ^1.9.3
+    "@backstage/dev-utils": 1.0.36
+    "@backstage/plugin-catalog-react": ^1.12.2
+    "@backstage/plugin-permission-react": ^0.4.24
+    "@backstage/test-utils": 1.5.9
+    "@backstage/theme": ^0.5.6
+    "@janus-idp/backstage-plugin-argocd-common": 1.0.1
+    "@janus-idp/cli": 1.13.0
+    "@kubernetes/client-node": ^0.20.0
+    "@material-ui/core": ^4.9.13
+    "@material-ui/icons": ^4.9.1
+    "@material-ui/lab": ^4.0.0-alpha.61
+    "@patternfly/patternfly": ^5.1.0
+    "@patternfly/react-charts": ^7.1.1
+    "@patternfly/react-core": ^5.1.2
+    "@patternfly/react-icons": ^5.1.1
+    "@patternfly/react-tokens": ^5.1.2
+    "@playwright/test": 1.45.3
+    "@redhat-developer/red-hat-developer-hub-theme": 0.0.54
+    "@testing-library/jest-dom": 6.4.8
+    "@testing-library/react": 14.3.1
+    "@testing-library/user-event": 14.5.2
+    moment: ^2.30.1
+    msw: 1.3.3
+    react: ^16.13.1 || ^17.0.0 || ^18.0.0
+    react-dom: ^18
+    react-router-dom: ^6.3.0
+    react-use: 17.5.1
+  peerDependencies:
+    react: ^16.13.1 || ^17.0.0 || ^18.0.0
+    react-router-dom: ^6.3.0
+  languageName: unknown
+  linkType: soft
+
 "@backstage/app-defaults@npm:^1.5.9":
   version: 1.5.9
   resolution: "@backstage/app-defaults@npm:1.5.9"
@@ -4611,57 +4663,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@janus-idp/backstage-plugin-argocd-common@1.0.1, @janus-idp/backstage-plugin-argocd-common@workspace:plugins/argocd-common":
-  version: 0.0.0-use.local
-  resolution: "@janus-idp/backstage-plugin-argocd-common@workspace:plugins/argocd-common"
+"@janus-idp/backstage-plugin-argocd-common@npm:1.0.1":
+  version: 1.0.1
+  resolution: "@janus-idp/backstage-plugin-argocd-common@npm:1.0.1"
   dependencies:
-    "@backstage/cli": 0.26.11
     "@backstage/plugin-permission-common": ^0.8.0
-  languageName: unknown
-  linkType: soft
-
-"@janus-idp/backstage-plugin-argocd@workspace:plugins/argocd":
-  version: 0.0.0-use.local
-  resolution: "@janus-idp/backstage-plugin-argocd@workspace:plugins/argocd"
-  dependencies:
-    "@backstage/catalog-model": ^1.5.0
-    "@backstage/cli": 0.26.11
-    "@backstage/config": 1.2.0
-    "@backstage/core-app-api": 1.14.1
-    "@backstage/core-components": ^0.14.9
-    "@backstage/core-plugin-api": ^1.9.3
-    "@backstage/dev-utils": 1.0.36
-    "@backstage/plugin-catalog-react": ^1.12.2
-    "@backstage/plugin-permission-react": ^0.4.24
-    "@backstage/test-utils": 1.5.9
-    "@backstage/theme": ^0.5.6
-    "@janus-idp/backstage-plugin-argocd-common": 1.0.1
-    "@janus-idp/cli": 1.13.0
-    "@kubernetes/client-node": ^0.20.0
-    "@material-ui/core": ^4.9.13
-    "@material-ui/icons": ^4.9.1
-    "@material-ui/lab": ^4.0.0-alpha.61
-    "@patternfly/patternfly": ^5.1.0
-    "@patternfly/react-charts": ^7.1.1
-    "@patternfly/react-core": ^5.1.2
-    "@patternfly/react-icons": ^5.1.1
-    "@patternfly/react-tokens": ^5.1.2
-    "@playwright/test": 1.45.3
-    "@redhat-developer/red-hat-developer-hub-theme": 0.0.54
-    "@testing-library/jest-dom": 6.4.8
-    "@testing-library/react": 14.3.1
-    "@testing-library/user-event": 14.5.2
-    moment: ^2.30.1
-    msw: 1.3.3
-    react: ^16.13.1 || ^17.0.0 || ^18.0.0
-    react-dom: ^18
-    react-router-dom: ^6.3.0
-    react-use: 17.5.1
-  peerDependencies:
-    react: ^16.13.1 || ^17.0.0 || ^18.0.0
-    react-router-dom: ^6.3.0
-  languageName: unknown
-  linkType: soft
+  checksum: 2ef76317622871b75e5296c7f281876dc5020468f3f127c49bb5959422c2eebae37cc1617252745258593377d2022e2b44204d74a082bdf9af311a1954cfc389
+  languageName: node
+  linkType: hard
 
 "@janus-idp/cli@npm:1.13.0":
   version: 1.13.0
