@@ -122,7 +122,6 @@ describe('PingIdentityEntityProvider', () => {
     });
 
     const provider = PingIdentityEntityProvider.fromConfig(config, {
-      id: 'development',
       logger,
       schedule: 'manual',
     })[0];
@@ -159,7 +158,6 @@ describe('PingIdentityEntityProvider', () => {
     };
 
     const provider = PingIdentityEntityProvider.fromConfig(config, {
-      id: 'development',
       logger,
       schedule: mockTaskRunner,
     })[0];
@@ -216,7 +214,6 @@ describe('PingIdentityEntityProvider', () => {
     };
 
     const provider = PingIdentityEntityProvider.fromConfig(config, {
-      id: 'development',
       logger,
       scheduler,
     })[0];
@@ -252,7 +249,6 @@ describe('PingIdentityEntityProvider', () => {
 
     expect(() =>
       PingIdentityEntityProvider.fromConfig(config, {
-        id: 'development',
         logger,
       }),
     ).toThrow('No schedule provided neither via code nor config for PingIdentityEntityProvider:default.');
@@ -284,7 +280,6 @@ describe('PingIdentityEntityProvider', () => {
 
     expect(() =>
       PingIdentityEntityProvider.fromConfig(config, {
-        id: 'development',
         logger,
         scheduler,
       }),
