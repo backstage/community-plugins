@@ -59,7 +59,7 @@ export class CodeCoverageRestApi implements CodeCoverageApi {
   private async fetch<T = unknown | string | JsonCoverageHistory>(
     path: string,
   ): Promise<T | string> {
-    const url = await this.discoveryApi.getBaseUrl('code-coverage');
+    const url = await this.discoveryApi.getBaseUrl('codeCoverage');
     const resp = await this.fetchApi.fetch(`${url}${path}`);
     if (!resp.ok) {
       throw await ResponseError.fromResponse(resp);
