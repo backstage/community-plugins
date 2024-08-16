@@ -1,5 +1,11 @@
 # @backstage-community/plugin-code-coverage
 
+## 0.2.30
+
+### Patch Changes
+
+- 7f16138: Updated `discoveryApi` to use base URL `codeCoverage` to be compatible with backend plugin ID, (previously `code-coverage`).
+
 ## 0.2.29
 
 ### Patch Changes
