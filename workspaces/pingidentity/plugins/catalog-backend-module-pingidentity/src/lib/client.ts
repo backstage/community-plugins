@@ -1,5 +1,6 @@
 import fetch, { Response } from 'node-fetch';
 import { PingIdentityProviderConfig } from './config';
+import { PingIdentityGroup, PingIdentityUser } from './types';
 
 class PingIdentityClient {
   private tokenCredential: string | null = null;
@@ -20,7 +21,7 @@ class PingIdentityClient {
    * 
    * @returns a list of all users fetched from Ping Identity API
    */
-  async getUsers<T>(): Promise<T[]> {
+  async getUsers(): Promise<PingIdentityUser[]> {
     const response = await this.requestApi('users');
     const data = await response.json();
     return data._embedded.users;
@@ -31,7 +32,7 @@ class PingIdentityClient {
    * 
    * @returns a list of all groups fetched from Ping Identity API
    */
-  async getGroups<T>(): Promise<T[]> {
+  async getGroups(): Promise<PingIdentityGroup[]> {
     const response = await this.requestApi('groups');
     const data = await response.json();
     return data._embedded.groups;

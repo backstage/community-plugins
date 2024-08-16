@@ -43,7 +43,6 @@ export const catalogModulePingIdentityEntityProvider = createBackendModule({
       async init({ catalog, config, logger, scheduler }) {
         catalog.addEntityProvider(
           PingIdentityEntityProvider.fromConfig(config, {
-            id: 'development',
             logger,
             scheduler,
             userTransformer: userTransformer,

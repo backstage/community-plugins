@@ -23,6 +23,125 @@ const mockConfig = {
 };
 const mockClient = new PingIdentityClient(mockConfig) as jest.Mocked<PingIdentityClient>;
 
+const exampleUser1 = {
+  _links: {
+    self: {
+      href: "https://api.pingone.com"
+    },
+    password: {
+      href: "https://api.pingone.com"
+    },
+    'password.set': {
+      href: "https://api.pingone.com"
+    },
+    'password.reset': {
+      href: "https://api.pingone.com"
+    },
+    'password.check': {
+      href: "https://api.pingone.com"
+    },
+    'password.recover': {
+      href: "https://api.pingone.com"
+    },
+    account: {
+      sendVerificationCode: {
+        href: "https://api.pingone.com"
+      }
+    },
+    linkedAccounts: {
+      href: "https://api.pingone.com"
+    }
+  },
+  id: "user1",
+  environment: {
+    id: "example-env"
+  },
+  account: {
+    canAuthenticate: true,
+    status: ""
+  },
+  createdAt: "",
+  email: "user1@example.com",
+  enabled: true,
+  identityProvider: {
+    type: ""
+  },
+  lifecycle: {
+    status: ""
+  },
+  mfaEnabled: false,
+  name: {
+    given: "User",
+    family: "One"
+  },
+  population: {
+    id: ""
+  },
+  updatedAt: "",
+  username: "user1",
+  verifyStatus: ""
+};
+
+
+const exampleUser2 = {
+  _links: {
+    self: {
+      href: "https://api.pingone.com"
+    },
+    password: {
+      href: "https://api.pingone.com"
+    },
+    'password.set': {
+      href: "https://api.pingone.com"
+    },
+    'password.reset': {
+      href: "https://api.pingone.com"
+    },
+    'password.check': {
+      href: "https://api.pingone.com"
+    },
+    'password.recover': {
+      href: "https://api.pingone.com"
+    },
+    account: {
+      sendVerificationCode: {
+        href: "https://api.pingone.com"
+      }
+    },
+    linkedAccounts: {
+      href: "https://api.pingone.com"
+    }
+  },
+  id: "user2",
+  environment: {
+    id: "example-env"
+  },
+  account: {
+    canAuthenticate: true,
+    status: ""
+  },
+  createdAt: "",
+  email: "user2@example.com",
+  enabled: true,
+  identityProvider: {
+    type: ""
+  },
+  lifecycle: {
+    status: ""
+  },
+  mfaEnabled: false,
+  name: {
+    given: "User",
+    family: "Two"
+  },
+  population: {
+    id: ""
+  },
+  updatedAt: "",
+  username: "user2",
+  verifyStatus: ""
+};
+
 describe('PingIdentity readPingIdentity', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -31,12 +150,24 @@ describe('PingIdentity readPingIdentity', () => {
 
   it('should return users and groups', async () => {
     mockClient.getGroups.mockResolvedValue([
-      { id: 'group1', name: 'Group One', description: 'Description of group one' },
+      {
+        id: 'group1', name: 'Group One', description: 'Description of group one',
+        _links: {
+          self: {
+            href: ''
+          }
+        },
+        environment: {
+          id: ''
+        },
+        directMemberCounts: {
+          users: 0
+        },
+        createdAt: '',
+        updatedAt: ''
+      },
     ]);
-    mockClient.getUsers.mockResolvedValue([
-      { id: 'user1', username: 'user1', email: 'user1@example.com', name: { given: 'User', family: 'One' } },
-      { id: 'user2', username: 'user2', email: 'user2@example.com', name: { given: 'User', family: 'Two' } },
-    ]);
+    mockClient.getUsers.mockResolvedValue([exampleUser1, exampleUser2]);
 
     const result = await readPingIdentity(mockClient);
 
@@ -59,11 +190,24 @@ describe('PingIdentity readPingIdentity', () => {
 
   it('should handle users with group memberships', async () => {
     mockClient.getGroups.mockResolvedValue([
-      { id: 'group1', name: 'Group One', description: 'Description of group one' },
+      {
+        id: 'group1', name: 'Group One', description: 'Description of group one',
+        _links: {
+          self: {
+            href: ''
+          }
+        },
+        environment: {
+          id: ''
+        },
+        directMemberCounts: {
+          users: 0
+        },
+        createdAt: '',
+        updatedAt: ''
+      },
     ]);
-    mockClient.getUsers.mockResolvedValue([
-      { id: 'user1', username: 'user1', email: 'user1@example.com', name: { given: 'User', family: 'One' } },
-    ]);
+    mockClient.getUsers.mockResolvedValue([exampleUser1]);
     mockClient.getUsersInGroup.mockResolvedValue(['user1']);
     mockClient.getParentGroup.mockResolvedValue(undefined);
 
@@ -77,8 +221,38 @@ describe('PingIdentity readPingIdentity', () => {
 
   it('should handle nested groups', async () => {
     mockClient.getGroups.mockResolvedValue([
-      { id: 'group1', name: 'Group One', description: 'Description of group one' },
-      { id: 'group2', name: 'Group Two', description: 'Description of group two', parentGroup: 'group1' },
+      {
+        id: 'group1', name: 'Group One', description: 'Description of group one',
+        _links: {
+          self: {
+            href: ''
+          }
+        },
+        environment: {
+          id: ''
+        },
+        directMemberCounts: {
+          users: 0
+        },
+        createdAt: '',
+        updatedAt: ''
+      },
+      {
+        id: 'group2', name: 'Group Two', description: 'Description of group two',
+        _links: {
+          self: {
+            href: ''
+          }
+        },
+        environment: {
+          id: ''
+        },
+        directMemberCounts: {
+          users: 0
+        },
+        createdAt: '',
+        updatedAt: ''
+      },
     ]);
     mockClient.getUsers.mockResolvedValue([]);
     mockClient.getUsersInGroup.mockResolvedValue([]);

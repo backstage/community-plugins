@@ -7,7 +7,7 @@ import {
   ANNOTATION_ORIGIN_LOCATION,
 } from '@backstage/catalog-model';
 import { PING_IDENTITY_ID_ANNOTATION } from './constants';
-import { UserTransformer, GroupTransformer } from './types';
+import { UserTransformer, GroupTransformer, PingIdentityUser, PingIdentityGroup } from './types';
 import { defaultGroupTransformer, defaultUserTransformer } from './defaultTransformers';
 
 /**
@@ -68,8 +68,8 @@ const parsePingIdentityUsers = async (
   userTransformer?: UserTransformer
 ): Promise<UserEntity[]> => {
   const transformer = userTransformer ?? defaultUserTransformer;
-  const users = await client.getUsers();
-  const transformedUsers: (UserEntity | undefined)[] = await Promise.all(users.map(async (user: any) => {
+  const pingIdentityUsers: PingIdentityUser[] = await client.getUsers();
+  const transformedUsers: (UserEntity | undefined)[] = await Promise.all(pingIdentityUsers.map(async (user: any) => {
     const userLocation = getEntityLocation(client.getConfig(), 'users', user.id);
     return await transformer({
       apiVersion: 'backstage.io/v1beta1',
@@ -95,7 +95,7 @@ const parsePingIdentityUsers = async (
         },
         memberOf: findGroupMemberships(user.id, groups, groupMembersMap)
       }
-    }, client.getConfig().envId, groups);
+    }, user, client.getConfig().envId, groups);
   }));
   return transformedUsers.filter(user => user !== undefined) as UserEntity[];
 }
@@ -115,8 +115,8 @@ const parsePingIdentityGroups = async (
   groupTransformer?: GroupTransformer
 ): Promise<GroupEntity[]> => {
   const transformer = groupTransformer ?? defaultGroupTransformer;
-  const groups = await client.getGroups();
-  const transformedGroups: (GroupEntity | undefined)[] = await Promise.all(groups.map(async (group: any) => {
+  const pingIdentityGroups: PingIdentityGroup[] = await client.getGroups();
+  const transformedGroups: (GroupEntity | undefined)[] = await Promise.all(pingIdentityGroups.map(async (group: any) => {
     const groupLocation = getEntityLocation(client.getConfig(), 'groups', group.id);
     // add users in group to group membership map
     groupMembersMap.set(group.id, new Set(await client.getUsersInGroup(group.id)));
@@ -141,7 +141,7 @@ const parsePingIdentityGroups = async (
         parent: await client.getParentGroup(group.id),
         members: [],
       }
-    }, client.getConfig().envId);
+    }, group, client.getConfig().envId);
   }));
   return transformedGroups.filter(group => group !== undefined) as GroupEntity[];
 };

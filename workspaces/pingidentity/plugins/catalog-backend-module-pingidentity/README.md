@@ -26,20 +26,20 @@ The plugin can also be run independently with `yarn start` in the `workspaces/pi
 
     ```yaml title="app-config.yaml"
     catalog:
-    providers:
+      providers:
         pingIdentityOrg:
-        default:
+          default:
             apiPath: https://api.pingone.ca/v1 # Change domain according to ping identity regional domain
             authPath: https://auth.pingone.ca 
             envId: ${PING_IDENTITY_ENV_ID}
             clientId: ${PING_IDENTITY_CLIENT_ID}
             clientSecret: ${PING_IDENTITY_CLIENT_SECRET}
             schedule: # Mandatory; same options as in TaskScheduleDefinition
-            # supports cron, ISO duration, "human duration" as used in code
-            frequency: { minutes: 30 } # Customize this to fit your needs
-            # supports ISO duration, "human duration" as used in code
-            timeout: { minutes: 10 } # Customize this to fit your needs
-            initialDelay: { seconds: 15 } # Customize this to fit your needs
+              # supports cron, ISO duration, "human duration" as used in code
+              frequency: { minutes: 30 } # Customize this to fit your needs
+              # supports ISO duration, "human duration" as used in code
+              timeout: { minutes: 10 } # Customize this to fit your needs
+              initialDelay: { seconds: 15 } # Customize this to fit your needs
     ```
 
 2. Register the plugin in the `packages/backend/src/index.ts` file:

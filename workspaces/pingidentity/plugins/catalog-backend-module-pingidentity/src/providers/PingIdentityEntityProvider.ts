@@ -1,16 +1,25 @@
-import { LoggerService } from '@backstage/backend-plugin-api';
-import { SchedulerService, SchedulerServiceTaskRunner } from '@backstage/backend-plugin-api';
-import { Config } from '@backstage/config';
+import {
+  LoggerService,
+  SchedulerService,
+  SchedulerServiceTaskRunner
+} from '@backstage/backend-plugin-api';
 import {
   EntityProvider,
   EntityProviderConnection,
 } from '@backstage/plugin-catalog-node'
+import {
+  GroupEntityV1alpha1,
+  UserEntityV1alpha1
+} from '@backstage/catalog-model';
+import { Config } from '@backstage/config';
 import * as uuid from 'uuid';
-import { PingIdentityProviderConfig, readProviderConfigs } from '../lib/config';
+import {
+  PingIdentityProviderConfig,
+  readProviderConfigs
+} from '../lib/config';
 import { readPingIdentity } from '../lib/read';
 import { UserTransformer, GroupTransformer } from '../lib/types';
 import { PingIdentityClient } from '../lib/client';
-
 
 /**
  * Options for {@link PingIdentityEntityProvider}.
@@ -18,13 +27,6 @@ import { PingIdentityClient } from '../lib/client';
  * @public
  */
 export interface PingIdentityEntityProviderOptions {
-  /**
-   * A unique, stable identifier for this provider.
-   *
-   * @example "production"
-   */
-  id: string;
-
   /**
    * The refresh schedule to use.
    *
@@ -195,7 +197,7 @@ function trackProgress(logger: LoggerService) {
 
   logger.info('Reading PingIdentity users and groups');
 
-  function markReadComplete(read: { users: unknown[]; groups: unknown[] }) {
+  function markReadComplete(read: { users: UserEntityV1alpha1[]; groups: GroupEntityV1alpha1[] }) {
     summary = `${read.users.length} PingIdentity users and ${read.groups.length} PingIdentity groups`;
     const readDuration = ((Date.now() - timestamp) / 1000).toFixed(1);
     timestamp = Date.now();
