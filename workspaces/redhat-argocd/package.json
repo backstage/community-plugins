@@ -23,7 +23,7 @@
   "workspaces": {
     "packages": [
       "packages/*",
-      "workspaces/redhat-argocd/plugins/*"
+      "plugins/*"
     ]
   },
   "repository": {
