@@ -1,0 +1,54 @@
+app:
+  title: Backstage TimeSaver Plugin
+  baseUrl: http://localhost:3000
+
+backend:
+  baseUrl: http://localhost:7007
+  listen:
+    port: 7007
+  database:
+    client: better-sqlite3
+    connection: ':memory:'
+  cache:
+    store: memory
+  cors:
+    origin: http://localhost:3000
+    methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
+    credentials: true
+  csp:
+    connect-src: ["'self'", 'http:', 'https:']
+    # Content-Security-Policy directives follow the Helmet format: https://helmetjs.github.io/#reference
+    # Default Helmet Content-Security-Policy values can be removed by setting the key to false
+  reading:
+    allow:
+      - host: localhost
+
+ts:
+  backward:
+    config: |
+      [
+        {
+          "entityRef": "template:default/cloudevops-create-terraform-repo",
+          "engineering": {
+            "devops": 2,
+            "development_team": 3,
+            "compliance": 0.5
+          }
+        },
+        {
+          "entityRef": "template:default/add-iam-role-to-iam-repository",
+          "engineering": {
+            "devops": 1,
+            "security": 2,
+            "development_team": 2
+          }
+        },
+        {
+          "entityRef": "template:default/cloudevops-create-eks-resources-for-project",
+          "engineering": {
+            "devops": 3,
+            "security": 1,
+            "development_team": 3
+          }
+        }
+      ]
