@@ -16,7 +16,6 @@
     "pluginId": "redhat-argocd-common",
     "pluginPackage": "@backstage-community/plugin-redhat-argocd-common",
     "pluginPackages": [
-      "@backstage-community/plugin-redhat-argocd",
       "@backstage-community/plugin-redhat-argocd-common"
     ]
   },

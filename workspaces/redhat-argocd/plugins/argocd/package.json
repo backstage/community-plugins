@@ -15,8 +15,7 @@
     "pluginId": "redhat-argocd",
     "pluginPackage": "@backstage-community/plugin-redhat-argocd",
     "pluginPackages": [
-      "@backstage-community/plugin-redhat-argocd",
-      "@backstage-community/plugin-redhat-argocd-common"
+      "@backstage-community/plugin-redhat-argocd"
     ]
   },
   "sideEffects": false,
@@ -90,7 +89,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/backstage/community-plugins",
-    "directory": "workspace/redhat-argocd/plugins/argocd"
+    "directory": "workspaces/redhat-argocd/plugins/argocd"
   },
   "keywords": [
     "support:production",
