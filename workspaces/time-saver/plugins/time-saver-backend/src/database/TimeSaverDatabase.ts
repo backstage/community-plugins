@@ -74,7 +74,7 @@ export interface TimeSaverStore {
 }
 
 const migrationsDir = resolvePackagePath(
-  '@tduniec/backstage-plugin-time-saver-backend',
+  '@backstage-community/plugin-time-saver-backend',
   'migrations',
 );
 
