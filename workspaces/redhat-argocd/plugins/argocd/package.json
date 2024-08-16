@@ -12,7 +12,7 @@
   "backstage": {
     "role": "frontend-plugin",
     "supported-versions": "1.28.4",
-    "pluginId": "argocd",
+    "pluginId": "redhat-argocd",
     "pluginPackage": "@backstage-community/plugin-redhat-argocd",
     "pluginPackages": [
       "@backstage-community/plugin-redhat-argocd",
@@ -89,7 +89,7 @@
   "configSchema": "config.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/backstage/community-plugin",
+    "url": "https://github.com/backstage/community-plugins",
     "directory": "workspace/redhat-argocd/plugins/argocd"
   },
   "keywords": [

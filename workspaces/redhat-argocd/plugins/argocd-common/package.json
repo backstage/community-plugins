@@ -13,7 +13,7 @@
   "backstage": {
     "role": "common-library",
     "supported-versions": "1.28.4",
-    "pluginId": "redhat-argocd",
+    "pluginId": "redhat-argocd-common",
     "pluginPackage": "@backstage-community/plugin-redhat-argocd-common",
     "pluginPackages": [
       "@backstage-community/plugin-redhat-argocd",
