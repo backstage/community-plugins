@@ -1,0 +1,1 @@
+export { ThreeScaleApiEntityProvider } from './ThreeScaleApiEntityProvider';
