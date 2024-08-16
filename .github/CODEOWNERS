@@ -37,3 +37,7 @@ yarn.lock                                           @backstage/community-plugins
 /workspaces/sonarqube                               @backstage/community-plugins-maintainers  @backstage/sda-se-reviewers
 /workspaces/tech-insights                           @backstage/community-plugins-maintainers  @xantier
 /workspaces/user-settings                           @backstage/community-plugins-maintainers  @backstage/sda-se-reviewers
+/workspaces/tech-insights                           @backstage/community-plugins-maintainers  @xantier
+/workspaces/time-saver                           @backstage/community-plugins-maintainers  @ionSurf @tduniec
+/workspaces/report-portal                           @backstage/community-plugins-maintainers  @yashoswalyo
+/workspaces/redhat-resource-optimization            @backstage/community-plugins-maintainers
