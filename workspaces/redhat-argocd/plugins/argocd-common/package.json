@@ -14,7 +14,7 @@
     "role": "common-library",
     "supported-versions": "1.28.4",
     "pluginId": "redhat-argocd",
-    "pluginPackage": "@backstage-community/plugin-argocd-common",
+    "pluginPackage": "@backstage-community/plugin-redhat-argocd-common",
     "pluginPackages": [
       "@backstage-community/plugin-redhat-argocd",
       "@backstage-community/plugin-redhat-argocd-common"
