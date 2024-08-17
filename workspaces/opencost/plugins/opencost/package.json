@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-opencost",
-  "version": "0.2.11",
+  "version": "0.2.12",
   "backstage": {
     "role": "frontend-plugin",
     "pluginId": "opencost",
