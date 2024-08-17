@@ -1,5 +1,11 @@
 # @backstage-community/plugin-opencost
 
+## 0.2.12
+
+### Patch Changes
+
+- 07d2704: update dependency axios to v1.7.4 [security]
+
 ## 0.2.11
 
 ### Patch Changes
