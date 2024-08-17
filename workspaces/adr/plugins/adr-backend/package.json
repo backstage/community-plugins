@@ -35,6 +35,7 @@
   },
   "dependencies": {
     "@backstage-community/plugin-adr-common": "workspace:^",
+    "@backstage-community/search-backend-module-adr": "workspace:^",
     "@backstage/backend-common": "^0.23.3",
     "@backstage/backend-plugin-api": "^0.7.0",
     "@backstage/catalog-client": "^1.6.5",
@@ -47,7 +48,6 @@
     "express": "^4.17.1",
     "express-promise-router": "^4.1.0",
     "luxon": "^3.0.0",
-    "marked": "^12.0.0",
     "node-fetch": "^2.6.5",
     "yn": "^4.0.0"
   },
