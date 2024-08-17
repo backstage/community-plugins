@@ -27,7 +27,12 @@ import { CatalogApi, CatalogClient } from '@backstage/catalog-client';
 import { Config } from '@backstage/config';
 import { NotFoundError } from '@backstage/errors';
 import { BadgeBuilder, DefaultBadgeBuilder } from '../lib/BadgeBuilder';
-import { BadgeContext, BadgeFactories } from '../types';
+import {
+  BADGE_STYLES,
+  BadgeContext,
+  BadgeFactories,
+  BadgeStyle,
+} from '../types';
 import { isNil } from 'lodash';
 import { IdentityApi } from '@backstage/plugin-auth-node';
 import { BadgesStore, DatabaseBadgesStore } from '../database/badgesStore';
@@ -144,6 +149,14 @@ async function obfuscatedRoute(
       );
     }
 
+    let style: BadgeStyle | undefined = undefined;
+    if (
+      typeof req.query.style === 'string' &&
+      BADGE_STYLES.includes(req.query.style as any)
+    ) {
+      style = req.query.style as BadgeStyle;
+    }
+
     // Create the badge specs
     const specs = [];
     for (const badgeInfo of await badgeBuilder.getBadges()) {
@@ -151,6 +164,7 @@ async function obfuscatedRoute(
         badgeUrl: `${baseUrl}/entity/${entityUuid}/${badgeInfo.id}`,
         config: config,
         entity,
+        style,
       };
 
       const badge = await badgeBuilder.createBadgeJson({
@@ -200,12 +214,21 @@ async function obfuscatedRoute(
       format = 'application/json';
     }
 
+    let style: BadgeStyle | undefined = undefined;
+    if (
+      typeof req.query.style === 'string' &&
+      BADGE_STYLES.includes(req.query.style as any)
+    ) {
+      style = req.query.style as BadgeStyle;
+    }
+
     const badgeOptions = {
       badgeInfo: { id: badgeId },
       context: {
         badgeUrl: `${baseUrl}/entity/${entityUuid}/${badgeId}`,
         config: config,
         entity,
+        style,
       },
     };
 
@@ -339,12 +362,21 @@ async function nonObfuscatedRoute(
         format = 'application/json';
       }
 
+      let style: BadgeStyle | undefined = undefined;
+      if (
+        typeof req.query.style === 'string' &&
+        BADGE_STYLES.includes(req.query.style as any)
+      ) {
+        style = req.query.style as BadgeStyle;
+      }
+
       const badgeOptions = {
         badgeInfo: { id: badgeId },
         context: {
           badgeUrl: `${baseUrl}/entity/${namespace}/${kind}/${name}/badge/${badgeId}`,
           config: config,
           entity,
+          style,
         },
       };
 
