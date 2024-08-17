@@ -1,5 +1,11 @@
 # @backstage-community/plugin-vault-backend
 
+## 0.4.16
+
+### Patch Changes
+
+- 5541765: Add missing dependency on `@backstage/backend-defaults`
+
 ## 0.4.15
 
 ### Patch Changes
