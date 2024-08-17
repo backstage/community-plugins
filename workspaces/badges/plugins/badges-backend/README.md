@@ -180,6 +180,15 @@ The badges backend api exposes two main endpoints for entity badges. The
   [BadgeSpec](https://github.com/backstage/backstage/tree/master/plugins/badges/src/api/types.ts)
   from the frontend plugin for a type declaration.
 
+### Custom badge styles
+
+The badge builder supports custom badge styles and colors.
+While requesting a badge or badge spec JSON, you can pass the `style` and `color` query parameters to customize the badge.
+
+```http
+GET /badge/entity/:entityUuid/badge-specs?style=flat&color=blue
+```
+
 ## Links
 
 - [Frontend part of the plugin](https://github.com/backstage/backstage/tree/master/plugins/badges)
