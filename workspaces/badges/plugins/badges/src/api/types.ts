@@ -21,12 +21,15 @@ export const badgesApiRef = createApiRef<BadgesApi>({
   id: 'plugin.badges.client',
 });
 
-export type BadgeStyle =
-  | 'plastic'
-  | 'flat'
-  | 'flat-square'
-  | 'for-the-badge'
-  | 'social';
+export const BADGE_STYLES = [
+  'plastic',
+  'flat',
+  'flat-square',
+  'for-the-badge',
+  'social',
+] as const;
+
+export type BadgeStyle = (typeof BADGE_STYLES)[number];
 
 interface Badge {
   color?: string;
@@ -53,6 +56,14 @@ export interface BadgeSpec {
   markdown: string;
 }
 
+export interface BadgeStyleOptions {
+  style?: BadgeStyle;
+  color?: string;
+}
+
 export interface BadgesApi {
-  getEntityBadgeSpecs(entity: Entity): Promise<BadgeSpec[]>;
+  getEntityBadgeSpecs(
+    entity: Entity,
+    bsOptions?: BadgeStyleOptions,
+  ): Promise<BadgeSpec[]>;
 }
