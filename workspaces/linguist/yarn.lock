@@ -2795,7 +2795,7 @@ __metadata:
     "@types/express": "*"
     "@types/fs-extra": ^11.0.0
     "@types/node-fetch": ^2.5.12
-    "@types/supertest": ^2.0.8
+    "@types/supertest": ^6.0.0
     "@types/uuid": ^9.0.0
     express: ^4.18.1
     express-promise-router: ^4.1.0
@@ -2805,7 +2805,7 @@ __metadata:
     linguist-js: ^2.5.3
     luxon: ^3.0.0
     node-fetch: ^2.6.7
-    supertest: ^6.2.4
+    supertest: ^7.0.0
     uuid: ^9.0.0
     yn: ^4.0.0
   languageName: unknown
@@ -11980,10 +11980,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/cookiejar@npm:*":
-  version: 2.1.1
-  resolution: "@types/cookiejar@npm:2.1.1"
-  checksum: 7b2967a3344e8e646e79e1dc09ef30a70c4ceeb348364c4eb75b56e2f2e695605fbddd40a50f468b2b5932d2ffb58694ba550f0f52d074c972023910c77de2f6
+"@types/cookiejar@npm:^2.1.5":
+  version: 2.1.5
+  resolution: "@types/cookiejar@npm:2.1.5"
+  checksum: 04d5990e87b6387532d15a87d9ec9b2eb783039291193863751dcfd7fc723a3b3aa30ce4c06b03975cba58632e933772f1ff031af23eaa3ac7f94e71afa6e073
   languageName: node
   linkType: hard
 
@@ -12321,6 +12321,13 @@ __metadata:
   version: 1.0.2
   resolution: "@types/mdurl@npm:1.0.2"
   checksum: 79c7e523b377f53cf1f5a240fe23d0c6cae856667692bd21bf1d064eafe5ccc40ae39a2aa0a9a51e8c94d1307228c8f6b121e847124591a9a828c3baf65e86e2
+  languageName: node
+  linkType: hard
+
+"@types/methods@npm:^1.1.4":
+  version: 1.1.4
+  resolution: "@types/methods@npm:1.1.4"
+  checksum: ad2a7178486f2fd167750f3eb920ab032a947ff2e26f55c86670a6038632d790b46f52e5b6ead5823f1e53fc68028f1e9ddd15cfead7903e04517c88debd72b1
   languageName: node
   linkType: hard
 
@@ -12684,22 +12691,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/superagent@npm:*":
-  version: 4.1.7
-  resolution: "@types/superagent@npm:4.1.7"
+"@types/superagent@npm:^8.1.0":
+  version: 8.1.8
+  resolution: "@types/superagent@npm:8.1.8"
   dependencies:
-    "@types/cookiejar": "*"
+    "@types/cookiejar": ^2.1.5
+    "@types/methods": ^1.1.4
     "@types/node": "*"
-  checksum: 090a9fd148d82550a8feda89df4a9f3051ff2e253b02cf5f84e01c23f6e5225c0bf814d600167449c5bd090a02e42449dfbe8fa089fc24b7c10e397d814e37b9
+    form-data: ^4.0.0
+  checksum: 19e9573a66c0aebeafae8243dc8fb613f1ba3376d448faa648c097b889ca51e52c470e64d850dcc1d4d30c13cfa5721b564e062a6b67ccc4892330c9ec7aaa14
   languageName: node
   linkType: hard
 
-"@types/supertest@npm:^2.0.8":
-  version: 2.0.16
-  resolution: "@types/supertest@npm:2.0.16"
+"@types/supertest@npm:^6.0.0":
+  version: 6.0.2
+  resolution: "@types/supertest@npm:6.0.2"
   dependencies:
-    "@types/superagent": "*"
-  checksum: 2fc998ea698e0467cdbe3bea0ebce2027ea3a45a13e51a6cecb0435f44b486faecf99c34d8702d2d7fe033e6e09fdd2b374af52ecc8d0c69a1deec66b8c0dd52
+    "@types/methods": ^1.1.4
+    "@types/superagent": ^8.1.0
+  checksum: 1eafa472665757a6fd984439d11f388ae0480c6d243a6884066c474c4e0357de5373316488da503b1690c3163e075ca8c64c0c4853b3bb7deb09e05d1b64e556
   languageName: node
   linkType: hard
 
@@ -19360,15 +19370,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"formidable@npm:^2.1.2":
-  version: 2.1.2
-  resolution: "formidable@npm:2.1.2"
+"formidable@npm:^3.5.1":
+  version: 3.5.1
+  resolution: "formidable@npm:3.5.1"
   dependencies:
     dezalgo: ^1.0.4
     hexoid: ^1.0.0
     once: ^1.4.0
-    qs: ^6.11.0
-  checksum: 81c8e5d89f5eb873e992893468f0de22c01678ca3d315db62be0560f9de1c77d4faefc9b1f4575098eb2263b3c81ba1024833a9fc3206297ddbac88a4f69b7a8
+  checksum: 46b21496f9f985161cf7636163147b6728f9997c7e1d59433680d92619758bf6862330e6d105b5816bafcd1ab32f27ef183455991f93ef836ea731c68db62af9
   languageName: node
   linkType: hard
 
@@ -29400,7 +29409,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:^7.3.2, semver@npm:^7.3.5, semver@npm:^7.3.7, semver@npm:^7.3.8, semver@npm:^7.5.3, semver@npm:^7.5.4":
+"semver@npm:^7.3.2, semver@npm:^7.3.5, semver@npm:^7.3.7, semver@npm:^7.5.3, semver@npm:^7.5.4":
   version: 7.6.0
   resolution: "semver@npm:7.6.0"
   dependencies:
@@ -30671,31 +30680,30 @@ __metadata:
   languageName: node
   linkType: hard
 
-"superagent@npm:^8.1.2":
-  version: 8.1.2
-  resolution: "superagent@npm:8.1.2"
+"superagent@npm:^9.0.1":
+  version: 9.0.2
+  resolution: "superagent@npm:9.0.2"
   dependencies:
     component-emitter: ^1.3.0
     cookiejar: ^2.1.4
     debug: ^4.3.4
     fast-safe-stringify: ^2.1.1
     form-data: ^4.0.0
-    formidable: ^2.1.2
+    formidable: ^3.5.1
     methods: ^1.1.2
     mime: 2.6.0
     qs: ^6.11.0
-    semver: ^7.3.8
-  checksum: f3601c5ccae34d5ba684a03703394b5d25931f4ae2e1e31a1de809f88a9400e997ece037f9accf148a21c408f950dc829db1e4e23576a7f9fe0efa79fd5c9d2f
+  checksum: f471461b21f034d844fd0aca332128d61e3afb75c2ee5950f3339f2a3b5ca8b23e2861224f19ad9b43f21c9184d28b7d9384af5a4fde64fdef479efdb15036db
   languageName: node
   linkType: hard
 
-"supertest@npm:^6.2.4":
-  version: 6.3.4
-  resolution: "supertest@npm:6.3.4"
+"supertest@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "supertest@npm:7.0.0"
   dependencies:
     methods: ^1.1.2
-    superagent: ^8.1.2
-  checksum: 875c6fa7940f21e5be9bb646579cdb030d4057bf2da643e125e1f0480add1200395d2b17e10b8e54e1009efc63e047422501e9eb30e12828668498c0910f295f
+    superagent: ^9.0.1
+  checksum: 974743aa511ec0f387135dfca05e378f6202366c81f0850dfbcc2c3d6fc690e856dda27e175c70db38510e21d87f331c0f62e1a942afea4c447953c647c26c8b
   languageName: node
   linkType: hard
 

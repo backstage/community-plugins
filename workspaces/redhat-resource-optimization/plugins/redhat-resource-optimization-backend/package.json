@@ -27,9 +27,9 @@
     "@backstage/plugin-auth-backend": "^0.22.9",
     "@backstage/plugin-auth-backend-module-guest-provider": "^0.1.8",
     "@backstage/plugin-proxy-backend": "^0.5.3",
-    "@types/supertest": "^2.0.12",
+    "@types/supertest": "^6.0.0",
     "msw": "^1.0.0",
-    "supertest": "^6.2.4"
+    "supertest": "^7.0.0"
   },
   "exports": {
     ".": "./src/index.ts",
