@@ -6,7 +6,8 @@ import {
 
 import { InputError } from '@backstage/errors';
 import { getBearerHandler, getPersonalAccessTokenHandler, WebApi } from 'azure-devops-node-api';
-
+import { Config } from '@backstage/config';
+import { RunPipelineParameters } from 'azure-devops-node-api/interfaces/PipelinesInterfaces';
 /**
  * Creates an `acme:example` Scaffolder action.
  *
@@ -25,7 +26,7 @@ export function runAzurePipelineAction(options: {
   // For more information on how to define custom actions, see
   //   https://backstage.io/docs/features/software-templates/writing-custom-actions
   return createTemplateAction<{
-    host: string;
+    host?: string;
     organization: string;
     pipelineId: string;
     project: string;
@@ -105,10 +106,41 @@ export function runAzurePipelineAction(options: {
           : getBearerHandler(credentials!.token);
 
       const webApi = new WebApi(url, authHandler);
+      const client = await webApi.getPipelinesApi();
+      const createOptions: RunPipelineParameters = {  };
 
-      webApi.getPipelinesApi();
+      const returnedRepo = await client.runPipeline(createOptions,project,parseInt(pipelineId, 10))
 
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      if (!returnedRepo) {
+        throw new InputError(
+          `Unable to run the pipeline with Organization ${organization}, Project ${project}.
+          Please make sure that both the Org and Project are typed corrected and exist.`,
+        );
+      }
+      const remoteUrl = returnedRepo.url;
+
+   
+      if (!remoteUrl) {
+        throw new InputError(
+          'No remote URL returned from run pipeline for Azure',
+        );
+      }
+      const pipelineRunId = returnedRepo.id;
+
+      if (!pipelineRunId) {
+        throw new InputError('No Id returned from run pipeline for Azure');
+      }
+
+      const repoContentsUrl = returnedRepo.pipeline?.url;
+
+      if (!repoContentsUrl) {
+        throw new InputError(
+          'No web URL returned from run pipeline for Azure',
+        );
+      }
+      ctx.output('remoteUrl', remoteUrl);
+      ctx.output('pipelineRunUrl', returnedRepo.url);
+      ctx.output('pipelineRunStatus', returnedRepo.state);
     },
   });
 }

@@ -52,3 +52,9 @@ catalog:
       target: ../../examples/org.yaml
       rules:
         - allow: [User, Group]
+
+    # Local example scaffolder action
+    - type: file
+      target: ../../examples/scaffolder.yaml
+      rules:
+        - allow: [Template]

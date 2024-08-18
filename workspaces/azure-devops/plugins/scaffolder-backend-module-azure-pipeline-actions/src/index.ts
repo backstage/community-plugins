@@ -5,4 +5,6 @@
  * @packageDocumentation
  */
 
-export * from './actions';
+import { scaffolderModule } from './actions/module';
+
+export default scaffolderModule;
