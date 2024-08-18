@@ -43,6 +43,7 @@ const jenkinsInfo: JenkinsInfo = {
   baseUrl: 'https://jenkins.example.com',
   headers: { headerName: 'headerValue' },
   jobFullName: 'example-jobName',
+  projectCountLimit: 60,
 };
 
 const fakePermissionApi = {
