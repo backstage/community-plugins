@@ -60,7 +60,7 @@
     "@backstage/plugin-auth-backend": "^0.22.9",
     "@backstage/plugin-auth-backend-module-guest-provider": "^0.1.8",
     "@types/node-fetch": "^2.5.12",
-    "@types/supertest": "^2.0.12",
-    "supertest": "^6.2.4"
+    "@types/supertest": "^6.0.0",
+    "supertest": "^7.0.0"
   }
 }
