@@ -1,5 +1,11 @@
 # @backstage-community/plugin-catalog-backend-module-scaffolder-relation-processor
 
+## 1.2.5
+
+### Patch Changes
+
+- 06226ad: Updated dependency `@janus-idp/cli` to `1.13.0`.
+
 ## 1.2.4
 
 ### Patch Changes
