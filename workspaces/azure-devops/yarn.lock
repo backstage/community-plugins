@@ -2828,7 +2828,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@backstage-community/plugin-scaffolder-backend-module-azure-pipeline-actions@workspace:plugins/scaffolder-backend-module-azure-pipeline-actions":
+"@backstage-community/plugin-scaffolder-backend-module-azure-pipeline-actions@workspace:^, @backstage-community/plugin-scaffolder-backend-module-azure-pipeline-actions@workspace:plugins/scaffolder-backend-module-azure-pipeline-actions":
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-scaffolder-backend-module-azure-pipeline-actions@workspace:plugins/scaffolder-backend-module-azure-pipeline-actions"
   dependencies:
@@ -2838,6 +2838,7 @@ __metadata:
     "@backstage/errors": ^1.2.4
     "@backstage/integration": ^1.13.0
     "@backstage/plugin-scaffolder-node": ^0.4.8
+    "@backstage/plugin-scaffolder-node-test-utils": ^0.1.9
     azure-devops-node-api: ^14.0.0
   languageName: unknown
   linkType: soft
@@ -4721,6 +4722,18 @@ __metadata:
 "@backstage/plugin-scaffolder-node@npm:^0.4.11":
   version: 0.4.11
   resolution: "@backstage/plugin-scaffolder-node@npm:0.4.11"
+  
+"@backstage/plugin-scaffolder-node-test-utils@npm:^0.1.9":
+  version: 0.1.9
+  resolution: "@backstage/plugin-scaffolder-node-test-utils@npm:0.1.9"
+  dependencies:
+    "@backstage/backend-common": ^0.23.3
+    "@backstage/backend-test-utils": ^0.4.4
+    "@backstage/plugin-scaffolder-node": ^0.4.8
+    "@backstage/types": ^1.1.1
+  checksum: d30e4242066b5625a7f847161416f1f4fcf0a075920f8dec287ac2627fd7fac7e646cc42dd9b64ca2ab16901c9f0459159ff56b27884dde648c3a2b149469e9e
+  languageName: node
+  linkType: hard
   dependencies:
     "@backstage/backend-common": ^0.25.0
     "@backstage/backend-plugin-api": ^1.0.0
@@ -14669,6 +14682,7 @@ __metadata:
     "@backstage/backend-defaults": ^0.5.0
     "@backstage/backend-tasks": ^0.6.1
     "@backstage/cli": ^0.27.1
+    "@backstage/backend-common": ^0.23.3
     "@backstage/config": ^1.2.0
     "@backstage/plugin-app-backend": ^0.3.74
     "@backstage/plugin-auth-backend": ^0.23.0
