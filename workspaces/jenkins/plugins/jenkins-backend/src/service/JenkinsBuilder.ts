@@ -33,10 +33,12 @@ import {
 
 import { Config } from '@backstage/config';
 
+/** @public */
 export type JenkinsBuilderReturn = Promise<{
   router: express.Router;
 }>;
 
+/** @public */
 export interface JenkinsEnvironment {
   permissions: PermissionEvaluator;
   config: Config;
@@ -47,6 +49,7 @@ export interface JenkinsEnvironment {
   httpAuth: HttpAuthService;
 }
 
+/** @public */
 export class JenkinsBuilder {
   static createBuilder(env: JenkinsEnvironment) {
     return new JenkinsBuilder(env);
