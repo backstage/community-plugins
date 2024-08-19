@@ -82,7 +82,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .
           git commit -m "chore: add Knip report for ${{ matrix.workspace }}"
-          git push origin ${{ github.event.workflow_run.head_branch }}
+          git push origin HEAD:${{ github.head_ref }}
 
   ci:
     name: Workspace ${{ matrix.workspace }}, CI step for node ${{ matrix.node-version }}
