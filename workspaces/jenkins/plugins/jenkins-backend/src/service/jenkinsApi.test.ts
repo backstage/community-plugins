@@ -43,6 +43,7 @@ const jenkinsInfo: JenkinsInfo = {
   baseUrl: 'https://jenkins.example.com',
   headers: { headerName: 'headerValue' },
   jobFullName: 'example-jobName',
+  projectCountLimit: 60,
 };
 
 const fakePermissionApi = {
@@ -783,8 +784,8 @@ describe('JenkinsApi', () => {
         status: 200,
         json: async () => {},
       } as Response);
-      const jobFullName = 'test/folder/depth/foo';
-      await jenkinsApi.getJobBuilds(jenkinsInfo, jobFullName);
+      const fullJobName = 'test/folder/depth/foo';
+      await jenkinsApi.getJobBuilds(jenkinsInfo, fullJobName);
       expect(mockFetch).toHaveBeenCalledWith(
         'https://jenkins.example.com/job/test/job/folder/job/depth/job/foo/api/json?tree=name,description,url,fullName,displayName,fullDisplayName,inQueue,builds[*]',
         { headers: { headerName: 'headerValue' }, method: 'get' },
