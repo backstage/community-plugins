@@ -14,6 +14,7 @@ yarn.lock                                           @backstage/community-plugins
 /workspaces/analytics                               @backstage/community-plugins-maintainers  @jmezach
 /workspaces/bitrise                                 @backstage/community-plugins-maintainers  @backstage/sda-se-reviewers
 /workspaces/code-coverage                           @backstage/community-plugins-maintainers  @alde
+/workspaces/confluence                              @backstage/community-plugins-maintainers  @fjudith
 /workspaces/cost-insights                           @backstage/community-plugins-maintainers  @backstage/silver-lining
 /workspaces/entity-feedback                         @backstage/community-plugins-maintainers  @kuangp
 /workspaces/explore                                 @backstage/community-plugins-maintainers  @backstage/sda-se-reviewers
@@ -28,3 +29,5 @@ yarn.lock                                           @backstage/community-plugins
 /workspaces/sonarqube                               @backstage/community-plugins-maintainers  @backstage/sda-se-reviewers
 /workspaces/user-settings                           @backstage/community-plugins-maintainers  @backstage/sda-se-reviewers
 /workspaces/tech-insights                           @backstage/community-plugins-maintainers  @xantier
+/workspaces/report-portal                           @backstage/community-plugins-maintainers  @yashoswalyo
+/workspaces/redhat-resource-optimization            @backstage/community-plugins-maintainers

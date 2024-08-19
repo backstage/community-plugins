@@ -19,7 +19,7 @@ import useAsync from 'react-use/esm/useAsync';
 import { ErrorPanel, Progress } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { ScorecardInfo } from '../ScorecardsInfo';
-import { techInsightsApiRef } from '../../api/TechInsightsApi';
+import { techInsightsApiRef } from '../../api';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { getCompoundEntityRef } from '@backstage/catalog-model';
 
@@ -28,8 +28,9 @@ export const ScorecardsCard = (props: {
   description?: string;
   checksId?: string[];
   onlyFailed?: boolean;
+  expanded?: boolean;
 }) => {
-  const { title, description, checksId, onlyFailed } = props;
+  const { title, description, checksId, onlyFailed, expanded = true } = props;
   const api = useApi(techInsightsApiRef);
   const { entity } = useEntity();
   const { value, loading, error } = useAsync(
@@ -65,6 +66,7 @@ export const ScorecardsCard = (props: {
       description={description}
       checkResults={filteredValue}
       noWarning={onlyFailed}
+      expanded={expanded}
     />
   );
 };

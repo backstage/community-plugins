@@ -30,6 +30,7 @@ import {
   checkResultRenderers,
   runChecksResponse,
 } from './mocks';
+import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
 
 const entity = {
   apiVersion: 'backstage.io/v1alpha1',
@@ -47,6 +48,7 @@ createDevApp()
     factory: () =>
       ({
         getCheckResultRenderers: (_: string[]) => checkResultRenderers,
+        isCheckResultFailed: (_: CheckResult) => true,
         getAllChecks: async () => [],
         runChecks: async (_: CompoundEntityRef, __?: string[]) =>
           runChecksResponse,

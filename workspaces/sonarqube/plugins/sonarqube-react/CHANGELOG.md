@@ -1,5 +1,11 @@
 # @backstage-community/plugin-sonarqube-react
 
+## 0.2.0
+
+### Minor Changes
+
+- 389e0a2: Enhancement to support tabular list of sonarqube views
+
 ## 0.1.17
 
 ### Patch Changes

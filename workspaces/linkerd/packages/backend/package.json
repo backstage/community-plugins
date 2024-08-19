@@ -38,6 +38,8 @@
     "@backstage/plugin-permission-backend-module-allow-all-policy": "^0.1.19",
     "@backstage/plugin-permission-common": "^0.8.0",
     "@backstage/plugin-permission-node": "^0.8.0",
+    "@backstage/plugin-search-backend-module-catalog": "^0.1.28",
+    "@backstage/plugin-search-backend-module-techdocs": "^0.1.27",
     "@backstage/plugin-techdocs-backend": "^1.10.9",
     "app": "link:../app",
     "better-sqlite3": "^9.0.0",

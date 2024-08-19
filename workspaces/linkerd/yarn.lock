@@ -6142,7 +6142,7 @@ __metadata:
     "@backstage/e2e-test-utils": ^0.1.1
     "@backstage/repo-tools": ^0.9.4
     "@changesets/cli": ^2.27.1
-    "@spotify/prettier-config": ^12.0.0
+    "@spotify/prettier-config": ^15.0.0
     node-gyp: ^9.0.0
     prettier: ^2.3.2
     typescript: ~5.3.0
@@ -9564,12 +9564,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@spotify/prettier-config@npm:^12.0.0":
-  version: 12.0.0
-  resolution: "@spotify/prettier-config@npm:12.0.0"
+"@spotify/prettier-config@npm:^15.0.0":
+  version: 15.0.0
+  resolution: "@spotify/prettier-config@npm:15.0.0"
   peerDependencies:
     prettier: 2.x
-  checksum: 04732b96af895269bb8a988ba309e80bd7b87c785837e06f72ff938e8895c5a3a3211fa37b54c6a2b502e88587a437c2be3ccb486a84aff02c2f6fb4582a4a97
+  checksum: aa5ec5739427f9acdb9d62ae6c04f04a344898567239f7ee45c75c6205ebdffbc61747ea8de6e83baf0bc3785359967de4b7097a8723c4b4063ff57dc5cb6c44
   languageName: node
   linkType: hard
 
@@ -12920,6 +12920,7 @@ __metadata:
     "@backstage/plugin-catalog-react": ^1.12.2
     "@backstage/plugin-kubernetes": ^0.11.12
     "@backstage/plugin-permission-react": ^0.4.24
+    "@backstage/plugin-search-react": ^1.7.13
     "@backstage/plugin-user-settings": ^0.8.9
     "@backstage/test-utils": ^1.5.8
     "@backstage/theme": ^0.5.6
@@ -13639,6 +13640,8 @@ __metadata:
     "@backstage/plugin-permission-backend-module-allow-all-policy": ^0.1.19
     "@backstage/plugin-permission-common": ^0.8.0
     "@backstage/plugin-permission-node": ^0.8.0
+    "@backstage/plugin-search-backend-module-catalog": ^0.1.28
+    "@backstage/plugin-search-backend-module-techdocs": ^0.1.27
     "@backstage/plugin-techdocs-backend": ^1.10.9
     "@types/dockerode": ^3.3.0
     "@types/express": ^4.17.6

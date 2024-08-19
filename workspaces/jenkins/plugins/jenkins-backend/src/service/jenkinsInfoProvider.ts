@@ -50,6 +50,7 @@ export interface JenkinsInfo {
   baseUrl: string;
   headers?: Record<string, string | string[]>;
   jobFullName: string; // TODO: make this an array
+  projectCountLimit: number;
   crumbIssuer?: boolean;
 }
 
@@ -58,6 +59,7 @@ export interface JenkinsInstanceConfig {
   name: string;
   baseUrl: string;
   username: string;
+  projectCountLimit?: number;
   apiKey: string;
   crumbIssuer?: boolean;
   /**
@@ -90,6 +92,7 @@ export class JenkinsConfig {
         name: c.getString('name'),
         baseUrl: c.getString('baseUrl'),
         username: c.getString('username'),
+        projectCountLimit: c.getOptionalNumber('projectCountLimit'),
         apiKey: c.getString('apiKey'),
         extraRequestHeaders: c.getOptional('extraRequestHeaders'),
         crumbIssuer: c.getOptionalBoolean('crumbIssuer'),
@@ -213,6 +216,9 @@ export class DefaultJenkinsInfoProvider implements JenkinsInfoProvider {
     jobFullName?: string;
     credentials?: BackstageCredentials;
   }): Promise<JenkinsInfo> {
+    // default limitation of projects
+    const DEFAULT_LIMITATION_OF_PROJECTS = 50;
+
     // load entity
     const entity = await this.catalog.getEntityByRef(
       opt.entityRef,
@@ -269,6 +275,8 @@ export class DefaultJenkinsInfoProvider implements JenkinsInfoProvider {
         ...instanceConfig.extraRequestHeaders,
       },
       jobFullName,
+      projectCountLimit:
+        instanceConfig.projectCountLimit ?? DEFAULT_LIMITATION_OF_PROJECTS,
       crumbIssuer: instanceConfig.crumbIssuer,
     };
   }

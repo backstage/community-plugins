@@ -1,5 +1,11 @@
 # @backstage-community/plugin-jenkins-backend
 
+## 0.4.9
+
+### Patch Changes
+
+- c1f63bd: Fixed rebuild api call on frontend and project/job depth on view runs route.
+
 ## 0.4.8
 
 ### Patch Changes

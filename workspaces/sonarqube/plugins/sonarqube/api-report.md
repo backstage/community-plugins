@@ -55,6 +55,13 @@ export class SonarQubeClient implements SonarQubeApi {
   // (undocumented)
   discoveryApi: DiscoveryApi;
   // (undocumented)
+  getFindingSummaries(
+    components: Array<{
+      projectInstance: string | undefined;
+      componentKey: string;
+    }>,
+  ): Promise<Map<string, FindingSummary>>;
+  // (undocumented)
   getFindingSummary({
     componentKey,
     projectInstance,
@@ -64,6 +71,8 @@ export class SonarQubeClient implements SonarQubeApi {
   }): Promise<FindingSummary | undefined>;
   // (undocumented)
   identityApi: IdentityApi;
+  // (undocumented)
+  settledResponseOf(responses: PromiseSettledResult<any>[]): Array<any>;
 }
 
 // @public (undocumented)
@@ -75,4 +84,22 @@ export type SonarQubeContentPageProps = {
 
 // @public (undocumented)
 export const sonarQubePlugin: BackstagePlugin<{}, {}, {}>;
+
+// @public (undocumented)
+export const SonarQubeTable: ({
+  tableContent,
+  title,
+  options,
+  emptyContent,
+  localization,
+}: SonarQubeTableProps) => React_2.JSX.Element;
+
+// @public (undocumented)
+export type SonarQubeTableProps = {
+  tableContent: any[] | undefined;
+  title?: string;
+  options?: any | undefined;
+  emptyContent?: React_2.ReactNode;
+  localization?: any;
+};
 ```

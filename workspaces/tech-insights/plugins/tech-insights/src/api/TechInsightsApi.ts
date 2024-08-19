@@ -40,6 +40,7 @@ export const techInsightsApiRef = createApiRef<TechInsightsApi>({
  */
 export interface TechInsightsApi {
   getCheckResultRenderers: (types: string[]) => CheckResultRenderer[];
+  isCheckResultFailed: (check: CheckResult) => boolean;
   getAllChecks(): Promise<Check[]>;
   runChecks(
     entityParams: CompoundEntityRef,
