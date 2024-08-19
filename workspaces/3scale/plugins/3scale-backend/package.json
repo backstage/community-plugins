@@ -42,12 +42,12 @@
   },
   "dependencies": {
     "@backstage/backend-common": "^0.23.3",
+    "@backstage/backend-dynamic-feature-service": "^0.2.15",
     "@backstage/backend-plugin-api": "^0.7.0",
     "@backstage/backend-tasks": "^0.5.27",
     "@backstage/catalog-model": "^1.5.0",
     "@backstage/config": "^1.2.0",
-    "@backstage/plugin-catalog-node": "^1.12.4",
-    "@backstage/backend-dynamic-feature-service": "^0.2.15"
+    "@backstage/plugin-catalog-node": "^1.12.4"
   },
   "devDependencies": {
     "@backstage/cli": "0.26.11",
@@ -78,8 +78,5 @@
   ],
   "homepage": "https://red.ht/rhdh",
   "bugs": "https://github.com/backstage/community-plugins/issues",
-  // "maintainers": [
-  //   "@janus-idp/maintainers-plugins"
-  // ],
   "author": "Red Hat"
 }
