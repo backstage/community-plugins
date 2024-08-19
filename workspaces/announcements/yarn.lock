@@ -2864,6 +2864,158 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@backstage-community/backstage-plugin-announcements-backend@workspace:plugins/announcements-backend":
+  version: 0.0.0-use.local
+  resolution: "@backstage-community/backstage-plugin-announcements-backend@workspace:plugins/announcements-backend"
+  dependencies:
+    "@backstage-community/backstage-plugin-announcements-common": "workspace:^"
+    "@backstage-community/backstage-plugin-search-backend-module-announcements": "workspace:^"
+    "@backstage/backend-common": ^0.22.0
+    "@backstage/backend-plugin-api": ^0.6.18
+    "@backstage/backend-test-utils": ^0.3.8
+    "@backstage/cli": ^0.26.5
+    "@backstage/config": ^1.2.0
+    "@backstage/core-plugin-api": ^1.9.2
+    "@backstage/errors": ^1.2.4
+    "@backstage/plugin-auth-node": ^0.4.13
+    "@backstage/plugin-permission-common": ^0.7.13
+    "@backstage/plugin-permission-node": ^0.7.29
+    "@backstage/plugin-search-backend-node": ^1.2.22
+    "@backstage/plugin-search-common": ^1.2.11
+    "@backstage/test-utils": ^1.5.5
+    "@procore-oss/backstage-plugin-announcements-common": ^0.2.2
+    "@procore-oss/backstage-plugin-search-backend-module-announcements": ^0.2.2
+    "@types/express": ^4.17.6
+    "@types/supertest": ^2.0.15
+    "@types/uuid": ^8.3.4
+    better-sqlite3: ^9.0.0
+    cross-fetch: ^3.1.5
+    express: ^4.17.1
+    express-promise-router: ^4.1.0
+    knex: ^3.0.1
+    luxon: ^3.2.0
+    msw: ^1.3.2
+    node-fetch: ^2.6.7
+    slugify: ^1.6.6
+    supertest: ^6.3.3
+    uuid: ^9.0.0
+    winston: ^3.2.1
+    yn: ^4.0.0
+  languageName: unknown
+  linkType: soft
+
+"@backstage-community/backstage-plugin-announcements-common@workspace:^, @backstage-community/backstage-plugin-announcements-common@workspace:plugins/announcements-common":
+  version: 0.0.0-use.local
+  resolution: "@backstage-community/backstage-plugin-announcements-common@workspace:plugins/announcements-common"
+  dependencies:
+    "@backstage/cli": ^0.26.5
+    "@backstage/plugin-permission-common": ^0.7.13
+  languageName: unknown
+  linkType: soft
+
+"@backstage-community/backstage-plugin-announcements-node@workspace:^, @backstage-community/backstage-plugin-announcements-node@workspace:plugins/announcements-node":
+  version: 0.0.0-use.local
+  resolution: "@backstage-community/backstage-plugin-announcements-node@workspace:plugins/announcements-node"
+  dependencies:
+    "@backstage-community/backstage-plugin-announcements-common": "workspace:^"
+    "@backstage/backend-plugin-api": ^0.6.18
+    "@backstage/cli": ^0.26.5
+    "@backstage/core-plugin-api": ^1.9.2
+    "@backstage/errors": ^1.2.4
+    "@backstage/test-utils": ^1.5.5
+    "@procore-oss/backstage-plugin-announcements-common": ^0.2.2
+    msw: ^1.3.2
+  languageName: unknown
+  linkType: soft
+
+"@backstage-community/backstage-plugin-announcements-react@workspace:^, @backstage-community/backstage-plugin-announcements-react@workspace:plugins/announcements-react":
+  version: 0.0.0-use.local
+  resolution: "@backstage-community/backstage-plugin-announcements-react@workspace:plugins/announcements-react"
+  dependencies:
+    "@backstage-community/backstage-plugin-announcements-common": "workspace:^"
+    "@backstage/cli": ^0.26.5
+    "@backstage/core-plugin-api": ^1.9.2
+    "@backstage/errors": ^1.2.4
+    "@material-ui/core": ^4.12.2
+    "@procore-oss/backstage-plugin-announcements-common": ^0.2.2
+    "@testing-library/jest-dom": ^5.10.1
+    "@testing-library/react": ^12.1.3
+    luxon: ^3.4.4
+    react-use: ^17.2.4
+  peerDependencies:
+    react: ^16.13.1 || ^17.0.0 || ^18.0.0
+  languageName: unknown
+  linkType: soft
+
+"@backstage-community/backstage-plugin-announcements@workspace:plugins/announcements":
+  version: 0.0.0-use.local
+  resolution: "@backstage-community/backstage-plugin-announcements@workspace:plugins/announcements"
+  dependencies:
+    "@backstage-community/backstage-plugin-announcements-common": "workspace:^"
+    "@backstage-community/backstage-plugin-announcements-react": "workspace:^"
+    "@backstage/catalog-model": ^1.5.0
+    "@backstage/cli": ^0.26.5
+    "@backstage/core-app-api": ^1.12.5
+    "@backstage/core-compat-api": ^0.2.7
+    "@backstage/core-components": ^0.14.7
+    "@backstage/core-plugin-api": ^1.9.2
+    "@backstage/dev-utils": ^1.0.32
+    "@backstage/errors": ^1.2.4
+    "@backstage/frontend-plugin-api": ^0.6.7
+    "@backstage/frontend-test-utils": ^0.1.11
+    "@backstage/plugin-catalog-react": ^1.12.0
+    "@backstage/plugin-permission-react": ^0.4.22
+    "@backstage/plugin-search-common": ^1.2.11
+    "@backstage/plugin-search-react": ^1.7.11
+    "@backstage/test-utils": ^1.5.5
+    "@backstage/theme": ^0.5.4
+    "@material-ui/core": ^4.12.2
+    "@material-ui/icons": ^4.9.1
+    "@material-ui/lab": 4.0.0-alpha.57
+    "@mui/material": ^5.15.6
+    "@procore-oss/backstage-plugin-announcements-common": ^0.2.2
+    "@testing-library/jest-dom": ^6.3.0
+    "@testing-library/react": ^14.0.0
+    "@testing-library/user-event": ^14.5.1
+    "@types/luxon": ^3.3.3
+    "@types/node": ^18.18.7
+    "@uiw/react-md-editor": ^4.0.3
+    add: ^2.0.6
+    cross-fetch: ^3.1.8
+    luxon: ^3.2.0
+    msw: ^1.3.2
+    react-use: ^17.2.4
+    slugify: 1.6.6
+  peerDependencies:
+    react: ^16.13.1 || ^17.0.0 || ^18.0.0
+    react-router-dom: 6.0.0-beta.0 || ^6.3.0
+  languageName: unknown
+  linkType: soft
+
+"@backstage-community/backstage-plugin-search-backend-module-announcements@workspace:^, @backstage-community/backstage-plugin-search-backend-module-announcements@workspace:plugins/search-backend-module-announcements":
+  version: 0.0.0-use.local
+  resolution: "@backstage-community/backstage-plugin-search-backend-module-announcements@workspace:plugins/search-backend-module-announcements"
+  dependencies:
+    "@backstage-community/backstage-plugin-announcements-common": "workspace:^"
+    "@backstage-community/backstage-plugin-announcements-node": "workspace:^"
+    "@backstage/backend-common": ^0.22.0
+    "@backstage/backend-plugin-api": ^0.6.18
+    "@backstage/backend-tasks": ^0.5.23
+    "@backstage/backend-test-utils": ^0.3.8
+    "@backstage/cli": ^0.26.5
+    "@backstage/core-plugin-api": ^1.9.2
+    "@backstage/errors": ^1.2.4
+    "@backstage/plugin-search-backend-node": ^1.2.22
+    "@backstage/plugin-search-common": ^1.2.11
+    "@backstage/test-utils": ^1.5.5
+    "@procore-oss/backstage-plugin-announcements-common": ^0.2.2
+    "@procore-oss/backstage-plugin-announcements-node": ^0.2.2
+    cross-fetch: ^4.0.0
+    msw: ^1.3.2
+    winston: ^3.11.0
+  languageName: unknown
+  linkType: soft
+
 "@backstage/app-defaults@npm:^1.5.5":
   version: 1.5.5
   resolution: "@backstage/app-defaults@npm:1.5.5"
@@ -5816,150 +5968,45 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@procore-oss/backstage-plugin-announcements-backend@workspace:plugins/announcements-backend":
-  version: 0.0.0-use.local
-  resolution: "@procore-oss/backstage-plugin-announcements-backend@workspace:plugins/announcements-backend"
+"@procore-oss/backstage-plugin-announcements-common@npm:^0.2.2":
+  version: 0.2.2
+  resolution: "@procore-oss/backstage-plugin-announcements-common@npm:0.2.2"
   dependencies:
-    "@backstage/backend-common": ^0.22.0
-    "@backstage/backend-plugin-api": ^0.6.18
-    "@backstage/backend-test-utils": ^0.3.8
-    "@backstage/cli": ^0.26.5
-    "@backstage/config": ^1.2.0
-    "@backstage/core-plugin-api": ^1.9.2
-    "@backstage/errors": ^1.2.4
-    "@backstage/plugin-auth-node": ^0.4.13
     "@backstage/plugin-permission-common": ^0.7.13
-    "@backstage/plugin-permission-node": ^0.7.29
-    "@backstage/plugin-search-backend-node": ^1.2.22
-    "@backstage/plugin-search-common": ^1.2.11
-    "@backstage/test-utils": ^1.5.5
-    "@procore-oss/backstage-plugin-announcements-common": "workspace:^"
-    "@procore-oss/backstage-plugin-search-backend-module-announcements": "workspace:^"
-    "@types/express": ^4.17.6
-    "@types/supertest": ^2.0.15
-    "@types/uuid": ^8.3.4
-    better-sqlite3: ^9.0.0
-    cross-fetch: ^3.1.5
-    express: ^4.17.1
-    express-promise-router: ^4.1.0
-    knex: ^3.0.1
-    luxon: ^3.2.0
-    msw: ^1.3.2
-    node-fetch: ^2.6.7
-    slugify: ^1.6.6
-    supertest: ^6.3.3
-    uuid: ^9.0.0
-    winston: ^3.2.1
-    yn: ^4.0.0
-  languageName: unknown
-  linkType: soft
+  checksum: 877ac9b358a191146fa0eebeddd7c0f927f32fbaa03ef1a0f1306e4b24bd2395b2e1a8158c7baa71dccdf0095f1b660cb8921994dfaa4d35eae9b22ffc545650
+  languageName: node
+  linkType: hard
 
-"@procore-oss/backstage-plugin-announcements-common@workspace:^, @procore-oss/backstage-plugin-announcements-common@workspace:plugins/announcements-common":
-  version: 0.0.0-use.local
-  resolution: "@procore-oss/backstage-plugin-announcements-common@workspace:plugins/announcements-common"
-  dependencies:
-    "@backstage/cli": ^0.26.5
-    "@backstage/plugin-permission-common": ^0.7.13
-  languageName: unknown
-  linkType: soft
-
-"@procore-oss/backstage-plugin-announcements-node@workspace:^, @procore-oss/backstage-plugin-announcements-node@workspace:plugins/announcements-node":
-  version: 0.0.0-use.local
-  resolution: "@procore-oss/backstage-plugin-announcements-node@workspace:plugins/announcements-node"
+"@procore-oss/backstage-plugin-announcements-node@npm:^0.2.2":
+  version: 0.2.2
+  resolution: "@procore-oss/backstage-plugin-announcements-node@npm:0.2.2"
   dependencies:
     "@backstage/backend-plugin-api": ^0.6.18
-    "@backstage/cli": ^0.26.5
     "@backstage/core-plugin-api": ^1.9.2
     "@backstage/errors": ^1.2.4
-    "@backstage/test-utils": ^1.5.5
-    "@procore-oss/backstage-plugin-announcements-common": "workspace:^"
-    msw: ^1.3.2
-  languageName: unknown
-  linkType: soft
+    "@procore-oss/backstage-plugin-announcements-common": ^0.2.2
+  checksum: 7cf2896557c5af79297c84c43add61ca1f47a0bcbc1d2846c5b33aa9bd23418138de0eb80e755489f637dbf36812fc955ddb45628c5a7c2883abe80f3ed15481
+  languageName: node
+  linkType: hard
 
-"@procore-oss/backstage-plugin-announcements-react@workspace:^, @procore-oss/backstage-plugin-announcements-react@workspace:plugins/announcements-react":
-  version: 0.0.0-use.local
-  resolution: "@procore-oss/backstage-plugin-announcements-react@workspace:plugins/announcements-react"
-  dependencies:
-    "@backstage/cli": ^0.26.5
-    "@backstage/core-plugin-api": ^1.9.2
-    "@backstage/errors": ^1.2.4
-    "@material-ui/core": ^4.12.2
-    "@procore-oss/backstage-plugin-announcements-common": "workspace:^"
-    "@testing-library/jest-dom": ^5.10.1
-    "@testing-library/react": ^12.1.3
-    luxon: ^3.4.4
-    react-use: ^17.2.4
-  peerDependencies:
-    react: ^16.13.1 || ^17.0.0 || ^18.0.0
-  languageName: unknown
-  linkType: soft
-
-"@procore-oss/backstage-plugin-announcements@workspace:plugins/announcements":
-  version: 0.0.0-use.local
-  resolution: "@procore-oss/backstage-plugin-announcements@workspace:plugins/announcements"
-  dependencies:
-    "@backstage/catalog-model": ^1.5.0
-    "@backstage/cli": ^0.26.5
-    "@backstage/core-app-api": ^1.12.5
-    "@backstage/core-compat-api": ^0.2.7
-    "@backstage/core-components": ^0.14.7
-    "@backstage/core-plugin-api": ^1.9.2
-    "@backstage/dev-utils": ^1.0.32
-    "@backstage/errors": ^1.2.4
-    "@backstage/frontend-plugin-api": ^0.6.7
-    "@backstage/frontend-test-utils": ^0.1.11
-    "@backstage/plugin-catalog-react": ^1.12.0
-    "@backstage/plugin-permission-react": ^0.4.22
-    "@backstage/plugin-search-common": ^1.2.11
-    "@backstage/plugin-search-react": ^1.7.11
-    "@backstage/test-utils": ^1.5.5
-    "@backstage/theme": ^0.5.4
-    "@material-ui/core": ^4.12.2
-    "@material-ui/icons": ^4.9.1
-    "@material-ui/lab": 4.0.0-alpha.57
-    "@mui/material": ^5.15.6
-    "@procore-oss/backstage-plugin-announcements-common": "workspace:^"
-    "@procore-oss/backstage-plugin-announcements-react": "workspace:^"
-    "@testing-library/jest-dom": ^6.3.0
-    "@testing-library/react": ^14.0.0
-    "@testing-library/user-event": ^14.5.1
-    "@types/luxon": ^3.3.3
-    "@types/node": ^18.18.7
-    "@uiw/react-md-editor": ^4.0.3
-    add: ^2.0.6
-    cross-fetch: ^3.1.8
-    luxon: ^3.2.0
-    msw: ^1.3.2
-    react-use: ^17.2.4
-    slugify: 1.6.6
-  peerDependencies:
-    react: ^16.13.1 || ^17.0.0 || ^18.0.0
-    react-router-dom: 6.0.0-beta.0 || ^6.3.0
-  languageName: unknown
-  linkType: soft
-
-"@procore-oss/backstage-plugin-search-backend-module-announcements@workspace:^, @procore-oss/backstage-plugin-search-backend-module-announcements@workspace:plugins/search-backend-module-announcements":
-  version: 0.0.0-use.local
-  resolution: "@procore-oss/backstage-plugin-search-backend-module-announcements@workspace:plugins/search-backend-module-announcements"
+"@procore-oss/backstage-plugin-search-backend-module-announcements@npm:^0.2.2":
+  version: 0.2.2
+  resolution: "@procore-oss/backstage-plugin-search-backend-module-announcements@npm:0.2.2"
   dependencies:
     "@backstage/backend-common": ^0.22.0
     "@backstage/backend-plugin-api": ^0.6.18
     "@backstage/backend-tasks": ^0.5.23
-    "@backstage/backend-test-utils": ^0.3.8
-    "@backstage/cli": ^0.26.5
     "@backstage/core-plugin-api": ^1.9.2
     "@backstage/errors": ^1.2.4
     "@backstage/plugin-search-backend-node": ^1.2.22
     "@backstage/plugin-search-common": ^1.2.11
-    "@backstage/test-utils": ^1.5.5
-    "@procore-oss/backstage-plugin-announcements-common": "workspace:^"
-    "@procore-oss/backstage-plugin-announcements-node": "workspace:^"
+    "@procore-oss/backstage-plugin-announcements-common": ^0.2.2
+    "@procore-oss/backstage-plugin-announcements-node": ^0.2.2
     cross-fetch: ^4.0.0
-    msw: ^1.3.2
     winston: ^3.11.0
-  languageName: unknown
-  linkType: soft
+  checksum: 9fcf7ca85744ca9c2a6e5b7b14cec60cd90ef8fe29c3f909986e4613305c450ead5a31f47570dbe60e540466b1deba9ca899791a0893921b06333bcfca838166
+  languageName: node
+  linkType: hard
 
 "@react-hookz/deep-equal@npm:^1.0.4":
   version: 1.0.4
