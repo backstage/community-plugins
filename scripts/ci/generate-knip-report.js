@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import pLimit from "p-limit";
 import os from "os";
 import { resolve as resolvePath } from "path";
@@ -61,7 +63,7 @@ async function handlePackage({ packageDir, knipDir}) {
   });
 
   for (const item of dirContents) {
-    if (item.isDirectory()) {
+    if (item.isDirectory() && item.name != "noop") {
       try {
         const currDirPath = resolvePath(fullDir, item.name);
         const reportPath = resolvePath(currDirPath, "knip-report.md");
