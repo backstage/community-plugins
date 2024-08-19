@@ -1,0 +1,29 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: '/'
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 15
+    labels:
+      - dependencies
+    commit-message:
+      prefix: "chore(deps)"
+    groups:
+      dependencies:
+        applies-to: version-updates
+        update-types:
+          - "minor"
+          - "patch"
+  - package-ecosystem: 'github-actions'
+    directory: '/' # Must be set to "/" to check for workflow files in .github/workflows
+    schedule:
+      interval: 'weekly'
+    commit-message:
+      prefix: "chore(deps)"
+    groups:
+      dependencies:
+        applies-to: version-updates
+        update-types:
+          - "minor"
+          - "patch"

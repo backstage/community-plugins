@@ -1,0 +1,41 @@
+name: Release
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+  pull-requests: write
+jobs:
+  release:
+    name: Create Changeset PR
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
+        with:
+          node-version: 18.x
+          cache: 'yarn'
+      - name: Install Dependencies
+        run: yarn install --immutable
+      - name: Build type declarations
+        run: yarn tsc
+      - name: Build packages
+        run: yarn build
+      - name: Enable non-immutable yarn installs
+        run: yarn config set -H enableImmutableInstalls false
+      - name: Authenticate yarn with NPM
+        run: yarn config set -H 'npmAuthToken' "${{secrets.NPM_TOKEN}}"
+      - name: Create Release Pull Request
+        uses: changesets/action@aba318e9165b45b7948c60273e0b72fce0a64eb9 # v1
+        with:
+          version: yarn version
+          publish: yarn workspaces foreach -v --no-private npm publish --access public --tolerate-republish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Publish git tags
+        run: yarn changeset tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
