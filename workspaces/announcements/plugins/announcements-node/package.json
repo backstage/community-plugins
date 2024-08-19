@@ -1,5 +1,5 @@
 {
-  "name": "@procore-oss/backstage-plugin-announcements-node",
+  "name": "@backstage-community/backstage-plugin-announcements-node",
   "description": "Node.js library for the announcements plugin",
   "version": "0.2.3",
   "main": "src/index.ts",
@@ -14,11 +14,11 @@
     "role": "node-library",
     "pluginId": "announcements",
     "pluginPackages": [
-      "@procore-oss/backstage-plugin-announcements",
-      "@procore-oss/backstage-plugin-announcements-backend",
-      "@procore-oss/backstage-plugin-announcements-common",
-      "@procore-oss/backstage-plugin-announcements-node",
-      "@procore-oss/backstage-plugin-announcements-react"
+      "@backstage-community/backstage-plugin-announcements",
+      "@backstage-community/backstage-plugin-announcements-backend",
+      "@backstage-community/backstage-plugin-announcements-common",
+      "@backstage-community/backstage-plugin-announcements-node",
+      "@backstage-community/backstage-plugin-announcements-react"
     ]
   },
   "scripts": {
@@ -33,7 +33,7 @@
     "@backstage/backend-plugin-api": "^0.6.18",
     "@backstage/core-plugin-api": "^1.9.2",
     "@backstage/errors": "^1.2.4",
-    "@procore-oss/backstage-plugin-announcements-common": "workspace:^"
+    "@backstage-community/backstage-plugin-announcements-common": "workspace:^"
   },
   "devDependencies": {
     "@backstage/cli": "^0.26.5",

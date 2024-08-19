@@ -1,5 +1,5 @@
 {
-  "name": "@procore-oss/backstage-plugin-search-backend-module-announcements",
+  "name": "@backstage-community/backstage-plugin-search-backend-module-announcements",
   "description": "The announcements backend module for the search plugin.",
   "version": "0.2.3",
   "main": "src/index.ts",
@@ -32,8 +32,8 @@
     "@backstage/errors": "^1.2.4",
     "@backstage/plugin-search-backend-node": "^1.2.22",
     "@backstage/plugin-search-common": "^1.2.11",
-    "@procore-oss/backstage-plugin-announcements-common": "workspace:^",
-    "@procore-oss/backstage-plugin-announcements-node": "workspace:^",
+    "@backstage-community/backstage-plugin-announcements-common": "workspace:^",
+    "@backstage-community/backstage-plugin-announcements-node": "workspace:^",
     "cross-fetch": "^4.0.0",
     "winston": "^3.11.0"
   },
