@@ -2,7 +2,6 @@ import { exec } from 'child_process';
 import os from 'os';
 import pLimit from 'p-limit';
 
-// Concurrency limiter to avoid overloading the system.
 const limiter = pLimit(os.cpus().length);
 
 export function createBinRunner(cwd) {
@@ -11,10 +10,10 @@ export function createBinRunner(cwd) {
       () =>
         new Promise((resolve, reject) => {
           exec(
-            command.join(' '),  // Join command arguments as a single string
+            command.join(' '), 
             {
               cwd,
-              shell: '/bin/bash',  // Use bash as the shell
+              shell: '/bin/bash', 
               timeout: 60000,
               maxBuffer: 1024 * 1024,
             },

@@ -100,6 +100,12 @@ jobs:
       - name: lint
         run: yarn backstage-cli repo lint --since origin/main
 
+      - name: generate knip reports
+        working-directory: ${{ github.workspace }}/scripts/ci
+        run: node generate-knip-report.js
+        env:
+          WORKSPACE_NAME: ${{ matrix.workspace }}
+
       - name: publish check
         run: yarn backstage-cli repo fix --check --publish
 

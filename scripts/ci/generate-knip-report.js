@@ -24,11 +24,9 @@ async function generateKnipConfig({ packageDir }) {
     jest: {
       entry: ["src/setupTests.ts", "**/*.test.{ts,tsx}"],
     },
-    storybook: { entry: "src/components/**/*.stories.tsx" },
     ignore: [
       ".eslintrc.js",
       "config.d.ts",
-      "knexfile.js",
       "node_modules/**",
       "dist/**",
       "{fixtures,migrations,templates}/**",
@@ -58,7 +56,6 @@ async function handlePackage({ packageDir, knipDir}) {
   }
   const fullDir = resolvePath(repoRoot, "workspaces", packageDir, "plugins");
 
-  // generate a separate report for each plugin within plguins
   const dirContents = await fs.readdir(fullDir, {
     withFileTypes: true,
   });
@@ -80,7 +77,7 @@ async function handlePackage({ packageDir, knipDir}) {
           "--include dependencies,unlisted",
           "--reporter markdown"
         );
-        // console.log(report);
+
         cleanKnipConfig({ packageDir: currDirPath });
 
         const existingReport = await fs
@@ -93,7 +90,7 @@ async function handlePackage({ packageDir, knipDir}) {
           });
 
         if (existingReport !== report) {
-          console.warn(`Knip report changed for ${packageDir}`);
+          console.warn(`Knip report changed for ${packageDir}/${item.name}`);
         }
         await fs.writeFile(reportPath, report);
       } catch (error) {
@@ -105,52 +102,52 @@ async function handlePackage({ packageDir, knipDir}) {
   }
 }
 
-export async function runKnipReports({ packageDirs }) {
-    const knipDir = resolvePath(repoRoot, './node_modules/knip/bin/');
-    const limiter = pLimit(os.cpus().length);
-  
+
+export async function runKnipReports({ packageDir }) {
+  const knipDir = resolvePath(repoRoot, './node_modules/knip/bin/');
+  const limiter = pLimit(os.cpus().length);
+
+  try {
+    await limiter(async () =>
+      handlePackage({ packageDir, knipDir })
+    );
+  } catch (e) {
+    console.log(
+      `Error occurred during knip reporting: ${e}, cleaning knip configs`
+    );
+
+    const fullDir = resolvePath(repoRoot, 'workspaces', packageDir, 'plugins');
+
     try {
-      await Promise.all(
-        packageDirs.map((packageDir) =>
-          limiter(async () =>
-            handlePackage({ packageDir, knipDir })
-          )
-        )
-      );
-    } catch (e) {
-      console.log(
-        `Error occurred during knip reporting: ${e}, cleaning knip configs`
-      );
-  
-      for (const packageDir of packageDirs) {
-        const fullDir = resolvePath(repoRoot, 'workspaces', packageDir, 'plugins');
-  
-        try {
-          const dirContents = await fs.readdir(fullDir, { withFileTypes: true });
-  
-          for (const item of dirContents) {
-            if (item.isDirectory()) {
-              const currDirPath = resolvePath(fullDir, item.name);
-              await cleanKnipConfig({ packageDir: currDirPath }); // Ensure `cleanKnipConfig` is awaited
-            }
-          }
-        } catch (error) {
-          console.error(`Failed to read directory or clean Knip config for ${packageDir}:`, error);
+      const dirContents = await fs.readdir(fullDir, { withFileTypes: true });
+
+      for (const item of dirContents) {
+        if (item.isDirectory()) {
+          const currDirPath = resolvePath(fullDir, item.name);
+          await cleanKnipConfig({ packageDir: currDirPath });
         }
       }
-  
-      throw e; // Re-throw the original error after cleanup
+    } catch (error) {
+      console.error(`Failed to read directory or clean Knip config for ${packageDir}:`, error);
     }
-  }
 
+    throw e;
+  }
+}
   async function main() {
     try {
-      await runKnipReports({ packageDirs: ['adr','bazaar'] });
+      if (!process.env.WORKSPACE_NAME) {
+        throw new Error("WORKSPACE_NAME environment variable not set");
+      }
+      await runKnipReports({ packageDir: process.env.WORKSPACE_NAME});
       console.log('Knip reports generated successfully');
     } catch (error) {
       console.error('Failed to generate Knip reports:', error);
     }
   }
-  
-  // Execute the main function
-  main();
+
+
+main().catch((error) => {
+  console.error(error.stack);
+  process.exit(1);
+});
