@@ -13,7 +13,7 @@ kind: Component
 metadata:
   name: example-website
   annotations:
-    jenkins.io/job-full-name: 'folder-name/project-name' # use this instead
+    jenkins.io/job-full-name: 'folder-name/project-name'
 spec:
   type: website
   lifecycle: experimental

@@ -237,13 +237,6 @@ export class JenkinsBuilder {
       },
     );
 
-    // addResourceRoutesToRouter(
-    //   router,
-    //   jenkinsInfoProvider,
-    //   authService,
-    //   httpAuth,
-    // );
-
     return router;
   }
 }
