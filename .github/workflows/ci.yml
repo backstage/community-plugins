@@ -77,12 +77,16 @@ jobs:
           WORKSPACE_NAME: ${{ matrix.workspace }}
 
       - name: Commit and push Knip report
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_SERVICE_ACCOUNT_TOKEN }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
           git add .
           git commit -m "chore: add Knip report for ${{ matrix.workspace }}"
           git push origin HEAD:${{ github.head_ref }}
+
 
   ci:
     name: Workspace ${{ matrix.workspace }}, CI step for node ${{ matrix.node-version }}
