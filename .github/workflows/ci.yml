@@ -48,8 +48,7 @@ jobs:
     needs: find-changed-workspaces
     strategy:
       matrix:
-        workspace: ${{ fromJSON(needs.find-changed-workspaces.outputs.workspaces)}}
-        node-version: [18.x, 20.x]
+        workspace: ${{ fromJSON(needs.find-changed-workspaces.outputs.workspaces) }}
       fail-fast: false
     defaults:
       run:
@@ -64,7 +63,7 @@ jobs:
       - name: Set up Node ${{ matrix.node-version }}
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 20
           registry-url: https://registry.npmjs.org/ # Needed for auth
 
       - name: yarn install
@@ -76,16 +75,62 @@ jobs:
         env:
           WORKSPACE_NAME: ${{ matrix.workspace }}
 
-      - name: Commit and push Knip report
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_SERVICE_ACCOUNT_TOKEN }}
+      - name: 'Configure git'
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
-          git add .
-          git commit -m "chore: add Knip report for ${{ matrix.workspace }}"
-          git push origin HEAD:${{ github.head_ref }}
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+
+      - name: 'Checkout or Create Branch'
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          if git show-ref --verify --quiet refs/heads/all-knip-reports; then
+              echo "Branch 'all-knip-reports' exists. Checking it out."
+              git checkout all-knip-reports
+          else
+              echo "Creating new branch 'all-knip-reports'."
+              git checkout -b all-knip-reports
+          fi
+      
+      - name: 'Commit changes'
+        run: |
+          git status
+          git add -A -- :!.npmrc
+          git commit -m "added knip reports for ${{matrix.workspace}}"
+          git push origin all-knip-reports
+
+      - name: 'Check for existing pull request'
+        id: check_pr
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7
+        with:
+          github-token: ${{ secrets.GH_SERVICE_ACCOUNT_TOKEN }}
+          script: |
+            const { data: pullRequests } = await github.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              head: 'all-knip-reports',
+              state: 'open',
+            });
+            return pullRequests.length > 0;
+
+      - name: 'Create Pull Request for Generated Knip Reports'
+        if: steps.check_pr.outputs.result == 'false' # Only run if no existing PR
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7
+        with:
+          github-token: ${{ secrets.GH_SERVICE_ACCOUNT_TOKEN }}
+          script: |
+            const workspaces = ${{ toJson(needs.find-changed-workspaces.outputs.workspaces) }};
+            await github.rest.pulls.create({
+              title: 'chore: add Knip reports',
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              head: 'all-knip-reports',
+              base: 'main',
+              body: [
+                'This Pull request contains knip reports generated for the following workspaces: ',
+                ' ',
+                workspaces.join('\n')
+              ].join('\n')
+            });
 
 
   ci:
