@@ -142,7 +142,6 @@ export async function runKnipReports({ packageDir }) {
         throw new Error("WORKSPACE_NAME environment variable not set");
       }
       await runKnipReports({ packageDir: process.env.WORKSPACE_NAME});
-      console.log('Knip reports generated successfully');
     } catch (error) {
       console.error('Failed to generate Knip reports:', error);
     }
