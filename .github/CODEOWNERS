@@ -9,6 +9,7 @@ yarn.lock                                           @backstage/community-plugins
 */yarn.lock                                         @backstage/community-plugins-maintainers @backstage-service
 
 /workspaces/adr                                     @backstage/community-plugins-maintainers  @kuangp
+/workspaces/announcements                           @backstage/community-plugins-maintainers  @kurtaking
 /workspaces/azure-devops                            @backstage/community-plugins-maintainers  @awanlin
 /workspaces/azure-storage-explorer                  @backstage/community-plugins-maintainers  @deepan10
 /workspaces/analytics                               @backstage/community-plugins-maintainers  @jmezach

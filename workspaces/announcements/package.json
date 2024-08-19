@@ -1,0 +1,62 @@
+{
+  "name": "root",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": "18 || 20"
+  },
+  "scripts": {
+    "dev": "concurrently \"yarn start\" \"yarn start-backend\"",
+    "start": "yarn workspace @backstage-community/backstage-plugin-announcements start",
+    "start-backend": "yarn workspace @backstage-community/backstage-plugin-announcements-backend start",
+    "start:ci": "concurrently \"yarn start\" \"yarn start-backend:ci\"",
+    "build": "backstage-cli repo build --all",
+    "tsc": "tsc",
+    "tsc:full": "tsc --skipLibCheck false --incremental false",
+    "new": "backstage-cli new --scope internal",
+    "clean": "backstage-cli repo clean",
+    "test": "backstage-cli repo test",
+    "test:all": "backstage-cli repo test --coverage",
+    "lint": "backstage-cli repo lint --since origin/main",
+    "lint:all": "backstage-cli repo lint",
+    "version": "changeset version && yarn install && (git commit -am 'Update internal dependencies' || true)",
+    "release": "changeset publish",
+    "prepare": "husky install",
+    "postinstall": "husky install || true"
+  },
+  "workspaces": {
+    "packages": [
+      "plugins/**"
+    ]
+  },
+  "devDependencies": {
+    "@backstage/cli": "^0.26.5",
+    "@changesets/cli": "^2.26.2",
+    "@spotify/prettier-config": "^15.0.0",
+    "@types/webpack": "^5.28.4",
+    "concurrently": "^8.2.2",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.2.0",
+    "prettier": "^2.8.8",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router": "^6.22.0",
+    "react-router-dom": "^6.20.0",
+    "typescript": "~5.2.2"
+  },
+  "resolutions": {
+    "@types/react": "^18",
+    "@types/react-dom": "^18"
+  },
+  "prettier": "@spotify/prettier-config",
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,mjs,cjs}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ]
+  },
+  "packageManager": "yarn@3.2.4"
+}

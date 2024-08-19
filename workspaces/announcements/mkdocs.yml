@@ -1,0 +1,10 @@
+site_name: 'Backstage Announcements plugin'
+site_description: 'Announcements management for Backstage'
+
+nav:
+  - Home: index.md
+  - Setup: setup.md
+  - 'Integration with @backstage/plugin-search': search.md
+
+plugins:
+  - techdocs-core
