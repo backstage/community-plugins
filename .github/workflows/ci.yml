@@ -76,6 +76,7 @@ jobs:
           registry-url: https://registry.npmjs.org/ # Needed for auth
 
       - name: yarn install
+        working-directory: ${{ github.workspace }}
         run: yarn install --immutable
 
       - name: check for missing repo fixes
