@@ -74,7 +74,8 @@ jobs:
         run: yarn install --immutable
 
       - name: Fetch previous commit for release check
-        run: git fetch origin '${{ github.event.before }}'
+        if: ${{ github.event.before != '' }}
+        run: git fetch origin '${{ github.event.before }}
 
       - name: Fetch the commit that triggered the workflow (used by backstage/changesets-action)
         run: git fetch origin ${{ github.sha }}
@@ -83,8 +84,14 @@ jobs:
       - name: Check if release
         id: release_check
         if: inputs.force_release != true
-        run: node ../../scripts/ci/check-if-release.js
+        run: |
+          COMMIT_SHA_BEFORE=${{ github.event.before }}
+          if [ -z "$COMMIT_SHA_BEFORE" ]; then
+            COMMIT_SHA_BEFORE=$(git rev-list --max-parents=0 HEAD)
+          fi
+          node ../../scripts/ci/check-if-release.js
         env:
+          TARGET_BRANCH: ${{ inputs.branch }}
           WORKSPACE_NAME: ${{ inputs.workspace }}
           COMMIT_SHA_BEFORE: '${{ github.event.before }}'
 
@@ -150,10 +157,19 @@ jobs:
       - name: Build all packages
         run: yarn build:all
 
+      - name: Determine npm publish tag (latest or maintenance)
+        id: determine-tag
+        run: |
+          if [ "${{ inputs.branch }}" = "main" ]; then
+            echo "tag=latest" >> $GITHUB_OUTPUT
+          else
+            echo "tag=maintenance" >> $GITHUB_OUTPUT
+          fi
+
       - name: publish
         run: |
           yarn config set -H 'npmAuthToken' "${{secrets.NPM_TOKEN}}"
-          yarn workspaces foreach -v --no-private npm publish --access public --tolerate-republish
+          yarn workspaces foreach -v --no-private npm publish --access public --tolerate-republish --tag ${{ steps.determine-tag.outputs.tag }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       
