@@ -27,7 +27,7 @@ concurrency:
 
 jobs:
   changesets-pr:
-    name: Update Version Packages PR for ${{ inputs.workspace }}
+    name: Update Version Packages PR for ${{ inputs.workspace }} on branch workspace/${{ inputs.workspace }}
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -40,6 +40,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f # v4
+        with:
+          ref: workspace/${{ inputs.workspace }}
       - name: Set up Node
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
         with:
@@ -62,13 +64,24 @@ jobs:
         run: yarn install --immutable
 
       - name: Fetch previous commit for release check
+        if: ${{ github.event.before != '' }}
         run: git fetch origin '${{ github.event.before }}'
+
+      - name: Fetch the commit that triggered the workflow (used by backstage/changesets-action)
+        run: git fetch origin ${{ github.sha }}
+        continue-on-error: true
 
       - name: Check if release
         id: release_check
         if: inputs.force_release != true
-        run: node ../../scripts/ci/check-if-release.js
+        run: |
+          COMMIT_SHA_BEFORE=${{ github.event.before }}
+          if [ -z "$COMMIT_SHA_BEFORE" ]; then
+            COMMIT_SHA_BEFORE=$(git rev-list --max-parents=0 HEAD)
+          fi
+          node ../../scripts/ci/check-if-release.js
         env:
+          TARGET_BRANCH: workspace/${{ inputs.workspace }}
           WORKSPACE_NAME: ${{ inputs.workspace }}
           COMMIT_SHA_BEFORE: '${{ github.event.before }}'
 
@@ -85,10 +98,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GH_SERVICE_ACCOUNT_TOKEN }}
 
-
-
   release:
-    name: Release workspace ${{ inputs.workspace }}
+    name: Release workspace ${{ inputs.workspace }} on branch workspace/${{ inputs.workspace }}
     runs-on: ubuntu-latest
     needs: changesets-pr
     if: needs.changesets-pr.outputs.needs_release == 'true' || inputs.force_release == true
@@ -100,8 +111,18 @@ jobs:
       NODE_OPTIONS: --max-old-space-size=4096
 
     steps:
+      - name: Ensure branch name follows the 'workspace/{workspace}' pattern if not 'main'
+        run: |
+          if [ "workspace/${{ inputs.workspace }}" != "main" ] && [[ "workspace/${{ inputs.workspace }}" != "workspace/${{ inputs.workspace }}" ]]; then
+            echo "Branch name 'workspace/${{ inputs.workspace }}' does not follow the expected pattern 'workspace/${{ inputs.workspace }}'."
+            exit 1
+          fi
+        working-directory: ${{ github.workspace }}
+
       - name: Checkout
         uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f # v4
+        with:
+          ref: workspace/${{ inputs.workspace }}
       - name: Set up Node
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
         with:
@@ -132,13 +153,22 @@ jobs:
       - name: Build all packages
         run: yarn build:all
 
+      - name: Determine npm publish tag (latest or maintenance)
+        id: determine-tag
+        run: |
+          if [ "workspace/${{ inputs.workspace }}" = "main" ]; then
+            echo "tag=latest" >> $GITHUB_OUTPUT
+          else
+            echo "tag=maintenance" >> $GITHUB_OUTPUT
+          fi
+
       - name: publish
         run: |
           yarn config set -H 'npmAuthToken' "${{secrets.NPM_TOKEN}}"
-          yarn workspaces foreach -v --no-private npm publish --access public --tolerate-republish
+          yarn workspaces foreach -v --no-private npm publish --access public --tolerate-republish --tag ${{ steps.determine-tag.outputs.tag }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      
+
       - name: Create tag
         working-directory: ${{ github.workspace }}/scripts/ci
         run: node create-tag.js
