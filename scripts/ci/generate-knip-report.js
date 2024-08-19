@@ -63,7 +63,7 @@ async function handlePackage({ packageDir, knipDir}) {
   });
 
   for (const item of dirContents) {
-    if (item.isDirectory() && item.name != "noop") {
+    if (item.isDirectory()) {
       try {
         const currDirPath = resolvePath(fullDir, item.name);
         const reportPath = resolvePath(currDirPath, "knip-report.md");
