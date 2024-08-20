@@ -67,17 +67,5 @@ export class ThreeScaleApiEntityProvider implements EntityProvider {
   run(): Promise<void>;
 }
 
-// Warnings were encountered during analysis:
-//
-// src/clients/ThreeScaleAPIConnector.d.ts:2:1 - (ae-undocumented) Missing documentation for "listServices".
-// src/clients/ThreeScaleAPIConnector.d.ts:3:1 - (ae-undocumented) Missing documentation for "listApiDocs".
-// src/clients/ThreeScaleAPIConnector.d.ts:4:1 - (ae-undocumented) Missing documentation for "getProxyConfig".
-// src/dynamic/index.d.ts:2:22 - (ae-undocumented) Missing documentation for "dynamicPluginInstaller".
-// src/providers/ThreeScaleApiEntityProvider.d.ts:5:1 - (ae-undocumented) Missing documentation for "ThreeScaleApiEntityProvider".
-// src/providers/ThreeScaleApiEntityProvider.d.ts:13:5 - (ae-undocumented) Missing documentation for "fromConfig".
-// src/providers/ThreeScaleApiEntityProvider.d.ts:20:5 - (ae-undocumented) Missing documentation for "getProviderName".
-// src/providers/ThreeScaleApiEntityProvider.d.ts:21:5 - (ae-undocumented) Missing documentation for "connect".
-// src/providers/ThreeScaleApiEntityProvider.d.ts:22:5 - (ae-undocumented) Missing documentation for "run".
-
 // (No @packageDocumentation comment for this package)
 ```
