@@ -1,5 +1,11 @@
 # @backstage-community/plugin-catalog-backend-module-scaffolder-relation-processor
 
+## 1.2.6
+
+### Patch Changes
+
+- a72ab93: removed references to app-config.janus.yaml in package.json
+
 ## 1.2.5
 
 ### Patch Changes
