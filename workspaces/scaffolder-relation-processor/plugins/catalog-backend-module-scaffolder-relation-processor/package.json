@@ -63,7 +63,6 @@
     "config.d.ts",
     "dist-dynamic/*.*",
     "dist-dynamic/dist/**",
-    "dist-dynamic/alpha/*",
-    "app-config.janus-idp.yaml"
+    "dist-dynamic/alpha/*"
   ]
 }
