@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import { setupRequestMockHandlers } from '@backstage/test-utils';
+import { UrlPatternDiscovery } from '@backstage/core-app-api';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
-import { SonarQubeClient } from './index';
-import { InstanceUrlWrapper, FindingsWrapper } from './types';
-import { UrlPatternDiscovery } from '@backstage/core-app-api';
+import { setupRequestMockHandlers } from '@backstage/test-utils';
+import { SonarQubeClient } from './SonarQubeClient';
 import { IdentityApi } from '@backstage/core-plugin-api';
+import { InstanceUrlWrapper, FindingsWrapper } from './types';
 import { FindingSummary } from '@backstage-community/plugin-sonarqube-react';
 
 const server = setupServer();
@@ -40,7 +40,6 @@ const identityApiGuest: IdentityApi = {
 
 describe('SonarQubeClient', () => {
   setupRequestMockHandlers(server);
-
   const mockBaseUrl = 'http://backstage:9191/api/sonarqube';
   const discoveryApi = UrlPatternDiscovery.compile(mockBaseUrl);
 
@@ -55,50 +54,17 @@ describe('SonarQubeClient', () => {
           ctx.json({
             analysisDate: '2020-01-01T00:00:00Z',
             measures: [
-              {
-                metric: 'alert_status',
-                value: 'OK',
-              },
-              {
-                metric: 'bugs',
-                value: '2',
-              },
-              {
-                metric: 'reliability_rating',
-                value: '3.0',
-              },
-              {
-                metric: 'vulnerabilities',
-                value: '4',
-              },
-              {
-                metric: 'security_rating',
-                value: '1.0',
-              },
-              {
-                metric: 'security_hotspots_reviewed',
-                value: '100',
-              },
-              {
-                metric: 'security_review_rating',
-                value: '1.0',
-              },
-              {
-                metric: 'code_smells',
-                value: '100',
-              },
-              {
-                metric: 'sqale_rating',
-                value: '2.0',
-              },
-              {
-                metric: 'coverage',
-                value: '55.5',
-              },
-              {
-                metric: 'duplicated_lines_density',
-                value: '1.0',
-              },
+              { metric: 'alert_status', value: 'OK' },
+              { metric: 'bugs', value: '2' },
+              { metric: 'reliability_rating', value: '3.0' },
+              { metric: 'vulnerabilities', value: '4' },
+              { metric: 'security_rating', value: '1.0' },
+              { metric: 'security_hotspots_reviewed', value: '100' },
+              { metric: 'security_review_rating', value: '1.0' },
+              { metric: 'code_smells', value: '100' },
+              { metric: 'sqale_rating', value: '2.0' },
+              { metric: 'coverage', value: '55.5' },
+              { metric: 'duplicated_lines_density', value: '1.0' },
             ],
           } as FindingsWrapper),
         );
@@ -128,6 +94,7 @@ describe('SonarQubeClient', () => {
     const summary = await client.getFindingSummary({
       componentKey: 'our:service',
     });
+
     expect(summary).toEqual(
       expect.objectContaining({
         lastAnalysis: '2020-01-01T00:00:00Z',
@@ -154,7 +121,6 @@ describe('SonarQubeClient', () => {
       'https://sonarcloud.io/component_measures?id=our%3Aservice&metric=coverage&resolved=false&view=list',
     );
   });
-
   it('should report finding summary (custom baseUrl)', async () => {
     setupHandlers();
     server.use(
@@ -280,5 +246,103 @@ describe('SonarQubeClient', () => {
     });
 
     expect(summary?.lastAnalysis).toBe('2020-01-01T00:00:00Z');
+  });
+
+  describe('getFindingSummaries', () => {
+    const setupHandlersForGetFindingSummaries = () => {
+      server.use(
+        rest.get(`${mockBaseUrl}/findings`, (req, res, ctx) => {
+          const componentKey = req.url.searchParams.get('componentKey');
+          if (componentKey === 'component-1') {
+            return res(
+              ctx.json({
+                analysisDate: '2020-01-01T00:00:00Z',
+                measures: [
+                  { metric: 'alert_status', value: 'OK' },
+                  { metric: 'bugs', value: '2' },
+                  { metric: 'code_smells', value: '100' },
+                ],
+              } as FindingsWrapper),
+            );
+          } else if (componentKey === 'component-2') {
+            return res(
+              ctx.json({
+                analysisDate: '2020-01-02T00:00:00Z',
+                measures: [
+                  { metric: 'alert_status', value: 'ERROR' },
+                  { metric: 'bugs', value: '5' },
+                  { metric: 'code_smells', value: '200' },
+                ],
+              } as FindingsWrapper),
+            );
+          }
+          return res(ctx.status(404));
+        }),
+      );
+      server.use(
+        rest.get(`${mockBaseUrl}/instanceUrl`, (_req, res, ctx) => {
+          return res(
+            ctx.json({
+              instanceUrl: 'https://sonarcloud.io',
+            } as InstanceUrlWrapper),
+          );
+        }),
+      );
+    };
+
+    beforeEach(() => {
+      setupHandlersForGetFindingSummaries();
+    });
+
+    it('should report finding summaries for multiple components', async () => {
+      const client = new SonarQubeClient({
+        discoveryApi,
+        identityApi: identityApiAuthenticated,
+      });
+
+      const summaries = await client.getFindingSummaries([
+        { projectInstance: 'instance-1', componentKey: 'component-1' },
+        { projectInstance: 'instance-2', componentKey: 'component-2' },
+      ]);
+
+      expect(summaries.size).toBe(2);
+
+      const summary1 = summaries.get('component-1');
+      expect(summary1).toEqual(
+        expect.objectContaining({
+          lastAnalysis: '2020-01-01T00:00:00Z',
+          metrics: {
+            alert_status: 'OK',
+            bugs: '2',
+            code_smells: '100',
+          },
+          projectUrl: 'https://sonarcloud.io/dashboard?id=component-1',
+        }),
+      );
+
+      const summary2 = summaries.get('component-2');
+      expect(summary2).toEqual(
+        expect.objectContaining({
+          lastAnalysis: '2020-01-02T00:00:00Z',
+          metrics: {
+            alert_status: 'ERROR',
+            bugs: '5',
+            code_smells: '200',
+          },
+          projectUrl: 'https://sonarcloud.io/dashboard?id=component-2',
+        }),
+      );
+    });
+
+    it('should handle empty components array', async () => {
+      const client = new SonarQubeClient({
+        discoveryApi,
+        identityApi: identityApiAuthenticated,
+      });
+
+      const summaries = await client.getFindingSummaries([]);
+
+      expect(summaries.size).toBe(0);
+    });
   });
 });

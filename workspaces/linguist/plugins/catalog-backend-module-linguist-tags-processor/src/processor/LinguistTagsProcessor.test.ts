@@ -20,7 +20,6 @@ import {
   sanitizeTag,
 } from './LinguistTagsProcessor';
 import { ConfigReader } from '@backstage/config';
-import { getVoidLogger } from '@backstage/backend-common';
 import { CatalogProcessorCache } from '@backstage/plugin-catalog-node';
 import { Entity, makeValidator } from '@backstage/catalog-model';
 import { DiscoveryService } from '@backstage/backend-plugin-api';
@@ -90,7 +89,7 @@ describe('LinguistTagsProcessor', () => {
     });
     expect(() => {
       return LinguistTagsProcessor.fromConfig(config, {
-        logger: getVoidLogger(),
+        logger: mockServices.logger.mock(),
         discovery,
         auth,
       });
@@ -341,7 +340,7 @@ function buildProcessor(options: Partial<LinguistTagsProcessorOptions>) {
     },
   });
   return LinguistTagsProcessor.fromConfig(config, {
-    logger: getVoidLogger(),
+    logger: mockServices.logger.mock(),
     discovery,
     auth,
   });

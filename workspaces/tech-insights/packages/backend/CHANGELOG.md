@@ -1,5 +1,13 @@
 # backend
 
+## 0.0.3
+
+### Patch Changes
+
+- Updated dependencies [e49b4eb]
+  - @backstage-community/plugin-tech-insights-backend@0.6.0
+  - app@0.0.3
+
 ## 0.0.2
 
 ### Patch Changes

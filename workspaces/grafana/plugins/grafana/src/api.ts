@@ -18,7 +18,7 @@ import {
   createApiRef,
   DiscoveryApi,
   FetchApi,
-} from '@backstage/core-plugin-api';
+} from '@backstage/frontend-plugin-api';
 import { QueryEvaluator } from './query';
 import { Alert, Dashboard } from './types';
 

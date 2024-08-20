@@ -1,5 +1,12 @@
 # @backstage-community/plugin-adr
 
+## 0.6.23
+
+### Patch Changes
+
+- Updated dependencies [5541765]
+  - @backstage-community/plugin-adr-common@0.2.27
+
 ## 0.6.22
 
 ### Patch Changes

@@ -2810,7 +2810,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@backstage-community/plugin-catalog-backend-module-azure-devops-annotator-processor@workspace:plugins/catalog-backend-module-azure-devops-annotator-processor":
+"@backstage-community/plugin-catalog-backend-module-azure-devops-annotator-processor@workspace:^, @backstage-community/plugin-catalog-backend-module-azure-devops-annotator-processor@workspace:plugins/catalog-backend-module-azure-devops-annotator-processor":
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-catalog-backend-module-azure-devops-annotator-processor@workspace:plugins/catalog-backend-module-azure-devops-annotator-processor"
   dependencies:
@@ -14370,6 +14370,7 @@ __metadata:
   resolution: "backend@workspace:packages/backend"
   dependencies:
     "@backstage-community/plugin-azure-devops-backend": "workspace:^"
+    "@backstage-community/plugin-catalog-backend-module-azure-devops-annotator-processor": "workspace:^"
     "@backstage/backend-common": ^0.23.3
     "@backstage/backend-defaults": ^0.4.1
     "@backstage/backend-tasks": ^0.5.27

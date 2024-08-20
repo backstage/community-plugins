@@ -386,7 +386,7 @@ export default async (opts: OptionValues) => {
       await fs.mkdirp(path.join(workspacePath, '.yarn', 'patches'));
       await fs.copyFile(
         path.join(
-          __dirname,
+          __dirname, // eslint-disable-line no-restricted-syntax
           '..',
           '..',
           'lib',
@@ -420,11 +420,11 @@ export default async (opts: OptionValues) => {
     }
 
     // Fix for some packages without react/react-dom deps
-    if (movedPackageJson.peerDependencies?.['react']) {
-      movedPackageJson.devDependencies['react'] =
-        movedPackageJson.peerDependencies['react'];
+    if (movedPackageJson.peerDependencies?.react) {
+      movedPackageJson.devDependencies.react =
+        movedPackageJson.peerDependencies.react;
       movedPackageJson.devDependencies['react-dom'] =
-        movedPackageJson.peerDependencies['react'];
+        movedPackageJson.peerDependencies.react;
     }
 
     // Fix for graphqiql package
