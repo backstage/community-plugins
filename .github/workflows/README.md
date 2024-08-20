@@ -1,32 +1,32 @@
 # CI/CD Workflows
 
-## 1. [ci.yml](./ci.yml)
+## [ci.yml](./ci.yml)
 
 Triggered on pull requests, this workflow runs tests on the target branch, focusing only on workspaces that have changes. Once all checks pass successfully, the pull request can be merged.
 
-## 2. [release_workspace.yml](./release_workspace.yml)
+## [release_workspace.yml](./release_workspace.yml)
 
 Handles the release process for a specific workspace. It either creates a "Version Packages" pull request if changesets are present or releases the packages within the workspace if they haven't been published yet. For more details on how changesets work, refer to the [Changesets documentation](https://github.com/changesets/changesets).
 
-## 3. [release-all.yml](./release-all.yml)
+## [release-all.yml](./release-all.yml)
 
 Responsible for releasing all workspaces in parallel by invoking the `release_workspace.yml` workflow for each workspace. It runs on the main branch whenever new changes are pushed. The workflow relies on `release_workspace.yml` to determine if a workspace requires publishing.
 
-## 4. [automate_changeset_feedback.yml](./automate_changeset_feedback.yml)
+## [automate_changeset_feedback.yml](./automate_changeset_feedback.yml)
 
 Generates feedback for changesets on pull requests.
 
-## 5. [automate_renovate_changeset.yml](./automate_renovate_changeset.yml)
+## [automate_renovate_changeset.yml](./automate_renovate_changeset.yml)
 
 Automates the generation of changesets for Renovate pull requests.
 
-## 6. [cron.yml](./cron.yml)
+## [cron.yml](./cron.yml)
 
 Runs tasks on a scheduled basis or manually via the `workflow_dispatch` event.
 
-## 7. [pr.yml](./pr.yml)
+## [pr.yml](./pr.yml)
 
-## 8. [renovate_cron.yml](./renovate_cron.yml)
+## [renovate_cron.yml](./renovate_cron.yml)
 
 Runs Renovate on a scheduled basis or manually.
 
