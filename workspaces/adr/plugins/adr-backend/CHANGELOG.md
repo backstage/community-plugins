@@ -1,5 +1,14 @@
 # @backstage-community/plugin-adr-backend
 
+## 0.4.21
+
+### Patch Changes
+
+- 5541765: Add missing dependency on `@backstage-community/search-backend-module-adr`
+- Updated dependencies [5541765]
+  - @backstage-community/plugin-adr-common@0.2.27
+  - @backstage-community/search-backend-module-adr@0.1.2
+
 ## 0.4.20
 
 ### Patch Changes

@@ -1,0 +1,1 @@
+export { RiskCardComponent } from './RiskCard';

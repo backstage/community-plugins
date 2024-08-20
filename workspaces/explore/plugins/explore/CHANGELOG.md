@@ -1,5 +1,11 @@
 # @backstage-community/plugin-explore
 
+## 0.5.3
+
+### Patch Changes
+
+- 5541765: Add missing dependency on `@backstage/catalog-client`
+
 ## 0.5.2
 
 ### Patch Changes

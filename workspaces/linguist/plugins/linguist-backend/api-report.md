@@ -8,6 +8,7 @@ import { BackendFeatureCompat } from '@backstage/backend-plugin-api';
 import { CatalogProcessor } from '@backstage/plugin-catalog-node';
 import { CatalogProcessorCache } from '@backstage/plugin-catalog-node';
 import { Config } from '@backstage/config';
+import { DatabaseService } from '@backstage/backend-plugin-api';
 import { DiscoveryService } from '@backstage/backend-plugin-api';
 import { Entity } from '@backstage/catalog-model';
 import express from 'express';
@@ -16,12 +17,9 @@ import { HumanDuration } from '@backstage/types';
 import { Languages } from '@backstage-community/plugin-linguist-common';
 import { LanguageType } from '@backstage-community/plugin-linguist-common';
 import { LoggerService } from '@backstage/backend-plugin-api';
-import { PluginDatabaseManager } from '@backstage/backend-common';
-import { PluginEndpointDiscovery } from '@backstage/backend-common';
-import { PluginTaskScheduler } from '@backstage/backend-tasks';
-import { TaskScheduleDefinition } from '@backstage/backend-tasks';
-import { TokenManager } from '@backstage/backend-common';
-import { UrlReader } from '@backstage/backend-common';
+import { SchedulerService } from '@backstage/backend-plugin-api';
+import { SchedulerServiceTaskScheduleDefinition } from '@backstage/backend-plugin-api';
+import { UrlReaderService } from '@backstage/backend-plugin-api';
 
 // @public (undocumented)
 export function createRouter(
@@ -90,7 +88,7 @@ export interface PluginOptions {
   // (undocumented)
   linguistJsOptions?: Record<string, unknown>;
   // (undocumented)
-  schedule?: TaskScheduleDefinition;
+  schedule?: SchedulerServiceTaskScheduleDefinition;
   // (undocumented)
   useSourceLocation?: boolean;
 }
@@ -100,11 +98,11 @@ export interface RouterOptions {
   // (undocumented)
   auth?: AuthService;
   // (undocumented)
-  config?: Config;
+  config: Config;
   // (undocumented)
-  database: PluginDatabaseManager;
+  database: DatabaseService;
   // (undocumented)
-  discovery: PluginEndpointDiscovery;
+  discovery: DiscoveryService;
   // (undocumented)
   httpAuth?: HttpAuthService;
   // (undocumented)
@@ -112,11 +110,9 @@ export interface RouterOptions {
   // (undocumented)
   logger: LoggerService;
   // (undocumented)
-  reader: UrlReader;
+  reader: UrlReaderService;
   // (undocumented)
-  scheduler?: PluginTaskScheduler;
-  // (undocumented)
-  tokenManager: TokenManager;
+  scheduler?: SchedulerService;
 }
 
 // @public

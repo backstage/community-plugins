@@ -189,7 +189,7 @@ export function GroupsDiagram(props: {
     error,
     value: catalogResponse,
   } = useAsync(() => {
-    let filter: EntityFilterQuery = { kind: ['Group'] };
+    const filter: EntityFilterQuery = { kind: ['Group'] };
     if (props.namespace) {
       filter['metadata.namespace'] = props.namespace;
     }
