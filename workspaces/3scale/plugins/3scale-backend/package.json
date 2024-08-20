@@ -62,7 +62,7 @@
     "dist-dynamic/*.*",
     "dist-dynamic/dist/**",
     "dist-dynamic/alpha/*",
-    "app-config.janus-idp.yaml"
+    "app-config.yaml"
   ],
   "configSchema": "config.d.ts",
   "repository": {
