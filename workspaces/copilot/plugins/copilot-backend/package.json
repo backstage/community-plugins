@@ -39,6 +39,8 @@
     "@backstage/backend-defaults": "^0.4.1",
     "@backstage/backend-plugin-api": "^0.7.0",
     "@backstage/backend-tasks": "^0.5.27",
+    "@backstage/config": "^1.2.0",
+    "@backstage/errors": "^1.2.4",
     "@backstage/integration": "^1.13.0",
     "@types/express": "*",
     "express": "^4.17.1",
@@ -52,8 +54,6 @@
   "devDependencies": {
     "@backstage/backend-test-utils": "^0.4.4",
     "@backstage/cli": "^0.26.11",
-    "@backstage/config": "^1.2.0",
-    "@backstage/errors": "^1.2.4",
     "@backstage/plugin-auth-backend": "^0.22.9",
     "@backstage/plugin-auth-backend-module-guest-provider": "^0.1.8",
     "@backstage/test-utils": "^1.5.9",

@@ -14,8 +14,14 @@
  * limitations under the License.
  */
 
-import { resolvePackagePath, DatabaseService } from '@backstage/backend-plugin-api';
-import { Metric, PeriodRange } from '@backstage-community/plugin-copilot-common';
+import {
+  resolvePackagePath,
+  DatabaseService,
+} from '@backstage/backend-plugin-api';
+import {
+  Metric,
+  PeriodRange,
+} from '@backstage-community/plugin-copilot-common';
 import { Knex } from 'knex';
 
 const migrationsDir = resolvePackagePath(

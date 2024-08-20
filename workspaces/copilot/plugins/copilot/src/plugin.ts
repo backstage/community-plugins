@@ -19,7 +19,7 @@ import {
   createRoutableExtension,
   discoveryApiRef,
   fetchApiRef,
-} from  '@backstage/core-plugin-api'
+} from '@backstage/core-plugin-api';
 
 import { rootRouteRef } from './routes';
 import { CopilotClient, copilotApiRef } from './api';

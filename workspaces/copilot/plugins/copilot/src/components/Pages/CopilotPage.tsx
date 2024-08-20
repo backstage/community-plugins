@@ -25,14 +25,14 @@ import {
 import { Metrics } from '../Metrics';
 import { LanguageCards, EnterpriseCards } from '../Cards';
 import { LanguageCharts, EnterpriseCharts } from '../Charts';
-import { createStateContext, useObservable } from 'react-use';
+import useObservable from 'react-use/lib/useObservable';
+import createStateContext from 'react-use/lib/factory/createStateContext';
 import { DateTime } from 'luxon';
 import { themes } from '@backstage/theme';
 import { appThemeApiRef, useApi } from '@backstage/core-plugin-api';
 import { ThemeProvider } from '@emotion/react';
 import { styled } from '@mui/material/styles';
 
-// Contexto para o intervalo de datas compartilhadas
 export const [useSharedDateRange, SharedDateRangeProvider] = createStateContext(
   {
     startDate: DateTime.now().minus({ days: 28 }).toJSDate(),
@@ -40,10 +40,9 @@ export const [useSharedDateRange, SharedDateRangeProvider] = createStateContext(
   },
 );
 
-// Estilização do conteúdo da página
 const StyledContent = styled(Content)(({ theme }) => ({
-  margin: theme.spacing(0),
-  padding: theme.spacing(0),
+  margin: `${theme.spacing(0)} !important`,
+  padding: `${theme.spacing(0)} !important`,
   '& > div': {
     backgroundColor: theme.palette.background.default,
   },

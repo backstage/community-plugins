@@ -38,7 +38,10 @@ export class CopilotClient implements CopilotApi {
       'startDate',
       DateTime.fromJSDate(startDate).toFormat('yyyy-MM-dd'),
     );
-    queryString.append('endDate', DateTime.fromJSDate(endDate).toFormat('yyyy-MM-dd'));
+    queryString.append(
+      'endDate',
+      DateTime.fromJSDate(endDate).toFormat('yyyy-MM-dd'),
+    );
 
     const urlSegment = `metrics?${queryString}`;
 

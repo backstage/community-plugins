@@ -39,7 +39,8 @@ export const EnterpriseCharts = ({
               id: 'days',
               data: metrics.map(x => new Date(x.day)),
               scaleType: 'point',
-              valueFormatter: date => DateTime.fromJSDate(date).toFormat('dd-MM-yy'),
+              valueFormatter: date =>
+                DateTime.fromJSDate(date).toFormat('dd-MM-yy'),
             },
           ]}
           bottomAxis={{
@@ -68,7 +69,8 @@ export const EnterpriseCharts = ({
               id: 'days',
               data: metrics.map(x => new Date(x.day)),
               scaleType: 'point',
-              valueFormatter: date => DateTime.fromJSDate(date).toFormat('dd-MM-yy'),
+              valueFormatter: date =>
+                DateTime.fromJSDate(date).toFormat('dd-MM-yy'),
             },
           ]}
           bottomAxis={{
@@ -99,7 +101,8 @@ export const EnterpriseCharts = ({
               id: 'days',
               data: metrics.map(x => new Date(x.day)),
               scaleType: 'point',
-              valueFormatter: date => DateTime.fromJSDate(date).toFormat('dd-MM-yy'),
+              valueFormatter: date =>
+                DateTime.fromJSDate(date).toFormat('dd-MM-yy'),
             },
           ]}
           bottomAxis={{
@@ -129,7 +132,8 @@ export const EnterpriseCharts = ({
             {
               data: metrics.map(x => new Date(x.day)),
               scaleType: 'band',
-              valueFormatter: date => DateTime.fromJSDate(date).toFormat('dd-MM-yy'),
+              valueFormatter: date =>
+                DateTime.fromJSDate(date).toFormat('dd-MM-yy'),
             },
           ]}
           bottomAxis={{

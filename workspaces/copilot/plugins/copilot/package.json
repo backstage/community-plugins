@@ -35,7 +35,7 @@
     "@mui/material": "^5.16.7",
     "@mui/x-charts": "^7.6.1",
     "luxon": "^3.5.0",
-    "react-use": "^17.2.4",
+    "react-use": "^17.3.1",
     "simple-date-range-calendar": "^1.0.10"
   },
   "peerDependencies": {
@@ -49,6 +49,9 @@
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^14.0.0",
     "@testing-library/user-event": "^14.0.0",
+    "@types/d3-scale": "^4.0.8",
+    "@types/d3-shape": "^3.1.6",
+    "@types/react": "^18.3.3",
     "msw": "^1.0.0"
   },
   "files": [

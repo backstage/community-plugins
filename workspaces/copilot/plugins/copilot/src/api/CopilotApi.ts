@@ -15,7 +15,10 @@
  */
 
 import { createApiRef } from '@backstage/core-plugin-api';
-import { Metric, PeriodRange } from '@backstage-community/plugin-copilot-common';
+import {
+  Metric,
+  PeriodRange,
+} from '@backstage-community/plugin-copilot-common';
 
 export const copilotApiRef = createApiRef<CopilotApi>({
   id: 'plugin.copilot.service',
