@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import useAsync from 'react-use/esm/useAsync';
+import useAsync from 'react-use/lib/useAsync';
 import { useApi } from '@backstage/core-plugin-api';
 import { Metric } from '@backstage-community/plugin-copilot-common';
 import { copilotApiRef } from '../api';

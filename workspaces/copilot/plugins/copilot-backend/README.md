@@ -75,7 +75,7 @@ These variables are used to configure the plugin and ensure it communicates with
 
 **Important:** The GitHub token, which is necessary for authentication, should be managed within your Backstage integrations configuration. The token must be added to your GitHub integration settings, and the plugin will retrieve it through the `GithubCredentialsProvider`.
 
-Ensure that your GitHub integration in the Backstage configuration includes the necessary token for the `GithubCredentialsProvider` to work correctly. 
+Ensure that your GitHub integration in the Backstage configuration includes the necessary token for the `GithubCredentialsProvider` to work correctly.
 
 ### YAML Configuration Example
 
