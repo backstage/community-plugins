@@ -1,7 +1,7 @@
 {
   "name": "@backstage-community/cli",
   "description": "CLI for the Community Plugins Repository",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "backstage": {
     "role": "cli"
   },
