@@ -20,7 +20,7 @@ import {
 import { createRouterFromConfig } from './service/router';
 
 /**
- * copilotPlugin backend plugin
+ * Backend plugin for Copilot.
  *
  * @public
  */

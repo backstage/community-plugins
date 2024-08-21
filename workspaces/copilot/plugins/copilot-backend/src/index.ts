@@ -13,5 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * Backend functionalities for the copilot plugin.
+ *
+ * @packageDocumentation
+ */
+
 export * from './service/router';
 export { copilotPlugin as default } from './plugin';
