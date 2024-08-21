@@ -190,8 +190,6 @@ export const PageContent = ({
 
   if (loading) {
     return <Progress />;
-  } else if (error) {
-    return <Alert severity="error">{error.message}</Alert>;
   } else if (!value) {
     return (
       <EmptyState
@@ -200,7 +198,10 @@ export const PageContent = ({
         description={`There is no BlackDuck Project ${projectName} with version ${projectVersion} on host ${hostKey} available!`}
       />
     );
+  } else if (error) {
+    return <Alert severity="error">{error.message}</Alert>;
   }
+
   return (
     <DenseTable
       vulnList={value.items || []}
@@ -228,12 +229,12 @@ export const BlackDuckPageComponent = ({
     );
   }
 
-  if (!hostKey || !projectName || !projectVersion) {
+  if (!projectName || !projectVersion) {
     return (
       <EmptyState
         missing="info"
         title="No information to display"
-        description="The project annotation is not structured correctly. The host key, project name, or project version is missing."
+        description="The project annotation is not structured correctly. The project name, or project version is missing."
       />
     );
   }

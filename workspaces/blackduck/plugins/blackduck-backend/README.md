@@ -151,10 +151,12 @@ Follow the Docs from [README.md](https://github.com/backstage/community-plugins/
 
 ### Global Config
 
-Add the following into your `app-config.yaml`
+Add the following into your `app-config.yaml`. The default host is mandatory - if no host specified in annotation, this host will be used. Other hosts are optional.
 
 ```yaml
 blackduck:
+  host: https://blackduck.yourcompany.default.com/api
+  token: YOUR_API_TOKEN_DEFAULT
   hosts:
     - name: one
       host: https://blackduck.yourcompany.one.com/api
@@ -166,7 +168,7 @@ blackduck:
 
 ### Catalog
 
-Add the following into your catalog
+Add the following into your catalog. The host part is optional - if no host specified in annotation, the default one will be used.
 
 ```yaml
 apiVersion: backstage.io/v1alpha1

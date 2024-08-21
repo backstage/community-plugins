@@ -10,11 +10,20 @@ export class BlackDuckConfig {
   constructor(private readonly hosts: BlackDuckHostConfig[]) {}
 
   static fromConfig(config: Config): BlackDuckConfig {
-    const hosts = config.getConfigArray('blackduck.hosts').map(host => ({
-      name: host.getString('name'),
-      host: host.getString('host'),
-      token: host.getString('token'),
-    }));
+    const defaultHost = {
+      name: 'default',
+      host: config.getString('blackduck.host'),
+      token: config.getString('blackduck.token'),
+    };
+
+    const hosts = [
+      defaultHost,
+      ...(config.getOptionalConfigArray('blackduck.hosts')?.map(host => ({
+        name: host.getString('name'),
+        host: host.getString('host'),
+        token: host.getString('token'),
+      })) ?? []),
+    ];
 
     return new BlackDuckConfig(hosts);
   }

@@ -99,8 +99,6 @@ const CardContent = ({
 
   if (loading) {
     return <Progress />;
-  } else if (error) {
-    return <Alert severity="error">{error.message}</Alert>;
   } else if (!value) {
     return (
       <InfoCard title="BlackDuck">
@@ -111,6 +109,8 @@ const CardContent = ({
         />
       </InfoCard>
     );
+  } else if (error) {
+    return <Alert severity="error">{error.message}</Alert>;
   }
 
   const vulnerabilityData = Object.values(
@@ -187,13 +187,13 @@ export const RiskCardComponent = () => {
     );
   }
 
-  if (!hostKey || !projectName || !projectVersion) {
+  if (!projectName || !projectVersion) {
     return (
       <InfoCard title="BlackDuck">
         <EmptyState
           missing="info"
           title="No information to display"
-          description="The project annotation is not structured correctly. The host key, project name, or project version is missing."
+          description="The project annotation is not structured correctly. The project name, or project version is missing."
         />
       </InfoCard>
     );
