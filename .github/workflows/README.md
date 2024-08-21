@@ -26,6 +26,8 @@ Runs tasks on a scheduled basis or manually via the `workflow_dispatch` event.
 
 ## [pr.yml](./pr.yml)
 
+Used to keep the Project Board in https://github.com/backstage/backstage/ in sync with PRs from this repo. 
+
 ## [renovate_cron.yml](./renovate_cron.yml)
 
 Runs Renovate on a scheduled basis or manually.
