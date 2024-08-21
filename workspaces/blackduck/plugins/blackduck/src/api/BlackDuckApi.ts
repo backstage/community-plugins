@@ -8,6 +8,7 @@ export const blackduckApiRef = createApiRef<BlackDuckApi>({
 /** @public */
 export interface BlackDuckApi {
   getVulns(
+    hostKey: string,
     projectName: string,
     projectVersion: string,
     entityRef: string,
@@ -16,6 +17,7 @@ export interface BlackDuckApi {
 
 export interface BlackDuckApi {
   getRiskProfile(
+    hostKey: string,
     projectName: string,
     projectVersion: string,
     entityRef: string,

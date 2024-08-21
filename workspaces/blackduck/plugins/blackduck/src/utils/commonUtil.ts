@@ -10,17 +10,19 @@ export const isBlackDuckAvailable = (entity: Entity) =>
 export const getProjectAnnotation = (
   entity: Entity,
 ): {
+  hostKey: string;
   projectName: string;
   projectVersion: string;
 } => {
+  let hostKey = undefined;
   let projectName = undefined;
   let projectVersion = undefined;
   const annotation: any =
     entity?.metadata.annotations?.[BLACKDUCK_PROJECT_ANNOTATION];
   if (annotation) {
-    [projectName, projectVersion] = annotation.split('/');
+    [hostKey, projectName, projectVersion] = annotation.split('/');
   }
-  return { projectName, projectVersion };
+  return { hostKey, projectName, projectVersion };
 };
 
 // Filter out the OK and UNKNOWN keys from the risk profile

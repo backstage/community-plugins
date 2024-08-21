@@ -74,16 +74,22 @@ const options = {
 const labels = ['Critical', 'High', 'Medium', 'Low'];
 
 type CardContentProps = {
+  hostKey: string;
   projectName: string;
   projectVersion: string;
 };
 
-const CardContent = ({ projectName, projectVersion }: CardContentProps) => {
+const CardContent = ({
+  hostKey,
+  projectName,
+  projectVersion,
+}: CardContentProps) => {
   const blackduckApi = useApi(blackduckApiRef);
   const { entity } = useEntity();
   const entityRef = stringifyEntityRef(entity);
   const { value, loading, error } = useAsync(async () => {
     const data: any = await blackduckApi.getRiskProfile(
+      hostKey,
       projectName,
       projectVersion,
       entityRef,
@@ -101,7 +107,7 @@ const CardContent = ({ projectName, projectVersion }: CardContentProps) => {
         <EmptyState
           missing="info"
           title="No information to display"
-          description={`There is no BlackDuck Project ${projectName} with version ${projectVersion} available!`}
+          description={`There is no BlackDuck Project ${projectName} with version ${projectVersion} on host ${hostKey} available!`}
         />
       </InfoCard>
     );
@@ -173,10 +179,31 @@ const CardContent = ({ projectName, projectVersion }: CardContentProps) => {
 
 export const RiskCardComponent = () => {
   const { entity } = useEntity();
-  const { projectName, projectVersion } = getProjectAnnotation(entity);
-  return isBlackDuckAvailable(entity) ? (
-    <CardContent projectName={projectName} projectVersion={projectVersion} />
-  ) : (
-    <MissingAnnotationEmptyState annotation={BLACKDUCK_PROJECT_ANNOTATION} />
+  const { hostKey, projectName, projectVersion } = getProjectAnnotation(entity);
+
+  if (!isBlackDuckAvailable(entity)) {
+    return (
+      <MissingAnnotationEmptyState annotation={BLACKDUCK_PROJECT_ANNOTATION} />
+    );
+  }
+
+  if (!hostKey || !projectName || !projectVersion) {
+    return (
+      <InfoCard title="BlackDuck">
+        <EmptyState
+          missing="info"
+          title="No information to display"
+          description="The project annotation is not structured correctly. The host key, project name, or project version is missing."
+        />
+      </InfoCard>
+    );
+  }
+
+  return (
+    <CardContent
+      hostKey={hostKey}
+      projectName={projectName}
+      projectVersion={projectVersion}
+    />
   );
 };

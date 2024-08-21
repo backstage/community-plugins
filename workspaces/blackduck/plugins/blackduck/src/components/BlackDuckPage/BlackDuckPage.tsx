@@ -161,13 +161,15 @@ const DenseTable = ({ vulnList, columns, filters }: DenseTableProps) => {
 };
 
 type PageContentProps = {
+  hostKey: string;
   projectName: string;
   projectVersion: string;
   columns: TableColumn[];
   filters: TableFilter[];
 };
 
-const PageContent = ({
+export const PageContent = ({
+  hostKey,
   projectName,
   projectVersion,
   columns,
@@ -178,6 +180,7 @@ const PageContent = ({
   const entityRef = stringifyEntityRef(entity);
   const { value, loading, error } = useAsync(async () => {
     const data: any = await blackduckApi.getVulns(
+      hostKey,
       projectName,
       projectVersion,
       entityRef,
@@ -194,7 +197,7 @@ const PageContent = ({
       <EmptyState
         missing="info"
         title="No information to display"
-        description={`There is no BlackDuck Project ${projectName} with version ${projectVersion} available!`}
+        description={`There is no BlackDuck Project ${projectName} with version ${projectVersion} on host ${hostKey} available!`}
       />
     );
   }
@@ -217,16 +220,31 @@ export const BlackDuckPageComponent = ({
   filters,
 }: BlackDuckPageComponentProps) => {
   const { entity } = useEntity();
-  const { projectName, projectVersion } = getProjectAnnotation(entity);
+  const { hostKey, projectName, projectVersion } = getProjectAnnotation(entity);
 
-  return isBlackDuckAvailable(entity) ? (
+  if (!isBlackDuckAvailable(entity)) {
+    return (
+      <MissingAnnotationEmptyState annotation={BLACKDUCK_PROJECT_ANNOTATION} />
+    );
+  }
+
+  if (!hostKey || !projectName || !projectVersion) {
+    return (
+      <EmptyState
+        missing="info"
+        title="No information to display"
+        description="The project annotation is not structured correctly. The host key, project name, or project version is missing."
+      />
+    );
+  }
+
+  return (
     <PageContent
+      hostKey={hostKey}
       projectName={projectName}
       projectVersion={projectVersion}
       columns={columns || defaultColumns}
       filters={filters || blackduckFilters}
     />
-  ) : (
-    <MissingAnnotationEmptyState annotation={BLACKDUCK_PROJECT_ANNOTATION} />
   );
 };

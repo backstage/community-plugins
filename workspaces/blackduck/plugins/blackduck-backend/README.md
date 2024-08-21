@@ -38,7 +38,10 @@ Create a file called blackduck.ts inside `packages/backend/src/plugins/` and add
 ### blackduck.ts
 
 ```typescript
-import { createRouter } from '@backstage-community/plugin-blackduck-backend';
+import {
+  createRouter,
+  BlackDuckConfig,
+} from '@backstage-community/plugin-blackduck-backend';
 import { Router } from 'express';
 import { PluginEnvironment } from '../types';
 
@@ -50,6 +53,7 @@ export default async function createPlugin(
     config: env.config,
     permissions: env.permissions,
     discovery: env.discovery,
+    blackDuckConfig: BlackDuckConfig.fromConfig(env.config),
   });
 }
 ```
@@ -151,8 +155,13 @@ Add the following into your `app-config.yaml`
 
 ```yaml
 blackduck:
-  host: https://blackduck.yourcompany.com/api
-  token: YOUR_API_TOKEN
+  hosts:
+    - name: one
+      host: https://blackduck.yourcompany.one.com/api
+      token: YOUR_API_TOKEN_ONE
+    - name: two
+      host: https://blackduck.yourcompany.two.com/api
+      token: YOUR_API_TOKEN_TWO
 ```
 
 ### Catalog
@@ -165,5 +174,5 @@ kind: Component
 metadata:
   name: backstage
   annotations:
-    blackduck/project: YOUR_PROJECT_NAME/YOUR_PROJECT_VERSION
+    blackduck/project: YOUR_PROJECT_HOST_NAME/YOUR_PROJECT_NAME/YOUR_PROJECT_VERSION
 ```
