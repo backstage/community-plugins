@@ -30,6 +30,6 @@ Runs tasks on a scheduled basis or manually via the `workflow_dispatch` event.
 
 Runs Renovate on a scheduled basis or manually.
 
-## 9. [version_bump.yml](./version_bump.yml)
+## [version_bump.yml](./version_bump.yml)
 
 Handles version bumping for specific workspaces. It creates a new branch for the version bump, updates the necessary files, commits the changes, and creates a pull request to merge the updates into the main branch.
