@@ -30,16 +30,42 @@ import Scheduler from '../task/Scheduler';
 import { GithubClient } from '../client/GithubClient';
 import { DateTime } from 'luxon';
 
-/** @public */
+/**
+ * Options for configuring the Copilot plugin.
+ * 
+ * @public
+ */
 export interface PluginOptions {
+  /**
+   * Schedule configuration for the plugin.
+   */
   schedule?: SchedulerServiceTaskScheduleDefinition;
 }
 
-/** @public */
+/**
+ * Options for configuring the router used by the Copilot plugin.
+ * 
+ * @public
+ */
 export interface RouterOptions {
+  /**
+   * Logger service for the router.
+   */
   logger: LoggerService;
+
+  /**
+   * Database service for the router.
+   */
   database: DatabaseService;
+
+  /**
+   * Scheduler service for the router.
+   */
   scheduler: SchedulerService;
+
+  /**
+   * Configuration for the router.
+   */
   config: Config;
 }
 
@@ -50,7 +76,18 @@ const defaultSchedule: SchedulerServiceTaskScheduleDefinition = {
   scope: 'local',
 };
 
-/** @public */
+
+/**
+ * Creates an Express router configured based on the provided router options and plugin options.
+ *
+ * This function initializes the router with the appropriate middleware and routes based on the
+ * configuration and options provided. It also schedules tasks if scheduling options are provided.
+ *
+ * @param routerOptions - Options for configuring the router, including services and configuration.
+ * @returns A promise that resolves to an Express router instance.
+ * 
+ * @public
+ */
 export async function createRouterFromConfig(routerOptions: RouterOptions) {
   const { config } = routerOptions;
   const pluginOptions: PluginOptions = {

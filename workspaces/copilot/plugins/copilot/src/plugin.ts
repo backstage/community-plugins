@@ -24,6 +24,11 @@ import {
 import { rootRouteRef } from './routes';
 import { CopilotClient, copilotApiRef } from './api';
 
+/**
+ * The Copilot plugin for Backstage.
+ *
+ * @public
+ */
 export const copilotPlugin = createPlugin({
   id: 'copilot',
   apis: [
@@ -42,6 +47,11 @@ export const copilotPlugin = createPlugin({
   },
 });
 
+/**
+ * Copilot page component for the Copilot plugin.
+ *
+ * @public
+ */
 export const CopilotPage = copilotPlugin.provide(
   createRoutableExtension({
     name: 'CopilotPage',

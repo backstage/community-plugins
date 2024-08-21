@@ -20,30 +20,118 @@
  * @packageDocumentation
  */
 
-export interface Metric {
-  day: string;
-  total_suggestions_count: number;
-  total_acceptances_count: number;
-  total_lines_suggested: number;
-  total_lines_accepted: number;
-  total_active_users: number;
-  total_chat_acceptances: number;
-  total_chat_turns: number;
-  total_active_chat_users: number;
-  breakdown: Breakdown[];
-}
-
+/**
+ * Represents metrics data for a day in the copilot plugin.
+ *
+ * @public
+ */
 export interface Breakdown {
-  language: string;
-  editor: string;
-  suggestions_count: number;
+  /**
+   * The number of times suggestions were accepted.
+   */
   acceptances_count: number;
-  lines_suggested: number;
-  lines_accepted: number;
+
+  /**
+   * The number of active users.
+   */
   active_users: number;
+
+  /**
+   * The editor used.
+   */
+  editor: string;
+
+  /**
+   * The programming language.
+   */
+  language: string;
+
+  /**
+   * The number of lines accepted.
+   */
+  lines_accepted: number;
+
+  /**
+   * The number of lines suggested.
+   */
+  lines_suggested: number;
+
+  /**
+   * The number of suggestions made.
+   */
+  suggestions_count: number;
 }
 
+/**
+ * Represents a detailed breakdown of metrics by language and editor.
+ *
+ * @public
+ */
+export interface Metric {
+  /**
+   * Detailed breakdown of metrics by language and editor.
+   */
+  breakdown: Breakdown[];
+
+  /**
+   * The date for the metrics reported.
+   */
+  day: string;
+
+  /**
+   * The total number of suggestions accepted.
+   */
+  total_acceptances_count: number;
+
+  /**
+   * The total number of active chat users.
+   */
+  total_active_chat_users: number;
+
+  /**
+   * The total number of active users.
+   */
+  total_active_users: number;
+
+  /**
+   * The total number of chat acceptances.
+   */
+  total_chat_acceptances: number;
+
+  /**
+   * The total number of chat turns.
+   */
+  total_chat_turns: number;
+
+  /**
+   * The total number of lines accepted.
+   */
+  total_lines_accepted: number;
+
+  /**
+   * The total number of lines suggested.
+   */
+  total_lines_suggested: number;
+
+  /**
+   * The total number of suggestions made.
+   */
+  total_suggestions_count: number;
+}
+
+/**
+ * Represents a range of dates for a reporting period.
+ *
+ * @public
+ */
 export interface PeriodRange {
-  minDate: string;
+  /**
+   * The maximum date of the reporting period.
+   */
   maxDate: string;
+
+  /**
+   * The minimum date of the reporting period.
+   */
+  minDate: string;
 }
