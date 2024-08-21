@@ -9,7 +9,7 @@ The 3scale Backstage provider plugin synchronizes the 3scale content into the [B
 Run the following command to install the 3scale Backstage provider plugin:
 
 ```console
-yarn workspace backend add @janus-idp/backstage-plugin-3scale-backend
+yarn workspace backend add @backstage-community/plugin-3scale-backend
 ```
 
 ### Configuration
@@ -40,7 +40,7 @@ yarn workspace backend add @janus-idp/backstage-plugin-3scale-backend
 
      ```ts title="packages/backend/src/plugins/catalog.ts"
      /* highlight-add-next-line */
-     import { ThreeScaleApiEntityProvider } from '@janus-idp/backstage-plugin-3scale-backend';
+     import { ThreeScaleApiEntityProvider } from '@backstage-community/plugin-3scale-backend';
 
      export default async function createPlugin(
        env: PluginEnvironment,
@@ -75,7 +75,7 @@ yarn workspace backend add @janus-idp/backstage-plugin-3scale-backend
 
      ```ts title="packages/backend/src/plugins/catalog.ts"
      /* highlight-add-next-line */
-     import { ThreeScaleApiEntityProvider } from '@janus-idp/backstage-plugin-3scale-backend';
+     import { ThreeScaleApiEntityProvider } from '@backstage-community/plugin-3scale-backend';
 
      export default async function createPlugin(
        env: PluginEnvironment,
@@ -118,7 +118,7 @@ yarn workspace backend add @janus-idp/backstage-plugin-3scale-backend
    const backend = createBackend();
 
    /* highlight-add-next-line */
-   backend.add(import('@janus-idp/backstage-plugin-3scale-backend/alpha'));
+   backend.add(import('@backstage-community/plugin-3scale-backend/alpha'));
 
    backend.start();
    ```
