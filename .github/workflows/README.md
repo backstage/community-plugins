@@ -6,7 +6,7 @@ Triggered on pull requests, this workflow runs tests on the target branch, focus
 
 ## [release_workspace.yml](./release_workspace.yml)
 
-Handles the release process for a specific workspace. It either creates a "Version Packages" pull request if changesets are present or releases the packages within the workspace if they haven't been published yet. For more details on how changesets work, refer to the [Changesets documentation](https://github.com/changesets/changesets).
+Handles the release process for a specific workspace from a specified branch (default: `main`). It either creates a "Version Packages" pull request if changesets are present or releases the packages within the workspace if they haven't been published yet. For more details on how changesets work, refer to the [Changesets documentation](https://github.com/changesets/changesets).
 
 ## [release.yml](./release.yml)
 
