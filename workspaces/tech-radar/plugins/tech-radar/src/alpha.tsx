@@ -17,6 +17,7 @@
 import { createApiFactory } from '@backstage/core-plugin-api';
 import {
   createApiExtension,
+  createNavItemExtension,
   createPageExtension,
   createPlugin,
   createSchemaFromZod,
@@ -29,7 +30,15 @@ import {
   convertLegacyRouteRef,
   convertLegacyRouteRefs,
 } from '@backstage/core-compat-api';
+import MapIcon from '@material-ui/icons/MyLocation';
 import { rootRouteRef } from './plugin';
+
+/** @alpha */
+export const techRadarNavItem = createNavItemExtension({
+  icon: MapIcon,
+  routeRef: convertLegacyRouteRef(rootRouteRef),
+  title: 'Tech Radar',
+});
 
 /** @alpha */
 export const techRadarPage = createPageExtension({
@@ -61,7 +70,7 @@ export const techRadarApi = createApiExtension({
 /** @alpha */
 export default createPlugin({
   id: 'tech-radar',
-  extensions: [techRadarPage, techRadarApi],
+  extensions: [techRadarPage, techRadarApi, techRadarNavItem],
   routes: convertLegacyRouteRefs({
     root: rootRouteRef,
   }),
