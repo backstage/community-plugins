@@ -20,6 +20,11 @@ export default _default;
 export const techRadarApi: ExtensionDefinition<{}>;
 
 // @alpha (undocumented)
+export const techRadarNavItem: ExtensionDefinition<{
+  title: string;
+}>;
+
+// @alpha (undocumented)
 export const techRadarPage: ExtensionDefinition<{
   height: number;
   width: number;
