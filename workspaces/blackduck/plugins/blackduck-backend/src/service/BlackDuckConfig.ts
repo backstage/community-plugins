@@ -1,11 +1,19 @@
 import { Config } from '@backstage/config';
 
+/**
+ * @public
+ */
 export interface BlackDuckHostConfig {
   name: string;
   host: string;
   token: string;
 }
 
+/**
+ * blackduckPlugin config
+ *
+ * @public
+ */
 export class BlackDuckConfig {
   constructor(private readonly hosts: BlackDuckHostConfig[]) {}
 
