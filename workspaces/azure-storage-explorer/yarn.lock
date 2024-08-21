@@ -1070,7 +1070,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/core-auth@npm:^1.3.0, @azure/core-auth@npm:^1.4.0, @azure/core-auth@npm:^1.5.0":
+"@azure/core-auth@npm:^1.4.0, @azure/core-auth@npm:^1.5.0":
   version: 1.7.2
   resolution: "@azure/core-auth@npm:1.7.2"
   dependencies:
@@ -1104,28 +1104,6 @@ __metadata:
     "@azure/core-client": ^1.3.0
     "@azure/core-rest-pipeline": ^1.3.0
   checksum: 387d0187607d95a6876f63d4b689210bce6ad243f48e56413136ba3875a8a9c4e238813307fb0cf0c53298f4b9d0893d04321c9331812bc74cf0f4e3e6872069
-  languageName: node
-  linkType: hard
-
-"@azure/core-http@npm:^3.0.0":
-  version: 3.0.4
-  resolution: "@azure/core-http@npm:3.0.4"
-  dependencies:
-    "@azure/abort-controller": ^1.0.0
-    "@azure/core-auth": ^1.3.0
-    "@azure/core-tracing": 1.0.0-preview.13
-    "@azure/core-util": ^1.1.1
-    "@azure/logger": ^1.0.0
-    "@types/node-fetch": ^2.5.0
-    "@types/tunnel": ^0.0.3
-    form-data: ^4.0.0
-    node-fetch: ^2.6.7
-    process: ^0.11.10
-    tslib: ^2.2.0
-    tunnel: ^0.0.6
-    uuid: ^8.3.0
-    xml2js: ^0.5.0
-  checksum: dc7cb65f782c2e947b4f8464347b5a9f5a13f557c5287a23ec87e4271ab96026fc5b9fe825fe6eacc97a09acc82c815482cef4d118e01cf9ec8bab0efeb157f9
   languageName: node
   linkType: hard
 
@@ -1166,17 +1144,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/core-tracing@npm:1.0.0-preview.13":
-  version: 1.0.0-preview.13
-  resolution: "@azure/core-tracing@npm:1.0.0-preview.13"
-  dependencies:
-    "@opentelemetry/api": ^1.0.1
-    tslib: ^2.2.0
-  checksum: bc3ea8dce1fc6bb6e4cb2e82ec0c361b3e6f6e18e162f352eb347e6991c6461ebc249f5d1b36402cc0d295e2a6bcbaa68014445d7f4293c0792a698c430f145e
-  languageName: node
-  linkType: hard
-
-"@azure/core-tracing@npm:^1.0.0, @azure/core-tracing@npm:^1.0.1":
+"@azure/core-tracing@npm:^1.0.0, @azure/core-tracing@npm:^1.0.1, @azure/core-tracing@npm:^1.1.2":
   version: 1.1.2
   resolution: "@azure/core-tracing@npm:1.1.2"
   dependencies:
@@ -1185,7 +1153,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/core-util@npm:^1.1.0, @azure/core-util@npm:^1.1.1, @azure/core-util@npm:^1.2.0, @azure/core-util@npm:^1.3.0, @azure/core-util@npm:^1.6.1, @azure/core-util@npm:^1.9.0":
+"@azure/core-util@npm:^1.1.0, @azure/core-util@npm:^1.2.0, @azure/core-util@npm:^1.3.0, @azure/core-util@npm:^1.6.1, @azure/core-util@npm:^1.9.0":
   version: 1.9.0
   resolution: "@azure/core-util@npm:1.9.0"
   dependencies:
@@ -1270,25 +1238,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/storage-blob@npm:12.17.0":
-  version: 12.17.0
-  resolution: "@azure/storage-blob@npm:12.17.0"
-  dependencies:
-    "@azure/abort-controller": ^1.0.0
-    "@azure/core-http": ^3.0.0
-    "@azure/core-lro": ^2.2.0
-    "@azure/core-paging": ^1.1.1
-    "@azure/core-tracing": 1.0.0-preview.13
-    "@azure/logger": ^1.0.0
-    events: ^3.0.0
-    tslib: ^2.2.0
-  checksum: 2e5d3f26577f698498bba7ff7b7cfeb942709a713d9c72864b80633bee28e2b369370afc55f18e49ccc02b4dad9d1de3a4602caa99dce1f8d8196c8472a8add1
-  languageName: node
-  linkType: hard
-
-"@azure/storage-blob@npm:^12.5.0":
-  version: 12.23.0
-  resolution: "@azure/storage-blob@npm:12.23.0"
+"@azure/storage-blob@npm:12.24.0, @azure/storage-blob@npm:^12.5.0":
+  version: 12.24.0
+  resolution: "@azure/storage-blob@npm:12.24.0"
   dependencies:
     "@azure/abort-controller": ^1.0.0
     "@azure/core-auth": ^1.4.0
@@ -1297,13 +1249,13 @@ __metadata:
     "@azure/core-lro": ^2.2.0
     "@azure/core-paging": ^1.1.1
     "@azure/core-rest-pipeline": ^1.10.1
-    "@azure/core-tracing": ^1.0.0
+    "@azure/core-tracing": ^1.1.2
     "@azure/core-util": ^1.6.1
     "@azure/core-xml": ^1.3.2
     "@azure/logger": ^1.0.0
     events: ^3.0.0
     tslib: ^2.2.0
-  checksum: 7f09b4bfae0d73f7cf8f383038edeaf8bc8610960bc24a9b8c140f4084bb3afd62971fb56e2ff5e013168165dcfff7b9a545f6cc837fe2669618184e4b77c107
+  checksum: 2ffe51b991f8ed6dd0003b22b9507956c215b06284645fda161d2c2147f368a6ba899e4e2f74e49033dc92f719275301b64e836386ba878b31a7183b1208ea5d
   languageName: node
   linkType: hard
 
@@ -2793,7 +2745,7 @@ __metadata:
   resolution: "@backstage-community/plugin-azure-storage-explorer-backend@workspace:plugins/azure-storage-backend"
   dependencies:
     "@azure/identity": 4.4.1
-    "@azure/storage-blob": 12.17.0
+    "@azure/storage-blob": 12.24.0
     "@backstage/backend-common": ^0.23.3
     "@backstage/backend-plugin-api": ^0.7.0
     "@backstage/cli": ^0.26.11
@@ -8601,7 +8553,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/api@npm:^1.0.1, @opentelemetry/api@npm:^1.3.0, @opentelemetry/api@npm:^1.4.0":
+"@opentelemetry/api@npm:^1.3.0, @opentelemetry/api@npm:^1.4.0":
   version: 1.9.0
   resolution: "@opentelemetry/api@npm:1.9.0"
   checksum: 9e88e59d53ced668f3daaecfd721071c5b85a67dd386f1c6f051d1be54375d850016c881f656ffbe9a03bedae85f7e89c2f2b635313f9c9b195ad033cdc31020
@@ -12200,16 +12152,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node-fetch@npm:^2.5.0":
-  version: 2.6.11
-  resolution: "@types/node-fetch@npm:2.6.11"
-  dependencies:
-    "@types/node": "*"
-    form-data: ^4.0.0
-  checksum: 180e4d44c432839bdf8a25251ef8c47d51e37355ddd78c64695225de8bc5dc2b50b7bb855956d471c026bb84bd7295688a0960085e7158cbbba803053492568b
-  languageName: node
-  linkType: hard
-
 "@types/node-forge@npm:^1.3.0":
   version: 1.3.11
   resolution: "@types/node-forge@npm:1.3.11"
@@ -12554,15 +12496,6 @@ __metadata:
   version: 2.0.7
   resolution: "@types/trusted-types@npm:2.0.7"
   checksum: 8e4202766a65877efcf5d5a41b7dd458480b36195e580a3b1085ad21e948bc417d55d6f8af1fd2a7ad008015d4117d5fdfe432731157da3c68678487174e4ba3
-  languageName: node
-  linkType: hard
-
-"@types/tunnel@npm:^0.0.3":
-  version: 0.0.3
-  resolution: "@types/tunnel@npm:0.0.3"
-  dependencies:
-    "@types/node": "*"
-  checksum: 53e23a1f9fb14a491c00425b2a4fc443817564d77be5e1b95fcbeb6d009551b62ea82ffc3e5ca0c6b9f6b186824ca6ec46e7450c1bcd6674a46d1325f0116e24
   languageName: node
   linkType: hard
 
@@ -30561,7 +30494,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tunnel@npm:0.0.6, tunnel@npm:^0.0.6":
+"tunnel@npm:0.0.6":
   version: 0.0.6
   resolution: "tunnel@npm:0.0.6"
   checksum: c362948df9ad34b649b5585e54ce2838fa583aa3037091aaed66793c65b423a264e5229f0d7e9a95513a795ac2bd4cb72cda7e89a74313f182c1e9ae0b0994fa
