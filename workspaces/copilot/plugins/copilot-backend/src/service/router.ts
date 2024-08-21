@@ -32,7 +32,7 @@ import { DateTime } from 'luxon';
 
 /**
  * Options for configuring the Copilot plugin.
- * 
+ *
  * @public
  */
 export interface PluginOptions {
@@ -44,7 +44,7 @@ export interface PluginOptions {
 
 /**
  * Options for configuring the router used by the Copilot plugin.
- * 
+ *
  * @public
  */
 export interface RouterOptions {
@@ -76,7 +76,6 @@ const defaultSchedule: SchedulerServiceTaskScheduleDefinition = {
   scope: 'local',
 };
 
-
 /**
  * Creates an Express router configured based on the provided router options and plugin options.
  *
@@ -85,7 +84,7 @@ const defaultSchedule: SchedulerServiceTaskScheduleDefinition = {
  *
  * @param routerOptions - Options for configuring the router, including services and configuration.
  * @returns A promise that resolves to an Express router instance.
- * 
+ *
  * @public
  */
 export async function createRouterFromConfig(routerOptions: RouterOptions) {
