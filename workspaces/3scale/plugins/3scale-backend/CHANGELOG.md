@@ -1,5 +1,11 @@
 ## @janus-idp/backstage-plugin-3scale-backend [1.8.0](https://github.com/janus-idp/backstage-plugins/compare/@janus-idp/backstage-plugin-3scale-backend@1.7.1...@janus-idp/backstage-plugin-3scale-backend@1.8.0) (2024-07-25)
 
+## 1.8.2
+
+### Patch Changes
+
+- 16995d3: Update README.md to reference the correct package name after migration to backstage/community-plugins
+
 ## 1.8.1
 
 ### Patch Changes
