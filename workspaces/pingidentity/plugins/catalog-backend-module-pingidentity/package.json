@@ -23,12 +23,14 @@
     "test": "backstage-cli package test",
     "clean": "backstage-cli package clean",
     "prepack": "backstage-cli package prepack",
-    "postpack": "backstage-cli package postpack"
+    "postversion": "yarn run export-dynamic",
+    "export-dynamic": "janus-cli package export-dynamic-plugin --no-embed-as-dependencies"
   },
   "dependencies": {
     "@backstage/backend-common": "^0.23.3",
     "@backstage/backend-plugin-api": "^0.7.0",
-    "@backstage/plugin-catalog-node": "^1.12.4"
+    "@backstage/plugin-catalog-node": "^1.12.4",
+    "@janus-idp/cli": "^1.13.1"
   },
   "devDependencies": {
     "@backstage/backend-defaults": "0.3.3",
