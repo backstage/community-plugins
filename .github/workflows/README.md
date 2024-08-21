@@ -8,7 +8,7 @@ Triggered on pull requests, this workflow runs tests on the target branch, focus
 
 Handles the release process for a specific workspace. It either creates a "Version Packages" pull request if changesets are present or releases the packages within the workspace if they haven't been published yet. For more details on how changesets work, refer to the [Changesets documentation](https://github.com/changesets/changesets).
 
-## [release-all.yml](./release-all.yml)
+## [release.yml](./release.yml)
 
 Responsible for releasing all workspaces in parallel by invoking the `release_workspace.yml` workflow for each workspace. It runs on the main branch whenever new changes are pushed. The workflow relies on `release_workspace.yml` to determine if a workspace requires publishing.
 
