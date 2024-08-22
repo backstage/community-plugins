@@ -12,8 +12,7 @@ describe('createRouter', () => {
   beforeAll(async () => {
     const config = new ConfigReader({
       blackduck: {
-        host: 'https://blackduck.example.com',
-        token: 'token',
+        default: 'blackduck1',
         hosts: [
           {
             name: 'blackduck1',

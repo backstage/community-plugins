@@ -15,29 +15,40 @@ export interface BlackDuckHostConfig {
  * @public
  */
 export class BlackDuckConfig {
-  constructor(private readonly hosts: BlackDuckHostConfig[]) {}
+  constructor(
+    private readonly hosts: BlackDuckHostConfig[],
+    private readonly defaultHost: string,
+  ) {}
 
   static fromConfig(config: Config): BlackDuckConfig {
-    const defaultHost = {
-      name: 'default',
-      host: config.getString('blackduck.host'),
-      token: config.getString('blackduck.token'),
-    };
+    let hosts: BlackDuckHostConfig[] = [];
+    let defaultHost: string = 'default';
 
-    const hosts = [
-      defaultHost,
-      ...(config.getOptionalConfigArray('blackduck.hosts')?.map(host => ({
-        name: host.getString('name'),
-        host: host.getString('host'),
-        token: host.getString('token'),
-      })) ?? []),
-    ];
+    if (config.has('blackduck.host') && config.has('blackduck.token')) {
+      const singleHost = {
+        name: 'default',
+        host: config.getString('blackduck.host'),
+        token: config.getString('blackduck.token'),
+      };
+      hosts = [singleHost];
+    }
 
-    return new BlackDuckConfig(hosts);
+    if (config.has('blackduck.hosts')) {
+      hosts = config.getConfigArray('blackduck.hosts').map(hostConfig => ({
+        name: hostConfig.getString('name'),
+        host: hostConfig.getString('host'),
+        token: hostConfig.getString('token'),
+      }));
+      defaultHost = config.getString('blackduck.default');
+    }
+
+    return new BlackDuckConfig(hosts, defaultHost);
   }
 
   getHostConfigByName(name: string): BlackDuckHostConfig {
-    const hostConfig = this.hosts.find(host => host.name === name);
+    const hostName = name === 'default' ? this.defaultHost : name;
+
+    const hostConfig = this.hosts.find(host => host.name === hostName);
 
     if (!hostConfig) {
       throw new Error(`No host found with name: ${name}`);

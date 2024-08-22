@@ -155,8 +155,7 @@ Add the following into your `app-config.yaml`. The default host is mandatory - i
 
 ```yaml
 blackduck:
-  host: https://blackduck.yourcompany.default.com/api
-  token: YOUR_API_TOKEN_DEFAULT
+  default: one
   hosts:
     - name: one
       host: https://blackduck.yourcompany.one.com/api

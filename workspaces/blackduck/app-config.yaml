@@ -105,8 +105,7 @@ catalog:
     #     - allow: [User, Group]
 
 blackduck:
-  host: ${BLACKDUCK_DEFAULT_HOST_URL}
-  token: ${BLACKDUCK_DEFAULT_HOST_TOKEN}
+  default: example-host
   hosts:
     - name: example-host
       host: ${BLACKDUCK_EXAMPLE_HOST_URL}
