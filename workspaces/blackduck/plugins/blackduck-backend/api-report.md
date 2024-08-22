@@ -13,7 +13,7 @@ import { PermissionsService } from '@backstage/backend-plugin-api';
 
 // @public
 export class BlackDuckConfig {
-  constructor(hosts: BlackDuckHostConfig[]);
+  constructor(hosts: BlackDuckHostConfig[], defaultHost: string);
   // (undocumented)
   static fromConfig(config: Config): BlackDuckConfig;
   // (undocumented)
