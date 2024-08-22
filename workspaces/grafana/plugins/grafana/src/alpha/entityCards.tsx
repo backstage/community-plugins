@@ -6,6 +6,7 @@ import { createEntityCardExtension } from '@backstage/plugin-catalog-react/alpha
  */
 export const entityGrafanaDashboardsCard = createEntityCardExtension({
   name: 'dashboards',
+  filter: 'kind:component',
   loader: () =>
     import('../components/DashboardsCard').then(m => <m.DashboardsCard />),
 });
@@ -15,6 +16,7 @@ export const entityGrafanaDashboardsCard = createEntityCardExtension({
  */
 export const entityGrafanaAlertsCard = createEntityCardExtension({
   name: 'alerts',
+  filter: 'kind:component',
   loader: () => import('../components/AlertsCard').then(m => <m.AlertsCard />),
 });
 
@@ -23,6 +25,7 @@ export const entityGrafanaAlertsCard = createEntityCardExtension({
  */
 export const entityGrafanaOverviewDashboardViewer = createEntityCardExtension({
   name: 'overview-dashboard',
+  filter: 'kind:component',
   loader: () =>
     import('../components/DashboardViewer').then(m => (
       <m.EntityDashboardViewer />

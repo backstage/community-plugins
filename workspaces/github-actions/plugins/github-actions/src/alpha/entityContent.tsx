@@ -10,6 +10,7 @@ export const entityGithubActionsContent = createEntityContentExtension({
   defaultPath: 'github-actions',
   defaultTitle: 'GitHub Actions',
   name: 'entity',
+  filter: 'kind:component',
   routeRef: convertLegacyRouteRef(rootRouteRef),
   loader: () =>
     import('../components/Router').then(m => <m.Router view="table" />),
