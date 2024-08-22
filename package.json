@@ -21,7 +21,7 @@
   "devDependencies": {
     "@manypkg/get-packages": "^2.2.2",
     "@spotify/eslint-plugin": "^15.0.0",
-    "@spotify/prettier-config": "^12.0.0",
+    "@spotify/prettier-config": "^15.0.0",
     "array-to-table": "^1.0.1",
     "eslint": "^8.6.0",
     "eslint-plugin-notice": "^0.9.10",
