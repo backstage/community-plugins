@@ -7,6 +7,7 @@ import { createEntityCardExtension } from '@backstage/plugin-catalog-react/alpha
  */
 export const entityGithubActionsCard = createEntityCardExtension({
   name: 'workflow-runs',
+  filter: 'kind:component',
   loader: () =>
     import('../components/Router').then(m => <m.Router view="cards" />),
 });
@@ -16,6 +17,7 @@ export const entityGithubActionsCard = createEntityCardExtension({
  */
 export const entityLatestGithubActionRunCard = createEntityCardExtension({
   name: 'latest-workflow-run',
+  filter: 'kind:component',
   configSchema: createSchemaFromZod(z =>
     z.object({
       props: z
@@ -38,6 +40,7 @@ export const entityLatestGithubActionRunCard = createEntityCardExtension({
 export const entityLatestGithubActionsForBranchCard = createEntityCardExtension(
   {
     name: 'latest-branch-workflow-runs',
+    filter: 'kind:component',
     configSchema: createSchemaFromZod(z =>
       z.object({
         props: z
@@ -60,6 +63,7 @@ export const entityLatestGithubActionsForBranchCard = createEntityCardExtension(
  */
 export const entityRecentGithubActionsRunsCard = createEntityCardExtension({
   name: 'recent-workflow-runs',
+  filter: 'kind:component',
   configSchema: createSchemaFromZod(z =>
     z.object({
       props: z
