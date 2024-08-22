@@ -115,7 +115,8 @@ export const app = createApp({
 });
 ```
 
-2. Next, enable your desired extensions in `app-config.yaml`
+2. Next, enable your desired extensions in `app-config.yaml`. By default, the content and cards will only appear on entities
+   that are Components. You can override that behavior here by adding a config block, demonstrated on the 'recent-workflow' card.
 
 ```yaml
 app:
@@ -123,7 +124,9 @@ app:
     - entity-content:github-actions/entity
     - entity-card:github-actions/latest-workflow-run
     - entity-card:github-actions/latest-branch-workflow-runs
-    - entity-card:github-actions/recent-workflow-runs
+    - entity-card:github-actions/recent-workflow-runs:
+        config:
+          filter: kind:component,api,group
 ```
 
 3. Whichever extensions you've enabled should now appear in your entity page.
