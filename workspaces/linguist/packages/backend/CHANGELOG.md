@@ -1,5 +1,14 @@
 # backend
 
+## 0.0.8
+
+### Patch Changes
+
+- Updated dependencies [6021ae7]
+  - @backstage-community/plugin-catalog-backend-module-linguist-tags-processor@0.1.5
+  - @backstage-community/plugin-linguist-backend@0.5.23
+  - app@0.0.5
+
 ## 0.0.7
 
 ### Patch Changes
