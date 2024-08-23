@@ -63,7 +63,7 @@
     "@backstage/dev-utils": "1.0.36",
     "@backstage/test-utils": "1.5.9",
     "@janus-idp/cli": "1.13.0",
-    "@playwright/test": "1.45.3",
+    "@playwright/test": "1.46.1",
     "@redhat-developer/red-hat-developer-hub-theme": "0.0.54",
     "@testing-library/jest-dom": "6.4.8",
     "@testing-library/react": "14.3.1",
