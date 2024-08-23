@@ -1,5 +1,12 @@
 # @backstage-community/plugin-code-coverage-backend
 
+## 0.2.34
+
+### Patch Changes
+
+- ae2ee8a: Updated dependency `@types/supertest` to `^6.0.0`.
+  Updated dependency `supertest` to `^7.0.0`.
+
 ## 0.2.33
 
 ### Patch Changes
