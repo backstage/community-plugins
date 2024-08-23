@@ -32,5 +32,6 @@
       "allowedVersions": "<5.0.0"
     }
   ],
-  "ignorePaths": ["**/dist-dynamic/**"]
+  "ignorePaths": ["**/dist-dynamic/**"],
+  "gitIgnoredAuthors": ["backstage-goalie"]
 }
