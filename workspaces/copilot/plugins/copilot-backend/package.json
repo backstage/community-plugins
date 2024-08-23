@@ -11,7 +11,13 @@
     "migrations/**/*.{js,d.ts}"
   ],
   "backstage": {
-    "role": "backend-plugin"
+    "role": "backend-plugin",
+    "pluginId": "copilot",
+    "pluginPackages": [
+      "@backstage-community/plugin-copilot",
+      "@backstage-community/plugin-copilot-backend",
+      "@backstage-community/plugin-copilot-common"
+    ]
   },
   "publishConfig": {
     "access": "public",

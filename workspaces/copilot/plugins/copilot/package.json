@@ -10,8 +10,19 @@
     "main": "dist/index.esm.js",
     "types": "dist/index.d.ts"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/copilot/plugins/copilot"
+  },
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "copilot",
+    "pluginPackages": [
+      "@backstage-community/plugin-copilot",
+      "@backstage-community/plugin-copilot-backend",
+      "@backstage-community/plugin-copilot-common"
+    ]
   },
   "sideEffects": false,
   "scripts": {
