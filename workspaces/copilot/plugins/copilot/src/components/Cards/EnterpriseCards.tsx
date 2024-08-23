@@ -26,15 +26,15 @@ export const EnterpriseCards = ({
   }, 0);
 
   const total_suggestions_count = metrics.reduce((acc, m) => {
-    return acc + m.total_suggestions_count ?? 0;
+    return acc + m.total_suggestions_count;
   }, 0);
 
   const total_acceptances_count = metrics.reduce((acc, m) => {
-    return acc + m.total_acceptances_count ?? 0;
+    return acc + m.total_acceptances_count;
   }, 0);
 
   const total_lines_accepted = metrics.reduce((acc, m) => {
-    return acc + m.total_lines_accepted ?? 0;
+    return acc + m.total_lines_accepted;
   }, 0);
 
   return (
