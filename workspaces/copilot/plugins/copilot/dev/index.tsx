@@ -20,8 +20,8 @@ import {
   UnifiedThemeProvider,
   themes as builtinThemes,
 } from '@backstage/theme';
-import DarkIcon from '@material-ui/icons/Brightness2';
-import LightIcon from '@material-ui/icons/WbSunny';
+import DarkIcon from '@mui/icons-material/Brightness2';
+import LightIcon from '@mui/icons-material/WbSunny';
 import { AppTheme } from '@backstage/core-plugin-api';
 import { GitHubIcon } from '@backstage/core-components';
 

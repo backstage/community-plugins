@@ -26,19 +26,11 @@ import { Metrics } from '../Metrics';
 import { LanguageCards, EnterpriseCards } from '../Cards';
 import { LanguageCharts, EnterpriseCharts } from '../Charts';
 import useObservable from 'react-use/lib/useObservable';
-import createStateContext from 'react-use/lib/factory/createStateContext';
-import { DateTime } from 'luxon';
 import { themes } from '@backstage/theme';
 import { appThemeApiRef, useApi } from '@backstage/core-plugin-api';
 import { ThemeProvider } from '@emotion/react';
 import { styled } from '@mui/material/styles';
-
-export const [useSharedDateRange, SharedDateRangeProvider] = createStateContext(
-  {
-    startDate: DateTime.now().minus({ days: 28 }).toJSDate(),
-    endDate: DateTime.now().minus({ days: 1 }).toJSDate(),
-  },
-);
+import { SharedDateRangeProvider } from '../../contexts';
 
 const StyledContent = styled(Content)(({ theme }) => ({
   margin: `${theme.spacing(0)} !important`,
