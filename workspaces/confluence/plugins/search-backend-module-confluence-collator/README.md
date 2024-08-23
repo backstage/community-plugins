@@ -36,7 +36,8 @@ backend.start();
 
 Before you are able to start index confluence spaces to search, you need to go through the [search getting started guide](https://backstage.io/docs/features/search/getting-started).
 
-When you have your `packages/backend/src/plugins/search.ts` file ready to make modifications, add the following code snippet to add the `ConfluenceCollatorFactory`. Note that you can optionally modify the `spaces` or `query`, otherwise it will resolve and index **all** spaces and documents authorized by the token.
+When you have your `packages/backend/src/plugins/search.ts` file ready to make modifications, add the following code snippet to add the `ConfluenceCollatorFactory`. Note that you can optionally modify
+the `spaces` or [`query`](https://developer.atlassian.com/cloud/confluence/advanced-searching-using-cql), otherwise it will resolve and index **all** spaces and documents authorized by the token.
 
 ```ts
 indexBuilder.addCollator({
