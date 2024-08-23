@@ -1,5 +1,12 @@
 # @backstage-community/plugin-linguist-backend
 
+## 0.5.22
+
+### Patch Changes
+
+- ae2ee8a: Updated dependency `@types/supertest` to `^6.0.0`.
+  Updated dependency `supertest` to `^7.0.0`.
+
 ## 0.5.21
 
 ### Patch Changes
