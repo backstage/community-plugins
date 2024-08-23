@@ -1,5 +1,11 @@
 # @backstage-community/plugin-azure-devops-backend
 
+## 0.6.10
+
+### Patch Changes
+
+- 968258f: Removed code marked as deprecated in the upstream Backstage project
+
 ## 0.6.9
 
 ### Patch Changes
