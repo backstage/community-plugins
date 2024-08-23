@@ -26,7 +26,7 @@ import { RepoBuild } from '@backstage-community/plugin-azure-devops-common';
 import { ScmIntegrationRegistry } from '@backstage/integration';
 import { Team } from '@backstage-community/plugin-azure-devops-common';
 import { TeamMember } from '@backstage-community/plugin-azure-devops-common';
-import { UrlReader } from '@backstage/backend-common';
+import { UrlReaderService } from '@backstage/backend-plugin-api';
 
 // @public @deprecated (undocumented)
 export class AzureDevOpsAnnotatorProcessor implements CatalogProcessor {
@@ -54,7 +54,7 @@ export class AzureDevOpsApi {
     config: Config,
     options: {
       logger: LoggerService;
-      urlReader: UrlReader;
+      urlReader: UrlReaderService;
     },
   ): AzureDevOpsApi;
   // (undocumented)
@@ -169,6 +169,6 @@ export interface RouterOptions {
   // (undocumented)
   permissions: PermissionsService;
   // (undocumented)
-  reader: UrlReader;
+  reader: UrlReaderService;
 }
 ```
