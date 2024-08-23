@@ -4,8 +4,8 @@ import { styled, useTheme } from '@mui/material/styles';
 import { Calendar } from 'simple-date-range-calendar';
 import { useMetrics } from '../../hooks';
 import { CardsProps, ChartsProps } from '../../types';
-import { useSharedDateRange } from '../Pages/CopilotPage';
 import { Progress } from '@backstage/core-components';
+import { useSharedDateRange } from '../../contexts';
 
 type MetricsProps = {
   Cards: React.ElementType<CardsProps>;

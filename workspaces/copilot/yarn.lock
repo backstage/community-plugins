@@ -13916,6 +13916,7 @@ __metadata:
     "@backstage/theme": ^0.5.6
     "@material-ui/core": ^4.12.2
     "@material-ui/icons": ^4.9.1
+    "@mui/material": ^5.16.7
     "@playwright/test": ^1.32.3
     "@testing-library/dom": ^9.0.0
     "@testing-library/jest-dom": ^6.0.0
@@ -14632,6 +14633,7 @@ __metadata:
     "@backstage-community/plugin-copilot-backend": "workspace:^"
     "@backstage/backend-common": ^0.23.3
     "@backstage/backend-defaults": ^0.4.1
+    "@backstage/backend-plugin-api": ^0.7.0
     "@backstage/backend-tasks": ^0.5.27
     "@backstage/cli": ^0.26.11
     "@backstage/config": ^1.2.0
