@@ -1,5 +1,11 @@
 # @backstage-community/plugin-explore-backend
 
+## 0.1.4
+
+### Patch Changes
+
+- 1cc9702: Fix tool provider extension point
+
 ## 0.1.3
 
 ### Patch Changes
