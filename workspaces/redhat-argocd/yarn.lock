@@ -2543,7 +2543,7 @@ __metadata:
     "@patternfly/react-icons": ^5.1.1
     "@patternfly/react-tokens": ^5.1.2
     "@playwright/test": 1.46.1
-    "@redhat-developer/red-hat-developer-hub-theme": 0.0.54
+    "@redhat-developer/red-hat-developer-hub-theme": 0.2.0
     "@testing-library/jest-dom": 6.4.8
     "@testing-library/react": 14.3.1
     "@testing-library/user-event": 14.5.2
@@ -6412,9 +6412,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@redhat-developer/red-hat-developer-hub-theme@npm:0.0.54":
-  version: 0.0.54
-  resolution: "@redhat-developer/red-hat-developer-hub-theme@npm:0.0.54"
+"@redhat-developer/red-hat-developer-hub-theme@npm:0.2.0":
+  version: 0.2.0
+  resolution: "@redhat-developer/red-hat-developer-hub-theme@npm:0.2.0"
   peerDependencies:
     "@backstage/theme": ^0.5.2
     "@emotion/react": ^11.11.1
@@ -6423,7 +6423,7 @@ __metadata:
     "@material-ui/icons": ^4.11.3
     "@mui/icons-material": ^5.14.19
     "@mui/material": ^5.14.20
-  checksum: 78a1e84c09f766a8b140ef00fc2c107a39d31229156b22ce8b3c5c57688b0444e733e7278890e17c20a9a8137fd3e29de032f76b6f4e9e35425d5c73f083cdbd
+  checksum: 2a5d52e2ba31c5a6ff2cfe75d78b1de1afa00690b522875e52d8ddc8805a3ccc5c202414a0304790efe0ed0ea2c570b9c8bf7472c7895d4bbe416c6541435196
   languageName: node
   linkType: hard
 
