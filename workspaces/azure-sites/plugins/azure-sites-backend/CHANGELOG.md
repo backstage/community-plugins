@@ -1,5 +1,11 @@
 # @backstage-community/plugin-azure-sites-backend
 
+## 0.3.7
+
+### Patch Changes
+
+- ae2ee8a: Updated dependency `@types/supertest` to `^6.0.0`.
+
 ## 0.3.6
 
 ### Patch Changes
