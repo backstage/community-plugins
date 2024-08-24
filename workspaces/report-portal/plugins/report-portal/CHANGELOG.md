@@ -1,5 +1,11 @@
 # @backstage-community/plugin-report-portal
 
+## 1.0.1
+
+### Patch Changes
+
+- 5c3b615: Backstage version bump to v1.30.2
+
 ## 1.0.0
 
 ### Major Changes
