@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-lighthouse-backend",
-  "version": "0.4.12",
+  "version": "0.4.13",
   "description": "Backend functionalities for lighthouse",
   "backstage": {
     "role": "backend-plugin",
