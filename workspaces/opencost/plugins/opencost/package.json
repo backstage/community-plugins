@@ -36,7 +36,7 @@
     "test": "backstage-cli package test"
   },
   "dependencies": {
-    "@backstage/core-components": "^0.14.9",
+    "@backstage/core-components": "^0.14.10",
     "@backstage/core-plugin-api": "^1.9.3",
     "@date-io/luxon": "1.x",
     "@material-ui/core": "^4.9.13",
@@ -50,8 +50,8 @@
     "recharts": "^2.5.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.26.11",
-    "@backstage/dev-utils": "^1.0.36",
+    "@backstage/cli": "^0.27.0",
+    "@backstage/dev-utils": "^1.0.37",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^15.0.0",
