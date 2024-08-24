@@ -1,5 +1,11 @@
 ## @janus-idp/backstage-plugin-argocd [1.5.7](https://github.com/janus-idp/backstage-plugins/compare/@janus-idp/backstage-plugin-argocd@1.5.6...@janus-idp/backstage-plugin-argocd@1.5.7) (2024-08-02)
 
+## 1.6.3
+
+### Patch Changes
+
+- 8907cb6: Backstage version bump to v1.30.2
+
 ## 1.6.2
 
 ### Patch Changes
