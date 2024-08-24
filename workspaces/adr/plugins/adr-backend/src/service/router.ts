@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 
-import { CacheClient, UrlReader } from '@backstage/backend-common';
 import { NotModifiedError, stringifyError } from '@backstage/errors';
 import express from 'express';
 import Router from 'express-promise-router';
 import { madrParser } from '@backstage-community/plugin-adr-common';
-import { LoggerService } from '@backstage/backend-plugin-api';
+import {
+  CacheService,
+  LoggerService,
+  UrlReaderService,
+} from '@backstage/backend-plugin-api';
 
 /** @public */
 export type AdrRouterOptions = {
-  reader: UrlReader;
-  cacheClient: CacheClient;
+  reader: UrlReaderService;
+  cacheClient: CacheService;
   logger: LoggerService;
 };
 

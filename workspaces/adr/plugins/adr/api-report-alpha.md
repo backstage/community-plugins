@@ -8,10 +8,23 @@ import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { TranslationRef } from '@backstage/core-plugin-api/alpha';
 
 // @alpha (undocumented)
-export const adrSearchResultListItemExtension: ExtensionDefinition<{
-  lineClamp: number;
-  noTrack: boolean;
-}>;
+export const adrSearchResultListItemExtension: ExtensionDefinition<
+  {
+    lineClamp: number;
+    noTrack: boolean;
+  },
+  {
+    lineClamp: number;
+    noTrack: boolean;
+  },
+  never,
+  never,
+  {
+    kind?: string | undefined;
+    namespace?: string | undefined;
+    name?: string | undefined;
+  }
+>;
 
 // @alpha (undocumented)
 export const adrTranslationRef: TranslationRef<
@@ -24,7 +37,7 @@ export const adrTranslationRef: TranslationRef<
 >;
 
 // @alpha (undocumented)
-const _default: BackstagePlugin<{}, {}>;
+const _default: BackstagePlugin<{}, {}, {}>;
 export default _default;
 
 // (No @packageDocumentation comment for this package)
