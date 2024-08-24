@@ -36,14 +36,14 @@
   },
   "dependencies": {
     "@backstage/config": "^1.2.0",
-    "@backstage/core-components": "^0.14.9",
+    "@backstage/core-components": "^0.14.10",
     "@backstage/core-plugin-api": "^1.9.3",
-    "@backstage/frontend-plugin-api": "^0.6.7",
+    "@backstage/frontend-plugin-api": "^0.7.0",
     "react-ga4": "^2.0.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.26.11",
-    "@backstage/dev-utils": "^1.0.35",
+    "@backstage/cli": "^0.27.0",
+    "@backstage/dev-utils": "^1.0.37",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^15.0.0",
