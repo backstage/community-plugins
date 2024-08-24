@@ -35,7 +35,7 @@ import {
   LoggerService,
   UrlReaderService,
 } from '@backstage/backend-plugin-api';
-import { MiddlewareFactory } from '@backstage/backend-defaults/dist/rootHttpRouter';
+import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 
 /**
  * Options for {@link createRouter}.
