@@ -1,5 +1,16 @@
 # @backstage-community/plugin-tech-insights-backend
 
+## 0.6.1
+
+### Patch Changes
+
+- ae2ee8a: Updated dependency `@types/supertest` to `^6.0.0`.
+  Updated dependency `supertest` to `^7.0.0`.
+- 00d148d: Backstage version bump to v1.30.2
+- Updated dependencies [00d148d]
+  - @backstage-community/plugin-tech-insights-common@0.2.16
+  - @backstage-community/plugin-tech-insights-node@0.6.5
+
 ## 0.6.0
 
 ### Minor Changes
