@@ -7,12 +7,12 @@ import { AdrCollatorFactoryOptions as AdrCollatorFactoryOptions_2 } from '@backs
 import { AdrParser as AdrParser_2 } from '@backstage-community/plugin-adr-common';
 import { AdrParserContext as AdrParserContext_2 } from '@backstage-community/plugin-adr-common';
 import { BackendFeatureCompat } from '@backstage/backend-plugin-api';
-import { CacheClient } from '@backstage/backend-common';
+import { CacheService } from '@backstage/backend-plugin-api';
 import { DefaultAdrCollatorFactory } from '@backstage-community/search-backend-module-adr';
 import express from 'express';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { MadrParserOptions as MadrParserOptions_2 } from '@backstage-community/plugin-adr-common';
-import { UrlReader } from '@backstage/backend-common';
+import { UrlReaderService } from '@backstage/backend-plugin-api';
 
 // @public @deprecated
 export type AdrCollatorFactoryOptions = AdrCollatorFactoryOptions_2;
@@ -29,8 +29,8 @@ export default adrPlugin;
 
 // @public (undocumented)
 export type AdrRouterOptions = {
-  reader: UrlReader;
-  cacheClient: CacheClient;
+  reader: UrlReaderService;
+  cacheClient: CacheService;
   logger: LoggerService;
 };
 
