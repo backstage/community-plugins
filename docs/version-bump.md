@@ -23,6 +23,9 @@ When a Plugin Owner or Community Plugins Maintainer wants to upgrade one or many
 
 ### Generate List of All Workspaces
 
+> [!WARNING]
+> Do not use the entire list as you will hit rate limits, chunks of 5-10 work best
+
 If you want to run the Version Bump workflow against all the workspaces in this repo you can do the following to generate the proper JSON array:
 
 1. Navigate into the `/workspaces` folder
