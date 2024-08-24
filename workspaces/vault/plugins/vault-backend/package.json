@@ -44,10 +44,10 @@
   },
   "dependencies": {
     "@backstage-community/plugin-vault-node": "workspace:^",
-    "@backstage/backend-common": "^0.23.3",
-    "@backstage/backend-defaults": "^0.4.1",
-    "@backstage/backend-plugin-api": "^0.7.0",
-    "@backstage/backend-tasks": "^0.5.27",
+    "@backstage/backend-common": "^0.24.0",
+    "@backstage/backend-defaults": "^0.4.3",
+    "@backstage/backend-plugin-api": "^0.8.0",
+    "@backstage/backend-tasks": "^0.6.0",
     "@backstage/config": "^1.2.0",
     "@backstage/errors": "^1.2.4",
     "@types/express": "*",
@@ -62,8 +62,8 @@
     "yn": "^5.0.0"
   },
   "devDependencies": {
-    "@backstage/backend-test-utils": "^0.4.4",
-    "@backstage/cli": "^0.26.11",
+    "@backstage/backend-test-utils": "^0.5.0",
+    "@backstage/cli": "^0.27.0",
     "@types/compression": "^1.7.2",
     "@types/node-fetch": "^2.5.12",
     "@types/supertest": "^6.0.0",
