@@ -2517,6 +2517,7 @@ __metadata:
   resolution: "@backstage-community/plugin-code-coverage-backend@workspace:plugins/code-coverage-backend"
   dependencies:
     "@backstage/backend-common": ^0.24.0
+    "@backstage/backend-defaults": ^0.4.3
     "@backstage/backend-plugin-api": ^0.8.0
     "@backstage/backend-test-utils": ^0.5.0
     "@backstage/catalog-client": ^1.6.6
@@ -2717,7 +2718,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/backend-defaults@npm:^0.4.2":
+"@backstage/backend-defaults@npm:^0.4.2, @backstage/backend-defaults@npm:^0.4.3":
   version: 0.4.3
   resolution: "@backstage/backend-defaults@npm:0.4.3"
   dependencies:
