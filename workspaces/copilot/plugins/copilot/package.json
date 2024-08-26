@@ -1,0 +1,71 @@
+{
+  "name": "@backstage-community/plugin-copilot",
+  "version": "0.1.1",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "license": "Apache-2.0",
+  "private": true,
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.esm.js",
+    "types": "dist/index.d.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/copilot/plugins/copilot"
+  },
+  "backstage": {
+    "role": "frontend-plugin",
+    "pluginId": "copilot",
+    "pluginPackages": [
+      "@backstage-community/plugin-copilot",
+      "@backstage-community/plugin-copilot-backend",
+      "@backstage-community/plugin-copilot-common"
+    ]
+  },
+  "sideEffects": false,
+  "scripts": {
+    "start": "backstage-cli package start",
+    "build": "backstage-cli package build",
+    "lint": "backstage-cli package lint",
+    "test": "backstage-cli package test",
+    "clean": "backstage-cli package clean",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack"
+  },
+  "dependencies": {
+    "@backstage-community/plugin-copilot-common": "workspace:^",
+    "@backstage/core-components": "^0.14.10",
+    "@backstage/core-plugin-api": "^1.9.3",
+    "@backstage/errors": "^1.2.4",
+    "@backstage/theme": "^0.5.6",
+    "@emotion/react": "^11.13.0",
+    "@emotion/styled": "^11.13.0",
+    "@mui/icons-material": "^5.16.7",
+    "@mui/material": "^5.16.7",
+    "@mui/x-charts": "^7.6.1",
+    "luxon": "^3.5.0",
+    "react-use": "^17.3.1",
+    "simple-date-range-calendar": "^1.0.10"
+  },
+  "peerDependencies": {
+    "react": "^17.0.0 || ^18.0.0"
+  },
+  "devDependencies": {
+    "@backstage/cli": "^0.27.0",
+    "@backstage/core-app-api": "^1.14.2",
+    "@backstage/dev-utils": "^1.0.37",
+    "@backstage/test-utils": "^1.5.10",
+    "@testing-library/jest-dom": "^6.0.0",
+    "@testing-library/react": "^14.0.0",
+    "@testing-library/user-event": "^14.0.0",
+    "@types/d3-scale": "^4.0.8",
+    "@types/d3-shape": "^3.1.6",
+    "@types/react": "^18.3.3",
+    "msw": "^1.0.0"
+  },
+  "files": [
+    "dist"
+  ]
+}

@@ -11,6 +11,7 @@ const _default: BackstagePlugin<
   {
     entityContent: RouteRef<undefined>;
   },
+  {},
   {}
 >;
 export default _default;

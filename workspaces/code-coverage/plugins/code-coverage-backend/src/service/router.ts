@@ -19,13 +19,7 @@ import Router from 'express-promise-router';
 import BodyParser from 'body-parser';
 import bodyParserXml from 'body-parser-xml';
 import { CatalogApi, CatalogClient } from '@backstage/catalog-client';
-import {
-  createLegacyAuthAdapters,
-  errorHandler,
-  PluginDatabaseManager,
-  PluginEndpointDiscovery,
-  UrlReader,
-} from '@backstage/backend-common';
+import { createLegacyAuthAdapters } from '@backstage/backend-common';
 import { InputError, NotFoundError } from '@backstage/errors';
 import { Config } from '@backstage/config';
 import { ScmIntegrations } from '@backstage/integration';
@@ -35,9 +29,13 @@ import { Cobertura, Converter, Jacoco, Lcov } from './converter';
 import { getEntitySourceLocation } from '@backstage/catalog-model';
 import {
   AuthService,
+  DatabaseService,
+  DiscoveryService,
   HttpAuthService,
   LoggerService,
+  UrlReaderService,
 } from '@backstage/backend-plugin-api';
+import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 
 /**
  * Options for {@link createRouter}.
@@ -46,9 +44,9 @@ import {
  */
 export interface RouterOptions {
   config: Config;
-  discovery: PluginEndpointDiscovery;
-  database: PluginDatabaseManager;
-  urlReader: UrlReader;
+  discovery: DiscoveryService;
+  database: DatabaseService;
+  urlReader: UrlReaderService;
   logger: LoggerService;
   catalogApi?: CatalogApi;
   auth?: AuthService;
@@ -258,7 +256,9 @@ export const makeRouter = async (
     });
   });
 
-  router.use(errorHandler());
+  const middleware = MiddlewareFactory.create({ logger, config });
+
+  router.use(middleware.error());
   return router;
 };
 

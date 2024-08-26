@@ -1,5 +1,13 @@
 # @backstage-community/plugin-lighthouse
 
+## 0.4.22
+
+### Patch Changes
+
+- 0ba8b43: Backstage version bump to v1.30.2
+- Updated dependencies [0ba8b43]
+  - @backstage-community/plugin-lighthouse-common@0.1.8
+
 ## 0.4.21
 
 ### Patch Changes
