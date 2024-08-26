@@ -10,7 +10,7 @@ feedback:
 # Add dynamic plugin configuration (copy this to dynamic-plugins.yaml file)
 dynamicPlugins:
   frontend:
-    janus-idp.backstage-plugin-feedback:
+    backstage-community.backstage-plugin-feedback:
       appIcons:
         - name: feedbackIcon
           importName: FeedbackIcon

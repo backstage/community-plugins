@@ -1,5 +1,5 @@
 {
-  "name": "@janus-idp/backstage-plugin-feedback-backend",
+  "name": "@backstage-community/backstage-plugin-feedback-backend",
   "version": "1.7.0",
   "main": "src/index.ts",
   "types": "src/index.ts",
@@ -12,8 +12,8 @@
     "supported-versions": "1.28.4",
     "pluginId": "feedback",
     "pluginPackages": [
-      "@janus-idp/backstage-plugin-feedback",
-      "@janus-idp/backstage-plugin-feedback-backend"
+      "@backstage-community/backstage-plugin-feedback",
+      "@backstage-community/backstage-plugin-feedback-backend"
     ]
   },
   "exports": {
@@ -84,7 +84,7 @@
   "configSchema": "config.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/janus-idp/backstage-plugins",
+    "url": "https://github.com/backstage/community-plugins",
     "directory": "plugins/feedback-backend"
   },
   "keywords": [
@@ -94,10 +94,11 @@
     "plugin"
   ],
   "homepage": "https://red.ht/rhdh",
-  "bugs": "https://github.com/janus-idp/backstage-plugins/issues",
+  "bugs": "https://github.com/backstage/community-plugins/issues",
   "maintainers": [
-    "@janus-idp/maintainers-plugins",
-    "@janus-idp/devex-uxe"
+    "riginoommen",
+    "deshmukhmayur",
+    "yashoswalyo"
   ],
   "author": "The Backstage Community"
 }
