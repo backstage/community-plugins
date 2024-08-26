@@ -54,5 +54,8 @@
     "*.{json,md}": [
       "prettier --write"
     ]
+  },
+  "dependencies": {
+    "@microsoft/api-extractor": "^7.36.4"
   }
 }
