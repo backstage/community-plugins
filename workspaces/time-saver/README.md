@@ -2,7 +2,7 @@
 
 This plugin provides an implementation of charts and statistics related to your time savings that are coming from usage of your templates. Plugins is built from frontend and backend part. This part of plugin `frontend` is responsible of providing views with charts describing data collected from `backend` part of plugin.
 
-## Repos
+## Plugins
 
 - [time-saver](./plugins/time-saver)
 - [time-saver-backend](./plugins/time-saver-backend)
