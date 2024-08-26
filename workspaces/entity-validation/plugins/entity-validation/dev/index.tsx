@@ -14,9 +14,29 @@
  * limitations under the License.
  */
 import React from 'react';
+import { Page, Header, Content } from '@backstage/core-components';
 import { createDevApp } from '@backstage/dev-utils';
-import { entityValidationPlugin, EntityValidationPage } from '../src/plugin';
+import {
+  entityValidationPlugin,
+  EntityValidationPage,
+  EntityValidationContent,
+} from '../src/plugin';
 import { CatalogApi, catalogApiRef } from '@backstage/plugin-catalog-react';
+
+import Typography from '@material-ui/core/Typography';
+
+const EmbedExamplePage = () => {
+  return (
+    <Page themeId="tool">
+      <Header title="Embed Example" />
+      <Content>
+        <EntityValidationContent
+          contentHead={<Typography variant="h6">Entity Validation</Typography>}
+        />
+      </Content>
+    </Page>
+  );
+};
 
 createDevApp()
   .registerPlugin(entityValidationPlugin)
@@ -32,5 +52,10 @@ createDevApp()
     element: <EntityValidationPage />,
     title: 'Root Page',
     path: '/entity-validation',
+  })
+  .addPage({
+    element: <EmbedExamplePage />,
+    title: 'Embedded Page',
+    path: '/entity-validation-embed',
   })
   .render();
