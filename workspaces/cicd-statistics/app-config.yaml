@@ -28,7 +28,20 @@ techdocs:
 
 auth:
   providers:
-    guest: {}
+    gitlab:
+      development:
+        clientId: ${AUTH_GITLAB_CLIENT_ID}
+        clientSecret: ${AUTH_GITLAB_CLIENT_SECRET}
+        ## uncomment if using self-hosted GitLab
+        # audience: https://gitlab.company.com
+        ## uncomment if using a custom redirect URI
+        # callbackUrl: https://${BASE_URL}/api/auth/gitlab/handler/frame
+        signIn:
+          resolvers:
+            # typically you would pick one of these
+            - resolver: emailMatchingUserEntityProfileEmail
+            # - resolver: emailLocalPartMatchingUserEntityName
+            # - resolver: usernameMatchingUserEntityName
 
 catalog:
   import:
