@@ -8,9 +8,7 @@
     "pluginPackage": "@backstage-community/plugin-cicd-statistics"
   },
   "publishConfig": {
-    "access": "public",
-    "main": "dist/index.esm.js",
-    "types": "dist/index.d.ts"
+    "access": "public"
   },
   "keywords": [
     "backstage",
@@ -22,6 +20,21 @@
     "type": "git",
     "url": "https://github.com/backstage/community-plugins",
     "directory": "workspaces/cicd-statistics/plugins/cicd-statistics-module-gitlab"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./alpha": "./src/alpha.ts",
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "alpha": [
+        "src/alpha.ts"
+      ],
+      "package.json": [
+        "package.json"
+      ]
+    }
   },
   "license": "Apache-2.0",
   "sideEffects": false,
@@ -40,8 +53,10 @@
   },
   "dependencies": {
     "@backstage-community/plugin-cicd-statistics": "workspace:^",
+    "@backstage-community/plugin-cicd-statistics-node": "workspace:^",
     "@backstage/catalog-model": "^1.6.0",
     "@backstage/core-plugin-api": "^1.9.3",
+    "@backstage/frontend-plugin-api": "^0.7.0",
     "@gitbeaker/browser": "^35.6.0",
     "@gitbeaker/core": "^35.6.0",
     "luxon": "^3.0.0",

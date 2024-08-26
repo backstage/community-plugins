@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
-// CHANGELOG: Users should update their exports to @backstage-community/plugin-cicd-statistics-node
+import { createApiRef } from '@backstage/core-plugin-api';
+import { CicdStatisticsApi } from './types';
 
-export { cicdStatisticsApiRef } from '@backstage-community/plugin-cicd-statistics-node';
+/** @public */
+export const cicdStatisticsApiRef = createApiRef<CicdStatisticsApi>({
+  id: 'cicd-statistics-api',
+});
