@@ -23,6 +23,7 @@ import {
   EntityOwnershipCard,
   EntityUserProfileCard,
 } from '@backstage/plugin-org';
+
 import { EntityCicdStatisticsContent } from '@backstage-community/plugin-cicd-statistics';
 
 const entityWarningContent = (
@@ -79,7 +80,6 @@ const websiteEntityPage = (
     <EntityLayout.Route path="/" title="Overview">
       {overviewContent}
     </EntityLayout.Route>
-
     <EntityLayout.Route path="/ci-cd-statistics" title="CI/CD">
       <EntityCicdStatisticsContent />
     </EntityLayout.Route>
