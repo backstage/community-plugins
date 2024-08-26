@@ -15,32 +15,7 @@ which may be leveraged by the Analytics API.
    yarn workspace packages/backend add @backstage-community/plugin-catalog-backend-module-time-saver-processor
    ```
 
-2. Wire up the processor in your backend.
-
-   Add the `TimeSaverProcessor` to the catalog plugin in
-   `packages/backend/src/catalog.ts`.
-
-   ```diff
-   + import {
-   +   TimeSaverProcessor,
-   + } from '@backstage-community/plugin-catalog-backend-module-time-saver-processor';
-   import { Router } from 'express';
-   import { PluginEnvironment } from '../types';
-
-   export default async function createPlugin(
-     env: PluginEnvironment,
-   ): Promise<Router> {
-     const builder = CatalogBuilder.create(env);
-   + builder.addProcessor(new TimeSaverProcessor(logger));
-     // ...
-     return router;
-   }
-   ```
-
-   **New Backend System**
-
-   If you are using the New Backend System, you can instead do so by updating
-   your `packages/backend/src/index.ts` in the following way:
+2. Update your `packages/backend/src/index.ts` in the following way:
 
    ```diff
    import { createBackend } from '@backstage/backend-defaults';
