@@ -1,4 +1,4 @@
-// This script generates a knip-report.md for all workspaces
+// This script generates knip reports for all workspaces
 
 import { resolve as resolvePath } from 'path';
 import { promises as fs } from 'fs';
