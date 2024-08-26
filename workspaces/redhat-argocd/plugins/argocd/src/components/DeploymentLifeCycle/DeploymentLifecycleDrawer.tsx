@@ -27,6 +27,7 @@ import { getCommitUrl, isAppHelmChartType } from '../../utils/utils';
 import AppNamespace from '../AppStatus/AppNamespace';
 import StatusHeading from '../AppStatus/StatusHeading';
 import DeploymentLifecycledHeader from './DeploymentLifecycleHeader';
+import { ResourcesTable } from '../Resources/ResourcesTable';
 
 interface DeploymentLifecycleDrawerProps {
   app: Application | undefined;
@@ -41,7 +42,7 @@ const useDrawerStyles = makeStyles<Theme>(theme =>
       fontSize: 20,
     },
     paper: {
-      width: '40%',
+      width: '75%',
       padding: theme.spacing(2.5),
       gap: '3%',
     },
@@ -65,6 +66,8 @@ const DeploymentLifecycleDrawer: React.FC<DeploymentLifecycleDrawerProps> = ({
   const appHistory = app?.status?.history ?? [];
   const latestRevision = appHistory[appHistory.length - 1];
   const appDeployedAt = latestRevision?.deployedAt;
+  const firstRevision = appHistory[0];
+  const createdAt = firstRevision?.deployedAt;
 
   const { entity } = useEntity();
   const classes = useDrawerStyles();
@@ -294,6 +297,21 @@ const DeploymentLifecycleDrawer: React.FC<DeploymentLifecycleDrawerProps> = ({
               </Box>
             </Grid>
           )}
+          <Grid item xs={12}>
+            <Typography variant="h6" color="textPrimary">
+              Resources
+            </Typography>
+            <Card
+              elevation={2}
+              key="resoucres-container"
+              style={{ padding: '25px' }}
+            >
+              <ResourcesTable
+                resources={app?.status?.resources || []}
+                createdAt={createdAt}
+              />
+            </Card>
+          </Grid>
         </Grid>
       </CardContent>
     </Drawer>

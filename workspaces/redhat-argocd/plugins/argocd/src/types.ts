@@ -174,3 +174,19 @@ export type Instances = {
   name: string;
   url: string;
 }[];
+
+export type Order = 'asc' | 'desc';
+
+export type OpenRowStatus = {
+  [x: string]: boolean;
+};
+
+export interface Resource {
+  version: string;
+  kind: string;
+  namespace: string;
+  name: string;
+  status: string;
+  health: Health;
+  group?: string;
+}
