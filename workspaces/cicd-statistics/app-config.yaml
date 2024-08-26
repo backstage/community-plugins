@@ -28,7 +28,6 @@ techdocs:
 
 auth:
   providers:
-    guest: {}
     gitlab:
       development:
         clientId: ${AUTH_GITLAB_CLIENT_ID}
