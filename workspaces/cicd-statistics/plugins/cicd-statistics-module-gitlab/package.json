@@ -53,7 +53,6 @@
   },
   "dependencies": {
     "@backstage-community/plugin-cicd-statistics": "workspace:^",
-    "@backstage-community/plugin-cicd-statistics-node": "workspace:^",
     "@backstage/catalog-model": "^1.6.0",
     "@backstage/core-plugin-api": "^1.9.3",
     "@backstage/frontend-plugin-api": "^0.7.0",

@@ -1,4 +1,4 @@
-import { cicdStatisticsApiRef } from '@backstage-community/plugin-cicd-statistics-node';
+import { cicdStatisticsApiRef } from '@backstage-community/plugin-cicd-statistics';
 import {
   createApiExtension,
   createApiFactory,
