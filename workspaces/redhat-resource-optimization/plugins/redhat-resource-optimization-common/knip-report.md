@@ -13,4 +13,3 @@
 | Name                       | Location                                  | Severity |
 | :------------------------- | :---------------------------------------- | :------- |
 | @backstage/core-plugin-api | src/client/OptimizationsApiClientProxy.ts | error    |
-

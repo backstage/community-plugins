@@ -25,4 +25,3 @@
 | :----------------------- | :-------------------------------------------------------------- | :------- |
 | @formatjs/intl/src/types | src/components/OptimizationsBreakdownChart/utils/chart-datum.ts | error    |
 | victory-core             | src/components/OptimizationsBreakdownChart/utils/chart-utils.ts | error    |
-

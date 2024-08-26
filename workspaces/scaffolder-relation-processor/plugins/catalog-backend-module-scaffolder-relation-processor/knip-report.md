@@ -12,4 +12,3 @@
 | :---------------------------- | :----------- | :------- |
 | @backstage/backend-test-utils | package.json | error    |
 | @janus-idp/cli                | package.json | error    |
-

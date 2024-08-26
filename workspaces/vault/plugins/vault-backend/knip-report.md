@@ -5,4 +5,3 @@
 | Name                                   | Location     | Severity |
 | :------------------------------------- | :----------- | :------- |
 | @backstage-community/plugin-vault-node | package.json | error    |
-

@@ -16,4 +16,3 @@
 | jest-canvas-mock        | package.json | error    |
 | jest                    | package.json | error    |
 | msw                     | package.json | error    |
-

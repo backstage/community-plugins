@@ -20,4 +20,3 @@
 | @testing-library/dom        | package.json | error    |
 | @playwright/test            | package.json | error    |
 | cross-env                   | package.json | error    |
-

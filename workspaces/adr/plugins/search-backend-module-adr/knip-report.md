@@ -13,4 +13,3 @@
 | Name                          | Location     | Severity |
 | :---------------------------- | :----------- | :------- |
 | @backstage/backend-test-utils | package.json | error    |
-

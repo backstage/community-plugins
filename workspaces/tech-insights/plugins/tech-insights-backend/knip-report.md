@@ -16,4 +16,3 @@
 | :-------------- | :----------- | :------- |
 | wait-for-expect | package.json | error    |
 | @types/uuid     | package.json | error    |
-

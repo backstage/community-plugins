@@ -12,4 +12,3 @@
 | Name                     | Location     | Severity |
 | :----------------------- | :----------- | :------- |
 | @backstage/backend-tasks | package.json | error    |
-

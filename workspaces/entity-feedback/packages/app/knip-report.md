@@ -6,4 +6,3 @@
 | :------------------------------------------ | :----------- | :------- |
 | @backstage-community/plugin-entity-feedback | package.json | error    |
 | react-router                                | package.json | error    |
-

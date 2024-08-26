@@ -9,4 +9,3 @@
 | @testing-library/react      | package.json | error    |
 | @backstage/test-utils       | package.json | error    |
 | msw                         | package.json | error    |
-

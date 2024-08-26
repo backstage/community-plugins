@@ -18,4 +18,3 @@
 | @types/d3-scale             | package.json | error    |
 | @types/d3-shape             | package.json | error    |
 | msw                         | package.json | error    |
-

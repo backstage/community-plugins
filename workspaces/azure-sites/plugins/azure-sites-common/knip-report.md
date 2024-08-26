@@ -5,4 +5,3 @@
 | Name                     | Location     | Severity |
 | :----------------------- | :----------- | :------- |
 | @backstage/catalog-model | package.json | error    |
-

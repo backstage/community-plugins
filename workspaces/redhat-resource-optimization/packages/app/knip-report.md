@@ -21,4 +21,3 @@
 | @emotion/react              | package.json | error    |
 | @mui/material               | package.json | error    |
 | cross-env                   | package.json | error    |
-

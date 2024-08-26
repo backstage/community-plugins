@@ -5,4 +5,3 @@
 | Name                                             | Location     | Severity |
 | :----------------------------------------------- | :----------- | :------- |
 | @backstage-community/plugin-tech-insights-common | package.json | error    |
-

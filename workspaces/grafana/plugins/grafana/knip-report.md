@@ -11,4 +11,3 @@
 | react-router-dom            | package.json | error    |
 | react-dom                   | package.json | error    |
 | msw                         | package.json | error    |
-

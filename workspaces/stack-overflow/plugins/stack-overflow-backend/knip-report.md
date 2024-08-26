@@ -14,4 +14,3 @@
 | :---------------------------- | :----------- | :------- |
 | @backstage/backend-test-utils | package.json | error    |
 | @types/node-fetch             | package.json | error    |
-

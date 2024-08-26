@@ -12,4 +12,3 @@
 | @types/lodash          | package.json | error    |
 | react-dom              | package.json | error    |
 | canvas                 | package.json | error    |
-
