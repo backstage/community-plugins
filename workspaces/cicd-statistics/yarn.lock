@@ -3594,7 +3594,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-auth-backend-module-gitlab-provider@npm:^0.1.21":
+"@backstage/plugin-auth-backend-module-gitlab-provider@npm:^0.1.20, @backstage/plugin-auth-backend-module-gitlab-provider@npm:^0.1.21":
   version: 0.1.21
   resolution: "@backstage/plugin-auth-backend-module-gitlab-provider@npm:0.1.21"
   dependencies:
@@ -3616,6 +3616,20 @@ __metadata:
     google-auth-library: ^9.0.0
     passport-google-oauth20: ^2.0.0
   checksum: e6f1e6204cbbd504c91d7230b02ce8f72c80e00ac42ebce671c8598239bdbebca90a005cc721d7c8ca8a4c8b1e9e5ef4a7df01609c7a7f6cd093a019851d5095
+  languageName: node
+  linkType: hard
+
+"@backstage/plugin-auth-backend-module-guest-provider@npm:^0.1.9":
+  version: 0.1.10
+  resolution: "@backstage/plugin-auth-backend-module-guest-provider@npm:0.1.10"
+  dependencies:
+    "@backstage/backend-common": ^0.24.1
+    "@backstage/backend-plugin-api": ^0.8.1
+    "@backstage/catalog-model": ^1.6.0
+    "@backstage/errors": ^1.2.4
+    "@backstage/plugin-auth-node": ^0.5.1
+    passport-oauth2: ^1.7.0
+  checksum: e123c5a3ce2df0c959627d730ac0a263d4c34223d01e4965fd1e21ddd1f4250086361d4641444c1e8f685a67fa85913b3f32e9a405b878f2308d7da77073cb80
   languageName: node
   linkType: hard
 
@@ -12638,6 +12652,8 @@ __metadata:
     "@backstage/config": ^1.2.0
     "@backstage/plugin-app-backend": ^0.3.72
     "@backstage/plugin-auth-backend": ^0.22.10
+    "@backstage/plugin-auth-backend-module-gitlab-provider": ^0.1.20
+    "@backstage/plugin-auth-backend-module-guest-provider": ^0.1.9
     "@backstage/plugin-auth-node": ^0.5.0
     "@backstage/plugin-catalog-backend": ^1.25.0
     "@backstage/plugin-proxy-backend": ^0.5.4
@@ -23595,7 +23611,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"passport-oauth2@npm:1.8.0, passport-oauth2@npm:1.x.x, passport-oauth2@npm:^1.1.2, passport-oauth2@npm:^1.4.0, passport-oauth2@npm:^1.6.0, passport-oauth2@npm:^1.6.1":
+"passport-oauth2@npm:1.8.0, passport-oauth2@npm:1.x.x, passport-oauth2@npm:^1.1.2, passport-oauth2@npm:^1.4.0, passport-oauth2@npm:^1.6.0, passport-oauth2@npm:^1.6.1, passport-oauth2@npm:^1.7.0":
   version: 1.8.0
   resolution: "passport-oauth2@npm:1.8.0"
   dependencies:
