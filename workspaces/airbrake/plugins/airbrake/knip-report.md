@@ -10,4 +10,3 @@
 | @types/react-dom        | package.json | error    |
 | react-dom               | package.json | error    |
 | canvas                  | package.json | error    |
-

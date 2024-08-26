@@ -5,4 +5,3 @@
 | Name                                         | Location     | Severity |
 | :------------------------------------------- | :----------- | :------- |
 | @backstage-community/plugin-playlist-backend | package.json | error    |
-

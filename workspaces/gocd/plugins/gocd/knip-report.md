@@ -3,8 +3,8 @@
 ## Unused dependencies (1)
 
 | Name | Location     | Severity |
-| :- | :----------- | :------- |
-| qs | package.json | error    |
+| :--- | :----------- | :------- |
+| qs   | package.json | error    |
 
 ## Unused devDependencies (5)
 
@@ -15,4 +15,3 @@
 | react-router-dom     | package.json | error    |
 | react-dom            | package.json | error    |
 | canvas               | package.json | error    |
-

@@ -11,4 +11,3 @@
 | Name             | Location     | Severity |
 | :--------------- | :----------- | :------- |
 | @types/supertest | package.json | error    |
-

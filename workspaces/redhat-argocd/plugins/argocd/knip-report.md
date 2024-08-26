@@ -16,4 +16,3 @@
 | @janus-idp/cli              | package.json | error    |
 | react-dom                   | package.json | error    |
 | msw                         | package.json | error    |
-

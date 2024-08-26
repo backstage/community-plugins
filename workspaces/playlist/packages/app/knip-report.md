@@ -6,4 +6,3 @@
 | :----------------------------------- | :----------- | :------- |
 | @backstage-community/plugin-playlist | package.json | error    |
 | react-router                         | package.json | error    |
-

@@ -12,6 +12,5 @@
 ## Unused devDependencies (1)
 
 | Name | Location     | Severity |
-| :-- | :----------- | :------- |
-| msw | package.json | error    |
-
+| :--- | :----------- | :------- |
+| msw  | package.json | error    |

@@ -3,6 +3,5 @@
 ## Unused dependencies (1)
 
 | Name | Location     | Severity |
-| :- | :----------- | :------- |
-| yn | package.json | error    |
-
+| :--- | :----------- | :------- |
+| yn   | package.json | error    |

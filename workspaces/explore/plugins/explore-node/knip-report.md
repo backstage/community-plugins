@@ -5,4 +5,3 @@
 | Name                                       | Location     | Severity |
 | :----------------------------------------- | :----------- | :------- |
 | @backstage-community/plugin-explore-common | package.json | error    |
-

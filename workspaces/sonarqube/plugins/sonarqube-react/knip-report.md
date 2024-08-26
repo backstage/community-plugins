@@ -9,4 +9,3 @@
 | @types/react     | package.json | error    |
 | react-dom        | package.json | error    |
 | react            | package.json | error    |
-

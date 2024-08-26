@@ -17,4 +17,3 @@
 | @backstage/test-utils       | package.json | error    |
 | @testing-library/dom        | package.json | error    |
 | cross-env                   | package.json | error    |
-

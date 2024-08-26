@@ -6,4 +6,3 @@
 | :-------------------------------------------------- | :----------- | :------- |
 | @backstage-community/plugin-entity-feedback-backend | package.json | error    |
 | @backstage/backend-plugin-api                       | package.json | error    |
-

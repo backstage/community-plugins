@@ -6,4 +6,3 @@
 | :-------------------------------------------- | :----------- | :------- |
 | @backstage-community/plugin-lighthouse-common | package.json | error    |
 | winston                                       | package.json | error    |
-

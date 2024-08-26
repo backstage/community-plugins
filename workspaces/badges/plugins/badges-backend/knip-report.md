@@ -5,4 +5,3 @@
 | Name | Location     | Severity |
 | :--- | :----------- | :------- |
 | cors | package.json | error    |
-

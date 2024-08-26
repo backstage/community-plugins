@@ -21,4 +21,3 @@
 | Name              | Location     | Severity |
 | :---------------- | :----------- | :------- |
 | @types/node-fetch | package.json | error    |
-

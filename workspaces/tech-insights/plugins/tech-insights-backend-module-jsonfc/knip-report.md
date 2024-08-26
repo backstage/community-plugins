@@ -9,4 +9,3 @@
 | @backstage/backend-common                        | package.json | error    |
 | @backstage/types                                 | package.json | error    |
 | luxon                                            | package.json | error    |
-
