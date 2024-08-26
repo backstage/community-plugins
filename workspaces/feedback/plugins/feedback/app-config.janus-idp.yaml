@@ -1,0 +1,42 @@
+feedback:
+  # A ref to base entity under which global feedbacks gets stored
+  # in format: 'kind:namespace/name', eg: 'component:default/example-website'
+  baseEntityRef: ${FEEDBACK_PLUGIN_BASE_ENTITY}
+
+  # Limit the number of characters for summary field
+  # should be between 1-255
+  summaryLimit: ${FEEDBACK_PLUGIN_SUMMARY_LIMIT}
+
+# Add dynamic plugin configuration (copy this to dynamic-plugins.yaml file)
+dynamicPlugins:
+  frontend:
+    janus-idp.backstage-plugin-feedback:
+      appIcons:
+        - name: feedbackIcon
+          importName: FeedbackIcon
+      dynamicRoutes:
+        - path: /feedback
+          importName: GlobalFeedbackPage
+          menuItem:
+            icon: feedbackIcon
+            text: Feedback
+      routeBindings:
+        targets:
+          - importName: feedbackPlugin
+        bindings:
+          - bindTarget: feedbackPlugin.externalRoutes
+            bindMap:
+              viewDocs: techdocsPlugin.routes.root
+      entityTabs:
+        - path: '/feedback'
+          title: Feedback
+          mountPoint: entity.page.feedback
+      mountPoints:
+        - mountPoint: entity.page.feedback/cards
+          importName: EntityFeedbackPage
+          config:
+            layout:
+              gridColumn: '1 / -1'
+            if:
+              anyOf:
+                - hasAnnotation: feedback/type
