@@ -25,9 +25,9 @@ export const feedbackPlugin: BackstagePlugin<
   {
     root: RouteRef<undefined>;
     entityRoot: RouteRef<{
-      name: string;
-      kind: string;
       namespace: string;
+      kind: string;
+      name: string;
     }>;
   },
   {
