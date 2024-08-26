@@ -46,6 +46,15 @@
     "supertest": "^6.2.4"
   },
   "files": [
-    "dist"
+    "dist",
+    "migrations/*.{js,d.ts}"
+  ],
+  "description": "This plugin provides an implementation of charts and statistics related to your time savings that are coming from usage of your templates. Plugins is built from frontend and backend part. Backend plugin is responsible for scheduled stats parsing process and data storage.",
+  "bugs": {
+    "url": "https://github.com/backstage/community-plugins/issues"
+  },
+  "homepage": "https://github.com/backstage/community-plugins/tree/main/workspaces/timesaver-plugin#readme",
+  "keywords": [
+    "time-saver"
   ]
 }
