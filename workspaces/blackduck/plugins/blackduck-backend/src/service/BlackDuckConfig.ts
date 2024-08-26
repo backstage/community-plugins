@@ -9,6 +9,8 @@ export interface BlackDuckHostConfig {
   token: string;
 }
 
+const DEFAULT_HOST_NAME = 'default';
+
 /**
  * blackduckPlugin config
  *
@@ -22,7 +24,11 @@ export class BlackDuckConfig {
 
   static fromConfig(config: Config): BlackDuckConfig {
     let hosts: BlackDuckHostConfig[] = [];
-    let defaultHost: string = 'default';
+    let defaultHost: string = DEFAULT_HOST_NAME;
+
+    if (config.has('blackduck.host') && config.has('blackduck.hosts')) {
+      throw new Error('Cannot have both blackduck.host and blackduck.hosts');
+    }
 
     if (config.has('blackduck.host') && config.has('blackduck.token')) {
       const singleHost = {
@@ -31,22 +37,25 @@ export class BlackDuckConfig {
         token: config.getString('blackduck.token'),
       };
       hosts = [singleHost];
-    }
-
-    if (config.has('blackduck.hosts')) {
+    } else if (
+      config.has('blackduck.hosts') &&
+      config.has('blackduck.default')
+    ) {
       hosts = config.getConfigArray('blackduck.hosts').map(hostConfig => ({
         name: hostConfig.getString('name'),
         host: hostConfig.getString('host'),
         token: hostConfig.getString('token'),
       }));
       defaultHost = config.getString('blackduck.default');
+    } else {
+      throw new Error('Invalid BlackDuck config found');
     }
 
     return new BlackDuckConfig(hosts, defaultHost);
   }
 
   getHostConfigByName(name: string): BlackDuckHostConfig {
-    const hostName = name === 'default' ? this.defaultHost : name;
+    const hostName = name === DEFAULT_HOST_NAME ? this.defaultHost : name;
 
     const hostConfig = this.hosts.find(host => host.name === hostName);
 
