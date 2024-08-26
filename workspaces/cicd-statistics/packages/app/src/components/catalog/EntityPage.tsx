@@ -25,8 +25,6 @@ import {
 } from '@backstage/plugin-org';
 import { EntityCicdStatisticsContent } from '@backstage-community/plugin-cicd-statistics';
 
-const cicdContent = <EntityCicdStatisticsContent />;
-
 const entityWarningContent = (
   <>
     <EntitySwitch>
@@ -71,7 +69,7 @@ const serviceEntityPage = (
     </EntityLayout.Route>
 
     <EntityLayout.Route path="/ci-cd-statistics" title="CI/CD">
-      {cicdContent}
+      <EntityCicdStatisticsContent />
     </EntityLayout.Route>
   </EntityLayout>
 );
@@ -83,7 +81,7 @@ const websiteEntityPage = (
     </EntityLayout.Route>
 
     <EntityLayout.Route path="/ci-cd-statistics" title="CI/CD">
-      {cicdContent}
+      <EntityCicdStatisticsContent />
     </EntityLayout.Route>
   </EntityLayout>
 );
