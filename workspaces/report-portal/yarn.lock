@@ -7579,11 +7579,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mui/icons-material@npm:^5.15.21":
-  version: 5.15.21
-  resolution: "@mui/icons-material@npm:5.15.21"
+"@mui/icons-material@npm:^5.0.0, @mui/icons-material@npm:^5.15.21":
+  version: 5.16.7
+  resolution: "@mui/icons-material@npm:5.16.7"
   dependencies:
-    "@babel/runtime": "npm:^7.23.9"
+    "@babel/runtime": ^7.23.9
   peerDependencies:
     "@mui/material": ^5.0.0
     "@types/react": ^17.0.0 || ^18.0.0
@@ -7591,7 +7591,7 @@ __metadata:
   peerDependenciesMeta:
     "@types/react":
       optional: true
-  checksum: b082fd4ae2372c8ca167a5e365e7e5bca6b78123be50b4cb001665533d0b3fe5590715dbce54ad4088668e5429a56bdbf11d78c4ff7d571b87018965617a9e6d
+  checksum: a875f2837897d79a83173d80461e06ab090b64d08913d26433cf2cbeb8e7c7456468632a7aa495d722718f09111a8043255777d73b4dfbe9e0f863a170fc7190
   languageName: node
   linkType: hard
 
@@ -13522,7 +13522,7 @@ __metadata:
     "@backstage/test-utils": ^1.5.10
     "@backstage/theme": ^0.5.6
     "@material-ui/core": ^4.12.2
-    "@material-ui/icons": ^4.9.1
+    "@mui/icons-material": ^5.0.0
     "@playwright/test": ^1.32.3
     "@redhat-developer/red-hat-developer-hub-theme": ^0.2.0
     "@testing-library/dom": ^9.0.0

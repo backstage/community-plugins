@@ -2673,8 +2673,8 @@ __metadata:
     "@backstage/plugin-catalog-react": ^1.12.3
     "@backstage/test-utils": ^1.5.10
     "@material-ui/core": ^4.12.2
-    "@material-ui/icons": ^4.9.1
     "@material-ui/lab": 4.0.0-alpha.61
+    "@mui/icons-material": ^5.0.0
     "@octokit/rest": ^19.0.3
     "@testing-library/dom": ^10.0.0
     "@testing-library/jest-dom": ^6.0.0
@@ -6670,6 +6670,22 @@ __metadata:
   version: 5.16.4
   resolution: "@mui/core-downloads-tracker@npm:5.16.4"
   checksum: e1be17bfcfc5e50d42eff8ca8660469c0e20f70bd5148183e8a8d66da12c420f86e097b68d09561055c2d6e4f93f6650ba65a30522a997da9cd9a08d09a54bbc
+  languageName: node
+  linkType: hard
+
+"@mui/icons-material@npm:^5.0.0":
+  version: 5.16.7
+  resolution: "@mui/icons-material@npm:5.16.7"
+  dependencies:
+    "@babel/runtime": ^7.23.9
+  peerDependencies:
+    "@mui/material": ^5.0.0
+    "@types/react": ^17.0.0 || ^18.0.0
+    react: ^17.0.0 || ^18.0.0
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+  checksum: a875f2837897d79a83173d80461e06ab090b64d08913d26433cf2cbeb8e7c7456468632a7aa495d722718f09111a8043255777d73b4dfbe9e0f863a170fc7190
   languageName: node
   linkType: hard
 
@@ -11932,7 +11948,7 @@ __metadata:
     "@backstage/test-utils": ^1.5.10
     "@backstage/theme": ^0.5.6
     "@material-ui/core": ^4.12.2
-    "@material-ui/icons": ^4.9.1
+    "@mui/icons-material": ^5.0.0
     "@playwright/test": ^1.32.3
     "@testing-library/dom": ^9.0.0
     "@testing-library/jest-dom": ^6.0.0
@@ -11980,7 +11996,7 @@ __metadata:
     "@backstage/test-utils": ^1.5.10
     "@backstage/theme": ^0.5.6
     "@material-ui/core": ^4.12.2
-    "@material-ui/icons": ^4.9.1
+    "@mui/icons-material": ^5.0.0
     "@playwright/test": ^1.32.3
     "@testing-library/dom": ^9.0.0
     "@testing-library/jest-dom": ^6.0.0
