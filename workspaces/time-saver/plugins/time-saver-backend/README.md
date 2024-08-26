@@ -13,50 +13,6 @@ This plugin provides an implementation of charts and statistics related to your 
 
 ## Installation
 
-1. Install the plugin package in your Backstage app:
-
-```sh
-# From your Backstage root directory
-yarn workspace packages/backend @backstage-community/plugin-time-saver-backend
-```
-
-2. Wire up the API implementation to your App in `timeSaver.ts` file in `packages/backend/src/plugins/`:
-
-```ts
-import { createRouter } from '@backstage-community/plugin-time-saver-backend';
-import { Router } from 'express';
-import { PluginEnvironment } from '../types';
-
-export default async function createPlugin(
-  env: PluginEnvironment,
-): Promise<Router> {
-  return await createRouter({
-    logger: env.logger,
-    database: env.database,
-    config: env.config,
-    scheduler: env.scheduler,
-  });
-}
-```
-
-in `packages/backend/src/index.ts`
-
-```ts
-
-import timeSaver from './plugins/timeSaver';
-
-...
-
-const timeSaverEnv = useHotMemoize(module, () => createEnv('timesaver'));
-
-...
-
-apiRouter.use('/time-saver', await timeSaver(timeSaverEnv)); // you should use authMiddleware if you are using it for backend
-
-```
-
-### New Backend - instalation
-
 1. Wire up the plugin in Backstage new backend system
 
 in `packages/backend/src/index.ts`
