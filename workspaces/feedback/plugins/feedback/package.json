@@ -14,8 +14,7 @@
     "supported-versions": "1.28.4",
     "pluginId": "feedback",
     "pluginPackages": [
-      "@backstage-community/backstage-plugin-feedback",
-      "@backstage-community/backstage-plugin-feedback-backend"
+      "@backstage-community/backstage-plugin-feedback"
     ]
   },
   "sideEffects": false,
