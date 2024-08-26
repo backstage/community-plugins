@@ -25,7 +25,7 @@ async function handlePackage() {
         
         try {
           console.log(`Processing directory: ${fullDir}`);
-          
+
           // Run `yarn backstage-repo-tools knip-reports`
           await execAsync('yarn backstage-repo-tools knip-reports', { cwd: fullDir });
           console.log(`Ran knip-reports in ${fullDir}`);
