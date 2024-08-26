@@ -249,8 +249,9 @@ export async function createRouter(
       const feedbackId = req.params.id;
 
       if (await feedbackDB.checkFeedbackId(feedbackId)) {
-        const feedback: FeedbackModel =
-          await feedbackDB.getFeedbackByUuid(feedbackId);
+        const feedback: FeedbackModel = await feedbackDB.getFeedbackByUuid(
+          feedbackId,
+        );
         return res.status(200).json({
           data: feedback,
           message: 'Feedback fetched successfully',

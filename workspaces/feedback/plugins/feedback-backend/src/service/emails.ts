@@ -9,10 +9,7 @@ export class NodeMailer {
   private readonly transportConfig: Transporter;
   private readonly from: string | undefined;
 
-  constructor(
-    config: Config,
-    private logger: LoggerService,
-  ) {
+  constructor(config: Config, private logger: LoggerService) {
     const useSecure = config.getOptionalBoolean(
       'feedback.integrations.email.secure',
     );
