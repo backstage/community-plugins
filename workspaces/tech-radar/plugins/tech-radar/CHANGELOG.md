@@ -1,5 +1,17 @@
 # @backstage-community/plugin-tech-radar
 
+## 0.7.8
+
+### Patch Changes
+
+- dc95722: Backstage version bump to v1.30.2
+
+## 0.7.7
+
+### Patch Changes
+
+- 897bb52: Add navbar item to the alpha version of FE plugin
+
 ## 0.7.6
 
 ### Patch Changes

@@ -6,7 +6,7 @@
 import { BackstagePlugin } from '@backstage/frontend-plugin-api';
 
 // @alpha
-const _default: BackstagePlugin<{}, {}>;
+const _default: BackstagePlugin<{}, {}, {}>;
 export default _default;
 
 // (No @packageDocumentation comment for this package)

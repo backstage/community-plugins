@@ -31,7 +31,7 @@ import {
   parseAzureDevOpsUrl,
 } from './azure-devops-utils';
 import { GitPullRequest } from 'azure-devops-node-api/interfaces/GitInterfaces';
-import { UrlReader } from '@backstage/backend-common';
+import { UrlReaderService } from '@backstage/backend-plugin-api';
 
 describe('convertDashboardPullRequest', () => {
   it('should return DashboardPullRequest', () => {
@@ -257,7 +257,7 @@ describe('replaceReadme', () => {
         ![Image 5](/images/sa)mple.gif)
     `;
 
-    const reader: UrlReader = {
+    const reader: UrlReaderService = {
       readUrl: url =>
         Promise.resolve({
           buffer: async () => Buffer.from(url),

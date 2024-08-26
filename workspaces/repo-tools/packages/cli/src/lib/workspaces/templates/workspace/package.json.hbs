@@ -18,7 +18,8 @@
     "lint": "backstage-cli repo lint --since origin/main",
     "lint:all": "backstage-cli repo lint",
     "prettier:check": "prettier --check .",
-    "new": "backstage-cli new --scope @backstage-community"
+    "new": "backstage-cli new --scope @backstage-community",
+    "postinstall": "cd ../../ && yarn install"
   },
   "workspaces": {
     "packages": [
@@ -43,7 +44,8 @@
   },
   "resolutions": {
     "@types/react": "^18",
-    "@types/react-dom": "^18"
+    "@types/react-dom": "^18",
+    "@microsoft/api-extractor": "7.36.4"
   },
   "prettier": "@spotify/prettier-config",
   "lint-staged": {

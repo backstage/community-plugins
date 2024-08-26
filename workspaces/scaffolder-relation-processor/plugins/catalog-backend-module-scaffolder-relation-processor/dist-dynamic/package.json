@@ -27,7 +27,6 @@
   "files": [
     "dist",
     "config.d.ts",
-    "app-config.janus-idp.yaml",
     "alpha"
   ],
   "bundleDependencies": true,

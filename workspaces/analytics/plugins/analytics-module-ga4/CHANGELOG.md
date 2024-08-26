@@ -1,5 +1,11 @@
 # @backstage-community/plugin-analytics-module-ga4
 
+## 0.2.9
+
+### Patch Changes
+
+- 6811b41: Backstage version bump to v1.30.2
+
 ## 0.2.8
 
 ### Patch Changes

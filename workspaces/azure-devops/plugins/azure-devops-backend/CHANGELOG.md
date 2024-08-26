@@ -1,5 +1,26 @@
 # @backstage-community/plugin-azure-devops-backend
 
+## 0.6.12
+
+### Patch Changes
+
+- b6515fa: Backstage version bump to v1.30.2
+- Updated dependencies [b6515fa]
+  - @backstage-community/plugin-azure-devops-common@0.4.7
+
+## 0.6.11
+
+### Patch Changes
+
+- ae2ee8a: Updated dependency `@types/supertest` to `^6.0.0`.
+  Updated dependency `supertest` to `^7.0.0`.
+
+## 0.6.10
+
+### Patch Changes
+
+- 968258f: Removed code marked as deprecated in the upstream Backstage project
+
 ## 0.6.9
 
 ### Patch Changes

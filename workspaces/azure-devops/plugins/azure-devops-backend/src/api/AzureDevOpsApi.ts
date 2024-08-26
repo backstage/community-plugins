@@ -55,7 +55,7 @@ import {
   TeamProjectReference,
   WebApiTeam,
 } from 'azure-devops-node-api/interfaces/CoreInterfaces';
-import { UrlReader } from '@backstage/backend-common';
+import { UrlReaderService } from '@backstage/backend-plugin-api';
 import { Config } from '@backstage/config';
 import {
   AzureDevOpsCredentialsProvider,
@@ -73,13 +73,13 @@ import { LoggerService } from '@backstage/backend-plugin-api';
 /** @public */
 export class AzureDevOpsApi {
   private readonly logger: LoggerService;
-  private readonly urlReader: UrlReader;
+  private readonly urlReader: UrlReaderService;
   private readonly config: Config;
   private readonly credentialsProvider: AzureDevOpsCredentialsProvider;
 
   private constructor(
     logger: LoggerService,
-    urlReader: UrlReader,
+    urlReader: UrlReaderService,
     config: Config,
     credentialsProvider: AzureDevOpsCredentialsProvider,
   ) {
@@ -91,7 +91,7 @@ export class AzureDevOpsApi {
 
   static fromConfig(
     config: Config,
-    options: { logger: LoggerService; urlReader: UrlReader },
+    options: { logger: LoggerService; urlReader: UrlReaderService },
   ) {
     const scmIntegrations = ScmIntegrations.fromConfig(config);
     const credentialsProvider =

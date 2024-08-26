@@ -34,6 +34,7 @@ import * as url from 'url';
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
 const parentRef = process.env.COMMIT_SHA_BEFORE || 'HEAD^';
+const targetBranch = process.env.TARGET_BRANCH || 'main';
 
 const execFile = promisify(execFileCb);
 
@@ -66,11 +67,14 @@ async function main() {
     throw new Error('GITHUB_OUTPUT environment variable not set');
   }
 
+  // Ensure we have fetched the targetBranch
+  await runPlain('git', 'fetch', 'origin', targetBranch);
+
   const diff = await runPlain(
     'git',
     'diff',
     '--name-only',
-    parentRef,
+    `${targetBranch}..${parentRef}`,
     "'*/package.json'", // Git treats this as what would usually be **/package.json
   );
 
