@@ -1,5 +1,5 @@
 {
-  "name": "@backstage-community/backstage-plugin-feedback",
+  "name": "@backstage-community/plugin-feedback",
   "version": "1.6.0",
   "main": "src/index.ts",
   "types": "src/index.ts",
@@ -14,8 +14,8 @@
     "supported-versions": "1.28.4",
     "pluginId": "feedback",
     "pluginPackages": [
-      "@backstage-community/backstage-plugin-feedback",
-      "@backstage-community/backstage-plugin-feedback-backend"
+      "@backstage-community/plugin-feedback",
+      "@backstage-community/plugin-feedback-backend"
     ]
   },
   "sideEffects": false,
@@ -72,7 +72,7 @@
   "configSchema": "config.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/backstage/community-plugins",
+    "url": "git+https://github.com/backstage/community-plugins.git",
     "directory": "workspaces/feedback/plugins/feedback"
   },
   "keywords": [
@@ -82,7 +82,7 @@
     "plugin"
   ],
   "scalprum": {
-    "name": "backstage-community.backstage-plugin-feedback",
+    "name": "backstage-community.plugin-feedback",
     "exposedModules": {
       "PluginRoot": "./src/index.ts"
     }

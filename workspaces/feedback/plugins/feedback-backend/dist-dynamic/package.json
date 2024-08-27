@@ -1,5 +1,5 @@
 {
-  "name": "@janus-idp/backstage-plugin-feedback-backend-dynamic",
+  "name": "@janus-idp/plugin-feedback-backend-dynamic",
   "version": "1.7.0",
   "main": "./dist/index.cjs.js",
   "types": "src/index.ts",
@@ -12,8 +12,8 @@
     "supported-versions": "1.28.4",
     "pluginId": "feedback",
     "pluginPackages": [
-      "@janus-idp/backstage-plugin-feedback",
-      "@janus-idp/backstage-plugin-feedback-backend"
+      "@janus-idp/plugin-feedback",
+      "@janus-idp/plugin-feedback-backend"
     ]
   },
   "exports": {

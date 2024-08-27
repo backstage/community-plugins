@@ -29,7 +29,7 @@ export interface FeedbackStore {
 }
 
 const migrationsDir = resolvePackagePath(
-  '@janus-idp/backstage-plugin-feedback-backend', // Package name
+  '@backstage-community/plugin-feedback-backend', // Package name
   'migrations', // Migrations directory
 );
 

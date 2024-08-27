@@ -37,7 +37,7 @@ It is dedicated to simplifying the process of gathering and managing user feedba
 1. Install the plugin in your environment
 
    ```bash
-   yarn workspace app add @janus-idp/backstage-plugin-feedback
+   yarn workspace app add @backstage-community/plugin-feedback
    ```
 
 2. Add configuration to app-config.yml
@@ -60,7 +60,7 @@ It is dedicated to simplifying the process of gathering and managing user feedba
      feedbackPlugin,
      GlobalFeedbackPage,
      OpcFeedbackComponent,
-   } from '@janus-idp/backstage-plugin-feedback';
+   } from '@backstage-community/plugin-feedback';
 
    // ...
    const app = createApp({

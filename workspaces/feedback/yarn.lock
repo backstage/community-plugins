@@ -2518,9 +2518,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage-community/backstage-plugin-feedback-backend@workspace:plugins/feedback-backend":
+"@backstage-community/plugin-feedback-backend@workspace:plugins/feedback-backend":
   version: 0.0.0-use.local
-  resolution: "@backstage-community/backstage-plugin-feedback-backend@workspace:plugins/feedback-backend"
+  resolution: "@backstage-community/plugin-feedback-backend@workspace:plugins/feedback-backend"
   dependencies:
     "@backstage/backend-common": ^0.23.3
     "@backstage/backend-dynamic-feature-service": ^0.2.15
@@ -2550,9 +2550,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@backstage-community/backstage-plugin-feedback@workspace:plugins/feedback":
+"@backstage-community/plugin-feedback@workspace:plugins/feedback":
   version: 0.0.0-use.local
-  resolution: "@backstage-community/backstage-plugin-feedback@workspace:plugins/feedback"
+  resolution: "@backstage-community/plugin-feedback@workspace:plugins/feedback"
   dependencies:
     "@backstage/catalog-model": ^1.5.0
     "@backstage/cli": 0.26.11

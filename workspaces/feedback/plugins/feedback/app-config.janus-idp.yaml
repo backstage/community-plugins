@@ -10,7 +10,7 @@ feedback:
 # Add dynamic plugin configuration (copy this to dynamic-plugins.yaml file)
 dynamicPlugins:
   frontend:
-    backstage-community.backstage-plugin-feedback:
+    backstage-community.plugin-feedback:
       appIcons:
         - name: feedbackIcon
           importName: FeedbackIcon
