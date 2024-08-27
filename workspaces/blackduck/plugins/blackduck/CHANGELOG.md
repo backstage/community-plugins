@@ -1,5 +1,11 @@
 # @backstage-community/plugin-blackduck
 
+## 0.0.3
+
+### Patch Changes
+
+- d46678b: Added ability to handle multiple hosts.
+
 ## 0.0.2
 
 ### Patch Changes
