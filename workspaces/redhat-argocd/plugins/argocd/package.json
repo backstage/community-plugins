@@ -80,7 +80,7 @@
     "app-config.backstage-community.yaml"
   ],
   "scalprum": {
-    "name": "janus-idp.backstage-plugin-argocd",
+    "name": "backstage-community.backstage-plugin-argocd",
     "exposedModules": {
       "PluginRoot": "./src/index.ts"
     }
