@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-entity-feedback",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "backstage": {
     "role": "frontend-plugin",
     "pluginId": "entity-feedback",
