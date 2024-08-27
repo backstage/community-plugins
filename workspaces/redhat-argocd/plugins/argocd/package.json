@@ -77,7 +77,7 @@
     "dist",
     "config.d.ts",
     "dist-scalprum",
-    "app-config.janus-idp.yaml"
+    "app-config.backstage-community.yaml"
   ],
   "scalprum": {
     "name": "janus-idp.backstage-plugin-argocd",
