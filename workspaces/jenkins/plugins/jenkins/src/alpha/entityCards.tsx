@@ -1,35 +1,37 @@
 import React from 'react';
-import { createSchemaFromZod } from '@backstage/frontend-plugin-api';
-import { createEntityCardExtension } from '@backstage/plugin-catalog-react/alpha';
+import { EntityCardBlueprint } from '@backstage/plugin-catalog-react/alpha';
 
 /**
  * @alpha
  */
-export const entityLatestJenkinsRunCard = createEntityCardExtension({
-  name: 'latest-run',
-  filter: 'kind:component',
-  configSchema: createSchemaFromZod(z =>
-    z.object({
-      props: z
-        .object({
-          branch: z.string().default('master'),
-          varaint: z.string().optional(),
-        })
-        .default({}),
-      filter: z.string().optional(),
-    }),
-  ),
-  loader: ({ config }) =>
-    import('../components/Cards').then(m => (
-      <m.LatestRunCard {...config.props} />
-    )),
-});
+export const entityLatestJenkinsRunCard = EntityCardBlueprint.makeWithOverrides(
+  {
+    name: 'latest-run',
+    config: {
+      schema: {
+        branch: z => z.string().default('master'),
+        variant: z => z.enum(['flex', 'fullHeight', 'gridItem']).optional(),
+      },
+    },
+    factory(originalFactory, { config }) {
+      return originalFactory({
+        filter: 'kind:component',
+        loader: async () =>
+          import('../components/Cards').then(m => (
+            <m.LatestRunCard {...config} />
+          )),
+      });
+    },
+  },
+);
 
 /**
  * @alpha
  */
-export const entityJobRunsTable = createEntityCardExtension({
+export const entityJobRunsTable = EntityCardBlueprint.make({
   name: 'job-runs',
-  loader: () =>
-    import('../components/JobRunsTable').then(m => <m.JobRunsTable />),
+  params: {
+    loader: () =>
+      import('../components/JobRunsTable').then(m => <m.JobRunsTable />),
+  },
 });
