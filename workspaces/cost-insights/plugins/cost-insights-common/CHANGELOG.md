@@ -1,5 +1,11 @@
 # @backstage-community/plugin-cost-insights-common
 
+## 0.1.5
+
+### Patch Changes
+
+- 8105856: Backstage version bump to v1.30.2
+
 ## 0.1.4
 
 ### Patch Changes

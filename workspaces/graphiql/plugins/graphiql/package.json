@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-graphiql",
-  "version": "0.3.9",
+  "version": "0.3.10",
   "description": "Backstage plugin for browsing GraphQL APIs",
   "backstage": {
     "role": "frontend-plugin",
@@ -53,10 +53,10 @@
     "test": "backstage-cli package test"
   },
   "dependencies": {
-    "@backstage/core-compat-api": "^0.2.7",
-    "@backstage/core-components": "^0.14.9",
+    "@backstage/core-compat-api": "^0.2.8",
+    "@backstage/core-components": "^0.14.10",
     "@backstage/core-plugin-api": "^1.9.3",
-    "@backstage/frontend-plugin-api": "^0.6.7",
+    "@backstage/frontend-plugin-api": "^0.7.0",
     "@material-ui/core": "^4.12.2",
     "@types/react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "graphiql": "^3.0.6",
@@ -66,9 +66,9 @@
     "react-use": "^17.2.4"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.26.11",
-    "@backstage/dev-utils": "^1.0.36",
-    "@backstage/test-utils": "^1.5.9",
+    "@backstage/cli": "^0.27.0",
+    "@backstage/dev-utils": "^1.0.37",
+    "@backstage/test-utils": "^1.5.10",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^15.0.0",

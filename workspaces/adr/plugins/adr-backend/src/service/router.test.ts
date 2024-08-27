@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-import {
-  CacheClient,
-  ReadTreeResponse,
-  ReadTreeResponseFile,
-  ReadUrlResponse,
-  UrlReader,
-} from '@backstage/backend-common';
 import express from 'express';
 import request from 'supertest';
 import { createRouter } from './router';
-import { LoggerService } from '@backstage/backend-plugin-api';
+import {
+  CacheService,
+  LoggerService,
+  UrlReaderService,
+  UrlReaderServiceReadTreeResponse,
+  UrlReaderServiceReadTreeResponseFile,
+  UrlReaderServiceReadUrlResponse,
+} from '@backstage/backend-plugin-api';
 import { NotModifiedError } from '@backstage/errors';
 
 const listEndpointName = '/list';
@@ -39,7 +39,7 @@ const makeEtagFromString = (string: string) => {
   return crypto.createHash('md5', string).digest('hex');
 };
 
-const testingUrlFakeFileTree: ReadTreeResponseFile[] = [
+const testingUrlFakeFileTree: UrlReaderServiceReadTreeResponseFile[] = [
   {
     path: 'folder/testFile001.txt',
     content: makeBufferFromString('folder/testFile001.txt content'),
@@ -55,7 +55,7 @@ const testingUrlFakeFileTree: ReadTreeResponseFile[] = [
 ];
 
 const makeFileContent = async (fileContent: string) => {
-  const result: ReadUrlResponse = {
+  const result: UrlReaderServiceReadUrlResponse = {
     buffer: makeBufferFromString(fileContent),
     etag: makeEtagFromString(fileContent),
   };
@@ -67,7 +67,7 @@ const testFileTwoContent = 'testFileTwo content';
 const genericFileContent = 'file content';
 const testImageContent = 'image content';
 
-const mockUrlReader: UrlReader = {
+const mockUrlReader: UrlReaderService = {
   readUrl(url: string) {
     switch (url) {
       case 'testFileOne':
@@ -81,7 +81,7 @@ const mockUrlReader: UrlReader = {
     }
   },
   readTree() {
-    const result: ReadTreeResponse = {
+    const result: UrlReaderServiceReadTreeResponse = {
       files: async () => testingUrlFakeFileTree,
       archive() {
         throw new Error('Function not implemented.');
@@ -100,7 +100,7 @@ const mockUrlReader: UrlReader = {
   },
 };
 
-class MockCacheClient implements CacheClient {
+class MockCacheClient implements CacheService {
   private itemRegistry: { [key: string]: any };
 
   constructor() {

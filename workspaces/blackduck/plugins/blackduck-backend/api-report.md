@@ -12,6 +12,25 @@ import { LoggerService } from '@backstage/backend-plugin-api';
 import { PermissionsService } from '@backstage/backend-plugin-api';
 
 // @public
+export class BlackDuckConfig {
+  constructor(hosts: BlackDuckHostConfig[], defaultHost: string);
+  // (undocumented)
+  static fromConfig(config: Config): BlackDuckConfig;
+  // (undocumented)
+  getHostConfigByName(name: string): BlackDuckHostConfig;
+}
+
+// @public (undocumented)
+export interface BlackDuckHostConfig {
+  // (undocumented)
+  host: string;
+  // (undocumented)
+  name: string;
+  // (undocumented)
+  token: string;
+}
+
+// @public
 const blackduckPlugin: BackendFeatureCompat;
 export default blackduckPlugin;
 
@@ -20,6 +39,8 @@ export function createRouter(options: RouterOptions): Promise<express.Router>;
 
 // @public (undocumented)
 export interface RouterOptions {
+  // (undocumented)
+  blackDuckConfig: BlackDuckConfig;
   // (undocumented)
   config: Config;
   // (undocumented)

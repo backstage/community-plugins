@@ -1,5 +1,11 @@
 # @backstage-community/plugin-grafana
 
+## 0.1.5
+
+### Patch Changes
+
+- ce4dfc1: Make entity cards appear on Components only by default in new FE system
+
 ## 0.1.4
 
 ### Patch Changes

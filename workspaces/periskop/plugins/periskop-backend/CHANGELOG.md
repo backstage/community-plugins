@@ -1,5 +1,12 @@
 # @backstage-community/plugin-periskop-backend
 
+## 0.2.18
+
+### Patch Changes
+
+- ae2ee8a: Updated dependency `@types/supertest` to `^6.0.0`.
+  Updated dependency `supertest` to `^7.0.0`.
+
 ## 0.2.17
 
 ### Patch Changes
