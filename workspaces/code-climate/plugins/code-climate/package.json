@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-code-climate",
-  "version": "0.1.36",
+  "version": "0.1.37",
   "backstage": {
     "role": "frontend-plugin",
     "pluginId": "code-climate",
