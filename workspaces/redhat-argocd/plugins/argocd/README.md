@@ -193,7 +193,7 @@ mv package $(echo $archive | sed -e 's:\.tgz$::')
 ```yaml
 dynamicPlugins:
   frontend:
-    backstage-community.backstage-plugin-argocd:
+    backstage-community.plugin-redhat-argocd:
       mountPoints:
         - mountPoint: entity.page.overview/cards
           importName: ArgocdDeploymentSummary
