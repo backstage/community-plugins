@@ -143,6 +143,8 @@ export class PingIdentityEntityProvider implements EntityProvider {
     const client = new PingIdentityClient(provider);
     const { users, groups } = await readPingIdentity(client,
       {
+        userQuerySize: this.options.provider.userQuerySize,
+        groupQuerySize: this.options.provider.groupQuerySize,
         userTransformer: this.options.userTransformer,
         groupTransformer: this.options.groupTransformer,
       }

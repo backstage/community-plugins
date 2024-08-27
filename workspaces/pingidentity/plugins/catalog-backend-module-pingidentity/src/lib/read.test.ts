@@ -173,7 +173,7 @@ describe('PingIdentity readPingIdentity', () => {
 
     expect(result.groups).toHaveLength(1);
     expect(result.users).toHaveLength(2);
-    expect(result.groups[0].metadata.name).toBe('Group One');
+    expect(result.groups[0].metadata.name).toBe('Group_One');
     expect(result.users[0].metadata.name).toBe('user1');
     expect(result.users[1].metadata.name).toBe('user2');
   });
@@ -209,14 +209,14 @@ describe('PingIdentity readPingIdentity', () => {
     ]);
     mockClient.getUsers.mockResolvedValue([exampleUser1]);
     mockClient.getUsersInGroup.mockResolvedValue(['user1']);
-    mockClient.getParentGroup.mockResolvedValue(undefined);
+    mockClient.getParentGroupId.mockResolvedValue(undefined);
 
     const result = await readPingIdentity(mockClient);
 
     expect(result.groups).toHaveLength(1);
     expect(result.users).toHaveLength(1);
     expect(result.users[0].spec.memberOf).toHaveLength(1);
-    expect(result.users[0].spec.memberOf).toStrictEqual(['Group One']);
+    expect(result.users[0].spec.memberOf).toStrictEqual(['Group_One']);
   });
 
   it('should handle nested groups', async () => {
@@ -256,7 +256,7 @@ describe('PingIdentity readPingIdentity', () => {
     ]);
     mockClient.getUsers.mockResolvedValue([]);
     mockClient.getUsersInGroup.mockResolvedValue([]);
-    mockClient.getParentGroup.mockImplementation(async (groupId) => {
+    mockClient.getParentGroupId.mockImplementation(async (groupId) => {
       if (groupId === 'group2') return 'group1';
       return undefined;
     });
@@ -264,9 +264,9 @@ describe('PingIdentity readPingIdentity', () => {
     const result = await readPingIdentity(mockClient);
 
     expect(result.groups).toHaveLength(2);
-    const groupTwo = result.groups.find(g => g.metadata.name === 'Group Two');
+    const groupTwo = result.groups.find(g => g.metadata.name === 'Group_Two');
 
-    expect(groupTwo?.spec.parent).toBe('group1');
+    expect(groupTwo?.spec.parent).toBe('Group_One');
   });
 
   it('should handle errors in fetching users or groups', async () => {

@@ -46,6 +46,22 @@ export type PingIdentityProviderConfig = {
    * Schedule configuration for refresh tasks.
    */
   schedule?: SchedulerServiceTaskScheduleDefinition;
+  /**
+   * The number of users to query at a time.
+   * @defaultValue 100
+   * @remarks
+   * This is a performance optimization to avoid querying too many users at once.
+   * @see https://apidocs.pingidentity.com/pingone/platform/v1/api/#paging-ordering-and-filtering-collections
+   */
+  userQuerySize?: number;
+  /**
+   * The number of groups to query at a time.
+   * @defaultValue 100
+   * @remarks
+   * This is a performance optimization to avoid querying too many groups at once.
+   * @see https://apidocs.pingidentity.com/pingone/platform/v1/api/#paging-ordering-and-filtering-collections
+   */
+  groupQuerySize?: number;
 };
 
 const readProviderConfig = (
@@ -57,6 +73,10 @@ const readProviderConfig = (
   const envId = providerConfigInstance.getString('envId');
   const clientId = providerConfigInstance.getOptionalString('clientId');
   const clientSecret = providerConfigInstance.getOptionalString('clientSecret');
+  const userQuerySize =
+    providerConfigInstance.getOptionalNumber('userQuerySize');
+  const groupQuerySize =
+    providerConfigInstance.getOptionalNumber('groupQuerySize');
 
   if (clientId && !clientSecret) {
     throw new Error(`clientSecret must be provided when clientId is defined.`);
@@ -80,6 +100,8 @@ const readProviderConfig = (
     clientId,
     clientSecret,
     schedule,
+    userQuerySize,
+    groupQuerySize,
   };
 };
 

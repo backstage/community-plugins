@@ -23,10 +23,6 @@ export interface Config {
            */
           envId: string;
           /**
-           * Schedule configuration for refresh tasks.
-           */
-          schedule?: SchedulerServiceTaskScheduleDefinitionConfig;
-          /**
            * PingIdentityClientCredentials
            */
           /**
@@ -38,6 +34,26 @@ export interface Config {
            * @visibility secret
            */
           clientSecret: string;
+          /**
+           * Schedule configuration for refresh tasks.
+           */
+          schedule?: SchedulerServiceTaskScheduleDefinitionConfig;
+          /**
+           * The number of users to query at a time.
+           * @defaultValue 100
+           * @remarks
+           * This is a performance optimization to avoid querying too many users at once.
+           * @see https://apidocs.pingidentity.com/pingone/platform/v1/api/#paging-ordering-and-filtering-collections
+           */
+          userQuerySize?: number;
+          /**
+           * The number of groups to query at a time.
+           * @defaultValue 100
+           * @remarks
+           * This is a performance optimization to avoid querying too many groups at once.
+           * @see https://apidocs.pingidentity.com/pingone/platform/v1/api/#paging-ordering-and-filtering-collections
+           */
+          groupQuerySize?: number;
         }
       };
     };

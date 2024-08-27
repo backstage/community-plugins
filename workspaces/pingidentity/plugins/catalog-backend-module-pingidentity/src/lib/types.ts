@@ -36,6 +36,31 @@ export type GroupTransformer = (
 ) => Promise<GroupEntity | undefined>;
 
 /**
+ * Ping Identity API response type
+ *
+ * @public
+ */
+export interface PingIdentityResponse {
+  _links: {
+    self: {
+      href: string;
+    };
+    prev?: {
+      href: string;
+    };
+    next?: {
+      href: string;
+    };
+  };
+  _embedded: {
+    users?: PingIdentityUser [];
+    groups?: PingIdentityGroup[];
+  };
+  count?: number; // total count of items in the collection
+  size?: number; // count of the current page of results
+}
+
+/**
  * Ping Identity user type
  *
  * @public

@@ -38,6 +38,8 @@ catalog:
         envId: ${PING_IDENTITY_ENV_ID}
         clientId: ${PING_IDENTITY_CLIENT_ID}
         clientSecret: ${PING_IDENTITY_CLIENT_SECRET}
+        userQuerySize: 2
+        groupQuerySize: 2
         schedule: # Mandatory; same options as in TaskScheduleDefinition
           # supports cron, ISO duration, "human duration" as used in code
           frequency: { seconds: 30 } # Customize this to fit your needs

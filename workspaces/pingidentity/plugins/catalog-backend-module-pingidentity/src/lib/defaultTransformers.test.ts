@@ -11,8 +11,8 @@ describe('defaultTransformers', () => {
       apiVersion: 'backstage.io/v1alpha1',
       kind: 'Group',
       metadata: {
-        annotations: { 'graph.microsoft.com/group-id': 'foo' },
-        name: 'bar',
+        annotations: { 'pingidentity.org/id': 'foo' },
+        name: 'group one',
       },
       spec: {
         children: [],
@@ -26,11 +26,11 @@ describe('defaultTransformers', () => {
           href: ''
         }
       },
-      id: 'bar',
+      id: 'group1',
       environment: {
         id: ''
       },
-      name: 'bar',
+      name: 'group one',
       description: '',
       directMemberCounts: {
         users: 0
@@ -39,8 +39,20 @@ describe('defaultTransformers', () => {
       updatedAt: ''
     }
     const result = await defaultGroupTransformer(group, pingIdentityGroup, 'envId');
-    // should not make any transformations
-    expect(result).toEqual(group);
+    // should normalize illegal characters in group name
+    expect(result).toEqual({
+      apiVersion: 'backstage.io/v1alpha1',
+      kind: 'Group',
+      metadata: {
+        annotations: { 'pingidentity.org/id': 'foo' },
+        name: 'group_one',
+      },
+      spec: {
+        children: [],
+        profile: { displayName: 'BAR' },
+        type: 'team',
+      },
+    });
   });
 
   it('tests defaultUserTransformer', async () => {
@@ -49,7 +61,7 @@ describe('defaultTransformers', () => {
       kind: 'User',
       metadata: {
         annotations: {
-          'graph.microsoft.com/user-id': 'foo',
+          'pingidentity.org/id': 'foo',
         },
         name: 'test~user@example.com',
       },
@@ -126,7 +138,7 @@ describe('defaultTransformers', () => {
       kind: 'User',
       metadata: {
         annotations: {
-          'graph.microsoft.com/user-id': 'foo',
+          'pingidentity.org/id': 'foo',
         },
         name: 'test_user_example.com',
       },

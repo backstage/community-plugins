@@ -23,6 +23,8 @@ describe('readProviderConfigs', () => {
                   minutes: 3,
                 },
               },
+              userQuerySize: 100,
+              groupQuerySize: 200,
             },
           },
         },
@@ -47,6 +49,8 @@ describe('readProviderConfigs', () => {
             minutes: 3,
           },
         },
+        userQuerySize: 100,
+        groupQuerySize: 200,
       },
     ];
     expect(actual).toEqual(expected);

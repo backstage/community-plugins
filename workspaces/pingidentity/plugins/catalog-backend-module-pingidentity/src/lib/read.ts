@@ -57,6 +57,7 @@ const getEntityLocation = (
  * @param client - The `PingIdentityClient`
  * @param groups - A list of all groups
  * @param groupMembersMap - Maps group ID to all user IDs that belong in that group
+ * @param userQuerySize - the number of users to query at a time
  * @param userTransformer - Optional user transformer method
  * 
  * @returns a parsed list of all users fetched from Ping Identity of type `UserEntity`
@@ -65,10 +66,11 @@ const parsePingIdentityUsers = async (
   client: PingIdentityClient,
   groups: GroupEntity[],
   groupMembersMap: Map<string, Set<string>>,
+  userQuerySize?: number,
   userTransformer?: UserTransformer
 ): Promise<UserEntity[]> => {
   const transformer = userTransformer ?? defaultUserTransformer;
-  const pingIdentityUsers: PingIdentityUser[] = await client.getUsers();
+  const pingIdentityUsers: PingIdentityUser[] = await client.getUsers(userQuerySize);
   const transformedUsers: (UserEntity | undefined)[] = await Promise.all(pingIdentityUsers.map(async (user: any) => {
     const userLocation = getEntityLocation(client.getConfig(), 'users', user.id);
     return await transformer({
@@ -104,7 +106,9 @@ const parsePingIdentityUsers = async (
  * Returns a parsed list of all groups in the Ping Identity environment
  *
  * @param client - The `PingIdentityClient`
- * @param groupMembersMap - Maps group ID to all user IDs that belong in that group
+ * @param groupMembersMap - Maps group ID to all user IDs that belong in that 
+ * @param parentGroupMap - Maps group ID to its parent group ID
+ * @param groupQuerySize - the number of groups to query at a time
  * @param groupTransformer - Optional group transformer method
  * 
  * @returns a parsed list of all groups fetched from Ping Identity of type `GroupEntity`
@@ -112,14 +116,20 @@ const parsePingIdentityUsers = async (
 const parsePingIdentityGroups = async (
   client: PingIdentityClient,
   groupMembersMap: Map<string, Set<string>>,
+  parentGroupMap: Map<string, string>,
+  groupQuerySize?: number,
   groupTransformer?: GroupTransformer
 ): Promise<GroupEntity[]> => {
   const transformer = groupTransformer ?? defaultGroupTransformer;
-  const pingIdentityGroups: PingIdentityGroup[] = await client.getGroups();
+  const pingIdentityGroups: PingIdentityGroup[] = await client.getGroups(groupQuerySize);
   const transformedGroups: (GroupEntity | undefined)[] = await Promise.all(pingIdentityGroups.map(async (group: any) => {
     const groupLocation = getEntityLocation(client.getConfig(), 'groups', group.id);
     // add users in group to group membership map
     groupMembersMap.set(group.id, new Set(await client.getUsersInGroup(group.id)));
+    // add parent group relationship to map
+    const parentGroupId = await client.getParentGroupId(group.id);
+    if (parentGroupId) parentGroupMap.set(group.id, parentGroupId);
+
     return await transformer({
       apiVersion: 'backstage.io/v1beta1',
       kind: 'Group',
@@ -138,8 +148,7 @@ const parsePingIdentityGroups = async (
           displayName: group.name!,
         },
         children: [],
-        parent: await client.getParentGroup(group.id),
-        members: [],
+        parent: undefined, // will be updated later
       }
     }, group, client.getConfig().envId);
   }));
@@ -160,6 +169,8 @@ const parsePingIdentityGroups = async (
 export const readPingIdentity = async (
   client: PingIdentityClient,
   options?: {
+    userQuerySize?: number;
+    groupQuerySize?: number;
     userTransformer?: UserTransformer;
     groupTransformer?: GroupTransformer;
   },
@@ -168,7 +179,23 @@ export const readPingIdentity = async (
   groups: GroupEntity[];
 }> => {
   const groupMembersMap = new Map<string, Set<string>>();
-  const groups: GroupEntity[] = await parsePingIdentityGroups(client, groupMembersMap, options?.groupTransformer);
-  const users: UserEntity[] = await parsePingIdentityUsers(client, groups, groupMembersMap, options?.userTransformer);
+  const parentGroupMap = new Map<string, string>();
+  const groups: GroupEntity[] = await parsePingIdentityGroups(client, groupMembersMap, parentGroupMap, options?.userQuerySize, options?.groupTransformer);
+  // update parent/child group relationship
+  const groupsMap = new Map<string, GroupEntity>();
+  groups.forEach(group => {
+    const groupId = group.metadata.annotations![PING_IDENTITY_ID_ANNOTATION];
+    groupsMap.set(groupId, group);
+  });
+
+  groups.forEach((group) => {
+    const parentGroupId = parentGroupMap.get(group.metadata.annotations![PING_IDENTITY_ID_ANNOTATION]);
+    if (parentGroupId) {
+      const parentGroup = groupsMap.get(parentGroupId);
+      group.spec.parent = parentGroup?.metadata.name;
+    }
+  });
+
+  const users: UserEntity[] = await parsePingIdentityUsers(client, groups, groupMembersMap, options?.groupQuerySize, options?.userTransformer);
   return { users, groups };
 };

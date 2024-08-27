@@ -1,6 +1,7 @@
 import fetch, { Response } from 'node-fetch';
 import { PingIdentityProviderConfig } from './config';
-import { PingIdentityGroup, PingIdentityUser } from './types';
+import { PingIdentityGroup, PingIdentityResponse, PingIdentityUser } from './types';
+import { PING_IDENTITY_DEFAULT_ENTITY_QUERY_SIZE } from './constants';
 
 class PingIdentityClient {
   private tokenCredential: string | null = null;
@@ -19,37 +20,59 @@ class PingIdentityClient {
   /**
    * Gets a list of all users fetched from Ping Identity API
    * 
+   * @param querySize - the number of users to query at a time
+   * 
    * @returns a list of all users fetched from Ping Identity API
    */
-  async getUsers(): Promise<PingIdentityUser[]> {
-    const response = await this.requestApi('users');
-    const data = await response.json();
-    return data._embedded.users;
+  async getUsers(querySize: number = PING_IDENTITY_DEFAULT_ENTITY_QUERY_SIZE): Promise<PingIdentityUser[]> {
+    const allUsers: PingIdentityUser[] = [];
+    let nextUrl: string | undefined = `users?limit=${querySize}`;
+
+    while (nextUrl) {
+      const url = nextUrl.startsWith('http') ? nextUrl : `${this.config.apiPath}/environments/${this.config.envId}/${nextUrl}`;
+      const response = await this.requestApi(url, true);
+      const data: PingIdentityResponse = await response.json() as PingIdentityResponse;
+      allUsers.push(...(data._embedded.users as PingIdentityUser[]));
+      nextUrl = data._links?.next?.href || undefined;
+    }
+
+    return allUsers;
   }
 
   /**
    * Gets a list of all groups fetched from Ping Identity API
+   *
+   * @param querySize - the number of groups to query at a time
    * 
    * @returns a list of all groups fetched from Ping Identity API
    */
-  async getGroups(): Promise<PingIdentityGroup[]> {
-    const response = await this.requestApi('groups');
-    const data = await response.json();
-    return data._embedded.groups;
+  async getGroups(querySize: number = PING_IDENTITY_DEFAULT_ENTITY_QUERY_SIZE): Promise<PingIdentityGroup[]> {
+    const allGroups: PingIdentityGroup[] = [];
+    let nextUrl: string | undefined = `groups?limit=${querySize}`;
+
+    while (nextUrl) {
+      const url = nextUrl.startsWith('http') ? nextUrl : `${this.config.apiPath}/environments/${this.config.envId}/${nextUrl}`;
+      const response = await this.requestApi(url, true);
+      const data: PingIdentityResponse = await response.json() as PingIdentityResponse;
+      allGroups.push(...(data._embedded.groups as PingIdentityGroup[]));
+      nextUrl = data._links?.next?.href || undefined;
+    }
+
+    return allGroups;
   }
 
   /**
-   * Gets the parent group of a given group, returns undefined if there is no parent group
+   * Gets the parent group ID of a given group, returns undefined if there is no parent group
    * 
    * @param groupId the group ID of a given group
    * 
-   * @returns the parent group of a given group, undefined if there is no parent group
+   * @returns the parent group ID of a given group, undefined if there is no parent group
    */
-  async getParentGroup(groupId: string): Promise<string | undefined> {
+  async getParentGroupId(groupId: string): Promise<string | undefined> {
     const response = await this.requestApi(`groups/${groupId}/memberOfGroups`);
     const data = await response.json();
     return data.size > 0
-      ? data._embedded.groupMemberships[0].name
+      ? data._embedded.groupMemberships[0].id
       : undefined;
   }
 
@@ -70,11 +93,11 @@ class PingIdentityClient {
    * Makes a Ping Identity API request to the configured environment
    * 
    * @param query the query to be made
-   * 
+   * @param isFullUrl Optional - true if the given query is the full request url
    * @returns the response to the given API call
    */
-  async requestApi(query: string): Promise<Response> {
-    const url = `${this.config.apiPath}/environments/${this.config.envId}/${query}`;
+  async requestApi(query: string, isFullUrl?: boolean): Promise<Response> {
+    const url = isFullUrl ? query : `${this.config.apiPath}/environments/${this.config.envId}/${query}`;
     let accessToken = await this.getAccessToken();
 
     let response = await this.makeRequest(url, accessToken);
