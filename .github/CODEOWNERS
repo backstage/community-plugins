@@ -32,3 +32,4 @@ yarn.lock                                           @backstage/community-plugins
 /workspaces/tech-insights                           @backstage/community-plugins-maintainers  @xantier
 /workspaces/report-portal                           @backstage/community-plugins-maintainers  @yashoswalyo
 /workspaces/redhat-resource-optimization            @backstage/community-plugins-maintainers
+/workspaces/pingidentity                            @backstage/community-plugins-maintainers  @jessicajhee

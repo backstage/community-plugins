@@ -10,7 +10,10 @@ import { GroupTransformer, UserTransformer } from './types';
 export const defaultGroupTransformer: GroupTransformer = async (
   entity,
   _envId,
-) => entity;
+) => {
+  entity.metadata.name = entity.metadata.name.replace(/[^a-zA-Z0-9_\-\.]/g, '_');
+  return entity;
+};
 
 /**
  * The default user transformer if none is provided

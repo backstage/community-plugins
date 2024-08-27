@@ -145,7 +145,7 @@ describe('PingIdentityClient', () => {
       }),
     );
 
-    const users = await client.getUsers();
+    const users = await client.getUsers(10);
 
     expect(users).toEqual([
       {
@@ -200,7 +200,7 @@ describe('PingIdentityClient', () => {
       }),
     );
 
-    const groups = await client.getGroups();
+    const groups = await client.getGroups(10);
 
     expect(groups).toEqual([
       {
@@ -231,7 +231,7 @@ describe('PingIdentityClient', () => {
             size: 1,
             _embedded: {
               groupMemberships: [
-                { name: 'Parent Group' },
+                { id: 'ParentGroup' },
               ],
             },
           }),
@@ -239,9 +239,9 @@ describe('PingIdentityClient', () => {
       }),
     );
 
-    const parentGroup = await client.getParentGroup('group1');
+    const parentGroup = await client.getParentGroupId('group1');
 
-    expect(parentGroup).toBe('Parent Group');
+    expect(parentGroup).toBe('ParentGroup');
   });
 
   it('should return undefined if no parent group exists', async () => {
@@ -265,7 +265,7 @@ describe('PingIdentityClient', () => {
       }),
     );
 
-    const parentGroup = await client.getParentGroup('group1');
+    const parentGroup = await client.getParentGroupId('group1');
 
     expect(parentGroup).toBeUndefined();
   });

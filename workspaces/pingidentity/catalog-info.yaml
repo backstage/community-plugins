@@ -2,12 +2,9 @@ apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: pingidentity
-  description: An example of a Backstage application.
-  # Example for optional annotations
-  # annotations:
-  #   github.com/project-slug: backstage/backstage
-  #   backstage.io/techdocs-ref: dir:.
+  title: '@backstage-community/pingidentity'
+  description: An Backstage plugin that ingests users and groups from Ping Identity into the catalog.
 spec:
-  type: website
-  owner: john@example.com
+  type: backstage-backend-plugin-module
+  owner: jessicajhee
   lifecycle: experimental
