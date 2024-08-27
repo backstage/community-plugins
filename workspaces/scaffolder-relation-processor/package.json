@@ -46,7 +46,7 @@
     "prettier": "^2.3.2",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
-    "typescript": "~5.3.0"
+    "typescript": "~5.5.0"
   },
   "resolutions": {
     "@types/react": "^18",
