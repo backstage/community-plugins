@@ -28,6 +28,10 @@
       "allowedVersions": "<3.0.0"
     },
     {
+      "matchPackageNames": ["typescript"],
+      "allowedVersions": "~5.3.0"
+    },
+    {
       "matchPackageNames": ["yn"],
       "allowedVersions": "<5.0.0"
     }
