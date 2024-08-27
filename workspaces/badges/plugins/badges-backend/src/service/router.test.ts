@@ -233,6 +233,33 @@ describe('createRouter', () => {
         expect(response.status).toEqual(200);
         expect(response.body).toEqual(badge);
       });
+
+      it('returns badge with style', async () => {
+        catalog.getEntityByRef.mockResolvedValueOnce(entity);
+
+        const image = '<svg>...</svg>';
+        badgeBuilder.createBadgeSvg.mockResolvedValueOnce(image);
+
+        const response = await request(app).get(
+          '/entity/default/component/test/badge/test-badge?style=flat',
+        );
+
+        expect(response.status).toEqual(200);
+        expect(response.body).toEqual(Buffer.from(image));
+
+        expect(badgeBuilder.createBadgeSvg).toHaveBeenCalledTimes(1);
+        expect(badgeBuilder.createBadgeSvg).toHaveBeenCalledWith({
+          badgeInfo: { id: badge.id },
+          context: {
+            badgeUrl: expect.stringMatching(
+              /http:\/\/127.0.0.1\/api\/badges\/entity\/default\/component\/test\/badge\/test-badge/,
+            ),
+            config,
+            entity,
+            style: 'flat',
+          },
+        });
+      });
     });
 
     describe('Errors', () => {

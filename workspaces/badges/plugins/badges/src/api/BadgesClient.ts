@@ -17,7 +17,7 @@
 import { generatePath } from 'react-router-dom';
 import { ResponseError } from '@backstage/errors';
 import { Entity, DEFAULT_NAMESPACE } from '@backstage/catalog-model';
-import { BadgesApi, BadgeSpec } from './types';
+import { BadgesApi, BadgeSpec, BadgeStyleOptions } from './types';
 import { ConfigApi, DiscoveryApi, FetchApi } from '@backstage/core-plugin-api';
 
 export class BadgesClient implements BadgesApi {
@@ -43,7 +43,10 @@ export class BadgesClient implements BadgesApi {
     return new BadgesClient(options);
   }
 
-  public async getEntityBadgeSpecs(entity: Entity): Promise<BadgeSpec[]> {
+  public async getEntityBadgeSpecs(
+    entity: Entity,
+    badgeOptions: BadgeStyleOptions,
+  ): Promise<BadgeSpec[]> {
     // Check if obfuscation is enabled in the configuration
     const obfuscate = this.configApi.getOptionalBoolean('app.badges.obfuscate');
 
@@ -65,7 +68,10 @@ export class BadgesClient implements BadgesApi {
     }
 
     // If obfuscation is disabled, get the badge specs directly as the previous implementation
-    const entityBadgeSpecsUrl = await this.getEntityBadgeSpecsUrl(entity);
+    const entityBadgeSpecsUrl = await this.getEntityBadgeSpecsUrl(
+      entity,
+      badgeOptions,
+    );
     const response = await this.fetchApi.fetch(entityBadgeSpecsUrl);
     if (!response.ok) {
       throw await ResponseError.fromResponse(response);
@@ -99,11 +105,21 @@ export class BadgesClient implements BadgesApi {
     return `${baseUrl}/entity/${entityUuid}/badge-specs`;
   }
 
-  private async getEntityBadgeSpecsUrl(entity: Entity): Promise<string> {
+  private async getEntityBadgeSpecsUrl(
+    entity: Entity,
+    badgeOptions: BadgeStyleOptions,
+  ): Promise<string> {
     const routeParams = this.getEntityRouteParams(entity);
     const path = generatePath(`:namespace/:kind/:name`, routeParams);
     const baseUrl = await this.discoveryApi.getBaseUrl('badges');
-    return `${baseUrl}/entity/${path}/badge-specs`;
+    const queries: string[] = [];
+    if (badgeOptions.style) {
+      queries.push(`style=${badgeOptions.style}`);
+    }
+    if (badgeOptions.color) {
+      queries.push(`color=${badgeOptions.color}`);
+    }
+    return `${baseUrl}/entity/${path}/badge-specs?${queries.join('&')}`;
   }
 
   // This function is used to generate the route parameters using the entity kind, namespace and name

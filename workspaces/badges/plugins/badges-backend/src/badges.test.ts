@@ -89,4 +89,51 @@ describe('BadgeFactories', () => {
       );
     }
   });
+
+  it('should be able to set styles', () => {
+    const entity: Entity = {
+      apiVersion: 'v1',
+      kind: 'service',
+      metadata: {
+        name: 'test',
+      },
+    };
+
+    const context: BadgeContext = {
+      badgeUrl: '/dummy/url',
+      config,
+      entity,
+      style: 'plastic',
+      color: 'black',
+    };
+
+    expect.assertions(Object.keys(badgeFactories).length);
+    for (const badgeFactory of Object.values(badgeFactories)) {
+      const badge = badgeFactory.createBadge(context);
+      expect(badge.style).toContain('plastic');
+    }
+  });
+
+  it('should be able to set color', () => {
+    const entity: Entity = {
+      apiVersion: 'v1',
+      kind: 'service',
+      metadata: {
+        name: 'test',
+      },
+    };
+
+    const context: BadgeContext = {
+      badgeUrl: '/dummy/url',
+      config,
+      entity,
+      color: 'black',
+    };
+
+    expect.assertions(Object.keys(badgeFactories).length);
+    for (const badgeFactory of Object.values(badgeFactories)) {
+      const badge = badgeFactory.createBadge(context);
+      expect(badge.color).toContain('black');
+    }
+  });
 });
