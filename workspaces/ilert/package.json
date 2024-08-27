@@ -33,9 +33,9 @@
     "directory": "workspaces/ilert"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.26.11",
+    "@backstage/cli": "^0.27.0",
     "@backstage/e2e-test-utils": "^0.1.1",
-    "@backstage/repo-tools": "^0.9.4",
+    "@backstage/repo-tools": "^0.9.5",
     "@changesets/cli": "^2.27.1",
     "@spotify/prettier-config": "^15.0.0",
     "node-gyp": "^10.0.0",
@@ -56,5 +56,8 @@
     "*.{json,md}": [
       "prettier --write"
     ]
+  },
+  "dependencies": {
+    "knip": "^5.27.4"
   }
 }

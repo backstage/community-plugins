@@ -27,7 +27,12 @@ import { CatalogApi, CatalogClient } from '@backstage/catalog-client';
 import { Config } from '@backstage/config';
 import { NotFoundError } from '@backstage/errors';
 import { BadgeBuilder, DefaultBadgeBuilder } from '../lib/BadgeBuilder';
-import { BadgeContext, BadgeFactories } from '../types';
+import {
+  BADGE_STYLES,
+  BadgeContext,
+  BadgeFactories,
+  BadgeStyle,
+} from '../types';
 import { isNil } from 'lodash';
 import { IdentityApi } from '@backstage/plugin-auth-node';
 import { BadgesStore, DatabaseBadgesStore } from '../database/badgesStore';
@@ -144,13 +149,19 @@ async function obfuscatedRoute(
       );
     }
 
+    const bsOptions = parseBadgeStyleOptions(req.query);
+
     // Create the badge specs
     const specs = [];
     for (const badgeInfo of await badgeBuilder.getBadges()) {
       const context: BadgeContext = {
-        badgeUrl: `${baseUrl}/entity/${entityUuid}/${badgeInfo.id}`,
+        badgeUrl: `${baseUrl}/entity/${entityUuid}/${
+          badgeInfo.id
+        }${buildBadgeStyleOptionsQuery(bsOptions)}`,
         config: config,
         entity,
+        style: bsOptions.style,
+        color: bsOptions.style,
       };
 
       const badge = await badgeBuilder.createBadgeJson({
@@ -200,12 +211,18 @@ async function obfuscatedRoute(
       format = 'application/json';
     }
 
+    const bsOptions = parseBadgeStyleOptions(req.query);
+
     const badgeOptions = {
       badgeInfo: { id: badgeId },
       context: {
-        badgeUrl: `${baseUrl}/entity/${entityUuid}/${badgeId}`,
+        badgeUrl: `${baseUrl}/entity/${entityUuid}/${badgeId}${buildBadgeStyleOptionsQuery(
+          bsOptions,
+        )}`,
         config: config,
         entity,
+        style: bsOptions.style,
+        color: bsOptions.color,
       },
     };
 
@@ -294,13 +311,19 @@ async function nonObfuscatedRoute(
       );
     }
 
+    const bsOptions = parseBadgeStyleOptions(req.query);
+
     const specs = [];
     for (const badgeInfo of await badgeBuilder.getBadges()) {
       const badgeId = badgeInfo.id;
       const context: BadgeContext = {
-        badgeUrl: `${baseUrl}/entity/${namespace}/${kind}/${name}/badge/${badgeId}`,
+        badgeUrl: `${baseUrl}/entity/${namespace}/${kind}/${name}/badge/${badgeId}${buildBadgeStyleOptionsQuery(
+          bsOptions,
+        )}`,
         config: config,
         entity,
+        style: bsOptions.style,
+        color: bsOptions.color,
       };
 
       const badge = await badgeBuilder.createBadgeJson({
@@ -339,12 +362,18 @@ async function nonObfuscatedRoute(
         format = 'application/json';
       }
 
+      const bsOptions = parseBadgeStyleOptions(req.query);
+
       const badgeOptions = {
         badgeInfo: { id: badgeId },
         context: {
-          badgeUrl: `${baseUrl}/entity/${namespace}/${kind}/${name}/badge/${badgeId}`,
+          badgeUrl: `${baseUrl}/entity/${namespace}/${kind}/${name}/badge/${badgeId}${buildBadgeStyleOptionsQuery(
+            bsOptions,
+          )}`,
           config: config,
           entity,
+          style: bsOptions.style,
+          color: bsOptions.color,
         },
       };
 
@@ -367,4 +396,50 @@ async function nonObfuscatedRoute(
   router.use(errorHandler());
 
   return router;
+}
+
+interface BadgeStyleOptions {
+  style?: BadgeStyle;
+  color?: string;
+}
+
+// Parse common badge style options from query parameters.
+//
+// This function will parse the following query parameters:
+// - `style`: One of the supported badge styles.
+// - `color`: A custom color for the badge message.
+function parseBadgeStyleOptions(query: qs.ParsedQs): BadgeStyleOptions {
+  let style: BadgeStyle | undefined = undefined;
+  let color: string | undefined = undefined;
+
+  if (
+    typeof query.style === 'string' &&
+    BADGE_STYLES.includes(query.style as any)
+  ) {
+    style = query.style as BadgeStyle;
+  }
+
+  if (typeof query.color === 'string') {
+    color = query.color;
+  }
+
+  return { style, color };
+}
+
+// Build a query string including explanation mark if there are any options.
+function buildBadgeStyleOptionsQuery({
+  style,
+  color,
+}: BadgeStyleOptions): string {
+  const query: string[] = [];
+
+  if (style) {
+    query.push(`style=${style}`);
+  }
+
+  if (color) {
+    query.push(`color=${color}`);
+  }
+
+  return query.length > 0 ? `?${query.join('&')}` : '';
 }

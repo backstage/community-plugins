@@ -7,13 +7,25 @@ import { BackstagePlugin } from '@backstage/frontend-plugin-api';
 import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
 
 // @alpha (undocumented)
-const _default: BackstagePlugin<{}, {}>;
+const _default: BackstagePlugin<{}, {}, {}>;
 export default _default;
 
 // @alpha (undocumented)
-export const exploreSearchResultListItem: ExtensionDefinition<{
-  noTrack?: boolean | undefined;
-}>;
+export const exploreSearchResultListItem: ExtensionDefinition<
+  {
+    noTrack?: boolean | undefined;
+  },
+  {
+    noTrack?: boolean | undefined;
+  },
+  never,
+  never,
+  {
+    kind?: string | undefined;
+    namespace?: string | undefined;
+    name?: string | undefined;
+  }
+>;
 
 // (No @packageDocumentation comment for this package)
 ```

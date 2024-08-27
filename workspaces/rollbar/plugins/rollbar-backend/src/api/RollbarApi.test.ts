@@ -15,7 +15,7 @@
  */
 
 import { getRequestHeaders, RollbarApi } from './RollbarApi';
-import { setupRequestMockHandlers } from '@backstage/backend-test-utils';
+import { registerMswTestHooks } from '@backstage/backend-test-utils';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import { getVoidLogger } from '@backstage/backend-common';
@@ -33,7 +33,7 @@ describe('RollbarApi', () => {
 
   describe('getAllProjects', () => {
     const server = setupServer();
-    setupRequestMockHandlers(server);
+    registerMswTestHooks(server);
 
     const mockBaseUrl = 'https://api.rollbar.com/api/1';
 

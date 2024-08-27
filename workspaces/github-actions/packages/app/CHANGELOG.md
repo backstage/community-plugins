@@ -1,5 +1,12 @@
 # app
 
+## 0.0.4
+
+### Patch Changes
+
+- Updated dependencies [a0591d5]
+  - @backstage-community/plugin-github-actions@0.6.21
+
 ## 0.0.3
 
 ### Patch Changes
