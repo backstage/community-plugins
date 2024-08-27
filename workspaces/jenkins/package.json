@@ -63,6 +63,7 @@
   },
   "dependencies": {
     "@backstage-community/plugin-jenkins": "workspace:^",
-    "@backstage-community/plugin-jenkins-backend": "workspace:^"
+    "@backstage-community/plugin-jenkins-backend": "workspace:^",
+    "knip": "^5.27.4"
   }
 }
