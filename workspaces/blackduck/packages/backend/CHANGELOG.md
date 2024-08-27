@@ -1,5 +1,12 @@
 # backend
 
+## 0.0.4
+
+### Patch Changes
+
+- Updated dependencies [d46678b]
+  - @backstage-community/plugin-blackduck-backend@0.0.4
+
 ## 0.0.3
 
 ### Patch Changes
