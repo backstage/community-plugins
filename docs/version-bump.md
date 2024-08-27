@@ -21,4 +21,13 @@ When a Plugin Owner or Community Plugins Maintainer wants to upgrade one or many
 5. The workflow will then run and create a PR for each workspace provided with the workspaces upgraded to the latest `main` release at the time of it being ran.
 6. At this point you can review the created PR(s) like any other PR
 
+### Generate List of All Workspaces
 
+> [!WARNING]
+> Do not use the entire list as you will hit rate limits, chunks of 5-10 work best
+
+If you want to run the Version Bump workflow against all the workspaces in this repo you can do the following to generate the proper JSON array:
+
+1. Navigate into the `/workspaces` folder
+2. Run: `ls | jq -R '[.]' | jq -s -c 'add'`
+3. Copy the output and use it as the Workspace value for Step 3 in the [Process section](#process) above
