@@ -1,15 +1,22 @@
 import React from 'react';
-import { convertLegacyRouteRef } from '@backstage/core-compat-api';
-import { createEntityContentExtension } from '@backstage/plugin-catalog-react/alpha';
+import {
+  compatWrapper,
+  convertLegacyRouteRef,
+} from '@backstage/core-compat-api';
+import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
 import { rootRouteRef } from '../plugin';
 
 /**
  * @alpha
  */
-export const entityJenkinsProjects = createEntityContentExtension({
-  defaultPath: 'jenkins',
-  defaultTitle: 'Jenkins',
-  name: 'projects',
-  routeRef: convertLegacyRouteRef(rootRouteRef),
-  loader: () => import('../components/Router').then(m => <m.Router />),
+export const entityJenkinsProjects = EntityContentBlueprint.make({
+  name: 'entity',
+  params: {
+    defaultPath: 'jenkins',
+    defaultTitle: 'Jenkins',
+    filter: 'kind:component',
+    routeRef: convertLegacyRouteRef(rootRouteRef),
+    loader: () =>
+      import('../components/Router').then(m => compatWrapper(<m.Router />)),
+  },
 });
