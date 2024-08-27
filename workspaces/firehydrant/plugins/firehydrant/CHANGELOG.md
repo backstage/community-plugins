@@ -1,5 +1,11 @@
 # @backstage-community/plugin-firehydrant
 
+## 0.2.22
+
+### Patch Changes
+
+- c63e30f: Backstage version bump to v1.30.2
+
 ## 0.2.21
 
 ### Patch Changes
