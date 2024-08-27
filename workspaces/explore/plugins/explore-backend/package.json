@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-explore-backend",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "backstage": {
     "role": "backend-plugin",
     "pluginId": "explore",
