@@ -34,4 +34,4 @@ yarn.lock                                           @backstage/community-plugins
 /workspaces/redhat-resource-optimization            @backstage/community-plugins-maintainers
 /workspaces/3scale                                  @backstage/community-plugins-maintainers  @fmenesesg
 /workspaces/redhat-argocd                           @backstage/community-plugins-maintainers  @karthikjeeyar @rohitkrai03 @Eswaraiahsapram
-/workspaces/scaffolder-relation-processor           @backstage/community-plugins-maintainers
+/workspaces/scaffolder-relation-processor           @backstage/community-plugins-maintainers  @04kash
