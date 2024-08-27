@@ -7,6 +7,7 @@ import { createEntityCardExtension } from '@backstage/plugin-catalog-react/alpha
  */
 export const entityLatestJenkinsRunCard = createEntityCardExtension({
   name: 'latest-run',
+  filter: 'kind:component',
   configSchema: createSchemaFromZod(z =>
     z.object({
       props: z

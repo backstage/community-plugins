@@ -12,7 +12,9 @@
     ]
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "main": "dist/index.esm.js",
+    "types": "dist/index.d.ts"
   },
   "exports": {
     ".": "./src/index.ts",
