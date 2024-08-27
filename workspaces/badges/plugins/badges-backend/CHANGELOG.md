@@ -1,5 +1,11 @@
 # @backstage-community/plugin-badges-backend
 
+## 0.5.0
+
+### Minor Changes
+
+- 82bc0cd: APIs now accept color and style query parameters to support badge customization.
+
 ## 0.4.5
 
 ### Patch Changes
