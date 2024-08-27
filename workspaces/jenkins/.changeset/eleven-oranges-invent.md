@@ -1,5 +1,4 @@
 ---
-'app-next': major
 '@backstage-community/plugin-jenkins-backend': minor
 '@backstage-community/plugin-jenkins': minor
 ---
