@@ -28,6 +28,6 @@ jobs:
           git config --global user.name 'Github changeset workflow'
 
       - name: Generate feedback
-        uses: backstage/actions/renovate-changesets@v0.6.10
+        uses: backstage/actions/renovate-changesets@v0.6.13
         with:
           multiple-workspaces: true
