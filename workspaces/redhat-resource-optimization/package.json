@@ -70,5 +70,8 @@
     "*.{json,md}": [
       "prettier --write"
     ]
+  },
+  "dependencies": {
+    "knip": "^5.27.4"
   }
 }

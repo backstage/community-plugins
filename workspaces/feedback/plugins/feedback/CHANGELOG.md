@@ -1,5 +1,24 @@
 ## @janus-idp/backstage-plugin-feedback [1.6.0](https://github.com/janus-idp/backstage-plugins/compare/@janus-idp/backstage-plugin-feedback@1.5.0...@janus-idp/backstage-plugin-feedback@1.6.0) (2024-07-26)
 
+## 1.6.3
+
+### Patch Changes
+
+- 2436cfa: fix typo in backend package.json
+  fix typo in frontend app-config.backstage-community.yaml filename
+
+## 1.6.2
+
+### Patch Changes
+
+- c5cfbd8: chore: update namespace janus-idp to backstage-community
+
+## 1.6.1
+
+### Patch Changes
+
+- 4827a7f: The feedback and feedback-backend plugins from the [janus-idp/backstage-plugins](https://github.com/janus-idp/backstage-plugins/tree/main/plugins/) repository was migrated to the community plugins, based on commit a8fe67c2. The migration was performed by following the manual migration steps outlined in the [Community Plugins CONTRIBUTING guide](https://github.com/backstage/community-plugins/blob/main/CONTRIBUTING.md#migrating-a-plugin)
+
 ### Features
 
 - **deps:** update to backstage 1.29 ([#1900](https://github.com/janus-idp/backstage-plugins/issues/1900)) ([f53677f](https://github.com/janus-idp/backstage-plugins/commit/f53677fb02d6df43a9de98c43a9f101a6db76802))

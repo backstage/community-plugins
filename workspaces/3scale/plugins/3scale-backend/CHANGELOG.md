@@ -1,5 +1,11 @@
 ## @janus-idp/backstage-plugin-3scale-backend [1.8.0](https://github.com/janus-idp/backstage-plugins/compare/@janus-idp/backstage-plugin-3scale-backend@1.7.1...@janus-idp/backstage-plugin-3scale-backend@1.8.0) (2024-07-25)
 
+## 1.8.4
+
+### Patch Changes
+
+- ed69246: Updated dependency `@janus-idp/cli` to `1.13.1`.
+
 ## 1.8.3
 
 ### Patch Changes

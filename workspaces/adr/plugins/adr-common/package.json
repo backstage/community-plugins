@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-adr-common",
-  "version": "0.2.27",
+  "version": "0.2.28",
   "description": "Common functionalities for the adr plugin",
   "backstage": {
     "role": "common-library",

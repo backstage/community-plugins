@@ -1,5 +1,11 @@
 # @backstage-community/plugin-codescene
 
+## 0.1.31
+
+### Patch Changes
+
+- 8f84c35: Backstage version bump to v1.30.2
+
 ## 0.1.30
 
 ### Patch Changes

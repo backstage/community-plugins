@@ -1,5 +1,14 @@
 # @backstage-community/plugin-explore-backend
 
+## 0.1.5
+
+### Patch Changes
+
+- 655e538: Backstage version bump to v1.30.2
+- Updated dependencies [655e538]
+  - @backstage-community/plugin-explore-common@0.0.5
+  - @backstage-community/plugin-explore-node@0.1.3
+
 ## 0.1.4
 
 ### Patch Changes
