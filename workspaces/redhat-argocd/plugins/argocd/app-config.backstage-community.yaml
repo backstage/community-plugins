@@ -1,6 +1,6 @@
 dynamicPlugins:
   frontend:
-    janus-idp.backstage-plugin-argocd:
+    backstage-community.backstage-plugin-redhat-argocd:
       mountPoints:
         - mountPoint: entity.page.cd/cards
           importName: ArgocdPage
