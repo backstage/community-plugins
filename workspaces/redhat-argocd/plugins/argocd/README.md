@@ -161,7 +161,7 @@ global:
     plugins:
       - package: ./dynamic-plugins/dist/roadiehq-backstage-plugin-argo-cd-backend-dynamic
         disabled: false
-      - package: ./dynamic-plugins/dist/janus-idp-backstage-plugin-argocd
+      - package: ./dynamic-plugins/dist/backstage-community-plugin-redhat-argocd
         disabled: false
 ```
 
