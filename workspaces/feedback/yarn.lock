@@ -2530,7 +2530,7 @@ __metadata:
     "@backstage/catalog-model": ^1.5.0
     "@backstage/cli": 0.26.11
     "@backstage/config": ^1.2.0
-    "@janus-idp/cli": 1.13.0
+    "@janus-idp/cli": 1.13.1
     "@types/express": "*"
     "@types/nodemailer": 6.4.15
     "@types/supertest": 2.0.16
@@ -2564,7 +2564,7 @@ __metadata:
     "@backstage/plugin-catalog-react": ^1.12.2
     "@backstage/test-utils": 1.5.9
     "@backstage/theme": ^0.5.6
-    "@janus-idp/cli": 1.13.0
+    "@janus-idp/cli": 1.13.1
     "@mui/icons-material": ^5.15.18
     "@mui/material": ^5.15.18
     "@one-platform/opc-feedback": 0.1.1-alpha
@@ -5441,9 +5441,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@janus-idp/cli@npm:1.13.0":
-  version: 1.13.0
-  resolution: "@janus-idp/cli@npm:1.13.0"
+"@janus-idp/cli@npm:1.13.1":
+  version: 1.13.1
+  resolution: "@janus-idp/cli@npm:1.13.1"
   dependencies:
     "@backstage/cli-common": ^0.1.14
     "@backstage/cli-node": ^0.2.7
@@ -5512,7 +5512,7 @@ __metadata:
       optional: true
   bin:
     janus-cli: bin/janus-cli
-  checksum: 86e62cbb1a8e2c441b231cd3a5c762e38ca3fb9345b8847cc671eb14bf64a19e6e313a7259294bd71ec722762ecec8cacfb2cb4419a2fc772c317be46f881da5
+  checksum: 7b7277e962b065f875f1a37cf988994d6a6b4c5e2b2f0cbd253c8d3c97fb58b31b415752951b5896d7c695d9e809f96fa38deafa6f3179334401a89ad3d6187f
   languageName: node
   linkType: hard
 
