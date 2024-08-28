@@ -154,10 +154,10 @@ export interface RouterOptions {
   // (undocumented)
   httpAuth?: HttpAuthService;
   // (undocumented)
-  identity: IdentityApi;
+  identity?: IdentityApi;
   // (undocumented)
   logger: LoggerService;
   // (undocumented)
-  tokenManager: TokenManager;
+  tokenManager?: TokenManager;
 }
 ```
