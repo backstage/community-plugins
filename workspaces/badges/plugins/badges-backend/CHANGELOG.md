@@ -1,5 +1,11 @@
 # @backstage-community/plugin-badges-backend
 
+## 0.5.1
+
+### Patch Changes
+
+- bdf5b08: Removed deprecated `tokenManager` and `identity` in favor of new auth services
+
 ## 0.5.0
 
 ### Minor Changes
