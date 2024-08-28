@@ -1,5 +1,12 @@
 ## @janus-idp/backstage-plugin-feedback-backend [1.7.0](https://github.com/janus-idp/backstage-plugins/compare/@janus-idp/backstage-plugin-feedback-backend@1.6.0...@janus-idp/backstage-plugin-feedback-backend@1.7.0) (2024-07-26)
 
+## 1.7.3
+
+### Patch Changes
+
+- 2436cfa: fix typo in backend package.json
+  fix typo in frontend app-config.backstage-community.yaml filename
+
 ## 1.7.2
 
 ### Patch Changes
