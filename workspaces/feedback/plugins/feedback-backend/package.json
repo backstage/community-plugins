@@ -75,7 +75,7 @@
   "files": [
     "dist",
     "config.d.ts",
-    "app-config.janus-idp.yaml",
+    "app-config.backstage-community.yaml",
     "migrations/**/*.{js,d.ts}",
     "dist-dynamic/*.*",
     "dist-dynamic/dist/**",
