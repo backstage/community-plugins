@@ -215,4 +215,4 @@ dynamicPlugins:
                 - isArgocdConfigured
 ```
 
-For more detailed explanation on dynamic plugins follow this [doc](https://github.com/janus-idp/backstage-showcase/blob/main/showcase-docs/dynamic-plugins.md).
+For more detailed explanation on dynamic plugins follow this [doc](https://github.com/redhat-developer/red-hat-developer-hub/blob/main/showcase-docs/dynamic-plugins.md).
