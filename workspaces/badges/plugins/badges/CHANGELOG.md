@@ -1,5 +1,11 @@
 # @backstage-community/plugin-badges
 
+## 0.3.0
+
+### Minor Changes
+
+- 82bc0cd: UI now supports customizing badge styles.
+
 ## 0.2.61
 
 ### Patch Changes

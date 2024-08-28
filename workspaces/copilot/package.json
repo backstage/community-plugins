@@ -64,6 +64,7 @@
   },
   "dependencies": {
     "@backstage-community/plugin-copilot": "workspace:^",
-    "@backstage-community/plugin-copilot-backend": "workspace:^"
+    "@backstage-community/plugin-copilot-backend": "workspace:^",
+    "knip": "^5.27.4"
   }
 }

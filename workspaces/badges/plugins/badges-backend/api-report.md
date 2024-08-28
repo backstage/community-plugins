@@ -48,9 +48,13 @@ export interface BadgeContext {
   // (undocumented)
   badgeUrl: string;
   // (undocumented)
+  color?: string;
+  // (undocumented)
   config: Config;
   // (undocumented)
   entity?: Entity;
+  // (undocumented)
+  style?: BadgeStyle;
 }
 
 // @public (undocumented)
