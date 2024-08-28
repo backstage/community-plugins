@@ -63,6 +63,7 @@
   },
   "dependencies": {
     "@backstage-community/plugin-azure-storage-explorer": "workspace:^",
-    "@backstage-community/plugin-azure-storage-explorer-backend": "workspace:^"
+    "@backstage-community/plugin-azure-storage-explorer-backend": "workspace:^",
+    "knip": "^5.27.4"
   }
 }

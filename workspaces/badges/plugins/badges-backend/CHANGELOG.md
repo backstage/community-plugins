@@ -1,5 +1,17 @@
 # @backstage-community/plugin-badges-backend
 
+## 0.5.1
+
+### Patch Changes
+
+- bdf5b08: Removed deprecated `tokenManager` and `identity` in favor of new auth services
+
+## 0.5.0
+
+### Minor Changes
+
+- 82bc0cd: APIs now accept color and style query parameters to support badge customization.
+
 ## 0.4.5
 
 ### Patch Changes

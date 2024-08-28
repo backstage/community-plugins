@@ -1,5 +1,29 @@
 ## @janus-idp/backstage-plugin-argocd [1.5.7](https://github.com/janus-idp/backstage-plugins/compare/@janus-idp/backstage-plugin-argocd@1.5.6...@janus-idp/backstage-plugin-argocd@1.5.7) (2024-08-02)
 
+## 1.6.7
+
+### Patch Changes
+
+- 2436cfa: update link to dynamic plugin info
+
+## 1.6.6
+
+### Patch Changes
+
+- 09499f2: chore: updated janus-idp namespace to backstage-community
+
+## 1.6.5
+
+### Patch Changes
+
+- ed69246: Updated dependency `@janus-idp/cli` to `1.13.1`.
+
+## 1.6.4
+
+### Patch Changes
+
+- aca4c41: Updated dependency `@kubernetes/client-node` to `^0.21.0`.
+
 ## 1.6.3
 
 ### Patch Changes

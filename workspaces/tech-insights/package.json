@@ -66,6 +66,7 @@
   "dependencies": {
     "@backstage-community/plugin-tech-insights": "workspace:^",
     "@backstage-community/plugin-tech-insights-backend": "workspace:^",
-    "@backstage-community/plugin-tech-insights-backend-module-jsonfc": "workspace:^"
+    "@backstage-community/plugin-tech-insights-backend-module-jsonfc": "workspace:^",
+    "knip": "^5.27.4"
   }
 }
