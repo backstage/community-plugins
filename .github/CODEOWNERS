@@ -8,10 +8,11 @@
 yarn.lock                                           @backstage/community-plugins-maintainers @backstage-service
 */yarn.lock                                         @backstage/community-plugins-maintainers @backstage-service
 
+/workspaces/3scale                                  @backstage/community-plugins-maintainers  @fmenesesg
 /workspaces/adr                                     @backstage/community-plugins-maintainers  @kuangp
+/workspaces/analytics                               @backstage/community-plugins-maintainers  @jmezach
 /workspaces/azure-devops                            @backstage/community-plugins-maintainers  @awanlin
 /workspaces/azure-storage-explorer                  @backstage/community-plugins-maintainers  @deepan10
-/workspaces/analytics                               @backstage/community-plugins-maintainers  @jmezach
 /workspaces/bitrise                                 @backstage/community-plugins-maintainers  @backstage/sda-se-reviewers
 /workspaces/blackduck                               @backstage/community-plugins-maintainers  @deepan10
 /workspaces/code-coverage                           @backstage/community-plugins-maintainers  @alde
@@ -26,13 +27,13 @@ yarn.lock                                           @backstage/community-plugins
 /workspaces/kafka                                   @backstage/community-plugins-maintainers  @andrewthauer
 /workspaces/linguist                                @backstage/community-plugins-maintainers  @awanlin
 /workspaces/octopus-deploy                          @backstage/community-plugins-maintainers  @jmezach
+/workspaces/pingidentity                            @backstage/community-plugins-maintainers  @jessicajhee
 /workspaces/playlist                                @backstage/community-plugins-maintainers  @kuangp
-/workspaces/rollbar                                 @backstage/community-plugins-maintainers  @andrewthauer
-/workspaces/sonarqube                               @backstage/community-plugins-maintainers  @backstage/sda-se-reviewers
-/workspaces/user-settings                           @backstage/community-plugins-maintainers  @backstage/sda-se-reviewers
-/workspaces/tech-insights                           @backstage/community-plugins-maintainers  @xantier
-/workspaces/report-portal                           @backstage/community-plugins-maintainers  @yashoswalyo
-/workspaces/redhat-resource-optimization            @backstage/community-plugins-maintainers
-/workspaces/3scale                                  @backstage/community-plugins-maintainers  @fmenesesg
 /workspaces/redhat-argocd                           @backstage/community-plugins-maintainers  @karthikjeeyar @rohitkrai03 @Eswaraiahsapram
+/workspaces/redhat-resource-optimization            @backstage/community-plugins-maintainers
+/workspaces/report-portal                           @backstage/community-plugins-maintainers  @yashoswalyo
+/workspaces/rollbar                                 @backstage/community-plugins-maintainers  @andrewthauer
 /workspaces/scaffolder-relation-processor           @backstage/community-plugins-maintainers  @04kash
+/workspaces/sonarqube                               @backstage/community-plugins-maintainers  @backstage/sda-se-reviewers
+/workspaces/tech-insights                           @backstage/community-plugins-maintainers  @xantier
+/workspaces/user-settings                           @backstage/community-plugins-maintainers  @backstage/sda-se-reviewers
