@@ -14,52 +14,31 @@
  * limitations under the License.
  */
 
-import {
-  DatabaseManager,
-  getVoidLogger,
-  PluginDatabaseManager,
-  PluginEndpointDiscovery,
-  TokenManager,
-  UrlReaders,
-} from '@backstage/backend-common';
 import express from 'express';
 import request from 'supertest';
 import { ConfigReader } from '@backstage/config';
 import { createRouter, createRouterFromConfig } from './router';
 import { LinguistBackendApi } from '../api';
-import { TaskScheduleDefinition } from '@backstage/backend-tasks';
+import { mockServices, TestDatabases } from '@backstage/backend-test-utils';
+import {
+  SchedulerServiceTaskScheduleDefinition,
+  UrlReaderService,
+} from '@backstage/backend-plugin-api';
 
-function createDatabase(): PluginDatabaseManager {
-  return DatabaseManager.fromConfig(
-    new ConfigReader({
-      backend: {
-        database: {
-          client: 'better-sqlite3',
-          connection: ':memory:',
-        },
-      },
+const mockUrlReader: UrlReaderService = {
+  readUrl: url =>
+    Promise.resolve({
+      buffer: async () => Buffer.from(url),
+      etag: 'buffer',
+      stream: jest.fn(),
     }),
-  ).forPlugin('code-coverage');
-}
-
-const testDiscovery: jest.Mocked<PluginEndpointDiscovery> = {
-  getBaseUrl: jest
-    .fn()
-    .mockResolvedValue('http://localhost:7007/api/code-coverage'),
-  getExternalBaseUrl: jest.fn(),
+  readTree: jest.fn(),
+  search: jest.fn(),
 };
 
-const mockedTokenManager: jest.Mocked<TokenManager> = {
-  getToken: jest.fn(),
-  authenticate: jest.fn(),
-};
+const databases = TestDatabases.create();
 
-const mockUrlReader = UrlReaders.default({
-  logger: getVoidLogger(),
-  config: new ConfigReader({}),
-});
-
-const schedule: TaskScheduleDefinition = {
+const schedule: SchedulerServiceTaskScheduleDefinition = {
   frequency: { minutes: 2 },
   timeout: { minutes: 15 },
   initialDelay: { seconds: 15 },
@@ -75,15 +54,17 @@ describe('createRouter', () => {
 
   describe('GET /health', () => {
     beforeAll(async () => {
+      const knex = await databases.init('SQLITE_3');
+      const getClient = jest.fn(async () => knex);
       const router = await createRouter(
         { schedule: schedule, age: { days: 30 }, useSourceLocation: false },
         {
           linguistBackendApi: linguistBackendApi,
-          discovery: testDiscovery,
-          database: createDatabase(),
+          discovery: mockServices.discovery.mock(),
+          database: mockServices.database.mock({ getClient }),
           reader: mockUrlReader,
-          logger: getVoidLogger(),
-          tokenManager: mockedTokenManager,
+          logger: mockServices.logger.mock(),
+          config: mockServices.rootConfig(),
         },
       );
       app = express().use(router);
@@ -109,14 +90,15 @@ describe('createRouter', () => {
           useSourceLocation: false,
         },
       });
+      const knex = await databases.init('SQLITE_3');
+      const getClient = jest.fn(async () => knex);
       const router = await createRouterFromConfig({
         linguistBackendApi: linguistBackendApi,
-        discovery: testDiscovery,
-        database: createDatabase(),
+        discovery: mockServices.discovery.mock(),
+        database: mockServices.database.mock({ getClient }),
         reader: mockUrlReader,
-        logger: getVoidLogger(),
+        logger: mockServices.logger.mock(),
         config,
-        tokenManager: mockedTokenManager,
       });
       app = express().use(router);
     });

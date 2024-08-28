@@ -14,7 +14,7 @@ The Bazaar allows engineers and teams to open up and announce their new and exci
 
 # Note
 
-You will **need** to also perform the installation instructions in [Bazaar Backend](https://github.com/backstage/backstage/tree/master/plugins/bazaar-backend) in order for this plugin to work.
+You will **need** to also perform the installation instructions in [Bazaar Backend](https://github.com/backstage/community-plugins/tree/main/workspaces/bazaar/plugins/bazaar-backend) in order for this plugin to work.
 
 ## Getting Started
 

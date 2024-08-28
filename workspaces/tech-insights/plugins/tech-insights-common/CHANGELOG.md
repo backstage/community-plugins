@@ -1,5 +1,19 @@
 # @backstage-community/plugin-tech-insights-common
 
+## 0.2.16
+
+### Patch Changes
+
+- 00d148d: Backstage version bump to v1.30.2
+
+## 0.2.15
+
+### Patch Changes
+
+- 794cc8b: Fix api reports generated with the wrong name
+  Update @backstage/cli to 0.26.11
+  Add missing Backstage fields in `package.json`
+
 ## 0.2.14
 
 ### Patch Changes

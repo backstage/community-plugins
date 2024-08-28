@@ -21,23 +21,12 @@ import {
 import {
   sonarQubeApiRef,
   useProjectInfo,
+  SONARQUBE_PROJECT_KEY_ANNOTATION,
 } from '@backstage-community/plugin-sonarqube-react';
-import { SONARQUBE_PROJECT_KEY_ANNOTATION } from '@backstage-community/plugin-sonarqube-react';
-import Chip from '@material-ui/core/Chip';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
-import BugReport from '@material-ui/icons/BugReport';
-import Lock from '@material-ui/icons/Lock';
-import LockOpen from '@material-ui/icons/LockOpen';
-import Security from '@material-ui/icons/Security';
-import SentimentVeryDissatisfied from '@material-ui/icons/SentimentVeryDissatisfied';
-import SentimentVerySatisfied from '@material-ui/icons/SentimentVerySatisfied';
-import React, { useMemo } from 'react';
+import React from 'react';
 import useAsync from 'react-use/esm/useAsync';
-import { Percentage } from './Percentage';
-import { Rating } from './Rating';
-import { RatingCard } from './RatingCard';
-import { Value } from './Value';
 import {
   EmptyState,
   InfoCard,
@@ -45,23 +34,19 @@ import {
   Progress,
 } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
-import { DateTime } from 'luxon';
+import {
+  BugReportRatingCard,
+  CodeSmellsRatingCard,
+  CoverageRatingCard,
+  DuplicationsRatingCard,
+  HotspotsReviewed,
+  LastAnalyzedRatingCard,
+  QualityBadge,
+  VulnerabilitiesRatingCard,
+} from './MetricInsights';
+import { DuplicationRating } from '../SonarQubeTable/types';
 
 const useStyles = makeStyles(theme => ({
-  badgeLabel: {
-    color: theme.palette.common.white,
-  },
-  badgeError: {
-    margin: 0,
-    backgroundColor: theme.palette.error.main,
-  },
-  badgeSuccess: {
-    margin: 0,
-    backgroundColor: theme.palette.success.main,
-  },
-  badgeUnknown: {
-    backgroundColor: theme.palette.grey[500],
-  },
   header: {
     padding: theme.spacing(2, 2, 2, 2.5),
   },
@@ -74,36 +59,18 @@ const useStyles = makeStyles(theme => ({
 }));
 
 /** @public */
-export type DuplicationRating = {
-  greaterThan: number;
-  rating: '1.0' | '2.0' | '3.0' | '4.0' | '5.0';
-};
-
-const defaultDuplicationRatings: DuplicationRating[] = [
-  { greaterThan: 0, rating: '1.0' },
-  { greaterThan: 3, rating: '2.0' },
-  { greaterThan: 5, rating: '3.0' },
-  { greaterThan: 10, rating: '4.0' },
-  { greaterThan: 20, rating: '5.0' },
-];
-
-/** @public */
 export const SonarQubeCard = (props: {
   variant?: InfoCardVariants;
   duplicationRatings?: DuplicationRating[];
   missingAnnotationReadMoreUrl?: string;
 }) => {
-  const {
-    variant = 'gridItem',
-    duplicationRatings = defaultDuplicationRatings,
-    missingAnnotationReadMoreUrl,
-  } = props;
+  const { variant = 'gridItem', missingAnnotationReadMoreUrl } = props;
   const { entity } = useEntity();
   const sonarQubeApi = useApi(sonarQubeApiRef);
 
   const { projectKey: projectTitle, projectInstance } = useProjectInfo(entity);
 
-  const { value, loading } = useAsync(
+  const { value: summaryFinding, loading } = useAsync(
     async () =>
       sonarQubeApi.getFindingSummary({
         componentKey: projectTitle,
@@ -113,53 +80,23 @@ export const SonarQubeCard = (props: {
   );
 
   const deepLink =
-    !loading && value
+    !loading && summaryFinding?.metrics
       ? {
           title: 'View more',
-          link: value.projectUrl,
+          link: summaryFinding.projectUrl,
         }
       : undefined;
 
   const classes = useStyles();
-  let gateLabel = 'Not computed';
-  let gateColor = classes.badgeUnknown;
-
-  if (value?.metrics.alert_status) {
-    const gatePassed = value.metrics.alert_status === 'OK';
-    gateLabel = gatePassed ? 'Gate passed' : 'Gate failed';
-    gateColor = gatePassed ? classes.badgeSuccess : classes.badgeError;
-  }
-
-  const qualityBadge = !loading && value && (
-    <Chip
-      label={gateLabel}
-      classes={{ root: gateColor, label: classes.badgeLabel }}
-    />
-  );
-
-  const duplicationRating = useMemo(() => {
-    if (loading || !value || !value.metrics.duplicated_lines_density) {
-      return '';
-    }
-
-    let rating = '';
-
-    for (const r of duplicationRatings) {
-      if (+value.metrics.duplicated_lines_density >= r.greaterThan) {
-        rating = r.rating;
-      }
-    }
-
-    return rating;
-  }, [loading, value, duplicationRatings]);
-
   return (
     <InfoCard
       title="Code Quality"
       deepLink={deepLink}
       variant={variant}
       headerProps={{
-        action: qualityBadge,
+        action: !loading && summaryFinding?.metrics && (
+          <QualityBadge value={summaryFinding} />
+        ),
         classes: {
           root: classes.header,
           action: classes.action,
@@ -175,7 +112,7 @@ export const SonarQubeCard = (props: {
         />
       )}
 
-      {!loading && projectTitle && !value && (
+      {!loading && projectTitle && !summaryFinding?.metrics && (
         <EmptyState
           missing="info"
           title="No information to display"
@@ -183,7 +120,7 @@ export const SonarQubeCard = (props: {
         />
       )}
 
-      {!loading && value && (
+      {!loading && summaryFinding?.metrics && (
         <>
           <Grid
             item
@@ -195,87 +132,28 @@ export const SonarQubeCard = (props: {
             spacing={0}
           >
             <Grid item container justifyContent="space-around">
-              <RatingCard
-                titleIcon={<BugReport />}
-                title="Bugs"
-                link={value.getIssuesUrl('BUG')}
-                leftSlot={<Value value={value.metrics.bugs} />}
-                rightSlot={<Rating rating={value.metrics.reliability_rating} />}
-              />
-              <RatingCard
-                titleIcon={
-                  value.metrics.vulnerabilities === '0' ? (
-                    <Lock />
-                  ) : (
-                    <LockOpen />
-                  )
-                }
+              <BugReportRatingCard value={summaryFinding} title="Bugs" />
+              <VulnerabilitiesRatingCard
+                value={summaryFinding}
                 title="Vulnerabilities"
-                link={value.getIssuesUrl('VULNERABILITY')}
-                leftSlot={<Value value={value.metrics.vulnerabilities} />}
-                rightSlot={<Rating rating={value.metrics.security_rating} />}
               />
-              <RatingCard
-                titleIcon={
-                  value.metrics.code_smells === '0' ? (
-                    <SentimentVerySatisfied />
-                  ) : (
-                    <SentimentVeryDissatisfied />
-                  )
-                }
+              <CodeSmellsRatingCard
+                value={summaryFinding}
                 title="Code Smells"
-                link={value.getIssuesUrl('CODE_SMELL')}
-                leftSlot={<Value value={value.metrics.code_smells} />}
-                rightSlot={<Rating rating={value.metrics.sqale_rating} />}
               />
-              {value.metrics.security_review_rating && (
-                <RatingCard
-                  titleIcon={<Security />}
-                  title="Hotspots Reviewed"
-                  link={value.getSecurityHotspotsUrl()}
-                  leftSlot={
-                    <Value
-                      value={
-                        value.metrics.security_hotspots_reviewed
-                          ? `${value.metrics.security_hotspots_reviewed}%`
-                          : '—'
-                      }
-                    />
-                  }
-                  rightSlot={
-                    <Rating rating={value.metrics.security_review_rating} />
-                  }
-                />
-              )}
+              <HotspotsReviewed
+                value={summaryFinding}
+                title="Hotspots Reviewed"
+              />
               <div style={{ width: '100%' }} />
-              <RatingCard
-                link={value.getComponentMeasuresUrl('COVERAGE')}
-                title="Coverage"
-                leftSlot={<Percentage value={value.metrics.coverage} />}
-                rightSlot={
-                  <Value
-                    value={
-                      value.metrics.coverage !== undefined
-                        ? `${value.metrics.coverage}%`
-                        : '—'
-                    }
-                  />
-                }
-              />
-              <RatingCard
+              <CoverageRatingCard value={summaryFinding} title="Coverage" />
+              <DuplicationsRatingCard
+                value={summaryFinding}
                 title="Duplications"
-                link={value.getComponentMeasuresUrl('DUPLICATED_LINES_DENSITY')}
-                leftSlot={<Rating rating={duplicationRating} hideValue />}
-                rightSlot={
-                  <Value value={`${value.metrics.duplicated_lines_density}%`} />
-                }
               />
             </Grid>
             <Grid item className={classes.lastAnalyzed}>
-              Last analyzed on{' '}
-              {DateTime.fromISO(value.lastAnalysis).toLocaleString(
-                DateTime.DATETIME_MED,
-              )}
+              <LastAnalyzedRatingCard value={summaryFinding} />
             </Grid>
           </Grid>
         </>

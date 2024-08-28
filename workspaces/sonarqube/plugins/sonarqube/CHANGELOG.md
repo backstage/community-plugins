@@ -1,5 +1,24 @@
 # @backstage-community/plugin-sonarqube
 
+## 0.8.1
+
+### Patch Changes
+
+- 2143e5e: Backstage version bump to v1.30.2
+- Updated dependencies [2143e5e]
+  - @backstage-community/plugin-sonarqube-react@0.2.1
+
+## 0.8.0
+
+### Minor Changes
+
+- 389e0a2: Enhancement to support tabular list of sonarqube views
+
+### Patch Changes
+
+- Updated dependencies [389e0a2]
+  - @backstage-community/plugin-sonarqube-react@0.2.0
+
 ## 0.7.19
 
 ### Patch Changes

@@ -17,6 +17,7 @@
 import { TechInsightsApi } from './TechInsightsApi';
 import { DiscoveryApi, IdentityApi } from '@backstage/core-plugin-api';
 import { TechInsightsClient as TechInsightsClientBase } from '@backstage-community/plugin-tech-insights-common/client';
+import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
 
 import {
   CheckResultRenderer,
@@ -42,5 +43,15 @@ export class TechInsightsClient
   getCheckResultRenderers(types: string[]): CheckResultRenderer[] {
     const renderers = this.renderers ?? [jsonRulesEngineCheckResultRenderer];
     return renderers.filter(d => types.includes(d.type));
+  }
+
+  isCheckResultFailed(check: CheckResult) {
+    const checkResultRenderers = this.getCheckResultRenderers([
+      check.check.type,
+    ]);
+    if (checkResultRenderers[0] && checkResultRenderers[0].isFailed) {
+      return checkResultRenderers[0].isFailed(check);
+    }
+    return true;
   }
 }

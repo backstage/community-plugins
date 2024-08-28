@@ -1,5 +1,18 @@
 # @backstage-community/plugin-code-coverage
 
+## 0.2.30
+
+### Patch Changes
+
+- 1ef6d0b: Backstage version bump to v1.30.2
+
+## 0.2.29
+
+### Patch Changes
+
+- a53dea5: Updated dependency `highlight.js` to `^11.0.0`.
+- 1a94274: version:bump to v1.29.1
+
 ## 0.2.28
 
 ### Patch Changes

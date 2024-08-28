@@ -1,5 +1,23 @@
 # @backstage-community/plugin-grafana
 
+## 0.1.5
+
+### Patch Changes
+
+- ce4dfc1: Make entity cards appear on Components only by default in new FE system
+
+## 0.1.4
+
+### Patch Changes
+
+- 81b18d0: Adds support for Backstage's new frontend system, available via the `/alpha` sub-path export.
+
+## 0.1.3
+
+### Patch Changes
+
+- 43a4002: Backstage version bump to v1.29.2
+
 ## 0.1.2
 
 ### Patch Changes

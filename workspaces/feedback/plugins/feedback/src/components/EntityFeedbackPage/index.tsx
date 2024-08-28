@@ -1,0 +1,1 @@
+export { EntityFeedbackPage } from './EntityFeedbackPage';

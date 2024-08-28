@@ -15,12 +15,7 @@
  */
 import { buildTechInsightsContext } from './techInsightsContextBuilder';
 import { createRouter } from './router';
-import {
-  DatabaseManager,
-  getVoidLogger,
-  PluginDatabaseManager,
-  ServerTokenManager,
-} from '@backstage/backend-common';
+import { ServerTokenManager } from '@backstage/backend-common';
 import { ConfigReader } from '@backstage/config';
 import request from 'supertest';
 import express from 'express';
@@ -30,7 +25,10 @@ import {
 } from '@backstage-community/plugin-tech-insights-node';
 import { DateTime } from 'luxon';
 import { Knex } from 'knex';
-import { TaskScheduler } from '@backstage/backend-tasks';
+import { mockServices } from '@backstage/backend-test-utils';
+import { DatabaseManager } from '@backstage/backend-defaults/database';
+import { DefaultSchedulerService } from '@backstage/backend-defaults/scheduler';
+import { DatabaseService } from '@backstage/backend-plugin-api';
 
 describe('Tech Insights router tests', () => {
   let app: express.Express;
@@ -52,7 +50,7 @@ describe('Tech Insights router tests', () => {
   });
 
   beforeAll(async () => {
-    const pluginDatabase: PluginDatabaseManager = {
+    const pluginDatabase: DatabaseService = {
       getClient: () => {
         return Promise.resolve({
           migrate: {
@@ -65,13 +63,13 @@ describe('Tech Insights router tests', () => {
       forPlugin: () => pluginDatabase,
     };
     const manager = databaseManager as DatabaseManager;
+    const database = manager.forPlugin('tech-insights');
+    const logger = mockServices.logger.mock();
     const techInsightsContext = await buildTechInsightsContext({
       database: pluginDatabase,
-      logger: getVoidLogger(),
+      logger,
       factRetrievers: [],
-      scheduler: new TaskScheduler(manager, getVoidLogger()).forPlugin(
-        'tech-insights',
-      ),
+      scheduler: DefaultSchedulerService.create({ database, logger }),
       config: ConfigReader.fromConfigs([]),
       discovery: {
         getBaseUrl: (_: string) => Promise.resolve('http://mock.url'),
@@ -81,7 +79,7 @@ describe('Tech Insights router tests', () => {
     });
 
     const router = await createRouter({
-      logger: getVoidLogger(),
+      logger,
       config: ConfigReader.fromConfigs([]),
       ...techInsightsContext,
       persistenceContext: mockPersistenceContext,

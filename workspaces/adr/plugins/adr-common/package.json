@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-adr-common",
-  "version": "0.2.26",
+  "version": "0.2.28",
   "description": "Common functionalities for the adr plugin",
   "backstage": {
     "role": "common-library",
@@ -39,13 +39,14 @@
     "test": "backstage-cli package test"
   },
   "dependencies": {
-    "@backstage/catalog-model": "^1.5.0",
-    "@backstage/integration": "^1.13.0",
-    "@backstage/plugin-search-common": "^1.2.13",
+    "@backstage/catalog-model": "^1.6.0",
+    "@backstage/integration": "^1.14.0",
+    "@backstage/plugin-search-common": "^1.2.14",
     "front-matter": "^4.0.2",
-    "luxon": "^3.0.0"
+    "luxon": "^3.0.0",
+    "marked": "^12.0.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.26.11"
+    "@backstage/cli": "^0.27.0"
   }
 }

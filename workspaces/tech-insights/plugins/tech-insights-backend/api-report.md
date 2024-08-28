@@ -4,9 +4,11 @@
 
 ```ts
 import { AuthService } from '@backstage/backend-plugin-api';
-import { BackendFeature } from '@backstage/backend-plugin-api';
+import { BackendFeatureCompat } from '@backstage/backend-plugin-api';
 import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
 import { Config } from '@backstage/config';
+import { DatabaseService } from '@backstage/backend-plugin-api';
+import { DiscoveryService } from '@backstage/backend-plugin-api';
 import { Duration } from 'luxon';
 import express from 'express';
 import { FactChecker } from '@backstage-community/plugin-tech-insights-node';
@@ -18,9 +20,7 @@ import { FactRetrieverRegistry as FactRetrieverRegistry_2 } from '@backstage-com
 import { HumanDuration } from '@backstage/types';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { PersistenceContext as PersistenceContext_2 } from '@backstage-community/plugin-tech-insights-node';
-import { PluginDatabaseManager } from '@backstage/backend-common';
-import { PluginEndpointDiscovery } from '@backstage/backend-common';
-import { PluginTaskScheduler } from '@backstage/backend-tasks';
+import { SchedulerService } from '@backstage/backend-plugin-api';
 import { TechInsightCheck } from '@backstage-community/plugin-tech-insights-node';
 import { TokenManager } from '@backstage/backend-common';
 
@@ -70,8 +70,8 @@ export type FactRetrieverRegistry = FactRetrieverRegistry_2;
 
 // @public
 export const initializePersistenceContext: (
-  database: PluginDatabaseManager,
-  options?: PersistenceContextOptions,
+  database: DatabaseService,
+  options: PersistenceContextOptions,
 ) => Promise<PersistenceContext_2>;
 
 // @public @deprecated (undocumented)
@@ -116,9 +116,9 @@ export interface TechInsightsOptions<
   // (undocumented)
   config: Config;
   // (undocumented)
-  database: PluginDatabaseManager;
+  database: DatabaseService;
   // (undocumented)
-  discovery: PluginEndpointDiscovery;
+  discovery: DiscoveryService;
   factCheckerFactory?: FactCheckerFactory<CheckType, CheckResultType>;
   factRetrieverRegistry?: FactRetrieverRegistry_2;
   factRetrievers?: FactRetrieverRegistration[];
@@ -126,13 +126,13 @@ export interface TechInsightsOptions<
   logger: LoggerService;
   persistenceContext?: PersistenceContext_2;
   // (undocumented)
-  scheduler: PluginTaskScheduler;
+  scheduler: SchedulerService;
   // (undocumented)
   tokenManager: TokenManager;
 }
 
 // @public
-const techInsightsPlugin: () => BackendFeature;
+const techInsightsPlugin: BackendFeatureCompat;
 export default techInsightsPlugin;
 
 // (No @packageDocumentation comment for this package)

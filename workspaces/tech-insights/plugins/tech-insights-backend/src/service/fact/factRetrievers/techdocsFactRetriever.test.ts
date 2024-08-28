@@ -16,14 +16,11 @@
 
 import { techdocsFactRetriever } from './techdocsFactRetriever';
 import { RELATION_OWNED_BY } from '@backstage/catalog-model';
-import {
-  PluginEndpointDiscovery,
-  getVoidLogger,
-  ServerTokenManager,
-} from '@backstage/backend-common';
+import { ServerTokenManager } from '@backstage/backend-common';
 import { ConfigReader } from '@backstage/config';
 import { GetEntitiesResponse } from '@backstage/catalog-client';
 import { mockServices } from '@backstage/backend-test-utils';
+import { DiscoveryService } from '@backstage/backend-plugin-api';
 
 const getEntitiesMock = jest.fn();
 jest.mock('@backstage/catalog-client', () => {
@@ -33,7 +30,7 @@ jest.mock('@backstage/catalog-client', () => {
       .mockImplementation(() => ({ getEntities: getEntitiesMock })),
   };
 });
-const discovery: jest.Mocked<PluginEndpointDiscovery> = {
+const discovery: jest.Mocked<DiscoveryService> = {
   getBaseUrl: jest.fn(),
   getExternalBaseUrl: jest.fn(),
 };
@@ -104,7 +101,7 @@ const defaultEntityListResponse: GetEntitiesResponse = {
 
 const handlerContext = {
   discovery,
-  logger: getVoidLogger(),
+  logger: mockServices.logger.mock(),
   auth: mockServices.auth(),
   config: ConfigReader.fromConfigs([]),
   tokenManager: ServerTokenManager.noop(),

@@ -15,10 +15,9 @@
  */
 
 import {
-  getVoidLogger,
-  ReadTreeResponse,
-  UrlReader,
-} from '@backstage/backend-common';
+  UrlReaderService,
+  UrlReaderServiceReadTreeResponse,
+} from '@backstage/backend-plugin-api';
 import { CatalogApi, GetEntitiesResponse } from '@backstage/catalog-client';
 import { Results } from 'linguist-js/dist/types';
 import { DateTime } from 'luxon';
@@ -74,7 +73,7 @@ describe('kindOrDefault', () => {
 });
 
 describe('Linguist backend API', () => {
-  const logger = getVoidLogger();
+  const logger = mockServices.logger.mock();
 
   const store: jest.Mocked<LinguistBackendStore> = {
     insertEntityResults: jest.fn(),
@@ -86,7 +85,7 @@ describe('Linguist backend API', () => {
     deleteEntity: jest.fn(),
   };
 
-  const urlReader: jest.Mocked<UrlReader> = {
+  const urlReader: jest.Mocked<UrlReaderService> = {
     readTree: jest.fn(),
     search: jest.fn(),
     readUrl: jest.fn(),
@@ -275,7 +274,7 @@ describe('Linguist backend API', () => {
         },
       ],
       dir: async () => '/temp/my-code',
-    } as ReadTreeResponse);
+    } as UrlReaderServiceReadTreeResponse);
 
     const fsSpy = jest.spyOn(fs, 'remove');
 
@@ -333,7 +332,7 @@ describe('Linguist backend API', () => {
         },
       ],
       dir: async () => '/temp/my-code',
-    } as ReadTreeResponse);
+    } as UrlReaderServiceReadTreeResponse);
 
     const fsSpy = jest.spyOn(fs, 'remove');
 
@@ -399,7 +398,7 @@ describe('Linguist backend API', () => {
         },
       ],
       dir: async () => '/temp/my-code',
-    } as ReadTreeResponse);
+    } as UrlReaderServiceReadTreeResponse);
 
     const fsSpy = jest.spyOn(fs, 'remove');
 

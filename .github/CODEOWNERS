@@ -10,12 +10,16 @@ yarn.lock                                           @backstage/community-plugins
 
 /workspaces/adr                                     @backstage/community-plugins-maintainers  @kuangp
 /workspaces/azure-devops                            @backstage/community-plugins-maintainers  @awanlin
+/workspaces/azure-storage-explorer                  @backstage/community-plugins-maintainers  @deepan10
 /workspaces/analytics                               @backstage/community-plugins-maintainers  @jmezach
 /workspaces/bitrise                                 @backstage/community-plugins-maintainers  @backstage/sda-se-reviewers
+/workspaces/blackduck                               @backstage/community-plugins-maintainers  @deepan10
 /workspaces/code-coverage                           @backstage/community-plugins-maintainers  @alde
+/workspaces/confluence                              @backstage/community-plugins-maintainers  @fjudith
 /workspaces/cost-insights                           @backstage/community-plugins-maintainers  @backstage/silver-lining
 /workspaces/entity-feedback                         @backstage/community-plugins-maintainers  @kuangp
 /workspaces/explore                                 @backstage/community-plugins-maintainers  @backstage/sda-se-reviewers
+/workspaces/feedback                                @backstage/community-plugins-maintainers  @riginoommen @deshmukhmayur @yashoswalyo
 /workspaces/fossa                                   @backstage/community-plugins-maintainers  @backstage/sda-se-reviewers
 /workspaces/git-release-manager                     @backstage/community-plugins-maintainers  @erikengervall
 /workspaces/github-pull-requests-board              @backstage/community-plugins-maintainers  @gregorytalita
@@ -27,3 +31,8 @@ yarn.lock                                           @backstage/community-plugins
 /workspaces/sonarqube                               @backstage/community-plugins-maintainers  @backstage/sda-se-reviewers
 /workspaces/user-settings                           @backstage/community-plugins-maintainers  @backstage/sda-se-reviewers
 /workspaces/tech-insights                           @backstage/community-plugins-maintainers  @xantier
+/workspaces/report-portal                           @backstage/community-plugins-maintainers  @yashoswalyo
+/workspaces/redhat-resource-optimization            @backstage/community-plugins-maintainers
+/workspaces/3scale                                  @backstage/community-plugins-maintainers  @fmenesesg
+/workspaces/redhat-argocd                           @backstage/community-plugins-maintainers  @karthikjeeyar @rohitkrai03 @Eswaraiahsapram
+/workspaces/scaffolder-relation-processor           @backstage/community-plugins-maintainers  @04kash

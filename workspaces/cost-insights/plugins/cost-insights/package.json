@@ -1,9 +1,14 @@
 {
   "name": "@backstage-community/plugin-cost-insights",
-  "version": "0.12.25",
+  "version": "0.12.27",
   "description": "A Backstage plugin that helps you keep track of your cloud spend",
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "cost-insights",
+    "pluginPackages": [
+      "@backstage-community/plugin-cost-insights",
+      "@backstage-community/plugin-cost-insights-common"
+    ]
   },
   "publishConfig": {
     "access": "public",
@@ -38,12 +43,12 @@
   },
   "dependencies": {
     "@backstage-community/plugin-cost-insights-common": "workspace:^",
-    "@backstage/catalog-model": "^1.4.5",
+    "@backstage/catalog-model": "^1.6.0",
     "@backstage/config": "^1.2.0",
-    "@backstage/core-components": "^0.14.4",
-    "@backstage/core-plugin-api": "^1.9.2",
-    "@backstage/plugin-catalog-react": "^1.11.3",
-    "@backstage/theme": "^0.5.3",
+    "@backstage/core-components": "^0.14.10",
+    "@backstage/core-plugin-api": "^1.9.3",
+    "@backstage/plugin-catalog-react": "^1.12.3",
+    "@backstage/theme": "^0.5.6",
     "@material-ui/core": "^4.12.2",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "4.0.0-alpha.61",
@@ -61,10 +66,10 @@
     "yup": "^1.0.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.26.3",
-    "@backstage/core-app-api": "^1.12.4",
-    "@backstage/dev-utils": "^1.0.31",
-    "@backstage/test-utils": "^1.5.4",
+    "@backstage/cli": "^0.27.0",
+    "@backstage/core-app-api": "^1.14.2",
+    "@backstage/dev-utils": "^1.0.37",
+    "@backstage/test-utils": "^1.5.10",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^15.0.0",

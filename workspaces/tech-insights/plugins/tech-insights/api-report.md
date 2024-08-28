@@ -43,6 +43,7 @@ export const EntityTechInsightsScorecardCard: (props: {
   description?: string | undefined;
   checksId?: string[] | undefined;
   onlyFailed?: boolean | undefined;
+  expanded?: boolean | undefined;
 }) => JSX_2.Element;
 
 // @public (undocumented)
@@ -71,6 +72,7 @@ export const ScorecardInfo: (props: {
   title: ReactNode;
   description?: string | undefined;
   noWarning?: boolean | undefined;
+  expanded?: boolean | undefined;
 }) => JSX_2.Element;
 
 // @public (undocumented)
@@ -88,6 +90,8 @@ export interface TechInsightsApi {
   getFacts(entity: CompoundEntityRef, facts: string[]): Promise<InsightFacts>;
   // (undocumented)
   getFactSchemas(): Promise<FactSchema[]>;
+  // (undocumented)
+  isCheckResultFailed: (check: CheckResult) => boolean;
   // (undocumented)
   runBulkChecks(
     entities: CompoundEntityRef[],
@@ -115,6 +119,8 @@ export class TechInsightsClient
   });
   // (undocumented)
   getCheckResultRenderers(types: string[]): CheckResultRenderer[];
+  // (undocumented)
+  isCheckResultFailed(check: CheckResult): boolean;
 }
 
 // @public (undocumented)

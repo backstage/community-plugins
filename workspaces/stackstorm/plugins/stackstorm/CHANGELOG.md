@@ -1,5 +1,17 @@
 # @backstage-community/plugin-stackstorm
 
+## 0.1.18
+
+### Patch Changes
+
+- b4ba73d: Backstage version bump to v1.30.2
+
+## 0.1.17
+
+### Patch Changes
+
+- d51e006: Backstage version bump to v1.29.2
+
 ## 0.1.16
 
 ### Patch Changes

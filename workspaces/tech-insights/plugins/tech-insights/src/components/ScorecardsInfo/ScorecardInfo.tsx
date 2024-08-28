@@ -18,35 +18,73 @@ import React, { ReactNode } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import { InfoCard } from '@backstage/core-components';
 import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
 import Alert from '@material-ui/lab/Alert';
 import { ScorecardsList } from '../ScorecardsList';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import Accordion from '@material-ui/core/Accordion';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import { useApi } from '@backstage/core-plugin-api';
+import { techInsightsApiRef } from '../../api';
 
 const useStyles = makeStyles(theme => ({
   subheader: {
-    fontWeight: 'bold',
     paddingLeft: theme.spacing(0.5),
+  },
+  accordionHeader: {
+    borderBottom: `1px solid ${theme.palette.border}`,
+  },
+  accordionHeaderContent: {
+    margin: `${theme.spacing(2)}px 0 !important`,
   },
 }));
 
 const infoCard = (
-  title: ReactNode,
+  title: React.ReactNode,
   description: string | undefined,
-  className: string,
-  element: JSX.Element,
+  classes: ReturnType<typeof useStyles>,
+  element: React.ReactElement,
+  expanded: boolean,
+  summary?: string,
 ) => (
   <Grid item xs={12}>
-    <InfoCard title={title}>
-      {description && (
-        <Typography className={className} variant="body1" gutterBottom>
-          {description}
-        </Typography>
-      )}
-      <Grid item xs={12}>
-        {element}
-      </Grid>
-    </InfoCard>
+    <Accordion defaultExpanded={expanded}>
+      <AccordionSummary
+        expandIcon={<ExpandMoreIcon />}
+        className={classes.accordionHeader}
+        classes={{
+          content: classes.accordionHeaderContent,
+        }}
+      >
+        <Grid container justifyContent="space-between" alignItems="center">
+          <Grid item>
+            <Typography variant="h5">{title}</Typography>
+          </Grid>
+          <Grid item>
+            <Typography>{summary}</Typography>
+          </Grid>
+        </Grid>
+      </AccordionSummary>
+      <AccordionDetails>
+        <Grid container>
+          {description && (
+            <Grid item xs={12}>
+              <Typography
+                className={classes.subheader}
+                variant="body1"
+                gutterBottom
+              >
+                {description}
+              </Typography>
+            </Grid>
+          )}
+          <Grid item xs={12}>
+            {element}
+          </Grid>
+        </Grid>
+      </AccordionDetails>
+    </Accordion>
   </Grid>
 );
 
@@ -55,33 +93,48 @@ export const ScorecardInfo = (props: {
   title: ReactNode;
   description?: string;
   noWarning?: boolean;
+  expanded?: boolean;
 }) => {
-  const { checkResults, title, description, noWarning } = props;
+  const {
+    checkResults,
+    title,
+    description,
+    noWarning,
+    expanded = true,
+  } = props;
   const classes = useStyles();
+  const api = useApi(techInsightsApiRef);
 
   if (!checkResults.length) {
     if (noWarning) {
       return infoCard(
         title,
         description,
-        classes.subheader,
+        classes,
         <Alert severity="info">
           All checks passed, or no checks have been performed yet
         </Alert>,
+        expanded,
       );
     }
     return infoCard(
       title,
       description,
-      classes.subheader,
+      classes,
       <Alert severity="warning">No checks have any data yet.</Alert>,
+      expanded,
     );
   }
 
   return infoCard(
     title,
     description,
-    classes.subheader,
+    classes,
     <ScorecardsList checkResults={checkResults} />,
+    expanded,
+    `${
+      checkResults.filter(checkResult => !api.isCheckResultFailed(checkResult))
+        .length
+    }/${checkResults.length}`,
   );
 };

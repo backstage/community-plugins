@@ -22,7 +22,8 @@
     "prettier:check": "prettier --check .",
     "new": "backstage-cli new --scope @backstage-community",
     "build:api-reports": "yarn build:api-reports:only --tsc",
-    "build:api-reports:only": "backstage-repo-tools api-reports -o ae-wrong-input-file-type --allow-warnings plugins/jenkins --validate-release-tags"
+    "build:api-reports:only": "backstage-repo-tools api-reports -o ae-wrong-input-file-type --allow-warnings plugins/jenkins --validate-release-tags",
+    "postinstall": "cd ../../ && yarn install"
   },
   "workspaces": {
     "packages": [
@@ -36,9 +37,9 @@
     "directory": "workspaces/jenkins"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.26.11",
+    "@backstage/cli": "^0.27.0",
     "@backstage/e2e-test-utils": "^0.1.1",
-    "@backstage/repo-tools": "^0.9.4",
+    "@backstage/repo-tools": "^0.9.5",
     "@changesets/cli": "^2.27.1",
     "@spotify/prettier-config": "^15.0.0",
     "concurrently": "^8.0.0",
@@ -62,6 +63,7 @@
   },
   "dependencies": {
     "@backstage-community/plugin-jenkins": "workspace:^",
-    "@backstage-community/plugin-jenkins-backend": "workspace:^"
+    "@backstage-community/plugin-jenkins-backend": "workspace:^",
+    "knip": "^5.27.4"
   }
 }

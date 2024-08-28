@@ -41,6 +41,8 @@ apiVersion: backstage.io/v1alpha1
 kind: API
 metadata:
   name: example-grpc-api
+  annotations:
+    github.com/project-slug: 'backstage/backstage'
 spec:
   type: grpc
   lifecycle: experimental

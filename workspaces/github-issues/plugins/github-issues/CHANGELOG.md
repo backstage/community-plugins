@@ -1,5 +1,11 @@
 # @backstage-community/plugin-github-issues
 
+## 0.4.4
+
+### Patch Changes
+
+- a71c87e: Backstage version bump to v1.30.2
+
 ## 0.4.3
 
 ### Patch Changes

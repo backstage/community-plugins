@@ -1,8 +1,12 @@
 {
   "name": "@backstage-community/plugin-code-climate",
-  "version": "0.1.35",
+  "version": "0.1.37",
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "code-climate",
+    "pluginPackages": [
+      "@backstage-community/plugin-code-climate"
+    ]
   },
   "publishConfig": {
     "access": "public",
@@ -32,10 +36,10 @@
     "test": "backstage-cli package test"
   },
   "dependencies": {
-    "@backstage/catalog-model": "^1.4.5",
-    "@backstage/core-components": "^0.14.4",
-    "@backstage/core-plugin-api": "^1.9.2",
-    "@backstage/plugin-catalog-react": "^1.11.3",
+    "@backstage/catalog-model": "^1.6.0",
+    "@backstage/core-components": "^0.14.10",
+    "@backstage/core-plugin-api": "^1.9.3",
+    "@backstage/plugin-catalog-react": "^1.12.3",
     "@material-ui/core": "^4.12.2",
     "@types/react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "humanize-duration": "^3.27.1",
@@ -43,9 +47,9 @@
     "react-use": "^17.2.4"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.26.3",
-    "@backstage/dev-utils": "^1.0.31",
-    "@backstage/test-utils": "^1.5.4",
+    "@backstage/cli": "^0.27.0",
+    "@backstage/dev-utils": "^1.0.37",
+    "@backstage/test-utils": "^1.5.10",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^15.0.0",
