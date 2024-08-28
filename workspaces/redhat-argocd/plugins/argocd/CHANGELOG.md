@@ -1,5 +1,11 @@
 ## @janus-idp/backstage-plugin-argocd [1.5.7](https://github.com/janus-idp/backstage-plugins/compare/@janus-idp/backstage-plugin-argocd@1.5.6...@janus-idp/backstage-plugin-argocd@1.5.7) (2024-08-02)
 
+## 1.6.7
+
+### Patch Changes
+
+- 2436cfa: update link to dynamic plugin info
+
 ## 1.6.6
 
 ### Patch Changes
