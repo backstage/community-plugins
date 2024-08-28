@@ -1,22 +1,19 @@
 import {
   LoggerService,
   SchedulerService,
-  SchedulerServiceTaskRunner
+  SchedulerServiceTaskRunner,
 } from '@backstage/backend-plugin-api';
 import {
   EntityProvider,
   EntityProviderConnection,
-} from '@backstage/plugin-catalog-node'
+} from '@backstage/plugin-catalog-node';
 import {
   GroupEntityV1alpha1,
-  UserEntityV1alpha1
+  UserEntityV1alpha1,
 } from '@backstage/catalog-model';
 import { Config } from '@backstage/config';
 import * as uuid from 'uuid';
-import {
-  PingIdentityProviderConfig,
-  readProviderConfigs
-} from '../lib/config';
+import { PingIdentityProviderConfig, readProviderConfigs } from '../lib/config';
 import { readPingIdentity } from '../lib/read';
 import { UserTransformer, GroupTransformer } from '../lib/types';
 import { PingIdentityClient } from '../lib/client';
@@ -53,8 +50,8 @@ export interface PingIdentityEntityProviderOptions {
    */
   logger: LoggerService;
   /**
- * The function that transforms a user entry in LDAP to an entity.
- */
+   * The function that transforms a user entry in LDAP to an entity.
+   */
   userTransformer?: UserTransformer;
 
   /**
@@ -113,10 +110,10 @@ export class PingIdentityEntityProvider implements EntityProvider {
       id: string;
       provider: PingIdentityProviderConfig;
       logger: LoggerService;
-      userTransformer?: UserTransformer,
-      groupTransformer?: GroupTransformer,
+      userTransformer?: UserTransformer;
+      groupTransformer?: GroupTransformer;
     },
-  ) { }
+  ) {}
 
   getProviderName(): string {
     return `PingIdentityEntityProvider:${this.options.id}`;
@@ -141,14 +138,12 @@ export class PingIdentityEntityProvider implements EntityProvider {
 
     const { markReadComplete } = trackProgress(logger);
     const client = new PingIdentityClient(provider);
-    const { users, groups } = await readPingIdentity(client,
-      {
-        userQuerySize: this.options.provider.userQuerySize,
-        groupQuerySize: this.options.provider.groupQuerySize,
-        userTransformer: this.options.userTransformer,
-        groupTransformer: this.options.groupTransformer,
-      }
-    );
+    const { users, groups } = await readPingIdentity(client, {
+      userQuerySize: this.options.provider.userQuerySize,
+      groupQuerySize: this.options.provider.groupQuerySize,
+      userTransformer: this.options.userTransformer,
+      groupTransformer: this.options.groupTransformer,
+    });
 
     await this.connection.applyMutation({
       type: 'full',
@@ -199,7 +194,10 @@ function trackProgress(logger: LoggerService) {
 
   logger.info('Reading PingIdentity users and groups');
 
-  function markReadComplete(read: { users: UserEntityV1alpha1[]; groups: GroupEntityV1alpha1[] }) {
+  function markReadComplete(read: {
+    users: UserEntityV1alpha1[];
+    groups: GroupEntityV1alpha1[];
+  }) {
     summary = `${read.users.length} PingIdentity users and ${read.groups.length} PingIdentity groups`;
     const readDuration = ((Date.now() - timestamp) / 1000).toFixed(1);
     timestamp = Date.now();

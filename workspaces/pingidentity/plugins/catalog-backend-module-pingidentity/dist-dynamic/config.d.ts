@@ -1,6 +1,4 @@
-import {
-  SchedulerServiceTaskScheduleDefinitionConfig
-} from '@backstage/backend-plugin-api';
+import { SchedulerServiceTaskScheduleDefinitionConfig } from '@backstage/backend-plugin-api';
 
 export interface Config {
   catalog?: {
@@ -38,7 +36,7 @@ export interface Config {
            * @visibility secret
            */
           clientSecret: string;
-        }
+        };
       };
     };
   };

@@ -31,9 +31,9 @@ export type PingIdentityProviderConfig = {
   envId: string;
 
   /**
-  * The OAuth client ID to use for authenticating requests.
-  * If specified, ClientSecret must also be specified
-  */
+   * The OAuth client ID to use for authenticating requests.
+   * If specified, ClientSecret must also be specified
+   */
   clientId?: string;
 
   /**
@@ -88,8 +88,8 @@ const readProviderConfig = (
 
   const schedule = providerConfigInstance.has('schedule')
     ? readSchedulerServiceTaskScheduleDefinitionFromConfig(
-      providerConfigInstance.getConfig('schedule'),
-    )
+        providerConfigInstance.getConfig('schedule'),
+      )
     : undefined;
 
   return {
@@ -104,7 +104,6 @@ const readProviderConfig = (
     groupQuerySize,
   };
 };
-
 
 export const readProviderConfigs = (
   config: Config,

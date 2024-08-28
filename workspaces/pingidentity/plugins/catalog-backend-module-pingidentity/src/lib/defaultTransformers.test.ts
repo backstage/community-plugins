@@ -23,22 +23,26 @@ describe('defaultTransformers', () => {
     const pingIdentityGroup: PingIdentityGroup = {
       _links: {
         self: {
-          href: ''
-        }
+          href: '',
+        },
       },
       id: 'group1',
       environment: {
-        id: ''
+        id: '',
       },
       name: 'group one',
       description: '',
       directMemberCounts: {
-        users: 0
+        users: 0,
       },
       createdAt: '',
-      updatedAt: ''
-    }
-    const result = await defaultGroupTransformer(group, pingIdentityGroup, 'envId');
+      updatedAt: '',
+    };
+    const result = await defaultGroupTransformer(
+      group,
+      pingIdentityGroup,
+      'envId',
+    );
     // should normalize illegal characters in group name
     expect(result).toEqual({
       apiVersion: 'backstage.io/v1alpha1',
@@ -68,70 +72,75 @@ describe('defaultTransformers', () => {
       spec: {
         memberOf: [],
         profile: {
-          displayName: 'BAR'
+          displayName: 'BAR',
         },
       },
     };
     const pingIdentityUser: PingIdentityUser = {
       _links: {
         self: {
-          href: "https://api.pingone.com"
+          href: 'https://api.pingone.com',
         },
         password: {
-          href: "https://api.pingone.com"
+          href: 'https://api.pingone.com',
         },
         'password.set': {
-          href: "https://api.pingone.com"
+          href: 'https://api.pingone.com',
         },
         'password.reset': {
-          href: "https://api.pingone.com"
+          href: 'https://api.pingone.com',
         },
         'password.check': {
-          href: "https://api.pingone.com"
+          href: 'https://api.pingone.com',
         },
         'password.recover': {
-          href: "https://api.pingone.com"
+          href: 'https://api.pingone.com',
         },
         account: {
           sendVerificationCode: {
-            href: "https://api.pingone.com"
-          }
+            href: 'https://api.pingone.com',
+          },
         },
         linkedAccounts: {
-          href: "https://api.pingone.com"
-        }
+          href: 'https://api.pingone.com',
+        },
       },
-      id: "bar-123",
+      id: 'bar-123',
       environment: {
-        id: "example-env"
+        id: 'example-env',
       },
       account: {
         canAuthenticate: true,
-        status: ""
+        status: '',
       },
-      createdAt: "",
-      email: "bar@example.com",
+      createdAt: '',
+      email: 'bar@example.com',
       enabled: true,
       identityProvider: {
-        type: ""
+        type: '',
       },
       lifecycle: {
-        status: ""
+        status: '',
       },
       mfaEnabled: false,
       name: {
-        given: "Bar",
-        family: "Example"
+        given: 'Bar',
+        family: 'Example',
       },
       population: {
-        id: ""
+        id: '',
       },
-      updatedAt: "",
-      username: "bar",
-      verifyStatus: ""
+      updatedAt: '',
+      username: 'bar',
+      verifyStatus: '',
     };
-    
-    const result = await defaultUserTransformer(user, pingIdentityUser, 'envId', []);
+
+    const result = await defaultUserTransformer(
+      user,
+      pingIdentityUser,
+      'envId',
+      [],
+    );
     // should normalize illegal characters in metadata.annotations.name
     expect(result).toEqual({
       apiVersion: 'backstage.io/v1alpha1',
@@ -145,7 +154,7 @@ describe('defaultTransformers', () => {
       spec: {
         memberOf: [],
         profile: {
-          displayName: 'BAR'
+          displayName: 'BAR',
         },
       },
     });

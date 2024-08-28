@@ -1,22 +1,27 @@
 # Ping Identity Backend Plugin for Backstage
+
 The Ping Identity backend plugin integrates Ping Identity into Backstage.
 
 # Capabilities
+
 The Ping Identity backend plugin has the following capabilities:
 
 ### User and group ingestion
-* Synchronization of Ping Identity users in an environment
-* Synchronization of Ping Identity groups and their users in the environment
+
+- Synchronization of Ping Identity users in an environment
+- Synchronization of Ping Identity groups and their users in the environment
 
 ### Default User Transformer
+
 By default, any illegal characters in an entity reference in Backstage will be normalized to `_` by the default user transformer. Backstage can only accept sequences composed of `[a-z0-9A-Z]`, possibly separated by one of `[-_.]`.
 
 The user and group transformers can be customized by leveraging the `pingIdentityTransformerExtensionPoint`. More details on this extension point can be found in the configuration section.
 
 # Getting Started
+
 The plugin can be seen in action in the example Backstage app included in this workspace. Run `yarn dev` in the `workspaces/pingidentity` directory to start the app. Navigate to the `Home` tab, and the ingested users and groups will appear under the `User` and `Group` kind entities in the catalog.
 
-The plugin can also be run independently with `yarn start` in the `workspaces/pingidentity/plugins/catalog-backend-module-pingidentity` directory. 
+The plugin can also be run independently with `yarn start` in the `workspaces/pingidentity/plugins/catalog-backend-module-pingidentity` directory.
 
 # Configuration
 
@@ -30,7 +35,7 @@ The plugin can also be run independently with `yarn start` in the `workspaces/pi
         pingIdentityOrg:
           default:
             apiPath: https://api.pingone.ca/v1 # Change domain according to ping identity regional domain
-            authPath: https://auth.pingone.ca 
+            authPath: https://auth.pingone.ca
             envId: ${PING_IDENTITY_ENV_ID}
             clientId: ${PING_IDENTITY_CLIENT_ID}
             clientSecret: ${PING_IDENTITY_CLIENT_SECRET}
@@ -48,7 +53,9 @@ The plugin can also be run independently with `yarn start` in the `workspaces/pi
    const backend = createBackend();
 
    /* highlight-add-next-line */
-   backend.add(import('@backstage-community/plugin-catalog-backend-module-pingidentity'));
+   backend.add(
+     import('@backstage-community/plugin-catalog-backend-module-pingidentity'),
+   );
 
    backend.start();
    ```
@@ -63,10 +70,7 @@ The plugin can also be run independently with `yarn start` in the `workspaces/pi
      UserTransformer,
    } from '@backstage-community/plugin-catalog-backend-module-pingidentity';
 
-   const customGroupTransformer: GroupTransformer = async (
-     entity,
-     envId,
-   ) => {
+   const customGroupTransformer: GroupTransformer = async (entity, envId) => {
      /* apply transformations */
      return entity;
    };

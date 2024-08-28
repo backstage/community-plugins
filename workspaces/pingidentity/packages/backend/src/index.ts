@@ -47,6 +47,8 @@ backend.add(import('@backstage/plugin-search-backend-module-pg/alpha'));
 backend.add(import('@backstage/plugin-search-backend-module-catalog/alpha'));
 backend.add(import('@backstage/plugin-search-backend-module-techdocs/alpha'));
 
-backend.add(import('@backstage-community/plugin-catalog-backend-module-pingidentity'));
+backend.add(
+  import('@backstage-community/plugin-catalog-backend-module-pingidentity'),
+);
 
 backend.start();
