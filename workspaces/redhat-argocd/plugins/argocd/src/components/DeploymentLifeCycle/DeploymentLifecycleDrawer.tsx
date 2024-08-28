@@ -28,6 +28,7 @@ import AppNamespace from '../AppStatus/AppNamespace';
 import StatusHeading from '../AppStatus/StatusHeading';
 import DeploymentLifecycledHeader from './DeploymentLifecycleHeader';
 import Rollouts from './sidebar/rollouts/Rollouts';
+import { ResourcesTable } from '../Resources/ResourcesTable';
 
 interface DeploymentLifecycleDrawerProps {
   app: Application | undefined;
@@ -61,7 +62,7 @@ const useDrawerStyles = makeStyles<Theme>(theme =>
       fontSize: 20,
     },
     paper: {
-      width: '40%',
+      width: '50%',
       padding: theme.spacing(2.5),
       gap: '3%',
     },
@@ -85,6 +86,8 @@ const DeploymentLifecycleDrawer: React.FC<DeploymentLifecycleDrawerProps> = ({
   const appHistory = app?.status?.history ?? [];
   const latestRevision = appHistory[appHistory.length - 1];
   const appDeployedAt = latestRevision?.deployedAt;
+  const firstRevision = appHistory[0];
+  const createdAt = firstRevision?.deployedAt;
 
   const { entity } = useEntity();
   const classes = useDrawerStyles();
@@ -210,6 +213,19 @@ const DeploymentLifecycleDrawer: React.FC<DeploymentLifecycleDrawerProps> = ({
               )}
             </Grid>
           )}
+          <Grid item xs={12}>
+            <Typography color="textPrimary">Resources</Typography>
+            <Card
+              elevation={2}
+              key="resoucres-container"
+              style={{ padding: '25px', marginTop: '10px' }}
+            >
+              <ResourcesTable
+                resources={app?.status?.resources || []}
+                createdAt={createdAt}
+              />
+            </Card>
+          </Grid>
           {appHistory.length >= 1 && (
             <Grid item xs={12}>
               <Grid
