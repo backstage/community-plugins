@@ -71,7 +71,7 @@ argocd:
 1. Install the Argocd plugin using the following command:
 
 ```bash
-yarn workspace app add @janus-idp/backstage-plugin-argocd
+yarn workspace app add @backstage-community/plugin-redhat-argocd
 ```
 
 2. Add deployment summary and deployment lifecycle compoennt to the `entityPage.tsx` source file:
@@ -82,7 +82,7 @@ import {
   ArgocdDeploymentSummary,
   ArgocdDeploymentLifecycle,
   isArgocdConfigured,
-} from '@janus-idp/backstage-plugin-argocd';
+} from '@backstage-community/plugin-redhat-argocd';
 
 const overviewContent = (
   <Grid container spacing={3} alignItems="stretch">
@@ -161,7 +161,7 @@ global:
     plugins:
       - package: ./dynamic-plugins/dist/roadiehq-backstage-plugin-argo-cd-backend-dynamic
         disabled: false
-      - package: ./dynamic-plugins/dist/janus-idp-backstage-plugin-argocd
+      - package: ./dynamic-plugins/dist/backstage-community-plugin-redhat-argocd
         disabled: false
 ```
 
@@ -193,7 +193,7 @@ mv package $(echo $archive | sed -e 's:\.tgz$::')
 ```yaml
 dynamicPlugins:
   frontend:
-    janus-idp.backstage-plugin-argocd:
+    backstage-community.plugin-redhat-argocd:
       mountPoints:
         - mountPoint: entity.page.overview/cards
           importName: ArgocdDeploymentSummary
