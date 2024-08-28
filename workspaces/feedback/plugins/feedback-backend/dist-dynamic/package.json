@@ -1,6 +1,6 @@
 {
-  "name": "@janus-idp/plugin-feedback-backend-dynamic",
-  "version": "1.7.0",
+  "name": "@backstage-community/plugin-feedback-backend-dynamic",
+  "version": "1.7.1",
   "main": "./dist/index.cjs.js",
   "types": "src/index.ts",
   "license": "Apache-2.0",
@@ -9,11 +9,11 @@
   },
   "backstage": {
     "role": "backend-plugin",
-    "supported-versions": "1.28.4",
+    "supported-versions": "1.29.2",
     "pluginId": "feedback",
     "pluginPackages": [
-      "@janus-idp/plugin-feedback",
-      "@janus-idp/plugin-feedback-backend"
+      "@backstage-community/plugin-feedback",
+      "@backstage-community/plugin-feedback-backend"
     ]
   },
   "exports": {
@@ -43,14 +43,14 @@
   "files": [
     "dist",
     "config.d.ts",
-    "app-config.janus-idp.yaml",
+    "app-config.backstage-community.yaml",
     "migrations/**/*.{js,d.ts}",
     "alpha"
   ],
   "configSchema": "config.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/janus-idp/backstage-plugins",
+    "url": "https://github.com/backstage/community-plugins",
     "directory": "plugins/feedback-backend"
   },
   "keywords": [
@@ -60,10 +60,11 @@
     "plugin"
   ],
   "homepage": "https://red.ht/rhdh",
-  "bugs": "https://github.com/janus-idp/backstage-plugins/issues",
+  "bugs": "https://github.com/backstage/community-plugins/issues",
   "maintainers": [
-    "@janus-idp/maintainers-plugins",
-    "@janus-idp/devex-uxe"
+    "riginoommen",
+    "deshmukhmayur",
+    "yashoswalyo"
   ],
   "author": "The Backstage Community",
   "bundleDependencies": true,
