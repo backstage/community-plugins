@@ -21,6 +21,7 @@ import {
   DatabaseManager,
   errorHandler,
   PluginEndpointDiscovery,
+  TokenManager,
 } from '@backstage/backend-common';
 import { CatalogApi, CatalogClient } from '@backstage/catalog-client';
 import { Config } from '@backstage/config';
@@ -33,6 +34,7 @@ import {
   BadgeStyle,
 } from '../types';
 import { isNil } from 'lodash';
+import { IdentityApi } from '@backstage/plugin-auth-node';
 import { BadgesStore, DatabaseBadgesStore } from '../database/badgesStore';
 import { createDefaultBadgeFactories } from '../badges';
 import {
@@ -48,9 +50,11 @@ export interface RouterOptions {
   catalog?: CatalogApi;
   config: Config;
   discovery: PluginEndpointDiscovery;
+  tokenManager?: TokenManager;
   auth?: AuthService;
   httpAuth?: HttpAuthService;
   logger: LoggerService;
+  identity?: IdentityApi;
   badgeStore?: BadgesStore;
 }
 
