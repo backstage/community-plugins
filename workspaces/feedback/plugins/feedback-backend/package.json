@@ -9,7 +9,7 @@
   },
   "backstage": {
     "role": "backend-plugin",
-    "supported-versions": "1.28.4",
+    "supported-versions": "1.29.2",
     "pluginId": "feedback",
     "pluginPackages": [
       "@backstage-community/plugin-feedback",

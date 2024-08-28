@@ -19,6 +19,7 @@ yarn.lock                                           @backstage/community-plugins
 /workspaces/cost-insights                           @backstage/community-plugins-maintainers  @backstage/silver-lining
 /workspaces/entity-feedback                         @backstage/community-plugins-maintainers  @kuangp
 /workspaces/explore                                 @backstage/community-plugins-maintainers  @backstage/sda-se-reviewers
+/workspaces/feedback                                @backstage/community-plugins-maintainers  @riginoommen @deshmukhmayur @yashoswalyo
 /workspaces/fossa                                   @backstage/community-plugins-maintainers  @backstage/sda-se-reviewers
 /workspaces/git-release-manager                     @backstage/community-plugins-maintainers  @erikengervall
 /workspaces/github-pull-requests-board              @backstage/community-plugins-maintainers  @gregorytalita
