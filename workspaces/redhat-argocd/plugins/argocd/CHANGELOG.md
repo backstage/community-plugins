@@ -1,5 +1,11 @@
 ## @janus-idp/backstage-plugin-argocd [1.5.7](https://github.com/janus-idp/backstage-plugins/compare/@janus-idp/backstage-plugin-argocd@1.5.6...@janus-idp/backstage-plugin-argocd@1.5.7) (2024-08-02)
 
+## 1.6.6
+
+### Patch Changes
+
+- 09499f2: chore: updated janus-idp namespace to backstage-community
+
 ## 1.6.5
 
 ### Patch Changes
