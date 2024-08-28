@@ -10,7 +10,7 @@ import { rootRouteRef } from '../plugin';
  * @alpha
  */
 export const entityJenkinsProjects = EntityContentBlueprint.make({
-  name: 'entity',
+  name: 'projects',
   params: {
     defaultPath: 'jenkins',
     defaultTitle: 'Jenkins',
