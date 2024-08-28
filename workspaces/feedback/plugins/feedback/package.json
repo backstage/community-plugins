@@ -64,7 +64,7 @@
     "react-router-dom": "^6.26.1"
   },
   "files": [
-    "app-config.@backstage-community.yaml",
+    "app-config.backstage-community.yaml",
     "dist",
     "config.d.ts",
     "dist-scalprum"
