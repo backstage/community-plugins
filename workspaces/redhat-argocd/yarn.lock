@@ -2507,7 +2507,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage-community/plugin-redhat-argocd-common@1.0.3, @backstage-community/plugin-redhat-argocd-common@workspace:plugins/argocd-common":
+"@backstage-community/plugin-redhat-argocd-common@^1.0.3, @backstage-community/plugin-redhat-argocd-common@workspace:plugins/argocd-common":
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-redhat-argocd-common@workspace:plugins/argocd-common"
   dependencies:
@@ -2520,7 +2520,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-redhat-argocd@workspace:plugins/argocd"
   dependencies:
-    "@backstage-community/plugin-redhat-argocd-common": 1.0.3
+    "@backstage-community/plugin-redhat-argocd-common": ^1.0.3
     "@backstage/catalog-model": ^1.6.0
     "@backstage/cli": ^0.27.0
     "@backstage/config": ^1.2.0
