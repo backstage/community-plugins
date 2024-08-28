@@ -50,11 +50,11 @@ export interface RouterOptions {
   catalog?: CatalogApi;
   config: Config;
   discovery: PluginEndpointDiscovery;
-  tokenManager: TokenManager;
+  tokenManager?: TokenManager;
   auth?: AuthService;
   httpAuth?: HttpAuthService;
   logger: LoggerService;
-  identity: IdentityApi;
+  identity?: IdentityApi;
   badgeStore?: BadgesStore;
 }
 
