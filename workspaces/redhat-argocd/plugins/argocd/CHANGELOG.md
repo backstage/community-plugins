@@ -1,5 +1,14 @@
 ## @janus-idp/backstage-plugin-argocd [1.5.7](https://github.com/janus-idp/backstage-plugins/compare/@janus-idp/backstage-plugin-argocd@1.5.6...@janus-idp/backstage-plugin-argocd@1.5.7) (2024-08-02)
 
+## 1.6.9
+
+### Patch Changes
+
+- 38d858e: regen yarn.lock
+- 4431964: fix version range for dependency @backstage-community/plugin-redhat-argocd-common so we can bump to 1.0.4 without the tests failing at https://github.com/backstage/community-plugins/actions/runs/10603150719/job/29386810871?pr=1114
+- Updated dependencies [38d858e]
+  - @backstage-community/plugin-redhat-argocd-common@1.0.5
+
 ## 1.6.8
 
 ### Patch Changes
