@@ -1,8 +1,5 @@
 import { ConfigReader } from '@backstage/config';
-import {
-  GroupEntity,
-  UserEntity,
-} from '@backstage/catalog-model';
+import { GroupEntity, UserEntity } from '@backstage/catalog-model';
 import { EntityProviderConnection } from '@backstage/plugin-catalog-node';
 import { PingIdentityEntityProvider } from './PingIdentityEntityProvider';
 import { mockServices } from '@backstage/backend-test-utils';
@@ -152,7 +149,7 @@ describe('PingIdentityEntityProvider', () => {
     });
 
     const mockTaskRunner = {
-      run: jest.fn().mockImplementation(async (task) => {
+      run: jest.fn().mockImplementation(async task => {
         await task.fn();
       }),
     };
@@ -201,7 +198,7 @@ describe('PingIdentityEntityProvider', () => {
     });
 
     const mockTaskRunner = {
-      run: jest.fn().mockImplementation(async (task) => {
+      run: jest.fn().mockImplementation(async task => {
         await task.fn();
       }),
     };
@@ -251,7 +248,9 @@ describe('PingIdentityEntityProvider', () => {
       PingIdentityEntityProvider.fromConfig(config, {
         logger,
       }),
-    ).toThrow('No schedule provided neither via code nor config for PingIdentityEntityProvider:default.');
+    ).toThrow(
+      'No schedule provided neither via code nor config for PingIdentityEntityProvider:default.',
+    );
   });
 
   it('fail with scheduler but no schedule config', () => {

@@ -53,7 +53,7 @@ export interface PingIdentityResponse {
     };
   };
   _embedded: {
-    users?: PingIdentityUser [];
+    users?: PingIdentityUser[];
     groups?: PingIdentityGroup[];
   };
   count?: number; // total count of items in the collection

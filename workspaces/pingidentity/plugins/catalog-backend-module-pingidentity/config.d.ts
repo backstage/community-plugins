@@ -1,6 +1,4 @@
-import {
-  SchedulerServiceTaskScheduleDefinitionConfig
-} from '@backstage/backend-plugin-api';
+import { SchedulerServiceTaskScheduleDefinitionConfig } from '@backstage/backend-plugin-api';
 
 export interface Config {
   catalog?: {
@@ -54,7 +52,7 @@ export interface Config {
            * @see https://apidocs.pingidentity.com/pingone/platform/v1/api/#paging-ordering-and-filtering-collections
            */
           groupQuerySize?: number;
-        }
+        };
       };
     };
   };

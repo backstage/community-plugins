@@ -34,7 +34,7 @@ export const catalogModulePingIdentityEntityProvider = createBackendModule({
       },
     });
     reg.registerInit({
-      deps: { 
+      deps: {
         catalog: catalogProcessingExtensionPoint,
         config: coreServices.rootConfig,
         logger: coreServices.logger,
