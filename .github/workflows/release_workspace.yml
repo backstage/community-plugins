@@ -76,6 +76,10 @@ jobs:
       - name: Fetch previous commit for release check
         run: git fetch origin '${{ github.event.before }}'
 
+      - name: Fetch the commit that triggered the workflow (used by backstage/changesets-action)
+        run: git fetch origin ${{ github.sha }}
+        continue-on-error: true
+
       - name: Check if release
         id: release_check
         if: inputs.force_release != true
