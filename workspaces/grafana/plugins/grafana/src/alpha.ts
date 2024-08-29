@@ -1,4 +1,4 @@
-import { createPlugin } from '@backstage/frontend-plugin-api';
+import { createFrontendPlugin } from '@backstage/frontend-plugin-api';
 import {
   entityGrafanaAlertsCard,
   entityGrafanaDashboardsCard,
@@ -11,7 +11,7 @@ import {
  *
  * @alpha
  */
-export default createPlugin({
+export default createFrontendPlugin({
   id: 'grafana',
   extensions: [
     grafanaApiExtension,
