@@ -221,13 +221,14 @@ export const BlackDuckPageComponent = ({
   filters,
 }: BlackDuckPageComponentProps) => {
   const { entity } = useEntity();
-  const { hostKey, projectName, projectVersion } = getProjectAnnotation(entity);
 
   if (!isBlackDuckAvailable(entity)) {
     return (
       <MissingAnnotationEmptyState annotation={BLACKDUCK_PROJECT_ANNOTATION} />
     );
   }
+
+  const { hostKey, projectName, projectVersion } = getProjectAnnotation(entity);
 
   if (!projectName || !projectVersion) {
     return (

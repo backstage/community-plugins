@@ -179,13 +179,18 @@ const CardContent = ({
 
 export const RiskCardComponent = () => {
   const { entity } = useEntity();
-  const { hostKey, projectName, projectVersion } = getProjectAnnotation(entity);
 
   if (!isBlackDuckAvailable(entity)) {
     return (
-      <MissingAnnotationEmptyState annotation={BLACKDUCK_PROJECT_ANNOTATION} />
+      <InfoCard title="BlackDuck">
+        <MissingAnnotationEmptyState
+          annotation={BLACKDUCK_PROJECT_ANNOTATION}
+        />
+      </InfoCard>
     );
   }
+
+  const { hostKey, projectName, projectVersion } = getProjectAnnotation(entity);
 
   if (!projectName || !projectVersion) {
     return (

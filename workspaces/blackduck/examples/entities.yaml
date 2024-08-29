@@ -15,7 +15,7 @@ metadata:
   annotations:
     blackduck/project: example-host/example-website/main
 spec:
-  type: website
+  type: service
   lifecycle: experimental
   owner: guests
   system: examples
