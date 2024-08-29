@@ -16,41 +16,45 @@
 
 import React from 'react';
 import {
-  createApiExtension,
+  ApiBlueprint,
   createApiFactory,
-  createPlugin,
+  createFrontendPlugin,
   discoveryApiRef,
   fetchApiRef,
 } from '@backstage/frontend-plugin-api';
 
 import { LinguistClient, linguistApiRef } from '../api';
 import { compatWrapper } from '@backstage/core-compat-api';
-import { createEntityCardExtension } from '@backstage/plugin-catalog-react/alpha';
+import { EntityCardBlueprint } from '@backstage/plugin-catalog-react/alpha';
 
 /** @alpha */
-export const entityLinguistCard = createEntityCardExtension({
+export const entityLinguistCard = EntityCardBlueprint.make({
   name: 'languages',
-  loader: async () =>
-    import('../components/LinguistCard').then(m =>
-      compatWrapper(<m.LinguistCard />),
-    ),
+  params: {
+    loader: async () =>
+      import('../components/LinguistCard').then(m =>
+        compatWrapper(<m.LinguistCard />),
+      ),
+  },
 });
 
 /** @alpha */
-export const linguistApi = createApiExtension({
-  factory: createApiFactory({
-    api: linguistApiRef,
-    deps: {
-      discoveryApi: discoveryApiRef,
-      fetchApi: fetchApiRef,
-    },
-    factory: ({ discoveryApi, fetchApi }) =>
-      new LinguistClient({ discoveryApi, fetchApi }),
-  }),
+export const linguistApi = ApiBlueprint.make({
+  params: {
+    factory: createApiFactory({
+      api: linguistApiRef,
+      deps: {
+        discoveryApi: discoveryApiRef,
+        fetchApi: fetchApiRef,
+      },
+      factory: ({ discoveryApi, fetchApi }) =>
+        new LinguistClient({ discoveryApi, fetchApi }),
+    }),
+  },
 });
 
 /** @alpha */
-export default createPlugin({
+export default createFrontendPlugin({
   id: 'linguist',
   extensions: [linguistApi, entityLinguistCard],
 });

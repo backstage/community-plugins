@@ -1,5 +1,5 @@
 import { convertLegacyRouteRefs } from '@backstage/core-compat-api';
-import { createPlugin } from '@backstage/frontend-plugin-api';
+import { createFrontendPlugin } from '@backstage/frontend-plugin-api';
 import {
   entityGithubActionsCard,
   entityGithubActionsContent,
@@ -13,7 +13,7 @@ import { rootRouteRef } from './routes';
 /**
  * @alpha
  */
-export default createPlugin({
+export default createFrontendPlugin({
   id: 'github-actions',
   routes: convertLegacyRouteRefs({
     entityContent: rootRouteRef,
