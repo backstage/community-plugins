@@ -1,5 +1,11 @@
 # @backstage-community/plugin-jenkins-backend
 
+## 0.4.12
+
+### Patch Changes
+
+- c3aaa1d: Removed hardcoded count limit from `jobsTreeSpec`
+
 ## 0.4.11
 
 ### Patch Changes
