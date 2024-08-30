@@ -1,5 +1,11 @@
 # @backstage-community/plugin-linguist
 
+## 0.1.26
+
+### Patch Changes
+
+- 45fd620: use new FE system syntax (replacing deprecated methods)
+
 ## 0.1.25
 
 ### Patch Changes
