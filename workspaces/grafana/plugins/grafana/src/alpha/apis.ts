@@ -1,6 +1,6 @@
 import {
   configApiRef,
-  createApiExtension,
+  ApiBlueprint,
   createApiFactory,
   discoveryApiRef,
   fetchApiRef,
@@ -15,34 +15,36 @@ import {
 /**
  * @alpha
  */
-export const grafanaApiExtension = createApiExtension({
-  factory: createApiFactory({
-    api: grafanaApiRef,
-    deps: {
-      discoveryApi: discoveryApiRef,
-      identityApi: identityApiRef,
-      configApi: configApiRef,
-      fetchApi: fetchApiRef,
-    },
-    factory: ({ discoveryApi, configApi, fetchApi }) => {
-      const unifiedAlertingEnabled =
-        configApi.getOptionalBoolean('grafana.unifiedAlerting') || false;
+export const grafanaApiExtension = ApiBlueprint.make({
+  params: {
+    factory: createApiFactory({
+      api: grafanaApiRef,
+      deps: {
+        discoveryApi: discoveryApiRef,
+        identityApi: identityApiRef,
+        configApi: configApiRef,
+        fetchApi: fetchApiRef,
+      },
+      factory: ({ discoveryApi, configApi, fetchApi }) => {
+        const unifiedAlertingEnabled =
+          configApi.getOptionalBoolean('grafana.unifiedAlerting') || false;
 
-      if (!unifiedAlertingEnabled) {
-        return new GrafanaApiClient({
+        if (!unifiedAlertingEnabled) {
+          return new GrafanaApiClient({
+            fetchApi,
+            discoveryApi,
+            domain: configApi.getString('grafana.domain'),
+            proxyPath: configApi.getOptionalString('grafana.proxyPath'),
+          });
+        }
+
+        return new UnifiedAlertingGrafanaApiClient({
           fetchApi,
           discoveryApi,
           domain: configApi.getString('grafana.domain'),
           proxyPath: configApi.getOptionalString('grafana.proxyPath'),
         });
-      }
-
-      return new UnifiedAlertingGrafanaApiClient({
-        fetchApi,
-        discoveryApi,
-        domain: configApi.getString('grafana.domain'),
-        proxyPath: configApi.getOptionalString('grafana.proxyPath'),
-      });
-    },
-  }),
+      },
+    }),
+  },
 });
