@@ -14,7 +14,7 @@ import { Link } from 'react-router-dom';
 import Stack from '@mui/material/Stack';
 import { DateTime } from 'luxon';
 import { announcementViewRouteRef } from '../../routes';
-import { useAnnouncements } from '@procore-oss/backstage-plugin-announcements-react';
+import { useAnnouncements } from '@backstage-community/plugin-announcements-react';
 import { Progress } from '@backstage/core-components';
 
 /**

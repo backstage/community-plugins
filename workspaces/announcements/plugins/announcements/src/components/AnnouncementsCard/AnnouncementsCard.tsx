@@ -8,7 +8,7 @@ import {
   Progress,
 } from '@backstage/core-components';
 import { useApi, useRouteRef } from '@backstage/core-plugin-api';
-import { announcementEntityPermissions } from '@procore-oss/backstage-plugin-announcements-common';
+import { announcementEntityPermissions } from '@backstage-community/plugin-announcements-common';
 import {
   List,
   ListItem,
@@ -26,7 +26,7 @@ import {
 import {
   announcementsApiRef,
   useAnnouncements,
-} from '@procore-oss/backstage-plugin-announcements-react';
+} from '@backstage-community/plugin-announcements-react';
 
 const useStyles = makeStyles({
   newAnnouncementIcon: {

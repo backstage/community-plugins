@@ -5,7 +5,7 @@ Adding the `NewAnnouncementBanner` component to a page will display a banner wit
 **Note:** if there are no announcements or the latest announcement has already been seen by the user, nothing will be displayed.
 
 ```ts
-import { NewAnnouncementBanner } from '@procore-oss/backstage-plugin-announcements';
+import { NewAnnouncementBanner } from '@backstage-community/plugin-announcements';
 
 export const HomePage = () => {
   return (

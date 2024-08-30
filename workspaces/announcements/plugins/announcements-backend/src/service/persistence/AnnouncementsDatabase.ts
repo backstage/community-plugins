@@ -4,7 +4,7 @@ import { AnnouncementModel } from '../model';
 import {
   AnnouncementsFilters,
   Announcement,
-} from '@procore-oss/backstage-plugin-announcements-common';
+} from '@backstage-community/plugin-announcements-common';
 import slugify from 'slugify';
 
 const announcementsTable = 'announcements';

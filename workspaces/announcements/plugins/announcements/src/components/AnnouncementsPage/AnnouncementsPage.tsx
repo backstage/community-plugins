@@ -6,7 +6,7 @@ import {
   announcementUpdatePermission,
   announcementDeletePermission,
   Announcement,
-} from '@procore-oss/backstage-plugin-announcements-common';
+} from '@backstage-community/plugin-announcements-common';
 import { DateTime } from 'luxon';
 import {
   Page,
@@ -53,7 +53,7 @@ import { ContextMenu } from './ContextMenu';
 import {
   announcementsApiRef,
   useAnnouncements,
-} from '@procore-oss/backstage-plugin-announcements-react';
+} from '@backstage-community/plugin-announcements-react';
 
 const useStyles = makeStyles(theme => ({
   cardHeader: {

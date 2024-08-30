@@ -5,7 +5,7 @@ import {
   Announcement,
   AnnouncementsList,
   Category,
-} from '@procore-oss/backstage-plugin-announcements-common';
+} from '@backstage-community/plugin-announcements-common';
 
 export const announcementsApiRef = createApiRef<AnnouncementsApi>({
   id: 'plugin.announcements.service',

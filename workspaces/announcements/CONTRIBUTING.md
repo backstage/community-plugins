@@ -11,7 +11,7 @@ Contributions are welcome, and they are greatly appreciated! Every little bit he
 
 The official support channels, for both users and contributors, are:
 
-- GitHub [issues](https://github.com/procore-oss/backstage-plugin-announcements/issues)
+- GitHub [issues](https://github.com/backstage-community/backstage-plugin-announcements/issues)
 
 ## How to Contribute
 
@@ -26,7 +26,7 @@ Pull Requests (PRs) are the main and exclusive way to contribute to the project.
 ```bash
 git clone git@github.com:your_github_username/backstage-plugin-announcements.git
 cd backstage-plugin-announcements
-git remote add upstream https://github.com/procore-oss/backstage-plugin-announcements.git
+git remote add upstream https://github.com/backstage-community/backstage-plugin-announcements.git
 git fetch upstream
 ```
 
@@ -94,5 +94,5 @@ In general, changesets are not needed for the documentation, build utilities or 
 
 For more information, checkout [adding a changeset](https://github.com/atlassian/changesets/blob/master/docs/adding-a-changeset.md) documentation in the changesets repository.
 
-[fork]: https://github.com/procore-oss/backstage-plugin-announcements/fork
+[fork]: https://github.com/backstage-community/backstage-plugin-announcements/fork
 [commit-message]: http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html

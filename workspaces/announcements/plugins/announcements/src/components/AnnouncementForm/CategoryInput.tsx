@@ -1,8 +1,8 @@
 import * as React from 'react';
 import TextField from '@mui/material/TextField';
 import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
-import { Category } from '@procore-oss/backstage-plugin-announcements-common';
-import { useCategories } from '@procore-oss/backstage-plugin-announcements-react';
+import { Category } from '@backstage-community/plugin-announcements-common';
+import { useCategories } from '@backstage-community/plugin-announcements-react';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 type CategoryInputProps = {

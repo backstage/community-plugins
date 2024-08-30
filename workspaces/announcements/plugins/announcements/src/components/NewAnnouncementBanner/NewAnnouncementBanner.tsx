@@ -14,8 +14,8 @@ import { announcementViewRouteRef } from '../../routes';
 import {
   announcementsApiRef,
   useAnnouncements,
-} from '@procore-oss/backstage-plugin-announcements-react';
-import { Announcement } from '@procore-oss/backstage-plugin-announcements-common';
+} from '@backstage-community/plugin-announcements-react';
+import { Announcement } from '@backstage-community/plugin-announcements-common';
 
 const useStyles = makeStyles(theme => ({
   // showing on top, as a block

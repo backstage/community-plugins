@@ -3,8 +3,8 @@ import MDEditor from '@uiw/react-md-editor';
 import { InfoCard } from '@backstage/core-components';
 import { identityApiRef, useApi } from '@backstage/core-plugin-api';
 import { Button, makeStyles, TextField } from '@material-ui/core';
-import { CreateAnnouncementRequest } from '@procore-oss/backstage-plugin-announcements-react';
-import { Announcement } from '@procore-oss/backstage-plugin-announcements-common';
+import { CreateAnnouncementRequest } from '@backstage-community/plugin-announcements-react';
+import { Announcement } from '@backstage-community/plugin-announcements-common';
 import CategoryInput from './CategoryInput';
 
 const useStyles = makeStyles(theme => ({

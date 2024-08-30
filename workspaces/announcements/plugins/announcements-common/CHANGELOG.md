@@ -1,4 +1,4 @@
-# @procore-oss/backstage-plugin-announcements-common
+# @backstage-community/plugin-announcements-common
 
 ## 0.2.4
 

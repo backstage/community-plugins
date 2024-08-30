@@ -5,7 +5,7 @@ import userEvent from '@testing-library/user-event';
 import { TestApiProvider } from '@backstage/test-utils';
 
 import CategoryInput from './CategoryInput';
-import { announcementsApiRef } from '@procore-oss/backstage-plugin-announcements-react';
+import { announcementsApiRef } from '@backstage-community/plugin-announcements-react';
 import { renderInTestApp } from '@backstage/test-utils';
 
 const categories = [
@@ -13,8 +13,8 @@ const categories = [
   { title: 'World', slug: 'world' },
 ];
 
-jest.mock('@procore-oss/backstage-plugin-announcements-react', () => ({
-  ...jest.requireActual('@procore-oss/backstage-plugin-announcements-react'),
+jest.mock('@backstage-community/plugin-announcements-react', () => ({
+  ...jest.requireActual('@backstage-community/plugin-announcements-react'),
   useCategories: () => {
     return {
       categories,

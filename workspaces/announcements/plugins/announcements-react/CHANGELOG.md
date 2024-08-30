@@ -1,4 +1,4 @@
-# @procore-oss/backstage-plugin-announcements-react
+# @backstage-community/plugin-announcements-react
 
 ## 0.4.2
 
@@ -6,7 +6,7 @@
 
 - 5d34ab8: Update to Backstage 1.30.1
 - Updated dependencies [5d34ab8]
-  - @procore-oss/backstage-plugin-announcements-common@0.2.4
+  - @backstage-community/plugin-announcements-common@0.2.4
 
 ## 0.4.1
 
@@ -14,7 +14,7 @@
 
 - 9937f08: - Adds missing backstage metadata to package.json
 - Updated dependencies [9937f08]
-  - @procore-oss/backstage-plugin-announcements-common@0.2.3
+  - @backstage-community/plugin-announcements-common@0.2.3
 
 ## 0.4.0
 
@@ -41,10 +41,10 @@
 - 656ef61: Update to Backstage version 1.27.1
 - 1a669e3: Added two new hooks (useAnnouncements and useCategories) to refactor out some repetive calls to the announcementsApi on the frontend.
 
-  While not the primary objective, these will be exported from '@procore-oss/backstage-plugin-announcements-react' so adopters _could_ retrieve announcements and display them as they see fit.
+  While not the primary objective, these will be exported from '@backstage-community/plugin-announcements-react' so adopters _could_ retrieve announcements and display them as they see fit.
 
 - Updated dependencies [656ef61]
-  - @procore-oss/backstage-plugin-announcements-common@0.2.2
+  - @backstage-community/plugin-announcements-common@0.2.2
 
 ## 0.2.1
 
@@ -52,7 +52,7 @@
 
 - 3a7ae1a: Bump all packages to latest stable release of Backstage (1.26.4)
 - Updated dependencies [3a7ae1a]
-  - @procore-oss/backstage-plugin-announcements-common@0.2.1
+  - @backstage-community/plugin-announcements-common@0.2.1
 
 ## 0.2.0
 
@@ -63,7 +63,7 @@
 ### Patch Changes
 
 - Updated dependencies [e811647]
-  - @procore-oss/backstage-plugin-announcements-common@0.2.0
+  - @backstage-community/plugin-announcements-common@0.2.0
 
 ## 0.1.2
 
@@ -71,7 +71,7 @@
 
 - 2b03aeb: Consolidate duplicated types into the common package.
 - Updated dependencies [2b03aeb]
-  - @procore-oss/backstage-plugin-announcements-common@0.1.4
+  - @backstage-community/plugin-announcements-common@0.1.4
 
 ## 0.1.1
 

@@ -1,4 +1,4 @@
-import { Category } from '@procore-oss/backstage-plugin-announcements-common';
+import { Category } from '@backstage-community/plugin-announcements-common';
 import { useCallback, useState } from 'react';
 
 export type DeleteCategoryDialogState = {

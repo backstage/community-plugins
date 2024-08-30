@@ -1,11 +1,11 @@
-# @procore-oss/backstage-plugin-announcements-backend
+# @backstage-community/plugin-announcements-backend
 
 ## 0.9.3
 
 ### Patch Changes
 
 - Updated dependencies [2bee323]
-  - @procore-oss/backstage-plugin-search-backend-module-announcements@0.2.5
+  - @backstage-community/backstage-plugin-search-backend-module-announcements@0.2.5
 
 ## 0.9.2
 
@@ -13,8 +13,8 @@
 
 - 5d34ab8: Update to Backstage 1.30.1
 - Updated dependencies [5d34ab8]
-  - @procore-oss/backstage-plugin-search-backend-module-announcements@0.2.4
-  - @procore-oss/backstage-plugin-announcements-common@0.2.4
+  - @backstage-community/backstage-plugin-search-backend-module-announcements@0.2.4
+  - @backstage-community/plugin-announcements-common@0.2.4
 
 ## 0.9.1
 
@@ -22,8 +22,8 @@
 
 - 9937f08: - Adds missing backstage metadata to package.json
 - Updated dependencies [9937f08]
-  - @procore-oss/backstage-plugin-search-backend-module-announcements@0.2.3
-  - @procore-oss/backstage-plugin-announcements-common@0.2.3
+  - @backstage-community/backstage-plugin-search-backend-module-announcements@0.2.3
+  - @backstage-community/plugin-announcements-common@0.2.3
 
 ## 0.9.0
 
@@ -56,8 +56,8 @@
 
 - 656ef61: Update to Backstage version 1.27.1
 - Updated dependencies [656ef61]
-  - @procore-oss/backstage-plugin-search-backend-module-announcements@0.2.2
-  - @procore-oss/backstage-plugin-announcements-common@0.2.2
+  - @backstage-community/backstage-plugin-search-backend-module-announcements@0.2.2
+  - @backstage-community/plugin-announcements-common@0.2.2
 
 ## 0.6.3
 
@@ -77,8 +77,8 @@
 
 - 3a7ae1a: Bump all packages to latest stable release of Backstage (1.26.4)
 - Updated dependencies [3a7ae1a]
-  - @procore-oss/backstage-plugin-search-backend-module-announcements@0.2.1
-  - @procore-oss/backstage-plugin-announcements-common@0.2.1
+  - @backstage-community/backstage-plugin-search-backend-module-announcements@0.2.1
+  - @backstage-community/plugin-announcements-common@0.2.1
 
 ## 0.6.0
 
@@ -89,21 +89,21 @@
 ### Patch Changes
 
 - Updated dependencies [e811647]
-  - @procore-oss/backstage-plugin-announcements-common@0.2.0
-  - @procore-oss/backstage-plugin-search-backend-module-announcements@0.2.0
+  - @backstage-community/plugin-announcements-common@0.2.0
+  - @backstage-community/backstage-plugin-search-backend-module-announcements@0.2.0
 
 ## 0.5.4
 
 ### Patch Changes
 
 - 2b03aeb: Consolidate duplicated types into the common package.
-- ee57cf2: Export collators from search backend module and deprecate the collators coming from `announcements-backend`. Users are recommended to update their imports to use `@procore-oss/backstage-plugin-search-backend-module-announcements`.
+- ee57cf2: Export collators from search backend module and deprecate the collators coming from `announcements-backend`. Users are recommended to update their imports to use `@backstage-community/backstage-plugin-search-backend-module-announcements`.
 - a0cf0a2: Remove unused api code now that service has been migrated to `announcements-node` and collator has been migrated to `search-backend-module-announcements`
 - Updated dependencies [2b03aeb]
 - Updated dependencies [e5c0685]
 - Updated dependencies [ee57cf2]
-  - @procore-oss/backstage-plugin-search-backend-module-announcements@0.1.1
-  - @procore-oss/backstage-plugin-announcements-common@0.1.4
+  - @backstage-community/backstage-plugin-search-backend-module-announcements@0.1.1
+  - @backstage-community/plugin-announcements-common@0.1.4
 
 ## 0.5.3
 
@@ -111,7 +111,7 @@
 
 - b6c3890: Add support for Backstage New Backend System
 - 2896e85: It was a mistake to remove the AnnouncementsCollatorFactory. Users can only migrate to the new search module for annoucements if they are leveraging the new backend system.
-- 2c733e7: Add deprecation warning for AnnouncementCollatorFactory. Users should import from the new search module instead (@procore-oss/plugin-search-backend-module-announcements).
+- 2c733e7: Add deprecation warning for AnnouncementCollatorFactory. Users should import from the new search module instead (@backstage-community/plugin-search-backend-module-announcements).
 
 ## 0.5.2
 
@@ -119,7 +119,7 @@
 
 - 35670f3: Upgrade Backstage to 1.22.1
 - Updated dependencies [35670f3]
-  - @procore-oss/backstage-plugin-announcements-common@0.1.3
+  - @backstage-community/plugin-announcements-common@0.1.3
 
 ## 0.5.1
 
@@ -153,7 +153,7 @@
 - c3c379d: bump backstage to v1.16.0
 - Updated dependencies [90a19ec]
 - Updated dependencies [c3c379d]
-  - @procore-oss/backstage-plugin-announcements-common@0.1.2
+  - @backstage-community/plugin-announcements-common@0.1.2
 
 ## 0.3.4
 
@@ -167,7 +167,7 @@
 
 - 4f7a351: bump all packages
 - Updated dependencies [4f7a351]
-  - @procore-oss/backstage-plugin-announcements-common@0.1.1
+  - @backstage-community/plugin-announcements-common@0.1.1
 
 ## 0.2.0
 
@@ -182,7 +182,7 @@
 - b8c5c87: Paginate results in the announcements page
 - Updated dependencies [793d5b9]
 - Updated dependencies [ab3813f]
-  - @procore-oss/backstage-plugin-announcements-common@0.0.7
+  - @backstage-community/plugin-announcements-common@0.0.7
 
 ## 0.1.4
 
@@ -190,7 +190,7 @@
 
 - 7d25e84: Bump Backstage-related dependencies
 - Updated dependencies [7d25e84]
-  - @procore-oss/backstage-plugin-announcements-common@0.0.6
+  - @backstage-community/plugin-announcements-common@0.0.6
 
 ## 0.1.3
 
@@ -200,21 +200,21 @@
 - 56d5e6d: Try and setup release pipeline to replace 'workspace:\*' version constraints
 - Updated dependencies [0e1d000]
 - Updated dependencies [56d5e6d]
-  - @procore-oss/backstage-plugin-announcements-common@0.0.5
+  - @backstage-community/plugin-announcements-common@0.0.5
 
 ## 0.1.2
 
 ### Patch Changes
 
 - Updated dependencies [9bdc37d]
-  - @procore-oss/backstage-plugin-announcements-common@0.0.4
+  - @backstage-community/plugin-announcements-common@0.0.4
 
 ## 0.1.1
 
 ### Patch Changes
 
 - Updated dependencies [6c9bf32]
-  - @procore-oss/backstage-plugin-announcements-common@0.0.3
+  - @backstage-community/plugin-announcements-common@0.0.3
 
 ## 0.1.0
 
@@ -227,7 +227,7 @@
 - 0c12eea: Bump Backstage dependencies
 - Updated dependencies [062aca5]
 - Updated dependencies [0c12eea]
-  - @procore-oss/backstage-plugin-announcements-common@0.0.2
+  - @backstage-community/plugin-announcements-common@0.0.2
 
 ## 0.0.5
 

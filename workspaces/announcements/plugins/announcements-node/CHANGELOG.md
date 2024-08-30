@@ -1,4 +1,4 @@
-# @procore-oss/backstage-plugin-announcements-node
+# @backstage-community/plugin-announcements-node
 
 ## 0.2.4
 
@@ -6,7 +6,7 @@
 
 - 5d34ab8: Update to Backstage 1.30.1
 - Updated dependencies [5d34ab8]
-  - @procore-oss/backstage-plugin-announcements-common@0.2.4
+  - @backstage-community/plugin-announcements-common@0.2.4
 
 ## 0.2.3
 
@@ -14,7 +14,7 @@
 
 - 9937f08: - Adds missing backstage metadata to package.json
 - Updated dependencies [9937f08]
-  - @procore-oss/backstage-plugin-announcements-common@0.2.3
+  - @backstage-community/plugin-announcements-common@0.2.3
 
 ## 0.2.2
 
@@ -22,7 +22,7 @@
 
 - 656ef61: Update to Backstage version 1.27.1
 - Updated dependencies [656ef61]
-  - @procore-oss/backstage-plugin-announcements-common@0.2.2
+  - @backstage-community/plugin-announcements-common@0.2.2
 
 ## 0.2.1
 
@@ -30,7 +30,7 @@
 
 - 3a7ae1a: Bump all packages to latest stable release of Backstage (1.26.4)
 - Updated dependencies [3a7ae1a]
-  - @procore-oss/backstage-plugin-announcements-common@0.2.1
+  - @backstage-community/plugin-announcements-common@0.2.1
 
 ## 0.2.0
 
@@ -41,11 +41,11 @@
 ### Patch Changes
 
 - Updated dependencies [e811647]
-  - @procore-oss/backstage-plugin-announcements-common@0.2.0
+  - @backstage-community/plugin-announcements-common@0.2.0
 
 ## 0.1.1
 
 ### Patch Changes
 
 - Updated dependencies [2b03aeb]
-  - @procore-oss/backstage-plugin-announcements-common@0.1.4
+  - @backstage-community/plugin-announcements-common@0.1.4

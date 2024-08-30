@@ -1,7 +1,7 @@
 import {
   Announcement,
   AnnouncementsList,
-} from '@procore-oss/backstage-plugin-announcements-common';
+} from '@backstage-community/plugin-announcements-common';
 import {
   AnnouncementRequestOptions,
   AnnouncementsService,

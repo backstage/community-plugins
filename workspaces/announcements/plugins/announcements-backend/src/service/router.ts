@@ -14,7 +14,7 @@ import {
   announcementDeletePermission,
   announcementUpdatePermission,
   announcementEntityPermissions,
-} from '@procore-oss/backstage-plugin-announcements-common';
+} from '@backstage-community/plugin-announcements-common';
 import { AnnouncementsContext } from './announcementsContextBuilder';
 import { createPermissionIntegrationRouter } from '@backstage/plugin-permission-node';
 

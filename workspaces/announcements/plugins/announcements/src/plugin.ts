@@ -15,7 +15,7 @@ import {
 import { AnnouncementsClient } from './api';
 import { AnnouncementSearchResultProps } from './components/AnnouncementSearchResultListItem';
 import { rootRouteRef } from './routes';
-import { announcementsApiRef } from '@procore-oss/backstage-plugin-announcements-react';
+import { announcementsApiRef } from '@backstage-community/plugin-announcements-react';
 
 export const announcementsPlugin = createPlugin({
   id: 'announcements',

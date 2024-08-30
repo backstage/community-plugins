@@ -4,7 +4,7 @@ Adding the `AnnouncementsCard` component to a page will display a Card with the 
 Announcements yet unseen by the user will be prefixed by a specific icon.
 
 ```ts
-import { AnnouncementsCard } from '@procore-oss/backstage-plugin-announcements';
+import { AnnouncementsCard } from '@backstage-community/plugin-announcements';
 
 export const HomePage = () => {
   return (
