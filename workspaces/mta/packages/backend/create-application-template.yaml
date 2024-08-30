@@ -1,0 +1,56 @@
+# Notice the v1beta3 version
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+# some metadata about the template itself
+metadata:
+  name: v1beta3-demo
+  title: Onboard Application to MTA
+  description: Onboard a new application to MTA
+spec:
+  owner: mta
+  type: service
+  # these are the steps which are rendered in the frontend with the form input
+  parameters:
+    - title: Fill in some steps
+      required:
+        - name
+      properties:
+        name:
+          title: Name
+          type: string
+          description: Unique name of the application
+          ui:autofocus: true
+    - title: Choose a location
+      properties:
+        url:
+          title: Repository URL
+          type: string
+        branch: 
+          title: Branch
+          type: string
+          description: Repository branch to use
+          default: main
+        rootPath: 
+          title: Root Path
+          type: string
+          description: Path to the root of the repository
+          default: '.'
+
+  # here's the steps that are executed in series in the scaffolder backend
+  steps:
+    - id: create-app
+      name: Create Application
+      action: mta:createApplication
+      input:
+        name: ${{ parameters.name }}
+        url: ${{ parameters.url }}
+        branch: ${{ parameters.branch }}
+        rootPath: ${{ parameters.rootPath }}
+  # some outputs which are saved along with the job for use in the frontend
+  output:
+    links:
+      - title: Repository
+        url: ${{ steps['publish'].output.remoteUrl }}
+      - title: Open in catalog
+        icon: catalog
+        entityRef: ${{ steps['register'].output.entityRef }}
