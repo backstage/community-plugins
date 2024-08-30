@@ -15,19 +15,17 @@
  * limitations under the License.
  */
 
-/* eslint-disable @backstage/no-undeclared-imports */
-
-import { execFile as execFileCb } from "child_process";
-import { resolve as resolvePath, dirname as dirnamePath } from "path";
-import { promisify } from "util";
+import { execFile as execFileCb } from 'child_process';
+import { resolve as resolvePath, dirname as dirnamePath } from 'path';
+import { promisify } from 'util';
 
 const execFile = promisify(execFileCb);
 
 async function findLockFiles() {
   //  Not using relative paths as this should be run inside a workspace folder
-  const projectRoot = resolvePath(".");
+  const projectRoot = resolvePath('.');
 
-  let files = process.argv.slice(2).filter((arg) => !arg.startsWith("--"));
+  let files = process.argv.slice(2).filter(arg => !arg.startsWith('--'));
 
   for (const argumentFile of files) {
     if (!argumentFile.match(/(?:^|[\/\\])yarn.lock$/)) {
@@ -37,10 +35,10 @@ async function findLockFiles() {
 
   if (!files.length) {
     // List all lock files that are in the root or in an immediate subdirectory
-    files = ["yarn.lock"];
+    files = ['yarn.lock'];
   }
 
-  return files.map((file) => ({
+  return files.map(file => ({
     fileRelativeToProjectRoot: file,
     directoryRelativeToProjectRoot: dirnamePath(file),
     directoryAbsolute: resolvePath(projectRoot, dirnamePath(file)),
@@ -52,8 +50,8 @@ async function main() {
 
   let fix = false;
   for (const arg of process.argv) {
-    if (arg.startsWith("--")) {
-      if (arg === "--fix") {
+    if (arg.startsWith('--')) {
+      if (arg === '--fix') {
         fix = true;
       } else {
         throw new Error(`Unknown argument ${arg}`);
@@ -62,7 +60,7 @@ async function main() {
   }
 
   for (const lockFile of lockFiles) {
-    console.log("Checking lock file", lockFile.fileRelativeToProjectRoot);
+    console.log('Checking lock file', lockFile.fileRelativeToProjectRoot);
 
     let stdout;
     let stderr;
@@ -70,12 +68,12 @@ async function main() {
 
     try {
       const result = await execFile(
-        "yarn",
-        ["dedupe", ...(fix ? [] : ["--check"])],
+        'yarn',
+        ['dedupe', ...(fix ? [] : ['--check'])],
         {
           shell: true,
           cwd: lockFile.directoryAbsolute,
-        }
+        },
       );
       stdout = result.stdout?.trim();
       stderr = result.stderr?.trim();
@@ -97,32 +95,32 @@ async function main() {
     if (failed) {
       if (!fix) {
         const command = `yarn${
-          lockFile.directoryRelativeToProjectRoot === "."
-            ? ""
+          lockFile.directoryRelativeToProjectRoot === '.'
+            ? ''
             : ` --cwd ${lockFile.directoryRelativeToProjectRoot}`
         } dedupe`;
-        const padding = " ".repeat(Math.max(0, 85 - 6 - command.length));
-        console.error("");
+        const padding = ' '.repeat(Math.max(0, 85 - 6 - command.length));
+        console.error('');
         console.error(
-          "*************************************************************************************"
+          '*************************************************************************************',
         );
         console.error(
-          "* You have duplicate versions of some packages in a yarn.lock file.                 *"
+          '* You have duplicate versions of some packages in a yarn.lock file.                 *',
         );
         console.error(
-          "* To solve this, run the following command from the project root and commit all     *"
+          '* To solve this, run the following command from the project root and commit all     *',
         );
         console.log(
-          "* yarn.lock changes.                                                                *"
+          '* yarn.lock changes.                                                                *',
         );
         console.log(
-          "*                                                                                   *"
+          '*                                                                                   *',
         );
         console.log(`*   ${command}${padding} *`);
         console.error(
-          "*************************************************************************************"
+          '*************************************************************************************',
         );
-        console.error("");
+        console.error('');
       }
 
       process.exit(1);
@@ -130,7 +128,7 @@ async function main() {
   }
 }
 
-main().catch((error) => {
+main().catch(error => {
   console.error(error.stack);
   process.exit(1);
 });

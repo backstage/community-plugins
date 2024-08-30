@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-/* eslint-disable @backstage/no-undeclared-imports */
 /*
  * Copyright 2025 The Backstage Authors
  *
@@ -45,8 +44,8 @@ async function main() {
   // as this avoids including any sample `app` and/or sample `backend` in the changeset
   const { packages } = await getPackages(workspacePlugins);
   const packageEntries = packages
-    .filter((p) => p.packageJson.name.includes('@backstage-community'))
-    .map((p) => `'${p.packageJson.name}': patch`);
+    .filter(p => p.packageJson.name.includes('@backstage-community'))
+    .map(p => `'${p.packageJson.name}': patch`);
 
   // Populate the changeset contents
   const changeset = `---
@@ -59,7 +58,7 @@ Backstage version bump to v${releaseVersion}\n`;
   await fs.writeFile(workspaceChangeset, changeset);
 }
 
-main().catch((error) => {
+main().catch(error => {
   console.error(error.stack);
   process.exit(1);
 });

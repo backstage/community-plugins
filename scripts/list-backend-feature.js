@@ -21,6 +21,7 @@ import { resolve, join } from 'path';
 import arrayToTable from 'array-to-table';
 
 import * as url from 'url';
+
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
 const EXCLUDED_WORKSPACES = ['noop', 'repo-tools'];
@@ -35,8 +36,8 @@ async function main(args) {
 
   // Get workspaces
   const workspaces = (await fs.readdir(workspacePath, { withFileTypes: true }))
-    .filter((w) => w.isDirectory() && !EXCLUDED_WORKSPACES.includes(w.name))
-    .map((w) => w.name);
+    .filter(w => w.isDirectory() && !EXCLUDED_WORKSPACES.includes(w.name))
+    .map(w => w.name);
 
   // Loop through workspaces
   for (const workspace of workspaces) {
@@ -90,7 +91,7 @@ async function main(args) {
   }
 }
 
-main(process.argv.slice(2)).catch((error) => {
+main(process.argv.slice(2)).catch(error => {
   console.error(error.stack || error);
   process.exit(1);
 });
