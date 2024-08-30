@@ -10,7 +10,7 @@ import { pingIdentityTransformerExtensionPoint } from '../extensions';
 /**
  * Registers the `PingIdentityEntityProvider` with the catalog processing extension point.
  *
- * @alpha
+ * @public
  */
 export const catalogModulePingIdentityEntityProvider = createBackendModule({
   pluginId: 'catalog',

@@ -10,9 +10,7 @@ import {
 import { reportPortalApiRef, ReportPortalClient } from './api';
 import { entityRootRouteRef, rootRouteRef } from './routes';
 
-/**
- * @packageDocumentation
- */
+/** @public */
 export const reportPortalPlugin = createPlugin({
   id: 'report-portal',
   routes: {
@@ -32,6 +30,7 @@ export const reportPortalPlugin = createPlugin({
   ],
 });
 
+/** @public */
 export const ReportPortalOverviewCard = reportPortalPlugin.provide(
   createComponentExtension({
     name: 'ReportPortalOverviewCard',
@@ -44,6 +43,7 @@ export const ReportPortalOverviewCard = reportPortalPlugin.provide(
   }),
 );
 
+/** @public */
 export const ReportPortalGlobalPage = reportPortalPlugin.provide(
   createRoutableExtension({
     name: 'ReportPortalGlobalPage',

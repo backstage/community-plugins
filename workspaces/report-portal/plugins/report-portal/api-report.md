@@ -16,28 +16,26 @@ import { RouteRef } from '@backstage/core-plugin-api';
 // @public
 export const isReportPortalAvailable: (entity: Entity) => boolean;
 
-// Warning: (ae-forgotten-export) The symbol "ReportPortalGlobalPageProps" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "ReportPortalGlobalPage" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const ReportPortalGlobalPage: (
   props: ReportPortalGlobalPageProps,
 ) => JSX_2.Element;
 
-// Warning: (ae-missing-release-tag) "ReportPortalIcon" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
+// @public (undocumented)
+export type ReportPortalGlobalPageProps = {
+  title?: string;
+  subtitle?: string;
+  theme?: string;
+};
+
 // @public (undocumented)
 export const ReportPortalIcon: (props: IconComponent) => React_2.JSX.Element;
 
-// Warning: (ae-missing-release-tag) "ReportPortalOverviewCard" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const ReportPortalOverviewCard: (props: {
   variant: InfoCardVariants;
 }) => JSX_2.Element | null;
 
-// Warning: (ae-missing-release-tag) "reportPortalPlugin" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const reportPortalPlugin: BackstagePlugin<
   {
@@ -51,13 +49,6 @@ export const reportPortalPlugin: BackstagePlugin<
   {},
   {}
 >;
-
-// Warnings were encountered during analysis:
-//
-// src/components/ReportPortalIcon/ReportPortalIcon.d.ts:3:22 - (ae-undocumented) Missing documentation for "ReportPortalIcon".
-// src/plugin.d.ts:5:22 - (ae-undocumented) Missing documentation for "reportPortalPlugin".
-// src/plugin.d.ts:13:22 - (ae-undocumented) Missing documentation for "ReportPortalOverviewCard".
-// src/plugin.d.ts:16:22 - (ae-undocumented) Missing documentation for "ReportPortalGlobalPage".
 
 // (No @packageDocumentation comment for this package)
 ```
