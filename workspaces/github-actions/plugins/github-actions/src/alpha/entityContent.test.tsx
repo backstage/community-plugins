@@ -1,22 +1,14 @@
 import { screen, waitFor } from '@testing-library/react';
-import { createExtensionTester } from '@backstage/frontend-test-utils';
-import * as cards from './entityCards';
 import {
-  createApiExtension,
-  createApiFactory,
-} from '@backstage/frontend-plugin-api';
+  createExtensionTester,
+  renderInTestApp,
+  TestApiProvider,
+} from '@backstage/frontend-test-utils';
+import * as content from './entityContent';
+import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { GithubActionsApi, githubActionsApiRef } from '../api';
 import { sampleEntity } from '../__fixtures__/entity';
-
-jest.mock('@backstage/plugin-catalog-react', () => ({
-  ...jest.requireActual('@backstage/plugin-catalog-react'),
-  useEntity: () => sampleEntity,
-}));
-
-jest.mock('@backstage/core-plugin-api', () => ({
-  ...jest.requireActual('@backstage/core-plugin-api'),
-  useRouteRef: () => () => '/github-actions',
-}));
+import React from 'react';
 
 const listBranchesMock = jest
   .fn()
@@ -27,25 +19,24 @@ const listWorkflowRunsMock = jest
   .fn()
   .mockReturnValue(require('../__fixtures__/list-workflow-runs.json'));
 
-describe('Entity card extensions', () => {
-  const mockGithubActionsApi = createApiExtension({
-    factory: createApiFactory({
-      api: githubActionsApiRef,
-      deps: {},
-      factory: () =>
-        ({
-          getDefaultBranch: jest.fn().mockReturnValue('main'),
-          listBranches: listBranchesMock,
-          listWorkflowRuns: listWorkflowRunsMock,
-          reRunWorkflow: () => null,
-        } as unknown as GithubActionsApi),
-    }),
-  });
+describe('Entity content extension', () => {
+  const mockGithubActionsApi = {
+    getDefaultBranch: jest.fn().mockReturnValue('main'),
+    listBranches: listBranchesMock,
+    listWorkflowRuns: listWorkflowRunsMock,
+    reRunWorkflow: () => null,
+  } as unknown as GithubActionsApi;
 
   it('should render WorkflowRunsTable', async () => {
-    createExtensionTester(cards.entityGithubActionsCard)
-      .add(mockGithubActionsApi)
-      .render();
+    renderInTestApp(
+      <TestApiProvider apis={[[githubActionsApiRef, mockGithubActionsApi]]}>
+        <EntityProvider entity={sampleEntity.entity}>
+          {createExtensionTester(
+            content.entityGithubActionsContent,
+          ).reactElement()}
+        </EntityProvider>
+      </TestApiProvider>,
+    );
 
     await waitFor(
       () => {
