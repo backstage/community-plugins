@@ -2,8 +2,9 @@
 
 The backend plugin for Tech Insights.
 
-It provides the API for the frontend tech insights, scorecards and fact visualization functionality,
-as well as a framework to run fact retrievers and store fact values in to a data store.
+It provides the API for the frontend tech insights, scorecards and fact visualization functionality, as well as a framework to run fact retrievers and store fact values in to a data store.
+
+Looking for the old backend installation docs? Visit [here](./docs/old-backend-system.md).
 
 ## Installation
 
@@ -25,7 +26,7 @@ backend.add(import('@backstage-community/plugin-tech-insights-backend'));
 
 ### Included FactRetrievers
 
-The Tech Insights backend is installed in your backend package, but you will not have any fact retrievers present in your application. `FactRetrievers` only get registered if configured in the `app-config.yaml`.
+`FactRetrievers` are only registered if configured in the `app-config.yaml`. Meaning that while you have the tech insights backend installed, you will not have any fact retrievers present in your application.
 
 There are three built-in FactRetrievers that come with Tech Insights:
 
@@ -69,7 +70,7 @@ lifecycle: { timeToLive: { weeks: 2 } }; # Human readable value
 
 #### Running fact retrievers in a multi-instance installation
 
-The Tech Insights plugin utilizes the `PluginTaskScheduler` for scheduling tasks and coordinating the task invocation across instances. See [the PluginTaskScheduler documentation](https://backstage.io/docs/reference/backend-tasks.plugintaskscheduler) for more information.
+The Tech Insights plugin utilizes `PluginTaskScheduler` to schedule and coordinate task invocation across instances. See [the PluginTaskScheduler documentation](https://backstage.io/docs/reference/backend-tasks.plugintaskscheduler) for more information.
 
 ### Included FactChecker
 
@@ -90,10 +91,12 @@ backend.add(import('@backstage-community/plugin-tech-insights-backend'));
 +backend.add(import('@backstage-community/plugin-tech-insights-backend-module-jsonfc'));
 ```
 
-Then, you configure the checks in the `app-config.yaml` file. The following example configures a _check_ that verifies a group has been set as the `spec.owner` for an entity. The check uses the `entityOwnershipFactRetriever` fact retriever to get the data.
+Then, configure the checks in the `app-config.yaml` file. The following example configures a _check_ to verify a group has been set as the `spec.owner` for an entity. The check uses the `entityOwnershipFactRetriever` fact retriever to get the data.
 
 ```yaml title="app-config.yaml"
 techInsights:
+  factRetrievers:
+    ...
   factChecker:
     checks:
       groupOwnerCheck:
