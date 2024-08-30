@@ -1,4 +1,3 @@
-/***/
 /**
  * The pingidentity backend module for the catalog plugin.
  *

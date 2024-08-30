@@ -3,6 +3,7 @@ import React from 'react';
 import SvgIcon from '@mui/material/SvgIcon';
 import { IconComponent } from '@backstage/core-plugin-api';
 
+/** @public */
 export const ReportPortalIcon = (props: IconComponent) => {
   return (
     <SvgIcon viewBox="0 0 31 31" {...props}>
