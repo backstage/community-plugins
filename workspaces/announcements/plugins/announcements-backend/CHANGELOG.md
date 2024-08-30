@@ -5,7 +5,7 @@
 ### Patch Changes
 
 - Updated dependencies [2bee323]
-  - @backstage-community/backstage-plugin-search-backend-module-announcements@0.2.5
+  - @backstage-community/plugin-search-backend-module-announcements@0.2.5
 
 ## 0.9.2
 
@@ -13,7 +13,7 @@
 
 - 5d34ab8: Update to Backstage 1.30.1
 - Updated dependencies [5d34ab8]
-  - @backstage-community/backstage-plugin-search-backend-module-announcements@0.2.4
+  - @backstage-community/plugin-search-backend-module-announcements@0.2.4
   - @backstage-community/plugin-announcements-common@0.2.4
 
 ## 0.9.1
@@ -22,7 +22,7 @@
 
 - 9937f08: - Adds missing backstage metadata to package.json
 - Updated dependencies [9937f08]
-  - @backstage-community/backstage-plugin-search-backend-module-announcements@0.2.3
+  - @backstage-community/plugin-search-backend-module-announcements@0.2.3
   - @backstage-community/plugin-announcements-common@0.2.3
 
 ## 0.9.0
@@ -56,7 +56,7 @@
 
 - 656ef61: Update to Backstage version 1.27.1
 - Updated dependencies [656ef61]
-  - @backstage-community/backstage-plugin-search-backend-module-announcements@0.2.2
+  - @backstage-community/plugin-search-backend-module-announcements@0.2.2
   - @backstage-community/plugin-announcements-common@0.2.2
 
 ## 0.6.3
@@ -77,7 +77,7 @@
 
 - 3a7ae1a: Bump all packages to latest stable release of Backstage (1.26.4)
 - Updated dependencies [3a7ae1a]
-  - @backstage-community/backstage-plugin-search-backend-module-announcements@0.2.1
+  - @backstage-community/plugin-search-backend-module-announcements@0.2.1
   - @backstage-community/plugin-announcements-common@0.2.1
 
 ## 0.6.0
@@ -90,19 +90,19 @@
 
 - Updated dependencies [e811647]
   - @backstage-community/plugin-announcements-common@0.2.0
-  - @backstage-community/backstage-plugin-search-backend-module-announcements@0.2.0
+  - @backstage-community/plugin-search-backend-module-announcements@0.2.0
 
 ## 0.5.4
 
 ### Patch Changes
 
 - 2b03aeb: Consolidate duplicated types into the common package.
-- ee57cf2: Export collators from search backend module and deprecate the collators coming from `announcements-backend`. Users are recommended to update their imports to use `@backstage-community/backstage-plugin-search-backend-module-announcements`.
+- ee57cf2: Export collators from search backend module and deprecate the collators coming from `announcements-backend`. Users are recommended to update their imports to use `@backstage-community/plugin-search-backend-module-announcements`.
 - a0cf0a2: Remove unused api code now that service has been migrated to `announcements-node` and collator has been migrated to `search-backend-module-announcements`
 - Updated dependencies [2b03aeb]
 - Updated dependencies [e5c0685]
 - Updated dependencies [ee57cf2]
-  - @backstage-community/backstage-plugin-search-backend-module-announcements@0.1.1
+  - @backstage-community/plugin-search-backend-module-announcements@0.1.1
   - @backstage-community/plugin-announcements-common@0.1.4
 
 ## 0.5.3

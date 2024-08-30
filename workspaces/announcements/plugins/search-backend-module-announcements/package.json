@@ -1,5 +1,5 @@
 {
-  "name": "@backstage-community/backstage-plugin-search-backend-module-announcements",
+  "name": "@backstage-community/plugin-search-backend-module-announcements",
   "description": "The announcements backend module for the search plugin.",
   "version": "0.2.5",
   "main": "src/index.ts",

@@ -5,7 +5,7 @@
 Add the new module to your backend app:
 
 ```bash
-yarn add --cwd packages/backend @backstage-community/backstage-plugin-search-backend-module-announcements
+yarn add --cwd packages/backend @backstage-community/plugin-search-backend-module-announcements
 ```
 
 Update `packages/backend/src/index.ts` to import announcements search module and register it with the backend:
@@ -18,9 +18,7 @@ const backend = createBackend();
 
 backend.add(import('@backstage-community/plugin-announcements-backend'));
 backend.add(
-  import(
-    '@backstage-community/backstage-plugin-search-backend-module-announcements'
-  ),
+  import('@backstage-community/plugin-search-backend-module-announcements'),
 );
 // ...
 ```

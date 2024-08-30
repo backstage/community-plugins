@@ -1,5 +1,5 @@
 ---
-'@backstage-community/backstage-plugin-search-backend-module-announcements': minor
+'@backstage-community/plugin-search-backend-module-announcements': minor
 '@backstage-community/plugin-announcements-backend': minor
 '@backstage-community/plugin-announcements-common': minor
 '@backstage-community/plugin-announcements-react': minor

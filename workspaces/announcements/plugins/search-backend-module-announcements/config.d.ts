@@ -4,7 +4,7 @@ export interface Config {
   search?: {
     collators?: {
       /**
-       * Configuration options for `@backstage-community/backstage-plugin-search-backend-module-announcements`
+       * Configuration options for `@backstage-community/plugin-search-backend-module-announcements`
        */
       announcements?: {
         /**

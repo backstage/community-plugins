@@ -1,4 +1,4 @@
-# @backstage-community/backstage-plugin-search-backend-module-announcements
+# @backstage-community/plugin-search-backend-module-announcements
 
 ## 0.2.5
 
@@ -60,7 +60,7 @@
 
 - 2b03aeb: Consolidate duplicated types into the common package.
 - e5c0685: Refactor the AnnouncementsCollatorFactory to use the service coming from the new `announcements-node` package. This removes the modules dependency on `announcements-backend` which we ultimately don't want.
-- ee57cf2: Export collators from search backend module and deprecate the collators coming from `announcements-backend`. Users are recommended to update their imports to use `@backstage-community/backstage-plugin-search-backend-module-announcements`.
+- ee57cf2: Export collators from search backend module and deprecate the collators coming from `announcements-backend`. Users are recommended to update their imports to use `@backstage-community/plugin-search-backend-module-announcements`.
 - Updated dependencies [2b03aeb]
   - @backstage-community/plugin-announcements-common@0.1.4
   - @backstage-community/plugin-announcements-node@0.1.1

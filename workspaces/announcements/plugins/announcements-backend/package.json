@@ -41,7 +41,7 @@
     "db:setup": "knex migrate:latest && knex seed:run"
   },
   "dependencies": {
-    "@backstage-community/backstage-plugin-search-backend-module-announcements": "workspace:^",
+    "@backstage-community/plugin-search-backend-module-announcements": "workspace:^",
     "@backstage-community/plugin-announcements-common": "workspace:^",
     "@backstage/backend-common": "^0.24.0",
     "@backstage/backend-plugin-api": "^0.8.0",
