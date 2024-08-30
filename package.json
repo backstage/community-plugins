@@ -7,7 +7,8 @@
     "node": "18 || 20"
   },
   "scripts": {
-    "create-workspace": "community-cli workspace create"
+    "create-workspace": "community-cli workspace create",
+    "postinstall": "husky"
   },
   "type": "module",
   "packageManager": "yarn@3.2.3",
@@ -18,7 +19,28 @@
     "@octokit/rest": "^20.1.1"
   },
   "devDependencies": {
+    "@manypkg/get-packages": "^2.2.2",
+    "@spotify/eslint-plugin": "^15.0.0",
+    "@spotify/prettier-config": "^15.0.0",
+    "array-to-table": "^1.0.1",
+    "eslint": "^8.6.0",
+    "eslint-plugin-notice": "^0.9.10",
+    "eslint-plugin-react": "^7.28.0",
+    "eslint-plugin-testing-library": "^6.0.0",
     "fs-extra": "11.2.0",
-    "node-fetch": "^2.6.7"
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.2",
+    "node-fetch": "^2.6.7",
+    "prettier": "^2.3.2"
+  },
+  "prettier": "@spotify/prettier-config",
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,mjs,cjs}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ]
   }
 }

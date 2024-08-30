@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-azure-storage-explorer-backend",
-  "version": "0.0.1",
+  "version": "0.0.4",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "license": "Apache-2.0",
@@ -38,10 +38,10 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
-    "@azure/identity": "4.2.1",
-    "@azure/storage-blob": "12.17.0",
-    "@backstage/backend-common": "^0.23.3",
-    "@backstage/backend-plugin-api": "^0.7.0",
+    "@azure/identity": "4.4.1",
+    "@azure/storage-blob": "12.24.0",
+    "@backstage/backend-common": "^0.24.0",
+    "@backstage/backend-plugin-api": "^0.8.0",
     "@backstage/config": "^1.2.0",
     "@backstage/errors": "^1.2.4",
     "@types/express": "*",
@@ -52,10 +52,10 @@
     "yn": "^4.0.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.26.11",
-    "@types/supertest": "^2.0.12",
+    "@backstage/cli": "^0.27.0",
+    "@types/supertest": "^6.0.0",
     "msw": "^1.0.0",
-    "supertest": "^6.2.4"
+    "supertest": "^7.0.0"
   },
   "files": [
     "dist"

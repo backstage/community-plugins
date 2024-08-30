@@ -11,6 +11,11 @@ on:
         description: "Force release even if no changesets are present"
         required: false
         type: boolean
+      branch:
+        description: "Branch to run the workflow on"
+        required: false
+        default: "main"
+        type: string
   workflow_call:
     inputs:
       force_release:
@@ -21,13 +26,18 @@ on:
         description: "Name of the Workspace"
         required: true
         type: string
+      branch:
+        description: "Branch to run the workflow on"
+        required: false
+        default: "main"
+        type: string
 
 concurrency:
   group: ${{ github.workflow }}-${{ inputs.workspace }}
 
 jobs:
   changesets-pr:
-    name: Update Version Packages PR for ${{ inputs.workspace }}
+    name: Update Version Packages PR for ${{ inputs.workspace }} on branch ${{ inputs.branch }}
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -40,6 +50,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f # v4
+        with:
+          ref: ${{ inputs.branch }}
       - name: Set up Node
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
         with:
@@ -63,6 +75,10 @@ jobs:
 
       - name: Fetch previous commit for release check
         run: git fetch origin '${{ github.event.before }}'
+
+      - name: Fetch the commit that triggered the workflow (used by backstage/changesets-action)
+        run: git fetch origin ${{ github.sha }}
+        continue-on-error: true
 
       - name: Check if release
         id: release_check
@@ -88,7 +104,7 @@ jobs:
 
 
   release:
-    name: Release workspace ${{ inputs.workspace }}
+    name: Release workspace ${{ inputs.workspace }} on branch ${{ inputs.branch }}
     runs-on: ubuntu-latest
     needs: changesets-pr
     if: needs.changesets-pr.outputs.needs_release == 'true' || inputs.force_release == true
@@ -102,6 +118,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f # v4
+        with:
+          ref: ${{ inputs.branch }}
       - name: Set up Node
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
         with:

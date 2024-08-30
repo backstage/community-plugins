@@ -8,6 +8,7 @@ import fs from 'fs-extra';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
+/** @public */
 export const createOdoAction = ({
   odoConfig,
 }: {

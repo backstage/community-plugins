@@ -1,0 +1,1 @@
+export { RosDetailComponent } from './RosDetailComponent';

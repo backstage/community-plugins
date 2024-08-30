@@ -1,5 +1,26 @@
 # @backstage-community/plugin-linguist-backend
 
+## 0.5.23
+
+### Patch Changes
+
+- 6021ae7: Backstage version bump to v1.30.2
+- Updated dependencies [6021ae7]
+  - @backstage-community/plugin-linguist-common@0.1.8
+
+## 0.5.22
+
+### Patch Changes
+
+- ae2ee8a: Updated dependency `@types/supertest` to `^6.0.0`.
+  Updated dependency `supertest` to `^7.0.0`.
+
+## 0.5.21
+
+### Patch Changes
+
+- 78129a3: Removed code marked as deprecated in the upstream Backstage project
+
 ## 0.5.20
 
 ### Patch Changes

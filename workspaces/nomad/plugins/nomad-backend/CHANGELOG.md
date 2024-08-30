@@ -1,5 +1,12 @@
 # @backstage-community/plugin-nomad-backend
 
+## 0.1.22
+
+### Patch Changes
+
+- ae2ee8a: Updated dependency `@types/supertest` to `^6.0.0`.
+  Updated dependency `supertest` to `^7.0.0`.
+
 ## 0.1.21
 
 ### Patch Changes

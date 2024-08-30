@@ -64,7 +64,7 @@ export class JenkinsApiImpl {
 
   private static readonly jobsTreeSpec = `jobs[
                    ${JenkinsApiImpl.jobTreeSpec}
-                 ]{0,50}`;
+                 ]`;
 
   private static readonly jobBuildsTreeSpec = `
                    name,
@@ -103,21 +103,24 @@ export class JenkinsApiImpl {
       // Assume jenkinsInfo.jobFullName is either
       // a MultiBranch Pipeline (folder with one job per branch) project
       // a Pipeline (standalone) project
+
+      // Add count limit to projects
+      // If limit is set in the config, use it, otherwise use the default limit of 50
+      const limitedJobsTreeSpec: string = `${JenkinsApiImpl.jobsTreeSpec}{0,${jenkinsInfo.projectCountLimit}}`;
+
       const project = await client.job.get({
         name: jenkinsInfo.jobFullName,
         // Filter only be the information we need, instead of loading all fields.
-        // Limit to only show the latest build for each job and only load 50 jobs
-        // at all.
         // Whitespaces are only included for readability here and stripped out
         // before sending to Jenkins
-        tree: JenkinsApiImpl.jobsTreeSpec.replace(/\s/g, ''),
+        tree: limitedJobsTreeSpec.replace(/\s/g, ''),
       });
 
       const isStandaloneProject = !project.jobs;
       if (isStandaloneProject) {
         const standaloneProject = await client.job.get({
           name: jenkinsInfo.jobFullName,
-          tree: JenkinsApiImpl.jobTreeSpec.replace(/\s/g, ''),
+          tree: limitedJobsTreeSpec.replace(/\s/g, ''),
         });
         projects.push(this.augmentProject(standaloneProject));
         return projects;
@@ -344,15 +347,11 @@ export class JenkinsApiImpl {
 
   async getJobBuilds(jenkinsInfo: JenkinsInfo, jobFullName: string) {
     let jobName = jobFullName;
-
     if (jobFullName.includes('/')) {
-      const arr = jobFullName.split('/');
-      const multibranchJobName = arr.shift();
-      jobName = [
-        multibranchJobName,
-        'job',
-        encodeURIComponent(arr.join('/')),
-      ].join('/');
+      jobName = jobFullName
+        .split('/')
+        .map((s: string) => `${encodeURIComponent(s)}`)
+        .join('/job/');
     }
 
     const response = await fetch(
@@ -369,7 +368,6 @@ export class JenkinsApiImpl {
     );
 
     const jobBuilds = await response.json();
-
     return jobBuilds;
   }
 }

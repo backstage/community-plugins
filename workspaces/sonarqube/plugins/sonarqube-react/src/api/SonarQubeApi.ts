@@ -57,6 +57,7 @@ export type Metrics = {
 
 /** @public */
 export interface FindingSummary {
+  title: string;
   lastAnalysis: string;
   metrics: Metrics;
   projectUrl: string;
@@ -76,4 +77,10 @@ export type SonarQubeApi = {
     componentKey?: string;
     projectInstance?: string;
   }): Promise<FindingSummary | undefined>;
+  getFindingSummaries(
+    components: Array<{
+      projectInstance: string | undefined;
+      componentKey: string;
+    }>,
+  ): Promise<Map<string, FindingSummary | undefined>>;
 };

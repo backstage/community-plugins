@@ -1,5 +1,19 @@
 # app
 
+## 0.0.5
+
+### Patch Changes
+
+- Updated dependencies [aba9f7f]
+  - @backstage-community/plugin-jenkins@0.10.4
+
+## 0.0.4
+
+### Patch Changes
+
+- Updated dependencies [c1f63bd]
+  - @backstage-community/plugin-jenkins@0.10.3
+
 ## 0.0.3
 
 ### Patch Changes

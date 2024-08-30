@@ -1,5 +1,17 @@
 # @backstage-community/plugin-github-actions
 
+## 0.6.21
+
+### Patch Changes
+
+- a0591d5: Make entity cards/content appear on Components only by default in new FE system
+
+## 0.6.20
+
+### Patch Changes
+
+- 8711599: Updating readmes in github actions to add configuration steps and removed incorrect limitations
+
 ## 0.6.19
 
 ### Patch Changes

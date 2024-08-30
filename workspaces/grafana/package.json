@@ -18,7 +18,8 @@
     "lint": "backstage-cli repo lint --since origin/main",
     "lint:all": "backstage-cli repo lint",
     "prettier:check": "prettier --check .",
-    "new": "backstage-cli new --scope @backstage-community"
+    "new": "backstage-cli new --scope @backstage-community",
+    "postinstall": "cd ../../ && yarn install"
   },
   "workspaces": {
     "packages": [
@@ -32,11 +33,11 @@
     "directory": "workspaces/grafana"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.26.11",
+    "@backstage/cli": "^0.27.0",
     "@backstage/e2e-test-utils": "^0.1.1",
-    "@backstage/repo-tools": "^0.9.4",
+    "@backstage/repo-tools": "^0.9.5",
     "@changesets/cli": "^2.27.1",
-    "@spotify/prettier-config": "^12.0.0",
+    "@spotify/prettier-config": "^15.0.0",
     "node-gyp": "^9.0.0",
     "prettier": "^2.3.2",
     "typescript": "~5.3.0"
@@ -55,5 +56,8 @@
     "*.{json,md}": [
       "prettier --write"
     ]
+  },
+  "dependencies": {
+    "knip": "^5.27.4"
   }
 }

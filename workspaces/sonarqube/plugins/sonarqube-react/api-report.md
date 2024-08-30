@@ -20,6 +20,8 @@ export interface FindingSummary {
   metrics: Metrics;
   // (undocumented)
   projectUrl: string;
+  // (undocumented)
+  title: string;
 }
 
 // @public (undocumented)
@@ -53,6 +55,12 @@ export type SonarQubeApi = {
     componentKey?: string;
     projectInstance?: string;
   }): Promise<FindingSummary | undefined>;
+  getFindingSummaries(
+    components: Array<{
+      projectInstance: string | undefined;
+      componentKey: string;
+    }>,
+  ): Promise<Map<string, FindingSummary | undefined>>;
 };
 
 // @public (undocumented)

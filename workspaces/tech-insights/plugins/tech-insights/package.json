@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-tech-insights",
-  "version": "0.3.31",
+  "version": "0.3.33",
   "backstage": {
     "role": "frontend-plugin",
     "pluginId": "tech-insights",
@@ -40,23 +40,22 @@
   },
   "dependencies": {
     "@backstage-community/plugin-tech-insights-common": "workspace:^",
-    "@backstage/catalog-model": "^1.5.0",
-    "@backstage/core-components": "^0.14.9",
+    "@backstage/catalog-model": "^1.6.0",
+    "@backstage/core-components": "^0.14.10",
     "@backstage/core-plugin-api": "^1.9.3",
     "@backstage/errors": "^1.2.4",
-    "@backstage/plugin-catalog-react": "^1.12.2",
+    "@backstage/plugin-catalog-react": "^1.12.3",
     "@backstage/types": "^1.1.1",
     "@material-table/exporters": "^1.2.19",
     "@material-ui/core": "^4.12.2",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "4.0.0-alpha.61",
     "@types/react": "^16.13.1 || ^17.0.0 || ^18.0.0",
-    "qs": "^6.9.4",
     "react-use": "^17.2.4"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.26.11",
-    "@backstage/dev-utils": "^1.0.36",
+    "@backstage/cli": "^0.27.0",
+    "@backstage/dev-utils": "^1.0.37",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^15.0.0",

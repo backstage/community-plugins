@@ -1,5 +1,17 @@
 # @backstage-community/plugin-adr-common
 
+## 0.2.28
+
+### Patch Changes
+
+- f18c579: Backstage version bump to v1.30.2
+
+## 0.2.27
+
+### Patch Changes
+
+- 5541765: Add missing dependency on `marked`
+
 ## 0.2.26
 
 ### Patch Changes

@@ -1,5 +1,25 @@
 # @backstage-community/plugin-catalog-backend-module-linguist-tags-processor
 
+## 0.1.5
+
+### Patch Changes
+
+- 6021ae7: Backstage version bump to v1.30.2
+- Updated dependencies [6021ae7]
+  - @backstage-community/plugin-linguist-common@0.1.8
+
+## 0.1.4
+
+### Patch Changes
+
+- ee627fb: Added missing `config.d.ts` to `files` section in `package.json`
+
+## 0.1.3
+
+### Patch Changes
+
+- 78129a3: Removed code marked as deprecated in the upstream Backstage project
+
 ## 0.1.2
 
 ### Patch Changes

@@ -7,7 +7,7 @@ import { BackstagePlugin } from '@backstage/frontend-plugin-api';
 import { TranslationRef } from '@backstage/core-plugin-api/alpha';
 
 // @alpha (undocumented)
-const _default: BackstagePlugin<{}, {}>;
+const _default: BackstagePlugin<{}, {}, {}>;
 export default _default;
 
 // @alpha (undocumented)
