@@ -11,7 +11,7 @@ spec:
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: example-website
+  name: example-service
   annotations:
     blackduck/project: example-host/example-website/main
 spec:
