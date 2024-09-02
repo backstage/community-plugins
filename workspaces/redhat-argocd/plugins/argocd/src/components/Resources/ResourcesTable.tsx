@@ -21,10 +21,19 @@ interface ResourcesTableProps {
 }
 
 const useStyles = makeStyles(theme => ({
+  table: {
+    width: '100%',
+    marginTop: theme.spacing(2),
+  },
   empty: {
     padding: theme.spacing(2),
     display: 'flex',
     justifyContent: 'center',
+  },
+  footer: {
+    '&:nth-of-type(odd)': {
+      backgroundColor: `${theme.palette.background.paper}`,
+    },
   },
 }));
 
@@ -50,7 +59,7 @@ export const ResourcesTable: FC<ResourcesTableProps> = ({
         health: { status: healthStatus },
       } = res;
 
-      return [undefined, kind, createdAt, status, healthStatus];
+      return [kind, createdAt, status, healthStatus];
     },
     [createdAt],
   );
@@ -163,27 +172,13 @@ export const ResourcesTable: FC<ResourcesTableProps> = ({
         onChange={handleSearchChange}
         onSearchClear={handleSearchClear}
       />
-      <TablePagination
-        rowsPerPageOptions={[
-          { value: 5, label: '5 rows' },
-          { value: 10, label: '10 rows' },
-          { value: 25, label: '25 rows' },
-        ]}
-        count={filteredResources.length}
-        style={{ marginLeft: 'auto' }}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-        labelRowsPerPage={null}
-      />
     </div>
   );
 
   return (
     <>
       {toolbar}
-      <Table aria-labelledby="Resources" style={{ width: '100%' }}>
+      <Table aria-labelledby="Resources" className={classes.table}>
         <ResourcesTableHeader
           order={order}
           orderBy={orderBy}
@@ -198,6 +193,22 @@ export const ResourcesTable: FC<ResourcesTableProps> = ({
                 <TableCell colSpan={ResourcesColumnHeaders.length} />
               </TableRow>
             )}
+            <TableRow className={classes.footer}>
+              <TablePagination
+                rowsPerPageOptions={[
+                  { value: 5, label: '5 rows' },
+                  { value: 10, label: '10 rows' },
+                  { value: 25, label: '25 rows' },
+                ]}
+                count={filteredResources.length}
+                style={{ marginLeft: 'auto' }}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                labelRowsPerPage={null}
+              />
+            </TableRow>
           </TableBody>
         ) : (
           <tbody>

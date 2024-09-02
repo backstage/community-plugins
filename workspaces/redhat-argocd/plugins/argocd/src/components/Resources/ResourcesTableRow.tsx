@@ -1,8 +1,6 @@
 import React from 'react';
-import { IconButton, makeStyles, TableCell, TableRow } from '@material-ui/core';
+import { makeStyles, TableCell, TableRow } from '@material-ui/core';
 import moment from 'moment';
-import KeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
-import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 
 import { ResourceSyncStatus } from './ResourcesSyncStatus';
 import { ResourceHealthStatus } from './ResourcesHealthStatus';
@@ -22,43 +20,22 @@ const useStyles = makeStyles(theme => ({
       backgroundColor: 'inherit',
     },
     boxShadow: '0px 0.5px 2px rgba(0, 0, 0, 0.3)',
+    borderBottom: `1px solid ${theme.palette.grey.A100}`,
   },
   tableCell: {
-    padding: theme.spacing(1, 2, 1, 0),
+    padding: theme.spacing(1, 2, 1),
+    height: 50,
   },
 }));
 
 export const ResourcesTableRow: React.FC<ResourcesTableRowProps> = ({
   row,
   createdAt,
-  open,
-  uid,
-  setOpen,
 }) => {
   const classes = useStyles();
 
-  const handleExpandCollapseClick = () => {
-    setOpen(prevState => ({
-      ...prevState,
-      [uid]: !prevState[uid],
-    }));
-  };
-
   return (
     <TableRow className={classes.resourceRow}>
-      <TableCell>
-        <IconButton
-          aria-label="expand row"
-          size="small"
-          onClick={handleExpandCollapseClick}
-        >
-          {open ? (
-            <KeyboardArrowDown fontSize="small" data-testid="down-arrow" />
-          ) : (
-            <KeyboardArrowRight fontSize="small" data-testid="right-arrow" />
-          )}
-        </IconButton>
-      </TableCell>
       <TableCell className={classes.tableCell} align="left">
         {row.kind}
       </TableCell>

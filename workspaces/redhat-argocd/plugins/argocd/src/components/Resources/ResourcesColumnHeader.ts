@@ -2,9 +2,6 @@ import { TableColumn } from '@backstage/core-components';
 
 export const ResourcesColumnHeaders: TableColumn[] = [
   {
-    id: 'expander',
-  },
-  {
     id: 'kind',
     title: 'Kind',
   },

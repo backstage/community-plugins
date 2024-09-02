@@ -23,7 +23,7 @@ interface ResourcesTableHeaderProps {
 
 const useStyles = makeStyles(theme => ({
   header: {
-    padding: theme.spacing(1, 2, 1, 0),
+    padding: theme.spacing(1, 2, 1),
     fontWeight: 'bold',
     color: theme.palette.text.primary,
   },
