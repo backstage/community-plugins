@@ -132,7 +132,7 @@ export interface StatusSync {
   revision?: string;
 }
 
-export interface Revision {
+export interface RevisionInfo {
   author: string;
   date: Date;
   message: string;

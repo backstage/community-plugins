@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { createStyles, makeStyles, Theme } from '@material-ui/core';
 import ArrowCircleUpIcon from '@patternfly/react-icons/dist/esm/icons/arrow-alt-circle-up-icon';
 import CheckCircleIcon from '@patternfly/react-icons/dist/esm/icons/check-circle-icon';
 import CircleNotchIcon from '@patternfly/react-icons/dist/esm/icons/circle-notch-icon';
@@ -10,28 +9,13 @@ import HeartIcon from '@patternfly/react-icons/dist/esm/icons/heart-icon';
 import PauseCircleIcon from '@patternfly/react-icons/dist/esm/icons/pause-circle-icon';
 import QuestionCircleIcon from '@patternfly/react-icons/dist/esm/icons/question-circle-icon';
 
-import { HealthStatus, SyncStatusCode, SyncStatuses } from '../../types';
+import {
+  HealthStatus,
+  SyncStatusCode,
+  SyncStatuses,
+} from '../../types/application';
+import useIconStyles from '../../hooks/useIconStyles';
 
-const useIconStyles = makeStyles<Theme>(theme =>
-  createStyles({
-    icon: {
-      marginLeft: theme.spacing(0.6),
-    },
-    'icon-spin': {
-      animation: '$spin-animation 0.5s infinite',
-      display: 'inline-block',
-    },
-
-    '@keyframes spin-animation': {
-      '0%': {
-        transform: 'rotate(0deg)',
-      },
-      '100%': {
-        transform: 'rotate(359deg)',
-      },
-    },
-  }),
-);
 export const SyncIcon: React.FC<{ status: SyncStatusCode }> = ({
   status,
 }): React.ReactNode => {

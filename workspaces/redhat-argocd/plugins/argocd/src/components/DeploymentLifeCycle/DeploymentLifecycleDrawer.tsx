@@ -22,18 +22,38 @@ import { Skeleton } from '@material-ui/lab';
 import GitLabIcon from '@patternfly/react-icons/dist/esm/icons/gitlab-icon';
 import moment from 'moment';
 
-import { Application, Revision } from '../../types';
+import { Application, RevisionInfo } from '../../types/application';
 import { getCommitUrl, isAppHelmChartType } from '../../utils/utils';
 import AppNamespace from '../AppStatus/AppNamespace';
 import StatusHeading from '../AppStatus/StatusHeading';
 import DeploymentLifecycledHeader from './DeploymentLifecycleHeader';
+import Rollouts from './sidebar/rollouts/Rollouts';
 
 interface DeploymentLifecycleDrawerProps {
   app: Application | undefined;
   isOpen: boolean;
   onClose: () => void;
-  revisionsMap: { [key: string]: Revision };
+  revisionsMap: { [key: string]: RevisionInfo };
 }
+
+const useDeploymentInfoStyles = makeStyles((theme: Theme) => ({
+  latestDeploymentContainer: {
+    marginBottom: theme.spacing(1),
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'row',
+  },
+  deploymentHistory: {
+    flex: 1,
+    width: '100%',
+    margin: 0,
+    padding: '0',
+    minHeight: 0,
+    maxHeight: '50vh',
+    overflowY: 'auto',
+    marginBottom: theme.spacing(1),
+  },
+}));
 
 const useDrawerStyles = makeStyles<Theme>(theme =>
   createStyles({
@@ -68,6 +88,7 @@ const DeploymentLifecycleDrawer: React.FC<DeploymentLifecycleDrawerProps> = ({
 
   const { entity } = useEntity();
   const classes = useDrawerStyles();
+  const deploymentClasess = useDeploymentInfoStyles();
 
   if (!app) {
     return null;
@@ -191,62 +212,61 @@ const DeploymentLifecycleDrawer: React.FC<DeploymentLifecycleDrawerProps> = ({
           )}
           {appHistory.length >= 1 && (
             <Grid item xs={12}>
-              <Typography color="textPrimary">Latest deployment</Typography>
+              <Grid
+                container
+                className={deploymentClasess.latestDeploymentContainer}
+              >
+                <Grid item xs={12}>
+                  <Typography color="textPrimary">Latest deployment</Typography>
 
-              <Card elevation={2} style={{ margin: '10px' }}>
-                <CardContent>
-                  <Typography color="textPrimary" gutterBottom>
-                    Deployment
-                  </Typography>
+                  <Card elevation={2} style={{ margin: '10px' }}>
+                    <CardContent>
+                      <Typography color="textPrimary" gutterBottom>
+                        Deployment
+                      </Typography>
 
-                  <Typography
-                    variant="body2"
-                    color="textSecondary"
-                    className={classes.commitMessage}
-                  >
-                    Image{' '}
-                    <Link
-                      href={`https://${app?.status?.summary?.images?.[0]}`}
-                      target="_blank"
-                      rel="noopener"
-                    >
-                      {app?.status?.summary?.images?.[0].split('/').pop()}
-                    </Link>
-                    <br />
-                    {revisionsMap[latestRevision?.revision]?.message}{' '}
-                    <Link
-                      href={
-                        isAppHelmChartType(app)
-                          ? app?.spec?.source?.repoURL
-                          : getCommitUrl(
-                              app?.spec?.source?.repoURL ?? '',
-                              latestRevision?.revision,
-                              entity?.metadata?.annotations ?? {},
-                            )
-                      }
-                      target="_blank"
-                      rel="noopener"
-                    >
-                      {latestRevision?.revision.slice(0, 7)}
-                    </Link>{' '}
-                    deployed {moment(appDeployedAt).local().fromNow()}
-                  </Typography>
-                </CardContent>
-              </Card>
+                      <Typography
+                        variant="body2"
+                        color="textSecondary"
+                        className={classes.commitMessage}
+                      >
+                        Image{' '}
+                        <Link
+                          href={`https://${app?.status?.summary?.images?.[0]}`}
+                          target="_blank"
+                          rel="noopener"
+                        >
+                          {app?.status?.summary?.images?.[0].split('/').pop()}
+                        </Link>
+                        <br />
+                        {revisionsMap[latestRevision?.revision]?.message}{' '}
+                        <Link
+                          href={
+                            isAppHelmChartType(app)
+                              ? app?.spec?.source?.repoURL
+                              : getCommitUrl(
+                                  app?.spec?.source?.repoURL ?? '',
+                                  latestRevision?.revision,
+                                  entity?.metadata?.annotations ?? {},
+                                )
+                          }
+                          target="_blank"
+                          rel="noopener"
+                        >
+                          {latestRevision?.revision.slice(0, 7)}
+                        </Link>{' '}
+                        deployed {moment(appDeployedAt).local().fromNow()}
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              </Grid>
             </Grid>
           )}
           {appHistory.length > 1 && (
             <Grid item xs={12}>
               <Typography color="textPrimary">Deployment history</Typography>
-              <Box
-                style={{
-                  width: '100%',
-                  margin: 0,
-                  padding: '0',
-                  height: '35vh',
-                  overflowY: 'auto',
-                }}
-              >
+              <Box className={deploymentClasess.deploymentHistory}>
                 <br />
                 {app?.status?.history
                   ?.slice()
@@ -294,6 +314,9 @@ const DeploymentLifecycleDrawer: React.FC<DeploymentLifecycleDrawerProps> = ({
               </Box>
             </Grid>
           )}
+        </Grid>
+        <Grid item xs={12}>
+          <Rollouts />
         </Grid>
       </CardContent>
     </Drawer>

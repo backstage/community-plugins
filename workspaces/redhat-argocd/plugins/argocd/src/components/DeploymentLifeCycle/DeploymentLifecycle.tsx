@@ -10,7 +10,7 @@ import { argoCDApiRef } from '../../api';
 import { useApplications } from '../../hooks/useApplications';
 import { useArgocdConfig } from '../../hooks/useArgocdConfig';
 import { useArgocdViewPermission } from '../../hooks/useArgocdViewPermission';
-import { Application, Revision } from '../../types';
+import { Application, RevisionInfo } from '../../types/application';
 import {
   getArgoCdAppConfig,
   getInstanceName,
@@ -19,6 +19,7 @@ import {
 import PermissionAlert from '../Common/PermissionAlert';
 import DeploymentLifecycleCard from './DeploymentLifecycleCard';
 import DeploymentLifecycleDrawer from './DeploymentLifecycleDrawer';
+import { ArgoResourcesProvider } from './sidebar/rollouts/RolloutContext';
 
 const useDrawerStyles = makeStyles<Theme>(theme =>
   createStyles({
@@ -63,9 +64,9 @@ const DeploymentLifecycle = () => {
   const [open, setOpen] = React.useState(false);
   const [activeItem, setActiveItem] = React.useState<string>();
   const [, setRevisions] = React.useState<{
-    [key: string]: Revision;
+    [key: string]: RevisionInfo;
   }>();
-  const revisionCache = React.useRef<{ [key: string]: Revision }>({});
+  const revisionCache = React.useRef<{ [key: string]: RevisionInfo }>({});
 
   const uniqRevisions: string[] = React.useMemo(
     () => getUniqueRevisions(apps),
@@ -138,13 +139,14 @@ const DeploymentLifecycle = () => {
           />
         ))}
       </div>
-
-      <DeploymentLifecycleDrawer
-        app={activeApp}
-        isOpen={open}
-        onClose={() => setOpen(false)}
-        revisionsMap={revisionCache.current}
-      />
+      <ArgoResourcesProvider application={activeApp}>
+        <DeploymentLifecycleDrawer
+          app={activeApp}
+          isOpen={open}
+          onClose={() => setOpen(false)}
+          revisionsMap={revisionCache.current}
+        />
+      </ArgoResourcesProvider>
     </>
   );
 };
