@@ -4,16 +4,6 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { ResourcesTable } from '../ResourcesTable';
 import { Resource } from '../../../types';
 
-jest.mock('../ResourcesTableBody', () => ({
-  ResourcesTableBody: jest.fn(() => <tbody>Mocked ResourcesTableBody</tbody>),
-}));
-
-jest.mock('../ResourcesTableHeader', () => ({
-  ResourcesTableHeader: jest.fn(() => (
-    <thead>Mocked ResourcesTableHeader</thead>
-  )),
-}));
-
 jest.mock('../ResourcesSearchBar', () => ({
   ResourcesSearchBar: jest.fn(({ value, onChange, onSearchClear }) => (
     <div>
@@ -126,8 +116,8 @@ describe('ResourcesTable', () => {
   it('should render the ResourcesTableHeader and ResourcesTableBody', () => {
     setup();
 
-    expect(screen.getByText('Mocked ResourcesTableHeader')).toBeInTheDocument();
-    expect(screen.getByText('Mocked ResourcesTableBody')).toBeInTheDocument();
+    expect(screen.getByText('Health status')).toBeInTheDocument();
+    expect(screen.getByText('Deployment')).toBeInTheDocument();
   });
 
   it('should handle search input changes correctly', () => {
@@ -181,13 +171,38 @@ describe('ResourcesTable', () => {
       <ResourcesTable resources={paginatedResources} createdAt={createdAt} />,
     );
 
+    const initialResources = screen.getAllByText('Deployment');
+    expect(initialResources.length).toBe(5);
+
     const nextPageButton = screen.getByLabelText('Next page');
     expect(nextPageButton).toBeInTheDocument();
-
     fireEvent.click(nextPageButton);
 
     await waitFor(() => {
-      expect(screen.getByText('Mocked ResourcesTableBody')).toBeInTheDocument();
+      const newPageResources = screen.getAllByText('Deployment');
+      expect(newPageResources.length).toBe(5);
     });
+  });
+
+  it('should handle search clear correctly', () => {
+    setup();
+
+    const searchInput = screen.getByTestId('search-input');
+    const clearButton = screen.getByRole('button', { name: 'Clear' });
+
+    fireEvent.change(searchInput, { target: { value: 'deployment' } });
+    expect(searchInput).toHaveValue('deployment');
+
+    fireEvent.click(clearButton);
+    expect(searchInput).toHaveValue('');
+  });
+
+  it('should update sort order when handleRequestSort is triggered', async () => {
+    setup();
+    fireEvent.click(screen.getByText('Health status'));
+    await waitFor(() => {
+      expect(screen.getByText('Deployment')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByText('Health status'));
   });
 });

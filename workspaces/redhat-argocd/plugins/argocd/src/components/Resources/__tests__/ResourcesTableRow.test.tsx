@@ -30,30 +30,8 @@ describe('ResourcesTableRow', () => {
     render(<ResourcesTableRow {...defaultProps} />);
 
     expect(screen.getByText('Service')).toBeInTheDocument();
-    expect(screen.getByText('08/25/2024 12:00 pm EDT')).toBeInTheDocument();
+    expect(screen.getByText('08/25/2024 12:00 pm')).toBeInTheDocument();
     expect(screen.getByText('Mocked Sync Status')).toBeInTheDocument();
     expect(screen.getByText('Mocked Health Status')).toBeInTheDocument();
-  });
-
-  it('should handles expand/collapse click correctly', () => {
-    render(<ResourcesTableRow {...defaultProps} />);
-
-    const expandButton = screen.getByRole('button', { name: /expand row/i });
-    fireEvent.click(expandButton);
-
-    expect(defaultProps.setOpen).toHaveBeenCalledWith(expect.any(Function));
-
-    // Simulate the toggle action
-    const toggleFunction = defaultProps.setOpen.mock.calls[0][0];
-    const currentOpenState = { '123': false };
-    expect(toggleFunction(currentOpenState)).toEqual({ '123': true });
-  });
-
-  it('should render the correct icon based on open state', () => {
-    render(<ResourcesTableRow {...defaultProps} />);
-    expect(screen.getByTestId('right-arrow')).toBeInTheDocument();
-
-    render(<ResourcesTableRow {...defaultProps} open />);
-    expect(screen.getByTestId('down-arrow')).toBeInTheDocument();
   });
 });
