@@ -4,7 +4,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 
 import { mockApplication, mockEntity } from '../../../../dev/__data__';
 import { useArgocdConfig } from '../../../hooks/useArgocdConfig';
-import { Application, Source } from '../../../types';
+import { Application, Source } from '../../../types/application';
 import DeploymentLifecycleCard from '../DeploymentLifecycleCard';
 
 jest.mock('@backstage/plugin-catalog-react', () => ({
