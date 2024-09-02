@@ -1,4 +1,4 @@
-import { Application } from '../../src/types';
+import { Application } from '../../src/types/application';
 
 const commonMetadata = {
   creationTimestamp: new Date('2024-04-22T05:39:23Z'),
@@ -127,6 +127,16 @@ export const mockApplication: Application = {
     ...commonMetadata,
     creationTimestamp: new Date('2024-04-22T05:39:23Z'),
     name: 'quarkus-app-dev',
+  },
+  spec: commonSpec,
+  status: commonStatus,
+};
+
+export const mockQuarkusApplication: Application = {
+  metadata: {
+    ...commonMetadata,
+    creationTimestamp: new Date('2024-04-22T05:39:23Z'),
+    name: 'quarkus-app',
   },
   spec: commonSpec,
   status: commonStatus,

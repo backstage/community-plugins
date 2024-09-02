@@ -1,8 +1,8 @@
 import { createApiRef, IdentityApi } from '@backstage/core-plugin-api';
 
-import { Application, Revision } from '../types';
+import { Application, RevisionInfo } from '../types/application';
 
-export type ArgoCDAppDeployRevisionDetails = Revision;
+export type ArgoCDAppDeployRevisionDetails = RevisionInfo;
 
 export type listAppsOptions = {
   url: string;
@@ -156,7 +156,7 @@ export class ArgoCDApiClient implements ArgoCDApi {
     revisionIDs: string[];
     instanceName: string;
     apps: Application[];
-  }): Promise<Revision[]> {
+  }): Promise<RevisionInfo[]> {
     if (!options.revisionIDs || options.revisionIDs.length < 1) {
       return Promise.resolve([]);
     }

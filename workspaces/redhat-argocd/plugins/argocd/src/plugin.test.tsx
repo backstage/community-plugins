@@ -15,6 +15,7 @@ import { screen, waitFor } from '@testing-library/react';
 
 import { mockApplication, mockEntity, mockRevision } from '../dev/__data__';
 import { argoCDApiRef } from './api';
+import { kubernetesApiRef } from './kubeApi';
 import {
   ArgocdDeploymentLifecycle,
   ArgocdDeploymentSummary,
@@ -22,6 +23,13 @@ import {
 } from './plugin';
 import { rootRouteRef } from './routes';
 
+jest.mock('./components/DeploymentLifeCycle/DeploymentLifecycle', () => () => (
+  <>Deployment lifecycle</>
+));
+
+jest.mock('./components/DeploymentSummary/DeploymentSummary', () => () => (
+  <>Deployment summary</>
+));
 describe('argocd', () => {
   const mockedApi: any = {
     listApps: async () => {
@@ -32,6 +40,14 @@ describe('argocd', () => {
     },
     getRevisionDetailsList: async () => {
       return [mockRevision];
+    },
+  };
+  const mockKubernetesApi: any = {
+    decorateRequestBodyForAuth: () => {
+      return () => {};
+    },
+    getCredentials: () => {
+      return '';
     },
   };
 
@@ -55,6 +71,7 @@ describe('argocd', () => {
           [argoCDApiRef, mockedApi],
           [configApiRef, mockConfiguration],
           [permissionApiRef, mockPermissionApi],
+          [kubernetesApiRef, mockKubernetesApi],
         ]}
       >
         <EntityProvider entity={mockEntity}>{children}</EntityProvider>
@@ -63,10 +80,10 @@ describe('argocd', () => {
   };
 
   it('should export plugin', () => {
-    // const app = createDevApp().registerPlugin(argocdPlugin).build();
-
-    const [argoApi] = argocdPlugin.getApis();
+    const [argoApi, kubeAuthApi, kubeApi] = argocdPlugin.getApis();
     expect(argocdPlugin).toBeDefined();
+    expect(kubeAuthApi).toBeDefined();
+    expect(kubeApi).toBeDefined();
 
     expect(
       argoApi.factory({
@@ -74,9 +91,28 @@ describe('argocd', () => {
         configApi: mockConfiguration,
       }),
     ).toBeDefined();
+
+    expect(
+      kubeAuthApi.factory({
+        gitlabAuthApi: {},
+        googleAuthApi: {},
+        microsoftAuthApi: {},
+        oktaAuthApi: {},
+        oneloginAuthApi: {},
+      }),
+    ).toBeDefined();
+
+    expect(
+      kubeApi.factory({
+        discoveryApi: {},
+        fetchApi: {},
+        kubernetesAuthApi: {},
+      }),
+    ).toBeDefined();
   });
 
   it('should render the deployment lifecycle extension', async () => {
+    jest.useRealTimers();
     await renderInTestApp(
       <Wrapper>
         <Routes>
