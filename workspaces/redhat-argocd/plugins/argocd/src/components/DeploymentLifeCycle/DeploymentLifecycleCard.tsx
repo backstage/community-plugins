@@ -20,7 +20,7 @@ import { Skeleton } from '@material-ui/lab';
 import GitLabIcon from '@patternfly/react-icons/dist/esm/icons/gitlab-icon';
 import moment from 'moment';
 
-import { Application, Revision } from '../../types';
+import { Application, RevisionInfo } from '../../types/application';
 import { getCommitUrl, isAppHelmChartType } from '../../utils/utils';
 import AppNamespace from '../AppStatus/AppNamespace';
 import StatusHeading from '../AppStatus/StatusHeading';
@@ -43,7 +43,7 @@ const useCardStyles = makeStyles<Theme>(theme =>
 
 interface DeploymentLifecycleCardProps {
   app: Application;
-  revisionsMap: { [key: string]: Revision };
+  revisionsMap: { [key: string]: RevisionInfo };
   onclick?: () => void;
 }
 

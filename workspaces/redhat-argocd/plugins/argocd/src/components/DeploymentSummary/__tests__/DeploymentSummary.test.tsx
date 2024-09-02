@@ -13,7 +13,7 @@ import {
 import { mockApplication, mockEntity } from '../../../../dev/__data__';
 import { useApplications } from '../../../hooks/useApplications';
 import { useArgocdConfig } from '../../../hooks/useArgocdConfig';
-import { Application, History } from '../../../types';
+import { Application, History } from '../../../types/application';
 import DeploymentSummary from '../DeploymentSummary';
 
 jest.mock('../../../hooks/useArgocdConfig', () => ({

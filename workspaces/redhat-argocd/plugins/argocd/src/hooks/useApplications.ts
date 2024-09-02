@@ -4,7 +4,7 @@ import { useAsyncRetry, useInterval } from 'react-use';
 import { useApi } from '@backstage/core-plugin-api';
 
 import { argoCDApiRef } from '../api';
-import { Application } from '../types';
+import { Application } from '../types/application';
 
 interface AppOptions {
   instanceName: string;
