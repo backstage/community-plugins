@@ -1,5 +1,11 @@
 ## @janus-idp/backstage-plugin-argocd [1.5.7](https://github.com/janus-idp/backstage-plugins/compare/@janus-idp/backstage-plugin-argocd@1.5.6...@janus-idp/backstage-plugin-argocd@1.5.7) (2024-08-02)
 
+## 1.7.0
+
+### Minor Changes
+
+- 9dc17ff: Add argo rollouts information in the application sidebar
+
 ## 1.6.9
 
 ### Patch Changes
