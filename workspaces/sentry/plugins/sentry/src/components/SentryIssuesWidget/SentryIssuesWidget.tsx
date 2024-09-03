@@ -97,7 +97,7 @@ export const SentryIssuesWidget = (props: {
   );
 };
 
-/** @alpha */
+/** @public */
 export const SentryIssuesWidgetCard = () => {
   const { entity } = useEntity();
   return (
