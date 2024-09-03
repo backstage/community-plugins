@@ -36,4 +36,18 @@ export const registerCommands = (program: Command) => {
     .command('workspace')
     .command('create')
     .action(lazy(() => import('./workspace/create').then(m => m.default)));
+
+  const lintCommand = program
+    .command('lint [command]')
+    .description('Tools for linting repository.');
+  lintCommand
+    .command('legacy-backend-exports [workspace-path...]')
+    .description(
+      'Lint backend plugin packages for legacy exports and make sure it conforms to the new export pattern',
+    )
+    .action(
+      lazy(() =>
+        import('./lint/lint-legacy-backend-exports').then(m => m.lint),
+      ),
+    );
 };
