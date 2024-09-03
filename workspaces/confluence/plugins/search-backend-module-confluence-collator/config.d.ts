@@ -57,6 +57,10 @@ export interface Config {
      */
     spaces?: string[];
     /**
+     * CQL query to select the pages to index. It is combined with spaces parameter above when finding documents.
+     */
+    query?: string;
+    /**
      * An abstract value that controls the concurrency level of the
      * collation process. Increasing this value will both increase the
      * number of entities fetched at a time from the catalog, as well as how
