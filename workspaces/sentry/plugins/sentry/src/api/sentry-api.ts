@@ -15,7 +15,7 @@
  */
 
 import { SentryIssue } from './sentry-issue';
-import { createApiRef } from '@backstage/core-plugin-api';
+import { createApiRef } from '@backstage/frontend-plugin-api';
 import { Entity } from '@backstage/catalog-model';
 
 /** @public */

@@ -15,19 +15,20 @@
  */
 
 import React from 'react';
-import { Entity } from '@backstage/catalog-model';
+import { useEntity } from '@backstage/plugin-catalog-react';
 import { Route, Routes } from 'react-router-dom';
 import { SentryIssuesWidget } from './SentryIssuesWidget';
 
 /** @public */
-export const Router = (props: { entity: Entity }) => {
+export const Router = () => {
+  const { entity } = useEntity();
   return (
     <Routes>
       <Route
         path="/"
         element={
           <SentryIssuesWidget
-            entity={props.entity}
+            entity={entity}
             statsFor="24h"
             tableOptions={{
               padding: 'dense',
@@ -38,7 +39,6 @@ export const Router = (props: { entity: Entity }) => {
           />
         }
       />
-      )
     </Routes>
   );
 };

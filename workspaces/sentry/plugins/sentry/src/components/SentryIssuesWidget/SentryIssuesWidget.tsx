@@ -90,6 +90,7 @@ export const SentryIssuesWidget = (props: {
       sentryIssues={value || []}
       statsFor={statsFor}
       tableOptions={tableOptions}
+      data-testid="sentry-issues-table2"
     />
   );
 };
