@@ -13,7 +13,7 @@ import { ResourcesTableHeader } from './ResourcesTableHeader';
 import { ResourcesColumnHeaders } from './ResourcesColumnHeader';
 import { ResourcesSearchBar } from './ResourcesSearchBar';
 import { ResourcesFilterBy } from './ResourcesFilterBy';
-import { Order, Resource } from '../../types';
+import { Order, Resource } from '../../../../types/application';
 
 interface ResourcesTableProps {
   resources: Resource[];

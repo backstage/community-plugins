@@ -8,7 +8,7 @@ jest.mock('../ResourcesTableRow', () => ({
   ResourcesTableRow: jest.fn(() => <div>Mocked ResourcesTableRow</div>),
 }));
 
-describe('ResourcesTableBody', () => {
+describe('ResourcesTableBody Component', () => {
   const defaultProps = {
     rows: [
       { kind: 'Development', status: 'Synced', health: { status: 'Healthy' } },
@@ -24,7 +24,7 @@ describe('ResourcesTableBody', () => {
     expect(screen.getAllByText('Mocked ResourcesTableRow')).toHaveLength(2);
   });
 
-  it('should passes the correct props to ResourcesTableRow', () => {
+  it('should pass the correct props to ResourcesTableRow', () => {
     render(<ResourcesTableBody {...defaultProps} />);
 
     defaultProps.rows.forEach((row, index) => {

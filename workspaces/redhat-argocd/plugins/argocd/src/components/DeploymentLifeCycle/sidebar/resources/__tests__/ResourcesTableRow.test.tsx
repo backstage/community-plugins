@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 
 import { ResourcesTableRow } from '../ResourcesTableRow';
 
@@ -11,7 +11,7 @@ jest.mock('../ResourcesHealthStatus', () => ({
   ResourceHealthStatus: jest.fn(() => <div>Mocked Health Status</div>),
 }));
 
-describe('ResourcesTableRow', () => {
+describe('ResourcesTableRow Component', () => {
   const defaultProps = {
     row: {
       kind: 'Service',

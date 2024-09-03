@@ -10,9 +10,9 @@ import {
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 
-import { HealthStatus, HealthStatusType } from '../../types';
+import { HealthStatus, HealthStatusType } from '../../../../types/application';
 
-const useStyles = makeStyles(() =>
+const useStyles = makeStyles(theme =>
   createStyles({
     filterContainer: {
       width: '14rem',
@@ -21,19 +21,18 @@ const useStyles = makeStyles(() =>
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
-      padding: '6px 12px',
-      border: `1px solid #ced4da`,
+      padding: theme.spacing(0.75, 1.5),
+      border: `1px solid ${theme.palette.grey.A100}`,
       width: '100%',
       textTransform: 'none',
     },
     filterLabel: {
-      marginLeft: '8px',
-      marginRight: '8px',
+      margin: theme.spacing(0, 1),
       flexGrow: 1,
       textAlign: 'left',
     },
     menu: {
-      marginTop: '4px',
+      marginTop: theme.spacing(0.5),
     },
     menuPaper: {
       minWidth: '14rem',

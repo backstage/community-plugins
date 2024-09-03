@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 
 import { ResourcesSearchBar } from '../ResourcesSearchBar';
 
-describe('ResourcesSearchBar', () => {
+describe('ResourcesSearchBar Component', () => {
   const mockOnChange = jest.fn();
   const mockOnSearchClear = jest.fn();
 
@@ -12,7 +12,7 @@ describe('ResourcesSearchBar', () => {
     mockOnSearchClear.mockClear();
   });
 
-  test('should renders the search input field', () => {
+  it('should render the search input field', () => {
     render(
       <ResourcesSearchBar
         value=""
@@ -25,7 +25,7 @@ describe('ResourcesSearchBar', () => {
     expect(input).toBeInTheDocument();
   });
 
-  test('does not display the clear icon when input is empty', () => {
+  it('should not display the clear icon when input is empty', () => {
     render(
       <ResourcesSearchBar
         value=""
@@ -38,7 +38,7 @@ describe('ResourcesSearchBar', () => {
     expect(clearIcon).not.toBeVisible();
   });
 
-  test('should displays the clear icon when there is text in the input field', () => {
+  it('should display the clear icon when there is text in the input field', () => {
     render(
       <ResourcesSearchBar
         value="search term"
@@ -51,7 +51,7 @@ describe('ResourcesSearchBar', () => {
     expect(clearIcon).toBeVisible();
   });
 
-  test('should calls onChange handler when typing in the input field', () => {
+  it('should call onChange handler when typing in the input field', () => {
     render(
       <ResourcesSearchBar
         value=""
@@ -67,7 +67,7 @@ describe('ResourcesSearchBar', () => {
     expect(mockOnChange).toHaveBeenCalledWith(expect.any(Object));
   });
 
-  test('should calls onSearchClear handler when clear icon is clicked', () => {
+  it('should call onSearchClear handler when clear icon is clicked', () => {
     render(
       <ResourcesSearchBar
         value="search term"

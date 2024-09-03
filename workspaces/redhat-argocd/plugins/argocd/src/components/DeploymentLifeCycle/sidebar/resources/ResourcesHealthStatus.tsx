@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { AppHealthIcon } from '../AppStatus/StatusIcons';
-import { HealthStatus } from '../../types';
+import { AppHealthIcon } from '../../../AppStatus/StatusIcons';
+import { HealthStatus } from '../../../../types/application';
 
 interface ResourceHealthStatusProps {
   healthStatus: string;

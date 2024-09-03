@@ -2,7 +2,7 @@ import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 
 import { ResourcesFilterBy } from '../ResourcesFilterBy';
-import { HealthStatus } from '../../../types';
+import { HealthStatus } from '../../../../../types/application';
 
 describe('ResourcesFilterBy Component', () => {
   const mockSetFilterValue = jest.fn();
@@ -11,14 +11,14 @@ describe('ResourcesFilterBy Component', () => {
     mockSetFilterValue.mockClear();
   });
 
-  it('should renders the filter button with default label "Filter by"', () => {
+  it('should render the filter button with default label "Filter by"', () => {
     render(<ResourcesFilterBy setFilterValue={mockSetFilterValue} />);
 
     const button = screen.getByRole('button', { name: /Filter by/i });
     expect(button).toBeInTheDocument();
   });
 
-  it('should opens the filter menu when the filter button is clicked', () => {
+  it('should open the filter menu when the filter button is clicked', () => {
     render(<ResourcesFilterBy setFilterValue={mockSetFilterValue} />);
 
     const button = screen.getByRole('button', { name: /Filter by/i });
@@ -46,7 +46,7 @@ describe('ResourcesFilterBy Component', () => {
     });
   });
 
-  it('should selects "All" option, updates label, and calls setFilterValue with "All"', () => {
+  it('should select "All" option, updates label, and calls setFilterValue with "All"', () => {
     render(<ResourcesFilterBy setFilterValue={mockSetFilterValue} />);
 
     const button = screen.getByRole('button', { name: /Filter by/i });
@@ -63,7 +63,7 @@ describe('ResourcesFilterBy Component', () => {
     expect(mockSetFilterValue).toHaveBeenCalledWith('All');
   });
 
-  it('selects a HealthStatus option, updates label, and calls setFilterValue with the selected status', () => {
+  it('should select a HealthStatus option, updates label, and calls setFilterValue with the selected status', () => {
     render(<ResourcesFilterBy setFilterValue={mockSetFilterValue} />);
 
     const button = screen.getByRole('button', { name: /Filter by/i });
@@ -87,7 +87,7 @@ describe('ResourcesFilterBy Component', () => {
     expect(mockSetFilterValue).toHaveBeenCalledWith(selectedKey);
   });
 
-  it('should closes the dropdown menu after selecting an option', () => {
+  it('should close the dropdown menu after selecting an option', () => {
     render(<ResourcesFilterBy setFilterValue={mockSetFilterValue} />);
 
     const button = screen.getByRole('button', { name: /Filter by/i });
@@ -100,7 +100,7 @@ describe('ResourcesFilterBy Component', () => {
     expect(allOption).not.toBeVisible();
   });
 
-  it('ensures only one option is selected at a time', () => {
+  it('should ensure only one option is selected at a time', () => {
     render(<ResourcesFilterBy setFilterValue={mockSetFilterValue} />);
 
     const button = screen.getByRole('button', { name: /Filter by/i });

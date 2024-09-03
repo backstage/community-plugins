@@ -8,7 +8,7 @@ import {
 } from '@material-ui/core';
 
 import { ResourcesColumnHeaders } from './ResourcesColumnHeader';
-import { Order } from '../../types';
+import { Order } from '../../../../types/application';
 
 interface ResourcesTableHeaderProps {
   onRequestSort: (

@@ -2,14 +2,14 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 
 import { ResourceHealthStatus } from '../ResourcesHealthStatus';
-import { AppHealthIcon } from '../../AppStatus/StatusIcons';
-import { HealthStatus } from '../../../types';
+import { AppHealthIcon } from '../../../../AppStatus/StatusIcons';
+import { HealthStatus } from '../../../../../types/application';
 
-jest.mock('../../AppStatus/StatusIcons', () => ({
+jest.mock('../../../../AppStatus/StatusIcons', () => ({
   AppHealthIcon: jest.fn(() => <span>Mocked Health Icon</span>),
 }));
 
-describe('ResourceHealthStatus', () => {
+describe('ResourceHealthStatus Component', () => {
   const renderComponent = (healthStatus: string) => {
     render(<ResourceHealthStatus healthStatus={healthStatus} />);
   };
@@ -31,7 +31,7 @@ describe('ResourceHealthStatus', () => {
     );
   });
 
-  it('should displays both the health icon and status text', () => {
+  it('should display both the health icon and status text', () => {
     const healthStatus = 'Progressing';
     renderComponent(healthStatus);
 

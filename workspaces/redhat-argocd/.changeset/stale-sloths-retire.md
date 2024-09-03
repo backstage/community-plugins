@@ -2,4 +2,4 @@
 '@backstage-community/plugin-redhat-argocd': minor
 ---
 
-Displaying list resources managed by gitops in the application sidebar
+Displaying list of resources managed by ArgoCD in the application sidebar

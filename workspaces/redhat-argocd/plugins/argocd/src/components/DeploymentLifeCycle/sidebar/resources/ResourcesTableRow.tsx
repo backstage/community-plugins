@@ -4,7 +4,7 @@ import moment from 'moment';
 
 import { ResourceSyncStatus } from './ResourcesSyncStatus';
 import { ResourceHealthStatus } from './ResourcesHealthStatus';
-import { OpenRowStatus, Resource } from '../../types';
+import { OpenRowStatus, Resource } from '../../../../types/application';
 
 type ResourcesTableRowProps = {
   row: Resource;
@@ -16,6 +16,9 @@ type ResourcesTableRowProps = {
 
 const useStyles = makeStyles(theme => ({
   resourceRow: {
+    '&:first-child': {
+      borderTop: `1px solid ${theme.palette.grey.A100}`,
+    },
     '&:nth-of-type(odd)': {
       backgroundColor: 'inherit',
     },

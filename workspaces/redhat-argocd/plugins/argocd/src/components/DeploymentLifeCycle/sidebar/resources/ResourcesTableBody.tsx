@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ResourcesTableRow } from './ResourcesTableRow';
-import { OpenRowStatus, Resource } from '../../types';
+import { OpenRowStatus, Resource } from '../../../../types/application';
 
 interface ResourcesTableBodyProps {
   rows: Resource[];

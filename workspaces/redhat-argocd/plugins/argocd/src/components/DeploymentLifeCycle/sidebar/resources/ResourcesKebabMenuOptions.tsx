@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme: Theme) =>
       borderRadius: '4px',
       minWidth: '14rem',
       padding: theme.spacing(0),
-      top: '10px',
+      top: theme.spacing(1),
     },
     menuItem: {
       color: theme.palette.grey[800],

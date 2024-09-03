@@ -28,7 +28,7 @@ import AppNamespace from '../AppStatus/AppNamespace';
 import StatusHeading from '../AppStatus/StatusHeading';
 import DeploymentLifecycledHeader from './DeploymentLifecycleHeader';
 import Rollouts from './sidebar/rollouts/Rollouts';
-import { ResourcesTable } from '../Resources/ResourcesTable';
+import { ResourcesTable } from './sidebar/resources/ResourcesTable';
 
 interface DeploymentLifecycleDrawerProps {
   app: Application | undefined;

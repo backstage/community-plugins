@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { SyncIcon } from '../AppStatus/StatusIcons';
-import { SyncStatusCode } from '../../types';
+import { SyncIcon } from '../../../AppStatus/StatusIcons';
+import { SyncStatusCode } from '../../../../types/application';
 
 interface ResourceSyncStatusProps {
   syncStatus: string;

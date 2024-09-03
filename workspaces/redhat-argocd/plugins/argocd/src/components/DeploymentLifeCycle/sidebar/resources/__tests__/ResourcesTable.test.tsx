@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 
 import { ResourcesTable } from '../ResourcesTable';
-import { Resource } from '../../../types';
+import { Resource } from '../../../../../types/application';
 
 jest.mock('../ResourcesSearchBar', () => ({
   ResourcesSearchBar: jest.fn(({ value, onChange, onSearchClear }) => (
@@ -31,7 +31,7 @@ jest.mock('../ResourcesFilterBy', () => ({
   )),
 }));
 
-describe('ResourcesTable', () => {
+describe('ResourcesTable Component', () => {
   const resources = [
     {
       kind: 'Rollout',

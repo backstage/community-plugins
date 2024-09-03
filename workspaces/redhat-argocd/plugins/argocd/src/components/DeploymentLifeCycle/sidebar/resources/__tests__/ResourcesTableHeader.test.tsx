@@ -3,7 +3,7 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 
 import { ResourcesTableHeader } from '../ResourcesTableHeader';
-import { Order } from '../../../types';
+import { Order } from '../../../../../types/application';
 
 jest.mock('../ResourcesColumnHeader', () => ({
   ResourcesColumnHeaders: [
@@ -13,7 +13,7 @@ jest.mock('../ResourcesColumnHeader', () => ({
   ],
 }));
 
-describe('ResourcesTableHeader', () => {
+describe('ResourcesTableHeader Component', () => {
   const onRequestSortMock = jest.fn();
   const defaultProps = {
     order: 'asc' as Order,
@@ -61,7 +61,7 @@ describe('ResourcesTableHeader', () => {
     }
   });
 
-  it('does not render TableSortLabel for expander column', () => {
+  it('should not render TableSortLabel for expander column', () => {
     render(<ResourcesTableHeader {...defaultProps} />);
 
     expect(screen.queryByTestId('expander')).not.toBeInTheDocument();
