@@ -34,6 +34,7 @@
   "devDependencies": {
     "@backstage/cli": "^0.26.11",
     "@backstage/e2e-test-utils": "^0.1.1",
+    "@changesets/cli": "^2.27.7",
     "@playwright/test": "^1.32.3",
     "@spotify/prettier-config": "^12.0.0",
     "concurrently": "^8.0.0",
