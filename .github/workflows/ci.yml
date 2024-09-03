@@ -24,7 +24,7 @@ jobs:
         uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f # v4
         with:
           ref: ${{ github.event.pull_request.base.ref }}
-          fetch-depth: ${{ env.NUMBER_OF_COMMITS }}
+          fetch-depth: 50 # TODO(awanlin): Temporary fix
 
       - name: Checkout head branch
         uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f # v4
