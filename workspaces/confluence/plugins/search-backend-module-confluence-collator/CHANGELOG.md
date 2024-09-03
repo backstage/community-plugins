@@ -1,5 +1,15 @@
 # @backstage-community/plugin-search-backend-module-confluence-collator
 
+## 0.2.0
+
+### Minor Changes
+
+- 33f9933: Add query parameter that allows providing a CQL query that is combined with spaces to more finely select the documents to index
+
+### Patch Changes
+
+- 8d99cb1: Backstage version bump to v1.30.2
+
 ## 0.1.0
 
 ### Minor Changes
