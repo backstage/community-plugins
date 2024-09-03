@@ -20,7 +20,10 @@ import useAsync from 'react-use/esm/useAsync';
 import { sentryApiRef } from '../../api';
 import SentryIssuesTable from '../SentryIssuesTable/SentryIssuesTable';
 import { SENTRY_PROJECT_SLUG_ANNOTATION, useProjectSlug } from '../hooks';
-import { MissingAnnotationEmptyState } from '@backstage/plugin-catalog-react';
+import {
+  MissingAnnotationEmptyState,
+  useEntity,
+} from '@backstage/plugin-catalog-react';
 
 import {
   EmptyState,
@@ -90,7 +93,23 @@ export const SentryIssuesWidget = (props: {
       sentryIssues={value || []}
       statsFor={statsFor}
       tableOptions={tableOptions}
-      data-testid="sentry-issues-table2"
+    />
+  );
+};
+
+/** @alpha */
+export const SentryIssuesWidgetCard = () => {
+  const { entity } = useEntity();
+  return (
+    <SentryIssuesWidget
+      entity={entity}
+      statsFor="24h"
+      tableOptions={{
+        padding: 'dense',
+        paging: true,
+        search: false,
+        pageSize: 5,
+      }}
     />
   );
 };

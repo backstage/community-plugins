@@ -4,7 +4,7 @@ import {
   renderInTestApp,
   TestApiProvider,
 } from '@backstage/frontend-test-utils';
-import { entitySentryContent } from './entityContent';
+import { entitySentryCard } from './entityCard';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { sentryApiRef, MockSentryApi } from '../api';
 import {
@@ -14,11 +14,11 @@ import {
 import React from 'react';
 
 describe('Entity content extension', () => {
-  it('should render Sentry tab', async () => {
+  it('should render Sentry issues card', async () => {
     renderInTestApp(
       <TestApiProvider apis={[[sentryApiRef, new MockSentryApi()]]}>
         <EntityProvider entity={sampleEntity}>
-          {createExtensionTester(entitySentryContent).reactElement()}
+          {createExtensionTester(entitySentryCard).reactElement()}
         </EntityProvider>
       </TestApiProvider>,
     );
@@ -35,7 +35,7 @@ describe('Entity content extension', () => {
     renderInTestApp(
       <TestApiProvider apis={[[sentryApiRef, new MockSentryApi()]]}>
         <EntityProvider entity={sampleEntityWithoutAnnotation}>
-          {createExtensionTester(entitySentryContent).reactElement()}
+          {createExtensionTester(entitySentryCard).reactElement()}
         </EntityProvider>
       </TestApiProvider>,
     );
