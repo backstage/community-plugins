@@ -33,6 +33,7 @@
   ],
   "dependencies": {
     "@backstage/cli": "^0.26.11",
+    "@backstage/cli-node": "^0.2.7",
     "@backstage/errors": "^1.2.4",
     "@manypkg/get-packages": "^2.2.1",
     "chalk": "^4.1.2",
@@ -41,7 +42,8 @@
     "fs-extra": "^11.2.0",
     "inquirer": "^8.0.0",
     "replace-in-file": "^7.1.0",
-    "semver": "^7.6.0"
+    "semver": "^7.6.0",
+    "ts-morph": "^23.0.0"
   },
   "nodemonConfig": {
     "watch": "./src",

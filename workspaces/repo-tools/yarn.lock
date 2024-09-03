@@ -2990,6 +2990,7 @@ __metadata:
   resolution: "@backstage-community/cli@workspace:packages/cli"
   dependencies:
     "@backstage/cli": ^0.26.11
+    "@backstage/cli-node": ^0.2.7
     "@backstage/errors": ^1.2.4
     "@manypkg/get-packages": ^2.2.1
     "@types/fs-extra": ^11.0.4
@@ -3001,6 +3002,7 @@ __metadata:
     inquirer: ^8.0.0
     replace-in-file: ^7.1.0
     semver: ^7.6.0
+    ts-morph: ^23.0.0
   bin:
     community-cli: bin/community-cli
   languageName: unknown
@@ -7365,6 +7367,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@ts-morph/common@npm:~0.24.0":
+  version: 0.24.0
+  resolution: "@ts-morph/common@npm:0.24.0"
+  dependencies:
+    fast-glob: ^3.3.2
+    minimatch: ^9.0.4
+    mkdirp: ^3.0.1
+    path-browserify: ^1.0.1
+  checksum: 793bc8a47c93ab55c6c036f94480d3b0e948661aef4bb7dbc29279b1dda2fc4fce809a88e221537867a313541842e12d1ecbd32b4769688abe1303807ec09db6
+  languageName: node
+  linkType: hard
+
 "@tsconfig/node10@npm:^1.0.7":
   version: 1.0.11
   resolution: "@tsconfig/node10@npm:1.0.11"
@@ -9946,6 +9960,13 @@ __metadata:
   version: 4.6.0
   resolution: "co@npm:4.6.0"
   checksum: 5210d9223010eb95b29df06a91116f2cf7c8e0748a9013ed853b53f362ea0e822f1e5bb054fb3cefc645239a4cf966af1f6133a3b43f40d591f3b68ed6cf0510
+  languageName: node
+  linkType: hard
+
+"code-block-writer@npm:^13.0.1":
+  version: 13.0.2
+  resolution: "code-block-writer@npm:13.0.2"
+  checksum: 8052ae6f27ef73366bd5df04b6f9beced493261fcaef5cbd0f3853644b5e0aa5af18d099b96448be88ea3d000c7b180207d371044edd9fcf98fea22c9f8ba3a1
   languageName: node
   linkType: hard
 
@@ -16770,6 +16791,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"mkdirp@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "mkdirp@npm:3.0.1"
+  bin:
+    mkdirp: dist/cjs/src/bin.js
+  checksum: 972deb188e8fb55547f1e58d66bd6b4a3623bf0c7137802582602d73e6480c1c2268dcbafbfb1be466e00cc7e56ac514d7fd9334b7cf33e3e2ab547c16f83a8d
+  languageName: node
+  linkType: hard
+
 "morgan@npm:^1.10.0":
   version: 1.10.0
   resolution: "morgan@npm:1.10.0"
@@ -17686,6 +17716,13 @@ __metadata:
   version: 0.0.1
   resolution: "path-browserify@npm:0.0.1"
   checksum: ae8dcd45d0d3cfbaf595af4f206bf3ed82d77f72b4877ae7e77328079e1468c84f9386754bb417d994d5a19bf47882fd253565c18441cd5c5c90ae5187599e35
+  languageName: node
+  linkType: hard
+
+"path-browserify@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "path-browserify@npm:1.0.1"
+  checksum: c6d7fa376423fe35b95b2d67990060c3ee304fc815ff0a2dc1c6c3cfaff2bd0d572ee67e18f19d0ea3bbe32e8add2a05021132ac40509416459fffee35200699
   languageName: node
   linkType: hard
 
@@ -19080,6 +19117,7 @@ __metadata:
     "@spotify/prettier-config": ^15.0.0
     knip: ^5.27.4
     prettier: ^2.3.2
+    ts-morph: ^23.0.0
     typescript: ~5.3.0
   languageName: unknown
   linkType: soft
@@ -21085,6 +21123,16 @@ __metadata:
   dependencies:
     tslib: ^2.1.0
   checksum: c9e5726361fa266916966b2070605f8664b6dd1d8b0ef7565dbf056abb6a87be26195985ef62dd97aeb0894cf2f4ad5b7f0d89dadadc197eaa38e99222afa29c
+  languageName: node
+  linkType: hard
+
+"ts-morph@npm:^23.0.0":
+  version: 23.0.0
+  resolution: "ts-morph@npm:23.0.0"
+  dependencies:
+    "@ts-morph/common": ~0.24.0
+    code-block-writer: ^13.0.1
+  checksum: 3282eb0f8bd4577770874736c3259b97501da9a86137160b5d68f106b7848ea7b1fbccf9e198a3d930ec40c993e9951d4bfae31e2562dac8f3de0d7bb0e23615
   languageName: node
   linkType: hard
 
