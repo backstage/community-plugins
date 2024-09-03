@@ -1,5 +1,11 @@
 # @backstage-community/plugin-jenkins-backend
 
+## 0.5.0
+
+### Minor Changes
+
+- 8ce69ed: Creating environment and example app for jenkins plugin
+
 ## 0.4.12
 
 ### Patch Changes
