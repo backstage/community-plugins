@@ -11,8 +11,22 @@ jest.mock('../ResourcesTableRow', () => ({
 describe('ResourcesTableBody Component', () => {
   const defaultProps = {
     rows: [
-      { kind: 'Development', status: 'Synced', health: { status: 'Healthy' } },
-      { kind: 'Service', status: 'Synced', health: { status: 'Healthy' } },
+      {
+        version: 'v1',
+        kind: 'Development',
+        namespace: 'openshift-gitops',
+        name: 'quarkus-app',
+        status: 'Synced',
+        health: { status: 'Healthy' },
+      },
+      {
+        version: 'v1',
+        kind: 'Service',
+        namespace: 'openshift-gitops',
+        name: 'quarkus-app',
+        status: 'Synced',
+        health: { status: 'Healthy' },
+      },
     ],
     createdAt: '2024-08-25T12:00:00Z',
   };

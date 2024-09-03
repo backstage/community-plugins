@@ -14,11 +14,12 @@ jest.mock('../ResourcesHealthStatus', () => ({
 describe('ResourcesTableRow Component', () => {
   const defaultProps = {
     row: {
-      kind: 'Service',
+      version: 'v1',
+      kind: 'Development',
+      namespace: 'openshift-gitops',
+      name: 'quarkus-app',
       status: 'Synced',
-      health: {
-        status: 'Healthy',
-      },
+      health: { status: 'Healthy' },
     },
     createdAt: '2024-08-25T12:00:00Z',
     open: false,
@@ -29,7 +30,7 @@ describe('ResourcesTableRow Component', () => {
   it('should render the row with correct data', () => {
     render(<ResourcesTableRow {...defaultProps} />);
 
-    expect(screen.getByText('Service')).toBeInTheDocument();
+    expect(screen.getByText('Development')).toBeInTheDocument();
     expect(screen.getByText('08/25/2024 12:00 pm')).toBeInTheDocument();
     expect(screen.getByText('Mocked Sync Status')).toBeInTheDocument();
     expect(screen.getByText('Mocked Health Status')).toBeInTheDocument();
