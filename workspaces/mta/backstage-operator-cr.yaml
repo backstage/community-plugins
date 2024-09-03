@@ -16,4 +16,3 @@ spec:
       enabled: true
   database:
     enableLocalDb: true
-

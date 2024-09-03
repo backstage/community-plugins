@@ -3,7 +3,7 @@ dynamicPlugins:
     internal.backstage-plugin-mta-frontend:
       dynamicRoutes:
         - path: /mta
-          importName: EntityMTAContent 
+          importName: EntityMTAContent
           menuItem:
             text: 'MTA'
       mountPoints:
@@ -17,5 +17,5 @@ dynamicPlugins:
                 xs: 'span 12'
             if:
               allOf:
-                - isKind: component 
+                - isKind: component
                 - isType: service

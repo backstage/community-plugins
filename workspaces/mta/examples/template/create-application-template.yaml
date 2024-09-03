@@ -25,12 +25,12 @@ spec:
         url:
           title: Repository URL
           type: string
-        branch: 
+        branch:
           title: Branch
           type: string
           description: Repository branch to use
           default: main
-        rootPath: 
+        rootPath:
           title: Root Path
           type: string
           description: Path to the root of the repository
