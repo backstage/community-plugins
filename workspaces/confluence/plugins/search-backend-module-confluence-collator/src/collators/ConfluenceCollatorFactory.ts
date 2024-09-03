@@ -48,6 +48,7 @@ export type ConfluenceCollatorFactoryOptions = {
   username?: string;
   password?: string;
   spaces?: string[];
+  query?: string;
   parallelismLimit?: number;
   logger: LoggerService;
 };
@@ -118,6 +119,7 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
   private readonly username: string | undefined;
   private readonly password: string | undefined;
   private readonly spaces: string[] | undefined;
+  private readonly query: string | undefined;
   private readonly parallelismLimit: number | undefined;
   private readonly logger: LoggerService;
   public readonly type: string = 'confluence';
@@ -130,6 +132,7 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
     this.username = options.username;
     this.password = options.password;
     this.spaces = options.spaces;
+    this.query = options.query;
     this.parallelismLimit = options.parallelismLimit;
     this.logger = options.logger.child({ documentType: this.type });
   }
@@ -142,6 +145,8 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
     const username = config.getOptionalString('confluence.auth.username');
     const password = config.getOptionalString('confluence.auth.password');
     const spaces = config.getOptionalStringArray('confluence.spaces') ?? [];
+    const query = config.getOptionalString('confluence.query') ?? '';
+
     const parallelismLimit = config.getOptionalNumber(
       'confluence.parallelismLimit',
     );
@@ -173,6 +178,7 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
       username,
       password,
       spaces,
+      query,
       parallelismLimit,
     });
   }
@@ -182,19 +188,8 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
   }
 
   async *execute(): AsyncGenerator<IndexableConfluenceDocument> {
-    let spacesList: string[] = await this.getSpacesConfig();
-
-    if (spacesList.length === 0) {
-      this.logger.info(
-        'No confluence.spaces configured in app-config.yaml, fetching all spaces',
-      );
-
-      spacesList = await this.discoverSpaces();
-    }
-
-    this.logger.info(`Indexing spaces: ${JSON.stringify(spacesList)}`);
-
-    const documentsList = await this.getDocumentsFromSpaces(spacesList);
+    const query = await this.getConfluenceQuery();
+    const documentsList = await this.getDocuments(query);
 
     this.logger.debug(`Document list: ${JSON.stringify(documentsList)}`);
 
@@ -228,25 +223,6 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
     }
   }
 
-  private async discoverSpaces(): Promise<string[]> {
-    const data = await this.get(
-      `${this.baseUrl}/rest/api/space?&limit=1000&type=global&status=current`,
-    );
-
-    if (!data.results) {
-      return [];
-    }
-
-    const spacesList = [];
-    for (const result of data.results) {
-      spacesList.push(result.key);
-    }
-
-    this.logger.debug(`Discovered spaces: ${JSON.stringify(spacesList)}`);
-
-    return spacesList;
-  }
-
   private async getSpacesConfig(): Promise<string[]> {
     const spaceList: string[] = [];
     if (this.spaces?.length === 0) {
@@ -255,13 +231,24 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
     return this.spaces || [];
   }
 
-  private async getDocumentsFromSpace(space: string): Promise<string[]> {
+  private async getConfluenceQuery(): Promise<string> {
+    let spaceList = await this.getSpacesConfig();
+    const spaceQuery = spaceList.map(s => `space="${s}"`).join(' or ');
+    let query = spaceQuery;
+    const additionalQuery = this.query;
+    if (additionalQuery !== '') {
+      query = `(${spaceQuery}) and (${additionalQuery})`;
+    }
+    return query;
+  }
+
+  private async getDocuments(query: string): Promise<string[]> {
     const documentsList = [];
 
-    this.logger.info(`Exploring space: "${space}"`);
+    this.logger.info(`Exploring documents using query: ${query}`);
 
     let next = true;
-    let requestUrl = `${this.baseUrl}/rest/api/content?limit=1000&status=current&spaceKey=${space}`;
+    let requestUrl = `${this.baseUrl}/rest/api/content/search?limit=1000&status=current&cql=${query}`;
     while (next) {
       const data = await this.get<ConfluenceDocumentList>(requestUrl);
       if (!data.results) {
@@ -275,16 +262,6 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
       } else {
         next = false;
       }
-    }
-
-    return documentsList;
-  }
-
-  private async getDocumentsFromSpaces(spaces: string[]): Promise<string[]> {
-    const documentsList = [];
-
-    for (const space of spaces) {
-      documentsList.push(...(await this.getDocumentsFromSpace(space)));
     }
 
     return documentsList;
