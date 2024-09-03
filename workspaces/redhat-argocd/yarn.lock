@@ -2546,7 +2546,7 @@ __metadata:
     "@patternfly/react-tokens": ^5.1.2
     "@playwright/test": 1.46.1
     "@redhat-developer/red-hat-developer-hub-theme": 0.0.54
-    "@testing-library/jest-dom": 6.4.8
+    "@testing-library/jest-dom": 6.5.0
     "@testing-library/react": 14.3.1
     "@testing-library/user-event": 14.5.2
     moment: ^2.30.1
@@ -8261,19 +8261,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/jest-dom@npm:6.4.8":
-  version: 6.4.8
-  resolution: "@testing-library/jest-dom@npm:6.4.8"
+"@testing-library/jest-dom@npm:6.5.0":
+  version: 6.5.0
+  resolution: "@testing-library/jest-dom@npm:6.5.0"
   dependencies:
     "@adobe/css-tools": ^4.4.0
-    "@babel/runtime": ^7.9.2
     aria-query: ^5.0.0
     chalk: ^3.0.0
     css.escape: ^1.5.1
     dom-accessibility-api: ^0.6.3
     lodash: ^4.17.21
     redent: ^3.0.0
-  checksum: b601688950e522557c2c6bbc0f026ae31a10583577c8a557814b0eb33648fe82afc06299f3cdb79ff0c5076fd1a6106f3d76e2ca0dde6f7ee0555e63008fbd72
+  checksum: c2d14103ebe3358852ec527ff7512f64207a39932b2f7b6dff7e73ba91296b01a71bad9a9584b6ee010681380a906c1740af50470adc6db660e1c7585d012ebf
   languageName: node
   linkType: hard
 
