@@ -1,12 +1,12 @@
 export interface Config {
   blackduck: {
     /**
-    * @visibility frontend
-    */
+     * @visibility frontend
+     */
     host: string;
     /**
-    * @visibility secret
-    */
+     * @visibility secret
+     */
     token: string;
   };
 }
