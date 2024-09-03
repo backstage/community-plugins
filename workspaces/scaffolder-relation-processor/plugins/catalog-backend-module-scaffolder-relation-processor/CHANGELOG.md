@@ -1,5 +1,11 @@
 # @backstage-community/plugin-catalog-backend-module-scaffolder-relation-processor
 
+## 1.0.1
+
+### Patch Changes
+
+- 1aba5e6: This release is equivalent to 1.0.0.
+
 ## 1.2.8
 
 ### Patch Changes
