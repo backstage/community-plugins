@@ -9,6 +9,8 @@
   "exclude": ["node_modules"],
   "compilerOptions": {
     "jsx": "react",
+    "declaration": true,
+    "declarationMap": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "outDir": "dist-types",
