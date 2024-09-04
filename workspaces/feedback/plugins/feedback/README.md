@@ -120,10 +120,10 @@ It is dedicated to simplifying the process of gathering and managing user feedba
    ```ts
    import { EntityFeedbackPage } from '@backstage-community/plugin-feedback';
    // ...
-   
+
    <EntityLayout.Route path="/feedback" title="Feedback">
      <EntityFeedbackPage />
-   </EntityLayout.Route>
+   </EntityLayout.Route>;
    ```
 
 ### Annotations
