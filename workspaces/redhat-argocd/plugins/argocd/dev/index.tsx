@@ -10,7 +10,7 @@ import { permissionApiRef } from '@backstage/plugin-permission-react';
 import { MockPermissionApi, TestApiProvider } from '@backstage/test-utils';
 
 import { Box } from '@material-ui/core';
-import { createDevAppThemes } from '@redhat-developer/red-hat-developer-hub-theme';
+import { getAllThemes } from '@redhat-developer/red-hat-developer-hub-theme';
 
 import {
   ArgoCDApi,
@@ -171,7 +171,7 @@ class MockKubernetesClient implements KubernetesApi {
 
 createDevApp()
   .registerPlugin(argocdPlugin)
-  .addThemes(createDevAppThemes())
+  .addThemes(getAllThemes())
   .addPage({
     element: (
       <TestApiProvider

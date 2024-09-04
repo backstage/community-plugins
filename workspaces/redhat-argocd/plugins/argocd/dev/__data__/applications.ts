@@ -214,6 +214,29 @@ export const preProdApplication = {
     sync: {
       status: 'Synced',
     },
+    resources: [
+      {
+        version: 'v1',
+        kind: 'Service',
+        namespace: 'openshift-gitops',
+        name: 'quarkus-app',
+        status: 'Synced',
+        health: {
+          status: 'Healthy',
+        },
+      },
+      {
+        group: 'apps',
+        version: 'v1',
+        kind: 'Deployment',
+        namespace: 'openshift-gitops',
+        name: 'quarkus-app',
+        status: 'Synced',
+        health: {
+          status: 'Degraded',
+        },
+      },
+    ],
   },
 };
 
@@ -282,7 +305,29 @@ export const prodApplication = {
         },
       },
     ],
-
+    resources: [
+      {
+        version: 'v1',
+        kind: 'Service',
+        namespace: 'openshift-gitops',
+        name: 'quarkus-app',
+        status: 'Synced',
+        health: {
+          status: 'Degraded',
+        },
+      },
+      {
+        group: 'apps',
+        version: 'v1',
+        kind: 'Deployment',
+        namespace: 'openshift-gitops',
+        name: 'quarkus-app',
+        status: 'Synced',
+        health: {
+          status: 'Healthy',
+        },
+      },
+    ],
     operationState: {
       ...commonStatus.operationState,
       operation: {

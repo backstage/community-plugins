@@ -2461,7 +2461,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.10.1, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.15.4, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.20.1, @babel/runtime@npm:^7.20.6, @babel/runtime@npm:^7.21.0, @babel/runtime@npm:^7.23.2, @babel/runtime@npm:^7.23.9, @babel/runtime@npm:^7.3.1, @babel/runtime@npm:^7.4.4, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.6.0, @babel/runtime@npm:^7.7.6, @babel/runtime@npm:^7.8.3, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.8.7, @babel/runtime@npm:^7.9.2":
+"@babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.10.1, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.15.4, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.20.1, @babel/runtime@npm:^7.20.6, @babel/runtime@npm:^7.21.0, @babel/runtime@npm:^7.23.2, @babel/runtime@npm:^7.23.9, @babel/runtime@npm:^7.25.0, @babel/runtime@npm:^7.3.1, @babel/runtime@npm:^7.4.4, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.6.0, @babel/runtime@npm:^7.7.6, @babel/runtime@npm:^7.8.3, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.8.7, @babel/runtime@npm:^7.9.2":
   version: 7.25.6
   resolution: "@babel/runtime@npm:7.25.6"
   dependencies:
@@ -2539,14 +2539,15 @@ __metadata:
     "@material-ui/core": ^4.9.13
     "@material-ui/icons": ^4.9.1
     "@material-ui/lab": ^4.0.0-alpha.61
+    "@mui/icons-material": ^6.0.0
     "@patternfly/patternfly": ^5.1.0
     "@patternfly/react-charts": ^7.1.1
     "@patternfly/react-core": ^5.1.2
     "@patternfly/react-icons": ^5.1.1
     "@patternfly/react-tokens": ^5.1.2
     "@playwright/test": 1.46.1
-    "@redhat-developer/red-hat-developer-hub-theme": 0.0.54
-    "@testing-library/jest-dom": 6.4.8
+    "@redhat-developer/red-hat-developer-hub-theme": 0.2.0
+    "@testing-library/jest-dom": 6.5.0
     "@testing-library/react": 14.3.1
     "@testing-library/user-event": 14.5.2
     moment: ^2.30.1
@@ -5753,6 +5754,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@mui/icons-material@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "@mui/icons-material@npm:6.0.0"
+  dependencies:
+    "@babel/runtime": ^7.25.0
+  peerDependencies:
+    "@mui/material": ^6.0.0
+    "@types/react": ^17.0.0 || ^18.0.0 || ^19.0.0
+    react: ^17.0.0 || ^18.0.0 || ^19.0.0
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+  checksum: 637447d71d10412d6a28bf9bd7d18e1c92da3113445e487db8368c5326830b932e44bc10b1ccc569126efe10fae8a2b86aa5b82ce680022e9a10a1e7987f6632
+  languageName: node
+  linkType: hard
+
 "@mui/material@npm:^5.12.2":
   version: 5.16.7
   resolution: "@mui/material@npm:5.16.7"
@@ -6499,9 +6516,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@redhat-developer/red-hat-developer-hub-theme@npm:0.0.54":
-  version: 0.0.54
-  resolution: "@redhat-developer/red-hat-developer-hub-theme@npm:0.0.54"
+"@redhat-developer/red-hat-developer-hub-theme@npm:0.2.0":
+  version: 0.2.0
+  resolution: "@redhat-developer/red-hat-developer-hub-theme@npm:0.2.0"
   peerDependencies:
     "@backstage/theme": ^0.5.2
     "@emotion/react": ^11.11.1
@@ -6510,7 +6527,7 @@ __metadata:
     "@material-ui/icons": ^4.11.3
     "@mui/icons-material": ^5.14.19
     "@mui/material": ^5.14.20
-  checksum: 78a1e84c09f766a8b140ef00fc2c107a39d31229156b22ce8b3c5c57688b0444e733e7278890e17c20a9a8137fd3e29de032f76b6f4e9e35425d5c73f083cdbd
+  checksum: 2a5d52e2ba31c5a6ff2cfe75d78b1de1afa00690b522875e52d8ddc8805a3ccc5c202414a0304790efe0ed0ea2c570b9c8bf7472c7895d4bbe416c6541435196
   languageName: node
   linkType: hard
 
@@ -8261,19 +8278,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/jest-dom@npm:6.4.8":
-  version: 6.4.8
-  resolution: "@testing-library/jest-dom@npm:6.4.8"
+"@testing-library/jest-dom@npm:6.5.0":
+  version: 6.5.0
+  resolution: "@testing-library/jest-dom@npm:6.5.0"
   dependencies:
     "@adobe/css-tools": ^4.4.0
-    "@babel/runtime": ^7.9.2
     aria-query: ^5.0.0
     chalk: ^3.0.0
     css.escape: ^1.5.1
     dom-accessibility-api: ^0.6.3
     lodash: ^4.17.21
     redent: ^3.0.0
-  checksum: b601688950e522557c2c6bbc0f026ae31a10583577c8a557814b0eb33648fe82afc06299f3cdb79ff0c5076fd1a6106f3d76e2ca0dde6f7ee0555e63008fbd72
+  checksum: c2d14103ebe3358852ec527ff7512f64207a39932b2f7b6dff7e73ba91296b01a71bad9a9584b6ee010681380a906c1740af50470adc6db660e1c7585d012ebf
   languageName: node
   linkType: hard
 

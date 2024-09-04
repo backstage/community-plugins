@@ -2628,6 +2628,32 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@backstage-community/plugin-cicd-statistics-module-buildkite@workspace:plugins/cicd-statistics-module-buildkite":
+  version: 0.0.0-use.local
+  resolution: "@backstage-community/plugin-cicd-statistics-module-buildkite@workspace:plugins/cicd-statistics-module-buildkite"
+  dependencies:
+    "@backstage-community/plugin-cicd-statistics": "workspace:^"
+    "@backstage/catalog-model": ^1.4.5
+    "@backstage/cli": ^0.26.3
+    "@backstage/core-plugin-api": ^1.9.2
+    "@backstage/test-utils": ^1.5.9
+    "@gitbeaker/browser": ^35.6.0
+    "@gitbeaker/core": ^35.6.0
+    "@roadiehq/backstage-plugin-buildkite": ^2.3.1
+    "@types/react": ^16.13.1 || ^17.0.0
+    "@types/react-dom": ^18.2.19
+    luxon: ^3.0.0
+    p-limit: ^3.1.0
+    react: ^16.13.1 || ^17.0.0 || ^18.0.0
+    react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
+    react-router-dom: 6.0.0-beta.0 || ^6.3.0
+  peerDependencies:
+    react: ^16.13.1 || ^17.0.0 || ^18.0.0
+    react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
+    react-router-dom: 6.0.0-beta.0 || ^6.3.0
+  languageName: unknown
+  linkType: soft
+
 "@backstage-community/plugin-cicd-statistics-module-gitlab@workspace:^, @backstage-community/plugin-cicd-statistics-module-gitlab@workspace:plugins/cicd-statistics-module-gitlab":
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-cicd-statistics-module-gitlab@workspace:plugins/cicd-statistics-module-gitlab"
@@ -2986,7 +3012,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/catalog-model@npm:^1.6.0":
+"@backstage/catalog-model@npm:^1.4.5, @backstage/catalog-model@npm:^1.5.0, @backstage/catalog-model@npm:^1.6.0":
   version: 1.6.0
   resolution: "@backstage/catalog-model@npm:1.6.0"
   dependencies:
@@ -3018,6 +3044,142 @@ __metadata:
     semver: ^7.5.3
     zod: ^3.22.4
   checksum: 7f605c885c6073074f179df6cd47041cdb7b736557b11c2298165a55ab8b4d2028a0c85335f5cd655ab5d6570a695c2bcea83e4c79ca636eedc309fcc24f1d84
+  languageName: node
+  linkType: hard
+
+"@backstage/cli@npm:^0.26.3":
+  version: 0.26.11
+  resolution: "@backstage/cli@npm:0.26.11"
+  dependencies:
+    "@backstage/catalog-model": ^1.5.0
+    "@backstage/cli-common": ^0.1.14
+    "@backstage/cli-node": ^0.2.7
+    "@backstage/config": ^1.2.0
+    "@backstage/config-loader": ^1.8.1
+    "@backstage/errors": ^1.2.4
+    "@backstage/eslint-plugin": ^0.1.8
+    "@backstage/integration": ^1.13.0
+    "@backstage/release-manifests": ^0.0.11
+    "@backstage/types": ^1.1.1
+    "@manypkg/get-packages": ^1.1.3
+    "@module-federation/enhanced": ^0.1.19
+    "@octokit/graphql": ^5.0.0
+    "@octokit/graphql-schema": ^13.7.0
+    "@octokit/oauth-app": ^4.2.0
+    "@octokit/request": ^6.0.0
+    "@pmmmwh/react-refresh-webpack-plugin": ^0.5.7
+    "@rollup/plugin-commonjs": ^25.0.0
+    "@rollup/plugin-json": ^6.0.0
+    "@rollup/plugin-node-resolve": ^15.0.0
+    "@rollup/plugin-yaml": ^4.0.0
+    "@spotify/eslint-config-base": ^15.0.0
+    "@spotify/eslint-config-react": ^15.0.0
+    "@spotify/eslint-config-typescript": ^15.0.0
+    "@sucrase/webpack-loader": ^2.0.0
+    "@svgr/core": 6.5.x
+    "@svgr/plugin-jsx": 6.5.x
+    "@svgr/plugin-svgo": 6.5.x
+    "@svgr/rollup": 6.5.x
+    "@svgr/webpack": 6.5.x
+    "@swc/core": ^1.3.46
+    "@swc/helpers": ^0.5.0
+    "@swc/jest": ^0.2.22
+    "@types/jest": ^29.5.11
+    "@types/webpack-env": ^1.15.2
+    "@typescript-eslint/eslint-plugin": ^6.12.0
+    "@typescript-eslint/parser": ^6.7.2
+    "@yarnpkg/lockfile": ^1.1.0
+    "@yarnpkg/parsers": ^3.0.0
+    bfj: ^8.0.0
+    buffer: ^6.0.3
+    chalk: ^4.0.0
+    chokidar: ^3.3.1
+    commander: ^12.0.0
+    cross-fetch: ^4.0.0
+    cross-spawn: ^7.0.3
+    css-loader: ^6.5.1
+    ctrlc-windows: ^2.1.0
+    diff: ^5.0.0
+    esbuild: ^0.21.0
+    esbuild-loader: ^4.0.0
+    eslint: ^8.6.0
+    eslint-config-prettier: ^9.0.0
+    eslint-formatter-friendly: ^7.0.0
+    eslint-plugin-deprecation: ^2.0.0
+    eslint-plugin-import: ^2.25.4
+    eslint-plugin-jest: ^27.0.0
+    eslint-plugin-jsx-a11y: ^6.5.1
+    eslint-plugin-react: ^7.28.0
+    eslint-plugin-react-hooks: ^4.3.0
+    eslint-plugin-unused-imports: ^3.0.0
+    eslint-webpack-plugin: ^4.0.0
+    express: ^4.17.1
+    fork-ts-checker-webpack-plugin: ^9.0.0
+    fs-extra: ^11.2.0
+    git-url-parse: ^14.0.0
+    glob: ^7.1.7
+    global-agent: ^3.0.0
+    handlebars: ^4.7.3
+    html-webpack-plugin: ^5.3.1
+    inquirer: ^8.2.0
+    jest: ^29.7.0
+    jest-css-modules: ^2.1.0
+    jest-environment-jsdom: ^29.0.2
+    jest-runtime: ^29.0.2
+    json-schema: ^0.4.0
+    lodash: ^4.17.21
+    mini-css-extract-plugin: ^2.4.2
+    minimatch: ^9.0.0
+    node-fetch: ^2.6.7
+    node-libs-browser: ^2.2.1
+    npm-packlist: ^5.0.0
+    ora: ^5.3.0
+    p-limit: ^3.1.0
+    p-queue: ^6.6.2
+    pirates: ^4.0.6
+    postcss: ^8.1.0
+    process: ^0.11.10
+    react-dev-utils: ^12.0.0-next.60
+    react-refresh: ^0.14.0
+    recursive-readdir: ^2.2.2
+    replace-in-file: ^7.1.0
+    rollup: ^4.0.0
+    rollup-plugin-dts: ^6.1.0
+    rollup-plugin-esbuild: ^6.1.1
+    rollup-plugin-postcss: ^4.0.0
+    rollup-pluginutils: ^2.8.2
+    run-script-webpack-plugin: ^0.2.0
+    semver: ^7.5.3
+    style-loader: ^3.3.1
+    sucrase: ^3.20.2
+    swc-loader: ^0.2.3
+    tar: ^6.1.12
+    terser-webpack-plugin: ^5.1.3
+    util: ^0.12.3
+    webpack: ^5.70.0
+    webpack-dev-server: ^5.0.0
+    webpack-node-externals: ^3.0.0
+    yaml: ^2.0.0
+    yml-loader: ^2.1.0
+    yn: ^4.0.0
+    zod: ^3.22.4
+  peerDependencies:
+    "@vitejs/plugin-react": ^4.0.4
+    vite: ^4.4.9
+    vite-plugin-html: ^3.2.0
+    vite-plugin-node-polyfills: ^0.22.0
+  peerDependenciesMeta:
+    "@vitejs/plugin-react":
+      optional: true
+    vite:
+      optional: true
+    vite-plugin-html:
+      optional: true
+    vite-plugin-node-polyfills:
+      optional: true
+  bin:
+    backstage-cli: bin/backstage-cli
+  checksum: 328525101cfa824722e7bdace20dbdb8f7ef55a1eb3b7084f03394177db5f13fe3e49a4746d07ae5d7fbb9ee45f01f239bb19cf4f59f28bf5c8093c395caea0f
   languageName: node
   linkType: hard
 
@@ -3157,7 +3319,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/config-loader@npm:^1.9.0":
+"@backstage/config-loader@npm:^1.8.1, @backstage/config-loader@npm:^1.9.0":
   version: 1.9.0
   resolution: "@backstage/config-loader@npm:1.9.0"
   dependencies:
@@ -3281,7 +3443,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/core-plugin-api@npm:^1.9.3":
+"@backstage/core-plugin-api@npm:^1.9.2, @backstage/core-plugin-api@npm:^1.9.3":
   version: 1.9.3
   resolution: "@backstage/core-plugin-api@npm:1.9.3"
   dependencies:
@@ -3411,7 +3573,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/integration@npm:^1.14.0":
+"@backstage/integration@npm:^1.13.0, @backstage/integration@npm:^1.14.0":
   version: 1.14.0
   resolution: "@backstage/integration@npm:1.14.0"
   dependencies:
@@ -4320,7 +4482,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/test-utils@npm:^1.5.10":
+"@backstage/test-utils@npm:^1.5.10, @backstage/test-utils@npm:^1.5.9":
   version: 1.5.10
   resolution: "@backstage/test-utils@npm:1.5.10"
   dependencies:
@@ -6198,7 +6360,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@material-ui/icons@npm:^4.11.3, @material-ui/icons@npm:^4.9.1":
+"@material-ui/icons@npm:^4.11.2, @material-ui/icons@npm:^4.11.3, @material-ui/icons@npm:^4.9.1":
   version: 4.11.3
   resolution: "@material-ui/icons@npm:4.11.3"
   dependencies:
@@ -6212,6 +6374,27 @@ __metadata:
     "@types/react":
       optional: true
   checksum: f849a8c4fecddc112cfa94105a2c72e763ff76b9f8da74135b7bbadfd294ed6685897cbea6a2128099be0ce37843784893d8c64da6bde37d020956ab9067206c
+  languageName: node
+  linkType: hard
+
+"@material-ui/lab@npm:4.0.0-alpha.57":
+  version: 4.0.0-alpha.57
+  resolution: "@material-ui/lab@npm:4.0.0-alpha.57"
+  dependencies:
+    "@babel/runtime": ^7.4.4
+    "@material-ui/utils": ^4.11.2
+    clsx: ^1.0.4
+    prop-types: ^15.7.2
+    react-is: ^16.8.0 || ^17.0.0
+  peerDependencies:
+    "@material-ui/core": ^4.9.10
+    "@types/react": ^16.8.6 || ^17.0.0
+    react: ^16.8.0 || ^17.0.0
+    react-dom: ^16.8.0 || ^17.0.0
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+  checksum: 0bc8b35e4a96ea04fa3fd43a64ff9685bdea2ad6ed8baf4c8f5cbe1524101a87f33229f6d23638074a3626fc3c55ba15a38d2ab984777dda896e117d0cea5c0e
   languageName: node
   linkType: hard
 
@@ -6350,7 +6533,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@material-ui/utils@npm:^4.11.3":
+"@material-ui/utils@npm:^4.11.2, @material-ui/utils@npm:^4.11.3":
   version: 4.11.3
   resolution: "@material-ui/utils@npm:4.11.3"
   dependencies:
@@ -6472,6 +6655,35 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@module-federation/dts-plugin@npm:0.1.21":
+  version: 0.1.21
+  resolution: "@module-federation/dts-plugin@npm:0.1.21"
+  dependencies:
+    "@module-federation/managers": 0.1.21
+    "@module-federation/sdk": 0.1.21
+    "@module-federation/third-party-dts-extractor": 0.1.21
+    adm-zip: ^0.5.10
+    ansi-colors: ^4.1.3
+    axios: ^1.6.7
+    chalk: 3.0.0
+    fs-extra: 9.1.0
+    isomorphic-ws: 5.0.0
+    koa: 2.11.0
+    lodash.clonedeepwith: 4.5.0
+    log4js: 6.9.1
+    node-schedule: 2.1.1
+    rambda: ^9.1.0
+    ws: 8.17.0
+  peerDependencies:
+    typescript: ^4.9.0 || ^5.0.0
+    vue-tsc: ^1.0.24
+  peerDependenciesMeta:
+    vue-tsc:
+      optional: true
+  checksum: ec4cd030a25617698754cbac2da5463f8942cdd0a64bdc95f6ff5fd29fff6b88cf3db90e53e6b260cd3593893fe6ee2d6e149d0a46698eb7f9cc19a9df26193d
+  languageName: node
+  linkType: hard
+
 "@module-federation/dts-plugin@npm:0.3.5":
   version: 0.3.5
   resolution: "@module-federation/dts-plugin@npm:0.3.5"
@@ -6498,6 +6710,32 @@ __metadata:
     vue-tsc:
       optional: true
   checksum: 8c8e653d0818b3df14ec399d6db0b5784f202c7909112e4884f29c4e268bd9ff6b2d891677776a65ac6204bf4df9cb2f377b7cb8884c1fee98d275d8d2f28f29
+  languageName: node
+  linkType: hard
+
+"@module-federation/enhanced@npm:^0.1.19":
+  version: 0.1.21
+  resolution: "@module-federation/enhanced@npm:0.1.21"
+  dependencies:
+    "@module-federation/dts-plugin": 0.1.21
+    "@module-federation/managers": 0.1.21
+    "@module-federation/manifest": 0.1.21
+    "@module-federation/rspack": 0.1.21
+    "@module-federation/runtime-tools": 0.1.21
+    "@module-federation/sdk": 0.1.21
+    upath: 2.0.1
+  peerDependencies:
+    typescript: ^4.9.0 || ^5.0.0
+    vue-tsc: ^1.0.24
+    webpack: ^5.0.0
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+    vue-tsc:
+      optional: true
+    webpack:
+      optional: true
+  checksum: bc0ff541db1066b290b3ad9ab868437dc3d0754b9d06ab263f8fb7f54e08238eae9232a482a681dd6152e4a175578d65df9f27fe181fc8fb602d7cc1ae34807d
   languageName: node
   linkType: hard
 
@@ -6529,6 +6767,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@module-federation/managers@npm:0.1.21":
+  version: 0.1.21
+  resolution: "@module-federation/managers@npm:0.1.21"
+  dependencies:
+    "@module-federation/sdk": 0.1.21
+    find-pkg: 2.0.0
+    fs-extra: 9.1.0
+  checksum: 5f230d5795d86dfd68c404ee2b7a1264950c283a4b1c6f4ee9cc9579fabb413718dfbc1ff726b9c213f9d3223d944dd38dd9d04b700962e6398c3c3728d6323e
+  languageName: node
+  linkType: hard
+
 "@module-federation/managers@npm:0.3.5":
   version: 0.3.5
   resolution: "@module-federation/managers@npm:0.3.5"
@@ -6537,6 +6786,19 @@ __metadata:
     find-pkg: 2.0.0
     fs-extra: 9.1.0
   checksum: a60a21c2c9bf84fd0911365980e2f0e163485f0a952992e3fec242e8e7a33f0c803c62e1c463fb1326845f0077aef2d45d90eba0f6f69545e60e0ea708ebcaba
+  languageName: node
+  linkType: hard
+
+"@module-federation/manifest@npm:0.1.21":
+  version: 0.1.21
+  resolution: "@module-federation/manifest@npm:0.1.21"
+  dependencies:
+    "@module-federation/dts-plugin": 0.1.21
+    "@module-federation/managers": 0.1.21
+    "@module-federation/sdk": 0.1.21
+    chalk: 3.0.0
+    find-pkg: 2.0.0
+  checksum: cef2011875f14e853a355626ae1dbc8ae3b0714d31140e329b5dd71525782b08c2e1d6ca45276a563bb3c3b7f7c4e64a31f0698ef12606f05aa6da46e759f345
   languageName: node
   linkType: hard
 
@@ -6550,6 +6812,19 @@ __metadata:
     chalk: 3.0.0
     find-pkg: 2.0.0
   checksum: 0b0f41802630536a9a90b3e958052d2a1503bdd3927c40e1962e371ee26f2646172ef895b868fd287921a318e0bac5a513ef069517565c445fb659c150e3a257
+  languageName: node
+  linkType: hard
+
+"@module-federation/rspack@npm:0.1.21":
+  version: 0.1.21
+  resolution: "@module-federation/rspack@npm:0.1.21"
+  dependencies:
+    "@module-federation/dts-plugin": 0.1.21
+    "@module-federation/managers": 0.1.21
+    "@module-federation/manifest": 0.1.21
+    "@module-federation/runtime-tools": 0.1.21
+    "@module-federation/sdk": 0.1.21
+  checksum: 55516285e23f4ca7127afafb14af667defbe46dc3224f85d7e07edbc8937d7fac909dfebc2f9dd73120b99bbe5135372cf0fbbe282990d80e6953a60dfa4c93e
   languageName: node
   linkType: hard
 
@@ -6575,6 +6850,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@module-federation/runtime-tools@npm:0.1.21":
+  version: 0.1.21
+  resolution: "@module-federation/runtime-tools@npm:0.1.21"
+  dependencies:
+    "@module-federation/runtime": 0.1.21
+    "@module-federation/webpack-bundler-runtime": 0.1.21
+  checksum: 628c0c4834093520f9c71481d587c9e18163f82e481b05b1900f04e2d5da4abb69af6d814ac5cd1951057b28d73f3adeb1cee7cd83628305b10cc7988405fbc5
+  languageName: node
+  linkType: hard
+
 "@module-federation/runtime-tools@npm:0.3.5":
   version: 0.3.5
   resolution: "@module-federation/runtime-tools@npm:0.3.5"
@@ -6582,6 +6867,15 @@ __metadata:
     "@module-federation/runtime": 0.3.5
     "@module-federation/webpack-bundler-runtime": 0.3.5
   checksum: 5287783b12fff5a37d45cb904d9e004c569bb0803680c133a19002810f7c84f8bff87594dacbc473cdc813788eb8c9feb0915fb2f446ca0f4c609d0be9e33191
+  languageName: node
+  linkType: hard
+
+"@module-federation/runtime@npm:0.1.21":
+  version: 0.1.21
+  resolution: "@module-federation/runtime@npm:0.1.21"
+  dependencies:
+    "@module-federation/sdk": 0.1.21
+  checksum: ce4de8515b54f1cd07a3c7c4cbd35fea163294b9fb24be10827872f3ebb62cd5c289f3602efe4149d963282739f79b51947afa039ee6f36be7f66dea83d590fc
   languageName: node
   linkType: hard
 
@@ -6594,10 +6888,28 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@module-federation/sdk@npm:0.1.21":
+  version: 0.1.21
+  resolution: "@module-federation/sdk@npm:0.1.21"
+  checksum: 6856dcfe2ef5ae939890b82010aaad911fa6c4330a05f290ae054c316c9b532d3691456a1f9e176fe05f1df2d6f2d8c7e0c842ca5648a0fd7abf270e44ed9ecb
+  languageName: node
+  linkType: hard
+
 "@module-federation/sdk@npm:0.3.5":
   version: 0.3.5
   resolution: "@module-federation/sdk@npm:0.3.5"
   checksum: 80f720af685def16bd80d6104dd7d831df03b1b3eedb11674a95f0e4420dbbaf732d4f619fc5e06421b36549483ab31484ad8a0490ac3033ed85ac300172be7d
+  languageName: node
+  linkType: hard
+
+"@module-federation/third-party-dts-extractor@npm:0.1.21":
+  version: 0.1.21
+  resolution: "@module-federation/third-party-dts-extractor@npm:0.1.21"
+  dependencies:
+    find-pkg: 2.0.0
+    fs-extra: 9.1.0
+    resolve: 1.22.8
+  checksum: e394fd7c2e6dbdf8df6937628680e7356ac897ee6f1309d7fbc38c00bcf4be9c0363f8bc1a75c29f7987a5a2f11f7855481813889b18e8b444ee9006aeb4a299
   languageName: node
   linkType: hard
 
@@ -6609,6 +6921,16 @@ __metadata:
     fs-extra: 9.1.0
     resolve: 1.22.8
   checksum: f7413bee4bf77fa8576dce31580fd91a636d0db6cffa17cd5f485039c5470254410005386f4b4160298b0fced985b9d1768411a64cc96f90a0b73f2e7d1a463f
+  languageName: node
+  linkType: hard
+
+"@module-federation/webpack-bundler-runtime@npm:0.1.21":
+  version: 0.1.21
+  resolution: "@module-federation/webpack-bundler-runtime@npm:0.1.21"
+  dependencies:
+    "@module-federation/runtime": 0.1.21
+    "@module-federation/sdk": 0.1.21
+  checksum: 7d96002066e63bdb503964fd5fb2798be25f4135a599d87721f4d26ebe1de1affbf447c56b082f7ee850ae7798d0ac637f6a486f58591269065e114051b466e5
   languageName: node
   linkType: hard
 
@@ -8003,6 +8325,30 @@ __metadata:
   version: 3.0.6
   resolution: "@repeaterjs/repeater@npm:3.0.6"
   checksum: aae878b953162bec77c94b45f2236ddfc01a65308267c7cb30220fa2f8511654a302c0d32aad228c58241d685607d7bb35b6d528b2879355e6636ff08fddb266
+  languageName: node
+  linkType: hard
+
+"@roadiehq/backstage-plugin-buildkite@npm:^2.3.1":
+  version: 2.3.2
+  resolution: "@roadiehq/backstage-plugin-buildkite@npm:2.3.2"
+  dependencies:
+    "@backstage/catalog-model": ^1.6.0
+    "@backstage/core-components": ^0.14.10
+    "@backstage/core-plugin-api": ^1.9.3
+    "@backstage/plugin-catalog-react": ^1.12.3
+    "@backstage/theme": ^0.5.6
+    "@material-ui/core": ^4.12.2
+    "@material-ui/icons": ^4.11.2
+    "@material-ui/lab": 4.0.0-alpha.57
+    history: ^5.0.0
+    moment: ^2.29.1
+    react-use: ^17.2.4
+  peerDependencies:
+    react: ^16.13.1 || ^17.0.0 || ^18.0.0
+    react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
+    react-router: 6.0.0-beta.0 || ^6.3.0
+    react-router-dom: 6.0.0-beta.0 || ^6.3.0
+  checksum: 6c850d9c107b949d684deecc547cf80f2a532536a3aa3a431033e68691433ae09c19cea69ffbc48faacfa078776d49f5e41c318fd73621c4c93d1dd66c2b57dc
   languageName: node
   linkType: hard
 
@@ -22409,6 +22755,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"moment@npm:^2.29.1":
+  version: 2.30.1
+  resolution: "moment@npm:2.30.1"
+  checksum: 859236bab1e88c3e5802afcf797fc801acdbd0ee509d34ea3df6eea21eb6bcc2abd4ae4e4e64aa7c986aa6cba563c6e62806218e6412a765010712e5fa121ba6
+  languageName: node
+  linkType: hard
+
 "morgan@npm:^1.10.0":
   version: 1.10.0
   resolution: "morgan@npm:1.10.0"
@@ -29905,6 +30258,21 @@ __metadata:
     imurmurhash: ^0.1.4
     signal-exit: ^3.0.7
   checksum: 5da60bd4eeeb935eec97ead3df6e28e5917a6bd317478e4a85a5285e8480b8ed96032bbcc6ecd07b236142a24f3ca871c924ec4a6575e623ec1b11bf8c1c253c
+  languageName: node
+  linkType: hard
+
+"ws@npm:8.17.0":
+  version: 8.17.0
+  resolution: "ws@npm:8.17.0"
+  peerDependencies:
+    bufferutil: ^4.0.1
+    utf-8-validate: ">=5.0.2"
+  peerDependenciesMeta:
+    bufferutil:
+      optional: true
+    utf-8-validate:
+      optional: true
+  checksum: 147ef9eab0251364e1d2c55338ad0efb15e6913923ccbfdf20f7a8a6cb8f88432bcd7f4d8f66977135bfad35575644f9983201c1a361019594a4e53977bf6d4e
   languageName: node
   linkType: hard
 

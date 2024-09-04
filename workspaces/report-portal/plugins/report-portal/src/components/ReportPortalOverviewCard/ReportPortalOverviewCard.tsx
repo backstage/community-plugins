@@ -65,6 +65,7 @@ const StyledResults = styled(Typography)({
   '& > *': { fontWeight: '800' },
 });
 
+/** @public */
 export const ReportPortalOverviewCard = (props: {
   variant: InfoCardVariants;
 }) => {
