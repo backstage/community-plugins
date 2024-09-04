@@ -1,6 +1,6 @@
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 
-import { Instances } from '../types';
+import { Instances } from '../types/application';
 
 export const useArgocdConfig = (): {
   instances: Instances;

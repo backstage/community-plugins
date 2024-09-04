@@ -11,6 +11,7 @@ export const mockEntity: Entity = {
         'rht-gitops.com/janus-argocd=quarkus-app-bootstrap',
       'argocd/project-name': 'project-name',
       'argocd/instance-name': 'instance-1',
+      'backstage.io/kubernetes-id': 'quarkus-app',
     },
   },
   spec: {

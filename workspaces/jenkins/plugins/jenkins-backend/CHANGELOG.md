@@ -1,5 +1,31 @@
 # @backstage-community/plugin-jenkins-backend
 
+## 0.5.0
+
+### Minor Changes
+
+- 8ce69ed: Creating environment and example app for jenkins plugin
+
+## 0.4.12
+
+### Patch Changes
+
+- c3aaa1d: Removed hardcoded count limit from `jobsTreeSpec`
+
+## 0.4.11
+
+### Patch Changes
+
+- aba9f7f: Backstage version bump to v1.30.2
+- Updated dependencies [aba9f7f]
+  - @backstage-community/plugin-jenkins-common@0.1.29
+
+## 0.4.10
+
+### Patch Changes
+
+- ae2ee8a: Updated dependency `@types/supertest` to `^6.0.0`.
+
 ## 0.4.9
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @backstage-community/plugin-gitops-profiles
 
+## 0.3.52
+
+### Patch Changes
+
+- aa6475b: Backstage version bump to v1.30.2
+
 ## 0.3.51
 
 ### Patch Changes

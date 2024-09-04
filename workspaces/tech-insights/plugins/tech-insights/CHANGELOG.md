@@ -1,5 +1,21 @@
 # @backstage-community/plugin-tech-insights
 
+## 0.3.34
+
+### Patch Changes
+
+- a84eb44: Move client to common package and allow to use backend auth system
+- Updated dependencies [a84eb44]
+  - @backstage-community/plugin-tech-insights-common@0.2.17
+
+## 0.3.33
+
+### Patch Changes
+
+- 00d148d: Backstage version bump to v1.30.2
+- Updated dependencies [00d148d]
+  - @backstage-community/plugin-tech-insights-common@0.2.16
+
 ## 0.3.32
 
 ### Patch Changes

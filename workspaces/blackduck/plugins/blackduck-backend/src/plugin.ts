@@ -2,6 +2,7 @@ import {
   coreServices,
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
+import { BlackDuckConfig } from './service/BlackDuckConfig';
 import { createRouter } from './service/router';
 
 /**
@@ -36,6 +37,7 @@ export const blackduckPlugin = createBackendPlugin({
             permissions,
             discovery,
             httpAuth,
+            blackDuckConfig: BlackDuckConfig.fromConfig(config),
           }),
         );
         httpRouter.addAuthPolicy({

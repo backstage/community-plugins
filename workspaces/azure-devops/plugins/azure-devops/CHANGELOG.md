@@ -1,5 +1,19 @@
 # @backstage-community/plugin-azure-devops
 
+## 0.4.10
+
+### Patch Changes
+
+- 45fd620: use new FE system syntax (replacing deprecated methods)
+
+## 0.4.9
+
+### Patch Changes
+
+- b6515fa: Backstage version bump to v1.30.2
+- Updated dependencies [b6515fa]
+  - @backstage-community/plugin-azure-devops-common@0.4.7
+
 ## 0.4.8
 
 ### Patch Changes

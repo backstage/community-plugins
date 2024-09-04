@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-shortcuts",
-  "version": "0.3.25",
+  "version": "0.3.26",
   "description": "A Backstage plugin that provides a shortcuts feature to the sidebar",
   "backstage": {
     "role": "frontend-plugin",
@@ -37,7 +37,7 @@
     "test": "backstage-cli package test"
   },
   "dependencies": {
-    "@backstage/core-components": "^0.14.9",
+    "@backstage/core-components": "^0.14.10",
     "@backstage/core-plugin-api": "^1.9.3",
     "@backstage/theme": "^0.5.6",
     "@backstage/types": "^1.1.1",
@@ -50,9 +50,9 @@
     "zen-observable": "^0.10.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.26.11",
-    "@backstage/dev-utils": "^1.0.36",
-    "@backstage/test-utils": "^1.5.9",
+    "@backstage/cli": "^0.27.0",
+    "@backstage/dev-utils": "^1.0.37",
+    "@backstage/test-utils": "^1.5.10",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^15.0.0",
