@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Application } from '../../types';
+import { Application } from '../../types/application';
 import AppHealthStatus from './AppHealthStatus';
 import AppSyncStatus from './AppSyncStatus';
 

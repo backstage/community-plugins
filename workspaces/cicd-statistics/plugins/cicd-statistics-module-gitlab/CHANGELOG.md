@@ -1,5 +1,13 @@
 # @backstage-community/plugin-cicd-statistics-module-gitlab
 
+## 0.1.33
+
+### Patch Changes
+
+- 8662d09: Backstage version bump to v1.30.2
+- Updated dependencies [8662d09]
+  - @backstage-community/plugin-cicd-statistics@0.1.39
+
 ## 0.1.32
 
 ### Patch Changes

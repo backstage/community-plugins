@@ -16,13 +16,7 @@
 
 import express from 'express';
 import request from 'supertest';
-import {
-  getVoidLogger,
-  PluginDatabaseManager,
-  PluginEndpointDiscovery,
-  DatabaseManager,
-  UrlReaders,
-} from '@backstage/backend-common';
+import { DatabaseManager } from '@backstage/backend-common';
 import { ConfigReader } from '@backstage/config';
 import { createRouter } from './router';
 import { CatalogRequestOptions } from '@backstage/catalog-client';
@@ -31,6 +25,11 @@ import { mockCredentials, mockServices } from '@backstage/backend-test-utils';
 jest.mock('./CodeCoverageDatabase');
 
 import { CodeCoverageDatabase } from './CodeCoverageDatabase';
+import {
+  DatabaseService,
+  DiscoveryService,
+  UrlReaderService,
+} from '@backstage/backend-plugin-api';
 
 CodeCoverageDatabase.create = jest.fn(
   async () =>
@@ -63,7 +62,7 @@ jest.mock('@backstage/catalog-client', () => ({
   })),
 }));
 
-function createDatabase(): PluginDatabaseManager {
+function createDatabase(): DatabaseService {
   return DatabaseManager.fromConfig(
     new ConfigReader({
       backend: {
@@ -76,16 +75,22 @@ function createDatabase(): PluginDatabaseManager {
   ).forPlugin('code-coverage');
 }
 
-const testDiscovery: jest.Mocked<PluginEndpointDiscovery> = {
+const testDiscovery: jest.Mocked<DiscoveryService> = {
   getBaseUrl: jest
     .fn()
     .mockResolvedValue('http://localhost:7007/api/code-coverage'),
   getExternalBaseUrl: jest.fn(),
 };
-const mockUrlReader = UrlReaders.default({
-  logger: getVoidLogger(),
-  config: new ConfigReader({}),
-});
+const mockUrlReader: UrlReaderService = {
+  readUrl: url =>
+    Promise.resolve({
+      buffer: async () => Buffer.from(url),
+      etag: 'buffer',
+      stream: jest.fn(),
+    }),
+  readTree: jest.fn(),
+  search: jest.fn(),
+};
 
 describe('createRouter', () => {
   let app: express.Express;
@@ -96,7 +101,7 @@ describe('createRouter', () => {
       database: createDatabase(),
       discovery: testDiscovery,
       urlReader: mockUrlReader,
-      logger: getVoidLogger(),
+      logger: mockServices.logger.mock(),
       auth: mockServices.auth(),
       httpAuth: mockServices.httpAuth(),
     });
@@ -162,7 +167,7 @@ describe('createRouter', () => {
         database: createDatabase(),
         discovery: testDiscovery,
         urlReader: mockUrlReader,
-        logger: getVoidLogger(),
+        logger: mockServices.logger.mock(),
       });
       app = express().use(router);
 

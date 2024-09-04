@@ -1,4 +1,4 @@
-import { Application } from '../../src/types';
+import { Application } from '../../src/types/application';
 
 const commonMetadata = {
   creationTimestamp: new Date('2024-04-22T05:39:23Z'),
@@ -132,6 +132,16 @@ export const mockApplication: Application = {
   status: commonStatus,
 };
 
+export const mockQuarkusApplication: Application = {
+  metadata: {
+    ...commonMetadata,
+    creationTimestamp: new Date('2024-04-22T05:39:23Z'),
+    name: 'quarkus-app',
+  },
+  spec: commonSpec,
+  status: commonStatus,
+};
+
 const preProdHelmParameters = {
   parameters: [
     {
@@ -204,6 +214,29 @@ export const preProdApplication = {
     sync: {
       status: 'Synced',
     },
+    resources: [
+      {
+        version: 'v1',
+        kind: 'Service',
+        namespace: 'openshift-gitops',
+        name: 'quarkus-app',
+        status: 'Synced',
+        health: {
+          status: 'Healthy',
+        },
+      },
+      {
+        group: 'apps',
+        version: 'v1',
+        kind: 'Deployment',
+        namespace: 'openshift-gitops',
+        name: 'quarkus-app',
+        status: 'Synced',
+        health: {
+          status: 'Degraded',
+        },
+      },
+    ],
   },
 };
 
@@ -272,7 +305,29 @@ export const prodApplication = {
         },
       },
     ],
-
+    resources: [
+      {
+        version: 'v1',
+        kind: 'Service',
+        namespace: 'openshift-gitops',
+        name: 'quarkus-app',
+        status: 'Synced',
+        health: {
+          status: 'Degraded',
+        },
+      },
+      {
+        group: 'apps',
+        version: 'v1',
+        kind: 'Deployment',
+        namespace: 'openshift-gitops',
+        name: 'quarkus-app',
+        status: 'Synced',
+        health: {
+          status: 'Healthy',
+        },
+      },
+    ],
     operationState: {
       ...commonStatus.operationState,
       operation: {

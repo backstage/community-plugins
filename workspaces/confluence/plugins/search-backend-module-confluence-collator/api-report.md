@@ -36,6 +36,7 @@ export type ConfluenceCollatorFactoryOptions = {
   username?: string;
   password?: string;
   spaces?: string[];
+  query?: string;
   parallelismLimit?: number;
   logger: LoggerService;
 };

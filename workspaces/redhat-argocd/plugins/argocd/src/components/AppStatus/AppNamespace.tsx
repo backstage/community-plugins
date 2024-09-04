@@ -3,7 +3,7 @@ import React from 'react';
 import { Chip, Typography } from '@material-ui/core';
 import { Flex, FlexItem } from '@patternfly/react-core';
 
-import { Application } from '../../types';
+import { Application } from '../../types/application';
 
 const AppNamespace: React.FC<{ app: Application }> = ({ app }) => {
   if (!app) {

@@ -1,5 +1,70 @@
 ## @janus-idp/backstage-plugin-argocd [1.5.7](https://github.com/janus-idp/backstage-plugins/compare/@janus-idp/backstage-plugin-argocd@1.5.6...@janus-idp/backstage-plugin-argocd@1.5.7) (2024-08-02)
 
+## 1.8.0
+
+### Minor Changes
+
+- 2687d9a: Displaying list of resources managed by ArgoCD in the application sidebar
+
+## 1.7.0
+
+### Minor Changes
+
+- 9dc17ff: Add argo rollouts information in the application sidebar
+
+## 1.6.9
+
+### Patch Changes
+
+- 38d858e: regen yarn.lock
+- 4431964: fix version range for dependency @backstage-community/plugin-redhat-argocd-common so we can bump to 1.0.4 without the tests failing at https://github.com/backstage/community-plugins/actions/runs/10603150719/job/29386810871?pr=1114
+- Updated dependencies [38d858e]
+  - @backstage-community/plugin-redhat-argocd-common@1.0.5
+
+## 1.6.8
+
+### Patch Changes
+
+- 576a2d1: chore: update supported-versions to 1.29.2
+- Updated dependencies [576a2d1]
+  - @backstage-community/plugin-redhat-argocd-common@1.0.4
+
+## 1.6.7
+
+### Patch Changes
+
+- 2436cfa: update link to dynamic plugin info
+
+## 1.6.6
+
+### Patch Changes
+
+- 09499f2: chore: updated janus-idp namespace to backstage-community
+
+## 1.6.5
+
+### Patch Changes
+
+- ed69246: Updated dependency `@janus-idp/cli` to `1.13.1`.
+
+## 1.6.4
+
+### Patch Changes
+
+- aca4c41: Updated dependency `@kubernetes/client-node` to `^0.21.0`.
+
+## 1.6.3
+
+### Patch Changes
+
+- 8907cb6: Backstage version bump to v1.30.2
+
+## 1.6.2
+
+### Patch Changes
+
+- 9710c02: Updated dependency `@playwright/test` to `1.46.1`.
+
 ## 1.6.1
 
 ### Patch Changes

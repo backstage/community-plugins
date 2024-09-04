@@ -1,0 +1,88 @@
+{
+  "name": "@backstage-community/plugin-feedback-backend-dynamic",
+  "version": "1.7.1",
+  "main": "./dist/index.cjs.js",
+  "types": "src/index.ts",
+  "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "backstage": {
+    "role": "backend-plugin",
+    "supported-versions": "1.29.2",
+    "pluginId": "feedback",
+    "pluginPackages": [
+      "@backstage-community/plugin-feedback",
+      "@backstage-community/plugin-feedback-backend"
+    ]
+  },
+  "exports": {
+    ".": {
+      "require": "./dist/index.cjs.js",
+      "default": "./dist/index.cjs.js"
+    },
+    "./alpha": {
+      "require": "./dist/alpha.cjs.js",
+      "default": "./dist/alpha.cjs.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "scripts": {},
+  "dependencies": {
+    "@types/express": "*",
+    "axios": "^1.6.4",
+    "express": "^4.17.1",
+    "express-promise-router": "^4.1.0",
+    "knex": "^3.1.0",
+    "node-fetch": "^2.6.7",
+    "nodemailer": "^6.9.8",
+    "short-uuid": "^4.2.2",
+    "yn": "^4.0.0"
+  },
+  "devDependencies": {},
+  "files": [
+    "dist",
+    "config.d.ts",
+    "app-config.backstage-community.yaml",
+    "migrations/**/*.{js,d.ts}",
+    "alpha"
+  ],
+  "configSchema": "config.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "plugins/feedback-backend"
+  },
+  "keywords": [
+    "support:tech-preview",
+    "lifecycle:active",
+    "backstage",
+    "plugin"
+  ],
+  "homepage": "https://red.ht/rhdh",
+  "bugs": "https://github.com/backstage/community-plugins/issues",
+  "maintainers": [
+    "riginoommen",
+    "deshmukhmayur",
+    "yashoswalyo"
+  ],
+  "author": "The Backstage Community",
+  "bundleDependencies": true,
+  "peerDependencies": {
+    "@backstage/backend-common": "^0.23.3",
+    "@backstage/backend-dynamic-feature-service": "^0.2.15",
+    "@backstage/backend-plugin-api": "^0.7.0",
+    "@backstage/backend-test-utils": "^0.4.4",
+    "@backstage/catalog-client": "^1.6.5",
+    "@backstage/catalog-model": "^1.5.0",
+    "@backstage/config": "^1.2.0"
+  },
+  "overrides": {
+    "@aws-sdk/util-utf8-browser": {
+      "@smithy/util-utf8": "^2.0.0"
+    }
+  },
+  "resolutions": {
+    "@aws-sdk/util-utf8-browser": "npm:@smithy/util-utf8@~2"
+  }
+}

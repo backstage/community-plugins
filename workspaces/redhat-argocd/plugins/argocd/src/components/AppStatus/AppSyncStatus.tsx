@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Chip } from '@material-ui/core';
 
-import { Application, SyncStatusCode } from '../../types';
+import { Application, SyncStatusCode } from '../../types/application';
 import { SyncIcon } from './StatusIcons';
 
 const AppSyncStatus: React.FC<{

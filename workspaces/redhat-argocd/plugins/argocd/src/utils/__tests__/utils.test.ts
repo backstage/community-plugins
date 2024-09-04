@@ -1,5 +1,5 @@
 import { mockApplication, mockEntity } from '../../../dev/__data__';
-import { Application, History, Status } from '../../types';
+import { Application, History, Status } from '../../types/application';
 import {
   ArgoCdLabels,
   getAppOperationState,

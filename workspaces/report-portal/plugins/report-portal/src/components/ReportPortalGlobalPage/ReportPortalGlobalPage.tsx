@@ -8,12 +8,14 @@ import Grid from '@mui/material/Grid';
 
 import { GlobalPageContent } from './GlobalPageContent';
 
+/** @public */
 export type ReportPortalGlobalPageProps = {
   title?: string;
   subtitle?: string;
   theme?: string;
 };
 
+/** @public */
 export const ReportPortalGlobalPage = (props: ReportPortalGlobalPageProps) => {
   const config = useApi(configApiRef);
   const emailTemplate = config.getOptionalString(

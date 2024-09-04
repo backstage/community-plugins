@@ -64,7 +64,7 @@ export class JenkinsApiImpl {
 
   private static readonly jobsTreeSpec = `jobs[
                    ${JenkinsApiImpl.jobTreeSpec}
-                 ]{0,50}`;
+                 ]`;
 
   private static readonly jobBuildsTreeSpec = `
                    name,

@@ -1,5 +1,15 @@
 # @backstage-community/plugin-entity-validation
 
+## 0.2.0
+
+### Minor Changes
+
+- f292b5c: Added a new component `EntityValidationContent` to allow embedding inside other pages without a duplicated header.
+
+### Patch Changes
+
+- f31f4b8: Backstage version bump to v1.30.2
+
 ## 0.1.22
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @backstage-community/plugin-sentry
 
+## 0.5.22
+
+### Patch Changes
+
+- 5e69efa: Backstage version bump to v1.30.2
+
 ## 0.5.21
 
 ### Patch Changes

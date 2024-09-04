@@ -16,11 +16,10 @@
 
 import { createApiFactory } from '@backstage/core-plugin-api';
 import {
-  createApiExtension,
-  createNavItemExtension,
-  createPageExtension,
-  createPlugin,
-  createSchemaFromZod,
+  ApiBlueprint,
+  NavItemBlueprint,
+  PageBlueprint,
+  createFrontendPlugin,
 } from '@backstage/frontend-plugin-api';
 import React from 'react';
 import { techRadarApiRef } from './api';
@@ -34,41 +33,49 @@ import MapIcon from '@material-ui/icons/MyLocation';
 import { rootRouteRef } from './plugin';
 
 /** @alpha */
-export const techRadarNavItem = createNavItemExtension({
-  icon: MapIcon,
-  routeRef: convertLegacyRouteRef(rootRouteRef),
-  title: 'Tech Radar',
+export const techRadarNavItem = NavItemBlueprint.make({
+  params: {
+    icon: MapIcon,
+    routeRef: convertLegacyRouteRef(rootRouteRef),
+    title: 'Tech Radar',
+  },
 });
 
 /** @alpha */
-export const techRadarPage = createPageExtension({
-  defaultPath: '/tech-radar',
-  routeRef: convertLegacyRouteRef(rootRouteRef),
-  configSchema: createSchemaFromZod(z =>
-    z.object({
-      title: z.string().default('Tech Radar'),
-      subtitle: z
-        .string()
-        .default('Pick the recommended technologies for your projects'),
-      pageTitle: z.string().default('Company Radar'),
-      path: z.string().default('/tech-radar'),
-      width: z.number().default(1500),
-      height: z.number().default(800),
-    }),
-  ),
-  loader: ({ config }) =>
-    import('./components').then(m =>
-      compatWrapper(<m.RadarPage {...config} />),
-    ),
+export const techRadarPage = PageBlueprint.makeWithOverrides({
+  config: {
+    schema: {
+      title: z => z.string().default('Tech Radar'),
+      subtitle: z =>
+        z
+          .string()
+          .default('Pick the recommended technologies for your projects'),
+      pageTitle: z => z.string().default('Company Radar'),
+      width: z => z.number().default(1500),
+      height: z => z.number().default(800),
+    },
+  },
+  factory(originalFactory, { config }) {
+    return originalFactory({
+      defaultPath: '/tech-radar',
+      routeRef: convertLegacyRouteRef(rootRouteRef),
+      loader: async () =>
+        import('./components').then(m =>
+          compatWrapper(<m.RadarPage {...config} />),
+        ),
+    });
+  },
 });
 
 /** @alpha */
-export const techRadarApi = createApiExtension({
-  factory: createApiFactory(techRadarApiRef, new SampleTechRadarApi()),
+export const techRadarApi = ApiBlueprint.make({
+  params: {
+    factory: createApiFactory(techRadarApiRef, new SampleTechRadarApi()),
+  },
 });
 
 /** @alpha */
-export default createPlugin({
+export default createFrontendPlugin({
   id: 'tech-radar',
   extensions: [techRadarPage, techRadarApi, techRadarNavItem],
   routes: convertLegacyRouteRefs({

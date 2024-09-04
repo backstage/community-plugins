@@ -15,12 +15,13 @@ export class BlackDuckClient implements BlackDuckApi {
   }
 
   public async getVulns(
+    hostKey: string,
     projectName: string,
     projectVersion: string,
     entityRef: string,
   ): Promise<any> {
     const baseUrl = `${await this.discoveryApi.getBaseUrl('blackduck')}`;
-    const vulnURL = `${baseUrl}/vulns/${projectName}/${projectVersion}`;
+    const vulnURL = `${baseUrl}/vulns/${hostKey}/${projectName}/${projectVersion}`;
     const { token: accessToken } = await this.identityApi.getCredentials();
     const response = await fetch(vulnURL, {
       method: 'POST',
@@ -38,12 +39,13 @@ export class BlackDuckClient implements BlackDuckApi {
   }
 
   public async getRiskProfile(
+    hostKey: string,
     projectName: string,
     projectVersion: string,
     entityRef: string,
   ): Promise<any> {
     const baseUrl = `${await this.discoveryApi.getBaseUrl('blackduck')}`;
-    const vulnURL = `${baseUrl}/risk-profile/${projectName}/${projectVersion}`;
+    const vulnURL = `${baseUrl}/risk-profile/${hostKey}/${projectName}/${projectVersion}`;
     const { token: idToken } = await this.identityApi.getCredentials();
     const response = await fetch(vulnURL, {
       method: 'POST',

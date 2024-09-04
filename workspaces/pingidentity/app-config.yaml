@@ -1,0 +1,48 @@
+app:
+  title: Ping Identity Example app
+  baseUrl: http://localhost:3000
+
+organization:
+  name: Entity Feedback Example
+
+backend:
+  baseUrl: http://localhost:7007
+  listen:
+    port: 7007
+    host: 0.0.0.0
+  csp:
+    connect-src: ["'self'", 'http:', 'https:']
+  cors:
+    origin: http://localhost:3000
+    methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
+    credentials: true
+  database:
+    client: better-sqlite3
+    connection: ':memory:'
+
+auth:
+  dangerouslyDisableDefaultAuthPolicy: true
+  providers:
+    guest: {}
+
+catalog:
+  import:
+    entityFilename: catalog-info.yaml
+  rules:
+    - allow: [Component, System, API, Resource, Location, User, Group]
+  providers:
+    pingIdentityOrg:
+      default:
+        apiPath: https://api.pingone.ca/v1
+        authPath: https://auth.pingone.ca
+        envId: ${PING_IDENTITY_ENV_ID}
+        clientId: ${PING_IDENTITY_CLIENT_ID}
+        clientSecret: ${PING_IDENTITY_CLIENT_SECRET}
+        userQuerySize: 2
+        groupQuerySize: 2
+        schedule: # Mandatory; same options as in TaskScheduleDefinition
+          # supports cron, ISO duration, "human duration" as used in code
+          frequency: { seconds: 30 } # Customize this to fit your needs
+          # supports ISO duration, "human duration" as used in code
+          timeout: { minutes: 10 } # Customize this to fit your needs
+          initialDelay: { seconds: 15 } # Customize this to fit your needs

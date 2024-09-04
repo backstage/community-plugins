@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-sonarqube-backend",
-  "version": "0.2.21",
+  "version": "0.2.23",
   "backstage": {
     "role": "backend-plugin",
     "pluginId": "sonarqube",
@@ -38,8 +38,8 @@
     "test": "backstage-cli package test"
   },
   "dependencies": {
-    "@backstage/backend-common": "^0.23.3",
-    "@backstage/backend-plugin-api": "^0.7.0",
+    "@backstage/backend-common": "^0.24.0",
+    "@backstage/backend-plugin-api": "^0.8.0",
     "@backstage/config": "^1.2.0",
     "@backstage/errors": "^1.2.4",
     "@types/express": "*",
@@ -49,12 +49,12 @@
     "yn": "^5.0.0"
   },
   "devDependencies": {
-    "@backstage/backend-test-utils": "^0.4.4",
-    "@backstage/cli": "^0.26.11",
+    "@backstage/backend-test-utils": "^0.5.0",
+    "@backstage/cli": "^0.27.0",
     "@types/node-fetch": "^2.5.12",
-    "@types/supertest": "^2.0.12",
+    "@types/supertest": "^6.0.0",
     "msw": "^1.0.0",
-    "supertest": "^6.2.4"
+    "supertest": "^7.0.0"
   },
   "configSchema": "config.d.ts"
 }
