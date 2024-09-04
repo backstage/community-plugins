@@ -7,6 +7,9 @@ import {
 } from '@backstage/frontend-plugin-api';
 import { CicdStatisticsApiGitlab } from './api';
 
+/**
+ * @alpha
+ */
 export const cicdStatisticsGitlabExtension = createApiExtension({
   factory: createApiFactory({
     api: cicdStatisticsApiRef,
@@ -19,6 +22,9 @@ export const cicdStatisticsGitlabExtension = createApiExtension({
   }),
 });
 
+/**
+ * @alpha
+ */
 const cicdStatisticsExtensionOverrides = createExtensionOverrides({
   extensions: [cicdStatisticsGitlabExtension],
 });
