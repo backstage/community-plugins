@@ -115,9 +115,12 @@ It is dedicated to simplifying the process of gathering and managing user feedba
    )
    ```
 
-5. Add `EntityFeedbackPage` component to the **Component page, Api page** in `src/components/catalog/EntityPage.tsx`.
+5. Import the `EntityFeedbackPage` component and add it to the **Component page, Api page** in `src/components/catalog/EntityPage.tsx`.
 
    ```ts
+   import { EntityFeedbackPage } from '@backstage-community/plugin-feedback';
+   // ...
+   
    <EntityLayout.Route path="/feedback" title="Feedback">
      <EntityFeedbackPage />
    </EntityLayout.Route>
