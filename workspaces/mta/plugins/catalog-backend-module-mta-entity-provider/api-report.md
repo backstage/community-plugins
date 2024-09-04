@@ -14,7 +14,6 @@ export default catalogModuleMtaEntityProvider;
 // Warnings were encountered during analysis:
 //
 // /Users/ibolton/Development/community-plugins/workspaces/mta/plugins/catalog-backend-module-mta-entity-provider/src/index.ts:2:1 - (ae-misplaced-package-tag) The @packageDocumentation comment must appear at the top of entry point *.d.ts file
-// /Users/ibolton/Development/community-plugins/workspaces/mta/plugins/catalog-backend-module-mta-entity-provider/src/module.ts:9:14 - (ae-undocumented) Missing documentation for "catalogModuleMtaEntityProvider".
 
 // (No @packageDocumentation comment for this package)
 ```

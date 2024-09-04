@@ -1,5 +1,5 @@
 {
-  "name": "root",
+  "name": "@internal/mta",
   "version": "1.0.0",
   "private": true,
   "engines": {
@@ -33,6 +33,11 @@
       "plugins/*"
     ]
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/mta"
+  },
   "devDependencies": {
     "@backstage/cli": "^0.26.11",
     "@backstage/e2e-test-utils": "^0.1.1",
@@ -48,7 +53,8 @@
   },
   "resolutions": {
     "@types/react": "^18",
-    "@types/react-dom": "^18"
+    "@types/react-dom": "^18",
+    "@microsoft/api-extractor": "7.36.4"
   },
   "prettier": "@spotify/prettier-config",
   "lint-staged": {

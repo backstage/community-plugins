@@ -25,10 +25,5 @@ export const mtaPlugin: BackstagePlugin<
   {}
 >;
 
-// Warnings were encountered during analysis:
-//
-// /Users/ibolton/Development/community-plugins/workspaces/mta/plugins/mta-frontend/src/plugin.ts:13:14 - (ae-undocumented) Missing documentation for "mtaPlugin".
-// /Users/ibolton/Development/community-plugins/workspaces/mta/plugins/mta-frontend/src/plugin.ts:33:14 - (ae-undocumented) Missing documentation for "EntityMTAContent".
-
 // (No @packageDocumentation comment for this package)
 ```

@@ -28,9 +28,7 @@ export default mtaScaffolderModule;
 
 // Warnings were encountered during analysis:
 //
-// /Users/ibolton/Development/community-plugins/workspaces/mta/plugins/scaffolder-backend-module-mta/src/actions/mta/create-application.ts:4:1 - (ae-undocumented) Missing documentation for "createMTAApplicationAction".
 // /Users/ibolton/Development/community-plugins/workspaces/mta/plugins/scaffolder-backend-module-mta/src/index.ts:2:1 - (ae-misplaced-package-tag) The @packageDocumentation comment must appear at the top of entry point *.d.ts file
-// /Users/ibolton/Development/community-plugins/workspaces/mta/plugins/scaffolder-backend-module-mta/src/module.ts:9:14 - (ae-undocumented) Missing documentation for "mtaScaffolderModule".
 
 // (No @packageDocumentation comment for this package)
 ```
