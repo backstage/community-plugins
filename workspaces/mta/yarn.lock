@@ -36552,16 +36552,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yaml@npm:^2.0.0, yaml@npm:^2.2.1, yaml@npm:^2.2.2":
-  version: 2.5.0
-  resolution: "yaml@npm:2.5.0"
-  bin:
-    yaml: bin.mjs
-  checksum: a116dca5c61641d9bf1f1016c6e71daeb1ed4915f5930ed237d45ab7a605aa5d92c332ff64879a6cd088cabede008c778774e3060ffeb4cd617d28088e4b2d83
-  languageName: node
-  linkType: hard
-
-"yaml@npm:^2.0.0-10":
+"yaml@npm:^2.0.0, yaml@npm:^2.0.0-10, yaml@npm:^2.2.1, yaml@npm:^2.2.2":
   version: 2.5.1
   resolution: "yaml@npm:2.5.1"
   bin:
