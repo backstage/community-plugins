@@ -11,7 +11,5 @@ export default createPlugin({
   routes: convertLegacyRouteRefs({
     entityContent: rootCatalogCicdStatsRouteRef,
   }),
-  extensions: [
-    entityCicdChartsContent,
-  ],
-})
+  extensions: [entityCicdChartsContent],
+});

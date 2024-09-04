@@ -14,5 +14,5 @@ export const entityCicdChartsContent = createEntityContentExtension({
   loader: async () => {
     const { EntityPageCicdCharts } = await import('../entity-page');
     return <EntityPageCicdCharts />;
-  }
+  },
 });
