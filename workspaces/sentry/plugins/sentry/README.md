@@ -13,7 +13,10 @@ The Sentry Plugin displays issues from [Sentry](https://sentry.io).
 yarn --cwd packages/app add @backstage-community/plugin-sentry
 ```
 
-2. Add the `EntitySentryCard` to the EntityPage:
+2. Import the sentry card or content into the frontend. If using the standard BAckstage frontend, follow step 2A, and if using
+   the [new alpha frontend system](https://backstage.io/docs/frontend-system/), follow step 2B instead.
+
+A. Add the `EntitySentryCard` to the EntityPage:
 
 ```jsx
 // packages/app/src/components/catalog/EntityPage.tsx
@@ -48,6 +51,44 @@ const overviewContent = (
 >   </EntityLayout>
 > );
 > ```
+
+B. [Install the plugin](https://backstage.io/docs/frontend-system/building-apps/index#install-features-manually) by updating `App.tsx` to include the plugin in the features block during app creation:
+
+```tsx
+// packages/app/src/App.tsx
+import { createApp } from '@backstage/frontend-app-api';
+import sentryPlugin from '@axis-backstage/plugin-sentry/alpha';
+
+...
+const app = createApp({
+  features: [
+    ...,
+    sentryPlugin,
+    ],
+});
+export default app.createRoot();
+```
+
+The, [configure the extension](https://backstage.io/docs/frontend-system/building-apps/configuring-extensions) inside `app-config.yaml` to include the entity content & card:
+
+```yaml
+# app-config.yaml
+app:
+  extensions:
+    - entity-content:sentry/sentry-issues
+    - entity-card:sentry/sentry-issues
+```
+
+You can also control which [entity kinds](https://backstage.io/docs/features/software-catalog/system-model) the sentry card appears on by adding a config underneath the entity-content, like so:
+
+```yaml
+# app-config.yaml
+app:
+  extensions:
+    - entity-content:sentry/sentry-issues
+        config:
+          filter: kind:component,system,group
+```
 
 3. Add the proxy config:
 
@@ -103,4 +144,46 @@ export const apis = [
 
   createApiFactory(sentryApiRef, new MockSentryApi()),
 ];
+```
+
+If using the [new frontend system](<(https://backstage.io/docs/frontend-system/)>), then use the mock api by modifying App.tsx instead;
+
+```ts
+// packages/app/src/App.tsx
+
+import {
+  createApiFactory,
+  createExtensionOverrides,
+  ApiBlueprint,
+} from '@backstage/frontend-plugin-api';
+import {
+  MockSentryApi,
+  sentryApiRef,
+} from '@backstage-community/plugin-sentry';
+import sentryPlugin from '@axis-backstage/plugin-sentry/alpha';
+
+
+const sentryMockApi = ApiBlueprint.make({
+  name: 'sentry',
+  params: {
+    factory: createApiFactory({
+      api: sentryApiRef,
+      deps: {},
+      factory: () => new MockSentryApi(),
+    }),
+  },
+});
+
+const app = createApp({
+  features: [
+    ...,
+    sentryPlugin,
+    createExtensionOverrides({
+      extensions: [
+        sentryMockApi,
+      ],
+    }),
+    ],
+});
+...
 ```

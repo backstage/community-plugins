@@ -74,6 +74,7 @@ const _default: BackstagePlugin<
       },
       | ConfigurableExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
       | ConfigurableExtensionDataRef<string, 'core.routing.path', {}>
+      | ConfigurableExtensionDataRef<string, 'catalog.entity-content-title', {}>
       | ConfigurableExtensionDataRef<
           RouteRef<AnyRouteRefParams>,
           'core.routing.ref',
@@ -81,7 +82,6 @@ const _default: BackstagePlugin<
             optional: true;
           }
         >
-      | ConfigurableExtensionDataRef<string, 'catalog.entity-content-title', {}>
       | ConfigurableExtensionDataRef<
           (entity: Entity) => boolean,
           'catalog.entity-filter-function',
