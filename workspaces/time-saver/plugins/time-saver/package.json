@@ -17,7 +17,12 @@
     "directory": "workspaces/time-saver/plugins/time-saver"
   },
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "time-saver",
+    "pluginPackages": [
+      "@backstage-community/plugin-time-saver",
+      "@backstage-community/plugin-time-saver-backend"
+    ]
   },
   "sideEffects": false,
   "scripts": {
