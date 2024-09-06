@@ -19,7 +19,11 @@
     "directory": "workspaces/time-saver/plugins/time-saver-common"
   },
   "backstage": {
-    "role": "common-library"
+    "role": "common-library",
+    "pluginId": "time-saver-common",
+    "pluginPackages": [
+      "@backstage-community/plugin-time-saver-common"
+    ]
   },
   "sideEffects": false,
   "scripts": {
