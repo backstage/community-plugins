@@ -1,29 +1,29 @@
 export interface Config {
-    blackduck: {
+  blackduck: {
+    /**
+     * The default host name.
+     * @visibility frontend
+     */
+    default: string;
+    /**
+     * An array of Black Duck hosts.
+     */
+    hosts: Array<{
       /**
-       * The default host name.
+       * Host name identifier.
        * @visibility frontend
        */
-      default: string;
+      name: string;
       /**
-       * An array of Black Duck hosts.
+       * The host URL for the Black Duck instance.
+       * @visibility frontend
        */
-      hosts: Array<{
-        /**
-         * Host name identifier.
-         * @visibility frontend
-         */
-        name: string;
-        /**
-         * The host URL for the Black Duck instance.
-         * @visibility frontend
-         */
-        host: string;
-        /**
-         * API token for authentication.
-         * @visibility secret
-         */
-        token: string;
-      }>;
-    };
-  }
+      host: string;
+      /**
+       * API token for authentication.
+       * @visibility secret
+       */
+      token: string;
+    }>;
+  };
+}
