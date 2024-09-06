@@ -17,7 +17,15 @@
     "directory": "workspaces/time-saver/plugins/catalog-backend-module-time-saver-processor"
   },
   "backstage": {
-    "role": "backend-plugin-module"
+    "role": "backend-plugin-module",
+    "pluginId": "catalog",
+    "pluginPackages": [
+      "@backstage-community/plugin-time-saver",
+      "@backstage-community/plugin-time-saver-backend",
+      "@backstage-community/plugin-time-saver-common",
+      "@backstage-community/plugin-catalog-backend-module-time-saver-processor"
+    ],
+    "pluginPackage": "@backstage/plugin-catalog-backend"
   },
   "scripts": {
     "start": "backstage-cli package start",
