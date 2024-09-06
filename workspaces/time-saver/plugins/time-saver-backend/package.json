@@ -16,7 +16,12 @@
     "directory": "workspaces/time-saver/plugins/time-saver-backend"
   },
   "backstage": {
-    "role": "backend-plugin"
+    "role": "backend-plugin",
+    "pluginId": "time-saver",
+    "pluginPackages": [
+      "@backstage-community/plugin-time-saver",
+      "@backstage-community/plugin-time-saver-backend"
+    ]
   },
   "scripts": {
     "start": "backstage-cli package start",
