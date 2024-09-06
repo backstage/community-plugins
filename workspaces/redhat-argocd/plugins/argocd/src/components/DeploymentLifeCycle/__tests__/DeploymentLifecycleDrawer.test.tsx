@@ -6,8 +6,9 @@ import { MockConfigApi, TestApiProvider } from '@backstage/test-utils';
 import { fireEvent, render, screen } from '@testing-library/react';
 
 import { mockApplication, mockEntity } from '../../../../dev/__data__';
-import { Application, Source } from '../../../types';
+import { Application, Source } from '../../../types/application';
 import DeploymentLifecycleDrawer from '../DeploymentLifecycleDrawer';
+import { useArgoResources } from '../sidebar/rollouts/RolloutContext';
 
 jest.mock('@backstage/plugin-catalog-react', () => ({
   useEntity: () => ({
@@ -21,8 +22,20 @@ jest.mock('@backstage/plugin-catalog-react', () => ({
     },
   }),
 }));
+jest.mock('../sidebar/rollouts/RolloutContext', () => ({
+  ...jest.requireActual('../sidebar/rollouts/RolloutContext'),
+  useArgoResources: jest.fn(),
+}));
 
 describe('DeploymentLifecycleDrawer', () => {
+  beforeEach(() => {
+    (useArgoResources as jest.Mock).mockReturnValue({ rollouts: [] });
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   const wrapper = ({ children }: { children: React.ReactNode }) => {
     return (
       <TestApiProvider

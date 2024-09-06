@@ -1,5 +1,11 @@
 # @backstage-community/plugin-report-portal-backend
 
+## 1.0.3
+
+### Patch Changes
+
+- b0e8a58: Corrected API Reports
+
 ## 1.0.2
 
 ### Patch Changes

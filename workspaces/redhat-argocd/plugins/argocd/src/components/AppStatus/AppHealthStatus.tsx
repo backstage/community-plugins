@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Chip } from '@material-ui/core';
 
-import { Application, HealthStatus } from '../../types';
+import { Application, HealthStatus } from '../../types/application';
 import { AppHealthIcon } from './StatusIcons';
 
 const AppHealthStatus: React.FC<{ app: Application; isChip?: boolean }> = ({

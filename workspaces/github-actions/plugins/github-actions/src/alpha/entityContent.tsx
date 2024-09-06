@@ -1,17 +1,19 @@
 import React from 'react';
 import { convertLegacyRouteRef } from '@backstage/core-compat-api';
-import { createEntityContentExtension } from '@backstage/plugin-catalog-react/alpha';
+import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
 import { rootRouteRef } from '../routes';
 
 /**
  * @alpha
  */
-export const entityGithubActionsContent = createEntityContentExtension({
-  defaultPath: 'github-actions',
-  defaultTitle: 'GitHub Actions',
+export const entityGithubActionsContent = EntityContentBlueprint.make({
   name: 'entity',
-  filter: 'kind:component',
-  routeRef: convertLegacyRouteRef(rootRouteRef),
-  loader: () =>
-    import('../components/Router').then(m => <m.Router view="table" />),
+  params: {
+    defaultPath: 'github-actions',
+    defaultTitle: 'GitHub Actions',
+    filter: 'kind:component',
+    routeRef: convertLegacyRouteRef(rootRouteRef),
+    loader: () =>
+      import('../components/Router').then(m => <m.Router view="table" />),
+  },
 });

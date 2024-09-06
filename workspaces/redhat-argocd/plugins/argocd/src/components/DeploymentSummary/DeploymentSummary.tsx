@@ -10,7 +10,11 @@ import moment from 'moment';
 import { useApplications } from '../../hooks/useApplications';
 import { useArgocdConfig } from '../../hooks/useArgocdConfig';
 import { useArgocdViewPermission } from '../../hooks/useArgocdViewPermission';
-import { Application, HealthStatus, SyncStatuses } from '../../types';
+import {
+  Application,
+  HealthStatus,
+  SyncStatuses,
+} from '../../types/application';
 import {
   getArgoCdAppConfig,
   getCommitUrl,

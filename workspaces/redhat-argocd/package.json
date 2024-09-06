@@ -6,6 +6,10 @@
     "node": "18 || 20"
   },
   "scripts": {
+    "start:backstage": "concurrently -c auto -n \"fe,be\" -p \"{name}:{pid}\" \"yarn start-app\" \"yarn start-backend\"",
+    "start-app": "yarn workspace app start",
+    "start-backend": "yarn workspace backend start",
+    "start:dev": "yarn workspace @backstage-community/plugin-redhat-argocd start",
     "tsc": "tsc",
     "tsc:full": "tsc --skipLibCheck true --incremental false",
     "build:all": "backstage-cli repo build --all",
@@ -37,6 +41,7 @@
     "@backstage/repo-tools": "^0.9.5",
     "@changesets/cli": "^2.27.1",
     "@spotify/prettier-config": "^15.0.0",
+    "concurrently": "^8.2.2",
     "node-gyp": "^9.0.0",
     "prettier": "^2.3.2",
     "typescript": "~5.3.0"
@@ -57,6 +62,7 @@
     ]
   },
   "dependencies": {
+    "@emotion/styled": "^11.13.0",
     "knip": "^5.27.4"
   }
 }

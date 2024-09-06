@@ -1,5 +1,11 @@
 # @backstage-community/plugin-periskop
 
+## 0.1.35
+
+### Patch Changes
+
+- 3feb293: Backstage version bump to v1.30.4
+
 ## 0.1.34
 
 ### Patch Changes

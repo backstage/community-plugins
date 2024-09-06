@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-jenkins",
-  "version": "0.10.4",
+  "version": "0.11.0",
   "description": "A Backstage plugin that integrates towards Jenkins",
   "backstage": {
     "role": "frontend-plugin",
@@ -12,9 +12,22 @@
     ]
   },
   "publishConfig": {
-    "access": "public",
-    "main": "dist/index.esm.js",
-    "types": "dist/index.d.ts"
+    "access": "public"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./alpha": "./src/alpha.ts",
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "alpha": [
+        "src/alpha.ts"
+      ],
+      "package.json": [
+        "package.json"
+      ]
+    }
   },
   "keywords": [
     "backstage",
@@ -45,6 +58,7 @@
   "dependencies": {
     "@backstage-community/plugin-jenkins-common": "workspace:^",
     "@backstage/catalog-model": "^1.6.0",
+    "@backstage/core-compat-api": "^0.2.8",
     "@backstage/core-components": "^0.14.10",
     "@backstage/core-plugin-api": "^1.9.3",
     "@backstage/errors": "^1.2.4",

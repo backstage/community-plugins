@@ -3,7 +3,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 
 import { mockApplication } from '../../../../dev/__data__';
-import { Application } from '../../../types';
+import { Application } from '../../../types/application';
 import AppNamespace from '../AppNamespace';
 
 describe('AppNamespace', () => {

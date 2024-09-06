@@ -1,6 +1,10 @@
 import { Entity } from '@backstage/catalog-model';
 
-import { Application, OperationPhases, OperationState } from '../types';
+import {
+  Application,
+  OperationPhases,
+  OperationState,
+} from '../types/application';
 
 export const enum ArgoCdLabels {
   appSelector = 'argocd/app-selector',

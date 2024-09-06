@@ -7,7 +7,9 @@
   },
   "scripts": {
     "dev": "concurrently \"yarn start\" \"yarn start-backend\"",
+    "dev-next": "concurrently \"yarn start-next\" \"yarn start-backend\"",
     "start": "yarn workspace app start",
+    "start-next": "yarn workspace app-next start",
     "start-backend": "yarn workspace backend start",
     "build:backend": "yarn workspace backend build",
     "tsc": "tsc",
@@ -39,6 +41,7 @@
   "devDependencies": {
     "@backstage/cli": "^0.27.0",
     "@backstage/e2e-test-utils": "^0.1.1",
+    "@backstage/frontend-test-utils": "^0.1.11",
     "@backstage/repo-tools": "^0.9.5",
     "@changesets/cli": "^2.27.1",
     "@spotify/prettier-config": "^15.0.0",
@@ -49,7 +52,8 @@
   },
   "resolutions": {
     "@types/react": "^18",
-    "@types/react-dom": "^18"
+    "@types/react-dom": "^18",
+    "@microsoft/api-extractor": "7.36.4"
   },
   "prettier": "@spotify/prettier-config",
   "lint-staged": {
@@ -64,6 +68,7 @@
   "dependencies": {
     "@backstage-community/plugin-jenkins": "workspace:^",
     "@backstage-community/plugin-jenkins-backend": "workspace:^",
+    "@backstage/frontend-plugin-api": "^0.7.0",
     "knip": "^5.27.4"
   }
 }

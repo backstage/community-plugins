@@ -1,17 +1,14 @@
 import { screen, waitFor } from '@testing-library/react';
-import { createExtensionTester } from '@backstage/frontend-test-utils';
-import * as cards from './entityCards';
 import {
-  createApiExtension,
-  createApiFactory,
-} from '@backstage/frontend-plugin-api';
+  createExtensionTester,
+  renderInTestApp,
+  TestApiProvider,
+} from '@backstage/frontend-test-utils';
+import * as cards from './entityCards';
+import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { GithubActionsApi, githubActionsApiRef } from '../api';
 import { sampleEntity } from '../__fixtures__/entity';
-
-jest.mock('@backstage/plugin-catalog-react', () => ({
-  ...jest.requireActual('@backstage/plugin-catalog-react'),
-  useEntity: () => sampleEntity,
-}));
+import React from 'react';
 
 jest.mock('@backstage/core-plugin-api', () => ({
   ...jest.requireActual('@backstage/core-plugin-api'),
@@ -28,24 +25,21 @@ const listWorkflowRunsMock = jest
   .mockReturnValue(require('../__fixtures__/list-workflow-runs.json'));
 
 describe('Entity card extensions', () => {
-  const mockGithubActionsApi = createApiExtension({
-    factory: createApiFactory({
-      api: githubActionsApiRef,
-      deps: {},
-      factory: () =>
-        ({
-          getDefaultBranch: jest.fn().mockReturnValue('main'),
-          listBranches: listBranchesMock,
-          listWorkflowRuns: listWorkflowRunsMock,
-          reRunWorkflow: () => null,
-        } as unknown as GithubActionsApi),
-    }),
-  });
+  const mockGithubActionsApi = {
+    getDefaultBranch: jest.fn().mockReturnValue('main'),
+    listBranches: listBranchesMock,
+    listWorkflowRuns: listWorkflowRunsMock,
+    reRunWorkflow: () => null,
+  } as unknown as GithubActionsApi;
 
   it('should render WorkflowRunsCard', async () => {
-    createExtensionTester(cards.entityGithubActionsCard)
-      .add(mockGithubActionsApi)
-      .render();
+    renderInTestApp(
+      <TestApiProvider apis={[[githubActionsApiRef, mockGithubActionsApi]]}>
+        <EntityProvider entity={sampleEntity.entity}>
+          {createExtensionTester(cards.entityGithubActionsCard).reactElement()}
+        </EntityProvider>
+      </TestApiProvider>,
+    );
 
     await waitFor(
       () => {
@@ -56,9 +50,15 @@ describe('Entity card extensions', () => {
   });
 
   it('should render LatestWorkflowRunCard', async () => {
-    createExtensionTester(cards.entityLatestGithubActionRunCard)
-      .add(mockGithubActionsApi)
-      .render();
+    renderInTestApp(
+      <TestApiProvider apis={[[githubActionsApiRef, mockGithubActionsApi]]}>
+        <EntityProvider entity={sampleEntity.entity}>
+          {createExtensionTester(
+            cards.entityLatestGithubActionRunCard,
+          ).reactElement()}
+        </EntityProvider>
+      </TestApiProvider>,
+    );
 
     await waitFor(
       () => {
@@ -69,9 +69,15 @@ describe('Entity card extensions', () => {
   });
 
   it('should render LatestWorkflowsRunForBranchCard', async () => {
-    createExtensionTester(cards.entityLatestGithubActionsForBranchCard)
-      .add(mockGithubActionsApi)
-      .render();
+    renderInTestApp(
+      <TestApiProvider apis={[[githubActionsApiRef, mockGithubActionsApi]]}>
+        <EntityProvider entity={sampleEntity.entity}>
+          {createExtensionTester(
+            cards.entityLatestGithubActionsForBranchCard,
+          ).reactElement()}
+        </EntityProvider>
+      </TestApiProvider>,
+    );
 
     await waitFor(
       () => {
@@ -82,9 +88,15 @@ describe('Entity card extensions', () => {
   });
 
   it('should render RecentWorkflowRunsCard', async () => {
-    createExtensionTester(cards.entityRecentGithubActionsRunsCard)
-      .add(mockGithubActionsApi)
-      .render();
+    renderInTestApp(
+      <TestApiProvider apis={[[githubActionsApiRef, mockGithubActionsApi]]}>
+        <EntityProvider entity={sampleEntity.entity}>
+          {createExtensionTester(
+            cards.entityRecentGithubActionsRunsCard,
+          ).reactElement()}
+        </EntityProvider>
+      </TestApiProvider>,
+    );
 
     await waitFor(
       () => {
