@@ -58,6 +58,16 @@ yarn workspace packages/app add @backstage-community/plugin-time-saver
 8. Now run `yarn dev` from the root of your project and you should see the DevTools option show up just below Settings in your sidebar and clicking on it will get you to the [Info tab](#info)
 9. Install [time-saver-backend](../time-saver-backend/README.md) part if not installed already
 
+## Permissions
+
+The TimeSaver plugin includes a read-action permission to be managed my the permissions plugin. You can find this in the common package:
+  ```ts
+  export const timeSaverPermission = createPermission({
+    name: 'timeSaver',
+    attributes: { action: 'read' },
+  });
+  ```
+
 ## Generate Statistics
 
 Configure your template definition like described below:
