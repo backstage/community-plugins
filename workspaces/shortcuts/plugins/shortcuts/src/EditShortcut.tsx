@@ -86,7 +86,7 @@ export const EditShortcut = ({
 
   const handleRemove = async () => {
     analytics.captureEvent('click', `Clicked 'Remove' in Edit Shortcut`);
-    
+
     try {
       await api.remove(shortcut.id);
       alertApi.post({
