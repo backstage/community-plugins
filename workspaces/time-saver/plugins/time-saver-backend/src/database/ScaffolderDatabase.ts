@@ -34,8 +34,6 @@ export class ScaffolderDatabase implements ScaffolderStore {
     private readonly logger: LoggerService,
   ) {}
   static async create(config: RootConfigService, logger: LoggerService) {
-    // const knex = await database.getClient();
-
     const db = DatabaseManager.fromConfig(config).forPlugin('scaffolder');
     const knex = await db.getClient();
 

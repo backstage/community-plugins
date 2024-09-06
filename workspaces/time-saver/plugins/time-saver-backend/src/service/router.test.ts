@@ -20,7 +20,6 @@ import express from 'express';
 import request from 'supertest';
 
 import { createRouter } from './router';
-// import { CatalogRequestOptions } from '@backstage/catalog-client';
 import { ConfigReader } from '@backstage/config';
 import {
   PluginTaskScheduler,
@@ -28,8 +27,6 @@ import {
   TaskRunner,
 } from '@backstage/backend-tasks';
 import { mockServices } from '@backstage/backend-test-utils';
-
-// let catalogRequestOptions: CatalogRequestOptions;
 
 const testDiscovery: jest.Mocked<DiscoveryService> = {
   getBaseUrl: jest
@@ -79,23 +76,11 @@ describe('createRouter', () => {
   const scheduler = {
     createScheduledTaskRunner: (_: unknown) => taskRunner,
   } as unknown as PluginTaskScheduler;
-  //  TODO : validate createScheduledTaskRunner parameters types.
 
   beforeAll(async () => {
-    // const discovery = HostDiscovery.fromConfig(config);
-    // const router = await createRouter({
-    //   database: database,
-    //   logger: getVoidLogger(),
-    //   discovery: discovery,
-    //   config: config,
-    //   scheduler: scheduler,
-    // });
-    // app = express().use(router);
     const router = await createRouter({
-      // config: new ConfigReader({}),
       config: config,
       logger: mockServices.logger.mock(),
-      // database: createDatabase(),
       database: database,
       discovery: testDiscovery,
       urlReader: mockUrlReader,
