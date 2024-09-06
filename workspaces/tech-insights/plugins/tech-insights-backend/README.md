@@ -95,8 +95,7 @@ Then, configure the checks in the `app-config.yaml` file. The following example 
 
 ```yaml title="app-config.yaml"
 techInsights:
-  factRetrievers:
-    ...
+  factRetrievers: ...
   factChecker:
     checks:
       groupOwnerCheck:
@@ -181,8 +180,8 @@ export const myFactRetriever: FactRetriever = {
 Additional FactRetrievers are added to the Tech Insights backend by creating a new backend module and registering the FactRetriever with the `techInsightsFactRetrieversExtensionPoint` extension point. This, along with other extension points, are available in the [@backstage-community/plugin-tech-insights-node](../tech-insights-node/README.md) library.
 
 ```ts title="plugins/tech-insights-backend-module-my-fact-retriever/src/module.ts"
-import { techInsightsFactRetrieversExtensionPoint } from '@backstage-community/plugin-tech-insights-node'
-import { myFactRetriever } from './myFactRetriever'
+import { techInsightsFactRetrieversExtensionPoint } from '@backstage-community/plugin-tech-insights-node';
+import { myFactRetriever } from './myFactRetriever';
 
 export const techInsightsModuleMyFactRetriever = createBackendModule({
   pluginId: 'tech-insights',
@@ -194,8 +193,8 @@ export const techInsightsModuleMyFactRetriever = createBackendModule({
       },
       async init({ providers }) {
         providers.addFactRetrievers({
-          myFactRetriever
-        })
+          myFactRetriever,
+        });
       },
     });
   },
