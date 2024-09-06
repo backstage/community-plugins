@@ -20,6 +20,8 @@ This plugin provides an implementation of charts and statistics related to your 
 
 ## Installation
 
+NOTE: Before proceeding, make sure that you have already setup [time-saver's backend plugin](../time-saver-backend/README.md)
+
 1. Install the plugin package in your Backstage app:
 
 ```sh
