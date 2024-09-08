@@ -158,6 +158,30 @@ describe('EditShortcut', () => {
     expect(spy).toHaveBeenCalledWith('id');
   });
 
+  it('should capture remove analytics event', async () => {
+    const analyticsSpy = new MockAnalyticsApi();
+    const spy = jest.spyOn(api, 'remove');
+
+    await renderInTestApp(
+      <TestApiProvider
+        apis={[
+          [analyticsApiRef, analyticsSpy],
+          [shortcutsApiRef, new DefaultShortcutsApi(MockStorageApi.create())],
+        ]}
+      >
+        <EditShortcut {...props} />
+      </TestApiProvider>,
+    );
+
+    fireEvent.click(screen.getByText('Remove'));
+    expect(spy).toHaveBeenCalledWith('id');
+
+    expect(analyticsSpy.getEvents()[0]).toMatchObject({
+      action: 'click',
+      subject: `Clicked 'Remove' in Edit Shortcut`,
+    });
+  });
+
   it('displays errors', async () => {
     jest
       .spyOn(api, 'update')
