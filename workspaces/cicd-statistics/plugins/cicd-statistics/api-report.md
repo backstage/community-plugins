@@ -134,6 +134,9 @@ export interface GetConfigurationOptions {
   entity: Entity;
 }
 
+// @public (undocumented)
+export const rootCatalogCicdStatsRouteRef: RouteRef<undefined>;
+
 // @public
 export interface Stage {
   duration: number;

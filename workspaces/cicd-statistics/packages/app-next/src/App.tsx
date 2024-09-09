@@ -36,6 +36,9 @@ import { Navigate, Route } from 'react-router';
 import { navigationExtension } from './components/Sidebar';
 import { SignInPage } from './components/auth/SignInPage';
 
+import cicdStatisticsPlugin from '@backstage-community/plugin-cicd-statistics/alpha';
+import cicdStatisticsGitlabPlugin from '@backstage-community/plugin-cicd-statistics-module-gitlab/alpha';
+
 const pageTheme = {
   ...defaultPageThemes,
   dataset: genPageTheme({
@@ -109,6 +112,8 @@ export const app = createApp({
     catalogPlugin,
     catalogImportPlugin,
     userSettingsPlugin,
+    cicdStatisticsPlugin,
+    cicdStatisticsGitlabPlugin,
     ...collectedLegacyPlugins,
     createExtensionOverrides({
       extensions: [
