@@ -1,5 +1,11 @@
 # @backstage-community/plugin-adr
 
+## 0.6.25
+
+### Patch Changes
+
+- 5c63ed0: Adds entity content and API extensions for the new frontend system
+
 ## 0.6.24
 
 ### Patch Changes
