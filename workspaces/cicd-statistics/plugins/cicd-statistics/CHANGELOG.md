@@ -1,5 +1,11 @@
 # @backstage-community/plugin-cicd-statistics
 
+## 0.1.40
+
+### Patch Changes
+
+- 52fcd76: Adds support for Backstage's new frontend system, available via the `/alpha` sub-path export.
+
 ## 0.1.39
 
 ### Patch Changes
