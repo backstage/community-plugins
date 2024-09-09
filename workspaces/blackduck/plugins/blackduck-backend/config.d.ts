@@ -1,5 +1,5 @@
 export interface Config {
-  blackduck: {
+  blackduck?: {
     /**
      * The default host name.
      * @visibility frontend
