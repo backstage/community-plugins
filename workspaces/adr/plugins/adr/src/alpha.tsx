@@ -16,11 +16,19 @@
 
 import React from 'react';
 import {
+  ApiBlueprint,
+  createApiFactory,
   createPlugin,
   createSchemaFromZod,
+  discoveryApiRef,
+  fetchApiRef,
 } from '@backstage/frontend-plugin-api';
+import { convertLegacyRouteRef } from '@backstage/core-compat-api';
 import { createSearchResultListItemExtension } from '@backstage/plugin-search-react/alpha';
+import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
 import { AdrDocument } from '@backstage-community/plugin-adr-common';
+import { rootRouteRef } from './routes';
+import { adrApiRef, AdrClient } from './api';
 
 export * from './translations';
 
@@ -51,7 +59,45 @@ export const adrSearchResultListItemExtension =
   });
 
 /** @alpha */
+export const adrEntityContentExtension = EntityContentBlueprint.make({
+  name: 'entity',
+  params: {
+    defaultPath: '/adrs',
+    defaultTitle: 'ADRs',
+    filter: 'kind:component',
+    routeRef: convertLegacyRouteRef(rootRouteRef),
+    loader: async () => {
+      const { EntityAdrContent } = await import(
+        './components/EntityAdrContent'
+      );
+      return <EntityAdrContent />;
+    },
+  },
+});
+
+/** @alpha */
+export const adrApiExtension = ApiBlueprint.make({
+  name: 'adr-api',
+  params: {
+    factory: createApiFactory({
+      api: adrApiRef,
+      deps: {
+        discoveryApi: discoveryApiRef,
+        fetchApi: fetchApiRef,
+      },
+      factory({ discoveryApi, fetchApi }) {
+        return new AdrClient({ discoveryApi, fetchApi });
+      },
+    }),
+  },
+});
+
+/** @alpha */
 export default createPlugin({
   id: 'adr',
-  extensions: [adrSearchResultListItemExtension],
+  extensions: [
+    adrSearchResultListItemExtension,
+    adrEntityContentExtension,
+    adrApiExtension,
+  ],
 });
