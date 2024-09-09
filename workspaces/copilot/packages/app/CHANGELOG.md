@@ -1,5 +1,12 @@
 # app
 
+## 0.0.3
+
+### Patch Changes
+
+- Updated dependencies [c55888b]
+  - @backstage-community/plugin-copilot@0.2.0
+
 ## 0.0.2
 
 ### Patch Changes
