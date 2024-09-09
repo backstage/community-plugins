@@ -13,7 +13,7 @@ The Sentry Plugin displays issues from [Sentry](https://sentry.io).
 yarn --cwd packages/app add @backstage-community/plugin-sentry
 ```
 
-2. Import the sentry card or content into the frontend. If using the standard BAckstage frontend, follow step 2A, and if using
+2. Import the sentry card or content into the frontend. If using the standard Backstage frontend, follow step 2A, and if using
    the [new alpha frontend system](https://backstage.io/docs/frontend-system/), follow step 2B instead.
 
 A. Add the `EntitySentryCard` to the EntityPage:
