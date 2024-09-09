@@ -1,5 +1,12 @@
 # @backstage-community/plugin-copilot-backend
 
+## 0.1.2
+
+### Patch Changes
+
+- Updated dependencies [c55888b]
+  - @backstage-community/plugin-copilot-common@0.2.0
+
 ## 0.1.1
 
 ### Patch Changes
