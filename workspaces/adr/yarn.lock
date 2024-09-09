@@ -2560,6 +2560,7 @@ __metadata:
     "@backstage-community/plugin-adr-common": "workspace:^"
     "@backstage/catalog-model": ^1.6.0
     "@backstage/cli": ^0.27.0
+    "@backstage/core-compat-api": ^0.2.8
     "@backstage/core-components": ^0.14.10
     "@backstage/core-plugin-api": ^1.9.3
     "@backstage/frontend-plugin-api": ^0.7.0
