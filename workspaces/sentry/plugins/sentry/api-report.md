@@ -51,7 +51,7 @@ export class ProductionSentryApi implements SentryApi {
 }
 
 // @public (undocumented)
-export const Router: (props: { entity: Entity }) => React_2.JSX.Element;
+export const Router: () => React_2.JSX.Element;
 
 // @public (undocumented)
 export interface SentryApi {
@@ -123,6 +123,9 @@ export const SentryIssuesWidget: (props: {
   variant?: InfoCardVariants;
   query?: string;
 }) => React_2.JSX.Element;
+
+// @public (undocumented)
+export const SentryIssuesWidgetCard: () => React_2.JSX.Element;
 
 // @public (undocumented)
 export type SentryPageProps = {

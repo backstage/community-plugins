@@ -108,7 +108,7 @@ const SentryIssuesTable = (props: SentryIssuesTableProps) => {
         columns={columns}
         options={tableOptions}
         title={
-          <Grid container>
+          <Grid data-testid="sentry-issues-grid" container>
             <Grid item>Sentry Issues</Grid>
             <Grid item>
               <FormControl variant="outlined" size="small">

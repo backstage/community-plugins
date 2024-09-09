@@ -14,4 +14,7 @@
  * limitations under the License.
  */
 
-export { SentryIssuesWidget } from './SentryIssuesWidget';
+export {
+  SentryIssuesWidget,
+  SentryIssuesWidgetCard,
+} from './SentryIssuesWidget';
