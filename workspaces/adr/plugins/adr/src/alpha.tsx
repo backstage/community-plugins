@@ -64,6 +64,7 @@ export const adrEntityContentExtension = EntityContentBlueprint.make({
   params: {
     defaultPath: '/adrs',
     defaultTitle: 'ADRs',
+    filter: 'kind:component',
     routeRef: convertLegacyRouteRef(rootRouteRef),
     loader: async () => {
       const { EntityAdrContent } = await import(
