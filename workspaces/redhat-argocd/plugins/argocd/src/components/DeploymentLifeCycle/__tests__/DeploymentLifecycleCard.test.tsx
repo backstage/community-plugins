@@ -68,7 +68,6 @@ describe('DeploymentLifecylceCard', () => {
     render(<DeploymentLifecycleCard app={mockApplication} revisionsMap={{}} />);
 
     fireEvent.mouseDown(screen.getByText('(in-cluster)'));
-
     expect(screen.getByTestId('local-cluster-tooltip')).toBeInTheDocument();
   });
 
