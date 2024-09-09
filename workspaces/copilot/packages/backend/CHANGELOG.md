@@ -1,5 +1,12 @@
 # backend
 
+## 0.0.3
+
+### Patch Changes
+
+- @backstage-community/plugin-copilot-backend@0.1.2
+- app@0.0.3
+
 ## 0.0.2
 
 ### Patch Changes

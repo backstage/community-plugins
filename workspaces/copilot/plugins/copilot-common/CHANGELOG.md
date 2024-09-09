@@ -1,5 +1,11 @@
 # @backstage-community/plugin-copilot-common
 
+## 0.2.0
+
+### Minor Changes
+
+- c55888b: Remove "private" field from package.json to allow potential publishing
+
 ## 0.1.1
 
 ### Patch Changes
