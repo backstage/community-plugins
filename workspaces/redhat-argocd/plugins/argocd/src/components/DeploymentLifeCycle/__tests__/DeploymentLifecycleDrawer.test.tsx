@@ -9,6 +9,7 @@ import { mockApplication, mockEntity } from '../../../../dev/__data__';
 import { Application, Source } from '../../../types/application';
 import DeploymentLifecycleDrawer from '../DeploymentLifecycleDrawer';
 import { useArgoResources } from '../sidebar/rollouts/RolloutContext';
+import { useDrawerContext } from '../DrawerContext';
 
 jest.mock('@backstage/plugin-catalog-react', () => ({
   useEntity: () => ({
@@ -26,10 +27,20 @@ jest.mock('../sidebar/rollouts/RolloutContext', () => ({
   ...jest.requireActual('../sidebar/rollouts/RolloutContext'),
   useArgoResources: jest.fn(),
 }));
+jest.mock('../DrawerContext', () => ({
+  ...jest.requireActual('../DrawerContext'),
+  useDrawerContext: jest.fn(),
+}));
 
 describe('DeploymentLifecycleDrawer', () => {
   beforeEach(() => {
     (useArgoResources as jest.Mock).mockReturnValue({ rollouts: [] });
+    (useDrawerContext as jest.Mock).mockReturnValue({
+      application: mockApplication,
+      revisionsMap: {},
+      appHistory: mockApplication?.status?.history,
+      latestRevision: mockApplication?.status?.history?.[1],
+    });
   });
 
   afterEach(() => {
@@ -65,14 +76,12 @@ describe('DeploymentLifecycleDrawer', () => {
     );
   };
   test('should not render the application drawer component', () => {
-    render(
-      <DeploymentLifecycleDrawer
-        app={null as unknown as Application}
-        isOpen
-        onClose={() => jest.fn()}
-        revisionsMap={{}}
-      />,
-    );
+    (useDrawerContext as jest.Mock).mockReturnValue({
+      application: null as unknown as Application,
+      revisionsMap: {},
+    });
+
+    render(<DeploymentLifecycleDrawer isOpen onClose={() => jest.fn()} />);
 
     expect(
       screen.queryByTestId('quarkus-app-dev-drawer'),
@@ -80,15 +89,9 @@ describe('DeploymentLifecycleDrawer', () => {
   });
 
   test('should render the application drawer component', () => {
-    render(
-      <DeploymentLifecycleDrawer
-        app={mockApplication}
-        isOpen
-        onClose={() => jest.fn()}
-        revisionsMap={{}}
-      />,
-      { wrapper },
-    );
+    render(<DeploymentLifecycleDrawer isOpen onClose={() => jest.fn()} />, {
+      wrapper,
+    });
 
     expect(screen.getByTestId('quarkus-app-dev-drawer')).toBeInTheDocument();
   });
@@ -101,15 +104,14 @@ describe('DeploymentLifecycleDrawer', () => {
         source: { ...mockApplication.spec.source, chart: 'redhat-charts' },
       },
     };
-    render(
-      <DeploymentLifecycleDrawer
-        app={helmApplication}
-        isOpen
-        onClose={() => jest.fn()}
-        revisionsMap={{}}
-      />,
-      { wrapper },
-    );
+    (useDrawerContext as jest.Mock).mockReturnValue({
+      application: helmApplication,
+      revisionsMap: {},
+    });
+
+    render(<DeploymentLifecycleDrawer isOpen onClose={() => jest.fn()} />, {
+      wrapper,
+    });
 
     const commitLink = screen.queryByText('Commit');
     expect(commitLink).not.toBeInTheDocument();
@@ -118,21 +120,22 @@ describe('DeploymentLifecycleDrawer', () => {
   test('should render the commit link in drawer component', () => {
     global.open = jest.fn();
 
-    render(
-      <DeploymentLifecycleDrawer
-        app={mockApplication}
-        isOpen
-        onClose={() => jest.fn()}
-        revisionsMap={{
-          '90f9758b7033a4bbb7c33a35ee474d61091644bc': {
-            author: 'test user',
-            message: 'commit message',
-            date: new Date(),
-          },
-        }}
-      />,
-      { wrapper },
-    );
+    (useDrawerContext as jest.Mock).mockReturnValue({
+      application: mockApplication,
+      revisionsMap: {
+        '90f9758b7033a4bbb7c33a35ee474d61091644bc': {
+          author: 'test user',
+          message: 'commit message',
+          date: new Date(),
+        },
+      },
+      appHistory: mockApplication.status.history,
+      latestRevision: mockApplication.status.history?.[1],
+    });
+
+    render(<DeploymentLifecycleDrawer isOpen onClose={() => jest.fn()} />, {
+      wrapper,
+    });
     const commitLink = screen.getByTestId('90f97-commit-link');
     fireEvent.click(commitLink);
 
@@ -153,15 +156,16 @@ describe('DeploymentLifecycleDrawer', () => {
     };
     global.open = jest.fn();
 
-    render(
-      <DeploymentLifecycleDrawer
-        isOpen
-        onClose={jest.fn()}
-        app={remoteApplication}
-        revisionsMap={{}}
-      />,
-      { wrapper },
-    );
+    (useDrawerContext as jest.Mock).mockReturnValue({
+      application: remoteApplication,
+      revisionsMap: {},
+      appHistory: mockApplication.status.history,
+      latestRevision: mockApplication.status.history?.[1],
+    });
+
+    render(<DeploymentLifecycleDrawer isOpen onClose={jest.fn()} />, {
+      wrapper,
+    });
     const commitLink = screen.getByTestId('90f97-commit-link');
     fireEvent.click(commitLink);
 
@@ -179,15 +183,15 @@ describe('DeploymentLifecycleDrawer', () => {
         },
       },
     };
-    render(
-      <DeploymentLifecycleDrawer
-        isOpen
-        onClose={jest.fn()}
-        app={remoteApplication}
-        revisionsMap={{}}
-      />,
-      { wrapper },
-    );
+
+    (useDrawerContext as jest.Mock).mockReturnValue({
+      application: remoteApplication,
+      revisionsMap: {},
+    });
+
+    render(<DeploymentLifecycleDrawer isOpen onClose={jest.fn()} />, {
+      wrapper,
+    });
 
     expect(screen.queryByText('(in-cluster)')).not.toBeInTheDocument();
     expect(

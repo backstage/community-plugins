@@ -63,6 +63,25 @@ describe('ResourcesFilterBy Component', () => {
     expect(mockSetFilterValue).toHaveBeenCalledWith('All');
   });
 
+  it('should close the filter by menu when user press escape', () => {
+    render(<ResourcesFilterBy setFilterValue={mockSetFilterValue} />);
+
+    const button = screen.getByRole('button', { name: /Filter by/i });
+    fireEvent.click(button);
+
+    const allOption = screen.getByRole('menuitem', { name: /All/i });
+
+    fireEvent.keyDown(allOption, {
+      key: 'Escape',
+      code: 'Escape',
+      keyCode: 27,
+      charCode: 27,
+    });
+
+    const defaultText = screen.getByText('Filter by');
+    expect(defaultText).toBeInTheDocument();
+  });
+
   it('should select a HealthStatus option, updates label, and calls setFilterValue with the selected status', () => {
     render(<ResourcesFilterBy setFilterValue={mockSetFilterValue} />);
 

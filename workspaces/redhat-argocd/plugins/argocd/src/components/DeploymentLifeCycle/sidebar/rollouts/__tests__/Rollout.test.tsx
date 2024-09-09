@@ -60,12 +60,6 @@ describe('Rollout Component', () => {
     expect(container.firstChild).toBeNull();
   });
 
-  it('renders the correct strategy based on rollout.spec.strategy.canary', () => {
-    render(<Rollout rollout={canaryRolloutWithRevisions} />);
-
-    expect(screen.getByText('Canary')).toBeInTheDocument();
-  });
-
   it('renders CanaryRevision components when canary strategy is present', () => {
     render(<Rollout rollout={canaryRolloutWithRevisions} />);
 

@@ -1,11 +1,18 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 
 import { ResourcesTableRow } from '../ResourcesTableRow';
 
 jest.mock('../ResourcesSyncStatus', () => ({
   ResourceSyncStatus: jest.fn(() => <div>Mocked Sync Status</div>),
 }));
+
+jest.mock(
+  '../resource/DeploymentMetadata',
+  () =>
+    ({ resource }: { resource: any }) =>
+      <div>{resource.namespace}</div>,
+);
 
 jest.mock('../ResourcesHealthStatus', () => ({
   ResourceHealthStatus: jest.fn(() => <div>Mocked Health Status</div>),
@@ -15,7 +22,7 @@ describe('ResourcesTableRow Component', () => {
   const defaultProps = {
     row: {
       version: 'v1',
-      kind: 'Development',
+      kind: 'Deployment',
       namespace: 'openshift-gitops',
       name: 'quarkus-app',
       status: 'Synced',
@@ -30,9 +37,18 @@ describe('ResourcesTableRow Component', () => {
   it('should render the row with correct data', () => {
     render(<ResourcesTableRow {...defaultProps} />);
 
-    expect(screen.getByText('Development')).toBeInTheDocument();
+    expect(screen.getByText('Deployment')).toBeInTheDocument();
     expect(screen.getByText('08/25/2024 12:00 pm')).toBeInTheDocument();
     expect(screen.getByText('Mocked Sync Status')).toBeInTheDocument();
     expect(screen.getByText('Mocked Health Status')).toBeInTheDocument();
+  });
+
+  it('should expand the clicked row and metadata should be visible', async () => {
+    render(<ResourcesTableRow {...defaultProps} />);
+
+    fireEvent.click(screen.getByTestId('expander-123'));
+    await waitFor(() => {
+      expect(screen.getByText('openshift-gitops')).toBeInTheDocument();
+    });
   });
 });

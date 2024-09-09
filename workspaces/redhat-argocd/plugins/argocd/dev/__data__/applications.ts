@@ -138,8 +138,49 @@ export const mockQuarkusApplication: Application = {
     creationTimestamp: new Date('2024-04-22T05:39:23Z'),
     name: 'quarkus-app',
   },
-  spec: commonSpec,
-  status: commonStatus,
+  spec: {
+    ...commonSpec,
+    source: {
+      ...commonSpec.source,
+      chart: 'bitnami',
+    },
+  },
+  status: {
+    ...commonStatus,
+    resources: [
+      {
+        version: 'argoproj.io',
+        kind: 'Rollout',
+        namespace: 'openshift-gitops',
+        name: 'canary-rollout-analysis',
+        status: 'Synced',
+        health: {
+          status: 'Degraded',
+        },
+      },
+      {
+        version: 'argoproj.io',
+        kind: 'Rollout',
+        namespace: 'openshift-gitops',
+        name: 'rollout-bluegreen',
+        status: 'Synced',
+        health: {
+          status: 'Degraded',
+        },
+      },
+      {
+        group: 'apps',
+        version: 'v1',
+        kind: 'Deployment',
+        namespace: 'openshift-gitops',
+        name: 'quarkus-app',
+        status: 'Synced',
+        health: {
+          status: 'Healthy',
+        },
+      },
+    ],
+  },
 };
 
 const preProdHelmParameters = {
