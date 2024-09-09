@@ -1,5 +1,11 @@
 # @backstage-community/plugin-blackduck-backend
 
+## 0.0.5
+
+### Patch Changes
+
+- e8617d5: Fixed missing configSchema in blackduck-backend Plugin.
+
 ## 0.0.4
 
 ### Patch Changes

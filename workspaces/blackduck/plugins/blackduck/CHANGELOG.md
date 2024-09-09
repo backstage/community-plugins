@@ -1,5 +1,11 @@
 # @backstage-community/plugin-blackduck
 
+## 0.0.4
+
+### Patch Changes
+
+- eb27d1b: Fixed missing annotation error being thrown if components rendered without checking if Blackduck is available
+
 ## 0.0.3
 
 ### Patch Changes
