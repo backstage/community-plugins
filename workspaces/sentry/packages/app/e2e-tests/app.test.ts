@@ -14,22 +14,14 @@
  * limitations under the License.
  */
 
-import { SentryIssue } from './sentry-issue';
-import { createApiRef } from '@backstage/frontend-plugin-api';
-import { Entity } from '@backstage/catalog-model';
+import { test, expect } from '@playwright/test';
 
-/** @public */
-export const sentryApiRef = createApiRef<SentryApi>({
-  id: 'plugin.sentry.service',
+test('App should render the welcome page', async ({ page }) => {
+  await page.goto('/');
+
+  const enterButton = page.getByRole('button', { name: 'Enter' });
+  await expect(enterButton).toBeVisible();
+  await enterButton.click();
+
+  await expect(page.getByText('My Company Catalog')).toBeVisible();
 });
-
-/** @public */
-export interface SentryApi {
-  fetchIssues(
-    entity: Entity,
-    options: {
-      statsFor: string;
-      query?: string;
-    },
-  ): Promise<SentryIssue[]>;
-}
