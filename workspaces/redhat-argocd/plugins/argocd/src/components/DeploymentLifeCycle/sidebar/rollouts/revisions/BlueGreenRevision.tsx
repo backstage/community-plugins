@@ -28,15 +28,19 @@ const BlueGreenRevision: React.FC<RevisionCardProps> = ({ revision }) => {
   }
 
   return (
-    <Card elevation={2} style={{ margin: '10px' }} data-testid={revisionName}>
+    <Card
+      elevation={2}
+      style={{ margin: '1px', width: '500px' }}
+      data-testid={revisionName}
+    >
       <CardContent>
         <Grid container>
-          <Grid item xs={8}>
+          <Grid item xs={6}>
             <Typography color="textPrimary" gutterBottom>
               {`Revision ${revisionNumber}`}
             </Typography>
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={6}>
             <Box sx={{ width: '100%' }} textAlign="end">
               {isStableRevision && <RevisionType label="Stable" />}
               {isActiveRevision && <RevisionType label="Active" />}

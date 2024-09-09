@@ -1,6 +1,14 @@
 import React from 'react';
 
-import { Box, Card, CardContent, Grid, Typography } from '@material-ui/core';
+import {
+  Box,
+  Card,
+  CardContent,
+  Grid,
+  makeStyles,
+  Theme,
+  Typography,
+} from '@material-ui/core';
 
 import useCanaryMetadata from '../../../../../hooks/useCanaryMetadata';
 import { Revision } from '../../../../../types/revision';
@@ -15,10 +23,20 @@ interface RevisionCardProps {
   animateProgressBar: boolean;
 }
 
+const useCanaryRevisionStyles = makeStyles((theme: Theme) => ({
+  canaryItem: {
+    // minHeight: theme.spacing(30),
+    width: theme.spacing(60),
+    overflowY: 'auto',
+    margin: '1px',
+  },
+}));
+
 const CanaryRevision: React.FC<RevisionCardProps> = ({
   revision,
   animateProgressBar = true,
 }) => {
+  const styles = useCanaryRevisionStyles();
   const { percentage, isStableRevision, isCanaryRevision } = useCanaryMetadata({
     revision,
   });
@@ -30,18 +48,19 @@ const CanaryRevision: React.FC<RevisionCardProps> = ({
   return (
     <Card
       elevation={2}
-      style={{ margin: '10px' }}
+      className={styles.canaryItem}
+      style={{ width: '500px' }}
       data-testid={`${revision?.metadata?.name}`}
     >
       <CardContent>
         <Grid container>
-          <Grid item xs={10}>
+          <Grid item xs={9}>
             <Typography color="textPrimary" gutterBottom>
               {`Revision ${revision?.metadata?.annotations?.[ROLLOUT_REVISION_ANNOTATION]}`}
             </Typography>
           </Grid>
           {(isStableRevision || isCanaryRevision) && (
-            <Grid item xs={2}>
+            <Grid item xs={3}>
               <Box sx={{ width: '100%' }}>
                 <RevisionType label={isStableRevision ? 'Stable' : 'Canary'} />
               </Box>

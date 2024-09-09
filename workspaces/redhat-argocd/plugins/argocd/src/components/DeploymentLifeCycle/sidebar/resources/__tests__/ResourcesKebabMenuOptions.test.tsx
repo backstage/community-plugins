@@ -20,6 +20,24 @@ describe('ResourcesKebabMenuOptions Component', () => {
     expect(screen.getByRole('menu')).toBeVisible();
   });
 
+  it('should close the kebab menu when escape key is pressed', () => {
+    render(<ResourcesKebabMenuOptions />);
+
+    const kebabButton = screen.getByRole('button', { name: /more/i });
+    fireEvent.click(kebabButton);
+
+    const menu = screen.getByRole('menu');
+
+    fireEvent.keyDown(menu, {
+      key: 'Escape',
+      code: 'Escape',
+      keyCode: 27,
+      charCode: 27,
+    });
+
+    expect(screen.queryByRole('menu')).not.toBeInTheDocument();
+  });
+
   it('should render the correct number of menu items', () => {
     render(<ResourcesKebabMenuOptions />);
 

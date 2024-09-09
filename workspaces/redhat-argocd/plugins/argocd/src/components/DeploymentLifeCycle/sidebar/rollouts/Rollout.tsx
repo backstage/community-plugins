@@ -1,29 +1,26 @@
 import React from 'react';
 
-import {
-  Box,
-  Chip,
-  Grid,
-  makeStyles,
-  Theme,
-  Typography,
-} from '@material-ui/core';
-import { Flex, FlexItem } from '@patternfly/react-core';
+import { Box, makeStyles, Theme } from '@material-ui/core';
 
 import { Revision, RolloutUI } from '../../../../types/revision';
 import BlueGreenRevision from './revisions/BlueGreenRevision';
 import CanaryRevision from './revisions/CanaryRevision';
-import RolloutStatus from './RolloutStatus';
+import MetadataItem from '../../../Common/MetadataItem';
+import Metadata from '../../../Common/Metadata';
 
 const useRevisionStyles = makeStyles((theme: Theme) => ({
   revisionContainer: {
     flex: 1,
+    gap: 10,
     width: '100%',
-    margin: 0,
+    marginTop: 10,
     padding: '0',
     minHeight: 0,
-    maxHeight: '50vh',
-    overflowY: 'auto',
+    maxHeight: theme.spacing(40),
+    display: 'flex',
+    flexWrap: 'wrap',
+    flexDirection: 'column',
+    overflowX: 'auto',
     marginBottom: theme.spacing(1),
   },
 }));
@@ -53,48 +50,27 @@ const Rollout: React.FC<RolloutProps> = ({ rollout }) => {
     return null;
   }
 
-  const rolloutStrategy = rollout.spec?.strategy?.canary
-    ? 'Canary'
-    : 'BlueGreen';
-
   return (
-    <Grid item xs={12}>
-      <Flex
-        gap={{ default: 'gapXs' }}
-        alignItems={{ default: 'alignItemsFlexStart' }}
-      >
-        <FlexItem>
-          <Typography variant="body1" color="textPrimary" gutterBottom>
-            {`${rollout.metadata?.name}`}
-          </Typography>
-        </FlexItem>
-        <FlexItem>
-          <Chip size="small" color="default" label={rolloutStrategy} />
-        </FlexItem>
-        <FlexItem>
-          {rollout.status?.phase && (
-            <RolloutStatus status={rollout.status.phase} />
-          )}
-        </FlexItem>
-      </Flex>
-
-      <Box className={classes.revisionContainer}>
-        {rollout.revisions.map((revision: Revision) => {
-          return rollout.spec?.strategy?.canary ? (
-            <CanaryRevision
-              key={revision?.metadata?.uid}
-              revision={revision}
-              animateProgressBar={isFirstRender}
-            />
-          ) : (
-            <BlueGreenRevision
-              key={revision?.metadata?.uid}
-              revision={revision}
-            />
-          );
-        })}
-      </Box>
-    </Grid>
+    <Metadata>
+      <MetadataItem title="Revisions">
+        <Box className={classes.revisionContainer}>
+          {[...rollout.revisions].map((revision: Revision) => {
+            return rollout.spec?.strategy?.canary ? (
+              <CanaryRevision
+                key={revision?.metadata?.uid}
+                revision={revision}
+                animateProgressBar={isFirstRender}
+              />
+            ) : (
+              <BlueGreenRevision
+                key={revision?.metadata?.uid}
+                revision={revision}
+              />
+            );
+          })}
+        </Box>
+      </MetadataItem>
+    </Metadata>
   );
 };
 export default React.memo(Rollout);

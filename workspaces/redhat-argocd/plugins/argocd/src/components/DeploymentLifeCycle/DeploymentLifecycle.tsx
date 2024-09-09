@@ -20,6 +20,7 @@ import PermissionAlert from '../Common/PermissionAlert';
 import DeploymentLifecycleCard from './DeploymentLifecycleCard';
 import DeploymentLifecycleDrawer from './DeploymentLifecycleDrawer';
 import { ArgoResourcesProvider } from './sidebar/rollouts/RolloutContext';
+import { DrawerProvider } from './DrawerContext';
 
 const useDrawerStyles = makeStyles<Theme>(theme =>
   createStyles({
@@ -139,14 +140,17 @@ const DeploymentLifecycle = () => {
           />
         ))}
       </div>
-      <ArgoResourcesProvider application={activeApp}>
-        <DeploymentLifecycleDrawer
-          app={activeApp}
-          isOpen={open}
-          onClose={() => setOpen(false)}
-          revisionsMap={revisionCache.current}
-        />
-      </ArgoResourcesProvider>
+      <DrawerProvider
+        application={activeApp as Application}
+        revisionsMap={revisionCache.current}
+      >
+        <ArgoResourcesProvider application={activeApp}>
+          <DeploymentLifecycleDrawer
+            isOpen={open}
+            onClose={() => setOpen(false)}
+          />
+        </ArgoResourcesProvider>
+      </DrawerProvider>
     </>
   );
 };
