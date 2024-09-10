@@ -5,4 +5,3 @@
  */
 
 export { catalogModuleLinguistTagsProcessor as default } from './module';
-export * from './processor';
