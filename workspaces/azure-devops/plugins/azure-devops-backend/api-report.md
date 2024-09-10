@@ -151,10 +151,10 @@ export class AzureDevOpsApi {
 const azureDevOpsPlugin: BackendFeatureCompat;
 export default azureDevOpsPlugin;
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 export function createRouter(options: RouterOptions): Promise<express.Router>;
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 export interface RouterOptions {
   // (undocumented)
   azureDevOpsApi?: AzureDevOpsApi;
