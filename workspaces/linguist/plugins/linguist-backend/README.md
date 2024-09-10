@@ -151,27 +151,6 @@ return createRouter(
 
 **Note:** This has the potential to cause a lot of processing, be very thoughtful about this before hand
 
-## Linguist Tags Processor
-
-The `LinguistTagsProcessor` can be added into your catalog builder as a way to incorporate the language breakdown from linguist as `metadata.tags` on your entities. Doing so enables the ability to easily filter for entities in your catalog index based on the language of the source repository.
-
-### Processor Setup
-
-Setup the linguist tag processor in `packages/backend/src/plugins/catalog.ts`.
-
-```ts
-import { LinguistTagsProcessor } from '@backstage-community/plugin-linguist-backend';
-// ...
-export default async function createPlugin(
-  // ...
-  builder.addProcessor(
-    LinguistTagsProcessor.fromConfig(env.config, {
-      logger: env.logger,
-      discovery: env.discovery,
-    })
-  );
-```
-
 ## Links
 
 - [Frontend part of the plugin](https://github.com/backstage/backstage/tree/master/plugins/linguist)
