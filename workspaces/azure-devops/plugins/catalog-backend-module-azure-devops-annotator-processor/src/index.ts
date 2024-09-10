@@ -6,4 +6,3 @@
  */
 
 export { catalogModuleAzureDevopsAnnotatorProcessor as default } from './module';
-export { AzureDevOpsAnnotatorProcessor } from './processor';

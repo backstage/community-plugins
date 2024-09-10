@@ -4,30 +4,6 @@
 
 ```ts
 import { BackendFeatureCompat } from '@backstage/backend-plugin-api';
-import { CatalogProcessor } from '@backstage/plugin-catalog-node';
-import { Config } from '@backstage/config';
-import { Entity } from '@backstage/catalog-model';
-import { LocationSpec } from '@backstage/plugin-catalog-common';
-import { ScmIntegrationRegistry } from '@backstage/integration';
-
-// @public (undocumented)
-export class AzureDevOpsAnnotatorProcessor implements CatalogProcessor {
-  constructor(opts: {
-    scmIntegrationRegistry: ScmIntegrationRegistry;
-    kinds?: string[];
-  });
-  // (undocumented)
-  static fromConfig(
-    config: Config,
-    options?: {
-      kinds?: string[];
-    },
-  ): AzureDevOpsAnnotatorProcessor;
-  // (undocumented)
-  getProcessorName(): string;
-  // (undocumented)
-  preProcessEntity(entity: Entity, location: LocationSpec): Promise<Entity>;
-}
 
 // @public (undocumented)
 const catalogModuleAzureDevopsAnnotatorProcessor: BackendFeatureCompat;
