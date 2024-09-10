@@ -18,6 +18,8 @@ export {
   EntityTechInsightsScorecardContent,
   EntityTechInsightsScorecardCard,
   TechInsightsScorecardPage,
+  TechInsightsCheckIcon,
+  TechInsightsLinksMenu,
   ScorecardInfo,
   ScorecardsList,
 } from './plugin';
@@ -27,3 +29,8 @@ export type { TechInsightsApi, Check, InsightFacts } from './api';
 export { BooleanCheck } from './components/BooleanCheck';
 export { jsonRulesEngineCheckResultRenderer } from './components/CheckResultRenderer';
 export type { CheckResultRenderer } from './components/CheckResultRenderer';
+export type {
+  ResultCheckIconProps,
+  ResultCheckIconBaseComponent,
+} from './components/ResultCheckIcon';
+export type { ResultLinksMenuInfo } from './components/ResultLinksMenu';

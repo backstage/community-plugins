@@ -285,6 +285,7 @@ export class JsonRulesEngineFactChecker
         ? techInsightCheck.successMetadata
         : techInsightCheck.failureMetadata,
       rule: { conditions: {} },
+      links: techInsightCheck.links,
     };
 
     if ('toJSON' in result) {

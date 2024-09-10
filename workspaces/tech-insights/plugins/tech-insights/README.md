@@ -183,3 +183,57 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
   ...
 );
 ```
+
+## Custom views rendering tech-insights results
+
+If you create a custom view which renders tech-insights results, you can use the `TechInsightsCheckIcon`, which also (by default) is clickable and opens a popup menu with links for this particular check and entity.
+
+You can also render the icon using the tech-insights renderer or pass the `disableLinksMenu` prop to `TechInsightsCheckIcon` to disable the menu, and render it elsewhere, by importing `TechInsightsLinksMenu`.
+
+### Render the check icon with a popup menu for links
+
+```tsx
+import { TechInsightsCheckIcon } from '@backstage-community/plugin-tech-insights';
+
+export const MyComponent = () => {
+  const entity = getEntitySomehow();
+  const result = getCheckResultSomehow();
+
+  return <TechInsightsCheckIcon result={result} entity={entity} />;
+};
+```
+
+### Render the popup menu for links
+
+You can render a custom component (like a button) which opens the popup menu with links.
+
+The menu will be anchored to an element, likely the button being pressed, or icon being clicked. The `setMenu` prop is used to get a function to open the menu.
+
+```tsx
+import {
+  TechInsightsLinksMenu,
+  ResultLinksMenuInfo,
+} from '@backstage-community/plugin-tech-insights';
+
+export const MyComponent = () => {
+  const entity = getEntitySomehow();
+  const result = getCheckResultSomehow();
+
+  const [menu, setMenu] = useState<ResultLinksMenuInfo | undefined>();
+
+  return (
+    <>
+      <Button
+        title="Show links"
+        disabled={!menu}
+        onClick={event => menu?.open(event.currentTarget)}
+      />
+      <TechInsightsLinksMenu
+        result={result}
+        entity={entity}
+        setMenu={setMenu}
+      />
+    </>
+  );
+};
+```

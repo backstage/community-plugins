@@ -56,6 +56,7 @@ createDevApp()
           bulkCheckResponse,
         getFacts: async (_: CompoundEntityRef, __: string[]) => '' as any,
         getFactSchemas: async () => [],
+        getLinksForEntity: () => [],
       } as TechInsightsApi),
   })
   .addPage({

@@ -22,8 +22,9 @@ import ListItemText from '@material-ui/core/ListItemText';
 import { makeStyles } from '@material-ui/core/styles';
 import { techInsightsApiRef } from '../../api';
 import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
-import Alert from '@material-ui/lab/Alert';
 import { MarkdownContent } from '@backstage/core-components';
+import { Entity } from '@backstage/catalog-model';
+import { ResultCheckIcon } from '../ResultCheckIcon';
 
 const useStyles = makeStyles(theme => ({
   listItemText: {
@@ -31,8 +32,12 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export const ScorecardsList = (props: { checkResults: CheckResult[] }) => {
-  const { checkResults } = props;
+export const ScorecardsList = (props: {
+  checkResults: CheckResult[];
+  entity?: Entity;
+}) => {
+  const { checkResults, entity } = props;
+
   const classes = useStyles();
   const api = useApi(techInsightsApiRef);
 
@@ -42,9 +47,11 @@ export const ScorecardsList = (props: { checkResults: CheckResult[] }) => {
   return (
     <List>
       {checkResults.map((result, index) => {
-        const description = checkResultRenderers.find(
+        const checkResultRenderer = checkResultRenderers.find(
           renderer => renderer.type === result.check.type,
-        )?.description;
+        );
+
+        const description = checkResultRenderer?.description;
 
         return (
           <ListItem key={result.check.id}>
@@ -60,11 +67,11 @@ export const ScorecardsList = (props: { checkResults: CheckResult[] }) => {
               }
               className={classes.listItemText}
             />
-            {checkResultRenderers
-              .find(({ type }) => type === result.check.type)
-              ?.component(result) ?? (
-              <Alert severity="error">Unknown type.</Alert>
-            )}
+            <ResultCheckIcon
+              result={result}
+              entity={entity}
+              checkResultRenderer={checkResultRenderer}
+            />
           </ListItem>
         );
       })}

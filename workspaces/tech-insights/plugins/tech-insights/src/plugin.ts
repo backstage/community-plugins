@@ -101,3 +101,27 @@ export const TechInsightsScorecardPage = techInsightsPlugin.provide(
     mountPoint: rootRouteRef,
   }),
 );
+
+/**
+ * @public
+ */
+export const TechInsightsCheckIcon = techInsightsPlugin.provide(
+  createRoutableExtension({
+    name: 'TechInsightsCheckIcon',
+    component: () =>
+      import('./components/ResultCheckIcon').then(m => m.ResultCheckIcon),
+    mountPoint: rootRouteRef,
+  }),
+);
+
+/**
+ * @public
+ */
+export const TechInsightsLinksMenu = techInsightsPlugin.provide(
+  createRoutableExtension({
+    name: 'TechInsightsLinksMenu',
+    component: () =>
+      import('./components/ResultLinksMenu').then(m => m.ResultLinksMenu),
+    mountPoint: rootRouteRef,
+  }),
+);

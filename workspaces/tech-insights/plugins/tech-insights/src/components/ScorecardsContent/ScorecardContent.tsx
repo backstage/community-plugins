@@ -40,7 +40,8 @@ export const ScorecardsContent = (props: {
   const { title, description, checksId } = props;
   const classes = useStyles();
   const api = useApi(techInsightsApiRef);
-  const { namespace, kind, name } = getCompoundEntityRef(useEntity().entity);
+  const { entity } = useEntity();
+  const { namespace, kind, name } = getCompoundEntityRef(entity);
   const { value, loading, error } = useAsync(
     async () => await api.runChecks({ namespace, kind, name }, checksId),
   );
@@ -57,6 +58,7 @@ export const ScorecardsContent = (props: {
         <ScorecardInfo
           title={title}
           description={description}
+          entity={entity}
           checkResults={value || []}
         />
       </Content>

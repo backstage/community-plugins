@@ -19,10 +19,17 @@ export type BulkCheckResponse = Array<{
 }>;
 
 // @public
+export type CheckLink = {
+  title: string;
+  url: string;
+};
+
+// @public
 export interface CheckResponse {
   description: string;
   factIds: string[];
   id: string;
+  links?: CheckLink[];
   metadata?: Record<string, any>;
   name: string;
   type: string;
