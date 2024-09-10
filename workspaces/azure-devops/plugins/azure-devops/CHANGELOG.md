@@ -1,5 +1,11 @@
 # @backstage-community/plugin-azure-devops
 
+## 0.5.0
+
+### Minor Changes
+
+- c6f00d3: **BREAKING** This change removes the deprecated `AzureDevOpsAnnotatorProcessor` from `@backstage-community/plugin-azure-devops-backend`. It also removes the export of `AzureDevOpsAnnotatorProcessor` from `@backstage-community/plugin-catalog-backend-module-azure-devops-annotator-processor`. Please install this processor using [the New Backend System setup](https://github.com/backstage/community-plugins/tree/main/workspaces/azure-devops/plugins/catalog-backend-module-azure-devops-annotator-processor#setup), which is now the default.
+
 ## 0.4.10
 
 ### Patch Changes
