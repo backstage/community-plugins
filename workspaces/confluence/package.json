@@ -48,7 +48,7 @@
     "typescript": "~5.4.0"
   },
   "resolutions": {
-    "@microsoft/api-extractor": "7.36.4",
+    "@microsoft/api-extractor": "7.47.7",
     "@types/react": "^18",
     "@types/react-dom": "^18"
   },

@@ -53,7 +53,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@material-ui/pickers@^3.3.10": "patch:@material-ui/pickers@npm%3A3.3.11#./.yarn/patches/@material-ui-pickers-npm-3.3.11-1c8f68ea20.patch",
-    "@microsoft/api-extractor": "7.36.4"
+    "@microsoft/api-extractor": "7.47.7"
   },
   "prettier": "@spotify/prettier-config",
   "lint-staged": {
