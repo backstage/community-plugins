@@ -36,7 +36,7 @@
     "@backstage/e2e-test-utils": "^0.1.1",
     "@backstage/repo-tools": "^0.8.0",
     "@changesets/cli": "^2.27.1",
-    "@spotify/prettier-config": "^12.0.0",
+    "@spotify/prettier-config": "^15.0.0",
     "node-gyp": "^9.0.0",
     "prettier": "^2.3.2",
     "react-router-dom": "^6.26.1",
