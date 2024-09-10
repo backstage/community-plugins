@@ -7,45 +7,22 @@ import { BackendFeatureCompat } from '@backstage/backend-plugin-api';
 import { Build } from 'azure-devops-node-api/interfaces/BuildInterfaces';
 import { BuildDefinitionReference } from 'azure-devops-node-api/interfaces/BuildInterfaces';
 import { BuildRun } from '@backstage-community/plugin-azure-devops-common';
-import { CatalogProcessor } from '@backstage/plugin-catalog-node';
 import { Config } from '@backstage/config';
 import { DashboardPullRequest } from '@backstage-community/plugin-azure-devops-common';
 import { DiscoveryService } from '@backstage/backend-plugin-api';
-import { Entity } from '@backstage/catalog-model';
 import express from 'express';
 import { GitRepository } from 'azure-devops-node-api/interfaces/GitInterfaces';
 import { GitTag } from '@backstage-community/plugin-azure-devops-common';
 import { HttpAuthService } from '@backstage/backend-plugin-api';
-import { LocationSpec } from '@backstage/plugin-catalog-common';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { PermissionsService } from '@backstage/backend-plugin-api';
 import { Project } from '@backstage-community/plugin-azure-devops-common';
 import { PullRequest } from '@backstage-community/plugin-azure-devops-common';
 import { PullRequestOptions } from '@backstage-community/plugin-azure-devops-common';
 import { RepoBuild } from '@backstage-community/plugin-azure-devops-common';
-import { ScmIntegrationRegistry } from '@backstage/integration';
 import { Team } from '@backstage-community/plugin-azure-devops-common';
 import { TeamMember } from '@backstage-community/plugin-azure-devops-common';
 import { UrlReaderService } from '@backstage/backend-plugin-api';
-
-// @public @deprecated (undocumented)
-export class AzureDevOpsAnnotatorProcessor implements CatalogProcessor {
-  constructor(opts: {
-    scmIntegrationRegistry: ScmIntegrationRegistry;
-    kinds?: string[];
-  });
-  // (undocumented)
-  static fromConfig(
-    config: Config,
-    options?: {
-      kinds?: string[];
-    },
-  ): AzureDevOpsAnnotatorProcessor;
-  // (undocumented)
-  getProcessorName(): string;
-  // (undocumented)
-  preProcessEntity(entity: Entity, location: LocationSpec): Promise<Entity>;
-}
 
 // @public (undocumented)
 export class AzureDevOpsApi {

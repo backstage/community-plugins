@@ -142,7 +142,7 @@ And if the entity was from `yet-another-org` it would look like this:
 dev.azure.com/host-org: server.company.com/yet-another-org
 ```
 
-**Note:** To save you time, effort, and confusion setting up these annotations manually you can use the `AzureDevOpsAnnotatorProcessor` processor which will add the `dev.azure.com/host-org` and `dev.azure.com/project-repo` annotations for you with the correct values. The Azure DevOps backend plugin has details on how to [add this processor](https://github.com/backstage/backstage/tree/master/plugins/azure-devops-backend#processor).
+**Note:** To save you time, effort, and confusion setting up these annotations manually you can use the `AzureDevOpsAnnotatorProcessor` processor which will add the `dev.azure.com/host-org` and `dev.azure.com/project-repo` annotations for you with the correct values. The Azure DevOps Annotator Processor backend module for the Catalog plugin has details on how to [add this processor](https://github.com/backstage/community-plugins/tree/main/workspaces/azure-devops/plugins/catalog-backend-module-azure-devops-annotator-processor).
 
 ### Azure Pipelines Component
 
