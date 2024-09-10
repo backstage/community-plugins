@@ -64,9 +64,9 @@
     "@backstage/plugin-auth-backend-module-guest-provider": "^0.1.9",
     "@backstage/test-utils": "^1.5.10",
     "@types/node-fetch": "^2.6.11",
-    "@types/supertest": "^2.0.8",
+    "@types/supertest": "^6.0.0",
     "msw": "^1.0.0",
-    "supertest": "^6.2.4"
+    "supertest": "^7.0.0"
   },
   "configSchema": "config.d.ts"
 }

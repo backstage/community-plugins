@@ -77,7 +77,7 @@
     "@backstage/dev-utils": "^1.0.37",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
-    "@testing-library/react": "^15.0.0",
+    "@testing-library/react": "^16.0.0",
     "@types/dompurify": "^3.0.0",
     "@types/lodash": "^4.14.151",
     "@types/react-dom": "^18.2.19",
