@@ -17,13 +17,13 @@ import { SchedulerService } from '@backstage/backend-plugin-api';
 import { SchedulerServiceTaskScheduleDefinition } from '@backstage/backend-plugin-api';
 import { UrlReaderService } from '@backstage/backend-plugin-api';
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 export function createRouter(
   pluginOptions: PluginOptions,
   routerOptions: RouterOptions,
 ): Promise<express.Router>;
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 export function createRouterFromConfig(
   routerOptions: RouterOptions,
 ): Promise<express.Router>;
@@ -40,7 +40,7 @@ export interface LinguistBackendApi {
 const linguistPlugin: BackendFeatureCompat;
 export default linguistPlugin;
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 export interface PluginOptions {
   // (undocumented)
   age?: HumanDuration;
@@ -56,7 +56,7 @@ export interface PluginOptions {
   useSourceLocation?: boolean;
 }
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 export interface RouterOptions {
   // (undocumented)
   auth?: AuthService;
