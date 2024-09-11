@@ -1,5 +1,11 @@
 # @backstage-community/plugin-azure-devops-backend
 
+## 0.7.1
+
+### Patch Changes
+
+- 1b55b99: Marked `createRouter` and `RouterOptions` as deprecated, to be removed soon after the Backstage `1.32.0` release in October
+
 ## 0.7.0
 
 ### Minor Changes
