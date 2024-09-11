@@ -13,15 +13,13 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
 import { ResourceSyncStatus } from './ResourcesSyncStatus';
 import { ResourceHealthStatus } from './ResourcesHealthStatus';
-import { OpenRowStatus, Resource } from '../../../../types/application';
+import { Resource } from '../../../../types/application';
 import ResourceMetadata from './resource/ResourceMetadata';
 
 type ResourcesTableRowProps = {
+  uid: string;
   row: Resource;
   createdAt: string;
-  open: boolean;
-  uid: string;
-  setOpen: React.Dispatch<React.SetStateAction<OpenRowStatus>>;
 };
 
 const useStyles = makeStyles(theme => ({
@@ -43,7 +41,7 @@ const useStyles = makeStyles(theme => ({
     padding: 10,
   },
   tableCell: {
-    padding: theme.spacing(1, 2, 1),
+    padding: theme.spacing(1, 0),
     height: 50,
   },
 }));
@@ -70,16 +68,21 @@ export const ResourcesTableRow: React.FC<ResourcesTableRowProps> = ({
           </IconButton>
         </TableCell>
         <TableCell className={classes.tableCell} align="left">
+          {row.name}
+        </TableCell>
+        <TableCell className={classes.tableCell} align="left">
           {row.kind}
         </TableCell>
         <TableCell className={classes.tableCell} align="left">
           {moment.utc(createdAt).local().format('MM/DD/YYYY hh:mm a')}
         </TableCell>
         <TableCell className={classes.tableCell} align="left">
-          <ResourceSyncStatus syncStatus={row.status} />
+          {row.status && <ResourceSyncStatus syncStatus={row.status} />}
         </TableCell>
         <TableCell className={classes.tableCell} align="left">
-          <ResourceHealthStatus healthStatus={row.health?.status} />
+          {row.health?.status && (
+            <ResourceHealthStatus healthStatus={row.health?.status} />
+          )}
         </TableCell>
       </TableRow>
       <TableRow className={classes.expandedRow}>

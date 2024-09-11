@@ -6,6 +6,10 @@ export const ResourcesColumnHeaders: TableColumn[] = [
     title: '',
   },
   {
+    id: 'name',
+    title: 'Name',
+  },
+  {
     id: 'kind',
     title: 'Kind',
   },

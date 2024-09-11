@@ -48,8 +48,6 @@ describe('ResourcesTableBody Component', () => {
           row,
           createdAt: defaultProps.createdAt,
           uid: index.toString(),
-          open: false,
-          setOpen: expect.any(Function),
         }),
         expect.anything(),
       );

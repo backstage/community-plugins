@@ -11,9 +11,9 @@ import {
 import { ResourcesTableBody } from './ResourcesTableBody';
 import { ResourcesTableHeader } from './ResourcesTableHeader';
 import { ResourcesColumnHeaders } from './ResourcesColumnHeader';
-import { ResourcesSearchBar } from './ResourcesSearchBar';
-import { ResourcesFilterBy } from './ResourcesFilterBy';
+import { ResourcesFilterBy } from './filters/ResourcesFilterBy';
 import { Order, Resource } from '../../../../types/application';
+import { FiltersType } from '../../../../types/resources';
 
 interface ResourcesTableProps {
   resources: Resource[];
@@ -24,6 +24,7 @@ const useStyles = makeStyles(theme => ({
   table: {
     width: '100%',
     marginTop: theme.spacing(2),
+    minHeight: theme.spacing(20),
   },
   empty: {
     padding: theme.spacing(2),
@@ -43,23 +44,29 @@ export const ResourcesTable: FC<ResourcesTableProps> = ({
 }) => {
   const classes = useStyles();
 
-  const [searchValue, setSearchValue] = useState<string>('');
-  const [filterValue, setFilterValue] = useState<string>('');
   const [order, setOrder] = useState<Order>('desc');
   const [orderBy, setOrderBy] = useState<string | null>(null);
   const [orderById, setOrderById] = useState<string | null>(null);
   const [page, setPage] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(5);
+  const [filters, setFilters] = useState<FiltersType>({
+    Kind: [],
+    HealthStatus: [],
+    SyncStatus: [],
+    SearchByName: [],
+  });
 
   const getSortableRowValues = useCallback(
     (res: Resource) => {
       const {
-        kind,
-        status,
-        health: { status: healthStatus },
+        name = '',
+        kind = '',
+        status = '',
+        health = { status: '' },
       } = res;
+      const healthStatus = health.status || '';
 
-      return [kind, createdAt, status, healthStatus];
+      return [undefined, name, kind, createdAt, status, healthStatus];
     },
     [createdAt],
   );
@@ -69,24 +76,41 @@ export const ResourcesTable: FC<ResourcesTableProps> = ({
     [resources],
   );
 
+  const getAllKinds = React.useMemo(() => {
+    return resources.reduce((kinds: string[], resource) => {
+      if (resource.kind && !kinds.includes(resource.kind)) {
+        kinds.push(resource.kind);
+      }
+      return kinds;
+    }, []);
+  }, [resources]);
+
   const filteredResources = React.useMemo(() => {
     let items = allResources;
 
-    // Filter by health status
-    if (filterValue && filterValue !== 'All') {
-      items = items.filter(resource => resource.health.status === filterValue);
-    }
-
-    // Search by kind
-    if (searchValue) {
+    // Filters
+    if (filters.HealthStatus.length) {
       items = items.filter(resource =>
-        resource.kind
+        filters.HealthStatus.includes(resource.health?.status ?? ''),
+      );
+    }
+    if (filters.SyncStatus.length) {
+      items = items.filter(resource =>
+        filters.SyncStatus.includes(resource.status),
+      );
+    }
+    if (filters.Kind.length) {
+      items = items.filter(resource => filters.Kind.includes(resource.kind));
+    }
+    if (filters.SearchByName.length) {
+      items = items.filter(resource =>
+        resource.name
           .toLocaleLowerCase()
-          .includes(searchValue.toLocaleLowerCase()),
+          .includes(filters.SearchByName[0].toLocaleLowerCase()),
       );
     }
 
-    // Sort
+    // Sorting
     if (orderById && order) {
       items = items.sort((a, b) => {
         const aValue = getSortableRowValues(a)[parseInt(orderById, 10)];
@@ -107,14 +131,7 @@ export const ResourcesTable: FC<ResourcesTableProps> = ({
     }
 
     return items;
-  }, [
-    allResources,
-    filterValue,
-    searchValue,
-    orderById,
-    order,
-    getSortableRowValues,
-  ]);
+  }, [allResources, filters, orderById, order, getSortableRowValues]);
 
   const visibleRows = React.useMemo(
     () =>
@@ -135,14 +152,6 @@ export const ResourcesTable: FC<ResourcesTableProps> = ({
     },
     [order, orderBy],
   );
-
-  const handleSearchChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) =>
-      setSearchValue(event.target.value),
-    [],
-  );
-
-  const handleSearchClear = useCallback(() => setSearchValue(''), []);
 
   const handleChangePage = useCallback((_event: unknown, newPage: number) => {
     setPage(newPage);
@@ -166,11 +175,10 @@ export const ResourcesTable: FC<ResourcesTableProps> = ({
       id="search-input-filter-toolbar"
       style={{ display: 'flex', alignItems: 'center' }}
     >
-      <ResourcesFilterBy setFilterValue={setFilterValue} />
-      <ResourcesSearchBar
-        value={searchValue}
-        onChange={handleSearchChange}
-        onSearchClear={handleSearchClear}
+      <ResourcesFilterBy
+        filters={filters}
+        setFilters={setFilters}
+        allKinds={getAllKinds}
       />
     </div>
   );

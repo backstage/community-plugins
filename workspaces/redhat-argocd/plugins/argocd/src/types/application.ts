@@ -42,7 +42,7 @@ export interface Status {
   sync: StatusSync;
   health: Health;
   operationState: OperationState;
-  resources?: StatusResource[];
+  resources?: Resource[];
   history?: History[];
   reconciledAt?: string;
   sourceType?: string;
@@ -107,16 +107,6 @@ export interface SyncResultResource {
   message: string;
   hookPhase: string;
   syncPhase: string;
-}
-
-export interface StatusResource {
-  version: string;
-  kind: string;
-  namespace: string;
-  name: string;
-  status: string;
-  health: Health;
-  group?: string;
 }
 
 export interface Summary {
@@ -187,7 +177,7 @@ export interface Resource {
   namespace: string;
   name: string;
   status: string;
-  health: Health;
+  health?: Health;
   group?: string;
 }
 

@@ -38,3 +38,17 @@ export const ArgoCDkindPluralMap: {
   AnalysisRun: 'analysisruns',
   Rollout: 'rollouts',
 } as const;
+
+export enum ResourcesFilters {
+  SearchByName = 'Name',
+  Kind = 'Kind',
+  SyncStatus = 'Sync status',
+  HealthStatus = 'Health status',
+}
+
+export interface FiltersType {
+  SearchByName: string[];
+  Kind: string[];
+  SyncStatus: string[];
+  HealthStatus: string[];
+}

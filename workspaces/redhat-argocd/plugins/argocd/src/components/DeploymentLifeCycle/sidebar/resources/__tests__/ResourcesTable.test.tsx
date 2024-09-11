@@ -18,7 +18,7 @@ jest.mock('../ResourcesSearchBar', () => ({
   )),
 }));
 
-jest.mock('../ResourcesFilterBy', () => ({
+jest.mock('../filters/ResourcesFilterBy', () => ({
   ResourcesFilterBy: jest.fn(({ setFilterValue }) => (
     <select
       data-testid="filter-by"
@@ -104,12 +104,10 @@ describe('ResourcesTable Component', () => {
   const setup = () =>
     render(<ResourcesTable resources={resources} createdAt={createdAt} />);
 
-  it('should render the search bar, filter dropdown, and pagination', () => {
+  it('should render the filter dropdown, and pagination', () => {
     setup();
 
-    expect(screen.getByTestId('search-input')).toBeInTheDocument();
     expect(screen.getByTestId('filter-by')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Clear' })).toBeInTheDocument();
     expect(screen.getByText('5 rows')).toBeInTheDocument();
   });
 
@@ -118,22 +116,6 @@ describe('ResourcesTable Component', () => {
 
     expect(screen.getByText('Health status')).toBeInTheDocument();
     expect(screen.getByText('Deployment')).toBeInTheDocument();
-  });
-
-  it('should handle search input changes correctly', () => {
-    setup();
-
-    const searchInput = screen.getByTestId('search-input');
-    fireEvent.change(searchInput, { target: { value: 'deployment' } });
-    expect(searchInput).toHaveValue('deployment');
-  });
-
-  it('should handle filter changes correctly', () => {
-    setup();
-
-    const filterDropdown = screen.getByTestId('filter-by');
-    fireEvent.change(filterDropdown, { target: { value: 'Synced' } });
-    expect(filterDropdown).toHaveValue('Synced');
   });
 
   it('should display "No Resources found" when there are no visible rows', () => {
@@ -182,19 +164,6 @@ describe('ResourcesTable Component', () => {
       const newPageResources = screen.getAllByText('Deployment');
       expect(newPageResources.length).toBe(5);
     });
-  });
-
-  it('should handle search clear correctly', () => {
-    setup();
-
-    const searchInput = screen.getByTestId('search-input');
-    const clearButton = screen.getByRole('button', { name: 'Clear' });
-
-    fireEvent.change(searchInput, { target: { value: 'deployment' } });
-    expect(searchInput).toHaveValue('deployment');
-
-    fireEvent.click(clearButton);
-    expect(searchInput).toHaveValue('');
   });
 
   it('should update sort order when handleRequestSort is triggered', async () => {
