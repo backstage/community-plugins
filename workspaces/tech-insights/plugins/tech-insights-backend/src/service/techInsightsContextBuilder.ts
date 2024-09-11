@@ -85,7 +85,7 @@ export interface TechInsightsOptions<
   discovery: DiscoveryService;
   database: DatabaseService;
   scheduler: SchedulerService;
-  tokenManager: TokenManager;
+  tokenManager?: TokenManager;
   auth?: AuthService;
 }
 

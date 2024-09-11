@@ -67,7 +67,7 @@ export type FactRetrieverContext = {
   config: Config;
   discovery: DiscoveryService;
   logger: LoggerService;
-  tokenManager: TokenManager;
+  tokenManager?: TokenManager;
   auth: AuthService;
   entityFilter?:
     | Record<string, string | symbol | (string | symbol)[]>[]

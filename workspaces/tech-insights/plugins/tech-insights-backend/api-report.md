@@ -128,7 +128,7 @@ export interface TechInsightsOptions<
   // (undocumented)
   scheduler: SchedulerService;
   // (undocumented)
-  tokenManager: TokenManager;
+  tokenManager?: TokenManager;
 }
 
 // @public
