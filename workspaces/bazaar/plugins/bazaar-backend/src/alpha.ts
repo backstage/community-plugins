@@ -32,16 +32,25 @@ export default createBackendPlugin({
       deps: {
         config: coreServices.rootConfig,
         database: coreServices.database,
-        identity: coreServices.identity,
-        logger: coreServices.logger,
+        discovery: coreServices.discovery,
+        httpAuth: coreServices.httpAuth,
         httpRouter: coreServices.httpRouter,
+        logger: coreServices.logger,
       },
-      async init({ database, config, identity, logger, httpRouter }) {
+      async init({
+        config,
+        database,
+        discovery,
+        httpAuth,
+        httpRouter,
+        logger,
+      }) {
         httpRouter.use(
           await createRouter({
-            database,
             config,
-            identity,
+            database,
+            discovery,
+            httpAuth,
             logger,
           }),
         );
