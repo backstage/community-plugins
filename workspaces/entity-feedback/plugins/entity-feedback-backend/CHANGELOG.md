@@ -1,5 +1,12 @@
 # @backstage-community/plugin-entity-feedback-backend
 
+## 0.3.0
+
+### Minor Changes
+
+- 6ab3e6d: The `identity` service is now optional. It has been removed as a plugin dependency for
+  the new backend system.
+
 ## 0.2.21
 
 ### Patch Changes
