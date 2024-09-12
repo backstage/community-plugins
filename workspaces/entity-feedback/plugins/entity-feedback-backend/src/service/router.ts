@@ -17,11 +17,11 @@
 import {
   createLegacyAuthAdapters,
   errorHandler,
-  PluginDatabaseManager,
-  PluginEndpointDiscovery,
 } from '@backstage/backend-common';
 import {
   AuthService,
+  DatabaseService,
+  DiscoveryService,
   HttpAuthService,
   LoggerService,
 } from '@backstage/backend-plugin-api';
@@ -42,9 +42,9 @@ import { DatabaseHandler } from './DatabaseHandler';
  * @public
  */
 export interface RouterOptions {
-  database: PluginDatabaseManager;
-  discovery: PluginEndpointDiscovery;
-  identity: IdentityApi;
+  database: DatabaseService;
+  discovery: DiscoveryService;
+  identity?: IdentityApi;
   logger: LoggerService;
   auth?: AuthService;
   httpAuth?: HttpAuthService;
