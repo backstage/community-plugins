@@ -30,31 +30,21 @@ export const entityFeedbackPlugin = createBackendPlugin({
   register(env) {
     env.registerInit({
       deps: {
-        discovery: coreServices.discovery,
-        database: coreServices.database,
-        identity: coreServices.identity,
-        logger: coreServices.logger,
-        httpRouter: coreServices.httpRouter,
         auth: coreServices.auth,
+        database: coreServices.database,
+        discovery: coreServices.discovery,
         httpAuth: coreServices.httpAuth,
+        httpRouter: coreServices.httpRouter,
+        logger: coreServices.logger,
       },
-      async init({
-        database,
-        discovery,
-        identity,
-        logger,
-        httpRouter,
-        auth,
-        httpAuth,
-      }) {
+      async init({ database, discovery, logger, httpRouter, auth, httpAuth }) {
         httpRouter.use(
           await createRouter({
+            auth,
             database,
             discovery,
-            identity,
-            logger,
-            auth,
             httpAuth,
+            logger,
           }),
         );
       },
