@@ -5,12 +5,12 @@
 ```ts
 import { AuthService } from '@backstage/backend-plugin-api';
 import { BackendFeatureCompat } from '@backstage/backend-plugin-api';
+import { DatabaseService } from '@backstage/backend-plugin-api';
+import { DiscoveryService } from '@backstage/backend-plugin-api';
 import express from 'express';
 import { HttpAuthService } from '@backstage/backend-plugin-api';
 import { IdentityApi } from '@backstage/plugin-auth-node';
 import { LoggerService } from '@backstage/backend-plugin-api';
-import { PluginDatabaseManager } from '@backstage/backend-common';
-import { PluginEndpointDiscovery } from '@backstage/backend-common';
 
 // @public (undocumented)
 export function createRouter(options: RouterOptions): Promise<express.Router>;
@@ -24,13 +24,13 @@ export interface RouterOptions {
   // (undocumented)
   auth?: AuthService;
   // (undocumented)
-  database: PluginDatabaseManager;
+  database: DatabaseService;
   // (undocumented)
-  discovery: PluginEndpointDiscovery;
+  discovery: DiscoveryService;
   // (undocumented)
   httpAuth?: HttpAuthService;
   // (undocumented)
-  identity: IdentityApi;
+  identity?: IdentityApi;
   // (undocumented)
   logger: LoggerService;
 }
