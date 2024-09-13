@@ -2501,9 +2501,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage-community/plugin-shorturl-backend-backend@workspace:plugins/shorturl-backend-backend":
+"@backstage-community/plugin-shorturl-backend@workspace:plugins/shorturl-backend":
   version: 0.0.0-use.local
-  resolution: "@backstage-community/plugin-shorturl-backend-backend@workspace:plugins/shorturl-backend-backend"
+  resolution: "@backstage-community/plugin-shorturl-backend@workspace:plugins/shorturl-backend"
   dependencies:
     "@backstage/backend-common": ^0.24.0
     "@backstage/backend-defaults": ^0.4.2

@@ -1,5 +1,5 @@
 {
-  "name": "@backstage-community/plugin-shorturl-backend-backend",
+  "name": "@backstage-community/plugin-shorturl-backend",
   "version": "0.1.0",
   "main": "src/index.ts",
   "types": "src/index.ts",

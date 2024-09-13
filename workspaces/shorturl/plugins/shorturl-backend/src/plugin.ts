@@ -17,12 +17,14 @@ export const shorturlBackendPlugin = createBackendPlugin({
         httpRouter: coreServices.httpRouter,
         logger: coreServices.logger,
         config: coreServices.rootConfig,
+        database: coreServices.database,
       },
-      async init({ httpRouter, logger, config }) {
+      async init({ httpRouter, logger, config, database }) {
         httpRouter.use(
           await createRouter({
             logger,
             config,
+            database,
           }),
         );
         httpRouter.addAuthPolicy({
