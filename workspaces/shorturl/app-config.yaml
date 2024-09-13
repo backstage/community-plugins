@@ -1,5 +1,6 @@
 shorturl:
-  lenght: 8
+  lenght: 6
+  alphabet: 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ
 
 app:
   title: ShortURL Example App

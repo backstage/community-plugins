@@ -8,7 +8,7 @@ import {
 import express from 'express';
 import Router from 'express-promise-router';
 import { NotFoundError } from '@backstage/errors';
-import { nanoid } from 'nanoid';
+import { customAlphabet } from 'nanoid';
 import { DatabaseHandler } from '../database/DatabaseHandler';
 import { ShortURLStore } from '../database/ShortURLStore';
 
@@ -17,6 +17,9 @@ export interface RouterOptions {
   config: RootConfigService;
   database: DatabaseService;
 }
+
+const defaultAlphabet =
+  '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz-';
 
 export async function createRouter(
   options: RouterOptions,
@@ -49,6 +52,10 @@ export async function createRouter(
       logger.debug(`URL not found in the database. Proceeding to create it.`);
     }
 
+    const urlLenght = Number(config.getOptionalString('shorturl.length')) || 8;
+    const urlAlphabet =
+      config.getOptionalString('shorturl.alphabet') || defaultAlphabet;
+    const nanoid = customAlphabet(urlAlphabet, urlLenght);
     const id = nanoid();
     await db.saveUrlMapping({
       shortId: id,
