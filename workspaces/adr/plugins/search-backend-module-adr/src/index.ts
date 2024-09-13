@@ -89,7 +89,6 @@ export default createBackendModule({
         logger: coreServices.rootLogger,
         reader: coreServices.urlReader,
         scheduler: coreServices.scheduler,
-        tokenManager: coreServices.tokenManager,
         indexRegistry: searchIndexRegistryExtensionPoint,
         catalog: catalogServiceRef,
       },
@@ -101,7 +100,6 @@ export default createBackendModule({
         logger,
         reader,
         scheduler,
-        tokenManager,
         indexRegistry,
         catalog,
       }) {
@@ -116,7 +114,6 @@ export default createBackendModule({
             discovery,
             logger,
             reader,
-            tokenManager,
             adrFilePathFilterFn,
             parser,
             catalogClient: catalog,

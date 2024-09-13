@@ -36,7 +36,6 @@ export const lighthousePlugin = createBackendPlugin({
         config: coreServices.rootConfig,
         logger: coreServices.logger,
         scheduler: coreServices.scheduler,
-        tokenManager: coreServices.tokenManager,
         discovery: coreServices.discovery,
         auth: coreServices.auth,
       },
@@ -45,7 +44,6 @@ export const lighthousePlugin = createBackendPlugin({
         config,
         logger,
         scheduler,
-        tokenManager,
         discovery,
         auth,
       }) {
@@ -54,7 +52,6 @@ export const lighthousePlugin = createBackendPlugin({
           config,
           logger,
           scheduler,
-          tokenManager,
           discovery,
           auth,
         });

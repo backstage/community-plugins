@@ -32,16 +32,14 @@ export const playlistPlugin = createBackendPlugin({
         http: coreServices.httpRouter,
         logger: coreServices.logger,
         database: coreServices.database,
-        identity: coreServices.identity,
         discovery: coreServices.discovery,
         permissions: coreServices.permissions,
       },
-      async init({ http, logger, database, identity, discovery, permissions }) {
+      async init({ http, logger, database, discovery, permissions }) {
         http.use(
           await createRouter({
             logger,
             database,
-            identity,
             discovery,
             permissions,
           }),
