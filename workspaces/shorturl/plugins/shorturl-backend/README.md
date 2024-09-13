@@ -13,6 +13,16 @@ You can also serve the plugin in isolation by running `yarn start` in the plugin
 This method of serving the plugin provides quicker iteration speed and a faster startup and hot reloads.
 It is only meant for local development, and the setup for it can be found inside the [/dev](./dev) directory.
 
+## Configuration
+
+This plugin has optional configuration options that can be set in the `app-config.yaml` file.
+
+```yaml
+shorturl:
+  lenght: 6 # default: 8
+  alphabet: 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ # default: A-Za-z0-9_-
+```
+
 ## Testing
 
 For testing purposes, we have enabled we have set `backend.auth.dangerouslyDisableDefaultAuthPolicy=true` in app-config.yaml.

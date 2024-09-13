@@ -47,4 +47,74 @@ describe('createRouter', () => {
       expect(response.body).toEqual({ status: 'ok' });
     });
   });
+
+  describe('PUT /create', () => {
+    let newId: string;
+    it('creates a new short URL', async () => {
+      const response = await request(app)
+        .put('/create')
+        .send({ fullUrl: 'https://backstage.io', usageCount: 0 });
+
+      expect(response.status).toEqual(201);
+      expect(response.body).toEqual({ status: 'ok', id: expect.any(String) });
+      newId = response.body.id;
+    });
+
+    it('returns existing short URL', async () => {
+      const response = await request(app)
+        .put('/create')
+        .send({ fullUrl: 'https://backstage.io', usageCount: 0 });
+
+      expect(response.status).toEqual(200);
+      expect(response.body).toEqual({ status: 'ok', id: newId });
+    });
+
+    it('returns 400 on invalid request', async () => {
+      const response = await request(app).put('/create').send({});
+
+      expect(response.status).toEqual(400);
+      expect(response.body).toEqual({ status: 'invalid request' });
+    });
+  });
+
+  describe('GET /go/:id', () => {
+    it('redirects to full URL', async () => {
+      const mockUrl = 'https://backstage.io';
+      const createUrlResponse = await request(app)
+        .put('/create')
+        .send({ fullUrl: mockUrl, usageCount: 0 });
+
+      const response = await request(app).get(
+        `/go/${createUrlResponse.body.id}`,
+      );
+
+      expect(response.status).toEqual(302);
+      expect(response.header.location).toEqual(mockUrl);
+    });
+
+    it('returns 404 on missing short URL', async () => {
+      const response = await request(app).get('/go/missing');
+
+      expect(response.status).toEqual(404);
+    });
+  });
+
+  describe('GET /getAll', () => {
+    it('returns all short URLs', async () => {
+      const { subject } = await createSubject('SQLITE_3');
+      await subject.saveUrlMapping({
+        shortId: 'abc123',
+        fullUrl: 'https://backstage.io/getAll',
+        usageCount: 0,
+      });
+
+      const response = await request(app).get('/getAll');
+
+      expect(response.status).toEqual(200);
+      expect(response.body).toEqual({
+        status: 'ok',
+        data: expect.any(Array),
+      });
+    });
+  });
 });
