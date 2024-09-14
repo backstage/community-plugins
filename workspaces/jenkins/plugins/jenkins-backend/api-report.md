@@ -40,7 +40,7 @@ export class DefaultJenkinsInfoProvider implements JenkinsInfoProvider {
   // (undocumented)
   static readonly OLD_JENKINS_ANNOTATION = 'jenkins.io/github-folder';
   // (undocumented)
-  static readonly JENKINS_OVERRIDE_URL = 'jenkins.io/override-url';
+  static readonly JENKINS_OVERRIDE_URL = 'jenkins.io/override-base-url';
 }
 
 // @public (undocumented)
