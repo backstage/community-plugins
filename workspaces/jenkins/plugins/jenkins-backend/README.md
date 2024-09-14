@@ -173,6 +173,39 @@ jenkins:
       apiKey: 123456789abcdef0123456789abcedf012
 ```
 
+#### Example - Override Base Url
+
+The following will show you how to override a base url defined in the Config with a value from the Catalog
+
+Config
+
+```yaml
+jenkins:
+  instances:
+    - name: departmentFoo
+      baseUrl: https://departmentFoo.example.com
+      username: backstage-bot
+      projectCountLimit: 100
+      apiKey: 123456789abcdef0123456789abcedf012
+      overrideBaseUrl: true
+```
+
+Catalog
+
+```yaml
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: artist-lookup
+  annotations:
+    'jenkins.io/job-full-name': departmentFoo:teamA/artistLookup-build
+    'jenkins.io/override-base-url': 'https://other.example.com'
+```
+
+This will set the instance's base url to 'https://other.example.com' when loading the configuration.
+
+This use case is for Jenkins systems where there are a lot of Jenkins instances configured from a base instance, which share the same API keys. Therefore a user does not have to define all of the instances here, but in the catalog for ease of use.
+
 ### Custom JenkinsInfoProvider
 
 An example of a bespoke JenkinsInfoProvider which uses an organisation specific annotation to look up the Jenkins info (including jobFullName):
