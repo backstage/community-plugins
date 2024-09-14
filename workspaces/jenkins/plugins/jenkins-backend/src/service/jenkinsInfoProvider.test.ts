@@ -464,7 +464,8 @@ describe('DefaultJenkinsInfoProvider', () => {
         metadata: {
           annotations: {
             'jenkins.io/job-full-name': 'other:teamA/artistLookup-build',
-            'jenkins.io/override-url': 'https://jenkinsOverriden.example.com',
+            'jenkins.io/override-base-url':
+              'https://jenkinsOverriden.example.com',
           },
         },
       },
@@ -500,7 +501,8 @@ describe('DefaultJenkinsInfoProvider', () => {
         metadata: {
           annotations: {
             'jenkins.io/job-full-name': 'other:teamA/artistLookup-build',
-            'jenkins.io/override-url': 'https://jenkinsOverriden.example.com',
+            'jenkins.io/override-base-url':
+              'https://jenkinsOverriden.example.com',
           },
         },
       },

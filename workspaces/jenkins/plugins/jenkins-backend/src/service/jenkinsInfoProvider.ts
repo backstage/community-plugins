@@ -196,7 +196,7 @@ export class JenkinsConfig {
 export class DefaultJenkinsInfoProvider implements JenkinsInfoProvider {
   static readonly OLD_JENKINS_ANNOTATION = 'jenkins.io/github-folder';
   static readonly NEW_JENKINS_ANNOTATION = 'jenkins.io/job-full-name';
-  static readonly JENKINS_OVERRIDE_URL = 'jenkins.io/override-url';
+  static readonly JENKINS_OVERRIDE_URL = 'jenkins.io/override-base-url';
 
   private constructor(
     private readonly config: JenkinsConfig,
