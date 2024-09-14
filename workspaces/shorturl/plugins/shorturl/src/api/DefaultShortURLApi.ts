@@ -35,7 +35,7 @@ export class DefaultShortURLApi implements ShortURLApi {
     const baseUrl = await this.discoveryApi.getBaseUrl('shorturl');
     const idResponse = await this.identityApi.getCredentials();
 
-    return await this.fetchApi.fetch(`${baseUrl}/getAll`, {
+    return await this.fetchApi.fetch(`${baseUrl}-backend/getAll`, {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${idResponse?.token}`,

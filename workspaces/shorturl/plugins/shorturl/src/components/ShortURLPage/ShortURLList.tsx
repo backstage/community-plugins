@@ -31,16 +31,13 @@ export const ShortURLList = () => {
 
   useEffect(() => {
     getData();
+    // todo(avila-m-6): properly add dependency array
   });
 
   return (
     <Box>
       <Table
         columns={[
-          {
-            title: 'Id',
-            field: 'short_id',
-          },
           {
             title: 'Full URL',
             render: (data: any) => {
