@@ -1,11 +1,11 @@
 import React from 'react';
 import { createDevApp } from '@backstage/dev-utils';
-import { shorturlPlugin, ShorturlPage } from '../src/plugin';
+import { shorturlPlugin, ShortURLPage } from '../src/plugin';
 
 createDevApp()
   .registerPlugin(shorturlPlugin)
   .addPage({
-    element: <ShorturlPage />,
+    element: <ShortURLPage />,
     title: 'Root Page',
     path: '/shorturl',
   })
