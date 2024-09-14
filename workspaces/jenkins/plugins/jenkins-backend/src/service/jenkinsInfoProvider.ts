@@ -66,6 +66,10 @@ export interface JenkinsInstanceConfig {
    * Extra headers to send to Jenkins instance
    */
   extraRequestHeaders?: Record<string, string>;
+  /**
+   * If set to true, default configurations URL will be updated from the annotations value
+   */
+  overrideDefaultUrl?: boolean;
 }
 
 /**
@@ -96,6 +100,7 @@ export class JenkinsConfig {
         apiKey: c.getString('apiKey'),
         extraRequestHeaders: c.getOptional('extraRequestHeaders'),
         crumbIssuer: c.getOptionalBoolean('crumbIssuer'),
+        overrideDefaultUrl: c.getOptionalBoolean('overrideDefaultUrl')
       })) || [];
 
     // load unnamed default config
@@ -111,6 +116,7 @@ export class JenkinsConfig {
     const extraRequestHeaders = jenkinsConfig.getOptional<
       JenkinsInstanceConfig['extraRequestHeaders']
     >('extraRequestHeaders');
+    const overrideDefaultUrl = jenkinsConfig.getOptionalBoolean('overrideDefaultUrl')
 
     if (hasNamedDefault && (baseUrl || username || apiKey)) {
       throw new Error(
@@ -136,6 +142,7 @@ export class JenkinsConfig {
           apiKey,
           extraRequestHeaders,
           crumbIssuer,
+          overrideDefaultUrl,
         },
       ]);
     }
@@ -189,6 +196,7 @@ export class JenkinsConfig {
 export class DefaultJenkinsInfoProvider implements JenkinsInfoProvider {
   static readonly OLD_JENKINS_ANNOTATION = 'jenkins.io/github-folder';
   static readonly NEW_JENKINS_ANNOTATION = 'jenkins.io/job-full-name';
+  static readonly JENKINS_OVERRIDE_URL   = 'jenkins.io/override-url';
 
   private constructor(
     private readonly config: JenkinsConfig,
@@ -261,7 +269,12 @@ export class DefaultJenkinsInfoProvider implements JenkinsInfoProvider {
     }
 
     // lookup baseURL + creds from config
-    const instanceConfig = this.config.getInstanceConfig(jenkinsName);
+    let instanceConfig = this.config.getInstanceConfig(jenkinsName);
+
+    // override baseURL if config has override set to true
+    if (instanceConfig.overrideDefaultUrl) {
+      instanceConfig.baseUrl = DefaultJenkinsInfoProvider.getEntityOverrideURL(entity)
+    }
 
     const creds = Buffer.from(
       `${instanceConfig.username}:${instanceConfig.apiKey}`,
@@ -288,6 +301,14 @@ export class DefaultJenkinsInfoProvider implements JenkinsInfoProvider {
       ] ||
       entity.metadata.annotations?.[
         DefaultJenkinsInfoProvider.NEW_JENKINS_ANNOTATION
+      ]
+    );
+  }
+
+  private static getEntityOverrideURL(entity: Entity) {
+    return (
+      entity.metadata.annotations?.[
+        DefaultJenkinsInfoProvider.JENKINS_OVERRIDE_URL
       ]
     );
   }

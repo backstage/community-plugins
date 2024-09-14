@@ -39,6 +39,8 @@ export class DefaultJenkinsInfoProvider implements JenkinsInfoProvider {
   static readonly NEW_JENKINS_ANNOTATION = 'jenkins.io/job-full-name';
   // (undocumented)
   static readonly OLD_JENKINS_ANNOTATION = 'jenkins.io/github-folder';
+  // (undocumented)
+  static readonly JENKINS_OVERRIDE_URL = 'jenkins.io/override-url';
 }
 
 // @public (undocumented)
@@ -131,6 +133,7 @@ export interface JenkinsInstanceConfig {
   projectCountLimit?: number;
   // (undocumented)
   username: string;
+  overrideDefaultUrl?: boolean;
 }
 
 // @public
