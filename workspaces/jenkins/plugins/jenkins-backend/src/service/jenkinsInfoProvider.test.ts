@@ -444,4 +444,111 @@ describe('DefaultJenkinsInfoProvider', () => {
       jobFullName: 'teamA/artistLookup-build',
     });
   });
+
+  it('Override Base URL set to true', async () => {
+    const provider = configureProvider(
+      {
+        jenkins: {
+          instances: [
+            {
+              name: 'other',
+              baseUrl: 'https://jenkins.example.com',
+              username: 'backstage - bot',
+              apiKey: '123456789abcdef0123456789abcedf012',
+              overrideBaseUrl: true,
+            },
+          ],
+        },
+      },
+      {
+        metadata: {
+          annotations: {
+            'jenkins.io/job-full-name': 'other:teamA/artistLookup-build',
+            'jenkins.io/override-url': 'https://jenkinsOverriden.example.com',
+          },
+        },
+      },
+    );
+    const info: JenkinsInfo = await provider.getInstance({ entityRef });
+
+    expect(mockCatalog.getEntityByRef).toHaveBeenCalledWith(
+      entityRef,
+      undefined,
+    );
+    expect(info).toMatchObject({
+      baseUrl: 'https://jenkinsOverriden.example.com',
+      jobFullName: 'teamA/artistLookup-build',
+    });
+  });
+
+  it('Override Base URL set to false', async () => {
+    const provider = configureProvider(
+      {
+        jenkins: {
+          instances: [
+            {
+              name: 'other',
+              baseUrl: 'https://jenkins.example.com',
+              username: 'backstage - bot',
+              apiKey: '123456789abcdef0123456789abcedf012',
+              overrideBaseUrl: false,
+            },
+          ],
+        },
+      },
+      {
+        metadata: {
+          annotations: {
+            'jenkins.io/job-full-name': 'other:teamA/artistLookup-build',
+            'jenkins.io/override-url': 'https://jenkinsOverriden.example.com',
+          },
+        },
+      },
+    );
+    const info: JenkinsInfo = await provider.getInstance({ entityRef });
+
+    expect(mockCatalog.getEntityByRef).toHaveBeenCalledWith(
+      entityRef,
+      undefined,
+    );
+    expect(info).toMatchObject({
+      baseUrl: 'https://jenkins.example.com',
+      jobFullName: 'teamA/artistLookup-build',
+    });
+  });
+
+  it('Override Base URL set to true but no override value given', async () => {
+    const provider = configureProvider(
+      {
+        jenkins: {
+          instances: [
+            {
+              name: 'other',
+              baseUrl: 'https://jenkins.example.com',
+              username: 'backstage - bot',
+              apiKey: '123456789abcdef0123456789abcedf012',
+              overrideBaseUrl: true,
+            },
+          ],
+        },
+      },
+      {
+        metadata: {
+          annotations: {
+            'jenkins.io/job-full-name': 'other:teamA/artistLookup-build',
+          },
+        },
+      },
+    );
+    const info: JenkinsInfo = await provider.getInstance({ entityRef });
+
+    expect(mockCatalog.getEntityByRef).toHaveBeenCalledWith(
+      entityRef,
+      undefined,
+    );
+    expect(info).toMatchObject({
+      baseUrl: 'https://jenkins.example.com',
+      jobFullName: 'teamA/artistLookup-build',
+    });
+  });
 });
