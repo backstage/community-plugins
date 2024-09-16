@@ -20,6 +20,7 @@ import {
   BackstageCredentials,
   DiscoveryService,
   HttpAuthService,
+  LoggerService,
 } from '@backstage/backend-plugin-api';
 import { CatalogApi } from '@backstage/catalog-client';
 import {
@@ -42,6 +43,7 @@ export interface JenkinsInfoProvider {
     jobFullName?: string;
 
     credentials?: BackstageCredentials;
+    logger?: LoggerService;
   }): Promise<JenkinsInfo>;
 }
 
@@ -206,6 +208,7 @@ export class DefaultJenkinsInfoProvider implements JenkinsInfoProvider {
     private readonly config: JenkinsConfig,
     private readonly catalog: CatalogApi,
     private readonly auth: AuthService,
+    private logger: LoggerService,
   ) {}
 
   static fromConfig(options: {
@@ -214,12 +217,14 @@ export class DefaultJenkinsInfoProvider implements JenkinsInfoProvider {
     discovery: DiscoveryService;
     auth?: AuthService;
     httpAuth?: HttpAuthService;
+    logger: LoggerService;
   }): DefaultJenkinsInfoProvider {
     const { auth } = createLegacyAuthAdapters(options);
     return new DefaultJenkinsInfoProvider(
       JenkinsConfig.fromConfig(options.config),
       options.catalog,
       auth,
+      options.logger,
     );
   }
 
@@ -284,6 +289,7 @@ export class DefaultJenkinsInfoProvider implements JenkinsInfoProvider {
       DefaultJenkinsInfoProvider.verifyUrlMatchesRegex(
         overrideUrlValue,
         instanceConfig.overrideBaseUrlCompatibleRegex,
+        this.logger,
       )
     ) {
       instanceConfig.baseUrl = overrideUrlValue;
@@ -324,7 +330,11 @@ export class DefaultJenkinsInfoProvider implements JenkinsInfoProvider {
     ];
   }
 
-  private static verifyUrlMatchesRegex(url: string, regexList: string[]) {
+  private static verifyUrlMatchesRegex(
+    url: string,
+    regexList: string[],
+    logger: LoggerService,
+  ) {
     for (const regexString of regexList) {
       try {
         const regex = new RegExp(regexString);
@@ -332,7 +342,7 @@ export class DefaultJenkinsInfoProvider implements JenkinsInfoProvider {
           return true;
         }
       } catch (e) {
-        console.error(`Invalid regex: "${regexString}" - Error: ${e.message}`);
+        logger.warn(`Invalid regex: "${regexString}" - Error: ${e.message}`);
       }
     }
     return false;

@@ -187,6 +187,7 @@ describe('DefaultJenkinsInfoProvider', () => {
       catalog: mockCatalog,
       discovery: mockServices.discovery(),
       auth: mockServices.auth(),
+      logger: mockServices.rootLogger(),
     });
   }
 
