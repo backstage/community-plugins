@@ -30,9 +30,11 @@ export const getProjectNameFromEntity = (entity: Entity): string => {
   return entity?.metadata.annotations?.[GITHUB_PROJECT_SLUG_ANNOTATION] ?? '';
 };
 
-export const getHostnameFromEntity = (entity: Entity): string => {
-  const { target } = getEntitySourceLocation(entity);
-  return new URL(target).hostname;
+export const getHostnameFromEntity = (entity: Entity): string | undefined => {
+  const sourceLocation = getEntitySourceLocation(entity);
+  return sourceLocation === undefined
+    ? undefined
+    : new URL(sourceLocation.target).hostname;
 };
 
 export function useEntityGithubRepositories() {
@@ -49,7 +51,7 @@ export function useEntityGithubRepositories() {
         setRepositories([
           {
             name: entityName,
-            locationHostname,
+            locationHostname: locationHostname || 'github.com',
           },
         ]);
       }
@@ -75,7 +77,7 @@ export function useEntityGithubRepositories() {
         ) {
           acc.push({
             name: entityName,
-            locationHostname: entityLocationHostname,
+            locationHostname: entityLocationHostname || 'github.com',
           });
         }
         return acc;
