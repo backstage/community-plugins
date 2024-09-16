@@ -1,5 +1,11 @@
 ## @janus-idp/backstage-plugin-argocd [1.5.7](https://github.com/janus-idp/backstage-plugins/compare/@janus-idp/backstage-plugin-argocd@1.5.6...@janus-idp/backstage-plugin-argocd@1.5.7) (2024-08-02)
 
+## 1.8.3
+
+### Patch Changes
+
+- 1f5881c: update sidebar filters for argocd plugin
+
 ## 1.8.2
 
 ### Patch Changes
