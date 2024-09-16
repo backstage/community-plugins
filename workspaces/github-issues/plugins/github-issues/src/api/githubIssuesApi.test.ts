@@ -28,6 +28,8 @@ import {
   GithubIssuesFilters,
 } from './githubIssuesApi';
 
+const mockToken = 'mocked-token';
+
 function entityRepository(
   name: string,
   locationHostname: string = 'github.com',
@@ -40,6 +42,21 @@ function entityRepository(
 function getFragment(
   filterBy = '',
   orderBy = 'field: UPDATED_AT, direction: DESC',
+  query = '    query {\n' +
+    '      \n' +
+    '        yoyo: repository(name: "yo-yo", owner: "mrwolny") {\n' +
+    '          ...issues\n' +
+    '        }\n' +
+    '      ,\n' +
+    '        yoyox: repository(name: "yoyo", owner: "mrwolny") {\n' +
+    '          ...issues\n' +
+    '        }\n' +
+    '      ,\n' +
+    '        yoyoxx: repository(name: "yo.yo", owner: "mrwolny") {\n' +
+    '          ...issues\n' +
+    '        }\n' +
+    '      \n' +
+    '    }\n',
 ) {
   return (
     '\n' +
@@ -84,21 +101,7 @@ function getFragment(
     '    }\n' +
     '  \n' +
     '\n' +
-    '    query {\n' +
-    '      \n' +
-    '        yoyo: repository(name: "yo-yo", owner: "mrwolny") {\n' +
-    '          ...issues\n' +
-    '        }\n' +
-    '      ,\n' +
-    '        yoyox: repository(name: "yoyo", owner: "mrwolny") {\n' +
-    '          ...issues\n' +
-    '        }\n' +
-    '      ,\n' +
-    '        yoyoxx: repository(name: "yo.yo", owner: "mrwolny") {\n' +
-    '          ...issues\n' +
-    '        }\n' +
-    '      \n' +
-    '    }\n' +
+    `${query}` +
     '  '
   );
 }
@@ -113,7 +116,7 @@ describe('githubIssuesApi', () => {
 
     beforeEach(() => {
       api = githubIssuesApi(
-        { getAccessToken: jest.fn() },
+        { getCredentials: jest.fn().mockReturnValue({ token: mockToken }) },
         {
           getOptionalConfigArray: jest.fn(),
         } as unknown as ConfigApi,
@@ -135,7 +138,50 @@ describe('githubIssuesApi', () => {
       expect(mockGraphQLQuery).toHaveBeenCalledWith(getFragment());
     });
 
-    it("should only fetch data for entities hosted in the same GitHub instance as the plugin's config", async () => {
+    it('should only fetch data for entities hosted in the same GitHub instance as is entity location', async () => {
+      await api.fetchIssuesByRepoFromGithub(
+        [
+          entityRepository('mrwolny/yo-yo'),
+          entityRepository('mrwolny/yoyo'),
+          entityRepository('mrwolny/yo.yo'),
+          entityRepository('mrwolny/another-repo', 'enterprise.github.com'), // This one should be filtered out
+        ],
+        10,
+        'github.com',
+      );
+
+      expect(mockGraphQLQuery).toHaveBeenCalledTimes(1);
+      expect(mockGraphQLQuery).toHaveBeenCalledWith(getFragment());
+    });
+
+    it('should only fetch data for entities hosted in the same GitHub instance as is entity location that differs from github.com', async () => {
+      await api.fetchIssuesByRepoFromGithub(
+        [
+          entityRepository('mrwolny/yo-yo'),
+          entityRepository('mrwolny/yoyo'),
+          entityRepository('mrwolny/yo.yo'),
+          entityRepository('mrwolny/another-repo', 'enterprise.github.com'), // This one should be filtered out
+        ],
+        10,
+        'enterprise.github.com',
+      );
+
+      const query =
+        '    query {\n' +
+        '      \n' +
+        '        anotherrepo: repository(name: "another-repo", owner: "mrwolny") {\n' +
+        '          ...issues\n' +
+        '        }\n' +
+        '      \n' +
+        '    }\n';
+
+      expect(mockGraphQLQuery).toHaveBeenCalledTimes(1);
+      expect(mockGraphQLQuery).toHaveBeenCalledWith(
+        getFragment('', 'field: UPDATED_AT, direction: DESC', query),
+      );
+    });
+
+    it('should only fetch data for entities hosted in the github.com if entity does not define location', async () => {
       await api.fetchIssuesByRepoFromGithub(
         [
           entityRepository('mrwolny/yo-yo'),
@@ -158,6 +204,7 @@ describe('githubIssuesApi', () => {
           entityRepository('mrwolny/yo.yo'),
         ],
         10,
+        undefined,
         {
           filterBy: {
             labels: ['bug'],
@@ -259,7 +306,7 @@ describe('githubIssuesApi', () => {
     );
 
     const api = githubIssuesApi(
-      { getAccessToken: jest.fn() },
+      { getCredentials: jest.fn().mockReturnValue({ token: mockToken }) },
       {
         getOptionalConfigArray: jest.fn(),
       } as unknown as ConfigApi,
@@ -329,7 +376,7 @@ describe('githubIssuesApi', () => {
     );
 
     const api = githubIssuesApi(
-      { getAccessToken: jest.fn() },
+      { getCredentials: jest.fn().mockReturnValue({ token: mockToken }) },
       {
         getOptionalConfigArray: jest.fn(),
       } as unknown as ConfigApi,
@@ -370,7 +417,7 @@ describe('githubIssuesApi', () => {
     const mockErrorApi = { post: jest.fn() };
 
     const api = githubIssuesApi(
-      { getAccessToken: jest.fn() },
+      { getCredentials: jest.fn().mockReturnValue({ token: mockToken }) },
       {
         getOptionalConfigArray: jest.fn(),
       } as unknown as ConfigApi,

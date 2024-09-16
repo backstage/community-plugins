@@ -3,6 +3,7 @@
 Welcome to the GitHub Issues plugin!
 
 Based on the [well-known GitHub slug annotation](https://backstage.io/docs/features/software-catalog/well-known-annotations#githubcomproject-slug) associated with the Entity, it renders the list of Open issues in GitHub.
+The plugin will attempt to determine the source code location using the [well-known Source location slug annotation](https://backstage.io/docs/features/software-catalog/well-known-annotations/#backstageiosource-location) associated with the Entity.
 
 The plugin is designed to work with four Entity kinds, and it behaves a bit differently depending on that kind:
 
