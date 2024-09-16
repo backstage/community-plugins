@@ -628,4 +628,40 @@ describe('DefaultJenkinsInfoProvider', () => {
       jobFullName: 'teamA/artistLookup-build',
     });
   });
+
+  it('Override Base URL test invalid regex', async () => {
+    const provider = configureProvider(
+      {
+        jenkins: {
+          instances: [
+            {
+              name: 'other',
+              baseUrl: 'https://jenkins.example.com',
+              username: 'backstage - bot',
+              apiKey: '123456789abcdef0123456789abcedf012',
+              overrideBaseUrlCompatibleRegex: ['(abc'],
+            },
+          ],
+        },
+      },
+      {
+        metadata: {
+          annotations: {
+            'jenkins.io/job-full-name': 'other:teamA/artistLookup-build',
+            'jenkins.io/override-base-url': 'https://jenkinsOverriden.test.com',
+          },
+        },
+      },
+    );
+    const info: JenkinsInfo = await provider.getInstance({ entityRef });
+
+    expect(mockCatalog.getEntityByRef).toHaveBeenCalledWith(
+      entityRef,
+      undefined,
+    );
+    expect(info).toMatchObject({
+      baseUrl: 'https://jenkins.example.com',
+      jobFullName: 'teamA/artistLookup-build',
+    });
+  });
 });

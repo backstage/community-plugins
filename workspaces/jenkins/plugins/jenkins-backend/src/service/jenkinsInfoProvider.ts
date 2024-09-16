@@ -332,7 +332,8 @@ export class DefaultJenkinsInfoProvider implements JenkinsInfoProvider {
           return true;
         }
       } catch (e) {
-        throw new Error(`Invalid regex: ${regexString}`);
+        console.error(`Invalid regex: "${regexString}" - Error: ${e.message}`);
+        return false;
       }
     }
     return false;
