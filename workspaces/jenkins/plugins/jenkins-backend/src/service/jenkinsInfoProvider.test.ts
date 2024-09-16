@@ -445,7 +445,7 @@ describe('DefaultJenkinsInfoProvider', () => {
     });
   });
 
-  it('Override Base URL set to true', async () => {
+  it('Override Base URL to a matching regex', async () => {
     const provider = configureProvider(
       {
         jenkins: {
@@ -455,7 +455,7 @@ describe('DefaultJenkinsInfoProvider', () => {
               baseUrl: 'https://jenkins.example.com',
               username: 'backstage - bot',
               apiKey: '123456789abcdef0123456789abcedf012',
-              overrideBaseUrl: true,
+              overrideBaseUrlCompatibleRegex: ['https://.*.example.com'],
             },
           ],
         },
@@ -482,7 +482,7 @@ describe('DefaultJenkinsInfoProvider', () => {
     });
   });
 
-  it('Override Base URL set to false', async () => {
+  it('Override Base URL to a multiple matching regex', async () => {
     const provider = configureProvider(
       {
         jenkins: {
@@ -492,7 +492,46 @@ describe('DefaultJenkinsInfoProvider', () => {
               baseUrl: 'https://jenkins.example.com',
               username: 'backstage - bot',
               apiKey: '123456789abcdef0123456789abcedf012',
-              overrideBaseUrl: false,
+              overrideBaseUrlCompatibleRegex: [
+                'https://.*.example.com',
+                'https://.*.test.com',
+              ],
+            },
+          ],
+        },
+      },
+      {
+        metadata: {
+          annotations: {
+            'jenkins.io/job-full-name': 'other:teamA/artistLookup-build',
+            'jenkins.io/override-base-url': 'https://jenkinsOverriden.test.com',
+          },
+        },
+      },
+    );
+    const info: JenkinsInfo = await provider.getInstance({ entityRef });
+
+    expect(mockCatalog.getEntityByRef).toHaveBeenCalledWith(
+      entityRef,
+      undefined,
+    );
+    expect(info).toMatchObject({
+      baseUrl: 'https://jenkinsOverriden.test.com',
+      jobFullName: 'teamA/artistLookup-build',
+    });
+  });
+
+  it('Override Base URL set to an empty regex list', async () => {
+    const provider = configureProvider(
+      {
+        jenkins: {
+          instances: [
+            {
+              name: 'other',
+              baseUrl: 'https://jenkins.example.com',
+              username: 'backstage - bot',
+              apiKey: '123456789abcdef0123456789abcedf012',
+              overrideBaseUrlCompatibleRegex: [],
             },
           ],
         },
@@ -519,7 +558,7 @@ describe('DefaultJenkinsInfoProvider', () => {
     });
   });
 
-  it('Override Base URL set to true but no override value given', async () => {
+  it('Override Base URL set to a non matching regex', async () => {
     const provider = configureProvider(
       {
         jenkins: {
@@ -529,7 +568,43 @@ describe('DefaultJenkinsInfoProvider', () => {
               baseUrl: 'https://jenkins.example.com',
               username: 'backstage - bot',
               apiKey: '123456789abcdef0123456789abcedf012',
-              overrideBaseUrl: true,
+              overrideBaseUrlCompatibleRegex: ['https://.*.example.com'],
+            },
+          ],
+        },
+      },
+      {
+        metadata: {
+          annotations: {
+            'jenkins.io/job-full-name': 'other:teamA/artistLookup-build',
+            'jenkins.io/override-base-url': 'https://jenkinsOverriden.test.com',
+          },
+        },
+      },
+    );
+    const info: JenkinsInfo = await provider.getInstance({ entityRef });
+
+    expect(mockCatalog.getEntityByRef).toHaveBeenCalledWith(
+      entityRef,
+      undefined,
+    );
+    expect(info).toMatchObject({
+      baseUrl: 'https://jenkins.example.com',
+      jobFullName: 'teamA/artistLookup-build',
+    });
+  });
+
+  it('Override Base URL set to a list but no override value given', async () => {
+    const provider = configureProvider(
+      {
+        jenkins: {
+          instances: [
+            {
+              name: 'other',
+              baseUrl: 'https://jenkins.example.com',
+              username: 'backstage - bot',
+              apiKey: '123456789abcdef0123456789abcedf012',
+              overrideBaseUrlCompatibleRegex: ['https://.*.test.com'],
             },
           ],
         },

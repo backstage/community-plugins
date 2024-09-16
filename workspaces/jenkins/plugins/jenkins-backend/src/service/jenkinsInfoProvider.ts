@@ -67,9 +67,9 @@ export interface JenkinsInstanceConfig {
    */
   extraRequestHeaders?: Record<string, string>;
   /**
-   * If set to true, default configurations URL will be updated from the annotations value
+   * Set a list of compatible regex strings for the url
    */
-  overrideBaseUrl?: boolean;
+  overrideBaseUrlCompatibleRegex?: string[];
 }
 
 /**
@@ -100,7 +100,9 @@ export class JenkinsConfig {
         apiKey: c.getString('apiKey'),
         extraRequestHeaders: c.getOptional('extraRequestHeaders'),
         crumbIssuer: c.getOptionalBoolean('crumbIssuer'),
-        overrideBaseUrl: c.getOptionalBoolean('overrideBaseUrl'),
+        overrideBaseUrlCompatibleRegex: c.getOptionalStringArray(
+          'overrideBaseUrlCompatibleRegex',
+        ),
       })) || [];
 
     // load unnamed default config
@@ -116,7 +118,9 @@ export class JenkinsConfig {
     const extraRequestHeaders = jenkinsConfig.getOptional<
       JenkinsInstanceConfig['extraRequestHeaders']
     >('extraRequestHeaders');
-    const overrideBaseUrl = jenkinsConfig.getOptionalBoolean('overrideBaseUrl');
+    const overrideBaseUrlCompatibleRegex = jenkinsConfig.getOptionalStringArray(
+      'overrideBaseUrlCompatibleRegex',
+    );
 
     if (hasNamedDefault && (baseUrl || username || apiKey)) {
       throw new Error(
@@ -142,7 +146,7 @@ export class JenkinsConfig {
           apiKey,
           extraRequestHeaders,
           crumbIssuer,
-          overrideBaseUrl,
+          overrideBaseUrlCompatibleRegex,
         },
       ]);
     }
@@ -274,7 +278,14 @@ export class DefaultJenkinsInfoProvider implements JenkinsInfoProvider {
     // override baseURL if config has override set to true
     const overrideUrlValue =
       DefaultJenkinsInfoProvider.getEntityOverrideURL(entity);
-    if (instanceConfig.overrideBaseUrl && overrideUrlValue) {
+    if (
+      instanceConfig.overrideBaseUrlCompatibleRegex &&
+      overrideUrlValue &&
+      DefaultJenkinsInfoProvider.verifyUrlMatchesRegex(
+        overrideUrlValue,
+        instanceConfig.overrideBaseUrlCompatibleRegex,
+      )
+    ) {
       instanceConfig.baseUrl = overrideUrlValue;
     }
 
@@ -311,5 +322,19 @@ export class DefaultJenkinsInfoProvider implements JenkinsInfoProvider {
     return entity.metadata.annotations?.[
       DefaultJenkinsInfoProvider.JENKINS_OVERRIDE_URL
     ];
+  }
+
+  private static verifyUrlMatchesRegex(url: string, regexList: string[]) {
+    for (const regexString of regexList) {
+      try {
+        const regex = new RegExp(regexString);
+        if (regex.test(url)) {
+          return true;
+        }
+      } catch (e) {
+        throw new Error(`Invalid regex: ${regexString}`);
+      }
+    }
+    return false;
   }
 }
