@@ -133,7 +133,7 @@ export interface JenkinsInstanceConfig {
   projectCountLimit?: number;
   // (undocumented)
   username: string;
-  overrideDefaultUrl?: boolean;
+  overrideBaseUrlCompatibleRegex?: string[];
 }
 
 // @public
