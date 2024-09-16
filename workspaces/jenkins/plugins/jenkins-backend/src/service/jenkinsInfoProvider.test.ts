@@ -629,7 +629,7 @@ describe('DefaultJenkinsInfoProvider', () => {
     });
   });
 
-  it('Override Base URL test invalid regex', async () => {
+  it('Override Base URL test invalid regex skip', async () => {
     const provider = configureProvider(
       {
         jenkins: {
@@ -639,7 +639,7 @@ describe('DefaultJenkinsInfoProvider', () => {
               baseUrl: 'https://jenkins.example.com',
               username: 'backstage - bot',
               apiKey: '123456789abcdef0123456789abcedf012',
-              overrideBaseUrlCompatibleRegex: ['(abc'],
+              overrideBaseUrlCompatibleRegex: ['(abc', 'https://.*.test.com'],
             },
           ],
         },
@@ -660,7 +660,7 @@ describe('DefaultJenkinsInfoProvider', () => {
       undefined,
     );
     expect(info).toMatchObject({
-      baseUrl: 'https://jenkins.example.com',
+      baseUrl: 'https://jenkinsOverriden.test.com',
       jobFullName: 'teamA/artistLookup-build',
     });
   });
