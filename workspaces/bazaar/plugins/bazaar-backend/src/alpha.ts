@@ -30,19 +30,19 @@ export default createBackendPlugin({
   register(env) {
     env.registerInit({
       deps: {
-        config: coreServices.rootConfig,
         database: coreServices.database,
-        identity: coreServices.identity,
         logger: coreServices.logger,
         httpRouter: coreServices.httpRouter,
+        auth: coreServices.auth,
+        httpAuth: coreServices.httpAuth,
       },
-      async init({ database, config, identity, logger, httpRouter }) {
+      async init({ database, logger, httpRouter, auth, httpAuth }) {
         httpRouter.use(
           await createRouter({
             database,
-            config,
-            identity,
             logger,
+            auth,
+            httpAuth,
           }),
         );
       },
