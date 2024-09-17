@@ -42,10 +42,12 @@ backend.add(import('@backstage/plugin-search-backend-module-techdocs/alpha'));
 
 backend.add(
   import(
-    '@internal/backstage-plugin-catalog-backend-module-mta-entity-provider'
+    '@backstage-community/backstage-plugin-catalog-backend-module-mta-entity-provider'
   ),
 );
-backend.add(import('@internal/backstage-plugin-scaffolder-backend-module-mta'));
-backend.add(import('@internal/backstage-plugin-mta-backend'));
+backend.add(
+  import('@backstage-community/backstage-plugin-scaffolder-backend-module-mta'),
+);
+backend.add(import('@backstage-community/backstage-plugin-mta-backend'));
 
 backend.start();

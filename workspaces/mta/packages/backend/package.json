@@ -16,6 +16,9 @@
     "build-image": "docker build ../.. -f Dockerfile --tag backstage"
   },
   "dependencies": {
+    "@backstage-community/backstage-plugin-catalog-backend-module-mta-entity-provider": "^0.1.0",
+    "@backstage-community/backstage-plugin-mta-backend": "^0.1.0",
+    "@backstage-community/backstage-plugin-scaffolder-backend-module-mta": "workspace:^",
     "@backstage/backend-common": "^0.21.7",
     "@backstage/backend-defaults": "^0.3.3",
     "@backstage/backend-dynamic-feature-service": "^0.2.15",
@@ -39,9 +42,6 @@
     "@backstage/plugin-search-backend-module-techdocs": "^0.1.22",
     "@backstage/plugin-search-backend-node": "^1.2.21",
     "@backstage/plugin-techdocs-backend": "^1.10.4",
-    "@internal/backstage-plugin-catalog-backend-module-mta-entity-provider": "^0.1.0",
-    "@internal/backstage-plugin-mta-backend": "^0.1.0",
-    "@internal/backstage-plugin-scaffolder-backend-module-mta": "workspace:^",
     "app": "link:../app",
     "better-sqlite3": "^9.0.0",
     "dockerode": "^3.3.1",

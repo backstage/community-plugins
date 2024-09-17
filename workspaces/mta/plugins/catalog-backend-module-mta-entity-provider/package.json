@@ -1,5 +1,5 @@
 {
-  "name": "@internal/backstage-plugin-catalog-backend-module-mta-entity-provider",
+  "name": "@backstage-community/backstage-plugin-catalog-backend-module-mta-entity-provider",
   "description": "The mta-entity-provider backend module for the catalog plugin.",
   "version": "0.1.0",
   "main": "src/index.ts",

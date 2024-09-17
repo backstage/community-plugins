@@ -23,7 +23,7 @@ const isDevelopment = process.env.NODE_ENV === 'development';
 
 // Determine the plugin root directory based on environment
 const pluginRoot = isDevelopment
-  ? resolvePackagePath('@internal/backstage-plugin-mta-backend')
+  ? resolvePackagePath('@backstage-community/backstage-plugin-mta-backend')
   : process.env.PLUGIN_ROOT || defaultPluginRoot;
 
 console.log('Resolving path for migrations...');

@@ -1,5 +1,5 @@
 {
-  "name": "@internal/backstage-plugin-scaffolder-backend-module-mta",
+  "name": "@backstage-community/backstage-plugin-scaffolder-backend-module-mta",
   "description": "The mta module for @backstage/plugin-scaffolder-backend",
   "version": "0.1.0",
   "main": "src/index.ts",
