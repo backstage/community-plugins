@@ -116,7 +116,7 @@ describe('githubIssuesApi', () => {
 
     beforeEach(() => {
       api = githubIssuesApi(
-        { getCredentials: jest.fn().mockReturnValue({ token: mockToken }) },
+        { getCredentials: jest.fn().mockResolvedValue({ token: mockToken }) },
         {
           getOptionalConfigArray: jest.fn(),
         } as unknown as ConfigApi,
@@ -306,7 +306,7 @@ describe('githubIssuesApi', () => {
     );
 
     const api = githubIssuesApi(
-      { getCredentials: jest.fn().mockReturnValue({ token: mockToken }) },
+      { getCredentials: jest.fn().mockResolvedValue({ token: mockToken }) },
       {
         getOptionalConfigArray: jest.fn(),
       } as unknown as ConfigApi,
@@ -376,7 +376,7 @@ describe('githubIssuesApi', () => {
     );
 
     const api = githubIssuesApi(
-      { getCredentials: jest.fn().mockReturnValue({ token: mockToken }) },
+      { getCredentials: jest.fn().mockResolvedValue({ token: mockToken }) },
       {
         getOptionalConfigArray: jest.fn(),
       } as unknown as ConfigApi,
@@ -417,7 +417,7 @@ describe('githubIssuesApi', () => {
     const mockErrorApi = { post: jest.fn() };
 
     const api = githubIssuesApi(
-      { getCredentials: jest.fn().mockReturnValue({ token: mockToken }) },
+      { getCredentials: jest.fn().mockResolvedValue({ token: mockToken }) },
       {
         getOptionalConfigArray: jest.fn(),
       } as unknown as ConfigApi,
