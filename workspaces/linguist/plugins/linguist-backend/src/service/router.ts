@@ -38,7 +38,10 @@ import {
 } from '@backstage/backend-plugin-api';
 import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 
-/** @public */
+/**
+ * @deprecated Please migrate to the new backend system as this will be removed in the future.
+ * @public
+ * */
 export interface PluginOptions {
   schedule?: SchedulerServiceTaskScheduleDefinition;
   age?: HumanDuration;
@@ -48,7 +51,10 @@ export interface PluginOptions {
   kind?: string[];
 }
 
-/** @public */
+/**
+ * @deprecated Please migrate to the new backend system as this will be removed in the future.
+ * @public
+ * */
 export interface RouterOptions {
   linguistBackendApi?: LinguistBackendApi;
   logger: LoggerService;
@@ -61,7 +67,10 @@ export interface RouterOptions {
   httpAuth?: HttpAuthService;
 }
 
-/** @public */
+/**
+ * @deprecated Please migrate to the new backend system as this will be removed in the future.
+ * @public
+ * */
 export async function createRouter(
   pluginOptions: PluginOptions,
   routerOptions: RouterOptions,
@@ -149,7 +158,10 @@ export async function createRouter(
   return router;
 }
 
-/** @public */
+/**
+ * @deprecated Please migrate to the new backend system as this will be removed in the future.
+ * @public
+ * */
 export async function createRouterFromConfig(routerOptions: RouterOptions) {
   const { config } = routerOptions;
   const pluginOptions: PluginOptions = {};
