@@ -10,6 +10,8 @@ import {
   getInstanceName,
   getProjectName,
   getUniqueRevisions,
+  getResourceCreateTimestamp,
+  sortValues,
 } from '../utils';
 
 describe('Utils', () => {
@@ -263,6 +265,172 @@ describe('Utils', () => {
         projectName: 'project-name',
         url: '/argocd/api',
       });
+    });
+  });
+
+  describe('getResourceCreateTimestamp', () => {
+    const argoResources = {
+      pods: [],
+      replicasets: [],
+      rollouts: [],
+      analysisruns: [],
+      deployments: [
+        {
+          metadata: {
+            name: 'quarkus-app',
+            namespace: 'openshift-gitops',
+            creationTimestamp: '2024-09-01T12:00:00Z',
+          },
+        },
+        {
+          metadata: {
+            name: 'another-app',
+            namespace: 'another-namespace',
+            creationTimestamp: '2024-09-02T12:00:00Z',
+          },
+        },
+      ],
+    };
+
+    const targetResource = {
+      version: 'v1',
+      kind: 'Deployment',
+      namespace: 'openshift-gitops',
+      name: 'quarkus-app',
+      status: 'Synced',
+      health: { status: 'Healthy' },
+    };
+
+    it('should return the correct creation timestamp when the resource is found', () => {
+      const timestamp = getResourceCreateTimestamp(
+        argoResources,
+        targetResource,
+      );
+      expect(timestamp).toBe('2024-09-01T12:00:00Z');
+    });
+
+    it('should return null if the resource kind is not found in argoResources', () => {
+      const noKindResources = {
+        ...argoResources,
+        services: [], // No services
+      };
+
+      const serviceTarget = {
+        version: 'v1',
+        kind: 'Service',
+        namespace: 'openshift-gitops',
+        name: 'my-service',
+        status: 'Synced',
+        health: { status: 'Healthy' },
+      };
+
+      const timestamp = getResourceCreateTimestamp(
+        noKindResources,
+        serviceTarget,
+      );
+      expect(timestamp).toBeNull();
+    });
+
+    it('should return null if the resource is not found within the kind', () => {
+      const notFoundResource = {
+        version: 'v1',
+        kind: 'Deployment',
+        namespace: 'openshift-gitops',
+        name: 'non-existent-app',
+        status: 'Synced',
+        health: { status: 'Healthy' },
+      };
+
+      const timestamp = getResourceCreateTimestamp(
+        argoResources,
+        notFoundResource,
+      );
+      expect(timestamp).toBeNull();
+    });
+
+    it('should return null if resource metadata is missing a creationTimestamp', () => {
+      const missingTimestampResources = {
+        pods: [],
+        replicasets: [],
+        rollouts: [],
+        analysisruns: [],
+        deployments: [
+          {
+            metadata: {
+              name: 'quarkus-app',
+              namespace: 'openshift-gitops',
+            },
+          },
+        ],
+      };
+
+      const timestamp = getResourceCreateTimestamp(
+        missingTimestampResources,
+        targetResource,
+      );
+      expect(timestamp).toBeNull();
+    });
+  });
+
+  describe('sortValues', () => {
+    it('should return 0 if either value is undefined', () => {
+      expect(sortValues(undefined, 1, 'asc')).toBe(0);
+      expect(sortValues(1, undefined, 'asc')).toBe(0);
+      expect(sortValues(undefined, undefined, 'asc')).toBe(0);
+    });
+
+    it('should sort date values correctly in ascending order', () => {
+      expect(
+        sortValues('2024-08-28T04:00:39Z', '2023-08-28T04:00:39Z', 'asc'),
+      ).toBeGreaterThan(0);
+      expect(
+        sortValues('2024-07-28T04:00:39Z', '2024-08-28T04:00:39Z', 'asc'),
+      ).toBeLessThan(0);
+      expect(
+        sortValues('2024-08-28T04:00:39Z', '2024-08-28T04:00:39Z', 'asc'),
+      ).toBe(0);
+    });
+
+    it('should sort date values correctly in descending order', () => {
+      expect(
+        sortValues('2024-08-28T04:00:39Z', '2024-08-22T04:00:39Z', 'desc'),
+      ).toBeLessThan(0);
+      expect(
+        sortValues('2023-08-28T04:00:39Z', '2024-08-28T04:00:39Z', 'desc'),
+      ).toBeGreaterThan(0);
+      expect(
+        sortValues('2024-08-28T04:00:39Z', '2024-08-28T04:00:39Z', 'desc'),
+      ).toBe(0);
+    });
+
+    it('should sort numeric values correctly in ascending order', () => {
+      expect(sortValues(10, 5, 'asc')).toBeGreaterThan(0);
+      expect(sortValues(5, 10, 'asc')).toBeLessThan(0);
+      expect(sortValues(10, 10, 'asc')).toBe(0);
+    });
+
+    it('should sort numeric values correctly in descending order', () => {
+      expect(sortValues(10, 5, 'desc')).toBeLessThan(0);
+      expect(sortValues(5, 10, 'desc')).toBeGreaterThan(0);
+      expect(sortValues(10, 10, 'desc')).toBe(0);
+    });
+
+    it('should sort string values correctly in ascending order', () => {
+      expect(sortValues('deployment', 'service', 'asc')).toBeLessThan(0);
+      expect(sortValues('healthy', 'degraded', 'asc')).toBeGreaterThan(0);
+      expect(sortValues('quarkus-app', 'quarkus-app', 'asc')).toBe(0);
+    });
+
+    it('should sort string values correctly in descending order', () => {
+      expect(sortValues('deployment', 'service', 'desc')).toBeGreaterThan(0);
+      expect(sortValues('healthy', 'degraded', 'desc')).toBeLessThan(0);
+      expect(sortValues('quarkus-app', 'quarkus-app', 'desc')).toBe(0);
+    });
+
+    it('should return 0 if values are of unsupported types', () => {
+      expect(sortValues({}, {}, 'asc')).toBe(0);
+      expect(sortValues([], [], 'asc')).toBe(0);
+      expect(sortValues(null, null, 'asc')).toBe(0);
     });
   });
 });

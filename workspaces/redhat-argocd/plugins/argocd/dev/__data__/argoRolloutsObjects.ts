@@ -1151,6 +1151,7 @@ export const mockArgoResources: ArgoResources = {
           'app.kubernetes.io/instance': 'quarkus-app',
         },
         name: 'canary-rollout-analysis',
+        namespace: 'openshift-gitops',
         uid: '96e8224d-d24b-4efa-bc7a-00907ad0e759',
       },
       spec: {
@@ -1255,6 +1256,7 @@ export const mockArgoResources: ArgoResources = {
           'app.kubernetes.io/instance': 'quarkus-app',
         },
         name: 'rollout-bluegreen',
+        namespace: 'openshift-gitops',
         uid: 'ced6c8ca-389e-4a90-9815-156d23d3a323',
       },
       spec: {
@@ -1354,6 +1356,63 @@ export const mockArgoResources: ArgoResources = {
           'app=rollout-bluegreen,app.kubernetes.io/instance=quarkus-app,rollouts-pod-template-hash=7479659dfb',
         stableRS: '7479659dfb',
         updatedReplicas: 2,
+      },
+    },
+  ],
+  services: [
+    {
+      metadata: {
+        name: 'quarkus-app',
+        namespace: 'openshift-gitops',
+        uid: 'c7c654a2-634c-49ed-8721-1f16430460f1',
+        resourceVersion: '177236',
+        creationTimestamp: '2024-09-17T08:49:24Z',
+        labels: {
+          'app.kubernetes.io/instance': 'quarkus-app',
+          'app.kubernetes.io/managed-by': 'Helm',
+          'app.kubernetes.io/name': 'quarkus-app',
+          'app.openshift.io/runtime': 'quarkus',
+          'backstage.io/kubernetes-id': 'test-app',
+          'helm.sh/chart': 'quarkus',
+        },
+        managedFields: [
+          {
+            manager: 'argocd-controller',
+            operation: 'Update',
+            apiVersion: 'v1',
+            time: '2024-09-17T08:49:24Z',
+          },
+          {
+            manager: 'Mozilla',
+            operation: 'Update',
+            apiVersion: 'v1',
+            time: '2024-09-17T09:20:40Z',
+          },
+        ],
+      },
+      spec: {
+        ports: [
+          {
+            name: 'http',
+            protocol: 'TCP',
+            port: 8080,
+            targetPort: 8080,
+          },
+        ],
+        selector: {
+          'app.kubernetes.io/instance': 'quarkus-app',
+          'app.kubernetes.io/name': 'quarkus-app',
+        },
+        clusterIP: '172.30.232.66',
+        clusterIPs: ['172.30.232.66'],
+        type: 'ClusterIP',
+        sessionAffinity: 'None',
+        ipFamilies: ['IPv4'],
+        ipFamilyPolicy: 'SingleStack',
+        internalTrafficPolicy: 'Cluster',
+      },
+      status: {
+        loadBalancer: {},
       },
     },
   ],

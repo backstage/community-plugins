@@ -53,7 +53,7 @@ describe('ResourcesTableHeader Component', () => {
       fireEvent.click(sortLabel);
       expect(onRequestSortMock).toHaveBeenCalledWith(
         expect.any(Object),
-        'Name',
+        'name',
         '0',
       );
     } else {
