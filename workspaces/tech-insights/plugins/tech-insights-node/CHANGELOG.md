@@ -1,5 +1,13 @@
 # @backstage-community/plugin-tech-insights-node
 
+## 0.6.7
+
+### Patch Changes
+
+- 1d33996: Added links property for checks, to allow the UI to render links for users to click and get more information about individual checks, what they mean, how to adhere to them, etc.
+- Updated dependencies [1d33996]
+  - @backstage-community/plugin-tech-insights-common@0.2.18
+
 ## 0.6.6
 
 ### Patch Changes
