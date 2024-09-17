@@ -1,5 +1,11 @@
 # @backstage-community/plugin-linguist-backend
 
+## 0.6.1
+
+### Patch Changes
+
+- 932d9e6: Marked `createRouter`, `createRouterFromConfig`, `RouterOptions`, and `PluginOptions` as deprecated, to be removed soon after the Backstage `1.32.0` release in October
+
 ## 0.6.0
 
 ### Minor Changes
