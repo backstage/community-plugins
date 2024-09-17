@@ -22,6 +22,9 @@ import {
   BD_PROJECTS_API_RESPONSE,
 } from '@backstage-community/plugin-blackduck-common';
 
+/**
+ * @public
+ */
 export class BlackDuckRestApi {
   private _bearer: string;
   private _limit: number;
@@ -165,5 +168,42 @@ export class BlackDuckRestApi {
       `Fetched Project : ${projectName}, Version: ${projectVersion} risk profile`,
     );
     return risk_profile.json();
+  }
+
+  public async createProject(
+    projectName: string,
+    projectVersion?: string,
+    phase: string = 'DEVELOPMENT',
+    distribution: string = 'INTERNAL',
+  ): Promise<any> {
+    const create_project_api = `${this.host}/projects`;
+    const payload: any = {};
+    payload.name = projectName;
+    if (projectVersion) {
+      payload.versionRequest = {
+        versionName: projectVersion,
+        phase: phase,
+        distribution: distribution,
+      };
+    }
+    this.logger.info(`Project ${JSON.stringify(payload)}`);
+
+    const res = await fetch(create_project_api, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${this._bearer}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      const body = await res.json();
+      this.logger.error(`Status Code: ${res.status}`);
+      this.logger.error(`Error Message ${JSON.stringify(body.errorMessage)}`);
+      throw new Error(`Unable to create project!`);
+    }
+
+    return res;
   }
 }
