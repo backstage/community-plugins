@@ -20,6 +20,16 @@ import { JsonValue } from '@backstage/types';
 /**
  * @public
  *
+ * Response type for check links.
+ */
+export type CheckLink = {
+  title: string;
+  url: string;
+};
+
+/**
+ * @public
+ *
  * Response type for checks.
  */
 export interface CheckResponse {
@@ -54,6 +64,12 @@ export interface CheckResponse {
    * Currently loosely typed, but in the future when patterns emerge, key shapes can be defined
    */
   metadata?: Record<string, any>;
+
+  /**
+   * An array of links to display for the check, for users to be able to read
+   * more about the check.
+   */
+  links?: CheckLink[];
 }
 
 /**

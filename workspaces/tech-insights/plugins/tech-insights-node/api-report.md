@@ -4,6 +4,7 @@
 
 ```ts
 import { AuthService } from '@backstage/backend-plugin-api';
+import { CheckLink } from '@backstage-community/plugin-tech-insights-common';
 import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
 import { CompoundEntityRef } from '@backstage/catalog-model';
 import { Config } from '@backstage/config';
@@ -121,6 +122,7 @@ export interface TechInsightCheck {
   factIds: string[];
   failureMetadata?: Record<string, any>;
   id: string;
+  links?: CheckLink[];
   name: string;
   successMetadata?: Record<string, any>;
   type: string;

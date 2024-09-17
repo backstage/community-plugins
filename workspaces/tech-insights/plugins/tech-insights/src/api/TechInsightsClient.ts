@@ -17,12 +17,16 @@
 import { TechInsightsApi } from './TechInsightsApi';
 import { DiscoveryApi, IdentityApi } from '@backstage/core-plugin-api';
 import { TechInsightsClient as TechInsightsClientBase } from '@backstage-community/plugin-tech-insights-common/client';
-import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
+import {
+  CheckLink,
+  CheckResult,
+} from '@backstage-community/plugin-tech-insights-common';
 
 import {
   CheckResultRenderer,
   jsonRulesEngineCheckResultRenderer,
 } from '../components/CheckResultRenderer';
+import { Entity } from '@backstage/catalog-model';
 
 /** @public */
 export class TechInsightsClient
@@ -30,14 +34,20 @@ export class TechInsightsClient
   implements TechInsightsApi
 {
   private readonly renderers?: CheckResultRenderer[];
+  private readonly customGetEntityLinks: (
+    result: CheckResult,
+    entity: Entity,
+  ) => CheckLink[];
 
   constructor(options: {
     discoveryApi: DiscoveryApi;
     identityApi: IdentityApi;
     renderers?: CheckResultRenderer[];
+    getEntityLinks?: (result: CheckResult, entity: Entity) => CheckLink[];
   }) {
     super(options);
     this.renderers = options.renderers;
+    this.customGetEntityLinks = options.getEntityLinks ?? (() => []);
   }
 
   getCheckResultRenderers(types: string[]): CheckResultRenderer[] {
@@ -53,5 +63,17 @@ export class TechInsightsClient
       return checkResultRenderers[0].isFailed(check);
     }
     return true;
+  }
+
+  getLinksForEntity(
+    result: CheckResult,
+    entity: Entity,
+    options: { includeStaticLinks?: boolean } = {},
+  ): CheckLink[] {
+    const links = this.customGetEntityLinks(result, entity);
+    if (options.includeStaticLinks) {
+      links.push(...(result.check.links ?? []));
+    }
+    return links;
   }
 }
