@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import { buildTechInsightsContext } from './techInsightsContextBuilder';
 import { createRouter } from './router';
-import { ServerTokenManager } from '@backstage/backend-common';
 import { ConfigReader } from '@backstage/config';
 import request from 'supertest';
 import express from 'express';
@@ -75,7 +75,7 @@ describe('Tech Insights router tests', () => {
         getBaseUrl: (_: string) => Promise.resolve('http://mock.url'),
         getExternalBaseUrl: (_: string) => Promise.resolve('http://mock.url'),
       },
-      tokenManager: ServerTokenManager.noop(),
+      auth: mockServices.auth(),
     });
 
     const router = await createRouter({

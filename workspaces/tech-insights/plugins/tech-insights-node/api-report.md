@@ -17,7 +17,6 @@ import { FactSchema } from '@backstage-community/plugin-tech-insights-common';
 import { HumanDuration } from '@backstage/types';
 import { JsonValue } from '@backstage/types';
 import { LoggerService } from '@backstage/backend-plugin-api';
-import { TokenManager } from '@backstage/backend-common';
 
 // @public
 export type CheckValidationResponse = {
@@ -68,7 +67,6 @@ export type FactRetrieverContext = {
   config: Config;
   discovery: DiscoveryService;
   logger: LoggerService;
-  tokenManager: TokenManager;
   auth: AuthService;
   entityFilter?:
     | Record<string, string | symbol | (string | symbol)[]>[]
