@@ -114,9 +114,18 @@ export const githubIssuesApi = (
   configApi: ConfigApi,
   errorApi: ErrorApi,
 ) => {
-  const getOctokit = async (hostname: string = 'github.com') => {
+  const getOctokit = async (hostname: string | undefined = undefined) => {
+    const configs = readGithubIntegrationConfigs(
+      configApi.getOptionalConfigArray('integrations.github') ?? [],
+    );
+
+    const githubIntegrationConfig = hostname
+      ? configs.find(v => v.host === hostname)
+      : configs[0];
+
+    const host = githubIntegrationConfig?.host;
     const { token } = await scmAuthApi.getCredentials({
-      url: `https://${hostname}/`,
+      url: `https://${host}/`,
       additionalScope: {
         customScopes: {
           github: ['repo'],
@@ -124,13 +133,8 @@ export const githubIssuesApi = (
       },
     });
 
-    const configs = readGithubIntegrationConfigs(
-      configApi.getOptionalConfigArray('integrations.github') ?? [],
-    );
-
-    const githubIntegrationConfig = configs.find(v => v.host === hostname);
     const baseUrl = githubIntegrationConfig?.apiBaseUrl;
-    return new Octokit({ auth: token, baseUrl });
+    return { octokit: new Octokit({ auth: token, baseUrl }), host };
   };
 
   const fetchIssuesByRepoFromGithub = async (
@@ -145,9 +149,7 @@ export const githubIssuesApi = (
       },
     }: GithubIssuesByRepoOptions = {},
   ): Promise<IssuesByRepo> => {
-    const host = hostname || 'github.com';
-    const octokit = await getOctokit(host);
-
+    const { octokit, host } = await getOctokit(hostname);
     const safeNames: Array<string> = [];
     const repositories = repos
       // only tries to fetch issues from repositories that are hosted on the same GitHub instance as the octokit

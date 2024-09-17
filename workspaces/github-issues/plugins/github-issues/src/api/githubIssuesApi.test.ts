@@ -42,21 +42,6 @@ function entityRepository(
 function getFragment(
   filterBy = '',
   orderBy = 'field: UPDATED_AT, direction: DESC',
-  query = '    query {\n' +
-    '      \n' +
-    '        yoyo: repository(name: "yo-yo", owner: "mrwolny") {\n' +
-    '          ...issues\n' +
-    '        }\n' +
-    '      ,\n' +
-    '        yoyox: repository(name: "yoyo", owner: "mrwolny") {\n' +
-    '          ...issues\n' +
-    '        }\n' +
-    '      ,\n' +
-    '        yoyoxx: repository(name: "yo.yo", owner: "mrwolny") {\n' +
-    '          ...issues\n' +
-    '        }\n' +
-    '      \n' +
-    '    }\n',
 ) {
   return (
     '\n' +
@@ -101,7 +86,21 @@ function getFragment(
     '    }\n' +
     '  \n' +
     '\n' +
-    `${query}` +
+    '    query {\n' +
+    '      \n' +
+    '        yoyo: repository(name: "yo-yo", owner: "mrwolny") {\n' +
+    '          ...issues\n' +
+    '        }\n' +
+    '      ,\n' +
+    '        yoyox: repository(name: "yoyo", owner: "mrwolny") {\n' +
+    '          ...issues\n' +
+    '        }\n' +
+    '      ,\n' +
+    '        yoyoxx: repository(name: "yo.yo", owner: "mrwolny") {\n' +
+    '          ...issues\n' +
+    '        }\n' +
+    '      \n' +
+    '    }\n' +
     '  '
   );
 }
@@ -147,14 +146,14 @@ describe('githubIssuesApi', () => {
           entityRepository('mrwolny/another-repo', 'enterprise.github.com'), // This one should be filtered out
         ],
         10,
-        'github.com',
+        'github.com', // entity location
       );
 
       expect(mockGraphQLQuery).toHaveBeenCalledTimes(1);
       expect(mockGraphQLQuery).toHaveBeenCalledWith(getFragment());
     });
 
-    it('should only fetch data for entities hosted in the same GitHub instance as is entity location that differs from github.com', async () => {
+    it("should only fetch data for entities hosted in the same GitHub instance as the plugin's first config", async () => {
       await api.fetchIssuesByRepoFromGithub(
         [
           entityRepository('mrwolny/yo-yo'),
@@ -163,33 +162,7 @@ describe('githubIssuesApi', () => {
           entityRepository('mrwolny/another-repo', 'enterprise.github.com'), // This one should be filtered out
         ],
         10,
-        'enterprise.github.com',
-      );
-
-      const query =
-        '    query {\n' +
-        '      \n' +
-        '        anotherrepo: repository(name: "another-repo", owner: "mrwolny") {\n' +
-        '          ...issues\n' +
-        '        }\n' +
-        '      \n' +
-        '    }\n';
-
-      expect(mockGraphQLQuery).toHaveBeenCalledTimes(1);
-      expect(mockGraphQLQuery).toHaveBeenCalledWith(
-        getFragment('', 'field: UPDATED_AT, direction: DESC', query),
-      );
-    });
-
-    it('should only fetch data for entities hosted in the github.com if entity does not define location', async () => {
-      await api.fetchIssuesByRepoFromGithub(
-        [
-          entityRepository('mrwolny/yo-yo'),
-          entityRepository('mrwolny/yoyo'),
-          entityRepository('mrwolny/yo.yo'),
-          entityRepository('mrwolny/another-repo', 'enterprise.github.com'), // This one should be filtered out
-        ],
-        10,
+        undefined,
       );
 
       expect(mockGraphQLQuery).toHaveBeenCalledTimes(1);
@@ -204,7 +177,7 @@ describe('githubIssuesApi', () => {
           entityRepository('mrwolny/yo.yo'),
         ],
         10,
-        undefined,
+        'github.com',
         {
           filterBy: {
             labels: ['bug'],
