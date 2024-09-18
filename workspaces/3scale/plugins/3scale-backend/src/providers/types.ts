@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { TaskScheduleDefinition } from '@backstage/backend-tasks';
+
+import { SchedulerServiceTaskScheduleDefinition } from '@backstage/backend-plugin-api';
 
 export type ThreeScaleConfig = {
   id: string;
@@ -22,5 +23,5 @@ export type ThreeScaleConfig = {
   systemLabel?: string;
   ownerLabel?: string;
   addLabels?: boolean;
-  schedule?: TaskScheduleDefinition;
+  schedule?: SchedulerServiceTaskScheduleDefinition;
 };
