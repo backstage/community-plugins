@@ -15,9 +15,9 @@
  */
 
 import React, {
-  ComponentProps,
-  ComponentType,
+  ElementType,
   MouseEventHandler,
+  PropsWithChildren,
   ReactNode,
   useState,
 } from 'react';
@@ -26,7 +26,6 @@ import { useApi } from '@backstage/core-plugin-api';
 import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
 import { Entity } from '@backstage/catalog-model';
 
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import IconButton from '@material-ui/core/IconButton';
 import Alert from '@material-ui/lab/Alert';
 
@@ -35,8 +34,8 @@ import { CheckResultRenderer } from '../CheckResultRenderer';
 import { ResultLinksMenu, ResultLinksMenuInfo } from '../ResultLinksMenu';
 
 /** @public */
-export type ResultCheckIconBaseComponent = ComponentType<{
-  onClick?: MouseEventHandler | undefined;
+export type ResultCheckIconBaseComponentProps = PropsWithChildren<{
+  onClick?: MouseEventHandler;
 }>;
 
 /**
@@ -48,7 +47,9 @@ export type ResultCheckIconBaseComponent = ComponentType<{
  *
  * @public
  */
-export interface ResultCheckIconProps<C extends ResultCheckIconBaseComponent> {
+export interface ResultCheckIconProps<
+  P extends ResultCheckIconBaseComponentProps,
+> {
   /**
    * The CheckResult object to create an icon for
    */
@@ -68,22 +69,20 @@ export interface ResultCheckIconProps<C extends ResultCheckIconBaseComponent> {
    */
   disableLinksMenu?: boolean;
   /**
-   * By default, the icon (and the parent `IconButton`) is wrapped inside a
-   * `ListItemSecondaryAction` which handles the `onClick` to open the popup
-   * menu.
-   *
-   * This can be changed by providing a custom component here.
+   * The icon is rendered with an `IconButton` which handles the onClick.
+   * To wrap this in another component, handling the onClick, pass a component,
+   * such as `ListItemSecondaryAction` which handles the `onClick` to open the
+   * popup menu.
    *
    * The {@link ResultCheckIconProps.componentProps} prop can be specified to
    * add props to the wrapping component.
    */
-  component?: C;
+  component?: ElementType<P>;
   /**
-   * Props to provide to the wrapping component, which by default is a
-   * `ListItemSecondaryAction` but can be overridden using
+   * Props to provide to the wrapping component
    * {@link ResultCheckIconProps.component}.
    */
-  componentProps?: Omit<ComponentProps<C>, 'onClick'>;
+  componentProps?: Omit<P, 'onClick' | 'children'>;
   /**
    * Override the component used to display instead of a result icon, when no
    * renderer was found for this check type.
@@ -91,20 +90,17 @@ export interface ResultCheckIconProps<C extends ResultCheckIconBaseComponent> {
   missingRendererComponent?: ReactNode;
 }
 
-export const ResultCheckIcon = <
-  C extends ResultCheckIconBaseComponent = typeof ListItemSecondaryAction,
->(
-  props: ResultCheckIconProps<C>,
+export const ResultCheckIcon = <P extends ResultCheckIconBaseComponentProps>(
+  props: ResultCheckIconProps<P>,
 ) => {
   const {
     result,
     entity,
     disableLinksMenu,
+    component,
     componentProps,
     missingRendererComponent = <Alert severity="error">Unknown type.</Alert>,
   } = props;
-
-  const Component = props.component ?? ListItemSecondaryAction;
 
   const api = useApi(techInsightsApiRef);
 
@@ -116,19 +112,35 @@ export const ResultCheckIcon = <
 
   const iconComponent = checkResultRenderer?.component(result);
 
-  const wrapActions = (component: React.ReactElement): ReactNode => {
+  const onClick: MouseEventHandler = event => {
+    menu?.open(event.currentTarget);
+  };
+
+  const wrapActions = (inner: React.ReactElement): ReactNode => {
     if (!menu) {
-      return component;
+      if (component) {
+        const Component =
+          component as ElementType<ResultCheckIconBaseComponentProps>;
+        return <Component {...componentProps}>{inner}</Component>;
+      }
+      return inner;
+    }
+
+    if (component) {
+      const Component =
+        component as ElementType<ResultCheckIconBaseComponentProps>;
+      return (
+        <Component {...componentProps} onClick={onClick}>
+          <IconButton edge="end" aria-label="icon">
+            {inner}
+          </IconButton>
+        </Component>
+      );
     }
     return (
-      <Component
-        {...componentProps}
-        onClick={event => menu?.open(event.currentTarget)}
-      >
-        <IconButton edge="end" aria-label="comments">
-          {component}
-        </IconButton>
-      </Component>
+      <IconButton edge="end" aria-label="icon" onClick={onClick}>
+        {inner}
+      </IconButton>
     );
   };
 

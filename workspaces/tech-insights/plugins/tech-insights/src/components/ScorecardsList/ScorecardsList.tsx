@@ -18,6 +18,7 @@ import React from 'react';
 import { useApi } from '@backstage/core-plugin-api';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import { makeStyles } from '@material-ui/core/styles';
 import { techInsightsApiRef } from '../../api';
@@ -70,6 +71,7 @@ export const ScorecardsList = (props: {
             <ResultCheckIcon
               result={result}
               entity={entity}
+              component={ListItemSecondaryAction}
               checkResultRenderer={checkResultRenderer}
             />
           </ListItem>
