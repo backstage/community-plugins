@@ -6,7 +6,7 @@ createDevApp()
   .registerPlugin(shorturlPlugin)
   .addPage({
     element: <ShortURLPage />,
-    title: 'Root Page',
+    title: 'ShortURL',
     path: '/shorturl',
   })
   .addPage({

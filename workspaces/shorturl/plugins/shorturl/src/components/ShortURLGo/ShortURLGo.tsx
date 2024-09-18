@@ -37,7 +37,7 @@ export const ShortURLGo = () => {
               return null;
             },
           );
-          if (response.ok) {
+          if (response.status === 'ok') {
             window.location.href = response.redirectUrl;
           } else {
             alertApi.post({

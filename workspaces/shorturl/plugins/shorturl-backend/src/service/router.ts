@@ -76,7 +76,9 @@ export async function createRouter(
     try {
       const urlResponse = await db.getUrlById({ shortId });
       if (urlResponse && urlResponse?.fullUrl) {
-        response.status(200).json({ status: 'ok', redirectUrl: urlResponse });
+        response
+          .status(200)
+          .json({ status: 'ok', redirectUrl: urlResponse.fullUrl });
       } else {
         response
           .status(500)
