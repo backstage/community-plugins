@@ -1,16 +1,21 @@
 import React, { useEffect } from 'react';
-import { CircularProgress } from '@material-ui/core';
+import { Box } from '@material-ui/core';
 import {
   useApi,
   fetchApiRef,
   discoveryApiRef,
   identityApiRef,
-  alertApiRef,
 } from '@backstage/core-plugin-api';
 import { DefaultShortURLApi } from '../../api';
+import {
+  BottomLink,
+  Content,
+  ErrorPanel,
+  Progress,
+} from '@backstage/core-components';
 
 export const ShortURLGo = () => {
-  const alertApi = useApi(alertApiRef);
+  const [redirectError, setRedirectError] = React.useState(new Error());
   const fetchApi = useApi(fetchApiRef);
   const identityApi = useApi(identityApiRef);
   const discoveryApi = useApi(discoveryApiRef);
@@ -19,43 +24,49 @@ export const ShortURLGo = () => {
     discoveryApi,
     identityApi,
   );
-  const shortUrl = window.location.pathname.split('/go/')[1];
+  const shortUrl = window.location.href.split('/go/')[1];
 
   useEffect(() => {
     const fetchData = async () => {
-      const path = window.location.pathname;
-      if (path.includes('/go/')) {
-        const id = path.split('/go/')[1];
-        try {
-          const response = await shortURLApi.getRedirectURL(id).then(
-            res => res.json(),
-            _ => {
-              alertApi.post({
-                message: `No redirection found for ID ${id}`,
-                severity: 'error',
-              });
-              return null;
-            },
+      if (!shortUrl || shortUrl === 'undefined') {
+        setRedirectError(new Error('Undefined ID found in URL'));
+        return;
+      }
+      try {
+        const response = await shortURLApi.getRedirectURL(shortUrl);
+        const responseJson = await response.json();
+        if (response.status === 200) {
+          window.location.href = responseJson.redirectUrl;
+          return;
+        } else if (response.status === 404) {
+          setRedirectError(
+            new Error(`No redirection found for path ${shortUrl}`),
           );
-          if (response.status === 'ok') {
-            window.location.href = response.redirectUrl;
-          } else {
-            alertApi.post({
-              message: `No redirection found for ID ${id}`,
-              severity: 'error',
-            });
-          }
-        } catch (error) {
-          alertApi.post({
-            message: 'Failed to fetch redirection URL',
-            severity: 'error',
-          });
+        } else {
+          setRedirectError(
+            new Error(
+              `StatusCode: ${response.status}, Message: ${response.json}`,
+            ),
+          );
         }
+      } catch (error) {
+        setRedirectError(
+          new Error(`Failed to fetch redirection URL: ${error}`),
+        );
       }
     };
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shortUrl]);
 
-  return <CircularProgress />;
+  return (
+    <Content>
+      {(redirectError.message === '' && <Progress />) || (
+        <Box>
+          <ErrorPanel title="Redirection failure" error={redirectError} />
+          <BottomLink title="Check existing ShortURLs" link="/shorturl" />
+        </Box>
+      )}
+    </Content>
+  );
 };
