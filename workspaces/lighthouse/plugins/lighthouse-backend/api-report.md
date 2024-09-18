@@ -27,7 +27,7 @@ export interface CreateLighthouseSchedulerOptions {
   // (undocumented)
   scheduler?: PluginTaskScheduler;
   // (undocumented)
-  tokenManager: TokenManager;
+  tokenManager?: TokenManager;
 }
 
 // @public (undocumented)
