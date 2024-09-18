@@ -15,6 +15,7 @@
  */
 import {
   createPlugin,
+  createComponentExtension,
   createRoutableExtension,
   createApiFactory,
   discoveryApiRef,
@@ -46,11 +47,12 @@ export const techInsightsPlugin = createPlugin({
  * @public
  */
 export const ScorecardInfo = techInsightsPlugin.provide(
-  createRoutableExtension({
+  createComponentExtension({
     name: 'ScorecardInfo',
-    component: () =>
-      import('./components/ScorecardsInfo').then(m => m.ScorecardInfo),
-    mountPoint: rootRouteRef,
+    component: {
+      lazy: () =>
+        import('./components/ScorecardsInfo').then(m => m.ScorecardInfo),
+    },
   }),
 );
 
@@ -58,11 +60,12 @@ export const ScorecardInfo = techInsightsPlugin.provide(
  * @public
  */
 export const ScorecardsList = techInsightsPlugin.provide(
-  createRoutableExtension({
+  createComponentExtension({
     name: 'ScorecardsList',
-    component: () =>
-      import('./components/ScorecardsList').then(m => m.ScorecardsList),
-    mountPoint: rootRouteRef,
+    component: {
+      lazy: () =>
+        import('./components/ScorecardsList').then(m => m.ScorecardsList),
+    },
   }),
 );
 
@@ -106,11 +109,12 @@ export const TechInsightsScorecardPage = techInsightsPlugin.provide(
  * @public
  */
 export const TechInsightsCheckIcon = techInsightsPlugin.provide(
-  createRoutableExtension({
+  createComponentExtension({
     name: 'TechInsightsCheckIcon',
-    component: () =>
-      import('./components/ResultCheckIcon').then(m => m.ResultCheckIcon),
-    mountPoint: rootRouteRef,
+    component: {
+      lazy: () =>
+        import('./components/ResultCheckIcon').then(m => m.ResultCheckIcon),
+    },
   }),
 );
 
@@ -118,10 +122,11 @@ export const TechInsightsCheckIcon = techInsightsPlugin.provide(
  * @public
  */
 export const TechInsightsLinksMenu = techInsightsPlugin.provide(
-  createRoutableExtension({
+  createComponentExtension({
     name: 'TechInsightsLinksMenu',
-    component: () =>
-      import('./components/ResultLinksMenu').then(m => m.ResultLinksMenu),
-    mountPoint: rootRouteRef,
+    component: {
+      lazy: () =>
+        import('./components/ResultLinksMenu').then(m => m.ResultLinksMenu),
+    },
   }),
 );
