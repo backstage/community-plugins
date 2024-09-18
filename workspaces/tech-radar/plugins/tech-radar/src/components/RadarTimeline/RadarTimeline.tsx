@@ -30,6 +30,7 @@ import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import AdjustIcon from '@material-ui/icons/Adjust';
 
 import { MovedState } from '../../api';
+import { MarkdownContent } from '@backstage/core-components';
 
 export type Props = {
   timeline?: EntrySnapshot[];
@@ -87,7 +88,7 @@ const RadarTimeline = (props: Props): JSX.Element => {
                     : ''}
                 </TableCell>
                 <TableCell align="left">
-                  {timeEntry.description ? timeEntry.description : ''}
+                  <MarkdownContent content={timeEntry.description || ''} />
                 </TableCell>
               </TableRow>
             ))}
