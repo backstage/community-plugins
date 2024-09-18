@@ -1,5 +1,15 @@
 # @backstage-community/plugin-bazaar-backend
 
+## 0.4.0
+
+### Minor Changes
+
+- 40b046d: **BREAKING**: The backend has been migrated to the new backend system. The `createRouter` function now requires the new `auth` and `httpAuth` services to be passed in, instead of the removed `identity` service. If you are using the new backend system module, this does not affect you.
+
+### Patch Changes
+
+- 23c908d: Backstage version bump to v1.30.2
+
 ## 0.3.17
 
 ### Patch Changes
