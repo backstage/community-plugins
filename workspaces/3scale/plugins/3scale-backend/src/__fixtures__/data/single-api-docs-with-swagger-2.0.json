@@ -1,0 +1,18 @@
+{
+  "api_docs": [
+    {
+      "api_doc": {
+        "id": 1,
+        "system_name": "list-users",
+        "name": "List users",
+        "description": "",
+        "published": true,
+        "skip_swagger_validations": false,
+        "body": "{\r\n  \"swagger\": \"2.0\",\r\n  \"info\": {\r\n    \"version\": \"1.0.0\",\r\n    \"title\": \"Simple API\",\r\n    \"description\": \"A simple API example\"\r\n  },\r\n  \"host\": \"api.example.com\",\r\n  \"basePath\": \"/v1\",\r\n  \"schemes\": [\r\n    \"https\"\r\n  ],\r\n  \"paths\": {\r\n    \"/users\": {\r\n      \"get\": {\r\n        \"summary\": \"Get all users\",\r\n        \"description\": \"Returns a list of users.\",\r\n        \"produces\": [\r\n          \"application/json\"\r\n        ],\r\n        \"responses\": {\r\n          \"200\": {\r\n            \"description\": \"A list of users.\",\r\n            \"schema\": {\r\n              \"type\": \"array\",\r\n              \"items\": {\r\n                \"$ref\": \"#/definitions/User\"\r\n              }\r\n            }\r\n          }\r\n        }\r\n      }\r\n    },\r\n    \"/users/{userId}\": {\r\n      \"get\": {\r\n        \"summary\": \"Get a user by ID\",\r\n        \"description\": \"Returns a single user.\",\r\n        \"parameters\": [\r\n          {\r\n            \"name\": \"userId\",\r\n            \"in\": \"path\",\r\n            \"required\": true,\r\n            \"type\": \"string\"\r\n          }\r\n        ],\r\n        \"responses\": {\r\n          \"200\": {\r\n            \"description\": \"A single user.\",\r\n            \"schema\": {\r\n              \"$ref\": \"#/definitions/User\"\r\n            }\r\n          },\r\n          \"404\": {\r\n            \"description\": \"User not found.\"\r\n          }\r\n        }\r\n      }\r\n    }\r\n  },\r\n  \"definitions\": {\r\n    \"User\": {\r\n      \"type\": \"object\",\r\n      \"properties\": {\r\n        \"id\": {\r\n          \"type\": \"string\"\r\n        },\r\n        \"name\": {\r\n          \"type\": \"string\"\r\n        },\r\n        \"email\": {\r\n          \"type\": \"string\"\r\n        }\r\n      }\r\n    }\r\n  }\r\n}",
+        "service_id": 2,
+        "created_at": "2024-09-17T10:09:04Z",
+        "updated_at": "2024-09-17T10:09:04Z"
+      }
+    }
+  ]
+}
