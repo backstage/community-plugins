@@ -26,7 +26,6 @@ import {
   DefaultFactRetrieverEngine,
   FactRetrieverEngine,
 } from './FactRetrieverEngine';
-import { ServerTokenManager } from '@backstage/backend-common';
 import { DatabaseManager } from '@backstage/backend-defaults/database';
 import { ConfigReader } from '@backstage/config';
 import {
@@ -142,7 +141,6 @@ describe('FactRetrieverEngine', () => {
       factRetrieverContext: {
         logger,
         config: ConfigReader.fromConfigs([]),
-        tokenManager: ServerTokenManager.noop(),
         auth: mockServices.auth(),
         discovery: {
           getBaseUrl: (_: string) => Promise.resolve('http://mock.url'),
