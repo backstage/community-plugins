@@ -1,5 +1,16 @@
 # @backstage-community/plugin-tech-insights-backend
 
+## 1.0.0
+
+### Major Changes
+
+- 9871d0b: **BREAKING**: The service no longer accepts the deprecated `TokenManager` instance, but instead the `AuthService` is now required where it used to be optional. If you are using the new backend system module, this does not affect you.
+
+### Patch Changes
+
+- Updated dependencies [9871d0b]
+  - @backstage-community/plugin-tech-insights-node@1.0.0
+
 ## 0.6.3
 
 ### Patch Changes
