@@ -1,1 +1,1 @@
-export { shorturlPlugin, ShortURLPage } from './plugin';
+export { shorturlPlugin, ShortURLPage, ShortURLGo } from './plugin';

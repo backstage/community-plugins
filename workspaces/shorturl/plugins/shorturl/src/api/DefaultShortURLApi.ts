@@ -31,11 +31,23 @@ export class DefaultShortURLApi implements ShortURLApi {
     });
   }
 
-  async getMappingData() {
+  async getAllURLs() {
     const baseUrl = await this.discoveryApi.getBaseUrl(backendPluginId);
     const idResponse = await this.identityApi.getCredentials();
 
     return await this.fetchApi.fetch(`${baseUrl}/getAll`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${idResponse?.token}`,
+      },
+    });
+  }
+
+  async getRedirectURL(shortURL: string): Promise<Response> {
+    const baseUrl = await this.discoveryApi.getBaseUrl(backendPluginId);
+    const idResponse = await this.identityApi.getCredentials();
+
+    return await this.fetchApi.fetch(`${baseUrl}/go/${shortURL}`, {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${idResponse?.token}`,

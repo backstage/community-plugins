@@ -17,5 +17,7 @@ export interface ShortURLApi {
     shortURLRequest: Omit<ShortURL, 'shortId'>,
   ): Promise<Response>;
 
-  getMappingData(): Promise<Response>;
+  getAllURLs(): Promise<Response>;
+
+  getRedirectURL(shortURL: string): Promise<Response>;
 }

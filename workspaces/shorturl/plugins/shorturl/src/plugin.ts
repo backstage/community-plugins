@@ -8,13 +8,14 @@ import {
   identityApiRef,
 } from '@backstage/core-plugin-api';
 
-import { rootRouteRef } from './routes';
+import { rootRouteRef, goRouteRef } from './routes';
 import { DefaultShortURLApi, shorturlApiRef } from './api/index';
 
 export const shorturlPlugin = createPlugin({
   id: 'shorturl',
   routes: {
     root: rootRouteRef,
+    go: goRouteRef,
   },
   apis: [
     createApiFactory({
@@ -36,5 +37,13 @@ export const ShortURLPage = shorturlPlugin.provide(
     component: () =>
       import('./components/ShortURLPage').then(m => m.ShortURLPage),
     mountPoint: rootRouteRef,
+  }),
+);
+
+export const ShortURLGo = shorturlPlugin.provide(
+  createRoutableExtension({
+    name: 'ShortURLGo',
+    component: () => import('./components/ShortURLGo').then(m => m.ShortURLGo),
+    mountPoint: goRouteRef,
   }),
 );

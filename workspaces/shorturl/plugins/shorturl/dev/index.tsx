@@ -1,6 +1,6 @@
 import React from 'react';
 import { createDevApp } from '@backstage/dev-utils';
-import { shorturlPlugin, ShortURLPage } from '../src/plugin';
+import { shorturlPlugin, ShortURLPage, ShortURLGo } from '../src/plugin';
 
 createDevApp()
   .registerPlugin(shorturlPlugin)
@@ -8,5 +8,10 @@ createDevApp()
     element: <ShortURLPage />,
     title: 'Root Page',
     path: '/shorturl',
+  })
+  .addPage({
+    element: <ShortURLGo />,
+    title: 'Short URL Redirect',
+    path: '/go/:id',
   })
   .render();

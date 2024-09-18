@@ -15,9 +15,7 @@ export const ShortURLList = ({ refreshFlag }: { refreshFlag: boolean }) => {
 
   const getData = async () => {
     try {
-      const response = await shorturlApi
-        .getMappingData()
-        .then(res => res.json());
+      const response = await shorturlApi.getAllURLs().then(res => res.json());
       if (response && response.status === 'ok') {
         if (urlData !== response?.data) {
           setUrlData(response?.data);
