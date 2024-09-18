@@ -21,10 +21,6 @@ import {
 import { DefaultFactRetrieverRegistry } from './fact/FactRetrieverRegistry';
 import { Config } from '@backstage/config';
 import {
-  createLegacyAuthAdapters,
-  TokenManager,
-} from '@backstage/backend-common';
-import {
   FactChecker,
   FactCheckerFactory,
   FactRetrieverRegistration,
@@ -85,8 +81,7 @@ export interface TechInsightsOptions<
   discovery: DiscoveryService;
   database: DatabaseService;
   scheduler: SchedulerService;
-  tokenManager: TokenManager;
-  auth?: AuthService;
+  auth: AuthService;
 }
 
 /**
@@ -129,7 +124,7 @@ export const buildTechInsightsContext = async <
     database,
     logger,
     scheduler,
-    tokenManager,
+    auth,
   } = options;
 
   const buildFactRetrieverRegistry = (): FactRetrieverRegistry => {
@@ -152,12 +147,6 @@ export const buildTechInsightsContext = async <
       logger,
     }));
 
-  const { auth } = createLegacyAuthAdapters({
-    auth: options.auth,
-    tokenManager,
-    discovery,
-  });
-
   const factRetrieverEngine = await DefaultFactRetrieverEngine.create({
     scheduler,
     repository: persistenceContext.techInsightsStore,
@@ -166,7 +155,6 @@ export const buildTechInsightsContext = async <
       config,
       discovery,
       logger,
-      tokenManager,
       auth,
     },
   });
