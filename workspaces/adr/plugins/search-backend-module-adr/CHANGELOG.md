@@ -1,5 +1,11 @@
 # @backstage-community/search-backend-module-adr
 
+## 0.1.4
+
+### Patch Changes
+
+- f43e557: Made the token manager optional. The new-backend module no longer injects custom token managers.
+
 ## 0.1.3
 
 ### Patch Changes
