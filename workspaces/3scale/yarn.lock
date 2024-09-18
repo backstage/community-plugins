@@ -2516,12 +2516,14 @@ __metadata:
   resolution: "@backstage-community/plugin-3scale-backend@workspace:plugins/3scale-backend"
   dependencies:
     "@backstage/backend-common": ^0.25.0
+    "@backstage/backend-defaults": ^0.5.0
     "@backstage/backend-dynamic-feature-service": ^0.4.0
     "@backstage/backend-plugin-api": ^1.0.0
     "@backstage/backend-tasks": ^0.6.1
     "@backstage/catalog-model": ^1.7.0
     "@backstage/cli": ^0.27.1
     "@backstage/config": ^1.2.0
+    "@backstage/plugin-catalog-backend": ^1.26.0
     "@backstage/plugin-catalog-node": ^1.13.0
     "@janus-idp/cli": 1.13.1
     "@types/supertest": 6.0.2
