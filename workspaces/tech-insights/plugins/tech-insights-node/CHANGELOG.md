@@ -1,5 +1,11 @@
 # @backstage-community/plugin-tech-insights-node
 
+## 1.0.0
+
+### Major Changes
+
+- 9871d0b: **BREAKING**: `FactRetrieverContext` no longer includes the deprecated `tokenManager`. Please use the `auth` field instead if you need to make backend requests.
+
 ## 0.6.7
 
 ### Patch Changes
