@@ -101,10 +101,6 @@ export class DatabaseHandler implements ShortURLStore {
       'usage_count',
     ]);
 
-    if (!rowData.length) {
-      throw new NotFoundError(`Unable to find the record`);
-    }
-
     return Promise.resolve(
       rowData as unknown as [
         { shortId: string; fullUrl: string; usageCount: number },

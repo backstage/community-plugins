@@ -1,6 +1,10 @@
 // code based on https://github.com/shailahir/backstage-plugin-shorturl
 import { Link, Table } from '@backstage/core-components';
-import { discoveryApiRef, useApi } from '@backstage/core-plugin-api';
+import {
+  alertApiRef,
+  discoveryApiRef,
+  useApi,
+} from '@backstage/core-plugin-api';
 import { Box } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { shorturlApiRef } from '../../api';
@@ -8,20 +12,36 @@ import useAsync from 'react-use/lib/useAsync';
 
 export const ShortURLList = () => {
   const [urlData, setUrlData] = useState([]);
-  const discoveryApi = useApi(discoveryApiRef);
+  const [apiFailure, setApiFailure] = useState(false);
+  const alertApi = useApi(alertApiRef);
   const shorturlApi = useApi(shorturlApiRef);
+  const discoveryApi = useApi(discoveryApiRef);
 
   const getData = async () => {
     try {
-      const data = await shorturlApi.getMappingData();
-      const jsonData = await data.json();
-      if (jsonData && jsonData.status === 'ok') {
-        setUrlData(jsonData?.data);
+      const response = await shorturlApi
+        .getMappingData()
+        .then(res => res.json());
+      if (response && response.status === 'ok') {
+        if (urlData !== response?.data) {
+          setUrlData(response?.data);
+        }
+        setApiFailure(false);
       } else {
+        setApiFailure(true);
         setUrlData([]);
+        alertApi.post({
+          message: 'Failed to fetch ShortURLs',
+          severity: 'error',
+        });
       }
     } catch (error) {
+      setApiFailure(true);
       setUrlData([]);
+      alertApi.post({
+        message: 'Failed to fetch ShortURLs',
+        severity: 'error',
+      });
     }
   };
 
@@ -31,8 +51,8 @@ export const ShortURLList = () => {
 
   useEffect(() => {
     getData();
-    // todo(avila-m-6): properly add dependency array
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [apiFailure]);
 
   return (
     <Box>

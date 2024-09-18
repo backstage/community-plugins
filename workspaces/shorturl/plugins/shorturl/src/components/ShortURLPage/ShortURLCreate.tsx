@@ -9,26 +9,60 @@ import {
   TextField,
 } from '@material-ui/core';
 import React, { useState } from 'react';
+import {
+  useApi,
+  alertApiRef,
+  discoveryApiRef,
+  fetchApiRef,
+  identityApiRef,
+} from '@backstage/core-plugin-api';
+import { DefaultShortURLApi } from '../../api';
 
 export const ShortURLCreate = () => {
+  const alertApi = useApi(alertApiRef);
+  const fetchApi = useApi(fetchApiRef);
+  const identityApi = useApi(identityApiRef);
+  const discoveryApi = useApi(discoveryApiRef);
+  const shortURLApi = new DefaultShortURLApi(
+    fetchApi,
+    discoveryApi,
+    identityApi,
+  );
+
   const [longUrl, setLongUrl] = useState('');
   const [shortUrl, setShortUrl] = useState('');
 
-  const handleCreateClick = async () => {
-    const newShortUrl = 'https://example.com/short-url';
-
-    setShortUrl(newShortUrl);
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text).then(
+      () => {
+        alertApi.post({ message: 'Short URL copied to clipboard' });
+      },
+      () => {
+        alertApi.post({
+          message: 'Failed to copy short URL to clipboard',
+          severity: 'error',
+        });
+      },
+    );
   };
 
   const handleCopyClick = async () => {
-    navigator.clipboard
-      .writeText(shortUrl)
-      .then(() => {
-        // todo(avila-m-6): add a toast notification
+    copyToClipboard(shortUrl);
+  };
+
+  const handleCreateClick = async () => {
+    const response = await shortURLApi
+      .createOrRetrieveShortUrl({
+        fullUrl: longUrl,
+        usageCount: 0,
       })
-      .catch(() => {
-        // console.error('Failed to copy short URL to clipboard:', error);
-      });
+      .then(res => res.json());
+    if (response.error) {
+      alertApi.post({ message: response.error, severity: 'error' });
+      return;
+    }
+    setShortUrl(response.shortUrl);
+    handleCopyClick(); // auto-trigger copy
   };
 
   return (
