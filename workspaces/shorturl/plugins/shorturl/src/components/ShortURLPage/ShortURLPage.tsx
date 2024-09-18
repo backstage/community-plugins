@@ -1,20 +1,22 @@
 // code based on https://github.com/shailahir/backstage-plugin-shorturl
-import React from 'react';
-import { Grid } from '@material-ui/core';
+import React, { useState } from 'react';
+import { Button, Grid } from '@material-ui/core';
 import {
-  Header,
   Page,
+  Header,
   Content,
-  ContentHeader,
   HeaderLabel,
+  ContentHeader,
   SupportButton,
 } from '@backstage/core-components';
 import { ShortURLCreate, ShortURLList } from '.';
 
 export const ShortURLPage = () => {
-  // const handleRefresh = async () => {
-  //   const newShortUrl = 'https://example.com/short-url';
-  // };
+  const [refreshFlag, setRefreshFlag] = useState(false);
+
+  const handleRefresh = async () => {
+    setRefreshFlag(!refreshFlag);
+  };
 
   return (
     <Page themeId="tool">
@@ -24,15 +26,17 @@ export const ShortURLPage = () => {
       </Header>
       <Content>
         <ContentHeader title="URL Shortener">
-          {/* <Button color="primary" onClick={handleRefresh}>Refresh</Button>*/}
+          <Button color="primary" onClick={handleRefresh}>
+            Refresh
+          </Button>
           <SupportButton>Contact for support</SupportButton>
         </ContentHeader>
         <Grid container spacing={3} direction="column">
           <Grid item>
-            <ShortURLCreate />
+            <ShortURLCreate onCreate={handleRefresh} />
           </Grid>
           <Grid item>
-            <ShortURLList />
+            <ShortURLList refreshFlag={refreshFlag} />
           </Grid>
         </Grid>
       </Content>

@@ -45,7 +45,7 @@ export async function createRouter(
     try {
       const existing = await db.getIdByUrl({ fullUrl: reqBody.fullUrl });
       if (existing && existing.shortId) {
-        response.json({ status: 'ok', id: existing.shortId });
+        response.json({ status: 'ok', shortUrl: existing.shortId });
       }
       return;
     } catch (e) {
@@ -63,7 +63,7 @@ export async function createRouter(
       usageCount: reqBody.usageCount,
     });
 
-    response.status(201).json({ status: 'ok', id });
+    response.status(201).json({ status: 'ok', shortUrl: id });
   });
 
   router.get('/go/:id', async (_, response) => {

@@ -5,7 +5,7 @@ import type {
   IdentityApi,
 } from '@backstage/core-plugin-api';
 import { ShortURLApi } from './ShortURLApi';
-import { ShortURL } from '../types';
+import { ShortURL, backendPluginId } from '../types';
 
 export class DefaultShortURLApi implements ShortURLApi {
   constructor(
@@ -15,7 +15,7 @@ export class DefaultShortURLApi implements ShortURLApi {
   ) {}
 
   async createOrRetrieveShortUrl(shortURLRequest: Omit<ShortURL, 'shortId'>) {
-    const baseUrl = await this.discoveryApi.getBaseUrl('shorturl');
+    const baseUrl = await this.discoveryApi.getBaseUrl(backendPluginId);
     const idResponse = await this.identityApi.getCredentials();
 
     return await this.fetchApi.fetch(`${baseUrl}/create`, {
@@ -32,10 +32,10 @@ export class DefaultShortURLApi implements ShortURLApi {
   }
 
   async getMappingData() {
-    const baseUrl = await this.discoveryApi.getBaseUrl('shorturl');
+    const baseUrl = await this.discoveryApi.getBaseUrl(backendPluginId);
     const idResponse = await this.identityApi.getCredentials();
 
-    return await this.fetchApi.fetch(`${baseUrl}-backend/getAll`, {
+    return await this.fetchApi.fetch(`${baseUrl}/getAll`, {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${idResponse?.token}`,

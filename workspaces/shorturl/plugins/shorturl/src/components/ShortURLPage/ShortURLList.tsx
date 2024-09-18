@@ -1,21 +1,17 @@
 // code based on https://github.com/shailahir/backstage-plugin-shorturl
 import { Link, Table } from '@backstage/core-components';
-import {
-  alertApiRef,
-  discoveryApiRef,
-  useApi,
-} from '@backstage/core-plugin-api';
+import { alertApiRef, configApiRef, useApi } from '@backstage/core-plugin-api';
 import { Box } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { shorturlApiRef } from '../../api';
 import useAsync from 'react-use/lib/useAsync';
 
-export const ShortURLList = () => {
+export const ShortURLList = ({ refreshFlag }: { refreshFlag: boolean }) => {
   const [urlData, setUrlData] = useState([]);
   const [apiFailure, setApiFailure] = useState(false);
   const alertApi = useApi(alertApiRef);
   const shorturlApi = useApi(shorturlApiRef);
-  const discoveryApi = useApi(discoveryApiRef);
+  const configApi = useApi(configApiRef);
 
   const getData = async () => {
     try {
@@ -46,13 +42,13 @@ export const ShortURLList = () => {
   };
 
   const { value: baseUrl } = useAsync(async () => {
-    return await discoveryApi.getBaseUrl('shorturl');
+    return await configApi.getString('app.baseUrl');
   }, []);
 
   useEffect(() => {
     getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [apiFailure]);
+  }, [apiFailure, refreshFlag]);
 
   return (
     <Box>

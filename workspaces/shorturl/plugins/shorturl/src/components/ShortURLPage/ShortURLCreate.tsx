@@ -8,19 +8,26 @@ import {
   Grid,
   TextField,
 } from '@material-ui/core';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   useApi,
   alertApiRef,
   discoveryApiRef,
+  configApiRef,
   fetchApiRef,
   identityApiRef,
 } from '@backstage/core-plugin-api';
 import { DefaultShortURLApi } from '../../api';
+import useAsync from 'react-use/lib/useAsync';
 
-export const ShortURLCreate = () => {
+interface ShortURLCreateProps {
+  onCreate: () => void;
+}
+
+export const ShortURLCreate: React.FC<ShortURLCreateProps> = ({ onCreate }) => {
   const alertApi = useApi(alertApiRef);
   const fetchApi = useApi(fetchApiRef);
+  const configApi = useApi(configApiRef);
   const identityApi = useApi(identityApiRef);
   const discoveryApi = useApi(discoveryApiRef);
   const shortURLApi = new DefaultShortURLApi(
@@ -32,14 +39,30 @@ export const ShortURLCreate = () => {
   const [longUrl, setLongUrl] = useState('');
   const [shortUrl, setShortUrl] = useState('');
 
+  const { value: baseUrl } = useAsync(async () => {
+    return await configApi.getString('app.baseUrl');
+  }, []);
+
+  const validateUrl = (url: string): boolean => {
+    try {
+      const validUrl = new URL(url);
+      return !!validUrl;
+    } catch (_) {
+      return false;
+    }
+  };
+
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text).then(
       () => {
-        alertApi.post({ message: 'Short URL copied to clipboard' });
+        alertApi.post({
+          message: 'Short URL copied to clipboard',
+          display: 'transient',
+        });
       },
       () => {
         alertApi.post({
-          message: 'Failed to copy short URL to clipboard',
+          message: `Failed to copy short URL to clipboard`,
           severity: 'error',
         });
       },
@@ -51,19 +74,47 @@ export const ShortURLCreate = () => {
   };
 
   const handleCreateClick = async () => {
+    let error: Error | undefined;
+    if (!validateUrl(longUrl)) {
+      alertApi.post({
+        message: 'Invalid URL',
+        severity: 'error',
+      });
+      return;
+    }
     const response = await shortURLApi
       .createOrRetrieveShortUrl({
         fullUrl: longUrl,
         usageCount: 0,
       })
-      .then(res => res.json());
-    if (response.error) {
-      alertApi.post({ message: response.error, severity: 'error' });
-      return;
+      .then(res => {
+        if (res.status === 200 || res.status === 201) {
+          // retrieved or created
+          return res.json();
+        }
+        throw new Error(`API returned status ${res.status}`);
+      })
+      .catch(err => {
+        error = err;
+      });
+    if (response && response.status === 'ok') {
+      const newLink = `${baseUrl}/go/${response.shortUrl}`;
+      setShortUrl(newLink);
+    } else {
+      alertApi.post({
+        message: `Failed to create short URL: ${error}`,
+        severity: 'error',
+      });
     }
-    setShortUrl(response.shortUrl);
-    handleCopyClick(); // auto-trigger copy
   };
+
+  useEffect(() => {
+    if (shortUrl) {
+      copyToClipboard(shortUrl);
+      onCreate();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shortUrl]);
 
   return (
     <Card>

@@ -5,3 +5,5 @@ export type ShortURL = {
   fullUrl: string;
   usageCount: number;
 };
+
+export const backendPluginId = 'shorturl-backend';
