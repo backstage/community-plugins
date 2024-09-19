@@ -24,10 +24,20 @@ import {
   DefaultCopilotCredentialsProvider,
 } from './utils/CopilotCredentialsProvider';
 
+/**
+ * Interface for providing credentials for accessing the Copilot API.
+ *
+ * @public
+ */
 export interface CopilotExtensionPoint {
   useCredentialsProvider(provider: CopilotCredentialsProvider): void;
 }
 
+/**
+ * Extension point for providing credentials for accessing the Copilot API.
+ *
+ * @public
+ */
 export const copilotExtensionPoint =
   createExtensionPoint<CopilotExtensionPoint>({
     id: 'copliot.credentials',

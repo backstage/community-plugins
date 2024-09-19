@@ -7,9 +7,25 @@ import { BackendFeature } from '@backstage/backend-plugin-api';
 import { Config } from '@backstage/config';
 import { DatabaseService } from '@backstage/backend-plugin-api';
 import express from 'express';
+import { ExtensionPoint } from '@backstage/backend-plugin-api';
+import { GithubCredentials } from '@backstage/integration';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { SchedulerService } from '@backstage/backend-plugin-api';
 import { SchedulerServiceTaskScheduleDefinition } from '@backstage/backend-plugin-api';
+
+// @public
+export interface CopilotCredentialsProvider {
+  getCredentials(): Promise<GithubInfo>;
+}
+
+// @public
+export interface CopilotExtensionPoint {
+  // (undocumented)
+  useCredentialsProvider(provider: CopilotCredentialsProvider): void;
+}
+
+// @public
+export const copilotExtensionPoint: ExtensionPoint<CopilotExtensionPoint>;
 
 // @public
 const copilotPlugin: BackendFeature;
@@ -21,6 +37,13 @@ export function createRouterFromConfig(
 ): Promise<express.Router>;
 
 // @public
+export type GithubInfo = {
+  credentials: GithubCredentials;
+  apiBaseUrl: string;
+  enterprise: string;
+};
+
+// @public
 export interface PluginOptions {
   schedule?: SchedulerServiceTaskScheduleDefinition;
 }
@@ -28,6 +51,7 @@ export interface PluginOptions {
 // @public
 export interface RouterOptions {
   config: Config;
+  credentialsProvider: CopilotCredentialsProvider;
   database: DatabaseService;
   logger: LoggerService;
   scheduler: SchedulerService;

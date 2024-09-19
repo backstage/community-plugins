@@ -21,13 +21,28 @@ import {
   ScmIntegrations,
 } from '@backstage/integration';
 
+/**
+ * Information required to access the GitHub API
+ *
+ * @public
+ */
 export type GithubInfo = {
   credentials: GithubCredentials;
   apiBaseUrl: string;
   enterprise: string;
 };
 
+/**
+ * Interface for providing credentials for accessing the copilot API
+ *
+ * @public
+ */
 export interface CopilotCredentialsProvider {
+  /**
+   * Retrieve the credentials required to access the copilot API
+   *
+   * @public
+   */
   getCredentials(): Promise<GithubInfo>;
 }
 
