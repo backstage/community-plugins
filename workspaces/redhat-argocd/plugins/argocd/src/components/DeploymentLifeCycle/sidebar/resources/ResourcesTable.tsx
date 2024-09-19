@@ -14,6 +14,11 @@ import { ResourcesColumnHeaders } from './ResourcesColumnHeader';
 import { ResourcesFilterBy } from './filters/ResourcesFilterBy';
 import { Order, Resource } from '../../../../types/application';
 import { FiltersType } from '../../../../types/resources';
+import {
+  getResourceCreateTimestamp,
+  sortValues,
+} from '../../../../utils/utils';
+import { useArgoResources } from '../rollouts/RolloutContext';
 
 interface ResourcesTableProps {
   resources: Resource[];
@@ -56,25 +61,33 @@ export const ResourcesTable: FC<ResourcesTableProps> = ({
     SearchByName: [],
   });
 
-  const getSortableRowValues = useCallback(
-    (res: Resource) => {
-      const {
-        name = '',
-        kind = '',
-        status = '',
-        health = { status: '' },
-      } = res;
-      const healthStatus = health.status || '';
+  const getSortableRowValues = useCallback((res: Resource) => {
+    const {
+      name = '',
+      kind = '',
+      status = '',
+      health = { status: '' },
+      createTimestamp,
+    } = res;
+    const healthStatus = health.status || '';
 
-      return [undefined, name, kind, createdAt, status, healthStatus];
-    },
-    [createdAt],
-  );
+    return [undefined, name, kind, createTimestamp, status, healthStatus];
+  }, []);
 
-  const allResources = React.useMemo(
-    () => resources.map((r, idx) => ({ ...r, id: idx })) ?? [],
-    [resources],
-  );
+  const { argoResources } = useArgoResources();
+
+  const allResources = React.useMemo(() => {
+    const getTimestamp = (row: Resource) =>
+      getResourceCreateTimestamp(argoResources, row) || createdAt;
+
+    return (
+      resources.map((r, idx) => ({
+        ...r,
+        id: idx,
+        createTimestamp: getTimestamp(r),
+      })) ?? []
+    );
+  }, [resources, argoResources, createdAt]);
 
   const getAllKinds = React.useMemo(() => {
     return resources.reduce((kinds: string[], resource) => {
@@ -113,25 +126,22 @@ export const ResourcesTable: FC<ResourcesTableProps> = ({
     // Sorting
     if (orderById && order) {
       items = items.sort((a, b) => {
-        const aValue = getSortableRowValues(a)[parseInt(orderById, 10)];
-        const bValue = getSortableRowValues(b)[parseInt(orderById, 10)];
+        let aValue = getSortableRowValues(a)[parseInt(orderById, 10)];
+        let bValue = getSortableRowValues(b)[parseInt(orderById, 10)];
 
         if (aValue === undefined || bValue === undefined) return 0;
 
-        if (typeof aValue === 'number' && typeof bValue === 'number') {
-          return order === 'asc' ? aValue - bValue : bValue - aValue;
+        if (orderBy === 'created-at') {
+          aValue = new Date(aValue).toISOString();
+          bValue = new Date(bValue).toISOString();
         }
-        if (typeof aValue === 'string' && typeof bValue === 'string') {
-          return order === 'asc'
-            ? aValue.localeCompare(bValue)
-            : bValue.localeCompare(aValue);
-        }
-        return 0;
+
+        return sortValues(aValue, bValue, order);
       });
     }
 
     return items;
-  }, [allResources, filters, orderById, order, getSortableRowValues]);
+  }, [allResources, filters, orderById, order, orderBy, getSortableRowValues]);
 
   const visibleRows = React.useMemo(
     () =>
@@ -195,7 +205,7 @@ export const ResourcesTable: FC<ResourcesTableProps> = ({
         />
         {visibleRows.length > 0 ? (
           <TableBody>
-            <ResourcesTableBody rows={visibleRows} createdAt={createdAt} />
+            <ResourcesTableBody rows={visibleRows} />
             {emptyRows > 0 && (
               <TableRow style={{ height: 55 * emptyRows }}>
                 <TableCell colSpan={ResourcesColumnHeaders.length} />

@@ -1,10 +1,13 @@
 import { Entity } from '@backstage/catalog-model';
+import pluralize from 'pluralize';
 
 import {
   Application,
   OperationPhases,
   OperationState,
+  Resource,
 } from '../types/application';
+import { ArgoResources } from '../types/resources';
 
 export const enum ArgoCdLabels {
   appSelector = 'argocd/app-selector',
@@ -167,3 +170,55 @@ export const getUniqueRevisions = (apps: Application[]): string[] =>
         return acc;
       }, [] as string[])
     : [];
+
+export const getResourceCreateTimestamp = (
+  argoResources: ArgoResources,
+  targetResource: Resource,
+) => {
+  const resources =
+    argoResources[pluralize(targetResource?.kind).toLowerCase()];
+
+  if (!resources || !Array.isArray(resources)) {
+    return null;
+  }
+
+  for (const resource of resources) {
+    const { name, namespace, creationTimestamp } = resource.metadata;
+
+    if (
+      name === targetResource.name &&
+      namespace === targetResource.namespace &&
+      creationTimestamp
+    ) {
+      return creationTimestamp;
+    }
+  }
+
+  return null;
+};
+
+export const sortValues = (
+  aValue: any,
+  bValue: any,
+  order: 'asc' | 'desc',
+): number => {
+  if (aValue === undefined || bValue === undefined) return 0;
+
+  if (!isNaN(Date.parse(aValue)) && !isNaN(Date.parse(bValue))) {
+    const aDate = new Date(aValue).getTime();
+    const bDate = new Date(bValue).getTime();
+    return order === 'asc' ? aDate - bDate : bDate - aDate;
+  }
+
+  if (typeof aValue === 'number' && typeof bValue === 'number') {
+    return order === 'asc' ? aValue - bValue : bValue - aValue;
+  }
+
+  if (typeof aValue === 'string' && typeof bValue === 'string') {
+    return order === 'asc'
+      ? aValue.localeCompare(bValue)
+      : bValue.localeCompare(aValue);
+  }
+
+  return 0;
+};

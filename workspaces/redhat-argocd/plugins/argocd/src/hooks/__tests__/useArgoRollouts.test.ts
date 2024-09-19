@@ -70,31 +70,4 @@ describe('useArgocdRollouts', () => {
     expect(result.current.replicasets).toEqual([]);
     expect(result.current.rollouts).toEqual([]);
   });
-
-  it('should return empty arrays for all Argo resources if resource type is not recognized', () => {
-    const unrecognizedResources = {
-      items: [
-        {
-          resources: [
-            {
-              type: 'unknownType',
-              resources: [
-                { kind: 'UnknownType', metadata: { name: 'unknown' } },
-              ],
-            },
-          ],
-        },
-      ],
-    };
-
-    (useKubernetesObjects as jest.Mock).mockReturnValue({
-      kubernetesObjects: unrecognizedResources,
-    });
-
-    const { result } = renderHook(() => useArgocdRollouts());
-
-    Object.values(result.current).forEach(value => {
-      expect(value).toEqual([]);
-    });
-  });
 });

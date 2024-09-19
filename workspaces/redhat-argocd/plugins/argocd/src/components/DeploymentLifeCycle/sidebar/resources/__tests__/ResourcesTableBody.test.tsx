@@ -18,6 +18,7 @@ describe('ResourcesTableBody Component', () => {
         name: 'quarkus-app',
         status: 'Synced',
         health: { status: 'Healthy' },
+        createTimestamp: '2024-08-25T12:00:00Z',
       },
       {
         version: 'v1',
@@ -26,9 +27,9 @@ describe('ResourcesTableBody Component', () => {
         name: 'quarkus-app',
         status: 'Synced',
         health: { status: 'Healthy' },
+        createTimestamp: '2024-08-25T12:00:00Z',
       },
     ],
-    createdAt: '2024-08-25T12:00:00Z',
   };
 
   it('should render the correct number of ResourcesTableRow components', () => {
@@ -46,7 +47,6 @@ describe('ResourcesTableBody Component', () => {
         index + 1,
         expect.objectContaining({
           row,
-          createdAt: defaultProps.createdAt,
           uid: index.toString(),
         }),
         expect.anything(),

@@ -179,6 +179,7 @@ export interface Resource {
   status: string;
   health?: Health;
   group?: string;
+  createTimestamp?: string;
 }
 
 export type HealthStatusType = keyof typeof HealthStatus;
