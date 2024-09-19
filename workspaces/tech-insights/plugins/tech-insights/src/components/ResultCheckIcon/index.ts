@@ -16,6 +16,6 @@
 
 export type {
   ResultCheckIconProps,
-  ResultCheckIconBaseComponent,
+  ResultCheckIconBaseComponentProps,
 } from './ResultCheckIcon';
 export { ResultCheckIcon } from './ResultCheckIcon';
