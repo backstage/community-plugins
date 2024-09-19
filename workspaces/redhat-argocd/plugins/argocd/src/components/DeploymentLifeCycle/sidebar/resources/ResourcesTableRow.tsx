@@ -35,6 +35,11 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(1, 0),
     height: 50,
   },
+  icon: {
+    marginLeft: theme.spacing(0.6),
+    width: '0.8em',
+    height: '0.8em',
+  },
 }));
 
 export const ResourcesTableRow: React.FC<ResourcesTableRowProps> = ({
@@ -69,7 +74,7 @@ export const ResourcesTableRow: React.FC<ResourcesTableRowProps> = ({
           {row.kind}
         </TableCell>
         <TableCell className={classes.tableCell} align="left">
-          {formattedTimestamp}
+          {row?.createTimestamp ? formattedTimestamp : <>-</>}
         </TableCell>
         <TableCell className={classes.tableCell} align="left">
           {row.status && <ResourceSyncStatus syncStatus={row.status} />}
