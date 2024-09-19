@@ -31,6 +31,6 @@ export { jsonRulesEngineCheckResultRenderer } from './components/CheckResultRend
 export type { CheckResultRenderer } from './components/CheckResultRenderer';
 export type {
   ResultCheckIconProps,
-  ResultCheckIconBaseComponent,
+  ResultCheckIconBaseComponentProps,
 } from './components/ResultCheckIcon';
 export type { ResultLinksMenuInfo } from './components/ResultLinksMenu';
