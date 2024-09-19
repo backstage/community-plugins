@@ -21,4 +21,8 @@
  */
 
 export * from './service/router';
-export { copilotPlugin as default } from './plugin';
+export { copilotPlugin as default, copilotExtensionPoint } from './plugin';
+export {
+  type CopilotCredentialsProvider,
+  type GithubInfo,
+} from './utils/CopilotCredentialsProvider';
