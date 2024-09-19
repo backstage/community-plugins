@@ -1,5 +1,11 @@
 ## @janus-idp/backstage-plugin-argocd [1.5.7](https://github.com/janus-idp/backstage-plugins/compare/@janus-idp/backstage-plugin-argocd@1.5.6...@janus-idp/backstage-plugin-argocd@1.5.7) (2024-08-02)
 
+## 1.8.5
+
+### Patch Changes
+
+- c829b80: fetched argo resources timestamp from k8s object
+
 ## 1.8.4
 
 ### Patch Changes
