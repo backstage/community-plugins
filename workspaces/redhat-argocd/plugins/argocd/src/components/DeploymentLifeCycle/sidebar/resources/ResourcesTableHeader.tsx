@@ -54,19 +54,17 @@ export const ResourcesTableHeader: React.FC<ResourcesTableHeaderProps> = ({
               key={headCell.id as string}
               align="left"
               padding="normal"
-              sortDirection={orderBy === headCell.title ? order : false}
+              sortDirection={orderBy === headCell.id ? order : false}
               className={
                 headCell.id !== 'expander' ? classes.header : classes.expander
               }
             >
               {headCell.title && (
                 <TableSortLabel
-                  active={
-                    orderBy === headCell.title && orderById === headCell.id
-                  }
+                  active={orderBy === headCell.id && orderById === `${index}`}
                   direction={order}
                   onClick={createSortHandler(
-                    headCell.title as string,
+                    headCell.id as string,
                     index.toString() as string,
                   )}
                 >

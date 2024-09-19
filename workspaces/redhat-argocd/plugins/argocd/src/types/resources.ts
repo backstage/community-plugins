@@ -11,7 +11,8 @@ export type ArgoCDResourcesKind =
   | 'Pod'
   | 'ReplicaSet'
   | 'AnalysisRun'
-  | 'Rollout';
+  | 'Rollout'
+  | string;
 
 export type ReplicaSet = V1ReplicaSet;
 export type Pod = V1Pod;
@@ -28,6 +29,7 @@ export type ArgoResources = {
   replicasets: ReplicaSet[];
   rollouts: Rollout[];
   analysisruns: AnalysisRun[];
+  [resourceType: string]: any[];
 };
 
 export const ArgoCDkindPluralMap: {

@@ -4,9 +4,11 @@ import { useArgocdRollouts } from '../../../../hooks/useArgoRollouts';
 import { Application } from '../../../../types/application';
 import { RolloutUI } from '../../../../types/revision';
 import { getRolloutUIResources } from '../../../../utils/rollout-utils';
+import { ArgoResources } from '../../../../types/resources';
 
 interface ArgoResourcesContextProps {
   rollouts: RolloutUI[];
+  argoResources: ArgoResources;
 }
 
 export const ArgoResourcesContext = createContext<ArgoResourcesContextProps>(
@@ -25,6 +27,7 @@ export const ArgoResourcesProvider: React.FC<{
     <ArgoResourcesContext.Provider
       value={{
         rollouts,
+        argoResources,
       }}
     >
       {children}

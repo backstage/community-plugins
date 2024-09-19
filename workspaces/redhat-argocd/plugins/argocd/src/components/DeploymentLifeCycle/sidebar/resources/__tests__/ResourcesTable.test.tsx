@@ -3,6 +3,12 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 
 import { ResourcesTable } from '../ResourcesTable';
 import { Resource } from '../../../../../types/application';
+import { useArgoResources } from '../../rollouts/RolloutContext';
+
+jest.mock('../../../sidebar/rollouts/RolloutContext', () => ({
+  ...jest.requireActual('../../../sidebar/rollouts/RolloutContext'),
+  useArgoResources: jest.fn(),
+}));
 
 jest.mock('../ResourcesSearchBar', () => ({
   ResourcesSearchBar: jest.fn(({ value, onChange, onSearchClear }) => (
@@ -32,6 +38,11 @@ jest.mock('../filters/ResourcesFilterBy', () => ({
 }));
 
 describe('ResourcesTable Component', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    (useArgoResources as jest.Mock).mockReturnValue({ argoResources: [] });
+  });
+
   const resources = [
     {
       kind: 'Rollout',
