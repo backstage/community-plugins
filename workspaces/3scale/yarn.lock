@@ -9732,7 +9732,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bare-events@npm:^2.0.0, bare-events@npm:^2.2.0":
+"bare-events@npm:^2.0.0":
+  version: 2.5.0
+  resolution: "bare-events@npm:2.5.0"
+  checksum: 5aa10716e7f33c5dfc471fd657eee2a33f2db0f78b3c83b5cdd1a45a7e7871114a69460ea96cd838807c55eb470b9e53dd0dfda8c83cced1352cc8253cebff48
+  languageName: node
+  linkType: hard
+
+"bare-events@npm:^2.2.0":
   version: 2.4.2
   resolution: "bare-events@npm:2.4.2"
   checksum: 6cd2b10dd32a3410787e120c091b6082fbc2df0c45ed723a7ae51d0e2f55d2a4037e1daff21dae90b671d36582f9f8d50df337875c281d10adb60df81b8cd861
@@ -16870,11 +16877,11 @@ __metadata:
   linkType: hard
 
 "keyv@npm:*":
-  version: 5.0.1
-  resolution: "keyv@npm:5.0.1"
+  version: 5.0.3
+  resolution: "keyv@npm:5.0.3"
   dependencies:
     "@keyv/serialize": "*"
-  checksum: 2b311f500e23e02a913400132ced64c94639bb6c57c29c93b0f8a9bf8f7d84f5de7a12ec4205b13f18ee90fd7dbcf494c8530603b97e799cd3f07a19496cc2fe
+  checksum: bb2cbce2bc3fe6723bc17443e0f6fd9b9a590bbb245b0e8fb030a8c20c6ab28c11e2ee4f727778a259449c18f5f4c76bc5b20dc80ea67d1c84018fc251fb8d89
   languageName: node
   linkType: hard
 
@@ -19260,10 +19267,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"path-to-regexp@npm:^6.2.0, path-to-regexp@npm:^6.2.1, path-to-regexp@npm:^6.2.2":
+"path-to-regexp@npm:^6.2.0, path-to-regexp@npm:^6.2.2":
   version: 6.2.2
   resolution: "path-to-regexp@npm:6.2.2"
   checksum: b7b0005c36f5099f9ed1fb20a820d2e4ed1297ffe683ea1d678f5e976eb9544f01debb281369dabdc26da82e6453901bf71acf2c7ed14b9243536c2a45286c33
+  languageName: node
+  linkType: hard
+
+"path-to-regexp@npm:^6.2.1":
+  version: 6.3.0
+  resolution: "path-to-regexp@npm:6.3.0"
+  checksum: eca78602e6434a1b6799d511d375ec044e8d7e28f5a48aa5c28d57d8152fb52f3fc62fb1cfc5dfa2198e1f041c2a82ed14043d75740a2fe60e91b5089a153250
   languageName: node
   linkType: hard
 
