@@ -3,7 +3,7 @@
   "info": {
     "version": "1.0.0",
     "title": "Simple API",
-    "description": "A simple API example"
+    "description": "List users API."
   },
   "host": "api.example.com",
   "basePath": "/v1",

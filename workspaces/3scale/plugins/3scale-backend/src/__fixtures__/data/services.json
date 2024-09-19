@@ -4,6 +4,7 @@
       "service": {
         "id": 2,
         "name": "API",
+        "description": "Nice API",
         "state": "incomplete",
         "system_name": "api",
         "backend_version": "1",

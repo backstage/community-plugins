@@ -240,27 +240,39 @@ export class ThreeScaleApiEntityProvider implements EntityProvider {
     proxy: Proxy,
   ): Promise<ApiEntity> {
     const location = `url:${this.baseUrl}/apiconfig/services/${service.service.id}`;
-    const defaultDescription = `Version: ${service.service.description}`;
+    const serviceDescription = service.service.description || '';
+    let entityDescription: string | undefined;
 
     const docs = apiDocs.map(doc => JSON.parse(doc.api_doc.body));
 
     let swaggerDocJSON;
     if (docs.length > 1) {
       // convert all docs to openapi 3.0 and merge them
+      let mergedDescription = `[Merged ${docs.length} API docs]`;
+      let mergedTitle = mergedDescription;
       const convertedDocs: Swagger.SwaggerV3[] = [];
       for (const doc of docs) {
-        convertedDocs.push(
-          await this.openApiMerger.convertAPIDocToOpenAPI3(doc),
+        const convertedDoc = await this.openApiMerger.convertAPIDocToOpenAPI3(
+          doc,
         );
+        convertedDocs.push(convertedDoc);
+        mergedDescription = getDocInfo(convertedDoc)?.description
+          ? `${mergedDescription} ${getDocInfo(convertedDoc)?.description}`
+          : mergedDescription;
+        mergedTitle = getDocInfo(convertedDoc)?.title
+          ? `${mergedTitle} ${getDocInfo(convertedDoc)?.description}`
+          : mergedTitle;
       }
       if (isNonEmptyArray(convertedDocs)) {
         swaggerDocJSON = await this.openApiMerger.mergeOpenAPI3Docs(
           convertedDocs,
         );
+        swaggerDocJSON.info.description = mergedDescription;
+        swaggerDocJSON.info.title = mergedTitle;
+        entityDescription = mergedDescription;
       }
     }
 
-    let description: string | undefined;
     if (docs.length === 1) {
       swaggerDocJSON = docs[0];
 
@@ -269,8 +281,9 @@ export class ThreeScaleApiEntityProvider implements EntityProvider {
         // Backstage UI can render only openapi 3.0 or swagger 2.0. That's why we need to convert swagger 1.2 to swagger 2.0.
         swaggerDocJSON = await this.openApiMerger.convertSwagger1_2To2_0(spec);
       }
-      description = getEntityDescription(spec);
+      entityDescription = getDocInfo(spec)?.description;
     }
+    console.log(`==== ${JSON.stringify(swaggerDocJSON)}`);
 
     return {
       kind: 'API',
@@ -282,7 +295,7 @@ export class ThreeScaleApiEntityProvider implements EntityProvider {
         },
         //  TODO: add tenant name
         name: `${service.service.system_name}`,
-        description: description || defaultDescription,
+        description: entityDescription || serviceDescription,
         //  TODO: add labels
         //  labels: this.getApiEntityLabels(service),
         links: [
@@ -311,9 +324,11 @@ export class ThreeScaleApiEntityProvider implements EntityProvider {
   }
 }
 
-function getEntityDescription(spec: any): string | undefined {
+function getDocInfo(
+  spec: any,
+): { description: string; title: string } | undefined {
   if (isSwagger2_0(spec) || isOpenAPI3_0(spec)) {
-    return spec.info?.description;
+    return spec.info;
   }
 
   // swagger 1.2 spec doc defined by single file doesn't have description field

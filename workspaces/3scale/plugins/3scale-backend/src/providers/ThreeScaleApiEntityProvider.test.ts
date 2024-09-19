@@ -88,8 +88,17 @@ describe('ThreeScaleApiEntityProvider', () => {
     it('should be created catalog entity with single api doc', async () => {
       const services = readTestJSONFile('services');
       requestJsonDataMock.mockResolvedValueOnce(services);
-      const apiDocs = readTestJSONFile('single-api-docs');
+
+      const openAPI3_0Spec = readTestJSONFile('input/open-api-3.0-doc');
+      const apiDoc = createAPIDoc(
+        'ping',
+        'ping',
+        'A simple API that responds with the input message.',
+        openAPI3_0Spec,
+      );
+      const apiDocs = { api_docs: [apiDoc] };
       requestJsonDataMock.mockResolvedValueOnce(apiDocs);
+
       const proxy = readTestJSONFile('proxy');
       requestJsonDataMock.mockResolvedValueOnce(proxy);
 
@@ -97,7 +106,7 @@ describe('ThreeScaleApiEntityProvider', () => {
 
       const entities = [
         createExpectedEntity(
-          'expectedOpenSingleAPISpecVersion3',
+          'input/open-api-3.0-doc',
           'A simple API that responds with the input message.',
         ),
       ];
@@ -110,18 +119,24 @@ describe('ThreeScaleApiEntityProvider', () => {
     it('should be created catalog entity with single api doc but swagger 2.0 should not be converted to API 3.0', async () => {
       const services = readTestJSONFile('services');
       requestJsonDataMock.mockResolvedValueOnce(services);
-      const apiDocs = readTestJSONFile('single-api-docs-with-swagger-2.0');
+
+      const swagger2_0Spec = readTestJSONFile('input/swagger-2.0-doc');
+      const apiDoc = createAPIDoc(
+        'list-users',
+        'List users API',
+        'List users API.',
+        swagger2_0Spec,
+      );
+      const apiDocs = { api_docs: [apiDoc] };
       requestJsonDataMock.mockResolvedValueOnce(apiDocs);
+
       const proxy = readTestJSONFile('proxy');
       requestJsonDataMock.mockResolvedValueOnce(proxy);
 
       await threeScaleApiEntityProvider.run();
 
       const entities = [
-        createExpectedEntity(
-          'expectedNotConvertedSwagger2.0',
-          'A simple API example',
-        ),
+        createExpectedEntity('input/swagger-2.0-doc', 'List users API.'),
       ];
       expect(entityProviderConnection.applyMutation).toHaveBeenCalledWith({
         type: 'full',
@@ -129,10 +144,17 @@ describe('ThreeScaleApiEntityProvider', () => {
       });
     });
 
-    it('should be created catalog entity with single api doc but converted from swagger 1.2 to open API 3.0', async () => {
+    it('should be created catalog entity with single api doc but converted from swagger 1.2 to swagger 2.0', async () => {
       const services = readTestJSONFile('services');
       requestJsonDataMock.mockResolvedValueOnce(services);
-      const apiDocs = readTestJSONFile('single-api-docs-with-swagger-1.2');
+      const swagger1_2Spec = readTestJSONFile('input/swagger-1.2-doc');
+      const apiDoc = createAPIDoc(
+        'get-user-profile-by-id',
+        'Get User Profile By ID',
+        'User profile API.',
+        swagger1_2Spec,
+      );
+      const apiDocs = { api_docs: [apiDoc] };
       requestJsonDataMock.mockResolvedValueOnce(apiDocs);
       const proxy = readTestJSONFile('proxy');
       requestJsonDataMock.mockResolvedValueOnce(proxy);
@@ -141,8 +163,8 @@ describe('ThreeScaleApiEntityProvider', () => {
 
       const entities = [
         createExpectedEntity(
-          'expectedOpenAPISingleSpecAfterSwagger1.2Conversion',
-          'API for managing user profiles',
+          'output/swagger-1.2-converted-to-swagger-2.0',
+          'Nice API',
         ),
       ];
       expect(entityProviderConnection.applyMutation).toHaveBeenCalledWith({
@@ -154,8 +176,26 @@ describe('ThreeScaleApiEntityProvider', () => {
     it('should be created catalog entity with merged few api docs', async () => {
       const services = readTestJSONFile('services');
       requestJsonDataMock.mockResolvedValueOnce(services);
-      const apiDocs = readTestJSONFile('multi-api-docs');
+
+      const openAPI3_0Spec1 = readTestJSONFile('input/open-api-3.0-doc');
+      const apiDoc1 = createAPIDoc(
+        'ping',
+        'Ping',
+        'A simple API that responds with the input message.',
+        openAPI3_0Spec1,
+      );
+      const openAPI3_0Spec2 = readTestJSONFile('input/open-api-3.0-doc-2');
+      const apiDoc2 = createAPIDoc(
+        'echo',
+        'Echo',
+        'A sample echo API.',
+        openAPI3_0Spec2,
+      );
+
+      const apiDocs = { api_docs: [apiDoc1, apiDoc2] };
+
       requestJsonDataMock.mockResolvedValueOnce(apiDocs);
+
       const proxy = readTestJSONFile('proxy');
       requestJsonDataMock.mockResolvedValueOnce(proxy);
 
@@ -163,8 +203,8 @@ describe('ThreeScaleApiEntityProvider', () => {
 
       const entities = [
         createExpectedEntity(
-          'expectedMergedOpenAPISpecWithVersion3',
-          'A sample echo API',
+          'output/expectedMergedOpenAPISpecWithVersion3',
+          '[Merged 2 API docs] A simple API that responds with the input message. A sample echo API.',
         ),
       ];
       expect(entityProviderConnection.applyMutation).toHaveBeenCalledWith({
@@ -225,5 +265,27 @@ function createExpectedEntity(
       },
     },
     locationKey: 'ThreeScaleApiEntityProvider:test',
+  };
+}
+
+function createAPIDoc(
+  systemName: string,
+  name: string,
+  description: string,
+  apiDocBody: any,
+) {
+  return {
+    api_doc: {
+      id: 1,
+      system_name: systemName,
+      name: name,
+      description: description,
+      published: true,
+      skip_swagger_validations: false,
+      body: JSON.stringify(apiDocBody),
+      service_id: 2,
+      created_at: '2024-09-17T10:09:04Z',
+      updated_at: '2024-09-17T10:09:04Z',
+    },
   };
 }
