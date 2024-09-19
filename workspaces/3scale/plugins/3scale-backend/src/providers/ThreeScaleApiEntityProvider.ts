@@ -260,7 +260,7 @@ export class ThreeScaleApiEntityProvider implements EntityProvider {
           ? `${mergedDescription} ${getDocInfo(convertedDoc)?.description}`
           : mergedDescription;
         mergedTitle = getDocInfo(convertedDoc)?.title
-          ? `${mergedTitle} ${getDocInfo(convertedDoc)?.description}`
+          ? `${mergedTitle} ${getDocInfo(convertedDoc)?.title}`
           : mergedTitle;
       }
       if (isNonEmptyArray(convertedDocs)) {

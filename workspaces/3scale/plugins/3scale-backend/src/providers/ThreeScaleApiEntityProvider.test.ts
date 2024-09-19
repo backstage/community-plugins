@@ -85,7 +85,7 @@ describe('ThreeScaleApiEntityProvider', () => {
       await threeScaleApiEntityProvider.connect(entityProviderConnection);
     });
 
-    it('should be created catalog entity with single api doc', async () => {
+    it('should be created catalog entity with single open API 3.0 doc', async () => {
       const services = readTestJSONFile('services');
       requestJsonDataMock.mockResolvedValueOnce(services);
 
@@ -173,7 +173,7 @@ describe('ThreeScaleApiEntityProvider', () => {
       });
     });
 
-    it('should be created catalog entity with merged few api docs', async () => {
+    it('should be created catalog entity with merged 2 open API 3.0 docs', async () => {
       const services = readTestJSONFile('services');
       requestJsonDataMock.mockResolvedValueOnce(services);
 
@@ -203,8 +203,55 @@ describe('ThreeScaleApiEntityProvider', () => {
 
       const entities = [
         createExpectedEntity(
-          'output/expectedMergedOpenAPISpecWithVersion3',
+          'output/merged-2-open-api-3.0-docs',
           '[Merged 2 API docs] A simple API that responds with the input message. A sample echo API.',
+        ),
+      ];
+      expect(entityProviderConnection.applyMutation).toHaveBeenCalledWith({
+        type: 'full',
+        entities,
+      });
+    });
+
+    it('should be created catalog entity with merged 3 api docs in different formats', async () => {
+      const services = readTestJSONFile('services');
+      requestJsonDataMock.mockResolvedValueOnce(services);
+
+      const openAPI3_0Spec1 = readTestJSONFile('input/open-api-3.0-doc');
+      const apiDoc1 = createAPIDoc(
+        'ping',
+        'ping',
+        'A simple API that responds with the input message.',
+        openAPI3_0Spec1,
+      );
+      const swagger2_0Spec = readTestJSONFile('input/swagger-2.0-doc');
+      const apiDoc2 = createAPIDoc(
+        'list-users',
+        'List users API',
+        'List users API.',
+        swagger2_0Spec,
+      );
+      const swagger1_2Spec = readTestJSONFile('input/swagger-1.2-doc');
+      const apiDoc3 = createAPIDoc(
+        'get-user-profile-by-id',
+        'Get User Profile By ID',
+        'User profile API.',
+        swagger1_2Spec,
+      );
+
+      const apiDocs = { api_docs: [apiDoc1, apiDoc2, apiDoc3] };
+
+      requestJsonDataMock.mockResolvedValueOnce(apiDocs);
+
+      const proxy = readTestJSONFile('proxy');
+      requestJsonDataMock.mockResolvedValueOnce(proxy);
+
+      await threeScaleApiEntityProvider.run();
+
+      const entities = [
+        createExpectedEntity(
+          'output/merged-3-different-api-docs',
+          '[Merged 3 API docs] A simple API that responds with the input message. List users API.',
         ),
       ];
       expect(entityProviderConnection.applyMutation).toHaveBeenCalledWith({

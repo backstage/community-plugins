@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "Ping Service",
+    "title": "Ping Service.",
     "description": "A simple API that responds with the input message.",
     "version": "1.0.0"
   },

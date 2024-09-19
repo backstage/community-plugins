@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "title": "[Merged 2 API docs] A simple API that responds with the input message. A sample echo API.",
+    "title": "[Merged 2 API docs] Ping Service. Echo API.",
     "description": "[Merged 2 API docs] A simple API that responds with the input message. A sample echo API.",
     "version": "1.0.0"
   },

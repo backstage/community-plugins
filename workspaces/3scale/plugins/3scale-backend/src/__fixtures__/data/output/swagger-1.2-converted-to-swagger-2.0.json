@@ -8,10 +8,10 @@
     "version": "1.2"
   },
   "paths": {
-    "/users/{userId}": {
+    "/profile/{userId}": {
       "get": {
         "operationId": "getUserProfile",
-        "summary": "Get user profile by ID",
+        "summary": "Get user profile by user ID",
         "description": "Returns a user's profile details by their ID.",
         "parameters": [
           {
