@@ -131,6 +131,7 @@ describe('githubIssuesApi', () => {
           entityRepository('mrwolny/yo.yo'),
         ],
         10,
+        'github.com',
       );
 
       expect(mockGraphQLQuery).toHaveBeenCalledTimes(1);
@@ -146,14 +147,14 @@ describe('githubIssuesApi', () => {
           entityRepository('mrwolny/another-repo', 'enterprise.github.com'), // This one should be filtered out
         ],
         10,
-        'github.com', // entity location
+        'github.com',
       );
 
       expect(mockGraphQLQuery).toHaveBeenCalledTimes(1);
       expect(mockGraphQLQuery).toHaveBeenCalledWith(getFragment());
     });
 
-    it("should only fetch data for entities hosted in the same GitHub instance as the plugin's first config", async () => {
+    it("should only fetch data for entities hosted in the same GitHub instance as the plugin's first config if no config matches", async () => {
       await api.fetchIssuesByRepoFromGithub(
         [
           entityRepository('mrwolny/yo-yo'),
@@ -162,7 +163,7 @@ describe('githubIssuesApi', () => {
           entityRepository('mrwolny/another-repo', 'enterprise.github.com'), // This one should be filtered out
         ],
         10,
-        undefined,
+        'enterprise.github.com',
       );
 
       expect(mockGraphQLQuery).toHaveBeenCalledTimes(1);
@@ -289,6 +290,7 @@ describe('githubIssuesApi', () => {
     const data = await api.fetchIssuesByRepoFromGithub(
       [entityRepository('mrwolny/yo-yo'), entityRepository('mrwolny/notfound')],
       10,
+      'github.com',
     );
 
     expect(data).toEqual({
@@ -359,6 +361,7 @@ describe('githubIssuesApi', () => {
     const data = await api.fetchIssuesByRepoFromGithub(
       [entityRepository('mrwolny/notfound')],
       10,
+      'github.com',
     );
 
     expect(data).toEqual({});
@@ -400,6 +403,7 @@ describe('githubIssuesApi', () => {
     await api.fetchIssuesByRepoFromGithub(
       [entityRepository('mrwolny/notfound')],
       10,
+      'github.com',
     );
 
     expect(mockErrorApi.post).toHaveBeenCalledTimes(1);

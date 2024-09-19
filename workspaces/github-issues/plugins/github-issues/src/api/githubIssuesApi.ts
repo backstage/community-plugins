@@ -114,14 +114,13 @@ export const githubIssuesApi = (
   configApi: ConfigApi,
   errorApi: ErrorApi,
 ) => {
-  const getOctokit = async (hostname: string | undefined = undefined) => {
+  const getOctokit = async (hostname: string) => {
     const configs = readGithubIntegrationConfigs(
       configApi.getOptionalConfigArray('integrations.github') ?? [],
     );
 
-    const githubIntegrationConfig = hostname
-      ? configs.find(v => v.host === hostname)
-      : configs[0];
+    const githubIntegrationConfig =
+      configs.find(v => v.host === hostname) ?? configs[0];
 
     const host = githubIntegrationConfig?.host;
     const { token } = await scmAuthApi.getCredentials({
@@ -140,7 +139,7 @@ export const githubIssuesApi = (
   const fetchIssuesByRepoFromGithub = async (
     repos: Array<Repository>,
     itemsPerRepo: number,
-    hostname?: string,
+    hostname: string,
     {
       filterBy,
       orderBy = {
