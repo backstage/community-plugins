@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { createLegacyAuthAdapters } from '@backstage/backend-common';
 import {
   DatabaseService,
   DiscoveryService,
@@ -63,7 +62,7 @@ export interface RouterOptions {
   discovery: DiscoveryService;
   config: Config;
   scheduler?: SchedulerService;
-  auth?: AuthService;
+  auth: AuthService;
   httpAuth?: HttpAuthService;
 }
 
@@ -93,18 +92,13 @@ export async function createRouter(
 
   const catalogClient = new CatalogClient({ discoveryApi: discovery });
 
-  const { auth: adaptedAuth } = createLegacyAuthAdapters({
-    auth,
-    discovery: discovery,
-  });
-
   const linguistBackendClient =
     routerOptions.linguistBackendApi ||
     new LinguistBackendClient(
       logger,
       linguistBackendStore,
       reader,
-      adaptedAuth,
+      auth,
       catalogClient,
       age,
       batchSize,

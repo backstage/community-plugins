@@ -4,7 +4,7 @@
 
 ```ts
 import { AuthService } from '@backstage/backend-plugin-api';
-import { BackendFeatureCompat } from '@backstage/backend-plugin-api';
+import { BackendFeature } from '@backstage/backend-plugin-api';
 import { Config } from '@backstage/config';
 import { DatabaseService } from '@backstage/backend-plugin-api';
 import { DiscoveryService } from '@backstage/backend-plugin-api';
@@ -37,7 +37,7 @@ export interface LinguistBackendApi {
 }
 
 // @public
-const linguistPlugin: BackendFeatureCompat;
+const linguistPlugin: BackendFeature;
 export default linguistPlugin;
 
 // @public @deprecated (undocumented)
@@ -59,7 +59,7 @@ export interface PluginOptions {
 // @public @deprecated (undocumented)
 export interface RouterOptions {
   // (undocumented)
-  auth?: AuthService;
+  auth: AuthService;
   // (undocumented)
   config: Config;
   // (undocumented)
