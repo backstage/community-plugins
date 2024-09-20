@@ -32,7 +32,6 @@ import {
   PullRequestsDashboardProvider,
 } from '../api/PullRequestsDashboardProvider';
 import Router from 'express-promise-router';
-import { createLegacyAuthAdapters } from '@backstage/backend-common';
 import { UrlReaderService } from '@backstage/backend-plugin-api';
 import express from 'express';
 import { InputError, NotAllowedError } from '@backstage/errors';
@@ -59,7 +58,7 @@ export interface RouterOptions {
   reader: UrlReaderService;
   permissions: PermissionsService;
   discovery: DiscoveryService;
-  httpAuth?: HttpAuthService;
+  httpAuth: HttpAuthService;
 }
 
 /**
@@ -69,9 +68,7 @@ export interface RouterOptions {
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
-  const { logger, reader, config, permissions } = options;
-
-  const { httpAuth } = createLegacyAuthAdapters(options);
+  const { logger, reader, config, permissions, httpAuth } = options;
 
   if (config.getOptionalString('azureDevOps.token')) {
     logger.warn(

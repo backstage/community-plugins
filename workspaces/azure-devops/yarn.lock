@@ -2734,7 +2734,6 @@ __metadata:
   resolution: "@backstage-community/plugin-azure-devops-backend@workspace:plugins/azure-devops-backend"
   dependencies:
     "@backstage-community/plugin-azure-devops-common": "workspace:^"
-    "@backstage/backend-common": ^0.25.0
     "@backstage/backend-defaults": ^0.5.0
     "@backstage/backend-plugin-api": ^1.0.0
     "@backstage/backend-test-utils": ^1.0.0
@@ -2816,7 +2815,6 @@ __metadata:
   resolution: "@backstage-community/plugin-catalog-backend-module-azure-devops-annotator-processor@workspace:plugins/catalog-backend-module-azure-devops-annotator-processor"
   dependencies:
     "@backstage-community/plugin-azure-devops-common": "workspace:^"
-    "@backstage/backend-common": ^0.25.0
     "@backstage/backend-plugin-api": ^1.0.0
     "@backstage/backend-test-utils": ^1.0.0
     "@backstage/catalog-model": ^1.7.0
@@ -14643,7 +14641,6 @@ __metadata:
   dependencies:
     "@backstage-community/plugin-azure-devops-backend": "workspace:^"
     "@backstage-community/plugin-catalog-backend-module-azure-devops-annotator-processor": "workspace:^"
-    "@backstage/backend-common": ^0.25.0
     "@backstage/backend-defaults": ^0.5.0
     "@backstage/backend-tasks": ^0.6.1
     "@backstage/cli": ^0.27.1
