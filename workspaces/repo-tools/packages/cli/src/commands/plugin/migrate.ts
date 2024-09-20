@@ -1,3 +1,5 @@
+// test
+
 import chalk from 'chalk';
 import fs from 'fs-extra';
 import { OptionValues } from 'commander';
