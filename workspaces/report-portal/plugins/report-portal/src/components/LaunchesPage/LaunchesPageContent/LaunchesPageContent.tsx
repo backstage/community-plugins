@@ -11,6 +11,7 @@ import { useApi } from '@backstage/core-plugin-api';
 
 import Launch from '@mui/icons-material/Launch';
 import { DateTime } from 'luxon';
+import { useDebounce } from 'react-use';
 
 import {
   LaunchDetailsResponse,
@@ -18,15 +19,41 @@ import {
   reportPortalApiRef,
 } from '../../../api';
 
+import Grid from '@mui/material/Grid';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+
 type LaunchDetails = {
   id: number;
   launchName: string;
   number: number;
+  status: string;
   total: number;
   passed: number;
   failed: number;
   skipped: number;
   startTime: number;
+};
+
+const RenderTime = (props: { timeMillis: number }) => {
+  const relativeTime = DateTime.fromMillis(props.timeMillis)
+    .toLocal()
+    .toRelative();
+  const dateTime = DateTime.fromMillis(props.timeMillis).toLocaleString({
+    dateStyle: 'short',
+    timeStyle: 'medium',
+  });
+
+  const [showTime, setShowTime] = useState(false);
+  return (
+    <Grid
+      onMouseEnter={() => setShowTime(true)}
+      onMouseLeave={() => setShowTime(false)}
+      style={{ fontSize: '15px' }}
+    >
+      {showTime ? dateTime : relativeTime}
+    </Grid>
+  );
 };
 
 export const LaunchesPageContent = (props: {
@@ -44,21 +71,26 @@ export const LaunchesPageContent = (props: {
     launches: [],
     page: {
       number: 1,
-      size: 10,
+      size: 50,
       totalElements: 0,
       totalPages: 1,
     },
   });
 
   const [error, setError] = useState<any>();
+  const defaultFilters = {
+    'page.size': tableData.page.size,
+    'page.page': tableData.page.number,
+    'page.sort': 'startTime,DESC',
+  };
+
+  const [filters, setFilters] = useState<{ [key: string]: any }>(
+    defaultFilters,
+  );
   useEffect(() => {
     setLoading(true);
     reportPortalApi
-      .getLaunchResults(project, host, {
-        'page.size': 10,
-        'page.page': 1,
-        'page.sort': 'startTime,DESC',
-      })
+      .getLaunchResults(project, host, filters)
       .then(res => {
         responseHandler(res);
       })
@@ -66,23 +98,14 @@ export const LaunchesPageContent = (props: {
         setLoading(false);
         setError(err);
       });
-  }, [host, project, reportPortalApi]);
+  }, [host, project, reportPortalApi, filters]);
 
   function handlePageChange(page: number, pageSize: number) {
+    setFilters({
+      'page.size': pageSize,
+      'page.page': page + 1,
+    });
     setLoading(true);
-    reportPortalApi
-      .getLaunchResults(project, host, {
-        'page.size': pageSize,
-        'page.page': page + 1,
-        'page.sort': 'startTime,DESC',
-      })
-      .then(res => {
-        responseHandler(res);
-      })
-      .catch(err => {
-        setError(err);
-        setLoading(false);
-      });
   }
 
   function responseHandler(res: LaunchDetailsResponse) {
@@ -92,10 +115,11 @@ export const LaunchesPageContent = (props: {
         id: data.id,
         launchName: data.name,
         number: data.number,
-        total: data.statistics.executions.total ?? '-',
-        passed: data.statistics.executions.passed ?? '-',
-        failed: data.statistics.executions.failed ?? '-',
-        skipped: data.statistics.executions.skipped ?? '-',
+        status: data.status,
+        total: data.statistics.executions.total ?? 0,
+        passed: data.statistics.executions.passed ?? 0,
+        failed: data.statistics.executions.failed ?? 0,
+        skipped: data.statistics.executions.skipped ?? 0,
         startTime: data.startTime,
       });
     });
@@ -107,7 +131,7 @@ export const LaunchesPageContent = (props: {
     {
       id: 0,
       field: 'launchName',
-      title: 'Launch',
+      title: 'Launch Name',
       render: row => (
         <Link to={`https://${host}/ui/#${project}/launches/latest/${row.id}`}>
           {row.launchName} #{row.number}
@@ -148,13 +172,16 @@ export const LaunchesPageContent = (props: {
       id: 4,
       title: 'Start Time',
       align: 'center',
+      defaultSort: 'desc',
+      field: 'startTime',
       width: '25%',
       render: row => DateTime.fromMillis(row.startTime).toRelative(),
     },
     {
       id: 5,
       title: 'Actions',
-      align: 'left',
+      align: 'center',
+      sorting: false,
       width: '5%',
       render: row => (
         <LinkButton
@@ -168,23 +195,43 @@ export const LaunchesPageContent = (props: {
       ),
     },
   ];
+
+  const [searchText, setSearchText] = useState<string>('');
+
+  useDebounce(
+    () => {
+      setFilters({
+        ...defaultFilters,
+        ...(searchText?.length > 0 && { 'filter.cnt.name': searchText }),
+      });
+    },
+    400,
+    [searchText],
+  );
+
+  function handleInput(inputString: string) {
+    setSearchText(inputString);
+  }
+
   if (error) return <ErrorPanel error={error} />;
   return (
     <Table
       options={{
-        pageSizeOptions: [5, 10, 20],
+        pageSizeOptions: [25, 50, 100],
         sorting: true,
         pageSize: tableData.page.size,
         searchFieldVariant: 'outlined',
         padding: 'dense',
         paginationPosition: 'both',
+        emptyRowsWhenPaging: false,
       }}
-      title="Latest Launches"
+      title={`Latest Launches (${tableData.page.totalElements})`}
       columns={columns}
-      data={tableData?.launches ?? []}
-      page={tableData?.page.number - 1}
-      totalCount={tableData?.page.totalElements}
+      data={tableData.launches ?? []}
+      page={tableData.page.number - 1}
+      totalCount={tableData.page.totalElements}
       onPageChange={handlePageChange}
+      onSearchChange={handleInput}
       isLoading={loading}
     />
   );

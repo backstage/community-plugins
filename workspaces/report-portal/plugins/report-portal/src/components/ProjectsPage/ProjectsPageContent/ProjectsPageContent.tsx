@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useDebounce } from 'react-use';
 
 import {
   ErrorPanel,
@@ -7,11 +8,17 @@ import {
   TableColumn,
   LinkButton,
 } from '@backstage/core-components';
-import { configApiRef, useApi, useRouteRef } from '@backstage/core-plugin-api';
+import {
+  alertApiRef,
+  configApiRef,
+  useApi,
+  useRouteRef,
+} from '@backstage/core-plugin-api';
 
 import Launch from '@mui/icons-material/Launch';
 import Skeleton from '@mui/material/Skeleton';
 
+import { useNavigate } from 'react-router-dom';
 import {
   ProjectDetails,
   ProjectListResponse,
@@ -22,21 +29,27 @@ import { launchRouteRef } from '../../../routes';
 const UniqueLaunches = (props: { host: string; projectId: string }) => {
   const { host, projectId } = props;
   const [loading, setLoading] = useState(true);
-  const [noOfLaunches, setNoOfLaunches] = useState(0);
+  const [noOfLaunches, setNoOfLaunches] = useState<string | number>('-');
+  const alertApi = useApi(alertApiRef);
 
   const api = useApi(reportPortalApiRef);
   useEffect(() => {
-    api.getLaunchResults(projectId, host, {}).then(res => {
-      setNoOfLaunches(res.content.length);
-      setLoading(false);
-    });
-  }, [api, projectId, host]);
-
-  return loading ? (
-    <Skeleton width="2rem" height="3rem" />
-  ) : (
-    <b>{noOfLaunches}</b>
-  );
+    api
+      .getLaunchResults(projectId, host, {})
+      .then(res => {
+        setNoOfLaunches(res.content.length);
+        setLoading(false);
+      })
+      .catch(err => {
+        alertApi.post({
+          message: err,
+          display: 'transient',
+          severity: 'error',
+        });
+        setLoading(false);
+      });
+  }, [api, projectId, host, alertApi]);
+  return loading ? <Skeleton height="2rem" /> : <>{noOfLaunches}</>;
 };
 
 export const ProjectsPageContent = (props: { host: string }) => {
@@ -65,14 +78,20 @@ export const ProjectsPageContent = (props: { host: string }) => {
 
   const [error, setError] = useState<any>();
 
+  const defaultFilters = {
+    'filter.eq.type': filterType,
+    'page.size': tableData.page.size,
+    'page.page': tableData.page.number,
+  };
+
+  const [filters, setFilters] = useState<{ [key: string]: any }>(
+    defaultFilters,
+  );
+
   useEffect(() => {
     if (loading) {
       reportPortalApi
-        .getInstanceDetails(host, {
-          'filter.eq.type': filterType,
-          'page.size': tableData.page.size,
-          'page.page': tableData.page.number,
-        })
+        .getInstanceDetails(host, filters)
         .then(res => {
           setTableData({ ...res });
           setLoading(false);
@@ -82,7 +101,7 @@ export const ProjectsPageContent = (props: { host: string }) => {
           setError(err);
         });
     }
-  });
+  }, [reportPortalApi, filterType, filters, host, loading]);
 
   const columns: TableColumn<ProjectDetails>[] = [
     {
@@ -122,19 +141,32 @@ export const ProjectsPageContent = (props: { host: string }) => {
   ];
 
   function handlePageChange(page: number, pageSize: number) {
+    setFilters({
+      ...defaultFilters,
+      'page.page': page + 1,
+      'page.size': pageSize,
+    });
     setLoading(true);
-    reportPortalApi
-      .getInstanceDetails(host, {
-        'filter.eq.type': filterType,
-        'page.size': pageSize,
-        'page.page': page + 1,
-      })
-      .then(res => {
-        setTableData({ ...res });
-        setLoading(false);
-      });
   }
 
+  const [searchText, setSearchText] = useState<string>();
+  useDebounce(
+    () => {
+      setFilters({
+        ...defaultFilters,
+        ...(searchText && { 'predefinedFilter.projects': searchText }),
+      });
+      setLoading(true);
+    },
+    600,
+    [searchText],
+  );
+
+  function handleSearchInput(inputText: string) {
+    setSearchText(inputText.length > 0 ? inputText : undefined);
+  }
+
+  const navigate = useNavigate();
   if (error) return <ErrorPanel error={error} />;
 
   return (
@@ -145,11 +177,15 @@ export const ProjectsPageContent = (props: { host: string }) => {
         paginationPosition: 'both',
         searchFieldVariant: 'outlined',
       }}
-      title="Projects"
+      title={`Projects (${tableData.page.totalElements})`}
       columns={columns}
       data={tableData.content}
       page={tableData.page.number - 1}
       totalCount={tableData.page.totalElements}
+      onSearchChange={handleSearchInput}
+      onRowClick={(_e, r) =>
+        navigate(`${launchPageRoute()}?host=${host}&project=${r?.projectName}`)
+      }
       onPageChange={handlePageChange}
       isLoading={loading}
     />
