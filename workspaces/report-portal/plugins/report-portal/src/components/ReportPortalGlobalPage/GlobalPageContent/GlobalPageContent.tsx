@@ -77,7 +77,7 @@ export const GlobalPageContent = () => {
           rel="noreferrer noopener"
           target="_blank"
           size="large"
-          onClick={e=>e.stopPropagation()}
+          onClick={e => e.stopPropagation()}
         >
           <LaunchIcon />
         </IconButton>
@@ -111,7 +111,11 @@ export const GlobalPageContent = () => {
       onRowClick={(_e, rowData) =>
         navigate(projectsPageRoute.concat(`?host=${rowData?.instance}`))
       }
-      options={{ searchFieldVariant: 'outlined', draggable: false, padding: 'dense' }}
+      options={{
+        searchFieldVariant: 'outlined',
+        draggable: false,
+        padding: 'dense',
+      }}
       data={instanceData}
     />
   );

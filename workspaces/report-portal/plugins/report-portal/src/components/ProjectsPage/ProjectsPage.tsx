@@ -45,7 +45,7 @@ export const ProjectsPage = (props: { themeId?: string }) => {
         <StyledButton
           endIcon={<Launch />}
           variant="text"
-          style={{marginRight:'16px'}}
+          style={{ marginRight: '16px' }}
           to={`https://${hostName}`}
         >
           Report Portal

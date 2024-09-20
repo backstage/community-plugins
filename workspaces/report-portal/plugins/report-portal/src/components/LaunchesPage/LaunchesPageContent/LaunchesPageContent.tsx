@@ -5,7 +5,6 @@ import {
   Table,
   TableColumn,
   Link,
-  LinkButton,
 } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 
