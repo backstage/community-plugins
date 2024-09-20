@@ -6,7 +6,6 @@ import {
   Link,
   Table,
   TableColumn,
-  LinkButton,
 } from '@backstage/core-components';
 import {
   alertApiRef,
@@ -25,6 +24,8 @@ import {
   reportPortalApiRef,
 } from '../../../api';
 import { launchRouteRef } from '../../../routes';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
 
 const UniqueLaunches = (props: { host: string; projectId: string }) => {
   const { host, projectId } = props;
@@ -106,7 +107,7 @@ export const ProjectsPageContent = (props: { host: string }) => {
   const columns: TableColumn<ProjectDetails>[] = [
     {
       id: 0,
-      title: 'Project',
+      title: 'Name',
       field: 'projectName',
       render: row => (
         <Link
@@ -115,27 +116,48 @@ export const ProjectsPageContent = (props: { host: string }) => {
           {row.projectName}
         </Link>
       ),
-      width: '60%',
+      width: '40%',
       searchable: true,
     },
     {
       id: 1,
-      title: 'Launches',
-      width: '30%',
-      render: row => <UniqueLaunches host={host} projectId={row.projectName} />,
+      sorting: false,
+      width: '20%',
     },
     {
       id: 2,
-      title: 'Actions',
+      title: 'Launches',
       align: 'center',
+      width: '10%',
+      highlight: true,
+      render: row => <UniqueLaunches host={host} projectId={row.projectName} />,
+    },
+    {
+      id: 3,
+      sorting: false,
+
+      width: '25%',
+    },
+    {
+      id: 4,
+      title: 'Actions',
+      sorting: false,
+      align: 'center',
+      width: '5%',
       render: row => (
-        <LinkButton
-          to={`https://${host}/ui/#${row.projectName}/`}
-          size="large"
-          color="inherit"
-        >
-          <Launch />
-        </LinkButton>
+        <Tooltip title="View on report portal" disableInteractive>
+          <IconButton
+            style={{ padding: 0 }}
+            href={`https://${host}/ui/#${row.projectName}`}
+            target="_blank"
+            size="medium"
+            onClick={e => e.stopPropagation()}
+            centerRipple
+            color="inherit"
+          >
+            <Launch />
+          </IconButton>
+        </Tooltip>
       ),
     },
   ];

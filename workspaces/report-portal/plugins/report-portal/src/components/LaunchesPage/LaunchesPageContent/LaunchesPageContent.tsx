@@ -133,40 +133,76 @@ export const LaunchesPageContent = (props: {
       field: 'launchName',
       title: 'Launch Name',
       render: row => (
-        <Link to={`https://${host}/ui/#${project}/launches/latest/${row.id}`}>
-          {row.launchName} #{row.number}
-        </Link>
+        <>
+          <Link to={`https://${host}/ui/#${project}/launches/latest/${row.id}`}>
+            {row.launchName} #{row.number}
+          </Link>
+          {row.total === 0 && ` - (${row.status})`}
+        </>
       ),
       width: '50%',
-      searchable: true,
     },
     {
       id: 1,
       title: 'Total',
       align: 'center',
       width: '5%',
-      render: row => <b>{row.total}</b>,
+      field: 'total',
+      render: data =>
+        data.total === 0 ? (
+          <Typography variant="caption">-</Typography>
+        ) : (
+          data.total
+        ),
+      highlight: true,
     },
     {
       id: 2,
       title: 'Passed',
       align: 'center',
       width: '5%',
-      render: row => <b>{row.passed}</b>,
+      field: 'passed',
+      render: data =>
+        data.passed === 0 ? (
+          <Typography variant="caption">-</Typography>
+        ) : (
+          <Typography variant="button" color="green">
+            {data.passed}
+          </Typography>
+        ),
+      highlight: true,
     },
     {
       id: 3,
       title: 'Failed',
       align: 'center',
       width: '5%',
-      render: row => <b>{row.failed}</b>,
+      field: 'failed',
+      render: data =>
+        data.failed === 0 ? (
+          <Typography variant="caption">-</Typography>
+        ) : (
+          <Typography variant="button" color="#a60000">
+            {data.failed}
+          </Typography>
+        ),
+      highlight: true,
     },
     {
       id: 4,
       title: 'Skipped',
       align: 'center',
       width: '5%',
-      render: row => <b>{row.skipped}</b>,
+      field: 'skipped',
+      render: data =>
+        data.skipped === 0 ? (
+          <Typography variant="caption">-</Typography>
+        ) : (
+          <Typography variant="button" color="grey">
+            {data.skipped}
+          </Typography>
+        ),
+      highlight: true,
     },
     {
       id: 4,
@@ -175,7 +211,8 @@ export const LaunchesPageContent = (props: {
       defaultSort: 'desc',
       field: 'startTime',
       width: '25%',
-      render: row => DateTime.fromMillis(row.startTime).toRelative(),
+      cellStyle: () => ({ paddingTop: 0, paddingBottom: 0 }),
+      render: row => <RenderTime timeMillis={row.startTime} />,
     },
     {
       id: 5,
@@ -184,14 +221,16 @@ export const LaunchesPageContent = (props: {
       sorting: false,
       width: '5%',
       render: row => (
-        <LinkButton
-          to={`https://${host}/ui/#${project}/launches/latest/${row.id}`}
-          size="large"
+        <IconButton
+          target="_blank"
+          style={{ padding: 0 }}
+          href={`https://${host}/ui/#${project}/launches/latest/${row.id}`}
+          size="small"
           centerRipple
           color="inherit"
         >
           <Launch />
-        </LinkButton>
+        </IconButton>
       ),
     },
   ];

@@ -24,7 +24,7 @@ export const ReportPortalGlobalPage = (props: ReportPortalGlobalPageProps) => {
   return (
     <PageWithHeader
       themeId={props.theme ?? 'app'}
-      subtitle={props.subtitle ?? 'View all report portals'}
+      subtitle={props.subtitle}
       title={props.title ?? 'Report Portal'}
     >
       <Content>
