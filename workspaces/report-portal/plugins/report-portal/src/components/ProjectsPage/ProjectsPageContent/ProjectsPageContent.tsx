@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useDebounce } from 'react-use';
+import useDebounce from 'react-use/lib/useDebounce';
 
 import {
   ErrorPanel,

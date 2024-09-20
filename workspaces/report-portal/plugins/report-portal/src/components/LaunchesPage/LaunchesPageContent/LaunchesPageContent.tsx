@@ -10,7 +10,7 @@ import { useApi } from '@backstage/core-plugin-api';
 
 import Launch from '@mui/icons-material/Launch';
 import { DateTime } from 'luxon';
-import { useDebounce } from 'react-use';
+import useDebounce from 'react-use/lib/useDebounce';
 
 import {
   LaunchDetailsResponse,
