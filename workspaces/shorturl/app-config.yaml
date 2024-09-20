@@ -10,5 +10,5 @@ backend:
   baseUrl: http://localhost:7007
   auth:
     dangerouslyDisableDefaultAuthPolicy: true
-  cors: 
-     origin: http://localhost:3000
+  cors:
+    origin: http://localhost:3000
