@@ -44,7 +44,6 @@
   "peerDependencies": {
     "@backstage/backend-plugin-api": "^0.8.0",
     "@backstage/catalog-model": "^1.6.0",
-    "@backstage/config": "^1.2.0",
     "@backstage/errors": "^1.2.4",
     "@backstage/plugin-catalog-node": "^1.12.5"
   },

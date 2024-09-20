@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 import { readSchedulerServiceTaskScheduleDefinitionFromConfig } from '@backstage/backend-plugin-api';
-import { Config } from '@backstage/config';
+import type { Config } from '@backstage/config';
 
 import { ThreeScaleConfig } from './types';
 
 export function readThreeScaleApiEntityConfigs(
   config: Config,
 ): ThreeScaleConfig[] {
-  console.log(config);
   const providerConfigs = config.getOptionalConfig(
     'catalog.providers.threeScaleApiEntity',
   );

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { SchedulerServiceTaskScheduleDefinition } from '@backstage/backend-plugin-api';
+import type { SchedulerServiceTaskScheduleDefinition } from '@backstage/backend-plugin-api';
 
 export type ThreeScaleConfig = {
   id: string;

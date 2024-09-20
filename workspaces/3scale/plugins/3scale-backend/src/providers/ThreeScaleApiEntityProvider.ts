@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
+
+import type {
   SchedulerServiceTaskRunner,
   SchedulerService,
   LoggerService,
@@ -26,7 +27,7 @@ import {
   Entity,
 } from '@backstage/catalog-model';
 
-import { Config } from '@backstage/config';
+import type { Config } from '@backstage/config';
 import { InputError, isError, NotFoundError } from '@backstage/errors';
 
 import {
@@ -39,7 +40,7 @@ import {
   listApiDocs,
   listServices,
 } from '../clients/ThreeScaleAPIConnector';
-import {
+import type {
   APIDocElement,
   APIDocs,
   Proxy,
@@ -47,7 +48,7 @@ import {
   Services,
 } from '../clients/types';
 import { readThreeScaleApiEntityConfigs } from './config';
-import { ThreeScaleConfig } from './types';
+import type { ThreeScaleConfig } from './types';
 
 export class ThreeScaleApiEntityProvider implements EntityProvider {
   private static SERVICES_FETCH_SIZE: number = 500;

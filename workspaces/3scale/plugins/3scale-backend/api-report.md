@@ -4,12 +4,12 @@
 
 ```ts
 import { BackendFeatureCompat } from '@backstage/backend-plugin-api';
-import { Config } from '@backstage/config';
+import type { Config } from '@backstage/config';
 import { EntityProvider } from '@backstage/plugin-catalog-node';
 import { EntityProviderConnection } from '@backstage/plugin-catalog-node';
-import { LoggerService } from '@backstage/backend-plugin-api';
-import { SchedulerService } from '@backstage/backend-plugin-api';
-import { SchedulerServiceTaskRunner } from '@backstage/backend-plugin-api';
+import type { LoggerService } from '@backstage/backend-plugin-api';
+import type { SchedulerService } from '@backstage/backend-plugin-api';
+import type { SchedulerServiceTaskRunner } from '@backstage/backend-plugin-api';
 
 // Warning: (ae-missing-release-tag) "catalogModule3ScaleEntityProvider" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //

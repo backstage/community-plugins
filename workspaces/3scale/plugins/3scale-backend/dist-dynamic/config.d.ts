@@ -1,4 +1,4 @@
-import { SchedulerServiceTaskScheduleDefinitionConfig } from '@backstage/backend-plugin-api';
+import type { SchedulerServiceTaskScheduleDefinitionConfig } from '@backstage/backend-plugin-api';
 
 export interface Config {
   catalog?: {
