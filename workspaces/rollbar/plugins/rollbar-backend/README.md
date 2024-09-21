@@ -11,6 +11,31 @@ Simple plugin that proxies requests to the [Rollbar](https://rollbar.com) API.
 yarn --cwd packages/backend add @backstage-community/plugin-rollbar-backend
 ```
 
+2. In your `packages/backend/src/index.ts` make the following changes:
+
+```diff
+  import { createBackend } from '@backstage/backend-defaults';
+
+  const backend = createBackend();
+
+  // ... other feature additions
+
++ backend.add(import('@backstage-community/plugin-rollbar-backend'));
+
+  // ...
+
+  backend.start();
+```
+
+### Legacy Backend Setup
+
+1. Install the plugin using:
+
+```bash
+# From your Backstage root directory
+yarn --cwd packages/backend add @backstage-community/plugin-rollbar-backend
+```
+
 2. Create a `rollbar.ts` file inside `packages/backend/src/plugins/`:
 
 ```typescript
