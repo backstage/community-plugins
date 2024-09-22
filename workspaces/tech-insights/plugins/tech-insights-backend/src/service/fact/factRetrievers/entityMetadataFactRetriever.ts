@@ -20,7 +20,7 @@ import {
 } from '@backstage-community/plugin-tech-insights-node';
 import { CatalogClient } from '@backstage/catalog-client';
 import { Entity } from '@backstage/catalog-model';
-import isEmpty from 'lodash/isEmpty';
+import isEmpty from 'lodash';
 
 /**
  * Generates facts which indicate the completeness of entity metadata.
