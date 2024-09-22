@@ -19,7 +19,7 @@ export function createBlackduckProjectAction(
     projectVersion?: string | undefined;
     versionPhase?: string | undefined;
     versionDistribution?: string | undefined;
-    instancName?: string | undefined;
+    instanceName?: string | undefined;
   },
   JsonObject
 >;

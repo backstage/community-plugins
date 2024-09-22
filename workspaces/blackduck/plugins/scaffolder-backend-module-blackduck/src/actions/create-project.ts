@@ -17,7 +17,7 @@ export function createBlackduckProjectAction(
     projectVersion?: string;
     versionPhase?: string;
     versionDistribution?: string;
-    instancName?: string;
+    instanceName?: string;
   }>({
     id: 'blackduck:create:project',
     description: 'Create a Blackduck project',
@@ -46,7 +46,7 @@ export function createBlackduckProjectAction(
             description: 'Distribution Internal / External',
             type: 'string',
           },
-          instancName: {
+          instanceName: {
             title: 'Instance',
             description: 'Name of the Instance',
             type: 'string',
@@ -55,21 +55,25 @@ export function createBlackduckProjectAction(
       },
     },
     async handler(ctx) {
+      const {
+        projectName,
+        projectVersion,
+        versionPhase = 'DEVELOPMENT',
+        versionDistribution = 'INTERNAL',
+        instanceName = 'default',
+      } = ctx.input;
+
       ctx.logger.info(
-        `Creating BlackDuck project: ${ctx.input.projectName} with 
-        version: ${ctx.input.projectVersion} 
-        & phase: ${ctx.input.versionPhase}, distribution: ${
-          ctx.input.versionDistribution
-        } on Instance: ${ctx.input.instancName ?? 'default'}`,
+        `Creating BlackDuck project: ${projectName} with 
+        version: ${projectVersion} 
+        & phase: ${versionPhase}, distribution: ${versionDistribution} on Instance: ${instanceName}`,
       );
 
       let blackduckApiUrl: string;
       let blackduckApiToken: string;
 
       try {
-        const hostConfig = blackDuckConfig.getHostConfigByName(
-          ctx.input.instancName ?? 'default',
-        );
+        const hostConfig = blackDuckConfig.getHostConfigByName(instanceName);
         blackduckApiUrl = hostConfig.host;
         blackduckApiToken = hostConfig.token;
       } catch (error) {
@@ -89,17 +93,17 @@ export function createBlackduckProjectAction(
       await blackDuckApi.auth();
 
       await blackDuckApi.createProject(
-        ctx.input.projectName,
-        ctx.input.projectVersion,
-        ctx.input.versionPhase,
-        ctx.input.versionDistribution,
+        projectName,
+        projectVersion,
+        versionPhase,
+        versionDistribution,
       );
 
-      ctx.output('projectName', ctx.input.projectName);
-      ctx.output('projectVersion', ctx.input.projectVersion);
-      ctx.output('versionPhase', ctx.input.versionPhase);
-      ctx.output('versionDistribution', ctx.input.versionDistribution);
-      ctx.output('instanceName', ctx.input.instancName);
+      ctx.output('projectName', projectName);
+      ctx.output('projectVersion', projectVersion);
+      ctx.output('versionPhase', versionPhase);
+      ctx.output('versionDistribution', versionDistribution);
+      ctx.output('instanceName', instanceName);
     },
   });
 }
