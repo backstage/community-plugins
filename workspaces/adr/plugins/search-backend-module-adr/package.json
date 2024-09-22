@@ -31,23 +31,23 @@
   },
   "dependencies": {
     "@backstage-community/plugin-adr-common": "workspace:^",
-    "@backstage/backend-common": "^0.24.0",
-    "@backstage/backend-plugin-api": "^0.8.0",
-    "@backstage/backend-tasks": "^0.6.0",
-    "@backstage/catalog-client": "^1.6.6",
-    "@backstage/catalog-model": "^1.6.0",
+    "@backstage/backend-common": "^0.25.0",
+    "@backstage/backend-plugin-api": "^1.0.0",
+    "@backstage/backend-tasks": "^0.6.1",
+    "@backstage/catalog-client": "^1.7.0",
+    "@backstage/catalog-model": "^1.7.0",
     "@backstage/config": "^1.2.0",
     "@backstage/errors": "^1.2.4",
-    "@backstage/integration": "^1.14.0",
-    "@backstage/plugin-catalog-node": "^1.12.5",
-    "@backstage/plugin-search-backend-node": "^1.3.0",
+    "@backstage/integration": "^1.15.0",
+    "@backstage/plugin-catalog-node": "^1.13.0",
+    "@backstage/plugin-search-backend-node": "^1.3.2",
     "@backstage/plugin-search-common": "^1.2.14",
     "luxon": "^3.0.0",
     "marked": "^12.0.0"
   },
   "devDependencies": {
-    "@backstage/backend-test-utils": "^0.5.0",
-    "@backstage/cli": "^0.27.0"
+    "@backstage/backend-test-utils": "^1.0.0",
+    "@backstage/cli": "^0.27.1"
   },
   "files": [
     "dist",
