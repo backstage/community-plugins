@@ -16,15 +16,15 @@
 
 import express from 'express';
 import Router from 'express-promise-router';
-import { Logger } from 'winston';
 import { errorHandler } from '@backstage/backend-common';
 import { Config } from '@backstage/config';
 import { RollbarApi } from '../api';
+import { LoggerService } from '@backstage/backend-plugin-api';
 
 /** @public */
 export interface RouterOptions {
   rollbarApi?: RollbarApi;
-  logger: Logger;
+  logger: LoggerService;
   config: Config;
 }
 
@@ -90,7 +90,7 @@ export async function createRouter(
   return router;
 }
 
-function getRollbarAccountToken(config: Config, logger: Logger) {
+function getRollbarAccountToken(config: Config, logger: LoggerService) {
   const token =
     config.getOptionalString('accountToken') ||
     process.env.ROLLBAR_ACCOUNT_TOKEN ||
