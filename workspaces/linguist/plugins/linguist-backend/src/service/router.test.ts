@@ -65,7 +65,6 @@ describe('createRouter', () => {
           reader: mockUrlReader,
           logger: mockServices.logger.mock(),
           config: mockServices.rootConfig(),
-          auth: mockServices.auth(),
         },
       );
       app = express().use(router);
@@ -100,7 +99,6 @@ describe('createRouter', () => {
         reader: mockUrlReader,
         logger: mockServices.logger.mock(),
         config,
-        auth: mockServices.auth(),
       });
       app = express().use(router);
     });

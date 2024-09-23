@@ -40,6 +40,7 @@
   },
   "dependencies": {
     "@backstage-community/plugin-linguist-common": "workspace:^",
+    "@backstage/backend-common": "^0.25.0",
     "@backstage/backend-defaults": "^0.5.0",
     "@backstage/backend-plugin-api": "^1.0.0",
     "@backstage/backend-tasks": "^0.6.1",

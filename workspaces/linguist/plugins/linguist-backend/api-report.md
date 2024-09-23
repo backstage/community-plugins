@@ -59,7 +59,7 @@ export interface PluginOptions {
 // @public @deprecated (undocumented)
 export interface RouterOptions {
   // (undocumented)
-  auth: AuthService;
+  auth?: AuthService;
   // (undocumented)
   config: Config;
   // (undocumented)
