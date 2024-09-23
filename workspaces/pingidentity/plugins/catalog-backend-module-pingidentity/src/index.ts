@@ -1,3 +1,9 @@
+/**
+ * The pingidentity backend module for the catalog plugin.
+ *
+ * @packageDocumentation
+ */
+
 /*
  * Copyright 2024 The Backstage Authors
  *
