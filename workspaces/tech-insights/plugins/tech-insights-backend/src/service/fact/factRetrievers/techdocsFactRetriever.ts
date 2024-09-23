@@ -23,8 +23,12 @@ import { Entity } from '@backstage/catalog-model';
 import { entityHasAnnotation, generateAnnotationFactName } from './utils';
 
 const techdocsAnnotation = 'backstage.io/techdocs-ref';
+const techdocsEntityAnnotation = 'backstage.io/techdocs-entity';
 const techdocsAnnotationFactName =
   generateAnnotationFactName(techdocsAnnotation);
+const techdocsEntityAnnotationFactName = generateAnnotationFactName(
+  techdocsEntityAnnotation,
+);
 
 /**
  * Generates facts related to the completeness of techdocs configuration for entities.
@@ -41,6 +45,10 @@ export const techdocsFactRetriever: FactRetriever = {
     [techdocsAnnotationFactName]: {
       type: 'boolean',
       description: 'The entity has a TechDocs reference annotation',
+    },
+    [techdocsEntityAnnotationFactName]: {
+      type: 'boolean',
+      description: 'The entity has a TechDocs entity annotation',
     },
   },
   handler: async ({ discovery, entityFilter, auth }: FactRetrieverContext) => {
@@ -67,6 +75,10 @@ export const techdocsFactRetriever: FactRetriever = {
           [techdocsAnnotationFactName]: entityHasAnnotation(
             entity,
             techdocsAnnotation,
+          ),
+          [techdocsEntityAnnotationFactName]: entityHasAnnotation(
+            entity,
+            techdocsEntityAnnotation,
           ),
         },
       };
