@@ -23,12 +23,10 @@ export const navigationExtension = createExtension({
   namespace: 'app',
   name: 'nav',
   attachTo: { id: 'app/layout', input: 'nav' },
-  output: {
-    element: coreExtensionData.reactElement,
-  },
-  factory() {
-    return {
-      element: compatWrapper(
+  output: [coreExtensionData.reactElement],
+  *factory() {
+    yield coreExtensionData.reactElement(
+      compatWrapper(
         <Sidebar>
           <SidebarDivider />
           <SidebarGroup label="Menu" icon={<MenuIcon />}>
@@ -49,6 +47,6 @@ export const navigationExtension = createExtension({
           </SidebarGroup>
         </Sidebar>,
       ),
-    };
+    );
   },
 });
