@@ -10,6 +10,7 @@ import Skeleton from '@mui/material/Skeleton';
 import { reportPortalApiRef } from '../../../api';
 import { useInstanceDetails } from '../../../hooks';
 import { projectsRouteRef } from '../../../routes';
+import { useNavigate } from 'react-router-dom';
 
 type InstanceData = {
   instance: string;
@@ -23,7 +24,7 @@ const NoOfProjects = (props: { host: string; filter: string }) => {
     props.filter,
   );
   return loading ? (
-    <Skeleton height="3rem" width="2rem" />
+    <Skeleton height="3rem" />
   ) : (
     <b>{projectListData?.content.length}</b>
   );
@@ -49,7 +50,7 @@ export const GlobalPageContent = () => {
     {
       id: 0,
       field: 'instance',
-      title: 'Instances',
+      title: 'Name',
       render: rowData => (
         <Link to={projectsPageRoute.concat(`?host=${rowData.instance}`)}>
           {rowData.instance}
@@ -61,7 +62,7 @@ export const GlobalPageContent = () => {
       id: 1,
       field: 'projects',
       title: 'Projects',
-      align: 'left',
+      align: 'center',
       render: rowData => rowData.projects,
       width: '10%',
     },
@@ -76,6 +77,7 @@ export const GlobalPageContent = () => {
           rel="noreferrer noopener"
           target="_blank"
           size="large"
+          onClick={e => e.stopPropagation()}
         >
           <LaunchIcon />
         </IconButton>
@@ -100,11 +102,20 @@ export const GlobalPageContent = () => {
     }
   }, [hosts]);
 
+  const navigate = useNavigate();
+
   return (
     <Table
       title="Instances"
       columns={columns}
-      options={{ padding: 'dense', searchFieldVariant: 'outlined' }}
+      onRowClick={(_e, rowData) =>
+        navigate(projectsPageRoute.concat(`?host=${rowData?.instance}`))
+      }
+      options={{
+        searchFieldVariant: 'outlined',
+        draggable: false,
+        padding: 'dense',
+      }}
       data={instanceData}
     />
   );

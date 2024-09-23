@@ -51,9 +51,10 @@ export const LaunchesPage = (props: { themeId?: string }) => {
         <StyledButton
           endIcon={<Launch />}
           variant="text"
-          to={`https://${hostName}/ui/#${projectName}`}
+          style={{ marginRight: '16px' }}
+          to={`https://${hostName}/ui/#${projectName}/launches/all`}
         >
-          Project Details
+          All Launches
         </StyledButton>
       </Header>
       <Content>
