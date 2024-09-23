@@ -45,6 +45,7 @@ const defaultEntityListResponse: GetEntitiesResponse = {
         tags: ['a-tag'],
         annotations: {
           'backstage.io/techdocs-ref': 'dir:.',
+          'backstage.io/techdocs-entity': 'component:default/techdocs-entity',
         },
       },
       kind: 'Component',
@@ -127,6 +128,7 @@ describe('techdocsFactRetriever', () => {
           ).toMatchObject({
             facts: {
               hasAnnotationBackstageIoTechdocsRef: true,
+              hasAnnotationBackstageIoTechdocsEntity: true,
             },
           });
         });
@@ -139,6 +141,7 @@ describe('techdocsFactRetriever', () => {
           ).toMatchObject({
             facts: {
               hasAnnotationBackstageIoTechdocsRef: false,
+              hasAnnotationBackstageIoTechdocsEntity: false,
             },
           });
         });
