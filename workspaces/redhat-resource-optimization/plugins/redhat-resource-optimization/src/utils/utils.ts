@@ -1,3 +1,18 @@
+/*
+ * Copyright 2024 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import { RecommendationsRecommendationsCurrent } from '@backstage-community/plugin-redhat-resource-optimization-common';
 
 const getPercentage = (currentVal: number, recommendedVal: number): number => {
@@ -51,7 +66,7 @@ export const getRecommendedValue = (
       // Mi = MiB = Mebibyte. 1Mi = 2²⁰ = 1,048,576 bytes
       // Ki = KiB = Kibibyte. 1Ki = 2¹⁰ = 1,024 bytes
       const getMultiplier = (units: string) => {
-        switch (units.toLowerCase()) {
+        switch (units.toLocaleLowerCase('en-US')) {
           case 'ei':
             return Math.pow(2, 60);
           case 'pi':
