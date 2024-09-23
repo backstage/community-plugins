@@ -1,3 +1,8 @@
+/**
+ * @packageDocumentation
+ * A module for the search backend that exports Confluence modules.
+ */
+
 /*
  * Copyright 2024 The Backstage Authors
  *
