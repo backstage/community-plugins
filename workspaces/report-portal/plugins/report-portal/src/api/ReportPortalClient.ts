@@ -38,7 +38,7 @@ export class ReportPortalClient implements ReportPortalApi {
     baseUrl.searchParams.append('host', host);
     const response = await this.fetchApi.fetch(baseUrl);
     if (response.status !== 200) {
-      throw new Error('Failed to fetch launch details');
+      throw new Error(`Failed to fetch launch details for ${projectId}`);
     }
     return (await response.json()) as LaunchDetailsResponse;
   }
