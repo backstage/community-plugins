@@ -140,7 +140,7 @@ export interface RouterOptions {
   // (undocumented)
   discovery: DiscoveryService;
   // (undocumented)
-  httpAuth: HttpAuthService;
+  httpAuth?: HttpAuthService;
   // (undocumented)
   logger: LoggerService;
   // (undocumented)
