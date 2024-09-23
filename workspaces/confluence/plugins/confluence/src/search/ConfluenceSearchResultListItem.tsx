@@ -29,6 +29,7 @@ import {
   ListItemIcon,
   ListItemText,
   makeStyles,
+  Typography,
 } from '@material-ui/core';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import { ConfluenceSearchIcon } from '../icons';
@@ -106,10 +107,10 @@ export const ConfluenceSearchResultListItem = ({
   );
   const excerpt = (
     <>
-      <span className={classes.lastUpdated}>
+      <Typography className={classes.lastUpdated}>
         Last Updated: {document.lastModifiedFriendly} by{' '}
         {document.lastModifiedBy}
-      </span>
+      </Typography>
       <>
         {highlight?.fields.text ? (
           <HighlightedSearchResultText
