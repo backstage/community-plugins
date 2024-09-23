@@ -14,4 +14,7 @@
  * limitations under the License.
  */
 
+/**
+ * @public
+ */
 export const pluginId = 'redhat-resource-optimization';
