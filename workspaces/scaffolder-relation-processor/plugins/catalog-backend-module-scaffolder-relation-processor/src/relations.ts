@@ -14,6 +14,12 @@
  * limitations under the License.
  */
 
+/**
+ * A relation from a scaffolder template entity to the entity it generated.
+ * Reverse direction of {@link RELATION_SCAFFOLDED_FROM}
+ *
+ * @public
+ */
 export const RELATION_SCAFFOLDER_OF = 'scaffolderOf';
 
 /**
