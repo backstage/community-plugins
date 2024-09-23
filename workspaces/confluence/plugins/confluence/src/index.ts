@@ -1,3 +1,9 @@
+/**
+ * Confluence frontend plugin.
+ *
+ * @packageDocumentation
+ */
+
 /*
  * Copyright 2024 The Backstage Authors
  *
