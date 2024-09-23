@@ -53,7 +53,7 @@ export class DatabaseHandler {
 
   private constructor(private readonly db: Knex) {}
 
-  async getByPeriod(
+  async getMetricsByPeriod(
     startDate: string,
     endDate: string,
   ): Promise<MetricDbRow[]> {
