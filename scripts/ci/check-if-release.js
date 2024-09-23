@@ -29,6 +29,7 @@ import { promises as fs } from 'fs';
 import { promisify } from 'util';
 import { resolve as resolvePath } from 'path';
 import { EOL } from 'os';
+import escapeRegExp from 'lodash.escaperegexp';
 
 import * as url from 'url';
 
@@ -79,8 +80,9 @@ async function main() {
     "'*/package.json'", // Git treats this as what would usually be **/package.json
   );
 
+  const safeWorkspaceName = escapeRegExp(process.env.WORKSPACE_NAME);
   const workspacePackageJsonRegex = new RegExp(
-    `^workspaces\/${process.env.WORKSPACE_NAME}\/(packages|plugins)\/[^/]+\/package\.json$`,
+    `^workspaces\/${safeWorkspaceName}\/(packages|plugins)\/[^/]+\/package\\.json$`,
   );
   const packageList = diff
     .split('\n')
