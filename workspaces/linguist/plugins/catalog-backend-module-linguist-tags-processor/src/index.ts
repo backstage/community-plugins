@@ -1,3 +1,9 @@
+/**
+ * The Linguist Tags Processor backend module for the Catalog plugin.
+ *
+ * @packageDocumentation
+ */
+
 /*
  * Copyright 2024 The Backstage Authors
  *
