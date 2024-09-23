@@ -19,7 +19,7 @@ describe('searchModuleConfluenceCollator', () => {
         [searchIndexRegistryExtensionPoint, extensionPointMock],
       ],
       features: [
-        searchModuleConfluenceCollator(),
+        searchModuleConfluenceCollator,
         mockServices.rootConfig.factory({
           data: {
             search: {
