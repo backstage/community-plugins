@@ -13,4 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export {};
+import '@testing-library/jest-dom';
+
+// eslint-disable-next-line no-restricted-imports
+import { TextEncoder } from 'util';
+
+// Also used in browser-based APIs for hashing.
+Object.defineProperty(global.self, 'TextEncoder', {
+  value: TextEncoder,
+});
