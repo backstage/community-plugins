@@ -1,5 +1,5 @@
 import React from 'react';
-import { createApp } from '@backstage/frontend-defaults';
+import { createApp } from '@backstage/frontend-app-api';
 import {
   configApiRef,
   createApiFactory,
@@ -16,46 +16,14 @@ import {
 import catalogPlugin from '@backstage/plugin-catalog/alpha';
 import catalogImportPlugin from '@backstage/plugin-catalog-import/alpha';
 import userSettingsPlugin from '@backstage/plugin-user-settings/alpha';
-import {
-  createUnifiedTheme,
-  createBaseThemeOptions,
-  pageTheme as defaultPageThemes,
-  palettes,
-  genPageTheme,
-  colorVariants,
-  shapes,
-  UnifiedTheme,
-} from '@backstage/theme';
 import { Navigate } from 'react-router';
 import { SignInPage } from './components/auth/SignInPage';
-import techRadarPlugin from '@backstage-community/plugin-tech-radar/alpha';
 import {
   TechRadarApi,
   TechRadarLoaderResponse,
   techRadarApiRef,
 } from '@backstage-community/plugin-tech-radar';
-
-const pageTheme = {
-  ...defaultPageThemes,
-  dataset: genPageTheme({
-    colors: colorVariants.purpleSky,
-    shape: shapes.wave,
-  }),
-};
-
-export const lightTheme: UnifiedTheme = createUnifiedTheme({
-  ...createBaseThemeOptions({
-    palette: { ...palettes.light },
-  }),
-  pageTheme,
-});
-
-export const darkTheme: UnifiedTheme = createUnifiedTheme({
-  ...createBaseThemeOptions({
-    palette: { ...palettes.dark },
-  }),
-  pageTheme,
-});
+import techRadarPlugin from '@backstage-community/plugin-tech-radar/alpha';
 
 const homePageExtension = PageBlueprint.make({
   name: 'homePage',
