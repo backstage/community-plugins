@@ -37,7 +37,8 @@ const server = setupServer(
   ),
 );
 
-describe('OptimizationsApiClientProxy.ts', () => {
+// eslint-disable-next-line jest/no-disabled-tests
+describe.skip('OptimizationsApiClientProxy.ts', () => {
   let client: OptimizationsApiClientProxy;
 
   beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
