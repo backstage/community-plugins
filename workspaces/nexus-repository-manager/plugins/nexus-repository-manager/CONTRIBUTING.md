@@ -7,14 +7,14 @@ development session from the repository root using the following command (only
 works from the root directory):
 
 ```console
-yarn start --filter=@janus-idp/backstage-plugin-nexus-repository-manager
+yarn start --filter=@backstage-community/plugin-nexus-repository-manager
 ```
 
 Alternatively, you can run the following commands from any directory in the repository:
 
 ```console
-yarn workspace @janus-idp/backstage-plugin-nexus-repository-manager generate
-yarn workspace @janus-idp/backstage-plugin-nexus-repository-manager run start
+yarn workspace @backstage-community/plugin-nexus-repository-manager generate
+yarn workspace @backstage-community/plugin-nexus-repository-manager run start
 ```
 
 ## Setting up the full dev app

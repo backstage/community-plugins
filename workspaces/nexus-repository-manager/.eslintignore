@@ -1,1 +1,2 @@
 playwright.config.ts
+plugins/nexus-repository-manager/src/generated

@@ -15,7 +15,7 @@ nexusRepositoryManager:
 
 dynamicPlugins:
   frontend:
-    janus-idp.backstage-plugin-nexus-repository-manager:
+    backstage-community.plugin-nexus-repository-manager:
       mountPoints:
         - mountPoint: entity.page.image-registry/cards
           importName: NexusRepositoryManagerPage

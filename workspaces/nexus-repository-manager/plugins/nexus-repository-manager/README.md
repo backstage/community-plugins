@@ -9,7 +9,7 @@ The Nexus Repository Manager plugin displays the information about your build ar
 1. Install the Nexus Repository Manager plugin using the following command:
 
    ```console
-   yarn workspace app add @janus-idp/backstage-plugin-nexus-repository-manager
+   yarn workspace app add @backstage-community/plugin-nexus-repository-manager
    ```
 
 1. Set the proxy to the desired Nexus Repository Manager server in the `app-config.yaml` file as follows:
@@ -54,7 +54,7 @@ The Nexus Repository Manager plugin displays the information about your build ar
    import {
      isNexusRepositoryManagerAvailable,
      NexusRepositoryManagerPage,
-   } from '@janus-idp/backstage-plugin-nexus-repository-manager';
+   } from '@backstage-community/plugin-nexus-repository-manager';
 
    const serviceEntityPage = (
      <EntityLayout>

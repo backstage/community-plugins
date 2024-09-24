@@ -1,5 +1,5 @@
 {
-  "name": "@janus-idp/backstage-plugin-nexus-repository-manager",
+  "name": "@backstage-community/plugin-nexus-repository-manager",
   "version": "1.10.0",
   "main": "src/index.ts",
   "types": "src/index.ts",
@@ -13,9 +13,9 @@
     "role": "frontend-plugin",
     "supported-versions": "1.28.4",
     "pluginId": "nexus-repository-manager",
-    "pluginPackage": "@janus-idp/backstage-plugin-nexus-repository-manager",
+    "pluginPackage": "@backstage-community/plugin-nexus-repository-manager",
     "pluginPackages": [
-      "@janus-idp/backstage-plugin-nexus-repository-manager"
+      "@backstage-community/plugin-nexus-repository-manager"
     ]
   },
   "sideEffects": false,
@@ -45,9 +45,7 @@
     "react-use": "^17.4.0"
   },
   "peerDependencies": {
-    "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
-    "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
-    "react-router-dom": "^6.0.0"
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0"
   },
   "devDependencies": {
     "@backstage/cli": "0.26.11",
@@ -63,7 +61,10 @@
     "@testing-library/user-event": "14.5.2",
     "@types/node": "18.19.33",
     "cross-fetch": "4.0.0",
-    "msw": "1.3.3"
+    "msw": "1.3.3",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-router-dom": "^6.0.0"
   },
   "files": [
     "dist",
@@ -74,8 +75,8 @@
   "configSchema": "config.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/janus-idp/backstage-plugins",
-    "directory": "plugins/nexus-repository-manager"
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/nexus-repository-manager/plugins/nexus-repository-manager"
   },
   "keywords": [
     "support:tech-preview",
@@ -84,7 +85,7 @@
     "plugin"
   ],
   "homepage": "https://red.ht/rhdh",
-  "bugs": "https://github.com/janus-idp/backstage-plugins/issues",
+  "bugs": "https://github.com/backstage/community-plugins/issues",
   "maintainers": [
     "@janus-idp/maintainers-plugins"
   ],

@@ -141,7 +141,7 @@ export const ArtifactTable = ({
           data-testid="nexus-repository-manager-empty-table"
         >
           No data was added yet,&nbsp;
-          <Link to="https://github.com/janus-idp/backstage-plugins/blob/main/plugins/nexus-repository-manager/ANNOTATIONS.md">
+          <Link to="https://github.com/backstage/community-plugins/tree/main/workspaces/nexus-repository-manager/plugins/nexus-repository-manager/ANNOTATIONS.md">
             learn how to add data
           </Link>
           .
