@@ -4,6 +4,8 @@
 
 ```ts
 import { BackendFeature } from '@backstage/backend-plugin-api';
+import { BD_REST_API_RESPONSE } from '@backstage-community/plugin-blackduck-common';
+import { BD_VERSIONS_API_RESPONSE } from '@backstage-community/plugin-blackduck-common';
 import { Config } from '@backstage/config';
 
 // @public
