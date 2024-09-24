@@ -57,6 +57,7 @@ export const jenkinsPlugin = createBackendPlugin({
           config,
           catalog: catalogClient,
           discovery,
+          logger,
         });
         const builder = JenkinsBuilder.createBuilder({
           /**

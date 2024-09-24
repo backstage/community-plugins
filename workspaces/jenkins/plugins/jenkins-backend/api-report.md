@@ -28,6 +28,7 @@ export class DefaultJenkinsInfoProvider implements JenkinsInfoProvider {
     discovery: DiscoveryService;
     auth?: AuthService;
     httpAuth?: HttpAuthService;
+    logger: LoggerService;
   }): DefaultJenkinsInfoProvider;
   // (undocumented)
   getInstance(opt: {
@@ -35,6 +36,8 @@ export class DefaultJenkinsInfoProvider implements JenkinsInfoProvider {
     jobFullName?: string;
     credentials?: BackstageCredentials;
   }): Promise<JenkinsInfo>;
+  // (undocumented)
+  static readonly JENKINS_OVERRIDE_URL = 'jenkins.io/override-base-url';
   // (undocumented)
   static readonly NEW_JENKINS_ANNOTATION = 'jenkins.io/job-full-name';
   // (undocumented)
@@ -113,11 +116,13 @@ export interface JenkinsInfoProvider {
     entityRef: CompoundEntityRef;
     jobFullName?: string;
     credentials?: BackstageCredentials;
+    logger?: LoggerService;
   }): Promise<JenkinsInfo>;
 }
 
 // @public (undocumented)
 export interface JenkinsInstanceConfig {
+  allowedBaseUrlOverrideRegex?: string;
   // (undocumented)
   apiKey: string;
   // (undocumented)
