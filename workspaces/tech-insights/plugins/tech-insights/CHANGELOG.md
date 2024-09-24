@@ -1,5 +1,11 @@
 # @backstage-community/plugin-tech-insights
 
+## 0.3.36
+
+### Patch Changes
+
+- 42a2c31: Export component extensions instead of routable extensions when routes aren't required (or used). ResultCheckIcon can now wrap both React components and HTML elements for onClick handling of the popup menu with links.
+
 ## 0.3.35
 
 ### Patch Changes

@@ -29,8 +29,10 @@ import { promises as fs } from 'fs';
 import { promisify } from 'util';
 import { resolve as resolvePath } from 'path';
 import { EOL } from 'os';
+import escapeRegExp from 'lodash.escaperegexp';
 
 import * as url from 'url';
+
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
 const parentRef = process.env.COMMIT_SHA_BEFORE || 'HEAD^';
@@ -78,7 +80,10 @@ async function main() {
     "'*/package.json'", // Git treats this as what would usually be **/package.json
   );
 
-  const workspacePackageJsonRegex = new RegExp(`^workspaces\/${process.env.WORKSPACE_NAME}\/(packages|plugins)\/[^/]+\/package\.json$`);
+  const safeWorkspaceName = escapeRegExp(process.env.WORKSPACE_NAME);
+  const workspacePackageJsonRegex = new RegExp(
+    `^workspaces\/${safeWorkspaceName}\/(packages|plugins)\/[^/]+\/package\\.json$`,
+  );
   const packageList = diff
     .split('\n')
     .filter(path => path.match(workspacePackageJsonRegex));
@@ -100,7 +105,9 @@ async function main() {
       }
 
       try {
-        const data = JSON.parse(await fs.readFile(resolvePath(repoRoot, path), 'utf8'));
+        const data = JSON.parse(
+          await fs.readFile(resolvePath(repoRoot, path), 'utf8'),
+        );
         name = data.name;
         newVersion = data.version;
       } catch (error) {
@@ -118,9 +125,8 @@ async function main() {
       oldVersion !== newVersion &&
       oldVersion !== '<none>' &&
       newVersion !== '<none>',
-  ); 
+  );
 
-  
   if (newVersions.length === 0) {
     console.log('No package version bumps detected, no release needed');
     await fs.appendFile(process.env.GITHUB_OUTPUT, `needs_release=false${EOL}`);
