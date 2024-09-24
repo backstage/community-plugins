@@ -5,227 +5,236 @@
 ```ts
 import { AnyApiFactory } from '@backstage/core-plugin-api';
 import { AnyRouteRefParams } from '@backstage/frontend-plugin-api';
-import { BackstagePlugin } from '@backstage/frontend-plugin-api';
 import { ConfigurableExtensionDataRef } from '@backstage/frontend-plugin-api';
 import { Entity } from '@backstage/catalog-model';
 import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
+import { FrontendPlugin } from '@backstage/frontend-plugin-api';
 import { default as React_2 } from 'react';
 import { RouteRef } from '@backstage/frontend-plugin-api';
 
 // @alpha (undocumented)
-const _default: BackstagePlugin<
+const _default: FrontendPlugin<
   {},
   {},
   {
-    'api:azure-devops': ExtensionDefinition<
-      {},
-      {},
-      ConfigurableExtensionDataRef<AnyApiFactory, 'core.api.factory', {}>,
-      {},
-      {
-        kind: 'api';
-        namespace: undefined;
-        name: undefined;
-      }
-    >;
-    'page:azure-devops': ExtensionDefinition<
-      {
+    'api:azure-devops': ExtensionDefinition<{
+      kind: 'api';
+      namespace: undefined;
+      name: undefined;
+      config: {};
+      configInput: {};
+      output: ConfigurableExtensionDataRef<
+        AnyApiFactory,
+        'core.api.factory',
+        {}
+      >;
+      inputs: {};
+    }>;
+    'page:azure-devops': ExtensionDefinition<{
+      kind: 'page';
+      namespace: undefined;
+      name: undefined;
+      config: {
         path: string | undefined;
-      },
-      {
+      };
+      configInput: {
         path?: string | undefined;
-      },
-      | ConfigurableExtensionDataRef<
-          React_2.JSX.Element,
-          'core.reactElement',
-          {}
-        >
-      | ConfigurableExtensionDataRef<string, 'core.routing.path', {}>
-      | ConfigurableExtensionDataRef<
-          RouteRef<AnyRouteRefParams>,
-          'core.routing.ref',
-          {
-            optional: true;
-          }
-        >,
-      {},
-      {
-        kind: 'page';
-        namespace: undefined;
-        name: undefined;
-      }
-    >;
-    'entity-content:azure-devops/pipelines': ExtensionDefinition<
-      {
-        path: string | undefined;
-        title: string | undefined;
-        filter: string | undefined;
-      },
-      {
-        filter?: string | undefined;
-        title?: string | undefined;
-        path?: string | undefined;
-      },
-      | ConfigurableExtensionDataRef<
-          React_2.JSX.Element,
-          'core.reactElement',
-          {}
-        >
-      | ConfigurableExtensionDataRef<string, 'core.routing.path', {}>
-      | ConfigurableExtensionDataRef<
-          RouteRef<AnyRouteRefParams>,
-          'core.routing.ref',
-          {
-            optional: true;
-          }
-        >
-      | ConfigurableExtensionDataRef<string, 'catalog.entity-content-title', {}>
-      | ConfigurableExtensionDataRef<
-          (entity: Entity) => boolean,
-          'catalog.entity-filter-function',
-          {
-            optional: true;
-          }
-        >
-      | ConfigurableExtensionDataRef<
-          string,
-          'catalog.entity-filter-expression',
-          {
-            optional: true;
-          }
-        >,
-      {},
-      {
-        kind: 'entity-content';
-        namespace: undefined;
-        name: 'pipelines';
-      }
-    >;
-    'entity-content:azure-devops/git-tags': ExtensionDefinition<
-      {
+      };
+      output:
+        | ConfigurableExtensionDataRef<
+            React_2.JSX.Element,
+            'core.reactElement',
+            {}
+          >
+        | ConfigurableExtensionDataRef<string, 'core.routing.path', {}>
+        | ConfigurableExtensionDataRef<
+            RouteRef<AnyRouteRefParams>,
+            'core.routing.ref',
+            {
+              optional: true;
+            }
+          >;
+      inputs: {};
+    }>;
+    'entity-content:azure-devops/pipelines': ExtensionDefinition<{
+      kind: 'entity-content';
+      namespace: undefined;
+      name: 'pipelines';
+      config: {
         path: string | undefined;
         title: string | undefined;
         filter: string | undefined;
-      },
-      {
+      };
+      configInput: {
         filter?: string | undefined;
         title?: string | undefined;
         path?: string | undefined;
-      },
-      | ConfigurableExtensionDataRef<
-          React_2.JSX.Element,
-          'core.reactElement',
-          {}
-        >
-      | ConfigurableExtensionDataRef<string, 'core.routing.path', {}>
-      | ConfigurableExtensionDataRef<
-          RouteRef<AnyRouteRefParams>,
-          'core.routing.ref',
-          {
-            optional: true;
-          }
-        >
-      | ConfigurableExtensionDataRef<string, 'catalog.entity-content-title', {}>
-      | ConfigurableExtensionDataRef<
-          (entity: Entity) => boolean,
-          'catalog.entity-filter-function',
-          {
-            optional: true;
-          }
-        >
-      | ConfigurableExtensionDataRef<
-          string,
-          'catalog.entity-filter-expression',
-          {
-            optional: true;
-          }
-        >,
-      {},
-      {
-        kind: 'entity-content';
-        namespace: undefined;
-        name: 'git-tags';
-      }
-    >;
-    'entity-content:azure-devops/pull-requests': ExtensionDefinition<
-      {
+      };
+      output:
+        | ConfigurableExtensionDataRef<
+            React_2.JSX.Element,
+            'core.reactElement',
+            {}
+          >
+        | ConfigurableExtensionDataRef<string, 'core.routing.path', {}>
+        | ConfigurableExtensionDataRef<
+            RouteRef<AnyRouteRefParams>,
+            'core.routing.ref',
+            {
+              optional: true;
+            }
+          >
+        | ConfigurableExtensionDataRef<
+            string,
+            'catalog.entity-content-title',
+            {}
+          >
+        | ConfigurableExtensionDataRef<
+            (entity: Entity) => boolean,
+            'catalog.entity-filter-function',
+            {
+              optional: true;
+            }
+          >
+        | ConfigurableExtensionDataRef<
+            string,
+            'catalog.entity-filter-expression',
+            {
+              optional: true;
+            }
+          >;
+      inputs: {};
+    }>;
+    'entity-content:azure-devops/git-tags': ExtensionDefinition<{
+      kind: 'entity-content';
+      namespace: undefined;
+      name: 'git-tags';
+      config: {
         path: string | undefined;
         title: string | undefined;
         filter: string | undefined;
-      },
-      {
+      };
+      configInput: {
         filter?: string | undefined;
         title?: string | undefined;
         path?: string | undefined;
-      },
-      | ConfigurableExtensionDataRef<
-          React_2.JSX.Element,
-          'core.reactElement',
-          {}
-        >
-      | ConfigurableExtensionDataRef<string, 'core.routing.path', {}>
-      | ConfigurableExtensionDataRef<
-          RouteRef<AnyRouteRefParams>,
-          'core.routing.ref',
-          {
-            optional: true;
-          }
-        >
-      | ConfigurableExtensionDataRef<string, 'catalog.entity-content-title', {}>
-      | ConfigurableExtensionDataRef<
-          (entity: Entity) => boolean,
-          'catalog.entity-filter-function',
-          {
-            optional: true;
-          }
-        >
-      | ConfigurableExtensionDataRef<
-          string,
-          'catalog.entity-filter-expression',
-          {
-            optional: true;
-          }
-        >,
-      {},
-      {
-        kind: 'entity-content';
-        namespace: undefined;
-        name: 'pull-requests';
-      }
-    >;
-    'entity-card:azure-devops/readme': ExtensionDefinition<
-      {
+      };
+      output:
+        | ConfigurableExtensionDataRef<
+            React_2.JSX.Element,
+            'core.reactElement',
+            {}
+          >
+        | ConfigurableExtensionDataRef<string, 'core.routing.path', {}>
+        | ConfigurableExtensionDataRef<
+            RouteRef<AnyRouteRefParams>,
+            'core.routing.ref',
+            {
+              optional: true;
+            }
+          >
+        | ConfigurableExtensionDataRef<
+            string,
+            'catalog.entity-content-title',
+            {}
+          >
+        | ConfigurableExtensionDataRef<
+            (entity: Entity) => boolean,
+            'catalog.entity-filter-function',
+            {
+              optional: true;
+            }
+          >
+        | ConfigurableExtensionDataRef<
+            string,
+            'catalog.entity-filter-expression',
+            {
+              optional: true;
+            }
+          >;
+      inputs: {};
+    }>;
+    'entity-content:azure-devops/pull-requests': ExtensionDefinition<{
+      kind: 'entity-content';
+      namespace: undefined;
+      name: 'pull-requests';
+      config: {
+        path: string | undefined;
+        title: string | undefined;
         filter: string | undefined;
-      },
-      {
+      };
+      configInput: {
         filter?: string | undefined;
-      },
-      | ConfigurableExtensionDataRef<
-          React_2.JSX.Element,
-          'core.reactElement',
-          {}
-        >
-      | ConfigurableExtensionDataRef<
-          (entity: Entity) => boolean,
-          'catalog.entity-filter-function',
-          {
-            optional: true;
-          }
-        >
-      | ConfigurableExtensionDataRef<
-          string,
-          'catalog.entity-filter-expression',
-          {
-            optional: true;
-          }
-        >,
-      {},
-      {
-        kind: 'entity-card';
-        namespace: undefined;
-        name: 'readme';
-      }
-    >;
+        title?: string | undefined;
+        path?: string | undefined;
+      };
+      output:
+        | ConfigurableExtensionDataRef<
+            React_2.JSX.Element,
+            'core.reactElement',
+            {}
+          >
+        | ConfigurableExtensionDataRef<string, 'core.routing.path', {}>
+        | ConfigurableExtensionDataRef<
+            RouteRef<AnyRouteRefParams>,
+            'core.routing.ref',
+            {
+              optional: true;
+            }
+          >
+        | ConfigurableExtensionDataRef<
+            string,
+            'catalog.entity-content-title',
+            {}
+          >
+        | ConfigurableExtensionDataRef<
+            (entity: Entity) => boolean,
+            'catalog.entity-filter-function',
+            {
+              optional: true;
+            }
+          >
+        | ConfigurableExtensionDataRef<
+            string,
+            'catalog.entity-filter-expression',
+            {
+              optional: true;
+            }
+          >;
+      inputs: {};
+    }>;
+    'entity-card:azure-devops/readme': ExtensionDefinition<{
+      kind: 'entity-card';
+      namespace: undefined;
+      name: 'readme';
+      config: {
+        filter: string | undefined;
+      };
+      configInput: {
+        filter?: string | undefined;
+      };
+      output:
+        | ConfigurableExtensionDataRef<
+            React_2.JSX.Element,
+            'core.reactElement',
+            {}
+          >
+        | ConfigurableExtensionDataRef<
+            (entity: Entity) => boolean,
+            'catalog.entity-filter-function',
+            {
+              optional: true;
+            }
+          >
+        | ConfigurableExtensionDataRef<
+            string,
+            'catalog.entity-filter-expression',
+            {
+              optional: true;
+            }
+          >;
+      inputs: {};
+    }>;
   }
 >;
 export default _default;
