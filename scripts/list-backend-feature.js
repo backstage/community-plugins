@@ -19,13 +19,14 @@ import fs from 'fs-extra';
 import { getPackages } from '@manypkg/get-packages';
 import { resolve, join } from 'path';
 import arrayToTable from 'array-to-table';
-
 import * as url from 'url';
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
 const EXCLUDED_WORKSPACES = ['noop', 'repo-tools'];
 const BACKEND_FEATURE =
+  "import { BackendFeature } from '@backstage/backend-plugin-api';";
+const BACKEND_FEATURE_COMPAT =
   "import { BackendFeatureCompat } from '@backstage/backend-plugin-api';";
 
 async function main(args) {
@@ -52,7 +53,7 @@ async function main(args) {
         const backendFeatureReport = {
           package: undefined,
           role: undefined,
-          migrated: undefined,
+          supported: undefined,
           alpha: undefined,
           readme: undefined,
         };
@@ -61,8 +62,11 @@ async function main(args) {
         backendFeatureReport.readme = `[README](${pkg.packageJson.repository.url}/blob/master/${pkg.packageJson.repository.directory}/README.md)`;
         const apiReportPath = join(pkg.dir, 'api-report.md');
         const apiReport = (await fs.readFile(apiReportPath)).toString();
-        if (apiReport.includes(BACKEND_FEATURE)) {
-          backendFeatureReport.migrated = true;
+        if (
+          apiReport.includes(BACKEND_FEATURE) ||
+          apiReport.includes(BACKEND_FEATURE_COMPAT)
+        ) {
+          backendFeatureReport.supported = true;
           backendFeatureReport.alpha = false;
         }
 
@@ -71,8 +75,11 @@ async function main(args) {
           const apiReportAlpha = (
             await fs.readFile(apiReportAlphaPath)
           ).toString();
-          if (apiReportAlpha.includes(BACKEND_FEATURE)) {
-            backendFeatureReport.migrated = true;
+          if (
+            apiReportAlpha.includes(BACKEND_FEATURE) ||
+            apiReportAlpha.includes(BACKEND_FEATURE_COMPAT)
+          ) {
+            backendFeatureReport.supported = true;
             backendFeatureReport.alpha = true;
           }
         }

@@ -15,7 +15,8 @@
  */
 
 import React from 'react';
-import { Check, techInsightsApiRef } from '../../api';
+import { techInsightsApiRef } from '../../api';
+import { Check } from '@backstage-community/plugin-tech-insights-common/client';
 import Typography from '@material-ui/core/Typography';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';

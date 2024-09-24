@@ -16,7 +16,6 @@
 
 import { techdocsFactRetriever } from './techdocsFactRetriever';
 import { RELATION_OWNED_BY } from '@backstage/catalog-model';
-import { ServerTokenManager } from '@backstage/backend-common';
 import { ConfigReader } from '@backstage/config';
 import { GetEntitiesResponse } from '@backstage/catalog-client';
 import { mockServices } from '@backstage/backend-test-utils';
@@ -105,7 +104,6 @@ const handlerContext = {
   logger: mockServices.logger.mock(),
   auth: mockServices.auth(),
   config: ConfigReader.fromConfigs([]),
-  tokenManager: ServerTokenManager.noop(),
 };
 
 const entityFactRetriever = techdocsFactRetriever;
