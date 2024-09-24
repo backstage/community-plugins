@@ -16,7 +16,6 @@
  */
 
 import fs from 'fs-extra';
-import { getPackages } from '@manypkg/get-packages';
 import { resolve } from 'path';
 import arrayToTable from 'array-to-table';
 import * as url from 'url';
@@ -29,7 +28,7 @@ async function main(args) {
   const rootPath = resolve(__dirname, '..');
   const workspacePath = resolve(rootPath, 'workspaces');
 
-  const backendFeatureReports = [];
+  const workspaceReports = [];
 
   // Get workspaces
   const workspaces = (await fs.readdir(workspacePath, { withFileTypes: true }))
@@ -38,32 +37,19 @@ async function main(args) {
 
   // Loop through workspaces
   for (const workspace of workspaces) {
-    const currentWorkspacePath = resolve(workspacePath, workspace);
-    const { packages } = await getPackages(currentWorkspacePath);
-
-    // Loop through packages in each workspace
-    for (const pkg of packages) {
-      const pkgRole = pkg.packageJson.backstage?.role;
-
-      const workspaceReport = {
-        workspace: workspace,
-        package: undefined,
-        role: undefined,
-        readme: undefined,
-      };
-      workspaceReport.package = pkg.packageJson.name;
-      workspaceReport.role = pkgRole;
-      workspaceReport.readme = `[README](${pkg.packageJson.repository.url}/blob/master/${pkg.packageJson.repository.directory}/README.md)`;
-      backendFeatureReports.push(workspaceReport);
-    }
+    const workspaceReport = {
+      workspace: `[${workspace}](https://github.com/backstage/community-plugins/tree/main/workspaces/${workspace})`,
+      'version-compatibility': `![Dynamic JSON Badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fbackstage%2Fcommunity-plugins%2Fmain%2Fworkspaces%2F${workspace}%2Fbackstage.json&query=%24.version&label=Backstage%20Version)`,
+    };
+    workspaceReports.push(workspaceReport);
   }
 
   const table = args.includes('--table');
 
   if (table) {
-    console.log(arrayToTable(backendFeatureReports));
+    console.log(arrayToTable(workspaceReports));
   } else {
-    console.log(backendFeatureReports);
+    console.log(workspaceReports);
   }
 }
 
