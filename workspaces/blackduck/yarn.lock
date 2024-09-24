@@ -3116,6 +3116,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@backstage/backend-plugin-api@npm:^0.8.0, @backstage/backend-plugin-api@npm:^0.8.1":
+  version: 0.8.1
+  resolution: "@backstage/backend-plugin-api@npm:0.8.1"
+  dependencies:
+    "@backstage/cli-common": ^0.1.14
+    "@backstage/config": ^1.2.0
+    "@backstage/errors": ^1.2.4
+    "@backstage/plugin-auth-node": ^0.5.1
+    "@backstage/plugin-permission-common": ^0.8.1
+    "@backstage/types": ^1.1.1
+    "@types/express": ^4.17.6
+    "@types/luxon": ^3.0.0
+    express: ^4.17.1
+    knex: ^3.0.0
+    luxon: ^3.0.0
+  checksum: 4a6614ceec13ff5ace3e04e8a1bad40567ce6a66afc19c02935161d12bdd7edbf4863d1d0203539e8a353dd78184078eb873fd14da6cbd093d1d9e4ced44c0fb
+  languageName: node
+  linkType: hard
+
 "@backstage/backend-plugin-api@npm:^1.0.0, @backstage/backend-plugin-api@npm:^1.1.0":
   version: 1.1.0
   resolution: "@backstage/backend-plugin-api@npm:1.1.0"
