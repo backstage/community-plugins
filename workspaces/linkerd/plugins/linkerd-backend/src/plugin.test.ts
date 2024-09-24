@@ -21,7 +21,7 @@ describe('linkerd plugin', () => {
   describe('GET /health', () => {
     it('returns ok', async () => {
       const { server } = await startTestBackend({
-        features: [linkerdPlugin()],
+        features: [linkerdPlugin],
       });
       const response = await request(server).get('/api/linkerd/health');
 
