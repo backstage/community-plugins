@@ -2523,6 +2523,7 @@ __metadata:
     "@backstage/dev-utils": ^1.0.37
     "@backstage/errors": ^1.2.4
     "@backstage/integration": ^1.14.0
+    "@backstage/integration-react": ^1.1.30
     "@backstage/plugin-catalog-react": ^1.12.3
     "@backstage/test-utils": ^1.5.10
     "@material-ui/core": ^4.12.4

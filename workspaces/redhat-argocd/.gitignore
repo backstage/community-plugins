@@ -34,6 +34,7 @@ node_modules/
 # Build output
 dist
 dist-types
+dist-scalprum
 
 # Temporary change files created by Vim
 *.swp

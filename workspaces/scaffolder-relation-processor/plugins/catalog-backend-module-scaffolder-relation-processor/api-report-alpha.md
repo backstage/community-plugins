@@ -8,6 +8,4 @@ import { BackendFeatureCompat } from '@backstage/backend-plugin-api';
 // @public
 const catalogModuleScaffolderRelationProcessor: BackendFeatureCompat;
 export default catalogModuleScaffolderRelationProcessor;
-
-// (No @packageDocumentation comment for this package)
 ```

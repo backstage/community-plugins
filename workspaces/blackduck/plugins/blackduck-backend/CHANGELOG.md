@@ -1,5 +1,13 @@
 # @backstage-community/plugin-blackduck-backend
 
+## 0.0.6
+
+### Patch Changes
+
+- d86bc62: Backstage version bump to v1.31.1
+- Updated dependencies [d86bc62]
+  - @backstage-community/plugin-blackduck-common@0.0.3
+
 ## 0.0.5
 
 ### Patch Changes

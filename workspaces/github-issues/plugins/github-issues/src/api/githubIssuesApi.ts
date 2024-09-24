@@ -15,14 +15,10 @@
  */
 
 import { Octokit } from 'octokit';
-import {
-  createApiRef,
-  ConfigApi,
-  ErrorApi,
-  OAuthApi,
-} from '@backstage/core-plugin-api';
+import { createApiRef, ConfigApi, ErrorApi } from '@backstage/core-plugin-api';
 import { readGithubIntegrationConfigs } from '@backstage/integration';
 import { ForwardedError } from '@backstage/errors';
+import { ScmAuthApi } from '@backstage/integration-react';
 
 /** @internal */
 export type Repository = {
@@ -114,30 +110,36 @@ export const githubIssuesApiRef = createApiRef<GithubIssuesApi>({
 
 /** @internal */
 export const githubIssuesApi = (
-  githubAuthApi: OAuthApi,
+  scmAuthApi: ScmAuthApi,
   configApi: ConfigApi,
   errorApi: ErrorApi,
 ) => {
-  let octokit: Octokit;
-
-  const getOctokit = async () => {
-    const githubConfig = readGithubIntegrationConfigs(
+  const getOctokit = async (hostname: string) => {
+    const configs = readGithubIntegrationConfigs(
       configApi.getOptionalConfigArray('integrations.github') ?? [],
-    )[0];
-    const baseUrl = githubConfig.apiBaseUrl;
+    );
 
-    const token = await githubAuthApi.getAccessToken(['repo']);
+    const githubIntegrationConfig =
+      configs.find(v => v.host === hostname) ?? configs[0];
 
-    if (!octokit) {
-      octokit = new Octokit({ auth: token, ...(baseUrl && { baseUrl }) });
-    }
+    const host = githubIntegrationConfig?.host;
+    const { token } = await scmAuthApi.getCredentials({
+      url: `https://${host}/`,
+      additionalScope: {
+        customScopes: {
+          github: ['repo'],
+        },
+      },
+    });
 
-    return { graphql: octokit.graphql, hostname: githubConfig.host };
+    const baseUrl = githubIntegrationConfig?.apiBaseUrl;
+    return { octokit: new Octokit({ auth: token, baseUrl }), host };
   };
 
   const fetchIssuesByRepoFromGithub = async (
     repos: Array<Repository>,
     itemsPerRepo: number,
+    hostname: string,
     {
       filterBy,
       orderBy = {
@@ -146,11 +148,11 @@ export const githubIssuesApi = (
       },
     }: GithubIssuesByRepoOptions = {},
   ): Promise<IssuesByRepo> => {
-    const { graphql, hostname } = await getOctokit();
+    const { octokit, host } = await getOctokit(hostname);
     const safeNames: Array<string> = [];
     const repositories = repos
       // only tries to fetch issues from repositories that are hosted on the same GitHub instance as the octokit
-      .filter(repo => repo.locationHostname === hostname)
+      .filter(repo => repo.locationHostname === host)
       .map(repo => {
         const [owner, name] = repo.name.split('/');
 
@@ -173,9 +175,9 @@ export const githubIssuesApi = (
     let issuesByRepo: IssuesByRepo = {};
     try {
       if (repositories.length === 0) {
-        throw new Error(`No repositories found for ${hostname}`);
+        throw new Error(`No repositories found for ${host}`);
       }
-      issuesByRepo = await graphql(
+      issuesByRepo = await octokit.graphql(
         createIssueByRepoQuery(repositories, itemsPerRepo, {
           filterBy,
           orderBy,

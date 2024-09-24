@@ -4,7 +4,7 @@
 
 ```ts
 import { AuthService } from '@backstage/backend-plugin-api';
-import { BackendFeatureCompat } from '@backstage/backend-plugin-api';
+import { BackendFeature } from '@backstage/backend-plugin-api';
 import { Config } from '@backstage/config';
 import { DatabaseService } from '@backstage/backend-plugin-api';
 import { DiscoveryService } from '@backstage/backend-plugin-api';
@@ -17,13 +17,13 @@ import { SchedulerService } from '@backstage/backend-plugin-api';
 import { SchedulerServiceTaskScheduleDefinition } from '@backstage/backend-plugin-api';
 import { UrlReaderService } from '@backstage/backend-plugin-api';
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 export function createRouter(
   pluginOptions: PluginOptions,
   routerOptions: RouterOptions,
 ): Promise<express.Router>;
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 export function createRouterFromConfig(
   routerOptions: RouterOptions,
 ): Promise<express.Router>;
@@ -37,10 +37,10 @@ export interface LinguistBackendApi {
 }
 
 // @public
-const linguistPlugin: BackendFeatureCompat;
+const linguistPlugin: BackendFeature;
 export default linguistPlugin;
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 export interface PluginOptions {
   // (undocumented)
   age?: HumanDuration;
@@ -56,7 +56,7 @@ export interface PluginOptions {
   useSourceLocation?: boolean;
 }
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 export interface RouterOptions {
   // (undocumented)
   auth?: AuthService;

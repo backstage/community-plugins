@@ -1,30 +1,34 @@
-import React, { useState } from 'react';
+/*
+ * Copyright 2024 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import React from 'react';
 import { ResourcesTableRow } from './ResourcesTableRow';
-import { OpenRowStatus, Resource } from '../../../../types/application';
+import { Resource } from '../../../../types/application';
 
 interface ResourcesTableBodyProps {
   rows: Resource[];
-  createdAt: string;
 }
 
 export const ResourcesTableBody: React.FC<ResourcesTableBodyProps> = ({
   rows,
-  createdAt,
 }) => {
-  const [open, setOpen] = useState<OpenRowStatus>({});
-
   return (
     <>
       {rows.map((row: Resource, index: number) => {
         return (
-          <ResourcesTableRow
-            row={row}
-            createdAt={createdAt}
-            key={index}
-            uid={index.toString()}
-            open={open[index] ? true : false}
-            setOpen={setOpen}
-          />
+          <ResourcesTableRow row={row} key={index} uid={index.toString()} />
         );
       })}
     </>

@@ -1,3 +1,18 @@
+/*
+ * Copyright 2024 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import React from 'react';
 import {
   makeStyles,
@@ -23,7 +38,7 @@ interface ResourcesTableHeaderProps {
 
 const useStyles = makeStyles(theme => ({
   header: {
-    padding: theme.spacing(1, 2, 1),
+    padding: theme.spacing(1, 0),
     fontWeight: 'bold',
     color: theme.palette.text.primary,
   },
@@ -54,19 +69,17 @@ export const ResourcesTableHeader: React.FC<ResourcesTableHeaderProps> = ({
               key={headCell.id as string}
               align="left"
               padding="normal"
-              sortDirection={orderBy === headCell.title ? order : false}
+              sortDirection={orderBy === headCell.id ? order : false}
               className={
                 headCell.id !== 'expander' ? classes.header : classes.expander
               }
             >
               {headCell.title && (
                 <TableSortLabel
-                  active={
-                    orderBy === headCell.title && orderById === headCell.id
-                  }
+                  active={orderBy === headCell.id && orderById === `${index}`}
                   direction={order}
                   onClick={createSortHandler(
-                    headCell.title as string,
+                    headCell.id as string,
                     index.toString() as string,
                   )}
                 >

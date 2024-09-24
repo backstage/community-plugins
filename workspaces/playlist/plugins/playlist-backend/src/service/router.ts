@@ -53,7 +53,7 @@ import {
 export interface RouterOptions {
   database: PluginDatabaseManager;
   discovery: PluginEndpointDiscovery;
-  identity: IdentityApi;
+  identity?: IdentityApi;
   logger: LoggerService;
   permissions: PermissionsService;
   auth?: AuthService;

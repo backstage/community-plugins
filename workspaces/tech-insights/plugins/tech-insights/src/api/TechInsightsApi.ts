@@ -19,10 +19,11 @@ import {
   CheckResult,
   BulkCheckResponse,
   FactSchema,
+  CheckLink,
 } from '@backstage-community/plugin-tech-insights-common';
 import { Check, InsightFacts } from './types';
 import { CheckResultRenderer } from '../components/CheckResultRenderer';
-import { CompoundEntityRef } from '@backstage/catalog-model';
+import { CompoundEntityRef, Entity } from '@backstage/catalog-model';
 
 /**
  * {@link @backstage/core-plugin-api#ApiRef} for the {@link TechInsightsApi}
@@ -52,4 +53,9 @@ export interface TechInsightsApi {
   ): Promise<BulkCheckResponse>;
   getFacts(entity: CompoundEntityRef, facts: string[]): Promise<InsightFacts>;
   getFactSchemas(): Promise<FactSchema[]>;
+  getLinksForEntity(
+    result: CheckResult,
+    entity: Entity,
+    options?: { includeStaticLinks?: boolean },
+  ): CheckLink[];
 }

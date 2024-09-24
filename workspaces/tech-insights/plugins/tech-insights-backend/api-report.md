@@ -22,7 +22,6 @@ import { LoggerService } from '@backstage/backend-plugin-api';
 import { PersistenceContext as PersistenceContext_2 } from '@backstage-community/plugin-tech-insights-node';
 import { SchedulerService } from '@backstage/backend-plugin-api';
 import { TechInsightCheck } from '@backstage-community/plugin-tech-insights-node';
-import { TokenManager } from '@backstage/backend-common';
 
 // @public
 export const buildTechInsightsContext: <
@@ -112,7 +111,7 @@ export interface TechInsightsOptions<
   CheckResultType extends CheckResult,
 > {
   // (undocumented)
-  auth?: AuthService;
+  auth: AuthService;
   // (undocumented)
   config: Config;
   // (undocumented)
@@ -127,8 +126,6 @@ export interface TechInsightsOptions<
   persistenceContext?: PersistenceContext_2;
   // (undocumented)
   scheduler: SchedulerService;
-  // (undocumented)
-  tokenManager: TokenManager;
 }
 
 // @public

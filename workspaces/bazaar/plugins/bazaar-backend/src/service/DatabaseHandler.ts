@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-import {
-  PluginDatabaseManager,
-  resolvePackagePath,
-} from '@backstage/backend-common';
+import { resolvePackagePath } from '@backstage/backend-plugin-api';
+import { DatabaseService } from '@backstage/backend-plugin-api';
 import { Knex } from 'knex';
 
 const migrationsDir = resolvePackagePath(
@@ -26,7 +24,7 @@ const migrationsDir = resolvePackagePath(
 );
 
 type Options = {
-  database: PluginDatabaseManager;
+  database: DatabaseService;
 };
 
 export class DatabaseHandler {

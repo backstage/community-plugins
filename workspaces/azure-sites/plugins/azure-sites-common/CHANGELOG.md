@@ -1,5 +1,11 @@
 # @backstage-community/plugin-azure-sites-common
 
+## 0.1.7
+
+### Patch Changes
+
+- bbf2c19: Backstage version bump to v1.31.1
+
 ## 0.1.6
 
 ### Patch Changes
