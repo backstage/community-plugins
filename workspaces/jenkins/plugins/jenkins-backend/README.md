@@ -173,6 +173,42 @@ jenkins:
       apiKey: 123456789abcdef0123456789abcedf012
 ```
 
+#### Example - Override Base Url from an Entity
+
+The following will show you how to override a base url defined in the Config with a value from the Catalog. allowedBaseUrlOverrideRegex must be a regex string in the config, which will check if the sent in url matches that regex for override.
+
+The check for the regex is to add a security check to make sure no malicious urls were sent to connect the plugin.
+
+Config
+
+```yaml
+jenkins:
+  instances:
+    - name: departmentFoo
+      baseUrl: https://departmentFoo.example.com
+      username: backstage-bot
+      projectCountLimit: 100
+      apiKey: 123456789abcdef0123456789abcedf012
+      allowedBaseUrlOverrideRegex: https://.*\.example\.com
+```
+
+Catalog
+
+```yaml
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: artist-lookup
+  annotations:
+    'jenkins.io/job-full-name': departmentFoo:teamA/artistLookup-build
+    'jenkins.io/override-base-url': 'https://other.example.com'
+```
+
+This will set the instance's base url to 'https://other.example.com' when loading the configuration. It will verify first if the url
+sent in is not null, along with the regex string list, and then compares the url to all regex strings to make sure one of them match.
+
+This use case is for Jenkins systems where there are a lot of Jenkins instances configured from a base instance, which share the same API keys. Therefore a user does not have to define all of the instances here, but in the catalog for ease of use.
+
 ### Custom JenkinsInfoProvider
 
 An example of a bespoke JenkinsInfoProvider which uses an organisation specific annotation to look up the Jenkins info (including jobFullName):
