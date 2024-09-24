@@ -1,5 +1,11 @@
 # @backstage-community/plugin-tech-insights-backend
 
+## 1.1.0
+
+### Minor Changes
+
+- fad299b: Adds fact to represent presence of the `backstage.io/techdocs-entity` annotation.
+
 ## 1.0.0
 
 ### Major Changes
