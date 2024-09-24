@@ -175,7 +175,7 @@ jenkins:
 
 #### Example - Override Base Url from an Entity
 
-The following will show you how to override a base url defined in the Config with a value from the Catalog. overrideBaseUrlCompatibleRegex must be set as a list of regex strings in the config, which will check if the sent in url matches any of them.
+The following will show you how to override a base url defined in the Config with a value from the Catalog. allowedBaseUrlOverrideRegex must be a regex string in the config, which will check if the sent in url matches that regex for override.
 
 The check for the regex is to add a security check to make sure no malicious urls were sent to connect the plugin.
 
@@ -189,7 +189,7 @@ jenkins:
       username: backstage-bot
       projectCountLimit: 100
       apiKey: 123456789abcdef0123456789abcedf012
-      overrideBaseUrlCompatibleRegex: ["https://.*\.example\.com"]
+      allowedBaseUrlOverrideRegex: https://.*\.example\.com
 ```
 
 Catalog

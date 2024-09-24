@@ -456,7 +456,7 @@ describe('DefaultJenkinsInfoProvider', () => {
               baseUrl: 'https://jenkins.example.com',
               username: 'backstage - bot',
               apiKey: '123456789abcdef0123456789abcedf012',
-              overrideBaseUrlCompatibleRegex: ['https://.*.example.com'],
+              allowedBaseUrlOverrideRegex: 'https://.*.example.com',
             },
           ],
         },
@@ -483,82 +483,6 @@ describe('DefaultJenkinsInfoProvider', () => {
     });
   });
 
-  it('Override Base URL to a multiple matching regex', async () => {
-    const provider = configureProvider(
-      {
-        jenkins: {
-          instances: [
-            {
-              name: 'other',
-              baseUrl: 'https://jenkins.example.com',
-              username: 'backstage - bot',
-              apiKey: '123456789abcdef0123456789abcedf012',
-              overrideBaseUrlCompatibleRegex: [
-                'https://.*.example.com',
-                'https://.*.test.com',
-              ],
-            },
-          ],
-        },
-      },
-      {
-        metadata: {
-          annotations: {
-            'jenkins.io/job-full-name': 'other:teamA/artistLookup-build',
-            'jenkins.io/override-base-url': 'https://jenkinsOverriden.test.com',
-          },
-        },
-      },
-    );
-    const info: JenkinsInfo = await provider.getInstance({ entityRef });
-
-    expect(mockCatalog.getEntityByRef).toHaveBeenCalledWith(
-      entityRef,
-      undefined,
-    );
-    expect(info).toMatchObject({
-      baseUrl: 'https://jenkinsOverriden.test.com',
-      jobFullName: 'teamA/artistLookup-build',
-    });
-  });
-
-  it('Override Base URL set to an empty regex list', async () => {
-    const provider = configureProvider(
-      {
-        jenkins: {
-          instances: [
-            {
-              name: 'other',
-              baseUrl: 'https://jenkins.example.com',
-              username: 'backstage - bot',
-              apiKey: '123456789abcdef0123456789abcedf012',
-              overrideBaseUrlCompatibleRegex: [],
-            },
-          ],
-        },
-      },
-      {
-        metadata: {
-          annotations: {
-            'jenkins.io/job-full-name': 'other:teamA/artistLookup-build',
-            'jenkins.io/override-base-url':
-              'https://jenkinsOverriden.example.com',
-          },
-        },
-      },
-    );
-    const info: JenkinsInfo = await provider.getInstance({ entityRef });
-
-    expect(mockCatalog.getEntityByRef).toHaveBeenCalledWith(
-      entityRef,
-      undefined,
-    );
-    expect(info).toMatchObject({
-      baseUrl: 'https://jenkins.example.com',
-      jobFullName: 'teamA/artistLookup-build',
-    });
-  });
-
   it('Override Base URL set to a non matching regex', async () => {
     const provider = configureProvider(
       {
@@ -569,7 +493,7 @@ describe('DefaultJenkinsInfoProvider', () => {
               baseUrl: 'https://jenkins.example.com',
               username: 'backstage - bot',
               apiKey: '123456789abcdef0123456789abcedf012',
-              overrideBaseUrlCompatibleRegex: ['https://.*.example.com'],
+              allowedBaseUrlOverrideRegex: 'https://.*.example.com',
             },
           ],
         },
@@ -605,7 +529,7 @@ describe('DefaultJenkinsInfoProvider', () => {
               baseUrl: 'https://jenkins.example.com',
               username: 'backstage - bot',
               apiKey: '123456789abcdef0123456789abcedf012',
-              overrideBaseUrlCompatibleRegex: ['https://.*.test.com'],
+              allowedBaseUrlOverrideRegex: 'https://.*.test.com',
             },
           ],
         },
@@ -640,7 +564,7 @@ describe('DefaultJenkinsInfoProvider', () => {
               baseUrl: 'https://jenkins.example.com',
               username: 'backstage - bot',
               apiKey: '123456789abcdef0123456789abcedf012',
-              overrideBaseUrlCompatibleRegex: ['(abc', 'https://.*.test.com'],
+              allowedBaseUrlOverrideRegex: '(abc',
             },
           ],
         },
@@ -661,7 +585,7 @@ describe('DefaultJenkinsInfoProvider', () => {
       undefined,
     );
     expect(info).toMatchObject({
-      baseUrl: 'https://jenkinsOverriden.test.com',
+      baseUrl: 'https://jenkins.example.com',
       jobFullName: 'teamA/artistLookup-build',
     });
   });

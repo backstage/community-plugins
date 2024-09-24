@@ -122,6 +122,7 @@ export interface JenkinsInfoProvider {
 
 // @public (undocumented)
 export interface JenkinsInstanceConfig {
+  allowedBaseUrlOverrideRegex?: string;
   // (undocumented)
   apiKey: string;
   // (undocumented)
@@ -131,7 +132,6 @@ export interface JenkinsInstanceConfig {
   extraRequestHeaders?: Record<string, string>;
   // (undocumented)
   name: string;
-  overrideBaseUrlCompatibleRegex?: string[];
   // (undocumented)
   projectCountLimit?: number;
   // (undocumented)

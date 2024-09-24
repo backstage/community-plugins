@@ -71,7 +71,7 @@ export interface JenkinsInstanceConfig {
   /**
    * Set a list of compatible regex strings for the url
    */
-  overrideBaseUrlCompatibleRegex?: string[];
+  allowedBaseUrlOverrideRegex?: string;
 }
 
 /**
@@ -102,8 +102,8 @@ export class JenkinsConfig {
         apiKey: c.getString('apiKey'),
         extraRequestHeaders: c.getOptional('extraRequestHeaders'),
         crumbIssuer: c.getOptionalBoolean('crumbIssuer'),
-        overrideBaseUrlCompatibleRegex: c.getOptionalStringArray(
-          'overrideBaseUrlCompatibleRegex',
+        allowedBaseUrlOverrideRegex: c.getOptionalString(
+          'allowedBaseUrlOverrideRegex',
         ),
       })) || [];
 
@@ -120,8 +120,8 @@ export class JenkinsConfig {
     const extraRequestHeaders = jenkinsConfig.getOptional<
       JenkinsInstanceConfig['extraRequestHeaders']
     >('extraRequestHeaders');
-    const overrideBaseUrlCompatibleRegex = jenkinsConfig.getOptionalStringArray(
-      'overrideBaseUrlCompatibleRegex',
+    const allowedBaseUrlOverrideRegex = jenkinsConfig.getOptionalString(
+      'allowedBaseUrlOverrideRegex',
     );
 
     if (hasNamedDefault && (baseUrl || username || apiKey)) {
@@ -148,7 +148,7 @@ export class JenkinsConfig {
           apiKey,
           extraRequestHeaders,
           crumbIssuer,
-          overrideBaseUrlCompatibleRegex,
+          allowedBaseUrlOverrideRegex,
         },
       ]);
     }
@@ -284,11 +284,11 @@ export class DefaultJenkinsInfoProvider implements JenkinsInfoProvider {
     const overrideUrlValue =
       DefaultJenkinsInfoProvider.getEntityOverrideURL(entity);
     if (
-      instanceConfig.overrideBaseUrlCompatibleRegex &&
+      instanceConfig.allowedBaseUrlOverrideRegex &&
       overrideUrlValue &&
       DefaultJenkinsInfoProvider.verifyUrlMatchesRegex(
         overrideUrlValue,
-        instanceConfig.overrideBaseUrlCompatibleRegex,
+        instanceConfig.allowedBaseUrlOverrideRegex,
         this.logger,
       )
     ) {
@@ -332,18 +332,16 @@ export class DefaultJenkinsInfoProvider implements JenkinsInfoProvider {
 
   private static verifyUrlMatchesRegex(
     url: string,
-    regexList: string[],
+    regexString: string,
     logger: LoggerService,
   ) {
-    for (const regexString of regexList) {
-      try {
-        const regex = new RegExp(regexString);
-        if (regex.test(url)) {
-          return true;
-        }
-      } catch (e) {
-        logger.warn(`Invalid regex: "${regexString}" - Error: ${e.message}`);
+    try {
+      const regex = new RegExp(regexString);
+      if (regex.test(url)) {
+        return true;
       }
+    } catch (e) {
+      logger.warn(`Invalid regex: "${regexString}" - Error: ${e.message}`);
     }
     return false;
   }
