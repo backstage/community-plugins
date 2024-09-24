@@ -109,7 +109,7 @@ export class VaultClient implements VaultApi {
     }
 
     const result = await this.callApi<{ items: VaultSecret[] }>(
-      `v1/secrets/${encodeURIComponent(secretPath)}`,
+      `v1/secrets/${(secretPath)}`,
       query,
     );
     return result.items;
