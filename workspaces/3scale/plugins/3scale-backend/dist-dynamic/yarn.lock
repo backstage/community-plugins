@@ -8,9 +8,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-3scale-backend-dynamic@workspace:."
   peerDependencies:
-    "@backstage/backend-plugin-api": ^0.8.0
-    "@backstage/catalog-model": ^1.6.0
+    "@backstage/backend-plugin-api": ^1.0.0
+    "@backstage/catalog-model": ^1.7.0
     "@backstage/errors": ^1.2.4
-    "@backstage/plugin-catalog-node": ^1.12.5
+    "@backstage/plugin-catalog-node": ^1.13.0
   languageName: unknown
   linkType: soft

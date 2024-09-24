@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-3scale-backend-dynamic",
-  "version": "1.8.4",
+  "version": "1.8.5",
   "license": "Apache-2.0",
   "main": "./dist/index.cjs.js",
   "types": "src/index.ts",
@@ -42,10 +42,10 @@
   "author": "Red Hat",
   "bundleDependencies": true,
   "peerDependencies": {
-    "@backstage/backend-plugin-api": "^0.8.0",
-    "@backstage/catalog-model": "^1.6.0",
+    "@backstage/backend-plugin-api": "^1.0.0",
+    "@backstage/catalog-model": "^1.7.0",
     "@backstage/errors": "^1.2.4",
-    "@backstage/plugin-catalog-node": "^1.12.5"
+    "@backstage/plugin-catalog-node": "^1.13.0"
   },
   "overrides": {
     "@aws-sdk/util-utf8-browser": {
