@@ -4,5 +4,5 @@ import { feedbackPlugin } from '../plugin';
 
 export const dynamicPluginInstaller: BackendDynamicPluginInstaller = {
   kind: 'new',
-  install: () => feedbackPlugin(),
+  install: () => feedbackPlugin,
 };
