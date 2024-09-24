@@ -1,5 +1,12 @@
 # app
 
+## 0.0.3
+
+### Patch Changes
+
+- Updated dependencies [37e9681]
+  - @backstage-community/plugin-azure-storage-explorer@0.0.3
+
 ## 0.0.2
 
 ### Patch Changes
