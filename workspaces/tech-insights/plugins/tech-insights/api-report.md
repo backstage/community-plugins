@@ -11,16 +11,15 @@ import { BulkCheckResponse } from '@backstage-community/plugin-tech-insights-com
 import { Check as Check_2 } from '@backstage-community/plugin-tech-insights-common/client';
 import { CheckLink } from '@backstage-community/plugin-tech-insights-common';
 import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
-import { ComponentProps } from 'react';
-import { ComponentType } from 'react';
 import { CompoundEntityRef } from '@backstage/catalog-model';
 import { DiscoveryApi } from '@backstage/core-plugin-api';
+import { ElementType } from 'react';
 import { Entity } from '@backstage/catalog-model';
 import { FactSchema } from '@backstage-community/plugin-tech-insights-common';
 import { IdentityApi } from '@backstage/core-plugin-api';
+import { InsightFacts as InsightFacts_2 } from '@backstage-community/plugin-tech-insights-common/client';
 import { JsonValue } from '@backstage/types';
 import { JSX as JSX_2 } from 'react';
-import { ListItemSecondaryAction } from '@material-ui/core';
 import { MouseEventHandler } from 'react';
 import { PropsWithChildren } from 'react';
 import { default as React_2 } from 'react';
@@ -74,15 +73,17 @@ export interface InsightFacts {
 export const jsonRulesEngineCheckResultRenderer: CheckResultRenderer;
 
 // @public (undocumented)
-export type ResultCheckIconBaseComponent = ComponentType<{
-  onClick?: MouseEventHandler | undefined;
+export type ResultCheckIconBaseComponentProps = PropsWithChildren<{
+  onClick?: MouseEventHandler;
 }>;
 
 // @public
-export interface ResultCheckIconProps<C extends ResultCheckIconBaseComponent> {
+export interface ResultCheckIconProps<
+  P extends ResultCheckIconBaseComponentProps,
+> {
   checkResultRenderer?: CheckResultRenderer;
-  component?: C;
-  componentProps?: Omit<ComponentProps<C>, 'onClick'>;
+  component?: ElementType<P>;
+  componentProps?: Omit<P, 'onClick' | 'children'>;
   disableLinksMenu?: boolean;
   entity?: Entity;
   missingRendererComponent?: ReactNode;
@@ -113,11 +114,11 @@ export const ScorecardsList: (props: {
 // @public
 export interface TechInsightsApi {
   // (undocumented)
-  getAllChecks(): Promise<Check[]>;
+  getAllChecks(): Promise<Check_2[]>;
   // (undocumented)
   getCheckResultRenderers: (types: string[]) => CheckResultRenderer[];
   // (undocumented)
-  getFacts(entity: CompoundEntityRef, facts: string[]): Promise<InsightFacts>;
+  getFacts(entity: CompoundEntityRef, facts: string[]): Promise<InsightFacts_2>;
   // (undocumented)
   getFactSchemas(): Promise<FactSchema[]>;
   // (undocumented)
@@ -133,7 +134,7 @@ export interface TechInsightsApi {
   // (undocumented)
   runBulkChecks(
     entities: CompoundEntityRef[],
-    checks?: Check[],
+    checks?: Check_2[],
   ): Promise<BulkCheckResponse>;
   // (undocumented)
   runChecks(
@@ -147,9 +148,9 @@ export const techInsightsApiRef: ApiRef<TechInsightsApi>;
 
 // @public (undocumented)
 export const TechInsightsCheckIcon: <
-  C extends ResultCheckIconBaseComponent = ListItemSecondaryAction,
+  P extends ResultCheckIconBaseComponentProps,
 >(
-  props: ResultCheckIconProps<C>,
+  props: ResultCheckIconProps<P>,
 ) => JSX_2.Element;
 
 // @public (undocumented)

@@ -1,5 +1,11 @@
 # @backstage-community/plugin-code-coverage
 
+## 0.2.31
+
+### Patch Changes
+
+- bf873a4: Backstage version bump to v1.31.1
+
 ## 0.2.30
 
 ### Patch Changes

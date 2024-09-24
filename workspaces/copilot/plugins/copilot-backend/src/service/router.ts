@@ -140,7 +140,7 @@ async function createRouter(
       return response.status(400).json('Invalid date format');
     }
 
-    const result = await db.getByPeriod(startDate, endDate);
+    const result = await db.getMetricsByPeriod(startDate, endDate);
 
     const metrics: Metric[] = result.map(metric => ({
       ...metric,

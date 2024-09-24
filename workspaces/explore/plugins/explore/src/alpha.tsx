@@ -14,20 +14,22 @@
  * limitations under the License.
  */
 
-import { createPlugin } from '@backstage/frontend-plugin-api';
-import { createSearchResultListItemExtension } from '@backstage/plugin-search-react/alpha';
+import { createFrontendPlugin } from '@backstage/frontend-plugin-api';
+import { SearchResultListItemBlueprint } from '@backstage/plugin-search-react/alpha';
 
 /** @alpha */
-export const exploreSearchResultListItem = createSearchResultListItemExtension({
-  predicate: result => result.type === 'tools',
-  component: () =>
-    import('./components/ToolSearchResultListItem').then(
-      m => m.ToolSearchResultListItem,
-    ),
+export const exploreSearchResultListItem = SearchResultListItemBlueprint.make({
+  params: {
+    predicate: result => result.type === 'tools',
+    component: () =>
+      import('./components/ToolSearchResultListItem').then(
+        m => m.ToolSearchResultListItem,
+      ),
+  },
 });
 
 /** @alpha */
-export default createPlugin({
+export default createFrontendPlugin({
   id: 'explore',
   extensions: [exploreSearchResultListItem],
 });

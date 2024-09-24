@@ -6,25 +6,28 @@
 import { AnyApiFactory } from '@backstage/core-plugin-api';
 import { AnyExtensionDataRef } from '@backstage/frontend-plugin-api';
 import { AnyRouteRefParams } from '@backstage/frontend-plugin-api';
-import { BackstagePlugin } from '@backstage/frontend-plugin-api';
 import { ConfigurableExtensionDataRef } from '@backstage/frontend-plugin-api';
 import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { ExtensionInput } from '@backstage/frontend-plugin-api';
+import { FrontendPlugin } from '@backstage/frontend-plugin-api';
 import { IconComponent } from '@backstage/core-plugin-api';
 import { default as React_2 } from 'react';
 import { RouteRef } from '@backstage/frontend-plugin-api';
 
 // @alpha (undocumented)
-const _default: BackstagePlugin<
+const _default: FrontendPlugin<
   {
     root: RouteRef<undefined>;
   },
   {},
   {
-    'nav-item:tech-radar': ExtensionDefinition<
-      {},
-      {},
-      ConfigurableExtensionDataRef<
+    'nav-item:tech-radar': ExtensionDefinition<{
+      kind: 'nav-item';
+      namespace: undefined;
+      name: undefined;
+      config: {};
+      configInput: {};
+      output: ConfigurableExtensionDataRef<
         {
           title: string;
           icon: IconComponent;
@@ -32,16 +35,11 @@ const _default: BackstagePlugin<
         },
         'core.nav-item.target',
         {}
-      >,
-      {},
-      {
-        kind: 'nav-item';
-        namespace: undefined;
-        name: undefined;
-      }
-    >;
-    'page:tech-radar': ExtensionDefinition<
-      {
+      >;
+      inputs: {};
+    }>;
+    'page:tech-radar': ExtensionDefinition<{
+      config: {
         title: string;
         subtitle: string;
         pageTitle: string;
@@ -49,8 +47,8 @@ const _default: BackstagePlugin<
         height: number;
       } & {
         path: string | undefined;
-      },
-      {
+      };
+      configInput: {
         title?: string | undefined;
         subtitle?: string | undefined;
         pageTitle?: string | undefined;
@@ -58,21 +56,22 @@ const _default: BackstagePlugin<
         height?: number | undefined;
       } & {
         path?: string | undefined;
-      },
-      | ConfigurableExtensionDataRef<
-          React_2.JSX.Element,
-          'core.reactElement',
-          {}
-        >
-      | ConfigurableExtensionDataRef<string, 'core.routing.path', {}>
-      | ConfigurableExtensionDataRef<
-          RouteRef<AnyRouteRefParams>,
-          'core.routing.ref',
-          {
-            optional: true;
-          }
-        >,
-      {
+      };
+      output:
+        | ConfigurableExtensionDataRef<
+            React_2.JSX.Element,
+            'core.reactElement',
+            {}
+          >
+        | ConfigurableExtensionDataRef<string, 'core.routing.path', {}>
+        | ConfigurableExtensionDataRef<
+            RouteRef<AnyRouteRefParams>,
+            'core.routing.ref',
+            {
+              optional: true;
+            }
+          >;
+      inputs: {
         [x: string]: ExtensionInput<
           AnyExtensionDataRef,
           {
@@ -80,46 +79,47 @@ const _default: BackstagePlugin<
             singleton: boolean;
           }
         >;
-      },
-      {
-        kind: 'page';
-        namespace: undefined;
-        name: undefined;
-      }
-    >;
-    'api:tech-radar': ExtensionDefinition<
-      {},
-      {},
-      ConfigurableExtensionDataRef<AnyApiFactory, 'core.api.factory', {}>,
-      {},
-      {
-        kind: 'api';
-        namespace: undefined;
-        name: undefined;
-      }
-    >;
+      };
+      kind: 'page';
+      namespace: undefined;
+      name: undefined;
+    }>;
+    'api:tech-radar': ExtensionDefinition<{
+      kind: 'api';
+      namespace: undefined;
+      name: undefined;
+      config: {};
+      configInput: {};
+      output: ConfigurableExtensionDataRef<
+        AnyApiFactory,
+        'core.api.factory',
+        {}
+      >;
+      inputs: {};
+    }>;
   }
 >;
 export default _default;
 
 // @alpha (undocumented)
-export const techRadarApi: ExtensionDefinition<
-  {},
-  {},
-  ConfigurableExtensionDataRef<AnyApiFactory, 'core.api.factory', {}>,
-  {},
-  {
-    kind: 'api';
-    namespace: undefined;
-    name: undefined;
-  }
->;
+export const techRadarApi: ExtensionDefinition<{
+  kind: 'api';
+  namespace: undefined;
+  name: undefined;
+  config: {};
+  configInput: {};
+  output: ConfigurableExtensionDataRef<AnyApiFactory, 'core.api.factory', {}>;
+  inputs: {};
+}>;
 
 // @alpha (undocumented)
-export const techRadarNavItem: ExtensionDefinition<
-  {},
-  {},
-  ConfigurableExtensionDataRef<
+export const techRadarNavItem: ExtensionDefinition<{
+  kind: 'nav-item';
+  namespace: undefined;
+  name: undefined;
+  config: {};
+  configInput: {};
+  output: ConfigurableExtensionDataRef<
     {
       title: string;
       icon: IconComponent;
@@ -127,18 +127,13 @@ export const techRadarNavItem: ExtensionDefinition<
     },
     'core.nav-item.target',
     {}
-  >,
-  {},
-  {
-    kind: 'nav-item';
-    namespace: undefined;
-    name: undefined;
-  }
->;
+  >;
+  inputs: {};
+}>;
 
 // @alpha (undocumented)
-export const techRadarPage: ExtensionDefinition<
-  {
+export const techRadarPage: ExtensionDefinition<{
+  config: {
     title: string;
     subtitle: string;
     pageTitle: string;
@@ -146,8 +141,8 @@ export const techRadarPage: ExtensionDefinition<
     height: number;
   } & {
     path: string | undefined;
-  },
-  {
+  };
+  configInput: {
     title?: string | undefined;
     subtitle?: string | undefined;
     pageTitle?: string | undefined;
@@ -155,17 +150,18 @@ export const techRadarPage: ExtensionDefinition<
     height?: number | undefined;
   } & {
     path?: string | undefined;
-  },
-  | ConfigurableExtensionDataRef<React_2.JSX.Element, 'core.reactElement', {}>
-  | ConfigurableExtensionDataRef<string, 'core.routing.path', {}>
-  | ConfigurableExtensionDataRef<
-      RouteRef<AnyRouteRefParams>,
-      'core.routing.ref',
-      {
-        optional: true;
-      }
-    >,
-  {
+  };
+  output:
+    | ConfigurableExtensionDataRef<React_2.JSX.Element, 'core.reactElement', {}>
+    | ConfigurableExtensionDataRef<string, 'core.routing.path', {}>
+    | ConfigurableExtensionDataRef<
+        RouteRef<AnyRouteRefParams>,
+        'core.routing.ref',
+        {
+          optional: true;
+        }
+      >;
+  inputs: {
     [x: string]: ExtensionInput<
       AnyExtensionDataRef,
       {
@@ -173,13 +169,11 @@ export const techRadarPage: ExtensionDefinition<
         singleton: boolean;
       }
     >;
-  },
-  {
-    kind: 'page';
-    namespace: undefined;
-    name: undefined;
-  }
->;
+  };
+  kind: 'page';
+  namespace: undefined;
+  name: undefined;
+}>;
 
 // (No @packageDocumentation comment for this package)
 ```
