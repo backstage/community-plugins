@@ -1,5 +1,13 @@
 # @backstage-community/plugin-lighthouse-backend
 
+## 0.4.15
+
+### Patch Changes
+
+- be1a131: Backstage version bump to v1.31.1
+- Updated dependencies [be1a131]
+  - @backstage-community/plugin-lighthouse-common@0.1.9
+
 ## 0.4.14
 
 ### Patch Changes
