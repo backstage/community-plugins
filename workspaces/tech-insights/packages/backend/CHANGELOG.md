@@ -1,5 +1,13 @@
 # backend
 
+## 0.0.8
+
+### Patch Changes
+
+- Updated dependencies [fad299b]
+  - @backstage-community/plugin-tech-insights-backend@1.1.0
+  - app@0.0.8
+
 ## 0.0.7
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @backstage-community/plugin-report-portal
 
+## 1.1.0
+
+### Minor Changes
+
+- 9e74cfe: Improved filtering on projects and launches page, minor ux improvments in all over plugin.
+
 ## 1.0.2
 
 ### Patch Changes

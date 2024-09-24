@@ -1,5 +1,12 @@
 # app
 
+## 0.0.8
+
+### Patch Changes
+
+- Updated dependencies [42a2c31]
+  - @backstage-community/plugin-tech-insights@0.3.36
+
 ## 0.0.7
 
 ### Patch Changes

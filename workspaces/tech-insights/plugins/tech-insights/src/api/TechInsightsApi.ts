@@ -21,7 +21,10 @@ import {
   FactSchema,
   CheckLink,
 } from '@backstage-community/plugin-tech-insights-common';
-import { Check, InsightFacts } from './types';
+import {
+  Check,
+  InsightFacts,
+} from '@backstage-community/plugin-tech-insights-common/client';
 import { CheckResultRenderer } from '../components/CheckResultRenderer';
 import { CompoundEntityRef, Entity } from '@backstage/catalog-model';
 
