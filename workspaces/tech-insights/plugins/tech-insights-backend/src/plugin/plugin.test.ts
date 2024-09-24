@@ -24,7 +24,7 @@ describe('techInsightsPlugin', () => {
     await startTestBackend({
       extensionPoints: [],
       features: [
-        techInsightsPlugin(),
+        techInsightsPlugin,
         httpRouterMock.factory,
         mockServices.database.factory(),
         mockServices.logger.factory(),
@@ -41,7 +41,6 @@ describe('techInsightsPlugin', () => {
           },
         }),
         mockServices.scheduler.factory(),
-        mockServices.tokenManager.factory(),
       ],
     });
 
