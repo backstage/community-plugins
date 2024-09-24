@@ -51,6 +51,7 @@
     "@types/express": "*",
     "express": "^4.17.1",
     "express-promise-router": "^4.1.0",
+    "joi": "^17.13.3",
     "knex": "^3.0.0",
     "luxon": "^3.5.0",
     "node-fetch": "^2.6.7",

@@ -31,6 +31,10 @@ export interface Config {
      */
     enterprise?: string;
     /**
+     * The name of the GitHub organization.
+     */
+    organization?: string;
+    /**
      * The host for GitHub Copilot integration.
      */
     host?: string;

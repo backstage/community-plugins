@@ -18,23 +18,22 @@ import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 import { styled } from '@mui/material/styles';
+import { InfoCard } from '@backstage/core-components';
 
 type ChartProps = {
   title: string;
 };
 
-const MainBox = styled(Box)(({ theme }) => ({
+const InfoCardStyled = styled(InfoCard)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
-  borderRadius: 25,
-  backgroundColor: theme.palette.background.paper,
   padding: theme.spacing(2),
   width: '100%',
 }));
 
 export const Chart = ({ title, children }: PropsWithChildren<ChartProps>) => {
   return (
-    <MainBox>
+    <InfoCardStyled divider={false} noPadding>
       <Box display="flex" alignItems="center">
         <Typography variant="h3" component="h2">
           {title}
@@ -42,6 +41,6 @@ export const Chart = ({ title, children }: PropsWithChildren<ChartProps>) => {
       </Box>
       <Divider />
       {children}
-    </MainBox>
+    </InfoCardStyled>
   );
 };

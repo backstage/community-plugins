@@ -16,9 +16,13 @@
 
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { GithubClient } from '../client/GithubClient';
-import { DatabaseHandler, MetricDbRow } from '../db/DatabaseHandler';
+import { DatabaseHandler } from '../db/DatabaseHandler';
+import ProcessorManagement from '../processors/ProcessorManagement';
+import { EnterpriseProcessor } from '../processors/EnterpriseProcessor';
+import { EnterpriseTeamProcessor } from '../processors/EnterpriseTeamProcessor';
+import { OrganizationProcessor } from '../processors/OrganizationProcessor';
 import { Config } from '@backstage/config';
-import { DateTime } from 'luxon';
+import { OrganizationTeamProcessor } from '../processors/OrganizationTeamProcessor';
 
 type Options = {
   api: GithubClient;
@@ -35,61 +39,16 @@ export default class Scheduler {
   }
 
   async run() {
-    try {
-      this.options.logger.info('Starting Github Copilot Processor');
+    const runner = new ProcessorManagement({
+      ...this.options,
+      processors: [
+        new EnterpriseProcessor(this.options),
+        new EnterpriseTeamProcessor(this.options),
+        new OrganizationProcessor(this.options),
+        new OrganizationTeamProcessor(this.options),
+      ],
+    });
 
-      const copilotMetrics =
-        await this.options.api.getCopilotUsageDataForEnterprise();
-      this.options.logger.info(`Fetched ${copilotMetrics.length} metrics`);
-
-      const lastDay = await this.options.db.getMostRecentDayFromMetrics();
-      this.options.logger.info(`Found last day: ${lastDay}`);
-
-      const diff = copilotMetrics
-        .sort(
-          (a, b) =>
-            DateTime.fromISO(a.day).toMillis() -
-            DateTime.fromISO(b.day).toMillis(),
-        )
-        .filter(metric => {
-          const metricDate = DateTime.fromISO(metric.day);
-          const lastDayDate = lastDay ? DateTime.fromISO(lastDay) : null;
-          return !lastDayDate || metricDate > lastDayDate;
-        })
-        .map(({ breakdown, ...rest }) => ({
-          ...rest,
-          breakdown: JSON.stringify(breakdown),
-        }));
-
-      this.options.logger.info(`Found ${diff.length} new metrics to insert`);
-
-      if (diff.length > 0) {
-        await batchInsertInChunks<MetricDbRow>(
-          diff,
-          30,
-          async (chunk: MetricDbRow[]) => {
-            await this.options.db.batchInsert(chunk);
-          },
-        );
-        this.options.logger.info('Inserted new metrics into the database');
-      } else {
-        this.options.logger.info('No new metrics found to insert');
-      }
-    } catch (error) {
-      this.options.logger.error(
-        `An error occurred while processing Github Copilot metrics: ${error}`,
-      );
-    }
-  }
-}
-
-async function batchInsertInChunks<T>(
-  data: T[],
-  chunkSize: number,
-  batchInsertFunc: (chunk: T[]) => Promise<void>,
-): Promise<void> {
-  for (let i = 0; i < data.length; i += chunkSize) {
-    const chunk = data.slice(i, i + chunkSize);
-    await batchInsertFunc(chunk);
+    await runner.runAsync();
   }
 }
