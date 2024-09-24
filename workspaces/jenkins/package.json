@@ -39,9 +39,10 @@
     "directory": "workspaces/jenkins"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.27.0",
+    "@backstage/cli": "^0.27.1",
     "@backstage/e2e-test-utils": "^0.1.1",
-    "@backstage/repo-tools": "^0.9.5",
+    "@backstage/frontend-test-utils": "^0.2.0",
+    "@backstage/repo-tools": "^0.9.7",
     "@changesets/cli": "^2.27.1",
     "@spotify/prettier-config": "^15.0.0",
     "concurrently": "^8.0.0",
@@ -67,7 +68,7 @@
   "dependencies": {
     "@backstage-community/plugin-jenkins": "workspace:^",
     "@backstage-community/plugin-jenkins-backend": "workspace:^",
-    "@backstage/frontend-plugin-api": "^0.7.0",
+    "@backstage/frontend-plugin-api": "^0.8.0",
     "knip": "^5.27.4"
   }
 }

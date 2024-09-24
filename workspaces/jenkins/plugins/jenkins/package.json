@@ -57,10 +57,10 @@
   },
   "dependencies": {
     "@backstage-community/plugin-jenkins-common": "workspace:^",
-    "@backstage/catalog-model": "^1.6.0",
-    "@backstage/core-compat-api": "^0.2.8",
-    "@backstage/core-components": "^0.14.10",
-    "@backstage/core-plugin-api": "^1.9.3",
+    "@backstage/catalog-model": "^1.7.0",
+    "@backstage/core-compat-api": "^0.3.0",
+    "@backstage/core-components": "^0.15.0",
+    "@backstage/core-plugin-api": "^1.9.4",
     "@backstage/errors": "^1.2.4",
     "@backstage/frontend-plugin-api": "^0.7.0",
     "@backstage/plugin-catalog-react": "^1.12.3",
@@ -71,10 +71,10 @@
     "react-use": "^17.2.4"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.27.0",
-    "@backstage/dev-utils": "^1.0.37",
+    "@backstage/cli": "^0.27.1",
+    "@backstage/dev-utils": "^1.1.0",
     "@backstage/frontend-test-utils": "^0.1.11",
-    "@backstage/test-utils": "^1.5.10",
+    "@backstage/test-utils": "^1.6.0",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^15.0.0",
