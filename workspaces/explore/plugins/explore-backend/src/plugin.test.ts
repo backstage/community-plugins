@@ -33,7 +33,7 @@ describe('explorePlugin', () => {
     await startTestBackend({
       extensionPoints: [],
       features: [
-        explorePlugin(),
+        explorePlugin,
         httpRouterMock.factory,
         mockServices.rootConfig.factory({
           data: {

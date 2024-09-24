@@ -19,6 +19,7 @@ var path = require('path');
 module.exports = {
   root: true,
   plugins: ['@spotify', 'notice', 'react', 'testing-library'],
+  ignorePatterns: ['.eslintrc.js', '.eslintrc.cjs'],
   rules: {
     'notice/notice': [
       'error',
