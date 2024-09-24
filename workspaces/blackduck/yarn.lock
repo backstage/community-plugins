@@ -2928,7 +2928,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/backend-common@npm:^0.24.1":
+"@backstage/backend-common@npm:^0.24.0, @backstage/backend-common@npm:^0.24.1":
   version: 0.24.1
   resolution: "@backstage/backend-common@npm:0.24.1"
   dependencies:
@@ -3196,7 +3196,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/backend-plugin-api@npm:^0.8.1":
+"@backstage/backend-plugin-api@npm:^0.8.0, @backstage/backend-plugin-api@npm:^0.8.1":
   version: 0.8.1
   resolution: "@backstage/backend-plugin-api@npm:0.8.1"
   dependencies:
