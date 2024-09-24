@@ -1,0 +1,51 @@
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: janus-idp-nexus-repository-manager
+  title: Nexus Repository Manager
+  description: Nexus Repository Manager plugin for Backstage
+  annotations:
+    backstage.io/source-location: url:https://github.com/janus-idp/backstage-plugins/tree/main/plugins/nexus-repository-manager
+    backstage.io/view-url: https://github.com/janus-idp/backstage-plugins/blob/main/plugins/nexus-repository-manager/catalog-info.yaml
+    backstage.io/edit-url: https://github.com/janus-idp/backstage-plugins/edit/main/plugins/nexus-repository-manager/catalog-info.yaml
+    github.com/project-slug: janus-idp/backstage-plugins
+    github.com/team-slug: janus-idp/maintainers-plugins
+    sonarqube.org/project-key: janus-idp_backstage-plugins
+  links:
+    - url: https://github.com/janus-idp/backstage-plugins/tree/main/plugins/nexus-repository-manager
+      title: GitHub Source
+      icon: source
+      type: source
+spec:
+  type: backstage-plugin
+  lifecycle: production
+  owner: owner-unknown
+  system: rhdh
+  subcomponentOf: janus-idp-backstage-plugins
+---
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: janus-idp-nexus-repository-manager
+  title: '@janus-idp/backstage-plugin-nexus-repository-manager'
+  description: Nexus Repository Manager plugin for Backstage
+  annotations:
+    backstage.io/source-location: url:https://github.com/janus-idp/backstage-plugins/tree/main/plugins/nexus-repository-manager
+    backstage.io/view-url: https://github.com/janus-idp/backstage-plugins/blob/main/plugins/nexus-repository-manager/catalog-info.yaml
+    backstage.io/edit-url: https://github.com/janus-idp/backstage-plugins/edit/main/plugins/nexus-repository-manager/catalog-info.yaml
+    github.com/project-slug: janus-idp/backstage-plugins
+    github.com/team-slug: janus-idp/maintainers-plugins
+    sonarqube.org/project-key: janus-idp_backstage-plugins
+  links:
+    - url: https://github.com/janus-idp/backstage-plugins/tree/main/plugins/nexus-repository-manager
+      title: GitHub Source
+      icon: source
+      type: source
+spec:
+  type: backstage-frontend-plugin
+  lifecycle: production
+  owner: rhdh-team
+  system: rhdh
+  subcomponentOf: janus-idp-nexus-repository-manager
