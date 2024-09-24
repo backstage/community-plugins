@@ -1,3 +1,18 @@
+/*
+ * Copyright 2024 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import { V1ObjectMeta } from '@kubernetes/client-node';
 
 export interface Application {
@@ -42,7 +57,7 @@ export interface Status {
   sync: StatusSync;
   health: Health;
   operationState: OperationState;
-  resources?: StatusResource[];
+  resources?: Resource[];
   history?: History[];
   reconciledAt?: string;
   sourceType?: string;
@@ -107,16 +122,6 @@ export interface SyncResultResource {
   message: string;
   hookPhase: string;
   syncPhase: string;
-}
-
-export interface StatusResource {
-  version: string;
-  kind: string;
-  namespace: string;
-  name: string;
-  status: string;
-  health: Health;
-  group?: string;
 }
 
 export interface Summary {
@@ -187,8 +192,9 @@ export interface Resource {
   namespace: string;
   name: string;
   status: string;
-  health: Health;
+  health?: Health;
   group?: string;
+  createTimestamp?: string;
 }
 
 export type HealthStatusType = keyof typeof HealthStatus;

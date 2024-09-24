@@ -4,7 +4,7 @@
 
 ```ts
 import { AuthService } from '@backstage/backend-plugin-api';
-import { BackendFeatureCompat } from '@backstage/backend-plugin-api';
+import { BackendFeature } from '@backstage/backend-plugin-api';
 import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
 import { Config } from '@backstage/config';
 import { DatabaseService } from '@backstage/backend-plugin-api';
@@ -22,7 +22,6 @@ import { LoggerService } from '@backstage/backend-plugin-api';
 import { PersistenceContext as PersistenceContext_2 } from '@backstage-community/plugin-tech-insights-node';
 import { SchedulerService } from '@backstage/backend-plugin-api';
 import { TechInsightCheck } from '@backstage-community/plugin-tech-insights-node';
-import { TokenManager } from '@backstage/backend-common';
 
 // @public
 export const buildTechInsightsContext: <
@@ -112,7 +111,7 @@ export interface TechInsightsOptions<
   CheckResultType extends CheckResult,
 > {
   // (undocumented)
-  auth?: AuthService;
+  auth: AuthService;
   // (undocumented)
   config: Config;
   // (undocumented)
@@ -127,12 +126,10 @@ export interface TechInsightsOptions<
   persistenceContext?: PersistenceContext_2;
   // (undocumented)
   scheduler: SchedulerService;
-  // (undocumented)
-  tokenManager: TokenManager;
 }
 
 // @public
-const techInsightsPlugin: BackendFeatureCompat;
+const techInsightsPlugin: BackendFeature;
 export default techInsightsPlugin;
 
 // (No @packageDocumentation comment for this package)

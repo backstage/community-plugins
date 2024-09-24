@@ -1,5 +1,17 @@
 # @backstage-community/plugin-bazaar
 
+## 0.2.30
+
+### Patch Changes
+
+- cb24354: Backstage version bump to v1.31.1
+
+## 0.2.29
+
+### Patch Changes
+
+- 23c908d: Backstage version bump to v1.30.2
+
 ## 0.2.28
 
 ### Patch Changes

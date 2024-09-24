@@ -15,6 +15,7 @@
  */
 import {
   createPlugin,
+  createComponentExtension,
   createRoutableExtension,
   createApiFactory,
   discoveryApiRef,
@@ -46,11 +47,12 @@ export const techInsightsPlugin = createPlugin({
  * @public
  */
 export const ScorecardInfo = techInsightsPlugin.provide(
-  createRoutableExtension({
+  createComponentExtension({
     name: 'ScorecardInfo',
-    component: () =>
-      import('./components/ScorecardsInfo').then(m => m.ScorecardInfo),
-    mountPoint: rootRouteRef,
+    component: {
+      lazy: () =>
+        import('./components/ScorecardsInfo').then(m => m.ScorecardInfo),
+    },
   }),
 );
 
@@ -58,11 +60,12 @@ export const ScorecardInfo = techInsightsPlugin.provide(
  * @public
  */
 export const ScorecardsList = techInsightsPlugin.provide(
-  createRoutableExtension({
+  createComponentExtension({
     name: 'ScorecardsList',
-    component: () =>
-      import('./components/ScorecardsList').then(m => m.ScorecardsList),
-    mountPoint: rootRouteRef,
+    component: {
+      lazy: () =>
+        import('./components/ScorecardsList').then(m => m.ScorecardsList),
+    },
   }),
 );
 
@@ -99,5 +102,31 @@ export const TechInsightsScorecardPage = techInsightsPlugin.provide(
     component: () =>
       import('./components/ScorecardsPage').then(m => m.ScorecardsPage),
     mountPoint: rootRouteRef,
+  }),
+);
+
+/**
+ * @public
+ */
+export const TechInsightsCheckIcon = techInsightsPlugin.provide(
+  createComponentExtension({
+    name: 'TechInsightsCheckIcon',
+    component: {
+      lazy: () =>
+        import('./components/ResultCheckIcon').then(m => m.ResultCheckIcon),
+    },
+  }),
+);
+
+/**
+ * @public
+ */
+export const TechInsightsLinksMenu = techInsightsPlugin.provide(
+  createComponentExtension({
+    name: 'TechInsightsLinksMenu',
+    component: {
+      lazy: () =>
+        import('./components/ResultLinksMenu').then(m => m.ResultLinksMenu),
+    },
   }),
 );

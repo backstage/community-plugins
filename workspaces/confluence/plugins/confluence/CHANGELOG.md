@@ -1,5 +1,11 @@
 # @backstage-community/plugin-confluence
 
+## 0.1.2
+
+### Patch Changes
+
+- 8efbeed: Backstage version bump to v1.31.1
+
 ## 0.1.1
 
 ### Patch Changes

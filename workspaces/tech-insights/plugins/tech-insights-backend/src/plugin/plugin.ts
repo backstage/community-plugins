@@ -100,7 +100,6 @@ export const techInsightsPlugin = createBackendPlugin({
         httpRouter: coreServices.httpRouter,
         logger: coreServices.logger,
         scheduler: coreServices.scheduler,
-        tokenManager: coreServices.tokenManager,
         auth: coreServices.auth,
       },
       async init({
@@ -110,7 +109,6 @@ export const techInsightsPlugin = createBackendPlugin({
         httpRouter,
         logger,
         scheduler,
-        tokenManager,
         auth,
       }) {
         const factRetrievers: FactRetrieverRegistration[] = Object.entries(
@@ -135,7 +133,6 @@ export const techInsightsPlugin = createBackendPlugin({
           logger,
           persistenceContext,
           scheduler,
-          tokenManager,
           auth,
         });
 

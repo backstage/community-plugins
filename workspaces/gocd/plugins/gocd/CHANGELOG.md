@@ -1,5 +1,11 @@
 # @backstage-community/plugin-gocd
 
+## 0.1.44
+
+### Patch Changes
+
+- 2138033: Backstage version bump to v1.30.2
+
 ## 0.1.43
 
 ### Patch Changes
