@@ -7,9 +7,10 @@
 
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
-import { IconComponent } from '@backstage/core-plugin-api';
 import { JSX as JSX_2 } from 'react';
+import { default as React_2 } from 'react';
 import { RouteRef } from '@backstage/core-plugin-api';
+import { SvgIconProps } from '@material-ui/core/SvgIcon';
 
 // @public (undocumented)
 export const CODESCENE_PROJECT_ANNOTATION = 'codescene.io/project-id';
@@ -21,7 +22,7 @@ export const CodeSceneEntityFileSummary: () => JSX_2.Element;
 export const CodeSceneEntityKPICard: () => JSX_2.Element;
 
 // @public (undocumented)
-export const CodeSceneIcon: IconComponent;
+export const CodeSceneIcon: (props: SvgIconProps) => React_2.JSX.Element;
 
 // @public (undocumented)
 export const CodeScenePage: () => JSX_2.Element;
