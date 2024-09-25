@@ -134,8 +134,9 @@ describe('FactRetrieverEngine', () => {
       }),
     };
     const manager = databaseManager as DatabaseManager;
-    const database = manager.forPlugin('tech-insights');
     const logger = mockServices.logger.mock();
+    const lifecycle = mockServices.lifecycle.mock();
+    const database = manager.forPlugin('tech-insights', { logger, lifecycle });
     const scheduler = DefaultSchedulerService.create({ database, logger });
     return await DefaultFactRetrieverEngine.create({
       factRetrieverContext: {

@@ -4,7 +4,7 @@
 
 ```ts
 import { AuthService } from '@backstage/backend-plugin-api';
-import { BackendFeatureCompat } from '@backstage/backend-plugin-api';
+import { BackendFeature } from '@backstage/backend-plugin-api';
 import { Config } from '@backstage/config';
 import express from 'express';
 import { LoggerService } from '@backstage/backend-plugin-api';
@@ -19,7 +19,7 @@ export function createRouter(options: RouterOptions): Promise<express.Router>;
 // Warning: (ae-missing-release-tag) "feedbackPlugin" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-const feedbackPlugin: BackendFeatureCompat;
+const feedbackPlugin: BackendFeature;
 export default feedbackPlugin;
 
 // (No @packageDocumentation comment for this package)

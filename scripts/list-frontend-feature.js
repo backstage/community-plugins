@@ -19,7 +19,6 @@ import fs from 'fs-extra';
 import { getPackages } from '@manypkg/get-packages';
 import { resolve, join } from 'path';
 import arrayToTable from 'array-to-table';
-
 import * as url from 'url';
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
@@ -52,7 +51,7 @@ async function main(args) {
         const frontendFeatureReport = {
           package: undefined,
           role: undefined,
-          migrated: undefined,
+          supported: undefined,
           alpha: undefined,
           readme: undefined,
         };
@@ -62,7 +61,7 @@ async function main(args) {
         const apiReportPath = join(pkg.dir, 'api-report.md');
         const apiReport = (await fs.readFile(apiReportPath)).toString();
         if (apiReport.includes(BACKSTAGE_PLUGIN)) {
-          frontendFeatureReport.migrated = true;
+          frontendFeatureReport.supported = true;
           frontendFeatureReport.alpha = false;
         }
 
@@ -72,7 +71,7 @@ async function main(args) {
             await fs.readFile(apiReportAlphaPath)
           ).toString();
           if (apiReportAlpha.includes(BACKSTAGE_PLUGIN)) {
-            frontendFeatureReport.migrated = true;
+            frontendFeatureReport.supported = true;
             frontendFeatureReport.alpha = true;
           }
         }

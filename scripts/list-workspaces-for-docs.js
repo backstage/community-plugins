@@ -19,7 +19,6 @@ import fs from 'fs-extra';
 import { getPackages } from '@manypkg/get-packages';
 import { resolve } from 'path';
 import arrayToTable from 'array-to-table';
-
 import * as url from 'url';
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
