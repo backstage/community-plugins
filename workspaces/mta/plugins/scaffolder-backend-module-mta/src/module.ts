@@ -6,6 +6,7 @@ import { scaffolderActionsExtensionPoint } from '@backstage/plugin-scaffolder-no
 import { createMTAApplicationAction } from './actions/mta/create-application';
 import { loggerToWinstonLogger } from '@backstage/backend-common';
 
+/** @public */
 export const mtaScaffolderModule = createBackendModule({
   pluginId: 'scaffolder',
   moduleId: 'mta',

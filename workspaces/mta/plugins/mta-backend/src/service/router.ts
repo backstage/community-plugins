@@ -11,6 +11,7 @@ import { Issuer, generators } from 'openid-client';
 import { isTokenExpired } from '../utils';
 import { DataBaseEntityApplicationStorage } from '../database/storage';
 
+/** @public */
 export interface RouterOptions {
   logger: Logger;
   database: PluginDatabaseManager;
@@ -19,6 +20,7 @@ export interface RouterOptions {
   cache: PluginCacheManager;
 }
 
+/** @public */
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
@@ -612,6 +614,7 @@ export async function createRouter(
   return router;
 }
 
+/** @internal */
 export interface Taskgroup {
   id?: number;
   name: string;
@@ -620,6 +623,8 @@ export interface Taskgroup {
   data: TaskData;
   tasks: TaskgroupTask[];
 }
+
+/** @internal */
 export interface TaskData {
   tagger: {
     enabled: boolean;
@@ -654,17 +659,20 @@ export interface TaskData {
   };
 }
 
+/** @internal */
 export interface TaskgroupTask {
   name: string;
   data: any;
   application: Ref;
 }
 
+/** @internal */
 export interface Ref {
   id: number;
   name: string;
 }
 
+/** @internal */
 export interface Repository {
   kind?: string;
   branch?: string;

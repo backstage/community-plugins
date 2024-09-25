@@ -1,9 +1,9 @@
-/***/
 /**
- * The mta module for @backstage/plugin-scaffolder-backend.
- *
  * @packageDocumentation
  */
 
+/** @public */
 export * from './actions';
+
+/** @public */
 export { mtaScaffolderModule as default } from './module';

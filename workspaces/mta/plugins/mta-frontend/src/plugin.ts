@@ -10,6 +10,7 @@ import { createApiFactory } from '@backstage/frontend-plugin-api';
 import { rootRouteRef } from './routes';
 import { mtaApiRef, DefaultMtaApi } from './api/api';
 
+/** @public */
 export const mtaPlugin = createPlugin({
   id: 'mta',
   apis: [
@@ -30,6 +31,7 @@ export const mtaPlugin = createPlugin({
   },
 });
 
+/** @public */
 export const EntityMTAContent = mtaPlugin.provide(
   createRoutableExtension({
     name: 'EntityMTAContent',

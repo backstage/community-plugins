@@ -18,6 +18,7 @@ import {
   loggerToWinstonLogger,
 } from '@backstage/backend-common';
 
+/** @public */
 export const mtaPlugin = createBackendPlugin({
   pluginId: 'mta',
   register(env) {

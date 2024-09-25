@@ -1,8 +1,6 @@
-/***/
 /**
- * The mta-entity-provider backend module for the catalog plugin.
- *
  * @packageDocumentation
  */
 
+/** @public */
 export { catalogModuleMtaEntityProvider as default } from './module';

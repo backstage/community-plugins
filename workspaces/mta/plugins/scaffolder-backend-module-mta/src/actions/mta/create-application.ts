@@ -1,6 +1,7 @@
 import { createTemplateAction } from '@backstage/plugin-scaffolder-node';
 import { Issuer } from 'openid-client';
 
+/** @public */
 export function createMTAApplicationAction(opts: any) {
   const { config, logger } = opts;
 

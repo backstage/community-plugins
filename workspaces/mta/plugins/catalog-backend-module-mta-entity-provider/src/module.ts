@@ -6,6 +6,7 @@ import { catalogProcessingExtensionPoint } from '@backstage/plugin-catalog-node/
 import { loggerToWinstonLogger } from '@backstage/backend-common';
 import { MTAProvider } from './provider/MTAEntityProvider';
 
+/** @public */
 export const catalogModuleMtaEntityProvider = createBackendModule({
   pluginId: 'catalog',
   moduleId: 'mta-entity-provider',
