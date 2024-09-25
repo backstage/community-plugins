@@ -70,8 +70,6 @@ export class ThreeScaleApiEntityProvider implements EntityProvider {
       scheduler: SchedulerService;
     },
   ): ThreeScaleApiEntityProvider[] {
-    console.log('Deps');
-    console.log(deps);
     const providerConfigs = readThreeScaleApiEntityConfigs(deps.config);
 
     if (!options.schedule && !options.scheduler) {
