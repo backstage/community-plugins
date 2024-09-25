@@ -35,14 +35,16 @@ export const catalogModule3ScaleEntityProvider = createBackendModule({
       },
       async init({ catalog, config, logger, scheduler }) {
         catalog.addEntityProvider(
-          ThreeScaleApiEntityProvider.fromConfig(config, {
-            logger,
-            scheduler: scheduler,
-            schedule: scheduler.createScheduledTaskRunner({
-              frequency: { minutes: 30 },
-              timeout: { minutes: 3 },
-            }),
-          }),
+          ThreeScaleApiEntityProvider.fromConfig(
+            { config, logger },
+            {
+              scheduler: scheduler,
+              schedule: scheduler.createScheduledTaskRunner({
+                frequency: { minutes: 30 },
+                timeout: { minutes: 3 },
+              }),
+            },
+          ),
         );
       },
     });

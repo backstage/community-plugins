@@ -1,0 +1,58 @@
+{
+  "name": "@backstage-community/plugin-3scale-backend-dynamic",
+  "version": "1.8.5",
+  "license": "Apache-2.0",
+  "main": "./dist/index.cjs.js",
+  "types": "src/index.ts",
+  "publishConfig": {
+    "access": "public"
+  },
+  "backstage": {
+    "role": "backend-plugin-module",
+    "supported-versions": "1.28.4",
+    "pluginId": "3scale",
+    "pluginPackage": "@backstage-community/plugin-3scale-backend"
+  },
+  "exports": {
+    ".": {
+      "require": "./dist/index.cjs.js",
+      "default": "./dist/index.cjs.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "config.d.ts",
+    "app-config.yaml"
+  ],
+  "configSchema": "config.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/3scale/plugins/3scale-backend"
+  },
+  "keywords": [
+    "support:tech-preview",
+    "lifecycle:active",
+    "backstage",
+    "plugin"
+  ],
+  "homepage": "https://red.ht/rhdh",
+  "bugs": "https://github.com/backstage/community-plugins/issues",
+  "author": "Red Hat",
+  "bundleDependencies": true,
+  "peerDependencies": {
+    "@backstage/backend-plugin-api": "^1.0.0",
+    "@backstage/catalog-model": "^1.7.0",
+    "@backstage/errors": "^1.2.4",
+    "@backstage/plugin-catalog-node": "^1.13.0"
+  },
+  "overrides": {
+    "@aws-sdk/util-utf8-browser": {
+      "@smithy/util-utf8": "^2.0.0"
+    }
+  },
+  "resolutions": {
+    "@aws-sdk/util-utf8-browser": "npm:@smithy/util-utf8@~2"
+  }
+}

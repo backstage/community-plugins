@@ -14,5 +14,5 @@
  * limitations under the License.
  */
 export * from './clients';
+export { catalogModule3ScaleEntityProvider as default } from './module';
 export * from './providers';
-export * from './dynamic/index';

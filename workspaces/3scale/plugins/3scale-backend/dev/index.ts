@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
-/**
- * The 3Scale backend plugin integrates 3Scale into Backstage
- *
- * @packageDocumentation
- */
-export { catalogModule3ScaleEntityProvider as default } from './module';
+import { createBackend } from '@backstage/backend-defaults';
+import { catalogModule3ScaleEntityProvider } from '../src/module';
+
+const backend = createBackend();
+
+backend.add(import('@backstage/plugin-catalog-backend/alpha'));
+backend.add(catalogModule3ScaleEntityProvider);
+
+backend.start();
