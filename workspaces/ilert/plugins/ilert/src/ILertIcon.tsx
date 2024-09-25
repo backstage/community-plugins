@@ -15,14 +15,13 @@
  */
 
 import React from 'react';
-import SvgIcon from '@material-ui/core/SvgIcon';
-import { IconComponent } from '@backstage/core-plugin-api';
+import SvgIcon, { SvgIconProps } from '@material-ui/core/SvgIcon';
 
 /**
  * @public
  */
-export const ILertIcon: IconComponent = () => (
-  <SvgIcon>
+export const ILertIcon = (props: SvgIconProps) => (
+  <SvgIcon {...props}>
     <g>
       <path
         stroke="none"
