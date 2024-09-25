@@ -43,7 +43,7 @@ yarn workspace backend add @backstage-community/plugin-3scale-backend
    const backend = createBackend();
 
    /* highlight-add-next-line */
-   backend.add(import('@backstage-community/plugin-3scale-backend/alpha'));
+   backend.add(import('@backstage-community/plugin-3scale-backend'));
 
    backend.start();
    ```
