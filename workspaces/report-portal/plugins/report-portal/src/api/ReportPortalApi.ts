@@ -29,7 +29,7 @@ export const reportPortalApiRef: ApiRef<ReportPortalApi> = createApiRef({
 export type ReportPortalApi = {
   getReportPortalBaseUrl: (host: string) => string;
   getLaunchResults: (
-    projectId: string,
+    projectName: string,
     host: string,
     filters: { [key: string]: string | number } | undefined,
   ) => Promise<LaunchDetailsResponse>;
