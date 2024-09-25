@@ -1,5 +1,13 @@
 # app
 
+## 0.0.6
+
+### Patch Changes
+
+- Updated dependencies [173a569]
+- Updated dependencies [3ef985a]
+  - @backstage-community/plugin-report-portal@1.1.1
+
 ## 0.0.5
 
 ### Patch Changes
