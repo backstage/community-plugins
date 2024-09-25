@@ -1,5 +1,11 @@
 # @backstage-community/plugin-jenkins-backend
 
+## 0.6.0
+
+### Minor Changes
+
+- dd2ab0b: Created functionality to override the Base URL of a Jenkins instance
+
 ## 0.5.0
 
 ### Minor Changes
