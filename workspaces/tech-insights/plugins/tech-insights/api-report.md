@@ -17,6 +17,7 @@ import { ElementType } from 'react';
 import { Entity } from '@backstage/catalog-model';
 import { FactSchema } from '@backstage-community/plugin-tech-insights-common';
 import { IdentityApi } from '@backstage/core-plugin-api';
+import { InsightFacts as InsightFacts_2 } from '@backstage-community/plugin-tech-insights-common/client';
 import { JsonValue } from '@backstage/types';
 import { JSX as JSX_2 } from 'react';
 import { MouseEventHandler } from 'react';
@@ -113,11 +114,11 @@ export const ScorecardsList: (props: {
 // @public
 export interface TechInsightsApi {
   // (undocumented)
-  getAllChecks(): Promise<Check[]>;
+  getAllChecks(): Promise<Check_2[]>;
   // (undocumented)
   getCheckResultRenderers: (types: string[]) => CheckResultRenderer[];
   // (undocumented)
-  getFacts(entity: CompoundEntityRef, facts: string[]): Promise<InsightFacts>;
+  getFacts(entity: CompoundEntityRef, facts: string[]): Promise<InsightFacts_2>;
   // (undocumented)
   getFactSchemas(): Promise<FactSchema[]>;
   // (undocumented)
@@ -133,7 +134,7 @@ export interface TechInsightsApi {
   // (undocumented)
   runBulkChecks(
     entities: CompoundEntityRef[],
-    checks?: Check[],
+    checks?: Check_2[],
   ): Promise<BulkCheckResponse>;
   // (undocumented)
   runChecks(

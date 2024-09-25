@@ -30,7 +30,7 @@ describe('techInsightsModuleJsonRulesEngineFactCheckerFactory', () => {
         [techInsightsFactCheckerFactoryExtensionPoint, extensionPoint],
       ],
       features: [
-        techInsightsModuleJsonRulesEngineFactCheckerFactory(),
+        techInsightsModuleJsonRulesEngineFactCheckerFactory,
         mockServices.logger.factory(),
         mockServices.rootConfig.factory({
           data: {

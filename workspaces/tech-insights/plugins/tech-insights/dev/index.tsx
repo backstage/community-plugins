@@ -20,9 +20,9 @@ import {
   EntityTechInsightsScorecardContent,
   techInsightsApiRef,
   TechInsightsApi,
-  Check,
   TechInsightsScorecardPage,
 } from '../src';
+import { Check } from '@backstage-community/plugin-tech-insights-common/client';
 import { CompoundEntityRef, Entity } from '@backstage/catalog-model';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import {

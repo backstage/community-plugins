@@ -4,7 +4,7 @@
 
 ```ts
 import { AuthService } from '@backstage/backend-plugin-api';
-import { BackendFeatureCompat } from '@backstage/backend-plugin-api';
+import { BackendFeature } from '@backstage/backend-plugin-api';
 import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
 import { Config } from '@backstage/config';
 import { DatabaseService } from '@backstage/backend-plugin-api';
@@ -129,7 +129,7 @@ export interface TechInsightsOptions<
 }
 
 // @public
-const techInsightsPlugin: BackendFeatureCompat;
+const techInsightsPlugin: BackendFeature;
 export default techInsightsPlugin;
 
 // (No @packageDocumentation comment for this package)
