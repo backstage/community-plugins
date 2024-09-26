@@ -1,5 +1,12 @@
 # @backstage-community/plugin-tech-insights-common
 
+## 0.2.19
+
+### Patch Changes
+
+- e516773: Remove usages of deprecated references and usage of @backstage/backend-common
+- e516773: Backstage version bump to v1.31.1
+
 ## 0.2.18
 
 ### Patch Changes

@@ -13,23 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { SignInPage as BackstageSignInPage } from '@backstage/core-components';
+import { SignInPageProps } from '@backstage/core-plugin-api';
+import React from 'react';
 
-import { BackendDynamicPluginInstaller } from '@backstage/backend-dynamic-feature-service';
-
-import { ThreeScaleApiEntityProvider } from '../providers';
-
-export const dynamicPluginInstaller: BackendDynamicPluginInstaller = {
-  kind: 'legacy',
-  async catalog(builder, env) {
-    builder.addEntityProvider(
-      ThreeScaleApiEntityProvider.fromConfig(env.config, {
-        logger: env.logger,
-        scheduler: env.scheduler,
-        schedule: env.scheduler.createScheduledTaskRunner({
-          frequency: { minutes: 1 },
-          timeout: { minutes: 1 },
-        }),
-      }),
-    );
-  },
+export const SignInPage = (props: SignInPageProps) => {
+  return <BackstageSignInPage {...props} auto providers={['guest']} />;
 };

@@ -37,12 +37,12 @@ export class ReportPortalClient implements ReportPortalApi {
   }
 
   async getLaunchResults(
-    projectId: string,
+    projectName: string,
     host: string,
     filters: { [key: string]: string | number } | undefined,
   ) {
     const baseUrl = new URL(
-      `${projectId}/launch/latest`,
+      `${projectName}/launch/latest`,
       await this.getBaseApiUrl(),
     );
     if (filters) {
@@ -53,7 +53,7 @@ export class ReportPortalClient implements ReportPortalApi {
     baseUrl.searchParams.append('host', host);
     const response = await this.fetchApi.fetch(baseUrl);
     if (response.status !== 200) {
-      throw new Error(`Failed to fetch launch details for ${projectId}`);
+      throw new Error(`Failed to fetch launch details for ${projectName}`);
     }
     return (await response.json()) as LaunchDetailsResponse;
   }

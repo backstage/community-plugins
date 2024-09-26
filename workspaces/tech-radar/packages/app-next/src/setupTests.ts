@@ -13,11 +13,4 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { getRootLogger } from '@backstage/backend-common';
-
-const logger = getRootLogger();
-
-process.on('SIGINT', () => {
-  logger.info('CTRL+C pressed; exiting.');
-  process.exit(0);
-});
+import '@testing-library/jest-dom';
