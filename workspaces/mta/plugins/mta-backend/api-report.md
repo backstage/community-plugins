@@ -4,7 +4,7 @@
 
 ```ts
 
-import { BackendFeature } from '@backstage/backend-plugin-api';
+import { BackendFeatureCompat } from '@backstage/backend-plugin-api';
 import { Config } from '@backstage/config';
 import express from 'express';
 import { IdentityApi } from '@backstage/plugin-auth-node';
@@ -16,7 +16,7 @@ import { PluginDatabaseManager } from '@backstage/backend-common';
 export function createRouter(options: RouterOptions): Promise<express.Router>;
 
 // @public (undocumented)
-const mtaPlugin: () => BackendFeature;
+const mtaPlugin: BackendFeatureCompat;
 export default mtaPlugin;
 
 // @public (undocumented)
