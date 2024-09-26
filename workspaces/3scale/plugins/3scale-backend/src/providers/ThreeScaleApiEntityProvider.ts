@@ -283,7 +283,6 @@ export class ThreeScaleApiEntityProvider implements EntityProvider {
       }
       entityDescription = getDocInfo(spec)?.description;
     }
-    console.log(`==== ${JSON.stringify(swaggerDocJSON)}`);
 
     return {
       kind: 'API',
