@@ -9,8 +9,17 @@
     "main": "dist/index.esm.js",
     "types": "dist/index.d.ts"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/mta/plugins/mta-frontend"
+  },
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "mta-frontend",
+    "pluginPackages": [
+      "@backstage-community/backstage-plugin-mta-frontend"
+    ]
   },
   "sideEffects": false,
   "scripts": {
