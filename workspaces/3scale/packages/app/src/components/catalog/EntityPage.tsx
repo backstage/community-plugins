@@ -174,10 +174,6 @@ const serviceEntityPage = (
         </Grid>
       </Grid>
     </EntityLayout.Route>
-
-    <EntityLayout.Route path="/docs" title="Docs">
-      {techdocsContent}
-    </EntityLayout.Route>
   </EntityLayout>
 );
 
@@ -201,10 +197,6 @@ const websiteEntityPage = (
         </Grid>
       </Grid>
     </EntityLayout.Route>
-
-    <EntityLayout.Route path="/docs" title="Docs">
-      {techdocsContent}
-    </EntityLayout.Route>
   </EntityLayout>
 );
 
@@ -219,10 +211,6 @@ const defaultEntityPage = (
   <EntityLayout>
     <EntityLayout.Route path="/" title="Overview">
       {overviewContent}
-    </EntityLayout.Route>
-
-    <EntityLayout.Route path="/docs" title="Docs">
-      {techdocsContent}
     </EntityLayout.Route>
   </EntityLayout>
 );

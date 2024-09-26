@@ -4932,33 +4932,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-search@npm:^1.4.16":
-  version: 1.4.17
-  resolution: "@backstage/plugin-search@npm:1.4.17"
-  dependencies:
-    "@backstage/core-compat-api": ^0.3.0
-    "@backstage/core-components": ^0.15.0
-    "@backstage/core-plugin-api": ^1.9.4
-    "@backstage/errors": ^1.2.4
-    "@backstage/frontend-plugin-api": ^0.8.0
-    "@backstage/plugin-catalog-react": ^1.13.1
-    "@backstage/plugin-search-common": ^1.2.14
-    "@backstage/plugin-search-react": ^1.8.0
-    "@backstage/types": ^1.1.1
-    "@backstage/version-bridge": ^1.0.9
-    "@material-ui/core": ^4.12.2
-    "@material-ui/icons": ^4.9.1
-    "@types/react": ^16.13.1 || ^17.0.0 || ^18.0.0
-    qs: ^6.9.4
-    react-use: ^17.2.4
-  peerDependencies:
-    react: ^16.13.1 || ^17.0.0 || ^18.0.0
-    react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
-    react-router-dom: 6.0.0-beta.0 || ^6.3.0
-  checksum: b0f621696e02e0e5db59d66c8b43591e5ef5ed90f2bb3e5093bbd26e32e1fd47ddd2153e0cd6211c76075f217faf0705bd6883fe17ea5c78795da7f295f53228
-  languageName: node
-  linkType: hard
-
 "@backstage/plugin-signals-react@npm:^0.0.5":
   version: 0.0.5
   resolution: "@backstage/plugin-signals-react@npm:0.0.5"
@@ -14113,8 +14086,6 @@ __metadata:
     "@backstage/plugin-catalog-react": ^1.13.0
     "@backstage/plugin-org": ^0.6.29
     "@backstage/plugin-scaffolder": ^1.25.0
-    "@backstage/plugin-search": ^1.4.16
-    "@backstage/plugin-search-react": ^1.8.0
     "@backstage/plugin-user-settings": ^0.8.12
     "@backstage/test-utils": ^1.6.0
     "@backstage/theme": ^0.5.7

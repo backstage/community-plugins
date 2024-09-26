@@ -27,11 +27,9 @@ import {
 } from '@backstage/plugin-catalog-import';
 import { ScaffolderPage, scaffolderPlugin } from '@backstage/plugin-scaffolder';
 import { orgPlugin } from '@backstage/plugin-org';
-import { SearchPage } from '@backstage/plugin-search';
 import { UserSettingsPage } from '@backstage/plugin-user-settings';
 import { apis } from './apis';
 import { entityPage } from './components/catalog/EntityPage';
-import { searchPage } from './components/search/SearchPage';
 import { Root } from './components/Root';
 
 import {
@@ -78,9 +76,6 @@ const routes = (
     <Route path="/create" element={<ScaffolderPage />} />
     <Route path="/api-docs" element={<ApiExplorerPage />} />
     <Route path="/catalog-import" element={<CatalogImportPage />} />
-    <Route path="/search" element={<SearchPage />}>
-      {searchPage}
-    </Route>
     <Route path="/settings" element={<UserSettingsPage />} />
     <Route path="/catalog-graph" element={<CatalogGraphPage />} />
   </FlatRoutes>
