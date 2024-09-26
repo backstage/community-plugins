@@ -1,5 +1,12 @@
 # @backstage-community/plugin-tech-insights-backend
 
+## 1.2.1
+
+### Patch Changes
+
+- 6a4787a: Add auth token logic to the fact retriever example in the README.
+  This makes it possible to copy it directly as a baseline for new fact retrievers.
+
 ## 1.2.0
 
 ### Minor Changes
