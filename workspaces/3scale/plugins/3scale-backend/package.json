@@ -33,8 +33,7 @@
     "postversion": "yarn run export-dynamic",
     "prepack": "backstage-cli package prepack",
     "start": "backstage-cli package start",
-    "test": "backstage-cli package test --passWithNoTests --coverage",
-    "tsc": "tsc"
+    "test": "backstage-cli package test --passWithNoTests --coverage"
   },
   "dependencies": {
     "@backstage/backend-plugin-api": "^1.0.0",
