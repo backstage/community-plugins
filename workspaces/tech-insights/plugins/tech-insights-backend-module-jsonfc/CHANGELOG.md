@@ -1,5 +1,16 @@
 # @backstage-community/plugin-tech-insights-backend-module-jsonfc
 
+## 0.1.58
+
+### Patch Changes
+
+- e516773: Remove usages of deprecated references and usage of @backstage/backend-common
+- e516773: Backstage version bump to v1.31.1
+- Updated dependencies [e516773]
+- Updated dependencies [e516773]
+  - @backstage-community/plugin-tech-insights-common@0.2.19
+  - @backstage-community/plugin-tech-insights-node@1.0.1
+
 ## 0.1.57
 
 ### Patch Changes
