@@ -14221,7 +14221,6 @@ __metadata:
     "@backstage/plugin-catalog-import": ^0.12.3
     "@backstage/plugin-catalog-react": ^1.13.0
     "@backstage/plugin-org": ^0.6.29
-    "@backstage/plugin-permission-react": ^0.4.26
     "@backstage/plugin-scaffolder": ^1.25.0
     "@backstage/plugin-search": ^1.4.16
     "@backstage/plugin-search-react": ^1.8.0
