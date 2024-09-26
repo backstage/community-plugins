@@ -142,7 +142,13 @@ export const myFactRetriever: FactRetriever = {
   },
   handler: async ctx => {
     // Handler function that retrieves the fact
-    const { discovery, config, logger } = ctx;
+    const { discovery, config, logger, auth } = ctx;
+
+    const { token } = await auth.getPluginRequestToken({
+      onBehalfOf: await auth.getOwnServiceCredentials(),
+      targetPluginId: 'catalog',
+    });
+
     const catalogClient = new CatalogClient({
       discoveryApi: discovery,
     });
