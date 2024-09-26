@@ -9626,14 +9626,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"b4a@npm:^1.6.4":
-  version: 1.6.6
-  resolution: "b4a@npm:1.6.6"
-  checksum: c46a27e3ac9c84426ae728f0fc46a6ae7703a7bc03e771fa0bef4827fd7cf3bb976d1a3d5afff54606248372ab8fdf595bd0114406690edf37f14d120630cf7f
-  languageName: node
-  linkType: hard
-
-"b4a@npm:^1.6.6":
+"b4a@npm:^1.6.4, b4a@npm:^1.6.6":
   version: 1.6.7
   resolution: "b4a@npm:1.6.7"
   checksum: afe4e239b49c0ef62236fe0d788ac9bd9d7eac7e9855b0d1835593cd0efcc7be394f9cc28a747a2ed2cdcb0a48c3528a551a196f472eb625457c711169c9efa2
@@ -9762,17 +9755,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bare-events@npm:^2.0.0":
+"bare-events@npm:^2.0.0, bare-events@npm:^2.2.0":
   version: 2.5.0
   resolution: "bare-events@npm:2.5.0"
   checksum: 5aa10716e7f33c5dfc471fd657eee2a33f2db0f78b3c83b5cdd1a45a7e7871114a69460ea96cd838807c55eb470b9e53dd0dfda8c83cced1352cc8253cebff48
-  languageName: node
-  linkType: hard
-
-"bare-events@npm:^2.2.0":
-  version: 2.4.2
-  resolution: "bare-events@npm:2.4.2"
-  checksum: 6cd2b10dd32a3410787e120c091b6082fbc2df0c45ed723a7ae51d0e2f55d2a4037e1daff21dae90b671d36582f9f8d50df337875c281d10adb60df81b8cd861
   languageName: node
   linkType: hard
 
