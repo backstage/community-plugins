@@ -22,33 +22,20 @@ import LaunchIcon from '@mui/icons-material/Launch';
 import IconButton from '@mui/material/IconButton';
 import Skeleton from '@mui/material/Skeleton';
 
-import { reportPortalApiRef } from '../../../api';
-import { useInstanceDetails } from '../../../hooks';
-import { projectsRouteRef } from '../../../routes';
 import { useNavigate } from 'react-router-dom';
+import { reportPortalApiRef } from '../../../api';
+import { projectsRouteRef } from '../../../routes';
 
 type InstanceData = {
-  instance: string;
+  name: string;
   filterType: string;
-  projects: React.ReactNode;
-};
-
-const NoOfProjects = (props: { host: string; filter: string }) => {
-  const { loading, projectListData } = useInstanceDetails(
-    props.host,
-    props.filter,
-  );
-  return loading ? (
-    <Skeleton height="3rem" />
-  ) : (
-    <b>{projectListData?.content.length}</b>
-  );
+  projects: React.ReactNode | number;
 };
 
 export const GlobalPageContent = () => {
-  const config = useApi(configApiRef);
+  const configApi = useApi(configApiRef);
   const reportPortalApi = useApi(reportPortalApiRef);
-  const hostsConfig = config.getConfigArray('reportPortal.integrations');
+  const hostsConfig = configApi.getConfigArray('reportPortal.integrations');
   const [hosts, _] = useState<
     { host: string; filterType: string }[] | undefined
   >(
@@ -60,15 +47,24 @@ export const GlobalPageContent = () => {
 
   const projectsPageRoute = useRouteRef(projectsRouteRef)();
 
-  const [instanceData, setInstanceData] = useState<InstanceData[]>([]);
+  const [instanceData, setInstanceData] = useState<InstanceData[]>(
+    hosts
+      ? hosts.map(h => ({
+          name: h.host,
+          filterType: h.filterType,
+          projects: <Skeleton height="3rem" />,
+        }))
+      : [],
+  );
+
   const columns: TableColumn<InstanceData>[] = [
     {
       id: 0,
-      field: 'instance',
+      field: 'name',
       title: 'Name',
       render: rowData => (
-        <Link to={projectsPageRoute.concat(`?host=${rowData.instance}`)}>
-          {rowData.instance}
+        <Link to={projectsPageRoute.concat(`?host=${rowData.name}`)}>
+          {rowData.name}
         </Link>
       ),
       width: '60%',
@@ -78,6 +74,7 @@ export const GlobalPageContent = () => {
       field: 'projects',
       title: 'Projects',
       align: 'center',
+      highlight: true,
       render: rowData => rowData.projects,
       width: '10%',
     },
@@ -88,7 +85,7 @@ export const GlobalPageContent = () => {
       align: 'center',
       render: rowData => (
         <IconButton
-          href={reportPortalApi.getReportPortalBaseUrl(rowData.instance)}
+          href={reportPortalApi.getReportPortalBaseUrl(rowData.name)}
           rel="noreferrer noopener"
           target="_blank"
           size="large"
@@ -102,29 +99,33 @@ export const GlobalPageContent = () => {
   ];
 
   useEffect(() => {
-    if (hosts) {
-      const tempArr: InstanceData[] = [];
-      hosts.forEach(value => {
-        tempArr.push({
-          instance: value.host,
-          filterType: value.filterType,
-          projects: (
-            <NoOfProjects host={value.host} filter={value.filterType} />
-          ),
-        });
-      });
-      setInstanceData(tempArr);
+    if (hosts && hosts.length > 0) {
+      const getProjectsCount = async () => {
+        for (const h of hosts) {
+          const resp = await reportPortalApi.getInstanceDetails(h.host, {
+            'filter.eq.type': h.filterType,
+          });
+          setInstanceData(iData => {
+            return iData.map(instance =>
+              instance.name === h.host
+                ? { ...instance, projects: resp.content.length }
+                : instance,
+            );
+          });
+        }
+      };
+      getProjectsCount();
     }
-  }, [hosts]);
+  }, [hosts, reportPortalApi]);
 
   const navigate = useNavigate();
 
   return (
     <Table
-      title="Instances"
+      title={`Instances (${instanceData.length})`}
       columns={columns}
       onRowClick={(_e, rowData) =>
-        navigate(projectsPageRoute.concat(`?host=${rowData?.instance}`))
+        navigate(projectsPageRoute.concat(`?host=${rowData?.name}`))
       }
       options={{
         searchFieldVariant: 'outlined',

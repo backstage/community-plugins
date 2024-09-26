@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { readTaskScheduleDefinitionFromConfig } from '@backstage/backend-tasks';
-import { Config } from '@backstage/config';
+import { readSchedulerServiceTaskScheduleDefinitionFromConfig } from '@backstage/backend-plugin-api';
+import type { Config } from '@backstage/config';
 
 import { ThreeScaleConfig } from './types';
 
@@ -45,7 +45,9 @@ function readThreeScaleApiEntityConfig(
   const addLabels = config.getOptionalBoolean('addLabels') || true;
 
   const schedule = config.has('schedule')
-    ? readTaskScheduleDefinitionFromConfig(config.getConfig('schedule'))
+    ? readSchedulerServiceTaskScheduleDefinitionFromConfig(
+        config.getConfig('schedule'),
+      )
     : undefined;
 
   return {

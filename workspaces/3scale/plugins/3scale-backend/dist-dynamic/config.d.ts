@@ -14,22 +14,25 @@
  * limitations under the License.
  */
 
-import { BackendDynamicPluginInstaller } from '@backstage/backend-dynamic-feature-service';
+import type { SchedulerServiceTaskScheduleDefinitionConfig } from '@backstage/backend-plugin-api';
 
-import { ThreeScaleApiEntityProvider } from '../providers';
-
-export const dynamicPluginInstaller: BackendDynamicPluginInstaller = {
-  kind: 'legacy',
-  async catalog(builder, env) {
-    builder.addEntityProvider(
-      ThreeScaleApiEntityProvider.fromConfig(env.config, {
-        logger: env.logger,
-        scheduler: env.scheduler,
-        schedule: env.scheduler.createScheduledTaskRunner({
-          frequency: { minutes: 1 },
-          timeout: { minutes: 1 },
-        }),
-      }),
-    );
-  },
-};
+export interface Config {
+  catalog?: {
+    providers?: {
+      threeScaleApiEntity?: {
+        [key: string]: {
+          /**
+           * ThreeScaleConfig
+           */
+          baseUrl: string;
+          /** @visibility secret */
+          accessToken: string;
+          systemLabel?: string;
+          ownerLabel?: string;
+          addLabels?: boolean;
+          schedule?: SchedulerServiceTaskScheduleDefinitionConfig;
+        };
+      };
+    };
+  };
+}

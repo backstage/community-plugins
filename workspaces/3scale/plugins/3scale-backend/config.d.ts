@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { TaskScheduleDefinitionConfig } from '@backstage/backend-tasks';
+
+import type { SchedulerServiceTaskScheduleDefinitionConfig } from '@backstage/backend-plugin-api';
 
 export interface Config {
   catalog?: {
@@ -29,7 +30,7 @@ export interface Config {
           systemLabel?: string;
           ownerLabel?: string;
           addLabels?: boolean;
-          schedule?: TaskScheduleDefinitionConfig;
+          schedule?: SchedulerServiceTaskScheduleDefinitionConfig;
         };
       };
     };
