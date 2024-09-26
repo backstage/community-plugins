@@ -15,12 +15,13 @@
  */
 
 import { techRadarApiRef } from './api';
-import { SampleTechRadarApi } from './sample';
+import { DefaultTechRadarApi } from './defaultApi';
 import {
   createPlugin,
   createRouteRef,
   createRoutableExtension,
   createApiFactory,
+  configApiRef,
 } from '@backstage/core-plugin-api';
 
 export const rootRouteRef = createRouteRef({
@@ -37,7 +38,20 @@ export const techRadarPlugin = createPlugin({
   routes: {
     root: rootRouteRef,
   },
-  apis: [createApiFactory(techRadarApiRef, new SampleTechRadarApi())],
+  apis: [
+    createApiFactory({
+      api: techRadarApiRef,
+      deps: {
+        configApi: configApiRef,
+      },
+      factory({ configApi }) {
+        return new DefaultTechRadarApi({
+          url: configApi.getOptionalString('techRadar.url'),
+          graphData: configApi.getOptionalConfig('techRadar.graphData'),
+        });
+      },
+    }),
+  ],
 });
 
 /**

@@ -59,3 +59,40 @@ catalog:
       target: ../../examples/org.yaml
       rules:
         - allow: [User, Group]
+
+techRadar:
+  url: 'https://api.github.com/repos/backstage/community-plugins/contents/workspaces/tech-radar/plugins/tech-radar/src/utils/sampleTechRadarContent.json'
+  graphData:
+    quadrants:
+      - id: techniques
+        name: Techniques
+      - id: tools
+        name: Tools
+      - id: platforms
+        name: Platforms
+      - id: infrastructure
+        name: Infrastructure
+    rings:
+      - id: 'trial'
+        name: 'TRIAL'
+        color: '#009EB0'
+        description: 'Recusandae possimus ipsum dolores.'
+      - id: 'adopt'
+        name: 'ADOPT'
+        color: '#5BA300'
+        description: 'Commodi accusantium culpa sed itaque excepturi rem eum nulla possimus.'
+    entries:
+      - key: 'github-actions'
+        id: 'github-actions'
+        title: 'GitHub Actions'
+        quadrant: 'infrastructure'
+        timeline:
+          - ringId: 'adopt'
+            date: '2020-08-06'
+            moved: 1
+          - ringId: 'trial'
+            date: '2020-07-05'
+            description: 'First trial'
+        links:
+          - url: 'https://github.com'
+            title: 'Learn more'

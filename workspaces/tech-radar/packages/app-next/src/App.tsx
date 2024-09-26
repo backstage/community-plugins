@@ -89,7 +89,8 @@ class SampleTechRadarApi implements TechRadarApi {
   }
 }
 
-// overriding the api is one way to change the radar content
+// Overriding the api like this is one way to change the radar content. Can also use the config to specify
+// a URL point to hosted json, or input the data directly in the config's yaml.
 const techRadarApi = ApiBlueprint.make({
   name: 'techRadarApi',
   params: {

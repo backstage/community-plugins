@@ -197,7 +197,13 @@ The TS example can be found [here](src/sample.ts).
 
 ### How do I load in my own data?
 
-The `TechRadar` plugin uses the `techRadarApiRef` to get a client which implements the `TechRadarApi` interface. The default sample one is located [here](src/sample.ts). To load your own data, you'll need to provide a class that implements the `TechRadarApi` and override the `techRadarApiRef` in the `app/src/apis.ts`.
+There are three ways to load in data to the `Tech Radar` plugin; (A) implementing a custom version of the the `TechRadarApi` interface, (B) providing
+a URL to a JSON file definition location in the config, or (C) providing the raw data in yaml format in the config. The options are prioritized in
+order; if all three were implemented, option A (the custom interface) would be used, and if only options B and C were implemented, option B would be used.
+
+#### Option A: Implementing the TechRadarApi
+
+The `TechRadar` plugin uses the `techRadarApiRef` to get a client which implements the `TechRadarApi` interface. The default implementation is located [here](src/defaultApi.ts). To load your own data, you'll need to provide a class that implements the `TechRadarApi` and override the `techRadarApiRef` in the `app/src/apis.ts`.
 
 ```ts
 // app/src/lib/MyClient.ts
@@ -236,6 +242,82 @@ export const apis: AnyApiFactory[] = [
   */
   createApiFactory(techRadarApiRef, new MyOwnClient()),
 ];
+```
+
+If using the [new alpha frontend system](https://backstage.io/docs/frontend-system/), the API implementation should use the ApiBlueprint syntax:
+
+```ts
+// app/src/App.tsx
+const techRadarApi = ApiBlueprint.make({
+  name: 'techRadarApi',
+  params: {
+    factory: createApiFactory(techRadarApiRef, new MyOwnClient()),
+  },
+});
+
+export const app = createApp({
+  features: [
+    ...,
+    createFrontendModule({
+      pluginId: 'app',
+      extensions: [
+        ...
+        techRadarApi,
+      ],
+    }),
+  ],
+});
+```
+
+#### Option B: Providing a URL to a definition JSON file location
+
+Add the following config in order to specify a location containing a JSON representation of the tech radar content (example [here](./src/utils/sampleTechRadarContent.json)). This option means the file can be stored in GitHub (or any other hosted location), versioned, and potentionally consumed by other systems along with portal. The plugin will make an unauthenticated GET request; if your use case requires authentication, you can implement an authenticated fetch process using option A.
+
+```yaml title="app-config.yaml"
+techRadar:
+  url: 'https://api.github.com/repos/<USER/ORG>/<REPO>/contents/<PATH>/<TO>/file.json'
+```
+
+#### Option C: Providing tech radar content directly in the configuration
+
+Directly enumerate the tech radar data in the config, under techRadar.graphData.
+
+```yaml title="app-config.yaml"
+techRadar:
+  graphData:
+    quadrants:
+      - id: techniques
+        name: Techniques
+      - id: tools
+        name: Tools
+      - id: platforms
+        name: Platforms
+      - id: infrastructure
+        name: Infrastructure
+    rings:
+      - id: 'trial'
+        name: 'TRIAL'
+        color: '#009EB0'
+        description: 'Recusandae possimus ipsum dolores.'
+      - id: 'adopt'
+        name: 'ADOPT'
+        color: '#5BA300'
+        description: 'Commodi accusantium culpa sed itaque excepturi rem eum nulla possimus.'
+    entries:
+      - key: 'github-actions'
+        id: 'github-actions'
+        title: 'GitHub Actions'
+        quadrant: 'infrastructure'
+        timeline:
+          - ringId: 'adopt'
+            date: '2020-08-06'
+            moved: 1
+          - ringId: 'trial'
+            date: '2020-07-05'
+            description: 'First trial'
+        links:
+          - url: 'https://github.com'
+            title: 'Learn more'
 ```
 
 ### How do I write tests?

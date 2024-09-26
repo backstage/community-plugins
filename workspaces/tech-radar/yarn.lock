@@ -2715,6 +2715,7 @@ __metadata:
   resolution: "@backstage-community/plugin-tech-radar@workspace:plugins/tech-radar"
   dependencies:
     "@backstage/cli": ^0.27.1
+    "@backstage/config": ^1.2.0
     "@backstage/core-compat-api": ^0.3.0
     "@backstage/core-components": ^0.15.0
     "@backstage/core-plugin-api": ^1.9.4

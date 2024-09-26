@@ -20,10 +20,11 @@ import {
   NavItemBlueprint,
   PageBlueprint,
   createFrontendPlugin,
+  configApiRef,
 } from '@backstage/frontend-plugin-api';
 import React from 'react';
 import { techRadarApiRef } from './api';
-import { SampleTechRadarApi } from './sample';
+import { DefaultTechRadarApi } from './defaultApi';
 import {
   compatWrapper,
   convertLegacyRouteRef,
@@ -70,7 +71,18 @@ export const techRadarPage = PageBlueprint.makeWithOverrides({
 /** @alpha */
 export const techRadarApi = ApiBlueprint.make({
   params: {
-    factory: createApiFactory(techRadarApiRef, new SampleTechRadarApi()),
+    factory: createApiFactory({
+      api: techRadarApiRef,
+      deps: {
+        configApi: configApiRef,
+      },
+      factory: ({ configApi }) => {
+        return new DefaultTechRadarApi({
+          url: configApi.getOptionalString('techRadar.url'),
+          graphData: configApi.getOptionalConfig('techRadar.graphData'),
+        });
+      },
+    }),
   },
 });
 

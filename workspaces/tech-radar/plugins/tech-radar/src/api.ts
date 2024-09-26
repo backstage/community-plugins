@@ -32,8 +32,8 @@ export const techRadarApiRef: ApiRef<TechRadarApi> = createApiRef<TechRadarApi>(
  *
  * @remarks
  *
- * This should be implemented by user, as {@link https://github.com/backstage/backstage/blob/master/plugins/tech-radar/src/sample.ts | default}
- * serves only some static data for example purposes
+ * This can be implemented by user, as {@link https://github.com/backstage/backstage/blob/master/plugins/tech-radar/src/defaultApi.ts | default}
+ * serves only some static data for example purposes if no configuration values are provided.
  *
  * @public
  */

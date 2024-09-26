@@ -41,7 +41,8 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "config.d.ts"
   ],
   "scripts": {
     "build": "backstage-cli package build",
@@ -53,6 +54,7 @@
     "test": "backstage-cli package test"
   },
   "dependencies": {
+    "@backstage/config": "^1.2.0",
     "@backstage/core-compat-api": "^0.3.0",
     "@backstage/core-components": "^0.15.0",
     "@backstage/core-plugin-api": "^1.9.4",
@@ -85,5 +87,6 @@
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-router-dom": "6.0.0-beta.0 || ^6.3.0"
-  }
+  },
+  "configSchema": "config.d.ts"
 }

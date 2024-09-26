@@ -22,7 +22,7 @@ import {
 import { screen } from '@testing-library/react';
 import { techRadarPage } from './alpha';
 import { techRadarApiRef } from './api';
-import { SampleTechRadarApi } from './sample';
+import { DefaultTechRadarApi } from './defaultApi';
 import React from 'react';
 
 describe('TechRadarPage', () => {
@@ -35,7 +35,7 @@ describe('TechRadarPage', () => {
 
   it('renders without exploding', async () => {
     renderInTestApp(
-      <TestApiProvider apis={[[techRadarApiRef, new SampleTechRadarApi()]]}>
+      <TestApiProvider apis={[[techRadarApiRef, new DefaultTechRadarApi({})]]}>
         {createExtensionTester(techRadarPage).reactElement()}
       </TestApiProvider>,
     );

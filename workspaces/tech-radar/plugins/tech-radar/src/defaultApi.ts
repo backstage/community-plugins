@@ -21,6 +21,7 @@ import {
   TechRadarLoaderResponse,
   TechRadarApi,
 } from './api';
+import { Config } from '@backstage/config';
 
 const rings = new Array<RadarRing>();
 rings.push({
@@ -223,8 +224,76 @@ export const mock: TechRadarLoaderResponse = {
   rings,
 };
 
-export class SampleTechRadarApi implements TechRadarApi {
+export type Options = {
+  /**
+   * URL provided via config to load the graph data from.
+   */
+  url?: string;
+  /**
+   * Hard coded graph data populated directly via the config.
+   */
+  graphData?: Config;
+};
+
+export class DefaultTechRadarApi implements TechRadarApi {
+  private readonly url: string | undefined;
+  private readonly graphData: Config | undefined;
+
+  constructor(opts: Options) {
+    this.url = opts.url;
+    this.graphData = opts.graphData;
+  }
   async load() {
+    if (this.url) {
+      const response = await fetch(this.url);
+
+      if (!response.ok) {
+        throw new Error(
+          `Get request failed to ${this.url} with ${response.status} ${response.statusText}`,
+        );
+      }
+      const responseJson = await response.json();
+      if (!responseJson.path.endsWith('.json')) {
+        throw new Error(
+          `Retrieved file content from ${this.url} is not JSON. Please provide a URL to a JSON file.`,
+        );
+      }
+      const jsonContent: TechRadarLoaderResponse = JSON.parse(
+        atob(responseJson.content),
+      );
+      // could add more robust type validation here as a future improvement
+      return jsonContent;
+    }
+    if (this.graphData) {
+      const parsedData: TechRadarLoaderResponse = {
+        quadrants: this.graphData
+          .getConfigArray('quadrants')
+          .map(q => ({ id: q.getString('id'), name: q.getString('name') })),
+        rings: this.graphData.getConfigArray('rings').map(r => ({
+          id: r.getString('id'),
+          name: r.getString('name'),
+          color: r.getString('color'),
+        })),
+        entries: this.graphData.getConfigArray('entries').map(e => ({
+          id: e.getString('id'),
+          key: e.getString('key'),
+          quadrant: e.getString('quadrant'),
+          title: e.getString('title'),
+          description: e.getOptionalString('description'),
+          links: e.getOptionalConfigArray('links')?.map(l => ({
+            url: l.getString('url'),
+            title: l.getString('title'),
+          })),
+          timeline: e.getConfigArray('timeline').map(t => ({
+            ringId: t.getString('ringId'),
+            date: new Date(t.get('date')),
+            moved: t.getOptionalNumber('moved'),
+            description: t.getOptionalString('description'),
+          })),
+        })),
+      };
+      return parsedData;
+    }
     return mock;
   }
 }
