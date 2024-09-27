@@ -25,7 +25,6 @@ import {
   getPersonalAccessTokenHandler,
   WebApi,
 } from 'azure-devops-node-api';
-import { Config } from '@backstage/config';
 import {
   RunPipelineParameters,
   RunState,
