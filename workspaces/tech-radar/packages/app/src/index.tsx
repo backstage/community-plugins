@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import '@backstage/cli/asset-types';
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App';
 
-/**
- * The 3Scale backend plugin integrates 3Scale into Backstage
- *
- * @packageDocumentation
- */
-export { catalogModule3ScaleEntityProvider as default } from './module';
+ReactDOM.createRoot(document.getElementById('root')!).render(<App />);
