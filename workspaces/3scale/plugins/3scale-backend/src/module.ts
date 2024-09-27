@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Janus IDP Authors
+ * Copyright 2024 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import {
   coreServices,
   createBackendModule,
@@ -34,14 +35,16 @@ export const catalogModule3ScaleEntityProvider = createBackendModule({
       },
       async init({ catalog, config, logger, scheduler }) {
         catalog.addEntityProvider(
-          ThreeScaleApiEntityProvider.fromConfig(config, {
-            logger,
-            scheduler: scheduler,
-            schedule: scheduler.createScheduledTaskRunner({
-              frequency: { minutes: 30 },
-              timeout: { minutes: 3 },
-            }),
-          }),
+          ThreeScaleApiEntityProvider.fromConfig(
+            { config, logger },
+            {
+              scheduler: scheduler,
+              schedule: scheduler.createScheduledTaskRunner({
+                frequency: { minutes: 30 },
+                timeout: { minutes: 3 },
+              }),
+            },
+          ),
         );
       },
     });

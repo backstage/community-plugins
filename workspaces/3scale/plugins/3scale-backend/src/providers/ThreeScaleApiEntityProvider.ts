@@ -1,12 +1,35 @@
-import { LoggerService } from '@backstage/backend-plugin-api';
-import { PluginTaskScheduler, TaskRunner } from '@backstage/backend-tasks';
+/*
+ * Copyright 2024 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import type {
+  SchedulerServiceTaskRunner,
+  SchedulerService,
+  LoggerService,
+} from '@backstage/backend-plugin-api';
+
 import {
   ANNOTATION_LOCATION,
   ANNOTATION_ORIGIN_LOCATION,
   ApiEntity,
   Entity,
 } from '@backstage/catalog-model';
-import { Config } from '@backstage/config';
+
+import type { Config } from '@backstage/config';
+import { InputError, isError, NotFoundError } from '@backstage/errors';
+
 import {
   EntityProvider,
   EntityProviderConnection,
@@ -17,7 +40,7 @@ import {
   listApiDocs,
   listServices,
 } from '../clients/ThreeScaleAPIConnector';
-import {
+import type {
   APIDocElement,
   APIDocs,
   Proxy,
@@ -25,7 +48,7 @@ import {
   Services,
 } from '../clients/types';
 import { readThreeScaleApiEntityConfigs } from './config';
-import { ThreeScaleConfig } from './types';
+import type { ThreeScaleConfig } from './types';
 
 export class ThreeScaleApiEntityProvider implements EntityProvider {
   private static SERVICES_FETCH_SIZE: number = 500;
@@ -37,14 +60,17 @@ export class ThreeScaleApiEntityProvider implements EntityProvider {
   private connection?: EntityProviderConnection;
 
   static fromConfig(
-    configRoot: Config,
-    options: {
+    deps: {
+      config: Config;
       logger: LoggerService;
-      schedule?: TaskRunner;
-      scheduler?: PluginTaskScheduler;
+    },
+
+    options: {
+      schedule: SchedulerServiceTaskRunner;
+      scheduler: SchedulerService;
     },
   ): ThreeScaleApiEntityProvider[] {
-    const providerConfigs = readThreeScaleApiEntityConfigs(configRoot);
+    const providerConfigs = readThreeScaleApiEntityConfigs(deps.config);
 
     if (!options.schedule && !options.scheduler) {
       throw new Error('Either schedule or scheduler must be provided.');
@@ -52,8 +78,8 @@ export class ThreeScaleApiEntityProvider implements EntityProvider {
 
     return providerConfigs.map(providerConfig => {
       if (!options.schedule && !providerConfig.schedule) {
-        throw new Error(
-          `No schedule provided neither via code nor config for ThreeScaleApiEntityProvider:${providerConfig.id}.`,
+        throw new InputError(
+          `No schedule provided via config for ThreeScaleApiEntityProvider:${providerConfig.id}.`,
         );
       }
 
@@ -74,7 +100,7 @@ export class ThreeScaleApiEntityProvider implements EntityProvider {
 
       return new ThreeScaleApiEntityProvider(
         providerConfig,
-        options.logger,
+        deps.logger,
         taskRunner,
       );
     });
@@ -83,7 +109,7 @@ export class ThreeScaleApiEntityProvider implements EntityProvider {
   private constructor(
     config: ThreeScaleConfig,
     logger: LoggerService,
-    taskRunner: TaskRunner,
+    taskRunner: SchedulerServiceTaskRunner,
   ) {
     this.env = config.id;
     this.baseUrl = config.baseUrl;
@@ -95,7 +121,9 @@ export class ThreeScaleApiEntityProvider implements EntityProvider {
     this.scheduleFn = this.createScheduleFn(taskRunner);
   }
 
-  private createScheduleFn(taskRunner: TaskRunner): () => Promise<void> {
+  private createScheduleFn(
+    taskRunner: SchedulerServiceTaskRunner,
+  ): () => Promise<void> {
     return async () => {
       const taskId = `${this.getProviderName()}:run`;
       return taskRunner.run({
@@ -104,18 +132,20 @@ export class ThreeScaleApiEntityProvider implements EntityProvider {
           try {
             await this.run();
           } catch (error: any) {
-            // Ensure that we don't log any sensitive internal data:
-            this.logger.error(
-              `Error while syncing 3scale API from ${this.baseUrl}`,
-              {
-                // Default Error properties:
-                name: error.name,
-                message: error.message,
-                stack: error.stack,
-                // Additional status code if available:
-                status: error.response?.status,
-              },
-            );
+            if (isError(error)) {
+              // Ensure that we don't log any sensitive internal data:
+              this.logger.error(
+                `Error while syncing 3scale API from ${this.baseUrl}`,
+                {
+                  // Default Error properties:
+                  name: error.name,
+                  message: error.message,
+                  stack: error.stack,
+                  // Additional status code if available:
+                  status: (error.response as { status?: string })?.status,
+                },
+              );
+            }
           }
         },
       });
@@ -133,7 +163,7 @@ export class ThreeScaleApiEntityProvider implements EntityProvider {
 
   async run(): Promise<void> {
     if (!this.connection) {
-      throw new Error('Not initialized');
+      throw new NotFoundError('Not initialized');
     }
 
     this.logger.info(`Discovering ApiEntities from 3scale ${this.baseUrl}`);

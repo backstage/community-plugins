@@ -1,3 +1,18 @@
+/*
+ * Copyright 2024 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import React, { useState } from 'react';
 
 import { configApiRef, useAnalytics, useApi } from '@backstage/core-plugin-api';
@@ -107,6 +122,7 @@ export const CreateFeedbackModal = (props: {
 
   const projectEntity = props.projectEntity;
   const userEntity = props.userEntity;
+  const serverType = props.serverType.toLocaleLowerCase('en-US');
 
   function handleCategoryClick(event: any) {
     setFeedbackType(event.target.value);
@@ -129,7 +145,7 @@ export const CreateFeedbackModal = (props: {
       description: description.value,
       projectId: projectEntity,
       url: window.location.href,
-      userAgent: navigator.userAgent,
+      userAgent: window.navigator.userAgent,
       createdBy: userEntity,
       feedbackType:
         feedbackType === 'BUG'
@@ -209,13 +225,12 @@ export const CreateFeedbackModal = (props: {
       </DialogTitle>
       <DialogContent dividers>
         <Grid container justifyContent="flex-start" className={classes.root}>
-          {props.serverType.toLowerCase() !== 'mail' &&
-          !selectedTag.match(/(Excellent|Good)/g) ? (
+          {serverType !== 'mail' && !selectedTag.match(/(Excellent|Good)/g) ? (
             <Grid xs={12}>
               <Alert severity="warning" variant="outlined">
                 Note: By submitting&nbsp;
                 {feedbackType === 'FEEDBACK' ? 'feedback' : 'bug'} with this
-                tag, it will create an issue in {props.serverType.toLowerCase()}
+                tag, it will create an issue in {serverType}
               </Alert>
             </Grid>
           ) : null}
@@ -256,7 +271,7 @@ export const CreateFeedbackModal = (props: {
               {feedbackType === 'BUG'
                 ? issueTags.map(issueTitle => (
                     <Chip
-                      key={issueTitle.toLowerCase()}
+                      key={issueTitle}
                       clickable
                       variant={
                         selectedTag === issueTitle ? 'filled' : 'outlined'
@@ -268,7 +283,7 @@ export const CreateFeedbackModal = (props: {
                   ))
                 : feedbackTags.map(feedbackTitle => (
                     <Chip
-                      key={feedbackTitle.toLowerCase()}
+                      key={feedbackTitle}
                       clickable
                       variant={
                         selectedTag === feedbackTitle ? 'filled' : 'outlined'
