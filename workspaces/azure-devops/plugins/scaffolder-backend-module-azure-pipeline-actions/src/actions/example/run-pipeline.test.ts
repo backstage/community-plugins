@@ -31,7 +31,7 @@ jest.mock('@backstage/plugin-scaffolder-node', () => {
   };
 });
 
-import { runAzurePipelineAction } from './example';
+import { runAzurePipelineAction } from './run-pipeline';
 import { ScmIntegrations } from '@backstage/integration';
 import { ConfigReader } from '@backstage/config';
 import { WebApi } from 'azure-devops-node-api';
