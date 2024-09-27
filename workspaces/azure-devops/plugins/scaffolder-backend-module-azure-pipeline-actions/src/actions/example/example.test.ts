@@ -31,7 +31,6 @@ jest.mock('@backstage/plugin-scaffolder-node', () => {
   };
 });
 
-
 import { runAzurePipelineAction } from './example';
 import { ScmIntegrations } from '@backstage/integration';
 import { ConfigReader } from '@backstage/config';
@@ -63,322 +62,105 @@ describe('publish:azure', () => {
 
   const mockGitClient = {
     createRepository: jest.fn(),
-    runPipeline: jest.fn()
   };
 
+  const mockPipelineClient = {
+    runPipeline: jest.fn(),
+  };
 
   const mockGitApi = {
     getGitApi: jest.fn().mockReturnValue(mockGitClient),
-    getPipelinesApi: jest.fn().mockReturnValue(mockGitClient)
+    getPipelinesApi: jest.fn().mockReturnValue(mockPipelineClient),
   };
 
   (WebApi as unknown as jest.Mock).mockImplementation(() => mockGitApi);
 
- 
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  
-  it('should throw if there is no integration config provided', async () => {
+  it('should throw if there is no token or credentials provided', async () => {
     await expect(
       action.handler({
         ...mockContext,
         input: {
           host: 'azure.com',
-          project: 'project',
           organization: 'org',
-          pipelineId: '1'
+          pipelineId: '1',
+          project: 'project',
         },
       }),
     ).rejects.toThrow(/No credentials provided/);
   });
 
-  it('should throw if there is no token in the integration config that is returned', async () => {
-    await expect(
-      action.handler({
-        ...mockContext,
-        input: {
-          host: 'myazurehostnotoken.com',
-          project: 'project',
-          organization: 'org',
-          pipelineId: '1'
-        },
-      }),
-    ).rejects.toThrow(
-      /No credentials provided https:\/\/myazurehostnotoken.com\/org, please check your integrations config/,
-    );
-  });
-
-  it('should throw when pipeline ID does not exist', async () => {
-    await expect(
-      action.handler({
-        ...mockContext,
-        input: {
-          project: 'project',
-          organization: 'org',
-          pipelineId: '1'
-        },
-      }),
-    ).rejects.toThrow(/Unable to run the pipeline with/);
-  });
-
-  it('should not throw if there is a token provided through ctx.input', async () => {
-    mockGitClient.createRepository.mockImplementation(() => ({
-      remoteUrl: 'http://google.com',
-      webUrl: 'http://google.com',
-      id: '709e891c-dee7-4f91-b963-534713c0737f',
-    }));
-
-    mockGitApi.getPipelinesApi.mockImplementation(() => ({
-      remoteUrl: 'http://google.com',
-      webUrl: 'http://google.com',
-      id: '709e891c-dee7-4f91-b963-534713c0737f',
-    }));
-
-    mockGitClient.runPipeline.mockImplementation(() => ({
-      remoteUrl: 'http://google.com',
-      webUrl: 'http://google.com',
-      id: '709e891c-dee7-4f91-b963-534713c0737f',
-    }));
-      
-    
-    await action.handler({
-      ...mockContext,
-      input: { organization: "org", pipelineId: "1", project:"myProject",
-        token: 'lols'}
-      
-    });
-
-    expect(WebApi).toHaveBeenCalledWith(
-      'https://dev.azure.com/org',
-      expect.any(Function),
-    );
-
- 
-  });
-
-  it('should throw if there is no remoteUrl returned', async () => {
-    mockGitClient.createRepository.mockImplementation(() => ({
-      remoteUrl: null,
-      webUrl: 'http://google.com',
-      id: '709e891c-dee7-4f91-b963-534713c0737f',
-    }));
-    await expect(
-      action.handler({
-        ...mockContext,
-        input: {
-          repoUrl: 'dev.azure.com?repo=bob&project=project&organization=org',
-        },
-      }),
-    ).rejects.toThrow(/No remote URL returned/);
-  });
-
-  it('should throw if there is no repositoryId returned', async () => {
-    mockGitClient.createRepository.mockImplementation(() => ({
-      remoteUrl: 'http://google.com',
-      webUrl: 'http://google.com',
-      id: null,
-    }));
-    await expect(
-      action.handler({
-        ...mockContext,
-        input: {
-          repoUrl: 'dev.azure.com?repo=bob&project=project&organization=org',
-        },
-      }),
-    ).rejects.toThrow(/No Id returned/);
-  });
-
-  it('should throw if there is no repoContentsUrl returned', async () => {
-    mockGitClient.createRepository.mockImplementation(() => ({
-      remoteUrl: 'http://google.com',
-      webUrl: null,
-      id: '709e891c-dee7-4f91-b963-534713c0737f',
-    }));
-    await expect(
-      action.handler({
-        ...mockContext,
-        input: {
-          repoUrl: 'dev.azure.com?repo=bob&project=project&organization=org',
-        },
-      }),
-    ).rejects.toThrow(/No web URL returned/);
-  });
-
-  it('should call the azureApis with the correct values', async () => {
-    mockGitClient.createRepository.mockImplementation(() => ({
-      remoteUrl: 'http://google.com',
-      webUrl: 'http://google.com',
-      id: '709e891c-dee7-4f91-b963-534713c0737f',
-    }));
-
-    await action.handler({
-      ...mockContext,
-      input: { organization: "org", pipelineId: "1", project:"myProject" },
-    });
-
-    expect(WebApi).toHaveBeenCalledWith(
-      'https://dev.azure.com/org',
-      expect.any(Function),
-    );
-
-     
-  });
-
-  it('should call initRepoAndPush with the correct values', async () => {
-    mockGitClient.createRepository.mockImplementation(() => ({
-      remoteUrl: 'https://dev.azure.com/organization/project/_git/repo',
-      webUrl: 'https://dev.azure.com/organization/project/_git/repo',
-      id: '709e891c-dee7-4f91-b963-534713c0737f',
-    }));
-
-    await action.handler(mockContext);
-
-    expect(initRepoAndPush).toHaveBeenCalledWith({
-      dir: mockContext.workspacePath,
-      remoteUrl: 'https://dev.azure.com/organization/project/_git/repo',
-      defaultBranch: 'master',
-      auth: { username: 'notempty', password: 'tokenlols' },
-      logger: mockContext.logger,
-      commitMessage: 'initial commit',
-      gitAuthorInfo: {},
-    });
-  });
-
-  it('should call initRepoAndPush with the correct default branch', async () => {
-    mockGitClient.createRepository.mockImplementation(() => ({
-      remoteUrl: 'https://dev.azure.com/organization/project/_git/repo',
-      webUrl: 'https://dev.azure.com/organization/project/_git/repo',
-      id: '709e891c-dee7-4f91-b963-534713c0737f',
+  it('should use token from input if provided', async () => {
+    mockPipelineClient.runPipeline.mockImplementation(() => ({
+      _links: { web: { href: 'http://pipeline-run-url.com' } },
     }));
 
     await action.handler({
       ...mockContext,
       input: {
-        ...mockContext.input,
-        defaultBranch: 'main',
+        host: 'dev.azure.com',
+        organization: 'org',
+        pipelineId: '1',
+        project: 'project',
+        token: 'input-token',
       },
     });
 
-    expect(initRepoAndPush).toHaveBeenCalledWith({
-      dir: mockContext.workspacePath,
-      remoteUrl: 'https://dev.azure.com/organization/project/_git/repo',
-      defaultBranch: 'main',
-      auth: { username: 'notempty', password: 'tokenlols' },
-      logger: mockContext.logger,
-      commitMessage: 'initial commit',
-      gitAuthorInfo: {},
-    });
+    expect(WebApi).toHaveBeenCalledWith(
+      'https://dev.azure.com/org',
+      expect.any(Function),
+    );
+
+    expect(mockContext.output).toHaveBeenCalledWith(
+      'pipelineRunUrl',
+      'http://pipeline-run-url.com',
+    );
   });
 
-  it('should call initRepoAndPush with the configured defaultAuthor', async () => {
-    const customAuthorConfig = new ConfigReader({
-      integrations: {
-        azure: [
-          {
-            host: 'dev.azure.com',
-            credentials: [{ personalAccessToken: 'tokenlols' }],
-          },
-          { host: 'myazurehostnotoken.com' },
-        ],
-      },
-      scaffolder: {
-        defaultAuthor: {
-          name: 'Test',
-          email: 'example@example.com',
+  it('should throw if runPipeline fails', async () => {
+    mockPipelineClient.runPipeline.mockImplementation(() => {
+      throw new Error('Pipeline run failed');
+    });
+
+    await expect(
+      action.handler({
+        ...mockContext,
+        input: {
+          host: 'dev.azure.com',
+          organization: 'org',
+          pipelineId: '1',
+          project: 'project',
         },
-      },
-    });
-
-    const customAuthorIntegrations =
-      ScmIntegrations.fromConfig(customAuthorConfig);
-    const customAuthorAction = createPublishAzureAction({
-      integrations: customAuthorIntegrations,
-      config: customAuthorConfig,
-    });
-
-    mockGitClient.createRepository.mockImplementation(() => ({
-      remoteUrl: 'https://dev.azure.com/organization/project/_git/repo',
-      webUrl: 'https://dev.azure.com/organization/project/_git/repo',
-      id: '709e891c-dee7-4f91-b963-534713c0737f',
-    }));
-
-    await customAuthorAction.handler(mockContext);
-
-    expect(initRepoAndPush).toHaveBeenCalledWith({
-      dir: mockContext.workspacePath,
-      remoteUrl: 'https://dev.azure.com/organization/project/_git/repo',
-      auth: { username: 'notempty', password: 'tokenlols' },
-      logger: mockContext.logger,
-      defaultBranch: 'master',
-      commitMessage: 'initial commit',
-      gitAuthorInfo: { name: 'Test', email: 'example@example.com' },
-    });
+      }),
+    ).rejects.toThrow(/Pipeline run failed/);
   });
 
-  it('should call initRepoAndPush with the configured defaultCommitMessage', async () => {
-    const customAuthorConfig = new ConfigReader({
-      integrations: {
-        azure: [
-          {
-            host: 'dev.azure.com',
-            credentials: [{ personalAccessToken: 'tokenlols' }],
-          },
-          { host: 'myazurehostnotoken.com' },
-        ],
-      },
-      scaffolder: {
-        defaultCommitMessage: 'Test commit message',
-      },
-    });
-
-    const customAuthorIntegrations =
-      ScmIntegrations.fromConfig(customAuthorConfig);
-    const customAuthorAction = createPublishAzureAction({
-      integrations: customAuthorIntegrations,
-      config: customAuthorConfig,
-    });
-
-    mockGitClient.createRepository.mockImplementation(() => ({
-      remoteUrl: 'https://dev.azure.com/organization/project/_git/repo',
-      webUrl: 'https://dev.azure.com/organization/project/_git/repo',
-      id: '709e891c-dee7-4f91-b963-534713c0737f',
+  it('should output pipelineRunStatus if available', async () => {
+    mockPipelineClient.runPipeline.mockImplementation(() => ({
+      _links: { web: { href: 'http://pipeline-run-url.com' } },
+      result: 'InProgress',
     }));
 
-    await customAuthorAction.handler(mockContext);
-
-    expect(initRepoAndPush).toHaveBeenCalledWith({
-      dir: mockContext.workspacePath,
-      remoteUrl: 'https://dev.azure.com/organization/project/_git/repo',
-      auth: { username: 'notempty', password: 'tokenlols' },
-      logger: mockContext.logger,
-      defaultBranch: 'master',
-      commitMessage: 'initial commit',
-      gitAuthorInfo: { email: undefined, name: undefined },
+    await action.handler({
+      ...mockContext,
+      input: {
+        host: 'dev.azure.com',
+        organization: 'org',
+        pipelineId: '1',
+        project: 'project',
+      },
     });
-  });
-
-  it('should call output with the remoteUrl the repoContentsUrl and the repositoryId', async () => {
-    mockGitClient.createRepository.mockImplementation(() => ({
-      remoteUrl: 'https://dev.azure.com/organization/project/_git/repo',
-      webUrl: 'https://dev.azure.com/organization/project/_git/repo',
-      id: '709e891c-dee7-4f91-b963-534713c0737f',
-    }));
-
-    await action.handler(mockContext);
 
     expect(mockContext.output).toHaveBeenCalledWith(
-      'remoteUrl',
-      'https://dev.azure.com/organization/project/_git/repo',
+      'pipelineRunUrl',
+      'http://pipeline-run-url.com',
     );
     expect(mockContext.output).toHaveBeenCalledWith(
-      'repoContentsUrl',
-      'https://dev.azure.com/organization/project/_git/repo',
-    );
-    expect(mockContext.output).toHaveBeenCalledWith(
-      'repositoryId',
-      '709e891c-dee7-4f91-b963-534713c0737f',
+      'pipelineRunStatus',
+      'InProgress',
     );
   });
 });

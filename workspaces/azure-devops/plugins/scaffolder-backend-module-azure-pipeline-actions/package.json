@@ -28,14 +28,15 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
+    "@backstage/backend-common": "^0.23.3",
     "@backstage/backend-plugin-api": "^0.7.0",
+    "@backstage/config": "^1.2.0",
     "@backstage/errors": "^1.2.4",
     "@backstage/integration": "^1.13.0",
     "@backstage/plugin-scaffolder-node": "^0.4.8",
-    "azure-devops-node-api": "^14.0.0"
+    "azure-devops-node-api": "^14.1.0"
   },
   "devDependencies": {
-    "@backstage/backend-common": "^0.23.3",
     "@backstage/cli": "^0.26.11",
     "@backstage/plugin-scaffolder-node-test-utils": "^0.1.9"
   },

@@ -2813,22 +2813,15 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-scaffolder-backend-module-azure-pipeline-actions@workspace:plugins/scaffolder-backend-module-azure-pipeline-actions"
   dependencies:
-    "@backstage/backend-common": ^0.25.0
-    "@backstage/backend-defaults": ^0.5.0
-    "@backstage/backend-plugin-api": ^1.0.0
-    "@backstage/catalog-model": ^1.7.0
+    "@backstage/backend-common": ^0.23.3
+    "@backstage/backend-plugin-api": ^0.7.0
     "@backstage/cli": ^0.26.11
     "@backstage/config": ^1.2.0
     "@backstage/errors": ^1.2.4
-    "@backstage/integration": ^1.15.0
-    "@backstage/plugin-auth-node": ^0.5.2
-    "@backstage/plugin-catalog-common": ^1.1.0
-    "@backstage/plugin-catalog-node": ^1.13.0
-    "@backstage/plugin-permission-common": ^0.8.1
-    "@backstage/plugin-permission-node": ^0.8.3
+    "@backstage/integration": ^1.13.0
     "@backstage/plugin-scaffolder-node": ^0.4.8
     "@backstage/plugin-scaffolder-node-test-utils": ^0.1.9
-    azure-devops-node-api: ^14.0.0
+    azure-devops-node-api: ^14.1.0
   languageName: unknown
   linkType: soft
 
@@ -15782,9 +15775,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+<<<<<<< HEAD
 "azure-devops-node-api@npm:^14.0.0":
 <<<<<<< HEAD
 <<<<<<< HEAD
+=======
+"azure-devops-node-api@npm:^14.1.0":
+>>>>>>> 6796661b (add logging, and refactor.)
   version: 14.1.0
   resolution: "azure-devops-node-api@npm:14.1.0"
   dependencies:
