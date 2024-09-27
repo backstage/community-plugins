@@ -36,3 +36,9 @@ spec:
         organization: ${{ (parameters.repoUrl | parseRepoUrl)['organization'] }}
         pipelineId: ${{ parameters.pipelineId }}
         project: ${{ (parameters.repoUrl | parseRepoUrl)['project'] }}
+
+  output:
+    links:
+      - title: Open in DevOps
+        icon: catalog
+        url: ${{ steps['runAzurePipeline'].output.pipelineRunUrl }}
