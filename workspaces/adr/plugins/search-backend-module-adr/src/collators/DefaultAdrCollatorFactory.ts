@@ -46,7 +46,6 @@ import {
   DiscoveryService,
   LoggerService,
   RootConfigService,
-  TokenManagerService,
   UrlReaderService,
 } from '@backstage/backend-plugin-api';
 
@@ -88,10 +87,6 @@ export type AdrCollatorFactoryOptions = {
    * URL Reader
    */
   reader: UrlReaderService;
-  /**
-   * Token Manager
-   */
-  tokenManager?: TokenManagerService;
   /**
    * Auth Service
    */

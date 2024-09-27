@@ -9,7 +9,7 @@ import { AdrDocument } from '@backstage-community/plugin-adr-common';
 import { AdrFilePathFilterFn } from '@backstage-community/plugin-adr-common';
 import { AdrParser } from '@backstage-community/plugin-adr-common';
 import { AuthService } from '@backstage/backend-plugin-api';
-import { BackendFeatureCompat } from '@backstage/backend-plugin-api';
+import { BackendFeature } from '@backstage/backend-plugin-api';
 import { CacheService } from '@backstage/backend-plugin-api';
 import { CatalogApi } from '@backstage/catalog-client';
 import { DiscoveryService } from '@backstage/backend-plugin-api';
@@ -18,7 +18,6 @@ import { ExtensionPoint } from '@backstage/backend-plugin-api';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { Readable } from 'stream';
 import { RootConfigService } from '@backstage/backend-plugin-api';
-import { TokenManagerService } from '@backstage/backend-plugin-api';
 import { UrlReaderService } from '@backstage/backend-plugin-api';
 
 // @public
@@ -31,7 +30,6 @@ export type AdrCollatorFactoryOptions = {
   logger: LoggerService;
   parser?: AdrParser;
   reader: UrlReaderService;
-  tokenManager?: TokenManagerService;
   auth?: AuthService;
 };
 
@@ -45,7 +43,7 @@ export type AdrsCollatorExtensionPoint = {
 export const adrsCollatorExtensionPoint: ExtensionPoint<AdrsCollatorExtensionPoint>;
 
 // @public
-const _default: BackendFeatureCompat;
+const _default: BackendFeature;
 export default _default;
 
 // @public

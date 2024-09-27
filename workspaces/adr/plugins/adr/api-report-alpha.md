@@ -4,90 +4,106 @@
 
 ```ts
 import { AnyApiFactory } from '@backstage/core-plugin-api';
+import { AnyExtensionDataRef } from '@backstage/frontend-plugin-api';
 import { AnyRouteRefParams } from '@backstage/frontend-plugin-api';
-import { BackstagePlugin } from '@backstage/frontend-plugin-api';
 import { ConfigurableExtensionDataRef } from '@backstage/frontend-plugin-api';
 import { Entity } from '@backstage/catalog-model';
 import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
+import { ExtensionInput } from '@backstage/frontend-plugin-api';
+import { FrontendPlugin } from '@backstage/frontend-plugin-api';
 import { default as React_2 } from 'react';
 import { RouteRef } from '@backstage/frontend-plugin-api';
+import { SearchResultItemExtensionComponent } from '@backstage/plugin-search-react/alpha';
+import { SearchResultItemExtensionPredicate } from '@backstage/plugin-search-react/alpha';
 import { TranslationRef } from '@backstage/core-plugin-api/alpha';
 
 // @alpha (undocumented)
-export const adrApiExtension: ExtensionDefinition<
-  {},
-  {},
-  ConfigurableExtensionDataRef<AnyApiFactory, 'core.api.factory', {}>,
-  {},
-  {
-    kind: 'api';
-    namespace: undefined;
-    name: 'adr-api';
-  }
->;
+export const adrApiExtension: ExtensionDefinition<{
+  kind: 'api';
+  namespace: undefined;
+  name: 'adr-api';
+  config: {};
+  configInput: {};
+  output: ConfigurableExtensionDataRef<AnyApiFactory, 'core.api.factory', {}>;
+  inputs: {};
+}>;
 
 // @alpha (undocumented)
-export const adrEntityContentExtension: ExtensionDefinition<
-  {
+export const adrEntityContentExtension: ExtensionDefinition<{
+  kind: 'entity-content';
+  namespace: undefined;
+  name: 'entity';
+  config: {
     path: string | undefined;
     title: string | undefined;
     filter: string | undefined;
-  },
-  {
+  };
+  configInput: {
     filter?: string | undefined;
     title?: string | undefined;
     path?: string | undefined;
-  },
-  | ConfigurableExtensionDataRef<React_2.JSX.Element, 'core.reactElement', {}>
-  | ConfigurableExtensionDataRef<string, 'core.routing.path', {}>
-  | ConfigurableExtensionDataRef<
-      RouteRef<AnyRouteRefParams>,
-      'core.routing.ref',
-      {
-        optional: true;
-      }
-    >
-  | ConfigurableExtensionDataRef<string, 'catalog.entity-content-title', {}>
-  | ConfigurableExtensionDataRef<
-      (entity: Entity) => boolean,
-      'catalog.entity-filter-function',
-      {
-        optional: true;
-      }
-    >
-  | ConfigurableExtensionDataRef<
-      string,
-      'catalog.entity-filter-expression',
-      {
-        optional: true;
-      }
-    >,
-  {},
-  {
-    kind: 'entity-content';
-    namespace: undefined;
-    name: 'entity';
-  }
->;
+  };
+  output:
+    | ConfigurableExtensionDataRef<React_2.JSX.Element, 'core.reactElement', {}>
+    | ConfigurableExtensionDataRef<string, 'core.routing.path', {}>
+    | ConfigurableExtensionDataRef<
+        RouteRef<AnyRouteRefParams>,
+        'core.routing.ref',
+        {
+          optional: true;
+        }
+      >
+    | ConfigurableExtensionDataRef<string, 'catalog.entity-content-title', {}>
+    | ConfigurableExtensionDataRef<
+        (entity: Entity) => boolean,
+        'catalog.entity-filter-function',
+        {
+          optional: true;
+        }
+      >
+    | ConfigurableExtensionDataRef<
+        string,
+        'catalog.entity-filter-expression',
+        {
+          optional: true;
+        }
+      >;
+  inputs: {};
+}>;
 
 // @alpha (undocumented)
-export const adrSearchResultListItemExtension: ExtensionDefinition<
-  {
+export const adrSearchResultListItemExtension: ExtensionDefinition<{
+  config: {
     lineClamp: number;
+  } & {
     noTrack: boolean;
-  },
-  {
-    lineClamp: number;
-    noTrack: boolean;
-  },
-  never,
-  never,
-  {
-    kind?: string | undefined;
-    namespace?: string | undefined;
-    name?: string | undefined;
-  }
->;
+  };
+  configInput: {
+    lineClamp?: number | undefined;
+  } & {
+    noTrack?: boolean | undefined;
+  };
+  output: ConfigurableExtensionDataRef<
+    {
+      predicate?: SearchResultItemExtensionPredicate | undefined;
+      component: SearchResultItemExtensionComponent;
+    },
+    'search.search-result-list-item.item',
+    {}
+  >;
+  inputs: {
+    [x: string]: ExtensionInput<
+      AnyExtensionDataRef,
+      {
+        optional: boolean;
+        singleton: boolean;
+      }
+    >;
+  };
+  kind: 'search-result-list-item';
+  namespace: undefined;
+  name: undefined;
+}>;
 
 // @alpha (undocumented)
 export const adrTranslationRef: TranslationRef<
@@ -100,67 +116,104 @@ export const adrTranslationRef: TranslationRef<
 >;
 
 // @alpha (undocumented)
-const _default: BackstagePlugin<
+const _default: FrontendPlugin<
   {},
   {},
   {
-    'entity-content:adr/entity': ExtensionDefinition<
-      {
+    'search-result-list-item:adr': ExtensionDefinition<{
+      config: {
+        lineClamp: number;
+      } & {
+        noTrack: boolean;
+      };
+      configInput: {
+        lineClamp?: number | undefined;
+      } & {
+        noTrack?: boolean | undefined;
+      };
+      output: ConfigurableExtensionDataRef<
+        {
+          predicate?: SearchResultItemExtensionPredicate | undefined;
+          component: SearchResultItemExtensionComponent;
+        },
+        'search.search-result-list-item.item',
+        {}
+      >;
+      inputs: {
+        [x: string]: ExtensionInput<
+          AnyExtensionDataRef,
+          {
+            optional: boolean;
+            singleton: boolean;
+          }
+        >;
+      };
+      kind: 'search-result-list-item';
+      namespace: undefined;
+      name: undefined;
+    }>;
+    'entity-content:adr/entity': ExtensionDefinition<{
+      kind: 'entity-content';
+      namespace: undefined;
+      name: 'entity';
+      config: {
         path: string | undefined;
         title: string | undefined;
         filter: string | undefined;
-      },
-      {
+      };
+      configInput: {
         filter?: string | undefined;
         title?: string | undefined;
         path?: string | undefined;
-      },
-      | ConfigurableExtensionDataRef<
-          React_2.JSX.Element,
-          'core.reactElement',
-          {}
-        >
-      | ConfigurableExtensionDataRef<string, 'core.routing.path', {}>
-      | ConfigurableExtensionDataRef<
-          RouteRef<AnyRouteRefParams>,
-          'core.routing.ref',
-          {
-            optional: true;
-          }
-        >
-      | ConfigurableExtensionDataRef<string, 'catalog.entity-content-title', {}>
-      | ConfigurableExtensionDataRef<
-          (entity: Entity) => boolean,
-          'catalog.entity-filter-function',
-          {
-            optional: true;
-          }
-        >
-      | ConfigurableExtensionDataRef<
-          string,
-          'catalog.entity-filter-expression',
-          {
-            optional: true;
-          }
-        >,
-      {},
-      {
-        kind: 'entity-content';
-        namespace: undefined;
-        name: 'entity';
-      }
-    >;
-    'api:adr/adr-api': ExtensionDefinition<
-      {},
-      {},
-      ConfigurableExtensionDataRef<AnyApiFactory, 'core.api.factory', {}>,
-      {},
-      {
-        kind: 'api';
-        namespace: undefined;
-        name: 'adr-api';
-      }
-    >;
+      };
+      output:
+        | ConfigurableExtensionDataRef<
+            React_2.JSX.Element,
+            'core.reactElement',
+            {}
+          >
+        | ConfigurableExtensionDataRef<string, 'core.routing.path', {}>
+        | ConfigurableExtensionDataRef<
+            RouteRef<AnyRouteRefParams>,
+            'core.routing.ref',
+            {
+              optional: true;
+            }
+          >
+        | ConfigurableExtensionDataRef<
+            string,
+            'catalog.entity-content-title',
+            {}
+          >
+        | ConfigurableExtensionDataRef<
+            (entity: Entity) => boolean,
+            'catalog.entity-filter-function',
+            {
+              optional: true;
+            }
+          >
+        | ConfigurableExtensionDataRef<
+            string,
+            'catalog.entity-filter-expression',
+            {
+              optional: true;
+            }
+          >;
+      inputs: {};
+    }>;
+    'api:adr/adr-api': ExtensionDefinition<{
+      kind: 'api';
+      namespace: undefined;
+      name: 'adr-api';
+      config: {};
+      configInput: {};
+      output: ConfigurableExtensionDataRef<
+        AnyApiFactory,
+        'core.api.factory',
+        {}
+      >;
+      inputs: {};
+    }>;
   }
 >;
 export default _default;
