@@ -6,7 +6,7 @@
 import { AdrCollatorFactoryOptions as AdrCollatorFactoryOptions_2 } from '@backstage-community/search-backend-module-adr';
 import { AdrParser as AdrParser_2 } from '@backstage-community/plugin-adr-common';
 import { AdrParserContext as AdrParserContext_2 } from '@backstage-community/plugin-adr-common';
-import { BackendFeatureCompat } from '@backstage/backend-plugin-api';
+import { BackendFeature } from '@backstage/backend-plugin-api';
 import { CacheService } from '@backstage/backend-plugin-api';
 import { DefaultAdrCollatorFactory } from '@backstage-community/search-backend-module-adr';
 import express from 'express';
@@ -24,7 +24,7 @@ export type AdrParser = AdrParser_2;
 export type AdrParserContext = AdrParserContext_2;
 
 // @public
-const adrPlugin: BackendFeatureCompat;
+const adrPlugin: BackendFeature;
 export default adrPlugin;
 
 // @public (undocumented)
