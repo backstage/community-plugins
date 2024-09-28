@@ -50,8 +50,8 @@
     "test": "backstage-cli package test"
   },
   "dependencies": {
-    "@backstage/backend-common": "^0.24.1",
-    "@backstage/backend-plugin-api": "^0.8.1",
+    "@backstage/backend-common": "^0.25.0",
+    "@backstage/backend-plugin-api": "^1.0.0",
     "@backstage/config": "^1.2.0",
     "@types/express": "*",
     "express": "^4.17.1",
@@ -60,8 +60,8 @@
     "yn": "^4.0.0"
   },
   "devDependencies": {
-    "@backstage/backend-defaults": "^0.4.3",
-    "@backstage/cli": "^0.27.0",
+    "@backstage/backend-defaults": "^0.5.0",
+    "@backstage/cli": "^0.27.1",
     "@backstage/plugin-auth-backend": "^0.23.0",
     "@backstage/plugin-auth-backend-module-guest-provider": "^0.2.0",
     "@types/node-fetch": "^2.5.12",
