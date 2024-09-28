@@ -1,5 +1,11 @@
 # @backstage-community/plugin-entity-validation
 
+## 0.2.1
+
+### Patch Changes
+
+- 633d9f5: Backstage version bump to v1.31.2
+
 ## 0.2.0
 
 ### Minor Changes
