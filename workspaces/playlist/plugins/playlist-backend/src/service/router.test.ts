@@ -133,7 +133,6 @@ describe('createRouter', () => {
     const router = await createRouter({
       database: createDatabase(),
       discovery,
-      identity: mockServices.identity(),
       logger: getVoidLogger(),
       permissions: mockPermissionEvaluator,
       auth: mockServices.auth(),
