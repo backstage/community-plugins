@@ -34,7 +34,7 @@ The following sections will help you get the Azure DevOps plugin setup and runni
 
 ### Azure DevOps Backend
 
-You need to setup the [Azure DevOps backend plugin](https://github.com/backstage/backstage/tree/master/plugins/azure-devops-backend) before you move forward with any of these steps if you haven't already
+You need to setup the [Azure DevOps backend plugin](https://github.com/backstage/community-plugins/tree/main/workspaces/azure-devops/plugins/azure-devops-backend) before you move forward with any of these steps if you haven't already
 
 ### Entity Annotation
 
