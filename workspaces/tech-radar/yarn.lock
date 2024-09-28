@@ -4234,8 +4234,8 @@ __metadata:
   linkType: hard
 
 "@backstage/plugin-catalog-backend@npm:^1.25.0":
-  version: 1.26.0
-  resolution: "@backstage/plugin-catalog-backend@npm:1.26.0"
+  version: 1.26.1
+  resolution: "@backstage/plugin-catalog-backend@npm:1.26.1"
   dependencies:
     "@backstage/backend-common": ^0.25.0
     "@backstage/backend-openapi-utils": ^0.1.18
@@ -4272,7 +4272,7 @@ __metadata:
     yaml: ^2.0.0
     yn: ^4.0.0
     zod: ^3.22.4
-  checksum: 76552d84afed5b2ca9a921a4f7080bec7e2ea7f3f2657906075444240a414434679a761acae5a9d0df31361387a743068bcb5cb1f036c91085d3663b4d80d8ec
+  checksum: 0cff2cd06f41d7e275ad3de4f3a7127e5ae651070cf4e3c044e7f6c12068c01fcfa49e0530ffc57cd9294aaca2f9865ce5d9f7e6597acdd910146e20faf8a25e
   languageName: node
   linkType: hard
 

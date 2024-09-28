@@ -3051,7 +3051,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/backend-defaults@npm:^0.4.0, @backstage/backend-defaults@npm:^0.4.2, @backstage/backend-defaults@npm:^0.4.4":
+"@backstage/backend-defaults@npm:^0.4.0, @backstage/backend-defaults@npm:^0.4.2":
   version: 0.4.4
   resolution: "@backstage/backend-defaults@npm:0.4.4"
   dependencies:
@@ -3213,11 +3213,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/backend-openapi-utils@npm:^0.1.17":
-  version: 0.1.17
-  resolution: "@backstage/backend-openapi-utils@npm:0.1.17"
+"@backstage/backend-openapi-utils@npm:^0.1.18":
+  version: 0.1.18
+  resolution: "@backstage/backend-openapi-utils@npm:0.1.18"
   dependencies:
-    "@backstage/backend-plugin-api": ^0.8.1
+    "@backstage/backend-plugin-api": ^1.0.0
     "@backstage/errors": ^1.2.4
     "@types/express": ^4.17.6
     "@types/express-serve-static-core": ^4.17.5
@@ -3228,7 +3228,7 @@ __metadata:
     lodash: ^4.17.21
     openapi-merge: ^1.3.2
     openapi3-ts: ^3.1.2
-  checksum: b88984a48e56883d2d3481ac15003aad560a77b1aad40ce4e49b86a44a2e62da9b021d55807df575bf7d6eca9bf0cfbbcd2b750b71070dec193d90371180f643
+  checksum: 5471baf1d4856fa5961e42dcc63be281776b9d4764e358b7e93286e0f1373411b1cadedb2a98c73c4544d81702d497b79dc20b9512b08119d610af28da2984df
   languageName: node
   linkType: hard
 
@@ -4685,23 +4685,23 @@ __metadata:
   linkType: hard
 
 "@backstage/plugin-catalog-backend@npm:^1.23.1":
-  version: 1.25.2
-  resolution: "@backstage/plugin-catalog-backend@npm:1.25.2"
+  version: 1.26.1
+  resolution: "@backstage/plugin-catalog-backend@npm:1.26.1"
   dependencies:
-    "@backstage/backend-common": ^0.24.1
-    "@backstage/backend-openapi-utils": ^0.1.17
-    "@backstage/backend-plugin-api": ^0.8.1
-    "@backstage/catalog-client": ^1.6.6
-    "@backstage/catalog-model": ^1.6.0
+    "@backstage/backend-common": ^0.25.0
+    "@backstage/backend-openapi-utils": ^0.1.18
+    "@backstage/backend-plugin-api": ^1.0.0
+    "@backstage/catalog-client": ^1.7.0
+    "@backstage/catalog-model": ^1.7.0
     "@backstage/config": ^1.2.0
     "@backstage/errors": ^1.2.4
-    "@backstage/integration": ^1.14.0
-    "@backstage/plugin-catalog-common": ^1.0.26
-    "@backstage/plugin-catalog-node": ^1.12.6
-    "@backstage/plugin-events-node": ^0.3.10
+    "@backstage/integration": ^1.15.0
+    "@backstage/plugin-catalog-common": ^1.1.0
+    "@backstage/plugin-catalog-node": ^1.13.0
+    "@backstage/plugin-events-node": ^0.4.0
     "@backstage/plugin-permission-common": ^0.8.1
-    "@backstage/plugin-permission-node": ^0.8.2
-    "@backstage/plugin-search-backend-module-catalog": ^0.2.1
+    "@backstage/plugin-permission-node": ^0.8.3
+    "@backstage/plugin-search-backend-module-catalog": ^0.2.2
     "@backstage/types": ^1.1.1
     "@opentelemetry/api": ^1.3.0
     "@types/express": ^4.17.6
@@ -4723,7 +4723,7 @@ __metadata:
     yaml: ^2.0.0
     yn: ^4.0.0
     zod: ^3.22.4
-  checksum: 4c9e37309b89ad83aeb31a014d7c4b09ce6b2813e68635817b8c80462df08ce32605f11989a1f77c80906458363f406071d6106ae83b8fd4ab2c8af2aab350a7
+  checksum: 0cff2cd06f41d7e275ad3de4f3a7127e5ae651070cf4e3c044e7f6c12068c01fcfa49e0530ffc57cd9294aaca2f9865ce5d9f7e6597acdd910146e20faf8a25e
   languageName: node
   linkType: hard
 
@@ -5024,31 +5024,31 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-search-backend-module-catalog@npm:^0.2.1":
-  version: 0.2.1
-  resolution: "@backstage/plugin-search-backend-module-catalog@npm:0.2.1"
+"@backstage/plugin-search-backend-module-catalog@npm:^0.2.2":
+  version: 0.2.2
+  resolution: "@backstage/plugin-search-backend-module-catalog@npm:0.2.2"
   dependencies:
-    "@backstage/backend-common": ^0.24.1
-    "@backstage/backend-plugin-api": ^0.8.1
-    "@backstage/catalog-client": ^1.6.6
-    "@backstage/catalog-model": ^1.6.0
+    "@backstage/backend-common": ^0.25.0
+    "@backstage/backend-plugin-api": ^1.0.0
+    "@backstage/catalog-client": ^1.7.0
+    "@backstage/catalog-model": ^1.7.0
     "@backstage/config": ^1.2.0
     "@backstage/errors": ^1.2.4
-    "@backstage/plugin-catalog-common": ^1.0.26
-    "@backstage/plugin-catalog-node": ^1.12.6
+    "@backstage/plugin-catalog-common": ^1.1.0
+    "@backstage/plugin-catalog-node": ^1.13.0
     "@backstage/plugin-permission-common": ^0.8.1
-    "@backstage/plugin-search-backend-node": ^1.3.1
+    "@backstage/plugin-search-backend-node": ^1.3.2
     "@backstage/plugin-search-common": ^1.2.14
-  checksum: 242c6711e5d3aad3a15d953d2b909bf92798c3d5fd87775849619421c9a800d97a192a673d6081ef3576123da0bd7dda1246b71a92bdba35704c943265fff733
+  checksum: d1bfabbbc91e3bf46e6394eddc1887131cd305073c1e74d4db6253110be7623b67ce9c6c18f59dca2681f6e8126d860612ae119bd136450eded1f26acfaf5f91
   languageName: node
   linkType: hard
 
-"@backstage/plugin-search-backend-node@npm:^1.3.1":
-  version: 1.3.1
-  resolution: "@backstage/plugin-search-backend-node@npm:1.3.1"
+"@backstage/plugin-search-backend-node@npm:^1.3.2":
+  version: 1.3.2
+  resolution: "@backstage/plugin-search-backend-node@npm:1.3.2"
   dependencies:
-    "@backstage/backend-defaults": ^0.4.4
-    "@backstage/backend-plugin-api": ^0.8.1
+    "@backstage/backend-defaults": ^0.5.0
+    "@backstage/backend-plugin-api": ^1.0.0
     "@backstage/config": ^1.2.0
     "@backstage/errors": ^1.2.4
     "@backstage/plugin-permission-common": ^0.8.1
@@ -5058,7 +5058,7 @@ __metadata:
     lunr: ^2.3.9
     ndjson: ^2.0.0
     uuid: ^9.0.0
-  checksum: 6c2ff416e587e5f5f21fb0b17112d3bb8eade3c68683723280952b2e0f2c8d1bf6a86a8c829ba68ff7213e1084a05a60a481d5d7ef327563e12172c507063582
+  checksum: f9a396504876ebc29a4c14c3c64446e5116098571d01480c78fd9806e5efdd82f053e626418083e8e93fc8898f364837561c0870a5a77c26c5767e5f73c528a4
   languageName: node
   linkType: hard
 
