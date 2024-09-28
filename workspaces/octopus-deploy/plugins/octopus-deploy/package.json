@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-octopus-deploy",
-  "version": "0.2.19",
+  "version": "0.2.20",
   "backstage": {
     "role": "frontend-plugin",
     "pluginId": "octopus-deploy",
