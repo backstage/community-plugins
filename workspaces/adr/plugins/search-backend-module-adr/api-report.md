@@ -30,7 +30,7 @@ export type AdrCollatorFactoryOptions = {
   logger: LoggerService;
   parser?: AdrParser;
   reader: UrlReaderService;
-  auth?: AuthService;
+  auth: AuthService;
 };
 
 // @public

@@ -2595,7 +2595,6 @@ __metadata:
   resolution: "@backstage-community/search-backend-module-adr@workspace:plugins/search-backend-module-adr"
   dependencies:
     "@backstage-community/plugin-adr-common": "workspace:^"
-    "@backstage/backend-common": ^0.25.0
     "@backstage/backend-plugin-api": ^1.0.0
     "@backstage/backend-tasks": ^0.6.1
     "@backstage/backend-test-utils": ^1.0.0
