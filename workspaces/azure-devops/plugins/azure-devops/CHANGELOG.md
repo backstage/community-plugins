@@ -1,5 +1,11 @@
 # @backstage-community/plugin-azure-devops
 
+## 0.6.0
+
+### Minor Changes
+
+- 904a6a2: Fixed a link to azure-devops-backend plugin in Readme.
+
 ## 0.5.1
 
 ### Patch Changes
