@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 import { screen, waitFor } from '@testing-library/react';
-import { createExtensionTester } from '@backstage/frontend-test-utils';
-import * as cards from './entityCards';
 import {
-  createApiExtension,
-  createApiFactory,
-} from '@backstage/frontend-plugin-api';
+  createExtensionTester,
+  renderInTestApp,
+} from '@backstage/frontend-test-utils';
+import * as cards from './entityCards';
+import { ApiBlueprint, createApiFactory } from '@backstage/frontend-plugin-api';
 import { JenkinsApi, jenkinsApiRef } from '../api';
 import { sampleEntity } from '../__fixtures__/entity';
 
@@ -34,33 +34,38 @@ jest.mock('@backstage/core-plugin-api', () => ({
 }));
 
 describe('Entity content extensions', () => {
-  const mockJenkinsApi = createApiExtension({
-    factory: createApiFactory({
-      api: jenkinsApiRef,
-      deps: {},
-      factory: () =>
-        ({
-          getProjects: jest.fn(),
-          getBuild: jest.fn(),
-          getJobBuilds: jest.fn().mockReturnValue({
-            name: 'main',
-            displayName: 'main',
-            description: 'description',
-            fullDisplayName: 'main',
-            inQueue: false,
-            fullName: 'main',
-            url: 'url.com',
-            builds: [],
-          }),
-          retry: () => null,
-        } as unknown as JenkinsApi),
-    }),
+  const mockJenkinsApi = ApiBlueprint.make({
+    name: 'jenkins',
+    params: {
+      factory: createApiFactory({
+        api: jenkinsApiRef,
+        deps: {},
+        factory: () =>
+          ({
+            getProjects: jest.fn(),
+            getBuild: jest.fn(),
+            getJobBuilds: jest.fn().mockReturnValue({
+              name: 'main',
+              displayName: 'main',
+              description: 'description',
+              fullDisplayName: 'main',
+              inQueue: false,
+              fullName: 'main',
+              url: 'url.com',
+              builds: [],
+            }),
+            retry: () => null,
+          } as unknown as JenkinsApi),
+      }),
+    },
   });
 
   it('should render Jenkins latest run card', async () => {
-    createExtensionTester(cards.entityLatestJenkinsRunCard)
-      .add(mockJenkinsApi)
-      .render();
+    renderInTestApp(
+      createExtensionTester(cards.entityLatestJenkinsRunCard)
+        .add(mockJenkinsApi)
+        .reactElement(),
+    );
 
     await waitFor(() => {
       expect(screen.getByText('Latest master build')).toBeInTheDocument();
@@ -68,9 +73,11 @@ describe('Entity content extensions', () => {
   });
 
   it('should render Jenkins runs table', async () => {
-    createExtensionTester(cards.entityJobRunsTable)
-      .add(mockJenkinsApi)
-      .render();
+    renderInTestApp(
+      createExtensionTester(cards.entityJobRunsTable)
+        .add(mockJenkinsApi)
+        .reactElement(),
+    );
 
     await waitFor(() => {
       expect(screen.getByText('main Runs')).toBeInTheDocument();

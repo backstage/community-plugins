@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 import { screen, waitFor } from '@testing-library/react';
-import { createExtensionTester } from '@backstage/frontend-test-utils';
-import * as content from './entityContent';
 import {
-  createApiExtension,
-  createApiFactory,
-} from '@backstage/frontend-plugin-api';
+  createExtensionTester,
+  renderInTestApp,
+} from '@backstage/frontend-test-utils';
+import * as content from './entityContent';
+import { ApiBlueprint, createApiFactory } from '@backstage/frontend-plugin-api';
 import { JenkinsApi, jenkinsApiRef } from '../api';
 import { sampleEntity } from '../__fixtures__/entity';
 
@@ -34,24 +34,29 @@ jest.mock('@backstage/core-plugin-api', () => ({
 }));
 
 describe('Entity content extensions', () => {
-  const mockJenkinsApi = createApiExtension({
-    factory: createApiFactory({
-      api: jenkinsApiRef,
-      deps: {},
-      factory: () =>
-        ({
-          getProjects: jest.fn(),
-          getBuild: jest.fn(),
-          getJobBuilds: jest.fn(),
-          retry: () => null,
-        } as unknown as JenkinsApi),
-    }),
+  const mockJenkinsApi = ApiBlueprint.make({
+    name: 'jenkins',
+    params: {
+      factory: createApiFactory({
+        api: jenkinsApiRef,
+        deps: {},
+        factory: () =>
+          ({
+            getProjects: jest.fn(),
+            getBuild: jest.fn(),
+            getJobBuilds: jest.fn(),
+            retry: () => null,
+          } as unknown as JenkinsApi),
+      }),
+    },
   });
 
   it('should render Jenkins projects table', async () => {
-    createExtensionTester(content.entityJenkinsProjects)
-      .add(mockJenkinsApi)
-      .render();
+    renderInTestApp(
+      createExtensionTester(content.entityJenkinsProjects)
+        .add(mockJenkinsApi)
+        .reactElement(),
+    );
 
     await waitFor(
       () => {
