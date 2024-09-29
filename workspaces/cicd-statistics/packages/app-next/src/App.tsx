@@ -17,13 +17,13 @@ import { FlatRoutes } from '@backstage/core-app-api';
 import { convertLegacyApp } from '@backstage/core-compat-api';
 import { createApp } from '@backstage/frontend-app-api';
 import {
+  ApiBlueprint,
   configApiRef,
-  createApiExtension,
   createApiFactory,
   createExtensionOverrides,
-  createPageExtension,
-  createSignInPageExtension,
-  createThemeExtension,
+  createFrontendModule,
+  PageBlueprint,
+  SignInPageBlueprint,
 } from '@backstage/frontend-plugin-api';
 import {
   ScmAuth,
@@ -34,74 +34,31 @@ import { ApiExplorerPage } from '@backstage/plugin-api-docs';
 import catalogPlugin from '@backstage/plugin-catalog/alpha';
 import catalogImportPlugin from '@backstage/plugin-catalog-import/alpha';
 import userSettingsPlugin from '@backstage/plugin-user-settings/alpha';
-import {
-  createUnifiedTheme,
-  createBaseThemeOptions,
-  pageTheme as defaultPageThemes,
-  palettes,
-  genPageTheme,
-  colorVariants,
-  shapes,
-  UnifiedTheme,
-  UnifiedThemeProvider,
-} from '@backstage/theme';
 import React from 'react';
 import { Navigate, Route } from 'react-router';
-
-import { navigationExtension } from './components/Sidebar';
 import { SignInPage } from './components/auth/SignInPage';
 
 import cicdStatisticsPlugin from '@backstage-community/plugin-cicd-statistics/alpha';
 import cicdStatisticsGitlabPlugin from '@backstage-community/plugin-cicd-statistics-module-gitlab/alpha';
 
-const pageTheme = {
-  ...defaultPageThemes,
-  dataset: genPageTheme({
-    colors: colorVariants.purpleSky,
-    shape: shapes.wave,
-  }),
-};
-
-export const lightTheme: UnifiedTheme = createUnifiedTheme({
-  ...createBaseThemeOptions({
-    palette: { ...palettes.light },
-  }),
-  pageTheme,
+const homePageExtension = PageBlueprint.make({
+  name: 'catalog-root',
+  params: {
+    defaultPath: '/',
+    loader: () => Promise.resolve(<Navigate to="catalog" />),
+  },
 });
 
-export const darkTheme: UnifiedTheme = createUnifiedTheme({
-  ...createBaseThemeOptions({
-    palette: { ...palettes.dark },
-  }),
-  pageTheme,
-});
-
-const lightThemeExtension = createThemeExtension({
-  id: 'mui-light',
-  title: 'MUI Light',
-  variant: 'light',
-  Provider: ({ children }) => (
-    <UnifiedThemeProvider theme={lightTheme} children={children} />
-  ),
-});
-const darkThemeExtension = createThemeExtension({
-  id: 'mui-dark',
-  title: 'MUI Dark',
-  variant: 'dark',
-  Provider: ({ children }) => (
-    <UnifiedThemeProvider theme={darkTheme} children={children} />
-  ),
-});
-
-const signInPage = createSignInPageExtension({
+const signInPage = SignInPageBlueprint.make({
   name: 'signInPage',
-  loader: async () => props => <SignInPage {...props} />,
+  params: {
+    loader: async () => props => <SignInPage {...props} />,
+  },
 });
 
-const homePageExtension = createPageExtension({
-  namespace: 'home',
-  defaultPath: '/',
-  loader: () => Promise.resolve(<Navigate to="catalog" />),
+export const signInPageModule = createFrontendModule({
+  pluginId: 'app',
+  extensions: [signInPage],
 });
 
 const collectedLegacyPlugins = convertLegacyApp(
@@ -110,16 +67,26 @@ const collectedLegacyPlugins = convertLegacyApp(
   </FlatRoutes>,
 );
 
-const scmAuthExtension = createApiExtension({
-  factory: ScmAuth.createDefaultApiFactory(),
-});
-
-const scmIntegrationApi = createApiExtension({
-  factory: createApiFactory({
-    api: scmIntegrationsApiRef,
-    deps: { configApi: configApiRef },
-    factory: ({ configApi }) => ScmIntegrationsApi.fromConfig(configApi),
-  }),
+const scmModule = createFrontendModule({
+  pluginId: 'app',
+  extensions: [
+    ApiBlueprint.make({
+      name: 'scm-auth',
+      params: {
+        factory: ScmAuth.createDefaultApiFactory(),
+      },
+    }),
+    ApiBlueprint.make({
+      name: 'scm-integrations',
+      params: {
+        factory: createApiFactory({
+          api: scmIntegrationsApiRef,
+          deps: { configApi: configApiRef },
+          factory: ({ configApi }) => ScmIntegrationsApi.fromConfig(configApi),
+        }),
+      },
+    }),
+  ],
 });
 
 export const app = createApp({
@@ -130,16 +97,10 @@ export const app = createApp({
     cicdStatisticsPlugin,
     cicdStatisticsGitlabPlugin,
     ...collectedLegacyPlugins,
+    signInPageModule,
+    scmModule,
     createExtensionOverrides({
-      extensions: [
-        signInPage,
-        darkThemeExtension,
-        lightThemeExtension,
-        homePageExtension,
-        scmAuthExtension,
-        scmIntegrationApi,
-        navigationExtension,
-      ],
+      extensions: [homePageExtension],
     }),
   ],
 });

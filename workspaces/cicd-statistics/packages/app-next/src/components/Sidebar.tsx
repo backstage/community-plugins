@@ -38,32 +38,32 @@ export const navigationExtension = createExtension({
   namespace: 'app',
   name: 'nav',
   attachTo: { id: 'app/layout', input: 'nav' },
-  output: {
-    element: coreExtensionData.reactElement,
-  },
+  output: [coreExtensionData.reactElement],
   factory() {
-    return {
-      element: compatWrapper(
-        <Sidebar>
-          <SidebarDivider />
-          <SidebarGroup label="Menu" icon={<MenuIcon />}>
-            {/* Global nav, not org-specific */}
-            <SidebarItem icon={HomeIcon} to="catalog" text="Home" />
-            <SidebarItem icon={ExtensionIcon} to="api-docs" text="APIs" />
-            {/* End global nav */}
+    return [
+      coreExtensionData.reactElement(
+        compatWrapper(
+          <Sidebar>
             <SidebarDivider />
-          </SidebarGroup>
-          <SidebarSpace />
-          <SidebarDivider />
-          <SidebarGroup
-            label="Settings"
-            icon={<UserSettingsSignInAvatar />}
-            to="/settings"
-          >
-            <Settings />
-          </SidebarGroup>
-        </Sidebar>,
+            <SidebarGroup label="Menu" icon={<MenuIcon />}>
+              {/* Global nav, not org-specific */}
+              <SidebarItem icon={HomeIcon} to="catalog" text="Home" />
+              <SidebarItem icon={ExtensionIcon} to="api-docs" text="APIs" />
+              {/* End global nav */}
+              <SidebarDivider />
+            </SidebarGroup>
+            <SidebarSpace />
+            <SidebarDivider />
+            <SidebarGroup
+              label="Settings"
+              icon={<UserSettingsSignInAvatar />}
+              to="/settings"
+            >
+              <Settings />
+            </SidebarGroup>
+          </Sidebar>,
+        ),
       ),
-    };
+    ];
   },
 });
