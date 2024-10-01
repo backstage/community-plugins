@@ -19,5 +19,5 @@ import { resourceOptimizationPlugin } from './plugin';
 /** @alpha */
 export const dynamicPluginInstaller: BackendDynamicPluginInstaller = {
   kind: 'new',
-  install: () => [resourceOptimizationPlugin()],
+  install: () => [resourceOptimizationPlugin],
 };
