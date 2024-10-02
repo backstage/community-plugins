@@ -1,5 +1,11 @@
 # @backstage-community/plugin-bazaar
 
+## 0.3.0
+
+### Minor Changes
+
+- 2873d5f: Adding Completion Capabilities
+
 ## 0.2.30
 
 ### Patch Changes
