@@ -93,7 +93,7 @@ describe('GithubIssuesCollatorFactory', () => {
       expect(collator).toBeInstanceOf(Readable);
     });
 
-    it('runs against mock tools', async () => {
+    it('indexes issues', async () => {
       fetchMock.post('https://api.github.com/graphql', () => {
         return {
           data: {
