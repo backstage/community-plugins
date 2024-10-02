@@ -38,15 +38,15 @@ const useStyles = makeStyles(
       marginBottom: '1rem',
     },
   },
-  { name: 'GithubSearchResultListItem' },
+  { name: 'GithubIssuesSearchResultListItemItem' },
 );
 
 /**
- * Props for {@link GithubSearchResultListItem}.
+ * Props for {@link GithubIssuesSearchResultListItemItem}.
  *
  * @public
  */
-export interface GithubSearchResultListItemProps {
+export interface GithubIssuesSearchResultListItemItemProps {
   icon?: ReactNode | ((result: IndexableDocument) => ReactNode);
   result?: IndexableDocument;
   highlight?: ResultHighlight;
@@ -54,8 +54,8 @@ export interface GithubSearchResultListItemProps {
 }
 
 /**  @public */
-export function GithubSearchResultListItem(
-  props: GithubSearchResultListItemProps,
+export function GithubIssuesSearchResultListItemItem(
+  props: GithubIssuesSearchResultListItemItemProps,
 ) {
   const result = props.result as any;
 
