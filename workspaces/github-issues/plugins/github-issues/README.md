@@ -56,6 +56,29 @@ const RenderGitHubIssuesCard = () => (
 );
 ```
 
+### Search integration
+
+It's also possible to enable indexing of Github Issues from your organazation by implementing the github issues [search backend module](plugins/search-backend-module-github-issues).
+
+You can then add the `GithubSearchResultListItem` to your `SearchPage.tsx` inside the `SearchResult` component
+
+### Imports:
+
+```tsx
+import { GithubSearchResultListItem } from '@backstage-community/plugin-search-github';
+import { GitHubIcon } from '@backstage/core-components';
+```
+
+### Add the component
+
+```tsx
+<SearchResult>
+  <GithubSearchResultListItem icon={<GitHubIcon />} />
+</SearchResult>
+```
+
+![alt text](image.png)
+
 ## Configuration
 
 Both `GithubIssuesPage` and `GithubIssuesCard` provide default configuration. It is ready to use out of the box.
