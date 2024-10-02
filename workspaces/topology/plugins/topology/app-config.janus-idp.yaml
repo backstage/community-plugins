@@ -1,0 +1,14 @@
+dynamicPlugins:
+  frontend:
+    janus-idp.backstage-plugin-topology:
+      mountPoints:
+        - mountPoint: entity.page.topology/cards
+          importName: TopologyPage
+          config:
+            layout:
+              gridColumn: '1 / -1'
+              height: 75vh
+            if:
+              anyOf:
+                - hasAnnotation: backstage.io/kubernetes-id
+                - hasAnnotation: backstage.io/kubernetes-namespace
