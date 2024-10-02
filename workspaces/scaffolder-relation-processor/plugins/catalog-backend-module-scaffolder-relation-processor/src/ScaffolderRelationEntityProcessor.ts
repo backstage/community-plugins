@@ -18,7 +18,7 @@ import {
   getCompoundEntityRef,
   parseEntityRef,
 } from '@backstage/catalog-model';
-import { LocationSpec } from '@backstage/plugin-catalog-common';
+import type { LocationSpec } from '@backstage/plugin-catalog-common';
 import {
   CatalogProcessor,
   CatalogProcessorEmit,
@@ -26,7 +26,7 @@ import {
 } from '@backstage/plugin-catalog-node';
 
 import { RELATION_SCAFFOLDED_FROM, RELATION_SCAFFOLDER_OF } from './relations';
-import { ScaffoldedFromSpec } from './types';
+import type { ScaffoldedFromSpec } from './types';
 
 /** @public */
 export class ScaffolderRelationEntityProcessor implements CatalogProcessor {
