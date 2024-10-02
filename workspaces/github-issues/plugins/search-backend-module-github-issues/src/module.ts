@@ -16,16 +16,41 @@
 import {
   coreServices,
   createBackendModule,
+  readSchedulerServiceTaskScheduleDefinitionFromConfig,
 } from '@backstage/backend-plugin-api';
+import { searchIndexRegistryExtensionPoint } from '@backstage/plugin-search-backend-node/alpha';
+import { GithubIssuesCollatorFactory } from './collators/GithubIssuesCollatorFactory';
 
-export const searchModuleGithubIssues = createBackendModule({
+export const searchModuleGithub = createBackendModule({
   pluginId: 'search',
   moduleId: 'github-issues',
   register(reg) {
     reg.registerInit({
-      deps: { logger: coreServices.logger },
-      async init({ logger }) {
-        logger.info('Hello World!');
+      deps: {
+        config: coreServices.rootConfig,
+        logger: coreServices.logger,
+        scheduler: coreServices.scheduler,
+        indexRegistry: searchIndexRegistryExtensionPoint,
+      },
+      async init({ logger, indexRegistry, config, scheduler }) {
+        const defaultSchedule = {
+          frequency: { minutes: 10 },
+          timeout: { minutes: 15 },
+          initialDelay: { seconds: 3 },
+        };
+
+        const schedule = config.has('search.collators.github.schedule')
+          ? readSchedulerServiceTaskScheduleDefinitionFromConfig(
+              config.getConfig('search.collators.github.schedule'),
+            )
+          : defaultSchedule;
+
+        indexRegistry.addCollator({
+          schedule: scheduler.createScheduledTaskRunner(schedule),
+          factory: GithubIssuesCollatorFactory.fromConfig(config, {
+            logger,
+          }),
+        });
       },
     });
   },
