@@ -10547,21 +10547,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@redhat-developer/red-hat-developer-hub-theme@npm:0.1.10":
-  version: 0.1.10
-  resolution: "@redhat-developer/red-hat-developer-hub-theme@npm:0.1.10"
-  peerDependencies:
-    "@backstage/theme": ^0.5.2
-    "@emotion/react": ^11.11.1
-    "@emotion/styled": ^11.11.0
-    "@material-ui/core": ^4.12.4
-    "@material-ui/icons": ^4.11.3
-    "@mui/icons-material": ^5.14.19
-    "@mui/material": ^5.14.20
-  checksum: 17f9a33b89af015c647d9c943b548a954e1a9f27a2929c10a16d4438b201f5dc31cd36e973aa0ca376aa3443d2eb97494ec6b301c1093716774596cbccca0e6d
-  languageName: node
-  linkType: hard
-
 "@redhat-developer/red-hat-developer-hub-theme@npm:0.2.0":
   version: 0.2.0
   resolution: "@redhat-developer/red-hat-developer-hub-theme@npm:0.2.0"
@@ -15126,7 +15111,7 @@ __metadata:
     "@mui/icons-material": ^5.15.16
     "@mui/material": ^5.15.16
     "@mui/styles": ^5.15.16
-    "@redhat-developer/red-hat-developer-hub-theme": 0.1.10
+    "@redhat-developer/red-hat-developer-hub-theme": 0.2.0
     "@testing-library/jest-dom": 6.4.8
     "@testing-library/react": 14.3.1
     "@types/node": 18.19.34
