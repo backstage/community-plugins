@@ -83,16 +83,17 @@ export class GithubIssuesCollatorFactory implements DocumentCollatorFactory {
     config: Config,
     options: {
       logger: LoggerService;
+      githubCredentialsProvider?: GithubCredentialsProvider;
     },
   ) {
     const integrations = ScmIntegrations.fromConfig(config);
-    const githubCredentialsProvider =
-      DefaultGithubCredentialsProvider.fromIntegrations(integrations);
 
     return new GithubIssuesCollatorFactory({
       config: config,
       logger: options.logger,
-      githubCredentialsProvider,
+      githubCredentialsProvider:
+        options.githubCredentialsProvider ||
+        DefaultGithubCredentialsProvider.fromIntegrations(integrations),
       integrations,
     });
   }

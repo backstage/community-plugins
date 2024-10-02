@@ -2562,6 +2562,8 @@ __metadata:
     "@backstage/plugin-search-common": ^1.2.14
     "@octokit/graphql": ^5.0.0
     "@octokit/graphql-schema": ^15.25.0
+    fetch-mock: ^11.1.5
+    msw: ^1.0.0
   languageName: unknown
   linkType: soft
 
@@ -8438,6 +8440,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/glob-to-regexp@npm:^0.4.4":
+  version: 0.4.4
+  resolution: "@types/glob-to-regexp@npm:0.4.4"
+  checksum: be9c924d664592a16129c825aa392365335ce455c34e1c9d3f6dd8b45371088bb5d4a45bbb576559f2b63d4f8bcf464cbd5baafb08cdf89b71d3b6a79356b747
+  languageName: node
+  linkType: hard
+
 "@types/graceful-fs@npm:^4.1.3":
   version: 4.1.5
   resolution: "@types/graceful-fs@npm:4.1.5"
@@ -14261,6 +14270,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fetch-mock@npm:^11.1.5":
+  version: 11.1.5
+  resolution: "fetch-mock@npm:11.1.5"
+  dependencies:
+    "@types/glob-to-regexp": ^0.4.4
+    dequal: ^2.0.3
+    glob-to-regexp: ^0.4.1
+    is-subset: ^0.1.1
+    regexparam: ^3.0.0
+  peerDependenciesMeta:
+    node-fetch:
+      optional: true
+  checksum: 3561c82ee6fe3125eb644ad757cb65ef6372642a4843e42c90a60751765908c608cfc9d56356e1105352f83271fd607f220916de0e57ebaebc03fbd5f0d9e8f9
+  languageName: node
+  linkType: hard
+
 "figures@npm:^3.0.0":
   version: 3.2.0
   resolution: "figures@npm:3.2.0"
@@ -16401,6 +16426,13 @@ __metadata:
   dependencies:
     better-path-resolve: 1.0.0
   checksum: 31029a383972bff4cc4f1bd1463fd04dde017e0a04ae3a6f6e08124a90c6c4656312d593101b0f38805fa3f3c8f6bc4583524bbf72c50784fa5ca0d3e5a76279
+  languageName: node
+  linkType: hard
+
+"is-subset@npm:^0.1.1":
+  version: 0.1.1
+  resolution: "is-subset@npm:0.1.1"
+  checksum: 97b8d7852af165269b7495095691a6ce6cf20bdfa1f846f97b4560ee190069686107af4e277fbd93aa0845c4d5db704391460ff6e9014aeb73264ba87893df44
   languageName: node
   linkType: hard
 
@@ -22148,6 +22180,13 @@ __metadata:
     es-errors: ^1.3.0
     set-function-name: ^2.0.1
   checksum: d7f333667d5c564e2d7a97c56c3075d64c722c9bb51b2b4df6822b2e8096d623a5e63088fb4c83df919b6951ef8113841de8b47de7224872fa6838bc5d8a7d64
+  languageName: node
+  linkType: hard
+
+"regexparam@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "regexparam@npm:3.0.0"
+  checksum: c8649af1538ccc12b5c5d250525f61bd370227dce41f4fb908433a9651e18b7be21dd8f8518c322dd9ebd75f7caaaea4921e374c39a469c11d4f9d0c738043e0
   languageName: node
   linkType: hard
 
