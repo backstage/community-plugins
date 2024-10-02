@@ -88,6 +88,10 @@ export interface Config {
          */
         caCert?: string;
       };
+      /**
+       * Integrate to the Backstage notifications service
+       */
+      notifications?: boolean;
     };
   };
 }
