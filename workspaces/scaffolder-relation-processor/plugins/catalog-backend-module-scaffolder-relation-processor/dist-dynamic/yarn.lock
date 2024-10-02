@@ -8,11 +8,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-catalog-backend-module-scaffolder-relation-processor-dynamic@workspace:."
   peerDependencies:
-    "@backstage/backend-common": ^0.21.6
-    "@backstage/backend-dynamic-feature-service": ^0.2.8
-    "@backstage/backend-plugin-api": ^0.6.16
-    "@backstage/catalog-model": ^1.4.5
-    "@backstage/plugin-catalog-common": ^1.0.22
-    "@backstage/plugin-catalog-node": ^1.11.1
+    "@backstage/backend-plugin-api": ^1.0.0
+    "@backstage/catalog-model": ^1.7.0
+    "@backstage/plugin-catalog-node": ^1.13.0
   languageName: unknown
   linkType: soft
