@@ -51,6 +51,7 @@
     "@backstage/catalog-client": "^1.7.0",
     "@backstage/catalog-model": "^1.7.0",
     "@backstage/config": "^1.2.0",
+    "@backstage/plugin-notifications-node": "^0.2.6",
     "@types/express": "*",
     "axios": "^1.6.4",
     "express": "^4.17.1",
