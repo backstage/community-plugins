@@ -4979,14 +4979,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@janus-idp/backstage-plugin-topology-common@npm:1.4.0":
-  version: 1.4.0
-  resolution: "@janus-idp/backstage-plugin-topology-common@npm:1.4.0"
+"@janus-idp/backstage-plugin-topology-common@1.4.0, @janus-idp/backstage-plugin-topology-common@workspace:plugins/topology-common":
+  version: 0.0.0-use.local
+  resolution: "@janus-idp/backstage-plugin-topology-common@workspace:plugins/topology-common"
   dependencies:
+    "@backstage/cli": 0.26.11
     "@backstage/plugin-permission-common": ^0.8.0
-  checksum: f12881a58177498f5c9edcc6ed4b343ec87168a7a054a82523446226dbf993cc1411d3170b7eadbe3f581875ddf1179eab3fcb49f4990e1bb236987ac6cada77
-  languageName: node
-  linkType: hard
+  languageName: unknown
+  linkType: soft
 
 "@janus-idp/backstage-plugin-topology@workspace:plugins/topology":
   version: 0.0.0-use.local
