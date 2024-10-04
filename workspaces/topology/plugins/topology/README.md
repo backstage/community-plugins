@@ -343,14 +343,14 @@ For more information about the labels and annotations, see [Guidelines for label
 1. Install the Topology plugin using the following command:
 
    ```console
-   yarn workspace app add @janus-idp/backstage-plugin-topology
+   yarn workspace app add @backstage-community/plugin-topology
    ```
 
 2. Enable **TOPOLOGY** tab in `packages/app/src/components/catalog/EntityPage.tsx`:
 
    ```tsx title="packages/app/src/components/catalog/EntityPage.tsx"
    /* highlight-add-next-line */
-   import { TopologyPage } from '@janus-idp/backstage-plugin-topology';
+   import { TopologyPage } from '@backstage-community/plugin-topology';
 
    const serviceEntityPage = (
      <EntityLayout>

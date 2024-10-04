@@ -1,5 +1,5 @@
 {
-  "name": "@janus-idp/backstage-plugin-topology-common",
+  "name": "@backstage-community/plugin-topology-common",
   "description": "Common functionalities for the topology plugin",
   "version": "1.4.0",
   "main": "src/index.ts",
@@ -16,8 +16,8 @@
     "supported-versions": "1.28.4",
     "pluginId": "topology",
     "pluginPackages": [
-      "@janus-idp/backstage-plugin-topology",
-      "@janus-idp/backstage-plugin-topology-common"
+      "@backstage-community/plugin-topology",
+      "@backstage-community/plugin-topology-common"
     ]
   },
   "sideEffects": false,

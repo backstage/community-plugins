@@ -61,7 +61,7 @@ rules:
       - get
       - watch
       - list
-  # Additional permissions for the @janus-idp/backstage-plugin-topology
+  # Additional permissions for the @backstage-community/plugin-topology
   - apiGroups:
       - tekton.dev
     resources:

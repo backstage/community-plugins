@@ -42,7 +42,7 @@ import './TopologyToolbar.css';
 
 import { usePermission } from '@backstage/plugin-permission-react';
 
-import { topologyViewPermission } from '@janus-idp/backstage-plugin-topology-common';
+import { topologyViewPermission } from '@backstage-community/plugin-topology-common';
 
 type TopologyViewWorkloadComponentProps = {
   useToolbar?: boolean;
