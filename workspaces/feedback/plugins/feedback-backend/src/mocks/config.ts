@@ -41,6 +41,7 @@ export const mockConfig = {
           token: '###',
         },
       ],
+      notifications: true,
     },
   },
 };
