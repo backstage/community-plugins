@@ -96,3 +96,34 @@ By default, this implementation comes with an in-memory storage to store checks.
  }),
 
 ```
+
+## Adding Custom Operator(s)
+
+This allows running cutom operator(s) via extension point. Below is an example of how to add in custom operators:
+
+```typescript
+import { createBackendModule } from '@backstage/backend-plugin-api';
+import { techInsightsOperatorsExtensionPoint } from '@backstage-community/backstage-plugin-tech-insights-backend-module-jsonfc';
+import {
+  customOperator1,
+  customOperator2,
+  customOperator3,
+} from './customOperators';
+
+export const techInsightsModuleSemverOperator = createBackendModule({
+  pluginId: 'tech-insights',
+  moduleId: 'custom-operator',
+  register(reg) {
+    reg.registerInit({
+      deps: { techInsightsOperators: techInsightsOperatorsExtensionPoint },
+      async init({ techInsightsOperators }) {
+        techInsightsOperators.addOperators(
+          customOperator1,
+          customOperator2,
+          customOperator3,
+        );
+      },
+    });
+  },
+});
+```
