@@ -28,6 +28,7 @@ import AccordionSummary from '@material-ui/core/AccordionSummary';
 import { useApi } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
 import { techInsightsApiRef } from '../../api';
+import { MarkdownContent } from '@backstage/core-components';
 
 const useStyles = makeStyles(theme => ({
   subheader: {
@@ -76,7 +77,7 @@ const infoCard = (
                 variant="body1"
                 gutterBottom
               >
-                {description}
+                <MarkdownContent content={description} />
               </Typography>
             </Grid>
           )}
