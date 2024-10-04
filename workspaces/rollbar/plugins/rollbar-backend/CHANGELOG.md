@@ -1,5 +1,17 @@
 # @backstage-community/plugin-rollbar-backend
 
+## 0.1.68
+
+### Patch Changes
+
+- d52fc2d: Backstage version bump to v1.31.2
+
+## 0.1.67
+
+### Patch Changes
+
+- b8152b4: Added support for the New Backend System
+
 ## 0.1.66
 
 ### Patch Changes

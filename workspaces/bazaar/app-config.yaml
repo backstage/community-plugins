@@ -1,0 +1,6 @@
+app:
+  title: Backstage
+  baseUrl: http://localhost:7007
+
+backend:
+  baseUrl: http://localhost:7007

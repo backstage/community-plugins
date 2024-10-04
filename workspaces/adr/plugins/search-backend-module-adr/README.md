@@ -27,24 +27,6 @@ backend.start();
 
 You may also want to add configuration parameters to your app-config, for example for controlling the scheduled indexing interval. These parameters should be placed under the `search.collators.adr` key. See [the config definition file](https://github.com/backstage/backstage/blob/master/plugins/search-backend-module-adr/config.d.ts) for more details.
 
-## Using Auth Middleware
-
-If your Backstage instance uses service-to-service authentication, the collator will need to have access to a `tokenManager`. This is automatically injected by the collator module when using the new backend system. But if you are using the old backend system, you will want to add it manually to ensure that the collator makes authenticated requests to the explore backend.
-
-```tsx
-indexBuilder.addCollator({
-  schedule,
-  factory: DefaultAdrCollatorFactory.fromConfig({
-    cache: env.cache,
-    config: env.config,
-    discovery: env.discovery,
-    logger: env.logger,
-    reader: env.reader,
-    tokenManager: env.tokenManager,
-  }),
-});
-```
-
 ## Parsing custom ADR document formats
 
 By default, the `DefaultAdrCollatorFactory` will parse and index documents that follow [MADR v3.0.0](https://github.com/adr/madr/tree/3.0.0) and [MADR v2.x](https://github.com/adr/madr/tree/2.1.2) standard file name and template format. If you use a different ADR format and file name convention, you can configure `DefaultAdrCollatorFactory` with custom `adrFilePathFilterFn` and `parser` options (see type definitions for details):

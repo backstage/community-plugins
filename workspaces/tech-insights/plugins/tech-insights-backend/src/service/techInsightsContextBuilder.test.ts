@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import { buildTechInsightsContext } from './techInsightsContextBuilder';
-import { ServerTokenManager } from '@backstage/backend-common';
-import { DatabaseManager } from '@backstage/backend-defaults/database';
 import { ConfigReader } from '@backstage/config';
 import { DefaultSchedulerService } from '@backstage/backend-defaults/scheduler';
 import { DefaultFactRetrieverRegistry } from './fact/FactRetrieverRegistry';
@@ -34,7 +33,7 @@ jest.mock('./fact/FactRetrieverEngine', () => ({
 
 describe('buildTechInsightsContext', () => {
   const logger = mockServices.logger.mock();
-  const pluginDatabase: DatabaseService = {
+  const database: DatabaseService = {
     getClient: () => {
       return Promise.resolve({
         migrate: {
@@ -43,11 +42,6 @@ describe('buildTechInsightsContext', () => {
       }) as unknown as Promise<Knex>;
     },
   };
-  const databaseManager: Partial<DatabaseManager> = {
-    forPlugin: () => pluginDatabase,
-  };
-  const manager = databaseManager as DatabaseManager;
-  const database = manager.forPlugin('tech-insights');
   const discoveryMock = {
     getBaseUrl: (_: string) => Promise.resolve('http://mock.url'),
     getExternalBaseUrl: (_: string) => Promise.resolve('http://mock.url'),
@@ -60,13 +54,13 @@ describe('buildTechInsightsContext', () => {
 
   it('constructs the default FactRetrieverRegistry if factRetrievers but no factRetrieverRegistry are passed', () => {
     buildTechInsightsContext({
-      database: pluginDatabase,
+      database,
       logger,
       factRetrievers: [],
-      scheduler: scheduler,
+      scheduler,
       config: ConfigReader.fromConfigs([]),
       discovery: discoveryMock,
-      tokenManager: ServerTokenManager.noop(),
+      auth: mockServices.auth(),
     });
     expect(DefaultFactRetrieverRegistry).toHaveBeenCalledTimes(1);
   });
@@ -75,14 +69,14 @@ describe('buildTechInsightsContext', () => {
     const factRetrieverRegistryMock = {} as DefaultFactRetrieverRegistry;
 
     buildTechInsightsContext({
-      database: pluginDatabase,
+      database,
       logger,
       factRetrievers: [],
       factRetrieverRegistry: factRetrieverRegistryMock,
-      scheduler: scheduler,
+      scheduler,
       config: ConfigReader.fromConfigs([]),
       discovery: discoveryMock,
-      tokenManager: ServerTokenManager.noop(),
+      auth: mockServices.auth(),
     });
     expect(DefaultFactRetrieverRegistry).not.toHaveBeenCalled();
   });

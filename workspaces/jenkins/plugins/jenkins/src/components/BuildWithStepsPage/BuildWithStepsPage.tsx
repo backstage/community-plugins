@@ -55,7 +55,7 @@ const BuildWithStepsView = () => {
     <div className={classes.root}>
       <Breadcrumbs aria-label="breadcrumb">
         {/* TODO: don't hardcode this link */}
-        <Link to="../../..">Projects</Link>
+        <Link to="..">Projects</Link>
         <Typography>Run</Typography>
       </Breadcrumbs>
       <Box m={2} />

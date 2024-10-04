@@ -64,6 +64,7 @@ export const ScorecardsCard = (props: {
     <ScorecardInfo
       title={title}
       description={description}
+      entity={entity}
       checkResults={filteredValue}
       noWarning={onlyFailed}
       expanded={expanded}

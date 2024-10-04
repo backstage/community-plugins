@@ -125,3 +125,15 @@ metadata:
     # (optional) if host is not added in annotaions, first entry from app-config will be used
     reportportal.io/host: <your-report-portal-host>
 ```
+
+## Acknowledgments
+
+This project wouldn't have been possible without the help of the following contributors:
+
+- Swapnil Jadhav
+- Nancy Jain
+- Shiwani Tummulwar
+- Suriya Prakash
+- Veerkumar Patil
+
+Thank you for your invaluable contributions!

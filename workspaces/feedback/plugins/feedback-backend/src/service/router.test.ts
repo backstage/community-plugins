@@ -1,3 +1,18 @@
+/*
+ * Copyright 2024 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import { getRootLogger, HostDiscovery } from '@backstage/backend-common';
 import {
   AuthService,
@@ -20,6 +35,7 @@ import {
   mockUser,
 } from '../mocks';
 import { createRouter } from './router';
+import { NotificationService } from '@backstage/plugin-notifications-node';
 
 const handlers = [
   rest.get(
@@ -71,6 +87,9 @@ describe('Router', () => {
   mswMockServer.listen({ onUnhandledRequest: 'bypass' });
   const config: Config = new ConfigReader(mockConfig);
   const discovery: DiscoveryService = HostDiscovery.fromConfig(config);
+  const notificationsMock: jest.Mocked<NotificationService> = {
+    send: jest.fn(),
+  };
   const logger: LoggerService = getRootLogger().child({
     service: 'feedback-backend',
   });
@@ -83,6 +102,7 @@ describe('Router', () => {
       config: config,
       discovery: discovery,
       auth: auth,
+      notifications: notificationsMock,
     });
     app = express().use(router);
   });
@@ -153,6 +173,19 @@ describe('Router', () => {
       expect(response.body.message).toEqual('Issue created successfully');
       expect(response.body.data.feedbackId).toEqual(mockFeedback.feedbackId);
       expect(response.statusCode).toEqual(201);
+      expect(notificationsMock.send).toHaveBeenCalledWith({
+        payload: {
+          description: 'Unit Test Issue',
+          link: 'http://localhost:3000/catalog/default/Component/example-website/feedback',
+          severity: 'normal',
+          title: 'New issue for Example App',
+          topic: 'feedback-component:default/example-website',
+        },
+        recipients: {
+          entityRef: 'component:default/example-website',
+          type: 'entity',
+        },
+      });
     });
   });
 

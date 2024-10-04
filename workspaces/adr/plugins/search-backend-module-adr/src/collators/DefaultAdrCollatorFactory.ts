@@ -15,7 +15,6 @@
  */
 
 import { Readable } from 'stream';
-import { createLegacyAuthAdapters } from '@backstage/backend-common';
 import {
   CATALOG_FILTER_EXISTS,
   CatalogApi,
@@ -46,7 +45,6 @@ import {
   DiscoveryService,
   LoggerService,
   RootConfigService,
-  TokenManagerService,
   UrlReaderService,
 } from '@backstage/backend-plugin-api';
 
@@ -89,13 +87,9 @@ export type AdrCollatorFactoryOptions = {
    */
   reader: UrlReaderService;
   /**
-   * Token Manager
-   */
-  tokenManager?: TokenManagerService;
-  /**
    * Auth Service
    */
-  auth?: AuthService;
+  auth: AuthService;
 };
 
 /**
@@ -125,7 +119,7 @@ export class DefaultAdrCollatorFactory implements DocumentCollatorFactory {
     this.reader = options.reader;
     this.scmIntegrations = ScmIntegrations.fromConfig(options.config);
 
-    this.auth = createLegacyAuthAdapters(options).auth;
+    this.auth = options.auth;
   }
 
   static fromConfig(options: AdrCollatorFactoryOptions) {

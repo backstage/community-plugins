@@ -16,10 +16,10 @@
 
 import React from 'react';
 import {
-  createApiExtension,
+  ApiBlueprint,
   createApiFactory,
-  createPageExtension,
-  createPlugin,
+  PageBlueprint,
+  createFrontendPlugin,
   discoveryApiRef,
   fetchApiRef,
 } from '@backstage/frontend-plugin-api';
@@ -29,79 +29,92 @@ import {
   convertLegacyRouteRef,
 } from '@backstage/core-compat-api';
 import {
-  createEntityCardExtension,
-  createEntityContentExtension,
+  EntityCardBlueprint,
+  EntityContentBlueprint,
 } from '@backstage/plugin-catalog-react/alpha';
 import { azurePullRequestDashboardRouteRef } from '../routes';
 
 /** @alpha */
-export const azureDevOpsApi = createApiExtension({
-  factory: createApiFactory({
-    api: azureDevOpsApiRef,
-    deps: {
-      discoveryApi: discoveryApiRef,
-      fetchApi: fetchApiRef,
-    },
-    factory: ({ discoveryApi, fetchApi }) =>
-      new AzureDevOpsClient({ discoveryApi, fetchApi }),
-  }),
+export const azureDevOpsApi = ApiBlueprint.make({
+  params: {
+    factory: createApiFactory({
+      api: azureDevOpsApiRef,
+      deps: {
+        discoveryApi: discoveryApiRef,
+        fetchApi: fetchApiRef,
+      },
+      factory: ({ discoveryApi, fetchApi }) =>
+        new AzureDevOpsClient({ discoveryApi, fetchApi }),
+    }),
+  },
 });
 
 /** @alpha */
-export const azureDevOpsPullRequestPage = createPageExtension({
-  defaultPath: '/azure-pull-requests',
-  routeRef: convertLegacyRouteRef(azurePullRequestDashboardRouteRef),
-  loader: () =>
-    import('../components/PullRequestsPage').then(m =>
-      compatWrapper(<m.PullRequestsPage />),
-    ),
-});
-
-/** @alpha */
-export const azureDevOpsPipelinesEntityContent = createEntityContentExtension({
-  name: 'pipelines',
-  defaultPath: '/pipelines',
-  defaultTitle: 'Pipelines',
-  loader: () =>
-    import('../components/EntityPageAzurePipelines').then(m =>
-      compatWrapper(<m.EntityPageAzurePipelines />),
-    ),
-});
-
-/** @alpha */
-export const azureDevOpsGitTagsEntityContent = createEntityContentExtension({
-  name: 'git-tags',
-  defaultPath: '/git-tags',
-  defaultTitle: 'Git Tags',
-  loader: () =>
-    import('../components/EntityPageAzureGitTags').then(m =>
-      compatWrapper(<m.EntityPageAzureGitTags />),
-    ),
-});
-
-/** @alpha */
-export const azureDevOpsPullRequestsEntityContent =
-  createEntityContentExtension({
-    name: 'pull-requests',
-    defaultPath: '/pull-requests',
-    defaultTitle: 'Pull Requests',
+export const azureDevOpsPullRequestPage = PageBlueprint.make({
+  params: {
+    defaultPath: '/azure-pull-requests',
+    routeRef: convertLegacyRouteRef(azurePullRequestDashboardRouteRef),
     loader: () =>
-      import('../components/EntityPageAzurePullRequests').then(m =>
-        compatWrapper(<m.EntityPageAzurePullRequests />),
+      import('../components/PullRequestsPage').then(m =>
+        compatWrapper(<m.PullRequestsPage />),
       ),
-  });
-
-/** @alpha */
-export const azureDevOpsReadmeEntityCard = createEntityCardExtension({
-  name: 'readme',
-  loader: async () =>
-    import('../components/ReadmeCard').then(m =>
-      compatWrapper(<m.ReadmeCard />),
-    ),
+  },
 });
 
 /** @alpha */
-export default createPlugin({
+export const azureDevOpsPipelinesEntityContent = EntityContentBlueprint.make({
+  name: 'pipelines',
+  params: {
+    defaultPath: '/pipelines',
+    defaultTitle: 'Pipelines',
+    loader: () =>
+      import('../components/EntityPageAzurePipelines').then(m =>
+        compatWrapper(<m.EntityPageAzurePipelines />),
+      ),
+  },
+});
+
+/** @alpha */
+export const azureDevOpsGitTagsEntityContent = EntityContentBlueprint.make({
+  name: 'git-tags',
+  params: {
+    defaultPath: '/git-tags',
+    defaultTitle: 'Git Tags',
+    loader: () =>
+      import('../components/EntityPageAzureGitTags').then(m =>
+        compatWrapper(<m.EntityPageAzureGitTags />),
+      ),
+  },
+});
+
+/** @alpha */
+export const azureDevOpsPullRequestsEntityContent = EntityContentBlueprint.make(
+  {
+    name: 'pull-requests',
+    params: {
+      defaultPath: '/pull-requests',
+      defaultTitle: 'Pull Requests',
+      loader: () =>
+        import('../components/EntityPageAzurePullRequests').then(m =>
+          compatWrapper(<m.EntityPageAzurePullRequests />),
+        ),
+    },
+  },
+);
+
+/** @alpha */
+export const azureDevOpsReadmeEntityCard = EntityCardBlueprint.make({
+  name: 'readme',
+  params: {
+    loader: async () =>
+      import('../components/ReadmeCard').then(m =>
+        compatWrapper(<m.ReadmeCard />),
+      ),
+  },
+});
+
+/** @alpha */
+export default createFrontendPlugin({
   id: 'azure-devops',
   extensions: [
     azureDevOpsApi,

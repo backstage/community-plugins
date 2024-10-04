@@ -14,6 +14,8 @@ It is only meant for local development, and the setup for it can be found inside
 
 #### Prerequisites
 
+### ArgoCD backend
+
 - Install `@roadiehq/backstage-plugin-argo-cd-backend` plugin using the following command from the root directory
 <!-- configure it by following [Argo CD Backend Plugin docs](https://www.npmjs.com/package/@roadiehq/backstage-plugin-argo-cd-backend) -->
 
@@ -66,7 +68,106 @@ argocd:
           password: ${ARGOCD_PASSWORD}
 ```
 
-#### How to add argocd frontend plugin to Backstage app
+### [Optional] Enable Argo Rollouts feature
+
+- Install the kubernetes backend plugin `@backstage/plugin-kubernetes-backend` and configure it by following the [installation](https://backstage.io/docs/features/kubernetes/installation/) and [configuration](https://backstage.io/docs/features/kubernetes/configuration/) guides.
+
+- The following customResources component is added under the kubernetes configuration in the app-config.yaml file:
+
+```
+ kubernetes:
+   ...
+   customResources:
+      - group: 'argoproj.io'
+        apiVersion: 'v1alpha1'
+        plural: 'rollouts'
+      - group: 'argoproj.io'
+        apiVersion: 'v1alpha1'
+        plural: 'analysisruns'
+```
+
+- The [ClusterRole](https://backstage.io/docs/features/kubernetes/configuration/#role-based-access-control) must be granted for custom resources (Rollouts and AnalysisRuns) to ServiceAccount accessing the cluster.
+
+- If you have the Backstage Kubernetes Plugin configured, then the ClusterRole is already granted.
+
+You can use the following code to grant the ClusterRole for custom resources:
+
+```
+  apiVersion: rbac.authorization.k8s.io/v1
+  kind: ClusterRole
+  metadata:
+    name: backstage-read-only
+  rules:
+   - apiGroups:
+      - argoproj.io
+    resources:
+      - rollouts
+      - analysisruns
+    verbs:
+      - get
+      - list
+```
+
+> Tip: You can use the [prepared manifest for a read-only ClusterRole](https://raw.githubusercontent.com/backstage/community-plugins/main/workspaces/redhat-argocd/plugins/argocd/manifests/clusterrole.yaml), which provides access for both Kubernetes plugin and Argocd plugin.
+
+##### Annotations
+
+- The following annotation is added to the entity's `catalog-info.yaml` file to identify whether an entity contains the Kubernetes resources:
+
+  ```yaml
+  annotations:
+    ...
+
+    backstage.io/kubernetes-id: <BACKSTAGE_ENTITY_NAME>
+  ```
+
+  You can also add the `backstage.io/kubernetes-namespace` annotation to identify the Kubernetes resources using the defined namespace.
+
+  ```yaml
+  annotations:
+    ...
+
+    backstage.io/kubernetes-namespace: <RESOURCE_NS>
+  ```
+
+- A custom label selector can be added, which Backstage uses to find the Kubernetes resources. The label selector takes precedence over the ID annotations.
+
+  ```yaml
+  annotations:
+    ...
+
+    backstage.io/kubernetes-label-selector: 'app=my-app,component=front-end'
+  ```
+
+##### Labels
+
+- The following label is added to the resources so that the Kubernetes plugin gets the Kubernetes resources from the requested entity:
+
+  ```yaml
+  labels:
+    ...
+
+    backstage.io/kubernetes-id: <BACKSTAGE_ENTITY_NAME>`
+  ```
+
+- To Map the Argo rollous to a particular gitops Application, the following label is added to the rollout resources:
+
+  ```yaml
+  labels:
+    ...
+
+    app.kubernetes.io/instance: <GITOPS_APPLCATION_NAME>`
+  ```
+
+  ***
+
+  **NOTE**
+
+  When using the label selector, the mentioned labels must be present on the resource.
+
+  ***
+
+## How to add argocd frontend plugin to Backstage app
 
 1. Install the Argocd plugin using the following command:
 

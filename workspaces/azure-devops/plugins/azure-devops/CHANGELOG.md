@@ -1,5 +1,31 @@
 # @backstage-community/plugin-azure-devops
 
+## 0.6.0
+
+### Minor Changes
+
+- 904a6a2: Fixed a link to azure-devops-backend plugin in Readme.
+
+## 0.5.1
+
+### Patch Changes
+
+- 2dd98b6: Backstage version bump to v1.31.1
+- Updated dependencies [2dd98b6]
+  - @backstage-community/plugin-azure-devops-common@0.4.8
+
+## 0.5.0
+
+### Minor Changes
+
+- c6f00d3: **BREAKING** This change removes the deprecated `AzureDevOpsAnnotatorProcessor` from `@backstage-community/plugin-azure-devops-backend`. It also removes the export of `AzureDevOpsAnnotatorProcessor` from `@backstage-community/plugin-catalog-backend-module-azure-devops-annotator-processor`. Please install this processor using [the New Backend System setup](https://github.com/backstage/community-plugins/tree/main/workspaces/azure-devops/plugins/catalog-backend-module-azure-devops-annotator-processor#setup), which is now the default.
+
+## 0.4.10
+
+### Patch Changes
+
+- 45fd620: use new FE system syntax (replacing deprecated methods)
+
 ## 0.4.9
 
 ### Patch Changes

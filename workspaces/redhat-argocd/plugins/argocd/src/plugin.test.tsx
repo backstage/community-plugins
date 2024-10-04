@@ -1,3 +1,18 @@
+/*
+ * Copyright 2024 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 
@@ -15,6 +30,7 @@ import { screen, waitFor } from '@testing-library/react';
 
 import { mockApplication, mockEntity, mockRevision } from '../dev/__data__';
 import { argoCDApiRef } from './api';
+import { kubernetesApiRef } from './kubeApi';
 import {
   ArgocdDeploymentLifecycle,
   ArgocdDeploymentSummary,
@@ -22,6 +38,13 @@ import {
 } from './plugin';
 import { rootRouteRef } from './routes';
 
+jest.mock('./components/DeploymentLifeCycle/DeploymentLifecycle', () => () => (
+  <>Deployment lifecycle</>
+));
+
+jest.mock('./components/DeploymentSummary/DeploymentSummary', () => () => (
+  <>Deployment summary</>
+));
 describe('argocd', () => {
   const mockedApi: any = {
     listApps: async () => {
@@ -32,6 +55,14 @@ describe('argocd', () => {
     },
     getRevisionDetailsList: async () => {
       return [mockRevision];
+    },
+  };
+  const mockKubernetesApi: any = {
+    decorateRequestBodyForAuth: () => {
+      return () => {};
+    },
+    getCredentials: () => {
+      return '';
     },
   };
 
@@ -55,6 +86,7 @@ describe('argocd', () => {
           [argoCDApiRef, mockedApi],
           [configApiRef, mockConfiguration],
           [permissionApiRef, mockPermissionApi],
+          [kubernetesApiRef, mockKubernetesApi],
         ]}
       >
         <EntityProvider entity={mockEntity}>{children}</EntityProvider>
@@ -63,10 +95,10 @@ describe('argocd', () => {
   };
 
   it('should export plugin', () => {
-    // const app = createDevApp().registerPlugin(argocdPlugin).build();
-
-    const [argoApi] = argocdPlugin.getApis();
+    const [argoApi, kubeAuthApi, kubeApi] = argocdPlugin.getApis();
     expect(argocdPlugin).toBeDefined();
+    expect(kubeAuthApi).toBeDefined();
+    expect(kubeApi).toBeDefined();
 
     expect(
       argoApi.factory({
@@ -74,9 +106,28 @@ describe('argocd', () => {
         configApi: mockConfiguration,
       }),
     ).toBeDefined();
+
+    expect(
+      kubeAuthApi.factory({
+        gitlabAuthApi: {},
+        googleAuthApi: {},
+        microsoftAuthApi: {},
+        oktaAuthApi: {},
+        oneloginAuthApi: {},
+      }),
+    ).toBeDefined();
+
+    expect(
+      kubeApi.factory({
+        discoveryApi: {},
+        fetchApi: {},
+        kubernetesAuthApi: {},
+      }),
+    ).toBeDefined();
   });
 
   it('should render the deployment lifecycle extension', async () => {
+    jest.useRealTimers();
     await renderInTestApp(
       <Wrapper>
         <Routes>

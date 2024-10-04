@@ -1,3 +1,18 @@
+/*
+ * Copyright 2024 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import * as React from 'react';
 
 import { Progress, ResponseErrorPanel } from '@backstage/core-components';
@@ -10,7 +25,7 @@ import { argoCDApiRef } from '../../api';
 import { useApplications } from '../../hooks/useApplications';
 import { useArgocdConfig } from '../../hooks/useArgocdConfig';
 import { useArgocdViewPermission } from '../../hooks/useArgocdViewPermission';
-import { Application, Revision } from '../../types';
+import { Application, RevisionInfo } from '../../types/application';
 import {
   getArgoCdAppConfig,
   getInstanceName,
@@ -19,6 +34,8 @@ import {
 import PermissionAlert from '../Common/PermissionAlert';
 import DeploymentLifecycleCard from './DeploymentLifecycleCard';
 import DeploymentLifecycleDrawer from './DeploymentLifecycleDrawer';
+import { ArgoResourcesProvider } from './sidebar/rollouts/RolloutContext';
+import { DrawerProvider } from './DrawerContext';
 
 const useDrawerStyles = makeStyles<Theme>(theme =>
   createStyles({
@@ -63,9 +80,9 @@ const DeploymentLifecycle = () => {
   const [open, setOpen] = React.useState(false);
   const [activeItem, setActiveItem] = React.useState<string>();
   const [, setRevisions] = React.useState<{
-    [key: string]: Revision;
+    [key: string]: RevisionInfo;
   }>();
-  const revisionCache = React.useRef<{ [key: string]: Revision }>({});
+  const revisionCache = React.useRef<{ [key: string]: RevisionInfo }>({});
 
   const uniqRevisions: string[] = React.useMemo(
     () => getUniqueRevisions(apps),
@@ -138,13 +155,17 @@ const DeploymentLifecycle = () => {
           />
         ))}
       </div>
-
-      <DeploymentLifecycleDrawer
-        app={activeApp}
-        isOpen={open}
-        onClose={() => setOpen(false)}
+      <DrawerProvider
+        application={activeApp as Application}
         revisionsMap={revisionCache.current}
-      />
+      >
+        <ArgoResourcesProvider application={activeApp}>
+          <DeploymentLifecycleDrawer
+            isOpen={open}
+            onClose={() => setOpen(false)}
+          />
+        </ArgoResourcesProvider>
+      </DrawerProvider>
     </>
   );
 };

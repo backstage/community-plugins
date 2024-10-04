@@ -1,8 +1,23 @@
+/*
+ * Copyright 2024 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import { createApiRef, IdentityApi } from '@backstage/core-plugin-api';
 
-import { Application, Revision } from '../types';
+import { Application, RevisionInfo } from '../types/application';
 
-export type ArgoCDAppDeployRevisionDetails = Revision;
+export type ArgoCDAppDeployRevisionDetails = RevisionInfo;
 
 export type listAppsOptions = {
   url: string;
@@ -156,7 +171,7 @@ export class ArgoCDApiClient implements ArgoCDApi {
     revisionIDs: string[];
     instanceName: string;
     apps: Application[];
-  }): Promise<Revision[]> {
+  }): Promise<RevisionInfo[]> {
     if (!options.revisionIDs || options.revisionIDs.length < 1) {
       return Promise.resolve([]);
     }

@@ -22,7 +22,7 @@ export type Member = {
   userRef?: string;
 };
 
-export type Status = 'ongoing' | 'proposed';
+export type Status = 'ongoing' | 'proposed' | 'completed';
 
 export type Size = 'small' | 'medium' | 'large';
 

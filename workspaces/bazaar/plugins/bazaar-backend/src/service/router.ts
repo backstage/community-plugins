@@ -14,27 +14,29 @@
  * limitations under the License.
  */
 
-import { errorHandler, PluginDatabaseManager } from '@backstage/backend-common';
 import express from 'express';
 import Router from 'express-promise-router';
-import { Config } from '@backstage/config';
-import { IdentityApi } from '@backstage/plugin-auth-node';
 import { DatabaseHandler } from './DatabaseHandler';
-import { LoggerService } from '@backstage/backend-plugin-api';
+import {
+  AuthService,
+  DatabaseService,
+  HttpAuthService,
+  LoggerService,
+} from '@backstage/backend-plugin-api';
 
 /** @public */
 export interface RouterOptions {
   logger: LoggerService;
-  database: PluginDatabaseManager;
-  config: Config;
-  identity: IdentityApi;
+  database: DatabaseService;
+  auth: AuthService;
+  httpAuth: HttpAuthService;
 }
 
 /** @public */
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
-  const { logger, database, identity } = options;
+  const { logger, database, auth, httpAuth } = options;
 
   const dbHandler = await DatabaseHandler.create({ database });
 
@@ -55,12 +57,16 @@ export async function createRouter(
 
   router.put('/projects/:id/member/:userId', async (request, response) => {
     const { id, userId } = request.params;
-    const user = await identity.getIdentity({ request: request });
+    const credentials = await httpAuth.credentials(request, {
+      allow: ['user', 'none'],
+    });
 
     await dbHandler.addMember(
       parseInt(id, 10),
       userId,
-      user?.identity.userEntityRef,
+      auth.isPrincipal(credentials, 'user')
+        ? credentials.principal.userEntityRef
+        : undefined,
       request.body?.picture,
     );
 
@@ -133,6 +139,5 @@ export async function createRouter(
     }
   });
 
-  router.use(errorHandler());
   return router;
 }

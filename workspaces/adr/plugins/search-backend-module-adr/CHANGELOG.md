@@ -1,5 +1,23 @@
 # @backstage-community/search-backend-module-adr
 
+## 0.2.0
+
+### Minor Changes
+
+- 5b56188: **BREAKING** Removed `TokenManager` as it has been removed from the upstream Backstage packages. `AuthService` is also now required. Please use the new backend system.
+
+### Patch Changes
+
+- 5b56188: Backstage version bump to v1.31.1
+- Updated dependencies [5b56188]
+  - @backstage-community/plugin-adr-common@0.2.29
+
+## 0.1.4
+
+### Patch Changes
+
+- f43e557: Made the token manager optional. The new-backend module no longer injects custom token managers.
+
 ## 0.1.3
 
 ### Patch Changes

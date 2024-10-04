@@ -19,8 +19,8 @@ import {
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
 import { DefaultJenkinsInfoProvider } from './service/jenkinsInfoProvider';
-import { createRouter } from './service/router';
 import { catalogServiceRef } from '@backstage/plugin-catalog-node/alpha';
+import { JenkinsBuilder } from './service/JenkinsBuilder';
 
 /**
  * Jenkins backend plugin
@@ -57,23 +57,25 @@ export const jenkinsPlugin = createBackendPlugin({
           config,
           catalog: catalogClient,
           discovery,
+          logger,
         });
-        httpRouter.use(
-          await createRouter({
-            permissions,
-            /**
-             * Logger for logging purposes
-             */
-            logger,
-            /**
-             * Info provider to be able to get all necessary information for the APIs
-             */
-            jenkinsInfoProvider,
-            discovery,
-            auth,
-            httpAuth,
-          }),
-        );
+        const builder = JenkinsBuilder.createBuilder({
+          /**
+           * Logger for logging purposes
+           */
+          logger,
+          /**
+           * Info provider to be able to get all necessary information for the APIs
+           */
+          jenkinsInfoProvider,
+          config,
+          permissions,
+          discovery,
+          auth,
+          httpAuth,
+        });
+        const { router } = await builder.build();
+        httpRouter.use(router);
       },
     });
   },

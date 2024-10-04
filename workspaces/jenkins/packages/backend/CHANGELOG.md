@@ -1,5 +1,19 @@
 # backend
 
+## 0.0.9
+
+### Patch Changes
+
+- Updated dependencies [dd2ab0b]
+  - @backstage-community/plugin-jenkins-backend@0.6.0
+
+## 0.0.8
+
+### Patch Changes
+
+- Updated dependencies [8ce69ed]
+  - @backstage-community/plugin-jenkins-backend@0.5.0
+
 ## 0.0.7
 
 ### Patch Changes

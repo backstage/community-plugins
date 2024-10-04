@@ -16,11 +16,21 @@
 
 import React from 'react';
 import {
+  ApiBlueprint,
+  createApiFactory,
   createPlugin,
-  createSchemaFromZod,
+  discoveryApiRef,
+  fetchApiRef,
 } from '@backstage/frontend-plugin-api';
-import { createSearchResultListItemExtension } from '@backstage/plugin-search-react/alpha';
+import {
+  compatWrapper,
+  convertLegacyRouteRef,
+} from '@backstage/core-compat-api';
+import { SearchResultListItemBlueprint } from '@backstage/plugin-search-react/alpha';
+import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
 import { AdrDocument } from '@backstage-community/plugin-adr-common';
+import { rootRouteRef } from './routes';
+import { adrApiRef, AdrClient } from './api';
 
 export * from './translations';
 
@@ -30,28 +40,74 @@ function isAdrDocument(result: any): result is AdrDocument {
 
 /** @alpha */
 export const adrSearchResultListItemExtension =
-  createSearchResultListItemExtension({
-    configSchema: createSchemaFromZod(z =>
-      z.object({
-        // TODO: Define how the icon can be configurable
-        noTrack: z.boolean().default(false),
-        lineClamp: z.number().default(5),
-      }),
-    ),
-    predicate: result => result.type === 'adr',
-    component: async ({ config }) => {
-      const { AdrSearchResultListItem } = await import(
-        './search/AdrSearchResultListItem'
-      );
-      return ({ result, ...rest }) =>
-        isAdrDocument(result) ? (
-          <AdrSearchResultListItem {...rest} {...config} result={result} />
-        ) : null;
+  SearchResultListItemBlueprint.makeWithOverrides({
+    config: {
+      schema: {
+        lineClamp: z => z.number().default(5),
+      },
+    },
+    factory(originalFactory, { config }) {
+      return originalFactory({
+        predicate: result => result.type === 'adr',
+        component: async () => {
+          const { AdrSearchResultListItem } = await import(
+            './search/AdrSearchResultListItem'
+          );
+          return ({ result, ...rest }) =>
+            compatWrapper(
+              isAdrDocument(result) ? (
+                <AdrSearchResultListItem
+                  {...rest}
+                  {...config}
+                  result={result}
+                />
+              ) : null,
+            );
+        },
+      });
     },
   });
 
 /** @alpha */
+export const adrEntityContentExtension = EntityContentBlueprint.make({
+  name: 'entity',
+  params: {
+    defaultPath: '/adrs',
+    defaultTitle: 'ADRs',
+    filter: 'kind:component',
+    routeRef: convertLegacyRouteRef(rootRouteRef),
+    loader: async () => {
+      const { EntityAdrContent } = await import(
+        './components/EntityAdrContent'
+      );
+      return <EntityAdrContent />;
+    },
+  },
+});
+
+/** @alpha */
+export const adrApiExtension = ApiBlueprint.make({
+  name: 'adr-api',
+  params: {
+    factory: createApiFactory({
+      api: adrApiRef,
+      deps: {
+        discoveryApi: discoveryApiRef,
+        fetchApi: fetchApiRef,
+      },
+      factory({ discoveryApi, fetchApi }) {
+        return new AdrClient({ discoveryApi, fetchApi });
+      },
+    }),
+  },
+});
+
+/** @alpha */
 export default createPlugin({
   id: 'adr',
-  extensions: [adrSearchResultListItemExtension],
+  extensions: [
+    adrSearchResultListItemExtension,
+    adrEntityContentExtension,
+    adrApiExtension,
+  ],
 });

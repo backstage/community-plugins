@@ -28,6 +28,7 @@ export class DefaultJenkinsInfoProvider implements JenkinsInfoProvider {
     discovery: DiscoveryService;
     auth?: AuthService;
     httpAuth?: HttpAuthService;
+    logger: LoggerService;
   }): DefaultJenkinsInfoProvider;
   // (undocumented)
   getInstance(opt: {
@@ -36,10 +37,36 @@ export class DefaultJenkinsInfoProvider implements JenkinsInfoProvider {
     credentials?: BackstageCredentials;
   }): Promise<JenkinsInfo>;
   // (undocumented)
+  static readonly JENKINS_OVERRIDE_URL = 'jenkins.io/override-base-url';
+  // (undocumented)
   static readonly NEW_JENKINS_ANNOTATION = 'jenkins.io/job-full-name';
   // (undocumented)
   static readonly OLD_JENKINS_ANNOTATION = 'jenkins.io/github-folder';
 }
+
+// @public (undocumented)
+export class JenkinsBuilder {
+  constructor(env: JenkinsEnvironment);
+  // (undocumented)
+  build(): Promise<{
+    router: express.Router;
+  }>;
+  // (undocumented)
+  protected buildRouter(
+    jenkinsInfoProvider: JenkinsInfoProvider,
+    permissionApi: PermissionEvaluator,
+    httpAuth: HttpAuthService,
+  ): express.Router;
+  // (undocumented)
+  static createBuilder(env: JenkinsEnvironment): JenkinsBuilder;
+  // (undocumented)
+  protected readonly env: JenkinsEnvironment;
+}
+
+// @public (undocumented)
+export type JenkinsBuilderReturn = Promise<{
+  router: express.Router;
+}>;
 
 // @public
 export class JenkinsConfig {
@@ -48,6 +75,24 @@ export class JenkinsConfig {
   getInstanceConfig(jenkinsName?: string): JenkinsInstanceConfig;
   // (undocumented)
   readonly instances: JenkinsInstanceConfig[];
+}
+
+// @public (undocumented)
+export interface JenkinsEnvironment {
+  // (undocumented)
+  auth?: AuthService;
+  // (undocumented)
+  config: Config;
+  // (undocumented)
+  discovery: DiscoveryService;
+  // (undocumented)
+  httpAuth: HttpAuthService;
+  // (undocumented)
+  jenkinsInfoProvider: JenkinsInfoProvider;
+  // (undocumented)
+  logger: LoggerService;
+  // (undocumented)
+  permissions: PermissionEvaluator;
 }
 
 // @public (undocumented)
@@ -71,11 +116,13 @@ export interface JenkinsInfoProvider {
     entityRef: CompoundEntityRef;
     jobFullName?: string;
     credentials?: BackstageCredentials;
+    logger?: LoggerService;
   }): Promise<JenkinsInfo>;
 }
 
 // @public (undocumented)
 export interface JenkinsInstanceConfig {
+  allowedBaseUrlOverrideRegex?: string;
   // (undocumented)
   apiKey: string;
   // (undocumented)

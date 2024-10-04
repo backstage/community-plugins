@@ -15,14 +15,13 @@
  */
 
 import React from 'react';
-import SvgIcon from '@material-ui/core/SvgIcon';
-import { IconComponent } from '@backstage/core-plugin-api';
+import SvgIcon, { SvgIconProps } from '@material-ui/core/SvgIcon';
 
 /**
  * @public
  */
-export const GraphiQLIcon: IconComponent = () => (
-  <SvgIcon>
+export const GraphiQLIcon = (props: SvgIconProps) => (
+  <SvgIcon {...props}>
     <g>
       <path d="M 3.449219 18.160156 L 2.585938 17.660156 L 12.195312 1.019531 L 13.058594 1.515625 Z M 3.449219 18.160156" />
       <path d="M 2.386719 16.332031 L 21.605469 16.332031 L 21.605469 17.328125 L 2.386719 17.328125 Z M 2.386719 16.332031" />
