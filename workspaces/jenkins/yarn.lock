@@ -2708,6 +2708,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@backstage-community/jenkins-scaffolder@workspace:plugins/jenkins-scaffolder":
+  version: 0.0.0-use.local
+  resolution: "@backstage-community/jenkins-scaffolder@workspace:plugins/jenkins-scaffolder"
+  dependencies:
+    "@backstage/backend-common": ^0.24.0
+    "@backstage/cli": ^0.27.0
+    "@backstage/plugin-scaffolder-node": ^0.4.9
+  languageName: unknown
+  linkType: soft
+
 "@backstage-community/plugin-github-actions@npm:^0.6.16":
   version: 0.6.21
   resolution: "@backstage-community/plugin-github-actions@npm:0.6.21"
@@ -5047,6 +5057,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@backstage/plugin-scaffolder-common@npm:^1.5.6":
+  version: 1.5.6
+  resolution: "@backstage/plugin-scaffolder-common@npm:1.5.6"
+  dependencies:
+    "@backstage/catalog-model": ^1.7.0
+    "@backstage/plugin-permission-common": ^0.8.1
+    "@backstage/types": ^1.1.1
+  checksum: 0dcfa5089d92dd7e0e400df25d17e838846ee8bec60f84f268c77d7815f37a217226f9385dcbb6a816de0266ecce502f9f491208aec06f83ca8e5f5a84451e9a
+  languageName: node
+  linkType: hard
+
 "@backstage/plugin-scaffolder-node@npm:^0.4.10":
   version: 0.4.10
   resolution: "@backstage/plugin-scaffolder-node@npm:0.4.10"
@@ -5069,6 +5090,31 @@ __metadata:
     zod: ^3.22.4
     zod-to-json-schema: ^3.20.4
   checksum: ed05b2c1d3db506af3488370ffe695985eaa5ef15821fba89d2083663c4624f4e89a5b515bee4afc3842dacd9d900990f416c93f7de18741d6d6c418b098878f
+  languageName: node
+  linkType: hard
+
+"@backstage/plugin-scaffolder-node@npm:^0.4.9":
+  version: 0.4.11
+  resolution: "@backstage/plugin-scaffolder-node@npm:0.4.11"
+  dependencies:
+    "@backstage/backend-common": ^0.25.0
+    "@backstage/backend-plugin-api": ^1.0.0
+    "@backstage/catalog-model": ^1.7.0
+    "@backstage/errors": ^1.2.4
+    "@backstage/integration": ^1.15.0
+    "@backstage/plugin-scaffolder-common": ^1.5.6
+    "@backstage/types": ^1.1.1
+    concat-stream: ^2.0.0
+    fs-extra: ^11.2.0
+    globby: ^11.0.0
+    isomorphic-git: ^1.23.0
+    jsonschema: ^1.2.6
+    p-limit: ^3.1.0
+    tar: ^6.1.12
+    winston: ^3.2.1
+    zod: ^3.22.4
+    zod-to-json-schema: ^3.20.4
+  checksum: cf5645e5edf6b76b89276a523817295affa6af4b8c4ce289cbebe0ec09c671e5f9baa53d1f992da07c34ee4b20b6a4a6e6c461361a774f68191be9a8e1a298ef
   languageName: node
   linkType: hard
 
