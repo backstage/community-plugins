@@ -68,6 +68,7 @@
     "@backstage-community/plugin-jenkins": "workspace:^",
     "@backstage-community/plugin-jenkins-backend": "workspace:^",
     "@backstage-community/plugin-jenkins-scaffolder": "workspace:^",
+    "@backstage/plugin-scaffolder-node": "^0.4.11",
     "@backstage/frontend-plugin-api": "^0.7.0",
     "knip": "^5.27.4"
   }
