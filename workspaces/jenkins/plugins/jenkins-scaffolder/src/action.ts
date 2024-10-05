@@ -10,16 +10,14 @@ interface JenkinsCreateJobActionOptions {
   };
 }
 
-interface JenkinsCreateJobInput {
-  configPath: string;
-  jobName: string;
-  folderName?: string;
-  serverUrl?: string;
-}
-
 const jenkinsCreateJobAction = (options: JenkinsCreateJobActionOptions) => {
   const { config } = options;
-  return createTemplateAction({
+  return createTemplateAction<{
+    configPath: string;
+    jobName: string;
+    folderName: string;
+    serverUrl: string | undefined;
+  }>({
     id: "jenkins:job:create",
     description: "Create a new job in Jenkins",
     schema: {
@@ -46,12 +44,12 @@ const jenkinsCreateJobAction = (options: JenkinsCreateJobActionOptions) => {
         }
       }
     },
-    async handler(ctx: { input: JenkinsCreateJobInput; workspacePath: string; logger: { info: (msg: string) => void } }) {
+    async handler(ctx) {
       const { configPath, jobName, folderName, serverUrl } = ctx.input;
       const outputDir: string = resolveSafeChildPath(ctx.workspacePath, configPath);
       const username: string | undefined = config.getOptionalString("scaffolder.jenkins.username");
       const apiKey: string | undefined = config.getOptionalString("scaffolder.jenkins.key");
-      const server: string | undefined = serverUrl || config.getOptionalString("scaffolder.jenkins.server");
+      const server: string | undefined = serverUrl as string || config.getOptionalString("scaffolder.jenkins.server");
       if (!username || !apiKey) {
         throw new InputError(
           `No valid Jenkins credentials given. Please add them to the config file.`
