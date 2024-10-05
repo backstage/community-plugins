@@ -12,7 +12,8 @@
     "types": "dist/index.d.ts"
   },
   "backstage": {
-    "role": "backend-plugin-module"
+    "role": "backend-plugin-module",
+    "pluginId": "plugin-jenkins-scaffolder"
   },
   "scripts": {
     "start": "backstage-cli package start",
