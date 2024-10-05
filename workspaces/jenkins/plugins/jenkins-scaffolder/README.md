@@ -1,66 +1,28 @@
-# scaffolder-backend-module-jenkins
+# Scaffolder plugin for Jenkins
 
-Welcome to the `scaffolder-backend-module-jenkins` custom action!
+Welcome to the `plugin-jenkins-scaffolder` custom action!
 
 This contains one action: `jenkins:job:create`
 
 The `jenkins:job:create` action creates a new job in Jenkins.
 
-## Getting started
+## New Backend System
 
-```
-cd packages/backend
-yarn add @ma11hewthomas/plugin-scaffolder-backend-module-jenkins
-```
+The jenkins backend plugin has support for the [new backend system](https://backstage.io/docs/backend-system/), here's how you can set that up:
 
-Configure the action:
-(you can check the [docs](https://backstage.io/docs/features/software-templates/writing-custom-actions#registering-custom-actions) to see all options):
+In your `packages/backend/src/index.ts` make the following changes:
 
-```typescript
-// packages/backend/src/plugins/scaffolder.ts
----
-import { ScmIntegrations } from '@backstage/integration';
-import { jenkinsCreateJobAction } from '@ma11hewthomas/plugin-scaffolder-backend-module-jenkins';
-
-export default async function createPlugin(
-  env: PluginEnvironment,
-): Promise<Router> {
-  const catalogClient = new CatalogClient({
-    discoveryApi: env.discovery,
-  });
-
-  const integrations = ScmIntegrations.fromConfig(env.config);
-
-  const builtInActions = createBuiltinActions({
-    integrations,
-    catalogClient,
-    config: env.config,
-    reader: env.reader,
-  });
-
-  const actions = [
-    ...builtInActions,
-    jenkinsCreateJobAction({
-      config: env.config,
-    }),
-  ];
-
-  return await createRouter({
-    logger: env.logger,
-    config: env.config,
-    database: env.database,
-    catalogClient: catalogClient,
-    reader: env.reader,
-    identity: env.identity,
-    actions,
-    scheduler: env.scheduler,
-  });
-}
+```diff
+  import { createBackend } from '@backstage/backend-defaults';
+  const backend = createBackend();
+  // ... other feature additions
+  backend.add(import('@backstage-community/plugin-jenkins-scaffolder'));
+  backend.start();
 ```
 
 ### Authorization
 
-In order to use `scaffolder-backend-module-jenkins`, you must provide a username and api key to allow access the Jenkins API (permission to create jobs is required)
+In order to use `plugin-jenkins-scaffolder`, you must provide a username and api key to allow access the Jenkins API (permission to create jobs is required)
 
 You must define your jenkins username and api key in the `app-config.yaml`:
 
