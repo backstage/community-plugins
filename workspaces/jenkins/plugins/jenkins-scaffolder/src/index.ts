@@ -6,7 +6,7 @@ import {
 import { jenkinsCreateJobAction } from './action';
 
 /**
- * A backend module that registers the action into the scaffolder
+ * @public
  */
 export const jenkinsJobCreate = createBackendModule({
   pluginId: 'scaffolder',
