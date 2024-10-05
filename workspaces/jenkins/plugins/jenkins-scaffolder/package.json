@@ -1,6 +1,6 @@
 {
-  "name": "@backstage-community/jenkins-scaffolder",
-  "description": "The jenkins-scaffolder module for @backstage/plugin-scaffolder-backend",
+  "name": "@backstage-community/plugin-jenkins-scaffolder",
+  "description": "Scaffolder plugin for Jenkins",
   "version": "0.1.0",
   "main": "src/index.ts",
   "types": "src/index.ts",
