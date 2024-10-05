@@ -5046,18 +5046,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-scaffolder-common@npm:^1.5.5":
-  version: 1.5.5
-  resolution: "@backstage/plugin-scaffolder-common@npm:1.5.5"
-  dependencies:
-    "@backstage/catalog-model": ^1.6.0
-    "@backstage/plugin-permission-common": ^0.8.1
-    "@backstage/types": ^1.1.1
-  checksum: f566516e11ece101664683407206617053d17b622cb96116505b0a32c04005129cd6dc84f8a5a088aa3a7033145160c30315df5448d2e5c54ed73bc6b38b2a86
-  languageName: node
-  linkType: hard
-
-"@backstage/plugin-scaffolder-common@npm:^1.5.6":
+"@backstage/plugin-scaffolder-common@npm:^1.5.5, @backstage/plugin-scaffolder-common@npm:^1.5.6":
   version: 1.5.6
   resolution: "@backstage/plugin-scaffolder-common@npm:1.5.6"
   dependencies:
@@ -5068,32 +5057,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-scaffolder-node@npm:^0.4.10":
-  version: 0.4.10
-  resolution: "@backstage/plugin-scaffolder-node@npm:0.4.10"
-  dependencies:
-    "@backstage/backend-common": ^0.24.1
-    "@backstage/backend-plugin-api": ^0.8.1
-    "@backstage/catalog-model": ^1.6.0
-    "@backstage/errors": ^1.2.4
-    "@backstage/integration": ^1.14.0
-    "@backstage/plugin-scaffolder-common": ^1.5.5
-    "@backstage/types": ^1.1.1
-    concat-stream: ^2.0.0
-    fs-extra: ^11.2.0
-    globby: ^11.0.0
-    isomorphic-git: ^1.23.0
-    jsonschema: ^1.2.6
-    p-limit: ^3.1.0
-    tar: ^6.1.12
-    winston: ^3.2.1
-    zod: ^3.22.4
-    zod-to-json-schema: ^3.20.4
-  checksum: ed05b2c1d3db506af3488370ffe695985eaa5ef15821fba89d2083663c4624f4e89a5b515bee4afc3842dacd9d900990f416c93f7de18741d6d6c418b098878f
-  languageName: node
-  linkType: hard
-
-"@backstage/plugin-scaffolder-node@npm:^0.4.11, @backstage/plugin-scaffolder-node@npm:^0.4.9":
+"@backstage/plugin-scaffolder-node@npm:^0.4.10, @backstage/plugin-scaffolder-node@npm:^0.4.11, @backstage/plugin-scaffolder-node@npm:^0.4.9":
   version: 0.4.11
   resolution: "@backstage/plugin-scaffolder-node@npm:0.4.11"
   dependencies:
