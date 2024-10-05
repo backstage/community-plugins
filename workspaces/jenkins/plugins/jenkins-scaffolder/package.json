@@ -13,7 +13,9 @@
   },
   "backstage": {
     "role": "backend-plugin-module",
-    "pluginId": "plugin-jenkins-scaffolder"
+    "pluginId": "plugin-jenkins-scaffolder",
+    "supported-versions": "1.28.4",
+    "pluginPackage": "@backstage-community/plugin-jenkins-scaffolder"
   },
   "scripts": {
     "start": "backstage-cli package start",
