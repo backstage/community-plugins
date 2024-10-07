@@ -1,0 +1,32 @@
+{
+  "items": [
+    {
+      "id": "ZG9ja2VyOmRjMDg4NmQ4MTk4MjI1M2ZkYjRlNjFkYTU0NTY4N2Ri",
+      "repository": "docker",
+      "format": "docker",
+      "group": null,
+      "name": "janus-idp/backstage-showcase",
+      "version": "sha-33dfe6b",
+      "assets": [
+        {
+          "downloadUrl": "http://localhost:8081/repository/docker/v2/janus-idp/backstage-showcase/manifests/sha-33dfe6b",
+          "path": "v2/janus-idp/backstage-showcase/manifests/sha-33dfe6b",
+          "id": "ZG9ja2VyOjYyNTRhNjg1YWM5Mzc4N2ZkOTY5ZWMxN2YxZDQzNjZm",
+          "repository": "docker",
+          "format": "docker",
+          "checksum": {
+            "sha1": "3ae9cd4ea015cc0cd2d254d9f255235256872fd2",
+            "sha256": "58433b2aa31be8d65bca3eedc83cd49aed997deef39dded5f1c7be1a9227d25f"
+          },
+          "contentType": "application/vnd.docker.distribution.manifest.v2+json",
+          "lastModified": "2023-07-27T21:38:10.664+00:00",
+          "lastDownloaded": "2023-08-07T17:47:19.273+00:00",
+          "uploader": "admin",
+          "uploaderIp": "0.0.0.0",
+          "fileSize": 1586
+        }
+      ]
+    }
+  ],
+  "continuationToken": null
+}
