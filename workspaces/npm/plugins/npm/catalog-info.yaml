@@ -1,10 +1,10 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: backstage-plugin-npm-workspace
-  title: 'Backstage Community Npm Plugin'
+  name: backstage-plugin-npm
+  title: '@backstage-community/plugin-npm'
   description: A Backstage plugin that shows meta info and latest versions from a npm registry
 spec:
   lifecycle: experimental
-  type: backstage-plugin
+  type: backstage-frontend-plugin
   owner: maintainers

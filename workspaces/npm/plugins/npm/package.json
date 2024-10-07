@@ -1,5 +1,6 @@
 {
   "name": "@backstage-community/plugin-npm",
+  "description": "A Backstage plugin that shows meta info and latest versions from a npm registry",
   "version": "0.1.0",
   "main": "src/index.ts",
   "types": "src/index.ts",
@@ -11,7 +12,13 @@
     "types": "dist/index.d.ts"
   },
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "supported-versions": "1.28.0",
+    "pluginId": "npm",
+    "pluginPackage": "@backstage-community/plugin-npm",
+    "pluginPackages": [
+      "@backstage-community/plugin-npm"
+    ]
   },
   "sideEffects": false,
   "scripts": {
@@ -51,5 +58,21 @@
   },
   "files": [
     "dist"
-  ]
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/npm/plugins/npm"
+  },
+  "keywords": [
+    "backstage",
+    "plugin",
+    "npm"
+  ],
+  "homepage": "https://github.com/backstage/community-plugins/tree/main/workspaces/npm/plugins/npm",
+  "bugs": "https://github.com/backstage/community-plugins/issues",
+  "maintainers": [
+    "jerolimov"
+  ],
+  "author": "Christoph Jerolimov"
 }

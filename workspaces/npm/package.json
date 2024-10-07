@@ -1,5 +1,6 @@
 {
   "name": "@internal/npm",
+  "description": "A Backstage plugin that shows meta info and latest versions from a npm registry",
   "version": "1.0.0",
   "private": true,
   "engines": {
@@ -24,6 +25,7 @@
     "lint": "backstage-cli repo lint --since origin/main",
     "lint:all": "backstage-cli repo lint",
     "prettier:check": "prettier --check .",
+    "prettier:fix": "prettier --write .",
     "new": "backstage-cli new --scope @backstage-community",
     "postinstall": "cd ../../ && yarn install"
   },
