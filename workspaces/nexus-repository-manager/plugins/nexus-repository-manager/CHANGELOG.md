@@ -1,5 +1,13 @@
 ### Dependencies
 
+## 1.10.1
+
+### Patch Changes
+
+- 2a9ec07: The [nexus-repository-manager](https://github.com/janus-idp/backstage-plugins/tree/main/plugins/nexus-repository-manager) plugin from the [janus-idp/backstage-plugins](https://github.com/janus-idp/backstage-plugins) repository is migrated to the [community plugins](https://github.com/backstage/community-plugins/tree/main).
+
+  The migration was performed by following the manual migration steps outlined in the [Community Plugins CONTRIBUTING guide](https://github.com/backstage/community-plugins/blob/main/CONTRIBUTING.md#migrating-a-plugin).
+
 - **@janus-idp/shared-react:** upgraded to 2.11.0
 - **@janus-idp/cli:** upgraded to 1.14.0
 
