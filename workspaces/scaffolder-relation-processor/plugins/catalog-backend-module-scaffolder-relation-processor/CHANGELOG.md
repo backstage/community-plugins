@@ -1,5 +1,11 @@
 # @backstage-community/plugin-catalog-backend-module-scaffolder-relation-processor
 
+## 2.0.0
+
+### Major Changes
+
+- 94fb1a0: **Breaking** migrate to the new backend system and remove deprecations
+
 ## 1.2.9
 
 ### Patch Changes
