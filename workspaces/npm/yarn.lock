@@ -2825,11 +2825,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-npm@workspace:plugins/npm"
   dependencies:
+    "@backstage/catalog-model": ^1.7.0
     "@backstage/cli": ^0.27.1
     "@backstage/core-app-api": ^1.15.0
     "@backstage/core-components": ^0.15.0
     "@backstage/core-plugin-api": ^1.9.4
     "@backstage/dev-utils": ^1.1.0
+    "@backstage/plugin-catalog-react": ^1.13.0
     "@backstage/test-utils": ^1.6.0
     "@backstage/theme": ^0.5.7
     "@material-ui/core": ^4.9.13
@@ -2838,6 +2840,7 @@ __metadata:
     "@testing-library/jest-dom": ^6.0.0
     "@testing-library/react": ^14.0.0
     "@testing-library/user-event": ^14.0.0
+    luxon: ^3.5.0
     msw: ^1.0.0
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-use: ^17.2.4
@@ -23859,7 +23862,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"luxon@npm:^3.0.0, luxon@npm:^3.2.1":
+"luxon@npm:^3.0.0, luxon@npm:^3.2.1, luxon@npm:^3.5.0":
   version: 3.5.0
   resolution: "luxon@npm:3.5.0"
   checksum: f290fe5788c8e51e748744f05092160d4be12150dca70f9fadc0d233e53d60ce86acd82e7d909a114730a136a77e56f0d3ebac6141bbb82fd310969a4704825b

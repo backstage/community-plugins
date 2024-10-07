@@ -13,10 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  createPlugin,
-  createRoutableExtension,
-} from '@backstage/core-plugin-api';
+import { createPlugin } from '@backstage/core-plugin-api';
 
 import { rootRouteRef } from './routes';
 
@@ -26,12 +23,3 @@ export const npmPlugin = createPlugin({
     root: rootRouteRef,
   },
 });
-
-export const NpmPage = npmPlugin.provide(
-  createRoutableExtension({
-    name: 'NpmPage',
-    component: () =>
-      import('./components/ExampleComponent').then(m => m.ExampleComponent),
-    mountPoint: rootRouteRef,
-  }),
-);

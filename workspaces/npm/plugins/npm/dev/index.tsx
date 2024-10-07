@@ -15,12 +15,12 @@
  */
 import React from 'react';
 import { createDevApp } from '@backstage/dev-utils';
-import { npmPlugin, NpmPage } from '../src/plugin';
+import { npmPlugin } from '../src/plugin';
 
 createDevApp()
   .registerPlugin(npmPlugin)
   .addPage({
-    element: <NpmPage />,
+    element: <div />,
     title: 'Root Page',
     path: '/npm',
   })

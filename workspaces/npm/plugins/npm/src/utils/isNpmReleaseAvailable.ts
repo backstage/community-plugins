@@ -13,4 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { ExampleComponent } from './ExampleComponent';
+import { type Entity } from '@backstage/catalog-model';
+
+import { NPM_PACKAGE_ANNOTATION } from '../annotations';
+
+export const isNpmReleaseAvailable = (entity: Entity): boolean => {
+  return Boolean(entity.metadata.annotations?.[NPM_PACKAGE_ANNOTATION]);
+};

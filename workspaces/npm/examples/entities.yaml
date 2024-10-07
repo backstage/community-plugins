@@ -3,7 +3,7 @@
 apiVersion: backstage.io/v1alpha1
 kind: System
 metadata:
-  name: examples
+  name: backstage
 spec:
   owner: guests
 ---
@@ -11,31 +11,109 @@ spec:
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: example-website
+  name: backstage-catalog-model
+  annotations:
+    npm/package: '@backstage/catalog-model'
+spec:
+  type: library
+  lifecycle: production
+  owner: guests
+  system: backstage
+---
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: backstage-catalog-client
+  annotations:
+    npm/package: '@backstage/catalog-client'
+spec:
+  type: library
+  lifecycle: production
+  owner: guests
+  system: backstage
+  dependsOn:
+    - component:backstage-catalog-model
+---
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: backstage-plugin-catalog-common
+  annotations:
+    npm/package: '@backstage/plugin-catalog-common'
+spec:
+  type: library
+  lifecycle: production
+  owner: guests
+  system: backstage
+  dependsOn:
+    - component:backstage-catalog-model
+---
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: backstage-plugin-catalog-node
+  annotations:
+    npm/package: '@backstage/plugin-catalog-node'
+spec:
+  type: library
+  lifecycle: production
+  owner: guests
+  system: backstage
+  dependsOn:
+    - component:backstage-catalog-model
+---
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: 'backstage-plugin-catalog-react'
+  annotations:
+    npm/package: '@backstage/plugin-catalog-react'
+spec:
+  type: library
+  lifecycle: production
+  owner: guests
+  system: backstage
+  dependsOn:
+    - component:backstage-catalog-model
+    - component:backstage-catalog-client
+    - component:backstage-plugin-catalog-common
+---
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: 'backstage-plugin-catalog'
+  annotations:
+    npm/package: '@backstage/plugin-catalog'
 spec:
   type: website
-  lifecycle: experimental
+  lifecycle: production
   owner: guests
-  system: examples
-  providesApis: [example-grpc-api]
+  system: backstage
+  dependsOn:
+    - component:backstage-catalog-model
+    - component:backstage-catalog-client
+    - component:backstage-plugin-catalog-common
+    - component:backstage-plugin-catalog-react
 ---
-# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-api
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component
 apiVersion: backstage.io/v1alpha1
-kind: API
+kind: Component
 metadata:
-  name: example-grpc-api
+  name: 'backstage-plugin-catalog-backend'
+  annotations:
+    npm/package: '@backstage/plugin-catalog-backend'
 spec:
-  type: grpc
-  lifecycle: experimental
+  type: service
+  lifecycle: production
   owner: guests
-  system: examples
-  definition: |
-    syntax = "proto3";
-
-    service Exampler {
-      rpc Example (ExampleMessage) returns (ExampleMessage) {};
-    }
-
-    message ExampleMessage {
-      string example = 1;
-    };
+  system: backstage
+  dependsOn:
+    - component:backstage-catalog-model
+    - component:backstage-catalog-client
+    - component:backstage-plugin-catalog-common
+    - component:backstage-plugin-catalog-node

@@ -1,13 +1,64 @@
-# npm
+# npm plugin
 
-Welcome to the npm plugin!
+## Screenshots
 
-_This plugin was created through the Backstage CLI_
+### Npm info card
 
-## Getting started
+![Screenshot](docs/npm-info-card.png)
 
-Your plugin has been added to the example app in this repository, meaning you'll be able to access it by running `yarn start` in the root directory, and then navigating to [/npm](http://localhost:3000/npm).
+### Npm release overview card
 
-You can also serve the plugin in isolation by running `yarn start` in the plugin directory.
-This method of serving the plugin provides quicker iteration speed and a faster startup and hot reloads.
-It is only meant for local development, and the setup for it can be found inside the [/dev](./dev) directory.
+![Screenshot](docs/npm-release-overview-card.png)
+
+### Extended catalog entity overview tab (example)
+
+![Screenshot](docs/catalog-entity-overview-tab.png)
+
+### New catalog entity npm release tab
+
+![Screenshot](docs/catalog-entity-npm-release-tab.png)
+
+## Setup
+
+Add to `packages/app/src/components/catalog/EntityPage.tsx`:
+
+After all other imports:
+
+```tsx
+import {
+  isNpmReleaseAvailable,
+  NpmInfoCard,
+  NpmReleaseOverviewCard,
+  NpmReleaseTableCard,
+} from '@backstage-community/plugin-npm';
+```
+
+Add to `const overviewContent` after `EntityAboutCard`:
+
+```tsx
+<EntitySwitch>
+  <EntitySwitch.Case if={isNpmReleaseAvailable}>
+    <Grid container item md={6} xs={12}>
+      <Grid item md={12}>
+        <NpmInfoCard />
+      </Grid>
+      <Grid item md={12}>
+        <NpmReleaseOverviewCard />
+      </Grid>
+    </Grid>
+  </EntitySwitch.Case>
+</EntitySwitch>
+```
+
+Add to `const serviceEntityPage` and `const websiteEntityPage` after the `/ci-cd` case
+and to `const defaultEntityPage` between the `/` and `/docs` routecase.
+
+```tsx
+<EntityLayout.Route
+  if={isNpmReleaseAvailable}
+  path="/npm-releases"
+  title="NPM Releases"
+>
+  <NpmReleaseTableCard />
+</EntityLayout.Route>
+```
