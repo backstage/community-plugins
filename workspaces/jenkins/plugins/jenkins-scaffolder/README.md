@@ -22,7 +22,7 @@ In your `packages/backend/src/index.ts` make the following changes:
 
 ### Authorization
 
-In order to use `plugin-jenkins-scaffolder`, you must provide a username and api key to allow access the Jenkins API (permission to create jobs is required)
+In order to use the Jenkins Module for Scaffolder, you must provide a username and api key to allow access the Jenkins API (permission to create jobs is required)
 
 You must define your jenkins username and api key in the `app-config.yaml`:
 
