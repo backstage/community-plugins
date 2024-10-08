@@ -12,7 +12,7 @@ The Topology plugin enables you to visualize the workloads such as Deployment, J
 - The Kubernetes plugin is configured and connects to the cluster using a `ServiceAccount`.
 - The [`ClusterRole`](https://backstage.io/docs/features/kubernetes/configuration#role-based-access-control) must be granted to `ServiceAccount` accessing the cluster. If you have the Backstage Kubernetes plugin configured, then the `ClusterRole` is already granted.
 
-> Tip: You can use the [prepared manifest for a read-only `ClusterRole`](https://raw.githubusercontent.com/janus-idp/backstage-plugins/main/plugins/topology/manifests/clusterrole.yaml), providing access for both Kubernetes plugin and Topology plugin.
+> Tip: You can use the [prepared manifest for a read-only `ClusterRole`](https://raw.githubusercontent.com/backstage/community-plugins/main/workspaces/topology/plugins/topology/manifests/clusterrole.yaml), providing access for both Kubernetes plugin and Topology plugin.
 
 #### Other configurations
 
