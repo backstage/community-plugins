@@ -90,12 +90,12 @@
   "files": [
     "dist",
     "dist-scalprum",
-    "app-config.janus-idp.yaml"
+    "app-config.backstage-community.yaml"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/janus-idp/backstage-plugins",
-    "directory": "plugins/topology"
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/topology/plugins/topology"
   },
   "keywords": [
     "support:production",
@@ -104,9 +104,11 @@
     "plugin"
   ],
   "homepage": "https://red.ht/rhdh",
-  "bugs": "https://github.com/janus-idp/backstage-plugins/issues",
+  "bugs": "https://github.com/backstage/community-plugins/issues",
   "maintainers": [
-    "@janus-idp/maintainers-plugins"
+    "@invincibleJai",
+    "@divyanshiGupta",
+    "@debsmita1"
   ],
   "author": "Red Hat"
 }

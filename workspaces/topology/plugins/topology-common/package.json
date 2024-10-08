@@ -38,8 +38,8 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/janus-idp/backstage-plugins",
-    "directory": "plugins/topology-common"
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/topology/plugins/topology-common"
   },
   "keywords": [
     "support:production",
@@ -48,12 +48,14 @@
     "plugin"
   ],
   "homepage": "https://red.ht/rhdh",
-  "bugs": "https://github.com/janus-idp/backstage-plugins/issues",
   "dependencies": {
     "@backstage/plugin-permission-common": "^0.8.0"
   },
+  "bugs": "https://github.com/backstage/community-plugins/issues",
   "maintainers": [
-    "@janus-idp/maintainers-plugins"
+    "@invincibleJai",
+    "@divyanshiGupta",
+    "@debsmita1"
   ],
   "author": "Red Hat"
 }
