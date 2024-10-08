@@ -1,5 +1,11 @@
 # @backstage-community/plugin-grafana
 
+## 0.1.7
+
+### Patch Changes
+
+- 10f4f46: Added support for multiple alert selectors.
+
 ## 0.1.6
 
 ### Patch Changes
