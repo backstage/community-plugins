@@ -1,5 +1,13 @@
 ## @janus-idp/backstage-plugin-argocd [1.5.7](https://github.com/janus-idp/backstage-plugins/compare/@janus-idp/backstage-plugin-argocd@1.5.6...@janus-idp/backstage-plugin-argocd@1.5.7) (2024-08-02)
 
+## 1.8.6
+
+### Patch Changes
+
+- a1313aa: Backstage version bump to v1.31.2
+- Updated dependencies [a1313aa]
+  - @backstage-community/plugin-redhat-argocd-common@1.0.6
+
 ## 1.8.5
 
 ### Patch Changes
