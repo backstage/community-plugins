@@ -1,0 +1,49 @@
+{
+  "services": [
+    {
+      "service": {
+        "id": 2,
+        "name": "API",
+        "description": "Nice API",
+        "state": "incomplete",
+        "system_name": "api",
+        "backend_version": "1",
+        "deployment_option": "hosted",
+        "support_email": "admin@3scale.apps.rosa.ceazq-ocd3j-vy9.8aja.p3.openshiftapps.com",
+        "intentions_required": false,
+        "buyers_manage_apps": true,
+        "buyers_manage_keys": true,
+        "referrer_filters_required": false,
+        "custom_keys_enabled": true,
+        "buyer_key_regenerate_enabled": true,
+        "mandatory_app_key": true,
+        "buyer_can_select_plan": false,
+        "buyer_plan_change_permission": "request",
+        "created_at": "2024-09-17T09:57:53Z",
+        "updated_at": "2024-09-17T10:06:42Z",
+        "links": [
+          {
+            "rel": "metrics",
+            "href": "https://3scale-admin.apps.rosa.ceazq-ocd3j-vy9.8aja.p3.openshiftapps.com/admin/api/services/2/metrics"
+          },
+          {
+            "rel": "self",
+            "href": "https://3scale-admin.apps.rosa.ceazq-ocd3j-vy9.8aja.p3.openshiftapps.com/admin/api/services/2"
+          },
+          {
+            "rel": "service_plans",
+            "href": "https://3scale-admin.apps.rosa.ceazq-ocd3j-vy9.8aja.p3.openshiftapps.com/admin/api/services/2/service_plans"
+          },
+          {
+            "rel": "application_plans",
+            "href": "https://3scale-admin.apps.rosa.ceazq-ocd3j-vy9.8aja.p3.openshiftapps.com/admin/api/services/2/application_plans"
+          },
+          {
+            "rel": "features",
+            "href": "https://3scale-admin.apps.rosa.ceazq-ocd3j-vy9.8aja.p3.openshiftapps.com/admin/api/services/2/features"
+          }
+        ]
+      }
+    }
+  ]
+}

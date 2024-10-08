@@ -118,9 +118,10 @@ export class JenkinsApiImpl {
 
       const isStandaloneProject = !project.jobs;
       if (isStandaloneProject) {
+        const limitedStandaloneJobTreeSpec = `${JenkinsApiImpl.jobTreeSpec}{0,${jenkinsInfo.projectCountLimit}}`;
         const standaloneProject = await client.job.get({
           name: jenkinsInfo.jobFullName,
-          tree: limitedJobsTreeSpec.replace(/\s/g, ''),
+          tree: limitedStandaloneJobTreeSpec.replace(/\s/g, ''),
         });
         projects.push(this.augmentProject(standaloneProject));
         return projects;

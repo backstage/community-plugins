@@ -8,6 +8,7 @@ import { BackendFeature } from '@backstage/backend-plugin-api';
 import { Config } from '@backstage/config';
 import express from 'express';
 import { LoggerService } from '@backstage/backend-plugin-api';
+import { NotificationService } from '@backstage/plugin-notifications-node';
 import { PluginEndpointDiscovery } from '@backstage/backend-common';
 
 // Warning: (ae-forgotten-export) The symbol "RouterOptions" needs to be exported by the entry point index.d.ts
