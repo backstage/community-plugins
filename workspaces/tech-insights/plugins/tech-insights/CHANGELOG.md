@@ -1,5 +1,11 @@
 # @backstage-community/plugin-tech-insights
 
+## 0.3.38
+
+### Patch Changes
+
+- caa9401: `ScorecardInfo` description now supports markdown syntax
+
 ## 0.3.37
 
 ### Patch Changes
