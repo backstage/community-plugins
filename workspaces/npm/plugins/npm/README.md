@@ -26,7 +26,7 @@ After all other imports:
 
 ```tsx
 import {
-  isNpmReleaseAvailable,
+  isNpmAvailable,
   NpmInfoCard,
   NpmReleaseOverviewCard,
   NpmReleaseTableCard,
@@ -37,7 +37,7 @@ Add to `const overviewContent` after `EntityAboutCard`:
 
 ```tsx
 <EntitySwitch>
-  <EntitySwitch.Case if={isNpmReleaseAvailable}>
+  <EntitySwitch.Case if={isNpmAvailable}>
     <Grid container item md={6} xs={12}>
       <Grid item md={12}>
         <NpmInfoCard />
@@ -55,7 +55,7 @@ and to `const defaultEntityPage` between the `/` and `/docs` routecase.
 
 ```tsx
 <EntityLayout.Route
-  if={isNpmReleaseAvailable}
+  if={isNpmAvailable}
   path="/npm-releases"
   title="NPM Releases"
 >

@@ -35,6 +35,13 @@ interface TableData {
   published: string;
 }
 
+/**
+ * Page content for the catalog (entiy page) that shows two tables.
+ * One for the latest tags and versions of a npm package.
+ * And another one for the complete version history.
+ *
+ * @public
+ */
 export function NpmReleaseTableCard() {
   const { entity } = useEntity();
 

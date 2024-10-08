@@ -75,7 +75,7 @@ import {
 } from '@backstage/plugin-kubernetes';
 
 import {
-  isNpmReleaseAvailable,
+  isNpmAvailable,
   NpmInfoCard,
   NpmReleaseOverviewCard,
   NpmReleaseTableCard,
@@ -156,7 +156,7 @@ const overviewContent = (
     </Grid>
 
     <EntitySwitch>
-      <EntitySwitch.Case if={isNpmReleaseAvailable}>
+      <EntitySwitch.Case if={isNpmAvailable}>
         <Grid container item md={6} xs={12}>
           <Grid item md={12}>
             <NpmInfoCard />
@@ -200,7 +200,7 @@ const serviceEntityPage = (
     </EntityLayout.Route>
 
     <EntityLayout.Route
-      if={isNpmReleaseAvailable}
+      if={isNpmAvailable}
       path="/npm-releases"
       title="NPM Releases"
     >
@@ -254,7 +254,7 @@ const websiteEntityPage = (
     </EntityLayout.Route>
 
     <EntityLayout.Route
-      if={isNpmReleaseAvailable}
+      if={isNpmAvailable}
       path="/npm-releases"
       title="NPM Releases"
     >
@@ -292,7 +292,7 @@ const defaultEntityPage = (
     </EntityLayout.Route>
 
     <EntityLayout.Route
-      if={isNpmReleaseAvailable}
+      if={isNpmAvailable}
       path="/npm-releases"
       title="NPM Releases"
     >

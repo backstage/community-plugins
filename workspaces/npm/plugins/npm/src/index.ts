@@ -13,9 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * A Backstage plugin that shows meta info and latest versions from a npm registry
+ *
+ * @packageDocumentation
+ */
+
 export { npmPlugin } from './plugin';
 
-export { isNpmReleaseAvailable } from './utils/isNpmReleaseAvailable';
+export { isNpmAvailable } from './utils/isNpmAvailable';
 export { NpmInfoCard } from './components/NpmInfoCard';
 export { NpmReleaseOverviewCard } from './components/NpmReleaseOverviewCard';
 export { NpmReleaseTableCard } from './components/NpmReleaseTableCard';

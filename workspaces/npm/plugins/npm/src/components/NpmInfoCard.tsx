@@ -75,6 +75,13 @@ function Item({
   );
 }
 
+/**
+ * Card for the catalog (entity page) that shows the npm
+ * name, description, keywords, license, some links and
+ * the latest version if available.
+ *
+ * @public
+ */
 export function NpmInfoCard() {
   const { entity } = useEntity();
 

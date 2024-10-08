@@ -17,6 +17,11 @@ import { createPlugin } from '@backstage/core-plugin-api';
 
 import { rootRouteRef } from './routes';
 
+/**
+ * Backstage plugin.
+ *
+ * @public
+ */
 export const npmPlugin = createPlugin({
   id: 'npm',
   routes: {
