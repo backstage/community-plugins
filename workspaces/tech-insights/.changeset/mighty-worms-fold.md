@@ -2,4 +2,4 @@
 '@backstage-community/plugin-tech-insights': patch
 ---
 
-ScorecardInfo description supports markdown syntax
+`ScorecardInfo` description now supports markdown syntax
