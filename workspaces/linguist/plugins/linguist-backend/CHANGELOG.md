@@ -1,5 +1,11 @@
 # @backstage-community/plugin-linguist-backend
 
+## 0.6.3
+
+### Patch Changes
+
+- 3fad54b: Fixes custom linguistJs options
+
 ## 0.6.2
 
 ### Patch Changes
