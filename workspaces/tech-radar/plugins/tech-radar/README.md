@@ -198,7 +198,7 @@ The TS example can be found [here](src/sample.ts).
 ### How do I load in my own data?
 
 There are three ways to load in data to the `Tech Radar` plugin; (A) implementing a custom version of the the `TechRadarApi` interface, (B) providing
-a URL to a JSON file definition location in the config, or (C) providing the raw data in yaml format in the config. The options are prioritized in
+an API via the [backstage proxy](https://backstage.io/docs/tutorials/using-backstage-proxy-within-plugin/) that serves a JSON representation of the data, or (C) providing the raw data in yaml format in the config. The options are prioritized in
 order; if all three were implemented, option A (the custom interface) would be used, and if only options B and C were implemented, option B would be used.
 
 #### Option A: Implementing the TechRadarApi
@@ -269,13 +269,26 @@ export const app = createApp({
 });
 ```
 
-#### Option B: Providing a URL to a definition JSON file location
+#### Option B: Providing an API that serves the definition JSON
 
-Add the following config in order to specify a location containing a JSON representation of the tech radar content (example [here](./src/utils/sampleTechRadarContent.json)). This option means the file can be stored in GitHub (or any other hosted location), versioned, and potentionally consumed by other systems along with portal. The plugin will make an unauthenticated GET request; if your use case requires authentication, you can implement an authenticated fetch process using option A.
+Populate the 'proxyUri' section of the techRadar config to reference the Backstage proxy that will
+serve a representation of the tech radar content (example [here](./src/utils/sampleTechRadarContent.json)). Use the[backstage proxy documentation ](https://backstage.io/docs/tutorials/using-backstage-proxy-within-plugin/) in order to configure the target location of the API that
+will serve the content. Note that the proxy allows you to configure headers (including authentication). The following is an example of how to point the proxy to a hosted file inside Github,
+though the proxy can point to any API that serves a valid JSON response.
 
 ```yaml title="app-config.yaml"
+proxy:
+  endpoints:
+    '/sampleData':
+      target: 'https://api.github.com/repos/<USER/ORG>/<REPO>/contents/<PATH>/<TO>/file.json'
+      # If using a hosted api (or pointing to a private repo in github), could use forwarded credentials & add headers here
+      credentials: dangerously-allow-unauthenticated
+      # the path rewrite here is only needed because we're proxying to a hosted file instead of an actual API endpoint
+      pathRewrite:
+        '^/api/proxy/sampleData': ''
+
 techRadar:
-  url: 'https://api.github.com/repos/<USER/ORG>/<REPO>/contents/<PATH>/<TO>/file.json'
+  proxyUri: '/sampleData'
 ```
 
 #### Option C: Providing tech radar content directly in the configuration

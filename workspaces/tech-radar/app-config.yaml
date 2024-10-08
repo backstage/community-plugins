@@ -63,9 +63,12 @@ catalog:
 proxy:
   endpoints:
     '/sampleData':
-      # target: https://api.github.com/repos/backstage/community-plugins/contents/workspaces/tech-radar/plugins/tech-radar/src/utils/sampleTechRadarContent.json
-      target: https://api.github.com/repos/alex-mckay/sample-data/contents/data.json
+      target: https://api.github.com/repos/backstage/community-plugins/contents/workspaces/tech-radar/plugins/tech-radar/src/utils/sampleTechRadarContent.json
+      # if using a hosted api, could use normal credential & add headers here
       credentials: dangerously-allow-unauthenticated
+      # the path rewrite here is only needed because we're proxying to a hosted file instead of an actual API endpoint
+      pathRewrite:
+        '^/api/proxy/sampleData': ''
 
 techRadar:
   proxyUri: '/sampleData'
