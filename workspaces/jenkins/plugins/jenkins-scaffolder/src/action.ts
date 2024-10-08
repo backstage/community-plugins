@@ -1,7 +1,7 @@
 import { createTemplateAction } from '@backstage/plugin-scaffolder-node';
 import { InputError } from '@backstage/errors';
 import fetch from 'cross-fetch';
-import fs from 'fs';
+import fs from 'fs/promises';
 import { resolveSafeChildPath } from '@backstage/backend-common';
 
 interface JenkinsCreateJobActionOptions {
@@ -51,14 +51,14 @@ const jenkinsCreateJobAction = (options: JenkinsCreateJobActionOptions) => {
         configPath,
       );
       const username: string | undefined = config.getOptionalString(
-        'scaffolder.jenkins.username',
+        'jenkins.username',
       );
       const apiKey: string | undefined = config.getOptionalString(
-        'scaffolder.jenkins.key',
+        'jenkins.apiKey',
       );
       const server: string | undefined =
         (serverUrl as string) ||
-        config.getOptionalString('scaffolder.jenkins.server');
+        config.getOptionalString('jenkins.baseUrl');
       if (!username || !apiKey) {
         throw new InputError(
           `No valid Jenkins credentials given. Please add them to the config file.`,
@@ -77,7 +77,7 @@ const jenkinsCreateJobAction = (options: JenkinsCreateJobActionOptions) => {
         url = url.concat(`/job/${folderName}`);
       }
       url = url.concat(`/createItem?name=${jobName}`);
-      let readStream: string = fs.readFileSync(outputDir, 'utf8');
+      let readStream: string = await fs.readFile(outputDir, 'utf8');
       const response: Response = await fetch(url, {
         method: 'POST',
         headers: {

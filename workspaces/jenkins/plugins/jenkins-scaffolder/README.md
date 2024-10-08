@@ -1,6 +1,6 @@
 # Scaffolder plugin for Jenkins
 
-Welcome to the `plugin-jenkins-scaffolder` custom action!
+Welcome to the Jenkins Module for Scaffolder!
 
 This contains one action: `jenkins:job:create`
 
@@ -16,7 +16,7 @@ In your `packages/backend/src/index.ts` make the following changes:
   import { createBackend } from '@backstage/backend-defaults';
   const backend = createBackend();
   // ... other feature additions
-  backend.add(import('@backstage-community/plugin-jenkins-scaffolder'));
+  backend.add(import('@backstage-community/plugin-scaffolder-backend-module-jenkins'));
   backend.start();
 ```
 
@@ -27,11 +27,10 @@ In order to use `plugin-jenkins-scaffolder`, you must provide a username and api
 You must define your jenkins username and api key in the `app-config.yaml`:
 
 ```yaml
-scaffolder:
-  jenkins:
-    username: ${JENKINS_USERNAME}
-    key: ${JENKINS_API_KEY}
-    server: ${JENKINS_SERVER_URL}
+jenkins:
+  baseUrl: ${JENKINS_SERVER_URL}
+  username: ${JENKINS_USERNAME}
+  apiKey: ${JENKINS_API_KEY}
 ```
 
 ### Example of using

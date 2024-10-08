@@ -1,5 +1,5 @@
 {
-  "name": "@backstage-community/plugin-jenkins-scaffolder",
+  "name": "@backstage-community/plugin-scaffolder-backend-module-jenkins",
   "description": "Scaffolder plugin for Jenkins",
   "version": "0.1.0",
   "main": "src/index.ts",
@@ -18,9 +18,9 @@
   },
   "backstage": {
     "role": "backend-plugin-module",
-    "pluginId": "plugin-jenkins-scaffolder",
+    "pluginId": "plugin-scaffolder-backend-module-jenkins",
     "supported-versions": "1.28.4",
-    "pluginPackage": "@backstage-community/plugin-jenkins-scaffolder"
+    "pluginPackage": "@backstage-community/plugin-scaffolder-backend-module-jenkins"
   },
   "scripts": {
     "start": "backstage-cli package start",
