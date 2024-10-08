@@ -21,6 +21,8 @@ import {
   PageBlueprint,
   createFrontendPlugin,
   configApiRef,
+  discoveryApiRef,
+  fetchApiRef,
 } from '@backstage/frontend-plugin-api';
 import React from 'react';
 import { techRadarApiRef } from './api';
@@ -75,10 +77,14 @@ export const techRadarApi = ApiBlueprint.make({
       api: techRadarApiRef,
       deps: {
         configApi: configApiRef,
+        discoveryApi: discoveryApiRef,
+        fetchApi: fetchApiRef,
       },
-      factory: ({ configApi }) => {
+      factory: ({ configApi, discoveryApi, fetchApi }) => {
         return new DefaultTechRadarApi({
-          url: configApi.getOptionalString('techRadar.url'),
+          discoveryApi,
+          fetchApi,
+          proxyUri: configApi.getOptionalString('techRadar.proxyUri'),
           graphData: configApi.getOptionalConfig('techRadar.graphData'),
         });
       },

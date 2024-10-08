@@ -16,10 +16,11 @@
 export interface Config {
   techRadar?: {
     /**
-     * Optional URL pointing to the definition file for the tech radar entries. If both `url` & `entries` are specified, the `url` will be used.
+     * Optional uri which will be hit to fetch the definition file for the tech radar entries. The file should be in JSON format.
+     * If both `proxyUri` & `entries` are specified, the `proxyUri` will be used.
      * @visibility frontend
      */
-    url?: string;
+    proxyUri?: string;
     /**
      * Optional representation of the tech radar entries. Will only be used if `url` is not provided.
      * @visibility frontend

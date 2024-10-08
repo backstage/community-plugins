@@ -22,6 +22,7 @@ import {
   TechRadarApi,
 } from './api';
 import { Config } from '@backstage/config';
+import { DiscoveryApi, FetchApi } from '@backstage/frontend-plugin-api';
 
 const rings = new Array<RadarRing>();
 rings.push({
@@ -225,10 +226,12 @@ export const mock: TechRadarLoaderResponse = {
 };
 
 export type Options = {
+  discoveryApi: DiscoveryApi;
+  fetchApi: FetchApi;
   /**
-   * URL provided via config to load the graph data from.
+   * Uri provided via config to load the graph data from.
    */
-  url?: string;
+  proxyUri?: string;
   /**
    * Hard coded graph data populated directly via the config.
    */
@@ -236,26 +239,33 @@ export type Options = {
 };
 
 export class DefaultTechRadarApi implements TechRadarApi {
-  private readonly url: string | undefined;
+  private readonly proxyUri: string | undefined;
   private readonly graphData: Config | undefined;
+  discoveryApi: DiscoveryApi;
+  fetchApi: FetchApi;
 
   constructor(opts: Options) {
-    this.url = opts.url;
+    this.discoveryApi = opts.discoveryApi;
+    this.fetchApi = opts.fetchApi;
+    this.proxyUri = opts.proxyUri;
     this.graphData = opts.graphData;
   }
   async load() {
-    if (this.url) {
-      const response = await fetch(this.url);
+    if (this.proxyUri) {
+      const proxyUrl = `${await this.discoveryApi.getBaseUrl('proxy')}${
+        this.proxyUri
+      }`;
+      const response = await this.fetchApi.fetch(proxyUrl);
 
       if (!response.ok) {
         throw new Error(
-          `Get request failed to ${this.url} with ${response.status} ${response.statusText}`,
+          `Get request failed to ${this.proxyUri} with ${response.status} ${response.statusText}`,
         );
       }
       const responseJson = await response.json();
       if (!responseJson.path.endsWith('.json')) {
         throw new Error(
-          `Retrieved file content from ${this.url} is not JSON. Please provide a URL to a JSON file.`,
+          `Retrieved file content from ${this.proxyUri} is not JSON. Please provide a path to a JSON file.`,
         );
       }
       const jsonContent: TechRadarLoaderResponse = JSON.parse(

@@ -18,6 +18,9 @@ import { DefaultTechRadarApi, mock } from './defaultApi';
 import { ConfigReader } from '@backstage/config';
 
 describe('DefaultTechRadarApi', () => {
+  const discoveryApiMock = {
+    getBaseUrl: jest.fn().mockResolvedValue('https://example.com'),
+  };
   const mockData = { quadrants: [], rings: [], entries: [] };
   const mockConfigData = new ConfigReader(mockData);
   const dataFromURL = {
@@ -30,76 +33,94 @@ describe('DefaultTechRadarApi', () => {
       { id: 'sw', name: 'southwest' },
     ],
   };
-  const jsonURL = 'https://example.com/data.json';
-  const yamlURL = 'https://example.com/data.yaml';
-  const malformattedJsonURL = 'https://example.com/malformatted.json';
-  global.fetch = jest.fn(url => {
-    switch (url) {
-      case jsonURL:
-        return Promise.resolve({
-          ok: true,
-          json: () =>
-            Promise.resolve({
-              path: 'data.json',
-              content: btoa(JSON.stringify(dataFromURL)),
-            }),
-        });
-      case yamlURL:
-        return Promise.resolve({
-          ok: true,
-          json: () =>
-            Promise.resolve({
-              path: 'data.yaml',
-            }),
-        });
-      case malformattedJsonURL:
-        return Promise.resolve({
-          ok: true,
-          json: () =>
-            Promise.resolve({
-              path: 'malformatted.json',
-              content: btoa(JSON.stringify({ name: 'test' })),
-            }),
-        });
-      default:
-        return Promise.resolve({
-          ok: false,
-        });
-    }
-  }) as jest.Mock;
+  const jsonFile = '/data.json';
+  const yamlFile = '/data.yaml';
+  const jsonURL = `https://example.com${jsonFile}`;
+  const yamlURL = `https://example.com${yamlFile}`;
+  const fetchApiMock = {
+    fetch: jest.fn(url => {
+      switch (url) {
+        case jsonURL:
+          return Promise.resolve({
+            ok: true,
+            json: () =>
+              Promise.resolve({
+                path: jsonFile,
+                content: btoa(JSON.stringify(dataFromURL)),
+              }),
+          } as Response);
+        case yamlURL:
+          return Promise.resolve({
+            ok: true,
+            json: () =>
+              Promise.resolve({
+                path: yamlFile,
+              }),
+          } as Response);
+        default:
+          return Promise.resolve({
+            ok: false,
+            json: () =>
+              Promise.resolve({
+                path: yamlFile,
+              }),
+          } as Response);
+      }
+    }),
+  };
   it('should default to standard mock data if no params are passed', async () => {
-    const client = new DefaultTechRadarApi({});
+    const client = new DefaultTechRadarApi({
+      discoveryApi: discoveryApiMock,
+      fetchApi: fetchApiMock,
+    });
     const data = await client.load();
+    expect(discoveryApiMock.getBaseUrl).not.toHaveBeenCalled();
     expect(data).toStrictEqual(mock);
   });
 
-  it('should retrieve data from url if only url param is provided', async () => {
+  it('should return graphData param if only graphData param is provided', async () => {
     const client = new DefaultTechRadarApi({
-      url: jsonURL,
+      discoveryApi: discoveryApiMock,
+      fetchApi: fetchApiMock,
+      graphData: mockConfigData,
+    });
+    const data = await client.load();
+    expect(data).toStrictEqual(mockData);
+    expect(discoveryApiMock.getBaseUrl).not.toHaveBeenCalled();
+  });
+
+  it('should retrieve data from proxyUri if only proxyUri param is provided', async () => {
+    const client = new DefaultTechRadarApi({
+      discoveryApi: discoveryApiMock,
+      fetchApi: fetchApiMock,
+      proxyUri: jsonFile,
     });
     const data = await client.load();
     expect(data).toStrictEqual(dataFromURL);
+    expect(discoveryApiMock.getBaseUrl).toHaveBeenCalledWith('proxy');
+    expect(fetchApiMock.fetch).toHaveBeenCalledWith(jsonURL);
   });
 
-  it('should return graphData param if only graphData param is provided', async () => {
-    const client = new DefaultTechRadarApi({ graphData: mockConfigData });
-    const data = await client.load();
-    expect(data).toStrictEqual(mockData);
-  });
-
-  it('should retrieve data from url if both params are provided', async () => {
+  it('should retrieve data from proxyUri if both params are provided', async () => {
     const client = new DefaultTechRadarApi({
-      url: jsonURL,
+      discoveryApi: discoveryApiMock,
+      fetchApi: fetchApiMock,
+      proxyUri: jsonFile,
       graphData: mockConfigData,
     });
     const data = await client.load();
     expect(data).toStrictEqual(dataFromURL);
+    expect(discoveryApiMock.getBaseUrl).toHaveBeenCalledWith('proxy');
   });
 
-  it('should throw if fetched response from URL is not a json file', async () => {
+  it('should throw if fetched response from proxyUri is not a json file', async () => {
     const client = new DefaultTechRadarApi({
-      url: yamlURL,
+      discoveryApi: discoveryApiMock,
+      fetchApi: fetchApiMock,
+      proxyUri: yamlFile,
     });
     await expect(client.load()).rejects.toThrow();
+    expect(discoveryApiMock.getBaseUrl).toHaveBeenCalledWith('proxy');
+    expect(fetchApiMock.fetch).toHaveBeenCalledWith(yamlURL);
   });
 });

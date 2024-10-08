@@ -22,6 +22,8 @@ import {
   createRoutableExtension,
   createApiFactory,
   configApiRef,
+  discoveryApiRef,
+  fetchApiRef,
 } from '@backstage/core-plugin-api';
 
 export const rootRouteRef = createRouteRef({
@@ -43,10 +45,14 @@ export const techRadarPlugin = createPlugin({
       api: techRadarApiRef,
       deps: {
         configApi: configApiRef,
+        discoveryApi: discoveryApiRef,
+        fetchApi: fetchApiRef,
       },
-      factory({ configApi }) {
+      factory({ configApi, discoveryApi, fetchApi }) {
         return new DefaultTechRadarApi({
-          url: configApi.getOptionalString('techRadar.url'),
+          discoveryApi,
+          fetchApi,
+          proxyUri: configApi.getOptionalString('techRadar.proxyUri'),
           graphData: configApi.getOptionalConfig('techRadar.graphData'),
         });
       },

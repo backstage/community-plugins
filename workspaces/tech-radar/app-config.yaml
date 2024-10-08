@@ -60,8 +60,15 @@ catalog:
       rules:
         - allow: [User, Group]
 
+proxy:
+  endpoints:
+    '/sampleData':
+      # target: https://api.github.com/repos/backstage/community-plugins/contents/workspaces/tech-radar/plugins/tech-radar/src/utils/sampleTechRadarContent.json
+      target: https://api.github.com/repos/alex-mckay/sample-data/contents/data.json
+      credentials: dangerously-allow-unauthenticated
+
 techRadar:
-  url: 'https://api.github.com/repos/backstage/community-plugins/contents/workspaces/tech-radar/plugins/tech-radar/src/utils/sampleTechRadarContent.json'
+  proxyUri: '/sampleData'
   graphData:
     quadrants:
       - id: techniques

@@ -111,7 +111,7 @@ export const app = createApp({
         homePageExtension,
         scmAuthExtension,
         scmIntegrationApi,
-        techRadarApi,
+        // techRadarApi,
       ],
     }),
   ],
