@@ -2777,16 +2777,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@backstage-community/plugin-jenkins-scaffolder@workspace:^, @backstage-community/plugin-jenkins-scaffolder@workspace:plugins/jenkins-scaffolder":
-  version: 0.0.0-use.local
-  resolution: "@backstage-community/plugin-jenkins-scaffolder@workspace:plugins/jenkins-scaffolder"
-  dependencies:
-    "@backstage/backend-common": ^0.24.0
-    "@backstage/cli": ^0.27.0
-    "@backstage/plugin-scaffolder-node": ^0.4.9
-  languageName: unknown
-  linkType: soft
-
 "@backstage-community/plugin-jenkins@workspace:^, @backstage-community/plugin-jenkins@workspace:plugins/jenkins":
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-jenkins@workspace:plugins/jenkins"
@@ -2821,6 +2811,16 @@ __metadata:
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-router-dom: 6.0.0-beta.0 || ^6.3.0
+  languageName: unknown
+  linkType: soft
+
+"@backstage-community/plugin-scaffolder-backend-module-jenkins@workspace:^, @backstage-community/plugin-scaffolder-backend-module-jenkins@workspace:plugins/jenkins-scaffolder":
+  version: 0.0.0-use.local
+  resolution: "@backstage-community/plugin-scaffolder-backend-module-jenkins@workspace:plugins/jenkins-scaffolder"
+  dependencies:
+    "@backstage/backend-common": ^0.24.0
+    "@backstage/cli": ^0.27.0
+    "@backstage/plugin-scaffolder-node": ^0.4.9
   languageName: unknown
   linkType: soft
 
@@ -7050,7 +7050,7 @@ __metadata:
   dependencies:
     "@backstage-community/plugin-jenkins": "workspace:^"
     "@backstage-community/plugin-jenkins-backend": "workspace:^"
-    "@backstage-community/plugin-jenkins-scaffolder": "workspace:^"
+    "@backstage-community/plugin-scaffolder-backend-module-jenkins": "workspace:^"
     "@backstage/cli": ^0.27.0
     "@backstage/e2e-test-utils": ^0.1.1
     "@backstage/frontend-plugin-api": ^0.7.0
