@@ -30,7 +30,7 @@ export type AlertsCardOpts = {
 };
 
 // @public
-export const alertSelectorFromEntity: (entity: Entity) => string;
+export const alertSelectorFromEntity: (entity: Entity) => string | string[];
 
 // @public
 export interface Dashboard {
