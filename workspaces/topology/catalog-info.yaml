@@ -2,12 +2,8 @@ apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: topology
-  description: An example of a Backstage application.
-  # Example for optional annotations
-  # annotations:
-  #   github.com/project-slug: backstage/backstage
-  #   backstage.io/techdocs-ref: dir:.
+  description: TODO
 spec:
-  type: website
-  owner: john@example.com
-  lifecycle: experimental
+  type: backstage-plugin
+  owner: maintainers
+  lifecycle: production
