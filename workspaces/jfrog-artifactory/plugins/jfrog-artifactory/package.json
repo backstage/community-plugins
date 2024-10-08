@@ -66,7 +66,7 @@
     "dist",
     "dist-scalprum",
     "config.d.ts",
-    "app-config.janus-idp.yaml"
+    "app-config.yaml"
   ],
   "configSchema": "config.d.ts",
   "repository": {
