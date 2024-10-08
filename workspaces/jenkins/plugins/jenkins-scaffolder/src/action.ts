@@ -50,15 +50,12 @@ const jenkinsCreateJobAction = (options: JenkinsCreateJobActionOptions) => {
         ctx.workspacePath,
         configPath,
       );
-      const username: string | undefined = config.getOptionalString(
-        'jenkins.username',
-      );
-      const apiKey: string | undefined = config.getOptionalString(
-        'jenkins.apiKey',
-      );
+      const username: string | undefined =
+        config.getOptionalString('jenkins.username');
+      const apiKey: string | undefined =
+        config.getOptionalString('jenkins.apiKey');
       const server: string | undefined =
-        (serverUrl as string) ||
-        config.getOptionalString('jenkins.baseUrl');
+        (serverUrl as string) || config.getOptionalString('jenkins.baseUrl');
       if (!username || !apiKey) {
         throw new InputError(
           `No valid Jenkins credentials given. Please add them to the config file.`,
