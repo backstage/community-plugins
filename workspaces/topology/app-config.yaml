@@ -111,7 +111,7 @@ kubernetes:
   clusterLocatorMethods:
     - type: 'config'
       clusters:
-      # taken from kubeconfig, might need to be changed for you. Run `kubectl config view --minify --output json` to find the server URL
+        # taken from kubeconfig, might need to be changed for you. Run `kubectl config view --minify --output json` to find the server URL
         - name: minikube
           authProvider: 'serviceAccount'
           url: https://127.0.0.1:59002
@@ -125,10 +125,7 @@ kubernetes:
               apiVersion: 'v1'
               plural: 'taskruns'
 
-
 # see https://backstage.io/docs/permissions/getting-started for more on the permission framework
 permission:
   # setting this to `false` will disable permissions
   enabled: true
-
-
