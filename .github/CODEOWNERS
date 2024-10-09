@@ -9,6 +9,7 @@ yarn.lock                                           @backstage/community-plugins
 */yarn.lock                                         @backstage/community-plugins-maintainers @backstage-service
 
 /workspaces/3scale                                  @backstage/community-plugins-maintainers  @fmenesesg
+/workspaces/acr                                     @backstage/community-plugins-maintainers  @invincibleJai
 /workspaces/adr                                     @backstage/community-plugins-maintainers  @kuangp
 /workspaces/analytics                               @backstage/community-plugins-maintainers  @jmezach
 /workspaces/azure-devops                            @backstage/community-plugins-maintainers  @awanlin
@@ -24,8 +25,10 @@ yarn.lock                                           @backstage/community-plugins
 /workspaces/fossa                                   @backstage/community-plugins-maintainers  @backstage/sda-se-reviewers
 /workspaces/git-release-manager                     @backstage/community-plugins-maintainers  @erikengervall
 /workspaces/github-pull-requests-board              @backstage/community-plugins-maintainers  @gregorytalita
+/workspaces/jfrog-artifactory                       @backstage/community-plugins-maintainers  @BethGriggs
 /workspaces/kafka                                   @backstage/community-plugins-maintainers  @andrewthauer
 /workspaces/linguist                                @backstage/community-plugins-maintainers  @awanlin
+/workspaces/nexus-repository-manager                @backstage/community-plugins-maintainers  @schultzp2020
 /workspaces/octopus-deploy                          @backstage/community-plugins-maintainers  @jmezach
 /workspaces/pingidentity                            @backstage/community-plugins-maintainers  @jessicajhee
 /workspaces/playlist                                @backstage/community-plugins-maintainers  @kuangp

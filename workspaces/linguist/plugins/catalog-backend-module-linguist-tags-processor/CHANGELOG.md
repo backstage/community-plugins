@@ -1,5 +1,19 @@
 # @backstage-community/plugin-catalog-backend-module-linguist-tags-processor
 
+## 0.2.1
+
+### Patch Changes
+
+- 4f08a49: Backstage version bump to v1.31.1
+- Updated dependencies [4f08a49]
+  - @backstage-community/plugin-linguist-common@0.1.9
+
+## 0.2.0
+
+### Minor Changes
+
+- 3a4d799: **BREAKING** This change removes the deprecated `LinguistTagsProcessor` from `@backstage-community/plugin-linguist-backend`. It also removes the export of `LinguistTagsProcessor` from `@backstage-community/plugin-catalog-backend-module-linguist-tags-processor`. Please install this processor using [the New Backend System setup](https://github.com/backstage/community-plugins/tree/main/workspaces/linguist/plugins/catalog-backend-module-linguist-tags-processor#setup), which is now the default.
+
 ## 0.1.5
 
 ### Patch Changes

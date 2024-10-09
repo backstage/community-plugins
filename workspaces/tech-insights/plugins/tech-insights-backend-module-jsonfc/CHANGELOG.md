@@ -1,5 +1,32 @@
 # @backstage-community/plugin-tech-insights-backend-module-jsonfc
 
+## 0.1.58
+
+### Patch Changes
+
+- e516773: Remove usages of deprecated references and usage of @backstage/backend-common
+- e516773: Backstage version bump to v1.31.1
+- Updated dependencies [e516773]
+- Updated dependencies [e516773]
+  - @backstage-community/plugin-tech-insights-common@0.2.19
+  - @backstage-community/plugin-tech-insights-node@1.0.1
+
+## 0.1.57
+
+### Patch Changes
+
+- Updated dependencies [9871d0b]
+  - @backstage-community/plugin-tech-insights-node@1.0.0
+
+## 0.1.56
+
+### Patch Changes
+
+- 1d33996: Added links property for checks, to allow the UI to render links for users to click and get more information about individual checks, what they mean, how to adhere to them, etc.
+- Updated dependencies [1d33996]
+  - @backstage-community/plugin-tech-insights-common@0.2.18
+  - @backstage-community/plugin-tech-insights-node@0.6.7
+
 ## 0.1.55
 
 ### Patch Changes

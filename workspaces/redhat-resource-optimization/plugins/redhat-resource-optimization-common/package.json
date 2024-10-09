@@ -16,8 +16,9 @@
   },
   "description": "Common functionalities for the redhat-resource-optimization plugin",
   "devDependencies": {
-    "@backstage/cli": "^0.27.0",
+    "@backstage/cli": "^0.27.1",
     "@backstage/types": "^1.1.1",
+    "@testing-library/jest-dom": "^6.0.0",
     "@types/lodash": "^4.17.5",
     "msw": "^2.3.4",
     "ts-morph": "^23.0.0",
@@ -30,6 +31,13 @@
   "files": [
     "dist"
   ],
+  "jest": {
+    "testEnvironmentOptions": {
+      "customExportConditions": [
+        ""
+      ]
+    }
+  },
   "license": "Apache-2.0",
   "main": "src/index.ts",
   "name": "@backstage-community/plugin-redhat-resource-optimization-common",
@@ -61,5 +69,5 @@
       ]
     }
   },
-  "version": "1.0.1"
+  "version": "1.0.2"
 }

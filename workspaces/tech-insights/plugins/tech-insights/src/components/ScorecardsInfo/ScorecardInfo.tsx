@@ -26,7 +26,9 @@ import Accordion from '@material-ui/core/Accordion';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import { useApi } from '@backstage/core-plugin-api';
+import { Entity } from '@backstage/catalog-model';
 import { techInsightsApiRef } from '../../api';
+import { MarkdownContent } from '@backstage/core-components';
 
 const useStyles = makeStyles(theme => ({
   subheader: {
@@ -75,7 +77,7 @@ const infoCard = (
                 variant="body1"
                 gutterBottom
               >
-                {description}
+                <MarkdownContent content={description} />
               </Typography>
             </Grid>
           )}
@@ -91,6 +93,7 @@ const infoCard = (
 export const ScorecardInfo = (props: {
   checkResults: CheckResult[];
   title: ReactNode;
+  entity: Entity;
   description?: string;
   noWarning?: boolean;
   expanded?: boolean;
@@ -98,6 +101,7 @@ export const ScorecardInfo = (props: {
   const {
     checkResults,
     title,
+    entity,
     description,
     noWarning,
     expanded = true,
@@ -130,7 +134,7 @@ export const ScorecardInfo = (props: {
     title,
     description,
     classes,
-    <ScorecardsList checkResults={checkResults} />,
+    <ScorecardsList checkResults={checkResults} entity={entity} />,
     expanded,
     `${
       checkResults.filter(checkResult => !api.isCheckResultFailed(checkResult))

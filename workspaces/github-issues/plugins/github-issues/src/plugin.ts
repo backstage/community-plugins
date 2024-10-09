@@ -21,8 +21,8 @@ import {
   createRoutableExtension,
   configApiRef,
   errorApiRef,
-  githubAuthApiRef,
 } from '@backstage/core-plugin-api';
+import { scmAuthApiRef } from '@backstage/integration-react';
 import { githubIssuesApi, githubIssuesApiRef } from './api';
 import { rootRouteRef } from './routes';
 
@@ -34,11 +34,11 @@ export const githubIssuesPlugin = createPlugin({
       api: githubIssuesApiRef,
       deps: {
         configApi: configApiRef,
-        githubAuthApi: githubAuthApiRef,
+        scmAuthApi: scmAuthApiRef,
         errorApi: errorApiRef,
       },
-      factory: ({ configApi, githubAuthApi, errorApi }) =>
-        githubIssuesApi(githubAuthApi, configApi, errorApi),
+      factory: ({ configApi, scmAuthApi, errorApi }) =>
+        githubIssuesApi(scmAuthApi, configApi, errorApi),
     }),
   ],
   routes: {

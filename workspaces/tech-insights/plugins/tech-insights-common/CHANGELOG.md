@@ -1,5 +1,18 @@
 # @backstage-community/plugin-tech-insights-common
 
+## 0.2.19
+
+### Patch Changes
+
+- e516773: Remove usages of deprecated references and usage of @backstage/backend-common
+- e516773: Backstage version bump to v1.31.1
+
+## 0.2.18
+
+### Patch Changes
+
+- 1d33996: Added links property for checks, to allow the UI to render links for users to click and get more information about individual checks, what they mean, how to adhere to them, etc.
+
 ## 0.2.17
 
 ### Patch Changes

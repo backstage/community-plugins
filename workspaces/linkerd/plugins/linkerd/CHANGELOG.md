@@ -1,5 +1,17 @@
 # @backstage-community/plugin-linkerd
 
+## 0.3.5
+
+### Patch Changes
+
+- e20f9cf: Add support for New Frontend System under `/alpha`
+
+## 0.3.4
+
+### Patch Changes
+
+- c9ae70c: Backstage version bump to v1.31.1
+
 ## 0.3.3
 
 ### Patch Changes

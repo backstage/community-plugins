@@ -22,7 +22,8 @@ import {
 
 export type { EntityPageCicdCharts } from './entity-page';
 
-const rootCatalogCicdStatsRouteRef = createRouteRef({
+/** @public */
+export const rootCatalogCicdStatsRouteRef = createRouteRef({
   id: 'cicd-statistics',
 });
 

@@ -1,5 +1,25 @@
 # @backstage-community/plugin-azure-devops-backend
 
+## 0.7.2
+
+### Patch Changes
+
+- 2dd98b6: Backstage version bump to v1.31.1
+- Updated dependencies [2dd98b6]
+  - @backstage-community/plugin-azure-devops-common@0.4.8
+
+## 0.7.1
+
+### Patch Changes
+
+- 1b55b99: Marked `createRouter` and `RouterOptions` as deprecated, to be removed soon after the Backstage `1.32.0` release in October
+
+## 0.7.0
+
+### Minor Changes
+
+- c6f00d3: **BREAKING** This change removes the deprecated `AzureDevOpsAnnotatorProcessor` from `@backstage-community/plugin-azure-devops-backend`. It also removes the export of `AzureDevOpsAnnotatorProcessor` from `@backstage-community/plugin-catalog-backend-module-azure-devops-annotator-processor`. Please install this processor using [the New Backend System setup](https://github.com/backstage/community-plugins/tree/main/workspaces/azure-devops/plugins/catalog-backend-module-azure-devops-annotator-processor#setup), which is now the default.
+
 ## 0.6.12
 
 ### Patch Changes

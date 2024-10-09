@@ -1,5 +1,37 @@
 ## @janus-idp/backstage-plugin-argocd [1.5.7](https://github.com/janus-idp/backstage-plugins/compare/@janus-idp/backstage-plugin-argocd@1.5.6...@janus-idp/backstage-plugin-argocd@1.5.7) (2024-08-02)
 
+## 1.8.6
+
+### Patch Changes
+
+- a1313aa: Backstage version bump to v1.31.2
+- Updated dependencies [a1313aa]
+  - @backstage-community/plugin-redhat-argocd-common@1.0.6
+
+## 1.8.5
+
+### Patch Changes
+
+- c829b80: fetched argo resources timestamp from k8s object
+
+## 1.8.4
+
+### Patch Changes
+
+- 7aa4847: add dynamic plugin assets in argocd package
+
+## 1.8.3
+
+### Patch Changes
+
+- 1f5881c: update sidebar filters for argocd plugin
+
+## 1.8.2
+
+### Patch Changes
+
+- b393cbc: Redesign argocd sidebar layout
+
 ## 1.8.1
 
 ### Patch Changes

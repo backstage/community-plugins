@@ -28,7 +28,7 @@ export const apis: AnyApiFactory[] = [
       fetchApiApi: fetchApiRef,
     },
     factory({ discoveryApi, fetchApi }) {
-      return new CicdStatisticsApiBuildkite(discoveryApi, fetchApi);
+      return new CicdStatisticsApiBuildkite({ discoveryApi, fetchApi });
     },
   }),
 ];
@@ -49,5 +49,5 @@ import { EntityCicdStatisticsContent } from '@backstage-community/plugin-cicd-st
 
 ```yaml
 annotations:
-  buildkite.com/pipeline-name: 'org-name/some-pipeline'
+  buildkite.com/pipeline: 'org-name/some-pipeline'
 ```

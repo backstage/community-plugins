@@ -1,0 +1,202 @@
+[
+  {
+    "component": {
+      "id": "ZG9ja2VyOmRjMDg4NmQ4MTk4MjI1M2ZkYjRlNjFkYTU0NTY4N2Ri",
+      "repository": "docker",
+      "format": "docker",
+      "group": null,
+      "name": "janus-idp/backstage-showcase",
+      "version": "sha-33dfe6b",
+      "assets": [
+        {
+          "downloadUrl": "http://localhost:8081/repository/docker/v2/janus-idp/backstage-showcase/manifests/sha-33dfe6b",
+          "path": "v2/janus-idp/backstage-showcase/manifests/sha-33dfe6b",
+          "id": "ZG9ja2VyOjYyNTRhNjg1YWM5Mzc4N2ZkOTY5ZWMxN2YxZDQzNjZm",
+          "repository": "docker",
+          "format": "docker",
+          "checksum": {
+            "sha1": "3ae9cd4ea015cc0cd2d254d9f255235256872fd2",
+            "sha256": "58433b2aa31be8d65bca3eedc83cd49aed997deef39dded5f1c7be1a9227d25f"
+          },
+          "contentType": "application/vnd.docker.distribution.manifest.v2+json",
+          "lastModified": "2023-07-27T21:38:10.664+00:00",
+          "lastDownloaded": "2023-08-07T17:47:19.273+00:00",
+          "uploader": "admin",
+          "uploaderIp": "0.0.0.0",
+          "fileSize": 1586
+        }
+      ]
+    },
+    "dockerManifests": [
+      {
+        "schemaVersion": 1,
+        "name": "janus-idp/backstage-showcase",
+        "tag": "sha-33dfe6b",
+        "fsLayers": [
+          {
+            "blobSum": "sha256:7890eb22610600843a22de84c96fab3f2d428d19e164a529d775ebbb22cc2f3e"
+          },
+          {
+            "blobSum": "sha256:cfdca8bd8795bb3e2c17030868e88434c52d55b7727a10187c9c0b7d0884daf0"
+          },
+          {
+            "blobSum": "sha256:d47076810fbfe12fe7ffed77b6e7e314d8c2edec4d191cbf5e2297feed9bfd80"
+          },
+          {
+            "blobSum": "sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1"
+          },
+          {
+            "blobSum": "sha256:b6c0e061017b8d76a988fe0a2e985baec96255966cf7fd71f36eae65c97d6bf4"
+          },
+          {
+            "blobSum": "sha256:f248198ee67af270e04ecac09c0bd34eb06025cd8db9e165146a78a603bc906b"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "component": {
+      "id": "ZG9ja2VyOjA5OTViYmFlZWIxZmJjM2VjYzEzODJkMjkwMzM2NzA1",
+      "repository": "docker",
+      "format": "docker",
+      "group": null,
+      "name": "janus-idp/backstage-showcase",
+      "version": "sha-de3dbf1",
+      "assets": [
+        {
+          "downloadUrl": "http://localhost:8081/repository/docker/v2/janus-idp/backstage-showcase/manifests/sha-de3dbf1",
+          "path": "v2/janus-idp/backstage-showcase/manifests/sha-de3dbf1",
+          "id": "ZG9ja2VyOjE0NDUzNzRhZDc5YTczODFmOTIzY2I5OWUzYjJmYTBk",
+          "repository": "docker",
+          "format": "docker",
+          "checksum": {
+            "sha1": "206f5cfc76a16dbba78e2b9a826cbe7bd5cdd7dd",
+            "sha256": "85aa455189b4dba87108d57ec3b223b1766e15c16cb03b046a17bdfcddb37cc3"
+          },
+          "contentType": "application/vnd.docker.distribution.manifest.v2+json",
+          "lastModified": "2023-07-27T21:38:03.120+00:00",
+          "lastDownloaded": "2023-08-07T17:47:19.273+00:00",
+          "uploader": "admin",
+          "uploaderIp": "0.0.0.0",
+          "fileSize": 1586
+        }
+      ]
+    },
+    "dockerManifests": [
+      {
+        "schemaVersion": 2,
+        "mediaType": "application/vnd.docker.distribution.manifest.v2+json",
+        "config": {
+          "mediaType": "application/vnd.docker.container.image.v1+json",
+          "size": 17214,
+          "digest": "sha256:7779fcf4e4a18239961a620c36329b646da17abb70d3e4af2d67a2d3b27695c9"
+        },
+        "layers": [
+          {
+            "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+            "size": 36581161,
+            "digest": "sha256:7890eb22610600843a22de84c96fab3f2d428d19e164a529d775ebbb22cc2f3e"
+          },
+          {
+            "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+            "size": 36267603,
+            "digest": "sha256:cfdca8bd8795bb3e2c17030868e88434c52d55b7727a10187c9c0b7d0884daf0"
+          },
+          {
+            "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+            "size": 34035582,
+            "digest": "sha256:8b819f6efa3a8cd38f30259971941291a36fa6472a83ae6bf9bc79119d0e4c87"
+          },
+          {
+            "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+            "size": 32,
+            "digest": "sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1"
+          },
+          {
+            "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+            "size": 132701544,
+            "digest": "sha256:ee443150ae3adcf4f259a86940e6095cd661cad1c31774d198f5d8f85adfd28d"
+          },
+          {
+            "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+            "size": 132772515,
+            "digest": "sha256:0fc00d970ac8cb78ca3040c28de02350f68f2eeb4d30c211d94aa06f1b093460"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "component": {
+      "id": "ZG9ja2VyOjdmMDZjOGViMzQ2N2JkOWEyNWY0OTUwOWY4ODYxNWFh",
+      "repository": "docker",
+      "format": "docker",
+      "group": null,
+      "name": "janus-idp/backstage-showcase",
+      "version": "latest",
+      "assets": [
+        {
+          "downloadUrl": "http://localhost:8081/repository/docker/v2/janus-idp/backstage-showcase/manifests/latest",
+          "path": "v2/janus-idp/backstage-showcase/manifests/latest",
+          "id": "ZG9ja2VyOmE3NjI4NGQzYzVlYjI1MTg0ODBhNmM1MDllN2UyYzE5",
+          "repository": "docker",
+          "format": "docker",
+          "checksum": {
+            "sha1": "206f5cfc76a16dbba78e2b9a826cbe7bd5cdd7dd",
+            "sha256": "85aa455189b4dba87108d57ec3b223b1766e15c16cb03b046a17bdfcddb37cc3"
+          },
+          "contentType": "application/vnd.docker.distribution.manifest.v2+json",
+          "lastModified": "2023-07-27T21:34:40.249+00:00",
+          "lastDownloaded": "2023-08-07T17:47:19.273+00:00",
+          "uploader": "admin",
+          "uploaderIp": "0.0.0.0",
+          "fileSize": 1586
+        }
+      ]
+    },
+    "dockerManifests": [
+      {
+        "schemaVersion": 2,
+        "mediaType": "application/vnd.docker.distribution.manifest.v2+json",
+        "config": {
+          "mediaType": "application/vnd.docker.container.image.v1+json",
+          "size": 17214,
+          "digest": "sha256:7779fcf4e4a18239961a620c36329b646da17abb70d3e4af2d67a2d3b27695c9"
+        },
+        "layers": [
+          {
+            "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+            "size": 36581161,
+            "digest": "sha256:7890eb22610600843a22de84c96fab3f2d428d19e164a529d775ebbb22cc2f3e"
+          },
+          {
+            "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+            "size": 36267603,
+            "digest": "sha256:cfdca8bd8795bb3e2c17030868e88434c52d55b7727a10187c9c0b7d0884daf0"
+          },
+          {
+            "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+            "size": 34035582,
+            "digest": "sha256:8b819f6efa3a8cd38f30259971941291a36fa6472a83ae6bf9bc79119d0e4c87"
+          },
+          {
+            "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+            "size": 32,
+            "digest": "sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1"
+          },
+          {
+            "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+            "size": 132701544,
+            "digest": "sha256:ee443150ae3adcf4f259a86940e6095cd661cad1c31774d198f5d8f85adfd28d"
+          },
+          {
+            "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+            "size": 132772515,
+            "digest": "sha256:0fc00d970ac8cb78ca3040c28de02350f68f2eeb4d30c211d94aa06f1b093460"
+          }
+        ]
+      }
+    ]
+  }
+]

@@ -9,7 +9,7 @@
       "status": "proposed",
       "updated_at": "2023-03-10T12:41:41.941Z",
       "community": "",
-      "size": "medium",
+      "size": "small",
       "start_date": null,
       "end_date": null,
       "responsible": "Responsible Adult 1",
@@ -21,7 +21,7 @@
       "entity_ref": null,
       "title": "Lorem ipsum 2",
       "description": "sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud",
-      "status": "proposed",
+      "status": "ongoing",
       "updated_at": "2023-03-09T12:41:41.941Z",
       "community": "",
       "size": "medium",
@@ -30,6 +30,21 @@
       "responsible": "Responsible Adult 2",
       "docs": null,
       "members_count": "5"
+    },
+    {
+      "id": 12,
+      "entity_ref": null,
+      "title": "Lorem ipsum 3",
+      "description": "sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit",
+      "status": "completed",
+      "updated_at": "2024-09-09T12:41:41.941Z",
+      "community": "",
+      "size": "large",
+      "start_date": null,
+      "end_date": null,
+      "responsible": "Responsible Adult 3",
+      "docs": null,
+      "members_count": "15"
     }
   ]
 }

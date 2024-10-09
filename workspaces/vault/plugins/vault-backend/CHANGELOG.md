@@ -1,5 +1,13 @@
 # @backstage-community/plugin-vault-backend
 
+## 0.4.19
+
+### Patch Changes
+
+- 26306c4: Backstage version bump to v1.31.2
+- Updated dependencies [26306c4]
+  - @backstage-community/plugin-vault-node@0.1.16
+
 ## 0.4.18
 
 ### Patch Changes

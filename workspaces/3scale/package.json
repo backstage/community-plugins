@@ -6,6 +6,9 @@
     "node": "18 || 20"
   },
   "scripts": {
+    "dev": "yarn workspaces foreach -A --include backend --include app --parallel -v -i run start",
+    "start": "yarn workspace app start",
+    "start-backend": "yarn workspace backend start",
     "tsc": "tsc",
     "tsc:full": "tsc --skipLibCheck true --incremental false",
     "build:all": "backstage-cli repo build --all",
@@ -18,7 +21,8 @@
     "lint": "backstage-cli repo lint --since origin/main",
     "lint:all": "backstage-cli repo lint",
     "prettier:check": "prettier --check .",
-    "new": "backstage-cli new --scope @backstage-community"
+    "new": "backstage-cli new --scope @backstage-community",
+    "postinstall": "cd ../../ && yarn install"
   },
   "workspaces": {
     "packages": [
@@ -32,9 +36,9 @@
     "directory": "workspaces/3scale"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.27.0",
+    "@backstage/cli": "^0.27.1",
     "@backstage/e2e-test-utils": "^0.1.1",
-    "@backstage/repo-tools": "^0.9.5",
+    "@backstage/repo-tools": "^0.9.7",
     "@changesets/cli": "^2.27.1",
     "@spotify/prettier-config": "^15.0.0",
     "node-gyp": "^9.0.0",
@@ -57,6 +61,7 @@
     ]
   },
   "dependencies": {
+    "@backstage-community/plugin-3scale-backend": "workspace:^",
     "knip": "^5.27.4"
   }
 }

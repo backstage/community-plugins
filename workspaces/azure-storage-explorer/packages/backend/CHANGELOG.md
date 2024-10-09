@@ -1,5 +1,19 @@
 # backend
 
+## 0.0.6
+
+### Patch Changes
+
+- Updated dependencies [37e9681]
+  - @backstage-community/plugin-azure-storage-explorer-backend@0.0.6
+
+## 0.0.5
+
+### Patch Changes
+
+- Updated dependencies [d803cce]
+  - @backstage-community/plugin-azure-storage-explorer-backend@0.0.5
+
 ## 0.0.4
 
 ### Patch Changes

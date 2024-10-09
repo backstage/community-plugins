@@ -1,5 +1,29 @@
 # @backstage-community/plugin-tech-insights
 
+## 0.3.37
+
+### Patch Changes
+
+- e516773: Remove usages of deprecated references and usage of @backstage/backend-common
+- e516773: Backstage version bump to v1.31.1
+- Updated dependencies [e516773]
+- Updated dependencies [e516773]
+  - @backstage-community/plugin-tech-insights-common@0.2.19
+
+## 0.3.36
+
+### Patch Changes
+
+- 42a2c31: Export component extensions instead of routable extensions when routes aren't required (or used). ResultCheckIcon can now wrap both React components and HTML elements for onClick handling of the popup menu with links.
+
+## 0.3.35
+
+### Patch Changes
+
+- 1d33996: Added support for links for checks. Static links are defined in the backend for each check. Dynamic links (based on the entity, e.g. to go to github repos, sonarqube projects, etc) are defined with functions in the frontend, when registering the tech-insights API. Two new components are added, TechInsightsCheckIcon and TechInsightsLinksMenu. The former to wrap a result icon with a popup menu with links, the second is the component to show the popup with links (which can be arbitrarily componsed in other UI views).
+- Updated dependencies [1d33996]
+  - @backstage-community/plugin-tech-insights-common@0.2.18
+
 ## 0.3.34
 
 ### Patch Changes
