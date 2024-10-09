@@ -37,6 +37,7 @@ import {
   LoggerService,
   SchedulerService,
 } from '@backstage/backend-plugin-api';
+import { NotificationService } from '@backstage/plugin-notifications-node';
 
 /**
  * @public
@@ -82,6 +83,7 @@ export interface TechInsightsOptions<
   database: DatabaseService;
   scheduler: SchedulerService;
   auth: AuthService;
+  notification: NotificationService;
 }
 
 /**
@@ -125,6 +127,7 @@ export const buildTechInsightsContext = async <
     logger,
     scheduler,
     auth,
+    notification,
   } = options;
 
   const buildFactRetrieverRegistry = (): FactRetrieverRegistry => {
@@ -156,6 +159,7 @@ export const buildTechInsightsContext = async <
       discovery,
       logger,
       auth,
+      notification,
     },
   });
 

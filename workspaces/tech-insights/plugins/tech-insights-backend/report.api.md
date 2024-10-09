@@ -19,6 +19,7 @@ import { FactRetrieverRegistration } from '@backstage-community/plugin-tech-insi
 import { FactRetrieverRegistry as FactRetrieverRegistry_2 } from '@backstage-community/plugin-tech-insights-node';
 import { HumanDuration } from '@backstage/types';
 import { LoggerService } from '@backstage/backend-plugin-api';
+import { NotificationService } from '@backstage/plugin-notifications-node';
 import { PersistenceContext as PersistenceContext_2 } from '@backstage-community/plugin-tech-insights-node';
 import { SchedulerService } from '@backstage/backend-plugin-api';
 import { TechInsightCheck } from '@backstage-community/plugin-tech-insights-node';
@@ -123,6 +124,8 @@ export interface TechInsightsOptions<
   factRetrievers?: FactRetrieverRegistration[];
   // (undocumented)
   logger: LoggerService;
+  // (undocumented)
+  notification: NotificationService;
   persistenceContext?: PersistenceContext_2;
   // (undocumented)
   scheduler: SchedulerService;

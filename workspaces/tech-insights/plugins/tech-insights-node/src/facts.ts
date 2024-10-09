@@ -23,6 +23,7 @@ import {
   DiscoveryService,
   LoggerService,
 } from '@backstage/backend-plugin-api';
+import { NotificationService } from '@backstage/plugin-notifications-node';
 
 /**
  * A container for facts. The shape of the fact records needs to correspond to the FactSchema with same `ref` value.
@@ -93,6 +94,7 @@ export type FactRetrieverContext = {
   discovery: DiscoveryService;
   logger: LoggerService;
   auth: AuthService;
+  notification: NotificationService;
   entityFilter?:
     | Record<string, string | symbol | (string | symbol)[]>[]
     | Record<string, string | symbol | (string | symbol)[]>;

@@ -20,6 +20,7 @@ import { GetEntitiesResponse } from '@backstage/catalog-client';
 import { entityMetadataFactRetriever } from './entityMetadataFactRetriever';
 import { mockServices } from '@backstage/backend-test-utils';
 import { DiscoveryService } from '@backstage/backend-plugin-api';
+import { NotificationService } from '@backstage/plugin-notifications-node';
 
 const getEntitiesMock = jest.fn();
 jest.mock('@backstage/catalog-client', () => {
@@ -32,6 +33,10 @@ jest.mock('@backstage/catalog-client', () => {
 const discovery: jest.Mocked<DiscoveryService> = {
   getBaseUrl: jest.fn(),
   getExternalBaseUrl: jest.fn(),
+};
+
+const notificationService: jest.Mocked<NotificationService> = {
+  send: jest.fn(),
 };
 
 const defaultEntityListResponse: GetEntitiesResponse = {
@@ -103,6 +108,7 @@ const handlerContext = {
   logger: mockServices.logger.mock(),
   auth: mockServices.auth(),
   config: ConfigReader.fromConfigs([]),
+  notification: notificationService,
 };
 
 const entityFactRetriever = entityMetadataFactRetriever;

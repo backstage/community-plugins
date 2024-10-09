@@ -39,6 +39,7 @@ import {
   techdocsFactRetriever,
 } from '../service';
 import { createFactRetrieverRegistrationFromConfig } from './config';
+import { notificationService } from '@backstage/plugin-notifications-node';
 
 /**
  * The tech-insights backend plugin.
@@ -101,6 +102,7 @@ export const techInsightsPlugin = createBackendPlugin({
         logger: coreServices.logger,
         scheduler: coreServices.scheduler,
         auth: coreServices.auth,
+        notification: notificationService,
       },
       async init({
         config,
@@ -110,6 +112,7 @@ export const techInsightsPlugin = createBackendPlugin({
         logger,
         scheduler,
         auth,
+        notification,
       }) {
         const factRetrievers: FactRetrieverRegistration[] = Object.entries(
           addedFactRetrievers,
@@ -134,6 +137,7 @@ export const techInsightsPlugin = createBackendPlugin({
           persistenceContext,
           scheduler,
           auth,
+          notification,
         });
 
         httpRouter.use(
