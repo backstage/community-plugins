@@ -2836,7 +2836,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@backstage-community/plugin-topology@workspace:plugins/topology":
+"@backstage-community/plugin-topology@workspace:^, @backstage-community/plugin-topology@workspace:plugins/topology":
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-topology@workspace:plugins/topology"
   dependencies:
@@ -7680,6 +7680,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@internal/topology@workspace:."
   dependencies:
+    "@backstage-community/plugin-topology": "workspace:^"
     "@backstage/cli": ^0.27.1
     "@backstage/e2e-test-utils": ^0.1.1
     "@backstage/repo-tools": ^0.8.0

@@ -106,6 +106,25 @@ catalog:
 
 kubernetes:
   # see https://backstage.io/docs/features/kubernetes/configuration for kubernetes configuration options
+  serviceLocatorMethod:
+    type: 'multiTenant'
+  clusterLocatorMethods:
+    - type: 'config'
+      clusters:
+      # taken from kubeconfig, might need to be changed for you. Run `kubectl config view --minify --output json` to find the server URL
+        - name: minikube
+          authProvider: 'serviceAccount'
+          url: https://127.0.0.1:59002
+          serviceAccountToken: ${KIND_SERVICE_ACCOUNT_TOKEN}
+          skipTLSVerify: true
+          customResources:
+            - group: 'tekton.dev'
+              apiVersion: 'v1'
+              plural: 'pipelineruns'
+            - group: 'tekton.dev'
+              apiVersion: 'v1'
+              plural: 'taskruns'
+
 
 # see https://backstage.io/docs/permissions/getting-started for more on the permission framework
 permission:

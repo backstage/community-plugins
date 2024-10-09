@@ -73,6 +73,7 @@ import {
   EntityKubernetesContent,
   isKubernetesAvailable,
 } from '@backstage/plugin-kubernetes';
+import { TopologyPage } from '@backstage-community/plugin-topology';
 
 const techdocsContent = (
   <EntityTechdocsContent>
@@ -168,6 +169,10 @@ const serviceEntityPage = (
 
     <EntityLayout.Route path="/ci-cd" title="CI/CD">
       {cicdContent}
+    </EntityLayout.Route>
+
+    <EntityLayout.Route path="/topology" title="Topology">
+      <TopologyPage />
     </EntityLayout.Route>
 
     <EntityLayout.Route
