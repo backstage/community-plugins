@@ -40,7 +40,7 @@ export const TopologyComponent = () => {
   const {
     palette: { type },
   } = useTheme();
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     const htmlTagElement = document.documentElement;
 
     const scalprumStyles = Array.from(

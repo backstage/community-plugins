@@ -115,7 +115,7 @@ kubernetes:
         - name: minikube
           authProvider: 'serviceAccount'
           url: https://127.0.0.1:59002
-          serviceAccountToken: ${KIND_SERVICE_ACCOUNT_TOKEN}
+          serviceAccountToken: ${K8S_SERVICE_ACCOUNT_TOKEN}
           skipTLSVerify: true
           customResources:
             - group: 'tekton.dev'
