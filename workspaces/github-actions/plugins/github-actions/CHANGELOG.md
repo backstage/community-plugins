@@ -1,5 +1,12 @@
 # @backstage-community/plugin-github-actions
 
+## 0.6.22
+
+### Patch Changes
+
+- 45fd620: use new FE system syntax (replacing deprecated methods)
+- 59b34f5: Backstage version bump to v1.30.2
+
 ## 0.6.21
 
 ### Patch Changes

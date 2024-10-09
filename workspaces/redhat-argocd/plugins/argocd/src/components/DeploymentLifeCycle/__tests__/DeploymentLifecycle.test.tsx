@@ -1,3 +1,18 @@
+/*
+ * Copyright 2024 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import React, { PropsWithChildren } from 'react';
 
 import { useApi } from '@backstage/core-plugin-api';
@@ -9,6 +24,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { mockApplication, mockEntity } from '../../../../dev/__data__';
 import { useArgocdConfig } from '../../../hooks/useArgocdConfig';
 import DeploymentLifecycle from '../DeploymentLifecycle';
+import { useArgoResources } from '../sidebar/rollouts/RolloutContext';
 
 jest.mock('../../../hooks/useArgocdConfig', () => ({
   useArgocdConfig: jest.fn(),
@@ -24,6 +40,11 @@ const mockUsePermission = usePermission as jest.MockedFunction<
 jest.mock('@backstage/core-plugin-api', () => ({
   ...jest.requireActual('@backstage/core-plugin-api'),
   useApi: jest.fn(),
+}));
+
+jest.mock('../sidebar/rollouts/RolloutContext', () => ({
+  ...jest.requireActual('../sidebar/rollouts/RolloutContext'),
+  useArgoResources: jest.fn(),
 }));
 
 jest.mock('@backstage/plugin-catalog-react', () => ({
@@ -43,6 +64,7 @@ describe('DeploymentLifecycle', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
+    (useArgoResources as jest.Mock).mockReturnValue({ rollouts: [] });
     mockUsePermission.mockReturnValue({ loading: false, allowed: true });
 
     (useArgocdConfig as any).mockReturnValue({

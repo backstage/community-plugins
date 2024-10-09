@@ -15,7 +15,11 @@
  */
 
 import React from 'react';
-import { StatusOK, StatusWarning } from '@backstage/core-components';
+import {
+  StatusOK,
+  StatusPending,
+  StatusWarning,
+} from '@backstage/core-components';
 import { Status } from '../../types';
 
 interface StatusComponent {
@@ -24,7 +28,8 @@ interface StatusComponent {
 
 const statuses: StatusComponent = {
   proposed: <StatusWarning>proposed</StatusWarning>,
-  ongoing: <StatusOK>ongoing</StatusOK>,
+  ongoing: <StatusPending>ongoing</StatusPending>,
+  completed: <StatusOK>completed</StatusOK>,
 };
 
 type Props = {

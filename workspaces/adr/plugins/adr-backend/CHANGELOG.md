@@ -1,5 +1,38 @@
 # @backstage-community/plugin-adr-backend
 
+## 0.4.25
+
+### Patch Changes
+
+- 5b56188: Backstage version bump to v1.31.1
+- Updated dependencies [5b56188]
+- Updated dependencies [5b56188]
+  - @backstage-community/search-backend-module-adr@0.2.0
+  - @backstage-community/plugin-adr-common@0.2.29
+
+## 0.4.24
+
+### Patch Changes
+
+- Updated dependencies [f43e557]
+  - @backstage-community/search-backend-module-adr@0.1.4
+
+## 0.4.23
+
+### Patch Changes
+
+- f18c579: Backstage version bump to v1.30.2
+- Updated dependencies [f18c579]
+  - @backstage-community/plugin-adr-common@0.2.28
+  - @backstage-community/search-backend-module-adr@0.1.3
+
+## 0.4.22
+
+### Patch Changes
+
+- ae2ee8a: Updated dependency `@types/supertest` to `^6.0.0`.
+  Updated dependency `supertest` to `^7.0.0`.
+
 ## 0.4.21
 
 ### Patch Changes

@@ -1,5 +1,46 @@
 # @backstage-community/plugin-linguist-backend
 
+## 0.6.3
+
+### Patch Changes
+
+- 3fad54b: Fixes custom linguistJs options
+
+## 0.6.2
+
+### Patch Changes
+
+- 4f08a49: Backstage version bump to v1.31.1
+- Updated dependencies [4f08a49]
+  - @backstage-community/plugin-linguist-common@0.1.9
+
+## 0.6.1
+
+### Patch Changes
+
+- 932d9e6: Marked `createRouter`, `createRouterFromConfig`, `RouterOptions`, and `PluginOptions` as deprecated, to be removed soon after the Backstage `1.32.0` release in October
+
+## 0.6.0
+
+### Minor Changes
+
+- 3a4d799: **BREAKING** This change removes the deprecated `LinguistTagsProcessor` from `@backstage-community/plugin-linguist-backend`. It also removes the export of `LinguistTagsProcessor` from `@backstage-community/plugin-catalog-backend-module-linguist-tags-processor`. Please install this processor using [the New Backend System setup](https://github.com/backstage/community-plugins/tree/main/workspaces/linguist/plugins/catalog-backend-module-linguist-tags-processor#setup), which is now the default.
+
+## 0.5.23
+
+### Patch Changes
+
+- 6021ae7: Backstage version bump to v1.30.2
+- Updated dependencies [6021ae7]
+  - @backstage-community/plugin-linguist-common@0.1.8
+
+## 0.5.22
+
+### Patch Changes
+
+- ae2ee8a: Updated dependency `@types/supertest` to `^6.0.0`.
+  Updated dependency `supertest` to `^7.0.0`.
+
 ## 0.5.21
 
 ### Patch Changes

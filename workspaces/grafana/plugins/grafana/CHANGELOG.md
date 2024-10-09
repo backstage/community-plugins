@@ -1,5 +1,18 @@
 # @backstage-community/plugin-grafana
 
+## 0.1.7
+
+### Patch Changes
+
+- 10f4f46: Added support for multiple alert selectors.
+
+## 0.1.6
+
+### Patch Changes
+
+- 45fd620: use new FE system syntax (replacing deprecated methods)
+- c01b96c: Backstage version bump to v1.30.2
+
 ## 0.1.5
 
 ### Patch Changes

@@ -1,0 +1,67 @@
+{
+  "apiVersion": "1.2",
+  "swaggerVersion": "1.2",
+  "basePath": "https://api.example.com/v1",
+  "resourcePath": "/profile",
+  "apis": [
+    {
+      "path": "/profile/{userId}",
+      "description": "User profile operations",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Get user profile by user ID",
+          "notes": "Returns a user's profile details by their ID.",
+          "type": "User",
+          "nickname": "getUserProfile",
+          "parameters": [
+            {
+              "name": "userId",
+              "description": "ID of the user to fetch",
+              "required": true,
+              "type": "string",
+              "paramType": "path"
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 200,
+              "message": "Successful response",
+              "responseModel": "User"
+            },
+            {
+              "code": 404,
+              "message": "User not found"
+            },
+            {
+              "code": 500,
+              "message": "Server error"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "models": {
+    "User": {
+      "id": "User",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "User ID",
+          "example": "1001"
+        },
+        "name": {
+          "type": "string",
+          "description": "User name",
+          "example": "John Doe"
+        },
+        "email": {
+          "type": "string",
+          "description": "User email address",
+          "example": "test@example.com"
+        }
+      }
+    }
+  }
+}

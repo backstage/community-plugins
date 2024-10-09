@@ -22,3 +22,4 @@
 
 export * from './service';
 export { jenkinsPlugin as default } from './plugin';
+export { JenkinsBuilder } from './service';

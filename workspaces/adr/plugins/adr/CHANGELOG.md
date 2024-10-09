@@ -1,5 +1,27 @@
 # @backstage-community/plugin-adr
 
+## 0.6.26
+
+### Patch Changes
+
+- 5b56188: Backstage version bump to v1.31.1
+- Updated dependencies [5b56188]
+  - @backstage-community/plugin-adr-common@0.2.29
+
+## 0.6.25
+
+### Patch Changes
+
+- 5c63ed0: Adds entity content and API extensions for the new frontend system
+
+## 0.6.24
+
+### Patch Changes
+
+- f18c579: Backstage version bump to v1.30.2
+- Updated dependencies [f18c579]
+  - @backstage-community/plugin-adr-common@0.2.28
+
 ## 0.6.23
 
 ### Patch Changes

@@ -1,5 +1,30 @@
 # @backstage-community/plugin-code-coverage-backend
 
+## 0.3.1
+
+### Patch Changes
+
+- bf873a4: Backstage version bump to v1.31.1
+
+## 0.3.0
+
+### Minor Changes
+
+- 32da7b0: Updated the `pluginId` defined in `src/plugin.ts` from `codeCoverage` to `code-coverage` to be compatible with frontend.
+
+## 0.2.35
+
+### Patch Changes
+
+- 1ef6d0b: Backstage version bump to v1.30.2
+
+## 0.2.34
+
+### Patch Changes
+
+- ae2ee8a: Updated dependency `@types/supertest` to `^6.0.0`.
+  Updated dependency `supertest` to `^7.0.0`.
+
 ## 0.2.33
 
 ### Patch Changes

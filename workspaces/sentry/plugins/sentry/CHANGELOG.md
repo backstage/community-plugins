@@ -1,5 +1,17 @@
 # @backstage-community/plugin-sentry
 
+## 1.0.0
+
+### Major Changes
+
+- 2909069: Removed parameters for the 'Router', calling useEntity() within the router itself instead. Also adds support for Backstage's new frontend system, available via the `/alpha` sub-path export.
+
+## 0.5.22
+
+### Patch Changes
+
+- 5e69efa: Backstage version bump to v1.30.2
+
 ## 0.5.21
 
 ### Patch Changes

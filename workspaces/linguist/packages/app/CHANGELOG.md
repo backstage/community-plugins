@@ -1,5 +1,26 @@
 # app
 
+## 0.0.7
+
+### Patch Changes
+
+- Updated dependencies [4f08a49]
+  - @backstage-community/plugin-linguist@0.1.27
+
+## 0.0.6
+
+### Patch Changes
+
+- Updated dependencies [45fd620]
+  - @backstage-community/plugin-linguist@0.1.26
+
+## 0.0.5
+
+### Patch Changes
+
+- Updated dependencies [6021ae7]
+  - @backstage-community/plugin-linguist@0.1.25
+
 ## 0.0.4
 
 ### Patch Changes

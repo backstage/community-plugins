@@ -24,6 +24,7 @@
     "lint": "backstage-cli repo lint --since origin/main",
     "lint:all": "backstage-cli repo lint",
     "format": "prettier --write .",
+    "postinstall": "cd ../../ && yarn install",
     "prettier:check": "prettier --check .",
     "new": "backstage-cli new --scope @backstage-community",
     "export-dynamic": "yarn workspaces foreach -A run export-dynamic",
@@ -41,9 +42,9 @@
     "directory": "workspaces/redhat-resource-optimization"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.26.11",
+    "@backstage/cli": "^0.27.1",
     "@backstage/e2e-test-utils": "^0.1.1",
-    "@backstage/repo-tools": "^0.9.4",
+    "@backstage/repo-tools": "^0.9.7",
     "@changesets/cli": "^2.27.1",
     "@janus-idp/cli": "^1.11.1",
     "@microsoft/api-extractor-model": "^7.29.2",
@@ -70,5 +71,8 @@
     "*.{json,md}": [
       "prettier --write"
     ]
+  },
+  "dependencies": {
+    "knip": "^5.27.4"
   }
 }

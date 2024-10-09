@@ -1,5 +1,40 @@
 # @backstage-community/plugin-blackduck-backend
 
+## 0.0.6
+
+### Patch Changes
+
+- d86bc62: Backstage version bump to v1.31.1
+- Updated dependencies [d86bc62]
+  - @backstage-community/plugin-blackduck-common@0.0.3
+
+## 0.0.5
+
+### Patch Changes
+
+- e8617d5: Fixed missing configSchema in blackduck-backend Plugin.
+
+## 0.0.4
+
+### Patch Changes
+
+- d46678b: Added ability to handle multiple hosts.
+
+## 0.0.3
+
+### Patch Changes
+
+- 235f5f4: Updated dependency `@types/supertest` to `^6.0.0`.
+  Updated dependency `supertest` to `^7.0.0`.
+
+## 0.0.2
+
+### Patch Changes
+
+- 28c1d5f: Backstage version bump to v1.30.2
+- Updated dependencies [28c1d5f]
+  - @backstage-community/plugin-blackduck-common@0.0.2
+
 ## 0.0.1
 
 ### Patch Changes

@@ -1,0 +1,237 @@
+[
+  {
+    "component": {
+      "assets": [
+        {
+          "checksum": {
+            "md5": "f425b239d1ba676c94e00b5cb6669cf3",
+            "sha1": "a1b535139baaa29dad30c6df6ccfa217c5cf99db"
+          },
+          "contentType": "application/java-archive",
+          "downloadUrl": "https://localhost:8081/repository/proxied-maven-central/com/example/will-halt/0.7.6/will-halt-0.7.6.jar",
+          "fileSize": 1000000,
+          "format": "maven2",
+          "id": "cHJveGllZC1tYXZlbi1jZW50cmFsMjplZGJkNTJmMzM2NGU3NDg2MzIwOGE2YjgxZjZhNWZhMA",
+          "lastDownloaded": null,
+          "lastModified": "2019-04-17T03:31:58.000+00:00",
+          "maven2": {
+            "artifactId": "will-halt",
+            "extension": "jar",
+            "groupId": "com.example",
+            "version": "0.7.6"
+          },
+          "path": "com/example/will-halt/0.7.6/will-halt-0.7.6.jar",
+          "repository": "proxied-maven-central",
+          "uploader": "anonymous",
+          "uploaderIp": "0.0.0.0"
+        },
+        {
+          "checksum": {
+            "md5": "ae074b24058b49b6b668f0639570b609",
+            "sha1": "ca9b66d3cd47be4fbab4624f73f8346b97c210a2"
+          },
+          "contentType": "text/plain",
+          "downloadUrl": "https://localhost:8081/repository/proxied-maven-central/com/example/will-halt/0.7.6/will-halt-0.7.6.jar.sha1",
+          "fileSize": 0,
+          "format": "maven2",
+          "id": "cHJveGllZC1tYXZlbi1jZW50cmFsMjplZGJkNTJmMzM2NGU3NDg2MmI1Zjg1MmRlZDY5ZTRjNQ",
+          "lastDownloaded": null,
+          "lastModified": "2019-04-17T03:32:02.000+00:00",
+          "maven2": {
+            "artifactId": "will-halt",
+            "extension": "jar.sha1",
+            "groupId": "com.example",
+            "version": "0.7.6"
+          },
+          "path": "com/example/will-halt/0.7.6/will-halt-0.7.6.jar.sha1",
+          "repository": "proxied-maven-central",
+          "uploader": "anonymous",
+          "uploaderIp": "0.0.0.0"
+        },
+        {
+          "checksum": {
+            "md5": "ab3ca44234f60c360586f6aef87c2f0b",
+            "sha1": "caac85acce2f2e4e467ac6395b403761238f8182"
+          },
+          "contentType": "application/xml",
+          "downloadUrl": "https://localhost:8081/repository/proxied-maven-central/com/example/will-halt/0.7.6/will-halt-0.7.6.pom",
+          "fileSize": 0,
+          "format": "maven2",
+          "id": "cHJveGllZC1tYXZlbi1jZW50cmFsMjplZGJkNTJmMzM2NGU3NDg2YmRmMTcyMWFmYTIzNjI2NA",
+          "lastDownloaded": null,
+          "lastModified": "2019-04-17T03:32:04.000+00:00",
+          "maven2": {
+            "artifactId": "will-halt",
+            "extension": "pom",
+            "groupId": "com.example",
+            "version": "0.7.6"
+          },
+          "path": "com/example/will-halt/0.7.6/will-halt-0.7.6.pom",
+          "repository": "proxied-maven-central",
+          "uploader": "anonymous",
+          "uploaderIp": "0.0.0.0"
+        },
+        {
+          "checksum": {
+            "md5": "3d9708e4b7ebe7ce5023cdb7521309a2",
+            "sha1": "3e0427204b02e393b12c03818a36575c69caa631"
+          },
+          "contentType": "text/plain",
+          "downloadUrl": "https://localhost:8081/repository/proxied-maven-central/com/example/will-halt/0.7.6/will-halt-0.7.6.pom.sha1",
+          "fileSize": 0,
+          "format": "maven2",
+          "id": "cHJveGllZC1tYXZlbi1jZW50cmFsMjplZGJkNTJmMzM2NGU3NDg2NmZmZjA2M2ExZThkOWE5Mw",
+          "lastDownloaded": null,
+          "lastModified": "2019-04-17T03:32:17.000+00:00",
+          "maven2": {
+            "artifactId": "will-halt",
+            "extension": "pom.sha1",
+            "groupId": "com.example",
+            "version": "0.7.6"
+          },
+          "path": "com/example/will-halt/0.7.6/will-halt-0.7.6.pom.sha1",
+          "repository": "proxied-maven-central",
+          "uploader": "anonymous",
+          "uploaderIp": "0.0.0.0"
+        }
+      ],
+      "format": "maven2",
+      "group": "com.example",
+      "id": "cHJveGllZC1tYXZlbi1jZW50cmFsMjo4ZmI0MzBjOWRmMjA3MTBjMTYyOTA3ODhiNjQ1YjMxZg",
+      "name": "will-halt",
+      "repository": "proxied-maven-central",
+      "tags": [],
+      "version": "0.7.6"
+    },
+    "dockerManifests": []
+  },
+  {
+    "component": {
+      "assets": [
+        {
+          "checksum": {
+            "md5": "b6fe6af90f3685052f5e4442a2b175d7",
+            "sha1": "99c11907918309fe94d7e7574a144c7c08077dd4"
+          },
+          "contentType": "application/java-archive",
+          "downloadUrl": "https://localhost:8081/repository/proxied-maven-central/com/example/will-halt/0.5.6/will-halt-0.5.6.jar",
+          "fileSize": 1000000,
+          "format": "maven2",
+          "id": "cHJveGllZC1tYXZlbi1jZW50cmFsMjoxZDQ4MmUyNTc0ZWE1ZGE5ZDcxZjE4YTZiYjYzOWRiZg",
+          "lastDownloaded": null,
+          "lastModified": "2019-12-04T20:51:33.000+00:00",
+          "maven2": {
+            "artifactId": "will-halt",
+            "extension": "jar",
+            "groupId": "com.example",
+            "version": "0.5.6"
+          },
+          "path": "com/example/will-halt/0.5.6/will-halt-0.5.6.jar",
+          "repository": "proxied-maven-central",
+          "uploader": "anonymous",
+          "uploaderIp": "0.0.0.0"
+        },
+        {
+          "checksum": {
+            "md5": "aa984a0f24e69f938e1b2377a66a4c08",
+            "sha1": "3c64b5b864063b24a0c83aeae07fc9a20f004437"
+          },
+          "contentType": "text/plain",
+          "downloadUrl": "https://localhost:8081/repository/proxied-maven-central/com/example/will-halt/0.5.6/will-halt-0.5.6.jar.sha1",
+          "fileSize": 0,
+          "format": "maven2",
+          "id": "cHJveGllZC1tYXZlbi1jZW50cmFsMjoxZDQ4MmUyNTc0ZWE1ZGE5MzNlNWE0YWQzZjhkYjAyZQ",
+          "lastDownloaded": null,
+          "lastModified": "2019-12-04T20:51:33.000+00:00",
+          "maven2": {
+            "artifactId": "will-halt",
+            "extension": "jar.sha1",
+            "groupId": "com.example",
+            "version": "0.5.6"
+          },
+          "path": "com/example/will-halt/0.5.6/will-halt-0.5.6.jar.sha1",
+          "repository": "proxied-maven-central",
+          "uploader": "anonymous",
+          "uploaderIp": "0.0.0.0"
+        },
+        {
+          "checksum": {
+            "md5": "1c0f86ed0542c4a50232f54ef69cba0d",
+            "sha1": "f1dfb6f038df56cefb71050119bb7ab92bc84cc6"
+          },
+          "contentType": "application/xml",
+          "downloadUrl": "https://localhost:8081/repository/proxied-maven-central/com/example/will-halt/0.5.6/will-halt-0.5.6.pom",
+          "fileSize": 0,
+          "format": "maven2",
+          "id": "cHJveGllZC1tYXZlbi1jZW50cmFsMjoxZDQ4MmUyNTc0ZWE1ZGE5NDgzOGJhNmZmMTFiZTNkYQ",
+          "lastDownloaded": null,
+          "lastModified": "2019-12-04T20:51:32.000+00:00",
+          "maven2": {
+            "artifactId": "will-halt",
+            "extension": "pom",
+            "groupId": "com.example",
+            "version": "0.5.6"
+          },
+          "path": "com/example/will-halt/0.5.6/will-halt-0.5.6.pom",
+          "repository": "proxied-maven-central",
+          "uploader": "anonymous",
+          "uploaderIp": "0.0.0.0"
+        },
+        {
+          "checksum": {
+            "md5": "77c4c1070c33884e601bac2f99b9a508",
+            "sha1": "c11c29975ea63d2e3c5584a72d761a8dde2d2515"
+          },
+          "contentType": "text/plain",
+          "downloadUrl": "https://localhost:8081/repository/proxied-maven-central/com/example/will-halt/0.5.6/will-halt-0.5.6.pom.sha1",
+          "fileSize": 0,
+          "format": "maven2",
+          "id": "cHJveGllZC1tYXZlbi1jZW50cmFsMjoxZDQ4MmUyNTc0ZWE1ZGE5ZWJkNzVmYmExODk1ZDAzNg",
+          "lastDownloaded": null,
+          "lastModified": "2019-12-04T20:51:32.000+00:00",
+          "maven2": {
+            "artifactId": "will-halt",
+            "extension": "pom.sha1",
+            "groupId": "com.example",
+            "version": "0.5.6"
+          },
+          "path": "com/example/will-halt/0.5.6/will-halt-0.5.6.pom.sha1",
+          "repository": "proxied-maven-central",
+          "uploader": "anonymous",
+          "uploaderIp": "0.0.0.0"
+        },
+        {
+          "checksum": {
+            "md5": "fb33e5f79d72b51a8dd9b1042bbfeb07",
+            "sha1": "d498a5094bf93adb34a26b77217b87876242a816"
+          },
+          "contentType": "application/x-gzip",
+          "downloadUrl": "https://localhost:8081/repository/proxied-maven-central/com/example/will-halt/0.5.6/will-halt-0.5.6.tar.gz",
+          "fileSize": 3000000,
+          "format": "maven2",
+          "id": "cHJveGllZC1tYXZlbi1jZW50cmFsMjoxZDQ4MmUyNTc0ZWE1ZGE5ZDg2OTQ2YjI0ZmI2NGI5NA",
+          "lastDownloaded": null,
+          "lastModified": "2019-12-04T20:51:31.000+00:00",
+          "maven2": {
+            "artifactId": "will-halt",
+            "extension": "tar.gz",
+            "groupId": "com.example",
+            "version": "0.5.6"
+          },
+          "path": "com/example/will-halt/0.5.6/will-halt-0.5.6.tar.gz",
+          "repository": "proxied-maven-central",
+          "uploader": "anonymous",
+          "uploaderIp": "0.0.0.0"
+        }
+      ],
+      "format": "maven2",
+      "group": "com.example",
+      "id": "cHJveGllZC1tYXZlbi1jZW50cmFsMjoyYTBiOTc5Zjg3ZDNjM2YzMDg1MGZkM2RhNDdlNGM1NA",
+      "name": "will-halt",
+      "repository": "proxied-maven-central",
+      "tags": [],
+      "version": "0.5.6"
+    },
+    "dockerManifests": []
+  }
+]

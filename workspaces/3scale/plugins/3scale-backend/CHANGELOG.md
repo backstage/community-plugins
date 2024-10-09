@@ -1,5 +1,37 @@
 ## @janus-idp/backstage-plugin-3scale-backend [1.8.0](https://github.com/janus-idp/backstage-plugins/compare/@janus-idp/backstage-plugin-3scale-backend@1.7.1...@janus-idp/backstage-plugin-3scale-backend@1.8.0) (2024-07-25)
 
+## 3.0.0
+
+### Major Changes
+
+- d8c8238: Merge API docs for the same service.
+
+## 2.0.0
+
+### Major Changes
+
+- 577034b: **BREAKING** migrate to the new backend and remove deprecations
+
+## 1.8.5
+
+### Patch Changes
+
+- c6e87b8: Backstage version bump to v1.31.1
+
+## 1.8.4
+
+### Patch Changes
+
+- ed69246: Updated dependency `@janus-idp/cli` to `1.13.1`.
+
+## 1.8.3
+
+### Patch Changes
+
+- 235f5f4: Updated dependency `@types/supertest` to `6.0.2`.
+  Updated dependency `supertest` to `7.0.0`.
+- 0df0ae0: Backstage version bump to v1.30.2
+
 ## 1.8.2
 
 ### Patch Changes

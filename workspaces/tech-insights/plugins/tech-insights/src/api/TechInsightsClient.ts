@@ -15,50 +15,39 @@
  */
 
 import { TechInsightsApi } from './TechInsightsApi';
-import {
-  BulkCheckResponse,
-  CheckResult,
-  FactSchema,
-} from '@backstage-community/plugin-tech-insights-common';
-import { Check, InsightFacts } from './types';
 import { DiscoveryApi, IdentityApi } from '@backstage/core-plugin-api';
-import { ResponseError } from '@backstage/errors';
+import { TechInsightsClient as TechInsightsClientBase } from '@backstage-community/plugin-tech-insights-common/client';
 import {
-  CompoundEntityRef,
-  stringifyEntityRef,
-} from '@backstage/catalog-model';
+  CheckLink,
+  CheckResult,
+} from '@backstage-community/plugin-tech-insights-common';
 
 import {
   CheckResultRenderer,
   jsonRulesEngineCheckResultRenderer,
 } from '../components/CheckResultRenderer';
-import qs from 'qs';
+import { Entity } from '@backstage/catalog-model';
 
 /** @public */
-export class TechInsightsClient implements TechInsightsApi {
-  private readonly discoveryApi: DiscoveryApi;
-  private readonly identityApi: IdentityApi;
+export class TechInsightsClient
+  extends TechInsightsClientBase
+  implements TechInsightsApi
+{
   private readonly renderers?: CheckResultRenderer[];
+  private readonly customGetEntityLinks: (
+    result: CheckResult,
+    entity: Entity,
+  ) => CheckLink[];
 
   constructor(options: {
     discoveryApi: DiscoveryApi;
     identityApi: IdentityApi;
     renderers?: CheckResultRenderer[];
+    getEntityLinks?: (result: CheckResult, entity: Entity) => CheckLink[];
   }) {
-    this.discoveryApi = options.discoveryApi;
-    this.identityApi = options.identityApi;
+    super(options);
     this.renderers = options.renderers;
-  }
-
-  async getFacts(
-    entity: CompoundEntityRef,
-    facts: string[],
-  ): Promise<InsightFacts> {
-    const query = qs.stringify({
-      entity: stringifyEntityRef(entity),
-      ids: facts,
-    });
-    return await this.api<InsightFacts>(`/facts/latest?${query}`);
+    this.customGetEntityLinks = options.getEntityLinks ?? (() => []);
   }
 
   getCheckResultRenderers(types: string[]): CheckResultRenderer[] {
@@ -76,67 +65,15 @@ export class TechInsightsClient implements TechInsightsApi {
     return true;
   }
 
-  async getAllChecks(): Promise<Check[]> {
-    return this.api('/checks');
-  }
-
-  async getFactSchemas(): Promise<FactSchema[]> {
-    return this.api('/fact-schemas');
-  }
-
-  async runChecks(
-    entityParams: CompoundEntityRef,
-    checks?: string[],
-  ): Promise<CheckResult[]> {
-    const { namespace, kind, name } = entityParams;
-    const requestBody = { checks };
-    return this.api(
-      `/checks/run/${encodeURIComponent(namespace)}/${encodeURIComponent(
-        kind,
-      )}/${encodeURIComponent(name)}`,
-      {
-        method: 'POST',
-        body: JSON.stringify(requestBody),
-      },
-    );
-  }
-
-  async runBulkChecks(
-    entities: CompoundEntityRef[],
-    checks?: Check[],
-  ): Promise<BulkCheckResponse> {
-    const checkIds = checks ? checks.map(check => check.id) : [];
-    const requestBody = {
-      entities,
-      checks: checkIds.length > 0 ? checkIds : undefined,
-    };
-    return this.api('/checks/run', {
-      method: 'POST',
-      body: JSON.stringify(requestBody),
-    });
-  }
-
-  private async api<T>(path: string, init?: RequestInit): Promise<T> {
-    const url = await this.discoveryApi.getBaseUrl('tech-insights');
-    const { token } = await this.identityApi.getCredentials();
-
-    const headers: HeadersInit = new Headers(init?.headers);
-    if (!headers.has('content-type'))
-      headers.set('content-type', 'application/json');
-    if (token && !headers.has('authorization')) {
-      headers.set('authorization', `Bearer ${token}`);
+  getLinksForEntity(
+    result: CheckResult,
+    entity: Entity,
+    options: { includeStaticLinks?: boolean } = {},
+  ): CheckLink[] {
+    const links = this.customGetEntityLinks(result, entity);
+    if (options.includeStaticLinks) {
+      links.push(...(result.check.links ?? []));
     }
-
-    const request = new Request(`${url}${path}`, {
-      ...init,
-      headers,
-    });
-
-    return fetch(request).then(async response => {
-      if (!response.ok) {
-        throw await ResponseError.fromResponse(response);
-      }
-      return response.json() as Promise<T>;
-    });
+    return links;
   }
 }

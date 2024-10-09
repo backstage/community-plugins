@@ -1,3 +1,18 @@
+/*
+ * Copyright 2024 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import React from 'react';
 import { blackduckApiRef } from '../../api';
 import { useEntity } from '@backstage/plugin-catalog-react';
@@ -74,16 +89,22 @@ const options = {
 const labels = ['Critical', 'High', 'Medium', 'Low'];
 
 type CardContentProps = {
+  hostKey: string;
   projectName: string;
   projectVersion: string;
 };
 
-const CardContent = ({ projectName, projectVersion }: CardContentProps) => {
+const CardContent = ({
+  hostKey,
+  projectName,
+  projectVersion,
+}: CardContentProps) => {
   const blackduckApi = useApi(blackduckApiRef);
   const { entity } = useEntity();
   const entityRef = stringifyEntityRef(entity);
   const { value, loading, error } = useAsync(async () => {
     const data: any = await blackduckApi.getRiskProfile(
+      hostKey,
       projectName,
       projectVersion,
       entityRef,
@@ -93,18 +114,18 @@ const CardContent = ({ projectName, projectVersion }: CardContentProps) => {
 
   if (loading) {
     return <Progress />;
-  } else if (error) {
-    return <Alert severity="error">{error.message}</Alert>;
   } else if (!value) {
     return (
       <InfoCard title="BlackDuck">
         <EmptyState
           missing="info"
           title="No information to display"
-          description={`There is no BlackDuck Project ${projectName} with version ${projectVersion} available!`}
+          description={`There is no BlackDuck Project ${projectName} with version ${projectVersion} on host ${hostKey} available!`}
         />
       </InfoCard>
     );
+  } else if (error) {
+    return <Alert severity="error">{error.message}</Alert>;
   }
 
   const vulnerabilityData = Object.values(
@@ -173,10 +194,36 @@ const CardContent = ({ projectName, projectVersion }: CardContentProps) => {
 
 export const RiskCardComponent = () => {
   const { entity } = useEntity();
-  const { projectName, projectVersion } = getProjectAnnotation(entity);
-  return isBlackDuckAvailable(entity) ? (
-    <CardContent projectName={projectName} projectVersion={projectVersion} />
-  ) : (
-    <MissingAnnotationEmptyState annotation={BLACKDUCK_PROJECT_ANNOTATION} />
+
+  if (!isBlackDuckAvailable(entity)) {
+    return (
+      <InfoCard title="BlackDuck">
+        <MissingAnnotationEmptyState
+          annotation={BLACKDUCK_PROJECT_ANNOTATION}
+        />
+      </InfoCard>
+    );
+  }
+
+  const { hostKey, projectName, projectVersion } = getProjectAnnotation(entity);
+
+  if (!projectName || !projectVersion) {
+    return (
+      <InfoCard title="BlackDuck">
+        <EmptyState
+          missing="info"
+          title="No information to display"
+          description="The project annotation is not structured correctly. The project name, or project version is missing."
+        />
+      </InfoCard>
+    );
+  }
+
+  return (
+    <CardContent
+      hostKey={hostKey}
+      projectName={projectName}
+      projectVersion={projectVersion}
+    />
   );
 };

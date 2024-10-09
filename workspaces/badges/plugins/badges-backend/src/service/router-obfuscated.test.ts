@@ -19,7 +19,6 @@ import request from 'supertest';
 import {
   getVoidLogger,
   PluginEndpointDiscovery,
-  ServerTokenManager,
   HostDiscovery,
 } from '@backstage/backend-common';
 import { CatalogApi } from '@backstage/catalog-client';
@@ -27,10 +26,6 @@ import type { Entity } from '@backstage/catalog-model';
 import { Config, ConfigReader } from '@backstage/config';
 import { createRouter } from './router';
 import { BadgeBuilder } from '../lib';
-import {
-  BackstageIdentityResponse,
-  IdentityApiGetIdentityRequest,
-} from '@backstage/plugin-auth-node';
 import { BadgesStore } from '../database/badgesStore';
 import { mockCredentials, mockServices } from '@backstage/backend-test-utils';
 
@@ -55,24 +50,6 @@ describe('createRouter', () => {
     getEntityFacets: jest.fn(),
     validateEntity: jest.fn(),
   };
-  const getIdentity = jest
-    .fn()
-    .mockImplementation(
-      async ({
-        request: _request,
-      }: IdentityApiGetIdentityRequest): Promise<
-        BackstageIdentityResponse | undefined
-      > => {
-        return {
-          identity: {
-            userEntityRef: 'user:default/guest',
-            ownershipEntityRefs: [],
-            type: 'user',
-          },
-          token: 'token',
-        };
-      },
-    );
 
   const config: Config = new ConfigReader({
     backend: {
@@ -140,15 +117,12 @@ describe('createRouter', () => {
 
   beforeAll(async () => {
     discovery = HostDiscovery.fromConfig(config);
-    const tokenManager = ServerTokenManager.noop();
     const router = await createRouter({
       badgeBuilder,
       catalog: catalog as Partial<CatalogApi> as CatalogApi,
       config,
       discovery,
-      tokenManager,
       logger: getVoidLogger(),
-      identity: { getIdentity },
       auth: mockServices.auth(),
       httpAuth: mockServices.httpAuth(),
     });
@@ -160,15 +134,12 @@ describe('createRouter', () => {
   });
 
   it('works with provided badgeStore', async () => {
-    const tokenManager = ServerTokenManager.noop();
     const router = await createRouter({
       badgeBuilder,
       catalog: catalog as Partial<CatalogApi> as CatalogApi,
       config,
       discovery,
-      tokenManager,
       logger: getVoidLogger(),
-      identity: { getIdentity },
       badgeStore: badgeStore,
       auth: mockServices.auth(),
       httpAuth: mockServices.httpAuth(),

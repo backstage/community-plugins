@@ -39,7 +39,11 @@ If Grafana's [Unified Alerting](https://grafana.com/blog/2021/06/14/the-new-unif
 
 ```yaml
 annotations:
-  grafana/alert-label-selector: 'service=awesome-service'
+  # This will only use one label selector
+  grafana/alert-label-selector: 'label=label-value'
+  # OR
+  # This will use two label selectors
+  grafana/alert-label-selector: 'label1=label-value1,label2=label-value2'
 ```
 
 The `EntityGrafanaAlertsCard` component will then display alerts matching the given label and value.

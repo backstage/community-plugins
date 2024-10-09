@@ -1,5 +1,27 @@
 # @backstage-community/plugin-sonarqube
 
+## 0.8.3
+
+### Patch Changes
+
+- 3ef2d79: Backstage version bump to v1.31.2
+- Updated dependencies [3ef2d79]
+  - @backstage-community/plugin-sonarqube-react@0.2.2
+
+## 0.8.2
+
+### Patch Changes
+
+- f257398: adds support for Backstage's new frontend system, available via the `/alpha` sub-path export.
+
+## 0.8.1
+
+### Patch Changes
+
+- 2143e5e: Backstage version bump to v1.30.2
+- Updated dependencies [2143e5e]
+  - @backstage-community/plugin-sonarqube-react@0.2.1
+
 ## 0.8.0
 
 ### Minor Changes

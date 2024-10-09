@@ -1,5 +1,30 @@
 # @backstage-community/plugin-rollbar-backend
 
+## 0.1.68
+
+### Patch Changes
+
+- d52fc2d: Backstage version bump to v1.31.2
+
+## 0.1.67
+
+### Patch Changes
+
+- b8152b4: Added support for the New Backend System
+
+## 0.1.66
+
+### Patch Changes
+
+- e2fd153: Backstage version bump to v1.30.2
+
+## 0.1.65
+
+### Patch Changes
+
+- ae2ee8a: Updated dependency `@types/supertest` to `^6.0.0`.
+  Updated dependency `supertest` to `^7.0.0`.
+
 ## 0.1.64
 
 ### Patch Changes

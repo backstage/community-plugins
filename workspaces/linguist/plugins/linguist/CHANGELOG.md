@@ -1,5 +1,27 @@
 # @backstage-community/plugin-linguist
 
+## 0.1.27
+
+### Patch Changes
+
+- 4f08a49: Backstage version bump to v1.31.1
+- Updated dependencies [4f08a49]
+  - @backstage-community/plugin-linguist-common@0.1.9
+
+## 0.1.26
+
+### Patch Changes
+
+- 45fd620: use new FE system syntax (replacing deprecated methods)
+
+## 0.1.25
+
+### Patch Changes
+
+- 6021ae7: Backstage version bump to v1.30.2
+- Updated dependencies [6021ae7]
+  - @backstage-community/plugin-linguist-common@0.1.8
+
 ## 0.1.24
 
 ### Patch Changes

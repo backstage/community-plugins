@@ -4,18 +4,18 @@
 
 ```ts
 import { AuthService } from '@backstage/backend-plugin-api';
-import { BackendFeatureCompat } from '@backstage/backend-plugin-api';
+import { BackendFeature } from '@backstage/backend-plugin-api';
 import { CatalogApi } from '@backstage/catalog-client';
 import { Config } from '@backstage/config';
+import { DatabaseService } from '@backstage/backend-plugin-api';
+import { DiscoveryService } from '@backstage/backend-plugin-api';
 import express from 'express';
 import { HttpAuthService } from '@backstage/backend-plugin-api';
 import { LoggerService } from '@backstage/backend-plugin-api';
-import { PluginDatabaseManager } from '@backstage/backend-common';
-import { PluginEndpointDiscovery } from '@backstage/backend-common';
-import { UrlReader } from '@backstage/backend-common';
+import { UrlReaderService } from '@backstage/backend-plugin-api';
 
 // @public
-const codeCoveragePlugin: BackendFeatureCompat;
+const codeCoveragePlugin: BackendFeature;
 export default codeCoveragePlugin;
 
 // @public
@@ -30,14 +30,14 @@ export interface RouterOptions {
   // (undocumented)
   config: Config;
   // (undocumented)
-  database: PluginDatabaseManager;
+  database: DatabaseService;
   // (undocumented)
-  discovery: PluginEndpointDiscovery;
+  discovery: DiscoveryService;
   // (undocumented)
   httpAuth?: HttpAuthService;
   // (undocumented)
   logger: LoggerService;
   // (undocumented)
-  urlReader: UrlReader;
+  urlReader: UrlReaderService;
 }
 ```

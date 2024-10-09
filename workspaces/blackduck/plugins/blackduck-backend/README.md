@@ -38,7 +38,10 @@ Create a file called blackduck.ts inside `packages/backend/src/plugins/` and add
 ### blackduck.ts
 
 ```typescript
-import { createRouter } from '@backstage-community/plugin-blackduck-backend';
+import {
+  createRouter,
+  BlackDuckConfig,
+} from '@backstage-community/plugin-blackduck-backend';
 import { Router } from 'express';
 import { PluginEnvironment } from '../types';
 
@@ -50,6 +53,7 @@ export default async function createPlugin(
     config: env.config,
     permissions: env.permissions,
     discovery: env.discovery,
+    blackDuckConfig: BlackDuckConfig.fromConfig(env.config),
   });
 }
 ```
@@ -147,17 +151,23 @@ Follow the Docs from [README.md](https://github.com/backstage/community-plugins/
 
 ### Global Config
 
-Add the following into your `app-config.yaml`
+Add the following into your `app-config.yaml`. The default host is mandatory - if no host specified in annotation, this host will be used. Other hosts are optional.
 
 ```yaml
 blackduck:
-  host: https://blackduck.yourcompany.com/api
-  token: YOUR_API_TOKEN
+  default: one
+  hosts:
+    - name: one
+      host: https://blackduck.yourcompany.one.com/api
+      token: YOUR_API_TOKEN_ONE
+    - name: two
+      host: https://blackduck.yourcompany.two.com/api
+      token: YOUR_API_TOKEN_TWO
 ```
 
 ### Catalog
 
-Add the following into your catalog
+Add the following into your catalog. The host part is optional - if no host specified in annotation, the default one will be used.
 
 ```yaml
 apiVersion: backstage.io/v1alpha1
@@ -165,5 +175,5 @@ kind: Component
 metadata:
   name: backstage
   annotations:
-    blackduck/project: YOUR_PROJECT_NAME/YOUR_PROJECT_VERSION
+    blackduck/project: YOUR_PROJECT_HOST_NAME/YOUR_PROJECT_NAME/YOUR_PROJECT_VERSION
 ```

@@ -1,5 +1,44 @@
 # @backstage-community/plugin-tech-insights-node
 
+## 1.0.1
+
+### Patch Changes
+
+- e516773: Remove usages of deprecated references and usage of @backstage/backend-common
+- e516773: Backstage version bump to v1.31.1
+- Updated dependencies [e516773]
+- Updated dependencies [e516773]
+  - @backstage-community/plugin-tech-insights-common@0.2.19
+
+## 1.0.0
+
+### Major Changes
+
+- 9871d0b: **BREAKING**: `FactRetrieverContext` no longer includes the deprecated `tokenManager`. Please use the `auth` field instead if you need to make backend requests.
+
+## 0.6.7
+
+### Patch Changes
+
+- 1d33996: Added links property for checks, to allow the UI to render links for users to click and get more information about individual checks, what they mean, how to adhere to them, etc.
+- Updated dependencies [1d33996]
+  - @backstage-community/plugin-tech-insights-common@0.2.18
+
+## 0.6.6
+
+### Patch Changes
+
+- Updated dependencies [a84eb44]
+  - @backstage-community/plugin-tech-insights-common@0.2.17
+
+## 0.6.5
+
+### Patch Changes
+
+- 00d148d: Backstage version bump to v1.30.2
+- Updated dependencies [00d148d]
+  - @backstage-community/plugin-tech-insights-common@0.2.16
+
 ## 0.6.4
 
 ### Patch Changes

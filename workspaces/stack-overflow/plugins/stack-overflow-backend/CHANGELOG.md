@@ -1,5 +1,17 @@
 # @backstage-community/plugin-stack-overflow-backend
 
+## 0.2.25
+
+### Patch Changes
+
+- b61618b: Entire package has been deprecated, use @backstage/plugin-search-backend-module-stack-overflow-collator instead
+
+## 0.2.24
+
+### Patch Changes
+
+- 04b3ce4: Backstage version bump to v1.30.2
+
 ## 0.2.23
 
 ### Patch Changes

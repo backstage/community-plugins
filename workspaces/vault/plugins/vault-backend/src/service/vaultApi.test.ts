@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { setupRequestMockHandlers } from '@backstage/backend-test-utils';
+import { registerMswTestHooks } from '@backstage/backend-test-utils';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import {
@@ -29,7 +29,7 @@ describe('VaultApi', () => {
   let api: VaultApi;
 
   const server = setupServer();
-  setupRequestMockHandlers(server);
+  registerMswTestHooks(server);
 
   const mockBaseUrl = 'https://api-vault.com';
   const config = new ConfigReader({

@@ -1,38 +1,49 @@
+/*
+ * Copyright 2024 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import * as React from 'react';
 
 import { useEntity } from '@backstage/plugin-catalog-react';
 
 import {
-  Box,
   Card,
   CardContent,
-  Chip,
   createStyles,
   Drawer,
   Grid,
   IconButton,
-  Link,
   makeStyles,
   Theme,
-  Tooltip,
   Typography,
 } from '@material-ui/core';
 import Close from '@material-ui/icons/Close';
-import { Skeleton } from '@material-ui/lab';
-import GitLabIcon from '@patternfly/react-icons/dist/esm/icons/gitlab-icon';
-import moment from 'moment';
 
-import { Application, Revision } from '../../types';
-import { getCommitUrl, isAppHelmChartType } from '../../utils/utils';
-import AppNamespace from '../AppStatus/AppNamespace';
+import { isAppHelmChartType } from '../../utils/utils';
+import AppNamespace from '../Common/AppNamespace';
 import StatusHeading from '../AppStatus/StatusHeading';
 import DeploymentLifecycledHeader from './DeploymentLifecycleHeader';
+import { ResourcesTable } from './sidebar/resources/ResourcesTable';
+import { useDrawerContext } from './DrawerContext';
+import Metadata from '../Common/Metadata';
+import MetadataItem from '../Common/MetadataItem';
+import AppServerLink from '../Common/AppServerLink';
+import AppCommitLink from '../Common/AppCommitLink';
 
 interface DeploymentLifecycleDrawerProps {
-  app: Application | undefined;
   isOpen: boolean;
   onClose: () => void;
-  revisionsMap: { [key: string]: Revision };
 }
 
 const useDrawerStyles = makeStyles<Theme>(theme =>
@@ -41,7 +52,7 @@ const useDrawerStyles = makeStyles<Theme>(theme =>
       fontSize: 20,
     },
     paper: {
-      width: '40%',
+      width: '75%',
       padding: theme.spacing(2.5),
       gap: '3%',
     },
@@ -57,17 +68,21 @@ const useDrawerStyles = makeStyles<Theme>(theme =>
   }),
 );
 const DeploymentLifecycleDrawer: React.FC<DeploymentLifecycleDrawerProps> = ({
-  app,
   isOpen,
   onClose,
-  revisionsMap,
 }) => {
-  const appHistory = app?.status?.history ?? [];
-  const latestRevision = appHistory[appHistory.length - 1];
-  const appDeployedAt = latestRevision?.deployedAt;
+  const {
+    application: app,
+    revisionsMap,
+    appHistory,
+    latestRevision,
+  } = useDrawerContext();
 
   const { entity } = useEntity();
   const classes = useDrawerStyles();
+
+  const firstRevision = appHistory?.[0];
+  const createdAt = firstRevision?.deployedAt;
 
   if (!app) {
     return null;
@@ -105,195 +120,51 @@ const DeploymentLifecycleDrawer: React.FC<DeploymentLifecycleDrawerProps> = ({
           </Grid>
 
           <Grid item xs={12}>
-            <Typography color="textPrimary">Instance</Typography>
+            <Metadata>
+              <MetadataItem title="Instance">
+                {app?.metadata?.instance?.name ?? 'default'}
+              </MetadataItem>
 
-            <Typography color="textSecondary" gutterBottom>
-              {app?.metadata?.instance?.name}
-            </Typography>
-          </Grid>
+              <MetadataItem title="Cluster">
+                <AppServerLink application={app} />
+              </MetadataItem>
 
-          <Grid item xs={12}>
-            <Typography variant="body1">Server</Typography>
+              <MetadataItem title="Namespace">
+                <AppNamespace app={app} />
+              </MetadataItem>
 
-            <Typography
-              style={{ overflowWrap: 'anywhere' }}
-              variant="body2"
-              color="textSecondary"
-              gutterBottom
-            >
-              {app?.spec?.destination?.server}{' '}
-              {app?.spec?.destination?.server ===
-              'https://kubernetes.default.svc' ? (
-                <Tooltip title="This is the local cluster where Argo CD is installed.">
-                  <span>(in-cluster) </span>
-                </Tooltip>
-              ) : (
-                ''
-              )}
-            </Typography>
-          </Grid>
-          <Grid item xs={12}>
-            <Typography color="textPrimary">Namespace</Typography>
-
-            <AppNamespace app={app} />
-          </Grid>
-          {!isAppHelmChartType(app) && (
-            <Grid item xs={12}>
-              <Typography color="textPrimary">Commit</Typography>
-              {latestRevision ? (
-                <>
-                  <Chip
-                    data-testid={`${latestRevision?.revision?.slice(
-                      0,
-                      5,
-                    )}-commit-link`}
-                    size="small"
-                    variant="outlined"
-                    icon={<GitLabIcon />}
-                    color="primary"
-                    onClick={e => {
-                      e.stopPropagation();
-
-                      const repoUrl = app?.spec?.source?.repoURL ?? '';
-                      if (repoUrl) {
-                        window.open(
-                          isAppHelmChartType(app)
-                            ? repoUrl
-                            : getCommitUrl(
-                                repoUrl,
-                                latestRevision?.revision,
-                                entity?.metadata?.annotations ?? {},
-                              ),
-                          '_blank',
-                        );
-                      }
-                    }}
-                    label={latestRevision?.revision.slice(0, 7)}
+              {!isAppHelmChartType(app) ? (
+                <MetadataItem title="Commit">
+                  <AppCommitLink
+                    application={app}
+                    entity={entity}
+                    revisionsMap={revisionsMap}
+                    latestRevision={latestRevision}
+                    showAuthor
                   />
-                  <Typography
-                    color="textSecondary"
-                    className={classes.commitMessage}
-                  >
-                    {revisionsMap?.[latestRevision?.revision] ? (
-                      <>
-                        {revisionsMap?.[latestRevision?.revision]?.message} by{' '}
-                        {revisionsMap?.[latestRevision?.revision]?.author}
-                      </>
-                    ) : (
-                      <Skeleton />
-                    )}
-                  </Typography>
-                </>
+                </MetadataItem>
               ) : (
-                <>-</>
+                <></>
               )}
-            </Grid>
-          )}
-          {appHistory.length >= 1 && (
-            <Grid item xs={12}>
-              <Typography color="textPrimary">Latest deployment</Typography>
 
-              <Card elevation={2} style={{ margin: '10px' }}>
-                <CardContent>
-                  <Typography color="textPrimary" gutterBottom>
-                    Deployment
-                  </Typography>
-
-                  <Typography
-                    variant="body2"
-                    color="textSecondary"
-                    className={classes.commitMessage}
-                  >
-                    Image{' '}
-                    <Link
-                      href={`https://${app?.status?.summary?.images?.[0]}`}
-                      target="_blank"
-                      rel="noopener"
-                    >
-                      {app?.status?.summary?.images?.[0].split('/').pop()}
-                    </Link>
-                    <br />
-                    {revisionsMap[latestRevision?.revision]?.message}{' '}
-                    <Link
-                      href={
-                        isAppHelmChartType(app)
-                          ? app?.spec?.source?.repoURL
-                          : getCommitUrl(
-                              app?.spec?.source?.repoURL ?? '',
-                              latestRevision?.revision,
-                              entity?.metadata?.annotations ?? {},
-                            )
-                      }
-                      target="_blank"
-                      rel="noopener"
-                    >
-                      {latestRevision?.revision.slice(0, 7)}
-                    </Link>{' '}
-                    deployed {moment(appDeployedAt).local().fromNow()}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-          )}
-          {appHistory.length > 1 && (
-            <Grid item xs={12}>
-              <Typography color="textPrimary">Deployment history</Typography>
-              <Box
-                style={{
-                  width: '100%',
-                  margin: 0,
-                  padding: '0',
-                  height: '35vh',
-                  overflowY: 'auto',
-                }}
-              >
-                <br />
-                {app?.status?.history
-                  ?.slice()
-                  ?.reverse()
-                  .slice(1)
-                  ?.map(dep => {
-                    const commitUrl = app?.spec?.source?.repoURL
-                      ? getCommitUrl(
-                          app.spec.source.repoURL,
-                          dep?.revision,
-                          entity?.metadata?.annotations ?? {},
-                        )
-                      : null;
-                    return (
-                      <Card
-                        elevation={2}
-                        key={dep.id}
-                        style={{ margin: '10px' }}
-                      >
-                        <CardContent>
-                          <Typography color="textPrimary" gutterBottom>
-                            Deployment
-                          </Typography>
-
-                          <Typography
-                            variant="body2"
-                            color="textSecondary"
-                            className={classes.commitMessage}
-                          >
-                            {revisionsMap[dep.revision]?.message}{' '}
-                            <Link
-                              aria-disabled={!!commitUrl}
-                              href={commitUrl ?? ''}
-                              target="_blank"
-                              rel="noopener"
-                            >
-                              {dep.revision.slice(0, 7)}
-                            </Link>{' '}
-                            deployed {moment(dep.deployedAt).local().fromNow()}
-                          </Typography>
-                        </CardContent>
-                      </Card>
-                    );
-                  })}
-              </Box>
-            </Grid>
-          )}
+              <MetadataItem title="Revision">
+                {app?.spec?.source?.targetRevision}
+              </MetadataItem>
+            </Metadata>
+          </Grid>
+          <Grid item xs={12}>
+            <Typography color="textPrimary">Resources</Typography>
+            <Card
+              elevation={2}
+              key="resoucres-container"
+              style={{ padding: '25px', marginTop: '10px' }}
+            >
+              <ResourcesTable
+                resources={app?.status?.resources || []}
+                createdAt={createdAt}
+              />
+            </Card>
+          </Grid>
         </Grid>
       </CardContent>
     </Drawer>

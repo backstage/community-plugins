@@ -20,7 +20,7 @@ import {
   SonarqubeConfig,
 } from './sonarqubeInfoProvider';
 import { setupServer } from 'msw/node';
-import { setupRequestMockHandlers } from '@backstage/backend-test-utils';
+import { registerMswTestHooks } from '@backstage/backend-test-utils';
 import { rest, RestRequest } from 'msw';
 
 describe('SonarqubeConfig', () => {
@@ -344,7 +344,7 @@ describe('DefaultSonarqubeInfoProvider', () => {
   });
 
   describe('getFindings', () => {
-    setupRequestMockHandlers(server);
+    registerMswTestHooks(server);
     const MOCK_BASE_URL = 'http://backstage:9191';
     const DUMMY_COMPONENT_KEY = 'dummyComponentKey';
     const DUMMY_ANALYSIS_DATE = '2022-01-01T00:00:00Z';

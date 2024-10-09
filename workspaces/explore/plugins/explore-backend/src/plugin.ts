@@ -37,7 +37,7 @@ export const explorePlugin = createBackendPlugin({
 
     env.registerExtensionPoint(toolProviderExtensionPoint, {
       setToolProvider(provider) {
-        if (provider) {
+        if (toolProvider) {
           throw new Error('The tool provider has been already set');
         }
         toolProvider = provider;

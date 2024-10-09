@@ -1,5 +1,24 @@
 # @backstage-community/plugin-kafka-backend
 
+## 0.3.20
+
+### Patch Changes
+
+- ec791d1: Backstage version bump to v1.31.1
+
+## 0.3.19
+
+### Patch Changes
+
+- e273f78: Backstage version bump to v1.30.4
+
+## 0.3.18
+
+### Patch Changes
+
+- ae2ee8a: Updated dependency `@types/supertest` to `^6.0.0`.
+  Updated dependency `supertest` to `^7.0.0`.
+
 ## 0.3.17
 
 ### Patch Changes

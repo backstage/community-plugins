@@ -1,3 +1,18 @@
+/*
+ * Copyright 2024 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -161,13 +176,15 @@ const DenseTable = ({ vulnList, columns, filters }: DenseTableProps) => {
 };
 
 type PageContentProps = {
+  hostKey: string;
   projectName: string;
   projectVersion: string;
   columns: TableColumn[];
   filters: TableFilter[];
 };
 
-const PageContent = ({
+export const PageContent = ({
+  hostKey,
   projectName,
   projectVersion,
   columns,
@@ -178,6 +195,7 @@ const PageContent = ({
   const entityRef = stringifyEntityRef(entity);
   const { value, loading, error } = useAsync(async () => {
     const data: any = await blackduckApi.getVulns(
+      hostKey,
       projectName,
       projectVersion,
       entityRef,
@@ -187,17 +205,18 @@ const PageContent = ({
 
   if (loading) {
     return <Progress />;
-  } else if (error) {
-    return <Alert severity="error">{error.message}</Alert>;
   } else if (!value) {
     return (
       <EmptyState
         missing="info"
         title="No information to display"
-        description={`There is no BlackDuck Project ${projectName} with version ${projectVersion} available!`}
+        description={`There is no BlackDuck Project ${projectName} with version ${projectVersion} on host ${hostKey} available!`}
       />
     );
+  } else if (error) {
+    return <Alert severity="error">{error.message}</Alert>;
   }
+
   return (
     <DenseTable
       vulnList={value.items || []}
@@ -217,16 +236,32 @@ export const BlackDuckPageComponent = ({
   filters,
 }: BlackDuckPageComponentProps) => {
   const { entity } = useEntity();
-  const { projectName, projectVersion } = getProjectAnnotation(entity);
 
-  return isBlackDuckAvailable(entity) ? (
+  if (!isBlackDuckAvailable(entity)) {
+    return (
+      <MissingAnnotationEmptyState annotation={BLACKDUCK_PROJECT_ANNOTATION} />
+    );
+  }
+
+  const { hostKey, projectName, projectVersion } = getProjectAnnotation(entity);
+
+  if (!projectName || !projectVersion) {
+    return (
+      <EmptyState
+        missing="info"
+        title="No information to display"
+        description="The project annotation is not structured correctly. The project name, or project version is missing."
+      />
+    );
+  }
+
+  return (
     <PageContent
+      hostKey={hostKey}
       projectName={projectName}
       projectVersion={projectVersion}
       columns={columns || defaultColumns}
       filters={filters || blackduckFilters}
     />
-  ) : (
-    <MissingAnnotationEmptyState annotation={BLACKDUCK_PROJECT_ANNOTATION} />
   );
 };

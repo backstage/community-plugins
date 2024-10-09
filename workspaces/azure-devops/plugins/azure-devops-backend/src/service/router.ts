@@ -48,7 +48,10 @@ import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 
 const DEFAULT_TOP = 10;
 
-/** @public */
+/**
+ * @deprecated Please migrate to the new backend system as this will be removed in the future.
+ * @public
+ * */
 export interface RouterOptions {
   azureDevOpsApi?: AzureDevOpsApi;
   logger: LoggerService;
@@ -59,7 +62,10 @@ export interface RouterOptions {
   httpAuth?: HttpAuthService;
 }
 
-/** @public */
+/**
+ * @deprecated Please migrate to the new backend system as this will be removed in the future.
+ * @public
+ * */
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {

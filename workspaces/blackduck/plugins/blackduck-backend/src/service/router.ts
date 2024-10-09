@@ -1,3 +1,18 @@
+/*
+ * Copyright 2024 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 import {
   DiscoveryService,
@@ -18,6 +33,7 @@ import {
   blackduckVulnerabilitiesReadPermission,
 } from '@backstage-community/plugin-blackduck-common';
 import { BlackDuckRestApi } from '../api/BlackDuckRestApi';
+import { BlackDuckConfig } from './BlackDuckConfig';
 
 /** @public */
 export interface RouterOptions {
@@ -26,21 +42,18 @@ export interface RouterOptions {
   permissions: PermissionsService;
   discovery: DiscoveryService;
   httpAuth?: HttpAuthService;
+  blackDuckConfig: BlackDuckConfig;
 }
 
 /** @public */
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
-  const { logger, config, permissions } = options;
+  const { logger, permissions, config, blackDuckConfig } = options;
   const { httpAuth } = createLegacyAuthAdapters(options);
   const permissionIntegrationRouter = createPermissionIntegrationRouter({
     permissions: blackduckPermissions,
   });
-
-  const bdConfig = config.getConfig('blackduck');
-  const bdHost = bdConfig.getString('host');
-  const bdToken = bdConfig.getString('token');
 
   const router = Router();
   router.use(express.json());
@@ -54,11 +67,32 @@ export async function createRouter(
   const middleware = MiddlewareFactory.create({ logger, config });
 
   router.post(
-    '/risk-profile/:projectName/:projectVersion',
+    '/risk-profile/:hostKey/:projectName/:projectVersion',
     async (_request, response) => {
       logger.debug('getting vulnarabilities..');
-      const { projectName, projectVersion } = _request.params;
-      const blackDuck = new BlackDuckRestApi(logger, bdHost, bdToken);
+      const { hostKey, projectName, projectVersion } = _request.params;
+
+      if (!hostKey || !projectName || !projectVersion) {
+        response.status(400).json({
+          message: 'The hostKey, projectName and projectVersion are required',
+        });
+        return;
+      }
+
+      let host: string;
+      let token: string;
+
+      try {
+        const hostConfig = blackDuckConfig.getHostConfigByName(hostKey);
+        host = hostConfig.host;
+        token = hostConfig.token;
+      } catch (error) {
+        response.status(400).json({
+          message: 'The hostKey is not valid.',
+        });
+        return;
+      }
+
       const credentials = await httpAuth.credentials(_request);
       const entityRef = _request.body.entityRef;
       logger.info('getting risk profile for project: ', entityRef);
@@ -84,6 +118,8 @@ export async function createRouter(
         throw new NotAllowedError('Unauthorized');
       }
 
+      const blackDuck = new BlackDuckRestApi(logger, host, token);
+
       await blackDuck.auth();
       const risk_profile = await blackDuck.getRiskProfile(
         projectName,
@@ -94,15 +130,35 @@ export async function createRouter(
   );
 
   router.post(
-    '/vulns/:projectName/:projectVersion',
+    '/vulns/:hostKey/:projectName/:projectVersion',
     async (_request, response) => {
-      const { projectName, projectVersion } = _request.params;
-      const blackDuck = new BlackDuckRestApi(logger, bdHost, bdToken);
+      const { hostKey, projectName, projectVersion } = _request.params;
       const credentials = await httpAuth.credentials(_request);
       const entityRef = _request.body.entityRef;
       logger.info('getting vulnarabilities for project: ', entityRef);
       if (typeof entityRef !== 'string') {
         throw new InputError('Invalid entityRef, not a string');
+      }
+
+      if (!hostKey || !projectName || !projectVersion) {
+        response.status(400).json({
+          message: 'The hostKey, projectName and projectVersion are required',
+        });
+        return;
+      }
+
+      let host: string;
+      let token: string;
+
+      try {
+        const hostConfig = blackDuckConfig.getHostConfigByName(hostKey);
+        host = hostConfig.host;
+        token = hostConfig.token;
+      } catch (error) {
+        response.status(400).json({
+          message: 'The hostKey is not valid.',
+        });
+        return;
       }
 
       const decision = (
@@ -122,6 +178,8 @@ export async function createRouter(
       if (decision.result !== AuthorizeResult.ALLOW) {
         throw new NotAllowedError('Unauthorized');
       }
+
+      const blackDuck = new BlackDuckRestApi(logger, host, token);
 
       await blackDuck.auth();
       const vulns = await blackDuck.getVulnerableComponents(

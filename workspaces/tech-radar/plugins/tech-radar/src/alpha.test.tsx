@@ -14,9 +14,16 @@
  * limitations under the License.
  */
 
-import { createExtensionTester } from '@backstage/frontend-test-utils';
+import {
+  createExtensionTester,
+  renderInTestApp,
+  TestApiProvider,
+} from '@backstage/frontend-test-utils';
 import { screen } from '@testing-library/react';
-import { techRadarPage, techRadarApi } from './alpha';
+import { techRadarPage } from './alpha';
+import { techRadarApiRef } from './api';
+import { SampleTechRadarApi } from './sample';
+import React from 'react';
 
 describe('TechRadarPage', () => {
   beforeAll(() => {
@@ -27,7 +34,11 @@ describe('TechRadarPage', () => {
   });
 
   it('renders without exploding', async () => {
-    createExtensionTester(techRadarPage).add(techRadarApi).render();
+    renderInTestApp(
+      <TestApiProvider apis={[[techRadarApiRef, new SampleTechRadarApi()]]}>
+        {createExtensionTester(techRadarPage).reactElement()}
+      </TestApiProvider>,
+    );
 
     await expect(screen.findByText('Tech Radar')).resolves.toBeInTheDocument();
   });

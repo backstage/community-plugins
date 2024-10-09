@@ -1,5 +1,29 @@
 # @backstage-community/plugin-catalog-backend-module-scaffolder-relation-processor
 
+## 2.0.0
+
+### Major Changes
+
+- 94fb1a0: **Breaking** migrate to the new backend system and remove deprecations
+
+## 1.2.9
+
+### Patch Changes
+
+- cd31d0e: Backstage version bump to v1.31.2
+
+## 1.2.8
+
+### Patch Changes
+
+- ed69246: Updated dependency `@janus-idp/cli` to `1.13.1`.
+
+## 1.2.7
+
+### Patch Changes
+
+- 029a6d1: Backstage version bump to v1.30.2
+
 ## 1.2.6
 
 ### Patch Changes

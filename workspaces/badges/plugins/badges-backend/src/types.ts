@@ -57,6 +57,9 @@ export interface BadgeContext {
   badgeUrl: string;
   config: Config;
   entity?: Entity; // for entity badges
+
+  color?: string; // for custom badges
+  style?: BadgeStyle; // for custom badges
 }
 
 /** @public */
