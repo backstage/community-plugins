@@ -138,7 +138,7 @@ describe('GithubIssuesCollatorFactory', () => {
       expect(documents[0].url).toBe('https://github.com/my-org/repo/issues/1');
       expect(documents[0].author).toBe('author');
       expect(documents[0].labels).toEqual(['bug']);
-      expect(documents[0].repository).toBe('repo');
+      expect(documents[0].repository.name).toBe('repo');
     });
   });
 });

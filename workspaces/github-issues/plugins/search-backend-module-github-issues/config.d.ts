@@ -26,7 +26,7 @@ export interface Config {
         /**
          * The target that this provider should consume.
          *
-         * @example "https://github.com/backstage"
+         * @example "backstage"
          */
         org: string;
         /**

@@ -103,10 +103,10 @@ export class GithubIssuesCollatorFactory implements DocumentCollatorFactory {
   }
 
   async *execute(): AsyncGenerator<GithubIssuesDocument> {
-    this.logger.info('Starting collation of GitHub issues.');
+    this.logger.info('Stsarting collation of GitHub issues.');
 
-    const documents = await this.fetchGithubIssuesDocuments();
-
+    const { client } = await this.createClient();
+    const { nodes: documents } = await this.fetchGithubIssuesDocuments(client);
     for (const document of documents) {
       if (!document.title || !document.url) {
         continue;
@@ -134,8 +134,11 @@ export class GithubIssuesCollatorFactory implements DocumentCollatorFactory {
     this.logger.info('Finished collation of GitHub issues.');
   }
 
-  private async fetchGithubIssuesDocuments(): Promise<Issue[] | Discussion[]> {
-    const { client } = await this.createClient();
+  private async fetchGithubIssuesDocuments(client: GraphQL): Promise<{
+    nodes: Issue[] | Discussion[];
+    hasNextPage: boolean;
+    endCursor: string | null;
+  }> {
     const queryString = `
   query ($first: Int!, $after: String, $q: String!) {
     search(first: $first, type: ISSUE, after: $after, query: $q) {
@@ -169,33 +172,30 @@ export class GithubIssuesCollatorFactory implements DocumentCollatorFactory {
 
     // todo: type the response
     let nodes: any[] = [];
-    let hasNextPage = true;
     let endCursor: string | null = null;
     const searchQuery = this.config.getString('search.collators.github.query');
 
-    while (hasNextPage) {
-      const variables = {
-        first: 100,
-        after: endCursor,
-        q: searchQuery,
-      };
+    const variables = {
+      first: 100,
+      after: endCursor,
+      q: searchQuery,
+    };
 
-      const { search } = (await client(queryString, variables)) as Query;
-      const { edges, pageInfo } = search;
+    const { search } = (await client(queryString, variables)) as Query;
+    const { edges, pageInfo } = search;
 
-      if (!edges || !pageInfo) {
-        this.logger.warn(
-          'No edges or pageInfo found in the GitHub search query response',
-        );
-        continue;
-      }
-
-      nodes = nodes.concat(edges.map(edge => edge && edge.node));
-      hasNextPage = pageInfo.hasNextPage ?? false;
-      endCursor = pageInfo.endCursor ?? null;
+    if (!edges || !pageInfo) {
+      this.logger.warn(
+        'No edges or pageInfo found in the GitHub search query response',
+      );
+      return { nodes, hasNextPage: false, endCursor: null };
     }
 
-    return nodes;
+    nodes = nodes.concat(edges.map(edge => edge && edge.node));
+    const hasNextPage = pageInfo.hasNextPage ?? false;
+    endCursor = pageInfo.endCursor ?? null;
+
+    return { nodes, hasNextPage, endCursor };
   }
 
   private async createClient(): Promise<{ client: GraphQL }> {
