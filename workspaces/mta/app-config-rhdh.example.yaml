@@ -1,0 +1,72 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: app-config-rhdh
+  labels:
+    # This needs to be set to the value of the 'EXT_CONF_SYNC_backstage' env var in the operator container, which is 'true' if unset
+    rhdh.redhat.com/ext-config-sync: 'true'
+  annotations:
+    rhdh.redhat.com/backstage-name: 'developer-hub'
+data:
+  app-config-rhdh.yaml: |-
+    app:
+      title: Red Hat Developer Hub - Migration Toolkit for Applications
+      baseUrl: <BACKSTAGE_URL>
+    backend:
+      baseUrl: <BACKSTAGE_URL>
+      cors:
+        origin: <BACKSTAGE_URL>
+        methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
+        credentials: true
+      auth:
+        dangerouslyDisableDefaultAuthPolicy: true
+
+    mta:
+      url: <MTA_URL>
+      providerAuth:
+        realm: tackle 
+        secret: backstage-provider-secret
+        clientID: backstage-provider
+
+    auth:
+      dangerouslyDisableDefaultAuthPolicy: true
+      providers:
+        guest: 
+          dangerouslyAllowOutsideDevelopment: true
+
+    dynamicPlugins:
+      frontend: 
+        internal.backstage-plugin-mta-frontend:
+          entityTabs:
+            - path: /mta
+              title: MTA
+              mountPoint: entity.page.mta
+          mountPoints:
+            - mountPoint: entity.page.mta/cards
+              importName: EntityMTAContent
+              config:
+                layout:
+                  gridColumn:
+                    lg: 'span 12'
+                    md: 'span 8'
+                    xs: 'span 6'
+                if:
+                  allOf:
+                    - isKind: component 
+                    - isType: service
+    catalog:
+      import:
+        entityFilename: catalog-info.yaml
+        pullRequestBranchName: backstage-integration
+      rules:
+        - allow: [Component, System, API, Resource, Location]
+      locations:
+        - type: url 
+          target: https://github.com/ibolton336/backstage-mta-plugins/blob/main/create-application-template.yaml
+          rules:
+            - allow: [Template]
+
+        - type: file
+          target: create-application-template.yaml
+          rules:
+            - allow: [Template]
