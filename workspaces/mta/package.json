@@ -25,7 +25,8 @@
     "lint:all": "backstage-cli repo lint",
     "prettier:check": "prettier --check .",
     "new": "backstage-cli new --scope internal",
-    "export-dynamic": "yarn --cwd plugins/mta-backend export-dynamic && yarn --cwd plugins/catalog-backend-module-mta-entity-provider export-dynamic"
+    "export-dynamic": "yarn --cwd plugins/mta-backend export-dynamic && yarn --cwd plugins/catalog-backend-module-mta-entity-provider export-dynamic",
+    "postinstall": "cd ../../ && yarn install"
   },
   "workspaces": {
     "packages": [
