@@ -73,6 +73,11 @@ const fetchNpmPackage = async (packageName: string | undefined) => {
   const response = await fetch(
     `https://registry.npmjs.org/${encodeURIComponent(packageName)}`,
   );
+  if (response.status === 404) {
+    throw new Error(
+      `Package ${packageName} not found (private repositories are not supported yet)`,
+    );
+  }
   if (!response.ok) {
     throw new Error(
       `Failed to fetch info for package ${packageName}: ${response.status} ${response.statusText}`,

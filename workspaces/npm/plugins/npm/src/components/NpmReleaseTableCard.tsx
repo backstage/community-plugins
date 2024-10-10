@@ -18,10 +18,15 @@ import {
   MissingAnnotationEmptyState,
   useEntity,
 } from '@backstage/plugin-catalog-react';
-import { Table, type TableColumn } from '@backstage/core-components';
+import {
+  ErrorPanel,
+  Table,
+  type TableColumn,
+} from '@backstage/core-components';
+import Box from '@material-ui/core/Box';
+import useAsync from 'react-use/esm/useAsync';
 import { DateTime } from 'luxon';
 import { NPM_PACKAGE_ANNOTATION } from '../annotations';
-import useAsync from 'react-use/esm/useAsync';
 import { API } from '../api';
 
 interface TagRow {
@@ -35,6 +40,47 @@ interface TableData {
   published: string;
 }
 
+const tagColumns: TableColumn<TagRow>[] = [
+  {
+    title: 'Tag',
+    field: 'tag',
+    type: 'string',
+  },
+  {
+    title: 'Version',
+    field: 'version',
+    type: 'string',
+  },
+  {
+    title: 'Published',
+    field: 'published',
+    type: 'datetime',
+    render: row => (
+      <time dateTime={row.published} title={row.published}>
+        {DateTime.fromISO(row.published).toRelative()}
+      </time>
+    ),
+  },
+];
+
+const columns: TableColumn<TableData>[] = [
+  {
+    title: 'Version',
+    field: 'version',
+    type: 'string',
+  },
+  {
+    title: 'Published',
+    field: 'published',
+    type: 'datetime',
+    render: row => (
+      <time dateTime={row.published} title={row.published}>
+        {DateTime.fromISO(row.published).toRelative()}
+      </time>
+    ),
+  },
+];
+
 /**
  * Page content for the catalog (entiy page) that shows two tables.
  * One for the latest tags and versions of a npm package.
@@ -47,10 +93,11 @@ export function NpmReleaseTableCard() {
 
   const packageName = entity.metadata.annotations?.[NPM_PACKAGE_ANNOTATION];
 
-  const packageInfo = useAsync(
-    () => API.fetchNpmPackage(packageName),
-    [packageName],
-  );
+  const {
+    value: packageInfo,
+    loading,
+    error,
+  } = useAsync(() => API.fetchNpmPackage(packageName), [packageName]);
 
   if (!packageName) {
     return (
@@ -61,60 +108,17 @@ export function NpmReleaseTableCard() {
     );
   }
 
-  const tagColumns: TableColumn<TableData>[] = [
-    {
-      title: 'Tag',
-      field: 'tag',
-      type: 'string',
-    },
-    {
-      title: 'Version',
-      field: 'version',
-      type: 'string',
-    },
-    {
-      title: 'Published',
-      field: 'published',
-      type: 'datetime',
-      render: row => (
-        <time dateTime={row.published} title={row.published}>
-          {DateTime.fromISO(row.published).toRelative()}
-        </time>
-      ),
-    },
-  ];
-
-  const columns: TableColumn<TableData>[] = [
-    {
-      title: 'Version',
-      field: 'version',
-      type: 'string',
-    },
-    {
-      title: 'Published',
-      field: 'published',
-      type: 'datetime',
-      render: row => (
-        <time dateTime={row.published} title={row.published}>
-          {DateTime.fromISO(row.published).toRelative()}
-        </time>
-      ),
-    },
-  ];
-
   const tagData: TagRow[] = [];
-  if (packageInfo.value?.['dist-tags']) {
-    for (const [tag, version] of Object.entries(
-      packageInfo.value['dist-tags'],
-    )) {
-      const published = packageInfo.value.time[version];
+  if (packageInfo?.['dist-tags']) {
+    for (const [tag, version] of Object.entries(packageInfo['dist-tags'])) {
+      const published = packageInfo.time[version];
       tagData.push({ tag, version, published });
     }
   }
 
   const data: TableData[] = [];
-  if (packageInfo.value?.time) {
-    for (const [version, published] of Object.entries(packageInfo.value.time)) {
+  if (packageInfo?.time) {
+    for (const [version, published] of Object.entries(packageInfo.time)) {
       if (version === 'created' || version === 'modified') {
         continue;
       }
@@ -123,29 +127,31 @@ export function NpmReleaseTableCard() {
     data.reverse();
   }
 
-  // .map((version) => ({
-  //   id: version.version,
-  //   name: version.name,
-  //   version: version.version,
-  //   releaseDate: version.time[version.version],
-  // })) || [];
+  const emptyContent = error ? (
+    <Box padding={1}>
+      <ErrorPanel error={error} />
+    </Box>
+  ) : null;
 
   return (
     <>
       <Table
         title="Current Tags"
         options={{ paging: false, padding: 'dense' }}
+        isLoading={loading}
         data={tagData}
         columns={tagColumns}
+        emptyContent={emptyContent}
       />
       <br />
       <br />
       <Table
         title="Version History"
         options={{ paging: true, pageSize: 10, padding: 'dense' }}
-        isLoading={packageInfo.loading}
+        isLoading={loading}
         data={data}
         columns={columns}
+        emptyContent={emptyContent}
       />
     </>
   );

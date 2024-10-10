@@ -69,7 +69,7 @@ spec:
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: 'backstage-plugin-catalog-react'
+  name: backstage-plugin-catalog-react
   annotations:
     npm/package: '@backstage/plugin-catalog-react'
 spec:
@@ -86,7 +86,7 @@ spec:
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: 'backstage-plugin-catalog'
+  name: backstage-plugin-catalog
   annotations:
     npm/package: '@backstage/plugin-catalog'
 spec:
@@ -104,7 +104,7 @@ spec:
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: 'backstage-plugin-catalog-backend'
+  name: backstage-plugin-catalog-backend
   annotations:
     npm/package: '@backstage/plugin-catalog-backend'
 spec:
@@ -117,3 +117,16 @@ spec:
     - component:backstage-catalog-client
     - component:backstage-plugin-catalog-common
     - component:backstage-plugin-catalog-node
+---
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: npm-package-not-found
+  annotations:
+    npm/package: npm-package-not-found
+spec:
+  type: service
+  lifecycle: testing
+  owner: guests
+  system: backstage

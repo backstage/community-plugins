@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 import React from 'react';
-import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
-import CardContent from '@material-ui/core/CardContent';
-import Divider from '@material-ui/core/Divider';
+import { ErrorPanel, InfoCard } from '@backstage/core-components';
+import Box from '@material-ui/core/Box';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid, { GridSize } from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import Link from '@material-ui/core/Link';
 import { makeStyles } from '@material-ui/core/styles';
 import {
   MissingAnnotationEmptyState,
@@ -53,7 +51,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function Item({
+function GridItem({
   label,
   value,
   md = 12,
@@ -87,10 +85,11 @@ export function NpmInfoCard() {
 
   const packageName = entity.metadata.annotations?.[NPM_PACKAGE_ANNOTATION];
 
-  const packageInfo = useAsync(
-    () => API.fetchNpmPackage(packageName),
-    [packageName],
-  );
+  const {
+    value: packageInfo,
+    loading,
+    error,
+  } = useAsync(() => API.fetchNpmPackage(packageName), [packageName]);
 
   if (!packageName) {
     return (
@@ -103,16 +102,18 @@ export function NpmInfoCard() {
 
   const latestTag =
     entity.metadata.annotations?.[NPM_STABLE_TAG_ANNOTATION] ?? 'latest';
-  const latestVersion = packageInfo.value?.['dist-tags']?.[latestTag];
+  const latestVersion = packageInfo?.['dist-tags']?.[latestTag];
   const latestPublishedAt = latestVersion
-    ? packageInfo.value?.time?.[latestVersion]
+    ? packageInfo?.time?.[latestVersion]
     : undefined;
 
-  const npmLink = `https://www.npmjs.com/package/${packageName}`;
+  const npmLink = packageInfo
+    ? `https://www.npmjs.com/package/${packageName}`
+    : null;
 
   let repositoryLink: string | undefined;
-  if (packageInfo.value?.repository?.url) {
-    let url = packageInfo.value.repository.url;
+  if (packageInfo?.repository?.url) {
+    let url = packageInfo.repository.url;
     if (url.startsWith('git+https://')) {
       url = url.slice('git+'.length);
     }
@@ -122,87 +123,116 @@ export function NpmInfoCard() {
     if (url.startsWith('https://')) {
       if (
         url.startsWith('https://github.com/') &&
-        packageInfo.value.repository.directory
+        packageInfo.repository.directory
       ) {
-        repositoryLink = `${url}/tree/main/${packageInfo.value.repository.directory}`;
+        repositoryLink = `${url}/tree/main/${packageInfo.repository.directory}`;
       } else {
         repositoryLink = url;
       }
     }
   }
 
-  const bugsLink = packageInfo.value?.bugs?.url;
+  const bugsLink = packageInfo?.bugs?.url;
 
-  const homepageLink = packageInfo.value?.homepage;
+  const homepageLink = packageInfo?.homepage;
 
   return (
-    <Card>
-      <CardHeader title={`Npm package ${packageName}`} />
-      <Divider />
-      <CardContent>
-        <Grid container>
-          {latestVersion ? (
-            <Item label="Latest version" value={latestVersion} md={4} />
-          ) : null}
+    <InfoCard title={`Npm package ${packageName}`}>
+      <Grid container>
+        {error ? (
+          <Box sx={{ width: '100%' }}>
+            <ErrorPanel error={error} />
+          </Box>
+        ) : null}
 
-          {latestPublishedAt ? (
-            <Item
-              label="Published at"
-              value={
-                <time dateTime={latestPublishedAt} title={latestPublishedAt}>
-                  {DateTime.fromISO(latestPublishedAt).toRelative()}
-                </time>
-              }
-              md={4}
-            />
-          ) : null}
+        {loading && !packageInfo ? (
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              width: '100%',
+              minHeight: '15rem',
+            }}
+          >
+            <CircularProgress size="5rem" />
+          </Box>
+        ) : null}
 
-          {packageInfo.value?.license ? (
-            <Item label="License" value={packageInfo.value.license} md={4} />
-          ) : null}
+        {latestVersion ? (
+          <GridItem label="Latest version" value={latestVersion} md={4} />
+        ) : null}
 
-          {/* Markdown? */}
-          {packageInfo.value?.description ? (
-            <Item label="Description" value={packageInfo.value.description} />
-          ) : null}
+        {latestPublishedAt ? (
+          <GridItem
+            label="Published at"
+            value={
+              <time dateTime={latestPublishedAt} title={latestPublishedAt}>
+                {DateTime.fromISO(latestPublishedAt).toRelative()}
+              </time>
+            }
+            md={4}
+          />
+        ) : null}
 
-          {/* Markdown? */}
-          {packageInfo.value?.keywords?.length ? (
-            <Item
-              label="Keywords"
-              value={packageInfo.value.keywords.join(', ')}
-            />
-          ) : null}
+        {packageInfo?.license ? (
+          <GridItem label="License" value={packageInfo.license} md={4} />
+        ) : null}
 
-          {npmLink ? (
-            <Item
-              label="Npm repository"
-              value={<Link href={npmLink}>{npmLink}</Link>}
-            />
-          ) : null}
+        {/* Markdown? */}
+        {packageInfo?.description ? (
+          <GridItem label="Description" value={packageInfo.description} />
+        ) : null}
 
-          {repositoryLink ? (
-            <Item
-              label="Code repository"
-              value={<Link href={repositoryLink}>{repositoryLink}</Link>}
-            />
-          ) : null}
+        {/* Markdown? */}
+        {packageInfo?.keywords?.length ? (
+          <GridItem label="Keywords" value={packageInfo.keywords.join(', ')} />
+        ) : null}
 
-          {bugsLink ? (
-            <Item
-              label="Issue tracker"
-              value={<Link href={bugsLink}>{bugsLink}</Link>}
-            />
-          ) : null}
+        {npmLink ? (
+          <GridItem
+            label="Npm repository"
+            value={
+              <a href={npmLink} target="_blank">
+                {npmLink}
+              </a>
+            }
+          />
+        ) : null}
 
-          {homepageLink ? (
-            <Item
-              label="Homepage"
-              value={<Link href={homepageLink}>{homepageLink}</Link>}
-            />
-          ) : null}
-        </Grid>
-      </CardContent>
-    </Card>
+        {repositoryLink ? (
+          <GridItem
+            label="Code repository"
+            value={
+              <a href={repositoryLink} target="_blank">
+                {repositoryLink}
+              </a>
+            }
+          />
+        ) : null}
+
+        {bugsLink ? (
+          <GridItem
+            label="Issue tracker"
+            value={
+              <a href={bugsLink} target="_blank">
+                {bugsLink}
+              </a>
+            }
+          />
+        ) : null}
+
+        {homepageLink ? (
+          <GridItem
+            label="Homepage"
+            value={
+              <a href={homepageLink} target="_blank">
+                {homepageLink}
+              </a>
+            }
+          />
+        ) : null}
+      </Grid>
+    </InfoCard>
   );
 }
