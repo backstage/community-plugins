@@ -6,6 +6,11 @@
   "backstage": {
     "role": "frontend"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/topology/packages/app"
+  },
   "scripts": {
     "start": "backstage-cli package start",
     "build": "backstage-cli package build",
