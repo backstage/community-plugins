@@ -1,0 +1,20 @@
+# Contains entities used for local development
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: test-component
+  description: Test component
+spec:
+  type: repository
+  lifecycle: experimental
+  owner: user:development/guest
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: test-component-2
+  description: Test component 2
+spec:
+  type: repository
+  lifecycle: experimental
+  owner: user:development/john.doe
