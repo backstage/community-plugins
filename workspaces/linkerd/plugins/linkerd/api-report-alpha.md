@@ -32,10 +32,38 @@ const plugin: FrontendPlugin<
       >;
       inputs: {};
     }>;
-    'entity-card:linkerd': ExtensionDefinition<{
+    'entity-card:linkerd/is-meshed': ExtensionDefinition<{
       kind: 'entity-card';
       namespace: undefined;
-      name: undefined;
+      name: 'is-meshed';
+      config: {
+        filter: string | undefined;
+      };
+      configInput: {
+        filter?: string | undefined;
+      };
+      output:
+        | ConfigurableExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
+        | ConfigurableExtensionDataRef<
+            (entity: Entity) => boolean,
+            'catalog.entity-filter-function',
+            {
+              optional: true;
+            }
+          >
+        | ConfigurableExtensionDataRef<
+            string,
+            'catalog.entity-filter-expression',
+            {
+              optional: true;
+            }
+          >;
+      inputs: {};
+    }>;
+    'entity-card:linkerd/edges-table': ExtensionDefinition<{
+      kind: 'entity-card';
+      namespace: undefined;
+      name: 'edges-table';
       config: {
         filter: string | undefined;
       };
