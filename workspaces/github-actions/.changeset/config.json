@@ -4,6 +4,7 @@
   "commit": false,
   "fixed": [],
   "linked": [],
+  "ignore": ["app", "app-next", "backend"],
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch"
