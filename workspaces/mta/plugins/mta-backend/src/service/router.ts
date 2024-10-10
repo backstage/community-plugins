@@ -404,7 +404,7 @@ export async function createRouter(
     response.json(j);
   });
 
-  router.put('/applications/:id', async (req, res) => {
+  router.put('/applications/:id', async (req: any, res: any) => {
     const applicationId = req.params.id;
     const accessToken = res.locals.accessToken; // Assuming accessToken is correctly set in locals
     const url = `${baseURLHub}/applications/${applicationId}`;
