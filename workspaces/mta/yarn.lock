@@ -2666,7 +2666,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage-community/backstage-plugin-catalog-backend-module-mta-entity-provider@^0.1.0, @backstage-community/backstage-plugin-catalog-backend-module-mta-entity-provider@workspace:plugins/catalog-backend-module-mta-entity-provider":
+"@backstage-community/backstage-plugin-catalog-backend-module-mta-entity-provider@workspace:^, @backstage-community/backstage-plugin-catalog-backend-module-mta-entity-provider@workspace:plugins/catalog-backend-module-mta-entity-provider":
   version: 0.0.0-use.local
   resolution: "@backstage-community/backstage-plugin-catalog-backend-module-mta-entity-provider@workspace:plugins/catalog-backend-module-mta-entity-provider"
   dependencies:
@@ -2685,7 +2685,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@backstage-community/backstage-plugin-mta-backend@^0.1.0, @backstage-community/backstage-plugin-mta-backend@workspace:plugins/mta-backend":
+"@backstage-community/backstage-plugin-mta-backend@workspace:^, @backstage-community/backstage-plugin-mta-backend@workspace:plugins/mta-backend":
   version: 0.0.0-use.local
   resolution: "@backstage-community/backstage-plugin-mta-backend@workspace:plugins/mta-backend"
   dependencies:
@@ -2716,7 +2716,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@backstage-community/backstage-plugin-mta-frontend@^0.1.0, @backstage-community/backstage-plugin-mta-frontend@workspace:plugins/mta-frontend":
+"@backstage-community/backstage-plugin-mta-frontend@workspace:^, @backstage-community/backstage-plugin-mta-frontend@workspace:plugins/mta-frontend":
   version: 0.0.0-use.local
   resolution: "@backstage-community/backstage-plugin-mta-frontend@workspace:plugins/mta-frontend"
   dependencies:
@@ -15762,7 +15762,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "app@workspace:packages/app"
   dependencies:
-    "@backstage-community/backstage-plugin-mta-frontend": ^0.1.0
+    "@backstage-community/backstage-plugin-mta-frontend": "workspace:^"
     "@backstage/app-defaults": ^1.5.4
     "@backstage/catalog-model": ^1.4.5
     "@backstage/cli": ^0.26.11
@@ -16473,8 +16473,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "backend@workspace:packages/backend"
   dependencies:
-    "@backstage-community/backstage-plugin-catalog-backend-module-mta-entity-provider": ^0.1.0
-    "@backstage-community/backstage-plugin-mta-backend": ^0.1.0
+    "@backstage-community/backstage-plugin-catalog-backend-module-mta-entity-provider": "workspace:^"
+    "@backstage-community/backstage-plugin-mta-backend": "workspace:^"
     "@backstage-community/backstage-plugin-scaffolder-backend-module-mta": "workspace:^"
     "@backstage/backend-common": ^0.21.7
     "@backstage/backend-defaults": ^0.3.3
