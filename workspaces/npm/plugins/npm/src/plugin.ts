@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { createPlugin } from '@backstage/core-plugin-api';
+import {
+  createPlugin,
+  createRoutableExtension,
+} from '@backstage/core-plugin-api';
 
 import { rootRouteRef } from './routes';
 
@@ -28,3 +31,15 @@ export const npmPlugin = createPlugin({
     root: rootRouteRef,
   },
 });
+
+/** @public */
+export const NpmReleases = npmPlugin.provide(
+  createRoutableExtension({
+    name: 'NpmReleasesTable',
+    component: () =>
+      import('./components/NpmReleaseTableCard').then(
+        m => m.NpmReleaseTableCard,
+      ),
+    mountPoint: rootRouteRef,
+  }),
+);
