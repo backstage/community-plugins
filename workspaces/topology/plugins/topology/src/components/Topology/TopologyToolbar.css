@@ -1,0 +1,11 @@
+.pf-v5-c-toolbar {
+  padding-bottom: 0px;
+}
+
+.pf-v5-c-toolbar__content-section {
+  padding: var(--pf-v5-global--spacer--sm) 0 0 0;
+}
+
+.bs-topology-wrapper {
+  height: 100%;
+}

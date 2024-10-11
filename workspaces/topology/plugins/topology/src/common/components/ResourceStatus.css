@@ -1,0 +1,16 @@
+.bs-topology-resource-status {
+  padding-left: var(--pf-v5-global--spacer--sm);
+  white-space: nowrap;
+}
+
+.bs-topology-resource-status__badge {
+  vertical-align: middle;
+}
+
+.bs-topology-resource-status__badge--alt {
+  vertical-align: baseline;
+}
+
+.bs-topology-resource-status--BackgroundColor {
+  background-color: transparent;
+}
