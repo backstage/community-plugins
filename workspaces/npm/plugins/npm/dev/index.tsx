@@ -15,9 +15,8 @@
  */
 import React from 'react';
 import { createDevApp } from '@backstage/dev-utils';
-import { npmPlugin, NpmReleases } from '../src/plugin';
+import { npmPlugin, NpmInfoCard, NpmReleaseTableCard } from '../src/plugin';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
-import { NpmInfoCard } from '../src/components/NpmInfoCard';
 import { Content, Header, Page } from '@backstage/core-components';
 import { Grid } from '@material-ui/core';
 
@@ -46,7 +45,7 @@ createDevApp()
           <EntityProvider entity={mockEntity}>
             <Grid container>
               <Grid item xs={8}>
-                <NpmReleases />
+                <NpmReleaseTableCard />
               </Grid>
               <Grid item xs={4}>
                 <NpmInfoCard />

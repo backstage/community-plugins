@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 import {
+  createComponentExtension,
   createPlugin,
-  createRoutableExtension,
 } from '@backstage/core-plugin-api';
 
 import { rootRouteRef } from './routes';
@@ -33,13 +33,37 @@ export const npmPlugin = createPlugin({
 });
 
 /** @public */
-export const NpmReleases = npmPlugin.provide(
-  createRoutableExtension({
-    name: 'NpmReleasesTable',
-    component: () =>
-      import('./components/NpmReleaseTableCard').then(
-        m => m.NpmReleaseTableCard,
-      ),
-    mountPoint: rootRouteRef,
+export const NpmReleaseTableCard = npmPlugin.provide(
+  createComponentExtension({
+    name: 'NpmReleaseTableCard',
+    component: {
+      lazy: () =>
+        import('./components/NpmReleaseTableCard').then(
+          m => m.NpmReleaseTableCard,
+        ),
+    },
+  }),
+);
+
+/** @public */
+export const NpmInfoCard = npmPlugin.provide(
+  createComponentExtension({
+    name: 'NpmInfoCard',
+    component: {
+      lazy: () => import('./components/NpmInfoCard').then(m => m.NpmInfoCard),
+    },
+  }),
+);
+
+/** @public */
+export const NpmReleaseOverviewCard = npmPlugin.provide(
+  createComponentExtension({
+    name: 'NpmReleaseOverviewCard',
+    component: {
+      lazy: () =>
+        import('./components/NpmReleaseOverviewCard').then(
+          m => m.NpmReleaseOverviewCard,
+        ),
+    },
   }),
 );

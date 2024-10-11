@@ -23,6 +23,8 @@
 export { npmPlugin } from './plugin';
 
 export { isNpmAvailable } from './utils/isNpmAvailable';
-export { NpmInfoCard } from './components/NpmInfoCard';
-export { NpmReleaseOverviewCard } from './components/NpmReleaseOverviewCard';
-export { NpmReleaseTableCard } from './components/NpmReleaseTableCard';
+export {
+  NpmInfoCard,
+  NpmReleaseOverviewCard,
+  NpmReleaseTableCard,
+} from './plugin';
