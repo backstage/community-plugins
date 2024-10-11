@@ -15,10 +15,10 @@
  */
 import React from 'react';
 import { createDevApp } from '@backstage/dev-utils';
-import { npmPlugin, NpmInfoCard, NpmReleaseTableCard } from '../src/plugin';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { Content, Header, Page } from '@backstage/core-components';
 import { Grid } from '@material-ui/core';
+import { npmPlugin, NpmInfoCard, NpmReleaseTableCard } from '../src/plugin';
 
 const mockEntity = {
   apiVersion: 'backstage.io/v1alpha1',
@@ -35,6 +35,7 @@ const mockEntity = {
     owner: 'guests',
   },
 };
+
 createDevApp()
   .registerPlugin(npmPlugin)
   .addPage({
