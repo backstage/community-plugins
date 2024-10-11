@@ -21,7 +21,6 @@ import {
   TechRadarLoaderResponse,
   TechRadarApi,
 } from './api';
-import { Config } from '@backstage/config';
 import { DiscoveryApi, FetchApi } from '@backstage/frontend-plugin-api';
 
 const rings = new Array<RadarRing>();
@@ -232,15 +231,10 @@ export type Options = {
    * Uri provided via config to load the graph data from.
    */
   proxyUri?: string;
-  /**
-   * Hard coded graph data populated directly via the config.
-   */
-  graphData?: Config;
 };
 
 export class DefaultTechRadarApi implements TechRadarApi {
   private readonly proxyUri: string | undefined;
-  private readonly graphData: Config | undefined;
   discoveryApi: DiscoveryApi;
   fetchApi: FetchApi;
 
@@ -248,7 +242,6 @@ export class DefaultTechRadarApi implements TechRadarApi {
     this.discoveryApi = opts.discoveryApi;
     this.fetchApi = opts.fetchApi;
     this.proxyUri = opts.proxyUri;
-    this.graphData = opts.graphData;
   }
   async load() {
     if (this.proxyUri) {
@@ -273,36 +266,6 @@ export class DefaultTechRadarApi implements TechRadarApi {
       );
       // could add more robust type validation here as a future improvement
       return jsonContent;
-    }
-    if (this.graphData) {
-      const parsedData: TechRadarLoaderResponse = {
-        quadrants: this.graphData
-          .getConfigArray('quadrants')
-          .map(q => ({ id: q.getString('id'), name: q.getString('name') })),
-        rings: this.graphData.getConfigArray('rings').map(r => ({
-          id: r.getString('id'),
-          name: r.getString('name'),
-          color: r.getString('color'),
-        })),
-        entries: this.graphData.getConfigArray('entries').map(e => ({
-          id: e.getString('id'),
-          key: e.getString('key'),
-          quadrant: e.getString('quadrant'),
-          title: e.getString('title'),
-          description: e.getOptionalString('description'),
-          links: e.getOptionalConfigArray('links')?.map(l => ({
-            url: l.getString('url'),
-            title: l.getString('title'),
-          })),
-          timeline: e.getConfigArray('timeline').map(t => ({
-            ringId: t.getString('ringId'),
-            date: new Date(t.get('date')),
-            moved: t.getOptionalNumber('moved'),
-            description: t.getOptionalString('description'),
-          })),
-        })),
-      };
-      return parsedData;
     }
     return mock;
   }

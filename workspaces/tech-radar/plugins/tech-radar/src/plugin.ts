@@ -53,7 +53,6 @@ export const techRadarPlugin = createPlugin({
           discoveryApi,
           fetchApi,
           proxyUri: configApi.getOptionalString('techRadar.proxyUri'),
-          graphData: configApi.getOptionalConfig('techRadar.graphData'),
         });
       },
     }),

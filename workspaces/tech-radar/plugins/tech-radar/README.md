@@ -197,9 +197,9 @@ The TS example can be found [here](src/sample.ts).
 
 ### How do I load in my own data?
 
-There are three ways to load in data to the `Tech Radar` plugin; (A) implementing a custom version of the the `TechRadarApi` interface, (B) providing
-an API via the [backstage proxy](https://backstage.io/docs/tutorials/using-backstage-proxy-within-plugin/) that serves a JSON representation of the data, or (C) providing the raw data in yaml format in the config. The options are prioritized in
-order; if all three were implemented, option A (the custom interface) would be used, and if only options B and C were implemented, option B would be used.
+There are two ways to load in data to the `Tech Radar` plugin; (A) implementing a custom version of the the `TechRadarApi` interface, or (B) providing
+an API via the [backstage proxy](https://backstage.io/docs/tutorials/using-backstage-proxy-within-plugin/) that serves a JSON representation of the data. The options are prioritized in
+order; if all both are implemented, option A (the custom interface) would be used.
 
 #### Option A: Implementing the TechRadarApi
 
@@ -289,48 +289,6 @@ proxy:
 
 techRadar:
   proxyUri: '/sampleData'
-```
-
-#### Option C: Providing tech radar content directly in the configuration
-
-Directly enumerate the tech radar data in the config, under techRadar.graphData.
-
-```yaml title="app-config.yaml"
-techRadar:
-  graphData:
-    quadrants:
-      - id: techniques
-        name: Techniques
-      - id: tools
-        name: Tools
-      - id: platforms
-        name: Platforms
-      - id: infrastructure
-        name: Infrastructure
-    rings:
-      - id: 'trial'
-        name: 'TRIAL'
-        color: '#009EB0'
-        description: 'Recusandae possimus ipsum dolores.'
-      - id: 'adopt'
-        name: 'ADOPT'
-        color: '#5BA300'
-        description: 'Commodi accusantium culpa sed itaque excepturi rem eum nulla possimus.'
-    entries:
-      - key: 'github-actions'
-        id: 'github-actions'
-        title: 'GitHub Actions'
-        quadrant: 'infrastructure'
-        timeline:
-          - ringId: 'adopt'
-            date: '2020-08-06'
-            moved: 1
-          - ringId: 'trial'
-            date: '2020-07-05'
-            description: 'First trial'
-        links:
-          - url: 'https://github.com'
-            title: 'Learn more'
 ```
 
 ### How do I write tests?

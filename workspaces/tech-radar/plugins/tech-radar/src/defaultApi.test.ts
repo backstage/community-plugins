@@ -15,14 +15,11 @@
  */
 
 import { DefaultTechRadarApi, mock } from './defaultApi';
-import { ConfigReader } from '@backstage/config';
 
 describe('DefaultTechRadarApi', () => {
   const discoveryApiMock = {
     getBaseUrl: jest.fn().mockResolvedValue('https://example.com'),
   };
-  const mockData = { quadrants: [], rings: [], entries: [] };
-  const mockConfigData = new ConfigReader(mockData);
   const dataFromURL = {
     rings: [],
     entries: [],
@@ -78,18 +75,7 @@ describe('DefaultTechRadarApi', () => {
     expect(data).toStrictEqual(mock);
   });
 
-  it('should return graphData param if only graphData param is provided', async () => {
-    const client = new DefaultTechRadarApi({
-      discoveryApi: discoveryApiMock,
-      fetchApi: fetchApiMock,
-      graphData: mockConfigData,
-    });
-    const data = await client.load();
-    expect(data).toStrictEqual(mockData);
-    expect(discoveryApiMock.getBaseUrl).not.toHaveBeenCalled();
-  });
-
-  it('should retrieve data from proxyUri if only proxyUri param is provided', async () => {
+  it('should retrieve data from proxyUri if proxyUri param is provided', async () => {
     const client = new DefaultTechRadarApi({
       discoveryApi: discoveryApiMock,
       fetchApi: fetchApiMock,
@@ -99,18 +85,6 @@ describe('DefaultTechRadarApi', () => {
     expect(data).toStrictEqual(dataFromURL);
     expect(discoveryApiMock.getBaseUrl).toHaveBeenCalledWith('proxy');
     expect(fetchApiMock.fetch).toHaveBeenCalledWith(jsonURL);
-  });
-
-  it('should retrieve data from proxyUri if both params are provided', async () => {
-    const client = new DefaultTechRadarApi({
-      discoveryApi: discoveryApiMock,
-      fetchApi: fetchApiMock,
-      proxyUri: jsonFile,
-      graphData: mockConfigData,
-    });
-    const data = await client.load();
-    expect(data).toStrictEqual(dataFromURL);
-    expect(discoveryApiMock.getBaseUrl).toHaveBeenCalledWith('proxy');
   });
 
   it('should throw if fetched response from proxyUri is not a json file', async () => {

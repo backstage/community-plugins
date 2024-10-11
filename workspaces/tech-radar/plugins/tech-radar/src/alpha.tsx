@@ -85,7 +85,6 @@ export const techRadarApi = ApiBlueprint.make({
           discoveryApi,
           fetchApi,
           proxyUri: configApi.getOptionalString('techRadar.proxyUri'),
-          graphData: configApi.getOptionalConfig('techRadar.graphData'),
         });
       },
     }),
