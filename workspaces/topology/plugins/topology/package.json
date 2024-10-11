@@ -34,7 +34,7 @@
     "tsc": "tsc"
   },
   "dependencies": {
-    "@backstage-community/plugin-topology-common": "1.4.0",
+    "@backstage-community/plugin-topology-common": "workspace:^",
     "@backstage/catalog-model": "^1.5.0",
     "@backstage/core-components": "^0.14.9",
     "@backstage/core-plugin-api": "^1.9.3",
