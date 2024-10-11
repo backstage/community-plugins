@@ -1,5 +1,13 @@
 # @backstage-community/plugin-copilot
 
+## 0.2.2
+
+### Patch Changes
+
+- 3dea8f4: - Acceptance Rate Average card now show acceptance/suggestion rate instead of lines/days
+
+  - Languages breakdown table had the wrong title for column "Total suggestions"
+
 ## 0.2.1
 
 ### Patch Changes

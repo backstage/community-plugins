@@ -32,14 +32,6 @@ export const EnterpriseCards = ({
   startDate,
   endDate,
 }: PropsWithChildren<CardsProps>) => {
-  const lines_suggested = metrics.reduce((acc, m) => {
-    const rate =
-      m.total_lines_suggested !== 0
-        ? m.total_lines_accepted / m.total_lines_suggested
-        : 0;
-    return acc + rate;
-  }, 0);
-
   const total_suggestions_count = metrics.reduce((acc, m) => {
     return acc + m.total_suggestions_count;
   }, 0);
@@ -59,7 +51,7 @@ export const EnterpriseCards = ({
           title="Acceptance Rate Average"
           value={
             metrics.length
-              ? ((lines_suggested / metrics.length) * 100)
+              ? ((total_acceptances_count / total_suggestions_count) * 100)
                   .toFixed(2)
                   .concat('%')
               : 'N/A'

@@ -1,6 +1,6 @@
 {
   "name": "backend",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "main": "dist/index.cjs.js",
   "types": "src/index.ts",
   "private": true,
@@ -21,8 +21,8 @@
     "build-image": "docker build ../.. -f Dockerfile --tag backstage"
   },
   "dependencies": {
-    "@backstage-community/backstage-plugin-catalog-backend-module-mta-entity-provider": "^0.1.0",
-    "@backstage-community/backstage-plugin-mta-backend": "^0.1.0",
+    "@backstage-community/backstage-plugin-catalog-backend-module-mta-entity-provider": "workspace:^",
+    "@backstage-community/backstage-plugin-mta-backend": "workspace:^",
     "@backstage-community/backstage-plugin-scaffolder-backend-module-mta": "workspace:^",
     "@backstage/backend-common": "^0.21.7",
     "@backstage/backend-defaults": "^0.3.3",
