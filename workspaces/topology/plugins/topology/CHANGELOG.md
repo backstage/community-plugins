@@ -1,5 +1,14 @@
 ### Dependencies
 
+## 1.28.3
+
+### Patch Changes
+
+- 5dd7d77: The `topology` and `topology-common` plugins from the [janus-idp/backstage-plugins](https://github.com/janus-idp/backstage-plugins) repository were migrated to the community plugins. The migration was performed by following the manual migration steps outlined in the [Community Plugins CONTRIBUTING guide](https://github.com/backstage/community-plugins/blob/main/CONTRIBUTING.md#migrating-a-plugin)
+- Updated dependencies [5dd7d77]
+
+  - @backstage-community/plugin-topology-common@1.4.1
+
 - **@janus-idp/cli:** upgraded to 1.15.1
 
 ### Dependencies
