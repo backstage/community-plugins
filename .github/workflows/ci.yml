@@ -15,10 +15,31 @@ jobs:
       workspaces: ${{ steps.find-changed-workspaces.outputs.workspaces }}
     steps:
       - name: Calculate number of commits in PR
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7
         id: calculate-commits
-        env:
-          COMMITS: ${{ github.event.pull_request.commits }}
-        run: echo "NUMBER_OF_COMMITS=$(($COMMITS + 1))" >> $GITHUB_ENV
+        with:
+          script: |
+            const {ref, head_ref} = context.payload
+            console.log({ref}, {head_ref})
+            const query = `query($owner:String!, $name:String!, $ref:String!, $head_ref:String!) {
+              repository(owner:$owner, name:$name){
+                ref(qualifiedName:$ref) {
+                  name
+                  compare(headRef:$head_ref) {
+                    aheadBy
+                    behindBy
+                  }
+                }
+              }
+            }`;
+            const variables = {
+              owner: context.repo.owner,
+              name: context.repo.repo,
+              ref,
+              head_ref
+            }
+            const result = await github.graphql(query, variables)
+            console.log(result)
 
       - name: Checkout base branch for diff purposes
         uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f # v4
