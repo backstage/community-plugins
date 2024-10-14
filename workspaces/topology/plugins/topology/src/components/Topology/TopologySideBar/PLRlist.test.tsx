@@ -20,8 +20,8 @@ import { render } from '@testing-library/react';
 import { mockTektonResources } from '../../../__fixtures__/1-tektonResources';
 import PLRlist from './PLRlist';
 
-jest.mock('@material-ui/styles', () => ({
-  ...jest.requireActual('@material-ui/styles'),
+jest.mock('@mui/material/styles', () => ({
+  ...jest.requireActual('@mui/material/styles'),
   makeStyles: () => (_theme: any) => {
     return {
       ok: 'ok',
