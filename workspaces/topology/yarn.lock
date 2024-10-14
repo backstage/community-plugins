@@ -16011,6 +16011,7 @@ __metadata:
     "@backstage/theme": ^0.5.7
     "@mui/icons-material": 5.16.4
     "@mui/material": ^6.1.3
+    "@mui/styles": ^6.1.3
     "@playwright/test": ^1.32.3
     "@testing-library/dom": ^9.0.0
     "@testing-library/jest-dom": ^6.0.0
