@@ -19,6 +19,7 @@ jobs:
         id: calculate-commits
         with:
           script: |
+            console.log(JSON.stringify(context))
             const {ref, head_ref} = context.payload
             console.log({ref}, {head_ref})
             const query = `query($owner:String!, $name:String!, $ref:String!, $head_ref:String!) {
