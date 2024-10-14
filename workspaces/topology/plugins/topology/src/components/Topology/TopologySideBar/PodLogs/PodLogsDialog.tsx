@@ -18,17 +18,15 @@ import React, { useState } from 'react';
 import { ErrorBoundary } from '@backstage/core-components';
 
 import { V1Pod } from '@kubernetes/client-node';
-import {
-  Box,
-  createStyles,
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-  makeStyles,
-  Theme,
-} from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
+import Box from '@mui/material/Box';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import IconButton from '@mui/material/IconButton';
+import { SelectChangeEvent } from '@mui/material/Select';
+import DialogContent from '@mui/material/DialogContent';
+import { Theme } from '@mui/material/styles';
+import { makeStyles } from '@mui/styles';
+import CloseIcon from '@mui/icons-material/Close';
 import { Button } from '@patternfly/react-core';
 
 import ResourceName from '../../../../common/components/ResourceName';
@@ -38,21 +36,19 @@ import { PodLogs } from './PodLogs';
 import PodLogsDownload from './PodLogsDownload';
 import { ContainerScope } from './types';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    titleContainer: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: theme.spacing(1),
-    },
-    closeButton: {
-      position: 'absolute',
-      right: theme.spacing(1),
-      top: theme.spacing(1),
-      color: theme.palette.grey[500],
-    },
-  }),
-);
+const useStyles = makeStyles((theme: Theme) => ({
+  titleContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: theme.spacing(1),
+  },
+  closeButton: {
+    position: 'absolute',
+    right: theme.spacing(1),
+    top: theme.spacing(1),
+    color: theme.palette.grey[500],
+  },
+}));
 
 type PodLogsDialogProps = {
   podData: V1Pod;
@@ -69,13 +65,13 @@ const ViewLogs = ({ podData, onClose }: ViewLogsProps) => {
   const [logText, setLogText] = useState<string>('');
 
   const curCluster =
-    (clusters.length > 0 && clusters[selectedCluster || 0]) || '';
+    (clusters.length > 0 && clusters[selectedCluster ?? 0]) || '';
   const { name: podName = '', namespace: podNamespace = '' } =
     podData?.metadata || {};
   const containersList = podData.spec?.containers || [];
 
   const curContainer =
-    (containersList?.length && (containersList?.[0].name as string)) || '';
+    (containersList?.length && (containersList?.[0].name ?? '')) || '';
 
   const [containerSelected, setContainerSelected] =
     React.useState<string>(curContainer);
@@ -87,7 +83,7 @@ const ViewLogs = ({ podData, onClose }: ViewLogsProps) => {
   });
 
   const onContainerChange = (
-    event: React.ChangeEvent<{ name?: string; value: unknown }>,
+    event: SelectChangeEvent<{ name?: string; value: unknown }>,
   ) => {
     setContainerSelected(event.target.value as string);
   };
@@ -96,7 +92,7 @@ const ViewLogs = ({ podData, onClose }: ViewLogsProps) => {
     if (containerSelected) {
       setPodScope(ps => ({
         ...ps,
-        containerName: containerSelected as string,
+        containerName: containerSelected,
       }));
     }
   }, [containerSelected]);
@@ -150,7 +146,7 @@ export const PodLogsDialog = ({ podData }: PodLogsDialogProps) => {
   const [open, setOpen] = useState<boolean>(false);
 
   const curCluster =
-    (clusters.length > 0 && clusters[selectedCluster || 0]) || '';
+    (clusters.length > 0 && clusters[selectedCluster ?? 0]) || '';
   const { name: podName = '', namespace: podNamespace = '' } =
     podData?.metadata || {};
 

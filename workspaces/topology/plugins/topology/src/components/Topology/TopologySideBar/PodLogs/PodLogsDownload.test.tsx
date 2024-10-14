@@ -21,14 +21,14 @@ import { downloadLogFile } from '@janus-idp/shared-react';
 
 import PodLogsDownload from './PodLogsDownload';
 
-jest.mock('@material-ui/core', () => ({
-  ...jest.requireActual('@material-ui/core'),
+jest.mock('@mui/material', () => ({
+  ...jest.requireActual('@mui/material'),
   IconButton: ({ children, ...rest }: React.PropsWithChildren<any>) => (
     <button {...rest}>{children}</button>
   ),
 }));
 
-jest.mock('@material-ui/icons/GetApp', () => () => <div>DownloadIcon</div>);
+jest.mock('@mui/icons-material/GetApp', () => () => <div>DownloadIcon</div>);
 
 jest.mock('@janus-idp/shared-react', () => ({
   downloadLogFile: jest.fn(),

@@ -40,6 +40,8 @@ import { apis } from './apis';
 import { entityPage } from './components/catalog/EntityPage';
 import { searchPage } from './components/search/SearchPage';
 import { Root } from './components/Root';
+// import { getThemes } from '@redhat-developer/red-hat-developer-hub-theme';
+import { StyledEngineProvider } from '@mui/material/styles';
 
 import {
   AlertDisplay,
@@ -74,6 +76,7 @@ const app = createApp({
   components: {
     SignInPage: props => <SignInPage {...props} auto providers={['guest']} />,
   },
+  // themes: getThemes(),
 });
 
 const routes = (
@@ -117,8 +120,10 @@ export default app.createRoot(
   <>
     <AlertDisplay />
     <OAuthRequestDialog />
-    <AppRouter>
-      <Root>{routes}</Root>
-    </AppRouter>
+    <StyledEngineProvider injectFirst>
+      <AppRouter>
+        <Root>{routes}</Root>
+      </AppRouter>
+    </StyledEngineProvider>
   </>,
 );
