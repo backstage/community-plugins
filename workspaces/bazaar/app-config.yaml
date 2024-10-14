@@ -20,7 +20,7 @@ catalog:
   orphanStrategy: delete
   processingInterval: { minutes: 1 }
   rules:
-    - allow: [ Component, API, Resource, User, Group ]
+    - allow: [Component, API, Resource, User, Group]
   locations:
     - type: file
       target: ../../local_dev.yaml
