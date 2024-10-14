@@ -2818,7 +2818,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-scaffolder-backend-module-jenkins@workspace:plugins/jenkins-scaffolder"
   dependencies:
-    "@backstage/backend-common": ^0.24.0
+    "@backstage/backend-plugin-api": ^1.0.0
     "@backstage/cli": ^0.27.0
     "@backstage/plugin-scaffolder-node": ^0.4.9
   languageName: unknown
@@ -5057,7 +5057,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-scaffolder-node@npm:^0.4.10, @backstage/plugin-scaffolder-node@npm:^0.4.11, @backstage/plugin-scaffolder-node@npm:^0.4.9":
+"@backstage/plugin-scaffolder-node@npm:^0.4.10, @backstage/plugin-scaffolder-node@npm:^0.4.9":
   version: 0.4.11
   resolution: "@backstage/plugin-scaffolder-node@npm:0.4.11"
   dependencies:
@@ -7054,7 +7054,6 @@ __metadata:
     "@backstage/cli": ^0.27.0
     "@backstage/e2e-test-utils": ^0.1.1
     "@backstage/frontend-plugin-api": ^0.7.0
-    "@backstage/plugin-scaffolder-node": ^0.4.11
     "@backstage/repo-tools": ^0.9.5
     "@changesets/cli": ^2.27.1
     "@spotify/prettier-config": ^15.0.0
