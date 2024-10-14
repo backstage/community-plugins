@@ -29,8 +29,8 @@ import {
 } from '../../../__fixtures__/workloadNodeData';
 import TopologyResourcesTabPanel from './TopologyResourcesTabPanel';
 
-jest.mock('@material-ui/styles', () => ({
-  ...jest.requireActual('@material-ui/styles'),
+jest.mock('@mui/material/styles', () => ({
+  ...jest.requireActual('@mui/material/styles'),
   makeStyles: () => (_theme: any) => {
     return {
       ok: 'ok',

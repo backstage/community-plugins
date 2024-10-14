@@ -15,13 +15,13 @@
  */
 import React from 'react';
 
-import { useTheme } from '@material-ui/core';
+import { useTheme } from '@mui/material/styles';
 import { render } from '@testing-library/react';
 
 import { TopologyComponent } from './TopologyComponent';
 
-jest.mock('@material-ui/core', () => ({
-  ...jest.requireActual('@material-ui/core'),
+jest.mock('@mui/material/styles', () => ({
+  ...jest.requireActual('@mmui/material/styles'),
   makeStyles: jest.fn().mockReturnValue(() => ({})),
 }));
 
@@ -43,7 +43,7 @@ jest.mock('../../hooks/useK8sObjectsResponse', () => ({
   }),
 }));
 
-jest.mock('@material-ui/core/styles', () => ({
+jest.mock('@mui/material/styles', () => ({
   useTheme: jest.fn(),
 }));
 

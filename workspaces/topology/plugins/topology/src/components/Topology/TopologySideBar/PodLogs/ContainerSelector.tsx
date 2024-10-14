@@ -16,7 +16,9 @@
 import React from 'react';
 
 import { V1Container } from '@kubernetes/client-node';
-import { MenuItem, Select } from '@material-ui/core';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+import { SelectChangeEvent } from '@mui/material/Select';
 
 import ResourceName from '../../../../common/components/ResourceName';
 
@@ -24,7 +26,7 @@ type ContainerSelectorType = {
   containersList: V1Container[];
   containerSelected: string;
   onContainerChange: (
-    event: React.ChangeEvent<{
+    event: SelectChangeEvent<{
       name?: string;
       value: unknown;
     }>,
@@ -42,7 +44,7 @@ export const ContainerSelector = ({
       onChange={onContainerChange}
       label="Container"
       style={{ marginLeft: '20px' }}
-      value={containerSelected}
+      value={{ value: containerSelected }}
       data-testid="container-select"
     >
       {containersList.map(container => {
