@@ -24,8 +24,6 @@ import DialogTitle from '@mui/material/DialogTitle';
 import IconButton from '@mui/material/IconButton';
 import { SelectChangeEvent } from '@mui/material/Select';
 import DialogContent from '@mui/material/DialogContent';
-import { Theme } from '@mui/material/styles';
-import { makeStyles } from '@mui/styles';
 import CloseIcon from '@mui/icons-material/Close';
 import { Button } from '@patternfly/react-core';
 
@@ -35,20 +33,6 @@ import { ContainerSelector } from './ContainerSelector';
 import { PodLogs } from './PodLogs';
 import PodLogsDownload from './PodLogsDownload';
 import { ContainerScope } from './types';
-
-const useStyles = makeStyles((theme: Theme) => ({
-  titleContainer: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: theme.spacing(1),
-  },
-  closeButton: {
-    position: 'absolute',
-    right: theme.spacing(1),
-    top: theme.spacing(1),
-    color: theme.palette.grey[500],
-  },
-}));
 
 type PodLogsDialogProps = {
   podData: V1Pod;
@@ -61,7 +45,6 @@ type ViewLogsProps = {
 
 const ViewLogs = ({ podData, onClose }: ViewLogsProps) => {
   const { clusters, selectedCluster } = React.useContext(K8sResourcesContext);
-  const classes = useStyles();
   const [logText, setLogText] = useState<string>('');
 
   const curCluster =
@@ -106,12 +89,17 @@ const ViewLogs = ({ podData, onClose }: ViewLogsProps) => {
   return (
     <Dialog maxWidth="xl" fullWidth open onClose={onClose}>
       <DialogTitle id="dialog-title">
-        <Box className={classes.titleContainer}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <ResourceName name={podName} kind={podData.kind as string} />
           <IconButton
             aria-label="close"
-            className={classes.closeButton}
             onClick={onClose}
+            sx={{
+              position: 'absolute',
+              right: 1,
+              top: 1,
+              color: 'grey.500',
+            }}
           >
             <CloseIcon />
           </IconButton>
