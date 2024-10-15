@@ -75,7 +75,7 @@ export const UserSelector = ({
         name={name}
         control={control}
         rules={rules}
-        defaultValue={defaultValue || ''}
+        defaultValue={defaultValue ?? ''}
         render={({ field: { onChange, value }, fieldState: { error } }) => (
           <Autocomplete
             className={classes.autocomplete}

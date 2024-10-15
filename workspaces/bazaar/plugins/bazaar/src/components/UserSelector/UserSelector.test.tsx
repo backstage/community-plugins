@@ -145,4 +145,29 @@ describe('UserSelector', () => {
       });
     });
   });
+
+  it('ensure defaultValue works to prepopulate the form', async () => {
+    render(
+      <TestWrapper>
+        <UserSelector
+          users={mockUsers}
+          disableClearable={false}
+          defaultValue="first.last@example.com"
+          label="Select User"
+          name="responsible"
+          control={undefined as any}
+        />
+      </TestWrapper>,
+    );
+
+    await act(async () => {
+      fireEvent.click(screen.getByText('Submit'));
+    });
+
+    await waitFor(() => {
+      expect(mockOnSubmit).toHaveBeenCalledWith({
+        responsible: 'first.last@example.com',
+      });
+    });
+  });
 });
