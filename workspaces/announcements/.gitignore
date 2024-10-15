@@ -1,0 +1,26 @@
+node_modules
+
+# Tests
+coverage
+
+# Ts generated output
+dist-types
+dist
+
+# Yarn 3 files
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+.env
+.npmrc
+**/*.tgz
+.vscode
+.idea
+
+local.sqlite
+tmp/*
