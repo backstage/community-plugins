@@ -57,7 +57,7 @@ describe('TopologyComponent', () => {
   it('should render TopologyComponent', () => {
     useThemeMock.mockReturnValue({
       palette: {
-        type: 'dark',
+        mode: 'dark',
       },
     });
     const { getByText } = render(<TopologyComponent />);
@@ -67,7 +67,7 @@ describe('TopologyComponent', () => {
   it('should show dark theme', () => {
     useThemeMock.mockReturnValue({
       palette: {
-        type: 'dark',
+        mode: 'dark',
       },
     });
     render(<TopologyComponent />);
@@ -78,7 +78,7 @@ describe('TopologyComponent', () => {
   it('should show light theme', () => {
     useThemeMock.mockReturnValue({
       palette: {
-        type: 'light',
+        mode: 'light',
       },
     });
     render(<TopologyComponent />);
