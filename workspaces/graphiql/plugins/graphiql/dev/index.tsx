@@ -54,6 +54,13 @@ createDevApp()
           id: 'countries',
           title: 'Countries',
           url: 'https://countries.trevorblades.com/',
+          plugins: [
+            {
+              content: () => <div>Hello from My plugin</div>,
+              icon: GraphiQLIcon,
+              title: 'My plugin',
+            },
+          ],
         }),
       ]);
     },

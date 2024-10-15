@@ -37,6 +37,7 @@ If all you need is a static list of endpoints, the plugin exports a `GraphQLEndp
 +  graphQlBrowseApiRef,
 +  GraphQLEndpoints,
 +} from '@backstage-community/plugin-graphiql';
++import { explorerPlugin } from '@graphiql/plugin-explorer';
 
   export const apis = [
 +   createApiFactory({
@@ -64,6 +65,8 @@ If all you need is a static list of endpoints, the plugin exports a `GraphQLEndp
 +               body: JSON.stringify(params),
 +             }).then(res => res.json());
 +           },
++           // Optional list of plugins
++           plugins: [explorerPlugin()]
 +         }
 +       ]),
 +   }),
