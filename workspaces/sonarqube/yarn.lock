@@ -3680,8 +3680,8 @@ __metadata:
   linkType: hard
 
 "@backstage/plugin-app-backend@npm:^0.3.74":
-  version: 0.3.74
-  resolution: "@backstage/plugin-app-backend@npm:0.3.74"
+  version: 0.3.75
+  resolution: "@backstage/plugin-app-backend@npm:0.3.75"
   dependencies:
     "@backstage/backend-common": ^0.25.0
     "@backstage/backend-plugin-api": ^1.0.0
@@ -3701,7 +3701,7 @@ __metadata:
     lodash: ^4.17.21
     luxon: ^3.0.0
     yn: ^4.0.0
-  checksum: 69767ec8c3196bfe3c1d474e09004a9b7e0c0398e800ea6075bbc3df7fda910032c33996d2d63e52fc24ae1fc694d1c3dd9e487f390fd54aedddc6ede2b0a029
+  checksum: 86ccfd13c7c960ba51bcee9b2004579124fb386e822a73cdabadb057e2d29484b463e9572176010ee4ae148487fad0c1650820665213a7e41f05c852dd55cd54
   languageName: node
   linkType: hard
 
