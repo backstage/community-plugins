@@ -2814,6 +2814,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@backstage-community/plugin-scaffolder-backend-module-jenkins@workspace:^, @backstage-community/plugin-scaffolder-backend-module-jenkins@workspace:plugins/jenkins-scaffolder":
+  version: 0.0.0-use.local
+  resolution: "@backstage-community/plugin-scaffolder-backend-module-jenkins@workspace:plugins/jenkins-scaffolder"
+  dependencies:
+    "@backstage/backend-plugin-api": ^1.0.0
+    "@backstage/cli": ^0.27.0
+    "@backstage/plugin-scaffolder-node": ^0.4.9
+  languageName: unknown
+  linkType: soft
+
 "@backstage-community/plugin-tech-radar@npm:^0.7.4":
   version: 0.7.8
   resolution: "@backstage-community/plugin-tech-radar@npm:0.7.8"
@@ -5036,27 +5046,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-scaffolder-common@npm:^1.5.5":
-  version: 1.5.5
-  resolution: "@backstage/plugin-scaffolder-common@npm:1.5.5"
+"@backstage/plugin-scaffolder-common@npm:^1.5.5, @backstage/plugin-scaffolder-common@npm:^1.5.6":
+  version: 1.5.6
+  resolution: "@backstage/plugin-scaffolder-common@npm:1.5.6"
   dependencies:
-    "@backstage/catalog-model": ^1.6.0
+    "@backstage/catalog-model": ^1.7.0
     "@backstage/plugin-permission-common": ^0.8.1
     "@backstage/types": ^1.1.1
-  checksum: f566516e11ece101664683407206617053d17b622cb96116505b0a32c04005129cd6dc84f8a5a088aa3a7033145160c30315df5448d2e5c54ed73bc6b38b2a86
+  checksum: 0dcfa5089d92dd7e0e400df25d17e838846ee8bec60f84f268c77d7815f37a217226f9385dcbb6a816de0266ecce502f9f491208aec06f83ca8e5f5a84451e9a
   languageName: node
   linkType: hard
 
-"@backstage/plugin-scaffolder-node@npm:^0.4.10":
-  version: 0.4.10
-  resolution: "@backstage/plugin-scaffolder-node@npm:0.4.10"
+"@backstage/plugin-scaffolder-node@npm:^0.4.10, @backstage/plugin-scaffolder-node@npm:^0.4.9":
+  version: 0.4.11
+  resolution: "@backstage/plugin-scaffolder-node@npm:0.4.11"
   dependencies:
-    "@backstage/backend-common": ^0.24.1
-    "@backstage/backend-plugin-api": ^0.8.1
-    "@backstage/catalog-model": ^1.6.0
+    "@backstage/backend-common": ^0.25.0
+    "@backstage/backend-plugin-api": ^1.0.0
+    "@backstage/catalog-model": ^1.7.0
     "@backstage/errors": ^1.2.4
-    "@backstage/integration": ^1.14.0
-    "@backstage/plugin-scaffolder-common": ^1.5.5
+    "@backstage/integration": ^1.15.0
+    "@backstage/plugin-scaffolder-common": ^1.5.6
     "@backstage/types": ^1.1.1
     concat-stream: ^2.0.0
     fs-extra: ^11.2.0
@@ -5068,7 +5078,7 @@ __metadata:
     winston: ^3.2.1
     zod: ^3.22.4
     zod-to-json-schema: ^3.20.4
-  checksum: ed05b2c1d3db506af3488370ffe695985eaa5ef15821fba89d2083663c4624f4e89a5b515bee4afc3842dacd9d900990f416c93f7de18741d6d6c418b098878f
+  checksum: cf5645e5edf6b76b89276a523817295affa6af4b8c4ce289cbebe0ec09c671e5f9baa53d1f992da07c34ee4b20b6a4a6e6c461361a774f68191be9a8e1a298ef
   languageName: node
   linkType: hard
 
@@ -7040,6 +7050,7 @@ __metadata:
   dependencies:
     "@backstage-community/plugin-jenkins": "workspace:^"
     "@backstage-community/plugin-jenkins-backend": "workspace:^"
+    "@backstage-community/plugin-scaffolder-backend-module-jenkins": "workspace:^"
     "@backstage/cli": ^0.27.0
     "@backstage/e2e-test-utils": ^0.1.1
     "@backstage/frontend-plugin-api": ^0.7.0
