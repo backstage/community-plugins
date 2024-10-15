@@ -17,21 +17,14 @@ import React from 'react';
 
 import { V1Container } from '@kubernetes/client-node';
 import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
-import { SelectChangeEvent } from '@mui/material/Select';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 import ResourceName from '../../../../common/components/ResourceName';
 
 type ContainerSelectorType = {
   containersList: V1Container[];
   containerSelected: string;
-  onContainerChange: (
-    event: SelectChangeEvent<{
-      name?: string;
-      value: unknown;
-    }>,
-    child: React.ReactNode,
-  ) => void;
+  onContainerChange: (event: SelectChangeEvent, child: React.ReactNode) => void;
 };
 
 export const ContainerSelector = ({
@@ -44,7 +37,7 @@ export const ContainerSelector = ({
       onChange={onContainerChange}
       label="Container"
       style={{ marginLeft: '20px' }}
-      value={{ value: containerSelected }}
+      value={containerSelected}
       data-testid="container-select"
     >
       {containersList.map(container => {
