@@ -82,10 +82,8 @@ const ViewLogs = ({ podData, onClose }: ViewLogsProps) => {
     clusterName: curCluster,
   });
 
-  const onContainerChange = (
-    event: SelectChangeEvent<{ name?: string; value: unknown }>,
-  ) => {
-    setContainerSelected(event.target.value as string);
+  const onContainerChange = (event: SelectChangeEvent) => {
+    setContainerSelected(event.target.value);
   };
 
   React.useEffect(() => {
