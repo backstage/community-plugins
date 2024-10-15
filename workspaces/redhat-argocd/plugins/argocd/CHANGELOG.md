@@ -1,5 +1,11 @@
 ## @janus-idp/backstage-plugin-argocd [1.5.7](https://github.com/janus-idp/backstage-plugins/compare/@janus-idp/backstage-plugin-argocd@1.5.6...@janus-idp/backstage-plugin-argocd@1.5.7) (2024-08-02)
 
+## 1.8.7
+
+### Patch Changes
+
+- 3865528: Fix CVE by upgrading kubernetes/client-node to v0.22.1
+
 ## 1.8.6
 
 ### Patch Changes
