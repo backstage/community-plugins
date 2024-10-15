@@ -44,7 +44,9 @@
   },
   "resolutions": {
     "@types/react": "^18",
-    "@types/react-dom": "^18"
+    "@types/react-dom": "^18",
+    "graphql-language-service": "5.1.7",
+    "@graphiql/react": "0.22.1"
   },
   "prettier": "@spotify/prettier-config",
   "lint-staged": {
