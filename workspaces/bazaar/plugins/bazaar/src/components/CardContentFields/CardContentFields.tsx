@@ -29,6 +29,7 @@ import { entityRouteRef } from '@backstage/plugin-catalog-react';
 import { AboutField } from './AboutField';
 import { StatusTag } from '../StatusTag';
 import { Member, BazaarProject } from '../../types';
+import { EntityRefLink } from '@backstage/plugin-catalog-react';
 
 type Props = {
   bazaarProject: BazaarProject;
@@ -160,7 +161,16 @@ export const CardContentFields = ({
             <Grid item xs={4}>
               <AboutField label="Responsible">
                 <Typography variant="body2">
-                  {bazaarProject.responsible || ''}
+                  {(() => {
+                    try {
+                      parseEntityRef(bazaarProject.responsible);
+                      return (
+                        <EntityRefLink entityRef={bazaarProject.responsible} />
+                      );
+                    } catch {
+                      return bazaarProject.responsible || '';
+                    }
+                  })()}{' '}
                 </Typography>
               </AboutField>
             </Grid>
