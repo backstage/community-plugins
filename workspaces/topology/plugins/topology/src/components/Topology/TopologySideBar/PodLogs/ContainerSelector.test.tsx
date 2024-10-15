@@ -69,7 +69,7 @@ describe('ContainerSelector', () => {
       />,
     );
 
-    fireEvent.mouseDown(getByRole('button'));
+    fireEvent.mouseDown(getByRole('combobox'));
     const listbox = within(getByRole('listbox'));
 
     fireEvent.click(listbox.getByText(/container2/i));

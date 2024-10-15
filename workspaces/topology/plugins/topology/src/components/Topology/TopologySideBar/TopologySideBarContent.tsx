@@ -15,7 +15,7 @@
  */
 import React from 'react';
 
-import { Divider } from '@material-ui/core';
+import Divider from '@mui/material/Divider';
 import { BaseNode } from '@patternfly/react-topology';
 
 import TopologySideBarBody from './TopologySideBarBody';

@@ -17,8 +17,8 @@ import React from 'react';
 
 import { DismissableBanner, LogViewer } from '@backstage/core-components';
 
-import { Paper } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
+import Paper from '@mui/material/Paper';
+import { Skeleton } from '@mui/lab';
 
 import { usePodLogs } from '../../../../hooks/usePodLogs';
 import { ContainerScope } from './types';
@@ -62,7 +62,7 @@ export const PodLogs = ({
         {loading && (
           <Skeleton
             data-testid="logs-skeleton"
-            variant="rect"
+            variant="rectangular"
             width="100%"
             height="100%"
           />
