@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.28.4
+
+### Patch Changes
+
+- 3865528: Fix CVE by upgrading kubernetes-client to v0.22.1
+
 ## 1.28.3
 
 ### Patch Changes
