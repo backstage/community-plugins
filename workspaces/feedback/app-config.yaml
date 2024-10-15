@@ -1,0 +1,22 @@
+app:
+  title: Feedback Dev App
+  baseUrl: http://localhost:3000
+
+backend:
+  baseUrl: http://localhost:7007
+  cors:
+    origin: http://localhost:3000
+    methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
+    credentials: true
+  reading:
+    allow:
+      - host: localhost
+
+feedback:
+  # A ref to base entity under which global feedbacks gets stored
+  # in format: kind:namespace/name
+  baseEntityRef: 'component:default/example-website'
+
+  # Limit the number of characters for summary field
+  # should be between 1-255
+  summaryLimit: 240
