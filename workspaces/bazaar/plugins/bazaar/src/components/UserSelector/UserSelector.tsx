@@ -26,14 +26,15 @@ import Autocomplete, {
 import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
 import { Controller, Control } from 'react-hook-form';
+import { FormValues } from '../../types';
 
 type Props = {
   users: Entity[];
   disableClearable: boolean;
   defaultValue: string | null;
   label: string;
-  name: string;
-  control: Control<any>;
+  name: 'responsible';
+  control: Control<FormValues, object>;
   rules?: Record<string, any>;
 };
 
