@@ -2833,6 +2833,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@backstage-community/plugin-scaffolder-backend-module-blackduck@workspace:^, @backstage-community/plugin-scaffolder-backend-module-blackduck@workspace:plugins/scaffolder-backend-module-blackduck":
+  version: 0.0.0-use.local
+  resolution: "@backstage-community/plugin-scaffolder-backend-module-blackduck@workspace:plugins/scaffolder-backend-module-blackduck"
+  dependencies:
+    "@backstage-community/plugin-blackduck-backend": "workspace:^"
+    "@backstage/backend-common": ^0.24.0
+    "@backstage/backend-plugin-api": ^0.8.0
+    "@backstage/cli": ^0.27.0
+    "@backstage/plugin-scaffolder-node": ^0.4.9
+  languageName: unknown
+  linkType: soft
+
 "@backstage-community/plugin-tech-radar@npm:^0.7.4":
   version: 0.7.5
   resolution: "@backstage-community/plugin-tech-radar@npm:0.7.5"
@@ -2915,7 +2927,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/backend-common@npm:^0.24.1":
+"@backstage/backend-common@npm:^0.24.0, @backstage/backend-common@npm:^0.24.1":
   version: 0.24.1
   resolution: "@backstage/backend-common@npm:0.24.1"
   dependencies:
@@ -3173,7 +3185,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/backend-plugin-api@npm:^0.8.1":
+"@backstage/backend-plugin-api@npm:^0.8.0, @backstage/backend-plugin-api@npm:^0.8.1":
   version: 0.8.1
   resolution: "@backstage/backend-plugin-api@npm:0.8.1"
   dependencies:
@@ -3317,7 +3329,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/cli@npm:^0.27.1":
+"@backstage/cli@npm:^0.27.0, @backstage/cli@npm:^0.27.1":
   version: 0.27.1
   resolution: "@backstage/cli@npm:0.27.1"
   dependencies:
@@ -4836,7 +4848,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-scaffolder-node@npm:^0.4.11":
+"@backstage/plugin-scaffolder-node@npm:^0.4.11, @backstage/plugin-scaffolder-node@npm:^0.4.9":
   version: 0.4.11
   resolution: "@backstage/plugin-scaffolder-node@npm:0.4.11"
   dependencies:
@@ -7031,6 +7043,7 @@ __metadata:
   dependencies:
     "@backstage-community/plugin-blackduck": "workspace:^"
     "@backstage-community/plugin-blackduck-backend": "workspace:^"
+    "@backstage-community/plugin-scaffolder-backend-module-blackduck": "workspace:^"
     "@backstage/cli": ^0.27.1
     "@backstage/e2e-test-utils": ^0.1.1
     "@backstage/repo-tools": ^0.9.7
@@ -14910,6 +14923,7 @@ __metadata:
   resolution: "backend@workspace:packages/backend"
   dependencies:
     "@backstage-community/plugin-blackduck-backend": "workspace:^"
+    "@backstage-community/plugin-scaffolder-backend-module-blackduck": "workspace:^"
     "@backstage/backend-common": ^0.25.0
     "@backstage/backend-defaults": ^0.5.0
     "@backstage/backend-tasks": ^0.6.1
