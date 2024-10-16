@@ -29,7 +29,7 @@ import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import AdjustIcon from '@material-ui/icons/Adjust';
 
-import { MovedState } from '../../api';
+import { MovedState } from '@backstage-community/plugin-tech-radar-common';
 
 export type Props = {
   timeline?: EntrySnapshot[];

@@ -197,7 +197,13 @@ The TS example can be found [here](src/sample.ts).
 
 ### How do I load in my own data?
 
-The `TechRadar` plugin uses the `techRadarApiRef` to get a client which implements the `TechRadarApi` interface. The default sample one is located [here](src/sample.ts). To load your own data, you'll need to provide a class that implements the `TechRadarApi` and override the `techRadarApiRef` in the `app/src/apis.ts`.
+There are two ways to load in data to the `Tech Radar` plugin; (A) implementing a custom version of the the `TechRadarApi` interface, or (B) use the default
+[API implementation](src/defaultApi.ts), which requires installing the optional tech-radar-backend. The default api will attempt to load data from the backend, and
+surface mock data if it cannot. The options are prioritized in order; if all both are implemented, option A (the custom interface) would be used.
+
+#### Option A: Implementing the TechRadarApi
+
+The `TechRadar` plugin uses the `techRadarApiRef` to get a client which implements the `TechRadarApi` interface. To control how your data is loaded, you'll need to provide a class that implements the `TechRadarApi` and override the `techRadarApiRef` in the `app/src/apis.ts`.
 
 ```ts
 // app/src/lib/MyClient.ts
@@ -223,6 +229,13 @@ export class MyOwnClient implements TechRadarApi {
         })),
       })),
     };
+
+    // one could also optionally return hardcoded data inside the client
+    // return {
+    //   entries: [],
+    //   rings: [],
+    //   quadrants: []
+    // };
   }
 }
 
@@ -237,6 +250,35 @@ export const apis: AnyApiFactory[] = [
   createApiFactory(techRadarApiRef, new MyOwnClient()),
 ];
 ```
+
+If using the [new alpha frontend system](https://backstage.io/docs/frontend-system/), the API implementation should use the ApiBlueprint syntax:
+
+```ts
+// app/src/App.tsx
+const techRadarApi = ApiBlueprint.make({
+  name: 'techRadarApi',
+  params: {
+    factory: createApiFactory(techRadarApiRef, new MyOwnClient()),
+  },
+});
+
+export const app = createApp({
+  features: [
+    ...,
+    createFrontendModule({
+      pluginId: 'app',
+      extensions: [
+        ...
+        techRadarApi,
+      ],
+    }),
+  ],
+});
+```
+
+#### Option B: Install the Tech Radar Backend Plugin
+
+Follow the instructions [here](../tech-radar-backend/README.md) to configure the backend to load data from a given URL.
 
 ### How do I write tests?
 

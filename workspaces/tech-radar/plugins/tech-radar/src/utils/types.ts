@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { MovedState } from '../api';
+import { MovedState } from '@backstage-community/plugin-tech-radar-common';
 
 // Parameters for a ring; its index in an array determines how close to the center this ring is.
 export type Ring = {
