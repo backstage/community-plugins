@@ -28,12 +28,5 @@ const githubProvider: SignInProviderConfig = {
 };
 
 export const SignInPage = (props: SignInPageProps) => {
-  return (
-    <BackstageSignInPage
-      {...props}
-      auto
-      // providers={['guest']} // use this line to test URLReader without configured integrations
-      providers={[githubProvider]}
-    />
-  );
+  return <BackstageSignInPage {...props} auto providers={[githubProvider]} />;
 };

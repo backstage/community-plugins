@@ -15,12 +15,15 @@
  */
 
 import { techRadarApiRef } from './api';
-import { SampleTechRadarApi } from './sample';
+import { DefaultTechRadarApi } from './defaultApi';
 import {
   createPlugin,
   createRouteRef,
   createRoutableExtension,
   createApiFactory,
+  discoveryApiRef,
+  fetchApiRef,
+  identityApiRef,
 } from '@backstage/core-plugin-api';
 
 export const rootRouteRef = createRouteRef({
@@ -37,7 +40,23 @@ export const techRadarPlugin = createPlugin({
   routes: {
     root: rootRouteRef,
   },
-  apis: [createApiFactory(techRadarApiRef, new SampleTechRadarApi())],
+  apis: [
+    createApiFactory({
+      api: techRadarApiRef,
+      deps: {
+        identityApi: identityApiRef,
+        discoveryApi: discoveryApiRef,
+        fetchApi: fetchApiRef,
+      },
+      factory({ identityApi, discoveryApi, fetchApi }) {
+        return new DefaultTechRadarApi({
+          discoveryApi,
+          fetchApi,
+          identityApi,
+        });
+      },
+    }),
+  ],
 });
 
 /**

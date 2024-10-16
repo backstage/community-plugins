@@ -42,6 +42,13 @@ techdocs:
 auth:
   providers:
     guest: {}
+    github:
+      development:
+        clientId: { AUTH_GITHUB_CLIENT_ID } # Replace with Client ID
+        clientSecret: { AUTH_GITHUB_CLIENT_SECRET } # Replace with Client Secret
+        signIn:
+          resolvers:
+            - resolver: customGithubSignInResolver
 
 catalog:
   import:
@@ -59,3 +66,9 @@ catalog:
       target: ../../examples/org.yaml
       rules:
         - allow: [User, Group]
+
+techRadar:
+  # todo: replace with https://github.com/backstage/community-plugins/blob/main/workspaces/tech-radar/plugins/tech-radar-common/src/sampleTechRadarResponse.json
+  url: https://github.com/alex-mckay/sample-data/blob/main/data.json
+  # files in private GH repos require GH integrations to be set up
+  # url: https://github.com/alex-mckay/private-sample-data/blob/main/data.json

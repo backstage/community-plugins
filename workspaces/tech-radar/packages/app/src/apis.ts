@@ -25,9 +25,9 @@ import {
 } from '@backstage/core-plugin-api';
 import {
   TechRadarApi,
-  TechRadarLoaderResponse,
   techRadarApiRef,
 } from '@backstage-community/plugin-tech-radar';
+import { TechRadarLoaderResponse } from '@backstage-community/plugin-tech-radar-common';
 
 // overriding the api is one way to change the radar content
 const mock: TechRadarLoaderResponse = {
@@ -53,5 +53,5 @@ export const apis: AnyApiFactory[] = [
     factory: ({ configApi }) => ScmIntegrationsApi.fromConfig(configApi),
   }),
   ScmAuth.createDefaultApiFactory(),
-  createApiFactory(techRadarApiRef, new SampleTechRadarApi()),
+  createApiFactory(techRadarApiRef, new SampleTechRadarApi()), // comment this line out to test the default API implementation
 ];

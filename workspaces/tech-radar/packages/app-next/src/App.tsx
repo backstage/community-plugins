@@ -35,9 +35,9 @@ import { Navigate } from 'react-router';
 import { SignInPage } from './components/auth/SignInPage';
 import {
   TechRadarApi,
-  TechRadarLoaderResponse,
   techRadarApiRef,
 } from '@backstage-community/plugin-tech-radar';
+import { TechRadarLoaderResponse } from '@backstage-community/plugin-tech-radar-common';
 import techRadarPlugin from '@backstage-community/plugin-tech-radar/alpha';
 
 const homePageExtension = PageBlueprint.make({
@@ -110,7 +110,7 @@ export const app = createApp({
         homePageExtension,
         scmAuthExtension,
         scmIntegrationApi,
-        techRadarApi,
+        techRadarApi, // comment this line out to test the default API implementation
       ],
     }),
   ],

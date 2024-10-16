@@ -6,7 +6,9 @@
     "role": "frontend-plugin",
     "pluginId": "tech-radar",
     "pluginPackages": [
-      "@backstage-community/plugin-tech-radar"
+      "@backstage-community/plugin-tech-radar",
+      "@backstage-community/plugin-tech-radar-backend",
+      "@backstage-community/plugin-tech-radar-common"
     ]
   },
   "publishConfig": {
@@ -53,6 +55,7 @@
     "test": "backstage-cli package test"
   },
   "dependencies": {
+    "@backstage-community/plugin-tech-radar-common": "workspace:^",
     "@backstage/core-compat-api": "^0.3.0",
     "@backstage/core-components": "^0.15.0",
     "@backstage/core-plugin-api": "^1.9.4",

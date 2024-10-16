@@ -1,0 +1,202 @@
+{
+    "entries": [
+        {
+            "timeline": [
+                {
+                    "moved": 0,
+                    "ringId": "adopt",
+                    "date": "2020-08-06T00:00:00.000Z",
+                    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua"
+                }
+            ],
+            "key": "javascript",
+            "id": "javascript",
+            "title": "JavaScript",
+            "quadrant": "languages",
+            "links": [
+                {
+                    "url": "https://www.javascript.com/",
+                    "title": "Learn more"
+                },
+                {
+                    "url": "https://www.typescriptlang.org/",
+                    "title": "TypeScript"
+                }
+            ],
+            "description": "Excepteur **sint** occaecat *cupidatat* non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\n```ts\nconst x = \"3\";\n```\n"
+        },
+        {
+            "timeline": [
+                {
+                    "moved": -1,
+                    "ringId": "adopt",
+                    "date": "2020-08-06T00:00:00.000Z",
+                    "description": "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat"
+                }
+            ],
+            "key": "typescript",
+            "id": "typescript",
+            "title": "TypeScript",
+            "quadrant": "languages",
+            "description": "Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat"
+        },
+        {
+            "timeline": [
+                {
+                    "moved": 1,
+                    "ringId": "adopt",
+                    "date": "2020-08-06T00:00:00.000Z",
+                    "description": "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur"
+                }
+            ],
+            "links": [
+                {
+                    "url": "https://webpack.js.org/",
+                    "title": "Learn more"
+                }
+            ],
+            "key": "webpack",
+            "id": "webpack",
+            "title": "Webpack",
+            "quadrant": "frameworks"
+        },
+        {
+            "timeline": [
+                {
+                    "moved": 0,
+                    "ringId": "adopt",
+                    "date": "2020-08-06T00:00:00.000Z"
+                }
+            ],
+            "links": [
+                {
+                    "url": "https://reactjs.org/",
+                    "title": "Learn more"
+                }
+            ],
+            "key": "react",
+            "id": "react",
+            "title": "React",
+            "quadrant": "frameworks"
+        },
+        {
+            "timeline": [
+                {
+                    "moved": 0,
+                    "ringId": "adopt",
+                    "date": "2020-08-06T00:00:00.000Z"
+                }
+            ],
+            "key": "code-reviews",
+            "id": "code-reviews",
+            "title": "Code Reviews",
+            "quadrant": "process"
+        },
+        {
+            "timeline": [
+                {
+                    "moved": 0,
+                    "ringId": "assess",
+                    "date": "2020-08-06T00:00:00.000Z"
+                }
+            ],
+            "key": "mob-programming",
+            "id": "mob-programming",
+            "title": "Mob Programming",
+            "quadrant": "process"
+        },
+        {
+            "timeline": [
+                {
+                    "moved": 0,
+                    "ringId": "adopt",
+                    "date": "2020-08-06T00:00:00.000Z"
+                }
+            ],
+            "key": "docs-like-code",
+            "id": "docs-like-code",
+            "title": "Docs-like-code",
+            "quadrant": "process"
+        },
+        {
+            "timeline": [
+                {
+                    "ringId": "hold",
+                    "date": "2020-08-06T00:00:00.000Z"
+                }
+            ],
+            "key": "force-push",
+            "id": "force-push",
+            "title": "Force push to master",
+            "quadrant": "process"
+        },
+        {
+            "timeline": [
+                {
+                    "ringId": "adopt",
+                    "date": "2020-08-06T00:00:00.000Z",
+                    "description": "long description"
+                },
+                {
+                    "ringId": "trial",
+                    "date": "2020-07-05T00:00:00.000Z",
+                    "description": "long description"
+                }
+            ],
+            "links": [
+                {
+                    "url": "https://github.com",
+                    "title": "Learn more"
+                }
+            ],
+            "key": "github-actions",
+            "id": "github-actions",
+            "title": "GitHub Actions",
+            "quadrant": "infrastructure"
+        }
+    ],
+    "quadrants": [
+        {
+            "id": "infrastructure",
+            "name": "Infrastructure"
+        },
+        {
+            "id": "frameworks",
+            "name": "Frameworks"
+        },
+        {
+            "id": "languages",
+            "name": "Languages"
+        },
+        {
+            "id": "process",
+            "name": "Process"
+        }
+    ],
+    "rings": [
+        {
+            "id": "adopt",
+            "name": "ADOPT",
+            "color": "#5BA300",
+            "description": "Commodi accusantium culpa sed itaque excepturi rem eum nulla possimus."
+        },
+        {
+            "id": "trial",
+            "name": "TRIAL",
+            "color": "#009EB0",
+            "description": "Recusandae possimus ipsum dolores."
+        },
+        {
+            "id": "assess",
+            "name": "ASSESS",
+            "color": "#C7BA00",
+            "description": "In asperiores repellat error recusandae et adipisci laborum porro."
+        },
+        {
+            "id": "hold",
+            "name": "HOLD",
+            "color": "#E09B96",
+            "description": "Esse mollitia in."
+        }
+    ]
+}

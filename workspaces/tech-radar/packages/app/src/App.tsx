@@ -45,13 +45,14 @@ import { Root } from './components/Root';
 import {
   AlertDisplay,
   OAuthRequestDialog,
-  SignInPage,
+  // SignInPage, // use this line to test URLReader without configured integrations
 } from '@backstage/core-components';
 import { createApp } from '@backstage/app-defaults';
 import { AppRouter, FlatRoutes } from '@backstage/core-app-api';
 import { CatalogGraphPage } from '@backstage/plugin-catalog-graph';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';
+import { SignInPage } from './components/auth/SignInPage';
 
 const app = createApp({
   apis,
@@ -73,7 +74,8 @@ const app = createApp({
     });
   },
   components: {
-    SignInPage: props => <SignInPage {...props} auto providers={['guest']} />,
+    // SignInPage: props => <SignInPage {...props} auto providers={['guest']} />, // use this line to test URLReader without configured integrations
+    SignInPage,
   },
 });
 
