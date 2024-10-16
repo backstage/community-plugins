@@ -19,8 +19,8 @@ import { createDevApp } from '@backstage/dev-utils';
 import { bazaarPlugin } from '../src/plugin';
 import { catalogPlugin } from '@backstage/plugin-catalog';
 import { entityRouteRef } from '@backstage/plugin-catalog-react';
-
 import { createRoutableExtension } from '@backstage/core-plugin-api';
+import { rootRouteRef } from '../src/routes';
 
 export const HomePage = catalogPlugin.provide(
   createRoutableExtension({
@@ -30,10 +30,30 @@ export const HomePage = catalogPlugin.provide(
   }),
 );
 
+export const BazaarOverviewCard = bazaarPlugin.provide(
+  createRoutableExtension({
+    name: 'BazaarOverviewCard',
+    component: () =>
+      import('../src/components/BazaarOverviewCard').then(
+        m => m.BazaarOverviewCard,
+      ),
+    mountPoint: rootRouteRef,
+  }),
+);
+
 createDevApp()
   .registerPlugin(bazaarPlugin)
   .addPage({
     element: <HomePage />,
     title: 'HomePage',
+  })
+  .addPage({
+    element: (
+      <BazaarOverviewCard
+        order="latest"
+        title="Bazaar Dev Overview Widget (Latest)"
+      />
+    ),
+    title: 'BazaarOverviewCard',
   })
   .render();
