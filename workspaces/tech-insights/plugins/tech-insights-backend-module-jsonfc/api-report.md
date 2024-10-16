@@ -8,6 +8,7 @@ import { BooleanCheckResult } from '@backstage-community/plugin-tech-insights-co
 import { CheckResponse } from '@backstage-community/plugin-tech-insights-common';
 import { CheckValidationResponse } from '@backstage-community/plugin-tech-insights-node';
 import { Config } from '@backstage/config';
+import { ExtensionPoint } from '@backstage/backend-plugin-api';
 import { FactChecker } from '@backstage-community/plugin-tech-insights-node';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { Operator } from 'json-rules-engine';
@@ -114,6 +115,9 @@ export interface TechInsightJsonRuleCheck extends TechInsightCheck {
 // @public
 const techInsightsModuleJsonRulesEngineFactCheckerFactory: BackendFeature;
 export default techInsightsModuleJsonRulesEngineFactCheckerFactory;
+
+// @public (undocumented)
+export const techInsightsOperatorsExtensionPoint: ExtensionPoint<TechInsightsOperatorsExtensionPoint>;
 
 // (No @packageDocumentation comment for this package)
 ```
