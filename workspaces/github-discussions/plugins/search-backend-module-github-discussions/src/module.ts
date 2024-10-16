@@ -17,15 +17,32 @@ import {
   coreServices,
   createBackendModule,
 } from '@backstage/backend-plugin-api';
+import { searchIndexRegistryExtensionPoint } from '@backstage/plugin-search-backend-node/alpha';
+import { GithubDiscussionsCollatorFactory } from './collators';
 
 export const searchModuleGithubDiscussions = createBackendModule({
   pluginId: 'search',
-  moduleId: 'github-discussions',
+  moduleId: 'github-discussions-collator',
   register(reg) {
     reg.registerInit({
-      deps: { logger: coreServices.logger },
-      async init({ logger }) {
-        logger.info('Hello World!');
+      deps: {
+        logger: coreServices.logger,
+        config: coreServices.rootConfig,
+        scheduler: coreServices.scheduler,
+        indexRegistry: searchIndexRegistryExtensionPoint,
+      },
+      async init({ logger, config, scheduler, indexRegistry }) {
+        const schedule = {
+          frequency: { minutes: 45 },
+          timeout: { minutes: 15 },
+          initialDelay: { seconds: 3 },
+        };
+        indexRegistry.addCollator({
+          schedule: scheduler.createScheduledTaskRunner(schedule),
+          factory: GithubDiscussionsCollatorFactory.fromConfig(config, {
+            logger,
+          }),
+        });
       },
     });
   },
