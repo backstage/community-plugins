@@ -13,25 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  createPlugin,
-  createRoutableExtension,
-} from '@backstage/core-plugin-api';
 
-import { rootRouteRef } from './routes';
+import { createPlugin } from '@backstage/core-plugin-api';
+import { createSearchResultListItemExtension } from '@backstage/plugin-search-react';
 
 export const githubDiscussionsPlugin = createPlugin({
   id: 'github-discussions',
-  routes: {
-    root: rootRouteRef,
-  },
 });
 
-export const GithubDiscussionsPage = githubDiscussionsPlugin.provide(
-  createRoutableExtension({
-    name: 'GithubDiscussionsPage',
-    component: () =>
-      import('./components/ExampleComponent').then(m => m.ExampleComponent),
-    mountPoint: rootRouteRef,
-  }),
-);
+export const GithubDiscussionsSearchResultListItem =
+  githubDiscussionsPlugin.provide(
+    createSearchResultListItemExtension({
+      name: 'GithubDiscussionsSearchResultListItem',
+      component: () =>
+        import('./components/GithubDiscussionsSearchResultListItem').then(
+          m => m.GithubDiscussionsSearchResultListItem,
+        ),
+    }),
+  );

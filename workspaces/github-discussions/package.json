@@ -43,6 +43,7 @@
     "typescript": "~5.3.0"
   },
   "dependencies": {
+    "@backstage/plugin-search-react": "^1.8.0",
     "knip": "^5.27.4"
   },
   "resolutions": {
