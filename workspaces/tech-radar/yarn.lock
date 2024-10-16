@@ -2710,7 +2710,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage-community/plugin-tech-radar-backend@workspace:plugins/tech-radar-backend":
+"@backstage-community/plugin-tech-radar-backend@workspace:^, @backstage-community/plugin-tech-radar-backend@workspace:plugins/tech-radar-backend":
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-tech-radar-backend@workspace:plugins/tech-radar-backend"
   dependencies:
@@ -2726,9 +2726,11 @@ __metadata:
     "@types/supertest": ^2.0.12
     express: ^4.17.1
     express-promise-router: ^4.1.0
+    js-yaml: ^4.1.0
     msw: ^2.3.1
     node-fetch: ^2.6.7
     supertest: ^6.2.4
+    zod: ^3.20.0
   languageName: unknown
   linkType: soft
 
@@ -14907,6 +14909,7 @@ __metadata:
   resolution: "app-next@workspace:packages/app-next"
   dependencies:
     "@backstage-community/plugin-tech-radar": "workspace:^"
+    "@backstage-community/plugin-tech-radar-common": "workspace:^"
     "@backstage/app-defaults": ^1.5.11
     "@backstage/catalog-model": ^1.7.0
     "@backstage/cli": ^0.27.1
@@ -14950,6 +14953,7 @@ __metadata:
   resolution: "app@workspace:packages/app"
   dependencies:
     "@backstage-community/plugin-tech-radar": "workspace:^"
+    "@backstage-community/plugin-tech-radar-common": "workspace:^"
     "@backstage/app-defaults": ^1.5.10
     "@backstage/catalog-model": ^1.6.0
     "@backstage/cli": ^0.27.0
@@ -15657,12 +15661,17 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "backend@workspace:packages/backend"
   dependencies:
+    "@backstage-community/plugin-tech-radar-backend": "workspace:^"
     "@backstage-community/plugin-tech-radar-common": "workspace:^"
     "@backstage/backend-defaults": ^0.4.3
+    "@backstage/backend-plugin-api": ^1.0.0
+    "@backstage/catalog-model": ^1.6.0
     "@backstage/cli": ^0.27.0
     "@backstage/plugin-app-backend": ^0.3.72
     "@backstage/plugin-auth-backend": ^0.22.10
+    "@backstage/plugin-auth-backend-module-github-provider": ^0.2.1
     "@backstage/plugin-auth-backend-module-guest-provider": ^0.1.9
+    "@backstage/plugin-auth-node": ^0.5.3
     "@backstage/plugin-catalog-backend": ^1.25.0
     "@backstage/plugin-catalog-backend-module-scaffolder-entity-model": ^0.1.21
     "@backstage/plugin-permission-backend": ^0.5.47
