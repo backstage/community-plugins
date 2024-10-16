@@ -19,7 +19,6 @@ import HomeIcon from '@material-ui/icons/Home';
 import ExtensionIcon from '@material-ui/icons/Extension';
 import LibraryBooks from '@material-ui/icons/LibraryBooks';
 import CreateComponentIcon from '@material-ui/icons/AddCircleOutline';
-import GithubIcon from '@material-ui/icons/GitHub';
 import LogoFull from './LogoFull';
 import LogoIcon from './LogoIcon';
 import {
@@ -41,6 +40,7 @@ import {
 } from '@backstage/core-components';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
+import { CopilotSidebar } from '@backstage-community/plugin-copilot';
 
 const useSidebarLogoStyles = makeStyles({
   root: {
@@ -87,7 +87,7 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
         {/* End global nav */}
         <SidebarDivider />
         <SidebarScrollWrapper>
-          <SidebarItem icon={GithubIcon} to="copilot" text="Copilot" />
+          <CopilotSidebar />
         </SidebarScrollWrapper>
       </SidebarGroup>
       <SidebarSpace />
