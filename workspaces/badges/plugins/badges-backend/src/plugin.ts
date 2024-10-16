@@ -34,30 +34,17 @@ export const badgesPlugin = createBackendPlugin({
         config: coreServices.rootConfig,
         logger: coreServices.logger,
         discovery: coreServices.discovery,
-        tokenManager: coreServices.tokenManager,
-        identity: coreServices.identity,
         httpRouter: coreServices.httpRouter,
         httpAuth: coreServices.httpAuth,
         auth: coreServices.auth,
       },
-      async init({
-        config,
-        logger,
-        discovery,
-        tokenManager,
-        identity,
-        httpRouter,
-        httpAuth,
-        auth,
-      }) {
+      async init({ config, logger, discovery, httpRouter, httpAuth, auth }) {
         httpRouter.use(
           await createRouter({
             config,
             logger,
             badgeFactories: createDefaultBadgeFactories(),
             discovery,
-            tokenManager,
-            identity,
             httpAuth,
             auth,
           }),

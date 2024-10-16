@@ -99,8 +99,7 @@ spec:
 ## Limitations
 
 - Only works with organization folder projects backed by GitHub
-- No pagination support currently, limited to 50 projects - don't run this on a
-  Jenkins instance with lots of builds
+- No pagination support currently
 
 ## EntityJobRunsTable
 

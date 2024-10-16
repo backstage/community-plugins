@@ -1,0 +1,31 @@
+feedback:
+  integrations:
+    jira:
+      # Under this object you can define multiple jira hosts
+      - host: ${JIRA_HOST_URL}
+        # Add your jira token along with Basic or Bearer type eg: Basic/Bearer <token>
+        token: ${JIRA_TOKEN}
+
+        # (optional) Due to GDPR limitations on jira cloud instances
+        # set hostType: CLOUD to make Jira Cloud to work
+        # default value is SERVER
+        hostType: CLOUD
+
+    email:
+      ## Email integration uses nodemailer to send emails
+      host: ${EMAIL_HOST}
+      port: ${EMAIL_PORT} # defaults to 587, if not found
+
+      # Email address of sender
+      from: ${EMAIL_FROM}
+
+      ## Authorization using user and password
+      auth:
+        user: ${EMAIL_USER}
+        pass: ${EMAIL_PASS}
+
+      # boolean
+      secure: false
+
+      # Path to ca certificate if required by mail server
+      caCert: ${NODE_EXTRA_CA_CERTS}

@@ -53,3 +53,35 @@ spec:
 > This can be done by setting [`allow_embedding=true`](https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/#allow_embedding) and [`cookie_samesite=none`](https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/#cookie_samesite) in your `grafana.ini` configuration file.
 >
 > Only change these settings if you fully understand and accept the risks.
+
+### Integrating with `EntityPage` (New Frontend System)
+
+Follow this section if you are using Backstage's [new frontend system](https://backstage.io/docs/frontend-system/).
+
+1. Import `grafanaPlugin` in your `App.tsx` and add it to your app's `features` array:
+
+```typescript
+import grafanaPlugin from '@backstage-community/plugin-grafana/alpha';
+
+// ...
+
+export const app = createApp({
+  features: [
+    // ...
+    grafanaPlugin,
+    // ...
+  ],
+});
+```
+
+2. Next, enable the desired extension in `app-config.yaml`. By default, the cards will only appear on entities
+   that are Components. You can override that behavior here by adding a config block, demonstrated below.
+
+```yaml
+app:
+  extensions:
+    - entity-card:grafana/overview-dashboard # can omit the config to keep the default behavior
+    - entity-card:grafana/overview-dashboard:
+        config:
+          filter: kind:component,api,group
+```

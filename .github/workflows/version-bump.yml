@@ -68,7 +68,7 @@ jobs:
 
       - name: 'Set release name'
         id: set_release_name
-        run: node scripts/ci/set-release-name.js ${{ matrix.workspace }}
+        run: node scripts/ci/set-release-name.js ${{ matrix.workspace }} ${{ inputs.release_line || 'main' }}
       - name: 'Configure git'
         run: |
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"

@@ -1,5 +1,34 @@
 # @backstage-community/plugin-vault-backend
 
+## 0.4.19
+
+### Patch Changes
+
+- 26306c4: Backstage version bump to v1.31.2
+- Updated dependencies [26306c4]
+  - @backstage-community/plugin-vault-node@0.1.16
+
+## 0.4.18
+
+### Patch Changes
+
+- 86821e2: Backstage version bump to v1.30.2
+- Updated dependencies [86821e2]
+  - @backstage-community/plugin-vault-node@0.1.15
+
+## 0.4.17
+
+### Patch Changes
+
+- ae2ee8a: Updated dependency `@types/supertest` to `^6.0.0`.
+  Updated dependency `supertest` to `^7.0.0`.
+
+## 0.4.16
+
+### Patch Changes
+
+- 5541765: Add missing dependency on `@backstage/backend-defaults`
+
 ## 0.4.15
 
 ### Patch Changes

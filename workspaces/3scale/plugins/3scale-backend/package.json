@@ -1,0 +1,82 @@
+{
+  "name": "@backstage-community/plugin-3scale-backend",
+  "version": "3.0.0",
+  "license": "Apache-2.0",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "publishConfig": {
+    "access": "public"
+  },
+  "backstage": {
+    "role": "backend-plugin-module",
+    "supported-versions": "1.28.4",
+    "pluginId": "3scale",
+    "pluginPackage": "@backstage-community/plugin-3scale-backend"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "package.json": [
+        "package.json"
+      ]
+    }
+  },
+  "scripts": {
+    "build": "backstage-cli package build",
+    "clean": "backstage-cli package clean",
+    "export-dynamic": "janus-cli package export-dynamic-plugin --no-embed-as-dependencies",
+    "lint": "backstage-cli package lint",
+    "postpack": "backstage-cli package postpack",
+    "postversion": "yarn run export-dynamic",
+    "prepack": "backstage-cli package prepack",
+    "start": "backstage-cli package start",
+    "test": "backstage-cli package test --passWithNoTests --coverage"
+  },
+  "dependencies": {
+    "@backstage/backend-plugin-api": "^1.0.0",
+    "@backstage/catalog-model": "^1.7.0",
+    "@backstage/errors": "^1.2.4",
+    "@backstage/plugin-catalog-node": "^1.13.0",
+    "atlassian-openapi": "^1.0.19",
+    "openapi-merge": "^1.3.3",
+    "swagger-converter": "2.1.0",
+    "swagger2openapi": "^7.0.4"
+  },
+  "devDependencies": {
+    "@backstage/backend-defaults": "^0.5.0",
+    "@backstage/backend-test-utils": "0.4.4",
+    "@backstage/cli": "^0.27.1",
+    "@backstage/config": "^1.2.0",
+    "@backstage/plugin-catalog-backend": "^1.26.0",
+    "@janus-idp/cli": "1.13.1",
+    "@types/supertest": "6.0.2",
+    "@types/swagger2openapi": "^7.0.4",
+    "msw": "1.3.3",
+    "supertest": "7.0.0"
+  },
+  "files": [
+    "dist",
+    "config.d.ts",
+    "dist-dynamic/*.*",
+    "dist-dynamic/dist/**",
+    "app-config.yaml"
+  ],
+  "configSchema": "config.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/3scale/plugins/3scale-backend"
+  },
+  "keywords": [
+    "support:tech-preview",
+    "lifecycle:active",
+    "backstage",
+    "plugin"
+  ],
+  "homepage": "https://red.ht/rhdh",
+  "bugs": "https://github.com/backstage/community-plugins/issues",
+  "author": "Red Hat"
+}

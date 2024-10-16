@@ -4,7 +4,7 @@
 
 ```ts
 import { AuthService } from '@backstage/backend-plugin-api';
-import { BackendFeatureCompat } from '@backstage/backend-plugin-api';
+import { BackendFeature } from '@backstage/backend-plugin-api';
 import { CatalogApi } from '@backstage/catalog-client';
 import { Config } from '@backstage/config';
 import { Entity } from '@backstage/catalog-model';
@@ -48,9 +48,13 @@ export interface BadgeContext {
   // (undocumented)
   badgeUrl: string;
   // (undocumented)
+  color?: string;
+  // (undocumented)
   config: Config;
   // (undocumented)
   entity?: Entity;
+  // (undocumented)
+  style?: BadgeStyle;
 }
 
 // @public (undocumented)
@@ -85,7 +89,7 @@ export type BadgeSpec = {
 };
 
 // @public
-const badgesPlugin: BackendFeatureCompat;
+const badgesPlugin: BackendFeature;
 export default badgesPlugin;
 
 // @public
@@ -150,10 +154,10 @@ export interface RouterOptions {
   // (undocumented)
   httpAuth?: HttpAuthService;
   // (undocumented)
-  identity: IdentityApi;
+  identity?: IdentityApi;
   // (undocumented)
   logger: LoggerService;
   // (undocumented)
-  tokenManager: TokenManager;
+  tokenManager?: TokenManager;
 }
 ```

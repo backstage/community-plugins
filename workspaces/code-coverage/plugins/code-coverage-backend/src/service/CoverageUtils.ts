@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { Request } from 'express';
-import { UrlReader } from '@backstage/backend-common';
 import { InputError, NotFoundError } from '@backstage/errors';
 import {
   Entity,
@@ -23,6 +22,7 @@ import {
 } from '@backstage/catalog-model';
 import { ScmIntegration, ScmIntegrations } from '@backstage/integration';
 import { AggregateCoverage, FileEntry, JsonCodeCoverage } from './types';
+import { UrlReaderService } from '@backstage/backend-plugin-api';
 
 export const calculatePercentage = (
   available: number,
@@ -75,7 +75,7 @@ export const aggregateCoverage = (c: JsonCodeCoverage): AggregateCoverage => {
 export class CoverageUtils {
   constructor(
     readonly scm: Partial<ScmIntegrations>,
-    readonly urlReader: Partial<UrlReader>,
+    readonly urlReader: Partial<UrlReaderService>,
   ) {}
 
   async processCoveragePayload(

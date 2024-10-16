@@ -33,7 +33,7 @@ import { ConfigReader } from '@backstage/config';
 import { GitRepository } from 'azure-devops-node-api/interfaces/GitInterfaces';
 import { createRouter } from './router';
 import express from 'express';
-import { getVoidLogger, UrlReaders } from '@backstage/backend-common';
+import { UrlReaderService } from '@backstage/backend-plugin-api';
 import request from 'supertest';
 import { AuthorizeResult } from '@backstage/plugin-permission-common';
 import { mockServices } from '@backstage/backend-test-utils';
@@ -82,16 +82,24 @@ describe('createRouter', () => {
       },
     });
 
-    const logger = getVoidLogger();
+    const logger = mockServices.logger.mock();
+
+    const mockUrlReader: UrlReaderService = {
+      readUrl: url =>
+        Promise.resolve({
+          buffer: async () => Buffer.from(url),
+          etag: 'buffer',
+          stream: jest.fn(),
+        }),
+      readTree: jest.fn(),
+      search: jest.fn(),
+    };
 
     const router = await createRouter({
       config,
       logger,
       azureDevOpsApi,
-      reader: UrlReaders.default({
-        config,
-        logger,
-      }),
+      reader: mockUrlReader,
       permissions: mockPermissionEvaluator,
       discovery: mockServices.discovery(),
     });

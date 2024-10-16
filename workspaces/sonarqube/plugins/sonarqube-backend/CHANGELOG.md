@@ -1,5 +1,24 @@
 # @backstage-community/plugin-sonarqube-backend
 
+## 0.2.24
+
+### Patch Changes
+
+- 3ef2d79: Backstage version bump to v1.31.2
+
+## 0.2.23
+
+### Patch Changes
+
+- 2143e5e: Backstage version bump to v1.30.2
+
+## 0.2.22
+
+### Patch Changes
+
+- ae2ee8a: Updated dependency `@types/supertest` to `^6.0.0`.
+  Updated dependency `supertest` to `^7.0.0`.
+
 ## 0.2.21
 
 ### Patch Changes

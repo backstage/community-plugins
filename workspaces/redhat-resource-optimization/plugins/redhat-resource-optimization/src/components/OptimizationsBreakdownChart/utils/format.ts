@@ -1,3 +1,18 @@
+/*
+ * Copyright 2024 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import { getLocale, intl } from '../../i18n';
 import messages from '../../../locales/messages';
 
@@ -51,7 +66,7 @@ export const formatCurrency: Formatter = (
   // Don't specify default fraction digits here, rely on react-intl instead
   return intl.formatNumber(fValue, {
     style: 'currency',
-    currency: units ? units.toUpperCase() : 'USD',
+    currency: units ? units.toLocaleUpperCase('en-US') : 'USD',
     ...options,
   });
 };
@@ -139,7 +154,9 @@ export const formatCurrencyRateRaw: Formatter = (
 
 // Returns i18n key for given units
 export const unitsLookupKey = (units: string): string => {
-  const lookup = units ? units.replace(/[- ]/g, '_').toLowerCase() : '';
+  const lookup = units
+    ? units.replace(/[- ]/g, '_').toLocaleLowerCase('en-US')
+    : '';
 
   switch (lookup) {
     case 'cores':

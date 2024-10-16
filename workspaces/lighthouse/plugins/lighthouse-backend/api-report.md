@@ -4,7 +4,7 @@
 
 ```ts
 import { AuthService } from '@backstage/backend-plugin-api';
-import { BackendFeatureCompat } from '@backstage/backend-plugin-api';
+import { BackendFeature } from '@backstage/backend-plugin-api';
 import { CatalogApi } from '@backstage/catalog-client';
 import { Config } from '@backstage/config';
 import { DiscoveryService } from '@backstage/backend-plugin-api';
@@ -27,7 +27,7 @@ export interface CreateLighthouseSchedulerOptions {
   // (undocumented)
   scheduler?: PluginTaskScheduler;
   // (undocumented)
-  tokenManager: TokenManager;
+  tokenManager?: TokenManager;
 }
 
 // @public (undocumented)
@@ -36,7 +36,7 @@ export function createScheduler(
 ): Promise<void>;
 
 // @public
-const lighthousePlugin: BackendFeatureCompat;
+const lighthousePlugin: BackendFeature;
 export default lighthousePlugin;
 
 // (No @packageDocumentation comment for this package)

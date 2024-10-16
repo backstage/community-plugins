@@ -46,7 +46,8 @@ export const createDefaultBadgeFactories = (): BadgeFactories => ({
         label: context.entity.kind,
         link: entityUrl(context),
         message: context.entity.metadata.name,
-        style: 'flat-square',
+        style: context.style || 'flat-square',
+        color: context.color,
       };
     },
   },
@@ -62,7 +63,8 @@ export const createDefaultBadgeFactories = (): BadgeFactories => ({
         label: 'lifecycle',
         link: entityUrl(context),
         message: `${context.entity.spec?.lifecycle || 'unknown'}`,
-        style: 'flat-square',
+        style: context.style || 'flat-square',
+        color: context.color,
       };
     },
   },
@@ -78,7 +80,8 @@ export const createDefaultBadgeFactories = (): BadgeFactories => ({
         label: 'owner',
         link: entityUrl(context),
         message: `${context.entity.spec?.owner || 'unknown'}`,
-        style: 'flat-square',
+        style: context.style || 'flat-square',
+        color: context.color,
       };
     },
   },
@@ -94,7 +97,8 @@ export const createDefaultBadgeFactories = (): BadgeFactories => ({
         label: 'docs',
         link: `${entityUrl(context)}/docs`,
         message: context.entity.metadata.name,
-        style: 'flat-square',
+        style: context.style || 'flat-square',
+        color: context.color,
       };
     },
   },

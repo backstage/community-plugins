@@ -1,5 +1,35 @@
 # @backstage-community/plugin-entity-feedback-backend
 
+## 0.3.1
+
+### Patch Changes
+
+- 2143b60: Backstage version bump to v1.31.1
+- Updated dependencies [2143b60]
+  - @backstage-community/plugin-entity-feedback-common@0.1.10
+
+## 0.3.0
+
+### Minor Changes
+
+- 6ab3e6d: The `identity` service is now optional. It has been removed as a plugin dependency for
+  the new backend system.
+
+## 0.2.21
+
+### Patch Changes
+
+- 3aa6178: Backstage version bump to v1.30.2
+- Updated dependencies [3aa6178]
+  - @backstage-community/plugin-entity-feedback-common@0.1.9
+
+## 0.2.20
+
+### Patch Changes
+
+- ae2ee8a: Updated dependency `@types/supertest` to `^6.0.0`.
+  Updated dependency `supertest` to `^7.0.0`.
+
 ## 0.2.19
 
 ### Patch Changes

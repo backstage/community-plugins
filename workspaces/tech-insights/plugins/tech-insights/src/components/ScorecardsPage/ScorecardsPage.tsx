@@ -26,7 +26,8 @@ import {
   TableOptions,
 } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
-import { Check, techInsightsApiRef } from '../../api';
+import { techInsightsApiRef } from '../../api';
+import { Check } from '@backstage-community/plugin-tech-insights-common/client';
 import useAsync from 'react-use/lib/useAsync';
 import { BulkCheckResponse } from '@backstage-community/plugin-tech-insights-common';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';

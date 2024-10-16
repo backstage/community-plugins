@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import { buildTechInsightsContext } from './techInsightsContextBuilder';
 import { createRouter } from './router';
-import { ServerTokenManager } from '@backstage/backend-common';
 import { ConfigReader } from '@backstage/config';
 import request from 'supertest';
 import express from 'express';
@@ -24,11 +24,8 @@ import {
   TechInsightsStore,
 } from '@backstage-community/plugin-tech-insights-node';
 import { DateTime } from 'luxon';
-import { Knex } from 'knex';
 import { mockServices } from '@backstage/backend-test-utils';
-import { DatabaseManager } from '@backstage/backend-defaults/database';
 import { DefaultSchedulerService } from '@backstage/backend-defaults/scheduler';
-import { DatabaseService } from '@backstage/backend-plugin-api';
 
 describe('Tech Insights router tests', () => {
   let app: express.Express;
@@ -50,23 +47,12 @@ describe('Tech Insights router tests', () => {
   });
 
   beforeAll(async () => {
-    const pluginDatabase: DatabaseService = {
-      getClient: () => {
-        return Promise.resolve({
-          migrate: {
-            latest: () => {},
-          },
-        }) as unknown as Promise<Knex>;
-      },
-    };
-    const databaseManager: Partial<DatabaseManager> = {
-      forPlugin: () => pluginDatabase,
-    };
-    const manager = databaseManager as DatabaseManager;
-    const database = manager.forPlugin('tech-insights');
+    const database = mockServices.database.mock({
+      migrations: { skip: true },
+    });
     const logger = mockServices.logger.mock();
     const techInsightsContext = await buildTechInsightsContext({
-      database: pluginDatabase,
+      database,
       logger,
       factRetrievers: [],
       scheduler: DefaultSchedulerService.create({ database, logger }),
@@ -75,7 +61,7 @@ describe('Tech Insights router tests', () => {
         getBaseUrl: (_: string) => Promise.resolve('http://mock.url'),
         getExternalBaseUrl: (_: string) => Promise.resolve('http://mock.url'),
       },
-      tokenManager: ServerTokenManager.noop(),
+      auth: mockServices.auth(),
     });
 
     const router = await createRouter({

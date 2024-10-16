@@ -1,5 +1,29 @@
 # @backstage-community/plugin-playlist-backend
 
+## 0.3.27
+
+### Patch Changes
+
+- 0c874f6: Backstage version bump to v1.31.2
+- Updated dependencies [0c874f6]
+  - @backstage-community/plugin-playlist-common@0.1.20
+
+## 0.3.26
+
+### Patch Changes
+
+- cba33e9: Updated auth system support - the router no longer requires an identity API, and optionally accepts an auth and httpAuth API
+- 22de8f4: Backstage version bump to v1.30.2
+- Updated dependencies [22de8f4]
+  - @backstage-community/plugin-playlist-common@0.1.19
+
+## 0.3.25
+
+### Patch Changes
+
+- ae2ee8a: Updated dependency `@types/supertest` to `^6.0.0`.
+  Updated dependency `supertest` to `^7.0.0`.
+
 ## 0.3.24
 
 ### Patch Changes

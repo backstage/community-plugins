@@ -1,5 +1,23 @@
 # @backstage-community/plugin-opencost
 
+## 0.2.14
+
+### Patch Changes
+
+- 077dc97: Backstage version bump to v1.31.2
+
+## 0.2.13
+
+### Patch Changes
+
+- 4d1d5c8: Backstage version bump to v1.30.2
+
+## 0.2.12
+
+### Patch Changes
+
+- 07d2704: update dependency axios to v1.7.4 [security]
+
 ## 0.2.11
 
 ### Patch Changes

@@ -11,10 +11,10 @@ import { ConfigApi } from '@backstage/core-plugin-api';
 import { DiscoveryApi } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
 import { FetchApi } from '@backstage/core-plugin-api';
-import { IconComponent } from '@backstage/core-plugin-api';
 import { JSX as JSX_2 } from 'react';
 import { default as React_2 } from 'react';
 import { RouteRef } from '@backstage/core-plugin-api';
+import { SvgIconProps } from '@material-ui/core/SvgIcon';
 
 // @public (undocumented)
 export const ACCEPTED = 'ACCEPTED';
@@ -532,7 +532,7 @@ export class ILertClient implements ILertApi {
 }
 
 // @public (undocumented)
-export const ILertIcon: IconComponent;
+export const ILertIcon: (props: SvgIconProps) => React_2.JSX.Element;
 
 // @public (undocumented)
 export const ILertPage: () => JSX_2.Element;

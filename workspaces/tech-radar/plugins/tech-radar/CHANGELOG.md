@@ -1,5 +1,29 @@
 # @backstage-community/plugin-tech-radar
 
+## 0.7.10
+
+### Patch Changes
+
+- 6bfb292: Backstage version bump to v1.31.1
+
+## 0.7.9
+
+### Patch Changes
+
+- 45fd620: use new FE system syntax (replacing deprecated methods)
+
+## 0.7.8
+
+### Patch Changes
+
+- dc95722: Backstage version bump to v1.30.2
+
+## 0.7.7
+
+### Patch Changes
+
+- 897bb52: Add navbar item to the alpha version of FE plugin
+
 ## 0.7.6
 
 ### Patch Changes

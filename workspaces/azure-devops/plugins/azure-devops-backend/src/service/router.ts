@@ -32,11 +32,8 @@ import {
   PullRequestsDashboardProvider,
 } from '../api/PullRequestsDashboardProvider';
 import Router from 'express-promise-router';
-import {
-  createLegacyAuthAdapters,
-  errorHandler,
-  UrlReader,
-} from '@backstage/backend-common';
+import { createLegacyAuthAdapters } from '@backstage/backend-common';
+import { UrlReaderService } from '@backstage/backend-plugin-api';
 import express from 'express';
 import { InputError, NotAllowedError } from '@backstage/errors';
 import { AuthorizeResult } from '@backstage/plugin-permission-common';
@@ -47,21 +44,28 @@ import {
   LoggerService,
   PermissionsService,
 } from '@backstage/backend-plugin-api';
+import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 
 const DEFAULT_TOP = 10;
 
-/** @public */
+/**
+ * @deprecated Please migrate to the new backend system as this will be removed in the future.
+ * @public
+ * */
 export interface RouterOptions {
   azureDevOpsApi?: AzureDevOpsApi;
   logger: LoggerService;
   config: Config;
-  reader: UrlReader;
+  reader: UrlReaderService;
   permissions: PermissionsService;
   discovery: DiscoveryService;
   httpAuth?: HttpAuthService;
 }
 
-/** @public */
+/**
+ * @deprecated Please migrate to the new backend system as this will be removed in the future.
+ * @public
+ * */
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
@@ -390,6 +394,8 @@ export async function createRouter(
     res.status(200).json(readme);
   });
 
-  router.use(errorHandler());
+  const middleware = MiddlewareFactory.create({ logger, config });
+
+  router.use(middleware.error());
   return router;
 }

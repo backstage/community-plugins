@@ -20,6 +20,7 @@ import {
   BackstageCredentials,
   DiscoveryService,
   HttpAuthService,
+  LoggerService,
 } from '@backstage/backend-plugin-api';
 import { CatalogApi } from '@backstage/catalog-client';
 import {
@@ -42,6 +43,7 @@ export interface JenkinsInfoProvider {
     jobFullName?: string;
 
     credentials?: BackstageCredentials;
+    logger?: LoggerService;
   }): Promise<JenkinsInfo>;
 }
 
@@ -50,6 +52,7 @@ export interface JenkinsInfo {
   baseUrl: string;
   headers?: Record<string, string | string[]>;
   jobFullName: string; // TODO: make this an array
+  projectCountLimit: number;
   crumbIssuer?: boolean;
 }
 
@@ -58,12 +61,17 @@ export interface JenkinsInstanceConfig {
   name: string;
   baseUrl: string;
   username: string;
+  projectCountLimit?: number;
   apiKey: string;
   crumbIssuer?: boolean;
   /**
    * Extra headers to send to Jenkins instance
    */
   extraRequestHeaders?: Record<string, string>;
+  /**
+   * Set a list of compatible regex strings for the url
+   */
+  allowedBaseUrlOverrideRegex?: string;
 }
 
 /**
@@ -90,9 +98,13 @@ export class JenkinsConfig {
         name: c.getString('name'),
         baseUrl: c.getString('baseUrl'),
         username: c.getString('username'),
+        projectCountLimit: c.getOptionalNumber('projectCountLimit'),
         apiKey: c.getString('apiKey'),
         extraRequestHeaders: c.getOptional('extraRequestHeaders'),
         crumbIssuer: c.getOptionalBoolean('crumbIssuer'),
+        allowedBaseUrlOverrideRegex: c.getOptionalString(
+          'allowedBaseUrlOverrideRegex',
+        ),
       })) || [];
 
     // load unnamed default config
@@ -108,6 +120,9 @@ export class JenkinsConfig {
     const extraRequestHeaders = jenkinsConfig.getOptional<
       JenkinsInstanceConfig['extraRequestHeaders']
     >('extraRequestHeaders');
+    const allowedBaseUrlOverrideRegex = jenkinsConfig.getOptionalString(
+      'allowedBaseUrlOverrideRegex',
+    );
 
     if (hasNamedDefault && (baseUrl || username || apiKey)) {
       throw new Error(
@@ -133,6 +148,7 @@ export class JenkinsConfig {
           apiKey,
           extraRequestHeaders,
           crumbIssuer,
+          allowedBaseUrlOverrideRegex,
         },
       ]);
     }
@@ -186,11 +202,13 @@ export class JenkinsConfig {
 export class DefaultJenkinsInfoProvider implements JenkinsInfoProvider {
   static readonly OLD_JENKINS_ANNOTATION = 'jenkins.io/github-folder';
   static readonly NEW_JENKINS_ANNOTATION = 'jenkins.io/job-full-name';
+  static readonly JENKINS_OVERRIDE_URL = 'jenkins.io/override-base-url';
 
   private constructor(
     private readonly config: JenkinsConfig,
     private readonly catalog: CatalogApi,
     private readonly auth: AuthService,
+    private logger: LoggerService,
   ) {}
 
   static fromConfig(options: {
@@ -199,12 +217,14 @@ export class DefaultJenkinsInfoProvider implements JenkinsInfoProvider {
     discovery: DiscoveryService;
     auth?: AuthService;
     httpAuth?: HttpAuthService;
+    logger: LoggerService;
   }): DefaultJenkinsInfoProvider {
     const { auth } = createLegacyAuthAdapters(options);
     return new DefaultJenkinsInfoProvider(
       JenkinsConfig.fromConfig(options.config),
       options.catalog,
       auth,
+      options.logger,
     );
   }
 
@@ -213,6 +233,9 @@ export class DefaultJenkinsInfoProvider implements JenkinsInfoProvider {
     jobFullName?: string;
     credentials?: BackstageCredentials;
   }): Promise<JenkinsInfo> {
+    // default limitation of projects
+    const DEFAULT_LIMITATION_OF_PROJECTS = 50;
+
     // load entity
     const entity = await this.catalog.getEntityByRef(
       opt.entityRef,
@@ -257,6 +280,21 @@ export class DefaultJenkinsInfoProvider implements JenkinsInfoProvider {
     // lookup baseURL + creds from config
     const instanceConfig = this.config.getInstanceConfig(jenkinsName);
 
+    // override baseURL if config has override set to true
+    const overrideUrlValue =
+      DefaultJenkinsInfoProvider.getEntityOverrideURL(entity);
+    if (
+      instanceConfig.allowedBaseUrlOverrideRegex &&
+      overrideUrlValue &&
+      DefaultJenkinsInfoProvider.verifyUrlMatchesRegex(
+        overrideUrlValue,
+        instanceConfig.allowedBaseUrlOverrideRegex,
+        this.logger,
+      )
+    ) {
+      instanceConfig.baseUrl = overrideUrlValue;
+    }
+
     const creds = Buffer.from(
       `${instanceConfig.username}:${instanceConfig.apiKey}`,
       'binary',
@@ -269,6 +307,8 @@ export class DefaultJenkinsInfoProvider implements JenkinsInfoProvider {
         ...instanceConfig.extraRequestHeaders,
       },
       jobFullName,
+      projectCountLimit:
+        instanceConfig.projectCountLimit ?? DEFAULT_LIMITATION_OF_PROJECTS,
       crumbIssuer: instanceConfig.crumbIssuer,
     };
   }
@@ -282,5 +322,27 @@ export class DefaultJenkinsInfoProvider implements JenkinsInfoProvider {
         DefaultJenkinsInfoProvider.NEW_JENKINS_ANNOTATION
       ]
     );
+  }
+
+  private static getEntityOverrideURL(entity: Entity) {
+    return entity.metadata.annotations?.[
+      DefaultJenkinsInfoProvider.JENKINS_OVERRIDE_URL
+    ];
+  }
+
+  private static verifyUrlMatchesRegex(
+    url: string,
+    regexString: string,
+    logger: LoggerService,
+  ) {
+    try {
+      const regex = new RegExp(regexString);
+      if (regex.test(url)) {
+        return true;
+      }
+    } catch (e) {
+      logger.warn(`Invalid regex: "${regexString}" - Error: ${e.message}`);
+    }
+    return false;
   }
 }

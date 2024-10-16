@@ -39,7 +39,11 @@ If Grafana's [Unified Alerting](https://grafana.com/blog/2021/06/14/the-new-unif
 
 ```yaml
 annotations:
-  grafana/alert-label-selector: 'service=awesome-service'
+  # This will only use one label selector
+  grafana/alert-label-selector: 'label=label-value'
+  # OR
+  # This will use two label selectors
+  grafana/alert-label-selector: 'label1=label-value1,label2=label-value2'
 ```
 
 The `EntityGrafanaAlertsCard` component will then display alerts matching the given label and value.
@@ -54,3 +58,35 @@ annotations:
 ```
 
 The `EntityGrafanaAlertsCard` component will then display alerts matching the given tag.
+
+### Integrating with `EntityPage` (New Frontend System)
+
+Follow this section if you are using Backstage's [new frontend system](https://backstage.io/docs/frontend-system/).
+
+1. Import `grafanaPlugin` in your `App.tsx` and add it to your app's `features` array:
+
+```typescript
+import grafanaPlugin from '@backstage-community/plugin-grafana/alpha';
+
+// ...
+
+export const app = createApp({
+  features: [
+    // ...
+    grafanaPlugin,
+    // ...
+  ],
+});
+```
+
+2. Next, enable the desired extension in `app-config.yaml`. By default, the cards will only appear on entities
+   that are Components. You can override that behavior here by adding a config block, demonstrated below.
+
+```yaml
+app:
+  extensions:
+    - entity-card:grafana/alerts # can omit the config to keep the default behavior
+    - entity-card:grafana/alerts:
+        config:
+          filter: kind:component,api,group
+```

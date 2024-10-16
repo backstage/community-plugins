@@ -4,7 +4,7 @@
 
 ```ts
 import { AuthService } from '@backstage/backend-plugin-api';
-import { BackendFeatureCompat } from '@backstage/backend-plugin-api';
+import { BackendFeature } from '@backstage/backend-plugin-api';
 import { BackstageIdentityResponse } from '@backstage/plugin-auth-node';
 import { ConditionalPolicyDecision } from '@backstage/plugin-permission-common';
 import { Conditions } from '@backstage/plugin-permission-node';
@@ -84,7 +84,7 @@ export const playlistConditions: Conditions<{
 }>;
 
 // @public
-const playlistPlugin: BackendFeatureCompat;
+const playlistPlugin: BackendFeature;
 export default playlistPlugin;
 
 // @public (undocumented)
@@ -98,7 +98,7 @@ export interface RouterOptions {
   // (undocumented)
   httpAuth?: HttpAuthService;
   // (undocumented)
-  identity: IdentityApi;
+  identity?: IdentityApi;
   // (undocumented)
   logger: LoggerService;
   // (undocumented)

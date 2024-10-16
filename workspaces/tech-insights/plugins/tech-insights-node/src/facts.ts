@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import { DateTime, Duration, DurationLike } from 'luxon';
 import { Config } from '@backstage/config';
 import { HumanDuration, JsonValue } from '@backstage/types';
-import { TokenManager } from '@backstage/backend-common';
 import { FactSchema } from '@backstage-community/plugin-tech-insights-common';
 import {
   AuthService,
@@ -92,7 +92,6 @@ export type FactRetrieverContext = {
   config: Config;
   discovery: DiscoveryService;
   logger: LoggerService;
-  tokenManager: TokenManager;
   auth: AuthService;
   entityFilter?:
     | Record<string, string | symbol | (string | symbol)[]>[]

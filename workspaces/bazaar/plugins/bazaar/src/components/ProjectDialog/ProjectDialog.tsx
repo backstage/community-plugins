@@ -111,7 +111,7 @@ export const ProjectDialog = ({
           <InputSelector
             control={control}
             name="status"
-            options={['proposed', 'ongoing']}
+            options={['proposed', 'ongoing', 'completed']}
           />
 
           <InputSelector

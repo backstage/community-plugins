@@ -1,5 +1,27 @@
 # @backstage-community/plugin-azure-sites-backend
 
+## 0.3.9
+
+### Patch Changes
+
+- bbf2c19: Backstage version bump to v1.31.1
+- Updated dependencies [bbf2c19]
+  - @backstage-community/plugin-azure-sites-common@0.1.7
+
+## 0.3.8
+
+### Patch Changes
+
+- 558cdfd: Backstage version bump to v1.30.2
+- Updated dependencies [558cdfd]
+  - @backstage-community/plugin-azure-sites-common@0.1.6
+
+## 0.3.7
+
+### Patch Changes
+
+- ae2ee8a: Updated dependency `@types/supertest` to `^6.0.0`.
+
 ## 0.3.6
 
 ### Patch Changes

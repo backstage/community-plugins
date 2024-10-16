@@ -1,16 +1,37 @@
-# Workflows
+# CI/CD Workflows
 
-1. [ci.yml](./ci.yml)
+## [ci.yml](./ci.yml)
 
-   This workflow runs on pull requests and it is supposed to run tests on the target branch. Since workspaces are isolated from each other, the workflow will perform a diff check to detect the workspaces with changes in order to speed up the checks.
-   Once all the checks succeed, the pull request can be merged.
+Triggered on pull requests, this workflow runs tests on the target branch, focusing only on workspaces that have changes. Once all checks pass successfully, the pull request can be merged.
 
-2. [release_workspace.yml](./release_workspace.yml)
+## [release_workspace.yml](./release_workspace.yml)
 
-   This workflow takes the name of a workspace as input and it is responsible for either creating a Version Packages PR in case there are changesets, or performing a release of the packages in the specified workspace in case some of them haven't been published.
+Handles the release process for a specific workspace from a specified branch (default: `main`). It either creates a "Version Packages" pull request if changesets are present or releases the packages within the workspace if they haven't been published yet. For more details on how changesets work, refer to the [Changesets documentation](https://github.com/changesets/changesets).
 
-   Please refer to the [Changesets documentation](https://github.com/changesets/changesets) to dig more into the details about how changesets work.
+## [release.yml](./release.yml)
 
-3. [release-all.yml](./release-all.yml)
+Responsible for releasing all workspaces in parallel by invoking the `release_workspace.yml` workflow for each workspace. It runs on the main branch whenever new changes are pushed. The workflow relies on `release_workspace.yml` to determine if a workspace requires publishing.
 
-   This workflow is responsible for releasing all the workspaces by invoking [release_workspace.yml](./release_workspace.yml) in parallel on all workspaces. The workflow runs on the main branch, whenever something new is pushed into the branch. The workflow relies on [release_workspace.yml](./release_workspace.yml) to be smart enough to skip building the selected workspace, whenever no publishing is needed.
+## [automate_changeset_feedback.yml](./automate_changeset_feedback.yml)
+
+Generates feedback for changesets on pull requests.
+
+## [automate_renovate_changeset.yml](./automate_renovate_changeset.yml)
+
+Automates the generation of changesets for Renovate pull requests.
+
+## [cron.yml](./cron.yml)
+
+Runs tasks on a scheduled basis or manually via the `workflow_dispatch` event.
+
+## [pr.yml](./pr.yml)
+
+Used to keep the Project Board in https://github.com/backstage/backstage/ in sync with PRs from this repo. 
+
+## [renovate_cron.yml](./renovate_cron.yml)
+
+Runs Renovate on a scheduled basis or manually.
+
+## [version_bump.yml](./version_bump.yml)
+
+Handles version bumping for specific workspaces. It creates a new branch for the version bump, updates the necessary files, commits the changes, and creates a pull request to merge the updates into the main branch.

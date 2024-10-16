@@ -1,5 +1,36 @@
 # @backstage-community/plugin-badges-backend
 
+## 0.5.2
+
+### Patch Changes
+
+- 64c86f9: Backstage version bump to v1.31.1
+
+## 0.5.1
+
+### Patch Changes
+
+- bdf5b08: Removed deprecated `tokenManager` and `identity` in favor of new auth services
+
+## 0.5.0
+
+### Minor Changes
+
+- 82bc0cd: APIs now accept color and style query parameters to support badge customization.
+
+## 0.4.5
+
+### Patch Changes
+
+- ce804f6: Backstage version bump to v1.30.2
+
+## 0.4.4
+
+### Patch Changes
+
+- ae2ee8a: Updated dependency `@types/supertest` to `^6.0.0`.
+  Updated dependency `supertest` to `^7.0.0`.
+
 ## 0.4.3
 
 ### Patch Changes

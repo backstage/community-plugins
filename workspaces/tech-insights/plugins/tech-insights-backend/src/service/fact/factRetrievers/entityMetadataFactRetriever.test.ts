@@ -20,7 +20,6 @@ import { GetEntitiesResponse } from '@backstage/catalog-client';
 import { entityMetadataFactRetriever } from './entityMetadataFactRetriever';
 import { mockServices } from '@backstage/backend-test-utils';
 import { DiscoveryService } from '@backstage/backend-plugin-api';
-import { ServerTokenManager } from '@backstage/backend-common';
 
 const getEntitiesMock = jest.fn();
 jest.mock('@backstage/catalog-client', () => {
@@ -104,7 +103,6 @@ const handlerContext = {
   logger: mockServices.logger.mock(),
   auth: mockServices.auth(),
   config: ConfigReader.fromConfigs([]),
-  tokenManager: ServerTokenManager.noop(),
 };
 
 const entityFactRetriever = entityMetadataFactRetriever;

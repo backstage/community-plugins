@@ -34,7 +34,7 @@ import mime from 'mime-types';
 
 import { IdentityRef } from 'azure-devops-node-api/interfaces/common/VSSInterfaces';
 import { PolicyEvaluationRecord } from 'azure-devops-node-api/interfaces/PolicyInterfaces';
-import { UrlReader } from '@backstage/backend-common';
+import { UrlReaderService } from '@backstage/backend-plugin-api';
 
 export function convertDashboardPullRequest(
   pullRequest: GitPullRequest,
@@ -208,7 +208,7 @@ export function convertPolicy(
 }
 
 export async function replaceReadme(
-  urlReader: UrlReader,
+  urlReader: UrlReaderService,
   host: string,
   org: string,
   project: string,

@@ -11,6 +11,14 @@ import { ReactNode } from 'react';
 import { RouteRef } from '@backstage/core-plugin-api';
 
 // @public (undocumented)
+export const EntityValidationContent: (props: {
+  defaultYaml?: string | undefined;
+  defaultLocation?: string | undefined;
+  hideFileLocationField?: boolean | undefined;
+  contentHead?: ReactNode;
+}) => JSX_2.Element;
+
+// @public (undocumented)
 export const EntityValidationPage: (props: {
   defaultYaml?: string | undefined;
   defaultLocation?: string | undefined;

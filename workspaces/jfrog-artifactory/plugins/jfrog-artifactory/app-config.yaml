@@ -1,0 +1,21 @@
+proxy:
+  endpoints:
+    '/jfrog-artifactory/api':
+      target: ${ARTIFACTORY_URL}
+      headers:
+        Authorization: Bearer ${ARTIFACTORY_TOKEN}
+      # Change to "false" in case of using self hosted artifactory instance with a self-signed certificate
+      secure: true
+
+dynamicPlugins:
+  frontend:
+    backstage-community.plugin-jfrog-artifactory:
+      mountPoints:
+        - mountPoint: entity.page.image-registry/cards
+          importName: JfrogArtifactoryPage
+          config:
+            layout:
+              gridColumn: 1 / -1
+            if:
+              anyOf:
+                - isJfrogArtifactoryAvailable

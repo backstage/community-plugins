@@ -1,5 +1,17 @@
 # @backstage-community/plugin-airbrake
 
+## 0.3.38
+
+### Patch Changes
+
+- 98e8285: Backstage version bump to v1.31.1
+
+## 0.3.37
+
+### Patch Changes
+
+- f01950b: Backstage version bump to v1.30.2
+
 ## 0.3.36
 
 ### Patch Changes

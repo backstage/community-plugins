@@ -1,5 +1,71 @@
 # @backstage-community/plugin-tech-insights-backend
 
+## 1.2.1
+
+### Patch Changes
+
+- 6a4787a: Add auth token logic to the fact retriever example in the README.
+  This makes it possible to copy it directly as a baseline for new fact retrievers.
+
+## 1.2.0
+
+### Minor Changes
+
+- 0f5c58a: Increment the schema version of the `techdocsFactRetriever`.
+
+### Patch Changes
+
+- e516773: Remove usages of deprecated references and usage of @backstage/backend-common
+- e516773: Backstage version bump to v1.31.1
+- Updated dependencies [e516773]
+- Updated dependencies [e516773]
+  - @backstage-community/plugin-tech-insights-common@0.2.19
+  - @backstage-community/plugin-tech-insights-node@1.0.1
+
+## 1.1.0
+
+### Minor Changes
+
+- fad299b: Adds fact to represent presence of the `backstage.io/techdocs-entity` annotation.
+
+## 1.0.0
+
+### Major Changes
+
+- 9871d0b: **BREAKING**: The service no longer accepts the deprecated `TokenManager` instance, but instead the `AuthService` is now required where it used to be optional. If you are using the new backend system module, this does not affect you.
+
+### Patch Changes
+
+- Updated dependencies [9871d0b]
+  - @backstage-community/plugin-tech-insights-node@1.0.0
+
+## 0.6.3
+
+### Patch Changes
+
+- Updated dependencies [1d33996]
+  - @backstage-community/plugin-tech-insights-common@0.2.18
+  - @backstage-community/plugin-tech-insights-node@0.6.7
+
+## 0.6.2
+
+### Patch Changes
+
+- Updated dependencies [a84eb44]
+  - @backstage-community/plugin-tech-insights-common@0.2.17
+  - @backstage-community/plugin-tech-insights-node@0.6.6
+
+## 0.6.1
+
+### Patch Changes
+
+- ae2ee8a: Updated dependency `@types/supertest` to `^6.0.0`.
+  Updated dependency `supertest` to `^7.0.0`.
+- 00d148d: Backstage version bump to v1.30.2
+- Updated dependencies [00d148d]
+  - @backstage-community/plugin-tech-insights-common@0.2.16
+  - @backstage-community/plugin-tech-insights-node@0.6.5
+
 ## 0.6.0
 
 ### Minor Changes

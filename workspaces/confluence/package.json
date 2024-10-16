@@ -22,7 +22,8 @@
     "prettier:check": "prettier --check .",
     "new": "backstage-cli new --scope @backstage-community",
     "build:api-reports": "yarn build:api-reports:only --tsc",
-    "build:api-reports:only": "backstage-repo-tools api-reports -o ae-wrong-input-file-type --validate-release-tags"
+    "build:api-reports:only": "backstage-repo-tools api-reports -o ae-wrong-input-file-type --validate-release-tags",
+    "postinstall": "cd ../../ && yarn install"
   },
   "workspaces": {
     "packages": [
@@ -36,14 +37,13 @@
     "directory": "workspaces/confluence"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.26.11",
+    "@backstage/cli": "^0.27.1",
     "@backstage/e2e-test-utils": "^0.1.1",
-    "@backstage/repo-tools": "^0.9.4",
+    "@backstage/repo-tools": "^0.9.7",
     "@changesets/cli": "^2.27.1",
     "@playwright/test": "^1.32.3",
-    "@spotify/prettier-config": "^12.0.0",
+    "@spotify/prettier-config": "^15.0.0",
     "concurrently": "^8.0.0",
-    "lerna": "^7.3.0",
     "node-gyp": "^10.0.0",
     "prettier": "^2.3.2",
     "typescript": "~5.4.0"
@@ -62,5 +62,8 @@
     "*.{json,md}": [
       "prettier --write"
     ]
+  },
+  "dependencies": {
+    "knip": "^5.27.4"
   }
 }

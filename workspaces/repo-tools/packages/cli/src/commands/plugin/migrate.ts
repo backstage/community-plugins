@@ -1,3 +1,19 @@
+/*
+ * Copyright 2024 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import chalk from 'chalk';
 import fs from 'fs-extra';
 import { OptionValues } from 'commander';
@@ -386,7 +402,7 @@ export default async (opts: OptionValues) => {
       await fs.mkdirp(path.join(workspacePath, '.yarn', 'patches'));
       await fs.copyFile(
         path.join(
-          __dirname,
+          __dirname, // eslint-disable-line no-restricted-syntax
           '..',
           '..',
           'lib',
@@ -420,11 +436,11 @@ export default async (opts: OptionValues) => {
     }
 
     // Fix for some packages without react/react-dom deps
-    if (movedPackageJson.peerDependencies?.['react']) {
-      movedPackageJson.devDependencies['react'] =
-        movedPackageJson.peerDependencies['react'];
+    if (movedPackageJson.peerDependencies?.react) {
+      movedPackageJson.devDependencies.react =
+        movedPackageJson.peerDependencies.react;
       movedPackageJson.devDependencies['react-dom'] =
-        movedPackageJson.peerDependencies['react'];
+        movedPackageJson.peerDependencies.react;
     }
 
     // Fix for graphqiql package

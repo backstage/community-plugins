@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { Logger } from 'winston';
 import { camelCase } from 'lodash';
 import { buildQuery } from '../util';
 import {
@@ -25,6 +24,7 @@ import {
   RollbarTopActiveItem,
 } from './types';
 import fetch from 'node-fetch';
+import { LoggerService } from '@backstage/backend-plugin-api';
 
 const baseUrl = 'https://api.rollbar.com/api/1';
 
@@ -48,7 +48,7 @@ export class RollbarApi {
 
   constructor(
     private readonly accessToken: string,
-    private readonly logger: Logger,
+    private readonly logger: LoggerService,
   ) {}
 
   async getAllProjects() {

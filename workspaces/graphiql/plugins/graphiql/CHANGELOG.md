@@ -1,5 +1,17 @@
 # @backstage-community/plugin-graphiql
 
+## 0.3.11
+
+### Patch Changes
+
+- 3ef985a: Updated the declaration of the `GraphiQLIcon` to pass through all `SvgIcon` props.
+
+## 0.3.10
+
+### Patch Changes
+
+- 90c410e: Backstage version bump to v1.30.2
+
 ## 0.3.9
 
 ### Patch Changes

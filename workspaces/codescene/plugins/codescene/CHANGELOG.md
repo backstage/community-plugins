@@ -1,5 +1,23 @@
 # @backstage-community/plugin-codescene
 
+## 0.1.33
+
+### Patch Changes
+
+- 1619771: Backstage version bump to v1.31.2
+
+## 0.1.32
+
+### Patch Changes
+
+- 3ef985a: Updated the declaration of the `CodeSceneIcon` to pass through all `SvgIcon` props.
+
+## 0.1.31
+
+### Patch Changes
+
+- 8f84c35: Backstage version bump to v1.30.2
+
 ## 0.1.30
 
 ### Patch Changes

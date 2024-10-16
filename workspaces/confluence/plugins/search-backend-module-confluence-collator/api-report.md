@@ -5,7 +5,7 @@
 ```ts
 /// <reference types="node" />
 
-import { BackendFeatureCompat } from '@backstage/backend-plugin-api';
+import { BackendFeature } from '@backstage/backend-plugin-api';
 import { Config } from '@backstage/config';
 import { DocumentCollatorFactory } from '@backstage/plugin-search-common';
 import { IndexableDocument } from '@backstage/plugin-search-common';
@@ -36,6 +36,7 @@ export type ConfluenceCollatorFactoryOptions = {
   username?: string;
   password?: string;
   spaces?: string[];
+  query?: string;
   parallelismLimit?: number;
   logger: LoggerService;
 };
@@ -106,6 +107,6 @@ export interface IndexableConfluenceDocument extends IndexableDocument {
 }
 
 // @public
-const searchModuleConfluenceCollator: BackendFeatureCompat;
+const searchModuleConfluenceCollator: BackendFeature;
 export default searchModuleConfluenceCollator;
 ```
