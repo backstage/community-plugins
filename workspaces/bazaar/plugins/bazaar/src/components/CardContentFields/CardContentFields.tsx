@@ -84,6 +84,7 @@ export const CardContentFields = ({
                   ))}
               </AboutField>
             </Grid>
+
             <Grid
               style={{
                 display: 'flex',
