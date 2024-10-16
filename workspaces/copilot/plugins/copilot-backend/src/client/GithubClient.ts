@@ -18,7 +18,7 @@ import { ResponseError } from '@backstage/errors';
 import { Config } from '@backstage/config';
 import { Metric, TeamInfo } from '@backstage-community/plugin-copilot-common';
 import fetch from 'node-fetch';
-import { getGithubInfo, GithubInfo } from '../utils/GithubUtils';
+import { getGithubInfo, GithubInfo } from '../utils/githubUtils';
 
 interface GithubApi {
   fetchEnterpriseCopilotUsage: () => Promise<Metric[]>;

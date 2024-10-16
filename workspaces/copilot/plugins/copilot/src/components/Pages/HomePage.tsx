@@ -20,22 +20,13 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Alert from '@mui/material/Alert';
-import enterpriseImg from '../../assets/images/enterprise.jpg';
-import organizationImg from '../../assets/images/organization.jpg';
 import { CopilotPage } from './CopilotPage';
 
-const aspectRatio16to9 = {
-  position: 'relative',
-  paddingTop: '56.25%',
-};
-
 interface InfoCardProps {
-  image: string;
   title: string;
   description: string[];
   buttonText: string;
@@ -44,7 +35,6 @@ interface InfoCardProps {
 }
 
 const InfoCard = ({
-  image,
   title,
   description,
   buttonText,
@@ -52,21 +42,6 @@ const InfoCard = ({
   warning,
 }: InfoCardProps) => (
   <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-    <Box sx={aspectRatio16to9}>
-      <CardMedia
-        component="img"
-        image={image}
-        alt={title}
-        sx={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          objectFit: 'cover',
-        }}
-      />
-    </Box>
     <CardContent sx={{ flexGrow: 1 }}>
       <Typography gutterBottom variant="h5" component="div">
         {title}
@@ -127,7 +102,6 @@ export const HomePage = (): React.JSX.Element => {
         <Grid container spacing={4} justifyContent="center" gap={2}>
           <Grid item xs={12} sm={6} md={5}>
             <InfoCard
-              image={enterpriseImg}
               title="Enterprise"
               description={[
                 'Dive deep into enterprise-level metrics to track performance, user engagement, and more. Get an overview of how AI assistance is being adopted across the entire enterprise.',
@@ -145,7 +119,6 @@ export const HomePage = (): React.JSX.Element => {
 
           <Grid item xs={12} sm={6} md={5}>
             <InfoCard
-              image={organizationImg}
               title="Organization"
               description={[
                 'Explore organization-wide statistics and gain insights into user activities and trends. Understand the broader impact of AI assistance within your organization.',

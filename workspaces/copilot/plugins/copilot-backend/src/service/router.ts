@@ -24,10 +24,10 @@ import {
   SchedulerServiceTaskScheduleDefinition,
 } from '@backstage/backend-plugin-api';
 import { Config } from '@backstage/config';
-import { DateTime } from 'luxon';
+import { NotFoundError } from '@backstage/errors';
 import { Metric } from '@backstage-community/plugin-copilot-common';
 import { DatabaseHandler } from '../db/DatabaseHandler';
-import Scheduler from '../task/Scheduler';
+import TaskManagement from '../task/TaskManagement';
 import { GithubClient } from '../client/GithubClient';
 import { validateQuery } from './validation/validateQuery';
 import {
@@ -124,7 +124,8 @@ async function createRouter(
   await scheduler.scheduleTask({
     id: 'copilot-metrics',
     ...(schedule ?? defaultSchedule),
-    fn: async () => await Scheduler.create({ db, logger, api, config }).run(),
+    fn: async () =>
+      await TaskManagement.create({ db, logger, api, config }).runAsync(),
   });
 
   const router = Router();
@@ -141,15 +142,7 @@ async function createRouter(
     async (req, res) => {
       const { startDate, endDate, type, team } = req.query as MetricsQuery;
 
-      const parsedStartDate = DateTime.fromISO(startDate);
-      const parsedEndDate = DateTime.fromISO(endDate);
-
-      if (!parsedStartDate.isValid || !parsedEndDate.isValid) {
-        return res.status(400).json('Invalid date format');
-      }
-
-      // eslint-disable-next-line testing-library/no-await-sync-queries
-      const result = await db.getByPeriod(startDate, endDate, type, team);
+      const result = await db.getMetrics(startDate, endDate, type, team);
 
       const metrics: Metric[] = result.map(metric => ({
         ...metric,
@@ -168,7 +161,7 @@ async function createRouter(
       const result = await db.getPeriodRange(type);
 
       if (!result) {
-        return res.status(400).json('No available data');
+        throw new NotFoundError();
       }
 
       return res.json(result);
@@ -178,17 +171,10 @@ async function createRouter(
   router.get('/teams', validateQuery(teamQuerySchema), async (req, res) => {
     const { type, startDate, endDate } = req.query as TeamQuery;
 
-    const parsedStartDate = DateTime.fromISO(startDate);
-    const parsedEndDate = DateTime.fromISO(endDate);
-
-    if (!parsedStartDate.isValid || !parsedEndDate.isValid) {
-      return res.status(400).json('Invalid date format');
-    }
-
     const result = await db.getTeams(type, startDate, endDate);
 
     if (!result) {
-      return res.status(400).json('No available data');
+      throw new NotFoundError();
     }
 
     return res.json(result);

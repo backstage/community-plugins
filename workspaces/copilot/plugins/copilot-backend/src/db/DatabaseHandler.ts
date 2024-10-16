@@ -54,25 +54,6 @@ export class DatabaseHandler {
 
   private constructor(private readonly db: Knex) {}
 
-  async getByPeriod(
-    startDate: string,
-    endDate: string,
-    type: MetricsType,
-    teamName?: string,
-  ): Promise<MetricDbRow[]> {
-    let query = this.db<MetricDbRow>('metrics').where('type', type);
-
-    if (teamName) {
-      query = query.where('team_name', teamName);
-    } else {
-      query = query.whereNull('team_name');
-    }
-
-    const records = await query.whereBetween('day', [startDate, endDate]);
-
-    return records ?? [];
-  }
-
   async getPeriodRange(type: MetricsType): Promise<PeriodRange | undefined> {
     const query = this.db<MetricDbRow>('metrics').where('type', type);
 
@@ -124,5 +105,23 @@ export class DatabaseHandler {
     } catch (e) {
       return undefined;
     }
+  }
+
+  async getMetrics(
+    startDate: string,
+    endDate: string,
+    type: MetricsType,
+    teamName?: string,
+  ): Promise<MetricDbRow[]> {
+    if (teamName) {
+      return await this.db<MetricDbRow>('metrics')
+        .where('type', type)
+        .where('team_name', teamName)
+        .whereBetween('day', [startDate, endDate]);
+    }
+    return this.db<MetricDbRow>('metrics')
+      .where('type', type)
+      .whereNull('team_name')
+      .whereBetween('day', [startDate, endDate]);
   }
 }

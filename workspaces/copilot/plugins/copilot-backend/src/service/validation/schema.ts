@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import Joi from 'joi';
+import { z } from 'zod';
 import { MetricsType } from '@backstage-community/plugin-copilot-common';
 
-const metricsTypeSchema = Joi.string<MetricsType>().valid(
-  'enterprise',
-  'organization',
-);
+const metricsTypeSchema = z.enum(['enterprise', 'organization']);
+
+const isoDateSchema = z.string().refine(date => !isNaN(Date.parse(date)), {
+  message: 'Invalid date format',
+});
 
 export type MetricsQuery = {
   startDate: string;
@@ -38,19 +39,19 @@ export type TeamQuery = {
   endDate: string;
 };
 
-export const metricsQuerySchema = Joi.object<MetricsQuery>({
-  startDate: Joi.string().isoDate().required(),
-  endDate: Joi.string().isoDate().required(),
-  type: metricsTypeSchema.required(),
-  team: Joi.string().optional(),
+export const metricsQuerySchema = z.object({
+  startDate: isoDateSchema,
+  endDate: isoDateSchema,
+  type: metricsTypeSchema,
+  team: z.string().optional(),
 });
 
-export const periodRangeQuerySchema = Joi.object<PeriodRangeQuery>({
-  type: metricsTypeSchema.required(),
+export const periodRangeQuerySchema = z.object({
+  type: metricsTypeSchema,
 });
 
-export const teamQuerySchema = Joi.object<TeamQuery>({
-  startDate: Joi.string().isoDate().required(),
-  endDate: Joi.string().isoDate().required(),
-  type: metricsTypeSchema.required(),
+export const teamQuerySchema = z.object({
+  startDate: isoDateSchema,
+  endDate: isoDateSchema,
+  type: metricsTypeSchema,
 });

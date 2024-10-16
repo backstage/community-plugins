@@ -79,7 +79,6 @@ export const createTotalSuggestionsAndAcceptancesSeries = (
     {
       id: 'total_acceptances_count_general',
       label: 'Total Acceptances (Overall)',
-
       valueFormatter: (v: number | null) => v?.toString() ?? 'N/A',
       data: metrics.map(metric => metric.total_acceptances_count),
     },
@@ -99,7 +98,6 @@ export const createTotalSuggestionsAndAcceptancesSeries = (
   addSeriesIfTeam(series, !!team, {
     id: 'total_acceptances_count_by_team',
     label: `Total Acceptances (${team})`,
-
     valueFormatter: (v: number | null) => v?.toString() ?? 'N/A',
     data: metrics.map(
       metric =>

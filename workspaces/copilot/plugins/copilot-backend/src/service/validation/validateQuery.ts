@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 import { NextFunction, Request, Response } from 'express';
-import Joi from 'joi';
+import { ZodSchema } from 'zod';
 
-export function validateQuery(schema: Joi.ObjectSchema) {
+export function validateQuery(schema: ZodSchema) {
   return (req: Request, res: Response, next: NextFunction) => {
-    const { error } = schema.validate(req.query);
+    const { error, data } = schema.safeParse(req.query);
+
     if (error) {
-      return res.status(400).json({ message: error.details[0].message });
+      return res.status(400).json({ message: error.errors[0].message });
     }
+
+    req.query = data;
+
     return next();
   };
 }
