@@ -13,15 +13,5 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-import { createDevApp } from '@backstage/dev-utils';
-import { githubDiscussionsPlugin, GithubDiscussionsPage } from '../src/plugin';
 
-createDevApp()
-  .registerPlugin(githubDiscussionsPlugin)
-  .addPage({
-    element: <GithubDiscussionsPage />,
-    title: 'Root Page',
-    path: '/github-discussions',
-  })
-  .render();
+export { GithubDiscussionsSearchResultListItem } from './GithubDiscussionsSearchResultListItem';
