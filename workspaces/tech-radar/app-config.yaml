@@ -68,7 +68,4 @@ catalog:
         - allow: [User, Group]
 
 techRadar:
-  # todo: replace with https://github.com/backstage/community-plugins/blob/main/workspaces/tech-radar/plugins/tech-radar-common/src/sampleTechRadarResponse.json
-  url: https://github.com/alex-mckay/sample-data/blob/main/data.json
-  # files in private GH repos require GH integrations to be set up
-  # url: https://github.com/alex-mckay/private-sample-data/blob/main/data.json
+  url: https://github.com/backstage/community-plugins/blob/main/workspaces/tech-radar/plugins/tech-radar-common/src/sampleTechRadarResponse.json
