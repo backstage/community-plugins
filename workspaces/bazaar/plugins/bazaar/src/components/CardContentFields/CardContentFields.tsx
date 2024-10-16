@@ -35,6 +35,7 @@ type Props = {
   members: Member[];
   descriptionSize: GridSize;
   membersSize: GridSize;
+  isMember: boolean;
 };
 
 const useStyles = makeStyles(
@@ -61,8 +62,11 @@ export const CardContentFields = ({
   members,
   descriptionSize,
   membersSize,
+  isMember,
 }: Props) => {
   const catalogEntityRoute = useRouteRef(entityRouteRef);
+  const currentPage = window.location.pathname;
+  const isEntityPage = currentPage.includes('/catalog/');
   const classes = useStyles();
   return (
     <div>
@@ -128,6 +132,19 @@ export const CardContentFields = ({
                 )}
               </AboutField>
             </Grid>
+
+            {!isEntityPage && isMember && (
+              <Grid item xs={12}>
+                <AboutField label="I've joined the project, what's next?">
+                  <Typography variant="body2" paragraph>
+                    To learn more about this project, click the "Entity Page"
+                    link, where you can view more information about the effort
+                    and navigate to the source code itself to begin
+                    collaborating.
+                  </Typography>
+                </AboutField>
+              </Grid>
+            )}
 
             <Grid item xs={2}>
               <AboutField label="Status">
