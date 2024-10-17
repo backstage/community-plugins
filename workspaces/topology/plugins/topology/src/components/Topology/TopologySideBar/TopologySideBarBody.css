@@ -1,0 +1,11 @@
+.topology-side-bar-tabs {
+  margin: 0 0 24px;
+}
+
+.topology-side-bar-tabs .tab-button {
+  background: transparent !important;
+}
+
+.topology-side-bar-tab-panel {
+  padding: 0 20px;
+}

@@ -1,5 +1,27 @@
 # @backstage-community/plugin-tech-insights-backend
 
+## 1.2.1
+
+### Patch Changes
+
+- 6a4787a: Add auth token logic to the fact retriever example in the README.
+  This makes it possible to copy it directly as a baseline for new fact retrievers.
+
+## 1.2.0
+
+### Minor Changes
+
+- 0f5c58a: Increment the schema version of the `techdocsFactRetriever`.
+
+### Patch Changes
+
+- e516773: Remove usages of deprecated references and usage of @backstage/backend-common
+- e516773: Backstage version bump to v1.31.1
+- Updated dependencies [e516773]
+- Updated dependencies [e516773]
+  - @backstage-community/plugin-tech-insights-common@0.2.19
+  - @backstage-community/plugin-tech-insights-node@1.0.1
+
 ## 1.1.0
 
 ### Minor Changes

@@ -1,5 +1,12 @@
 # backend
 
+## 0.0.6
+
+### Patch Changes
+
+- Updated dependencies [9792d34]
+  - @backstage-community/plugin-report-portal-backend@1.0.4
+
 ## 0.0.5
 
 ### Patch Changes

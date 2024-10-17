@@ -53,6 +53,8 @@ catalog:
         - allow: [User, Group]
 
 linguist:
+  linguistJsOptions:
+    categories: ['programming']
   schedule:
     frequency:
       minutes: 2

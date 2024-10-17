@@ -91,7 +91,7 @@ const headCells: HeadCell[] = [
     id: 'totalSuggestions',
     numeric: true,
     disablePadding: false,
-    label: 'Accepted Lines of Code',
+    label: 'Total Suggestions',
   },
   {
     id: 'acceptanceRate',

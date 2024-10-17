@@ -2533,6 +2533,7 @@ __metadata:
     "@backstage/config": ^1.2.0
     "@backstage/plugin-auth-backend": ^0.23.0
     "@backstage/plugin-auth-backend-module-guest-provider": ^0.2.0
+    "@backstage/plugin-notifications-node": ^0.2.6
     "@janus-idp/cli": 1.13.1
     "@types/express": "*"
     "@types/nodemailer": 6.4.15
@@ -2571,7 +2572,7 @@ __metadata:
     "@mui/icons-material": ^5.15.18
     "@mui/material": ^5.15.18
     "@one-platform/opc-feedback": 0.1.1-alpha
-    "@redhat-developer/red-hat-developer-hub-theme": 0.0.54
+    "@redhat-developer/red-hat-developer-hub-theme": 0.2.0
     "@testing-library/jest-dom": 6.5.0
     "@testing-library/react": 14.3.1
     "@testing-library/user-event": 14.5.2
@@ -3853,6 +3854,33 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@backstage/plugin-notifications-common@npm:^0.0.5":
+  version: 0.0.5
+  resolution: "@backstage/plugin-notifications-common@npm:0.0.5"
+  dependencies:
+    "@backstage/config": ^1.2.0
+    "@material-ui/icons": ^4.9.1
+  checksum: 3cdfd9565d9bfcb2d7187381e697978833d54ce6633baa4d18494a55761006f7893b73ddfdfc6e0d068fe470559aa2febbd7dac401fbcad2bff9a959f61a71d1
+  languageName: node
+  linkType: hard
+
+"@backstage/plugin-notifications-node@npm:^0.2.6":
+  version: 0.2.6
+  resolution: "@backstage/plugin-notifications-node@npm:0.2.6"
+  dependencies:
+    "@backstage/backend-common": ^0.25.0
+    "@backstage/backend-plugin-api": ^1.0.0
+    "@backstage/catalog-client": ^1.7.0
+    "@backstage/catalog-model": ^1.7.0
+    "@backstage/plugin-notifications-common": ^0.0.5
+    "@backstage/plugin-signals-node": ^0.1.11
+    knex: ^3.0.0
+    node-fetch: ^2.7.0
+    uuid: ^9.0.0
+  checksum: 8dabc31a84bb6aea2e52eea9103e79f545794d01d75bda273117b362a3548cb6813eaca5883389d7943c8f6d01bca0d646af079a3b2903ec89adc631ad51a21b
+  languageName: node
+  linkType: hard
+
 "@backstage/plugin-permission-common@npm:^0.8.1":
   version: 0.8.1
   resolution: "@backstage/plugin-permission-common@npm:0.8.1"
@@ -3985,6 +4013,23 @@ __metadata:
     "@backstage/plugin-permission-common": ^0.8.1
     "@backstage/types": ^1.1.1
   checksum: e4e44c06aaabfa296c9f07b6d9537bebcdbc54c309dcfbe9b11ee2625193df1571f58469388b49379a5a0fa1cc6560b81347dc4020b239b118558ae4d0c79511
+  languageName: node
+  linkType: hard
+
+"@backstage/plugin-signals-node@npm:^0.1.11":
+  version: 0.1.11
+  resolution: "@backstage/plugin-signals-node@npm:0.1.11"
+  dependencies:
+    "@backstage/backend-common": ^0.25.0
+    "@backstage/backend-plugin-api": ^1.0.0
+    "@backstage/config": ^1.2.0
+    "@backstage/plugin-auth-node": ^0.5.2
+    "@backstage/plugin-events-node": ^0.4.0
+    "@backstage/types": ^1.1.1
+    express: ^4.17.1
+    uuid: ^9.0.0
+    ws: ^8.18.0
+  checksum: 1c4e012666d40a5fddcc7a88d7b5d776e6aea958b5adafc2ae9619354aa693c63f30e6b52d02d6b418de6bac8462422dff0d8c98ace4996ff84c51093065409c
   languageName: node
   linkType: hard
 
@@ -7159,9 +7204,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@redhat-developer/red-hat-developer-hub-theme@npm:0.0.54":
-  version: 0.0.54
-  resolution: "@redhat-developer/red-hat-developer-hub-theme@npm:0.0.54"
+"@redhat-developer/red-hat-developer-hub-theme@npm:0.2.0":
+  version: 0.2.0
+  resolution: "@redhat-developer/red-hat-developer-hub-theme@npm:0.2.0"
   peerDependencies:
     "@backstage/theme": ^0.5.2
     "@emotion/react": ^11.11.1
@@ -7170,7 +7215,7 @@ __metadata:
     "@material-ui/icons": ^4.11.3
     "@mui/icons-material": ^5.14.19
     "@mui/material": ^5.14.20
-  checksum: 78a1e84c09f766a8b140ef00fc2c107a39d31229156b22ce8b3c5c57688b0444e733e7278890e17c20a9a8137fd3e29de032f76b6f4e9e35425d5c73f083cdbd
+  checksum: 2a5d52e2ba31c5a6ff2cfe75d78b1de1afa00690b522875e52d8ddc8805a3ccc5c202414a0304790efe0ed0ea2c570b9c8bf7472c7895d4bbe416c6541435196
   languageName: node
   linkType: hard
 
@@ -28808,7 +28853,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ws@npm:^8.11.0, ws@npm:^8.13.0, ws@npm:^8.16.0":
+"ws@npm:^8.11.0, ws@npm:^8.13.0, ws@npm:^8.16.0, ws@npm:^8.18.0":
   version: 8.18.0
   resolution: "ws@npm:8.18.0"
   peerDependencies:

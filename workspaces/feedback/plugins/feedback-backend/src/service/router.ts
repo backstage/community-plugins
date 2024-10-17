@@ -31,17 +31,20 @@ import { DatabaseFeedbackStore } from '../database/feedbackStore';
 import { FeedbackCategory, FeedbackModel } from '../model/feedback.model';
 import { NodeMailer } from './emails';
 
+import { NotificationService } from '@backstage/plugin-notifications-node';
+
 export interface RouterOptions {
   logger: LoggerService;
   config: Config;
   discovery: PluginEndpointDiscovery;
   auth: AuthService;
+  notifications?: NotificationService;
 }
 
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
-  const { logger, config, discovery, auth } = options;
+  const { logger, config, discovery, auth, notifications } = options;
   const router = Router();
   const feedbackDB = await DatabaseFeedbackStore.create({
     database: DatabaseManager.fromConfig(config).forPlugin('feedback'),
@@ -51,6 +54,10 @@ export async function createRouter(
 
   const mailer = new NodeMailer(config, logger);
   const catalogClient = new CatalogClient({ discoveryApi: discovery });
+  const notificationsEnabled =
+    (config.getOptionalBoolean('feedback.integrations.notifications') ??
+      false) &&
+    notifications !== undefined;
 
   router.use(express.json());
   logger.info('Feedback backend plugin is running');
@@ -118,6 +125,21 @@ export async function createRouter(
         message: `${feedbackType} created successfully`,
         data: respObj,
       });
+
+      if (notificationsEnabled) {
+        notifications.send({
+          recipients: { type: 'entity', entityRef: reqData.projectId! },
+          payload: {
+            title: `New ${feedbackType.toLocaleLowerCase('en-US')} for ${
+              entityRef.metadata.title ?? entityRef.metadata.name
+            }`,
+            description: reqData.summary,
+            link: `${entityRoute}`,
+            severity: 'normal',
+            topic: `feedback-${reqData.projectId}`,
+          },
+        });
+      }
 
       if (entityRef.metadata.annotations) {
         const annotations = entityRef.metadata.annotations;

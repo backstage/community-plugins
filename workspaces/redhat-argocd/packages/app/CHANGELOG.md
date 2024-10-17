@@ -1,5 +1,19 @@
 # app
 
+## 0.0.6
+
+### Patch Changes
+
+- Updated dependencies [3865528]
+  - @backstage-community/plugin-redhat-argocd@1.8.7
+
+## 0.0.5
+
+### Patch Changes
+
+- Updated dependencies [a1313aa]
+  - @backstage-community/plugin-redhat-argocd@1.8.6
+
 ## 0.0.4
 
 ### Patch Changes

@@ -179,7 +179,7 @@ export async function createRouterFromConfig(routerOptions: RouterOptions) {
       | HumanDuration
       | undefined;
     pluginOptions.kind = config.getOptionalStringArray('linguist.kind');
-    pluginOptions.linguistJsOptions = config.getOptionalConfig(
+    pluginOptions.linguistJsOptions = config.getOptional(
       'linguist.linguistJsOptions',
     );
   }

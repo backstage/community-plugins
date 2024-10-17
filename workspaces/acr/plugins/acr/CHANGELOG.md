@@ -1,5 +1,17 @@
 ### Dependencies
 
+## 1.8.2
+
+### Patch Changes
+
+- 6b97b5f: Backstage version bump to v1.31.2
+
+## 1.8.1
+
+### Patch Changes
+
+- e72af66: The acr from the [janus-idp/backstage-plugins](https://github.com/janus-idp/backstage-plugins/tree/main/plugins/acr) repository was migrated to the community plugins. The migration was performed by following the manual migration steps outlined in the [Community Plugins CONTRIBUTING guide](https://github.com/backstage/community-plugins/blob/main/CONTRIBUTING.md#migrating-a-plugin)
+
 - **@janus-idp/cli:** upgraded to 1.13.2
 
 ### Dependencies

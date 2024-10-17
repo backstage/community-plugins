@@ -1,5 +1,17 @@
 # @backstage-community/plugin-ilert
 
+## 0.3.4
+
+### Patch Changes
+
+- 0a6f370: Backstage version bump to v1.31.2
+
+## 0.3.3
+
+### Patch Changes
+
+- 3ef985a: Updated the declaration of the `ILertIcon` to pass through all `SvgIcon` props.
+
 ## 0.3.2
 
 ### Patch Changes

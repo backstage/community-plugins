@@ -17,7 +17,7 @@ import {
   coreServices,
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
-
+import { notificationService } from '@backstage/plugin-notifications-node';
 import { createRouter } from './service/router';
 
 export const feedbackPlugin = createBackendPlugin({
@@ -30,14 +30,23 @@ export const feedbackPlugin = createBackendPlugin({
         config: coreServices.rootConfig,
         discovery: coreServices.discovery,
         auth: coreServices.auth,
+        notifications: notificationService,
       },
-      async init({ logger, httpRouter, config, discovery, auth }) {
+      async init({
+        logger,
+        httpRouter,
+        config,
+        discovery,
+        auth,
+        notifications,
+      }) {
         httpRouter.use(
           await createRouter({
             logger: logger,
             config: config,
             discovery: discovery,
             auth: auth,
+            notifications,
           }),
         );
       },

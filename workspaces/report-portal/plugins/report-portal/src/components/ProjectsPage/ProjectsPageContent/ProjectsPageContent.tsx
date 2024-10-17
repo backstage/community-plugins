@@ -32,6 +32,8 @@ import {
 import Launch from '@mui/icons-material/Launch';
 import Skeleton from '@mui/material/Skeleton';
 
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
 import { useNavigate } from 'react-router-dom';
 import {
   ProjectDetails,
@@ -39,38 +41,11 @@ import {
   reportPortalApiRef,
 } from '../../../api';
 import { launchRouteRef } from '../../../routes';
-import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
-
-const UniqueLaunches = (props: { host: string; projectId: string }) => {
-  const { host, projectId } = props;
-  const [loading, setLoading] = useState(true);
-  const [noOfLaunches, setNoOfLaunches] = useState<string | number>('-');
-  const alertApi = useApi(alertApiRef);
-
-  const api = useApi(reportPortalApiRef);
-  useEffect(() => {
-    api
-      .getLaunchResults(projectId, host, {})
-      .then(res => {
-        setNoOfLaunches(res.content.length);
-        setLoading(false);
-      })
-      .catch(err => {
-        alertApi.post({
-          message: err,
-          display: 'transient',
-          severity: 'error',
-        });
-        setLoading(false);
-      });
-  }, [api, projectId, host, alertApi]);
-  return loading ? <Skeleton height="2rem" /> : <>{noOfLaunches}</>;
-};
 
 export const ProjectsPageContent = (props: { host: string }) => {
   const { host } = props;
   const launchPageRoute = useRouteRef(launchRouteRef);
+  const alertApi = useApi(alertApiRef);
 
   const config = useApi(configApiRef).getConfigArray(
     'reportPortal.integrations',
@@ -81,6 +56,10 @@ export const ProjectsPageContent = (props: { host: string }) => {
       ?.getString('filterType') ?? 'INTERNAL';
 
   const [loading, setLoading] = useState(true);
+  const [launchesCount, setLaunchesCount] = useState<{
+    [key: string]: number;
+  }>();
+
   const [tableData, setTableData] = useState<ProjectListResponse>({
     content: [],
     page: {
@@ -106,18 +85,48 @@ export const ProjectsPageContent = (props: { host: string }) => {
 
   useEffect(() => {
     if (loading) {
-      reportPortalApi
-        .getInstanceDetails(host, filters)
-        .then(res => {
-          setTableData({ ...res });
+      const getTableData = async () => {
+        try {
+          const res = await reportPortalApi.getInstanceDetails(host, filters);
+          setTableData(res);
           setLoading(false);
-        })
-        .catch(err => {
+
+          // Fetch counts
+          const launchCountPromises = res.content.map(project =>
+            reportPortalApi
+              .getLaunchResults(project.projectName, host, {})
+              .then(res2 => ({
+                projectName: project.projectName,
+                count: res2.content.length,
+              }))
+              .catch(() => {
+                alertApi.post({
+                  message: `Failed to fetch launches for project ${project.projectName}`,
+                  severity: 'error',
+                  display: 'transient',
+                });
+                return { projectName: project.projectName, count: 0 };
+              }),
+          );
+
+          const launchCountsResults = await Promise.all(launchCountPromises);
+
+          const launchCountsMap = launchCountsResults.reduce(
+            (acc, { projectName, count }) => {
+              acc[projectName] = count;
+              return acc;
+            },
+            {} as { [key: string]: number },
+          );
+          setLaunchesCount(launchCountsMap);
+        } catch (err) {
           setLoading(false);
           setError(err);
-        });
+        }
+      };
+      getTableData();
     }
-  }, [reportPortalApi, filterType, filters, host, loading]);
+  }, [reportPortalApi, filters, host, loading, alertApi]);
 
   const columns: TableColumn<ProjectDetails>[] = [
     {
@@ -145,7 +154,18 @@ export const ProjectsPageContent = (props: { host: string }) => {
       align: 'center',
       width: '10%',
       highlight: true,
-      render: row => <UniqueLaunches host={host} projectId={row.projectName} />,
+      sorting: true,
+      customSort: (d1, d2) => {
+        const launchA = launchesCount ? launchesCount[d1.projectName] : 0;
+        const launchB = launchesCount ? launchesCount[d2.projectName] : 0;
+        return launchA - launchB;
+      },
+      render: row =>
+        launchesCount ? (
+          launchesCount[row.projectName]
+        ) : (
+          <Skeleton height="2rem" />
+        ),
     },
     {
       id: 3,
@@ -183,6 +203,7 @@ export const ProjectsPageContent = (props: { host: string }) => {
       'page.page': page + 1,
       'page.size': pageSize,
     });
+    setLaunchesCount(undefined);
     setLoading(true);
   }
 
@@ -193,6 +214,7 @@ export const ProjectsPageContent = (props: { host: string }) => {
         ...defaultFilters,
         ...(searchText && { 'predefinedFilter.projects': searchText }),
       });
+      setLaunchesCount(undefined);
       setLoading(true);
     },
     600,

@@ -1,5 +1,11 @@
 # @backstage-community/plugin-gcp-projects
 
+## 0.3.54
+
+### Patch Changes
+
+- b93e977: Backstage version bump to v1.31.2
+
 ## 0.3.53
 
 ### Patch Changes
