@@ -19,9 +19,8 @@ jobs:
         id: calculate-commits
         with:
           script: |
-            console.log(JSON.stringify(context))
-            const {ref, head_ref} = context.payload
-            console.log({ref}, {head_ref})
+            const head_ref = context.payload.pull_request.head.label;
+            console.log({head_ref})
             const query = `query($owner:String!, $name:String!, $ref:String!, $head_ref:String!) {
               repository(owner:$owner, name:$name){
                 ref(qualifiedName:$ref) {
@@ -36,11 +35,14 @@ jobs:
             const variables = {
               owner: context.repo.owner,
               name: context.repo.repo,
-              ref,
+              ref: "refs/heads/main",
               head_ref
             }
-            const result = await github.graphql(query, variables)
-            console.log(result)
+            const {data} = await github.graphql(query, variables)
+            console.log(data)
+            const { aheadBy, behindBy } = data.repository.ref.compare;
+            core.setOutput("aheadBy", aheadBy);
+            core.setOutput("behindBy", behindBy);
 
       - name: Checkout base branch for diff purposes
         uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f # v4
