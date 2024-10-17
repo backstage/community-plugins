@@ -161,6 +161,8 @@ By migrating a plugin to this repository you will need to ensure you can meet ce
 - Agree to publish the plugin to the `@backstage-community` npm scope.
 - Adopt the Changesets workflow for releasing new plugin versions.
 - Adhere to the repository security process for handling security-related issues.
+- Agree to commit to the responsibilities and requirements listed in the [Plugin Maintainer's role
+](https://github.com/backstage/community/blob/main/GOVERNANCE.md#plugin-maintainer).
 - Plugins moved to the repository should be licensed under Apache 2.0.
 
 ### Manual migration steps

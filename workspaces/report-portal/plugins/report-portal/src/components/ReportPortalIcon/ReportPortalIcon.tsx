@@ -15,11 +15,10 @@
  */
 import React from 'react';
 
-import SvgIcon from '@mui/material/SvgIcon';
-import { IconComponent } from '@backstage/core-plugin-api';
+import SvgIcon, { SvgIconProps } from '@mui/material/SvgIcon';
 
 /** @public */
-export const ReportPortalIcon = (props: IconComponent) => {
+export const ReportPortalIcon = (props: SvgIconProps) => {
   return (
     <SvgIcon viewBox="0 0 31 31" {...props}>
       <path d="M15.4885 6.22788L23.8044 10.8581V15.8268L29.5248 12.6418V8.20391C29.5248 7.87542 29.3431 7.57189 29.0481 7.40764L15.9652 0.123184C15.6702 -0.0410613 15.3068 -0.0410613 15.0118 0.123184L1.92885 7.40764C1.63387 7.57189 1.45215 7.87542 1.45215 8.20391V14.1728L15.4885 6.22788Z" />

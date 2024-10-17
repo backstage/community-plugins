@@ -19,12 +19,14 @@ import {
   ApiBlueprint,
   createApiFactory,
   createPlugin,
-  createSchemaFromZod,
   discoveryApiRef,
   fetchApiRef,
 } from '@backstage/frontend-plugin-api';
-import { convertLegacyRouteRef } from '@backstage/core-compat-api';
-import { createSearchResultListItemExtension } from '@backstage/plugin-search-react/alpha';
+import {
+  compatWrapper,
+  convertLegacyRouteRef,
+} from '@backstage/core-compat-api';
+import { SearchResultListItemBlueprint } from '@backstage/plugin-search-react/alpha';
 import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
 import { AdrDocument } from '@backstage-community/plugin-adr-common';
 import { rootRouteRef } from './routes';
@@ -38,23 +40,31 @@ function isAdrDocument(result: any): result is AdrDocument {
 
 /** @alpha */
 export const adrSearchResultListItemExtension =
-  createSearchResultListItemExtension({
-    configSchema: createSchemaFromZod(z =>
-      z.object({
-        // TODO: Define how the icon can be configurable
-        noTrack: z.boolean().default(false),
-        lineClamp: z.number().default(5),
-      }),
-    ),
-    predicate: result => result.type === 'adr',
-    component: async ({ config }) => {
-      const { AdrSearchResultListItem } = await import(
-        './search/AdrSearchResultListItem'
-      );
-      return ({ result, ...rest }) =>
-        isAdrDocument(result) ? (
-          <AdrSearchResultListItem {...rest} {...config} result={result} />
-        ) : null;
+  SearchResultListItemBlueprint.makeWithOverrides({
+    config: {
+      schema: {
+        lineClamp: z => z.number().default(5),
+      },
+    },
+    factory(originalFactory, { config }) {
+      return originalFactory({
+        predicate: result => result.type === 'adr',
+        component: async () => {
+          const { AdrSearchResultListItem } = await import(
+            './search/AdrSearchResultListItem'
+          );
+          return ({ result, ...rest }) =>
+            compatWrapper(
+              isAdrDocument(result) ? (
+                <AdrSearchResultListItem
+                  {...rest}
+                  {...config}
+                  result={result}
+                />
+              ) : null,
+            );
+        },
+      });
     },
   });
 

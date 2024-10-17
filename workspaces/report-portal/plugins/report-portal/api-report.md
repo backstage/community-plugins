@@ -7,11 +7,11 @@
 
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
-import { IconComponent } from '@backstage/core-plugin-api';
 import { InfoCardVariants } from '@backstage/core-components';
 import { JSX as JSX_2 } from 'react';
 import { default as React_2 } from 'react';
 import { RouteRef } from '@backstage/core-plugin-api';
+import { SvgIconProps } from '@mui/material/SvgIcon';
 
 // @public
 export const isReportPortalAvailable: (entity: Entity) => boolean;
@@ -29,7 +29,7 @@ export type ReportPortalGlobalPageProps = {
 };
 
 // @public (undocumented)
-export const ReportPortalIcon: (props: IconComponent) => React_2.JSX.Element;
+export const ReportPortalIcon: (props: SvgIconProps) => React_2.JSX.Element;
 
 // @public (undocumented)
 export const ReportPortalOverviewCard: (props: {

@@ -13,15 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { LoggerService } from '@backstage/backend-plugin-api';
-import { PluginTaskScheduler, TaskRunner } from '@backstage/backend-tasks';
+
+import type {
+  SchedulerServiceTaskRunner,
+  SchedulerService,
+  LoggerService,
+} from '@backstage/backend-plugin-api';
 import {
   ANNOTATION_LOCATION,
   ANNOTATION_ORIGIN_LOCATION,
   ApiEntity,
   Entity,
 } from '@backstage/catalog-model';
-import { Config } from '@backstage/config';
+
+import type { Config } from '@backstage/config';
+import { InputError, isError, NotFoundError } from '@backstage/errors';
+
 import {
   EntityProvider,
   EntityProviderConnection,
@@ -32,7 +39,7 @@ import {
   listApiDocs,
   listServices,
 } from '../clients/ThreeScaleAPIConnector';
-import {
+import type {
   APIDocElement,
   APIDocs,
   Proxy,
@@ -40,7 +47,14 @@ import {
   Services,
 } from '../clients/types';
 import { readThreeScaleApiEntityConfigs } from './config';
-import { ThreeScaleConfig } from './types';
+import { isNonEmptyArray, NonEmptyArray, ThreeScaleConfig } from './types';
+import {
+  isOpenAPI3_0,
+  isSwagger1_2,
+  isSwagger2_0,
+  OpenAPIMergerAndConverter,
+} from './open-api-merger-converter';
+import { Swagger } from 'atlassian-openapi';
 
 export class ThreeScaleApiEntityProvider implements EntityProvider {
   private static SERVICES_FETCH_SIZE: number = 500;
@@ -49,17 +63,21 @@ export class ThreeScaleApiEntityProvider implements EntityProvider {
   private readonly accessToken: string;
   private readonly logger: LoggerService;
   private readonly scheduleFn: () => Promise<void>;
+  private readonly openApiMerger: OpenAPIMergerAndConverter;
   private connection?: EntityProviderConnection;
 
   static fromConfig(
-    configRoot: Config,
-    options: {
+    deps: {
+      config: Config;
       logger: LoggerService;
-      schedule?: TaskRunner;
-      scheduler?: PluginTaskScheduler;
+    },
+
+    options: {
+      schedule: SchedulerServiceTaskRunner;
+      scheduler: SchedulerService;
     },
   ): ThreeScaleApiEntityProvider[] {
-    const providerConfigs = readThreeScaleApiEntityConfigs(configRoot);
+    const providerConfigs = readThreeScaleApiEntityConfigs(deps.config);
 
     if (!options.schedule && !options.scheduler) {
       throw new Error('Either schedule or scheduler must be provided.');
@@ -67,8 +85,8 @@ export class ThreeScaleApiEntityProvider implements EntityProvider {
 
     return providerConfigs.map(providerConfig => {
       if (!options.schedule && !providerConfig.schedule) {
-        throw new Error(
-          `No schedule provided neither via code nor config for ThreeScaleApiEntityProvider:${providerConfig.id}.`,
+        throw new InputError(
+          `No schedule provided via config for ThreeScaleApiEntityProvider:${providerConfig.id}.`,
         );
       }
 
@@ -89,7 +107,7 @@ export class ThreeScaleApiEntityProvider implements EntityProvider {
 
       return new ThreeScaleApiEntityProvider(
         providerConfig,
-        options.logger,
+        deps.logger,
         taskRunner,
       );
     });
@@ -98,7 +116,7 @@ export class ThreeScaleApiEntityProvider implements EntityProvider {
   private constructor(
     config: ThreeScaleConfig,
     logger: LoggerService,
-    taskRunner: TaskRunner,
+    taskRunner: SchedulerServiceTaskRunner,
   ) {
     this.env = config.id;
     this.baseUrl = config.baseUrl;
@@ -108,9 +126,12 @@ export class ThreeScaleApiEntityProvider implements EntityProvider {
     });
 
     this.scheduleFn = this.createScheduleFn(taskRunner);
+    this.openApiMerger = new OpenAPIMergerAndConverter();
   }
 
-  private createScheduleFn(taskRunner: TaskRunner): () => Promise<void> {
+  private createScheduleFn(
+    taskRunner: SchedulerServiceTaskRunner,
+  ): () => Promise<void> {
     return async () => {
       const taskId = `${this.getProviderName()}:run`;
       return taskRunner.run({
@@ -119,18 +140,20 @@ export class ThreeScaleApiEntityProvider implements EntityProvider {
           try {
             await this.run();
           } catch (error: any) {
-            // Ensure that we don't log any sensitive internal data:
-            this.logger.error(
-              `Error while syncing 3scale API from ${this.baseUrl}`,
-              {
-                // Default Error properties:
-                name: error.name,
-                message: error.message,
-                stack: error.stack,
-                // Additional status code if available:
-                status: error.response?.status,
-              },
-            );
+            if (isError(error)) {
+              // Ensure that we don't log any sensitive internal data:
+              this.logger.error(
+                `Error while syncing 3scale API from ${this.baseUrl}`,
+                {
+                  // Default Error properties:
+                  name: error.name,
+                  message: error.message,
+                  stack: error.stack,
+                  // Additional status code if available:
+                  status: (error.response as { status?: string })?.status,
+                },
+              );
+            }
           }
         },
       });
@@ -148,7 +171,7 @@ export class ThreeScaleApiEntityProvider implements EntityProvider {
 
   async run(): Promise<void> {
     if (!this.connection) {
-      throw new Error('Not initialized');
+      throw new NotFoundError('Not initialized');
     }
 
     this.logger.info(`Discovering ApiEntities from 3scale ${this.baseUrl}`);
@@ -171,24 +194,19 @@ export class ThreeScaleApiEntityProvider implements EntityProvider {
         const service = element;
         this.logger.debug(`Find service ${service.service.name}`);
 
-        // Trying to find the API Doc for the service and validate if api doc was assigned to an API.
-        const apiDoc = apiDocs.api_docs.find(obj => {
-          if (obj.api_doc.service_id !== undefined) {
-            return obj.api_doc.service_id === service.service.id;
-          }
-          return false;
-        });
-
+        const docs = apiDocs.api_docs.filter(
+          obj => obj.api_doc.service_id === service.service.id,
+        );
         const proxy = await getProxyConfig(
           this.baseUrl,
           this.accessToken,
           service.service.id,
         );
-        if (apiDoc !== undefined) {
-          this.logger.info(JSON.stringify(apiDoc));
-          const apiEntity: ApiEntity = this.buildApiEntityFromService(
+        if (isNonEmptyArray(docs)) {
+          this.logger.info(JSON.stringify(docs));
+          const apiEntity: ApiEntity = await this.buildApiEntityFromService(
             service,
-            apiDoc,
+            docs,
             proxy,
           );
           entities.push(apiEntity);
@@ -216,14 +234,55 @@ export class ThreeScaleApiEntityProvider implements EntityProvider {
     });
   }
 
-  private buildApiEntityFromService(
+  private async buildApiEntityFromService(
     service: ServiceElement,
-    apiDoc: APIDocElement,
+    apiDocs: NonEmptyArray<APIDocElement>,
     proxy: Proxy,
-  ): ApiEntity {
+  ): Promise<ApiEntity> {
     const location = `url:${this.baseUrl}/apiconfig/services/${service.service.id}`;
+    const serviceDescription = service.service.description || '';
+    let entityDescription: string | undefined;
 
-    const spec = JSON.parse(apiDoc.api_doc.body);
+    const docs = apiDocs.map(doc => JSON.parse(doc.api_doc.body));
+
+    let swaggerDocJSON;
+    if (docs.length > 1) {
+      // convert all docs to openapi 3.0 and merge them
+      let mergedDescription = `[Merged ${docs.length} API docs]`;
+      let mergedTitle = mergedDescription;
+      const convertedDocs: Swagger.SwaggerV3[] = [];
+      for (const doc of docs) {
+        const convertedDoc = await this.openApiMerger.convertAPIDocToOpenAPI3(
+          doc,
+        );
+        convertedDocs.push(convertedDoc);
+        mergedDescription = getDocInfo(convertedDoc)?.description
+          ? `${mergedDescription} ${getDocInfo(convertedDoc)?.description}`
+          : mergedDescription;
+        mergedTitle = getDocInfo(convertedDoc)?.title
+          ? `${mergedTitle} ${getDocInfo(convertedDoc)?.title}`
+          : mergedTitle;
+      }
+      if (isNonEmptyArray(convertedDocs)) {
+        swaggerDocJSON = await this.openApiMerger.mergeOpenAPI3Docs(
+          convertedDocs,
+        );
+        swaggerDocJSON.info.description = mergedDescription;
+        swaggerDocJSON.info.title = mergedTitle;
+        entityDescription = mergedDescription;
+      }
+    }
+
+    if (docs.length === 1) {
+      swaggerDocJSON = docs[0];
+
+      const spec = JSON.parse(apiDocs[0].api_doc.body);
+      if (isSwagger1_2(spec)) {
+        // Backstage UI can render only openapi 3.0 or swagger 2.0. That's why we need to convert swagger 1.2 to swagger 2.0.
+        swaggerDocJSON = await this.openApiMerger.convertSwagger1_2To2_0(spec);
+      }
+      entityDescription = getDocInfo(spec)?.description;
+    }
 
     return {
       kind: 'API',
@@ -235,8 +294,7 @@ export class ThreeScaleApiEntityProvider implements EntityProvider {
         },
         //  TODO: add tenant name
         name: `${service.service.system_name}`,
-        description:
-          spec.info.description || `Version: ${service.service.description}`,
+        description: entityDescription || serviceDescription,
         //  TODO: add labels
         //  labels: this.getApiEntityLabels(service),
         links: [
@@ -259,8 +317,19 @@ export class ThreeScaleApiEntityProvider implements EntityProvider {
         lifecycle: this.env,
         system: '3scale',
         owner: '3scale',
-        definition: apiDoc.api_doc.body,
+        definition: JSON.stringify(swaggerDocJSON, null, 2),
       },
     };
   }
+}
+
+function getDocInfo(
+  spec: any,
+): { description: string; title: string } | undefined {
+  if (isSwagger2_0(spec) || isOpenAPI3_0(spec)) {
+    return spec.info;
+  }
+
+  // swagger 1.2 spec doc defined by single file doesn't have description field
+  return undefined;
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { APIDocs, Proxy, Services } from './types';
+import type { APIDocs, Proxy, Services } from './types';
 
 export function listServices(
   baseUrl: string,

@@ -37,7 +37,7 @@ const techdocsEntityAnnotationFactName = generateAnnotationFactName(
  */
 export const techdocsFactRetriever: FactRetriever = {
   id: 'techdocsFactRetriever',
-  version: '0.0.1',
+  version: '0.1.0',
   title: 'Tech Docs',
   description:
     'Generates facts related to the completeness of techdocs configuration for entities',
