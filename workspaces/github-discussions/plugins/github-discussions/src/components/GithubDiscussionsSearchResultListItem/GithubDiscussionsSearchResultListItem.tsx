@@ -14,4 +14,55 @@
  * limitations under the License.
  */
 
-export const GithubDiscussionsSearchResultListItem = {};
+import React, { ReactNode } from 'react';
+import Box from '@material-ui/core/Box';
+import Chip from '@material-ui/core/Chip';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import Typography from '@material-ui/core/Typography';
+import { makeStyles } from '@material-ui/core/styles';
+import { Link } from '@backstage/core-components';
+import { ResultHighlight } from '@backstage/plugin-search-common';
+import { HighlightedSearchResultText } from '@backstage/plugin-search-react';
+
+const useStyles = makeStyles(
+  {
+    item: {
+      display: 'flex',
+    },
+    flexContainer: {
+      flexWrap: 'wrap',
+    },
+    itemText: {
+      width: '100%',
+      wordBreak: 'break-all',
+      marginBottom: '1rem',
+    },
+  },
+  { name: 'GithubDiscussionsSearchResultListItem' },
+);
+
+/**
+ * Props for {@link GithubDiscussionsSearchResultListItem}.
+ *
+ * @public
+ */
+export interface GithubDiscussionsSearchResultListItemProps {
+  icon?: ReactNode | ((result: any) => ReactNode);
+  result?: any;
+  highlight?: ResultHighlight;
+  rank?: number;
+  lineClamp?: number;
+}
+
+/** @public */
+export function GithubDiscussionsSearchResultListItem(
+  props: GithubDiscussionsSearchResultListItemProps,
+) {
+  // const { result, highlight } = props;
+  // const classes = useStyles();
+
+  // if (!result) return null;
+
+  return <div className={classes.item}>hello</div>;
+}
