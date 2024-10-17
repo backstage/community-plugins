@@ -15,19 +15,26 @@
  */
 
 import { createPlugin } from '@backstage/core-plugin-api';
-import { createSearchResultListItemExtension } from '@backstage/plugin-search-react';
+import {
+  SearchResultListItemExtensionPropsm,
+  createSearchResultListItemExtension,
+} from '@backstage/plugin-search-react';
+import { GithubDiscussionsSearchResultListItemProps } from './components/GithubDiscussionsSearchResultListItem';
 
 export const githubDiscussionsPlugin = createPlugin({
   id: 'github-discussions',
 });
 
-export const GithubDiscussionsSearchResultListItem =
-  githubDiscussionsPlugin.provide(
-    createSearchResultListItemExtension({
-      name: 'GithubDiscussionsSearchResultListItem',
-      component: () =>
+export const GithubDiscussionsSearchResultListItem: (
+  props: SearchResultListItemExtensionProps<GithubDiscussionsSearchResultListItemProps>,
+) => JSX.Element | null = githubDiscussionsPlugin.provide(
+  createSearchResultListItemExtension({
+    name: 'GithubDiscussionsSearchResultListItem',
+    component: {
+      lazy: () =>
         import('./components/GithubDiscussionsSearchResultListItem').then(
           m => m.GithubDiscussionsSearchResultListItem,
         ),
-    }),
-  );
+    },
+  }),
+);
