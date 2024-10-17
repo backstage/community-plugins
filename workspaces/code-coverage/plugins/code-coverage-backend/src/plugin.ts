@@ -25,7 +25,7 @@ import { createRouter } from './service/router';
  * @public
  */
 export const codeCoveragePlugin = createBackendPlugin({
-  pluginId: 'codeCoverage',
+  pluginId: 'code-coverage',
   register(env) {
     env.registerInit({
       deps: {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Kévin Gomez <contact@kevingomez.fr>
+ * Copyright 2024 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,8 +24,9 @@ import {
 import { useApi } from '@backstage/core-plugin-api';
 import { grafanaApiRef } from '../../api';
 import useAsync from 'react-use/lib/useAsync';
-import { Alert } from '@material-ui/lab';
-import { Tooltip } from '@material-ui/core';
+import Alert from '@material-ui/lab/Alert';
+import Tooltip from '@material-ui/core/Tooltip';
+import Typography from '@material-ui/core/Typography';
 import { Dashboard, DashboardCardOpts } from '../../types';
 import {
   dashboardSelectorFromEntity,
@@ -69,7 +70,7 @@ export const DashboardsTable = ({
         entity,
       )}" selector are displayed.`}
     >
-      <span>{opts.title || 'Dashboards'}</span>
+      <Typography>{opts.title || 'Dashboards'}</Typography>
     </Tooltip>
   );
 

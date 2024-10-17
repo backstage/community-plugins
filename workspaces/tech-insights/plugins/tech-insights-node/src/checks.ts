@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 import { TechInsightsStore } from './persistence';
-import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
+import {
+  CheckLink,
+  CheckResult,
+} from '@backstage-community/plugin-tech-insights-common';
 
 /**
  * A factory wrapper to construct FactChecker implementations.
@@ -138,6 +141,12 @@ export interface TechInsightCheck {
    * Can contain links, description texts or other actionable items
    */
   failureMetadata?: Record<string, any>;
+
+  /**
+   * An array of links to display for the check, for users to be able to read
+   * more about the check.
+   */
+  links?: CheckLink[];
 }
 
 /**

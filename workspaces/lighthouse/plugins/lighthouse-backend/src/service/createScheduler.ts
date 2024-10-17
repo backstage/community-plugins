@@ -37,7 +37,7 @@ export interface CreateLighthouseSchedulerOptions {
   discovery: DiscoveryService;
   scheduler?: PluginTaskScheduler;
   catalogClient: CatalogApi;
-  tokenManager: TokenManager;
+  tokenManager?: TokenManager;
   auth?: AuthService;
 }
 

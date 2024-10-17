@@ -4,6 +4,7 @@
 
 ```ts
 import { AuthService } from '@backstage/backend-plugin-api';
+import { CheckLink } from '@backstage-community/plugin-tech-insights-common';
 import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
 import { CompoundEntityRef } from '@backstage/catalog-model';
 import { Config } from '@backstage/config';
@@ -16,7 +17,6 @@ import { FactSchema } from '@backstage-community/plugin-tech-insights-common';
 import { HumanDuration } from '@backstage/types';
 import { JsonValue } from '@backstage/types';
 import { LoggerService } from '@backstage/backend-plugin-api';
-import { TokenManager } from '@backstage/backend-common';
 
 // @public
 export type CheckValidationResponse = {
@@ -67,7 +67,6 @@ export type FactRetrieverContext = {
   config: Config;
   discovery: DiscoveryService;
   logger: LoggerService;
-  tokenManager: TokenManager;
   auth: AuthService;
   entityFilter?:
     | Record<string, string | symbol | (string | symbol)[]>[]
@@ -121,6 +120,7 @@ export interface TechInsightCheck {
   factIds: string[];
   failureMetadata?: Record<string, any>;
   id: string;
+  links?: CheckLink[];
   name: string;
   successMetadata?: Record<string, any>;
   type: string;
