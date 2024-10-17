@@ -14,4 +14,7 @@
  * limitations under the License.
  */
 
-export { GithubDiscussionsSearchResultListItem } from './GithubDiscussionsSearchResultListItem';
+export {
+  GithubDiscussionsSearchResultListItem,
+  type GithubDiscussionsSearchResultListItemProps,
+} from './GithubDiscussionsSearchResultListItem';
