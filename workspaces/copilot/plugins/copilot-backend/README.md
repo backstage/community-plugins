@@ -77,6 +77,50 @@ These variables are used to configure the plugin and ensure it communicates with
 
 Ensure that your GitHub integration in the Backstage configuration includes the necessary token for the `GithubCredentialsProvider` to work correctly.
 
+If you need to have more control how credentials are provided you can use the plugin extension point to provide your own implementation of the `CopilotCredentialsProvider`.
+
+```typescript
+/* istanbul ignore file */
+import { createBackendModule } from '@backstage/backend-plugin-api';
+import {
+  copilotExtensionPoint,
+  CopilotCredentialsProvider,
+} from '@backstage-community/plugin-copilot-backend';
+import { GithubInfo } from '@backstage-community/plugin-copilot-backend';
+
+class CredentialsProvider implements CopilotCredentialsProvider {
+  async getCredentials(): Promise<GithubInfo> {
+    /// your implementation here
+  }
+}
+
+export const copilotCredentialsProviderModule = createBackendModule({
+  pluginId: 'copilot',
+  moduleId: 'credentials',
+  register(env) {
+    env.registerInit({
+      deps: {
+        copilot: copilotExtensionPoint,
+      },
+      async init({ copilot }) {
+        copilot.useCredentialsProvider(new CredentialsProvider());
+      },
+    });
+  },
+});
+```
+
+You then register this in your backend index.ts
+
+```typescript
+import { copilotCredentialsProviderModule } from './extension_points/copilot';
+
+...
+
+backend.add(copilotCredentialsProviderModule);
+
+```
+
 ### YAML Configuration Example
 
 ```yaml
