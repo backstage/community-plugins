@@ -11,6 +11,10 @@ import {
 import { rootRouteRef, goRouteRef } from './routes';
 import { DefaultShortURLApi, shorturlApiRef } from './api/index';
 
+/**
+ * The ShortURL frontend plugin.
+ * @public
+ */
 export const shorturlPlugin = createPlugin({
   id: 'shorturl',
   routes: {
@@ -31,6 +35,10 @@ export const shorturlPlugin = createPlugin({
   ],
 });
 
+/**
+ * ShortURLPage is a ui on /shorturl to manage short urls
+ * @public
+ */
 export const ShortURLPage = shorturlPlugin.provide(
   createRoutableExtension({
     name: 'ShortURLPage',
@@ -40,6 +48,10 @@ export const ShortURLPage = shorturlPlugin.provide(
   }),
 );
 
+/**
+ * ShortURLGo is a ui on /go/:url to redirect to the original url
+ * @public
+ */
 export const ShortURLGo = shorturlPlugin.provide(
   createRoutableExtension({
     name: 'ShortURLGo',

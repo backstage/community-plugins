@@ -12,15 +12,36 @@ import { customAlphabet } from 'nanoid';
 import { DatabaseHandler } from '../database/DatabaseHandler';
 import { ShortURLStore } from '../database/ShortURLStore';
 
+/**
+ * RouterOptions
+ * @public
+ */
 export interface RouterOptions {
+  /**
+   * Logger service
+   * @public
+   */
   logger: LoggerService;
+  /**
+   * Config service
+   * @public
+   */
   config: RootConfigService;
+
+  /**
+   * Database service
+   * @public
+   */
   database: DatabaseService;
 }
 
 const defaultAlphabet =
   '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz-';
 
+/**
+ * createRouter
+ * @public
+ */
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
