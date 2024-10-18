@@ -218,6 +218,7 @@ export const EntityBazaarInfoContent = ({
           members={members.value || []}
           descriptionSize={10}
           membersSize={2}
+          isMember={isMember}
         />
       </div>
     );
