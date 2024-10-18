@@ -1,5 +1,13 @@
 # @backstage-community/plugin-adr
 
+## 0.6.27
+
+### Patch Changes
+
+- b9f6780: Backstage version bump to v1.32.2
+- Updated dependencies [b9f6780]
+  - @backstage-community/plugin-adr-common@0.2.30
+
 ## 0.6.26
 
 ### Patch Changes
