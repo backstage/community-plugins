@@ -295,6 +295,7 @@ export const HomePageBazaarInfoCard = ({
           members={members.value || []}
           descriptionSize={9}
           membersSize={3}
+          isMember={isMember}
         />
       </Card>
     </div>
