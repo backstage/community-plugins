@@ -13,10 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  DocumentCollatorFactory,
-  IndexableDocument,
-} from '@backstage/plugin-search-common';
+import { DocumentCollatorFactory } from '@backstage/plugin-search-common';
 import { Config } from '@backstage/config';
 import { Readable } from 'stream';
 import { LoggerService } from '@backstage/backend-plugin-api';
@@ -26,23 +23,7 @@ import {
   toAsyncIterable,
   type GithubDiscussionFetcherResult,
 } from 'github-discussions-fetcher';
-
-export interface GithubDiscussionsDocument extends IndexableDocument {
-  author: string;
-  category: string;
-  labels: {
-    name: string;
-    color: string;
-  }[];
-  comments: {
-    author: string;
-    bodyText: string;
-    replies: {
-      author: string;
-      bodyText: string;
-    }[];
-  }[];
-}
+import { GithubDiscussionsDocument } from '../types';
 
 export type GithubDiscussionsCollatorFactoryOptions = {
   logger: LoggerService;
