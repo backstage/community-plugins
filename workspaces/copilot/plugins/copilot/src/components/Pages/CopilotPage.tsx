@@ -14,64 +14,30 @@
  * limitations under the License.
  */
 
-import React from 'react';
-import {
-  Header,
-  Page,
-  Content,
-  TabbedCard,
-  CardTab,
-} from '@backstage/core-components';
-import { Metrics } from '../Metrics';
-import { LanguageCards, EnterpriseCards } from '../Cards';
-import { LanguageCharts, EnterpriseCharts } from '../Charts';
-import useObservable from 'react-use/lib/useObservable';
-import { themes } from '@backstage/theme';
-import { appThemeApiRef, useApi } from '@backstage/core-plugin-api';
-import { ThemeProvider } from '@emotion/react';
-import { styled } from '@mui/material/styles';
-import { SharedDateRangeProvider } from '../../contexts';
+import React, { PropsWithChildren } from 'react';
+import { Header, Page, Content } from '@backstage/core-components';
+import { SharedDateRangeProvider, SharedTeamProvider } from '../../contexts';
 
-const StyledContent = styled(Content)(({ theme }) => ({
-  margin: `${theme.spacing(0)} !important`,
-  padding: `${theme.spacing(0)} !important`,
-  '& > div': {
-    backgroundColor: theme.palette.background.default,
-  },
-}));
-
-export const CopilotPage = () => {
-  const appThemeApi = useApi(appThemeApiRef);
-  const activeThemeId = useObservable(
-    appThemeApi.activeThemeId$(),
-    appThemeApi.getActiveThemeId(),
-  );
-  const prefersDarkMode = window.matchMedia(
-    '(prefers-color-scheme: dark)',
-  ).matches;
-  const mode = activeThemeId ?? (prefersDarkMode ? 'dark' : 'light');
-  const theme = (mode === 'dark' ? themes.dark : themes.light).getTheme('v5')!;
-
-  return (
-    <ThemeProvider theme={theme}>
-      <Page themeId="tool">
-        <Header
-          title="Copilot Adoption"
-          subtitle="Exploring the Impact and Integration of AI Assistance in Development Workflows"
-        />
-        <StyledContent>
-          <SharedDateRangeProvider>
-            <TabbedCard>
-              <CardTab label="Enterprise">
-                <Metrics Cards={EnterpriseCards} Charts={EnterpriseCharts} />
-              </CardTab>
-              <CardTab label="Languages">
-                <Metrics Cards={LanguageCards} Charts={LanguageCharts} />
-              </CardTab>
-            </TabbedCard>
-          </SharedDateRangeProvider>
-        </StyledContent>
-      </Page>
-    </ThemeProvider>
-  );
+type CopilotPageProps = {
+  title: string;
+  subtitle: string;
+  themeId: string;
 };
+
+export function CopilotPage({
+  children,
+  themeId,
+  title,
+  subtitle,
+}: PropsWithChildren<CopilotPageProps>): React.JSX.Element {
+  return (
+    <Page themeId={themeId}>
+      <Header title={title} subtitle={subtitle} />
+      <Content>
+        <SharedDateRangeProvider>
+          <SharedTeamProvider>{children}</SharedTeamProvider>
+        </SharedDateRangeProvider>
+      </Content>
+    </Page>
+  );
+}
