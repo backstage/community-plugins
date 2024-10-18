@@ -16,7 +16,7 @@
 
 import { createPlugin } from '@backstage/core-plugin-api';
 import {
-  SearchResultListItemExtensionPropsm,
+  SearchResultListItemExtensionProps,
   createSearchResultListItemExtension,
 } from '@backstage/plugin-search-react';
 import { GithubDiscussionsSearchResultListItemProps } from './components/GithubDiscussionsSearchResultListItem';
@@ -30,11 +30,9 @@ export const GithubDiscussionsSearchResultListItem: (
 ) => JSX.Element | null = githubDiscussionsPlugin.provide(
   createSearchResultListItemExtension({
     name: 'GithubDiscussionsSearchResultListItem',
-    component: {
-      lazy: () =>
-        import('./components/GithubDiscussionsSearchResultListItem').then(
-          m => m.GithubDiscussionsSearchResultListItem,
-        ),
-    },
+    component: () =>
+      import('./components/GithubDiscussionsSearchResultListItem').then(
+        m => m.GithubDiscussionsSearchResultListItem,
+      ),
   }),
 );

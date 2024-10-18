@@ -28,6 +28,7 @@
     "@backstage/plugin-permission-node": "^0.8.4",
     "@backstage/plugin-search-backend": "^1.6.0",
     "@backstage/plugin-search-backend-node": "^1.3.3",
+    "@backstage-community/plugin-search-backend-module-github-discussions": "workspace:^",
     "app": "link:../app",
     "better-sqlite3": "^9.0.0",
     "node-gyp": "^10.0.0",

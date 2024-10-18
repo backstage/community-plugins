@@ -27,5 +27,10 @@ backend.add(
 );
 
 backend.add(import('@backstage/plugin-search-backend/alpha'));
+backend.add(
+  import(
+    '@backstage-community/plugin-search-backend-module-github-discussions'
+  ),
+);
 
 backend.start();

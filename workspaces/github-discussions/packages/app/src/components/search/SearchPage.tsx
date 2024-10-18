@@ -31,6 +31,8 @@ import {
   Page,
 } from '@backstage/core-components';
 
+import { GithubDiscussionsSearchResultListItem } from '@backstage-community/plugin-github-discussions';
+
 const useStyles = makeStyles((theme: Theme) => ({
   bar: {
     padding: theme.spacing(1, 0),
@@ -92,7 +94,9 @@ const SearchPage = () => {
           </Grid>
           <Grid item xs={9}>
             <SearchPagination />
-            <SearchResult />
+            <SearchResult>
+              <GithubDiscussionsSearchResultListItem />
+            </SearchResult>
           </Grid>
         </Grid>
       </Content>

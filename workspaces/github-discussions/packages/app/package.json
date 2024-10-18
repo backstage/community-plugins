@@ -23,6 +23,7 @@
     "@backstage/plugin-search": "^1.4.18",
     "@backstage/plugin-search-react": "^1.8.1",
     "@backstage/theme": "^0.6.0",
+    "@backstage-community/plugin-github-discussions": "workspace:^",
     "@material-ui/core": "^4.12.2",
     "@material-ui/icons": "^4.9.1",
     "react": "^18.0.2",
