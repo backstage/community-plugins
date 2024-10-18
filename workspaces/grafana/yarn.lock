@@ -8158,16 +8158,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^18.11.18":
-  version: 18.19.42
-  resolution: "@types/node@npm:18.19.42"
-  dependencies:
-    undici-types: ~5.26.4
-  checksum: 3f976583d3f4ff6040187f98e838337d59134e53bfe1cf241d8143e87e6f9507a1ad0aa435ea550c21d76c6cabb78f63a410413de476764f45695378cc022377
-  languageName: node
-  linkType: hard
-
-"@types/node@npm:^18.11.9":
+"@types/node@npm:^18.11.18, @types/node@npm:^18.11.9":
   version: 18.19.56
   resolution: "@types/node@npm:18.19.56"
   dependencies:
@@ -25078,16 +25069,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zod-validation-error@npm:^3.0.3":
-  version: 3.3.1
-  resolution: "zod-validation-error@npm:3.3.1"
-  peerDependencies:
-    zod: ^3.18.0
-  checksum: b3e5ee3d20cd945af20762fd2780d977c59f7e90c541ab4f1f7c5196fc344df27353224927e5b11bb2b790a4a1e6043e2548194bbea43e1b2ac3779d57182d55
-  languageName: node
-  linkType: hard
-
-"zod-validation-error@npm:^3.4.0":
+"zod-validation-error@npm:^3.0.3, zod-validation-error@npm:^3.4.0":
   version: 3.4.0
   resolution: "zod-validation-error@npm:3.4.0"
   peerDependencies:
