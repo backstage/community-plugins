@@ -82,8 +82,16 @@ export const dashboardSelectorFromEntity = (entity: Entity) =>
  * Returns the alert selector annotation for an entity
  * @public
  */
-export const alertSelectorFromEntity = (entity: Entity) =>
-  entity?.metadata.annotations?.[GRAFANA_ANNOTATION_ALERT_LABEL_SELECTOR] ?? '';
+export const alertSelectorFromEntity = (entity: Entity) => {
+  const annotation =
+    entity?.metadata.annotations?.[GRAFANA_ANNOTATION_ALERT_LABEL_SELECTOR] ??
+    '';
+  const selectors = annotation.split(',').map(l => l.trim());
+  if (selectors.length > 1) {
+    return selectors;
+  }
+  return annotation;
+};
 
 /**
  * Returns the overview dashboard annotation for an entity

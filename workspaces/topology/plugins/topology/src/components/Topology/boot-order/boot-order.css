@@ -1,0 +1,10 @@
+.kubevirt-boot-order-summary__empty-text {
+  margin-bottom: 0;
+}
+.kubevirt-boot-order-summary__expandable {
+  margin-top: 0;
+}
+.kubevirt-boot-order-summary__ol {
+  margin-left: 1.5rem;
+  margin-top: -1rem;
+}

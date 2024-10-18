@@ -25,8 +25,11 @@ yarn.lock                                           @backstage/community-plugins
 /workspaces/fossa                                   @backstage/community-plugins-maintainers  @backstage/sda-se-reviewers
 /workspaces/git-release-manager                     @backstage/community-plugins-maintainers  @erikengervall
 /workspaces/github-pull-requests-board              @backstage/community-plugins-maintainers  @gregorytalita
+/workspaces/jfrog-artifactory                       @backstage/community-plugins-maintainers  @BethGriggs
 /workspaces/kafka                                   @backstage/community-plugins-maintainers  @andrewthauer
 /workspaces/linguist                                @backstage/community-plugins-maintainers  @awanlin
+/workspaces/nexus-repository-manager                @backstage/community-plugins-maintainers  @schultzp2020
+/workspaces/npm                                     @backstage/community-plugins-maintainers  @jerolimov @karthikjeeyar
 /workspaces/octopus-deploy                          @backstage/community-plugins-maintainers  @jmezach
 /workspaces/pingidentity                            @backstage/community-plugins-maintainers  @jessicajhee
 /workspaces/playlist                                @backstage/community-plugins-maintainers  @kuangp
@@ -37,4 +40,5 @@ yarn.lock                                           @backstage/community-plugins
 /workspaces/scaffolder-relation-processor           @backstage/community-plugins-maintainers  @04kash
 /workspaces/sonarqube                               @backstage/community-plugins-maintainers  @backstage/sda-se-reviewers
 /workspaces/tech-insights                           @backstage/community-plugins-maintainers  @xantier
+/workspaces/topology                                @backstage/community-plugins-maintainers  @divyanshiGupta @debsmita1 @ciiay
 /workspaces/user-settings                           @backstage/community-plugins-maintainers  @backstage/sda-se-reviewers

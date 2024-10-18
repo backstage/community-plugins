@@ -1,5 +1,11 @@
 # @backstage-community/plugin-bazaar
 
+## 0.4.0
+
+### Minor Changes
+
+- 5fbdb1d: Added next steps after joining a project
+
 ## 0.3.0
 
 ### Minor Changes

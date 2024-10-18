@@ -16,8 +16,7 @@
 import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { Config } from '@backstage/config';
-import express from 'express';
-import Router from 'express-promise-router';
+import express, { Router } from 'express';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 
 /**
