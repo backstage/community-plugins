@@ -1,5 +1,12 @@
 # app
 
+## 0.0.2
+
+### Patch Changes
+
+- Updated dependencies [3865528]
+  - @backstage-community/plugin-topology@1.28.4
+
 ## 0.0.1
 
 ### Patch Changes
