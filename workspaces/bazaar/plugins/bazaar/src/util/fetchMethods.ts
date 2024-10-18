@@ -50,3 +50,14 @@ export const fetchCatalogItems = async (
 
   return entities.items;
 };
+
+export const fetchUsers = async (catalogApi: CatalogApi): Promise<Entity[]> => {
+  const entities = await catalogApi.getEntities({
+    filter: {
+      kind: ['User'],
+    },
+    fields: ['kind', 'metadata.name', 'metadata.namespace'],
+  });
+
+  return entities.items;
+};
