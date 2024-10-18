@@ -31,17 +31,17 @@
   },
   "dependencies": {
     "@backstage-community/plugin-azure-devops-common": "workspace:^",
-    "@backstage/backend-plugin-api": "^1.0.0",
+    "@backstage/backend-plugin-api": "^1.0.1",
     "@backstage/catalog-model": "^1.7.0",
     "@backstage/config": "^1.2.0",
-    "@backstage/integration": "^1.15.0",
+    "@backstage/integration": "^1.15.1",
     "@backstage/plugin-catalog-common": "^1.1.0",
-    "@backstage/plugin-catalog-node": "^1.13.0",
+    "@backstage/plugin-catalog-node": "^1.13.1",
     "lodash": "^4.17.21"
   },
   "devDependencies": {
-    "@backstage/backend-test-utils": "^1.0.0",
-    "@backstage/cli": "^0.27.1"
+    "@backstage/backend-test-utils": "^1.0.2",
+    "@backstage/cli": "^0.28.0"
   },
   "files": [
     "dist"
