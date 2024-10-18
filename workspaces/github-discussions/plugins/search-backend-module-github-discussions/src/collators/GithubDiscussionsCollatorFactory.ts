@@ -68,14 +68,28 @@ export class GithubDiscussionsCollatorFactory
 
   async *execute(): AsyncGenerator<GithubDiscussionsDocument> {
     yield {
-      title: 'discussion-announcement',
+      title: 'announcement-example',
       text: 'this is an announcement',
-      location: 'https://github.com/guidanti',
-      author: 'minkimcello',
+      location: 'https://github.com/guidanti/github-discussions-fetcher',
+      author: 'taras',
       category: 'announcements', // double check category string values
       labels: [
         {
-          name: 'something',
+          name: 'foo',
+          color: 'red',
+        },
+      ],
+      comments: [],
+    };
+    yield {
+      title: 'poll-example',
+      text: 'this is a poll',
+      location: 'https://github.com/guidanti/community-plugins',
+      author: 'minkimcello',
+      category: 'poll', // double check category string values
+      labels: [
+        {
+          name: 'bar',
           color: 'blue',
         },
       ],
