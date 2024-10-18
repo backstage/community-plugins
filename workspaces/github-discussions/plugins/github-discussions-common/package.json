@@ -1,5 +1,5 @@
 {
-  "name": "backstage-plugin-github-discussions-common",
+  "name": "@backstage-community/plugin-github-discussions-common",
   "description": "Common functionalities for the github-discussions plugin",
   "version": "0.1.0",
   "main": "src/index.ts",
@@ -23,6 +23,9 @@
     "clean": "backstage-cli package clean",
     "prepack": "backstage-cli package prepack",
     "postpack": "backstage-cli package postpack"
+  },
+  "dependencies": {
+    "@backstage/plugin-search-common": "^1.2.14"
   },
   "devDependencies": {
     "@backstage/cli": "^0.28.0"
