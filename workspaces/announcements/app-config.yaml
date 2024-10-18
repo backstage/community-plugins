@@ -1,0 +1,28 @@
+app:
+  title: Announcements Dev App
+  baseUrl: http://localhost:3000
+
+backend:
+  baseUrl: http://localhost:7007
+  listen:
+    port: 7007
+  database:
+    client: better-sqlite3
+    connection: ':memory:'
+  cache:
+    store: memory
+  cors:
+    origin: http://localhost:3000
+    methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
+    credentials: true
+  csp:
+    connect-src: ["'self'", 'http:', 'https:']
+    # Content-Security-Policy directives follow the Helmet format: https://helmetjs.github.io/#reference
+    # Default Helmet Content-Security-Policy values can be removed by setting the key to false
+  reading:
+    allow:
+      - host: localhost
+
+auth:
+  providers:
+    guest: {}
