@@ -14,30 +14,30 @@
  * limitations under the License.
  */
 
-import {
-  getVoidLogger,
-  ReadTreeResponse,
-  UrlReader,
-} from '@backstage/backend-common';
 import { ConfigReader } from '@backstage/config';
 import { NotFoundError, NotModifiedError } from '@backstage/errors';
 import { ScmIntegrations } from '@backstage/integration';
 import { createTodoParser } from './createTodoParser';
 import { TodoScmReader } from './TodoScmReader';
+import {
+  UrlReaderService,
+  UrlReaderServiceReadTreeResponse,
+} from '@backstage/backend-plugin-api';
+import { mockServices } from '@backstage/backend-test-utils';
 
-function mockReader(): jest.Mocked<UrlReader> {
+function mockReader(): jest.Mocked<UrlReaderService> {
   return {
     read: jest.fn(),
     readTree: jest.fn(),
     search: jest.fn(),
     readUrl: jest.fn(),
-  } as jest.Mocked<UrlReader>;
+  } as jest.Mocked<UrlReaderService>;
 }
 
 describe('TodoScmReader', () => {
   it('should be created from config', () => {
     const todoReader = TodoScmReader.fromConfig(new ConfigReader({}), {
-      logger: getVoidLogger(),
+      logger: mockServices.logger.mock(),
       reader: mockReader(),
     });
     expect(todoReader).toEqual(expect.any(TodoScmReader));
@@ -46,7 +46,7 @@ describe('TodoScmReader', () => {
   it('should read TODOs', async () => {
     const reader = mockReader();
     const todoReader = new TodoScmReader({
-      logger: getVoidLogger(),
+      logger: mockServices.logger.mock(),
       reader,
       integrations: ScmIntegrations.fromConfig(new ConfigReader({})),
     });
@@ -59,7 +59,7 @@ describe('TodoScmReader', () => {
           path: 'my-folder/my-file.js',
         },
       ],
-    } as ReadTreeResponse);
+    } as UrlReaderServiceReadTreeResponse);
 
     const url = 'https://github.com/backstage/backstage/catalog-info.yaml';
     const expected = {
@@ -122,7 +122,7 @@ describe('TodoScmReader', () => {
     const parser = jest.fn(createTodoParser({ additionalTags: ['XXX'] }));
     const reader = mockReader();
     const todoReader = new TodoScmReader({
-      logger: getVoidLogger(),
+      logger: mockServices.logger.mock(),
       reader,
       parser,
       integrations: ScmIntegrations.fromConfig(new ConfigReader({})),
@@ -135,7 +135,7 @@ describe('TodoScmReader', () => {
           path: 'my-file.lua',
         },
       ],
-    } as ReadTreeResponse);
+    } as UrlReaderServiceReadTreeResponse);
 
     await expect(
       todoReader.readTodos({
@@ -160,7 +160,7 @@ describe('TodoScmReader', () => {
   });
 
   it('should log and ignore parser errors', async () => {
-    const logger = getVoidLogger();
+    const logger = mockServices.logger.mock();
     const errorSpy = jest.spyOn(logger, 'error');
     const reader = mockReader();
     const todoReader = new TodoScmReader({
@@ -179,7 +179,7 @@ describe('TodoScmReader', () => {
           path: 'my-file.sh',
         },
       ],
-    } as ReadTreeResponse);
+    } as UrlReaderServiceReadTreeResponse);
 
     await expect(
       todoReader.readTodos({
@@ -196,7 +196,7 @@ describe('TodoScmReader', () => {
     const filePathFilter = jest.fn(() => true);
 
     const todoReader = new TodoScmReader({
-      logger: getVoidLogger(),
+      logger: mockServices.logger.mock(),
       reader,
       integrations: ScmIntegrations.fromConfig(new ConfigReader({})),
       filePathFilter,
@@ -208,7 +208,7 @@ describe('TodoScmReader', () => {
           path: 'my-folder/my-file.js',
         },
       ],
-    } as ReadTreeResponse);
+    } as UrlReaderServiceReadTreeResponse);
     await expect(
       todoReader.readTodos({
         url: 'https://github.com/backstage/backstage/catalog-info.yaml',
@@ -244,7 +244,7 @@ describe('TodoScmReader', () => {
     const filePathFilter = jest.fn(() => false);
 
     const todoReader = new TodoScmReader({
-      logger: getVoidLogger(),
+      logger: mockServices.logger.mock(),
       reader,
       integrations: ScmIntegrations.fromConfig(new ConfigReader({})),
       filePathFilter,
@@ -256,7 +256,7 @@ describe('TodoScmReader', () => {
           path: '',
         },
       ],
-    } as ReadTreeResponse);
+    } as UrlReaderServiceReadTreeResponse);
     await expect(
       todoReader.readTodos({
         url: 'https://github.com/backstage/backstage/catalog-info.yaml',
