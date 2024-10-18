@@ -22,7 +22,7 @@
     "prettier:check": "prettier --check .",
     "new": "backstage-cli new --scope @backstage-community",
     "build:api-reports": "yarn build:api-reports:only --tsc",
-    "build:api-reports:only": "backstage-repo-tools api-reports -o ae-wrong-input-file-type --validate-release-tags",
+    "build:api-reports:only": "backstage-repo-tools api-reports -o ae-wrong-input-file-type,ae-undocumented --validate-release-tags",
     "postinstall": "cd ../../ && yarn install"
   },
   "workspaces": {
@@ -49,7 +49,6 @@
     "typescript": "~5.4.0"
   },
   "resolutions": {
-    "@microsoft/api-extractor": "7.36.4",
     "@types/react": "^18",
     "@types/react-dom": "^18"
   },
