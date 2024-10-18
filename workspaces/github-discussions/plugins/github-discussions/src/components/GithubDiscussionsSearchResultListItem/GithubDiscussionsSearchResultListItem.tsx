@@ -16,31 +16,31 @@
 
 import React, { ReactNode } from 'react';
 import Box from '@material-ui/core/Box';
-import Chip from '@material-ui/core/Chip';
+// import Chip from '@material-ui/core/Chip';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import { Link } from '@backstage/core-components';
-import { ResultHighlight } from '@backstage/plugin-search-common';
+import {
+  ResultHighlight,
+  SearchDocument,
+} from '@backstage/plugin-search-common';
 import { HighlightedSearchResultText } from '@backstage/plugin-search-react';
 
-const useStyles = makeStyles(
-  {
-    item: {
-      display: 'flex',
-    },
-    flexContainer: {
-      flexWrap: 'wrap',
-    },
-    itemText: {
-      width: '100%',
-      wordBreak: 'break-all',
-      marginBottom: '1rem',
-    },
+const useStyles = makeStyles({
+  item: {
+    display: 'flex',
   },
-  { name: 'GithubDiscussionsSearchResultListItem' },
-);
+  flexContainer: {
+    flexWrap: 'wrap',
+  },
+  itemText: {
+    width: '100%',
+    wordBreak: 'break-all',
+    marginBottom: '1rem',
+  },
+});
 
 /**
  * Props for {@link GithubDiscussionsSearchResultListItem}.
@@ -48,8 +48,8 @@ const useStyles = makeStyles(
  * @public
  */
 export interface GithubDiscussionsSearchResultListItemProps {
-  icon?: ReactNode | ((result: any) => ReactNode);
-  result?: any;
+  icon?: ReactNode | ((result: SearchDocument) => ReactNode);
+  result?: SearchDocument;
   highlight?: ResultHighlight;
   rank?: number;
   lineClamp?: number;
@@ -63,5 +63,58 @@ export function GithubDiscussionsSearchResultListItem(
   const classes = useStyles();
   if (!result) return null;
 
-  return <div className={classes.item}>hello</div>;
+  return (
+    <div className={classes.item}>
+      {props.icon && (
+        <ListItemIcon>
+          {typeof props.icon === 'function' ? props.icon(result) : props.icon}
+        </ListItemIcon>
+      )}
+      <div className={classes.flexContainer}>
+        <ListItemText
+          className={classes.itemText}
+          primaryTypographyProps={{ variant: 'h6' }}
+          primary={
+            <Link noTrack to={result.location}>
+              {highlight?.fields.title ? (
+                <HighlightedSearchResultText
+                  text={highlight.fields.title}
+                  preTag={highlight.preTag}
+                  postTag={highlight.postTag}
+                />
+              ) : (
+                result.title
+              )}
+            </Link>
+          }
+          secondary={
+            <Typography
+              component="span"
+              style={{
+                display: '-webkit-box',
+                WebkitBoxOrient: 'vertical',
+                WebkitLineClamp: props.lineClamp,
+                overflow: 'hidden',
+              }}
+              color="textSecondary"
+              variant="body2"
+            >
+              {highlight?.fields.text ? (
+                <HighlightedSearchResultText
+                  text={highlight.fields.text}
+                  preTag={highlight.preTag}
+                  postTag={highlight.postTag}
+                />
+              ) : (
+                result.text
+              )}
+            </Typography>
+          }
+        />
+        <Box>
+          {/* {result.kind && <Chip label={`Kind: ${result.kind}`} size="small" />} */}
+        </Box>
+      </div>
+    </div>
+  );
 }
