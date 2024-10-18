@@ -17,7 +17,7 @@ import { cicdStatisticsApiRef } from '@backstage-community/plugin-cicd-statistic
 import {
   ApiBlueprint,
   createApiFactory,
-  createExtensionOverrides,
+  createFrontendModule,
   gitlabAuthApiRef,
 } from '@backstage/frontend-plugin-api';
 import { CicdStatisticsApiGitlab } from './api';
@@ -43,7 +43,8 @@ export const cicdStatisticsGitlabExtension = ApiBlueprint.make({
 /**
  * @alpha
  */
-const cicdStatisticsExtensionOverrides = createExtensionOverrides({
+const cicdStatisticsExtensionOverrides = createFrontendModule({
+  pluginId: 'cicd-statistics',
   extensions: [cicdStatisticsGitlabExtension],
 });
 
