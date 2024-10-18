@@ -35,14 +35,14 @@
   },
   "dependencies": {
     "@backstage/config": "^1.2.0",
-    "@backstage/core-components": "^0.15.0",
-    "@backstage/core-plugin-api": "^1.9.4",
-    "@backstage/frontend-plugin-api": "^0.8.0",
+    "@backstage/core-components": "^0.15.1",
+    "@backstage/core-plugin-api": "^1.10.0",
+    "@backstage/frontend-plugin-api": "^0.9.0",
     "@newrelic/browser-agent": "^1.236.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.27.1",
-    "@backstage/dev-utils": "^1.1.1",
+    "@backstage/cli": "^0.28.0",
+    "@backstage/dev-utils": "^1.1.2",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^15.0.0",
     "@types/react": "^18.2.58",
