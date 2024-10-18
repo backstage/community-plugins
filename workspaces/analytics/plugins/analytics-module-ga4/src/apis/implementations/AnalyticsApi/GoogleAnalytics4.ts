@@ -44,7 +44,7 @@ export class GoogleAnalytics4 implements AnalyticsApi, NewAnalyticsApi {
   private readonly allowedAttributes?: string[];
   /**
    * Instantiate the implementation and initialize ReactGA.
-   * @param options initializes Google Analytics module with the config
+   * @param options - initializes Google Analytics module with the config
    */
   private constructor(options: {
     identityApi?: IdentityApi;
@@ -207,9 +207,9 @@ export class GoogleAnalytics4 implements AnalyticsApi, NewAnalyticsApi {
 
   /**
    * Returns an object of dimensions/metrics given an Analytics Context and an
-   * Event Attributes, e.g. { c_pluginId: "some value", a_attribute1: 42 }
-   * @param context analytics context object
-   * @param attributes additional analytics event attributes
+   * Event Attributes, e.g. `{ c_pluginId: "some value", a_attribute1: 42 }`
+   * @param context - analytics context object
+   * @param attributes-  additional analytics event attributes
    */
   private setEventParameters(
     context: AnalyticsContextValue | NewAnalyticsContextValue,
@@ -267,7 +267,7 @@ export class GoogleAnalytics4 implements AnalyticsApi, NewAnalyticsApi {
    *
    * Note: this feature requires that an integrator has set up a Google
    * Analytics User ID view in the property used to track Backstage.
-   * @param identityApi IdentityApi object
+   * @param identityApi - IdentityApi object
    */
   private async setUserFrom(identityApi: IdentityApi) {
     const { userEntityRef } = await identityApi.getBackstageIdentity();
@@ -285,7 +285,7 @@ export class GoogleAnalytics4 implements AnalyticsApi, NewAnalyticsApi {
   /**
    * Returns a PII-free (according to Google's terms of service) user ID for
    * use in Google Analytics.
-   * @param userEntityRef user entity as string
+   * @param userEntityRef - user entity as string
    */
   private getPrivateUserId(userEntityRef: string): Promise<string> {
     // Allow integrators to provide their own hashing transformer.
@@ -298,7 +298,7 @@ export class GoogleAnalytics4 implements AnalyticsApi, NewAnalyticsApi {
 
   /**
    * Simple hash function; relies on web cryptography + the sha-256 algorithm.
-   * @param value value to be hashed
+   * @param value - value to be hashed
    */
   private async hash(value: string): Promise<string> {
     const digest = await window.crypto.subtle.digest(

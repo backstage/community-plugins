@@ -175,7 +175,7 @@ export class NewRelicBrowser implements AnalyticsApi, NewAnalyicsApi {
 
   /**
    * Simple hash function; relies on web cryptography + the sha-256 algorithm.
-   * @param value value to be hashed
+   * @param value - value to be hashed
    */
   private async hash(value: string): Promise<string> {
     const digest = await window.crypto.subtle.digest(
