@@ -24,6 +24,7 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
+    "@backstage-community/plugin-github-discussions-common": "workspace:^",
     "@backstage/core-components": "^0.15.1",
     "@backstage/core-plugin-api": "^1.10.0",
     "@backstage/plugin-search-common": "^1.2.14",

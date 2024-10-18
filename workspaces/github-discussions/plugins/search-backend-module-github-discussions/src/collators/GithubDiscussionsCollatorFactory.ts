@@ -25,7 +25,7 @@ import {
   toAsyncIterable,
   type GithubDiscussionFetcherResult,
 } from 'github-discussions-fetcher';
-import { GithubDiscussionsDocument } from '../types';
+import { type GithubDiscussionsDocument } from '@backstage-community/plugin-github-discussions-common';
 
 export type GithubDiscussionsCollatorFactoryOptions = {
   logger: LoggerService;

@@ -2635,10 +2635,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@backstage-community/plugin-github-discussions-common@workspace:^, @backstage-community/plugin-github-discussions-common@workspace:plugins/github-discussions-common":
+  version: 0.0.0-use.local
+  resolution: "@backstage-community/plugin-github-discussions-common@workspace:plugins/github-discussions-common"
+  dependencies:
+    "@backstage/cli": "npm:^0.28.0"
+    "@backstage/plugin-search-common": "npm:^1.2.14"
+  languageName: unknown
+  linkType: soft
+
 "@backstage-community/plugin-github-discussions@workspace:^, @backstage-community/plugin-github-discussions@workspace:plugins/github-discussions":
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-github-discussions@workspace:plugins/github-discussions"
   dependencies:
+    "@backstage-community/plugin-github-discussions-common": "workspace:^"
     "@backstage/cli": "npm:^0.28.0"
     "@backstage/core-components": "npm:^0.15.1"
     "@backstage/core-plugin-api": "npm:^1.10.0"
@@ -2670,6 +2680,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-search-backend-module-github-discussions@workspace:plugins/search-backend-module-github-discussions"
   dependencies:
+    "@backstage-community/plugin-github-discussions-common": "workspace:^"
     "@backstage/backend-plugin-api": "npm:^1.0.1"
     "@backstage/backend-test-utils": "npm:^1.0.1"
     "@backstage/cli": "npm:^0.28.0"
@@ -11293,14 +11304,6 @@ __metadata:
   checksum: 10/fda8d0a0f4810068d23715f2f45153146d6ee8f62dd827ce1e0b6cc3c8328e84ad61e11399a83931705cef702fe7cbb457856bf99b9bd10c4ed57b0786252385
   languageName: node
   linkType: hard
-
-"backstage-plugin-github-discussions-common@workspace:plugins/github-discussions-common":
-  version: 0.0.0-use.local
-  resolution: "backstage-plugin-github-discussions-common@workspace:plugins/github-discussions-common"
-  dependencies:
-    "@backstage/cli": "npm:^0.28.0"
-  languageName: unknown
-  linkType: soft
 
 "bail@npm:^2.0.0":
   version: 2.0.2
