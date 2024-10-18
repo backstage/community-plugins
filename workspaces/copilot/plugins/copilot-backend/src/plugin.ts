@@ -16,8 +16,32 @@
 import {
   coreServices,
   createBackendPlugin,
+  createExtensionPoint,
 } from '@backstage/backend-plugin-api';
 import { createRouterFromConfig } from './service/router';
+import {
+  CopilotCredentialsProvider,
+  DefaultCopilotCredentialsProvider,
+} from './utils/CopilotCredentialsProvider';
+
+/**
+ * Interface for providing credentials for accessing the Copilot API.
+ *
+ * @public
+ */
+export interface CopilotExtensionPoint {
+  useCredentialsProvider(provider: CopilotCredentialsProvider): void;
+}
+
+/**
+ * Extension point for providing credentials for accessing the Copilot API.
+ *
+ * @public
+ */
+export const copilotExtensionPoint =
+  createExtensionPoint<CopilotExtensionPoint>({
+    id: 'copliot.credentials',
+  });
 
 /**
  * Backend plugin for Copilot.
@@ -27,6 +51,13 @@ import { createRouterFromConfig } from './service/router';
 export const copilotPlugin = createBackendPlugin({
   pluginId: 'copilot',
   register(env) {
+    let credentialsProvider: CopilotCredentialsProvider;
+    env.registerExtensionPoint(copilotExtensionPoint, {
+      useCredentialsProvider(provider: CopilotCredentialsProvider) {
+        credentialsProvider = provider;
+      },
+    });
+
     env.registerInit({
       deps: {
         httpRouter: coreServices.httpRouter,
@@ -42,6 +73,9 @@ export const copilotPlugin = createBackendPlugin({
             database,
             scheduler,
             config,
+            credentialsProvider:
+              credentialsProvider ??
+              new DefaultCopilotCredentialsProvider({ config }),
           }),
         );
         httpRouter.addAuthPolicy({

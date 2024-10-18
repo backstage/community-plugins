@@ -15,10 +15,12 @@
  */
 
 import { ResponseError } from '@backstage/errors';
-import { Config } from '@backstage/config';
 import { Metric } from '@backstage-community/plugin-copilot-common';
 import fetch from 'node-fetch';
-import { getGithubInfo, GithubInfo } from '../utils/GithubUtils';
+import {
+  CopilotCredentialsProvider,
+  GithubInfo,
+} from '../utils/CopilotCredentialsProvider';
 
 interface GithubApi {
   getCopilotUsageDataForEnterprise: () => Promise<Metric[]>;
@@ -27,8 +29,8 @@ interface GithubApi {
 export class GithubClient implements GithubApi {
   constructor(private readonly props: GithubInfo) {}
 
-  static async fromConfig(config: Config) {
-    const info = await getGithubInfo(config);
+  static async fromConfig(credentialsProvider: CopilotCredentialsProvider) {
+    const info = await credentialsProvider.getCredentials();
     return new GithubClient(info);
   }
 
