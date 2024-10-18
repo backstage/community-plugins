@@ -18,9 +18,9 @@ import React from 'react';
 import {
   ApiBlueprint,
   createApiFactory,
-  createPlugin,
   discoveryApiRef,
   fetchApiRef,
+  createFrontendPlugin,
 } from '@backstage/frontend-plugin-api';
 import {
   compatWrapper,
@@ -103,7 +103,7 @@ export const adrApiExtension = ApiBlueprint.make({
 });
 
 /** @alpha */
-export default createPlugin({
+export default createFrontendPlugin({
   id: 'adr',
   extensions: [
     adrSearchResultListItemExtension,

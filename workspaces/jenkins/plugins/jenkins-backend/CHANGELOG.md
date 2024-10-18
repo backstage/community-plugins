@@ -1,5 +1,13 @@
 # @backstage-community/plugin-jenkins-backend
 
+## 0.6.2
+
+### Patch Changes
+
+- f090030: Backstage version bump to v1.32.0
+- Updated dependencies [f090030]
+  - @backstage-community/plugin-jenkins-common@0.1.30
+
 ## 0.6.1
 
 ### Patch Changes

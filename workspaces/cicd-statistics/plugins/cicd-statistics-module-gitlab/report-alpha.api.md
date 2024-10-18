@@ -6,24 +6,24 @@
 import { AnyApiFactory } from '@backstage/core-plugin-api';
 import { ConfigurableExtensionDataRef } from '@backstage/frontend-plugin-api';
 import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
-import { ExtensionOverrides } from '@backstage/frontend-plugin-api';
+import { FrontendModule } from '@backstage/frontend-plugin-api';
 
 // @alpha (undocumented)
-const cicdStatisticsExtensionOverrides: ExtensionOverrides;
+const cicdStatisticsExtensionOverrides: FrontendModule;
 export default cicdStatisticsExtensionOverrides;
 
 // @alpha (undocumented)
-export const cicdStatisticsGitlabExtension: ExtensionDefinition<
-  {},
-  {},
-  ConfigurableExtensionDataRef<AnyApiFactory, 'core.api.factory', {}>,
-  {},
-  {
-    kind: 'api';
-    namespace: undefined;
-    name: 'cicd-statistics-gitlab-api';
-  }
->;
+export const cicdStatisticsGitlabExtension: ExtensionDefinition<{
+  kind: 'api';
+  name: 'cicd-statistics-gitlab-api';
+  config: {};
+  configInput: {};
+  output: ConfigurableExtensionDataRef<AnyApiFactory, 'core.api.factory', {}>;
+  inputs: {};
+  params: {
+    factory: AnyApiFactory;
+  };
+}>;
 
 // (No @packageDocumentation comment for this package)
 ```
