@@ -34,5 +34,6 @@ export const GithubDiscussionsSearchResultListItem: (
       import('./components/GithubDiscussionsSearchResultListItem').then(
         m => m.GithubDiscussionsSearchResultListItem,
       ),
+    predicate: result => result.type === 'github-discussions',
   }),
 );
