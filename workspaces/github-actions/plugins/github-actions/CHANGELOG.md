@@ -1,5 +1,11 @@
 # @backstage-community/plugin-github-actions
 
+## 0.6.23
+
+### Patch Changes
+
+- 6fdae83: Backstage version bump to v1.32.0
+
 ## 0.6.22
 
 ### Patch Changes
