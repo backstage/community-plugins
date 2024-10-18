@@ -18,7 +18,6 @@ const _default: FrontendPlugin<
   {
     'entity-card:linguist/languages': ExtensionDefinition<{
       kind: 'entity-card';
-      namespace: undefined;
       name: 'languages';
       config: {
         filter: string | undefined;
@@ -47,10 +46,13 @@ const _default: FrontendPlugin<
             }
           >;
       inputs: {};
+      params: {
+        loader: () => Promise<JSX.Element>;
+        filter?: string | ((entity: Entity) => boolean) | undefined;
+      };
     }>;
     'api:linguist': ExtensionDefinition<{
       kind: 'api';
-      namespace: undefined;
       name: undefined;
       config: {};
       configInput: {};
@@ -60,6 +62,9 @@ const _default: FrontendPlugin<
         {}
       >;
       inputs: {};
+      params: {
+        factory: AnyApiFactory;
+      };
     }>;
   }
 >;
