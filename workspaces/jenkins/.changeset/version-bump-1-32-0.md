@@ -4,4 +4,4 @@
 '@backstage-community/plugin-jenkins': patch
 ---
 
-Backstage version bump to v1.32.1
+Backstage version bump to v1.32.0
