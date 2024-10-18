@@ -44,7 +44,7 @@ export const cicdStatisticsGitlabExtension = ApiBlueprint.make({
  * @alpha
  */
 const cicdStatisticsExtensionOverrides = createFrontendModule({
-  pluginId: 'cicd-statistics', // or app??
+  pluginId: 'cicd-statistics',
   extensions: [cicdStatisticsGitlabExtension],
 });
 
