@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import {
-  createApiExtension,
+  ApiBlueprint,
   createApiFactory,
   discoveryApiRef,
   fetchApiRef,
@@ -24,14 +24,17 @@ import { jenkinsApiRef, JenkinsClient } from '../api';
 /**
  * @alpha
  */
-export const jenkinsApi = createApiExtension({
-  factory: createApiFactory({
-    api: jenkinsApiRef,
-    deps: {
-      discoveryApi: discoveryApiRef,
-      fetchApi: fetchApiRef,
-    },
-    factory: ({ discoveryApi, fetchApi }) =>
-      new JenkinsClient({ discoveryApi, fetchApi }),
-  }),
+export const jenkinsApi = ApiBlueprint.make({
+  name: 'jenkins',
+  params: {
+    factory: createApiFactory({
+      api: jenkinsApiRef,
+      deps: {
+        discoveryApi: discoveryApiRef,
+        fetchApi: fetchApiRef,
+      },
+      factory: ({ discoveryApi, fetchApi }) =>
+        new JenkinsClient({ discoveryApi, fetchApi }),
+    }),
+  },
 });
