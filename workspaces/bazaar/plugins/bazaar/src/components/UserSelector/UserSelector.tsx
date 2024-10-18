@@ -13,13 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-import {
-  Entity,
-  stringifyEntityRef,
-  parseEntityRef,
-} from '@backstage/catalog-model';
-import Typography from '@material-ui/core/Typography';
+import React, { useState, useEffect } from 'react';
+import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import Autocomplete, {
   createFilterOptions,
 } from '@material-ui/lab/Autocomplete';
@@ -27,6 +22,12 @@ import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
 import { Controller, Control } from 'react-hook-form';
 import { FormValues } from '../../types';
+import { useApi } from '@backstage/core-plugin-api';
+import {
+  entityPresentationApiRef,
+  EntityDisplayName,
+  EntityRefPresentationSnapshot,
+} from '@backstage/plugin-catalog-react';
 
 type Props = {
   users: Entity[];
@@ -43,8 +44,6 @@ const useStyles = makeStyles({
   autocomplete: { overflow: 'hidden' },
 });
 
-const filter = createFilterOptions<Entity | string>();
-
 export const UserSelector = ({
   users,
   disableClearable,
@@ -55,19 +54,46 @@ export const UserSelector = ({
   rules,
 }: Props) => {
   const classes = useStyles();
+  const entityPresentationApi = useApi(entityPresentationApiRef);
+  const [entityPresentations, setEntityPresentations] = useState<
+    Map<string, EntityRefPresentationSnapshot>
+  >(new Map());
 
-  const getDisplayName = (value: string | Entity) => {
-    if (!value) return '';
-    if (typeof value === 'string') {
-      try {
-        const { name: entityName } = parseEntityRef(value);
-        return entityName;
-      } catch {
-        return value;
-      }
-    }
-    return value.metadata.name;
+  useEffect(() => {
+    const fetchPresentations = async () => {
+      const presentations = new Map<string, EntityRefPresentationSnapshot>();
+      await Promise.all(
+        users.map(async user => {
+          const presentation = await entityPresentationApi.forEntity(user)
+            .promise;
+          presentations.set(stringifyEntityRef(user), presentation);
+        }),
+      );
+      setEntityPresentations(presentations);
+    };
+
+    fetchPresentations();
+  }, [users, entityPresentationApi]);
+
+  const getOptionLabel = (option: Entity | string) => {
+    // option can be a string due to freeSolo.
+    if (typeof option === 'string') return option;
+    const entityRef = stringifyEntityRef(option);
+
+    return (
+      entityPresentations.get(entityRef)?.primaryTitle ?? option.metadata.name
+    );
   };
+
+  const filterOptions = createFilterOptions<Entity | string>({
+    stringify: option => {
+      if (typeof option === 'string') return option;
+      const entityRef = stringifyEntityRef(option);
+      return (
+        entityPresentations.get(entityRef)?.primaryTitle ?? option.metadata.name
+      );
+    },
+  });
 
   return (
     <div className={classes.container}>
@@ -84,10 +110,14 @@ export const UserSelector = ({
             disableClearable={disableClearable}
             value={value}
             options={users}
-            getOptionLabel={getDisplayName}
-            renderOption={option => (
-              <Typography component="span">{getDisplayName(option)}</Typography>
-            )}
+            getOptionLabel={getOptionLabel}
+            renderOption={option =>
+              typeof option === 'string' ? (
+                option
+              ) : (
+                <EntityDisplayName entityRef={option} />
+              )
+            }
             renderInput={params => (
               <TextField
                 {...params}
@@ -107,11 +137,11 @@ export const UserSelector = ({
               }
             }}
             filterOptions={(options, params) => {
-              const filtered = filter(options, params);
+              const filtered = filterOptions(options, params);
               if (
                 params.inputValue !== '' &&
                 !options.some(
-                  option => getDisplayName(option) === params.inputValue,
+                  option => getOptionLabel(option) === params.inputValue,
                 )
               ) {
                 filtered.push(params.inputValue);
