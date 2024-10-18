@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 import { DocumentCollatorFactory } from '@backstage/plugin-search-common';
-import { Config } from '@backstage/config';
 import { Readable } from 'stream';
-import { LoggerService } from '@backstage/backend-plugin-api';
+import {
+  LoggerService,
+  RootConfigService,
+} from '@backstage/backend-plugin-api';
 import { run, useScope, type Operation } from 'effection';
 import {
   fetchGithubDiscussions,
@@ -27,23 +29,22 @@ import { GithubDiscussionsDocument } from '../types';
 
 export type GithubDiscussionsCollatorFactoryOptions = {
   logger: LoggerService;
+  config: RootConfigService;
 };
 
 export class GithubDiscussionsCollatorFactory
   implements DocumentCollatorFactory
 {
+  private readonly config: RootConfigService;
   private readonly logger: LoggerService;
   public readonly type: string = 'github-discussions';
 
   private constructor(options: GithubDiscussionsCollatorFactoryOptions) {
     this.logger = options.logger.child({ documentType: this.type });
+    this.config = options.config.get('githubDiscussions');
   }
 
-  static fromConfig(
-    config: Config,
-    options: GithubDiscussionsCollatorFactoryOptions,
-  ) {
-    console.log(config);
+  static fromConfig(options: GithubDiscussionsCollatorFactoryOptions) {
     return new GithubDiscussionsCollatorFactory({
       ...options,
     });
@@ -54,11 +55,14 @@ export class GithubDiscussionsCollatorFactory
   }
 
   async *execute(): AsyncGenerator<GithubDiscussionsDocument> {
-    const documents = await run(function* (): Operation<
+    const urls = this.config.getStringArray('url');
+    const documents = await run(function* injection(): Operation<
       AsyncIterable<GithubDiscussionFetcherResult>
     > {
       const scope = yield* useScope();
-      const entries = yield* fetchGithubDiscussions();
+      for (const url of urls) {
+        const entries = yield* fetchGithubDiscussions({});
+      }
       return toAsyncIterable(entries, scope);
     });
     for await (const document of documents) {
