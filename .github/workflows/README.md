@@ -38,4 +38,4 @@ Handles version bumping for specific workspaces. It creates a new branch for the
 
 ## [automate-staleness.yml](./automate-staleness.yml)
 
-This workflow marks issues that have been inactive for 60 days as stale, and if no further activity occurs, it will close them 7 days later. For pull requests (PRs), it marks them as stale after 14 days of inactivity, with a similar 7-day closure period if no activity is detected. This process is executed as a cron job that runs every 6 hours.
+This workflow marks issues and pull requests (PRs) as stale after a period of inactivity. If no further activity occurs, they will be closed after an additional period. The process is executed regularly as a cron job.
