@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-/**
- * Common functionalities for the github-discussions plugin.
- *
- * @packageDocumentation
- */
+import { IndexableDocument } from '@backstage/plugin-search-common';
 
-/**
- * In this package you might for example declare types that are common
- * between the frontend and backend plugin packages.
- */
-export type CommonType = {
-  field: string;
-};
-
-/**
- * Or you might declare some common constants.
- */
-export const COMMON_CONSTANT = 1;
+export interface GithubDiscussionsDocument extends IndexableDocument {
+  author: string;
+  category: string;
+  labels: {
+    name: string;
+    color: string;
+  }[];
+  comments: {
+    author: string;
+    bodyText: string;
+    replies: {
+      author: string;
+      bodyText: string;
+    }[];
+  }[];
+}
