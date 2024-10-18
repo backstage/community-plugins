@@ -65,3 +65,17 @@ export const GithubIssuesPage = githubIssuesPlugin.provide(
     mountPoint: rootRouteRef,
   }),
 );
+
+/** @public */
+export const GithubIssuesSearchResultListItem: (
+  props: SearchResultListItemExtensionProps<GithubIssuesSearchResultListItemItemProps>,
+) => JSX.Element | null = searchGithubPlugin.provide(
+  createSearchResultListItemExtension({
+    name: 'GithubIssuesSearchResultListItem',
+    component: () =>
+      import('./components/GithubIssuesSearchResultListItemItem').then(
+        m => m.GithubIssuesSearchResultListItemItem,
+      ),
+    predicate: result => result.type === 'github',
+  }),
+);
