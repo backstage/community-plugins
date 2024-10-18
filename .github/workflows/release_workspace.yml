@@ -74,6 +74,7 @@ jobs:
         run: yarn install --immutable
 
       - name: Fetch previous commit for release check
+        if: ${{ github.event.before != '' }}
         run: git fetch origin '${{ github.event.before }}'
 
       - name: Fetch the commit that triggered the workflow (used by backstage/changesets-action)
@@ -85,6 +86,7 @@ jobs:
         if: inputs.force_release != true
         run: node ../../scripts/ci/check-if-release.js
         env:
+          TARGET_BRANCH: ${{ inputs.branch }}
           WORKSPACE_NAME: ${{ inputs.workspace }}
           COMMIT_SHA_BEFORE: '${{ github.event.before }}'
 
@@ -116,6 +118,14 @@ jobs:
       NODE_OPTIONS: --max-old-space-size=4096
 
     steps:
+      - name: Ensure branch name follows the 'workspace/{workspace}' pattern if not 'main'
+        run: |
+          if [ "${{ inputs.branch }}" != "main" ] && [[ "${{ inputs.branch }}" != "workspace/${{ inputs.workspace }}" ]]; then
+            echo "Branch name '${{ inputs.branch }}' does not follow the expected pattern 'workspace/${{ inputs.workspace }}'."
+            exit 1
+          fi
+        working-directory: ${{ github.workspace }}
+
       - name: Checkout
         uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f # v4
         with:
@@ -150,13 +160,22 @@ jobs:
       - name: Build all packages
         run: yarn build:all
 
+      - name: Determine npm publish tag (latest or maintenance)
+        id: determine-tag
+        run: |
+          if [ "${{ inputs.branch }}" = "main" ]; then
+            echo "tag=latest" >> $GITHUB_OUTPUT
+          else
+            echo "tag=maintenance" >> $GITHUB_OUTPUT
+          fi
+
       - name: publish
         run: |
           yarn config set -H 'npmAuthToken' "${{secrets.NPM_TOKEN}}"
-          yarn workspaces foreach -v --no-private npm publish --access public --tolerate-republish
+          yarn workspaces foreach -v --no-private npm publish --access public --tolerate-republish --tag ${{ steps.determine-tag.outputs.tag }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      
+
       - name: Create tag
         working-directory: ${{ github.workspace }}/scripts/ci
         run: node create-tag.js
