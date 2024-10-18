@@ -1,5 +1,11 @@
 # @backstage-community/plugin-todo-backend
 
+## 0.3.20
+
+### Patch Changes
+
+- 714e522: Backstage version bump to v1.30.2
+
 ## 0.3.19
 
 ### Patch Changes

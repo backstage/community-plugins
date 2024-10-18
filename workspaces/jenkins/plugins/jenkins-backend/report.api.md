@@ -4,7 +4,7 @@
 
 ```ts
 import { AuthService } from '@backstage/backend-plugin-api';
-import { BackendFeatureCompat } from '@backstage/backend-plugin-api';
+import { BackendFeature } from '@backstage/backend-plugin-api';
 import { BackstageCredentials } from '@backstage/backend-plugin-api';
 import { CatalogApi } from '@backstage/catalog-client';
 import { CompoundEntityRef } from '@backstage/catalog-model';
@@ -139,7 +139,7 @@ export interface JenkinsInstanceConfig {
 }
 
 // @public
-const jenkinsPlugin: BackendFeatureCompat;
+const jenkinsPlugin: BackendFeature;
 export default jenkinsPlugin;
 
 // @public (undocumented)

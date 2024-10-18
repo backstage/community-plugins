@@ -16,15 +16,12 @@
 import React from 'react';
 import { FlatRoutes } from '@backstage/core-app-api';
 import { convertLegacyApp } from '@backstage/core-compat-api';
-import { createApp } from '@backstage/frontend-app-api';
+import { createApp } from '@backstage/frontend-defaults';
 import {
   configApiRef,
-  createApiExtension,
   createApiFactory,
-  createExtensionOverrides,
-  createPageExtension,
-  createSignInPageExtension,
-  createThemeExtension,
+  createFrontendModule,
+  PageBlueprint,
   ApiBlueprint,
 } from '@backstage/frontend-plugin-api';
 import {
@@ -36,17 +33,6 @@ import { ApiExplorerPage } from '@backstage/plugin-api-docs';
 import catalogPlugin from '@backstage/plugin-catalog/alpha';
 import catalogImportPlugin from '@backstage/plugin-catalog-import/alpha';
 import userSettingsPlugin from '@backstage/plugin-user-settings/alpha';
-import {
-  createUnifiedTheme,
-  createBaseThemeOptions,
-  pageTheme as defaultPageThemes,
-  palettes,
-  genPageTheme,
-  colorVariants,
-  shapes,
-  UnifiedTheme,
-  UnifiedThemeProvider,
-} from '@backstage/theme';
 import { Navigate, Route } from 'react-router';
 
 import sentryPlugin from '@backstage-community/plugin-sentry/alpha';
@@ -54,56 +40,13 @@ import {
   MockSentryApi,
   sentryApiRef,
 } from '@backstage-community/plugin-sentry';
-import { SignInPage } from './components/auth/SignInPage';
 
-const pageTheme = {
-  ...defaultPageThemes,
-  dataset: genPageTheme({
-    colors: colorVariants.purpleSky,
-    shape: shapes.wave,
-  }),
-};
-
-export const lightTheme: UnifiedTheme = createUnifiedTheme({
-  ...createBaseThemeOptions({
-    palette: { ...palettes.light },
-  }),
-  pageTheme,
-});
-
-export const darkTheme: UnifiedTheme = createUnifiedTheme({
-  ...createBaseThemeOptions({
-    palette: { ...palettes.dark },
-  }),
-  pageTheme,
-});
-
-const lightThemeExtension = createThemeExtension({
-  id: 'mui-light',
-  title: 'MUI Light',
-  variant: 'light',
-  Provider: ({ children }) => (
-    <UnifiedThemeProvider theme={lightTheme} children={children} />
-  ),
-});
-const darkThemeExtension = createThemeExtension({
-  id: 'mui-dark',
-  title: 'MUI Dark',
-  variant: 'dark',
-  Provider: ({ children }) => (
-    <UnifiedThemeProvider theme={darkTheme} children={children} />
-  ),
-});
-
-const homePageExtension = createPageExtension({
-  namespace: 'home',
-  defaultPath: '/',
-  loader: () => Promise.resolve(<Navigate to="catalog" />),
-});
-
-const signInPage = createSignInPageExtension({
-  name: 'signInPage',
-  loader: async () => props => <SignInPage {...props} />,
+const homePageExtension = PageBlueprint.make({
+  name: 'home',
+  params: {
+    defaultPath: '/',
+    loader: () => Promise.resolve(<Navigate to="catalog" />),
+  },
 });
 
 const collectedLegacyPlugins = convertLegacyApp(
@@ -112,16 +55,22 @@ const collectedLegacyPlugins = convertLegacyApp(
   </FlatRoutes>,
 );
 
-const scmAuthExtension = createApiExtension({
-  factory: ScmAuth.createDefaultApiFactory(),
+const scmAuthApi = ApiBlueprint.make({
+  name: 'scm-auth',
+  params: {
+    factory: ScmAuth.createDefaultApiFactory(),
+  },
 });
 
-const scmIntegrationApi = createApiExtension({
-  factory: createApiFactory({
-    api: scmIntegrationsApiRef,
-    deps: { configApi: configApiRef },
-    factory: ({ configApi }) => ScmIntegrationsApi.fromConfig(configApi),
-  }),
+const scmIntegrationsApi = ApiBlueprint.make({
+  name: 'scm-integrations',
+  params: {
+    factory: createApiFactory({
+      api: scmIntegrationsApiRef,
+      deps: { configApi: configApiRef },
+      factory: ({ configApi }) => ScmIntegrationsApi.fromConfig(configApi),
+    }),
+  },
 });
 
 const sentryMockApi = ApiBlueprint.make({
@@ -142,14 +91,12 @@ export const app = createApp({
     userSettingsPlugin,
     sentryPlugin,
     ...collectedLegacyPlugins,
-    createExtensionOverrides({
+    createFrontendModule({
+      pluginId: 'app',
       extensions: [
-        signInPage,
-        darkThemeExtension,
-        lightThemeExtension,
         homePageExtension,
-        scmAuthExtension,
-        scmIntegrationApi,
+        scmAuthApi,
+        scmIntegrationsApi,
         sentryMockApi,
       ],
     }),

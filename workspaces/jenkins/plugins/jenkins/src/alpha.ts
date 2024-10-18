@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { convertLegacyRouteRefs } from '@backstage/core-compat-api';
-import { createPlugin } from '@backstage/frontend-plugin-api';
+import { createFrontendPlugin } from '@backstage/frontend-plugin-api';
 import {
   entityJenkinsProjects,
   entityLatestJenkinsRunCard,
@@ -25,7 +25,7 @@ import { rootRouteRef } from './plugin';
 /**
  * @alpha
  */
-export default createPlugin({
+export default createFrontendPlugin({
   id: 'jenkins',
   routes: convertLegacyRouteRefs({
     entityContent: rootRouteRef,

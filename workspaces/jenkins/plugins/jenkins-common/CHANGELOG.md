@@ -1,5 +1,11 @@
 # @backstage-community/plugin-jenkins-common
 
+## 0.1.30
+
+### Patch Changes
+
+- f090030: Backstage version bump to v1.32.0
+
 ## 0.1.29
 
 ### Patch Changes

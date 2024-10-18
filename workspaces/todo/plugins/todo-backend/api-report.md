@@ -11,7 +11,7 @@ import express from 'express';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { ScmIntegrations } from '@backstage/integration';
 import { ServiceRef } from '@backstage/backend-plugin-api';
-import { UrlReader } from '@backstage/backend-common';
+import { UrlReaderService } from '@backstage/backend-plugin-api';
 
 // @public (undocumented)
 export function createRouter(options: RouterOptions): Promise<express.Router>;
@@ -120,7 +120,11 @@ export type TodoReaderServiceOptions = {
 };
 
 // @public (undocumented)
-export const todoReaderServiceRef: ServiceRef<TodoReader, 'plugin'>;
+export const todoReaderServiceRef: ServiceRef<
+  TodoReader,
+  'plugin',
+  'singleton'
+>;
 
 // @public (undocumented)
 export class TodoScmReader implements TodoReader {
@@ -137,7 +141,7 @@ export class TodoScmReader implements TodoReader {
 // @public (undocumented)
 export type TodoScmReaderOptions = {
   logger: LoggerService;
-  reader: UrlReader;
+  reader: UrlReaderService;
   integrations: ScmIntegrations;
   parser?: TodoParser;
   filePathFilter?: (filePath: string) => boolean;
