@@ -16,17 +16,15 @@
 
 import React, { ReactNode } from 'react';
 import Box from '@material-ui/core/Box';
-// import Chip from '@material-ui/core/Chip';
+import Chip from '@material-ui/core/Chip';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import { Link } from '@backstage/core-components';
-import {
-  ResultHighlight,
-  SearchDocument,
-} from '@backstage/plugin-search-common';
+import { ResultHighlight } from '@backstage/plugin-search-common';
 import { HighlightedSearchResultText } from '@backstage/plugin-search-react';
+import { type GithubDiscussionsDocument } from '@backstage-community/plugin-github-discussions-common';
 
 const useStyles = makeStyles({
   item: {
@@ -48,8 +46,8 @@ const useStyles = makeStyles({
  * @public
  */
 export interface GithubDiscussionsSearchResultListItemProps {
-  icon?: ReactNode | ((result: SearchDocument) => ReactNode);
-  result?: SearchDocument;
+  icon?: ReactNode;
+  result?: GithubDiscussionsDocument;
   highlight?: ResultHighlight;
   rank?: number;
   lineClamp?: number;
@@ -59,17 +57,13 @@ export interface GithubDiscussionsSearchResultListItemProps {
 export function GithubDiscussionsSearchResultListItem(
   props: GithubDiscussionsSearchResultListItemProps,
 ) {
-  const { result, highlight } = props;
+  const { result, highlight, icon } = props;
   const classes = useStyles();
   if (!result) return null;
 
   return (
     <div className={classes.item}>
-      {props.icon && (
-        <ListItemIcon>
-          {typeof props.icon === 'function' ? props.icon(result) : props.icon}
-        </ListItemIcon>
-      )}
+      {icon && <ListItemIcon>{icon}</ListItemIcon>}
       <div className={classes.flexContainer}>
         <ListItemText
           className={classes.itemText}
@@ -112,7 +106,9 @@ export function GithubDiscussionsSearchResultListItem(
           }
         />
         <Box>
-          {/* {result.kind && <Chip label={`Kind: ${result.kind}`} size="small" />} */}
+          {result.category && (
+            <Chip label={`Category: ${result.category}`} size="small" />
+          )}
         </Box>
       </div>
     </div>
