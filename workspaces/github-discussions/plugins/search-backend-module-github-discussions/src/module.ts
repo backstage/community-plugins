@@ -41,6 +41,7 @@ export const searchModuleGithubDiscussions = createBackendModule({
           schedule: scheduler.createScheduledTaskRunner(schedule),
           factory: GithubDiscussionsCollatorFactory.fromConfig(config, {
             logger,
+            config,
           }),
         });
       },

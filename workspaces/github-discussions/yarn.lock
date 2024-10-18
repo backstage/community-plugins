@@ -2661,7 +2661,7 @@ __metadata:
     "@backstage/plugin-search-backend-node": ^1.3.3
     "@backstage/plugin-search-common": ^1.2.14
     effection: ^3.0.3
-    github-discussions-fetcher: ../../../../../graphql-github-discussions/build/npm
+    github-discussions-fetcher: ^0.2.0
     stream: ^0.0.3
   languageName: unknown
   linkType: soft
@@ -15350,16 +15350,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"github-discussions-fetcher@file:../../../../../graphql-github-discussions/build/npm::locator=%40backstage-community%2Fplugin-search-backend-module-github-discussions%40workspace%3Aplugins%2Fsearch-backend-module-github-discussions":
-  version: 0.1.1
-  resolution: "github-discussions-fetcher@file:../../../../../graphql-github-discussions/build/npm#../../../../../graphql-github-discussions/build/npm::hash=b48164&locator=%40backstage-community%2Fplugin-search-backend-module-github-discussions%40workspace%3Aplugins%2Fsearch-backend-module-github-discussions"
+"github-discussions-fetcher@npm:^0.2.0":
+  version: 0.2.0
+  resolution: "github-discussions-fetcher@npm:0.2.0"
   dependencies:
     "@octokit/graphql": ^4.8.0
     "@octokit/types": 13.6.1
     chalk: 5.3.0
     effection: 3.0.3
     graphql: 16.8.2
-  checksum: be3766f9ed76efda5c78ca77ef827710e6b989d7850df216134780539f016aa08470c605af56e2effa9d4d257e872a5f2093168bca3dda9d8f7af5927feea4e6
+  checksum: 9a9e1afa557101675dec8ea6a2bae4fe64374ef5ceb6e5b70e61695aa827c12b86160ea61992348bbb71dc4583d44d4dbbe298cf56251ef9fb55d49cc1ab0acf
   languageName: node
   linkType: hard
 
