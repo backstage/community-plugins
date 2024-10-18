@@ -28,6 +28,8 @@
     "@backstage/config": "^1.2.0",
     "@backstage/plugin-search-backend-node": "^1.3.3",
     "@backstage/plugin-search-common": "^1.2.14",
+    "effection": "^3.0.3",
+    "github-discussions-fetcher": "^0.2.0",
     "stream": "^0.0.3"
   },
   "devDependencies": {

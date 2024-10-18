@@ -20,6 +20,12 @@ import {
 import { Config } from '@backstage/config';
 import { Readable } from 'stream';
 import { LoggerService } from '@backstage/backend-plugin-api';
+import { run, useScope, type Operation } from 'effection';
+import {
+  fetchGithubDiscussions,
+  toAsyncIterable,
+  type GithubDiscussionFetcherResult,
+} from 'github-discussions-fetcher';
 
 export interface GithubDiscussionsDocument extends IndexableDocument {
   author: string;
@@ -67,33 +73,23 @@ export class GithubDiscussionsCollatorFactory
   }
 
   async *execute(): AsyncGenerator<GithubDiscussionsDocument> {
-    yield {
-      title: 'announcement-example',
-      text: 'this is an announcement',
-      location: 'https://github.com/guidanti/github-discussions-fetcher',
-      author: 'taras',
-      category: 'announcements', // double check category string values
-      labels: [
-        {
-          name: 'foo',
-          color: 'red',
-        },
-      ],
-      comments: [],
-    };
-    yield {
-      title: 'poll-example',
-      text: 'this is a poll',
-      location: 'https://github.com/guidanti/community-plugins',
-      author: 'minkimcello',
-      category: 'poll', // double check category string values
-      labels: [
-        {
-          name: 'bar',
-          color: 'blue',
-        },
-      ],
-      comments: [],
-    };
+    const documents = await run(function* (): Operation<
+      AsyncIterable<GithubDiscussionFetcherResult>
+    > {
+      const scope = yield* useScope();
+      const entries = yield* fetchGithubDiscussions();
+      return toAsyncIterable(entries, scope);
+    });
+    for await (const document of documents) {
+      yield {
+        title: document.title,
+        text: document.bodyText,
+        location: document.url,
+        author: document.author,
+        category: document.category,
+        labels: document.labels,
+        comments: document.comments,
+      };
+    }
   }
 }
