@@ -67,7 +67,6 @@ export class GithubDiscussionsCollatorFactory
   }
 
   async *execute(): AsyncGenerator<GithubDiscussionsDocument> {
-    this.logger.info('hello');
     yield {
       title: 'discussion-announcement',
       text: 'this is an announcement',

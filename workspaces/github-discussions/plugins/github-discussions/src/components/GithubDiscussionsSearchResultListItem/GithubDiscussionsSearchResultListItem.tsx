@@ -59,10 +59,9 @@ export interface GithubDiscussionsSearchResultListItemProps {
 export function GithubDiscussionsSearchResultListItem(
   props: GithubDiscussionsSearchResultListItemProps,
 ) {
-  // const { result, highlight } = props;
-  // const classes = useStyles();
-
-  // if (!result) return null;
+  const { result, highlight } = props;
+  const classes = useStyles();
+  if (!result) return null;
 
   return <div className={classes.item}>hello</div>;
 }
