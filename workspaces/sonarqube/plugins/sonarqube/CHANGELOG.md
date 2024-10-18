@@ -1,5 +1,11 @@
 # @backstage-community/plugin-sonarqube
 
+## 0.8.4
+
+### Patch Changes
+
+- af63cf8: fix: use fetchApi instead of explicit identityApi token in sonarqube frontend plugin api
+
 ## 0.8.3
 
 ### Patch Changes
