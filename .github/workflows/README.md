@@ -36,6 +36,6 @@ Runs Renovate on a scheduled basis or manually.
 
 Handles version bumping for specific workspaces. It creates a new branch for the version bump, updates the necessary files, commits the changes, and creates a pull request to merge the updates into the main branch.
 
-## [automate_staleness.yml](https://github.com/04kash/community-plugins/blob/fix-broken-links/.github/workflows/automate-staleness.yml)
+## [automate-staleness.yml](./automate-staleness.yml)
 
 This workflow marks issues that have been inactive for 60 days as stale, and if no further activity occurs, it will close them 7 days later. For pull requests (PRs), it marks them as stale after 14 days of inactivity, with a similar 7-day closure period if no activity is detected. This process is executed as a cron job that runs every 6 hours.
