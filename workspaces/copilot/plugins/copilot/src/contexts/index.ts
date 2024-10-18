@@ -17,3 +17,5 @@ export {
   useSharedDateRange,
   SharedDateRangeProvider,
 } from './SharedDateRangeContext';
+
+export { useSharedTeam, SharedTeamProvider } from './SharedTeamContext';
