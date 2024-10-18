@@ -16,38 +16,32 @@
 
 import React from 'react';
 import { createDevApp } from '@backstage/dev-utils';
-import { bazaarPlugin } from '../src/plugin';
-import { catalogPlugin } from '@backstage/plugin-catalog';
-import { entityRouteRef } from '@backstage/plugin-catalog-react';
-import { createRoutableExtension } from '@backstage/core-plugin-api';
+import { CatalogApi, catalogApiRef } from '@backstage/plugin-catalog-react';
+import { bazaarPlugin, BazaarPage } from '../src/plugin';
+import { bazaarApiRef } from '../src/api';
 
-export const HomePage = catalogPlugin.provide(
-  createRoutableExtension({
-    name: 'BazaarPage',
-    component: () => import('../src/components/HomePage').then(m => m.HomePage),
-    mountPoint: entityRouteRef,
-  }),
-);
+import getProjectsData from './__fixtures__/get-projects-response.json';
+
 createDevApp()
   .registerPlugin(bazaarPlugin)
-  // .registerApi({
-  //   api: bazaarApiRef,
-  //   deps: {},
-  //   factory: () =>
-  //     ({
-  //       getProjects: async () => getProjectsData,
-  //     } as any),
-  // })
-  // .registerApi({
-  //   api: catalogApiRef,
-  //   deps: {},
-  //   factory: () =>
-  //     ({
-  //       getEntities: () => ({}),
-  //     } as CatalogApi),
-  // })
+  .registerApi({
+    api: bazaarApiRef,
+    deps: {},
+    factory: () =>
+      ({
+        getProjects: async () => getProjectsData,
+      } as any),
+  })
+  .registerApi({
+    api: catalogApiRef,
+    deps: {},
+    factory: () =>
+      ({
+        getEntities: () => ({}),
+      } as CatalogApi),
+  })
   .addPage({
-    element: <HomePage />,
-    title: 'Home Page',
+    element: <BazaarPage />,
+    title: 'Root Page',
   })
   .render();
