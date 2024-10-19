@@ -5,6 +5,9 @@ app:
 organization:
   name: My Company
 
+githubDiscussions:
+  url: https://github.com/guidanti/github-discussions-fetcher
+
 backend:
   # Used for enabling authentication, secret is shared by all backend plugins
   # See https://backstage.io/docs/auth/service-to-service-auth for

@@ -2685,10 +2685,14 @@ __metadata:
     "@backstage/backend-test-utils": "npm:^1.0.1"
     "@backstage/cli": "npm:^0.28.0"
     "@backstage/config": "npm:^1.2.0"
+    "@backstage/integration": "npm:^1.15.1"
     "@backstage/plugin-search-backend-node": "npm:^1.3.3"
     "@backstage/plugin-search-common": "npm:^1.2.14"
+    "@types/parse-github-url": "npm:^1"
+    assert-ts: "npm:^0.3.4"
     effection: "npm:^3.0.3"
-    github-discussions-fetcher: "npm:^0.2.0"
+    github-discussions-fetcher: "npm:^0.2.1"
+    parse-github-url: "npm:^1.0.3"
     stream: "npm:^0.0.3"
   languageName: unknown
   linkType: soft
@@ -9592,6 +9596,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/parse-github-url@npm:^1":
+  version: 1.0.3
+  resolution: "@types/parse-github-url@npm:1.0.3"
+  dependencies:
+    "@types/node": "npm:*"
+  checksum: 10/c6dec72cb81a79c8fca15fb1b2632b54a7116bdea8b9ca39e4973bff3a86b6b3253c6649055c0bc40d3709b4255e524057b888917b345c1427c07dd9f03ae4bf
+  languageName: node
+  linkType: hard
+
 "@types/parse-json@npm:^4.0.0":
   version: 4.0.2
   resolution: "@types/parse-json@npm:4.0.2"
@@ -10982,6 +10995,13 @@ __metadata:
   version: 1.0.0
   resolution: "assert-plus@npm:1.0.0"
   checksum: 10/f4f991ae2df849cc678b1afba52d512a7cbf0d09613ba111e72255409ff9158550c775162a47b12d015d1b82b3c273e8e25df0e4783d3ddb008a293486d00a07
+  languageName: node
+  linkType: hard
+
+"assert-ts@npm:^0.3.4":
+  version: 0.3.4
+  resolution: "assert-ts@npm:0.3.4"
+  checksum: 10/1456681683f489d154018bb16e488090f44799ff9e23069d27a12cf97d0e7d050d5a8f5b7deaa3fd2c71334bf1116ddab50efd530a421353b8d6d02e991792f4
   languageName: node
   linkType: hard
 
@@ -16189,16 +16209,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"github-discussions-fetcher@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "github-discussions-fetcher@npm:0.2.0"
+"github-discussions-fetcher@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "github-discussions-fetcher@npm:0.2.1"
   dependencies:
     "@octokit/graphql": "npm:^4.8.0"
     "@octokit/types": "npm:13.6.1"
     chalk: "npm:5.3.0"
     effection: "npm:3.0.3"
     graphql: "npm:16.8.2"
-  checksum: 10/22bab0f2b2eaba9dce74d0ceb74e74d79395eb18a3402fff6919008849793e2c03e59c96e98c3029a28ce25c27b3eb3fd0385fbe50041629c23c053e69cd9c10
+  checksum: 10/a0133d774bcce04bf20b7348920cf35ab5386d3229a755981bc3dc559733c57dfb1630294bd6804db7ed26acad45d87490b75a9e3b62fb61a9be5b3ded8ab2cc
   languageName: node
   linkType: hard
 
@@ -21889,6 +21909,15 @@ __metadata:
     is-decimal: "npm:^1.0.0"
     is-hexadecimal: "npm:^1.0.0"
   checksum: 10/feb46b516722474797d72331421f3e62856750cfb4f70ba098b36447bf0b169e819cc4fdee53e022874d5f0c81b605d86e1912b9842a70e59a54de2fee81589d
+  languageName: node
+  linkType: hard
+
+"parse-github-url@npm:^1.0.3":
+  version: 1.0.3
+  resolution: "parse-github-url@npm:1.0.3"
+  bin:
+    parse-github-url: cli.js
+  checksum: 10/88c7f9d30b3e14026b5136c0a28ca0b443d27e15d7731adab4b49b1a33bcf8603ca45d39951c1ade64e94b0b163f2077a29268f4586332acc552a35ce15d5af6
   languageName: node
   linkType: hard
 
