@@ -1,5 +1,11 @@
 # @backstage-community/plugin-github-issues
 
+## 0.4.7
+
+### Patch Changes
+
+- b2bf4d5: Backstage version bump to v1.32.2
+
 ## 0.4.6
 
 ### Patch Changes
