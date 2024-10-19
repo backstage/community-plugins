@@ -1,5 +1,11 @@
 # @backstage-community/plugin-apache-airflow
 
+## 0.2.30
+
+### Patch Changes
+
+- 51dc978: Backstage version bump to v1.32.2
+
 ## 0.2.29
 
 ### Patch Changes
