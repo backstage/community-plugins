@@ -49,7 +49,6 @@ const homePageExtension = PageBlueprint.make({
 });
 
 const signInPage = SignInPageBlueprint.make({
-  name: 'SignInPage',
   params: {
     loader: async () => props => <SignInPage {...props} />,
   },
