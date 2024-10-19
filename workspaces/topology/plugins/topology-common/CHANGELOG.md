@@ -1,5 +1,11 @@
 ## @janus-idp/backstage-plugin-topology-common [1.3.0](https://github.com/janus-idp/backstage-plugins/compare/@janus-idp/backstage-plugin-topology-common@1.2.2...@janus-idp/backstage-plugin-topology-common@1.3.0) (2024-07-26)
 
+## 1.4.2
+
+### Patch Changes
+
+- 62a2d24: Backstage version bump to v1.32.2
+
 ## 1.4.1
 
 ### Patch Changes
