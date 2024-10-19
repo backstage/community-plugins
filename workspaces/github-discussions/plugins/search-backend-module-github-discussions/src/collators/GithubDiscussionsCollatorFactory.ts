@@ -19,34 +19,61 @@ import {
   LoggerService,
   RootConfigService,
 } from '@backstage/backend-plugin-api';
-import { run, useScope, type Operation } from 'effection';
+import { run, useScope, type Operation, createQueue, spawn } from 'effection';
 import {
   fetchGithubDiscussions,
   toAsyncIterable,
   type GithubDiscussionFetcherResult,
+  createGithubGraphqlClient,
 } from 'github-discussions-fetcher';
 import { type GithubDiscussionsDocument } from '@backstage-community/plugin-github-discussions-common';
+import {
+  DefaultGithubCredentialsProvider,
+  ScmIntegrations,
+} from '@backstage/integration';
+import assert from 'assert-ts';
+import gh from 'parse-github-url';
+
+type GithubDiscussionsCollatorFactoryConstructorOptions = {
+  config: RootConfigService;
+  logger: LoggerService;
+};
 
 export type GithubDiscussionsCollatorFactoryOptions = {
   logger: LoggerService;
   config: RootConfigService;
+  credentialsProvider: DefaultGithubCredentialsProvider;
+  integrations: ScmIntegrations;
 };
 
 export class GithubDiscussionsCollatorFactory
   implements DocumentCollatorFactory
 {
   private readonly config: RootConfigService;
+  private readonly integrations: ScmIntegrations;
   private readonly logger: LoggerService;
+  private credentialsProvider: DefaultGithubCredentialsProvider;
   public readonly type: string = 'github-discussions';
 
   private constructor(options: GithubDiscussionsCollatorFactoryOptions) {
     this.logger = options.logger.child({ documentType: this.type });
     this.config = options.config.get('githubDiscussions');
+    this.credentialsProvider = options.credentialsProvider;
+    this.integrations = options.integrations;
   }
 
-  static fromConfig(options: GithubDiscussionsCollatorFactoryOptions) {
+  static fromConfig({
+    config,
+    logger,
+  }: GithubDiscussionsCollatorFactoryConstructorOptions) {
+    const integrations = ScmIntegrations.fromConfig(config);
+    const credentialsProvider =
+      DefaultGithubCredentialsProvider.fromIntegrations(integrations);
     return new GithubDiscussionsCollatorFactory({
-      ...options,
+      logger,
+      credentialsProvider,
+      config,
+      integrations,
     });
   }
 
@@ -55,16 +82,52 @@ export class GithubDiscussionsCollatorFactory
   }
 
   async *execute(): AsyncGenerator<GithubDiscussionsDocument> {
-    const urls = this.config.getStringArray('url');
+    const logger: typeof console = this.logger as unknown as typeof console;
+
+    const url = gh(this.config.getString('url'));
+    assert(url !== null, `Not parsable as a Github URL`);
+    const { name: repo, owner: org } = url;
+    assert(org !== null, `Discussions url is missing organization name`);
+    assert(repo !== null, `Discussion url is missing repository`);
+
+    const github = this.integrations.github;
+
+    const integration = github.byUrl(`${url}`);
+
+    assert(integration, `Could not retrieve a Github integration for ${url}`);
+
+    const { token } = await this.credentialsProvider.getCredentials({
+      url: `${url}`,
+    });
+
+    const client = createGithubGraphqlClient({
+      token,
+      endpoint: `${integration?.config.apiBaseUrl}/graphql`,
+    });
+
     const documents = await run(function* injection(): Operation<
       AsyncIterable<GithubDiscussionFetcherResult>
     > {
       const scope = yield* useScope();
-      for (const url of urls) {
-        const entries = yield* fetchGithubDiscussions({});
-      }
-      return toAsyncIterable(entries, scope);
+      const results = createQueue<GithubDiscussionFetcherResult, void>();
+
+      yield* spawn(function* () {
+        yield* fetchGithubDiscussions({
+          client,
+          org,
+          repo,
+          discussionsBatchSize: 70,
+          commentsBatchSize: 70,
+          repliesBatchSize: 70,
+          logger,
+          results,
+        });
+        results.close();
+      });
+
+      return toAsyncIterable(results, scope);
     });
+
     for await (const document of documents) {
       yield {
         title: document.title,
