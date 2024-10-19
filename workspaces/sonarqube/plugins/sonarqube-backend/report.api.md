@@ -77,10 +77,5 @@ export interface SonarqubeMeasure {
 const sonarqubePlugin: BackendFeature;
 export default sonarqubePlugin;
 
-// Warnings were encountered during analysis:
-//
-// src/service/sonarqubeInfoProvider.d.ts:133:8 - (tsdoc-undefined-tag) The TSDoc tag "@private" is not defined in this configuration
-// src/service/sonarqubeInfoProvider.d.ts:143:8 - (tsdoc-undefined-tag) The TSDoc tag "@private" is not defined in this configuration
-
 // (No @packageDocumentation comment for this package)
 ```
