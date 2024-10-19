@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-github-issues",
-  "version": "0.4.6",
+  "version": "0.4.7",
   "backstage": {
     "role": "frontend-plugin",
     "pluginId": "github-issues",
