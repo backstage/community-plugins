@@ -1,4 +1,4 @@
-import { Category } from '@backstage-community/plugin-announcements-common';
+import { Category } from '@backstage/community-plugins/backstage-plugin-announcements-common';
 import { Knex } from 'knex';
 
 const categoriesTable = 'categories';

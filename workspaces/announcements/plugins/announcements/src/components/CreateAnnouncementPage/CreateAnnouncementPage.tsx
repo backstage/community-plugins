@@ -9,11 +9,11 @@ import {
   CreateAnnouncementRequest,
   announcementsApiRef,
   useCategories,
-} from '@backstage-community/plugin-announcements-react';
+} from '@backstage/community-plugins/backstage-plugin-announcements-react';
 import {
   Announcement,
   Category,
-} from '@backstage-community/plugin-announcements-common';
+} from '@backstage/community-plugins/backstage-plugin-announcements-common';
 
 type CreateAnnouncementPageProps = {
   themeId: string;

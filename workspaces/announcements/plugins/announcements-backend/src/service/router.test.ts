@@ -1,4 +1,3 @@
-import { getVoidLogger } from '@backstage/backend-common';
 import express from 'express';
 import { DateTime } from 'luxon';
 import request from 'supertest';
@@ -12,6 +11,7 @@ import {
   HttpAuthService,
   PermissionsService,
 } from '@backstage/backend-plugin-api';
+import { mockServices } from '@backstage/backend-test-utils';
 
 describe('createRouter', () => {
   let app: express.Express;
@@ -49,7 +49,8 @@ describe('createRouter', () => {
 
   beforeAll(async () => {
     const announcementsContext: AnnouncementsContext = {
-      logger: getVoidLogger(),
+      logger: mockServices.logger.mock(),
+      config: mockServices.rootConfig.mock(),
       persistenceContext: mockPersistenceContext,
       permissions: mockPermissions,
       httpAuth: mockHttpAuth,

@@ -6,7 +6,7 @@ import {
   announcementUpdatePermission,
   announcementDeletePermission,
   Announcement,
-} from '@backstage-community/plugin-announcements-common';
+} from '@backstage/community-plugins/backstage-plugin-announcements-common';
 import { DateTime } from 'luxon';
 import {
   Page,
@@ -25,21 +25,11 @@ import {
   EntityPeekAheadPopover,
   entityRouteRef,
 } from '@backstage/plugin-catalog-react';
-import Alert from '@material-ui/lab/Alert';
-import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  IconButton,
-  ListItemIcon,
-  Menu,
-  MenuItem,
-  Tooltip,
-  makeStyles,
-} from '@material-ui/core';
+import Alert from '@mui/material/Alert';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import makeStyles from '@mui/styles/makeStyles';
 import {
   announcementCreateRouteRef,
   announcementEditRouteRef,
@@ -48,12 +38,20 @@ import {
 } from '../../routes';
 import { DeleteAnnouncementDialog } from './DeleteAnnouncementDialog';
 import { useDeleteAnnouncementDialogState } from './useDeleteAnnouncementDialogState';
-import { Pagination } from '@material-ui/lab';
 import { ContextMenu } from './ContextMenu';
 import {
   announcementsApiRef,
   useAnnouncements,
-} from '@backstage-community/plugin-announcements-react';
+} from '@backstage/community-plugins/backstage-plugin-announcements-react';
+import Tooltip from '@mui/material/Tooltip';
+import IconButton from '@mui/material/IconButton';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import Card from '@mui/material/Card';
+import CardHeader from '@mui/material/CardHeader';
+import CardContent from '@mui/material/CardContent';
+import Pagination from '@mui/material/Pagination';
 
 const useStyles = makeStyles(theme => ({
   cardHeader: {
@@ -149,15 +147,23 @@ const AnnouncementCard = ({
       setAnchorEl(undefined);
       setOpen(false);
     };
+
+    const canShowMenu =
+      (!loadingUpdatePermission && canUpdate) ||
+      (!loadingDeletePermission && canDelete);
+
     return (
       <>
-        <IconButton
-          data-testid="announcement-edit-menu"
-          aria-label="more"
-          onClick={handleOpenEditMenu}
-        >
-          <MoreVertIcon />
-        </IconButton>
+        {canShowMenu && (
+          <IconButton
+            data-testid="announcement-edit-menu"
+            aria-label="more"
+            onClick={handleOpenEditMenu}
+            size="large"
+          >
+            <MoreVertIcon />
+          </IconButton>
+        )}
         <Menu anchorEl={anchorEl} open={open} onClose={handleCloseEditClose}>
           {!loadingUpdatePermission && canUpdate && (
             <MenuItem
@@ -200,10 +206,12 @@ const AnnouncementsGrid = ({
   maxPerPage,
   category,
   cardTitleLength,
+  active,
 }: {
   maxPerPage: number;
   category?: string;
   cardTitleLength?: number;
+  active?: boolean;
 }) => {
   const classes = useStyles();
   const announcementsApi = useApi(announcementsApiRef);
@@ -224,6 +232,7 @@ const AnnouncementsGrid = ({
       max: maxPerPage,
       page: page,
       category,
+      active,
     },
     { dependencies: [maxPerPage, page, category] },
   );
@@ -298,7 +307,7 @@ type AnnouncementCreateButtonProps = {
   name?: string;
 };
 
-type AnnouncementsPageProps = {
+export type AnnouncementsPageProps = {
   themeId: string;
   title: string;
   subtitle?: ReactNode;
@@ -306,6 +315,8 @@ type AnnouncementsPageProps = {
   category?: string;
   buttonOptions?: AnnouncementCreateButtonProps;
   cardOptions?: AnnouncementCardProps;
+  hideContextMenu?: boolean;
+  hideInactive?: boolean;
 };
 
 export const AnnouncementsPage = (props: AnnouncementsPageProps) => {
@@ -315,10 +326,22 @@ export const AnnouncementsPage = (props: AnnouncementsPageProps) => {
   const { loading: loadingCreatePermission, allowed: canCreate } =
     usePermission({ permission: announcementCreatePermission });
 
+  const {
+    hideContextMenu,
+    hideInactive,
+    themeId,
+    title,
+    subtitle,
+    buttonOptions,
+    maxPerPage,
+    category,
+    cardOptions,
+  } = props;
+
   return (
-    <Page themeId={props.themeId}>
-      <Header title={props.title} subtitle={props.subtitle}>
-        <ContextMenu />
+    <Page themeId={themeId}>
+      <Header title={title} subtitle={subtitle}>
+        {!hideContextMenu && <ContextMenu />}
       </Header>
 
       <Content>
@@ -330,17 +353,16 @@ export const AnnouncementsPage = (props: AnnouncementsPageProps) => {
               color="primary"
               variant="contained"
             >
-              {props.buttonOptions
-                ? `New ${props.buttonOptions.name}`
-                : 'New announcement'}
+              {buttonOptions ? `New ${buttonOptions.name}` : 'New announcement'}
             </LinkButton>
           )}
         </ContentHeader>
 
         <AnnouncementsGrid
-          maxPerPage={props.maxPerPage ?? 10}
-          category={props.category ?? queryParams.get('category') ?? undefined}
-          cardTitleLength={props.cardOptions?.titleLength}
+          maxPerPage={maxPerPage ?? 10}
+          category={category ?? queryParams.get('category') ?? undefined}
+          cardTitleLength={cardOptions?.titleLength}
+          active={hideInactive ? true : false}
         />
       </Content>
     </Page>

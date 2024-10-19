@@ -1,5 +1,5 @@
+import { mockServices } from '@backstage/backend-test-utils';
 import { buildAnnouncementsContext } from './announcementsContextBuilder';
-import { getVoidLogger } from '@backstage/backend-common';
 import { initializePersistenceContext } from './persistence/persistenceContext';
 import {
   HttpAuthService,
@@ -12,7 +12,8 @@ jest.mock('./persistence/persistenceContext', () => ({
 
 describe('buildAnnouncementsContext', () => {
   it('returns context with logger, persistenceContext, permissions and httpAuth properties', async () => {
-    const logger = getVoidLogger();
+    const logger = mockServices.logger.mock();
+    const config = mockServices.rootConfig.mock();
     const database = {
       getClient: jest.fn(),
       url: 'url',
@@ -28,6 +29,7 @@ describe('buildAnnouncementsContext', () => {
 
     const context = await buildAnnouncementsContext({
       logger,
+      config,
       database,
       permissions,
       httpAuth,
@@ -35,6 +37,7 @@ describe('buildAnnouncementsContext', () => {
 
     expect(context).toStrictEqual({
       logger,
+      config,
       persistenceContext: await initializePersistenceContext(database),
       permissions,
       httpAuth,

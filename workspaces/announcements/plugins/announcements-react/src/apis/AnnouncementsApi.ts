@@ -5,7 +5,7 @@ import {
   Announcement,
   AnnouncementsList,
   Category,
-} from '@backstage-community/plugin-announcements-common';
+} from '@backstage/community-plugins/backstage-plugin-announcements-common';
 
 export const announcementsApiRef = createApiRef<AnnouncementsApi>({
   id: 'plugin.announcements.service',
@@ -16,6 +16,7 @@ export interface AnnouncementsApi {
     max?: number;
     page?: number;
     category?: string;
+    active?: boolean;
   }): Promise<AnnouncementsList>;
   announcementByID(id: string): Promise<Announcement>;
 

@@ -1,7 +1,7 @@
-import { Category } from '@backstage-community/plugin-announcements-common';
+import { Category } from '@backstage/community-plugins/backstage-plugin-announcements-common';
 import { useCallback, useState } from 'react';
 
-export type DeleteCategoryDialogState = {
+type DeleteCategoryDialogState = {
   open: (c: Category) => void;
   close: () => void;
 

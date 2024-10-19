@@ -4,36 +4,41 @@ import { RequirePermission } from '@backstage/plugin-permission-react';
 import {
   announcementCreatePermission,
   announcementUpdatePermission,
-} from '@backstage-community/plugin-announcements-common';
+} from '@backstage/community-plugins/backstage-plugin-announcements-common';
 import {
+  announcementAdminRouteRef,
   announcementCreateRouteRef,
   announcementEditRouteRef,
   announcementViewRouteRef,
   categoriesListRouteRef,
 } from '../routes';
-import { AnnouncementsPage } from './AnnouncementsPage';
+import { AnnouncementsPage, AnnouncementsPageProps } from './AnnouncementsPage';
 import { AnnouncementPage } from './AnnouncementPage';
 import { CreateAnnouncementPage } from './CreateAnnouncementPage';
 import { EditAnnouncementPage } from './EditAnnouncementPage';
 import { CategoriesPage } from './CategoriesPage';
+import { AdminPortal } from './Admin';
 
 type RouterProps = {
   themeId?: string;
   title?: string;
   subtitle?: string;
   category?: string;
+  hideContextMenu?: boolean;
   cardOptions?: {
     titleLength: number | undefined;
   };
   buttonOptions?: {
     name: string | undefined;
   };
+  hideInactive?: boolean;
 };
 
 export const Router = (props: RouterProps) => {
-  const propsWithDefaults = {
+  const propsWithDefaults: AnnouncementsPageProps = {
     themeId: 'home',
     title: 'Announcements',
+    hideInactive: false,
     ...props,
   };
 
@@ -57,6 +62,14 @@ export const Router = (props: RouterProps) => {
         element={
           <RequirePermission permission={announcementUpdatePermission}>
             <EditAnnouncementPage {...propsWithDefaults} />
+          </RequirePermission>
+        }
+      />
+      <Route
+        path={`${announcementAdminRouteRef.path}`}
+        element={
+          <RequirePermission permission={announcementCreatePermission}>
+            <AdminPortal />
           </RequirePermission>
         }
       />

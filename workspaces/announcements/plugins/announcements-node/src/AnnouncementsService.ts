@@ -3,7 +3,7 @@ import {
   createServiceRef,
   coreServices,
 } from '@backstage/backend-plugin-api';
-import { Announcement } from '@backstage-community/plugin-announcements-common';
+import { Announcement } from '@backstage/community-plugins/backstage-plugin-announcements-common';
 import { DefaultAnnouncementsService } from './DefaultAnnouncementsService';
 
 /** @public */

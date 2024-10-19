@@ -1,4 +1,77 @@
-# @backstage-community/plugin-announcements-common
+# @backstage-community/backstage-plugin-announcements-common
+
+## 0.2.8
+
+### Patch Changes
+
+- cfda065: Adds the ability to filter to only show active announcements
+
+  This should not be a breaking change. The `<AnnouncementsPage />` component now accepts an optional `hideInactive` prop that will hide inactive announcements. The default behavior is to show all announcements, or in other words, `hideInactive: false`.
+
+  ```tsx
+   <AnnouncementsPage
+    title="Announcements"
+    ...
+    hideInactive
+  />
+  ```
+
+## 0.2.7
+
+### Patch Changes
+
+- c9be1ca: Adds an integration with @backstage/plugins-signals-backend. New announcements will now be displayed in near real-time if your Backstage instance supports signals.
+
+## 0.2.6
+
+### Patch Changes
+
+- 152842c: # Overview
+
+  Adds support for the Backstage event system (@backstage/plugin-events-backend).
+
+  ## Topic
+
+  All events are published to the `announcements` topic.
+
+  ## Event actions
+
+  The following event actions are supported
+
+  ### Announcements
+
+  All announcement payloads include the entire contents of the announcement
+
+  - 'create_announcement': Create a new announcement
+  - 'update_announcement': Update an existing announcement
+  - 'delete_announcement': Delete an existing announcement
+
+  ### Categories
+
+  All category payloads include the category slug.
+
+  - 'create_category': Create a new category
+  - 'delete_category': Delete an existing category
+
+  ## Subscribing to announcement events example
+
+  ```ts
+  import { EVENTS_TOPIC_ANNOUNCEMENTS } from '@backstage-community/backstage-plugin-announcements-common';
+
+  events.subscribe({
+    id: 'announcements-subscriber',
+    topics: [EVENTS_TOPIC_ANNOUNCEMENTS],
+    async onEvent(params): Promise<void> {
+      console.log('Announcement', params);
+    },
+  });
+  ```
+
+## 0.2.5
+
+### Patch Changes
+
+- 071914c: bump dependencies and update to the latest version of backstage (1.31.2)
 
 ## 0.2.4
 

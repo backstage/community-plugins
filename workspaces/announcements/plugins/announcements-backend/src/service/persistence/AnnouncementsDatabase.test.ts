@@ -48,6 +48,7 @@ describe('AnnouncementsDatabase', () => {
       excerpt: 'excerpt',
       body: 'body',
       created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+      active: true,
     });
 
     const announcement = await store.announcementByID('id');
@@ -60,6 +61,7 @@ describe('AnnouncementsDatabase', () => {
       body: 'body',
       category: undefined,
       created_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
+      active: 1,
     });
   });
 
@@ -71,6 +73,7 @@ describe('AnnouncementsDatabase', () => {
       excerpt: 'excerpt',
       body: 'body',
       created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+      active: true,
     });
 
     const announcements = await store.announcements({});
@@ -86,6 +89,7 @@ describe('AnnouncementsDatabase', () => {
           body: 'body',
           category: undefined,
           created_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
+          active: 1,
         },
       ],
     });
@@ -99,6 +103,7 @@ describe('AnnouncementsDatabase', () => {
       excerpt: 'excerpt',
       body: 'body',
       created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+      active: true,
     });
 
     await store.updateAnnouncement({
@@ -108,6 +113,7 @@ describe('AnnouncementsDatabase', () => {
       excerpt: 'excerpt2',
       body: 'body2',
       created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+      active: false,
     });
 
     const announcements = await store.announcements({});
@@ -123,6 +129,7 @@ describe('AnnouncementsDatabase', () => {
           body: 'body2',
           category: undefined,
           created_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
+          active: 0,
         },
       ],
     });
@@ -136,6 +143,7 @@ describe('AnnouncementsDatabase', () => {
       excerpt: 'excerpt',
       body: 'body',
       created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+      active: true,
     });
 
     expect((await store.announcements({})).count).toBe(1);
@@ -178,6 +186,7 @@ describe('AnnouncementsDatabase', () => {
         body: 'body',
         category: 'category',
         created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+        active: true,
       });
 
       await store.insertAnnouncement({
@@ -188,6 +197,7 @@ describe('AnnouncementsDatabase', () => {
         body: 'body2',
         category: 'category',
         created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+        active: true,
       });
 
       await store.insertAnnouncement({
@@ -198,6 +208,7 @@ describe('AnnouncementsDatabase', () => {
         body: 'body3',
         category: 'different',
         created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+        active: true,
       });
 
       const announcements = await store.announcements({
@@ -218,6 +229,7 @@ describe('AnnouncementsDatabase', () => {
               title: 'Category',
             },
             created_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
+            active: 1,
           },
           {
             id: 'id',
@@ -230,6 +242,7 @@ describe('AnnouncementsDatabase', () => {
               title: 'Category',
             },
             created_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
+            active: 1,
           },
         ],
       });
@@ -243,6 +256,7 @@ describe('AnnouncementsDatabase', () => {
         excerpt: 'excerpt',
         body: 'body',
         created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+        active: true,
       });
 
       await store.insertAnnouncement({
@@ -252,6 +266,7 @@ describe('AnnouncementsDatabase', () => {
         excerpt: 'excerpt2',
         body: 'body2',
         created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+        active: true,
       });
 
       const announcements = await store.announcements({
@@ -259,7 +274,7 @@ describe('AnnouncementsDatabase', () => {
       });
 
       expect(announcements).toEqual({
-        count: 2,
+        count: 1,
         results: [
           {
             id: 'id',
@@ -269,6 +284,7 @@ describe('AnnouncementsDatabase', () => {
             body: 'body',
             category: undefined,
             created_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
+            active: 1,
           },
         ],
       });
@@ -282,6 +298,7 @@ describe('AnnouncementsDatabase', () => {
         excerpt: 'excerpt',
         body: 'body',
         created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+        active: true,
       });
 
       await store.insertAnnouncement({
@@ -291,6 +308,27 @@ describe('AnnouncementsDatabase', () => {
         excerpt: 'excerpt2',
         body: 'body2',
         created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+        active: true,
+      });
+
+      await store.insertAnnouncement({
+        id: 'id3',
+        publisher: 'publisher3',
+        title: 'title3',
+        excerpt: 'excerpt3',
+        body: 'body3',
+        created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+        active: true,
+      });
+
+      await store.insertAnnouncement({
+        id: 'id4',
+        publisher: 'publisher4',
+        title: 'title4',
+        excerpt: 'excerpt4',
+        body: 'body4',
+        created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+        active: true,
       });
 
       const announcements = await store.announcements({
@@ -298,8 +336,80 @@ describe('AnnouncementsDatabase', () => {
       });
 
       expect(announcements).toEqual({
+        count: 1,
+        results: [
+          {
+            id: 'id4',
+            publisher: 'publisher4',
+            title: 'title4',
+            excerpt: 'excerpt4',
+            body: 'body4',
+            category: undefined,
+            created_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
+            active: 1,
+          },
+        ],
+      });
+    });
+
+    it('active', async () => {
+      await store.insertAnnouncement({
+        id: 'id',
+        publisher: 'publisher',
+        title: 'title',
+        excerpt: 'excerpt',
+        body: 'body',
+        created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+        active: false,
+      });
+
+      await store.insertAnnouncement({
+        id: 'id2',
+        publisher: 'publisher2',
+        title: 'title2',
+        excerpt: 'excerpt2',
+        body: 'body2',
+        created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+        active: true,
+      });
+
+      await store.insertAnnouncement({
+        id: 'id3',
+        publisher: 'publisher3',
+        title: 'title3',
+        excerpt: 'excerpt3',
+        body: 'body3',
+        created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+        active: false,
+      });
+
+      await store.insertAnnouncement({
+        id: 'id4',
+        publisher: 'publisher4',
+        title: 'title4',
+        excerpt: 'excerpt4',
+        body: 'body4',
+        created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+        active: true,
+      });
+
+      const announcements = await store.announcements({
+        active: true,
+      });
+
+      expect(announcements).toEqual({
         count: 2,
         results: [
+          {
+            id: 'id4',
+            publisher: 'publisher4',
+            title: 'title4',
+            excerpt: 'excerpt4',
+            body: 'body4',
+            category: undefined,
+            created_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
+            active: 1,
+          },
           {
             id: 'id2',
             publisher: 'publisher2',
@@ -308,6 +418,7 @@ describe('AnnouncementsDatabase', () => {
             body: 'body2',
             category: undefined,
             created_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
+            active: 1,
           },
         ],
       });

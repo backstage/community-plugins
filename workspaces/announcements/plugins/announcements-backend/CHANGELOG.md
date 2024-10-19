@@ -1,11 +1,117 @@
-# @backstage-community/plugin-announcements-backend
+# @backstage-community/backstage-plugin-announcements-backend
+
+## 0.10.4
+
+### Patch Changes
+
+- a16f8f9: Fixes an issue with the announcements count returning the incorrect value when filters are applied.
+
+  For example, if there are 2 total announcements in the database, and you request a `max` of 1 announcement, the count would still return 2.
+
+  ```ts
+  // before
+  {
+    count: 2,
+    announcements: [mostRecentAnnouncement]
+  }
+
+
+  // after
+  {
+    count: 1,
+    announcements: [mostRecentAnnouncement]
+  }
+  ```
+
+- cfda065: Adds the ability to activate and deactivate an announcement. This should not be a breaking change. All existing announcements will backfill to `active: true`.
+- Updated dependencies [cfda065]
+  - @backstage-community/backstage-plugin-announcements-common@0.2.8
+  - @backstage-community/backstage-plugin-search-backend-module-announcements@0.3.3
+
+## 0.10.3
+
+### Patch Changes
+
+- c9be1ca: Adds an integration with @backstage/plugins-signals-backend. New announcements will now be displayed in near real-time if your Backstage instance supports signals.
+- Updated dependencies [c9be1ca]
+  - @backstage-community/backstage-plugin-announcements-common@0.2.7
+  - @backstage-community/backstage-plugin-search-backend-module-announcements@0.3.2
+
+## 0.10.2
+
+### Patch Changes
+
+- 75536ca: Internal refactor to remove `export` from unused exported types.
+
+## 0.10.1
+
+### Patch Changes
+
+- 152842c: # Overview
+
+  Adds support for the Backstage event system (@backstage/plugin-events-backend).
+
+  ## Topic
+
+  All events are published to the `announcements` topic.
+
+  ## Event actions
+
+  The following event actions are supported
+
+  ### Announcements
+
+  All announcement payloads include the entire contents of the announcement
+
+  - 'create_announcement': Create a new announcement
+  - 'update_announcement': Update an existing announcement
+  - 'delete_announcement': Delete an existing announcement
+
+  ### Categories
+
+  All category payloads include the category slug.
+
+  - 'create_category': Create a new category
+  - 'delete_category': Delete an existing category
+
+  ## Subscribing to announcement events example
+
+  ```ts
+  import { EVENTS_TOPIC_ANNOUNCEMENTS } from '@backstage-community/backstage-plugin-announcements-common';
+
+  events.subscribe({
+    id: 'announcements-subscriber',
+    topics: [EVENTS_TOPIC_ANNOUNCEMENTS],
+    async onEvent(params): Promise<void> {
+      console.log('Announcement', params);
+    },
+  });
+  ```
+
+- Updated dependencies [152842c]
+  - @backstage-community/backstage-plugin-announcements-common@0.2.6
+  - @backstage-community/backstage-plugin-search-backend-module-announcements@0.3.1
+
+## 0.10.0
+
+### Minor Changes
+
+- ebcc341: Migrate away from winston logger and old services. Replace with coreServices where posisble. It is possible this will be a breaking change for those who have not migrated to the new backend system.
+
+### Patch Changes
+
+- 071914c: bump dependencies and update to the latest version of backstage (1.31.2)
+- Updated dependencies [071914c]
+- Updated dependencies [ebcc341]
+  - @backstage-community/backstage-plugin-search-backend-module-announcements@0.3.0
+  - @backstage-community/backstage-plugin-announcements-common@0.2.5
 
 ## 0.9.3
 
 ### Patch Changes
 
 - Updated dependencies [2bee323]
-  - @backstage-community/plugin-search-backend-module-announcements@0.2.5
+  - @backstage-community/backstage-plugin-search-backend-module-announcements@0.2.5
 
 ## 0.9.2
 
@@ -13,8 +119,8 @@
 
 - 5d34ab8: Update to Backstage 1.30.1
 - Updated dependencies [5d34ab8]
-  - @backstage-community/plugin-search-backend-module-announcements@0.2.4
-  - @backstage-community/plugin-announcements-common@0.2.4
+  - @backstage-community/backstage-plugin-search-backend-module-announcements@0.2.4
+  - @backstage-community/backstage-plugin-announcements-common@0.2.4
 
 ## 0.9.1
 
@@ -22,8 +128,8 @@
 
 - 9937f08: - Adds missing backstage metadata to package.json
 - Updated dependencies [9937f08]
-  - @backstage-community/plugin-search-backend-module-announcements@0.2.3
-  - @backstage-community/plugin-announcements-common@0.2.3
+  - @backstage-community/backstage-plugin-search-backend-module-announcements@0.2.3
+  - @backstage-community/backstage-plugin-announcements-common@0.2.3
 
 ## 0.9.0
 
@@ -56,8 +162,8 @@
 
 - 656ef61: Update to Backstage version 1.27.1
 - Updated dependencies [656ef61]
-  - @backstage-community/plugin-search-backend-module-announcements@0.2.2
-  - @backstage-community/plugin-announcements-common@0.2.2
+  - @backstage-community/backstage-plugin-search-backend-module-announcements@0.2.2
+  - @backstage-community/backstage-plugin-announcements-common@0.2.2
 
 ## 0.6.3
 
@@ -77,8 +183,8 @@
 
 - 3a7ae1a: Bump all packages to latest stable release of Backstage (1.26.4)
 - Updated dependencies [3a7ae1a]
-  - @backstage-community/plugin-search-backend-module-announcements@0.2.1
-  - @backstage-community/plugin-announcements-common@0.2.1
+  - @backstage-community/backstage-plugin-search-backend-module-announcements@0.2.1
+  - @backstage-community/backstage-plugin-announcements-common@0.2.1
 
 ## 0.6.0
 
@@ -89,21 +195,21 @@
 ### Patch Changes
 
 - Updated dependencies [e811647]
-  - @backstage-community/plugin-announcements-common@0.2.0
-  - @backstage-community/plugin-search-backend-module-announcements@0.2.0
+  - @backstage-community/backstage-plugin-announcements-common@0.2.0
+  - @backstage-community/backstage-plugin-search-backend-module-announcements@0.2.0
 
 ## 0.5.4
 
 ### Patch Changes
 
 - 2b03aeb: Consolidate duplicated types into the common package.
-- ee57cf2: Export collators from search backend module and deprecate the collators coming from `announcements-backend`. Users are recommended to update their imports to use `@backstage-community/plugin-search-backend-module-announcements`.
+- ee57cf2: Export collators from search backend module and deprecate the collators coming from `announcements-backend`. Users are recommended to update their imports to use `@backstage-community/backstage-plugin-search-backend-module-announcements`.
 - a0cf0a2: Remove unused api code now that service has been migrated to `announcements-node` and collator has been migrated to `search-backend-module-announcements`
 - Updated dependencies [2b03aeb]
 - Updated dependencies [e5c0685]
 - Updated dependencies [ee57cf2]
-  - @backstage-community/plugin-search-backend-module-announcements@0.1.1
-  - @backstage-community/plugin-announcements-common@0.1.4
+  - @backstage-community/backstage-plugin-search-backend-module-announcements@0.1.1
+  - @backstage-community/backstage-plugin-announcements-common@0.1.4
 
 ## 0.5.3
 
@@ -119,7 +225,7 @@
 
 - 35670f3: Upgrade Backstage to 1.22.1
 - Updated dependencies [35670f3]
-  - @backstage-community/plugin-announcements-common@0.1.3
+  - @backstage-community/backstage-plugin-announcements-common@0.1.3
 
 ## 0.5.1
 
@@ -153,7 +259,7 @@
 - c3c379d: bump backstage to v1.16.0
 - Updated dependencies [90a19ec]
 - Updated dependencies [c3c379d]
-  - @backstage-community/plugin-announcements-common@0.1.2
+  - @backstage-community/backstage-plugin-announcements-common@0.1.2
 
 ## 0.3.4
 
@@ -167,7 +273,7 @@
 
 - 4f7a351: bump all packages
 - Updated dependencies [4f7a351]
-  - @backstage-community/plugin-announcements-common@0.1.1
+  - @backstage-community/backstage-plugin-announcements-common@0.1.1
 
 ## 0.2.0
 
@@ -182,7 +288,7 @@
 - b8c5c87: Paginate results in the announcements page
 - Updated dependencies [793d5b9]
 - Updated dependencies [ab3813f]
-  - @backstage-community/plugin-announcements-common@0.0.7
+  - @backstage-community/backstage-plugin-announcements-common@0.0.7
 
 ## 0.1.4
 
@@ -190,7 +296,7 @@
 
 - 7d25e84: Bump Backstage-related dependencies
 - Updated dependencies [7d25e84]
-  - @backstage-community/plugin-announcements-common@0.0.6
+  - @backstage-community/backstage-plugin-announcements-common@0.0.6
 
 ## 0.1.3
 
@@ -200,21 +306,21 @@
 - 56d5e6d: Try and setup release pipeline to replace 'workspace:\*' version constraints
 - Updated dependencies [0e1d000]
 - Updated dependencies [56d5e6d]
-  - @backstage-community/plugin-announcements-common@0.0.5
+  - @backstage-community/backstage-plugin-announcements-common@0.0.5
 
 ## 0.1.2
 
 ### Patch Changes
 
 - Updated dependencies [9bdc37d]
-  - @backstage-community/plugin-announcements-common@0.0.4
+  - @backstage-community/backstage-plugin-announcements-common@0.0.4
 
 ## 0.1.1
 
 ### Patch Changes
 
 - Updated dependencies [6c9bf32]
-  - @backstage-community/plugin-announcements-common@0.0.3
+  - @backstage-community/backstage-plugin-announcements-common@0.0.3
 
 ## 0.1.0
 
@@ -227,7 +333,7 @@
 - 0c12eea: Bump Backstage dependencies
 - Updated dependencies [062aca5]
 - Updated dependencies [0c12eea]
-  - @backstage-community/plugin-announcements-common@0.0.2
+  - @backstage-community/backstage-plugin-announcements-common@0.0.2
 
 ## 0.0.5
 

@@ -3,7 +3,7 @@ import { announcementsApiRef } from '../apis';
 import {
   AnnouncementsFilters,
   AnnouncementsList,
-} from '@backstage-community/plugin-announcements-common';
+} from '@backstage/community-plugins/backstage-plugin-announcements-common';
 import { useAsyncRetry } from 'react-use';
 
 type UseAnnouncementsPropOptions = {

@@ -11,12 +11,12 @@ import {
   CreateAnnouncementRequest,
   CreateCategoryRequest,
   AnnouncementsApi,
-} from '@backstage-community/plugin-announcements-react';
+} from '@backstage/community-plugins/backstage-plugin-announcements-react';
 import {
   Announcement,
   AnnouncementsList,
   Category,
-} from '@backstage-community/plugin-announcements-common';
+} from '@backstage/community-plugins/backstage-plugin-announcements-common';
 
 const lastSeenKey = 'user_last_seen_date';
 
@@ -88,10 +88,12 @@ export class AnnouncementsClient implements AnnouncementsApi {
     max,
     page,
     category,
+    active,
   }: {
     max?: number;
     page?: number;
     category?: string;
+    active?: boolean;
   }): Promise<AnnouncementsList> {
     const params = new URLSearchParams();
     if (category) {
@@ -102,6 +104,9 @@ export class AnnouncementsClient implements AnnouncementsApi {
     }
     if (page) {
       params.append('page', page.toString());
+    }
+    if (active) {
+      params.append('active', active.toString());
     }
 
     return this.fetch<AnnouncementsList>(`/announcements?${params.toString()}`);

@@ -1,11 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import MDEditor from '@uiw/react-md-editor';
 import { InfoCard } from '@backstage/core-components';
 import { identityApiRef, useApi } from '@backstage/core-plugin-api';
-import { Button, makeStyles, TextField } from '@material-ui/core';
-import { CreateAnnouncementRequest } from '@backstage-community/plugin-announcements-react';
-import { Announcement } from '@backstage-community/plugin-announcements-common';
+import makeStyles from '@mui/styles/makeStyles';
+import { CreateAnnouncementRequest } from '@backstage/community-plugins/backstage-plugin-announcements-react';
+import { Announcement } from '@backstage/community-plugins/backstage-plugin-announcements-common';
 import CategoryInput from './CategoryInput';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Switch from '@mui/material/Switch';
 
 const useStyles = makeStyles(theme => ({
   formRoot: {
@@ -15,7 +20,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export type AnnouncementFormProps = {
+type AnnouncementFormProps = {
   initialData: Announcement;
   onSubmit: (data: CreateAnnouncementRequest) => Promise<void>;
 };
@@ -26,16 +31,24 @@ export const AnnouncementForm = ({
 }: AnnouncementFormProps) => {
   const classes = useStyles();
   const identityApi = useApi(identityApiRef);
+
   const [form, setForm] = React.useState({
     ...initialData,
     category: initialData.category?.slug,
   });
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setForm({
       ...form,
       [event.target.id]: event.target.value,
+    });
+  };
+
+  const handleChangeActive = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setForm({
+      ...form,
+      [event.target.name]: event.target.checked,
     });
   };
 
@@ -90,6 +103,18 @@ export const AnnouncementForm = ({
           style={{ minHeight: '30rem' }}
           onChange={value => setForm({ ...form, ...{ body: value || '' } })}
         />
+        <FormGroup>
+          <FormControlLabel
+            control={
+              <Switch
+                name="active"
+                checked={form.active}
+                onChange={handleChangeActive}
+              />
+            }
+            label="Active"
+          />
+        </FormGroup>
         <Button
           variant="contained"
           color="primary"

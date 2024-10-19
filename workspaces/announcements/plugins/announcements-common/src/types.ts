@@ -11,6 +11,7 @@ export type Announcement = {
   excerpt: string;
   body: string;
   created_at: string;
+  active: boolean;
 };
 
 export type AnnouncementsList = {
@@ -23,4 +24,9 @@ export type AnnouncementsFilters = {
   offset?: number;
   category?: string;
   page?: number;
+  active?: boolean;
+};
+
+export type AnnouncementSignal = {
+  data: Announcement;
 };

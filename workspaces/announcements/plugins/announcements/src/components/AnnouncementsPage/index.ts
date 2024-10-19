@@ -1,1 +1,4 @@
-export { AnnouncementsPage } from './AnnouncementsPage';
+export {
+  AnnouncementsPage,
+  type AnnouncementsPageProps,
+} from './AnnouncementsPage';

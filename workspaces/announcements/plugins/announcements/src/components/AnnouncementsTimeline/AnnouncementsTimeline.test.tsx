@@ -6,11 +6,11 @@ import {
 import React from 'react';
 import { TestApiProvider, renderInTestApp } from '@backstage/test-utils';
 import { rootRouteRef } from '../../routes';
-import { AnnouncementsList } from '@backstage-community/plugin-announcements-common';
+import { AnnouncementsList } from '@backstage/community-plugins/backstage-plugin-announcements-common';
 import {
   AnnouncementsApi,
   announcementsApiRef,
-} from '@backstage-community/plugin-announcements-react';
+} from '@backstage/community-plugins/backstage-plugin-announcements-react';
 
 const renderMockTimelineComponent = async ({
   announcements,
@@ -61,6 +61,7 @@ describe('AnnouncementsTimeline', () => {
           body: 'Body 1',
           publisher: 'Publisher 1',
           created_at: '2022-01-01',
+          active: true,
         },
         {
           id: '2',
@@ -69,6 +70,7 @@ describe('AnnouncementsTimeline', () => {
           body: 'Body 2',
           publisher: 'Publisher 2',
           created_at: '2022-01-02',
+          active: true,
         },
       ],
     };

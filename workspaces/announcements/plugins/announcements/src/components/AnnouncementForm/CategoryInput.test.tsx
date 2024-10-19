@@ -5,7 +5,7 @@ import userEvent from '@testing-library/user-event';
 import { TestApiProvider } from '@backstage/test-utils';
 
 import CategoryInput from './CategoryInput';
-import { announcementsApiRef } from '@backstage-community/plugin-announcements-react';
+import { announcementsApiRef } from '@backstage/community-plugins/backstage-plugin-announcements-react';
 import { renderInTestApp } from '@backstage/test-utils';
 
 const categories = [
@@ -13,17 +13,22 @@ const categories = [
   { title: 'World', slug: 'world' },
 ];
 
-jest.mock('@backstage-community/plugin-announcements-react', () => ({
-  ...jest.requireActual('@backstage-community/plugin-announcements-react'),
-  useCategories: () => {
-    return {
-      categories,
-      loading: false,
-      error: undefined,
-      retry: jest.fn(),
-    };
-  },
-}));
+jest.mock(
+  '@backstage/community-plugins/backstage-plugin-announcements-react',
+  () => ({
+    ...jest.requireActual(
+      '@backstage/community-plugins/backstage-plugin-announcements-react',
+    ),
+    useCategories: () => {
+      return {
+        categories,
+        loading: false,
+        error: undefined,
+        retry: jest.fn(),
+      };
+    },
+  }),
+);
 
 describe('CategoryInput', () => {
   const mockSetForm: (
@@ -35,6 +40,7 @@ describe('CategoryInput', () => {
       excerpt: string;
       body: string;
       created_at: string;
+      active: boolean;
     }>,
   ) => void = jest.fn();
 
@@ -46,6 +52,7 @@ describe('CategoryInput', () => {
     excerpt: 'excerpt',
     body: 'body',
     created_at: 'created_at',
+    active: true,
   };
 
   const announcementsApiMock = { categories: jest.fn() };

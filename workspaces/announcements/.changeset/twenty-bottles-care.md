@@ -7,4 +7,4 @@
 '@backstage-community/announcements': minor
 ---
 
-Migrates the existing [announcements plugins](https://github.com/procore-oss/backstage-plugin-announcements) to @backstage-community. This change will benefit from the new `@backstage-community` namespace and will allow for easier maintenance and collaboration.
+Migrates the existing [announcements plugins](https://github.com/backstage-community/backstage-plugin-announcements) to @backstage-community. This change will benefit from the new `@backstage-community` namespace and will allow for easier maintenance and collaboration.

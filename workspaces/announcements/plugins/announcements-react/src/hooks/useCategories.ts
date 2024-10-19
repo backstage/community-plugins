@@ -1,6 +1,6 @@
 import { useApi } from '@backstage/core-plugin-api';
 import { announcementsApiRef } from '../apis';
-import { Category } from '@backstage-community/plugin-announcements-common';
+import { Category } from '@backstage/community-plugins/backstage-plugin-announcements-common';
 import { useAsyncRetry } from 'react-use';
 
 export const useCategories = (): {

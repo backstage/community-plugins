@@ -1,5 +1,4 @@
 import { useRouteRef } from '@backstage/core-plugin-api';
-import { Typography, Box } from '@material-ui/core';
 import {
   Timeline,
   TimelineItem,
@@ -8,14 +7,16 @@ import {
   TimelineConnector,
   TimelineDot,
   TimelineSeparator,
-} from '@material-ui/lab';
+} from '@mui/lab';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Stack from '@mui/material/Stack';
 import { DateTime } from 'luxon';
 import { announcementViewRouteRef } from '../../routes';
-import { useAnnouncements } from '@backstage-community/plugin-announcements-react';
+import { useAnnouncements } from '@backstage/community-plugins/backstage-plugin-announcements-react';
 import { Progress } from '@backstage/core-components';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 
 /**
  * Props for the AnnouncementsTimeline component.
@@ -36,6 +37,11 @@ export type AnnouncementsTimelineProps = {
    * Default: '425px'
    */
   timelineMinWidth?: string;
+  /**
+   * Whether to only show active announcements.
+   * Default: false
+   */
+  hideInactive?: boolean;
 };
 
 /**
@@ -54,6 +60,11 @@ const DEFAULT_TIMELINE_WIDTH = '425px';
 const DEFAULT_RESULTS_MAX = 10;
 
 /**
+ * Default setting for only displaying active annoucenments.
+ */
+const DEFAULT_INACTIVE = false;
+
+/**
  * Timeline of most recent announcements.
  *
  * @param options - The options for the announcements timeline.
@@ -63,11 +74,13 @@ export const AnnouncementsTimeline = ({
   maxResults = DEFAULT_RESULTS_MAX,
   timelineAlignment = DEFAULT_TIMELINE_ALIGNMENT,
   timelineMinWidth = DEFAULT_TIMELINE_WIDTH,
+  hideInactive = DEFAULT_INACTIVE,
 }: AnnouncementsTimelineProps) => {
   const viewAnnouncementLink = useRouteRef(announcementViewRouteRef);
 
   const { announcements, loading, error } = useAnnouncements({
     max: maxResults,
+    active: hideInactive,
   });
 
   if (loading) {
@@ -86,7 +99,7 @@ export const AnnouncementsTimeline = ({
       spacing={0}
     >
       <Box sx={{ minWidth: timelineMinWidth }}>
-        <Timeline align={timelineAlignment}>
+        <Timeline position={timelineAlignment}>
           {announcements.results.map(a => (
             <TimelineItem key={`ti-${a.id}`}>
               <TimelineOppositeContent

@@ -8,16 +8,9 @@ import {
   Progress,
 } from '@backstage/core-components';
 import { useApi, useRouteRef } from '@backstage/core-plugin-api';
-import { announcementEntityPermissions } from '@backstage-community/plugin-announcements-common';
-import {
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  makeStyles,
-} from '@material-ui/core';
-import { Alert } from '@material-ui/lab';
-import NewReleasesIcon from '@material-ui/icons/NewReleases';
+import { announcementEntityPermissions } from '@backstage/community-plugins/backstage-plugin-announcements-common';
+import makeStyles from '@mui/styles/makeStyles';
+import NewReleasesIcon from '@mui/icons-material/NewReleases';
 import {
   announcementCreateRouteRef,
   announcementViewRouteRef,
@@ -26,7 +19,12 @@ import {
 import {
   announcementsApiRef,
   useAnnouncements,
-} from '@backstage-community/plugin-announcements-react';
+} from '@backstage/community-plugins/backstage-plugin-announcements-react';
+import Alert from '@mui/material/Alert';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
 
 const useStyles = makeStyles({
   newAnnouncementIcon: {
@@ -38,6 +36,7 @@ type AnnouncementsCardOpts = {
   title?: string;
   max?: number;
   category?: string;
+  active?: boolean;
   variant?: InfoCardVariants;
 };
 
@@ -45,6 +44,7 @@ export const AnnouncementsCard = ({
   title,
   max,
   category,
+  active,
   variant = 'gridItem',
 }: AnnouncementsCardOpts) => {
   const classes = useStyles();
@@ -57,6 +57,7 @@ export const AnnouncementsCard = ({
   const { announcements, loading, error } = useAnnouncements({
     max: max || 5,
     category,
+    active,
   });
 
   const { announcementCreatePermission } = announcementEntityPermissions;

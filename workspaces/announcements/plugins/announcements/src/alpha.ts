@@ -1,5 +1,8 @@
 import { convertLegacyRouteRefs } from '@backstage/core-compat-api';
-import { BackstagePlugin, createPlugin } from '@backstage/frontend-plugin-api';
+import {
+  createFrontendPlugin,
+  FrontendPlugin,
+} from '@backstage/frontend-plugin-api';
 import { announcementsApiExtension } from './alpha/apis';
 import { entityAnnouncementsCard } from './alpha/entityCards';
 import { announcementsNavItem } from './alpha/navItems';
@@ -9,7 +12,7 @@ import { rootRouteRef } from './routes';
 /**
  * @alpha
  */
-export default createPlugin({
+export default createFrontendPlugin({
   id: 'announcements',
   routes: convertLegacyRouteRefs({
     root: rootRouteRef,
@@ -20,4 +23,4 @@ export default createPlugin({
     announcementsPage,
     announcementsNavItem,
   ],
-}) as BackstagePlugin;
+}) as FrontendPlugin;

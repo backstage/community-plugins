@@ -1,21 +1,24 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { DateTime } from 'luxon';
 import { Link } from '@backstage/core-components';
 import { useApi, useRouteRef } from '@backstage/core-plugin-api';
-import {
-  IconButton,
-  makeStyles,
-  Snackbar,
-  SnackbarContent,
-} from '@material-ui/core';
-import { Alert } from '@material-ui/lab';
-import Close from '@material-ui/icons/Close';
+import makeStyles from '@mui/styles/makeStyles';
+import Close from '@mui/icons-material/Close';
 import { announcementViewRouteRef } from '../../routes';
 import {
   announcementsApiRef,
   useAnnouncements,
-} from '@backstage-community/plugin-announcements-react';
-import { Announcement } from '@backstage-community/plugin-announcements-common';
+} from '@backstage/community-plugins/backstage-plugin-announcements-react';
+import {
+  Announcement,
+  AnnouncementSignal,
+  SIGNALS_CHANNEL_ANNOUNCEMENTS,
+} from '@backstage/community-plugins/backstage-plugin-announcements-common';
+import { useSignal } from '@backstage/plugin-signals-react';
+import Snackbar from '@mui/material/Snackbar';
+import SnackbarContent from '@mui/material/SnackbarContent';
+import IconButton from '@mui/material/IconButton';
+import Alert from '@mui/material/Alert';
 
 const useStyles = makeStyles(theme => ({
   // showing on top, as a block
@@ -98,6 +101,7 @@ const AnnouncementBanner = (props: AnnouncementBannerProps) => {
             title="Mark as seen"
             color="inherit"
             onClick={handleClick}
+            size="large"
           >
             <Close className={classes.icon} />
           </IconButton>,
@@ -111,16 +115,36 @@ type NewAnnouncementBannerProps = {
   variant?: 'block' | 'floating';
   max?: number;
   category?: string;
+  active?: boolean;
 };
 
 export const NewAnnouncementBanner = (props: NewAnnouncementBannerProps) => {
+  const { max, category, active, variant } = props;
+
   const announcementsApi = useApi(announcementsApiRef);
 
+  const [signaledAnnouncement, setSignaledAnnouncement] = useState<
+    AnnouncementSignal['data'] | undefined
+  >();
+
   const { announcements, loading, error } = useAnnouncements({
-    max: props.max || 1,
-    category: props.category,
+    max: max ?? 1,
+    category,
+    active,
   });
   const lastSeen = announcementsApi.lastSeenDate();
+
+  const { lastSignal } = useSignal<AnnouncementSignal>(
+    SIGNALS_CHANNEL_ANNOUNCEMENTS,
+  );
+
+  useEffect(() => {
+    if (!lastSignal) {
+      return;
+    }
+
+    setSignaledAnnouncement(lastSignal?.data);
+  }, [lastSignal]);
 
   if (loading) {
     return null;
@@ -136,6 +160,10 @@ export const NewAnnouncementBanner = (props: NewAnnouncementBannerProps) => {
     return lastSeen < DateTime.fromISO(announcement.created_at);
   });
 
+  if (signaledAnnouncement) {
+    unseenAnnouncements.push(signaledAnnouncement);
+  }
+
   if (unseenAnnouncements?.length === 0) {
     return null;
   }
@@ -146,7 +174,7 @@ export const NewAnnouncementBanner = (props: NewAnnouncementBannerProps) => {
         <AnnouncementBanner
           key={announcement.id}
           announcement={announcement}
-          variant={props.variant}
+          variant={variant}
         />
       ))}
     </>

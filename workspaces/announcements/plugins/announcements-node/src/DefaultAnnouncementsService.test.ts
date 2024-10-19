@@ -1,18 +1,22 @@
-import { setupRequestMockHandlers } from '@backstage/test-utils';
+import { registerMswTestHooks } from '@backstage/test-utils';
 import { DefaultAnnouncementsService } from './DefaultAnnouncementsService';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
+import { mockServices } from '@backstage/backend-test-utils';
 
 describe('DefaultAnnouncementsService', () => {
   const server = setupServer();
   const mockBaseUrl = 'http://localhost:7007/api/';
-  const discoveryApi = { getBaseUrl: async () => mockBaseUrl };
 
-  setupRequestMockHandlers(server);
+  registerMswTestHooks(server);
 
   let client: DefaultAnnouncementsService;
   beforeEach(() => {
-    client = new DefaultAnnouncementsService({ discoveryApi });
+    client = new DefaultAnnouncementsService({
+      discoveryApi: mockServices.discovery.mock({
+        getBaseUrl: jest.fn().mockReturnValue(mockBaseUrl),
+      }),
+    });
     server.listen();
   });
 

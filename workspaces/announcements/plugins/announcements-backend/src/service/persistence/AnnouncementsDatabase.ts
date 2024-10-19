@@ -4,7 +4,7 @@ import { AnnouncementModel } from '../model';
 import {
   AnnouncementsFilters,
   Announcement,
-} from '@backstage-community/plugin-announcements-common';
+} from '@backstage/community-plugins/backstage-plugin-announcements-common';
 import slugify from 'slugify';
 
 const announcementsTable = 'announcements';
@@ -14,11 +14,11 @@ type AnnouncementUpsert = Omit<Announcement, 'category' | 'created_at'> & {
   created_at: DateTime;
 };
 
-export type DbAnnouncement = Omit<Announcement, 'category'> & {
+type DbAnnouncement = Omit<Announcement, 'category'> & {
   category?: string;
 };
 
-export type DbAnnouncementWithCategory = DbAnnouncement & {
+type DbAnnouncementWithCategory = DbAnnouncement & {
   category_slug?: string;
   category_title?: string;
 };
@@ -58,6 +58,7 @@ const announcementUpsertToDB = (
     body: announcement.body,
     publisher: announcement.publisher,
     created_at: announcement.created_at.toSQL()!,
+    active: announcement.active,
   };
 };
 
@@ -78,6 +79,7 @@ const DBToAnnouncementWithCategory = (
     body: announcementDb.body,
     publisher: announcementDb.publisher,
     created_at: timestampToDateTime(announcementDb.created_at),
+    active: announcementDb.active,
   };
 };
 
@@ -87,16 +89,17 @@ export class AnnouncementsDatabase {
   async announcements(
     request: AnnouncementsFilters,
   ): Promise<AnnouncementModelsList> {
+    const { category, offset, max, active } = request;
+
     const countQueryBuilder = this.db<DbAnnouncement>(announcementsTable).count<
       Record<string, number>
     >('id', { as: 'total' });
 
-    if (request.category) {
-      countQueryBuilder.where('category', request.category);
+    if (category) {
+      countQueryBuilder.where('category', category);
     }
 
     const countResult = await countQueryBuilder.first();
-
     const queryBuilder = this.db<DbAnnouncementWithCategory>(announcementsTable)
       .select(
         'id',
@@ -107,46 +110,65 @@ export class AnnouncementsDatabase {
         'category',
         'created_at',
         'categories.title as category_title',
+        'active',
       )
       .orderBy('created_at', 'desc')
       .leftJoin('categories', 'announcements.category', 'categories.slug');
 
-    if (request.category) {
-      queryBuilder.where('category', request.category);
+    if (category) {
+      queryBuilder.where('category', category);
     }
-    if (request.offset) {
-      queryBuilder.offset(request.offset);
+    if (offset) {
+      queryBuilder.offset(offset);
     }
-    if (request.max) {
-      queryBuilder.limit(request.max);
+    if (max) {
+      queryBuilder.limit(max);
+    }
+    if (active) {
+      queryBuilder.where('active', active);
+    }
+
+    const results = (await queryBuilder.select()).map(
+      DBToAnnouncementWithCategory,
+    );
+
+    let count =
+      countResult && countResult.total
+        ? parseInt(countResult.total.toString(), 10)
+        : 0;
+
+    /*
+     * If we have a filter, we need to calculate the count
+     * based on the results we have, as the count query will not
+     * take into account the filter (i.e., limit and offset).
+     */
+    if (max || offset || active) {
+      count = results.length;
     }
 
     return {
-      count:
-        countResult && countResult.total
-          ? parseInt(countResult.total.toString(), 10)
-          : 0,
-      results: (await queryBuilder.select()).map(DBToAnnouncementWithCategory),
+      count,
+      results,
     };
   }
 
   async announcementByID(id: string): Promise<AnnouncementModel | undefined> {
-    const dbAnnouncement = await this.db<DbAnnouncementWithCategory>(
-      announcementsTable,
-    )
-      .select(
-        'id',
-        'publisher',
-        'announcements.title',
-        'excerpt',
-        'body',
-        'category',
-        'created_at',
-        'categories.title as category_title',
-      )
-      .leftJoin('categories', 'announcements.category', 'categories.slug')
-      .where('id', id)
-      .first();
+    const dbAnnouncement: DbAnnouncementWithCategory =
+      await this.db<DbAnnouncementWithCategory>(announcementsTable)
+        .select(
+          'id',
+          'publisher',
+          'announcements.title',
+          'excerpt',
+          'body',
+          'category',
+          'created_at',
+          'categories.title as category_title',
+          'active',
+        )
+        .leftJoin('categories', 'announcements.category', 'categories.slug')
+        .where('id', id)
+        .first();
     if (!dbAnnouncement) {
       return undefined;
     }
@@ -165,7 +187,13 @@ export class AnnouncementsDatabase {
       announcementUpsertToDB(announcement),
     );
 
-    return (await this.announcementByID(announcement.id))!;
+    const newAnnouncement = await this.announcementByID(announcement.id);
+
+    if (!newAnnouncement) {
+      throw new Error('Failed to insert announcement');
+    }
+
+    return newAnnouncement;
   }
 
   async updateAnnouncement(

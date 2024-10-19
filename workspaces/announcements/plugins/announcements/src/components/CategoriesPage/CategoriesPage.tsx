@@ -7,33 +7,20 @@ import {
   TableColumn,
   ErrorPanel,
 } from '@backstage/core-components';
-import { Button, IconButton, makeStyles } from '@material-ui/core';
-import AddIcon from '@material-ui/icons/Add';
-import DeleteIcon from '@material-ui/icons/Delete';
+import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { NewCategoryDialog } from '../NewCategoryDialog';
-import { useCategories } from '@backstage-community/plugin-announcements-react';
-import { Category } from '@backstage-community/plugin-announcements-common';
+import { useCategories } from '@backstage/community-plugins/backstage-plugin-announcements-react';
+import { Category } from '@backstage/community-plugins/backstage-plugin-announcements-common';
 import { useDeleteCategoryDialogState } from './useDeleteCategoryDialogState';
 import { alertApiRef, useApi } from '@backstage/core-plugin-api';
-import { announcementsApiRef } from '@backstage-community/plugin-announcements-react';
+import { announcementsApiRef } from '@backstage/community-plugins/backstage-plugin-announcements-react';
 import { DeleteCategoryDialog } from './DeleteCategoryDialog';
 import { ResponseError } from '@backstage/errors';
-
-const useStyles = makeStyles(theme => ({
-  container: {
-    width: 850,
-  },
-  empty: {
-    padding: theme.spacing(1),
-    display: 'flex',
-    justifyContent: 'center',
-    flexDirection: 'column',
-    textAlign: 'center',
-  },
-}));
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
 
 const CategoriesTable = () => {
-  const classes = useStyles();
   const [newCategoryDialogOpen, setNewCategoryDialogOpen] = useState(false);
   const announcementsApi = useApi(announcementsApiRef);
   const alertApi = useApi(alertApiRef);
@@ -91,7 +78,7 @@ const CategoriesTable = () => {
       field: 'actions',
       render: category => {
         return (
-          <IconButton onClick={() => openDeleteDialog(category)}>
+          <IconButton onClick={() => openDeleteDialog(category)} size="large">
             <DeleteIcon />
           </IconButton>
         );
@@ -115,20 +102,7 @@ const CategoriesTable = () => {
             onClick: _event => setNewCategoryDialogOpen(true),
           },
         ]}
-        emptyContent={
-          <div className={classes.empty}>
-            <p>No category was created yet.</p>
-            <p>
-              <Button
-                color="primary"
-                variant="outlined"
-                onClick={() => setNewCategoryDialogOpen(true)}
-              >
-                Add category
-              </Button>
-            </p>
-          </div>
-        }
+        emptyContent={<Typography p={2}>No categories found</Typography>}
       />
       <NewCategoryDialog
         open={newCategoryDialogOpen}

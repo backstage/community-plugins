@@ -1,13 +1,15 @@
 import { Readable } from 'stream';
-import { Logger } from 'winston';
-import { DiscoveryApi } from '@backstage/core-plugin-api';
 import {
   DocumentCollatorFactory,
   IndexableDocument,
 } from '@backstage/plugin-search-common';
-import { DefaultAnnouncementsService } from '@backstage-community/plugin-announcements-node';
-import { Announcement } from '@backstage-community/plugin-announcements-common';
-import { AuthService } from '@backstage/backend-plugin-api';
+import { DefaultAnnouncementsService } from '@backstage/community-plugins/backstage-plugin-announcements-node';
+import { Announcement } from '@backstage/community-plugins/backstage-plugin-announcements-common';
+import {
+  AuthService,
+  DiscoveryService,
+  LoggerService,
+} from '@backstage/backend-plugin-api';
 
 type IndexableAnnouncementDocument = IndexableDocument & {
   excerpt: string;
@@ -15,15 +17,15 @@ type IndexableAnnouncementDocument = IndexableDocument & {
 };
 
 type AnnouncementCollatorOptions = {
-  logger: Logger;
-  discoveryApi: DiscoveryApi;
+  logger: LoggerService;
+  discoveryApi: DiscoveryService;
   auth: AuthService;
 };
 
 export class AnnouncementCollatorFactory implements DocumentCollatorFactory {
   public readonly type: string = 'announcements';
 
-  private logger: Logger;
+  private logger: LoggerService;
   private announcementsClient: DefaultAnnouncementsService;
   private auth: AuthService;
 

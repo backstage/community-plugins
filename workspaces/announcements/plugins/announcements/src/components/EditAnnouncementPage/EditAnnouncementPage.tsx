@@ -6,13 +6,13 @@ import {
   useApi,
   useRouteRefParams,
 } from '@backstage/core-plugin-api';
-import { Alert } from '@material-ui/lab';
 import { AnnouncementForm } from '../AnnouncementForm';
 import { announcementEditRouteRef } from '../../routes';
 import {
   announcementsApiRef,
   CreateAnnouncementRequest,
-} from '@backstage-community/plugin-announcements-react';
+} from '@backstage/community-plugins/backstage-plugin-announcements-react';
+import Alert from '@mui/material/Alert';
 
 type EditAnnouncementPageProps = {
   themeId: string;

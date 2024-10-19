@@ -1,4 +1,4 @@
-import { Announcement } from '@backstage-community/plugin-announcements-common';
+import { Announcement } from '@backstage/community-plugins/backstage-plugin-announcements-common';
 
 export type CreateAnnouncementRequest = Omit<
   Announcement,

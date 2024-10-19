@@ -1,16 +1,20 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRouteRef } from '@backstage/core-plugin-api';
-import IconButton from '@material-ui/core/IconButton';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import MenuItem from '@material-ui/core/MenuItem';
-import MenuList from '@material-ui/core/MenuList';
-import Popover from '@material-ui/core/Popover';
-import { makeStyles } from '@material-ui/core/styles';
-import Description from '@material-ui/icons/Description';
-import MoreVert from '@material-ui/icons/MoreVert';
-import { categoriesListRouteRef } from '../../routes';
+import IconButton from '@mui/material/IconButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import MenuItem from '@mui/material/MenuItem';
+import MenuList from '@mui/material/MenuList';
+import Popover from '@mui/material/Popover';
+import makeStyles from '@mui/styles/makeStyles';
+import Description from '@mui/icons-material/Description';
+import MoreVert from '@mui/icons-material/MoreVert';
+import {
+  announcementAdminRouteRef,
+  categoriesListRouteRef,
+} from '../../routes';
+import Box from '@mui/material/Box';
 
 const useStyles = makeStyles({
   button: {
@@ -21,6 +25,7 @@ const useStyles = makeStyles({
 export function ContextMenu() {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement>();
+  const announcementsLink = useRouteRef(announcementAdminRouteRef);
   const categoriesLink = useRouteRef(categoriesListRouteRef);
   const navigate = useNavigate();
 
@@ -33,7 +38,7 @@ export function ContextMenu() {
   };
 
   return (
-    <>
+    <Box data-testid="announcements-context-menu">
       <IconButton
         aria-label="more"
         aria-controls="long-menu"
@@ -42,6 +47,7 @@ export function ContextMenu() {
         data-testid="menu-button"
         color="inherit"
         className={classes.button}
+        size="large"
       >
         <MoreVert />
       </IconButton>
@@ -53,6 +59,12 @@ export function ContextMenu() {
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
         <MenuList>
+          <MenuItem onClick={() => navigate(announcementsLink())}>
+            <ListItemIcon>
+              <Description fontSize="small" />
+            </ListItemIcon>
+            <ListItemText primary="Admin" />
+          </MenuItem>
           <MenuItem onClick={() => navigate(categoriesLink())}>
             <ListItemIcon>
               <Description fontSize="small" />
@@ -61,6 +73,6 @@ export function ContextMenu() {
           </MenuItem>
         </MenuList>
       </Popover>
-    </>
+    </Box>
   );
 }

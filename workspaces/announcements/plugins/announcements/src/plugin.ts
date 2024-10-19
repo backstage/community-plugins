@@ -15,7 +15,7 @@ import {
 import { AnnouncementsClient } from './api';
 import { AnnouncementSearchResultProps } from './components/AnnouncementSearchResultListItem';
 import { rootRouteRef } from './routes';
-import { announcementsApiRef } from '@backstage-community/plugin-announcements-react';
+import { announcementsApiRef } from '@backstage/community-plugins/backstage-plugin-announcements-react';
 
 export const announcementsPlugin = createPlugin({
   id: 'announcements',
@@ -47,6 +47,14 @@ export const AnnouncementsPage = announcementsPlugin.provide(
   createRoutableExtension({
     name: 'AnnouncementsPage',
     component: () => import('./components/Router').then(m => m.Router),
+    mountPoint: rootRouteRef,
+  }),
+);
+
+export const AnnouncementsAdminPortal = announcementsPlugin.provide(
+  createRoutableExtension({
+    name: 'AnnouncementsAdminPortal',
+    component: () => import('./components/Admin').then(m => m.AdminPortal),
     mountPoint: rootRouteRef,
   }),
 );

@@ -8,7 +8,7 @@ import { screen, waitFor } from '@testing-library/react';
 import {
   AnnouncementsApi,
   announcementsApiRef,
-} from '@backstage-community/plugin-announcements-react';
+} from '@backstage/community-plugins/backstage-plugin-announcements-react';
 import { DateTime } from 'luxon';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import React from 'react';

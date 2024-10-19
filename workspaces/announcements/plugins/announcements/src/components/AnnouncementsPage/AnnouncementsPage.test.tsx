@@ -8,8 +8,8 @@ import { AnnouncementsPage } from './AnnouncementsPage';
 import { rootRouteRef } from '../../routes';
 import { permissionApiRef } from '@backstage/plugin-permission-react';
 import { catalogApiRef, entityRouteRef } from '@backstage/plugin-catalog-react';
-import { fireEvent } from '@testing-library/react';
-import { announcementsApiRef } from '@backstage-community/plugin-announcements-react';
+import { fireEvent, screen } from '@testing-library/react';
+import { announcementsApiRef } from '@backstage/community-plugins/backstage-plugin-announcements-react';
 
 const mockAnnouncements = [
   {
@@ -36,7 +36,7 @@ describe('AnnouncementsPage', () => {
   };
 
   it('should render', async () => {
-    const rendered = await renderInTestApp(
+    await renderInTestApp(
       <TestApiProvider
         apis={[
           [permissionApiRef, mockPermissionApi],
@@ -53,12 +53,38 @@ describe('AnnouncementsPage', () => {
         },
       },
     );
-    expect(rendered.getByText('Announcements')).toBeInTheDocument();
+    expect(screen.getByText('Announcements')).toBeInTheDocument();
+  });
+
+  it('should hide context menu', async () => {
+    await renderInTestApp(
+      <TestApiProvider
+        apis={[
+          [permissionApiRef, mockPermissionApi],
+          [announcementsApiRef, mockAnnouncementsApi],
+          [catalogApiRef, mockCatalogApi],
+        ]}
+      >
+        <AnnouncementsPage
+          themeId="home"
+          title="Announcements"
+          hideContextMenu
+        />
+      </TestApiProvider>,
+      {
+        mountedRoutes: {
+          '/announcements': rootRouteRef,
+          '/catalog/:namespace/:kind/:name': entityRouteRef,
+        },
+      },
+    );
+
+    expect(screen.queryByTestId('announcements-context-menu')).toBeNull();
   });
 
   describe('AnnouncementCard', () => {
     it('should render announcement card title', async () => {
-      const rendered = await renderInTestApp(
+      await renderInTestApp(
         <TestApiProvider
           apis={[
             [permissionApiRef, mockPermissionApi],
@@ -75,13 +101,13 @@ describe('AnnouncementsPage', () => {
           },
         },
       );
-      expect(rendered.getByText('Announcements')).toBeInTheDocument();
-      expect(rendered.getByText('announcement-title')).toBeInTheDocument();
-      expect(rendered.getByText('excerpt')).toBeInTheDocument();
+      expect(screen.getByText('Announcements')).toBeInTheDocument();
+      expect(screen.getByText('announcement-title')).toBeInTheDocument();
+      expect(screen.getByText('excerpt')).toBeInTheDocument();
     });
 
     it('should render with overridden announcement card length', async () => {
-      const rendered = await renderInTestApp(
+      await renderInTestApp(
         <TestApiProvider
           apis={[
             [permissionApiRef, mockPermissionApi],
@@ -104,15 +130,13 @@ describe('AnnouncementsPage', () => {
         },
       );
 
-      expect(rendered.getByText('Announcements')).toBeInTheDocument();
-      expect(rendered.queryByText('announcement-title')).toBeNull();
-      expect(rendered.getByText('announcement-...')).toBeInTheDocument();
-      expect(rendered.getByText('New customNoun')).toBeInTheDocument();
+      expect(screen.getByText('Announcements')).toBeInTheDocument();
+      expect(screen.queryByText('announcement-title')).toBeNull();
+      expect(screen.getByText('announcement-...')).toBeInTheDocument();
+      expect(screen.getByText('New customNoun')).toBeInTheDocument();
 
-      fireEvent.mouseOver(rendered.getByText('announcement-...'));
-      expect(
-        await rendered.findByText('announcement-title'),
-      ).toBeInTheDocument();
+      fireEvent.mouseOver(screen.getByText('announcement-...'));
+      expect(await screen.findByText('announcement-title')).toBeInTheDocument();
     });
   });
 });

@@ -18,32 +18,46 @@ Are you looking to install the announcements plugin? See the project's [installa
 # install dependencies
 yarn install
 
+# set .env
+cp env.sample .env
+source .env
+
 # start the backend
 yarn start
 ```
 
 ### Database
 
-The plugin includes a better-sqlite3 database seeded with categories and announcements.
+The plugin includes support for postgres and better-sqlite3 databases. By default, the plugin uses a postgres database via docker-compose. Update the `app-config.yaml` to use the `better-sqlite3` database.
+
+#### Postgres
+
+The postgres database can be started with docker-compose. Don't forget to copy the `env.sample`.
+
+```sh
+# start the postgres database
+docker-compose up -d
+
+# stop the postgres database
+docker-compose down -v
+```
+
+#### better-sqlite3
+
+The better-sqlite3 database can be seeded with categories and announcements.
 
 With the backend running,
 
 ```sh
 # runs migrations and seeds the database
 yarn db:setup
+
+# or run them separately
+yarn db:migrations
+yarn db:seed
 ```
 
 This will create a `local.sqlite` file under the `db/` directory.
-
-#### Other commands
-
-```sh
-# run migrations
-yarn db:migrations
-
-# seed the database
-yarn db:seed
-```
 
 Visit [knexjs](https://knexjs.org/guide/migrations.html) to learn more about the database migrations and seeding.
 

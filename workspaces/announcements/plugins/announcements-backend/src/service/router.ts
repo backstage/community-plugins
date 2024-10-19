@@ -3,7 +3,7 @@ import Router from 'express-promise-router';
 import { DateTime } from 'luxon';
 import slugify from 'slugify';
 import { v4 as uuid } from 'uuid';
-import { errorHandler } from '@backstage/backend-common';
+import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 import { NotAllowedError } from '@backstage/errors';
 import {
   AuthorizeResult,
@@ -14,9 +14,23 @@ import {
   announcementDeletePermission,
   announcementUpdatePermission,
   announcementEntityPermissions,
-} from '@backstage-community/plugin-announcements-common';
-import { AnnouncementsContext } from './announcementsContextBuilder';
+  EVENTS_TOPIC_ANNOUNCEMENTS,
+  EVENTS_ACTION_CREATE_ANNOUNCEMENT,
+  EVENTS_ACTION_UPDATE_ANNOUNCEMENT,
+  EVENTS_ACTION_CREATE_CATEGORY,
+  EVENTS_ACTION_DELETE_CATEGORY,
+} from '@backstage/community-plugins/backstage-plugin-announcements-common';
 import { createPermissionIntegrationRouter } from '@backstage/plugin-permission-node';
+import {
+  HttpAuthService,
+  LoggerService,
+  PermissionsService,
+  RootConfigService,
+} from '@backstage/backend-plugin-api';
+import { PersistenceContext } from './persistence/persistenceContext';
+import { EventsService } from '@backstage/plugin-events-node';
+import { signalAnnouncement } from './signal';
+import { SignalsService } from '@backstage/plugin-signals-node';
 
 interface AnnouncementRequest {
   publisher: string;
@@ -24,16 +38,42 @@ interface AnnouncementRequest {
   title: string;
   excerpt: string;
   body: string;
+  active: boolean;
 }
 
 interface CategoryRequest {
   title: string;
 }
 
+type RouterOptions = {
+  httpAuth: HttpAuthService;
+  config: RootConfigService;
+  logger: LoggerService;
+  permissions: PermissionsService;
+  persistenceContext: PersistenceContext;
+  events?: EventsService;
+  signals?: SignalsService;
+};
+
+type GetAnnouncementsQueryParams = {
+  category?: string;
+  page?: number;
+  max?: number;
+  active?: boolean;
+};
+
 export async function createRouter(
-  options: AnnouncementsContext,
+  options: RouterOptions,
 ): Promise<express.Router> {
-  const { persistenceContext, permissions, httpAuth } = options;
+  const {
+    persistenceContext,
+    permissions,
+    httpAuth,
+    config,
+    logger,
+    events,
+    signals,
+  } = options;
 
   const permissionIntegrationRouter = createPermissionIntegrationRouter({
     permissions: Object.values(announcementEntityPermissions),
@@ -64,22 +104,17 @@ export async function createRouter(
    ****************/
   router.get(
     '/announcements',
-    async (
-      req: Request<
-        {},
-        {},
-        {},
-        { category?: string; page?: number; max?: number }
-      >,
-      res,
-    ) => {
+    async (req: Request<{}, {}, {}, GetAnnouncementsQueryParams>, res) => {
+      const {
+        query: { category, max, page, active },
+      } = req;
+
       const results = await persistenceContext.announcementsStore.announcements(
         {
-          category: req.query.category,
-          max: req.query.max,
-          offset: req.query.page
-            ? (req.query.page - 1) * (req.query.max ?? 10)
-            : undefined,
+          category,
+          max,
+          offset: page ? (page - 1) * (max ?? 10) : undefined,
+          active,
         },
       );
 
@@ -106,9 +141,29 @@ export async function createRouter(
         throw new NotAllowedError('Unauthorized');
       }
 
+      const announcement =
+        await persistenceContext.announcementsStore.announcementByID(
+          req.params.id,
+        );
+
+      if (!announcement) {
+        logger.warn('Announcement not found', { id: req.params.id });
+        return res.status(404).end();
+      }
+
       await persistenceContext.announcementsStore.deleteAnnouncementByID(
         req.params.id,
       );
+
+      if (events) {
+        events.publish({
+          topic: EVENTS_TOPIC_ANNOUNCEMENTS,
+          eventPayload: {
+            announcement,
+          },
+          metadata: { action: EVENTS_ACTION_DELETE_CATEGORY },
+        });
+      }
 
       return res.status(204).end();
     },
@@ -130,6 +185,18 @@ export async function createRouter(
           },
         });
 
+      if (events) {
+        events.publish({
+          topic: EVENTS_TOPIC_ANNOUNCEMENTS,
+          eventPayload: {
+            announcement,
+          },
+          metadata: { action: EVENTS_ACTION_CREATE_ANNOUNCEMENT },
+        });
+
+        await signalAnnouncement(announcement, signals);
+      }
+
       return res.status(201).json(announcement);
     },
   );
@@ -141,10 +208,13 @@ export async function createRouter(
         throw new NotAllowedError('Unauthorized');
       }
 
+      const {
+        params: { id },
+        body: { title, excerpt, body, publisher, category, active },
+      } = req;
+
       const initialAnnouncement =
-        await persistenceContext.announcementsStore.announcementByID(
-          req.params.id,
-        );
+        await persistenceContext.announcementsStore.announcementByID(id);
       if (!initialAnnouncement) {
         return res.status(404).end();
       }
@@ -153,13 +223,24 @@ export async function createRouter(
         await persistenceContext.announcementsStore.updateAnnouncement({
           ...initialAnnouncement,
           ...{
-            title: req.body.title,
-            excerpt: req.body.excerpt,
-            body: req.body.body,
-            publisher: req.body.publisher,
-            category: req.body.category,
+            title,
+            excerpt,
+            body,
+            publisher,
+            category,
+            active,
           },
         });
+
+      if (events) {
+        events.publish({
+          topic: EVENTS_TOPIC_ANNOUNCEMENTS,
+          eventPayload: {
+            announcement,
+          },
+          metadata: { action: EVENTS_ACTION_UPDATE_ANNOUNCEMENT },
+        });
+      }
 
       return res.status(200).json(announcement);
     },
@@ -193,6 +274,16 @@ export async function createRouter(
 
       await persistenceContext.categoriesStore.insert(category);
 
+      if (events) {
+        events.publish({
+          topic: EVENTS_TOPIC_ANNOUNCEMENTS,
+          eventPayload: {
+            category: category.slug,
+          },
+          metadata: { action: EVENTS_ACTION_CREATE_CATEGORY },
+        });
+      }
+
       return res.status(201).json(category);
     },
   );
@@ -215,11 +306,21 @@ export async function createRouter(
       }
       await persistenceContext.categoriesStore.delete(req.params.slug);
 
+      if (events) {
+        events.publish({
+          topic: EVENTS_TOPIC_ANNOUNCEMENTS,
+          eventPayload: {
+            category: req.params.slug,
+          },
+          metadata: { action: EVENTS_ACTION_DELETE_CATEGORY },
+        });
+      }
+
       return res.status(204).end();
     },
   );
 
-  router.use(errorHandler());
+  router.use(MiddlewareFactory.create({ config, logger }).error());
 
   return router;
 }

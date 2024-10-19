@@ -1,4 +1,115 @@
-# @backstage-community/plugin-announcements
+# @backstage-community/backstage-plugin-announcements
+
+## 0.11.2
+
+### Patch Changes
+
+- e3b9e01: Add the ability to hide the context menu via a `hideContextMenu` boolean property.
+
+  The menu to access creating categories now includes a link to access the admin portal. However, the menu appears by default on the announcements page, and you may not want it visible to end users. Permissions are in place once a user lands on the admin portal, but it would be better to hide the menu altogether.
+
+- cfda065: Adds the ability to filter to only show active announcements
+
+  This should not be a breaking change. The `<AnnouncementsPage />` component now accepts an optional `hideInactive` prop that will hide inactive announcements. The default behavior is to show all announcements, or in other words, `hideInactive: false`.
+
+  ```tsx
+   <AnnouncementsPage
+    title="Announcements"
+    ...
+    hideInactive
+  />
+  ```
+
+- 977774e: Add a link from the context menu to admin portal, so users can leverage feature without the need to import a separate component.
+
+  It is still possible to import the `AnnouncementsAdminPortal` component and use it as before.
+
+- Updated dependencies [cfda065]
+  - @backstage-community/backstage-plugin-announcements-common@0.2.8
+  - @backstage-community/backstage-plugin-announcements-react@0.4.7
+
+## 0.11.1
+
+### Patch Changes
+
+- aad9d99: fix: `AdminPortal` was not available for export.
+
+  Taking the opportunity to update `AdminPortal` to `AnnouncementsAdminPortal` and make available for export
+
+  ```tsx
+    import { AnnouncementsAdminPortal } from '@backstage-community/backstage-plugin-announcements';
+
+    // default
+    <AnnouncementsAdminPortal />
+
+    // supports optional props
+    <AnnouncementsAdminPortal
+      title='my title'
+      subtitle='my subtitle'
+      themeId='my theme'
+    >
+  ```
+
+## 0.11.0
+
+### Minor Changes
+
+- 46b4b23: New announcement portal dedicated to managing annoucements and categories.
+
+  ```tsx
+  import {AdminPortal} from '@backstage-community/backstage-plugin-announcements';
+
+  // default
+  <AdminPortal />
+
+  // supports optional props
+  <AdminPortal title='my title' subtitle='my subtitle' themeId='my theme'>
+
+  ```
+
+### Patch Changes
+
+- 58a4cc2: Migrate from Material UI v4 to v5.
+- Updated dependencies [58a4cc2]
+  - @backstage-community/backstage-plugin-announcements-react@0.4.6
+
+## 0.10.5
+
+### Patch Changes
+
+- c9be1ca: Adds an integration with @backstage/plugins-signals-backend. New announcements will now be displayed in near real-time if your Backstage instance supports signals.
+- Updated dependencies [c9be1ca]
+  - @backstage-community/backstage-plugin-announcements-common@0.2.7
+  - @backstage-community/backstage-plugin-announcements-react@0.4.5
+
+## 0.10.4
+
+### Patch Changes
+
+- 75536ca: Internal refactor to remove `export` from unused exported types.
+
+## 0.10.3
+
+### Patch Changes
+
+- Updated dependencies [152842c]
+  - @backstage-community/backstage-plugin-announcements-common@0.2.6
+  - @backstage-community/backstage-plugin-announcements-react@0.4.4
+
+## 0.10.2
+
+### Patch Changes
+
+- ed63d12: No longer display the three dots (menu) option if user does not have correct permissions to edit or delete announcements.
+
+## 0.10.1
+
+### Patch Changes
+
+- 071914c: bump dependencies and update to the latest version of backstage (1.31.2)
+- Updated dependencies [071914c]
+  - @backstage-community/backstage-plugin-announcements-common@0.2.5
+  - @backstage-community/backstage-plugin-announcements-react@0.4.3
 
 ## 0.10.0
 
@@ -16,8 +127,8 @@
 
 - 5d34ab8: Update to Backstage 1.30.1
 - Updated dependencies [5d34ab8]
-  - @backstage-community/plugin-announcements-common@0.2.4
-  - @backstage-community/plugin-announcements-react@0.4.2
+  - @backstage-community/backstage-plugin-announcements-common@0.2.4
+  - @backstage-community/backstage-plugin-announcements-react@0.4.2
 
 ## 0.9.1
 
@@ -25,8 +136,8 @@
 
 - 9937f08: - Adds support for Backstage's new frontend system, available via the `/alpha` sub-path export.
 - Updated dependencies [9937f08]
-  - @backstage-community/plugin-announcements-common@0.2.3
-  - @backstage-community/plugin-announcements-react@0.4.1
+  - @backstage-community/backstage-plugin-announcements-common@0.2.3
+  - @backstage-community/backstage-plugin-announcements-react@0.4.1
 
 ## 0.9.0
 
@@ -40,7 +151,7 @@
 ### Patch Changes
 
 - Updated dependencies [6089647]
-  - @backstage-community/plugin-announcements-react@0.4.0
+  - @backstage-community/backstage-plugin-announcements-react@0.4.0
 
 ## 0.8.0
 
@@ -54,7 +165,7 @@
 ### Patch Changes
 
 - Updated dependencies [b4e2ed3]
-  - @backstage-community/plugin-announcements-react@0.3.0
+  - @backstage-community/backstage-plugin-announcements-react@0.3.0
 
 ## 0.7.0
 
@@ -75,13 +186,13 @@
 - 656ef61: Update to Backstage version 1.27.1
 - 1a669e3: Added two new hooks (useAnnouncements and useCategories) to refactor out some repetive calls to the announcementsApi on the frontend.
 
-  While not the primary objective, these will be exported from '@backstage-community/plugin-announcements-react' so adopters _could_ retrieve announcements and display them as they see fit.
+  While not the primary objective, these will be exported from '@backstage-community/backstage-plugin-announcements-react' so adopters _could_ retrieve announcements and display them as they see fit.
 
 - e9e446f: Adds the ability to create new categories dynamically from the new announcement form
 - Updated dependencies [656ef61]
 - Updated dependencies [1a669e3]
-  - @backstage-community/plugin-announcements-common@0.2.2
-  - @backstage-community/plugin-announcements-react@0.2.2
+  - @backstage-community/backstage-plugin-announcements-common@0.2.2
+  - @backstage-community/backstage-plugin-announcements-react@0.2.2
 
 ## 0.6.4
 
@@ -105,8 +216,8 @@
 - 3a7ae1a: Bump all packages to latest stable release of Backstage (1.26.4)
 - 965e089: Added a property for AnnouncementsPage named `buttonOptions.name` to `AnnouncementCreateButtonProps` which will adjust what is shown in the "New announcement" LinkButton. eg. `buttonOptions.name = Pizza` will update LinkButton to "New Pizza"
 - Updated dependencies [3a7ae1a]
-  - @backstage-community/plugin-announcements-common@0.2.1
-  - @backstage-community/plugin-announcements-react@0.2.1
+  - @backstage-community/backstage-plugin-announcements-common@0.2.1
+  - @backstage-community/backstage-plugin-announcements-react@0.2.1
 
 ## 0.6.1
 
@@ -123,8 +234,8 @@
 ### Patch Changes
 
 - Updated dependencies [e811647]
-  - @backstage-community/plugin-announcements-common@0.2.0
-  - @backstage-community/plugin-announcements-react@0.2.0
+  - @backstage-community/backstage-plugin-announcements-common@0.2.0
+  - @backstage-community/backstage-plugin-announcements-react@0.2.0
 
 ## 0.5.0
 
@@ -135,13 +246,13 @@
 ### Patch Changes
 
 - 2b03aeb: Consolidate duplicated types into the common package.
-- f7b3b0b: Migrate to `announcementsApiRef` and `AnnouncementApi` interface from `@backstage-community/plugin-announcements-react` and mark existing exports as deprecated.
+- f7b3b0b: Migrate to `announcementsApiRef` and `AnnouncementApi` interface from `@backstage-community/backstage-plugin-announcements-react` and mark existing exports as deprecated.
 
-  Users should now import both `announcementsApiRef` and `AnnouncementApi` from `@backstage-community/plugin-announcements-react`. Existing exports will be removed in a future release.
+  Users should now import both `announcementsApiRef` and `AnnouncementApi` from `@backstage-community/backstage-plugin-announcements-react`. Existing exports will be removed in a future release.
 
 - Updated dependencies [2b03aeb]
-  - @backstage-community/plugin-announcements-common@0.1.4
-  - @backstage-community/plugin-announcements-react@0.1.2
+  - @backstage-community/backstage-plugin-announcements-common@0.1.4
+  - @backstage-community/backstage-plugin-announcements-react@0.1.2
 
 ## 0.4.6
 
@@ -162,7 +273,7 @@
 
 - 35670f3: Upgrade Backstage to 1.22.1
 - Updated dependencies [35670f3]
-  - @backstage-community/plugin-announcements-common@0.1.3
+  - @backstage-community/backstage-plugin-announcements-common@0.1.3
 
 ## 0.4.3
 
@@ -213,7 +324,7 @@
 - c3c379d: bump backstage to v1.16.0
 - Updated dependencies [90a19ec]
 - Updated dependencies [c3c379d]
-  - @backstage-community/plugin-announcements-common@0.1.2
+  - @backstage-community/backstage-plugin-announcements-common@0.1.2
 
 ## 0.2.2
 
@@ -221,7 +332,7 @@
 
 - 4f7a351: bump all packages
 - Updated dependencies [4f7a351]
-  - @backstage-community/plugin-announcements-common@0.1.1
+  - @backstage-community/backstage-plugin-announcements-common@0.1.1
 
 ## 0.1.0
 
@@ -240,7 +351,7 @@
 - cca69ec: Prevent the submission of empty announcements
 - Updated dependencies [793d5b9]
 - Updated dependencies [ab3813f]
-  - @backstage-community/plugin-announcements-common@0.0.7
+  - @backstage-community/backstage-plugin-announcements-common@0.0.7
 
 ## 0.0.14
 
@@ -267,7 +378,7 @@
 - 00753b7: Fix routes definition
 - 60babbc: Make the themeId configurable on all pages
 - Updated dependencies [7d25e84]
-  - @backstage-community/plugin-announcements-common@0.0.6
+  - @backstage-community/backstage-plugin-announcements-common@0.0.6
 
 ## 0.0.11
 
@@ -277,21 +388,21 @@
 - 56d5e6d: Try and setup release pipeline to replace 'workspace:\*' version constraints
 - Updated dependencies [0e1d000]
 - Updated dependencies [56d5e6d]
-  - @backstage-community/plugin-announcements-common@0.0.5
+  - @backstage-community/backstage-plugin-announcements-common@0.0.5
 
 ## 0.0.10
 
 ### Patch Changes
 
 - Updated dependencies [9bdc37d]
-  - @backstage-community/plugin-announcements-common@0.0.4
+  - @backstage-community/backstage-plugin-announcements-common@0.0.4
 
 ## 0.0.9
 
 ### Patch Changes
 
 - Updated dependencies [6c9bf32]
-  - @backstage-community/plugin-announcements-common@0.0.3
+  - @backstage-community/backstage-plugin-announcements-common@0.0.3
 
 ## 0.0.8
 
@@ -300,7 +411,7 @@
 - 0c12eea: Bump Backstage dependencies
 - Updated dependencies [062aca5]
 - Updated dependencies [0c12eea]
-  - @backstage-community/plugin-announcements-common@0.0.2
+  - @backstage-community/backstage-plugin-announcements-common@0.0.2
 
 ## 0.0.7
 

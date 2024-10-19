@@ -1,4 +1,4 @@
-# @backstage-community/plugin-announcements-node
+# @backstage-community/backstage-plugin-announcements-node
 
 Welcome to the Node.js library package for the announcements plugin!
 

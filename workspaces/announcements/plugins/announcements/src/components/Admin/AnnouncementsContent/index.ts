@@ -1,0 +1,1 @@
+export { AnnouncementsContent } from './AnnouncementsContent';

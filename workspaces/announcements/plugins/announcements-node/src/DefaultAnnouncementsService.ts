@@ -1,20 +1,20 @@
 import {
   Announcement,
   AnnouncementsList,
-} from '@backstage-community/plugin-announcements-common';
+} from '@backstage/community-plugins/backstage-plugin-announcements-common';
 import {
   AnnouncementRequestOptions,
   AnnouncementsService,
 } from './AnnouncementsService';
-import { DiscoveryApi } from '@backstage/core-plugin-api';
 import { ResponseError } from '@backstage/errors';
+import { DiscoveryService } from '@backstage/backend-plugin-api';
 
 type AnnouncementsServiceOptions = {
-  discoveryApi: DiscoveryApi;
+  discoveryApi: DiscoveryService;
 };
 
 export class DefaultAnnouncementsService implements AnnouncementsService {
-  private readonly discoveryApi: DiscoveryApi;
+  private readonly discoveryApi: DiscoveryService;
 
   static create(opts: AnnouncementsServiceOptions) {
     return new DefaultAnnouncementsService(opts);

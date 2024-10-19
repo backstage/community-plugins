@@ -1,7 +1,7 @@
-import { Announcement } from '@backstage-community/plugin-announcements-common';
+import { Announcement } from '@backstage/community-plugins/backstage-plugin-announcements-common';
 import { useCallback, useState } from 'react';
 
-export type DeleteAnnouncementDialogState = {
+type DeleteAnnouncementDialogState = {
   open: (a: Announcement) => void;
   close: () => void;
 

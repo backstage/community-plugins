@@ -1,4 +1,4 @@
-# @backstage-community/plugin-announcements-react
+# @backstage-community/backstage-plugin-announcements-react
 
 This library provides reusable components for displaying announcements in a Backstage plugin.
 

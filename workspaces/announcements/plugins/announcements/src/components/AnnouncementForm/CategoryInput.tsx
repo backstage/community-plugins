@@ -1,9 +1,9 @@
 import * as React from 'react';
 import TextField from '@mui/material/TextField';
 import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
-import { Category } from '@backstage-community/plugin-announcements-common';
-import { useCategories } from '@backstage-community/plugin-announcements-react';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import { Category } from '@backstage/community-plugins/backstage-plugin-announcements-common';
+import { useCategories } from '@backstage/community-plugins/backstage-plugin-announcements-react';
+import CircularProgress from '@mui/material/CircularProgress';
 
 type CategoryInputProps = {
   setForm: (
@@ -15,6 +15,7 @@ type CategoryInputProps = {
       excerpt: string;
       body: string;
       created_at: string;
+      active: boolean;
     }>,
   ) => void;
   form: {
@@ -25,6 +26,7 @@ type CategoryInputProps = {
     excerpt: string;
     body: string;
     created_at: string;
+    active: boolean;
   };
   initialValue: string;
 };
