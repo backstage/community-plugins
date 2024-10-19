@@ -21,6 +21,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
+import GitHubIcon from '@material-ui/icons/GitHub';
 import { Link } from '@backstage/core-components';
 import { ResultHighlight } from '@backstage/plugin-search-common';
 import { HighlightedSearchResultText } from '@backstage/plugin-search-react';
@@ -106,9 +107,21 @@ export function GithubDiscussionsSearchResultListItem(
           }
         />
         <Box>
-          {result.category && (
-            <Chip label={`Category: ${result.category}`} size="small" />
+          {result.author && (
+            <Chip
+              label={result.category}
+              size="small"
+              component="a"
+              href={`https://github.com/${result.author}`}
+              clickable
+              icon={<GitHubIcon />}
+            />
           )}
+          {result.category && <Chip label={result.category} size="small" />}
+          {result.labels.length &&
+            result.labels.map(({ name }) => {
+              return <Chip label={name} size="small" />;
+            })}
         </Box>
       </div>
     </div>
