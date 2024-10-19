@@ -27,6 +27,7 @@ import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import RecordVoiceOverIcon from '@mui/icons-material/RecordVoiceOver';
+import Typography from '@mui/material/Typography';
 
 const useStyles = makeStyles({
   createdAt: {
@@ -80,12 +81,12 @@ export const AnnouncementSearchResultListItem = ({
   );
   const excerpt = (
     <>
-      <span className={classes.createdAt}>
+      <Typography className={classes.createdAt}>
         Published{' '}
-        <span title={document.createdAt}>
+        <Typography title={document.createdAt}>
           {DateTime.fromISO(document.createdAt).toRelative()}
-        </span>
-      </span>
+        </Typography>
+      </Typography>
       <>
         {highlight?.fields.text ? (
           <HighlightedSearchResultText

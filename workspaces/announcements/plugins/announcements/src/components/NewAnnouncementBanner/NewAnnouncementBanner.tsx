@@ -34,6 +34,7 @@ import Snackbar from '@mui/material/Snackbar';
 import SnackbarContent from '@mui/material/SnackbarContent';
 import IconButton from '@mui/material/IconButton';
 import Alert from '@mui/material/Alert';
+import Typography from '@mui/material/Typography';
 
 const useStyles = makeStyles(theme => ({
   // showing on top, as a block
@@ -89,7 +90,7 @@ const AnnouncementBanner = (props: AnnouncementBannerProps) => {
 
   const message = (
     <>
-      <span className={classes.bannerIcon}>📣</span>
+      <Typography className={classes.bannerIcon}>📣</Typography>
       <Link to={viewAnnouncementLink({ id: announcement.id })}>
         {announcement.title}
       </Link>

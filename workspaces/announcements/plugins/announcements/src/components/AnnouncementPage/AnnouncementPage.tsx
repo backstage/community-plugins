@@ -41,6 +41,7 @@ import { announcementViewRouteRef, rootRouteRef } from '../../routes';
 import { announcementsApiRef } from '@backstage-community/plugin-announcements-react';
 import { Announcement } from '@backstage-community/plugin-announcements-common';
 import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
 
 const AnnouncementDetails = ({
   announcement,
@@ -56,7 +57,7 @@ const AnnouncementDetails = ({
 
   const publisherRef = parseEntityRef(announcement.publisher);
   const subHeader = (
-    <span>
+    <Typography>
       By{' '}
       <EntityPeekAheadPopover entityRef={announcement.publisher}>
         <Link to={entityLink(publisherRef)}>
@@ -64,7 +65,7 @@ const AnnouncementDetails = ({
         </Link>
       </EntityPeekAheadPopover>
       , {DateTime.fromISO(announcement.created_at).toRelative()}
-    </span>
+    </Typography>
   );
 
   return (
