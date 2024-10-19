@@ -1,3 +1,4 @@
+/* eslint-disable func-names */
 /*
  * Copyright 2024 The Backstage Authors
  *
