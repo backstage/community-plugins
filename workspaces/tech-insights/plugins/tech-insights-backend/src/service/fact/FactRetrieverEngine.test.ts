@@ -34,6 +34,7 @@ import {
   mockServices,
 } from '@backstage/backend-test-utils';
 import { DefaultSchedulerService } from '@backstage/backend-defaults/scheduler';
+import { NotificationService } from '@backstage/plugin-notifications-node';
 
 jest.setTimeout(60_000);
 
@@ -63,6 +64,10 @@ const testFactRetriever: FactRetriever = {
       },
     ];
   }),
+};
+
+const notificationService: jest.Mocked<NotificationService> = {
+  send: jest.fn(),
 };
 
 const defaultCadence = '1 * * * *';
@@ -147,6 +152,7 @@ describe('FactRetrieverEngine', () => {
           getBaseUrl: (_: string) => Promise.resolve('http://mock.url'),
           getExternalBaseUrl: (_: string) => Promise.resolve('http://mock.url'),
         },
+        notification: notificationService,
       },
       factRetrieverRegistry: createMockFactRetrieverRegistry(
         cadence,
