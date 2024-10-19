@@ -16,12 +16,11 @@
 import React from 'react';
 import { FlatRoutes } from '@backstage/core-app-api';
 import { convertLegacyApp } from '@backstage/core-compat-api';
-import { createApp } from '@backstage/frontend-app-api';
+import { createApp } from '@backstage/frontend-defaults';
 import {
   ApiBlueprint,
   configApiRef,
   createApiFactory,
-  createExtensionOverrides,
   createFrontendModule,
   PageBlueprint,
   SignInPageBlueprint,
@@ -38,6 +37,7 @@ import userSettingsPlugin from '@backstage/plugin-user-settings/alpha';
 import { Navigate, Route } from 'react-router';
 import sonarQubePlugin from '@backstage-community/plugin-sonarqube/alpha';
 import { SignInPage } from '@backstage/core-components';
+import { navigationExtension } from './components/Sidebar';
 
 const homePageExtension = PageBlueprint.make({
   name: 'catalog-root',
@@ -66,26 +66,22 @@ const collectedLegacyPlugins = convertLegacyApp(
   </FlatRoutes>,
 );
 
-const scmModule = createFrontendModule({
-  pluginId: 'app',
-  extensions: [
-    ApiBlueprint.make({
-      name: 'scm-auth',
-      params: {
-        factory: ScmAuth.createDefaultApiFactory(),
-      },
+const scmAuthApi = ApiBlueprint.make({
+  name: 'scm-auth',
+  params: {
+    factory: ScmAuth.createDefaultApiFactory(),
+  },
+});
+
+const scmIntegrationsApi = ApiBlueprint.make({
+  name: 'scm-integrations',
+  params: {
+    factory: createApiFactory({
+      api: scmIntegrationsApiRef,
+      deps: { configApi: configApiRef },
+      factory: ({ configApi }) => ScmIntegrationsApi.fromConfig(configApi),
     }),
-    ApiBlueprint.make({
-      name: 'scm-integrations',
-      params: {
-        factory: createApiFactory({
-          api: scmIntegrationsApiRef,
-          deps: { configApi: configApiRef },
-          factory: ({ configApi }) => ScmIntegrationsApi.fromConfig(configApi),
-        }),
-      },
-    }),
-  ],
+  },
 });
 
 export const app = createApp({
@@ -95,10 +91,15 @@ export const app = createApp({
     userSettingsPlugin,
     sonarQubePlugin,
     ...collectedLegacyPlugins,
-    signInPageModule,
-    scmModule,
-    createExtensionOverrides({
-      extensions: [homePageExtension],
+    createFrontendModule({
+      pluginId: 'app',
+      extensions: [
+        signInPage,
+        homePageExtension,
+        scmAuthApi,
+        scmIntegrationsApi,
+        navigationExtension,
+      ],
     }),
   ],
 });
