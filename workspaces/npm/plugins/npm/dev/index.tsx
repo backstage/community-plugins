@@ -15,13 +15,48 @@
  */
 import React from 'react';
 import { createDevApp } from '@backstage/dev-utils';
-import { npmPlugin } from '../src/plugin';
+import { EntityProvider } from '@backstage/plugin-catalog-react';
+import { Content, Header, Page } from '@backstage/core-components';
+import { Grid } from '@material-ui/core';
+import { npmPlugin, NpmInfoCard, NpmReleaseTableCard } from '../src/plugin';
+
+const mockEntity = {
+  apiVersion: 'backstage.io/v1alpha1',
+  kind: 'Component',
+  metadata: {
+    name: 'backstage-plugin-catalog',
+    annotations: {
+      'npm/package': '@backstage/plugin-catalog',
+    },
+  },
+  spec: {
+    type: 'website',
+    lifecycle: 'production',
+    owner: 'guests',
+  },
+};
 
 createDevApp()
   .registerPlugin(npmPlugin)
   .addPage({
-    element: <div />,
-    title: 'Root Page',
+    element: (
+      <Page themeId="tool">
+        <Header title="Npm demo application" subtitle="standalone app" />
+        <Content>
+          <EntityProvider entity={mockEntity}>
+            <Grid container>
+              <Grid item xs={8}>
+                <NpmReleaseTableCard />
+              </Grid>
+              <Grid item xs={4}>
+                <NpmInfoCard />
+              </Grid>
+            </Grid>
+          </EntityProvider>
+        </Content>
+      </Page>
+    ),
+    title: 'Npm',
     path: '/npm',
   })
   .render();
