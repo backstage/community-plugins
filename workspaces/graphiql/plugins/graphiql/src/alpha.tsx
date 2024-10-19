@@ -16,13 +16,12 @@
 
 import React from 'react';
 import {
-  createApiExtension,
   createExtension,
   createExtensionDataRef,
   createExtensionInput,
-  createNavItemExtension,
-  createPageExtension,
-  createPlugin,
+  NavItemBlueprint,
+  PageBlueprint,
+  createFrontendPlugin,
   createSchemaFromZod,
   PortableSchema,
 } from '@backstage/frontend-plugin-api';
@@ -41,24 +40,29 @@ import {
 } from '@backstage/core-compat-api';
 
 /** @alpha */
-export const graphiqlPage = createPageExtension({
-  defaultPath: '/graphiql',
-  routeRef: convertLegacyRouteRef(graphiQLRouteRef),
-  loader: () =>
-    import('./components').then(m => compatWrapper(<m.GraphiQLPage />)),
+export const graphiqlPage = PageBlueprint.make({
+  name: 'graphiql',
+  params: {
+    defaultPath: '/graphiql',
+    routeRef: convertLegacyRouteRef(graphiQLRouteRef),
+    loader: () =>
+      import('./components').then(m => compatWrapper(<m.GraphiQLPage />)),
+  },
 });
 
 /** @alpha */
-export const graphiqlNavItem = createNavItemExtension({
-  title: 'GraphiQL',
-  icon: GraphiQLIcon as IconComponent,
-  routeRef: convertLegacyRouteRef(graphiQLRouteRef),
+export const graphiqlNavItem = NavItemBlueprint.make({
+  params: {
+    title: 'GraphiQL',
+    icon: GraphiQLIcon as IconComponent,
+    routeRef: convertLegacyRouteRef(graphiQLRouteRef),
+  },
 });
 
 /** @internal */
-const endpointDataRef = createExtensionDataRef<GraphQLEndpoint>(
-  'graphiql.graphiql-endpoint',
-);
+const endpointDataRef = createExtensionDataRef<GraphQLEndpoint>().with({
+  id: 'graphiql.graphiql-endpoint',
+});
 
 /** @alpha */
 export const graphiqlBrowseApi = createApiExtension({
@@ -121,7 +125,7 @@ const graphiqlGitlabGraphiQLEndpointExtension = createGraphiQLEndpointExtension(
 );
 
 /** @alpha */
-export default createPlugin({
+export default createFrontendPlugin({
   id: 'graphiql',
   extensions: [
     graphiqlPage,
