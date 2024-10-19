@@ -21,7 +21,6 @@ const plugin: FrontendPlugin<
   {
     'api:linkerd': ExtensionDefinition<{
       kind: 'api';
-      namespace: undefined;
       name: undefined;
       config: {};
       configInput: {};
@@ -31,10 +30,12 @@ const plugin: FrontendPlugin<
         {}
       >;
       inputs: {};
+      params: {
+        factory: AnyApiFactory;
+      };
     }>;
     'entity-card:linkerd/is-meshed': ExtensionDefinition<{
       kind: 'entity-card';
-      namespace: undefined;
       name: 'is-meshed';
       config: {
         filter: string | undefined;
@@ -59,10 +60,13 @@ const plugin: FrontendPlugin<
             }
           >;
       inputs: {};
+      params: {
+        loader: () => Promise<JSX.Element>;
+        filter?: string | ((entity: Entity) => boolean) | undefined;
+      };
     }>;
     'entity-card:linkerd/edges-table': ExtensionDefinition<{
       kind: 'entity-card';
-      namespace: undefined;
       name: 'edges-table';
       config: {
         filter: string | undefined;
@@ -87,10 +91,13 @@ const plugin: FrontendPlugin<
             }
           >;
       inputs: {};
+      params: {
+        loader: () => Promise<JSX.Element>;
+        filter?: string | ((entity: Entity) => boolean) | undefined;
+      };
     }>;
     'entity-content:linkerd': ExtensionDefinition<{
       kind: 'entity-content';
-      namespace: undefined;
       name: undefined;
       config: {
         path: string | undefined;
@@ -132,6 +139,13 @@ const plugin: FrontendPlugin<
             }
           >;
       inputs: {};
+      params: {
+        loader: () => Promise<JSX.Element>;
+        defaultPath: string;
+        defaultTitle: string;
+        routeRef?: RouteRef<AnyRouteRefParams> | undefined;
+        filter?: string | ((entity: Entity) => boolean) | undefined;
+      };
     }>;
   }
 >;
