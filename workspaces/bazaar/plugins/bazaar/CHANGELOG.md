@@ -1,5 +1,11 @@
 # @backstage-community/plugin-bazaar
 
+## 0.5.0
+
+### Minor Changes
+
+- fe0d104: Added a new UserSelector component that allows users to select a responsible user from the catalog, with the option to manually enter still being there"
+
 ## 0.4.0
 
 ### Minor Changes
