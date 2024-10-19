@@ -16,32 +16,44 @@
 
 import React from 'react';
 import { createDevApp } from '@backstage/dev-utils';
-import { CatalogApi, catalogApiRef } from '@backstage/plugin-catalog-react';
-import { bazaarPlugin, BazaarPage } from '../src/plugin';
-import { bazaarApiRef } from '../src/api';
+import { bazaarPlugin } from '../src/plugin';
+import { catalogPlugin } from '@backstage/plugin-catalog';
+import { entityRouteRef } from '@backstage/plugin-catalog-react';
+import { createRoutableExtension } from '@backstage/core-plugin-api';
+import { rootRouteRef } from '../src/routes';
 
-import getProjectsData from './__fixtures__/get-projects-response.json';
+export const HomePage = catalogPlugin.provide(
+  createRoutableExtension({
+    name: 'BazaarPage',
+    component: () => import('../src/components/HomePage').then(m => m.HomePage),
+    mountPoint: entityRouteRef,
+  }),
+);
+
+export const BazaarOverviewCard = bazaarPlugin.provide(
+  createRoutableExtension({
+    name: 'BazaarOverviewCard',
+    component: () =>
+      import('../src/components/BazaarOverviewCard').then(
+        m => m.BazaarOverviewCard,
+      ),
+    mountPoint: rootRouteRef,
+  }),
+);
 
 createDevApp()
   .registerPlugin(bazaarPlugin)
-  .registerApi({
-    api: bazaarApiRef,
-    deps: {},
-    factory: () =>
-      ({
-        getProjects: async () => getProjectsData,
-      } as any),
-  })
-  .registerApi({
-    api: catalogApiRef,
-    deps: {},
-    factory: () =>
-      ({
-        getEntities: () => ({}),
-      } as CatalogApi),
+  .addPage({
+    element: <HomePage />,
+    title: 'HomePage',
   })
   .addPage({
-    element: <BazaarPage />,
-    title: 'Root Page',
+    element: (
+      <BazaarOverviewCard
+        order="latest"
+        title="Bazaar Dev Overview Widget (Latest)"
+      />
+    ),
+    title: 'BazaarOverviewCard',
   })
   .render();
