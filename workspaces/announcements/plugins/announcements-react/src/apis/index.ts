@@ -13,5 +13,5 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { ExampleComponent } from './ExampleComponent';
-export type { ExampleComponentProps } from './ExampleComponent';
+export { announcementsApiRef, type AnnouncementsApi } from './AnnouncementsApi';
+export type { CreateAnnouncementRequest, CreateCategoryRequest } from './types';

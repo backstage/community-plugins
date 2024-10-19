@@ -13,21 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-import { screen } from '@testing-library/react';
-import { renderInTestApp } from '@backstage/test-utils';
-import { ExampleComponent } from './ExampleComponent';
+import { Announcement } from '@backstage-community/plugin-announcements-common';
 
-describe('ExampleComponent', () => {
-  it('should render', async () => {
-    await renderInTestApp(<ExampleComponent />);
+export type CreateAnnouncementRequest = Omit<
+  Announcement,
+  'id' | 'category' | 'created_at'
+> & {
+  category?: string;
+};
 
-    expect(screen.getByText('Hello World')).toBeInTheDocument();
-  });
-
-  it('should display a custom message', async () => {
-    await renderInTestApp(<ExampleComponent message="Hello Example" />);
-
-    expect(screen.getByText('Hello Example')).toBeInTheDocument();
-  });
-});
+export type CreateCategoryRequest = {
+  title: string;
+};

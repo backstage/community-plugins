@@ -13,8 +13,5 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-// The index file in ./hooks/ is typically responsible for selecting
-// which hooks are public API and should be exported from the package.
-
-export * from './useExample';
+export { useAnnouncements } from './useAnnouncements';
+export { useCategories } from './useCategories';
