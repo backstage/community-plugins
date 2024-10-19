@@ -19,7 +19,9 @@ import {
   createBackendModule,
 } from '@backstage/backend-plugin-api';
 import { techInsightsFactCheckerFactoryExtensionPoint } from '@backstage-community/plugin-tech-insights-node';
+import { Operator } from 'json-rules-engine';
 import { JsonRulesEngineFactCheckerFactory } from '../service';
+import { techInsightsOperatorsExtensionPoint } from '../extensions/';
 
 /**
  * Sets a JsonRulesEngineFactCheckerFactory as FactCheckerFactory
@@ -31,15 +33,23 @@ export const techInsightsModuleJsonRulesEngineFactCheckerFactory =
   createBackendModule({
     pluginId: 'tech-insights',
     moduleId: 'json-rules-engine-fact-checker-factory',
-    register(env) {
-      env.registerInit({
+    register(reg) {
+      const addedOperators: Operator<any, any>[] = [];
+      reg.registerExtensionPoint(techInsightsOperatorsExtensionPoint, {
+        addOperators(...newOperators: Operator<any, any>[]) {
+          addedOperators.push(...newOperators);
+        },
+      });
+      reg.registerInit({
         deps: {
           config: coreServices.rootConfig,
           logger: coreServices.logger,
           techInsights: techInsightsFactCheckerFactoryExtensionPoint,
         },
-        async init({ config, logger, techInsights }) {
+        async init({ config, techInsights, logger }) {
+          const operators = [...addedOperators];
           const factory = JsonRulesEngineFactCheckerFactory.fromConfig(config, {
+            operators,
             logger,
           });
           techInsights.setFactCheckerFactory(factory);
