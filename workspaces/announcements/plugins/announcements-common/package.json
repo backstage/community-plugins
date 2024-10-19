@@ -13,7 +13,15 @@
     "types": "dist/index.d.ts"
   },
   "backstage": {
-    "role": "common-library"
+    "role": "common-library",
+    "pluginId": "announcements",
+    "pluginPackages": [
+      "@backstage-community/plugin-announcements",
+      "@backstage-community/plugin-announcements-backend",
+      "@backstage-community/plugin-announcements-common",
+      "@backstage-community/plugin-announcements-node",
+      "@backstage-community/plugin-announcements-react"
+    ]
   },
   "sideEffects": false,
   "scripts": {
@@ -23,6 +31,9 @@
     "clean": "backstage-cli package clean",
     "prepack": "backstage-cli package prepack",
     "postpack": "backstage-cli package postpack"
+  },
+  "dependencies": {
+    "@backstage/plugin-permission-common": "^0.8.1"
   },
   "devDependencies": {
     "@backstage/cli": "^0.28.0"

@@ -2520,6 +2520,7 @@ __metadata:
   resolution: "@backstage-community/plugin-announcements-common@workspace:plugins/announcements-common"
   dependencies:
     "@backstage/cli": ^0.28.0
+    "@backstage/plugin-permission-common": ^0.8.1
   languageName: unknown
   linkType: soft
 
