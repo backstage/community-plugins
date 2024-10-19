@@ -3,7 +3,7 @@
 Adding the `AnnouncementsTimeline` component to a page will display a raw timeline of the latest announcements.
 
 ```ts
-import { AnnouncementsTimeline } from '@procore-oss/backstage-plugin-announcements';
+import { AnnouncementsTimeline } from '@backstage-community/plugin-announcements';
 
 export const TimelineExampleCard = () => {
   return (

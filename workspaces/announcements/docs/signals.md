@@ -14,7 +14,7 @@ const backend = createBackend();
 backend.add(import('@backstage/events-backend'));
 ...
 backend.add(import('@backstage/signals-backend'));
-backend.add(import('@procore-oss/backstage-plugin-announcements-backend'));
+backend.add(import('@backstage-community/plugin-announcements-backend'));
 
 backend.start();
 ```
