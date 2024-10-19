@@ -14,41 +14,35 @@
  * limitations under the License.
  */
 
-import fetch from 'cross-fetch';
 import {
   FindingSummary,
   Metrics,
   SonarQubeApi,
 } from '@backstage-community/plugin-sonarqube-react';
 import { InstanceUrlWrapper, FindingsWrapper } from './types';
-import { DiscoveryApi, IdentityApi } from '@backstage/core-plugin-api';
+import { DiscoveryApi, FetchApi } from '@backstage/core-plugin-api';
 
 /** @public */
 export class SonarQubeClient implements SonarQubeApi {
   discoveryApi: DiscoveryApi;
-  identityApi: IdentityApi;
+  fetchApi: FetchApi;
 
-  constructor(options: {
-    discoveryApi: DiscoveryApi;
-    identityApi: IdentityApi;
-  }) {
+  constructor(options: { discoveryApi: DiscoveryApi; fetchApi: FetchApi }) {
     this.discoveryApi = options.discoveryApi;
-    this.identityApi = options.identityApi;
+    this.fetchApi = options.fetchApi;
   }
 
   private async callApi<T>(
     path: string,
     query: { [key in string]: any },
   ): Promise<T | undefined> {
-    const { token: idToken } = await this.identityApi.getCredentials();
-
-    const apiUrl = `${await this.discoveryApi.getBaseUrl('sonarqube')}`;
-    const response = await fetch(
-      `${apiUrl}/${path}?${new URLSearchParams(query).toString()}`,
+    const response = await this.fetchApi.fetch(
+      `${await this.discoveryApi.getBaseUrl(
+        'sonarqube',
+      )}/${path}?${new URLSearchParams(query).toString()}`,
       {
         headers: {
           'Content-Type': 'application/json',
-          ...(idToken && { Authorization: `Bearer ${idToken}` }),
         },
       },
     );
