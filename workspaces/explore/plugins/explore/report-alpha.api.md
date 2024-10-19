@@ -8,6 +8,7 @@ import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { FrontendPlugin } from '@backstage/frontend-plugin-api';
 import { SearchResultItemExtensionComponent } from '@backstage/plugin-search-react/alpha';
 import { SearchResultItemExtensionPredicate } from '@backstage/plugin-search-react/alpha';
+import { SearchResultListItemBlueprintParams } from '@backstage/plugin-search-react/alpha';
 
 // @alpha (undocumented)
 const _default: FrontendPlugin<
@@ -16,7 +17,6 @@ const _default: FrontendPlugin<
   {
     'search-result-list-item:explore': ExtensionDefinition<{
       kind: 'search-result-list-item';
-      namespace: undefined;
       name: undefined;
       config: {
         noTrack: boolean;
@@ -33,6 +33,7 @@ const _default: FrontendPlugin<
         {}
       >;
       inputs: {};
+      params: SearchResultListItemBlueprintParams;
     }>;
   }
 >;
@@ -41,7 +42,6 @@ export default _default;
 // @alpha (undocumented)
 export const exploreSearchResultListItem: ExtensionDefinition<{
   kind: 'search-result-list-item';
-  namespace: undefined;
   name: undefined;
   config: {
     noTrack: boolean;
@@ -58,6 +58,7 @@ export const exploreSearchResultListItem: ExtensionDefinition<{
     {}
   >;
   inputs: {};
+  params: SearchResultListItemBlueprintParams;
 }>;
 
 // (No @packageDocumentation comment for this package)
