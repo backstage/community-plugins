@@ -1,5 +1,7 @@
-# @backstage-community/plugin-announcements-react
+# announcements-react
 
-Welcome to the web library package for the announcements plugin!
+This library provides reusable components for displaying announcements in a Backstage plugin.
 
-_This plugin was created through the Backstage CLI_
+## Hooks
+
+There are multiple [hooks](./src/hooks/index.ts) you may use in your Backstage plugin to fetch and use announcements however you see fit.
