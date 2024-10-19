@@ -11,6 +11,7 @@
 ### Patch Changes
 
 - 55969e3: Backstage version bump to v1.31.2
+- e6d92ee: Adding emitting analytics event for removing shortcut.
 
 ## 0.3.26
 
