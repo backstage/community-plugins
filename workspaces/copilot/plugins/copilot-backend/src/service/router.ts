@@ -29,6 +29,7 @@ import { DatabaseHandler } from '../db/DatabaseHandler';
 import Scheduler from '../task/Scheduler';
 import { GithubClient } from '../client/GithubClient';
 import { DateTime } from 'luxon';
+import { CopilotCredentialsProvider } from '../utils/CopilotCredentialsProvider';
 
 /**
  * Options for configuring the Copilot plugin.
@@ -67,6 +68,11 @@ export interface RouterOptions {
    * Configuration for the router.
    */
   config: Config;
+
+  /**
+   * Credentials provider for the router.
+   */
+  credentialsProvider: CopilotCredentialsProvider;
 }
 
 const defaultSchedule: SchedulerServiceTaskScheduleDefinition = {
@@ -106,11 +112,12 @@ async function createRouter(
   routerOptions: RouterOptions,
   pluginOptions: PluginOptions,
 ): Promise<express.Router> {
-  const { logger, database, scheduler, config } = routerOptions;
+  const { logger, database, scheduler, config, credentialsProvider } =
+    routerOptions;
   const { schedule } = pluginOptions;
 
   const db = await DatabaseHandler.create({ database });
-  const api = await GithubClient.fromConfig(config);
+  const api = await GithubClient.fromConfig(credentialsProvider);
 
   await scheduler.scheduleTask({
     id: 'copilot-metrics',
