@@ -13,5 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { searchModuleAnnouncementsCollator as default } from './module';
-export * from './collators';
+
+/**
+ * Node.js library for the announcements plugin.
+ *
+ * @packageDocumentation
+ */
+
+// In this package you might for example export functions that
+// help other plugins or modules interact with your plugin.
+
+export { AnnouncementCollatorFactory } from './AnnouncementCollatorFactory';

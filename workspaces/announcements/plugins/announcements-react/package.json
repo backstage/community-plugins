@@ -33,9 +33,9 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
+    "@backstage-community/plugin-announcements-common": "workspace:^",
     "@backstage/core-plugin-api": "^1.9.4",
     "@backstage/errors": "^1.2.4",
-    "@backstage-community/plugin-announcements-common": "workspace:^",
     "luxon": "^3.4.4",
     "react-use": "^17.2.4"
   },

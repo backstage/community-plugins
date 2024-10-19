@@ -13,5 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { searchModuleAnnouncementsCollator as default } from './module';
-export * from './collators';
+import { SchedulerServiceTaskScheduleDefinitionConfig } from '@backstage/backend-plugin-api';
+
+export interface Config {
+  search?: {
+    collators?: {
+      /**
+       * Configuration options for `@backstage-community/plugin-search-backend-module-announcements`
+       */
+      announcements?: {
+        /**
+         * The schedule for how often to run the collation job.
+         */
+        schedule?: SchedulerServiceTaskScheduleDefinitionConfig;
+      };
+    };
+  };
+}
