@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 import { FlatRoutes } from '@backstage/core-app-api';
 import { convertLegacyApp } from '@backstage/core-compat-api';
 import { createApp } from '@backstage/frontend-defaults';
 import {
-  ApiBlueprint,
   configApiRef,
+  ApiBlueprint,
   createApiFactory,
   createFrontendModule,
   PageBlueprint,
@@ -34,30 +33,27 @@ import { ApiExplorerPage } from '@backstage/plugin-api-docs';
 import catalogPlugin from '@backstage/plugin-catalog/alpha';
 import catalogImportPlugin from '@backstage/plugin-catalog-import/alpha';
 import userSettingsPlugin from '@backstage/plugin-user-settings/alpha';
+import React from 'react';
 import { Navigate, Route } from 'react-router';
-import sonarQubePlugin from '@backstage-community/plugin-sonarqube/alpha';
-import { SignInPage } from '@backstage/core-components';
-import { navigationExtension } from './components/Sidebar';
 
-const homePageExtension = PageBlueprint.make({
-  name: 'catalog-root',
-  params: {
-    defaultPath: '/',
-    loader: () => Promise.resolve(<Navigate to="catalog" />),
-  },
-});
+import { navigationExtension } from './components/Sidebar';
+import { SignInPage } from '@backstage/core-components';
+
+import sonarQubePlugin from '@backstage-community/plugin-sonarqube/alpha';
 
 const signInPage = SignInPageBlueprint.make({
-  name: 'guest',
   params: {
     loader: async () => props =>
       <SignInPage {...props} providers={['guest']} />,
   },
 });
 
-export const signInPageModule = createFrontendModule({
-  pluginId: 'app',
-  extensions: [signInPage],
+const homePageExtension = PageBlueprint.make({
+  name: 'home',
+  params: {
+    defaultPath: '/',
+    loader: () => Promise.resolve(<Navigate to="catalog" />),
+  },
 });
 
 const collectedLegacyPlugins = convertLegacyApp(
