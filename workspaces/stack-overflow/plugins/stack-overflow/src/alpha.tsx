@@ -16,32 +16,36 @@
 
 import { configApiRef, createApiFactory } from '@backstage/core-plugin-api';
 import {
-  createApiExtension,
-  createPlugin,
+  ApiBlueprint,
+  createFrontendPlugin,
 } from '@backstage/frontend-plugin-api';
-import { createSearchResultListItemExtension } from '@backstage/plugin-search-react/alpha';
+import { SearchResultListItemBlueprint } from '@backstage/plugin-search-react/alpha';
 import { StackOverflowClient, stackOverflowApiRef } from './api';
 
 /** @alpha */
-const stackOverflowApi = createApiExtension({
-  factory: createApiFactory({
-    api: stackOverflowApiRef,
-    deps: { configApi: configApiRef },
-    factory: ({ configApi }) => StackOverflowClient.fromConfig(configApi),
-  }),
+const stackOverflowApi = ApiBlueprint.make({
+  params: {
+    factory: createApiFactory({
+      api: stackOverflowApiRef,
+      deps: { configApi: configApiRef },
+      factory: ({ configApi }) => StackOverflowClient.fromConfig(configApi),
+    }),
+  },
 });
 
 /** @alpha */
-const stackOverflowSearchResultListItem = createSearchResultListItemExtension({
-  predicate: result => result.type === 'stack-overflow',
-  component: () =>
-    import('./search/StackOverflowSearchResultListItem').then(
-      m => m.StackOverflowSearchResultListItem,
-    ),
+const stackOverflowSearchResultListItem = SearchResultListItemBlueprint.make({
+  params: {
+    predicate: result => result.type === 'stack-overflow',
+    component: () =>
+      import('./search/StackOverflowSearchResultListItem').then(
+        m => m.StackOverflowSearchResultListItem,
+      ),
+  },
 });
 
 /** @alpha */
-export default createPlugin({
+export default createFrontendPlugin({
   id: 'stack-overflow',
   // TODO: Migrate homepage cards when the declarative homepage plugin supports them
   extensions: [stackOverflowApi, stackOverflowSearchResultListItem],
