@@ -20,4 +20,4 @@
  * @packageDocumentation
  */
 
-export { copilotPlugin, CopilotPage } from './plugin';
+export { copilotPlugin, CopilotSidebar, CopilotIndexPage } from './plugin';

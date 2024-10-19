@@ -13,18 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import React, { useMemo } from 'react';
 import Box from '@mui/material/Box';
-import { styled, useTheme } from '@mui/material/styles';
+import Stack from '@mui/material/Stack';
+import { styled } from '@mui/material/styles';
 import { Calendar } from 'simple-date-range-calendar';
-import { useMetrics } from '../../hooks';
-import { CardsProps, ChartsProps } from '../../types';
-import { Progress } from '@backstage/core-components';
-import { useSharedDateRange } from '../../contexts';
+import { useMetrics, useMetricsByTeam, useTeams } from '../../hooks';
+import { CardsProps, ChartsProps, FilterProps } from '../../types';
+import { InfoCard, Progress } from '@backstage/core-components';
+import { useSharedDateRange, useSharedTeam } from '../../contexts';
 
 type MetricsProps = {
   Cards: React.ElementType<CardsProps>;
   Charts: React.ElementType<ChartsProps>;
+  Filters: React.ElementType<FilterProps>;
 };
 
 const MainBox = styled(Box)(({ theme }) => ({
@@ -33,37 +35,72 @@ const MainBox = styled(Box)(({ theme }) => ({
   gap: theme.spacing(2),
 }));
 
-export const RenderCharts = ({ Charts }: Omit<MetricsProps, 'Cards'>) => {
+export const RenderFilters = ({
+  Filters,
+}: Omit<Omit<MetricsProps, 'Cards'>, 'Charts'>) => {
   const [state] = useSharedDateRange();
-  const { items, loading } = useMetrics(state.startDate, state.endDate);
+  const [team, setTeam] = useSharedTeam();
+  const data = useTeams(state.startDate, state.endDate);
+  const options = useMemo(
+    () => data.items?.map(x => ({ label: x, value: x })) ?? [],
+    [data.items],
+  );
 
-  if (loading) {
+  if (!Filters) return null;
+
+  if (data.loading) {
     return <Progress />;
   }
 
-  return <Charts metrics={items || []} />;
+  return <Filters options={options} team={team} setTeam={setTeam} />;
 };
 
-export const RenderCards = ({ Cards }: Omit<MetricsProps, 'Charts'>) => {
+export const RenderCharts = ({
+  Charts,
+}: Omit<Omit<MetricsProps, 'Cards'>, 'Filters'>) => {
   const [state] = useSharedDateRange();
-  const { items, loading } = useMetrics(state.startDate, state.endDate);
+  const [team] = useSharedTeam();
+  const data = useMetrics(state.startDate, state.endDate);
+  const dataPerTeam = useMetricsByTeam(state.startDate, state.endDate);
 
-  if (loading) {
+  if (data.loading || dataPerTeam.loading) {
+    return <Progress />;
+  }
+
+  return (
+    <Charts
+      team={team}
+      metrics={data.items ?? []}
+      metricsByTeam={dataPerTeam.items ?? []}
+    />
+  );
+};
+
+export const RenderCards = ({
+  Cards,
+}: Omit<Omit<MetricsProps, 'Charts'>, 'Filters'>) => {
+  const [state] = useSharedDateRange();
+  const [team] = useSharedTeam();
+  const data = useMetrics(state.startDate, state.endDate);
+  const dataPerTeam = useMetricsByTeam(state.startDate, state.endDate);
+
+  if (data.loading || dataPerTeam.loading) {
     return <Progress />;
   }
 
   return (
     <Cards
+      team={team}
       startDate={state.startDate}
       endDate={state.endDate}
-      metrics={items || []}
+      metrics={data.items ?? []}
+      metricsByTeam={dataPerTeam.items ?? []}
     />
   );
 };
 
-export const Metrics = ({ Cards, Charts }: MetricsProps) => {
+export const Metrics = ({ Cards, Charts, Filters }: MetricsProps) => {
   const [state, setState] = useSharedDateRange();
-  const theme = useTheme();
 
   const onDateRangeIsSelected = (start: Date, end: Date) => {
     setState({ startDate: start, endDate: end });
@@ -72,15 +109,20 @@ export const Metrics = ({ Cards, Charts }: MetricsProps) => {
   return (
     <MainBox>
       <Box display="flex" gap={2}>
-        <Box flex={1} maxWidth={300}>
-          <Calendar
-            theme={theme.palette.mode}
-            startDate={state.startDate}
-            endDate={state.endDate}
-            onDateRangeIsSelected={onDateRangeIsSelected}
-          />
+        <Box flex={1} maxWidth={296}>
+          <InfoCard divider={false} noPadding>
+            <Calendar
+              styles={{ borderRadius: 4, width: 296 }}
+              startDate={state.startDate}
+              endDate={state.endDate}
+              onDateRangeIsSelected={onDateRangeIsSelected}
+            />
+          </InfoCard>
         </Box>
-        <Box flex={2}>
+        <Box flex={1}>
+          <Stack pb={1.5}>
+            <RenderFilters Filters={Filters} />
+          </Stack>
           <RenderCards Cards={Cards} />
         </Box>
       </Box>

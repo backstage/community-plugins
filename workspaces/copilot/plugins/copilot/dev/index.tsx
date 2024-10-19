@@ -15,7 +15,7 @@
  */
 import React from 'react';
 import { createDevApp } from '@backstage/dev-utils';
-import { CopilotPage, copilotPlugin } from '../src';
+import { copilotPlugin, CopilotSidebar, CopilotIndexPage } from '../src';
 import {
   UnifiedThemeProvider,
   themes as builtinThemes,
@@ -23,7 +23,6 @@ import {
 import DarkIcon from '@mui/icons-material/Brightness2';
 import LightIcon from '@mui/icons-material/WbSunny';
 import { AppTheme } from '@backstage/core-plugin-api';
-import { GitHubIcon } from '@backstage/core-components';
 
 const customThemes: AppTheme[] = [
   {
@@ -49,11 +48,9 @@ const customThemes: AppTheme[] = [
 createDevApp()
   .addThemes(customThemes)
   .registerPlugin(copilotPlugin)
-  .registerPlugin()
+  .addSidebarItem(<CopilotSidebar />)
   .addPage({
-    element: <CopilotPage />,
-    title: 'Copilot Page',
-    icon: GitHubIcon,
+    element: <CopilotIndexPage />,
     path: '/copilot',
   })
   .render();

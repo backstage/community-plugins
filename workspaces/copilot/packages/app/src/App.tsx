@@ -51,7 +51,7 @@ import { AppRouter, FlatRoutes } from '@backstage/core-app-api';
 import { CatalogGraphPage } from '@backstage/plugin-catalog-graph';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';
-import { CopilotPage } from '@backstage-community/plugin-copilot';
+import { CopilotIndexPage } from '@backstage-community/plugin-copilot';
 
 const app = createApp({
   apis,
@@ -111,10 +111,9 @@ const routes = (
     </Route>
     <Route path="/settings" element={<UserSettingsPage />} />
     <Route path="/catalog-graph" element={<CatalogGraphPage />} />
-    <Route path="/copilot" element={<CopilotPage />} />
+    <Route path="/copilot" element={<CopilotIndexPage />} />
   </FlatRoutes>
 );
-
 export default app.createRoot(
   <>
     <AlertDisplay />
