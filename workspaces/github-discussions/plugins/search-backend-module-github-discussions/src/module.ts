@@ -39,7 +39,7 @@ export const searchModuleGithubDiscussions = createBackendModule({
         };
         indexRegistry.addCollator({
           schedule: scheduler.createScheduledTaskRunner(schedule),
-          factory: GithubDiscussionsCollatorFactory.fromConfig(config, {
+          factory: GithubDiscussionsCollatorFactory.fromConfig({
             logger,
             config,
           }),
