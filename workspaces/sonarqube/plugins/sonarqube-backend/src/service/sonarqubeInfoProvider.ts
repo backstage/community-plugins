@@ -248,8 +248,8 @@ export class DefaultSonarqubeInfoProvider implements SonarqubeInfoProvider {
    * @param instanceUrl - URL of the sonarqube instance
    * @param token - token to access the sonarqube instance
    * @returns The list of supported metrics, if no metrics are supported an empty list is provided in the promise
-   * @private
    */
+  // TODO(awanlin) - Add @private back
   private static async getSupportedMetrics(
     instanceUrl: string,
     token: string,
@@ -280,8 +280,8 @@ export class DefaultSonarqubeInfoProvider implements SonarqubeInfoProvider {
    * @param authToken - token used as basic auth user without password
    * @param query - parameters to provide to the call
    * @returns A promise on the answer to the API call if the answer status code is 200, undefined otherwise.
-   * @private
    */
+  // TODO(awanlin) - Add @private back
   private static async callApi<T>(
     url: string,
     path: string,
