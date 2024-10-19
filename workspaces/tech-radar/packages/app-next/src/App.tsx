@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import React from 'react';
-import { createApp } from '@backstage/frontend-app-api';
+import { createApp } from '@backstage/frontend-defaults';
 import {
   configApiRef,
   createApiFactory,
