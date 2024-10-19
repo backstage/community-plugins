@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-allure",
-  "version": "0.1.54",
+  "version": "0.1.55",
   "description": "A Backstage plugin that integrates with Allure",
   "backstage": {
     "role": "frontend-plugin",
