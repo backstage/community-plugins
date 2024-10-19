@@ -13,14 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export * from './service/router';
-export { announcementsPlugin as default } from './plugin';
-export { buildAnnouncementsContext } from './service/announcementsContextBuilder';
 
-import { AnnouncementCollatorFactory as AnnouncementCollatorFactory_ } from '@procore-oss/backstage-plugin-search-backend-module-announcements';
+exports.up = async function up(knex) {
+  await knex.schema.alterTable('announcements', table => {
+    table.boolean('active');
+  });
+};
 
 /**
- * @public
- * @deprecated Use `AnnouncementCollatorFactory` from `@procore-oss/backstage-plugin-search-backend-module-announcements` instead
+ * @param { import("knex").Knex } knex
+ * @returns { Promise<void> }
  */
-export type AnnouncementCollatorFactory = AnnouncementCollatorFactory_;
+exports.down = async function down(knex) {
+  await knex.schema.alterTable('announcements', table => {
+    table.dropColumn('active');
+  });
+};

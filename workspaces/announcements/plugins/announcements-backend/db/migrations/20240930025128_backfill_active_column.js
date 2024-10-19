@@ -13,30 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  BackstageCredentials,
-  BackstageUserPrincipal,
-} from '@backstage/backend-plugin-api';
 
-export interface TodoItem {
-  title: string;
-  id: string;
-  createdBy: string;
-  createdAt: string;
-}
+exports.up = async function up(knex) {
+  await knex.table('announcements').update('active', true).whereNull('active');
+};
 
-export interface TodoListService {
-  createTodo(
-    input: {
-      title: string;
-      entityRef?: string;
-    },
-    options: {
-      credentials: BackstageCredentials<BackstageUserPrincipal>;
-    },
-  ): Promise<TodoItem>;
-
-  listTodos(): Promise<{ items: TodoItem[] }>;
-
-  getTodo(request: { id: string }): Promise<TodoItem>;
-}
+/**
+ * @param { import("knex").Knex } knex
+ * @returns { Promise<void> }
+ */
+exports.down = async function down(_knex) {};

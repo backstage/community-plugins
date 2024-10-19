@@ -13,4 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { createTodoListService } from './createTodoListService';
+import { Announcement } from '@backstage-community/plugin-announcements-common';
+import { DateTime } from 'luxon';
+
+export type AnnouncementModel = Omit<Announcement, 'created_at'> & {
+  created_at: DateTime;
+};

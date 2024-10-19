@@ -14,40 +14,47 @@
  * limitations under the License.
  */
 import {
-  coreServices,
   createBackendPlugin,
+  coreServices,
 } from '@backstage/backend-plugin-api';
-import { createRouter } from './router';
-import { catalogServiceRef } from '@backstage/plugin-catalog-node/alpha';
-import { createTodoListService } from './services/TodoListService';
+import { createRouter } from './service/router';
+import { initializePersistenceContext } from './service/persistence/persistenceContext';
+import { signalsServiceRef } from '@backstage/plugin-signals-node';
+import { eventsServiceRef } from '@backstage/plugin-events-node';
 
-/**
- * announcementsPlugin backend plugin
- *
- * @public
- */
 export const announcementsPlugin = createBackendPlugin({
   pluginId: 'announcements',
   register(env) {
     env.registerInit({
       deps: {
         logger: coreServices.logger,
-        auth: coreServices.auth,
+        http: coreServices.httpRouter,
+        permissions: coreServices.permissions,
+        database: coreServices.database,
         httpAuth: coreServices.httpAuth,
-        httpRouter: coreServices.httpRouter,
-        catalog: catalogServiceRef,
+        config: coreServices.rootConfig,
+        events: eventsServiceRef,
+        signals: signalsServiceRef,
       },
-      async init({ logger, auth, httpAuth, httpRouter, catalog }) {
-        const todoListService = await createTodoListService({
-          logger,
-          auth,
-          catalog,
-        });
-
-        httpRouter.use(
+      async init({
+        http,
+        logger,
+        permissions,
+        database,
+        httpAuth,
+        config,
+        events,
+        signals,
+      }) {
+        http.use(
           await createRouter({
+            permissions,
+            logger,
+            config,
+            persistenceContext: await initializePersistenceContext(database),
             httpAuth,
-            todoListService,
+            events,
+            signals,
           }),
         );
       },
