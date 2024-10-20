@@ -109,7 +109,7 @@ export function GithubDiscussionsSearchResultListItem(
         <Box>
           {result.author && (
             <Chip
-              label={result.category}
+              label={result.author}
               size="small"
               component="a"
               href={`https://github.com/${result.author}`}
@@ -118,9 +118,9 @@ export function GithubDiscussionsSearchResultListItem(
             />
           )}
           {result.category && <Chip label={result.category} size="small" />}
-          {result.labels.length &&
+          {result.labels.length > 0 &&
             result.labels.map(({ name }) => {
-              return <Chip label={name} size="small" />;
+              return <Chip key={name} label={name} size="small" />;
             })}
         </Box>
       </div>
