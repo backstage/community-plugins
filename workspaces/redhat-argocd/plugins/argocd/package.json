@@ -32,7 +32,7 @@
     "ui-test": "yarn playwright test"
   },
   "dependencies": {
-    "@backstage-community/plugin-redhat-argocd-common": "^1.0.7",
+    "@backstage-community/plugin-redhat-argocd-common": "workspace:^",
     "@backstage/catalog-model": "^1.7.0",
     "@backstage/core-components": "^0.15.1",
     "@backstage/core-plugin-api": "^1.10.0",
