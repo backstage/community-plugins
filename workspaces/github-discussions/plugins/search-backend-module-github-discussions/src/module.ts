@@ -19,6 +19,10 @@ import {
 } from '@backstage/backend-plugin-api';
 import { searchIndexRegistryExtensionPoint } from '@backstage/plugin-search-backend-node/alpha';
 import { GithubDiscussionsCollatorFactory } from './collators';
+import {
+  DefaultGithubCredentialsProvider,
+  ScmIntegrations,
+} from '@backstage/integration';
 
 export const searchModuleGithubDiscussions = createBackendModule({
   pluginId: 'search',
@@ -34,14 +38,22 @@ export const searchModuleGithubDiscussions = createBackendModule({
       async init({ logger, config, scheduler, indexRegistry }) {
         const schedule = {
           frequency: { minutes: 45 },
-          timeout: { minutes: 15 },
+          timeout: { minutes: 30 },
           initialDelay: { seconds: 3 },
         };
+
+        const integrations = ScmIntegrations.fromConfig(config);
+        const { github: githubIntegration } = integrations;
+        const credentialsProvider =
+          DefaultGithubCredentialsProvider.fromIntegrations(integrations);
+
         indexRegistry.addCollator({
           schedule: scheduler.createScheduledTaskRunner(schedule),
           factory: GithubDiscussionsCollatorFactory.fromConfig({
             logger,
             config,
+            credentialsProvider,
+            githubIntegration,
           }),
         });
       },
