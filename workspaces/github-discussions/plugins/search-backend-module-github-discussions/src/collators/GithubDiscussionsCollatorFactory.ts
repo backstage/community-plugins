@@ -20,67 +20,69 @@ import {
   RootConfigService,
 } from '@backstage/backend-plugin-api';
 import {
-  run,
-  useScope,
-  type Operation,
   createQueue,
+  type Operation,
+  run,
   spawn,
   suspend,
+  useScope,
 } from 'effection';
 import {
-  fetchGithubDiscussions,
-  toAsyncIterable,
-  type GithubDiscussionFetcherResult,
   createGithubGraphqlClient,
+  fetchGithubDiscussions,
+  type GithubDiscussionFetcherResult,
+  toAsyncIterable,
 } from 'github-discussions-fetcher';
 import { type GithubDiscussionsDocument } from '@backstage-community/plugin-github-discussions-common';
 import {
-  DefaultGithubCredentialsProvider,
-  ScmIntegrations,
+  type DefaultGithubCredentialsProvider,
+  type GithubIntegration,
+  ScmIntegrationsGroup,
 } from '@backstage/integration';
 import assert from 'assert-ts';
 import gh from 'parse-github-url';
 
-type GithubDiscussionsCollatorFactoryConstructorOptions = {
+interface GithubDiscussionsCollatorFactoryConstructorOptions {
   config: RootConfigService;
   logger: LoggerService;
-};
+  credentialsProvider: DefaultGithubCredentialsProvider;
+  githubIntegration: ScmIntegrationsGroup<GithubIntegration>;
+}
 
-export type GithubDiscussionsCollatorFactoryOptions = {
+export interface GithubDiscussionsCollatorFactoryOptions {
   logger: LoggerService;
   config: RootConfigService;
   credentialsProvider: DefaultGithubCredentialsProvider;
-  integrations: ScmIntegrations;
-};
+  githubIntegration: ScmIntegrationsGroup<GithubIntegration>;
+}
 
 export class GithubDiscussionsCollatorFactory
   implements DocumentCollatorFactory
 {
   private readonly config: RootConfigService;
-  private readonly integrations: ScmIntegrations;
-  private readonly logger: LoggerService;
+  private readonly githubIntegration: ScmIntegrationsGroup<GithubIntegration>;
   private credentialsProvider: DefaultGithubCredentialsProvider;
+  private readonly logger: LoggerService;
   public readonly type: string = 'github-discussions';
 
   private constructor(options: GithubDiscussionsCollatorFactoryOptions) {
     this.logger = options.logger.child({ documentType: this.type });
     this.config = options.config;
     this.credentialsProvider = options.credentialsProvider;
-    this.integrations = options.integrations;
+    this.githubIntegration = options.githubIntegration;
   }
 
   static fromConfig({
     config,
     logger,
+    credentialsProvider,
+    githubIntegration,
   }: GithubDiscussionsCollatorFactoryConstructorOptions) {
-    const integrations = ScmIntegrations.fromConfig(config);
-    const credentialsProvider =
-      DefaultGithubCredentialsProvider.fromIntegrations(integrations);
     return new GithubDiscussionsCollatorFactory({
       logger,
       credentialsProvider,
       config,
-      integrations,
+      githubIntegration,
     });
   }
 
@@ -103,9 +105,7 @@ export class GithubDiscussionsCollatorFactory
     assert(org !== null, `Discussions url is missing organization name`);
     assert(repo !== null, `Discussion url is missing repository`);
 
-    const github = this.integrations.github;
-
-    const integration = github.byUrl(url.href);
+    const integration = this.githubIntegration.byUrl(url.href);
 
     assert(integration, `Could not retrieve a Github integration for ${url}`);
 
