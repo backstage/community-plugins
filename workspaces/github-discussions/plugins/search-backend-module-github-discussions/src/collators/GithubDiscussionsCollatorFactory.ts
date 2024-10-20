@@ -19,7 +19,14 @@ import {
   LoggerService,
   RootConfigService,
 } from '@backstage/backend-plugin-api';
-import { run, useScope, type Operation, createQueue, spawn } from 'effection';
+import {
+  run,
+  useScope,
+  type Operation,
+  createQueue,
+  spawn,
+  suspend,
+} from 'effection';
 import {
   fetchGithubDiscussions,
   toAsyncIterable,
@@ -82,7 +89,13 @@ export class GithubDiscussionsCollatorFactory
   }
 
   async *execute(): AsyncGenerator<GithubDiscussionsDocument> {
-    const logger: typeof console = this.logger as unknown as typeof console;
+    const logger: typeof console = {
+      log: this.logger.info.bind(this.logger),
+      info: this.logger.info.bind(this.logger),
+      error: this.logger.error.bind(this.logger),
+      warn: this.logger.warn.bind(this.logger),
+      dir: this.logger.info.bind(this.logger),
+    } as unknown as typeof console;
 
     const url = gh(this.config.getString('githubDiscussions.url'));
     assert(url !== null, `Not parsable as a Github URL`);
@@ -105,39 +118,53 @@ export class GithubDiscussionsCollatorFactory
       endpoint: `${integration?.config.apiBaseUrl}/graphql`,
     });
 
-    const documents = await run(function* injection(): Operation<
-      AsyncIterable<GithubDiscussionFetcherResult>
-    > {
+    let documents: AsyncIterable<GithubDiscussionFetcherResult> | undefined;
+
+    const task = run(function* injection(): Operation<void> {
       const scope = yield* useScope();
       const results = createQueue<GithubDiscussionFetcherResult, void>();
 
       yield* spawn(function* () {
-        yield* fetchGithubDiscussions({
-          client,
-          org,
-          repo,
-          discussionsBatchSize: 70,
-          commentsBatchSize: 70,
-          repliesBatchSize: 70,
-          logger,
-          results,
-        });
+        try {
+          yield* fetchGithubDiscussions({
+            client,
+            org,
+            repo,
+            discussionsBatchSize: 70,
+            commentsBatchSize: 70,
+            repliesBatchSize: 70,
+            logger,
+            results,
+          });
+        } catch (e) {
+          logger.error(
+            `Encountered an error while ingesting GitHub Discussions`,
+            e,
+          );
+        }
         results.close();
       });
 
-      return toAsyncIterable(results, scope);
+      documents = toAsyncIterable(results, scope);
+
+      yield* suspend();
     });
 
-    for await (const document of documents) {
-      yield {
-        title: document.title,
-        text: document.bodyText,
-        location: document.url,
-        author: document.author,
-        category: document.category,
-        labels: document.labels,
-        comments: document.comments,
-      };
+    if (documents) {
+      for await (const document of documents) {
+        yield {
+          title: document.title,
+          text: document.bodyText,
+          location: document.url,
+          author: document.author,
+          category: document.category,
+          labels: document.labels,
+          comments: document.comments,
+        };
+      }
+      await task.halt();
+    } else {
+      logger.error(`Documents were not available when iteration started`);
     }
   }
 }
