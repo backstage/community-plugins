@@ -2691,7 +2691,7 @@ __metadata:
     "@types/parse-github-url": "npm:^1"
     assert-ts: "npm:^0.3.4"
     effection: "npm:^3.0.3"
-    github-discussions-fetcher: "npm:^0.2.3"
+    github-discussions-fetcher: "npm:^0.3.0"
     parse-github-url: "npm:^1.0.3"
     stream: "npm:^0.0.3"
   languageName: unknown
@@ -16219,9 +16219,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"github-discussions-fetcher@npm:^0.2.3":
-  version: 0.2.3
-  resolution: "github-discussions-fetcher@npm:0.2.3"
+"github-discussions-fetcher@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "github-discussions-fetcher@npm:0.3.0"
   dependencies:
     "@deno/shim-deno": "npm:~0.18.0"
     "@octokit/graphql": "npm:^4.8.0"
@@ -16229,7 +16229,7 @@ __metadata:
     chalk: "npm:4.1.2"
     effection: "npm:3.0.3"
     graphql: "npm:16.8.2"
-  checksum: 10/a6869c7d269e7635d3bff6eba94cd77a6ec3839f1014d7c665213d70a14603f197a87c3857b59b5f012b316f3a68e17b6ce3fe0fa96552c55cb245edfdb3d5f6
+  checksum: 10/79c2c835c194037cf1c69bc1c7aaf7502c074c9b45defe30a0b6de476883c282ccd1d8c24129d2a5b656a793bd04e7e7f1aa0db30afa2ae8d36839376617b349
   languageName: node
   linkType: hard
 
