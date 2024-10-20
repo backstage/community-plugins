@@ -57,7 +57,7 @@ export class GithubDiscussionsCollatorFactory
 
   private constructor(options: GithubDiscussionsCollatorFactoryOptions) {
     this.logger = options.logger.child({ documentType: this.type });
-    this.config = options.config.get('githubDiscussions');
+    this.config = options.config;
     this.credentialsProvider = options.credentialsProvider;
     this.integrations = options.integrations;
   }
@@ -84,7 +84,7 @@ export class GithubDiscussionsCollatorFactory
   async *execute(): AsyncGenerator<GithubDiscussionsDocument> {
     const logger: typeof console = this.logger as unknown as typeof console;
 
-    const url = gh(this.config.getString('url'));
+    const url = gh(this.config.getString('githubDiscussions.url'));
     assert(url !== null, `Not parsable as a Github URL`);
     const { name: repo, owner: org } = url;
     assert(org !== null, `Discussions url is missing organization name`);
@@ -92,12 +92,12 @@ export class GithubDiscussionsCollatorFactory
 
     const github = this.integrations.github;
 
-    const integration = github.byUrl(`${url}`);
+    const integration = github.byUrl(url.href);
 
     assert(integration, `Could not retrieve a Github integration for ${url}`);
 
     const { token } = await this.credentialsProvider.getCredentials({
-      url: `${url}`,
+      url: url.href,
     });
 
     const client = createGithubGraphqlClient({

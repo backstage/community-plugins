@@ -2691,7 +2691,7 @@ __metadata:
     "@types/parse-github-url": "npm:^1"
     assert-ts: "npm:^0.3.4"
     effection: "npm:^3.0.3"
-    github-discussions-fetcher: "npm:^0.2.1"
+    github-discussions-fetcher: "npm:^0.2.3"
     parse-github-url: "npm:^1.0.3"
     stream: "npm:^0.0.3"
   languageName: unknown
@@ -4767,6 +4767,23 @@ __metadata:
     pkginfo: "npm:^0.4.1"
     uid2: "npm:^1.0.0"
   checksum: 10/6932aca4213f1e47c41454cbb9ef1309643ffa14fa3da401f18e397e76f3fa1669be76d96db65dd6435854d7f05b30d3a27f645d10e3c6ed955ad30930d47b3e
+  languageName: node
+  linkType: hard
+
+"@deno/shim-deno-test@npm:^0.5.0":
+  version: 0.5.0
+  resolution: "@deno/shim-deno-test@npm:0.5.0"
+  checksum: 10/167072948c1b582d6e5555e0ec385a9fa98c21d15e3aadf525b256880c54d382fe65744d2da49f550817b782b9aa8111fa16a33c42deb2ad2343b2fb99674ba5
+  languageName: node
+  linkType: hard
+
+"@deno/shim-deno@npm:~0.18.0":
+  version: 0.18.2
+  resolution: "@deno/shim-deno@npm:0.18.2"
+  dependencies:
+    "@deno/shim-deno-test": "npm:^0.5.0"
+    which: "npm:^4.0.0"
+  checksum: 10/8ca41731d31858007ba9103b707491f854f15561f35f34b9d8ea0f940dadd28b2948cf2481a0c5a0083fbfbb399c9411891655a4a4bac294a7942ac1ecb74709
   languageName: node
   linkType: hard
 
@@ -12060,13 +12077,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chalk@npm:5.3.0":
-  version: 5.3.0
-  resolution: "chalk@npm:5.3.0"
-  checksum: 10/6373caaab21bd64c405bfc4bd9672b145647fc9482657b5ea1d549b3b2765054e9d3d928870cdf764fb4aad67555f5061538ff247b8310f110c5c888d92397ea
-  languageName: node
-  linkType: hard
-
 "char-regex@npm:^1.0.2":
   version: 1.0.2
   resolution: "char-regex@npm:1.0.2"
@@ -16209,16 +16219,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"github-discussions-fetcher@npm:^0.2.1":
-  version: 0.2.1
-  resolution: "github-discussions-fetcher@npm:0.2.1"
+"github-discussions-fetcher@npm:^0.2.3":
+  version: 0.2.3
+  resolution: "github-discussions-fetcher@npm:0.2.3"
   dependencies:
+    "@deno/shim-deno": "npm:~0.18.0"
     "@octokit/graphql": "npm:^4.8.0"
     "@octokit/types": "npm:13.6.1"
-    chalk: "npm:5.3.0"
+    chalk: "npm:4.1.2"
     effection: "npm:3.0.3"
     graphql: "npm:16.8.2"
-  checksum: 10/a0133d774bcce04bf20b7348920cf35ab5386d3229a755981bc3dc559733c57dfb1630294bd6804db7ed26acad45d87490b75a9e3b62fb61a9be5b3ded8ab2cc
+  checksum: 10/a6869c7d269e7635d3bff6eba94cd77a6ec3839f1014d7c665213d70a14603f197a87c3857b59b5f012b316f3a68e17b6ce3fe0fa96552c55cb245edfdb3d5f6
   languageName: node
   linkType: hard
 
