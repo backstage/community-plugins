@@ -15,7 +15,6 @@
  */
 import { DocumentCollatorFactory } from '@backstage/plugin-search-common';
 import { Readable } from 'stream';
-import fs from 'fs-extra';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import {
   createQueue,
@@ -46,7 +45,8 @@ interface GithubDiscussionsCollatorFactoryConstructorOptions {
   githubIntegration: ScmIntegrationsGroup<GithubIntegration>;
   timeout: number;
   url: string;
-  cache: string;
+  cacheBase?: string;
+  clearCacheOnSuccess?: boolean;
 }
 
 export interface GithubDiscussionsCollatorFactoryOptions {
@@ -55,7 +55,8 @@ export interface GithubDiscussionsCollatorFactoryOptions {
   githubIntegration: ScmIntegrationsGroup<GithubIntegration>;
   timeout: number;
   url: string;
-  cache: string;
+  cacheBase?: string;
+  clearCacheOnSuccess?: boolean;
 }
 
 export class GithubDiscussionsCollatorFactory
@@ -67,7 +68,8 @@ export class GithubDiscussionsCollatorFactory
   public readonly type: string = 'github-discussions';
   private readonly timeout: number;
   private readonly url: string;
-  private readonly cache: string;
+  private readonly cacheBase?: string;
+  private readonly clearCacheOnSuccess?: boolean;
 
   private constructor(options: GithubDiscussionsCollatorFactoryOptions) {
     this.logger = options.logger.child({ documentType: this.type });
@@ -75,7 +77,8 @@ export class GithubDiscussionsCollatorFactory
     this.githubIntegration = options.githubIntegration;
     this.timeout = options.timeout;
     this.url = options.url;
-    this.cache = options.cache;
+    this.cacheBase = options.cacheBase;
+    this.clearCacheOnSuccess = options.clearCacheOnSuccess;
   }
 
   static fromConfig({
@@ -84,7 +87,8 @@ export class GithubDiscussionsCollatorFactory
     githubIntegration,
     timeout,
     url,
-    cache,
+    cacheBase,
+    clearCacheOnSuccess,
   }: GithubDiscussionsCollatorFactoryConstructorOptions) {
     return new GithubDiscussionsCollatorFactory({
       logger,
@@ -92,7 +96,8 @@ export class GithubDiscussionsCollatorFactory
       githubIntegration,
       timeout,
       url,
-      cache,
+      cacheBase,
+      clearCacheOnSuccess,
     });
   }
 
@@ -129,8 +134,9 @@ export class GithubDiscussionsCollatorFactory
     });
 
     let documents: AsyncIterable<GithubDiscussionFetcherResult> | undefined;
-    const cache = new URL(this.cache);
+    const cache = this.cacheBase ? new URL(this.cacheBase) : undefined;
     const timeout = this.timeout;
+    const clearCacheOnSuccess = this.clearCacheOnSuccess;
 
     const task = run(function* injection(): Operation<void> {
       const scope = yield* useScope();
@@ -149,6 +155,7 @@ export class GithubDiscussionsCollatorFactory
             results,
             cache,
             timeout,
+            clearCacheOnSuccess,
           });
         } catch (e) {
           logger.error(
@@ -177,7 +184,6 @@ export class GithubDiscussionsCollatorFactory
         };
       }
       await task.halt();
-      await fs.remove(cache.pathname);
     } else {
       logger.error(`Documents were not available when iteration started`);
     }

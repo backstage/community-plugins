@@ -60,8 +60,11 @@ export const searchModuleGithubDiscussions = createBackendModule({
         const credentialsProvider =
           DefaultGithubCredentialsProvider.fromIntegrations(integrations);
         const url = config.getString('search.collators.githubDiscussions.url');
-        const cache = config.getString(
-          'search.collators.githubDiscussions.cache',
+        const cacheBase = config.getString(
+          'search.collators.githubDiscussions.cacheBase',
+        );
+        const clearCacheOnSuccess = config.getOptionalBoolean(
+          'search.collators.githubDiscussions.clearCacheOnSuccess',
         );
 
         indexRegistry.addCollator({
@@ -72,7 +75,8 @@ export const searchModuleGithubDiscussions = createBackendModule({
             githubIntegration,
             timeout,
             url,
-            cache,
+            cacheBase,
+            clearCacheOnSuccess,
           }),
         });
       },
