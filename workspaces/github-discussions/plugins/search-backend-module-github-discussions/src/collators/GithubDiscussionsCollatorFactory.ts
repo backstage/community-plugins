@@ -49,6 +49,7 @@ interface GithubDiscussionsCollatorFactoryConstructorOptions {
   logger: LoggerService;
   credentialsProvider: DefaultGithubCredentialsProvider;
   githubIntegration: ScmIntegrationsGroup<GithubIntegration>;
+  timeout: number;
 }
 
 export interface GithubDiscussionsCollatorFactoryOptions {
@@ -56,6 +57,7 @@ export interface GithubDiscussionsCollatorFactoryOptions {
   config: RootConfigService;
   credentialsProvider: DefaultGithubCredentialsProvider;
   githubIntegration: ScmIntegrationsGroup<GithubIntegration>;
+  timeout: number;
 }
 
 export class GithubDiscussionsCollatorFactory
@@ -66,12 +68,14 @@ export class GithubDiscussionsCollatorFactory
   private credentialsProvider: DefaultGithubCredentialsProvider;
   private readonly logger: LoggerService;
   public readonly type: string = 'github-discussions';
+  private readonly timeout: number;
 
   private constructor(options: GithubDiscussionsCollatorFactoryOptions) {
     this.logger = options.logger.child({ documentType: this.type });
     this.config = options.config;
     this.credentialsProvider = options.credentialsProvider;
     this.githubIntegration = options.githubIntegration;
+    this.timeout = options.timeout;
   }
 
   static fromConfig({
@@ -79,12 +83,14 @@ export class GithubDiscussionsCollatorFactory
     logger,
     credentialsProvider,
     githubIntegration,
+    timeout,
   }: GithubDiscussionsCollatorFactoryConstructorOptions) {
     return new GithubDiscussionsCollatorFactory({
       logger,
       credentialsProvider,
       config,
       githubIntegration,
+      timeout,
     });
   }
 
@@ -129,6 +135,7 @@ export class GithubDiscussionsCollatorFactory
         '.cache-github-discussions/',
       ),
     );
+    const timeout = this.timeout;
 
     const task = run(function* injection(): Operation<void> {
       const scope = yield* useScope();
@@ -146,6 +153,7 @@ export class GithubDiscussionsCollatorFactory
             logger,
             results,
             cache,
+            timeout,
           });
         } catch (e) {
           logger.error(
