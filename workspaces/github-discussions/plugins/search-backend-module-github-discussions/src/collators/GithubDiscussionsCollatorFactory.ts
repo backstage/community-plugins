@@ -15,6 +15,8 @@
  */
 import { DocumentCollatorFactory } from '@backstage/plugin-search-common';
 import { Readable } from 'stream';
+import fs from 'fs-extra';
+import { join } from 'path';
 import {
   LoggerService,
   RootConfigService,
@@ -119,6 +121,12 @@ export class GithubDiscussionsCollatorFactory
     });
 
     let documents: AsyncIterable<GithubDiscussionFetcherResult> | undefined;
+    const cache = new URL(
+      join(
+        this.config.getString('githubDiscussions.cache'),
+        '.cache-github-discussions/',
+      ),
+    );
 
     const task = run(function* injection(): Operation<void> {
       const scope = yield* useScope();
@@ -135,6 +143,7 @@ export class GithubDiscussionsCollatorFactory
             repliesBatchSize: 70,
             logger,
             results,
+            cache,
           });
         } catch (e) {
           logger.error(
@@ -163,6 +172,7 @@ export class GithubDiscussionsCollatorFactory
         };
       }
       await task.halt();
+      await fs.remove(cache.pathname);
     } else {
       logger.error(`Documents were not available when iteration started`);
     }
