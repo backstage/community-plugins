@@ -40,8 +40,6 @@ import { apis } from './apis';
 import { entityPage } from './components/catalog/EntityPage';
 import { searchPage } from './components/search/SearchPage';
 import { Root } from './components/Root';
-// import { getThemes } from '@redhat-developer/red-hat-developer-hub-theme';
-import { StyledEngineProvider } from '@mui/material/styles';
 
 import {
   AlertDisplay,
@@ -53,6 +51,10 @@ import { AppRouter, FlatRoutes } from '@backstage/core-app-api';
 import { CatalogGraphPage } from '@backstage/plugin-catalog-graph';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';
+import {
+  UnifiedThemeProvider,
+  themes as builtinThemes,
+} from '@backstage/theme';
 
 const app = createApp({
   apis,
@@ -76,7 +78,24 @@ const app = createApp({
   components: {
     SignInPage: props => <SignInPage {...props} auto providers={['guest']} />,
   },
-  // themes: getThemes(),
+  themes: [
+    {
+      Provider: ({ children }) => (
+        <UnifiedThemeProvider theme={builtinThemes.light} children={children} />
+      ),
+      id: 'light',
+      title: 'Backstage Light',
+      variant: 'light',
+    },
+    {
+      Provider: ({ children }) => (
+        <UnifiedThemeProvider theme={builtinThemes.dark} children={children} />
+      ),
+      id: 'dark',
+      title: 'Backstage Dark',
+      variant: 'dark',
+    },
+  ],
 });
 
 const routes = (
@@ -120,10 +139,8 @@ export default app.createRoot(
   <>
     <AlertDisplay />
     <OAuthRequestDialog />
-    <StyledEngineProvider injectFirst>
-      <AppRouter>
-        <Root>{routes}</Root>
-      </AppRouter>
-    </StyledEngineProvider>
+    <AppRouter>
+      <Root>{routes}</Root>
+    </AppRouter>
   </>,
 );

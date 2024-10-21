@@ -44,7 +44,6 @@ import { MyGroupsSidebarItem } from '@backstage/plugin-org';
 import GroupIcon from '@mui/icons-material/People';
 
 import { ThemeProvider, useTheme } from '@mui/material/styles';
-import { IconComponent } from '@backstage/core-plugin-api';
 
 const useSidebarLogoStyles = makeStyles({
   root: {
@@ -87,28 +86,16 @@ export const Root = ({ children }: PropsWithChildren<{}>) => {
           <SidebarDivider />
           <SidebarGroup label="Menu" icon={<MenuIcon />}>
             {/* Global nav, not org-specific */}
-            <SidebarItem
-              icon={HomeIcon as IconComponent}
-              to="catalog"
-              text="Home"
-            />
+            <SidebarItem icon={HomeIcon} to="catalog" text="Home" />
             <MyGroupsSidebarItem
               singularTitle="My Group"
               pluralTitle="My Groups"
-              icon={GroupIcon as IconComponent}
+              icon={GroupIcon}
             />
+            <SidebarItem icon={ExtensionIcon} to="api-docs" text="APIs" />
+            <SidebarItem icon={LibraryBooks} to="docs" text="Docs" />
             <SidebarItem
-              icon={ExtensionIcon as IconComponent}
-              to="api-docs"
-              text="APIs"
-            />
-            <SidebarItem
-              icon={LibraryBooks as IconComponent}
-              to="docs"
-              text="Docs"
-            />
-            <SidebarItem
-              icon={CreateComponentIcon as IconComponent}
+              icon={CreateComponentIcon}
               to="create"
               text="Create..."
             />
