@@ -2694,7 +2694,7 @@ __metadata:
     assert-ts: "npm:^0.3.4"
     effection: "npm:^3.0.3"
     fs-extra: "npm:^11.2.0"
-    github-discussions-fetcher: "npm:^0.4.0"
+    github-discussions-fetcher: "npm:^0.5.0"
     luxon: "npm:^3.5.0"
     parse-github-url: "npm:^1.0.3"
     stream: "npm:^0.0.3"
@@ -9529,7 +9529,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/luxon@npm:^3, @types/luxon@npm:^3.0.0, @types/luxon@npm:~3.4.0":
+"@types/luxon@npm:3.4.2, @types/luxon@npm:^3, @types/luxon@npm:^3.0.0, @types/luxon@npm:~3.4.0":
   version: 3.4.2
   resolution: "@types/luxon@npm:3.4.2"
   checksum: 10/fd89566e3026559f2bc4ddcc1e70a2c16161905ed50be9473ec0cfbbbe919165041408c4f6e06c4bcf095445535052e2c099087c76b1b38e368127e618fc968d
@@ -16242,18 +16242,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"github-discussions-fetcher@npm:^0.4.0":
-  version: 0.4.0
-  resolution: "github-discussions-fetcher@npm:0.4.0"
+"github-discussions-fetcher@npm:^0.5.0":
+  version: 0.5.0
+  resolution: "github-discussions-fetcher@npm:0.5.0"
   dependencies:
     "@deno/shim-deno": "npm:~0.18.0"
     "@octokit/graphql": "npm:^4.8.0"
     "@octokit/types": "npm:13.6.1"
+    "@types/luxon": "npm:3.4.2"
     chalk: "npm:4.1.2"
     effection: "npm:3.0.3"
     graphql: "npm:16.8.2"
     luxon: "npm:3.5.0"
-  checksum: 10/ed01cad7d19e0f0b573d0d9a96cdb0ca556007919efd9355533426003f8f8b176d00f835057c5c6a981c5b91347b690c2abb3fe07e7cc84e2f329566299665af
+  checksum: 10/5893a8185feeda79435b3d52adec7e711d2e97f8c23a5d18bc0afb2e4c247fc7c9dd22e67be7f51399e784f959c0a8f9a0f787bf22db2c88fc198bef271db67a
   languageName: node
   linkType: hard
 
