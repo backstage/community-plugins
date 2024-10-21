@@ -16,7 +16,7 @@ Responsible for releasing all workspaces in parallel by invoking the `release_wo
 
 Generates feedback for changesets on pull requests.
 
-## [automate_renovate_changeset.yml](./automate_renovate_changeset.yml)
+## [automate_renovate_changesets.yml](./automate_renovate_changesets.yml)
 
 Automates the generation of changesets for Renovate pull requests.
 
@@ -28,10 +28,14 @@ Runs tasks on a scheduled basis or manually via the `workflow_dispatch` event.
 
 Used to keep the Project Board in https://github.com/backstage/backstage/ in sync with PRs from this repo. 
 
-## [renovate_cron.yml](./renovate_cron.yml)
+## [renovate.yml](./renovate.yml)
 
 Runs Renovate on a scheduled basis or manually.
 
-## [version_bump.yml](./version_bump.yml)
+## [version-bump.yml](./version-bump.yml)
 
 Handles version bumping for specific workspaces. It creates a new branch for the version bump, updates the necessary files, commits the changes, and creates a pull request to merge the updates into the main branch.
+
+## [automate-staleness.yml](./automate-staleness.yml)
+
+This workflow marks issues and pull requests (PRs) as stale after a period of inactivity. If no further activity occurs, they will be closed after an additional period. The process is executed regularly as a cron job.
