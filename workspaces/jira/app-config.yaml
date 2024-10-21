@@ -1,0 +1,44 @@
+app:
+  title: "Jira Plugin"
+  baseUrl: "http://localhost:3000"
+jira:
+  token: '${JIRA_API_TOKEN}'
+
+backend:
+  baseUrl: http://localhost:7007
+  jira:
+    target: 'https://wf-nineleaps.atlassian.net' 
+    token: ${JIRA_API_TOKEN}
+
+proxy:
+  endpoints:
+    '/jira/api':
+      target: 'https://wf-nineleaps.atlassian.net/rest/api/3' 
+      headers:
+        Authorization: 'Bearer ${JIRA_API_TOKEN}' 
+        Accept: 'application/json'
+        Content-Type: 'application/json'
+        X-Atlassian-Token: 'nocheck'
+      changeOrigin: true
+      allowedHeaders: ['Authorization']
+
+integrations:
+  jira:
+    - host: wf-nineleaps.atlassian.net
+      apiBaseUrl: 'https://wf-nineleaps.atlassian.net/rest/api/3'
+      token: ${JIRA_API_TOKEN}
+
+catalog:
+  rules:
+    - allow:
+        - Component
+        - API
+        - Resource
+        - System
+        - Location
+        - Template
+  processors:
+    jira:
+      projectKey: 'CMS' 
+
+  
