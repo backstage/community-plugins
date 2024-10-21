@@ -33,7 +33,7 @@
     "assert-ts": "^0.3.4",
     "effection": "^3.0.3",
     "fs-extra": "^11.2.0",
-    "github-discussions-fetcher": "^0.3.0",
+    "github-discussions-fetcher": "^0.4.0",
     "luxon": "^3.5.0",
     "parse-github-url": "^1.0.3",
     "stream": "^0.0.3"
