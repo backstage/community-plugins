@@ -16,11 +16,7 @@
 import { DocumentCollatorFactory } from '@backstage/plugin-search-common';
 import { Readable } from 'stream';
 import fs from 'fs-extra';
-import { join } from 'path';
-import {
-  LoggerService,
-  RootConfigService,
-} from '@backstage/backend-plugin-api';
+import { LoggerService } from '@backstage/backend-plugin-api';
 import {
   createQueue,
   type Operation,
@@ -45,52 +41,58 @@ import assert from 'assert-ts';
 import gh from 'parse-github-url';
 
 interface GithubDiscussionsCollatorFactoryConstructorOptions {
-  config: RootConfigService;
   logger: LoggerService;
   credentialsProvider: DefaultGithubCredentialsProvider;
   githubIntegration: ScmIntegrationsGroup<GithubIntegration>;
   timeout: number;
+  url: string;
+  cache: string;
 }
 
 export interface GithubDiscussionsCollatorFactoryOptions {
   logger: LoggerService;
-  config: RootConfigService;
   credentialsProvider: DefaultGithubCredentialsProvider;
   githubIntegration: ScmIntegrationsGroup<GithubIntegration>;
   timeout: number;
+  url: string;
+  cache: string;
 }
 
 export class GithubDiscussionsCollatorFactory
   implements DocumentCollatorFactory
 {
-  private readonly config: RootConfigService;
   private readonly githubIntegration: ScmIntegrationsGroup<GithubIntegration>;
   private credentialsProvider: DefaultGithubCredentialsProvider;
   private readonly logger: LoggerService;
   public readonly type: string = 'github-discussions';
   private readonly timeout: number;
+  private readonly url: string;
+  private readonly cache: string;
 
   private constructor(options: GithubDiscussionsCollatorFactoryOptions) {
     this.logger = options.logger.child({ documentType: this.type });
-    this.config = options.config;
     this.credentialsProvider = options.credentialsProvider;
     this.githubIntegration = options.githubIntegration;
     this.timeout = options.timeout;
+    this.url = options.url;
+    this.cache = options.cache;
   }
 
   static fromConfig({
-    config,
     logger,
     credentialsProvider,
     githubIntegration,
     timeout,
+    url,
+    cache,
   }: GithubDiscussionsCollatorFactoryConstructorOptions) {
     return new GithubDiscussionsCollatorFactory({
       logger,
       credentialsProvider,
-      config,
       githubIntegration,
       timeout,
+      url,
+      cache,
     });
   }
 
@@ -107,9 +109,7 @@ export class GithubDiscussionsCollatorFactory
       dir: this.logger.info.bind(this.logger),
     } as unknown as typeof console;
 
-    const url = gh(
-      this.config.getString('search.collators.githubDiscussions.url'),
-    );
+    const url = gh(this.url);
     assert(url !== null, `Not parsable as a Github URL`);
     const { name: repo, owner: org } = url;
     assert(org !== null, `Discussions url is missing organization name`);
@@ -129,12 +129,7 @@ export class GithubDiscussionsCollatorFactory
     });
 
     let documents: AsyncIterable<GithubDiscussionFetcherResult> | undefined;
-    const cache = new URL(
-      join(
-        this.config.getString('search.collators.githubDiscussions.cache'),
-        '.cache-github-discussions/',
-      ),
-    );
+    const cache = new URL(this.cache);
     const timeout = this.timeout;
 
     const task = run(function* injection(): Operation<void> {
