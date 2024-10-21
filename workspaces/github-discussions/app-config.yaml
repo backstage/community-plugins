@@ -5,13 +5,11 @@ app:
 organization:
   name: My Company
 
-githubDiscussions:
-  url: https://github.com/guidanti/github-discussions-fetcher
-  cache: file:///example/absolute/path
-
 search:
   collators:
     githubDiscussions:
+      url: https://github.com/guidanti/github-discussions-fetcher
+      cache: file:///example/absolute/path
       schedule:
         initialDelay: { seconds: 10 }
         timeout: { minutes: 30 }
