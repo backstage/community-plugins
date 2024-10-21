@@ -21,10 +21,16 @@
     "build-image": "docker build ../.. -f Dockerfile --tag backstage"
   },
   "dependencies": {
+    "@backstage-community/plugin-tech-radar-backend": "workspace:^",
+    "@backstage-community/plugin-tech-radar-common": "workspace:^",
     "@backstage/backend-defaults": "^0.5.2",
+    "@backstage/backend-plugin-api": "^1.0.0",
+    "@backstage/catalog-model": "^1.6.0",
     "@backstage/plugin-app-backend": "^0.3.76",
     "@backstage/plugin-auth-backend": "^0.23.1",
+    "@backstage/plugin-auth-backend-module-github-provider": "^0.2.1",
     "@backstage/plugin-auth-backend-module-guest-provider": "^0.2.1",
+    "@backstage/plugin-auth-node": "^0.5.3",
     "@backstage/plugin-catalog-backend": "^1.27.1",
     "@backstage/plugin-catalog-backend-module-scaffolder-entity-model": "^0.2.1",
     "@backstage/plugin-permission-backend": "^0.5.50",
