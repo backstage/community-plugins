@@ -2845,12 +2845,15 @@ __metadata:
     "@backstage/plugin-permission-react": ^0.4.27
     "@backstage/test-utils": ^1.7.0
     "@backstage/theme": ^0.6.0
+    "@emotion/react": ^11.5.0
+    "@emotion/styled": ^11.3.0
     "@janus-idp/cli": 1.15.1
     "@janus-idp/shared-react": 2.11.1
     "@kubernetes/client-node": ^0.22.1
     "@mui/icons-material": 5.15.17
     "@mui/lab": 5.0.0-alpha.173
     "@mui/material": ^5.15.17
+    "@mui/styles": 5.16.7
     "@patternfly/patternfly": ^5.1.0
     "@patternfly/react-charts": ^7.1.1
     "@patternfly/react-core": ^5.1.1
