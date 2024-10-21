@@ -16,20 +16,15 @@
 import React from 'react';
 
 import { V1Container } from '@kubernetes/client-node';
-import { MenuItem, Select } from '@material-ui/core';
+import MenuItem from '@mui/material/MenuItem';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 import ResourceName from '../../../../common/components/ResourceName';
 
 type ContainerSelectorType = {
   containersList: V1Container[];
   containerSelected: string;
-  onContainerChange: (
-    event: React.ChangeEvent<{
-      name?: string;
-      value: unknown;
-    }>,
-    child: React.ReactNode,
-  ) => void;
+  onContainerChange: (event: SelectChangeEvent, child: React.ReactNode) => void;
 };
 
 export const ContainerSelector = ({
