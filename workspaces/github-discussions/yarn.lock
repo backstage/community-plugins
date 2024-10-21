@@ -2689,11 +2689,13 @@ __metadata:
     "@backstage/plugin-search-backend-node": "npm:^1.3.3"
     "@backstage/plugin-search-common": "npm:^1.2.14"
     "@types/fs-extra": "npm:^11"
+    "@types/luxon": "npm:^3"
     "@types/parse-github-url": "npm:^1"
     assert-ts: "npm:^0.3.4"
     effection: "npm:^3.0.3"
     fs-extra: "npm:^11.2.0"
     github-discussions-fetcher: "npm:^0.3.0"
+    luxon: "npm:^3.5.0"
     parse-github-url: "npm:^1.0.3"
     stream: "npm:^0.0.3"
   languageName: unknown
@@ -9527,7 +9529,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/luxon@npm:^3.0.0, @types/luxon@npm:~3.4.0":
+"@types/luxon@npm:^3, @types/luxon@npm:^3.0.0, @types/luxon@npm:~3.4.0":
   version: 3.4.2
   resolution: "@types/luxon@npm:3.4.2"
   checksum: 10/fd89566e3026559f2bc4ddcc1e70a2c16161905ed50be9473ec0cfbbbe919165041408c4f6e06c4bcf095445535052e2c099087c76b1b38e368127e618fc968d
@@ -19770,7 +19772,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"luxon@npm:^3.0.0, luxon@npm:^3.2.1":
+"luxon@npm:^3.0.0, luxon@npm:^3.2.1, luxon@npm:^3.5.0":
   version: 3.5.0
   resolution: "luxon@npm:3.5.0"
   checksum: 10/48f86e6c1c96815139f8559456a3354a276ba79bcef0ae0d4f2172f7652f3ba2be2237b0e103b8ea0b79b47715354ac9fac04eb1db3485dcc72d5110491dd47f
