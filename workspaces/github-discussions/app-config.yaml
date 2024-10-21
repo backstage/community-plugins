@@ -7,6 +7,7 @@ organization:
 
 githubDiscussions:
   url: https://github.com/guidanti/github-discussions-fetcher
+  cache: file:///example/absolute/path
 
 backend:
   # Used for enabling authentication, secret is shared by all backend plugins
