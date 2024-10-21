@@ -16,7 +16,7 @@
 import React from 'react';
 import { Theme } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Grid2';
+import Grid from '@mui/material/Unstable_Grid2';
 import { makeStyles } from '@mui/styles';
 
 import { CatalogSearchResultListItem } from '@backstage/plugin-catalog';
