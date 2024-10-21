@@ -26,6 +26,12 @@ import {
 } from '@backstage/integration';
 import { Duration } from 'luxon';
 
+const defaultSchedule = {
+  frequency: { minutes: 45 },
+  timeout: { minutes: 30 },
+  initialDelay: { seconds: 10 },
+};
+
 export const searchModuleGithubDiscussions = createBackendModule({
   pluginId: 'search',
   moduleId: 'github-discussions-collator',
@@ -38,12 +44,6 @@ export const searchModuleGithubDiscussions = createBackendModule({
         indexRegistry: searchIndexRegistryExtensionPoint,
       },
       async init({ logger, config, scheduler, indexRegistry }) {
-        const defaultSchedule = {
-          frequency: { minutes: 45 },
-          timeout: { minutes: 30 },
-          initialDelay: { seconds: 10 },
-        };
-
         const schedule = config.has(
           'search.collators.githubDiscussions.schedule',
         )
@@ -59,15 +59,20 @@ export const searchModuleGithubDiscussions = createBackendModule({
         const { github: githubIntegration } = integrations;
         const credentialsProvider =
           DefaultGithubCredentialsProvider.fromIntegrations(integrations);
+        const url = config.getString('search.collators.githubDiscussions.url');
+        const cache = config.getString(
+          'search.collators.githubDiscussions.cache',
+        );
 
         indexRegistry.addCollator({
           schedule: scheduler.createScheduledTaskRunner(schedule),
           factory: GithubDiscussionsCollatorFactory.fromConfig({
             logger,
-            config,
             credentialsProvider,
             githubIntegration,
             timeout,
+            url,
+            cache,
           }),
         });
       },
