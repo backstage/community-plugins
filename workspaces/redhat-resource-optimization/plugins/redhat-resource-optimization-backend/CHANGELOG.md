@@ -1,5 +1,11 @@
 # @backstage-community/plugin-redhat-resource-optimization-backend
 
+## 1.0.4
+
+### Patch Changes
+
+- 3a1aab2: Backstage version bump to v1.32.2
+
 ## 1.0.3
 
 ### Patch Changes

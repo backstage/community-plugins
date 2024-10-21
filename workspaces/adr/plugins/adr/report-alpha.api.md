@@ -15,23 +15,25 @@ import { default as React_2 } from 'react';
 import { RouteRef } from '@backstage/frontend-plugin-api';
 import { SearchResultItemExtensionComponent } from '@backstage/plugin-search-react/alpha';
 import { SearchResultItemExtensionPredicate } from '@backstage/plugin-search-react/alpha';
+import { SearchResultListItemBlueprintParams } from '@backstage/plugin-search-react/alpha';
 import { TranslationRef } from '@backstage/core-plugin-api/alpha';
 
 // @alpha (undocumented)
 export const adrApiExtension: ExtensionDefinition<{
   kind: 'api';
-  namespace: undefined;
   name: 'adr-api';
   config: {};
   configInput: {};
   output: ConfigurableExtensionDataRef<AnyApiFactory, 'core.api.factory', {}>;
   inputs: {};
+  params: {
+    factory: AnyApiFactory;
+  };
 }>;
 
 // @alpha (undocumented)
 export const adrEntityContentExtension: ExtensionDefinition<{
   kind: 'entity-content';
-  namespace: undefined;
   name: 'entity';
   config: {
     path: string | undefined;
@@ -69,6 +71,13 @@ export const adrEntityContentExtension: ExtensionDefinition<{
         }
       >;
   inputs: {};
+  params: {
+    loader: () => Promise<JSX.Element>;
+    defaultPath: string;
+    defaultTitle: string;
+    routeRef?: RouteRef<AnyRouteRefParams> | undefined;
+    filter?: string | ((entity: Entity) => boolean) | undefined;
+  };
 }>;
 
 // @alpha (undocumented)
@@ -101,8 +110,8 @@ export const adrSearchResultListItemExtension: ExtensionDefinition<{
     >;
   };
   kind: 'search-result-list-item';
-  namespace: undefined;
   name: undefined;
+  params: SearchResultListItemBlueprintParams;
 }>;
 
 // @alpha (undocumented)
@@ -149,12 +158,11 @@ const _default: FrontendPlugin<
         >;
       };
       kind: 'search-result-list-item';
-      namespace: undefined;
       name: undefined;
+      params: SearchResultListItemBlueprintParams;
     }>;
     'entity-content:adr/entity': ExtensionDefinition<{
       kind: 'entity-content';
-      namespace: undefined;
       name: 'entity';
       config: {
         path: string | undefined;
@@ -200,10 +208,16 @@ const _default: FrontendPlugin<
             }
           >;
       inputs: {};
+      params: {
+        loader: () => Promise<JSX.Element>;
+        defaultPath: string;
+        defaultTitle: string;
+        routeRef?: RouteRef<AnyRouteRefParams> | undefined;
+        filter?: string | ((entity: Entity) => boolean) | undefined;
+      };
     }>;
     'api:adr/adr-api': ExtensionDefinition<{
       kind: 'api';
-      namespace: undefined;
       name: 'adr-api';
       config: {};
       configInput: {};
@@ -213,6 +227,9 @@ const _default: FrontendPlugin<
         {}
       >;
       inputs: {};
+      params: {
+        factory: AnyApiFactory;
+      };
     }>;
   }
 >;

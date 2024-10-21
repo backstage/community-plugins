@@ -1,5 +1,11 @@
 ## @janus-idp/backstage-plugin-feedback-backend [1.7.0](https://github.com/janus-idp/backstage-plugins/compare/@janus-idp/backstage-plugin-feedback-backend@1.6.0...@janus-idp/backstage-plugin-feedback-backend@1.7.0) (2024-07-26)
 
+## 1.7.6
+
+### Patch Changes
+
+- 133e87e: Backstage version bump to v1.32.2
+
 ## 1.7.5
 
 ### Patch Changes

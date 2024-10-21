@@ -1,5 +1,11 @@
 # @backstage-community/plugin-search-backend-module-confluence-collator
 
+## 0.2.2
+
+### Patch Changes
+
+- e4aaaf6: Backstage version bump to v1.32.2
+
 ## 0.2.1
 
 ### Patch Changes

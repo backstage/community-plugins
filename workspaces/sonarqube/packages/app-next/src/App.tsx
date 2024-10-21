@@ -13,15 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 import { FlatRoutes } from '@backstage/core-app-api';
 import { convertLegacyApp } from '@backstage/core-compat-api';
-import { createApp } from '@backstage/frontend-app-api';
+import { createApp } from '@backstage/frontend-defaults';
 import {
-  ApiBlueprint,
   configApiRef,
+  ApiBlueprint,
   createApiFactory,
-  createExtensionOverrides,
   createFrontendModule,
   PageBlueprint,
   SignInPageBlueprint,
@@ -35,29 +33,27 @@ import { ApiExplorerPage } from '@backstage/plugin-api-docs';
 import catalogPlugin from '@backstage/plugin-catalog/alpha';
 import catalogImportPlugin from '@backstage/plugin-catalog-import/alpha';
 import userSettingsPlugin from '@backstage/plugin-user-settings/alpha';
+import React from 'react';
 import { Navigate, Route } from 'react-router';
-import sonarQubePlugin from '@backstage-community/plugin-sonarqube/alpha';
+
+import { navigationExtension } from './components/Sidebar';
 import { SignInPage } from '@backstage/core-components';
 
-const homePageExtension = PageBlueprint.make({
-  name: 'catalog-root',
-  params: {
-    defaultPath: '/',
-    loader: () => Promise.resolve(<Navigate to="catalog" />),
-  },
-});
+import sonarQubePlugin from '@backstage-community/plugin-sonarqube/alpha';
 
 const signInPage = SignInPageBlueprint.make({
-  name: 'guest',
   params: {
     loader: async () => props =>
       <SignInPage {...props} providers={['guest']} />,
   },
 });
 
-export const signInPageModule = createFrontendModule({
-  pluginId: 'app',
-  extensions: [signInPage],
+const homePageExtension = PageBlueprint.make({
+  name: 'home',
+  params: {
+    defaultPath: '/',
+    loader: () => Promise.resolve(<Navigate to="catalog" />),
+  },
 });
 
 const collectedLegacyPlugins = convertLegacyApp(
@@ -66,26 +62,22 @@ const collectedLegacyPlugins = convertLegacyApp(
   </FlatRoutes>,
 );
 
-const scmModule = createFrontendModule({
-  pluginId: 'app',
-  extensions: [
-    ApiBlueprint.make({
-      name: 'scm-auth',
-      params: {
-        factory: ScmAuth.createDefaultApiFactory(),
-      },
+const scmAuthApi = ApiBlueprint.make({
+  name: 'scm-auth',
+  params: {
+    factory: ScmAuth.createDefaultApiFactory(),
+  },
+});
+
+const scmIntegrationsApi = ApiBlueprint.make({
+  name: 'scm-integrations',
+  params: {
+    factory: createApiFactory({
+      api: scmIntegrationsApiRef,
+      deps: { configApi: configApiRef },
+      factory: ({ configApi }) => ScmIntegrationsApi.fromConfig(configApi),
     }),
-    ApiBlueprint.make({
-      name: 'scm-integrations',
-      params: {
-        factory: createApiFactory({
-          api: scmIntegrationsApiRef,
-          deps: { configApi: configApiRef },
-          factory: ({ configApi }) => ScmIntegrationsApi.fromConfig(configApi),
-        }),
-      },
-    }),
-  ],
+  },
 });
 
 export const app = createApp({
@@ -95,10 +87,15 @@ export const app = createApp({
     userSettingsPlugin,
     sonarQubePlugin,
     ...collectedLegacyPlugins,
-    signInPageModule,
-    scmModule,
-    createExtensionOverrides({
-      extensions: [homePageExtension],
+    createFrontendModule({
+      pluginId: 'app',
+      extensions: [
+        signInPage,
+        homePageExtension,
+        scmAuthApi,
+        scmIntegrationsApi,
+        navigationExtension,
+      ],
     }),
   ],
 });
