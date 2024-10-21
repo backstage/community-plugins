@@ -16,6 +16,7 @@
 import {
   coreServices,
   createBackendModule,
+  readSchedulerServiceTaskScheduleDefinitionFromConfig,
 } from '@backstage/backend-plugin-api';
 import { searchIndexRegistryExtensionPoint } from '@backstage/plugin-search-backend-node/alpha';
 import { GithubDiscussionsCollatorFactory } from './collators';
@@ -36,11 +37,19 @@ export const searchModuleGithubDiscussions = createBackendModule({
         indexRegistry: searchIndexRegistryExtensionPoint,
       },
       async init({ logger, config, scheduler, indexRegistry }) {
-        const schedule = {
+        const defaultSchedule = {
           frequency: { minutes: 45 },
           timeout: { minutes: 30 },
-          initialDelay: { seconds: 3 },
+          initialDelay: { seconds: 10 },
         };
+
+        const schedule = config.has(
+          'search.collators.githubDiscussions.schedule',
+        )
+          ? readSchedulerServiceTaskScheduleDefinitionFromConfig(
+              config.getConfig('search.collators.githubDiscussions.schedule'),
+            )
+          : defaultSchedule;
 
         const integrations = ScmIntegrations.fromConfig(config);
         const { github: githubIntegration } = integrations;

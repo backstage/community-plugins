@@ -9,6 +9,14 @@ githubDiscussions:
   url: https://github.com/guidanti/github-discussions-fetcher
   cache: file:///example/absolute/path
 
+search:
+  collators:
+    githubDiscussions:
+      schedule:
+        initialDelay: { seconds: 10 }
+        timeout: { minutes: 30 }
+        frequency: { minutes: 45 }
+
 backend:
   # Used for enabling authentication, secret is shared by all backend plugins
   # See https://backstage.io/docs/auth/service-to-service-auth for
