@@ -1,5 +1,12 @@
 # app
 
+## 0.0.6
+
+### Patch Changes
+
+- Updated dependencies [4876ff1]
+  - @backstage-community/plugin-blackduck@0.0.6
+
 ## 0.0.5
 
 ### Patch Changes

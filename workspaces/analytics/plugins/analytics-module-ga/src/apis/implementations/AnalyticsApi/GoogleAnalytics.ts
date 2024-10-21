@@ -206,7 +206,7 @@ export class GoogleAnalytics implements AnalyticsApi, NewAnalyticsApi {
 
   /**
    * Returns an object of dimensions/metrics given an Analytics Context and an
-   * Event Attributes, e.g. { dimension1: "some value", metric8: 42 }
+   * Event Attributes, e.g. `{ dimension1: "some value", metric8: 42 }`
    */
   private getCustomDimensionMetrics(
     context: AnalyticsContextValue | NewAnalyticsContextValue,

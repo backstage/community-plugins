@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import React from 'react';
-import { createApp } from '@backstage/frontend-app-api';
+import { createApp } from '@backstage/frontend-defaults';
 import {
   configApiRef,
   createApiFactory,
@@ -49,7 +49,6 @@ const homePageExtension = PageBlueprint.make({
 });
 
 const signInPage = SignInPageBlueprint.make({
-  name: 'SignInPage',
   params: {
     loader: async () => props => <SignInPage {...props} />,
   },

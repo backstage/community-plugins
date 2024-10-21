@@ -19,7 +19,6 @@ const _default: FrontendPlugin<
   {
     'api:azure-devops': ExtensionDefinition<{
       kind: 'api';
-      namespace: undefined;
       name: undefined;
       config: {};
       configInput: {};
@@ -29,10 +28,12 @@ const _default: FrontendPlugin<
         {}
       >;
       inputs: {};
+      params: {
+        factory: AnyApiFactory;
+      };
     }>;
     'page:azure-devops': ExtensionDefinition<{
       kind: 'page';
-      namespace: undefined;
       name: undefined;
       config: {
         path: string | undefined;
@@ -55,10 +56,14 @@ const _default: FrontendPlugin<
             }
           >;
       inputs: {};
+      params: {
+        defaultPath: string;
+        loader: () => Promise<JSX.Element>;
+        routeRef?: RouteRef<AnyRouteRefParams> | undefined;
+      };
     }>;
     'entity-content:azure-devops/pipelines': ExtensionDefinition<{
       kind: 'entity-content';
-      namespace: undefined;
       name: 'pipelines';
       config: {
         path: string | undefined;
@@ -104,10 +109,16 @@ const _default: FrontendPlugin<
             }
           >;
       inputs: {};
+      params: {
+        loader: () => Promise<JSX.Element>;
+        defaultPath: string;
+        defaultTitle: string;
+        routeRef?: RouteRef<AnyRouteRefParams> | undefined;
+        filter?: string | ((entity: Entity) => boolean) | undefined;
+      };
     }>;
     'entity-content:azure-devops/git-tags': ExtensionDefinition<{
       kind: 'entity-content';
-      namespace: undefined;
       name: 'git-tags';
       config: {
         path: string | undefined;
@@ -153,10 +164,16 @@ const _default: FrontendPlugin<
             }
           >;
       inputs: {};
+      params: {
+        loader: () => Promise<JSX.Element>;
+        defaultPath: string;
+        defaultTitle: string;
+        routeRef?: RouteRef<AnyRouteRefParams> | undefined;
+        filter?: string | ((entity: Entity) => boolean) | undefined;
+      };
     }>;
     'entity-content:azure-devops/pull-requests': ExtensionDefinition<{
       kind: 'entity-content';
-      namespace: undefined;
       name: 'pull-requests';
       config: {
         path: string | undefined;
@@ -202,10 +219,16 @@ const _default: FrontendPlugin<
             }
           >;
       inputs: {};
+      params: {
+        loader: () => Promise<JSX.Element>;
+        defaultPath: string;
+        defaultTitle: string;
+        routeRef?: RouteRef<AnyRouteRefParams> | undefined;
+        filter?: string | ((entity: Entity) => boolean) | undefined;
+      };
     }>;
     'entity-card:azure-devops/readme': ExtensionDefinition<{
       kind: 'entity-card';
-      namespace: undefined;
       name: 'readme';
       config: {
         filter: string | undefined;
@@ -234,6 +257,10 @@ const _default: FrontendPlugin<
             }
           >;
       inputs: {};
+      params: {
+        loader: () => Promise<JSX.Element>;
+        filter?: string | ((entity: Entity) => boolean) | undefined;
+      };
     }>;
   }
 >;

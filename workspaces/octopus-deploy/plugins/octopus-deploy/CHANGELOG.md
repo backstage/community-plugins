@@ -1,5 +1,11 @@
 # @backstage-community/plugin-octopus-deploy
 
+## 0.2.21
+
+### Patch Changes
+
+- 4a9264e: Backstage version bump to v1.32.2
+
 ## 0.2.20
 
 ### Patch Changes

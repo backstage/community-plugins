@@ -1,5 +1,13 @@
 # @backstage-community/plugin-tech-insights-node
 
+## 1.0.2
+
+### Patch Changes
+
+- 7a14237: Backstage version bump to v1.32.2
+- Updated dependencies [7a14237]
+  - @backstage-community/plugin-tech-insights-common@0.2.20
+
 ## 1.0.1
 
 ### Patch Changes
