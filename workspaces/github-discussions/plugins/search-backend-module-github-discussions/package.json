@@ -34,6 +34,7 @@
     "effection": "^3.0.3",
     "fs-extra": "^11.2.0",
     "github-discussions-fetcher": "^0.3.0",
+    "luxon": "^3.5.0",
     "parse-github-url": "^1.0.3",
     "stream": "^0.0.3"
   },
@@ -41,6 +42,7 @@
     "@backstage/backend-test-utils": "^1.0.1",
     "@backstage/cli": "^0.28.0",
     "@types/fs-extra": "^11",
+    "@types/luxon": "^3",
     "@types/parse-github-url": "^1"
   },
   "files": [

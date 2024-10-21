@@ -24,6 +24,7 @@ import {
   DefaultGithubCredentialsProvider,
   ScmIntegrations,
 } from '@backstage/integration';
+import { Duration } from 'luxon';
 
 export const searchModuleGithubDiscussions = createBackendModule({
   pluginId: 'search',
@@ -51,6 +52,9 @@ export const searchModuleGithubDiscussions = createBackendModule({
             )
           : defaultSchedule;
 
+        const timeout = Duration.fromObject(schedule.timeout).as(
+          'milliseconds',
+        );
         const integrations = ScmIntegrations.fromConfig(config);
         const { github: githubIntegration } = integrations;
         const credentialsProvider =
@@ -63,6 +67,7 @@ export const searchModuleGithubDiscussions = createBackendModule({
             config,
             credentialsProvider,
             githubIntegration,
+            timeout,
           }),
         });
       },
