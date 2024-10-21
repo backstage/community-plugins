@@ -101,7 +101,9 @@ export class GithubDiscussionsCollatorFactory
       dir: this.logger.info.bind(this.logger),
     } as unknown as typeof console;
 
-    const url = gh(this.config.getString('githubDiscussions.url'));
+    const url = gh(
+      this.config.getString('search.collators.githubDiscussions.url'),
+    );
     assert(url !== null, `Not parsable as a Github URL`);
     const { name: repo, owner: org } = url;
     assert(org !== null, `Discussions url is missing organization name`);
@@ -123,7 +125,7 @@ export class GithubDiscussionsCollatorFactory
     let documents: AsyncIterable<GithubDiscussionFetcherResult> | undefined;
     const cache = new URL(
       join(
-        this.config.getString('githubDiscussions.cache'),
+        this.config.getString('search.collators.githubDiscussions.cache'),
         '.cache-github-discussions/',
       ),
     );
