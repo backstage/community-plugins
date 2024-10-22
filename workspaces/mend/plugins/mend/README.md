@@ -131,11 +131,4 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
 
 **Add the mend.io backend plugin**
 
-> [!IMPORTANT]
-> New Backend System
-
-In your `packages/backend/src/index.ts` file:
-
-```ts
-backend.add(import('@backstage-community/plugin-mend-backend'));
-```
+See the [mend backend plugin instructions](../mend-backend/README.md).

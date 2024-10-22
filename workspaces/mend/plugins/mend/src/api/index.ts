@@ -1,6 +1,5 @@
 import { QueryClient } from '@tanstack/react-query';
 import { createApiRef, DiscoveryApi } from '@backstage/core-plugin-api';
-import { CatalogApi } from '@backstage/catalog-client';
 
 /**
  * Plugin API
@@ -20,13 +19,6 @@ export class MendClient {
     this.discoveryApi = options.discoveryApi;
   }
 }
-
-/**
- * Catalog API Ref
- */
-export const catalogApiRef = createApiRef<CatalogApi>({
-  id: 'plugin.catalog.service',
-});
 
 /**
  * React Query Client

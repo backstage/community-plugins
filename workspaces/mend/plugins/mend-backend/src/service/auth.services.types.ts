@@ -54,8 +54,8 @@ export type JwtAuthToken = {
   domainName: string;
   domainUuid: string;
   tier: string;
-  sessionStartTime: 1720348909448;
+  sessionStartTime: number;
   correlationId: string;
-  iat: 1720348939;
-  exp: 1720350739;
+  iat: number;
+  exp: number;
 };

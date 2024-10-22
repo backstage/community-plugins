@@ -136,7 +136,7 @@ export async function createRouter(
       // parse data
       const projects = dataProjectParser(data, results[2]);
 
-      return response.json({
+      response.json({
         ...projects,
         clientUrl: MendAuthSevice.getClientUrl(),
         clientName: MendAuthSevice.getClientName(),
@@ -144,7 +144,7 @@ export async function createRouter(
       // Allow any object structure here
     } catch (error: any) {
       logger.error('/project', error);
-      return response
+      response
         .status(500)
         .json({ error: 'Oops! Please try again later.' });
     }
@@ -163,7 +163,8 @@ export async function createRouter(
       const uid = request.body.uid;
 
       if (!uid) {
-        return response.status(401).json({ error: 'Oops! No UUID provided' });
+        response.status(401).json({ error: 'Oops! No UUID provided' });
+        return;
       }
 
       const projectResult = await Promise.all([
@@ -205,13 +206,14 @@ export async function createRouter(
       );
 
       if (!data.length) {
-        return response.json({
+        response.json({
           findingList: [],
           projectName: '',
           projectUuid: '',
           clientUrl: MendAuthSevice.getClientUrl(),
           clientName: MendAuthSevice.getClientName(),
         });
+        return;
       }
 
       const params = {
@@ -252,7 +254,7 @@ export async function createRouter(
         findingResult[2], // ESC-51: Follow Jira activity
       );
 
-      return response.json({
+      response.json({
         findingList,
         projectName: project.projectList[0].entity.params.repo,
         projectUuid: project.projectList[0].uuid,
@@ -262,7 +264,7 @@ export async function createRouter(
       // Allow any object structure here
     } catch (error: any) {
       logger.error('/finding', error);
-      return response
+      response
         .status(500)
         .json({ error: 'Oops! Please try again later.' });
     }

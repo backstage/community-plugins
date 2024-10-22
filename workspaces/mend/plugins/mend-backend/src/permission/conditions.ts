@@ -1,3 +1,4 @@
+import express from 'express';
 import { createConditionExports } from '@backstage/plugin-permission-node';
 import {
   createPermissionIntegrationRouter,
@@ -17,7 +18,7 @@ export const mendConditions = conditions;
 
 export const createMendProjectConditionalDecision = createConditionalDecision;
 
-export const permissionIntegrationRouter = createPermissionIntegrationRouter({
+export const permissionIntegrationRouter: express.Router = createPermissionIntegrationRouter({
   permissions: [mendReadPermission],
   getResources: async resourceRefs => {
     return resourceRefs.map(resourceRef => {

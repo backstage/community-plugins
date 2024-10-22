@@ -1,6 +1,13 @@
 # mend.io - backend
 
-See the [mend plugin instructions](../mend/README.md).
+> [!IMPORTANT]
+> New Backend System
+
+In your `packages/backend/src/index.ts` file:
+
+```ts
+backend.add(import('@backstage-community/plugin-mend-backend'));
+```
 
 ### Plugin Permission (optional)
 
@@ -41,3 +48,6 @@ export class OrganizationPolicy implements PermissionPolicy {
   }
 // ...
 ```
+**Add the mend.io frontend plugin**
+
+See the [mend frontend plugin instructions](../mend/README.md).
