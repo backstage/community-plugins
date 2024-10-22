@@ -18,19 +18,20 @@ export const mendConditions = conditions;
 
 export const createMendProjectConditionalDecision = createConditionalDecision;
 
-export const permissionIntegrationRouter: express.Router = createPermissionIntegrationRouter({
-  permissions: [mendReadPermission],
-  getResources: async resourceRefs => {
-    return resourceRefs.map(resourceRef => {
-      return {
-        permission: mendReadPermission,
-        resourceRef,
-      };
-    });
-  },
-  resourceType: RESOURCE_TYPE.PROJECT,
-  rules: Object.values(rules),
-});
+export const permissionIntegrationRouter: express.Router =
+  createPermissionIntegrationRouter({
+    permissions: [mendReadPermission],
+    getResources: async resourceRefs => {
+      return resourceRefs.map(resourceRef => {
+        return {
+          permission: mendReadPermission,
+          resourceRef,
+        };
+      });
+    },
+    resourceType: RESOURCE_TYPE.PROJECT,
+    rules: Object.values(rules),
+  });
 
 export const transformConditions: ConditionTransformer<FilterProps> =
   createConditionTransformer(Object.values(rules));

@@ -23,11 +23,13 @@ const useStyles = makeStyles<Theme, { color: string; isHovered: boolean }>(
       flexShrink: 0,
       backgroundImage: ({ isHovered }: { isHovered: boolean }): string =>
         isHovered ? linearGradient : '',
-      cursor: ({ isHovered }: { isHovered: boolean }): string => (isHovered ? 'pointer' : ''),
+      cursor: ({ isHovered }: { isHovered: boolean }): string =>
+        isHovered ? 'pointer' : '',
       '&:hover': {
         backgroundImage: ({ isHovered }: { isHovered: boolean }): string =>
           isHovered ? linearGradient : '',
-        cursor: ({ isHovered }: { isHovered: boolean }): string => (isHovered ? 'pointer' : ''),
+        cursor: ({ isHovered }: { isHovered: boolean }): string =>
+          isHovered ? 'pointer' : '',
       },
     },
     scrapLabel: {

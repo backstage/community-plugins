@@ -74,14 +74,14 @@ import { MendTab } from '@backstage-community/plugin-mend';
 const serviceEntityPage = (
   <EntityLayout>
     <EntityLayout.Route path="/" title="Overview">
-    // ... other elements
-    <EntityLayout.Route path="/mend" title="mend.io">
-      <MendTab />
-    </EntityLayout.Route>
-    // ... other elements
+      // ... other elements
+      <EntityLayout.Route path="/mend" title="mend.io">
+        <MendTab />
+      </EntityLayout.Route>
+      // ... other elements
     </EntityLayout.Route>
   </EntityLayout>
-// ...
+  // ...
 );
 // ...
 ```
@@ -100,9 +100,9 @@ const routes = (
     <Route path="/catalog" element={<CatalogIndexPage />} />
     // ... other elements
     <Route path="/mend" element={<MendPage />} />
-   // ... other elements
+    // ... other elements
   </FlatRoutes>
-// ...
+  // ...
 );
 // ...
 ```
@@ -124,7 +124,7 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
     </Sidebar>
     {children}
   </SidebarPage>
-// ...
+  // ...
 );
 // ...
 ```

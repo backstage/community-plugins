@@ -211,22 +211,32 @@ export const dataMatcher = (
 
 const getIssueStatus = (
   engine: StatisticsEngine,
-  finding: CodeFindingSuccessResponseData
-  | DependenciesFindingSuccessResponseData
-  | ContainersFindingSuccessResponseData,
+  finding:
+    | CodeFindingSuccessResponseData
+    | DependenciesFindingSuccessResponseData
+    | ContainersFindingSuccessResponseData,
 ): string => {
   if (engine === StatisticsEngine.CODE) {
     if ((finding as CodeFindingSuccessResponseData)?.suppressed)
       return 'suppressed';
-    if ((finding as CodeFindingSuccessResponseData)?.almIssues?.jiraPlatform?.issueStatus) return 'created';
-    if ((finding as CodeFindingSuccessResponseData)?.reviewed) return 'reviewed';
+    if (
+      (finding as CodeFindingSuccessResponseData)?.almIssues?.jiraPlatform
+        ?.issueStatus
+    )
+      return 'created';
+    if ((finding as CodeFindingSuccessResponseData)?.reviewed)
+      return 'reviewed';
   }
 
   if (engine === StatisticsEngine.DEPENDENCIES) {
     // NOTE: Available status: IGNORED and ACTIVE
     // ACTIVE means unreviewed
     // IGNORED means suppressed, comment fields are available to this status
-    if ((finding as DependenciesFindingSuccessResponseData)?.findingInfo?.status === 'IGNORED') return 'suppressed';
+    if (
+      (finding as DependenciesFindingSuccessResponseData)?.findingInfo
+        ?.status === 'IGNORED'
+    )
+      return 'suppressed';
   }
 
   return 'unreviewed';

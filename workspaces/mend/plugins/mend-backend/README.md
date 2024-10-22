@@ -27,27 +27,28 @@ import {
 } from '@mend/backstage-plugin-mend-backend';
 // ... other polices
 export class OrganizationPolicy implements PermissionPolicy {
-    async handle(
-      request: PolicyQuery,
-      user?: BackstageIdentityResponse,
-    ): Promise<PolicyDecision> {
-      if (isPermission(request.permission, mendReadPermission)) {
-        return createMendProjectConditionalDecision(
-          request.permission,
-          mendConditions.filter({
-            ids: [], // List of project id
-            exclude: true // Default
-          }),
-        );
-      }
-       // ... other conditions
-      return {
-        result: AuthorizeResult.ALLOW,
-      };
+  async handle(
+    request: PolicyQuery,
+    user?: BackstageIdentityResponse,
+  ): Promise<PolicyDecision> {
+    if (isPermission(request.permission, mendReadPermission)) {
+      return createMendProjectConditionalDecision(
+        request.permission,
+        mendConditions.filter({
+          ids: [], // List of project id
+          exclude: true, // Default
+        }),
+      );
     }
+    // ... other conditions
+    return {
+      result: AuthorizeResult.ALLOW,
+    };
   }
+}
 // ...
 ```
+
 **Add the mend.io frontend plugin**
 
 See the [mend frontend plugin instructions](../mend/README.md).

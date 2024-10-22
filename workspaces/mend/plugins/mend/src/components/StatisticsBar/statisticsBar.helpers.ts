@@ -34,9 +34,7 @@ export const getTotalFindings = (data: Statistics): BarChartData[] => {
   ];
 };
 
-export const getTotalFindingsByEngine = (
-  data: Statistics,
-): BarChartData[] => {
+export const getTotalFindingsByEngine = (data: Statistics): BarChartData[] => {
   return [
     {
       value: data?.[StatisticsEngine.DEPENDENCIES]?.total,

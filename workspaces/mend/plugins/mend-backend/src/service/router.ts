@@ -144,9 +144,7 @@ export async function createRouter(
       // Allow any object structure here
     } catch (error: any) {
       logger.error('/project', error);
-      response
-        .status(500)
-        .json({ error: 'Oops! Please try again later.' });
+      response.status(500).json({ error: 'Oops! Please try again later.' });
     }
   });
 
@@ -250,7 +248,9 @@ export async function createRouter(
       const project = dataProjectParser(data, projectResult[2]);
       const findingList = dataFindingParser(
         findingResult[0].filter(item => !item.suppressed), // NOTE: Do not show suppressed item
-        findingResult[1].filter((item) => !(item.findingInfo.status === 'IGNORED')), // NOTE: Do not show ignored item
+        findingResult[1].filter(
+          item => !(item.findingInfo.status === 'IGNORED'),
+        ), // NOTE: Do not show ignored item
         findingResult[2], // ESC-51: Follow Jira activity
       );
 
@@ -264,9 +264,7 @@ export async function createRouter(
       // Allow any object structure here
     } catch (error: any) {
       logger.error('/finding', error);
-      response
-        .status(500)
-        .json({ error: 'Oops! Please try again later.' });
+      response.status(500).json({ error: 'Oops! Please try again later.' });
     }
   });
 

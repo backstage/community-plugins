@@ -18,7 +18,7 @@ const useStyles = makeStyles(() => ({
   container: {
     border: '1px solid #dfdfdf',
     height: '100%',
-    minHeight: 168
+    minHeight: 168,
   },
   header: {
     justifyContent: 'center',
@@ -26,7 +26,7 @@ const useStyles = makeStyles(() => ({
     '& span': {
       fontWeight: 500,
       fontSize: '20px',
-    }
+    },
   },
   content: {
     alignItems: 'center',
@@ -36,7 +36,11 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export const Card = ({ children, loading, title }: CardProps): React.ReactNode => {
+export const Card = ({
+  children,
+  loading,
+  title,
+}: CardProps): React.ReactNode => {
   const classes = useStyles();
 
   return (
