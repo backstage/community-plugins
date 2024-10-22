@@ -38,7 +38,7 @@ import {
  *
  * @public
  */
-export function runAzurePipelineAction(options: {
+export function createAzureDevopsRunPipelineAction(options: {
   integrations: ScmIntegrationRegistry;
 }) {
   const { integrations } = options;

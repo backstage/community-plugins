@@ -18,7 +18,7 @@ import {
   createBackendModule,
 } from '@backstage/backend-plugin-api';
 import { scaffolderActionsExtensionPoint } from '@backstage/plugin-scaffolder-node/alpha';
-import { runAzurePipelineAction } from './actions/example/run-pipeline';
+import { createAzureDevopsRunPipelineAction } from './actions/devopsRunPipeline';
 import { ScmIntegrations } from '@backstage/integration';
 
 /**
@@ -35,7 +35,9 @@ export const scaffolderModule = createBackendModule({
       },
       async init({ scaffolderActions, config }) {
         const integrations = ScmIntegrations.fromConfig(config);
-        scaffolderActions.addActions(runAzurePipelineAction({ integrations }));
+        scaffolderActions.addActions(
+          createAzureDevopsRunPipelineAction({ integrations }),
+        );
       },
     });
   },

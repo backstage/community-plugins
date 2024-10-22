@@ -31,7 +31,7 @@ jest.mock('@backstage/plugin-scaffolder-node', () => {
   };
 });
 
-import { runAzurePipelineAction } from './run-pipeline';
+import { createAzureDevopsRunPipelineAction } from './devopsRunPipeline';
 import { ScmIntegrations } from '@backstage/integration';
 import { ConfigReader } from '@backstage/config';
 import { WebApi } from 'azure-devops-node-api';
@@ -51,7 +51,7 @@ describe('publish:azure', () => {
   });
 
   const integrations = ScmIntegrations.fromConfig(config);
-  const action = runAzurePipelineAction({ integrations, config });
+  const action = createAzureDevopsRunPipelineAction({ integrations });
 
   const mockContext = createMockActionContext({
     input: {
