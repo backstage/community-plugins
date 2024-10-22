@@ -47,6 +47,9 @@ interface GithubDiscussionsCollatorFactoryConstructorOptions {
   url: string;
   cacheBase?: string;
   clearCacheOnSuccess?: boolean;
+  discussionsBatchSize?: number;
+  commentsBatchSize?: number;
+  repliesBatchSize?: number;
 }
 
 export interface GithubDiscussionsCollatorFactoryOptions {
@@ -57,6 +60,9 @@ export interface GithubDiscussionsCollatorFactoryOptions {
   url: string;
   cacheBase?: string;
   clearCacheOnSuccess?: boolean;
+  discussionsBatchSize?: number;
+  commentsBatchSize?: number;
+  repliesBatchSize?: number;
 }
 
 export class GithubDiscussionsCollatorFactory
@@ -70,6 +76,9 @@ export class GithubDiscussionsCollatorFactory
   private readonly url: string;
   private readonly cacheBase?: string;
   private readonly clearCacheOnSuccess?: boolean;
+  private readonly discussionsBatchSize?: number;
+  private readonly commentsBatchSize?: number;
+  private readonly repliesBatchSize?: number;
 
   private constructor(options: GithubDiscussionsCollatorFactoryOptions) {
     this.logger = options.logger.child({ documentType: this.type });
@@ -79,6 +88,9 @@ export class GithubDiscussionsCollatorFactory
     this.url = options.url;
     this.cacheBase = options.cacheBase;
     this.clearCacheOnSuccess = options.clearCacheOnSuccess;
+    this.discussionsBatchSize = options.discussionsBatchSize;
+    this.commentsBatchSize = options.commentsBatchSize;
+    this.repliesBatchSize = options.repliesBatchSize;
   }
 
   static fromConfig({
@@ -89,6 +101,9 @@ export class GithubDiscussionsCollatorFactory
     url,
     cacheBase,
     clearCacheOnSuccess,
+    discussionsBatchSize,
+    commentsBatchSize,
+    repliesBatchSize,
   }: GithubDiscussionsCollatorFactoryConstructorOptions) {
     return new GithubDiscussionsCollatorFactory({
       logger,
@@ -98,6 +113,9 @@ export class GithubDiscussionsCollatorFactory
       url,
       cacheBase,
       clearCacheOnSuccess,
+      discussionsBatchSize,
+      commentsBatchSize,
+      repliesBatchSize,
     });
   }
 
@@ -112,6 +130,7 @@ export class GithubDiscussionsCollatorFactory
       error: this.logger.error.bind(this.logger),
       warn: this.logger.warn.bind(this.logger),
       dir: this.logger.info.bind(this.logger),
+      debug: this.logger.debug.bind(this.logger),
     } as unknown as typeof console;
 
     const url = gh(this.url);
@@ -135,8 +154,13 @@ export class GithubDiscussionsCollatorFactory
 
     let documents: AsyncIterable<GithubDiscussionFetcherResult> | undefined;
     const cache = this.cacheBase ? new URL(this.cacheBase) : undefined;
-    const timeout = this.timeout;
-    const clearCacheOnSuccess = this.clearCacheOnSuccess;
+    const {
+      timeout,
+      clearCacheOnSuccess,
+      discussionsBatchSize = 100,
+      commentsBatchSize = 100,
+      repliesBatchSize = 100,
+    } = this;
 
     const task = run(function* injection(): Operation<void> {
       const scope = yield* useScope();
@@ -148,9 +172,9 @@ export class GithubDiscussionsCollatorFactory
             client,
             org,
             repo,
-            discussionsBatchSize: 70,
-            commentsBatchSize: 70,
-            repliesBatchSize: 70,
+            discussionsBatchSize,
+            commentsBatchSize,
+            repliesBatchSize,
             logger,
             results,
             cache,
