@@ -4,5 +4,5 @@
 
 ### Patch Changes
 
-- Updated dependencies [ab4b7fd]
+- Updated dependencies [394506b]
   - @backstage-community/plugin-npm@1.0.0

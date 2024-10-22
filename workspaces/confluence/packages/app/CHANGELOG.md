@@ -1,5 +1,12 @@
 # app
 
+## 0.0.4
+
+### Patch Changes
+
+- Updated dependencies [e4aaaf6]
+  - @backstage-community/plugin-confluence@0.1.3
+
 ## 0.0.3
 
 ### Patch Changes

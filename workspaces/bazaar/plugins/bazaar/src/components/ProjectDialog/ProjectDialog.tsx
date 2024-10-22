@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import { useForm, UseFormReset, UseFormGetValues } from 'react-hook-form';
@@ -27,6 +27,11 @@ import {
   DialogActions,
   DialogContent,
 } from '../CustomDialogTitle';
+import { fetchUsers } from '../../util/fetchMethods';
+import { UserSelector } from '../UserSelector';
+import { useApi } from '@backstage/core-plugin-api';
+import { catalogApiRef } from '@backstage/plugin-catalog-react';
+import { Entity } from '@backstage/catalog-model';
 
 type Props = {
   handleSave: (
@@ -52,6 +57,9 @@ export const ProjectDialog = ({
   deleteButton,
   handleClose,
 }: Props) => {
+  const catalogApi = useApi(catalogApiRef);
+  const [users, setUsers] = useState<Entity[]>([]);
+
   const {
     handleSubmit,
     reset,
@@ -72,6 +80,10 @@ export const ProjectDialog = ({
     handleClose();
     reset(defaultValues);
   };
+
+  useEffect(() => {
+    fetchUsers(catalogApi).then(setUsers);
+  }, [catalogApi]);
 
   return (
     <div>
@@ -120,15 +132,14 @@ export const ProjectDialog = ({
             options={['small', 'medium', 'large']}
           />
 
-          <InputField
-            error={errors.responsible}
+          <UserSelector
+            users={users}
+            disableClearable={false}
+            defaultValue={defaultValues.responsible}
+            label="Select or enter responsible user"
+            name="responsible"
             control={control}
-            rules={{
-              required: true,
-            }}
-            inputType="responsible"
-            helperText="Please enter a contact person"
-            placeholder="Contact person of the project"
+            rules={{ required: 'Please select or enter a responsible user' }}
           />
 
           {isAddForm && projectSelector}
