@@ -18,7 +18,6 @@ import React, { useEffect, useState } from 'react';
 import { useApi } from '@backstage/core-plugin-api';
 import { jiraApiRef } from '../../api';
 import {
-  Button,
   Card,
   CardContent,
   CircularProgress,
@@ -34,9 +33,6 @@ import {
   Typography,
 } from '@material-ui/core';
 import { usernameApi } from '../../utils/usernameApi';
-import ChevronLeft from '@material-ui/icons/ChevronLeft';
-import ChevronRight from '@material-ui/icons/ChevronRight';
-// import { JiraNoBorderIcon } from '../../../../../packages/app/src/assets/icons';
 import { JiraNoBorderIcon } from '../../utils/assets';
 import calculateDaysAgo from '../../utils/daysAgo';
 
@@ -106,7 +102,6 @@ export const JiraLocalComponent = () => {
 
     try {
       const { total } = await jiraApi.fetchAndStoreIssues(jql, 0, 0, username);
-      // console.log('Total issues:', total);
 
       const promises = [];
       for (let startAt = 0; startAt < total; startAt += maxResults) {
@@ -160,25 +155,6 @@ export const JiraLocalComponent = () => {
           >
             My tasks
           </Typography>
-          {/* <div
-            style={{
-              display: 'flex',
-              paddingBottom: '10px',
-            }}
-          >
-            <Button onClick={handlePreviousPage} disabled={currentPage === 0}>
-              <ChevronLeft />
-            </Button>
-            <Typography style={{ paddingTop: '7px' }}>
-              {currentPage + 1}
-            </Typography>
-            <Button
-              onClick={handleNextPage}
-              disabled={currentPage >= totalPages - 1}
-            >
-              <ChevronRight />
-            </Button>
-          </div> */}
         </div>
         <TableContainer component={Paper} style={{ boxShadow: 'none' }}>
           <Table className={classes.table} aria-label="jira issues table">
@@ -195,7 +171,6 @@ export const JiraLocalComponent = () => {
                   height: 'full',
                   display: 'flex',
                   alignItems: 'center',
-                  // justifyContent: 'center',
                 }}
               >
                 <CircularProgress />

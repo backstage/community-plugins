@@ -18,7 +18,6 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { useApi } from '@backstage/core-plugin-api';
 import { JiraLocalComponent } from './JiraLocalComponent';
-import { jiraApiRef } from '../../api';
 
 // Mock Jira API data
 const mockIssues = [
