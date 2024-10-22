@@ -11,6 +11,9 @@ search:
       url: https://github.com/guidanti/github-discussions-fetcher
       cacheBase: file:///example/absolute/path
       clearCacheOnSuccess: true
+      discussionsBatchSize: 65
+      commentsBatchSize: 65
+      repliesBatchSize: 65
       schedule:
         initialDelay: { seconds: 10 }
         timeout: { minutes: 30 }
