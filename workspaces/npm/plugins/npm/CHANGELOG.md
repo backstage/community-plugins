@@ -4,4 +4,4 @@
 
 ### Major Changes
 
-- ab4b7fd: Initial version that shows meta info and latest versions from a npm registry
+- 394506b: Initial version that shows meta info and latest versions from a npm registry

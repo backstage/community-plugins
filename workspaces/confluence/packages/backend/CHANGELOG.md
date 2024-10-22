@@ -1,5 +1,13 @@
 # backend
 
+## 0.0.4
+
+### Patch Changes
+
+- Updated dependencies [e4aaaf6]
+  - @backstage-community/plugin-search-backend-module-confluence-collator@0.2.2
+  - app@0.0.4
+
 ## 0.0.3
 
 ### Patch Changes

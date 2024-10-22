@@ -13,10 +13,4 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { SignInPage as BackstageSignInPage } from '@backstage/core-components';
-import { SignInPageProps } from '@backstage/core-plugin-api';
-import React from 'react';
-
-export const SignInPage = (props: SignInPageProps) => {
-  return <BackstageSignInPage {...props} auto providers={['guest']} />;
-};
+export { UserSelector } from './UserSelector';

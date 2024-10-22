@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-tech-insights-node",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "backstage": {
     "role": "node-library",
     "pluginId": "tech-insights",
@@ -43,7 +43,7 @@
   },
   "dependencies": {
     "@backstage-community/plugin-tech-insights-common": "workspace:^",
-    "@backstage/backend-plugin-api": "^1.0.0",
+    "@backstage/backend-plugin-api": "^1.0.1",
     "@backstage/catalog-model": "^1.7.0",
     "@backstage/config": "^1.2.0",
     "@backstage/types": "^1.1.1",
@@ -51,6 +51,6 @@
     "luxon": "^3.0.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.27.1"
+    "@backstage/cli": "^0.28.0"
   }
 }
