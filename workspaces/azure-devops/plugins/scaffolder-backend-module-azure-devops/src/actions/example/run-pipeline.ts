@@ -43,8 +43,6 @@ export function runAzurePipelineAction(options: {
 }) {
   const { integrations } = options;
 
-  // For more information on how to define custom actions, see
-  //   https://backstage.io/docs/features/software-templates/writing-custom-actions
   return createTemplateAction<{
     host?: string;
     organization: string;
@@ -59,7 +57,7 @@ export function runAzurePipelineAction(options: {
         required: ['organization', 'pipelineId', 'project'],
         type: 'object',
         properties: {
-          server: {
+          host: {
             type: 'string',
             title: 'Host',
             description: 'The host of Azure DevOps. Defaults to dev.azure.com',
