@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { UrlReader } from '@backstage/backend-common';
 import { ScmIntegrations } from '@backstage/integration';
 
 import {
@@ -32,6 +31,7 @@ import {
   createServiceFactory,
   createServiceRef,
   LoggerService,
+  UrlReaderService,
 } from '@backstage/backend-plugin-api';
 
 const excludedExtensions = [
@@ -49,7 +49,7 @@ const MAX_FILE_SIZE = 200000;
 /** @public */
 export type TodoScmReaderOptions = {
   logger: LoggerService;
-  reader: UrlReader;
+  reader: UrlReaderService;
   integrations: ScmIntegrations;
   parser?: TodoParser;
   filePathFilter?: (filePath: string) => boolean;
@@ -63,7 +63,7 @@ type CacheItem = {
 /** @public */
 export class TodoScmReader implements TodoReader {
   private readonly logger: LoggerService;
-  private readonly reader: UrlReader;
+  private readonly reader: UrlReaderService;
   private readonly parser: TodoParser;
   private readonly integrations: ScmIntegrations;
   private readonly filePathFilter: (filePath: string) => boolean;
