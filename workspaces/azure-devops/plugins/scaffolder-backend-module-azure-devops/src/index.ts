@@ -15,7 +15,7 @@
  */
 
 /**
- * The azure-pipeline-actions module for @backstage/plugin-scaffolder-backend.
+ * The azure-devops module for @backstage/plugin-scaffolder-backend.
  *
  * @packageDocumentation
  */
