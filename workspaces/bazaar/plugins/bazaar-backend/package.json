@@ -61,11 +61,11 @@
     "yn": "^4.0.0"
   },
   "devDependencies": {
-    "@backstage/plugin-catalog-backend": "^1.26.1",
     "@backstage/backend-defaults": "^0.5.2",
     "@backstage/backend-test-utils": "^1.0.2",
     "@backstage/cli": "^0.28.0",
     "@backstage/plugin-auth-backend": "^0.23.1",
-    "@backstage/plugin-auth-backend-module-guest-provider": "^0.2.1"
+    "@backstage/plugin-auth-backend-module-guest-provider": "^0.2.1",
+    "@backstage/plugin-catalog-backend": "^1.26.1"
   }
 }

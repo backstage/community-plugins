@@ -56,9 +56,9 @@
     "react-use": "^17.2.4"
   },
   "devDependencies": {
-    "@backstage/plugin-catalog": "^1.23.1",
     "@backstage/cli": "^0.28.0",
     "@backstage/dev-utils": "^1.1.2",
+    "@backstage/plugin-catalog": "^1.23.1",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^15.0.0",
