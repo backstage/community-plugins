@@ -2768,6 +2768,7 @@ __metadata:
     "@backstage/plugin-scaffolder-node": ^0.4.8
     "@backstage/plugin-scaffolder-node-test-utils": ^0.1.9
     azure-devops-node-api: ^14.1.0
+    yaml: ^2.6.0
   languageName: unknown
   linkType: soft
 
@@ -34337,7 +34338,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yaml@npm:^2.0.0, yaml@npm:^2.0.0-10, yaml@npm:^2.2.1, yaml@npm:^2.2.2":
+"yaml@npm:^2.0.0, yaml@npm:^2.0.0-10, yaml@npm:^2.2.1, yaml@npm:^2.2.2, yaml@npm:^2.6.0":
   version: 2.6.0
   resolution: "yaml@npm:2.6.0"
   bin:
