@@ -44,11 +44,10 @@ export const searchModuleGithubDiscussions = createBackendModule({
         indexRegistry: searchIndexRegistryExtensionPoint,
       },
       async init({ logger, config, scheduler, indexRegistry }) {
-        const schedule = config.has(
-          'search.collators.githubDiscussions.schedule',
-        )
+        const _config = config.getConfig('search.collators.githubDiscussions');
+        const schedule = _config.has('schedule')
           ? readSchedulerServiceTaskScheduleDefinitionFromConfig(
-              config.getConfig('search.collators.githubDiscussions.schedule'),
+              _config.getConfig('schedule'),
             )
           : defaultSchedule;
 
@@ -59,9 +58,9 @@ export const searchModuleGithubDiscussions = createBackendModule({
         const { github: githubIntegration } = integrations;
         const credentialsProvider =
           DefaultGithubCredentialsProvider.fromIntegrations(integrations);
-        const _config = config.getConfig('search.collators.githubDiscussions');
+
         const url = _config.getString('url');
-        const cacheBase = _config.getString('cacheBase');
+        const cacheBase = _config.getOptionalString('cacheBase');
         const clearCacheOnSuccess = _config.getOptionalBoolean(
           'clearCacheOnSuccess',
         );
