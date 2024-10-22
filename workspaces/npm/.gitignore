@@ -32,7 +32,9 @@ node_modules/
 .env.test
 
 # Build output
+*.tgz
 dist
+dist-scalprum
 dist-types
 
 # Temporary change files created by Vim

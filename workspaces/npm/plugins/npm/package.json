@@ -22,12 +22,13 @@
   "sideEffects": false,
   "scripts": {
     "start": "backstage-cli package start",
-    "build": "backstage-cli package build",
+    "build": "backstage-cli package build && yarn export-dynamic",
     "lint": "backstage-cli package lint",
     "test": "backstage-cli package test",
-    "clean": "backstage-cli package clean",
+    "clean": "backstage-cli package clean && rm -rf dist-scalprum",
     "prepack": "backstage-cli package prepack",
-    "postpack": "backstage-cli package postpack"
+    "postpack": "backstage-cli package postpack",
+    "export-dynamic": "janus-cli package export-dynamic-plugin --in-place"
   },
   "dependencies": {
     "@backstage/catalog-model": "^1.7.0",
@@ -47,6 +48,7 @@
     "@backstage/core-app-api": "^1.15.1",
     "@backstage/dev-utils": "^1.1.2",
     "@backstage/test-utils": "^1.7.0",
+    "@janus-idp/cli": "^1.15.2",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^14.0.0",
     "@testing-library/user-event": "^14.0.0",
@@ -54,7 +56,9 @@
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0"
   },
   "files": [
-    "dist"
+    "app-config.backstage-community.yaml",
+    "dist",
+    "dist-scalprum"
   ],
   "repository": {
     "type": "git",
