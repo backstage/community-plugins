@@ -48,7 +48,7 @@ export const TopologyComponent = () => {
     ).filter(link =>
       link.attributes
         .getNamedItem('href')
-        ?.value?.includes('backstage-plugin-topology'),
+        ?.value?.includes('backstage-community.plugin-topology'),
     );
 
     scalprumStyles.forEach(link =>
