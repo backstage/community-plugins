@@ -20,20 +20,33 @@ import { render, screen } from '@testing-library/react';
 import { HealthStatus, SyncStatusCode } from '../../../types/application';
 import { AppHealthIcon, SyncIcon } from '../StatusIcons';
 
+jest.mock('@material-ui/styles', () => ({
+  ...jest.requireActual('@material-ui/styles'),
+  makeStyles: () => (_theme: any) => {
+    return {
+      success: 'success',
+      error: 'error',
+      running: 'running',
+      warning: 'warning',
+      pending: 'pending',
+    };
+  },
+}));
+
 describe('StatusIcons', () => {
   describe('Sync Status', () => {
     test('should return application sync icon', () => {
       render(<SyncIcon status="Synced" />);
-      expect(screen.getByTestId('synced-icon')).toBeInTheDocument();
+      expect(screen.getByTestId('status-ok')).toBeInTheDocument();
 
       render(<SyncIcon status="OutOfSync" />);
       expect(screen.getByTestId('outofsync-icon')).toBeInTheDocument();
 
       render(<SyncIcon status="Unknown" />);
-      expect(screen.getByTestId('unknown-icon')).toBeInTheDocument();
+      expect(screen.getByTestId('status-running')).toBeInTheDocument();
 
       render(<SyncIcon status={'invalid' as SyncStatusCode} />);
-      expect(screen.getByTestId('unknown-icon')).toBeInTheDocument();
+      expect(screen.getByTestId('status-running')).toBeInTheDocument();
     });
   });
 
@@ -46,7 +59,7 @@ describe('StatusIcons', () => {
       expect(screen.getByTestId('suspended-icon')).toBeInTheDocument();
 
       render(<AppHealthIcon status={HealthStatus.Progressing} />);
-      expect(screen.getByTestId('progressing-icon')).toBeInTheDocument();
+      expect(screen.getByTestId('status-running')).toBeInTheDocument();
 
       render(<AppHealthIcon status={HealthStatus.Missing} />);
       expect(screen.getByTestId('missing-icon')).toBeInTheDocument();

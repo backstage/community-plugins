@@ -18,9 +18,26 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core';
 const useIconStyles = makeStyles<Theme>(theme =>
   createStyles({
     icon: {
+      height: '0.8em',
+      width: '0.8em',
+      top: '0.125em',
+      position: 'relative',
+      marginRight: theme.spacing(0.6),
+      flexShrink: 0,
+    },
+    bsIcon: {
       marginLeft: theme.spacing(0.6),
-      width: '1em',
-      height: '1em',
+      marginBottom: '7px',
+      marginRight: '8px',
+      width: '0.8em',
+    },
+    iconOnly: {
+      marginLeft: theme.spacing(0.6),
+      height: '0.8em',
+      width: '0.8em',
+      top: '0',
+      position: 'relative',
+      flexShrink: 0,
     },
     'icon-spin': {
       animation: '$spin-animation 0.5s infinite',

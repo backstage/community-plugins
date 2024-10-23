@@ -14,13 +14,7 @@
  * limitations under the License.
  */
 import React from 'react';
-
-import {
-  CheckCircleIcon,
-  CircleNotchIcon,
-  ErrorCircleOIcon,
-  PauseCircleIcon,
-} from '@patternfly/react-icons';
+import PauseCircleIcon from '@mui/icons-material/PauseCircleOutlineOutlined';
 
 import useIconStyles from '../../../../hooks/useIconStyles';
 import {
@@ -29,6 +23,12 @@ import {
 } from '../../../../types/analysisRuns';
 import { HealthStatus } from '../../../../types/application';
 import { RolloutPhase, RolloutPhaseType } from '../../../../types/rollouts';
+import {
+  StatusError,
+  StatusOK,
+  StatusRunning,
+} from '@backstage/core-components';
+import { Typography } from '@material-ui/core';
 
 export const getStatusColor = (
   status: HealthStatus | RolloutPhaseType | AnalysisRunPhase,
@@ -56,28 +56,48 @@ const RolloutStatusIcon: React.FC<{ status: keyof typeof RolloutPhase }> = ({
   status,
 }): React.ReactNode => {
   const classes = useIconStyles();
-
   const commonProps = {
+    style: {
+      marginLeft: '4.8px',
+      marginBottom: '5px',
+      marginRight: '8px',
+      width: '0.8em',
+    },
+    'data-testid': `rollout-${status.toLocaleLowerCase('en-US')}-icon`,
+  };
+
+  const pausedProps = {
     ['data-testid']: `rollout-${status.toLocaleLowerCase('en-US')}-icon`,
     className: classes.icon,
-    style: { color: getStatusColor(status) },
+    style: {
+      color: getStatusColor(status),
+      marginLeft: '5px',
+      marginBottom: '5px',
+    },
   };
 
   switch (status) {
     case RolloutPhase.Healthy:
-      return <CheckCircleIcon {...commonProps} />;
+      return (
+        <Typography {...commonProps}>
+          <StatusOK />
+        </Typography>
+      );
 
     case RolloutPhase.Paused:
-      return <PauseCircleIcon {...commonProps} />;
+      return <PauseCircleIcon {...pausedProps} />;
 
     case RolloutPhase.Degraded:
-      return <ErrorCircleOIcon {...commonProps} />;
+      return (
+        <Typography {...commonProps}>
+          <StatusError />
+        </Typography>
+      );
     case RolloutPhase.Progressing:
       return (
-        <CircleNotchIcon
-          {...commonProps}
-          className={`${classes.icon} ${classes['icon-spin']}`}
-        />
+        <Typography {...commonProps}>
+          <StatusRunning />
+        </Typography>
       );
     default:
       return null;

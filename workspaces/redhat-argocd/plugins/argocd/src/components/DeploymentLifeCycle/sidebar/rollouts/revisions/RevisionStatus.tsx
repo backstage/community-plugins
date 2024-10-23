@@ -14,13 +14,9 @@
  * limitations under the License.
  */
 import React from 'react';
-
-import {
-  ArrowCircleDownIcon,
-  CheckCircleIcon,
-  CircleNotchIcon,
-} from '@patternfly/react-icons';
-
+import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown';
+import { Typography } from '@material-ui/core';
+import { StatusOK, StatusRunning } from '@backstage/core-components';
 import useIconStyles from '../../../../../hooks/useIconStyles';
 import { ReplicaSet } from '../../../../../types/resources';
 
@@ -30,6 +26,12 @@ interface RevisionStatusProps {
 
 const RevisionStatus: React.FC<RevisionStatusProps> = ({ revision }) => {
   const classes = useIconStyles();
+  const iconStyle = {
+    marginLeft: '4.8px',
+    marginBottom: '5px',
+    marginRight: '8px',
+    width: '0.8em',
+  };
 
   const replicas = revision?.status?.replicas || 0;
   const availableReplicas = revision?.status?.availableReplicas || 0;
@@ -44,15 +46,16 @@ const RevisionStatus: React.FC<RevisionStatusProps> = ({ revision }) => {
   }
   if (!!revision && availableReplicas < replicas) {
     return (
-      <CircleNotchIcon
-        className={`${classes.icon} ${classes['icon-spin']}`}
-        style={{ fill: '#0DADEA' }}
-      />
+      <Typography style={iconStyle}>
+        <StatusRunning />
+      </Typography>
     );
   }
   if (!!revision && availableReplicas === replicas) {
     return (
-      <CheckCircleIcon className={classes.icon} style={{ fill: 'green' }} />
+      <Typography style={iconStyle}>
+        <StatusOK />
+      </Typography>
     );
   }
   return null;

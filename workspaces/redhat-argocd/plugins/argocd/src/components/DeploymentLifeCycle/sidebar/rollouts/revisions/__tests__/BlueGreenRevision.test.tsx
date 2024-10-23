@@ -29,6 +29,19 @@ const blueGreenRollout = getRolloutUIResources(
 
 const revision = blueGreenRollout.revisions[0];
 
+jest.mock('@material-ui/styles', () => ({
+  ...jest.requireActual('@material-ui/styles'),
+  makeStyles: () => (_theme: any) => {
+    return {
+      success: 'success',
+      error: 'error',
+      running: 'running',
+      warning: 'warning',
+      pending: 'pending',
+    };
+  },
+}));
+
 describe('BlueGreenRevision', () => {
   it('should not render if the revision is missing', () => {
     const { container } = render(

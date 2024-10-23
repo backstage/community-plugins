@@ -25,9 +25,5 @@ interface ResourceSyncStatusProps {
 export const ResourceSyncStatus: React.FC<ResourceSyncStatusProps> = ({
   syncStatus,
 }) => {
-  return (
-    <>
-      <SyncIcon status={syncStatus as SyncStatusCode} /> {syncStatus}
-    </>
-  );
+  return <SyncIcon status={syncStatus as SyncStatusCode} />;
 };

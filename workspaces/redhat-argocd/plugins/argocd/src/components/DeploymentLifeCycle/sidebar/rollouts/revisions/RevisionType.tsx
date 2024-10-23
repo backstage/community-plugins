@@ -15,44 +15,42 @@
  */
 import React from 'react';
 
-import { Chip } from '@material-ui/core';
-import {
-  CheckCircleIcon,
-  DoveIcon,
-  OutlinedCheckCircleIcon,
-  SearchIcon,
-} from '@patternfly/react-icons';
+import { Chip, Typography } from '@material-ui/core';
+import { DoveIcon } from '@patternfly/react-icons';
+import SearchIcon from '@mui/icons-material/Search';
+import { StatusOK } from '@backstage/core-components';
 
 const RevisionType: React.FC<{ label: string }> = ({ label }) => {
   const iconStyle = {
-    marginLeft: '10px',
+    marginLeft: '4.8px',
+    marginBottom: '8px',
+    marginRight: '5px',
+    width: '0.8em',
+    height: '1em',
+  };
+
+  const pfIconStyle = {
+    marginLeft: '5px',
+    marginRight: '3px',
     width: '1em',
     height: '1em',
   };
 
-  if (label === 'Stable') {
+  if (label === 'Stable' || label === 'Active') {
     return (
-      <Chip
-        variant="outlined"
-        size="small"
-        color="default"
-        icon={<CheckCircleIcon style={{ ...iconStyle, fill: 'green' }} />}
-        label={label}
-      />
-    );
-  }
-
-  if (label === 'Active') {
-    return (
-      <Chip
-        variant="outlined"
-        size="small"
-        color="default"
-        icon={
-          <OutlinedCheckCircleIcon style={{ ...iconStyle, fill: 'green' }} />
-        }
-        label={label}
-      />
+      <>
+        <Chip
+          variant="outlined"
+          size="small"
+          color="default"
+          icon={
+            <Typography style={iconStyle}>
+              <StatusOK />
+            </Typography>
+          }
+          label={label}
+        />
+      </>
     );
   }
 
@@ -61,7 +59,7 @@ const RevisionType: React.FC<{ label: string }> = ({ label }) => {
       <Chip
         variant="outlined"
         size="small"
-        icon={<DoveIcon style={{ ...iconStyle, fill: '#e4aa37' }} />}
+        icon={<DoveIcon style={{ ...pfIconStyle, fill: '#e4aa37' }} />}
         label={label}
       />
     );
@@ -72,7 +70,7 @@ const RevisionType: React.FC<{ label: string }> = ({ label }) => {
       variant="outlined"
       size="small"
       color="default"
-      icon={<SearchIcon style={{ ...iconStyle, fill: 'gray' }} />}
+      icon={<SearchIcon style={{ fill: 'gray' }} />}
       label={label}
     />
   );

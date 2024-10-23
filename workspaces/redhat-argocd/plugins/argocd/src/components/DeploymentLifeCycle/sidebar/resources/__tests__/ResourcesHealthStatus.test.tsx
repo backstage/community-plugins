@@ -17,11 +17,18 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 
 import { ResourceHealthStatus } from '../ResourcesHealthStatus';
-import { AppHealthIcon } from '../../../../AppStatus/StatusIcons';
-import { HealthStatus } from '../../../../../types/application';
 
-jest.mock('../../../../AppStatus/StatusIcons', () => ({
-  AppHealthIcon: jest.fn(() => <span>Mocked Health Icon</span>),
+jest.mock('@material-ui/styles', () => ({
+  ...jest.requireActual('@material-ui/styles'),
+  makeStyles: () => (_theme: any) => {
+    return {
+      success: 'success',
+      error: 'error',
+      running: 'running',
+      warning: 'warning',
+      pending: 'pending',
+    };
+  },
 }));
 
 describe('ResourceHealthStatus Component', () => {
@@ -40,17 +47,15 @@ describe('ResourceHealthStatus Component', () => {
     const healthStatus = 'Degraded';
     renderComponent(healthStatus);
 
-    expect(AppHealthIcon).toHaveBeenCalledWith(
-      { status: healthStatus as HealthStatus },
-      {},
-    );
+    expect(screen.getByTestId('degraded-icon')).toBeInTheDocument();
+    expect(screen.getByText(healthStatus)).toBeInTheDocument();
   });
 
   it('should display both the health icon and status text', () => {
     const healthStatus = 'Progressing';
     renderComponent(healthStatus);
 
-    expect(screen.getByText('Mocked Health Icon')).toBeInTheDocument();
+    expect(screen.getByTestId('status-running')).toBeInTheDocument();
     expect(screen.getByText(healthStatus)).toBeInTheDocument();
   });
 });

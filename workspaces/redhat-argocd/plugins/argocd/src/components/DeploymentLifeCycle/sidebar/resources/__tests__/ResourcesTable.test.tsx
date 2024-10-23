@@ -39,6 +39,19 @@ jest.mock('../ResourcesSearchBar', () => ({
   )),
 }));
 
+jest.mock('@material-ui/styles', () => ({
+  ...jest.requireActual('@material-ui/styles'),
+  makeStyles: () => (_theme: any) => {
+    return {
+      success: 'success',
+      error: 'error',
+      running: 'running',
+      warning: 'warning',
+      pending: 'pending',
+    };
+  },
+}));
+
 jest.mock('../filters/ResourcesFilterBy', () => ({
   ResourcesFilterBy: jest.fn(({ setFilterValue }) => (
     <select

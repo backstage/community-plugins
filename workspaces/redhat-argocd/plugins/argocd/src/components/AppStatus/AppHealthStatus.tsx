@@ -29,14 +29,16 @@ const AppHealthStatus: React.FC<{ app: Application; isChip?: boolean }> = ({
       data-testid="app-health-status-chip"
       size="small"
       variant="outlined"
-      icon={<AppHealthIcon status={app.status.health.status as HealthStatus} />}
+      icon={
+        <AppHealthIcon
+          status={app.status.health.status as HealthStatus}
+          iconOnly
+        />
+      }
       label={app.status.health.status}
     />
   ) : (
-    <>
-      <AppHealthIcon status={app.status.health.status as HealthStatus} />{' '}
-      {app.status.health.status}
-    </>
+    <AppHealthIcon status={app.status.health.status as HealthStatus} />
   );
 };
 

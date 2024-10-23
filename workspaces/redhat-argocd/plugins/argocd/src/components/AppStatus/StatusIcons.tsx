@@ -15,14 +15,15 @@
  */
 import React from 'react';
 
-import ArrowCircleUpIcon from '@patternfly/react-icons/dist/esm/icons/arrow-alt-circle-up-icon';
-import CheckCircleIcon from '@patternfly/react-icons/dist/esm/icons/check-circle-icon';
-import CircleNotchIcon from '@patternfly/react-icons/dist/esm/icons/circle-notch-icon';
-import GhostIcon from '@patternfly/react-icons/dist/esm/icons/ghost-icon';
-import HeartBrokenIcon from '@patternfly/react-icons/dist/esm/icons/heart-broken-icon';
-import HeartIcon from '@patternfly/react-icons/dist/esm/icons/heart-icon';
-import PauseCircleIcon from '@patternfly/react-icons/dist/esm/icons/pause-circle-icon';
-import QuestionCircleIcon from '@patternfly/react-icons/dist/esm/icons/question-circle-icon';
+import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
+import HeartIcon from '@mui/icons-material/FavoriteBorder';
+import HeartBrokenIcon from '@mui/icons-material/HeartBrokenOutlined';
+import PauseCircleIcon from '@mui/icons-material/PauseCircleOutlineOutlined';
+import { StatusOK, StatusRunning } from '@backstage/core-components';
+import { Typography } from '@material-ui/core';
+import { Status } from '@janus-idp/shared-react';
+
+import GhostIcon from '../icons/GhostIcon';
 
 import {
   HealthStatus,
@@ -31,92 +32,135 @@ import {
 } from '../../types/application';
 import useIconStyles from '../../hooks/useIconStyles';
 
-export const SyncIcon: React.FC<{ status: SyncStatusCode }> = ({
+export const SyncIcon = ({
   status,
+  iconOnly,
+}: {
+  status: SyncStatusCode;
+  iconOnly?: boolean;
 }): React.ReactNode => {
   const classes = useIconStyles();
+  const iconStyle = {
+    marginLeft: '4.8px',
+    marginBottom: '5px',
+    marginRight: '8px',
+    width: '0.8em',
+  };
   switch (status) {
     case SyncStatuses.Synced:
-      return (
-        <CheckCircleIcon
-          data-testid="synced-icon"
-          className={`${classes.icon}`}
-          style={{ height: '1em', color: 'green' }}
-        />
+      return iconOnly ? (
+        <Typography style={iconStyle}>
+          <StatusOK />
+        </Typography>
+      ) : (
+        <StatusOK>
+          <Typography style={{ fontSize: '0.875rem', paddingBottom: '1px' }}>
+            {SyncStatuses.Synced}
+          </Typography>
+        </StatusOK>
       );
+
     case SyncStatuses.OutOfSync:
       return (
-        <ArrowCircleUpIcon
-          data-testid="outofsync-icon"
-          className={`${classes.icon}`}
-          style={{ height: '1em', color: '#f4c030' }}
-        />
+        <>
+          <ArrowCircleUpIcon
+            data-testid="outofsync-icon"
+            className={iconOnly ? classes.iconOnly : classes.icon}
+            style={{
+              color: '#f4c030',
+            }}
+          />
+          {!iconOnly && status}
+        </>
       );
     case SyncStatuses.Unknown:
-      return (
-        <CircleNotchIcon
-          data-testid="unknown-icon"
-          className={`${classes.icon} ${classes['icon-spin']}`}
-          style={{ height: '1em', color: '#0DADEA' }}
-        />
+      return iconOnly ? (
+        <Typography style={iconStyle}>{SyncStatuses.Unknown}</Typography>
+      ) : (
+        <StatusRunning>
+          <Typography style={{ fontSize: '0.875rem', paddingBottom: '1px' }}>
+            {SyncStatuses.Unknown}
+          </Typography>
+        </StatusRunning>
       );
     default:
       return null;
   }
 };
 
-export const AppHealthIcon: React.FC<{ status: HealthStatus }> = ({
+export const AppHealthIcon = ({
   status,
+  iconOnly,
+}: {
+  status: HealthStatus;
+  iconOnly?: boolean;
 }): React.ReactNode => {
   const classes = useIconStyles();
 
   switch (status) {
     case HealthStatus.Healthy:
       return (
-        <HeartIcon
-          data-testid="healthy-icon"
-          className={`${classes.icon}`}
-          style={{ height: '1em', color: 'green' }}
-        />
+        <>
+          <HeartIcon
+            data-testid="healthy-icon"
+            className={iconOnly ? classes.iconOnly : classes.icon}
+            style={{ color: 'green' }}
+          />
+          {!iconOnly && status}
+        </>
       );
     case HealthStatus.Suspended:
       return (
-        <PauseCircleIcon
-          data-testid="suspended-icon"
-          className={`${classes.icon}`}
-          style={{ height: '1em', color: '#766f94' }}
-        />
+        <>
+          <PauseCircleIcon
+            data-testid="suspended-icon"
+            className={iconOnly ? classes.iconOnly : classes.icon}
+            style={{ color: '#766f94' }}
+          />
+          {!iconOnly && status}
+        </>
       );
     case HealthStatus.Degraded:
       return (
-        <HeartBrokenIcon
-          data-testid="degraded-icon"
-          className={`${classes.icon}`}
-          style={{ height: '1em', color: '#E96D76' }}
-        />
+        <>
+          <HeartBrokenIcon
+            data-testid="degraded-icon"
+            className={iconOnly ? classes.iconOnly : classes.icon}
+            style={{ color: '#E96D76' }}
+          />
+          {!iconOnly && status}
+        </>
       );
     case HealthStatus.Progressing:
       return (
-        <CircleNotchIcon
-          data-testid="progressing-icon"
-          className={`${classes.icon} ${classes['icon-spin']}`}
-          style={{ height: '1em', color: '#0DADEA' }}
-        />
+        <StatusRunning>
+          <Typography style={{ fontSize: '0.875rem' }}>
+            {HealthStatus.Progressing}
+          </Typography>
+        </StatusRunning>
       );
     case HealthStatus.Missing:
       return (
-        <GhostIcon
-          data-testid="missing-icon"
-          className={`${classes.icon}`}
-          style={{ height: '1em', color: '#f4c030' }}
-        />
+        <>
+          <GhostIcon
+            dataTestId="missing-icon"
+            className={iconOnly ? classes.iconOnly : classes.icon}
+          />
+          {!iconOnly && status}
+        </>
       );
     default:
       return (
-        <QuestionCircleIcon
-          data-testid="unknown-icon"
-          style={{ height: '1em', color: 'green' }}
-        />
+        <>
+          <Status
+            status="Unknown"
+            iconStyles={{ color: 'green' }}
+            iconOnly={iconOnly}
+            iconClassName={iconOnly ? classes.bsIcon : ''}
+            dataTestId="unknown-icon"
+          />
+          {!iconOnly && status}
+        </>
       );
   }
 };

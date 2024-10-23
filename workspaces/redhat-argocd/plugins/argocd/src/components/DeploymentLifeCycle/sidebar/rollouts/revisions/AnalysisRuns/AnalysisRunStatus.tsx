@@ -16,44 +16,52 @@
 import React from 'react';
 
 import {
-  CheckCircleIcon,
-  CircleNotchIcon,
-  ExclamationCircleIcon,
-} from '@patternfly/react-icons';
-
-import useIconStyles from '../../../../../../hooks/useIconStyles';
-import {
   AnalysisRunPhase,
   AnalysisRunPhases,
 } from '../../../../../../types/analysisRuns';
-import { getStatusColor } from '../../RolloutStatusIcon';
+import { Typography } from '@material-ui/core';
+import {
+  StatusError,
+  StatusOK,
+  StatusRunning,
+} from '@backstage/core-components';
 
 const AnalysisRunStatus: React.FC<{ status: AnalysisRunPhase | undefined }> = ({
   status,
 }) => {
-  const classes = useIconStyles();
-
   if (!status) {
     return null;
   }
+
   const commonProps = {
-    ['data-testid']: `analysisrun-${status.toLocaleLowerCase('en-US')}-icon`,
-    className: classes.icon,
-    style: { color: getStatusColor(status) },
+    style: {
+      marginLeft: '4.8px',
+      marginBottom: '5px',
+      marginRight: '8px',
+      width: '0.8em',
+    },
+    'data-testid': `analysisrun-${status.toLocaleLowerCase('en-US')}-icon`,
   };
 
   switch (status) {
     case AnalysisRunPhases.Successful:
-      return <CheckCircleIcon {...commonProps} />;
+      return (
+        <Typography {...commonProps}>
+          <StatusOK />
+        </Typography>
+      );
     case AnalysisRunPhases.Running:
       return (
-        <CircleNotchIcon
-          {...commonProps}
-          className={`${classes.icon} ${classes['icon-spin']}`}
-        />
+        <Typography {...commonProps}>
+          <StatusRunning />
+        </Typography>
       );
     case AnalysisRunPhases.Failed:
-      return <ExclamationCircleIcon {...commonProps} />;
+      return (
+        <Typography {...commonProps}>
+          <StatusError />
+        </Typography>
+      );
 
     default:
       return null;

@@ -23,6 +23,19 @@ import {
 } from '../../../../../../../types/analysisRuns';
 import AnalysisRunStatus from '../AnalysisRunStatus';
 
+jest.mock('@material-ui/styles', () => ({
+  ...jest.requireActual('@material-ui/styles'),
+  makeStyles: () => (_theme: any) => {
+    return {
+      success: 'success',
+      error: 'error',
+      running: 'running',
+      warning: 'warning',
+      pending: 'pending',
+    };
+  },
+}));
+
 describe('AnalysisRunStatus Component', () => {
   it('returns null if status is undefined', () => {
     const { container } = render(<AnalysisRunStatus status={undefined} />);
@@ -41,7 +54,6 @@ describe('AnalysisRunStatus Component', () => {
 
     const icon = screen.getByTestId('analysisrun-successful-icon');
     expect(icon).toBeInTheDocument();
-    expect(icon).toHaveStyle({ color: 'green' });
   });
 
   it('renders the correct icon for Running status', () => {
@@ -49,7 +61,6 @@ describe('AnalysisRunStatus Component', () => {
 
     const icon = screen.getByTestId('analysisrun-running-icon');
     expect(icon).toBeInTheDocument();
-    expect(icon).toHaveStyle({ color: '#0DADEA' });
   });
 
   it('renders the correct icon for Failed status', () => {
@@ -57,6 +68,5 @@ describe('AnalysisRunStatus Component', () => {
 
     const icon = screen.getByTestId('analysisrun-failed-icon');
     expect(icon).toBeInTheDocument();
-    expect(icon).toHaveStyle({ color: '#E96D76' });
   });
 });

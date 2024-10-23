@@ -21,11 +21,11 @@ import {
   ToolbarFilter,
   ToolbarGroup,
   Badge,
-  MenuToggle,
   SearchInput,
   Select,
 } from '@patternfly/react-core';
-import FilterIcon from '@patternfly/react-icons/dist/esm/icons/filter-icon';
+import FilterIcon from '@mui/icons-material/FilterAltOutlined';
+import { ToggleButton } from '@material-ui/lab';
 import {
   healthStatusMenuItems,
   syncStatusMenuItems,
@@ -98,17 +98,18 @@ export const ResourcesFilterBy: FC<ResourcesFilterByProps> = ({
           aria-label="ResourcesFilters"
           id="ResourcesFilters"
           toggle={toggleRef => (
-            <MenuToggle
+            <ToggleButton
+              value="list"
+              aria-label="list"
               ref={toggleRef}
               onClick={onResourcesFilterToggle}
-              isExpanded={isResourcesFilterExpanded}
-              style={{ width: '200px' }}
+              style={{ width: '200px', justifyContent: 'left', color: 'unset' }}
             >
-              <FilterIcon />{' '}
+              <FilterIcon />
               {resourcesFilterBy
                 ? ResourcesFilters[resourcesFilterBy]
                 : 'Filter by'}
-            </MenuToggle>
+            </ToggleButton>
           )}
           onSelect={onResourcesFilterSelect}
           selected={resourcesFilterBy}
@@ -161,20 +162,23 @@ export const ResourcesFilterBy: FC<ResourcesFilterByProps> = ({
             <Select
               aria-label="Health Status"
               toggle={toggleRef => (
-                <MenuToggle
+                <ToggleButton
                   ref={toggleRef}
                   onClick={() =>
                     setIsHealthStatusExpanded(!isHealthStatusExpanded)
                   }
-                  isExpanded={isHealthStatusExpanded}
                   data-testid="health-status-toggle"
-                  style={{ width: '260px' }}
+                  style={{
+                    width: '260px',
+                    justifyContent: 'left',
+                    color: 'unset',
+                  }}
                 >
                   Filter by Health status{' '}
                   {filters.HealthStatus.length > 0 && (
                     <Badge isRead>{filters.HealthStatus.length}</Badge>
                   )}
-                </MenuToggle>
+                </ToggleButton>
               )}
               onSelect={(event, selection) =>
                 onSelect('HealthStatus', event, selection)
@@ -198,17 +202,20 @@ export const ResourcesFilterBy: FC<ResourcesFilterByProps> = ({
             <Select
               aria-label="Sync Status"
               toggle={toggleRef => (
-                <MenuToggle
+                <ToggleButton
                   ref={toggleRef}
                   onClick={() => setIsSyncStatusExpanded(!isSyncStatusExpanded)}
-                  isExpanded={isSyncStatusExpanded}
-                  style={{ width: '240px' }}
+                  style={{
+                    width: '240px',
+                    justifyContent: 'left',
+                    color: 'unset',
+                  }}
                 >
                   Filter by Sync status{' '}
                   {filters.SyncStatus.length > 0 && (
                     <Badge isRead>{filters.SyncStatus.length}</Badge>
                   )}
-                </MenuToggle>
+                </ToggleButton>
               )}
               onSelect={(event, selection) =>
                 onSelect('SyncStatus', event, selection)
@@ -233,17 +240,20 @@ export const ResourcesFilterBy: FC<ResourcesFilterByProps> = ({
             <Select
               aria-label="Kind"
               toggle={toggleRef => (
-                <MenuToggle
+                <ToggleButton
                   ref={toggleRef}
                   onClick={() => setIsKindFilterExpanded(!isKindFilterExpanded)}
-                  isExpanded={isKindFilterExpanded}
-                  style={{ width: '200px' }}
+                  style={{
+                    width: '200px',
+                    justifyContent: 'left',
+                    color: 'unset',
+                  }}
                 >
                   Filter by Kind{' '}
                   {filters.Kind.length > 0 && (
                     <Badge isRead>{filters.Kind.length}</Badge>
                   )}
-                </MenuToggle>
+                </ToggleButton>
               )}
               onSelect={(event, selection) =>
                 onSelect('Kind', event, selection)

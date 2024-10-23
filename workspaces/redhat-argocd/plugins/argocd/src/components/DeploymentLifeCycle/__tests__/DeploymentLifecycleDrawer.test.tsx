@@ -26,6 +26,19 @@ import DeploymentLifecycleDrawer from '../DeploymentLifecycleDrawer';
 import { useArgoResources } from '../sidebar/rollouts/RolloutContext';
 import { useDrawerContext } from '../DrawerContext';
 
+jest.mock('@material-ui/styles', () => ({
+  ...jest.requireActual('@material-ui/styles'),
+  makeStyles: () => (_theme: any) => {
+    return {
+      success: 'success',
+      error: 'error',
+      running: 'running',
+      warning: 'warning',
+      pending: 'pending',
+    };
+  },
+}));
+
 jest.mock('@backstage/plugin-catalog-react', () => ({
   useEntity: () => ({
     ...mockEntity,

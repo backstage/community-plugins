@@ -20,10 +20,17 @@ import { render } from '@testing-library/react';
 import { ReplicaSet } from '../../../../../../types/resources';
 import RevisionStatus from '../RevisionStatus';
 
-jest.mock('@patternfly/react-icons', () => ({
-  ArrowCircleDownIcon: () => <div data-testid="ArrowCircleDownIcon" />,
-  CircleNotchIcon: () => <div data-testid="CircleNotchIcon" />,
-  CheckCircleIcon: () => <div data-testid="CheckCircleIcon" />,
+jest.mock('@material-ui/styles', () => ({
+  ...jest.requireActual('@material-ui/styles'),
+  makeStyles: () => (_theme: any) => {
+    return {
+      success: 'success',
+      error: 'error',
+      running: 'running',
+      warning: 'warning',
+      pending: 'pending',
+    };
+  },
 }));
 
 describe('RevisionStatus', () => {
@@ -56,7 +63,7 @@ describe('RevisionStatus', () => {
 
     const { getByTestId } = render(<RevisionStatus revision={mockRevision} />);
 
-    expect(getByTestId('CircleNotchIcon')).toBeInTheDocument();
+    expect(getByTestId('status-running')).toBeInTheDocument();
   });
 
   it('renders CheckCircleIcon when availableReplicas equal replicas', () => {
@@ -69,6 +76,6 @@ describe('RevisionStatus', () => {
 
     const { getByTestId } = render(<RevisionStatus revision={mockRevision} />);
 
-    expect(getByTestId('CheckCircleIcon')).toBeInTheDocument();
+    expect(getByTestId('status-ok')).toBeInTheDocument();
   });
 });
