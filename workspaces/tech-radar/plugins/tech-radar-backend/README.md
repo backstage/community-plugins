@@ -61,10 +61,6 @@ export default async function createPlugin(
 ### src/index.ts
 
 ```diff
-diff --git a/packages/backend/src/index.ts b/packages/backend/src/index.ts
-index 1942c36ad1..7fdc48ba24 100644
---- a/packages/backend/src/index.ts
-+++ b/packages/backend/src/index.ts
 @@ -50,6 +50,7 @@ import scaffolder from './plugins/scaffolder';
  import proxy from './plugins/proxy';
  import search from './plugins/search';
@@ -85,7 +81,7 @@ index 1942c36ad1..7fdc48ba24 100644
    apiRouter.use('/badges', await badges(badgesEnv));
    apiRouter.use('/jenkins', await jenkins(jenkinsEnv));
    apiRouter.use('/permission', await permission(permissionEnv));
-+  apiRouter.use('/tech-radar', await sonarqube(techRadarEnv));
++  apiRouter.use('/tech-radar', await techRadar(techRadarEnv));
    apiRouter.use(notFoundHandler());
 
    const service = createServiceBuilder(module)

@@ -19,7 +19,6 @@ export interface Config {
   techRadar: {
     /**
      * The url from which the tech radar graph data is fetched.
-     * @visibility frontend
      */
     url: string;
   };

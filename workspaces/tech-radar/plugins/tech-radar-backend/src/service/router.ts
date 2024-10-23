@@ -54,7 +54,7 @@ export async function createRouter(
     response.json({ status: 'ok' });
   });
 
-  router.get('/entries', async (_, response) => {
+  router.get('/data', async (_, response) => {
     const url = config.getString('techRadar.url');
     const dataFromUrl = await readTechRadarResponseFromURL(url, reader, logger);
     if (!dataFromUrl) {
