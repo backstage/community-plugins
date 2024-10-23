@@ -66,41 +66,26 @@ describe('createRouter', () => {
     });
   });
 
-  describe('GET /entities', () => {
+  describe('GET /data', () => {
     it('returns ok & data if readTechRadarResponseFromURL returns valid response', async () => {
       jest
         .spyOn(utils, 'readTechRadarResponseFromURL')
         .mockResolvedValue(emptyRadarData);
-      const response = await request(app).get('/entries');
+      const response = await request(app).get('/data');
 
       expect(response.status).toEqual(200);
       expect(response.body.status).toEqual('ok');
       expect(response.body.data).toEqual(emptyRadarData);
     });
 
-    it('returns 400 if readTechRadarResponseFromURL returns undefined', async () => {
+    it('returns 502 if readTechRadarResponseFromURL returns undefined', async () => {
       jest
         .spyOn(utils, 'readTechRadarResponseFromURL')
         .mockResolvedValue(undefined);
-      const response = await request(app).get('/entries');
+      const response = await request(app).get('/data');
 
-      expect(response.status).toEqual(400);
+      expect(response.status).toEqual(502);
       expect(response.body.status).not.toEqual('ok');
-    });
-
-    it('returns 500 if config is missing URL value', async () => {
-      const missingConfig = new ConfigReader({
-        techRadar: {},
-      });
-      const router = await createRouter({
-        logger: mockServices.logger.mock(),
-        config: missingConfig,
-        reader: mockServices.urlReader.mock(),
-      });
-      app = express().use(router);
-      const response = await request(app).get('/entries');
-
-      expect(response.status).toEqual(500);
     });
   });
 });

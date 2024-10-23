@@ -13,377 +13,55 @@ export enum MovedState {
 }
 
 // @public
-export type RadarEntry = z.infer<typeof RadarEntryParser>;
+export interface RadarEntry {
+  description?: string;
+  id: string;
+  key: string;
+  links?: Array<RadarEntryLink>;
+  quadrant: string;
+  timeline: Array<RadarEntrySnapshot>;
+  title: string;
+  // @deprecated
+  url?: string;
+}
 
 // @public
-export const RadarEntryParser: z.ZodObject<
-  {
-    key: z.ZodString;
-    id: z.ZodString;
-    quadrant: z.ZodString;
-    title: z.ZodString;
-    url: z.ZodOptional<z.ZodString>;
-    timeline: z.ZodArray<
-      z.ZodObject<
-        {
-          date: z.ZodDate;
-          ringId: z.ZodString;
-          description: z.ZodOptional<z.ZodString>;
-          moved: z.ZodOptional<z.ZodNativeEnum<typeof MovedState>>;
-        },
-        'strip',
-        z.ZodTypeAny,
-        {
-          date: Date;
-          ringId: string;
-          description?: string | undefined;
-          moved?: MovedState | undefined;
-        },
-        {
-          date: Date;
-          ringId: string;
-          description?: string | undefined;
-          moved?: MovedState | undefined;
-        }
-      >,
-      'many'
-    >;
-    description: z.ZodOptional<z.ZodString>;
-    links: z.ZodOptional<
-      z.ZodArray<
-        z.ZodObject<
-          {
-            url: z.ZodString;
-            title: z.ZodString;
-          },
-          'strip',
-          z.ZodTypeAny,
-          {
-            url: string;
-            title: string;
-          },
-          {
-            url: string;
-            title: string;
-          }
-        >,
-        'many'
-      >
-    >;
-  },
-  'strip',
-  z.ZodTypeAny,
-  {
-    key: string;
-    id: string;
-    timeline: {
-      date: Date;
-      ringId: string;
-      description?: string | undefined;
-      moved?: MovedState | undefined;
-    }[];
-    title: string;
-    quadrant: string;
-    url?: string | undefined;
-    description?: string | undefined;
-    links?:
-      | {
-          url: string;
-          title: string;
-        }[]
-      | undefined;
-  },
-  {
-    key: string;
-    id: string;
-    timeline: {
-      date: Date;
-      ringId: string;
-      description?: string | undefined;
-      moved?: MovedState | undefined;
-    }[];
-    title: string;
-    quadrant: string;
-    url?: string | undefined;
-    description?: string | undefined;
-    links?:
-      | {
-          url: string;
-          title: string;
-        }[]
-      | undefined;
-  }
->;
+export interface RadarEntryLink {
+  title: string;
+  url: string;
+}
 
 // @public
-export type RadarQuadrant = z.infer<typeof RadarQuadrantParser>;
+export interface RadarEntrySnapshot {
+  date: Date;
+  description?: string;
+  moved?: MovedState;
+  ringId: string;
+}
 
 // @public
-export const RadarQuadrantParser: z.ZodObject<
-  {
-    id: z.ZodString;
-    name: z.ZodString;
-  },
-  'strip',
-  z.ZodTypeAny,
-  {
-    id: string;
-    name: string;
-  },
-  {
-    id: string;
-    name: string;
-  }
->;
+export interface RadarQuadrant {
+  id: string;
+  name: string;
+}
 
 // @public
-export type RadarRing = z.infer<typeof RadarRingParser>;
+export interface RadarRing {
+  color: string;
+  description?: string;
+  id: string;
+  name: string;
+}
 
 // @public
-export const RadarRingParser: z.ZodObject<
-  {
-    id: z.ZodString;
-    name: z.ZodString;
-    color: z.ZodString;
-    description: z.ZodOptional<z.ZodString>;
-  },
-  'strip',
-  z.ZodTypeAny,
-  {
-    id: string;
-    name: string;
-    color: string;
-    description?: string | undefined;
-  },
-  {
-    id: string;
-    name: string;
-    color: string;
-    description?: string | undefined;
-  }
->;
+export interface TechRadarLoaderResponse {
+  entries: RadarEntry[];
+  quadrants: RadarQuadrant[];
+  rings: RadarRing[];
+}
 
 // @public
-export type TechRadarLoaderResponse = z.infer<
-  typeof TechRadarLoaderResponseParser
->;
-
-// @public
-export const TechRadarLoaderResponseParser: z.ZodObject<
-  {
-    quadrants: z.ZodArray<
-      z.ZodObject<
-        {
-          id: z.ZodString;
-          name: z.ZodString;
-        },
-        'strip',
-        z.ZodTypeAny,
-        {
-          id: string;
-          name: string;
-        },
-        {
-          id: string;
-          name: string;
-        }
-      >,
-      'many'
-    >;
-    rings: z.ZodArray<
-      z.ZodObject<
-        {
-          id: z.ZodString;
-          name: z.ZodString;
-          color: z.ZodString;
-          description: z.ZodOptional<z.ZodString>;
-        },
-        'strip',
-        z.ZodTypeAny,
-        {
-          id: string;
-          name: string;
-          color: string;
-          description?: string | undefined;
-        },
-        {
-          id: string;
-          name: string;
-          color: string;
-          description?: string | undefined;
-        }
-      >,
-      'many'
-    >;
-    entries: z.ZodArray<
-      z.ZodObject<
-        {
-          key: z.ZodString;
-          id: z.ZodString;
-          quadrant: z.ZodString;
-          title: z.ZodString;
-          url: z.ZodOptional<z.ZodString>;
-          timeline: z.ZodArray<
-            z.ZodObject<
-              {
-                date: z.ZodDate;
-                ringId: z.ZodString;
-                description: z.ZodOptional<z.ZodString>;
-                moved: z.ZodOptional<z.ZodNativeEnum<typeof MovedState>>;
-              },
-              'strip',
-              z.ZodTypeAny,
-              {
-                date: Date;
-                ringId: string;
-                description?: string | undefined;
-                moved?: MovedState | undefined;
-              },
-              {
-                date: Date;
-                ringId: string;
-                description?: string | undefined;
-                moved?: MovedState | undefined;
-              }
-            >,
-            'many'
-          >;
-          description: z.ZodOptional<z.ZodString>;
-          links: z.ZodOptional<
-            z.ZodArray<
-              z.ZodObject<
-                {
-                  url: z.ZodString;
-                  title: z.ZodString;
-                },
-                'strip',
-                z.ZodTypeAny,
-                {
-                  url: string;
-                  title: string;
-                },
-                {
-                  url: string;
-                  title: string;
-                }
-              >,
-              'many'
-            >
-          >;
-        },
-        'strip',
-        z.ZodTypeAny,
-        {
-          key: string;
-          id: string;
-          timeline: {
-            date: Date;
-            ringId: string;
-            description?: string | undefined;
-            moved?: MovedState | undefined;
-          }[];
-          title: string;
-          quadrant: string;
-          url?: string | undefined;
-          description?: string | undefined;
-          links?:
-            | {
-                url: string;
-                title: string;
-              }[]
-            | undefined;
-        },
-        {
-          key: string;
-          id: string;
-          timeline: {
-            date: Date;
-            ringId: string;
-            description?: string | undefined;
-            moved?: MovedState | undefined;
-          }[];
-          title: string;
-          quadrant: string;
-          url?: string | undefined;
-          description?: string | undefined;
-          links?:
-            | {
-                url: string;
-                title: string;
-              }[]
-            | undefined;
-        }
-      >,
-      'many'
-    >;
-  },
-  'strip',
-  z.ZodTypeAny,
-  {
-    entries: {
-      key: string;
-      id: string;
-      timeline: {
-        date: Date;
-        ringId: string;
-        description?: string | undefined;
-        moved?: MovedState | undefined;
-      }[];
-      title: string;
-      quadrant: string;
-      url?: string | undefined;
-      description?: string | undefined;
-      links?:
-        | {
-            url: string;
-            title: string;
-          }[]
-        | undefined;
-    }[];
-    quadrants: {
-      id: string;
-      name: string;
-    }[];
-    rings: {
-      id: string;
-      name: string;
-      color: string;
-      description?: string | undefined;
-    }[];
-  },
-  {
-    entries: {
-      key: string;
-      id: string;
-      timeline: {
-        date: Date;
-        ringId: string;
-        description?: string | undefined;
-        moved?: MovedState | undefined;
-      }[];
-      title: string;
-      quadrant: string;
-      url?: string | undefined;
-      description?: string | undefined;
-      links?:
-        | {
-            url: string;
-            title: string;
-          }[]
-        | undefined;
-    }[];
-    quadrants: {
-      id: string;
-      name: string;
-    }[];
-    rings: {
-      id: string;
-      name: string;
-      color: string;
-      description?: string | undefined;
-    }[];
-  }
->;
+export const TechRadarLoaderResponseParser: z.ZodSchema<TechRadarLoaderResponse>;
 
 // (No @packageDocumentation comment for this package)
 ```

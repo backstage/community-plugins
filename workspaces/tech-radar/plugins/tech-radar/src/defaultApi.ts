@@ -254,7 +254,7 @@ export class DefaultTechRadarApi implements TechRadarApi {
   async load() {
     const { token: idToken } = await this.identityApi.getCredentials();
     const apiUrl = await this.discoveryApi.getBaseUrl('tech-radar');
-    const response = await this.fetchApi.fetch(`${apiUrl}/entries`, {
+    const response = await this.fetchApi.fetch(`${apiUrl}/data`, {
       headers: {
         'Content-Type': 'application/json',
         ...(idToken && { Authorization: `Bearer ${idToken}` }),

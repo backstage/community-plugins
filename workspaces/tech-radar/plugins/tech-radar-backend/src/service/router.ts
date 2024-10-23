@@ -48,6 +48,7 @@ export async function createRouter(
 
   const router = Router();
   router.use(express.json());
+  const url = config.getString('techRadar.url');
 
   router.get('/health', (_, response) => {
     logger.info('PONG!');
@@ -55,12 +56,11 @@ export async function createRouter(
   });
 
   router.get('/data', async (_, response) => {
-    const url = config.getString('techRadar.url');
     const dataFromUrl = await readTechRadarResponseFromURL(url, reader, logger);
     if (!dataFromUrl) {
-      response.statusCode = 400;
-      response.json({ message: 'Unable to retrieve data from provided URL' });
-      return;
+      response
+        .status(502)
+        .json({ message: 'Unable to retrieve data from provided URL' });
     }
     response.json({ status: 'ok', data: dataFromUrl });
   });
