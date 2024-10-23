@@ -27,9 +27,9 @@ After all other imports:
 ```tsx
 import {
   isNpmAvailable,
-  NpmInfoCard,
-  NpmReleaseOverviewCard,
-  NpmReleaseTableCard,
+  EntityNpmInfoCard,
+  EntityNpmReleaseOverviewCard,
+  EntityNpmReleaseTableCard,
 } from '@backstage-community/plugin-npm';
 ```
 
@@ -40,10 +40,10 @@ Add to `const overviewContent` after `EntityAboutCard`:
   <EntitySwitch.Case if={isNpmAvailable}>
     <Grid container item md={6} xs={12}>
       <Grid item md={12}>
-        <NpmInfoCard />
+        <EntityNpmInfoCard />
       </Grid>
       <Grid item md={12}>
-        <NpmReleaseOverviewCard />
+        <EntityNpmReleaseOverviewCard />
       </Grid>
     </Grid>
   </EntitySwitch.Case>
@@ -59,6 +59,6 @@ and to `const defaultEntityPage` between the `/` and `/docs` routecase.
   path="/npm-releases"
   title="NPM Releases"
 >
-  <NpmReleaseTableCard />
+  <EntityNpmReleaseTableCard />
 </EntityLayout.Route>
 ```
