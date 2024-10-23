@@ -73,7 +73,7 @@ const app = createApp({
     });
   },
   components: {
-    SignInPage: props => <SignInPage {...props} auto providers={['guest']} />, // use this line to test URLReader without configured integrations
+    SignInPage: props => <SignInPage {...props} auto providers={['guest']} />,
   },
 });
 
