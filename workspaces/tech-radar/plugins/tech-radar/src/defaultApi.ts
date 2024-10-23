@@ -263,7 +263,7 @@ export class DefaultTechRadarApi implements TechRadarApi {
     if (response.status === 200) {
       const respJson = await response.json();
       const validationResult = TechRadarLoaderResponseParser.safeParse(
-        respJson.data,
+        respJson,
       );
       if (validationResult.success) {
         return validationResult.data;

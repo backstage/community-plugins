@@ -75,7 +75,7 @@ describe('createRouter', () => {
 
       expect(response.status).toEqual(200);
       expect(response.body.status).toEqual('ok');
-      expect(response.body.data).toEqual(emptyRadarData);
+      expect(response.body).toEqual(emptyRadarData);
     });
 
     it('returns 502 if readTechRadarResponseFromURL returns undefined', async () => {
@@ -85,7 +85,6 @@ describe('createRouter', () => {
       const response = await request(app).get('/data');
 
       expect(response.status).toEqual(502);
-      expect(response.body.status).not.toEqual('ok');
     });
   });
 });
