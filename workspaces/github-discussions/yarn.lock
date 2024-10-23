@@ -2694,7 +2694,7 @@ __metadata:
     assert-ts: "npm:^0.3.4"
     effection: "npm:^3.0.3"
     fs-extra: "npm:^11.2.0"
-    github-discussions-fetcher: "npm:^0.5.0"
+    github-discussions-fetcher: "npm:^0.6.0"
     luxon: "npm:^3.5.0"
     parse-github-url: "npm:^1.0.3"
     stream: "npm:^0.0.3"
@@ -9529,7 +9529,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/luxon@npm:3.4.2, @types/luxon@npm:^3, @types/luxon@npm:^3.0.0, @types/luxon@npm:~3.4.0":
+"@types/luxon@npm:^3, @types/luxon@npm:^3.0.0, @types/luxon@npm:~3.4.0":
   version: 3.4.2
   resolution: "@types/luxon@npm:3.4.2"
   checksum: 10/fd89566e3026559f2bc4ddcc1e70a2c16161905ed50be9473ec0cfbbbe919165041408c4f6e06c4bcf095445535052e2c099087c76b1b38e368127e618fc968d
@@ -16242,19 +16242,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"github-discussions-fetcher@npm:^0.5.0":
-  version: 0.5.0
-  resolution: "github-discussions-fetcher@npm:0.5.0"
+"github-discussions-fetcher@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "github-discussions-fetcher@npm:0.6.0"
   dependencies:
     "@deno/shim-deno": "npm:~0.18.0"
     "@octokit/graphql": "npm:^4.8.0"
     "@octokit/types": "npm:13.6.1"
-    "@types/luxon": "npm:3.4.2"
     chalk: "npm:4.1.2"
     effection: "npm:3.0.3"
     graphql: "npm:16.8.2"
-    luxon: "npm:3.5.0"
-  checksum: 10/5893a8185feeda79435b3d52adec7e711d2e97f8c23a5d18bc0afb2e4c247fc7c9dd22e67be7f51399e784f959c0a8f9a0f787bf22db2c88fc198bef271db67a
+    moment: "npm:2.30.1"
+  checksum: 10/8969d99b9cd2451a87a3da6ad52813ad593f361e1ea65728adab92af442a2f6d2d83271149e7dac054a3aadbe5770885231b51c43f015877c499a9bd93d7cdb7
   languageName: node
   linkType: hard
 
@@ -19774,7 +19773,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"luxon@npm:3.5.0, luxon@npm:^3.0.0, luxon@npm:^3.2.1, luxon@npm:^3.5.0":
+"luxon@npm:^3.0.0, luxon@npm:^3.2.1, luxon@npm:^3.5.0":
   version: 3.5.0
   resolution: "luxon@npm:3.5.0"
   checksum: 10/48f86e6c1c96815139f8559456a3354a276ba79bcef0ae0d4f2172f7652f3ba2be2237b0e103b8ea0b79b47715354ac9fac04eb1db3485dcc72d5110491dd47f
@@ -20856,6 +20855,13 @@ __metadata:
   bin:
     mockttp: dist/admin/admin-bin.js
   checksum: 10/08ad868010c491eb8e93fa25803f98826e88b6c8aa81bed0d63aafb0b14f150aa05ab2f016592b03ba822de94394d1c6808bdba59c91ba6eef3d68fa688c18b5
+  languageName: node
+  linkType: hard
+
+"moment@npm:2.30.1":
+  version: 2.30.1
+  resolution: "moment@npm:2.30.1"
+  checksum: 10/ae42d876d4ec831ef66110bdc302c0657c664991e45cf2afffc4b0f6cd6d251dde11375c982a5c0564ccc0fa593fc564576ddceb8c8845e87c15f58aa6baca69
   languageName: node
   linkType: hard
 
