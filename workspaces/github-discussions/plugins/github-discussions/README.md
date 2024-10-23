@@ -1,13 +1,47 @@
-# github-discussions
+# Github Discussions Plugin
 
-Welcome to the github-discussions plugin!
+Welcome to the Github Discussions plugin!
 
-_This plugin was created through the Backstage CLI_
+This plugin allows you to search through Github discussions and integrate the results into your Backstage instance.
 
-## Getting started
+## Prerequisites
 
-Your plugin has been added to the example app in this repository, meaning you'll be able to access it by running `yarn start` in the root directory, and then navigating to [/github-discussions](http://localhost:3000/github-discussions).
+Before using this plugin, you will need to install and configure the [Github Discussions Search Collator](../search-backend-module-github-discussions/README.md). The plugin's components are designed to render search results that are of document type `github-discussions`. Without the collator in place, no search results will be availalbe for the plugin's components to display.
 
-You can also serve the plugin in isolation by running `yarn start` in the plugin directory.
-This method of serving the plugin provides quicker iteration speed and a faster startup and hot reloads.
-It is only meant for local development, and the setup for it can be found inside the [/dev](./dev) directory.
+## Setup
+
+1. Install this plugin:
+
+```bash
+# From your Backstage root directory
+yarn --cwd packages/app add @backstage-community/plugin-github-discussions
+```
+
+2. Add `GithubDiscussionsSearchResultListItem` to your search page:
+
+```diff
+# packages/app/src/components/search/SearchPage.tsx
++ import {
++   GithubDiscussionsSearchResultListItem,
++ } from '@backstage-community/plugin-github-discussions';
+import { SearchResult } from '@backstage/plugin-search-react';
+
+...
+
+const SearchPage = () => {
+  ...
+  return (
+    <Page>
+      <Header />
+      <Content>
+        ...
+        <Grid>
+          <SearchResult>
++             <GithubDiscussionsSearchResultListItem />
+          </SearchResult>
+        </Grid>
+      </Content>
+    </Page>
+  )
+}
+```
