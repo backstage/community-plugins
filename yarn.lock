@@ -1665,7 +1665,6 @@ __metadata:
     husky: ^9.0.11
     lint-staged: ^15.2.2
     lodash.escaperegexp: ^4.1.2
-    luxon: ^3.5.0
     node-fetch: ^2.6.7
     prettier: ^2.3.2
   languageName: unknown
@@ -12308,7 +12307,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"luxon@npm:^3.0.0, luxon@npm:^3.2.1, luxon@npm:^3.5.0":
+"luxon@npm:^3.0.0, luxon@npm:^3.2.1":
   version: 3.5.0
   resolution: "luxon@npm:3.5.0"
   checksum: f290fe5788c8e51e748744f05092160d4be12150dca70f9fadc0d233e53d60ce86acd82e7d909a114730a136a77e56f0d3ebac6141bbb82fd310969a4704825b
