@@ -62,8 +62,9 @@ const tagColumns: TableColumn<TagRow>[] = [
  * Card for the catalog (entiy page) that shows the latest tags
  * with their version number and the release date.
  *
+ * @public
  */
-export const NpmReleaseOverviewCard = () => {
+export const EntityNpmReleaseOverviewCard = () => {
   const { entity } = useEntity();
 
   const packageName = entity.metadata.annotations?.[NPM_PACKAGE_ANNOTATION];

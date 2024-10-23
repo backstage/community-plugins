@@ -86,8 +86,9 @@ const columns: TableColumn<TableData>[] = [
  * One for the latest tags and versions of a npm package.
  * And another one for the complete version history.
  *
+ * @public
  */
-export const NpmReleaseTableCard = () => {
+export const EntityNpmReleaseTableCard = () => {
   const { entity } = useEntity();
 
   const packageName = entity.metadata.annotations?.[NPM_PACKAGE_ANNOTATION];

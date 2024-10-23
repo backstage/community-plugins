@@ -36,22 +36,28 @@ export const npmPlugin = createPlugin({
  * Page content for the catalog (entiy page) that shows two tables.
  * One for the latest tags and versions of a npm package.
  * And another one for the complete version history.
- *  @public
+ *
+ * @public
  */
 export const EntityNpmReleaseTableCard = npmPlugin.provide(
   createComponentExtension({
     name: 'EntityNpmReleaseTableCard',
     component: {
       lazy: () =>
-        import('./components/NpmReleaseTableCard').then(
-          m => m.NpmReleaseTableCard,
+        import('./components/EntityNpmReleaseTableCard').then(
+          m => m.EntityNpmReleaseTableCard,
         ),
     },
   }),
 );
 
 /**
- *
+ * @deprecated please use `EntityNpmReleaseTableCard` instead.
+ * @public
+ */
+export const NpmReleaseTableCard = EntityNpmReleaseTableCard;
+
+/**
  * Card for the catalog (entity page) that shows the npm
  * name, description, keywords, license, some links and
  * the latest version if available.
@@ -62,10 +68,17 @@ export const EntityNpmInfoCard = npmPlugin.provide(
   createComponentExtension({
     name: 'EntityNpmInfoCard',
     component: {
-      lazy: () => import('./components/NpmInfoCard').then(m => m.NpmInfoCard),
+      lazy: () =>
+        import('./components/EntityNpmInfoCard').then(m => m.EntityNpmInfoCard),
     },
   }),
 );
+
+/**
+ * @deprecated please use `EntityNpmInfoCard` instead.
+ * @public
+ */
+export const NpmInfoCard = EntityNpmInfoCard;
 
 /**
  * Card for the catalog (entiy page) that shows the latest tags
@@ -78,9 +91,15 @@ export const EntityNpmReleaseOverviewCard = npmPlugin.provide(
     name: 'EntityNpmReleaseOverviewCard',
     component: {
       lazy: () =>
-        import('./components/NpmReleaseOverviewCard').then(
-          m => m.NpmReleaseOverviewCard,
+        import('./components/EntityNpmReleaseOverviewCard').then(
+          m => m.EntityNpmReleaseOverviewCard,
         ),
     },
   }),
 );
+
+/**
+ * @deprecated please use `EntityNpmReleaseOverviewCard` instead.
+ * @public
+ */
+export const NpmReleaseOverviewCard = EntityNpmReleaseOverviewCard;

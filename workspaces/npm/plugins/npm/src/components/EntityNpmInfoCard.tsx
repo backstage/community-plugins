@@ -78,8 +78,9 @@ function GridItem({
  * name, description, keywords, license, some links and
  * the latest version if available.
  *
+ * @public
  */
-export const NpmInfoCard = () => {
+export const EntityNpmInfoCard = () => {
   const { entity } = useEntity();
 
   const packageName = entity.metadata.annotations?.[NPM_PACKAGE_ANNOTATION];
