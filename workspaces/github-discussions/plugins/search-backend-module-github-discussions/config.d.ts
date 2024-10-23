@@ -24,25 +24,52 @@ export interface Config {
        */
       githubDiscussions?: {
         /**
+         * The base URL of the GitHub repository to fetch discussions from.
+         * This is required to define the repository from which the collator
+         * will index discussions with its comments replies.
+         */
+        url: string;
+        /**
          * The schedule for how often to run the collation job.
          */
         schedule?: SchedulerServiceTaskScheduleDefinitionConfig;
         /**
-         */
-        url: string;
-        /**
+         * The base file URI where the cache will be stored.
+         *
+         * Defaults to `node_modules/github-discussions-fetcher/script/.cache`.
          */
         cacheBase?: string;
         /**
+         * Whether to clear the cache after a successful collation run.
+         * When enabled, the cache will be cleared after each successful run
+         * of `execute()` of the search collator.
+         *
+         * Defaults to true.
          */
         clearCacheOnSuccess?: boolean;
         /**
+         * The batch size for fetching discussions from the repository.
+         * It controls how many discussions are queried in a single batch,
+         * helping to manage the rate at which API calls are made to avoid
+         * exceeding GitHub's rate limits.
+         *
+         * Defaults to 100.
          */
         discussionsBatchSize?: number;
         /**
+         * The batch size for fetching comments from discussions. It
+         * controls how many comments are queried in a single batch from
+         * discussions.
+         *
+         * Defaults to 100.
          */
         commentsBatchSize?: number;
         /**
+         * The batch size for fetching replies to comments in discussions.
+         * It controls how many replies are queried in a single batch from
+         * comments.
+         *
+         * Defaults to 100.
          */
         repliesBatchSize?: number;
       };
