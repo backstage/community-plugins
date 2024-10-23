@@ -1,0 +1,28 @@
+dynamicPlugins:
+  frontend:
+    backstage-community.plugin-npm:
+      mountPoints:
+        - mountPoint: entity.page.overview/cards
+          importName: NpmInfoCard
+          config:
+            layout:
+              gridColumn: '1 / -1'
+            if:
+              anyOf:
+                - hasAnnotation: npm/package
+        - mountPoint: entity.page.overview/cards
+          importName: NpmReleaseOverviewCard
+          config:
+            layout:
+              gridColumn: '1 / -1'
+            if:
+              anyOf:
+                - hasAnnotation: npm/package
+        - mountPoint: entity.page.release/cards
+          importName: NpmReleaseTableCard
+          config:
+            layout:
+              gridColumn: '1 / -1'
+            if:
+              anyOf:
+                - hasAnnotation: npm/package
