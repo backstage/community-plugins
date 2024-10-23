@@ -63,7 +63,7 @@ export async function createRouter(
         .json({ message: 'Unable to retrieve data from provided URL' });
       return;
     }
-    response.json({ status: 'ok', data: dataFromUrl });
+    response.json(dataFromUrl);
   });
 
   const middleware = MiddlewareFactory.create({ logger, config });
