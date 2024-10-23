@@ -9,15 +9,15 @@ search:
   collators:
     githubDiscussions:
       url: https://github.com/guidanti/github-discussions-fetcher
+      schedule:
+        initialDelay: { seconds: 10 }
+        timeout: { minutes: 10 }
+        frequency: { minutes: 30 }
       cacheBase: file:///example/absolute/path
       clearCacheOnSuccess: true
       discussionsBatchSize: 65
       commentsBatchSize: 65
       repliesBatchSize: 65
-      schedule:
-        initialDelay: { seconds: 10 }
-        timeout: { minutes: 30 }
-        frequency: { minutes: 45 }
 
 backend:
   # Used for enabling authentication, secret is shared by all backend plugins
