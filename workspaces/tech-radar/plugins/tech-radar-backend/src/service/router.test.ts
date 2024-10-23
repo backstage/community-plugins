@@ -74,7 +74,6 @@ describe('createRouter', () => {
       const response = await request(app).get('/data');
 
       expect(response.status).toEqual(200);
-      expect(response.body.status).toEqual('ok');
       expect(response.body).toEqual(emptyRadarData);
     });
 
