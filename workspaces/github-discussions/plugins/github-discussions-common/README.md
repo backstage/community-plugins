@@ -1,5 +1,3 @@
-# backstage-plugin-github-discussions-common
+# Github Discussions Common
 
-Welcome to the common package for the github-discussions plugin!
-
-_This plugin was created through the Backstage CLI_
+Common types for Github Discussions plugin.
