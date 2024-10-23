@@ -52,7 +52,7 @@
     "@backstage/core-app-api": "^1.15.1",
     "@backstage/dev-utils": "^1.1.2",
     "@backstage/test-utils": "^1.7.0",
-    "@hey-api/openapi-ts": "0.34.5",
+    "@hey-api/openapi-ts": "0.53.11",
     "@janus-idp/cli": "1.14.0",
     "@redhat-developer/red-hat-developer-hub-theme": "0.2.0",
     "@testing-library/jest-dom": "6.4.8",
