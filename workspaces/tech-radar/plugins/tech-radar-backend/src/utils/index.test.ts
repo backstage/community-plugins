@@ -13,52 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  UrlReaderService,
-  UrlReaderServiceReadUrlResponse,
-} from '@backstage/backend-plugin-api';
+import { UrlReaderService } from '@backstage/backend-plugin-api';
 import { mockServices } from '@backstage/backend-test-utils';
 import { readTechRadarResponseFromURL } from './index';
 
-const validURL = 'https://example.com/tech-loader.json';
-const fetchingYamlURL = 'https://example.com/fetch.yaml';
-const fetchingBadJsonURL = 'https://example.com/non-tech-loader.json';
-const bufferContent = Buffer.from(
-  JSON.stringify({
-    entries: [],
-    quadrants: [],
-    rings: [],
-  }),
-);
-const nonJsonBufferContent = Buffer.from('lorem ipsum');
-const invalidJsonBufferContent = Buffer.from(
-  JSON.stringify({
-    names: [],
-    description: '',
-  }),
-);
-
+const mockReadBuffer = jest.fn();
 const mockUrlReader: UrlReaderService = {
-  readUrl(url: string) {
-    switch (url) {
-      case validURL:
-        return Promise.resolve({
-          buffer: () => Promise.resolve(bufferContent),
-          etag: '',
-        } as UrlReaderServiceReadUrlResponse);
-      case fetchingYamlURL:
-        return Promise.resolve({
-          buffer: () => Promise.resolve(nonJsonBufferContent),
-          etag: '',
-        } as UrlReaderServiceReadUrlResponse);
-      case fetchingBadJsonURL:
-        return Promise.resolve({
-          buffer: () => Promise.resolve(invalidJsonBufferContent),
-          etag: '',
-        } as UrlReaderServiceReadUrlResponse);
-      default:
-        throw new Error(`Unknown URL: ${url}`);
-    }
+  async readUrl(_: string) {
+    return {
+      buffer: mockReadBuffer,
+      etag: '',
+    };
   },
   readTree() {
     throw new Error('readTree not implemented.');
@@ -71,8 +36,17 @@ const mockUrlReader: UrlReaderService = {
 describe('Utils', () => {
   describe('readTechRadarResponseFromURL', () => {
     it('returns correctly parsed data when grabbing buffer from url reader', async () => {
+      mockReadBuffer.mockResolvedValue(
+        Buffer.from(
+          JSON.stringify({
+            entries: [],
+            quadrants: [],
+            rings: [],
+          }),
+        ),
+      );
       const buffer = await readTechRadarResponseFromURL(
-        validURL,
+        'https://example.com/tech-loader.json',
         mockUrlReader,
         mockServices.logger.mock(),
       );
@@ -80,6 +54,7 @@ describe('Utils', () => {
     });
 
     it('returns undefined if urlReader cannot get buffer from URL', async () => {
+      mockReadBuffer.mockResolvedValue(undefined);
       const response = await readTechRadarResponseFromURL(
         'https://randomurl.com',
         mockUrlReader,
@@ -89,8 +64,9 @@ describe('Utils', () => {
     });
 
     it('returns undefined if retrieved file contents cannot be parsed into JSON', async () => {
+      mockReadBuffer.mockResolvedValue(Buffer.from('lorem ipsum'));
       const response = await readTechRadarResponseFromURL(
-        fetchingYamlURL,
+        'https://example.com/fetch.yaml',
         mockUrlReader,
         mockServices.logger.mock(),
       );
@@ -98,8 +74,16 @@ describe('Utils', () => {
     });
 
     it('returns undefined if retrieved file contents cannot be parsed into valid TechLoaderResponse JSON', async () => {
+      mockReadBuffer.mockResolvedValue(
+        Buffer.from(
+          JSON.stringify({
+            names: [],
+            description: '',
+          }),
+        ),
+      );
       const response = await readTechRadarResponseFromURL(
-        fetchingBadJsonURL,
+        'https://example.com/non-tech-loader.json',
         mockUrlReader,
         mockServices.logger.mock(),
       );

@@ -61,6 +61,7 @@ export async function createRouter(
       response
         .status(502)
         .json({ message: 'Unable to retrieve data from provided URL' });
+      return;
     }
     response.json({ status: 'ok', data: dataFromUrl });
   });

@@ -18,7 +18,6 @@ import {
   TechRadarLoaderResponse,
   TechRadarLoaderResponseParser,
 } from '@backstage-community/plugin-tech-radar-common';
-import { load } from 'js-yaml';
 import { ZodError } from 'zod';
 
 /**
@@ -49,7 +48,7 @@ export async function readTechRadarResponseFromURL(
 
   if (buffer) {
     try {
-      responseJson = parseFileBuffer(buffer);
+      responseJson = JSON.parse(buffer.toString());
       const validationResult =
         TechRadarLoaderResponseParser.safeParse(responseJson);
       if (!validationResult.success) {
@@ -67,18 +66,6 @@ export async function readTechRadarResponseFromURL(
   }
 
   return undefined;
-}
-
-/**
- * Parses an array buffer into a json object.
- * @param buffer - the buffer to parse.
- * @internal
- */
-function parseFileBuffer(buffer: ArrayBuffer | Buffer) {
-  // Parses the given buffer into a json object
-  const raw = load(Buffer.from(buffer).toString('utf-8'));
-  const text = JSON.stringify(raw, null, 2);
-  return JSON.parse(text);
 }
 
 /**
