@@ -69,7 +69,8 @@
   "homepage": "https://github.com/backstage/community-plugins/tree/main/workspaces/npm/plugins/npm",
   "bugs": "https://github.com/backstage/community-plugins/issues",
   "maintainers": [
-    "jerolimov"
+    "jerolimov",
+    "karthikjeeyar"
   ],
   "author": "Christoph Jerolimov"
 }
