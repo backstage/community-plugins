@@ -85,7 +85,7 @@ spec:
 
 Follow this section if you are using Backstage's [new frontend system](https://backstage.io/docs/frontend-system/).
 
-1. Import `githubActionsPlugin` in your `App.tsx` and add it to your app's `features` array:
+1. Import `sonarQubePlugin` in your `App.tsx` and add it to your app's `features` array:
 
 ```typescript
 import sonarQubePlugin from '@backstage-community/plugin-sonarqube/alpha';
