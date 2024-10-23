@@ -59,7 +59,7 @@ const tagColumns: TableColumn<TagRow>[] = [
 ];
 
 /**
- * Card for the catalog (entiy page) that shows the latest tags
+ * Card for the catalog (entity page) that shows the latest tags
  * with their version number and the release date.
  *
  * @public

@@ -33,7 +33,7 @@ export const npmPlugin = createPlugin({
 });
 
 /**
- * Page content for the catalog (entiy page) that shows two tables.
+ * Page content for the catalog (entity page) that shows two tables.
  * One for the latest tags and versions of a npm package.
  * And another one for the complete version history.
  *
@@ -81,7 +81,7 @@ export const EntityNpmInfoCard = npmPlugin.provide(
 export const NpmInfoCard = EntityNpmInfoCard;
 
 /**
- * Card for the catalog (entiy page) that shows the latest tags
+ * Card for the catalog (entity page) that shows the latest tags
  * with their version number and the release date.
  *
  * @public
