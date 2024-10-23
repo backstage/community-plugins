@@ -171,8 +171,6 @@ export interface RadarEntrySnapshot {
 
 /**
  * Parser for {@link RadarEntry}
- *
- * @public
  */
 const RadarEntryParser: z.ZodSchema<RadarEntry> = z.object({
   // React key to use for this Entry
