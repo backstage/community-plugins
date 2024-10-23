@@ -27,7 +27,7 @@
     "lint": "backstage-cli package lint",
     "postpack": "backstage-cli package postpack",
     "postversion": "yarn run export-dynamic",
-    "prepack": "backstage-cli package prepack && yarn build",
+    "prepack": "backstage-cli package prepack",
     "start": "backstage-cli package start",
     "test": "backstage-cli package test --passWithNoTests --coverage",
     "tsc": "tsc"
