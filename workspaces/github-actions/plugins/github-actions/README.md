@@ -26,8 +26,8 @@ TBD
 ### Generic Requirements
 
 1. Provide OAuth credentials:
-   1. [Create an OAuth App](https://developer.github.com/apps/building-oauth-apps/creating-an-oauth-app/) in the GitHub organization with the callback URL set to `http://localhost:7007/api/auth/github/handler/frame`.
-      **Note**: This can be done with a user account also. Depending on if you use a personal account or an organization account will change the repositories this is functional with
+   - [Create an OAuth App](https://developer.github.com/apps/building-oauth-apps/creating-an-oauth-app/) in the GitHub organization. Set the callback URL to your backend URL. By default, the generated Backstage backend URL is http://localhost:7007/api/auth/github/handler/frame, but this may vary depending on your Backstage instance.
+   > **Note**: This can be done with a user account also. Depending on if you use a personal account or an organization account will change the repositories this is functional with
 1. Take the Client ID and Client Secret from the newly created app's settings page and you can do either:
 
    1. Put them into `AUTH_GITHUB_CLIENT_ID` and `AUTH_GITHUB_CLIENT_SECRET` environment variables.
@@ -42,7 +42,7 @@ TBD
            clientSecret: ${AUTH_GITHUB_CLIENT_SECRET}
    ```
 
-1. Annotate your component with a correct GitHub Actions repository and owner:
+2. Annotate your component with a correct GitHub Actions repository and owner:
 
    The annotation key is `github.com/project-slug`.
 
@@ -69,6 +69,11 @@ TBD
 ```bash
 # From your Backstage root directory
 yarn --cwd packages/app add @backstage-community/plugin-github-actions
+```
+
+Now, add this dependency to your backend index file (new backend system):
+```tsx
+backend.add(import('@backstage/plugin-auth-backend-module-github-provider'));
 ```
 
 ### Integrating with `EntityPage`
