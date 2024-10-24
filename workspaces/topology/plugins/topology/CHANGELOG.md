@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 2.0.0
+
+### Major Changes
+
+- 730359c: Migrated to MUI5
+
 ## 1.28.4
 
 ### Patch Changes
