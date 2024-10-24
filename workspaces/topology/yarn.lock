@@ -2845,7 +2845,7 @@ __metadata:
     "@backstage/plugin-permission-react": ^0.4.27
     "@backstage/test-utils": ^1.7.0
     "@backstage/theme": ^0.6.0
-    "@janus-idp/cli": 1.15.1
+    "@janus-idp/cli": 1.15.2
     "@janus-idp/shared-react": 2.11.1
     "@kubernetes/client-node": ^0.22.1
     "@mui/icons-material": 5.15.17
@@ -7760,9 +7760,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@janus-idp/cli@npm:1.15.1":
-  version: 1.15.1
-  resolution: "@janus-idp/cli@npm:1.15.1"
+"@janus-idp/cli@npm:1.15.2":
+  version: 1.15.2
+  resolution: "@janus-idp/cli@npm:1.15.2"
   dependencies:
     "@backstage/cli-common": ^0.1.14
     "@backstage/cli-node": ^0.2.7
@@ -7793,13 +7793,11 @@ __metadata:
     eslint: ^8.49.0
     eslint-config-prettier: ^8.10.0
     eslint-webpack-plugin: ^3.2.0
-    express: ^4.18.2
     fork-ts-checker-webpack-plugin: ^7.0.0-alpha.8
     fs-extra: ^10.1.0
     gitconfiglocal: 2.1.0
     handlebars: ^4.7.7
     html-webpack-plugin: ^5.3.1
-    inquirer: ^8.2.0
     is-native-module: ^1.1.3
     lodash: ^4.17.21
     mini-css-extract-plugin: ^2.4.2
@@ -7807,7 +7805,6 @@ __metadata:
     npm-packlist: ^5.0.0
     ora: ^5.3.0
     postcss: ^8.2.13
-    process: ^0.11.10
     react-dev-utils: ^12.0.0-next.60
     react-refresh: ^0.14.0
     recursive-readdir: ^2.2.2
@@ -7831,7 +7828,7 @@ __metadata:
       optional: true
   bin:
     janus-cli: bin/janus-cli
-  checksum: fd5aa1fb2efea187341cb78231752452eadb684f95d0af1ef4e75be9231bb61c8080bed3d8f25fd9f952e02058e0559054f34e6aeef628518a6e653160c5a16a
+  checksum: 632cbc3582b910b1f3cbec857877a4b8ea34a418c2b9de99d76e61aaab36c3152da37cfa2a59ac16f7933df488221adaea274b8e7f99b24d976f3eabef646b5f
   languageName: node
   linkType: hard
 
