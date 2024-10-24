@@ -22,6 +22,9 @@ export const EntityNpmReleaseTableCard: () => JSX_2.Element;
 // @public
 export const isNpmAvailable: (entity: Entity) => boolean;
 
+// @public @deprecated (undocumented)
+export const NpmInfoCard: () => JSX_2.Element;
+
 // @public
 export const npmPlugin: BackstagePlugin<
   {
@@ -30,4 +33,10 @@ export const npmPlugin: BackstagePlugin<
   {},
   {}
 >;
+
+// @public @deprecated (undocumented)
+export const NpmReleaseOverviewCard: () => JSX_2.Element;
+
+// @public @deprecated (undocumented)
+export const NpmReleaseTableCard: () => JSX_2.Element;
 ```

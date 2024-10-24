@@ -35,6 +35,11 @@ interface TagRow {
   published: string;
 }
 
+interface TableData {
+  version: string;
+  published: string;
+}
+
 const tagColumns: TableColumn<TagRow>[] = [
   {
     title: 'Tag',
@@ -58,12 +63,32 @@ const tagColumns: TableColumn<TagRow>[] = [
   },
 ];
 
+const columns: TableColumn<TableData>[] = [
+  {
+    title: 'Version',
+    field: 'version',
+    type: 'string',
+  },
+  {
+    title: 'Published',
+    field: 'published',
+    type: 'datetime',
+    render: row => (
+      <time dateTime={row.published} title={row.published}>
+        {DateTime.fromISO(row.published).toRelative()}
+      </time>
+    ),
+  },
+];
+
 /**
- * Card for the catalog (entiy page) that shows the latest tags
- * with their version number and the release date.
+ * Page content for the catalog (entity page) that shows two tables.
+ * One for the latest tags and versions of a npm package.
+ * And another one for the complete version history.
  *
+ * @public
  */
-export const NpmReleaseOverviewCard = () => {
+export const EntityNpmReleaseTableCard = () => {
   const { entity } = useEntity();
 
   const packageName = entity.metadata.annotations?.[NPM_PACKAGE_ANNOTATION];
@@ -83,12 +108,23 @@ export const NpmReleaseOverviewCard = () => {
     );
   }
 
-  const data: TagRow[] = [];
+  const tagData: TagRow[] = [];
   if (packageInfo?.['dist-tags']) {
     for (const [tag, version] of Object.entries(packageInfo['dist-tags'])) {
       const published = packageInfo.time[version];
-      data.push({ tag, version, published });
+      tagData.push({ tag, version, published });
     }
+  }
+
+  const data: TableData[] = [];
+  if (packageInfo?.time) {
+    for (const [version, published] of Object.entries(packageInfo.time)) {
+      if (version === 'created' || version === 'modified') {
+        continue;
+      }
+      data.push({ version, published });
+    }
+    data.reverse();
   }
 
   const emptyContent = error ? (
@@ -98,13 +134,25 @@ export const NpmReleaseOverviewCard = () => {
   ) : null;
 
   return (
-    <Table
-      title="Current Tags"
-      options={{ paging: false, padding: 'dense' }}
-      isLoading={loading}
-      data={data}
-      columns={tagColumns}
-      emptyContent={emptyContent}
-    />
+    <>
+      <Table
+        title="Current Tags"
+        options={{ paging: false, padding: 'dense' }}
+        isLoading={loading}
+        data={tagData}
+        columns={tagColumns}
+        emptyContent={emptyContent}
+      />
+      <br />
+      <br />
+      <Table
+        title="Version History"
+        options={{ paging: true, pageSize: 10, padding: 'dense' }}
+        isLoading={loading}
+        data={data}
+        columns={columns}
+        emptyContent={emptyContent}
+      />
+    </>
   );
 };
