@@ -1,0 +1,1 @@
+export { ShortURLGo } from './ShortURLGo';
