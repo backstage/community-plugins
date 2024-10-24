@@ -1,5 +1,11 @@
 # @backstage-community/plugin-tech-radar
 
+## 1.0.0
+
+### Major Changes
+
+- e5a9abf: Refactors the default api shipped with the plugin to use the new, optional tech-radar-backend plugin to load data dynamically. Also includes a breaking refactor to consume some types from the new tech-radar-common plugin.
+
 ## 0.7.11
 
 ### Patch Changes
