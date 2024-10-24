@@ -26,16 +26,45 @@ jest.mock('react', () => ({
   useContext: jest.fn(),
 }));
 
-jest.mock('@material-ui/core', () => ({
-  ...jest.requireActual('@material-ui/core'),
-  makeStyles: () => () => {
-    return {
-      titleContainer: 'title',
-      closeButton: 'close',
-    };
-  },
-  Dialog: () => <div data-testid="dialog" />,
+jest.mock('@emotion/react', () => ({
+  ...jest.requireActual('@emotion/react'),
+  Styled: (props: any) => <div {...props} />,
 }));
+
+jest.mock('@mui/material/Dialog', () => (props: any) => (
+  <div data-testid="dialog">{props.children}</div>
+));
+jest.mock('@mui/material/DialogContent', () => (props: any) => (
+  <div data-testid="dialog-content">{props.children}</div>
+));
+jest.mock('@mui/material/DialogTitle', () => (props: any) => (
+  <div data-testid="dialog-title">{props.children}</div>
+));
+jest.mock('@mui/material/Box', () => (props: any) => (
+  <div data-testid="box">{props.children}</div>
+));
+jest.mock('@mui/material/Select', () => (props: any) => (
+  <div data-testid="select">{props.children}</div>
+));
+jest.mock('@mui/material/IconButton', () => (props: any) => (
+  <div data-testid="icon-button">{props.children}</div>
+));
+jest.mock('@mui/material/MenuItem', () => (props: any) => (
+  <div data-testid="menu-item">{props.children}</div>
+));
+jest.mock('@backstage/core-components', () => ({
+  ...jest.requireActual('@backstage/core-components'),
+  WarningPanel: (props: any) => (
+    <div data-testid="warning-panel">{props.children}</div>
+  ),
+  ErrorBoundary: (props: any) => (
+    <div data-testid="error-boundary">{props.children}</div>
+  ),
+}));
+jest.mock('./PodLogs', () => ({
+  PodLogs: () => <div data-testid="pod-logs" />,
+}));
+jest.mock('@mui/icons-material/Close', () => () => <span>Close Icon</span>);
 
 describe('PodLogsDialog', () => {
   it('should show Dialog & View logs', () => {
