@@ -43,8 +43,6 @@ import SearchIcon from '@mui/icons-material/Search';
 import { MyGroupsSidebarItem } from '@backstage/plugin-org';
 import GroupIcon from '@mui/icons-material/People';
 
-import { ThemeProvider, useTheme } from '@mui/material/styles';
-
 const useSidebarLogoStyles = makeStyles({
   root: {
     width: sidebarConfig.drawerWidthClosed,
@@ -74,49 +72,46 @@ const SidebarLogo = () => {
 };
 
 export const Root = ({ children }: PropsWithChildren<{}>) => {
-  const theme = useTheme();
   return (
-    <ThemeProvider theme={theme}>
-      <SidebarPage>
-        <Sidebar>
-          <SidebarLogo />
-          <SidebarGroup label="Search" icon={<SearchIcon />} to="/search">
-            <SidebarSearchModal />
-          </SidebarGroup>
+    <SidebarPage>
+      <Sidebar>
+        <SidebarLogo />
+        <SidebarGroup label="Search" icon={<SearchIcon />} to="/search">
+          <SidebarSearchModal />
+        </SidebarGroup>
+        <SidebarDivider />
+        <SidebarGroup label="Menu" icon={<MenuIcon />}>
+          {/* Global nav, not org-specific */}
+          <SidebarItem icon={HomeIcon} to="catalog" text="Home" />
+          <MyGroupsSidebarItem
+            singularTitle="My Group"
+            pluralTitle="My Groups"
+            icon={GroupIcon}
+          />
+          <SidebarItem icon={ExtensionIcon} to="api-docs" text="APIs" />
+          <SidebarItem icon={LibraryBooks} to="docs" text="Docs" />
+          <SidebarItem
+            icon={CreateComponentIcon}
+            to="create"
+            text="Create..."
+          />
+          {/* End global nav */}
           <SidebarDivider />
-          <SidebarGroup label="Menu" icon={<MenuIcon />}>
-            {/* Global nav, not org-specific */}
-            <SidebarItem icon={HomeIcon} to="catalog" text="Home" />
-            <MyGroupsSidebarItem
-              singularTitle="My Group"
-              pluralTitle="My Groups"
-              icon={GroupIcon}
-            />
-            <SidebarItem icon={ExtensionIcon} to="api-docs" text="APIs" />
-            <SidebarItem icon={LibraryBooks} to="docs" text="Docs" />
-            <SidebarItem
-              icon={CreateComponentIcon}
-              to="create"
-              text="Create..."
-            />
-            {/* End global nav */}
-            <SidebarDivider />
-            <SidebarScrollWrapper>
-              {/* Items in this group will be scrollable if they run out of space */}
-            </SidebarScrollWrapper>
-          </SidebarGroup>
-          <SidebarSpace />
-          <SidebarDivider />
-          <SidebarGroup
-            label="Settings"
-            icon={<UserSettingsSignInAvatar />}
-            to="/settings"
-          >
-            <SidebarSettings />
-          </SidebarGroup>
-        </Sidebar>
-        {children}
-      </SidebarPage>
-    </ThemeProvider>
+          <SidebarScrollWrapper>
+            {/* Items in this group will be scrollable if they run out of space */}
+          </SidebarScrollWrapper>
+        </SidebarGroup>
+        <SidebarSpace />
+        <SidebarDivider />
+        <SidebarGroup
+          label="Settings"
+          icon={<UserSettingsSignInAvatar />}
+          to="/settings"
+        >
+          <SidebarSettings />
+        </SidebarGroup>
+      </Sidebar>
+      {children}
+    </SidebarPage>
   );
 };

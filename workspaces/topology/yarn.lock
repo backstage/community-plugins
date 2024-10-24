@@ -6267,7 +6267,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emotion/react@npm:^11.10.5, @emotion/react@npm:^11.5.0":
+"@emotion/react@npm:^11.10.5":
   version: 11.13.3
   resolution: "@emotion/react@npm:11.13.3"
   dependencies:
@@ -6308,7 +6308,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emotion/styled@npm:^11.10.5, @emotion/styled@npm:^11.3.0":
+"@emotion/styled@npm:^11.10.5":
   version: 11.13.0
   resolution: "@emotion/styled@npm:11.13.0"
   dependencies:
@@ -15680,8 +15680,6 @@ __metadata:
     "@backstage/plugin-user-settings": ^0.8.14
     "@backstage/test-utils": ^1.7.0
     "@backstage/theme": ^0.6.0
-    "@emotion/react": ^11.5.0
-    "@emotion/styled": ^11.3.0
     "@mui/icons-material": 5.15.17
     "@mui/lab": 5.0.0-alpha.173
     "@mui/material": 5.15.17
