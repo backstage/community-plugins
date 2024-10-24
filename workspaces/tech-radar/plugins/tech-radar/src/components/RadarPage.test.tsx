@@ -19,11 +19,12 @@ import {
   TestApiProvider,
   renderInTestApp,
 } from '@backstage/test-utils';
+import { TechRadarLoaderResponse } from '@backstage-community/plugin-tech-radar-common';
 import { act, screen, waitFor } from '@testing-library/react';
 import React from 'react';
 import GetBBoxPolyfill from '../utils/polyfills/getBBox';
 import { RadarPage } from './RadarPage';
-import { TechRadarLoaderResponse, techRadarApiRef, TechRadarApi } from '../api';
+import { techRadarApiRef, TechRadarApi } from '../api';
 
 import { errorApiRef } from '@backstage/core-plugin-api';
 

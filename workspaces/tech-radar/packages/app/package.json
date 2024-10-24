@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@backstage-community/plugin-tech-radar": "workspace:^",
+    "@backstage-community/plugin-tech-radar-common": "workspace:^",
     "@backstage/app-defaults": "^1.5.12",
     "@backstage/catalog-model": "^1.7.0",
     "@backstage/cli": "^0.28.0",

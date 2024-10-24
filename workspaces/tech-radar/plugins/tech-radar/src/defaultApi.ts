@@ -15,12 +15,19 @@
  */
 
 import {
+  DiscoveryApi,
+  IdentityApi,
+  FetchApi,
+} from '@backstage/frontend-plugin-api';
+
+import { TechRadarApi } from './api';
+import {
   RadarRing,
   RadarQuadrant,
   RadarEntry,
   TechRadarLoaderResponse,
-  TechRadarApi,
-} from './api';
+  TechRadarLoaderResponseParser,
+} from '@backstage-community/plugin-tech-radar-common';
 
 const rings = new Array<RadarRing>();
 rings.push({
@@ -223,8 +230,45 @@ export const mock: TechRadarLoaderResponse = {
   rings,
 };
 
-export class SampleTechRadarApi implements TechRadarApi {
+export type Options = {
+  discoveryApi: DiscoveryApi;
+  fetchApi: FetchApi;
+  identityApi: IdentityApi;
+};
+
+/**
+ * Default implementation of the TechRadarApi; attempts to load the tech radar data from the optional backend plugin.
+ * If the backend is not available, or if returns invalid data, will return mock data.
+ */
+export class DefaultTechRadarApi implements TechRadarApi {
+  discoveryApi: DiscoveryApi;
+  fetchApi: FetchApi;
+  identityApi: IdentityApi;
+
+  constructor(opts: Options) {
+    this.discoveryApi = opts.discoveryApi;
+    this.fetchApi = opts.fetchApi;
+    this.identityApi = opts.identityApi;
+  }
+
   async load() {
+    const { token: idToken } = await this.identityApi.getCredentials();
+    const apiUrl = await this.discoveryApi.getBaseUrl('tech-radar');
+    const response = await this.fetchApi.fetch(`${apiUrl}/data`, {
+      headers: {
+        'Content-Type': 'application/json',
+        ...(idToken && { Authorization: `Bearer ${idToken}` }),
+      },
+    });
+    if (response.status === 200) {
+      const respJson = await response.json();
+      const validationResult =
+        TechRadarLoaderResponseParser.safeParse(respJson);
+      if (validationResult.success) {
+        return validationResult.data;
+      }
+    }
+
     return mock;
   }
 }
