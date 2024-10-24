@@ -1,5 +1,11 @@
 # @backstage-community/plugin-npm
 
+## 1.0.2
+
+### Patch Changes
+
+- fa1521c: export deprecated card components to be backward compatible
+
 ## 1.0.1
 
 ### Patch Changes
