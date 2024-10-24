@@ -16,7 +16,7 @@
 import React from 'react';
 
 import { IconButton } from '@material-ui/core';
-import ExternalLinkIcon from '@patternfly/react-icons/dist/esm/icons/external-link-alt-icon';
+import ExternalLinkIcon from '@mui/icons-material/OpenInNewOutlined';
 
 import { useArgocdConfig } from '../../hooks/useArgocdConfig';
 import { Application } from '../../types/application';

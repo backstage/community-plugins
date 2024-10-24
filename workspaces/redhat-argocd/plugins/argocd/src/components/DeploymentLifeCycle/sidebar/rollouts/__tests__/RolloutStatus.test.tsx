@@ -20,6 +20,19 @@ import { render, screen } from '@testing-library/react';
 import { RolloutPhase, RolloutPhaseType } from '../../../../../types/rollouts';
 import RolloutStatus from '../RolloutStatus';
 
+jest.mock('@material-ui/styles', () => ({
+  ...jest.requireActual('@material-ui/styles'),
+  makeStyles: () => (_theme: any) => {
+    return {
+      success: 'success',
+      error: 'error',
+      running: 'running',
+      warning: 'warning',
+      pending: 'pending',
+    };
+  },
+}));
+
 describe('RolloutStatus Component', () => {
   test('renders null when status is not provided', () => {
     const { container } = render(

@@ -29,14 +29,16 @@ const AppSyncStatus: React.FC<{
       data-testid="app-sync-status-chip"
       size="small"
       variant="outlined"
-      icon={<SyncIcon status={app?.status?.sync?.status as SyncStatusCode} />}
+      icon={
+        <SyncIcon
+          status={app?.status?.sync?.status as SyncStatusCode}
+          iconOnly
+        />
+      }
       label={app?.status?.sync?.status}
     />
   ) : (
-    <>
-      <SyncIcon status={app?.status?.sync?.status as SyncStatusCode} />{' '}
-      {app?.status?.sync?.status}
-    </>
+    <SyncIcon status={app?.status?.sync?.status as SyncStatusCode} />
   );
 };
 export default AppSyncStatus;

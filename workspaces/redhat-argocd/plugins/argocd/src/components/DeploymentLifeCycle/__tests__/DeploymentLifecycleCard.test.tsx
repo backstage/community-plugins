@@ -22,6 +22,19 @@ import { useArgocdConfig } from '../../../hooks/useArgocdConfig';
 import { Application, Source } from '../../../types/application';
 import DeploymentLifecycleCard from '../DeploymentLifecycleCard';
 
+jest.mock('@material-ui/styles', () => ({
+  ...jest.requireActual('@material-ui/styles'),
+  makeStyles: () => (_theme: any) => {
+    return {
+      success: 'success',
+      error: 'error',
+      running: 'running',
+      warning: 'warning',
+      pending: 'pending',
+    };
+  },
+}));
+
 jest.mock('@backstage/plugin-catalog-react', () => ({
   useEntity: () => ({
     ...mockEntity,
@@ -39,7 +52,7 @@ jest.mock('../../../hooks/useArgocdConfig', () => ({
   useArgocdConfig: jest.fn(),
 }));
 
-describe('DeploymentLifecylceCard', () => {
+describe('DeploymentLifecycleCard', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 

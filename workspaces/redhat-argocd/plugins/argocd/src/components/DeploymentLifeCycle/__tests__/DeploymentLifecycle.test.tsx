@@ -33,6 +33,19 @@ jest.mock('@backstage/plugin-permission-react', () => ({
   usePermission: jest.fn(),
 }));
 
+jest.mock('@material-ui/styles', () => ({
+  ...jest.requireActual('@material-ui/styles'),
+  makeStyles: () => (_theme: any) => {
+    return {
+      success: 'success',
+      error: 'error',
+      running: 'running',
+      warning: 'warning',
+      pending: 'pending',
+    };
+  },
+}));
+
 const mockUsePermission = usePermission as jest.MockedFunction<
   typeof usePermission
 >;

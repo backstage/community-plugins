@@ -31,6 +31,19 @@ import { useArgocdConfig } from '../../../hooks/useArgocdConfig';
 import { Application, History } from '../../../types/application';
 import DeploymentSummary from '../DeploymentSummary';
 
+jest.mock('@material-ui/styles', () => ({
+  ...jest.requireActual('@material-ui/styles'),
+  makeStyles: () => (_theme: any) => {
+    return {
+      success: 'success',
+      error: 'error',
+      running: 'running',
+      warning: 'warning',
+      pending: 'pending',
+    };
+  },
+}));
+
 jest.mock('../../../hooks/useArgocdConfig', () => ({
   useArgocdConfig: jest.fn(),
 }));
@@ -218,7 +231,7 @@ describe('DeploymentSummary', () => {
       within(firstRow).getByText('90f9758');
     });
     await fireEvent.click(lastDeployedHeader);
-    // miui table requires two clicks to start sorting
+    // mui table requires two clicks to start sorting
     await fireEvent.click(lastDeployedHeader);
 
     await waitFor(() => {

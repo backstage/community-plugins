@@ -21,6 +21,19 @@ import { mockArgoResources } from '../../../../../../../../dev/__data__/argoRoll
 import { AnalysisRun } from '../../../../../../../types/analysisRuns';
 import AnalysisRuns from '../AnalysisRuns';
 
+jest.mock('@material-ui/styles', () => ({
+  ...jest.requireActual('@material-ui/styles'),
+  makeStyles: () => (_theme: any) => {
+    return {
+      success: 'success',
+      error: 'error',
+      running: 'running',
+      warning: 'warning',
+      pending: 'pending',
+    };
+  },
+}));
+
 describe('AnalysisRuns Component', () => {
   const mockAnalysisRuns = [
     mockArgoResources.analysisruns[0],

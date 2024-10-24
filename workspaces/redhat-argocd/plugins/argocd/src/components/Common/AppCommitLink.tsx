@@ -22,7 +22,8 @@ import {
   makeStyles,
   Theme,
 } from '@material-ui/core';
-import GitLabIcon from '@patternfly/react-icons/dist/esm/icons/gitlab-icon';
+import GitlabIcon from '../icons/GitlabIcon';
+
 import { Skeleton } from '@material-ui/lab';
 import { getCommitUrl } from '../../utils/utils';
 import { Entity } from '@backstage/catalog-model';
@@ -44,6 +45,7 @@ const useCommitStyles = makeStyles<Theme>(theme => ({
     whiteSpace: 'nowrap',
     overflow: 'hidden',
   },
+  gitIcon: {},
 }));
 
 const AppCommitLink: React.FC<CommitLinkProps> = ({
@@ -78,7 +80,7 @@ const AppCommitLink: React.FC<CommitLinkProps> = ({
             );
           }
         }}
-        icon={<GitLabIcon />}
+        icon={<GitlabIcon style={{ marginLeft: '8px' }} />}
         color="primary"
         label={latestRevision?.revision.slice(0, 7)}
       />

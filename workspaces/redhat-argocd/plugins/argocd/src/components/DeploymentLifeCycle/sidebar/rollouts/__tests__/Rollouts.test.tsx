@@ -27,6 +27,19 @@ jest.mock('../RolloutContext', () => ({
   useArgoResources: jest.fn(),
 }));
 
+jest.mock('@material-ui/styles', () => ({
+  ...jest.requireActual('@material-ui/styles'),
+  makeStyles: () => (_theme: any) => {
+    return {
+      success: 'success',
+      error: 'error',
+      running: 'running',
+      warning: 'warning',
+      pending: 'pending',
+    };
+  },
+}));
+
 describe('Rollouts', () => {
   beforeEach(() => {
     (useArgoResources as jest.Mock).mockReturnValue({
