@@ -2531,7 +2531,7 @@ __metadata:
     "@testing-library/jest-dom": 6.4.8
     "@testing-library/react": 14.3.1
     "@testing-library/user-event": 14.5.2
-    "@types/node": 18.19.33
+    "@types/node": 18.19.57
     cross-fetch: 4.0.0
     msw: 1.3.4
     react-router-dom: ^6.26.2
@@ -9011,12 +9011,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:18.19.33":
-  version: 18.19.33
-  resolution: "@types/node@npm:18.19.33"
+"@types/node@npm:18.19.57, @types/node@npm:^18.11.18, @types/node@npm:^18.11.9":
+  version: 18.19.57
+  resolution: "@types/node@npm:18.19.57"
   dependencies:
     undici-types: ~5.26.4
-  checksum: b6db87d095bc541d64a410fa323a35c22c6113220b71b608bbe810b2397932d0f0a51c3c0f3ef90c20d8180a1502d950a7c5314b907e182d9cc10b36efd2a44e
+  checksum: d7be072513df5f6b14384dc284561ddf4e6393ce85b8fd3cc9ab0c0a7abd03bfdab6519548dab7c743ec9dfca9ce686dde2db0fbbf1d357e0822b4f99a54b193
   languageName: node
   linkType: hard
 
@@ -9031,15 +9031,6 @@ __metadata:
   version: 16.18.111
   resolution: "@types/node@npm:16.18.111"
   checksum: 961f29ce0bca1a3621bffab142f3dcc48dad13ea4b60c2b695b1f126ff85bcc57c7f46901bc90aad18ee9a4f4c525a9031e1297885a9e1901b161f047fb7fe72
-  languageName: node
-  linkType: hard
-
-"@types/node@npm:^18.11.18, @types/node@npm:^18.11.9":
-  version: 18.19.53
-  resolution: "@types/node@npm:18.19.53"
-  dependencies:
-    undici-types: ~5.26.4
-  checksum: 53a5a480998967f45e243f35413152f2f67c3bbe517a51e6aaba239fe1ec14be7b302538e9c17bfda4a317fcea41cb09d09764286e0341fcea37a5de5a98d54b
   languageName: node
   linkType: hard
 

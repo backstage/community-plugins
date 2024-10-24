@@ -2864,7 +2864,7 @@ __metadata:
     "@testing-library/react-hooks": 8.0.1
     "@testing-library/user-event": 14.5.2
     "@types/git-url-parse": 9.0.3
-    "@types/node": 18.19.34
+    "@types/node": 18.19.57
     "@types/react": ^18.3.11
     classnames: 2.x
     cross-fetch: 4.0.0
@@ -14307,12 +14307,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:18.19.34":
-  version: 18.19.34
-  resolution: "@types/node@npm:18.19.34"
+"@types/node@npm:18.19.57, @types/node@npm:^18.11.18, @types/node@npm:^18.11.9":
+  version: 18.19.57
+  resolution: "@types/node@npm:18.19.57"
   dependencies:
     undici-types: ~5.26.4
-  checksum: ae6369baa1529ec3564da29611ec7eb8ccb219080d717292151b6b899820d25290243d01c9240f11a63d1a42e47198cd6310fab67b6d17bea723221fea07b644
+  checksum: d7be072513df5f6b14384dc284561ddf4e6393ce85b8fd3cc9ab0c0a7abd03bfdab6519548dab7c743ec9dfca9ce686dde2db0fbbf1d357e0822b4f99a54b193
   languageName: node
   linkType: hard
 
@@ -14327,15 +14327,6 @@ __metadata:
   version: 16.18.112
   resolution: "@types/node@npm:16.18.112"
   checksum: d634729e60d2e7bd951843fddf5fb59ae786ca707f384e8f90881b011076962b4e3fee3393e3be4be4fb7d86943893e0bda9650aea24ac692bdf407bf1a5d84d
-  languageName: node
-  linkType: hard
-
-"@types/node@npm:^18.11.18, @types/node@npm:^18.11.9":
-  version: 18.19.54
-  resolution: "@types/node@npm:18.19.54"
-  dependencies:
-    undici-types: ~5.26.4
-  checksum: d85bacc7430c2913bcd2cf293f312bc1f9108819707ac25b58404185c3b8f9ca9e3e93c396672f457c18e65f5ba86cc8363803f830207c6b7dd14fd74e1455b0
   languageName: node
   linkType: hard
 
