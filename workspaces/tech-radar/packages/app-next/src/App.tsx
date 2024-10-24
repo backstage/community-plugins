@@ -19,7 +19,6 @@ import {
   configApiRef,
   createApiFactory,
   createFrontendModule,
-  SignInPageBlueprint,
   ApiBlueprint,
   PageBlueprint,
 } from '@backstage/frontend-plugin-api';
@@ -32,12 +31,11 @@ import catalogPlugin from '@backstage/plugin-catalog/alpha';
 import catalogImportPlugin from '@backstage/plugin-catalog-import/alpha';
 import userSettingsPlugin from '@backstage/plugin-user-settings/alpha';
 import { Navigate } from 'react-router';
-import { SignInPage } from './components/auth/SignInPage';
 import {
   TechRadarApi,
-  TechRadarLoaderResponse,
   techRadarApiRef,
 } from '@backstage-community/plugin-tech-radar';
+import { TechRadarLoaderResponse } from '@backstage-community/plugin-tech-radar-common';
 import techRadarPlugin from '@backstage-community/plugin-tech-radar/alpha';
 
 const homePageExtension = PageBlueprint.make({
@@ -45,12 +43,6 @@ const homePageExtension = PageBlueprint.make({
   params: {
     defaultPath: '/',
     loader: () => Promise.resolve(<Navigate to="catalog" />),
-  },
-});
-
-const signInPage = SignInPageBlueprint.make({
-  params: {
-    loader: async () => props => <SignInPage {...props} />,
   },
 });
 
@@ -105,11 +97,10 @@ export const app = createApp({
     createFrontendModule({
       pluginId: 'app',
       extensions: [
-        signInPage,
         homePageExtension,
         scmAuthExtension,
         scmIntegrationApi,
-        techRadarApi,
+        techRadarApi, // comment this line out to test the default API implementation
       ],
     }),
   ],
