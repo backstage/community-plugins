@@ -31,15 +31,15 @@
     "export-dynamic": "janus-cli package export-dynamic-plugin --no-embed-as-dependencies"
   },
   "dependencies": {
-    "@backstage/backend-common": "^0.21.6",
-    "@backstage/backend-dynamic-feature-service": "^0.2.15",
-    "@backstage/backend-plugin-api": "^0.6.17",
+    "@backstage/backend-common": "^0.25.0",
+    "@backstage/backend-dynamic-feature-service": "^0.4.0",
+    "@backstage/backend-plugin-api": "^0.8.0",
     "@backstage/catalog-client": "^1.6.5",
-    "@backstage/plugin-scaffolder-node": "^0.4.2",
+    "@backstage/plugin-scaffolder-node": "^0.5.0",
     "openid-client": "^5.6.5"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.26.11",
+    "@backstage/cli": "^0.28.0",
     "@janus-idp/cli": "^1.13.0"
   },
   "files": [

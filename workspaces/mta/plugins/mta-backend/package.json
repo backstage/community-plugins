@@ -33,11 +33,11 @@
     "tsc": "tsc"
   },
   "dependencies": {
-    "@backstage/backend-common": "^0.23.3",
-    "@backstage/backend-dynamic-feature-service": "^0.2.15",
+    "@backstage/backend-common": "^0.25.0",
+    "@backstage/backend-dynamic-feature-service": "^0.4.0",
     "@backstage/backend-plugin-api": "^0.8.0",
     "@backstage/config": "^1.2.0",
-    "@backstage/plugin-auth-node": "^0.4.17",
+    "@backstage/plugin-auth-node": "^0.5.0",
     "@backstage/plugin-catalog-node": "^1.12.4",
     "@types/express": "*",
     "dotenv": "^16.4.5",
@@ -52,7 +52,7 @@
   },
   "devDependencies": {
     "@backstage/backend-defaults": "^0.5.0",
-    "@backstage/cli": "^0.26.11",
+    "@backstage/cli": "^0.28.0",
     "@backstage/plugin-auth-backend": "^0.23.0",
     "@backstage/plugin-auth-backend-module-guest-provider": "^0.2.0",
     "@janus-idp/cli": "^1.11.1",

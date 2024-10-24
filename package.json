@@ -16,7 +16,7 @@
   "packageManager": "yarn@3.2.3",
   "devDependencies": {
     "@backstage-community/cli": "portal:./workspaces/repo-tools/packages/cli",
-    "@backstage/cli": "^0.27.0",
+    "@backstage/cli": "^0.28.0",
     "@backstage/cli-node": "^0.2.2",
     "@changesets/parse": "^0.4.0",
     "@manypkg/get-packages": "^2.2.2",
