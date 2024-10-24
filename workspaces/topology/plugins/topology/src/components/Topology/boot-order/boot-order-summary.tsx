@@ -36,7 +36,7 @@ export const BootOrderSummary: React.FC<BootOrderSummaryProps> = ({
         <BootOrderEmptySummary devices={devices} />
       ) : (
         <ol>
-          {sources.map(source => (
+          {sources.map((source: any) => (
             <li key={deviceKey(source)}>{deviceLabel(source)}</li>
           ))}
         </ol>

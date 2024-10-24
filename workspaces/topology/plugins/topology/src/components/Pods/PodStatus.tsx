@@ -86,7 +86,7 @@ const PodStatus = ({
   const vData = React.useMemo(() => {
     const updateVData: PodData[] = podStatus.map((pod: any) => ({
       x: pod,
-      y: _.sumBy(data, d => +(getPodStatus(d) === pod)) || 0,
+      y: _.sumBy(data, (d: any) => +(getPodStatus(d) === pod)) || 0,
     }));
 
     if (_.isEmpty(data)) {

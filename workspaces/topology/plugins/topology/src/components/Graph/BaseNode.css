@@ -12,6 +12,10 @@
   fill: var(--pf-v5-global--palette--blue-300);
 }
 
+.bs-topology-base-node-resource-icon > text {
+  fill: var(--pf-v5-global--palette--white);
+}
+
 .bs-topology-base-node-resource-icon-service {
   fill: var(--pf-v5-global--palette--light-green-500);
 }
