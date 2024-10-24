@@ -15,7 +15,7 @@
  */
 import React from 'react';
 
-import { useTheme } from '@material-ui/core/styles';
+import { useTheme } from '@mui/material/styles';
 
 import { FilterContext } from '../../hooks/FilterContext';
 import { K8sResourcesContext } from '../../hooks/K8sResourcesContext';
@@ -38,7 +38,7 @@ const savedStylesheets = new Set<HTMLLinkElement>();
 
 export const TopologyComponent = () => {
   const {
-    palette: { type },
+    palette: { mode },
   } = useTheme();
   React.useLayoutEffect(() => {
     const htmlTagElement = document.documentElement;
@@ -61,7 +61,7 @@ export const TopologyComponent = () => {
       }
     });
 
-    if (type === THEME_DARK) {
+    if (mode === THEME_DARK) {
       htmlTagElement.classList.add(THEME_DARK_CLASS);
     } else {
       htmlTagElement.classList.remove(THEME_DARK_CLASS);
@@ -78,7 +78,7 @@ export const TopologyComponent = () => {
         htmlTagElement.classList.remove(THEME_DARK_CLASS);
       }
     };
-  }, [type]);
+  }, [mode]);
 
   const watchedResources = [
     ModelsPlural.deployments,
