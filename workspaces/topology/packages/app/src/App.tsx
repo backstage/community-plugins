@@ -51,10 +51,6 @@ import { AppRouter, FlatRoutes } from '@backstage/core-app-api';
 import { CatalogGraphPage } from '@backstage/plugin-catalog-graph';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';
-import {
-  UnifiedThemeProvider,
-  themes as builtinThemes,
-} from '@backstage/theme';
 
 const app = createApp({
   apis,
@@ -78,24 +74,6 @@ const app = createApp({
   components: {
     SignInPage: props => <SignInPage {...props} auto providers={['guest']} />,
   },
-  themes: [
-    {
-      Provider: ({ children }) => (
-        <UnifiedThemeProvider theme={builtinThemes.light} children={children} />
-      ),
-      id: 'light',
-      title: 'Backstage Light',
-      variant: 'light',
-    },
-    {
-      Provider: ({ children }) => (
-        <UnifiedThemeProvider theme={builtinThemes.dark} children={children} />
-      ),
-      id: 'dark',
-      title: 'Backstage Dark',
-      variant: 'dark',
-    },
-  ],
 });
 
 const routes = (
