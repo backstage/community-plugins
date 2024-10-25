@@ -16,17 +16,11 @@
 import React from 'react';
 import { createApp } from '@backstage/frontend-defaults';
 import {
-  configApiRef,
   createApiFactory,
   createFrontendModule,
   ApiBlueprint,
   PageBlueprint,
 } from '@backstage/frontend-plugin-api';
-import {
-  ScmAuth,
-  ScmIntegrationsApi,
-  scmIntegrationsApiRef,
-} from '@backstage/integration-react';
 import catalogPlugin from '@backstage/plugin-catalog/alpha';
 import catalogImportPlugin from '@backstage/plugin-catalog-import/alpha';
 import userSettingsPlugin from '@backstage/plugin-user-settings/alpha';
@@ -46,41 +40,23 @@ const homePageExtension = PageBlueprint.make({
   },
 });
 
-const scmAuthExtension = ApiBlueprint.make({
-  name: 'scmAuth',
-  params: {
-    factory: ScmAuth.createDefaultApiFactory(),
-  },
-});
-
-const scmIntegrationApi = ApiBlueprint.make({
-  name: 'scmIntegrationsApi',
-  params: {
-    factory: createApiFactory({
-      api: scmIntegrationsApiRef,
-      deps: { configApi: configApiRef },
-      factory: ({ configApi }) => ScmIntegrationsApi.fromConfig(configApi),
-    }),
-  },
-});
-
-const mock: TechRadarLoaderResponse = {
-  entries: [],
-  quadrants: [
-    { id: 'infrastructure', name: 'Infrastructure' },
-    { id: 'frameworks', name: 'Frameworks' },
-    { id: 'languages', name: 'Languages' },
-    { id: 'process', name: 'Process' },
-  ],
-  rings: [],
-};
 class SampleTechRadarApi implements TechRadarApi {
-  async load() {
-    return mock;
+  async load(): Promise<TechRadarLoaderResponse> {
+    return {
+      entries: [],
+      quadrants: [
+        { id: 'infrastructure', name: 'Infrastructure' },
+        { id: 'frameworks', name: 'Frameworks' },
+        { id: 'languages', name: 'Languages' },
+        { id: 'process', name: 'Process' },
+      ],
+      rings: [],
+    };
   }
 }
 
 // overriding the api is one way to change the radar content
+// @ts-ignore
 const techRadarApi = ApiBlueprint.make({
   name: 'techRadarApi',
   params: {
@@ -98,9 +74,7 @@ export const app = createApp({
       pluginId: 'app',
       extensions: [
         homePageExtension,
-        scmAuthExtension,
-        scmIntegrationApi,
-        techRadarApi, // comment this line out to test the default API implementation
+        // techRadarApi, // comment out to use a custom api
       ],
     }),
   ],
