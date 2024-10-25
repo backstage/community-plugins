@@ -23,7 +23,6 @@ import {
 import {
   createServiceFactory,
   createServiceRef,
-  ServiceRef,
 } from '@backstage/backend-plugin-api';
 import { catalogServiceRef } from '@backstage/plugin-catalog-node/alpha';
 
@@ -138,22 +137,21 @@ export class TodoReaderService implements TodoService {
   }
 }
 
-export const todoServiceRef: ServiceRef<TodoService> =
-  createServiceRef<TodoService>({
-    id: 'todo.client',
-    defaultFactory: async service =>
-      createServiceFactory({
-        service,
-        deps: {
-          catalogApi: catalogServiceRef,
-          todoReader: todoReaderServiceRef,
-        },
-        async factory({ catalogApi, todoReader }) {
-          const todoReaderService = new TodoReaderService({
-            catalogClient: catalogApi,
-            todoReader,
-          });
-          return todoReaderService;
-        },
-      }),
-  });
+export const todoServiceRef = createServiceRef<TodoService>({
+  id: 'todo.client',
+  defaultFactory: async service =>
+    createServiceFactory({
+      service,
+      deps: {
+        catalogApi: catalogServiceRef,
+        todoReader: todoReaderServiceRef,
+      },
+      async factory({ catalogApi, todoReader }) {
+        const todoReaderService = new TodoReaderService({
+          catalogClient: catalogApi,
+          todoReader,
+        });
+        return todoReaderService;
+      },
+    }),
+});

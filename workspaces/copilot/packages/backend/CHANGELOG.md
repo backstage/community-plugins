@@ -1,5 +1,13 @@
 # backend
 
+## 0.0.5
+
+### Patch Changes
+
+- Updated dependencies [399dc3b]
+  - @backstage-community/plugin-copilot-backend@0.1.4
+  - app@0.0.6
+
 ## 0.0.4
 
 ### Patch Changes

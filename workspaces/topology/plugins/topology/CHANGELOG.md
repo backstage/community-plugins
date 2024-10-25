@@ -1,5 +1,14 @@
 ### Dependencies
 
+## 1.28.4
+
+### Patch Changes
+
+- 3865528: Fix CVE by upgrading kubernetes-client to v0.22.1
+- 62a2d24: Backstage version bump to v1.32.2
+- Updated dependencies [62a2d24]
+  - @backstage-community/plugin-topology-common@1.4.2
+
 ## 1.28.3
 
 ### Patch Changes

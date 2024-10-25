@@ -1,6 +1,26 @@
 app:
-  title: Backstage
-  baseUrl: http://localhost:7007
+  title: Bazaar Dev App
+  baseUrl: http://localhost:3000
 
 backend:
   baseUrl: http://localhost:7007
+  cors:
+    origin: http://localhost:3000
+    methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
+    credentials: true
+  reading:
+    allow:
+      - host: localhost
+auth:
+  environment: development
+  providers:
+    guest: {}
+
+catalog:
+  orphanStrategy: delete
+  processingInterval: { minutes: 1 }
+  rules:
+    - allow: [Component, API, Resource, User, Group]
+  locations:
+    - type: file
+      target: ../../local_dev.yaml

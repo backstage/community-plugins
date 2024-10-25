@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 
-import { createApiFactory } from '@backstage/core-plugin-api';
+import {
+  createApiFactory,
+  discoveryApiRef,
+  fetchApiRef,
+  identityApiRef,
+} from '@backstage/core-plugin-api';
 import {
   ApiBlueprint,
   NavItemBlueprint,
@@ -23,7 +28,7 @@ import {
 } from '@backstage/frontend-plugin-api';
 import React from 'react';
 import { techRadarApiRef } from './api';
-import { SampleTechRadarApi } from './sample';
+import { DefaultTechRadarApi } from './defaultApi';
 import {
   compatWrapper,
   convertLegacyRouteRef,
@@ -70,7 +75,21 @@ export const techRadarPage = PageBlueprint.makeWithOverrides({
 /** @alpha */
 export const techRadarApi = ApiBlueprint.make({
   params: {
-    factory: createApiFactory(techRadarApiRef, new SampleTechRadarApi()),
+    factory: createApiFactory({
+      api: techRadarApiRef,
+      deps: {
+        identityApi: identityApiRef,
+        discoveryApi: discoveryApiRef,
+        fetchApi: fetchApiRef,
+      },
+      factory: ({ identityApi, discoveryApi, fetchApi }) => {
+        return new DefaultTechRadarApi({
+          discoveryApi,
+          fetchApi,
+          identityApi,
+        });
+      },
+    }),
   },
 });
 

@@ -1,5 +1,11 @@
 # @backstage-community/plugin-catalog-backend-module-pingidentity
 
+## 0.1.4
+
+### Patch Changes
+
+- bdd62a4: Backstage version bump to v1.32.2
+
 ## 0.1.3
 
 ### Patch Changes
