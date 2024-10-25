@@ -1,0 +1,215 @@
+/*
+ * Copyright 2024 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import { DocumentCollatorFactory } from '@backstage/plugin-search-common';
+import { Readable } from 'stream';
+import { LoggerService } from '@backstage/backend-plugin-api';
+import {
+  createQueue,
+  type Operation,
+  run,
+  spawn,
+  suspend,
+  useScope,
+} from 'effection';
+import {
+  createGithubGraphqlClient,
+  fetchGithubDiscussions,
+  type GithubDiscussionFetcherResult,
+  toAsyncIterable,
+} from 'github-discussions-fetcher';
+import { type GithubDiscussionsDocument } from '@backstage-community/plugin-github-discussions-common';
+import {
+  type DefaultGithubCredentialsProvider,
+  type GithubIntegration,
+  ScmIntegrationsGroup,
+} from '@backstage/integration';
+import assert from 'assert-ts';
+import gh from 'parse-github-url';
+
+interface GithubDiscussionsCollatorFactoryConstructorOptions {
+  logger: LoggerService;
+  credentialsProvider: DefaultGithubCredentialsProvider;
+  githubIntegration: ScmIntegrationsGroup<GithubIntegration>;
+  timeout: number;
+  url: string;
+  cacheBase?: string;
+  clearCacheOnSuccess?: boolean;
+  discussionsBatchSize?: number;
+  commentsBatchSize?: number;
+  repliesBatchSize?: number;
+}
+
+export interface GithubDiscussionsCollatorFactoryOptions {
+  logger: LoggerService;
+  credentialsProvider: DefaultGithubCredentialsProvider;
+  githubIntegration: ScmIntegrationsGroup<GithubIntegration>;
+  timeout: number;
+  url: string;
+  cacheBase?: string;
+  clearCacheOnSuccess?: boolean;
+  discussionsBatchSize?: number;
+  commentsBatchSize?: number;
+  repliesBatchSize?: number;
+}
+
+export class GithubDiscussionsCollatorFactory
+  implements DocumentCollatorFactory
+{
+  private readonly githubIntegration: ScmIntegrationsGroup<GithubIntegration>;
+  private credentialsProvider: DefaultGithubCredentialsProvider;
+  private readonly logger: LoggerService;
+  public readonly type: string = 'github-discussions';
+  private readonly timeout: number;
+  private readonly url: string;
+  private readonly cacheBase?: string;
+  private readonly clearCacheOnSuccess?: boolean;
+  private readonly discussionsBatchSize?: number;
+  private readonly commentsBatchSize?: number;
+  private readonly repliesBatchSize?: number;
+
+  private constructor(options: GithubDiscussionsCollatorFactoryOptions) {
+    this.logger = options.logger.child({ documentType: this.type });
+    this.credentialsProvider = options.credentialsProvider;
+    this.githubIntegration = options.githubIntegration;
+    this.timeout = options.timeout;
+    this.url = options.url;
+    this.cacheBase = options.cacheBase;
+    this.clearCacheOnSuccess = options.clearCacheOnSuccess;
+    this.discussionsBatchSize = options.discussionsBatchSize;
+    this.commentsBatchSize = options.commentsBatchSize;
+    this.repliesBatchSize = options.repliesBatchSize;
+  }
+
+  static fromConfig({
+    logger,
+    credentialsProvider,
+    githubIntegration,
+    timeout,
+    url,
+    cacheBase,
+    clearCacheOnSuccess,
+    discussionsBatchSize,
+    commentsBatchSize,
+    repliesBatchSize,
+  }: GithubDiscussionsCollatorFactoryConstructorOptions) {
+    return new GithubDiscussionsCollatorFactory({
+      logger,
+      credentialsProvider,
+      githubIntegration,
+      timeout,
+      url,
+      cacheBase,
+      clearCacheOnSuccess,
+      discussionsBatchSize,
+      commentsBatchSize,
+      repliesBatchSize,
+    });
+  }
+
+  async getCollator() {
+    return Readable.from(this.execute());
+  }
+
+  async *execute(): AsyncGenerator<GithubDiscussionsDocument> {
+    const logger: typeof console = {
+      log: this.logger.info.bind(this.logger),
+      info: this.logger.info.bind(this.logger),
+      error: this.logger.error.bind(this.logger),
+      warn: this.logger.warn.bind(this.logger),
+      dir: this.logger.info.bind(this.logger),
+      debug: this.logger.debug.bind(this.logger),
+    } as unknown as typeof console;
+
+    const url = gh(this.url);
+    assert(url !== null, `Not parsable as a Github URL`);
+    const { name: repo, owner: org } = url;
+    assert(org !== null, `Discussions url is missing organization name`);
+    assert(repo !== null, `Discussion url is missing repository`);
+
+    const integration = this.githubIntegration.byUrl(url.href);
+
+    assert(integration, `Could not retrieve a Github integration for ${url}`);
+
+    const { token } = await this.credentialsProvider.getCredentials({
+      url: url.href,
+    });
+
+    const client = createGithubGraphqlClient({
+      token,
+      endpoint: `${integration?.config.apiBaseUrl}/graphql`,
+    });
+
+    let documents: AsyncIterable<GithubDiscussionFetcherResult> | undefined;
+    const cache = this.cacheBase ? new URL(this.cacheBase) : undefined;
+    const {
+      timeout,
+      clearCacheOnSuccess,
+      discussionsBatchSize = 100,
+      commentsBatchSize = 100,
+      repliesBatchSize = 100,
+    } = this;
+
+    const task = run(function* injection(): Operation<void> {
+      const scope = yield* useScope();
+      const results = createQueue<GithubDiscussionFetcherResult, void>();
+
+      yield* spawn(function* () {
+        try {
+          yield* fetchGithubDiscussions({
+            client,
+            org,
+            repo,
+            discussionsBatchSize,
+            commentsBatchSize,
+            repliesBatchSize,
+            logger,
+            results,
+            cache,
+            timeout,
+            clearCacheOnSuccess,
+          });
+        } catch (e) {
+          logger.error(
+            `Encountered an error while ingesting GitHub Discussions`,
+            e,
+          );
+        }
+        results.close();
+      });
+
+      documents = toAsyncIterable(results, scope);
+
+      yield* suspend();
+    });
+
+    if (documents) {
+      for await (const document of documents) {
+        yield {
+          title: document.title,
+          text: document.bodyText,
+          location: document.url,
+          author: document.author,
+          category: document.category,
+          labels: document.labels,
+          comments: document.comments,
+        };
+      }
+      await task.halt();
+    } else {
+      logger.error(`Documents were not available when iteration started`);
+    }
+  }
+}
