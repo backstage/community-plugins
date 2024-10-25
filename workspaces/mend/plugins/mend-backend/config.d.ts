@@ -1,7 +1,7 @@
 export type Config = {
   mend: {
     /**
-     * @visibility backend
+     * @visibility secret
      */
     activationKey: string;
     /**
