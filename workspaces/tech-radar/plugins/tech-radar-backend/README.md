@@ -11,6 +11,8 @@ techRadar:
   url: https://github.com/backstage/community-plugins/blob/main/workspaces/tech-radar/plugins/tech-radar-common/src/sampleTechRadarResponse.json
 ```
 
+If you are storing the JSON file in a private repository, you will need to configure the proper integration in the `app-config.yaml` file. For more information on how to configure integrations, see the [Backstage documentation](https://backstage.io/docs/integrations/).
+
 ## Integrating into a backstage instance
 
 This plugin needs to be added to an existing backstage instance.

@@ -65,7 +65,7 @@ export interface TechRadarPageProps {
 
 ### Radar properties
 
-When defining the radar entries you can see the available properties on the file [api](./src/api.ts)
+When defining the radar entries you can see the available properties on the file [model.ts](../tech-radar-common/src/model.ts)
 
 ## Tech radar data model
 
@@ -197,11 +197,17 @@ The TS example can be found [here](src/sample.ts).
 
 ### How do I load in my own data?
 
-There are two ways to load in data to the `Tech Radar` plugin; (A) implementing a custom version of the the `TechRadarApi` interface, or (B) use the default
-[API implementation](src/defaultApi.ts), which requires installing the optional tech-radar-backend. The default api will attempt to load data from the backend, and
-surface mock data if it cannot. The options are prioritized in order; if all both are implemented, option A (the custom interface) would be used.
+There are two ways to load data into the `Tech Radar` plugin:
 
-#### Option A: Implementing the TechRadarApi
+1. **Default Implementation (Recommended)**: The default implementation requires installing the `@backstage-community/plugin-tech-radar-backend` plugin. The default API will attempt to load data from a specified git url.
+
+2. **Custom Implementation**: Implement a custom version of the `TechRadarApi` interface. This allows for more control over how your data is loaded. If both methods are implemented, the custom interface will take precedence.
+
+#### Option A: Install the Tech Radar Backend Plugin
+
+Follow the instructions [here](../tech-radar-backend/README.md) to configure the backend to load data from a given URL.
+
+#### Option B: Implementing the TechRadarApi
 
 The `TechRadar` plugin uses the `techRadarApiRef` to get a client which implements the `TechRadarApi` interface. To control how your data is loaded, you'll need to provide a class that implements the `TechRadarApi` and override the `techRadarApiRef` in the `app/src/apis.ts`.
 
@@ -209,8 +215,9 @@ The `TechRadar` plugin uses the `techRadarApiRef` to get a client which implemen
 // app/src/lib/MyClient.ts
 import {
   TechRadarApi,
-  TechRadarLoaderResponse,
+  techRadarApiRef,
 } from '@backstage-community/plugin-tech-radar';
+import { TechRadarLoaderResponse } from '@backstage-community/plugin-tech-radar-common';
 
 export class MyOwnClient implements TechRadarApi {
   async load(id: string | undefined): Promise<TechRadarLoaderResponse> {
@@ -275,10 +282,6 @@ export const app = createApp({
   ],
 });
 ```
-
-#### Option B: Install the Tech Radar Backend Plugin
-
-Follow the instructions [here](../tech-radar-backend/README.md) to configure the backend to load data from a given URL.
 
 ### How do I write tests?
 

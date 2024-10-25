@@ -42,13 +42,6 @@ techdocs:
 auth:
   providers:
     guest: {}
-    github:
-      development:
-        clientId: { AUTH_GITHUB_CLIENT_ID } # Replace with Client ID
-        clientSecret: { AUTH_GITHUB_CLIENT_SECRET } # Replace with Client Secret
-        signIn:
-          resolvers:
-            - resolver: customGithubSignInResolver
 
 catalog:
   import:
