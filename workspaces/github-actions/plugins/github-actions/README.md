@@ -9,6 +9,7 @@ Website: [https://github.com/actions](https://github.com/actions)
   - [Screenshots](#screenshots)
   - [Setup](#setup)
     - [Generic Requirements](#generic-requirements)
+      - [Provide OAuth Credentials](#provide-oauth-credentials)
     - [Installation](#installation)
     - [Integrating with `EntityPage`](#integrating-with-entitypage)
     - [Integrating with `EntityPage` (New Frontend System)](#integrating-with-entitypage-new-frontend-system)
@@ -25,13 +26,21 @@ TBD
 
 ### Generic Requirements
 
-1. Provide OAuth credentials:
-   - [Create an OAuth App](https://developer.github.com/apps/building-oauth-apps/creating-an-oauth-app/) in the GitHub organization. Set the callback URL to your backend URL. By default, the generated Backstage backend URL is http://localhost:7007/api/auth/github/handler/frame, but this may vary depending on your Backstage instance.
-   > **Note**: This can be done with a user account also. Depending on if you use a personal account or an organization account will change the repositories this is functional with
+#### Provide OAuth Credentials
+
+Create an OAuth App in your GitHub organization, setting the callback URL to:
+
+`http://localhost:7007/api/auth/github/handler/frame`
+
+Replacing `localhost:7007` with the base URL of your backstage backend instance.
+
+> **Note**: This setup can also be completed with a personal GitHub account.  
+> Keep in mind that using a personal account versus an organization account will affect which repositories the app can access.
+
 1. Take the Client ID and Client Secret from the newly created app's settings page and you can do either:
 
-   1. Put them into `AUTH_GITHUB_CLIENT_ID` and `AUTH_GITHUB_CLIENT_SECRET` environment variables.
-   2. Add them to the app-config like below:
+   - Put them into `AUTH_GITHUB_CLIENT_ID` and `AUTH_GITHUB_CLIENT_SECRET` environment variables.
+   - Add them to the app-config like below:
 
    ```yaml
    auth:
@@ -71,10 +80,11 @@ TBD
 yarn --cwd packages/app add @backstage-community/plugin-github-actions
 ```
 
-Now, add this dependency to your backend index file (new backend system):
-```tsx
-backend.add(import('@backstage/plugin-auth-backend-module-github-provider'));
-```
+> **Note**: If you are using GitHub auth to sign in, **you may already have the GitHub provider** added to your backend index file. If it is not the case, add the following dependency to enable GitHub authentication:
+>
+> ```tsx
+> backend.add(import('@backstage/plugin-auth-backend-module-github-provider'));
+> ```
 
 ### Integrating with `EntityPage`
 
