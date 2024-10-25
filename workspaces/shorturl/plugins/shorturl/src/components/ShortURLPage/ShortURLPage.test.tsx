@@ -13,14 +13,12 @@ describe('ShortURLPage', () => {
   const identityApi = {
     getCredentials: jest.fn().mockResolvedValue({ token: 'token' }),
     getProfileInfo: jest.fn().mockResolvedValue({}),
-    getBackstageIdentity: jest
-      .fn()
-      .mockResolvedValue({
-        identity: {
-          userEntityRef: 'user:default/guest',
-          ownershipEntityRefs: [],
-        },
-      }),
+    getBackstageIdentity: jest.fn().mockResolvedValue({
+      identity: {
+        userEntityRef: 'user:default/guest',
+        ownershipEntityRefs: [],
+      },
+    }),
     signOut: jest.fn(),
   };
   const api = new DefaultShortURLApi(fetchApi, discoveryApi, identityApi);

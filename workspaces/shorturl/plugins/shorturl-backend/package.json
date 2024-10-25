@@ -23,9 +23,9 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
-    "@backstage/backend-common": "^0.24.0",
-    "@backstage/backend-defaults": "^0.4.2",
-    "@backstage/backend-plugin-api": "^0.8.0",
+    "@backstage/backend-common": "^0.25.0",
+    "@backstage/backend-defaults": "^0.5.2",
+    "@backstage/backend-plugin-api": "^1.0.1",
     "@backstage/errors": "^1.2.4",
     "express": "^4.17.1",
     "express-promise-router": "^4.1.0",
@@ -34,10 +34,10 @@
     "node-fetch": "^2.6.7"
   },
   "devDependencies": {
-    "@backstage/backend-test-utils": "^0.5.0",
-    "@backstage/cli": "^0.27.0",
-    "@backstage/plugin-auth-backend": "^0.22.10",
-    "@backstage/plugin-auth-backend-module-guest-provider": "^0.1.9",
+    "@backstage/backend-test-utils": "^1.0.2",
+    "@backstage/cli": "^0.28.1",
+    "@backstage/plugin-auth-backend": "^0.23.1",
+    "@backstage/plugin-auth-backend-module-guest-provider": "^0.2.1",
     "@types/express": "*",
     "@types/supertest": "^2.0.12",
     "msw": "^2.3.1",
