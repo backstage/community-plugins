@@ -46,7 +46,7 @@ async function main() {
   const { packages } = await getPackages(workspacePlugins);
   const packageEntries = packages
     .filter(p => p.packageJson.name.includes('@backstage-community'))
-    .map(p => `'${p.packageJson.name}': patch`);
+    .map(p => `'${p.packageJson.name}': minor`);
 
   // Populate the changeset contents
   const changeset = `---
