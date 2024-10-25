@@ -2813,6 +2813,7 @@ __metadata:
     "@backstage/cli": ^0.28.0
     "@backstage/config": ^1.2.0
     "@backstage/errors": ^1.2.4
+    "@backstage/plugin-notifications-node": ^0.2.8
     "@backstage/types": ^1.1.1
     "@types/express": ^4.17.6
     "@types/lodash": ^4.14.151
@@ -2859,6 +2860,7 @@ __metadata:
     "@backstage/catalog-model": ^1.7.0
     "@backstage/cli": ^0.28.0
     "@backstage/config": ^1.2.0
+    "@backstage/plugin-notifications-node": ^0.2.8
     "@backstage/types": ^1.1.1
     "@types/luxon": ^3.0.0
     luxon: ^3.0.0
@@ -4731,6 +4733,33 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@backstage/plugin-notifications-common@npm:^0.0.5":
+  version: 0.0.5
+  resolution: "@backstage/plugin-notifications-common@npm:0.0.5"
+  dependencies:
+    "@backstage/config": ^1.2.0
+    "@material-ui/icons": ^4.9.1
+  checksum: 3cdfd9565d9bfcb2d7187381e697978833d54ce6633baa4d18494a55761006f7893b73ddfdfc6e0d068fe470559aa2febbd7dac401fbcad2bff9a959f61a71d1
+  languageName: node
+  linkType: hard
+
+"@backstage/plugin-notifications-node@npm:^0.2.8":
+  version: 0.2.8
+  resolution: "@backstage/plugin-notifications-node@npm:0.2.8"
+  dependencies:
+    "@backstage/backend-common": ^0.25.0
+    "@backstage/backend-plugin-api": ^1.0.1
+    "@backstage/catalog-client": ^1.7.1
+    "@backstage/catalog-model": ^1.7.0
+    "@backstage/plugin-notifications-common": ^0.0.5
+    "@backstage/plugin-signals-node": ^0.1.13
+    knex: ^3.0.0
+    node-fetch: ^2.7.0
+    uuid: ^9.0.0
+  checksum: 7accf7b543801b3a76b1f7eb69fe8d8f025eaff0a4c360f994251292896c9cd7c16d96e5d003b52c78a8d863a36c097e610ea650be59c221c6461326c48a76d0
+  languageName: node
+  linkType: hard
+
 "@backstage/plugin-org@npm:^0.6.31":
   version: 0.6.31
   resolution: "@backstage/plugin-org@npm:0.6.31"
@@ -5370,6 +5399,23 @@ __metadata:
     "@types/react":
       optional: true
   checksum: e1fc589f68b850ed601ec5f8a401bb4157aee02c0caee84698ebaa1f6f4e7b17559002dc642603eda35a85ad38958038cd2b45547f761fb2897b241ef9c6c9a6
+  languageName: node
+  linkType: hard
+
+"@backstage/plugin-signals-node@npm:^0.1.13":
+  version: 0.1.13
+  resolution: "@backstage/plugin-signals-node@npm:0.1.13"
+  dependencies:
+    "@backstage/backend-common": ^0.25.0
+    "@backstage/backend-plugin-api": ^1.0.1
+    "@backstage/config": ^1.2.0
+    "@backstage/plugin-auth-node": ^0.5.3
+    "@backstage/plugin-events-node": ^0.4.2
+    "@backstage/types": ^1.1.1
+    express: ^4.17.1
+    uuid: ^9.0.0
+    ws: ^8.18.0
+  checksum: 62a0c5364d55fbbe2ab21d64e298266e23d23d28e2388ef18915a42b6da3a5e112a29879c3abd5ba0c0d58ac1f59e186fd55d7e06d761da61d94ad151d0c0680
   languageName: node
   linkType: hard
 
@@ -34432,7 +34478,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ws@npm:*, ws@npm:^8.11.0, ws@npm:^8.12.0, ws@npm:^8.13.0, ws@npm:^8.15.0, ws@npm:^8.16.0, ws@npm:^8.8.0":
+"ws@npm:*, ws@npm:^8.11.0, ws@npm:^8.12.0, ws@npm:^8.13.0, ws@npm:^8.15.0, ws@npm:^8.16.0, ws@npm:^8.18.0, ws@npm:^8.8.0":
   version: 8.18.0
   resolution: "ws@npm:8.18.0"
   peerDependencies:

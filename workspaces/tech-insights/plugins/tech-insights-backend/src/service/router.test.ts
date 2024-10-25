@@ -26,6 +26,7 @@ import {
 import { DateTime } from 'luxon';
 import { mockServices } from '@backstage/backend-test-utils';
 import { DefaultSchedulerService } from '@backstage/backend-defaults/scheduler';
+import { NotificationService } from '@backstage/plugin-notifications-node';
 
 describe('Tech Insights router tests', () => {
   let app: express.Express;
@@ -40,6 +41,10 @@ describe('Tech Insights router tests', () => {
       getFactsBetweenTimestampsByIds: factsBetweenTimestampsByIdsMock,
       getLatestSchemas: latestSchemasMock,
     } as unknown as TechInsightsStore,
+  };
+
+  const notificationService: jest.Mocked<NotificationService> = {
+    send: jest.fn(),
   };
 
   afterEach(() => {
@@ -62,6 +67,7 @@ describe('Tech Insights router tests', () => {
         getExternalBaseUrl: (_: string) => Promise.resolve('http://mock.url'),
       },
       auth: mockServices.auth(),
+      notification: notificationService,
     });
 
     const router = await createRouter({
