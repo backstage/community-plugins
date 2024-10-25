@@ -25,9 +25,10 @@ import { getPackages } from '@manypkg/get-packages';
 import { join } from 'path';
 
 async function main() {
-  // Get the releaseVersion
+  // Get the releaseVersion and versionBumpType
   const [script, releaseVersion, versionBumpType] = process.argv.slice(1);
-  if (!releaseVersion) {
+
+  if (!releaseVersion || !versionBumpType) {
     throw new Error(
       `Argument must be ${script} <release-version> <version-bump-type>`,
     );
