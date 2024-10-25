@@ -1,5 +1,5 @@
 shorturl:
-  lenght: 6
+  length: 6
   alphabet: 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ
 
 app:

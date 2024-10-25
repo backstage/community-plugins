@@ -10,7 +10,7 @@
     "tsc:full": "tsc --skipLibCheck false --incremental false",
     "build:all": "backstage-cli repo build --all",
     "build:api-reports": "yarn build:api-reports:only --tsc",
-    "build:api-reports:only": "backstage-repo-tools api-reports -o ae-wrong-input-file-type --validate-release-tags",
+    "build:api-reports:only": "backstage-repo-tools api-reports -o ae-wrong-input-file-type,ae-undocumented --validate-release-tags",
     "clean": "backstage-cli repo clean",
     "test": "backstage-cli repo test",
     "test:all": "backstage-cli repo test --coverage",

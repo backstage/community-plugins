@@ -2,8 +2,6 @@
 
 Welcome to the shorturl-backend backend plugin!
 
-_This plugin was created through the Backstage CLI_
-
 ## Getting started
 
 Your plugin has been added to the example app in this repository, meaning you'll be able to access it by running `yarn
@@ -19,7 +17,7 @@ This plugin has optional configuration options that can be set in the `app-confi
 
 ```yaml
 shorturl:
-  lenght: 6 # default: 8
+  length: 6 # default: 8
   alphabet: 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ # default: A-Za-z0-9_-
 ```
 

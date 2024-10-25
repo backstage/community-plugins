@@ -38,6 +38,7 @@ yarn.lock                                           @backstage/community-plugins
 /workspaces/report-portal                           @backstage/community-plugins-maintainers  @yashoswalyo
 /workspaces/rollbar                                 @backstage/community-plugins-maintainers  @andrewthauer
 /workspaces/scaffolder-relation-processor           @backstage/community-plugins-maintainers  @04kash
+/workspaces/shorturl                                @backstage/community-plugins-maintainers  @avila-m-6
 /workspaces/sonarqube                               @backstage/community-plugins-maintainers  @backstage/sda-se-reviewers
 /workspaces/tech-insights                           @backstage/community-plugins-maintainers  @xantier
 /workspaces/topology                                @backstage/community-plugins-maintainers  @divyanshiGupta @debsmita1 @ciiay
