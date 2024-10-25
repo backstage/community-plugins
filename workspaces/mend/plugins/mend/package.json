@@ -48,6 +48,7 @@
   },
   "peerDependencies": {
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-router-dom": "^6.25.1"
   },
   "devDependencies": {
@@ -60,6 +61,7 @@
     "@testing-library/user-event": "^14.0.0",
     "msw": "^1.0.0",
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-router-dom": "^6.25.1"
   },
   "files": [
