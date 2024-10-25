@@ -13,10 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { SignInPage as BackstageSignInPage } from '@backstage/core-components';
-import { SignInPageProps } from '@backstage/core-plugin-api';
-import React from 'react';
+import { createBackend } from '@backstage/backend-defaults';
 
-export const SignInPage = (props: SignInPageProps) => {
-  return <BackstageSignInPage {...props} auto providers={['guest']} />;
-};
+const backend = createBackend();
+
+backend.add(import('@backstage/plugin-auth-backend'));
+backend.add(import('@backstage/plugin-auth-backend-module-guest-provider'));
+backend.add(import('../src'));
+
+backend.start();

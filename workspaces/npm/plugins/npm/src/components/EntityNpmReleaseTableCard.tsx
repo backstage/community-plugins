@@ -82,13 +82,13 @@ const columns: TableColumn<TableData>[] = [
 ];
 
 /**
- * Page content for the catalog (entiy page) that shows two tables.
+ * Page content for the catalog (entity page) that shows two tables.
  * One for the latest tags and versions of a npm package.
  * And another one for the complete version history.
  *
  * @public
  */
-export function NpmReleaseTableCard() {
+export const EntityNpmReleaseTableCard = () => {
   const { entity } = useEntity();
 
   const packageName = entity.metadata.annotations?.[NPM_PACKAGE_ANNOTATION];
@@ -155,4 +155,4 @@ export function NpmReleaseTableCard() {
       />
     </>
   );
-}
+};

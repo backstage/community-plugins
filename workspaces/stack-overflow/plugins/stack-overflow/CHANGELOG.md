@@ -1,5 +1,11 @@
 # @backstage-community/plugin-stack-overflow
 
+## 0.1.33
+
+### Patch Changes
+
+- bd443d6: Backstage version bump to v1.32.2
+
 ## 0.1.32
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @backstage-community/plugin-playlist-common
 
+## 0.1.21
+
+### Patch Changes
+
+- c69b919: Backstage version bump to v1.32.2
+
 ## 0.1.20
 
 ### Patch Changes

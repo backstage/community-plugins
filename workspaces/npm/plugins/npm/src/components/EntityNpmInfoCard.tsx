@@ -80,7 +80,7 @@ function GridItem({
  *
  * @public
  */
-export function NpmInfoCard() {
+export const EntityNpmInfoCard = () => {
   const { entity } = useEntity();
 
   const packageName = entity.metadata.annotations?.[NPM_PACKAGE_ANNOTATION];
@@ -235,4 +235,4 @@ export function NpmInfoCard() {
       </Grid>
     </InfoCard>
   );
-}
+};

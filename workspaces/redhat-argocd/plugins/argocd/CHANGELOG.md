@@ -1,5 +1,19 @@
 ## @janus-idp/backstage-plugin-argocd [1.5.7](https://github.com/janus-idp/backstage-plugins/compare/@janus-idp/backstage-plugin-argocd@1.5.6...@janus-idp/backstage-plugin-argocd@1.5.7) (2024-08-02)
 
+## 1.8.9
+
+### Patch Changes
+
+- ef55b90: Updated reference to `@backstage-community/plugin-redhat-argocd-common` in the frontend plugin to use the `workspace:^` version
+
+## 1.8.8
+
+### Patch Changes
+
+- ccc01a0: Backstage version bump to v1.32.2
+- Updated dependencies [ccc01a0]
+  - @backstage-community/plugin-redhat-argocd-common@1.0.7
+
 ## 1.8.7
 
 ### Patch Changes
