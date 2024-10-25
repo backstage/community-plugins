@@ -15,7 +15,7 @@ on:
         required: true
         type: string
       version-bump-type:
-        description: ': Specifies the type of version update to apply.'
+        description: 'Specifies the type of version update to apply.'
         required: true
         default: 'minor'
         type: choice
