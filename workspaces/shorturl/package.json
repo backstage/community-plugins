@@ -59,5 +59,9 @@
   },
   "dependencies": {
     "knip": "^5.27.4"
-  }
+  },
+  "files": [
+    "config.d.ts"
+  ],
+  "configSchema": "config.d.ts"
 }
