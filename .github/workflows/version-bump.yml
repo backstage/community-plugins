@@ -14,6 +14,15 @@ on:
         description: 'Workspace (this must be a JSON array)'
         required: true
         type: string
+      version-bump-type:
+        description: 'Specifies the type of version update to apply.'
+        required: true
+        default: 'minor'
+        type: choice
+        options:
+          - 'major'
+          - 'minor'
+          - 'patch'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -103,7 +112,7 @@ jobs:
       - name: 'Add changeset'
         if: ${{ steps.check_for_changes.outputs.HAS_CHANGES == 1 }}
         working-directory: ./workspaces/${{ matrix.workspace }}
-        run: node ../../scripts/ci/generate-version-bump-changeset.js ${{ steps.set_release_name.outputs.release_version }}
+        run: node ../../scripts/ci/generate-version-bump-changeset.js ${{ steps.set_release_name.outputs.release_version }} ${{ inputs.version-bump-type || 'minor' }}
       - name: 'Commit changes'
         if: ${{ steps.check_for_changes.outputs.HAS_CHANGES == 1 }}
         run: |
