@@ -25,7 +25,7 @@ import { ScmIntegrations } from '@backstage/integration';
  * A backend module that registers the action into the scaffolder
  */
 export const scaffolderModule = createBackendModule({
-  moduleId: 'azure:pipelines',
+  moduleId: 'azure-devops',
   pluginId: 'scaffolder',
   register({ registerInit }) {
     registerInit({
