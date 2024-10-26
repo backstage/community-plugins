@@ -20,6 +20,7 @@ import {
   BD_VERISON_DETAIL,
   BD_VERSIONS_API_RESPONSE,
   BD_PROJECTS_API_RESPONSE,
+  BD_CREATE_PROJECT_API_RESPONSE,
 } from '@backstage-community/plugin-blackduck-common';
 
 /**
@@ -173,21 +174,27 @@ export class BlackDuckRestApi {
   public async createProject(
     projectName: string,
     projectVersion?: string,
-    phase: string = 'DEVELOPMENT',
-    distribution: string = 'INTERNAL',
-  ): Promise<any> {
+    versionPhase: string = 'DEVELOPMENT',
+    versionDistribution: string = 'INTERNAL',
+  ): Promise<BD_CREATE_PROJECT_API_RESPONSE> {
     const create_project_api = `${this.host}/projects`;
-    const payload: any = {};
+    const versionRequest = projectVersion
+      ? {
+          versionName: projectVersion,
+          phase: versionPhase,
+          distribution: versionDistribution,
+        }
+      : undefined;
+    const payload = { name: projectName, versionRequest };
+    // const payload: any = {};
     payload.name = projectName;
     if (projectVersion) {
       payload.versionRequest = {
         versionName: projectVersion,
-        phase: phase,
-        distribution: distribution,
+        phase: versionPhase,
+        distribution: versionDistribution,
       };
     }
-    this.logger.info(`Project ${JSON.stringify(payload)}`);
-
     const res = await fetch(create_project_api, {
       method: 'POST',
       headers: {
@@ -204,6 +211,6 @@ export class BlackDuckRestApi {
       throw new Error(`Unable to create project!`);
     }
 
-    return res;
+    return { status: res.status, location: res.headers.get('Location')! };
   }
 }
