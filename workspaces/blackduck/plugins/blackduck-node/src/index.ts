@@ -13,5 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export * from './service/router';
-export { blackduckPlugin as default } from './plugin';
+
+/**
+ * Node.js library for the blackduck plugin.
+ *
+ * @packageDocumentation
+ */
+
+// In this package you might for example export functions that
+// help other plugins or modules interact with your plugin.
+
+/**
+ *
+ * @public
+ */
+export * from './BlackDuckRestApi';
+export * from './BlackDuckConfig';
