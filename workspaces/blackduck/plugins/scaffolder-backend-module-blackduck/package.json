@@ -30,8 +30,8 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
-    "@backstage-community/plugin-blackduck-backend": "workspace:^",
-    "@backstage/backend-plugin-api": "^0.8.0",
+    "@backstage-community/plugin-blackduck-node": "workspace:^",
+    "@backstage/backend-plugin-api": "^1.0.1",
     "@backstage/plugin-scaffolder-node": "^0.4.9"
   },
   "devDependencies": {
