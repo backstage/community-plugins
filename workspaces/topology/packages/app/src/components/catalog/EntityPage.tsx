@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 import React from 'react';
-import { Button, Grid } from '@material-ui/core';
+import Button from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
+
 import {
   EntityApiDefinitionCard,
   EntityConsumedApisCard,

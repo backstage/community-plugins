@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useState, useEffect } from 'react';
+import React, { useCallback } from 'react';
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import Autocomplete, {
   createFilterOptions,
@@ -23,11 +23,12 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Controller, Control } from 'react-hook-form';
 import { FormValues } from '../../types';
 import { useApi } from '@backstage/core-plugin-api';
+import useAsync from 'react-use/esm/useAsync';
 import {
   entityPresentationApiRef,
   EntityDisplayName,
-  EntityRefPresentationSnapshot,
 } from '@backstage/plugin-catalog-react';
+import { VirtualizedListbox } from '../VirtualizedListbox';
 
 type Props = {
   users: Entity[];
@@ -55,42 +56,41 @@ export const UserSelector = ({
 }: Props) => {
   const classes = useStyles();
   const entityPresentationApi = useApi(entityPresentationApiRef);
-  const [entityPresentations, setEntityPresentations] = useState<
-    Map<string, EntityRefPresentationSnapshot>
-  >(new Map());
 
-  useEffect(() => {
-    const fetchPresentations = async () => {
-      const presentations = new Map<string, EntityRefPresentationSnapshot>();
+  const { value: entityData, loading } = useAsync(async () => {
+    const entityRefToPresentation = new Map(
       await Promise.all(
         users.map(async user => {
           const presentation = await entityPresentationApi.forEntity(user)
             .promise;
-          presentations.set(stringifyEntityRef(user), presentation);
+          return [stringifyEntityRef(user), presentation] as const;
         }),
-      );
-      setEntityPresentations(presentations);
-    };
-
-    fetchPresentations();
-  }, [users, entityPresentationApi]);
-
-  const getOptionLabel = (option: Entity | string) => {
-    // option can be a string due to freeSolo.
-    if (typeof option === 'string') return option;
-    const entityRef = stringifyEntityRef(option);
-
-    return (
-      entityPresentations.get(entityRef)?.primaryTitle ?? option.metadata.name
+      ),
     );
-  };
+
+    return { users, entityRefToPresentation };
+  }, [users]);
+
+  const getOptionLabel = useCallback(
+    (option: Entity | string) => {
+      // option can be a string due to freeSolo.
+      if (typeof option === 'string') return option;
+      const entityRef = stringifyEntityRef(option);
+      return (
+        entityData?.entityRefToPresentation.get(entityRef)?.primaryTitle ??
+        option.metadata.name
+      );
+    },
+    [entityData],
+  );
 
   const filterOptions = createFilterOptions<Entity | string>({
     stringify: option => {
       if (typeof option === 'string') return option;
       const entityRef = stringifyEntityRef(option);
       return (
-        entityPresentations.get(entityRef)?.primaryTitle ?? option.metadata.name
+        entityData?.entityRefToPresentation.get(entityRef)?.primaryTitle ??
+        option.metadata.name
       );
     },
   });
@@ -105,6 +105,7 @@ export const UserSelector = ({
         render={({ field: { onChange, value }, fieldState: { error } }) => (
           <Autocomplete
             className={classes.autocomplete}
+            loading={loading}
             fullWidth
             freeSolo
             disableClearable={disableClearable}
@@ -148,6 +149,7 @@ export const UserSelector = ({
               }
               return filtered;
             }}
+            ListboxComponent={VirtualizedListbox}
           />
         )}
       />

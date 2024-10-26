@@ -1,12 +1,14 @@
 {
   "name": "@backstage-community/plugin-tech-radar",
-  "version": "0.7.11",
+  "version": "1.0.0",
   "description": "A Backstage plugin that lets you display a Tech Radar for your organization",
   "backstage": {
     "role": "frontend-plugin",
     "pluginId": "tech-radar",
     "pluginPackages": [
-      "@backstage-community/plugin-tech-radar"
+      "@backstage-community/plugin-tech-radar",
+      "@backstage-community/plugin-tech-radar-backend",
+      "@backstage-community/plugin-tech-radar-common"
     ]
   },
   "publishConfig": {
@@ -53,6 +55,7 @@
     "test": "backstage-cli package test"
   },
   "dependencies": {
+    "@backstage-community/plugin-tech-radar-common": "workspace:^",
     "@backstage/core-compat-api": "^0.3.1",
     "@backstage/core-components": "^0.15.1",
     "@backstage/core-plugin-api": "^1.10.0",

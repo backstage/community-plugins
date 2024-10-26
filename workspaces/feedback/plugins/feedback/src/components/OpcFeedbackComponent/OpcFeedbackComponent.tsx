@@ -25,6 +25,7 @@ import {
   useApi,
   useRouteRef,
 } from '@backstage/core-plugin-api';
+import { useTheme } from '@mui/material/styles';
 
 import { feedbackApiRef } from '../../api';
 import { FeedbackCategory } from '../../models/feedback.model';
@@ -36,6 +37,7 @@ export const OpcFeedbackComponent = () => {
   const identityApi = useApi(identityApiRef);
   const alertApi = useApi(alertApiRef);
   const analytics = useAnalytics();
+  const theme = useTheme();
 
   const footer = JSON.stringify({
     name: appConfig.getString('app.title'),
@@ -99,7 +101,7 @@ export const OpcFeedbackComponent = () => {
     <opc-feedback
       docs={docsSpa()}
       spa={feedbackSpa()}
-      theme="blue"
+      theme={theme.palette.mode === 'dark' ? 'dark' : 'blue'}
       app={footer}
       summaryLimit={summaryLimit}
     />

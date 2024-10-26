@@ -15,7 +15,7 @@
  */
 import React from 'react';
 
-import { Typography } from '@material-ui/core';
+import Typography from '@mui/material/Typography';
 import { Split, SplitItem, Stack, StackItem } from '@patternfly/react-core';
 
 import ResourceName from '../../../common/components/ResourceName';
