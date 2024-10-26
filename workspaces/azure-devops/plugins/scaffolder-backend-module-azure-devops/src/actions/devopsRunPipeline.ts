@@ -18,6 +18,7 @@ import {
   DefaultAzureDevOpsCredentialsProvider,
   ScmIntegrationRegistry,
 } from '@backstage/integration';
+import { examples } from './devopsRunPipeline.examples';
 
 import { InputError } from '@backstage/errors';
 import {
@@ -52,6 +53,7 @@ export function createAzureDevopsRunPipelineAction(options: {
     token?: string;
   }>({
     id: 'azure:pipeline:run',
+    examples,
     schema: {
       input: {
         required: ['organization', 'pipelineId', 'project'],
