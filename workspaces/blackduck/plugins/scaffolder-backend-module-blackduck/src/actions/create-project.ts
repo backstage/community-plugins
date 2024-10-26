@@ -19,6 +19,7 @@ import {
   BlackDuckRestApi,
   BlackDuckConfig,
 } from '@backstage-community/plugin-blackduck-node';
+import { BD_CREATE_PROJECT_API_RESPONSE } from '@backstage-community/plugin-blackduck-common';
 
 /**
  * @public
@@ -109,18 +110,21 @@ export function createBlackduckProjectAction(
 
       await blackDuckApi.auth();
 
-      await blackDuckApi.createProject(
-        projectName,
-        projectVersion,
-        versionPhase,
-        versionDistribution,
-      );
+      const res: BD_CREATE_PROJECT_API_RESPONSE =
+        await blackDuckApi.createProject(
+          projectName,
+          projectVersion,
+          versionPhase,
+          versionDistribution,
+        );
 
       ctx.output('projectName', projectName);
       ctx.output('projectVersion', projectVersion);
       ctx.output('versionPhase', versionPhase);
       ctx.output('versionDistribution', versionDistribution);
       ctx.output('instanceName', instanceName);
+      ctx.output('status', `${res.status}`);
+      ctx.output('location', `${res.location}`);
     },
   });
 }

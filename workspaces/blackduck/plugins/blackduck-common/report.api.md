@@ -6,6 +6,12 @@
 import { ResourcePermission } from '@backstage/plugin-permission-common';
 
 // @public (undocumented)
+export type BD_CREATE_PROJECT_API_RESPONSE = {
+  status: Number;
+  location?: String;
+};
+
+// @public (undocumented)
 export type BD_PROJECT_DETAIL = {
   name: string;
   projectLevelAdjustments: string;
