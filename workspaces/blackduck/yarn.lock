@@ -2849,6 +2849,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-scaffolder-backend-module-blackduck@workspace:plugins/scaffolder-backend-module-blackduck"
   dependencies:
+    "@backstage-community/plugin-blackduck-common": "workspace:^"
     "@backstage-community/plugin-blackduck-node": "workspace:^"
     "@backstage/backend-common": ^0.24.0
     "@backstage/backend-plugin-api": ^1.0.1
