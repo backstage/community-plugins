@@ -17,7 +17,7 @@ import {
   coreServices,
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
-import { BlackDuckConfig } from './service/BlackDuckConfig';
+import { BlackDuckConfig } from '@backstage-community/plugin-blackduck-node';
 import { createRouter } from './service/router';
 
 /**
