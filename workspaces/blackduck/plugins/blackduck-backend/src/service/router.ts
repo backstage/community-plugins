@@ -32,8 +32,10 @@ import {
   blackduckRiskProfileReadPermission,
   blackduckVulnerabilitiesReadPermission,
 } from '@backstage-community/plugin-blackduck-common';
-import { BlackDuckRestApi } from '../api/BlackDuckRestApi';
-import { BlackDuckConfig } from './BlackDuckConfig';
+import {
+  BlackDuckRestApi,
+  BlackDuckConfig,
+} from '@backstage-community/plugin-blackduck-node';
 
 /**
  * @deprecated Please migrate to the new backend system as this will be removed in the future.
