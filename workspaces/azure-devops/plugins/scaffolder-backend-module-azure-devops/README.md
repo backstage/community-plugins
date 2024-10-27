@@ -1,6 +1,6 @@
 # Azure DevOps Actions backend module for the Scaffolder plugin
 
-This is a [Backend Plugin](https://backstage.io/docs/plugins/backend-plugin/) containing a set of [Custom Actions](https://backstage.io/docs/features/software-templates/writing-custom-actions) using the Azure Devops [`REST API`](https://learn.microsoft.com/en-us/rest/api/azure/devops/?view=azure-devops-rest-7.2) & ['azure-devops-node-api'](https://github.com/microsoft/azure-devops-node-api).
+This is a [Backend Plugin](https://backstage.io/docs/plugins/backend-plugin/) containing a set of [Custom Actions](https://backstage.io/docs/features/software-templates/writing-custom-actions) using the Azure Devops [`REST API`](https://learn.microsoft.com/en-us/rest/api/azure/devops/?view=azure-devops-rest-7.2) & [azure-devops-node-api](https://github.com/microsoft/azure-devops-node-api).
 It contains the following actions:
 
 - `azure:pipeline:run`: run a azure pipeline for a project, with pipeline id
@@ -29,7 +29,7 @@ backend.add(
 
 ### Pre-Requisites
 
-Your Backstage instance must have a valid ['Azure DevOps integration'](https://backstage.io/docs/integrations/azure/locations) for for your target host. `dev.azure.com` is used by default in the scaffolder actions.
+Your Backstage instance must have a valid [Azure DevOps integration](https://backstage.io/docs/integrations/azure/locations) for for your target host. `dev.azure.com` is used by default in the scaffolder actions.
 
 To get started quickly, use the following as an example:
 
