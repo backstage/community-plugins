@@ -1,5 +1,5 @@
 ---
-'@backstage-community/plugin-topology': major
+'@backstage-community/plugin-topology': minor
 ---
 
 Migrated to MUI5
