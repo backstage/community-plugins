@@ -37,28 +37,28 @@ import {
           httpAuth: coreServices.httpAuth,
           userInfo: coreServices.userInfo,
         },
-        async init({ httpRouter, logger, config, database, httpAuth, userInfo }) {
-      
+        async init({ httpRouter, logger, config, database }) {
           const client = await database.getClient();
           const migrationsDir = resolvePackagePath(
             '@backstage/plugin-jira-backend',
             'migrations',
           );
           console.log('dir: ', migrationsDir);
-  
+        
           await client.migrate.latest({
             directory: migrationsDir,
           });
-  
+        
           const router = await createRouter({
             db: client,
             configApi: config,
             logger,
             config,
           });
-  
+        
           httpRouter.use(router);
-        },
+        }
+        
       });
     },
   });

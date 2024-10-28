@@ -17,6 +17,7 @@
 import { Config } from '@backstage/config';
 import { DiscoveryApi } from '@backstage/core-plugin-api';
 
+// Define the JiraIssue interface to represent individual issues
 export interface JiraIssue {
   id: string;
   key: string;
@@ -37,7 +38,16 @@ export interface JiraIssue {
     project: {
       key: string;
     };
+    assignee?: { displayName: string }; 
+    created?: string; 
+    updated?: string; 
   };
+}
+
+// Define the IssuesResponse interface to represent the API response
+export interface IssuesResponse {
+  issues: JiraIssue[];
+  total: number;
 }
 
 export interface JiraApi {
@@ -46,7 +56,7 @@ export interface JiraApi {
     maxResults: number,
     startAt: number,
     username: string,
-  ) => Promise<JiraIssue[]>;
+  ) => Promise<IssuesResponse>; 
 }
 
 type Options = {
@@ -57,11 +67,9 @@ type Options = {
 export class JiraApiClient implements JiraApi {
   private readonly discoveryApi: DiscoveryApi;
   private readonly token: string | undefined;
-  private readonly config: Config;
 
   constructor(options: Options) {
     this.discoveryApi = options.discoveryApi;
-    this.config = options.config;
     this.token = options.config.getOptionalString('backend.jira.token');
   }
 
@@ -107,7 +115,7 @@ export class JiraApiClient implements JiraApi {
     maxResults: number,
     startAt: number,
     username: string,
-  ): Promise<JiraIssue[]> {
+  ): Promise<IssuesResponse> { 
     console.log(
       'jiraApiClient.listIssues: ',
       jql,
@@ -116,9 +124,17 @@ export class JiraApiClient implements JiraApi {
       username,
     );
     const encodedJql = encodeURIComponent(jql);
-    return this.fetch<JiraIssue[]>(
+    
+    // Fetch the data from the Jira API
+    const data = await this.fetch<{ issues: JiraIssue[]; total: number }>(
       `/search?jql=${encodedJql}&maxResults=${maxResults}&startAt=${startAt}`,
       username,
     );
+
+    // Return the response in the IssuesResponse format
+    return {
+      issues: data.issues,
+      total: data.total,
+    };
   }
 }

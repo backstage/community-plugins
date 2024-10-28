@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 import React, { useEffect, useState } from 'react';
 import { useApi } from '@backstage/core-plugin-api';
 import { jiraApiRef } from '../../api';
@@ -84,13 +83,18 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+// Define the Issue type for better type safety
+interface Issue {
+  url: string;
+  title: string;
+  created_at: string;
+}
+
 export const JiraLocalComponent = () => {
   const classes = useStyles();
 
   const jiraApi = useApi(jiraApiRef);
-  const [issues, setIssues] = useState([]);
-  const [currentPage, setCurrentPage] = useState(0);
-  const [totalPages, setTotalPages] = useState(0);
+  const [issues, setIssues] = useState<Issue[]>([]);
   const [loading, setLoading] = useState(true);
 
   const { profile } = usernameApi();
@@ -110,16 +114,13 @@ export const JiraLocalComponent = () => {
         );
       }
 
-      const allResults = await Promise.all(promises);
-      const allData = allResults.flat();
-
-      const totalIssues = await jiraApi.getStoredIssues();
+      const totalIssues = (await jiraApi.getStoredIssues()) as Issue[];
       setIssues(
         totalIssues.sort(
-          (a, b) => new Date(b.created_at) - new Date(a.created_at),
+          (a: Issue, b: Issue) =>
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
         ),
       );
-      setTotalPages(Math.ceil(total / maxResults));
     } catch (e) {
       console.error('Error fetching issues:', e);
     } finally {
@@ -130,7 +131,7 @@ export const JiraLocalComponent = () => {
   useEffect(() => {
     if (!username) return;
     fetchIssues();
-  }, [currentPage, username]);
+  }, [username]);
 
   return (
     <Card className={classes.card}>
@@ -192,19 +193,19 @@ export const JiraLocalComponent = () => {
                     >
                       <JiraNoBorderIcon />
                       <Link
-                        href={issue?.url}
+                        href={issue.url}
                         target="_blank"
                         rel="noopener noreferrer"
                       >
                         <Typography variant="body1">
-                          {issue?.title.length > 50
-                            ? `${issue?.title.slice(0, 50)}...`
-                            : issue?.title}
+                          {issue.title.length > 50
+                            ? `${issue.title.slice(0, 50)}...`
+                            : issue.title}
                         </Typography>
                       </Link>
                     </TableCell>
                     <TableCell className={classes.cell}>
-                      {calculateDaysAgo(issue?.created_at)}
+                      {calculateDaysAgo(issue.created_at)}
                     </TableCell>
                   </TableRow>
                 ))}

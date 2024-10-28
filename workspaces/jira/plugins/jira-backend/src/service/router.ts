@@ -33,7 +33,7 @@ export interface RouterOptions {
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
-  const { logger, config, db, configApi } = options;
+  const { logger, config, db } = options;
 
   const router = Router();
   router.use(express.json());
@@ -50,7 +50,6 @@ export async function createRouter(
 
   // Endpoint to fetch issues from Jira and store them in the database
   router.post('/fetch-issues', async (request, response) => {
-    // console.log('Inside fetch-issues');
     const { jql, maxResults, startAt, username } = request.body;
 
     try {
@@ -61,7 +60,6 @@ export async function createRouter(
         username,
       );
 
-      const storedEmail = await jiraService.getCurrentUserEmail();
       const storedIssues = await jiraService.getStoredIssues();
 
       response.status(200).json({ total: dataCount, storedIssues });

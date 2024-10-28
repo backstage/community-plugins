@@ -7,13 +7,11 @@
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
+ * Unless required by the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 import {
   ConfigApi,
   createApiRef,
@@ -26,13 +24,17 @@ export interface JiraIssue {
   summary: string;
   status: string;
 }
+
 export interface JiraApi {
+  getStoredIssues(): unknown;
+  fetchAndStoreIssues(jql: string, arg1: number, arg2: number, username: string | undefined): { total: any; } | PromiseLike<{ total: any; }>;
   listIssues: (
     jql: string,
     maxResults: number,
     startAt: number,
   ) => Promise<JiraIssue[]>;
 }
+
 type Options = {
   discoveryApi: DiscoveryApi;
   configApi: ConfigApi;
@@ -42,7 +44,7 @@ export const jiraApiRef = createApiRef<JiraApi>({
   id: 'plugin.jira.service',
 });
 
-export class JiraApiClient {
+export class JiraApiClient implements JiraApi {
   private readonly discoveryApi: DiscoveryApi;
 
   constructor(options: Options) {
@@ -59,6 +61,7 @@ export class JiraApiClient {
     }
     return await response.json();
   }
+
   async fetchAndStoreIssues(
     jql: string,
     maxResults: number,
@@ -87,7 +90,28 @@ export class JiraApiClient {
       );
     }
     const responseJSON = await response.json();
-    // console.log('🚀 ~ JiraApiClient ~ responseJSON:', responseJSON);
     return responseJSON;
   }
+
+  // Implementation of the listIssues method
+  async listIssues(
+    jql: string,
+    maxResults: number,
+    startAt: number,
+  ): Promise<JiraIssue[]> {
+    const proxyUrl = await this.discoveryApi.getBaseUrl('jira');
+    const response = await fetch(`${proxyUrl}/issues/search?jql=${encodeURIComponent(jql)}&maxResults=${maxResults}&startAt=${startAt}`);
+
+    if (!response.ok) {
+      throw new Error(`Failed to list issues: ${response.statusText}`);
+    }
+    const data = await response.json();
+    return data.issues.map((issue: any) => ({
+      id: issue.id,
+      key: issue.key,
+      summary: issue.fields.summary,
+      status: issue.fields.status.name,
+    }));
+  }
 }
+

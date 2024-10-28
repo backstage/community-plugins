@@ -16,17 +16,26 @@
 
 import { Config } from '@backstage/config';
 import { Knex } from 'knex';
-import { JiraApiClient } from './jiraApiClient';
+import { JiraApiClient, JiraIssue } from './jiraApiClient';
+
+export interface IssuesResponse {
+  issues: JiraIssue[]; 
+  total: number; 
+}
 
 export class JiraService {
   private readonly jiraApi: JiraApiClient;
-  private readonly jiraDomain: string | undefined;
+  private readonly jiraDomain: string;
 
   constructor(private readonly db: Knex, config: Config) {
-    this.jiraDomain = config.getOptionalString('backend.jira.target');
+    const domain = config.getOptionalString('backend.jira.target');
+    if (!domain) {
+      throw new Error('Jira domain must be configured in backend.jira.target');
+    }
+    this.jiraDomain = domain;
     this.jiraApi = new JiraApiClient({
       discoveryApi: {
-        getBaseUrl: () => Promise.resolve(this.jiraDomain),
+        getBaseUrl: () => Promise.resolve(this.jiraDomain as string), // Cast to string
       },
       config,
     });
@@ -38,7 +47,7 @@ export class JiraService {
     maxResults: number,
     startAt: number,
     username: string,
-  ) {
+  ): Promise<number> { 
     console.log('Fetching issues from Jira...');
 
     try {
@@ -52,15 +61,15 @@ export class JiraService {
         .merge();
 
       // Call Jira API to get the list of issues
-      const issues = await this.jiraApi.listIssues(
+      const issuesResponse: IssuesResponse = await this.jiraApi.listIssues(
         jql,
         maxResults,
         startAt,
         username,
       );
-      console.log('🚀 ~ JiraService ~ issues:', issues);
-      const issuesArray = issues?.issues;
-      // console.log('🚀 ~ JiraService ~ issuesArray:', issuesArray);
+
+      console.log('🚀 ~ JiraService ~ issues:', issuesResponse);
+      const issuesArray = issuesResponse.issues;
 
       for (const issue of issuesArray) {
         await this.db('jira_issues')
@@ -75,13 +84,13 @@ export class JiraService {
             url: `${this.jiraDomain}/jira/software/projects/${
               issue.key.split('-')[0]
             }/issues/${issue.key}`,
-            created_at: issue.fields.created,
-            updated_at: issue.fields.updated,
+            created_at: issue.fields.created || new Date(), 
+            updated_at: issue.fields.updated || new Date(), 
           })
           .onConflict('issue_id')
           .merge();
       }
-      return issues?.total;
+      return issuesResponse.total; 
     } catch (error) {
       console.error('Error in fetchAndStoreIssues:', error);
       throw new Error('Failed to fetch and store Jira issues');
