@@ -80,7 +80,13 @@ Replacing `localhost:7007` with the base URL of your backstage backend instance.
 yarn --cwd packages/app add @backstage-community/plugin-github-actions
 ```
 
-> **Note**: If you are using GitHub auth to sign in, **you may already have the GitHub provider** added to your backend index file. If it is not the case, add the following dependency to enable GitHub authentication:
+> **Note**: If you are using GitHub auth to sign in, you may already have the GitHub provider, **if it is not the case**, install it by running:
+>
+> ```tsx
+> yarn --cwd packages/backend add @backstage/plugin-auth-backend-module-github-provider
+> ```
+>
+> And add the following dependency to your backend index file:
 >
 > ```tsx
 > backend.add(import('@backstage/plugin-auth-backend-module-github-provider'));
