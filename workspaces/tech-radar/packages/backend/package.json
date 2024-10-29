@@ -1,6 +1,6 @@
 {
   "name": "backend",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "dist/index.cjs.js",
   "types": "src/index.ts",
   "private": true,
@@ -32,14 +32,10 @@
     "@backstage/plugin-auth-backend-module-guest-provider": "^0.2.1",
     "@backstage/plugin-auth-node": "^0.5.3",
     "@backstage/plugin-catalog-backend": "^1.27.1",
-    "@backstage/plugin-catalog-backend-module-scaffolder-entity-model": "^0.2.1",
     "@backstage/plugin-permission-backend": "^0.5.50",
     "@backstage/plugin-permission-backend-module-allow-all-policy": "^0.2.1",
     "@backstage/plugin-proxy-backend": "^0.5.7",
     "@backstage/plugin-scaffolder-backend": "^1.26.2",
-    "@backstage/plugin-search-backend": "^1.6.1",
-    "@backstage/plugin-search-backend-module-catalog": "^0.2.4",
-    "@backstage/plugin-search-backend-module-techdocs": "^0.3.1",
     "@backstage/plugin-techdocs-backend": "^1.11.1"
   },
   "devDependencies": {
