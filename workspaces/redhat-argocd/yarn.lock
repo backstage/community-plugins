@@ -2851,7 +2851,7 @@ __metadata:
     "@backstage/theme": ^0.5.6
     "@janus-idp/cli": 1.13.1
     "@janus-idp/shared-react": 2.10.0
-    "@kubernetes/client-node": ^0.21.0
+    "@kubernetes/client-node": ^0.22.1
     "@material-ui/core": ^4.9.13
     "@material-ui/icons": ^4.9.1
     "@material-ui/lab": ^4.0.0-alpha.61
@@ -7899,7 +7899,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jsep-plugin/regex@npm:^1.0.1":
+"@jsep-plugin/assignment@npm:^1.2.1":
+  version: 1.2.1
+  resolution: "@jsep-plugin/assignment@npm:1.2.1"
+  peerDependencies:
+    jsep: ^0.4.0||^1.0.0
+  checksum: d56fd7423c59dd269c50b0a9c22ec05f099a789ec8e8980f2307782f496ab3f0740151f1bdc7a1f3a8ee9085cdeb6f5b4def0d6b312e6b93ab160e6489b400f2
+  languageName: node
+  linkType: hard
+
+"@jsep-plugin/regex@npm:^1.0.1, @jsep-plugin/regex@npm:^1.0.3":
   version: 1.0.3
   resolution: "@jsep-plugin/regex@npm:1.0.3"
   peerDependencies:
@@ -8082,29 +8091,29 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kubernetes/client-node@npm:^0.21.0":
-  version: 0.21.0
-  resolution: "@kubernetes/client-node@npm:0.21.0"
+"@kubernetes/client-node@npm:^0.22.1":
+  version: 0.22.1
+  resolution: "@kubernetes/client-node@npm:0.22.1"
   dependencies:
     "@types/js-yaml": ^4.0.1
-    "@types/node": ^20.1.1
+    "@types/node": ^22.0.0
     "@types/request": ^2.47.1
     "@types/ws": ^8.5.3
     byline: ^5.0.0
     isomorphic-ws: ^5.0.0
     js-yaml: ^4.1.0
-    jsonpath-plus: ^8.0.0
+    jsonpath-plus: ^10.0.0
     openid-client: ^5.3.0
     request: ^2.88.0
     rfc4648: ^1.3.0
     stream-buffers: ^3.0.2
     tar: ^7.0.0
     tslib: ^2.4.1
-    ws: ^8.11.0
+    ws: ^8.18.0
   dependenciesMeta:
     openid-client:
       optional: true
-  checksum: a5dab2c284d6a0a613946eea30d14fc7b5eb0c8e1f452d66e60a24f5ac08842e4099bf145e1e4d71f37508e0803ab5661f2ddd07dcde0aa8a859530b6e1d86a2
+  checksum: 501377ad70681df9e30885cf18e40f9b16fd452bc50d9a46688a6f667a2a7f490238269e528b1f1804a6eaf4347f8edda57e5129b1a28a52915fe7898ea84329
   languageName: node
   linkType: hard
 
@@ -13731,12 +13740,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:>=13.7.0":
-  version: 22.5.4
-  resolution: "@types/node@npm:22.5.4"
+"@types/node@npm:*, @types/node@npm:>=13.7.0, @types/node@npm:^22.0.0":
+  version: 22.7.5
+  resolution: "@types/node@npm:22.7.5"
   dependencies:
     undici-types: ~6.19.2
-  checksum: 77ac225c38c428200036780036da0bc6764e2721cfa8f528c7e7da7cfefe01a32a5791e28a54efbeedbc977949058d7db902b2e00139298225d4686cee4ae6db
+  checksum: 1a8bbb504efaffcef7b8491074a428e5c0b5425b0c0ffb13e7262cb8462c275e8cc5eaf90a38d8fbf52a1eeda7c01ab3b940673c43fc2414140779c973e40ec6
   languageName: node
   linkType: hard
 
@@ -24086,7 +24095,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsep@npm:^1.1.2, jsep@npm:^1.2.0":
+"jsep@npm:^1.1.2, jsep@npm:^1.2.0, jsep@npm:^1.3.9":
   version: 1.3.9
   resolution: "jsep@npm:1.3.9"
   checksum: d1f3e2cc00209f67a989b73c2a89d2ccbea908d950ec959e2448c6449b134c6367b47eef4e1292767cb490f0b5b72e7309080b93ee4c7398684df2514dbd33a3
@@ -24308,6 +24317,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jsonpath-plus@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "jsonpath-plus@npm:10.0.0"
+  dependencies:
+    "@jsep-plugin/assignment": ^1.2.1
+    "@jsep-plugin/regex": ^1.0.3
+    jsep: ^1.3.9
+  bin:
+    jsonpath: bin/jsonpath-cli.js
+    jsonpath-plus: bin/jsonpath-cli.js
+  checksum: 992a62a0a5d2b96b40389de0608943840db39b466f9d3c1d71b4801e34b8d397c74811213e24e33c833b74aa83d9ce7860c1e7e0bc29980161489ea4a3962ecf
+  languageName: node
+  linkType: hard
+
 "jsonpath-plus@npm:^6.0.1":
   version: 6.0.1
   resolution: "jsonpath-plus@npm:6.0.1"
@@ -24319,16 +24342,6 @@ __metadata:
   version: 7.2.0
   resolution: "jsonpath-plus@npm:7.2.0"
   checksum: 05f447339d29be861e307d6e812aec1b9b88a3ba6bba286966a4e8bed3e752bee3d715eabfc21dce968be85ccb48bf79d2c1af78da7b9b74cd1b446d4d5d02f5
-  languageName: node
-  linkType: hard
-
-"jsonpath-plus@npm:^8.0.0":
-  version: 8.1.0
-  resolution: "jsonpath-plus@npm:8.1.0"
-  bin:
-    jsonpath: bin/jsonpath-cli.js
-    jsonpath-plus: bin/jsonpath-cli.js
-  checksum: 03363938d9b6ea908af592dd5e8c9b2d50dbaba553eb758b4bae9cb042febbd42a591a1c4e0fe312c6c7fc4d0376395168eee3a93b5cb397295c7d85a49ca9fa
   languageName: node
   linkType: hard
 
@@ -35107,7 +35120,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ws@npm:^8.11.0, ws@npm:^8.12.0, ws@npm:^8.13.0, ws@npm:^8.16.0, ws@npm:^8.17.1":
+"ws@npm:^8.11.0, ws@npm:^8.12.0, ws@npm:^8.13.0, ws@npm:^8.16.0, ws@npm:^8.17.1, ws@npm:^8.18.0":
   version: 8.18.0
   resolution: "ws@npm:8.18.0"
   peerDependencies:
