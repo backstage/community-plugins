@@ -43,7 +43,8 @@
     "@backstage/cli": "^0.28.0",
     "@types/fs-extra": "^11",
     "@types/luxon": "^3",
-    "@types/parse-github-url": "^1"
+    "@types/parse-github-url": "^1",
+    "msw": "^2.6.0"
   },
   "files": [
     "dist",

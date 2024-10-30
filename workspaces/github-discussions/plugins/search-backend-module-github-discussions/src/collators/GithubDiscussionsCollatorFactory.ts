@@ -191,6 +191,7 @@ export class GithubDiscussionsCollatorFactory
             clearCacheOnSuccess,
           });
         } catch (e) {
+          console.log(e);
           logger.error(
             `Encountered an error while ingesting GitHub Discussions`,
             e,
