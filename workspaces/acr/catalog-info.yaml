@@ -1,13 +1,10 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: acr
-  description: An example of a Backstage application.
-  # Example for optional annotations
-  # annotations:
-  #   github.com/project-slug: backstage/backstage
-  #   backstage.io/techdocs-ref: dir:.
+  name: backstage-plugin-acr-workspace
+  title: 'Azure Container Registry plugin for Backstage'
+  description: A Backstage plugin that displays information about your container images available in the Azure Container Registry
 spec:
-  type: website
-  owner: john@example.com
   lifecycle: experimental
+  type: backstage-plugin
+  owner: maintainers
