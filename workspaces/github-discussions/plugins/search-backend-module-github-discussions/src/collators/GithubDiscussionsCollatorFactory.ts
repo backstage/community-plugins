@@ -39,7 +39,12 @@ import {
 import assert from 'assert-ts';
 import gh from 'parse-github-url';
 
-interface GithubDiscussionsCollatorFactoryConstructorOptions {
+/**
+ * Options for {@link GithubDiscussionsCollatorFactory}
+ *
+ * @public
+ */
+export interface GithubDiscussionsCollatorFactoryConstructorOptions {
   logger: LoggerService;
   credentialsProvider: DefaultGithubCredentialsProvider;
   githubIntegration: ScmIntegrationsGroup<GithubIntegration>;
@@ -65,6 +70,10 @@ export interface GithubDiscussionsCollatorFactoryOptions {
   repliesBatchSize?: number;
 }
 
+/**
+ * Search collator responsible for fetching GitHub discussions to index.
+ * @public
+ */
 export class GithubDiscussionsCollatorFactory
   implements DocumentCollatorFactory
 {

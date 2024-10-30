@@ -19,5 +19,8 @@
  *
  * @packageDocumentation
  */
-export { GithubDiscussionsCollatorFactory } from './collators';
+export {
+  GithubDiscussionsCollatorFactory,
+  type GithubDiscussionsCollatorFactoryConstructorOptions,
+} from './collators';
 export { searchModuleGithubDiscussions as default } from './module';

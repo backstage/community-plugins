@@ -32,6 +32,10 @@ const defaultSchedule = {
   initialDelay: { seconds: 10 },
 };
 
+/**
+ * Search backend module for GitHub discussions index.
+ * @public
+ */
 export const searchModuleGithubDiscussions = createBackendModule({
   pluginId: 'search',
   moduleId: 'github-discussions-collator',
