@@ -14,16 +14,12 @@ import { LoggerService } from '@backstage/backend-plugin-api';
 import { Readable } from 'stream';
 import { ScmIntegrationsGroup } from '@backstage/integration';
 
-// Warning: (ae-missing-release-tag) "GithubDiscussionsCollatorFactory" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export class GithubDiscussionsCollatorFactory
   implements DocumentCollatorFactory
 {
   // (undocumented)
   execute(): AsyncGenerator<GithubDiscussionsDocument>;
-  // Warning: (ae-forgotten-export) The symbol "GithubDiscussionsCollatorFactoryConstructorOptions" needs to be exported by the entry point index.d.ts
-  //
   // (undocumented)
   static fromConfig({
     logger,
@@ -43,18 +39,46 @@ export class GithubDiscussionsCollatorFactory
   readonly type: string;
 }
 
-// Warning: (ae-missing-release-tag) "searchModuleGithubDiscussions" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
+export interface GithubDiscussionsCollatorFactoryConstructorOptions {
+  // (undocumented)
+  cacheBase?: string;
+  // (undocumented)
+  clearCacheOnSuccess?: boolean;
+  // (undocumented)
+  commentsBatchSize?: number;
+  // (undocumented)
+  credentialsProvider: DefaultGithubCredentialsProvider;
+  // (undocumented)
+  discussionsBatchSize?: number;
+  // (undocumented)
+  githubIntegration: ScmIntegrationsGroup<GithubIntegration>;
+  logger: LoggerService;
+  // (undocumented)
+  repliesBatchSize?: number;
+  // (undocumented)
+  timeout: number;
+  // (undocumented)
+  url: string;
+}
+
+// @public
 const searchModuleGithubDiscussions: BackendFeature;
 export default searchModuleGithubDiscussions;
 
 // Warnings were encountered during analysis:
 //
-// src/collators/GithubDiscussionsCollatorFactory.d.ts:31:1 - (ae-undocumented) Missing documentation for "GithubDiscussionsCollatorFactory".
-// src/collators/GithubDiscussionsCollatorFactory.d.ts:35:5 - (ae-undocumented) Missing documentation for "type".
-// src/collators/GithubDiscussionsCollatorFactory.d.ts:44:5 - (ae-undocumented) Missing documentation for "fromConfig".
-// src/collators/GithubDiscussionsCollatorFactory.d.ts:45:5 - (ae-undocumented) Missing documentation for "getCollator".
-// src/collators/GithubDiscussionsCollatorFactory.d.ts:46:5 - (ae-undocumented) Missing documentation for "execute".
-// src/module.d.ts:1:22 - (ae-undocumented) Missing documentation for "searchModuleGithubDiscussions".
+// src/collators/GithubDiscussionsCollatorFactory.d.ts:17:5 - (ae-undocumented) Missing documentation for "credentialsProvider".
+// src/collators/GithubDiscussionsCollatorFactory.d.ts:18:5 - (ae-undocumented) Missing documentation for "githubIntegration".
+// src/collators/GithubDiscussionsCollatorFactory.d.ts:19:5 - (ae-undocumented) Missing documentation for "timeout".
+// src/collators/GithubDiscussionsCollatorFactory.d.ts:20:5 - (ae-undocumented) Missing documentation for "url".
+// src/collators/GithubDiscussionsCollatorFactory.d.ts:21:5 - (ae-undocumented) Missing documentation for "cacheBase".
+// src/collators/GithubDiscussionsCollatorFactory.d.ts:22:5 - (ae-undocumented) Missing documentation for "clearCacheOnSuccess".
+// src/collators/GithubDiscussionsCollatorFactory.d.ts:23:5 - (ae-undocumented) Missing documentation for "discussionsBatchSize".
+// src/collators/GithubDiscussionsCollatorFactory.d.ts:24:5 - (ae-undocumented) Missing documentation for "commentsBatchSize".
+// src/collators/GithubDiscussionsCollatorFactory.d.ts:25:5 - (ae-undocumented) Missing documentation for "repliesBatchSize".
+// src/collators/GithubDiscussionsCollatorFactory.d.ts:47:5 - (ae-undocumented) Missing documentation for "type".
+// src/collators/GithubDiscussionsCollatorFactory.d.ts:56:5 - (ae-undocumented) Missing documentation for "fromConfig".
+// src/collators/GithubDiscussionsCollatorFactory.d.ts:57:5 - (ae-undocumented) Missing documentation for "getCollator".
+// src/collators/GithubDiscussionsCollatorFactory.d.ts:58:5 - (ae-undocumented) Missing documentation for "execute".
 ```
