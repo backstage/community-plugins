@@ -301,43 +301,33 @@ export const readKeycloakRealm = async (
     }),
   );
 
-  const parsedGroups = await kGroups.reduce(
-    async (promise, g) => {
-      const partial = await promise;
-      const entity = await parseGroup(
-        g,
-        config.realm,
-        options?.groupTransformer,
-      );
-      if (entity) {
-        const group = {
-          ...g,
-          entity,
-        } as GroupRepresentationWithParentAndEntity;
-        partial.push(group);
-      }
-      return partial;
-    },
-    Promise.resolve([] as GroupRepresentationWithParentAndEntity[]),
-  );
+  const parsedGroups = await kGroups.reduce(async (promise, g) => {
+    const partial = await promise;
+    const entity = await parseGroup(g, config.realm, options?.groupTransformer);
+    if (entity) {
+      const group = {
+        ...g,
+        entity,
+      } as GroupRepresentationWithParentAndEntity;
+      partial.push(group);
+    }
+    return partial;
+  }, Promise.resolve([] as GroupRepresentationWithParentAndEntity[]));
 
-  const parsedUsers = await kUsers.reduce(
-    async (promise, u) => {
-      const partial = await promise;
-      const entity = await parseUser(
-        u,
-        config.realm,
-        parsedGroups,
-        options?.userTransformer,
-      );
-      if (entity) {
-        const user = { ...u, entity } as UserRepresentationWithEntity;
-        partial.push(user);
-      }
-      return partial;
-    },
-    Promise.resolve([] as UserRepresentationWithEntity[]),
-  );
+  const parsedUsers = await kUsers.reduce(async (promise, u) => {
+    const partial = await promise;
+    const entity = await parseUser(
+      u,
+      config.realm,
+      parsedGroups,
+      options?.userTransformer,
+    );
+    if (entity) {
+      const user = { ...u, entity } as UserRepresentationWithEntity;
+      partial.push(user);
+    }
+    return partial;
+  }, Promise.resolve([] as UserRepresentationWithEntity[]));
 
   const groups = parsedGroups.map(g => {
     const entity = g.entity;
