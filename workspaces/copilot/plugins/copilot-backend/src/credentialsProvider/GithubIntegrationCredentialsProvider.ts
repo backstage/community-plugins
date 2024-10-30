@@ -17,36 +17,16 @@
 import { Config } from '@backstage/config';
 import {
   DefaultGithubCredentialsProvider,
-  GithubCredentials,
   ScmIntegrations,
 } from '@backstage/integration';
+import { CopilotCredentialsProvider, GithubInfo } from './credentialsProvider';
 
 /**
- * Information required to access the GitHub API
+ * A credentials provider that retrieves GitHub credentials from the backstage integrations.
  *
  * @public
  */
-export type GithubInfo = {
-  credentials: GithubCredentials;
-  apiBaseUrl: string;
-  enterprise: string;
-};
-
-/**
- * Interface for providing credentials for accessing the copilot API
- *
- * @public
- */
-export interface CopilotCredentialsProvider {
-  /**
-   * Retrieve the credentials required to access the copilot API
-   *
-   * @public
-   */
-  getCredentials(): Promise<GithubInfo>;
-}
-
-export class DefaultCopilotCredentialsProvider
+export class GithubIntegrationCredentialsProvider
   implements CopilotCredentialsProvider
 {
   private readonly host: string;

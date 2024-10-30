@@ -29,7 +29,7 @@ import { DatabaseHandler } from '../db/DatabaseHandler';
 import Scheduler from '../task/Scheduler';
 import { GithubClient } from '../client/GithubClient';
 import { DateTime } from 'luxon';
-import { CopilotCredentialsProvider } from '../utils/CopilotCredentialsProvider';
+import { CopilotCredentialsProvider } from '../credentialsProvider';
 
 /**
  * Options for configuring the Copilot plugin.

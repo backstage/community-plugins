@@ -73,14 +73,43 @@ These variables are used to configure the plugin and ensure it communicates with
 
 ### GitHub Credentials
 
-**Important:** The GitHub token, which is necessary for authentication, should be managed within your Backstage integrations configuration. The token must be added to your GitHub integration settings, and the plugin will retrieve it through the `GithubCredentialsProvider`.
+By default, the plugin uses the GitHub token from the copilot config under `copilot.token` to authenticate with the GitHub API.
 
-Ensure that your GitHub integration in the Backstage configuration includes the necessary token for the `GithubCredentialsProvider` to work correctly.
+Optionally you can configure the `GithubIntegrationCredentialsProvider` via an extension point to allow the provider to use your GitHub credentials managed within your Backstage integrations configuration. The token must be added to your GitHub integration settings, and the plugin will retrieve it through the `GithubCredentialsProvider`.
+
+You can configure this using an extention point as follows:
+
+```typescript
+import { createBackendModule } from '@backstage/backend-plugin-api';
+import {
+  copilotExtensionPoint,
+  CopilotCredentialsProvider,
+  GithubInfo,
+  GithubIntegrationCredentialsProvider,
+} from '@backstage-community/plugin-copilot-backend';
+
+export const copilotCredentialsProviderModule = createBackendModule({
+  pluginId: 'copilot',
+  moduleId: 'credentials',
+  register(env) {
+    env.registerInit({
+      deps: {
+        copilot: copilotExtensionPoint,
+        config: coreServices.rootConfig,
+      },
+      async init({ copilot, config }) {
+        copilot.useCredentialsProvider(
+          new GithubIntegrationCredentialsProvider({ config }),
+        );
+      },
+    });
+  },
+});
+```
 
 If you need to have more control how credentials are provided you can use the plugin extension point to provide your own implementation of the `CopilotCredentialsProvider`.
 
 ```typescript
-/* istanbul ignore file */
 import { createBackendModule } from '@backstage/backend-plugin-api';
 import {
   copilotExtensionPoint,
@@ -134,6 +163,7 @@ copilot:
       seconds: 15
   host: YOUR_GITHUB_HOST_HERE
   enterprise: YOUR_ENTERPRISE_NAME_HERE
+  token: YOUR_GITHUB_TOKEN_HERE
 ```
 
 ### Generating GitHub Copilot Token

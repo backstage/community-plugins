@@ -14,21 +14,9 @@
  * limitations under the License.
  */
 
-/**
- * Backend functionalities for the copilot plugin.
- *
- * @packageDocumentation
- */
-
-export * from './service/router';
-export {
-  copilotPlugin as default,
-  copilotExtensionPoint,
-  type CopilotExtensionPoint,
-} from './plugin';
 export {
   type CopilotCredentialsProvider,
   type GithubInfo,
-  DefaultCopilotCredentialsProvider,
-  GithubIntegrationCredentialsProvider,
 } from './credentialsProvider';
+export { GithubIntegrationCredentialsProvider } from './GithubIntegrationCredentialsProvider';
+export { DefaultCopilotCredentialsProvider } from './DefaultCredentialsProvider';

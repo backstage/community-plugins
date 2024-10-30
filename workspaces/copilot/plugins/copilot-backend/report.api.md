@@ -37,11 +37,29 @@ export function createRouterFromConfig(
 ): Promise<express.Router>;
 
 // @public
+export class DefaultCopilotCredentialsProvider
+  implements CopilotCredentialsProvider
+{
+  constructor(options: { config: Config });
+  // (undocumented)
+  getCredentials(): Promise<GithubInfo>;
+}
+
+// @public
 export type GithubInfo = {
   credentials: GithubCredentials;
   apiBaseUrl: string;
   enterprise: string;
 };
+
+// @public
+export class GithubIntegrationCredentialsProvider
+  implements CopilotCredentialsProvider
+{
+  constructor(options: { config: Config });
+  // (undocumented)
+  getCredentials(): Promise<GithubInfo>;
+}
 
 // @public
 export interface PluginOptions {

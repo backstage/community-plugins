@@ -17,10 +17,7 @@
 import { ResponseError } from '@backstage/errors';
 import { Metric } from '@backstage-community/plugin-copilot-common';
 import fetch from 'node-fetch';
-import {
-  CopilotCredentialsProvider,
-  GithubInfo,
-} from '../utils/CopilotCredentialsProvider';
+import { CopilotCredentialsProvider, GithubInfo } from '../credentialsProvider';
 
 interface GithubApi {
   getCopilotUsageDataForEnterprise: () => Promise<Metric[]>;

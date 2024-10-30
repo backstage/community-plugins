@@ -22,7 +22,7 @@ import { createRouterFromConfig } from './service/router';
 import {
   CopilotCredentialsProvider,
   DefaultCopilotCredentialsProvider,
-} from './utils/CopilotCredentialsProvider';
+} from './credentialsProvider';
 
 /**
  * Interface for providing credentials for accessing the Copilot API.

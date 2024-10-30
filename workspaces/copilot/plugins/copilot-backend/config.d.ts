@@ -34,5 +34,11 @@ export interface Config {
      * The host for GitHub Copilot integration.
      */
     host?: string;
+
+    /**
+     * Optional api key to access the enterprise GitHub APIs that support copilot metrics
+     * @visibility secret
+     */
+    token?: string;
   };
 }
