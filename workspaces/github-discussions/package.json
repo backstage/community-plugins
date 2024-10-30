@@ -51,8 +51,7 @@
   },
   "resolutions": {
     "@types/react": "^18",
-    "@types/react-dom": "^18",
-    "@microsoft/api-extractor": "7.36.4"
+    "@types/react-dom": "^18"
   },
   "prettier": "@spotify/prettier-config",
   "lint-staged": {
