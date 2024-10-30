@@ -17,14 +17,12 @@ export const mtaScaffolderModule = createBackendModule({
         config: coreServices.rootConfig,
         logger: coreServices.logger,
         discovery: coreServices.discovery,
-        identity: coreServices.identity,
       },
-      async init({ scaffolder, config, logger, discovery, identity }) {
+      async init({ scaffolder, config, logger, discovery }) {
         const createAction = createMTAApplicationAction({
           config: config,
           logger: loggerToWinstonLogger(logger),
           discovery,
-          identity,
         });
         scaffolder.addActions(createAction);
       },
