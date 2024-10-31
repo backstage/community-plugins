@@ -81,8 +81,7 @@
   },
   "files": [
     "dist",
-    "dist-scalprum",
-    "app-config.yaml"
+    "dist-scalprum"
   ],
   "repository": {
     "type": "git",
