@@ -1,5 +1,12 @@
 # backend
 
+## 0.0.12
+
+### Patch Changes
+
+- Updated dependencies [28110f5]
+  - @backstage-community/plugin-scaffolder-backend-module-azure-devops@0.1.1
+
 ## 0.0.11
 
 ### Patch Changes
