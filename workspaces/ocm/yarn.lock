@@ -2656,6 +2656,7 @@ __metadata:
     "@backstage/plugin-permission-node": ^0.8.4
     "@kubernetes/client-node": ^0.22.1
     "@openapitools/openapi-generator-cli": 2.13.4
+    "@spotify/prettier-config": ^15.0.0
     "@types/express": 4.17.21
     "@types/supertest": 2.0.16
     express: ^4.18.2
@@ -2672,6 +2673,7 @@ __metadata:
   dependencies:
     "@backstage/cli": 0.28.2
     "@backstage/plugin-permission-common": ^0.8.1
+    "@spotify/prettier-config": ^15.0.0
     prettier: 3.3.3
   peerDependencies:
     "@backstage/plugin-permission-common": ^0.8.1
@@ -2703,6 +2705,7 @@ __metadata:
     "@mui/icons-material": ^5.16.4
     "@patternfly/patternfly": ^5.1.0
     "@redhat-developer/red-hat-developer-hub-theme": 0.4.0
+    "@spotify/prettier-config": ^15.0.0
     "@testing-library/dom": ^10.0.0
     "@testing-library/jest-dom": ^6.0.0
     "@testing-library/react": ^15.0.0
@@ -8470,6 +8473,15 @@ __metadata:
   peerDependencies:
     prettier: 2.x
   checksum: 04732b96af895269bb8a988ba309e80bd7b87c785837e06f72ff938e8895c5a3a3211fa37b54c6a2b502e88587a437c2be3ccb486a84aff02c2f6fb4582a4a97
+  languageName: node
+  linkType: hard
+
+"@spotify/prettier-config@npm:^15.0.0":
+  version: 15.0.0
+  resolution: "@spotify/prettier-config@npm:15.0.0"
+  peerDependencies:
+    prettier: 2.x
+  checksum: aa5ec5739427f9acdb9d62ae6c04f04a344898567239f7ee45c75c6205ebdffbc61747ea8de6e83baf0bc3785359967de4b7097a8723c4b4063ff57dc5cb6c44
   languageName: node
   linkType: hard
 
