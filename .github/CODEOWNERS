@@ -18,6 +18,7 @@ yarn.lock                                           @backstage/community-plugins
 /workspaces/blackduck                               @backstage/community-plugins-maintainers  @deepan10
 /workspaces/code-coverage                           @backstage/community-plugins-maintainers  @alde
 /workspaces/confluence                              @backstage/community-plugins-maintainers  @fjudith
+/workspaces/copilot                                 @backstage/community-plugins-maintainers  @esw-afabiano 
 /workspaces/cost-insights                           @backstage/community-plugins-maintainers  @backstage/silver-lining
 /workspaces/entity-feedback                         @backstage/community-plugins-maintainers  @kuangp
 /workspaces/explore                                 @backstage/community-plugins-maintainers  @backstage/sda-se-reviewers
@@ -29,7 +30,7 @@ yarn.lock                                           @backstage/community-plugins
 /workspaces/kafka                                   @backstage/community-plugins-maintainers  @andrewthauer
 /workspaces/linguist                                @backstage/community-plugins-maintainers  @awanlin
 /workspaces/nexus-repository-manager                @backstage/community-plugins-maintainers  @schultzp2020
-/workspaces/npm                                     @backstage/community-plugins-maintainers  @jerolimov @karthikjeeyar
+/workspaces/npm                                     @backstage/community-plugins-maintainers  @christoph-jerolimov @karthikjeeyar
 /workspaces/octopus-deploy                          @backstage/community-plugins-maintainers  @jmezach
 /workspaces/pingidentity                            @backstage/community-plugins-maintainers  @jessicajhee
 /workspaces/playlist                                @backstage/community-plugins-maintainers  @kuangp

@@ -20,9 +20,14 @@
  * @packageDocumentation
  */
 
-export { npmPlugin } from './plugin';
+export {
+  npmPlugin,
+  EntityNpmInfoCard,
+  EntityNpmReleaseOverviewCard,
+  EntityNpmReleaseTableCard,
+  NpmInfoCard,
+  NpmReleaseOverviewCard,
+  NpmReleaseTableCard,
+} from './plugin';
 
 export { isNpmAvailable } from './utils/isNpmAvailable';
-export { NpmInfoCard } from './components/NpmInfoCard';
-export { NpmReleaseOverviewCard } from './components/NpmReleaseOverviewCard';
-export { NpmReleaseTableCard } from './components/NpmReleaseTableCard';

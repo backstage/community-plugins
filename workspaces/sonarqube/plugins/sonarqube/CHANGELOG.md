@@ -1,5 +1,11 @@
 # @backstage-community/plugin-sonarqube
 
+## 0.8.5
+
+### Patch Changes
+
+- d59c520: fix typo in README.md file
+
 ## 0.8.4
 
 ### Patch Changes

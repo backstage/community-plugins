@@ -1,13 +1,19 @@
 # @backstage-community/plugin-npm
 
+## 1.0.2
+
+### Patch Changes
+
+- fa1521c: export deprecated card components to be backward compatible
+
 ## 1.0.1
 
 ### Patch Changes
 
-- 818c09d: Backstage version bump to v1.32.2
+- 12d5926: Add standalone demo application
 
 ## 1.0.0
 
 ### Major Changes
 
-- ab4b7fd: Initial version that shows meta info and latest versions from a npm registry
+- 394506b: Initial version that shows meta info and latest versions from a npm registry

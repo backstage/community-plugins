@@ -1,5 +1,17 @@
 ### Dependencies
 
+## 1.29.0
+
+### Minor Changes
+
+- 730359c: Migrated to MUI5
+
+### Patch Changes
+
+- 694e163: - Fixed an issue with the topology node badge icon text color.
+  - Updated the stylesheet link filter string to accommodate the new topology package name.
+  - Removed `janus-idp/cli` from `devDependencies` as `export-dynamic` is no longer needed for the topology plugin package.
+
 ## 1.28.4
 
 ### Patch Changes
