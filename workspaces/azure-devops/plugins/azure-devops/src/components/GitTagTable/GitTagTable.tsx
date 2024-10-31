@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import Box from '@material-ui/core/Box';
+import Box from '@mui/material/Box';
 import {
   Link,
   ResponseErrorPanel,
