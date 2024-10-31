@@ -121,9 +121,7 @@ describe('parseResources', () => {
 
 describe('parseManagedCluster', () => {
   it('should parse a managed cluster to cluster details', () => {
-    const mc: ManagedCluster = require(
-      `${FIXTURES_DIR}/cluster.open-cluster-management.io/managedclusters/cluster1.json`,
-    );
+    const mc: ManagedCluster = require(`${FIXTURES_DIR}/cluster.open-cluster-management.io/managedclusters/cluster1.json`);
 
     const result = parseManagedCluster(mc);
 
@@ -156,9 +154,7 @@ describe('parseManagedCluster', () => {
   });
 
   it('should parse a managed cluster without labels to cluster details', () => {
-    const mc: ManagedCluster = require(
-      `${FIXTURES_DIR}/cluster.open-cluster-management.io/managedclusters/cluster1.json`,
-    );
+    const mc: ManagedCluster = require(`${FIXTURES_DIR}/cluster.open-cluster-management.io/managedclusters/cluster1.json`);
     mc.status!.allocatable = {};
     mc.status!.capacity = {};
     mc.metadata!.labels = {};
@@ -194,9 +190,7 @@ describe('parseManagedCluster', () => {
   });
 
   it('should parse an unavailable managed cluster to cluster details', () => {
-    const mc: ManagedCluster = require(
-      `${FIXTURES_DIR}/cluster.open-cluster-management.io/managedclusters/cluster1.json`,
-    );
+    const mc: ManagedCluster = require(`${FIXTURES_DIR}/cluster.open-cluster-management.io/managedclusters/cluster1.json`);
     mc.status!.conditions = [
       {
         message: 'Managed cluster is unavailable',
@@ -218,9 +212,7 @@ describe('parseManagedCluster', () => {
 
 describe('parseUpdateInfo', () => {
   it('should correctly parse update information from ClusterInfo', () => {
-    const mci: ManagedClusterInfo = require(
-      `${FIXTURES_DIR}/internal.open-cluster-management.io/managedclusterinfos/local-cluster.json`,
-    );
+    const mci: ManagedClusterInfo = require(`${FIXTURES_DIR}/internal.open-cluster-management.io/managedclusterinfos/local-cluster.json`);
 
     const result = parseUpdateInfo(mci);
 
@@ -234,9 +226,7 @@ describe('parseUpdateInfo', () => {
   });
 
   it('should correctly parse while there are no updates available with no arrays', () => {
-    const mciOriginal: ManagedClusterInfo = require(
-      `${FIXTURES_DIR}/internal.open-cluster-management.io/managedclusterinfos/local-cluster.json`,
-    );
+    const mciOriginal: ManagedClusterInfo = require(`${FIXTURES_DIR}/internal.open-cluster-management.io/managedclusterinfos/local-cluster.json`);
     const mci = {
       ...mciOriginal,
       status: {
@@ -262,9 +252,7 @@ describe('parseUpdateInfo', () => {
   });
 
   it('should correctly parse when there is only one update available', () => {
-    const mciOriginal: ManagedClusterInfo = require(
-      `${FIXTURES_DIR}/internal.open-cluster-management.io/managedclusterinfos/local-cluster.json`,
-    );
+    const mciOriginal: ManagedClusterInfo = require(`${FIXTURES_DIR}/internal.open-cluster-management.io/managedclusterinfos/local-cluster.json`);
     const mci = {
       ...mciOriginal,
       status: {
@@ -297,9 +285,7 @@ describe('parseUpdateInfo', () => {
 
 describe('parseNodeStatus', () => {
   it('should correctly parse a node list', () => {
-    const mciOriginal: ManagedClusterInfo = require(
-      `${FIXTURES_DIR}/internal.open-cluster-management.io/managedclusterinfos/local-cluster.json`,
-    );
+    const mciOriginal: ManagedClusterInfo = require(`${FIXTURES_DIR}/internal.open-cluster-management.io/managedclusterinfos/local-cluster.json`);
     const mci = {
       ...mciOriginal,
       status: {
@@ -318,9 +304,7 @@ describe('parseNodeStatus', () => {
   });
 
   it('should return an empty array if nodes are empty', () => {
-    const mciOriginal: ManagedClusterInfo = require(
-      `${FIXTURES_DIR}/internal.open-cluster-management.io/managedclusterinfos/local-cluster.json`,
-    );
+    const mciOriginal: ManagedClusterInfo = require(`${FIXTURES_DIR}/internal.open-cluster-management.io/managedclusterinfos/local-cluster.json`);
     const mci = {
       ...mciOriginal,
       status: {
@@ -335,9 +319,7 @@ describe('parseNodeStatus', () => {
   });
 
   it('should return an empty array if nodes are not present', () => {
-    const mciOriginal: ManagedClusterInfo = require(
-      `${FIXTURES_DIR}/internal.open-cluster-management.io/managedclusterinfos/local-cluster.json`,
-    );
+    const mciOriginal: ManagedClusterInfo = require(`${FIXTURES_DIR}/internal.open-cluster-management.io/managedclusterinfos/local-cluster.json`);
     const mci = {
       ...mciOriginal,
       status: {
@@ -352,9 +334,7 @@ describe('parseNodeStatus', () => {
   });
 
   it('should throw an error if there are more conditions in a node', () => {
-    const mciOriginal: ManagedClusterInfo = require(
-      `${FIXTURES_DIR}/internal.open-cluster-management.io/managedclusterinfos/local-cluster.json`,
-    );
+    const mciOriginal: ManagedClusterInfo = require(`${FIXTURES_DIR}/internal.open-cluster-management.io/managedclusterinfos/local-cluster.json`);
     const mci = {
       ...mciOriginal,
       status: {

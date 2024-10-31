@@ -25,15 +25,9 @@ export const handlers = [
         ctx.status(200),
         ctx.json({
           items: [
-            require(
-              `${__dirname}/cluster.open-cluster-management.io/managedclusters/local-cluster.json`,
-            ),
-            require(
-              `${__dirname}/cluster.open-cluster-management.io/managedclusters/cluster1.json`,
-            ),
-            require(
-              `${__dirname}/cluster.open-cluster-management.io/managedclusters/offline-cluster.json`,
-            ),
+            require(`${__dirname}/cluster.open-cluster-management.io/managedclusters/local-cluster.json`),
+            require(`${__dirname}/cluster.open-cluster-management.io/managedclusters/cluster1.json`),
+            require(`${__dirname}/cluster.open-cluster-management.io/managedclusters/offline-cluster.json`),
           ],
         }),
       );
@@ -46,15 +40,9 @@ export const handlers = [
         ctx.status(200),
         ctx.json({
           items: [
-            require(
-              `${__dirname}/internal.open-cluster-management.io/managedclusterinfos/local-cluster.json`,
-            ),
-            require(
-              `${__dirname}/internal.open-cluster-management.io/managedclusterinfos/cluster1.json`,
-            ),
-            require(
-              `${__dirname}/internal.open-cluster-management.io/managedclusterinfos/offline-cluster.json`,
-            ),
+            require(`${__dirname}/internal.open-cluster-management.io/managedclusterinfos/local-cluster.json`),
+            require(`${__dirname}/internal.open-cluster-management.io/managedclusterinfos/cluster1.json`),
+            require(`${__dirname}/internal.open-cluster-management.io/managedclusterinfos/offline-cluster.json`),
           ],
         }),
       );
@@ -66,9 +54,7 @@ export const handlers = [
       return res(
         ctx.status(200),
         ctx.json(
-          require(
-            `${__dirname}/cluster.open-cluster-management.io/managedclusters/local-cluster.json`,
-          ),
+          require(`${__dirname}/cluster.open-cluster-management.io/managedclusters/local-cluster.json`),
         ),
       );
     },
@@ -79,9 +65,7 @@ export const handlers = [
       return res(
         ctx.status(200),
         ctx.json(
-          require(
-            `${__dirname}/cluster.open-cluster-management.io/managedclusters/cluster1.json`,
-          ),
+          require(`${__dirname}/cluster.open-cluster-management.io/managedclusters/cluster1.json`),
         ),
       );
     },
@@ -92,9 +76,7 @@ export const handlers = [
       return res(
         ctx.status(200),
         ctx.json(
-          require(
-            `${__dirname}/cluster.open-cluster-management.io/managedclusters/offline-cluster.json`,
-          ),
+          require(`${__dirname}/cluster.open-cluster-management.io/managedclusters/offline-cluster.json`),
         ),
       );
     },
@@ -105,9 +87,7 @@ export const handlers = [
       return res(
         ctx.status(404),
         ctx.json(
-          require(
-            `${__dirname}/cluster.open-cluster-management.io/managedclusters/non_existent_cluster.json`,
-          ),
+          require(`${__dirname}/cluster.open-cluster-management.io/managedclusters/non_existent_cluster.json`),
         ),
       );
     },
@@ -118,9 +98,7 @@ export const handlers = [
       return res(
         ctx.status(200),
         ctx.json(
-          require(
-            `${__dirname}/internal.open-cluster-management.io/managedclusterinfos/cluster1.json`,
-          ),
+          require(`${__dirname}/internal.open-cluster-management.io/managedclusterinfos/cluster1.json`),
         ),
       );
     },
@@ -131,9 +109,7 @@ export const handlers = [
       return res(
         ctx.status(200),
         ctx.json(
-          require(
-            `${__dirname}/internal.open-cluster-management.io/managedclusterinfos/local-cluster.json`,
-          ),
+          require(`${__dirname}/internal.open-cluster-management.io/managedclusterinfos/local-cluster.json`),
         ),
       );
     },
@@ -144,9 +120,7 @@ export const handlers = [
       return res(
         ctx.status(200),
         ctx.json(
-          require(
-            `${__dirname}/internal.open-cluster-management.io/managedclusterinfos/offline-cluster.json`,
-          ),
+          require(`${__dirname}/internal.open-cluster-management.io/managedclusterinfos/offline-cluster.json`),
         ),
       );
     },
