@@ -67,8 +67,6 @@
     "dist",
     "embedded",
     "config.d.ts",
-    "dist-dynamic/*.*",
-    "dist-dynamic/dist/**",
     "app-config.yaml"
   ],
   "configSchema": "config.d.ts",
