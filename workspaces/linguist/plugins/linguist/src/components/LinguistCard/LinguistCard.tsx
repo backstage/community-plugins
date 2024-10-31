@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-import Box from '@material-ui/core/Box';
-import Chip from '@material-ui/core/Chip';
-import Tooltip from '@material-ui/core/Tooltip';
-import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import Box from '@mui/material/Box';
+import Chip from '@mui/material/Chip';
+import Tooltip from '@mui/material/Tooltip';
+import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
+import { Theme, useTheme } from '@mui/material/styles';
+import makeStyles from '@mui/styles/makeStyles';
 import { InfoCard, Progress } from '@backstage/core-components';
-import Alert from '@material-ui/lab/Alert';
+import Alert from '@mui/material/Alert';
 import { DateTime } from 'luxon';
 import React from 'react';
 import slugify from 'slugify';
@@ -30,7 +31,7 @@ import { useLanguages } from '../../hooks';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { linguistTranslationRef } from '../../translation';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme: Theme) => ({
   infoCard: {
     marginBottom: theme.spacing(3),
   },
