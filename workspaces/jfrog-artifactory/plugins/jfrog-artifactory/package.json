@@ -24,7 +24,6 @@
     "clean": "backstage-cli package clean",
     "lint": "backstage-cli package lint",
     "postpack": "backstage-cli package postpack",
-    "postversion": "yarn run export-dynamic",
     "prepack": "backstage-cli package prepack",
     "start": "backstage-cli package start",
     "test": "backstage-cli package test --passWithNoTests --coverage",
