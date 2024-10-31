@@ -1,4 +1,34 @@
-## @janus-idp/backstage-plugin-argocd [1.5.7](https://github.com/janus-idp/backstage-plugins/compare/@janus-idp/backstage-plugin-argocd@1.5.6...@janus-idp/backstage-plugin-argocd@1.5.7) (2024-08-02)
+## @backstage-community/plugin-redhat-argocd
+
+## 1.10.1
+
+### Patch Changes
+
+- 9e73efd: redhat-argocd: release 1.8.9 as 1.10.1
+
+## 1.10.0
+
+### Minor Changes
+
+- 1684b7aa: redhat-argocd: release 1.8.8 as 1.10.0
+
+## 1.9.1
+
+### Patch Changes
+
+- b8a5ccf5: redhat-argocd: release 1.8.7 as 1.9.1
+
+## 1.9.0
+
+### Minor Changes
+
+- d2c0e4d0: redhat-argocd: release 1.8.6 as 1.9.0
+
+## 1.8.10
+
+### Patch Changes
+
+- 2b7826d6: fix(deps): upgrade kubernetes/client-node in argocd plugin
 
 ## 1.8.9
 

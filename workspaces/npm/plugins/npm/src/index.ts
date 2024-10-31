@@ -25,6 +25,9 @@ export {
   EntityNpmInfoCard,
   EntityNpmReleaseOverviewCard,
   EntityNpmReleaseTableCard,
+  NpmInfoCard,
+  NpmReleaseOverviewCard,
+  NpmReleaseTableCard,
 } from './plugin';
 
 export { isNpmAvailable } from './utils/isNpmAvailable';

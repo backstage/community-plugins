@@ -65,7 +65,7 @@ export interface TechRadarPageProps {
 
 ### Radar properties
 
-When defining the radar entries you can see the available properties on the file [api](./src/api.ts)
+When defining the radar entries you can see the available properties on the file [model.ts](../tech-radar-common/src/model.ts)
 
 ## Tech radar data model
 
@@ -197,14 +197,27 @@ The TS example can be found [here](src/sample.ts).
 
 ### How do I load in my own data?
 
-The `TechRadar` plugin uses the `techRadarApiRef` to get a client which implements the `TechRadarApi` interface. The default sample one is located [here](src/sample.ts). To load your own data, you'll need to provide a class that implements the `TechRadarApi` and override the `techRadarApiRef` in the `app/src/apis.ts`.
+There are two ways to load data into the `Tech Radar` plugin:
+
+1. **Default Implementation (Recommended)**: The default implementation requires installing the `@backstage-community/plugin-tech-radar-backend` plugin. The default API will attempt to load data from a specified git url.
+
+2. **Custom Implementation**: Implement a custom version of the `TechRadarApi` interface. This allows for more control over how your data is loaded. If both methods are implemented, the custom interface will take precedence.
+
+#### Option A: Install the Tech Radar Backend Plugin
+
+Follow the instructions [here](../tech-radar-backend/README.md) to configure the backend to load data from a given URL.
+
+#### Option B: Implementing the TechRadarApi
+
+The `TechRadar` plugin uses the `techRadarApiRef` to get a client which implements the `TechRadarApi` interface. To control how your data is loaded, you'll need to provide a class that implements the `TechRadarApi` and override the `techRadarApiRef` in the `app/src/apis.ts`.
 
 ```ts
 // app/src/lib/MyClient.ts
 import {
   TechRadarApi,
-  TechRadarLoaderResponse,
+  techRadarApiRef,
 } from '@backstage-community/plugin-tech-radar';
+import { TechRadarLoaderResponse } from '@backstage-community/plugin-tech-radar-common';
 
 export class MyOwnClient implements TechRadarApi {
   async load(id: string | undefined): Promise<TechRadarLoaderResponse> {
@@ -223,6 +236,13 @@ export class MyOwnClient implements TechRadarApi {
         })),
       })),
     };
+
+    // one could also optionally return hardcoded data inside the client
+    // return {
+    //   entries: [],
+    //   rings: [],
+    //   quadrants: []
+    // };
   }
 }
 
@@ -236,6 +256,31 @@ export const apis: AnyApiFactory[] = [
   */
   createApiFactory(techRadarApiRef, new MyOwnClient()),
 ];
+```
+
+If using the [new alpha frontend system](https://backstage.io/docs/frontend-system/), the API implementation should use the ApiBlueprint syntax:
+
+```ts
+// app/src/App.tsx
+const techRadarApi = ApiBlueprint.make({
+  name: 'techRadarApi',
+  params: {
+    factory: createApiFactory(techRadarApiRef, new MyOwnClient()),
+  },
+});
+
+export const app = createApp({
+  features: [
+    ...,
+    createFrontendModule({
+      pluginId: 'app',
+      extensions: [
+        ...
+        techRadarApi,
+      ],
+    }),
+  ],
+});
 ```
 
 ### How do I write tests?
