@@ -2514,7 +2514,7 @@ __metadata:
   resolution: "@backstage-community/plugin-jfrog-artifactory@workspace:plugins/jfrog-artifactory"
   dependencies:
     "@backstage/catalog-model": ^1.7.0
-    "@backstage/cli": ^0.28.0
+    "@backstage/cli": ^0.28.2
     "@backstage/core-app-api": ^1.15.1
     "@backstage/core-components": ^0.15.1
     "@backstage/core-plugin-api": ^1.10.0
@@ -2726,9 +2726,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/cli@npm:^0.28.0":
-  version: 0.28.0
-  resolution: "@backstage/cli@npm:0.28.0"
+"@backstage/cli@npm:^0.28.2":
+  version: 0.28.2
+  resolution: "@backstage/cli@npm:0.28.2"
   dependencies:
     "@backstage/catalog-model": ^1.7.0
     "@backstage/cli-common": ^0.1.14
@@ -2838,7 +2838,7 @@ __metadata:
     terser-webpack-plugin: ^5.1.3
     ts-morph: ^23.0.0
     util: ^0.12.3
-    webpack: ^5.70.0
+    webpack: ^5.94.0
     webpack-dev-server: ^5.0.0
     webpack-node-externals: ^3.0.0
     yaml: ^2.0.0
@@ -2874,7 +2874,7 @@ __metadata:
       optional: true
   bin:
     backstage-cli: bin/backstage-cli
-  checksum: d99a9ee70ab169645b6966c90c7955f88883c21f44d56d2e7259f4612a13b4d9c7da4a95f2be8f99117d3b6fc565566b978091a5aaf70e32a2ed95d8b9fa142a
+  checksum: 32e75a897a7a7b14df6ce43b66fdd5c9fb11b54b88fd3655257055536c77d38bf2d0c5fefbd44348f6250493673396c566eab695007f89d870757956ef659159
   languageName: node
   linkType: hard
 
@@ -4574,7 +4574,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@internal/jfrog-artifactory@workspace:."
   dependencies:
-    "@backstage/cli": ^0.28.0
+    "@backstage/cli": ^0.28.2
     "@backstage/e2e-test-utils": ^0.1.1
     "@backstage/repo-tools": ^0.10.0
     "@changesets/cli": ^2.27.1
@@ -25013,7 +25013,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webpack@npm:^5.70.0":
+"webpack@npm:^5.94.0":
   version: 5.95.0
   resolution: "webpack@npm:5.95.0"
   dependencies:
