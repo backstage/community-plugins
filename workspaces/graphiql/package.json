@@ -33,9 +33,9 @@
     "directory": "workspaces/graphiql"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.27.0",
+    "@backstage/cli": "^0.28.0",
     "@backstage/e2e-test-utils": "^0.1.1",
-    "@backstage/repo-tools": "^0.9.5",
+    "@backstage/repo-tools": "^0.10.0",
     "@changesets/cli": "^2.27.1",
     "@spotify/prettier-config": "^15.0.0",
     "node-gyp": "^10.0.0",
