@@ -74,10 +74,7 @@
   },
   "files": [
     "dist",
-    "config.d.ts",
-    "dist-dynamic/*.*",
-    "dist-dynamic/dist/**",
-    "app-config.yaml"
+    "config.d.ts"
   ],
   "repository": {
     "type": "git",
