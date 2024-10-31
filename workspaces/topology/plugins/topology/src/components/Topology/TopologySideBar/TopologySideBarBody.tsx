@@ -15,7 +15,9 @@
  */
 import React from 'react';
 
-import { Divider, Tab, Tabs } from '@material-ui/core';
+import Divider from '@mui/material/Divider';
+import Tab from '@mui/material/Tab';
+import Tabs from '@mui/material/Tabs';
 import { BaseNode } from '@patternfly/react-topology';
 
 import TopologyDetailsTabPanel from './TopologyDetailsTabPanel';

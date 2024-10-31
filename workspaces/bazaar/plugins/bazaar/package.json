@@ -53,15 +53,18 @@
     "luxon": "^3.0.0",
     "material-ui-search-bar": "^1.0.0",
     "react-hook-form": "^7.13.0",
-    "react-use": "^17.2.4"
+    "react-use": "^17.2.4",
+    "react-window": "^1.8.10"
   },
   "devDependencies": {
     "@backstage/cli": "^0.28.0",
     "@backstage/dev-utils": "^1.1.2",
+    "@backstage/plugin-catalog": "^1.23.1",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^15.0.0",
     "@types/react-dom": "^18.2.19",
+    "@types/react-window": "^1.8.8",
     "canvas": "^2.11.2",
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",

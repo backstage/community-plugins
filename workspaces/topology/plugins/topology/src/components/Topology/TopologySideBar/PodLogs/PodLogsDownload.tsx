@@ -15,8 +15,8 @@
  */
 import React from 'react';
 
-import { IconButton } from '@material-ui/core';
-import DownloadIcon from '@material-ui/icons/GetApp';
+import IconButton from '@mui/material/IconButton';
+import DownloadIcon from '@mui/icons-material/GetApp';
 
 import { downloadLogFile } from '@janus-idp/shared-react';
 

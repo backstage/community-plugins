@@ -16,28 +16,20 @@
 import React from 'react';
 import { createApp } from '@backstage/frontend-defaults';
 import {
-  configApiRef,
   createApiFactory,
   createFrontendModule,
-  SignInPageBlueprint,
   ApiBlueprint,
   PageBlueprint,
 } from '@backstage/frontend-plugin-api';
-import {
-  ScmAuth,
-  ScmIntegrationsApi,
-  scmIntegrationsApiRef,
-} from '@backstage/integration-react';
 import catalogPlugin from '@backstage/plugin-catalog/alpha';
 import catalogImportPlugin from '@backstage/plugin-catalog-import/alpha';
 import userSettingsPlugin from '@backstage/plugin-user-settings/alpha';
 import { Navigate } from 'react-router';
-import { SignInPage } from './components/auth/SignInPage';
 import {
   TechRadarApi,
-  TechRadarLoaderResponse,
   techRadarApiRef,
 } from '@backstage-community/plugin-tech-radar';
+import { TechRadarLoaderResponse } from '@backstage-community/plugin-tech-radar-common';
 import techRadarPlugin from '@backstage-community/plugin-tech-radar/alpha';
 
 const homePageExtension = PageBlueprint.make({
@@ -48,47 +40,23 @@ const homePageExtension = PageBlueprint.make({
   },
 });
 
-const signInPage = SignInPageBlueprint.make({
-  params: {
-    loader: async () => props => <SignInPage {...props} />,
-  },
-});
-
-const scmAuthExtension = ApiBlueprint.make({
-  name: 'scmAuth',
-  params: {
-    factory: ScmAuth.createDefaultApiFactory(),
-  },
-});
-
-const scmIntegrationApi = ApiBlueprint.make({
-  name: 'scmIntegrationsApi',
-  params: {
-    factory: createApiFactory({
-      api: scmIntegrationsApiRef,
-      deps: { configApi: configApiRef },
-      factory: ({ configApi }) => ScmIntegrationsApi.fromConfig(configApi),
-    }),
-  },
-});
-
-const mock: TechRadarLoaderResponse = {
-  entries: [],
-  quadrants: [
-    { id: 'infrastructure', name: 'Infrastructure' },
-    { id: 'frameworks', name: 'Frameworks' },
-    { id: 'languages', name: 'Languages' },
-    { id: 'process', name: 'Process' },
-  ],
-  rings: [],
-};
 class SampleTechRadarApi implements TechRadarApi {
-  async load() {
-    return mock;
+  async load(): Promise<TechRadarLoaderResponse> {
+    return {
+      entries: [],
+      quadrants: [
+        { id: 'infrastructure', name: 'Infrastructure' },
+        { id: 'frameworks', name: 'Frameworks' },
+        { id: 'languages', name: 'Languages' },
+        { id: 'process', name: 'Process' },
+      ],
+      rings: [],
+    };
   }
 }
 
 // overriding the api is one way to change the radar content
+// @ts-ignore
 const techRadarApi = ApiBlueprint.make({
   name: 'techRadarApi',
   params: {
@@ -105,11 +73,8 @@ export const app = createApp({
     createFrontendModule({
       pluginId: 'app',
       extensions: [
-        signInPage,
         homePageExtension,
-        scmAuthExtension,
-        scmIntegrationApi,
-        techRadarApi,
+        // techRadarApi, // comment out to use a custom api
       ],
     }),
   ],

@@ -7,57 +7,10 @@ import { ApiRef } from '@backstage/core-plugin-api';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { default as React_2 } from 'react';
 import { RouteRef } from '@backstage/core-plugin-api';
-
-// @public
-export enum MovedState {
-  Down = -1,
-  NoChange = 0,
-  Up = 1,
-}
-
-// @public
-export interface RadarEntry {
-  description?: string;
-  id: string;
-  key: string;
-  links?: Array<RadarEntryLink>;
-  quadrant: string;
-  timeline: Array<RadarEntrySnapshot>;
-  title: string;
-  // @deprecated
-  url?: string;
-}
-
-// @public
-export interface RadarEntryLink {
-  title: string;
-  url: string;
-}
-
-// @public
-export interface RadarEntrySnapshot {
-  date: Date;
-  description?: string;
-  moved?: MovedState;
-  ringId: string;
-}
+import { TechRadarLoaderResponse } from '@backstage-community/plugin-tech-radar-common';
 
 // @public
 export function RadarPage(props: TechRadarPageProps): React_2.JSX.Element;
-
-// @public
-export interface RadarQuadrant {
-  id: string;
-  name: string;
-}
-
-// @public
-export interface RadarRing {
-  color: string;
-  description?: string;
-  id: string;
-  name: string;
-}
 
 // @public @deprecated (undocumented)
 export const Router: typeof RadarPage;
@@ -82,13 +35,6 @@ export interface TechRadarComponentProps {
   searchText?: string;
   svgProps?: object;
   width: number;
-}
-
-// @public
-export interface TechRadarLoaderResponse {
-  entries: RadarEntry[];
-  quadrants: RadarQuadrant[];
-  rings: RadarRing[];
 }
 
 // @public
