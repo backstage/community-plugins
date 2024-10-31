@@ -1,5 +1,5 @@
 {
-  "name": "@backstage-community/plugin-keycloak-backend",
+  "name": "@backstage-community/plugin-catalog-backend-module-keycloak",
   "version": "3.1.0",
   "description": "A Backend backend plugin for Keycloak",
   "main": "src/index.ts",
@@ -12,7 +12,7 @@
     "role": "backend-plugin-module",
     "supported-versions": "1.32.4",
     "pluginId": "keycloak",
-    "pluginPackage": "@backstage-community/plugin-keycloak-backend"
+    "pluginPackage": "@backstage-community/plugin-catalog-backend-module-keycloak"
   },
   "exports": {
     ".": "./src/index.ts",
@@ -75,7 +75,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/backstage/community-plugins",
-    "directory": "workspaces/keycloak/plugins/keycloak-backend"
+    "directory": "workspaces/keycloak/plugins/catalog-backend-module-keycloak"
   },
   "keywords": [
     "support:production",

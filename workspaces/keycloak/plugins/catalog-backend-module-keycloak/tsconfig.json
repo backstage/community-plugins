@@ -3,7 +3,7 @@
   "include": ["src", "dev", "migrations"],
   "exclude": ["node_modules"],
   "compilerOptions": {
-    "outDir": "../../dist-types/plugins/keycloak-backend",
+    "outDir": "../../dist-types/plugins/catalog-backend-module-keycloak",
     "rootDir": "."
   }
 }

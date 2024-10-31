@@ -10,7 +10,7 @@
       "persistent": true
     },
     "tsc": {
-      "outputs": ["../../dist-types/plugins/keycloak-backend/**"]
+      "outputs": ["../../dist-types/plugins/catalog-backend-module-keycloak/**"]
     }
   }
 }
