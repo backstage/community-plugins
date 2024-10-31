@@ -17,5 +17,5 @@
 export * from './types';
 export * from './permissions';
 
-export const ANNOTATION_CLUSTER_ID = 'backstage-community.io/ocm-cluster-id';
-export const ANNOTATION_PROVIDER_ID = 'backstage-community.io/ocm-provider-id';
+export const ANNOTATION_CLUSTER_ID = 'janus-idp.io/ocm-cluster-id';
+export const ANNOTATION_PROVIDER_ID = 'janus-idp.io/ocm-provider-id';
