@@ -1,0 +1,277 @@
+{
+  "apiVersion": "internal.open-cluster-management.io/v1beta1",
+  "kind": "ManagedClusterInfo",
+  "metadata": {
+    "creationTimestamp": "2022-11-15T15:26:26Z",
+    "generation": 2,
+    "labels": {
+      "app.kubernetes.io/instance": "acm-infra",
+      "authdeployment": "primary",
+      "cloud": "BareMetal",
+      "cluster.open-cluster-management.io/clusterset": "argocd-managed",
+      "clusterID": "0492612e-4f45-4d50-94d0-8b60a145cfa1",
+      "feature.open-cluster-management.io/addon-application-manager": "available",
+      "feature.open-cluster-management.io/addon-cert-policy-controller": "available",
+      "feature.open-cluster-management.io/addon-config-policy-controller": "available",
+      "feature.open-cluster-management.io/addon-governance-policy-framework": "available",
+      "feature.open-cluster-management.io/addon-iam-policy-controller": "available",
+      "feature.open-cluster-management.io/addon-observability-controller": "available",
+      "feature.open-cluster-management.io/addon-search-collector": "available",
+      "feature.open-cluster-management.io/addon-work-manager": "available",
+      "name": "cluster1",
+      "openshiftVersion": "4.10.50",
+      "vendor": "OpenShift"
+    },
+    "name": "cluster1",
+    "namespace": "cluster1",
+    "resourceVersion": "2816766485",
+    "uid": "2d89060a-0649-4426-b7cf-f01e2584c332"
+  },
+  "spec": {
+    "loggingCA": "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURKVENDQWcyZ0F3SUJBZ0lJRFF0K3N2b0lnVnN3RFFZSktvWklodmNOQVFFTEJRQXdJREVlTUJ3R0ExVUUKQXhNVmIyTnRMV3RzZFhOMFpYSnNaWFF0Ykc5bloyVnlNQjRYRFRJeU1EZ3lOVEV6TWpjMU4xb1hEVEl6TURneQpOVEV6TWpjMU9Gb3dJREVlTUJ3R0ExVUVBeE1WYjJOdExXdHNkWE4wWlhKc1pYUXRiRzluWjJWeU1JSUJJakFOCkJna3Foa2lHOXcwQkFRRUZBQU9DQVE4QU1JSUJDZ0tDQVFFQTVhMHlmV0I0RWxjZDd5UkN0S3greVhidC9qTVkKUDJkUGduZUQ1aVhuNFRpd1pOUUhmUU5QRk1zRTl1ajZuNkZjUklaUDM2ZEV4RHNMOGVmdTBYb3l4YVp3d3VRUApkSGgwbUlsVnltMjk3b2EyTEZ2aGFNVDJ2dHBDRHBhS3M3NklGbnFJUUtYQkZuMEJJVUNHMXRDdUNaZ0E3R3dRCmxjYWVodTV0RXV2bmJPSWd5eHlOSFAvT29sLytXL1paRzJ6SCtKd01qN1FNQmhYNk04ZFhkOUxBVGgyRzJpUE0KUVBGcHpUbXQ2OW90QTBmbWJYSVUzVTBORkt5bnhMamh3cVhObGZUTzBaZzdHc1RyNVVJV2tNdjdiOVA5MFJWbwpBaFNXZGJQYk8wSzgyMFIrL29WVzdvK2tmSW1Pc1VNZE1YeXFYQmlEZ1FhcTIybzlYcnorWTByZ0VRSURBUUFCCm8yTXdZVEFPQmdOVkhROEJBZjhFQkFNQ0FxUXdEd1lEVlIwVEFRSC9CQVV3QXdFQi96QWRCZ05WSFE0RUZnUVUKZGo1SHVnTEplKzcyK1pkYjlKRXpGaW5hNVJRd0h3WURWUjBqQkJnd0ZvQVVkajVIdWdMSmUrNzIrWmRiOUpFegpGaW5hNVJRd0RRWUpLb1pJaHZjTkFRRUxCUUFEZ2dFQkFKTFhBdElPSDBVcnhZeC9WVXVTM2lqd0ZyaDVKOUpkCm8wK0JVQ1UvYlMvQkJvZlJ6RUpldVFBMWo2cU1aYmJtdXEvVjdmeVp3L25VbFRSUWVHTjhrSnN3U0cyTWlYeFgKOU41SGl0a2tZVE1tNUJjNlF6ZHJ4UjlMOENJRTNSRnZzRmhRUVdCZmtldGMweHJyeHQxd3dML1RIMU5hUGVSdApoUHFvclhkbGNRbWVKU2ZiTXBKMXc0dEpQaGlKcmg5cW1DblU2enlCSzlTLzRsclp1KzUySmYwc1ZGSEdoWUFmCnNxZnNBNWkwaDN3TVJmSExlU1UyZElvYkc1RjJIbEVQVGQrYis5RW53MUJramtCU3AwUHBneXJBK1pLK3pwK2QKMWJjTTlrbHVpRDkxR3ZTWmtiTkhhTFNpVUZRVEJER05sdEE4Z1lUUS81b2FzUndtL3VrcXlORT0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=",
+    "masterEndpoint": "https://api.cluster1.bar.baz:6443"
+  },
+  "status": {
+    "cloudVendor": "BareMetal",
+    "clusterID": "0492612e-4f45-4d50-94d0-8b60a145cfa1",
+    "conditions": [
+      {
+        "lastTransitionTime": "2022-11-15T15:26:27Z",
+        "message": "Accepted by hub cluster admin",
+        "reason": "HubClusterAdminAccepted",
+        "status": "True",
+        "type": "HubAcceptedManagedCluster"
+      },
+      {
+        "lastTransitionTime": "2022-11-15T15:26:37Z",
+        "message": "Import succeeded",
+        "reason": "ManagedClusterImported",
+        "status": "True",
+        "type": "ManagedClusterImportSucceeded"
+      },
+      {
+        "lastTransitionTime": "2022-11-15T15:27:02Z",
+        "message": "Managed cluster joined",
+        "reason": "ManagedClusterJoined",
+        "status": "True",
+        "type": "ManagedClusterJoined"
+      },
+      {
+        "lastTransitionTime": "2023-02-06T14:59:25Z",
+        "message": "Managed cluster is available",
+        "reason": "ManagedClusterAvailable",
+        "status": "True",
+        "type": "ManagedClusterConditionAvailable"
+      },
+      {
+        "lastTransitionTime": "2022-11-15T15:48:29Z",
+        "message": "Managed cluster info is synced",
+        "reason": "ManagedClusterInfoSynced",
+        "status": "True",
+        "type": "ManagedClusterInfoSynced"
+      }
+    ],
+    "consoleURL": "https://console-openshift-console.apps.cluster1.bar.baz",
+    "distributionInfo": {
+      "ocp": {
+        "availableUpdates": ["4.10.51"],
+        "channel": "stable-4.10",
+        "desired": {
+          "channels": [
+            "candidate-4.10",
+            "candidate-4.11",
+            "eus-4.10",
+            "fast-4.10",
+            "fast-4.11",
+            "stable-4.10",
+            "stable-4.11"
+          ],
+          "image": "quay.io/openshift-release-dev/ocp-release@sha256:9301ca818d705bda5981db961904f2b6e3f9adcc51e3c8e258c05950236dfc3d",
+          "url": "https://access.redhat.com/errata/RHSA-2023:0241",
+          "version": "4.10.50"
+        },
+        "desiredVersion": "4.10.50",
+        "managedClusterClientConfig": {
+          "caBundle": "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUZWVENDQkQyZ0F3SUJBZ0lTQTArVnFqdGUxZkFYbzV4dmUrNzhiT3B3TUEwR0NTcUdTSWIzRFFFQkN3VUEKTURJeEN6QUpCZ05WQkFZVEFsVlRNUll3RkFZRFZRUUtFdzFNWlhRbmN5QkZibU55ZVhCME1Rc3dDUVlEVlFRRApFd0pTTXpBZUZ3MHlNakV5TVRreE1EVTBORE5hRncweU16QXpNVGt4TURVME5ESmFNRE14TVRBdkJnTlZCQU1UCktHRndhUzVxWlhKeWVTNXBiMjV2Y3k1bGJXVmhMbTl3WlhKaGRHVXRabWx5YzNRdVkyeHZkV1F3Z2dFaU1BMEcKQ1NxR1NJYjNEUUVCQVFVQUE0SUJEd0F3Z2dFS0FvSUJBUURUWmxXZmEvWXlUdEJyT00yaW5aMzhhbzNsVVBDZApMT05Yc25wdGZPSHpoVkszV0pUQU5heWE2dVV0NGE5NXVzK1hhRGNnNnlVWkc5TmR2ditjT3orTTlFR0VDd1dGCkRkbHBvaDZWeDh2cDh0ZXNhY0JUdjh5d0Z1TjQ2MjdSRDBLSldzVHNma1I3S1FkdmhCQXFnRktiU3l5elQvc0UKbk1idjMzejVONU85bHR6MzBoMHd1OWxQVERqaHBFZWRaS1VQRWFjS0diRndXRW5sZ0VSSTduQTIxeXhGTzZIZwpvL2ZtSURKR25qRndEM29MclVKM00xUS9TU3hZRnBzLzZTOHp3T1IrZENKdi9jUFBFd2VoallXNStvY2NPYS9JCnZVR3ZONkpadGhTSW1XdU1iQUZnMHNsR0F5QjJaZG1ZMUFwZWxoK1dsRU8zTE43cTUvUms2VnRCQWdNQkFBR2oKZ2dKaU1JSUNYakFPQmdOVkhROEJBZjhFQkFNQ0JhQXdIUVlEVlIwbEJCWXdGQVlJS3dZQkJRVUhBd0VHQ0NzRwpBUVVGQndNQ01Bd0dBMVVkRXdFQi93UUNNQUF3SFFZRFZSME9CQllFRk1LVjVwNEJUQWFiRjBEeS9LY3hpWFRECmhZZjRNQjhHQTFVZEl3UVlNQmFBRkJRdXN4ZTNXRmJMcmxBSlFPWWZyNTJMRk1MR01GVUdDQ3NHQVFVRkJ3RUIKQkVrd1J6QWhCZ2dyQmdFRkJRY3dBWVlWYUhSMGNEb3ZMM0l6TG04dWJHVnVZM0l1YjNKbk1DSUdDQ3NHQVFVRgpCekFDaGhab2RIUndPaTh2Y2pNdWFTNXNaVzVqY2k1dmNtY3ZNRE1HQTFVZEVRUXNNQ3FDS0dGd2FTNXFaWEp5CmVTNXBiMjV2Y3k1bGJXVmhMbTl3WlhKaGRHVXRabWx5YzNRdVkyeHZkV1F3VEFZRFZSMGdCRVV3UXpBSUJnWm4KZ1F3QkFnRXdOd1lMS3dZQkJBR0MzeE1CQVFFd0tEQW1CZ2dyQmdFRkJRY0NBUllhYUhSMGNEb3ZMMk53Y3k1cwpaWFJ6Wlc1amNubHdkQzV2Y21jd2dnRURCZ29yQmdFRUFkWjVBZ1FDQklIMEJJSHhBTzhBZFFEb1B0RGFQdlVHCk5UTG5WeWk4aVd2SkE5UEwwUkZyN090cDRYZDliUWE5YmdBQUFZVXFQSGQxQUFBRUF3QkdNRVFDSUYzVzl4UDkKSCtZVnJOTGlWNXB0alIyRXhndDNtSkxySnlPRnhJNG1yUHVEQWlBMFVRc24zUnNmTTBmeFNPaDlkTmhFMTMvNgp6NHltSUtSOC9uZXJFRWRIdWdCMkFMYysreVRmbkUyNmRmSTV4YnBZOUd4ZC9FTFBlcDgxeEo0ZENZRWw3YlNaCkFBQUJoU284ZVhFQUFBUURBRWN3UlFJZ050UVpUdDV3OUxzS1Q3Y1dzalVNWlVYeGREOWFsa1FZTWJHN1RxcFIKNktBQ0lRRHZjVklyNkFnckZNSVNyeGZmK3AyWmc4Zkx4TC9lMnpPNnczMmpZTjYvbXpBTkJna3Foa2lHOXcwQgpBUXNGQUFPQ0FRRUFJWVFqRWpLTEpsRDlOQTN6RllTa3JFaTFFeDk5K256bGRwT0tOTVJETVU5TTZIbGhLaWRpCmpMOE9pemNhYmlLUlUyeEQxSlVZbmZFRnl4Q0JuVzdZRlYra0xvcm4ycmlIblVUL0hFU1NGZ0JXekQ4QlRYWVMKeHB3KzdWQ3dVaDRTRjJXOVg4UzVpQzQxSTJ3NFRLVHpDczJ2dmJibUdlckhOWHlWUXdWNU9XcTRVQTdVME1IeQpJcCs1ZURKZXZzckl4dE1JWTQxU3dKYzdGRHd5a3llOFpWRlZ3cVZuWmtpRm9NRGU1U01JYWMvQ1V0ZzZLbS9PCnhLelFxZzVYZGZrNkh3SzBxeGZURXNhNTdTSkZ0UWNiTkJjYTVlaWc2eXE3SUhtR1M2TmRpQkcwOFQ0Q3FreGMKQURxVHRmZFFOZXdDQ0ZwWFZSSkhHNC9jeGlYOWl4dG9uZz09Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0KLS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUZGakNDQXY2Z0F3SUJBZ0lSQUpFckNFclBEQmluVS9iV0xpV25YMW93RFFZSktvWklodmNOQVFFTEJRQXcKVHpFTE1Ba0dBMVVFQmhNQ1ZWTXhLVEFuQmdOVkJBb1RJRWx1ZEdWeWJtVjBJRk5sWTNWeWFYUjVJRkpsYzJWaApjbU5vSUVkeWIzVndNUlV3RXdZRFZRUURFd3hKVTFKSElGSnZiM1FnV0RFd0hoY05NakF3T1RBME1EQXdNREF3CldoY05NalV3T1RFMU1UWXdNREF3V2pBeU1Rc3dDUVlEVlFRR0V3SlZVekVXTUJRR0ExVUVDaE1OVEdWMEozTWcKUlc1amNubHdkREVMTUFrR0ExVUVBeE1DVWpNd2dnRWlNQTBHQ1NxR1NJYjNEUUVCQVFVQUE0SUJEd0F3Z2dFSwpBb0lCQVFDN0FoVW96UGFnbE5NUEV1eU5WWkxEK0lMeG1hWjZRb2luWFNhcXRTdTV4VXl4cjQ1citYWElvOWNQClI1UVVWVFZYako2b29qa1o5WUk4UXFsT2J2VTd3eTdiamNDd1hQTlpPT2Z0ejJud1dnc2J2c0NVSkNXSCtqZHgKc3hQbkhLemhtKy9iNUR0RlVrV1dxY0ZUempUSVV1NjFydTJQM21CdzRxVlVxN1p0RHBlbFFEUnJLOU84WnV0bQpOSHo2YTR1UFZ5bVorREFYWGJweWIvdUJ4YTNTaGxnOUY4Zm5DYnZ4Sy9lRzNNSGFjVjNVUnVQTXJTWEJpTHhnClozVm1zL0VZOTZKYzVsUC9Pb2kyUjZYL0V4anFtQWwzUDUxVCtjOEI1ZldtY0JjVXIyT2svNW16azUzY1U2Y0cKL2tpRkhhRnByaVYxdXhQTVVnUDE3VkdoaTlzVkFnTUJBQUdqZ2dFSU1JSUJCREFPQmdOVkhROEJBZjhFQkFNQwpBWVl3SFFZRFZSMGxCQll3RkFZSUt3WUJCUVVIQXdJR0NDc0dBUVVGQndNQk1CSUdBMVVkRXdFQi93UUlNQVlCCkFmOENBUUF3SFFZRFZSME9CQllFRkJRdXN4ZTNXRmJMcmxBSlFPWWZyNTJMRk1MR01COEdBMVVkSXdRWU1CYUEKRkhtMFdlWjd0dVhrQVhPQUNJaklHbGoyNlp0dU1ESUdDQ3NHQVFVRkJ3RUJCQ1l3SkRBaUJnZ3JCZ0VGQlFjdwpBb1lXYUhSMGNEb3ZMM2d4TG1rdWJHVnVZM0l1YjNKbkx6QW5CZ05WSFI4RUlEQWVNQnlnR3FBWWhoWm9kSFJ3Ck9pOHZlREV1WXk1c1pXNWpjaTV2Y21jdk1DSUdBMVVkSUFRYk1Ca3dDQVlHWjRFTUFRSUJNQTBHQ3lzR0FRUUIKZ3Q4VEFRRUJNQTBHQ1NxR1NJYjNEUUVCQ3dVQUE0SUNBUUNGeWs1SFBxUDNoVVNGdk5WbmVMS1lZNjExVFI2VwpQVE5sY2xRdGdhRHF3KzM0SUw5ZnpMZHdBTGR1Ty9aZWxON2tJSittNzR1eUErZWl0Ulk4a2M2MDdUa0M1M3dsCmlrZm1aVzQvUnZUWjhNNlVLKzVVemhLOGpDZEx1TUdZTDZLdnpYR1JTZ2kzeUxnamV3UXRDUGtJVno2RDJRUXoKQ2tjaGVBbUNKOE1xeUp1NXpsenlaTWpBdm5uQVQ0NXRSQXhla3JzdTk0c1E0ZWdkUkNuYldTRHRZN2toK0JJbQpsSk5Yb0IxbEJNRUtJcTRRRFVPWG9SZ2ZmdURnaGplMVdyRzlNTCtIYmlzcS95Rk9Hd1hEOVJpWDhGNnN3Nlc0CmF2QXV2RHN6dWU1TDNzejg1SytFQzRZL3dGVkROdlpvNFRZWGFvNlowZitsUUtjMHQ4RFFZemsxT1hWdThycDIKeUpNQzZhbExiQmZPREFMWnZZSDduN2RvMUFabHM0STlkMVA0am5rRHJRb3hCM1VxUTloVmwzTEVLUTczeEYxTwp5SzVHaEREWDhvVmZHS0Y1dStkZWNJc0g0WWFUdzdtUDNHRnhKU3F2MyswbFVGSm9pNUxjNWRhMTQ5cDkwSWRzCmhDRXhyb0wxKzdtcnlJa1hQZUZNNVRnTzlyMHJ2WmFCRk92VjJ6MGdwMzVaMCtMNFdQbGJ1RWpOL2x4UEZpbisKSGxVanI4Z1JzSTNxZkpPUUZ5LzlyS0lKUjBZLzhPbXd0LzhvVFdneTFtZGVIbW1qazdqMW5Zc3ZDOUpTUTZadgpNbGRsVFRLQjN6aFRoVjErWFdZcDZyamQ1SlcxemJWV0VrTE54RTdHSlRoRVVHM3N6Z0JWR1A3cFNXVFVUc3FYCm5MUmJ3SE9vcTdoSHdnPT0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQotLS0tLUJFR0lOIENFUlRJRklDQVRFLS0tLS0KTUlJRllEQ0NCRWlnQXdJQkFnSVFRQUYzSVRmVTZVSzQ3bmFxUEdRS3R6QU5CZ2txaGtpRzl3MEJBUXNGQURBLwpNU1F3SWdZRFZRUUtFeHRFYVdkcGRHRnNJRk5wWjI1aGRIVnlaU0JVY25WemRDQkRieTR4RnpBVkJnTlZCQU1UCkRrUlRWQ0JTYjI5MElFTkJJRmd6TUI0WERUSXhNREV5TURFNU1UUXdNMW9YRFRJME1Ea3pNREU0TVRRd00xb3cKVHpFTE1Ba0dBMVVFQmhNQ1ZWTXhLVEFuQmdOVkJBb1RJRWx1ZEdWeWJtVjBJRk5sWTNWeWFYUjVJRkpsYzJWaApjbU5vSUVkeWIzVndNUlV3RXdZRFZRUURFd3hKVTFKSElGSnZiM1FnV0RFd2dnSWlNQTBHQ1NxR1NJYjNEUUVCCkFRVUFBNElDRHdBd2dnSUtBb0lDQVFDdDZDUno5QlEzODV1ZUsxY29ISWUrM0xmZk9KQ01ianptVjZCNDkzWEMKb3Y3MWFtNzJBRThvMjk1b2hteEVrN2F4WS8wVUVtdS9IOUxxTVpzaGZ0RXpQTHBJOWQxNTM3TzQveEx4SVpwTAp3WXFHY1dsS1ptWnNqMzQ4Y0wrdEtTSUc4K1RBNW9DdTRrdVB0NWwrbEFPZjAwZVhmSmxJSTFQb09LNVBDbStECkx0RkpWNHlBZExiYUw5QTRqWHNEY0NFYmRmSXdQUHFQcnQzYVk2dnJGay9DamhGTGZzOEw2UCsxZHk3MHNudEsKNEV3U0pReHdqUU1wb09GVEpPd1QyZTRadnhDelNvdy9pYU5oVWQ2c2h3ZVU5R054N0M3aWIxdVlnZUdKWERSNQpiSGJ2TzVCaWVlYmJwSm92SnNYUUVPRU8zdGtRamhiN3QvZW85OGZsQWdlWWp6WUlsZWZpTjVZTk5uV2UrdzV5CnNSMmJ2QVA1U1FYWWdkMEZ0Q3JXUWVtc0FYYVZDZy9ZMzlXOUVoODFMeWdYYk5LWXdhZ0paSGR1UnplNnpxeFoKWG1pZGYzTFdpY1VHUVNrK1dUN2RKdlVreVJHbldxTk1RQjlHb1ptMXB6cFJib1k3bm4xeXB4SUZlRm50UGxGNApGUXNEajQzUUx3V3lQbnRLSEV0ekJSTDh4dXJnVUJOOFE1TjBzOHAwNTQ0ZkFRalFNTlJiY1RhMEI3ckJNREJjClNMZUNPNWltZldDS29xTXBnc3k2dllNRUc2S0RBMEdoMWdYeEc4SzI4S2g4aGp0R3FFZ3FpTngybW5hL0gycWwKUFJtUDZ6anpaTjdJS3cwS0tQLzMyK0lWUXRRaTBDZGQ0WG4rR09kd2lLMU81dG1MT3NiZEoxRnUvN3hrOVRORApUd0lEQVFBQm80SUJSakNDQVVJd0R3WURWUjBUQVFIL0JBVXdBd0VCL3pBT0JnTlZIUThCQWY4RUJBTUNBUVl3ClN3WUlLd1lCQlFVSEFRRUVQekE5TURzR0NDc0dBUVVGQnpBQ2hpOW9kSFJ3T2k4dllYQndjeTVwWkdWdWRISjEKYzNRdVkyOXRMM0p2YjNSekwyUnpkSEp2YjNSallYZ3pMbkEzWXpBZkJnTlZIU01FR0RBV2dCVEVwN0drZXl4eAordHZoUzVCMS84UVZZSVdKRURCVUJnTlZIU0FFVFRCTE1BZ0dCbWVCREFFQ0FUQS9CZ3NyQmdFRUFZTGZFd0VCCkFUQXdNQzRHQ0NzR0FRVUZCd0lCRmlKb2RIUndPaTh2WTNCekxuSnZiM1F0ZURFdWJHVjBjMlZ1WTNKNWNIUXUKYjNKbk1Ed0dBMVVkSHdRMU1ETXdNYUF2b0MyR0syaDBkSEE2THk5amNtd3VhV1JsYm5SeWRYTjBMbU52YlM5RQpVMVJTVDA5VVEwRllNME5TVEM1amNtd3dIUVlEVlIwT0JCWUVGSG0wV2VaN3R1WGtBWE9BQ0lqSUdsajI2WnR1Ck1BMEdDU3FHU0liM0RRRUJDd1VBQTRJQkFRQUtjd0JzbG03L0RsTFFydDJNNTFvR3JTK280NCsveVFvREZWREMKNVd4Q3UyK2I5TFJQd2tTSUNIWE02d2ViRkdKdWVON3NKN281WFBXaW9XNVdsSEFRVTdHNzVLL1Fvc01yQWRTVwo5TVVnTlRQNTJHRTI0SEdOdExpMXFvSkZsY0R5cVNNbzU5YWh5MmNJMnFCRExLb2JreC9KM3ZXcmFWMFQ5VnVHCldDTEtUVlhrY0dkdHdsZkZSamxCejRwWWcxaHRtZjVYNkRZTzhBNGpxdjJJbDlEalhBNlVTYlcxRnpYU0xyOU8KaGU4WTRJV1M2d1k3YkNrakNXRGNSUUpNRWhnNzZmc08zdHhFK0ZpWXJ1cTlSVVdoaUYxbXl2NFE2VytDeUJGQwpEZnZwN09PR0FONmRFT000K3FSOXNkam9TWUtFQnBzcjZHdFBBUXc0ZHk3NTNlYzUKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=",
+          "url": "https://api.cluster1.bar.baz:6443"
+        },
+        "version": "4.10.50",
+        "versionAvailableUpdates": [
+          {
+            "channels": [
+              "candidate-4.10",
+              "candidate-4.11",
+              "eus-4.10",
+              "fast-4.10",
+              "fast-4.11",
+              "stable-4.10",
+              "stable-4.11"
+            ],
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:d23a3b88ece36f741923552904b730c5452db698c7678cf65181fefb62ea5e2f",
+            "url": "https://access.redhat.com/errata/RHSA-2023:0561",
+            "version": "4.10.51"
+          }
+        ],
+        "versionHistory": [
+          {
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:aab51636460b5a9757b736a29bc92ada6e6e6282e46b06e6fd483063d590d62a",
+            "state": "Completed",
+            "verified": false,
+            "version": "4.10.24"
+          },
+          {
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:e1fa1f513068082d97d78be643c369398b0e6820afab708d26acda2262940954",
+            "state": "Completed",
+            "verified": true,
+            "version": "4.10.26"
+          },
+          {
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:4ef9ec346f612972cf0441e1e009b836f8db1143a6fbe95edbe573baf2e41f7b",
+            "state": "Completed",
+            "verified": true,
+            "version": "4.10.43"
+          },
+          {
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:9301ca818d705bda5981db961904f2b6e3f9adcc51e3c8e258c05950236dfc3d",
+            "state": "Completed",
+            "verified": true,
+            "version": "4.10.50"
+          }
+        ]
+      },
+      "type": "OCP"
+    },
+    "kubeVendor": "OpenShift",
+    "loggingEndpoint": {
+      "hostname": "klusterlet-addon-workmgr-open-cluster-management-agent-addon.apps.cluster1.bar.baz",
+      "ip": ""
+    },
+    "loggingPort": {
+      "name": "https",
+      "port": 0,
+      "protocol": "TCP"
+    },
+    "nodeList": [
+      {
+        "capacity": {
+          "cpu": "16",
+          "memory": "65927696Ki",
+          "socket": "8"
+        },
+        "conditions": [
+          {
+            "status": "True",
+            "type": "Ready"
+          }
+        ],
+        "labels": {
+          "node-role.kubernetes.io/worker": ""
+        },
+        "name": "compute-0"
+      },
+      {
+        "capacity": {
+          "cpu": "16",
+          "memory": "65927696Ki",
+          "socket": "8"
+        },
+        "conditions": [
+          {
+            "status": "True",
+            "type": "Ready"
+          }
+        ],
+        "labels": {
+          "node-role.kubernetes.io/worker": ""
+        },
+        "name": "compute-1"
+      },
+      {
+        "capacity": {
+          "cpu": "16",
+          "memory": "65927696Ki",
+          "socket": "8"
+        },
+        "conditions": [
+          {
+            "status": "True",
+            "type": "Ready"
+          }
+        ],
+        "labels": {
+          "node-role.kubernetes.io/worker": ""
+        },
+        "name": "compute-2"
+      },
+      {
+        "capacity": {
+          "cpu": "16",
+          "memory": "65927696Ki",
+          "socket": "8"
+        },
+        "conditions": [
+          {
+            "status": "True",
+            "type": "Ready"
+          }
+        ],
+        "labels": {
+          "node-role.kubernetes.io/worker": ""
+        },
+        "name": "compute-3"
+      },
+      {
+        "capacity": {
+          "cpu": "8",
+          "memory": "32897580Ki",
+          "socket": "4"
+        },
+        "conditions": [
+          {
+            "status": "True",
+            "type": "Ready"
+          }
+        ],
+        "labels": {
+          "node-role.kubernetes.io/master": ""
+        },
+        "name": "control-0"
+      },
+      {
+        "capacity": {
+          "cpu": "8",
+          "memory": "32897580Ki",
+          "socket": "4"
+        },
+        "conditions": [
+          {
+            "status": "True",
+            "type": "Ready"
+          }
+        ],
+        "labels": {
+          "node-role.kubernetes.io/master": ""
+        },
+        "name": "control-1"
+      },
+      {
+        "capacity": {
+          "cpu": "8",
+          "memory": "32897580Ki",
+          "socket": "4"
+        },
+        "conditions": [
+          {
+            "status": "True",
+            "type": "Ready"
+          }
+        ],
+        "labels": {
+          "node-role.kubernetes.io/master": ""
+        },
+        "name": "control-2"
+      }
+    ],
+    "version": "v1.23.12+8a6bfe4"
+  }
+}
