@@ -1,5 +1,12 @@
 ### Dependencies
 
+## 1.9.1
+
+### Patch Changes
+
+- 71aca1f: - Version update in `package.json` from `1.8.3` to `1.9.0`
+  - Removed `export-dynamic` script and Janus CLI dependency in `package.json`
+
 ## 1.8.3
 
 ### Patch Changes
