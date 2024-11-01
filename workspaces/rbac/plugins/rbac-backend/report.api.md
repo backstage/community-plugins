@@ -79,7 +79,14 @@ export interface RouterOptions {
 
 // Warnings were encountered during analysis:
 //
-// /home/kmittal/repos/community-plugins/workspaces/rbac/plugins/rbac-node/src/types/types.ts:1:1 - (ae-wrong-input-file-type) Incorrect file type; API Extractor expects to analyze compiler outputs with the .d.ts file extension. Troubleshooting tips: https://api-extractor.com/link/dts-error
+// src/service/policy-builder.d.ts:7:1 - (ae-undocumented) Missing documentation for "EnvOptions".
+// src/service/policy-builder.d.ts:17:1 - (ae-undocumented) Missing documentation for "RBACRouterOptions".
+// src/service/policy-builder.d.ts:26:1 - (ae-undocumented) Missing documentation for "PolicyBuilder".
+// src/service/policy-builder.d.ts:27:5 - (ae-undocumented) Missing documentation for "build".
+// src/service/router.d.ts:4:1 - (ae-undocumented) Missing documentation for "RouterOptions".
+// src/service/router.d.ts:5:5 - (ae-undocumented) Missing documentation for "logger".
+// src/service/router.d.ts:6:5 - (ae-undocumented) Missing documentation for "config".
+// src/service/router.d.ts:8:1 - (ae-undocumented) Missing documentation for "createRouter".
 
 // (No @packageDocumentation comment for this package)
 
