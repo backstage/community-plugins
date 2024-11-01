@@ -199,7 +199,29 @@ export type UpdatePolicy = {
 
 // Warnings were encountered during analysis:
 //
-// /home/kmittal/repos/community-plugins/workspaces/rbac/plugins/rbac-node/src/types/types.ts:1:1 - (ae-wrong-input-file-type) Incorrect file type; API Extractor expects to analyze compiler outputs with the .d.ts file extension. Troubleshooting tips: https://api-extractor.com/link/dts-error
+// src/permissions.d.ts:2:22 - (ae-undocumented) Missing documentation for "RESOURCE_TYPE_POLICY_ENTITY".
+// src/types.d.ts:3:1 - (ae-undocumented) Missing documentation for "Source".
+// src/types.d.ts:4:1 - (ae-undocumented) Missing documentation for "PermissionPolicyMetadata".
+// src/types.d.ts:7:1 - (ae-undocumented) Missing documentation for "RoleMetadata".
+// src/types.d.ts:15:1 - (ae-undocumented) Missing documentation for "Policy".
+// src/types.d.ts:19:1 - (ae-undocumented) Missing documentation for "RoleBasedPolicy".
+// src/types.d.ts:24:1 - (ae-undocumented) Missing documentation for "Role".
+// src/types.d.ts:29:1 - (ae-undocumented) Missing documentation for "UpdatePolicy".
+// src/types.d.ts:33:1 - (ae-undocumented) Missing documentation for "NamedPolicy".
+// src/types.d.ts:37:1 - (ae-undocumented) Missing documentation for "ResourcedPolicy".
+// src/types.d.ts:40:1 - (ae-undocumented) Missing documentation for "PolicyDetails".
+// src/types.d.ts:41:1 - (ae-undocumented) Missing documentation for "isResourcedPolicy".
+// src/types.d.ts:42:1 - (ae-undocumented) Missing documentation for "PluginPermissionMetaData".
+// src/types.d.ts:46:1 - (ae-undocumented) Missing documentation for "NonEmptyArray".
+// src/types.d.ts:47:22 - (ae-undocumented) Missing documentation for "PermissionActionValues".
+// src/types.d.ts:48:1 - (ae-undocumented) Missing documentation for "PermissionAction".
+// src/types.d.ts:49:22 - (ae-undocumented) Missing documentation for "toPermissionAction".
+// src/types.d.ts:50:1 - (ae-undocumented) Missing documentation for "isValidPermissionAction".
+// src/types.d.ts:51:1 - (ae-undocumented) Missing documentation for "PermissionInfo".
+// src/types.d.ts:55:1 - (ae-undocumented) Missing documentation for "RoleConditionalPolicyDecision".
+// src/types.d.ts:60:22 - (ae-undocumented) Missing documentation for "ConditionalAliases".
+// src/types.d.ts:64:22 - (ae-undocumented) Missing documentation for "CONDITION_ALIAS_SIGN".
+// src/types.d.ts:65:1 - (ae-undocumented) Missing documentation for "UnauthorizedError".
 
 // (No @packageDocumentation comment for this package)
 

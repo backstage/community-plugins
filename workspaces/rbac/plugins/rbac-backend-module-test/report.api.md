@@ -10,10 +10,6 @@ import { BackendFeature } from '@backstage/backend-plugin-api';
 const rbacModuleTest: BackendFeature;
 export default rbacModuleTest;
 
-// Warnings were encountered during analysis:
-//
-// /home/kmittal/repos/community-plugins/workspaces/rbac/plugins/rbac-node/src/types/types.ts:1:1 - (ae-wrong-input-file-type) Incorrect file type; API Extractor expects to analyze compiler outputs with the .d.ts file extension. Troubleshooting tips: https://api-extractor.com/link/dts-error
-
 // (No @packageDocumentation comment for this package)
 
 ```

@@ -56,6 +56,15 @@ export const rbacProviderExtensionPoint: ExtensionPoint<RBACProviderExtensionPoi
 
 // Warnings were encountered during analysis:
 //
-// /home/kmittal/repos/community-plugins/workspaces/rbac/plugins/rbac-node/src/types/types.ts:1:1 - (ae-wrong-input-file-type) Incorrect file type; API Extractor expects to analyze compiler outputs with the .d.ts file extension. Troubleshooting tips: https://api-extractor.com/link/dts-error
+// src/extensions.d.ts:16:22 - (ae-undocumented) Missing documentation for "rbacProviderExtensionPoint".
+// src/extensions.d.ts:17:1 - (ae-undocumented) Missing documentation for "RBACProviderExtensionPoint".
+// src/types/types.d.ts:6:5 - (ae-undocumented) Missing documentation for "getPluginIds".
+// src/types/types.d.ts:8:1 - (ae-undocumented) Missing documentation for "RBACProvider".
+// src/types/types.d.ts:9:5 - (ae-undocumented) Missing documentation for "getProviderName".
+// src/types/types.d.ts:10:5 - (ae-undocumented) Missing documentation for "connect".
+// src/types/types.d.ts:11:5 - (ae-undocumented) Missing documentation for "refresh".
+// src/types/types.d.ts:13:1 - (ae-undocumented) Missing documentation for "RBACProviderConnection".
+// src/types/types.d.ts:14:5 - (ae-undocumented) Missing documentation for "applyRoles".
+// src/types/types.d.ts:15:5 - (ae-undocumented) Missing documentation for "applyPermissions".
 
 ```
