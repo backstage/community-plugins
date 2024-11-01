@@ -89,8 +89,8 @@ export const mockMembers: MemberEntity[] = [
     metadata: {
       namespace: 'default',
       annotations: {},
-      name: 'janus-authors',
-      title: 'Janus-IDP Authors',
+      name: 'backstage-community-authors',
+      title: 'Backstage-Community Authors',
     },
     apiVersion: 'backstage.io/v1alpha1',
     kind: 'Group',

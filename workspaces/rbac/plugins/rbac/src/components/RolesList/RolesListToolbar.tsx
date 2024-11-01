@@ -56,7 +56,7 @@ export const RolesListToolbar = ({
           and also the role associated with your user should have the permission
           policies mentioned{' '}
           <a
-            href="https://github.com/janus-idp/backstage-plugins/tree/main/plugins/rbac#prerequisites"
+            href="https://github.com/backstage/community-plugins/tree/main/workspaces/rbac/plugins/rbac#prerequisites"
             target="blank"
             className={classes.rbacPreReqLink}
           >

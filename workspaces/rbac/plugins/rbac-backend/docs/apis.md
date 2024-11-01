@@ -41,7 +41,10 @@ Returns:
     }
   },
   {
-    "memberReferences": ["group:default/janus-authors", "user:default/matt"],
+    "memberReferences": [
+      "group:default/backstage-community-authors",
+      "user:default/matt"
+    ],
     "name": "role:default/test",
     "metadata": {
       "source": "csv-file",
@@ -71,7 +74,10 @@ Returns:
 ```json
 [
   {
-    "memberReferences": ["group:default/janus-authors", "user:default/matt"],
+    "memberReferences": [
+      "group:default/backstage-community-authors",
+      "user:default/matt"
+    ],
     "name": "role:default/test",
     "metadata": {
       "source": "csv-file",
@@ -876,7 +882,7 @@ curl -X POST "http://localhost:7007/api/permission/roles/conditions" \
              "rule": "IS_ENTITY_OWNER",
              "resourceType": "catalog-entity",
              "params": {
-               "claims": ["group:default/janus-authors"]
+               "claims": ["group:default/backstage-community-authors"]
              }
            }
          }' \
