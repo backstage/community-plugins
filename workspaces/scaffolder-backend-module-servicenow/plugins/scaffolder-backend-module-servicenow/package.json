@@ -62,13 +62,12 @@
   "files": [
     "dist",
     "config.d.ts",
-    "dist-dynamic/*.*",
-    "app-config.janus-idp.yaml"
+    "app-config.yaml"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/janus-idp/backstage-plugins",
-    "directory": "plugins/servicenow-actions"
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/scaffolder-backend-module-servicenow/plugins/scaffolder-backend-module-servicenow"
   },
   "keywords": [
     "support:tech-preview",
@@ -76,10 +75,6 @@
     "backstage",
     "backend-plugin-module"
   ],
-  "homepage": "https://red.ht/rhdh",
-  "bugs": "https://github.com/janus-idp/backstage-plugins/issues",
-  "maintainers": [
-    "@janus-idp/maintainers-plugins"
-  ],
+  "bugs": "https://github.com/backstage/community-plugins/issues",
   "author": "Red Hat"
 }
