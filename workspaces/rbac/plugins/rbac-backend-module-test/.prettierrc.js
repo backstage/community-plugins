@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 /** @type {import("@ianvs/prettier-plugin-sort-imports").PrettierConfig} */
 module.exports = {
   ...require('@spotify/prettier-config'),
