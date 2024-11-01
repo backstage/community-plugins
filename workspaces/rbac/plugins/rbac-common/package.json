@@ -1,0 +1,69 @@
+{
+  "name": "@backstage-community/plugin-rbac-common",
+  "description": "Common functionalities for the rbac-common plugin",
+  "version": "1.12.0",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.cjs.js",
+    "module": "dist/index.esm.js",
+    "types": "dist/index.d.ts"
+  },
+  "backstage": {
+    "role": "common-library",
+    "supported-versions": "1.32.5",
+    "pluginId": "rbac",
+    "pluginPackages": [
+      "@backstage-community/plugin-rbac",
+      "@backstage-community/plugin-rbac-backend",
+      "@backstage-community/plugin-rbac-common",
+      "@backstage-community/plugin-rbac-node"
+    ]
+  },
+  "sideEffects": false,
+  "scripts": {
+    "build": "backstage-cli package build",
+    "tsc": "tsc",
+    "prettier:check": "prettier --ignore-unknown --check .",
+    "prettier:fix": "prettier --ignore-unknown --write .",
+    "lint:check": "backstage-cli package lint",
+    "lint:fix": "backstage-cli package lint --fix",
+    "test": "backstage-cli package test --passWithNoTests --coverage",
+    "clean": "backstage-cli package clean",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack"
+  },
+  "peerDependencies": {
+    "@backstage/errors": "^1.2.4",
+    "@backstage/plugin-permission-common": "^0.8.1"
+  },
+  "devDependencies": {
+    "@backstage/cli": "0.28.2",
+    "@backstage/errors": "^1.2.4",
+    "@backstage/plugin-permission-common": "^0.8.1",
+    "@spotify/prettier-config": "^15.0.0",
+    "prettier": "3.3.3"
+  },
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/rbac/plugins/rbac-common"
+  },
+  "keywords": [
+    "support:production",
+    "lifecycle:active",
+    "backstage",
+    "plugin"
+  ],
+  "homepage": "https://red.ht/rhdh",
+  "bugs": "https://github.com/backstage/community-plugins/issues",
+  "maintainers": [
+    "@PatAKnight"
+  ],
+  "author": "Red Hat"
+}
