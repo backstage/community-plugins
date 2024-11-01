@@ -38,8 +38,8 @@ export class CasbinDBAdapterFactory {
 
     let adapter;
     if (client === 'pg') {
-      const dbName =
-        await this.databaseClient.client.config.connection.database;
+      const dbName = await this.databaseClient.client.config.connection
+        .database;
       const schema =
         (await this.databaseClient.client.searchPath?.[0]) ?? 'public';
 

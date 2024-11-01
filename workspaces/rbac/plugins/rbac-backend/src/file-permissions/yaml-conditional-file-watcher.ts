@@ -99,8 +99,9 @@ export class YamlConditinalPoliciesFileWatcher extends AbstractFileWatcher<
       const removedConds: RoleConditionalPolicyDecision<PermissionAction>[] =
         [];
 
-      const csvFileRoles =
-        await this.roleMetadataStorage.filterRoleMetadata('csv-file');
+      const csvFileRoles = await this.roleMetadataStorage.filterRoleMetadata(
+        'csv-file',
+      );
       const existedFileConds = (
         await this.conditionalStorage.filterConditions(
           csvFileRoles.map(role => role.roleEntityRef),
@@ -263,8 +264,9 @@ export class YamlConditinalPoliciesFileWatcher extends AbstractFileWatcher<
   }
 
   async cleanUpConditionalPolicies(): Promise<void> {
-    const csvFileRoles =
-      await this.roleMetadataStorage.filterRoleMetadata('csv-file');
+    const csvFileRoles = await this.roleMetadataStorage.filterRoleMetadata(
+      'csv-file',
+    );
     const existedFileConds = (
       await this.conditionalStorage.filterConditions(
         csvFileRoles.map(role => role.roleEntityRef),
