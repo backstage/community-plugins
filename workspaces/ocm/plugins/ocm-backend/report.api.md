@@ -65,6 +65,22 @@ export class ManagedClusterProvider implements EntityProvider {
 // @public (undocumented)
 export const ocmPlugin: BackendFeature;
 
+// Warnings were encountered during analysis:
+//
+// src/bundle.d.ts:1:22 - (ae-undocumented) Missing documentation for "bundle".
+// src/providers/ManagedClusterProvider.d.ts:9:5 - (ae-undocumented) Missing documentation for "client".
+// src/providers/ManagedClusterProvider.d.ts:10:5 - (ae-undocumented) Missing documentation for "hubResourceName".
+// src/providers/ManagedClusterProvider.d.ts:11:5 - (ae-undocumented) Missing documentation for "id".
+// src/providers/ManagedClusterProvider.d.ts:12:5 - (ae-undocumented) Missing documentation for "owner".
+// src/providers/ManagedClusterProvider.d.ts:13:5 - (ae-undocumented) Missing documentation for "logger".
+// src/providers/ManagedClusterProvider.d.ts:15:5 - (ae-undocumented) Missing documentation for "connection".
+// src/providers/ManagedClusterProvider.d.ts:19:5 - (ae-undocumented) Missing documentation for "fromConfig".
+// src/providers/ManagedClusterProvider.d.ts:27:5 - (ae-undocumented) Missing documentation for "connect".
+// src/providers/ManagedClusterProvider.d.ts:29:5 - (ae-undocumented) Missing documentation for "getProviderName".
+// src/providers/ManagedClusterProvider.d.ts:30:5 - (ae-undocumented) Missing documentation for "run".
+// src/providers/module.d.ts:1:22 - (ae-undocumented) Missing documentation for "catalogModuleOCMEntityProvider".
+// src/service/router.d.ts:1:22 - (ae-undocumented) Missing documentation for "ocmPlugin".
+
 // (No @packageDocumentation comment for this package)
 
 ```

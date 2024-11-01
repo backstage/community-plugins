@@ -54,6 +54,16 @@ root: RouteRef<undefined>;
 // @public (undocumented)
 export const useCluster: () => ClusterContextType;
 
+// Warnings were encountered during analysis:
+//
+// src/components/ClusterAvailableResourcesCard/ClusterAvailableResourcesCard.d.ts:1:22 - (ae-undocumented) Missing documentation for "ClusterAvailableResourceCard".
+// src/components/ClusterContext/ClusterContext.d.ts:8:22 - (ae-undocumented) Missing documentation for "ClusterContextProvider".
+// src/components/ClusterContext/ClusterContext.d.ts:9:22 - (ae-undocumented) Missing documentation for "useCluster".
+// src/components/ClusterInfoCard/ClusterInfoCard.d.ts:2:22 - (ae-undocumented) Missing documentation for "ClusterInfoCard".
+// src/plugin.d.ts:3:22 - (ae-undocumented) Missing documentation for "ocmPlugin".
+// src/plugin.d.ts:6:22 - (ae-undocumented) Missing documentation for "OcmPage".
+// src/plugin.d.ts:9:22 - (ae-undocumented) Missing documentation for "OcmIcon".
+
 // (No @packageDocumentation comment for this package)
 
 ```
