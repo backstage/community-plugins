@@ -13,16 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { type Entity } from '@backstage/catalog-model';
+import { createApiRef } from '@backstage/core-plugin-api';
 
-import { NPM_PACKAGE_ANNOTATION } from '../annotations';
+import { NpmBackendApi } from './NpmBackendApi';
 
-/**
- * Function that returns true if the given entity contains at least one
- * npm related annotations.
- *
- * @public
- */
-export const isNpmAvailable = (entity: Entity): boolean => {
-  return Boolean(entity.metadata.annotations?.[NPM_PACKAGE_ANNOTATION]);
-};
+export * from './NpmBackendClient';
+
+export const NpmBackendApiRef = createApiRef<NpmBackendApi>({
+  id: 'plugin.npm.backend-api-ref',
+});

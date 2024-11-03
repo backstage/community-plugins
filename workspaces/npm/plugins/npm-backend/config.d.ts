@@ -13,21 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-/**
- * A Backstage plugin that shows meta info and latest versions from a npm registry
- *
- * @packageDocumentation
- */
-
-export { isNpmAvailable } from '@backstage-community/plugin-npm-common';
-
-export {
-  npmPlugin,
-  EntityNpmInfoCard,
-  EntityNpmReleaseOverviewCard,
-  EntityNpmReleaseTableCard,
-  NpmInfoCard,
-  NpmReleaseOverviewCard,
-  NpmReleaseTableCard,
-} from './plugin';
+export interface Config {
+  npm?: {
+    /**
+     * Use another default registry. This automatically enforce usage of the backend.
+     *
+     * @visibility frontend
+     */
+    defaultRegistry?: string;
+    /**
+     * List of registries that can be used to fetch packages from
+     */
+    registries?: {
+      /**
+       * Registry name
+       */
+      name?: string;
+      /**
+       * Registry base url
+       */
+      url?: string;
+      /**
+       * Registry auth token
+       * @visibility secret
+       */
+      token?: string;
+    }[];
+  };
+}
