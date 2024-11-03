@@ -13,16 +13,4 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { type Entity } from '@backstage/catalog-model';
-
-import { NPM_PACKAGE_ANNOTATION } from '../annotations';
-
-/**
- * Function that returns true if the given entity contains at least one
- * npm related annotations.
- *
- * @public
- */
-export const isNpmAvailable = (entity: Entity): boolean => {
-  return Boolean(entity.metadata.annotations?.[NPM_PACKAGE_ANNOTATION]);
-};
+export { npmPlugin as default } from './plugin';

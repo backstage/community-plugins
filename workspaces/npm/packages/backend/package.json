@@ -21,6 +21,7 @@
     "build-image": "docker build ../.. -f Dockerfile --tag backstage"
   },
   "dependencies": {
+    "@backstage-community/plugin-npm-backend": "workspace:^",
     "@backstage/backend-defaults": "^0.5.2",
     "@backstage/config": "^1.2.0",
     "@backstage/plugin-app-backend": "^0.3.76",

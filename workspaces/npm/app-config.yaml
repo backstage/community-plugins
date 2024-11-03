@@ -78,21 +78,26 @@ catalog:
   rules:
     - allow: [Component, System, API, Resource, Location]
   locations:
-    # Local example data, file locations are relative to the backend process, typically `packages/backend`
+    # Plugin itself for techdocs
     - type: file
-      target: ../../examples/entities.yaml
-
-    # Local example template
+      target: ../../catalog-info.yaml
     - type: file
-      target: ../../examples/template/template.yaml
-      rules:
-        - allow: [Template]
-
-    # Local example organizational data
+      target: ../../plugins/npm/catalog-info.yaml
     - type: file
-      target: ../../examples/org.yaml
+      target: ../../plugins/npm-backend/catalog-info.yaml
+    - type: file
+      target: ../../plugins/npm-common/catalog-info.yaml
+    # Local example data
+    - type: file
+      target: ../../examples/example-org.yaml
       rules:
         - allow: [User, Group]
+    - type: file
+      target: ../../examples/example-system.yaml
+    - type: file
+      target: ../../examples/npmjs-components.yaml
+    - type: file
+      target: ../../examples/github-components.yaml
 
     ## Uncomment these lines to add more example data
     # - type: url

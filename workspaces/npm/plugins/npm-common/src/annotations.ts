@@ -15,19 +15,11 @@
  */
 
 /**
- * A Backstage plugin that shows meta info and latest versions from a npm registry
- *
- * @packageDocumentation
+ * @public
  */
-
-export { isNpmAvailable } from '@backstage-community/plugin-npm-common';
-
-export {
-  npmPlugin,
-  EntityNpmInfoCard,
-  EntityNpmReleaseOverviewCard,
-  EntityNpmReleaseTableCard,
-  NpmInfoCard,
-  NpmReleaseOverviewCard,
-  NpmReleaseTableCard,
-} from './plugin';
+export enum NpmAnnotation {
+  PACKAGE_NAME = 'npm/package',
+  REGISTRY_NAME = 'npm/registry',
+  STABLE_TAG = 'npm/stable-tag',
+  SHOW_TAGS = 'npm/show-tags',
+}

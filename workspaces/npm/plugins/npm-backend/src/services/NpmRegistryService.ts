@@ -13,21 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {
+  BackstageCredentials,
+  BackstageUserPrincipal,
+} from '@backstage/backend-plugin-api';
 
-/**
- * A Backstage plugin that shows meta info and latest versions from a npm registry
- *
- * @packageDocumentation
- */
+import { NpmRegistryPackageInfo } from '@backstage-community/plugin-npm-common';
 
-export { isNpmAvailable } from '@backstage-community/plugin-npm-common';
-
-export {
-  npmPlugin,
-  EntityNpmInfoCard,
-  EntityNpmReleaseOverviewCard,
-  EntityNpmReleaseTableCard,
-  NpmInfoCard,
-  NpmReleaseOverviewCard,
-  NpmReleaseTableCard,
-} from './plugin';
+export interface NpmRegistryService {
+  getPackageInfo(
+    entityRef: string,
+    options: {
+      credentials: BackstageCredentials<BackstageUserPrincipal>;
+    },
+  ): Promise<NpmRegistryPackageInfo>;
+}

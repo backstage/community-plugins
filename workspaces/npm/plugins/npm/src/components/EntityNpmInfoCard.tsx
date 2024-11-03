@@ -14,23 +14,24 @@
  * limitations under the License.
  */
 import React from 'react';
+
 import { ErrorPanel, InfoCard } from '@backstage/core-components';
+import {
+  MissingAnnotationEmptyState,
+  useEntity,
+} from '@backstage/plugin-catalog-react';
+
+import { NpmAnnotation } from '@backstage-community/plugin-npm-common';
+
 import Box from '@material-ui/core/Box';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid, { GridSize } from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import {
-  MissingAnnotationEmptyState,
-  useEntity,
-} from '@backstage/plugin-catalog-react';
-import useAsync from 'react-use/esm/useAsync';
+
 import { DateTime } from 'luxon';
-import {
-  NPM_PACKAGE_ANNOTATION,
-  NPM_STABLE_TAG_ANNOTATION,
-} from '../annotations';
-import { API } from '../api';
+
+import { usePackageInfo } from '../hooks/usePackageInfo';
 
 // From https://github.com/backstage/backstage/blob/master/plugins/catalog/src/components/AboutCard/AboutField.tsx
 const useStyles = makeStyles(theme => ({
@@ -82,34 +83,33 @@ function GridItem({
  */
 export const EntityNpmInfoCard = () => {
   const { entity } = useEntity();
+  const { packageInfo, loading, error } = usePackageInfo();
 
-  const packageName = entity.metadata.annotations?.[NPM_PACKAGE_ANNOTATION];
-
-  const {
-    value: packageInfo,
-    loading,
-    error,
-  } = useAsync(() => API.fetchNpmPackage(packageName), [packageName]);
+  const packageName = entity.metadata.annotations?.[NpmAnnotation.PACKAGE_NAME];
 
   if (!packageName) {
     return (
       <MissingAnnotationEmptyState
-        annotation={NPM_PACKAGE_ANNOTATION}
+        annotation={NpmAnnotation.PACKAGE_NAME}
         readMoreUrl="https://backstage.io/docs/features/software-catalog/descriptor-format"
       />
     );
   }
 
   const latestTag =
-    entity.metadata.annotations?.[NPM_STABLE_TAG_ANNOTATION] ?? 'latest';
+    entity.metadata.annotations?.[NpmAnnotation.STABLE_TAG] ?? 'latest';
   const latestVersion = packageInfo?.['dist-tags']?.[latestTag];
   const latestPublishedAt = latestVersion
     ? packageInfo?.time?.[latestVersion]
     : undefined;
 
-  const npmLink = packageInfo
-    ? `https://www.npmjs.com/package/${packageName}`
-    : null;
+  const registryName =
+    entity.metadata.annotations?.[NpmAnnotation.REGISTRY_NAME];
+
+  const npmLink =
+    packageInfo && !registryName
+      ? `https://www.npmjs.com/package/${packageName}`
+      : null;
 
   let repositoryLink: string | undefined;
   if (packageInfo?.repository?.url) {
@@ -187,6 +187,10 @@ export const EntityNpmInfoCard = () => {
         {/* Markdown? */}
         {packageInfo?.keywords?.length ? (
           <GridItem label="Keywords" value={packageInfo.keywords.join(', ')} />
+        ) : null}
+
+        {registryName ? (
+          <GridItem label="Registry name" value={registryName} />
         ) : null}
 
         {npmLink ? (

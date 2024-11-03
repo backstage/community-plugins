@@ -15,19 +15,12 @@
  */
 
 /**
- * A Backstage plugin that shows meta info and latest versions from a npm registry
+ * Common functionalities for the npm plugin.
  *
  * @packageDocumentation
  */
 
-export { isNpmAvailable } from '@backstage-community/plugin-npm-common';
-
-export {
-  npmPlugin,
-  EntityNpmInfoCard,
-  EntityNpmReleaseOverviewCard,
-  EntityNpmReleaseTableCard,
-  NpmInfoCard,
-  NpmReleaseOverviewCard,
-  NpmReleaseTableCard,
-} from './plugin';
+export * from './annotations';
+export * from './NpmRegistryClient';
+export * from './types';
+export * from './utils';

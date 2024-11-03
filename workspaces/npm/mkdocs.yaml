@@ -1,0 +1,8 @@
+site_name: Backstage Community Npm Plugin
+site_description: A Backstage plugin that shows meta info and latest versions from a npm registry
+
+plugins:
+  - techdocs-core
+
+nav:
+  - Customization: index.md

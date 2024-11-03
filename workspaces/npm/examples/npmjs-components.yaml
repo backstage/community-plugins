@@ -1,12 +1,4 @@
 ---
-# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-system
-apiVersion: backstage.io/v1alpha1
-kind: System
-metadata:
-  name: backstage
-spec:
-  owner: guests
----
 # https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component
 apiVersion: backstage.io/v1alpha1
 kind: Component
@@ -14,6 +6,7 @@ metadata:
   name: backstage-catalog-model
   annotations:
     npm/package: '@backstage/catalog-model'
+    npm/show-tags: latest, next
 spec:
   type: library
   lifecycle: production
@@ -27,6 +20,7 @@ metadata:
   name: backstage-catalog-client
   annotations:
     npm/package: '@backstage/catalog-client'
+    npm/show-tags: latest, next
 spec:
   type: library
   lifecycle: production
@@ -42,6 +36,7 @@ metadata:
   name: backstage-plugin-catalog-common
   annotations:
     npm/package: '@backstage/plugin-catalog-common'
+    npm/show-tags: latest, next
 spec:
   type: library
   lifecycle: production
@@ -57,6 +52,7 @@ metadata:
   name: backstage-plugin-catalog-node
   annotations:
     npm/package: '@backstage/plugin-catalog-node'
+    npm/show-tags: latest, next
 spec:
   type: library
   lifecycle: production
@@ -72,6 +68,7 @@ metadata:
   name: backstage-plugin-catalog-react
   annotations:
     npm/package: '@backstage/plugin-catalog-react'
+    npm/show-tags: latest, next
 spec:
   type: library
   lifecycle: production
@@ -89,6 +86,7 @@ metadata:
   name: backstage-plugin-catalog
   annotations:
     npm/package: '@backstage/plugin-catalog'
+    npm/show-tags: latest, next
 spec:
   type: website
   lifecycle: production

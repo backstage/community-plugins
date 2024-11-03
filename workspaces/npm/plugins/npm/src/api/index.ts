@@ -13,9 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { createApiRef } from '@backstage/core-plugin-api';
 
-export const NPM_PACKAGE_ANNOTATION = 'npm/package';
+import { NpmBackendApi } from './NpmBackendApi';
 
-export const NPM_STABLE_TAG_ANNOTATION = 'npm/stable-tag';
+export * from './NpmBackendClient';
 
-export const NPM_SHOW_TAGS_ANNOTATION = 'npm/show-tags';
+export const NpmBackendApiRef = createApiRef<NpmBackendApi>({
+  id: 'plugin.npm.backend-api-ref',
+});

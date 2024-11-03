@@ -13,4 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-console.log('Hello from ${{ values.name }}!');
+export interface Config {
+  npm?: {
+    registries?: {
+      /**
+       * Registry name
+       */
+      name?: string;
+      /**
+       * Registry base url
+       */
+      url?: string;
+      /**
+       * Registry auth token
+       * @visibility secret
+       */
+      token?: string;
+    }[];
+  };
+}

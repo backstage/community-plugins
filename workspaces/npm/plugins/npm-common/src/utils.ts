@@ -13,21 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { type Entity } from '@backstage/catalog-model';
+
+import { NpmAnnotation } from './annotations';
 
 /**
- * A Backstage plugin that shows meta info and latest versions from a npm registry
+ * Function that returns true if the given entity contains at least one
+ * npm related annotations.
  *
- * @packageDocumentation
+ * @public
  */
-
-export { isNpmAvailable } from '@backstage-community/plugin-npm-common';
-
-export {
-  npmPlugin,
-  EntityNpmInfoCard,
-  EntityNpmReleaseOverviewCard,
-  EntityNpmReleaseTableCard,
-  NpmInfoCard,
-  NpmReleaseOverviewCard,
-  NpmReleaseTableCard,
-} from './plugin';
+export const isNpmAvailable = (entity: Entity): boolean => {
+  return Boolean(entity.metadata.annotations?.[NpmAnnotation.PACKAGE_NAME]);
+};
