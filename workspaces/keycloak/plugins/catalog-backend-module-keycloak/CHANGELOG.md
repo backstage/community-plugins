@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 3.2.0
+
+### Minor Changes
+
+- e6f036e: Bump Keycloak version to rebase changes from janus/backstage-plugins
+
 ## 3.1.1
 
 ### Patch Changes
