@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 3.1.1
+
+### Patch Changes
+
+- bc4f802: Migrated from [janus-idp/backstage-plugins](https://github.com/janus-idp/backstage-plugins).
+
 ## 3.1.0
 
 ### Minor Changes
