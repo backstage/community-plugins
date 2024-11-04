@@ -1,0 +1,641 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`KeycloakOrgEntityProvider with v18 should read with grantType client_credential 1`] = `
+[
+  [
+    {
+      "entities": [
+        {
+          "entity": {
+            "apiVersion": "backstage.io/v1beta1",
+            "kind": "User",
+            "metadata": {
+              "annotations": {
+                "backstage.io/managed-by-location": "url:http://localhost:8080/admin/realms/master/users/59efec15-a00b-4700-8833-5f4cdecc1132",
+                "backstage.io/managed-by-origin-location": "url:http://localhost:8080/admin/realms/master/users/59efec15-a00b-4700-8833-5f4cdecc1132",
+                "keycloak.org/id": "59efec15-a00b-4700-8833-5f4cdecc1132",
+                "keycloak.org/realm": "master",
+              },
+              "name": "jamesdoe",
+            },
+            "spec": {
+              "memberOf": [
+                "biggroup",
+              ],
+              "profile": {
+                "email": "jamesdoe@gmail.com",
+              },
+            },
+          },
+          "locationKey": "keycloak-org-provider:default",
+        },
+        {
+          "entity": {
+            "apiVersion": "backstage.io/v1beta1",
+            "kind": "User",
+            "metadata": {
+              "annotations": {
+                "backstage.io/managed-by-location": "url:http://localhost:8080/admin/realms/master/users/c982b51a-abf6-4f68-bfdf-a1c6257214fc",
+                "backstage.io/managed-by-origin-location": "url:http://localhost:8080/admin/realms/master/users/c982b51a-abf6-4f68-bfdf-a1c6257214fc",
+                "keycloak.org/id": "c982b51a-abf6-4f68-bfdf-a1c6257214fc",
+                "keycloak.org/realm": "master",
+              },
+              "name": "joedoe",
+            },
+            "spec": {
+              "memberOf": [],
+              "profile": {
+                "email": undefined,
+              },
+            },
+          },
+          "locationKey": "keycloak-org-provider:default",
+        },
+        {
+          "entity": {
+            "apiVersion": "backstage.io/v1beta1",
+            "kind": "User",
+            "metadata": {
+              "annotations": {
+                "backstage.io/managed-by-location": "url:http://localhost:8080/admin/realms/master/users/2bf97dbd-fd6a-47ae-986b-2632fa95e03f",
+                "backstage.io/managed-by-origin-location": "url:http://localhost:8080/admin/realms/master/users/2bf97dbd-fd6a-47ae-986b-2632fa95e03f",
+                "keycloak.org/id": "2bf97dbd-fd6a-47ae-986b-2632fa95e03f",
+                "keycloak.org/realm": "master",
+              },
+              "name": "johndoe",
+            },
+            "spec": {
+              "memberOf": [],
+              "profile": {
+                "displayName": "John Doe",
+                "email": undefined,
+              },
+            },
+          },
+          "locationKey": "keycloak-org-provider:default",
+        },
+        {
+          "entity": {
+            "apiVersion": "backstage.io/v1beta1",
+            "kind": "Group",
+            "metadata": {
+              "annotations": {
+                "backstage.io/managed-by-location": "url:http://localhost:8080/admin/realms/master/groups/9cf51b5d-e066-4ed8-940c-dc6da77f81a5",
+                "backstage.io/managed-by-origin-location": "url:http://localhost:8080/admin/realms/master/groups/9cf51b5d-e066-4ed8-940c-dc6da77f81a5",
+                "keycloak.org/id": "9cf51b5d-e066-4ed8-940c-dc6da77f81a5",
+                "keycloak.org/realm": "master",
+              },
+              "name": "biggroup",
+            },
+            "spec": {
+              "children": [
+                "subgroup",
+              ],
+              "members": [
+                "jamesdoe",
+              ],
+              "parent": undefined,
+              "profile": {
+                "displayName": "biggroup",
+              },
+              "type": "group",
+            },
+          },
+          "locationKey": "keycloak-org-provider:default",
+        },
+        {
+          "entity": {
+            "apiVersion": "backstage.io/v1beta1",
+            "kind": "Group",
+            "metadata": {
+              "annotations": {
+                "backstage.io/managed-by-location": "url:http://localhost:8080/admin/realms/master/groups/eefa5b46-0509-41d8-b8b3-7ddae9c83632",
+                "backstage.io/managed-by-origin-location": "url:http://localhost:8080/admin/realms/master/groups/eefa5b46-0509-41d8-b8b3-7ddae9c83632",
+                "keycloak.org/id": "eefa5b46-0509-41d8-b8b3-7ddae9c83632",
+                "keycloak.org/realm": "master",
+              },
+              "name": "subgroup",
+            },
+            "spec": {
+              "children": [],
+              "members": [],
+              "parent": "biggroup",
+              "profile": {
+                "displayName": "subgroup",
+              },
+              "type": "group",
+            },
+          },
+          "locationKey": "keycloak-org-provider:default",
+        },
+        {
+          "entity": {
+            "apiVersion": "backstage.io/v1beta1",
+            "kind": "Group",
+            "metadata": {
+              "annotations": {
+                "backstage.io/managed-by-location": "url:http://localhost:8080/admin/realms/master/groups/557501bd-8188-41c0-a2d5-43ff3d5b0258",
+                "backstage.io/managed-by-origin-location": "url:http://localhost:8080/admin/realms/master/groups/557501bd-8188-41c0-a2d5-43ff3d5b0258",
+                "keycloak.org/id": "557501bd-8188-41c0-a2d5-43ff3d5b0258",
+                "keycloak.org/realm": "master",
+              },
+              "name": "emptygroup",
+            },
+            "spec": {
+              "children": [],
+              "members": [],
+              "parent": undefined,
+              "profile": {
+                "displayName": "emptygroup",
+              },
+              "type": "group",
+            },
+          },
+          "locationKey": "keycloak-org-provider:default",
+        },
+      ],
+      "type": "full",
+    },
+  ],
+]
+`;
+
+exports[`KeycloakOrgEntityProvider with v18 should read with grantType password 1`] = `
+[
+  [
+    {
+      "entities": [
+        {
+          "entity": {
+            "apiVersion": "backstage.io/v1beta1",
+            "kind": "User",
+            "metadata": {
+              "annotations": {
+                "backstage.io/managed-by-location": "url:http://localhost:8080/admin/realms/master/users/59efec15-a00b-4700-8833-5f4cdecc1132",
+                "backstage.io/managed-by-origin-location": "url:http://localhost:8080/admin/realms/master/users/59efec15-a00b-4700-8833-5f4cdecc1132",
+                "keycloak.org/id": "59efec15-a00b-4700-8833-5f4cdecc1132",
+                "keycloak.org/realm": "master",
+              },
+              "name": "jamesdoe",
+            },
+            "spec": {
+              "memberOf": [
+                "biggroup",
+              ],
+              "profile": {
+                "email": "jamesdoe@gmail.com",
+              },
+            },
+          },
+          "locationKey": "keycloak-org-provider:default",
+        },
+        {
+          "entity": {
+            "apiVersion": "backstage.io/v1beta1",
+            "kind": "User",
+            "metadata": {
+              "annotations": {
+                "backstage.io/managed-by-location": "url:http://localhost:8080/admin/realms/master/users/c982b51a-abf6-4f68-bfdf-a1c6257214fc",
+                "backstage.io/managed-by-origin-location": "url:http://localhost:8080/admin/realms/master/users/c982b51a-abf6-4f68-bfdf-a1c6257214fc",
+                "keycloak.org/id": "c982b51a-abf6-4f68-bfdf-a1c6257214fc",
+                "keycloak.org/realm": "master",
+              },
+              "name": "joedoe",
+            },
+            "spec": {
+              "memberOf": [],
+              "profile": {
+                "email": undefined,
+              },
+            },
+          },
+          "locationKey": "keycloak-org-provider:default",
+        },
+        {
+          "entity": {
+            "apiVersion": "backstage.io/v1beta1",
+            "kind": "User",
+            "metadata": {
+              "annotations": {
+                "backstage.io/managed-by-location": "url:http://localhost:8080/admin/realms/master/users/2bf97dbd-fd6a-47ae-986b-2632fa95e03f",
+                "backstage.io/managed-by-origin-location": "url:http://localhost:8080/admin/realms/master/users/2bf97dbd-fd6a-47ae-986b-2632fa95e03f",
+                "keycloak.org/id": "2bf97dbd-fd6a-47ae-986b-2632fa95e03f",
+                "keycloak.org/realm": "master",
+              },
+              "name": "johndoe",
+            },
+            "spec": {
+              "memberOf": [],
+              "profile": {
+                "displayName": "John Doe",
+                "email": undefined,
+              },
+            },
+          },
+          "locationKey": "keycloak-org-provider:default",
+        },
+        {
+          "entity": {
+            "apiVersion": "backstage.io/v1beta1",
+            "kind": "Group",
+            "metadata": {
+              "annotations": {
+                "backstage.io/managed-by-location": "url:http://localhost:8080/admin/realms/master/groups/9cf51b5d-e066-4ed8-940c-dc6da77f81a5",
+                "backstage.io/managed-by-origin-location": "url:http://localhost:8080/admin/realms/master/groups/9cf51b5d-e066-4ed8-940c-dc6da77f81a5",
+                "keycloak.org/id": "9cf51b5d-e066-4ed8-940c-dc6da77f81a5",
+                "keycloak.org/realm": "master",
+              },
+              "name": "biggroup",
+            },
+            "spec": {
+              "children": [
+                "subgroup",
+              ],
+              "members": [
+                "jamesdoe",
+              ],
+              "parent": undefined,
+              "profile": {
+                "displayName": "biggroup",
+              },
+              "type": "group",
+            },
+          },
+          "locationKey": "keycloak-org-provider:default",
+        },
+        {
+          "entity": {
+            "apiVersion": "backstage.io/v1beta1",
+            "kind": "Group",
+            "metadata": {
+              "annotations": {
+                "backstage.io/managed-by-location": "url:http://localhost:8080/admin/realms/master/groups/eefa5b46-0509-41d8-b8b3-7ddae9c83632",
+                "backstage.io/managed-by-origin-location": "url:http://localhost:8080/admin/realms/master/groups/eefa5b46-0509-41d8-b8b3-7ddae9c83632",
+                "keycloak.org/id": "eefa5b46-0509-41d8-b8b3-7ddae9c83632",
+                "keycloak.org/realm": "master",
+              },
+              "name": "subgroup",
+            },
+            "spec": {
+              "children": [],
+              "members": [],
+              "parent": "biggroup",
+              "profile": {
+                "displayName": "subgroup",
+              },
+              "type": "group",
+            },
+          },
+          "locationKey": "keycloak-org-provider:default",
+        },
+        {
+          "entity": {
+            "apiVersion": "backstage.io/v1beta1",
+            "kind": "Group",
+            "metadata": {
+              "annotations": {
+                "backstage.io/managed-by-location": "url:http://localhost:8080/admin/realms/master/groups/557501bd-8188-41c0-a2d5-43ff3d5b0258",
+                "backstage.io/managed-by-origin-location": "url:http://localhost:8080/admin/realms/master/groups/557501bd-8188-41c0-a2d5-43ff3d5b0258",
+                "keycloak.org/id": "557501bd-8188-41c0-a2d5-43ff3d5b0258",
+                "keycloak.org/realm": "master",
+              },
+              "name": "emptygroup",
+            },
+            "spec": {
+              "children": [],
+              "members": [],
+              "parent": undefined,
+              "profile": {
+                "displayName": "emptygroup",
+              },
+              "type": "group",
+            },
+          },
+          "locationKey": "keycloak-org-provider:default",
+        },
+      ],
+      "type": "full",
+    },
+  ],
+]
+`;
+
+exports[`KeycloakOrgEntityProvider with v24 should read with grantType client_credential 1`] = `
+[
+  [
+    {
+      "entities": [
+        {
+          "entity": {
+            "apiVersion": "backstage.io/v1beta1",
+            "kind": "User",
+            "metadata": {
+              "annotations": {
+                "backstage.io/managed-by-location": "url:http://localhost:8080/admin/realms/master/users/59efec15-a00b-4700-8833-5f4cdecc1132",
+                "backstage.io/managed-by-origin-location": "url:http://localhost:8080/admin/realms/master/users/59efec15-a00b-4700-8833-5f4cdecc1132",
+                "keycloak.org/id": "59efec15-a00b-4700-8833-5f4cdecc1132",
+                "keycloak.org/realm": "master",
+              },
+              "name": "jamesdoe",
+            },
+            "spec": {
+              "memberOf": [
+                "biggroup",
+              ],
+              "profile": {
+                "email": "jamesdoe@gmail.com",
+              },
+            },
+          },
+          "locationKey": "keycloak-org-provider:default",
+        },
+        {
+          "entity": {
+            "apiVersion": "backstage.io/v1beta1",
+            "kind": "User",
+            "metadata": {
+              "annotations": {
+                "backstage.io/managed-by-location": "url:http://localhost:8080/admin/realms/master/users/c982b51a-abf6-4f68-bfdf-a1c6257214fc",
+                "backstage.io/managed-by-origin-location": "url:http://localhost:8080/admin/realms/master/users/c982b51a-abf6-4f68-bfdf-a1c6257214fc",
+                "keycloak.org/id": "c982b51a-abf6-4f68-bfdf-a1c6257214fc",
+                "keycloak.org/realm": "master",
+              },
+              "name": "joedoe",
+            },
+            "spec": {
+              "memberOf": [],
+              "profile": {
+                "email": undefined,
+              },
+            },
+          },
+          "locationKey": "keycloak-org-provider:default",
+        },
+        {
+          "entity": {
+            "apiVersion": "backstage.io/v1beta1",
+            "kind": "User",
+            "metadata": {
+              "annotations": {
+                "backstage.io/managed-by-location": "url:http://localhost:8080/admin/realms/master/users/2bf97dbd-fd6a-47ae-986b-2632fa95e03f",
+                "backstage.io/managed-by-origin-location": "url:http://localhost:8080/admin/realms/master/users/2bf97dbd-fd6a-47ae-986b-2632fa95e03f",
+                "keycloak.org/id": "2bf97dbd-fd6a-47ae-986b-2632fa95e03f",
+                "keycloak.org/realm": "master",
+              },
+              "name": "johndoe",
+            },
+            "spec": {
+              "memberOf": [],
+              "profile": {
+                "displayName": "John Doe",
+                "email": undefined,
+              },
+            },
+          },
+          "locationKey": "keycloak-org-provider:default",
+        },
+        {
+          "entity": {
+            "apiVersion": "backstage.io/v1beta1",
+            "kind": "Group",
+            "metadata": {
+              "annotations": {
+                "backstage.io/managed-by-location": "url:http://localhost:8080/admin/realms/master/groups/9cf51b5d-e066-4ed8-940c-dc6da77f81a5",
+                "backstage.io/managed-by-origin-location": "url:http://localhost:8080/admin/realms/master/groups/9cf51b5d-e066-4ed8-940c-dc6da77f81a5",
+                "keycloak.org/id": "9cf51b5d-e066-4ed8-940c-dc6da77f81a5",
+                "keycloak.org/realm": "master",
+              },
+              "name": "biggroup",
+            },
+            "spec": {
+              "children": [
+                "subgroup",
+              ],
+              "members": [
+                "jamesdoe",
+              ],
+              "parent": undefined,
+              "profile": {
+                "displayName": "biggroup",
+              },
+              "type": "group",
+            },
+          },
+          "locationKey": "keycloak-org-provider:default",
+        },
+        {
+          "entity": {
+            "apiVersion": "backstage.io/v1beta1",
+            "kind": "Group",
+            "metadata": {
+              "annotations": {
+                "backstage.io/managed-by-location": "url:http://localhost:8080/admin/realms/master/groups/eefa5b46-0509-41d8-b8b3-7ddae9c83632",
+                "backstage.io/managed-by-origin-location": "url:http://localhost:8080/admin/realms/master/groups/eefa5b46-0509-41d8-b8b3-7ddae9c83632",
+                "keycloak.org/id": "eefa5b46-0509-41d8-b8b3-7ddae9c83632",
+                "keycloak.org/realm": "master",
+              },
+              "name": "subgroup",
+            },
+            "spec": {
+              "children": [],
+              "members": [],
+              "parent": "biggroup",
+              "profile": {
+                "displayName": "subgroup",
+              },
+              "type": "group",
+            },
+          },
+          "locationKey": "keycloak-org-provider:default",
+        },
+        {
+          "entity": {
+            "apiVersion": "backstage.io/v1beta1",
+            "kind": "Group",
+            "metadata": {
+              "annotations": {
+                "backstage.io/managed-by-location": "url:http://localhost:8080/admin/realms/master/groups/557501bd-8188-41c0-a2d5-43ff3d5b0258",
+                "backstage.io/managed-by-origin-location": "url:http://localhost:8080/admin/realms/master/groups/557501bd-8188-41c0-a2d5-43ff3d5b0258",
+                "keycloak.org/id": "557501bd-8188-41c0-a2d5-43ff3d5b0258",
+                "keycloak.org/realm": "master",
+              },
+              "name": "emptygroup",
+            },
+            "spec": {
+              "children": [],
+              "members": [],
+              "parent": undefined,
+              "profile": {
+                "displayName": "emptygroup",
+              },
+              "type": "group",
+            },
+          },
+          "locationKey": "keycloak-org-provider:default",
+        },
+      ],
+      "type": "full",
+    },
+  ],
+]
+`;
+
+exports[`KeycloakOrgEntityProvider with v24 should read with grantType password 1`] = `
+[
+  [
+    {
+      "entities": [
+        {
+          "entity": {
+            "apiVersion": "backstage.io/v1beta1",
+            "kind": "User",
+            "metadata": {
+              "annotations": {
+                "backstage.io/managed-by-location": "url:http://localhost:8080/admin/realms/master/users/59efec15-a00b-4700-8833-5f4cdecc1132",
+                "backstage.io/managed-by-origin-location": "url:http://localhost:8080/admin/realms/master/users/59efec15-a00b-4700-8833-5f4cdecc1132",
+                "keycloak.org/id": "59efec15-a00b-4700-8833-5f4cdecc1132",
+                "keycloak.org/realm": "master",
+              },
+              "name": "jamesdoe",
+            },
+            "spec": {
+              "memberOf": [
+                "biggroup",
+              ],
+              "profile": {
+                "email": "jamesdoe@gmail.com",
+              },
+            },
+          },
+          "locationKey": "keycloak-org-provider:default",
+        },
+        {
+          "entity": {
+            "apiVersion": "backstage.io/v1beta1",
+            "kind": "User",
+            "metadata": {
+              "annotations": {
+                "backstage.io/managed-by-location": "url:http://localhost:8080/admin/realms/master/users/c982b51a-abf6-4f68-bfdf-a1c6257214fc",
+                "backstage.io/managed-by-origin-location": "url:http://localhost:8080/admin/realms/master/users/c982b51a-abf6-4f68-bfdf-a1c6257214fc",
+                "keycloak.org/id": "c982b51a-abf6-4f68-bfdf-a1c6257214fc",
+                "keycloak.org/realm": "master",
+              },
+              "name": "joedoe",
+            },
+            "spec": {
+              "memberOf": [],
+              "profile": {
+                "email": undefined,
+              },
+            },
+          },
+          "locationKey": "keycloak-org-provider:default",
+        },
+        {
+          "entity": {
+            "apiVersion": "backstage.io/v1beta1",
+            "kind": "User",
+            "metadata": {
+              "annotations": {
+                "backstage.io/managed-by-location": "url:http://localhost:8080/admin/realms/master/users/2bf97dbd-fd6a-47ae-986b-2632fa95e03f",
+                "backstage.io/managed-by-origin-location": "url:http://localhost:8080/admin/realms/master/users/2bf97dbd-fd6a-47ae-986b-2632fa95e03f",
+                "keycloak.org/id": "2bf97dbd-fd6a-47ae-986b-2632fa95e03f",
+                "keycloak.org/realm": "master",
+              },
+              "name": "johndoe",
+            },
+            "spec": {
+              "memberOf": [],
+              "profile": {
+                "displayName": "John Doe",
+                "email": undefined,
+              },
+            },
+          },
+          "locationKey": "keycloak-org-provider:default",
+        },
+        {
+          "entity": {
+            "apiVersion": "backstage.io/v1beta1",
+            "kind": "Group",
+            "metadata": {
+              "annotations": {
+                "backstage.io/managed-by-location": "url:http://localhost:8080/admin/realms/master/groups/9cf51b5d-e066-4ed8-940c-dc6da77f81a5",
+                "backstage.io/managed-by-origin-location": "url:http://localhost:8080/admin/realms/master/groups/9cf51b5d-e066-4ed8-940c-dc6da77f81a5",
+                "keycloak.org/id": "9cf51b5d-e066-4ed8-940c-dc6da77f81a5",
+                "keycloak.org/realm": "master",
+              },
+              "name": "biggroup",
+            },
+            "spec": {
+              "children": [
+                "subgroup",
+              ],
+              "members": [
+                "jamesdoe",
+              ],
+              "parent": undefined,
+              "profile": {
+                "displayName": "biggroup",
+              },
+              "type": "group",
+            },
+          },
+          "locationKey": "keycloak-org-provider:default",
+        },
+        {
+          "entity": {
+            "apiVersion": "backstage.io/v1beta1",
+            "kind": "Group",
+            "metadata": {
+              "annotations": {
+                "backstage.io/managed-by-location": "url:http://localhost:8080/admin/realms/master/groups/eefa5b46-0509-41d8-b8b3-7ddae9c83632",
+                "backstage.io/managed-by-origin-location": "url:http://localhost:8080/admin/realms/master/groups/eefa5b46-0509-41d8-b8b3-7ddae9c83632",
+                "keycloak.org/id": "eefa5b46-0509-41d8-b8b3-7ddae9c83632",
+                "keycloak.org/realm": "master",
+              },
+              "name": "subgroup",
+            },
+            "spec": {
+              "children": [],
+              "members": [],
+              "parent": "biggroup",
+              "profile": {
+                "displayName": "subgroup",
+              },
+              "type": "group",
+            },
+          },
+          "locationKey": "keycloak-org-provider:default",
+        },
+        {
+          "entity": {
+            "apiVersion": "backstage.io/v1beta1",
+            "kind": "Group",
+            "metadata": {
+              "annotations": {
+                "backstage.io/managed-by-location": "url:http://localhost:8080/admin/realms/master/groups/557501bd-8188-41c0-a2d5-43ff3d5b0258",
+                "backstage.io/managed-by-origin-location": "url:http://localhost:8080/admin/realms/master/groups/557501bd-8188-41c0-a2d5-43ff3d5b0258",
+                "keycloak.org/id": "557501bd-8188-41c0-a2d5-43ff3d5b0258",
+                "keycloak.org/realm": "master",
+              },
+              "name": "emptygroup",
+            },
+            "spec": {
+              "children": [],
+              "members": [],
+              "parent": undefined,
+              "profile": {
+                "displayName": "emptygroup",
+              },
+              "type": "group",
+            },
+          },
+          "locationKey": "keycloak-org-provider:default",
+        },
+      ],
+      "type": "full",
+    },
+  ],
+]
+`;
