@@ -15,7 +15,7 @@
  */
 
 /**
- * The azure-devops module for @backstage/plugin-scaffolder-backend.
+ * The azure-devops module for the Scaffolder.
  *
  * @packageDocumentation
  */
