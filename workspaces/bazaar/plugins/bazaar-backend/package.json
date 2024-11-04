@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-bazaar-backend",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "backstage": {
     "role": "backend-plugin",
     "pluginId": "bazaar",
@@ -65,6 +65,7 @@
     "@backstage/backend-test-utils": "^1.0.2",
     "@backstage/cli": "^0.28.0",
     "@backstage/plugin-auth-backend": "^0.23.1",
-    "@backstage/plugin-auth-backend-module-guest-provider": "^0.2.1"
+    "@backstage/plugin-auth-backend-module-guest-provider": "^0.2.1",
+    "@backstage/plugin-catalog-backend": "^1.26.1"
   }
 }

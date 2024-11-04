@@ -22,14 +22,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apidevtools/json-schema-ref-parser@npm:11.5.4":
-  version: 11.5.4
-  resolution: "@apidevtools/json-schema-ref-parser@npm:11.5.4"
+"@apidevtools/json-schema-ref-parser@npm:11.7.0":
+  version: 11.7.0
+  resolution: "@apidevtools/json-schema-ref-parser@npm:11.7.0"
   dependencies:
     "@jsdevtools/ono": ^7.1.3
     "@types/json-schema": ^7.0.15
     js-yaml: ^4.1.0
-  checksum: 3f4bd685d85e6a1c4dd9df2795f36480e737d50d1b920e8ea21f29e3e76df400beb8bdaf87f31d5bbff3f7f3256384bec8aba101e1cee1234965cd06d5020a6d
+  checksum: ee1c9e7c1bbf0b8d935522f9407c382e20a54464414fa65326fa8f56239e5a6f2b911f48c65fe2888a94d3445dced46ba36c286da435d47cefc8699d4a5b0ae2
   languageName: node
   linkType: hard
 
@@ -2533,7 +2533,7 @@ __metadata:
     "@backstage/plugin-catalog-react": ^1.14.0
     "@backstage/test-utils": ^1.7.0
     "@backstage/theme": ^0.6.0
-    "@hey-api/openapi-ts": 0.34.5
+    "@hey-api/openapi-ts": 0.53.11
     "@janus-idp/cli": 1.14.0
     "@janus-idp/shared-react": 2.11.0
     "@material-ui/core": ^4.9.13
@@ -2546,7 +2546,7 @@ __metadata:
     "@testing-library/user-event": 14.5.2
     "@types/node": 18.19.33
     cross-fetch: 4.0.0
-    msw: 1.3.3
+    msw: 1.3.4
     react: ^18.0.0
     react-dom: ^18.0.0
     react-router-dom: ^6.0.0
@@ -4882,18 +4882,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hey-api/openapi-ts@npm:0.34.5":
-  version: 0.34.5
-  resolution: "@hey-api/openapi-ts@npm:0.34.5"
+"@hey-api/openapi-ts@npm:0.53.11":
+  version: 0.53.11
+  resolution: "@hey-api/openapi-ts@npm:0.53.11"
   dependencies:
-    "@apidevtools/json-schema-ref-parser": 11.5.4
-    c12: 1.10.0
-    camelcase: 8.0.0
-    commander: 12.0.0
+    "@apidevtools/json-schema-ref-parser": 11.7.0
+    c12: 2.0.1
+    commander: 12.1.0
     handlebars: 4.7.8
+  peerDependencies:
+    typescript: ^5.x
   bin:
-    openapi-ts: bin/index.js
-  checksum: fc4dad967e79f28079bc637ffdd5b99711158698c7a02cb2b3e4453349899de390f39ba174df6d0d6b58887dcf26336d2c8d6d6e2a6534d1fdf0b089ad7df980
+    openapi-ts: bin/index.cjs
+  checksum: 25a672271f53011d47fae27cdb22e69a933fdbb1519cc16423e46b691265d5e3a75612e2d70090a12f3e1164945b83a2e45548952a7118bb0e289d734e4840cb
   languageName: node
   linkType: hard
 
@@ -11094,23 +11095,28 @@ __metadata:
   languageName: node
   linkType: hard
 
-"c12@npm:1.10.0":
-  version: 1.10.0
-  resolution: "c12@npm:1.10.0"
+"c12@npm:2.0.1":
+  version: 2.0.1
+  resolution: "c12@npm:2.0.1"
   dependencies:
-    chokidar: ^3.6.0
-    confbox: ^0.1.3
+    chokidar: ^4.0.1
+    confbox: ^0.1.7
     defu: ^6.1.4
     dotenv: ^16.4.5
-    giget: ^1.2.1
-    jiti: ^1.21.0
-    mlly: ^1.6.1
-    ohash: ^1.1.3
+    giget: ^1.2.3
+    jiti: ^2.3.0
+    mlly: ^1.7.1
+    ohash: ^1.1.4
     pathe: ^1.1.2
     perfect-debounce: ^1.0.0
-    pkg-types: ^1.0.3
-    rc9: ^2.1.1
-  checksum: ba5a6bf8f53fec3848dcb5ab95f92e1114b6489943c6cd9117cedd9d34e9b1252cbe5e09ff0df9d46da1cfdb11de8abe14375479a75cdd77340b74517f7c1efb
+    pkg-types: ^1.2.0
+    rc9: ^2.1.2
+  peerDependencies:
+    magicast: ^0.3.5
+  peerDependenciesMeta:
+    magicast:
+      optional: true
+  checksum: fee1d576b426efdc5cfc836939241a794aaaa29556653c7dafbad68de025b9181dd46f7a0498665fbf8e6ee37a12fb3ab63e780c0524c9a6320da6cb2ddd8246
   languageName: node
   linkType: hard
 
@@ -11204,13 +11210,6 @@ __metadata:
     pascal-case: ^3.1.2
     tslib: ^2.0.3
   checksum: bcbd25cd253b3cbc69be3f535750137dbf2beb70f093bdc575f73f800acc8443d34fd52ab8f0a2413c34f1e8203139ffc88428d8863e4dfe530cfb257a379ad6
-  languageName: node
-  linkType: hard
-
-"camelcase@npm:8.0.0":
-  version: 8.0.0
-  resolution: "camelcase@npm:8.0.0"
-  checksum: 6da7abe997af29e80052f17aa21628c7cce14af364cef9f07a2a44d59614dd6f361d405f121938e673424d673697a8c53ad17be8c4b03b0a727307c4db8b5b5e
   languageName: node
   linkType: hard
 
@@ -11357,6 +11356,15 @@ __metadata:
     fsevents:
       optional: true
   checksum: d2f29f499705dcd4f6f3bbed79a9ce2388cf530460122eed3b9c48efeab7a4e28739c6551fd15bec9245c6b9eeca7a32baa64694d64d9b6faeb74ddb8c4a413d
+  languageName: node
+  linkType: hard
+
+"chokidar@npm:^4.0.1":
+  version: 4.0.1
+  resolution: "chokidar@npm:4.0.1"
+  dependencies:
+    readdirp: ^4.0.1
+  checksum: 193da9786b0422a895d59c7552195d15c6c636e6a2293ae43d09e34e243e24ccd02d693f007c767846a65abbeae5fea6bfacb8fc2ddec4ea4d397620d552010d
   languageName: node
   linkType: hard
 
@@ -11707,10 +11715,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"commander@npm:12.0.0":
-  version: 12.0.0
-  resolution: "commander@npm:12.0.0"
-  checksum: bce9e243dc008baba6b8d923f95b251ad115e6e7551a15838d7568abebcca0fc832da1800cf37caf37852f35ce4b7fb794ba7a4824b88c5adb1395f9268642df
+"commander@npm:12.1.0, commander@npm:^12.0.0":
+  version: 12.1.0
+  resolution: "commander@npm:12.1.0"
+  checksum: 68e9818b00fc1ed9cdab9eb16905551c2b768a317ae69a5e3c43924c2b20ac9bb65b27e1cab36aeda7b6496376d4da908996ba2c0b5d79463e0fb1e77935d514
   languageName: node
   linkType: hard
 
@@ -11725,13 +11733,6 @@ __metadata:
   version: 10.0.1
   resolution: "commander@npm:10.0.1"
   checksum: 436901d64a818295803c1996cd856621a74f30b9f9e28a588e726b2b1670665bccd7c1a77007ebf328729f0139838a88a19265858a0fa7a8728c4656796db948
-  languageName: node
-  linkType: hard
-
-"commander@npm:^12.0.0":
-  version: 12.1.0
-  resolution: "commander@npm:12.1.0"
-  checksum: 68e9818b00fc1ed9cdab9eb16905551c2b768a317ae69a5e3c43924c2b20ac9bb65b27e1cab36aeda7b6496376d4da908996ba2c0b5d79463e0fb1e77935d514
   languageName: node
   linkType: hard
 
@@ -11897,7 +11898,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"confbox@npm:^0.1.3, confbox@npm:^0.1.7":
+"confbox@npm:^0.1.7":
   version: 0.1.7
   resolution: "confbox@npm:0.1.7"
   checksum: bde836c26f5154a348b0c0a757f8a0138929e5737e0553be3c4f07a056abca618b861aa63ac3b22d344789b56be99a1382928933e08cd500df00213bf4d8fb43
@@ -15499,7 +15500,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"giget@npm:^1.2.1":
+"giget@npm:^1.2.3":
   version: 1.2.3
   resolution: "giget@npm:1.2.3"
   dependencies:
@@ -17843,12 +17844,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jiti@npm:^1.21.0, jiti@npm:^1.21.6":
+"jiti@npm:^1.21.6":
   version: 1.21.6
   resolution: "jiti@npm:1.21.6"
   bin:
     jiti: bin/jiti.js
   checksum: 9ea4a70a7bb950794824683ed1c632e2ede26949fbd348e2ba5ec8dc5efa54dc42022d85ae229cadaa60d4b95012e80ea07d625797199b688cc22ab0e8891d32
+  languageName: node
+  linkType: hard
+
+"jiti@npm:^2.3.0":
+  version: 2.3.3
+  resolution: "jiti@npm:2.3.3"
+  bin:
+    jiti: lib/jiti-cli.mjs
+  checksum: f1a2b87d937569c966f00a8c9153c8f3e02445b31e034fdaed1b9639a4ecfae3c4df24c7644d5b4764c566f8dee09132a5b55cd049b48e618024accd31d8e6b3
   languageName: node
   linkType: hard
 
@@ -20124,7 +20134,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mlly@npm:^1.6.1, mlly@npm:^1.7.1":
+"mlly@npm:^1.7.1":
   version: 1.7.1
   resolution: "mlly@npm:1.7.1"
   dependencies:
@@ -20184,9 +20194,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"msw@npm:1.3.3":
-  version: 1.3.3
-  resolution: "msw@npm:1.3.3"
+"msw@npm:1.3.4":
+  version: 1.3.4
+  resolution: "msw@npm:1.3.4"
   dependencies:
     "@mswjs/cookies": ^0.2.2
     "@mswjs/interceptors": ^0.17.10
@@ -20214,7 +20224,7 @@ __metadata:
       optional: true
   bin:
     msw: cli/index.js
-  checksum: cb3fda1519485f219d36c4e5ac1e1190ffe77dab66121c88cb9db0bace1ecb5a45c83db49e68e7c688b330ce43eed17d00939e09812dc710c0d4b3e59925730c
+  checksum: 57646ecb831e98f00387e60bad4d535e426d406ae2645340e59500c219059be225f1f02a5ff21aee9daeb7a8bdde922a00fb82930781d27e3f3fdaf6b292c25f
   languageName: node
   linkType: hard
 
@@ -20771,7 +20781,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ohash@npm:^1.1.3":
+"ohash@npm:^1.1.3, ohash@npm:^1.1.4":
   version: 1.1.4
   resolution: "ohash@npm:1.1.4"
   checksum: 8c63897941e67129ac81a15cfc2bb66a7b122200c9ee244e86d3d6b7aa7f5d9f7cb98d33dfc38b169c83b77c9babcc6f66ccbc90864d1f862f10ac8b72d80d66
@@ -21591,7 +21601,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pkg-types@npm:^1.0.3, pkg-types@npm:^1.1.1, pkg-types@npm:^1.2.0":
+"pkg-types@npm:^1.1.1, pkg-types@npm:^1.2.0":
   version: 1.2.0
   resolution: "pkg-types@npm:1.2.0"
   dependencies:
@@ -22495,7 +22505,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rc9@npm:^2.1.1":
+"rc9@npm:^2.1.2":
   version: 2.1.2
   resolution: "rc9@npm:2.1.2"
   dependencies:
@@ -22915,6 +22925,13 @@ __metadata:
   dependencies:
     minimatch: ^5.1.0
   checksum: 1dc0f7440ff5d9378b593abe9d42f34ebaf387516615e98ab410cf3a68f840abbf9ff1032d15e0a0dbffa78f9e2c46d4fafdbaac1ca435af2efe3264e3f21874
+  languageName: node
+  linkType: hard
+
+"readdirp@npm:^4.0.1":
+  version: 4.0.2
+  resolution: "readdirp@npm:4.0.2"
+  checksum: 309376e717f94fb7eb61bec21e2603243a9e2420cd2e9bf94ddf026aefea0d7377ed1a62f016d33265682e44908049a55c3cfc2307450a1421654ea008489b39
   languageName: node
   linkType: hard
 
