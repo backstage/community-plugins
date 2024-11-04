@@ -15622,8 +15622,8 @@ __metadata:
     "@testing-library/jest-dom": 6.4.8
     "@testing-library/react": 14.3.1
     "@types/node": 18.19.34
-    "@types/react": 18.3.3
-    "@types/react-dom": 18.3.0
+    "@types/react": 18.3.12
+    "@types/react-dom": 18.3.1
     react: ^18.0.0
     react-dom: ^18.0.0
     react-router: ^6.23.0
