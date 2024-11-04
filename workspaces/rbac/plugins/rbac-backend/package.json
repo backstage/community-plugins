@@ -34,8 +34,8 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
-    "@backstage-community/plugin-rbac-common": "^1.12.1",
-    "@backstage-community/plugin-rbac-node": "^1.8.1",
+    "@backstage-community/plugin-rbac-common": "workspace:^",
+    "@backstage-community/plugin-rbac-node": "workspace:^",
     "@backstage/backend-defaults": "^0.5.2",
     "@backstage/backend-plugin-api": "^1.0.1",
     "@backstage/catalog-client": "^1.7.1",
