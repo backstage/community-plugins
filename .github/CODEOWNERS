@@ -35,6 +35,7 @@ yarn.lock                                           @backstage/community-plugins
 /workspaces/octopus-deploy                          @backstage/community-plugins-maintainers  @jmezach
 /workspaces/pingidentity                            @backstage/community-plugins-maintainers  @jessicajhee
 /workspaces/playlist                                @backstage/community-plugins-maintainers  @kuangp
+/workspaces/rbac                                    @backstage/community-plugins-maintainers  @AndrienkoAleksandr @PatAKnight
 /workspaces/redhat-argocd                           @backstage/community-plugins-maintainers  @karthikjeeyar @rohitkrai03 @Eswaraiahsapram
 /workspaces/redhat-resource-optimization            @backstage/community-plugins-maintainers
 /workspaces/report-portal                           @backstage/community-plugins-maintainers  @yashoswalyo
