@@ -1,0 +1,12 @@
+dist
+dist-types
+coverage
+.vscode
+CHANGELOG.md
+generated
+templates
+*.hbs
+renovate.json
+dist-dynamic
+dist-scalprum
+playwright-report
