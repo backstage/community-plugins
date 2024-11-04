@@ -2576,7 +2576,7 @@ __metadata:
     "@backstage/cli": ^0.28.0
     "@backstage/plugin-catalog-common": ^1.1.0
     "@backstage/plugin-catalog-node": ^1.13.1
-    "@janus-idp/cli": 1.13.1
+    "@janus-idp/cli": 1.17.0
   languageName: unknown
   linkType: soft
 
@@ -2871,7 +2871,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/cli-node@npm:^0.2.7, @backstage/cli-node@npm:^0.2.9":
+"@backstage/cli-node@npm:^0.2.9":
   version: 0.2.9
   resolution: "@backstage/cli-node@npm:0.2.9"
   dependencies:
@@ -3039,7 +3039,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/config-loader@npm:^1.8.1, @backstage/config-loader@npm:^1.9.1":
+"@backstage/config-loader@npm:^1.9.1":
   version: 1.9.1
   resolution: "@backstage/config-loader@npm:1.9.1"
   dependencies:
@@ -3098,7 +3098,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/eslint-plugin@npm:^0.1.10, @backstage/eslint-plugin@npm:^0.1.8":
+"@backstage/eslint-plugin@npm:^0.1.10":
   version: 0.1.10
   resolution: "@backstage/eslint-plugin@npm:0.1.10"
   dependencies:
@@ -4451,16 +4451,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@janus-idp/cli@npm:1.13.1":
-  version: 1.13.1
-  resolution: "@janus-idp/cli@npm:1.13.1"
+"@janus-idp/cli@npm:1.17.0":
+  version: 1.17.0
+  resolution: "@janus-idp/cli@npm:1.17.0"
   dependencies:
     "@backstage/cli-common": ^0.1.14
-    "@backstage/cli-node": ^0.2.7
+    "@backstage/cli-node": ^0.2.9
     "@backstage/config": ^1.2.0
-    "@backstage/config-loader": ^1.8.1
+    "@backstage/config-loader": ^1.9.1
     "@backstage/errors": ^1.2.4
-    "@backstage/eslint-plugin": ^0.1.8
+    "@backstage/eslint-plugin": ^0.1.10
     "@backstage/types": ^1.1.1
     "@manypkg/get-packages": ^1.1.3
     "@openshift/dynamic-plugin-sdk-webpack": ^3.0.0
@@ -4484,13 +4484,11 @@ __metadata:
     eslint: ^8.49.0
     eslint-config-prettier: ^8.10.0
     eslint-webpack-plugin: ^3.2.0
-    express: ^4.18.2
     fork-ts-checker-webpack-plugin: ^7.0.0-alpha.8
     fs-extra: ^10.1.0
     gitconfiglocal: 2.1.0
     handlebars: ^4.7.7
     html-webpack-plugin: ^5.3.1
-    inquirer: ^8.2.0
     is-native-module: ^1.1.3
     lodash: ^4.17.21
     mini-css-extract-plugin: ^2.4.2
@@ -4498,7 +4496,6 @@ __metadata:
     npm-packlist: ^5.0.0
     ora: ^5.3.0
     postcss: ^8.2.13
-    process: ^0.11.10
     react-dev-utils: ^12.0.0-next.60
     react-refresh: ^0.14.0
     recursive-readdir: ^2.2.2
@@ -4522,7 +4519,7 @@ __metadata:
       optional: true
   bin:
     janus-cli: bin/janus-cli
-  checksum: 7b7277e962b065f875f1a37cf988994d6a6b4c5e2b2f0cbd253c8d3c97fb58b31b415752951b5896d7c695d9e809f96fa38deafa6f3179334401a89ad3d6187f
+  checksum: a0800b42010b40485f5e62a295e608a0d2a6c02a5e55a30b09974823849a7f38644a720fddd214da06ae939cd5a84a56ea52c5c9476c8a45851fad320f1523b7
   languageName: node
   linkType: hard
 
@@ -13410,7 +13407,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"express@npm:^4.17.1, express@npm:^4.17.3, express@npm:^4.18.2":
+"express@npm:^4.17.1, express@npm:^4.17.3":
   version: 4.19.2
   resolution: "express@npm:4.19.2"
   dependencies:

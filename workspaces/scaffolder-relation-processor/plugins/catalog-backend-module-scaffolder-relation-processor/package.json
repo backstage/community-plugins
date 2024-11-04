@@ -50,7 +50,7 @@
     "@backstage/backend-test-utils": "^1.0.2",
     "@backstage/cli": "^0.28.0",
     "@backstage/plugin-catalog-common": "^1.1.0",
-    "@janus-idp/cli": "1.13.1"
+    "@janus-idp/cli": "1.17.0"
   },
   "files": [
     "dist",
