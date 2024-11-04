@@ -1,0 +1,2 @@
+g, user:default/guest, role:default/catalog-writer
+p, role:default/catalog-writer, catalog-entity, update, allow

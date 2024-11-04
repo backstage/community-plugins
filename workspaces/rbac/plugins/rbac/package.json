@@ -1,0 +1,119 @@
+{
+  "name": "@backstage-community/plugin-rbac",
+  "version": "1.32.0",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.esm.js",
+    "types": "dist/index.d.ts"
+  },
+  "backstage": {
+    "role": "frontend-plugin",
+    "supported-versions": "1.32.5",
+    "pluginId": "rbac",
+    "pluginPackages": [
+      "@backstage-community/plugin-rbac",
+      "@backstage-community/plugin-rbac-backend",
+      "@backstage-community/plugin-rbac-common",
+      "@backstage-community/plugin-rbac-node"
+    ]
+  },
+  "sideEffects": false,
+  "scripts": {
+    "build": "backstage-cli package build",
+    "clean": "backstage-cli package clean",
+    "lint:check": "backstage-cli package lint",
+    "lint:fix": "backstage-cli package lint --fix",
+    "postpack": "backstage-cli package postpack",
+    "prepack": "backstage-cli package prepack",
+    "start": "backstage-cli package start",
+    "test": "backstage-cli package test --passWithNoTests --coverage",
+    "tsc": "tsc",
+    "prettier:check": "prettier --ignore-unknown --check .",
+    "prettier:fix": "prettier --ignore-unknown --write .",
+    "ui-test": "start-server-and-test start localhost:3000 'playwright test'"
+  },
+  "dependencies": {
+    "@backstage-community/plugin-rbac-common": "^1.12.0",
+    "@backstage/catalog-model": "^1.7.0",
+    "@backstage/core-components": "^0.15.1",
+    "@backstage/core-plugin-api": "^1.10.0",
+    "@backstage/plugin-catalog": "^1.24.0",
+    "@backstage/plugin-catalog-common": "^1.1.0",
+    "@backstage/plugin-permission-common": "^0.8.1",
+    "@backstage/plugin-permission-react": "^0.4.27",
+    "@backstage/theme": "^0.6.0",
+    "@janus-idp/shared-react": "^2.13.0",
+    "@material-ui/core": "^4.9.13",
+    "@material-ui/icons": "^4.11.3",
+    "@material-ui/lab": "^4.0.0-alpha.45",
+    "@mui/icons-material": "5.16.4",
+    "@mui/material": "^5.14.18",
+    "@rjsf/core": "^5.21.2",
+    "@rjsf/mui": "^5.21.2",
+    "@rjsf/utils": "^5.21.2",
+    "@rjsf/validator-ajv8": "^5.21.2",
+    "autosuggest-highlight": "^3.3.4",
+    "formik": "^2.4.5",
+    "react-use": "^17.4.0",
+    "yup": "^1.3.2"
+  },
+  "peerDependencies": {
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-router-dom": "^6.0.0"
+  },
+  "devDependencies": {
+    "@backstage/cli": "0.28.2",
+    "@backstage/core-app-api": "1.15.1",
+    "@backstage/dev-utils": "1.1.2",
+    "@backstage/test-utils": "1.7.0",
+    "@playwright/test": "1.45.3",
+    "@redhat-developer/red-hat-developer-hub-theme": "0.4.0",
+    "@spotify/prettier-config": "^15.0.0",
+    "@testing-library/dom": "^10.0.0",
+    "@testing-library/jest-dom": "^6.0.0",
+    "@testing-library/react": "^15.0.0",
+    "@testing-library/react-hooks": "8.0.1",
+    "@testing-library/user-event": "14.5.2",
+    "@types/autosuggest-highlight": "3.2.3",
+    "@types/node": "18.19.34",
+    "@types/react": "^18.2.58",
+    "canvas": "^2.11.2",
+    "msw": "1.3.3",
+    "prettier": "3.3.3",
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-router-dom": "^6.0.0",
+    "start-server-and-test": "2.0.8"
+  },
+  "scalprum": {
+    "name": "janus-idp.backstage-plugin-rbac",
+    "exposedModules": {
+      "RbacPlugin": "./src/index.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "dist-scalprum",
+    "app-config.yaml"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/rbac/plugins/rbac"
+  },
+  "keywords": [
+    "support:production",
+    "lifecycle:active",
+    "backstage",
+    "plugin"
+  ],
+  "homepage": "https://red.ht/rhdh",
+  "bugs": "https://github.com/backstage/community-plugins/issues",
+  "maintainers": [
+    "@PatAKnight"
+  ],
+  "author": "Red Hat"
+}
