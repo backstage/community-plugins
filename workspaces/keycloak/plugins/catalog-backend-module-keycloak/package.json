@@ -10,7 +10,7 @@
   },
   "backstage": {
     "role": "backend-plugin-module",
-    "supported-versions": "1.32.4",
+    "supported-versions": "1.32.5",
     "pluginId": "keycloak",
     "pluginPackage": "@backstage-community/plugin-catalog-backend-module-keycloak"
   },
