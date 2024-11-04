@@ -24,12 +24,6 @@ export interface Config {
      */
     host: string;
     /**
-     * Token used to authenticate requests.
-     * @visibility secret
-     * @deprecated Use `integrations.azure` instead, see {@link https://backstage.io/docs/integrations/azure/locations}
-     */
-    token?: string;
-    /**
      * The organization of the given Azure instance
      */
     organization: string;
