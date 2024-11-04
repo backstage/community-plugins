@@ -2472,7 +2472,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-ocm-backend@workspace:plugins/ocm-backend"
   dependencies:
-    "@backstage-community/plugin-ocm-common": ^3.6.0
+    "@backstage-community/plugin-ocm-common": ^3.6.1
     "@backstage/backend-defaults": ^0.5.2
     "@backstage/backend-dynamic-feature-service": 0.4.3
     "@backstage/backend-openapi-utils": ^0.2.0
@@ -2499,7 +2499,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@backstage-community/plugin-ocm-common@^3.6.0, @backstage-community/plugin-ocm-common@workspace:plugins/ocm-common":
+"@backstage-community/plugin-ocm-common@^3.6.1, @backstage-community/plugin-ocm-common@workspace:plugins/ocm-common":
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-ocm-common@workspace:plugins/ocm-common"
   dependencies:
@@ -2516,7 +2516,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-ocm@workspace:plugins/ocm"
   dependencies:
-    "@backstage-community/plugin-ocm-common": ^3.6.0
+    "@backstage-community/plugin-ocm-common": ^3.6.1
     "@backstage/catalog-model": ^1.7.0
     "@backstage/cli": 0.28.2
     "@backstage/core-app-api": 1.15.1
