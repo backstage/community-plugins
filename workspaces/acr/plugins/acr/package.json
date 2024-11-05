@@ -22,10 +22,8 @@
   "scripts": {
     "build": "backstage-cli package build",
     "clean": "backstage-cli package clean",
-    "export-dynamic": "janus-cli package export-dynamic-plugin --in-place",
     "lint": "backstage-cli package lint",
     "postpack": "backstage-cli package postpack",
-    "postversion": "yarn run export-dynamic",
     "prepack": "backstage-cli package prepack",
     "start": "backstage-cli package start",
     "test": "backstage-cli package test --passWithNoTests --coverage",
@@ -51,7 +49,6 @@
     "@backstage/core-app-api": "^1.15.1",
     "@backstage/dev-utils": "^1.1.2",
     "@backstage/test-utils": "^1.7.0",
-    "@janus-idp/cli": "1.13.2",
     "@redhat-developer/red-hat-developer-hub-theme": "0.2.0",
     "@testing-library/jest-dom": "6.6.2",
     "@testing-library/react": "14.3.1",
@@ -65,9 +62,9 @@
     "react-router-dom": "^6.26.2"
   },
   "files": [
-    "dist",
-    "dist-scalprum",
-    "app-config.yaml"
+    "app-config.dynamic.yaml",
+    "app-config.yaml",
+    "dist"
   ],
   "repository": {
     "type": "git",
