@@ -17,12 +17,9 @@
 import {
   mockServices,
   registerMswTestHooks,
+  createMockDirectory,
 } from '@backstage/backend-test-utils';
 import { TestPipeline } from '@backstage/plugin-search-backend-node';
-import {
-  ScmIntegrations,
-  DefaultGithubCredentialsProvider,
-} from '@backstage/integration';
 import { graphql, http } from 'msw';
 import { setupServer } from 'msw/node';
 import { Readable } from 'stream';
@@ -44,11 +41,10 @@ const mockSearchDocIndex = {
   ],
 };
 
-const logger = mockServices.logger.mock();
-const timeout = 60_000;
-const url = 'https://github.com/backstage/backstage';
-const integrations = ScmIntegrations.fromConfig(
-  new ConfigReader({
+describe('GithubDiscussionsCollatorFactory', () => {
+  const logger = mockServices.logger.mock();
+  const mockDir = createMockDirectory();
+  const config = new ConfigReader({
     integrations: {
       github: [
         {
@@ -57,37 +53,44 @@ const integrations = ScmIntegrations.fromConfig(
         },
       ],
     },
-  }),
-);
-const credentialsProvider =
-  DefaultGithubCredentialsProvider.fromIntegrations(integrations);
+    search: {
+      collators: {
+        githubDiscussions: {
+          schedule: {
+            initialDelay: { seconds: 0 },
+            timeout: { minutes: 1 },
+            frequency: { minutes: 5 },
+          },
+          url: 'https://github.com/backstage/backstage',
+          cacheBase: `file://${mockDir.path}`,
+        },
+      },
+    },
+  });
 
-const options = {
-  logger,
-  credentialsProvider,
-  githubIntegration: integrations.github,
-  timeout,
-  url,
-};
-
-describe('GithubDiscussionsCollatorFactory', () => {
-  it('has expected type', () => {
-    const factory = GithubDiscussionsCollatorFactory.fromConfig(options);
+  it('has expected type', async () => {
+    const factory = await GithubDiscussionsCollatorFactory.fromConfig({
+      logger,
+      config,
+    });
     expect(factory.type).toBe('github-discussions');
   });
+
   describe('getCollator', () => {
     let factory: GithubDiscussionsCollatorFactory;
     let collator: Readable;
+
     const server = setupServer();
     registerMswTestHooks(server);
 
     beforeEach(async () => {
-      factory = GithubDiscussionsCollatorFactory.fromConfig(options);
+      mockDir.clear();
+      factory = await GithubDiscussionsCollatorFactory.fromConfig({
+        logger,
+        config,
+      });
       collator = await factory.getCollator();
       server.use(
-        graphql.query(/.*/, () => {
-          console.log('🔴 graphql query');
-        }),
         http.all(/.*/, () => {
           console.log('🔴 http all');
         }),

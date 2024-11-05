@@ -2692,7 +2692,7 @@ __metadata:
     "@types/luxon": "npm:^3"
     "@types/parse-github-url": "npm:^1"
     assert-ts: "npm:^0.3.4"
-    effection: "npm:^3.0.3"
+    effection: "npm:^4.0.0-alpha.3"
     fs-extra: "npm:^11.2.0"
     github-discussions-fetcher: "npm:^0.7.2"
     luxon: "npm:^3.5.0"
@@ -14261,17 +14261,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"effection@npm:4.0.0-alpha.3":
+"effection@npm:4.0.0-alpha.3, effection@npm:^4.0.0-alpha.3":
   version: 4.0.0-alpha.3
   resolution: "effection@npm:4.0.0-alpha.3"
   checksum: 10/1ae02f8431b34c130f4ebe0a5dfcf6144f17ed1c87f6933ecf1c17d23d3aad23ae0ad859cea1c51b2f6083ca189518bd762055a91f95e29b9f268eb732f8de6d
-  languageName: node
-  linkType: hard
-
-"effection@npm:^3.0.3":
-  version: 3.0.3
-  resolution: "effection@npm:3.0.3"
-  checksum: 10/6bffe03ccb3ac2545677f1f9ccc6af1790bcf3f457d9dfbc474920f6f89b514ace33de34307ee70ce07070cd0765dc7959b1b12c606c80299954be693ba60ed7
   languageName: node
   linkType: hard
 
