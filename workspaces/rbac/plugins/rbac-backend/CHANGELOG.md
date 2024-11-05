@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 5.2.3
+
+### Patch Changes
+
+- 2249d08: bump rbac plugins to include latest changes in janus
+
 ## 5.2.2
 
 ### Patch Changes
