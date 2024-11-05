@@ -1,0 +1,144 @@
+{
+  "apiVersion": "cluster.open-cluster-management.io/v1",
+  "kind": "ManagedCluster",
+  "metadata": {
+    "annotations": {
+      "open-cluster-management/created-via": "other"
+    },
+    "creationTimestamp": "2021-08-27T13:57:23Z",
+    "finalizers": [
+      "cluster.open-cluster-management.io/api-resource-cleanup",
+      "managedclusterinfo.finalizers.open-cluster-management.io",
+      "open-cluster-management.io/managedclusterrole",
+      "managedcluster-import-controller.open-cluster-management.io/cleanup",
+      "managedcluster-import-controller.open-cluster-management.io/manifestwork-cleanup"
+    ],
+    "generation": 32,
+    "labels": {
+      "app.kubernetes.io/instance": "acm-infra",
+      "authdeployment": "primary",
+      "cloud": "Other",
+      "cluster.open-cluster-management.io/clusterset": "argocd-managed",
+      "clusterID": "5d448ae7-05f1-42cc-aacc-3122a8ad0184",
+      "feature.open-cluster-management.io/addon-application-manager": "available",
+      "feature.open-cluster-management.io/addon-cert-policy-controller": "available",
+      "feature.open-cluster-management.io/addon-config-policy-controller": "available",
+      "feature.open-cluster-management.io/addon-governance-policy-framework": "available",
+      "feature.open-cluster-management.io/addon-iam-policy-controller": "available",
+      "feature.open-cluster-management.io/addon-observability-controller": "available",
+      "feature.open-cluster-management.io/addon-search-collector": "available",
+      "feature.open-cluster-management.io/addon-work-manager": "available",
+      "name": "offline-cluster",
+      "openshiftVersion": "4.9.21",
+      "vendor": "OpenShift"
+    },
+    "name": "offline-cluster",
+    "resourceVersion": "2876894186",
+    "uid": "128de4b5-f9ec-430b-bffc-d16214ec8a07"
+  },
+  "spec": {
+    "hubAcceptsClient": true,
+    "leaseDurationSeconds": 60,
+    "managedClusterClientConfigs": [
+      {
+        "caBundle": "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUZSakNDQkM2Z0F3SUJBZ0lTQklyL25CRDd1L0V6NmsvcmgwWmhhNE14TUEwR0NTcUdTSWIzRFFFQkN3VUEKTURJeEN6QUpCZ05WQkFZVEFsVlRNUll3RkFZRFZRUUtFdzFNWlhRbmN5QkZibU55ZVhCME1Rc3dDUVlEVlFRRApFd0pTTXpBZUZ3MHlNekF5TVRneE5UTTNORE5hRncweU16QTFNVGt4TlRNM05ESmFNQ3N4S1RBbkJnTlZCQU1UCklHRndhUzV6YldGMVp5NXVZUzV2Y0dWeVlYUmxMV1pwY25OMExtTnNiM1ZrTUlJQklqQU5CZ2txaGtpRzl3MEIKQVFFRkFBT0NBUThBTUlJQkNnS0NBUUVBeTIvWVFwbGZiYWtDdFZDOWhEaTd6VmxVM1pGSXYrenNWc2hvT3dObgpZS1ptTXEwNFV1bk1mcnBteVNPcGxFQk9SWmNkT2dvSmErQ2NhSHdWVGgxako1OXA2VFVhTnRtRCttWmlHdE8yCkxmYmxkWjNPSzhSWE5WYktlRUhkVWtZNHpZN3JGOHU2aXBpLzZoTmpqOG1rU3VSS2xaNWxRZXJCU3RiVVA4YWgKME1oa3VKdkZIRzZqM2VPcXk2U2JKTGEzTFZxNGJyVzhoZ01YeEZYZHpBbWtHR3QwYWdLQ0tHQ0V2dDdhUmZtUApFMjBjdWNwZXlaWDBxelprelp5T2xyd0tmc2pGZnptMEVOamlKaWZwVWhNYmErK0VSa214RytmZ0tNcmxxRkY0CjFQRkhxOFloMklYdTNlbHRCRHU3Z3lVcnJOTEwvVGpIMFJseklvdVplbmVhUHdJREFRQUJvNElDV3pDQ0FsY3cKRGdZRFZSMFBBUUgvQkFRREFnV2dNQjBHQTFVZEpRUVdNQlFHQ0NzR0FRVUZCd01CQmdnckJnRUZCUWNEQWpBTQpCZ05WSFJNQkFmOEVBakFBTUIwR0ExVWREZ1FXQkJRc25wSXJ5RExEdFFvaFAyQUthdG01VVBqV1l6QWZCZ05WCkhTTUVHREFXZ0JRVUxyTVh0MWhXeTY1UUNVRG1INitkaXhUQ3hqQlZCZ2dyQmdFRkJRY0JBUVJKTUVjd0lRWUkKS3dZQkJRVUhNQUdHRldoMGRIQTZMeTl5TXk1dkxteGxibU55TG05eVp6QWlCZ2dyQmdFRkJRY3dBb1lXYUhSMApjRG92TDNJekxta3ViR1Z1WTNJdWIzSm5MekFyQmdOVkhSRUVKREFpZ2lCaGNHa3VjMjFoZFdjdWJtRXViM0JsCmNtRjBaUzFtYVhKemRDNWpiRzkxWkRCTUJnTlZIU0FFUlRCRE1BZ0dCbWVCREFFQ0FUQTNCZ3NyQmdFRUFZTGYKRXdFQkFUQW9NQ1lHQ0NzR0FRVUZCd0lCRmhwb2RIUndPaTh2WTNCekxteGxkSE5sYm1OeWVYQjBMbTl5WnpDQwpBUVFHQ2lzR0FRUUIxbmtDQkFJRWdmVUVnZklBOEFCMkFIb3lqRlRZdHkyMklPbzQ0RkllNllRV2NESVRoVTA3CjBpdkJPbGVqVXV0U0FBQUJobVZqZklJQUFBUURBRWN3UlFJaEFKYmdNK2JoRUhtbWdmWjhERjlSb29XSzhzdm4KM3ZXZCtobDFqR2lkT2hGNkFpQjhMRURpT3MzdVRqa0ZUeDI2VjNpcC8xNDRvQzZkQ1J4TmVCZGJqaHpEcFFCMgpBT2crME5vKzlRWTFNdWRYS0x5SmE4a0QwOHZSRVd2czYybmhkMzF0QnIxdUFBQUJobVZqZkZ3QUFBUURBRWN3ClJRSWhBT0tVMUZZMjhBamJvZG04MUExRjJkbzlmOTFuQnFMYmVYVVgxdHBITE42SEFpQm9SampGcVUwRldtVm4KcllaUTE1UGhGOW9YNVRvYjVsS2xHMmN1NWxCejJEQU5CZ2txaGtpRzl3MEJBUXNGQUFPQ0FRRUFWSUlZWFRrNAo5R1ZQbXV4N2NvcmhVUFV1NENXOVhFaEljdGdieEdvTFB2U2VncXpoNHBHL09yQkNNS0lWaWhtRWhqTWdabkkyClVaTFRTQ1VZU0tpZjNEYXlUL1FxM1pGQjArQUlxb08vWmZyLzk1ckpRQ0Q5UDk4MDNsd29udUhrYUdyRzcvNFEKUkpxaXhXdWo4TWRWUGdzNjJweGRSMmVvS3UvazdzVWg1OUJRcVgxSWMzaUJqVGNoSkhoSUFJKy95ZUR5M1FnMApweUJXcVFkRnNxVTczdW5DSU45Vy82aUZmN2MxaSs2ZEM3WW9MNVNZbFpWczBCUDIwRzNMWS9LUllwb3NBSERSCkF1Zk9lWWlkR01XbThhL1ptbWY4TnloQ1JwK0Y0amsxWG94UitVUUJlR3dsaW44Vy9QY3ZFdWxMYlMwaFBOMEsKZG5yUXcwWnZmZkEvRlE9PQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCi0tLS0tQkVHSU4gQ0VSVElGSUNBVEUtLS0tLQpNSUlGRmpDQ0F2NmdBd0lCQWdJUkFKRXJDRXJQREJpblUvYldMaVduWDFvd0RRWUpLb1pJaHZjTkFRRUxCUUF3ClR6RUxNQWtHQTFVRUJoTUNWVk14S1RBbkJnTlZCQW9USUVsdWRHVnlibVYwSUZObFkzVnlhWFI1SUZKbGMyVmgKY21Ob0lFZHliM1Z3TVJVd0V3WURWUVFERXd4SlUxSkhJRkp2YjNRZ1dERXdIaGNOTWpBd09UQTBNREF3TURBdwpXaGNOTWpVd09URTFNVFl3TURBd1dqQXlNUXN3Q1FZRFZRUUdFd0pWVXpFV01CUUdBMVVFQ2hNTlRHVjBKM01nClJXNWpjbmx3ZERFTE1Ba0dBMVVFQXhNQ1VqTXdnZ0VpTUEwR0NTcUdTSWIzRFFFQkFRVUFBNElCRHdBd2dnRUsKQW9JQkFRQzdBaFVvelBhZ2xOTVBFdXlOVlpMRCtJTHhtYVo2UW9pblhTYXF0U3U1eFV5eHI0NXIrWFhJbzljUApSNVFVVlRWWGpKNm9vamtaOVlJOFFxbE9idlU3d3k3YmpjQ3dYUE5aT09mdHoybndXZ3NidnNDVUpDV0gramR4CnN4UG5IS3pobSsvYjVEdEZVa1dXcWNGVHpqVElVdTYxcnUyUDNtQnc0cVZVcTdadERwZWxRRFJySzlPOFp1dG0KTkh6NmE0dVBWeW1aK0RBWFhicHliL3VCeGEzU2hsZzlGOGZuQ2J2eEsvZUczTUhhY1YzVVJ1UE1yU1hCaUx4ZwpaM1Ztcy9FWTk2SmM1bFAvT29pMlI2WC9FeGpxbUFsM1A1MVQrYzhCNWZXbWNCY1VyMk9rLzVtems1M2NVNmNHCi9raUZIYUZwcmlWMXV4UE1VZ1AxN1ZHaGk5c1ZBZ01CQUFHamdnRUlNSUlCQkRBT0JnTlZIUThCQWY4RUJBTUMKQVlZd0hRWURWUjBsQkJZd0ZBWUlLd1lCQlFVSEF3SUdDQ3NHQVFVRkJ3TUJNQklHQTFVZEV3RUIvd1FJTUFZQgpBZjhDQVFBd0hRWURWUjBPQkJZRUZCUXVzeGUzV0ZiTHJsQUpRT1lmcjUyTEZNTEdNQjhHQTFVZEl3UVlNQmFBCkZIbTBXZVo3dHVYa0FYT0FDSWpJR2xqMjZadHVNRElHQ0NzR0FRVUZCd0VCQkNZd0pEQWlCZ2dyQmdFRkJRY3cKQW9ZV2FIUjBjRG92TDNneExta3ViR1Z1WTNJdWIzSm5MekFuQmdOVkhSOEVJREFlTUJ5Z0dxQVloaFpvZEhSdwpPaTh2ZURFdVl5NXNaVzVqY2k1dmNtY3ZNQ0lHQTFVZElBUWJNQmt3Q0FZR1o0RU1BUUlCTUEwR0N5c0dBUVFCCmd0OFRBUUVCTUEwR0NTcUdTSWIzRFFFQkN3VUFBNElDQVFDRnlrNUhQcVAzaFVTRnZOVm5lTEtZWTYxMVRSNlcKUFRObGNsUXRnYURxdyszNElMOWZ6TGR3QUxkdU8vWmVsTjdrSUorbTc0dXlBK2VpdFJZOGtjNjA3VGtDNTN3bAppa2ZtWlc0L1J2VFo4TTZVSys1VXpoSzhqQ2RMdU1HWUw2S3Z6WEdSU2dpM3lMZ2pld1F0Q1BrSVZ6NkQyUVF6CkNrY2hlQW1DSjhNcXlKdTV6bHp5Wk1qQXZubkFUNDV0UkF4ZWtyc3U5NHNRNGVnZFJDbmJXU0R0WTdraCtCSW0KbEpOWG9CMWxCTUVLSXE0UURVT1hvUmdmZnVEZ2hqZTFXckc5TUwrSGJpc3EveUZPR3dYRDlSaVg4RjZzdzZXNAphdkF1dkRzenVlNUwzc3o4NUsrRUM0WS93RlZETnZabzRUWVhhbzZaMGYrbFFLYzB0OERRWXprMU9YVnU4cnAyCnlKTUM2YWxMYkJmT0RBTFp2WUg3bjdkbzFBWmxzNEk5ZDFQNGpua0RyUW94QjNVcVE5aFZsM0xFS1E3M3hGMU8KeUs1R2hERFg4b1ZmR0tGNXUrZGVjSXNINFlhVHc3bVAzR0Z4SlNxdjMrMGxVRkpvaTVMYzVkYTE0OXA5MElkcwpoQ0V4cm9MMSs3bXJ5SWtYUGVGTTVUZ085cjBydlphQkZPdlYyejBncDM1WjArTDRXUGxidUVqTi9seFBGaW4rCkhsVWpyOGdSc0kzcWZKT1FGeS85cktJSlIwWS84T213dC84b1RXZ3kxbWRlSG1tams3ajFuWXN2QzlKU1E2WnYKTWxkbFRUS0IzemhUaFYxK1hXWXA2cmpkNUpXMXpiVldFa0xOeEU3R0pUaEVVRzNzemdCVkdQN3BTV1RVVHNxWApuTFJid0hPb3E3aEh3Zz09Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0KLS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUZZRENDQkVpZ0F3SUJBZ0lRUUFGM0lUZlU2VUs0N25hcVBHUUt0ekFOQmdrcWhraUc5dzBCQVFzRkFEQS8KTVNRd0lnWURWUVFLRXh0RWFXZHBkR0ZzSUZOcFoyNWhkSFZ5WlNCVWNuVnpkQ0JEYnk0eEZ6QVZCZ05WQkFNVApEa1JUVkNCU2IyOTBJRU5CSUZnek1CNFhEVEl4TURFeU1ERTVNVFF3TTFvWERUSTBNRGt6TURFNE1UUXdNMW93ClR6RUxNQWtHQTFVRUJoTUNWVk14S1RBbkJnTlZCQW9USUVsdWRHVnlibVYwSUZObFkzVnlhWFI1SUZKbGMyVmgKY21Ob0lFZHliM1Z3TVJVd0V3WURWUVFERXd4SlUxSkhJRkp2YjNRZ1dERXdnZ0lpTUEwR0NTcUdTSWIzRFFFQgpBUVVBQTRJQ0R3QXdnZ0lLQW9JQ0FRQ3Q2Q1J6OUJRMzg1dWVLMWNvSEllKzNMZmZPSkNNYmp6bVY2QjQ5M1hDCm92NzFhbTcyQUU4bzI5NW9obXhFazdheFkvMFVFbXUvSDlMcU1ac2hmdEV6UExwSTlkMTUzN080L3hMeElacEwKd1lxR2NXbEtabVpzajM0OGNMK3RLU0lHOCtUQTVvQ3U0a3VQdDVsK2xBT2YwMGVYZkpsSUkxUG9PSzVQQ20rRApMdEZKVjR5QWRMYmFMOUE0alhzRGNDRWJkZkl3UFBxUHJ0M2FZNnZyRmsvQ2poRkxmczhMNlArMWR5NzBzbnRLCjRFd1NKUXh3alFNcG9PRlRKT3dUMmU0WnZ4Q3pTb3cvaWFOaFVkNnNod2VVOUdOeDdDN2liMXVZZ2VHSlhEUjUKYkhidk81QmllZWJicEpvdkpzWFFFT0VPM3RrUWpoYjd0L2VvOThmbEFnZVlqellJbGVmaU41WU5ObldlK3c1eQpzUjJidkFQNVNRWFlnZDBGdENyV1FlbXNBWGFWQ2cvWTM5VzlFaDgxTHlnWGJOS1l3YWdKWkhkdVJ6ZTZ6cXhaClhtaWRmM0xXaWNVR1FTaytXVDdkSnZVa3lSR25XcU5NUUI5R29abTFwenBSYm9ZN25uMXlweElGZUZudFBsRjQKRlFzRGo0M1FMd1d5UG50S0hFdHpCUkw4eHVyZ1VCTjhRNU4wczhwMDU0NGZBUWpRTU5SYmNUYTBCN3JCTURCYwpTTGVDTzVpbWZXQ0tvcU1wZ3N5NnZZTUVHNktEQTBHaDFnWHhHOEsyOEtoOGhqdEdxRWdxaU54Mm1uYS9IMnFsClBSbVA2emp6Wk43SUt3MEtLUC8zMitJVlF0UWkwQ2RkNFhuK0dPZHdpSzFPNXRtTE9zYmRKMUZ1Lzd4azlUTkQKVHdJREFRQUJvNElCUmpDQ0FVSXdEd1lEVlIwVEFRSC9CQVV3QXdFQi96QU9CZ05WSFE4QkFmOEVCQU1DQVFZdwpTd1lJS3dZQkJRVUhBUUVFUHpBOU1Ec0dDQ3NHQVFVRkJ6QUNoaTlvZEhSd09pOHZZWEJ3Y3k1cFpHVnVkSEoxCmMzUXVZMjl0TDNKdmIzUnpMMlJ6ZEhKdmIzUmpZWGd6TG5BM1l6QWZCZ05WSFNNRUdEQVdnQlRFcDdHa2V5eHgKK3R2aFM1QjEvOFFWWUlXSkVEQlVCZ05WSFNBRVRUQkxNQWdHQm1lQkRBRUNBVEEvQmdzckJnRUVBWUxmRXdFQgpBVEF3TUM0R0NDc0dBUVVGQndJQkZpSm9kSFJ3T2k4dlkzQnpMbkp2YjNRdGVERXViR1YwYzJWdVkzSjVjSFF1CmIzSm5NRHdHQTFVZEh3UTFNRE13TWFBdm9DMkdLMmgwZEhBNkx5OWpjbXd1YVdSbGJuUnlkWE4wTG1OdmJTOUUKVTFSU1QwOVVRMEZZTTBOU1RDNWpjbXd3SFFZRFZSME9CQllFRkhtMFdlWjd0dVhrQVhPQUNJaklHbGoyNlp0dQpNQTBHQ1NxR1NJYjNEUUVCQ3dVQUE0SUJBUUFLY3dCc2xtNy9EbExRcnQyTTUxb0dyUytvNDQrL3lRb0RGVkRDCjVXeEN1MitiOUxSUHdrU0lDSFhNNndlYkZHSnVlTjdzSjdvNVhQV2lvVzVXbEhBUVU3Rzc1Sy9Rb3NNckFkU1cKOU1VZ05UUDUyR0UyNEhHTnRMaTFxb0pGbGNEeXFTTW81OWFoeTJjSTJxQkRMS29ia3gvSjN2V3JhVjBUOVZ1RwpXQ0xLVFZYa2NHZHR3bGZGUmpsQno0cFlnMWh0bWY1WDZEWU84QTRqcXYySWw5RGpYQTZVU2JXMUZ6WFNMcjlPCmhlOFk0SVdTNndZN2JDa2pDV0RjUlFKTUVoZzc2ZnNPM3R4RStGaVlydXE5UlVXaGlGMW15djRRNlcrQ3lCRkMKRGZ2cDdPT0dBTjZkRU9NNCtxUjlzZGpvU1lLRUJwc3I2R3RQQVF3NGR5NzUzZWM1Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K",
+        "url": "https://api.offline-cluster.bar.baz:6443"
+      }
+    ]
+  },
+  "status": {
+    "allocatable": {
+      "cpu": "1136500m",
+      "devices.kubevirt.io/kvm": "21036",
+      "devices.kubevirt.io/tun": "28k",
+      "devices.kubevirt.io/vhost-net": "28k",
+      "ephemeral-storage": "11346483746883",
+      "hugepages-1Gi": "0",
+      "hugepages-2Mi": "0",
+      "memory": "7469511796Ki",
+      "pods": "7750"
+    },
+    "capacity": {
+      "bridge.network.kubevirt.io/cni-podman0": "2k",
+      "core_worker": "1008",
+      "cpu": "1152",
+      "devices.kubevirt.io/kvm": "25036",
+      "devices.kubevirt.io/tun": "28k",
+      "devices.kubevirt.io/vhost-net": "28k",
+      "ephemeral-storage": "12311722836Ki",
+      "hugepages-1Gi": "0",
+      "hugepages-2Mi": "0",
+      "memory": "7505192052Ki",
+      "pods": "7750",
+      "socket_worker": "56"
+    },
+    "clusterClaims": [
+      {
+        "name": "id.k8s.io",
+        "value": "offline-cluster"
+      },
+      {
+        "name": "kubeversion.open-cluster-management.io",
+        "value": "v1.22.3+fdba464"
+      },
+      {
+        "name": "platform.open-cluster-management.io",
+        "value": "BareMetal"
+      },
+      {
+        "name": "product.open-cluster-management.io",
+        "value": "OpenShift"
+      },
+      {
+        "name": "consoleurl.cluster.open-cluster-management.io",
+        "value": "https://console-openshift-console.apps.offline-cluster.bar.baz"
+      },
+      {
+        "name": "controlplanetopology.openshift.io",
+        "value": "HighlyAvailable"
+      },
+      {
+        "name": "id.openshift.io",
+        "value": "5d448ae7-05f1-42cc-aacc-3122a8ad0184"
+      },
+      {
+        "name": "infrastructure.openshift.io",
+        "value": "{\"infraName\":\"offline-cluster-dq8j2\"}"
+      },
+      {
+        "name": "oauthredirecturis.openshift.io",
+        "value": "https://oauth-openshift.apps.offline-cluster.bar.baz/oauth/token/implicit"
+      },
+      {
+        "name": "version.openshift.io",
+        "value": "4.9.21"
+      }
+    ],
+    "conditions": [
+      {
+        "lastTransitionTime": "2021-08-27T13:57:23Z",
+        "message": "Accepted by hub cluster admin",
+        "reason": "HubClusterAdminAccepted",
+        "status": "True",
+        "type": "HubAcceptedManagedCluster"
+      },
+      {
+        "lastTransitionTime": "2022-10-20T13:45:52Z",
+        "message": "Managed cluster is unavailable",
+        "reason": "ManagedClusterUnavailable",
+        "status": "False",
+        "type": "ManagedClusterConditionAvailable"
+      },
+      {
+        "lastTransitionTime": "2021-08-27T13:59:13Z",
+        "message": "Managed cluster joined",
+        "reason": "ManagedClusterJoined",
+        "status": "True",
+        "type": "ManagedClusterJoined"
+      }
+    ],
+    "version": {
+      "kubernetes": "v1.22.3+fdba464"
+    }
+  }
+}
