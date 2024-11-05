@@ -1,5 +1,11 @@
 ## @janus-idp/backstage-plugin-3scale-backend [1.8.0](https://github.com/janus-idp/backstage-plugins/compare/@janus-idp/backstage-plugin-3scale-backend@1.7.1...@janus-idp/backstage-plugin-3scale-backend@1.8.0) (2024-07-25)
 
+## 3.0.2
+
+### Patch Changes
+
+- 3f84dd4: Removed `export-dynamic` script and Janus IDP cli from the build process and npm release.
+
 ## 3.0.1
 
 ### Patch Changes
