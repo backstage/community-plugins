@@ -19,18 +19,10 @@ import {
   readSchedulerServiceTaskScheduleDefinitionFromConfig,
 } from '@backstage/backend-plugin-api';
 import { searchIndexRegistryExtensionPoint } from '@backstage/plugin-search-backend-node/alpha';
-import { GithubDiscussionsCollatorFactory } from './collators';
 import {
-  DefaultGithubCredentialsProvider,
-  ScmIntegrations,
-} from '@backstage/integration';
-import { Duration } from 'luxon';
-
-const defaultSchedule = {
-  frequency: { minutes: 45 },
-  timeout: { minutes: 30 },
-  initialDelay: { seconds: 10 },
-};
+  GithubDiscussionsCollatorFactory,
+  DEFAULT_SCHEDULE,
+} from './collators';
 
 /**
  * Search backend module for GitHub discussions index.
@@ -53,41 +45,13 @@ export const searchModuleGithubDiscussions = createBackendModule({
           ? readSchedulerServiceTaskScheduleDefinitionFromConfig(
               _config.getConfig('schedule'),
             )
-          : defaultSchedule;
-
-        const timeout = Duration.fromObject(schedule.timeout).as(
-          'milliseconds',
-        );
-        const integrations = ScmIntegrations.fromConfig(config);
-        const { github: githubIntegration } = integrations;
-        const credentialsProvider =
-          DefaultGithubCredentialsProvider.fromIntegrations(integrations);
-
-        const url = _config.getString('url');
-        const cacheBase = _config.getOptionalString('cacheBase');
-        const clearCacheOnSuccess = _config.getOptionalBoolean(
-          'clearCacheOnSuccess',
-        );
-        const discussionsBatchSize = _config.getOptionalNumber(
-          'discussionsBatchSize',
-        );
-        const commentsBatchSize =
-          _config.getOptionalNumber('commentsBatchSize');
-        const repliesBatchSize = _config.getOptionalNumber('repliesBatchSize');
+          : DEFAULT_SCHEDULE;
 
         indexRegistry.addCollator({
           schedule: scheduler.createScheduledTaskRunner(schedule),
-          factory: GithubDiscussionsCollatorFactory.fromConfig({
+          factory: await GithubDiscussionsCollatorFactory.fromConfig({
+            config,
             logger,
-            credentialsProvider,
-            githubIntegration,
-            timeout,
-            url,
-            cacheBase,
-            clearCacheOnSuccess,
-            discussionsBatchSize,
-            commentsBatchSize,
-            repliesBatchSize,
           }),
         });
       },
