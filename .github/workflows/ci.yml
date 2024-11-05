@@ -41,9 +41,9 @@ jobs:
               ref: "refs/heads/main",
               head_ref
             }
-            const {data} = await github.graphql(query, variables)
-            console.log(data)
-            const { aheadBy, behindBy, baseTarget } = data.repository.ref.compare;
+            const {repository} = await github.graphql(query, variables)
+            console.log(repository)
+            const { aheadBy, behindBy, baseTarget } = repository.ref.compare;
             core.setOutput("aheadBy", aheadBy);
             core.setOutput("behindBy", behindBy);
             core.setOutput("baseTarget", baseTarget.abbreviatedOid);
