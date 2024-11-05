@@ -16,4 +16,5 @@
 export {
   GithubDiscussionsCollatorFactory,
   type GithubDiscussionsCollatorFactoryConstructorOptions,
+  DEFAULT_SCHEDULE,
 } from './GithubDiscussionsCollatorFactory';

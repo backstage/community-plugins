@@ -15,7 +15,11 @@
  */
 import { DocumentCollatorFactory } from '@backstage/plugin-search-common';
 import { Readable } from 'stream';
-import { LoggerService } from '@backstage/backend-plugin-api';
+import {
+  LoggerService,
+  readSchedulerServiceTaskScheduleDefinitionFromConfig,
+  RootConfigService,
+} from '@backstage/backend-plugin-api';
 import {
   createQueue,
   type Operation,
@@ -32,12 +36,20 @@ import {
 } from 'github-discussions-fetcher';
 import { type GithubDiscussionsDocument } from '@backstage-community/plugin-github-discussions-common';
 import {
-  type DefaultGithubCredentialsProvider,
+  DefaultGithubCredentialsProvider,
   type GithubIntegration,
   ScmIntegrationsGroup,
+  ScmIntegrations,
 } from '@backstage/integration';
 import assert from 'assert-ts';
 import gh from 'parse-github-url';
+import { Duration } from 'luxon';
+
+export const DEFAULT_SCHEDULE = {
+  frequency: { minutes: 45 },
+  timeout: { minutes: 30 },
+  initialDelay: { seconds: 10 },
+} as const;
 
 /**
  * Options for {@link GithubDiscussionsCollatorFactory}
@@ -46,15 +58,7 @@ import gh from 'parse-github-url';
  */
 export interface GithubDiscussionsCollatorFactoryConstructorOptions {
   logger: LoggerService;
-  credentialsProvider: DefaultGithubCredentialsProvider;
-  githubIntegration: ScmIntegrationsGroup<GithubIntegration>;
-  timeout: number;
-  url: string;
-  cacheBase?: string;
-  clearCacheOnSuccess?: boolean;
-  discussionsBatchSize?: number;
-  commentsBatchSize?: number;
-  repliesBatchSize?: number;
+  config: RootConfigService;
 }
 
 export interface GithubDiscussionsCollatorFactoryOptions {
@@ -102,18 +106,34 @@ export class GithubDiscussionsCollatorFactory
     this.repliesBatchSize = options.repliesBatchSize;
   }
 
-  static fromConfig({
+  static async fromConfig({
     logger,
-    credentialsProvider,
-    githubIntegration,
-    timeout,
-    url,
-    cacheBase,
-    clearCacheOnSuccess,
-    discussionsBatchSize,
-    commentsBatchSize,
-    repliesBatchSize,
+    config,
   }: GithubDiscussionsCollatorFactoryConstructorOptions) {
+    const _config = config.getConfig('search.collators.githubDiscussions');
+    const schedule = _config.has('schedule')
+      ? readSchedulerServiceTaskScheduleDefinitionFromConfig(
+          _config.getConfig('schedule'),
+        )
+      : DEFAULT_SCHEDULE;
+
+    const timeout = Duration.fromObject(schedule.timeout).as('milliseconds');
+    const integrations = ScmIntegrations.fromConfig(_config);
+    const { github: githubIntegration } = integrations;
+    const credentialsProvider =
+      DefaultGithubCredentialsProvider.fromIntegrations(integrations);
+
+    const url = _config.getString('url');
+    const cacheBase = _config.getOptionalString('cacheBase');
+    const clearCacheOnSuccess = _config.getOptionalBoolean(
+      'clearCacheOnSuccess',
+    );
+    const discussionsBatchSize = _config.getOptionalNumber(
+      'discussionsBatchSize',
+    );
+    const commentsBatchSize = _config.getOptionalNumber('commentsBatchSize');
+    const repliesBatchSize = _config.getOptionalNumber('repliesBatchSize');
+
     return new GithubDiscussionsCollatorFactory({
       logger,
       credentialsProvider,
@@ -175,7 +195,7 @@ export class GithubDiscussionsCollatorFactory
       const scope = yield* useScope();
       const results = createQueue<GithubDiscussionFetcherResult, void>();
 
-      yield* spawn(function* () {
+      yield* spawn(function* (): Operation<void> {
         try {
           yield* fetchGithubDiscussions({
             client,
@@ -191,7 +211,7 @@ export class GithubDiscussionsCollatorFactory
             clearCacheOnSuccess,
           });
         } catch (e) {
-          console.log(e);
+          logger.log(e);
           logger.error(
             `Encountered an error while ingesting GitHub Discussions`,
             e,
