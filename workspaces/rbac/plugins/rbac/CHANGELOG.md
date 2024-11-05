@@ -1,5 +1,13 @@
 ### Dependencies
 
+## 1.32.1
+
+### Patch Changes
+
+- 019f010: Migrated from [janus-idp/backstage-plugins](https://github.com/janus-idp/backstage-plugins).
+- Updated dependencies [019f010]
+  - @backstage-community/plugin-rbac-common@1.12.1
+
 ## 1.32.0
 
 ### Minor Changes

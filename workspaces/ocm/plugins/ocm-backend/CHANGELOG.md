@@ -1,5 +1,13 @@
 ### Dependencies
 
+## 5.2.1
+
+### Patch Changes
+
+- 22a79d1: Migrated from [janus-idp/backstage-plugins](https://github.com/janus-idp/backstage-plugins).
+- Updated dependencies [22a79d1]
+  - @backstage-community/plugin-ocm-common@3.6.1
+
 ## 5.2.0
 
 ### Minor Changes
