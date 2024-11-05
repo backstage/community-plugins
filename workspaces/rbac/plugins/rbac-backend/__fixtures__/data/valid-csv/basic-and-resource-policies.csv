@@ -1,0 +1,21 @@
+# ========== basic type permission policies ========== #
+# case 1
+p, user:default/known_user, test.resource.deny, use, deny
+# case 2 is about user without listed permissions
+# case 3
+p, user:default/duplicated, test.resource, use, allow
+p, user:default/duplicated, test.resource, use, deny
+# case 4
+p, user:default/known_user, test.resource, use, allow
+# case 5
+unknown user
+
+# ========== resource type permission policies ========== #
+# case 1
+p, user:default/known_user, test-resource-deny, update, deny
+# case 2 is about user without listed permissions
+# case 3
+p, user:default/duplicated, test-resource, update, allow
+p, user:default/duplicated, test-resource, update, deny
+# case 4
+p, user:default/known_user, test-resource, update, allow
