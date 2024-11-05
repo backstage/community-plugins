@@ -55,7 +55,7 @@
     "@hey-api/openapi-ts": "0.53.11",
     "@janus-idp/cli": "1.14.0",
     "@redhat-developer/red-hat-developer-hub-theme": "0.2.0",
-    "@testing-library/jest-dom": "6.4.8",
+    "@testing-library/jest-dom": "6.6.2",
     "@testing-library/react": "14.3.1",
     "@testing-library/react-hooks": "8.0.1",
     "@testing-library/user-event": "14.5.2",
