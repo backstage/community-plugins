@@ -1,5 +1,11 @@
 # @backstage-community/plugin-puppetdb
 
+## 0.1.22
+
+### Patch Changes
+
+- 61e6448: Backstage version bump to v1.32.2
+
 ## 0.1.21
 
 ### Patch Changes

@@ -54,4 +54,8 @@ backend.add(import('@backstage/plugin-search-backend-module-techdocs/alpha'));
 // Azure DevOps plugin
 backend.add(import('@backstage-community/plugin-azure-devops-backend'));
 
+backend.add(
+  import('@backstage-community/plugin-scaffolder-backend-module-azure-devops'),
+);
+
 backend.start();

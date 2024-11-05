@@ -21,6 +21,7 @@ import {
 import { isKubernetesAvailable } from '@backstage/plugin-kubernetes';
 
 export const IsMeshedEntityCard = EntityCardBlueprint.make({
+  name: 'is-meshed',
   params: {
     loader: async () => {
       const m = await import('../components/IsMeshedBanner');
@@ -31,6 +32,7 @@ export const IsMeshedEntityCard = EntityCardBlueprint.make({
 });
 
 export const EdgesTableEntityCard = EntityCardBlueprint.make({
+  name: 'edges-table',
   params: {
     loader: async () => {
       const m = await import('../components/EdgesTable');

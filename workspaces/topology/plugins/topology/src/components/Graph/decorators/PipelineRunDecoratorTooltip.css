@@ -1,0 +1,20 @@
+.bs-topology-pipelinerun-decorator-tooltip {
+  min-width: 135px;
+}
+
+.bs-topology-pipelinerun-decorator-tooltip__title {
+  text-align: left;
+  padding-bottom: 1rem;
+}
+
+.bs-topology-pipelinerun-decorator-tooltip__status-bars-title {
+  text-align: left;
+}
+
+.bs-topology-pipelinerun-decorator-tooltip__status-breakdown {
+  text-align: left;
+}
+
+.bs-topology-pipelinerun-decorator-tooltip__status-bars-wrapper {
+  padding-bottom: 0.5rem;
+}

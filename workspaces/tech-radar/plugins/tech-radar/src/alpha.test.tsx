@@ -22,10 +22,27 @@ import {
 import { screen } from '@testing-library/react';
 import { techRadarPage } from './alpha';
 import { techRadarApiRef } from './api';
-import { SampleTechRadarApi } from './sample';
+import { DefaultTechRadarApi } from './defaultApi';
 import React from 'react';
 
 describe('TechRadarPage', () => {
+  const discoveryApi = {
+    getBaseUrl: jest.fn().mockResolvedValue('https://example.com'),
+  };
+  const fetchApi = {
+    fetch: jest.fn().mockResolvedValue({
+      ok: true,
+      json: jest.fn().mockResolvedValue([]),
+    }),
+  };
+  const identityApi = {
+    getProfileInfo: jest.fn(),
+    getBackstageIdentity: jest.fn(),
+    async getCredentials() {
+      return { token: 'fake-jwt-token' };
+    },
+    signOut: jest.fn(),
+  };
   beforeAll(() => {
     Object.defineProperty(window.SVGElement.prototype, 'getBBox', {
       value: () => ({ width: 100, height: 100 }),
@@ -35,7 +52,14 @@ describe('TechRadarPage', () => {
 
   it('renders without exploding', async () => {
     renderInTestApp(
-      <TestApiProvider apis={[[techRadarApiRef, new SampleTechRadarApi()]]}>
+      <TestApiProvider
+        apis={[
+          [
+            techRadarApiRef,
+            new DefaultTechRadarApi({ discoveryApi, fetchApi, identityApi }),
+          ],
+        ]}
+      >
         {createExtensionTester(techRadarPage).reactElement()}
       </TestApiProvider>,
     );

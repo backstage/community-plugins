@@ -1,5 +1,25 @@
 # @backstage-community/plugin-sonarqube
 
+## 0.8.6
+
+### Patch Changes
+
+- 2d16371: Removed `@microsoft/api-extractor` resolution as it is no longer needed
+
+## 0.8.5
+
+### Patch Changes
+
+- d59c520: fix typo in README.md file
+
+## 0.8.4
+
+### Patch Changes
+
+- 4d0cdf5: Backstage version bump to v1.32.2
+- Updated dependencies [4d0cdf5]
+  - @backstage-community/plugin-sonarqube-react@0.2.3
+
 ## 0.8.3
 
 ### Patch Changes

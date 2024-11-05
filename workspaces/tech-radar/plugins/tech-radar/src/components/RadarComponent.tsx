@@ -18,11 +18,11 @@ import { Progress } from '@backstage/core-components';
 import { errorApiRef, useApi } from '@backstage/core-plugin-api';
 import React, { useEffect } from 'react';
 import useAsync from 'react-use/esm/useAsync';
+import { techRadarApiRef } from '../api';
 import {
-  type RadarEntry,
-  techRadarApiRef,
-  type TechRadarLoaderResponse,
-} from '../api';
+  RadarEntry,
+  TechRadarLoaderResponse,
+} from '@backstage-community/plugin-tech-radar-common';
 import Radar from '../components/Radar';
 import type { Entry } from '../utils/types';
 
@@ -90,7 +90,7 @@ export interface TechRadarComponentProps {
    */
   svgProps?: object;
   /**
-   * Text to filter {@link RadarEntry} inside Tech Radar
+   * Text to filter RadarEntry inside Tech Radar
    */
   searchText?: string;
 }

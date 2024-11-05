@@ -1,5 +1,11 @@
 # @backstage-community/plugin-copilot-common
 
+## 0.2.2
+
+### Patch Changes
+
+- 399dc3b: Backstage version bump to v1.32.2
+
 ## 0.2.1
 
 ### Patch Changes

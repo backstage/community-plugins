@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 import { screen, waitFor } from '@testing-library/react';
-import { createExtensionTester } from '@backstage/frontend-test-utils';
-import * as content from './entityContent';
 import {
-  createApiExtension,
-  createApiFactory,
-} from '@backstage/frontend-plugin-api';
+  createExtensionTester,
+  renderInTestApp,
+  TestApiProvider,
+} from '@backstage/frontend-test-utils';
+import * as content from './entityContent';
+import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { JenkinsApi, jenkinsApiRef } from '../api';
 import { sampleEntity } from '../__fixtures__/entity';
+import React from 'react';
 
 jest.mock('@backstage/plugin-catalog-react', () => ({
   ...jest.requireActual('@backstage/plugin-catalog-react'),
@@ -34,25 +36,35 @@ jest.mock('@backstage/core-plugin-api', () => ({
 }));
 
 describe('Entity content extensions', () => {
-  const mockJenkinsApi = createApiExtension({
-    factory: createApiFactory({
-      api: jenkinsApiRef,
-      deps: {},
-      factory: () =>
-        ({
-          getProjects: jest.fn(),
-          getBuild: jest.fn(),
-          getJobBuilds: jest.fn(),
-          retry: () => null,
-        } as unknown as JenkinsApi),
-    }),
-  });
+  const mockJenkinsApi = {
+    getProjects: jest.fn(),
+    getBuild: jest.fn(),
+    getJobBuilds: jest.fn(),
+    retry: () => null,
+  } as unknown as JenkinsApi;
+
+  const mockedEntity = {
+    apiVersion: 'backstage.io/v1alpha1',
+    kind: 'Component',
+    metadata: {
+      name: 'backstage',
+      description: 'backstage.io',
+    },
+    spec: {
+      lifecycle: 'production',
+      type: 'service',
+      owner: 'user:guest',
+    },
+  };
 
   it('should render Jenkins projects table', async () => {
-    createExtensionTester(content.entityJenkinsProjects)
-      .add(mockJenkinsApi)
-      .render();
-
+    renderInTestApp(
+      <TestApiProvider apis={[[jenkinsApiRef, mockJenkinsApi]]}>
+        <EntityProvider entity={mockedEntity}>
+          {createExtensionTester(content.entityJenkinsProjects).reactElement()}
+        </EntityProvider>
+      </TestApiProvider>,
+    );
     await waitFor(
       () => {
         expect(screen.getByText('Projects')).toBeInTheDocument();
