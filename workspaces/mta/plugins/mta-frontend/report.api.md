@@ -10,10 +10,10 @@ import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { JSX as JSX_2 } from 'react';
 import { RouteRef } from '@backstage/core-plugin-api';
 
-// @public (undocumented)
+// @public
 export const EntityMTAContent: () => JSX_2.Element;
 
-// @public (undocumented)
+// @public
 export const mtaPlugin: BackstagePlugin<    {
 entityContent: RouteRef<undefined>;
 }, {}, {}>;
