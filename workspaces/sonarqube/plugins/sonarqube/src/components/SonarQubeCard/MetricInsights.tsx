@@ -71,6 +71,7 @@ export const QualityBadge = (props: MetricInsightsProps) => {
       component: 'a',
       href: value.projectUrl,
       clickable: true,
+      target: '__blank',
     };
   }
   const qualityBadge = (
