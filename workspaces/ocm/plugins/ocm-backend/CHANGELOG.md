@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 5.2.2
+
+### Patch Changes
+
+- 20a4d4f: chore: use workspace dependencies
+
 ## 5.2.1
 
 ### Patch Changes
