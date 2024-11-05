@@ -16645,14 +16645,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jose@npm:^5.0.0":
-  version: 5.9.3
-  resolution: "jose@npm:5.9.3"
-  checksum: d128f2b90daf76f14eb22a81528e4f1cd99aa73613ae9d7edad69479c0ae9c29d571108e21d6ac33c3892de7bea24c4a4b99b4eb63354ebe566683c719ee334e
-  languageName: node
-  linkType: hard
-
-"jose@npm:^5.9.6":
+"jose@npm:^5.0.0, jose@npm:^5.9.6":
   version: 5.9.6
   resolution: "jose@npm:5.9.6"
   checksum: 4b536da0201858ed4c4582e8bb479081f11e0c63dd0f5e473adde16fc539785e1f2f0409bc1fc7cbbb5b68026776c960b4952da3a06f6fdfff0b9764c9127ae0
