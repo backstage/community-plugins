@@ -2461,8 +2461,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-rbac-backend@workspace:plugins/rbac-backend"
   dependencies:
-    "@backstage-community/plugin-rbac-common": ^1.12.0
-    "@backstage-community/plugin-rbac-node": ^1.8.0
+    "@backstage-community/plugin-rbac-common": ^1.12.1
+    "@backstage-community/plugin-rbac-node": ^1.8.1
     "@backstage/backend-defaults": ^0.5.2
     "@backstage/backend-plugin-api": ^1.0.1
     "@backstage/backend-test-utils": 1.0.2
@@ -2478,7 +2478,7 @@ __metadata:
     "@backstage/plugin-permission-node": ^0.8.4
     "@backstage/types": 1.1.1
     "@dagrejs/graphlib": ^2.1.13
-    "@janus-idp/backstage-plugin-audit-log-node": ^1.7.0
+    "@janus-idp/backstage-plugin-audit-log-node": ^1.7.1
     "@spotify/prettier-config": ^15.0.0
     "@types/express": 4.17.21
     "@types/lodash": ^4.14.151
@@ -2500,7 +2500,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@backstage-community/plugin-rbac-common@^1.12.0, @backstage-community/plugin-rbac-common@workspace:plugins/rbac-common":
+"@backstage-community/plugin-rbac-common@^1.12.1, @backstage-community/plugin-rbac-common@workspace:plugins/rbac-common":
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-rbac-common@workspace:plugins/rbac-common"
   dependencies:
@@ -2515,7 +2515,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@backstage-community/plugin-rbac-node@^1.8.0, @backstage-community/plugin-rbac-node@workspace:plugins/rbac-node":
+"@backstage-community/plugin-rbac-node@^1.8.1, @backstage-community/plugin-rbac-node@workspace:plugins/rbac-node":
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-rbac-node@workspace:plugins/rbac-node"
   dependencies:
@@ -2530,7 +2530,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-rbac@workspace:plugins/rbac"
   dependencies:
-    "@backstage-community/plugin-rbac-common": ^1.12.0
+    "@backstage-community/plugin-rbac-common": ^1.12.1
     "@backstage/catalog-model": ^1.7.0
     "@backstage/cli": 0.28.2
     "@backstage/core-app-api": 1.15.1
@@ -2543,7 +2543,7 @@ __metadata:
     "@backstage/plugin-permission-react": ^0.4.27
     "@backstage/test-utils": 1.7.0
     "@backstage/theme": ^0.6.0
-    "@janus-idp/shared-react": ^2.13.0
+    "@janus-idp/shared-react": ^2.13.1
     "@material-ui/core": ^4.9.13
     "@material-ui/icons": ^4.11.3
     "@material-ui/lab": ^4.0.0-alpha.45
@@ -4918,18 +4918,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@janus-idp/backstage-plugin-audit-log-node@npm:^1.7.0":
-  version: 1.7.0
-  resolution: "@janus-idp/backstage-plugin-audit-log-node@npm:1.7.0"
+"@janus-idp/backstage-plugin-audit-log-node@npm:^1.7.1":
+  version: 1.7.1
+  resolution: "@janus-idp/backstage-plugin-audit-log-node@npm:1.7.1"
   dependencies:
     lodash: ^4.17.21
-  checksum: 22557f15cffc7a22bca592d9b0efaf917ac3cb8a2693957407ccad1f160060d349dc81fbc5f823c1b9e26cf2357d7566a005ac00d5b31b94b9ef952b13b301d0
+  checksum: 1d8861a8bdb88aabfd39493077f360d505dc110b310f079d64fc48f1896037afe0b7f991f9541f02437f6011d1e45ddaf42f7d9e8698c57a3e662687f2dd186a
   languageName: node
   linkType: hard
 
-"@janus-idp/shared-react@npm:^2.13.0":
-  version: 2.13.0
-  resolution: "@janus-idp/shared-react@npm:2.13.0"
+"@janus-idp/shared-react@npm:^2.13.1":
+  version: 2.13.1
+  resolution: "@janus-idp/shared-react@npm:2.13.1"
   dependencies:
     "@backstage/catalog-model": ^1.7.0
     "@backstage/core-components": ^0.15.1
@@ -4947,7 +4947,7 @@ __metadata:
     react-use: ^17.5.0
   peerDependencies:
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
-  checksum: 646bf1013f61926481b6c1457186d7b2f54df1f97c8249e40c66051d6ac81c360bfe1e7f4b3fb80596ee0f3e7a712724e564c96e3079e18fcb9e98a4f5bf1983
+  checksum: 7b19a31ca484ec89a77e926406105e34af56ded97832c8afd8cdac4205173ed3d61b578deca0bb74760c4cdb7ae962e294dd8bf42a853fbd6a8e1ffda695a737
   languageName: node
   linkType: hard
 
