@@ -3,4 +3,4 @@
 '@backstage-community/plugin-topology': patch
 ---
 
-Bump up share-react version and updated supported-versions.
+Bump up share-react version to ^2.13.1 and updated supported-versions to ^1.28.4.
