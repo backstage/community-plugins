@@ -11,7 +11,7 @@
   },
   "backstage": {
     "role": "frontend-plugin",
-    "supported-versions": "1.28.4",
+    "supported-versions": "^1.28.4",
     "pluginId": "topology",
     "pluginPackages": [
       "@backstage-community/plugin-topology",
@@ -43,7 +43,7 @@
     "@backstage/plugin-kubernetes-react": "^0.4.4",
     "@backstage/plugin-permission-react": "^0.4.27",
     "@backstage/theme": "^0.6.0",
-    "@janus-idp/shared-react": "2.11.1",
+    "@janus-idp/shared-react": "^2.13.1",
     "@kubernetes/client-node": "^0.22.1",
     "@mui/icons-material": "5.15.17",
     "@mui/lab": "5.0.0-alpha.173",
