@@ -3,4 +3,4 @@
 '@backstage-community/plugin-rbac': patch
 ---
 
-bump rbac plugins to include latest changes in janus
+chore: use workspace dependencies

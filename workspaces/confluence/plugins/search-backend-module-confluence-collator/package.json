@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-search-backend-module-confluence-collator",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "The confluence-collator backend module for the search plugin.",
   "backstage": {
     "role": "backend-plugin-module",
@@ -29,7 +29,6 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
-    "@backstage/backend-common": "^0.25.0",
     "@backstage/backend-plugin-api": "^1.0.1",
     "@backstage/backend-tasks": "^0.6.1",
     "@backstage/config": "^1.2.0",

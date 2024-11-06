@@ -1,5 +1,12 @@
 ### Dependencies
 
+## 5.2.2
+
+### Patch Changes
+
+- 20a4d4f: chore: use workspace dependencies
+- 584ef74: Add dist to `files` field in package.json
+
 ## 5.2.1
 
 ### Patch Changes
