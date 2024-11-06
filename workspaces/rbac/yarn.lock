@@ -2461,8 +2461,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-rbac-backend@workspace:plugins/rbac-backend"
   dependencies:
-    "@backstage-community/plugin-rbac-common": ^1.12.1
-    "@backstage-community/plugin-rbac-node": ^1.8.1
+    "@backstage-community/plugin-rbac-common": "workspace:^"
+    "@backstage-community/plugin-rbac-node": "workspace:^"
     "@backstage/backend-defaults": ^0.5.2
     "@backstage/backend-plugin-api": ^1.0.1
     "@backstage/backend-test-utils": 1.0.2
@@ -2500,7 +2500,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@backstage-community/plugin-rbac-common@^1.12.1, @backstage-community/plugin-rbac-common@workspace:plugins/rbac-common":
+"@backstage-community/plugin-rbac-common@workspace:^, @backstage-community/plugin-rbac-common@workspace:plugins/rbac-common":
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-rbac-common@workspace:plugins/rbac-common"
   dependencies:
@@ -2515,7 +2515,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@backstage-community/plugin-rbac-node@^1.8.1, @backstage-community/plugin-rbac-node@workspace:plugins/rbac-node":
+"@backstage-community/plugin-rbac-node@workspace:^, @backstage-community/plugin-rbac-node@workspace:plugins/rbac-node":
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-rbac-node@workspace:plugins/rbac-node"
   dependencies:
@@ -2530,7 +2530,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-rbac@workspace:plugins/rbac"
   dependencies:
-    "@backstage-community/plugin-rbac-common": ^1.12.1
+    "@backstage-community/plugin-rbac-common": "workspace:^"
     "@backstage/catalog-model": ^1.7.0
     "@backstage/cli": 0.28.2
     "@backstage/core-app-api": 1.15.1
