@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.10.3
+
+### Patch Changes
+
+- a83d499: Bumping the @janus-cli/shared-react dependency to ^2.13.0
+
 ## 1.10.2
 
 ### Patch Changes
