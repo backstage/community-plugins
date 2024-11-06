@@ -36,7 +36,7 @@
     "ui-test": "start-server-and-test start localhost:3000 'playwright test'"
   },
   "dependencies": {
-    "@backstage-community/plugin-rbac-common": "^1.12.1",
+    "@backstage-community/plugin-rbac-common": "workspace:^",
     "@backstage/catalog-model": "^1.7.0",
     "@backstage/core-components": "^0.15.1",
     "@backstage/core-plugin-api": "^1.10.0",
