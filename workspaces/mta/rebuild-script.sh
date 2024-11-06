@@ -19,12 +19,25 @@ yarn && yarn run tsc && yarn run build:all
 DYNAMIC_PLUGIN_ROOT_DIR=./deploy
 mkdir -p $DYNAMIC_PLUGIN_ROOT_DIR
 
-yarn --cwd plugins/mta-backend export-dynamic 
-yarn --cwd plugins/mta-frontend export-dynamic
-yarn --cwd plugins/catalog-backend-module-mta-entity-provider export-dynamic
-yarn --cwd plugins/scaffolder-backend-module-mta export-dynamic
-echo "Dynamic plugins exported"
+echo "Export dynamic plugins..."
 
+cd plugins/mta-backend
+npx -y @janus-idp/cli@^1.11.1 package export-dynamic-plugin --clean
+cd ../..
+
+cd plugins/mta-frontend
+npx -y @janus-idp/cli@^1.11.1 package export-dynamic-plugin --clean
+cd ../..
+
+cd plugins/catalog-backend-module-mta-entity-provider
+npx -y @janus-idp/cli@^1.13.0 package export-dynamic-plugin --no-embed-as-dependencies
+cd ../..
+
+cd plugins/scaffolder-backend-module-mta
+npx -y @janus-idp/cli@^1.13.0 package export-dynamic-plugin --no-embed-as-dependencies
+cd ../..
+
+echo "Dynamic plugins exported"
 
 echo "Packaging up plugin static assets"
 MTA_BACKEND_INTEGRITY_HASH=$(npm pack plugins/mta-backend/dist-dynamic --pack-destination $DYNAMIC_PLUGIN_ROOT_DIR --json | jq -r '.[0].integrity')
