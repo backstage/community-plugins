@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.10.4
+
+### Patch Changes
+
+- 5e5c1a5: Removed `export-dynamic` script and Janus IDP cli from the build process and npm release.
+
 ## 1.10.3
 
 ### Patch Changes
