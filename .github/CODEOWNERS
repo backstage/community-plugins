@@ -9,7 +9,7 @@ yarn.lock                                           @backstage/community-plugins
 */yarn.lock                                         @backstage/community-plugins-maintainers @backstage-service
 
 /workspaces/3scale                                  @backstage/community-plugins-maintainers  @04kash @AndrienkoAleksandr
-/workspaces/acr                                     @backstage/community-plugins-maintainers  @invincibleJai
+/workspaces/acr                                     @backstage/community-plugins-maintainers  @christoph-jerolimov @invincibleJai
 /workspaces/adr                                     @backstage/community-plugins-maintainers  @kuangp
 /workspaces/analytics                               @backstage/community-plugins-maintainers  @jmezach
 /workspaces/azure-devops                            @backstage/community-plugins-maintainers  @awanlin
@@ -33,11 +33,11 @@ yarn.lock                                           @backstage/community-plugins
 /workspaces/mta                                     @backstage/community-plugins-maintainers  @ibolton336
 /workspaces/nexus-repository-manager                @backstage/community-plugins-maintainers  @schultzp2020
 /workspaces/npm                                     @backstage/community-plugins-maintainers  @christoph-jerolimov @karthikjeeyar
-/workspaces/ocm                                     @backstage/community-plugins-maintainers  @debsmita1
+/workspaces/ocm                                     @backstage/community-plugins-maintainers  @christoph-jerolimov @debsmita1
 /workspaces/octopus-deploy                          @backstage/community-plugins-maintainers  @jmezach
 /workspaces/pingidentity                            @backstage/community-plugins-maintainers  @jessicajhee
 /workspaces/playlist                                @backstage/community-plugins-maintainers  @kuangp
-/workspaces/rbac                                    @backstage/community-plugins-maintainers  @AndrienkoAleksandr @PatAKnight
+/workspaces/rbac                                    @backstage/community-plugins-maintainers  @AndrienkoAleksandr @divyanshiGupta @PatAKnight
 /workspaces/redhat-argocd                           @backstage/community-plugins-maintainers  @karthikjeeyar @rohitkrai03 @Eswaraiahsapram
 /workspaces/redhat-resource-optimization            @backstage/community-plugins-maintainers  @christoph-jerolimov @04kash
 /workspaces/report-portal                           @backstage/community-plugins-maintainers  @yashoswalyo
