@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.29.2
+
+### Patch Changes
+
+- 232c0e7: Added `build:all` script to trigger `prepare` script in release process and removed `postversion` script.
+
 ## 1.29.1
 
 ### Patch Changes
