@@ -15,9 +15,14 @@ To configure the plugin using the new backend system:
 
    const backend = createBackend();
 
-   backend.add(import('@backstage-community/plugin-copilot'));
+   backend.add(import('@backstage-community/plugin-copilot-backend'));
 
    backend.start();
+   ```
+2. Add the package as a dependency in the backend workspace 
+
+   ```sh
+   yarn --cwd packages/backend add @backstage-community/plugin-copilot-backend
    ```
 
 ### Old System
