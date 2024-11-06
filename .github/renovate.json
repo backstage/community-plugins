@@ -37,5 +37,5 @@
     }
   ],
   "ignorePaths": ["**/dist-dynamic/**"],
-  "gitIgnoredAuthors": ["backstage-goalie"]
+  "gitIgnoredAuthors": ["97962292+backstage-goalie[bot]@users.noreply.github.com"]
 }
