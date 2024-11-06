@@ -5,4 +5,4 @@
 '@backstage-community/plugin-rbac': patch
 ---
 
-Updated supported-versions.
+Updated supported-versions to ^1.28.4.
