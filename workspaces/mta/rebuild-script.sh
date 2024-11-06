@@ -63,16 +63,16 @@ data:
     includes:
       - dynamic-plugins.default.yaml
     plugins:
-      - package: 'http://plugin-registry:8080/internal-backstage-plugin-mta-backend-dynamic-0.1.0.tgz'
+      - package: 'http://plugin-registry:8080/backstage-community-backstage-plugin-mta-backend-dynamic-0.1.1.tgz'
         disabled: false
         integrity: '$MTA_BACKEND_INTEGRITY_HASH'
-      - package: 'http://plugin-registry:8080/internal-backstage-plugin-mta-frontend-dynamic-0.1.0.tgz'
+      - package: 'http://plugin-registry:8080/backstage-community-backstage-plugin-mta-frontend-dynamic-0.1.1.tgz'
         disabled: false
         integrity: '$MTA_FRONTEND_INTEGRITY_HASH'
-      - package: 'http://plugin-registry:8080/internal-backstage-plugin-catalog-backend-module-mta-entity-provider-dynamic-0.1.0.tgz'
+      - package: 'http://plugin-registry:8080/backstage-community-backstage-plugin-catalog-backend-module-mta-entity-provider-dynamic-0.1.1.tgz'
         disabled: false
         integrity: '$CATALOG_BACKEND_MODULE_INTEGRITY_HASH'
-      - package: 'http://plugin-registry:8080/internal-backstage-plugin-scaffolder-backend-module-mta-dynamic-0.1.0.tgz'
+      - package: 'http://plugin-registry:8080/backstage-community-backstage-plugin-scaffolder-backend-module-mta-dynamic-0.1.1.tgz'
         disabled: false
         integrity: '$SCAFFOLDER_BACKEND_MODULE_INTEGRITY_HASH'
 EOF

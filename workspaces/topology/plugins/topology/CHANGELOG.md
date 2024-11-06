@@ -1,5 +1,14 @@
 ### Dependencies
 
+## 1.29.1
+
+### Patch Changes
+
+- 833d4dd: Resolved issues with the style-inject module path references in the npm package to ensure proper loading.
+- e77652d: Bump up share-react version to ^2.13.1 and updated supported-versions to ^1.28.4.
+- Updated dependencies [e77652d]
+  - @backstage-community/plugin-topology-common@1.4.3
+
 ## 1.29.0
 
 ### Minor Changes
