@@ -59,7 +59,7 @@ export const ApplicationDetailsForm = ({
   const {
     control,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isDirty },
     watch,
   } = useForm({
     defaultValues: useMemo(() => {
@@ -153,6 +153,8 @@ export const ApplicationDetailsForm = ({
     updateApplication(updatedApplication);
   };
   const isProcessing = isSubmitting || isWaiting;
+  const isFormValid = sourceCredentials && mavenCredentials && repositoryUrl;
+  const canUpdate = isDirty && isFormValid && !Object.keys(errors).length;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -253,6 +255,8 @@ export const ApplicationDetailsForm = ({
             variant="contained"
             color="primary"
             disabled={
+              !canUpdate ||
+              isProcessing ||
               isSubmitting ||
               Object.keys(errors).length > 0 ||
               !sourceCredentials ||
