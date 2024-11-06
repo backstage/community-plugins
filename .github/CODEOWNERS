@@ -29,7 +29,7 @@ yarn.lock                                           @backstage/community-plugins
 /workspaces/jfrog-artifactory                       @backstage/community-plugins-maintainers  @BethGriggs
 /workspaces/kafka                                   @backstage/community-plugins-maintainers  @andrewthauer
 /workspaces/keycloak                                @backstage/community-plugins-maintainers  @AndrienkoAleksandr @schultzp2020
-/workspaces/kiali                                   @backstage/community-plugins-maintainers  @aljesusg
+/workspaces/kiali                                   @backstage/community-plugins-maintainers  @aljesusg @josunect
 /workspaces/linguist                                @backstage/community-plugins-maintainers  @awanlin
 /workspaces/mta                                     @backstage/community-plugins-maintainers  @ibolton336
 /workspaces/nexus-repository-manager                @backstage/community-plugins-maintainers  @schultzp2020
