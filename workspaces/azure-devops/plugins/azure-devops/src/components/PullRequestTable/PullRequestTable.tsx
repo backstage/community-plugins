@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import Box from '@material-ui/core/Box';
-import Chip from '@material-ui/core/Chip';
+import Box from '@mui/material/Box';
+import Chip from '@mui/material/Chip';
 import {
   Link,
   ResponseErrorPanel,
