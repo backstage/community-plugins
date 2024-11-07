@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 2.2.2
+
+### Patch Changes
+
+- 6ca34c8: Migrated from [janus-idp/backstage-plugins](https://github.com/janus-idp/backstage-plugins).
+
 ## 2.2.1
 
 ### Patch Changes
