@@ -23,16 +23,15 @@
     "./**/*.css.esm.js"
   ],
   "scripts": {
-    "build": "backstage-cli package build",
-    "build:all": "yarn build && yarn prepare",
+    "build": "backstage-cli package build && node replace-style-injection-paths.js",
+    "prepublish": "yarn prepare",
     "clean": "backstage-cli package clean",
     "lint": "backstage-cli package lint",
     "postpack": "backstage-cli package postpack",
     "prepack": "backstage-cli package prepack",
     "start": "backstage-cli package start",
     "test": "backstage-cli package test --passWithNoTests --coverage",
-    "tsc": "tsc",
-    "prepare": "node replace-style-injection-paths.js"
+    "tsc": "tsc"
   },
   "dependencies": {
     "@backstage-community/plugin-topology-common": "workspace:^",
