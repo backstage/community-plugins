@@ -1,5 +1,12 @@
 ### Dependencies
 
+## 1.29.3
+
+### Patch Changes
+
+- a2c5a0a: Updated the `build` script to correct `style-inject` module path references in packed files, ensuring proper resolution and avoiding runtime errors in the published package.
+- a2c5a0a: Added `build:all` script to trigger `prepare` script in release process and removed `postversion` script.
+
 ## 1.29.2
 
 ### Patch Changes
