@@ -29,8 +29,7 @@
     "test": "backstage-cli package test",
     "clean": "backstage-cli package clean",
     "prepack": "backstage-cli package prepack",
-    "postpack": "backstage-cli package postpack",
-    "export-dynamic": "janus-cli package export-dynamic-plugin --clean"
+    "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
     "@backstage/core-components": "^0.14.3",
@@ -57,16 +56,14 @@
     "@backstage/core-app-api": "^1.12.3",
     "@backstage/dev-utils": "^1.0.30",
     "@backstage/test-utils": "^1.5.3",
-    "@janus-idp/cli": "^1.11.1",
     "@testing-library/jest-dom": "^5.10.1",
     "@testing-library/react": "^12.1.3",
     "@testing-library/user-event": "^14.0.0",
     "msw": "^1.0.0"
   },
   "files": [
+    "app-config.dynamic.yaml",
     "dist",
-    "dist-dynamic/*.*",
-    "dist-dynamic/dist/**",
     "migrations/**/*"
   ]
 }
