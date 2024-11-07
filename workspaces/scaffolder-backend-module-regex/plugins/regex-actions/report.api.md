@@ -14,12 +14,12 @@ import { TemplateAction } from '@backstage/plugin-scaffolder-node';
 export const createReplaceAction: () => TemplateAction<    {
 regExps: {
 values: {
-key: string;
 value: string;
+key: string;
 }[];
 pattern: string;
 replacement: string;
-flags?: ("i" | "s" | "u" | "g" | "d" | "y" | "m")[] | undefined;
+flags?: ("g" | "m" | "i" | "y" | "u" | "s" | "d")[] | undefined;
 }[];
 }, JsonObject>;
 
