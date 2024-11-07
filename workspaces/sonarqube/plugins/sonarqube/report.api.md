@@ -8,8 +8,8 @@
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { DiscoveryApi } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
+import { FetchApi } from '@backstage/core-plugin-api';
 import { FindingSummary } from '@backstage-community/plugin-sonarqube-react';
-import { IdentityApi } from '@backstage/core-plugin-api';
 import { InfoCardVariants } from '@backstage/core-components';
 import { JSX as JSX_2 } from 'react';
 import { default as React_2 } from 'react';
@@ -48,12 +48,11 @@ export const SonarQubeCard: (props: {
 
 // @public (undocumented)
 export class SonarQubeClient implements SonarQubeApi {
-  constructor(options: {
-    discoveryApi: DiscoveryApi;
-    identityApi: IdentityApi;
-  });
+  constructor(options: { discoveryApi: DiscoveryApi; fetchApi: FetchApi });
   // (undocumented)
   discoveryApi: DiscoveryApi;
+  // (undocumented)
+  fetchApi: FetchApi;
   // (undocumented)
   getFindingSummaries(
     components: Array<{
@@ -69,8 +68,6 @@ export class SonarQubeClient implements SonarQubeApi {
     componentKey?: string;
     projectInstance?: string;
   }): Promise<FindingSummary | undefined>;
-  // (undocumented)
-  identityApi: IdentityApi;
   // (undocumented)
   settledResponseOf(responses: PromiseSettledResult<any>[]): Array<any>;
 }
