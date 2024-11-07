@@ -2,7 +2,7 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: janus-idp-regex-actions
+  name: backstage-community-regex-actions
   title: Regex scaffolder actions
   description: The regex custom actions
   annotations:
