@@ -45,6 +45,7 @@ yarn.lock                                           @backstage/community-plugins
 /workspaces/rollbar                                 @backstage/community-plugins-maintainers  @andrewthauer
 /workspaces/scaffolder-backend-module-sonarqube     @backstage/community-plugins-maintainers  @04kash @schultzp2020
 /workspaces/scaffolder-backend-module-servicenow    @backstage/community-plugins-maintainers  @schultzp2020
+/workspaces/scaffolder-backend-module-regex         @backstage/community-plugins-maintainers  @04kash
 /workspaces/scaffolder-relation-processor           @backstage/community-plugins-maintainers  @04kash
 /workspaces/sonarqube                               @backstage/community-plugins-maintainers  @backstage/sda-se-reviewers
 /workspaces/tech-insights                           @backstage/community-plugins-maintainers  @xantier
