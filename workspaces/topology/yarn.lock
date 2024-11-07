@@ -2792,6 +2792,7 @@ __metadata:
     "@backstage/plugin-kubernetes": ^0.11.16
     "@backstage/plugin-kubernetes-common": ^0.8.3
     "@backstage/plugin-kubernetes-react": ^0.4.4
+    "@backstage/plugin-permission-common": ^0.8.1
     "@backstage/plugin-permission-react": ^0.4.27
     "@backstage/test-utils": ^1.7.0
     "@backstage/theme": ^0.6.0
