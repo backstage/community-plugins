@@ -2522,7 +2522,7 @@ __metadata:
     "@backstage/plugin-catalog-react": ^1.14.0
     "@backstage/test-utils": ^1.7.0
     "@backstage/theme": ^0.6.0
-    "@janus-idp/shared-react": ^2.13.0
+    "@janus-idp/shared-react": ^2.13.1
     "@material-ui/core": ^4.9.13
     "@material-ui/icons": ^4.11.3
     "@material-ui/lab": ^4.0.0-alpha.45
@@ -4537,7 +4537,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@janus-idp/shared-react@npm:^2.13.0":
+"@janus-idp/shared-react@npm:^2.13.1":
   version: 2.13.1
   resolution: "@janus-idp/shared-react@npm:2.13.1"
   dependencies:
