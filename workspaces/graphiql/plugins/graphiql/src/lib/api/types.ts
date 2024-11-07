@@ -15,6 +15,7 @@
  */
 
 import { createApiRef } from '@backstage/core-plugin-api';
+import type { GraphiQLPlugin } from '@graphiql/react';
 
 /** @public */
 export type GraphQLEndpoint = {
@@ -28,6 +29,8 @@ export type GraphQLEndpoint = {
   // The body parameter is equivalent to the POST body to be JSON-serialized, and the
   // return value should be the equivalent of a parsed JSON response from that POST.
   fetcher: (body: any) => Promise<any>;
+
+  plugins?: GraphiQLPlugin[];
 };
 
 /** @public */
