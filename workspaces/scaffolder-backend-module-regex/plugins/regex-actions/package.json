@@ -58,7 +58,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/backstage/community-plugins",
-    "directory": "plugins/regex-actions"
+    "directory": "workspaces/scaffolder-backend-module-regex/plugins/regex-actions"
   },
   "keywords": [
     "support:production",
