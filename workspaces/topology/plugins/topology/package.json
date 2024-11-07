@@ -23,8 +23,8 @@
     "./**/*.css.esm.js"
   ],
   "scripts": {
-    "build": "backstage-cli package build && node replace-style-injection-paths.js",
-    "prepublish": "yarn prepare",
+    "build": "backstage-cli package build",
+    "prepublish": "node replace-style-injection-paths.js",
     "clean": "backstage-cli package clean",
     "lint": "backstage-cli package lint",
     "postpack": "backstage-cli package postpack",
