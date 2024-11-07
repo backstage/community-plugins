@@ -1,6 +1,5 @@
 ---
 '@backstage-community/plugin-mend-backend': minor
-'@backstage-community/plugin-mend': minor
 ---
 
-Enable NPM publishing by removing private flag.
+Initial release of the `@backstage-community/plugin-mend-backend` plugin.
