@@ -2,7 +2,7 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: janus-idp-quay-actions
+  name: backstage-community-quay-actions
   title: Quay scaffolder actions
   description: Quay actions for Backstage
   annotations:

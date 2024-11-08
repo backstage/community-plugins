@@ -23,9 +23,7 @@ export default scaffolderModuleQuayAction;
 // Warnings were encountered during analysis:
 //
 // src/actions/createQuayRepository.d.ts:23:1 - (ae-undocumented) Missing documentation for "createQuayRepositoryAction".
-// src/index.d.ts:2:1 - (ae-misplaced-package-tag) The @packageDocumentation comment must appear at the top of entry point *.d.ts file
+// src/index.d.ts:2:32 - (tsdoc-characters-after-block-tag) The token "@backstage" looks like a TSDoc tag but contains an invalid character "/"; if it is not a tag, use a backslash to escape the "@"
 // src/module.d.ts:1:22 - (ae-undocumented) Missing documentation for "scaffolderModuleQuayAction".
-
-// (No @packageDocumentation comment for this package)
 
 ```
