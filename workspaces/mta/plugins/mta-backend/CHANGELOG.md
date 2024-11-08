@@ -1,5 +1,11 @@
 # @backstage-community/backstage-plugin-mta-backend
 
+## 0.2.1
+
+### Patch Changes
+
+- 03b3e06: Removed `export-dynamic` script and Janus IDP cli from the build process and npm release.
+
 ## 0.2.0
 
 ### Minor Changes
