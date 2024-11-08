@@ -4478,18 +4478,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-permission-backend-module-allow-all-policy@npm:^0.2.1":
-  version: 0.2.1
-  resolution: "@backstage/plugin-permission-backend-module-allow-all-policy@npm:0.2.1"
-  dependencies:
-    "@backstage/backend-plugin-api": ^1.0.1
-    "@backstage/plugin-auth-node": ^0.5.3
-    "@backstage/plugin-permission-common": ^0.8.1
-    "@backstage/plugin-permission-node": ^0.8.4
-  checksum: 37285ed79ccb594d3442a89b619f0cd4b4f14707484cb1b1b0c0bcf6ca2f50bd34f857f59cd769fd58cfd7b2154108762beaccdbdf823604da552484242aeb39
-  languageName: node
-  linkType: hard
-
 "@backstage/plugin-permission-backend@npm:^0.5.50":
   version: 0.5.50
   resolution: "@backstage/plugin-permission-backend@npm:0.5.50"
@@ -15250,6 +15238,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "backend@workspace:packages/backend"
   dependencies:
+    "@backstage-community/plugin-rbac-backend": "workspace:^"
     "@backstage/backend-defaults": ^0.5.1
     "@backstage/cli": ^0.28.0
     "@backstage/config": ^1.2.0
@@ -15261,8 +15250,6 @@ __metadata:
     "@backstage/plugin-catalog-backend": ^1.27.0
     "@backstage/plugin-catalog-backend-module-logs": ^0.1.2
     "@backstage/plugin-catalog-backend-module-scaffolder-entity-model": ^0.2.1
-    "@backstage/plugin-permission-backend": ^0.5.50
-    "@backstage/plugin-permission-backend-module-allow-all-policy": ^0.2.1
     "@backstage/plugin-permission-common": ^0.8.1
     "@backstage/plugin-permission-node": ^0.8.4
     "@backstage/plugin-proxy-backend": ^0.5.7

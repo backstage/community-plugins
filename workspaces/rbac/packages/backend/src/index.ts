@@ -39,11 +39,7 @@ backend.add(
 backend.add(import('@backstage/plugin-catalog-backend-module-logs'));
 
 // permission plugin
-backend.add(import('@backstage/plugin-permission-backend/alpha'));
-// See https://backstage.io/docs/permissions/getting-started for how to create your own permission policy
-backend.add(
-  import('@backstage/plugin-permission-backend-module-allow-all-policy'),
-);
+backend.add(import('@backstage-community/plugin-rbac-backend'));
 
 // search plugin
 backend.add(import('@backstage/plugin-search-backend/alpha'));
