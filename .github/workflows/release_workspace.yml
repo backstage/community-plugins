@@ -83,7 +83,10 @@ jobs:
       - name: Check if release
         id: release_check
         if: inputs.force_release != true
-        run: node ../../scripts/ci/check-if-release.js
+        run: |
+          yarn install
+          node scripts/ci/check-if-release.js
+        working-directory: ./
         env:
           WORKSPACE_NAME: ${{ inputs.workspace }}
           COMMIT_SHA_BEFORE: '${{ github.event.before }}'
@@ -100,8 +103,6 @@ jobs:
           skipRootChangelogUpdate: true
         env:
           GITHUB_TOKEN: ${{ secrets.GH_SERVICE_ACCOUNT_TOKEN }}
-
-
 
   release:
     name: Release workspace ${{ inputs.workspace }} on branch ${{ inputs.branch }}
