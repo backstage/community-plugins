@@ -2464,9 +2464,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage-community/plugin-scaffolder-backend-module-quay@workspace:plugins/quay-actions":
+"@backstage-community/plugin-scaffolder-backend-module-quay@workspace:plugins/quay":
   version: 0.0.0-use.local
-  resolution: "@backstage-community/plugin-scaffolder-backend-module-quay@workspace:plugins/quay-actions"
+  resolution: "@backstage-community/plugin-scaffolder-backend-module-quay@workspace:plugins/quay"
   dependencies:
     "@backstage/backend-plugin-api": ^1.0.1
     "@backstage/cli": 0.28.2
@@ -4294,9 +4294,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@internal/quay-actions@workspace:.":
+"@internal/quay@workspace:.":
   version: 0.0.0-use.local
-  resolution: "@internal/quay-actions@workspace:."
+  resolution: "@internal/quay@workspace:."
   dependencies:
     "@backstage/cli": ^0.28.0
     "@backstage/e2e-test-utils": ^0.1.1

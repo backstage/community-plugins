@@ -2,13 +2,13 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: backstage-community-quay-actions
+  name: backstage-community-quay
   title: Quay scaffolder actions
   description: Quay actions for Backstage
   annotations:
-    backstage.io/source-location: url:https://github.com/backstage/community-plugins/blob/main/workspaces/quay-actions/plugins/quay-actions
-    backstage.io/view-url: https://github.com/backstage/community-plugins/blob/main/workspaces/quay-actions/plugins/quay-actions/catalog-info.yaml
-    backstage.io/edit-url: https://github.com/backstage/community-plugins/blob/main/workspaces/quay-actions/plugins/quay-actions/catalog-info.yaml
+    backstage.io/source-location: url:https://github.com/backstage/community-plugins/blob/main/workspaces/quay/plugins/quay-actions
+    backstage.io/view-url: https://github.com/backstage/community-plugins/blob/main/workspaces/quay/plugins/quay-actions/catalog-info.yaml
+    backstage.io/edit-url: https://github.com/backstage/community-plugins/blob/main/workspaces/quay/plugins/quay-actions/catalog-info.yaml
     github.com/project-slug: backstage/community-plugins
     github.com/team-slug: backstage-community/maintainers-plugins
     sonarqube.org/project-key: backstage-community_backstage-plugins
@@ -17,7 +17,7 @@ metadata:
     - scaffolder
     - actions
   links:
-    - url: https://github.com/backstage/community-plugins/blob/main/workspaces/quay-actions/plugins/quay-actions
+    - url: https://github.com/backstage/community-plugins/blob/main/workspaces/quay/plugins/quay-actions
       title: GitHub Source
       icon: source
       type: source
@@ -36,9 +36,9 @@ metadata:
   title: '@backstage-community/plugin-scaffolder-backend-module-quay'
   description: Quay actions for Backstage
   annotations:
-    backstage.io/source-location: url:https://github.com/backstage/community-plugins/blob/main/workspaces/quay-actions/plugins/quay-actions
-    backstage.io/view-url: https://github.com/backstage/community-plugins/blob/main/workspaces/quay-actions/plugins/quay-actions/catalog-info.yaml
-    backstage.io/edit-url: https://github.com/backstage/community-plugins/blob/main/workspaces/quay-actions/plugins/quay-actions/catalog-info.yaml
+    backstage.io/source-location: url:https://github.com/backstage/community-plugins/blob/main/workspaces/quay/plugins/quay-actions
+    backstage.io/view-url: https://github.com/backstage/community-plugins/blob/main/workspaces/quay/plugins/quay-actions/catalog-info.yaml
+    backstage.io/edit-url: https://github.com/backstage/community-plugins/blob/main/workspaces/quay/plugins/quay-actions/catalog-info.yaml
     github.com/project-slug: backstage/community-plugins
     github.com/team-slug: backstage-community/maintainers-plugins
     sonarqube.org/project-key: backstage-community_backstage-plugins
@@ -47,7 +47,7 @@ metadata:
     - scaffolder
     - actions
   links:
-    - url: https://github.com/backstage/community-plugins/blob/main/workspaces/quay-actions/plugins/quay-actions
+    - url: https://github.com/backstage/community-plugins/blob/main/workspaces/quay/plugins/quay-actions
       title: GitHub Source
       icon: source
       type: source
