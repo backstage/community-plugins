@@ -11,7 +11,7 @@ This plugin contains no other functionality.
 1. Install the plugin package in your Backstage app:
 
    ```console
-   yarn workspace app add @janus-idp/backstage-plugin-analytics-provider-segment
+   yarn workspace app add @backstage-community/plugin-analytics-provider-segment
    ```
 
 ## Configuration
@@ -26,7 +26,7 @@ This plugin contains no other functionality.
      identityApiRef,
    } from '@backstage/core-plugin-api';
 
-   import { SegmentAnalytics } from '@janus-idp/backstage-plugin-analytics-provider-segment';
+   import { SegmentAnalytics } from '@backstage-community/plugin-analytics-provider-segment';
 
    /* highlight-add-end */
 

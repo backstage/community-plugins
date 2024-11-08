@@ -3,7 +3,7 @@
 If you would like to contribute improvements to this plugin, the easiest way to
 make and test changes is to do the following:
 
-> 1.  Clone the main Backstage monorepo `git clone git@github.com:janus-idp/backstage-plugins.git`
+> 1.  Clone the main Backstage monorepo `git clone git@github.com:backstage-community/backstage-plugins.git`
 > 2.  Install all dependencies `yarn install`
 > 3.  If one does not exist, create an `app-config.local.yaml` file in the root of
 >     the monorepo and add config for this plugin (see below)

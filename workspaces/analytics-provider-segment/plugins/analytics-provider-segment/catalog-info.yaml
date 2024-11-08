@@ -2,18 +2,18 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: janus-idp-analytics-segment
+  name: backstage-community-analytics-segment
   title: 'Analytics Module: Segment'
   description: 'Analytics Module: Segment'
   annotations:
-    backstage.io/source-location: url:https://github.com/janus-idp/backstage-plugins/tree/main/plugins/analytics-provider-segment
-    backstage.io/view-url: https://github.com/janus-idp/backstage-plugins/blob/main/plugins/analytics-provider-segment/catalog-info.yaml
-    backstage.io/edit-url: https://github.com/janus-idp/backstage-plugins/edit/main/plugins/analytics-provider-segment/catalog-info.yaml
-    github.com/project-slug: janus-idp/backstage-plugins
-    github.com/team-slug: janus-idp/maintainers-plugins
-    sonarqube.org/project-key: janus-idp_backstage-plugins
+    backstage.io/source-location: url:https://github.com/backstage/community-plugins/tree/main/workspaces/analytics-provider-segment/plugins/analytics-provider-segment
+    backstage.io/view-url: https://github.com/backstage/community-plugins/tree/main/workspaces/analytics-provider-segment/plugins/analytics-provider-segment/catalog-info.yaml
+    backstage.io/edit-url: https://github.com/backstage/community-plugins/tree/main/workspaces/analytics-provider-segment/plugins/analytics-provider-segment/catalog-info.yaml
+    github.com/project-slug: backstage-community/backstage-plugins
+    github.com/team-slug: backstage-community/maintainers-plugins
+    sonarqube.org/project-key: backstage-community_backstage-plugins
   links:
-    - url: https://github.com/janus-idp/backstage-plugins/tree/main/plugins/analytics-provider-segment
+    - url: https://github.com/backstage/community-plugins/tree/main/workspaces/analytics-provider-segment/plugins/analytics-provider-segment
       title: GitHub Source
       icon: source
       type: source
@@ -48,4 +48,4 @@ spec:
   lifecycle: production
   owner: rhdh-team
   system: rhdh
-  subcomponentOf: janus-idp-analytics-segment
+  subcomponentOf: backstage-community-analytics-segment
