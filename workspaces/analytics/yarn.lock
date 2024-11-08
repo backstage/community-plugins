@@ -2893,7 +2893,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/cli@npm:0.28.2":
+"@backstage/cli@npm:0.28.2, @backstage/cli@npm:^0.28.2":
   version: 0.28.2
   resolution: "@backstage/cli@npm:0.28.2"
   dependencies:
@@ -4803,7 +4803,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@internal/analytics@workspace:."
   dependencies:
-    "@backstage/cli": ^0.28.0
+    "@backstage/cli": ^0.28.2
     "@backstage/e2e-test-utils": ^0.1.1
     "@backstage/repo-tools": ^0.10.0
     "@changesets/cli": ^2.27.1
