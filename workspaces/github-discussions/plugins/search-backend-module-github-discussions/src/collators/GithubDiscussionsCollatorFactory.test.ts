@@ -20,25 +20,53 @@ import {
   createMockDirectory,
 } from '@backstage/backend-test-utils';
 import { TestPipeline } from '@backstage/plugin-search-backend-node';
-import { graphql, http } from 'msw';
+import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 import { Readable } from 'stream';
 import { ConfigReader } from '@backstage/config';
 import { GithubDiscussionsCollatorFactory } from './GithubDiscussionsCollatorFactory';
 
-const mockSearchDocIndex = {
-  docs: [
-    {
-      title: 'Discussion 1 title',
-      text: 'Example discussion 1 body text',
-      location: 'https://github.com/backstage/backstage/discussions/1',
+const mockGithubDiscussions = {
+  data: {
+    repository: {
+      discussions: {
+        totalCount: 1,
+        pageInfo: {
+          hasNextPage: false,
+          endCursor: null,
+        },
+        nodes: [
+          {
+            id: 'discussion',
+            title: 'Discussion title',
+            url: 'https://github.com/backstage/backstage/discussions/1',
+            bodyText: 'example discussion body text',
+            number: 1,
+            labels: null,
+            author: {
+              login: 'github-username',
+            },
+            category: {
+              name: 'discussion',
+            },
+            comments: {
+              totalCount: 0,
+              pageInfo: {
+                hasNextPage: false,
+                endCursor: null,
+              },
+              nodes: [],
+            },
+          },
+        ],
+      },
     },
-    {
-      title: 'Discussion 2 title',
-      text: 'Example discussion 2 body text',
-      location: 'https://github.com/backstage/backstage/discussions/2',
+    rateLimit: {
+      cost: 1,
+      remaining: 1,
+      nodeCount: 1,
     },
-  ],
+  },
 };
 
 describe('GithubDiscussionsCollatorFactory', () => {
@@ -62,7 +90,7 @@ describe('GithubDiscussionsCollatorFactory', () => {
             frequency: { minutes: 5 },
           },
           url: 'https://github.com/backstage/backstage',
-          cacheBase: `file://${mockDir.path}`,
+          cacheBase: `file://${mockDir.path}/`,
         },
       },
     },
@@ -84,27 +112,50 @@ describe('GithubDiscussionsCollatorFactory', () => {
     registerMswTestHooks(server);
 
     beforeEach(async () => {
-      mockDir.clear();
       factory = await GithubDiscussionsCollatorFactory.fromConfig({
         logger,
         config,
       });
       collator = await factory.getCollator();
       server.use(
-        http.all(/.*/, () => {
-          console.log('🔴 http all');
-        }),
+        http.post('https://api.github.com/graphql', () =>
+          HttpResponse.json(mockGithubDiscussions),
+        ),
       );
+    });
+
+    afterEach(() => {
+      mockDir.clear();
     });
 
     it('returns a readable stream', async () => {
       expect(collator).toBeInstanceOf(Readable);
     });
+
     it('fetches from the configured endpoint', async () => {
       const pipeline = TestPipeline.fromCollator(collator);
       const { documents } = await pipeline.execute();
-      expect(documents).toHaveLength(mockSearchDocIndex.docs.length);
+      expect(documents).toHaveLength(
+        mockGithubDiscussions.data.repository.discussions.totalCount,
+      );
     });
-    //   it('should create documents for each discussion');
+
+    it('should create documents for each discussion', async () => {
+      const pipeline = TestPipeline.fromCollator(collator);
+      const { documents } = await pipeline.execute();
+      documents.forEach((document, index) => {
+        expect(document).toMatchObject({
+          author: 'github-username',
+          category: 'discussion',
+          comments: [],
+          labels: [],
+          location: `https://github.com/backstage/backstage/discussions/${
+            index + 1
+          }`,
+          text: `example discussion body text`,
+          title: `Discussion title`,
+        });
+      });
+    });
   });
 });
