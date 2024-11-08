@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 3.2.1
+
+### Patch Changes
+
+- b6d0d27: Fix pluginId and pluginPackage metadata in the package.json file
+
 ## 3.2.0
 
 ### Minor Changes
