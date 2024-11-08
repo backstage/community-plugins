@@ -19,12 +19,12 @@ yarn --cwd packages/app add @backstage-community/plugin-analytics-module-ga4
 
 ```tsx
 // packages/app/src/apis.ts
+import { GoogleAnalytics4 } from '@backstage-community/plugin-analytics-module-ga4';
 import {
   analyticsApiRef,
   configApiRef,
   identityApiRef,
 } from '@backstage/core-plugin-api';
-import { GoogleAnalytics4 } from '@backstage-community/plugin-analytics-module-ga4';
 
 export const apis: AnyApiFactory[] = [
   // Instantiate and register the GA Analytics API Implementation.
@@ -140,12 +140,12 @@ when you instantiate `GoogleAnalytics`. This function will be passed the
 as the user ID. For example:
 
 ```typescript
+import { GoogleAnalytics } from '@backstage-community/plugin-analytics-module-ga';
 import {
   analyticsApiRef,
   configApiRef,
   identityApiRef,
 } from '@backstage/core-plugin-api';
-import { GoogleAnalytics } from '@backstage-community/plugin-analytics-module-ga';
 
 export const apis: AnyApiFactory[] = [
   createApiFactory({

@@ -17,12 +17,12 @@ yarn --cwd packages/app add @backstage-community/plugin-analytics-module-newreli
 
 ```tsx
 // packages/app/src/apis.ts
+import { NewRelicBrowser } from '@backstage-community/plugin-analytics-module-newrelic-browser';
 import {
   analyticsApiRef,
   configApiRef,
   identityApiRef,
 } from '@backstage/core-plugin-api';
-import { NewRelicBrowser } from '@backstage-community/plugin-analytics-module-newrelic-browser';
 
 export const apis: AnyApiFactory[] = [
   // Instantiate and register the New Relic Browser API Implementation.
@@ -78,12 +78,12 @@ By default the user ID is calculated as a SHA-256 hash of the current user's `us
 different value, provide a `userIdTransform` function alongside `identityApi` when you instantiate `NewRelicBrowser`. This function will be passed the `userEntityRef` as an argument and should resolve to the value you wish to set as the user ID. For example:
 
 ```typescript
+import { GoogleAnalytics } from '@backstage-community/plugin-analytics-module-newrelic-browser';
 import {
   analyticsApiRef,
   configApiRef,
   identityApiRef,
 } from '@backstage/core-plugin-api';
-import { GoogleAnalytics } from '@backstage-community/plugin-analytics-module-newrelic-browser';
 
 export const apis: AnyApiFactory[] = [
   createApiFactory({
