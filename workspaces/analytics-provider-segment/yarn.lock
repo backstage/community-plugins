@@ -2499,6 +2499,9 @@ __metadata:
     msw: 1.3.3
     prettier: 3.3.3
     prop-types: ^15.8.1
+    react: ^16.13.1 || ^17.0.0 || ^18.0.0
+    react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
+    react-router-dom: ^6.0.0
     react-use: ^17.4.0
   peerDependencies:
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
@@ -6274,6 +6277,13 @@ __metadata:
     "@mui/icons-material": ^5.14.19
     "@mui/material": ^5.14.20
   checksum: 8684f8faa2fe87100dba2c19f1e1a306e808cf98bc65da829c3203a325ea6520a93e54c174e25a220ccf8280ecc2750a178a0d18b12f5ba354c7c415e8a9dc7b
+  languageName: node
+  linkType: hard
+
+"@remix-run/router@npm:1.21.0":
+  version: 1.21.0
+  resolution: "@remix-run/router@npm:1.21.0"
+  checksum: d9477a7772053ad0ffcf03385cfb1a54e56f8a56d1f9f5062de3b1dfcbd019dd73282a00a5a72aa55c120771110982448c165c1405d64540aaef13051a8e45cc
   languageName: node
   linkType: hard
 
@@ -21193,6 +21203,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-dom@npm:^16.13.1 || ^17.0.0 || ^18.0.0":
+  version: 18.3.1
+  resolution: "react-dom@npm:18.3.1"
+  dependencies:
+    loose-envify: ^1.1.0
+    scheduler: ^0.23.2
+  peerDependencies:
+    react: ^18.3.1
+  checksum: 298954ecd8f78288dcaece05e88b570014d8f6dce5db6f66e6ee91448debeb59dcd31561dddb354eee47e6c1bb234669459060deb238ed0213497146e555a0b9
+  languageName: node
+  linkType: hard
+
 "react-double-scrollbar@npm:0.0.15":
   version: 0.0.15
   resolution: "react-double-scrollbar@npm:0.0.15"
@@ -21324,6 +21346,30 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-router-dom@npm:^6.0.0":
+  version: 6.28.0
+  resolution: "react-router-dom@npm:6.28.0"
+  dependencies:
+    "@remix-run/router": 1.21.0
+    react-router: 6.28.0
+  peerDependencies:
+    react: ">=16.8"
+    react-dom: ">=16.8"
+  checksum: 0cf4658a92bc66f50ec9d8518c36aa5a402bcadce71fb624ed6f900d73a29ea87ff904a4f2c42279107e75e80cc08c6192563fadcc5d4e642e6d476e38e83b21
+  languageName: node
+  linkType: hard
+
+"react-router@npm:6.28.0":
+  version: 6.28.0
+  resolution: "react-router@npm:6.28.0"
+  dependencies:
+    "@remix-run/router": 1.21.0
+  peerDependencies:
+    react: ">=16.8"
+  checksum: 23246ca957b5c2bc8d6f9a81fee2df2ce4fc3feca3ec27c2fd85999568fc1299a4e8273e4ab70b6f3acd43a1fb45e0c93cb01ef77e68c9f9e1f7e4f42a1419ea
+  languageName: node
+  linkType: hard
+
 "react-side-effect@npm:^2.1.0":
   version: 2.1.2
   resolution: "react-side-effect@npm:2.1.2"
@@ -21434,7 +21480,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react@npm:^18.3.1":
+"react@npm:^16.13.1 || ^17.0.0 || ^18.0.0, react@npm:^18.3.1":
   version: 18.3.1
   resolution: "react@npm:18.3.1"
   dependencies:
@@ -22288,6 +22334,15 @@ __metadata:
   dependencies:
     xmlchars: ^2.2.0
   checksum: d3fa3e2aaf6c65ed52ee993aff1891fc47d5e47d515164b5449cbf5da2cbdc396137e55590472e64c5c436c14ae64a8a03c29b9e7389fc6f14035cf4e982ef3b
+  languageName: node
+  linkType: hard
+
+"scheduler@npm:^0.23.2":
+  version: 0.23.2
+  resolution: "scheduler@npm:0.23.2"
+  dependencies:
+    loose-envify: ^1.1.0
+  checksum: 3e82d1f419e240ef6219d794ff29c7ee415fbdc19e038f680a10c067108e06284f1847450a210b29bbaf97b9d8a97ced5f624c31c681248ac84c80d56ad5a2c4
   languageName: node
   linkType: hard
 
