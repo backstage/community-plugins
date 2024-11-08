@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { RbacPage } from '@backstage-community/plugin-rbac';
 import { createApp } from '@backstage/app-defaults';
 import { AppRouter, FlatRoutes } from '@backstage/core-app-api';
 import {
@@ -20,6 +21,7 @@ import {
   OAuthRequestDialog,
   SignInPage,
 } from '@backstage/core-components';
+import { githubAuthApiRef } from '@backstage/core-plugin-api';
 import { apiDocsPlugin, ApiExplorerPage } from '@backstage/plugin-api-docs';
 import {
   CatalogEntityPage,
@@ -71,7 +73,21 @@ const app = createApp({
     });
   },
   components: {
-    SignInPage: props => <SignInPage {...props} auto providers={['guest']} />,
+    SignInPage: props => (
+      <SignInPage
+        {...props}
+        auto
+        providers={[
+          {
+            id: 'github-auth-provider',
+            title: 'GitHub',
+            message: 'Sign in using GitHub',
+            apiRef: githubAuthApiRef,
+          },
+          'guest',
+        ]}
+      />
+    ),
   },
 });
 
@@ -109,6 +125,7 @@ const routes = (
     </Route>
     <Route path="/settings" element={<UserSettingsPage />} />
     <Route path="/catalog-graph" element={<CatalogGraphPage />} />
+    <Route path="/rbac" element={<RbacPage />} />;
   </FlatRoutes>
 );
 
