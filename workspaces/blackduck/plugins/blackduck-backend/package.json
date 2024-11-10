@@ -20,7 +20,8 @@
     "pluginPackages": [
       "@backstage-community/plugin-blackduck",
       "@backstage-community/plugin-blackduck-backend",
-      "@backstage-community/plugin-blackduck-common"
+      "@backstage-community/plugin-blackduck-common",
+      "@backstage-community/plugin-blackduck-node"
     ]
   },
   "scripts": {
