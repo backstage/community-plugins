@@ -15,3 +15,25 @@
  */
 
 import '@testing-library/jest-dom';
+// eslint-disable-next-line no-restricted-imports
+import { TextDecoder, TextEncoder } from 'util';
+
+Object.assign(global, { TextDecoder, TextEncoder });
+
+// https://github.com/jsdom/jsdom/issues/3002#issuecomment-1118039915
+Range.prototype.getBoundingClientRect = () => ({
+  x: 0,
+  y: 0,
+  bottom: 0,
+  height: 0,
+  left: 0,
+  right: 0,
+  top: 0,
+  width: 0,
+  toJSON: () => '',
+});
+Range.prototype.getClientRects = () => ({
+  item: () => null,
+  length: 0,
+  [Symbol.iterator]: jest.fn(),
+});

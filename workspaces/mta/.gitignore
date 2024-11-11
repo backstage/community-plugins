@@ -55,3 +55,9 @@ e2e-test-report/
 
 # Yarn install state
 .yarn/install-state.gz
+
+#App config 
+
+app-config-rhdh.yaml
+dist-dynamic/
+deploy/

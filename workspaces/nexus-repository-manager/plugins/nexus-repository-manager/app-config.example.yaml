@@ -1,0 +1,14 @@
+proxy:
+  endpoints:
+    '/nexus-repository-manager':
+      target: ${NEXUS_REPOSITORY_MANAGER_URL}
+      headers:
+        X-Requested-With: 'XMLHttpRequest'
+        # Uncomment the following line to access a private Nexus Repository Manager using a token
+        # Authorization: 'Bearer <NEXUS_REPOSITORY_MANAGER_TOKEN>'
+      changeOrigin: true
+      # Change to "false" in case of using self hosted Nexus Repository Manager instance with a self-signed certificate
+      secure: true
+
+nexusRepositoryManager:
+  experimentalAnnotations: true

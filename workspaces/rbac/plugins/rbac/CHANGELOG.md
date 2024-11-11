@@ -1,5 +1,14 @@
 ### Dependencies
 
+## 1.32.3
+
+### Patch Changes
+
+- dd0e2b4: chore: use workspace dependencies
+- b7c2fa1: Updated supported-versions to ^1.28.4.
+- Updated dependencies [b7c2fa1]
+  - @backstage-community/plugin-rbac-common@1.12.2
+
 ## 1.32.2
 
 ### Patch Changes
