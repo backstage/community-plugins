@@ -1,4 +1,4 @@
-name: Release workspace
+name: Create Changeset PR for workspace
 
 on:
   workflow_dispatch:
@@ -18,8 +18,8 @@ concurrency:
   group: ${{ github.workflow }}-${{ inputs.workspace }}
 
 jobs:
-  release:
-    name: Release workspace ${{ inputs.workspace }}
+  changesets-pr:
+    name: Update Version Packages PR for ${{ inputs.workspace }} on branch main
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -52,22 +52,14 @@ jobs:
       - name: yarn install
         run: yarn install --immutable
 
-      - name: Compile TypeScript
-        run: yarn tsc:full
-
-      - name: Build all packages
-        run: yarn build:all
-
-      - name: publish
-        run: |
-          yarn config set -H 'npmAuthToken' "${{secrets.NPM_TOKEN}}"
-          yarn workspaces foreach -v --no-private npm publish --access public --tolerate-republish
+      - name: Update Version Packages (${{ inputs.workspace }}) PR
+        id: changesets-pr
+        uses: backstage/changesets-action@291bfc1f76d1dcfbf967f5810dc0423592eae09a # v2.3.1
+        with:
+          title: Version Packages (${{ inputs.workspace }})
+          cwd: workspaces/${{ inputs.workspace }}
+          version: yarn changeset version
+          versionBranch: changesets-release/${{ inputs.workspace }}
+          skipRootChangelogUpdate: true
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Create tag
-        working-directory: ${{ github.workspace }}/scripts/ci
-        run: node create-tag.js
-        env:
-          WORKSPACE_NAME: ${{ inputs.workspace }}
           GITHUB_TOKEN: ${{ secrets.GH_SERVICE_ACCOUNT_TOKEN }}

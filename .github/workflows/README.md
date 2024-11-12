@@ -4,13 +4,19 @@
 
 Triggered on pull requests, this workflow runs tests on the target branch, focusing only on workspaces that have changes. Once all checks pass successfully, the pull request can be merged.
 
+create_changeset_pr_for_workspace.yml
+
+## [create_changeset_pr_for_workspace.yml](./create_changeset_pr_for_workspace.yml)
+
+Creates a "Version Packages" pull request for a specific workspace. For more details on how changesets work, refer to the [Changesets documentation](https://github.com/changesets/changesets).
+
 ## [release_workspace.yml](./release_workspace.yml)
 
-Handles the release process for a specific workspace from a specified branch (default: `main`). It either creates a "Version Packages" pull request if changesets are present or releases the packages within the workspace if they haven't been published yet. For more details on how changesets work, refer to the [Changesets documentation](https://github.com/changesets/changesets).
+Handles the release process for a specific workspace.
 
-## [release.yml](./release.yml)
+## [release_all.yml](./release_all.yml)
 
-Responsible for releasing all workspaces in parallel by invoking the `release_workspace.yml` workflow for each workspace. It runs on the main branch whenever new changes are pushed. The workflow relies on `release_workspace.yml` to determine if a workspace requires publishing.
+Responsible for releasing all workspaces in parallel by invoking the `release_workspace.yml` workflow for each workspace that needs to be released, and by invoking `create_changeset_pr_for_workspace.yml` workflow for each workspace that has new changesets. It runs on the main branch whenever new changes are pushed.
 
 ## [automate_changeset_feedback.yml](./automate_changeset_feedback.yml)
 
