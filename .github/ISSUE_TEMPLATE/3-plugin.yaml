@@ -1,6 +1,6 @@
 name: 🔌 New Plugin
-description: "Submit a proposal for a new plugin"
-title: "🔌 Plugin: <Title>"
+description: 'Submit a proposal for a new plugin'
+title: '🔌 Plugin: <Title>'
 labels: [plugin]
 body:
   - type: markdown
@@ -12,41 +12,41 @@ body:
     validations:
       required: true
     attributes:
-      label: "🔖 Summary"
-      description: "Provide a general summary of the plugin and how it should work"
-      placeholder: "You should add ..."
+      label: '🔖 Summary'
+      description: 'Provide a general summary of the plugin and how it should work'
+      placeholder: 'You should add ...'
   - type: textarea
     id: website
     attributes:
-      label: "🌐 Project website (if applicable)"
-      description: "Add a link to the open source project or product this plugin will integrate with, if existing"
-      placeholder: "Website Link is ..."
+      label: '🌐 Project website (if applicable)'
+      description: 'Add a link to the open source project or product this plugin will integrate with, if existing'
+      placeholder: 'Website Link is ...'
   - type: textarea
     id: context
     attributes:
-      label: "✌️ Context"
-      description: "A clear and concise description about the Plugin."
-      placeholder: "Providing additional context"
+      label: '✌️ Context'
+      description: 'A clear and concise description about the Plugin.'
+      placeholder: 'Providing additional context'
   - type: checkboxes
     id: no-duplicate-issues
     attributes:
-      label: "👀 Have you spent some time to check if this plugin request has been raised before?"
+      label: '👀 Have you spent some time to check if this plugin request has been raised before?'
       options:
         - label: "I checked and didn't find similar issue"
           required: true
   - type: checkboxes
     id: willing-to-take-ownership
     attributes:
-      label: "✍️ Are you willing to maintain the plugin?"
+      label: '✍️ Are you willing to maintain the plugin?'
       options:
-        - label: "I understand the responsibilities as a [Plugin Maintainer Governance](https://github.com/backstage/community/blob/main/GOVERNANCE.md#plugin-maintainer) & will maintain the plugin"
+        - label: 'I understand the responsibilities as a [Plugin Maintainer Governance](https://github.com/backstage/community/blob/main/GOVERNANCE.md#plugin-maintainer) & will maintain the plugin'
           required: true
   - type: checkboxes
     id: read-code-of-conduct
     attributes:
-      label: "🏢 Have you read the Code of Conduct?"
+      label: '🏢 Have you read the Code of Conduct?'
       options:
-        - label: "I have read the [Code of Conduct](https://github.com/backstage/community-plugins/blob/main/CODE_OF_CONDUCT.md)"
+        - label: 'I have read the [Code of Conduct](https://github.com/backstage/community-plugins/blob/main/CODE_OF_CONDUCT.md)'
           required: true
   - type: dropdown
     id: willing-to-submit-pr

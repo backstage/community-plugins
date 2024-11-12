@@ -14,52 +14,50 @@
  * limitations under the License.
  */
 import {
-    coreServices,
-    createBackendPlugin,
-    resolvePackagePath,
-  } from '@backstage/backend-plugin-api';
-  import { createRouter } from './service/router';
-  
-  /**
-   * jiraPlugin backend plugin
-   *
-   * @public
-   */
-  export const jiraPlugin = createBackendPlugin({
-    pluginId: 'jira',
-    register(env) {
-      env.registerInit({
-        deps: {
-          httpRouter: coreServices.httpRouter,
-          logger: coreServices.logger,
-          config: coreServices.rootConfig,
-          database: coreServices.database,
-          httpAuth: coreServices.httpAuth,
-          userInfo: coreServices.userInfo,
-        },
-        async init({ httpRouter, logger, config, database }) {
-          const client = await database.getClient();
-          const migrationsDir = resolvePackagePath(
-            '@backstage/plugin-jira-backend',
-            'migrations',
-          );
-          console.log('dir: ', migrationsDir);
-        
-          await client.migrate.latest({
-            directory: migrationsDir,
-          });
-        
-          const router = await createRouter({
-            db: client,
-            configApi: config,
-            logger,
-            config,
-          });
-        
-          httpRouter.use(router);
-        }
-        
-      });
-    },
-  });
-  
+  coreServices,
+  createBackendPlugin,
+  resolvePackagePath,
+} from '@backstage/backend-plugin-api';
+import { createRouter } from './service/router';
+
+/**
+ * jiraPlugin backend plugin
+ *
+ * @public
+ */
+export const jiraPlugin = createBackendPlugin({
+  pluginId: 'jira',
+  register(env) {
+    env.registerInit({
+      deps: {
+        httpRouter: coreServices.httpRouter,
+        logger: coreServices.logger,
+        config: coreServices.rootConfig,
+        database: coreServices.database,
+        httpAuth: coreServices.httpAuth,
+        userInfo: coreServices.userInfo,
+      },
+      async init({ httpRouter, logger, config, database }) {
+        const client = await database.getClient();
+        const migrationsDir = resolvePackagePath(
+          '@backstage/plugin-jira-backend',
+          'migrations',
+        );
+        console.log('dir: ', migrationsDir);
+
+        await client.migrate.latest({
+          directory: migrationsDir,
+        });
+
+        const router = await createRouter({
+          db: client,
+          configApi: config,
+          logger,
+          config,
+        });
+
+        httpRouter.use(router);
+      },
+    });
+  },
+});

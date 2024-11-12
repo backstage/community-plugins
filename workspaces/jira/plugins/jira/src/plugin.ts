@@ -93,7 +93,7 @@ export const jiraPlugin = createPlugin({
         configApi: configApiRef,
       },
       factory: ({ discoveryApi, configApi }) =>
-        new JiraApiClient({ discoveryApi, configApi }), 
+        new JiraApiClient({ discoveryApi, configApi }),
     }),
   ],
   routes: {
@@ -111,4 +111,3 @@ export const JiraPage = jiraPlugin.provide(
     mountPoint: rootRouteRef,
   }),
 );
-

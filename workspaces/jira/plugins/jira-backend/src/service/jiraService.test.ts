@@ -7,7 +7,7 @@ jest.mock('./jiraApiClient');
 
 describe('JiraService', () => {
   let jiraService: JiraService;
-  let db: Partial<Knex>; 
+  let db: Partial<Knex>;
   let config: Config;
   let mockJiraApi: JiraApiClient;
 
@@ -15,7 +15,7 @@ describe('JiraService', () => {
     db = {
       insert: jest.fn().mockReturnThis(),
       select: jest.fn(() => ({
-        first: jest.fn(), 
+        first: jest.fn(),
       })),
       onConflict: jest.fn().mockReturnThis(),
       merge: jest.fn(),
@@ -42,7 +42,7 @@ describe('JiraService', () => {
       (db.select as jest.Mock).mockRejectedValue(new Error('Database error'));
 
       await expect(jiraService.getStoredIssues()).rejects.toThrow(
-        'Failed to retrieve stored Jira issues'
+        'Failed to retrieve stored Jira issues',
       );
     });
   });

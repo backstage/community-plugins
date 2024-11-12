@@ -38,7 +38,6 @@ type DenseTableProps = {
 };
 
 const DenseTable = ({ issues }: DenseTableProps) => {
-
   const columns: TableColumn[] = [
     { title: 'Key', field: 'key' },
     { title: 'Summary', field: 'summary' },

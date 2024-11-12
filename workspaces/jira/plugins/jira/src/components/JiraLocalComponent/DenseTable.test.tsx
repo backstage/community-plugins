@@ -61,5 +61,4 @@ describe('DenseTable component', () => {
     expect(getByText('In Progress')).toBeInTheDocument();
     expect(getByText('Alice Brown')).toBeInTheDocument();
   });
-
 });

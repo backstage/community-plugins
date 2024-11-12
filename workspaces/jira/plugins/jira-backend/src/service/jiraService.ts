@@ -19,8 +19,8 @@ import { Knex } from 'knex';
 import { JiraApiClient, JiraIssue } from './jiraApiClient';
 
 export interface IssuesResponse {
-  issues: JiraIssue[]; 
-  total: number; 
+  issues: JiraIssue[];
+  total: number;
 }
 
 export class JiraService {
@@ -47,7 +47,7 @@ export class JiraService {
     maxResults: number,
     startAt: number,
     username: string,
-  ): Promise<number> { 
+  ): Promise<number> {
     console.log('Fetching issues from Jira...');
 
     try {
@@ -84,13 +84,13 @@ export class JiraService {
             url: `${this.jiraDomain}/jira/software/projects/${
               issue.key.split('-')[0]
             }/issues/${issue.key}`,
-            created_at: issue.fields.created || new Date(), 
-            updated_at: issue.fields.updated || new Date(), 
+            created_at: issue.fields.created || new Date(),
+            updated_at: issue.fields.updated || new Date(),
           })
           .onConflict('issue_id')
           .merge();
       }
-      return issuesResponse.total; 
+      return issuesResponse.total;
     } catch (error) {
       console.error('Error in fetchAndStoreIssues:', error);
       throw new Error('Failed to fetch and store Jira issues');

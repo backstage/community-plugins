@@ -46,10 +46,7 @@ export class AuthenticationError extends Error {
 }
 
 export class APIError extends Error {
-  constructor(
-    message: string,
-    public statusCode: number,
-  ) {
+  constructor(message: string, public statusCode: number) {
     super(message);
     this.name = 'APIError';
   }

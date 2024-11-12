@@ -1,1 +1,1 @@
-module.exports = { root: true, };
+module.exports = { root: true };

@@ -2,7 +2,7 @@
 
 The Jira Plugin provides a page that integrates with Jira to display relevant project and issue information for the user.
 
-![Jira Plugin Screenshot](./docs/jira-frontend.png)  
+![Jira Plugin Screenshot](./docs/jira-frontend.png)
 
 ### Features
 
@@ -13,26 +13,25 @@ The Jira Plugin provides a page that integrates with Jira to display relevant pr
 
 1. Install the Jira Plugin:
 
-    ```bash
-    # From your Backstage root directory
-    yarn --cwd packages/app add @nineleaps/plugin-jira
-    ```
+   ```bash
+   # From your Backstage root directory
+   yarn --cwd packages/app add @nineleaps/plugin-jira
+   ```
 
 2. Add the `JiraPage` extension to your app:
-   
+
    ```tsx
    // packages/app/src/App.tsx
 
-    import { Route } from 'react-router';
-    import { JiraPage } from '@nineleaps/plugin-jira';
+   import { Route } from 'react-router';
+   import { JiraPage } from '@nineleaps/plugin-jira';
 
-    <Route path="/jira" element={<JiraPage />} />;
-    ```
+   <Route path="/jira" element={<JiraPage />} />;
+   ```
 
 ## Customization
 
 You can customize the appearance or behavior of the Jira page by modifying the components or by passing custom props if needed.
-
 
 ## Development
 
@@ -43,25 +42,26 @@ To run a development version of the plugin with mocked data, use:
 ```
 
 ## API
+
 This plugin provides a custom `JiraApiClient` for interacting with Jira APIs, defined in jiraApiRef.
 
 ```typescript
-   export const jiraPlugin = createPlugin({
-    id: 'jira',
-    apis: [
-        createApiFactory({
-        api: jiraApiRef,
-        deps: {
-            discoveryApi: discoveryApiRef,
-            configApi: configApiRef,
-        },
-        factory: ({ discoveryApi, configApi }) =>
-            new JiraApiClient({ discoveryApi, configApi }),
-        }),
-    ],
-    });
-  ```
-  
+export const jiraPlugin = createPlugin({
+  id: 'jira',
+  apis: [
+    createApiFactory({
+      api: jiraApiRef,
+      deps: {
+        discoveryApi: discoveryApiRef,
+        configApi: configApiRef,
+      },
+      factory: ({ discoveryApi, configApi }) =>
+        new JiraApiClient({ discoveryApi, configApi }),
+    }),
+  ],
+});
+```
+
 ## License
 
 ```text
@@ -78,3 +78,4 @@ This plugin provides a custom `JiraApiClient` for interacting with Jira APIs, de
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the License for the specific language governing permissions and
 * limitations under the License.
+```

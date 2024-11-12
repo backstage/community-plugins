@@ -1,6 +1,6 @@
-name: "🐛 Plugin Bug Report"
-description: "Submit a plugin bug report to help us improve"
-title: "🐛 <Plugin>: <Title>"
+name: '🐛 Plugin Bug Report'
+description: 'Submit a plugin bug report to help us improve'
+title: '🐛 <Plugin>: <Title>'
 labels:
   - bug
 body:
@@ -11,8 +11,8 @@ body:
     id: plugin-name
     attributes:
       label: Plugin Name
-      description: "Specify the name of the [plugin name](https://www.npmjs.com/search?q=%40backstage-community) this issue refers to"
-      placeholder: "Example: catalog"
+      description: 'Specify the name of the [plugin name](https://www.npmjs.com/search?q=%40backstage-community) this issue refers to'
+      placeholder: 'Example: catalog'
     validations:
       required: true
   - type: textarea
@@ -20,32 +20,32 @@ body:
     validations:
       required: true
     attributes:
-      label: "📜 Description"
-      description: "A clear and concise description of what the bug is."
-      placeholder: "It bugs out when ..."
+      label: '📜 Description'
+      description: 'A clear and concise description of what the bug is.'
+      placeholder: 'It bugs out when ...'
   - type: textarea
     id: expected-behavior
     validations:
       required: true
     attributes:
-      label: "👍 Expected behavior"
-      description: "What did you think should happen?"
-      placeholder: "It should ..."
+      label: '👍 Expected behavior'
+      description: 'What did you think should happen?'
+      placeholder: 'It should ...'
   - type: textarea
     id: actual-behavior
     validations:
       required: true
     attributes:
-      label: "👎 Actual Behavior with Screenshots"
-      description: "What did actually happen? Add screenshots, if applicable."
-      placeholder: "It actually ..."
+      label: '👎 Actual Behavior with Screenshots'
+      description: 'What did actually happen? Add screenshots, if applicable.'
+      placeholder: 'It actually ...'
   - type: textarea
     id: steps-to-reproduce
     validations:
       required: true
     attributes:
-      label: "👟 Reproduction steps"
-      description: "How do you trigger this bug? Please walk us through it step by step."
+      label: '👟 Reproduction steps'
+      description: 'How do you trigger this bug? Please walk us through it step by step.'
       placeholder:
         "Provide a link to a live example, or an unambiguous set of steps to reproduce this bug. Include code or configuration to reproduce, if relevant.\n
         1. Go to '...'\n
@@ -56,22 +56,22 @@ body:
     validations:
       required: false
     attributes:
-      label: "📃 Provide the context for the Bug."
-      description: "How has this issue affected you? What are you trying to accomplish?"
-      placeholder: "Providing context (e.g. links to configuration settings, stack trace or log data) helps us come up with a solution that is most useful in the real world."
+      label: '📃 Provide the context for the Bug.'
+      description: 'How has this issue affected you? What are you trying to accomplish?'
+      placeholder: 'Providing context (e.g. links to configuration settings, stack trace or log data) helps us come up with a solution that is most useful in the real world.'
   - type: checkboxes
     id: no-duplicate-issues
     attributes:
-      label: "👀 Have you spent some time to check if this bug has been raised before?"
+      label: '👀 Have you spent some time to check if this bug has been raised before?'
       options:
         - label: "I checked and didn't find similar issue"
           required: true
   - type: checkboxes
     id: read-code-of-conduct
     attributes:
-      label: "🏢 Have you read the Code of Conduct?"
+      label: '🏢 Have you read the Code of Conduct?'
       options:
-        - label: "I have read the [Code of Conduct](https://github.com/backstage/community-plugins/blob/main/CODE_OF_CONDUCT.md)"
+        - label: 'I have read the [Code of Conduct](https://github.com/backstage/community-plugins/blob/main/CODE_OF_CONDUCT.md)'
           required: true
   - type: dropdown
     attributes:

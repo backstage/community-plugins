@@ -38,9 +38,9 @@ export interface JiraIssue {
     project: {
       key: string;
     };
-    assignee?: { displayName: string }; 
-    created?: string; 
-    updated?: string; 
+    assignee?: { displayName: string };
+    created?: string;
+    updated?: string;
   };
 }
 
@@ -56,7 +56,7 @@ export interface JiraApi {
     maxResults: number,
     startAt: number,
     username: string,
-  ) => Promise<IssuesResponse>; 
+  ) => Promise<IssuesResponse>;
 }
 
 type Options = {
@@ -115,7 +115,7 @@ export class JiraApiClient implements JiraApi {
     maxResults: number,
     startAt: number,
     username: string,
-  ): Promise<IssuesResponse> { 
+  ): Promise<IssuesResponse> {
     console.log(
       'jiraApiClient.listIssues: ',
       jql,
@@ -124,7 +124,7 @@ export class JiraApiClient implements JiraApi {
       username,
     );
     const encodedJql = encodeURIComponent(jql);
-    
+
     // Fetch the data from the Jira API
     const data = await this.fetch<{ issues: JiraIssue[]; total: number }>(
       `/search?jql=${encodedJql}&maxResults=${maxResults}&startAt=${startAt}`,

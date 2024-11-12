@@ -15,16 +15,16 @@
  * limitations under the License.
  */
 
-import { join } from "path";
-import fs from "fs/promises";
-import { default as parseChangeset } from "@changesets/parse";
+import { join } from 'path';
+import fs from 'fs/promises';
+import { default as parseChangeset } from '@changesets/parse';
 
 const privatePackages = new Set([
-  "app",
-  "backend",
-  "e2e-test",
-  "storybook",
-  "techdocs-cli-embedded-app",
+  'app',
+  'backend',
+  'e2e-test',
+  'storybook',
+  'techdocs-cli-embedded-app',
 ]);
 
 /**
@@ -34,42 +34,42 @@ const privatePackages = new Set([
  */
 async function main() {
   if (process.argv.length < 3) {
-    throw new Error("Usage: node verify-changesets.js name-of-the-workspace");
+    throw new Error('Usage: node verify-changesets.js name-of-the-workspace');
   }
   const workspace = process.argv[2];
 
   const changesetsFolderPath = join(
     import.meta.dirname,
-    "..",
-    "..",
-    "workspaces",
+    '..',
+    '..',
+    'workspaces',
     workspace,
-    ".changeset"
+    '.changeset',
   );
   const fileNames = await fs.readdir(changesetsFolderPath);
   const changesetNames = fileNames.filter(
-    (name) => name.endsWith(".md") && name !== "README.md"
+    name => name.endsWith('.md') && name !== 'README.md',
   );
 
   const changesets = await Promise.all(
-    changesetNames.map(async (name) => {
+    changesetNames.map(async name => {
       const content = await fs.readFile(
         join(changesetsFolderPath, name),
-        "utf8"
+        'utf8',
       );
       return { name, ...parseChangeset(content) };
-    })
+    }),
   );
 
   const errors = [];
   for (const changeset of changesets) {
-    const privateReleases = changeset.releases.filter((release) =>
-      privatePackages.has(release.name)
+    const privateReleases = changeset.releases.filter(release =>
+      privatePackages.has(release.name),
     );
     if (privateReleases.length > 0) {
       const names = privateReleases
-        .map((release) => `'${release.name}'`)
-        .join(", ");
+        .map(release => `'${release.name}'`)
+        .join(', ');
       errors.push({
         name: changeset.name,
         messages: [
@@ -81,9 +81,9 @@ async function main() {
 
   if (errors.length) {
     console.log();
-    console.log("***********************************************************");
-    console.log("*             Changeset verification failed!              *");
-    console.log("***********************************************************");
+    console.log('***********************************************************');
+    console.log('*             Changeset verification failed!              *');
+    console.log('***********************************************************');
     console.log();
     for (const error of errors) {
       console.error(`Changeset '${error.name}' is invalid:`);
@@ -93,13 +93,13 @@ async function main() {
       }
     }
     console.log();
-    console.log("***********************************************************");
+    console.log('***********************************************************');
     console.log();
     process.exit(1);
   }
 }
 
-main().catch((error) => {
+main().catch(error => {
   console.error(error.stack);
   process.exit(1);
 });

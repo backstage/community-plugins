@@ -68,9 +68,9 @@ describe('JiraApiClient', () => {
         statusText: 'Not Found',
       });
 
-      await expect(jiraApiClient['fetch']('/search', 'testUser')).rejects.toThrow(
-        'Failed to fetch: Not Found',
-      );
+      await expect(
+        jiraApiClient['fetch']('/search', 'testUser'),
+      ).rejects.toThrow('Failed to fetch: Not Found');
     });
   });
 
@@ -96,7 +96,12 @@ describe('JiraApiClient', () => {
         json: jest.fn().mockResolvedValue(mockResponse),
       });
 
-      const issues = await jiraApiClient.listIssues('project = PRJ', 10, 0, 'testUser');
+      const issues = await jiraApiClient.listIssues(
+        'project = PRJ',
+        10,
+        0,
+        'testUser',
+      );
 
       expect(issues).toEqual(mockResponse);
       expect(global.fetch).toHaveBeenCalledWith(
@@ -117,4 +122,3 @@ describe('JiraApiClient', () => {
     });
   });
 });
-

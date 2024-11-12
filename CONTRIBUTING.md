@@ -98,9 +98,9 @@ To create a changeset, follow these steps:
 
 2. Run the following command to create a new changeset:
 
-    ```bash
-    $ yarn changeset
-    ```
+   ```bash
+   $ yarn changeset
+   ```
 
 3. You will be prompted to select the packages and the type of change you are making.
 
@@ -162,7 +162,7 @@ By migrating a plugin to this repository you will need to ensure you can meet ce
 - Adopt the Changesets workflow for releasing new plugin versions.
 - Adhere to the repository security process for handling security-related issues.
 - Agree to commit to the responsibilities and requirements listed in the [Plugin Maintainer's role
-](https://github.com/backstage/community/blob/main/GOVERNANCE.md#plugin-maintainer).
+  ](https://github.com/backstage/community/blob/main/GOVERNANCE.md#plugin-maintainer).
 - Plugins moved to the repository should be licensed under Apache 2.0.
 
 ### Manual migration steps
@@ -200,7 +200,7 @@ cp -r ../existing-plugins/plugins/plugin-name plugins/
 
 8. Update external references to the old plugin location such as documentation to point to the new location in the `backstage/community-plugins` repository.
 
-9.  In the original repository, update the plugin to indicate that it has been moved to the `backstage/community-plugins` repository. You may wish to deprecate the old version on npm.
+9. In the original repository, update the plugin to indicate that it has been moved to the `backstage/community-plugins` repository. You may wish to deprecate the old version on npm.
 
 ## Organization Membership Request for CODEOWNERS
 

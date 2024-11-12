@@ -65,7 +65,9 @@ describe('JiraLocalComponent', () => {
   it.skip('should handle pagination correctly', async () => {
     render(<JiraLocalComponent />);
 
-    const nextPageButton = await screen.findByRole('button', { name: /chevronright/i });
+    const nextPageButton = await screen.findByRole('button', {
+      name: /chevronright/i,
+    });
 
     expect(screen.getByText('1')).toBeInTheDocument();
 

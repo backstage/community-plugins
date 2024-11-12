@@ -27,7 +27,12 @@ export interface JiraIssue {
 
 export interface JiraApi {
   getStoredIssues(): unknown;
-  fetchAndStoreIssues(jql: string, arg1: number, arg2: number, username: string | undefined): { total: any; } | PromiseLike<{ total: any; }>;
+  fetchAndStoreIssues(
+    jql: string,
+    arg1: number,
+    arg2: number,
+    username: string | undefined,
+  ): { total: any } | PromiseLike<{ total: any }>;
   listIssues: (
     jql: string,
     maxResults: number,
@@ -100,7 +105,11 @@ export class JiraApiClient implements JiraApi {
     startAt: number,
   ): Promise<JiraIssue[]> {
     const proxyUrl = await this.discoveryApi.getBaseUrl('jira');
-    const response = await fetch(`${proxyUrl}/issues/search?jql=${encodeURIComponent(jql)}&maxResults=${maxResults}&startAt=${startAt}`);
+    const response = await fetch(
+      `${proxyUrl}/issues/search?jql=${encodeURIComponent(
+        jql,
+      )}&maxResults=${maxResults}&startAt=${startAt}`,
+    );
 
     if (!response.ok) {
       throw new Error(`Failed to list issues: ${response.statusText}`);
@@ -114,4 +123,3 @@ export class JiraApiClient implements JiraApi {
     }));
   }
 }
-

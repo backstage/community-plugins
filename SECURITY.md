@@ -10,4 +10,4 @@ If you discover a potential security vulnerability within this repository, pleas
 
 For vulnerabilities in the core Backstage project, please follow their [security policy](https://github.com/backstage/backstage/blob/master/SECURITY.md). For vulnerabilities in third-party dependencies, please follow the respective processes outlined by those projects.
 
-If you are unsure, please reach out to one of the  [Community Plugins Maintainers](https://github.com/backstage/backstage/blob/master/OWNERS.md#community-plugins) on Discord.
+If you are unsure, please reach out to one of the [Community Plugins Maintainers](https://github.com/backstage/backstage/blob/master/OWNERS.md#community-plugins) on Discord.
