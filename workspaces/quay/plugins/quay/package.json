@@ -1,0 +1,106 @@
+{
+  "name": "@backstage-community/plugin-quay",
+  "version": "1.14.1",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.esm.js",
+    "types": "dist/index.d.ts"
+  },
+  "backstage": {
+    "role": "frontend-plugin",
+    "supported-versions": "1.32.5",
+    "pluginId": "quay",
+    "pluginPackage": "@backstage-community/plugin-quay",
+    "pluginPackages": [
+      "@backstage-community/plugin-quay",
+      "@backstage-community/plugin-quay-common"
+    ]
+  },
+  "sideEffects": false,
+  "scripts": {
+    "build": "backstage-cli package build",
+    "clean": "backstage-cli package clean",
+    "lint:check": "backstage-cli package lint",
+    "lint:fix": "backstage-cli package lint --fix",
+    "postpack": "backstage-cli package postpack",
+    "prepack": "backstage-cli package prepack",
+    "prepare": "",
+    "start": "backstage-cli package start",
+    "test": "backstage-cli package test --passWithNoTests --coverage",
+    "tsc": "tsc",
+    "prettier:check": "prettier --ignore-unknown --check .",
+    "prettier:fix": "prettier --ignore-unknown --write .",
+    "ui-test": "start-server-and-test start localhost:3000 'playwright test'"
+  },
+  "dependencies": {
+    "@backstage-community/plugin-quay-common": "^1.3.1",
+    "@backstage/catalog-model": "^1.7.0",
+    "@backstage/core-components": "^0.15.1",
+    "@backstage/core-plugin-api": "^1.10.0",
+    "@backstage/plugin-catalog-common": "^1.1.0",
+    "@backstage/plugin-catalog-react": "^1.14.0",
+    "@backstage/plugin-permission-react": "^0.4.27",
+    "@backstage/theme": "^0.6.0",
+    "@janus-idp/shared-react": "^2.13.1",
+    "@material-ui/core": "^4.12.2",
+    "@material-ui/icons": "^4.11.3",
+    "@material-ui/lab": "4.0.0-alpha.61",
+    "react-use": "^17.4.0"
+  },
+  "peerDependencies": {
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-router-dom": "^6.0.0"
+  },
+  "devDependencies": {
+    "@backstage/cli": "0.28.2",
+    "@backstage/core-app-api": "1.15.1",
+    "@backstage/dev-utils": "1.1.2",
+    "@backstage/test-utils": "1.7.0",
+    "@playwright/test": "1.45.3",
+    "@redhat-developer/red-hat-developer-hub-theme": "0.4.0",
+    "@spotify/prettier-config": "^15.0.0",
+    "@testing-library/dom": "^10.0.0",
+    "@testing-library/jest-dom": "^6.0.0",
+    "@testing-library/react": "^15.0.0",
+    "@testing-library/react-hooks": "8.0.1",
+    "@testing-library/user-event": "14.5.2",
+    "@types/node": "18.19.34",
+    "@types/react": "^18.2.58",
+    "@types/react-dom": "^18.2.19",
+    "canvas": "^2.11.2",
+    "cross-fetch": "4.0.0",
+    "msw": "1.3.3",
+    "prettier": "3.3.3",
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-router-dom": "^6.0.0",
+    "start-server-and-test": "2.0.8"
+  },
+  "files": [
+    "dist",
+    "dist-scalprum",
+    "config.d.ts"
+  ],
+  "configSchema": "config.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/quay/plugins/quay"
+  },
+  "keywords": [
+    "support:production",
+    "lifecycle:active",
+    "backstage",
+    "plugin"
+  ],
+  "homepage": "https://red.ht/rhdh",
+  "bugs": "https://github.com/backstage/community-plugins/issues",
+  "maintainers": [
+    "@karthikjeeyar"
+  ],
+  "author": "Red Hat"
+}
