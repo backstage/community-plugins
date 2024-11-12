@@ -2694,7 +2694,7 @@ __metadata:
     assert-ts: "npm:^0.3.4"
     effection: "npm:^4.0.0-alpha.3"
     fs-extra: "npm:^11.2.0"
-    github-discussions-fetcher: "npm:^0.7.3"
+    github-discussions-fetcher: "npm:^0.7.4"
     luxon: "npm:^3.5.0"
     msw: "npm:^2.6.0"
     parse-github-url: "npm:^1.0.3"
@@ -16307,9 +16307,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"github-discussions-fetcher@npm:^0.7.3":
-  version: 0.7.3
-  resolution: "github-discussions-fetcher@npm:0.7.3"
+"github-discussions-fetcher@npm:^0.7.4":
+  version: 0.7.4
+  resolution: "github-discussions-fetcher@npm:0.7.4"
   dependencies:
     "@deno/shim-deno": "npm:~0.18.0"
     "@octokit/graphql": "npm:^4.8.0"
@@ -16318,7 +16318,7 @@ __metadata:
     effection: "npm:4.0.0-alpha.3"
     graphql: "npm:16.8.2"
     moment: "npm:2.30.1"
-  checksum: 10/7a90060cc0ba8b1ebbadfcb12cd4804a731b9d12dbc6099ea38ef6aaa5aa64fb8521e2e7ad642a35e9ede3d63e918a4c6926d28afed5ef2c074efab3e8a4659f
+  checksum: 10/2c8322f1c7ae4ef6dc97672df3e640899b5a01915a77acef927695e25d1aef9016d52d5a81eaca899454fdf9c6428b490b3790a8ba782ddce236035b64937c5b
   languageName: node
   linkType: hard
 
