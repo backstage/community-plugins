@@ -10,8 +10,18 @@
     "main": "dist/index.esm.js",
     "types": "dist/index.d.ts"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/github-discussions/plugins/github-discussions"
+  },
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "github-discussions",
+    "pluginPackages": [
+      "@backstage-community/plugin-github-discussions",
+      "@backstage-community/plugin-github-discussions-common"
+    ]
   },
   "sideEffects": false,
   "scripts": {

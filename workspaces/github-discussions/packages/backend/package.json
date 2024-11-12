@@ -4,6 +4,11 @@
   "main": "dist/index.cjs.js",
   "types": "src/index.ts",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/github-discussions/packages/backend"
+  },
   "backstage": {
     "role": "backend"
   },
