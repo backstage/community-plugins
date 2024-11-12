@@ -29,13 +29,10 @@ jobs:
       - name: Find changed workspaces
         id: find-changed-workspaces
         run: node ./scripts/ci/list-workspaces-to-be-released.js
-        env:
-          COMMIT_SHA_BEFORE: '${{ github.event.before }}'
 
   create-changeset-pr:
     name: Create changeset PR for ${{ matrix.workspace }}
     needs: find-changed-workspaces
-    if: ${{ needs.find-changed-workspaces.outputs.workspaces_with_changesets != '[]' }}
     strategy:
       fail-fast: false
       matrix:
@@ -48,7 +45,6 @@ jobs:
   release-workspace:
     name: Release ${{ matrix.workspace }}
     needs: find-changed-workspaces
-    if: ${{ needs.find-changed-workspaces.outputs.workspaces_to_be_published != '[]' }}
     strategy:
       fail-fast: false
       matrix:
