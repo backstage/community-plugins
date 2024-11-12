@@ -1,5 +1,11 @@
 # @backstage-community/plugin-azure-devops
 
+## 0.6.2
+
+### Patch Changes
+
+- c5283ca: Migrated to using MUI v5
+
 ## 0.6.1
 
 ### Patch Changes

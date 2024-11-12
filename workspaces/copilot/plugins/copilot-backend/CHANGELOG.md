@@ -1,5 +1,11 @@
 # @backstage-community/plugin-copilot-backend
 
+## 0.1.5
+
+### Patch Changes
+
+- e45e2f8: Remove unused @backstage/backend-common package from dependencies.
+
 ## 0.1.4
 
 ### Patch Changes

@@ -5,18 +5,22 @@ import {
   PluginDatabaseManager,
 } from '@backstage/backend-common';
 import { Config } from '@backstage/config';
-import { IdentityApi } from '@backstage/plugin-auth-node';
 import { Logger } from 'winston';
 import { Issuer, generators } from 'openid-client';
 import { isTokenExpired } from '../utils';
 import { DataBaseEntityApplicationStorage } from '../database/storage';
+import {
+  HttpAuthService,
+  UserInfoService,
+} from '@backstage/backend-plugin-api';
 
 /** @public */
 export interface RouterOptions {
   logger: Logger;
   database: PluginDatabaseManager;
+  httpAuth: HttpAuthService;
   config: Config;
-  identity: IdentityApi;
+  userInfo: UserInfoService;
   cache: PluginCacheManager;
 }
 
@@ -24,7 +28,7 @@ export interface RouterOptions {
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
-  const { logger, config, database, identity, cache } = options;
+  const { logger, config, httpAuth, database, userInfo, cache } = options;
 
   const dbClient = await database.getClient();
   const entityApplicationStorage =
@@ -86,9 +90,13 @@ export async function createRouter(
       next();
       return;
     }
-    const backstageID = await identity.getIdentity({ request });
+    const credentials = await httpAuth.credentials(request, {
+      allow: ['user'],
+    });
+
+    const backstageID = await userInfo.getUserInfo(credentials);
     logger.info(
-      `backstageID id for userEntityRef: ${backstageID?.identity.userEntityRef}`,
+      `backstageID id for userEntityRef: ${backstageID?.userEntityRef}`,
     );
     logger.info({
       backstageBaseURL,
@@ -96,7 +104,7 @@ export async function createRouter(
       requestHeaders: request.headers,
       referer: request.headers.referer,
     });
-    const id = backstageID?.identity.userEntityRef ?? 'undefined';
+    const id = backstageID?.userEntityRef ?? 'undefined';
     const u = new URL(`${backstageBaseURL}/api/mta/cb/${id}`);
     const org = request.headers.referer;
     logger.info(`here2: ${org}`);

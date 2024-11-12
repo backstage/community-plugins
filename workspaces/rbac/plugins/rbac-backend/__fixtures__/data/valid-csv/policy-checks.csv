@@ -1,0 +1,67 @@
+# basic type permission policies
+### Let's deny 'use' action for 'test.resource' for group:default/data_admin
+p, group:default/data_admin, test.resource, use, deny
+
+# case1:
+# g, user:default/alice, group:default/data_admin
+p, user:default/alice, test.resource, use, allow
+
+# case2:
+# g, user:default/akira, group:default/data_admin
+
+# case3:
+# g, user:default/antey, group:default/data_admin
+p, user:default/antey, test.resource, use, deny
+
+### Let's allow 'use' action for 'test.resource' for group:default/data_read_admin
+p, group:default/data_read_admin, test.resource, use, allow
+
+# case4:
+# g, user:default/julia, group:default/data_read_admin
+p, user:default/julia, test.resource, use, allow
+
+# case5:
+# g, user:default/mike, group:default/data_read_admin
+
+# case6:
+# g, user:default/tom, group:default/data_read_admin
+p, user:default/tom, test.resource, use, deny
+
+
+# resource type permission policies
+### Let's deny 'read' action for 'test.resource' permission for group:default/data_admin
+p, group:default/data_admin, test-resource, read, deny
+
+# case1:
+# g, user:default/alice, group:default/data_admin
+p, user:default/alice, test-resource, read, allow
+
+# case2:
+# g, user:default/akira, group:default/data_admin
+
+# case3:
+# g, user:default/antey, group:default/data_admin
+p, user:default/antey, test-resource, read, deny
+
+### Let's allow 'read' action for 'test-resource' permission for group:default/data_read_admin
+p, group:default/data_read_admin, test-resource, read, allow
+
+# case4:
+# g, user:default/julia, group:default/data_read_admin
+p, user:default/julia, test-resource, read, allow
+
+# case5:
+# g, user:default/mike, group:default/data_read_admin
+
+# case6:
+# g, user:default/tom, group:default/data_read_admin
+p, user:default/tom, test-resource, read, deny
+
+
+# group inheritance:
+# g, group:default/data-read-admin, group:default/data_parent_admin
+# and we know case5:
+# g, user:default/mike, data-read-admin
+
+p, group:default/data_parent_admin, test.resource.2, use, allow
+p, group:default/data_parent_admin, test-resource, create, allow

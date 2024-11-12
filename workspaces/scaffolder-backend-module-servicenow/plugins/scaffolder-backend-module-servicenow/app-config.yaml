@@ -1,0 +1,7 @@
+servicenow:
+  # The base url of the ServiceNow instance.
+  baseUrl: ${SERVICENOW_BASE_URL}
+  # The username to use for authentication.
+  username: ${SERVICENOW_USERNAME}
+  # The password to use for authentication.
+  password: ${SERVICENOW_PASSWORD}

@@ -1,0 +1,10 @@
+{
+  "extends": "@backstage/cli/config/tsconfig.json",
+  "include": ["src", "dev", "migrations"],
+  "exclude": ["node_modules"],
+  "compilerOptions": {
+    "allowArbitraryExtensions": true,
+    "outDir": "../../dist-types/plugins/servicenow-actions",
+    "rootDir": "."
+  }
+}

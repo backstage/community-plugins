@@ -87,7 +87,7 @@ describe('createRouter', () => {
         })
         .send();
 
-      expect(response.status).toEqual(400);
+      expect(response.status).toEqual(500);
     });
 
     it('use the value as instance name when instance key not provided', async () => {

@@ -83,6 +83,6 @@ export interface Config {
      *
      * Defaults to `15`.
      */
-    parallelismLimit: number;
+    parallelismLimit?: number;
   };
 }

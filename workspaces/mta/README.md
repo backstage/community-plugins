@@ -38,20 +38,24 @@ These plugins are designed to work in unison to provide a means to create and an
   kind: Tackle
   apiVersion: tackle.konveyor.io/v1alpha1
   metadata:
-  name: tackle
-  namespace: konveyor-tackle
+    name: tackle
+    namespace: konveyor-tackle
   spec:
-  feature_auth_required: false
+    feature_auth_required: true
   EOF
   ```
 
+```
+
   - Obtain the URL for the tackle instance by running the following command:
 
-  ```
-  oc get routes
-  ```
+```
 
-  You will need the URL for the tackle instance to configure the MTA plugin. This URL needs to be added to the app-config configmap [here](app-config-rhdh.example.yaml) under the `mta` key. Be sure to add the `http://` or `https://` prefix to the URL.
+oc get routes
+
+```
+
+You will need the URL for the tackle instance to configure the MTA plugin. This URL needs to be added to the app-config configmap [here](app-config-rhdh.example.yaml) under the `mta` key. Be sure to add the `http://` or `https://` prefix to the URL.
 
 - Additionally, The MTA plugin requires a keycloak instance to authenticate with the MTA instance. This can be created and configured simply by running the [Tackle create keycloak script](tackle-create-keycloak-client.sh) or the [MTA create keycloak script](mta-create-keycloak-client.sh). This will create a keycloak client for the MTA instance and provide the necessary configuration for the MTA plugin. The keycloak configuration also needs to be added to the app-config configmap [here](app-config-rhdh.example.yaml) under the `mta` key.
 
@@ -63,32 +67,34 @@ These plugins are designed to work in unison to provide a means to create and an
 
 - Two primary configmaps are required to get the MTA plugin loaded as a dynamic plugin within RHDH:
 
-  - [App config](app-config-rhdh.example.yaml) - Rename this file to app-config-rhdh.yaml and update the values as needed. This configmap contains the configuration for the backstage instance. The keys are as follows:
+- [App config](app-config-rhdh.example.yaml) - Rename this file to app-config-rhdh.yaml and update the values as needed. This configmap contains the configuration for the backstage instance. The keys are as follows:
 
-    - `mta` - Contains the configuration for the MTA resources.
+  - `mta` - Contains the configuration for the MTA resources.
 
-      - `url` - The URL for the MTA instance running in the cluster.
-      - `providerAuth` - The keycloak authentication configuration for the MTA instance.
-        - `realm` - The realm for the keycloak instance.
-        - `clientId` - The client ID for the keycloak instance.A
-        - `secret` - The client secret for the keycloak instance.
+    - `url` - The URL for the MTA instance running in the cluster.
+    - `providerAuth` - The keycloak authentication configuration for the MTA instance.
+      - `realm` - The realm for the keycloak instance.
+      - `clientId` - The client ID for the keycloak instance.A
+      - `secret` - The client secret for the keycloak instance.
 
-    - `dynamicPlugins` - Contains the configuration for the front end dynamic plugins. More info [here](https://github.com/janus-idp/backstage-showcase/blob/main/showcase-docs/dynamic-plugins.md#customizing-and-adding-entity-tabs)
+  - `dynamicPlugins` - Contains the configuration for the front end dynamic plugins. More info [here](https://github.com/janus-idp/backstage-showcase/blob/main/showcase-docs/dynamic-plugins.md#customizing-and-adding-entity-tabs)
 
-  - [Dynamic plugins](dynamic-plugins.yaml)
+- [Dynamic plugins](dynamic-plugins.yaml)
 
-    - `package` - The package name for the plugin.
-    - `integrity` - The integrity hash for the plugin.
-    - `disabled` - Whether the plugin is enabled or not.
+  - `package` - The package name for the plugin.
+  - `integrity` - The integrity hash for the plugin.
+  - `disabled` - Whether the plugin is enabled or not.
 
-    - A script is available for reference [here](01-stage-dynamic-plugins.sh) that will package up the plugins into the deploy directory and generate the integrity hashes for the plugins. When the time comes to deploy the plugins, you will also need to create a plugin-registry using the script [here](02-create-plugin-registry.sh). This will create a plugin registry that the RHDH operator will use to deploy the plugins. A detailed end to end guide can be found [here](https://github.com/gashcrumb/dynamic-plugins-getting-started/tree/main)
+  - A script is available for reference [here](01-stage-dynamic-plugins.sh) that will package up the plugins into the deploy directory and generate the integrity hashes for the plugins. When the time comes to deploy the plugins, you will also need to create a plugin-registry using the script [here](02-create-plugin-registry.sh). This will create a plugin registry that the RHDH operator will use to deploy the plugins. A detailed end to end guide can be found [here](https://github.com/gashcrumb/dynamic-plugins-getting-started/tree/main)
 
 ## Compile for Dynamic plugin testing
 
 - Once you have made necessary modification to the configmap and secrets, you can compile the plugin by running the following commands in the plugin directory.
 
 ```
+
 ./rebuild-script.sh
+
 ```
 
 This script will:
@@ -102,3 +108,4 @@ This script will:
 - Create the plugin registry for the dynamic plugins.
 - Apply the app-config and dynamic-plugins configmaps to the cluster.
 - Create the backstage instance using the RHDH operator.
+```

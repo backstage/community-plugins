@@ -1,5 +1,8 @@
 import { createTemplateAction } from '@backstage/plugin-scaffolder-node';
 import { Issuer } from 'openid-client';
+/**
+ * Creates an action that creates an application in MTA.
+ */
 
 /** @public */
 export function createMTAApplicationAction(opts: any) {

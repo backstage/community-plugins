@@ -1,5 +1,11 @@
 ## @janus-idp/backstage-plugin-feedback-backend [1.7.0](https://github.com/janus-idp/backstage-plugins/compare/@janus-idp/backstage-plugin-feedback-backend@1.6.0...@janus-idp/backstage-plugin-feedback-backend@1.7.0) (2024-07-26)
 
+## 1.7.7
+
+### Patch Changes
+
+- f9314f0: Removed `export-dynamic` script and Janus IDP cli from the build process and npm release.
+
 ## 1.7.6
 
 ### Patch Changes

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { errorHandler } from '@backstage/backend-common';
 import express from 'express';
 import Router from 'express-promise-router';
 import { SonarqubeInfoProvider } from './sonarqubeInfoProvider';
@@ -89,6 +88,5 @@ export async function createRouter(
     });
   });
 
-  router.use(errorHandler());
   return router;
 }

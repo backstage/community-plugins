@@ -37,7 +37,7 @@
     "./package.json": "./package.json"
   },
   "files": [
-    "app-config.rhdh.yaml",
+    "app-config.dynamic.yaml",
     "dist",
     "config.d.ts"
   ],
@@ -55,7 +55,6 @@
   "scripts": {
     "build": "backstage-cli package build",
     "clean": "backstage-cli package clean",
-    "export-dynamic": "yarn run -T janus-cli package export-dynamic-plugin --embed-as-dependencies",
     "lint": "backstage-cli package lint",
     "postpack": "backstage-cli package postpack",
     "prepack": "backstage-cli package prepack",
@@ -73,5 +72,5 @@
       ]
     }
   },
-  "version": "1.0.4"
+  "version": "1.0.5"
 }

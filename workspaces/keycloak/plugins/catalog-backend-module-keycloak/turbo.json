@@ -1,0 +1,16 @@
+{
+  "extends": ["//"],
+  "tasks": {
+    "start:plugin": {
+      "cache": false,
+      "persistent": true
+    },
+    "start:keycloak": {
+      "cache": false,
+      "persistent": true
+    },
+    "tsc": {
+      "outputs": ["../../dist-types/plugins/catalog-backend-module-keycloak/**"]
+    }
+  }
+}

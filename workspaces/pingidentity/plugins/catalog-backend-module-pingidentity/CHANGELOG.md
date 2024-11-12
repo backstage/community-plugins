@@ -1,5 +1,11 @@
 # @backstage-community/plugin-catalog-backend-module-pingidentity
 
+## 0.1.5
+
+### Patch Changes
+
+- cf437a2: Removed `export-dynamic` script and Janus IDP cli from the build process and npm release.
+
 ## 0.1.4
 
 ### Patch Changes

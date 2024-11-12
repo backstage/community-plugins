@@ -1,0 +1,28 @@
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: backstage-community-rbac-common
+  title: '@backstage-community/backstage-plugin-rbac-common'
+  description: RBAC plugin shared code
+  annotations:
+    backstage.io/source-location: url:https://github.com/backstage/community-plugins/tree/main/workspaces/rbac/plugins/rbac-common
+    backstage.io/view-url: https://github.com/backstage/community-plugins/blob/main/workspaces/rbac/plugins/rbac-common/catalog-info.yaml
+    backstage.io/edit-url: https://github.com/backstage/community-plugins/edit/main/workspaces/rbac/plugins/rbac-common/catalog-info.yaml
+    github.com/project-slug: backstage-community/backstage-plugins
+    github.com/team-slug: backstage/maintainers-plugins
+    sonarqube.org/project-key: backstage-community_plugins
+  tags:
+    - security
+    - rbac
+  links:
+    - url: https://github.com/backstage/community-plugins/tree/main/workspaces/rbac/plugins/rbac-common
+      title: GitHub Source
+      icon: source
+      type: source
+spec:
+  type: backstage-common-library
+  lifecycle: production
+  owner: backstage-team
+  system: backstage
+  subcomponentOf: backstage-community-rbac

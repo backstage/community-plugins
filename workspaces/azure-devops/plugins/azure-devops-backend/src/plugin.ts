@@ -35,7 +35,6 @@ export const azureDevOpsPlugin = createBackendPlugin({
         reader: coreServices.urlReader,
         permissions: coreServices.permissions,
         httpRouter: coreServices.httpRouter,
-        discovery: coreServices.discovery,
         httpAuth: coreServices.httpAuth,
       },
       async init({
@@ -44,7 +43,6 @@ export const azureDevOpsPlugin = createBackendPlugin({
         reader,
         permissions,
         httpRouter,
-        discovery,
         httpAuth,
       }) {
         httpRouter.use(
@@ -53,7 +51,6 @@ export const azureDevOpsPlugin = createBackendPlugin({
             logger,
             reader,
             permissions,
-            discovery,
             httpAuth,
           }),
         );

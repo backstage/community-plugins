@@ -1,0 +1,10 @@
+g, user:default/, role:default/catalog-deleter
+g, user:default/test, role:default/
+p, role:default/, catalog.entity.create, use, allow
+p, role:default/test, catalog.entity.create, delete, temp
+
+p, role:default/rest, catalog-entity, update, allow
+g, user:default/guest, role:default/rest
+
+p, role:default/config, catalog-entity, update, allow
+g, user:default/guest, role:default/config

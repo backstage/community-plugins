@@ -5,7 +5,12 @@ PLUGIN_REGISTRY_URL="${PLUGIN_REGISTRY_URL:-"http://plugin-registry:8080"}"
 
 yarn install
 yarn build:all
-yarn export-dynamic
+
+for plugin in plugins/redhat-resource-optimization*; do
+    cd $plugin
+    npx -y @janus-idp/cli@^1.13.0 package export-dynamic-plugin
+    cd ..
+done
 
 # Uses "npm pack" to to create .tgz files containing the plugin static assets
 DYNAMIC_PLUGIN_ROOT_DIR="./dynamic-plugins-root"

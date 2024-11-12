@@ -26,12 +26,21 @@ export const mtaPlugin = createBackendPlugin({
       deps: {
         logger: coreServices.logger,
         httpRouter: coreServices.httpRouter,
+        httpAuth: coreServices.httpAuth,
         config: coreServices.rootConfig,
         database: coreServices.database,
-        identity: coreServices.identity,
+        userInfo: coreServices.userInfo,
         cache: coreServices.cache,
       },
-      async init({ logger, httpRouter, config, database, identity, cache }) {
+      async init({
+        logger,
+        httpRouter,
+        httpAuth,
+        config,
+        database,
+        userInfo,
+        cache,
+      }) {
         logger.info('Hello from example plugin');
         const winstonLogger = loggerToWinstonLogger(logger);
 
@@ -47,9 +56,10 @@ export const mtaPlugin = createBackendPlugin({
           await createRouter({
             logger: winstonLogger,
             cache: pluginCacheManager,
+            httpAuth,
             database,
             config,
-            identity,
+            userInfo,
           }),
         );
         httpRouter.addAuthPolicy(policyConfig);

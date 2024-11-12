@@ -9,13 +9,9 @@ import { BuildDefinitionReference } from 'azure-devops-node-api/interfaces/Build
 import { BuildRun } from '@backstage-community/plugin-azure-devops-common';
 import { Config } from '@backstage/config';
 import { DashboardPullRequest } from '@backstage-community/plugin-azure-devops-common';
-import { DiscoveryService } from '@backstage/backend-plugin-api';
-import express from 'express';
 import { GitRepository } from 'azure-devops-node-api/interfaces/GitInterfaces';
 import { GitTag } from '@backstage-community/plugin-azure-devops-common';
-import { HttpAuthService } from '@backstage/backend-plugin-api';
 import { LoggerService } from '@backstage/backend-plugin-api';
-import { PermissionsService } from '@backstage/backend-plugin-api';
 import { Project } from '@backstage-community/plugin-azure-devops-common';
 import { PullRequest } from '@backstage-community/plugin-azure-devops-common';
 import { PullRequestOptions } from '@backstage-community/plugin-azure-devops-common';
@@ -127,25 +123,4 @@ export class AzureDevOpsApi {
 // @public
 const azureDevOpsPlugin: BackendFeature;
 export default azureDevOpsPlugin;
-
-// @public @deprecated (undocumented)
-export function createRouter(options: RouterOptions): Promise<express.Router>;
-
-// @public @deprecated (undocumented)
-export interface RouterOptions {
-  // (undocumented)
-  azureDevOpsApi?: AzureDevOpsApi;
-  // (undocumented)
-  config: Config;
-  // (undocumented)
-  discovery: DiscoveryService;
-  // (undocumented)
-  httpAuth?: HttpAuthService;
-  // (undocumented)
-  logger: LoggerService;
-  // (undocumented)
-  permissions: PermissionsService;
-  // (undocumented)
-  reader: UrlReaderService;
-}
 ```

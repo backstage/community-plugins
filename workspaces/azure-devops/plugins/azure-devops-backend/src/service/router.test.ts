@@ -101,7 +101,7 @@ describe('createRouter', () => {
       azureDevOpsApi,
       reader: mockUrlReader,
       permissions: mockPermissionEvaluator,
-      discovery: mockServices.discovery(),
+      httpAuth: mockServices.httpAuth(),
     });
 
     app = express().use(router);

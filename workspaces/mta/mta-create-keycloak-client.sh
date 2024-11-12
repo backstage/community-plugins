@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Variables
-KEYCLOAK_URL=$(oc get route mta -n konveyor-tackle -o jsonpath='{.spec.host}')
+KEYCLOAK_URL=$(oc get route mta -n openshift-mta -o jsonpath='{.spec.host}')
 KEYCLOAK_URL="https://${KEYCLOAK_URL}/auth"
 echo "Using Keycloak URL: $KEYCLOAK_URL"
 
@@ -11,7 +11,7 @@ USERNAME="admin"
 MTA_REALM="mta"
 
 # Fetch the encoded password from the secret
-ENCODED_PASSWORD=$(oc get secret credential-mta-rhsso -n konveyor-tackle -o jsonpath='{.data.ADMIN_PASSWORD}')
+ENCODED_PASSWORD=$(oc get secret credential-mta-rhsso -n openshift-mta -o jsonpath='{.data.ADMIN_PASSWORD}')
 echo "Encoded Password: $ENCODED_PASSWORD"
 
 # Decode the password

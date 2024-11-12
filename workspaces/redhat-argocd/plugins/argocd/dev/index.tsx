@@ -18,11 +18,12 @@ import React from 'react';
 import { Entity } from '@backstage/catalog-model';
 import { ConfigReader } from '@backstage/config';
 import { configApiRef } from '@backstage/core-plugin-api';
+import { Page, Header, TabbedLayout } from '@backstage/core-components';
 import { createDevApp } from '@backstage/dev-utils';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { KubernetesApi } from '@backstage/plugin-kubernetes-react';
 import { permissionApiRef } from '@backstage/plugin-permission-react';
-import { MockPermissionApi, TestApiProvider } from '@backstage/test-utils';
+import { mockApis, TestApiProvider } from '@backstage/test-utils';
 
 import { Box } from '@material-ui/core';
 import { getAllThemes } from '@redhat-developer/red-hat-developer-hub-theme';
@@ -71,7 +72,7 @@ const mockEntity: Entity = {
     owner: 'user:guest',
   },
 };
-const mockPermissionApi = new MockPermissionApi();
+
 export class MockArgoCDApiClient implements ArgoCDApi {
   async listApps(_options: listAppsOptions): Promise<any> {
     return {
@@ -194,7 +195,7 @@ createDevApp()
           [kubernetesApiRef, new MockKubernetesClient(mockArgoResources)],
           [configApiRef, new ConfigReader(mockArgocdConfig)],
           [argoCDApiRef, new MockArgoCDApiClient()],
-          [permissionApiRef, mockPermissionApi],
+          [permissionApiRef, mockApis.permission()],
         ]}
       >
         <EntityProvider entity={mockEntity}>
@@ -217,7 +218,14 @@ createDevApp()
         ]}
       >
         <EntityProvider entity={mockEntity}>
-          <ArgocdDeploymentSummary />
+          <Page themeId="service">
+            <Header type="component — service" title="quarkus-app" />
+            <TabbedLayout>
+              <TabbedLayout.Route path="/" title="CI/CD">
+                <ArgocdDeploymentSummary />
+              </TabbedLayout.Route>
+            </TabbedLayout>
+          </Page>
         </EntityProvider>
       </TestApiProvider>
     ),

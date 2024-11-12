@@ -1,5 +1,11 @@
 ## @janus-idp/backstage-plugin-topology-common [1.3.0](https://github.com/janus-idp/backstage-plugins/compare/@janus-idp/backstage-plugin-topology-common@1.2.2...@janus-idp/backstage-plugin-topology-common@1.3.0) (2024-07-26)
 
+## 1.4.3
+
+### Patch Changes
+
+- e77652d: Bump up share-react version to ^2.13.1 and updated supported-versions to ^1.28.4.
+
 ## 1.4.2
 
 ### Patch Changes

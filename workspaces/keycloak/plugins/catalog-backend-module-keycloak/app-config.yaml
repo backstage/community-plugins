@@ -1,0 +1,11 @@
+enabled:
+  keycloak: true
+catalog:
+  providers:
+    keycloakOrg:
+      default:
+        baseUrl: '${KEYCLOAK_BASE_URL}'
+        loginRealm: '${KEYCLOAK_LOGIN_REALM}'
+        realm: '${KEYCLOAK_REALM}'
+        clientId: '${KEYCLOAK_CLIENT_ID}'
+        clientSecret: '${KEYCLOAK_CLIENT_SECRET}'

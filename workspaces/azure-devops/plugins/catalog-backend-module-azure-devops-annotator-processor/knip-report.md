@@ -5,7 +5,6 @@
 | Name                                            | Location     | Severity |
 | :---------------------------------------------- | :----------- | :------- |
 | @backstage-community/plugin-azure-devops-common | package.json | error    |
-| @backstage/backend-common                       | package.json | error    |
 
 ## Unused devDependencies (1)
 

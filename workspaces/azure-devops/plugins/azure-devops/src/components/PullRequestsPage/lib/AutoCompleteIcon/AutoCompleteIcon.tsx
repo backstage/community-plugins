@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import DoneAllIcon from '@material-ui/icons/DoneAll';
+import DoneAllIcon from '@mui/icons-material/DoneAll';
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import makeStyles from '@mui/styles/makeStyles';
 
 const useStyles = makeStyles(theme => ({
   root: (props: { hasAutoComplete: boolean }) => ({

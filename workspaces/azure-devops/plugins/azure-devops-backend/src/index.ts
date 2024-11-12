@@ -21,5 +21,4 @@
  */
 
 export { AzureDevOpsApi } from './api';
-export * from './service/router';
 export { azureDevOpsPlugin as default } from './plugin';

@@ -36,5 +36,6 @@
       "allowedVersions": "<5.0.0"
     }
   ],
-  "ignorePaths": ["**/dist-dynamic/**"]
+  "ignorePaths": ["**/dist-dynamic/**"],
+  "gitIgnoredAuthors": ["97962292+backstage-goalie[bot]@users.noreply.github.com"]
 }

@@ -32,14 +32,12 @@ import {
   PullRequestsDashboardProvider,
 } from '../api/PullRequestsDashboardProvider';
 import Router from 'express-promise-router';
-import { createLegacyAuthAdapters } from '@backstage/backend-common';
 import { UrlReaderService } from '@backstage/backend-plugin-api';
 import express from 'express';
 import { InputError, NotAllowedError } from '@backstage/errors';
 import { AuthorizeResult } from '@backstage/plugin-permission-common';
 import { createPermissionIntegrationRouter } from '@backstage/plugin-permission-node';
 import {
-  DiscoveryService,
   HttpAuthService,
   LoggerService,
   PermissionsService,
@@ -49,8 +47,7 @@ import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 const DEFAULT_TOP = 10;
 
 /**
- * @deprecated Please migrate to the new backend system as this will be removed in the future.
- * @public
+ * @internal
  * */
 export interface RouterOptions {
   azureDevOpsApi?: AzureDevOpsApi;
@@ -58,26 +55,16 @@ export interface RouterOptions {
   config: Config;
   reader: UrlReaderService;
   permissions: PermissionsService;
-  discovery: DiscoveryService;
-  httpAuth?: HttpAuthService;
+  httpAuth: HttpAuthService;
 }
 
 /**
- * @deprecated Please migrate to the new backend system as this will be removed in the future.
- * @public
+ * @internal
  * */
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
-  const { logger, reader, config, permissions } = options;
-
-  const { httpAuth } = createLegacyAuthAdapters(options);
-
-  if (config.getOptionalString('azureDevOps.token')) {
-    logger.warn(
-      "The 'azureDevOps.token' has been deprecated, use 'integrations.azure' instead, for more details see: https://backstage.io/docs/integrations/azure/locations",
-    );
-  }
+  const { logger, reader, config, permissions, httpAuth } = options;
 
   const permissionIntegrationRouter = createPermissionIntegrationRouter({
     permissions: azureDevOpsPermissions,

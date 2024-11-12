@@ -1,0 +1,106 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: documentation-template
+  title: Create a techdocs sample
+  description: Create a techdocs sample
+  tags:
+    - documentation
+    - techdocs
+spec:
+  owner: backstage-community-plugins-authors
+  system: backstage-community-plugins-idp
+  type: service
+
+  parameters:
+    - title: Provide information about the existing component
+      required:
+        - componentName
+      properties:
+        componentName:
+          title: Component Name
+          type: string
+          description: Attach the techdocs to an existing component
+          ui:field: EntityPicker
+          ui:options:
+            catalogFilter:
+              kind:
+                - Component
+    - title: Provide information about the new component
+      required:
+        - owner
+        - system
+      properties:
+        owner:
+          title: Owner
+          type: string
+          ui:field: EntityPicker
+          ui:options:
+            catalogFilter:
+              kind:
+                - Group
+                - User
+        system:
+          title: System
+          type: string
+          ui:field: EntityPicker
+          ui:options:
+            catalogFilter:
+              kind:
+                - User
+                - System
+
+  steps:
+    - id: regexValues
+      name: Regex Values
+      action: regex:replace
+      input:
+        regExps:
+          - pattern: ^(\S+:)?(default\/)?(\S+)$
+            # component:default/<entity-name> -> <entity-name>
+            # component:<entity-name> -> <entity-name>
+            # <entity-name> -> <entity-name>
+            replacement: $3
+            values:
+              - key: system
+                value: ${{ parameters.system }}
+              - key: componentName
+                value: ${{ parameters.componentName }}
+
+    - id: fetch
+      name: Template Docs Skeleton
+      action: fetch:template
+      input:
+        url: https://github.com/backstage/software-templates/tree/main/scaffolder-templates/docs-template/skeleton
+        values:
+          name: ${{ steps.regexValues.output.values.componentName }}-techdocs
+          description: Contains the techdocs for ${{ steps.regexValues.output.values.componentName }}
+          destination:
+            owner: ${{ steps.regexValues.output.values.system }}
+            repo: ${{ steps.regexValues.output.values.componentName }}-techdocs
+          owner: ${{ parameters.owner }}
+
+    - id: publish
+      name: Publishing to the Source Code Repository
+      action: publish:github
+      input:
+        allowedHosts: ['github.com']
+        description: Contains the techdocs for ${{ steps.regexValues.output.values.componentName }}
+        repoUrl: github.com?owner=${{ steps.regexValues.output.values.system }}&repo=${{ steps.regexValues.output.values.componentName }}-techdocs
+        defaultBranch: main
+        repoVisibility: public
+
+    - id: register
+      name: Registering the Catalog Info Component
+      action: catalog:register
+      input:
+        repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
+        catalogInfoPath: /catalog-info.yaml
+
+  output:
+    links:
+      - title: Open the Source Code Repository
+        url: ${{ steps.publish.output.remoteUrl }}
+      - title: Open the Catalog Info Component
+        icon: catalog
+        entityRef: ${{ steps.register.output.entityRef }}

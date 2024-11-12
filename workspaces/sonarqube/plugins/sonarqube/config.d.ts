@@ -22,5 +22,37 @@ export interface Config {
      * @visibility frontend
      */
     baseUrl?: string;
+
+    /**
+     * The external url of the sonarqube installation.
+     * Use this if you want to use a different url for the frontend than the backend.
+     * @visibility frontend
+     */
+    externalBaseUrl?: string;
+
+    /**
+     * The optional sonarqube instances.
+     * @visibility frontend
+     */
+    instances?: Array<{
+      /**
+       * The name of the sonarqube instance.
+       * @visibility frontend
+       */
+      name: string;
+
+      /**
+       * The base url of the sonarqube instance.
+       * @visibility frontend
+       */
+      baseUrl: string;
+
+      /**
+       * The external url of the sonarqube instance.
+       * Use this if you want to use a different url for the frontend than the backend.
+       * @visibility frontend
+       */
+      externalBaseUrl?: string;
+    }>;
   };
 }

@@ -13,7 +13,10 @@ export function createRouter(options: RouterOptions): Promise<express.Router>;
 
 // @public
 export class DefaultSonarqubeInfoProvider implements SonarqubeInfoProvider {
-  static fromConfig(config: Config): DefaultSonarqubeInfoProvider;
+  static fromConfig(
+    config: Config,
+    logger: LoggerService,
+  ): DefaultSonarqubeInfoProvider;
   getBaseUrl(options?: { instanceName?: string }): {
     baseUrl: string;
     externalBaseUrl?: string;

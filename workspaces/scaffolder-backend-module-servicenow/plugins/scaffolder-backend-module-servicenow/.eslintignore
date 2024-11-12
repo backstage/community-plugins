@@ -1,0 +1,5 @@
+dist-dynamic
+dist-scalprum
+!.eslintrc.js
+!.prettierrc.js
+src/generated/**
