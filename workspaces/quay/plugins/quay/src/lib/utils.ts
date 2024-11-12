@@ -125,13 +125,13 @@ export const securityScanComparator = (
   const finalAValue = capitalizeFirstLetter(
     ar.securityStatus === 'scanned'
       ? aParts[0].split(':')[0]
-      : (ar.securityStatus ?? 'scanning'),
+      : ar.securityStatus ?? 'scanning',
   );
 
   const finalBValue = capitalizeFirstLetter(
     br.securityStatus === 'scanned'
       ? bParts[0].split(':')[0]
-      : (br.securityStatus ?? 'scanning'),
+      : br.securityStatus ?? 'scanning',
   );
 
   if (finalAValue === 'Scanning' || finalBValue === 'Scanning') return 1;
