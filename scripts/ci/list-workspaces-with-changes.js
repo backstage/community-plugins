@@ -14,108 +14,23 @@
  * limitations under the License.
  */
 import { execFile as execFileCb } from 'child_process';
-
 import { promises as fs } from 'fs';
 import { promisify } from 'util';
 import { resolve as resolvePath } from 'path';
 import { EOL } from 'os';
-import semver from 'semver';
-import npmFetch from 'npm-registry-fetch';
+
 import * as url from 'url';
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
+const commitShaBefore = process.env.COMMIT_SHA_BEFORE;
+const baseRef = process.env.BASE_REF || 'origin/main';
+
 const execFile = promisify(execFileCb);
 
-async function main() {
-  if (process.env.CI && typeof process.env.GITHUB_OUTPUT === 'undefined') {
-    throw new Error('GITHUB_OUTPUT environment variable not set');
-  }
-
-  const repoRoot = resolvePath(__dirname, '..', '..');
-  process.chdir(repoRoot);
-
-  const workspacesWithChangesets = new Set(
-    (await runPlain('ls workspaces/*/.changeset/*.md | grep -v README.md'))
-      .split('\n')
-      .map(path => path.match(/^workspaces\/([^/]+)\//)[1])
-      .filter(Boolean),
-  );
-
-  workspacesWithChangesets.add('noop');
-
-  const workspacesToBePublished = await findWorkspacesToBePublished();
-  for (const workspace of workspacesToBePublished) {
-    if (workspacesWithChangesets.has(workspace)) {
-      workspacesToBePublished.delete(workspace);
-    }
-  }
-
-  workspacesToBePublished.add('noop');
-
-  const output = `workspaces_with_changesets=${JSON.stringify(
-    Array.from(workspacesWithChangesets),
-  )}${EOL}workspaces_to_be_published=${JSON.stringify(
-    Array.from(workspacesToBePublished),
-  )}${EOL}`;
-
-  console.log(output);
-  if (process.env.CI) {
-    await fs.appendFile(process.env.GITHUB_OUTPUT, output);
-  }
-}
-
-main().catch(error => {
-  console.error(error.stack);
-  process.exit(1);
-});
-
-async function findWorkspacesToBePublished() {
-  const allPackages = (
-    await runPlain(`ls workspaces/*/plugins/*/package.json`)
-  ).split('\n');
-
-  const workspacesWithChanges = new Set();
-
-  for (let i = 0; i < allPackages.length; i++) {
-    const progress = (((i + 1) / allPackages.length) * 100).toFixed(0);
-    process.stdout.write(`Progress: ${progress}%\r`);
-
-    const path = allPackages[i];
-    const workspace = path.match(/^workspaces\/([^/]+)\//)[1];
-    if (workspacesWithChanges.has(workspace)) {
-      continue;
-    }
-    const pkgJson = JSON.parse(await fs.readFile(path, 'utf-8'));
-    if (pkgJson.private) {
-      continue;
-    }
-
-    try {
-      const response = await npmFetch.json(pkgJson.name, {});
-      const latestPublishedVersion = response['dist-tags'].latest;
-      if (semver.gt(pkgJson.version, latestPublishedVersion)) {
-        workspacesWithChanges.add(workspace);
-      }
-    } catch (e) {
-      if (e.statusCode === 404) {
-        console.info(`\nThe plugin ${pkgJson.name} was not found on npm.`);
-        workspacesWithChanges.add(workspace);
-      } else {
-        console.error(
-          `\nAn error occurred while checking for the latest version' of ${pkgJson.name}. Error: ${e}`,
-        );
-      }
-    }
-  }
-
-  return workspacesWithChanges;
-}
-
-async function runPlain(cmd) {
-  const [c, ...args] = cmd.split(' ');
+async function runPlain(cmd, ...args) {
   try {
-    const { stdout } = await execFile(c, args, { shell: true });
+    const { stdout } = await execFile(cmd, args, { shell: true });
     return stdout.trim();
   } catch (error) {
     if (error.stderr) {
@@ -129,3 +44,50 @@ async function runPlain(cmd) {
     );
   }
 }
+
+async function main() {
+  if (!process.env.GITHUB_OUTPUT) {
+    throw new Error('GITHUB_OUTPUT environment variable not set');
+  }
+
+  const repoRoot = resolvePath(__dirname, '..', '..');
+  process.chdir(repoRoot);
+
+  const diff = process.env.COMMIT_SHA_BEFORE
+    ? await runPlain('git', 'diff', '--name-only', commitShaBefore)
+    : await runPlain('git', 'diff', '--name-only', `${baseRef}...`);
+
+  const packageList = diff.split('\n');
+
+  const workspaces = new Set(['noop']);
+  for (const path of packageList) {
+    const match = path.match(/^workspaces\/([^/]+)\//);
+    if (match) {
+      workspaces.add(match[1]);
+    }
+  }
+
+  console.log('workspaces found with changes:', Array.from(workspaces));
+
+  for (const workspace of workspaces) {
+    if (
+      !(await fs
+        .stat(`workspaces/${workspace}/package.json`)
+        .catch(() => false))
+    ) {
+      workspaces.delete(workspace);
+    }
+  }
+
+  console.log('workspaces that exist:', Array.from(workspaces));
+
+  await fs.appendFile(
+    process.env.GITHUB_OUTPUT,
+    `workspaces=${JSON.stringify(Array.from(workspaces))}${EOL}`,
+  );
+}
+
+main().catch(error => {
+  console.error(error.stack);
+  process.exit(1);
+});

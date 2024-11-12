@@ -28,7 +28,7 @@ jobs:
 
       - name: Find changed workspaces
         id: find-changed-workspaces
-        run: node ./scripts/ci/list-workspaces-with-changes.js
+        run: node ./scripts/ci/list-workspaces-to-be-released.js
         env:
           COMMIT_SHA_BEFORE: '${{ github.event.before }}'
 
