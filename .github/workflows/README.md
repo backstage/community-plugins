@@ -4,8 +4,6 @@
 
 Triggered on pull requests, this workflow runs tests on the target branch, focusing only on workspaces that have changes. Once all checks pass successfully, the pull request can be merged.
 
-create_changeset_pr_for_workspace.yml
-
 ## [create_changeset_pr_for_workspace.yml](./create_changeset_pr_for_workspace.yml)
 
 Creates a "Version Packages" pull request for a specific workspace. For more details on how changesets work, refer to the [Changesets documentation](https://github.com/changesets/changesets).
