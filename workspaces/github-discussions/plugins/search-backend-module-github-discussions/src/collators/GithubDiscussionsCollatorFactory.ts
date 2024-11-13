@@ -118,7 +118,7 @@ export class GithubDiscussionsCollatorFactory
       : DEFAULT_SCHEDULE;
 
     const timeout = Duration.fromObject(schedule.timeout).as('milliseconds');
-    const integrations = ScmIntegrations.fromConfig(_config);
+    const integrations = ScmIntegrations.fromConfig(config);
     const { github: githubIntegration } = integrations;
     const credentialsProvider =
       DefaultGithubCredentialsProvider.fromIntegrations(integrations);
