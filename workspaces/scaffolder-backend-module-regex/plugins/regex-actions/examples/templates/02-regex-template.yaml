@@ -1,0 +1,62 @@
+---
+steps:
+  - id: regexValues
+    action: regex:replace
+    name: Regex Values
+    input:
+      regExps:
+        - pattern: "^(\\S+).*$"
+          replacement: '$1'
+          values:
+            - key: eg1
+              value: Hello world!
+            - key: eg2
+              value: Test world!
+---
+steps:
+  - id: regexValues
+    action: regex:replace
+    name: Regex Values
+    input:
+      regExps:
+        - pattern: dog
+          replacement: monkey
+          values:
+            - key: eg1
+              value:
+                The quick brown fox jumps over the lazy dog. If the dog reacted, was
+                it really lazy?
+        - pattern: Dog
+          replacement: ferret
+          flags:
+            - i
+          values:
+            - key: eg2
+              value:
+                The quick brown fox jumps over the lazy dog. If the dog reacted, was
+                it really lazy?
+---
+steps:
+  - id: regexValues
+    action: regex:replace
+    name: Regex Values
+    input:
+      regExps:
+        - pattern: dog
+          replacement: monkey
+          flags:
+            - g
+          values:
+            - key: eg1
+              value:
+                The quick brown fox jumps over the lazy dog. If the dog reacted, was
+                it really lazy?
+        - pattern: Dog
+          replacement: ferret
+          flags:
+            - gi
+          values:
+            - key: eg2
+              value:
+                The quick brown fox jumps over the lazy dog. If the dog reacted, was
+                it really lazy?

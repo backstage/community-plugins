@@ -1,0 +1,8 @@
+catalog:
+  providers:
+    ocm:
+      default:
+        name: '${OCM_HUB_NAME}'
+        url: '${OCM_HUB_URL}'
+        serviceAccountToken: '${OCM_INFRA_TOKEN}'
+        owner: backstage-community-authors
