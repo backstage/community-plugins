@@ -21,11 +21,13 @@ import {
   Status,
 } from '@janus-idp/shared-react';
 
+import './PlrStatus.css';
+
 type PlrStatusProps = { obj: PipelineRunKind };
 
 const PlrStatus = ({ obj }: PlrStatusProps) => {
   const plrStatus = pipelineRunFilterReducer(obj);
-  return <Status status={plrStatus} />;
+  return <Status status={plrStatus} className="bs-tkn-plrstatus" />;
 };
 
 export default PlrStatus;
