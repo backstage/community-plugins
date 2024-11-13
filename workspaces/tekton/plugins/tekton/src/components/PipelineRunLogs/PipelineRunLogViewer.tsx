@@ -37,7 +37,9 @@ export const PipelineRunLogViewer = ({ pod }: PipelineRunLogViewerProps) => {
     (acc: string, container: V1Container, idx: number) => {
       if (container?.name && value?.[idx]?.text) {
         return acc
-          .concat(`${container.name.toUpperCase()}\n${value[idx].text}`)
+          .concat(
+            `${container.name.toLocaleUpperCase('en-US')}\n${value[idx].text}`,
+          )
           .concat(idx === containersList.length - 1 ? '' : '\n');
       }
       return acc;

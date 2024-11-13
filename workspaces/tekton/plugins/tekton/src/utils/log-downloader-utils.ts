@@ -50,7 +50,7 @@ export async function getPodLogs(
       (acc: string, r: { text: string }, idx) => {
         const container: V1Container = containerFlatList[idx];
         return acc
-          .concat(`${container?.name.toUpperCase()}\n${r?.text}`)
+          .concat(`${container?.name.toLocaleUpperCase('en-US')}\n${r?.text}`)
           .concat(idx === containersList.length - 1 ? '' : '\n');
       },
 

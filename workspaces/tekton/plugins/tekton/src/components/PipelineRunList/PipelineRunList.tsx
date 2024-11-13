@@ -143,9 +143,9 @@ const PipelineRunList = () => {
     }
 
     if (search) {
-      const f = search.toUpperCase();
+      const f = search.toLocaleUpperCase('en-US');
       plrs = plrs.filter((plr: PipelineRunKind) => {
-        const n = plr.metadata?.name?.toUpperCase();
+        const n = plr.metadata?.name?.toLocaleUpperCase('en-US');
         return n?.includes(f);
       });
     }
