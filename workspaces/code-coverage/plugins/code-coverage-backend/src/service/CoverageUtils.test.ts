@@ -30,6 +30,8 @@ describe('calculatePercentage', () => {
     [100, 100, 100],
     [133, 13, 9.77],
     [0, 0, 0],
+    [1, 0, 0],
+    [0, 1, 0],
   ].forEach(([a, c, e]) => {
     it(`${c}/${a} === ${e}`, () => {
       expect(calculatePercentage(a, c)).toEqual(e);
@@ -145,6 +147,24 @@ describe('aggregateCoverage', () => {
           covered: 124,
           missed: 51,
           percentage: 70.86,
+        },
+        timestamp: 1234567890,
+      },
+    },
+    {
+      file: 'cobertura-jsoncoverage-files-7.json',
+      expected: {
+        branch: {
+          available: 0,
+          covered: 0,
+          missed: 0,
+          percentage: 0,
+        },
+        line: {
+          available: 0,
+          covered: 0,
+          missed: 0,
+          percentage: 0,
         },
         timestamp: 1234567890,
       },
