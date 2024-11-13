@@ -16,6 +16,7 @@
 import React from 'react';
 
 import { Entity } from '@backstage/catalog-model';
+import { Page, Header, TabbedLayout } from '@backstage/core-components';
 import { createDevApp } from '@backstage/dev-utils';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import {
@@ -23,7 +24,7 @@ import {
   KubernetesProxyApi,
 } from '@backstage/plugin-kubernetes-react';
 import { permissionApiRef } from '@backstage/plugin-permission-react';
-import { MockPermissionApi, TestApiProvider } from '@backstage/test-utils';
+import { mockApis, TestApiProvider } from '@backstage/test-utils';
 
 import { getAllThemes } from '@redhat-developer/red-hat-developer-hub-theme';
 
@@ -59,7 +60,7 @@ const mockEntity: Entity = {
   },
 };
 
-const mockPermissionApi = new MockPermissionApi();
+const mockPermissionApi = mockApis.permission({});
 class MockKubernetesProxyApi implements KubernetesProxyApi {
   async getPodLogs(_request: any): Promise<any> {
     const delayedResponse = (data: string, ms: number) =>
@@ -216,7 +217,14 @@ createDevApp()
         ]}
       >
         <EntityProvider entity={mockEntity}>
-          <TektonCI />
+          <Page themeId="service">
+            <Header type="component — service" title="demo-sevice" />
+            <TabbedLayout>
+              <TabbedLayout.Route path="/" title="CI/CD">
+                <TektonCI />
+              </TabbedLayout.Route>
+            </TabbedLayout>
+          </Page>
         </EntityProvider>
       </TestApiProvider>
     ),
