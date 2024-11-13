@@ -1,5 +1,11 @@
 # @backstage-community/plugin-redhat-resource-optimization-backend
 
+## 1.0.5
+
+### Patch Changes
+
+- a3c0dc2: Removed `export-dynamic` script and Janus IDP cli from the build process and npm release.
+
 ## 1.0.4
 
 ### Patch Changes

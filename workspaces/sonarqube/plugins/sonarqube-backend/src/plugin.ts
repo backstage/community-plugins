@@ -18,6 +18,7 @@ import {
   coreServices,
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
+import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 import { DefaultSonarqubeInfoProvider } from './service/sonarqubeInfoProvider';
 import { createRouter } from './service/router';
 
@@ -36,19 +37,24 @@ export const sonarqubePlugin = createBackendPlugin({
         httpRouter: coreServices.httpRouter,
       },
       async init({ logger, config, httpRouter }) {
-        httpRouter.use(
-          await createRouter({
-            /**
-             * Logger for logging purposes
-             */
+        const router = await createRouter({
+          /**
+           * Logger for logging purposes
+           */
+          logger,
+          /**
+           * Info provider to be able to get all necessary information for the APIs
+           */
+          sonarqubeInfoProvider: DefaultSonarqubeInfoProvider.fromConfig(
+            config,
             logger,
-            /**
-             * Info provider to be able to get all necessary information for the APIs
-             */
-            sonarqubeInfoProvider:
-              DefaultSonarqubeInfoProvider.fromConfig(config),
-          }),
-        );
+          ),
+        });
+
+        const factory = MiddlewareFactory.create({ logger, config });
+        router.use(factory.error());
+
+        httpRouter.use(router);
       },
     });
   },

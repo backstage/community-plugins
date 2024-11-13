@@ -1,0 +1,7 @@
+{
+  "error": {
+    "message": "No Record found",
+    "detail": "Record doesn't exist or ACL restricts the record retrieval"
+  },
+  "status": "failure"
+}

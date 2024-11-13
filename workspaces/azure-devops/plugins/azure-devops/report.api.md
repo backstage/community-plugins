@@ -22,7 +22,7 @@ import { Readme } from '@backstage-community/plugin-azure-devops-common';
 import { ReadmeConfig } from '@backstage-community/plugin-azure-devops-common';
 import { RepoBuild } from '@backstage-community/plugin-azure-devops-common';
 import { RepoBuildOptions } from '@backstage-community/plugin-azure-devops-common';
-import { SvgIconProps } from '@material-ui/core/SvgIcon';
+import { SvgIconProps } from '@mui/material/SvgIcon';
 import { Team } from '@backstage-community/plugin-azure-devops-common';
 
 // @public (undocumented)

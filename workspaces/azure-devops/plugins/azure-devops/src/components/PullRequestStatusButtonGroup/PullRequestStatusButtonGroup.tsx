@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import Button from '@material-ui/core/Button';
-import ButtonGroup from '@material-ui/core/ButtonGroup';
+import Button from '@mui/material/Button';
+import ButtonGroup from '@mui/material/ButtonGroup';
 
 import { PullRequestStatus } from '@backstage-community/plugin-azure-devops-common';
 import React from 'react';
@@ -30,7 +30,7 @@ export const PullRequestStatusButtonGroup = ({
   return (
     <ButtonGroup aria-label="outlined button group">
       <Button
-        color={status === PullRequestStatus.Active ? 'primary' : 'default'}
+        color={status === PullRequestStatus.Active ? 'secondary' : 'primary'}
         onClick={() => {
           setStatus(PullRequestStatus.Active);
         }}
@@ -38,7 +38,7 @@ export const PullRequestStatusButtonGroup = ({
         Active
       </Button>
       <Button
-        color={status === PullRequestStatus.Completed ? 'primary' : 'default'}
+        color={status === PullRequestStatus.Completed ? 'secondary' : 'primary'}
         onClick={() => {
           setStatus(PullRequestStatus.Completed);
         }}
@@ -46,7 +46,7 @@ export const PullRequestStatusButtonGroup = ({
         Completed
       </Button>
       <Button
-        color={status === PullRequestStatus.Abandoned ? 'primary' : 'default'}
+        color={status === PullRequestStatus.Abandoned ? 'secondary' : 'primary'}
         onClick={() => {
           setStatus(PullRequestStatus.Abandoned);
         }}

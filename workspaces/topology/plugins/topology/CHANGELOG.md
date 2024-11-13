@@ -1,5 +1,51 @@
 ### Dependencies
 
+## 1.29.5
+
+### Patch Changes
+
+- 72f0537: Update topology dev pages (requires an additional permission dependency). This should not affect users.
+
+## 1.29.4
+
+### Patch Changes
+
+- e5c3246: Added `prepublish` script to correct `style-inject` module path references in packed files, ensuring proper resolution and avoiding runtime errors in the published package. And reverted `build` script.
+
+## 1.29.3
+
+### Patch Changes
+
+- a2c5a0a: Updated the `build` script to correct `style-inject` module path references in packed files, ensuring proper resolution and avoiding runtime errors in the published package.
+- a2c5a0a: Added `build:all` script to trigger `prepare` script in release process and removed `postversion` script.
+
+## 1.29.2
+
+### Patch Changes
+
+- 232c0e7: Added `build:all` script to trigger `prepare` script in release process and removed `postversion` script.
+
+## 1.29.1
+
+### Patch Changes
+
+- 833d4dd: Resolved issues with the style-inject module path references in the npm package to ensure proper loading.
+- e77652d: Bump up share-react version to ^2.13.1 and updated supported-versions to ^1.28.4.
+- Updated dependencies [e77652d]
+  - @backstage-community/plugin-topology-common@1.4.3
+
+## 1.29.0
+
+### Minor Changes
+
+- 730359c: Migrated to MUI5
+
+### Patch Changes
+
+- 694e163: - Fixed an issue with the topology node badge icon text color.
+  - Updated the stylesheet link filter string to accommodate the new topology package name.
+  - Removed `janus-idp/cli` from `devDependencies` as `export-dynamic` is no longer needed for the topology plugin package.
+
 ## 1.28.4
 
 ### Patch Changes

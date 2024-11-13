@@ -46,9 +46,8 @@
     "./package.json": "./package.json"
   },
   "files": [
-    "app-config.rhdh.yaml",
-    "dist",
-    "dist-scalprum"
+    "app-config.dynamic.yaml",
+    "dist"
   ],
   "license": "Apache-2.0",
   "main": "src/index.ts",
@@ -75,7 +74,6 @@
   "scripts": {
     "build": "backstage-cli package build",
     "clean": "backstage-cli package clean",
-    "export-dynamic": "yarn run -T janus-cli package export-dynamic-plugin",
     "lint": "backstage-cli package lint",
     "postpack": "backstage-cli package postpack",
     "prepack": "backstage-cli package prepack",
@@ -91,5 +89,5 @@
       ]
     }
   },
-  "version": "1.0.4"
+  "version": "1.0.5"
 }

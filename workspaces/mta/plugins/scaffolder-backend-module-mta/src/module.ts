@@ -5,7 +5,9 @@ import {
 import { scaffolderActionsExtensionPoint } from '@backstage/plugin-scaffolder-node/alpha';
 import { createMTAApplicationAction } from './actions/mta/create-application';
 import { loggerToWinstonLogger } from '@backstage/backend-common';
-
+/*
+ * A backend module that integrates with the scaffolder to provide MTA application creation.
+ */
 /** @public */
 export const mtaScaffolderModule = createBackendModule({
   pluginId: 'scaffolder',
@@ -17,14 +19,12 @@ export const mtaScaffolderModule = createBackendModule({
         config: coreServices.rootConfig,
         logger: coreServices.logger,
         discovery: coreServices.discovery,
-        identity: coreServices.identity,
       },
-      async init({ scaffolder, config, logger, discovery, identity }) {
+      async init({ scaffolder, config, logger, discovery }) {
         const createAction = createMTAApplicationAction({
           config: config,
           logger: loggerToWinstonLogger(logger),
           discovery,
-          identity,
         });
         scaffolder.addActions(createAction);
       },

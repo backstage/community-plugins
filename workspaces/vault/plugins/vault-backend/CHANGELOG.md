@@ -1,5 +1,11 @@
 # @backstage-community/plugin-vault-backend
 
+## 0.4.21
+
+### Patch Changes
+
+- e45e2f8: Remove unused @backstage/backend-common package from dependencies.
+
 ## 0.4.20
 
 ### Patch Changes
