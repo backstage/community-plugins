@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 5.2.3
+
+### Patch Changes
+
+- 066b3bd: removed canvas from devDependencies
+
 ## 5.2.2
 
 ### Patch Changes
