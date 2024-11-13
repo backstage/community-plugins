@@ -15,6 +15,11 @@
  */
 import { createPermission } from '@backstage/plugin-permission-common';
 
+/**
+ * Permission to view tekton resources.
+ *
+ * @public
+ */
 export const tektonViewPermission = createPermission({
   name: 'tekton.view.read',
   attributes: {
@@ -24,5 +29,7 @@ export const tektonViewPermission = createPermission({
 
 /**
  * List of all permissions on permission polices.
+ *
+ * @public
  */
 export const tektonPermissions = [tektonViewPermission];

@@ -26,7 +26,7 @@ export const testPipelineRun: PipelineRunKind = {
     creationTimestamp: new Date('2023-12-12T06:38:29Z'),
     labels: {
       'backstage.io/kubernetes-id': 'developer-portal',
-      'janus-idp.io/tekton': 'developer-portal',
+      'tekton.dev/cicd': 'true',
       'tekton.dev/build-namespace': 'karthik',
       'tekton.dev/pipeline': 'new-pipeline',
     },
@@ -62,7 +62,7 @@ export const testPods: V1Pod[] = [
       labels: {
         'app.kubernetes.io/managed-by': 'tekton-pipelines',
         'backstage.io/kubernetes-id': 'developer-portal',
-        'janus-idp.io/tekton': 'developer-portal',
+        'tekton.dev/cicd': 'true',
         'tekton.dev/clusterTask': 'tkn',
         'tekton.dev/memberOf': 'tasks',
         'tekton.dev/pipeline': 'test-pipeline',
@@ -98,7 +98,7 @@ export const testPods: V1Pod[] = [
       resourceVersion: '379623',
       labels: {
         'backstage.io/kubernetes-id': 'developer-portal',
-        'janus-idp.io/tekton': 'developer-portal',
+        'tekton.dev/cicd': 'true',
         'tekton.dev/pipeline': 'test-pipeline',
         'tekton.dev/pipelineRun': 'test-pipeline-8e09zm',
         'tekton.dev/pipelineTask': 'sbom-task',
@@ -128,7 +128,7 @@ export const testPods: V1Pod[] = [
       resourceVersion: '379623',
       labels: {
         'backstage.io/kubernetes-id': 'developer-portal',
-        'janus-idp.io/tekton': 'developer-portal',
+        'tekton.dev/cicd': 'true',
         'tekton.dev/pipeline': 'test-pipeline',
         'tekton.dev/pipelineRun': 'test-pipeline-8e09zm',
         'tekton.dev/pipelineTask': 'sbom-task',

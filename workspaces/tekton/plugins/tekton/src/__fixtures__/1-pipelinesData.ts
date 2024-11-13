@@ -33,7 +33,7 @@ export const mockKubernetesPlrResponse = {
         labels: {
           'app.kubernetes.io/managed-by': 'tekton-pipelines',
           'backstage.io/kubernetes-id': 'developer-portal',
-          'janus-idp.io/tekton': 'developer-portal',
+          'tekton.dev/cicd': 'true',
           'tekton.dev/clusterTask': 'tkn',
           'tekton.dev/memberOf': 'tasks',
           'tekton.dev/pipeline': 'test-pipeline',
@@ -271,7 +271,7 @@ export const mockKubernetesPlrResponse = {
         resourceVersion: '379623',
         labels: {
           'backstage.io/kubernetes-id': 'developer-portal',
-          'janus-idp.io/tekton': 'developer-portal',
+          'tekton.dev/cicd': 'true',
           'tekton.dev/pipeline': 'test-pipeline',
           'tekton.dev/pipelineRun': 'test-pipeline-three',
           'tekton.dev/pipelineTask': 'scan-task',
@@ -301,7 +301,7 @@ export const mockKubernetesPlrResponse = {
         resourceVersion: '379623',
         labels: {
           'backstage.io/kubernetes-id': 'developer-portal',
-          'janus-idp.io/tekton': 'developer-portal',
+          'tekton.dev/cicd': 'true',
           'tekton.dev/pipeline': 'test-pipeline',
           'tekton.dev/pipelineRun': 'test-pipeline-8e09zm',
           'tekton.dev/pipelineTask': 'sbom-task',
@@ -331,7 +331,7 @@ export const mockKubernetesPlrResponse = {
         resourceVersion: '379623',
         labels: {
           'backstage.io/kubernetes-id': 'developer-portal',
-          'janus-idp.io/tekton': 'developer-portal',
+          'tekton.dev/cicd': 'true',
           'tekton.dev/pipeline': 'test-pipeline',
           'tekton.dev/pipelineRun': 'test-pipeline-8e09zm',
           'tekton.dev/pipelineTask': 'sbom-task',
@@ -361,7 +361,7 @@ export const mockKubernetesPlrResponse = {
         resourceVersion: '379623',
         labels: {
           'backstage.io/kubernetes-id': 'developer-portal',
-          'janus-idp.io/tekton': 'developer-portal',
+          'tekton.dev/cicd': 'true',
           'tekton.dev/pipeline': 'test-pipeline',
           'tekton.dev/pipelineRun': 'test-pipeline-8e09zm',
           'tekton.dev/pipelineTask': 'sbom-task',
@@ -391,7 +391,7 @@ export const mockKubernetesPlrResponse = {
         resourceVersion: '379623',
         labels: {
           'backstage.io/kubernetes-id': 'developer-portal',
-          'janus-idp.io/tekton': 'developer-portal',
+          'tekton.dev/cicd': 'true',
           'tekton.dev/pipeline': 'test-pipeline',
           'tekton.dev/pipelineRun': 'test-pipeline-8e09zm',
           'tekton.dev/pipelineTask': 'sbom-task',
@@ -421,7 +421,7 @@ export const mockKubernetesPlrResponse = {
         resourceVersion: '379623',
         labels: {
           'backstage.io/kubernetes-id': 'developer-portal',
-          'janus-idp.io/tekton': 'developer-portal',
+          'tekton.dev/cicd': 'true',
           'tekton.dev/pipeline': 'test-pipeline',
           'tekton.dev/pipelineRun': 'pipelinerun-with-sbom-task',
           'tekton.dev/pipelineTask': 'sbom-task',
@@ -451,7 +451,7 @@ export const mockKubernetesPlrResponse = {
         resourceVersion: '379623',
         labels: {
           'backstage.io/kubernetes-id': 'developer-portal',
-          'janus-idp.io/tekton': 'developer-portal',
+          'tekton.dev/cicd': 'true',
           'tekton.dev/pipeline': 'test-pipeline',
           'tekton.dev/pipelineRun': 'pipelinerun-with-external-sbom-task',
           'tekton.dev/pipelineTask': 'sbom-task-with-external-link',

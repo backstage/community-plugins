@@ -82,7 +82,7 @@ The Tekton plugin enables you to visualize the `PipelineRun` resources available
   annotations:
     ...
 
-    janus-idp.io/tekton : <BACKSTAGE_ENTITY_NAME>
+    tekton.dev/cicd : "true"
   ```
 
 - A custom label selector can be added, which Backstage uses to find the Kubernetes resources. The label selector takes precedence over the ID annotations.

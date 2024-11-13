@@ -49,7 +49,7 @@ const mockEntity: Entity = {
     description: 'backstage.io',
     annotations: {
       'backstage.io/kubernetes-id': 'backstage',
-      'janus-idp.io/tekton': 'app',
+      'tekton.dev/cicd': 'true',
     },
   },
   spec: {

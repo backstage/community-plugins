@@ -37,6 +37,11 @@ import {
   kubernetesProxyApiRef,
 } from './types/types';
 
+/**
+ * A Tekton plugin.
+ *
+ * @public
+ */
 export const tektonPlugin = createPlugin({
   id: 'tekton',
   apis: [
@@ -98,6 +103,11 @@ export const tektonPlugin = createPlugin({
   ],
 });
 
+/**
+ * Component for the catalog entity CI/CD tab.
+ *
+ * @public
+ */
 export const TektonCI = tektonPlugin.provide(
   createComponentExtension({
     name: 'TektonCI',

@@ -14,4 +14,11 @@
  * limitations under the License.
  */
 
+/**
+ * Common library for the Tekton plugin.
+ *
+ * @packageDocumentation
+ */
+
+export * from './annotations';
 export * from './permissions';

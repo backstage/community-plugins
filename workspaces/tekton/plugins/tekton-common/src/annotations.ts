@@ -13,23 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-import { Route, Routes } from 'react-router-dom';
-
-import { useEntity } from '@backstage/plugin-catalog-react';
-
-import { TektonCIComponent } from './Tekton/TektonCIComponent';
-import { isTektonCIAvailable } from '../utils/isTektonCIAvailable';
-
-/** @public */
-export const Router = () => {
-  const { entity } = useEntity();
-  if (isTektonCIAvailable(entity)) {
-    return (
-      <Routes>
-        <Route path="/" element={<TektonCIComponent />} />
-      </Routes>
-    );
-  }
-  return null;
-};
+/**
+ * Annotations to enable or configure the Tekton plugin.
+ *
+ * @public
+ */
+export enum TektonAnnotations {
+  /**
+   * Enables the CI/CD feature for catalog entities.
+   *
+   * Key is `tekton.dev/cicd`, value should be set to `"true"`.
+   *
+   * Quoates are required because catalog entity annotation-values must be a string.
+   */
+  CICD = 'tekton.dev/cicd',
+}

@@ -13,7 +13,7 @@ kind: Component
 metadata:
   name: example-service
   annotations:
-    janus-idp.io/tekton: 'true'
+    tekton.dev/cicd: 'true'
 spec:
   type: service
   lifecycle: experimental
