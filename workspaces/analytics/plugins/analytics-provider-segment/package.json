@@ -82,7 +82,8 @@
     "directory": "workspaces/analytics/plugins/analytics-provider-segment"
   },
   "maintainers": [
-    "@janus-idp/maintainers-plugins"
+    "schultzp2020",
+    "christoph-jerolimov"
   ],
   "author": "Red Hat",
   "homepage": "https://red.ht/rhdh",
