@@ -1,0 +1,114 @@
+{
+  "name": "@backstage-community/plugin-tekton",
+  "version": "3.15.1",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "license": "Apache-2.0",
+  "private": true,
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.esm.js",
+    "types": "dist/index.d.ts"
+  },
+  "backstage": {
+    "role": "frontend-plugin",
+    "supported-versions": "^1.32.0",
+    "pluginId": "tekton",
+    "pluginPackage": "@backstage-community/plugin-tekton",
+    "pluginPackages": [
+      "@backstage-community/plugin-tekton",
+      "@backstage-community/plugin-tekton-common"
+    ]
+  },
+  "sideEffects": [
+    "./**/*.css",
+    "./**/*.css.esm.js"
+  ],
+  "scripts": {
+    "start": "backstage-cli package start",
+    "build": "backstage-cli package build",
+    "lint": "backstage-cli package lint",
+    "test": "backstage-cli package test",
+    "clean": "backstage-cli package clean",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack"
+  },
+  "dependencies": {
+    "@aonic-ui/pipelines": "^1.1.1",
+    "@backstage-community/plugin-tekton-common": "workspace:^",
+    "@backstage/catalog-model": "^1.7.0",
+    "@backstage/core-components": "^0.15.1",
+    "@backstage/core-plugin-api": "^1.10.0",
+    "@backstage/plugin-catalog-react": "^1.14.0",
+    "@backstage/plugin-kubernetes": "^0.11.16",
+    "@backstage/plugin-kubernetes-common": "^0.8.3",
+    "@backstage/plugin-kubernetes-react": "^0.4.4",
+    "@backstage/plugin-permission-react": "^0.4.27",
+    "@backstage/theme": "^0.6.0",
+    "@janus-idp/shared-react": "^2.13.1",
+    "@kubernetes/client-node": "^0.22.1",
+    "@material-ui/core": "^4.9.13",
+    "@material-ui/icons": "^4.11.3",
+    "@material-ui/lab": "^4.0.0-alpha.45",
+    "@mui/icons-material": "5.15.17",
+    "@patternfly/patternfly": "^5.1.0",
+    "@patternfly/react-charts": "^7.1.1",
+    "@patternfly/react-core": "^5.1.2",
+    "@patternfly/react-tokens": "^5.1.2",
+    "@patternfly/react-topology": "^5.1.0",
+    "classnames": "^2.3.2",
+    "dagre": "^0.8.5",
+    "lodash": "^4.17.21",
+    "react-measure": "^2.5.2",
+    "react-use": "^17.4.0"
+  },
+  "peerDependencies": {
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-router-dom": "^6.0.0"
+  },
+  "devDependencies": {
+    "@backstage/cli": "0.28.2",
+    "@backstage/core-app-api": "1.15.1",
+    "@backstage/dev-utils": "1.1.2",
+    "@backstage/test-utils": "1.7.0",
+    "@playwright/test": "1.45.3",
+    "@redhat-developer/red-hat-developer-hub-theme": "0.4.0",
+    "@testing-library/jest-dom": "6.4.8",
+    "@testing-library/react": "14.3.1",
+    "@testing-library/react-hooks": "8.0.1",
+    "@testing-library/user-event": "14.5.2",
+    "@types/dagre": "^0.7.52",
+    "@types/lodash": "4.17.5",
+    "@types/node": "18.19.34",
+    "cross-fetch": "4.0.0",
+    "msw": "1.3.3",
+    "prettier": "3.3.3",
+    "start-server-and-test": "2.0.8"
+  },
+  "files": [
+    "app-config.dynamic.yaml",
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/backstage/community-plugins.git",
+    "directory": "workspaces/tekton/plugins/tekton"
+  },
+  "keywords": [
+    "support:production",
+    "lifecycle:active",
+    "kubernetes",
+    "tekton",
+    "backstage",
+    "plugin"
+  ],
+  "homepage": "https://red.ht/rhdh",
+  "bugs": "https://github.com/backstage/community-plugins/issues",
+  "maintainers": [
+    "christoph-jerolimov",
+    "@debsmita1",
+    "@divyanshiGupta"
+  ],
+  "author": "Red Hat"
+}

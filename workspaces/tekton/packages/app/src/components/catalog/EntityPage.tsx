@@ -74,6 +74,11 @@ import {
   isKubernetesAvailable,
 } from '@backstage/plugin-kubernetes';
 
+import {
+  isTektonCIAvailable,
+  TektonCI,
+} from '@backstage-community/plugin-tekton';
+
 const techdocsContent = (
   <EntityTechdocsContent>
     <TechDocsAddons>
@@ -93,6 +98,9 @@ const cicdContent = (
         <EntityGithubActionsContent />
       </EntitySwitch.Case>
      */}
+    <EntitySwitch.Case if={isTektonCIAvailable}>
+      <TektonCI />
+    </EntitySwitch.Case>
 
     <EntitySwitch.Case>
       <EmptyState

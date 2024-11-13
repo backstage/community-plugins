@@ -1,13 +1,14 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: tekton
-  description: An example of a Backstage application.
-  # Example for optional annotations
-  # annotations:
-  #   github.com/project-slug: backstage/backstage
-  #   backstage.io/techdocs-ref: dir:.
+  name: backstage-plugin-tekton-workspace
+  title: Tekton plugin for Backstage
+  description: Tekton plugin for Backstage
+  tags:
+    - kubernetes
+    - openshift
+    - tekton
 spec:
-  type: website
-  owner: john@example.com
-  lifecycle: experimental
+  type: backstage-plugin
+  lifecycle: production
+  owner: rhtap-team

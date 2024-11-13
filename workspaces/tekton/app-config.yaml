@@ -78,21 +78,15 @@ catalog:
   rules:
     - allow: [Component, System, API, Resource, Location]
   locations:
-    # Local example data, file locations are relative to the backend process, typically `packages/backend`
-    - type: file
-      target: ../../examples/entities.yaml
-
-    # Local example template
-    - type: file
-      target: ../../examples/template/template.yaml
-      rules:
-        - allow: [Template]
-
     # Local example organizational data
     - type: file
       target: ../../examples/org.yaml
       rules:
         - allow: [User, Group]
+
+    # Local example data
+    - type: file
+      target: ../../examples/entities.yaml
 
     ## Uncomment these lines to add more example data
     # - type: url
@@ -106,6 +100,25 @@ catalog:
 
 kubernetes:
   # see https://backstage.io/docs/features/kubernetes/configuration for kubernetes configuration options
+  serviceLocatorMethod:
+    type: 'multiTenant'
+  clusterLocatorMethods:
+    - type: 'config'
+      clusters:
+        # taken from kubeconfig, might need to be changed for you. Run `kubectl config view --minify --output json` to find the server URL
+        - name: test-cluster
+          authProvider: serviceAccount
+          url: ${K8S_API_SERVER}
+          serviceAccountToken: ${K8S_SERVICE_ACCOUNT_TOKEN}
+          skipTLSVerify: true
+          skipMetricsLookup: true
+          customResources:
+            - group: tekton.dev
+              apiVersion: v1
+              plural: pipelineruns
+            - group: tekton.dev
+              apiVersion: v1
+              plural: taskruns
 
 # see https://backstage.io/docs/permissions/getting-started for more on the permission framework
 permission:
