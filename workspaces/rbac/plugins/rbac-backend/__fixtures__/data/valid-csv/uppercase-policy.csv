@@ -1,0 +1,7 @@
+p, role:default/CATALOG-USER, catalog-entity, read, allow
+p, role:default/known_role, test.resource.deny, use, allow
+
+g, user:default/known_user, role:default/known_role
+g, user:default/TOM, role:default/CATALOG-USER
+g, group:default/READER-GROUP, role:default/CATALOG-USER
+g, group:default/READER-GROUP, role:default/known_role

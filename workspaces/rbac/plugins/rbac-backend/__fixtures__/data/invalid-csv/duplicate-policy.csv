@@ -3,6 +3,9 @@ g, user:default/guest, role:default/catalog-deleter
 
 g, user:default/guest, role:default/catalog-updater
 
+g, group:default/READER-GROUP, role:default/CATALOG-USER
+g, group:default/READER-GROUP, role:default/CATALOG-USER
+
 p, role:default/catalog-writer, catalog.entity.create, use, allow
 p, role:default/catalog-writer, catalog.entity.create, use, allow
 
@@ -10,3 +13,5 @@ p, role:default/catalog-writer, catalog-entity, delete, allow
 
 p, role:default/duplication-effect, catalog-entity, update, allow
 p, role:default/duplication-effect, catalog-entity, update, deny
+
+p, role:default/CATALOG-USER, catalog-entity, read, allow
