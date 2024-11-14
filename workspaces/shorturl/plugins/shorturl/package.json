@@ -10,8 +10,18 @@
     "main": "dist/index.esm.js",
     "types": "dist/index.d.ts"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/shorturl/plugins/shorturl"
+  },
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "shorturl",
+    "pluginPackages": [
+      "@backstage-community/plugin-shorturl",
+      "@backstage-community/plugin-shorturl-backend"
+    ]
   },
   "sideEffects": false,
   "scripts": {

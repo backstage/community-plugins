@@ -10,8 +10,18 @@
     "main": "dist/index.cjs.js",
     "types": "dist/index.d.ts"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/shorturl/plugins/shorturl-backend"
+  },
   "backstage": {
-    "role": "backend-plugin"
+    "role": "backend-plugin",
+    "pluginId": "shorturl",
+    "pluginPackages": [
+      "@backstage-community/plugin-shorturl",
+      "@backstage-community/plugin-shorturl-backend"
+    ]
   },
   "scripts": {
     "start": "backstage-cli package start",
