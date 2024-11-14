@@ -50,6 +50,7 @@ yarn.lock                                           @backstage/community-plugins
 /workspaces/scaffolder-backend-module-servicenow    @backstage/community-plugins-maintainers  @schultzp2020
 /workspaces/scaffolder-backend-module-regex         @backstage/community-plugins-maintainers  @04kash
 /workspaces/scaffolder-relation-processor           @backstage/community-plugins-maintainers  @04kash
+/workspaces/shorturl                                @backstage/community-plugins-maintainers  @avila-m-6 @shailahir
 /workspaces/sonarqube                               @backstage/community-plugins-maintainers  @backstage/sda-se-reviewers
 /workspaces/tech-insights                           @backstage/community-plugins-maintainers  @xantier
 /workspaces/tekton                                  @backstage/community-plugins-maintainers  @christoph-jerolimov @karthikjeeyar
