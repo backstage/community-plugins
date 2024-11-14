@@ -2531,6 +2531,7 @@ __metadata:
     "@backstage/plugin-scaffolder-node-test-utils": 0.1.14
     "@spotify/prettier-config": ^15.0.0
     prettier: 3.3.3
+    yaml: ^2.6.0
   languageName: unknown
   linkType: soft
 
