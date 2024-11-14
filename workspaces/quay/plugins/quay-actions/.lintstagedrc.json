@@ -1,4 +1,4 @@
 {
   "*": "prettier --ignore-unknown --write",
-  "*.{js,jsx,ts,tsx,mjs,cjs}": "backstage-cli package lint --fix"
+  "*.{js,jsx,ts,tsx,mjs,cjs}": "eslint --ignore-pattern '!.*.js' --fix"
 }
