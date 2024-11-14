@@ -1,0 +1,64 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: create-quay-repo
+  title: Create a Quay repository
+  description: Create a Quay repository
+
+spec:
+  type: service
+  parameters:
+    - title: Repository information
+      required: ['name', 'visibility', 'description', 'token']
+      properties:
+        name:
+          title: Repository name
+          type: string
+          description: Name of the repository to be created
+        token:
+          title: Token
+          type: string
+          description: Bearer token used for authorization
+          ui:widget: password
+        visibility:
+          title: Visiblity
+          type: string
+          description: Visibility setting for the created repository, either public or private
+          ui:widget: select
+          enum: ['public', 'private']
+        repoKind:
+          title: Repository kind
+          type: string
+          description: The created repository kind either image, application or none
+          ui:widget: select
+          enum: ['image', 'application']
+        description:
+          title: Description
+          type: string
+          description: The repository desription
+        namespace:
+          title: Namespace
+          type: string
+          description: The users namespace is used by default
+        baseUrl:
+          title: Base URL
+          type: string
+          description: URL of your quay instance, set to "https://quay.io" by default
+
+  steps:
+    - id: create-quay-repo
+      name: Create quay repo
+      action: quay:create-repository
+      input:
+        baseUrl: ${{ parameters.baseUrl }}
+        token: ${{ parameters.token }}
+        name: ${{ parameters.name }}
+        visibility: ${{ parameters.visibility }}
+        description: ${{ parameters.description }}
+        namespace: ${{ parameters.namespace }}
+        repoKind: ${{ parameters.repoKind }}
+
+  output:
+    links:
+      - title: Quay repository link
+        url: ${{ steps['create-quay-repo'].output.repositoryUrl }}
