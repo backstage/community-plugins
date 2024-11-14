@@ -25,4 +25,3 @@ spec:
   owner: rhtap-team
   system: backstage
   subcomponentOf: backstage-community-plugins
-
