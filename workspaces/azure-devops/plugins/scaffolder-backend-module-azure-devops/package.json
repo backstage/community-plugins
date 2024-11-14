@@ -39,16 +39,16 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
-    "@backstage/backend-plugin-api": "^0.7.0",
+    "@backstage/backend-plugin-api": "^0.8.0",
     "@backstage/config": "^1.2.0",
     "@backstage/errors": "^1.2.4",
     "@backstage/integration": "^1.13.0",
-    "@backstage/plugin-scaffolder-node": "^0.4.8",
+    "@backstage/plugin-scaffolder-node": "^0.5.0",
     "azure-devops-node-api": "^14.1.0",
     "yaml": "^2.6.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.26.11",
+    "@backstage/cli": "^0.28.0",
     "@backstage/plugin-scaffolder-node-test-utils": "^0.1.9"
   },
   "files": [
