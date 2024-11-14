@@ -1,5 +1,13 @@
 ### Dependencies
 
+## 1.14.2
+
+### Patch Changes
+
+- 00c79ed: Migrated from [janus-idp/backstage-plugins](https://github.com/janus-idp/backstage-plugins).
+- Updated dependencies [00c79ed]
+  - @backstage-community/plugin-quay-common@1.3.2
+
 ## 1.14.1
 
 ### Patch Changes
