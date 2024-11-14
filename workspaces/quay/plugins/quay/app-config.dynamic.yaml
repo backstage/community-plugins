@@ -1,0 +1,12 @@
+dynamicPlugins:
+  frontend:
+    backstage-community.backstage-plugin-quay:
+      mountPoints:
+        - mountPoint: entity.page.image-registry/cards
+          importName: QuayPage
+          config:
+            layout:
+              gridColumn: 1 / -1
+            if:
+              anyOf:
+                - isQuayAvailable
