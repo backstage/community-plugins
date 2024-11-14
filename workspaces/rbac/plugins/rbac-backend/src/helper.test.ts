@@ -25,6 +25,7 @@ import {
   removeTheDifference,
   transformArrayToPolicy,
   transformPolicyGroupToLowercase,
+  transformRolesGroupToLowercase,
   typedPoliciesToString,
   typedPolicyToString,
 } from './helper';
@@ -157,6 +158,28 @@ describe('helper.ts', () => {
       transformPolicyGroupToLowercase(policyArray);
       expect(policyArray).toEqual(['g']);
     });
+  });
+
+  describe('transformRolesGroupToLowercase', () => {
+    it('should convert users and groups in roles to lowercase', () => {
+      const roles = [
+        ['user:default/test', 'role:default/test-provider'],
+        ['group:default/Developers', 'role:default/Reader'],
+      ];
+      const expectedRoles = [
+        ['user:default/test', 'role:default/test-provider'],
+        ['group:default/developers', 'role:default/Reader'],
+      ];
+      expect(transformRolesGroupToLowercase(roles)).toEqual(expectedRoles);
+    });
+
+    it.each([[[['user:default/test']]], [[[]]]])(
+      'should handle invalid input %d',
+      input => {
+        const result = transformRolesGroupToLowercase(input);
+        expect(result).toEqual(input);
+      },
+    );
   });
 
   describe('removeTheDifference', () => {

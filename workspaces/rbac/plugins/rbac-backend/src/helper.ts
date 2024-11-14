@@ -145,6 +145,14 @@ export function transformPolicyGroupToLowercase(policyArray: string[]) {
   }
 }
 
+export function transformRolesGroupToLowercase(roles: string[][]) {
+  return roles.map(role =>
+    role.length >= 1
+      ? [role[0].toLocaleLowerCase('en-US'), ...role.slice(1)]
+      : role,
+  );
+}
+
 export function deepSortedEqual(
   obj1: Record<string, any>,
   obj2: Record<string, any>,
