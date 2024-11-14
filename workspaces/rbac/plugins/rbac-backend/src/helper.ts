@@ -135,6 +135,16 @@ export function transformArrayToPolicy(policyArray: string[]): RoleBasedPolicy {
   return { entityReference, permission, policy, effect };
 }
 
+export function transformPolicyGroupToLowercase(policyArray: string[]) {
+  if (
+    policyArray.length > 1 &&
+    policyArray[0].startsWith('g') &&
+    (policyArray[1].startsWith('user') || policyArray[1].startsWith('group'))
+  ) {
+    policyArray[1] = policyArray[1].toLowerCase();
+  }
+}
+
 export function deepSortedEqual(
   obj1: Record<string, any>,
   obj2: Record<string, any>,
