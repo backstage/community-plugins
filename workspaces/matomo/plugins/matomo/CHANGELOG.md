@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.11.0
+
+### Minor Changes
+
+- a522528: The matomo and matomo-backend plugins from [janus-idp/backstage-plugins](https://github.com/janus-idp/backstage-plugins/tree/main/plugins/) are migrated to community-plugins. The migrations is performed using manual steps.
+
 ## 1.10.1
 
 ### Patch Changes
