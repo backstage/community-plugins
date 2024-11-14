@@ -1,5 +1,13 @@
 # app-next
 
+## 0.0.7
+
+### Patch Changes
+
+- Updated dependencies [4c50596]
+- Updated dependencies [c05862b]
+  - @backstage-community/plugin-sonarqube@0.8.7
+
 ## 0.0.6
 
 ### Patch Changes

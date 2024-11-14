@@ -24,6 +24,7 @@ import { techInsightsApiRef } from '../../api/TechInsightsApi';
 import { makeStyles } from '@material-ui/core/styles';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { getCompoundEntityRef } from '@backstage/catalog-model';
+import { Check } from '@backstage-community/plugin-tech-insights-common/client';
 
 const useStyles = makeStyles(() => ({
   contentScorecards: {
@@ -36,8 +37,9 @@ export const ScorecardsContent = (props: {
   title: string;
   description?: string;
   checksId?: string[];
+  filter?: (check: Check) => boolean;
 }) => {
-  const { title, description, checksId } = props;
+  const { title, description, checksId, filter } = props;
   const classes = useStyles();
   const api = useApi(techInsightsApiRef);
   const { entity } = useEntity();
@@ -45,6 +47,9 @@ export const ScorecardsContent = (props: {
   const { value, loading, error } = useAsync(
     async () => await api.runChecks({ namespace, kind, name }, checksId),
   );
+
+  const filteredValues =
+    !filter || !value ? value : value.filter(val => filter(val.check));
 
   if (loading) {
     return <Progress />;
@@ -59,7 +64,7 @@ export const ScorecardsContent = (props: {
           title={title}
           description={description}
           entity={entity}
-          checkResults={value || []}
+          checkResults={filteredValues || []}
         />
       </Content>
     </Page>
