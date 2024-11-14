@@ -16,15 +16,15 @@
 import { Config } from '@backstage/config';
 import {
   AnalyticsApi,
-  IdentityApi,
   AnalyticsEvent,
+  IdentityApi,
 } from '@backstage/core-plugin-api';
 import {
   AnalyticsApi as NewAnalyicsApi,
   AnalyticsEvent as NewAnalyticsEvent,
 } from '@backstage/frontend-plugin-api';
-import { BrowserAgent } from '@newrelic/browser-agent/loaders/browser-agent';
 import type { setAPI } from '@newrelic/browser-agent/loaders/api/api';
+import { BrowserAgent } from '@newrelic/browser-agent/loaders/browser-agent';
 
 type NewRelicAPI = ReturnType<typeof setAPI>;
 

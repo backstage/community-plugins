@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import '@testing-library/jest-dom';
-
 // eslint-disable-next-line no-restricted-imports
 import { TextEncoder } from 'util';
 

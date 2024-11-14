@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { Link } from '@backstage/core-components';
+import React from 'react';
 
 export const Playground = () => {
   return (

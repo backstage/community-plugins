@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 The Backstage Authors
+ * Copyright 2024 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,21 @@
  * limitations under the License.
  */
 
-import { Link } from '@backstage/core-components';
-import React from 'react';
-
-export const Playground = () => {
-  return (
-    <>
-      <Link to="#clicked">Click Here</Link>
-    </>
-  );
+/** @type {import("@ianvs/prettier-plugin-sort-imports").PrettierConfig} */
+module.exports = {
+  ...require('@spotify/prettier-config'),
+  plugins: ['@ianvs/prettier-plugin-sort-imports'],
+  importOrder: [
+    '^react(.*)$',
+    '',
+    '^@backstage/(.*)$',
+    '',
+    '<THIRD_PARTY_MODULES>',
+    '',
+    '^@backstage-community/(.*)$',
+    '',
+    '<BUILTIN_MODULES>',
+    '',
+    '^[.]',
+  ],
 };

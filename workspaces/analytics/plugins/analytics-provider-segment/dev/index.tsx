@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 The Backstage Authors
+ * Copyright 2022 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,28 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  analyticsApiRef,
-  configApiRef,
-  identityApiRef,
-} from '@backstage/core-plugin-api';
-import { createDevApp } from '@backstage/dev-utils';
+
 import React from 'react';
-import { GoogleAnalytics } from '../src';
+
+import { createDevApp } from '@backstage/dev-utils';
+
+import { getAllThemes } from '@redhat-developer/red-hat-developer-hub-theme';
+
+import { analyticsModuleSegment } from '../src';
 import { Playground } from './Playground';
 
 createDevApp()
-  .registerApi({
-    api: analyticsApiRef,
-    deps: { configApi: configApiRef, identityApi: identityApiRef },
-    factory: ({ configApi, identityApi }) =>
-      GoogleAnalytics.fromConfig(configApi, {
-        identityApi,
-      }),
-  })
+  .registerPlugin(analyticsModuleSegment)
+  .addThemes(getAllThemes())
   .addPage({
-    path: '/ga',
-    title: 'GA Playground',
+    path: '/segment',
+    title: 'Segment Playground',
     element: <Playground />,
   })
   .render();

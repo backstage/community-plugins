@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 The Backstage Authors
+ * Copyright 2022 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import '@testing-library/jest-dom';
+import 'cross-fetch/polyfill';
 
-import { Link } from '@backstage/core-components';
-import React from 'react';
+// eslint-disable-next-line no-restricted-imports
+import { TextEncoder } from 'util';
 
-export const Playground = () => {
-  return (
-    <>
-      <Link to="#clicked">Click Here</Link>
-    </>
-  );
-};
+// Mock browser crypto.subtle.digest method for sha-256 hashing.
+Object.defineProperty(global.self, 'crypto', {
+  value: {
+    subtle: {
+      digest: (_algo: string, data: Uint8Array): ArrayBuffer => data.buffer,
+    },
+  },
+});
+
+// Also used in browser-based APIs for hashing.
+Object.defineProperty(global.self, 'TextEncoder', {
+  value: TextEncoder,
+});
