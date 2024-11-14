@@ -2846,6 +2846,7 @@ __metadata:
     "@backstage/errors": ^1.2.4
     "@backstage/types": ^1.1.1
     "@types/luxon": ^3.0.0
+    fast-json-stable-stringify: ^2.1.0
     luxon: ^3.0.0
     qs: ^6.12.3
   languageName: unknown
@@ -7416,6 +7417,7 @@ __metadata:
     "@changesets/cli": ^2.27.1
     "@spotify/prettier-config": ^15.0.0
     concurrently: ^8.0.0
+    fast-json-stable-stringify: ^2.1.0
     knip: ^5.27.4
     node-gyp: ^10.0.0
     prettier: ^2.3.2

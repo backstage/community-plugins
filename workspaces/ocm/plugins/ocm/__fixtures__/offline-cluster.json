@@ -1,0 +1,29 @@
+{
+  "name": "offline-cluster",
+  "consoleUrl": "https://console-openshift-console.apps.offline-cluster.bar.baz",
+  "kubernetesVersion": "v1.22.3+fdba464",
+  "oauthUrl": "https://oauth-openshift.apps.offline-cluster.bar.baz/oauth/token/implicit",
+  "openshiftId": "5d448ae7-05f1-42cc-aacc-3122a8ad0184",
+  "openshiftVersion": "4.9.21",
+  "platform": "BareMetal",
+  "region": "",
+  "allocatableResources": {
+    "cpuCores": "1136500m",
+    "memorySize": "7469511796Ki",
+    "numberOfPods": "7750"
+  },
+  "availableResources": {
+    "cpuCores": "1152",
+    "memorySize": "7505192052Ki",
+    "numberOfPods": "7750"
+  },
+  "update": {
+    "available": true,
+    "version": "4.10.51",
+    "url": "https://access.redhat.com/errata/RHSA-2023:0561"
+  },
+  "status": {
+    "available": false,
+    "reason": "Managed cluster is unavailable"
+  }
+}

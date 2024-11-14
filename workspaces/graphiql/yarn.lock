@@ -2536,6 +2536,7 @@ __metadata:
     "@testing-library/dom": ^10.0.0
     "@testing-library/jest-dom": ^6.0.0
     "@testing-library/react": ^15.0.0
+    "@testing-library/user-event": ^14.5.2
     "@types/codemirror": ^5.0.0
     "@types/react": ^16.13.1 || ^17.0.0 || ^18.0.0
     "@types/react-dom": ^18.2.19
@@ -4283,9 +4284,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphiql/react@npm:^0.21.0":
-  version: 0.21.0
-  resolution: "@graphiql/react@npm:0.21.0"
+"@graphiql/react@npm:0.22.1":
+  version: 0.22.1
+  resolution: "@graphiql/react@npm:0.22.1"
   dependencies:
     "@graphiql/toolkit": ^0.9.1
     "@headlessui/react": ^1.7.15
@@ -4306,13 +4307,13 @@ __metadata:
     graphql: ^15.5.0 || ^16.0.0
     react: ^16.8.0 || ^17 || ^18
     react-dom: ^16.8.0 || ^17 || ^18
-  checksum: a0515477b06afdbfa032475456ac08133e10d85d58f332048e38a54c7c4d02e62354996abad7f42d194c6e1dc7fb8365e3ac739f4ae51bf4a8f80403abb81be3
+  checksum: 2fc79cd6fa3fc4af0942bcb43d82131b11a9092c772d3d0821d6210229d07568779b33b0346e7488d54b61f2c6139a95a554c4a6543d3352b7d7b2dfc7c8dca0
   languageName: node
   linkType: hard
 
 "@graphiql/toolkit@npm:^0.9.1":
-  version: 0.9.1
-  resolution: "@graphiql/toolkit@npm:0.9.1"
+  version: 0.9.2
+  resolution: "@graphiql/toolkit@npm:0.9.2"
   dependencies:
     "@n1ru4l/push-pull-async-iterable-iterator": ^3.1.0
     meros: ^1.1.4
@@ -4322,7 +4323,7 @@ __metadata:
   peerDependenciesMeta:
     graphql-ws:
       optional: true
-  checksum: 5328426051b7f9a9ffbd569c950d1a103ce0e2ee7b5d7a57f3d899488ad43d1a5101e8aeced7416e106c7687d67bb7981aa7e87dea5b0f17b77569aa738bf3b5
+  checksum: 4474a998a948d0df5cef8371245b0e895be40803a07e49231ab91798aa761880e6e4a684478a44b723c013f0e8206dab3d86e5b0fc9b688df035fa9f1fa29734
   languageName: node
   linkType: hard
 
@@ -8460,6 +8461,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@testing-library/user-event@npm:^14.5.2":
+  version: 14.5.2
+  resolution: "@testing-library/user-event@npm:14.5.2"
+  peerDependencies:
+    "@testing-library/dom": ">=7.21.4"
+  checksum: d76937dffcf0082fbf3bb89eb2b81a31bf5448048dd61c33928c5f10e33a58e035321d39145cefd469bb5a499c68a5b4086b22f1a44e3e7c7e817dc5f6782867
+  languageName: node
+  linkType: hard
+
 "@tootallnate/once@npm:2":
   version: 2.0.0
   resolution: "@tootallnate/once@npm:2.0.0"
@@ -11425,16 +11435,16 @@ __metadata:
   linkType: hard
 
 "codemirror-graphql@npm:^2.0.11":
-  version: 2.0.11
-  resolution: "codemirror-graphql@npm:2.0.11"
+  version: 2.1.1
+  resolution: "codemirror-graphql@npm:2.1.1"
   dependencies:
     "@types/codemirror": ^0.0.90
-    graphql-language-service: 5.2.0
+    graphql-language-service: 5.3.0
   peerDependencies:
     "@codemirror/language": 6.0.0
     codemirror: ^5.65.3
-    graphql: ^15.5.0 || ^16.0.0
-  checksum: cdbeb713af63a069c5526f864edf4f71dd811437e44dba7967164ea2d380c52dfe51d3ea3fde06c94ffeb596b93af737767923d6fc434c628fa4241621684950
+    graphql: ^15.5.0 || ^16.0.0 || ^17.0.0-alpha.2
+  checksum: e839875d89d121ed0b1a5229492fc25401877f213431506ca3a242cc991e32bc28d4ed885de0ffd0af9c4738ea9770c529bbdbd59b84f757a4b1454e9e68d829
   languageName: node
   linkType: hard
 
@@ -15304,18 +15314,15 @@ __metadata:
   linkType: hard
 
 "graphiql@npm:^3.0.6":
-  version: 3.2.0
-  resolution: "graphiql@npm:3.2.0"
+  version: 3.7.1
+  resolution: "graphiql@npm:3.7.1"
   dependencies:
-    "@graphiql/react": ^0.21.0
-    "@graphiql/toolkit": ^0.9.1
-    graphql-language-service: ^5.2.0
-    markdown-it: ^14.1.0
+    "@graphiql/react": ^0.26.2
   peerDependencies:
-    graphql: ^15.5.0 || ^16.0.0
+    graphql: ^15.5.0 || ^16.0.0 || ^17.0.0-alpha.2
     react: ^16.8.0 || ^17 || ^18
     react-dom: ^16.8.0 || ^17 || ^18
-  checksum: 7e49324b97c21312cb7e646d90ef6cc69824c0caf9bc957d5dd42b88d8992472c82301664454cfa3327b3bdf331b524bfa1c6ee5cc02f0917e6a5daa79114dff
+  checksum: 34e30d7e89215675a8910cef228bbfb7a3f93cd921c6e2f195cffa9379b64e9807eed9dd5bfa025dcbc02be8e033e97135f0dfb48f35755f99d150207d1b6f6d
   languageName: node
   linkType: hard
 
@@ -15329,8 +15336,8 @@ __metadata:
   linkType: hard
 
 "graphql-config@npm:^5.0.2":
-  version: 5.0.3
-  resolution: "graphql-config@npm:5.0.3"
+  version: 5.1.3
+  resolution: "graphql-config@npm:5.1.3"
   dependencies:
     "@graphql-tools/graphql-file-loader": ^8.0.0
     "@graphql-tools/json-file-loader": ^8.0.0
@@ -15339,8 +15346,8 @@ __metadata:
     "@graphql-tools/url-loader": ^8.0.0
     "@graphql-tools/utils": ^10.0.0
     cosmiconfig: ^8.1.0
-    jiti: ^1.18.2
-    minimatch: ^4.2.3
+    jiti: ^2.0.0
+    minimatch: ^9.0.5
     string-env-interpolation: ^1.0.1
     tslib: ^2.4.0
   peerDependencies:
@@ -15349,13 +15356,13 @@ __metadata:
   peerDependenciesMeta:
     cosmiconfig-toml-loader:
       optional: true
-  checksum: 3d079d48ccc624d16bee58d15802267d65e856f4d1ba278ededb3ac66a565d4f205cd60ac1f19ed8159bfa2d944c453ae58512c6513a8004754bea9964924485
+  checksum: fde8aee849def42a5eaf02fbe3e404c91be94a53782c22ff58b29bfcfed7e9be2fba114fa94b4a97e12ea1e5970267ebaa119ba6915b2d4d9bb8f5ae9c5485c2
   languageName: node
   linkType: hard
 
-"graphql-language-service@npm:5.2.0, graphql-language-service@npm:^5.2.0":
-  version: 5.2.0
-  resolution: "graphql-language-service@npm:5.2.0"
+"graphql-language-service@npm:5.1.7":
+  version: 5.1.7
+  resolution: "graphql-language-service@npm:5.1.7"
   dependencies:
     nullthrows: ^1.0.0
     vscode-languageserver-types: ^3.17.1
@@ -15363,7 +15370,7 @@ __metadata:
     graphql: ^15.5.0 || ^16.0.0
   bin:
     graphql: dist/temp-bin.js
-  checksum: b053c6b7158d0ee7a3e55391bfd8be956fc5380211ca586b3a252007845e119540fb40efcc438975eaebc5ef25f46973f7ff4d9543c66e14ebd992957e0299b7
+  checksum: eca00df3a136f687fa96c10c458817082c7ee427552969beeac0871d565e697faf93f677fdad15ee8bb3011fa5a47fe861bde71c88db9b8b4d67704928406fae
   languageName: node
   linkType: hard
 
@@ -17450,12 +17457,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jiti@npm:^1.18.2, jiti@npm:^1.21.6":
+"jiti@npm:^1.21.6":
   version: 1.21.6
   resolution: "jiti@npm:1.21.6"
   bin:
     jiti: bin/jiti.js
   checksum: 9ea4a70a7bb950794824683ed1c632e2ede26949fbd348e2ba5ec8dc5efa54dc42022d85ae229cadaa60d4b95012e80ea07d625797199b688cc22ab0e8891d32
+  languageName: node
+  linkType: hard
+
+"jiti@npm:^2.0.0":
+  version: 2.3.3
+  resolution: "jiti@npm:2.3.3"
+  bin:
+    jiti: lib/jiti-cli.mjs
+  checksum: f1a2b87d937569c966f00a8c9153c8f3e02445b31e034fdaed1b9639a4ecfae3c4df24c7644d5b4764c566f8dee09132a5b55cd049b48e618024accd31d8e6b3
   languageName: node
   linkType: hard
 
@@ -19424,15 +19440,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimatch@npm:^4.2.3":
-  version: 4.2.3
-  resolution: "minimatch@npm:4.2.3"
-  dependencies:
-    brace-expansion: ^1.1.7
-  checksum: 3392388e3ef7de7ae9a3a48d48a27a323934452f4af81b925dfbe85ce2dc07da855e3dbcc69229888be4e5118f6c0b79847d30f3e7c0e0017b25e423c11c0409
-  languageName: node
-  linkType: hard
-
 "minimatch@npm:^5.0.1, minimatch@npm:^5.1.0":
   version: 5.1.6
   resolution: "minimatch@npm:5.1.6"
@@ -19442,12 +19449,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimatch@npm:^9.0.0, minimatch@npm:^9.0.1":
-  version: 9.0.4
-  resolution: "minimatch@npm:9.0.4"
+"minimatch@npm:^9.0.0, minimatch@npm:^9.0.1, minimatch@npm:^9.0.5":
+  version: 9.0.5
+  resolution: "minimatch@npm:9.0.5"
   dependencies:
     brace-expansion: ^2.0.1
-  checksum: cf717f597ec3eed7dabc33153482a2e8d49f4fd3c26e58fd9c71a94c5029a0838728841b93f46bf1263b65a8010e2ee800d0dc9b004ab8ba8b6d1ec07cc115b5
+  checksum: 2c035575eda1e50623c731ec6c14f65a85296268f749b9337005210bb2b34e2705f8ef1a358b188f69892286ab99dc42c8fb98a57bde55c8d81b3023c19cea28
   languageName: node
   linkType: hard
 
