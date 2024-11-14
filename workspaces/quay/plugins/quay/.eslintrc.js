@@ -13,10 +13,4 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-const eslintConfigFactory = require('@backstage/cli/config/eslint-factory');
-
-module.exports = eslintConfigFactory(__dirname); // Load the default Backstage config
-module.exports.rules = {
-  // TODO: Remove this later
-  'react/forbid-elements': 'off',
-};
+module.exports = require('@backstage/cli/config/eslint-factory')(__dirname);

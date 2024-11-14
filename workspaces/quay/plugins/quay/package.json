@@ -80,9 +80,9 @@
     "start-server-and-test": "2.0.8"
   },
   "files": [
-    "dist",
-    "dist-scalprum",
-    "config.d.ts"
+    "app-config.dynamic.yaml",
+    "config.d.ts",
+    "dist"
   ],
   "configSchema": "config.d.ts",
   "repository": {

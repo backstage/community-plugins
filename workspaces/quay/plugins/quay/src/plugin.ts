@@ -27,6 +27,11 @@ import { QuayApiClient, quayApiRef } from './api';
 import { QUAY_ANNOTATION_REPOSITORY } from './hooks';
 import { rootRouteRef, tagRouteRef } from './routes';
 
+/**
+ * Quay plugin
+ *
+ * @public
+ */
 export const quayPlugin = createPlugin({
   id: 'quay',
   routes: {
@@ -47,6 +52,11 @@ export const quayPlugin = createPlugin({
   ],
 });
 
+/**
+ * Quay page
+ *
+ * @public
+ */
 export const QuayPage = quayPlugin.provide(
   createRoutableExtension({
     name: 'QuayPage',
@@ -55,5 +65,10 @@ export const QuayPage = quayPlugin.provide(
   }),
 );
 
+/**
+ * Returns true if the catalog entity contains the quay annotation `quay.io/repository-slug`.
+ *
+ * @public
+ */
 export const isQuayAvailable = (entity: Entity) =>
   Boolean(entity?.metadata.annotations?.[QUAY_ANNOTATION_REPOSITORY]);
