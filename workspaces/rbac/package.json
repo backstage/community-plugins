@@ -6,6 +6,9 @@
     "node": "18 || 20"
   },
   "scripts": {
+    "dev": "yarn workspaces foreach -A --include backend --include app --parallel -v -i run start",
+    "start": "yarn workspace app start",
+    "start-backend": "yarn workspace backend start",
     "tsc": "tsc",
     "tsc:full": "tsc --skipLibCheck true --incremental false",
     "build:all": "backstage-cli repo build --all",
@@ -43,6 +46,10 @@
     "typescript": "~5.3.0"
   },
   "dependencies": {
+    "@backstage-community/plugin-rbac": "workspace:^",
+    "@backstage-community/plugin-rbac-backend": "workspace:^",
+    "@backstage-community/plugin-rbac-common": "workspace:^",
+    "@backstage-community/plugin-rbac-node": "workspace:^",
     "@ianvs/prettier-plugin-sort-imports": "^4.3.1",
     "knip": "^5.27.4"
   },

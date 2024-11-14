@@ -48,6 +48,7 @@ export const EntityTechInsightsScorecardCard: (props: {
   title: string;
   description?: string | undefined;
   checksId?: string[] | undefined;
+  filter?: ((check: Check_2) => boolean) | undefined;
   onlyFailed?: boolean | undefined;
   expanded?: boolean | undefined;
 }) => JSX_2.Element;
@@ -57,6 +58,7 @@ export const EntityTechInsightsScorecardContent: (props: {
   title: string;
   description?: string | undefined;
   checksId?: string[] | undefined;
+  filter?: ((check: Check_2) => boolean) | undefined;
 }) => JSX_2.Element;
 
 // @public @deprecated

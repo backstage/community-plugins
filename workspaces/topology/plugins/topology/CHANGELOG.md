@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.29.5
+
+### Patch Changes
+
+- 72f0537: Update topology dev pages (requires an additional permission dependency). This should not affect users.
+
 ## 1.29.4
 
 ### Patch Changes
