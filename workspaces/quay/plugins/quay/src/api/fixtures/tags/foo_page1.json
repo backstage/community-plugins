@@ -1,0 +1,24 @@
+{
+  "tags": [
+    {
+      "name": "latest",
+      "reversion": false,
+      "start_ts": 1678904538,
+      "manifest_digest": "sha256:e766248d812bcdadc1ee293b564af1f2517dd6c0327eefab2411e4f11e980d54",
+      "is_manifest_list": true,
+      "size": null,
+      "last_modified": "Wed, 15 Mar 2023 18:22:18 -0000"
+    },
+    {
+      "name": "latest-linux-arm64",
+      "reversion": false,
+      "start_ts": 1678904535,
+      "manifest_digest": "sha256:e461dc54b4e2469bb7f5bf85a4b7445c175548ba9d56c3f617dd25bc3adf3752",
+      "is_manifest_list": false,
+      "size": 267435022,
+      "last_modified": "Wed, 15 Mar 2023 18:22:15 -0000"
+    }
+  ],
+  "page": 1,
+  "has_additional": true
+}
