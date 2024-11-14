@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import ReactGA from 'react-ga';
+import { Config } from '@backstage/config';
 import {
   AnalyticsApi,
   AnalyticsContextValue,
@@ -24,10 +24,10 @@ import {
 } from '@backstage/core-plugin-api';
 import {
   AnalyticsApi as NewAnalyticsApi,
-  AnalyticsEvent as NewAnalyticsEvent,
   AnalyticsContextValue as NewAnalyticsContextValue,
+  AnalyticsEvent as NewAnalyticsEvent,
 } from '@backstage/frontend-plugin-api';
-import { Config } from '@backstage/config';
+import ReactGA from 'react-ga';
 import { DeferredCapture } from '../../../util';
 import {
   parseVirtualSearchPageViewConfig,

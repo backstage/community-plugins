@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import ReactGA from 'react-ga4';
-
 import { UaEventOptions } from 'react-ga4/types/ga4';
 
 type Hit = {

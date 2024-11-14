@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2022 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,18 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { createDevApp } from '@backstage/dev-utils';
-import { getAllThemes } from '@redhat-developer/red-hat-developer-hub-theme';
-import React from 'react';
-import { MatomoAnalyticsApi } from '../src';
-import { Playground } from './Playground';
+import '@testing-library/jest-dom';
+import 'cross-fetch/polyfill';
 
-createDevApp()
-  .registerApi(MatomoAnalyticsApi)
-  .addThemes(getAllThemes())
-  .addPage({
-    title: 'Matomo Analytics Playground',
-    path: '/analytics-module-matomo',
-    element: <Playground />,
-  })
-  .render();
+// eslint-disable-next-line no-restricted-imports
+import { TextEncoder } from 'util';
+
+// Mock browser crypto.subtle.digest method for sha-256 hashing.
+Object.defineProperty(global.self, 'crypto', {
+  value: {
+    subtle: {
+      digest: (_algo: string, data: Uint8Array): ArrayBuffer => data.buffer,
+    },
+  },
+});
+
+// Also used in browser-based APIs for hashing.
+Object.defineProperty(global.self, 'TextEncoder', {
+  value: TextEncoder,
+});

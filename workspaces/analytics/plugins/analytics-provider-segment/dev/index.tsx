@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2022 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,18 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { createDevApp } from '@backstage/dev-utils';
-import { getAllThemes } from '@redhat-developer/red-hat-developer-hub-theme';
+
 import React from 'react';
-import { MatomoAnalyticsApi } from '../src';
+
+import { createDevApp } from '@backstage/dev-utils';
+
+import { getAllThemes } from '@redhat-developer/red-hat-developer-hub-theme';
+
+import { analyticsModuleSegment } from '../src';
 import { Playground } from './Playground';
 
 createDevApp()
-  .registerApi(MatomoAnalyticsApi)
+  .registerPlugin(analyticsModuleSegment)
   .addThemes(getAllThemes())
   .addPage({
-    title: 'Matomo Analytics Playground',
-    path: '/analytics-module-matomo',
+    path: '/segment',
+    title: 'Segment Playground',
     element: <Playground />,
   })
   .render();

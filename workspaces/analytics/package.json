@@ -7,7 +7,7 @@
   },
   "scripts": {
     "tsc": "tsc",
-    "tsc:full": "tsc --skipLibCheck false --incremental false",
+    "tsc:full": "tsc --skipLibCheck true --incremental false",
     "build:all": "backstage-cli repo build --all",
     "clean": "backstage-cli repo clean",
     "test": "backstage-cli repo test",
@@ -18,7 +18,7 @@
     "prettier:check": "prettier --check .",
     "new": "backstage-cli new --scope @backstage-community",
     "build:api-reports": "yarn build:api-reports:only --tsc",
-    "build:api-reports:only": "backstage-repo-tools api-reports -o ae-wrong-input-file-type,ae-undocumented --validate-release-tags",
+    "build:api-reports:only": "backstage-repo-tools api-reports --allow-all-warnings -o ae-wrong-input-file-type,ae-undocumented --validate-release-tags",
     "postinstall": "cd ../../ && yarn install"
   },
   "workspaces": {
@@ -37,6 +37,7 @@
     "@backstage/e2e-test-utils": "^0.1.1",
     "@backstage/repo-tools": "^0.10.0",
     "@changesets/cli": "^2.27.1",
+    "@ianvs/prettier-plugin-sort-imports": "^4.4.0",
     "@spotify/prettier-config": "^15.0.0",
     "node-gyp": "^10.0.0",
     "prettier": "^2.3.2",

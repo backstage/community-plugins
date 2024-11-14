@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-import ReactGA from 'react-ga4';
+import { Config } from '@backstage/config';
 import {
   AnalyticsApi,
   AnalyticsContextValue,
-  AnalyticsEventAttributes,
   AnalyticsEvent,
+  AnalyticsEventAttributes,
   IdentityApi,
 } from '@backstage/core-plugin-api';
 import {
   AnalyticsApi as NewAnalyticsApi,
-  AnalyticsEvent as NewAnalyticsEvent,
   AnalyticsContextValue as NewAnalyticsContextValue,
+  AnalyticsEvent as NewAnalyticsEvent,
 } from '@backstage/frontend-plugin-api';
-import { Config } from '@backstage/config';
+import ReactGA from 'react-ga4';
 import { DeferredCapture } from '../../../util/DeferredCapture';
 
 /**

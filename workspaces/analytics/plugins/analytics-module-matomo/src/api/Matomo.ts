@@ -15,13 +15,12 @@
  */
 import {
   AnalyticsApi,
+  analyticsApiRef,
   AnalyticsEvent,
   ConfigApi,
-  analyticsApiRef,
   configApiRef,
   createApiFactory,
 } from '@backstage/core-plugin-api';
-
 import { loadMatomo } from './loadMatomo';
 
 declare const window: Window &

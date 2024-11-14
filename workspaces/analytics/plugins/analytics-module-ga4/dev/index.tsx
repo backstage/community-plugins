@@ -20,7 +20,6 @@ import {
 } from '@backstage/core-plugin-api';
 import { createDevApp } from '@backstage/dev-utils';
 import React from 'react';
-
 import { GoogleAnalytics4 } from '../src';
 import { Playground } from './Playground';
 

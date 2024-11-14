@@ -13,18 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { createDevApp } from '@backstage/dev-utils';
-import { getAllThemes } from '@redhat-developer/red-hat-developer-hub-theme';
-import React from 'react';
-import { MatomoAnalyticsApi } from '../src';
-import { Playground } from './Playground';
 
-createDevApp()
-  .registerApi(MatomoAnalyticsApi)
-  .addThemes(getAllThemes())
-  .addPage({
-    title: 'Matomo Analytics Playground',
-    path: '/analytics-module-matomo',
-    element: <Playground />,
-  })
-  .render();
+
+/** @type {import("@ianvs/prettier-plugin-sort-imports").PrettierConfig} */
+module.exports = {
+  ...require('@spotify/prettier-config'),
+  plugins: ['@ianvs/prettier-plugin-sort-imports'],
+  importOrder: [
+    '^react(.*)$',
+    '',
+    '^@backstage/(.*)$',
+    '',
+    '<THIRD_PARTY_MODULES>',
+    '',
+    '^@backstage-community/(.*)$',
+    '',
+    '<BUILTIN_MODULES>',
+    '',
+    '^[.]',
+  ],
+};

@@ -16,8 +16,8 @@
 import { ConfigReader } from '@backstage/config';
 import { IdentityApi } from '@backstage/core-plugin-api';
 import ReactGA from 'react-ga4';
-import { GoogleAnalytics4 } from './GoogleAnalytics4';
 import { UaEventOptions } from 'react-ga4/types/ga4';
+import { GoogleAnalytics4 } from './GoogleAnalytics4';
 
 const fnEvent = jest.spyOn(ReactGA, 'event');
 

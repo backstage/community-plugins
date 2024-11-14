@@ -19,13 +19,12 @@ yarn workspace app add @backstage-community/plugin-analytics-module-matomo
 
 ```tsx
 // packages/app/src/apis.ts
+import { MatomoAnalytics } from '@backstage-community/plugin-analytics-module-matomo';
 import {
   analyticsApiRef,
   configApiRef,
   identityApiRef,
 } from '@backstage/core-plugin-api';
-
-import { MatomoAnalytics } from '@backstage-community/plugin-analytics-module-matomo';
 
 export const apis: AnyApiFactory[] = [
   // Instantiate and register the Matomo Analytics API Implementation.

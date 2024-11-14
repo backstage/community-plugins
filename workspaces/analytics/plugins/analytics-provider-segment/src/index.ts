@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 The Backstage Authors
+ * Copyright 2022 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,25 +16,17 @@
 import {
   analyticsApiRef,
   configApiRef,
+  createApiFactory,
   identityApiRef,
 } from '@backstage/core-plugin-api';
-import { createDevApp } from '@backstage/dev-utils';
-import React from 'react';
-import { GoogleAnalytics } from '../src';
-import { Playground } from './Playground';
 
-createDevApp()
-  .registerApi({
-    api: analyticsApiRef,
-    deps: { configApi: configApiRef, identityApi: identityApiRef },
-    factory: ({ configApi, identityApi }) =>
-      GoogleAnalytics.fromConfig(configApi, {
-        identityApi,
-      }),
-  })
-  .addPage({
-    path: '/ga',
-    title: 'GA Playground',
-    element: <Playground />,
-  })
-  .render();
+import { SegmentAnalytics } from './apis/implementations/AnalyticsApi';
+
+export { analyticsModuleSegment } from './plugin';
+export * from './apis/implementations/AnalyticsApi';
+export const SegmentAnalyticsApi = createApiFactory({
+  api: analyticsApiRef,
+  deps: { configApi: configApiRef, identityApi: identityApiRef },
+  factory: ({ configApi, identityApi }) =>
+    SegmentAnalytics.fromConfig(configApi, identityApi),
+});
