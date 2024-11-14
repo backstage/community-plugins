@@ -16,23 +16,14 @@ import { SubRouteRef } from '@backstage/core-plugin-api';
 // @public
 export const isQuayAvailable: (entity: Entity) => boolean;
 
-// Warning: (ae-missing-release-tag) "QuayPage" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export const QuayPage: () => JSX_2.Element;
 
-// Warning: (ae-missing-release-tag) "quayPlugin" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export const quayPlugin: BackstagePlugin<    {
 root: RouteRef<undefined>;
 tag: SubRouteRef<PathParams<"/tag/:digest">>;
 }, {}, {}>;
-
-// Warnings were encountered during analysis:
-//
-// src/plugin.d.ts:3:22 - (ae-undocumented) Missing documentation for "quayPlugin".
-// src/plugin.d.ts:7:22 - (ae-undocumented) Missing documentation for "QuayPage".
 
 // (No @packageDocumentation comment for this package)
 
