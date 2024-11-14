@@ -1,0 +1,18 @@
+{
+  "labels": [
+    {
+      "id": "9f22a8bb-5788-4442-ab4d-03dd4c6f1d72",
+      "key": "architecture",
+      "value": "aarch64",
+      "source_type": "manifest",
+      "media_type": "text/plain"
+    },
+    {
+      "id": "7e71f6fe-25af-4736-9d15-bac24993f085",
+      "key": "build-date",
+      "value": "2023-02-22T13:52:48",
+      "source_type": "manifest",
+      "media_type": "text/plain"
+    }
+  ]
+}

@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.10.2
+
+### Patch Changes
+
+- 0568517: Bump shared-react to 2.13.1
+
 ## 1.10.1
 
 ### Patch Changes
