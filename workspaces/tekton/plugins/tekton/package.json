@@ -30,7 +30,8 @@
     "test": "backstage-cli package test",
     "clean": "backstage-cli package clean",
     "prepack": "backstage-cli package prepack",
-    "postpack": "backstage-cli package postpack"
+    "postpack": "backstage-cli package postpack",
+    "prepublish": "./fix-style-inject-imports.sh"
   },
   "dependencies": {
     "@aonic-ui/pipelines": "^1.1.1",
