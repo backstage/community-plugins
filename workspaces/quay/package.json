@@ -10,7 +10,7 @@
     "tsc:full": "tsc --skipLibCheck true --incremental false",
     "build:all": "backstage-cli repo build --all",
     "build:api-reports": "yarn build:api-reports:only",
-    "build:api-reports:only": "backstage-repo-tools api-reports --allow-all-warnings -o ae-wrong-input-file-type --validate-release-tags",
+    "build:api-reports:only": "backstage-repo-tools api-reports --allow-all-warnings -o ae-wrong-input-file-type,ae-undocumented --validate-release-tags",
     "clean": "backstage-cli repo clean",
     "test": "backstage-cli repo test",
     "test:all": "backstage-cli repo test --coverage",
@@ -44,7 +44,8 @@
   },
   "dependencies": {
     "@ianvs/prettier-plugin-sort-imports": "^4.4.0",
-    "knip": "^5.27.4"
+    "knip": "^5.27.4",
+    "yaml": "^2.6.0"
   },
   "resolutions": {
     "@types/react": "^18",
