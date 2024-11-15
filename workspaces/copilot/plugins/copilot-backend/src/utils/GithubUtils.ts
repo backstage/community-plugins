@@ -15,11 +15,7 @@
  */
 
 import { Config } from '@backstage/config';
-import {
-  DefaultGithubCredentialsProvider,
-  GithubCredentials,
-  ScmIntegrations,
-} from '@backstage/integration';
+import { GithubCredentials, ScmIntegrations } from '@backstage/integration';
 
 export type GithubInfo = {
   credentials: GithubCredentials;
@@ -29,8 +25,6 @@ export type GithubInfo = {
 
 export const getGithubInfo = async (config: Config): Promise<GithubInfo> => {
   const integrations = ScmIntegrations.fromConfig(config);
-  const credentialsProvider =
-    DefaultGithubCredentialsProvider.fromIntegrations(integrations);
 
   const host = config.getString('copilot.host');
   const enterprise = config.getString('copilot.enterprise');
@@ -53,13 +47,11 @@ export const getGithubInfo = async (config: Config): Promise<GithubInfo> => {
 
   const apiBaseUrl = githubConfig.apiBaseUrl ?? 'https://api.github.com';
 
-  const credentials = await credentialsProvider.getCredentials({
-    url: apiBaseUrl,
-  });
-
-  if (!credentials.headers) {
-    throw new Error('Failed to retrieve credentials headers.');
-  }
+  const credentials: GithubCredentials = {
+    type: 'token',
+    headers: { Authorization: `Bearer ${githubConfig.token}` },
+    token: githubConfig.token,
+  };
 
   return {
     apiBaseUrl,
