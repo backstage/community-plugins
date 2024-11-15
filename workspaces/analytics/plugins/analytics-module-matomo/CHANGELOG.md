@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.9.0
+
+### Minor Changes
+
+- 883e289: Migrate matomo analytics provider from janus to backstage community-plugins.
+
 ## 1.8.1
 
 ### Patch Changes
