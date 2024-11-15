@@ -22,7 +22,7 @@ export default mtaScaffolderModule;
 
 // Warnings were encountered during analysis:
 //
-// /Users/ibolton/Development/community-plugins/workspaces/mta/plugins/scaffolder-backend-module-mta/src/actions/mta/create-application.ts:8:1 - (ae-undocumented) Missing documentation for "createMTAApplicationAction".
-// /Users/ibolton/Development/community-plugins/workspaces/mta/plugins/scaffolder-backend-module-mta/src/module.ts:12:14 - (ae-undocumented) Missing documentation for "mtaScaffolderModule".
+// /Users/awanlin/repos/forks/community-plugins/workspaces/mta/plugins/scaffolder-backend-module-mta/src/actions/mta/create-application.ts:8:1 - (ae-undocumented) Missing documentation for "createMTAApplicationAction".
+// /Users/awanlin/repos/forks/community-plugins/workspaces/mta/plugins/scaffolder-backend-module-mta/src/module.ts:12:14 - (ae-undocumented) Missing documentation for "mtaScaffolderModule".
 
 ```
