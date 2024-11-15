@@ -71,7 +71,6 @@
   },
   "files": [
     "dist",
-    "dist-scalprum",
     "config.d.ts",
     "app-config.backstage-community.yaml"
   ],
