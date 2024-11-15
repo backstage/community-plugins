@@ -15,32 +15,24 @@
  */
 
 import { Config } from '@backstage/config';
-import {
-  DefaultGithubCredentialsProvider,
-  GithubCredentials,
-  ScmIntegrations,
-} from '@backstage/integration';
+import { GithubCredentials, ScmIntegrations } from '@backstage/integration';
 
 export type GithubInfo = {
   credentials: GithubCredentials;
   apiBaseUrl: string;
-  enterprise: string;
+  enterprise?: string;
+  organization?: string;
 };
 
 export const getGithubInfo = async (config: Config): Promise<GithubInfo> => {
   const integrations = ScmIntegrations.fromConfig(config);
-  const credentialsProvider =
-    DefaultGithubCredentialsProvider.fromIntegrations(integrations);
 
   const host = config.getString('copilot.host');
-  const enterprise = config.getString('copilot.enterprise');
+  const enterprise = config.getOptionalString('copilot.enterprise');
+  const organization = config.getOptionalString('copilot.organization');
 
   if (!host) {
     throw new Error('The host configuration is missing from the config.');
-  }
-
-  if (!enterprise) {
-    throw new Error('The enterprise configuration is missing from the config.');
   }
 
   const githubConfig = integrations.github.byHost(host)?.config;
@@ -53,17 +45,16 @@ export const getGithubInfo = async (config: Config): Promise<GithubInfo> => {
 
   const apiBaseUrl = githubConfig.apiBaseUrl ?? 'https://api.github.com';
 
-  const credentials = await credentialsProvider.getCredentials({
-    url: apiBaseUrl,
-  });
-
-  if (!credentials.headers) {
-    throw new Error('Failed to retrieve credentials headers.');
-  }
+  const credentials: GithubCredentials = {
+    type: 'token',
+    headers: { Authorization: `Bearer ${githubConfig.token}` },
+    token: githubConfig.token,
+  };
 
   return {
     apiBaseUrl,
     credentials,
     enterprise,
+    organization,
   };
 };
