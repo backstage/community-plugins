@@ -2578,7 +2578,7 @@ __metadata:
     "@backstage/dev-utils": 1.1.2
     "@redhat-developer/red-hat-developer-hub-theme": 0.4.0
     "@testing-library/jest-dom": 6.4.8
-    "@types/node": 18.19.33
+    "@types/node": 18.19.64
     cross-fetch: 4.0.0
     msw: 1.3.3
     prettier: 3.3.3
@@ -8325,12 +8325,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:18.19.33":
-  version: 18.19.33
-  resolution: "@types/node@npm:18.19.33"
+"@types/node@npm:18.19.64, @types/node@npm:^18.11.9":
+  version: 18.19.64
+  resolution: "@types/node@npm:18.19.64"
   dependencies:
     undici-types: ~5.26.4
-  checksum: b6db87d095bc541d64a410fa323a35c22c6113220b71b608bbe810b2397932d0f0a51c3c0f3ef90c20d8180a1502d950a7c5314b907e182d9cc10b36efd2a44e
+  checksum: e7680215b03c9bee8a33947f03d06048e8e460f23b1b7b29c45350cf437faa5f8fcb7d8c3eb8dfec8427923e7a184df42bc710c1b6252b4852e3ed7064c6228f
   languageName: node
   linkType: hard
 
@@ -8338,15 +8338,6 @@ __metadata:
   version: 12.20.55
   resolution: "@types/node@npm:12.20.55"
   checksum: e4f86785f4092706e0d3b0edff8dca5a13b45627e4b36700acd8dfe6ad53db71928c8dee914d4276c7fd3b6ccd829aa919811c9eb708a2c8e4c6eb3701178c37
-  languageName: node
-  linkType: hard
-
-"@types/node@npm:^18.11.9":
-  version: 18.19.54
-  resolution: "@types/node@npm:18.19.54"
-  dependencies:
-    undici-types: ~5.26.4
-  checksum: d85bacc7430c2913bcd2cf293f312bc1f9108819707ac25b58404185c3b8f9ca9e3e93c396672f457c18e65f5ba86cc8363803f830207c6b7dd14fd74e1455b0
   languageName: node
   linkType: hard
 

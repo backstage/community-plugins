@@ -2844,7 +2844,7 @@ __metadata:
     "@testing-library/user-event": 14.5.2
     "@types/dagre": ^0.7.52
     "@types/lodash": 4.17.5
-    "@types/node": 18.19.34
+    "@types/node": 18.19.64
     classnames: ^2.3.2
     cross-fetch: 4.0.0
     dagre: ^0.8.5
@@ -13527,12 +13527,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:18.19.34":
-  version: 18.19.34
-  resolution: "@types/node@npm:18.19.34"
+"@types/node@npm:18.19.64, @types/node@npm:^18.11.18, @types/node@npm:^18.11.9":
+  version: 18.19.64
+  resolution: "@types/node@npm:18.19.64"
   dependencies:
     undici-types: ~5.26.4
-  checksum: ae6369baa1529ec3564da29611ec7eb8ccb219080d717292151b6b899820d25290243d01c9240f11a63d1a42e47198cd6310fab67b6d17bea723221fea07b644
+  checksum: e7680215b03c9bee8a33947f03d06048e8e460f23b1b7b29c45350cf437faa5f8fcb7d8c3eb8dfec8427923e7a184df42bc710c1b6252b4852e3ed7064c6228f
   languageName: node
   linkType: hard
 
@@ -13540,15 +13540,6 @@ __metadata:
   version: 12.20.55
   resolution: "@types/node@npm:12.20.55"
   checksum: e4f86785f4092706e0d3b0edff8dca5a13b45627e4b36700acd8dfe6ad53db71928c8dee914d4276c7fd3b6ccd829aa919811c9eb708a2c8e4c6eb3701178c37
-  languageName: node
-  linkType: hard
-
-"@types/node@npm:^18.11.18, @types/node@npm:^18.11.9":
-  version: 18.19.64
-  resolution: "@types/node@npm:18.19.64"
-  dependencies:
-    undici-types: ~5.26.4
-  checksum: e7680215b03c9bee8a33947f03d06048e8e460f23b1b7b29c45350cf437faa5f8fcb7d8c3eb8dfec8427923e7a184df42bc710c1b6252b4852e3ed7064c6228f
   languageName: node
   linkType: hard
 
