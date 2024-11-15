@@ -21,13 +21,11 @@ jobs:
           fetch-depth: 2
           ref: ${{ github.head_ref }}
           token: ${{ secrets.GH_SERVICE_ACCOUNT_TOKEN }}
-          
+
       - name: Configure Git
         run: |
           git config --global user.email noreply@backstage.io
           git config --global user.name 'Github changeset workflow'
 
-      - name: Generate feedback
-        uses: backstage/actions/renovate-changesets@v0.6.13
-        with:
-          multiple-workspaces: true
+      - name: Generate changesets
+        run: node ./scripts/ci/generate-bump-changesets.js
