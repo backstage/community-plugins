@@ -39,7 +39,6 @@
     "node-fetch": "^2.6.7"
   },
   "devDependencies": {
-    "@backstage/backend-tasks": "^0.6.1",
     "@backstage/backend-test-utils": "^1.0.2",
     "@backstage/cli": "^0.28.0",
     "js-yaml": "^4.1.0",
