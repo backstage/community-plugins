@@ -10,8 +10,4 @@ import { BackendFeatureCompat } from '@backstage/backend-plugin-api';
 const catalogModuleMtaEntityProvider: BackendFeatureCompat;
 export default catalogModuleMtaEntityProvider;
 
-// Warnings were encountered during analysis:
-//
-// /Users/awanlin/repos/forks/community-plugins/workspaces/mta/plugins/catalog-backend-module-mta-entity-provider/src/module.ts:12:14 - (ae-undocumented) Missing documentation for "catalogModuleMtaEntityProvider".
-
 ```

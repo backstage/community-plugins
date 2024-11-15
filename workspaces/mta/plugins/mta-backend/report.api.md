@@ -36,16 +36,4 @@ export interface RouterOptions {
     userInfo: UserInfoService;
 }
 
-// Warnings were encountered during analysis:
-//
-// /Users/awanlin/repos/forks/community-plugins/workspaces/mta/plugins/mta-backend/src/plugin.ts:22:14 - (ae-undocumented) Missing documentation for "mtaPlugin".
-// /Users/awanlin/repos/forks/community-plugins/workspaces/mta/plugins/mta-backend/src/service/router.ts:18:1 - (ae-undocumented) Missing documentation for "RouterOptions".
-// /Users/awanlin/repos/forks/community-plugins/workspaces/mta/plugins/mta-backend/src/service/router.ts:19:3 - (ae-undocumented) Missing documentation for "logger".
-// /Users/awanlin/repos/forks/community-plugins/workspaces/mta/plugins/mta-backend/src/service/router.ts:20:3 - (ae-undocumented) Missing documentation for "database".
-// /Users/awanlin/repos/forks/community-plugins/workspaces/mta/plugins/mta-backend/src/service/router.ts:21:3 - (ae-undocumented) Missing documentation for "httpAuth".
-// /Users/awanlin/repos/forks/community-plugins/workspaces/mta/plugins/mta-backend/src/service/router.ts:22:3 - (ae-undocumented) Missing documentation for "config".
-// /Users/awanlin/repos/forks/community-plugins/workspaces/mta/plugins/mta-backend/src/service/router.ts:23:3 - (ae-undocumented) Missing documentation for "userInfo".
-// /Users/awanlin/repos/forks/community-plugins/workspaces/mta/plugins/mta-backend/src/service/router.ts:24:3 - (ae-undocumented) Missing documentation for "cache".
-// /Users/awanlin/repos/forks/community-plugins/workspaces/mta/plugins/mta-backend/src/service/router.ts:28:1 - (ae-undocumented) Missing documentation for "createRouter".
-
 ```
