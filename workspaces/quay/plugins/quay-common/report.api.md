@@ -16,10 +16,6 @@ export const quayPermissions: BasicPermission[];
 // @public (undocumented)
 export const quayViewPermission: BasicPermission;
 
-// Warnings were encountered during analysis:
-//
-// src/permissions.d.ts:1:22 - (ae-undocumented) Missing documentation for "quayViewPermission".
-
 // (No @packageDocumentation comment for this package)
 
 ```
