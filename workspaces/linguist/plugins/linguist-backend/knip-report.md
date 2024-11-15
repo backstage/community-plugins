@@ -5,5 +5,4 @@
 | Name                                        | Location     | Severity |
 | :------------------------------------------ | :----------- | :------- |
 | @backstage-community/plugin-linguist-common | package.json | error    |
-| @backstage/backend-tasks                    | package.json | error    |
 | yn                                          | package.json | error    |
