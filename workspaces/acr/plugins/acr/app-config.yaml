@@ -8,16 +8,3 @@ proxy:
         Authorization: 'Bearer ${ACR_AUTH_TOKEN}'
       # Change to "false" in case of using self hosted artifactory instance with a self-signed certificate
       secure: true
-
-dynamicPlugins:
-  frontend:
-    backstage-community.plugin-acr:
-      mountPoints:
-        - mountPoint: entity.page.image-registry/cards
-          importName: AcrPage
-          config:
-            layout:
-              gridColumn: 1 / -1
-            if:
-              anyOf:
-                - isAcrAvailable

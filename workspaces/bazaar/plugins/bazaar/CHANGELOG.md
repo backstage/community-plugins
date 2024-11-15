@@ -1,5 +1,12 @@
 # @backstage-community/plugin-bazaar
 
+## 0.5.2
+
+### Patch Changes
+
+- c3bdb20: feat(bazaar): improve `yarn dev` setup for running both frontend and backend together, and enable Bazaar API for project interactions.
+- 8964f7d: Add virtualization to UserSelector dropdown
+
 ## 0.5.1
 
 ### Patch Changes

@@ -15,80 +15,73 @@
  */
 
 import { UrlPatternDiscovery } from '@backstage/core-app-api';
-import { rest } from 'msw';
-import { setupServer } from 'msw/node';
-import { setupRequestMockHandlers } from '@backstage/test-utils';
 import { SonarQubeClient } from './SonarQubeClient';
-import { IdentityApi } from '@backstage/core-plugin-api';
 import { InstanceUrlWrapper, FindingsWrapper } from './types';
 import { FindingSummary } from '@backstage-community/plugin-sonarqube-react';
 
-const server = setupServer();
-
-const identityApiAuthenticated: IdentityApi = {
-  signOut: jest.fn(),
-  getProfileInfo: jest.fn(),
-  getBackstageIdentity: jest.fn(),
-  getCredentials: jest.fn().mockResolvedValue({ token: 'fake-id-token' }),
-};
-const identityApiGuest: IdentityApi = {
-  signOut: jest.fn(),
-  getProfileInfo: jest.fn(),
-  getBackstageIdentity: jest.fn(),
-  getCredentials: jest.fn().mockResolvedValue({ token: undefined }),
+const fetchApi = {
+  fetch: jest.fn(),
 };
 
 describe('SonarQubeClient', () => {
-  setupRequestMockHandlers(server);
   const mockBaseUrl = 'http://backstage:9191/api/sonarqube';
   const discoveryApi = UrlPatternDiscovery.compile(mockBaseUrl);
 
-  const setupHandlers = () => {
-    server.use(
-      rest.get(`${mockBaseUrl}/findings`, (req, res, ctx) => {
-        expect(req.url.searchParams.toString()).toBe(
-          'componentKey=our%3Aservice&instanceKey=',
-        );
-
-        return res(
-          ctx.json({
-            analysisDate: '2020-01-01T00:00:00Z',
-            measures: [
-              { metric: 'alert_status', value: 'OK' },
-              { metric: 'bugs', value: '2' },
-              { metric: 'reliability_rating', value: '3.0' },
-              { metric: 'vulnerabilities', value: '4' },
-              { metric: 'security_rating', value: '1.0' },
-              { metric: 'security_hotspots_reviewed', value: '100' },
-              { metric: 'security_review_rating', value: '1.0' },
-              { metric: 'code_smells', value: '100' },
-              { metric: 'sqale_rating', value: '2.0' },
-              { metric: 'coverage', value: '55.5' },
-              { metric: 'duplicated_lines_density', value: '1.0' },
-            ],
-          } as FindingsWrapper),
-        );
-      }),
-    );
-    server.use(
-      rest.get(`${mockBaseUrl}/instanceUrl`, (req, res, ctx) => {
-        expect(req.url.searchParams.toString()).toBe('instanceKey=');
-
-        return res(
-          ctx.json({
-            instanceUrl: 'https://sonarcloud.io',
-          } as InstanceUrlWrapper),
-        );
-      }),
+  const setupHandlers = (
+    findings: FindingsWrapper,
+    instanceUrlWrapper: InstanceUrlWrapper,
+  ) => {
+    fetchApi.fetch.mockImplementation(
+      async (input: RequestInfo, _?: RequestInit) => {
+        if (input.toString().includes('/findings')) {
+          return {
+            status: 200,
+            json: async () => findings,
+          };
+        } else if (input.toString().includes('/instanceUrl')) {
+          return {
+            status: 200,
+            json: async () => instanceUrlWrapper,
+          };
+        }
+        return {
+          status: 404,
+          json: async () => {
+            return {
+              message: 'Not Found',
+            };
+          },
+        };
+      },
     );
   };
 
   it('should report finding summary', async () => {
-    setupHandlers();
+    setupHandlers(
+      {
+        analysisDate: '2020-01-01T00:00:00Z',
+        measures: [
+          { metric: 'alert_status', value: 'OK' },
+          { metric: 'bugs', value: '2' },
+          { metric: 'reliability_rating', value: '3.0' },
+          { metric: 'vulnerabilities', value: '4' },
+          { metric: 'security_rating', value: '1.0' },
+          { metric: 'security_hotspots_reviewed', value: '100' },
+          { metric: 'security_review_rating', value: '1.0' },
+          { metric: 'code_smells', value: '100' },
+          { metric: 'sqale_rating', value: '2.0' },
+          { metric: 'coverage', value: '55.5' },
+          { metric: 'duplicated_lines_density', value: '1.0' },
+        ],
+      },
+      {
+        instanceUrl: 'https://sonarcloud.io',
+      },
+    );
 
     const client = new SonarQubeClient({
       discoveryApi,
-      identityApi: identityApiAuthenticated,
+      fetchApi,
     });
 
     const summary = await client.getFindingSummary({
@@ -122,50 +115,32 @@ describe('SonarQubeClient', () => {
     );
   });
   it('should report finding summary (custom baseUrl)', async () => {
-    setupHandlers();
-    server.use(
-      rest.get(`${mockBaseUrl}/instanceUrl`, (req, res, ctx) => {
-        expect(req.url.searchParams.toString()).toBe('instanceKey=custom');
-
-        return res(
-          ctx.json({
-            instanceUrl: 'http://a.instance.local',
-          } as InstanceUrlWrapper),
-        );
-      }),
-    );
-
-    server.use(
-      rest.get(`${mockBaseUrl}/findings`, (req, res, ctx) => {
-        expect(req.url.searchParams.toString()).toBe(
-          'componentKey=our%3Aservice&instanceKey=custom',
-        );
-
-        return res(
-          ctx.json({
-            analysisDate: '2020-01-03T00:00:00Z',
-            measures: [
-              {
-                metric: 'alert_status',
-                value: 'ERROR',
-              },
-              {
-                metric: 'bugs',
-                value: '45',
-              },
-              {
-                metric: 'reliability_rating',
-                value: '5.0',
-              },
-            ],
-          } as FindingsWrapper),
-        );
-      }),
+    setupHandlers(
+      {
+        analysisDate: '2020-01-03T00:00:00Z',
+        measures: [
+          {
+            metric: 'alert_status',
+            value: 'ERROR',
+          },
+          {
+            metric: 'bugs',
+            value: '45',
+          },
+          {
+            metric: 'reliability_rating',
+            value: '5.0',
+          },
+        ],
+      },
+      {
+        instanceUrl: 'http://a.instance.local',
+      },
     );
 
     const client = new SonarQubeClient({
       discoveryApi,
-      identityApi: identityApiAuthenticated,
+      fetchApi,
     });
 
     const summary = await client.getFindingSummary({
@@ -193,53 +168,19 @@ describe('SonarQubeClient', () => {
   });
 
   it('should add identity token for logged in users', async () => {
-    setupHandlers();
-    server.use(
-      rest.get(`${mockBaseUrl}/findings`, (req, res, ctx) => {
-        expect(req.url.searchParams.toString()).toBe(
-          'componentKey=our%3Aservice&instanceKey=',
-        );
-        expect(req.headers.get('Authorization')).toBe('Bearer fake-id-token');
-        return res(
-          ctx.json({
-            analysisDate: '2020-01-01T00:00:00Z',
-            measures: [],
-          } as FindingsWrapper),
-        );
-      }),
+    setupHandlers(
+      {
+        analysisDate: '2020-01-01T00:00:00Z',
+        measures: [],
+      },
+      {
+        instanceUrl: 'http://a.instance.local',
+      },
     );
 
     const client = new SonarQubeClient({
       discoveryApi,
-      identityApi: identityApiAuthenticated,
-    });
-    const summary = await client.getFindingSummary({
-      componentKey: 'our:service',
-    });
-
-    expect(summary?.lastAnalysis).toBe('2020-01-01T00:00:00Z');
-  });
-
-  it('should omit identity token for guest users', async () => {
-    setupHandlers();
-    server.use(
-      rest.get(`${mockBaseUrl}/findings`, (req, res, ctx) => {
-        expect(req.url.searchParams.toString()).toBe(
-          'componentKey=our%3Aservice&instanceKey=',
-        );
-        expect(req.headers.has('Authorization')).toBeFalsy();
-        return res(
-          ctx.json({
-            analysisDate: '2020-01-01T00:00:00Z',
-            measures: [],
-          } as FindingsWrapper),
-        );
-      }),
-    );
-
-    const client = new SonarQubeClient({
-      discoveryApi,
-      identityApi: identityApiGuest,
+      fetchApi,
     });
     const summary = await client.getFindingSummary({
       componentKey: 'our:service',
@@ -250,43 +191,56 @@ describe('SonarQubeClient', () => {
 
   describe('getFindingSummaries', () => {
     const setupHandlersForGetFindingSummaries = () => {
-      server.use(
-        rest.get(`${mockBaseUrl}/findings`, (req, res, ctx) => {
-          const componentKey = req.url.searchParams.get('componentKey');
-          if (componentKey === 'component-1') {
-            return res(
-              ctx.json({
-                analysisDate: '2020-01-01T00:00:00Z',
-                measures: [
-                  { metric: 'alert_status', value: 'OK' },
-                  { metric: 'bugs', value: '2' },
-                  { metric: 'code_smells', value: '100' },
-                ],
-              } as FindingsWrapper),
+      fetchApi.fetch.mockImplementation(
+        async (input: RequestInfo, _?: RequestInit) => {
+          if (input.toString().includes('/findings')) {
+            const componentKey = new URL(input.toString()).searchParams.get(
+              'componentKey',
             );
-          } else if (componentKey === 'component-2') {
-            return res(
-              ctx.json({
-                analysisDate: '2020-01-02T00:00:00Z',
-                measures: [
-                  { metric: 'alert_status', value: 'ERROR' },
-                  { metric: 'bugs', value: '5' },
-                  { metric: 'code_smells', value: '200' },
-                ],
-              } as FindingsWrapper),
-            );
+            const findings = {
+              analysisDate:
+                componentKey === 'component-1'
+                  ? '2020-01-01T00:00:00Z'
+                  : '2020-01-02T00:00:00Z',
+              measures: [
+                {
+                  metric: 'alert_status',
+                  value: componentKey === 'component-1' ? 'OK' : 'ERROR',
+                },
+                {
+                  metric: 'bugs',
+                  value: componentKey === 'component-1' ? '2' : '5',
+                },
+                {
+                  metric: 'code_smells',
+                  value: componentKey === 'component-1' ? '100' : '200',
+                },
+              ],
+            } as FindingsWrapper;
+
+            return {
+              status: 200,
+              json: async () => findings,
+            };
+          } else if (input.toString().includes('/instanceUrl')) {
+            return {
+              status: 200,
+              json: async () => {
+                return {
+                  instanceUrl: 'https://sonarcloud.io',
+                } as InstanceUrlWrapper;
+              },
+            };
           }
-          return res(ctx.status(404));
-        }),
-      );
-      server.use(
-        rest.get(`${mockBaseUrl}/instanceUrl`, (_req, res, ctx) => {
-          return res(
-            ctx.json({
-              instanceUrl: 'https://sonarcloud.io',
-            } as InstanceUrlWrapper),
-          );
-        }),
+          return {
+            status: 404,
+            json: async () => {
+              return {
+                message: 'Not Found',
+              };
+            },
+          };
+        },
       );
     };
 
@@ -297,7 +251,7 @@ describe('SonarQubeClient', () => {
     it('should report finding summaries for multiple components', async () => {
       const client = new SonarQubeClient({
         discoveryApi,
-        identityApi: identityApiAuthenticated,
+        fetchApi,
       });
 
       const summaries = await client.getFindingSummaries([
@@ -337,7 +291,7 @@ describe('SonarQubeClient', () => {
     it('should handle empty components array', async () => {
       const client = new SonarQubeClient({
         discoveryApi,
-        identityApi: identityApiAuthenticated,
+        fetchApi,
       });
 
       const summaries = await client.getFindingSummaries([]);

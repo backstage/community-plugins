@@ -1,0 +1,14 @@
+{
+  "kind": "Status",
+  "apiVersion": "v1",
+  "metadata": {},
+  "status": "Failure",
+  "message": "managedclusters.cluster.open-cluster-management.io \"non_existent_cluster\" not found",
+  "reason": "NotFound",
+  "details": {
+    "name": "non_existent_cluster",
+    "group": "cluster.open-cluster-management.io",
+    "kind": "managedclusters"
+  },
+  "code": 404
+}

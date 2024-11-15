@@ -24,6 +24,7 @@
     "@spotify/eslint-plugin": "^15.0.0",
     "@spotify/prettier-config": "^15.0.0",
     "array-to-table": "^1.0.1",
+    "codeowners-utils": "^1.0.2",
     "eslint": "^8.6.0",
     "eslint-plugin-notice": "^0.9.10",
     "eslint-plugin-react": "^7.28.0",

@@ -7,10 +7,11 @@
 import { BackendFeatureCompat } from '@backstage/backend-plugin-api';
 import { Config } from '@backstage/config';
 import express from 'express';
-import { IdentityApi } from '@backstage/plugin-auth-node';
+import { HttpAuthService } from '@backstage/backend-plugin-api';
 import { Logger } from 'winston';
 import { PluginCacheManager } from '@backstage/backend-common';
 import { PluginDatabaseManager } from '@backstage/backend-common';
+import { UserInfoService } from '@backstage/backend-plugin-api';
 
 // @public (undocumented)
 export function createRouter(options: RouterOptions): Promise<express.Router>;
@@ -28,9 +29,11 @@ export interface RouterOptions {
     // (undocumented)
     database: PluginDatabaseManager;
     // (undocumented)
-    identity: IdentityApi;
+    httpAuth: HttpAuthService;
     // (undocumented)
     logger: Logger;
+    // (undocumented)
+    userInfo: UserInfoService;
 }
 
 ```

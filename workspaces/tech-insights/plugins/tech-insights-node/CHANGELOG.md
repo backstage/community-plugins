@@ -1,5 +1,12 @@
 # @backstage-community/plugin-tech-insights-node
 
+## 1.0.3
+
+### Patch Changes
+
+- Updated dependencies [331daba]
+  - @backstage-community/plugin-tech-insights-common@0.2.21
+
 ## 1.0.2
 
 ### Patch Changes

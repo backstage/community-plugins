@@ -1,5 +1,11 @@
 # @backstage-community/plugin-sentry
 
+## 1.0.2
+
+### Patch Changes
+
+- 2d16371: Removed `@microsoft/api-extractor` resolution as it is no longer needed
+
 ## 1.0.1
 
 ### Patch Changes
