@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 3.16.1
+
+### Patch Changes
+
+- 9b803bb: Fixed `style-inject` imports in packed \*.css.esm.js files until a new version of `@backstage/cli` is released that includes https://github.com/backstage/backstage/pull/27547.
+
 ## 3.16.0
 
 ### Minor Changes
