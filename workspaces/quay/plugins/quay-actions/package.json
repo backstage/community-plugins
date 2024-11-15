@@ -50,9 +50,7 @@
     "prettier": "3.3.3"
   },
   "files": [
-    "dist",
-    "dist-dynamic/*.*",
-    "dist-dynamic/dist/**"
+    "dist"
   ],
   "repository": {
     "type": "git",
