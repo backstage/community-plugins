@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-copilot-backend",
-  "version": "0.1.4",
+  "version": "0.1.6",
   "homepage": "https://backstage.io",
   "license": "Apache-2.0",
   "main": "src/index.ts",
@@ -41,7 +41,6 @@
   "dependencies": {
     "@backstage-community/plugin-copilot-common": "workspace:^",
     "@backstage/backend-app-api": "^1.0.1",
-    "@backstage/backend-common": "^0.25.0",
     "@backstage/backend-defaults": "^0.5.2",
     "@backstage/backend-plugin-api": "^1.0.1",
     "@backstage/backend-tasks": "^0.6.1",

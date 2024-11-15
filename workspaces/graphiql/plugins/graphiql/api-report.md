@@ -9,6 +9,7 @@ import { ApiRef } from '@backstage/core-plugin-api';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { ErrorApi } from '@backstage/core-plugin-api';
 import { FetchApi } from '@backstage/core-plugin-api';
+import type { GraphiQLPlugin } from '@graphiql/react';
 import { JSX as JSX_2 } from 'react';
 import { OAuthApi } from '@backstage/core-plugin-api';
 import { default as React_2 } from 'react';
@@ -25,6 +26,7 @@ export type EndpointConfig = {
     [name in string]: string;
   };
   fetchApi?: FetchApi;
+  plugins?: GraphiQLPlugin[];
 };
 
 // @public (undocumented)
@@ -35,6 +37,7 @@ export type GithubEndpointConfig = {
   errorApi?: ErrorApi;
   fetchApi?: FetchApi;
   githubAuthApi: OAuthApi;
+  plugins?: GraphiQLPlugin[];
 };
 
 // @public (undocumented)
@@ -64,6 +67,7 @@ export type GraphQLEndpoint = {
   id: string;
   title: string;
   fetcher: (body: any) => Promise<any>;
+  plugins?: GraphiQLPlugin[];
 };
 
 // @public (undocumented)

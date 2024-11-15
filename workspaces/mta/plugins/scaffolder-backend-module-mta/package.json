@@ -1,7 +1,7 @@
 {
   "name": "@backstage-community/backstage-plugin-scaffolder-backend-module-mta",
   "description": "The mta module for @backstage/plugin-scaffolder-backend",
-  "version": "0.1.1",
+  "version": "0.2.1",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "license": "Apache-2.0",
@@ -27,8 +27,7 @@
     "test": "backstage-cli package test",
     "clean": "backstage-cli package clean",
     "prepack": "backstage-cli package prepack",
-    "postpack": "backstage-cli package postpack",
-    "export-dynamic": "janus-cli package export-dynamic-plugin --no-embed-as-dependencies"
+    "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
     "@backstage/backend-common": "^0.21.6",
@@ -39,12 +38,9 @@
     "openid-client": "^5.6.5"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.26.11",
-    "@janus-idp/cli": "^1.13.0"
+    "@backstage/cli": "^0.26.11"
   },
   "files": [
-    "dist",
-    "dist-dynamic/*.*",
-    "dist-dynamic/dist/**"
+    "dist"
   ]
 }
