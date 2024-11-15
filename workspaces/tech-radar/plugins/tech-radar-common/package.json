@@ -39,7 +39,7 @@
     "zod": "^3.20.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.27.1"
+    "@backstage/cli": "^0.28.0"
   },
   "files": [
     "dist"
