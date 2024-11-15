@@ -1,5 +1,11 @@
 # @backstage-community/plugin-quay-common
 
+## 1.3.3
+
+### Patch Changes
+
+- 8c4c579: Updated report.api.md
+
 ## 1.3.2
 
 ### Patch Changes
