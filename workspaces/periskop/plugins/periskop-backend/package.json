@@ -50,8 +50,8 @@
     "test": "backstage-cli package test"
   },
   "dependencies": {
-    "@backstage/backend-common": "^0.25.0",
     "@backstage/backend-plugin-api": "^1.0.1",
+    "@backstage/backend-test-utils": "1.0.2",
     "@backstage/config": "^1.2.0",
     "@types/express": "*",
     "express": "^4.17.1",

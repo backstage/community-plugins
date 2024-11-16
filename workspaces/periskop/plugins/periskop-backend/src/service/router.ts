@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { errorHandler } from '@backstage/backend-common';
 import express from 'express';
 import Router from 'express-promise-router';
 import { PeriskopApi } from '../api/index';
@@ -52,6 +51,6 @@ export async function createRouter(
     const errors = await periskopApi.getErrors(locationName, serviceName);
     response.status(200).json(errors);
   });
-  router.use(errorHandler());
+
   return router;
 }
