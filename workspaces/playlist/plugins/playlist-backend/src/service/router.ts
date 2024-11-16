@@ -14,12 +14,6 @@
  * limitations under the License.
  */
 
-import {
-  createLegacyAuthAdapters,
-  errorHandler,
-  PluginDatabaseManager,
-  PluginEndpointDiscovery,
-} from '@backstage/backend-common';
 import { CatalogClient } from '@backstage/catalog-client';
 import { parseEntityRef } from '@backstage/catalog-model';
 import { NotAllowedError } from '@backstage/errors';
@@ -42,6 +36,8 @@ import { DatabaseHandler } from './DatabaseHandler';
 import { parseListPlaylistsFilterParams } from './ListPlaylistsFilter';
 import {
   AuthService,
+  DatabaseService,
+  DiscoveryService,
   HttpAuthService,
   LoggerService,
   PermissionsService,
@@ -51,13 +47,13 @@ import {
  * @public
  */
 export interface RouterOptions {
-  database: PluginDatabaseManager;
-  discovery: PluginEndpointDiscovery;
+  database: DatabaseService;
+  discovery: DiscoveryService;
   identity?: IdentityApi;
   logger: LoggerService;
   permissions: PermissionsService;
-  auth?: AuthService;
-  httpAuth?: HttpAuthService;
+  auth: AuthService;
+  httpAuth: HttpAuthService;
 }
 
 /**
@@ -71,9 +67,9 @@ export async function createRouter(
     discovery,
     logger,
     permissions: permissionEvaluator,
+    auth,
+    httpAuth,
   } = options;
-
-  const { auth, httpAuth } = createLegacyAuthAdapters(options);
 
   logger.info('Initializing Playlist backend');
 
@@ -270,6 +266,5 @@ export async function createRouter(
     res.status(200).end();
   });
 
-  router.use(errorHandler());
   return router;
 }
