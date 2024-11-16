@@ -16,7 +16,6 @@
 
 import express from 'express';
 import Router from 'express-promise-router';
-import { errorHandler } from '@backstage/backend-common';
 import { Config } from '@backstage/config';
 import { RollbarApi } from '../api';
 import { LoggerService } from '@backstage/backend-plugin-api';
@@ -84,8 +83,6 @@ export async function createRouter(
       res.status(200).json(items);
     });
   }
-
-  router.use(errorHandler());
 
   return router;
 }
