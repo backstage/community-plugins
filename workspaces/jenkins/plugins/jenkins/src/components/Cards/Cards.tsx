@@ -95,11 +95,9 @@ const JenkinsApiErrorPanel = (props: {
   return <WarningPanel severity="error" title={title} message={message} />;
 };
 
-type LatestRunCardTitle = string | ((branch: string) => string);
-
 const renderLatestRunCardTitle = (
   branch: string,
-  title?: LatestRunCardTitle,
+  title?: string | ((branch: string) => string),
 ): string => {
   if (title && typeof title === 'function') {
     return title(branch);
@@ -110,7 +108,7 @@ const renderLatestRunCardTitle = (
 export const LatestRunCard = (props: {
   branch: string;
   variant?: InfoCardVariants;
-  title?: LatestRunCardTitle;
+  title?: string | ((branch: string) => string);
 }) => {
   const { branch = 'master', variant, title } = props;
   const [{ projects, loading, error }] = useBuilds({ branch });

@@ -30,7 +30,7 @@ export const EntityJobRunsTable: () => JSX_2.Element;
 export const EntityLatestJenkinsRunCard: (props: {
   branch: string;
   variant?: InfoCardVariants | undefined;
-  title?: (string | ((branch: string) => string)) | undefined;
+  title?: string | ((branch: string) => string) | undefined;
 }) => JSX_2.Element;
 
 // @public (undocumented)
@@ -126,8 +126,8 @@ export { jenkinsPlugin as plugin };
 // @public (undocumented)
 export const LatestRunCard: (props: {
   branch: string;
-  variant?: InfoCardVariants;
-  title?: LatestRunCardTitle;
+  variant?: InfoCardVariants | undefined;
+  title?: string | ((branch: string) => string) | undefined;
 }) => React_2.JSX.Element;
 
 // Warning: (ae-missing-release-tag) "LEGACY_JENKINS_ANNOTATION" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -160,8 +160,4 @@ export const Router: (props: {
   title?: string;
   columns?: TableColumn<Project>[];
 }) => React_2.JSX.Element;
-
-// Warnings were encountered during analysis:
-//
-// src/components/Cards/Cards.d.ts:7:5 - (ae-forgotten-export) The symbol "LatestRunCardTitle" needs to be exported by the entry point index.d.ts
 ```
