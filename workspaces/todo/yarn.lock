@@ -2561,7 +2561,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-todo-backend@workspace:plugins/todo-backend"
   dependencies:
-    "@backstage/backend-common": ^0.25.0
     "@backstage/backend-openapi-utils": ^0.2.0
     "@backstage/backend-plugin-api": ^1.0.1
     "@backstage/backend-test-utils": ^1.0.2

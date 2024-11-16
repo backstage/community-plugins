@@ -16,7 +16,6 @@
 
 import express from 'express';
 import request from 'supertest';
-import { errorHandler } from '@backstage/backend-common';
 
 import { createRouter } from './router';
 import { parseFilterParam, parseOrderByParam } from '../lib/utils';
@@ -51,7 +50,7 @@ describe('createRouter', () => {
     const router = await createRouter({
       todoService: mockService,
     });
-    app = express().use(router).use(errorHandler());
+    app = express().use(router);
   });
 
   beforeEach(() => {
