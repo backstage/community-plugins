@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import {
-  PluginDatabaseManager,
+  DatabaseService,
+  LoggerService,
   resolvePackagePath,
-} from '@backstage/backend-common';
-import { LoggerService } from '@backstage/backend-plugin-api';
+} from '@backstage/backend-plugin-api';
 
 import { Knex } from 'knex';
 import short from 'short-uuid';
@@ -59,7 +60,7 @@ export class DatabaseFeedbackStore implements FeedbackStore {
     skipMigrations,
     logger,
   }: {
-    database: PluginDatabaseManager;
+    database: DatabaseService;
     skipMigrations: boolean;
     logger: LoggerService;
   }): Promise<DatabaseFeedbackStore> {

@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import {
-  DatabaseManager,
-  errorHandler,
-  PluginEndpointDiscovery,
-} from '@backstage/backend-common';
-import { AuthService, LoggerService } from '@backstage/backend-plugin-api';
+  AuthService,
+  DatabaseService,
+  DiscoveryService,
+  LoggerService,
+} from '@backstage/backend-plugin-api';
 import { CatalogClient } from '@backstage/catalog-client';
 import { Entity, UserEntityV1alpha1 } from '@backstage/catalog-model';
 import { Config } from '@backstage/config';
@@ -36,18 +37,19 @@ import { NotificationService } from '@backstage/plugin-notifications-node';
 export interface RouterOptions {
   logger: LoggerService;
   config: Config;
-  discovery: PluginEndpointDiscovery;
+  discovery: DiscoveryService;
   auth: AuthService;
+  database: DatabaseService;
   notifications?: NotificationService;
 }
 
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
-  const { logger, config, discovery, auth, notifications } = options;
+  const { logger, config, discovery, auth, database, notifications } = options;
   const router = Router();
   const feedbackDB = await DatabaseFeedbackStore.create({
-    database: DatabaseManager.fromConfig(config).forPlugin('feedback'),
+    database: database,
     skipMigrations: false,
     logger,
   });
@@ -393,6 +395,5 @@ export async function createRouter(
     })();
   });
 
-  router.use(errorHandler());
   return router;
 }

@@ -42,7 +42,6 @@
     "tsc": "tsc"
   },
   "dependencies": {
-    "@backstage/backend-common": "^0.25.0",
     "@backstage/backend-dynamic-feature-service": "^0.4.3",
     "@backstage/backend-plugin-api": "^1.0.1",
     "@backstage/backend-test-utils": "^1.0.2",

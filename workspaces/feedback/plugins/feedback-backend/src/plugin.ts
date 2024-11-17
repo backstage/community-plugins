@@ -30,6 +30,7 @@ export const feedbackPlugin = createBackendPlugin({
         config: coreServices.rootConfig,
         discovery: coreServices.discovery,
         auth: coreServices.auth,
+        database: coreServices.database,
         notifications: notificationService,
       },
       async init({
@@ -38,6 +39,7 @@ export const feedbackPlugin = createBackendPlugin({
         config,
         discovery,
         auth,
+        database,
         notifications,
       }) {
         httpRouter.use(
@@ -46,6 +48,7 @@ export const feedbackPlugin = createBackendPlugin({
             config: config,
             discovery: discovery,
             auth: auth,
+            database: database,
             notifications,
           }),
         );
