@@ -42,7 +42,6 @@
   "dependencies": {
     "@backstage-community/plugin-explore-common": "workspace:^",
     "@backstage-community/plugin-explore-node": "workspace:^",
-    "@backstage/backend-common": "^0.25.0",
     "@backstage/backend-plugin-api": "^1.0.1",
     "@backstage/config": "^1.2.0",
     "@backstage/types": "^1.1.1",

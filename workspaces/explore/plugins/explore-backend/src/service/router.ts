@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { errorHandler } from '@backstage/backend-common';
 import { GetExploreToolsRequest } from '@backstage-community/plugin-explore-common';
 import express from 'express';
 import Router from 'express-promise-router';
@@ -45,8 +44,6 @@ export async function createRouter(
     const result = await toolProvider.getTools(requestQuery);
     response.json(result);
   });
-
-  router.use(errorHandler());
 
   return router;
 }

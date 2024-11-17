@@ -2518,7 +2518,6 @@ __metadata:
   dependencies:
     "@backstage-community/plugin-explore-common": "workspace:^"
     "@backstage-community/plugin-explore-node": "workspace:^"
-    "@backstage/backend-common": ^0.25.0
     "@backstage/backend-defaults": ^0.5.2
     "@backstage/backend-plugin-api": ^1.0.1
     "@backstage/backend-test-utils": ^1.0.2
