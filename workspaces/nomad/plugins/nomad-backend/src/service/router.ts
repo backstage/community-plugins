@@ -15,7 +15,6 @@
  */
 
 import fetch from 'node-fetch';
-import { errorHandler, requestLoggingHandler } from '@backstage/backend-common';
 import { Config } from '@backstage/config';
 import { InputError } from '@backstage/errors';
 import express from 'express';
@@ -120,7 +119,5 @@ export async function createRouter(
     resp.json(versionsBody);
   });
 
-  router.use(requestLoggingHandler());
-  router.use(errorHandler());
   return router;
 }
