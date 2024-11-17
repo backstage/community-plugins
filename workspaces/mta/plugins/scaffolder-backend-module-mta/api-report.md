@@ -16,7 +16,7 @@ branch: string;
 rootPath: string;
 }, JsonObject>;
 
-// @public (undocumented)
+// @public
 const mtaScaffolderModule: BackendFeatureCompat;
 export default mtaScaffolderModule;
 

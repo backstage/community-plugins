@@ -1,8 +1,10 @@
-import { resolvePackagePath } from '@backstage/backend-common';
 import { Knex } from 'knex';
-import { Logger } from 'winston';
 import path from 'path';
 import dotenv from 'dotenv';
+import {
+  LoggerService,
+  resolvePackagePath,
+} from '@backstage/backend-plugin-api';
 
 const ENTITY_APPLICATION_TABLE = 'entity-application-mapping';
 const OAUTH_MAPPING_TABLE = 'oauth-mapping';
@@ -50,12 +52,12 @@ export class DataBaseEntityApplicationStorage
 {
   public constructor(
     private readonly knex: Knex<any, any[]>,
-    private readonly logger: Logger,
+    private readonly logger: LoggerService,
   ) {}
 
   static async create(
     knex: Knex<any, any[]>,
-    logger: Logger,
+    logger: LoggerService,
   ): Promise<EntityApplicationStorage> {
     logger.info('Starting to migrate database');
     await knex.migrate.latest({
@@ -93,7 +95,6 @@ export class DataBaseEntityApplicationStorage
     entityID: string,
     applicationID: string,
   ): Promise<Boolean | void> {
-    // this.logger.info('saving in storage: ' + entityID + ' ' + applicatonID);
     this.logger.info(`saving in storage: ${entityID} ${applicationID}`);
 
     if (!entityID || !applicationID) {

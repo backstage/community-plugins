@@ -3,7 +3,6 @@ import {
   createBackendModule,
 } from '@backstage/backend-plugin-api';
 import { catalogProcessingExtensionPoint } from '@backstage/plugin-catalog-node/alpha';
-import { loggerToWinstonLogger } from '@backstage/backend-common';
 import { MTAProvider } from './provider/MTAEntityProvider';
 /**
  * A backend module that integrates with the catalog to provide MTA entities.
@@ -22,11 +21,7 @@ export const catalogModuleMtaEntityProvider = createBackendModule({
       },
       async init({ config, catalog, logger, scheduler }) {
         catalog.addEntityProvider(
-          MTAProvider.newProvider(
-            config,
-            loggerToWinstonLogger(logger),
-            scheduler,
-          ),
+          MTAProvider.newProvider(config, logger, scheduler),
         );
       },
     });

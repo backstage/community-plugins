@@ -1,22 +1,9 @@
-// plugins/example-backend/src/plugin.ts
-// import { MTAProvider } from '../../catalog-backend-module-mta/src/provider/MTAEntityProvider';
-
-// eslint-disable-next-line @backstage/no-relative-monorepo-imports
-// import { MTAProvider } from '../../catalog-backend-module-mta/src/provider/MTAEntityProvider';
-
-// import { catalogProcessingExtensionPoint } from '@backstage/plugin-catalog-node/alpha';
 import {
   coreServices,
   createBackendPlugin,
-  // createBackendModule,
-  // HttpRouterService,
   HttpRouterServiceAuthPolicy,
 } from '@backstage/backend-plugin-api';
 import { createRouter } from './service/router';
-import {
-  cacheToPluginCacheManager,
-  loggerToWinstonLogger,
-} from '@backstage/backend-common';
 
 /** @public */
 export const mtaPlugin = createBackendPlugin({
@@ -41,21 +28,16 @@ export const mtaPlugin = createBackendPlugin({
         userInfo,
         cache,
       }) {
-        logger.info('Hello from example plugin');
-        const winstonLogger = loggerToWinstonLogger(logger);
+        logger.info(`Url: ${config.getString('mta.url')}`);
 
-        winstonLogger.info(`Url: ${config.getString('mta.url')}`);
-
-        const pluginCacheManager = cacheToPluginCacheManager(cache);
-        // http.addAuthPolicy({ path: '/api/mta/*', allow: 'unauthenticated' });
         const policyConfig: HttpRouterServiceAuthPolicy = {
           path: '/api/mta/cb/:rest',
           allow: 'unauthenticated',
         };
         httpRouter.use(
           await createRouter({
-            logger: winstonLogger,
-            cache: pluginCacheManager,
+            logger,
+            cache,
             httpAuth,
             database,
             config,
@@ -63,29 +45,6 @@ export const mtaPlugin = createBackendPlugin({
           }),
         );
         httpRouter.addAuthPolicy(policyConfig);
-
-        // httpRouter.use((req, res, next) => {
-        //   if (req.path.startsWith('/api/mta/cb/:username')) {
-        //     // Bypassing authentication for specific callback route
-        //     next();
-        //   } else {
-        //     // Apply authentication middleware
-        //     // authenticateRequest(req, res, next);
-        //   }
-        // });
-
-        // function authenticateRequest(req, res, next) {
-        //   const token = req.headers.authorization?.split(' ')[1];
-        //   if (!token) {
-        //     return res.status(401).json({ error: 'No token provided' });
-        //   }
-        //   // Proceed with token verification and identity setting
-        //   verifyToken(token, identity, (err) => {
-        //     if (err) {
-        //       return res.status(401).json({ error: 'Unauthorized' });
-        //     }
-        //     next();
-        //   });
       },
     });
   },

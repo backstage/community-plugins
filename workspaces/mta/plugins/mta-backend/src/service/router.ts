@@ -1,27 +1,24 @@
-import { errorHandler } from '@backstage/backend-common';
 import express, { Router } from 'express';
-import {
-  PluginCacheManager,
-  PluginDatabaseManager,
-} from '@backstage/backend-common';
 import { Config } from '@backstage/config';
-import { Logger } from 'winston';
 import { Issuer, generators } from 'openid-client';
 import { isTokenExpired } from '../utils';
 import { DataBaseEntityApplicationStorage } from '../database/storage';
 import {
+  CacheService,
+  DatabaseService,
   HttpAuthService,
+  LoggerService,
   UserInfoService,
 } from '@backstage/backend-plugin-api';
 
 /** @public */
 export interface RouterOptions {
-  logger: Logger;
-  database: PluginDatabaseManager;
+  logger: LoggerService;
+  database: DatabaseService;
   httpAuth: HttpAuthService;
   config: Config;
   userInfo: UserInfoService;
-  cache: PluginCacheManager;
+  cache: CacheService;
 }
 
 /** @public */
@@ -33,7 +30,7 @@ export async function createRouter(
   const dbClient = await database.getClient();
   const entityApplicationStorage =
     await DataBaseEntityApplicationStorage.create(dbClient, logger);
-  const cacheClient = await cache.getClient();
+  const cacheClient = cache;
   const frontEndBaseURL = config.getString('app.baseUrl');
   const backstageBaseURL = config.getString('backend.baseUrl');
   const baseUrl = config.getString('mta.url');
@@ -98,12 +95,9 @@ export async function createRouter(
     logger.info(
       `backstageID id for userEntityRef: ${backstageID?.userEntityRef}`,
     );
-    logger.info({
-      backstageBaseURL,
-      frontEndBaseURL,
-      requestHeaders: request.headers,
-      referer: request.headers.referer,
-    });
+    logger.info(
+      `${backstageBaseURL}, ${frontEndBaseURL}, requestHeaders: ${request.headers}, referer: ${request.headers.referer}`,
+    );
     const id = backstageID?.userEntityRef ?? 'undefined';
     const u = new URL(`${backstageBaseURL}/api/mta/cb/${id}`);
     const org = request.headers.referer;
@@ -356,7 +350,7 @@ export async function createRouter(
 
       response.json(entities);
     } catch (error) {
-      logger.error('Failed to fetch entities:', error);
+      logger.error('Failed to fetch entities:', error as Error);
 
       response.status(500).json({ error: 'Failed to fetch entities' });
     }
@@ -370,7 +364,7 @@ export async function createRouter(
     const { entityID, applicationID } = request.body;
 
     try {
-      logger.info('Attempting to save:', entityID, applicationID);
+      logger.info(`Attempting to save: ${entityID} ${applicationID}`);
       const res = await entityApplicationStorage.saveApplicationIDForEntity(
         entityID,
         applicationID,
@@ -380,10 +374,10 @@ export async function createRouter(
         response.status(500).json({ error: 'Failed to save data' });
         return;
       }
-      logger.info('Successfully saved:', entityID, applicationID);
+      logger.info(`Successfully saved: ${entityID} ${applicationID}`);
       response.status(201).json({ entityID, applicationID });
     } catch (error) {
-      logger.error('Error in /application/entity:', error);
+      logger.error('Error in /application/entity:', error as Error);
       response.status(500).json({ error: 'Internal Server Error' });
     }
   });
@@ -403,7 +397,7 @@ export async function createRouter(
 
     const status = await (await getResponse).status;
     if (status !== 200) {
-      logger.error('response does not make sense %s', getResponse);
+      logger.error(`response does not make sense ${await getResponse}`);
       response.status(status);
       response.json({ status: status });
       return;
@@ -457,10 +451,7 @@ export async function createRouter(
       const { application, targetList } = analysisOptions;
 
       logger.info(
-        'Received request to analyze application:',
-        applicationId,
-        'with options:',
-        analysisOptions,
+        `Received request to analyze application: ${applicationId} with options: ${analysisOptions}`,
       );
 
       const TASKGROUPS = `${baseURLHub}/taskgroups`;
@@ -591,11 +582,6 @@ export async function createRouter(
         taskgroupResponse.data.rules = {
           labels: {
             excluded: [],
-            // included: [
-            //   'konveyor.io/target=eap8',
-            //   'konveyor.io/target=cloud-readiness',
-            //   'konveyor.io/target=quarkus',
-            // ],
             included: targetList,
           },
         };
@@ -607,9 +593,8 @@ export async function createRouter(
         await new Promise(resolve => setTimeout(resolve, 1000));
       } catch (error: any) {
         logger.error(
-          'Error during analysis of application:',
-          applicationId,
-          error,
+          `Error during analysis of application: ${applicationId}`,
+          error as Error,
         );
         response
           .status(500)
@@ -618,7 +603,6 @@ export async function createRouter(
     },
   );
 
-  router.use(errorHandler());
   return router;
 }
 

@@ -5,12 +5,12 @@
 ```ts
 
 import { BackendFeatureCompat } from '@backstage/backend-plugin-api';
+import { CacheService } from '@backstage/backend-plugin-api';
 import { Config } from '@backstage/config';
+import { DatabaseService } from '@backstage/backend-plugin-api';
 import express from 'express';
 import { HttpAuthService } from '@backstage/backend-plugin-api';
-import { Logger } from 'winston';
-import { PluginCacheManager } from '@backstage/backend-common';
-import { PluginDatabaseManager } from '@backstage/backend-common';
+import { LoggerService } from '@backstage/backend-plugin-api';
 import { UserInfoService } from '@backstage/backend-plugin-api';
 
 // @public (undocumented)
@@ -23,15 +23,15 @@ export default mtaPlugin;
 // @public (undocumented)
 export interface RouterOptions {
     // (undocumented)
-    cache: PluginCacheManager;
+    cache: CacheService;
     // (undocumented)
     config: Config;
     // (undocumented)
-    database: PluginDatabaseManager;
+    database: DatabaseService;
     // (undocumented)
     httpAuth: HttpAuthService;
     // (undocumented)
-    logger: Logger;
+    logger: LoggerService;
     // (undocumented)
     userInfo: UserInfoService;
 }

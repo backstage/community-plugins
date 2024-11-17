@@ -2675,7 +2675,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@backstage-community/backstage-plugin-catalog-backend-module-mta-entity-provider@workspace:plugins/catalog-backend-module-mta-entity-provider"
   dependencies:
-    "@backstage/backend-common": ^0.23.3
     "@backstage/backend-dynamic-feature-service": ^0.2.15
     "@backstage/backend-plugin-api": ^0.6.18
     "@backstage/backend-test-utils": ^0.3.6
@@ -2685,7 +2684,6 @@ __metadata:
     "@backstage/plugin-catalog-common": ^1.0.22
     "@backstage/plugin-catalog-node": ^1.12.4
     openid-client: ^5.6.5
-    winston: ^3.13.0
   languageName: unknown
   linkType: soft
 
@@ -2693,7 +2691,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@backstage-community/backstage-plugin-mta-backend@workspace:plugins/mta-backend"
   dependencies:
-    "@backstage/backend-common": ^0.23.3
     "@backstage/backend-defaults": ^0.5.0
     "@backstage/backend-dynamic-feature-service": ^0.2.15
     "@backstage/backend-plugin-api": ^0.8.0
@@ -2714,7 +2711,6 @@ __metadata:
     node-fetch: ^2.6.7
     openid-client: ^5.6.4
     supertest: ^6.2.4
-    winston: ^3.2.1
     yn: ^4.0.0
   languageName: unknown
   linkType: soft
@@ -2755,7 +2751,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@backstage-community/backstage-plugin-scaffolder-backend-module-mta@workspace:plugins/scaffolder-backend-module-mta"
   dependencies:
-    "@backstage/backend-common": ^0.21.6
     "@backstage/backend-dynamic-feature-service": ^0.2.15
     "@backstage/backend-plugin-api": ^0.6.17
     "@backstage/catalog-client": ^1.6.5
@@ -2788,7 +2783,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/backend-app-api@npm:^0.7.0, @backstage/backend-app-api@npm:^0.7.3, @backstage/backend-app-api@npm:^0.7.9":
+"@backstage/backend-app-api@npm:^0.7.3, @backstage/backend-app-api@npm:^0.7.9":
   version: 0.7.9
   resolution: "@backstage/backend-app-api@npm:0.7.9"
   dependencies:
@@ -2918,76 +2913,6 @@ __metadata:
     winston: ^3.2.1
     winston-transport: ^4.5.0
   checksum: 5696cfd35b9804be92568103932e8109dcbafe2bafd6eca4e04f1935f6128f6098528ecbb61d81fb78c959cd47f85e611203e624807f3b5956d2d3e7e7b5b554
-  languageName: node
-  linkType: hard
-
-"@backstage/backend-common@npm:^0.21.6, @backstage/backend-common@npm:^0.21.7":
-  version: 0.21.7
-  resolution: "@backstage/backend-common@npm:0.21.7"
-  dependencies:
-    "@aws-sdk/abort-controller": ^3.347.0
-    "@aws-sdk/client-codecommit": ^3.350.0
-    "@aws-sdk/client-s3": ^3.350.0
-    "@aws-sdk/credential-providers": ^3.350.0
-    "@aws-sdk/types": ^3.347.0
-    "@backstage/backend-app-api": ^0.7.0
-    "@backstage/backend-dev-utils": ^0.1.4
-    "@backstage/backend-plugin-api": ^0.6.17
-    "@backstage/cli-common": ^0.1.13
-    "@backstage/config": ^1.2.0
-    "@backstage/config-loader": ^1.8.0
-    "@backstage/errors": ^1.2.4
-    "@backstage/integration": ^1.10.0
-    "@backstage/integration-aws-node": ^0.1.12
-    "@backstage/plugin-auth-node": ^0.4.12
-    "@backstage/types": ^1.1.1
-    "@google-cloud/storage": ^7.0.0
-    "@keyv/memcache": ^1.3.5
-    "@keyv/redis": ^2.5.3
-    "@kubernetes/client-node": 0.20.0
-    "@manypkg/get-packages": ^1.1.3
-    "@octokit/rest": ^19.0.3
-    "@types/cors": ^2.8.6
-    "@types/dockerode": ^3.3.0
-    "@types/express": ^4.17.6
-    "@types/luxon": ^3.0.0
-    "@types/webpack-env": ^1.15.2
-    archiver: ^6.0.0
-    base64-stream: ^1.0.0
-    compression: ^1.7.4
-    concat-stream: ^2.0.0
-    cors: ^2.8.5
-    dockerode: ^4.0.0
-    express: ^4.17.1
-    express-promise-router: ^4.1.0
-    fs-extra: ^11.2.0
-    git-url-parse: ^14.0.0
-    helmet: ^6.0.0
-    isomorphic-git: ^1.23.0
-    jose: ^5.0.0
-    keyv: ^4.5.2
-    knex: ^3.0.0
-    lodash: ^4.17.21
-    logform: ^2.3.2
-    luxon: ^3.0.0
-    minimatch: ^9.0.0
-    mysql2: ^3.0.0
-    node-fetch: ^2.6.7
-    p-limit: ^3.1.0
-    pg: ^8.11.3
-    raw-body: ^2.4.1
-    tar: ^6.1.12
-    uuid: ^9.0.0
-    winston: ^3.2.1
-    winston-transport: ^4.5.0
-    yauzl: ^3.0.0
-    yn: ^4.0.0
-  peerDependencies:
-    pg-connection-string: ^2.3.0
-  peerDependenciesMeta:
-    pg-connection-string:
-      optional: true
-  checksum: a774e8556d2286fe4648a669c96cece8f831db11b1d7c1075a6bf8da43318ce53e064543b173b7ecc347a23c738e2b52a74168d5f9403fc20fa14eaf2d1fc83b
   languageName: node
   linkType: hard
 
@@ -16269,7 +16194,6 @@ __metadata:
     "@backstage-community/backstage-plugin-catalog-backend-module-mta-entity-provider": "workspace:^"
     "@backstage-community/backstage-plugin-mta-backend": "workspace:^"
     "@backstage-community/backstage-plugin-scaffolder-backend-module-mta": "workspace:^"
-    "@backstage/backend-common": ^0.21.7
     "@backstage/backend-defaults": ^0.3.3
     "@backstage/backend-dynamic-feature-service": ^0.2.15
     "@backstage/backend-tasks": ^0.5.22
@@ -36272,7 +36196,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"winston@npm:^3.13.0, winston@npm:^3.2.1":
+"winston@npm:^3.2.1":
   version: 3.15.0
   resolution: "winston@npm:3.15.0"
   dependencies:
