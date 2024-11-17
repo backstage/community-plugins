@@ -22,6 +22,7 @@ import {
 } from '@backstage/backend-plugin-api';
 import {
   createQueue,
+  createScope,
   type Operation,
   run,
   spawn,
@@ -32,16 +33,15 @@ import {
   createGithubGraphqlClient,
   fetchGithubDiscussions,
   type GithubDiscussionFetcherResult,
+  GithubGraphqlClient,
   toAsyncIterable,
 } from 'github-discussions-fetcher';
 import { type GithubDiscussionsDocument } from '@backstage-community/plugin-github-discussions-common';
 import {
   DefaultGithubCredentialsProvider,
   type GithubIntegration,
-  ScmIntegrationsGroup,
   ScmIntegrations,
 } from '@backstage/integration';
-import assert from 'assert-ts';
 import gh from 'parse-github-url';
 import { Duration } from 'luxon';
 
@@ -64,7 +64,7 @@ export interface GithubDiscussionsCollatorFactoryConstructorOptions {
 export interface GithubDiscussionsCollatorFactoryOptions {
   logger: LoggerService;
   credentialsProvider: DefaultGithubCredentialsProvider;
-  githubIntegration: ScmIntegrationsGroup<GithubIntegration>;
+  integration: GithubIntegration;
   timeout: number;
   url: string;
   cacheBase?: string;
@@ -72,6 +72,8 @@ export interface GithubDiscussionsCollatorFactoryOptions {
   discussionsBatchSize?: number;
   commentsBatchSize?: number;
   repliesBatchSize?: number;
+  repo: string;
+  org: string;
 }
 
 /**
@@ -81,12 +83,14 @@ export interface GithubDiscussionsCollatorFactoryOptions {
 export class GithubDiscussionsCollatorFactory
   implements DocumentCollatorFactory
 {
-  private readonly githubIntegration: ScmIntegrationsGroup<GithubIntegration>;
+  private readonly integration: GithubIntegration;
   private credentialsProvider: DefaultGithubCredentialsProvider;
   private readonly logger: LoggerService;
   public readonly type: string = 'github-discussions';
   private readonly timeout: number;
   private readonly url: string;
+  private readonly org: string;
+  private readonly repo: string;
   private readonly cacheBase?: string;
   private readonly clearCacheOnSuccess?: boolean;
   private readonly discussionsBatchSize?: number;
@@ -96,7 +100,7 @@ export class GithubDiscussionsCollatorFactory
   private constructor(options: GithubDiscussionsCollatorFactoryOptions) {
     this.logger = options.logger.child({ documentType: this.type });
     this.credentialsProvider = options.credentialsProvider;
-    this.githubIntegration = options.githubIntegration;
+    this.integration = options.integration;
     this.timeout = options.timeout;
     this.url = options.url;
     this.cacheBase = options.cacheBase;
@@ -104,6 +108,8 @@ export class GithubDiscussionsCollatorFactory
     this.discussionsBatchSize = options.discussionsBatchSize;
     this.commentsBatchSize = options.commentsBatchSize;
     this.repliesBatchSize = options.repliesBatchSize;
+    this.org = options.org;
+    this.repo = options.repo;
   }
 
   static async fromConfig({
@@ -119,11 +125,25 @@ export class GithubDiscussionsCollatorFactory
 
     const timeout = Duration.fromObject(schedule.timeout).as('milliseconds');
     const integrations = ScmIntegrations.fromConfig(config);
+
     const { github: githubIntegration } = integrations;
     const credentialsProvider =
       DefaultGithubCredentialsProvider.fromIntegrations(integrations);
 
     const url = _config.getString('url');
+
+    const ghUrl = gh(url);
+    if (!ghUrl) throw new Error(`${url} is not parsable as a Github URL`);
+    const { name: repo, owner: org } = ghUrl;
+
+    if (!org) throw new Error(`Missing organization name in ${url}`);
+    if (!repo) throw new Error(`Missing repository name in ${url}`);
+
+    const integration = githubIntegration.byUrl(url);
+    if (!integration) {
+      throw new Error(`Could not retrieve a Github integration for ${url}`);
+    }
+
     const cacheBase = _config.getOptionalString('cacheBase');
     const clearCacheOnSuccess = _config.getOptionalBoolean(
       'clearCacheOnSuccess',
@@ -137,8 +157,10 @@ export class GithubDiscussionsCollatorFactory
     return new GithubDiscussionsCollatorFactory({
       logger,
       credentialsProvider,
-      githubIntegration,
+      integration: integration,
       timeout,
+      repo,
+      org,
       url,
       cacheBase,
       clearCacheOnSuccess,
@@ -162,84 +184,82 @@ export class GithubDiscussionsCollatorFactory
       debug: this.logger.debug.bind(this.logger),
     } as unknown as typeof console;
 
-    const url = gh(this.url);
-    assert(url !== null, `Not parsable as a Github URL`);
-    const { name: repo, owner: org } = url;
-    assert(org !== null, `Discussions url is missing organization name`);
-    assert(repo !== null, `Discussion url is missing repository`);
-
-    const integration = this.githubIntegration.byUrl(url.href);
-
-    assert(integration, `Could not retrieve a Github integration for ${url}`);
-
     const { token } = await this.credentialsProvider.getCredentials({
-      url: url.href,
+      url: this.url,
     });
 
     const client = createGithubGraphqlClient({
       token,
-      endpoint: `${integration?.config.apiBaseUrl}/graphql`,
+      endpoint: `${this.integration.config.apiBaseUrl}/graphql`,
     });
 
-    let documents: AsyncIterable<GithubDiscussionFetcherResult> | undefined;
-    const cache = this.cacheBase ? new URL(this.cacheBase) : undefined;
-    const {
-      timeout,
-      clearCacheOnSuccess,
-      discussionsBatchSize = 100,
-      commentsBatchSize = 100,
-      repliesBatchSize = 100,
-    } = this;
-
-    const task = run(function* injection(): Operation<void> {
-      const scope = yield* useScope();
-      const results = createQueue<GithubDiscussionFetcherResult, void>();
-
-      yield* spawn(function* (): Operation<void> {
-        try {
-          yield* fetchGithubDiscussions({
-            client,
-            org,
-            repo,
-            discussionsBatchSize,
-            commentsBatchSize,
-            repliesBatchSize,
-            logger,
-            results,
-            cache,
-            timeout,
-            clearCacheOnSuccess,
-          });
-        } catch (e) {
-          logger.log(e);
-          logger.error(
-            `Encountered an error while ingesting GitHub Discussions`,
-            e,
-          );
-        }
-        results.close();
-      });
-
-      documents = toAsyncIterable(results, scope);
-
-      yield* suspend();
+    const discussionDocuments = fetchDiscussionDocuments({
+      client,
+      org: this.org,
+      repo: this.repo,
+      discussionsBatchSize: this.discussionsBatchSize ?? 100,
+      commentsBatchSize: this.commentsBatchSize ?? 100,
+      repliesBatchSize: this.repliesBatchSize ?? 100,
+      timeout: this.timeout,
+      clearCacheOnSuccess: this.clearCacheOnSuccess,
+      logger,
+      cache: this.cacheBase ? new URL(this.cacheBase) : undefined,
     });
 
-    if (documents) {
-      for await (const document of documents) {
-        yield {
-          title: document.title,
-          text: document.bodyText,
-          location: document.url,
-          author: document.author,
-          category: document.category,
-          labels: document.labels,
-          comments: document.comments,
-        };
-      }
-      await task.halt();
-    } else {
-      logger.error(`Documents were not available when iteration started`);
+    let count = 0;
+    for await (const document of discussionDocuments) {
+      yield {
+        title: document.title,
+        text: document.bodyText,
+        location: document.url,
+        author: document.author,
+        category: document.category,
+        labels: document.labels,
+        comments: document.comments,
+      };
+      count++;
     }
+
+    this.logger.info(`Collator indexed ${count} documents`);
   }
+}
+
+interface FetchDiscussionDocumentsParams {
+  client: GithubGraphqlClient;
+  org: string;
+  repo: string;
+  discussionsBatchSize: number;
+  commentsBatchSize: number;
+  repliesBatchSize: number;
+  logger: typeof console;
+  cache?: URL;
+  timeout?: number;
+  clearCacheOnSuccess?: boolean;
+}
+
+function fetchDiscussionDocuments(params: FetchDiscussionDocumentsParams) {
+  const results = createQueue<GithubDiscussionFetcherResult, void>();
+  const [scope, halt] = createScope();
+
+  scope.run(function* (): Operation<void> {
+    yield* spawn(function* (): Operation<void> {
+      try {
+        yield* fetchGithubDiscussions({
+          ...params,
+          results,
+        });
+      } catch (e) {
+        params.logger.log(e);
+        params.logger.error(
+          `Encountered an error while ingesting GitHub Discussions`,
+          e,
+        );
+      }
+      results.close();
+    });
+
+    yield* suspend();
+  });
+
+  return toAsyncIterable(results, scope);
 }
