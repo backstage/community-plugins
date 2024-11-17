@@ -35,7 +35,6 @@
   },
   "dependencies": {
     "@backstage-community/plugin-blackduck-common": "workspace:^",
-    "@backstage/backend-common": "^0.25.0",
     "@backstage/backend-plugin-api": "^1.0.1",
     "@backstage/catalog-model": "^1.7.0",
     "@backstage/config": "^1.2.0",

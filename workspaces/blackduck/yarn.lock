@@ -2740,7 +2740,6 @@ __metadata:
   resolution: "@backstage-community/plugin-blackduck-backend@workspace:plugins/blackduck-backend"
   dependencies:
     "@backstage-community/plugin-blackduck-common": "workspace:^"
-    "@backstage/backend-common": ^0.25.0
     "@backstage/backend-defaults": ^0.5.2
     "@backstage/backend-plugin-api": ^1.0.1
     "@backstage/backend-test-utils": ^1.0.2
@@ -2776,7 +2775,6 @@ __metadata:
   resolution: "@backstage-community/plugin-blackduck@workspace:plugins/blackduck"
   dependencies:
     "@backstage-community/plugin-blackduck-common": "workspace:^"
-    "@backstage/backend-common": ^0.25.0
     "@backstage/backend-plugin-api": ^1.0.1
     "@backstage/catalog-model": ^1.7.0
     "@backstage/cli": ^0.28.0
@@ -15142,7 +15140,6 @@ __metadata:
   resolution: "backend@workspace:packages/backend"
   dependencies:
     "@backstage-community/plugin-blackduck-backend": "workspace:^"
-    "@backstage/backend-common": ^0.25.0
     "@backstage/backend-defaults": ^0.5.2
     "@backstage/backend-tasks": ^0.6.1
     "@backstage/catalog-client": ^1.7.1

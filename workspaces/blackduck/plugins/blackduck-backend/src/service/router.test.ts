@@ -49,6 +49,7 @@ describe('createRouter', () => {
       permissions: mockServices.permissions.mock(),
       discovery: mockServices.discovery.mock(),
       blackDuckConfig: BlackDuckConfig.fromConfig(config),
+      httpAuth: mockServices.httpAuth(),
     });
     app = express().use(router);
   });
