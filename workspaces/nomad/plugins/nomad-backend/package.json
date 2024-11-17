@@ -37,7 +37,6 @@
   },
   "dependencies": {
     "@backstage/backend-plugin-api": "^1.0.1",
-    "@backstage/backend-test-utils": "1.0.2",
     "@backstage/config": "^1.2.0",
     "@backstage/errors": "^1.2.4",
     "@types/express": "*",
@@ -48,6 +47,7 @@
   },
   "devDependencies": {
     "@backstage/backend-defaults": "^0.5.2",
+    "@backstage/backend-test-utils": "1.0.2",
     "@backstage/cli": "^0.28.0",
     "@backstage/plugin-auth-backend": "^0.23.1",
     "@backstage/plugin-auth-backend-module-guest-provider": "^0.2.1",
