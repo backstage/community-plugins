@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { errorHandler } from '@backstage/backend-common';
+
 import {
   AuthService,
   DiscoveryService,
@@ -98,6 +98,5 @@ export async function createRouter(
     },
   );
 
-  router.use(errorHandler());
   return router;
 }
