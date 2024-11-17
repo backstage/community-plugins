@@ -42,6 +42,8 @@ import {
   LoggerService,
   PermissionsService,
 } from '@backstage/backend-plugin-api';
+import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
+import { Config } from '@backstage/config';
 
 /**
  * @public
@@ -54,6 +56,7 @@ export interface RouterOptions {
   permissions: PermissionsService;
   auth: AuthService;
   httpAuth: HttpAuthService;
+  config: Config;
 }
 
 /**
@@ -69,6 +72,7 @@ export async function createRouter(
     permissions: permissionEvaluator,
     auth,
     httpAuth,
+    config,
   } = options;
 
   logger.info('Initializing Playlist backend');
@@ -266,5 +270,6 @@ export async function createRouter(
     res.status(200).end();
   });
 
+  router.use(MiddlewareFactory.create({ config, logger }).error());
   return router;
 }

@@ -8,6 +8,7 @@ import { BackendFeature } from '@backstage/backend-plugin-api';
 import { BackstageIdentityResponse } from '@backstage/plugin-auth-node';
 import { ConditionalPolicyDecision } from '@backstage/plugin-permission-common';
 import { Conditions } from '@backstage/plugin-permission-node';
+import { Config } from '@backstage/config';
 import { DatabaseService } from '@backstage/backend-plugin-api';
 import { DiscoveryService } from '@backstage/backend-plugin-api';
 import express from 'express';
@@ -91,6 +92,8 @@ export default playlistPlugin;
 export interface RouterOptions {
   // (undocumented)
   auth: AuthService;
+  // (undocumented)
+  config: Config;
   // (undocumented)
   database: DatabaseService;
   // (undocumented)

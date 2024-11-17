@@ -114,6 +114,7 @@ describe('createRouter', () => {
       permissions: mockPermissionEvaluator,
       auth: mockServices.auth(),
       httpAuth: mockServices.httpAuth(),
+      config: mockServices.rootConfig(),
     });
 
     app = express().use(router);
