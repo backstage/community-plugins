@@ -43,7 +43,11 @@ describe('router', () => {
       { name: 'prod', api: prodKafkaApi },
     ];
 
-    const router = makeRouter(mockServices.rootLogger(), apis);
+    const router = makeRouter(
+      mockServices.rootLogger(),
+      apis,
+      mockServices.rootConfig(),
+    );
     app = express().use(router);
   });
 

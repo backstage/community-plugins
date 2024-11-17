@@ -22,6 +22,7 @@ import { KafkaApi, KafkaJsApiImpl } from './KafkaApi';
 import _ from 'lodash';
 import { getClusterDetails } from '../config/ClusterReader';
 import { LoggerService } from '@backstage/backend-plugin-api';
+import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 
 /** @public */
 export interface RouterOptions {
@@ -37,6 +38,7 @@ export interface ClusterApi {
 export const makeRouter = (
   logger: LoggerService,
   kafkaApis: ClusterApi[],
+  config: Config,
 ): express.Router => {
   const router = Router();
   router.use(express.json());
@@ -82,6 +84,8 @@ export const makeRouter = (
     res.json({ consumerId, offsets: groupWithTopicOffsets.flat() });
   });
 
+  router.use(MiddlewareFactory.create({ config, logger }).error());
+
   return router;
 };
 
@@ -104,5 +108,5 @@ export async function createRouter(
     api: new KafkaJsApiImpl({ clientId, logger, ...cluster }),
   }));
 
-  return makeRouter(logger, kafkaApis);
+  return makeRouter(logger, kafkaApis, options.config);
 }
