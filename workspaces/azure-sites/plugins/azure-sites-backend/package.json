@@ -42,7 +42,6 @@
     "@azure/arm-resourcegraph": "^4.2.1",
     "@azure/identity": "^4.0.0",
     "@backstage-community/plugin-azure-sites-common": "workspace:^",
-    "@backstage/backend-common": "^0.25.0",
     "@backstage/backend-plugin-api": "^1.0.1",
     "@backstage/catalog-client": "^1.7.1",
     "@backstage/config": "^1.2.0",

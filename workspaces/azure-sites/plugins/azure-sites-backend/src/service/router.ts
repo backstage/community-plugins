@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 
-import {
-  createLegacyAuthAdapters,
-  errorHandler,
-} from '@backstage/backend-common';
 import express from 'express';
 import Router from 'express-promise-router';
 
@@ -47,16 +43,16 @@ export interface RouterOptions {
   catalogApi: CatalogApi;
   permissions: PermissionsService;
   discovery: DiscoveryService;
-  auth?: AuthService;
-  httpAuth?: HttpAuthService;
+  auth: AuthService;
+  httpAuth: HttpAuthService;
 }
 
 /** @public */
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
-  const { logger, azureSitesApi, permissions, catalogApi } = options;
-  const { auth, httpAuth } = createLegacyAuthAdapters(options);
+  const { logger, azureSitesApi, permissions, catalogApi, auth, httpAuth } =
+    options;
 
   const permissionIntegrationRouter = createPermissionIntegrationRouter({
     permissions: azureSitesPermissions,
@@ -194,6 +190,6 @@ export async function createRouter(
       }
     },
   );
-  router.use(errorHandler());
+
   return router;
 }
