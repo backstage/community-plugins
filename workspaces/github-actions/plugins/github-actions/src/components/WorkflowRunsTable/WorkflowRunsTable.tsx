@@ -65,14 +65,6 @@ const generatedColumns: TableColumn<Partial<WorkflowRun>>[] = [
             component={RouterLink}
             to={routeLink({ id: row.id! })}
             title={row.message} // display full message on hover
-            style={{
-              display: 'inline-block',
-              maxWidth: '400px',
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              verticalAlign: 'bottom',
-            }}
           >
             {truncatedMessage}
           </Link>
