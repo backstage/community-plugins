@@ -32,7 +32,7 @@
     "dist/**/*.js"
   ],
   "dependencies": {
-    "@backstage/cli": "^0.26.11",
+    "@backstage/cli": "^0.28.0",
     "@backstage/cli-node": "^0.2.7",
     "@backstage/errors": "^1.2.4",
     "@manypkg/get-packages": "^2.2.1",
