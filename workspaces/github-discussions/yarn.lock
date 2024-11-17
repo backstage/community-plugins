@@ -2573,13 +2573,11 @@ __metadata:
     "@backstage/integration": ^1.15.1
     "@backstage/plugin-search-backend-node": ^1.3.3
     "@backstage/plugin-search-common": ^1.2.14
+    "@guidanti/backstage-github-discussions-fetcher": ^0.3.0
     "@types/fs-extra": ^11
     "@types/luxon": ^3
     "@types/parse-github-url": ^1
-    assert-ts: ^0.3.4
-    effection: ^4.0.0-alpha.3
     fs-extra: ^11.2.0
-    github-discussions-fetcher: ^0.7.4
     luxon: ^3.5.0
     msw: ^2.6.0
     parse-github-url: ^1.0.3
@@ -4626,8 +4624,8 @@ __metadata:
   version: 0.18.2
   resolution: "@deno/shim-deno@npm:0.18.2"
   dependencies:
-    "@deno/shim-deno-test": "npm:^0.5.0"
-    which: "npm:^4.0.0"
+    "@deno/shim-deno-test": ^0.5.0
+    which: ^4.0.0
   checksum: 63f009ec40803f5b408a8b2d38a67a7d2db6e0334e9a0fd2fa89ead07b85fab5534ae36ce9dbe972452bd0687a63d81074b649cc8df9d73237352e5007f5b005
   languageName: node
   linkType: hard
@@ -5299,6 +5297,16 @@ __metadata:
   bin:
     proto-loader-gen-types: build/bin/proto-loader-gen-types.js
   checksum: 399c1b8a4627f93dc31660d9636ea6bf58be5675cc7581e3df56a249369e5be02c6cd0d642c5332b0d5673bc8621619bc06fb045aa3e8f57383737b5d35930dc
+  languageName: node
+  linkType: hard
+
+"@guidanti/backstage-github-discussions-fetcher@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "@guidanti/backstage-github-discussions-fetcher@npm:0.3.0"
+  dependencies:
+    effection: 4.0.0-alpha.3
+    github-discussions-fetcher: ^0.7.4
+  checksum: d56b8a47ca58235d5c936b0a2ccdb046c211617ee14aeb9445c8ca3c8b008fa4e05d4128a1e6d15559752138badaca06838db1fa48e091eaaeb8dd5f85610225
   languageName: node
   linkType: hard
 
@@ -6821,9 +6829,9 @@ __metadata:
   version: 6.0.12
   resolution: "@octokit/endpoint@npm:6.0.12"
   dependencies:
-    "@octokit/types": "npm:^6.0.3"
-    is-plain-object: "npm:^5.0.0"
-    universal-user-agent: "npm:^6.0.0"
+    "@octokit/types": ^6.0.3
+    is-plain-object: ^5.0.0
+    universal-user-agent: ^6.0.0
   checksum: b48b29940af11c4b9bca41cf56809754bb8385d4e3a6122671799d27f0238ba575b3fde86d2d30a84f4dbbc14430940de821e56ecc6a9a92d47fc2b29a31479d
   languageName: node
   linkType: hard
@@ -6853,9 +6861,9 @@ __metadata:
   version: 4.8.0
   resolution: "@octokit/graphql@npm:4.8.0"
   dependencies:
-    "@octokit/request": "npm:^5.6.0"
-    "@octokit/types": "npm:^6.0.3"
-    universal-user-agent: "npm:^6.0.0"
+    "@octokit/request": ^5.6.0
+    "@octokit/types": ^6.0.3
+    universal-user-agent: ^6.0.0
   checksum: f68afe53f63900d4a16a0a733f2f500df2695b731f8ed32edb728d50edead7f5011437f71d069c2d2f6d656227703d0c832a3c8af58ecf82bd5dcc051f2d2d74
   languageName: node
   linkType: hard
@@ -6965,9 +6973,9 @@ __metadata:
   version: 2.1.0
   resolution: "@octokit/request-error@npm:2.1.0"
   dependencies:
-    "@octokit/types": "npm:^6.0.3"
-    deprecation: "npm:^2.0.0"
-    once: "npm:^1.4.0"
+    "@octokit/types": ^6.0.3
+    deprecation: ^2.0.0
+    once: ^1.4.0
   checksum: baec2b5700498be01b4d958f9472cb776b3f3b0ea52924323a07e7a88572e24cac2cdf7eb04a0614031ba346043558b47bea2d346e98f0e8385b4261f138ef18
   languageName: node
   linkType: hard
@@ -6987,12 +6995,12 @@ __metadata:
   version: 5.6.3
   resolution: "@octokit/request@npm:5.6.3"
   dependencies:
-    "@octokit/endpoint": "npm:^6.0.1"
-    "@octokit/request-error": "npm:^2.1.0"
-    "@octokit/types": "npm:^6.16.1"
-    is-plain-object: "npm:^5.0.0"
-    node-fetch: "npm:^2.6.7"
-    universal-user-agent: "npm:^6.0.0"
+    "@octokit/endpoint": ^6.0.1
+    "@octokit/request-error": ^2.1.0
+    "@octokit/types": ^6.16.1
+    is-plain-object: ^5.0.0
+    node-fetch: ^2.6.7
+    universal-user-agent: ^6.0.0
   checksum: c0b4542eb4baaf880d673c758d3e0b5c4a625a4ae30abf40df5548b35f1ff540edaac74625192b1aff42a79ac661e774da4ab7d5505f1cb4ef81239b1e8510c5
   languageName: node
   linkType: hard
@@ -7034,7 +7042,7 @@ __metadata:
   version: 13.6.1
   resolution: "@octokit/types@npm:13.6.1"
   dependencies:
-    "@octokit/openapi-types": "npm:^22.2.0"
+    "@octokit/openapi-types": ^22.2.0
   checksum: 05bb427bc3c84088e2367b8d1b7a9834732116bb3d35ef51d1aae34b3919027159dd496b9362dab1cb047918da15be1dc1cafc512c97f9b77458bd273b5a2ba9
   languageName: node
   linkType: hard
@@ -7052,7 +7060,7 @@ __metadata:
   version: 6.41.0
   resolution: "@octokit/types@npm:6.41.0"
   dependencies:
-    "@octokit/openapi-types": "npm:^12.11.0"
+    "@octokit/openapi-types": ^12.11.0
   checksum: fd6f75e0b19b90d1a3d244d2b0c323ed8f2f05e474a281f60a321986683548ef2e0ec2b3a946aa9405d6092e055344455f69f58957c60f58368c8bdda5b7d2ab
   languageName: node
   linkType: hard
@@ -10906,13 +10914,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"assert-ts@npm:^0.3.4":
-  version: 0.3.4
-  resolution: "assert-ts@npm:0.3.4"
-  checksum: 143d6dd83c3cbe71bc4927d734de22ef0a0052f3bde059eed78d5ca5b71428bc35a5c0437d3637cde17583babc46116e6076414a4f69e5735e32391adc5984e6
-  languageName: node
-  linkType: hard
-
 "assert@npm:^1.1.1":
   version: 1.5.1
   resolution: "assert@npm:1.5.1"
@@ -14057,7 +14058,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"effection@npm:4.0.0-alpha.3, effection@npm:^4.0.0-alpha.3":
+"effection@npm:4.0.0-alpha.3":
   version: 4.0.0-alpha.3
   resolution: "effection@npm:4.0.0-alpha.3"
   checksum: 65f5790f8e7cb1912c2ae27b7ddc9d06224bc1a8584daafa69f5402663c2124387c0897430a9428b4f7a89a1ee4837c4589e79463698278515b31305cafad0e7
@@ -16068,13 +16069,13 @@ __metadata:
   version: 0.7.4
   resolution: "github-discussions-fetcher@npm:0.7.4"
   dependencies:
-    "@deno/shim-deno": "npm:~0.18.0"
-    "@octokit/graphql": "npm:^4.8.0"
-    "@octokit/types": "npm:13.6.1"
-    chalk: "npm:4.1.2"
-    effection: "npm:4.0.0-alpha.3"
-    graphql: "npm:16.8.2"
-    moment: "npm:2.30.1"
+    "@deno/shim-deno": ~0.18.0
+    "@octokit/graphql": ^4.8.0
+    "@octokit/types": 13.6.1
+    chalk: 4.1.2
+    effection: 4.0.0-alpha.3
+    graphql: 16.8.2
+    moment: 2.30.1
   checksum: e3e27153c9684a67fc951bc511f6bc6faf4333dc0c497d61a976253c105c4376204bcb41f0af95dae5b4defea6f8a96086522f68c2c80e710fcbb5724862965b
   languageName: node
   linkType: hard
