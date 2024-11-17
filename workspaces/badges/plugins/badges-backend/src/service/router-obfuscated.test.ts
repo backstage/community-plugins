@@ -16,11 +16,6 @@
 
 import express from 'express';
 import request from 'supertest';
-import {
-  getVoidLogger,
-  PluginEndpointDiscovery,
-  HostDiscovery,
-} from '@backstage/backend-common';
 import { CatalogApi } from '@backstage/catalog-client';
 import type { Entity } from '@backstage/catalog-model';
 import { Config, ConfigReader } from '@backstage/config';
@@ -69,8 +64,6 @@ describe('createRouter', () => {
     },
   });
 
-  let discovery: PluginEndpointDiscovery;
-
   const entity: Entity = {
     apiVersion: 'v1',
     kind: 'Component',
@@ -116,15 +109,15 @@ describe('createRouter', () => {
   };
 
   beforeAll(async () => {
-    discovery = HostDiscovery.fromConfig(config);
     const router = await createRouter({
       badgeBuilder,
       catalog: catalog as Partial<CatalogApi> as CatalogApi,
       config,
-      discovery,
-      logger: getVoidLogger(),
+      discovery: mockServices.discovery.mock(),
+      logger: mockServices.rootLogger(),
       auth: mockServices.auth(),
       httpAuth: mockServices.httpAuth(),
+      database: mockServices.database.mock(),
     });
     app = express().use(router);
   });
@@ -138,11 +131,12 @@ describe('createRouter', () => {
       badgeBuilder,
       catalog: catalog as Partial<CatalogApi> as CatalogApi,
       config,
-      discovery,
-      logger: getVoidLogger(),
+      discovery: mockServices.discovery.mock(),
+      logger: mockServices.rootLogger(),
       badgeStore: badgeStore,
       auth: mockServices.auth(),
       httpAuth: mockServices.httpAuth(),
+      database: mockServices.database.mock(),
     });
     expect(router).toBeDefined();
   });

@@ -15,9 +15,9 @@
  */
 
 import {
-  PluginDatabaseManager,
+  DatabaseService,
   resolvePackagePath,
-} from '@backstage/backend-common';
+} from '@backstage/backend-plugin-api';
 import { Knex } from 'knex';
 import { isNil } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
@@ -54,7 +54,7 @@ export class DatabaseBadgesStore implements BadgesStore {
     database,
     skipMigrations,
   }: {
-    database: PluginDatabaseManager;
+    database: DatabaseService;
     skipMigrations?: boolean;
   }): Promise<DatabaseBadgesStore> {
     const client = await database.getClient();

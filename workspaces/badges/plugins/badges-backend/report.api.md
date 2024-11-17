@@ -7,13 +7,13 @@ import { AuthService } from '@backstage/backend-plugin-api';
 import { BackendFeature } from '@backstage/backend-plugin-api';
 import { CatalogApi } from '@backstage/catalog-client';
 import { Config } from '@backstage/config';
+import { DatabaseService } from '@backstage/backend-plugin-api';
+import { DiscoveryService } from '@backstage/backend-plugin-api';
 import { Entity } from '@backstage/catalog-model';
 import express from 'express';
 import { HttpAuthService } from '@backstage/backend-plugin-api';
 import { IdentityApi } from '@backstage/plugin-auth-node';
 import { LoggerService } from '@backstage/backend-plugin-api';
-import { PluginEndpointDiscovery } from '@backstage/backend-common';
-import { TokenManager } from '@backstage/backend-common';
 
 // @public (undocumented)
 export interface Badge {
@@ -138,7 +138,7 @@ export class DefaultBadgeBuilder implements BadgeBuilder {
 // @public (undocumented)
 export interface RouterOptions {
   // (undocumented)
-  auth?: AuthService;
+  auth: AuthService;
   // (undocumented)
   badgeBuilder?: BadgeBuilder;
   // (undocumented)
@@ -150,14 +150,14 @@ export interface RouterOptions {
   // (undocumented)
   config: Config;
   // (undocumented)
-  discovery: PluginEndpointDiscovery;
+  database: DatabaseService;
   // (undocumented)
-  httpAuth?: HttpAuthService;
+  discovery: DiscoveryService;
+  // (undocumented)
+  httpAuth: HttpAuthService;
   // (undocumented)
   identity?: IdentityApi;
   // (undocumented)
   logger: LoggerService;
-  // (undocumented)
-  tokenManager?: TokenManager;
 }
 ```

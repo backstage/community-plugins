@@ -16,13 +16,6 @@
 
 import express from 'express';
 import Router from 'express-promise-router';
-import {
-  createLegacyAuthAdapters,
-  DatabaseManager,
-  errorHandler,
-  PluginEndpointDiscovery,
-  TokenManager,
-} from '@backstage/backend-common';
 import { CatalogApi, CatalogClient } from '@backstage/catalog-client';
 import { Config } from '@backstage/config';
 import { NotFoundError } from '@backstage/errors';
@@ -39,6 +32,8 @@ import { BadgesStore, DatabaseBadgesStore } from '../database/badgesStore';
 import { createDefaultBadgeFactories } from '../badges';
 import {
   AuthService,
+  DatabaseService,
+  DiscoveryService,
   HttpAuthService,
   LoggerService,
 } from '@backstage/backend-plugin-api';
@@ -49,13 +44,13 @@ export interface RouterOptions {
   badgeFactories?: BadgeFactories;
   catalog?: CatalogApi;
   config: Config;
-  discovery: PluginEndpointDiscovery;
-  tokenManager?: TokenManager;
-  auth?: AuthService;
-  httpAuth?: HttpAuthService;
+  discovery: DiscoveryService;
+  auth: AuthService;
+  httpAuth: HttpAuthService;
   logger: LoggerService;
   identity?: IdentityApi;
   badgeStore?: BadgesStore;
+  database: DatabaseService;
 }
 
 /** @public */
@@ -71,10 +66,8 @@ export async function createRouter(
     );
   const router = Router();
 
-  const { config, logger, discovery } = options;
+  const { config, logger, discovery, auth, httpAuth } = options;
   const baseUrl = await discovery.getExternalBaseUrl('badges');
-
-  const { auth, httpAuth } = createLegacyAuthAdapters(options);
 
   if (config.getOptionalBoolean('app.badges.obfuscate')) {
     return obfuscatedRoute(
@@ -115,7 +108,7 @@ async function obfuscatedRoute(
   const store = options.badgeStore
     ? options.badgeStore
     : await DatabaseBadgesStore.create({
-        database: DatabaseManager.fromConfig(config).forPlugin('badges'),
+        database: options.database,
       });
 
   router.get('/entity/:entityUuid/badge-specs', async (req, res) => {
@@ -281,8 +274,6 @@ async function obfuscatedRoute(
     },
   );
 
-  router.use(errorHandler());
-
   return router;
 }
 
@@ -392,8 +383,6 @@ async function nonObfuscatedRoute(
       res.status(200).send(data);
     },
   );
-
-  router.use(errorHandler());
 
   return router;
 }

@@ -16,11 +16,6 @@
 
 import express from 'express';
 import request from 'supertest';
-import {
-  getVoidLogger,
-  PluginEndpointDiscovery,
-  HostDiscovery,
-} from '@backstage/backend-common';
 import { CatalogApi } from '@backstage/catalog-client';
 import type { Entity } from '@backstage/catalog-model';
 import { Config, ConfigReader } from '@backstage/config';
@@ -31,6 +26,7 @@ import {
   IdentityApiGetIdentityRequest,
 } from '@backstage/plugin-auth-node';
 import { BadgesStore } from '../database/badgesStore';
+import { mockServices } from '@backstage/backend-test-utils';
 
 describe('createRouter', () => {
   let app: express.Express;
@@ -53,7 +49,6 @@ describe('createRouter', () => {
   const getIdentity = jest.fn();
 
   let config: Config;
-  let discovery: PluginEndpointDiscovery;
 
   const entity: Entity = {
     apiVersion: 'v1',
@@ -112,13 +107,15 @@ describe('createRouter', () => {
       },
     );
 
-    discovery = HostDiscovery.fromConfig(config);
     const router = await createRouter({
       badgeBuilder,
       catalog: catalog as Partial<CatalogApi> as CatalogApi,
       config,
-      discovery,
-      logger: getVoidLogger(),
+      discovery: mockServices.discovery.mock(),
+      logger: mockServices.rootLogger(),
+      database: mockServices.database.mock(),
+      auth: mockServices.auth(),
+      httpAuth: mockServices.httpAuth(),
     });
     app = express().use(router);
   });
@@ -132,9 +129,12 @@ describe('createRouter', () => {
       badgeBuilder,
       catalog: catalog as Partial<CatalogApi> as CatalogApi,
       config,
-      discovery,
-      logger: getVoidLogger(),
+      discovery: mockServices.discovery.mock(),
+      logger: mockServices.rootLogger(),
       badgeStore: badgeStore,
+      database: mockServices.database.mock(),
+      auth: mockServices.auth(),
+      httpAuth: mockServices.httpAuth(),
     });
     expect(router).toBeDefined();
   });
