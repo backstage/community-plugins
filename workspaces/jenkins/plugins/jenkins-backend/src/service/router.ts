@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 
-import {
-  createLegacyAuthAdapters,
-  errorHandler,
-} from '@backstage/backend-common';
 import express from 'express';
 import Router from 'express-promise-router';
 import { JenkinsInfoProvider } from './jenkinsInfoProvider';
@@ -32,7 +28,6 @@ import { stringifyError } from '@backstage/errors';
 import { createPermissionIntegrationRouter } from '@backstage/plugin-permission-node';
 import { jenkinsPermissions } from '@backstage-community/plugin-jenkins-common';
 import {
-  AuthService,
   DiscoveryService,
   HttpAuthService,
   LoggerService,
@@ -44,15 +39,14 @@ export interface RouterOptions {
   jenkinsInfoProvider: JenkinsInfoProvider;
   permissions?: PermissionEvaluator | PermissionAuthorizer;
   discovery: DiscoveryService;
-  auth?: AuthService;
-  httpAuth?: HttpAuthService;
+  httpAuth: HttpAuthService;
 }
 
 /** @public */
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
-  const { jenkinsInfoProvider, permissions, logger } = options;
+  const { jenkinsInfoProvider, permissions, logger, httpAuth } = options;
 
   let permissionEvaluator: PermissionEvaluator | undefined;
   if (permissions && 'authorizeConditional' in permissions) {
@@ -65,8 +59,6 @@ export async function createRouter(
       ? toPermissionEvaluator(permissions)
       : undefined;
   }
-
-  const { httpAuth } = createLegacyAuthAdapters(options);
 
   const jenkinsApi = new JenkinsApiImpl(permissionEvaluator);
 
@@ -208,6 +200,6 @@ export async function createRouter(
       response.json({}).status(status);
     },
   );
-  router.use(errorHandler());
+
   return router;
 }

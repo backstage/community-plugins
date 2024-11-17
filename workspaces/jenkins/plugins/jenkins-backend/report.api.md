@@ -26,7 +26,7 @@ export class DefaultJenkinsInfoProvider implements JenkinsInfoProvider {
     config: Config;
     catalog: CatalogApi;
     discovery: DiscoveryService;
-    auth?: AuthService;
+    auth: AuthService;
     httpAuth?: HttpAuthService;
     logger: LoggerService;
   }): DefaultJenkinsInfoProvider;
@@ -145,11 +145,9 @@ export default jenkinsPlugin;
 // @public (undocumented)
 export interface RouterOptions {
   // (undocumented)
-  auth?: AuthService;
-  // (undocumented)
   discovery: DiscoveryService;
   // (undocumented)
-  httpAuth?: HttpAuthService;
+  httpAuth: HttpAuthService;
   // (undocumented)
   jenkinsInfoProvider: JenkinsInfoProvider;
   // (undocumented)

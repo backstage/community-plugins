@@ -2663,7 +2663,6 @@ __metadata:
   resolution: "@backstage-community/plugin-jenkins-backend@workspace:plugins/jenkins-backend"
   dependencies:
     "@backstage-community/plugin-jenkins-common": "workspace:^"
-    "@backstage/backend-common": ^0.25.0
     "@backstage/backend-defaults": ^0.5.1
     "@backstage/backend-plugin-api": ^1.0.1
     "@backstage/backend-test-utils": ^1.0.1
@@ -15307,7 +15306,6 @@ __metadata:
   resolution: "backend@workspace:packages/backend"
   dependencies:
     "@backstage-community/plugin-jenkins-backend": "workspace:^"
-    "@backstage/backend-common": ^0.25.0
     "@backstage/backend-defaults": ^0.5.1
     "@backstage/backend-tasks": ^0.6.1
     "@backstage/cli": ^0.28.0

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { createLegacyAuthAdapters } from '@backstage/backend-common';
 import {
   AuthService,
   BackstageCredentials,
@@ -215,15 +214,14 @@ export class DefaultJenkinsInfoProvider implements JenkinsInfoProvider {
     config: Config;
     catalog: CatalogApi;
     discovery: DiscoveryService;
-    auth?: AuthService;
+    auth: AuthService;
     httpAuth?: HttpAuthService;
     logger: LoggerService;
   }): DefaultJenkinsInfoProvider {
-    const { auth } = createLegacyAuthAdapters(options);
     return new DefaultJenkinsInfoProvider(
       JenkinsConfig.fromConfig(options.config),
       options.catalog,
-      auth,
+      options.auth,
       options.logger,
     );
   }
