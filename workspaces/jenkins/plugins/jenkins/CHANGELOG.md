@@ -1,5 +1,11 @@
 # @backstage-community/plugin-jenkins
 
+## 0.12.0
+
+### Minor Changes
+
+- 6bde043: Add title property to Jenkins components.
+
 ## 0.11.1
 
 ### Patch Changes
