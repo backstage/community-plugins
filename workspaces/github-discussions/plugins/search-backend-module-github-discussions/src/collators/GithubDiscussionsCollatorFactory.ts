@@ -21,21 +21,9 @@ import {
   RootConfigService,
 } from '@backstage/backend-plugin-api';
 import {
-  createQueue,
-  createScope,
-  type Operation,
-  run,
-  spawn,
-  suspend,
-  useScope,
-} from 'effection';
-import {
   createGithubGraphqlClient,
-  fetchGithubDiscussions,
-  type GithubDiscussionFetcherResult,
-  GithubGraphqlClient,
-  toAsyncIterable,
-} from 'github-discussions-fetcher';
+  fetchDiscussionDocuments,
+} from '@guidanti/backstage-github-discussions-fetcher';
 import { type GithubDiscussionsDocument } from '@backstage-community/plugin-github-discussions-common';
 import {
   DefaultGithubCredentialsProvider,
@@ -222,44 +210,4 @@ export class GithubDiscussionsCollatorFactory
 
     this.logger.info(`Collator indexed ${count} documents`);
   }
-}
-
-interface FetchDiscussionDocumentsParams {
-  client: GithubGraphqlClient;
-  org: string;
-  repo: string;
-  discussionsBatchSize: number;
-  commentsBatchSize: number;
-  repliesBatchSize: number;
-  logger: typeof console;
-  cache?: URL;
-  timeout?: number;
-  clearCacheOnSuccess?: boolean;
-}
-
-function fetchDiscussionDocuments(params: FetchDiscussionDocumentsParams) {
-  const results = createQueue<GithubDiscussionFetcherResult, void>();
-  const [scope, halt] = createScope();
-
-  scope.run(function* (): Operation<void> {
-    yield* spawn(function* (): Operation<void> {
-      try {
-        yield* fetchGithubDiscussions({
-          ...params,
-          results,
-        });
-      } catch (e) {
-        params.logger.log(e);
-        params.logger.error(
-          `Encountered an error while ingesting GitHub Discussions`,
-          e,
-        );
-      }
-      results.close();
-    });
-
-    yield* suspend();
-  });
-
-  return toAsyncIterable(results, scope);
 }
