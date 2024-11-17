@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Logger } from 'winston';
+
 import { AzureStorageProvider } from './AzureStorageProvider';
 import { Config } from '@backstage/config';
 import Router from 'express-promise-router';
 import express from 'express';
 import { NotFoundError } from '@backstage/errors';
-import { errorHandler } from '@backstage/backend-common';
+import { LoggerService } from '@backstage/backend-plugin-api';
 
 export interface AzureStorageEnv {
-  logger: Logger;
+  logger: LoggerService;
   config: Config;
 }
 
@@ -59,7 +59,7 @@ export class AzureStorageBuilder {
 
   protected buildRouter(
     azureStorageProvider: AzureStorageProvider,
-    logger: Logger,
+    logger: LoggerService,
   ): express.Router {
     const router = Router();
     router.use(express.json());
@@ -117,8 +117,6 @@ export class AzureStorageBuilder {
         });
       },
     );
-
-    router.use(errorHandler());
 
     return router;
   }

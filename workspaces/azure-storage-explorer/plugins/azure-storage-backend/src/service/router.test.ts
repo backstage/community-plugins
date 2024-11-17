@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { getVoidLogger } from '@backstage/backend-common';
+
+import { mockServices } from '@backstage/backend-test-utils';
 import express from 'express';
 import request from 'supertest';
 import { ConfigReader } from '@backstage/config';
@@ -25,7 +26,7 @@ describe('createRouter', () => {
 
   beforeAll(async () => {
     const router = await createRouter({
-      logger: getVoidLogger(),
+      logger: mockServices.rootLogger(),
       config: new ConfigReader({
         azureStorage: {
           blobContainers: [
