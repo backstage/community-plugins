@@ -35,6 +35,8 @@ export const codeCoveragePlugin = createBackendPlugin({
         httpRouter: coreServices.httpRouter,
         discovery: coreServices.discovery,
         database: coreServices.database,
+        auth: coreServices.auth,
+        httpAuth: coreServices.httpAuth,
       },
       async init({
         config,
@@ -43,6 +45,8 @@ export const codeCoveragePlugin = createBackendPlugin({
         httpRouter,
         discovery,
         database,
+        auth,
+        httpAuth,
       }) {
         httpRouter.use(
           await createRouter({
@@ -51,6 +55,8 @@ export const codeCoveragePlugin = createBackendPlugin({
             urlReader,
             discovery,
             database,
+            auth,
+            httpAuth,
           }),
         );
         httpRouter.addAuthPolicy({

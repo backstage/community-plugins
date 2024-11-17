@@ -16,10 +16,10 @@
 import fs from 'fs';
 import path from 'path';
 import { Lcov } from './lcov';
-import { getVoidLogger } from '@backstage/backend-common';
+import { mockServices } from '@backstage/backend-test-utils';
 
 describe('convert lcov', () => {
-  const converter = new Lcov(getVoidLogger());
+  const converter = new Lcov(mockServices.rootLogger());
   [1, 2].forEach(idx => {
     const lcov = fs
       .readFileSync(

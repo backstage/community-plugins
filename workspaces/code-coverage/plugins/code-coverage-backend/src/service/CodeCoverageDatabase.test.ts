@@ -13,26 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Knex as KnexType } from 'knex';
-import { DatabaseManager } from '@backstage/backend-common';
+
+import { mockServices } from '@backstage/backend-test-utils';
 import { stringifyEntityRef } from '@backstage/catalog-model';
-import { ConfigReader } from '@backstage/config';
 import {
   CodeCoverageDatabase,
   CodeCoverageStore,
 } from './CodeCoverageDatabase';
 import { JsonCodeCoverage } from './types';
-
-const db = DatabaseManager.fromConfig(
-  new ConfigReader({
-    backend: {
-      database: {
-        client: 'better-sqlite3',
-        connection: ':memory:',
-      },
-    },
-  }),
-).forPlugin('code-coverage');
 
 const coverage: Array<JsonCodeCoverage> = [
   {
@@ -96,23 +84,11 @@ const coverage: Array<JsonCodeCoverage> = [
     ],
   },
 ];
-function createDatabaseManager(
-  client: KnexType,
-  skipMigrations: boolean = false,
-) {
-  return {
-    getClient: async () => client,
-    migrations: {
-      skip: skipMigrations,
-    },
-  };
-}
+
 let database: CodeCoverageStore;
 describe('CodeCoverageDatabase', () => {
   beforeAll(async () => {
-    const client = await db.getClient();
-    const databaseManager = createDatabaseManager(client);
-    database = await CodeCoverageDatabase.create(databaseManager);
+    database = await CodeCoverageDatabase.create(mockServices.database.mock());
 
     await database.insertCodeCoverage(coverage[0]);
     await database.insertCodeCoverage(coverage[1]);

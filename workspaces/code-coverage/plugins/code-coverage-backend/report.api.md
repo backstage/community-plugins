@@ -24,7 +24,7 @@ export function createRouter(options: RouterOptions): Promise<express.Router>;
 // @public
 export interface RouterOptions {
   // (undocumented)
-  auth?: AuthService;
+  auth: AuthService;
   // (undocumented)
   catalogApi?: CatalogApi;
   // (undocumented)
@@ -34,7 +34,7 @@ export interface RouterOptions {
   // (undocumented)
   discovery: DiscoveryService;
   // (undocumented)
-  httpAuth?: HttpAuthService;
+  httpAuth: HttpAuthService;
   // (undocumented)
   logger: LoggerService;
   // (undocumented)

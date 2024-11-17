@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import {
-  PluginDatabaseManager,
+  DatabaseService,
   resolvePackagePath,
-} from '@backstage/backend-common';
+} from '@backstage/backend-plugin-api';
 import { NotFoundError } from '@backstage/errors';
 import { parseEntityRef, stringifyEntityRef } from '@backstage/catalog-model';
 import { Knex } from 'knex';
@@ -44,9 +45,7 @@ const migrationsDir = resolvePackagePath(
 );
 
 export class CodeCoverageDatabase implements CodeCoverageStore {
-  static async create(
-    database: PluginDatabaseManager,
-  ): Promise<CodeCoverageStore> {
+  static async create(database: DatabaseService): Promise<CodeCoverageStore> {
     const knex = await database.getClient();
 
     if (!database.migrations?.skip) {

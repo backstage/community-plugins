@@ -19,7 +19,6 @@ import Router from 'express-promise-router';
 import BodyParser from 'body-parser';
 import bodyParserXml from 'body-parser-xml';
 import { CatalogApi, CatalogClient } from '@backstage/catalog-client';
-import { createLegacyAuthAdapters } from '@backstage/backend-common';
 import { InputError, NotFoundError } from '@backstage/errors';
 import { Config } from '@backstage/config';
 import { ScmIntegrations } from '@backstage/integration';
@@ -48,9 +47,9 @@ export interface RouterOptions {
   database: DatabaseService;
   urlReader: UrlReaderService;
   logger: LoggerService;
+  auth: AuthService;
+  httpAuth: HttpAuthService;
   catalogApi?: CatalogApi;
-  auth?: AuthService;
-  httpAuth?: HttpAuthService;
 }
 
 export interface CodeCoverageApi {
@@ -60,14 +59,14 @@ export interface CodeCoverageApi {
 export const makeRouter = async (
   options: RouterOptions,
 ): Promise<express.Router> => {
-  const { config, logger, discovery, database, urlReader } = options;
+  const { config, logger, discovery, database, urlReader, auth, httpAuth } =
+    options;
 
   const codeCoverageDatabase = await CodeCoverageDatabase.create(database);
   const codecovUrl = await discovery.getExternalBaseUrl('code-coverage');
   const catalogApi =
     options.catalogApi ?? new CatalogClient({ discoveryApi: discovery });
   const scm = ScmIntegrations.fromConfig(config);
-  const { auth, httpAuth } = createLegacyAuthAdapters(options);
 
   const bodySizeLimit =
     config.getOptionalString('codeCoverage.bodySizeLimit') ?? '100kb';

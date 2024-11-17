@@ -16,7 +16,6 @@
 
 import express from 'express';
 import request from 'supertest';
-import { DatabaseManager } from '@backstage/backend-common';
 import { ConfigReader } from '@backstage/config';
 import { createRouter } from './router';
 import { CatalogRequestOptions } from '@backstage/catalog-client';
@@ -26,7 +25,6 @@ jest.mock('./CodeCoverageDatabase');
 
 import { CodeCoverageDatabase } from './CodeCoverageDatabase';
 import {
-  DatabaseService,
   DiscoveryService,
   UrlReaderService,
 } from '@backstage/backend-plugin-api';
@@ -62,19 +60,6 @@ jest.mock('@backstage/catalog-client', () => ({
   })),
 }));
 
-function createDatabase(): DatabaseService {
-  return DatabaseManager.fromConfig(
-    new ConfigReader({
-      backend: {
-        database: {
-          client: 'better-sqlite3',
-          connection: ':memory:',
-        },
-      },
-    }),
-  ).forPlugin('code-coverage');
-}
-
 const testDiscovery: jest.Mocked<DiscoveryService> = {
   getBaseUrl: jest
     .fn()
@@ -98,7 +83,7 @@ describe('createRouter', () => {
   beforeAll(async () => {
     const router = await createRouter({
       config: new ConfigReader({}),
-      database: createDatabase(),
+      database: mockServices.database.mock(),
       discovery: testDiscovery,
       urlReader: mockUrlReader,
       logger: mockServices.logger.mock(),
@@ -164,10 +149,12 @@ describe('createRouter', () => {
             bodySizeLimit: '1b',
           },
         }),
-        database: createDatabase(),
+        database: mockServices.database.mock(),
         discovery: testDiscovery,
         urlReader: mockUrlReader,
         logger: mockServices.logger.mock(),
+        auth: mockServices.auth.mock(),
+        httpAuth: mockServices.httpAuth.mock(),
       });
       app = express().use(router);
 
