@@ -8,14 +8,14 @@ import { Config } from '@backstage/config';
 import express from 'express';
 import { LoggerService } from '@backstage/backend-plugin-api';
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 export function createRouter(options: RouterOptions): Promise<express.Router>;
 
 // @public
 const nomadPlugin: BackendFeature;
 export default nomadPlugin;
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 export interface RouterOptions {
   // (undocumented)
   config: Config;
