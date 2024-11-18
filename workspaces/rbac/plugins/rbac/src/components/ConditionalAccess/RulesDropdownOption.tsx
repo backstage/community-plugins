@@ -15,38 +15,43 @@
  */
 import React from 'react';
 
-import { makeStyles, Typography } from '@material-ui/core';
-import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 
 import { RulesData } from './types';
-
-const useStyles = makeStyles(theme => ({
-  optionLabel: {
-    color: theme.palette.text.primary,
-  },
-  optionDescription: {
-    color: theme.palette.text.secondary,
-    fontSize: '14px',
-  },
-}));
 
 type RulesDropdownOptionProps = {
   label: string;
   rulesData?: RulesData;
+  props: React.HTMLAttributes<HTMLLIElement>;
 };
 
 export const RulesDropdownOption = ({
   label,
   rulesData,
+  props,
 }: RulesDropdownOptionProps) => {
-  const classes = useStyles();
   const description = rulesData?.[label]?.description ?? '';
   return (
-    <Box style={{ display: 'flex', flexFlow: 'column' }}>
-      <Typography className={classes.optionLabel}>{label}</Typography>
-      <Typography className={classes.optionDescription}>
+    <li
+      {...props}
+      style={{ display: 'flex', flexFlow: 'column', alignItems: 'flex-start' }}
+      key={label}
+    >
+      <Typography
+        sx={{
+          color: theme => theme.palette.text.primary,
+        }}
+      >
+        {label}
+      </Typography>
+      <Typography
+        sx={{
+          color: theme => theme.palette.text.secondary,
+          fontSize: '14px',
+        }}
+      >
         {description}
       </Typography>
-    </Box>
+    </li>
   );
 };
