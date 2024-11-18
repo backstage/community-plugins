@@ -18,10 +18,10 @@ import { UrlReaderService } from '@backstage/backend-plugin-api';
 const codeCoveragePlugin: BackendFeature;
 export default codeCoveragePlugin;
 
-// @public
+// @public @deprecated (undocumented)
 export function createRouter(options: RouterOptions): Promise<express.Router>;
 
-// @public
+// @public @deprecated (undocumented)
 export interface RouterOptions {
   // (undocumented)
   auth: AuthService;
