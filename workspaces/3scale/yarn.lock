@@ -2639,7 +2639,7 @@ __metadata:
     "@types/supertest": 6.0.2
     "@types/swagger2openapi": ^7.0.4
     atlassian-openapi: ^1.0.19
-    msw: 1.3.4
+    msw: 1.3.5
     openapi-merge: ^1.3.3
     supertest: 7.0.0
     swagger-converter: 2.1.0
@@ -24480,9 +24480,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"msw@npm:1.3.4, msw@npm:^1.0.0":
-  version: 1.3.4
-  resolution: "msw@npm:1.3.4"
+"msw@npm:1.3.5, msw@npm:^1.0.0":
+  version: 1.3.5
+  resolution: "msw@npm:1.3.5"
   dependencies:
     "@mswjs/cookies": ^0.2.2
     "@mswjs/interceptors": ^0.17.10
@@ -24499,7 +24499,7 @@ __metadata:
     js-levenshtein: ^1.1.6
     node-fetch: ^2.6.7
     outvariant: ^1.4.0
-    path-to-regexp: ^6.2.0
+    path-to-regexp: ^6.3.0
     strict-event-emitter: ^0.4.3
     type-fest: ^2.19.0
     yargs: ^17.3.1
@@ -24510,7 +24510,7 @@ __metadata:
       optional: true
   bin:
     msw: cli/index.js
-  checksum: 57646ecb831e98f00387e60bad4d535e426d406ae2645340e59500c219059be225f1f02a5ff21aee9daeb7a8bdde922a00fb82930781d27e3f3fdaf6b292c25f
+  checksum: 5e1d96d63c0ce07db94373b2315739abecb76dac32dcc6ce116c902ced3e61ef2b1c7ff87eed3627c93fe0588002717edab9c745ebdee29437ed0da4b3beb561
   languageName: node
   linkType: hard
 
@@ -26055,7 +26055,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"path-to-regexp@npm:^6.2.0":
+"path-to-regexp@npm:^6.3.0":
   version: 6.3.0
   resolution: "path-to-regexp@npm:6.3.0"
   checksum: eca78602e6434a1b6799d511d375ec044e8d7e28f5a48aa5c28d57d8152fb52f3fc62fb1cfc5dfa2198e1f041c2a82ed14043d75740a2fe60e91b5089a153250
