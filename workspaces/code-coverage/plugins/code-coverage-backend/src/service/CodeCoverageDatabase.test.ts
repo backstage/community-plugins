@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { mockServices } from '@backstage/backend-test-utils';
+import { mockServices, TestDatabases } from '@backstage/backend-test-utils';
 import { stringifyEntityRef } from '@backstage/catalog-model';
 import {
   CodeCoverageDatabase,
@@ -85,10 +85,16 @@ const coverage: Array<JsonCodeCoverage> = [
   },
 ];
 
+const databases = TestDatabases.create();
+
 let database: CodeCoverageStore;
 describe('CodeCoverageDatabase', () => {
   beforeAll(async () => {
-    database = await CodeCoverageDatabase.create(mockServices.database.mock());
+    const knex = await databases.init('SQLITE_3');
+    const getClient = jest.fn(async () => knex);
+    database = await CodeCoverageDatabase.create(
+      mockServices.database.mock({ getClient }),
+    );
 
     await database.insertCodeCoverage(coverage[0]);
     await database.insertCodeCoverage(coverage[1]);
