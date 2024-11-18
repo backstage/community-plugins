@@ -19,6 +19,7 @@ import Router from 'express-promise-router';
 import { PeriskopApi } from '../api/index';
 import { Config } from '@backstage/config';
 import { LoggerService } from '@backstage/backend-plugin-api';
+import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 
 /**
  * @public
@@ -52,5 +53,6 @@ export async function createRouter(
     response.status(200).json(errors);
   });
 
+  router.use(MiddlewareFactory.create({ config, logger }).error());
   return router;
 }
