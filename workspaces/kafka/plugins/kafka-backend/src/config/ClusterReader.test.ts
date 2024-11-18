@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import '@backstage/backend-common';
 import { ConfigReader } from '@backstage/config';
 import { getClusterDetails } from './ClusterReader';
 
