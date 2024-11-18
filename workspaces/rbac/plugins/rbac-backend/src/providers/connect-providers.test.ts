@@ -456,7 +456,9 @@ describe('Connection', () => {
 
       await provider.applyPermissions(policies);
       expect(mockLoggerService.warn).toHaveBeenCalledWith(
-        `Unable to add policy ${policies[0].toString()}. Cause: source does not match originating role ${policies[0][0]}, consider making changes to the 'CSV-FILE'`,
+        `Unable to add policy ${policies[0].toString()}. Cause: source does not match originating role ${
+          policies[0][0]
+        }, consider making changes to the 'CSV-FILE'`,
       );
     });
 
