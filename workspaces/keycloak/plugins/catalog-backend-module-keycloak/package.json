@@ -80,6 +80,8 @@
     "lifecycle:active",
     "backstage",
     "plugin",
+    "works-with:rhsso:^7.6",
+    "works-with:keycloak:~18",
     "works-with:rhbk:^24",
     "works-with:keycloak:~24"
   ],
