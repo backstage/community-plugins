@@ -20,6 +20,7 @@ import { InputError } from '@backstage/errors';
 import express from 'express';
 import Router from 'express-promise-router';
 import { LoggerService } from '@backstage/backend-plugin-api';
+import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 
 /** @public */
 export interface RouterOptions {
@@ -119,5 +120,6 @@ export async function createRouter(
     resp.json(versionsBody);
   });
 
+  router.use(MiddlewareFactory.create({ config, logger }).error());
   return router;
 }
