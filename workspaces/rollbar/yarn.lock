@@ -2516,7 +2516,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-rollbar-backend@workspace:plugins/rollbar-backend"
   dependencies:
-    "@backstage/backend-common": ^0.25.0
     "@backstage/backend-defaults": ^0.5.2
     "@backstage/backend-plugin-api": ^1.0.1
     "@backstage/backend-test-utils": ^1.0.2
