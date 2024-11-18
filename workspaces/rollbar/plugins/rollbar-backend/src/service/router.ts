@@ -19,6 +19,7 @@ import Router from 'express-promise-router';
 import { Config } from '@backstage/config';
 import { RollbarApi } from '../api';
 import { LoggerService } from '@backstage/backend-plugin-api';
+import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 
 /** @public */
 export interface RouterOptions {
@@ -84,6 +85,7 @@ export async function createRouter(
     });
   }
 
+  router.use(MiddlewareFactory.create({ config, logger }).error());
   return router;
 }
 
