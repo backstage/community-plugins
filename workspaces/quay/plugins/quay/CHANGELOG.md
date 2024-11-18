@@ -1,5 +1,12 @@
 ### Dependencies
 
+## 1.14.3
+
+### Patch Changes
+
+- Updated dependencies [8c4c579]
+  - @backstage-community/plugin-quay-common@1.3.3
+
 ## 1.14.2
 
 ### Patch Changes

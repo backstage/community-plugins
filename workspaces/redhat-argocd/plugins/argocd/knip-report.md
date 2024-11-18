@@ -13,6 +13,5 @@
 | :-------------------------- | :----------- | :------- |
 | @testing-library/user-event | package.json | error    |
 | @backstage/core-app-api     | package.json | error    |
-| @janus-idp/cli              | package.json | error    |
 | react-dom                   | package.json | error    |
 | msw                         | package.json | error    |
