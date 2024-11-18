@@ -13,14 +13,14 @@ import { HttpAuthService } from '@backstage/backend-plugin-api';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { UserInfoService } from '@backstage/backend-plugin-api';
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 export function createRouter(options: RouterOptions): Promise<express.Router>;
 
 // @public (undocumented)
 const mtaPlugin: BackendFeatureCompat;
 export default mtaPlugin;
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 export interface RouterOptions {
     // (undocumented)
     cache: CacheService;
