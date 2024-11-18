@@ -36,6 +36,7 @@ export const playlistPlugin = createBackendPlugin({
         permissions: coreServices.permissions,
         auth: coreServices.auth,
         httpAuth: coreServices.httpAuth,
+        config: coreServices.rootConfig,
       },
       async init({
         http,
@@ -45,6 +46,7 @@ export const playlistPlugin = createBackendPlugin({
         permissions,
         auth,
         httpAuth,
+        config,
       }) {
         http.use(
           await createRouter({
@@ -54,6 +56,7 @@ export const playlistPlugin = createBackendPlugin({
             permissions,
             auth,
             httpAuth,
+            config,
           }),
         );
       },

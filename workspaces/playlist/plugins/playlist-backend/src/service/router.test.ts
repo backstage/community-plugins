@@ -14,12 +14,6 @@
  * limitations under the License.
  */
 
-import {
-  DatabaseManager,
-  getVoidLogger,
-  PluginEndpointDiscovery,
-} from '@backstage/backend-common';
-import { ConfigReader } from '@backstage/config';
 import { AuthorizeResult } from '@backstage/plugin-permission-common';
 import { permissions } from '@backstage-community/plugin-playlist-common';
 import express from 'express';
@@ -101,18 +95,6 @@ jest.mock('./DatabaseHandler', () => ({
 describe('createRouter', () => {
   let app: express.Express;
 
-  const createDatabase = () =>
-    DatabaseManager.fromConfig(
-      new ConfigReader({
-        backend: {
-          database: {
-            client: 'better-sqlite3',
-            connection: ':memory:',
-          },
-        },
-      }),
-    ).forPlugin('playlist');
-
   const mockedAuthorize = jest
     .fn()
     .mockImplementation(async () => [{ result: AuthorizeResult.ALLOW }]);
@@ -124,19 +106,15 @@ describe('createRouter', () => {
     authorizeConditional: mockedAuthorizeConditional,
   };
 
-  const discovery: jest.Mocked<PluginEndpointDiscovery> = {
-    getBaseUrl: jest.fn(),
-    getExternalBaseUrl: jest.fn(),
-  };
-
   beforeEach(async () => {
     const router = await createRouter({
-      database: createDatabase(),
-      discovery,
-      logger: getVoidLogger(),
+      database: mockServices.database.mock(),
+      discovery: mockServices.discovery(),
+      logger: mockServices.rootLogger(),
       permissions: mockPermissionEvaluator,
       auth: mockServices.auth(),
       httpAuth: mockServices.httpAuth(),
+      config: mockServices.rootConfig(),
     });
 
     app = express().use(router);
