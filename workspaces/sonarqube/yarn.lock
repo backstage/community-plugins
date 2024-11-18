@@ -2637,7 +2637,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-sonarqube-backend@workspace:plugins/sonarqube-backend"
   dependencies:
-    "@backstage/backend-common": ^0.25.0
     "@backstage/backend-defaults": ^0.5.2
     "@backstage/backend-plugin-api": ^1.0.1
     "@backstage/backend-test-utils": ^1.0.2
@@ -13414,7 +13413,6 @@ __metadata:
   resolution: "backend@workspace:packages/backend"
   dependencies:
     "@backstage-community/plugin-sonarqube-backend": "workspace:^"
-    "@backstage/backend-common": ^0.25.0
     "@backstage/backend-defaults": ^0.5.2
     "@backstage/backend-plugin-api": ^1.0.1
     "@backstage/backend-tasks": ^0.6.1

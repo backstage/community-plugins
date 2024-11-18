@@ -21,6 +21,8 @@ import { InputError } from '@backstage/errors';
 import { LoggerService } from '@backstage/backend-plugin-api';
 
 /**
+ * @deprecated Please migrate to the new backend system as this will be removed in the future.
+ *
  * Dependencies needed by the router
  * @public
  */
@@ -36,6 +38,8 @@ export interface RouterOptions {
 }
 
 /**
+ * @deprecated Please migrate to the new backend system as this will be removed in the future.
+ *
  * @public
  *
  * Constructs a sonarqube router.
