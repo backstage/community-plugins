@@ -38,16 +38,17 @@ export class LowercaseFileAdapter extends FileAdapter {
     model: Model,
     handler: (line: string, model: Model) => void,
   ): Promise<void> {
+    // Reference: https://github.com/casbin/node-casbin/blob/master/src/persist/fileAdapter.ts#L34-#L43
     const bodyBuf = await (
       this.fs ? this.fs : mustGetDefaultFileSystem()
     ).readFileSync(this.filePath);
     const lines = bodyBuf.toString().split('\n');
 
-    lines.forEach((n: string, index: number) => {
-      if (!n) {
+    lines.forEach((line: string) => {
+      if (!line) {
         return;
       }
-      const lowercasedLine = this.transformLineToLowercaseGroupsUsers(n);
+      const lowercasedLine = this.transformLineToLowercaseGroupsUsers(line);
       handler(lowercasedLine, model);
     });
   }
