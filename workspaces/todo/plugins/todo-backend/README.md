@@ -33,7 +33,7 @@ export default async function createPlugin(
     catalogClient,
   });
 
-  return await createRouter({ todoService });
+  return await createRouter({ todoService, env.config, env.logger });
 }
 ```
 

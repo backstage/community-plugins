@@ -24,10 +24,15 @@ import {
   parseOrderByParam,
 } from '../lib/utils';
 import { createOpenApiRouter } from '../schema/openapi.generated';
+import { Config } from '@backstage/config';
+import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
+import { LoggerService } from '@backstage/backend-plugin-api';
 
 /** @public */
 export interface RouterOptions {
   todoService: TodoService;
+  config: Config;
+  logger: LoggerService;
 }
 
 /** @public */
@@ -36,7 +41,7 @@ export async function createRouter(
 ): Promise<express.Router> {
   const router = await createOpenApiRouter();
   router.use(express.json());
-  const { todoService } = options;
+  const { todoService, config, logger } = options;
 
   router.get('/v1/todos', async (req, res) => {
     const { offset, limit } = req.query;
@@ -71,5 +76,6 @@ export async function createRouter(
     res.json(todos);
   });
 
+  router.use(MiddlewareFactory.create({ config, logger }).error());
   return router;
 }
