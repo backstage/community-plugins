@@ -32,21 +32,31 @@ import {
   HttpAuthService,
   LoggerService,
 } from '@backstage/backend-plugin-api';
+import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
+import { Config } from '@backstage/config';
 
-/** @public */
+/**
+ * @deprecated Please migrate to the new backend system as this will be removed in the future.
+ *
+ * @public */
 export interface RouterOptions {
   logger: LoggerService;
   jenkinsInfoProvider: JenkinsInfoProvider;
   permissions?: PermissionEvaluator | PermissionAuthorizer;
   discovery: DiscoveryService;
   httpAuth: HttpAuthService;
+  config: Config;
 }
 
-/** @public */
+/**
+ * @deprecated Please migrate to the new backend system as this will be removed in the future.
+ *
+ * @public */
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
-  const { jenkinsInfoProvider, permissions, logger, httpAuth } = options;
+  const { jenkinsInfoProvider, permissions, logger, httpAuth, config } =
+    options;
 
   let permissionEvaluator: PermissionEvaluator | undefined;
   if (permissions && 'authorizeConditional' in permissions) {
@@ -201,5 +211,6 @@ export async function createRouter(
     },
   );
 
+  router.use(MiddlewareFactory.create({ config, logger }).error());
   return router;
 }
