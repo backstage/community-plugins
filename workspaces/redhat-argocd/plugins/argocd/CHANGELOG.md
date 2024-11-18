@@ -1,5 +1,11 @@
 ## @backstage-community/plugin-redhat-argocd
 
+## 1.10.4
+
+### Patch Changes
+
+- a6e850f: Updated dependency `msw` to `1.3.5`.
+
 ## 1.10.3
 
 ### Patch Changes
