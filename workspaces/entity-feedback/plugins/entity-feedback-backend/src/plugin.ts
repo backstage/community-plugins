@@ -36,8 +36,17 @@ export const entityFeedbackPlugin = createBackendPlugin({
         httpAuth: coreServices.httpAuth,
         httpRouter: coreServices.httpRouter,
         logger: coreServices.logger,
+        config: coreServices.rootConfig,
       },
-      async init({ database, discovery, logger, httpRouter, auth, httpAuth }) {
+      async init({
+        database,
+        discovery,
+        logger,
+        httpRouter,
+        auth,
+        httpAuth,
+        config,
+      }) {
         httpRouter.use(
           await createRouter({
             auth,
@@ -45,6 +54,7 @@ export const entityFeedbackPlugin = createBackendPlugin({
             discovery,
             httpAuth,
             logger,
+            config,
           }),
         );
       },
