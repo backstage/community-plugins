@@ -14,13 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  DatabaseManager,
-  getVoidLogger,
-  PluginEndpointDiscovery,
-} from '@backstage/backend-common';
 import { stringifyEntityRef } from '@backstage/catalog-model';
-import { ConfigReader } from '@backstage/config';
 import express from 'express';
 import request from 'supertest';
 
@@ -133,30 +127,14 @@ jest.mock('./DatabaseHandler', () => ({
 describe('createRouter', () => {
   let app: express.Express;
 
-  const createDatabase = () =>
-    DatabaseManager.fromConfig(
-      new ConfigReader({
-        backend: {
-          database: {
-            client: 'better-sqlite3',
-            connection: ':memory:',
-          },
-        },
-      }),
-    ).forPlugin('entity-feedback');
-
-  const discovery: jest.Mocked<PluginEndpointDiscovery> = {
-    getBaseUrl: jest.fn(),
-    getExternalBaseUrl: jest.fn(),
-  };
-
   beforeEach(async () => {
     const router = await createRouter({
-      database: createDatabase(),
-      discovery,
-      logger: getVoidLogger(),
+      database: mockServices.database.mock(),
+      discovery: mockServices.discovery(),
+      logger: mockServices.rootLogger(),
       auth: mockServices.auth(),
       httpAuth: mockServices.httpAuth(),
+      config: mockServices.rootConfig(),
     });
 
     app = express().use(router);
