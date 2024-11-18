@@ -33,7 +33,13 @@ import { FeedbackCategory, FeedbackModel } from '../model/feedback.model';
 import { NodeMailer } from './emails';
 
 import { NotificationService } from '@backstage/plugin-notifications-node';
+import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 
+/**
+ * @deprecated Please migrate to the new backend system as this will be removed in the future.
+ *
+ * @public
+ */
 export interface RouterOptions {
   logger: LoggerService;
   config: Config;
@@ -43,6 +49,11 @@ export interface RouterOptions {
   notifications?: NotificationService;
 }
 
+/**
+ * @deprecated Please migrate to the new backend system as this will be removed in the future.
+ *
+ * @public
+ */
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
@@ -395,5 +406,6 @@ export async function createRouter(
     })();
   });
 
+  router.use(MiddlewareFactory.create({ config, logger }).error());
   return router;
 }

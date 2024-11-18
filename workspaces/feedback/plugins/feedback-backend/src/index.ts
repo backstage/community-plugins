@@ -14,4 +14,5 @@
  * limitations under the License.
  */
 export { createRouter } from './service/router';
+export { type RouterOptions } from './service/router';
 export { feedbackPlugin as default } from './plugin';
