@@ -55,6 +55,10 @@ export type ReadTodosResult = {
 // @public (undocumented)
 export interface RouterOptions {
   // (undocumented)
+  config: Config;
+  // (undocumented)
+  logger: LoggerService;
+  // (undocumented)
   todoService: TodoService;
 }
 
