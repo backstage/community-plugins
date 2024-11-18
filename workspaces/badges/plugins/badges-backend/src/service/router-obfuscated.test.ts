@@ -22,7 +22,11 @@ import { Config, ConfigReader } from '@backstage/config';
 import { createRouter } from './router';
 import { BadgeBuilder } from '../lib';
 import { BadgesStore } from '../database/badgesStore';
-import { mockCredentials, mockServices } from '@backstage/backend-test-utils';
+import {
+  mockCredentials,
+  mockServices,
+  TestDatabases,
+} from '@backstage/backend-test-utils';
 
 describe('createRouter', () => {
   let app: express.Express;
@@ -108,7 +112,11 @@ describe('createRouter', () => {
     }),
   };
 
+  const databases = TestDatabases.create();
+
   beforeAll(async () => {
+    const knex = await databases.init('SQLITE_3');
+    const getClient = jest.fn(async () => knex);
     const router = await createRouter({
       badgeBuilder,
       catalog: catalog as Partial<CatalogApi> as CatalogApi,
@@ -117,7 +125,7 @@ describe('createRouter', () => {
       logger: mockServices.rootLogger(),
       auth: mockServices.auth(),
       httpAuth: mockServices.httpAuth(),
-      database: mockServices.database.mock(),
+      database: mockServices.database.mock({ getClient }),
     });
     app = express().use(router);
   });
@@ -127,6 +135,8 @@ describe('createRouter', () => {
   });
 
   it('works with provided badgeStore', async () => {
+    const knex = await databases.init('SQLITE_3');
+    const getClient = jest.fn(async () => knex);
     const router = await createRouter({
       badgeBuilder,
       catalog: catalog as Partial<CatalogApi> as CatalogApi,
@@ -136,7 +146,7 @@ describe('createRouter', () => {
       badgeStore: badgeStore,
       auth: mockServices.auth(),
       httpAuth: mockServices.httpAuth(),
-      database: mockServices.database.mock(),
+      database: mockServices.database.mock({ getClient }),
     });
     expect(router).toBeDefined();
   });

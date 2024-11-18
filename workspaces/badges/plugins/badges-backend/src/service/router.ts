@@ -37,6 +37,7 @@ import {
   HttpAuthService,
   LoggerService,
 } from '@backstage/backend-plugin-api';
+import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 
 /** @public */
 export interface RouterOptions {
@@ -274,6 +275,7 @@ async function obfuscatedRoute(
     },
   );
 
+  router.use(MiddlewareFactory.create({ config, logger }).error());
   return router;
 }
 

@@ -26,7 +26,7 @@ import {
   IdentityApiGetIdentityRequest,
 } from '@backstage/plugin-auth-node';
 import { BadgesStore } from '../database/badgesStore';
-import { mockServices } from '@backstage/backend-test-utils';
+import { mockErrorHandler, mockServices } from '@backstage/backend-test-utils';
 
 describe('createRouter', () => {
   let app: express.Express;
@@ -73,6 +73,12 @@ describe('createRouter', () => {
     getBadgeUuid: jest.fn(),
   };
 
+  const discovery = mockServices.discovery.mock({
+    getExternalBaseUrl: jest
+      .fn()
+      .mockResolvedValue('http://127.0.0.1/api/badges'),
+  });
+
   beforeAll(async () => {
     badgeBuilder = {
       getBadges: jest.fn(),
@@ -111,13 +117,13 @@ describe('createRouter', () => {
       badgeBuilder,
       catalog: catalog as Partial<CatalogApi> as CatalogApi,
       config,
-      discovery: mockServices.discovery.mock(),
+      discovery: discovery,
       logger: mockServices.rootLogger(),
       database: mockServices.database.mock(),
       auth: mockServices.auth(),
       httpAuth: mockServices.httpAuth(),
     });
-    app = express().use(router);
+    app = express().use(router).use(mockErrorHandler());
   });
 
   beforeEach(() => {
@@ -129,7 +135,7 @@ describe('createRouter', () => {
       badgeBuilder,
       catalog: catalog as Partial<CatalogApi> as CatalogApi,
       config,
-      discovery: mockServices.discovery.mock(),
+      discovery: discovery,
       logger: mockServices.rootLogger(),
       badgeStore: badgeStore,
       database: mockServices.database.mock(),
@@ -160,7 +166,9 @@ describe('createRouter', () => {
           kind: 'component',
           name: 'test',
         },
-        { token: '' },
+        {
+          token: 'mock-service-token:{"sub":"plugin:test","target":"catalog"}',
+        },
       );
 
       expect(badgeBuilder.getBadges).toHaveBeenCalledTimes(1);
@@ -198,7 +206,10 @@ describe('createRouter', () => {
             kind: 'component',
             name: 'test',
           },
-          { token: '' },
+          {
+            token:
+              'mock-service-token:{"sub":"plugin:test","target":"catalog"}',
+          },
         );
 
         expect(badgeBuilder.getBadges).toHaveBeenCalledTimes(0);

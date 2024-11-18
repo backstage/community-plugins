@@ -2516,6 +2516,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-badges-backend@workspace:plugins/badges-backend"
   dependencies:
+    "@backstage/backend-defaults": ^0.5.2
     "@backstage/backend-plugin-api": ^1.0.1
     "@backstage/backend-test-utils": ^1.0.2
     "@backstage/catalog-client": ^1.7.1
