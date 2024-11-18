@@ -34,10 +34,10 @@ export interface BlackDuckHostConfig {
 const blackduckPlugin: BackendFeature;
 export default blackduckPlugin;
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 export function createRouter(options: RouterOptions): Promise<express.Router>;
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 export interface RouterOptions {
   // (undocumented)
   blackDuckConfig: BlackDuckConfig;
