@@ -56,6 +56,7 @@ export const explorePlugin = createBackendPlugin({
             logger,
             toolProvider:
               toolProvider ?? StaticExploreToolProvider.fromConfig(config),
+            config,
           }),
         );
       },

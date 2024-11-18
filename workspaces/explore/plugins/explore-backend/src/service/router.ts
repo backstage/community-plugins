@@ -19,22 +19,29 @@ import express from 'express';
 import Router from 'express-promise-router';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { ExploreToolProvider } from '@backstage-community/plugin-explore-node';
+import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
+import { Config } from '@backstage/config';
 
 /**
+ * @deprecated Please migrate to the new backend system as this will be removed in the future.
+ *
  * @public
  */
 export interface RouterOptions {
   logger: LoggerService;
   toolProvider: ExploreToolProvider;
+  config: Config;
 }
 
 /**
+ * @deprecated Please migrate to the new backend system as this will be removed in the future.
+ *
  * @public
  */
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
-  const { toolProvider } = options;
+  const { toolProvider, logger, config } = options;
 
   const router = Router();
   router.use(express.json());
@@ -45,6 +52,7 @@ export async function createRouter(
     response.json(result);
   });
 
+  router.use(MiddlewareFactory.create({ config, logger }).error());
   return router;
 }
 

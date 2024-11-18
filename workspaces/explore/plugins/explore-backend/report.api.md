@@ -12,7 +12,7 @@ import { GetExploreToolsRequest } from '@backstage-community/plugin-explore-comm
 import { GetExploreToolsResponse } from '@backstage-community/plugin-explore-common';
 import { LoggerService } from '@backstage/backend-plugin-api';
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 export function createRouter(options: RouterOptions): Promise<express.Router>;
 
 // @public
@@ -22,8 +22,10 @@ export default explorePlugin;
 // @public @deprecated (undocumented)
 export type ExploreToolProvider = ExploreToolProvider_2;
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 export interface RouterOptions {
+  // (undocumented)
+  config: Config;
   // (undocumented)
   logger: LoggerService;
   // (undocumented)

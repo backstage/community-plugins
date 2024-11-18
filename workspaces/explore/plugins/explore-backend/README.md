@@ -68,6 +68,7 @@ export default async function createPlugin(
   return await createRouter({
     logger: env.logger,
     toolProvider: StaticExploreToolProvider.fromConfig(env.config),
+    config: env.config,
   });
 }
 ```
@@ -125,6 +126,7 @@ export default async function createPlugin(
   return await createRouter({
     logger: env.logger,
     toolProvider: StaticExploreToolProvider.fromData(exploreTools),
+    config: env.config,
   });
 }
 ```

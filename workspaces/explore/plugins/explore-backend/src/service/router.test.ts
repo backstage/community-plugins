@@ -42,8 +42,9 @@ describe('createRouter', () => {
 
   beforeAll(async () => {
     const router = await createRouter({
-      logger: mockServices.logger.mock(),
+      logger: mockServices.rootLogger(),
       toolProvider,
+      config: mockServices.rootConfig(),
     });
     app = express().use(router);
   });
