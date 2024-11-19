@@ -2,4 +2,4 @@
 '@backstage-community/plugin-scaffolder-backend-module-servicenow': patch
 ---
 
-Updated dependency `msw` to `1.3.5`.
+Updated dependency `@hey-api/openapi-ts` to `0.55.3`.
