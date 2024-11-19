@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 2.2.2
+
+### Patch Changes
+
+- a6e850f: Updated dependency `msw` to `1.3.5`.
+
 ## 2.2.1
 
 ### Patch Changes
