@@ -15,14 +15,18 @@
  */
 import {
   createApiFactory,
+  createComponentExtension,
   createPlugin,
   createRoutableExtension,
   discoveryApiRef,
   fetchApiRef,
 } from '@backstage/core-plugin-api';
-
-import { rootRouteRef } from './routes';
 import { CopilotClient, copilotApiRef } from './api';
+import {
+  copilotRouteRef,
+  enterpriseRouteRef,
+  organizationRouteRef,
+} from './routes';
 
 /**
  * The Copilot plugin for Backstage.
@@ -43,19 +47,35 @@ export const copilotPlugin = createPlugin({
     }),
   ],
   routes: {
-    root: rootRouteRef,
+    copilot: copilotRouteRef,
+    enterprise: enterpriseRouteRef,
+    organization: organizationRouteRef,
   },
 });
 
 /**
- * Copilot page component for the Copilot plugin.
+ * CopilotIndexPage component for the Copilot plugin.
  *
  * @public
  */
-export const CopilotPage = copilotPlugin.provide(
+export const CopilotIndexPage = copilotPlugin.provide(
   createRoutableExtension({
-    name: 'CopilotPage',
-    component: () => import('./components/Pages').then(m => m.CopilotPage),
-    mountPoint: rootRouteRef,
+    name: 'CopilotIndexPage',
+    component: () => import('./components/Pages').then(m => m.CopilotIndexPage),
+    mountPoint: copilotRouteRef,
+  }),
+);
+
+/**
+ * CopilotSidebar component for the Copilot plugin.
+ *
+ * @public
+ */
+export const CopilotSidebar = copilotPlugin.provide(
+  createComponentExtension({
+    name: 'OrganizationCopilotPage',
+    component: {
+      lazy: () => import('./components/Sidebar').then(m => m.Sidebar),
+    },
   }),
 );

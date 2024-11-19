@@ -63,6 +63,13 @@ export interface Breakdown {
 }
 
 /**
+ * Represents the possible types of metrics data.
+ *
+ * @public
+ */
+export type MetricsType = 'enterprise' | 'organization';
+
+/**
  * Represents a detailed breakdown of metrics by language and editor.
  *
  * @public
@@ -77,6 +84,18 @@ export interface Metric {
    * The date for the metrics reported.
    */
   day: string;
+
+  /**
+   * The type of the metrics data.
+   * Can be 'enterprise', 'organization'.
+   */
+  type: MetricsType;
+
+  /**
+   * The name of the team, applicable when the metric is for a specific team.
+   * When null, it indicates metrics for all teams, aggregated at the 'enterprise' or 'organization' level.
+   */
+  team_name?: string;
 
   /**
    * The total number of suggestions accepted.
@@ -134,4 +153,26 @@ export interface PeriodRange {
    * The minimum date of the reporting period.
    */
   minDate: string;
+}
+
+/**
+ * Represents information about a team.
+ *
+ * @public
+ */
+export interface TeamInfo {
+  /**
+   * The unique identifier of the team.
+   */
+  id: number;
+
+  /**
+   * The slug of the team, used for URL-friendly identifiers.
+   */
+  slug: string;
+
+  /**
+   * The name of the team.
+   */
+  name: string;
 }

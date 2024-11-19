@@ -18,6 +18,7 @@ import useAsync from 'react-use/lib/useAsync';
 import { useApi } from '@backstage/core-plugin-api';
 import { Metric } from '@backstage-community/plugin-copilot-common';
 import { copilotApiRef } from '../api';
+import { useSetMetricsTypeFromRoute } from './useSetMetricsTypeFromRoute';
 
 export function useMetrics(
   startDate: Date,
@@ -29,10 +30,14 @@ export function useMetrics(
 } {
   const api = useApi(copilotApiRef);
 
-  const { value, loading, error } = useAsync(
-    () => api.getMetrics(startDate, endDate),
-    [api, startDate, endDate],
-  );
+  const type = useSetMetricsTypeFromRoute();
+
+  const { value, loading, error } = useAsync(() => {
+    if (type) {
+      return api.getMetrics(startDate, endDate, type);
+    }
+    return Promise.resolve([]);
+  }, [api, type, startDate, endDate]);
 
   return {
     items: value,

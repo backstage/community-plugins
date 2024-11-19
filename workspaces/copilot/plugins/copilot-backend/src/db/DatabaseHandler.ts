@@ -20,6 +20,7 @@ import {
 } from '@backstage/backend-plugin-api';
 import {
   Metric,
+  MetricsType,
   PeriodRange,
 } from '@backstage-community/plugin-copilot-common';
 import { Knex } from 'knex';
@@ -53,46 +54,72 @@ export class DatabaseHandler {
 
   private constructor(private readonly db: Knex) {}
 
-  async getMetricsByPeriod(
-    startDate: string,
-    endDate: string,
-  ): Promise<MetricDbRow[]> {
-    const records = await this.db<MetricDbRow>('metrics').whereBetween('day', [
-      startDate,
-      endDate,
-    ]);
-    return records ?? [];
-  }
+  async getPeriodRange(type: MetricsType): Promise<PeriodRange | undefined> {
+    const query = this.db<MetricDbRow>('metrics').where('type', type);
 
-  async getPeriodRange(): Promise<PeriodRange | undefined> {
-    const minDate = await this.db<MetricDbRow>('metrics')
-      .orderBy('day', 'asc')
-      .first('day');
-    const maxDate = await this.db<MetricDbRow>('metrics')
-      .orderBy('day', 'desc')
-      .first('day');
+    const minDate = await query.orderBy('day', 'asc').first('day');
+    const maxDate = await query.orderBy('day', 'desc').first('day');
 
     if (!minDate?.day || !maxDate?.day) return undefined;
 
     return { minDate: minDate.day, maxDate: maxDate.day };
   }
 
+  async getTeams(
+    type: MetricsType,
+    startDate: string,
+    endDate: string,
+  ): Promise<Array<string | undefined>> {
+    const result = await this.db<MetricDbRow>('metrics')
+      .where('type', type)
+      .whereBetween('day', [startDate, endDate])
+      .whereNotNull('team_name')
+      .distinct('team_name')
+      .orderBy('team_name', 'asc')
+      .select('team_name');
+
+    return result.map(x => x.team_name);
+  }
+
   async batchInsert(metrics: MetricDbRow[]): Promise<void> {
     await this.db<MetricDbRow[]>('metrics')
       .insert(metrics)
-      .onConflict('day')
+      .onConflict(['day', 'type', 'team_name'])
       .ignore();
   }
 
-  async getMostRecentDayFromMetrics(): Promise<string | undefined> {
+  async getMostRecentDayFromMetrics(
+    type: MetricsType,
+    teamName?: string,
+  ): Promise<string | undefined> {
     try {
-      const mostRecent = await this.db<MetricDbRow>('metrics')
+      const query = await this.db<MetricDbRow>('metrics')
+        .where('type', type)
+        .where('team_name', teamName ?? null)
         .orderBy('day', 'desc')
         .first('day');
-
-      return mostRecent ? mostRecent.day : undefined;
+      return query ? query.day : undefined;
     } catch (e) {
       return undefined;
     }
+  }
+
+  async getMetrics(
+    startDate: string,
+    endDate: string,
+    type: MetricsType,
+    teamName?: string,
+  ): Promise<MetricDbRow[]> {
+    console.log(startDate, endDate, type, teamName);
+    if (teamName) {
+      return await this.db<MetricDbRow>('metrics')
+        .where('type', type)
+        .where('team_name', teamName)
+        .whereBetween('day', [startDate, endDate]);
+    }
+    return this.db<MetricDbRow>('metrics')
+      .where('type', type)
+      .whereNull('team_name')
+      .whereBetween('day', [startDate, endDate]);
   }
 }

@@ -2773,6 +2773,7 @@ __metadata:
     supertest: ^6.2.4
     winston: ^3.2.1
     yn: ^4.0.0
+    zod: ^3.23.8
   languageName: unknown
   linkType: soft
 
@@ -2811,9 +2812,12 @@ __metadata:
     luxon: ^3.5.0
     msw: ^1.0.0
     react-use: ^17.3.1
-    simple-date-range-calendar: ^1.0.10
+    simple-date-range-calendar: ^2.0.6
   peerDependencies:
     react: ^17.0.0 || ^18.0.0
+    react-dom: ^18.0.2
+    react-router: ^6.3.0
+    react-router-dom: ^6.3.0
   languageName: unknown
   linkType: soft
 
@@ -6000,7 +6004,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emotion/hash@npm:^0.9.1, @emotion/hash@npm:^0.9.2":
+"@emotion/hash@npm:^0.9.2":
   version: 0.9.2
   resolution: "@emotion/hash@npm:0.9.2"
   checksum: 379bde2830ccb0328c2617ec009642321c0e009a46aa383dfbe75b679c6aea977ca698c832d225a893901f29d7b3eef0e38cf341f560f6b2b56f1ff23c172387
@@ -8253,7 +8257,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mui/icons-material@npm:^5.16.4, @mui/icons-material@npm:^5.16.7":
+"@mui/icons-material@npm:^5.16.7":
   version: 5.16.7
   resolution: "@mui/icons-material@npm:5.16.7"
   dependencies:
@@ -8269,7 +8273,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mui/material@npm:^5.12.2, @mui/material@npm:^5.16.5, @mui/material@npm:^5.16.7":
+"@mui/material@npm:^5.12.2, @mui/material@npm:^5.16.7":
   version: 5.16.7
   resolution: "@mui/material@npm:5.16.7"
   dependencies:
@@ -8302,7 +8306,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mui/private-theming@npm:^5.16.5, @mui/private-theming@npm:^5.16.6":
+"@mui/private-theming@npm:^5.16.6":
   version: 5.16.6
   resolution: "@mui/private-theming@npm:5.16.6"
   dependencies:
@@ -8340,38 +8344,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mui/styles@npm:^5.16.4":
-  version: 5.16.5
-  resolution: "@mui/styles@npm:5.16.5"
-  dependencies:
-    "@babel/runtime": ^7.23.9
-    "@emotion/hash": ^0.9.1
-    "@mui/private-theming": ^5.16.5
-    "@mui/types": ^7.2.15
-    "@mui/utils": ^5.16.5
-    clsx: ^2.1.0
-    csstype: ^3.1.3
-    hoist-non-react-statics: ^3.3.2
-    jss: ^10.10.0
-    jss-plugin-camel-case: ^10.10.0
-    jss-plugin-default-unit: ^10.10.0
-    jss-plugin-global: ^10.10.0
-    jss-plugin-nested: ^10.10.0
-    jss-plugin-props-sort: ^10.10.0
-    jss-plugin-rule-value-function: ^10.10.0
-    jss-plugin-vendor-prefixer: ^10.10.0
-    prop-types: ^15.8.1
-  peerDependencies:
-    "@types/react": ^17.0.0 || ^18.0.0
-    react: ^17.0.0
-  peerDependenciesMeta:
-    "@types/react":
-      optional: true
-  checksum: 1ce9083949a19f1cd9765412f26cd5bfa919b0dafe3a851f57710204aa831714da4a84095bbff1da3785f5cf7686532be41726b798d0ab067a94d5349482e880
-  languageName: node
-  linkType: hard
-
-"@mui/system@npm:^5.15.15, @mui/system@npm:^5.16.5, @mui/system@npm:^5.16.7":
+"@mui/system@npm:^5.15.15, @mui/system@npm:^5.16.7":
   version: 5.16.7
   resolution: "@mui/system@npm:5.16.7"
   dependencies:
@@ -8411,7 +8384,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mui/utils@npm:^5.14.15, @mui/utils@npm:^5.15.14, @mui/utils@npm:^5.16.5, @mui/utils@npm:^5.16.6":
+"@mui/utils@npm:^5.14.15, @mui/utils@npm:^5.15.14, @mui/utils@npm:^5.16.6":
   version: 5.16.6
   resolution: "@mui/utils@npm:5.16.6"
   dependencies:
@@ -17663,10 +17636,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"date-fns@npm:^3.6.0":
-  version: 3.6.0
-  resolution: "date-fns@npm:3.6.0"
-  checksum: 0daa1e9a436cf99f9f2ae9232b55e11f3dd46132bee10987164f3eebd29f245b2e066d7d7db40782627411ecf18551d8f4c9fcdf2226e48bb66545407d448ab7
+"date-fns@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "date-fns@npm:4.1.0"
+  checksum: fb681b242cccabed45494468f64282a7d375ea970e0adbcc5dcc92dcb7aba49b2081c2c9739d41bf71ce89ed68dd73bebfe06ca35129490704775d091895710b
   languageName: node
   linkType: hard
 
@@ -23729,7 +23702,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jss-plugin-camel-case@npm:^10.10.0, jss-plugin-camel-case@npm:^10.5.1":
+"jss-plugin-camel-case@npm:^10.5.1":
   version: 10.10.0
   resolution: "jss-plugin-camel-case@npm:10.10.0"
   dependencies:
@@ -23740,7 +23713,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jss-plugin-default-unit@npm:^10.10.0, jss-plugin-default-unit@npm:^10.5.1":
+"jss-plugin-default-unit@npm:^10.5.1":
   version: 10.10.0
   resolution: "jss-plugin-default-unit@npm:10.10.0"
   dependencies:
@@ -23750,7 +23723,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jss-plugin-global@npm:^10.10.0, jss-plugin-global@npm:^10.5.1":
+"jss-plugin-global@npm:^10.5.1":
   version: 10.10.0
   resolution: "jss-plugin-global@npm:10.10.0"
   dependencies:
@@ -23760,7 +23733,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jss-plugin-nested@npm:^10.10.0, jss-plugin-nested@npm:^10.5.1":
+"jss-plugin-nested@npm:^10.5.1":
   version: 10.10.0
   resolution: "jss-plugin-nested@npm:10.10.0"
   dependencies:
@@ -23771,7 +23744,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jss-plugin-props-sort@npm:^10.10.0, jss-plugin-props-sort@npm:^10.5.1":
+"jss-plugin-props-sort@npm:^10.5.1":
   version: 10.10.0
   resolution: "jss-plugin-props-sort@npm:10.10.0"
   dependencies:
@@ -23781,7 +23754,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jss-plugin-rule-value-function@npm:^10.10.0, jss-plugin-rule-value-function@npm:^10.5.1":
+"jss-plugin-rule-value-function@npm:^10.5.1":
   version: 10.10.0
   resolution: "jss-plugin-rule-value-function@npm:10.10.0"
   dependencies:
@@ -23792,7 +23765,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jss-plugin-vendor-prefixer@npm:^10.10.0, jss-plugin-vendor-prefixer@npm:^10.5.1":
+"jss-plugin-vendor-prefixer@npm:^10.5.1":
   version: 10.10.0
   resolution: "jss-plugin-vendor-prefixer@npm:10.10.0"
   dependencies:
@@ -23803,7 +23776,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jss@npm:10.10.0, jss@npm:^10.10.0, jss@npm:^10.5.1, jss@npm:~10.10.0":
+"jss@npm:10.10.0, jss@npm:^10.5.1, jss@npm:~10.10.0":
   version: 10.10.0
   resolution: "jss@npm:10.10.0"
   dependencies:
@@ -30685,23 +30658,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"simple-date-range-calendar@npm:^1.0.10":
-  version: 1.0.10
-  resolution: "simple-date-range-calendar@npm:1.0.10"
+"simple-date-range-calendar@npm:^2.0.6":
+  version: 2.0.6
+  resolution: "simple-date-range-calendar@npm:2.0.6"
   dependencies:
+    date-fns: ^4.1.0
+  peerDependencies:
     "@emotion/react": ^11.13.0
     "@emotion/styled": ^11.13.0
-    "@mui/icons-material": ^5.16.4
-    "@mui/material": ^5.16.5
-    "@mui/styles": ^5.16.4
-    "@mui/system": ^5.16.5
-    date-fns: ^3.6.0
-    typescript: ^5.5.3
-    web-vitals: ^2.1.4
-  peerDependencies:
-    react: ^18.3.1
-    react-dom: ^18.3.1
-  checksum: a7a77d47cd8be2e1658b0c30dc9a39ce5f62663b8356c4a96150e21b10d369f628391c7051e83e2821075ce944599a4729b67f4a0598d47e81135e686edc1e27
+    "@mui/material": ^5.16.7
+    react: ^18.0.0
+    react-dom: ^18.0.0
+  checksum: f24d91e32136183106313ec35d795551ffc95b8943bbe4fb2075ad9ebf8c4d29f41da58b5ee83a1f68323f75c0f7fb2ae0d22c6b68e34ee0bdb20593d53ebea4
   languageName: node
   linkType: hard
 
@@ -32813,16 +32781,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^5.5.3, typescript@npm:~5.5.0":
-  version: 5.5.4
-  resolution: "typescript@npm:5.5.4"
-  bin:
-    tsc: bin/tsc
-    tsserver: bin/tsserver
-  checksum: b309040f3a1cd91c68a5a58af6b9fdd4e849b8c42d837b2c2e73f9a4f96a98c4f1ed398a9aab576ee0a4748f5690cf594e6b99dbe61de7839da748c41e6d6ca8
-  languageName: node
-  linkType: hard
-
 "typescript@npm:~5.3.0":
   version: 5.3.3
   resolution: "typescript@npm:5.3.3"
@@ -32830,6 +32788,16 @@ __metadata:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: 2007ccb6e51bbbf6fde0a78099efe04dc1c3dfbdff04ca3b6a8bc717991862b39fd6126c0c3ebf2d2d98ac5e960bcaa873826bb2bb241f14277034148f41f6a2
+  languageName: node
+  linkType: hard
+
+"typescript@npm:~5.5.0":
+  version: 5.5.4
+  resolution: "typescript@npm:5.5.4"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: b309040f3a1cd91c68a5a58af6b9fdd4e849b8c42d837b2c2e73f9a4f96a98c4f1ed398a9aab576ee0a4748f5690cf594e6b99dbe61de7839da748c41e6d6ca8
   languageName: node
   linkType: hard
 
@@ -32843,16 +32811,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@^5.5.3#~builtin<compat/typescript>, typescript@patch:typescript@~5.5.0#~builtin<compat/typescript>":
-  version: 5.5.4
-  resolution: "typescript@patch:typescript@npm%3A5.5.4#~builtin<compat/typescript>::version=5.5.4&hash=a1c5e5"
-  bin:
-    tsc: bin/tsc
-    tsserver: bin/tsserver
-  checksum: fc52962f31a5bcb716d4213bef516885e4f01f30cea797a831205fc9ef12b405a40561c40eae3127ab85ba1548e7df49df2bcdee6b84a94bfbe3a0d7eff16b14
-  languageName: node
-  linkType: hard
-
 "typescript@patch:typescript@~5.3.0#~builtin<compat/typescript>":
   version: 5.3.3
   resolution: "typescript@patch:typescript@npm%3A5.3.3#~builtin<compat/typescript>::version=5.3.3&hash=a1c5e5"
@@ -32860,6 +32818,16 @@ __metadata:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: f61375590b3162599f0f0d5b8737877ac0a7bc52761dbb585d67e7b8753a3a4c42d9a554c4cc929f591ffcf3a2b0602f65ae3ce74714fd5652623a816862b610
+  languageName: node
+  linkType: hard
+
+"typescript@patch:typescript@~5.5.0#~builtin<compat/typescript>":
+  version: 5.5.4
+  resolution: "typescript@patch:typescript@npm%3A5.5.4#~builtin<compat/typescript>::version=5.5.4&hash=a1c5e5"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: fc52962f31a5bcb716d4213bef516885e4f01f30cea797a831205fc9ef12b405a40561c40eae3127ab85ba1548e7df49df2bcdee6b84a94bfbe3a0d7eff16b14
   languageName: node
   linkType: hard
 
@@ -33652,13 +33620,6 @@ __metadata:
   version: 0.20.3
   resolution: "web-tree-sitter@npm:0.20.3"
   checksum: 1187b48d69d6f6319c74ca8f413e8d7c1703869a351070053351ef169c045aad16e5c6b2a73779beaade2f0b6bb3433166363355c9d02e9b2dcf60a195dbffdb
-  languageName: node
-  linkType: hard
-
-"web-vitals@npm:^2.1.4":
-  version: 2.1.4
-  resolution: "web-vitals@npm:2.1.4"
-  checksum: 03d3f47dbf55c3dce07beb0ff5de8ddd52e2d0a53a8df5c84e7a16dda93543341d67231fa79b1d9772b091419af4ec0fd395b8bcf451a0e26846e3f76b3d0efc
   languageName: node
   linkType: hard
 
@@ -34543,7 +34504,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zod@npm:^3.22.4":
+"zod@npm:^3.22.4, zod@npm:^3.23.8":
   version: 3.23.8
   resolution: "zod@npm:3.23.8"
   checksum: 15949ff82118f59c893dacd9d3c766d02b6fa2e71cf474d5aa888570c469dbf5446ac5ad562bb035bf7ac9650da94f290655c194f4a6de3e766f43febd432c5c
