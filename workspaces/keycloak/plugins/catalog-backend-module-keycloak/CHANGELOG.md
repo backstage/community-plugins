@@ -1,5 +1,12 @@
 ### Dependencies
 
+## 3.2.2
+
+### Patch Changes
+
+- 3c72e65: Update Keycloak metadata to reflect dual maintenance support
+- d3d078b: Updated dependency `@types/lodash` to `4.17.13`.
+
 ## 3.2.1
 
 ### Patch Changes
