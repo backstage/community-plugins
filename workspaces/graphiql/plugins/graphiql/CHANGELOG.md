@@ -1,5 +1,11 @@
 # @backstage-community/plugin-graphiql
 
+## 0.4.0
+
+### Minor Changes
+
+- d6ab6de: Add support for GraphiQL plugins.
+
 ## 0.3.11
 
 ### Patch Changes

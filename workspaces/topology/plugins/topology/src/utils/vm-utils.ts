@@ -158,8 +158,8 @@ export const getVmiIpAddresses = (vmi: VMIKind | null) => {
   return uniq(
     flatMap(
       // get IPs only for named interfaces because Windows reports IPs for other devices like Loopback Pseudo-Interface 1 etc.
-      get(vmi, 'status.interfaces', []).filter(i => !!i.name),
-      i => {
+      get(vmi, 'status.interfaces', []).filter((i: { name: any }) => !!i.name),
+      (i: { ipAddress: string; ipAddresses: string[] }) => {
         const arr = [];
         if (i.ipAddress) {
           // the "ipAddress" is deprecated but still can contain useful value
@@ -174,7 +174,7 @@ export const getVmiIpAddresses = (vmi: VMIKind | null) => {
         }
         return arr;
       },
-    ).filter(ip => ip && ip.length > 0),
+    ).filter((ip: string | any[]) => ip && ip.length > 0),
   );
 };
 

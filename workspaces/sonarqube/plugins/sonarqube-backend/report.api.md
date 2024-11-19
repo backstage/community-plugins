@@ -8,12 +8,15 @@ import { Config } from '@backstage/config';
 import express from 'express';
 import { LoggerService } from '@backstage/backend-plugin-api';
 
-// @public
+// @public @deprecated (undocumented)
 export function createRouter(options: RouterOptions): Promise<express.Router>;
 
 // @public
 export class DefaultSonarqubeInfoProvider implements SonarqubeInfoProvider {
-  static fromConfig(config: Config): DefaultSonarqubeInfoProvider;
+  static fromConfig(
+    config: Config,
+    logger: LoggerService,
+  ): DefaultSonarqubeInfoProvider;
   getBaseUrl(options?: { instanceName?: string }): {
     baseUrl: string;
     externalBaseUrl?: string;
@@ -24,7 +27,7 @@ export class DefaultSonarqubeInfoProvider implements SonarqubeInfoProvider {
   }): Promise<SonarqubeFindings | undefined>;
 }
 
-// @public
+// @public @deprecated (undocumented)
 export interface RouterOptions {
   logger: LoggerService;
   sonarqubeInfoProvider: SonarqubeInfoProvider;

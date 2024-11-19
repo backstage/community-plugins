@@ -62,7 +62,7 @@ export const GraphiQLBrowser = (props: GraphiQLBrowserProps) => {
     return <Typography variant="h4">No endpoints available</Typography>;
   }
 
-  const { id, fetcher } = endpoints[tabIndex];
+  const { id, fetcher, plugins } = endpoints[tabIndex];
   const storage = StorageBucket.forLocalStorage(`plugin/graphiql/data/${id}`);
 
   return (
@@ -80,7 +80,12 @@ export const GraphiQLBrowser = (props: GraphiQLBrowserProps) => {
         </Tabs>
         <Divider />
         <div className={classes.graphiQlWrapper}>
-          <GraphiQL key={tabIndex} fetcher={fetcher} storage={storage} />
+          <GraphiQL
+            key={tabIndex}
+            fetcher={fetcher}
+            storage={storage}
+            plugins={plugins}
+          />
         </div>
       </Suspense>
     </div>

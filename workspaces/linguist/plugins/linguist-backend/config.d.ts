@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-import { TaskScheduleDefinition } from '@backstage/backend-tasks';
+import { SchedulerServiceTaskScheduleDefinition } from '@backstage/backend-plugin-api';
 import { HumanDuration } from '@backstage/types';
 import { Options as LinguistJsOptions } from 'linguist-js/dist/types';
 
 export interface Config {
   /** Configuration options for the linguist plugin */
   linguist?: {
-    schedule?: TaskScheduleDefinition;
+    schedule?: SchedulerServiceTaskScheduleDefinition;
     /**
      * @default 20
      */
@@ -42,35 +42,5 @@ export interface Config {
      * [linguist-js](https://www.npmjs.com/package/linguist-js) options
      */
     linguistJsOptions?: LinguistJsOptions;
-
-    /** Options for the tags processor */
-    tagsProcessor?: {
-      /**
-       * Determines how many bytes of a language should be in a repo
-       * for it to be added as an entity tag. Defaults to 0.
-       */
-      bytesThreshold?: number;
-      /**
-       * The types of linguist languages that should be processed. Can be
-       * any of "programming", "data", "markup", "prose". Defaults to ["programming"].
-       */
-      languageTypes?: string[];
-      /**
-       * A custom mapping of linguist languages to how they should be rendered as entity tags.
-       * If a language is mapped to '' it will not be included as a tag.
-       */
-      languageMap?: {
-        [language: string]: string | undefined;
-      };
-      /**
-       * How long to cache entity languages for in memory. Used to avoid constant db hits during
-       * processing. Defaults to 30 minutes.
-       */
-      cacheTTL?: HumanDuration;
-      /**
-       * An optional prefix to apply to all created tags from linguist
-       */
-      tagPrefix?: string;
-    };
   };
 }

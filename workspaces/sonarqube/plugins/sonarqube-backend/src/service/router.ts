@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { errorHandler } from '@backstage/backend-common';
 import express from 'express';
 import Router from 'express-promise-router';
 import { SonarqubeInfoProvider } from './sonarqubeInfoProvider';
@@ -22,6 +21,8 @@ import { InputError } from '@backstage/errors';
 import { LoggerService } from '@backstage/backend-plugin-api';
 
 /**
+ * @deprecated Please migrate to the new backend system as this will be removed in the future.
+ *
  * Dependencies needed by the router
  * @public
  */
@@ -37,6 +38,8 @@ export interface RouterOptions {
 }
 
 /**
+ * @deprecated Please migrate to the new backend system as this will be removed in the future.
+ *
  * @public
  *
  * Constructs a sonarqube router.
@@ -89,6 +92,5 @@ export async function createRouter(
     });
   });
 
-  router.use(errorHandler());
   return router;
 }

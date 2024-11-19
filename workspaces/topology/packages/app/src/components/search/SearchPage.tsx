@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 import React from 'react';
-import { makeStyles, Theme, Grid, Paper } from '@material-ui/core';
+import { Theme } from '@mui/material/styles';
+import Paper from '@mui/material/Paper';
+import Grid from '@mui/material/Grid';
+import { makeStyles } from '@mui/styles';
 
 import { CatalogSearchResultListItem } from '@backstage/plugin-catalog';
 import {

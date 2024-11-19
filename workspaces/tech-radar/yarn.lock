@@ -5051,32 +5051,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-search-backend@npm:^1.6.1":
-  version: 1.6.1
-  resolution: "@backstage/plugin-search-backend@npm:1.6.1"
-  dependencies:
-    "@backstage/backend-common": ^0.25.0
-    "@backstage/backend-defaults": ^0.5.2
-    "@backstage/backend-openapi-utils": ^0.2.0
-    "@backstage/backend-plugin-api": ^1.0.1
-    "@backstage/config": ^1.2.0
-    "@backstage/errors": ^1.2.4
-    "@backstage/plugin-permission-common": ^0.8.1
-    "@backstage/plugin-permission-node": ^0.8.4
-    "@backstage/plugin-search-backend-node": ^1.3.4
-    "@backstage/plugin-search-common": ^1.2.14
-    "@backstage/types": ^1.1.1
-    "@types/express": ^4.17.6
-    dataloader: ^2.0.0
-    express: ^4.17.1
-    lodash: ^4.17.21
-    qs: ^6.10.1
-    yn: ^4.0.0
-    zod: ^3.22.4
-  checksum: a7930909a4ecaad5ca4af14e8405eb469b27eb0a0d6ebe364ba36e73de76d7fe7363f356f962c7bc28140a8e905cd64e1971dc380fe71f063d5cc168a04605fb
-  languageName: node
-  linkType: hard
-
 "@backstage/plugin-search-common@npm:^1.2.14":
   version: 1.2.14
   resolution: "@backstage/plugin-search-common@npm:1.2.14"
@@ -14467,7 +14441,6 @@ __metadata:
     "@backstage/frontend-app-api": ^0.10.0
     "@backstage/frontend-defaults": ^0.1.1
     "@backstage/frontend-plugin-api": ^0.9.0
-    "@backstage/integration-react": ^1.2.0
     "@backstage/plugin-api-docs": ^0.11.11
     "@backstage/plugin-catalog": ^1.24.0
     "@backstage/plugin-catalog-common": ^1.1.0
@@ -15204,14 +15177,10 @@ __metadata:
     "@backstage/plugin-auth-backend-module-guest-provider": ^0.2.1
     "@backstage/plugin-auth-node": ^0.5.3
     "@backstage/plugin-catalog-backend": ^1.27.1
-    "@backstage/plugin-catalog-backend-module-scaffolder-entity-model": ^0.2.1
     "@backstage/plugin-permission-backend": ^0.5.50
     "@backstage/plugin-permission-backend-module-allow-all-policy": ^0.2.1
     "@backstage/plugin-proxy-backend": ^0.5.7
     "@backstage/plugin-scaffolder-backend": ^1.26.2
-    "@backstage/plugin-search-backend": ^1.6.1
-    "@backstage/plugin-search-backend-module-catalog": ^0.2.4
-    "@backstage/plugin-search-backend-module-techdocs": ^0.3.1
     "@backstage/plugin-techdocs-backend": ^1.11.1
   languageName: unknown
   linkType: soft

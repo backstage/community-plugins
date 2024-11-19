@@ -10,7 +10,6 @@
   },
   "configSchema": "config.d.ts",
   "dependencies": {
-    "@backstage/backend-common": "^0.25.0",
     "@backstage/backend-defaults": "^0.5.2",
     "@backstage/backend-dynamic-feature-service": "^0.4.3",
     "@backstage/backend-plugin-api": "^1.0.1",
@@ -23,6 +22,7 @@
     "yn": "^4.0.0"
   },
   "devDependencies": {
+    "@backstage/backend-test-utils": "1.0.2",
     "@backstage/cli": "^0.28.0",
     "@backstage/plugin-auth-backend": "^0.23.1",
     "@backstage/plugin-auth-backend-module-guest-provider": "^0.2.1",
@@ -37,7 +37,7 @@
     "./package.json": "./package.json"
   },
   "files": [
-    "app-config.rhdh.yaml",
+    "app-config.dynamic.yaml",
     "dist",
     "config.d.ts"
   ],
@@ -55,7 +55,6 @@
   "scripts": {
     "build": "backstage-cli package build",
     "clean": "backstage-cli package clean",
-    "export-dynamic": "yarn run -T janus-cli package export-dynamic-plugin --embed-as-dependencies",
     "lint": "backstage-cli package lint",
     "postpack": "backstage-cli package postpack",
     "prepack": "backstage-cli package prepack",
@@ -73,5 +72,5 @@
       ]
     }
   },
-  "version": "1.0.4"
+  "version": "1.0.5"
 }

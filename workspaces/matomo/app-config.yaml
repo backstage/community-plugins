@@ -1,0 +1,25 @@
+app:
+  title: Matomo Dev App
+  baseUrl: http://localhost:3000
+
+backend:
+  baseUrl: http://localhost:7007
+  cors:
+    origin: http://localhost:3000
+    methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
+    credentials: true
+  reading:
+    allow:
+      - host: localhost
+
+# Config for dev app
+matomo:
+  # frontend
+  frontendBaseUrl: ${MATOMO_HOST}
+  contactUsLink: ${SLACK_CONTACT_LINK}
+
+  # backend
+  apiUrl: ${MATOMO_HOST}
+  apiToken: ${MATOMO_TOKEN_AUTH}
+  # (OPTIONAL) Set to false if you get SSL certificate error
+  secure: false #

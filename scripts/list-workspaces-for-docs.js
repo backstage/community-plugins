@@ -20,6 +20,7 @@ import { getPackages } from '@manypkg/get-packages';
 import { resolve } from 'path';
 import arrayToTable from 'array-to-table';
 import * as url from 'url';
+import * as codeowners from 'codeowners-utils';
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
@@ -31,6 +32,10 @@ async function main(args) {
 
   const backendFeatureReports = [];
 
+  // Get `CODEOWNERS` entries
+  const codeownersPath = resolve(rootPath, '.github', 'CODEOWNERS');
+  const codeOwnerEntries = await codeowners.loadOwners(codeownersPath);
+
   // Get workspaces
   const workspaces = (await fs.readdir(workspacePath, { withFileTypes: true }))
     .filter(w => w.isDirectory() && !EXCLUDED_WORKSPACES.includes(w.name))
@@ -38,15 +43,43 @@ async function main(args) {
 
   // Loop through workspaces
   for (const workspace of workspaces) {
+    // Find the owner by looking up the workspace in the `CODEOWNERS` file
+    const owners = codeOwnerEntries
+      .filter(c => c.pattern === `/workspaces/${workspace}`)
+      .map(o => o.owners)
+      .flat();
+    const filteredOwners = owners.filter(
+      o => o !== '@backstage/community-plugins-maintainers',
+    );
+    filteredOwners.forEach((owner, index) => {
+      if (owner === '@backstage/sda-se-reviewers') {
+        filteredOwners[
+          index
+        ] = `[@backstage/sda-se-reviewers](https://github.com/orgs/backstage/teams/sda-se-reviewers)`;
+      } else {
+        filteredOwners[
+          index
+        ] = `[${owner}](https://github.com/${owner.substring(1)})`;
+      }
+    });
+    const workspaceOwners =
+      filteredOwners.length === 0
+        ? '[@backstage/community-plugins-maintainers](https://github.com/orgs/backstage/teams/community-plugins-maintainers)'
+        : filteredOwners.join(', ');
+
     const currentWorkspacePath = resolve(workspacePath, workspace);
     const { packages } = await getPackages(currentWorkspacePath);
 
     // Loop through packages in each workspace
     for (const pkg of packages) {
+      if (pkg.packageJson.private) {
+        continue;
+      }
       const pkgRole = pkg.packageJson.backstage?.role;
 
       const workspaceReport = {
         workspace: workspace,
+        owner: workspaceOwners,
         package: undefined,
         role: undefined,
         readme: undefined,

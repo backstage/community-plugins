@@ -17,8 +17,8 @@
 import React from 'react';
 import { renderInTestApp } from '@backstage/test-utils';
 import { GraphiQLBrowser } from './GraphiQLBrowser';
-
-jest.mock('graphiql', () => ({ GraphiQL: () => '<GraphiQL />' }));
+import { GraphiQLIcon } from '../../GraphiQLIcon';
+import userEvent from '@testing-library/user-event';
 
 describe('GraphiQLBrowser', () => {
   it('should render error text if there are no endpoints', async () => {
@@ -45,5 +45,33 @@ describe('GraphiQLBrowser', () => {
     );
     rendered.getByText('Endpoint A');
     rendered.getByText('Endpoint B');
+    expect(rendered.getByTestId('graphiql-container')).not.toBeNull();
+  });
+
+  it('should render plugins', async () => {
+    const rendered = await renderInTestApp(
+      <GraphiQLBrowser
+        endpoints={[
+          {
+            id: 'a',
+            title: 'Endpoint A',
+            async fetcher() {},
+            plugins: [
+              {
+                content: () => <div>Hello from My plugin</div>,
+                icon: GraphiQLIcon,
+                title: 'My plugin',
+              },
+            ],
+          },
+        ]}
+      />,
+    );
+
+    await userEvent.click(
+      rendered.getByRole('button', { name: 'Show My plugin' }),
+    );
+
+    expect(rendered.getByText('Hello from My plugin')).toBeVisible();
   });
 });

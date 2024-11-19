@@ -148,3 +148,24 @@ export const generatedColumns: TableColumn[] = [
 <EntityJenkinsContent columns={generatedColumns}/>
 // ...
 ```
+
+## Modify the title
+
+To change the default title text, simply use the `title` property:
+
+```tsx
+<EntityJenkinsContent title="Jenkins build history" />
+
+<EntityLatestJenkinsRunCard
+  branch="main"
+  variant="gridItem"
+  title="Latest production build"
+/>
+
+// Here it is possible to use a function to concatenate the branch name
+<EntityLatestJenkinsRunCard
+  branch="main"
+  variant="gridItem"
+  title={(branch: string) => `Latest ${branch} build`}
+/>
+```

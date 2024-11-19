@@ -1,5 +1,11 @@
 # @backstage-community/plugin-github-actions
 
+## 0.6.24
+
+### Patch Changes
+
+- 9501620: Updating README to include missing steps
+
 ## 0.6.23
 
 ### Patch Changes
