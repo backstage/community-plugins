@@ -498,7 +498,8 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
    * The temporary enforcer has lazy loading of the permission policies enabled to reduce the amount
    * of time it takes to initialize the temporary enforcer.
    * The justification for lazy loading is because permission policies are already present in the
-   * role manager / database and it will be filtered and loaded whenever `loadFilteredPolicy` is called.
+   * role manager / database and it will be filtered and loaded whenever `getFilteredPolicy` is called
+   * and permissions / roles are applied to the temp enforcer
    * @param entityRef The user to enforce
    * @param resourceType The resource type / name of the permission policy
    * @param action The action of the permission policy
@@ -512,26 +513,39 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
     action: string,
     roles: string[],
   ): Promise<boolean> {
-    const filter = [];
-    if (roles.length > 0) {
-      roles.forEach(role => {
-        filter.push({ ptype: 'p', v0: role, v1: resourceType, v2: action });
-      });
-    } else {
-      filter.push({ ptype: 'p', v1: resourceType, v2: action });
-    }
-
-    const adapt = this.enforcer.getAdapter();
-    const roleManager = this.enforcer.getRoleManager();
     const tempEnforcer = new Enforcer();
-    await tempEnforcer.initWithModelAndAdapter(
-      newModelFromString(MODEL),
-      adapt,
-      true,
-    );
-    tempEnforcer.setRoleManager(roleManager);
+    const model = newModelFromString(MODEL);
 
-    await tempEnforcer.loadFilteredPolicy(filter);
+    // copy filtered policies from enforcer to tempEnforcer
+    // model.addPolicies('p', 'p', [['role:admin', 'data:resource', 'read', 'allow']]);
+    let policies: string[][] = [];
+    if (roles.length > 0) {
+      for (const role of roles) {
+        const filteredRolePolicies = await this.enforcer.getFilteredPolicy(
+          0,
+          ...[role, resourceType, action],
+        );
+        policies.push(...filteredRolePolicies);
+      }
+    } else {
+      const regex = /\b(?:user|group):[a-zA-Z0-9_-]+\/[a-zA-Z0-9_-]+\b/g;
+
+      const enforcePolicies = await this.enforcer.getFilteredPolicy(
+        1,
+        ...[resourceType, action],
+      );
+
+      policies = enforcePolicies.filter(policy => policy[0].match(regex));
+    }
+    model.addPolicies('p', 'p', policies);
+
+    // init temp enforce with model only, without adapter at all...
+    await tempEnforcer.initWithModelAndAdapter(model, undefined, false);
+    // set up role manager for temp enforcer
+    const roleManager = this.enforcer.getRoleManager();
+    tempEnforcer.setRoleManager(roleManager);
+    tempEnforcer.enableAutoBuildRoleLinks(false);
+    await tempEnforcer.buildRoleLinks();
 
     return await tempEnforcer.enforce(entityRef, resourceType, action);
   }

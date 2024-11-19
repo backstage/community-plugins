@@ -101,10 +101,18 @@ export class BackstageRoleManager implements RoleManager {
 
   /**
    * hasLink determines whether name1 inherits role: name2.
-   * During this check we build the group hierarchy graph to determine if the particular user is directly or indirectly
-   * attached to the role that we are receiving.
-   * In the event that there is a postgres database connection, we will attempt to query the roles from the database.
-   * Otherwise we will use the cached allRoles to determine if there is a link.
+   * Before this check is called in the background by the enforcer,
+   * we filter out all roles that the user is not connected to
+   * directly or indirectly through the use of retrieving roles through
+   * enforcer.getRolesForUser and apply those roles to a tempEnforcer.
+   *
+   * This means that hasLink will almost always be true in the event that a user
+   * is assigned to a role (either directly or indirectly)
+   *
+   * In the event that a user or group is not assigned to a role and instead
+   * are assigned directly to permissions, then name2 will become either that
+   * user or group through the filtering. In this case we will build the graph
+   * if necessary for name2 group presence or evaulate based on the names matching.
    * @param name1 The user that we are authorizing.
    * @param name2 The name of the role that we are checking against.
    * @param domain Unimplemented.
@@ -115,7 +123,6 @@ export class BackstageRoleManager implements RoleManager {
     name2: string,
     ...domain: string[]
   ): Promise<boolean> {
-    let currentRole: RoleMemberList;
     if (domain.length > 0) {
       throw new Error('domain argument is not supported.');
     }
@@ -130,23 +137,6 @@ export class BackstageRoleManager implements RoleManager {
       return true;
     }
 
-    if (this.isPGClient()) {
-      currentRole = new RoleMemberList(name2);
-      await currentRole.buildMembers(currentRole, this.rbacDBClient);
-    } else {
-      currentRole = this.allRoles.get(name2)!;
-    }
-
-    // Check for direct declaration of user to role
-    const directDeclaration = await this.checkForUserToRole(
-      name1,
-      name2,
-      currentRole,
-    );
-    if (directDeclaration) {
-      return true;
-    }
-
     // name1 is always user in our case.
     // name2 is user or group.
     // user(name1) couldn't inherit user(name2).
@@ -156,37 +146,35 @@ export class BackstageRoleManager implements RoleManager {
       return false;
     }
 
-    const memo = new AncestorSearchMemo(
-      name1,
-      this.catalogApi,
-      this.catalogDBClient,
-      this.auth,
-      this.maxDepth,
-    );
-    await memo.buildUserGraph(memo);
-
-    memo.debugNodesAndEdges(this.logger, name1);
-    if (!memo.isAcyclic()) {
-      const cycles = memo.findCycles();
-
-      this.logger.warn(
-        `Detected cycle dependencies in the Group graph: ${JSON.stringify(
-          cycles,
-        )}. Admin/(catalog owner) have to fix it to make RBAC permission evaluation correct for groups: ${JSON.stringify(
-          cycles,
-        )}`,
+    // if it is a group, then we will have to build the graph,
+    if (kind.toLocaleLowerCase() === 'group') {
+      const memo = new AncestorSearchMemo(
+        name1,
+        this.catalogApi,
+        this.catalogDBClient,
+        this.auth,
+        this.maxDepth,
       );
+      await memo.buildUserGraph(memo);
+      memo.debugNodesAndEdges(this.logger, name1);
 
-      return false;
+      if (!memo.isAcyclic()) {
+        const cycles = memo.findCycles();
+
+        this.logger.warn(
+          `Detected cycle dependencies in the Group graph: ${JSON.stringify(
+            cycles,
+          )}. Admin/(catalog owner) have to fix it to make RBAC permission evaluation correct for groups: ${JSON.stringify(
+            cycles,
+          )}`,
+        );
+        return false;
+      }
+
+      return memo.hasEntityRef(name2);
     }
 
-    if (
-      this.parseEntityKind(name2) === 'role' &&
-      this.hasMember(currentRole, memo)
-    ) {
-      return true;
-    }
-    return memo.hasEntityRef(name2);
+    return true;
   }
 
   /**
@@ -240,6 +228,22 @@ export class BackstageRoleManager implements RoleManager {
       await memo.buildUserGraph(memo);
       memo.debugNodesAndEdges(this.logger, name);
 
+      // Account for the user not being in the graph (this can happen during direct assignment to roles)
+      memo.setNode(name);
+
+      if (!memo.isAcyclic()) {
+        const cycles = memo.findCycles();
+
+        this.logger.warn(
+          `Detected cycle dependencies in the Group graph: ${JSON.stringify(
+            cycles,
+          )}. Admin/(catalog owner) have to fix it to make RBAC permission evaluation correct for groups: ${JSON.stringify(
+            cycles,
+          )}`,
+        );
+        return Promise.resolve([]);
+      }
+
       if (this.isPGClient()) {
         const currentRole = new RoleMemberList(name);
         await currentRole.buildRoles(
@@ -251,8 +255,6 @@ export class BackstageRoleManager implements RoleManager {
       }
 
       const allRoles: string[] = [];
-      // Account for the user not being in the graph
-      memo.setNode(name);
       for (const value of this.allRoles.values()) {
         if (this.hasMember(value, memo)) {
           allRoles.push(value.name);
@@ -299,12 +301,6 @@ export class BackstageRoleManager implements RoleManager {
     return newRole;
   }
 
-  // parse the entity to find out if it is a user / group / or role
-  private parseEntityKind(name: string): string {
-    const parsed = name.split(':');
-    return parsed[0];
-  }
-
   /**
    * isPGClient checks what the current database client is at them time.
    * This is to ensure that we are querying the database in the event of postgres
@@ -314,37 +310,6 @@ export class BackstageRoleManager implements RoleManager {
   isPGClient(): boolean {
     const client = this.rbacDBClient.client.config.client;
     return client === 'pg';
-  }
-
-  /**
-   * checkForUserToRole checks if there exists a direct declaration of a user to a role. Used to exit out of
-   * hasLink faster in the event to reduce the time it would take to build the user graph.
-   * @param name1 The user that we are checking for.
-   * @param name2 The role that we are checking for.
-   * @returns True if there is a user that is directly attached to a particular role.
-   */
-  private async checkForUserToRole(
-    name1: string,
-    name2: string,
-    currentRole: RoleMemberList | undefined,
-  ): Promise<boolean | undefined> {
-    const tempRole = this.getOrCreateRole(name2);
-
-    // Immediately check if the our temporary role has a link with the role that we are comparing it to
-    if (this.parseEntityKind(name2) === 'role' && tempRole.hasMember(name1)) {
-      return true;
-    }
-
-    // Clean up the temp role
-    if (tempRole.getMembers().length === 0) {
-      this.allRoles.delete(name2);
-    }
-
-    if (currentRole && currentRole.hasMember(name1)) {
-      return true;
-    }
-
-    return undefined;
   }
 
   /**
