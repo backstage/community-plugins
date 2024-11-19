@@ -103,7 +103,7 @@ export const entityRecentGithubActionsRunsCard =
     },
     factory(originalFactory, { config }) {
       return originalFactory({
-        filter: containsGithubAnnotation,
+        filter: hasGithubAnnotation,
         loader: async () =>
           import('../components/Cards').then(m => (
             <m.RecentWorkflowRunsCard {...config.props} />
