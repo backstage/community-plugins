@@ -13,4 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export {};
+
+/**
+ * Configuration interface for the GitHub Copilot Plugin.
+ */
+export interface Config {
+  /** Configuration options for the GitHub Copilot Plugin */
+  copilot?: {
+    /**
+     * The name of the GitHub enterprise.
+     * @visibility frontend
+     */
+    enterprise?: string;
+    /**
+     * The name of the GitHub organization.
+     * @visibility frontend
+     */
+    organization?: string;
+  };
+}

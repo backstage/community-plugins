@@ -18,29 +18,23 @@ import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import Icon from '@mui/material/Icon';
 import Typography from '@mui/material/Typography';
+import Stack from '@mui/material/Stack';
+import Tooltip from '@mui/material/Tooltip';
 import { styled } from '@mui/material/styles';
+import { InfoCard } from '@backstage/core-components';
 import { DateTime } from 'luxon';
 
 type CardItemProps = {
+  team?: string;
   title: string;
-  value: number | string;
+  primaryValue: number | string;
+  secondaryValue?: number | string;
   startDate: Date;
   endDate: Date;
   icon: ElementType<ReactNode>;
 };
 
 const format = 'dd/MM/yyyy';
-
-const MainBox = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'center',
-  borderRadius: 25,
-  minWidth: 256,
-  minHeight: 138,
-  backgroundColor: theme.palette.background.paper,
-  padding: theme.spacing(2),
-}));
 
 const TextGroup = styled(Box)(({ theme }) => ({
   padding: theme.spacing(1),
@@ -52,14 +46,16 @@ const FooterText = styled(Typography)(({ theme }) => ({
 }));
 
 export const Card = ({
+  team,
   title,
-  value,
+  primaryValue,
+  secondaryValue,
   startDate,
   endDate,
   icon,
 }: CardItemProps) => {
   const message = useMemo(() => {
-    if (value === 'N/A') return `No data available`;
+    if (primaryValue === 'N/A') return `No data available`;
 
     const endDateTime = DateTime.fromJSDate(endDate);
     const now = DateTime.now();
@@ -77,19 +73,38 @@ export const Card = ({
     return `From ${DateTime.fromJSDate(startDate).toFormat(
       format,
     )} to ${endDateTime.toFormat(format)}`;
-  }, [value, startDate, endDate]);
+  }, [primaryValue, startDate, endDate]);
 
   return (
-    <MainBox>
+    <InfoCard divider={false}>
       <Box display="flex" alignItems="center">
         <Icon component={icon} />
         <TextGroup>
-          <Typography color="textSecondary" variant="subtitle2" component="h2">
+          <Typography color="primary" variant="subtitle2" component="h2">
             {title}
           </Typography>
-          <Typography variant="h3" component="h2">
-            {value}
-          </Typography>
+          <Stack direction="row" gap={2} alignItems="flex-end">
+            <Tooltip title={team && secondaryValue ? team : 'Overall'}>
+              <Typography
+                variant="h3"
+                component="h2"
+                color="textPrimary"
+                mb={0}
+              >
+                {primaryValue}
+              </Typography>
+            </Tooltip>
+            <Tooltip title={team && secondaryValue && 'Overall'}>
+              <Typography
+                variant="h6"
+                component="h5"
+                color="textSecondary"
+                mb={0}
+              >
+                {secondaryValue}
+              </Typography>
+            </Tooltip>
+          </Stack>
         </TextGroup>
       </Box>
       <Divider />
@@ -98,6 +113,6 @@ export const Card = ({
           {message}
         </FooterText>
       </Box>
-    </MainBox>
+    </InfoCard>
   );
 };

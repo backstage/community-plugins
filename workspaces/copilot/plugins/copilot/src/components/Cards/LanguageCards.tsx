@@ -21,24 +21,39 @@ import { getLanguageStats } from '../../utils';
 import { CardsProps } from '../../types';
 import { styled } from '@mui/material/styles';
 
-const CardBox = styled(Box)(() => ({
-  flex: '1 1 0',
-  maxWidth: 354,
-}));
+const CardBox = styled(Box)({
+  flex: '1 1 calc(50% - 10px)',
+  minWidth: 300,
+  maxWidth: 'calc(50% - 10px)',
+  boxSizing: 'border-box',
+});
 
 export const LanguageCards = ({
+  team,
   metrics,
+  metricsByTeam,
   startDate,
   endDate,
 }: PropsWithChildren<CardsProps>) => {
-  const languageStats = getLanguageStats(metrics);
+  const overallLanguageStats =
+    metrics.length > 0 ? getLanguageStats(metrics) : [];
+  const teamLanguageStats =
+    metricsByTeam.length > 0 ? getLanguageStats(metricsByTeam) : [];
 
   return (
-    <Box display="flex" flexWrap="wrap" gap={2}>
+    <Box display="flex" flexWrap="wrap" gap={1} justifyContent="space-between">
       <CardBox>
         <Card
+          team={team}
           title="Nº of Languages"
-          value={metrics.length ? languageStats.length : 'N/A'}
+          primaryValue={
+            team
+              ? teamLanguageStats.length || 'N/A'
+              : overallLanguageStats.length || 'N/A'
+          }
+          secondaryValue={
+            team ? overallLanguageStats.length || 'N/A' : undefined
+          }
           startDate={startDate}
           endDate={endDate}
           icon={() => (
