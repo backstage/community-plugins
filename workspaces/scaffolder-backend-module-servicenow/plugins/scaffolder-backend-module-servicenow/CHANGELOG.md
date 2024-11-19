@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 2.2.3
+
+### Patch Changes
+
+- 3d6256e: Updated dependency `@hey-api/openapi-ts` to `0.55.3`.
+
 ## 2.2.2
 
 ### Patch Changes
