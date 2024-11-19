@@ -1,5 +1,5 @@
 {
-  "name": "@backstage-community/scaffolder-backend-module-regex",
+  "name": "@backstage-community/plugin-scaffolder-backend-module-regex",
   "description": "The regex custom actions",
   "version": "2.2.2",
   "main": "src/index.ts",

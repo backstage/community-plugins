@@ -2463,9 +2463,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage-community/scaffolder-backend-module-regex@workspace:plugins/regex-actions":
+"@backstage-community/plugin-scaffolder-backend-module-regex@workspace:plugins/regex-actions":
   version: 0.0.0-use.local
-  resolution: "@backstage-community/scaffolder-backend-module-regex@workspace:plugins/regex-actions"
+  resolution: "@backstage-community/plugin-scaffolder-backend-module-regex@workspace:plugins/regex-actions"
   dependencies:
     "@backstage/backend-plugin-api": ^1.0.1
     "@backstage/cli": 0.28.2
