@@ -13,5 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+export { useTeams } from './useTeams';
 export { useMetrics } from './useMetrics';
+export { useMetricsByTeam } from './useMetricsByTeam';
 export { usePeriodRange } from './usePeriodRange';
+export { useSetMetricsTypeFromRoute } from './useSetMetricsTypeFromRoute';

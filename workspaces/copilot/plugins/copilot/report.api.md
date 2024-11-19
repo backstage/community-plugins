@@ -8,16 +8,22 @@
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { JSX as JSX_2 } from 'react';
 import { RouteRef } from '@backstage/core-plugin-api';
+import { SubRouteRef } from '@backstage/core-plugin-api';
 
 // @public
-export const CopilotPage: () => JSX_2.Element;
+export const CopilotIndexPage: () => JSX_2.Element;
 
 // @public
 export const copilotPlugin: BackstagePlugin<
   {
-    root: RouteRef<undefined>;
+    copilot: RouteRef<undefined>;
+    enterprise: SubRouteRef<undefined>;
+    organization: SubRouteRef<undefined>;
   },
   {},
   {}
 >;
+
+// @public
+export const CopilotSidebar: () => JSX_2.Element;
 ```

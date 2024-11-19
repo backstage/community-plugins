@@ -18,6 +18,7 @@ import useAsync from 'react-use/lib/useAsync';
 import { useApi } from '@backstage/core-plugin-api';
 import { PeriodRange } from '@backstage-community/plugin-copilot-common';
 import { copilotApiRef } from '../api';
+import { useSetMetricsTypeFromRoute } from './useSetMetricsTypeFromRoute';
 
 export function usePeriodRange(): {
   item: PeriodRange | undefined;
@@ -25,8 +26,14 @@ export function usePeriodRange(): {
   error?: Error;
 } {
   const api = useApi(copilotApiRef);
+  const type = useSetMetricsTypeFromRoute();
 
-  const { value, loading, error } = useAsync(() => api.periodRange(), [api]);
+  const { value, loading, error } = useAsync(() => {
+    if (type) {
+      return api.periodRange(type);
+    }
+    return Promise.resolve(undefined);
+  }, [api, type]);
 
   return {
     item: value,
