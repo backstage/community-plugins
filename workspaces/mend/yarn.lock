@@ -2479,7 +2479,7 @@ __metadata:
     jsonwebtoken: ^9.0.2
     msw: ^1.0.0
     node-fetch: ^2.6.7
-    path-to-regexp: ^7.1.0
+    path-to-regexp: ^8.0.0
     supertest: ^6.2.4
     winston: ^3.2.1
     yn: ^4.0.0
@@ -20985,13 +20985,6 @@ __metadata:
   version: 6.3.0
   resolution: "path-to-regexp@npm:6.3.0"
   checksum: eca78602e6434a1b6799d511d375ec044e8d7e28f5a48aa5c28d57d8152fb52f3fc62fb1cfc5dfa2198e1f041c2a82ed14043d75740a2fe60e91b5089a153250
-  languageName: node
-  linkType: hard
-
-"path-to-regexp@npm:^7.1.0":
-  version: 7.2.0
-  resolution: "path-to-regexp@npm:7.2.0"
-  checksum: 665b422b41d2ca39eb29a863614f22370d29abfcb878b1475dce6a05b5f72be9397ee45e29cd4f60571a60341b5aeac2ca64a9d627a9d32da5a73c898977cc8b
   languageName: node
   linkType: hard
 
