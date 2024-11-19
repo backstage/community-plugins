@@ -18,7 +18,7 @@ import Box from '@mui/material/Box';
 import { styled } from '@mui/material/styles';
 import { PieChart } from '@mui/x-charts';
 import { Chart } from './Chart';
-import { LanguagesBreakdownTable } from '../Table/LanguagesBreakdownTable';
+import { LanguagesComparisonTables } from '../Table/LanguagesComparisonTables';
 import {
   getLanguageStats,
   getTopLanguagesByAcceptanceRate,
@@ -36,55 +36,113 @@ const RowBox = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'row',
   gap: theme.spacing(2),
+  width: '100%',
 }));
 
-export const LanguageCharts = ({ metrics }: PropsWithChildren<ChartsProps>) => {
-  const languageStats = getLanguageStats(metrics);
+const Fieldset = styled('fieldset')(({ theme }) => ({
+  border: `1px solid ${theme.palette.divider}`,
+  borderRadius: theme.shape.borderRadius,
+  padding: theme.spacing(2),
+  marginBottom: theme.spacing(2),
+}));
 
-  const topFiveLanguagesByAcceptedPrompts = getTopLanguagesByAcceptedPrompts(
-    metrics,
-    5,
-  );
-  const topFiveLanguagesByAcceptanceRate = getTopLanguagesByAcceptanceRate(
-    metrics,
+const Legend = styled('legend')(({ theme }) => ({
+  fontSize: theme.typography.h6.fontSize,
+  padding: `0 ${theme.spacing(1)}`,
+}));
+
+const renderPieCharts = (promptsData: any[], rateData: any[]) => (
+  <RowBox>
+    <Chart title="Top 5 Languages By Accepted Prompts">
+      <PieChart
+        margin={{ right: 200 }}
+        series={[
+          {
+            data: promptsData.map(lan => ({
+              id: lan.language,
+              value: lan.totalAcceptances,
+              label: `${lan.language}: ${lan.totalAcceptances}`,
+            })),
+            highlightScope: { fade: 'global', highlight: 'item' },
+            faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' },
+          },
+        ]}
+        height={300}
+      />
+    </Chart>
+    <Chart title="Top 5 Languages By Acceptance Rate">
+      <PieChart
+        margin={{ right: 200 }}
+        series={[
+          {
+            data: rateData.map(lan => ({
+              id: lan.language,
+              value: lan.acceptanceRate * 100,
+              label: `${lan.language}: ${(lan.acceptanceRate * 100).toFixed(
+                2,
+              )}%`,
+            })),
+            highlightScope: { fade: 'global', highlight: 'item' },
+            faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' },
+            valueFormatter: item => `${item.value.toFixed(2)}%`,
+          },
+        ]}
+        height={300}
+      />
+    </Chart>
+  </RowBox>
+);
+
+export const LanguageCharts = ({
+  team,
+  metrics,
+  metricsByTeam,
+}: PropsWithChildren<ChartsProps>) => {
+  const languageStats = getLanguageStats(metrics);
+  const languageStatsByTeam = getLanguageStats(metricsByTeam);
+
+  const topFiveLanguagesByAcceptedPromptsOverall =
+    getTopLanguagesByAcceptedPrompts(metrics, 5);
+  const topFiveLanguagesByAcceptanceRateOverall =
+    getTopLanguagesByAcceptanceRate(metrics, 5);
+  const topFiveLanguagesByAcceptedPromptsTeam =
+    getTopLanguagesByAcceptedPrompts(metricsByTeam, 5);
+  const topFiveLanguagesByAcceptanceRateTeam = getTopLanguagesByAcceptanceRate(
+    metricsByTeam,
     5,
   );
 
   return (
     <MainBox>
-      <RowBox>
-        <Chart title="Top 5 Languages By Accepted Prompts">
-          <PieChart
-            series={[
-              {
-                data: topFiveLanguagesByAcceptedPrompts.map(lan => ({
-                  id: lan.language,
-                  value: lan.totalAcceptances,
-                  label: lan.language,
-                })),
-              },
-            ]}
-            height={300}
-          />
-        </Chart>
-        <Chart title="Top 5 Languages By Acceptance Rate">
-          <PieChart
-            series={[
-              {
-                data: topFiveLanguagesByAcceptanceRate.map(lan => ({
-                  id: lan.language,
-                  value: lan.acceptanceRate * 100,
-                  label: lan.language,
-                })),
-                valueFormatter: item => `${item.value.toFixed(2)}%`,
-              },
-            ]}
-            height={300}
-          />
-        </Chart>
-      </RowBox>
+      {team && (
+        <Fieldset>
+          <Legend>{team}</Legend>
+          {renderPieCharts(
+            topFiveLanguagesByAcceptedPromptsTeam,
+            topFiveLanguagesByAcceptanceRateTeam,
+          )}
+        </Fieldset>
+      )}
+      {team && (
+        <Fieldset>
+          <Legend>Overall</Legend>
+          {renderPieCharts(
+            topFiveLanguagesByAcceptedPromptsOverall,
+            topFiveLanguagesByAcceptanceRateOverall,
+          )}
+        </Fieldset>
+      )}
+      {!team &&
+        renderPieCharts(
+          topFiveLanguagesByAcceptedPromptsOverall,
+          topFiveLanguagesByAcceptanceRateOverall,
+        )}
       <Chart title="Languages Breakdown">
-        <LanguagesBreakdownTable rows={languageStats} />
+        <LanguagesComparisonTables
+          team={team}
+          overallRows={languageStats}
+          teamRows={languageStatsByTeam}
+        />
       </Chart>
     </MainBox>
   );

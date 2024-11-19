@@ -1,5 +1,16 @@
 # @backstage-community/plugin-copilot
 
+## 0.3.0
+
+### Minor Changes
+
+- 7f17c9f: Introduced support for organizations and team metrics visualization in the Copilot plugin.
+
+### Patch Changes
+
+- Updated dependencies [7f17c9f]
+  - @backstage-community/plugin-copilot-common@0.3.0
+
 ## 0.2.3
 
 ### Patch Changes

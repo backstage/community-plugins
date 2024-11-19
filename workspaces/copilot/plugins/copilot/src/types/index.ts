@@ -15,6 +15,7 @@
  */
 
 import { Metric } from '@backstage-community/plugin-copilot-common';
+import React from 'react';
 
 export type LanguageStats = {
   language: string;
@@ -24,11 +25,28 @@ export type LanguageStats = {
 };
 
 export type CardsProps = {
+  team?: string;
   metrics: Metric[];
+  metricsByTeam: Metric[];
   startDate: Date;
   endDate: Date;
 };
 
 export type ChartsProps = {
+  team?: string;
   metrics: Metric[];
+  metricsByTeam: Metric[];
+};
+
+export type FilterProps = {
+  team?: string;
+  setTeam: React.Dispatch<React.SetStateAction<string | undefined>>;
+  options: FilterOptions;
+};
+
+export type FilterOptions = FilterOption[];
+
+export type FilterOption = {
+  label: string;
+  value: string;
 };
