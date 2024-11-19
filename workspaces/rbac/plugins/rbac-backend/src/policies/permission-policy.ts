@@ -256,9 +256,9 @@ export class RBACPermissionPolicy implements PermissionPolicy {
         // handle permission with 'resource' type
         const hasNamedPermission =
           await this.hasImplicitPermissionSpecifiedByName(
-            userEntityRef,
             permissionName,
             action,
+            roles,
           );
         // Let's set up higher priority for permission specified by name, than by resource type
         const obj = hasNamedPermission ? permissionName : resourceType;
@@ -298,13 +298,17 @@ export class RBACPermissionPolicy implements PermissionPolicy {
   }
 
   private async hasImplicitPermissionSpecifiedByName(
-    userEntityRef: string,
     permissionName: string,
     action: string,
+    roles: string[],
   ): Promise<boolean> {
-    const userPerms =
-      await this.enforcer.getImplicitPermissionsForUser(userEntityRef);
-    for (const perm of userPerms) {
+    const perms: string[][] = [];
+
+    for (const role of roles) {
+      perms.push(...(await this.enforcer.getFilteredPolicy(0, role)));
+    }
+
+    for (const perm of perms) {
       if (permissionName === perm[1] && action === perm[2]) {
         return true;
       }

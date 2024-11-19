@@ -242,26 +242,6 @@ describe('RBACPermissionPolicy Tests', () => {
         AuthorizeResult.ALLOW,
       );
     });
-
-    // case2 with role
-    it('should allow update access to resource permission for role from csv file', async () => {
-      const decision = await policy.handle(
-        newPolicyQueryWithResourcePermission(
-          'catalog.entity.read',
-          'catalog-entity',
-          'update',
-        ),
-        newPolicyQueryUser('role:default/catalog-writer'),
-      );
-      expect(decision.result).toBe(AuthorizeResult.ALLOW);
-      verifyAuditLogForResourcedPermission(
-        'role:default/catalog-writer',
-        'catalog.entity.read',
-        'update',
-        'catalog-entity',
-        AuthorizeResult.ALLOW,
-      );
-    });
   });
 
   describe('Policy checks for clean up old policies for csv file', () => {
@@ -2282,12 +2262,8 @@ function verifyAuditLogForNonResourcedPermission(
   });
 
   const message = resourceType
-    ? `${
-        expectedUser ?? 'user without entity'
-      } is ${result} for permission '${permissionName}', resource type '${resourceType}' and action '${action}'`
-    : `${
-        expectedUser ?? 'user without entity'
-      } is ${result} for permission '${permissionName}' and action '${action}'`;
+    ? `${expectedUser ?? 'user without entity'} is ${result} for permission '${permissionName}', resource type '${resourceType}' and action '${action}'`
+    : `${expectedUser ?? 'user without entity'} is ${result} for permission '${permissionName}' and action '${action}'`;
   expect(auditLoggerMock.auditLog).toHaveBeenNthCalledWith(2, {
     actorId: expectedUser,
     eventName: 'PermissionEvaluationCompleted',
