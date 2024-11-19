@@ -63,6 +63,22 @@ const serviceEntityPage = (
 );
 ```
 
+If you are using Backstage's [new frontend system](https://backstage.io/docs/frontend-system/), simply import `sonarQubePlugin` in your `App.tsx` and add it to your app's `features` array:
+
+```typescript
+import jenkinsPlugin from '@backstage-community/plugin-jenkins/alpha';
+
+// ...
+
+export const app = createApp({
+  features: [
+    // ...
+    jenkinsPlugin,
+    // ...
+  ],
+});
+```
+
 4. Run app with `yarn start`
 5. Add the Jenkins folder annotation to your `catalog-info.yaml`.
 

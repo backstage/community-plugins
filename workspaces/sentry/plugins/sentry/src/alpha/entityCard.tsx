@@ -16,6 +16,7 @@
 import React from 'react';
 import { compatWrapper } from '@backstage/core-compat-api';
 import { EntityCardBlueprint } from '@backstage/plugin-catalog-react/alpha';
+import { hasSentryAnnotation } from '../api/annotations';
 
 /**
  * @alpha
@@ -23,7 +24,7 @@ import { EntityCardBlueprint } from '@backstage/plugin-catalog-react/alpha';
 export const entitySentryCard = EntityCardBlueprint.make({
   name: 'sentry-issues',
   params: {
-    filter: 'kind:component',
+    filter: hasSentryAnnotation,
     loader: () =>
       import('../components/SentryIssuesWidget').then(m =>
         compatWrapper(<m.SentryIssuesWidgetCard />),
