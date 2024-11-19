@@ -2262,8 +2262,12 @@ function verifyAuditLogForNonResourcedPermission(
   });
 
   const message = resourceType
-    ? `${expectedUser ?? 'user without entity'} is ${result} for permission '${permissionName}', resource type '${resourceType}' and action '${action}'`
-    : `${expectedUser ?? 'user without entity'} is ${result} for permission '${permissionName}' and action '${action}'`;
+    ? `${
+        expectedUser ?? 'user without entity'
+      } is ${result} for permission '${permissionName}', resource type '${resourceType}' and action '${action}'`
+    : `${
+        expectedUser ?? 'user without entity'
+      } is ${result} for permission '${permissionName}' and action '${action}'`;
   expect(auditLoggerMock.auditLog).toHaveBeenNthCalledWith(2, {
     actorId: expectedUser,
     eventName: 'PermissionEvaluationCompleted',
