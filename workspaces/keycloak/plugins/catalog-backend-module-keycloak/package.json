@@ -58,7 +58,7 @@
     "@backstage/config": "1.2.0",
     "@backstage/plugin-catalog-backend": "1.27.1",
     "@spotify/prettier-config": "^15.0.0",
-    "@types/lodash": "4.17.5",
+    "@types/lodash": "4.17.13",
     "@types/uuid": "9.0.8",
     "deepmerge": "4.3.1",
     "prettier": "3.3.3"
