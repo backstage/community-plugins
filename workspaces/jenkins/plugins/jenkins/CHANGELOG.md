@@ -1,5 +1,11 @@
 # @backstage-community/plugin-jenkins
 
+## 0.12.1
+
+### Patch Changes
+
+- e657f8d: Add default filtering based on required annotation to the new frontend system components
+
 ## 0.12.0
 
 ### Minor Changes
