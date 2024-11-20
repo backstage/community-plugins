@@ -1,5 +1,11 @@
 # @backstage-community/plugin-github-actions
 
+## 0.6.25
+
+### Patch Changes
+
+- e657f8d: Add default filtering based on required annotation to the new frontend system components
+
 ## 0.6.24
 
 ### Patch Changes
