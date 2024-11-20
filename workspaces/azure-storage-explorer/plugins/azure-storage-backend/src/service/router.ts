@@ -17,13 +17,19 @@ import { Config } from '@backstage/config';
 import { Logger } from 'winston';
 import { AzureStorageBuilder } from './AzureStorageBuilder';
 
-/** @public */
+/**
+ * @deprecated Please migrate to the new backend system as this will be removed in the future.
+ *
+ * @public */
 export interface RouterOptions {
   logger: Logger;
   config: Config;
 }
 
-/** @public */
+/**
+ * @deprecated Please migrate to the new backend system as this will be removed in the future.
+ *
+ * @public */
 export async function createRouter(options: RouterOptions) {
   const { logger, config } = options;
   const { router } = await AzureStorageBuilder.createBuilder({
