@@ -1,5 +1,17 @@
 # @backstage-community/plugin-github-issues
 
+## 0.4.8
+
+### Patch Changes
+
+- 596f613: Adding support for the new frontend system, available at the `/alpha` export.
+
+## 0.4.7
+
+### Patch Changes
+
+- b2bf4d5: Backstage version bump to v1.32.2
+
 ## 0.4.6
 
 ### Patch Changes

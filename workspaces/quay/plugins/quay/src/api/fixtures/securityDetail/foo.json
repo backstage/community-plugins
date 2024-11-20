@@ -1,0 +1,51 @@
+{
+  "status": "scanned",
+  "data": {
+    "Layer": {
+      "Name": "sha256:e461dc54b4e2469bb7f5bf85a4b7445c175548ba9d56c3f617dd25bc3adf3752",
+      "ParentName": "",
+      "NamespaceName": "",
+      "IndexedByVersion": 4,
+      "Features": [
+        {
+          "Name": "gnutls",
+          "VersionFormat": "",
+          "NamespaceName": "",
+          "AddedBy": "sha256:7137c714522609d16699246b8d76cf6b43c697e03f2df5773b704926c1a1902b",
+          "Version": "3.7.6-12.el9_0",
+          "Vulnerabilities": [
+            {
+              "Severity": "Medium",
+              "NamespaceName": "RHEL9-rhel-9-including-unpatched",
+              "Link": "https://access.redhat.com/errata/RHSA-2023:1141 https://access.redhat.com/security/cve/CVE-2023-0361",
+              "FixedBy": "0:3.7.6-18.el9_1",
+              "Description": "The gnutls packages provide the GNU Transport Layer Security (GnuTLS) library, which implements cryptographic algorithms and protocols such as SSL, TLS, and DTLS.\n\nSecurity Fix(es):\n\n* gnutls: timing side-channel in the TLS RSA key exchange code (CVE-2023-0361)\n\nFor more details about the security issue(s), including the impact, a CVSS score, acknowledgments, and other related information, refer to the CVE page(s) listed in the References section.\n\nBug Fix(es):\n\n* CCM tag length should be limited to known values (BZ#2144535)\n\n* In FIPS mode, gnutls should reject RSASSA-PSS salt lengths larger than the output size of the hash function used, or provide an indicator (BZ#2144537)\n\n* dracut-cmdline[554]: Error in GnuTLS initialization: Error while performing self checks i FIPS mode (BZ#2149640)",
+              "Name": "RHSA-2023:1141: gnutls security and bug fix update (Moderate)",
+              "Metadata": {
+                "UpdatedBy": "RHEL9-rhel-9-including-unpatched",
+                "RepoName": "cpe:/o:redhat:enterprise_linux:9::baseos",
+                "RepoLink": null,
+                "DistroName": "Red Hat Enterprise Linux Server",
+                "DistroVersion": "9",
+                "NVD": {
+                  "CVSSv3": {
+                    "Vectors": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N",
+                    "Score": 7.5
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "Name": "xz-libs",
+          "VersionFormat": "",
+          "NamespaceName": "",
+          "AddedBy": "sha256:7137c714522609d16699246b8d76cf6b43c697e03f2df5773b704926c1a1902b",
+          "Version": "5.2.5-8.el9_0",
+          "Vulnerabilities": []
+        }
+      ]
+    }
+  }
+}

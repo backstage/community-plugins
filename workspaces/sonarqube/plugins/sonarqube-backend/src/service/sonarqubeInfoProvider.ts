@@ -15,6 +15,7 @@
  */
 
 import { Config } from '@backstage/config';
+import { LoggerService } from '@backstage/backend-plugin-api';
 import fetch from 'node-fetch';
 
 /**
@@ -232,14 +233,23 @@ export class SonarqubeConfig {
  * Use default config and annotations, build using fromConfig static function.
  */
 export class DefaultSonarqubeInfoProvider implements SonarqubeInfoProvider {
-  private constructor(private readonly config: SonarqubeConfig) {}
+  private constructor(
+    private readonly config: SonarqubeConfig,
+    private readonly logger: LoggerService,
+  ) {}
 
   /**
    * Generate an instance from a Config instance
    * @param config - Backend configuration
    */
-  static fromConfig(config: Config): DefaultSonarqubeInfoProvider {
-    return new DefaultSonarqubeInfoProvider(SonarqubeConfig.fromConfig(config));
+  static fromConfig(
+    config: Config,
+    logger: LoggerService,
+  ): DefaultSonarqubeInfoProvider {
+    return new DefaultSonarqubeInfoProvider(
+      SonarqubeConfig.fromConfig(config),
+      logger,
+    );
   }
 
   /**
@@ -248,9 +258,9 @@ export class DefaultSonarqubeInfoProvider implements SonarqubeInfoProvider {
    * @param instanceUrl - URL of the sonarqube instance
    * @param token - token to access the sonarqube instance
    * @returns The list of supported metrics, if no metrics are supported an empty list is provided in the promise
-   * @private
    */
-  private static async getSupportedMetrics(
+  // TODO(awanlin) - Add @private back
+  private async getSupportedMetrics(
     instanceUrl: string,
     token: string,
   ): Promise<string[]> {
@@ -258,7 +268,7 @@ export class DefaultSonarqubeInfoProvider implements SonarqubeInfoProvider {
     let nextPage: number = 1;
 
     for (;;) {
-      const result = await DefaultSonarqubeInfoProvider.callApi<{
+      const result = await this.callApi<{
         metrics: Array<{ key: string }>;
         total: number;
       }>(instanceUrl, 'api/metrics/search', token, { ps: 500, p: nextPage });
@@ -280,9 +290,9 @@ export class DefaultSonarqubeInfoProvider implements SonarqubeInfoProvider {
    * @param authToken - token used as basic auth user without password
    * @param query - parameters to provide to the call
    * @returns A promise on the answer to the API call if the answer status code is 200, undefined otherwise.
-   * @private
    */
-  private static async callApi<T>(
+  // TODO(awanlin) - Add @private back
+  private async callApi<T>(
     url: string,
     path: string,
     authToken: string,
@@ -293,15 +303,20 @@ export class DefaultSonarqubeInfoProvider implements SonarqubeInfoProvider {
     // lack of password
     const encodedAuthToken = Buffer.from(`${authToken}:`).toString('base64');
 
-    const response = await fetch(
-      `${url}/${path}?${new URLSearchParams(query).toString()}`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Basic ${encodedAuthToken}`,
-        },
+    const fullUrl = `${url}/${path}?${new URLSearchParams(query).toString()}`;
+
+    const response = await fetch(fullUrl, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Basic ${encodedAuthToken}`,
       },
-    );
+    });
+    if (!response.ok) {
+      const text = await response.text();
+      const msg = !text ? '' : ` - Response: "${text}"`;
+      this.logger.error(`"GET ${fullUrl}" ${response.status}${msg}`);
+      return undefined;
+    }
     if (response.status === 200) {
       return (await response.json()) as T;
     }
@@ -339,22 +354,20 @@ export class DefaultSonarqubeInfoProvider implements SonarqubeInfoProvider {
     });
 
     // get component info to retrieve analysis date
-    const component =
-      await DefaultSonarqubeInfoProvider.callApi<ComponentWrapper>(
-        baseUrl,
-        'api/components/show',
-        apiKey,
-        {
-          component: componentKey,
-        },
-      );
+    const component = await this.callApi<ComponentWrapper>(
+      baseUrl,
+      'api/components/show',
+      apiKey,
+      {
+        component: componentKey,
+      },
+    );
     if (!component || !component.component) {
       return undefined;
     }
 
     // select the metrics that are supported by the SonarQube instance
-    const supportedMetrics =
-      await DefaultSonarqubeInfoProvider.getSupportedMetrics(baseUrl, apiKey);
+    const supportedMetrics = await this.getSupportedMetrics(baseUrl, apiKey);
     const wantedMetrics: string[] = [
       'alert_status',
       'bugs',
@@ -375,16 +388,15 @@ export class DefaultSonarqubeInfoProvider implements SonarqubeInfoProvider {
     );
 
     // get all measures
-    const measures =
-      await DefaultSonarqubeInfoProvider.callApi<MeasuresWrapper>(
-        baseUrl,
-        'api/measures/component',
-        apiKey,
-        {
-          component: componentKey,
-          metricKeys: metricsToQuery.join(','),
-        },
-      );
+    const measures = await this.callApi<MeasuresWrapper>(
+      baseUrl,
+      'api/measures/component',
+      apiKey,
+      {
+        component: componentKey,
+        metricKeys: metricsToQuery.join(','),
+      },
+    );
     if (!measures) {
       return undefined;
     }

@@ -1,5 +1,25 @@
 # @backstage-community/plugin-jenkins
 
+## 0.12.1
+
+### Patch Changes
+
+- e657f8d: Add default filtering based on required annotation to the new frontend system components
+
+## 0.12.0
+
+### Minor Changes
+
+- 6bde043: Add title property to Jenkins components.
+
+## 0.11.1
+
+### Patch Changes
+
+- f090030: Backstage version bump to v1.32.0
+- Updated dependencies [f090030]
+  - @backstage-community/plugin-jenkins-common@0.1.30
+
 ## 0.11.0
 
 ### Minor Changes

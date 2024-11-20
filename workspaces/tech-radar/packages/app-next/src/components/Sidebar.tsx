@@ -35,7 +35,6 @@ import MenuIcon from '@material-ui/icons/Menu';
 import React from 'react';
 
 export const navigationExtension = createExtension({
-  namespace: 'app',
   name: 'nav',
   attachTo: { id: 'app/layout', input: 'nav' },
   output: [coreExtensionData.reactElement],

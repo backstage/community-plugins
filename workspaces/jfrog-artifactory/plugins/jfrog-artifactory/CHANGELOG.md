@@ -1,5 +1,42 @@
 ### Dependencies
 
+## 1.10.3
+
+### Patch Changes
+
+- a6e850f: Updated dependency `msw` to `1.3.5`.
+
+## 1.10.2
+
+### Patch Changes
+
+- 0568517: Bump shared-react to 2.13.1
+
+## 1.10.1
+
+### Patch Changes
+
+- a83d499: Bumping the @janus-cli/shared-react dependency to ^2.13.0
+
+## 1.10.0
+
+### Minor Changes
+
+- 5b0bfd9: Backstage version bump to v1.32.5
+
+## 1.9.1
+
+### Patch Changes
+
+- 71aca1f: - Version update in `package.json` from `1.8.3` to `1.9.0`
+  - Removed `export-dynamic` script and Janus CLI dependency in `package.json`
+
+## 1.8.3
+
+### Patch Changes
+
+- 15b7d99: Backstage version bump to v1.32.2
+
 ## 1.8.2
 
 ### Patch Changes

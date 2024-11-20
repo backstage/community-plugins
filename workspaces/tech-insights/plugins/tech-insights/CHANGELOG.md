@@ -1,5 +1,27 @@
 # @backstage-community/plugin-tech-insights
 
+## 0.3.40
+
+### Patch Changes
+
+- 331daba: Added optional `filter` prop to `EntityTechInsightsScorecardContent` and `EntityTechInsightsScorecardCard` for easier and more flexible filtering of what checks to display.
+- Updated dependencies [331daba]
+  - @backstage-community/plugin-tech-insights-common@0.2.21
+
+## 0.3.39
+
+### Patch Changes
+
+- 7a14237: Backstage version bump to v1.32.2
+- Updated dependencies [7a14237]
+  - @backstage-community/plugin-tech-insights-common@0.2.20
+
+## 0.3.38
+
+### Patch Changes
+
+- caa9401: `ScorecardInfo` description now supports markdown syntax
+
 ## 0.3.37
 
 ### Patch Changes

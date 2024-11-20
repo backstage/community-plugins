@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-import { Metric } from '@backstage-community/plugin-copilot-common';
+import {
+  Metric,
+  MetricsType,
+} from '@backstage-community/plugin-copilot-common';
 import { LanguageStats } from '../types';
 
 export function getTopLanguagesByAcceptedPrompts(
@@ -56,3 +59,8 @@ export function getLanguageStats(metricsArray: Metric[]): LanguageStats[] {
   });
   return Array.from(languageStatsMap.values());
 }
+
+export const mappingRoutes: Record<string, MetricsType> = {
+  '/copilot/enterprise': 'enterprise',
+  '/copilot/organization': 'organization',
+};

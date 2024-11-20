@@ -1,0 +1,7 @@
+.bs-topology-workload-node .pod-ring__center-text tspan {
+  font-size: 11px !important;
+}
+
+.bs-topology-workload-node .pod-ring__center-text--reversed tspan {
+  font-size: 11px !important;
+}

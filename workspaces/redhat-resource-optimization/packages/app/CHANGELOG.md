@@ -1,5 +1,12 @@
 # app
 
+## 0.0.5
+
+### Patch Changes
+
+- Updated dependencies [3a1aab2]
+  - @backstage-community/plugin-redhat-resource-optimization@1.0.4
+
 ## 0.0.4
 
 ### Patch Changes

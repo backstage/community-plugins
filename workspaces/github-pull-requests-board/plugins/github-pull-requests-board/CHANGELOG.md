@@ -1,5 +1,17 @@
 # @backstage-community/plugin-github-pull-requests-board
 
+## 0.2.7
+
+### Patch Changes
+
+- afefe93: Adding support for the new frontend system, available at the `/alpha` export.
+
+## 0.2.6
+
+### Patch Changes
+
+- 4dc008a: Backstage version bump to v1.32.2
+
 ## 0.2.5
 
 ### Patch Changes

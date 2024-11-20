@@ -1,5 +1,30 @@
 # @backstage-community/plugin-bazaar
 
+## 0.5.2
+
+### Patch Changes
+
+- c3bdb20: feat(bazaar): improve `yarn dev` setup for running both frontend and backend together, and enable Bazaar API for project interactions.
+- 8964f7d: Add virtualization to UserSelector dropdown
+
+## 0.5.1
+
+### Patch Changes
+
+- 56ae2fe: Backstage version bump to v1.32.2
+
+## 0.5.0
+
+### Minor Changes
+
+- fe0d104: Added a new UserSelector component that allows users to select a responsible user from the catalog, with the option to manually enter still being there"
+
+## 0.4.0
+
+### Minor Changes
+
+- 5fbdb1d: Added next steps after joining a project
+
 ## 0.3.0
 
 ### Minor Changes

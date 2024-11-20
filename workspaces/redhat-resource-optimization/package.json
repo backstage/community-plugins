@@ -16,7 +16,7 @@
     "tsc:full": "tsc --skipLibCheck false --incremental false",
     "build:all": "backstage-cli repo build --all",
     "build:api-reports": "yarn build:api-reports:only --tsc",
-    "build:api-reports:only": "backstage-repo-tools api-reports -o ae-wrong-input-file-type --validate-release-tags",
+    "build:api-reports:only": "backstage-repo-tools api-reports -o ae-wrong-input-file-type,ae-undocumented --validate-release-tags",
     "clean": "backstage-cli repo clean",
     "test": "backstage-cli repo test",
     "test:all": "backstage-cli repo test --coverage",
@@ -27,7 +27,6 @@
     "postinstall": "cd ../../ && yarn install",
     "prettier:check": "prettier --check .",
     "new": "backstage-cli new --scope @backstage-community",
-    "export-dynamic": "yarn workspaces foreach -A run export-dynamic",
     "versions:bump": "yarn backstage-cli versions:bump"
   },
   "workspaces": {
@@ -42,11 +41,10 @@
     "directory": "workspaces/redhat-resource-optimization"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.27.1",
+    "@backstage/cli": "^0.28.0",
     "@backstage/e2e-test-utils": "^0.1.1",
-    "@backstage/repo-tools": "^0.9.7",
+    "@backstage/repo-tools": "^0.10.0",
     "@changesets/cli": "^2.27.1",
-    "@janus-idp/cli": "^1.11.1",
     "@microsoft/api-extractor-model": "^7.29.2",
     "@microsoft/tsdoc": "^0.15.0",
     "@microsoft/tsdoc-config": "^0.17.0",
@@ -59,8 +57,7 @@
   },
   "resolutions": {
     "@types/react": "^18",
-    "@types/react-dom": "^18",
-    "@microsoft/api-extractor": "7.36.4"
+    "@types/react-dom": "^18"
   },
   "prettier": "@spotify/prettier-config",
   "lint-staged": {

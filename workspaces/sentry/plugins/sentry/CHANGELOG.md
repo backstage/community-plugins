@@ -1,5 +1,23 @@
 # @backstage-community/plugin-sentry
 
+## 1.0.3
+
+### Patch Changes
+
+- e657f8d: Add default filtering based on required annotation to the new frontend system components
+
+## 1.0.2
+
+### Patch Changes
+
+- 2d16371: Removed `@microsoft/api-extractor` resolution as it is no longer needed
+
+## 1.0.1
+
+### Patch Changes
+
+- 2dedede: Backstage version bump to v1.32.0
+
 ## 1.0.0
 
 ### Major Changes

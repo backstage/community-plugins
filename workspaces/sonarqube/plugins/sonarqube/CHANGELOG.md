@@ -1,5 +1,38 @@
 # @backstage-community/plugin-sonarqube
 
+## 0.8.8
+
+### Patch Changes
+
+- e657f8d: Add default filtering based on required annotation to the new frontend system components
+
+## 0.8.7
+
+### Patch Changes
+
+- 4c50596: Add config visibility to the frontend
+- c05862b: fix: use fetchApi instead of explicit identityApi token in sonarqube frontend plugin api
+
+## 0.8.6
+
+### Patch Changes
+
+- 2d16371: Removed `@microsoft/api-extractor` resolution as it is no longer needed
+
+## 0.8.5
+
+### Patch Changes
+
+- d59c520: fix typo in README.md file
+
+## 0.8.4
+
+### Patch Changes
+
+- 4d0cdf5: Backstage version bump to v1.32.2
+- Updated dependencies [4d0cdf5]
+  - @backstage-community/plugin-sonarqube-react@0.2.3
+
 ## 0.8.3
 
 ### Patch Changes

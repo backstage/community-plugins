@@ -1,5 +1,11 @@
 # @backstage-community/plugin-odo-module-devfile-field-extension
 
+## 0.21.4
+
+### Patch Changes
+
+- 128dca3: Backstage version bump to v1.32.2
+
 ## 0.21.3
 
 ### Patch Changes

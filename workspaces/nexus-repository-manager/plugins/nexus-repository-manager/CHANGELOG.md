@@ -1,5 +1,35 @@
 ### Dependencies
 
+## 1.10.6
+
+### Patch Changes
+
+- 3d6256e: Updated dependency `@hey-api/openapi-ts` to `0.55.3`.
+
+## 1.10.5
+
+### Patch Changes
+
+- a6e850f: Updated dependency `msw` to `1.3.5`.
+
+## 1.10.4
+
+### Patch Changes
+
+- 5e5c1a5: Removed `export-dynamic` script and Janus IDP cli from the build process and npm release.
+
+## 1.10.3
+
+### Patch Changes
+
+- a83d499: Bumping the @janus-cli/shared-react dependency to ^2.13.0
+
+## 1.10.2
+
+### Patch Changes
+
+- 99aaee5: Backstage version bump to v1.32.2
+
 ## 1.10.1
 
 ### Patch Changes

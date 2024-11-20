@@ -1,0 +1,94 @@
+{
+  "name": "@backstage-community/plugin-analytics-provider-segment",
+  "version": "1.10.3",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.esm.js",
+    "types": "dist/index.d.ts"
+  },
+  "backstage": {
+    "role": "frontend-plugin",
+    "supported-versions": "1.32.5",
+    "pluginId": "analytics-provider-segment",
+    "pluginPackage": "@backstage-community/plugin-analytics-provider-segment",
+    "pluginPackages": [
+      "@backstage-community/plugin-analytics-provider-segment"
+    ]
+  },
+  "sideEffects": false,
+  "scripts": {
+    "start": "backstage-cli package start",
+    "build": "backstage-cli package build",
+    "tsc": "tsc",
+    "prettier:check": "prettier --ignore-unknown --check .",
+    "prettier:fix": "prettier --ignore-unknown --write .",
+    "lint:check": "backstage-cli package lint",
+    "lint:fix": "backstage-cli package lint --fix",
+    "test": "backstage-cli package test --passWithNoTests --coverage",
+    "clean": "backstage-cli package clean",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack"
+  },
+  "dependencies": {
+    "@backstage/config": "^1.2.0",
+    "@backstage/core-components": "^0.15.1",
+    "@backstage/core-plugin-api": "^1.10.0",
+    "@backstage/theme": "^0.6.0",
+    "@material-ui/core": "^4.9.13",
+    "@material-ui/icons": "^4.11.3",
+    "@material-ui/lab": "4.0.0-alpha.61",
+    "@segment/analytics-next": "^1.58.0",
+    "prop-types": "^15.8.1",
+    "react-use": "^17.4.0"
+  },
+  "peerDependencies": {
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-router-dom": "^6.0.0"
+  },
+  "devDependencies": {
+    "@backstage/cli": "0.28.2",
+    "@backstage/core-app-api": "1.15.1",
+    "@backstage/dev-utils": "1.1.2",
+    "@backstage/test-utils": "1.7.0",
+    "@redhat-developer/red-hat-developer-hub-theme": "0.4.0",
+    "@spotify/prettier-config": "^15.0.0",
+    "@testing-library/dom": "9.3.4",
+    "@testing-library/jest-dom": "6.4.8",
+    "@testing-library/react": "14.3.1",
+    "@testing-library/user-event": "14.5.2",
+    "@types/node": "18.19.34",
+    "@types/react": "18.3.3",
+    "cross-fetch": "4.0.0",
+    "msw": "1.3.5",
+    "prettier": "3.3.3",
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-router-dom": "^6.0.0"
+  },
+  "files": [
+    "dist",
+    "config.d.ts",
+    "app-config.backstage-community.yaml"
+  ],
+  "configSchema": "config.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/analytics/plugins/analytics-provider-segment"
+  },
+  "maintainers": [
+    "schultzp2020",
+    "christoph-jerolimov"
+  ],
+  "author": "Red Hat",
+  "homepage": "https://red.ht/rhdh",
+  "bugs": "https://github.com/backstage/community-plugins/issues",
+  "keywords": [
+    "support:production",
+    "lifecycle:active"
+  ]
+}

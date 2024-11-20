@@ -1,5 +1,17 @@
 # @backstage-community/plugin-report-portal-backend
 
+## 1.0.5
+
+### Patch Changes
+
+- a4fd654: Backstage version bump to v1.32.2
+
+## 1.0.4
+
+### Patch Changes
+
+- 9792d34: Backstage version bump to v1.31.3
+
 ## 1.0.3
 
 ### Patch Changes

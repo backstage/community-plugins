@@ -1,5 +1,17 @@
 # @backstage-community/plugin-bazaar-backend
 
+## 0.4.3
+
+### Patch Changes
+
+- c3bdb20: feat(bazaar): improve `yarn dev` setup for running both frontend and backend together, and enable Bazaar API for project interactions.
+
+## 0.4.2
+
+### Patch Changes
+
+- 56ae2fe: Backstage version bump to v1.32.2
+
 ## 0.4.1
 
 ### Patch Changes

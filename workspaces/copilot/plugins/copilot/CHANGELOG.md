@@ -1,5 +1,32 @@
 # @backstage-community/plugin-copilot
 
+## 0.3.0
+
+### Minor Changes
+
+- 7f17c9f: Introduced support for organizations and team metrics visualization in the Copilot plugin.
+
+### Patch Changes
+
+- Updated dependencies [7f17c9f]
+  - @backstage-community/plugin-copilot-common@0.3.0
+
+## 0.2.3
+
+### Patch Changes
+
+- 399dc3b: Backstage version bump to v1.32.2
+- Updated dependencies [399dc3b]
+  - @backstage-community/plugin-copilot-common@0.2.2
+
+## 0.2.2
+
+### Patch Changes
+
+- 3dea8f4: - Acceptance Rate Average card now show acceptance/suggestion rate instead of lines/days
+
+  - Languages breakdown table had the wrong title for column "Total suggestions"
+
 ## 0.2.1
 
 ### Patch Changes

@@ -1,5 +1,27 @@
 # @backstage-community/plugin-search-backend-module-confluence-collator
 
+## 0.2.4
+
+### Patch Changes
+
+- 3211478: Make `parallelismLimit` configuration field optional.
+
+  This field is already treated as optional in the package code, and the default
+  value is already mentioned in the description. As such we can safely mark it as
+  optional and treat configuration which omits it as valid.
+
+## 0.2.3
+
+### Patch Changes
+
+- e45e2f8: Remove unused @backstage/backend-common package from dependencies.
+
+## 0.2.2
+
+### Patch Changes
+
+- e4aaaf6: Backstage version bump to v1.32.2
+
 ## 0.2.1
 
 ### Patch Changes

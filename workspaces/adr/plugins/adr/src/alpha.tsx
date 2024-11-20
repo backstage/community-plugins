@@ -18,9 +18,9 @@ import React from 'react';
 import {
   ApiBlueprint,
   createApiFactory,
-  createPlugin,
   discoveryApiRef,
   fetchApiRef,
+  createFrontendPlugin,
 } from '@backstage/frontend-plugin-api';
 import {
   compatWrapper,
@@ -28,7 +28,10 @@ import {
 } from '@backstage/core-compat-api';
 import { SearchResultListItemBlueprint } from '@backstage/plugin-search-react/alpha';
 import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
-import { AdrDocument } from '@backstage-community/plugin-adr-common';
+import {
+  AdrDocument,
+  isAdrAvailable,
+} from '@backstage-community/plugin-adr-common';
 import { rootRouteRef } from './routes';
 import { adrApiRef, AdrClient } from './api';
 
@@ -74,7 +77,7 @@ export const adrEntityContentExtension = EntityContentBlueprint.make({
   params: {
     defaultPath: '/adrs',
     defaultTitle: 'ADRs',
-    filter: 'kind:component',
+    filter: isAdrAvailable,
     routeRef: convertLegacyRouteRef(rootRouteRef),
     loader: async () => {
       const { EntityAdrContent } = await import(
@@ -103,7 +106,7 @@ export const adrApiExtension = ApiBlueprint.make({
 });
 
 /** @alpha */
-export default createPlugin({
+export default createFrontendPlugin({
   id: 'adr',
   extensions: [
     adrSearchResultListItemExtension,

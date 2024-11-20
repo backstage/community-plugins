@@ -1,5 +1,17 @@
 # @backstage-community/plugin-linkerd-backend
 
+## 0.3.7
+
+### Patch Changes
+
+- 0555e21: Removed usages and references of `@backstage/backend-common`
+
+## 0.3.6
+
+### Patch Changes
+
+- e564ebe: Backstage version bump to v1.32.2
+
 ## 0.3.5
 
 ### Patch Changes

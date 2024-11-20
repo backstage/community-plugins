@@ -1,5 +1,17 @@
 # @backstage-community/plugin-code-coverage
 
+## 0.2.33
+
+### Patch Changes
+
+- ff7bf93: Prevent divide by zero error when rendering codecoverage lines on empty files.
+
+## 0.2.32
+
+### Patch Changes
+
+- f5b0d2a: Backstage version bump to v1.32.2
+
 ## 0.2.31
 
 ### Patch Changes

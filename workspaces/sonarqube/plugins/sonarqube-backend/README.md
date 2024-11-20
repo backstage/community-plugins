@@ -42,7 +42,10 @@ export default async function createPlugin(
 ): Promise<Router> {
   return await createRouter({
     logger: env.logger,
-    sonarqubeInfoProvider: DefaultSonarqubeInfoProvider.fromConfig(env.config),
+    sonarqubeInfoProvider: DefaultSonarqubeInfoProvider.fromConfig(
+      env.config,
+      env.logger,
+    ),
   });
 }
 ```

@@ -1,5 +1,21 @@
 # @backstage-community/plugin-entity-feedback-backend
 
+## 0.4.0
+
+### Minor Changes
+
+- fcf6f84: **BREAKING** `auth`, `config`, and `httpAuth` are now required, please migrate to the new backend system as the best path forward for this change.
+
+  Also, removed usages and references of `@backstage/backend-common`
+
+## 0.3.2
+
+### Patch Changes
+
+- 8cc3f65: Backstage version bump to v1.32.2
+- Updated dependencies [8cc3f65]
+  - @backstage-community/plugin-entity-feedback-common@0.1.11
+
 ## 0.3.1
 
 ### Patch Changes

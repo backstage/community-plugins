@@ -1,5 +1,19 @@
 # @backstage-community/plugin-periskop-backend
 
+## 0.2.22
+
+### Patch Changes
+
+- fdcc96d: Removed usages and references of `@backstage/backend-common`
+
+  Deprecated `createRouter` and its router options in favour of the new backend system.
+
+## 0.2.21
+
+### Patch Changes
+
+- c7477bf: Backstage version bump to v1.32.2
+
 ## 0.2.20
 
 ### Patch Changes

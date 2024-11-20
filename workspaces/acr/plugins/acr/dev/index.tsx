@@ -1,8 +1,9 @@
 import React from 'react';
 
 import { createDevApp } from '@backstage/dev-utils';
-import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { TestApiProvider } from '@backstage/test-utils';
+import { Page, Header, TabbedLayout } from '@backstage/core-components';
+import { EntityProvider } from '@backstage/plugin-catalog-react';
 
 import { getAllThemes } from '@redhat-developer/red-hat-developer-hub-theme';
 
@@ -43,7 +44,14 @@ createDevApp()
         ]}
       >
         <EntityProvider entity={mockEntity}>
-          <AcrPage />
+          <Page themeId="service">
+            <Header type="component — service" title="ACR demo application" />
+            <TabbedLayout>
+              <TabbedLayout.Route path="/" title="ACR">
+                <AcrPage />
+              </TabbedLayout.Route>
+            </TabbedLayout>
+          </Page>
         </EntityProvider>
       </TestApiProvider>
     ),

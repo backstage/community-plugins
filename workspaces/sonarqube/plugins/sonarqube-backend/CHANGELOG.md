@@ -1,5 +1,25 @@
 # @backstage-community/plugin-sonarqube-backend
 
+## 0.3.1
+
+### Patch Changes
+
+- f53852b: Removed usages and references of `@backstage/backend-common`
+
+  Deprecated `createRouter` and its router options in favour of the new backend system.
+
+## 0.3.0
+
+### Minor Changes
+
+- ddc377c: **BREAKING** Added error logging when API calls fail. With this change your will need to include the `logger` when using the `DefaultSonarqubeInfoProvider.fromConfig()` like this: `DefaultSonarqubeInfoProvider.fromConfig(config, logger)`
+
+## 0.2.25
+
+### Patch Changes
+
+- 4d0cdf5: Backstage version bump to v1.32.2
+
 ## 0.2.24
 
 ### Patch Changes

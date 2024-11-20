@@ -1,5 +1,19 @@
 # @backstage-community/plugin-azure-devops-backend
 
+## 0.8.0
+
+### Minor Changes
+
+- 0880746: **BREAKING** Removed support for what is known as the legacy backend, please use the New Backend System. Also removed the long deprecated `azureDevOps.token` configuration option, use `integrations.azure` instead.
+
+## 0.7.3
+
+### Patch Changes
+
+- dab2f81: Backstage version bump to v1.32.2
+- Updated dependencies [dab2f81]
+  - @backstage-community/plugin-azure-devops-common@0.4.9
+
 ## 0.7.2
 
 ### Patch Changes

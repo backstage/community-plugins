@@ -1,4 +1,72 @@
-## @janus-idp/backstage-plugin-argocd [1.5.7](https://github.com/janus-idp/backstage-plugins/compare/@janus-idp/backstage-plugin-argocd@1.5.6...@janus-idp/backstage-plugin-argocd@1.5.7) (2024-08-02)
+## @backstage-community/plugin-redhat-argocd
+
+## 1.10.4
+
+### Patch Changes
+
+- a6e850f: Updated dependency `msw` to `1.3.5`.
+
+## 1.10.3
+
+### Patch Changes
+
+- d1cae81: Removed `export-dynamic` script and Janus IDP cli from the build process and npm release.
+
+## 1.10.2
+
+### Patch Changes
+
+- a83d499: Bumping the @janus-cli/shared-react dependency to ^2.13.0
+
+## 1.10.1
+
+### Patch Changes
+
+- 9e73efd: redhat-argocd: release 1.8.9 as 1.10.1
+
+## 1.10.0
+
+### Minor Changes
+
+- 1684b7aa: redhat-argocd: release 1.8.8 as 1.10.0
+
+## 1.9.1
+
+### Patch Changes
+
+- b8a5ccf5: redhat-argocd: release 1.8.7 as 1.9.1
+
+## 1.9.0
+
+### Minor Changes
+
+- d2c0e4d0: redhat-argocd: release 1.8.6 as 1.9.0
+
+## 1.8.10
+
+### Patch Changes
+
+- 2b7826d6: fix(deps): upgrade kubernetes/client-node in argocd plugin
+
+## 1.8.9
+
+### Patch Changes
+
+- ef55b90: Updated reference to `@backstage-community/plugin-redhat-argocd-common` in the frontend plugin to use the `workspace:^` version
+
+## 1.8.8
+
+### Patch Changes
+
+- ccc01a0: Backstage version bump to v1.32.2
+- Updated dependencies [ccc01a0]
+  - @backstage-community/plugin-redhat-argocd-common@1.0.7
+
+## 1.8.7
+
+### Patch Changes
+
+- 3865528: Fix CVE by upgrading kubernetes/client-node to v0.22.1
 
 ## 1.8.6
 
