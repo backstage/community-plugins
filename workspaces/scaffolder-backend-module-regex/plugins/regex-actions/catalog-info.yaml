@@ -32,7 +32,7 @@ apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: backstage-community-regex-actions-module
-  title: '@backstage-community/scaffolder-backend-module-regex'
+  title: '@backstage-community/plugin-scaffolder-backend-module-regex'
   description: The regex custom actions
   annotations:
     backstage.io/source-location: url:https://github.com/backstage/community-plugins/tree/main/workspaces/scaffolder-backend-module-regex/plugins/regex-actions

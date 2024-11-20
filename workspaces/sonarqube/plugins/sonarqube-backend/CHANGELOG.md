@@ -1,5 +1,13 @@
 # @backstage-community/plugin-sonarqube-backend
 
+## 0.3.1
+
+### Patch Changes
+
+- f53852b: Removed usages and references of `@backstage/backend-common`
+
+  Deprecated `createRouter` and its router options in favour of the new backend system.
+
 ## 0.3.0
 
 ### Minor Changes
