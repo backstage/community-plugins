@@ -17,7 +17,7 @@ import type { SchedulerServiceTaskScheduleDefinition } from '@backstage/backend-
 import type { UserEntity } from '@backstage/catalog-model';
 import type UserRepresentation from '@keycloak/keycloak-admin-client/lib/defs/userRepresentation';
 
-// @alpha
+// @public
 const catalogModuleKeycloakEntityProvider: BackendFeature;
 export default catalogModuleKeycloakEntityProvider;
 
