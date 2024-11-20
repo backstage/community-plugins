@@ -1,5 +1,11 @@
 # @backstage-community/plugin-sonarqube
 
+## 0.8.8
+
+### Patch Changes
+
+- e657f8d: Add default filtering based on required annotation to the new frontend system components
+
 ## 0.8.7
 
 ### Patch Changes
