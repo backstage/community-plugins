@@ -1,5 +1,11 @@
 # @backstage-community/plugin-sentry
 
+## 1.0.3
+
+### Patch Changes
+
+- e657f8d: Add default filtering based on required annotation to the new frontend system components
+
 ## 1.0.2
 
 ### Patch Changes
