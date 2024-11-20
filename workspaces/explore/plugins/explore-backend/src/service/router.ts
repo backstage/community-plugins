@@ -22,6 +22,8 @@ import { LoggerService } from '@backstage/backend-plugin-api';
 import { ExploreToolProvider } from '@backstage-community/plugin-explore-node';
 
 /**
+ * @deprecated Please migrate to the new backend system as this will be removed in the future.
+ *
  * @public
  */
 export interface RouterOptions {
@@ -30,6 +32,8 @@ export interface RouterOptions {
 }
 
 /**
+ * @deprecated Please migrate to the new backend system as this will be removed in the future.
+ *
  * @public
  */
 export async function createRouter(
