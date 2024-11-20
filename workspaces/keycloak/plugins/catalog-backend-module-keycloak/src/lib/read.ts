@@ -120,25 +120,21 @@ export async function getEntities<T extends Users | Groups>(
   const pageCount = Math.ceil(entityCount / entityQuerySize);
 
   // The next line acts like range in python
-  const entityPromises = Array.from(
-    { length: pageCount },
-    (_, i) =>
-      entities
-        .find({
-          realm: config.realm,
-          max: entityQuerySize,
-          first: i * entityQuerySize,
-        })
-        .catch(err =>
-          logger.warn('Failed to retieve Keycloak entities.', err),
-        ) as ReturnType<T['find']>,
-  );
+  const entityResults = [];
+  for (let i = 0; i < pageCount; i) {
+    try {
+      const entitiesPage = await entities.find({
+        realm: config.realm,
+        max: entityQuerySize,
+        first: i * entityQuerySize,
+      });
+      entityResults.push(...entitiesPage);
+    } catch (err) {
+      logger.warn(`Failed to retrieve Keycloak entities: ${err}`);
+    }
+  }
 
-  const entityResults = (await Promise.all(entityPromises)).flat() as Awaited<
-    ReturnType<T['find']>
-  >;
-
-  return entityResults;
+  return entityResults as Awaited<ReturnType<T['find']>>;
 }
 
 async function getAllGroupMembers<T extends Groups>(
@@ -269,65 +265,69 @@ export const readKeycloakRealm = async (
       [] as GroupRepresentationWithParent[],
     );
   }
-  const kGroups = await Promise.all(
-    rawKGroups.map(async g => {
-      g.members = await getAllGroupMembers(
-        client.groups as Groups,
-        g.id!,
-        config,
-        options,
-      );
+  const kGroups = [];
+  for (const g of rawKGroups) {
+    g.members = await getAllGroupMembers(client.groups, g.id!, config, options);
 
-      if (isVersion23orHigher) {
-        if (g.subGroupCount! > 0) {
-          g.subGroups = await client.groups.listSubGroups({
-            parentId: g.id!,
-            first: 0,
-            max: g.subGroupCount,
-            briefRepresentation: false,
-            realm: config.realm,
-          });
-        }
-        if (g.parentId) {
-          const groupParent = await client.groups.findOne({
-            id: g.parentId,
-            realm: config.realm,
-          });
-          g.parent = groupParent?.name;
-        }
+    if (isVersion23orHigher) {
+      if (g.subGroupCount! > 0) {
+        g.subGroups = await client.groups.listSubGroups({
+          parentId: g.id!,
+          first: 0,
+          max: g.subGroupCount,
+          briefRepresentation: false,
+          realm: config.realm,
+        });
       }
+      if (g.parentId) {
+        const groupParent = await client.groups.findOne({
+          id: g.parentId,
+          realm: config.realm,
+        });
+        g.parent = groupParent?.name;
+      }
+    }
 
-      return g;
-    }),
+    kGroups.push(g);
+  }
+
+  const parsedGroups = await kGroups.reduce(
+    async (promise, g) => {
+      const partial = await promise;
+      const entity = await parseGroup(
+        g,
+        config.realm,
+        options?.groupTransformer,
+      );
+      if (entity) {
+        const group = {
+          ...g,
+          entity,
+        } as GroupRepresentationWithParentAndEntity;
+        partial.push(group);
+      }
+      return partial;
+    },
+    Promise.resolve([] as GroupRepresentationWithParentAndEntity[]),
   );
 
-  const parsedGroups = await kGroups.reduce(async (promise, g) => {
-    const partial = await promise;
-    const entity = await parseGroup(g, config.realm, options?.groupTransformer);
-    if (entity) {
-      const group = {
-        ...g,
-        entity,
-      } as GroupRepresentationWithParentAndEntity;
-      partial.push(group);
-    }
-    return partial;
-  }, Promise.resolve([] as GroupRepresentationWithParentAndEntity[]));
-
-  const parsedUsers = await kUsers.reduce(async (promise, u) => {
-    const partial = await promise;
-    const entity = await parseUser(
-      u,
-      config.realm,
-      parsedGroups,
-      options?.userTransformer,
-    );
-    if (entity) {
-      const user = { ...u, entity } as UserRepresentationWithEntity;
-      partial.push(user);
-    }
-    return partial;
-  }, Promise.resolve([] as UserRepresentationWithEntity[]));
+  const parsedUsers = await kUsers.reduce(
+    async (promise, u) => {
+      const partial = await promise;
+      const entity = await parseUser(
+        u,
+        config.realm,
+        parsedGroups,
+        options?.userTransformer,
+      );
+      if (entity) {
+        const user = { ...u, entity } as UserRepresentationWithEntity;
+        partial.push(user);
+      }
+      return partial;
+    },
+    Promise.resolve([] as UserRepresentationWithEntity[]),
+  );
 
   const groups = parsedGroups.map(g => {
     const entity = g.entity;
