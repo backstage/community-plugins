@@ -1,5 +1,13 @@
 # @backstage-community/plugin-nomad-backend
 
+## 0.1.26
+
+### Patch Changes
+
+- 75644d9: Removed usages and references of `@backstage/backend-common`
+
+  Deprecated `createRouter` and its router options in favour of the new backend system.
+
 ## 0.1.25
 
 ### Patch Changes
