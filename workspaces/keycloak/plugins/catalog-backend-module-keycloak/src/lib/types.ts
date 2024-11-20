@@ -19,32 +19,42 @@ import type { GroupEntity, UserEntity } from '@backstage/catalog-model';
 import type GroupRepresentation from '@keycloak/keycloak-admin-client/lib/defs/groupRepresentation';
 import type UserRepresentation from '@keycloak/keycloak-admin-client/lib/defs/userRepresentation';
 
+/**
+ * @public
+ */
 export interface GroupRepresentationWithParent extends GroupRepresentation {
   parentId?: string;
   parent?: string;
   members?: string[];
 }
 
+/**
+ * @public
+ */
 export interface GroupRepresentationWithParentAndEntity
   extends GroupRepresentationWithParent {
   entity: GroupEntity;
 }
 
+/**
+ * @public
+ */
 export interface UserRepresentationWithEntity extends UserRepresentation {
   entity: UserEntity;
 }
 
 /**
- * Customize the ingested User entity
+ * Customize the ingested User entity.
  *
  * @public
  *
- * @param {UserEntity} entity The output of the default parser
- * @param {UserRepresentation} user Keycloak user representation
- * @param {string} realm Realm name
- * @param {GroupRepresentationWithParentAndEntity[]} groups Data about available groups (can be used to create additional relationships)
+ * @param entity - The output of the default parser.
+ * @param user - The Keycloak user representation.
+ * @param realm - The realm name.
+ * @param groups - Data about available groups, which can be used to create additional relationships.
  *
- * @returns {Promise<UserEntity | undefined>} Resolve to a modified `UserEntity` object that will be ingested into the catalog or resolve to `undefined` to reject the entity
+ * @returns A promise resolving to a modified `UserEntity` object to be ingested into the catalog,
+ * or `undefined` to reject the entity.
  */
 export type UserTransformer = (
   entity: UserEntity,
@@ -54,15 +64,16 @@ export type UserTransformer = (
 ) => Promise<UserEntity | undefined>;
 
 /**
- * Customize the ingested Group entity
+ * Customize the ingested Group entity.
  *
  * @public
  *
- * @param {GroupEntity} entity The output of the default parser
- * @param {GroupRepresentation} group Keycloak group representation
- * @param {string} realm Realm name
+ * @param entity - The output of the default parser.
+ * @param group - The Keycloak group representation.
+ * @param realm - The realm name.
  *
- * @returns {Promise<GroupEntity | undefined>} Resolve to a modified `GroupEntity` object that will be ingested into the catalog or resolve to `undefined` to reject the entity
+ * @returns A promise resolving to a modified `GroupEntity` object to be ingested into the catalog,
+ * or `undefined` to reject the entity.
  */
 export type GroupTransformer = (
   entity: GroupEntity,
