@@ -9,8 +9,6 @@ app:
     - entity-card:catalog/links:
         config:
           filter: kind:component has:links
-    # - entity-content:sonarqube/entity
-    # - entity-card:sonarqube/card
 
 organization:
   name: SonarQube Example

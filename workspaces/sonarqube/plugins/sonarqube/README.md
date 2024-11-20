@@ -85,7 +85,7 @@ spec:
 
 Follow this section if you are using Backstage's [new frontend system](https://backstage.io/docs/frontend-system/).
 
-1. Import `sonarQubePlugin` in your `App.tsx` and add it to your app's `features` array:
+Import `sonarQubePlugin` in your `App.tsx` and add it to your app's `features` array:
 
 ```typescript
 import sonarQubePlugin from '@backstage-community/plugin-sonarqube/alpha';
@@ -99,28 +99,6 @@ export const app = createApp({
     // ...
   ],
 });
-```
-
-2. Next, enable your desired extensions in `app-config.yaml`
-
-```yaml
-app:
-  extensions:
-    - entity-content:sonarqube/entity
-    - entity-card:sonarqube/card
-```
-
-3. Whichever extensions you've enabled should now appear in your entity page.
-
-You can also control which [entity kinds](https://backstage.io/docs/features/software-catalog/system-model) the sonarqube card appears on by adding a config underneath the entity-content, like so:
-
-```yaml
-# app-config.yaml
-app:
-  extensions:
-    - entity-content:sonarqube/entity
-        config:
-          filter: kind:component,system
 ```
 
 ## Links
