@@ -37,6 +37,7 @@ type EventMap = {
 
 export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
   private readonly roleEventEmitter = new EventEmitter<EventMap>();
+  private loadPolicyPromise: Promise<void> | null = null;
 
   constructor(
     private readonly enforcer: Enforcer,
@@ -49,19 +50,40 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
     return this;
   }
 
+  // Load the latest permissions from the database without throttling
+  async loadPermissionsWithoutThrottling(): Promise<void> {
+    // await this.waitForUnlock();
+    if (!this.loadPolicyPromise) {
+      this.loadPolicyPromise = this.enforcer
+        .loadPolicy()
+        .catch(err => {
+          // todo rework to use logger...
+          console.error('Failed to load policy from database!!!!', err);
+        })
+        .finally(() => {
+          this.loadPolicyPromise = null;
+        });
+    }
+    return this.loadPolicyPromise;
+  }
+
   async hasPolicy(...policy: string[]): Promise<boolean> {
+    await this.loadPermissionsWithoutThrottling();
     return await this.enforcer.hasPolicy(...policy);
   }
 
   async hasGroupingPolicy(...policy: string[]): Promise<boolean> {
+    await this.loadPermissionsWithoutThrottling();
     return await this.enforcer.hasGroupingPolicy(...policy);
   }
 
   async getPolicy(): Promise<string[][]> {
+    await this.loadPermissionsWithoutThrottling();
     return await this.enforcer.getPolicy();
   }
 
   async getGroupingPolicy(): Promise<string[][]> {
+    await this.loadPermissionsWithoutThrottling();
     return await this.enforcer.getGroupingPolicy();
   }
 
@@ -73,6 +95,7 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
     fieldIndex: number,
     ...filter: string[]
   ): Promise<string[][]> {
+    await this.loadPermissionsWithoutThrottling();
     return await this.enforcer.getFilteredPolicy(fieldIndex, ...filter);
   }
 
@@ -80,6 +103,7 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
     fieldIndex: number,
     ...filter: string[]
   ): Promise<string[][]> {
+    await this.loadPermissionsWithoutThrottling();
     return await this.enforcer.getFilteredGroupingPolicy(fieldIndex, ...filter);
   }
 
@@ -115,6 +139,7 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
     if (policies.length === 0) {
       return;
     }
+    await this.loadPermissionsWithoutThrottling();
 
     const trx = externalTrx || (await this.knex.transaction());
 
@@ -195,6 +220,7 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
     if (policies.length === 0) {
       return;
     }
+    await this.loadPermissionsWithoutThrottling();
 
     const trx = externalTrx ?? (await this.knex.transaction());
 
@@ -243,6 +269,7 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
     newRole: string[][],
     newRoleMetadata: RoleMetadataDao,
   ): Promise<void> {
+    await this.loadPermissionsWithoutThrottling();
     const oldRoleName = oldRole.at(0)?.at(1)!;
 
     const trx = await this.knex.transaction();
@@ -268,6 +295,7 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
     oldPolicies: string[][],
     newPolicies: string[][],
   ): Promise<void> {
+    await this.loadPermissionsWithoutThrottling();
     const trx = await this.knex.transaction();
 
     try {
@@ -303,6 +331,7 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
     policies: string[][],
     externalTrx?: Knex.Transaction,
   ): Promise<void> {
+    await this.loadPermissionsWithoutThrottling();
     const trx = externalTrx ?? (await this.knex.transaction());
 
     try {
@@ -376,6 +405,7 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
     isUpdate?: boolean,
     externalTrx?: Knex.Transaction,
   ): Promise<void> {
+    await this.loadPermissionsWithoutThrottling();
     const trx = externalTrx ?? (await this.knex.transaction());
 
     const roleEntity = roleMetadata.roleEntityRef;
