@@ -44,7 +44,6 @@
     "typescript": "~5.3.0"
   },
   "dependencies": {
-    "@ianvs/prettier-plugin-sort-imports": "^4.3.1",
     "knip": "^5.27.4"
   },
   "resolutions": {
