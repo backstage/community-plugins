@@ -19,8 +19,10 @@ import { parseEntityRef } from '@backstage/catalog-model';
 import { Table, WarningPanel } from '@backstage/core-components';
 import { usePermission } from '@backstage/plugin-permission-react';
 
-import { Card, CardContent, makeStyles } from '@material-ui/core';
-import CachedIcon from '@material-ui/icons/Cached';
+import CachedIcon from '@mui/icons-material/Cached';
+import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
 
 import { policyEntityUpdatePermission } from '@backstage-community/plugin-rbac-common';
 
@@ -34,14 +36,6 @@ type MembersCardProps = {
   roleName: string;
   membersInfo: MembersInfo;
 };
-
-const useStyles = makeStyles(theme => ({
-  empty: {
-    padding: theme.spacing(2),
-    display: 'flex',
-    justifyContent: 'center',
-  },
-}));
 
 const getRefreshIcon = () => <CachedIcon />;
 const getEditIcon = (isAllowed: boolean, roleName: string) => {
@@ -65,7 +59,6 @@ export const MembersCard = ({ roleName, membersInfo }: MembersCardProps) => {
     resourceRef: policyEntityUpdatePermission.resourceType,
   });
 
-  const classes = useStyles();
   const actions = [
     {
       icon: getRefreshIcon,
@@ -120,9 +113,12 @@ export const MembersCard = ({ roleName, membersInfo }: MembersCardProps) => {
           isLoading={loading}
           columns={columns}
           emptyContent={
-            <div data-testid="members-table-empty" className={classes.empty}>
+            <Box
+              data-testid="members-table-empty"
+              sx={{ display: 'flex', justifyContent: 'center', p: 2 }}
+            >
               No records found
-            </div>
+            </Box>
           }
         />
       </CardContent>

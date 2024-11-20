@@ -17,22 +17,17 @@ import React from 'react';
 
 import { useApi } from '@backstage/core-plugin-api';
 
-import {
-  Box,
-  Button,
-  createStyles,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-  makeStyles,
-  TextField,
-  Theme,
-} from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
-import ErrorIcon from '@material-ui/icons/Error';
-import { Alert } from '@material-ui/lab';
+import CloseIcon from '@mui/icons-material/Close';
+import ErrorIcon from '@mui/icons-material/Error';
+import Alert from '@mui/material/Alert';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import IconButton from '@mui/material/IconButton';
+import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
 import { RoleBasedPolicy } from '@backstage-community/plugin-rbac-common';
@@ -44,22 +39,6 @@ import {
   removePermissions,
 } from '../../utils/role-form-utils';
 import { useToast } from '../ToastContext';
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    titleContainer: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: theme.spacing(1),
-    },
-    closeButton: {
-      position: 'absolute',
-      right: theme.spacing(1),
-      top: theme.spacing(1),
-      color: theme.palette.grey[500],
-    },
-  }),
-);
 
 type DeleteRoleDialogProps = {
   open: boolean;
@@ -77,7 +56,6 @@ const DeleteRoleDialog = ({
   roleName,
   propOptions,
 }: DeleteRoleDialogProps) => {
-  const classes = useStyles();
   const { setToastMessage } = useToast();
   const [deleteRoleValue, setDeleteRoleValue] = React.useState<string>();
   const [disableDelete, setDisableDelete] = React.useState(false);
@@ -128,7 +106,13 @@ const DeleteRoleDialog = ({
   return (
     <Dialog maxWidth="md" open={open} onClose={closeDialog}>
       <DialogTitle id="delete-role" title="Delete Role">
-        <Box className={classes.titleContainer}>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: theme => theme.spacing(1),
+          }}
+        >
           <Typography component="span" sx={{ fontWeight: 'bold' }}>
             <ErrorIcon
               style={{
@@ -144,7 +128,12 @@ const DeleteRoleDialog = ({
 
           <IconButton
             aria-label="close"
-            className={classes.closeButton}
+            sx={{
+              position: 'absolute',
+              right: theme => theme.spacing(1),
+              top: theme => theme.spacing(1),
+              color: theme => theme.palette.grey[500],
+            }}
             onClick={closeDialog}
           >
             <CloseIcon />

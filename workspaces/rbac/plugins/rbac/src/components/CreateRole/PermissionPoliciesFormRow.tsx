@@ -15,13 +15,13 @@
  */
 import React from 'react';
 
-import { FormLabel, makeStyles } from '@material-ui/core';
-import IconButton from '@material-ui/core/IconButton';
-import TextField from '@material-ui/core/TextField';
-import Autocomplete from '@material-ui/lab/Autocomplete';
 import ChecklistRtlIcon from '@mui/icons-material/ChecklistRtl';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import RemoveIcon from '@mui/icons-material/Remove';
+import Autocomplete from '@mui/material/Autocomplete';
+import FormLabel from '@mui/material/FormLabel';
+import IconButton from '@mui/material/IconButton';
+import TextField from '@mui/material/TextField';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { FormikErrors } from 'formik';
@@ -32,17 +32,6 @@ import { ConditionalAccessSidebar } from '../ConditionalAccess/ConditionalAccess
 import { ConditionRules, ConditionsData } from '../ConditionalAccess/types';
 import { PoliciesCheckboxGroup } from './PoliciesCheckboxGroup';
 import { PluginsPermissionPoliciesData } from './types';
-
-const useStyles = makeStyles(theme => ({
-  removeButton: {
-    color: theme.palette.grey[500],
-    flexGrow: 0,
-    alignSelf: 'center',
-  },
-  conditionalAccessButton: {
-    fontSize: theme.typography.fontSize,
-  },
-}));
 
 type PermissionPoliciesFormRowProps = {
   permissionPoliciesRowData: PermissionsData;
@@ -79,7 +68,6 @@ export const PermissionPoliciesFormRow = ({
   getPermissionDisabled,
   onAddConditions,
 }: PermissionPoliciesFormRowProps) => {
-  const classes = useStyles();
   const { plugin: pluginError, permission: permissionError } =
     permissionPoliciesRowError;
   const { data: conditionRulesData, error: conditionRulesError } =
@@ -200,7 +188,9 @@ export const PermissionPoliciesFormRow = ({
                       ?.isResourced
                   }
                   aria-label="configure-access"
-                  className={classes.conditionalAccessButton}
+                  sx={{
+                    fontSize: theme => theme.typography.fontSize,
+                  }}
                   onClick={() => setSidebarOpen(true)}
                   disabled={!!conditionRulesError}
                 >
@@ -215,7 +205,11 @@ export const PermissionPoliciesFormRow = ({
           </div>
           <IconButton
             title="Remove"
-            className={classes.removeButton}
+            sx={{
+              color: theme => theme.palette.grey[500],
+              flexGrow: 0,
+              alignSelf: 'center',
+            }}
             onClick={() => onRemove()}
             disabled={rowCount === 1}
             data-testid={`${rowName}-remove`}

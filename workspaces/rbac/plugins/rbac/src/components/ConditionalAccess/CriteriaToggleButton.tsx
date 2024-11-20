@@ -15,7 +15,7 @@
  */
 import React, { CSSProperties } from 'react';
 
-import { Theme } from '@material-ui/core';
+import { Theme } from '@mui/material/styles';
 import ToggleButton from '@mui/material/ToggleButton';
 
 type CriteriaToggleButtonProps = {

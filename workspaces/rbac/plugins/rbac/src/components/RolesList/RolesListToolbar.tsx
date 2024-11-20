@@ -15,26 +15,11 @@
  */
 import React from 'react';
 
-import { LinkButton } from '@backstage/core-components';
+import { Link, LinkButton } from '@backstage/core-components';
 
-import { makeStyles } from '@material-ui/core';
-import Alert from '@material-ui/lab/Alert';
-import AlertTitle from '@material-ui/lab/AlertTitle';
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
 import Typography from '@mui/material/Typography';
-
-const useStyles = makeStyles(theme => ({
-  toolbar: {
-    display: 'flex',
-    justifyContent: 'end',
-    marginBottom: '24px',
-  },
-  rbacPreReqLink: {
-    color: theme.palette.link,
-  },
-  alertTitle: {
-    fontWeight: 'bold',
-  },
-}));
 
 export const RolesListToolbar = ({
   createRoleAllowed,
@@ -43,29 +28,29 @@ export const RolesListToolbar = ({
   createRoleAllowed: boolean;
   createRoleLoading: boolean;
 }) => {
-  const classes = useStyles();
   return (
     <div>
       {!createRoleLoading && !createRoleAllowed && (
         <Alert severity="warning" data-testid="create-role-warning">
-          <AlertTitle className={classes.alertTitle}>
+          <AlertTitle
+            sx={{
+              fontWeight: 'bold',
+            }}
+          >
             Unable to create role.
           </AlertTitle>
           To enable create/edit role button, make sure required users/groups are
           available in catalog as a role cannot be created without users/groups
           and also the role associated with your user should have the permission
           policies mentioned{' '}
-          <a
-            href="https://github.com/backstage/community-plugins/tree/main/workspaces/rbac/plugins/rbac#prerequisites"
-            target="blank"
-            className={classes.rbacPreReqLink}
+          <Link
+            to="https://github.com/backstage/community-plugins/tree/main/workspaces/rbac/plugins/rbac#prerequisites"
+            target="_blank"
           >
             here
-          </a>
-          .
-          <br />
-          <Typography>
-            <Typography component="span" sx={{ fontWeight: 'bold' }}>
+          </Link>
+          <Typography sx={{ mt: 1 }} fontSize="small">
+            <Typography component="span" fontWeight="bold" fontSize="small">
               Note
             </Typography>
             : Even after ingesting users/groups in catalog and applying above
@@ -76,7 +61,14 @@ export const RolesListToolbar = ({
         </Alert>
       )}
       <br />
-      <Typography component="span" className={classes.toolbar}>
+      <Typography
+        component="span"
+        sx={{
+          display: 'flex',
+          justifyContent: 'end',
+          marginBottom: '24px',
+        }}
+      >
         <LinkButton
           to="role/new"
           color="primary"

@@ -19,8 +19,10 @@ import { parseEntityRef } from '@backstage/catalog-model';
 import { Table, WarningPanel } from '@backstage/core-components';
 import { usePermission } from '@backstage/plugin-permission-react';
 
-import { Card, CardContent, makeStyles } from '@material-ui/core';
-import CachedIcon from '@material-ui/icons/Cached';
+import CachedIcon from '@mui/icons-material/Cached';
+import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
 
 import { policyEntityUpdatePermission } from '@backstage-community/plugin-rbac-common';
 
@@ -28,14 +30,6 @@ import { usePermissionPolicies } from '../../hooks/usePermissionPolicies';
 import { PermissionsData } from '../../types';
 import EditRole from '../EditRole';
 import { columns } from './PermissionsListColumns';
-
-const useStyles = makeStyles(theme => ({
-  empty: {
-    padding: theme.spacing(2),
-    display: 'flex',
-    justifyContent: 'center',
-  },
-}));
 
 type PermissionsCardProps = {
   entityReference: string;
@@ -67,7 +61,6 @@ export const PermissionsCard = ({
     permission: policyEntityUpdatePermission,
     resourceRef: policyEntityUpdatePermission.resourceType,
   });
-  const classes = useStyles();
 
   const onSearchResultsChange = (searchResults: PermissionsData[]) => {
     setPermissions(searchResults);
@@ -134,9 +127,12 @@ export const PermissionsCard = ({
           columns={columns}
           isLoading={loading}
           emptyContent={
-            <div data-testid="permission-table-empty" className={classes.empty}>
+            <Box
+              data-testid="permission-table-empty"
+              sx={{ display: 'flex', justifyContent: 'center', p: 2 }}
+            >
               No records found
-            </div>
+            </Box>
           }
         />
       </CardContent>
