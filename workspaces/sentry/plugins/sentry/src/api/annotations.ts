@@ -18,12 +18,6 @@ import { Entity } from '@backstage/catalog-model';
 
 export const SENTRY_PROJECT_SLUG_ANNOTATION = 'sentry.io/project-slug';
 
-export const hasSentryAnnotation = (entity: Entity) => {
-  return Boolean(
-    entity?.metadata.annotations?.[SENTRY_PROJECT_SLUG_ANNOTATION],
-  );
-};
-
 // The value can be the format of `[organization]/[project-slug]` or just `[project-slug]
 const parseAnnotation = (entity: Entity) => {
   return (entity?.metadata.annotations?.[SENTRY_PROJECT_SLUG_ANNOTATION] ?? '')

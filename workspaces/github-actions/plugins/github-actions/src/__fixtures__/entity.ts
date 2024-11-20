@@ -30,22 +30,3 @@ export const sampleEntity = {
     },
   },
 };
-
-export const entityWithoutAnnotation = {
-  entity: {
-    apiVersion: 'backstage.io/v1alpha1',
-    kind: 'Component',
-    metadata: {
-      name: 'backstage',
-      annotations: {
-        'backstage.io/techdocs-ref':
-          'url:https://github.com/backstage/backstage',
-      },
-    },
-    spec: {
-      lifecycle: 'experimental',
-      type: 'library',
-      owner: 'cncf',
-    },
-  },
-};

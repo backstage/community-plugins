@@ -15,7 +15,7 @@
  */
 import React from 'react';
 import { EntityCardBlueprint } from '@backstage/plugin-catalog-react/alpha';
-import { hasGithubAnnotation } from '../components/getProjectNameFromEntity';
+import { isGithubActionsAvailable } from '../components/Router';
 
 /**
  * @alpha
@@ -23,7 +23,7 @@ import { hasGithubAnnotation } from '../components/getProjectNameFromEntity';
 export const entityGithubActionsCard = EntityCardBlueprint.make({
   name: 'workflow-runs',
   params: {
-    filter: hasGithubAnnotation,
+    filter: isGithubActionsAvailable,
     loader: () =>
       import('../components/Router').then(m => <m.Router view="cards" />),
   },
@@ -47,7 +47,7 @@ export const entityLatestGithubActionRunCard =
     },
     factory(originalFactory, { config }) {
       return originalFactory({
-        filter: hasGithubAnnotation,
+        filter: isGithubActionsAvailable,
         loader: async () =>
           import('../components/Cards').then(m => (
             <m.LatestWorkflowRunCard {...config.props} />
@@ -74,7 +74,7 @@ export const entityLatestGithubActionsForBranchCard =
     },
     factory(originalFactory, { config }) {
       return originalFactory({
-        filter: hasGithubAnnotation,
+        filter: isGithubActionsAvailable,
         loader: async () =>
           import('../components/Cards').then(m => (
             <m.LatestWorkflowsForBranchCard {...config.props} />
@@ -103,7 +103,7 @@ export const entityRecentGithubActionsRunsCard =
     },
     factory(originalFactory, { config }) {
       return originalFactory({
-        filter: hasGithubAnnotation,
+        filter: isGithubActionsAvailable,
         loader: async () =>
           import('../components/Cards').then(m => (
             <m.RecentWorkflowRunsCard {...config.props} />

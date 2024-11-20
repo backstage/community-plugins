@@ -20,7 +20,7 @@ import {
 } from '@backstage/core-compat-api';
 import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
 import { rootRouteRef } from '../plugin';
-import { hasSentryAnnotation } from '../api/annotations';
+import { isSentryAvailable } from '../components';
 
 /**
  * @alpha
@@ -30,7 +30,7 @@ export const entitySentryContent = EntityContentBlueprint.make({
   params: {
     defaultPath: '/sentry',
     defaultTitle: 'Sentry',
-    filter: hasSentryAnnotation,
+    filter: isSentryAvailable,
     routeRef: convertLegacyRouteRef(rootRouteRef),
     loader: () =>
       import('../components/Router').then(m => compatWrapper(<m.Router />)),
