@@ -17,20 +17,12 @@ import React from 'react';
 
 import { Table } from '@backstage/core-components';
 
-import { makeStyles } from '@material-ui/core';
+import Box from '@mui/material/Box';
 import { FormikErrors } from 'formik';
 
 import { getMembers } from '../../utils/rbac-utils';
 import { selectedMembersColumns } from './AddedMembersTableColumn';
 import { RoleFormValues, SelectedMember } from './types';
-
-const useStyles = makeStyles(theme => ({
-  empty: {
-    padding: theme.spacing(2),
-    display: 'flex',
-    justifyContent: 'center',
-  },
-}));
 
 type AddedMembersTableProps = {
   selectedMembers: SelectedMember[];
@@ -45,7 +37,6 @@ export const AddedMembersTable = ({
   selectedMembers,
   setFieldValue,
 }: AddedMembersTableProps) => {
-  const classes = useStyles();
   return (
     <Table
       title={
@@ -56,9 +47,9 @@ export const AddedMembersTable = ({
       data={selectedMembers}
       columns={selectedMembersColumns(selectedMembers, setFieldValue)}
       emptyContent={
-        <div className={classes.empty}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', p: 2 }}>
           No records. Selected users and groups appear here.
-        </div>
+        </Box>
       }
     />
   );

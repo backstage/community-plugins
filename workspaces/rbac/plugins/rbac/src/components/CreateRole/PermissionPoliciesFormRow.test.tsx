@@ -20,12 +20,10 @@ import { fireEvent, render, screen, within } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
 import { mockTransformedConditionRules } from '../../__fixtures__/mockTransformedConditionRules';
+import * as ConditionsFormRowFields from '../ConditionalAccess/ConditionsFormRowFields';
 import { PermissionPoliciesFormRow } from './PermissionPoliciesFormRow';
 
-jest.mock('@material-ui/core', () => ({
-  ...jest.requireActual('@material-ui/core'),
-  makeStyles: jest.fn().mockReturnValue(() => ({})),
-}));
+jest.mock('../ConditionalAccess/ConditionsFormRowFields');
 
 describe('PermissionPoliciesFormRow', () => {
   const mockProps = {
@@ -61,15 +59,18 @@ describe('PermissionPoliciesFormRow', () => {
     onAddConditions: jest.fn(),
   };
 
+  const spy = jest.spyOn(ConditionsFormRowFields, 'getTextFieldStyles');
+  spy.mockReturnValue({} as any);
+
   it('renders without crashing', () => {
     render(<PermissionPoliciesFormRow {...mockProps} />);
     expect(
-      screen.getByRole('textbox', {
+      screen.getByRole('combobox', {
         name: /plugin/i,
       }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole('textbox', {
+      screen.getByRole('combobox', {
         name: /resource type/i,
       }),
     ).toBeInTheDocument();

@@ -16,8 +16,9 @@
 import React from 'react';
 
 import { useDeleteDialog } from '@janus-idp/shared-react';
-import { IconButton, Tooltip } from '@material-ui/core';
 import Delete from '@mui/icons-material/Delete';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 
 type DeleteRoleProps = {

@@ -17,8 +17,8 @@ import React from 'react';
 
 import { PermissionCondition } from '@backstage/plugin-permission-common';
 
-import { IconButton } from '@material-ui/core';
 import RemoveIcon from '@mui/icons-material/Remove';
+import IconButton from '@mui/material/IconButton';
 
 import {
   getNestedRuleErrors,
@@ -51,7 +51,6 @@ type ComplexConditionRowProps = {
   setRemoveAllClicked: React.Dispatch<React.SetStateAction<boolean>>;
   conditionRulesData?: RulesData;
   notConditionType?: NotConditionType;
-  classes: any;
   currentCondition: Condition;
   ruleIndex: number;
   activeCriteria?: 'allOf' | 'anyOf';
@@ -70,7 +69,6 @@ export const ComplexConditionRow = ({
   setRemoveAllClicked,
   conditionRulesData,
   notConditionType,
-  classes,
   currentCondition,
   ruleIndex,
   activeCriteria,
@@ -252,7 +250,12 @@ export const ComplexConditionRow = ({
         />
         <IconButton
           title="Remove"
-          className={classes.removeRuleButton}
+          sx={{
+            color: theme => theme.palette.grey[500],
+            flexGrow: 0,
+            alignSelf: 'baseline',
+            marginTop: theme => theme.spacing(3.3),
+          }}
           disabled={isNestedCondition ? nestedDisabled : disabled}
           onClick={
             isNestedCondition &&

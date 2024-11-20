@@ -15,49 +15,14 @@
  */
 import React from 'react';
 
-import { makeStyles } from '@material-ui/core';
-import Drawer from '@material-ui/core/Drawer';
 import CloseIcon from '@mui/icons-material/Close';
 import Box from '@mui/material/Box';
+import Drawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 
 import { ConditionsForm } from './ConditionsForm';
 import { ConditionsData, RulesData } from './types';
-
-const useDrawerStyles = makeStyles(() => ({
-  paper: {
-    ['@media (max-width: 960px)']: {
-      width: '-webkit-fill-available',
-    },
-    width: '50vw',
-    height: '100vh',
-    gap: '3%',
-    display: '-webkit-inline-box',
-  },
-}));
-
-const useDrawerContentStyles = makeStyles(theme => ({
-  sidebar: {
-    display: 'flex',
-    flexFlow: 'column',
-    justifyContent: 'space-between',
-    backgroundColor: `${theme.palette.background.default} !important`,
-  },
-  header: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'baseline',
-    padding: theme.spacing(2.5),
-    fontFamily: theme.typography.fontFamily,
-  },
-  headerSubtitle: {
-    fontWeight: 400,
-    fontFamily: theme.typography.fontFamily,
-    paddingTop: theme.spacing(1),
-  },
-}));
 
 type ConditionalAccessSidebarProps = {
   open: boolean;
@@ -76,27 +41,56 @@ export const ConditionalAccessSidebar = ({
   conditionRulesData,
   conditionsFormVal,
 }: ConditionalAccessSidebarProps) => {
-  const classes = useDrawerStyles();
-  const contentClasses = useDrawerContentStyles();
   return (
     <Drawer
       anchor="right"
       open={open}
       data-testid="rules-sidebar"
-      classes={{
-        paper: classes.paper,
+      PaperProps={{
+        sx: {
+          ['@media (max-width: 960px)']: {
+            width: '100%',
+          },
+          width: '50%',
+          height: '100%',
+        },
       }}
     >
-      <Box className={contentClasses.sidebar}>
-        <Box className={contentClasses.header}>
-          <Typography variant="h5">
-            <Typography component="span" sx={{ fontWeight: 500 }}>
-              Configure access for the
-            </Typography>{' '}
-            {selPluginResourceType}
+      <Box
+        sx={{
+          display: 'flex',
+          flexFlow: 'column',
+          justifyContent: 'space-between',
+          height: '100%',
+          backgroundColor: theme => `${theme.palette.background.paper}`,
+        }}
+      >
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'baseline',
+            padding: theme => theme.spacing(2.5),
+            fontFamily: theme => theme.typography.fontFamily,
+          }}
+        >
+          <Box>
+            <Box sx={{ display: 'flex', gap: '5px' }}>
+              <Typography sx={{ fontWeight: 500 }} variant="h5">
+                Configure access for the
+              </Typography>
+              <Typography style={{ fontWeight: 600 }} variant="h5">
+                {selPluginResourceType}
+              </Typography>
+            </Box>
             <Typography
               variant="body2"
-              className={contentClasses.headerSubtitle}
+              sx={{
+                fontWeight: 400,
+                fontFamily: theme => theme.typography.fontFamily,
+                paddingTop: theme => theme.spacing(1),
+              }}
               align="left"
             >
               By default, the selected resource type will be visible to the
@@ -104,7 +98,7 @@ export const ConditionalAccessSidebar = ({
               permission to specific plugin resource type rule, select it and
               add the required parameters.
             </Typography>
-          </Typography>
+          </Box>
           <IconButton
             key="dismiss"
             title="Close the drawer"

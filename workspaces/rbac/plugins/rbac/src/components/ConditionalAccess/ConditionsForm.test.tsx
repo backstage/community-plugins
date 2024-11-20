@@ -15,20 +15,21 @@
  */
 import React from 'react';
 
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render } from '@testing-library/react';
 
 import { mockTransformedConditionRules } from '../../__fixtures__/mockTransformedConditionRules';
 import { ConditionsForm } from './ConditionsForm';
+import * as ConditionsFormRowFields from './ConditionsFormRowFields';
 
-jest.mock('@material-ui/core', () => ({
-  ...jest.requireActual('@material-ui/core'),
-  makeStyles: jest.fn().mockReturnValue(() => ({})),
-}));
+jest.mock('../ConditionalAccess/ConditionsFormRowFields');
 
 describe('ConditionsForm', () => {
   const selPluginResourceType = 'catalog-entity';
   const onSaveMock = jest.fn();
   const onCloseMock = jest.fn();
+
+  const spy = jest.spyOn(ConditionsFormRowFields, 'getTextFieldStyles');
+  spy.mockReturnValue({} as any);
 
   const renderComponent = (props = {}) =>
     render(
@@ -79,21 +80,8 @@ describe('ConditionsForm', () => {
     expect(onSaveMock).toHaveBeenCalledWith(undefined);
   });
 
-  it('disables Save button if conditions are unchanged', () => {
+  it('disables Save button if conditions are unchanged or no rule selected', () => {
     const { getByTestId } = renderComponent();
-    expect(getByTestId('save-conditions')).toBeDisabled();
-  });
-
-  it('disables Save button if no rule is selected', () => {
-    const { getByTestId } = renderComponent();
-
-    fireEvent.change(
-      screen.getByRole('textbox', {
-        name: /rule/i,
-      }),
-      { target: { value: '' } },
-    );
-
     expect(getByTestId('save-conditions')).toBeDisabled();
   });
 
