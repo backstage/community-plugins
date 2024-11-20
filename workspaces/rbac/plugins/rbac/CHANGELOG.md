@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.33.0
+
+### Minor Changes
+
+- 757799e: Upgraded RBAC plugin from mui4 to mui5
+
 ## 1.32.5
 
 ### Patch Changes
