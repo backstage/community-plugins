@@ -20,6 +20,7 @@ import {
 } from '@backstage/core-compat-api';
 import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
 import { rootRouteRef } from '../plugin';
+import { isJenkinsAvailable } from '../components/Router';
 
 /**
  * @alpha
@@ -29,7 +30,7 @@ export const entityJenkinsProjects = EntityContentBlueprint.make({
   params: {
     defaultPath: 'jenkins',
     defaultTitle: 'Jenkins',
-    filter: 'kind:component',
+    filter: isJenkinsAvailable,
     routeRef: convertLegacyRouteRef(rootRouteRef),
     loader: () =>
       import('../components/Router').then(m => compatWrapper(<m.Router />)),

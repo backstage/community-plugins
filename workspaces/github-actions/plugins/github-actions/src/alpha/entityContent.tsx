@@ -16,6 +16,7 @@
 import React from 'react';
 import { convertLegacyRouteRef } from '@backstage/core-compat-api';
 import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
+import { isGithubActionsAvailable } from '../components/Router';
 import { rootRouteRef } from '../routes';
 
 /**
@@ -26,7 +27,7 @@ export const entityGithubActionsContent = EntityContentBlueprint.make({
   params: {
     defaultPath: 'github-actions',
     defaultTitle: 'GitHub Actions',
-    filter: 'kind:component',
+    filter: isGithubActionsAvailable,
     routeRef: convertLegacyRouteRef(rootRouteRef),
     loader: () =>
       import('../components/Router').then(m => <m.Router view="table" />),
