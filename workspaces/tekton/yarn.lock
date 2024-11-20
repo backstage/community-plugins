@@ -2836,7 +2836,7 @@ __metadata:
     "@patternfly/react-core": ^5.1.2
     "@patternfly/react-tokens": ^5.1.2
     "@patternfly/react-topology": ^5.1.0
-    "@playwright/test": 1.45.3
+    "@playwright/test": 1.48.2
     "@redhat-developer/red-hat-developer-hub-theme": 0.4.0
     "@testing-library/jest-dom": 6.4.8
     "@testing-library/react": 14.3.1
@@ -9569,18 +9569,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@playwright/test@npm:1.45.3":
-  version: 1.45.3
-  resolution: "@playwright/test@npm:1.45.3"
-  dependencies:
-    playwright: 1.45.3
-  bin:
-    playwright: cli.js
-  checksum: 3e2c88d40f98cf94ab7947263804d1ee78c4bb21a35c8dbb64855eed5565ffc688509c5f07bda5438cba6c354374981448dcba3dbe326d1699b4fef75c9ce43d
-  languageName: node
-  linkType: hard
-
-"@playwright/test@npm:^1.32.3":
+"@playwright/test@npm:1.48.2, @playwright/test@npm:^1.32.3":
   version: 1.48.2
   resolution: "@playwright/test@npm:1.48.2"
   dependencies:
@@ -28278,36 +28267,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright-core@npm:1.45.3":
-  version: 1.45.3
-  resolution: "playwright-core@npm:1.45.3"
-  bin:
-    playwright-core: cli.js
-  checksum: cecb58877b2c643403d7a72c24a7aa0fdd087a3c7f9a5ea5403851336ea831d8e304b1f159aacbbabd12e5c47eaac054333746c9e5431ec07b13d64dbf3b50ec
-  languageName: node
-  linkType: hard
-
 "playwright-core@npm:1.48.2":
   version: 1.48.2
   resolution: "playwright-core@npm:1.48.2"
   bin:
     playwright-core: cli.js
   checksum: a73ecea379f13f757ec38299871256a130d4abec5688369969a6b1ef6104c67f731a27c9a503a988c3e5b1141048552a3ed8c4d061cb631ff2ebab606835c10a
-  languageName: node
-  linkType: hard
-
-"playwright@npm:1.45.3":
-  version: 1.45.3
-  resolution: "playwright@npm:1.45.3"
-  dependencies:
-    fsevents: 2.3.2
-    playwright-core: 1.45.3
-  dependenciesMeta:
-    fsevents:
-      optional: true
-  bin:
-    playwright: cli.js
-  checksum: d9d23b155ccd001553214f710561b01e48eb409676102f8ab94c0b4aa5ac5f398becc1a96528b0554944e07e34189503d891913e0e0a4aa58ad36b9c08747983
   languageName: node
   linkType: hard
 
