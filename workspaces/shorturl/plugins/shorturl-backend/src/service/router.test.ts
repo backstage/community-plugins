@@ -56,8 +56,11 @@ describe('createRouter', () => {
         .send({ fullUrl: 'https://backstage.io', usageCount: 0 });
 
       expect(response.status).toEqual(201);
-      expect(response.body).toEqual({ status: 'ok', id: expect.any(String) });
-      newId = response.body.id;
+      expect(response.body).toEqual({
+        status: 'ok',
+        shortUrl: expect.any(String),
+      });
+      newId = response.body.shortUrl;
     });
 
     it('returns existing short URL', async () => {
@@ -66,7 +69,7 @@ describe('createRouter', () => {
         .send({ fullUrl: 'https://backstage.io', usageCount: 0 });
 
       expect(response.status).toEqual(200);
-      expect(response.body).toEqual({ status: 'ok', id: newId });
+      expect(response.body).toEqual({ status: 'ok', shortUrl: newId });
     });
 
     it('returns 400 on invalid request', async () => {
@@ -85,11 +88,11 @@ describe('createRouter', () => {
         .send({ fullUrl: mockUrl, usageCount: 0 });
 
       const response = await request(app).get(
-        `/go/${createUrlResponse.body.id}`,
+        `/go/${createUrlResponse.body.shortUrl}`,
       );
 
-      expect(response.status).toEqual(302);
-      expect(response.header.location).toEqual(mockUrl);
+      expect(response.status).toEqual(200);
+      expect(response.body.redirectUrl).toEqual(mockUrl);
     });
 
     it('returns 404 on missing short URL', async () => {
