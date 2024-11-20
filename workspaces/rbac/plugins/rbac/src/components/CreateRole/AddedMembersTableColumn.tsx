@@ -18,8 +18,9 @@ import React from 'react';
 import { parseEntityRef } from '@backstage/catalog-model';
 import { Link, TableColumn } from '@backstage/core-components';
 
-import { Box, IconButton } from '@material-ui/core';
 import Delete from '@mui/icons-material/Delete';
+import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
 import { FormikErrors } from 'formik';
 
 import { RoleFormValues, SelectedMember } from './types';

@@ -18,7 +18,7 @@ import { useParams } from 'react-router-dom';
 
 import { Header, Page, TabbedLayout } from '@backstage/core-components';
 
-import { Grid } from '@material-ui/core';
+import Grid from '@mui/material/Grid';
 
 import { useLocationToast } from '../../hooks/useLocationToast';
 import { useMembers } from '../../hooks/useMembers';

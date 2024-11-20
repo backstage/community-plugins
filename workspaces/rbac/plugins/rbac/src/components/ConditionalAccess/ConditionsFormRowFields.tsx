@@ -17,8 +17,11 @@ import React from 'react';
 
 import { PermissionCondition } from '@backstage/plugin-permission-common';
 
-import { Box, TextField } from '@material-ui/core';
-import { Autocomplete } from '@material-ui/lab';
+import Autocomplete from '@mui/material/Autocomplete';
+import Box from '@mui/material/Box';
+import { Theme, useTheme } from '@mui/material/styles';
+import TextField from '@mui/material/TextField';
+import { makeStyles } from '@mui/styles';
 import Form from '@rjsf/mui';
 import {
   RegistryFieldsType,
@@ -32,7 +35,6 @@ import {
   getNestedRuleErrors,
   getSimpleRuleErrors,
   isSimpleRule,
-  makeConditionsFormRowFieldsStyles,
   setErrorMessage,
 } from '../../utils/conditional-access-utils';
 import { criterias } from './const';
@@ -66,6 +68,60 @@ type ConditionFormRowFieldsProps = {
   updateRules?: (newCondition: Condition[] | Condition) => void;
 };
 
+interface StyleProps {
+  isNotSimpleCondition: boolean;
+}
+
+const makeConditionsFormRowFieldsStyles = makeStyles<Theme, StyleProps>(() => ({
+  inputFieldContainer: {
+    display: 'flex',
+    flexFlow: 'row',
+    gap: '10px',
+    flexGrow: 1,
+    margin: ({ isNotSimpleCondition }) =>
+      isNotSimpleCondition ? '-1.5rem 0 0 1.85rem' : '0',
+  },
+}));
+
+export const getTextFieldStyles = (theme: Theme) => ({
+  '& div[class*="MuiInputBase-root"]': {
+    backgroundColor: theme.palette.background.paper,
+  },
+  '& span': {
+    color: theme.palette.textSubtle,
+  },
+  '& input': {
+    color: theme.palette.textContrast,
+  },
+  '& fieldset.MuiOutlinedInput-notchedOutline': {
+    borderColor: theme.palette.grey[500],
+  },
+  '& div.MuiOutlinedInput-root': {
+    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+      borderColor: theme.palette.primary.light,
+    },
+    '&.Mui-error .MuiOutlinedInput-notchedOutline': {
+      borderColor: theme.palette.status.error,
+      '&:hover': {
+        borderColor: theme.palette.status.error,
+      },
+    },
+  },
+  '& label.MuiFormLabel-root.Mui-focused': {
+    color: theme.palette.primary.light,
+  },
+  '& label.MuiFormLabel-root.Mui-error': {
+    color: theme.palette.status.error,
+  },
+  '& div.MuiOutlinedInput-root:hover fieldset': {
+    borderColor:
+      theme.palette.mode === 'dark' ? theme.palette.textContrast : 'unset',
+  },
+  '& label': {
+    color: theme.palette.textSubtle,
+  },
+});
+
 export const ConditionsFormRowFields = ({
   oldCondition,
   index,
@@ -82,10 +138,13 @@ export const ConditionsFormRowFields = ({
   nestedConditionRuleIndex,
   updateRules,
 }: ConditionFormRowFieldsProps) => {
+  const isNotSimpleCondition =
+    criteria === criterias.not && !nestedConditionCriteria;
+  const theme = useTheme();
   const classes = makeConditionsFormRowFieldsStyles({
-    isNotSimpleCondition:
-      criteria === criterias.not && !nestedConditionCriteria,
+    isNotSimpleCondition,
   });
+
   const rules = conditionRulesData?.rules ?? [];
   const paramsSchema =
     conditionRulesData?.[(oldCondition as PermissionCondition).rule]?.schema;
@@ -96,7 +155,44 @@ export const ConditionsFormRowFields = ({
     'ui:submitButtonOptions': {
       norender: true,
     },
-    'ui:classNames': `${classes.params}`,
+    'ui:classNames': `{
+      '& div[class*="MuiInputBase-root"]': {
+        backgroundColor: theme.palette.background.paper,
+      },
+      '& span': {
+        color: theme.palette.textSubtle,
+      },
+      '& input': {
+        color: theme.palette.textContrast,
+      },
+      '& fieldset.MuiOutlinedInput-notchedOutline': {
+        borderColor: theme.palette.grey[500],
+      },
+      '& div.MuiOutlinedInput-root': {
+        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+          borderColor: theme.palette.primary.light,
+        },
+        '&.Mui-error .MuiOutlinedInput-notchedOutline': {
+          borderColor: theme.palette.status.error,
+          '&:hover': {
+            borderColor: theme.palette.status.error,
+          },
+        },
+      },
+      '& label.MuiFormLabel-root.Mui-focused': {
+        color: theme.palette.primary.light,
+      },
+      '& label.MuiFormLabel-root.Mui-error': {
+        color: theme.palette.status.error,
+      },
+      '& div.MuiOutlinedInput-root:hover fieldset': {
+        borderColor:
+          theme.palette.mode === 'dark' ? theme.palette.textContrast : 'unset',
+      },
+      '& label': {
+        color: theme.palette.textSubtle,
+      },
+    }`,
     'ui:field': 'array',
   };
 
@@ -282,7 +378,7 @@ export const ConditionsFormRowFields = ({
     <Box className={classes.inputFieldContainer}>
       <Autocomplete
         style={{ width: '50%', marginTop: '26px' }}
-        className={classes.params}
+        sx={getTextFieldStyles(theme)}
         options={rules ?? []}
         value={(oldCondition as PermissionCondition)?.rule || null}
         getOptionDisabled={option =>
@@ -295,8 +391,9 @@ export const ConditionsFormRowFields = ({
             params: {},
           } as PermissionCondition)
         }
-        renderOption={option => (
+        renderOption={(props, option) => (
           <RulesDropdownOption
+            props={props}
             label={option ?? ''}
             rulesData={conditionRulesData}
           />
@@ -332,7 +429,7 @@ export const ConditionsFormRowFields = ({
         ) : (
           <TextField
             style={{ width: '100%', marginTop: '26px' }}
-            className={classes.params}
+            sx={getTextFieldStyles(theme)}
             disabled
             label="string, string"
             required

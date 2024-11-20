@@ -18,7 +18,7 @@ import React from 'react';
 import { Progress, Table, WarningPanel } from '@backstage/core-components';
 
 import { useDeleteDialog } from '@janus-idp/shared-react';
-import { makeStyles } from '@material-ui/core';
+import Box from '@mui/material/Box';
 
 import { useCheckIfLicensePluginEnabled } from '../../hooks/useCheckIfLicensePluginEnabled';
 import { useLocationToast } from '../../hooks/useLocationToast';
@@ -31,20 +31,11 @@ import DeleteRoleDialog from './DeleteRoleDialog';
 import { columns } from './RolesListColumns';
 import { RolesListToolbar } from './RolesListToolbar';
 
-const useStyles = makeStyles(theme => ({
-  empty: {
-    padding: theme.spacing(2),
-    display: 'flex',
-    justifyContent: 'center',
-  },
-}));
-
 export const RolesList = () => {
   const { toastMessage, setToastMessage } = useToast();
   const { openDialog, setOpenDialog, deleteComponent } = useDeleteDialog();
   useLocationToast(setToastMessage);
   const [roles, setRoles] = React.useState<number | undefined>();
-  const classes = useStyles();
   const { loading, data, retry, createRoleAllowed, createRoleLoading, error } =
     useRoles();
 
@@ -118,9 +109,12 @@ export const RolesList = () => {
         columns={columns}
         renderSummaryRow={summary => onSearchResultsChange(summary.data)}
         emptyContent={
-          <div data-testid="roles-table-empty" className={classes.empty}>
+          <Box
+            data-testid="roles-table-empty"
+            sx={{ display: 'flex', justifyContent: 'center', p: 2 }}
+          >
             No records found
-          </div>
+          </Box>
         }
       />
       {isLicensePluginEnabled.isEnabled && <DownloadCSVLink />}

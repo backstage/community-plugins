@@ -20,16 +20,14 @@ import { parseEntityRef } from '@backstage/catalog-model';
 import { SimpleStepper, SimpleStepperStep } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  Divider,
-  Paper,
-} from '@material-ui/core';
-import { Alert } from '@material-ui/lab';
+import Alert from '@mui/material/Alert';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardHeader from '@mui/material/CardHeader';
+import Divider from '@mui/material/Divider';
+import Paper from '@mui/material/Paper';
 import { FormikErrors, FormikHelpers, useFormik } from 'formik';
 
 import { rbacApiRef } from '../../api/RBACBackendClient';

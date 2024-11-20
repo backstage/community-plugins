@@ -18,8 +18,10 @@ import React from 'react';
 import { parseEntityRef } from '@backstage/catalog-model';
 import { Link } from '@backstage/core-components';
 
-import { IconButton, Tooltip, Typography } from '@material-ui/core';
-import EditIcon from '@material-ui/icons/Edit';
+import EditIcon from '@mui/icons-material/Edit';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
+import Typography from '@mui/material/Typography';
 
 type EditRoleProps = {
   roleName: string;

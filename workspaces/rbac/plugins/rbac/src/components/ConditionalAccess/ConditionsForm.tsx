@@ -17,9 +17,11 @@ import React from 'react';
 
 import { PermissionCondition } from '@backstage/plugin-permission-common';
 
-import { Box, Button, makeStyles } from '@material-ui/core';
-import { Alert, AlertTitle } from '@material-ui/lab';
 import WarningIcon from '@mui/icons-material/Warning';
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 
 import {
   hasAllOfOrAnyOfErrors,
@@ -38,29 +40,6 @@ import {
   RulesData,
 } from './types';
 
-const useStyles = makeStyles(theme => ({
-  form: {
-    padding: theme.spacing(2.5),
-    paddingTop: 0,
-    flexGrow: 1,
-    overflow: 'auto',
-  },
-  addConditionButton: {
-    color: theme.palette.primary.light,
-  },
-  footer: {
-    display: 'flex',
-    flexDirection: 'row',
-    gap: '15px',
-    alignItems: 'baseline',
-    borderTop: `2px solid ${theme.palette.border}`,
-    padding: theme.spacing(2.5),
-    '& button': {
-      textTransform: 'none',
-    },
-  },
-}));
-
 type ConditionFormProps = {
   conditionRulesData?: RulesData;
   conditionsFormVal?: ConditionsData;
@@ -76,7 +55,6 @@ export const ConditionsForm = ({
   onClose,
   onSave,
 }: ConditionFormProps) => {
-  const classes = useStyles();
   const [conditions, setConditions] = React.useState<ConditionsData>(
     conditionsFormVal ?? {
       condition: {
@@ -217,7 +195,14 @@ export const ConditionsForm = ({
 
   return (
     <>
-      <Box className={classes.form}>
+      <Box
+        sx={{
+          padding: theme => theme.spacing(2.5),
+          paddingTop: 0,
+          flexGrow: 1,
+          overflow: 'auto',
+        }}
+      >
         <ConditionsFormRow
           conditionRulesData={conditionRulesData}
           conditionRow={conditions}
@@ -243,7 +228,19 @@ export const ConditionsForm = ({
           </Alert>
         )}
       </Box>
-      <Box className={classes.footer}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          gap: '15px',
+          alignItems: 'baseline',
+          borderTop: theme => `2px solid ${theme.palette.border}`,
+          padding: theme => theme.spacing(2.5),
+          '& button': {
+            textTransform: 'none',
+          },
+        }}
+      >
         <Button
           variant="contained"
           color="primary"
