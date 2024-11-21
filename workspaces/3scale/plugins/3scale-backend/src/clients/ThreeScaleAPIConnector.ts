@@ -15,6 +15,9 @@
  */
 import type { APIDocs, Proxy, Services } from './types';
 
+/**
+ * @public
+ */
 export function listServices(
   baseUrl: string,
   access_token: string,
@@ -31,6 +34,9 @@ export function listServices(
   });
 }
 
+/**
+ * @public
+ */
 export function listApiDocs(
   baseUrl: string,
   access_token: string,
@@ -45,6 +51,9 @@ export function listApiDocs(
   });
 }
 
+/**
+ * @public
+ */
 export function getProxyConfig(
   baseUrl: string,
   access_token: string,
