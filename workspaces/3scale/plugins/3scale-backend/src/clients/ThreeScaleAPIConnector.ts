@@ -16,7 +16,7 @@
 import type { APIDocs, Proxy, Services } from './types';
 
 /**
- * @public
+ * @internal
  */
 export function listServices(
   baseUrl: string,
@@ -35,7 +35,7 @@ export function listServices(
 }
 
 /**
- * @public
+ * @internal
  */
 export function listApiDocs(
   baseUrl: string,
@@ -52,7 +52,7 @@ export function listApiDocs(
 }
 
 /**
- * @public
+ * @internal
  */
 export function getProxyConfig(
   baseUrl: string,
