@@ -22,7 +22,6 @@ export const queryACSData = () => {
 
     const getVulnerabilities = (jsonData: any) => {
 
-        // trying something...
         const deploymentVulnerabilties = jsonData.map((deployment) => {
             console.log("deployment:", deployment)
 

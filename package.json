@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "engines": {
-    "node": "18 || 20"
+    "node": "20 || 22"
   },
   "scripts": {
     "dev": "yarn workspaces foreach -A --include backend --include app --parallel -v -i run start",
@@ -31,7 +31,7 @@
     ]
   },
   "devDependencies": {
-    "@backstage/cli": "^0.28.0",
+    "@backstage/cli": "^0.29.0",
     "@backstage/e2e-test-utils": "^0.1.1",
     "@playwright/test": "^1.32.3",
     "@spotify/prettier-config": "^12.0.0",
@@ -41,7 +41,8 @@
   },
   "resolutions": {
     "@types/react": "^18",
-    "@types/react-dom": "^18"
+    "@types/react-dom": "^18",
+    "@swagger-api/apidom-json-pointer": "1.0.0-alpha.10"
   },
   "prettier": "@spotify/prettier-config",
   "lint-staged": {
@@ -53,5 +54,8 @@
       "prettier --write"
     ]
   },
-  "packageManager": "yarn@4.4.1"
+  "packageManager": "yarn@4.4.0",
+  "dependencies": {
+    "@swagger-api/apidom-json-pointer": "^1.0.0-beta.0"
+  }
 }
