@@ -1,0 +1,1 @@
+export { VulnerabilitiesComponent  } from './VulnerabilitiesComponent';
