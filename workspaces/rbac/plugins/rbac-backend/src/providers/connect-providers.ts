@@ -65,6 +65,8 @@ export class Connection implements RBACProviderConnection {
       new StringAdapter(stringPolicy),
     );
 
+    await this.enforcer.loadPermissionsWithoutThrottling();
+
     const providerRoles = await this.getProviderRoles();
 
     // Get the roles for this provider coming from rbac plugin
@@ -92,6 +94,8 @@ export class Connection implements RBACProviderConnection {
       newModelFromString(MODEL),
       new StringAdapter(stringPolicy),
     );
+
+    await this.enforcer.loadPermissionsWithoutThrottling();
 
     const providerRoles = await this.getProviderRoles();
 
