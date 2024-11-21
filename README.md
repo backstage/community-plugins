@@ -1,9 +1,8 @@
-# [Backstage](https://backstage.io)
+# Advanced Cluster Security Backstage Plugin
 
-This is your newly scaffolded Backstage App, Good Luck!
+The `ACS_API_URL` and `ACS_API_KEY` will need to be set in order for the route to work in the `app-config.yaml` file. The purpose of this route is to access data from the ACS endpoint.
 
 To start the app, run:
-
 ```sh
 yarn install
 yarn dev
