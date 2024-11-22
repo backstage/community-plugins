@@ -16,7 +16,7 @@ export const queryACSData = () => {
 
     // TODO: Discuss potential differences in catalog entity data format across different backstage instances
     const retrieveCatalogItem = () => {
-        return entity?.spec?.system
+        return entity?.metadata?.name
     }
 
     const getVulnerabilities = (jsonData: any) => {
@@ -39,7 +39,7 @@ export const queryACSData = () => {
     const getACSData = async() => {
         const deploymentName = retrieveCatalogItem()
         console.log("Entity", entity)
-        console.log("system: ", deploymentName)
+        console.log("Name: ", deploymentName)
 
         await fetch(`${backendUrl}/api/proxy/acs/v1/export/vuln-mgmt/workloads?query=Deployment%3A${deploymentName}`)
             .then(response => response.text())
