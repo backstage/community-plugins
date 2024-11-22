@@ -54,6 +54,10 @@ Here's how to get the backend up and running:
 4. Now run `yarn start-backend` from the repo root
 5. Finally open `http://localhost:7007/api/linguist/health` in a browser and it should return `{"status":"ok"}`
 
+## Linguist Backend API
+
+The linguist backend provides API documentation through OpenAPI. To view the OpenAPI spec for your backstage instance, consider installing `@backstage/plugin-catalog-backend-module-backstage-openapi`.
+
 ## Plugin Options
 
 The Linguist backend has various plugin options that you can provide in the `app-config.yaml` file that will allow you to configure various aspects of how it works. The following sections go into the details of these options
