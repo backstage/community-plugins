@@ -66,6 +66,7 @@ function DownloadCSVLink() {
       sx={{
         color: theme => theme.palette.link,
         textDecoration: 'underline',
+        marginTop: '1rem',
       }}
       size="small"
     >
