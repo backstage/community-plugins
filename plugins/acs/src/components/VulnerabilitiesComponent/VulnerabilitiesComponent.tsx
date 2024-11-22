@@ -1,27 +1,12 @@
 import React, { useEffect } from 'react';
 import {
-  Card,
-  CardContent,
   Grid,
-  Link,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TablePagination,
-  TableRow,
   Typography,
 } from '@material-ui/core';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { InfoCard } from '@backstage/core-components';
-import { Tooltip } from '@patternfly/react-core';
 import { makeStyles } from '@material-ui/core/styles';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import QueryOpenshift from '../../common/QueryOpenshiftAPI';
-import CheckCircle from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
-import ExclamationTriangleIcon from '@patternfly/react-icons/dist/esm/icons/exclamation-triangle-icon';
-import TimesCircle from '@patternfly/react-icons/dist/js/icons/times-circle-icon';
 import { queryACSData } from '../../common/QueryACS'
 
 export const VulnerabilitiesComponent = (data: any) => {
@@ -38,10 +23,6 @@ export const VulnerabilitiesComponent = (data: any) => {
     useEffect(() => {
 
     }, [ACSDataResult]);
-
-    // table pagination
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
     const useStyles = makeStyles(theme => ({
         root: {
