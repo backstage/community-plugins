@@ -122,7 +122,6 @@ export class CSVFileWatcher extends AbstractFileWatcher<string[][]> {
     const roleMetadatas =
       await this.roleMetadataStorage.filterRoleMetadata('csv-file');
     const fileRoles = roleMetadatas.map(meta => meta.roleEntityRef);
-    console.log(`=== ${fileRoles}`);
 
     if (fileRoles.length > 0) {
       for (const fileRole of fileRoles) {

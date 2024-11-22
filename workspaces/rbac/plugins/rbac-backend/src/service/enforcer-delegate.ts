@@ -92,8 +92,6 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
           ptype: 'g',
           v0: policy[0],
           v1: policy[1],
-          v2: policy[2],
-          v3: policy[3],
         },
       ],
     );
@@ -139,7 +137,7 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
       tempModel,
       filterArgs,
     );
-    // return await tempModel.getFilteredPolicy('p', 'p', fieldIndex, ...filter);
+
     return await tempModel.getPolicy('p', 'p');
   }
 
@@ -160,7 +158,7 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
       tempModel,
       filterArgs,
     );
-    // return tempModel.getFilteredPolicy('g', 'g', fieldIndex, ...filter);
+
     return await tempModel.getPolicy('g', 'g');
   }
 
@@ -196,6 +194,7 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
     if (policies.length === 0) {
       return;
     }
+
     const trx = externalTrx || (await this.knex.transaction());
 
     try {
