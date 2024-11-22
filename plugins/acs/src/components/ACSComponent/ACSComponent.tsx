@@ -3,19 +3,11 @@ import {
   Grid,
   Tab,
   Tabs,
-  Typography
 } from '@material-ui/core';
 import {
-    InfoCard,
-    Header,
-    Page,
-    Content,
-    ContentHeader,
+    InfoCard
 } from '@backstage/core-components';
-import LinearProgress from '@material-ui/core/LinearProgress';
-import { makeStyles } from '@material-ui/core/styles';
 import { VulnerabilitiesComponent } from '../VulnerabilitiesComponent';
-import { queryACSData } from '../../common/QueryACS'
 
 export function ACSComponent() {
     const [value, setValue] = React.useState(0);

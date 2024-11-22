@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useApi, configApiRef } from '@backstage/core-plugin-api';
 import { useEntity } from '@backstage/plugin-catalog-react';
-import jsonlines from 'jsonlines';
 
 export const queryACSData = () => {
     const [result, setResult] = useState([]);
@@ -22,13 +21,13 @@ export const queryACSData = () => {
 
     const getVulnerabilities = (jsonData: any) => {
 
-        const deploymentVulnerabilties = jsonData.map((deployment) => {
+        const deploymentVulnerabilties = jsonData.map((deployment: any) => {
             console.log("deployment:", deployment)
 
-            const images = deployment.result.images.map((image) => {
+            const images = deployment.result.images.map((image: any) => {
                 console.log("image:", image)
 
-                return image.scan.components.filter((component) => component.vulns.length > 0)
+                return image.scan.components.filter((component: any) => component.vulns.length > 0)
             })
 
             console.log("All vulns in deployment: ", images)
