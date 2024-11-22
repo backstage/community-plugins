@@ -462,6 +462,7 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
     action: string,
     roles: string[],
   ): Promise<boolean> {
+    await this.loadPermissionsWithoutThrottling();
     const filter = [];
     if (roles.length > 0) {
       roles.forEach(role => {

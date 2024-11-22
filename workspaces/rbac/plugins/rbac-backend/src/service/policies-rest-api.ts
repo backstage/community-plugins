@@ -172,7 +172,6 @@ export class PoliciesServer {
         throw new NotAllowedError(); // 403
       }
 
-      await this.enforcer.loadPermissionsWithoutThrottling();
       let policies: string[][];
       if (this.isPolicyFilterEnabled(request)) {
         const entityRef = this.getFirstQuery(request.query.entityRef);
@@ -257,8 +256,6 @@ export class PoliciesServer {
           element.entityReference = entityRef;
         });
 
-        await this.enforcer.loadPermissionsWithoutThrottling();
-
         const processedPolicies = await this.processPolicies(policyRaw, true);
 
         await this.enforcer.removePolicies(processedPolicies);
@@ -294,8 +291,6 @@ export class PoliciesServer {
       }
 
       const processedPolicies = await this.processPolicies(policyRaw);
-
-      await this.enforcer.loadPermissionsWithoutThrottling();
 
       const entityRef = processedPolicies[0][0];
       const roleMetadata = await this.roleMetadata.findRoleMetadata(entityRef);
@@ -344,8 +339,6 @@ export class PoliciesServer {
         [...oldPolicyRaw, ...newPolicyRaw].forEach(element => {
           element.entityReference = entityRef;
         });
-
-        await this.enforcer.loadPermissionsWithoutThrottling();
 
         const processedOldPolicy = await this.processPolicies(
           oldPolicyRaw,
@@ -419,7 +412,6 @@ export class PoliciesServer {
         throw new NotAllowedError(); // 403
       }
 
-      await this.enforcer.loadPermissionsWithoutThrottling();
       const roles = await this.enforcer.getGroupingPolicy();
 
       const body = await this.transformRoleArray(...roles);
@@ -447,7 +439,6 @@ export class PoliciesServer {
       }
       const roleEntityRef = this.getEntityReference(request, true);
 
-      await this.enforcer.loadPermissionsWithoutThrottling();
       const role = await this.enforcer.getFilteredGroupingPolicy(
         1,
         roleEntityRef,
@@ -489,7 +480,6 @@ export class PoliciesServer {
         );
       }
 
-      await this.enforcer.loadPermissionsWithoutThrottling();
       const rMetadata = await this.roleMetadata.findRoleMetadata(roleRaw.name);
 
       err = await validateSource('rest', rMetadata);
@@ -597,8 +587,6 @@ export class PoliciesServer {
         modifiedBy: credentials.principal.userEntityRef,
       };
 
-      await this.enforcer.loadPermissionsWithoutThrottling();
-
       const oldMetadata =
         await this.roleMetadata.findRoleMetadata(roleEntityRef);
       if (!oldMetadata) {
@@ -704,7 +692,6 @@ export class PoliciesServer {
 
         const roleEntityRef = this.getEntityReference(request, true);
 
-        await this.enforcer.loadPermissionsWithoutThrottling();
         let roleMembers = [];
         if (request.query.memberReferences) {
           const memberReference = this.getFirstQuery(
