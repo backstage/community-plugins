@@ -540,7 +540,7 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
     model.addPolicies('p', 'p', policies);
 
     // init temp enforce with model only, without adapter at all...
-    await tempEnforcer.initWithModelAndAdapter(model, undefined, false);
+    await tempEnforcer.initWithModelAndAdapter(model);
     // set up role manager for temp enforcer
     const roleManager = this.enforcer.getRoleManager();
     tempEnforcer.setRoleManager(roleManager);
