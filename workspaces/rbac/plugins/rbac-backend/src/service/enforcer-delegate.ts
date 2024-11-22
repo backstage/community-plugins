@@ -530,6 +530,7 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
     action: string,
     roles: string[],
   ): Promise<boolean> {
+    await this.loadPermissionsWithoutThrottling();
     const filter = [];
     if (roles.length > 0) {
       roles.forEach(role => {
@@ -539,16 +540,17 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
       filter.push({ ptype: 'p', v1: resourceType, v2: action });
     }
 
-    const model = newModelFromString(MODEL);
     const adapt = this.enforcer.getAdapter();
-    await (adapt as FilteredAdapter).loadFilteredPolicy(model, filter);
-
-    const tempEnforcer = new Enforcer();
-    await tempEnforcer.initWithModelAndAdapter(model);
     const roleManager = this.enforcer.getRoleManager();
+    const tempEnforcer = new Enforcer();
+    await tempEnforcer.initWithModelAndAdapter(
+      newModelFromString(MODEL),
+      adapt,
+      true,
+    );
     tempEnforcer.setRoleManager(roleManager);
-    tempEnforcer.enableAutoBuildRoleLinks(false);
-    await tempEnforcer.buildRoleLinks();
+
+    await tempEnforcer.loadFilteredPolicy(filter);
 
     return await tempEnforcer.enforce(entityRef, resourceType, action);
   }
