@@ -119,26 +119,28 @@ export class CSVFileWatcher extends AbstractFileWatcher<string[][]> {
 
     // Check for any old policies that will need to be removed by checking if
     // the policy no longer exists in the temp enforcer (csv file)
-    const roleMetadatas = await this.roleMetadataStorage.filterRoleMetadata(
-      'csv-file',
-    );
+    const roleMetadatas =
+      await this.roleMetadataStorage.filterRoleMetadata('csv-file');
     const fileRoles = roleMetadatas.map(meta => meta.roleEntityRef);
+    console.log(`=== ${fileRoles}`);
 
     if (fileRoles.length > 0) {
-      const groupingPoliciesToRemove =
-        await this.enforcer.getFilteredGroupingPolicy(1, ...fileRoles);
-      for (const gPolicy of groupingPoliciesToRemove) {
-        if (!(await tempEnforcer.hasGroupingPolicy(...gPolicy))) {
-          this.csvFilePolicies.removedGroupPolicies.push(gPolicy);
+      for (const fileRole of fileRoles) {
+        const groupingPoliciesToRemove =
+          await this.enforcer.getFilteredGroupingPolicy(1, fileRole);
+        for (const gPolicy of groupingPoliciesToRemove) {
+          if (!(await tempEnforcer.hasGroupingPolicy(...gPolicy))) {
+            this.csvFilePolicies.removedGroupPolicies.push(gPolicy);
+          }
         }
-      }
-      const policiesToRemove = await this.enforcer.getFilteredPolicy(
-        0,
-        ...fileRoles,
-      );
-      for (const policy of policiesToRemove) {
-        if (!(await tempEnforcer.hasPolicy(...policy))) {
-          this.csvFilePolicies.removedPolicies.push(policy);
+        const policiesToRemove = await this.enforcer.getFilteredPolicy(
+          0,
+          fileRole,
+        );
+        for (const policy of policiesToRemove) {
+          if (!(await tempEnforcer.hasPolicy(...policy))) {
+            this.csvFilePolicies.removedPolicies.push(policy);
+          }
         }
       }
     }
@@ -175,9 +177,8 @@ export class CSVFileWatcher extends AbstractFileWatcher<string[][]> {
   // temp enforcer (csv file) and a role metadata storage.
   // We will update role metadata with the new source "csv-file"
   private async migrateLegacyMetadata(tempEnforcer: Enforcer) {
-    let legacyRolesMetadata = await this.roleMetadataStorage.filterRoleMetadata(
-      'legacy',
-    );
+    let legacyRolesMetadata =
+      await this.roleMetadataStorage.filterRoleMetadata('legacy');
     const legacyRoles = legacyRolesMetadata.map(meta => meta.roleEntityRef);
     if (legacyRoles.length > 0) {
       const legacyGroupPolicies = await tempEnforcer.getFilteredGroupingPolicy(
@@ -470,9 +471,8 @@ export class CSVFileWatcher extends AbstractFileWatcher<string[][]> {
           isUpdate.length > 1,
         );
 
-        const isRolePresent = await this.roleMetadataStorage.findRoleMetadata(
-          roleEntityRef,
-        );
+        const isRolePresent =
+          await this.roleMetadataStorage.findRoleMetadata(roleEntityRef);
         const eventName = isRolePresent
           ? RoleEvents.UPDATE_ROLE
           : RoleEvents.DELETE_ROLE;
@@ -497,9 +497,8 @@ export class CSVFileWatcher extends AbstractFileWatcher<string[][]> {
   }
 
   async cleanUpRolesAndPolicies(): Promise<void> {
-    const roleMetadatas = await this.roleMetadataStorage.filterRoleMetadata(
-      'csv-file',
-    );
+    const roleMetadatas =
+      await this.roleMetadataStorage.filterRoleMetadata('csv-file');
     const fileRoles = roleMetadatas.map(meta => meta.roleEntityRef);
 
     if (fileRoles.length > 0) {
