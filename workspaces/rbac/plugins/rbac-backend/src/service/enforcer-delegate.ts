@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Enforcer, newModelFromString } from 'casbin';
+import { Enforcer, FilteredAdapter, newModelFromString } from 'casbin';
 import { Knex } from 'knex';
 
 import EventEmitter from 'events';
@@ -67,19 +67,55 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
   }
 
   async hasPolicy(...policy: string[]): Promise<boolean> {
-    return await this.enforcer.hasPolicy(...policy);
+    const tempModel = newModelFromString(MODEL);
+    await (this.enforcer.getAdapter() as FilteredAdapter).loadFilteredPolicy(
+      tempModel,
+      [
+        {
+          ptype: 'p',
+          v0: policy[0],
+          v1: policy[1],
+          v2: policy[2],
+          v3: policy[3],
+        },
+      ],
+    );
+    return tempModel.hasPolicy('p', 'p', policy);
   }
 
   async hasGroupingPolicy(...policy: string[]): Promise<boolean> {
-    return await this.enforcer.hasGroupingPolicy(...policy);
+    const tempModel = newModelFromString(MODEL);
+    await (this.enforcer.getAdapter() as FilteredAdapter).loadFilteredPolicy(
+      tempModel,
+      [
+        {
+          ptype: 'g',
+          v0: policy[0],
+          v1: policy[1],
+          v2: policy[2],
+          v3: policy[3],
+        },
+      ],
+    );
+    return tempModel.hasPolicy('g', 'g', policy);
   }
 
   async getPolicy(): Promise<string[][]> {
-    return await this.enforcer.getPolicy();
+    const tempModel = newModelFromString(MODEL);
+    await (this.enforcer.getAdapter() as FilteredAdapter).loadFilteredPolicy(
+      tempModel,
+      [{ ptype: 'p' }],
+    );
+    return await tempModel.getPolicy('p', 'p');
   }
 
   async getGroupingPolicy(): Promise<string[][]> {
-    return await this.enforcer.getGroupingPolicy();
+    const tempModel = newModelFromString(MODEL);
+    await (this.enforcer.getAdapter() as FilteredAdapter).loadFilteredPolicy(
+      tempModel,
+      [{ ptype: 'g' }],
+    );
+    return await tempModel.getPolicy('g', 'g');
   }
 
   async getRolesForUser(userEntityRef: string): Promise<string[]> {
@@ -90,14 +126,42 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
     fieldIndex: number,
     ...filter: string[]
   ): Promise<string[][]> {
-    return await this.enforcer.getFilteredPolicy(fieldIndex, ...filter);
+    const tempModel = newModelFromString(MODEL);
+
+    const filterArgs: Record<string, string>[] = [];
+    const filterObj: Record<string, string> = { ptype: 'p' };
+    for (let i = 0; i < filter.length; i++) {
+      filterObj[`v${i + fieldIndex}`] = filter[i];
+      filterArgs.push(filterObj);
+    }
+
+    await (this.enforcer.getAdapter() as FilteredAdapter).loadFilteredPolicy(
+      tempModel,
+      filterArgs,
+    );
+    // return await tempModel.getFilteredPolicy('p', 'p', fieldIndex, ...filter);
+    return await tempModel.getPolicy('p', 'p');
   }
 
   async getFilteredGroupingPolicy(
     fieldIndex: number,
     ...filter: string[]
   ): Promise<string[][]> {
-    return await this.enforcer.getFilteredGroupingPolicy(fieldIndex, ...filter);
+    const tempModel = newModelFromString(MODEL);
+
+    const filterArgs: Record<string, string>[] = [];
+    const filterObj: Record<string, string> = { ptype: 'g' };
+    for (let i = 0; i < filter.length; i++) {
+      filterObj[`v${i + fieldIndex}`] = filter[i];
+      filterArgs.push(filterObj);
+    }
+
+    await (this.enforcer.getAdapter() as FilteredAdapter).loadFilteredPolicy(
+      tempModel,
+      filterArgs,
+    );
+    // return tempModel.getFilteredPolicy('g', 'g', fieldIndex, ...filter);
+    return await tempModel.getPolicy('g', 'g');
   }
 
   async addPolicy(
@@ -106,7 +170,7 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
   ): Promise<void> {
     const trx = externalTrx ?? (await this.knex.transaction());
 
-    if (await this.enforcer.hasPolicy(...policy)) {
+    if (await this.hasPolicy(...policy)) {
       return;
     }
     try {
@@ -160,7 +224,7 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
     const trx = externalTrx ?? (await this.knex.transaction());
     const entityRef = roleMetadata.roleEntityRef;
 
-    if (await this.enforcer.hasGroupingPolicy(...policy)) {
+    if (await this.hasGroupingPolicy(...policy)) {
       return;
     }
     try {
@@ -358,8 +422,10 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
       if (!isUpdate) {
         const currentRoleMetadata =
           await this.roleMetadataStorage.findRoleMetadata(roleEntity, trx);
-        const remainingGroupPolicies =
-          await this.enforcer.getFilteredGroupingPolicy(1, roleEntity);
+        const remainingGroupPolicies = await this.getFilteredGroupingPolicy(
+          1,
+          roleEntity,
+        );
         if (
           currentRoleMetadata &&
           remainingGroupPolicies.length === 0 &&
@@ -406,8 +472,10 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
       if (!isUpdate) {
         const currentRoleMetadata =
           await this.roleMetadataStorage.findRoleMetadata(roleEntity, trx);
-        const remainingGroupPolicies =
-          await this.enforcer.getFilteredGroupingPolicy(1, roleEntity);
+        const remainingGroupPolicies = await this.getFilteredGroupingPolicy(
+          1,
+          roleEntity,
+        );
         if (
           currentRoleMetadata &&
           remainingGroupPolicies.length === 0 &&
@@ -462,7 +530,6 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
     action: string,
     roles: string[],
   ): Promise<boolean> {
-    await this.loadPermissionsWithoutThrottling();
     const filter = [];
     if (roles.length > 0) {
       roles.forEach(role => {
@@ -472,17 +539,16 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
       filter.push({ ptype: 'p', v1: resourceType, v2: action });
     }
 
+    const model = newModelFromString(MODEL);
     const adapt = this.enforcer.getAdapter();
-    const roleManager = this.enforcer.getRoleManager();
-    const tempEnforcer = new Enforcer();
-    await tempEnforcer.initWithModelAndAdapter(
-      newModelFromString(MODEL),
-      adapt,
-      true,
-    );
-    tempEnforcer.setRoleManager(roleManager);
+    await (adapt as FilteredAdapter).loadFilteredPolicy(model, filter);
 
-    await tempEnforcer.loadFilteredPolicy(filter);
+    const tempEnforcer = new Enforcer();
+    await tempEnforcer.initWithModelAndAdapter(model);
+    const roleManager = this.enforcer.getRoleManager();
+    tempEnforcer.setRoleManager(roleManager);
+    tempEnforcer.enableAutoBuildRoleLinks(false);
+    await tempEnforcer.buildRoleLinks();
 
     return await tempEnforcer.enforce(entityRef, resourceType, action);
   }
