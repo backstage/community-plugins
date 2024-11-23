@@ -1755,6 +1755,7 @@ describe('Policy checks for conditional policies', () => {
       enf,
       roleMetadataStorageMock,
       mockClientKnex,
+      auditLoggerMock,
     );
 
     policy = await RBACPermissionPolicy.build(
@@ -2176,7 +2177,12 @@ async function newEnforcerDelegate(
     await enf.addGroupingPolicies(storedGroupingPolicies);
   }
 
-  return new EnforcerDelegate(enf, roleMetadataStorageMock, mockClientKnex);
+  return new EnforcerDelegate(
+    enf,
+    roleMetadataStorageMock,
+    mockClientKnex,
+    auditLoggerMock,
+  );
 }
 
 async function newPermissionPolicy(

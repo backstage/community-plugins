@@ -55,6 +55,12 @@ const roleMetadataStorageMock: RoleMetadataStorage = {
   removeRoleMetadata: jest.fn().mockImplementation(),
 };
 
+const auditLoggerMock = {
+  getActorId: jest.fn().mockImplementation(),
+  createAuditLogDetails: jest.fn().mockImplementation(),
+  auditLog: jest.fn().mockImplementation(),
+};
+
 const mockClientKnex = Knex.knex({ client: MockClient });
 
 const mockAuthService = mockServices.auth();
@@ -179,7 +185,12 @@ describe('EnforcerDelegate', () => {
       await enf.addGroupingPolicies(groupingPolicies);
     }
 
-    return new EnforcerDelegate(enf, roleMetadataStorageMock, knex);
+    return new EnforcerDelegate(
+      enf,
+      roleMetadataStorageMock,
+      knex,
+      auditLoggerMock,
+    );
   }
 
   describe('hasPolicy', () => {

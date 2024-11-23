@@ -13,12 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { AuditLogger } from '@janus-idp/backstage-plugin-audit-log-node';
 import { Enforcer, FilteredAdapter, newModelFromString } from 'casbin';
 import { Knex } from 'knex';
 
 import EventEmitter from 'events';
 
 import { ADMIN_ROLE_NAME } from '../admin-permissions/admin-creation';
+import {
+  FETCH_NEWER_PERMISSIONS_STAGE,
+  PolisiesData,
+} from '../audit-log/audit-logger';
 import {
   RoleMetadataDao,
   RoleMetadataStorage,
@@ -43,6 +48,7 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
     private readonly enforcer: Enforcer,
     private readonly roleMetadataStorage: RoleMetadataStorage,
     private readonly knex: Knex,
+    private readonly auditLogger: AuditLogger,
   ) {}
 
   on(event: RoleEvents, listener: (role: string) => void): this {
@@ -56,8 +62,14 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
       this.loadPolicyPromise = this.enforcer
         .loadPolicy()
         .catch(err => {
-          // todo rework to use logger...
-          console.error('Failed to load policy from database!!!!', err);
+          this.auditLogger.auditLog({
+            message: 'Failed to load newer policies from database',
+            eventName: PolisiesData.FAILED_TO_FETCH_NEWER_PERMISSIONS,
+            stage: FETCH_NEWER_PERMISSIONS_STAGE,
+            status: 'failed',
+            errors: [err],
+          });
+          throw err;
         })
         .finally(() => {
           this.loadPolicyPromise = null;
