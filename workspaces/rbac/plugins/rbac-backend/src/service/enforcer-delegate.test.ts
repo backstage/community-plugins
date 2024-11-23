@@ -19,6 +19,7 @@ import { Model, newEnforcer, newModelFromString } from 'casbin';
 import * as Knex from 'knex';
 import { MockClient } from 'knex-mock-client';
 
+import { auditLogger } from '../../__fixtures__/test-utils';
 import { CasbinDBAdapterFactory } from '../database/casbin-adapter-factory';
 import {
   RoleMetadataDao,
@@ -53,12 +54,6 @@ const roleMetadataStorageMock: RoleMetadataStorage = {
   createRoleMetadata: jest.fn().mockImplementation(),
   updateRoleMetadata: jest.fn().mockImplementation(),
   removeRoleMetadata: jest.fn().mockImplementation(),
-};
-
-const auditLoggerMock = {
-  getActorId: jest.fn().mockImplementation(),
-  createAuditLogDetails: jest.fn().mockImplementation(),
-  auditLog: jest.fn().mockImplementation(),
 };
 
 const mockClientKnex = Knex.knex({ client: MockClient });
@@ -189,7 +184,7 @@ describe('EnforcerDelegate', () => {
       enf,
       roleMetadataStorageMock,
       knex,
-      auditLoggerMock,
+      auditLogger(),
     );
   }
 
