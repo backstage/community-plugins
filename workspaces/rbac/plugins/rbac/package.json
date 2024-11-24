@@ -112,5 +112,15 @@
   "maintainers": [
     "@PatAKnight"
   ],
-  "author": "Red Hat"
+  "author": "Red Hat",
+  "prettier": "@spotify/prettier-config",
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,mjs,cjs}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ]
+  }
 }
