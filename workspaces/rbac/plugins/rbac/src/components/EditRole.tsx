@@ -40,15 +40,16 @@ const EditRole = ({
 }: EditRoleProps) => {
   const { name, namespace, kind } = parseEntityRef(roleName);
   return (
-    <Tooltip title={tooltip || ''}>
+    <Tooltip title={tooltip ?? ''}>
       <Typography component="span" data-testid={dataTestId}>
         <IconButton
-          color="inherit"
           component={Link}
           aria-label="Update"
           disabled={disable}
-          title={tooltip || 'Edit Role'}
-          to={to || `../role/${kind}/${namespace}/${name}`}
+          title={tooltip ?? 'Edit Role'}
+          to={to ?? `../role/${kind}/${namespace}/${name}`}
+          style={{ padding: '0.5rem', color: 'inherit', borderRadius: '50%' }}
+          sx={{ '&:hover': { borderRadius: '50%' } }}
         >
           <EditIcon />
         </IconButton>
