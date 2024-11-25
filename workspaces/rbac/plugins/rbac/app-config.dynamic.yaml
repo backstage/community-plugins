@@ -4,10 +4,8 @@ dynamicPlugins:
       appIcons:
         - name: rbacIcon
           importName: RbacIcon
-          module: RbacPlugin
       dynamicRoutes:
         - path: /rbac
-          module: RbacPlugin
           importName: RbacPage
           menuItem:
             icon: rbacIcon
