@@ -99,6 +99,8 @@ export const selectedMembersColumns = (
               onClick={() => onRemove(mem.etag)}
               aria-label="Remove"
               title="Remove member"
+              style={{ padding: '0.5rem', borderRadius: '50%' }}
+              sx={{ '&:hover': { borderRadius: '50%' } }}
             >
               <Delete />
             </IconButton>

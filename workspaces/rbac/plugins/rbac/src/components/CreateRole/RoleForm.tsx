@@ -363,7 +363,7 @@ export const RoleForm = ({
           </Box>
         )}
         <Button
-          style={{ position: 'absolute', right: '0', bottom: '0' }}
+          style={{ position: 'absolute', right: '2.75rem', bottom: '2.75rem' }}
           onClick={handleCancel}
           color="primary"
         >
