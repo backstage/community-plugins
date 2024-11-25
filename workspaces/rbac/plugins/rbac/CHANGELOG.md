@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.33.1
+
+### Patch Changes
+
+- ba05b93: Fixed UI issues.
+
 ## 1.33.0
 
 ### Minor Changes
