@@ -13,17 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { AuditLogger } from '@janus-idp/backstage-plugin-audit-log-node';
 import { Enforcer, FilteredAdapter, newModelFromString } from 'casbin';
 import { Knex } from 'knex';
 
 import EventEmitter from 'events';
 
 import { ADMIN_ROLE_NAME } from '../admin-permissions/admin-creation';
-import {
-  FETCH_NEWER_PERMISSIONS_STAGE,
-  PolisiesData,
-} from '../audit-log/audit-logger';
 import {
   RoleMetadataDao,
   RoleMetadataStorage,
@@ -42,40 +37,16 @@ type EventMap = {
 
 export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
   private readonly roleEventEmitter = new EventEmitter<EventMap>();
-  private loadPolicyPromise: Promise<void> | null = null;
 
   constructor(
     private readonly enforcer: Enforcer,
     private readonly roleMetadataStorage: RoleMetadataStorage,
     private readonly knex: Knex,
-    private readonly auditLogger: AuditLogger,
   ) {}
 
   on(event: RoleEvents, listener: (role: string) => void): this {
     this.roleEventEmitter.on(event, listener);
     return this;
-  }
-
-  // Load the latest permissions from the database without throttling
-  async loadPermissionsWithoutThrottling(): Promise<void> {
-    if (!this.loadPolicyPromise) {
-      this.loadPolicyPromise = this.enforcer
-        .loadPolicy()
-        .catch(err => {
-          this.auditLogger.auditLog({
-            message: 'Failed to load newer policies from database',
-            eventName: PolisiesData.FAILED_TO_FETCH_NEWER_PERMISSIONS,
-            stage: FETCH_NEWER_PERMISSIONS_STAGE,
-            status: 'failed',
-            errors: [err],
-          });
-          throw err;
-        })
-        .finally(() => {
-          this.loadPolicyPromise = null;
-        });
-    }
-    return this.loadPolicyPromise;
   }
 
   async hasPolicy(...policy: string[]): Promise<boolean> {
@@ -541,7 +512,6 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
     action: string,
     roles: string[],
   ): Promise<boolean> {
-    await this.loadPermissionsWithoutThrottling();
     const filter = [];
     if (roles.length > 0) {
       roles.forEach(role => {

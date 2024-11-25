@@ -180,12 +180,7 @@ describe('CSVFileWatcher', () => {
 
     const knex = Knex.knex({ client: MockClient });
 
-    enforcerDelegate = new EnforcerDelegate(
-      enf,
-      roleMetadataStorageMock,
-      knex,
-      auditLoggerMock,
-    );
+    enforcerDelegate = new EnforcerDelegate(enf, roleMetadataStorageMock, knex);
 
     auditLoggerMock.auditLog.mockReset();
     (roleMetadataStorageMock.updateRoleMetadata as jest.Mock).mockClear();

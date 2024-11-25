@@ -19,7 +19,6 @@ import { Model, newEnforcer, newModelFromString } from 'casbin';
 import * as Knex from 'knex';
 import { MockClient } from 'knex-mock-client';
 
-import { auditLogger } from '../../__fixtures__/test-utils';
 import { CasbinDBAdapterFactory } from '../database/casbin-adapter-factory';
 import {
   RoleMetadataDao,
@@ -180,12 +179,7 @@ describe('EnforcerDelegate', () => {
       await enf.addGroupingPolicies(groupingPolicies);
     }
 
-    return new EnforcerDelegate(
-      enf,
-      roleMetadataStorageMock,
-      knex,
-      auditLogger(),
-    );
+    return new EnforcerDelegate(enf, roleMetadataStorageMock, knex);
   }
 
   describe('hasPolicy', () => {

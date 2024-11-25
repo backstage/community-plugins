@@ -31,7 +31,6 @@ import type {
   RBACProviderConnection,
 } from '@backstage-community/plugin-rbac-node';
 
-import { auditLogger } from '../../__fixtures__/test-utils';
 import { CasbinDBAdapterFactory } from '../database/casbin-adapter-factory';
 import {
   RoleMetadataDao,
@@ -185,12 +184,7 @@ describe('Connection', () => {
 
     const knex = Knex.knex({ client: MockClient });
 
-    enforcerDelegate = new EnforcerDelegate(
-      enf,
-      roleMetadataStorageMock,
-      knex,
-      auditLogger(),
-    );
+    enforcerDelegate = new EnforcerDelegate(enf, roleMetadataStorageMock, knex);
 
     await enforcerDelegate.addGroupingPolicy(
       roleToBeRemoved,
@@ -486,7 +480,6 @@ describe('connectRBACProviders', () => {
       enf,
       roleMetadataStorageMock,
       knex,
-      auditLogger(),
     );
 
     await connectRBACProviders(
