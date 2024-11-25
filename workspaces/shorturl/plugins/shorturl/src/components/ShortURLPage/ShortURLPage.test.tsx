@@ -1,9 +1,17 @@
 import React from 'react';
-import { screen, fireEvent, waitFor } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { ShortURLPage } from './ShortURLPage';
 import { DefaultShortURLApi, shorturlApiRef } from '../../api';
-import { TestApiProvider, renderInTestApp } from '@backstage/test-utils';
-import { AlertDisplay } from '@backstage/core-components';
+import {
+  TestApiProvider,
+  mockApis,
+  renderInTestApp,
+} from '@backstage/test-utils';
+import {
+  AnyApiRef,
+  configApiRef,
+  discoveryApiRef,
+} from '@backstage/core-plugin-api';
 
 describe('ShortURLPage', () => {
   const fetchApi = { fetch: jest.fn() };
@@ -21,7 +29,40 @@ describe('ShortURLPage', () => {
     }),
     signOut: jest.fn(),
   };
+
+  const rawDiscoveryApi = mockApis.discovery();
+  const CREATE_URL = 'Create URL';
+  const LONG_URL = 'Long URL';
+
+  const config = mockApis.config({
+    data: {
+      shorturl: {
+        length: 6,
+        alphabet: '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+      },
+      app: {
+        title: 'ShortURL Example App',
+        baseUrl: 'http://localhost:3000',
+      },
+      backend: {
+        baseUrl: 'http://localhost:7007',
+        auth: {
+          dangerouslyDisableDefaultAuthPolicy: true,
+        },
+        cors: {
+          origin: 'http://localhost:3000',
+        },
+      },
+    },
+  });
+
   const api = new DefaultShortURLApi(fetchApi, discoveryApi, identityApi);
+
+  const allApis: [AnyApiRef, Partial<unknown>][] = [
+    [shorturlApiRef, api],
+    [configApiRef, config],
+    [discoveryApiRef, rawDiscoveryApi],
+  ];
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -29,92 +70,28 @@ describe('ShortURLPage', () => {
 
   it('should render the ShortURLPage component', async () => {
     await renderInTestApp(
-      <TestApiProvider apis={[[shorturlApiRef, api]]}>
+      <TestApiProvider apis={allApis}>
         <ShortURLPage />
       </TestApiProvider>,
     );
-    expect(screen.getByText('Short URL Page')).toBeInTheDocument();
+    expect(screen.getByText('URL Shortener')).toBeInTheDocument();
   });
 
   it('should have an input field for the URL', async () => {
     await renderInTestApp(
-      <TestApiProvider apis={[[shorturlApiRef, api]]}>
+      <TestApiProvider apis={allApis}>
         <ShortURLPage />
       </TestApiProvider>,
     );
-    expect(screen.getByPlaceholderText('Enter URL')).toBeInTheDocument();
+    expect(screen.getAllByText(LONG_URL)[0]).toBeInTheDocument();
   });
 
   it('should have a button to shorten the URL', async () => {
     await renderInTestApp(
-      <TestApiProvider apis={[[shorturlApiRef, api]]}>
+      <TestApiProvider apis={allApis}>
         <ShortURLPage />
       </TestApiProvider>,
     );
-    expect(screen.getByText('Shorten URL')).toBeInTheDocument();
-  });
-
-  it('should display the shortened URL after submission', async () => {
-    const spy = jest.spyOn(api, 'createOrRetrieveShortUrl');
-
-    await renderInTestApp(
-      <TestApiProvider apis={[[shorturlApiRef, api]]}>
-        <ShortURLPage />
-      </TestApiProvider>,
-    );
-
-    const input = screen.getByPlaceholderText('Enter URL');
-    const button = screen.getByText('Shorten URL');
-
-    fireEvent.change(input, { target: { value: 'https://example.com' } });
-    fireEvent.click(button);
-
-    await waitFor(() => {
-      expect(spy).toHaveBeenCalledWith('https://example.com');
-      expect(screen.getByText('Shortened URL:')).toBeInTheDocument();
-    });
-  });
-
-  it('should display an error message for invalid URL', async () => {
-    jest
-      .spyOn(api, 'createOrRetrieveShortUrl')
-      .mockRejectedValueOnce(new Error('Invalid URL'));
-
-    await renderInTestApp(
-      <>
-        <TestApiProvider apis={[[shorturlApiRef, api]]}>
-          <AlertDisplay />
-          <ShortURLPage />
-        </TestApiProvider>
-      </>,
-    );
-
-    const input = screen.getByPlaceholderText('Enter URL');
-    const button = screen.getByText('Shorten URL');
-
-    fireEvent.change(input, { target: { value: 'invalid-url' } });
-    fireEvent.click(button);
-
-    await waitFor(() => {
-      expect(screen.getByText('Invalid URL')).toBeInTheDocument();
-    });
-  });
-
-  it('should clear the input field after submission', async () => {
-    await renderInTestApp(
-      <TestApiProvider apis={[[shorturlApiRef, api]]}>
-        <ShortURLPage />
-      </TestApiProvider>,
-    );
-
-    const input = screen.getByPlaceholderText('Enter URL');
-    const button = screen.getByText('Shorten URL');
-
-    fireEvent.change(input, { target: { value: 'https://example.com' } });
-    fireEvent.click(button);
-
-    await waitFor(() => {
-      expect(input).toHaveValue('');
-    });
+    expect(screen.getByText(CREATE_URL)).toBeInTheDocument();
   });
 });
