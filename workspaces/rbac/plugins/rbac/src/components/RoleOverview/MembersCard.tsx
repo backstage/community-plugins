@@ -27,7 +27,7 @@ import CardContent from '@mui/material/CardContent';
 import { policyEntityUpdatePermission } from '@backstage-community/plugin-rbac-common';
 
 import { MembersInfo } from '../../hooks/useMembers';
-import { MembersData } from '../../types';
+import { filterTableData } from '../../utils/filter-table-data';
 import { getMembers } from '../../utils/rbac-utils';
 import EditRole from '../EditRole';
 import { columns } from './MembersListColumns';
@@ -53,7 +53,7 @@ const getEditIcon = (isAllowed: boolean, roleName: string) => {
 
 export const MembersCard = ({ roleName, membersInfo }: MembersCardProps) => {
   const { data, loading, retry, error, canReadUsersAndGroups } = membersInfo;
-  const [members, setMembers] = React.useState<MembersData[]>();
+  const [searchText, setSearchText] = React.useState<string>();
   const policyEntityPermissionResult = usePermission({
     permission: policyEntityUpdatePermission,
     resourceRef: policyEntityUpdatePermission.resourceType,
@@ -84,9 +84,10 @@ export const MembersCard = ({ roleName, membersInfo }: MembersCardProps) => {
     },
   ];
 
-  const onSearchResultsChange = (searchResults: MembersData[]) => {
-    setMembers(searchResults);
-  };
+  const filteredData = React.useMemo(
+    () => filterTableData({ data, columns, searchText }),
+    [data, searchText],
+  );
 
   return (
     <Card>
@@ -103,11 +104,10 @@ export const MembersCard = ({ roleName, membersInfo }: MembersCardProps) => {
         <Table
           title={
             !loading && data?.length
-              ? `Users and groups (${getMembers(members || data)})`
+              ? `Users and groups (${getMembers(filteredData)})`
               : 'Users and groups'
           }
           actions={actions}
-          renderSummaryRow={summary => onSearchResultsChange(summary.data)}
           options={{ padding: 'default', search: true, paging: true }}
           data={data ?? []}
           isLoading={loading}
@@ -120,6 +120,7 @@ export const MembersCard = ({ roleName, membersInfo }: MembersCardProps) => {
               No records found
             </Box>
           }
+          onSearchChange={setSearchText}
         />
       </CardContent>
     </Card>
