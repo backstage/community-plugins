@@ -92,10 +92,6 @@ export type EvaluationAuditInfo = {
   decision?: PolicyDecision;
 };
 
-export const PolisiesData = {
-  FAILED_TO_FETCH_NEWER_PERMISSIONS: 'FailedToFetchNewerPermissions',
-};
-
 export const ConditionEvents = {
   CREATE_CONDITION: 'CreateCondition',
   UPDATE_CONDITION: 'UpdateCondition',
@@ -122,8 +118,6 @@ export const HANDLE_RBAC_DATA_STAGE = 'handleRBACData';
 
 // Audit log stage for determining access rights based on user permissions and resource information
 export const EVALUATE_PERMISSION_ACCESS_STAGE = 'evaluatePermissionAccess';
-
-export const FETCH_NEWER_PERMISSIONS_STAGE = 'fetchNewerPermissions';
 
 // Audit log stage for sending the response to the client about handled permission policies, roles, and condition policies
 export const SEND_RESPONSE_STAGE = 'sendResponse';
