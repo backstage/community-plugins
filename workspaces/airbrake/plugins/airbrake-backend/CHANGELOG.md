@@ -1,5 +1,11 @@
 # @backstage-community/plugin-airbrake-backend
 
+## 0.3.21
+
+### Patch Changes
+
+- 14a35d5: Deprecated `createRouter` and its router options in favour of the new backend system.
+
 ## 0.3.20
 
 ### Patch Changes
