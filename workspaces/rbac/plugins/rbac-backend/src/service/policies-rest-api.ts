@@ -375,9 +375,8 @@ export class PoliciesServer {
           'new policy',
         );
 
-        const roleMetadata = await this.roleMetadata.findRoleMetadata(
-          entityRef,
-        );
+        const roleMetadata =
+          await this.roleMetadata.findRoleMetadata(entityRef);
         if (entityRef.startsWith('role:default') && !roleMetadata) {
           throw new Error(`Corresponding role ${entityRef} was not found`);
         }
@@ -588,9 +587,8 @@ export class PoliciesServer {
         modifiedBy: credentials.principal.userEntityRef,
       };
 
-      const oldMetadata = await this.roleMetadata.findRoleMetadata(
-        roleEntityRef,
-      );
+      const oldMetadata =
+        await this.roleMetadata.findRoleMetadata(roleEntityRef);
       if (!oldMetadata) {
         throw new NotFoundError(`Unable to find metadata for ${roleEntityRef}`);
       }
@@ -724,9 +722,8 @@ export class PoliciesServer {
           }
         }
 
-        const currentMetadata = await this.roleMetadata.findRoleMetadata(
-          roleEntityRef,
-        );
+        const currentMetadata =
+          await this.roleMetadata.findRoleMetadata(roleEntityRef);
         const err = await validateSource('rest', currentMetadata);
         if (err) {
           throw new NotAllowedError(`Unable to delete role: ${err.message}`);
@@ -874,9 +871,8 @@ export class PoliciesServer {
         this.options.auth,
       );
 
-      const id = await this.conditionalStorage.createCondition(
-        conditionToCreate,
-      );
+      const id =
+        await this.conditionalStorage.createCondition(conditionToCreate);
 
       const body = { id: id };
 
