@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-rbac",
-  "version": "1.33.0",
+  "version": "1.33.2",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "license": "Apache-2.0",
@@ -85,16 +85,9 @@
     "react-router-dom": "^6.0.0",
     "start-server-and-test": "2.0.8"
   },
-  "scalprum": {
-    "name": "janus-idp.backstage-plugin-rbac",
-    "exposedModules": {
-      "RbacPlugin": "./src/index.ts"
-    }
-  },
   "files": [
-    "dist",
-    "dist-scalprum",
-    "app-config.yaml"
+    "app-config.dynamic.yaml",
+    "dist"
   ],
   "repository": {
     "type": "git",
@@ -112,5 +105,15 @@
   "maintainers": [
     "@PatAKnight"
   ],
-  "author": "Red Hat"
+  "author": "Red Hat",
+  "prettier": "@spotify/prettier-config",
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,mjs,cjs}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ]
+  }
 }

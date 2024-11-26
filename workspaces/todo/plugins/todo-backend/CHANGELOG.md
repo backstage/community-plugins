@@ -1,5 +1,11 @@
 # @backstage-community/plugin-todo-backend
 
+## 0.3.22
+
+### Patch Changes
+
+- b23745f: Deprecated `createRouter` and its router options in favour of the new backend system.
+
 ## 0.3.21
 
 ### Patch Changes

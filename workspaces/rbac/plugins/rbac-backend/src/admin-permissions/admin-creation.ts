@@ -73,9 +73,8 @@ export const useAdminsFromConfig = async (
     }
   }
 
-  const adminRoleMeta = await roleMetadataStorage.findRoleMetadata(
-    ADMIN_ROLE_NAME,
-  );
+  const adminRoleMeta =
+    await roleMetadataStorage.findRoleMetadata(ADMIN_ROLE_NAME);
 
   const trx = await knex.transaction();
   let addedRoleMembers;

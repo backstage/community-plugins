@@ -283,9 +283,8 @@ export class RBACPermissionPolicy implements PermissionPolicy {
     permissionName: string,
     action: string,
   ): Promise<boolean> {
-    const userPerms = await this.enforcer.getImplicitPermissionsForUser(
-      userEntityRef,
-    );
+    const userPerms =
+      await this.enforcer.getImplicitPermissionsForUser(userEntityRef);
     for (const perm of userPerms) {
       if (permissionName === perm[1] && action === perm[2]) {
         return true;

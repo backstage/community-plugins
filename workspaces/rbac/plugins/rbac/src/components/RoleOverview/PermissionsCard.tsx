@@ -27,7 +27,7 @@ import CardContent from '@mui/material/CardContent';
 import { policyEntityUpdatePermission } from '@backstage-community/plugin-rbac-common';
 
 import { usePermissionPolicies } from '../../hooks/usePermissionPolicies';
-import { PermissionsData } from '../../types';
+import { filterTableData } from '../../utils/filter-table-data';
 import EditRole from '../EditRole';
 import { columns } from './PermissionsListColumns';
 
@@ -56,26 +56,25 @@ export const PermissionsCard = ({
 }: PermissionsCardProps) => {
   const { data, loading, retry, error } =
     usePermissionPolicies(entityReference);
-  const [permissions, setPermissions] = React.useState<PermissionsData[]>();
+  const [searchText, setSearchText] = React.useState<string>();
   const permissionResult = usePermission({
     permission: policyEntityUpdatePermission,
     resourceRef: policyEntityUpdatePermission.resourceType,
   });
 
-  const onSearchResultsChange = (searchResults: PermissionsData[]) => {
-    setPermissions(searchResults);
-  };
+  const numberOfPolicies = React.useMemo(() => {
+    const filteredPermissions = filterTableData({ data, columns, searchText });
+    let policies = 0;
+    filteredPermissions.forEach(p => {
+      if (p.conditions) {
+        policies++;
+        return;
+      }
+      policies += p.policies.filter(pol => pol.effect === 'allow').length;
+    });
+    return policies;
+  }, [data, searchText]);
 
-  let numberOfPolicies = 0;
-  (permissions || data)?.forEach(p => {
-    if (p.conditions) {
-      numberOfPolicies++;
-      return;
-    }
-    numberOfPolicies =
-      numberOfPolicies +
-      p.policies.filter(pol => pol.effect === 'allow').length;
-  });
   const actions = [
     {
       icon: getRefreshIcon,
@@ -121,7 +120,6 @@ export const PermissionsCard = ({
               : 'Permission Policies'
           }
           actions={actions}
-          renderSummaryRow={summary => onSearchResultsChange(summary.data)}
           options={{ padding: 'default', search: true, paging: true }}
           data={data}
           columns={columns}
@@ -134,6 +132,7 @@ export const PermissionsCard = ({
               No records found
             </Box>
           }
+          onSearchChange={setSearchText}
         />
       </CardContent>
     </Card>
