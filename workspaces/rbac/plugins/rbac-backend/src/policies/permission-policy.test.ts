@@ -40,6 +40,7 @@ import type { RoleMetadata } from '@backstage-community/plugin-rbac-common';
 
 import { resolve } from 'path';
 
+import { auditLogger } from '../../__fixtures__/test-utils';
 import { ADMIN_ROLE_NAME } from '../admin-permissions/admin-creation';
 import { CasbinDBAdapterFactory } from '../database/casbin-adapter-factory';
 import { ConditionalStorage } from '../database/conditional-storage';
@@ -109,11 +110,7 @@ const mockClientKnex = Knex.knex({ client: MockClient });
 
 const mockAuthService = mockServices.auth();
 
-const auditLoggerMock = {
-  getActorId: jest.fn().mockImplementation(),
-  createAuditLogDetails: jest.fn().mockImplementation(),
-  auditLog: jest.fn().mockImplementation(),
-};
+const auditLoggerMock = auditLogger();
 
 const pluginMetadataCollectorMock: Partial<PluginPermissionMetadataCollector> =
   {
@@ -865,7 +862,7 @@ describe('RBACPermissionPolicy Tests', () => {
           perm.resource,
           AuthorizeResult.ALLOW,
         );
-        auditLoggerMock.auditLog.mockReset();
+        (auditLoggerMock.auditLog as jest.Mock).mockReset();
       }
     });
   });
@@ -986,7 +983,7 @@ describe('RBACPermissionPolicy Tests', () => {
         'policy-entity',
         AuthorizeResult.ALLOW,
       );
-      auditLoggerMock.auditLog.mockReset();
+      (auditLoggerMock.auditLog as jest.Mock).mockReset();
 
       const decision2 = await policy.handle(
         newPolicyQueryWithResourcePermission(
@@ -2196,7 +2193,7 @@ async function newPermissionPolicy(
     pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
     mockAuthService,
   );
-  auditLoggerMock.auditLog.mockReset();
+  (auditLoggerMock.auditLog as jest.Mock).mockReset();
   return permissionPolicy;
 }
 
