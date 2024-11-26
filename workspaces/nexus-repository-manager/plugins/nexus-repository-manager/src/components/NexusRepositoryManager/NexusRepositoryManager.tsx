@@ -33,6 +33,9 @@ export function getAssetVariants(component: ComponentXO) {
   );
 }
 
+/**
+ * @public
+ */
 export function NexusRepositoryManager() {
   const nexusClient = useApi(NexusRepositoryManagerApiRef);
   const { entity } = useEntity();
