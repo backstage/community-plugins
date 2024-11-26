@@ -4,6 +4,7 @@
 
 .topology-side-bar-tabs .tab-button {
   background: transparent !important;
+  padding: 12px 16px;
 }
 
 .topology-side-bar-tab-panel {
