@@ -8,26 +8,20 @@ import { Entity } from '@backstage/catalog-model';
 import { default as React_2 } from 'react';
 import { RouteRef } from '@backstage/core-plugin-api';
 
-// Warning: (ae-missing-release-tag) "isNexusRepositoryManagerAvailable" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const isNexusRepositoryManagerAvailable: (entity: Entity) => boolean;
 
-// Warning: (ae-missing-release-tag) "isNexusRepositoryManagerExperimentalAvailable" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const isNexusRepositoryManagerExperimentalAvailable: (
   entity: Entity,
 ) => boolean;
 
-// Warning: (ae-forgotten-export) The symbol "NexusRepositoryManager" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "NexusRepositoryManagerPage" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
+// @public (undocumented)
+export function NexusRepositoryManager(): React_2.JSX.Element;
+
 // @public (undocumented)
 export const NexusRepositoryManagerPage: NexusRepositoryManager;
 
-// Warning: (ae-missing-release-tag) "nexusRepositoryManagerPlugin" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const nexusRepositoryManagerPlugin: BackstagePlugin<
   {
