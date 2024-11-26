@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 5.2.6
+
+### Patch Changes
+
+- 4084738: Ensures that the permissions and roles are properly synced during request handling. This is important in high availability scenarios as we need to ensure data is up to date during scaling.
+
 ## 5.2.5
 
 ### Patch Changes
