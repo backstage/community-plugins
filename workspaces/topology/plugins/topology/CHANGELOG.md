@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.29.7
+
+### Patch Changes
+
+- 2c07330: Fixed tab button margin, text color, and text background color issues.
+
 ## 1.29.6
 
 ### Patch Changes
