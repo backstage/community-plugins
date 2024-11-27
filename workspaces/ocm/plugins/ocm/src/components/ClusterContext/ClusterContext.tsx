@@ -28,7 +28,10 @@ import {
 
 import { OcmApiRef } from '../../api';
 
-type ClusterContextType = {
+/**
+ * @public
+ */
+export type ClusterContextType = {
   data: Cluster | null;
   loading: boolean;
   error: Error | null;
@@ -38,6 +41,9 @@ const ClusterContext = createContext<ClusterContextType>(
   {} as ClusterContextType,
 );
 
+/**
+ * @public
+ */
 export const ClusterContextProvider = (props: any) => {
   const { entity } = useEntity();
   const ocmApi = useApi(OcmApiRef);
@@ -84,4 +90,8 @@ export const ClusterContextProvider = (props: any) => {
     </ClusterContext.Provider>
   );
 };
+
+/**
+ * @public
+ */
 export const useCluster = () => useContext(ClusterContext);
