@@ -1,5 +1,11 @@
 # @backstage-community/plugin-github-actions
 
+## 0.6.26
+
+### Patch Changes
+
+- a130288: Truncate commit message to first newline
+
 ## 0.6.25
 
 ### Patch Changes
