@@ -22,6 +22,9 @@ import { catalogProcessingExtensionPoint } from '@backstage/plugin-catalog-node/
 
 import { ManagedClusterProvider } from './ManagedClusterProvider';
 
+/**
+ * @public
+ */
 export const catalogModuleOCMEntityProvider = createBackendModule({
   moduleId: 'catalog-backend-module-ocm',
   pluginId: 'catalog',

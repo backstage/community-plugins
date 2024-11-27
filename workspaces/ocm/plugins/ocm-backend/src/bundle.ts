@@ -19,6 +19,9 @@ import { createBackendFeatureLoader } from '@backstage/backend-plugin-api';
 import { catalogModuleOCMEntityProvider } from './providers';
 import { ocmPlugin } from './service/router';
 
+/**
+ * @public
+ */
 export const bundle = createBackendFeatureLoader({
   async loader() {
     return [catalogModuleOCMEntityProvider, ocmPlugin];

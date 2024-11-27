@@ -179,6 +179,9 @@ async function createRouter(deps: {
   return router;
 }
 
+/**
+ * @public
+ */
 export const ocmPlugin = createBackendPlugin({
   pluginId: 'ocm',
   register(env) {

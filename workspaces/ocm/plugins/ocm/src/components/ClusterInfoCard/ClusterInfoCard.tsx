@@ -23,6 +23,9 @@ import { useCluster } from '../ClusterContext';
 import { Status, Update } from '../common';
 import { TableCardFromData } from '../TableCardFromData';
 
+/**
+ * @public
+ */
 export const ClusterInfoCard = () => {
   const { data } = useCluster();
 
