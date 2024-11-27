@@ -22,6 +22,9 @@ import { ocmEntityReadPermission } from '@backstage-community/plugin-ocm-common'
 import { useCluster } from '../ClusterContext';
 import { TableCardFromData } from '../TableCardFromData';
 
+/**
+ * @public
+ */
 export const ClusterAvailableResourceCard = (): any => {
   const { data } = useCluster();
 

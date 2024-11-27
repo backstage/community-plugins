@@ -13,26 +13,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * @public
+ */
 export type ClusterStatus = {
   available: boolean;
   reason?: string;
 };
 
+/**
+ * @public
+ */
 export type ClusterBase = {
   name: string;
 };
 
+/**
+ * @public
+ */
 export type ClusterUpdate = {
   available?: boolean;
   version?: string;
   url?: string;
 };
 
+/**
+ * @public
+ */
 export type ClusterNodesStatus = {
   status: string;
   type: string;
 };
 
+/**
+ * @public
+ */
 export type ClusterDetails = {
   consoleUrl?: string;
   kubernetesVersion?: string;
@@ -55,7 +71,14 @@ export type ClusterDetails = {
   status: ClusterStatus;
 };
 
+/**
+ * @public
+ */
 export type Cluster = ClusterBase & ClusterDetails;
+
+/**
+ * @public
+ */
 export type ClusterOverview = ClusterBase & {
   status: ClusterStatus;
   update: ClusterUpdate;
