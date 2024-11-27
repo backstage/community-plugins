@@ -64,7 +64,7 @@
     "@backstage/cli": "0.28.2",
     "@backstage/config": "1.2.0",
     "@backstage/plugin-catalog-backend": "1.27.1",
-    "@openapitools/openapi-generator-cli": "2.13.4",
+    "@openapitools/openapi-generator-cli": "2.15.3",
     "@spotify/prettier-config": "^15.0.0",
     "@types/express": "4.17.21",
     "@types/supertest": "2.0.16",
