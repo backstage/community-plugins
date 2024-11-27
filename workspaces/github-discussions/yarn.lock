@@ -3162,7 +3162,7 @@ __metadata:
     "@backstage/integration": ^1.15.1
     "@backstage/plugin-search-backend-node": ^1.3.3
     "@backstage/plugin-search-common": ^1.2.14
-    "@guidanti/backstage-github-discussions-fetcher": ^0.4.0
+    "@guidanti/backstage-github-discussions-fetcher": ^0.5.0
     "@types/fs-extra": ^11
     "@types/luxon": ^3
     "@types/parse-github-url": ^1
@@ -6576,13 +6576,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@guidanti/backstage-github-discussions-fetcher@npm:^0.4.0":
-  version: 0.4.0
-  resolution: "@guidanti/backstage-github-discussions-fetcher@npm:0.4.0"
+"@guidanti/backstage-github-discussions-fetcher@npm:^0.5.0":
+  version: 0.5.0
+  resolution: "@guidanti/backstage-github-discussions-fetcher@npm:0.5.0"
   dependencies:
     effection: 4.0.0-alpha.3
-    github-discussions-fetcher: ^0.8.0
-  checksum: 47e92d26240dd7610993447735b2b819cb99ab27c452893fa9acdf656f65280a396effa702ce4fb5d4c0f210b2afaa55ef0c40cabd49711581b48333503728a0
+    github-discussions-fetcher: 0.9.0
+  checksum: 8a76716ced782e5df150c6ea88d989b8a0189da1e40cecd55f829a373885b077a359d3d182fce15ee5d1115f586f651048e6418343a93d84f5382bef076c6f75
   languageName: node
   linkType: hard
 
@@ -17911,9 +17911,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"github-discussions-fetcher@npm:^0.8.0":
-  version: 0.8.0
-  resolution: "github-discussions-fetcher@npm:0.8.0"
+"github-discussions-fetcher@npm:0.9.0":
+  version: 0.9.0
+  resolution: "github-discussions-fetcher@npm:0.9.0"
   dependencies:
     "@deno/shim-deno": ~0.18.0
     "@graphql-codegen/cli": ^4.0.0
@@ -17928,9 +17928,9 @@ __metadata:
     chalk: 4.1.2
     effection: 4.0.0-alpha.3
     graphql: 16.8.2
-    moment: 2.30.1
+    pretty-ms: 9.2.0
     typescript: ^5.6.2
-  checksum: 6c88f3dece34b70f020b9bd3c26903c7fdf2fd1332f6c878c65c35dc081dfc6c2dca3d2e6f8c1534c4989e9b89e0687bd85bd3e8c686f259d1cf016be8c361a4
+  checksum: 73b5392ed858ee18c7a7d81d4ad2bae58335ab13eebdc8631790e92b9bb682feea57ef120fc35a21e35453d1e802e077bb59ec2a9ae0e4e9048093e0a817ba4f
   languageName: node
   linkType: hard
 
@@ -22733,13 +22733,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"moment@npm:2.30.1":
-  version: 2.30.1
-  resolution: "moment@npm:2.30.1"
-  checksum: 859236bab1e88c3e5802afcf797fc801acdbd0ee509d34ea3df6eea21eb6bcc2abd4ae4e4e64aa7c986aa6cba563c6e62806218e6412a765010712e5fa121ba6
-  languageName: node
-  linkType: hard
-
 "morgan@npm:^1.10.0":
   version: 1.10.0
   resolution: "morgan@npm:1.10.0"
@@ -25037,6 +25030,15 @@ __metadata:
     ansi-styles: "npm:^5.0.0"
     react-is: "npm:^18.0.0"
   checksum: 032c1602383e71e9c0c02a01bbd25d6759d60e9c7cf21937dde8357aa753da348fcec5def5d1002c9678a8524d5fe099ad98861286550ef44de8808cc61e43b6
+  languageName: node
+  linkType: hard
+
+"pretty-ms@npm:9.2.0":
+  version: 9.2.0
+  resolution: "pretty-ms@npm:9.2.0"
+  dependencies:
+    parse-ms: ^4.0.0
+  checksum: d3a5a5b1c8a3417f64a877dba5ee2bacee404b59bc12083466e5e6dce2745e4bd716e1f9860624c7dceb1b4a532e808e4f2a7a03903a132344b3818951e2d125
   languageName: node
   linkType: hard
 
