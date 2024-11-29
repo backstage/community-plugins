@@ -16,6 +16,9 @@
 import type { Config } from '@backstage/config';
 import type { JsonObject } from '@backstage/types';
 
+/**
+ * @public
+ */
 export type CreateActionOptions = {
   config: Config;
 };
