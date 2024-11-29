@@ -24,7 +24,7 @@ import {
   createGithubGraphqlClient,
   fetchDiscussionDocuments,
 } from '@guidanti/backstage-github-discussions-fetcher';
-import { type GithubDiscussionsDocument } from '@backstage-community/plugin-github-discussions-common';
+import { type GithubDiscussionIndexableDocument } from '@backstage-community/plugin-github-discussions-common';
 import {
   DefaultGithubCredentialsProvider,
   type GithubIntegration,
@@ -162,7 +162,7 @@ export class GithubDiscussionsCollatorFactory
     return Readable.from(this.execute());
   }
 
-  async *execute(): AsyncGenerator<GithubDiscussionsDocument> {
+  async *execute(): AsyncGenerator<GithubDiscussionIndexableDocument> {
     const logger: typeof console = {
       log: this.logger.info.bind(this.logger),
       info: this.logger.info.bind(this.logger),
