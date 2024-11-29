@@ -2465,9 +2465,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage-community/scaffolder-backend-module-kubernetes@workspace:plugins/kubernetes-actions":
+"@backstage-community/plugin-scaffolder-backend-module-kubernetes@workspace:plugins/kubernetes-actions":
   version: 0.0.0-use.local
-  resolution: "@backstage-community/scaffolder-backend-module-kubernetes@workspace:plugins/kubernetes-actions"
+  resolution: "@backstage-community/plugin-scaffolder-backend-module-kubernetes@workspace:plugins/kubernetes-actions"
   dependencies:
     "@backstage/backend-plugin-api": ^1.0.1
     "@backstage/catalog-client": ^1.7.1
