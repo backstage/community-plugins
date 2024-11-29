@@ -12564,6 +12564,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"debounce-promise@npm:^3.1.2":
+  version: 3.1.2
+  resolution: "debounce-promise@npm:3.1.2"
+  checksum: 29bac4524c423cc852319d7455363909ea3d933a3b9e3eb1149d963cffc34c475fe37219d0bafc61af566500b5d663cba579bbad7ee4023bef06f8394ed900ad
+  languageName: node
+  linkType: hard
+
 "debounce@npm:^1.2.0":
   version: 1.2.1
   resolution: "debounce@npm:1.2.1"
@@ -15360,17 +15367,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql-language-service@npm:5.1.7":
-  version: 5.1.7
-  resolution: "graphql-language-service@npm:5.1.7"
+"graphql-language-service@npm:5.3.0":
+  version: 5.3.0
+  resolution: "graphql-language-service@npm:5.3.0"
   dependencies:
+    debounce-promise: ^3.1.2
     nullthrows: ^1.0.0
     vscode-languageserver-types: ^3.17.1
   peerDependencies:
-    graphql: ^15.5.0 || ^16.0.0
+    graphql: ^15.5.0 || ^16.0.0 || ^17.0.0-alpha.2
   bin:
     graphql: dist/temp-bin.js
-  checksum: eca00df3a136f687fa96c10c458817082c7ee427552969beeac0871d565e697faf93f677fdad15ee8bb3011fa5a47fe861bde71c88db9b8b4d67704928406fae
+  checksum: 9cee9a5cd9ff7db86104d6fa32ff909f1d69396185683a00bc8b5329ef3249fa8d0207dbeda82d4bd738cfd659ce1a1d39339650d5278f8712d5353ccc60a9fb
   languageName: node
   linkType: hard
 
