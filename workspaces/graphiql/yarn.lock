@@ -4284,11 +4284,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphiql/react@npm:0.22.1":
-  version: 0.22.1
-  resolution: "@graphiql/react@npm:0.22.1"
+"@graphiql/react@npm:0.27.0":
+  version: 0.27.0
+  resolution: "@graphiql/react@npm:0.27.0"
   dependencies:
-    "@graphiql/toolkit": ^0.9.1
+    "@graphiql/toolkit": ^0.11.0
     "@headlessui/react": ^1.7.15
     "@radix-ui/react-dialog": ^1.0.4
     "@radix-ui/react-dropdown-menu": ^2.0.5
@@ -4297,33 +4297,34 @@ __metadata:
     "@types/codemirror": ^5.60.8
     clsx: ^1.2.1
     codemirror: ^5.65.3
-    codemirror-graphql: ^2.0.11
+    codemirror-graphql: ^2.1.1
     copy-to-clipboard: ^3.2.0
     framer-motion: ^6.5.1
-    graphql-language-service: ^5.2.0
+    get-value: ^3.0.1
+    graphql-language-service: ^5.3.0
     markdown-it: ^14.1.0
     set-value: ^4.1.0
   peerDependencies:
-    graphql: ^15.5.0 || ^16.0.0
+    graphql: ^15.5.0 || ^16.0.0 || ^17.0.0
     react: ^16.8.0 || ^17 || ^18
     react-dom: ^16.8.0 || ^17 || ^18
-  checksum: 2fc79cd6fa3fc4af0942bcb43d82131b11a9092c772d3d0821d6210229d07568779b33b0346e7488d54b61f2c6139a95a554c4a6543d3352b7d7b2dfc7c8dca0
+  checksum: 0575bd27dd1173070991799429e9041e415905fa3944b987a72b3603bbb961ee967f301681ae837d3991a853b5e81488a102e9116e18cdc20dab170a14a32bfc
   languageName: node
   linkType: hard
 
-"@graphiql/toolkit@npm:^0.9.1":
-  version: 0.9.2
-  resolution: "@graphiql/toolkit@npm:0.9.2"
+"@graphiql/toolkit@npm:^0.11.0":
+  version: 0.11.1
+  resolution: "@graphiql/toolkit@npm:0.11.1"
   dependencies:
     "@n1ru4l/push-pull-async-iterable-iterator": ^3.1.0
     meros: ^1.1.4
   peerDependencies:
-    graphql: ^15.5.0 || ^16.0.0
+    graphql: ^15.5.0 || ^16.0.0 || ^17.0.0
     graphql-ws: ">= 4.5.0"
   peerDependenciesMeta:
     graphql-ws:
       optional: true
-  checksum: 4474a998a948d0df5cef8371245b0e895be40803a07e49231ab91798aa761880e6e4a684478a44b723c013f0e8206dab3d86e5b0fc9b688df035fa9f1fa29734
+  checksum: ca04746a141d4fab4e51e397b3a6b97a3fbd9d83a32ae360439c6438721f9771adfac44e406970db1f91a989541da1bc4455fe5121069fd51062eeeb7fb86391
   languageName: node
   linkType: hard
 
@@ -11434,7 +11435,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"codemirror-graphql@npm:^2.0.11":
+"codemirror-graphql@npm:^2.1.1":
   version: 2.1.1
   resolution: "codemirror-graphql@npm:2.1.1"
   dependencies:
@@ -15067,6 +15068,15 @@ __metadata:
   dependencies:
     resolve-pkg-maps: ^1.0.0
   checksum: d124e6900f8beb3b71f215941096075223158d0abb09fb5daa8d83299f6c17d5e95a97d12847b387e9e716bb9bd256a473f918fb8020f3b1acc0b1e5c2830bbf
+  languageName: node
+  linkType: hard
+
+"get-value@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "get-value@npm:3.0.1"
+  dependencies:
+    isobject: ^3.0.1
+  checksum: d2df36858c34f0ef63d928e760740b23d14a7b955eaf740fea0d908b60cf2504de388a2ff72fb531318719645271f506390005f811a53d35ce4d7f7eba98e470
   languageName: node
   linkType: hard
 
