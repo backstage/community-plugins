@@ -14,7 +14,7 @@ It is only meant for local development, and the setup for it can be found inside
 
 #### Prerequisites
 
-### ArgoCD backend
+### Argo CD backend
 
 - Install `@roadiehq/backstage-plugin-argo-cd-backend` plugin using the following command from the root directory
 <!-- configure it by following [Argo CD Backend Plugin docs](https://www.npmjs.com/package/@roadiehq/backstage-plugin-argo-cd-backend) -->
