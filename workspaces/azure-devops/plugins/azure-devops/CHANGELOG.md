@@ -1,5 +1,11 @@
 # @backstage-community/plugin-azure-devops
 
+## 0.6.3
+
+### Patch Changes
+
+- d71fade: Reverted the MUI v5 migration
+
 ## 0.6.2
 
 ### Patch Changes
