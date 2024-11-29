@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.10.4
+
+### Patch Changes
+
+- 378ca22: Clean up api report warnings and remove unnecessary files
+
 ## 1.10.3
 
 ### Patch Changes
