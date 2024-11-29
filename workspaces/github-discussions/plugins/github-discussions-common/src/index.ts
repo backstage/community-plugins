@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
-import { IndexableDocument } from '@backstage/plugin-search-common';
+import {
+  SearchDocument,
+  IndexableDocument,
+} from '@backstage/plugin-search-common';
 
-export interface GithubDiscussionsDocument extends IndexableDocument {
+interface GithubDiscussionsDocument {
   author: string;
   category: string;
   labels: {
@@ -32,3 +35,8 @@ export interface GithubDiscussionsDocument extends IndexableDocument {
     }[];
   }[];
 }
+
+export type GithubDiscussionsSearchDocument = GithubDiscussionsDocument &
+  SearchDocument;
+export type GithubDiscussionIndexableDocument = GithubDiscussionsDocument &
+  IndexableDocument;

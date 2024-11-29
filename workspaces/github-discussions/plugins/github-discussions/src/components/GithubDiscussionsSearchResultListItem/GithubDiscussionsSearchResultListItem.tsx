@@ -25,7 +25,7 @@ import GitHubIcon from '@material-ui/icons/GitHub';
 import { Link } from '@backstage/core-components';
 import { ResultHighlight } from '@backstage/plugin-search-common';
 import { HighlightedSearchResultText } from '@backstage/plugin-search-react';
-import { type GithubDiscussionsDocument } from '@backstage-community/plugin-github-discussions-common';
+import { type GithubDiscussionsSearchDocument } from '@backstage-community/plugin-github-discussions-common';
 
 const useStyles = makeStyles({
   item: {
@@ -48,7 +48,7 @@ const useStyles = makeStyles({
  */
 export interface GithubDiscussionsSearchResultListItemProps {
   icon?: ReactNode;
-  result?: GithubDiscussionsDocument;
+  result?: GithubDiscussionsSearchDocument;
   highlight?: ResultHighlight;
   rank?: number;
   lineClamp?: number;
