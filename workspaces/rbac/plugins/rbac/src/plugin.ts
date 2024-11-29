@@ -29,6 +29,9 @@ import {
 import { rbacApiRef, RBACBackendClient } from './api/RBACBackendClient';
 import { createRoleRouteRef, roleRouteRef, rootRouteRef } from './routes';
 
+/**
+ * @public
+ */
 export const rbacPlugin = createPlugin({
   id: 'rbac',
   routes: {
@@ -58,6 +61,9 @@ export const rbacPlugin = createPlugin({
   ],
 });
 
+/**
+ * @public
+ */
 export const RbacPage = rbacPlugin.provide(
   createRoutableExtension({
     name: 'RbacPage',
@@ -66,6 +72,9 @@ export const RbacPage = rbacPlugin.provide(
   }),
 );
 
+/**
+ * @public
+ */
 export const Administration = rbacPlugin.provide(
   createComponentExtension({
     name: 'Administration',
