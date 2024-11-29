@@ -15,6 +15,7 @@
  */
 import { compatWrapper } from '@backstage/core-compat-api';
 import { EntityCardBlueprint } from '@backstage/plugin-catalog-react/alpha';
+import { isSonarQubeAvailable } from '@backstage-community/plugin-sonarqube-react';
 import React from 'react';
 
 /**
@@ -23,7 +24,7 @@ import React from 'react';
 export const entitySonarQubeCard: any = EntityCardBlueprint.make({
   name: 'card',
   params: {
-    filter: 'kind:component',
+    filter: isSonarQubeAvailable,
     loader: () =>
       import('../components/SonarQubeCard').then(m =>
         compatWrapper(<m.SonarQubeCard />),

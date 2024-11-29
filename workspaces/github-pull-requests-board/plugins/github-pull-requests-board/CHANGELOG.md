@@ -1,5 +1,17 @@
 # @backstage-community/plugin-github-pull-requests-board
 
+## 0.2.8
+
+### Patch Changes
+
+- 5c7171c: Make draft PR icon color inherit from theme
+
+## 0.2.7
+
+### Patch Changes
+
+- afefe93: Adding support for the new frontend system, available at the `/alpha` export.
+
 ## 0.2.6
 
 ### Patch Changes

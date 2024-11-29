@@ -39,7 +39,7 @@ describe('EditRole', () => {
       </Router>,
     );
 
-    expect(screen.getByRole('button', { name: 'Update' })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: 'Update' })).toHaveAttribute(
       'aria-disabled',
       'true',
     );
@@ -59,12 +59,11 @@ describe('EditRole', () => {
     );
 
     expect(screen.getByTestId('edit-role-btn')).toHaveAttribute(
-      'title',
+      'aria-label',
       tooltipText,
     );
-    expect(screen.getByRole('button', { name: 'Update' })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: 'Update' })).not.toHaveAttribute(
       'aria-disabled',
-      'false',
     );
   });
 
@@ -81,7 +80,7 @@ describe('EditRole', () => {
       </Router>,
     );
 
-    expect(screen.getByRole('button')).toHaveAttribute('href', toPath);
+    expect(screen.getByRole('link')).toHaveAttribute('href', toPath);
   });
 
   it('sets the correct default link path based on roleName', () => {
@@ -95,7 +94,7 @@ describe('EditRole', () => {
       </Router>,
     );
 
-    expect(screen.getByRole('button')).toHaveAttribute(
+    expect(screen.getByRole('link')).toHaveAttribute(
       'href',
       expect.stringContaining('/role/Role/default/roleName'),
     );

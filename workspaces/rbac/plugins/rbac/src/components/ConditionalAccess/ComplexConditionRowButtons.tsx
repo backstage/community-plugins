@@ -16,11 +16,13 @@
 import React from 'react';
 
 import AddIcon from '@mui/icons-material/Add';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import Tooltip from '@mui/material/Tooltip';
 
 import { getDefaultRule } from '../../utils/conditional-access-utils';
-import { AddNestedConditionButton } from './AddNestedConditionButton';
+import { tooltipTitle } from './AddNestedConditionButton';
 import { criterias } from './const';
 import { Condition, ConditionsData } from './types';
 
@@ -28,7 +30,6 @@ type ComplexConditionRowButtonsProps = {
   conditionRow: ConditionsData;
   onRuleChange: (newCondition: ConditionsData) => void;
   criteria: string;
-  classes: any;
   selPluginResourceType: string;
   updateErrors: (_index: number) => void;
   isNestedConditionRule: (condition: Condition) => boolean;
@@ -39,7 +40,6 @@ export const ComplexConditionRowButtons = ({
   conditionRow,
   onRuleChange,
   criteria,
-  classes,
   selPluginResourceType,
   updateErrors,
   isNestedConditionRule,
@@ -72,22 +72,42 @@ export const ComplexConditionRowButtons = ({
 
   return (
     (criteria === criterias.allOf || criteria === criterias.anyOf) && (
-      <Box mt={1} mb={1}>
+      <Box
+        mt={1}
+        mb={1}
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'flex-start',
+        }}
+      >
         <Button
-          className={classes.addRuleButton}
+          sx={{
+            color: theme => theme.palette.primary.light,
+          }}
           size="small"
           onClick={handleAddRule}
+          startIcon={<AddIcon fontSize="small" />}
         >
-          <AddIcon fontSize="small" />
           Add rule
         </Button>
         <Button
-          className={classes.addNestedConditionButton}
+          sx={{
+            color: theme => theme.palette.primary.light,
+          }}
           size="small"
           onClick={() => handleAddNestedCondition(criteria)}
+          startIcon={<AddIcon fontSize="small" />}
+          endIcon={
+            <Tooltip title={tooltipTitle()} placement="top">
+              <HelpOutlineIcon
+                fontSize="small"
+                style={{ marginLeft: '0.25rem' }}
+              />
+            </Tooltip>
+          }
         >
-          <AddIcon fontSize="small" />
-          <AddNestedConditionButton />
+          Add Nested Condition
         </Button>
       </Box>
     )

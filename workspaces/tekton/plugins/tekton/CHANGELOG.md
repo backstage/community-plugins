@@ -1,5 +1,18 @@
 ### Dependencies
 
+## 3.16.3
+
+### Patch Changes
+
+- 41a3d82: Updated dependency `@playwright/test` to `1.48.2`.
+
+## 3.16.2
+
+### Patch Changes
+
+- a6e850f: Updated dependency `msw` to `1.3.5`.
+- d3d078b: Updated dependency `@types/lodash` to `4.17.13`.
+
 ## 3.16.1
 
 ### Patch Changes

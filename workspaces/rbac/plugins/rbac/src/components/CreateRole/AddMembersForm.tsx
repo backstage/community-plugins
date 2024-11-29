@@ -17,9 +17,10 @@ import React from 'react';
 
 import { stringifyEntityRef } from '@backstage/catalog-model';
 
-import { LinearProgress, TextField } from '@material-ui/core';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import Autocomplete from '@material-ui/lab/Autocomplete';
+import Autocomplete from '@mui/material/Autocomplete';
+import FormHelperText from '@mui/material/FormHelperText';
+import LinearProgress from '@mui/material/LinearProgress';
+import TextField from '@mui/material/TextField';
 import { FormikErrors } from 'formik';
 
 import { MemberEntity } from '../../types';
@@ -100,6 +101,14 @@ export const AddMembersForm = ({
     return membersOptions.slice(0, 99);
   }, [membersOptions, search]);
 
+  const handleIsOptionEqualToValue = (
+    option: SelectedMember,
+    value: SelectedMember,
+  ) =>
+    value.etag
+      ? option.etag === value.etag
+      : selectedMember.etag === value.etag;
+
   return (
     <>
       <FormHelperText>
@@ -110,11 +119,7 @@ export const AddMembersForm = ({
       <Autocomplete
         options={filteredMembers || []}
         getOptionLabel={(option: SelectedMember) => option.label ?? ''}
-        getOptionSelected={(option: SelectedMember, value: SelectedMember) =>
-          value.etag
-            ? option.etag === value.etag
-            : selectedMember.etag === value.etag
-        }
+        isOptionEqualToValue={handleIsOptionEqualToValue}
         loading={membersData.loading}
         loadingText={<LinearProgress />}
         disableClearable
@@ -135,8 +140,8 @@ export const AddMembersForm = ({
             (sm: SelectedMember) => sm.etag === option.etag,
           )
         }
-        renderOption={(option: SelectedMember, state) => (
-          <MembersDropdownOption option={option} state={state} />
+        renderOption={(props, option: SelectedMember, state) => (
+          <MembersDropdownOption props={props} option={option} state={state} />
         )}
         noOptionsText="No users and groups found."
         clearOnEscape

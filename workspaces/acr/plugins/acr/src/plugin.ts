@@ -15,6 +15,9 @@ import {
 import { AZURE_CONTAINER_REGISTRY_ANNOTATION_IMAGE_NAME } from './consts';
 import { rootRouteRef } from './routes';
 
+/**
+ * @public
+ */
 export const acrPlugin = createPlugin({
   id: 'acr',
   routes: {
@@ -37,7 +40,9 @@ export const acrPlugin = createPlugin({
     }),
   ],
 });
-
+/**
+ * @public
+ */
 export const AcrPage = acrPlugin.provide(
   createComponentExtension({
     name: 'AzureContainerRegistryPage',
@@ -47,7 +52,9 @@ export const AcrPage = acrPlugin.provide(
     },
   }),
 );
-
+/**
+ * @public
+ */
 export const isAcrAvailable = (entity: Entity) =>
   Boolean(
     entity?.metadata.annotations?.[

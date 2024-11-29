@@ -22,14 +22,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apidevtools/json-schema-ref-parser@npm:11.7.0":
-  version: 11.7.0
-  resolution: "@apidevtools/json-schema-ref-parser@npm:11.7.0"
+"@apidevtools/json-schema-ref-parser@npm:11.7.2":
+  version: 11.7.2
+  resolution: "@apidevtools/json-schema-ref-parser@npm:11.7.2"
   dependencies:
     "@jsdevtools/ono": ^7.1.3
     "@types/json-schema": ^7.0.15
     js-yaml: ^4.1.0
-  checksum: ee1c9e7c1bbf0b8d935522f9407c382e20a54464414fa65326fa8f56239e5a6f2b911f48c65fe2888a94d3445dced46ba36c286da435d47cefc8699d4a5b0ae2
+  checksum: 44096e5cd5a03b17ee5eb0a3b9e9a4db85d87da8ae2abda264eae615f2a43e3e6ba5ca208e1161d4d946755b121c10a9550e88792a725951f2c4cff6df0d8a19
   languageName: node
   linkType: hard
 
@@ -2533,7 +2533,7 @@ __metadata:
     "@backstage/plugin-catalog-react": ^1.14.0
     "@backstage/test-utils": ^1.7.0
     "@backstage/theme": ^0.6.0
-    "@hey-api/openapi-ts": 0.53.11
+    "@hey-api/openapi-ts": 0.55.3
     "@janus-idp/shared-react": ^2.13.0
     "@material-ui/core": ^4.9.13
     "@material-ui/icons": ^4.11.3
@@ -2545,7 +2545,7 @@ __metadata:
     "@testing-library/user-event": 14.5.2
     "@types/node": 18.19.64
     cross-fetch: 4.0.0
-    msw: 1.3.4
+    msw: 1.3.5
     react: ^18.0.0
     react-dom: ^18.0.0
     react-router-dom: ^6.0.0
@@ -4458,11 +4458,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hey-api/openapi-ts@npm:0.53.11":
-  version: 0.53.11
-  resolution: "@hey-api/openapi-ts@npm:0.53.11"
+"@hey-api/openapi-ts@npm:0.55.3":
+  version: 0.55.3
+  resolution: "@hey-api/openapi-ts@npm:0.55.3"
   dependencies:
-    "@apidevtools/json-schema-ref-parser": 11.7.0
+    "@apidevtools/json-schema-ref-parser": 11.7.2
     c12: 2.0.1
     commander: 12.1.0
     handlebars: 4.7.8
@@ -4470,7 +4470,7 @@ __metadata:
     typescript: ^5.x
   bin:
     openapi-ts: bin/index.cjs
-  checksum: 25a672271f53011d47fae27cdb22e69a933fdbb1519cc16423e46b691265d5e3a75612e2d70090a12f3e1164945b83a2e45548952a7118bb0e289d734e4840cb
+  checksum: 1bce3e572d26d728a9e5d93b760ed518b9def2b47d544517e92da817e2b66c16dc45ff1633e344fa36251b778d2a3195e525dad5fb10bdcba3351bc36a8e419a
   languageName: node
   linkType: hard
 
@@ -19078,9 +19078,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"msw@npm:1.3.4":
-  version: 1.3.4
-  resolution: "msw@npm:1.3.4"
+"msw@npm:1.3.5":
+  version: 1.3.5
+  resolution: "msw@npm:1.3.5"
   dependencies:
     "@mswjs/cookies": ^0.2.2
     "@mswjs/interceptors": ^0.17.10
@@ -19097,7 +19097,7 @@ __metadata:
     js-levenshtein: ^1.1.6
     node-fetch: ^2.6.7
     outvariant: ^1.4.0
-    path-to-regexp: ^6.2.0
+    path-to-regexp: ^6.3.0
     strict-event-emitter: ^0.4.3
     type-fest: ^2.19.0
     yargs: ^17.3.1
@@ -19108,7 +19108,7 @@ __metadata:
       optional: true
   bin:
     msw: cli/index.js
-  checksum: 57646ecb831e98f00387e60bad4d535e426d406ae2645340e59500c219059be225f1f02a5ff21aee9daeb7a8bdde922a00fb82930781d27e3f3fdaf6b292c25f
+  checksum: 5e1d96d63c0ce07db94373b2315739abecb76dac32dcc6ce116c902ced3e61ef2b1c7ff87eed3627c93fe0588002717edab9c745ebdee29437ed0da4b3beb561
   languageName: node
   linkType: hard
 
@@ -20238,7 +20238,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"path-to-regexp@npm:^6.2.0":
+"path-to-regexp@npm:^6.3.0":
   version: 6.3.0
   resolution: "path-to-regexp@npm:6.3.0"
   checksum: eca78602e6434a1b6799d511d375ec044e8d7e28f5a48aa5c28d57d8152fb52f3fc62fb1cfc5dfa2198e1f041c2a82ed14043d75740a2fe60e91b5089a153250

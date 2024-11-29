@@ -1,5 +1,17 @@
 ### Dependencies
 
+## 1.29.7
+
+### Patch Changes
+
+- aaeb7fc: Fixed tab button margin, text color, and text background color issues.
+
+## 1.29.6
+
+### Patch Changes
+
+- a6e850f: Updated dependency `msw` to `1.3.5`.
+
 ## 1.29.5
 
 ### Patch Changes

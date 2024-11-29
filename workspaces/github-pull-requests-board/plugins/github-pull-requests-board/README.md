@@ -77,3 +77,21 @@ const groupPage = (
     </EntityLayoutWrapper>;
 )
 ```
+
+## Integrating with the new Frontend System
+
+Follow this section if you are using Backstage's [new frontend system](https://backstage.io/docs/frontend-system/).
+
+Import `githubPullRequestsPlugin` in your `App.tsx` and add it to your app's `features` array:
+
+```typescript
+import githubPullRequestsPlugin from '@backstage-community/plugin-github-pull-requests-board/alpha';
+// ...
+export const app = createApp({
+  features: [
+    // ...
+    githubPullRequestsPlugin,
+    // ...
+  ],
+});
+```

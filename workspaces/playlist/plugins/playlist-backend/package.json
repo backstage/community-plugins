@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-playlist-backend",
-  "version": "0.3.28",
+  "version": "0.4.0",
   "backstage": {
     "role": "backend-plugin",
     "pluginId": "playlist",
@@ -39,7 +39,7 @@
   },
   "dependencies": {
     "@backstage-community/plugin-playlist-common": "workspace:^",
-    "@backstage/backend-common": "^0.25.0",
+    "@backstage/backend-defaults": "^0.5.2",
     "@backstage/backend-plugin-api": "^1.0.1",
     "@backstage/catalog-client": "^1.7.1",
     "@backstage/catalog-model": "^1.7.0",

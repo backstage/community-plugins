@@ -1,5 +1,17 @@
 ### Dependencies
 
+## 1.10.4
+
+### Patch Changes
+
+- 378ca22: Clean up api report warnings and remove unnecessary files
+
+## 1.10.3
+
+### Patch Changes
+
+- a6e850f: Updated dependency `msw` to `1.3.5`.
+
 ## 1.10.2
 
 ### Patch Changes

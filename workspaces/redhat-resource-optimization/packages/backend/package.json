@@ -22,7 +22,6 @@
   },
   "dependencies": {
     "@backstage-community/plugin-redhat-resource-optimization-backend": "workspace:^",
-    "@backstage/backend-common": "^0.25.0",
     "@backstage/backend-defaults": "^0.5.2",
     "@backstage/backend-tasks": "^0.6.1",
     "@backstage/config": "^1.2.0",

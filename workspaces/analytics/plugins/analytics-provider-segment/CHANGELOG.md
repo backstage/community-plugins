@@ -1,5 +1,17 @@
 ### Dependencies
 
+## 1.10.4
+
+### Patch Changes
+
+- dd8f9e4: Updated dependency `@types/react` to `18.3.12`.
+
+## 1.10.3
+
+### Patch Changes
+
+- a6e850f: Updated dependency `msw` to `1.3.5`.
+
 ## 1.10.2
 
 ### Patch Changes

@@ -57,7 +57,7 @@ async function main() {
     await exec(`git add ${fileName}`);
   }
   await exec('git commit --amend --no-edit');
-  await exec('git push');
+  await exec('git push -f');
   console.log(`Added changeset for commit ${shortHash.trim()}`);
 }
 

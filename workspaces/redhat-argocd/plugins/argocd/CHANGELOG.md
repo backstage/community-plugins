@@ -1,5 +1,17 @@
 ## @backstage-community/plugin-redhat-argocd
 
+## 1.10.4
+
+### Patch Changes
+
+- a6e850f: Updated dependency `msw` to `1.3.5`.
+
+## 1.10.3
+
+### Patch Changes
+
+- d1cae81: Removed `export-dynamic` script and Janus IDP cli from the build process and npm release.
+
 ## 1.10.2
 
 ### Patch Changes

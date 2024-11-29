@@ -16,8 +16,9 @@
 import React from 'react';
 
 import { useDeleteDialog } from '@janus-idp/shared-react';
-import { IconButton, Tooltip } from '@material-ui/core';
 import Delete from '@mui/icons-material/Delete';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 
 type DeleteRoleProps = {
@@ -41,14 +42,15 @@ const DeleteRole = ({
   };
 
   return (
-    <Tooltip title={tooltip || ''}>
+    <Tooltip title={tooltip ?? ''}>
       <Typography component="span" data-testid={dataTestId}>
         <IconButton
-          color="inherit"
           onClick={() => openDialog(roleName)}
           aria-label="Delete"
           disabled={disable}
-          title={tooltip || 'Delete Role'}
+          title={tooltip ?? 'Delete Role'}
+          style={{ padding: '0.5rem', borderRadius: '50%' }}
+          sx={{ '&:hover': { borderRadius: '50%' } }}
         >
           <Delete />
         </IconButton>

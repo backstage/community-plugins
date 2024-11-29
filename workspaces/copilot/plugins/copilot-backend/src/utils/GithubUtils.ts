@@ -20,21 +20,19 @@ import { GithubCredentials, ScmIntegrations } from '@backstage/integration';
 export type GithubInfo = {
   credentials: GithubCredentials;
   apiBaseUrl: string;
-  enterprise: string;
+  enterprise?: string;
+  organization?: string;
 };
 
 export const getGithubInfo = async (config: Config): Promise<GithubInfo> => {
   const integrations = ScmIntegrations.fromConfig(config);
 
   const host = config.getString('copilot.host');
-  const enterprise = config.getString('copilot.enterprise');
+  const enterprise = config.getOptionalString('copilot.enterprise');
+  const organization = config.getOptionalString('copilot.organization');
 
   if (!host) {
     throw new Error('The host configuration is missing from the config.');
-  }
-
-  if (!enterprise) {
-    throw new Error('The enterprise configuration is missing from the config.');
   }
 
   const githubConfig = integrations.github.byHost(host)?.config;
@@ -57,5 +55,6 @@ export const getGithubInfo = async (config: Config): Promise<GithubInfo> => {
     apiBaseUrl,
     credentials,
     enterprise,
+    organization,
   };
 };

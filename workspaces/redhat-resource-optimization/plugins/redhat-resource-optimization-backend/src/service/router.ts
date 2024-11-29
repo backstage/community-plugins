@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { errorHandler } from '@backstage/backend-common';
 import type {
   LoggerService,
   RootConfigService,
@@ -39,6 +38,5 @@ export async function createRouter(
   registerHealthRoutes(router, options);
   registerTokenRoutes(router, options);
 
-  router.use(errorHandler());
   return router;
 }

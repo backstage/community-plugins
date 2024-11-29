@@ -17,13 +17,13 @@ export interface AirbrakeConfig {
 const airbrakePlugin: BackendFeature;
 export default airbrakePlugin;
 
-// @public
+// @public @deprecated (undocumented)
 export function createRouter(options: RouterOptions): Promise<express.Router>;
 
 // @public
 export function extractAirbrakeConfig(config: Config): AirbrakeConfig;
 
-// @public
+// @public @deprecated (undocumented)
 export interface RouterOptions {
   airbrakeConfig: AirbrakeConfig;
   logger: LoggerService;

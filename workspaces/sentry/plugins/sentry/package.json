@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-sentry",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A Backstage plugin that integrates towards Sentry",
   "backstage": {
     "role": "frontend-plugin",

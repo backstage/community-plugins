@@ -1,5 +1,19 @@
 ### Dependencies
 
+## 5.2.5
+
+### Patch Changes
+
+- 40f3226: Clean up api report warnings and remove unnecessary files
+- Updated dependencies [40f3226]
+  - @backstage-community/plugin-ocm-common@3.6.2
+
+## 5.2.4
+
+### Patch Changes
+
+- a6e850f: Updated dependency `msw` to `1.3.5`.
+
 ## 5.2.3
 
 ### Patch Changes

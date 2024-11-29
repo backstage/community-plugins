@@ -19,10 +19,10 @@ import { useAsync } from 'react-use';
 import { Progress } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 
-import { makeStyles } from '@material-ui/core';
-import Button from '@material-ui/core/Button';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import AddIcon from '@mui/icons-material/Add';
+import Button from '@mui/material/Button';
+import FormHelperText from '@mui/material/FormHelperText';
+import { styled, Theme } from '@mui/material/styles';
 import { FormikErrors } from 'formik';
 
 import { rbacApiRef } from '../../api/RBACBackendClient';
@@ -34,16 +34,19 @@ import { initialPermissionPolicyRowValue } from './const';
 import { PermissionPoliciesFormRow } from './PermissionPoliciesFormRow';
 import { RoleFormValues } from './types';
 
-const useStyles = makeStyles(theme => ({
-  permissionPoliciesForm: {
-    padding: '20px',
-    border: `2px solid ${theme.palette.border}`,
-    borderRadius: '5px',
-  },
-  addButton: {
-    color: theme.palette.primary.light,
-  },
-}));
+const classes = {
+  permissionPoliciesForm: 'permission-policies-form',
+};
+
+const PermissionPoliciesFormContainer = styled('div')(
+  ({ theme }: { theme: Theme }) => ({
+    [`&.${classes.permissionPoliciesForm}`]: {
+      padding: '20px',
+      border: `2px solid ${theme.palette.border}`,
+      borderRadius: '5px',
+    },
+  }),
+);
 
 type PermissionPoliciesFormProps = {
   permissionPoliciesRows: PermissionsData[];
@@ -64,7 +67,6 @@ export const PermissionPoliciesForm = ({
   setFieldError,
   handleBlur,
 }: PermissionPoliciesFormProps) => {
-  const classes = useStyles();
   const rbacApi = useApi(rbacApiRef);
   const conditionRules = useConditionRules();
 
@@ -170,7 +172,9 @@ export const PermissionPoliciesForm = ({
       {permissionPoliciesLoading ? (
         <Progress />
       ) : (
-        <div className={classes.permissionPoliciesForm}>
+        <PermissionPoliciesFormContainer
+          className={classes.permissionPoliciesForm}
+        >
           {permissionPoliciesRows.map((pp, index) => (
             <PermissionPoliciesFormRow
               key={index}
@@ -213,7 +217,9 @@ export const PermissionPoliciesForm = ({
             />
           ))}
           <Button
-            className={classes.addButton}
+            sx={{
+              color: theme => theme.palette.primary.light,
+            }}
             size="small"
             onClick={onRowAdd}
             name="add-permission-policy"
@@ -221,7 +227,7 @@ export const PermissionPoliciesForm = ({
             <AddIcon />
             Add
           </Button>
-        </div>
+        </PermissionPoliciesFormContainer>
       )}
       {!permissionPoliciesLoading &&
         (permissionPoliciesErr?.message ||

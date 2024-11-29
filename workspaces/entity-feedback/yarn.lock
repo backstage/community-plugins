@@ -2528,7 +2528,6 @@ __metadata:
   resolution: "@backstage-community/plugin-entity-feedback-backend@workspace:plugins/entity-feedback-backend"
   dependencies:
     "@backstage-community/plugin-entity-feedback-common": "workspace:^"
-    "@backstage/backend-common": ^0.25.0
     "@backstage/backend-defaults": ^0.5.2
     "@backstage/backend-plugin-api": ^1.0.1
     "@backstage/backend-test-utils": ^1.0.2
