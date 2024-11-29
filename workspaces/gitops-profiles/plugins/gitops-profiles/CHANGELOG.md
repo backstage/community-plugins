@@ -1,5 +1,11 @@
 # @backstage-community/plugin-gitops-profiles
 
+## 0.3.55
+
+### Patch Changes
+
+- 6cd4e02: Fix broken link to docker image with binary of the plugin
+
 ## 0.3.54
 
 ### Patch Changes
