@@ -1,5 +1,11 @@
 # @backstage-community/plugin-azure-storage-explorer-backend
 
+## 0.0.8
+
+### Patch Changes
+
+- 8e1d040: Deprecated `createRouter` and its router options in favour of the new backend system.
+
 ## 0.0.7
 
 ### Patch Changes
