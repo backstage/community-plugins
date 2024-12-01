@@ -1,5 +1,11 @@
 # @backstage-community/plugin-badges-backend
 
+## 0.5.4
+
+### Patch Changes
+
+- 1f907f2: Deprecated `createRouter` and its router options in favour of the new backend system.
+
 ## 0.5.3
 
 ### Patch Changes
