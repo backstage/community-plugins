@@ -11,7 +11,7 @@ The following actions are currently supported in this module:
 Run the following command to install the action package in your Backstage project
 
 ```bash
-yarn workspace backend add @backstage-community/scaffolder-backend-module-kubernetes
+yarn workspace backend add @backstage-community/plugin-scaffolder-backend-module-kubernetes
 ```
 
 ### Installing the action on the backend
