@@ -1,5 +1,5 @@
 ---
-'@backstage-community/scaffolder-backend-module-kubernetes': patch
+'@backstage-community/plugin-scaffolder-backend-module-kubernetes': patch
 ---
 
 The [scaffolder-backend-module-kubernetes](https://github.com/janus-idp/backstage-plugins/tree/main/plugins/kubernetes-actions) plugin from the [janus-idp/backstage-plugins](https://github.com/janus-idp/backstage-plugins) repository was migrated to the [community plugins](https://github.com/backstage/community-plugins), based on commit `9671df5d`.
