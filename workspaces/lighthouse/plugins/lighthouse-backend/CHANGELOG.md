@@ -1,5 +1,11 @@
 # @backstage-community/plugin-lighthouse-backend
 
+## 0.4.17
+
+### Patch Changes
+
+- fe5f938: Deprecated `createScheduler` and its options in favour of the new backend system.
+
 ## 0.4.16
 
 ### Patch Changes

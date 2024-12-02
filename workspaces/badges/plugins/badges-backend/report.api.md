@@ -119,7 +119,7 @@ export type BadgeStyle = (typeof BADGE_STYLES)[number];
 // @public (undocumented)
 export const createDefaultBadgeFactories: () => BadgeFactories;
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 export function createRouter(options: RouterOptions): Promise<express.Router>;
 
 // @public (undocumented)
@@ -135,7 +135,7 @@ export class DefaultBadgeBuilder implements BadgeBuilder {
   protected getMarkdownCode(params: Badge, badgeUrl: string): string;
 }
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 export interface RouterOptions {
   // (undocumented)
   auth?: AuthService;
