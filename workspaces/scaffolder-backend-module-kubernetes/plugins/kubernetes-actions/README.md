@@ -23,7 +23,7 @@ const backend = createBackend();
 
 // Add the following line
 backend.add(
-  import('@backstage-community/scaffolder-backend-module-kubernetes'),
+  import('@backstage-community/plugin-scaffolder-backend-module-kubernetes'),
 );
 
 backend.start();
