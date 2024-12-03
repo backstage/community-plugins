@@ -1,5 +1,11 @@
 # @backstage-community/plugin-explore-backend
 
+## 0.1.8
+
+### Patch Changes
+
+- 00f3ac0: Deprecated `createRouter` and its router options in favour of the new backend system.
+
 ## 0.1.7
 
 ### Patch Changes
