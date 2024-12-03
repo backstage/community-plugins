@@ -3162,7 +3162,7 @@ __metadata:
     "@backstage/integration": ^1.15.1
     "@backstage/plugin-search-backend-node": ^1.3.3
     "@backstage/plugin-search-common": ^1.2.14
-    "@guidanti/backstage-github-discussions-fetcher": ^0.5.0
+    "@guidanti/backstage-github-discussions-fetcher": ^0.6.0
     "@types/fs-extra": ^11
     "@types/luxon": ^3
     "@types/parse-github-url": ^1
@@ -6576,13 +6576,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@guidanti/backstage-github-discussions-fetcher@npm:^0.5.0":
-  version: 0.5.0
-  resolution: "@guidanti/backstage-github-discussions-fetcher@npm:0.5.0"
+"@guidanti/backstage-github-discussions-fetcher@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "@guidanti/backstage-github-discussions-fetcher@npm:0.6.0"
   dependencies:
     effection: 4.0.0-alpha.3
-    github-discussions-fetcher: 0.9.0
-  checksum: 8a76716ced782e5df150c6ea88d989b8a0189da1e40cecd55f829a373885b077a359d3d182fce15ee5d1115f586f651048e6418343a93d84f5382bef076c6f75
+    github-discussions-fetcher: 0.10.0
+  checksum: 3ece94bd515b8fb0daac1ef4bd1f6e0c36042dbd121f534e511a878125958e70183dd6947aecb2e41e0d334cf1e7c27172482e0e0ad6b2eda293c77501983349
   languageName: node
   linkType: hard
 
@@ -17911,9 +17911,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"github-discussions-fetcher@npm:0.9.0":
-  version: 0.9.0
-  resolution: "github-discussions-fetcher@npm:0.9.0"
+"github-discussions-fetcher@npm:0.10.0":
+  version: 0.10.0
+  resolution: "github-discussions-fetcher@npm:0.10.0"
   dependencies:
     "@deno/shim-deno": ~0.18.0
     "@graphql-codegen/cli": ^4.0.0
@@ -17928,9 +17928,9 @@ __metadata:
     chalk: 4.1.2
     effection: 4.0.0-alpha.3
     graphql: 16.8.2
-    pretty-ms: 9.2.0
+    pretty-ms: 7.0.1
     typescript: ^5.6.2
-  checksum: 73b5392ed858ee18c7a7d81d4ad2bae58335ab13eebdc8631790e92b9bb682feea57ef120fc35a21e35453d1e802e077bb59ec2a9ae0e4e9048093e0a817ba4f
+  checksum: 113c9118e4fb37c5febd722bb38f0d4d0b9b15a8b09803f6cfadd1e9e4fc09279146f94d64d84e53769eb8b669edf13fa9891d1ef2b761f312627886e78d5baf
   languageName: node
   linkType: hard
 
@@ -23919,6 +23919,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"parse-ms@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "parse-ms@npm:2.1.0"
+  checksum: d5c66c76cca8df5bd0574e2d11b9c3752893b59b466e74308d4a2f09760dc5436a1633f549cad300fc8c3c19154d14959a3b8333d3b2f7bd75898fe18149d564
+  languageName: node
+  linkType: hard
+
 "parse-ms@npm:^4.0.0":
   version: 4.0.0
   resolution: "parse-ms@npm:4.0.0"
@@ -25033,12 +25040,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pretty-ms@npm:9.2.0":
-  version: 9.2.0
-  resolution: "pretty-ms@npm:9.2.0"
+"pretty-ms@npm:7.0.1":
+  version: 7.0.1
+  resolution: "pretty-ms@npm:7.0.1"
   dependencies:
-    parse-ms: ^4.0.0
-  checksum: d3a5a5b1c8a3417f64a877dba5ee2bacee404b59bc12083466e5e6dce2745e4bd716e1f9860624c7dceb1b4a532e808e4f2a7a03903a132344b3818951e2d125
+    parse-ms: ^2.1.0
+  checksum: d76c4920283b48be91f1d3797a2ce4bd51187d58d2a609ae993c028f73c92d16439449d857af57ccad91ae3a38b30c87307f5589749a056102ebb494c686957e
   languageName: node
   linkType: hard
 
