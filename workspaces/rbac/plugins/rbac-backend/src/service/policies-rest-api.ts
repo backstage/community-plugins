@@ -437,7 +437,7 @@ export class PoliciesServer {
       if (decision.result === AuthorizeResult.DENY) {
         throw new NotAllowedError(); // 403
       }
-      const roleEntityRef = this.getEntityReference(request, true);
+      const roleEntityRef = this.getEntityReference(request, true, true);
 
       const role = await this.enforcer.getFilteredGroupingPolicy(
         1,
@@ -479,6 +479,7 @@ export class PoliciesServer {
           `Invalid role definition. Cause: ${err.message}`,
         );
       }
+      this.transformMemberReferencesToLowercase(roleRaw);
 
       const rMetadata = await this.roleMetadata.findRoleMetadata(roleRaw.name);
 
@@ -546,7 +547,7 @@ export class PoliciesServer {
       if (decision.result === AuthorizeResult.DENY) {
         throw new NotAllowedError(); // 403
       }
-      const roleEntityRef = this.getEntityReference(request, true);
+      const roleEntityRef = this.getEntityReference(request, true, true);
 
       const oldRoleRaw: Role = request.body.oldRole;
 
@@ -571,6 +572,8 @@ export class PoliciesServer {
           `Invalid new role object. Cause: ${err.message}`,
         );
       }
+      this.transformMemberReferencesToLowercase(oldRoleRaw);
+      this.transformMemberReferencesToLowercase(newRoleRaw);
 
       const oldRole = this.transformRoleToArray(oldRoleRaw);
       const newRole = this.transformRoleToArray(newRoleRaw);
@@ -690,7 +693,7 @@ export class PoliciesServer {
           throw new NotAllowedError(); // 403
         }
 
-        const roleEntityRef = this.getEntityReference(request, true);
+        const roleEntityRef = this.getEntityReference(request, true, true);
 
         let roleMembers = [];
         if (request.query.memberReferences) {
@@ -1041,7 +1044,11 @@ export class PoliciesServer {
     return router;
   }
 
-  getEntityReference(request: Request, role?: boolean): string {
+  getEntityReference(
+    request: Request,
+    role?: boolean,
+    lowercase?: boolean,
+  ): string {
     const kind = request.params.kind;
     const namespace = request.params.namespace;
     const name = request.params.name;
@@ -1052,7 +1059,7 @@ export class PoliciesServer {
       throw new InputError(err.message);
     }
 
-    return entityRef;
+    return lowercase ? entityRef.toLocaleLowerCase('en-US') : entityRef;
   }
 
   async transformPolicyArray(
@@ -1118,6 +1125,12 @@ export class PoliciesServer {
       roles.push([entity, role.name]);
     }
     return roles;
+  }
+
+  transformMemberReferencesToLowercase(role: Role) {
+    role.memberReferences = role.memberReferences.map(member =>
+      member.toLocaleLowerCase('en-US'),
+    );
   }
 
   getActionQueries(
