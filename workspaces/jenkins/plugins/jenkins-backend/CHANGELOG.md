@@ -1,5 +1,11 @@
 # @backstage-community/plugin-jenkins-backend
 
+## 0.6.3
+
+### Patch Changes
+
+- 3500d71: Deprecated `createRouter` and its router options in favour of the new backend system.
+
 ## 0.6.2
 
 ### Patch Changes
