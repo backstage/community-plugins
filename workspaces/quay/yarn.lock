@@ -2527,7 +2527,7 @@ __metadata:
   dependencies:
     "@backstage/backend-plugin-api": ^1.0.1
     "@backstage/cli": 0.28.2
-    "@backstage/plugin-scaffolder-node": ^0.5.0
+    "@backstage/plugin-scaffolder-node": ^0.5.1
     "@backstage/plugin-scaffolder-node-test-utils": 0.1.14
     "@spotify/prettier-config": ^15.0.0
     prettier: 3.3.3
@@ -3660,6 +3660,31 @@ __metadata:
     zod: ^3.22.4
     zod-to-json-schema: ^3.20.4
   checksum: ebb1fdcbc31140c98dc92bbd1a585aa3b4840ac9b9f4b59dad01ce86014494554cced8fb81bb6605abe5a6099a41feb7cbebbca1c8bf7d38c48f9ee346a3eb15
+  languageName: node
+  linkType: hard
+
+"@backstage/plugin-scaffolder-node@npm:^0.5.1":
+  version: 0.5.1
+  resolution: "@backstage/plugin-scaffolder-node@npm:0.5.1"
+  dependencies:
+    "@backstage/backend-common": ^0.25.0
+    "@backstage/backend-plugin-api": ^1.0.1
+    "@backstage/catalog-model": ^1.7.0
+    "@backstage/errors": ^1.2.4
+    "@backstage/integration": ^1.15.1
+    "@backstage/plugin-scaffolder-common": ^1.5.6
+    "@backstage/types": ^1.1.1
+    concat-stream: ^2.0.0
+    fs-extra: ^11.2.0
+    globby: ^11.0.0
+    isomorphic-git: ^1.23.0
+    jsonschema: ^1.2.6
+    p-limit: ^3.1.0
+    tar: ^6.1.12
+    winston: ^3.2.1
+    zod: ^3.22.4
+    zod-to-json-schema: ^3.20.4
+  checksum: 8cbbdbee87a537f3aade9cbf4aaea0db4f4c8272fc4c05557acb8fa1b8abad21a581949c7d1fd9d9aca736c0de405086ffa28fda31ad2752fdad2ace6c756917
   languageName: node
   linkType: hard
 
