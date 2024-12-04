@@ -38,7 +38,7 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
-    "@azure/identity": "4.4.1",
+    "@azure/identity": "4.5.0",
     "@azure/storage-blob": "12.24.0",
     "@backstage/backend-common": "^0.25.0",
     "@backstage/backend-plugin-api": "^1.0.1",
