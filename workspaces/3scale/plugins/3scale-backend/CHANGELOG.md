@@ -1,5 +1,11 @@
 ## @janus-idp/backstage-plugin-3scale-backend [1.8.0](https://github.com/janus-idp/backstage-plugins/compare/@janus-idp/backstage-plugin-3scale-backend@1.7.1...@janus-idp/backstage-plugin-3scale-backend@1.8.0) (2024-07-25)
 
+## 3.0.4
+
+### Patch Changes
+
+- cf44ca3: Clean up api report warnings and remove unnecessary files
+
 ## 3.0.3
 
 ### Patch Changes
