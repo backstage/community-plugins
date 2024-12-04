@@ -437,7 +437,7 @@ export class PoliciesServer {
       if (decision.result === AuthorizeResult.DENY) {
         throw new NotAllowedError(); // 403
       }
-      const roleEntityRef = this.getEntityReference(request, true, true);
+      const roleEntityRef = this.getEntityReference(request, true);
 
       const role = await this.enforcer.getFilteredGroupingPolicy(
         1,
@@ -547,7 +547,7 @@ export class PoliciesServer {
       if (decision.result === AuthorizeResult.DENY) {
         throw new NotAllowedError(); // 403
       }
-      const roleEntityRef = this.getEntityReference(request, true, true);
+      const roleEntityRef = this.getEntityReference(request, true);
 
       const oldRoleRaw: Role = request.body.oldRole;
 
@@ -693,7 +693,7 @@ export class PoliciesServer {
           throw new NotAllowedError(); // 403
         }
 
-        const roleEntityRef = this.getEntityReference(request, true, true);
+        const roleEntityRef = this.getEntityReference(request, true);
 
         let roleMembers = [];
         if (request.query.memberReferences) {
@@ -1044,11 +1044,7 @@ export class PoliciesServer {
     return router;
   }
 
-  getEntityReference(
-    request: Request,
-    role?: boolean,
-    lowercase?: boolean,
-  ): string {
+  getEntityReference(request: Request, role?: boolean): string {
     const kind = request.params.kind;
     const namespace = request.params.namespace;
     const name = request.params.name;
@@ -1059,7 +1055,7 @@ export class PoliciesServer {
       throw new InputError(err.message);
     }
 
-    return lowercase ? entityRef.toLocaleLowerCase('en-US') : entityRef;
+    return entityRef;
   }
 
   async transformPolicyArray(
