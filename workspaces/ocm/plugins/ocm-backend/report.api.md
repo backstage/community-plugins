@@ -13,19 +13,13 @@ import type { LoggerService } from '@backstage/backend-plugin-api';
 import type { SchedulerService } from '@backstage/backend-plugin-api';
 import type { SchedulerServiceTaskRunner } from '@backstage/backend-plugin-api';
 
-// Warning: (ae-missing-release-tag) "bundle" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 const bundle: BackendFeature;
 export default bundle;
 
-// Warning: (ae-missing-release-tag) "catalogModuleOCMEntityProvider" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const catalogModuleOCMEntityProvider: BackendFeature;
 
-// Warning: (ae-missing-release-tag) "ManagedClusterProvider" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export class ManagedClusterProvider implements EntityProvider {
     protected constructor(client: CustomObjectsApi, hubResourceName: string, id: string, deps: {
@@ -60,26 +54,8 @@ export class ManagedClusterProvider implements EntityProvider {
     run(): Promise<void>;
 }
 
-// Warning: (ae-missing-release-tag) "ocmPlugin" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const ocmPlugin: BackendFeature;
-
-// Warnings were encountered during analysis:
-//
-// src/bundle.d.ts:1:22 - (ae-undocumented) Missing documentation for "bundle".
-// src/providers/ManagedClusterProvider.d.ts:9:5 - (ae-undocumented) Missing documentation for "client".
-// src/providers/ManagedClusterProvider.d.ts:10:5 - (ae-undocumented) Missing documentation for "hubResourceName".
-// src/providers/ManagedClusterProvider.d.ts:11:5 - (ae-undocumented) Missing documentation for "id".
-// src/providers/ManagedClusterProvider.d.ts:12:5 - (ae-undocumented) Missing documentation for "owner".
-// src/providers/ManagedClusterProvider.d.ts:13:5 - (ae-undocumented) Missing documentation for "logger".
-// src/providers/ManagedClusterProvider.d.ts:15:5 - (ae-undocumented) Missing documentation for "connection".
-// src/providers/ManagedClusterProvider.d.ts:19:5 - (ae-undocumented) Missing documentation for "fromConfig".
-// src/providers/ManagedClusterProvider.d.ts:27:5 - (ae-undocumented) Missing documentation for "connect".
-// src/providers/ManagedClusterProvider.d.ts:29:5 - (ae-undocumented) Missing documentation for "getProviderName".
-// src/providers/ManagedClusterProvider.d.ts:30:5 - (ae-undocumented) Missing documentation for "run".
-// src/providers/module.d.ts:1:22 - (ae-undocumented) Missing documentation for "catalogModuleOCMEntityProvider".
-// src/service/router.d.ts:1:22 - (ae-undocumented) Missing documentation for "ocmPlugin".
 
 // (No @packageDocumentation comment for this package)
 

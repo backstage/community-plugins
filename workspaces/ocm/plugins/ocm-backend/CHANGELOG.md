@@ -1,5 +1,14 @@
 ### Dependencies
 
+## 5.2.4
+
+### Patch Changes
+
+- 056a5ca: Updated dependency `@openapitools/openapi-generator-cli` to `2.15.3`.
+- 40f3226: Clean up api report warnings and remove unnecessary files
+- Updated dependencies [40f3226]
+  - @backstage-community/plugin-ocm-common@3.6.2
+
 ## 5.2.3
 
 ### Patch Changes

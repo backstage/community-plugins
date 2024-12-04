@@ -52,6 +52,7 @@ import {
 import { getClaim, translateOCMToResource } from '../helpers/parser';
 
 /**
+ * @public
  * Provides OpenShift cluster resource entities from Open Cluster Management.
  */
 export class ManagedClusterProvider implements EntityProvider {

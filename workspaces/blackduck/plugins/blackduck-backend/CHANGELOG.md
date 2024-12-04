@@ -1,5 +1,11 @@
 # @backstage-community/plugin-blackduck-backend
 
+## 0.0.8
+
+### Patch Changes
+
+- ca201c4: Deprecated `createRouter` and its router options in favour of the new backend system.
+
 ## 0.0.7
 
 ### Patch Changes

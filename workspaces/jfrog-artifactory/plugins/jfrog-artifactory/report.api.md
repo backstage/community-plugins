@@ -10,18 +10,12 @@ import { Entity } from '@backstage/catalog-model';
 import { JSX as JSX_2 } from 'react';
 import { RouteRef } from '@backstage/core-plugin-api';
 
-// Warning: (ae-missing-release-tag) "isJfrogArtifactoryAvailable" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const isJfrogArtifactoryAvailable: (entity: Entity) => boolean;
 
-// Warning: (ae-missing-release-tag) "JfrogArtifactoryPage" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const JfrogArtifactoryPage: () => JSX_2.Element;
 
-// Warning: (ae-missing-release-tag) "jfrogArtifactoryPlugin" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const jfrogArtifactoryPlugin: BackstagePlugin<
   {

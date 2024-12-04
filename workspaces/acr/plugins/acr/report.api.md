@@ -10,13 +10,9 @@ import { Entity } from '@backstage/catalog-model';
 import { JSX as JSX_2 } from 'react';
 import { RouteRef } from '@backstage/core-plugin-api';
 
-// Warning: (ae-missing-release-tag) "AcrPage" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const AcrPage: () => JSX_2.Element;
 
-// Warning: (ae-missing-release-tag) "acrPlugin" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const acrPlugin: BackstagePlugin<
   {
@@ -26,8 +22,6 @@ export const acrPlugin: BackstagePlugin<
   {}
 >;
 
-// Warning: (ae-missing-release-tag) "isAcrAvailable" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const isAcrAvailable: (entity: Entity) => boolean;
 
