@@ -1,5 +1,13 @@
 ## @janus-idp/backstage-scaffolder-backend-module-annotator [1.3.0](https://github.com/janus-idp/backstage-plugins/compare/@janus-idp/backstage-scaffolder-backend-module-annotator@1.2.1...@janus-idp/backstage-scaffolder-backend-module-annotator@1.3.0) (2024-07-25)
 
+## 2.2.2
+
+### Patch Changes
+
+- b6fe90f: The [scaffolder-backend-module-annotator](https://github.com/janus-idp/backstage-plugins/tree/main/plugins/scaffolder-annotator-action) plugin from the [janus-idp/backstage-plugins](https://github.com/janus-idp/backstage-plugins) repository was migrated to the [community plugins](https://github.com/backstage/community-plugins), based on commit `9671df5d`.
+
+  The migration was performed by following the manual migration steps outlined in the [Community Plugins CONTRIBUTING guide](https://github.com/backstage/community-plugins/blob/main/CONTRIBUTING.md#migrating-a-plugin).
+
 ## 2.2.1
 
 ### Patch Changes
