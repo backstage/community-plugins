@@ -2144,5 +2144,49 @@
   },
   "clientPolicies": {
     "policies": []
-  }
+  },
+  "users": [
+    {
+      "id": "9cfa34f3-acb5-43d6-8cbe-c0ef3ae8555e",
+      "createdTimestamp": 1733415777973,
+      "username": "service-account-backstage",
+      "enabled": true,
+      "totp": false,
+      "emailVerified": false,
+      "serviceAccountClientId": "backstage",
+      "credentials": [],
+      "disableableCredentialTypes": [],
+      "requiredActions": [],
+      "realmRoles": ["default-roles-backstage-community-realm"],
+      "clientRoles": {
+        "realm-management": [
+          "manage-users",
+          "query-groups",
+          "view-users",
+          "query-users"
+        ],
+        "backstage": ["uma_protection"],
+        "account": ["view-groups"]
+      },
+      "notBefore": 0,
+      "groups": []
+    },
+    {
+      "id": "1527313d-b2ca-4da7-a968-fe8d61d9736b",
+      "createdTimestamp": 1733419640462,
+      "username": "test",
+      "enabled": true,
+      "totp": false,
+      "emailVerified": true,
+      "firstName": "Tester",
+      "lastName": "Test",
+      "email": "test@example.com",
+      "credentials": [],
+      "disableableCredentialTypes": [],
+      "requiredActions": [],
+      "realmRoles": ["default-roles-backstage-community-realm"],
+      "notBefore": 0,
+      "groups": ["/backstage"]
+    }
+  ]
 }
