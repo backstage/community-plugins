@@ -1,7 +1,0 @@
----
-'@backstage-community/plugin-scaffolder-backend-module-annotator': patch
----
-
-The [scaffolder-backend-module-annotator](https://github.com/janus-idp/backstage-plugins/tree/main/plugins/scaffolder-annotator-action) plugin from the [janus-idp/backstage-plugins](https://github.com/janus-idp/backstage-plugins) repository was migrated to the [community plugins](https://github.com/backstage/community-plugins), based on commit `9671df5d`.
-
-The migration was performed by following the manual migration steps outlined in the [Community Plugins CONTRIBUTING guide](https://github.com/backstage/community-plugins/blob/main/CONTRIBUTING.md#migrating-a-plugin).
