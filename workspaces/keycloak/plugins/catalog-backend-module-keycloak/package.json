@@ -32,7 +32,7 @@
     "lint:fix": "backstage-cli package lint --fix",
     "postpack": "backstage-cli package postpack",
     "prepack": "backstage-cli package prepack",
-    "start": "opener http://localhost:8080/admin/master/console/#/backstage-community-realm && opener http://localhost:7007/catalog/entities && turbo run start:plugin start:keycloak",
+    "start": "open-cli http://localhost:8080/admin/master/console/#/backstage-community-realm && open-cli http://localhost:7007/catalog/entities && yarn run start:plugin start:keycloak",
     "start:keycloak": "podman run -p 8080:8080 -e 'KEYCLOAK_ADMIN=admin' -e 'KEYCLOAK_ADMIN_PASSWORD=admin' -v ./__fixtures__/keycloak-realm.json:/opt/keycloak/data/import/keycloak-realm.json$([[ $OSTYPE = linux* ]] && echo ':z') quay.io/keycloak/keycloak:22.0.1 start-dev --import-realm",
     "start:plugin": "backstage-cli package start",
     "test": "backstage-cli package test --passWithNoTests --coverage",
@@ -45,10 +45,10 @@
     "@backstage/catalog-model": "^1.7.2",
     "@backstage/errors": "^1.2.6",
     "@backstage/plugin-catalog-node": "^1.15.0",
+    "@common.js/p-limit": "^6.1.0",
     "@keycloak/keycloak-admin-client": "26.1.0",
     "inclusion": "^1.0.1",
     "lodash": "^4.17.21",
-    "p-limit": "^6.1.0",
     "pg-format": "^1.0.4",
     "uuid": "^9.0.1"
   },
@@ -62,6 +62,7 @@
     "@types/lodash": "4.17.13",
     "@types/uuid": "9.0.8",
     "deepmerge": "4.3.1",
+    "open-cli": "^8.0.0",
     "prettier": "3.4.2"
   },
   "files": [

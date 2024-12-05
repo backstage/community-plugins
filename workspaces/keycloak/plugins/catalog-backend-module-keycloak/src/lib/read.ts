@@ -17,12 +17,12 @@
 import type { LoggerService } from '@backstage/backend-plugin-api';
 import type { GroupEntity, UserEntity } from '@backstage/catalog-model';
 
+import pLimit from '@common.js/p-limit';
 import type KeycloakAdminClient from '@keycloak/keycloak-admin-client';
 import type GroupRepresentation from '@keycloak/keycloak-admin-client/lib/defs/groupRepresentation';
 import type UserRepresentation from '@keycloak/keycloak-admin-client/lib/defs/userRepresentation';
 import type { Groups } from '@keycloak/keycloak-admin-client/lib/resources/groups';
 import type { Users } from '@keycloak/keycloak-admin-client/lib/resources/users';
-import pLimit from 'p-limit';
 
 import { KeycloakProviderConfig } from './config';
 import {
