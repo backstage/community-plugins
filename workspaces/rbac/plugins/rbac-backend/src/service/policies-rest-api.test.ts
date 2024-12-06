@@ -2105,31 +2105,30 @@ describe('REST policies api', () => {
       );
     });
 
-    ['user:default/permission_admin', 'user:default/Permission_Admin'].forEach(
-      member => {
-        it(`should be created role with description for ${member}`, async () => {
-          const result = await request(app)
-            .post('/roles')
-            .send({
-              memberReferences: [member],
-              name: 'role:default/rbac_admin',
-              metadata: {
-                description: 'some test description',
-              },
-            });
-
-          expect(result.statusCode).toBe(201);
-          expect(enforcerDelegateMock.addGroupingPolicies).toHaveBeenCalledWith(
-            [['user:default/permission_admin', 'role:default/rbac_admin']],
-            {
-              roleEntityRef: 'role:default/rbac_admin',
-              source: 'rest',
-              author: 'user:default/guest',
+    it.each(['user:default/permission_admin', 'user:default/Permission_Admin'])(
+      `should be created role with description`,
+      async member => {
+        const result = await request(app)
+          .post('/roles')
+          .send({
+            memberReferences: [member],
+            name: 'role:default/rbac_admin',
+            metadata: {
               description: 'some test description',
-              modifiedBy: 'user:default/guest',
             },
-          );
-        });
+          });
+
+        expect(result.statusCode).toBe(201);
+        expect(enforcerDelegateMock.addGroupingPolicies).toHaveBeenCalledWith(
+          [['user:default/permission_admin', 'role:default/rbac_admin']],
+          {
+            roleEntityRef: 'role:default/rbac_admin',
+            source: 'rest',
+            author: 'user:default/guest',
+            description: 'some test description',
+            modifiedBy: 'user:default/guest',
+          },
+        );
       },
     );
 
@@ -2171,21 +2170,20 @@ describe('REST policies api', () => {
       });
     });
 
-    ['user:default/permission_admin', 'user:default/Permission_Admin'].forEach(
-      duplicate => {
-        it(`should fail to create role - duplicate ${duplicate}`, async () => {
-          const result = await request(app)
-            .post('/roles')
-            .send({
-              memberReferences: ['user:default/permission_admin', duplicate],
-              name: 'role:default/rbac_admin',
-            });
-
-          expect(result.statusCode).toBe(409);
-          expect(result.body.error).toEqual({
-            name: 'ConflictError',
-            message: `Duplicate role members found; user:default/permission_admin, role:default/rbac_admin is a duplicate`,
+    it.each(['user:default/permission_admin', 'user:default/Permission_Admin'])(
+      'should fail to create role - duplicate',
+      async duplicate => {
+        const result = await request(app)
+          .post('/roles')
+          .send({
+            memberReferences: ['user:default/permission_admin', duplicate],
+            name: 'role:default/rbac_admin',
           });
+
+        expect(result.statusCode).toBe(409);
+        expect(result.body.error).toEqual({
+          name: 'ConflictError',
+          message: `Duplicate role members found; user:default/permission_admin, role:default/rbac_admin is a duplicate`,
         });
       },
     );
@@ -2634,11 +2632,14 @@ describe('REST policies api', () => {
       });
     });
 
-    it('should update role', async () => {
+    it.each([
+      ['user:default/permission_admin', 'user:default/test'],
+      ['user:default/Permission_Admin', 'user:default/Test'],
+    ])('should update role', async (oldUser, newUser) => {
       enforcerDelegateMock.hasGroupingPolicy = jest
         .fn()
         .mockImplementation(async (...param: string[]): Promise<boolean> => {
-          if (param[0] === 'user:default/test') {
+          if (param[0] === newUser.toLocaleLowerCase('en-US')) {
             return false;
           }
           return true;
@@ -2651,15 +2652,25 @@ describe('REST policies api', () => {
         .put('/roles/role/default/rbac_admin')
         .send({
           oldRole: {
-            memberReferences: ['user:default/permission_admin'],
+            memberReferences: [oldUser],
           },
           newRole: {
-            memberReferences: ['user:default/test'],
+            memberReferences: [newUser],
             name: 'role:default/rbac_admin',
           },
         });
 
       expect(result.statusCode).toEqual(200);
+      expect(enforcerDelegateMock.hasGroupingPolicy).toHaveBeenNthCalledWith(
+        1,
+        'user:default/test',
+        'role:default/rbac_admin',
+      );
+      expect(enforcerDelegateMock.hasGroupingPolicy).toHaveBeenNthCalledWith(
+        2,
+        'user:default/permission_admin',
+        'role:default/rbac_admin',
+      );
     });
 
     it('should update role where newRole has multiple roles', async () => {
@@ -2972,12 +2983,16 @@ describe('REST policies api', () => {
       });
     });
 
-    ['group:default/test', 'group:default/Test'].forEach(member => {
-      it(`should delete a user / group ${member} from a role`, async () => {
+    it.each(['group:default/test', 'group:default/Test'])(
+      'should delete a user / group %s from a role',
+      async member => {
         enforcerDelegateMock.hasGroupingPolicy = jest
           .fn()
           .mockImplementation(async (..._param: string[]): Promise<boolean> => {
-            return true;
+            if (_param[0] === 'group:default/test') {
+              return true;
+            }
+            return false;
           });
         enforcerDelegateMock.removeGroupingPolicies = jest
           .fn()
@@ -2987,8 +3002,13 @@ describe('REST policies api', () => {
         enforcerDelegateMock.getFilteredGroupingPolicy = jest
           .fn()
           .mockImplementation(
-            async (_index: number, ..._filter: string[]): Promise<string[]> => {
-              return ['group:default/test', 'role/default/rbac_admin', 'rest'];
+            async (
+              _index: number,
+              ..._filter: string[]
+            ): Promise<string[][]> => {
+              return [
+                ['group:default/test', 'role/default/rbac_admin', 'rest'],
+              ];
             },
           );
 
@@ -2997,8 +3017,15 @@ describe('REST policies api', () => {
           .send();
 
         expect(result.statusCode).toEqual(204);
-      });
-    });
+        expect(
+          enforcerDelegateMock.getFilteredGroupingPolicy,
+        ).toHaveBeenCalledWith(
+          0,
+          'group:default/test',
+          'role:default/rbac_admin',
+        );
+      },
+    );
 
     it('should delete a role', async () => {
       enforcerDelegateMock.hasGroupingPolicy = jest
