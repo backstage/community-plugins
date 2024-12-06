@@ -103,6 +103,7 @@ const handlerContext = {
   discovery,
   logger: mockServices.logger.mock(),
   auth: mockServices.auth(),
+  reader: mockServices.urlReader.mock(),
   config: ConfigReader.fromConfigs([]),
 };
 
