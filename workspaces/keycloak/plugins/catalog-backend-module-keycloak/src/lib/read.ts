@@ -17,12 +17,14 @@
 import type { LoggerService } from '@backstage/backend-plugin-api';
 import type { GroupEntity, UserEntity } from '@backstage/catalog-model';
 
-import pLimit from '@common.js/p-limit';
 import type KeycloakAdminClient from '@keycloak/keycloak-admin-client';
 import type GroupRepresentation from '@keycloak/keycloak-admin-client/lib/defs/groupRepresentation';
 import type UserRepresentation from '@keycloak/keycloak-admin-client/lib/defs/userRepresentation';
 import type { Groups } from '@keycloak/keycloak-admin-client/lib/resources/groups';
 import type { Users } from '@keycloak/keycloak-admin-client/lib/resources/users';
+// @ts-ignore
+import inclusion from 'inclusion';
+import { LimitFunction } from 'p-limit';
 
 import { KeycloakProviderConfig } from './config';
 import {
@@ -38,6 +40,21 @@ import {
   UserRepresentationWithEntity,
   UserTransformer,
 } from './types';
+
+let limitFunc: ((concurrency: number) => LimitFunction) | undefined;
+
+export async function loadPLimitModule() {
+  const pLimitCJSModule = await inclusion('p-limit');
+  limitFunc = pLimitCJSModule.default;
+}
+
+export function limitedConcurrency(concurrency: number): LimitFunction {
+  if (!limitFunc) {
+    throw new Error('pLimit is not initialized. Call loadPLimitModule first.');
+  }
+  const limit = limitFunc(concurrency);
+  return limit;
+}
 
 export const parseGroup = async (
   keycloakGroup: GroupRepresentationWithParent,
@@ -121,9 +138,10 @@ export async function getEntities<T extends Users | Groups>(
 
   const pageCount = Math.ceil(entityCount / entityQuerySize);
 
+  const limit = limitedConcurrency(concurrency);
   // The next line acts like range in python
   const entityPromises = Array.from({ length: pageCount }, (_, i) =>
-    pLimit(concurrency)(() =>
+    limit(() =>
       entities
         .find({
           realm: config.realm,
@@ -276,7 +294,8 @@ export const readKeycloakRealm = async (
       [] as GroupRepresentationWithParent[],
     );
   }
-  const limit = pLimit(concurrency);
+
+  const limit = limitedConcurrency(concurrency);
   const kGroups = await Promise.all(
     rawKGroups.map(g =>
       limit(async () => {
