@@ -20,6 +20,9 @@ import {
 import { notificationService } from '@backstage/plugin-notifications-node';
 import { createRouter } from './service/router';
 
+/**
+ * @public
+ */
 export const feedbackPlugin = createBackendPlugin({
   pluginId: 'feedback',
   register(env) {
