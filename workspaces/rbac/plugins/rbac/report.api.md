@@ -14,8 +14,6 @@ import { default as RbacIcon } from '@mui/icons-material/VpnKeyOutlined';
 import { RouteRef } from '@backstage/core-plugin-api';
 import { SubRouteRef } from '@backstage/core-plugin-api';
 
-// Warning: (ae-missing-release-tag) "Administration" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const Administration: () => JSX_2.Element | null;
 
@@ -23,27 +21,17 @@ export { AdminPanelSettingsOutlinedIcon }
 
 export { RbacIcon }
 
-// Warning: (ae-missing-release-tag) "RbacPage" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const RbacPage: ({ useHeader }: {
     useHeader?: boolean | undefined;
 }) => JSX_2.Element;
 
-// Warning: (ae-missing-release-tag) "rbacPlugin" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const rbacPlugin: BackstagePlugin<    {
 root: RouteRef<undefined>;
 role: SubRouteRef<PathParams<"/roles/:roleKind/:roleNamespace/:roleName">>;
 createRole: SubRouteRef<undefined>;
 }, {}, {}>;
-
-// Warnings were encountered during analysis:
-//
-// src/plugin.d.ts:2:22 - (ae-undocumented) Missing documentation for "rbacPlugin".
-// src/plugin.d.ts:7:22 - (ae-undocumented) Missing documentation for "RbacPage".
-// src/plugin.d.ts:10:22 - (ae-undocumented) Missing documentation for "Administration".
 
 // (No @packageDocumentation comment for this package)
 
