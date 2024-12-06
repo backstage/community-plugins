@@ -45,10 +45,10 @@
     "@backstage/catalog-model": "^1.7.0",
     "@backstage/errors": "^1.2.4",
     "@backstage/plugin-catalog-node": "^1.13.1",
-    "@common.js/p-limit": "^6.1.0",
     "@keycloak/keycloak-admin-client": "24.0.5",
     "inclusion": "^1.0.1",
     "lodash": "^4.17.21",
+    "p-limit": "^6.1.0",
     "pg-format": "^1.0.4",
     "uuid": "^9.0.1"
   },

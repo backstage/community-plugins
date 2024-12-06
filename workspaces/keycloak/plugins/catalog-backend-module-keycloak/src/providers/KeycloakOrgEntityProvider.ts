@@ -44,7 +44,7 @@ import {
   UserTransformer,
 } from '../lib';
 import { readProviderConfigs } from '../lib/config';
-import { readKeycloakRealm } from '../lib/read';
+import { loadPLimitModule, readKeycloakRealm } from '../lib/read';
 
 /**
  * Options for {@link KeycloakOrgEntityProvider}.
@@ -232,6 +232,7 @@ export class KeycloakOrgEntityProvider implements EntityProvider {
 
     await kcAdminClient.auth(credentials);
 
+    await loadPLimitModule();
     const { users, groups } = await readKeycloakRealm(
       kcAdminClient,
       provider,
