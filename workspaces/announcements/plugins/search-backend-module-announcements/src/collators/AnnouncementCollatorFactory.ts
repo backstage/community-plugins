@@ -26,17 +26,32 @@ import {
   LoggerService,
 } from '@backstage/backend-plugin-api';
 
+/**
+ * Indexable document for announcements.
+ *
+ * @public
+ */
 type IndexableAnnouncementDocument = IndexableDocument & {
   excerpt: string;
   createdAt: string;
 };
 
+/**
+ * Options for {@link AnnouncementCollatorFactory}
+ *
+ * @public
+ */
 type AnnouncementCollatorOptions = {
   logger: LoggerService;
   discoveryApi: DiscoveryService;
   auth: AuthService;
 };
 
+/**
+ * Search collator responsibile for indexing announcements.
+ *
+ * @public
+ */
 export class AnnouncementCollatorFactory implements DocumentCollatorFactory {
   public readonly type: string = 'announcements';
 

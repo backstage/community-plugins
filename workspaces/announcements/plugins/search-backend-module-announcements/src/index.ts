@@ -20,4 +20,4 @@
  * @packageDocumentation
  */
 
-export { searchModuleAnnouncements as default } from './module';
+export { searchModuleAnnouncementsCollator as default } from './module';

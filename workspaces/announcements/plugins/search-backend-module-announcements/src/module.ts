@@ -21,7 +21,12 @@ import {
 import { searchIndexRegistryExtensionPoint } from '@backstage/plugin-search-backend-node/alpha';
 import { AnnouncementCollatorFactory } from './collators/AnnouncementCollatorFactory';
 
-export const searchModuleAnnouncements = createBackendModule({
+/**
+ * Search backend module for announcements.
+ *
+ * @public
+ */
+export const searchModuleAnnouncementsCollator = createBackendModule({
   pluginId: 'search',
   moduleId: 'announcements',
   register(reg) {
