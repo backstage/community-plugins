@@ -72,7 +72,7 @@
     "@backstage/core-app-api": "1.15.1",
     "@backstage/dev-utils": "1.1.2",
     "@backstage/test-utils": "1.7.0",
-    "@playwright/test": "1.48.2",
+    "@playwright/test": "1.49.0",
     "@redhat-developer/red-hat-developer-hub-theme": "0.4.0",
     "@testing-library/jest-dom": "6.4.8",
     "@testing-library/react": "14.3.1",
