@@ -15,22 +15,50 @@ jobs:
       workspaces: ${{ steps.find-changed-workspaces.outputs.workspaces }}
     steps:
       - name: Calculate number of commits in PR
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7
         id: calculate-commits
-        env:
-          COMMITS: ${{ github.event.pull_request.commits }}
-        run: echo "NUMBER_OF_COMMITS=$(($COMMITS + 1))" >> $GITHUB_ENV
+        with:
+          script: |
+            const head_ref = context.payload.pull_request.head.label;
+            console.log({head_ref})
+            const query = `query($owner:String!, $name:String!, $ref:String!, $head_ref:String!) {
+              repository(owner:$owner, name:$name){
+                ref(qualifiedName:$ref) {
+                  name
+                  compare(headRef:$head_ref) {
+                    aheadBy
+                    behindBy
+                    baseTarget {
+                      abbreviatedOid
+                    }
+                  }
+                }
+              }
+            }`;
+            const variables = {
+              owner: context.repo.owner,
+              name: context.repo.repo,
+              ref: "refs/heads/main",
+              head_ref
+            }
+            const {repository} = await github.graphql(query, variables)
+            console.log(repository)
+            const { aheadBy, behindBy, baseTarget } = repository.ref.compare;
+            core.setOutput("aheadBy", aheadBy);
+            core.setOutput("behindBy", behindBy);
+            core.setOutput("baseTarget", baseTarget.abbreviatedOid);
 
       - name: Checkout base branch for diff purposes
         uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f # v4
         with:
           ref: ${{ github.event.pull_request.base.ref }}
-          fetch-depth: 50 # TODO(awanlin): Temporary fix
+          fetch-depth: ${{ steps.calculate-commits.outputs.behindBy }}
 
       - name: Checkout head branch
         uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f # v4
         with:
           # Needed for diff
-          fetch-depth: ${{ env.NUMBER_OF_COMMITS }}
+          fetch-depth: ${{ steps.calculate-commits.outputs.aheadBy }}
 
       - name: Set up Node
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
