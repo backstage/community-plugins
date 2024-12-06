@@ -22,6 +22,9 @@ import { catalogProcessingExtensionPoint } from '@backstage/plugin-catalog-node/
 
 import { ThreeScaleApiEntityProvider } from './providers';
 
+/**
+ * @public
+ */
 export const catalogModule3ScaleEntityProvider = createBackendModule({
   moduleId: 'catalog-backend-module-3scale',
   pluginId: 'catalog',

@@ -1,5 +1,11 @@
 # @backstage-community/plugin-jenkins
 
+## 0.12.2
+
+### Patch Changes
+
+- 69f11c0: Fix typo in the readme
+
 ## 0.12.1
 
 ### Patch Changes

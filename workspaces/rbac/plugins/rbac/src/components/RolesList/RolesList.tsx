@@ -23,7 +23,7 @@ import Box from '@mui/material/Box';
 import { useCheckIfLicensePluginEnabled } from '../../hooks/useCheckIfLicensePluginEnabled';
 import { useLocationToast } from '../../hooks/useLocationToast';
 import { useRoles } from '../../hooks/useRoles';
-import { RolesData } from '../../types';
+import { filterTableData } from '../../utils/filter-table-data';
 import DownloadCSVLink from '../DownloadUserStatistics';
 import { SnackbarAlert } from '../SnackbarAlert';
 import { useToast } from '../ToastContext';
@@ -35,7 +35,7 @@ export const RolesList = () => {
   const { toastMessage, setToastMessage } = useToast();
   const { openDialog, setOpenDialog, deleteComponent } = useDeleteDialog();
   useLocationToast(setToastMessage);
-  const [roles, setRoles] = React.useState<number | undefined>();
+  const [searchText, setSearchText] = React.useState<string>();
   const { loading, data, retry, createRoleAllowed, createRoleLoading, error } =
     useRoles();
 
@@ -48,9 +48,10 @@ export const RolesList = () => {
   const onAlertClose = () => {
     setToastMessage('');
   };
-  const onSearchResultsChange = (searchResults: RolesData[]) => {
-    setRoles(searchResults.length);
-  };
+  const filteredRoles = React.useMemo(
+    () => filterTableData({ data, columns, searchText }),
+    [data, searchText],
+  );
 
   const getErrorWarning = () => {
     const errorTitleBase = 'Something went wrong while fetching the';
@@ -100,14 +101,13 @@ export const RolesList = () => {
       <Table
         title={
           !loading && data?.length
-            ? `All roles (${roles ?? data.length})`
+            ? `All roles (${filteredRoles.length})`
             : `All roles`
         }
         options={{ padding: 'default', search: true, paging: true }}
         data={data}
         isLoading={loading}
         columns={columns}
-        renderSummaryRow={summary => onSearchResultsChange(summary.data)}
         emptyContent={
           <Box
             data-testid="roles-table-empty"
@@ -116,6 +116,7 @@ export const RolesList = () => {
             No records found
           </Box>
         }
+        onSearchChange={setSearchText}
       />
       {isLicensePluginEnabled.isEnabled && <DownloadCSVLink />}
       {openDialog && (

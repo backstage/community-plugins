@@ -1,5 +1,22 @@
 # @backstage-community/plugin-azure-devops
 
+## 0.7.0
+
+### Minor Changes
+
+- 7ce46dc: Backstage version bump to v1.33.5
+
+### Patch Changes
+
+- Updated dependencies [7ce46dc]
+  - @backstage-community/plugin-azure-devops-common@0.5.0
+
+## 0.6.3
+
+### Patch Changes
+
+- d71fade: Reverted the MUI v5 migration
+
 ## 0.6.2
 
 ### Patch Changes

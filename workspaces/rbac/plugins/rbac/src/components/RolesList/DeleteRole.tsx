@@ -42,14 +42,15 @@ const DeleteRole = ({
   };
 
   return (
-    <Tooltip title={tooltip || ''}>
+    <Tooltip title={tooltip ?? ''}>
       <Typography component="span" data-testid={dataTestId}>
         <IconButton
-          color="inherit"
           onClick={() => openDialog(roleName)}
           aria-label="Delete"
           disabled={disable}
-          title={tooltip || 'Delete Role'}
+          title={tooltip ?? 'Delete Role'}
+          style={{ padding: '0.5rem', borderRadius: '50%' }}
+          sx={{ '&:hover': { borderRadius: '50%' } }}
         >
           <Delete />
         </IconButton>

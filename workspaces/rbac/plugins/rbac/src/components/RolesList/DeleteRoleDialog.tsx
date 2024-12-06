@@ -63,6 +63,9 @@ const DeleteRoleDialog = ({
 
   const rbacApi = useApi(rbacApiRef);
 
+  const dialogBackgroundColor = (theme: { palette: { mode: string } }) =>
+    theme.palette.mode === 'dark' ? '#1b1d21' : '#fff';
+
   const deleteRole = async () => {
     try {
       const policies = await rbacApi.getAssociatedPolicies(roleName);
@@ -105,11 +108,19 @@ const DeleteRoleDialog = ({
 
   return (
     <Dialog maxWidth="md" open={open} onClose={closeDialog}>
-      <DialogTitle id="delete-role" title="Delete Role">
+      <DialogTitle
+        id="delete-role"
+        title="Delete Role"
+        sx={{
+          marginBottom: '0 !important',
+          backgroundColor: dialogBackgroundColor,
+        }}
+      >
         <Box
           sx={{
             display: 'flex',
             alignItems: 'center',
+            justifyContent: 'space-between',
             gap: theme => theme.spacing(1),
           }}
         >
@@ -119,6 +130,7 @@ const DeleteRoleDialog = ({
                 color: 'red',
                 alignContent: 'center',
                 marginTop: '7px',
+                marginRight: '5px',
                 marginBottom: '-3px',
               }}
               fontSize="small"
@@ -129,10 +141,10 @@ const DeleteRoleDialog = ({
           <IconButton
             aria-label="close"
             sx={{
-              position: 'absolute',
-              right: theme => theme.spacing(1),
-              top: theme => theme.spacing(1),
+              padding: '8px !important',
               color: theme => theme.palette.grey[500],
+              borderRadius: '50%',
+              '&:hover': { borderRadius: '50%' },
             }}
             onClick={closeDialog}
           >
@@ -140,7 +152,7 @@ const DeleteRoleDialog = ({
           </IconButton>
         </Box>
       </DialogTitle>
-      <DialogContent>
+      <DialogContent sx={{ backgroundColor: dialogBackgroundColor }}>
         Are you sure you want to delete the role{' '}
         <Typography component="span" sx={{ fontWeight: 'bold' }}>
           {roleName}
@@ -166,7 +178,10 @@ const DeleteRoleDialog = ({
         <TextField
           name="delete-role"
           data-testid="delete-role"
-          style={{ marginTop: '24px' }}
+          sx={{
+            marginTop: '24px',
+            backgroundColor: `${dialogBackgroundColor} !important`,
+          }}
           required
           variant="outlined"
           label="Role name"
@@ -182,11 +197,12 @@ const DeleteRoleDialog = ({
         </Box>
       )}
       <DialogActions
-        style={{
+        sx={{
           paddingLeft: '25px',
           paddingBottom: '30px',
           justifyContent: 'left',
           paddingTop: '16px',
+          backgroundColor: dialogBackgroundColor,
         }}
       >
         <Button

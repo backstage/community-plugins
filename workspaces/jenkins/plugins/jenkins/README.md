@@ -63,7 +63,7 @@ const serviceEntityPage = (
 );
 ```
 
-If you are using Backstage's [new frontend system](https://backstage.io/docs/frontend-system/), simply import `sonarQubePlugin` in your `App.tsx` and add it to your app's `features` array:
+If you are using Backstage's [new frontend system](https://backstage.io/docs/frontend-system/), simply import `jenkinsPlugin` in your `App.tsx` and add it to your app's `features` array:
 
 ```typescript
 import jenkinsPlugin from '@backstage-community/plugin-jenkins/alpha';
