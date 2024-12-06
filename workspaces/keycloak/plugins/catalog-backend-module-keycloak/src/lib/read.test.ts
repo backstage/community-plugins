@@ -31,6 +31,7 @@ import {
 import { KeycloakProviderConfig } from './config';
 import {
   getEntities,
+  loadPLimitModule,
   parseGroup,
   parseUser,
   processGroupsRecursively,
@@ -48,6 +49,10 @@ const config: KeycloakProviderConfig = {
 const logger = mockServices.logger.mock();
 
 describe('readKeycloakRealm', () => {
+  beforeAll(async () => {
+    await loadPLimitModule();
+  });
+
   it('should return the correct number of users and groups (Version 23 or Higher)', async () => {
     const client =
       new KeycloakAdminClientMockServerv24() as unknown as KeycloakAdminClient;

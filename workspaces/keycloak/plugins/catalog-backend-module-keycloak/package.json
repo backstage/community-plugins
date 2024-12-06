@@ -49,6 +49,7 @@
     "@keycloak/keycloak-admin-client": "26.1.0",
     "inclusion": "^1.0.1",
     "lodash": "^4.17.21",
+    "p-limit": "^6.1.0",
     "pg-format": "^1.0.4",
     "uuid": "^9.0.1"
   },

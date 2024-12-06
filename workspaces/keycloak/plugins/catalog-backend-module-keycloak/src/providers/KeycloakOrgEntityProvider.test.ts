@@ -71,6 +71,22 @@ describe.each([
   let keycloakLogger: ServiceMock<LoggerService>;
   let schedule: SchedulerServiceTaskRunnerMock;
 
+  const mockPLimit = jest.fn().mockImplementation((_concurrency: number) => {
+    // Create function repetedly calling the original function without limit implementation
+    const limit = jest
+      .fn()
+      .mockImplementation(
+        async <Arguments extends unknown[], ReturnType>(
+          fn: (...args: Arguments) => ReturnType | PromiseLike<ReturnType>,
+          ...args: Arguments
+        ): Promise<ReturnType> => {
+          const result = fn(...args);
+          return result instanceof Promise ? result : Promise.resolve(result); // Ensure result is always a Promise
+        },
+      );
+    return limit;
+  });
+
   beforeEach(() => {
     jest.clearAllMocks();
     authMock.mockReset();
@@ -78,7 +94,15 @@ describe.each([
     logger = mockServices.logger.mock({
       child: () => keycloakLogger,
     });
-    inclusion.mockImplementation(() => ({ default: mockImplementation })); // Return the correct mock based on the version
+    inclusion.mockImplementation((libName: string) => {
+      if (libName === '@keycloak/keycloak-admin-client') {
+        return { default: mockImplementation };
+      }
+      if (libName === 'p-limit') {
+        return { default: mockPLimit };
+      }
+      throw new Error(`Unexpected inclusion of ${libName}`);
+    }); // Return the correct mock based on the version
     schedule = scheduler.createScheduledTaskRunner(
       '' as unknown as SchedulerServiceTaskScheduleDefinition,
     ) as SchedulerServiceTaskRunnerMock;
