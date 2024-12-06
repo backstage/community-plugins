@@ -2938,8 +2938,8 @@ describe('REST policies api', () => {
       enforcerDelegateMock.getFilteredGroupingPolicy = jest
         .fn()
         .mockImplementation(
-          async (_index: number, ..._filter: string[]): Promise<string[]> => {
-            return ['group:default/test', 'role/default/rbac_admin', 'rest'];
+          async (_index: number, ..._filter: string[]): Promise<string[][]> => {
+            return [['group:default/test', 'role/default/rbac_admin', 'rest']];
           },
         );
 
@@ -2965,7 +2965,7 @@ describe('REST policies api', () => {
       enforcerDelegateMock.getFilteredGroupingPolicy = jest
         .fn()
         .mockImplementation(
-          async (_index: number, ..._filter: string[]): Promise<string[]> => {
+          async (_index: number, ..._filter: string[]): Promise<string[][]> => {
             return [];
           },
         );
@@ -3066,8 +3066,8 @@ describe('REST policies api', () => {
       enforcerDelegateMock.getFilteredGroupingPolicy = jest
         .fn()
         .mockImplementation(
-          async (_index: number, ..._filter: string[]): Promise<string[]> => {
-            return ['group:default/test', 'role/default/rbac_admin', 'rest'];
+          async (_index: number, ..._filter: string[]): Promise<string[][]> => {
+            return [['group:default/test', 'role/default/rbac_admin', 'rest']];
           },
         );
       enforcerDelegateMock.hasGroupingPolicy = jest
