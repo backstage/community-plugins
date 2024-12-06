@@ -51,18 +51,16 @@ const createJobWithFile = (jenkins: Jenkins) => {
             type: 'string',
             title: 'Folder',
           },
-          serverUrl: {
-            type: 'string',
-            title: 'URL',
-          },
         },
       },
     },
     async handler(ctx) {
       try {
         const { configPath, folderName } = ctx.input;
-        const outputDir = resolveSafeChildPath(ctx.workspacePath, configPath);
-        const jobXml = await fs.readFile(outputDir, 'utf8');
+        const jobXml = await fs.readFile(
+          resolveSafeChildPath(ctx.workspacePath, configPath),
+          'utf8',
+        );
 
         ctx.logger.info(
           `Creating jenkins job ${ctx.input.jobName} under folder ${ctx.input.folderName}`,
