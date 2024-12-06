@@ -699,7 +699,7 @@ export class PoliciesServer {
         if (request.query.memberReferences) {
           const memberReference = this.getFirstQuery(
             request.query.memberReferences!,
-          );
+          ).toLocaleLowerCase('en-US');
           const gp = await this.enforcer.getFilteredGroupingPolicy(
             0,
             memberReference,
