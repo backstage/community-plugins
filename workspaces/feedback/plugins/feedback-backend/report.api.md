@@ -11,17 +11,26 @@ import { LoggerService } from '@backstage/backend-plugin-api';
 import { NotificationService } from '@backstage/plugin-notifications-node';
 import { PluginEndpointDiscovery } from '@backstage/backend-common';
 
-// Warning: (ae-forgotten-export) The symbol "RouterOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "createRouter" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public @deprecated (undocumented)
 export function createRouter(options: RouterOptions): Promise<express.Router>;
 
-// Warning: (ae-missing-release-tag) "feedbackPlugin" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 const feedbackPlugin: BackendFeature;
 export default feedbackPlugin;
+
+// @public @deprecated (undocumented)
+export interface RouterOptions {
+  // (undocumented)
+  auth: AuthService;
+  // (undocumented)
+  config: Config;
+  // (undocumented)
+  discovery: PluginEndpointDiscovery;
+  // (undocumented)
+  logger: LoggerService;
+  // (undocumented)
+  notifications?: NotificationService;
+}
 
 // (No @packageDocumentation comment for this package)
 ```
