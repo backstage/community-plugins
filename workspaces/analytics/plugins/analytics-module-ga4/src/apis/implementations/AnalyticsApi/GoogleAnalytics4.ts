@@ -53,6 +53,7 @@ export class GoogleAnalytics4 implements AnalyticsApi, NewAnalyticsApi {
     measurementId: string;
     testMode: boolean;
     debug: boolean;
+    cookieFlags: string;
     enableSendPageView: boolean;
     contentGroupBy?: string;
     allowedContexts?: string[];
@@ -65,6 +66,7 @@ export class GoogleAnalytics4 implements AnalyticsApi, NewAnalyticsApi {
       userIdTransform = 'sha-256',
       testMode,
       debug,
+      cookieFlags,
       enableSendPageView,
       contentGroupBy,
       allowedContexts,
@@ -74,9 +76,11 @@ export class GoogleAnalytics4 implements AnalyticsApi, NewAnalyticsApi {
     ReactGA.initialize(measurementId, {
       testMode,
       gaOptions: {
+        cookieFlags: cookieFlags,
         debug_mode: debug,
       },
       gtagOptions: {
+        cookie_flags: cookieFlags,
         debug_mode: debug,
         send_page_view: enableSendPageView,
       },
@@ -121,6 +125,9 @@ export class GoogleAnalytics4 implements AnalyticsApi, NewAnalyticsApi {
     const identity =
       config.getOptionalString('app.analytics.ga4.identity') || 'disabled';
     const debug = config.getOptionalBoolean('app.analytics.ga4.debug') ?? false;
+    const cookieFlags =
+      config.getOptionalString('app.analytics.ga4.cookieFlags') ??
+      'SameSite=Lax';
     const enableSendPageView =
       config.getOptionalBoolean('app.analytics.ga4.enableSendPageView') ??
       false;
@@ -150,6 +157,7 @@ export class GoogleAnalytics4 implements AnalyticsApi, NewAnalyticsApi {
       measurementId: measurementId,
       testMode,
       debug,
+      cookieFlags,
       enableSendPageView,
       contentGroupBy,
       allowedContexts,
