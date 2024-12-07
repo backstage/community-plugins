@@ -1,5 +1,11 @@
 # @backstage-community/plugin-quay-common
 
+## 1.3.4
+
+### Patch Changes
+
+- 1af220c: Clean up api report warnings and remove unnecessary files
+
 ## 1.3.3
 
 ### Patch Changes
