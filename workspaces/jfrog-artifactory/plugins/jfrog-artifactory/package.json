@@ -51,7 +51,7 @@
     "@backstage/dev-utils": "^1.1.2",
     "@backstage/test-utils": "^1.7.0",
     "@redhat-developer/red-hat-developer-hub-theme": "0.2.0",
-    "@testing-library/jest-dom": "6.6.2",
+    "@testing-library/jest-dom": "6.6.3",
     "@testing-library/react": "14.3.1",
     "@testing-library/user-event": "14.5.2",
     "@types/node": "18.19.64",
