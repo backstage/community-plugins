@@ -1,5 +1,11 @@
 ## @backstage-community/plugin-redhat-argocd
 
+## 1.10.5
+
+### Patch Changes
+
+- aa02f04: Updated dependency `@playwright/test` to `1.49.0`.
+
 ## 1.10.4
 
 ### Patch Changes
