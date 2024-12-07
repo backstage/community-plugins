@@ -1,5 +1,15 @@
 ### Dependencies
 
+## 5.2.7
+
+### Patch Changes
+
+- 7843798: Updated dependency `qs` to `6.13.1`.
+- 4b3653a: Clean up api report warnings and remove unnecessary files
+- Updated dependencies [4b3653a]
+  - @backstage-community/plugin-rbac-common@1.12.3
+  - @backstage-community/plugin-rbac-node@1.8.3
+
 ## 5.2.6
 
 ### Patch Changes
