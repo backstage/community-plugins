@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 3.2.3
+
+### Patch Changes
+
+- 74902d9: Clean up api report warnings and remove unnecessary files
+
 ## 3.2.2
 
 ### Patch Changes
