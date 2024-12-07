@@ -1,5 +1,11 @@
 ## @backstage-community/plugin-rbac-common [1.8.2](https://github.com/janus-idp/backstage-plugins/compare/@backstage-community/plugin-rbac-common@1.8.1...@backstage-community/plugin-rbac-common@1.8.2) (2024-08-06)
 
+## 1.12.3
+
+### Patch Changes
+
+- 4b3653a: Clean up api report warnings and remove unnecessary files
+
 ## 1.12.2
 
 ### Patch Changes
