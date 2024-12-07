@@ -38,7 +38,7 @@ jobs:
       # cache wouldn't necessarily upload when it changes. actions/download-artifact also doesn't work
       # because it only handles artifacts uploaded in the same run, and we want to restore from the
       # previous successful run.
-      - uses: dawidd6/action-download-artifact@v5
+      - uses: dawidd6/action-download-artifact@v6
         if: github.event.inputs.repoCache != 'disabled'
         continue-on-error: true
         with:
