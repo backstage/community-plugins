@@ -1,5 +1,14 @@
 ### Dependencies
 
+## 1.14.6
+
+### Patch Changes
+
+- 1af220c: Clean up api report warnings and remove unnecessary files
+- aa02f04: Updated dependency `@playwright/test` to `1.49.0`.
+- Updated dependencies [1af220c]
+  - @backstage-community/plugin-quay-common@1.3.4
+
 ## 1.14.5
 
 ### Patch Changes

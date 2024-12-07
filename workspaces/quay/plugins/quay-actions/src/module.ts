@@ -18,6 +18,9 @@ import { scaffolderActionsExtensionPoint } from '@backstage/plugin-scaffolder-no
 
 import { createQuayRepositoryAction } from './actions';
 
+/**
+ * @public
+ */
 export const scaffolderModuleQuayAction = createBackendModule({
   moduleId: 'scaffolder-backend-quay',
   pluginId: 'scaffolder',
