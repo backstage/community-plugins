@@ -6,14 +6,10 @@
 
 import { BasicPermission } from '@backstage/plugin-permission-common';
 
-// Warning: (ae-missing-release-tag) "quayPermissions" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export const quayPermissions: BasicPermission[];
 
-// Warning: (ae-missing-release-tag) "quayViewPermission" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export const quayViewPermission: BasicPermission;
 
 // (No @packageDocumentation comment for this package)
