@@ -27,7 +27,7 @@ import {
   disableJob,
   enableJob,
 } from './actions/job/';
-import { buildJenkinsClient, JenkinsConfig } from './config';
+import { buildJenkinsClient } from './config';
 
 /**
  * @public
@@ -36,7 +36,7 @@ import { buildJenkinsClient, JenkinsConfig } from './config';
  */
 export const scaffolderBackendModuleJenkins = createBackendModule({
   pluginId: 'scaffolder',
-  moduleId: 'plugin-scaffolder-jenkins-actions',
+  moduleId: 'jenkins',
   register({ registerInit }) {
     registerInit({
       deps: {
@@ -45,9 +45,7 @@ export const scaffolderBackendModuleJenkins = createBackendModule({
         logger: coreServices.logger,
       },
       async init({ config, logger, scaffolderActions }) {
-        const jenkinsClient = buildJenkinsClient(
-          JenkinsConfig.fromConfig(config),
-        );
+        const jenkinsClient = buildJenkinsClient(config);
 
         scaffolderActions.addActions(createJob(jenkinsClient));
         scaffolderActions.addActions(createJobWithFile(jenkinsClient));
