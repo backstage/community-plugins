@@ -28,7 +28,10 @@ interface RequestParameters {
   visibility?: string;
 }
 
-type TemplateActionParameters = {
+/**
+ * @public
+ */
+export type TemplateActionParameters = {
   baseUrl: string;
   token?: string;
   username?: string;
@@ -82,6 +85,9 @@ const examples = [
   },
 ];
 
+/**
+ * @public
+ */
 export const createSonarQubeProjectAction = () => {
   return createTemplateAction<TemplateActionParameters>({
     id: id,

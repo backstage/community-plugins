@@ -28,6 +28,7 @@ import {
 } from '@backstage-community/plugin-rbac-node';
 
 /**
+ * @public
  * RBAC plugin
  *
  */

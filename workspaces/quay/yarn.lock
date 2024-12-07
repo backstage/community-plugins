@@ -3639,8 +3639,8 @@ __metadata:
   linkType: hard
 
 "@backstage/plugin-scaffolder-node@npm:^0.5.0":
-  version: 0.5.0
-  resolution: "@backstage/plugin-scaffolder-node@npm:0.5.0"
+  version: 0.5.1
+  resolution: "@backstage/plugin-scaffolder-node@npm:0.5.1"
   dependencies:
     "@backstage/backend-common": ^0.25.0
     "@backstage/backend-plugin-api": ^1.0.1
@@ -3659,7 +3659,7 @@ __metadata:
     winston: ^3.2.1
     zod: ^3.22.4
     zod-to-json-schema: ^3.20.4
-  checksum: ebb1fdcbc31140c98dc92bbd1a585aa3b4840ac9b9f4b59dad01ce86014494554cced8fb81bb6605abe5a6099a41feb7cbebbca1c8bf7d38c48f9ee346a3eb15
+  checksum: 8cbbdbee87a537f3aade9cbf4aaea0db4f4c8272fc4c05557acb8fa1b8abad21a581949c7d1fd9d9aca736c0de405086ffa28fda31ad2752fdad2ace6c756917
   languageName: node
   linkType: hard
 
@@ -4762,7 +4762,6 @@ __metadata:
     node-gyp: ^9.0.0
     prettier: ^2.3.2
     typescript: ~5.3.0
-    yaml: ^2.6.0
   languageName: unknown
   linkType: soft
 
