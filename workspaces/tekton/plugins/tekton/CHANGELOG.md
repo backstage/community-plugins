@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 3.16.4
+
+### Patch Changes
+
+- aa02f04: Updated dependency `@playwright/test` to `1.49.0`.
+
 ## 3.16.3
 
 ### Patch Changes
