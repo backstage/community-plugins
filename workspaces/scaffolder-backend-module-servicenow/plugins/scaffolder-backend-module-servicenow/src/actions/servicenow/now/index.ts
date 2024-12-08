@@ -20,8 +20,8 @@ import { CreateActionOptions } from '../../types';
 
 /**
  * Returns all ServiceNow `now` namespace actions.
- *
- * @returns {TemplateAction[]}
+ * @public
+ * @returns TemplateAction[]
  */
 export function createNowActions(
   options: CreateActionOptions,
