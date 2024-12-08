@@ -35,6 +35,7 @@ import type { Credentials } from '@keycloak/keycloak-admin-client/lib/utils/auth
 // @ts-ignore
 import inclusion from 'inclusion';
 import { merge } from 'lodash';
+import { LimitFunction } from 'p-limit';
 import * as uuid from 'uuid';
 
 import {
@@ -44,7 +45,7 @@ import {
   UserTransformer,
 } from '../lib';
 import { readProviderConfigs } from '../lib/config';
-import { loadPLimitModule, readKeycloakRealm } from '../lib/read';
+import { readKeycloakRealm } from '../lib/read';
 
 /**
  * Options for {@link KeycloakOrgEntityProvider}.
@@ -232,11 +233,16 @@ export class KeycloakOrgEntityProvider implements EntityProvider {
 
     await kcAdminClient.auth(credentials);
 
-    await loadPLimitModule();
+    const pLimitCJSModule = await inclusion('p-limit');
+    const limitFunc = pLimitCJSModule.default;
+    const concurrency = provider.maxConcurrency ?? Number.POSITIVE_INFINITY;
+    const limit: LimitFunction = limitFunc(concurrency);
+
     const { users, groups } = await readKeycloakRealm(
       kcAdminClient,
       provider,
       logger,
+      limit,
       {
         userQuerySize: provider.userQuerySize,
         groupQuerySize: provider.groupQuerySize,
