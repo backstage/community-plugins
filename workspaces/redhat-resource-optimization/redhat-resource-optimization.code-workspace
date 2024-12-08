@@ -1,23 +1,16 @@
 {
   "folders": [
     {
-      "name": "redhat-resource-optimization",
+      "name": "Red Hat - Resource Optimization",
       "path": "."
     }
   ],
   "extensions": {
     "recommendations": [
-      "dbaeumer.vscode-eslint",
-      "eamodio.gitlens",
       "esbenp.prettier-vscode",
+      "dbaeumer.vscode-eslint",
       "orta.vscode-jest",
-      "redhat.vscode-yaml",
-      "rangav.vscode-thunder-client",
-      "Intility.vscode-backstage"
     ],
-    "unwantedRecommendations": [
-      "vscjava.vscode-java-pack"
-    ]
   },
   "settings": {
     "jest.jestCommandLine": "node_modules/.bin/jest --config node_modules/@backstage/cli/config/jest.js",
@@ -35,7 +28,7 @@
         "name": "Launch Chrome",
         "request": "launch",
         "type": "chrome",
-        "url": "http://localhost4:3000/redhat-resource-optimization",
+        "url": "http://localhost:3000/redhat-resource-optimization",
         "webRoot": "${workspaceFolder}"
       }
     ]
