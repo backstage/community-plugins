@@ -40,7 +40,7 @@ We’ll leverage the Orchestrator plugin capabilities to apply the recommendatio
 
 ## Architecture overview
 
-![pic](./resources/optimize-resources-workflow.png)
+![pic](./resources/optimize-resources-workflow.svg)
 
 ## Additional information
 

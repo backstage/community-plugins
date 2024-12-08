@@ -36,7 +36,7 @@ In Red Hat Developer Hub there are three types of plugins:
 
 ## Architecture overview:
 
-![pic](./resources/optimizations-plugins-phase-1.png)
+![pic](./resources/optimizations-plugins-phase-1.svg)
 
 ### Enablement
 
