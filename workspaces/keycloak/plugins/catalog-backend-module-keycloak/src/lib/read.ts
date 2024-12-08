@@ -22,8 +22,6 @@ import type GroupRepresentation from '@keycloak/keycloak-admin-client/lib/defs/g
 import type UserRepresentation from '@keycloak/keycloak-admin-client/lib/defs/userRepresentation';
 import type { Groups } from '@keycloak/keycloak-admin-client/lib/resources/groups';
 import type { Users } from '@keycloak/keycloak-admin-client/lib/resources/users';
-// @ts-ignore
-import inclusion from 'inclusion';
 import { LimitFunction } from 'p-limit';
 
 import { KeycloakProviderConfig } from './config';
@@ -40,21 +38,6 @@ import {
   UserRepresentationWithEntity,
   UserTransformer,
 } from './types';
-
-let limitFunc: ((concurrency: number) => LimitFunction) | undefined;
-
-export async function loadPLimitModule() {
-  const pLimitCJSModule = await inclusion('p-limit');
-  limitFunc = pLimitCJSModule.default;
-}
-
-export function limitedConcurrency(concurrency: number): LimitFunction {
-  if (!limitFunc) {
-    throw new Error('pLimit is not initialized. Call loadPLimitModule first.');
-  }
-  const limit = limitFunc(concurrency);
-  return limit;
-}
 
 export const parseGroup = async (
   keycloakGroup: GroupRepresentationWithParent,
@@ -129,8 +112,8 @@ export async function getEntities<T extends Users | Groups>(
   entities: T,
   config: KeycloakProviderConfig,
   logger: LoggerService,
+  limit: LimitFunction,
   entityQuerySize: number = KEYCLOAK_ENTITY_QUERY_SIZE,
-  concurrency: number = Number.POSITIVE_INFINITY,
 ): Promise<Awaited<ReturnType<T['find']>>> {
   const rawEntityCount = await entities.count({ realm: config.realm });
   const entityCount =
@@ -138,7 +121,6 @@ export async function getEntities<T extends Users | Groups>(
 
   const pageCount = Math.ceil(entityCount / entityQuerySize);
 
-  const limit = limitedConcurrency(concurrency);
   // The next line acts like range in python
   const entityPromises = Array.from({ length: pageCount }, (_, i) =>
     limit(() =>
@@ -238,6 +220,7 @@ export const readKeycloakRealm = async (
   client: KeycloakAdminClient,
   config: KeycloakProviderConfig,
   logger: LoggerService,
+  limit: LimitFunction,
   options?: {
     userQuerySize?: number;
     groupQuerySize?: number;
@@ -248,22 +231,20 @@ export const readKeycloakRealm = async (
   users: UserEntity[];
   groups: GroupEntity[];
 }> => {
-  const concurrency = config.maxConcurrency ?? Number.POSITIVE_INFINITY;
-
   const kUsers = await getEntities(
     client.users,
     config,
     logger,
+    limit,
     options?.userQuerySize,
-    concurrency,
   );
 
   const topLevelKGroups = (await getEntities(
     client.groups,
     config,
     logger,
+    limit,
     options?.groupQuerySize,
-    concurrency,
   )) as GroupRepresentationWithParent[];
 
   let serverVersion: number;
@@ -295,7 +276,6 @@ export const readKeycloakRealm = async (
     );
   }
 
-  const limit = limitedConcurrency(concurrency);
   const kGroups = await Promise.all(
     rawKGroups.map(g =>
       limit(async () => {
