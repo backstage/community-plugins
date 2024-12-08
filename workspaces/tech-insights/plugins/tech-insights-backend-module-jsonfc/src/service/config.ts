@@ -122,6 +122,9 @@ function readCheckFromCheckConfig(
   const name = config.getString('name');
   const description = config.getString('description');
   const factIds = config.getStringArray('factIds');
+  const metadata = config
+    .getOptionalConfig('metadata')
+    ?.get<Record<string, any>>();
   const successMetadata = config
     .getOptionalConfig('successMetadata')
     ?.get<Record<string, any>>();
@@ -135,6 +138,7 @@ function readCheckFromCheckConfig(
     factIds,
     failureMetadata,
     id,
+    metadata,
     name,
     rule,
     successMetadata,

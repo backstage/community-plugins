@@ -19,6 +19,7 @@ export type Check = {
   name: string;
   description: string;
   factIds: string[];
+  metadata?: Record<string, any>;
   successMetadata?: Record<string, unknown>;
   failureMetadata?: Record<string, unknown>;
 };

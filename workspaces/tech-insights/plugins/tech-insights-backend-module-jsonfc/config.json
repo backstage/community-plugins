@@ -41,6 +41,10 @@
         },
         "rule": {
           "$ref": "#/$defs/rule"
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": true
         }
       }
     },
