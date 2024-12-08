@@ -87,6 +87,12 @@ export function createAzureDevopsRunPipelineAction(options: {
             type: 'string',
             description: "The branch of the pipeline's repository.",
           },
+          templateParameters: {
+            type: 'object',
+            title: 'Template Parameters',
+            description:
+              'Azure DevOps pipeline template parameters in key-value pairs.',
+          },
         },
       },
       output: {
