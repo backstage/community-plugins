@@ -72,6 +72,27 @@ export const examples: TemplateExample[] = [
     }),
   },
   {
+    description: 'Run Azure Pipeline with template parameters',
+    example: yaml.stringify({
+      steps: [
+        {
+          id: 'runAzurePipeline',
+          action: 'azure:pipeline:run',
+          name: 'Run Azure Devops Pipeline',
+          input: {
+            organization: 'organization',
+            pipelineId: 'pipelineId',
+            project: 'project',
+            branch: 'branch',
+            templateParameters: {
+              templateParameterKey: 'templateParameterValue',
+            },
+          },
+        },
+      ],
+    }),
+  },
+  {
     description: 'Run Azure Pipeline with custom token',
     example: yaml.stringify({
       steps: [
