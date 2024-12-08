@@ -283,6 +283,19 @@ export const app = createApp({
 });
 ```
 
+#### Option C: Opt-out of statefullness and manage state independently
+
+In situations where you need to integrate a radar and manage state independently of Backstage, use the stateless UI component:
+
+```tsx
+import { StatelessRadar } from "@backstage-community/plugin-tech-radar";
+// load hardcoded data - or substitute with however you manage data state in your application
+import { data as techData } from "./data";
+
+// ...
+<StatelessRadar width={1500} height={800} {...techData} />
+```
+
 ### How do I write tests?
 
 You can use the `svgProps` option to pass custom React props to the `<svg>` element we create for the Tech Radar. This complements well with the `data-testid` attribute and the `@testing-library/react` library we use in Backstage.

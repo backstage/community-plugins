@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+export { default as StatelessRadar } from './Radar';
+export type { StatelessRadarProps } from './Radar';
 export { RadarComponent as TechRadarComponent } from './RadarComponent';
 export type { TechRadarComponentProps } from './RadarComponent';
 export * from './RadarPage';
