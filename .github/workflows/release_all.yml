@@ -1,0 +1,55 @@
+name: Release all workspaces
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  find-changed-workspaces:
+    name: Detect workspace changes
+    runs-on: ubuntu-latest
+    outputs:
+      workspaces_to_be_published: ${{ steps.find-changed-workspaces.outputs.workspaces_to_be_published }}
+      workspaces_with_changesets: ${{ steps.find-changed-workspaces.outputs.workspaces_with_changesets }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f # v4
+
+      - name: Set up Node
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org/ # Needed for auth
+
+      - name: yarn install
+        run: yarn install --immutable
+
+      - name: Find changed workspaces
+        id: find-changed-workspaces
+        run: node ./scripts/ci/list-workspaces-to-be-released.js
+
+  create-changeset-pr:
+    name: Create changeset PR for ${{ matrix.workspace }}
+    needs: find-changed-workspaces
+    strategy:
+      fail-fast: false
+      matrix:
+        workspace: ${{ fromJSON(needs.find-changed-workspaces.outputs.workspaces_with_changesets) }}
+    uses: ./.github/workflows/create_changeset_pr_for_workspace.yml
+    with:
+      workspace: ${{ matrix.workspace }}
+    secrets: inherit
+
+  release-workspace:
+    name: Release ${{ matrix.workspace }}
+    needs: find-changed-workspaces
+    strategy:
+      fail-fast: false
+      matrix:
+        workspace: ${{ fromJSON(needs.find-changed-workspaces.outputs.workspaces_to_be_published) }}
+    uses: ./.github/workflows/release_workspace.yml
+    with:
+      workspace: ${{ matrix.workspace }}
+    secrets: inherit
