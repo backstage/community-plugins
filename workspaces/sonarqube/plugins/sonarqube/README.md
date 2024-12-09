@@ -49,7 +49,7 @@ The "Read more" link that shows in the MissingAnnotationEmptyState is also confi
        <EntityAboutCard variant="gridItem" />
      </Grid>
 +    <Grid item md={6}>
-+      <EntitySonarQubeCard variant="gridItem" readMoreUrl={MISSING_ANNOTATION_READ_MORE_URL} />
++      <EntitySonarQubeCard variant="gridItem" missingAnnotationReadMoreUrl={MISSING_ANNOTATION_READ_MORE_URL} />
 +    </Grid>
    </Grid>
  );
