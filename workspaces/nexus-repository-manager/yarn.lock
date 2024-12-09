@@ -2533,7 +2533,7 @@ __metadata:
     "@backstage/plugin-catalog-react": ^1.14.0
     "@backstage/test-utils": ^1.7.0
     "@backstage/theme": ^0.6.0
-    "@hey-api/openapi-ts": 0.55.3
+    "@hey-api/openapi-ts": 0.59.1
     "@janus-idp/shared-react": ^2.13.0
     "@material-ui/core": ^4.9.13
     "@material-ui/icons": ^4.11.3
@@ -4458,9 +4458,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hey-api/openapi-ts@npm:0.55.3":
-  version: 0.55.3
-  resolution: "@hey-api/openapi-ts@npm:0.55.3"
+"@hey-api/openapi-ts@npm:0.59.1":
+  version: 0.59.1
+  resolution: "@hey-api/openapi-ts@npm:0.59.1"
   dependencies:
     "@apidevtools/json-schema-ref-parser": 11.7.2
     c12: 2.0.1
@@ -4470,7 +4470,7 @@ __metadata:
     typescript: ^5.x
   bin:
     openapi-ts: bin/index.cjs
-  checksum: 1bce3e572d26d728a9e5d93b760ed518b9def2b47d544517e92da817e2b66c16dc45ff1633e344fa36251b778d2a3195e525dad5fb10bdcba3351bc36a8e419a
+  checksum: 00c074165f0fe31e556ec94dbfb3babd8f4053844bd8b35c30b5a1785d89e77d51d76f49616d67ce726b88115cbb904073cd31ef53c13310e0a9b3afc0a80c5a
   languageName: node
   linkType: hard
 
