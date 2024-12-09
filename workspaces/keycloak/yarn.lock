@@ -2474,7 +2474,6 @@ __metadata:
     "@backstage/errors": ^1.2.4
     "@backstage/plugin-catalog-backend": 1.27.1
     "@backstage/plugin-catalog-node": ^1.13.1
-    "@common.js/p-limit": ^6.1.0
     "@keycloak/keycloak-admin-client": 24.0.5
     "@spotify/prettier-config": ^15.0.0
     "@types/lodash": 4.17.13
@@ -2483,6 +2482,7 @@ __metadata:
     inclusion: ^1.0.1
     lodash: ^4.17.21
     open-cli: ^8.0.0
+    p-limit: ^6.1.0
     pg-format: ^1.0.4
     prettier: 3.4.2
     uuid: ^9.0.1
@@ -3587,22 +3587,6 @@ __metadata:
   version: 1.6.0
   resolution: "@colors/colors@npm:1.6.0"
   checksum: aa209963e0c3218e80a4a20553ba8c0fbb6fa13140540b4e5f97923790be06801fc90172c1114fc8b7e888b3d012b67298cde6b9e81521361becfaee400c662f
-  languageName: node
-  linkType: hard
-
-"@common.js/p-limit@npm:^6.1.0":
-  version: 6.1.0
-  resolution: "@common.js/p-limit@npm:6.1.0"
-  dependencies:
-    "@common.js/yocto-queue": ^1.1.1
-  checksum: 6ebc19dffce939c9bd5ced0b1c0799a65d27d886f58fb0cf8ba571e5fec3949869337622587a4a9e4f491c47026c0a5d586ea6a2012a83ac75666dcf381af76c
-  languageName: node
-  linkType: hard
-
-"@common.js/yocto-queue@npm:^1.1.1":
-  version: 1.1.1
-  resolution: "@common.js/yocto-queue@npm:1.1.1"
-  checksum: 7987b2e5686b53794915503099a893f95b8ba9da97443a3f33e30fae6d5f75815d4bf4cbcbd96209a17de381b90b6238cb8250cb22d5bffc7cc0503639655a20
   languageName: node
   linkType: hard
 
@@ -18101,6 +18085,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"p-limit@npm:^6.1.0":
+  version: 6.2.0
+  resolution: "p-limit@npm:6.2.0"
+  dependencies:
+    yocto-queue: ^1.1.1
+  checksum: ea46ba4a3013daa3335833013156bdcdd8f5c67b49ad2f33b34832b0d528f003d29b55bf5beeedc39ba9d9ada3dab7b1f4b890db3ebc8260a044a011126c6fc9
+  languageName: node
+  linkType: hard
+
 "p-locate@npm:^3.0.0":
   version: 3.0.0
   resolution: "p-locate@npm:3.0.0"
@@ -23414,6 +23407,13 @@ __metadata:
   version: 0.1.0
   resolution: "yocto-queue@npm:0.1.0"
   checksum: f77b3d8d00310def622123df93d4ee654fc6a0096182af8bd60679ddcdfb3474c56c6c7190817c84a2785648cdee9d721c0154eb45698c62176c322fb46fc700
+  languageName: node
+  linkType: hard
+
+"yocto-queue@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "yocto-queue@npm:1.1.1"
+  checksum: f2e05b767ed3141e6372a80af9caa4715d60969227f38b1a4370d60bffe153c9c5b33a862905609afc9b375ec57cd40999810d20e5e10229a204e8bde7ef255c
   languageName: node
   linkType: hard
 
