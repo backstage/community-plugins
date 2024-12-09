@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 2.2.4
+
+### Patch Changes
+
+- 4d3571c: Clean up api report warnings and remove unnecessary files
+
 ## 2.2.3
 
 ### Patch Changes
