@@ -114,6 +114,8 @@ const readProviderConfig = (
     providerConfigInstance.getOptionalNumber('userQuerySize');
   const groupQuerySize =
     providerConfigInstance.getOptionalNumber('groupQuerySize');
+  const maxConcurrency =
+    providerConfigInstance.getOptionalNumber('maxConcurrency');
 
   if (clientId && !clientSecret) {
     throw new InputError(
@@ -153,6 +155,7 @@ const readProviderConfig = (
     schedule,
     userQuerySize,
     groupQuerySize,
+    maxConcurrency,
   };
 };
 
