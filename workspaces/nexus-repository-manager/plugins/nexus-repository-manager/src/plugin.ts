@@ -18,6 +18,9 @@ import {
 } from './api';
 import { rootRouteRef } from './routes';
 
+/**
+ * @public
+ */
 export const nexusRepositoryManagerPlugin = createPlugin({
   id: 'nexus-repository-manager',
   routes: {
@@ -41,6 +44,9 @@ export const nexusRepositoryManagerPlugin = createPlugin({
   ],
 });
 
+/**
+ * @public
+ */
 export const NexusRepositoryManagerPage = nexusRepositoryManagerPlugin.provide(
   createComponentExtension({
     name: 'NexusRepositoryManagerPage',
@@ -50,11 +56,17 @@ export const NexusRepositoryManagerPage = nexusRepositoryManagerPlugin.provide(
   }),
 );
 
+/**
+ * @public
+ */
 export const isNexusRepositoryManagerAvailable = (entity: Entity) =>
   NEXUS_REPOSITORY_MANAGER_ANNOTATIONS.some(value =>
     Boolean(entity.metadata.annotations?.[value.annotation]),
   );
 
+/**
+ * @public
+ */
 export const isNexusRepositoryManagerExperimentalAvailable = (entity: Entity) =>
   isNexusRepositoryManagerAvailable(entity) ||
   NEXUS_REPOSITORY_MANAGER_EXPERIMENTAL_ANNOTATIONS.some(value =>
