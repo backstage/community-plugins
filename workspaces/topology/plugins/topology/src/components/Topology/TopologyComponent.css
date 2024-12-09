@@ -1,0 +1,9 @@
+.pf-ri__topology {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.bs-topology-text-muted {
+  color: var(--pf-v5-global--Color--200);
+}

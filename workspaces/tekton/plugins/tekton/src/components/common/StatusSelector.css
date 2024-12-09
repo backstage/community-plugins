@@ -1,0 +1,8 @@
+.bs-tkn-status-selector {
+  display: flex;
+  align-items: center;
+}
+
+.bs-tkn-status-selector > div > div > div {
+  margin-top: 0;
+}

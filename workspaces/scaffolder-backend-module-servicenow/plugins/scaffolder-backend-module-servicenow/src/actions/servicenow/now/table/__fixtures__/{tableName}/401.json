@@ -1,0 +1,7 @@
+{
+  "error": {
+    "message": "User Not Authenticated",
+    "detail": "Required to provide Auth information"
+  },
+  "status": "failure"
+}

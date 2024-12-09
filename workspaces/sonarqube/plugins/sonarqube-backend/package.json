@@ -1,0 +1,62 @@
+{
+  "name": "@backstage-community/plugin-sonarqube-backend",
+  "version": "0.3.1",
+  "backstage": {
+    "role": "backend-plugin",
+    "pluginId": "sonarqube",
+    "pluginPackages": [
+      "@backstage-community/plugin-sonarqube",
+      "@backstage-community/plugin-sonarqube-backend",
+      "@backstage-community/plugin-sonarqube-react"
+    ]
+  },
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.cjs.js",
+    "types": "dist/index.d.ts"
+  },
+  "homepage": "https://backstage.io",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/sonarqube/plugins/sonarqube-backend"
+  },
+  "license": "Apache-2.0",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "files": [
+    "dist",
+    "config.d.ts"
+  ],
+  "scripts": {
+    "build": "backstage-cli package build",
+    "clean": "backstage-cli package clean",
+    "lint": "backstage-cli package lint",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack",
+    "start": "backstage-cli package start",
+    "test": "backstage-cli package test"
+  },
+  "dependencies": {
+    "@backstage/backend-defaults": "^0.5.2",
+    "@backstage/backend-plugin-api": "^1.0.1",
+    "@backstage/config": "^1.2.0",
+    "@backstage/errors": "^1.2.4",
+    "@types/express": "*",
+    "express": "^4.18.1",
+    "express-promise-router": "^4.1.0",
+    "node-fetch": "^2.6.7",
+    "yn": "^5.0.0"
+  },
+  "devDependencies": {
+    "@backstage/backend-test-utils": "^1.0.2",
+    "@backstage/cli": "^0.28.0",
+    "@backstage/plugin-auth-backend": "^0.23.1",
+    "@backstage/plugin-auth-backend-module-guest-provider": "^0.2.1",
+    "@types/node-fetch": "^2.5.12",
+    "@types/supertest": "^6.0.0",
+    "msw": "^1.0.0",
+    "supertest": "^7.0.0"
+  },
+  "configSchema": "config.d.ts"
+}

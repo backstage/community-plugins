@@ -1,0 +1,13 @@
+{
+  "apiVersion": "backstage.io/v1beta1",
+  "kind": "Resource",
+  "metadata": {
+    "annotations": {
+      "kubernetes.io/api-server": "http://localhost:5000"
+    },
+    "name": "bar"
+  },
+  "spec": {
+    "type": "db"
+  }
+}

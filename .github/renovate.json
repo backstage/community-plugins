@@ -1,0 +1,48 @@
+{
+  "extends": [
+    "config:best-practices",
+    ":gitSignOff",
+    ":rebaseStalePrs",
+    "group:linters",
+    "group:test",
+    ":preserveSemverRanges"
+  ],
+  "ignorePresets": [":pinDevDependencies", ":pinDigest", "docker:pinDigests"],
+  "labels": ["dependencies"],
+  "postUpdateOptions": ["yarnDedupeHighest"],
+  "osvVulnerabilityAlerts": true,
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "labels": ["dependencies", "security"]
+  },
+  "npm": {
+    "minimumReleaseAge": "3 days"
+  },
+  "packageRules": [
+    {
+      "matchManagers": ["github-actions"],
+      "groupName": "GitHub Actions"
+    },
+    {
+      "matchManagers": ["npm"],
+      "enabled": false,
+      "matchPackageNames": ["@backstage/**"]
+    },
+    {
+      "matchPackageNames": ["node-fetch"],
+      "allowedVersions": "<3.0.0"
+    },
+    {
+      "matchPackageNames": ["typescript"],
+      "allowedVersions": "~5.3.0"
+    },
+    {
+      "matchPackageNames": ["yn"],
+      "allowedVersions": "<5.0.0"
+    }
+  ],
+  "ignorePaths": ["**/dist-dynamic/**"],
+  "gitIgnoredAuthors": [
+    "97962292+backstage-goalie[bot]@users.noreply.github.com"
+  ]
+}

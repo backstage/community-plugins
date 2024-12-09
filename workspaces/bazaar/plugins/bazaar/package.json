@@ -1,0 +1,78 @@
+{
+  "name": "@backstage-community/plugin-bazaar",
+  "version": "0.5.2",
+  "backstage": {
+    "role": "frontend-plugin",
+    "pluginId": "bazaar",
+    "pluginPackages": [
+      "@backstage-community/plugin-bazaar",
+      "@backstage-community/plugin-bazaar-backend"
+    ]
+  },
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.esm.js",
+    "types": "dist/index.d.ts"
+  },
+  "homepage": "https://backstage.io",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/bazaar/plugins/bazaar"
+  },
+  "license": "Apache-2.0",
+  "sideEffects": false,
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "backstage-cli package build",
+    "clean": "backstage-cli package clean",
+    "lint": "backstage-cli package lint",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack",
+    "start": "backstage-cli package start",
+    "test": "backstage-cli package test"
+  },
+  "dependencies": {
+    "@backstage/catalog-client": "^1.7.1",
+    "@backstage/catalog-model": "^1.7.0",
+    "@backstage/core-components": "^0.15.1",
+    "@backstage/core-plugin-api": "^1.10.0",
+    "@backstage/errors": "^1.2.4",
+    "@backstage/plugin-catalog-react": "^1.14.0",
+    "@date-io/luxon": "1.x",
+    "@material-ui/core": "^4.12.2",
+    "@material-ui/icons": "^4.9.1",
+    "@material-ui/lab": "4.0.0-alpha.61",
+    "@material-ui/pickers": "^3.3.10",
+    "@testing-library/jest-dom": "^6.0.0",
+    "@types/react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "luxon": "^3.0.0",
+    "material-ui-search-bar": "^1.0.0",
+    "react-hook-form": "^7.13.0",
+    "react-use": "^17.2.4",
+    "react-window": "^1.8.10"
+  },
+  "devDependencies": {
+    "@backstage/cli": "^0.28.0",
+    "@backstage/dev-utils": "^1.1.2",
+    "@backstage/plugin-catalog": "^1.23.1",
+    "@testing-library/dom": "^10.0.0",
+    "@testing-library/jest-dom": "^6.0.0",
+    "@testing-library/react": "^15.0.0",
+    "@types/react-dom": "^18.2.19",
+    "@types/react-window": "^1.8.8",
+    "canvas": "^2.11.2",
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-router-dom": "6.0.0-beta.0 || ^6.3.0"
+  },
+  "peerDependencies": {
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-router-dom": "6.0.0-beta.0 || ^6.3.0"
+  }
+}

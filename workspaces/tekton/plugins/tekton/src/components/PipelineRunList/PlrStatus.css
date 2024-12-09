@@ -1,0 +1,8 @@
+.bs-tkn-plrstatus {
+  display: flex;
+  align-items: center;
+}
+
+.bs-tkn-plrstatus svg {
+  top: 0;
+}

@@ -1,0 +1,9 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: sonarcloud
+  description: SonarCloud scaffolder actions for Backstage
+spec:
+  type: backstage-plugin
+  owner: backstage-community
+  lifecycle: experimental

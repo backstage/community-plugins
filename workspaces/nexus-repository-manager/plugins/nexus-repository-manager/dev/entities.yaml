@@ -1,0 +1,25 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: docker-example
+  description: An example component with a Docker Nexus artifact annotation
+  annotations:
+    nexus-repository-manager/docker.image-name: cypress/base
+
+spec:
+  type: service
+  owner: group:janus-idp
+  lifecycle: production
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: maven-example
+  description: An example component with a Maven Nexus artifact annotation
+  annotations:
+    nexus-repository-manager/maven.group-id: org.apache.logging.log4j
+
+spec:
+  type: service
+  owner: group:janus-idp
+  lifecycle: production

@@ -1,0 +1,27 @@
+.bs-tkn-pipeline-visualization__label {
+  align-items: baseline;
+  padding-bottom: var(--pf-v5-global--spacer--xs);
+}
+
+.bs-tkn-pipeline-visualization__label .badge {
+  font-size: 17px;
+  line-height: 20px;
+  margin-right: 4px;
+  min-width: 24px;
+  padding: 0 7px;
+  border-radius: 20px;
+  color: var(--pf-v5-global--palette--white);
+  display: inline-block;
+  text-align: center;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.bs-tkn-pipeline-visualization__layout .pf-topology-content {
+  border-radius: 20px;
+}
+
+.bs-tkn-pipeline-visualization__layout .pf-topology-visualization-surface {
+  font-size: 1rem;
+  border-radius: 1rem;
+}

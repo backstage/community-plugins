@@ -1,0 +1,16 @@
+.topology-side-bar-details-item {
+  margin-bottom: var(--pf-v5-global--spacer--lg);
+}
+
+.topology-side-bar-details-item:last-child {
+  margin-bottom: 0;
+}
+
+.topology-side-bar-details-item dt {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.topology-side-bar-details-item dd {
+  font-size: 14px;
+}

@@ -1,0 +1,88 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Ping Service.",
+    "description": "A simple API that responds with the input message.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.example.com/v1",
+      "description": "Production Server"
+    },
+    {
+      "url": "https://api.staging.example.com/v1",
+      "description": "Staging Server"
+    }
+  ],
+  "paths": {
+    "/ping": {
+      "post": {
+        "summary": "Ping message",
+        "description": "Returns the same message that was sent in the request body.",
+        "operationId": "pingMessage",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Hello, world!"
+                  }
+                },
+                "required": ["message"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The echoed message",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Hello, world!"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input, missing 'message' field"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "PingRequest": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Hello, world!"
+          }
+        },
+        "required": ["message"]
+      },
+      "PingResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Hello, world!"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,63 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: create-kubernetes-namespace
+  title: Create a kubernetes namespace
+  description: Create a kubernetes namespace
+
+spec:
+  type: service
+  parameters:
+    - title: Information
+      required: [namespace, token]
+      properties:
+        namespace:
+          title: Namespace name
+          type: string
+          description: Name of the namespace to be created
+        clusterRef:
+          title: Cluster reference
+          type: string
+          description: Cluster resource entity reference from the catalog
+          ui:field: EntityPicker
+          ui:options:
+            catalogFilter:
+              kind: Resource
+        url:
+          title: Url
+          type: string
+          description: Url of the kubernetes API, will be used if clusterRef is not provided
+        token:
+          title: Token
+          type: string
+          description: Bearer token to authenticate with
+        skipTLSVerify:
+          title: Skip TLS verification
+          type: boolean
+          description: Skip TLS certificate verification, not recommended to use in production environment, default to false
+        caData:
+          title: CA data
+          type: string
+          description: Certificate Authority base64 encoded certificate
+        labels:
+          title: Labels
+          type: string
+          description: Labels to be applied to the namespace
+          ui:widget: textarea
+          ui:options:
+            rows: 3
+          ui:help: 'Hint: Separate multiple labels with a semicolon!'
+          ui:placeholder: 'kubernetes.io/type=namespace; app.io/managed-by=org'
+
+  steps:
+    - id: create-kubernetes-namespace
+      name: Create kubernetes namespace
+      action: kubernetes:create-namespace
+      input:
+        namespace: ${{ parameters.namespace }}
+        clusterRef: ${{ parameters.clusterRef }}
+        url: ${{ parameters.url }}
+        token: ${{ parameters.token }}
+        skipTLSVerify: ${{ parameters.skipTLSVerify }}
+        caData: ${{ parameters.caData }}
+        labels: ${{ parameters.labels }}

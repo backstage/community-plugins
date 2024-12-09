@@ -1,0 +1,63 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: sonarcloud-create-project
+  title: Create SonarCloud Project
+  description: Creates a SonarCloud project and sets the default branch
+spec:
+  owner: platform-team
+  type: service
+
+  parameters:
+    - title: SonarCloud Project
+      required:
+        - organization
+        - name
+        - projectKey
+      properties:
+        organization:
+          title: SonarCloud Organization
+          type: string
+          description: Your SonarCloud organization key
+        name:
+          title: Project Name
+          type: string
+          description: Human-readable display name for the project
+        projectKey:
+          title: Project Key
+          type: string
+          description: Unique project key within the organization
+        visibility:
+          title: Visibility
+          type: string
+          description: Project visibility level
+          enum:
+            - public
+            - private
+          default: private
+
+  steps:
+    - id: sonarcloud-create
+      action: sonarcloud:create-project
+      name: Create SonarCloud Project
+      input:
+        organization: ${{ parameters.organization }}
+        name: ${{ parameters.name }}
+        key: ${{ parameters.projectKey }}
+        visibility: ${{ parameters.visibility }}
+        token: ${{ secrets.SONARCLOUD_TOKEN }}
+
+    - id: sonarcloud-branch
+      action: sonarcloud:set-default-branch
+      name: Set Default Branch
+      input:
+        projectKey: ${{ steps['sonarcloud-create'].output.projectKey }}
+        token: ${{ secrets.SONARCLOUD_TOKEN }}
+
+  output:
+    links:
+      - title: SonarCloud Project
+        url: ${{ steps['sonarcloud-create'].output.projectUrl }}
+    text:
+      - title: Project Key
+        content: ${{ steps['sonarcloud-create'].output.projectKey }}

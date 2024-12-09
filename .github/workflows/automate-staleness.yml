@@ -1,0 +1,39 @@
+name: Automate staleness
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 */6 * * *'  # Runs every 6 hours
+permissions:
+  contents: read
+jobs:
+  stale:
+    permissions:
+      issues: write
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@5c7944e73c4c2a096b17a9cb74d65b6c2bbafbde # v2.9.1
+        with:
+          egress-policy: audit
+      
+      - uses: actions/stale@v9
+        id: stale
+        with:
+          stale-issue-message: >
+            This issue has been automatically marked as stale because it has not had
+            recent activity. It will be closed if no further activity occurs. Thank you
+            for your contributions.
+          days-before-issue-stale: 60
+          days-before-issue-close: 7
+          stale-issue-label: stale
+          stale-pr-message: >
+            This PR has been automatically marked as stale because it has not had
+            recent activity from the author. It will be closed if no further activity occurs.
+            If the PR was closed and you want it re-opened, let us know
+            and we'll re-open the PR so that you can continue the contribution!
+          days-before-pr-stale: 14
+          days-before-pr-close: 7
+          stale-pr-label: stale
+          operations-per-run: 100
+          

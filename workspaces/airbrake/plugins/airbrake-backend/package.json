@@ -1,0 +1,60 @@
+{
+  "name": "@backstage-community/plugin-airbrake-backend",
+  "version": "0.3.21",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.cjs.js",
+    "types": "dist/index.d.ts"
+  },
+  "backstage": {
+    "role": "backend-plugin",
+    "pluginId": "airbrake",
+    "pluginPackages": [
+      "@backstage-community/plugin-airbrake",
+      "@backstage-community/plugin-airbrake-backend"
+    ]
+  },
+  "homepage": "https://backstage.io",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/airbrake/plugins/airbrake-backend"
+  },
+  "scripts": {
+    "start": "backstage-cli package start",
+    "build": "backstage-cli package build",
+    "lint": "backstage-cli package lint",
+    "test": "backstage-cli package test",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack",
+    "clean": "backstage-cli package clean"
+  },
+  "dependencies": {
+    "@backstage/backend-common": "^0.25.0",
+    "@backstage/backend-plugin-api": "^1.0.1",
+    "@backstage/config": "^1.2.0",
+    "@types/express": "*",
+    "express": "^4.17.1",
+    "express-promise-router": "^4.1.0",
+    "http-proxy-middleware": "^2.0.0",
+    "yn": "^4.0.0"
+  },
+  "devDependencies": {
+    "@backstage/backend-defaults": "^0.5.2",
+    "@backstage/backend-test-utils": "^1.0.2",
+    "@backstage/cli": "^0.28.0",
+    "@backstage/plugin-auth-backend": "^0.23.1",
+    "@backstage/plugin-auth-backend-module-guest-provider": "^0.2.1",
+    "@types/http-proxy-middleware": "^1.0.0",
+    "@types/supertest": "^6.0.0",
+    "supertest": "^7.0.0"
+  },
+  "files": [
+    "dist",
+    "config.d.ts"
+  ],
+  "configSchema": "config.d.ts"
+}

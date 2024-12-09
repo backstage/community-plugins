@@ -1,0 +1,53 @@
+{
+  "proxy": {
+    "service_id": 2,
+    "endpoint": "https://api-3scale-apicast-production.apps.rosa.ceazq-ocd3j-vy9.8aja.p3.openshiftapps.com:443",
+    "api_backend": "https://echo-api.3scale.net:443",
+    "credentials_location": "query",
+    "auth_app_key": "app_key",
+    "auth_app_id": "app_id",
+    "auth_user_key": "user_key",
+    "error_auth_failed": "Authentication failed",
+    "error_auth_missing": "Authentication parameters missing",
+    "error_status_auth_failed": 403,
+    "error_headers_auth_failed": "text/plain; charset=us-ascii",
+    "error_status_auth_missing": 403,
+    "error_headers_auth_missing": "text/plain; charset=us-ascii",
+    "error_no_match": "No Mapping Rule matched",
+    "error_status_no_match": 404,
+    "error_headers_no_match": "text/plain; charset=us-ascii",
+    "error_limits_exceeded": "Usage limit exceeded",
+    "error_status_limits_exceeded": 429,
+    "error_headers_limits_exceeded": "text/plain; charset=us-ascii",
+    "secret_token": "Shared_secret_sent_from_proxy_to_API_backend_60e69c4e8b2d7666",
+    "sandbox_endpoint": "https://api-3scale-apicast-staging.apps.rosa.ceazq-ocd3j-vy9.8aja.p3.openshiftapps.com:443",
+    "api_test_path": "/",
+    "api_test_success": true,
+    "policies_config": [
+      {
+        "name": "apicast",
+        "version": "builtin",
+        "configuration": {},
+        "enabled": true
+      }
+    ],
+    "created_at": "2024-09-17T09:57:53Z",
+    "updated_at": "2024-09-17T10:06:42Z",
+    "deployment_option": "hosted",
+    "lock_version": 1,
+    "links": [
+      {
+        "rel": "mapping_rules",
+        "href": "/admin/api/services/2/proxy/mapping_rules"
+      },
+      {
+        "rel": "self",
+        "href": "/admin/api/services/2/proxy"
+      },
+      {
+        "rel": "service",
+        "href": "/admin/api/services/2"
+      }
+    ]
+  }
+}

@@ -1,0 +1,351 @@
+openapi: 3.0.3
+info:
+  title: Feedback Backend Plugin REST API
+  description: This is a sample description about this spec.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: '3'
+servers:
+  - url: https://backedn-url/api/feedback
+tags: &ref_2 []
+paths:
+  /:
+    get:
+      summary: Get all feedbacks
+      description: 'Returns all feedbacks from database '
+      operationId: getAllFeedbacks
+      tags: *ref_2
+      parameters:
+        - in: query
+          name: query
+          description: Search text
+          schema: &ref_0
+            type: string
+        - in: query
+          name: projectId
+          description: Fetch feedbacks for specific component
+          schema: *ref_0
+          required: false
+        - in: query
+          name: limit
+          description: Number of feedbacks to fetch
+          schema: &ref_1
+            type: number
+          required: true
+        - in: query
+          name: offset
+          description: Value of last feedback of current page
+          schema: *ref_1
+          required: true
+      requestBody: &ref_3 {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Feedback Model'
+                    description: Array of all feedbacks
+                  count:
+                    type: number
+                    description: Total feedbacks in database
+                  currentPage:
+                    type: number
+                    description: Feedbacks fetched in current request
+                  pageSize:
+                    type: number
+                    description: Last feedback fetched from database
+                required:
+                  - data
+                  - count
+                  - currentPage
+                  - pageSize
+          description: Get Array of all feedbacks
+    post:
+      summary: Create new feedback
+      description: Creates feedback and creates ticket on Jira, Github, etc
+      operationId: createNewFeedback
+      tags: *ref_2
+      parameters: &ref_5 []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Feedback Model'
+      responses:
+        '201':
+          description: Feedback created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Feedback created successfully
+                  data:
+                    type: object
+                    properties:
+                      feedbackId:
+                        type: string
+                        description: Unique id of newly created feedback
+                      projectId:
+                        type: string
+                        description: Entity ref of component
+                    required:
+                      - feedbackId
+                      - projectId
+                required:
+                  - message
+                  - data
+        '500':
+          description: Error occured
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /{feedbackId}:
+    get:
+      summary: Get individual feedback
+      description: ''
+      operationId: getFeedbackById
+      tags: *ref_2
+      parameters: []
+      requestBody: *ref_3
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Feedback Model'
+                    description: Feedback details
+                  message:
+                    type: string
+                    description: Feedback fetched successfully
+                required:
+                  - data
+                  - message
+          description: Feedback fetched successfully
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Feedback id is invalid
+          description: Feedback id is invalid
+    patch:
+      summary: Update the feedback in database
+      description: ''
+      operationId: updateFeedbackById
+      tags: *ref_2
+      parameters: *ref_5
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Feedback Model'
+              description: Modal data that need to be updated
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Feedback Model'
+                    description: Object of updated data
+                  message:
+                    type: string
+                    description: Feedback updated successfully
+                required:
+                  - data
+                  - message
+          description: Feedback updated successfully
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Feedback id is invalid
+          description: Feedback id is invalid
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Failed to update data
+          description: Failed to update data
+    delete:
+      summary: Delete the feedback from database
+      description: ''
+      operationId: deleteFeedbackById
+      tags: *ref_2
+      parameters: *ref_5
+      requestBody: *ref_3
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Message:
+                    type: string
+                    description: Deleted successfully
+                required:
+                  - Message
+          description: Feedback Deleted successfully
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Feedback id is invalid
+          description: Feedback id is invalid
+  /{feedbackId}/ticket:
+    get:
+      summary: Get details like progress and assignee of a ticket
+      description: ''
+      operationId: getTicketDetails
+      tags: *ref_2
+      parameters:
+        - in: query
+          name: ticketId
+          description: Ticket id of the feedback
+          schema: *ref_0
+          required: true
+        - in: query
+          name: projectId
+          description: Entity ref of component
+          schema: *ref_0
+          required: true
+      requestBody: *ref_3
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Status of the ticket
+                  assignee:
+                    type: string
+                    description: To whom the ticket is assigned
+                  avatarUrls:
+                    type: object
+                    properties: {}
+                    description: Object of avatars of assignee
+                  message:
+                    type: string
+                    description: Fetched successfully
+                required:
+                  - status
+                  - assignee
+                  - avatarUrls
+                  - message
+          description: Ticket details fetched successfully
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Failed to fetch ticket details
+          description: Failed to fetch ticket details
+components:
+  schemas:
+    Feedback Model:
+      type: object
+      properties:
+        feedbackId:
+          type: string
+          description: Id of feedback
+        summary:
+          type: string
+          description: Summary of feedback
+        projectId:
+          type: string
+          description: EntityRef of component
+        description:
+          type: string
+          description: Description of feedback
+        url:
+          type: string
+          description: Url from which feedback was submitted
+        userAgent:
+          type: string
+          description: User-Agent of origin
+        tag:
+          anyOf:
+            - $ref: '#/components/schemas/Tags'
+          description: Tags
+        ticketUrl:
+          type: string
+          description: Url to view ticket
+        createdBy:
+          type: string
+          description: EntityRef of user who created the feedback
+        createdAt:
+          type: string
+          description: ISO timestamp when feedback is created
+          format: date-time
+        updatedBy:
+          type: string
+          description: EntityRef of user who updated the feedback
+        updatedAt:
+          type: string
+          description: ISO timestamp when feedback is updated
+          format: date-time
+        feedbackType:
+          oneOf:
+            - $ref: '#/components/schemas/Feedback Type'
+          description: Type of feedback
+      required:
+        - url
+        - createdAt
+        - ticketUrl
+        - tag
+        - userAgent
+        - updatedAt
+        - feedbackType
+        - description
+        - projectId
+        - summary
+      description: Feedback Model
+    Tags:
+      type: string
+      description: All Tags
+      enum:
+        - Good
+        - Excellent
+        - Needs Improvement
+        - Slow Loading
+        - Navigation
+        - Not Responsive
+        - UI Issues
+        - Other
+      enumDesc: Accepted tags
+      pattern: ''
+    Feedback Type:
+      type: string
+      description: Type of feedback
+      enum:
+        - FEEDBACK
+        - BUG
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error

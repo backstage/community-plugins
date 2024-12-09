@@ -1,0 +1,47 @@
+{
+  "name": "@backstage-community/plugin-jenkins-common",
+  "version": "0.1.30",
+  "backstage": {
+    "role": "common-library",
+    "pluginId": "jenkins",
+    "pluginPackages": [
+      "@backstage-community/plugin-jenkins",
+      "@backstage-community/plugin-jenkins-backend",
+      "@backstage-community/plugin-jenkins-common"
+    ]
+  },
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.cjs.js",
+    "module": "dist/index.esm.js",
+    "types": "dist/index.d.ts"
+  },
+  "homepage": "https://backstage.io",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/jenkins/plugins/jenkins-common"
+  },
+  "license": "Apache-2.0",
+  "sideEffects": false,
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "backstage-cli package build",
+    "clean": "backstage-cli package clean",
+    "lint": "backstage-cli package lint",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack",
+    "test": "backstage-cli package test"
+  },
+  "dependencies": {
+    "@backstage/plugin-catalog-common": "^1.1.0",
+    "@backstage/plugin-permission-common": "^0.8.1"
+  },
+  "devDependencies": {
+    "@backstage/cli": "^0.28.0"
+  }
+}

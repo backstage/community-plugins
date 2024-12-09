@@ -1,0 +1,682 @@
+openapi: 3.0.0
+info:
+  title: RBAC Backend API
+  description: >-
+    Harnesses the power of the Backstage permission framework to empower you
+    with robust role-based access control capabilities within your Backstage
+    environment.
+  version: latest
+servers:
+  - url: 'http://localhost:7007'
+components:
+  schemas:
+    RoleResponse:
+      type: array
+      items:
+        type: object
+        properties:
+          memberReferences:
+            type: array
+            description: Users / groups to be added to the role <kind>:<default>/<name>.
+            items:
+              type: string
+          name:
+            type: string
+            description: The name of the role.
+          metadata:
+            type: object
+            description: Metadata about the role.
+            properties:
+              author:
+                type: string
+                description: The author of the role.
+              createdAt:
+                type: string
+                description: The date and time the role was created.
+              lastModified:
+                type: string
+                description: The date and time the role was last modified.
+              modifiedBy:
+                type: string
+                description: The user who last modified the role.
+              source:
+                type: string
+                description: The source from which the role was defined.
+              description:
+                type: string
+                description: A description of the role.```
+    Role:
+      type: object
+      properties:
+        memberReferences:
+          type: array
+          description: Users / groups to be added to the role <kind>:<default>/<name>.
+          items:
+            type: string
+        name:
+          type: string
+          description: The name of the role.
+        metadata:
+          type: object
+          description: Metadata about the role.
+          properties:
+            description:
+              type: string
+              description: A description of the role.
+    Condition:
+      type: object
+      oneOf:
+        - properties:
+            anyOf:
+              type: array
+              items:
+                $ref: '#/components/schemas/Condition'
+          required: [anyOf]
+        - properties:
+            allOf:
+              type: array
+              items:
+                $ref: '#/components/schemas/Condition'
+          required: [allOf]
+        - properties:
+            not:
+              $ref: '#/components/schemas/Condition'
+          required: [not]
+        - properties:
+            rule:
+              type: string
+            resourceType:
+              type: string
+            params:
+              type: object
+          required: [rule, resourceType, params]
+    PropertyObject:
+      type: object
+      properties:
+        type:
+          type: string
+        description:
+          type: string
+      required: [type, description]
+    PropertyArray:
+      type: object
+      properties:
+        type:
+          type: string
+        description:
+          type: string
+        items:
+          type: object
+          properties:
+            type:
+              type: string
+      required: [type, description, items]
+
+    PermissionPolicy:
+      type: object
+      properties:
+        entityReference:
+          type: string
+          description: Entity <kind>:<default>/<name>.
+        permission:
+          type: string
+          description: Permission from a specific plugin, Resource type or name
+        policy:
+          type: string
+          description: 'Policy action for the permission: create, read, update, delete, use'
+        effect:
+          type: string
+          description: allow or deny
+
+    PermissionResponse:
+      type: object
+      properties:
+        entityReference:
+          type: string
+          description: Entity <kind>:<default>/<name>.
+        permission:
+          type: string
+          description: Permission from a specific plugin, Resource type or name
+        policy:
+          type: string
+          description: 'Policy action for the permission: create, read, update, delete, use'
+        effect:
+          type: string
+          description: allow or deny
+        metadata:
+          type: object
+          description: Metadata about the role.
+          properties:
+            source:
+              type: string
+              description: The source from which the permission policy was defined.
+  parameters:
+    nameParam:
+      name: name
+      in: path
+      description: Name of the role.
+      required: true
+      schema:
+        type: string
+    namespaceParam:
+      name: namespace
+      in: path
+      description: Namespace of the role.
+      required: true
+      schema:
+        type: string
+    kindParam:
+      name: kind
+      in: path
+      description: role
+      required: true
+      schema:
+        type: string
+    memberReferencesParam:
+      name: memberReferences
+      in: query
+      description: users / groups to be deleted from the role <kind>:<default>/<name>
+      required: false
+      schema:
+        type: array
+        description: Users / groups to be added to the role <kind>:<default>/<name>.
+        items:
+          type: string
+paths:
+  /api/permission/roles:
+    get:
+      description: Lists all roles
+      responses:
+        '200':
+          description: Request was successful.
+          content:
+            application/json:
+              schema:
+                type: object
+                '$ref': '#/components/schemas/RoleResponse'
+        '403':
+          description: Refusal to authorize
+    post:
+      description: Creates a new role.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              '$ref': '#/components/schemas/Role'
+      responses:
+        '201':
+          description: New resource was successfully created.
+        '400':
+          description: Invalid role definition.
+        '403':
+          description: Refusal to authorize
+        '409':
+          description: Conflict with current state and target resource.
+  /api/permission/roles/{kind}/{namespace}/{name}:
+    get:
+      description: List the single role and the members associated with that role.
+      parameters:
+        - $ref: '#/components/parameters/nameParam'
+        - $ref: '#/components/parameters/namespaceParam'
+        - $ref: '#/components/parameters/kindParam'
+      responses:
+        '200':
+          description: Request was successful.
+          content:
+            application/json:
+              schema:
+                '$ref': '#/components/schemas/RoleResponse'
+        '403':
+          description: Refusal to authorize
+        '404':
+          description: Could not find resource
+    put:
+      description: Updates a specified role.
+      parameters:
+        - $ref: '#/components/parameters/nameParam'
+        - $ref: '#/components/parameters/namespaceParam'
+        - $ref: '#/components/parameters/kindParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                oldRole:
+                  '$ref': '#/components/schemas/Role'
+                newRole:
+                  '$ref': '#/components/schemas/Role'
+      responses:
+        '200':
+          description: Request was successful.
+        '400':
+          description: Input Error
+        '403':
+          description: Refusal to authorize
+        '404':
+          description: Could not find resource
+        '409':
+          description: Conflict with current state and target resource.
+    delete:
+      description: >-
+        Deletes a single role and all users associated with that role if no
+        memberReferences is specified. Otherwise deletes the single user/group
+        specified in the memberReferences parameter.
+      parameters:
+        - $ref: '#/components/parameters/nameParam'
+        - $ref: '#/components/parameters/namespaceParam'
+        - $ref: '#/components/parameters/kindParam'
+        - $ref: '#/components/parameters/memberReferencesParam'
+      responses:
+        '204':
+          description: ok
+        '403':
+          description: Refusal to authorize
+        '404':
+          description: Could not find resource.
+  /api/permission/policies:
+    get:
+      description: Lists all permission polices.
+      parameters:
+        - name: entityReference
+          in: query
+          description: Entity <kind>:<default>/<name>.
+          required: false
+          schema:
+            type: string
+        - name: permission
+          in: query
+          description: Permission from a specific plugin, Resource type or name
+          required: false
+          schema:
+            type: string
+        - name: policy
+          in: query
+          description: 'Policy action for the permission: create, read, update, delete, use'
+          required: false
+          schema:
+            type: string
+        - name: effect
+          in: query
+          description: allow or deny
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Request was successful.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  '$ref': '#/components/schemas/PermissionResponse'
+        '403':
+          description: Refusal to authorize
+    post:
+      description: Creates one or more permission policies for a specified entity.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                '$ref': '#/components/schemas/PermissionPolicy'
+      responses:
+        '201':
+          description: New resource was successfully created.
+        '400':
+          description: Input Error
+        '403':
+          description: Refusal to authorize
+  /api/permission/policies/{kind}/{namespace}/{name}:
+    get:
+      description: List permission policies related to the specified entity reference
+      parameters:
+        - $ref: '#/components/parameters/nameParam'
+        - $ref: '#/components/parameters/namespaceParam'
+        - $ref: '#/components/parameters/kindParam'
+      responses:
+        '200':
+          description: Request was successful.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  '$ref': '#/components/schemas/PermissionResponse'
+        '403':
+          description: Refusal to authorize
+        '404':
+          description: Could not find resource
+    put:
+      description: Updates one or more permission policies for a specified entity.
+      parameters:
+        - $ref: '#/components/parameters/nameParam'
+        - $ref: '#/components/parameters/namespaceParam'
+        - $ref: '#/components/parameters/kindParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                oldPolicy:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      permission:
+                        type: string
+                        description: >-
+                          Permission from a specific plugin, Resource type or
+                          name
+                      policy:
+                        type: string
+                        description: >-
+                          Policy action for the permission: create, read,
+                          update, delete, use
+                      effect:
+                        type: string
+                        description: allow or deny
+                newPolicy:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      permission:
+                        type: string
+                        description: >-
+                          Permission from a specific plugin, Resource type or
+                          name
+                      policy:
+                        type: string
+                        description: >-
+                          Policy action for the permission: create, read,
+                          update, delete, use
+                      effect:
+                        type: string
+                        description: allow or deny
+      responses:
+        '200':
+          description: Request was successful.
+        '400':
+          description: Input Error
+        '403':
+          description: Refusal to authorize
+    delete:
+      description: >-
+        Deletes a permission policy or a group of permission policies of a
+        specified entity.
+      parameters:
+        - $ref: '#/components/parameters/nameParam'
+        - $ref: '#/components/parameters/namespaceParam'
+        - $ref: '#/components/parameters/kindParam'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                '$ref': '#/components/schemas/PermissionPolicy'
+      responses:
+        '204':
+          description: ok
+        '400':
+          description: Input Error
+        '403':
+          description: Refusal to authorize
+  /api/permission/plugins/policies:
+    get:
+      description: >-
+        Lists all plugin permission policies from plugins installed in your
+        Backstage instance.
+      responses:
+        '200':
+          description: Request was successful
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    pluginId:
+                      type: string
+                    policies:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                            description: Permission from a specific plugin.
+                          resourceType:
+                            type: string
+                            description: Resource type.
+                          policy:
+                            type: string
+                            description: >-
+                              Policy action for the permission: create, read,
+                              update, delete, use.
+                        required: [name, policy]
+        '403':
+          description: Refusal to authorize
+  /api/permission/plugins/condition-rules:
+    get:
+      description: Provides conditional rule parameter schemas.
+      responses:
+        '200':
+          description: Request was successful
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    pluginId:
+                      type: string
+                    rules:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                          description:
+                            type: string
+                          resourceType:
+                            type: string
+                          paramsSchema:
+                            type: object
+                            properties:
+                              $schema:
+                                type: string
+                              additionalProperties:
+                                type: boolean
+                              required:
+                                type: string
+                              type:
+                                type: string
+                            oneOf:
+                              - properties:
+                                  properties:
+                                    type: object
+                                    additionalProperties:
+                                      $ref: '#/components/schemas/PropertyArray'
+                              - properties:
+                                  properties:
+                                    type: object
+                                    additionalProperties:
+                                      $ref: '#/components/schemas/PropertyObject'
+        '403':
+          description: Refusal to authorize
+  /api/permission/roles/conditions:
+    get:
+      description: Lists all conditions
+      responses:
+        '200':
+          description: Request was successful
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  required:
+                    [
+                      result,
+                      roleEntityRef,
+                      pluginId,
+                      resourceType,
+                      permissionMapping,
+                      conditions,
+                    ]
+                  properties:
+                    id:
+                      type: integer
+                    result:
+                      type: string
+                    roleEntityRef:
+                      type: string
+                    pluginId:
+                      type: string
+                    resourceType:
+                      type: string
+                    permissionMapping:
+                      type: array
+                      items:
+                        type: string
+                    conditions:
+                      $ref: '#/components/schemas/Condition'
+        '403':
+          description: Refusal to authorize
+    post:
+      description: Creates a new condition.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                result:
+                  type: string
+                roleEntityRef:
+                  type: string
+                pluginId:
+                  type: string
+                resourceType:
+                  type: string
+                permissionMapping:
+                  type: array
+                  items:
+                    type: string
+                conditions:
+                  $ref: '#/components/schemas/Condition'
+      responses:
+        '201':
+          description: New resource was successfully created.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+        '403':
+          description: Refusal to authorize
+  /api/permission/roles/conditions/{id}:
+    get:
+      description: Returns condition by id.
+      responses:
+        '200':
+          description: Request was successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  result:
+                    type: string
+                  roleEntityRef:
+                    type: string
+                  pluginId:
+                    type: string
+                  resourceType:
+                    type: string
+                  permissionMapping:
+                    type: array
+                    items:
+                      type: string
+                  conditions:
+                    $ref: '#/components/schemas/Condition'
+        '400':
+          description: Input Error
+        '403':
+          description: Refusal to authorize
+        '404':
+          description: Could not find resource
+    put:
+      description: Update conditions by id.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                result:
+                  type: string
+                roleEntityRef:
+                  type: string
+                pluginId:
+                  type: string
+                resourceType:
+                  type: string
+                permissionMapping:
+                  type: array
+                  items:
+                    type: string
+                conditions:
+                  $ref: '#/components/schemas/Condition'
+      responses:
+        '200':
+          description: Request was successful
+        '400':
+          description: Id is not a valid number.
+        '403':
+          description: Refusal to authorize
+        '404':
+          description: Id is not a valid number.
+    delete:
+      description: Deletes condition by id.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: ok
+        '400':
+          description: Id is not a valid number.
+        '403':
+          description: Refusal to authorize
+        '404':
+          description: Could not find resource.

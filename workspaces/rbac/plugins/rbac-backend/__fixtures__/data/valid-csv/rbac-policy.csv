@@ -1,0 +1,14 @@
+g, user:default/guest, role:default/catalog-writer
+g, user:default/guest, role:default/legacy
+g, user:default/guest, role:default/catalog-reader
+g, user:default/guest, role:default/catalog-deleter
+
+p, role:default/catalog-writer, catalog-entity, update, allow
+p, role:default/legacy, catalog-entity, update, allow
+p, role:default/catalog-writer, catalog-entity, read, allow
+p, role:default/catalog-writer, catalog.entity.create, use, allow
+p, role:default/catalog-deleter, catalog-entity, delete, deny
+
+p, role:default/known_role, test.resource.deny, use, allow
+
+g, user:default/known_user, role:default/known_role

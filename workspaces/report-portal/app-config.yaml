@@ -1,0 +1,51 @@
+app:
+  title: Report Portal Example App
+  baseUrl: http://localhost:3000
+
+organization:
+  name: Report Portal Example
+
+backend:
+  baseUrl: http://localhost:7007
+  listen:
+    port: 7007
+  csp:
+    connect-src: ["'self'", 'http:', 'https:']
+  cors:
+    origin: http://localhost:3000
+    methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
+    credentials: true
+  database:
+    client: better-sqlite3
+    connection: ':memory:'
+
+techdocs:
+  builder: 'local'
+  generator:
+    runIn: 'local'
+  publisher:
+    type: 'local'
+
+auth:
+  providers:
+    guest: {}
+
+catalog:
+  import:
+    entityFilename: catalog-info.yaml
+    pullRequestBranchName: backstage-integration
+  rules:
+    - allow: [Component, System, API, Resource, Location]
+  locations:
+    - type: file
+      target: ../../examples/entities/example-report-portal.yaml
+      rules:
+        - allow: [Component, User]
+
+reportPortal:
+  supportEmailTemplate: ${REPORT_PORTAL_SUPPORT_EMAIL_TEMPLATE}
+  integrations:
+    - host: ${REPORT_PORTAL_HOST}
+      baseUrl: ${REPORT_PORTAL_BASE_URL}
+      token: Bearer ${REPORT_PORTAL_TOKEN}
+      filterType: INTERNAL

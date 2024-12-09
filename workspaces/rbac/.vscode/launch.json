@@ -1,0 +1,14 @@
+{
+  "version": "1.0.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Current selected test",
+      "program": "${workspaceRoot}/node_modules/.bin/backstage-cli",
+      "args": ["package", "test", "${relativeFile}"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+    }
+  ]
+}

@@ -1,0 +1,159 @@
+name: CI
+
+on:
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  find-changed-workspaces:
+    name: Detect workspace changes
+    runs-on: ubuntu-latest
+    outputs:
+      workspaces: ${{ steps.find-changed-workspaces.outputs.workspaces }}
+    steps:
+      - name: Calculate number of commits in PR
+        id: calculate-commits
+        env:
+          COMMITS: ${{ github.event.pull_request.commits }}
+        run: echo "NUMBER_OF_COMMITS=$(($COMMITS + 1))" >> $GITHUB_ENV
+
+      - name: Checkout base branch for diff purposes
+        uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f # v4
+        with:
+          ref: ${{ github.event.pull_request.base.ref }}
+          fetch-depth: 50 # TODO(awanlin): Temporary fix
+
+      - name: Checkout head branch
+        uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f # v4
+        with:
+          # Needed for diff
+          fetch-depth: ${{ env.NUMBER_OF_COMMITS }}
+
+      - name: Set up Node
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org/ # Needed for auth
+
+      - name: Find changed workspaces
+        id: find-changed-workspaces
+        run: node ./scripts/ci/list-workspaces-with-changes.js
+        env:
+          BASE_REF: origin/${{ github.event.pull_request.base.ref }}
+
+  ci:
+    name: Workspace ${{ matrix.workspace }}, CI step for node ${{ matrix.node-version }}
+    runs-on: ubuntu-latest
+    needs: find-changed-workspaces
+    strategy:
+      matrix:
+        workspace: ${{ fromJSON(needs.find-changed-workspaces.outputs.workspaces) }}
+        node-version: [18.x, 20.x]
+      fail-fast: false
+    defaults:
+      run:
+        working-directory: ./workspaces/${{ matrix.workspace }}
+
+    env:
+      CI: true
+      NODE_OPTIONS: --max-old-space-size=8192
+
+    steps:
+      - name: Checkout main branch for tests purposes
+        uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f # v4
+        with:
+          ref: main
+      - name: Checkout
+        uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f # v4
+        with:
+          ref: ${{ github.event.workflow_run.head_branch }}
+
+      - name: Set up Node ${{ matrix.node-version }}
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          registry-url: https://registry.npmjs.org/ # Needed for auth
+
+      - name: yarn install
+        run: yarn install --immutable
+
+      - name: check for missing repo fixes
+        run: yarn fix --check
+
+      - name: validate config
+        if: ${{ hashFiles('app-config.yaml') != '' }}
+        run: yarn backstage-cli config:check --lax
+
+      - name: type checking and declarations
+        run: yarn tsc:full
+
+      - name: prettier
+        run: yarn prettier:check
+
+      - name: check api reports and generate API reference
+        run: yarn build:api-reports:only --ci
+
+      - name: build all packages
+        run: yarn backstage-cli repo build --all
+
+      - name: lint
+        run: yarn backstage-cli repo lint --since origin/main
+
+      - name: publish check
+        run: yarn backstage-cli repo fix --check --publish
+
+      - name: test changed packages
+        run: yarn backstage-cli repo test --coverage --maxWorkers=3
+
+      - name: ensure clean working directory
+        run: |
+          if files=$(git ls-files --exclude-standard --others --modified) && [[ -z "$files" ]]; then
+            exit 0
+          else
+            echo ""
+            echo "Working directory has been modified:"
+            echo ""
+            git status --short
+            echo ""
+            exit 1
+          fi
+
+  verify:
+    name: Workspace ${{ matrix.workspace }}, Verify step
+    runs-on: ubuntu-latest
+    needs: find-changed-workspaces
+    strategy:
+      matrix:
+        workspace: ${{ fromJSON(needs.find-changed-workspaces.outputs.workspaces) }}
+      fail-fast: false
+    steps:
+      - name: Checkout head branch
+        uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f # v4
+        with:
+          ref: ${{ github.event.workflow_run.head_branch }}
+      - name: Setup node
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
+        with:
+          node-version: 20.x
+      - name: Install root dependencies
+        run: yarn install --immutable
+      - name: Verify lockfile duplicates
+        run: node scripts/ci/verify-lockfile-duplicates.js workspaces/${{ matrix.workspace }}/yarn.lock
+      - name: Verify changesets
+        run: node scripts/ci/verify-changesets.js ${{ matrix.workspace }}
+  result:
+    if: ${{ always() }}
+    name: check all required jobs
+    runs-on: ubuntu-latest
+    needs: [ci, verify]
+    steps:
+      - run: exit 1
+        if: >-
+          ${{
+               contains(needs.*.result, 'failure')
+            || contains(needs.*.result, 'cancelled')
+            || contains(needs.*.result, 'skipped')
+          }}

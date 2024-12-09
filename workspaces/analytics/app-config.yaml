@@ -1,0 +1,18 @@
+app:
+  title: Analytics Dev App
+  baseUrl: http://localhost:3000
+  analytics:
+    # Matomo analytics provider config
+    matomo:
+      host: ${MATOMO_HOST}
+      siteId: ${MATOMO_SITE_ID}
+
+backend:
+  baseUrl: http://localhost:7007
+  cors:
+    origin: http://localhost:3000
+    methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
+    credentials: true
+  reading:
+    allow:
+      - host: localhost

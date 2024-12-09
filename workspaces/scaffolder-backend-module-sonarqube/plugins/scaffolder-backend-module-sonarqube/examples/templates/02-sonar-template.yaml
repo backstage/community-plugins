@@ -1,0 +1,89 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: create-sonar-project-template-02
+  title: Create a SonarQube project
+  description: Creates a new SonarQube project using oneOf subschema keyword
+  links:
+    - title: SonarQube
+      url: https://docs.sonarqube.org/latest/
+spec:
+  type: service
+  parameters:
+    - title: Fill in some steps
+      properties:
+        connection:
+          type: object
+          title: 'Connection Details'
+          required: ['baseUrl', 'auth']
+          description: 'Please provide the SonarQube connection details. Note: A token or username and password combination is required.'
+          properties:
+            baseUrl:
+              title: Base URL
+              type: string
+              description: SonarQube base URL
+              ui:autofocus: true
+            auth:
+              title: 'Authentication Method'
+              type: object
+              description: Select an authentication method
+              oneOf:
+                - title: Token
+                  required: ['token']
+                  properties:
+                    token:
+                      title: Token
+                      type: string
+                      description: SonarQube auth token
+                - title: Username and Password
+                  required: ['username', 'password']
+                  properties:
+                    username:
+                      title: Username
+                      type: string
+                      description: SonarQube username
+                    password:
+                      title: Password
+                      type: string
+                      description: SonarQube password
+                      ui:widget: password
+        project:
+          type: object
+          title: 'Project details'
+          required: ['name', 'key']
+          properties:
+            name:
+              title: Name
+              type: string
+              description: Project name
+            key:
+              title: Key
+              type: string
+              description: Project key
+            branch:
+              title: Branch
+              type: string
+              description: Project branch
+            visibility:
+              title: Visibility
+              type: string
+              description: Project visibility
+              ui:widget: select
+              enum: ['public', 'private']
+  steps:
+    - id: create-sonar-project
+      name: Create SonarQube project
+      action: sonarqube:create-project
+      input:
+        baseUrl: ${{ parameters.connection.baseUrl }}
+        token: ${{ parameters.connection.auth.token }}
+        username: ${{ parameters.connection.auth.username }}
+        password: ${{ parameters.connection.auth.password }}
+        name: ${{ parameters.project.name }}
+        key: ${{ parameters.project.key }}
+        branch: ${{ parameters.project.branch }}
+        visibility: ${{ parameters.projectvisibility }}
+  output:
+    links:
+      - title: SonarQube project URL
+        url: ${{ steps['create-sonar-project'].output.projectUrl }}

@@ -1,0 +1,19 @@
+.topology-details-tab {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--pf-v5-global--spacer--lg);
+}
+
+.topology-workload-details {
+  flex: 1;
+  min-width: 200px;
+}
+
+.topology-side-bar-pod-ring {
+  width: 100%;
+}
+
+.topology-side-bar-pod-ring svg {
+  overflow: visible !important;
+  max-width: 130px;
+}

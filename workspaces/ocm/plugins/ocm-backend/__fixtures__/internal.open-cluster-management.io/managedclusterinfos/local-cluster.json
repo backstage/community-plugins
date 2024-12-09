@@ -1,0 +1,762 @@
+{
+  "apiVersion": "internal.open-cluster-management.io/v1beta1",
+  "kind": "ManagedClusterInfo",
+  "metadata": {
+    "creationTimestamp": "2021-02-20T15:40:11Z",
+    "generation": 4,
+    "labels": {
+      "authdeployment": "primary",
+      "cloud": "Other",
+      "cluster.open-cluster-management.io/clusterset": "default",
+      "clusterID": "91976abd-8b8e-47b9-82d3-e84793396ed7",
+      "feature.open-cluster-management.io/addon-application-manager": "available",
+      "feature.open-cluster-management.io/addon-cert-policy-controller": "available",
+      "feature.open-cluster-management.io/addon-config-policy-controller": "available",
+      "feature.open-cluster-management.io/addon-governance-policy-framework": "available",
+      "feature.open-cluster-management.io/addon-iam-policy-controller": "available",
+      "feature.open-cluster-management.io/addon-observability-controller": "available",
+      "feature.open-cluster-management.io/addon-work-manager": "available",
+      "installer.name": "multiclusterhub",
+      "installer.namespace": "acm",
+      "local-cluster": "true",
+      "name": "local-cluster",
+      "openshiftVersion": "4.10.26",
+      "velero.io/exclude-from-backup": "true",
+      "vendor": "OpenShift"
+    },
+    "name": "local-cluster",
+    "namespace": "local-cluster",
+    "resourceVersion": "2816778131",
+    "uid": "ef22a272-e06a-4c30-a445-0320a295b3e8"
+  },
+  "spec": {
+    "loggingCA": "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURKVENDQWcyZ0F3SUJBZ0lJRFF0K3N2b0lnVnN3RFFZSktvWklodmNOQVFFTEJRQXdJREVlTUJ3R0ExVUUKQXhNVmIyTnRMV3RzZFhOMFpYSnNaWFF0Ykc5bloyVnlNQjRYRFRJeU1EZ3lOVEV6TWpjMU4xb1hEVEl6TURneQpOVEV6TWpjMU9Gb3dJREVlTUJ3R0ExVUVBeE1WYjJOdExXdHNkWE4wWlhKc1pYUXRiRzluWjJWeU1JSUJJakFOCkJna3Foa2lHOXcwQkFRRUZBQU9DQVE4QU1JSUJDZ0tDQVFFQTVhMHlmV0I0RWxjZDd5UkN0S3greVhidC9qTVkKUDJkUGduZUQ1aVhuNFRpd1pOUUhmUU5QRk1zRTl1ajZuNkZjUklaUDM2ZEV4RHNMOGVmdTBYb3l4YVp3d3VRUApkSGgwbUlsVnltMjk3b2EyTEZ2aGFNVDJ2dHBDRHBhS3M3NklGbnFJUUtYQkZuMEJJVUNHMXRDdUNaZ0E3R3dRCmxjYWVodTV0RXV2bmJPSWd5eHlOSFAvT29sLytXL1paRzJ6SCtKd01qN1FNQmhYNk04ZFhkOUxBVGgyRzJpUE0KUVBGcHpUbXQ2OW90QTBmbWJYSVUzVTBORkt5bnhMamh3cVhObGZUTzBaZzdHc1RyNVVJV2tNdjdiOVA5MFJWbwpBaFNXZGJQYk8wSzgyMFIrL29WVzdvK2tmSW1Pc1VNZE1YeXFYQmlEZ1FhcTIybzlYcnorWTByZ0VRSURBUUFCCm8yTXdZVEFPQmdOVkhROEJBZjhFQkFNQ0FxUXdEd1lEVlIwVEFRSC9CQVV3QXdFQi96QWRCZ05WSFE0RUZnUVUKZGo1SHVnTEplKzcyK1pkYjlKRXpGaW5hNVJRd0h3WURWUjBqQkJnd0ZvQVVkajVIdWdMSmUrNzIrWmRiOUpFegpGaW5hNVJRd0RRWUpLb1pJaHZjTkFRRUxCUUFEZ2dFQkFKTFhBdElPSDBVcnhZeC9WVXVTM2lqd0ZyaDVKOUpkCm8wK0JVQ1UvYlMvQkJvZlJ6RUpldVFBMWo2cU1aYmJtdXEvVjdmeVp3L25VbFRSUWVHTjhrSnN3U0cyTWlYeFgKOU41SGl0a2tZVE1tNUJjNlF6ZHJ4UjlMOENJRTNSRnZzRmhRUVdCZmtldGMweHJyeHQxd3dML1RIMU5hUGVSdApoUHFvclhkbGNRbWVKU2ZiTXBKMXc0dEpQaGlKcmg5cW1DblU2enlCSzlTLzRsclp1KzUySmYwc1ZGSEdoWUFmCnNxZnNBNWkwaDN3TVJmSExlU1UyZElvYkc1RjJIbEVQVGQrYis5RW53MUJramtCU3AwUHBneXJBK1pLK3pwK2QKMWJjTTlrbHVpRDkxR3ZTWmtiTkhhTFNpVUZRVEJER05sdEE4Z1lUUS81b2FzUndtL3VrcXlORT0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=",
+    "masterEndpoint": "https://api.foo.bar.baz:6443"
+  },
+  "status": {
+    "cloudVendor": "BareMetal",
+    "clusterID": "91976abd-8b8e-47b9-82d3-e84793396ed7",
+    "conditions": [
+      {
+        "lastTransitionTime": "2021-02-20T15:40:10Z",
+        "message": "Accepted by hub cluster admin",
+        "reason": "HubClusterAdminAccepted",
+        "status": "True",
+        "type": "HubAcceptedManagedCluster"
+      },
+      {
+        "lastTransitionTime": "2021-02-20T15:40:31Z",
+        "message": "Managed cluster joined",
+        "reason": "ManagedClusterJoined",
+        "status": "True",
+        "type": "ManagedClusterJoined"
+      },
+      {
+        "lastTransitionTime": "2023-01-07T04:19:53Z",
+        "message": "Managed cluster is available",
+        "reason": "ManagedClusterAvailable",
+        "status": "True",
+        "type": "ManagedClusterConditionAvailable"
+      },
+      {
+        "lastTransitionTime": "2022-08-25T13:31:07Z",
+        "message": "Import succeeded",
+        "reason": "ManagedClusterImported",
+        "status": "True",
+        "type": "ManagedClusterImportSucceeded"
+      },
+      {
+        "lastTransitionTime": "2022-02-26T11:01:18Z",
+        "message": "Managed cluster info is synced",
+        "reason": "ManagedClusterInfoSynced",
+        "status": "True",
+        "type": "ManagedClusterInfoSynced"
+      }
+    ],
+    "consoleURL": "https://console-openshift-console.apps.foo.bar.baz",
+    "distributionInfo": {
+      "ocp": {
+        "availableUpdates": [
+          "4.10.28",
+          "4.10.30",
+          "4.10.31",
+          "4.10.32",
+          "4.10.33",
+          "4.10.34",
+          "4.10.35",
+          "4.10.36",
+          "4.10.37",
+          "4.10.39",
+          "4.10.40",
+          "4.10.41",
+          "4.10.42",
+          "4.10.43",
+          "4.10.45",
+          "4.10.46",
+          "4.10.47",
+          "4.10.50",
+          "4.10.51"
+        ],
+        "channel": "stable-4.10",
+        "desired": {
+          "channels": [
+            "candidate-4.10",
+            "candidate-4.11",
+            "eus-4.10",
+            "fast-4.10",
+            "fast-4.11",
+            "stable-4.10",
+            "stable-4.11"
+          ],
+          "image": "quay.io/openshift-release-dev/ocp-release@sha256:e1fa1f513068082d97d78be643c369398b0e6820afab708d26acda2262940954",
+          "url": "https://access.redhat.com/errata/RHSA-2022:5875",
+          "version": "4.10.26"
+        },
+        "desiredVersion": "4.10.26",
+        "managedClusterClientConfig": {
+          "caBundle": "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUZQekNDQkNlZ0F3SUJBZ0lTQTh5czB3TDFjNDYzNEZGOEwrRW1jcGFjTUEwR0NTcUdTSWIzRFFFQkN3VUEKTURJeEN6QUpCZ05WQkFZVEFsVlRNUll3RkFZRFZRUUtFdzFNWlhRbmN5QkZibU55ZVhCME1Rc3dDUVlEVlFRRApFd0pTTXpBZUZ3MHlNekF4TVRneE16RTVNamxhRncweU16QTBNVGd4TXpFNU1qaGFNQ2N4SlRBakJnTlZCQU1UCkhHRndhUzV0YjJNdGFXNW1jbUV1YldGemMyOXdaVzR1WTJ4dmRXUXdnZ0VpTUEwR0NTcUdTSWIzRFFFQkFRVUEKQTRJQkR3QXdnZ0VLQW9JQkFRQ2NHVklLOTRvbjNoR01LL01vZWQvcWE0NnliZkFBMEo5TnoxYStxRStDK3poKwpoL0ZUOTdqZkhvd2djMlQxSmxJTkNHYVk2SkNRcjA4c003QTdwUXhKUHI5cnFJZEJsWXNZZEd4YWRTdWZtR09BCjlCMkhTWmYxdWNLNjlKUzZKMTJ1Ui9uQ0NJZHVjOTEwT3lQZHprNkhkdlFFWEhiK0hSdGhuOFRHTGN2NFdvbFYKYlhjNks2STl2RmJBRTJSNjZVbTN6eXB3M1BOL29pTFErY3RCdFJnd1oyc0xPZHpRTW8vaTlSYmwvb0Jkc2FnUwpNc25Ba05qc0lET25YWWVybnRaSGlLTGR4VDNocy9XQlFIQSttRmpyRGNCQkZWYTVqTkEyaEpURG84N0FFNFZ5CjhQNDFKZVdnNitGeHVIZFJrdzk4aVpNN3FTeVZDeUtUU0FvaWk4WC9BZ01CQUFHamdnSllNSUlDVkRBT0JnTlYKSFE4QkFmOEVCQU1DQmFBd0hRWURWUjBsQkJZd0ZBWUlLd1lCQlFVSEF3RUdDQ3NHQVFVRkJ3TUNNQXdHQTFVZApFd0VCL3dRQ01BQXdIUVlEVlIwT0JCWUVGSlZuelhhOGFRZGt3Y3ozaDdLOXZmVFphZlBOTUI4R0ExVWRJd1FZCk1CYUFGQlF1c3hlM1dGYkxybEFKUU9ZZnI1MkxGTUxHTUZVR0NDc0dBUVVGQndFQkJFa3dSekFoQmdnckJnRUYKQlFjd0FZWVZhSFIwY0RvdkwzSXpMbTh1YkdWdVkzSXViM0puTUNJR0NDc0dBUVVGQnpBQ2hoWm9kSFJ3T2k4dgpjak11YVM1c1pXNWpjaTV2Y21jdk1DY0dBMVVkRVFRZ01CNkNIR0Z3YVM1dGIyTXRhVzVtY21FdWJXRnpjMjl3ClpXNHVZMnh2ZFdRd1RBWURWUjBnQkVVd1F6QUlCZ1puZ1F3QkFnRXdOd1lMS3dZQkJBR0MzeE1CQVFFd0tEQW0KQmdnckJnRUZCUWNDQVJZYWFIUjBjRG92TDJOd2N5NXNaWFJ6Wlc1amNubHdkQzV2Y21jd2dnRUZCZ29yQmdFRQpBZFo1QWdRQ0JJSDJCSUh6QVBFQWRnQjZNb3hVMkxjdHRpRHFPT0JTSHVtRUZuQXlFNFZOTzlJcndUcFhvMUxyClVnQUFBWVhGUDhndkFBQUVBd0JITUVVQ0lRREZ1YWRWWUttV0ZwRG0zR0ZKMjNySktGZ2Q0a3ZzS0p6aW9pcGwKbkhzZi9BSWdHUThuSzhKQmtSUGxkV2ZGYzB6N0VLaytVM01tTlgwTTdGMkNSSG51N0NJQWR3RG9QdERhUHZVRwpOVExuVnlpOGlXdkpBOVBMMFJGcjdPdHA0WGQ5YlFhOWJnQUFBWVhGUDhnVkFBQUVBd0JJTUVZQ0lRREE0S2dJCmRPMVlaTjNvMlR6YTJmUGZMbkVsa1JJcExlcGNSR3V0am9NcXB3SWhBTGZIR0Z3alFKMVBpODNMVmhBYXFHdkIKZkNiQ0VFM284REYxaFJXNC9PK0hNQTBHQ1NxR1NJYjNEUUVCQ3dVQUE0SUJBUUJuU2JjSjRESGZkV3lUUEJaNQpnQmxMelJsYUdhZDh5TlV1SFZFTjlIcXNPRnJZM0sxc3hyUnpJaEJtUWtQbEdHR3IxNEJSb05GQU1YamZhcmwxCmRzSXRUQ3paWXlnckxhTHViMVZvMm5RZlBHMGZCZC9iNDdrZk9RZzZSMnZxMXdkdTdHNjFhNjN4NERpS29yTGEKYVJXSEw3VFp6K05wVGEwU1Q1b1J5bGpjMTJTWXNLR0pFeFZvVVlrYVpiRjRyVm80ZzVjSWwzeTFUWGNBdzNNUwphRFV4Yms1YjdydkhoSkMyQjQwKzRhTWl5bmVuczFYTktYUXdwMG8wOC82YkVjcXlVdk1QWFNmN01jdVN4d1VUCmVaUVNaUW5ZN201YVh2L251UUpnbHlNSHVFREZTc3hod1d3dzd4WW5TYURIQkh0bHNQZTBvUm9BZ1ZERi9obUgKMU11SAotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCi0tLS0tQkVHSU4gQ0VSVElGSUNBVEUtLS0tLQpNSUlGRmpDQ0F2NmdBd0lCQWdJUkFKRXJDRXJQREJpblUvYldMaVduWDFvd0RRWUpLb1pJaHZjTkFRRUxCUUF3ClR6RUxNQWtHQTFVRUJoTUNWVk14S1RBbkJnTlZCQW9USUVsdWRHVnlibVYwSUZObFkzVnlhWFI1SUZKbGMyVmgKY21Ob0lFZHliM1Z3TVJVd0V3WURWUVFERXd4SlUxSkhJRkp2YjNRZ1dERXdIaGNOTWpBd09UQTBNREF3TURBdwpXaGNOTWpVd09URTFNVFl3TURBd1dqQXlNUXN3Q1FZRFZRUUdFd0pWVXpFV01CUUdBMVVFQ2hNTlRHVjBKM01nClJXNWpjbmx3ZERFTE1Ba0dBMVVFQXhNQ1VqTXdnZ0VpTUEwR0NTcUdTSWIzRFFFQkFRVUFBNElCRHdBd2dnRUsKQW9JQkFRQzdBaFVvelBhZ2xOTVBFdXlOVlpMRCtJTHhtYVo2UW9pblhTYXF0U3U1eFV5eHI0NXIrWFhJbzljUApSNVFVVlRWWGpKNm9vamtaOVlJOFFxbE9idlU3d3k3YmpjQ3dYUE5aT09mdHoybndXZ3NidnNDVUpDV0gramR4CnN4UG5IS3pobSsvYjVEdEZVa1dXcWNGVHpqVElVdTYxcnUyUDNtQnc0cVZVcTdadERwZWxRRFJySzlPOFp1dG0KTkh6NmE0dVBWeW1aK0RBWFhicHliL3VCeGEzU2hsZzlGOGZuQ2J2eEsvZUczTUhhY1YzVVJ1UE1yU1hCaUx4ZwpaM1Ztcy9FWTk2SmM1bFAvT29pMlI2WC9FeGpxbUFsM1A1MVQrYzhCNWZXbWNCY1VyMk9rLzVtems1M2NVNmNHCi9raUZIYUZwcmlWMXV4UE1VZ1AxN1ZHaGk5c1ZBZ01CQUFHamdnRUlNSUlCQkRBT0JnTlZIUThCQWY4RUJBTUMKQVlZd0hRWURWUjBsQkJZd0ZBWUlLd1lCQlFVSEF3SUdDQ3NHQVFVRkJ3TUJNQklHQTFVZEV3RUIvd1FJTUFZQgpBZjhDQVFBd0hRWURWUjBPQkJZRUZCUXVzeGUzV0ZiTHJsQUpRT1lmcjUyTEZNTEdNQjhHQTFVZEl3UVlNQmFBCkZIbTBXZVo3dHVYa0FYT0FDSWpJR2xqMjZadHVNRElHQ0NzR0FRVUZCd0VCQkNZd0pEQWlCZ2dyQmdFRkJRY3cKQW9ZV2FIUjBjRG92TDNneExta3ViR1Z1WTNJdWIzSm5MekFuQmdOVkhSOEVJREFlTUJ5Z0dxQVloaFpvZEhSdwpPaTh2ZURFdVl5NXNaVzVqY2k1dmNtY3ZNQ0lHQTFVZElBUWJNQmt3Q0FZR1o0RU1BUUlCTUEwR0N5c0dBUVFCCmd0OFRBUUVCTUEwR0NTcUdTSWIzRFFFQkN3VUFBNElDQVFDRnlrNUhQcVAzaFVTRnZOVm5lTEtZWTYxMVRSNlcKUFRObGNsUXRnYURxdyszNElMOWZ6TGR3QUxkdU8vWmVsTjdrSUorbTc0dXlBK2VpdFJZOGtjNjA3VGtDNTN3bAppa2ZtWlc0L1J2VFo4TTZVSys1VXpoSzhqQ2RMdU1HWUw2S3Z6WEdSU2dpM3lMZ2pld1F0Q1BrSVZ6NkQyUVF6CkNrY2hlQW1DSjhNcXlKdTV6bHp5Wk1qQXZubkFUNDV0UkF4ZWtyc3U5NHNRNGVnZFJDbmJXU0R0WTdraCtCSW0KbEpOWG9CMWxCTUVLSXE0UURVT1hvUmdmZnVEZ2hqZTFXckc5TUwrSGJpc3EveUZPR3dYRDlSaVg4RjZzdzZXNAphdkF1dkRzenVlNUwzc3o4NUsrRUM0WS93RlZETnZabzRUWVhhbzZaMGYrbFFLYzB0OERRWXprMU9YVnU4cnAyCnlKTUM2YWxMYkJmT0RBTFp2WUg3bjdkbzFBWmxzNEk5ZDFQNGpua0RyUW94QjNVcVE5aFZsM0xFS1E3M3hGMU8KeUs1R2hERFg4b1ZmR0tGNXUrZGVjSXNINFlhVHc3bVAzR0Z4SlNxdjMrMGxVRkpvaTVMYzVkYTE0OXA5MElkcwpoQ0V4cm9MMSs3bXJ5SWtYUGVGTTVUZ085cjBydlphQkZPdlYyejBncDM1WjArTDRXUGxidUVqTi9seFBGaW4rCkhsVWpyOGdSc0kzcWZKT1FGeS85cktJSlIwWS84T213dC84b1RXZ3kxbWRlSG1tams3ajFuWXN2QzlKU1E2WnYKTWxkbFRUS0IzemhUaFYxK1hXWXA2cmpkNUpXMXpiVldFa0xOeEU3R0pUaEVVRzNzemdCVkdQN3BTV1RVVHNxWApuTFJid0hPb3E3aEh3Zz09Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0KLS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUZZRENDQkVpZ0F3SUJBZ0lRUUFGM0lUZlU2VUs0N25hcVBHUUt0ekFOQmdrcWhraUc5dzBCQVFzRkFEQS8KTVNRd0lnWURWUVFLRXh0RWFXZHBkR0ZzSUZOcFoyNWhkSFZ5WlNCVWNuVnpkQ0JEYnk0eEZ6QVZCZ05WQkFNVApEa1JUVkNCU2IyOTBJRU5CSUZnek1CNFhEVEl4TURFeU1ERTVNVFF3TTFvWERUSTBNRGt6TURFNE1UUXdNMW93ClR6RUxNQWtHQTFVRUJoTUNWVk14S1RBbkJnTlZCQW9USUVsdWRHVnlibVYwSUZObFkzVnlhWFI1SUZKbGMyVmgKY21Ob0lFZHliM1Z3TVJVd0V3WURWUVFERXd4SlUxSkhJRkp2YjNRZ1dERXdnZ0lpTUEwR0NTcUdTSWIzRFFFQgpBUVVBQTRJQ0R3QXdnZ0lLQW9JQ0FRQ3Q2Q1J6OUJRMzg1dWVLMWNvSEllKzNMZmZPSkNNYmp6bVY2QjQ5M1hDCm92NzFhbTcyQUU4bzI5NW9obXhFazdheFkvMFVFbXUvSDlMcU1ac2hmdEV6UExwSTlkMTUzN080L3hMeElacEwKd1lxR2NXbEtabVpzajM0OGNMK3RLU0lHOCtUQTVvQ3U0a3VQdDVsK2xBT2YwMGVYZkpsSUkxUG9PSzVQQ20rRApMdEZKVjR5QWRMYmFMOUE0alhzRGNDRWJkZkl3UFBxUHJ0M2FZNnZyRmsvQ2poRkxmczhMNlArMWR5NzBzbnRLCjRFd1NKUXh3alFNcG9PRlRKT3dUMmU0WnZ4Q3pTb3cvaWFOaFVkNnNod2VVOUdOeDdDN2liMXVZZ2VHSlhEUjUKYkhidk81QmllZWJicEpvdkpzWFFFT0VPM3RrUWpoYjd0L2VvOThmbEFnZVlqellJbGVmaU41WU5ObldlK3c1eQpzUjJidkFQNVNRWFlnZDBGdENyV1FlbXNBWGFWQ2cvWTM5VzlFaDgxTHlnWGJOS1l3YWdKWkhkdVJ6ZTZ6cXhaClhtaWRmM0xXaWNVR1FTaytXVDdkSnZVa3lSR25XcU5NUUI5R29abTFwenBSYm9ZN25uMXlweElGZUZudFBsRjQKRlFzRGo0M1FMd1d5UG50S0hFdHpCUkw4eHVyZ1VCTjhRNU4wczhwMDU0NGZBUWpRTU5SYmNUYTBCN3JCTURCYwpTTGVDTzVpbWZXQ0tvcU1wZ3N5NnZZTUVHNktEQTBHaDFnWHhHOEsyOEtoOGhqdEdxRWdxaU54Mm1uYS9IMnFsClBSbVA2emp6Wk43SUt3MEtLUC8zMitJVlF0UWkwQ2RkNFhuK0dPZHdpSzFPNXRtTE9zYmRKMUZ1Lzd4azlUTkQKVHdJREFRQUJvNElCUmpDQ0FVSXdEd1lEVlIwVEFRSC9CQVV3QXdFQi96QU9CZ05WSFE4QkFmOEVCQU1DQVFZdwpTd1lJS3dZQkJRVUhBUUVFUHpBOU1Ec0dDQ3NHQVFVRkJ6QUNoaTlvZEhSd09pOHZZWEJ3Y3k1cFpHVnVkSEoxCmMzUXVZMjl0TDNKdmIzUnpMMlJ6ZEhKdmIzUmpZWGd6TG5BM1l6QWZCZ05WSFNNRUdEQVdnQlRFcDdHa2V5eHgKK3R2aFM1QjEvOFFWWUlXSkVEQlVCZ05WSFNBRVRUQkxNQWdHQm1lQkRBRUNBVEEvQmdzckJnRUVBWUxmRXdFQgpBVEF3TUM0R0NDc0dBUVVGQndJQkZpSm9kSFJ3T2k4dlkzQnpMbkp2YjNRdGVERXViR1YwYzJWdVkzSjVjSFF1CmIzSm5NRHdHQTFVZEh3UTFNRE13TWFBdm9DMkdLMmgwZEhBNkx5OWpjbXd1YVdSbGJuUnlkWE4wTG1OdmJTOUUKVTFSU1QwOVVRMEZZTTBOU1RDNWpjbXd3SFFZRFZSME9CQllFRkhtMFdlWjd0dVhrQVhPQUNJaklHbGoyNlp0dQpNQTBHQ1NxR1NJYjNEUUVCQ3dVQUE0SUJBUUFLY3dCc2xtNy9EbExRcnQyTTUxb0dyUytvNDQrL3lRb0RGVkRDCjVXeEN1MitiOUxSUHdrU0lDSFhNNndlYkZHSnVlTjdzSjdvNVhQV2lvVzVXbEhBUVU3Rzc1Sy9Rb3NNckFkU1cKOU1VZ05UUDUyR0UyNEhHTnRMaTFxb0pGbGNEeXFTTW81OWFoeTJjSTJxQkRMS29ia3gvSjN2V3JhVjBUOVZ1RwpXQ0xLVFZYa2NHZHR3bGZGUmpsQno0cFlnMWh0bWY1WDZEWU84QTRqcXYySWw5RGpYQTZVU2JXMUZ6WFNMcjlPCmhlOFk0SVdTNndZN2JDa2pDV0RjUlFKTUVoZzc2ZnNPM3R4RStGaVlydXE5UlVXaGlGMW15djRRNlcrQ3lCRkMKRGZ2cDdPT0dBTjZkRU9NNCtxUjlzZGpvU1lLRUJwc3I2R3RQQVF3NGR5NzUzZWM1Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K",
+          "url": "https://api.foo.bar.baz:6443"
+        },
+        "version": "4.10.26",
+        "versionAvailableUpdates": [
+          {
+            "channels": [
+              "candidate-4.10",
+              "candidate-4.11",
+              "eus-4.10",
+              "fast-4.10",
+              "fast-4.11",
+              "stable-4.10",
+              "stable-4.11"
+            ],
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:2127608ebd67a2470860c42368807a0de2308dba144ec4c298bec1c03d79cb52",
+            "url": "https://access.redhat.com/errata/RHBA-2022:6095",
+            "version": "4.10.28"
+          },
+          {
+            "channels": [
+              "candidate-4.10",
+              "candidate-4.11",
+              "eus-4.10",
+              "fast-4.10",
+              "fast-4.11",
+              "stable-4.10",
+              "stable-4.11"
+            ],
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:7f543788330d486627c612c64eebc8e992944991e21cfdb771fd36725b277f07",
+            "url": "https://access.redhat.com/errata/RHSA-2022:6133",
+            "version": "4.10.30"
+          },
+          {
+            "channels": [
+              "candidate-4.10",
+              "candidate-4.11",
+              "eus-4.10",
+              "fast-4.10",
+              "fast-4.11",
+              "stable-4.10",
+              "stable-4.11"
+            ],
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:86f3b85645c613dc4a79d04c28b9bbd3519745f0862e30275acceadcbc409b42",
+            "url": "https://access.redhat.com/errata/RHSA-2022:6258",
+            "version": "4.10.31"
+          },
+          {
+            "channels": [
+              "candidate-4.10",
+              "candidate-4.11",
+              "eus-4.10",
+              "fast-4.10",
+              "fast-4.11",
+              "stable-4.10",
+              "stable-4.11"
+            ],
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:9f53e05393bcc9bc1ab9666b1e4307ea44be896342b3b64ab465e59bac0dbd34",
+            "url": "https://access.redhat.com/errata/RHBA-2022:6372",
+            "version": "4.10.32"
+          },
+          {
+            "channels": [
+              "candidate-4.10",
+              "candidate-4.11",
+              "eus-4.10",
+              "fast-4.10",
+              "fast-4.11",
+              "stable-4.10",
+              "stable-4.11"
+            ],
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:15832b3fc1eae4e3fafc97350e5d8a4d1be3948a6e5f5e9db8709b092d27e3da",
+            "url": "https://access.redhat.com/errata/RHBA-2022:6532",
+            "version": "4.10.33"
+          },
+          {
+            "channels": [
+              "candidate-4.10",
+              "candidate-4.11",
+              "eus-4.10",
+              "fast-4.10",
+              "fast-4.11",
+              "stable-4.10",
+              "stable-4.11"
+            ],
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:8e2e492710a3b36b1de781ac1e926451cbf48b566c8781fb56ce03ff22752c9b",
+            "url": "https://access.redhat.com/errata/RHBA-2022:6663",
+            "version": "4.10.34"
+          },
+          {
+            "channels": [
+              "candidate-4.10",
+              "candidate-4.11",
+              "eus-4.10",
+              "fast-4.10",
+              "fast-4.11",
+              "stable-4.10",
+              "stable-4.11"
+            ],
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:766bc6b381163ecccfea00556dd336dd49067413f69cbc29337fea778295c7bb",
+            "url": "https://access.redhat.com/errata/RHBA-2022:6728",
+            "version": "4.10.35"
+          },
+          {
+            "channels": [
+              "candidate-4.10",
+              "candidate-4.11",
+              "eus-4.10",
+              "fast-4.10",
+              "fast-4.11",
+              "stable-4.10",
+              "stable-4.11"
+            ],
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:afe912343dc35b6c2307e2e2b4d174057fd76095504215fe25277a795df8eae9",
+            "url": "https://access.redhat.com/errata/RHSA-2022:6805",
+            "version": "4.10.36"
+          },
+          {
+            "channels": [
+              "candidate-4.10",
+              "candidate-4.11",
+              "eus-4.10",
+              "fast-4.10",
+              "fast-4.11",
+              "stable-4.10",
+              "stable-4.11"
+            ],
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:bd0603b261c362fb0589ac21444b7b9f4ecadb4cea9ef000164f1d3648116bce",
+            "url": "https://access.redhat.com/errata/RHBA-2022:6901",
+            "version": "4.10.37"
+          },
+          {
+            "channels": [
+              "candidate-4.10",
+              "candidate-4.11",
+              "eus-4.10",
+              "fast-4.10",
+              "fast-4.11",
+              "stable-4.10",
+              "stable-4.11"
+            ],
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:59d7ac85da072fea542d7c43498e764c72933e306117a105eac7bd5dda4e6bbe",
+            "url": "https://access.redhat.com/errata/RHSA-2022:7211",
+            "version": "4.10.39"
+          },
+          {
+            "channels": [
+              "candidate-4.10",
+              "candidate-4.11",
+              "eus-4.10",
+              "fast-4.10",
+              "fast-4.11",
+              "stable-4.10",
+              "stable-4.11"
+            ],
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:b9fad814fb4442e7e852b0614d9bb4e2ebc5e1a2fa51623aa838b4ee0e4a5369",
+            "url": "https://access.redhat.com/errata/RHBA-2022:7298",
+            "version": "4.10.40"
+          },
+          {
+            "channels": [
+              "candidate-4.10",
+              "candidate-4.11",
+              "eus-4.10",
+              "fast-4.10",
+              "fast-4.11",
+              "stable-4.10",
+              "stable-4.11"
+            ],
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:7d62627dde39d83084bf17bd2d0d46ee2a984210446a131b66ab047aeeb513cc",
+            "url": "https://access.redhat.com/errata/RHBA-2022:7866",
+            "version": "4.10.41"
+          },
+          {
+            "channels": [
+              "candidate-4.10",
+              "candidate-4.11",
+              "eus-4.10",
+              "fast-4.10",
+              "fast-4.11",
+              "stable-4.10",
+              "stable-4.11"
+            ],
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:735957b2c08c013a71cc5461d572ab297a069d8d03e853f78f745f89d0bb20c9",
+            "url": "https://access.redhat.com/errata/RHBA-2022:8496",
+            "version": "4.10.42"
+          },
+          {
+            "channels": [
+              "candidate-4.10",
+              "candidate-4.11",
+              "eus-4.10",
+              "fast-4.10",
+              "fast-4.11",
+              "stable-4.10",
+              "stable-4.11"
+            ],
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:4ef9ec346f612972cf0441e1e009b836f8db1143a6fbe95edbe573baf2e41f7b",
+            "url": "https://access.redhat.com/errata/RHBA-2022:8623",
+            "version": "4.10.43"
+          },
+          {
+            "channels": [
+              "candidate-4.10",
+              "candidate-4.11",
+              "eus-4.10",
+              "fast-4.10",
+              "fast-4.11",
+              "stable-4.10",
+              "stable-4.11"
+            ],
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:5f9ac79c9c257c28b8b51e79a0382de285d6e4c4e4537710b7c117601d320293",
+            "url": "https://access.redhat.com/errata/RHBA-2022:8882",
+            "version": "4.10.45"
+          },
+          {
+            "channels": [
+              "candidate-4.10",
+              "candidate-4.11",
+              "eus-4.10",
+              "fast-4.10",
+              "fast-4.11",
+              "stable-4.10",
+              "stable-4.11"
+            ],
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:885eeba368670aded2ef6433814ebd0eab21566812125f459af45d93e7109692",
+            "url": "https://access.redhat.com/errata/RHBA-2022:9099",
+            "version": "4.10.46"
+          },
+          {
+            "channels": [
+              "candidate-4.10",
+              "candidate-4.11",
+              "eus-4.10",
+              "fast-4.10",
+              "fast-4.11",
+              "stable-4.10",
+              "stable-4.11"
+            ],
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:bb0d33862d3f550474d5c34e6bc379c095337eff9d3c3c3eac0787a4b9e7140a",
+            "url": "https://access.redhat.com/errata/RHSA-2023:0032",
+            "version": "4.10.47"
+          },
+          {
+            "channels": [
+              "candidate-4.10",
+              "candidate-4.11",
+              "eus-4.10",
+              "fast-4.10",
+              "fast-4.11",
+              "stable-4.10",
+              "stable-4.11"
+            ],
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:9301ca818d705bda5981db961904f2b6e3f9adcc51e3c8e258c05950236dfc3d",
+            "url": "https://access.redhat.com/errata/RHSA-2023:0241",
+            "version": "4.10.50"
+          },
+          {
+            "channels": [
+              "candidate-4.10",
+              "candidate-4.11",
+              "eus-4.10",
+              "fast-4.10",
+              "fast-4.11",
+              "stable-4.10",
+              "stable-4.11"
+            ],
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:d23a3b88ece36f741923552904b730c5452db698c7678cf65181fefb62ea5e2f",
+            "url": "https://access.redhat.com/errata/RHSA-2023:0561",
+            "version": "4.10.51"
+          }
+        ],
+        "versionHistory": [
+          {
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:e1fa1f513068082d97d78be643c369398b0e6820afab708d26acda2262940954",
+            "state": "Completed",
+            "verified": true,
+            "version": "4.10.26"
+          },
+          {
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:6ae80e777c206b7314732aff542be105db892bf0e114a6757cb9e34662b8f891",
+            "state": "Partial",
+            "verified": false,
+            "version": "4.16.21"
+          },
+          {
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:6ae80e777c206b7314732aff542be105db892bf0e114a6757cb9e34662b8f891",
+            "state": "Partial",
+            "verified": false,
+            "version": "4.16.21"
+          },
+          {
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:6ae80e777c206b7314732aff542be105db892bf0e114a6757cb9e34662b8f891",
+            "state": "Partial",
+            "verified": false,
+            "version": "4.16.21"
+          },
+          {
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:6ae80e777c206b7314732aff542be105db892bf0e114a6757cb9e34662b8f891",
+            "state": "Partial",
+            "verified": false,
+            "version": "4.16.21"
+          },
+          {
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:6ae80e777c206b7314732aff542be105db892bf0e114a6757cb9e34662b8f891",
+            "state": "Partial",
+            "verified": false,
+            "version": "4.16.21"
+          },
+          {
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:6ae80e777c206b7314732aff542be105db892bf0e114a6757cb9e34662b8f891",
+            "state": "Partial",
+            "verified": false,
+            "version": "4.16.21"
+          },
+          {
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:6ae80e777c206b7314732aff542be105db892bf0e114a6757cb9e34662b8f891",
+            "state": "Partial",
+            "verified": false,
+            "version": "4.16.21"
+          },
+          {
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:6ae80e777c206b7314732aff542be105db892bf0e114a6757cb9e34662b8f891",
+            "state": "Partial",
+            "verified": false,
+            "version": "4.16.21"
+          },
+          {
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:6ae80e777c206b7314732aff542be105db892bf0e114a6757cb9e34662b8f891",
+            "state": "Partial",
+            "verified": false,
+            "version": "4.16.21"
+          },
+          {
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:6ae80e777c206b7314732aff542be105db892bf0e114a6757cb9e34662b8f891",
+            "state": "Partial",
+            "verified": false,
+            "version": "4.16.21"
+          },
+          {
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:6ae80e777c206b7314732aff542be105db892bf0e114a6757cb9e34662b8f891",
+            "state": "Partial",
+            "verified": false,
+            "version": "4.16.21"
+          },
+          {
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:6ae80e777c206b7314732aff542be105db892bf0e114a6757cb9e34662b8f891",
+            "state": "Partial",
+            "verified": false,
+            "version": "4.16.21"
+          },
+          {
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:6ae80e777c206b7314732aff542be105db892bf0e114a6757cb9e34662b8f891",
+            "state": "Partial",
+            "verified": false,
+            "version": "4.16.21"
+          },
+          {
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:6ae80e777c206b7314732aff542be105db892bf0e114a6757cb9e34662b8f891",
+            "state": "Partial",
+            "verified": false,
+            "version": "4.16.21"
+          },
+          {
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:6ae80e777c206b7314732aff542be105db892bf0e114a6757cb9e34662b8f891",
+            "state": "Partial",
+            "verified": false,
+            "version": "4.16.21"
+          },
+          {
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:6ae80e777c206b7314732aff542be105db892bf0e114a6757cb9e34662b8f891",
+            "state": "Partial",
+            "verified": false,
+            "version": "4.16.21"
+          },
+          {
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:6ae80e777c206b7314732aff542be105db892bf0e114a6757cb9e34662b8f891",
+            "state": "Partial",
+            "verified": false,
+            "version": "4.16.21"
+          },
+          {
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:6ae80e777c206b7314732aff542be105db892bf0e114a6757cb9e34662b8f891",
+            "state": "Partial",
+            "verified": false,
+            "version": "4.16.21"
+          },
+          {
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:6ae80e777c206b7314732aff542be105db892bf0e114a6757cb9e34662b8f891",
+            "state": "Partial",
+            "verified": false,
+            "version": "4.16.21"
+          },
+          {
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:6ae80e777c206b7314732aff542be105db892bf0e114a6757cb9e34662b8f891",
+            "state": "Partial",
+            "verified": false,
+            "version": "4.16.21"
+          },
+          {
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:6ae80e777c206b7314732aff542be105db892bf0e114a6757cb9e34662b8f891",
+            "state": "Partial",
+            "verified": false,
+            "version": "4.16.21"
+          },
+          {
+            "image": "provisioner.foo.bar.baz:5000/ocp4/openshift4@sha256:a7b23f38d1e5be975a6b516739689673011bdfa59a7158dc6ca36cefae169c18",
+            "state": "Completed",
+            "verified": false,
+            "version": "4.6.17"
+          },
+          {
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:6ae80e777c206b7314732aff542be105db892bf0e114a6757cb9e34662b8f891",
+            "state": "Completed",
+            "verified": false,
+            "version": "4.6.21"
+          },
+          {
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:6ae80e777c206b7314732aff542be105db892bf0e114a6757cb9e34662b8f891",
+            "state": "Completed",
+            "verified": false,
+            "version": "4.6.21"
+          },
+          {
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:6ae80e777c206b7314732aff542be105db892bf0e114a6757cb9e34662b8f891",
+            "state": "Completed",
+            "verified": false,
+            "version": "4.6.21"
+          },
+          {
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:6ae80e777c206b7314732aff542be105db892bf0e114a6757cb9e34662b8f891",
+            "state": "Completed",
+            "verified": false,
+            "version": "4.6.21"
+          },
+          {
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:6ae80e777c206b7314732aff542be105db892bf0e114a6757cb9e34662b8f891",
+            "state": "Completed",
+            "verified": false,
+            "version": "4.6.21"
+          },
+          {
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:6ae80e777c206b7314732aff542be105db892bf0e114a6757cb9e34662b8f891",
+            "state": "Completed",
+            "verified": false,
+            "version": "4.6.21"
+          },
+          {
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:6ae80e777c206b7314732aff542be105db892bf0e114a6757cb9e34662b8f891",
+            "state": "Completed",
+            "verified": false,
+            "version": "4.6.21"
+          },
+          {
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:6ae80e777c206b7314732aff542be105db892bf0e114a6757cb9e34662b8f891",
+            "state": "Completed",
+            "verified": false,
+            "version": "4.6.21"
+          },
+          {
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:6ae80e777c206b7314732aff542be105db892bf0e114a6757cb9e34662b8f891",
+            "state": "Completed",
+            "verified": false,
+            "version": "4.6.21"
+          },
+          {
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:6ae80e777c206b7314732aff542be105db892bf0e114a6757cb9e34662b8f891",
+            "state": "Completed",
+            "verified": false,
+            "version": "4.6.21"
+          },
+          {
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:6ae80e777c206b7314732aff542be105db892bf0e114a6757cb9e34662b8f891",
+            "state": "Completed",
+            "verified": false,
+            "version": "4.6.21"
+          },
+          {
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:6ae80e777c206b7314732aff542be105db892bf0e114a6757cb9e34662b8f891",
+            "state": "Completed",
+            "verified": false,
+            "version": "4.6.21"
+          },
+          {
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:6ae80e777c206b7314732aff542be105db892bf0e114a6757cb9e34662b8f891",
+            "state": "Completed",
+            "verified": false,
+            "version": "4.6.21"
+          },
+          {
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:6ae80e777c206b7314732aff542be105db892bf0e114a6757cb9e34662b8f891",
+            "state": "Partial",
+            "verified": false,
+            "version": "4.6.21"
+          },
+          {
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:6ae80e777c206b7314732aff542be105db892bf0e114a6757cb9e34662b8f891",
+            "state": "Partial",
+            "verified": false,
+            "version": "4.6.21"
+          },
+          {
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:6ae80e777c206b7314732aff542be105db892bf0e114a6757cb9e34662b8f891",
+            "state": "Partial",
+            "verified": false,
+            "version": "4.6.21"
+          },
+          {
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:6ae80e777c206b7314732aff542be105db892bf0e114a6757cb9e34662b8f891",
+            "state": "Partial",
+            "verified": false,
+            "version": "4.6.21"
+          },
+          {
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:6ae80e777c206b7314732aff542be105db892bf0e114a6757cb9e34662b8f891",
+            "state": "Completed",
+            "verified": false,
+            "version": "4.6.21"
+          },
+          {
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:6ae80e777c206b7314732aff542be105db892bf0e114a6757cb9e34662b8f891",
+            "state": "Completed",
+            "verified": false,
+            "version": "4.6.21"
+          },
+          {
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:6ae80e777c206b7314732aff542be105db892bf0e114a6757cb9e34662b8f891",
+            "state": "Completed",
+            "verified": false,
+            "version": "4.6.21"
+          },
+          {
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:6ae80e777c206b7314732aff542be105db892bf0e114a6757cb9e34662b8f891",
+            "state": "Partial",
+            "verified": false,
+            "version": "4.6.21"
+          },
+          {
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:6ae80e777c206b7314732aff542be105db892bf0e114a6757cb9e34662b8f891",
+            "state": "Partial",
+            "verified": false,
+            "version": "4.6.21"
+          },
+          {
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:f07ba64a24638e3bf8ff5d71b6f5bd400ed4501ed4aadf5f3a36ecda1ea75ec6",
+            "state": "Completed",
+            "verified": true,
+            "version": "4.6.31"
+          },
+          {
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:96f00e5b0cde92488c42cd9395ff5a755c77f4273eb10aa83bc2707a8badf93f",
+            "state": "Completed",
+            "verified": true,
+            "version": "4.7.32"
+          },
+          {
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:5d396ad7d5f3cb527580c735e87dfd3b853bbb531e7f03e3a184d0accc223cdf",
+            "state": "Completed",
+            "verified": true,
+            "version": "4.8.13"
+          },
+          {
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:cc74abac76c51be6798df097930848b36e41e98806d78c56a08f6db46aec0ce4",
+            "state": "Completed",
+            "verified": true,
+            "version": "4.8.47"
+          },
+          {
+            "image": "quay.io/openshift-release-dev/ocp-release@sha256:8ab373599e8a010dffb9c7ed45e01c00cb06a7857fe21de102d978be4738b2ec",
+            "state": "Completed",
+            "verified": true,
+            "version": "4.9.45"
+          }
+        ]
+      },
+      "type": "OCP"
+    },
+    "kubeVendor": "OpenShift",
+    "loggingEndpoint": {
+      "hostname": "klusterlet-addon-workmgr.open-cluster-management-agent-addon.svc",
+      "ip": ""
+    },
+    "loggingPort": {
+      "name": "https",
+      "port": 443,
+      "protocol": "TCP"
+    },
+    "nodeList": [
+      {
+        "capacity": {
+          "cpu": "32",
+          "memory": "264059840Ki",
+          "socket": "2"
+        },
+        "conditions": [
+          {
+            "status": "True",
+            "type": "Ready"
+          }
+        ],
+        "labels": {
+          "node-role.kubernetes.io/master": "",
+          "node-role.kubernetes.io/worker": ""
+        },
+        "name": "os-ctrl-0.foo.bar.baz"
+      },
+      {
+        "capacity": {
+          "cpu": "32",
+          "memory": "131939504Ki",
+          "socket": "2"
+        },
+        "conditions": [
+          {
+            "status": "True",
+            "type": "Ready"
+          }
+        ],
+        "labels": {
+          "node-role.kubernetes.io/master": "",
+          "node-role.kubernetes.io/worker": ""
+        },
+        "name": "os-ctrl-1.foo.bar.baz"
+      },
+      {
+        "capacity": {
+          "cpu": "32",
+          "memory": "131939336Ki",
+          "socket": "2"
+        },
+        "conditions": [
+          {
+            "status": "True",
+            "type": "Ready"
+          }
+        ],
+        "labels": {
+          "node-role.kubernetes.io/master": "",
+          "node-role.kubernetes.io/worker": ""
+        },
+        "name": "os-ctrl-2.foo.bar.baz"
+      }
+    ],
+    "version": "v1.23.5+012e945"
+  }
+}

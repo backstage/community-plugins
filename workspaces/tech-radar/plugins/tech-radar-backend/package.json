@@ -1,0 +1,61 @@
+{
+  "name": "@backstage-community/plugin-tech-radar-backend",
+  "version": "1.0.0",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.cjs.js",
+    "types": "dist/index.d.ts"
+  },
+  "backstage": {
+    "role": "backend-plugin",
+    "pluginId": "tech-radar",
+    "pluginPackages": [
+      "@backstage-community/plugin-tech-radar",
+      "@backstage-community/plugin-tech-radar-backend",
+      "@backstage-community/plugin-tech-radar-common"
+    ]
+  },
+  "homepage": "https://backstage.io",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/tech-radar/plugins/tech-radar-backend"
+  },
+  "scripts": {
+    "start": "backstage-cli package start",
+    "build": "backstage-cli package build",
+    "lint": "backstage-cli package lint",
+    "test": "backstage-cli package test",
+    "clean": "backstage-cli package clean",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack"
+  },
+  "dependencies": {
+    "@backstage-community/plugin-tech-radar-common": "workspace:^",
+    "@backstage/backend-defaults": "^0.5.0",
+    "@backstage/backend-plugin-api": "^1.0.0",
+    "@backstage/config": "^1.2.0",
+    "express": "^4.17.1",
+    "express-promise-router": "^4.1.0",
+    "node-fetch": "^2.6.7",
+    "zod": "^3.20.0"
+  },
+  "devDependencies": {
+    "@backstage/backend-test-utils": "^1.0.0",
+    "@backstage/cli": "^0.27.1",
+    "@backstage/plugin-auth-backend": "^0.23.0",
+    "@backstage/plugin-auth-backend-module-guest-provider": "^0.2.0",
+    "@types/express": "*",
+    "@types/supertest": "^2.0.12",
+    "msw": "^2.3.1",
+    "supertest": "^6.2.4"
+  },
+  "files": [
+    "dist",
+    "config.d.ts"
+  ],
+  "configSchema": "config.d.ts"
+}

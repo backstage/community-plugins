@@ -1,0 +1,43 @@
+.bs-topology-resource-item {
+  align-items: baseline;
+  display: flex;
+  min-width: 0;
+}
+
+.bs-topology-resource-item__resource-name {
+  line-height: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bs-topology-resource-item__resource-name--lg {
+  line-height: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.bs-topology-resource-icon {
+  background-color: var(--pf-v5-global--palette--blue-300);
+  border-radius: 20px;
+  color: var(--pf-v5-global--palette--white);
+  display: inline-block;
+  flex-shrink: 0;
+  font-size: 14px;
+  line-height: 16px;
+  margin-right: 4px;
+  min-width: 18px;
+  padding: 1px 4px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.bs-topology-resource-icon--lg {
+  font-size: 17px;
+  line-height: 20px;
+  margin-right: 7px;
+  min-width: 24px;
+  padding: 0 7px;
+  font-weight: 500;
+}

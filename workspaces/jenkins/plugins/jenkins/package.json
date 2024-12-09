@@ -1,0 +1,93 @@
+{
+  "name": "@backstage-community/plugin-jenkins",
+  "version": "0.12.2",
+  "description": "A Backstage plugin that integrates towards Jenkins",
+  "backstage": {
+    "role": "frontend-plugin",
+    "pluginId": "jenkins",
+    "pluginPackages": [
+      "@backstage-community/plugin-jenkins",
+      "@backstage-community/plugin-jenkins-backend",
+      "@backstage-community/plugin-jenkins-common"
+    ]
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./alpha": "./src/alpha.ts",
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "alpha": [
+        "src/alpha.ts"
+      ],
+      "package.json": [
+        "package.json"
+      ]
+    }
+  },
+  "keywords": [
+    "backstage",
+    "jenkins"
+  ],
+  "homepage": "https://backstage.io",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/jenkins/plugins/jenkins"
+  },
+  "license": "Apache-2.0",
+  "sideEffects": false,
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "backstage-cli package build",
+    "clean": "backstage-cli package clean",
+    "lint": "backstage-cli package lint",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack",
+    "start": "backstage-cli package start",
+    "test": "backstage-cli package test"
+  },
+  "dependencies": {
+    "@backstage-community/plugin-jenkins-common": "workspace:^",
+    "@backstage/catalog-model": "^1.7.0",
+    "@backstage/core-compat-api": "^0.3.1",
+    "@backstage/core-components": "^0.15.1",
+    "@backstage/core-plugin-api": "^1.10.0",
+    "@backstage/errors": "^1.2.4",
+    "@backstage/frontend-plugin-api": "^0.9.0",
+    "@backstage/plugin-catalog-react": "^1.14.0",
+    "@material-ui/core": "^4.12.2",
+    "@material-ui/icons": "^4.9.1",
+    "@types/react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "luxon": "^3.0.0",
+    "react-use": "^17.2.4"
+  },
+  "devDependencies": {
+    "@backstage/cli": "^0.28.0",
+    "@backstage/dev-utils": "^1.1.2",
+    "@backstage/frontend-test-utils": "^0.2.1",
+    "@backstage/test-utils": "^1.7.0",
+    "@testing-library/dom": "^10.0.0",
+    "@testing-library/jest-dom": "^6.0.0",
+    "@testing-library/react": "^15.0.0",
+    "@types/react-dom": "^18.2.19",
+    "@types/testing-library__jest-dom": "^6.0.0",
+    "canvas": "^2.11.2",
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-router-dom": "6.0.0-beta.0 || ^6.3.0"
+  },
+  "peerDependencies": {
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-router-dom": "6.0.0-beta.0 || ^6.3.0"
+  }
+}

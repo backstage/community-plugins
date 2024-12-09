@@ -1,0 +1,12 @@
+.bs-tkn-resource-status {
+  padding-left: var(--pf-v5-global--spacer--sm);
+  white-space: nowrap;
+}
+
+.bs-tkn-resource-status__badge {
+  vertical-align: middle;
+}
+
+.bs-tkn-resource-status__badge--alt {
+  vertical-align: baseline;
+}

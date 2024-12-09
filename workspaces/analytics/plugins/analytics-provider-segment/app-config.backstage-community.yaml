@@ -1,0 +1,6 @@
+app:
+  analytics:
+    segment:
+      writeKey: ${SEGMENT_WRITE_KEY}
+      maskIP: true # prevents IP addresses from being sent if true
+      testMode: false # prevents data from being sent if true

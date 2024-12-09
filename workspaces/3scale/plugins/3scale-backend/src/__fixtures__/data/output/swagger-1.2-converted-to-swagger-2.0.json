@@ -1,0 +1,63 @@
+{
+  "host": "api.example.com",
+  "basePath": "/v1",
+  "schemes": ["https"],
+  "swagger": "2.0",
+  "info": {
+    "title": "Title was not specified",
+    "version": "1.2"
+  },
+  "paths": {
+    "/profile/{userId}": {
+      "get": {
+        "operationId": "getUserProfile",
+        "summary": "Get user profile by user ID",
+        "description": "Returns a user's profile details by their ID.",
+        "parameters": [
+          {
+            "in": "path",
+            "description": "ID of the user to fetch",
+            "name": "userId",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "User": {
+      "properties": {
+        "email": {
+          "type": "string",
+          "description": "User email address",
+          "example": "test@example.com"
+        },
+        "id": {
+          "type": "string",
+          "description": "User ID",
+          "example": "1001"
+        },
+        "name": {
+          "type": "string",
+          "description": "User name",
+          "example": "John Doe"
+        }
+      }
+    }
+  }
+}

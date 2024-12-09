@@ -1,0 +1,15 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: backstage-plugin-tekton-common
+  title: '@backstage-community/plugin-tekton-common'
+  description: Tekton common plugin for Backstage
+  tags:
+    - kubernetes
+    - openshift
+    - tekton
+spec:
+  type: backstage-common-library
+  lifecycle: production
+  owner: rhtap-team
+  subcomponentOf: backstage-plugin-tekton-workspace

@@ -1,0 +1,17 @@
+.bs-tkn-pipeline-visualization__label {
+  align-items: baseline;
+}
+
+.bs-tkn-pipeline-visualization__label .badge {
+  font-size: 12px;
+  line-height: 20px;
+  margin-right: 4px;
+  min-width: 24px;
+  padding: 0 7px;
+  border-radius: 20px;
+  color: var(--pf-v5-global--palette--white);
+  display: inline-block;
+  text-align: center;
+  white-space: nowrap;
+  width: 100%;
+}

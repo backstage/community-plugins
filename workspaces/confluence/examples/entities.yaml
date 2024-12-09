@@ -1,0 +1,100 @@
+---
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-system
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  title: Confluence
+  name: confluence
+spec:
+  owner: atlassian
+---
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  title: Confluence Cloud
+  name: confluence-cloud
+  links:
+    - url: https://developer.atlassian.com/cloud/confluence
+      title: Developer documentation
+      icon: docs
+spec:
+  type: website
+  lifecycle: production
+  owner: atlassian
+  system: confluence
+  providesApis:
+    - confluence-cloud-rest-api
+    - confluence-cloud-rest-api-v2
+---
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-api
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  title: Confluence Cloud REST API
+  name: confluence-cloud-rest-api
+  links:
+    - url: https://developer.atlassian.com/cloud/confluence
+      title: Developer documentation
+      icon: docs
+spec:
+  type: openapi
+  lifecycle: production
+  owner: atlassian
+  system: confluence
+  definition:
+    $text: https://dac-static.atlassian.com/cloud/confluence/swagger.v3.json
+---
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-api
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  title: Confluence Cloud REST API v2
+  name: confluence-cloud-rest-api-v2
+  links:
+    - url: https://developer.atlassian.com/cloud/confluence
+      title: Developer documentation
+      icon: docs
+spec:
+  type: openapi
+  lifecycle: production
+  owner: atlassian
+  system: confluence
+  definition:
+    $text: https://dac-static.atlassian.com/cloud/confluence/openapi-v2.v3.json
+---
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  title: Confluence Data Center
+  name: confluence-server
+  links:
+    - url: https://developer.atlassian.com/server/confluence
+      title: Developer documentation
+      icon: docs
+spec:
+  type: website
+  lifecycle: production
+  owner: atlassian
+  system: confluence
+  providesApis:
+    - confluence-server-rest-api
+---
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-api
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  title: Confluence Data Center REST API
+  name: confluence-server-rest-api
+  links:
+    - url: https://developer.atlassian.com/server/confluence
+      title: Developer documentation
+      icon: docs
+spec:
+  type: openapi
+  lifecycle: production
+  owner: atlassian
+  system: confluence
+  definition:
+    $text: https://dac-static.atlassian.com/server/confluence/9.0.0.swagger.v3.json
