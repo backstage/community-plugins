@@ -11,15 +11,11 @@ import { default as FeedbackIcon } from '@mui/icons-material/TextsmsOutlined';
 import { JSX as JSX_2 } from 'react';
 import { RouteRef } from '@backstage/core-plugin-api';
 
-// Warning: (ae-missing-release-tag) "EntityFeedbackPage" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const EntityFeedbackPage: () => JSX_2.Element;
 
 export { FeedbackIcon };
 
-// Warning: (ae-missing-release-tag) "feedbackPlugin" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const feedbackPlugin: BackstagePlugin<
   {
@@ -36,15 +32,11 @@ export const feedbackPlugin: BackstagePlugin<
   {}
 >;
 
-// Warning: (ae-missing-release-tag) "GlobalFeedbackPage" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const GlobalFeedbackPage: (props: {
   themeId?: string | undefined;
 }) => JSX_2.Element;
 
-// Warning: (ae-missing-release-tag) "OpcFeedbackComponent" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const OpcFeedbackComponent: () => JSX_2.Element;
 
