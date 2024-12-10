@@ -118,13 +118,13 @@ export const ResourcesFilterBy: FC<ResourcesFilterByProps> = ({
         </Select>
       </ToolbarItem>
 
-      <ToolbarItem variant="search-filter">
+      <ToolbarItem variant="label-group">
         <ToolbarFilter
-          chips={filters.SearchByName}
-          deleteChip={(category, chip) =>
-            handleDelete(category, chip, setFilters)
+          labels={filters.SearchByName}
+          deleteLabel={(category, label) =>
+            handleDelete(category, label, setFilters)
           }
-          deleteChipGroup={category => handleDeleteGroup(category, setFilters)}
+          deleteLabelGroup={category => handleDeleteGroup(category, setFilters)}
           categoryName="Name"
         >
           {resourcesFilterBy === 'SearchByName' && (
@@ -149,11 +149,11 @@ export const ResourcesFilterBy: FC<ResourcesFilterByProps> = ({
 
       <ToolbarGroup variant="filter-group">
         <ToolbarFilter
-          chips={filters.HealthStatus}
-          deleteChip={(category, chip) =>
-            handleDelete(category, chip, setFilters)
+          labels={filters.HealthStatus}
+          deleteLabel={(category, label) =>
+            handleDelete(category, label, setFilters)
           }
-          deleteChipGroup={category => handleDeleteGroup(category, setFilters)}
+          deleteLabelGroup={category => handleDeleteGroup(category, setFilters)}
           id="health-status"
           categoryName="Health status"
         >
@@ -187,11 +187,11 @@ export const ResourcesFilterBy: FC<ResourcesFilterByProps> = ({
           )}
         </ToolbarFilter>
         <ToolbarFilter
-          chips={filters.SyncStatus}
-          deleteChip={(category, chip) =>
-            handleDelete(category, chip, setFilters)
+          labels={filters.SyncStatus}
+          deleteLabel={(category, label) =>
+            handleDelete(category, label, setFilters)
           }
-          deleteChipGroup={category => handleDeleteGroup(category, setFilters)}
+          deleteLabelGroup={category => handleDeleteGroup(category, setFilters)}
           categoryName="Sync status"
         >
           {resourcesFilterBy === 'SyncStatus' && (
@@ -222,11 +222,11 @@ export const ResourcesFilterBy: FC<ResourcesFilterByProps> = ({
         </ToolbarFilter>
 
         <ToolbarFilter
-          chips={filters.Kind}
-          deleteChip={(category, chip) =>
-            handleDelete(category, chip, setFilters)
+          labels={filters.Kind}
+          deleteLabel={(category, label) =>
+            handleDelete(category, label, setFilters)
           }
-          deleteChipGroup={category => handleDeleteGroup(category, setFilters)}
+          deleteLabelGroup={category => handleDeleteGroup(category, setFilters)}
           categoryName="Kind"
         >
           {resourcesFilterBy === 'Kind' && (
