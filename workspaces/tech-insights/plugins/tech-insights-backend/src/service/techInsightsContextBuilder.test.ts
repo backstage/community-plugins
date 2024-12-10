@@ -21,6 +21,7 @@ import { DefaultFactRetrieverRegistry } from './fact/FactRetrieverRegistry';
 import { Knex } from 'knex';
 import { mockServices } from '@backstage/backend-test-utils';
 import { DatabaseService } from '@backstage/backend-plugin-api';
+import { NotificationService } from '@backstage/plugin-notifications-node';
 
 jest.mock('./fact/FactRetrieverRegistry');
 jest.mock('./fact/FactRetrieverEngine', () => ({
@@ -30,6 +31,10 @@ jest.mock('./fact/FactRetrieverEngine', () => ({
     }),
   },
 }));
+
+const notificationService: jest.Mocked<NotificationService> = {
+  send: jest.fn(),
+};
 
 describe('buildTechInsightsContext', () => {
   const logger = mockServices.logger.mock();
@@ -61,6 +66,7 @@ describe('buildTechInsightsContext', () => {
       config: ConfigReader.fromConfigs([]),
       discovery: discoveryMock,
       auth: mockServices.auth(),
+      notification: notificationService,
     });
     expect(DefaultFactRetrieverRegistry).toHaveBeenCalledTimes(1);
   });
@@ -77,6 +83,7 @@ describe('buildTechInsightsContext', () => {
       config: ConfigReader.fromConfigs([]),
       discovery: discoveryMock,
       auth: mockServices.auth(),
+      notification: notificationService,
     });
     expect(DefaultFactRetrieverRegistry).not.toHaveBeenCalled();
   });
