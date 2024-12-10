@@ -38,7 +38,6 @@
     "directory": "workspaces/tech-insights"
   },
   "devDependencies": {
-    "@backstage/catalog-model": "^1.7.1",
     "@backstage/cli": "^0.28.0",
     "@backstage/e2e-test-utils": "^0.1.1",
     "@backstage/repo-tools": "^0.10.0",
