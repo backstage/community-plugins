@@ -42,28 +42,37 @@ function duration(startTimestamp: [number, number]): string {
  *
  * FactRetrieverEngine responsible scheduling and running fact retrieval tasks.
  */
-export interface FactRetrieverEngine {
+export abstract class FactRetrieverEngine {
   /**
    * Schedules fact retriever run cycles based on configuration provided in the registration.
    *
    * Default implementation uses backend-tasks to handle scheduling. This function can be called multiple
    * times, where initial calls schedule the tasks and subsequent invocations update the schedules.
    */
-  schedule(): Promise<void>;
+  abstract schedule(): Promise<void>;
+
+  /**
+   * Schedules single fact retriever run cycles based on configuration provided in the registration.
+   *
+   * Default implementation defers to scheduling all jobs
+   */
+  async scheduleJob(_: string): Promise<void> {
+    return await this.schedule();
+  }
 
   /**
    * Provides possibility to manually run a fact retriever job and construct fact data
    *
    * @param ref - Reference to the task name stored in the executor database. By convention this is the fact retriever id
    */
-  triggerJob(ref: string): Promise<void>;
+  abstract triggerJob(ref: string): Promise<void>;
 
   /**
    * Exposes fact retriever job configuration information about previous and next runs and schedule
    *
    * @param ref - Reference to the task name stored in the executor database. By convention this is the fact retriever id
    */
-  getJobRegistration(ref: string): Promise<FactRetrieverRegistration>;
+  abstract getJobRegistration(ref: string): Promise<FactRetrieverRegistration>;
 }
 
 export class DefaultFactRetrieverEngine implements FactRetrieverEngine {
@@ -112,36 +121,45 @@ export class DefaultFactRetrieverEngine implements FactRetrieverEngine {
     );
   }
 
+  private async scheduleRegistration(registration: FactRetrieverRegistration) {
+    const { factRetriever, cadence, lifecycle, timeout, initialDelay } =
+      registration;
+    const cronExpression = cadence || this.defaultCadence || randomDailyCron();
+    const timeLimit =
+      timeout || this.defaultTimeout || Duration.fromObject({ minutes: 5 });
+    const initialDelaySetting =
+      initialDelay ||
+      this.defaultInitialDelay ||
+      Duration.fromObject({ seconds: 5 });
+
+    await this.scheduler.scheduleTask({
+      id: factRetriever.id,
+      frequency: { cron: cronExpression },
+      fn: this.createFactRetrieverHandler(factRetriever, lifecycle),
+      timeout: timeLimit,
+      // We add a delay in order to prevent errors due to the
+      // fact that the backend is not yet online in a cold-start scenario
+      initialDelay: initialDelaySetting,
+    });
+  }
+
+  async scheduleJob(ref: string): Promise<void> {
+    const registration = await this.factRetrieverRegistry.get(ref);
+    return this.scheduleRegistration(registration);
+  }
+
   async schedule() {
     const registrations = await this.factRetrieverRegistry.listRegistrations();
     const newRegs: string[] = [];
 
     await Promise.all(
       registrations.map(async registration => {
-        const { factRetriever, cadence, lifecycle, timeout, initialDelay } =
-          registration;
-        const cronExpression =
-          cadence || this.defaultCadence || randomDailyCron();
-        const timeLimit =
-          timeout || this.defaultTimeout || Duration.fromObject({ minutes: 5 });
-        const initialDelaySetting =
-          initialDelay ||
-          this.defaultInitialDelay ||
-          Duration.fromObject({ seconds: 5 });
         try {
-          await this.scheduler.scheduleTask({
-            id: factRetriever.id,
-            frequency: { cron: cronExpression },
-            fn: this.createFactRetrieverHandler(factRetriever, lifecycle),
-            timeout: timeLimit,
-            // We add a delay in order to prevent errors due to the
-            // fact that the backend is not yet online in a cold-start scenario
-            initialDelay: initialDelaySetting,
-          });
-          newRegs.push(factRetriever.id);
+          await this.scheduleRegistration(registration);
+          newRegs.push(registration.factRetriever.id);
         } catch (e) {
           this.logger.warn(
-            `Failed to schedule fact retriever ${factRetriever.id}, ${e}`,
+            `Failed to schedule fact retriever ${registration.factRetriever.id}, ${e}`,
           );
         }
       }),
