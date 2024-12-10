@@ -15,7 +15,6 @@ import { CompoundEntityRef } from '@backstage/catalog-model';
 import { DiscoveryApi } from '@backstage/core-plugin-api';
 import { ElementType } from 'react';
 import { Entity } from '@backstage/catalog-model';
-import { Entity as Entity_2 } from '@backstage/catalog-model/index';
 import { FactSchema } from '@backstage-community/plugin-tech-insights-common';
 import { IdentityApi } from '@backstage/core-plugin-api';
 import { InsightFacts as InsightFacts_2 } from '@backstage-community/plugin-tech-insights-common/client';
@@ -102,7 +101,7 @@ export type ResultLinksMenuInfo = {
 export const ScorecardInfo: (props: {
   checkResults: CheckResult[];
   title: ReactNode;
-  entity: Entity_2;
+  entity: Entity;
   description?: string | undefined;
   noWarning?: boolean | undefined;
   expanded?: boolean | undefined;
@@ -111,7 +110,7 @@ export const ScorecardInfo: (props: {
 // @public (undocumented)
 export const ScorecardsList: (props: {
   checkResults: CheckResult[];
-  entity?: Entity_2 | undefined;
+  entity?: Entity | undefined;
 }) => JSX_2.Element;
 
 // @public
@@ -185,7 +184,7 @@ export class TechInsightsClient
 export const TechInsightsLinksMenu: (
   props: PropsWithChildren<{
     result: CheckResult;
-    entity?: Entity_2 | undefined;
+    entity?: Entity | undefined;
     setMenu(opener: ResultLinksMenuInfo | undefined): void;
   }>,
 ) => JSX_2.Element | null;
