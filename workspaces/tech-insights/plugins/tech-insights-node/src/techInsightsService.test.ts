@@ -19,7 +19,7 @@ import {
   registerMswTestHooks,
   startTestBackend,
 } from '@backstage/backend-test-utils';
-import { setupServer } from 'msw';
+import { setupServer } from 'msw/node';
 import { techInsightsServiceRef } from './techInsightsService';
 
 describe('techInsightsServiceRef', () => {
