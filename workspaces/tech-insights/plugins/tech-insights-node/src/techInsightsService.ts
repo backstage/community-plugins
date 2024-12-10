@@ -31,6 +31,11 @@ import {
 } from '@backstage/backend-plugin-api';
 import { CompoundEntityRef } from '@backstage/catalog-model';
 
+/**
+ * A service that provides access to tech insights data.
+ *
+ * @public
+ */
 export interface TechInsightsService {
   getFacts(entity: CompoundEntityRef, facts: string[]): Promise<InsightFacts>;
   getAllChecks(): Promise<Check[]>;
@@ -45,6 +50,11 @@ export interface TechInsightsService {
   ): Promise<BulkCheckResponse>;
 }
 
+/**
+ * A reference to the tech insights service.
+ *
+ * @public
+ */
 export const techInsightsServiceRef = createServiceRef<TechInsightsService>({
   id: 'tech-insights-client',
   defaultFactory: async service =>

@@ -4,6 +4,8 @@
 
 ```ts
 import { AuthService } from '@backstage/backend-plugin-api';
+import { BulkCheckResponse } from '@backstage-community/plugin-tech-insights-common';
+import { Check } from '@backstage-community/plugin-tech-insights-common/client';
 import { CheckLink } from '@backstage-community/plugin-tech-insights-common';
 import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
 import { CompoundEntityRef } from '@backstage/catalog-model';
@@ -15,8 +17,10 @@ import { DurationLike } from 'luxon';
 import { ExtensionPoint } from '@backstage/backend-plugin-api';
 import { FactSchema } from '@backstage-community/plugin-tech-insights-common';
 import { HumanDuration } from '@backstage/types';
+import { InsightFacts } from '@backstage-community/plugin-tech-insights-common/client';
 import { JsonValue } from '@backstage/types';
 import { LoggerService } from '@backstage/backend-plugin-api';
+import { ServiceRef } from '@backstage/backend-plugin-api';
 
 // @public
 export type CheckValidationResponse = {
@@ -200,6 +204,15 @@ export interface TechInsightsPersistenceContextExtensionPoint {
 
 // @public
 export const techInsightsPersistenceContextExtensionPoint: ExtensionPoint<TechInsightsPersistenceContextExtensionPoint>;
+
+// Warning: (ae-forgotten-export) The symbol "TechInsightsService" needs to be exported by the entry point index.d.ts
+//
+// @public
+export const techInsightsServiceRef: ServiceRef<
+  TechInsightsService,
+  'plugin',
+  'singleton'
+>;
 
 // @public
 export interface TechInsightsStore {
