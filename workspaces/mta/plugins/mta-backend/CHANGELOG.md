@@ -1,5 +1,11 @@
 # @backstage-community/backstage-plugin-mta-backend
 
+## 0.2.2
+
+### Patch Changes
+
+- 9004ac1: Deprecated `createRouter` and its router options in favour of the new backend system.
+
 ## 0.2.1
 
 ### Patch Changes
