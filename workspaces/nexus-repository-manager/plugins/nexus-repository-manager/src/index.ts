@@ -5,4 +5,4 @@ export {
   nexusRepositoryManagerPlugin,
 } from './plugin';
 
-export { NexusRepositoryManager } from './components/NexusRepositoryManager';
+export type { NexusRepositoryManager } from './components/NexusRepositoryManager';
