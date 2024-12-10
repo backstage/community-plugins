@@ -56,6 +56,8 @@
   },
   "packageManager": "yarn@4.4.0",
   "dependencies": {
-    "@swagger-api/apidom-json-pointer": "^1.0.0-beta.0"
+    "@swagger-api/apidom-json-pointer": "^1.0.0-beta.0",
+    "react-data-table-component": "^7.6.2",
+    "styled-components": "^6.1.13"
   }
 }

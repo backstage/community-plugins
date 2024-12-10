@@ -1,0 +1,1 @@
+export { SecurityFindingsComponent  } from './SecurityFindingsComponent';

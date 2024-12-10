@@ -1,0 +1,1 @@
+export { CVEEntityDetailsComponent  } from './CVEEntityDetailsComponent';

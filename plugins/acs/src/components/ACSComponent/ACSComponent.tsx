@@ -18,11 +18,7 @@ export function ACSComponent() {
       <div>
         <InfoCard title={title} subheader={subheader}>
           <Button variant="outlined">View in Advanced Cluster Security</Button>
-          <Grid container spacing={3} direction="column">
-            <Grid item>
-              <VulnerabilitiesComponent />
-            </Grid>
-          </Grid>
+          <VulnerabilitiesComponent />
         </InfoCard>
       </div>
     )
