@@ -54,6 +54,12 @@ export type Check = {
   factIds: string[];
 
   /**
+   * General Metadata to be returned
+   * Can contain links, description texts or other actionable items
+   */
+  metadata?: Record<string, any>;
+
+  /**
    * Metadata to be returned in case a check has been successfully evaluated
    * Can contain links, description texts or other actionable items
    */
