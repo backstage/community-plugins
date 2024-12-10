@@ -33,6 +33,7 @@ jest.mock('./fact/FactRetrieverEngine', () => ({
 
 describe('buildTechInsightsContext', () => {
   const logger = mockServices.logger.mock();
+  const urlReader = mockServices.urlReader.mock();
   const database: DatabaseService = {
     getClient: () => {
       return Promise.resolve({
@@ -61,6 +62,7 @@ describe('buildTechInsightsContext', () => {
       config: ConfigReader.fromConfigs([]),
       discovery: discoveryMock,
       auth: mockServices.auth(),
+      urlReader,
     });
     expect(DefaultFactRetrieverRegistry).toHaveBeenCalledTimes(1);
   });
@@ -77,6 +79,7 @@ describe('buildTechInsightsContext', () => {
       config: ConfigReader.fromConfigs([]),
       discovery: discoveryMock,
       auth: mockServices.auth(),
+      urlReader,
     });
     expect(DefaultFactRetrieverRegistry).not.toHaveBeenCalled();
   });

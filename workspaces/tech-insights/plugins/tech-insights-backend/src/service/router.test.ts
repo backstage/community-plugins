@@ -51,6 +51,7 @@ describe('Tech Insights router tests', () => {
       migrations: { skip: true },
     });
     const logger = mockServices.logger.mock();
+    const urlReader = mockServices.urlReader.mock();
     const techInsightsContext = await buildTechInsightsContext({
       database,
       logger,
@@ -62,6 +63,7 @@ describe('Tech Insights router tests', () => {
         getExternalBaseUrl: (_: string) => Promise.resolve('http://mock.url'),
       },
       auth: mockServices.auth(),
+      urlReader,
     });
 
     const router = await createRouter({

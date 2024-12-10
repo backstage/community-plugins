@@ -101,6 +101,7 @@ export const techInsightsPlugin = createBackendPlugin({
         logger: coreServices.logger,
         scheduler: coreServices.scheduler,
         auth: coreServices.auth,
+        urlReader: coreServices.urlReader,
       },
       async init({
         config,
@@ -110,6 +111,7 @@ export const techInsightsPlugin = createBackendPlugin({
         logger,
         scheduler,
         auth,
+        urlReader,
       }) {
         const factRetrievers: FactRetrieverRegistration[] = Object.entries(
           addedFactRetrievers,
@@ -134,6 +136,7 @@ export const techInsightsPlugin = createBackendPlugin({
           persistenceContext,
           scheduler,
           auth,
+          urlReader,
         });
 
         httpRouter.use(
