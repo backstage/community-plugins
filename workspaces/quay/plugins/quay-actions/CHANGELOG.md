@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 2.2.3
+
+### Patch Changes
+
+- 1af220c: Clean up api report warnings and remove unnecessary files
+
 ## 2.2.2
 
 ### Patch Changes

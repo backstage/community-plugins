@@ -1,5 +1,14 @@
 ### Dependencies
 
+## 1.33.3
+
+### Patch Changes
+
+- aa02f04: Updated dependency `@playwright/test` to `1.49.0`.
+- 4b3653a: Clean up api report warnings and remove unnecessary files
+- Updated dependencies [4b3653a]
+  - @backstage-community/plugin-rbac-common@1.12.3
+
 ## 1.33.2
 
 ### Patch Changes
