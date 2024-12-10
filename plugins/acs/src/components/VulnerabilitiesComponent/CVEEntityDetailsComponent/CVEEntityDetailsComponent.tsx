@@ -17,17 +17,17 @@ export const CVEEntityDetailsComponent: React.FC<Props> = ({ data, cveDetails, e
         <>
             <p><b>{cveDetails}</b></p>
             <Stack direction="row" spacing={1}>
-                <Chip label={severityLabel} color="error" variant="outlined" />
-                <Chip label={firstDiscoveredLabel} color="default" variant="outlined" />
-                <Chip label={publishedLabel} color="default" variant="outlined" />
+                <Chip label={severityLabel} color="error" size="small" variant="outlined" />
+                <Chip label={firstDiscoveredLabel} color="default" size="small" variant="outlined" />
+                <Chip label={publishedLabel} color="default" size="small" variant="outlined" />
             </Stack>
             <p>{data.expanded_data.summary}</p>
 
             <p><b>{entityDetails}</b></p>
             <Stack direction="row" spacing={1}>
-                <Chip label={workloadLabel} color="default" variant="outlined" />
-                <Chip label={namespaceLabel} color="default" variant="outlined" />
-                <Chip label={clusterLabel} color="default" variant="outlined" />
+                <Chip label={workloadLabel} color="default" size="small" variant="outlined" />
+                <Chip label={namespaceLabel} color="default" size="small" variant="outlined" />
+                <Chip label={clusterLabel} color="default" size="small" variant="outlined" />
             </Stack>
         </>
     );
