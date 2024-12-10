@@ -1,5 +1,5 @@
 ---
-'@backstage-community/plugin-redhat-argocd': major
+'@backstage-community/plugin-redhat-argocd': minor
 ---
 
-Update patternfly deps to v6
+Update Patternfly deps to v6
