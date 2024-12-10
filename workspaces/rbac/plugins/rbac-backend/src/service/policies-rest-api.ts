@@ -479,6 +479,7 @@ export class PoliciesServer {
           `Invalid role definition. Cause: ${err.message}`,
         );
       }
+      this.transformMemberReferencesToLowercase(roleRaw);
 
       const rMetadata = await this.roleMetadata.findRoleMetadata(roleRaw.name);
 
@@ -571,6 +572,8 @@ export class PoliciesServer {
           `Invalid new role object. Cause: ${err.message}`,
         );
       }
+      this.transformMemberReferencesToLowercase(oldRoleRaw);
+      this.transformMemberReferencesToLowercase(newRoleRaw);
 
       const oldRole = this.transformRoleToArray(oldRoleRaw);
       const newRole = this.transformRoleToArray(newRoleRaw);
@@ -696,7 +699,7 @@ export class PoliciesServer {
         if (request.query.memberReferences) {
           const memberReference = this.getFirstQuery(
             request.query.memberReferences!,
-          );
+          ).toLocaleLowerCase('en-US');
           const gp = await this.enforcer.getFilteredGroupingPolicy(
             0,
             memberReference,
@@ -1118,6 +1121,12 @@ export class PoliciesServer {
       roles.push([entity, role.name]);
     }
     return roles;
+  }
+
+  transformMemberReferencesToLowercase(role: Role) {
+    role.memberReferences = role.memberReferences.map(member =>
+      member.toLocaleLowerCase('en-US'),
+    );
   }
 
   getActionQueries(
