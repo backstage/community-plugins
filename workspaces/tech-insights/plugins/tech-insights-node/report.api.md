@@ -205,8 +205,26 @@ export interface TechInsightsPersistenceContextExtensionPoint {
 // @public
 export const techInsightsPersistenceContextExtensionPoint: ExtensionPoint<TechInsightsPersistenceContextExtensionPoint>;
 
-// Warning: (ae-forgotten-export) The symbol "TechInsightsService" needs to be exported by the entry point index.d.ts
-//
+// @public
+export interface TechInsightsService {
+  // (undocumented)
+  getAllChecks(): Promise<Check[]>;
+  // (undocumented)
+  getFacts(entity: CompoundEntityRef, facts: string[]): Promise<InsightFacts>;
+  // (undocumented)
+  getFactSchemas(): Promise<FactSchema[]>;
+  // (undocumented)
+  runBulkChecks(
+    entities: CompoundEntityRef[],
+    checks?: Check[],
+  ): Promise<BulkCheckResponse>;
+  // (undocumented)
+  runChecks(
+    entityParams: CompoundEntityRef,
+    checks?: string[],
+  ): Promise<CheckResult[]>;
+}
+
 // @public
 export const techInsightsServiceRef: ServiceRef<
   TechInsightsService,
