@@ -779,16 +779,24 @@ describe('EnforcerDelegate', () => {
       const oldRoleName = 'role:default/dev-team';
       roleMetadataStorageMock.findRoleMetadata = jest
         .fn()
-        .mockImplementation(async (): Promise<RoleMetadataDao> => {
-          return {
-            source: 'rest',
-            roleEntityRef: oldRoleName,
-            author: modifiedBy,
-            modifiedBy,
-            description: 'Role for dev engineers',
-            createdAt: '2024-03-01 00:23:41+00',
-          };
-        });
+        .mockImplementation(
+          async (
+            roleEntityRef: string,
+            _trx: Knex.Knex.Transaction,
+          ): Promise<RoleMetadataDao | undefined> => {
+            if (roleEntityRef === oldRoleName) {
+              return {
+                source: 'rest',
+                roleEntityRef: oldRoleName,
+                author: modifiedBy,
+                modifiedBy,
+                description: 'Role for dev engineers',
+                createdAt: '2024-03-01 00:23:41+00',
+              };
+            }
+            return undefined;
+          },
+        );
 
       const enfDelegate = await createEnfDelegate(
         [],
