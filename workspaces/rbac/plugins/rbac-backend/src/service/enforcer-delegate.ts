@@ -25,6 +25,11 @@ import {
 } from '../database/role-metadata';
 import { mergeRoleMetadata, policiesToString, policyToString } from '../helper';
 import { MODEL } from './permission-model';
+import { AuditLogger } from '@janus-idp/backstage-plugin-audit-log-node';
+import {
+  FETCH_NEWER_PERMISSIONS_STAGE,
+  PolisiesData,
+} from '../audit-log/audit-logger';
 
 export type RoleEvents = 'roleAdded';
 export interface RoleEventEmitter<T extends RoleEvents> {
@@ -38,8 +43,34 @@ type EventMap = {
 export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
   private readonly roleEventEmitter = new EventEmitter<EventMap>();
 
+  private loadPolicyPromise: Promise<void> | null = null;
+
+  // Load the latest permissions from the database without throttling
+  async loadPolicy(): Promise<void> {
+    if (!this.loadPolicyPromise) {
+      this.loadPolicyPromise = this.enforcer
+        .loadPolicy()
+        .catch(err => {
+          console.error('Failed to load permissions from database', err);
+          this.auditLogger.auditLog({
+            message: 'Failed to load newer policies from database',
+            eventName: PolisiesData.FAILED_TO_FETCH_NEWER_PERMISSIONS,
+            stage: FETCH_NEWER_PERMISSIONS_STAGE,
+            status: 'failed',
+            errors: [err],
+          });
+          throw err;
+        })
+        .finally(() => {
+          this.loadPolicyPromise = null;
+        });
+    }
+    return this.loadPolicyPromise;
+  }
+
   constructor(
     private readonly enforcer: Enforcer,
+    private readonly auditLogger: AuditLogger,
     private readonly roleMetadataStorage: RoleMetadataStorage,
     private readonly knex: Knex,
   ) {}
