@@ -1,5 +1,11 @@
 ## @backstage-community/plugin-redhat-argocd
 
+## 1.11.0
+
+### Minor Changes
+
+- 8c8ab01: Update Patternfly deps to v6
+
 ## 1.10.5
 
 ### Patch Changes
