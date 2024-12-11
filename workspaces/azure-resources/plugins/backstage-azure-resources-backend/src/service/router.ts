@@ -24,7 +24,7 @@ import {
   ClientSecretCredential,
   DefaultAzureCredential,
 } from '@azure/identity';
-import { azureResourceConfig } from '../config';
+import { AzureResourceConfig } from '../config';
 
 export interface RouterOptions {
   logger: Logger;
