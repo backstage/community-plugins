@@ -13,6 +13,7 @@ yarn.lock                                           @backstage/community-plugins
 /workspaces/adr                                     @backstage/community-plugins-maintainers  @kuangp
 /workspaces/analytics                               @backstage/community-plugins-maintainers  @jmezach
 /workspaces/azure-devops                            @backstage/community-plugins-maintainers  @awanlin
+/workspaces/azure-resources                         @backstage/community-plugins-maintainers  @deepan10
 /workspaces/azure-storage-explorer                  @backstage/community-plugins-maintainers  @deepan10
 /workspaces/bitrise                                 @backstage/community-plugins-maintainers  @backstage/sda-se-reviewers
 /workspaces/blackduck                               @backstage/community-plugins-maintainers  @deepan10
