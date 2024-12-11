@@ -34,7 +34,7 @@ export interface RouterOptions {
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
-  const azureConfig = azureResourceConfig.fromConfig(options.config);
+  const azureConfig = AzureResourceConfig.fromConfig(options.config);
 
   const cred =
     azureConfig !== null
