@@ -165,14 +165,25 @@ export class KeycloakAdminClientMockServerv24 {
     ]),
     listMembers: jest
       .fn()
-      .mockResolvedValueOnce(groupMembers1.map(username => ({ username })))
-      // return empty list for second pagination page of the groupMembers1.
-      .mockResolvedValueOnce([])
-      // return empty list members
-      .mockResolvedValueOnce([])
-      // return empty list members
-      .mockResolvedValueOnce([])
-      .mockResolvedValueOnce(groupMembers2.map(username => ({ username }))),
+      .mockImplementation(
+        async (payload?: {
+          id: string;
+          _max?: number;
+          _realm?: string;
+          first?: number;
+        }) => {
+          const { id, first } = payload || {};
+          if (id === '9cf51b5d-e066-4ed8-940c-dc6da77f81a5' && first === 0) {
+            // biggroup - first members page
+            return groupMembers1.map(username => ({ username }));
+          }
+          if (id === 'bb10231b-2939-4b1a-b8bb-9249ed7b76f7' && first === 0) {
+            // testgroup - first members page
+            return groupMembers2.map(username => ({ username }));
+          }
+          return [];
+        },
+      ),
   };
 
   auth = authMock;

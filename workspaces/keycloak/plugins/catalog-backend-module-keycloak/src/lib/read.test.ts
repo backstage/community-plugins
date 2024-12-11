@@ -16,6 +16,7 @@
 import { mockServices } from '@backstage/backend-test-utils';
 
 import type KeycloakAdminClient from '@keycloak/keycloak-admin-client';
+import { LimitFunction } from 'p-limit';
 
 import {
   kGroups23orHigher,
@@ -46,12 +47,28 @@ const config: KeycloakProviderConfig = {
 };
 
 const logger = mockServices.logger.mock();
+const mockPLimit = jest
+  .fn()
+  .mockImplementation(
+    async <Arguments extends unknown[], ReturnType>(
+      fn: (...args: Arguments) => ReturnType | PromiseLike<ReturnType>,
+      ...args: Arguments
+    ): Promise<ReturnType> => {
+      const result = fn(...args);
+      return result instanceof Promise ? result : Promise.resolve(result); // Ensure result is always a Promise
+    },
+  );
 
 describe('readKeycloakRealm', () => {
   it('should return the correct number of users and groups (Version 23 or Higher)', async () => {
     const client =
       new KeycloakAdminClientMockServerv24() as unknown as KeycloakAdminClient;
-    const { users, groups } = await readKeycloakRealm(client, config, logger);
+    const { users, groups } = await readKeycloakRealm(
+      client,
+      config,
+      logger,
+      mockPLimit as unknown as LimitFunction,
+    );
     expect(users).toHaveLength(3);
     expect(groups).toHaveLength(3);
   });
@@ -59,7 +76,12 @@ describe('readKeycloakRealm', () => {
   it('should return the correct number of users and groups (Version Less than 23)', async () => {
     const client =
       new KeycloakAdminClientMockServerv18() as unknown as KeycloakAdminClient;
-    const { users, groups } = await readKeycloakRealm(client, config, logger);
+    const { users, groups } = await readKeycloakRealm(
+      client,
+      config,
+      logger,
+      mockPLimit as unknown as LimitFunction,
+    );
     expect(users).toHaveLength(3);
     expect(groups).toHaveLength(3);
   });
@@ -72,7 +94,12 @@ describe('readKeycloakRealm', () => {
       .mockResolvedValue([usersFixture[1], usersFixture[2]]);
     client.users.count = jest.fn().mockResolvedValue(2);
 
-    const { groups } = await readKeycloakRealm(client, config, logger);
+    const { groups } = await readKeycloakRealm(
+      client,
+      config,
+      logger,
+      mockPLimit as unknown as LimitFunction,
+    );
 
     for (const group of groups) {
       console.log(group.spec.members);
@@ -92,10 +119,16 @@ describe('readKeycloakRealm', () => {
 
     const client =
       new KeycloakAdminClientMockServerv24() as unknown as KeycloakAdminClient;
-    const { users, groups } = await readKeycloakRealm(client, config, logger, {
-      userTransformer,
-      groupTransformer,
-    });
+    const { users, groups } = await readKeycloakRealm(
+      client,
+      config,
+      logger,
+      mockPLimit as unknown as LimitFunction,
+      {
+        userTransformer,
+        groupTransformer,
+      },
+    );
     expect(groups[0].metadata.name).toBe('biggroup_foo');
     expect(groups[0].spec.children).toEqual(['subgroup_foo']);
     expect(groups[0].spec.members).toEqual(['jamesdoe_bar']);
@@ -116,10 +149,16 @@ describe('readKeycloakRealm', () => {
 
     const client =
       new KeycloakAdminClientMockServerv18() as unknown as KeycloakAdminClient;
-    const { users, groups } = await readKeycloakRealm(client, config, logger, {
-      userTransformer,
-      groupTransformer,
-    });
+    const { users, groups } = await readKeycloakRealm(
+      client,
+      config,
+      logger,
+      mockPLimit as unknown as LimitFunction,
+      {
+        userTransformer,
+        groupTransformer,
+      },
+    );
     expect(groups[0].metadata.name).toBe('biggroup_foo');
     expect(groups[0].spec.children).toEqual(['subgroup_foo']);
     expect(groups[0].spec.members).toEqual(['jamesdoe_bar']);
@@ -261,6 +300,7 @@ describe('getEntitiesUser', () => {
         realm: '',
       },
       logger,
+      mockPLimit as unknown as LimitFunction,
     );
 
     expect(users).toHaveLength(3);
@@ -278,6 +318,7 @@ describe('getEntitiesUser', () => {
         realm: '',
       },
       logger,
+      mockPLimit as unknown as LimitFunction,
     );
 
     expect(users).toHaveLength(3);
@@ -295,6 +336,7 @@ describe('getEntitiesUser', () => {
         realm: '',
       },
       logger,
+      mockPLimit as unknown as LimitFunction,
       1,
     );
 
@@ -313,6 +355,7 @@ describe('getEntitiesUser', () => {
         realm: '',
       },
       logger,
+      mockPLimit as unknown as LimitFunction,
       1,
     );
 

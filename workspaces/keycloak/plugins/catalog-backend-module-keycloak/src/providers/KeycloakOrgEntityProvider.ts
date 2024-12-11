@@ -35,6 +35,7 @@ import type { Credentials } from '@keycloak/keycloak-admin-client/lib/utils/auth
 // @ts-ignore
 import inclusion from 'inclusion';
 import { merge } from 'lodash';
+import { LimitFunction } from 'p-limit';
 import * as uuid from 'uuid';
 
 import {
@@ -232,10 +233,16 @@ export class KeycloakOrgEntityProvider implements EntityProvider {
 
     await kcAdminClient.auth(credentials);
 
+    const pLimitCJSModule = await inclusion('p-limit');
+    const limitFunc = pLimitCJSModule.default;
+    const concurrency = provider.maxConcurrency ?? Number.POSITIVE_INFINITY;
+    const limit: LimitFunction = limitFunc(concurrency);
+
     const { users, groups } = await readKeycloakRealm(
       kcAdminClient,
       provider,
       logger,
+      limit,
       {
         userQuerySize: provider.userQuerySize,
         groupQuerySize: provider.groupQuerySize,
