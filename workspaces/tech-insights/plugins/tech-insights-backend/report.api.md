@@ -49,10 +49,11 @@ export const entityMetadataFactRetriever: FactRetriever;
 export const entityOwnershipFactRetriever: FactRetriever;
 
 // @public
-export interface FactRetrieverEngine {
-  getJobRegistration(ref: string): Promise<FactRetrieverRegistration>;
-  schedule(): Promise<void>;
-  triggerJob(ref: string): Promise<void>;
+export abstract class FactRetrieverEngine {
+  abstract getJobRegistration(ref: string): Promise<FactRetrieverRegistration>;
+  abstract schedule(): Promise<void>;
+  scheduleJob(_: string): Promise<void>;
+  abstract triggerJob(ref: string): Promise<void>;
 }
 
 // @public (undocumented)
