@@ -4,31 +4,13 @@
 
 ```ts
 import { BackendFeature } from '@backstage/backend-plugin-api';
+import { BlackDuckConfig } from '@backstage-community/plugin-blackduck-node';
 import { Config } from '@backstage/config';
 import { DiscoveryService } from '@backstage/backend-plugin-api';
 import express from 'express';
 import { HttpAuthService } from '@backstage/backend-plugin-api';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { PermissionsService } from '@backstage/backend-plugin-api';
-
-// @public
-export class BlackDuckConfig {
-  constructor(hosts: BlackDuckHostConfig[], defaultHost: string);
-  // (undocumented)
-  static fromConfig(config: Config): BlackDuckConfig;
-  // (undocumented)
-  getHostConfigByName(name: string): BlackDuckHostConfig;
-}
-
-// @public (undocumented)
-export interface BlackDuckHostConfig {
-  // (undocumented)
-  host: string;
-  // (undocumented)
-  name: string;
-  // (undocumented)
-  token: string;
-}
 
 // @public
 const blackduckPlugin: BackendFeature;
