@@ -22,6 +22,7 @@ import { LoggerService } from '@backstage/backend-plugin-api';
 import { PersistenceContext as PersistenceContext_2 } from '@backstage-community/plugin-tech-insights-node';
 import { SchedulerService } from '@backstage/backend-plugin-api';
 import { TechInsightCheck } from '@backstage-community/plugin-tech-insights-node';
+import { UrlReaderService } from '@backstage/backend-plugin-api';
 
 // @public
 export const buildTechInsightsContext: <
@@ -126,6 +127,8 @@ export interface TechInsightsOptions<
   persistenceContext?: PersistenceContext_2;
   // (undocumented)
   scheduler: SchedulerService;
+  // (undocumented)
+  urlReader: UrlReaderService;
 }
 
 // @public
