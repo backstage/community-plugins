@@ -51,7 +51,7 @@
     "@backstage-community/plugin-rbac": "workspace:^",
     "@backstage-community/plugin-rbac-backend": "workspace:^",
     "@backstage-community/plugin-rbac-common": "workspace:^",
-    "@backstage-community/plugin-rbac-node": "workspace:^",
+    "@backstage-community/plugin-rbac-node": "workspace:^"
   },
   "resolutions": {
     "@types/react": "^18",
