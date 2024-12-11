@@ -51,6 +51,8 @@
     "luxon": "^3.0.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.28.0"
+    "@backstage/backend-test-utils": "^1.0.2",
+    "@backstage/cli": "^0.28.0",
+    "msw": "^2.0.0"
   }
 }
