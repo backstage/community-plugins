@@ -252,8 +252,8 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
   async addGroupingPolicies(
     policies: string[][],
     roleMetadata: RoleMetadataDao,
-    externalTrx?: Knex.Transaction,
     oldRoleEntityRef?: string,
+    externalTrx?: Knex.Transaction,
   ): Promise<void> {
     if (policies.length === 0) {
       return;
@@ -322,8 +322,8 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
       await this.addGroupingPolicies(
         newRole,
         newRoleMetadata,
-        trx,
         currentMetadata.roleEntityRef,
+        trx,
       );
 
       // Role name changed -> update roleEntityRef in policies
