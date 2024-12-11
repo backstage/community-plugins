@@ -874,6 +874,7 @@ describe('EnforcerDelegate', () => {
 
     it('should update grouping policies: role should be renamed', async () => {
       const oldRoleName = 'role:default/dev-team';
+      const newRoleName = 'role:default/new-team-name';
       roleMetadataStorageMock.findRoleMetadata = jest
         .fn()
         .mockImplementation(
@@ -895,12 +896,20 @@ describe('EnforcerDelegate', () => {
           },
         );
 
+      const secondGroupingPolicyWithOldRole = ['user:default/tim', oldRoleName];
+      const firstRolePolicy = [oldRoleName, 'policy-entity', 'read', 'allow'];
+      const secondRolePolicy = [oldRoleName, 'policy-entity', 'write', 'allow'];
+      const expectedPolicies = [
+        policy,
+        [newRoleName, 'policy-entity', 'read', 'allow'],
+        [newRoleName, 'policy-entity', 'write', 'allow'],
+      ];
+
       const enfDelegate = await createEnfDelegate(
-        [],
-        [groupingPolicy, secondGroupingPolicy],
+        [policy, firstRolePolicy, secondRolePolicy],
+        [groupingPolicy, secondGroupingPolicyWithOldRole],
       );
 
-      const newRoleName = 'role:default/new-team-name';
       const groupingPolicyWithRenamedRole = ['user:default/tom', newRoleName];
       const secondGroupingPolicyWithRenamedRole = [
         'user:default/tim',
@@ -913,7 +922,7 @@ describe('EnforcerDelegate', () => {
         modifiedBy,
       };
       await enfDelegate.updateGroupingPolicies(
-        [groupingPolicy, secondGroupingPolicy],
+        [groupingPolicy, secondGroupingPolicyWithOldRole],
         [groupingPolicyWithRenamedRole, secondGroupingPolicyWithRenamedRole],
         roleMetadataDao,
       );
@@ -925,7 +934,7 @@ describe('EnforcerDelegate', () => {
 
       expect(enfRemoveGroupingPoliciesSpy).toHaveBeenCalledWith([
         groupingPolicy,
-        secondGroupingPolicy,
+        secondGroupingPolicyWithOldRole,
       ]);
       expect(enfAddGroupingPoliciesSpy).toHaveBeenCalledWith([
         groupingPolicyWithRenamedRole,
@@ -943,6 +952,7 @@ describe('EnforcerDelegate', () => {
       expect(metadata.modifiedBy).toEqual(modifiedBy);
       expect(metadata.roleEntityRef).toEqual(newRoleName);
       expect(metadata.source).toEqual('rest');
+      expect(await enfDelegate.getPolicy()).toEqual(expectedPolicies);
     });
 
     it('should update grouping policies: should be updated role description and source', async () => {
