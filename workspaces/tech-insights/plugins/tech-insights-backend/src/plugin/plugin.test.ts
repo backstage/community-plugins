@@ -28,6 +28,7 @@ describe('techInsightsPlugin', () => {
         httpRouterMock.factory,
         mockServices.database.factory(),
         mockServices.logger.factory(),
+        mockServices.urlReader.factory(),
         mockServices.rootConfig.factory({
           data: {
             techInsights: {
