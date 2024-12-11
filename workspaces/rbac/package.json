@@ -13,7 +13,7 @@
     "tsc:full": "tsc --skipLibCheck true --incremental false",
     "build:all": "backstage-cli repo build --all",
     "build:api-reports": "yarn build:api-reports:only",
-    "build:api-reports:only": "backstage-repo-tools api-reports --allow-all-warnings -o ae-wrong-input-file-type --validate-release-tags",
+    "build:api-reports:only": "backstage-repo-tools api-reports -o ae-wrong-input-file-type,ae-undocumented --validate-release-tags",
     "clean": "backstage-cli repo clean",
     "test": "backstage-cli repo test",
     "test:all": "backstage-cli repo test --coverage",
@@ -40,6 +40,7 @@
     "@backstage/e2e-test-utils": "^0.1.1",
     "@backstage/repo-tools": "^0.10.0",
     "@changesets/cli": "^2.27.1",
+    "@ianvs/prettier-plugin-sort-imports": "^4.3.1",
     "@spotify/prettier-config": "^15.0.0",
     "knip": "^5.27.4",
     "node-gyp": "^9.0.0",
@@ -51,7 +52,6 @@
     "@backstage-community/plugin-rbac-backend": "workspace:^",
     "@backstage-community/plugin-rbac-common": "workspace:^",
     "@backstage-community/plugin-rbac-node": "workspace:^",
-    "@ianvs/prettier-plugin-sort-imports": "^4.3.1"
   },
   "resolutions": {
     "@types/react": "^18",

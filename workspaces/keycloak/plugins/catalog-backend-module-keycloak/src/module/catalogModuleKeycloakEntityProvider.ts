@@ -28,7 +28,7 @@ import { KeycloakOrgEntityProvider } from '../providers';
 /**
  * Registers the `KeycloakEntityProvider` with the catalog processing extension point.
  *
- * @alpha
+ * @public
  */
 export const catalogModuleKeycloakEntityProvider = createBackendModule({
   pluginId: 'catalog',

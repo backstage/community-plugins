@@ -1,5 +1,17 @@
 ## @backstage-community/plugin-redhat-argocd
 
+## 1.11.0
+
+### Minor Changes
+
+- 8c8ab01: Update Patternfly deps to v6
+
+## 1.10.5
+
+### Patch Changes
+
+- aa02f04: Updated dependency `@playwright/test` to `1.49.0`.
+
 ## 1.10.4
 
 ### Patch Changes

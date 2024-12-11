@@ -168,6 +168,9 @@ const examples = [
   },
 ];
 
+/**
+ * @public
+ */
 export const createReplaceAction = () => {
   return createTemplateAction({
     id,
