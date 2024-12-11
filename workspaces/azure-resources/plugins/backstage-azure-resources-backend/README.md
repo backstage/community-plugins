@@ -51,7 +51,7 @@ Create a [new Application Registration](https://docs.microsoft.com/azure/active-
 
 ```yaml
 azureResources:
-  clientId: ab77a497-102e-4c4d-9853-3aca7e733245 # the app registrations clientId
-  clientSecret: ~AcbyiAM2YUMQwUSqhzg # a secret created for the app registration
-  tenantId: f02ae3d3-be5c-4b9d-9d6e-8192055d4083 # your Azure tenant id
+  clientId: ${AZURE_SP_ID} # the app registrations clientId
+  clientSecret: ${AZURE_SP_SECRET} # a secret created for the app registration
+  tenantId: ${AZURE_TENANT_ID} # your Azure tenant id
 ```
