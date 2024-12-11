@@ -135,6 +135,7 @@ describe('FactRetrieverEngine', () => {
     };
     const manager = databaseManager as DatabaseManager;
     const logger = mockServices.logger.mock();
+    const urlReader = mockServices.urlReader.mock();
     const lifecycle = mockServices.lifecycle.mock();
     const database = manager.forPlugin('tech-insights', { logger, lifecycle });
     const scheduler = DefaultSchedulerService.create({ database, logger });
@@ -143,6 +144,7 @@ describe('FactRetrieverEngine', () => {
         logger,
         config: ConfigReader.fromConfigs([]),
         auth: mockServices.auth(),
+        urlReader,
         discovery: {
           getBaseUrl: (_: string) => Promise.resolve('http://mock.url'),
           getExternalBaseUrl: (_: string) => Promise.resolve('http://mock.url'),

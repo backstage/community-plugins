@@ -21,6 +21,7 @@ import { InsightFacts } from '@backstage-community/plugin-tech-insights-common/c
 import { JsonValue } from '@backstage/types';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { ServiceRef } from '@backstage/backend-plugin-api';
+import { UrlReaderService } from '@backstage/backend-plugin-api';
 
 // @public
 export type CheckValidationResponse = {
@@ -72,6 +73,7 @@ export type FactRetrieverContext = {
   discovery: DiscoveryService;
   logger: LoggerService;
   auth: AuthService;
+  urlReader: UrlReaderService;
   entityFilter?:
     | Record<string, string | symbol | (string | symbol)[]>[]
     | Record<string, string | symbol | (string | symbol)[]>;

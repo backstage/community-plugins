@@ -27,6 +27,9 @@ import {
 import { FeedbackAPI, feedbackApiRef } from './api';
 import { entityRootRouteRef, rootRouteRef, viewDocsRouteRef } from './routes';
 
+/**
+ * @public
+ */
 export const feedbackPlugin = createPlugin({
   id: 'feedback',
   routes: {
@@ -57,6 +60,9 @@ export const feedbackPlugin = createPlugin({
   ],
 });
 
+/**
+ * @public
+ */
 export const GlobalFeedbackPage = feedbackPlugin.provide(
   createRoutableExtension({
     name: 'GlobalFeedbackPage',
@@ -66,6 +72,9 @@ export const GlobalFeedbackPage = feedbackPlugin.provide(
   }),
 );
 
+/**
+ * @public
+ */
 export const EntityFeedbackPage = feedbackPlugin.provide(
   createRoutableExtension({
     name: 'EntityFeedbackPage',
@@ -75,6 +84,9 @@ export const EntityFeedbackPage = feedbackPlugin.provide(
   }),
 );
 
+/**
+ * @public
+ */
 export const OpcFeedbackComponent = feedbackPlugin.provide(
   createComponentExtension({
     name: 'OpcFeedbackComponent',
