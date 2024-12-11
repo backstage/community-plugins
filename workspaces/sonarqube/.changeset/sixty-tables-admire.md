@@ -1,5 +1,5 @@
 ---
-'@backstage-community/plugin-sonarqube': minor
+'@backstage-community/plugin-sonarqube': patch
 ---
 
 Updating missingAnnotationReadMoreUrl attribute on documentation
