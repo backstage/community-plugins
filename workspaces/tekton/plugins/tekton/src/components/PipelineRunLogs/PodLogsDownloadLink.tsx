@@ -36,8 +36,8 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     downloadAction: {
       position: 'relative',
-      marginBottom: 'var(--pf-v5-global--spacer--sm)',
-      color: 'var(--pf-v5-global--color--100)',
+      marginBottom: 'var(--pf-t--global--spacer--sm)',
+      color: 'var(--pf-t--global--icon--color--100)',
       cursor: 'pointer',
     },
     buttonDisabled: {
