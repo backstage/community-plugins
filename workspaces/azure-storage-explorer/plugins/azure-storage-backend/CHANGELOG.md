@@ -1,5 +1,11 @@
 # @backstage-community/plugin-azure-storage-explorer-backend
 
+## 0.0.10
+
+### Patch Changes
+
+- 41c034b: Updated dependency `@azure/storage-blob` to `12.26.0`.
+
 ## 0.0.9
 
 ### Patch Changes

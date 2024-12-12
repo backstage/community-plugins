@@ -1,5 +1,11 @@
 # @backstage-community/plugin-sonarqube
 
+## 0.8.9
+
+### Patch Changes
+
+- f6e08b0: Updating missingAnnotationReadMoreUrl attribute on documentation
+
 ## 0.8.8
 
 ### Patch Changes
