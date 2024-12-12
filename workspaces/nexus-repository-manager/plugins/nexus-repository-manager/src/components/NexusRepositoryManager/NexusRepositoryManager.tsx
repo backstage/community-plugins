@@ -33,10 +33,7 @@ export function getAssetVariants(component: ComponentXO) {
   );
 }
 
-/**
- * @public
- */
-export function NexusRepositoryManager() {
+export const NexusRepositoryManager = () => {
   const nexusClient = useApi(NexusRepositoryManagerApiRef);
   const { entity } = useEntity();
   const { ANNOTATIONS } = nexusClient.getAnnotations();
@@ -94,4 +91,4 @@ export function NexusRepositoryManager() {
       <ArtifactTable title={title} artifacts={artifacts} />
     </div>
   );
-}
+};
