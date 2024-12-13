@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import DataTable, { ExpanderComponentProps } from 'react-data-table-component';
 import { CVEEntityDetailsComponent } from '../CVEEntityDetailsComponent';
+import ArrowDownward from '@material-ui/icons/ArrowDownward';
 
 export const SecurityFindingsComponent = (data: Array<String>) => {
     const [dataRows, setDataRows] = useState([]);
     const [pending, setPending] = React.useState(true);
 
     const columns: [] = [
-        { name: 'CVE', selector: row => row.row_data.cve, sortable: true, wrap: true, width: '140px' },
+        { name: 'CVE', selector: row => row.row_data.cve, sortable: true, wrap: true, width: '140px', button: true, cell: row => (
+			<a href={row.row_data.link} target="_blank" rel="noopener noreferrer">
+				{row.row_data.cve}
+			</a>
+		), },
         { name: 'Severity', selector: row => row.row_data.severity, sortable: true, wrap: true, width: '100px' },
         { name: 'Status', selector: row => row.row_data.status, sortable: true, wrap: true, width: '100px' },
         { name: 'Workload', selector: row => row.row_data.workload, sortable: true, wrap: true, width: '150px' },
@@ -47,6 +52,36 @@ export const SecurityFindingsComponent = (data: Array<String>) => {
         return "Not fixable";
     }
 
+    const formatISODateTime = (isoDateString: any) => {
+        const date = new Date(isoDateString);
+
+        const formattedDate = date.toLocaleDateString();
+        const formattedTime = date.toLocaleTimeString();
+
+        return `${formattedDate} | ${formattedTime}`;
+    }
+
+    function subtractDatesInHours(date1, date2) {
+        const oneHour = 60 * 60 * 1000; // milliseconds in one hour
+        const diffInMilliseconds = date1 - date2;
+        console.log("diff in milliseconds: ", diffInMilliseconds)
+        return Math.round(diffInMilliseconds / oneHour); // Convert milliseconds to hours
+    }
+
+    const getDiscovered = (occurenceDate: string) => {
+        const d1 = new Date();
+        const d2 = new Date(occurenceDate);
+
+        const differenceInMilliseconds = d1 - d2;
+
+        const differenceInDays = differenceInMilliseconds / (1000 * 60 * 60 * 24);
+
+        if (differenceInDays === 1) return `${Math.floor(differenceInDays)} day ago`;
+        if (differenceInDays < 1) return "PLACEHOLDER";
+    
+        return `${Math.floor(differenceInDays)} days ago`
+    }
+
     const organizeData = () => {
         const rows: any = [];
         const cveEntityDetailsData: any = {};
@@ -61,41 +96,43 @@ export const SecurityFindingsComponent = (data: Array<String>) => {
     
                 for (const [Key, DeploymentValue2] of Object.entries(element1?.scan?.components)) {
                     
-                    if (DeploymentValue2.vulns.length > 0) {
-                        console.log("DeploymentValue2: ", DeploymentValue2)
+                    if (DeploymentValue2.vulns.length === 0) continue;
 
-                        DeploymentValue2?.vulns?.forEach((vulns: Array) => {
-                            // console.log("vulns: ", vulns)
+                    console.log("DeploymentValue2: ", DeploymentValue2)
 
-                            rows.push({
-                                row_data: {
-                                    cve: vulns?.cve,
-                                    severity: checkVulnSeverity(vulns?.severity),
-                                    status: isFixable(vulns?.fixedBy),
-                                    workload: element?.result?.deployment?.name,
-                                    image: element1?.name?.fullName,
-                                    cvss: vulns?.cvss,
-                                    discovered: vulns?.firstImageOccurrence,
-                                    advisory: ''
-                                },
-                                expanded_data: {
-                                    severity: checkVulnSeverity(vulns?.severity),
-                                    first_discovered: vulns?.firstImageOccurrence,
-                                    published: vulns?.publishedOn,
-                                    summary: vulns?.summary,
-                                    workload: element?.result?.deployment?.name,
-                                    cluster: element?.result?.deployment?.clusterName,
-                                    image: element1?.name?.fullName,
-                                    component: '',
-                                    version: '',
-                                    cveFixedIn: vulns?.fixedBy,
-                                    source: DeploymentValue2?.source,
-                                    location: '',
-                                    advisory: '',
-                                }
-                            });
-                        })
-                    }
+                    DeploymentValue2?.vulns?.forEach((vulns: Array) => {
+                        // console.log("vulns: ", vulns)
+
+                        rows.push({
+                            row_data: {
+                                cve: vulns?.cve,
+                                severity: checkVulnSeverity(vulns?.severity),
+                                status: isFixable(vulns?.fixedBy),
+                                workload: element?.result?.deployment?.name,
+                                image: element1?.name?.fullName,
+                                cvss: vulns?.cvss,
+                                discovered: getDiscovered(vulns?.firstImageOccurrence),
+                                advisory: '',
+                                link: vulns?.link,
+                            },
+                            expanded_data: {
+                                severity: checkVulnSeverity(vulns?.severity),
+                                first_discovered: formatISODateTime(vulns?.firstImageOccurrence),
+                                published: formatISODateTime(vulns?.publishedOn) || "N/A",
+                                summary: vulns?.summary,
+                                workload: element?.result?.deployment?.name,
+                                namespace: element?.result?.deployment?.namespace,
+                                cluster: element?.result?.deployment?.clusterName,
+                                image: element1?.name?.fullName,
+                                component: DeploymentValue2?.name,
+                                version: DeploymentValue2?.version,
+                                cveFixedIn: vulns?.fixedBy,
+                                source: DeploymentValue2?.source,
+                                location: DeploymentValue2?.location || "N/A",
+                                advisory: '',
+                            }
+                        });
+                    })
                 }
             })
         });
@@ -110,7 +147,6 @@ export const SecurityFindingsComponent = (data: Array<String>) => {
         organizeData();
     }, []);
 
-
     return (
         <div>
             <DataTable
@@ -119,12 +155,11 @@ export const SecurityFindingsComponent = (data: Array<String>) => {
                 expandableRows 
                 expandableRowsComponent={CVEEntityDetailsComponent}
                 expandableRowsComponentProps={{"cveDetails": "CVE details", "entityDetails": "Entity details"}}
-                progressPending={pending} 
-                // progressComponent={<CustomLoader />}
+                progressPending={pending}
+                sortIcon={<ArrowDownward />}
                 theme="dark"
+                highlightOnHover
                 pagination
-
-                
             />
         </div>
     )

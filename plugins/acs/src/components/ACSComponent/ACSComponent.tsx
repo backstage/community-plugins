@@ -1,10 +1,10 @@
 import React from 'react';
 import {
+  Box,
   Button,
-  Grid,
-  Tab,
-  Tabs,
+  Typography,
 } from '@material-ui/core';
+import Stack from '@mui/material/Stack';
 import {
     InfoCard
 } from '@backstage/core-components';
@@ -16,8 +16,18 @@ export function ACSComponent() {
 
     return (
       <div>
-        <InfoCard title={title} subheader={subheader}>
-          <Button variant="outlined">View in Advanced Cluster Security</Button>
+        <Stack direction="row">
+          <div>
+            <Typography variant="h5" gutterBottom>{title}</Typography>
+            <Typography variant="subtitle2" gutterBottom>{subheader}</Typography>
+          </div>
+          <div style={{ textAlign: 'right' }}>
+            <Button variant="outlined">View in Advanced Cluster Security</Button>
+          </div>
+        </Stack>
+        
+        
+        <InfoCard>
           <VulnerabilitiesComponent />
         </InfoCard>
       </div>
