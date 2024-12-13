@@ -1,51 +1,34 @@
 import React from 'react';
 import {
-  Grid,
-  Tab,
-  Tabs,
+  Button,
+  Typography,
 } from '@material-ui/core';
+import Stack from '@mui/material/Stack';
 import {
     InfoCard
 } from '@backstage/core-components';
 import { VulnerabilitiesComponent } from '../VulnerabilitiesComponent';
 
 export function ACSComponent() {
-    const [value, setValue] = React.useState(0);
-    const title: string = "Advanced Cluster Security"
-    const subheader: string = "Assess and remediate vulnerabilities and security violations in your workloads"
-  
-    const handleChange = (event, newValue) => {
-      setValue(newValue);
-    };
-
-    const TabsComponent = () => {
-      return (
-        <div>
-        <Tabs
-          value={value}
-          onChange={handleChange}
-          indicatorColor="primary"
-          textColor="primary"
-        >
-          <Tab label="Vulnerabilities" />
-          <Tab label="Policies" />
-        </Tabs>
-        </div>
-      )
-    }
+    const title: string = "Security findings"
+    const subheader: string = "Assess vulnerabilities and policy violations for your component workloads"
 
     return (
       <div>
-      <InfoCard title={title} subheader={subheader}>
-        <Grid container spacing={3} direction="column">
-          <Grid item>
-            <TabsComponent />
-          </Grid>
-          <Grid item>
-            <VulnerabilitiesComponent />
-          </Grid>
-        </Grid>
-      </InfoCard>
+        <Stack direction="row">
+          <div>
+            <Typography variant="h5" gutterBottom>{title}</Typography>
+            <Typography variant="subtitle2" gutterBottom>{subheader}</Typography>
+          </div>
+          <div style={{ textAlign: 'right' }}>
+            <Button variant="outlined">View in Advanced Cluster Security</Button>
+          </div>
+        </Stack>
+        
+        
+        <InfoCard>
+          <VulnerabilitiesComponent />
+        </InfoCard>
       </div>
     )
 }
