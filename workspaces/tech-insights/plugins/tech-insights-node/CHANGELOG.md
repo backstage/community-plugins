@@ -1,5 +1,11 @@
 # @backstage-community/plugin-tech-insights-node
 
+## 2.0.0
+
+### Major Changes
+
+- c3bbe0f: In order to use UrlReaderService in fact retrievers, UrlReaderService has been added to FactRetrieverContext.
+
 ## 1.0.3
 
 ### Patch Changes
