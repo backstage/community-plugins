@@ -1,5 +1,5 @@
 ---
-'@backstage-community/plugin-copilot': minor
+'@backstage-community/plugin-copilot': patch
 ---
 
 Fix division by zero in language stats
