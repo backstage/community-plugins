@@ -16,14 +16,6 @@ export const VulnerabilitiesComponent = () => {
         error: ACSDataError,
     } = queryACSData();
 
-    console.log("ACSDataResult: ", ACSDataResult)
-    console.log("ACSDataLoaded: ", ACSDataLoaded)
-    console.log("ACSDataError: ", ACSDataError)
-
-    useEffect(() => {
-
-    }, [ACSDataResult]);
-
     const useStyles = makeStyles(theme => ({
         root: {
         width: '100%',

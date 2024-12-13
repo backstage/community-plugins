@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import DataTable, { ExpanderComponentProps } from 'react-data-table-component';
+import DataTable from 'react-data-table-component';
 import { CVEEntityDetailsComponent } from '../CVEEntityDetailsComponent';
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
 
@@ -61,13 +61,6 @@ export const SecurityFindingsComponent = (data: Array<String>) => {
         return `${formattedDate} | ${formattedTime}`;
     }
 
-    function subtractDatesInHours(date1, date2) {
-        const oneHour = 60 * 60 * 1000; // milliseconds in one hour
-        const diffInMilliseconds = date1 - date2;
-        console.log("diff in milliseconds: ", diffInMilliseconds)
-        return Math.round(diffInMilliseconds / oneHour); // Convert milliseconds to hours
-    }
-
     const getDiscovered = (occurenceDate: string) => {
         const d1 = new Date();
         const d2 = new Date(occurenceDate);
@@ -84,25 +77,13 @@ export const SecurityFindingsComponent = (data: Array<String>) => {
 
     const organizeData = () => {
         const rows: any = [];
-        const cveEntityDetailsData: any = {};
-    
-        console.log(data)
+
         data?.data?.forEach((element: Object) => {
-            console.log("ELEMENT: ", element);
-    
-            // for (const [deploymentKey, DeploymentValue] of Object.entries(element)) {
             element?.result?.images?.forEach((element1: Object) => {
-                // console.log("ELEMENT1: ", element1);
-    
                 for (const [Key, DeploymentValue2] of Object.entries(element1?.scan?.components)) {
-                    
                     if (DeploymentValue2.vulns.length === 0) continue;
 
-                    console.log("DeploymentValue2: ", DeploymentValue2)
-
                     DeploymentValue2?.vulns?.forEach((vulns: Array) => {
-                        // console.log("vulns: ", vulns)
-
                         rows.push({
                             row_data: {
                                 cve: vulns?.cve,
@@ -136,8 +117,6 @@ export const SecurityFindingsComponent = (data: Array<String>) => {
                 }
             })
         });
-
-        console.log("rows: ", rows)
 
         setPending(false)
         setDataRows(rows);

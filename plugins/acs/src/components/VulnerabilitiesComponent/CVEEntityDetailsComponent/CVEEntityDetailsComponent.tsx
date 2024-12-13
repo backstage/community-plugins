@@ -6,8 +6,6 @@ import Stack from '@mui/material/Stack';
 
 export const CVEEntityDetailsComponent: React.FC<Props> = ({ data, cveDetails, entityDetails }) => {
     const [dataRows, setDataRows] = useState([]);
-    
-    console.log("CVE Entity Details Component Data: ", data);
 
     const columns: [] = [
         { name: 'Image', selector: row => row.image, sortable: true, wrap: true, width: '200px' },
@@ -18,8 +16,6 @@ export const CVEEntityDetailsComponent: React.FC<Props> = ({ data, cveDetails, e
         { name: 'Location', selector: row => row.location, sortable: true, wrap: true, width: '150px' },
         { name: 'Advisory', selector: row => row.advisory, sortable: true, wrap: true, width: '100px' }
     ];
-
-
 
     const severityLabel = `Severity: ${data.expanded_data.severity}`;
     const firstDiscoveredLabel = `First discovered: ${data.expanded_data.first_discovered}`;

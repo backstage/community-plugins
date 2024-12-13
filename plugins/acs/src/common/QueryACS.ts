@@ -19,28 +19,8 @@ export const queryACSData = () => {
         return entity?.metadata?.name
     }
 
-    // const getVulnerabilities = (jsonData: any) => {
-
-    //     const deploymentVulnerabilties = jsonData.map((deployment: any) => {
-    //         console.log("deployment:", deployment)
-
-    //         const images = deployment.result.images.map((image: any) => {
-    //             console.log("image:", image)
-
-    //             return image.scan.components.filter((component: any) => component.vulns.length > 0)
-    //         })
-
-    //         console.log("All vulns in deployment: ", images)
-    //     })
-
-    //     return deploymentVulnerabilties
-    // }
-
     const getACSData = async() => {
-        const acsVulnData = []
         const deploymentName = retrieveCatalogItem()
-        console.log("Entity", entity)
-        console.log("Name: ", deploymentName)
 
         await fetch(`${backendUrl}/api/proxy/acs/v1/export/vuln-mgmt/workloads?query=Deployment%3A${deploymentName}`)
             .then(response => response.text())
@@ -54,10 +34,6 @@ export const queryACSData = () => {
                     }
                 });
 
-                // const vulns = getVulnerabilities(jsonData)
-                // console.log("vulns: ", vulns);
-
-                
                 // TODO: fix issue where additional index is added which is just an undefined
                 jsonData.pop()
 
