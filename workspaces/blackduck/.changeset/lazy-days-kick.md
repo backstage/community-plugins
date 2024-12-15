@@ -4,3 +4,4 @@
 ---
 
 Implemented blackduck scaffolder - project creation action
+Added @backstage-community/plugin-blackduck-node as dependency
