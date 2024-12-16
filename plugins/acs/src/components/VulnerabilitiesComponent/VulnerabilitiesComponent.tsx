@@ -9,12 +9,12 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import { queryACSData } from '../../common/QueryACS';
 import { SecurityFindingsComponent } from './SecurityFindingsComponent';
 
-export const VulnerabilitiesComponent = () => {
+export const VulnerabilitiesComponent = (serviceName: any) => {
     const {
         result: ACSDataResult,
         loaded: ACSDataLoaded,
         error: ACSDataError,
-    } = queryACSData();
+    } = queryACSData(serviceName);
 
     const useStyles = makeStyles(theme => ({
         root: {

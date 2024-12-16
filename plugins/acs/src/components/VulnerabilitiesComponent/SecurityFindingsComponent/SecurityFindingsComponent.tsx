@@ -13,13 +13,12 @@ export const SecurityFindingsComponent = (data: Array<String>) => {
 				{row.row_data.cve}
 			</a>
 		), },
-        { name: 'Severity', selector: row => row.row_data.severity, sortable: true, wrap: true, width: '100px' },
-        { name: 'Status', selector: row => row.row_data.status, sortable: true, wrap: true, width: '100px' },
-        { name: 'Workload', selector: row => row.row_data.workload, sortable: true, wrap: true, width: '150px' },
-        { name: 'Image', selector: row => row.row_data.image, sortable: true, wrap: true, width: '200px' },
-        { name: 'CVSS', selector: row => row.row_data.cvss, sortable: true, wrap: true, width: '85px' },
-        { name: 'Discovered', selector: row => row.row_data.discovered, sortable: true, wrap: true, width: '125px' },
-        { name: 'Advisory', selector: row => row.row_data.advisor, sortable: true, wrap: true, width: '150px' }
+        { name: 'Severity', selector: row => row.row_data.severity, sortable: true, wrap: true },
+        { name: 'Status', selector: row => row.row_data.status, sortable: true, wrap: true },
+        { name: 'Workload', selector: row => row.row_data.workload, sortable: true, wrap: true, grow: 2 },
+        { name: 'Image', selector: row => row.row_data.image, sortable: true, wrap: true, grow: 2 },
+        { name: 'CVSS', selector: row => row.row_data.cvss, sortable: true, wrap: true },
+        { name: 'Discovered', selector: row => row.row_data.discovered, sortable: true, wrap: true },
     ];
 
     const checkVulnSeverity = (vulnSeverity: string) => {
@@ -93,7 +92,6 @@ export const SecurityFindingsComponent = (data: Array<String>) => {
                                 image: element1?.name?.fullName,
                                 cvss: vulns?.cvss,
                                 discovered: getDiscovered(vulns?.firstImageOccurrence),
-                                advisory: '',
                                 link: vulns?.link,
                             },
                             expanded_data: {
@@ -110,7 +108,6 @@ export const SecurityFindingsComponent = (data: Array<String>) => {
                                 cveFixedIn: vulns?.fixedBy,
                                 source: DeploymentValue2?.source,
                                 location: DeploymentValue2?.location || "N/A",
-                                advisory: '',
                             }
                         });
                     })
@@ -126,17 +123,23 @@ export const SecurityFindingsComponent = (data: Array<String>) => {
         organizeData();
     }, []);
 
+    const [theme, setTheme] = useState('light');
+
+    useEffect(() => {
+        setTheme(window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light")
+    }, [theme]);
+
     return (
         <div>
             <DataTable
                 data={dataRows}
                 columns={columns}
-                expandableRows 
+                expandableRows
                 expandableRowsComponent={CVEEntityDetailsComponent}
                 expandableRowsComponentProps={{"cveDetails": "CVE details", "entityDetails": "Entity details"}}
                 progressPending={pending}
                 sortIcon={<ArrowDownward />}
-                theme="dark"
+                theme={theme}
                 highlightOnHover
                 pagination
             />
