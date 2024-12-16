@@ -1,5 +1,11 @@
 # @backstage-community/plugin-tech-insights
 
+## 0.3.41
+
+### Patch Changes
+
+- 9a09c39: Remove use of react 18 `useId` hook to maintain compatibility with react 17.
+
 ## 0.3.40
 
 ### Patch Changes
