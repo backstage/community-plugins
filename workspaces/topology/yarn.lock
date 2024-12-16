@@ -2796,7 +2796,7 @@ __metadata:
     "@backstage/plugin-permission-react": ^0.4.27
     "@backstage/test-utils": ^1.7.0
     "@backstage/theme": ^0.6.0
-    "@janus-idp/shared-react": ^2.13.1
+    "@janus-idp/shared-react": ^2.14.1
     "@kubernetes/client-node": ^0.22.1
     "@mui/icons-material": 5.15.17
     "@mui/lab": 5.0.0-alpha.173
@@ -7252,9 +7252,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@janus-idp/shared-react@npm:^2.13.1":
-  version: 2.13.1
-  resolution: "@janus-idp/shared-react@npm:2.13.1"
+"@janus-idp/shared-react@npm:^2.14.1":
+  version: 2.14.1
+  resolution: "@janus-idp/shared-react@npm:2.14.1"
   dependencies:
     "@backstage/catalog-model": ^1.7.0
     "@backstage/core-components": ^0.15.1
@@ -7264,6 +7264,7 @@ __metadata:
     "@kubernetes/client-node": ^0.22.1
     "@material-ui/core": ^4.12.4
     "@mui/icons-material": 5.15.17
+    "@mui/material": ^5.15.17
     classnames: ^2.3.2
     date-fns: ^2.30.0
     file-saver: ^2.0.5
@@ -7272,7 +7273,7 @@ __metadata:
     react-use: ^17.5.0
   peerDependencies:
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
-  checksum: 7b19a31ca484ec89a77e926406105e34af56ded97832c8afd8cdac4205173ed3d61b578deca0bb74760c4cdb7ae962e294dd8bf42a853fbd6a8e1ffda695a737
+  checksum: 65cbbb9b4e5bd03674df903be358093988d4d95ed3e0527f38e069ac07e21dd004f0d9ac2fac2243d9e022b4158908bf025bfbab3f038deef980e073c1ecc6dc
   languageName: node
   linkType: hard
 

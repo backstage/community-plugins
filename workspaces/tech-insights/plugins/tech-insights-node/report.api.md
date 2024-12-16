@@ -127,6 +127,7 @@ export interface TechInsightCheck {
   failureMetadata?: Record<string, any>;
   id: string;
   links?: CheckLink[];
+  metadata?: Record<string, any>;
   name: string;
   successMetadata?: Record<string, any>;
   type: string;
