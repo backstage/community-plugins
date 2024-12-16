@@ -184,7 +184,12 @@ describe('Connection', () => {
 
     const knex = Knex.knex({ client: MockClient });
 
-    enforcerDelegate = new EnforcerDelegate(enf, roleMetadataStorageMock, knex);
+    enforcerDelegate = new EnforcerDelegate(
+      enf,
+      auditLoggerMock,
+      roleMetadataStorageMock,
+      knex,
+    );
 
     await enforcerDelegate.addGroupingPolicy(
       roleToBeRemoved,
@@ -478,6 +483,7 @@ describe('connectRBACProviders', () => {
 
     const enforcerDelegate = new EnforcerDelegate(
       enf,
+      auditLoggerMock,
       roleMetadataStorageMock,
       knex,
     );
