@@ -1,5 +1,11 @@
 # @backstage-community/plugin-tech-insights-common
 
+## 0.3.0
+
+### Minor Changes
+
+- 5289c38: Add metadata to TechInsightCheck
+
 ## 0.2.21
 
 ### Patch Changes
