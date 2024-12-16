@@ -263,6 +263,31 @@ const testChecks: Record<string, TechInsightJsonRuleCheck[]> = {
       },
     },
   ],
+
+  metadata: [
+    {
+      id: 'metadataTestCheck',
+      name: 'metadataTestCheck',
+      type: JSON_RULE_ENGINE_CHECK_TYPE,
+      description: 'Metadata Check For Testing',
+      factIds: ['test-factretriever'],
+      metadata: {
+        rank: 1,
+        filter: { lifescycle: ['production'] },
+      },
+      rule: {
+        conditions: {
+          all: [
+            {
+              fact: 'testnumberfact',
+              operator: 'lessThan',
+              value: 5,
+            },
+          ],
+        },
+      },
+    },
+  ],
 };
 
 const latestSchemasMock = jest.fn().mockImplementation(() => [
@@ -705,6 +730,46 @@ describe('JsonRulesEngineFactChecker', () => {
           },
         },
       ]);
+    });
+
+    it('should respond with result, facts, fact schemas and checks with metadatas', async () => {
+      const results = await factChecker.runChecks('a/a/a', ['metadata']);
+      expect(results).toHaveLength(1);
+      expect(results[0]).toMatchObject({
+        facts: {
+          testnumberfact: {
+            value: 3,
+            type: 'integer',
+            description: '',
+          },
+        },
+        result: true,
+        check: {
+          id: 'metadataTestCheck',
+          type: JSON_RULE_ENGINE_CHECK_TYPE,
+          name: 'metadataTestCheck',
+          description: 'Metadata Check For Testing',
+          factIds: ['test-factretriever'],
+          metadata: {
+            rank: 1,
+            filter: { lifescycle: ['production'] },
+          },
+          rule: {
+            conditions: {
+              all: [
+                {
+                  fact: 'testnumberfact',
+                  factResult: 3,
+                  operator: 'lessThan',
+                  result: true,
+                  value: 5,
+                },
+              ],
+              priority: 1,
+            },
+          },
+        },
+      });
     });
   });
 

@@ -18,7 +18,6 @@ import React, {
   PropsWithChildren,
   useCallback,
   useEffect,
-  useId,
   useMemo,
 } from 'react';
 import { useApi } from '@backstage/core-plugin-api';
@@ -26,7 +25,7 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import { techInsightsApiRef } from '../../api';
 import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
-import { Entity } from '@backstage/catalog-model';
+import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 
 /**
  * TechInsightsLinksMenu setMenu receiver.
@@ -66,7 +65,9 @@ export const ResultLinksMenu = (
     [api, result, entity],
   );
 
-  const menuId = `menu-${useId()}`;
+  const menuId = `menu-${result.check.id}-${
+    entity ? stringifyEntityRef(entity) : 'unknown'
+  }`;
 
   const [anchorEl, setAnchorEl] = React.useState<Element | undefined>(
     undefined,
