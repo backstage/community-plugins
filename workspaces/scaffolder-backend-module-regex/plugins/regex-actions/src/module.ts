@@ -18,6 +18,9 @@ import { scaffolderActionsExtensionPoint } from '@backstage/plugin-scaffolder-no
 
 import { createReplaceAction } from './actions';
 
+/**
+ * @public
+ */
 export const scaffolderModuleRegexActions = createBackendModule({
   moduleId: 'scaffolder-backend-regexp',
   pluginId: 'scaffolder',
