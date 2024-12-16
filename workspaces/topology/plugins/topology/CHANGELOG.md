@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.29.9
+
+### Patch Changes
+
+- b133709: fix status text and icon alignment issue
+
 ## 1.29.8
 
 ### Patch Changes
