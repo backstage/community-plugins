@@ -9,10 +9,19 @@ import {
     InfoCard
 } from '@backstage/core-components';
 import { VulnerabilitiesComponent } from '../VulnerabilitiesComponent';
+import { useEntity } from '@backstage/plugin-catalog-react';
 
 export function ACSComponent() {
     const title: string = "Security findings"
     const subheader: string = "Assess vulnerabilities and policy violations for your component workloads"
+
+    // Get catalog data
+    const { entity } = useEntity();
+
+    // TODO: Discuss potential differences in catalog entity data format across different backstage instances
+    const retrieveServiceName = () => {
+        return entity?.metadata?.name
+    }
 
     return (
       <div>
@@ -27,7 +36,7 @@ export function ACSComponent() {
         </Grid>
 
         <InfoCard>
-          <VulnerabilitiesComponent />
+          <VulnerabilitiesComponent serviceName={retrieveServiceName()}/>
         </InfoCard>
       </div>
     )

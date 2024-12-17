@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useApi, configApiRef } from '@backstage/core-plugin-api';
-import { useEntity } from '@backstage/plugin-catalog-react';
 
-export const queryACSData = () => {
+export const queryACSData = (data: string) => {
     const [result, setResult] = useState([]);
     const [loaded, setLoaded] = useState<boolean>(false);
     const [error, setError] = useState<boolean>(false);
@@ -11,18 +10,8 @@ export const queryACSData = () => {
     const config = useApi(configApiRef);
     const backendUrl = config.getString('backend.baseUrl');
 
-    // Get catalog data
-    const { entity } = useEntity();
-
-    // TODO: Discuss potential differences in catalog entity data format across different backstage instances
-    const retrieveCatalogItem = () => {
-        return entity?.metadata?.name
-    }
-
     const getACSData = async() => {
-        const deploymentName = retrieveCatalogItem()
-
-        await fetch(`${backendUrl}/api/proxy/acs/v1/export/vuln-mgmt/workloads?query=Deployment%3A${deploymentName}`)
+        await fetch(`${backendUrl}/api/proxy/acs/v1/export/vuln-mgmt/workloads?query=Deployment%3A${data?.serviceName}`)
             .then(response => response.text())
             .then(text => {
 
