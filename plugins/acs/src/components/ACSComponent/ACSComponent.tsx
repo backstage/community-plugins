@@ -4,6 +4,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import Stack from '@mui/material/Stack';
+import Grid from '@mui/material/Grid2';
 import {
     InfoCard
 } from '@backstage/core-components';
@@ -15,10 +16,11 @@ export function ACSComponent() {
 
     return (
       <div>
-        <Stack direction="row">
-          <div>
+        <Grid container spacing={2}>
+          <Grid size={{ xs: 6, md: 8 }}>
             <Typography variant="h5" gutterBottom>{title}</Typography>
             <Typography variant="subtitle2" gutterBottom>{subheader}</Typography>
+<<<<<<< Updated upstream
           </div>
           <div style={{ textAlign: 'right' }}>
             <Button variant="outlined">View in Advanced Cluster Security</Button>
@@ -26,6 +28,14 @@ export function ACSComponent() {
         </Stack>
         
         
+=======
+          </Grid>
+          <Grid size={{ xs: 6, md: 4 }}>
+            <Button href="#" target="_blank" variant="outlined">View in Advanced Cluster Security</Button>
+          </Grid>
+        </Grid>
+
+>>>>>>> Stashed changes
         <InfoCard>
           <VulnerabilitiesComponent />
         </InfoCard>
