@@ -15,4 +15,4 @@
  */
 
 export { default } from './Radar';
-export type { Props as RadarProps } from './Radar';
+export type { Props as StatelessRadarProps } from './Radar';
