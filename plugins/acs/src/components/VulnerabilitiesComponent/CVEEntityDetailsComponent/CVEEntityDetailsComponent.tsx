@@ -8,12 +8,12 @@ export const CVEEntityDetailsComponent: React.FC<Props> = ({ data, cveDetails, e
     const [dataRows, setDataRows] = useState([]);
 
     const columns: [] = [
-        { name: 'Image', selector: row => row.image, sortable: true, wrap: true, width: '200px' },
-        { name: 'Component', selector: row => row.component, sortable: true, wrap: true, width: '150px' },
-        { name: 'Version', selector: row => row.version, sortable: true, wrap: true, width: '100px' },
-        { name: 'CVE fixed in', selector: row => row.cveFixedIn, sortable: true, wrap: true, width: '150px' },
-        { name: 'Source', selector: row => row.source, sortable: true, wrap: true, width: '100px' },
-        { name: 'Location', selector: row => row.location, sortable: true, wrap: true, width: '150px' },
+        { name: 'Image', selector: row => row.image, sortable: true, wrap: true, grow: 2 },
+        { name: 'Component', selector: row => row.component, sortable: true, wrap: true },
+        { name: 'Version', selector: row => row.version, sortable: true, wrap: true, grow: 2 },
+        { name: 'CVE fixed in', selector: row => row.cveFixedIn, sortable: true, wrap: true, grow: 2 },
+        { name: 'Source', selector: row => row.source, sortable: true, wrap: true },
+        { name: 'Location', selector: row => row.location, sortable: true, wrap: true },
     ];
 
     const severityLabel = `Severity: ${data.expanded_data.severity}`;
