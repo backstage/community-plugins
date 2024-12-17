@@ -14,7 +14,6 @@ export const CVEEntityDetailsComponent: React.FC<Props> = ({ data, cveDetails, e
         { name: 'CVE fixed in', selector: row => row.cveFixedIn, sortable: true, wrap: true, width: '150px' },
         { name: 'Source', selector: row => row.source, sortable: true, wrap: true, width: '100px' },
         { name: 'Location', selector: row => row.location, sortable: true, wrap: true, width: '150px' },
-        { name: 'Advisory', selector: row => row.advisory, sortable: true, wrap: true, width: '100px' }
     ];
 
     const severityLabel = `Severity: ${data.expanded_data.severity}`;
@@ -35,7 +34,6 @@ export const CVEEntityDetailsComponent: React.FC<Props> = ({ data, cveDetails, e
             cveFixedIn: data?.expanded_data?.cveFixedIn || "N/A",
             source: data?.expanded_data?.source || "N/A",
             location: data?.expanded_data?.location || "N/A",
-            advisory: data?.expanded_data?.advisory || "N/A"
         })
 
         setDataRows(rows)
