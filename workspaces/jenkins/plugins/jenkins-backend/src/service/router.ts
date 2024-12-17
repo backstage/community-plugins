@@ -214,6 +214,35 @@ export async function createRouter(
       response.json({}).status(status);
     },
   );
+
+  router.get(
+    '/v1/entity/:namespace/:kind/:name/job/:jobFullName/:buildNumber/consoleText',
+    async (request, response) => {
+      const { namespace, kind, name, jobFullName, buildNumber } =
+        request.params;
+
+      const jenkinsInfo = await jenkinsInfoProvider.getInstance({
+        entityRef: {
+          kind,
+          namespace,
+          name,
+        },
+        jobFullName,
+        credentials: await httpAuth.credentials(request),
+      });
+
+      const consoleText = await jenkinsApi.getBuildConsoleText(
+        jenkinsInfo,
+        jobFullName,
+        parseInt(buildNumber, 10),
+      );
+
+      response.json({
+        consoleText: consoleText,
+      });
+    },
+  );
+
   router.use(errorHandler());
   return router;
 }
