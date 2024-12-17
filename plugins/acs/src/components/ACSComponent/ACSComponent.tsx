@@ -20,22 +20,12 @@ export function ACSComponent() {
           <Grid size={{ xs: 6, md: 8 }}>
             <Typography variant="h5" gutterBottom>{title}</Typography>
             <Typography variant="subtitle2" gutterBottom>{subheader}</Typography>
-<<<<<<< Updated upstream
-          </div>
-          <div style={{ textAlign: 'right' }}>
-            <Button variant="outlined">View in Advanced Cluster Security</Button>
-          </div>
-        </Stack>
-        
-        
-=======
           </Grid>
           <Grid size={{ xs: 6, md: 4 }}>
             <Button href="#" target="_blank" variant="outlined">View in Advanced Cluster Security</Button>
           </Grid>
         </Grid>
 
->>>>>>> Stashed changes
         <InfoCard>
           <VulnerabilitiesComponent />
         </InfoCard>
