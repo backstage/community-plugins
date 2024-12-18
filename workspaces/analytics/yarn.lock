@@ -2577,7 +2577,7 @@ __metadata:
     "@backstage/core-plugin-api": ^1.10.0
     "@backstage/dev-utils": 1.1.2
     "@redhat-developer/red-hat-developer-hub-theme": 0.4.0
-    "@testing-library/jest-dom": 6.4.8
+    "@testing-library/jest-dom": 6.6.3
     "@types/node": 18.19.33
     cross-fetch: 4.0.0
     msw: 1.3.5
@@ -2628,7 +2628,7 @@ __metadata:
     "@segment/analytics-next": ^1.58.0
     "@spotify/prettier-config": ^15.0.0
     "@testing-library/dom": 9.3.4
-    "@testing-library/jest-dom": 6.4.8
+    "@testing-library/jest-dom": 6.6.3
     "@testing-library/react": 14.3.1
     "@testing-library/user-event": 14.5.2
     "@types/node": 18.19.34
@@ -7937,19 +7937,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/jest-dom@npm:6.4.8, @testing-library/jest-dom@npm:^6.0.0":
-  version: 6.4.8
-  resolution: "@testing-library/jest-dom@npm:6.4.8"
+"@testing-library/jest-dom@npm:6.6.3, @testing-library/jest-dom@npm:^6.0.0":
+  version: 6.6.3
+  resolution: "@testing-library/jest-dom@npm:6.6.3"
   dependencies:
     "@adobe/css-tools": ^4.4.0
-    "@babel/runtime": ^7.9.2
     aria-query: ^5.0.0
     chalk: ^3.0.0
     css.escape: ^1.5.1
     dom-accessibility-api: ^0.6.3
     lodash: ^4.17.21
     redent: ^3.0.0
-  checksum: b601688950e522557c2c6bbc0f026ae31a10583577c8a557814b0eb33648fe82afc06299f3cdb79ff0c5076fd1a6106f3d76e2ca0dde6f7ee0555e63008fbd72
+  checksum: c1dc4260b05309a0084416639006cd105849acc5b102bef682a3b19bd6fce07ff6762085fc7f2599546c995a2fc66fdb1d70e50e22a634a0098524056cc9e511
   languageName: node
   linkType: hard
 
