@@ -59,7 +59,7 @@
   },
   "devDependencies": {
     "@backstage/cli": "^0.28.0",
-    "@testing-library/jest-dom": "6.6.2",
+    "@testing-library/jest-dom": "6.6.3",
     "@testing-library/react": "14.3.1",
     "@types/node": "18.19.64",
     "@types/react": "18.3.12",
