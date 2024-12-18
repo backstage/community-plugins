@@ -33,7 +33,7 @@
   "dependencies": {
     "@backstage/backend-plugin-api": "^1.0.0",
     "@backstage/errors": "^1.2.4",
-    "@backstage/plugin-scaffolder-node": "^0.4.9",
+    "@backstage/plugin-scaffolder-node": "^0.4.12",
     "cross-fetch": "^4.0.0"
   },
   "devDependencies": {
