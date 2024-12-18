@@ -1,5 +1,11 @@
 ## @backstage-community/plugin-redhat-argocd
 
+## 1.11.1
+
+### Patch Changes
+
+- b7f5849: Change argocd to Argo CD in comments or description
+
 ## 1.11.0
 
 ### Minor Changes
