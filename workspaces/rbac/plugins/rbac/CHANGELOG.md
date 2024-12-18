@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.33.4
+
+### Patch Changes
+
+- 27c3f1f: Fix role overview page styling issues
+
 ## 1.33.3
 
 ### Patch Changes
