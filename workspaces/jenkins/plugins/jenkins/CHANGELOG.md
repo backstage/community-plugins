@@ -1,5 +1,11 @@
 # @backstage-community/plugin-jenkins
 
+## 0.13.0
+
+### Minor Changes
+
+- dfe7569: Add an API to retrieve the consoleText for a build.
+
 ## 0.12.2
 
 ### Patch Changes
