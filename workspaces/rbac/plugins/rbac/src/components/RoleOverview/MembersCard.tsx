@@ -21,8 +21,6 @@ import { usePermission } from '@backstage/plugin-permission-react';
 
 import CachedIcon from '@mui/icons-material/Cached';
 import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
 
 import { policyEntityUpdatePermission } from '@backstage-community/plugin-rbac-common';
 
@@ -90,39 +88,37 @@ export const MembersCard = ({ roleName, membersInfo }: MembersCardProps) => {
   );
 
   return (
-    <Card>
-      <CardContent>
-        {!loading && error && (
-          <div style={{ paddingBottom: '16px' }}>
-            <WarningPanel
-              message={(error as Error)?.message || (error as Error)?.name}
-              title="Something went wrong while fetching the users and groups"
-              severity="error"
-            />
-          </div>
-        )}
-        <Table
-          title={
-            !loading && data?.length
-              ? `Users and groups (${getMembers(filteredData)})`
-              : 'Users and groups'
-          }
-          actions={actions}
-          options={{ padding: 'default', search: true, paging: true }}
-          data={data ?? []}
-          isLoading={loading}
-          columns={columns}
-          emptyContent={
-            <Box
-              data-testid="members-table-empty"
-              sx={{ display: 'flex', justifyContent: 'center', p: 2 }}
-            >
-              No records found
-            </Box>
-          }
-          onSearchChange={setSearchText}
-        />
-      </CardContent>
-    </Card>
+    <Box>
+      {!loading && error && (
+        <Box style={{ paddingBottom: '16px' }}>
+          <WarningPanel
+            message={(error as Error)?.message || (error as Error)?.name}
+            title="Something went wrong while fetching the users and groups"
+            severity="error"
+          />
+        </Box>
+      )}
+      <Table
+        title={
+          !loading && data?.length
+            ? `Users and groups (${getMembers(filteredData)})`
+            : 'Users and groups'
+        }
+        actions={actions}
+        options={{ padding: 'default', search: true, paging: true }}
+        data={data ?? []}
+        isLoading={loading}
+        columns={columns}
+        emptyContent={
+          <Box
+            data-testid="members-table-empty"
+            sx={{ display: 'flex', justifyContent: 'center', p: 2 }}
+          >
+            No records found
+          </Box>
+        }
+        onSearchChange={setSearchText}
+      />
+    </Box>
   );
 };
