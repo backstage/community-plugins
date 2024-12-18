@@ -21,8 +21,6 @@ import { usePermission } from '@backstage/plugin-permission-react';
 
 import CachedIcon from '@mui/icons-material/Cached';
 import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
 
 import { policyEntityUpdatePermission } from '@backstage-community/plugin-rbac-common';
 
@@ -102,39 +100,37 @@ export const PermissionsCard = ({
   ];
 
   return (
-    <Card>
-      <CardContent>
-        {error?.name && error.name !== 404 && (
-          <div style={{ paddingBottom: '16px' }}>
-            <WarningPanel
-              message={error?.message}
-              title="Something went wrong while fetching the permission policies"
-              severity="error"
-            />
-          </div>
-        )}
-        <Table
-          title={
-            !loading && data.length > 0
-              ? `Permission Policies (${numberOfPolicies})`
-              : 'Permission Policies'
-          }
-          actions={actions}
-          options={{ padding: 'default', search: true, paging: true }}
-          data={data}
-          columns={columns}
-          isLoading={loading}
-          emptyContent={
-            <Box
-              data-testid="permission-table-empty"
-              sx={{ display: 'flex', justifyContent: 'center', p: 2 }}
-            >
-              No records found
-            </Box>
-          }
-          onSearchChange={setSearchText}
-        />
-      </CardContent>
-    </Card>
+    <Box>
+      {error?.name && error.name !== 404 && (
+        <Box style={{ paddingBottom: '16px' }}>
+          <WarningPanel
+            message={error?.message}
+            title="Something went wrong while fetching the permission policies"
+            severity="error"
+          />
+        </Box>
+      )}
+      <Table
+        title={
+          !loading && data.length > 0
+            ? `Permission Policies (${numberOfPolicies})`
+            : 'Permission Policies'
+        }
+        actions={actions}
+        options={{ padding: 'default', search: true, paging: true }}
+        data={data}
+        columns={columns}
+        isLoading={loading}
+        emptyContent={
+          <Box
+            data-testid="permission-table-empty"
+            sx={{ display: 'flex', justifyContent: 'center', p: 2 }}
+          >
+            No records found
+          </Box>
+        }
+        onSearchChange={setSearchText}
+      />
+    </Box>
   );
 };
