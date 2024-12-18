@@ -21,6 +21,8 @@ import Autocomplete from '@mui/material/Autocomplete';
 import FormHelperText from '@mui/material/FormHelperText';
 import LinearProgress from '@mui/material/LinearProgress';
 import TextField from '@mui/material/TextField';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import IconButton from '@mui/material/IconButton';
 import { FormikErrors } from 'formik';
 
 import { MemberEntity } from '../../types';
@@ -50,12 +52,11 @@ export const AddMembersForm = ({
   membersData,
 }: AddMembersFormProps) => {
   const [search, setSearch] = React.useState<string>('');
-  const [selectedMember, setSelectedMember] = React.useState<SelectedMember>({
-    label: '',
-    etag: '',
-    type: '',
-    ref: '',
-  } as SelectedMember);
+  const [selectedMember, setSelectedMember] =
+    React.useState<SelectedMember[]>(selectedMembers);
+  React.useEffect(() => {
+    setSelectedMember(selectedMembers);
+  }, [selectedMembers]);
 
   const getDescription = (member: MemberEntity) => {
     const memberCount = getMembersCount(member);
@@ -117,6 +118,9 @@ export const AddMembersForm = ({
       </FormHelperText>
       <br />
       <Autocomplete
+        data-testid="users-and-groups-autocomplete"
+        sx={{ width: '30%' }}
+        multiple
         options={filteredMembers || []}
         getOptionLabel={(option: SelectedMember) => option.label ?? ''}
         isOptionEqualToValue={handleIsOptionEqualToValue}
@@ -124,21 +128,15 @@ export const AddMembersForm = ({
         loadingText={<LinearProgress />}
         disableClearable
         value={selectedMember}
-        onChange={(_e, value: SelectedMember) => {
+        onChange={(_e, value: SelectedMember[]) => {
           setSelectedMember(value);
-          if (value) {
-            setSearch(value.label);
-            setFieldValue('selectedMembers', [...selectedMembers, value]);
-          }
+          setFieldValue('selectedMembers', value);
+          setSearch('');
         }}
+        renderTags={() => []}
         inputValue={search}
         onInputChange={(_e, newSearch: string, reason) =>
           reason === 'input' && setSearch(newSearch)
-        }
-        getOptionDisabled={(option: SelectedMember) =>
-          !!selectedMembers.find(
-            (sm: SelectedMember) => sm.etag === option.etag,
-          )
         }
         renderOption={(props, option: SelectedMember, state) => (
           <MembersDropdownOption props={props} option={option} state={state} />
@@ -155,6 +153,25 @@ export const AddMembersForm = ({
             error={!!selectedMembersError}
             helperText={selectedMembersError ?? ''}
             required
+            InputProps={{
+              ...params.InputProps,
+              endAdornment: (
+                <>
+                  {search && (
+                    <IconButton
+                      size="small"
+                      onClick={() => {
+                        setSearch('');
+                      }}
+                      aria-label="clear search"
+                    >
+                      <HighlightOffIcon fontSize="small" />
+                    </IconButton>
+                  )}
+                  {params.InputProps.endAdornment}
+                </>
+              ),
+            }}
           />
         )}
       />
