@@ -1,5 +1,19 @@
 ### Dependencies
 
+## 1.29.9
+
+### Patch Changes
+
+- b133709: fix status text and icon alignment issue
+
+## 1.29.8
+
+### Patch Changes
+
+- e815da7: Clean up api report warnings and remove unnecessary files
+- Updated dependencies [e815da7]
+  - @backstage-community/plugin-topology-common@1.4.4
+
 ## 1.29.7
 
 ### Patch Changes

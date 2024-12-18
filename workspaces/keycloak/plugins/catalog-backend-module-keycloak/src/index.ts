@@ -15,7 +15,11 @@
  */
 
 export * from './providers';
-export type { UserTransformer, GroupTransformer } from './lib';
+export type {
+  UserTransformer,
+  GroupTransformer,
+  KeycloakProviderConfig,
+} from './lib';
 export * from './lib/transformers';
 export * from './extensions';
 export * from './lib/types';

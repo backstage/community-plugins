@@ -36,6 +36,7 @@ import {
   DiscoveryService,
   LoggerService,
   SchedulerService,
+  UrlReaderService,
 } from '@backstage/backend-plugin-api';
 
 /**
@@ -82,6 +83,7 @@ export interface TechInsightsOptions<
   database: DatabaseService;
   scheduler: SchedulerService;
   auth: AuthService;
+  urlReader: UrlReaderService;
 }
 
 /**
@@ -125,6 +127,7 @@ export const buildTechInsightsContext = async <
     logger,
     scheduler,
     auth,
+    urlReader,
   } = options;
 
   const buildFactRetrieverRegistry = (): FactRetrieverRegistry => {
@@ -156,6 +159,7 @@ export const buildTechInsightsContext = async <
       discovery,
       logger,
       auth,
+      urlReader,
     },
   });
 

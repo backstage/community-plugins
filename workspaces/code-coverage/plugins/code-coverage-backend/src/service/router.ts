@@ -38,6 +38,8 @@ import {
 import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 
 /**
+ * @deprecated Please migrate to the new backend system as this will be removed in the future.
+ *
  * Options for {@link createRouter}.
  *
  * @public
@@ -263,6 +265,8 @@ export const makeRouter = async (
 };
 
 /**
+ * @deprecated Please migrate to the new backend system as this will be removed in the future.
+ *
  * Creates a code-coverage plugin backend router.
  *
  * @public

@@ -53,6 +53,12 @@ export interface JenkinsApi {
     jobFullName: string;
     buildNumber: string;
   }): Promise<Build>;
+  // Warning: (ae-forgotten-export) The symbol "BuildConsoleText" needs to be exported by the entry point index.d.ts
+  getBuildConsoleText(options: {
+    entity: CompoundEntityRef;
+    jobFullName: string;
+    buildNumber: string;
+  }): Promise<BuildConsoleText>;
   // Warning: (ae-forgotten-export) The symbol "Job" needs to be exported by the entry point index.d.ts
   //
   // (undocumented)
@@ -90,6 +96,12 @@ export class JenkinsClient implements JenkinsApi {
     jobFullName: string;
     buildNumber: string;
   }): Promise<Build>;
+  // (undocumented)
+  getBuildConsoleText(options: {
+    entity: CompoundEntityRef;
+    jobFullName: string;
+    buildNumber: string;
+  }): Promise<BuildConsoleText>;
   // (undocumented)
   getJobBuilds(options: {
     entity: CompoundEntityRef;

@@ -16,6 +16,9 @@
 
 import { createPermission } from '@backstage/plugin-permission-common';
 
+/**
+ * @public
+ */
 export const topologyViewPermission = createPermission({
   name: 'topology.view.read',
   attributes: {
@@ -24,6 +27,7 @@ export const topologyViewPermission = createPermission({
 });
 
 /**
+ * @public
  * List of all permissions on permission polices.
  */
 export const topologyPermissions = [topologyViewPermission];

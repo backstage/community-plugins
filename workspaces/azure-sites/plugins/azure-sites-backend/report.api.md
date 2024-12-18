@@ -58,10 +58,10 @@ export class AzureSitesConfig {
 const azureSitesPlugin: BackendFeature;
 export default azureSitesPlugin;
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 export function createRouter(options: RouterOptions): Promise<express.Router>;
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 export interface RouterOptions {
   // (undocumented)
   auth?: AuthService;

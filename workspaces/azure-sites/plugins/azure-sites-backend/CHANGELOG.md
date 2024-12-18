@@ -1,5 +1,11 @@
 # @backstage-community/plugin-azure-sites-backend
 
+## 0.3.11
+
+### Patch Changes
+
+- 2101453: Deprecated `createRouter` and its router options in favour of the new backend system.
+
 ## 0.3.10
 
 ### Patch Changes

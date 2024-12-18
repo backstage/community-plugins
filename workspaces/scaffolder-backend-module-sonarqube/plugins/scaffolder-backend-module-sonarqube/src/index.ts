@@ -15,7 +15,7 @@
  */
 
 /**
- * The sonarqube module for @backstage/plugin-scaffolder-backend.
+ * The sonarqube module for \@backstage/plugin-scaffolder-backend.
  *
  * @packageDocumentation
  */

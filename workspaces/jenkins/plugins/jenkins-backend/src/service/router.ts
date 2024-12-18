@@ -38,7 +38,10 @@ import {
   LoggerService,
 } from '@backstage/backend-plugin-api';
 
-/** @public */
+/**
+ * @deprecated Please migrate to the new backend system as this will be removed in the future.
+ *
+ * @public */
 export interface RouterOptions {
   logger: LoggerService;
   jenkinsInfoProvider: JenkinsInfoProvider;
@@ -48,7 +51,10 @@ export interface RouterOptions {
   httpAuth?: HttpAuthService;
 }
 
-/** @public */
+/**
+ * @deprecated Please migrate to the new backend system as this will be removed in the future.
+ *
+ * @public */
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
@@ -208,6 +214,35 @@ export async function createRouter(
       response.json({}).status(status);
     },
   );
+
+  router.get(
+    '/v1/entity/:namespace/:kind/:name/job/:jobFullName/:buildNumber/consoleText',
+    async (request, response) => {
+      const { namespace, kind, name, jobFullName, buildNumber } =
+        request.params;
+
+      const jenkinsInfo = await jenkinsInfoProvider.getInstance({
+        entityRef: {
+          kind,
+          namespace,
+          name,
+        },
+        jobFullName,
+        credentials: await httpAuth.credentials(request),
+      });
+
+      const consoleText = await jenkinsApi.getBuildConsoleText(
+        jenkinsInfo,
+        jobFullName,
+        parseInt(buildNumber, 10),
+      );
+
+      response.json({
+        consoleText: consoleText,
+      });
+    },
+  );
+
   router.use(errorHandler());
   return router;
 }

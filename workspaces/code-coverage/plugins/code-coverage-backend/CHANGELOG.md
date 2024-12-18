@@ -1,5 +1,11 @@
 # @backstage-community/plugin-code-coverage-backend
 
+## 0.3.3
+
+### Patch Changes
+
+- 37bd870: Deprecated `createRouter` and its router options in favour of the new backend system.
+
 ## 0.3.2
 
 ### Patch Changes
