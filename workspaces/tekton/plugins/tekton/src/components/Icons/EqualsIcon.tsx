@@ -15,7 +15,7 @@
  */
 import * as React from 'react';
 
-import { global_palette_gold_400 as mediumColor } from '@patternfly/react-tokens/dist/js/global_palette_gold_400';
+import { t_color_yellow_40 as mediumColor } from '@patternfly/react-tokens/dist/js/t_color_yellow_40';
 
 const EqualsIcon = ({
   className,
