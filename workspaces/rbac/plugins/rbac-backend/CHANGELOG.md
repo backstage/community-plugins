@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 5.2.8
+
+### Patch Changes
+
+- 18f9d9d: Updated dependency `@types/node` to `18.19.68`.
+
 ## 5.2.7
 
 ### Patch Changes
