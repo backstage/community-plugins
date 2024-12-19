@@ -373,7 +373,6 @@ describe('fetch subgroups', () => {
       client,
       config,
       topLevelGroups23orHigher,
-      client.groups,
     );
 
     expect(groups).toHaveLength(3);

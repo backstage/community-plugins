@@ -153,8 +153,7 @@ export async function getEntities<T extends Users | Groups>(
 }
 
 async function getAllGroupMembers<T extends Groups>(
-  kcAdminClient: KeycloakAdminClient,
-  groups: T,
+  groupsAPI: () => Promise<T>,
   groupId: string,
   config: KeycloakProviderConfig,
   options?: { userQuerySize?: number },
@@ -166,7 +165,7 @@ async function getAllGroupMembers<T extends Groups>(
   let totalMembers = 0;
 
   do {
-    await ensureTokenValid(kcAdminClient, config);
+    const groups = await groupsAPI();
     const members = await groups.listMembers({
       id: groupId,
       max: querySize,
@@ -191,7 +190,6 @@ export async function processGroupsRecursively(
   kcAdminClient: KeycloakAdminClient,
   config: KeycloakProviderConfig,
   topLevelGroups: GroupRepresentationWithParent[],
-  entities: Groups,
 ) {
   const allGroups: GroupRepresentationWithParent[] = [];
   for (const group of topLevelGroups) {
@@ -199,7 +197,7 @@ export async function processGroupsRecursively(
 
     if (group.subGroupCount! > 0) {
       await ensureTokenValid(kcAdminClient, config);
-      const subgroups = await entities.listSubGroups({
+      const subgroups = await kcAdminClient.groups.listSubGroups({
         parentId: group.id!,
         first: 0,
         max: group.subGroupCount,
@@ -209,7 +207,6 @@ export async function processGroupsRecursively(
         kcAdminClient,
         config,
         subgroups,
-        entities,
       );
       allGroups.push(...subGroupResults);
     }
@@ -307,6 +304,7 @@ export const readKeycloakRealm = async (
     limit,
     options?.userQuerySize,
   );
+  logger.info(`Fetched ${kUsers.length} users from Keycloak`);
 
   const topLevelKGroups = (await getEntities(
     async () => {
@@ -318,6 +316,7 @@ export const readKeycloakRealm = async (
     limit,
     options?.groupQuerySize,
   )) as GroupRepresentationWithParent[];
+  logger.info(`Fetched ${topLevelKGroups.length} groups from Keycloak`);
 
   let serverVersion: number;
 
@@ -340,7 +339,6 @@ export const readKeycloakRealm = async (
       client,
       config,
       topLevelKGroups,
-      client.groups as Groups,
     );
   } else {
     rawKGroups = topLevelKGroups.reduce(
@@ -353,8 +351,10 @@ export const readKeycloakRealm = async (
     rawKGroups.map(g =>
       limit(async () => {
         g.members = await getAllGroupMembers(
-          client,
-          client.groups as Groups,
+          async () => {
+            await ensureTokenValid(client, config);
+            return client.groups as Groups;
+          },
           g.id!,
           config,
           options,
