@@ -44,6 +44,8 @@ const config: KeycloakProviderConfig = {
   realm: 'myrealm',
   id: 'mock_id',
   baseUrl: 'http://mock-url',
+  clientId: 'mock-client-id',
+  clientSecret: 'mock-client-secret',
 };
 
 const logger = mockServices.logger.mock();
@@ -293,7 +295,7 @@ describe('getEntitiesUser', () => {
       new KeycloakAdminClientMockServerv24() as unknown as KeycloakAdminClient;
 
     const users = await getEntities(
-      client.users,
+      async () => client.users,
       {
         id: '',
         baseUrl: '',
@@ -311,7 +313,7 @@ describe('getEntitiesUser', () => {
       new KeycloakAdminClientMockServerv18() as unknown as KeycloakAdminClient;
 
     const users = await getEntities(
-      client.users,
+      async () => client.users,
       {
         id: '',
         baseUrl: '',
@@ -329,7 +331,7 @@ describe('getEntitiesUser', () => {
       new KeycloakAdminClientMockServerv24() as unknown as KeycloakAdminClient;
 
     await getEntities(
-      client.users,
+      async () => client.users,
       {
         id: '',
         baseUrl: '',
@@ -348,7 +350,7 @@ describe('getEntitiesUser', () => {
       new KeycloakAdminClientMockServerv18() as unknown as KeycloakAdminClient;
 
     await getEntities(
-      client.users,
+      async () => client.users,
       {
         id: '',
         baseUrl: '',
@@ -368,9 +370,10 @@ describe('fetch subgroups', () => {
     const client =
       new KeycloakAdminClientMockServerv24() as unknown as KeycloakAdminClient;
     const groups = await processGroupsRecursively(
+      client,
+      config,
       topLevelGroups23orHigher,
       client.groups,
-      config.realm,
     );
 
     expect(groups).toHaveLength(3);

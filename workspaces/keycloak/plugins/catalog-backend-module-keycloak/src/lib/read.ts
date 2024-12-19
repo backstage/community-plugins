@@ -188,26 +188,28 @@ async function getAllGroupMembers<T extends Groups>(
 }
 
 export async function processGroupsRecursively(
+  kcAdminClient: KeycloakAdminClient,
+  config: KeycloakProviderConfig,
   topLevelGroups: GroupRepresentationWithParent[],
   entities: Groups,
-  realm: string,
 ) {
   const allGroups: GroupRepresentationWithParent[] = [];
   for (const group of topLevelGroups) {
     allGroups.push(group);
 
     if (group.subGroupCount! > 0) {
+      await ensureTokenValid(kcAdminClient, config);
       const subgroups = await entities.listSubGroups({
         parentId: group.id!,
         first: 0,
         max: group.subGroupCount,
         briefRepresentation: true,
-        realm,
       });
       const subGroupResults = await processGroupsRecursively(
+        kcAdminClient,
+        config,
         subgroups,
         entities,
-        realm,
       );
       allGroups.push(...subGroupResults);
     }
@@ -335,9 +337,10 @@ export const readKeycloakRealm = async (
 
   if (isVersion23orHigher) {
     rawKGroups = await processGroupsRecursively(
+      client,
+      config,
       topLevelKGroups,
       client.groups as Groups,
-      config.realm,
     );
   } else {
     rawKGroups = topLevelKGroups.reduce(
