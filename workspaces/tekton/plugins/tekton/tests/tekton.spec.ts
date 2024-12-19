@@ -140,7 +140,7 @@ test.describe('Tekton plugin', () => {
       await expect(card).toContainText('Enterprise Contract is a set of tools');
 
       // check the summary
-      const summary = card.locator('.pf-v5-c-card');
+      const summary = card.locator('.pf-v6-c-card');
       await expect(summary.getByText('Summary')).toBeVisible();
       await expect(summary.getByText('Failed')).toBeVisible();
       await expect(summary.getByText('Success')).toBeVisible();
@@ -297,7 +297,7 @@ async function checkCards(
   columns: string[],
 ) {
   // check the violations summary
-  const sections = base.locator('.pf-v5-c-card:visible');
+  const sections = base.locator('.pf-v6-c-card:visible');
   for (const item of sectionTitles) {
     await expect(sections.filter({ hasText: item })).toBeVisible();
   }
