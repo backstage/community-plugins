@@ -2743,7 +2743,7 @@ __metadata:
     "@backstage/backend-plugin-api": ^1.0.0
     "@backstage/cli": ^0.27.0
     "@backstage/errors": ^1.2.4
-    "@backstage/plugin-scaffolder-node": ^0.4.9
+    "@backstage/plugin-scaffolder-node": ^0.4.12
     cross-fetch: ^4.0.0
   languageName: unknown
   linkType: soft
@@ -4983,9 +4983,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-scaffolder-node@npm:^0.4.9":
-  version: 0.4.11
-  resolution: "@backstage/plugin-scaffolder-node@npm:0.4.11"
+"@backstage/plugin-scaffolder-node@npm:^0.4.12":
+  version: 0.4.12
+  resolution: "@backstage/plugin-scaffolder-node@npm:0.4.12"
   dependencies:
     "@backstage/backend-common": ^0.25.0
     "@backstage/backend-plugin-api": ^1.0.0
@@ -5004,7 +5004,7 @@ __metadata:
     winston: ^3.2.1
     zod: ^3.22.4
     zod-to-json-schema: ^3.20.4
-  checksum: cf5645e5edf6b76b89276a523817295affa6af4b8c4ce289cbebe0ec09c671e5f9baa53d1f992da07c34ee4b20b6a4a6e6c461361a774f68191be9a8e1a298ef
+  checksum: 1820b9c459bdb565ff0312cea58f2f4fa06031b46028cbc291ff8a9b61c338452219d690cd6c50cc9ba5ebae3a55f255bb8b7568250bfc55647072a0c1990784
   languageName: node
   linkType: hard
 
