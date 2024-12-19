@@ -85,6 +85,28 @@ permission:
 
 For more information on the available API endpoints accessible to the policy administrators, refer to the [API documentation](./docs/apis.md).
 
+### Configure plugins with permission
+
+In order for the RBAC UI to display available permissions provided by installed plugins, the corresponding
+plugin IDs must be added to the `app-config.yaml`.
+
+You can specify the plugins with permission in your application configuration as follows:
+
+```YAML
+permission:
+  enabled: true
+  rbac:
+    pluginsWithPermission:
+      - catalog
+      - scaffolder
+    admin:
+      users:
+        - name: user:default/alice
+        - name: group:default/admins
+```
+
+For more information on the available permissions within Showcase and RHDH, refer to the [permissions documentation](./docs/permissions.md).
+
 ### Configuring policies via file
 
 The RBAC plugin also allows you to import policies from an external file. These policies are defined in the [Casbin rules format](https://casbin.org/docs/category/the-basics), known for its simplicity and clarity. For a quick start, please refer to the format details in the provided link.
