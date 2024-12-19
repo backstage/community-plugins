@@ -42,7 +42,6 @@
   "dependencies": {
     "@backstage-community/plugin-explore-common": "workspace:^",
     "@backstage-community/plugin-explore-node": "workspace:^",
-    "@backstage/backend-common": "^0.25.0",
     "@backstage/backend-plugin-api": "^1.0.1",
     "@backstage/config": "^1.2.0",
     "@backstage/types": "^1.1.1",
@@ -54,7 +53,7 @@
     "yn": "^4.0.0"
   },
   "devDependencies": {
-    "@backstage/backend-defaults": "^0.5.2",
+    "@backstage/backend-defaults": "^0.6.0",
     "@backstage/backend-test-utils": "^1.0.2",
     "@backstage/cli": "^0.28.0",
     "@backstage/plugin-auth-backend": "^0.23.1",
