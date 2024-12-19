@@ -104,3 +104,25 @@ permission:
      ```
 
    - Integrate the [`SignIn`](https://backstage.io/docs/auth/#sign-in-configuration) component to be able to sign-in to the Backstage instance.
+
+### Configure plugins with permission
+
+In order for the RBAC UI to display available permissions provided by installed plugins, the corresponding
+plugin IDs must be added to the `app-config.yaml`.
+
+You can specify the plugins with permission in your application configuration as follows:
+
+```YAML
+permission:
+  enabled: true
+  rbac:
+    admin:
+      users:
+        - name: user:default/alice
+        - name: group:default/admins
+    pluginsWithPermission:
+      - catalog
+      - scaffolder
+```
+
+For more information on the available permissions within Showcase and RHDH, refer to the [permissions documentation](../rbac-backend/docs/permissions.md).
