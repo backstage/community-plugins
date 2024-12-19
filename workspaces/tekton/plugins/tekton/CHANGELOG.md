@@ -1,5 +1,13 @@
 ### Dependencies
 
+## 3.16.5
+
+### Patch Changes
+
+- 350250c: Updated dependency `@testing-library/jest-dom` to `6.6.3`.
+- 18f9d9d: Updated dependency `@types/node` to `18.19.68`.
+- 4eef4d1: Updated dependency `@playwright/test` to `1.49.1`.
+
 ## 3.16.4
 
 ### Patch Changes
