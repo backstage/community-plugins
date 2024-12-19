@@ -94,6 +94,7 @@ export const useAdminsFromConfig = async (
     await enf.addGroupingPolicies(
       addedRoleMembers,
       getAdminRoleMetadata(),
+      undefined,
       trx,
     );
 
