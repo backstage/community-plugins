@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
-import { CVEEntityDetailsComponent } from '../CVEEntityDetailsComponent';
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
+import { useTheme } from '@material-ui/core/styles';
+
+import { CVEEntityDetailsComponent } from '../CVEEntityDetailsComponent';
+
 
 export const SecurityFindingsComponent = (data: Array<String>) => {
     const [dataRows, setDataRows] = useState([]);
     const [pending, setPending] = React.useState(true);
+    const theme = useTheme();
+    const isDarkMode = theme.palette.type === 'dark';
 
     const columns: [] = [
         { name: 'CVE', selector: row => row.row_data.cve, sortable: true, wrap: true, width: '140px', button: true, cell: row => (
@@ -123,12 +128,6 @@ export const SecurityFindingsComponent = (data: Array<String>) => {
         organizeData();
     }, []);
 
-    const [theme, setTheme] = useState('light');
-
-    useEffect(() => {
-        setTheme(window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light")
-    }, [theme]);
-
     return (
         <div>
             <DataTable
@@ -139,7 +138,7 @@ export const SecurityFindingsComponent = (data: Array<String>) => {
                 expandableRowsComponentProps={{"cveDetails": "CVE details", "entityDetails": "Entity details"}}
                 progressPending={pending}
                 sortIcon={<ArrowDownward />}
-                theme={theme}
+                theme={isDarkMode ? 'dark' : 'light'}
                 highlightOnHover
                 pagination
             />

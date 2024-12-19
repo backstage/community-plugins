@@ -31,7 +31,7 @@ export const queryACSData = (data: string) => {
             })
             .catch((_error) => {
                 setError(true)
-                console.error(`Error fetching ACS data for ${deploymentName}`);
+                console.error(`Error fetching ACS data for ${data?.serviceName}`);
             })
     }
 
