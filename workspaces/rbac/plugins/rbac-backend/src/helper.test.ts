@@ -24,6 +24,8 @@ import {
   policyToString,
   removeTheDifference,
   transformArrayToPolicy,
+  transformPolicyGroupToLowercase,
+  transformRolesGroupToLowercase,
   typedPoliciesToString,
   typedPolicyToString,
 } from './helper';
@@ -121,6 +123,63 @@ describe('helper.ts', () => {
       const expectedPolicy = ['user:default/some-user', 'role:default/dev'];
       expect(metadataStringToPolicy(policy)).toEqual(expectedPolicy);
     });
+  });
+
+  describe('transformPolicyGroupToLowercase', () => {
+    it.each([
+      [
+        ['g', 'user:default/TOM', 'role:default/CATALOG-USER'],
+        ['g', 'user:default/tom', 'role:default/CATALOG-USER'],
+      ],
+      [
+        ['g', 'group:default/Developers', 'role:default/CATALOG-USER'],
+        ['g', 'group:default/developers', 'role:default/CATALOG-USER'],
+      ],
+    ])('should convert group in %s to lowercase', (input, expected) => {
+      transformPolicyGroupToLowercase(input);
+      expect(input).toEqual(expected);
+    });
+
+    it('should not transform policy to lowercase', () => {
+      const policyArray = [
+        'p',
+        'role:default/CATALOG-USER',
+        'catalog-entity',
+        'read',
+        'allow',
+      ];
+      const expected = [...policyArray];
+      transformPolicyGroupToLowercase(policyArray);
+      expect(policyArray).toEqual(expected);
+    });
+
+    it('should handle invalid input', () => {
+      const policyArray = ['g'];
+      transformPolicyGroupToLowercase(policyArray);
+      expect(policyArray).toEqual(['g']);
+    });
+  });
+
+  describe('transformRolesGroupToLowercase', () => {
+    it('should convert users and groups in roles to lowercase', () => {
+      const roles = [
+        ['user:default/test', 'role:default/test-provider'],
+        ['group:default/Developers', 'role:default/Reader'],
+      ];
+      const expectedRoles = [
+        ['user:default/test', 'role:default/test-provider'],
+        ['group:default/developers', 'role:default/Reader'],
+      ];
+      expect(transformRolesGroupToLowercase(roles)).toEqual(expectedRoles);
+    });
+
+    it.each([[[['user:default/test']]], [[[]]]])(
+      'should handle invalid input %d',
+      input => {
+        const result = transformRolesGroupToLowercase(input);
+        expect(result).toEqual(input);
+      },
+    );
   });
 
   describe('removeTheDifference', () => {
