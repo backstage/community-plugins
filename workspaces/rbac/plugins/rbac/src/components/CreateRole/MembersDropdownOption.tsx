@@ -17,6 +17,8 @@ import React from 'react';
 
 import { AutocompleteRenderOptionState } from '@mui/material/Autocomplete';
 import Typography from '@mui/material/Typography';
+import Checkbox from '@mui/material/Checkbox';
+import Box from '@mui/material/Box';
 import match from 'autosuggest-highlight/match';
 import parse from 'autosuggest-highlight/parse';
 
@@ -48,22 +50,30 @@ export const MembersDropdownOption = ({
         alignItems: 'flex-start',
       }}
     >
-      <Typography component="span">
-        {parts.map(part => (
-          <Typography
-            key={`${part.text}-${etag}`}
-            component="span"
-            sx={{
-              fontWeight: part.highlight ? 400 : 700,
-              color: theme => theme.palette.text.primary,
-            }}
-            data-testid={option.label}
-          >
-            {part.text}
-          </Typography>
-        ))}
-      </Typography>
-      <Typography sx={{ color: theme => theme.palette.text.secondary }}>
+      <Box sx={{ display: 'flex' }}>
+        <Checkbox style={{ marginRight: 8 }} checked={state.selected} />
+        <Typography component="span" sx={{ marginTop: '0.5rem' }}>
+          {parts.map(part => (
+            <Typography
+              key={`${part.text}-${etag}`}
+              component="span"
+              sx={{
+                fontWeight: part.highlight ? 400 : 700,
+                color: theme => theme.palette.text.primary,
+              }}
+              data-testid={option.label}
+            >
+              {part.text}
+            </Typography>
+          ))}
+        </Typography>
+      </Box>
+      <Typography
+        sx={{
+          color: theme => theme.palette.text.secondary,
+          marginLeft: '50px',
+        }}
+      >
         {option.description}
       </Typography>{' '}
     </li>
