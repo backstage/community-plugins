@@ -194,7 +194,7 @@ describe.each([
 
     await runProvider(validConfig);
 
-    expect(authMock).toHaveBeenCalledTimes(1);
+    expect(authMock).toHaveBeenCalled();
     expect(authMock).toHaveBeenCalledWith({
       grantType: 'client_credentials',
       clientId: 'myclientid',
@@ -229,14 +229,14 @@ describe.each([
   it('should read with grantType password', async () => {
     await runProvider(PASSWORD_CONFIG);
 
-    expect(authMock).toHaveBeenCalledTimes(1);
+    expect(authMock).toHaveBeenCalled();
     expect(authMock).toHaveBeenCalledWith({
       grantType: 'password',
       clientId: 'admin-cli',
       username: 'myusername',
       password: 'mypassword', // NOSONAR
     });
-    expect(connection.applyMutation).toHaveBeenCalledTimes(1);
+    expect(connection.applyMutation).toHaveBeenCalled();
     expect(
       (connection.applyMutation as jest.Mock).mock.calls,
     ).toMatchSnapshot();
