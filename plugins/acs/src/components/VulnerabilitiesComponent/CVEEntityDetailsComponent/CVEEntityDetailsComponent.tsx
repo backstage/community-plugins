@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
+import { useTheme } from '@material-ui/core/styles';
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 
+
 export const CVEEntityDetailsComponent: React.FC<Props> = ({ data, cveDetails, entityDetails }) => {
     const [dataRows, setDataRows] = useState([]);
+    const theme = useTheme();
+    const isDarkMode = theme.palette.type === 'dark';
 
     const columns: [] = [
         { name: 'Image', selector: row => row.image, sortable: true, wrap: true, grow: 2 },
@@ -67,7 +71,7 @@ export const CVEEntityDetailsComponent: React.FC<Props> = ({ data, cveDetails, e
                     <DataTable
                         data={dataRows}
                         columns={columns}
-                        theme="dark"
+                        theme={isDarkMode ? 'dark' : 'light'}
                     />
                 </Box>
             </div>
