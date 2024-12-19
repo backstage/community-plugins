@@ -122,6 +122,12 @@ export class KeycloakOrgEntityProvider implements EntityProvider {
   private connection?: EntityProviderConnection;
   private scheduleFn?: () => Promise<void>;
 
+  /**
+   * Static builder method to create multiple KeycloakOrgEntityProvider instances from a single config.
+   * @param deps - The dependencies required for the provider, including the configuration and logger.
+   * @param options - Options for scheduling tasks and transforming users and groups.
+   * @returns An array of KeycloakOrgEntityProvider instances.
+   */
   static fromConfig(
     deps: {
       config: Config;
@@ -178,10 +184,17 @@ export class KeycloakOrgEntityProvider implements EntityProvider {
     this.schedule(options.taskRunner);
   }
 
+  /**
+   * Returns the name of this entity provider.
+   */
   getProviderName(): string {
     return `KeycloakOrgEntityProvider:${this.options.id}`;
   }
 
+  /**
+   * Connect to Backstage catalog entity provider
+   * @param connection - The connection to the catalog API ingestor, which allows the provision of new entities.
+   */
   async connect(connection: EntityProviderConnection) {
     this.connection = connection;
     await this.scheduleFn?.();
@@ -267,6 +280,10 @@ export class KeycloakOrgEntityProvider implements EntityProvider {
     markCommitComplete();
   }
 
+  /**
+   * Periodically schedules a task to read Keycloak user and group information, parse it, and provision it to the Backstage catalog.
+   * @param taskRunner - The task runner to use for scheduling tasks.
+   */
   schedule(taskRunner: SchedulerServiceTaskRunner) {
     this.scheduleFn = async () => {
       const id = `${this.getProviderName()}:refresh`;
