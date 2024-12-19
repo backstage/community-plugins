@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.10.5
+
+### Patch Changes
+
+- 3d5311f: Updated dependency `@redhat-developer/red-hat-developer-hub-theme` to `0.4.0`.
+
 ## 1.10.4
 
 ### Patch Changes
