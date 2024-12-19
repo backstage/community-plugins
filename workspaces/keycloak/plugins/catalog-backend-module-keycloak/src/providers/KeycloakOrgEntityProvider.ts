@@ -253,6 +253,9 @@ export class KeycloakOrgEntityProvider implements EntityProvider {
 
     const { markCommitComplete } = markReadComplete({ users, groups });
 
+    this.options.logger.info(
+      'Committing Keycloak users and groups to catalog API',
+    );
     await this.connection.applyMutation({
       type: 'full',
       entities: [...users, ...groups].map(entity => ({
