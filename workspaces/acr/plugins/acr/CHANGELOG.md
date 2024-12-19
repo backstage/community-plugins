@@ -1,5 +1,12 @@
 ### Dependencies
 
+## 1.8.7
+
+### Patch Changes
+
+- 350250c: Updated dependency `@testing-library/jest-dom` to `6.6.3`.
+- 18f9d9d: Updated dependency `@types/node` to `18.19.68`.
+
 ## 1.8.6
 
 ### Patch Changes
