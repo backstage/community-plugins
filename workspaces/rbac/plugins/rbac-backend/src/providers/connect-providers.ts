@@ -67,6 +67,7 @@ export class Connection implements RBACProviderConnection {
 
     const providerRoles = await this.getProviderRoles();
 
+    await this.enforcer.loadPolicy();
     // Get the roles for this provider coming from rbac plugin
     for (const providerRole of providerRoles) {
       providerRolesforRemoval.push(
@@ -95,6 +96,7 @@ export class Connection implements RBACProviderConnection {
 
     const providerRoles = await this.getProviderRoles();
 
+    await this.enforcer.loadPolicy();
     // Get the roles for this provider coming from rbac plugin
     for (const providerRole of providerRoles) {
       providerPermissions.push(

@@ -25,6 +25,11 @@ import {
 } from '../database/role-metadata';
 import { mergeRoleMetadata, policiesToString, policyToString } from '../helper';
 import { MODEL } from './permission-model';
+import { AuditLogger } from '@janus-idp/backstage-plugin-audit-log-node';
+import {
+  FETCH_NEWER_PERMISSIONS_STAGE,
+  PolisiesData,
+} from '../audit-log/audit-logger';
 
 export type RoleEvents = 'roleAdded';
 export interface RoleEventEmitter<T extends RoleEvents> {
@@ -38,11 +43,62 @@ type EventMap = {
 export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
   private readonly roleEventEmitter = new EventEmitter<EventMap>();
 
+  private loadPolicyPromise: Promise<void> | null = null;
+  private semaphore: number = 0;
+  private editOperationsQueue: Promise<void>[] = []; // Queue to track edit operations
+
   constructor(
     private readonly enforcer: Enforcer,
+    private readonly auditLogger: AuditLogger,
     private readonly roleMetadataStorage: RoleMetadataStorage,
     private readonly knex: Knex,
   ) {}
+
+  async loadPolicy(): Promise<void> {
+    if (this.loadPolicyPromise) {
+      // If a load operation is already in progress, return the cached promise
+      return this.loadPolicyPromise;
+    }
+
+    // Increment semaphore to block edits during load
+    this.semaphore++;
+
+    this.loadPolicyPromise = (async () => {
+      try {
+        await this.waitForEditOperationsToFinish();
+
+        await this.enforcer.loadPolicy();
+      } catch (err) {
+        this.auditLogger.auditLog({
+          message: 'Failed to load newer policies from database',
+          eventName: PolisiesData.FAILED_TO_FETCH_NEWER_PERMISSIONS,
+          stage: FETCH_NEWER_PERMISSIONS_STAGE,
+          status: 'failed',
+          errors: [err],
+        });
+      } finally {
+        this.semaphore--;
+        this.loadPolicyPromise = null;
+      }
+    })();
+
+    return this.loadPolicyPromise;
+  }
+
+  private async waitForEditOperationsToFinish(): Promise<void> {
+    await Promise.all(this.editOperationsQueue);
+  }
+
+  async execEditOperation(operation: Promise<void>): Promise<void> {
+    this.editOperationsQueue.push(operation);
+
+    await operation;
+
+    const index = this.editOperationsQueue.indexOf(operation);
+    if (index !== -1) {
+      this.editOperationsQueue.splice(index, 1);
+    }
+  }
 
   on(event: RoleEvents, listener: (role: string) => void): this {
     this.roleEventEmitter.on(event, listener);
@@ -174,28 +230,35 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
     policies: string[][],
     externalTrx?: Knex.Transaction,
   ): Promise<void> {
-    if (policies.length === 0) {
-      return;
+    if (this.loadPolicyPromise) {
+      await this.loadPolicyPromise;
     }
 
-    const trx = externalTrx || (await this.knex.transaction());
+    const addPoliciesOperation = (async () => {
+      if (policies.length === 0) {
+        return;
+      }
 
-    try {
-      const ok = await this.enforcer.addPolicies(policies);
-      if (!ok) {
-        throw new Error(
-          `Failed to store policies ${policiesToString(policies)}`,
-        );
+      const trx = externalTrx || (await this.knex.transaction());
+
+      try {
+        const ok = await this.enforcer.addPolicies(policies);
+        if (!ok) {
+          throw new Error(
+            `Failed to store policies ${policiesToString(policies)}`,
+          );
+        }
+        if (!externalTrx) {
+          await trx.commit();
+        }
+      } catch (err) {
+        if (!externalTrx) {
+          await trx.rollback(err);
+        }
+        throw err;
       }
-      if (!externalTrx) {
-        await trx.commit();
-      }
-    } catch (err) {
-      if (!externalTrx) {
-        await trx.rollback(err);
-      }
-      throw err;
-    }
+    })();
+    await this.execEditOperation(addPoliciesOperation);
   }
 
   async addGroupingPolicy(
@@ -203,50 +266,57 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
     roleMetadata: RoleMetadataDao,
     externalTrx?: Knex.Transaction,
   ): Promise<void> {
-    const trx = externalTrx ?? (await this.knex.transaction());
-    const entityRef = roleMetadata.roleEntityRef;
-
-    if (await this.hasGroupingPolicy(...policy)) {
-      return;
+    if (this.loadPolicyPromise) {
+      await this.loadPolicyPromise;
     }
-    try {
-      let currentMetadata;
-      if (entityRef.startsWith(`role:`)) {
-        currentMetadata = await this.roleMetadataStorage.findRoleMetadata(
-          entityRef,
-          trx,
-        );
-      }
 
-      if (currentMetadata) {
-        await this.roleMetadataStorage.updateRoleMetadata(
-          mergeRoleMetadata(currentMetadata, roleMetadata),
-          entityRef,
-          trx,
-        );
-      } else {
-        const currentDate: Date = new Date();
-        roleMetadata.createdAt = currentDate.toUTCString();
-        roleMetadata.lastModified = currentDate.toUTCString();
-        await this.roleMetadataStorage.createRoleMetadata(roleMetadata, trx);
-      }
+    const addGroupingPolicyOperation = (async () => {
+      const trx = externalTrx ?? (await this.knex.transaction());
+      const entityRef = roleMetadata.roleEntityRef;
 
-      const ok = await this.enforcer.addGroupingPolicy(...policy);
-      if (!ok) {
-        throw new Error(`failed to create policy ${policyToString(policy)}`);
+      if (await this.hasGroupingPolicy(...policy)) {
+        return;
       }
-      if (!externalTrx) {
-        await trx.commit();
+      try {
+        let currentMetadata;
+        if (entityRef.startsWith(`role:`)) {
+          currentMetadata = await this.roleMetadataStorage.findRoleMetadata(
+            entityRef,
+            trx,
+          );
+        }
+
+        if (currentMetadata) {
+          await this.roleMetadataStorage.updateRoleMetadata(
+            mergeRoleMetadata(currentMetadata, roleMetadata),
+            entityRef,
+            trx,
+          );
+        } else {
+          const currentDate: Date = new Date();
+          roleMetadata.createdAt = currentDate.toUTCString();
+          roleMetadata.lastModified = currentDate.toUTCString();
+          await this.roleMetadataStorage.createRoleMetadata(roleMetadata, trx);
+        }
+
+        const ok = await this.enforcer.addGroupingPolicy(...policy);
+        if (!ok) {
+          throw new Error(`failed to create policy ${policyToString(policy)}`);
+        }
+        if (!externalTrx) {
+          await trx.commit();
+        }
+        if (!currentMetadata) {
+          this.roleEventEmitter.emit('roleAdded', roleMetadata.roleEntityRef);
+        }
+      } catch (err) {
+        if (!externalTrx) {
+          await trx.rollback(err);
+        }
+        throw err;
       }
-      if (!currentMetadata) {
-        this.roleEventEmitter.emit('roleAdded', roleMetadata.roleEntityRef);
-      }
-    } catch (err) {
-      if (!externalTrx) {
-        await trx.rollback(err);
-      }
-      throw err;
-    }
+    })();
+    await this.execEditOperation(addGroupingPolicyOperation);
   }
 
   async addGroupingPolicies(
@@ -254,50 +324,53 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
     roleMetadata: RoleMetadataDao,
     externalTrx?: Knex.Transaction,
   ): Promise<void> {
-    if (policies.length === 0) {
-      return;
+    if (this.loadPolicyPromise) {
+      await this.loadPolicyPromise;
     }
 
-    const trx = externalTrx ?? (await this.knex.transaction());
+    const addGroupingPoliciesOperation = (async () => {
+      const trx = externalTrx ?? (await this.knex.transaction());
 
-    try {
-      const currentRoleMetadata =
-        await this.roleMetadataStorage.findRoleMetadata(
-          roleMetadata.roleEntityRef,
-          trx,
-        );
-      if (currentRoleMetadata) {
-        await this.roleMetadataStorage.updateRoleMetadata(
-          mergeRoleMetadata(currentRoleMetadata, roleMetadata),
-          roleMetadata.roleEntityRef,
-          trx,
-        );
-      } else {
-        const currentDate: Date = new Date();
-        roleMetadata.createdAt = currentDate.toUTCString();
-        roleMetadata.lastModified = currentDate.toUTCString();
-        await this.roleMetadataStorage.createRoleMetadata(roleMetadata, trx);
-      }
+      try {
+        const currentRoleMetadata =
+          await this.roleMetadataStorage.findRoleMetadata(
+            roleMetadata.roleEntityRef,
+            trx,
+          );
+        if (currentRoleMetadata) {
+          await this.roleMetadataStorage.updateRoleMetadata(
+            mergeRoleMetadata(currentRoleMetadata, roleMetadata),
+            roleMetadata.roleEntityRef,
+            trx,
+          );
+        } else {
+          const currentDate: Date = new Date();
+          roleMetadata.createdAt = currentDate.toUTCString();
+          roleMetadata.lastModified = currentDate.toUTCString();
+          await this.roleMetadataStorage.createRoleMetadata(roleMetadata, trx);
+        }
 
-      const ok = await this.enforcer.addGroupingPolicies(policies);
-      if (!ok) {
-        throw new Error(
-          `Failed to store policies ${policiesToString(policies)}`,
-        );
-      }
+        const ok = await this.enforcer.addGroupingPolicies(policies);
+        if (!ok) {
+          throw new Error(
+            `Failed to store policies ${policiesToString(policies)}`,
+          );
+        }
 
-      if (!externalTrx) {
-        await trx.commit();
+        if (!externalTrx) {
+          await trx.commit();
+        }
+        if (!currentRoleMetadata) {
+          this.roleEventEmitter.emit('roleAdded', roleMetadata.roleEntityRef);
+        }
+      } catch (err) {
+        if (!externalTrx) {
+          await trx.rollback(err);
+        }
+        throw err;
       }
-      if (!currentRoleMetadata) {
-        this.roleEventEmitter.emit('roleAdded', roleMetadata.roleEntityRef);
-      }
-    } catch (err) {
-      if (!externalTrx) {
-        await trx.rollback(err);
-      }
-      throw err;
-    }
+    })();
+    await this.execEditOperation(addGroupingPoliciesOperation);
   }
 
   async updateGroupingPolicies(
@@ -305,85 +378,124 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
     newRole: string[][],
     newRoleMetadata: RoleMetadataDao,
   ): Promise<void> {
-    const oldRoleName = oldRole.at(0)?.at(1)!;
-
-    const trx = await this.knex.transaction();
-    try {
-      const currentMetadata = await this.roleMetadataStorage.findRoleMetadata(
-        oldRoleName,
-        trx,
-      );
-      if (!currentMetadata) {
-        throw new Error(`Role metadata ${oldRoleName} was not found`);
-      }
-
-      await this.removeGroupingPolicies(oldRole, currentMetadata, true, trx);
-      await this.addGroupingPolicies(newRole, newRoleMetadata, trx);
-      await trx.commit();
-    } catch (err) {
-      await trx.rollback(err);
-      throw err;
+    if (this.loadPolicyPromise) {
+      await this.loadPolicyPromise;
     }
+
+    const updateGroupingPoliciesOperation = (async () => {
+      const oldRoleName = oldRole.at(0)?.at(1)!;
+
+      const trx = await this.knex.transaction();
+      try {
+        const currentMetadata = await this.roleMetadataStorage.findRoleMetadata(
+          oldRoleName,
+          trx,
+        );
+        if (!currentMetadata) {
+          throw new Error(`Role metadata ${oldRoleName} was not found`);
+        }
+
+        for (let i = 0; i < oldRole.length; i++) {
+          const oldPolicy = oldRole[i];
+          const newPolicy = newRole[i];
+          await this.enforcer.updateGroupingPolicy(oldPolicy, newPolicy);
+          await this.roleMetadataStorage.updateRoleMetadata(
+            mergeRoleMetadata(currentMetadata, newRoleMetadata),
+            oldRoleName,
+            trx,
+          );
+        }
+        await trx.commit();
+      } catch (err) {
+        await trx.rollback(err);
+        throw err;
+      }
+    })();
+    await this.execEditOperation(updateGroupingPoliciesOperation);
   }
 
   async updatePolicies(
     oldPolicies: string[][],
     newPolicies: string[][],
   ): Promise<void> {
-    const trx = await this.knex.transaction();
-
-    try {
-      await this.removePolicies(oldPolicies, trx);
-      await this.addPolicies(newPolicies, trx);
-      await trx.commit();
-    } catch (err) {
-      await trx.rollback(err);
-      throw err;
+    if (this.loadPolicyPromise) {
+      await this.loadPolicyPromise;
     }
+
+    const updatePoliciesOperation = (async () => {
+      const trx = await this.knex.transaction();
+
+      try {
+        for (let i = 0; i < oldPolicies.length; i++) {
+          const oldPolicy = oldPolicies[i];
+          const newPolicy = newPolicies[i];
+          await this.enforcer.updatePolicy(oldPolicy, newPolicy);
+        }
+        await trx.commit();
+      } catch (err) {
+        await trx.rollback(err);
+        throw err;
+      }
+    })();
+    await this.execEditOperation(updatePoliciesOperation);
   }
 
   async removePolicy(policy: string[], externalTrx?: Knex.Transaction) {
-    const trx = externalTrx ?? (await this.knex.transaction());
-
-    try {
-      const ok = await this.enforcer.removePolicy(...policy);
-      if (!ok) {
-        throw new Error(`fail to delete policy ${policy}`);
-      }
-      if (!externalTrx) {
-        await trx.commit();
-      }
-    } catch (err) {
-      if (!externalTrx) {
-        await trx.rollback(err);
-      }
-      throw err;
+    if (this.loadPolicyPromise) {
+      await this.loadPolicyPromise;
     }
+
+    const removePolicyOperation = (async () => {
+      const trx = externalTrx ?? (await this.knex.transaction());
+
+      try {
+        const ok = await this.enforcer.removePolicy(...policy);
+        if (!ok) {
+          throw new Error(`fail to delete policy ${policy}`);
+        }
+        if (!externalTrx) {
+          await trx.commit();
+        }
+      } catch (err) {
+        if (!externalTrx) {
+          await trx.rollback(err);
+        }
+        throw err;
+      }
+    })();
+    await this.execEditOperation(removePolicyOperation);
   }
 
   async removePolicies(
     policies: string[][],
     externalTrx?: Knex.Transaction,
   ): Promise<void> {
-    const trx = externalTrx ?? (await this.knex.transaction());
-
-    try {
-      const ok = await this.enforcer.removePolicies(policies);
-      if (!ok) {
-        throw new Error(
-          `Failed to delete policies ${policiesToString(policies)}`,
-        );
-      }
-
-      if (!externalTrx) {
-        await trx.commit();
-      }
-    } catch (err) {
-      if (!externalTrx) {
-        await trx.rollback(err);
-      }
-      throw err;
+    if (this.loadPolicyPromise) {
+      await this.loadPolicyPromise;
     }
+
+    const removePoliciesOperation = (async () => {
+      const trx = externalTrx ?? (await this.knex.transaction());
+
+      try {
+        const ok = await this.enforcer.removePolicies(policies);
+        if (!ok) {
+          throw new Error(
+            `Failed to delete policies ${policiesToString(policies)}`,
+          );
+        }
+
+        if (!externalTrx) {
+          await trx.commit();
+        }
+      } catch (err) {
+        if (!externalTrx) {
+          await trx.rollback(err);
+        }
+        throw err;
+      }
+    })();
+    await this.execEditOperation(removePoliciesOperation);
   }
 
   async removeGroupingPolicy(
@@ -392,46 +504,53 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
     isUpdate?: boolean,
     externalTrx?: Knex.Transaction,
   ): Promise<void> {
-    const trx = externalTrx ?? (await this.knex.transaction());
-    const roleEntity = policy[1];
-
-    try {
-      const ok = await this.enforcer.removeGroupingPolicy(...policy);
-      if (!ok) {
-        throw new Error(`Failed to delete policy ${policyToString(policy)}`);
-      }
-
-      if (!isUpdate) {
-        const currentRoleMetadata =
-          await this.roleMetadataStorage.findRoleMetadata(roleEntity, trx);
-        const remainingGroupPolicies = await this.getFilteredGroupingPolicy(
-          1,
-          roleEntity,
-        );
-        if (
-          currentRoleMetadata &&
-          remainingGroupPolicies.length === 0 &&
-          roleEntity !== ADMIN_ROLE_NAME
-        ) {
-          await this.roleMetadataStorage.removeRoleMetadata(roleEntity, trx);
-        } else if (currentRoleMetadata) {
-          await this.roleMetadataStorage.updateRoleMetadata(
-            mergeRoleMetadata(currentRoleMetadata, roleMetadata),
-            roleEntity,
-            trx,
-          );
-        }
-      }
-
-      if (!externalTrx) {
-        await trx.commit();
-      }
-    } catch (err) {
-      if (!externalTrx) {
-        await trx.rollback(err);
-      }
-      throw err;
+    if (this.loadPolicyPromise) {
+      await this.loadPolicyPromise;
     }
+
+    const removeGroupingPolicyOperation = (async () => {
+      const trx = externalTrx ?? (await this.knex.transaction());
+      const roleEntity = policy[1];
+
+      try {
+        const ok = await this.enforcer.removeGroupingPolicy(...policy);
+        if (!ok) {
+          throw new Error(`Failed to delete policy ${policyToString(policy)}`);
+        }
+
+        if (!isUpdate) {
+          const currentRoleMetadata =
+            await this.roleMetadataStorage.findRoleMetadata(roleEntity, trx);
+          const remainingGroupPolicies = await this.getFilteredGroupingPolicy(
+            1,
+            roleEntity,
+          );
+          if (
+            currentRoleMetadata &&
+            remainingGroupPolicies.length === 0 &&
+            roleEntity !== ADMIN_ROLE_NAME
+          ) {
+            await this.roleMetadataStorage.removeRoleMetadata(roleEntity, trx);
+          } else if (currentRoleMetadata) {
+            await this.roleMetadataStorage.updateRoleMetadata(
+              mergeRoleMetadata(currentRoleMetadata, roleMetadata),
+              roleEntity,
+              trx,
+            );
+          }
+        }
+
+        if (!externalTrx) {
+          await trx.commit();
+        }
+      } catch (err) {
+        if (!externalTrx) {
+          await trx.rollback(err);
+        }
+        throw err;
+      }
+    })();
+    await this.execEditOperation(removeGroupingPolicyOperation);
   }
 
   async removeGroupingPolicies(
@@ -440,48 +559,56 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
     isUpdate?: boolean,
     externalTrx?: Knex.Transaction,
   ): Promise<void> {
-    const trx = externalTrx ?? (await this.knex.transaction());
+    if (this.loadPolicyPromise) {
+      await this.loadPolicyPromise;
+    }
 
-    const roleEntity = roleMetadata.roleEntityRef;
-    try {
-      const ok = await this.enforcer.removeGroupingPolicies(policies);
-      if (!ok) {
-        throw new Error(
-          `Failed to delete grouping policies: ${policiesToString(policies)}`,
-        );
-      }
+    const removeGroupingPolicyOperation = (async () => {
+      const trx = externalTrx ?? (await this.knex.transaction());
+      const roleEntity = roleMetadata.roleEntityRef;
 
-      if (!isUpdate) {
-        const currentRoleMetadata =
-          await this.roleMetadataStorage.findRoleMetadata(roleEntity, trx);
-        const remainingGroupPolicies = await this.getFilteredGroupingPolicy(
-          1,
-          roleEntity,
-        );
-        if (
-          currentRoleMetadata &&
-          remainingGroupPolicies.length === 0 &&
-          roleEntity !== ADMIN_ROLE_NAME
-        ) {
-          await this.roleMetadataStorage.removeRoleMetadata(roleEntity, trx);
-        } else if (currentRoleMetadata) {
-          await this.roleMetadataStorage.updateRoleMetadata(
-            mergeRoleMetadata(currentRoleMetadata, roleMetadata),
-            roleEntity,
-            trx,
+      try {
+        const ok = await this.enforcer.removeGroupingPolicies(policies);
+        if (!ok) {
+          throw new Error(
+            `Failed to delete grouping policies: ${policiesToString(policies)}`,
           );
         }
-      }
 
-      if (!externalTrx) {
-        await trx.commit();
+        if (!isUpdate) {
+          const currentRoleMetadata =
+            await this.roleMetadataStorage.findRoleMetadata(roleEntity, trx);
+          const remainingGroupPolicies = await this.getFilteredGroupingPolicy(
+            1,
+            roleEntity,
+          );
+
+          if (
+            currentRoleMetadata &&
+            remainingGroupPolicies.length === 0 &&
+            roleEntity !== ADMIN_ROLE_NAME
+          ) {
+            await this.roleMetadataStorage.removeRoleMetadata(roleEntity, trx);
+          } else if (currentRoleMetadata) {
+            await this.roleMetadataStorage.updateRoleMetadata(
+              mergeRoleMetadata(currentRoleMetadata, roleMetadata),
+              roleEntity,
+              trx,
+            );
+          }
+        }
+
+        if (!externalTrx) {
+          await trx.commit();
+        }
+      } catch (err) {
+        if (!externalTrx) {
+          await trx.rollback(err);
+        }
+        throw err;
       }
-    } catch (err) {
-      if (!externalTrx) {
-        await trx.rollback(err);
-      }
-      throw err;
-    }
+    })();
+    await this.execEditOperation(removeGroupingPolicyOperation);
   }
 
   /**
