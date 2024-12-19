@@ -1,5 +1,12 @@
 ### Dependencies
 
+## 1.14.7
+
+### Patch Changes
+
+- 18f9d9d: Updated dependency `@types/node` to `18.19.68`.
+- 4eef4d1: Updated dependency `@playwright/test` to `1.49.1`.
+
 ## 1.14.6
 
 ### Patch Changes
