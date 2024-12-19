@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 2.2.3
+
+### Patch Changes
+
+- 40e2594: Updated dependency `msw` to `1.3.5`.
+
 ## 2.2.2
 
 ### Patch Changes
