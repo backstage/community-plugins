@@ -22,6 +22,7 @@ import type GroupRepresentation from '@keycloak/keycloak-admin-client/lib/defs/g
 import type UserRepresentation from '@keycloak/keycloak-admin-client/lib/defs/userRepresentation';
 import type { Groups } from '@keycloak/keycloak-admin-client/lib/resources/groups';
 import type { Users } from '@keycloak/keycloak-admin-client/lib/resources/users';
+import { LimitFunction } from 'p-limit';
 
 import { KeycloakProviderConfig } from './config';
 import {
@@ -37,6 +38,8 @@ import {
   UserRepresentationWithEntity,
   UserTransformer,
 } from './types';
+import { Credentials } from '@keycloak/keycloak-admin-client/lib/utils/auth';
+import { InputError } from '@backstage/errors';
 
 export const parseGroup = async (
   keycloakGroup: GroupRepresentationWithParent,
@@ -108,30 +111,38 @@ export const parseUser = async (
 };
 
 export async function getEntities<T extends Users | Groups>(
-  entities: T,
+  getEntitiesFn: () => Promise<T>,
   config: KeycloakProviderConfig,
   logger: LoggerService,
+  limit: LimitFunction,
   entityQuerySize: number = KEYCLOAK_ENTITY_QUERY_SIZE,
 ): Promise<Awaited<ReturnType<T['find']>>> {
-  const rawEntityCount = await entities.count({ realm: config.realm });
+  const entitiesAPI = await getEntitiesFn();
+  const rawEntityCount = await entitiesAPI.count({ realm: config.realm });
   const entityCount =
     typeof rawEntityCount === 'number' ? rawEntityCount : rawEntityCount.count;
 
   const pageCount = Math.ceil(entityCount / entityQuerySize);
 
   // The next line acts like range in python
-  const entityPromises = Array.from(
-    { length: pageCount },
-    (_, i) =>
-      entities
-        .find({
-          realm: config.realm,
-          max: entityQuerySize,
-          first: i * entityQuerySize,
-        })
-        .catch(err =>
-          logger.warn('Failed to retieve Keycloak entities.', err),
-        ) as ReturnType<T['find']>,
+  const entityPromises = Array.from({ length: pageCount }, (_, i) =>
+    limit(() =>
+      getEntitiesFn().then(entities => {
+        return entities
+          .find({
+            realm: config.realm,
+            max: entityQuerySize,
+            first: i * entityQuerySize,
+          })
+          .then(ents => {
+            console.log(`index ${i} from ${pageCount}`);
+            return ents;
+          })
+          .catch(err =>
+            logger.warn('Failed to retieve Keycloak entities.', err),
+          ) as ReturnType<T['find']>;
+      }),
+    ),
   );
 
   const entityResults = (await Promise.all(entityPromises)).flat() as Awaited<
@@ -142,7 +153,7 @@ export async function getEntities<T extends Users | Groups>(
 }
 
 async function getAllGroupMembers<T extends Groups>(
-  groups: T,
+  groupsAPI: () => Promise<T>,
   groupId: string,
   config: KeycloakProviderConfig,
   options?: { userQuerySize?: number },
@@ -154,6 +165,7 @@ async function getAllGroupMembers<T extends Groups>(
   let totalMembers = 0;
 
   do {
+    const groups = await groupsAPI();
     const members = await groups.listMembers({
       id: groupId,
       max: querySize,
@@ -175,26 +187,26 @@ async function getAllGroupMembers<T extends Groups>(
 }
 
 export async function processGroupsRecursively(
+  kcAdminClient: KeycloakAdminClient,
+  config: KeycloakProviderConfig,
   topLevelGroups: GroupRepresentationWithParent[],
-  entities: Groups,
-  realm: string,
 ) {
   const allGroups: GroupRepresentationWithParent[] = [];
   for (const group of topLevelGroups) {
     allGroups.push(group);
 
     if (group.subGroupCount! > 0) {
-      const subgroups = await entities.listSubGroups({
+      await ensureTokenValid(kcAdminClient, config);
+      const subgroups = await kcAdminClient.groups.listSubGroups({
         parentId: group.id!,
         first: 0,
         max: group.subGroupCount,
         briefRepresentation: true,
-        realm,
       });
       const subGroupResults = await processGroupsRecursively(
+        kcAdminClient,
+        config,
         subgroups,
-        entities,
-        realm,
       );
       allGroups.push(...subGroupResults);
     }
@@ -213,10 +225,65 @@ export function* traverseGroups(
   }
 }
 
+// update token with refresh token.
+async function ensureTokenValid(
+  kcAdminClient: KeycloakAdminClient,
+  provider: KeycloakProviderConfig,
+) {
+  if (!kcAdminClient.accessToken) {
+    await authenticate(kcAdminClient, provider);
+  } else {
+    const tokenData = JSON.parse(
+      Buffer.from(kcAdminClient.accessToken.split('.')[1], 'base64').toString(),
+    );
+
+    const tokenExpiry = tokenData.exp * 1000; // Convert to milliseconds
+    const now = Date.now();
+
+    // update token with refresh token.
+    if (now > tokenExpiry - 30000) {
+      await authenticate(kcAdminClient, provider);
+    }
+  }
+}
+
+async function authenticate(
+  kcAdminClient: KeycloakAdminClient,
+  provider: KeycloakProviderConfig,
+) {
+  try {
+    let credentials: Credentials;
+    if (provider.username && provider.password) {
+      credentials = {
+        grantType: 'password',
+        clientId: provider.clientId ?? 'admin-cli',
+        username: provider.username,
+        password: provider.password,
+      };
+    } else if (provider.clientId && provider.clientSecret) {
+      credentials = {
+        grantType: 'client_credentials',
+        clientId: provider.clientId,
+        clientSecret: provider.clientSecret,
+      };
+    } else {
+      throw new InputError(
+        `username and password or clientId and clientSecret must be provided.`,
+      );
+    }
+    await kcAdminClient.auth(credentials);
+    console.log('Authenticated successfully');
+  } catch (error) {
+    console.error('Failed to authenticate', error);
+    throw error;
+  }
+}
+
 export const readKeycloakRealm = async (
   client: KeycloakAdminClient,
   config: KeycloakProviderConfig,
   logger: LoggerService,
+  limit: LimitFunction,
   options?: {
     userQuerySize?: number;
     groupQuerySize?: number;
@@ -228,18 +295,28 @@ export const readKeycloakRealm = async (
   groups: GroupEntity[];
 }> => {
   const kUsers = await getEntities(
-    client.users,
+    async () => {
+      await ensureTokenValid(client, config);
+      return client.users;
+    },
     config,
     logger,
+    limit,
     options?.userQuerySize,
   );
+  logger.info(`Fetched ${kUsers.length} users from Keycloak`);
 
   const topLevelKGroups = (await getEntities(
-    client.groups,
+    async () => {
+      await ensureTokenValid(client, config);
+      return client.groups;
+    },
     config,
     logger,
+    limit,
     options?.groupQuerySize,
   )) as GroupRepresentationWithParent[];
+  logger.info(`Fetched ${topLevelKGroups.length} groups from Keycloak`);
 
   let serverVersion: number;
 
@@ -259,9 +336,9 @@ export const readKeycloakRealm = async (
 
   if (isVersion23orHigher) {
     rawKGroups = await processGroupsRecursively(
+      client,
+      config,
       topLevelKGroups,
-      client.groups as Groups,
-      config.realm,
     );
   } else {
     rawKGroups = topLevelKGroups.reduce(
@@ -269,65 +346,83 @@ export const readKeycloakRealm = async (
       [] as GroupRepresentationWithParent[],
     );
   }
+
   const kGroups = await Promise.all(
-    rawKGroups.map(async g => {
-      g.members = await getAllGroupMembers(
-        client.groups as Groups,
-        g.id!,
-        config,
-        options,
-      );
+    rawKGroups.map(g =>
+      limit(async () => {
+        g.members = await getAllGroupMembers(
+          async () => {
+            await ensureTokenValid(client, config);
+            return client.groups as Groups;
+          },
+          g.id!,
+          config,
+          options,
+        );
 
-      if (isVersion23orHigher) {
-        if (g.subGroupCount! > 0) {
-          g.subGroups = await client.groups.listSubGroups({
-            parentId: g.id!,
-            first: 0,
-            max: g.subGroupCount,
-            briefRepresentation: false,
-            realm: config.realm,
-          });
+        if (isVersion23orHigher) {
+          if (g.subGroupCount! > 0) {
+            await ensureTokenValid(client, config);
+            g.subGroups = await client.groups.listSubGroups({
+              parentId: g.id!,
+              first: 0,
+              max: g.subGroupCount,
+              briefRepresentation: false,
+              realm: config.realm,
+            });
+          }
+          if (g.parentId) {
+            await ensureTokenValid(client, config);
+            const groupParent = await client.groups.findOne({
+              id: g.parentId,
+              realm: config.realm,
+            });
+            g.parent = groupParent?.name;
+          }
         }
-        if (g.parentId) {
-          const groupParent = await client.groups.findOne({
-            id: g.parentId,
-            realm: config.realm,
-          });
-          g.parent = groupParent?.name;
-        }
-      }
 
-      return g;
-    }),
+        return g;
+      }),
+    ),
   );
 
-  const parsedGroups = await kGroups.reduce(async (promise, g) => {
-    const partial = await promise;
-    const entity = await parseGroup(g, config.realm, options?.groupTransformer);
-    if (entity) {
-      const group = {
-        ...g,
-        entity,
-      } as GroupRepresentationWithParentAndEntity;
-      partial.push(group);
-    }
-    return partial;
-  }, Promise.resolve([] as GroupRepresentationWithParentAndEntity[]));
+  const parsedGroups = await kGroups.reduce(
+    async (promise, g) => {
+      const partial = await promise;
+      const entity = await parseGroup(
+        g,
+        config.realm,
+        options?.groupTransformer,
+      );
+      if (entity) {
+        const group = {
+          ...g,
+          entity,
+        } as GroupRepresentationWithParentAndEntity;
+        partial.push(group);
+      }
+      return partial;
+    },
+    Promise.resolve([] as GroupRepresentationWithParentAndEntity[]),
+  );
 
-  const parsedUsers = await kUsers.reduce(async (promise, u) => {
-    const partial = await promise;
-    const entity = await parseUser(
-      u,
-      config.realm,
-      parsedGroups,
-      options?.userTransformer,
-    );
-    if (entity) {
-      const user = { ...u, entity } as UserRepresentationWithEntity;
-      partial.push(user);
-    }
-    return partial;
-  }, Promise.resolve([] as UserRepresentationWithEntity[]));
+  const parsedUsers = await kUsers.reduce(
+    async (promise, u) => {
+      const partial = await promise;
+      const entity = await parseUser(
+        u,
+        config.realm,
+        parsedGroups,
+        options?.userTransformer,
+      );
+      if (entity) {
+        const user = { ...u, entity } as UserRepresentationWithEntity;
+        partial.push(user);
+      }
+      return partial;
+    },
+    Promise.resolve([] as UserRepresentationWithEntity[]),
+  );
 
   const groups = parsedGroups.map(g => {
     const entity = g.entity;
@@ -348,6 +443,10 @@ export const readKeycloakRealm = async (
     )?.entity.metadata.name;
     return entity;
   });
+
+  logger.info(
+    `Fetched and parsed ${parsedUsers.length} users and ${groups.length} groups from Keycloak`,
+  );
 
   return { users: parsedUsers.map(u => u.entity), groups };
 };
