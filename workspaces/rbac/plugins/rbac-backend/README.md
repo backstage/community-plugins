@@ -99,6 +99,7 @@ permission:
     pluginsWithPermission:
       - catalog
       - scaffolder
+      - permission
     admin:
       users:
         - name: user:default/alice
