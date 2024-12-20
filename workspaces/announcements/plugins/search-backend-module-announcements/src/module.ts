@@ -56,8 +56,8 @@ export const searchModuleAnnouncementsCollator = createBackendModule({
 
         const schedule = config.has('search.collators.announcements.schedule')
           ? readSchedulerServiceTaskScheduleDefinitionFromConfig(
-            config.getConfig('search.collators.announcements.schedule'),
-          )
+              config.getConfig('search.collators.announcements.schedule'),
+            )
           : defaultSchedule;
 
         indexRegistry.addCollator({
