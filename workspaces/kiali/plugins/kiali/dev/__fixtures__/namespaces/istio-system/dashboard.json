@@ -1,0 +1,347 @@
+{
+  "name": "",
+  "title": "Inbound Metrics",
+  "charts": [
+    {
+      "name": "Request volume",
+      "unit": "ops",
+      "spans": 3,
+      "startCollapsed": false,
+      "metrics": [
+        {
+          "labels": {
+            "source_canonical_service": "productpage",
+            "source_workload_namespace": "bookinfo"
+          },
+          "datapoints": [
+            [1710323970, "1"],
+            [1710324000, "1"],
+            [1710324030, "1"],
+            [1710324060, "1.0000666711114075"],
+            [1710324090, "0.9999333377774815"],
+            [1710324120, "1"],
+            [1710324150, "1"],
+            [1710324180, "0.9999333377774815"],
+            [1710324210, "0.9999333377774815"],
+            [1710324240, "1.0000666711114075"],
+            [1710324270, "1.0000666711114075"],
+            [1710324300, "1"],
+            [1710324330, "1"],
+            [1710324360, "1"],
+            [1710324390, "1.0000666711114075"],
+            [1710324420, "1"],
+            [1710324450, "1.0000666711114075"],
+            [1710324480, "0.9999333377774815"],
+            [1710324510, "1.0000666711114075"],
+            [1710324540, "1"],
+            [1710324570, "0.9999333377774815"]
+          ],
+          "name": "request_count"
+        }
+      ],
+      "xAxis": null,
+      "error": ""
+    },
+    {
+      "name": "Request duration",
+      "unit": "seconds",
+      "spans": 3,
+      "startCollapsed": false,
+      "metrics": [
+        {
+          "labels": {
+            "source_canonical_service": "productpage",
+            "source_workload_namespace": "bookinfo"
+          },
+          "datapoints": [
+            [1710323970, "0.0004166666666666667"],
+            [1710324000, "0.00006999999999970897"],
+            [1710324030, "0.00014000000000014551"],
+            [1710324060, "0.00014000000000014554"],
+            [1710324090, "0.0002099999999998545"],
+            [1710324120, "0.00006999999999995149"],
+            [1710324150, "0.00020999999999985448"],
+            [1710324180, "0.00006999999999995149"],
+            [1710324210, "0.000489999999999903"],
+            [1710324240, "0.0005600000000000971"],
+            [1710324270, "0.00028000000000004855"],
+            [1710324300, "0.000210000000000097"],
+            [1710324330, "0.0004900000000001455"],
+            [1710324360, "0.00006999999999995149"],
+            [1710324390, "0.00006999999999995149"],
+            [1710324420, "0.0003466666666667152"],
+            [1710324450, "0.00021000000000009702"],
+            [1710324480, "0.000560000000000097"],
+            [1710324510, "0.0005600000000000971"],
+            [1710324540, "0.00048666666666637566"],
+            [1710324570, "0.0005928571428573509"]
+          ],
+          "stat": "avg",
+          "name": "request_duration_millis"
+        }
+      ],
+      "xAxis": null,
+      "error": ""
+    },
+    {
+      "name": "Request size",
+      "unit": "bytes",
+      "spans": 3,
+      "startCollapsed": false,
+      "metrics": [
+        {
+          "labels": {
+            "source_canonical_service": "productpage",
+            "source_workload_namespace": "bookinfo"
+          },
+          "datapoints": [
+            [1710323970, "1250"],
+            [1710324000, "1250"],
+            [1710324030, "1250"],
+            [1710324060, "1250"],
+            [1710324090, "1249.9999999999998"],
+            [1710324120, "1250"],
+            [1710324150, "1250"],
+            [1710324180, "1249.9999999999998"],
+            [1710324210, "1249.9999999999998"],
+            [1710324240, "1250"],
+            [1710324270, "1250"],
+            [1710324300, "1250"],
+            [1710324330, "1250"],
+            [1710324360, "1250"],
+            [1710324390, "1250"],
+            [1710324420, "1250"],
+            [1710324450, "1250"],
+            [1710324480, "1249.9999999999998"],
+            [1710324510, "1250"],
+            [1710324540, "1250"],
+            [1710324570, "1250"]
+          ],
+          "stat": "avg",
+          "name": "request_size"
+        }
+      ],
+      "xAxis": null,
+      "error": ""
+    },
+    {
+      "name": "Response size",
+      "unit": "bytes",
+      "spans": 3,
+      "startCollapsed": false,
+      "metrics": [
+        {
+          "labels": {
+            "source_canonical_service": "productpage",
+            "source_workload_namespace": "bookinfo"
+          },
+          "datapoints": [
+            [1710323970, "1150"],
+            [1710324000, "1150"],
+            [1710324030, "1150"],
+            [1710324060, "1150"],
+            [1710324090, "1149.9999999999998"],
+            [1710324120, "1150"],
+            [1710324150, "1150"],
+            [1710324180, "1149.9999999999998"],
+            [1710324210, "1149.9999999999998"],
+            [1710324240, "1150"],
+            [1710324270, "1150"],
+            [1710324300, "1150"],
+            [1710324330, "1150"],
+            [1710324360, "1150"],
+            [1710324390, "1150"],
+            [1710324420, "1150"],
+            [1710324450, "1150"],
+            [1710324480, "1149.9999999999998"],
+            [1710324510, "1150"],
+            [1710324540, "1150"],
+            [1710324570, "1150"]
+          ],
+          "stat": "avg",
+          "name": "response_size"
+        }
+      ],
+      "xAxis": null,
+      "error": ""
+    },
+    {
+      "name": "Request throughput",
+      "unit": "bitrate",
+      "spans": 3,
+      "startCollapsed": false,
+      "metrics": [
+        {
+          "labels": {
+            "source_canonical_service": "productpage",
+            "source_workload_namespace": "bookinfo"
+          },
+          "datapoints": [
+            [1710323970, "10000"],
+            [1710324000, "10000"],
+            [1710324030, "10000"],
+            [1710324060, "10000.666711114074"],
+            [1710324090, "9999.333377774814"],
+            [1710324120, "10000"],
+            [1710324150, "10000"],
+            [1710324180, "9999.333377774814"],
+            [1710324210, "9999.333377774814"],
+            [1710324240, "10000.666711114074"],
+            [1710324270, "10000.666711114074"],
+            [1710324300, "10000"],
+            [1710324330, "10000"],
+            [1710324360, "10000"],
+            [1710324390, "10000.666711114074"],
+            [1710324420, "10000"],
+            [1710324450, "10000.666711114074"],
+            [1710324480, "9999.333377774814"],
+            [1710324510, "10000.666711114074"],
+            [1710324540, "10000"],
+            [1710324570, "9332.711152589827"]
+          ],
+          "name": "request_throughput"
+        }
+      ],
+      "xAxis": null,
+      "error": ""
+    },
+    {
+      "name": "Response throughput",
+      "unit": "bitrate",
+      "spans": 3,
+      "startCollapsed": false,
+      "metrics": [
+        {
+          "labels": {
+            "source_canonical_service": "productpage",
+            "source_workload_namespace": "bookinfo"
+          },
+          "datapoints": [
+            [1710323970, "9200"],
+            [1710324000, "9200"],
+            [1710324030, "9200"],
+            [1710324060, "9200.61337422495"],
+            [1710324090, "9199.386707552829"],
+            [1710324120, "9200"],
+            [1710324150, "9200"],
+            [1710324180, "9199.386707552829"],
+            [1710324210, "9199.386707552829"],
+            [1710324240, "9200.61337422495"],
+            [1710324270, "9200.61337422495"],
+            [1710324300, "9200"],
+            [1710324330, "9200"],
+            [1710324360, "9200"],
+            [1710324390, "9200.61337422495"],
+            [1710324420, "9200"],
+            [1710324450, "9200.61337422495"],
+            [1710324480, "9199.386707552829"],
+            [1710324510, "9200.61337422495"],
+            [1710324540, "9200"],
+            [1710324570, "8586.09426038264"]
+          ],
+          "name": "response_throughput"
+        }
+      ],
+      "xAxis": null,
+      "error": ""
+    },
+    {
+      "name": "gRPC received",
+      "unit": "msgrate",
+      "spans": 3,
+      "startCollapsed": false,
+      "metrics": [],
+      "xAxis": null,
+      "error": ""
+    },
+    {
+      "name": "gRPC sent",
+      "unit": "msgrate",
+      "spans": 3,
+      "startCollapsed": false,
+      "metrics": [],
+      "xAxis": null,
+      "error": ""
+    },
+    {
+      "name": "TCP opened",
+      "unit": "connrate",
+      "spans": 3,
+      "startCollapsed": false,
+      "metrics": [],
+      "xAxis": null,
+      "error": ""
+    },
+    {
+      "name": "TCP closed",
+      "unit": "connrate",
+      "spans": 3,
+      "startCollapsed": false,
+      "metrics": [],
+      "xAxis": null,
+      "error": ""
+    },
+    {
+      "name": "TCP received",
+      "unit": "bitrate",
+      "spans": 3,
+      "startCollapsed": false,
+      "metrics": [],
+      "xAxis": null,
+      "error": ""
+    },
+    {
+      "name": "TCP sent",
+      "unit": "bitrate",
+      "spans": 3,
+      "startCollapsed": false,
+      "metrics": [],
+      "xAxis": null,
+      "error": ""
+    }
+  ],
+  "aggregations": [
+    {
+      "label": "destination_canonical_revision",
+      "displayName": "Local version",
+      "singleSelection": false
+    },
+    {
+      "label": "source_workload_namespace",
+      "displayName": "Remote namespace",
+      "singleSelection": false
+    },
+    {
+      "label": "source_canonical_service",
+      "displayName": "Remote app",
+      "singleSelection": false
+    },
+    {
+      "label": "source_canonical_revision",
+      "displayName": "Remote version",
+      "singleSelection": false
+    },
+    {
+      "label": "response_code",
+      "displayName": "Response code",
+      "singleSelection": false
+    },
+    {
+      "label": "grpc_response_status",
+      "displayName": "GRPC status",
+      "singleSelection": false
+    },
+    {
+      "label": "response_flags",
+      "displayName": "Response flags",
+      "singleSelection": false
+    },
+    {
+      "label": "connection_security_policy",
+      "displayName": "Connection Security Policy",
+      "singleSelection": false
+    }
+  ],
+  "externalLinks": null,
+  "rows": 3
+}
