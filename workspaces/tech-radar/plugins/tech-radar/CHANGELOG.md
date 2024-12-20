@@ -1,5 +1,11 @@
 # @backstage-community/plugin-tech-radar
 
+## 1.0.1
+
+### Patch Changes
+
+- 188a7a5: Updated dependency `@types/color` to `^4.0.0`.
+
 ## 1.0.0
 
 ### Major Changes
