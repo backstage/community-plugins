@@ -15,21 +15,41 @@
  */
 import { createPermission } from '@backstage/plugin-permission-common';
 
+/**
+ * Permission to create new announcements
+ *
+ * @public
+ */
 export const announcementCreatePermission = createPermission({
   name: 'announcement.entity.create',
   attributes: { action: 'create' },
 });
 
+/**
+ * Permission to delete announcements
+ *
+ * @public
+ */
 export const announcementDeletePermission = createPermission({
   name: 'announcement.entity.delete',
   attributes: { action: 'delete' },
 });
 
+/**
+ * Permission to update announcements
+ *
+ * @public
+ */
 export const announcementUpdatePermission = createPermission({
   name: 'announcement.entity.update',
   attributes: { action: 'update' },
 });
 
+/**
+ * Collection of all announcement-related permissions
+ *
+ * @public
+ */
 export const announcementEntityPermissions = {
   announcementCreatePermission,
   announcementDeletePermission,
