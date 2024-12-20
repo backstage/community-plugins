@@ -6,6 +6,9 @@
     "node": "18 || 20"
   },
   "scripts": {
+    "start:backstage": "concurrently -c auto -n \"fe,be\" -p \"{name}:{pid}\" \"yarn start-app\" \"yarn start-backend\"",
+    "start-app": "yarn workspace app start",
+    "start-backend": "yarn workspace backend start",
     "tsc": "tsc",
     "tsc:full": "tsc --skipLibCheck true --incremental false",
     "build:all": "backstage-cli repo build --all",
@@ -18,6 +21,7 @@
     "lint": "backstage-cli repo lint --since origin/main",
     "lint:all": "backstage-cli repo lint",
     "prettier:check": "prettier --check .",
+    "prettier:write": "prettier --write .",
     "new": "backstage-cli new --scope @backstage-community",
     "postinstall": "cd ../../ && yarn install"
   },
@@ -37,14 +41,18 @@
     "@backstage/e2e-test-utils": "^0.1.1",
     "@backstage/repo-tools": "^0.10.0",
     "@changesets/cli": "^2.27.1",
+    "@ianvs/prettier-plugin-sort-imports": "^4.3.1",
     "@spotify/prettier-config": "^12.0.0",
+    "@types/deep-freeze": "^0.1.5",
+    "concurrently": "^8.2.2",
     "knip": "^5.27.4",
     "node-gyp": "^9.0.0",
     "prettier": "^2.3.2",
     "typescript": "~5.3.0"
   },
   "dependencies": {
-    "@ianvs/prettier-plugin-sort-imports": "^4.3.1"
+    "@backstage-community/plugin-kiali": "workspace:^",
+    "@backstage-community/plugin-kiali-backend": "workspace:^"
   },
   "resolutions": {
     "@types/react": "^18",

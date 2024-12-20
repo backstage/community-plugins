@@ -1,0 +1,63 @@
+{
+  "namespace": {
+    "name": "istio-system",
+    "cluster": "Kubernetes",
+    "isAmbient": false,
+    "labels": {
+      "kubernetes.io/metadata.name": "istio-system",
+      "topology.istio.io/network": ""
+    },
+    "annotations": null
+  },
+  "name": "istio-egressgateway",
+  "cluster": "Kubernetes",
+  "workloads": [
+    {
+      "workloadName": "istio-egressgateway",
+      "istioSidecar": false,
+      "istioAmbient": false,
+      "labels": {
+        "app": "istio-egressgateway",
+        "chart": "gateways",
+        "heritage": "Tiller",
+        "install.operator.istio.io/owning-resource": "unknown",
+        "istio": "egressgateway",
+        "istio.io/rev": "default",
+        "operator.istio.io/component": "EgressGateways",
+        "release": "istio",
+        "service.istio.io/canonical-name": "istio-egressgateway",
+        "service.istio.io/canonical-revision": "latest",
+        "sidecar.istio.io/inject": "false"
+      },
+      "serviceAccountNames": ["istio-egressgateway-service-account"]
+    }
+  ],
+  "serviceNames": ["istio-egressgateway"],
+  "runtimes": [
+    {
+      "name": "",
+      "dashboardRefs": [
+        {
+          "template": "envoy",
+          "title": "Envoy Metrics"
+        }
+      ]
+    }
+  ],
+  "health": {
+    "workloadStatuses": [
+      {
+        "name": "istio-egressgateway",
+        "desiredReplicas": 1,
+        "currentReplicas": 1,
+        "availableReplicas": 1,
+        "syncedProxies": -1
+      }
+    ],
+    "requests": {
+      "inbound": {},
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  }
+}

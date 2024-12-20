@@ -1,0 +1,201 @@
+{
+  "namespace": {
+    "name": "travel-agency",
+    "cluster": "",
+    "isAmbient": false,
+    "labels": null,
+    "annotations": null
+  },
+  "cluster": "",
+  "applications": [
+    {
+      "name": "insurances",
+      "cluster": "Kubernetes",
+      "istioSidecar": true,
+      "istioAmbient": false,
+      "labels": {
+        "app": "insurances",
+        "version": "v1"
+      },
+      "istioReferences": [],
+      "health": {
+        "workloadStatuses": [
+          {
+            "name": "insurances-v1",
+            "desiredReplicas": 1,
+            "currentReplicas": 1,
+            "availableReplicas": 1,
+            "syncedProxies": 1
+          }
+        ],
+        "requests": {
+          "inbound": {},
+          "outbound": {},
+          "healthAnnotations": {}
+        }
+      }
+    },
+    {
+      "name": "mysqldb",
+      "cluster": "Kubernetes",
+      "istioSidecar": true,
+      "istioAmbient": false,
+      "labels": {
+        "app": "mysqldb",
+        "version": "v1"
+      },
+      "istioReferences": [],
+      "health": {
+        "workloadStatuses": [
+          {
+            "name": "mysqldb-v1",
+            "desiredReplicas": 1,
+            "currentReplicas": 1,
+            "availableReplicas": 1,
+            "syncedProxies": 1
+          }
+        ],
+        "requests": {
+          "inbound": {},
+          "outbound": {},
+          "healthAnnotations": {}
+        }
+      }
+    },
+    {
+      "name": "travels",
+      "cluster": "Kubernetes",
+      "istioSidecar": true,
+      "istioAmbient": false,
+      "labels": {
+        "app": "travels",
+        "version": "v1"
+      },
+      "istioReferences": [],
+      "health": {
+        "workloadStatuses": [
+          {
+            "name": "travels-v1",
+            "desiredReplicas": 1,
+            "currentReplicas": 1,
+            "availableReplicas": 1,
+            "syncedProxies": 1
+          }
+        ],
+        "requests": {
+          "inbound": {},
+          "outbound": {},
+          "healthAnnotations": {}
+        }
+      }
+    },
+    {
+      "name": "cars",
+      "cluster": "Kubernetes",
+      "istioSidecar": true,
+      "istioAmbient": false,
+      "labels": {
+        "app": "cars",
+        "version": "v1"
+      },
+      "istioReferences": [],
+      "health": {
+        "workloadStatuses": [
+          {
+            "name": "cars-v1",
+            "desiredReplicas": 1,
+            "currentReplicas": 1,
+            "availableReplicas": 1,
+            "syncedProxies": 1
+          }
+        ],
+        "requests": {
+          "inbound": {},
+          "outbound": {},
+          "healthAnnotations": {}
+        }
+      }
+    },
+    {
+      "name": "discounts",
+      "cluster": "Kubernetes",
+      "istioSidecar": true,
+      "istioAmbient": false,
+      "labels": {
+        "app": "discounts",
+        "version": "v1"
+      },
+      "istioReferences": [],
+      "health": {
+        "workloadStatuses": [
+          {
+            "name": "discounts-v1",
+            "desiredReplicas": 1,
+            "currentReplicas": 1,
+            "availableReplicas": 1,
+            "syncedProxies": 1
+          }
+        ],
+        "requests": {
+          "inbound": {},
+          "outbound": {},
+          "healthAnnotations": {}
+        }
+      }
+    },
+    {
+      "name": "flights",
+      "cluster": "Kubernetes",
+      "istioSidecar": true,
+      "istioAmbient": false,
+      "labels": {
+        "app": "flights",
+        "version": "v1"
+      },
+      "istioReferences": [],
+      "health": {
+        "workloadStatuses": [
+          {
+            "name": "flights-v1",
+            "desiredReplicas": 1,
+            "currentReplicas": 1,
+            "availableReplicas": 1,
+            "syncedProxies": 1
+          }
+        ],
+        "requests": {
+          "inbound": {},
+          "outbound": {},
+          "healthAnnotations": {}
+        }
+      }
+    },
+    {
+      "name": "hotels",
+      "cluster": "Kubernetes",
+      "istioSidecar": true,
+      "istioAmbient": false,
+      "labels": {
+        "app": "hotels",
+        "version": "v1"
+      },
+      "istioReferences": [],
+      "health": {
+        "workloadStatuses": [
+          {
+            "name": "hotels-v1",
+            "desiredReplicas": 1,
+            "currentReplicas": 1,
+            "availableReplicas": 1,
+            "syncedProxies": 1
+          }
+        ],
+        "requests": {
+          "inbound": {},
+          "outbound": {},
+          "healthAnnotations": {}
+        }
+      }
+    }
+  ]
+}

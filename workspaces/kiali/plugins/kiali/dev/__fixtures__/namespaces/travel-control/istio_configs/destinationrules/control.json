@@ -1,0 +1,85 @@
+{
+  "namespace": {
+    "name": "travel-control",
+    "cluster": "",
+    "isAmbient": false,
+    "labels": null,
+    "annotations": null
+  },
+  "objectType": "destinationrules",
+  "authorizationPolicy": null,
+  "destinationRule": {
+    "kind": "DestinationRule",
+    "apiVersion": "networking.istio.io/v1beta1",
+    "metadata": {
+      "name": "control",
+      "namespace": "travel-control",
+      "uid": "a89f69da-5778-46be-b200-4085b6b4c356",
+      "resourceVersion": "811967",
+      "generation": 1,
+      "creationTimestamp": "2024-03-20T12:45:22Z",
+      "labels": {
+        "kiali_wizard": "request_routing"
+      },
+      "managedFields": [
+        {
+          "manager": "kiali",
+          "operation": "Update",
+          "apiVersion": "networking.istio.io/v1beta1",
+          "time": "2024-03-20T12:45:22Z",
+          "fieldsType": "FieldsV1",
+          "fieldsV1": {
+            "f:metadata": {
+              "f:labels": {
+                ".": {},
+                "f:kiali_wizard": {}
+              }
+            },
+            "f:spec": {
+              ".": {},
+              "f:host": {},
+              "f:subsets": {}
+            }
+          }
+        }
+      ]
+    },
+    "spec": {
+      "host": "control.travel-control.svc.cluster.local",
+      "subsets": [
+        {
+          "name": "v1",
+          "labels": {
+            "version": "v1"
+          }
+        }
+      ]
+    },
+    "status": {}
+  },
+  "envoyFilter": null,
+  "gateway": null,
+  "peerAuthentication": null,
+  "requestAuthentication": null,
+  "serviceEntry": null,
+  "sidecar": null,
+  "virtualService": null,
+  "workloadEntry": null,
+  "workloadGroup": null,
+  "wasmPlugin": null,
+  "telemetry": null,
+  "k8sGateway": null,
+  "k8sGRPCRoute": null,
+  "k8sHTTPRoute": null,
+  "k8sReferenceGrant": null,
+  "k8sTCPRoute": null,
+  "k8sTLSRoute": null,
+  "permissions": {
+    "create": true,
+    "update": true,
+    "delete": true
+  },
+  "validation": null,
+  "references": null,
+  "help": null
+}

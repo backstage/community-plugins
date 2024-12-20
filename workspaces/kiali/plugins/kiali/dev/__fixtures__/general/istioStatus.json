@@ -1,0 +1,7 @@
+[
+  { "name": "istiod-7548d4ff85-fj8tb", "status": "Healthy", "is_core": true },
+  { "name": "istiod-2", "status": "NotFound", "is_core": true },
+  { "name": "istiod-3", "status": "Unhealthy", "is_core": true },
+  { "name": "istiod-4", "status": "Unreachable", "is_core": true },
+  { "name": "istiod-5", "status": "NotReady", "is_core": true }
+]

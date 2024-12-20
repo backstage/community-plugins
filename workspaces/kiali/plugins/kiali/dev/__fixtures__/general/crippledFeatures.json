@@ -1,0 +1,11 @@
+{
+  "requestSize": false,
+  "requestSizeAverage": false,
+  "requestSizePercentiles": false,
+  "responseSize": false,
+  "responseSizeAverage": false,
+  "responseSizePercentiles": false,
+  "responseTime": false,
+  "responseTimeAverage": false,
+  "responseTimePercentiles": false
+}

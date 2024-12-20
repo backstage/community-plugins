@@ -1,0 +1,190 @@
+{
+  "name": "control",
+  "cluster": "Kubernetes",
+  "type": "Deployment",
+  "createdAt": "2024-02-16T11:27:39Z",
+  "resourceVersion": "56909",
+  "istioSidecar": true,
+  "istioAmbient": false,
+  "additionalDetailSample": null,
+  "labels": {
+    "app": "control",
+    "version": "v1"
+  },
+  "appLabel": true,
+  "versionLabel": true,
+  "podCount": 0,
+  "annotations": {
+    "deployment.kubernetes.io/revision": "1",
+    "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"apps/v1\",\"kind\":\"Deployment\",\"metadata\":{\"annotations\":{},\"name\":\"control\",\"namespace\":\"travel-control\"},\"spec\":{\"replicas\":1,\"selector\":{\"matchLabels\":{\"app\":\"control\",\"version\":\"v1\"}},\"template\":{\"metadata\":{\"annotations\":{\"readiness.status.sidecar.istio.io/applicationPorts\":\"\"},\"labels\":{\"app\":\"control\",\"version\":\"v1\"}},\"spec\":{\"containers\":[{\"env\":[{\"name\":\"PORTAL_SERVICES\",\"value\":\"voyages.fr;http://voyages.travel-portal:8000,viaggi.it;http://viaggi.travel-portal:8000,travels.uk;http://travels.travel-portal:8000\"}],\"image\":\"quay.io/kiali/demo_travels_control:v1\",\"imagePullPolicy\":\"IfNotPresent\",\"name\":\"control\",\"ports\":[{\"containerPort\":8080}],\"securityContext\":{\"allowPrivilegeEscalation\":false,\"capabilities\":{\"drop\":[\"ALL\"]},\"privileged\":false,\"readOnlyRootFilesystem\":true}}]}}}}\n"
+  },
+  "healthAnnotations": {},
+  "istioReferences": null,
+  "dashboardAnnotations": {},
+  "serviceAccountNames": null,
+  "desiredReplicas": 1,
+  "currentReplicas": 1,
+  "availableReplicas": 1,
+  "pods": [
+    {
+      "name": "control-746644dd7d-sqpw4",
+      "labels": {
+        "app": "control",
+        "pod-template-hash": "746644dd7d",
+        "security.istio.io/tlsMode": "istio",
+        "service.istio.io/canonical-name": "control",
+        "service.istio.io/canonical-revision": "v1",
+        "version": "v1"
+      },
+      "createdAt": "2024-02-16T11:27:39Z",
+      "createdBy": [
+        {
+          "name": "control-746644dd7d",
+          "kind": "ReplicaSet"
+        }
+      ],
+      "containers": [
+        {
+          "name": "control",
+          "image": "quay.io/kiali/demo_travels_control:v1",
+          "isProxy": false,
+          "isReady": true,
+          "isAmbient": false
+        }
+      ],
+      "istioContainers": [
+        {
+          "name": "istio-proxy",
+          "image": "gcr.io/istio-release/proxyv2:1.20.1",
+          "isProxy": true,
+          "isReady": true,
+          "isAmbient": false
+        }
+      ],
+      "istioInitContainers": [
+        {
+          "name": "istio-init",
+          "image": "gcr.io/istio-release/proxyv2:1.20.1",
+          "isProxy": true,
+          "isReady": true,
+          "isAmbient": false
+        }
+      ],
+      "status": "Running",
+      "statusMessage": "",
+      "statusReason": "",
+      "appLabel": true,
+      "versionLabel": true,
+      "annotations": {
+        "istio.io/rev": "default",
+        "kubectl.kubernetes.io/default-container": "control",
+        "kubectl.kubernetes.io/default-logs-container": "control",
+        "prometheus.io/path": "/stats/prometheus",
+        "prometheus.io/port": "15020",
+        "prometheus.io/scrape": "true",
+        "readiness.status.sidecar.istio.io/applicationPorts": "",
+        "sidecar.istio.io/status": "{\"initContainers\":[\"istio-init\"],\"containers\":[\"istio-proxy\"],\"volumes\":[\"workload-socket\",\"credential-socket\",\"workload-certs\",\"istio-envoy\",\"istio-data\",\"istio-podinfo\",\"istio-token\",\"istiod-ca-cert\"],\"imagePullSecrets\":null,\"revision\":\"default\"}"
+      },
+      "proxyStatus": {
+        "CDS": "Synced",
+        "EDS": "Synced",
+        "LDS": "Synced",
+        "RDS": "Synced"
+      },
+      "serviceAccountName": "default"
+    }
+  ],
+  "services": [
+    {
+      "name": "control",
+      "namespace": "travel-control",
+      "istioSidecar": true,
+      "cluster": "Kubernetes",
+      "istioAmbient": false,
+      "appLabel": true,
+      "additionalDetailSample": null,
+      "annotations": null,
+      "healthAnnotations": {},
+      "ports": null,
+      "labels": {
+        "app": "control"
+      },
+      "selector": {
+        "app": "control"
+      },
+      "istioReferences": [],
+      "kialiWizard": "",
+      "serviceRegistry": "Kubernetes",
+      "health": {
+        "requests": {
+          "inbound": {},
+          "outbound": {},
+          "healthAnnotations": {}
+        }
+      }
+    }
+  ],
+  "runtimes": [
+    {
+      "name": "",
+      "dashboardRefs": [
+        {
+          "template": "envoy",
+          "title": "Envoy Metrics"
+        }
+      ]
+    }
+  ],
+  "additionalDetails": [],
+  "validations": {
+    "gateway": {
+      "bookinfo-gateway.bookinfo": {
+        "name": "bookinfo-gateway",
+        "objectType": "gateway",
+        "valid": false,
+        "checks": [
+          {
+            "code": "KIA0302",
+            "message": "No matching workload found for gateway selector in this namespace",
+            "severity": "warning",
+            "path": "spec/selector"
+          }
+        ],
+        "references": null
+      }
+    },
+    "virtualservice": {
+      "bookinfo.bookinfo": {
+        "name": "bookinfo",
+        "objectType": "virtualservice",
+        "valid": true,
+        "checks": [],
+        "references": null
+      }
+    },
+    "workload": {
+      "control.travel-control": {
+        "name": "control",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      }
+    }
+  },
+  "waypointWorkloads": null,
+  "health": {
+    "workloadStatus": {
+      "name": "control",
+      "desiredReplicas": 1,
+      "currentReplicas": 1,
+      "availableReplicas": 1,
+      "syncedProxies": 1
+    },
+    "requests": {
+      "inbound": {},
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  }
+}

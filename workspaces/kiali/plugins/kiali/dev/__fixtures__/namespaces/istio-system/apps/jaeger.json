@@ -1,0 +1,54 @@
+{
+  "namespace": {
+    "name": "istio-system",
+    "cluster": "Kubernetes",
+    "isAmbient": false,
+    "labels": {
+      "kubernetes.io/metadata.name": "istio-system",
+      "topology.istio.io/network": ""
+    },
+    "annotations": null
+  },
+  "name": "jaeger",
+  "cluster": "Kubernetes",
+  "workloads": [
+    {
+      "workloadName": "jaeger",
+      "istioSidecar": false,
+      "istioAmbient": false,
+      "labels": {
+        "app": "jaeger",
+        "sidecar.istio.io/inject": "false"
+      },
+      "serviceAccountNames": ["default"]
+    }
+  ],
+  "serviceNames": ["tracing", "zipkin", "jaeger-collector"],
+  "runtimes": [
+    {
+      "name": "Go",
+      "dashboardRefs": [
+        {
+          "template": "go",
+          "title": "Go Metrics"
+        }
+      ]
+    }
+  ],
+  "health": {
+    "workloadStatuses": [
+      {
+        "name": "jaeger",
+        "desiredReplicas": 1,
+        "currentReplicas": 1,
+        "availableReplicas": 1,
+        "syncedProxies": -1
+      }
+    ],
+    "requests": {
+      "inbound": {},
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  }
+}

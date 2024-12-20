@@ -1,0 +1,100 @@
+/*
+ * Copyright 2024 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import { KialiAppAction } from '../actions/KialiAppAction';
+import { CertsInfo } from '../types/CertsInfo';
+import { RawDate, TimeRange, UserName } from '../types/Common';
+import { ComponentStatus } from '../types/IstioStatus';
+import { NotificationGroup } from '../types/MessageCenter';
+import { Namespace } from '../types/Namespace';
+import { StatusState } from '../types/StatusState';
+import { TLSStatus } from '../types/TLSStatus';
+import { JaegerTrace, TracingInfo } from '../types/TracingInfo';
+import { AlertUtils } from '../utils/Alertutils';
+
+export interface NamespaceState {
+  readonly activeNamespaces: Namespace[];
+  readonly filter: string;
+  readonly items?: Namespace[];
+  readonly isFetching: boolean;
+  readonly lastUpdated?: Date;
+  readonly namespacesPerCluster?: Map<string, string[]>;
+}
+
+export interface MessageCenterState {
+  nextId: number; // This likely will go away once we have persistence
+  groups: NotificationGroup[];
+  hidden: boolean;
+  expanded: boolean;
+  expandedGroupId?: string;
+}
+
+export enum LoginStatus {
+  logging,
+  loggedIn,
+  loggedOut,
+  error,
+  expired,
+}
+
+export interface LoginSession {
+  expiresOn: RawDate;
+  username: UserName;
+  kialiCookie: string;
+}
+
+export interface LoginState {
+  landingRoute?: string;
+  message: string;
+  session?: LoginSession;
+  status: LoginStatus;
+}
+
+export interface InterfaceSettings {
+  navCollapse: boolean;
+}
+
+export interface UserSettings {
+  duration: number;
+  interface: InterfaceSettings;
+  refreshInterval: number;
+  replayActive: boolean;
+  replayQueryTime: number;
+  timeRange: TimeRange;
+}
+
+export type TracingState = {
+  info?: TracingInfo;
+  selectedTrace?: JaegerTrace;
+};
+
+// This defines the Kiali Global Application State
+export interface KialiAppState {
+  // Global state === across multiple pages
+  // could also be session state
+  /** Page Settings */
+  authentication: LoginState;
+  istioStatus: ComponentStatus[];
+  istioCertsInfo: CertsInfo[];
+  messageCenter: MessageCenterState;
+  meshTLSStatus: TLSStatus;
+  namespaces: NamespaceState;
+  statusState: StatusState;
+  /** User Settings */
+  userSettings: UserSettings;
+  tracingState: TracingState;
+  dispatch: { [key: string]: React.Dispatch<KialiAppAction> };
+  alertUtils?: AlertUtils;
+}

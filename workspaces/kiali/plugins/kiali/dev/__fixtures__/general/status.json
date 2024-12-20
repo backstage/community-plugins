@@ -1,0 +1,35 @@
+{
+  "status": {
+    "Kiali commit hash": "c17d0550cfb033900c392ff5813368c1185954f1",
+    "Kiali container version": "v1.74.0-SNAPSHOT",
+    "Kiali state": "running",
+    "Kiali version": "v1.74.0-SNAPSHOT",
+    "Mesh name": "Istio",
+    "Mesh version": "1.18.2"
+  },
+  "externalServices": [
+    {
+      "name": "Istio",
+      "version": "1.18.2"
+    },
+    {
+      "name": "Prometheus",
+      "version": "2.41.0"
+    },
+    {
+      "name": "Kubernetes",
+      "version": "v1.26.3+b404935"
+    },
+    {
+      "name": "Grafana"
+    },
+    {
+      "name": "Jaeger"
+    }
+  ],
+  "warningMessages": [],
+  "istioEnvironment": {
+    "isMaistra": false,
+    "istioAPIEnabled": true
+  }
+}
