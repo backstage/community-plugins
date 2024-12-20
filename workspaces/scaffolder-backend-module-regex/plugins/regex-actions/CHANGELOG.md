@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 2.2.5
+
+### Patch Changes
+
+- 0f5c451: Updated dependency `prettier` to `3.4.2`.
+
 ## 2.2.4
 
 ### Patch Changes
