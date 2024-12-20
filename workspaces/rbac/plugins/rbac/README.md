@@ -123,6 +123,7 @@ permission:
     pluginsWithPermission:
       - catalog
       - scaffolder
+      - permission
 ```
 
 For more information on the available permissions within Showcase and RHDH, refer to the [permissions documentation](../rbac-backend/docs/permissions.md).
