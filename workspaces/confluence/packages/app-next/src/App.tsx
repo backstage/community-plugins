@@ -23,6 +23,7 @@ import catalogPlugin from '@backstage/plugin-catalog/alpha';
 import catalogImportPlugin from '@backstage/plugin-catalog-import/alpha';
 import searchPlugin from '@backstage/plugin-search/alpha';
 import userSettingsPlugin from '@backstage/plugin-user-settings/alpha';
+import confluencePlugin from '@backstage-community/plugin-confluence/alpha';
 import { Navigate } from 'react-router';
 
 const homePageExtension = PageBlueprint.make({
@@ -39,6 +40,7 @@ export const app = createApp({
     catalogPlugin,
     catalogImportPlugin,
     userSettingsPlugin,
+    confluencePlugin,
     createFrontendModule({
       pluginId: 'app',
       extensions: [homePageExtension],
