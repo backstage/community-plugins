@@ -107,8 +107,8 @@ permission:
 
 ### Configure plugins with permission
 
-In order for the RBAC UI to display available permissions provided by installed plugins, the corresponding
-plugin IDs must be added to the `app-config.yaml`.
+In order for the RBAC UI to display available permissions provided by installed plugins, add the corresponding
+plugin IDs to the `app-config.yaml`.
 
 You can specify the plugins with permission in your application configuration as follows:
 
