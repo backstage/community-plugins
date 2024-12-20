@@ -19,13 +19,13 @@ import { parseEntityRef } from '@backstage/catalog-model';
 import { Table, WarningPanel } from '@backstage/core-components';
 import { usePermission } from '@backstage/plugin-permission-react';
 
-import { Card, CardContent, makeStyles } from '@material-ui/core';
-import CachedIcon from '@material-ui/icons/Cached';
+import CachedIcon from '@mui/icons-material/Cached';
+import Box from '@mui/material/Box';
 
 import { policyEntityUpdatePermission } from '@backstage-community/plugin-rbac-common';
 
 import { MembersInfo } from '../../hooks/useMembers';
-import { MembersData } from '../../types';
+import { filterTableData } from '../../utils/filter-table-data';
 import { getMembers } from '../../utils/rbac-utils';
 import EditRole from '../EditRole';
 import { columns } from './MembersListColumns';
@@ -34,14 +34,6 @@ type MembersCardProps = {
   roleName: string;
   membersInfo: MembersInfo;
 };
-
-const useStyles = makeStyles(theme => ({
-  empty: {
-    padding: theme.spacing(2),
-    display: 'flex',
-    justifyContent: 'center',
-  },
-}));
 
 const getRefreshIcon = () => <CachedIcon />;
 const getEditIcon = (isAllowed: boolean, roleName: string) => {
@@ -59,13 +51,12 @@ const getEditIcon = (isAllowed: boolean, roleName: string) => {
 
 export const MembersCard = ({ roleName, membersInfo }: MembersCardProps) => {
   const { data, loading, retry, error, canReadUsersAndGroups } = membersInfo;
-  const [members, setMembers] = React.useState<MembersData[]>();
+  const [searchText, setSearchText] = React.useState<string>();
   const policyEntityPermissionResult = usePermission({
     permission: policyEntityUpdatePermission,
     resourceRef: policyEntityUpdatePermission.resourceType,
   });
 
-  const classes = useStyles();
   const actions = [
     {
       icon: getRefreshIcon,
@@ -91,41 +82,43 @@ export const MembersCard = ({ roleName, membersInfo }: MembersCardProps) => {
     },
   ];
 
-  const onSearchResultsChange = (searchResults: MembersData[]) => {
-    setMembers(searchResults);
-  };
+  const filteredData = React.useMemo(
+    () => filterTableData({ data, columns, searchText }),
+    [data, searchText],
+  );
 
   return (
-    <Card>
-      <CardContent>
-        {!loading && error && (
-          <div style={{ paddingBottom: '16px' }}>
-            <WarningPanel
-              message={(error as Error)?.message || (error as Error)?.name}
-              title="Something went wrong while fetching the users and groups"
-              severity="error"
-            />
-          </div>
-        )}
-        <Table
-          title={
-            !loading && data?.length
-              ? `Users and groups (${getMembers(members || data)})`
-              : 'Users and groups'
-          }
-          actions={actions}
-          renderSummaryRow={summary => onSearchResultsChange(summary.data)}
-          options={{ padding: 'default', search: true, paging: true }}
-          data={data ?? []}
-          isLoading={loading}
-          columns={columns}
-          emptyContent={
-            <div data-testid="members-table-empty" className={classes.empty}>
-              No records found
-            </div>
-          }
-        />
-      </CardContent>
-    </Card>
+    <Box>
+      {!loading && error && (
+        <Box style={{ paddingBottom: '16px' }}>
+          <WarningPanel
+            message={(error as Error)?.message || (error as Error)?.name}
+            title="Something went wrong while fetching the users and groups"
+            severity="error"
+          />
+        </Box>
+      )}
+      <Table
+        title={
+          !loading && data?.length
+            ? `Users and groups (${getMembers(filteredData)})`
+            : 'Users and groups'
+        }
+        actions={actions}
+        options={{ padding: 'default', search: true, paging: true }}
+        data={data ?? []}
+        isLoading={loading}
+        columns={columns}
+        emptyContent={
+          <Box
+            data-testid="members-table-empty"
+            sx={{ display: 'flex', justifyContent: 'center', p: 2 }}
+          >
+            No records found
+          </Box>
+        }
+        onSearchChange={setSearchText}
+      />
+    </Box>
   );
 };

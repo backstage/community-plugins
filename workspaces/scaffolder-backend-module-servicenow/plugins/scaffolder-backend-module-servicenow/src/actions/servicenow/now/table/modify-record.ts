@@ -117,9 +117,9 @@ const examples = [
 
 /**
  * Creates an action handler that modifies a record in the specified table.
- *
- * @param {CreateActionOptions} options - options to configure the action
- * @returns {TemplateAction} an action handler
+ * @public
+ * @param options - options to configure the action
+ * @returns TemplateAction - an action handler
  */
 export const modifyRecordAction = (
   options: CreateActionOptions,

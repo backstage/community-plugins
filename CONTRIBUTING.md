@@ -26,6 +26,7 @@ If you have questions or feedback regarding Community Plugins, you can visit the
   - [Developer Certificate of Origin](#developer-certificate-of-origin)
   - [API Reports](#api-reports)
   - [Submitting a Pull Request](#submitting-a-pull-request)
+    - [Merge Strategy](#merge-strategy)
   - [Review Process](#review-process)
     - [Review Tips](#review-tips)
 
@@ -43,7 +44,7 @@ The community plugins repository is under [Apache 2.0](../LICENSE) license. All 
 
 See [SECURITY](SECURITY.md).
 
-## Get Started!
+## Get Started
 
 So...feel ready to jump in? Let's do this. 👏🏻 💯
 
@@ -77,7 +78,7 @@ Frontend and Backend plugins come with a standalone runner that you should be ab
 
 There could be times when there is a need for a more rich development environment for a workspace. Say that the workspace and it's plugin depend on a full catalog, and maybe the kubernetes plugin already running too, that could be a bit of a pain to set up. In that case, there might be a full Backstage environment that you can run with `yarn dev` in the workspace root, which will start up a full Backstage environment located in `$WORKSPACE_ROOT/packages/app` and `$WORKSPACE_ROOT/packages/backend`.
 
-> [!IMPORTANT]  
+> [!IMPORTANT]
 > This full Backstage environment is not setup by default, and is setup on a per workspace basis. Check out the workspace `README.md` for more information on how to get a dev environment setup for each plugin.
 
 ## Coding Guidelines
@@ -98,9 +99,9 @@ To create a changeset, follow these steps:
 
 2. Run the following command to create a new changeset:
 
-    ```bash
-    $ yarn changeset
-    ```
+   ```bash
+   $ yarn changeset
+   ```
 
 3. You will be prompted to select the packages and the type of change you are making.
 
@@ -112,7 +113,7 @@ To create a changeset, follow these steps:
 
 Once the changeset is merged, it will trigger the release process for the plugin and create a "Version packages ($workspace_name)" PR. Once the PR is merged, a new version of the plugin will be published based on the type of change made.
 
-> [!NOTE]  
+> [!NOTE]
 > It's important to create a changeset for each individual change you make to a plugin. This ensures that the release process is properly managed and that dependencies between plugins are correctly updated.
 
 ## Release
@@ -125,7 +126,7 @@ A release is automatically triggered by merging the plugins “Version Packages�
 
 For workspaces the name should reflect the name of the plugins contained in a simple manner (e.g. for the plugins `todo` & `todo-backend` the workspace would be called `todo`).
 
-For plugins we will continue to follow the naming pattern suggested by the ADR on the main repository: https://backstage.io/docs/architecture-decisions/adrs-adr011.
+For plugins we will continue to follow the naming pattern suggested by the ADR on the main repository: <https://backstage.io/docs/architecture-decisions/adrs-adr011>.
 
 You can create a workspace by running the following:
 
@@ -162,7 +163,7 @@ By migrating a plugin to this repository you will need to ensure you can meet ce
 - Adopt the Changesets workflow for releasing new plugin versions.
 - Adhere to the repository security process for handling security-related issues.
 - Agree to commit to the responsibilities and requirements listed in the [Plugin Maintainer's role
-](https://github.com/backstage/community/blob/main/GOVERNANCE.md#plugin-maintainer).
+  ](https://github.com/backstage/community/blob/main/GOVERNANCE.md#plugin-maintainer).
 - Plugins moved to the repository should be licensed under Apache 2.0.
 
 ### Manual migration steps
@@ -200,7 +201,7 @@ cp -r ../existing-plugins/plugins/plugin-name plugins/
 
 8. Update external references to the old plugin location such as documentation to point to the new location in the `backstage/community-plugins` repository.
 
-9.  In the original repository, update the plugin to indicate that it has been moved to the `backstage/community-plugins` repository. You may wish to deprecate the old version on npm.
+9. In the original repository, update the plugin to indicate that it has been moved to the `backstage/community-plugins` repository. You may wish to deprecate the old version on npm.
 
 ## Organization Membership Request for CODEOWNERS
 
@@ -281,6 +282,12 @@ Here are some examples of good PR descriptions:
 - <https://github.com/backstage/backstage/pull/19623>
 - <https://github.com/backstage/backstage/pull/15881>
 - <https://github.com/backstage/backstage/pull/16401>
+
+### Merge Strategy
+
+The standard merge strategy for this repository is **squash merge**. This keeps the commit history clean and concise by combining all changes from a pull request into a single commit.
+
+In certain situations, such as when a pull request introduces logically distinct changes for frontend and backend, a **rebase merge** may be acceptable. This allows preserving individual commits for better traceability. However, when using rebase merge, pull request authors are expected to be judicious with the number of commits merged and ensure each commit represents a meaningful and self-contained change. Excessive granularity in commits should still be avoided. Please discuss with the reviewers if you believe a rebase merge is appropriate for your pull request.
 
 ## Review Process
 

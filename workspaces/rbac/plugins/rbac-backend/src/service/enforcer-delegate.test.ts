@@ -15,7 +15,7 @@
  */
 import { mockServices } from '@backstage/backend-test-utils';
 
-import { newEnforcer, newModelFromString } from 'casbin';
+import { Model, newEnforcer, newModelFromString } from 'casbin';
 import * as Knex from 'knex';
 import { MockClient } from 'knex-mock-client';
 
@@ -90,9 +90,9 @@ describe('EnforcerDelegate', () => {
     string[],
     any
   >;
-  let enfFilterGroupingPolicySpy: jest.SpyInstance<
-    Promise<string[][]>,
-    [fieldIndex: number, ...fieldValues: string[]],
+  let adapterLoaderFilterGroupingPolicySpy: jest.SpyInstance<
+    Promise<void>,
+    [model: Model, filter: any],
     any
   >;
   let enfRemoveGroupingPoliciesSpy: jest.SpyInstance<
@@ -143,6 +143,10 @@ describe('EnforcerDelegate', () => {
       config,
       mockClientKnex,
     ).createAdapter();
+    adapterLoaderFilterGroupingPolicySpy = jest.spyOn(
+      sqliteInMemoryAdapter,
+      'loadFilteredPolicy',
+    );
 
     const catalogDBClient = Knex.knex({ client: MockClient });
     const rbacDBClient = Knex.knex({ client: MockClient });
@@ -150,7 +154,6 @@ describe('EnforcerDelegate', () => {
     enfRemovePolicySpy = jest.spyOn(enf, 'removePolicy');
     enfRemovePoliciesSpy = jest.spyOn(enf, 'removePolicies');
     enfRemoveGroupingPolicySpy = jest.spyOn(enf, 'removeGroupingPolicy');
-    enfFilterGroupingPolicySpy = jest.spyOn(enf, 'getFilteredGroupingPolicy');
     enfRemoveGroupingPoliciesSpy = jest.spyOn(enf, 'removeGroupingPolicies');
     enfAddPolicySpy = jest.spyOn(enf, 'addPolicy');
     enfAddGroupingPolicySpy = jest.spyOn(enf, 'addGroupingPolicy');
@@ -976,7 +979,7 @@ describe('EnforcerDelegate', () => {
       );
 
       expect(roleMetadataStorageMock.findRoleMetadata).toHaveBeenCalledTimes(1);
-      expect(enfFilterGroupingPolicySpy).toHaveBeenCalledTimes(1);
+      expect(adapterLoaderFilterGroupingPolicySpy).toHaveBeenCalledTimes(1);
 
       expect(roleMetadataStorageMock.removeRoleMetadata).toHaveBeenCalledWith(
         'role:default/team-dev',
@@ -999,7 +1002,7 @@ describe('EnforcerDelegate', () => {
       );
 
       expect(roleMetadataStorageMock.findRoleMetadata).toHaveBeenCalledTimes(1);
-      expect(enfFilterGroupingPolicySpy).toHaveBeenCalledTimes(1);
+      expect(adapterLoaderFilterGroupingPolicySpy).toHaveBeenCalledTimes(1);
 
       const metadata = (roleMetadataStorageMock.updateRoleMetadata as jest.Mock)
         .mock.calls[0][0];
@@ -1029,7 +1032,7 @@ describe('EnforcerDelegate', () => {
       );
 
       expect(roleMetadataStorageMock.findRoleMetadata).not.toHaveBeenCalled();
-      expect(enfFilterGroupingPolicySpy).not.toHaveBeenCalled();
+      expect(adapterLoaderFilterGroupingPolicySpy).not.toHaveBeenCalled();
       expect(roleMetadataStorageMock.removeRoleMetadata).not.toHaveBeenCalled();
       expect(roleMetadataStorageMock.updateRoleMetadata).not.toHaveBeenCalled();
     });
@@ -1051,7 +1054,7 @@ describe('EnforcerDelegate', () => {
           };
         });
       enfRemoveGroupingPoliciesSpy.mockReset();
-      enfFilterGroupingPolicySpy.mockReset();
+      adapterLoaderFilterGroupingPolicySpy.mockReset();
 
       const enfDelegate = await createEnfDelegate([], groupingPoliciesToDelete);
       await enfDelegate.removeGroupingPolicies(
@@ -1069,7 +1072,7 @@ describe('EnforcerDelegate', () => {
       );
 
       expect(roleMetadataStorageMock.findRoleMetadata).toHaveBeenCalledTimes(1);
-      expect(enfFilterGroupingPolicySpy).toHaveBeenCalledTimes(1);
+      expect(adapterLoaderFilterGroupingPolicySpy).toHaveBeenCalledTimes(1);
 
       expect(roleMetadataStorageMock.removeRoleMetadata).toHaveBeenCalledWith(
         'role:default/team-dev',
@@ -1088,7 +1091,7 @@ describe('EnforcerDelegate', () => {
           };
         });
       enfRemoveGroupingPoliciesSpy.mockReset();
-      enfFilterGroupingPolicySpy.mockReset();
+      adapterLoaderFilterGroupingPolicySpy.mockReset();
 
       const remainingGroupPolicy = [
         'user:default/some-user-2',
@@ -1113,7 +1116,7 @@ describe('EnforcerDelegate', () => {
       );
 
       expect(roleMetadataStorageMock.findRoleMetadata).toHaveBeenCalledTimes(1);
-      expect(enfFilterGroupingPolicySpy).toHaveBeenCalledTimes(1);
+      expect(adapterLoaderFilterGroupingPolicySpy).toHaveBeenCalledTimes(1);
 
       const metadata = (roleMetadataStorageMock.updateRoleMetadata as jest.Mock)
         .mock.calls[0][0];
@@ -1136,7 +1139,7 @@ describe('EnforcerDelegate', () => {
           };
         });
       enfRemoveGroupingPoliciesSpy.mockReset();
-      enfFilterGroupingPolicySpy.mockReset();
+      adapterLoaderFilterGroupingPolicySpy.mockReset();
 
       const enfDelegate = await createEnfDelegate([], groupingPoliciesToDelete);
       await enfDelegate.removeGroupingPolicies(
@@ -1154,7 +1157,7 @@ describe('EnforcerDelegate', () => {
       );
 
       expect(roleMetadataStorageMock.findRoleMetadata).not.toHaveBeenCalled();
-      expect(enfFilterGroupingPolicySpy).not.toHaveBeenCalled();
+      expect(adapterLoaderFilterGroupingPolicySpy).not.toHaveBeenCalled();
       expect(roleMetadataStorageMock.removeRoleMetadata).not.toHaveBeenCalled();
       expect(roleMetadataStorageMock.updateRoleMetadata).not.toHaveBeenCalled();
     });

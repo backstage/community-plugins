@@ -1,0 +1,17 @@
+dynamicPlugins:
+  frontend:
+    backstage-community.backstage-plugin-rbac:
+      appIcons:
+        - name: rbacIcon
+          importName: RbacIcon
+      dynamicRoutes:
+        - path: /rbac
+          importName: RbacPage
+          menuItem:
+            icon: rbacIcon
+            text: RBAC
+      menuItems:
+        rbac:
+          parent: admin
+          icon: rbacIcon
+          priority: 10

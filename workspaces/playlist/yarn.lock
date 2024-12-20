@@ -2639,7 +2639,6 @@ __metadata:
   resolution: "@backstage-community/plugin-playlist-backend@workspace:plugins/playlist-backend"
   dependencies:
     "@backstage-community/plugin-playlist-common": "workspace:^"
-    "@backstage/backend-common": ^0.25.0
     "@backstage/backend-defaults": ^0.5.2
     "@backstage/backend-plugin-api": ^1.0.1
     "@backstage/backend-test-utils": ^1.0.2

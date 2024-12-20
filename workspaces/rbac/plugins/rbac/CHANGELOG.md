@@ -1,5 +1,51 @@
 ### Dependencies
 
+## 1.33.4
+
+### Patch Changes
+
+- 27c3f1f: Fix role overview page styling issues
+
+## 1.33.3
+
+### Patch Changes
+
+- aa02f04: Updated dependency `@playwright/test` to `1.49.0`.
+- 4b3653a: Clean up api report warnings and remove unnecessary files
+- Updated dependencies [4b3653a]
+  - @backstage-community/plugin-rbac-common@1.12.3
+
+## 1.33.2
+
+### Patch Changes
+
+- c3fe880: - fix: remove empty summary row
+  - fix: remove `@janus-idp/cli` / `scalprum` configuration from `package.json`. Users that build and install the plugin from the source code must change their app-config.yaml from `janus-idp.backstage-plugin-rbac` to `backstage-community.plugin-rbac` and drop the module parameter. This matches now other plugins we migrated from the Janus IDP community to the Backstage community plugin and was missed before.
+
+## 1.33.1
+
+### Patch Changes
+
+- ba05b93: Fixed UI issues.
+
+## 1.33.0
+
+### Minor Changes
+
+- 757799e: Upgraded RBAC plugin from mui4 to mui5
+
+## 1.32.5
+
+### Patch Changes
+
+- a6e850f: Updated dependency `msw` to `1.3.5`.
+
+## 1.32.4
+
+### Patch Changes
+
+- 066b3bd: removed canvas from devDependencies
+
 ## 1.32.3
 
 ### Patch Changes

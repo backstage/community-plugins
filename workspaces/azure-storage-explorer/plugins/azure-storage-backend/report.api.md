@@ -12,10 +12,10 @@ import { Router } from 'express';
 const azureStoragePlugin: BackendFeature;
 export default azureStoragePlugin;
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 export function createRouter(options: RouterOptions): Promise<Router>;
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 export interface RouterOptions {
   // (undocumented)
   config: Config;

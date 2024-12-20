@@ -14,7 +14,7 @@ It is only meant for local development, and the setup for it can be found inside
 
 #### Prerequisites
 
-### ArgoCD backend
+### Argo CD backend
 
 - Install `@roadiehq/backstage-plugin-argo-cd-backend` plugin using the following command from the root directory
 <!-- configure it by following [Argo CD Backend Plugin docs](https://www.npmjs.com/package/@roadiehq/backstage-plugin-argo-cd-backend) -->
@@ -51,7 +51,7 @@ import {legacyPlugin} from '@backstage/backend-common';
 backend.add(legacyPlugin('argocd', import('./plugins/argocd')));
 ```
 
-- add argocd instance information in app.config.yaml
+- add Argo CD instance information in app.config.yaml
 
 ```ts
 argocd:
@@ -108,7 +108,7 @@ You can use the following code to grant the ClusterRole for custom resources:
       - list
 ```
 
-> Tip: You can use the [prepared manifest for a read-only ClusterRole](https://raw.githubusercontent.com/backstage/community-plugins/main/workspaces/redhat-argocd/plugins/argocd/manifests/clusterrole.yaml), which provides access for both Kubernetes plugin and Argocd plugin.
+> Tip: You can use the [prepared manifest for a read-only ClusterRole](https://raw.githubusercontent.com/backstage/community-plugins/main/workspaces/redhat-argocd/plugins/argocd/manifests/clusterrole.yaml), which provides access for both Kubernetes plugin and Argo CD plugin.
 
 ##### Annotations
 
@@ -167,9 +167,9 @@ You can use the following code to grant the ClusterRole for custom resources:
 
   ***
 
-## How to add argocd frontend plugin to Backstage app
+## How to add Argo CD frontend plugin to Backstage app
 
-1. Install the Argocd plugin using the following command:
+1. Install the Argo CD plugin using the following command:
 
 ```bash
 yarn workspace app add @backstage-community/plugin-redhat-argocd

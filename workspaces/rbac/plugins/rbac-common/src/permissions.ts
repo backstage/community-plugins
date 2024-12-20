@@ -18,9 +18,13 @@ import {
   ResourcePermission,
 } from '@backstage/plugin-permission-common';
 
+/**
+ * @public
+ */
 export const RESOURCE_TYPE_POLICY_ENTITY = 'policy-entity';
 
 /**
+ * @public
  * Convenience type for permission entity
  */
 export type PolicyEntityPermission = ResourcePermission<
@@ -28,6 +32,7 @@ export type PolicyEntityPermission = ResourcePermission<
 >;
 
 /**
+ * @public
  * This permission is used to authorize actions that involve reading
  * permission policies.
  */
@@ -40,6 +45,7 @@ export const policyEntityReadPermission = createPermission({
 });
 
 /**
+ * @public
  * This permission is used to authorize the creation of new permission policies.
  */
 export const policyEntityCreatePermission = createPermission({
@@ -51,6 +57,7 @@ export const policyEntityCreatePermission = createPermission({
 });
 
 /**
+ * @public
  * This permission is used to authorize actions that involve removing permission
  * policies.
  */
@@ -63,6 +70,7 @@ export const policyEntityDeletePermission = createPermission({
 });
 
 /**
+ * @public
  * This permission is used to authorize updating permission policies
  */
 export const policyEntityUpdatePermission = createPermission({
@@ -74,6 +82,7 @@ export const policyEntityUpdatePermission = createPermission({
 });
 
 /**
+ * @public
  * List of all permissions on permission polices.
  */
 export const policyEntityPermissions = [

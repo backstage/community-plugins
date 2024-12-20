@@ -15,12 +15,18 @@
  */
 import type { GroupTransformer, UserTransformer } from './types';
 
+/**
+ * @public
+ */
 export const noopGroupTransformer: GroupTransformer = async (
   entity,
   _user,
   _realm,
 ) => entity;
 
+/**
+ * @public
+ */
 export const noopUserTransformer: UserTransformer = async (
   entity,
   _user,
@@ -29,6 +35,7 @@ export const noopUserTransformer: UserTransformer = async (
 ) => entity;
 
 /**
+ * @public
  * User transformer that sanitizes .metadata.name from email address to a valid name
  */
 export const sanitizeEmailTransformer: UserTransformer = async (

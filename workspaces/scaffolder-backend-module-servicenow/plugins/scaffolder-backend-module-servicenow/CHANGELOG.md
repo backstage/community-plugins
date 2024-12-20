@@ -1,5 +1,23 @@
 ### Dependencies
 
+## 2.2.4
+
+### Patch Changes
+
+- 4d3571c: Clean up api report warnings and remove unnecessary files
+
+## 2.2.3
+
+### Patch Changes
+
+- 3d6256e: Updated dependency `@hey-api/openapi-ts` to `0.55.3`.
+
+## 2.2.2
+
+### Patch Changes
+
+- a6e850f: Updated dependency `msw` to `1.3.5`.
+
 ## 2.2.1
 
 ### Patch Changes

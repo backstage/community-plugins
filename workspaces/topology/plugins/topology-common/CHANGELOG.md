@@ -1,5 +1,11 @@
 ## @janus-idp/backstage-plugin-topology-common [1.3.0](https://github.com/janus-idp/backstage-plugins/compare/@janus-idp/backstage-plugin-topology-common@1.2.2...@janus-idp/backstage-plugin-topology-common@1.3.0) (2024-07-26)
 
+## 1.4.4
+
+### Patch Changes
+
+- e815da7: Clean up api report warnings and remove unnecessary files
+
 ## 1.4.3
 
 ### Patch Changes

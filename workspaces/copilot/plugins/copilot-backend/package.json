@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-copilot-backend",
-  "version": "0.1.5",
+  "version": "0.2.0",
   "homepage": "https://backstage.io",
   "license": "Apache-2.0",
   "main": "src/index.ts",
@@ -54,7 +54,8 @@
     "luxon": "^3.5.0",
     "node-fetch": "^2.6.7",
     "winston": "^3.2.1",
-    "yn": "^4.0.0"
+    "yn": "^4.0.0",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@backstage/backend-test-utils": "^1.0.2",

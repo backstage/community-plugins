@@ -254,7 +254,7 @@ export class Connection implements RBACProviderConnection {
     const removedPermissions: string[][] = [];
     for (const permission of providerPermissions) {
       if (!(await tempEnforcer.hasPolicy(...permission))) {
-        this.enforcer.removePolicy(permission);
+        await this.enforcer.removePolicy(permission);
         removedPermissions.push(permission);
       }
 

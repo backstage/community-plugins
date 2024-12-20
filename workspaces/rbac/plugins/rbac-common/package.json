@@ -1,7 +1,7 @@
 {
   "name": "@backstage-community/plugin-rbac-common",
   "description": "Common functionalities for the rbac-common plugin",
-  "version": "1.12.2",
+  "version": "1.12.3",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "license": "Apache-2.0",
@@ -44,7 +44,7 @@
     "@backstage/errors": "^1.2.4",
     "@backstage/plugin-permission-common": "^0.8.1",
     "@spotify/prettier-config": "^15.0.0",
-    "prettier": "3.3.3"
+    "prettier": "^3.3.3"
   },
   "files": [
     "dist"
@@ -65,5 +65,15 @@
   "maintainers": [
     "@PatAKnight"
   ],
-  "author": "Red Hat"
+  "author": "Red Hat",
+  "prettier": "@spotify/prettier-config",
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,mjs,cjs}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ]
+  }
 }

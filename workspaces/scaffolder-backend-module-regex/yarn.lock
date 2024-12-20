@@ -2463,16 +2463,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage-community/scaffolder-backend-module-regex@workspace:plugins/regex-actions":
+"@backstage-community/plugin-scaffolder-backend-module-regex@workspace:plugins/regex-actions":
   version: 0.0.0-use.local
-  resolution: "@backstage-community/scaffolder-backend-module-regex@workspace:plugins/regex-actions"
+  resolution: "@backstage-community/plugin-scaffolder-backend-module-regex@workspace:plugins/regex-actions"
   dependencies:
     "@backstage/backend-plugin-api": ^1.0.1
     "@backstage/cli": 0.28.2
     "@backstage/plugin-scaffolder-node": ^0.5.0
     "@backstage/plugin-scaffolder-node-test-utils": 0.1.14
     "@spotify/prettier-config": ^15.0.0
-    prettier: 3.3.3
+    prettier: 3.4.2
     yaml: ^2.3.3
     zod: ^3.22.4
   languageName: unknown
@@ -3143,8 +3143,8 @@ __metadata:
   linkType: hard
 
 "@backstage/plugin-scaffolder-node@npm:^0.5.0":
-  version: 0.5.0
-  resolution: "@backstage/plugin-scaffolder-node@npm:0.5.0"
+  version: 0.5.1
+  resolution: "@backstage/plugin-scaffolder-node@npm:0.5.1"
   dependencies:
     "@backstage/backend-common": ^0.25.0
     "@backstage/backend-plugin-api": ^1.0.1
@@ -3163,7 +3163,7 @@ __metadata:
     winston: ^3.2.1
     zod: ^3.22.4
     zod-to-json-schema: ^3.20.4
-  checksum: ebb1fdcbc31140c98dc92bbd1a585aa3b4840ac9b9f4b59dad01ce86014494554cced8fb81bb6605abe5a6099a41feb7cbebbca1c8bf7d38c48f9ee346a3eb15
+  checksum: 8cbbdbee87a537f3aade9cbf4aaea0db4f4c8272fc4c05557acb8fa1b8abad21a581949c7d1fd9d9aca736c0de405086ffa28fda31ad2752fdad2ace6c756917
   languageName: node
   linkType: hard
 
@@ -18434,12 +18434,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:3.3.3":
-  version: 3.3.3
-  resolution: "prettier@npm:3.3.3"
+"prettier@npm:3.4.2":
+  version: 3.4.2
+  resolution: "prettier@npm:3.4.2"
   bin:
     prettier: bin/prettier.cjs
-  checksum: bc8604354805acfdde6106852d14b045bb20827ad76a5ffc2455b71a8257f94de93f17f14e463fe844808d2ccc87248364a5691488a3304f1031326e62d9276e
+  checksum: 061c84513db62d3944c8dc8df36584dad82883ce4e49efcdbedd8703dce5b173c33fd9d2a4e1725d642a3b713c932b55418342eaa347479bc4a9cca114a04cd0
   languageName: node
   linkType: hard
 

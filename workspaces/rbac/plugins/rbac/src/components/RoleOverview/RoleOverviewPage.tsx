@@ -18,7 +18,7 @@ import { useParams } from 'react-router-dom';
 
 import { Header, Page, TabbedLayout } from '@backstage/core-components';
 
-import { Grid } from '@material-ui/core';
+import Grid from '@mui/material/Grid';
 
 import { useLocationToast } from '../../hooks/useLocationToast';
 import { useMembers } from '../../hooks/useMembers';
@@ -50,7 +50,7 @@ export const RoleOverviewPage = () => {
         />
         <TabbedLayout>
           <TabbedLayout.Route path="" title="Overview">
-            <Grid container direction="row">
+            <Grid container direction="row" spacing={2}>
               <Grid item lg={12} xs={12}>
                 <AboutCard
                   roleName={`${roleKind}:${roleNamespace}/${roleName}`}

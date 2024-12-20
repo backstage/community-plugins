@@ -1,5 +1,29 @@
 # @backstage-community/plugin-tech-insights-node
 
+## 2.1.0
+
+### Minor Changes
+
+- 5289c38: Add metadata to TechInsightCheck
+
+### Patch Changes
+
+- Updated dependencies [5289c38]
+  - @backstage-community/plugin-tech-insights-common@0.3.0
+
+## 2.0.0
+
+### Major Changes
+
+- c3bbe0f: In order to use UrlReaderService in fact retrievers, UrlReaderService has been added to FactRetrieverContext.
+
+## 1.0.3
+
+### Patch Changes
+
+- Updated dependencies [331daba]
+  - @backstage-community/plugin-tech-insights-common@0.2.21
+
 ## 1.0.2
 
 ### Patch Changes

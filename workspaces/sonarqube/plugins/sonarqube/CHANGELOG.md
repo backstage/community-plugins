@@ -1,5 +1,24 @@
 # @backstage-community/plugin-sonarqube
 
+## 0.8.9
+
+### Patch Changes
+
+- f6e08b0: Updating missingAnnotationReadMoreUrl attribute on documentation
+
+## 0.8.8
+
+### Patch Changes
+
+- e657f8d: Add default filtering based on required annotation to the new frontend system components
+
+## 0.8.7
+
+### Patch Changes
+
+- 4c50596: Add config visibility to the frontend
+- c05862b: fix: use fetchApi instead of explicit identityApi token in sonarqube frontend plugin api
+
 ## 0.8.6
 
 ### Patch Changes

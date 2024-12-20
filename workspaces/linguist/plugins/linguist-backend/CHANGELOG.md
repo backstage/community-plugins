@@ -1,5 +1,22 @@
 # @backstage-community/plugin-linguist-backend
 
+## 0.8.0
+
+### Minor Changes
+
+- 067af9a: Backstage version bump to v1.33.5
+
+### Patch Changes
+
+- Updated dependencies [067af9a]
+  - @backstage-community/plugin-linguist-common@0.2.0
+
+## 0.7.0
+
+### Minor Changes
+
+- 9602620: **BREAKING** Removed support for what is known as the legacy backend, please use the New Backend System.
+
 ## 0.6.4
 
 ### Patch Changes

@@ -23,6 +23,8 @@ import { Options } from 'http-proxy-middleware/dist/types';
 import { LoggerService } from '@backstage/backend-plugin-api';
 
 /**
+ * @deprecated Please migrate to the new backend system as this will be removed in the future.
+ *
  * The router options that are needed when creating a router.
  *
  * @public
@@ -63,6 +65,8 @@ export const generateAirbrakePathRewrite = (
 };
 
 /**
+ * @deprecated Please migrate to the new backend system as this will be removed in the future.
+ *
  * Create the Airbrake Router, used for making API calls to the Airbrake API.
  *
  * @public

@@ -1,5 +1,29 @@
 ### Dependencies
 
+## 1.10.5
+
+### Patch Changes
+
+- 3d5311f: Updated dependency `@redhat-developer/red-hat-developer-hub-theme` to `0.4.0`.
+
+## 1.10.4
+
+### Patch Changes
+
+- 378ca22: Clean up api report warnings and remove unnecessary files
+
+## 1.10.3
+
+### Patch Changes
+
+- a6e850f: Updated dependency `msw` to `1.3.5`.
+
+## 1.10.2
+
+### Patch Changes
+
+- 0568517: Bump shared-react to 2.13.1
+
 ## 1.10.1
 
 ### Patch Changes

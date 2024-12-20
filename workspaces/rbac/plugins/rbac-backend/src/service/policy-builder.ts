@@ -49,6 +49,9 @@ import { MODEL } from './permission-model';
 import { PluginPermissionMetadataCollector } from './plugin-endpoints';
 import { PoliciesServer } from './policies-rest-api';
 
+/**
+ * @public
+ */
 export type EnvOptions = {
   config: Config;
   logger: LoggerService;
@@ -60,6 +63,9 @@ export type EnvOptions = {
   lifecycle: LifecycleService;
 };
 
+/**
+ * @public
+ */
 export type RBACRouterOptions = {
   config: Config;
   logger: LoggerService;
@@ -70,6 +76,9 @@ export type RBACRouterOptions = {
   userInfo: UserInfoService;
 };
 
+/**
+ * @public
+ */
 export class PolicyBuilder {
   public static async build(
     env: EnvOptions,

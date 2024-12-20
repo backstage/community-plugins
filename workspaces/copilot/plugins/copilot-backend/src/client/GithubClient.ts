@@ -16,12 +16,17 @@
 
 import { ResponseError } from '@backstage/errors';
 import { Config } from '@backstage/config';
-import { Metric } from '@backstage-community/plugin-copilot-common';
+import { Metric, TeamInfo } from '@backstage-community/plugin-copilot-common';
 import fetch from 'node-fetch';
 import { getGithubInfo, GithubInfo } from '../utils/GithubUtils';
 
 interface GithubApi {
-  getCopilotUsageDataForEnterprise: () => Promise<Metric[]>;
+  fetchEnterpriseCopilotUsage: () => Promise<Metric[]>;
+  fetchEnterpriseTeamCopilotUsage: (teamId: string) => Promise<Metric[]>;
+  fetchEnterpriseTeams: () => Promise<TeamInfo[]>;
+  fetchOrganizationCopilotUsage: () => Promise<Metric[]>;
+  fetchOrganizationTeamCopilotUsage: (teamId: string) => Promise<Metric[]>;
+  fetchOrganizationTeams: () => Promise<TeamInfo[]>;
 }
 
 export class GithubClient implements GithubApi {
@@ -32,8 +37,33 @@ export class GithubClient implements GithubApi {
     return new GithubClient(info);
   }
 
-  async getCopilotUsageDataForEnterprise(): Promise<Metric[]> {
+  async fetchEnterpriseCopilotUsage(): Promise<Metric[]> {
     const path = `/enterprises/${this.props.enterprise}/copilot/usage`;
+    return this.get(path);
+  }
+
+  async fetchEnterpriseTeamCopilotUsage(teamId: string): Promise<Metric[]> {
+    const path = `/enterprises/${this.props.enterprise}/team/${teamId}/copilot/usage`;
+    return this.get(path);
+  }
+
+  async fetchEnterpriseTeams(): Promise<TeamInfo[]> {
+    const path = `/enterprises/${this.props.enterprise}/teams`;
+    return this.get(path);
+  }
+
+  async fetchOrganizationCopilotUsage(): Promise<Metric[]> {
+    const path = `/orgs/${this.props.organization}/copilot/usage`;
+    return this.get(path);
+  }
+
+  async fetchOrganizationTeamCopilotUsage(teamId: string): Promise<Metric[]> {
+    const path = `/orgs/${this.props.organization}/team/${teamId}/copilot/usage`;
+    return this.get(path);
+  }
+
+  async fetchOrganizationTeams(): Promise<TeamInfo[]> {
+    const path = `/orgs/${this.props.organization}/teams`;
     return this.get(path);
   }
 

@@ -95,15 +95,26 @@ const JenkinsApiErrorPanel = (props: {
   return <WarningPanel severity="error" title={title} message={message} />;
 };
 
+const renderLatestRunCardTitle = (
+  branch: string,
+  title?: string | ((branch: string) => string),
+): string => {
+  if (title && typeof title === 'function') {
+    return title(branch);
+  }
+  return title || `Latest ${branch} build`;
+};
+
 export const LatestRunCard = (props: {
   branch: string;
   variant?: InfoCardVariants;
+  title?: string | ((branch: string) => string);
 }) => {
-  const { branch = 'master', variant } = props;
+  const { branch = 'master', variant, title } = props;
   const [{ projects, loading, error }] = useBuilds({ branch });
   const latestRun = projects?.[0];
   return (
-    <InfoCard title={`Latest ${branch} build`} variant={variant}>
+    <InfoCard title={renderLatestRunCardTitle(branch, title)} variant={variant}>
       {!error ? (
         <WidgetContent
           loading={loading}

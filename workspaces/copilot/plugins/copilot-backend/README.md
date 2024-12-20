@@ -15,7 +15,7 @@ To configure the plugin using the new backend system:
 
    const backend = createBackend();
 
-   backend.add(import('@backstage-community/plugin-copilot'));
+   backend.add(import('@backstage-community/plugin-copilot-backend'));
 
    backend.start();
    ```
@@ -24,17 +24,17 @@ To configure the plugin using the new backend system:
 
 To install the plugin using the old method:
 
-1. Add the `@backstage-community/plugin-copilot` package to your backend:
+1. Add the `@backstage-community/plugin-copilot-backend` package to your backend:
 
    ```sh
-   yarn --cwd packages/backend add @backstage-community/plugin-copilot
+   yarn --cwd packages/backend add @backstage-community/plugin-copilot-backend
    ```
 
 2. In your `packages/backend/src/plugins/copilot.ts` file, add the following code:
 
    ```typescript
    import { TaskScheduleDefinition } from '@backstage/backend-tasks';
-   import { createRouterFromConfig } from '@backstage-community/plugin-copilot';
+   import { createRouterFromConfig } from '@backstage-community/plugin-copilot-backend';
 
    export default async function createPlugin(): Promise<void> {
      const schedule: TaskScheduleDefinition = {
@@ -53,9 +53,7 @@ To install the plugin using the old method:
    import { createRouterFromConfig } from './plugins/copilot';
 
    async function main() {
-     // Backend setup
      const env = createEnv('copilot');
-     // Plugin registration
      apiRouter.use('/copilot', await createRouterFromConfig(env));
    }
    ```
@@ -68,14 +66,36 @@ To configure the GitHub Copilot plugin, you need to set the following environmen
 
 - **`copilot.host`**: The host URL for your GitHub Copilot instance (e.g., `github.com` or `github.enterprise.com`).
 - **`copilot.enterprise`**: The name of your GitHub Enterprise instance (e.g., `my-enterprise`).
+- **`copilot.organization`**: The name of your GitHub Organization (e.g., `my-organization`).
 
 These variables are used to configure the plugin and ensure it communicates with the correct GitHub instance.
 
 ### GitHub Credentials
 
-**Important:** The GitHub token, which is necessary for authentication, should be managed within your Backstage integrations configuration. The token must be added to your GitHub integration settings, and the plugin will retrieve it through the `GithubCredentialsProvider`.
+**Important:** The GitHub token, necessary for authentication, should be managed within your Backstage integrations configuration. Ensure that your GitHub integration in the Backstage configuration includes the necessary token for the `GithubCredentialsProvider` to function correctly.
 
-Ensure that your GitHub integration in the Backstage configuration includes the necessary token for the `GithubCredentialsProvider` to work correctly.
+### GitHub Token Scopes
+
+To ensure the GitHub Copilot plugin operates correctly within your organization or enterprise, your GitHub access token must include specific scopes. These scopes grant the plugin the necessary permissions to interact with your GitHub organization and manage Copilot usage.
+
+#### Required Scopes
+
+1. **List Teams Endpoint**
+
+   - **Scope Required:** `read:org`
+   - **Purpose:** Allows the plugin to list all teams within your GitHub organization.
+
+2. **Copilot Usage**
+   - **Scopes Required - enterprise:** `manage_billing:copilot`, `read:enterprise`
+   - **Scopes Required - organization:** `manage_billing:copilot`, `read:org`, or `read:enterprise`
+   - **Purpose:** Enables the plugin to manage and monitor GitHub Copilot usage within your organization or/and enterprise.
+
+#### How to Configure Token Scopes
+
+1. **Generate a Personal Access Token (PAT):**
+   - Navigate to [GitHub Personal Access Tokens](https://github.com/settings/tokens).
+   - Click on **Generate new token**.
+   - Select the scopes according to your needs
 
 ### YAML Configuration Example
 
@@ -90,20 +110,20 @@ copilot:
       seconds: 15
   host: YOUR_GITHUB_HOST_HERE
   enterprise: YOUR_ENTERPRISE_NAME_HERE
+  organization: YOUR_ORGANIZATION_NAME_HERE
+
+integrations:
+  github:
+    - host: YOUR_GITHUB_HOST_HERE
+      token: YOUR_GENERATED_TOKEN
 ```
-
-### Generating GitHub Copilot Token
-
-To generate an access token for using GitHub Copilot:
-
-- Visit [Generate GitHub Access Token](https://github.com/settings/tokens).
-- Follow the instructions to create a new token with the `read:enterprise` scope.
 
 ### API Documentation
 
-For more details on using the GitHub Copilot API:
+For more details on using the GitHub Copilot and Teams APIs, refer to the following documentation:
 
-- Refer to the [API documentation](https://docs.github.com/en/rest/copilot/copilot-usage?apiVersion=2022-11-28) for comprehensive information on available functionalities.
+- [GitHub Teams API - List Teams](https://docs.github.com/en/rest/teams/teams?apiVersion=2022-11-28#list-teams)
+- [GitHub Copilot API - Usage](https://docs.github.com/en/rest/copilot/copilot-usage?apiVersion=2022-11-28)
 
 ## Run
 

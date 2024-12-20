@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-sonarqube-backend",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "backstage": {
     "role": "backend-plugin",
     "pluginId": "sonarqube",
@@ -38,7 +38,6 @@
     "test": "backstage-cli package test"
   },
   "dependencies": {
-    "@backstage/backend-common": "^0.25.0",
     "@backstage/backend-defaults": "^0.5.2",
     "@backstage/backend-plugin-api": "^1.0.1",
     "@backstage/config": "^1.2.0",

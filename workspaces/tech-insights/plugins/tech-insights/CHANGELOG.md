@@ -1,5 +1,26 @@
 # @backstage-community/plugin-tech-insights
 
+## 0.3.42
+
+### Patch Changes
+
+- Updated dependencies [5289c38]
+  - @backstage-community/plugin-tech-insights-common@0.3.0
+
+## 0.3.41
+
+### Patch Changes
+
+- 9a09c39: Remove use of react 18 `useId` hook to maintain compatibility with react 17.
+
+## 0.3.40
+
+### Patch Changes
+
+- 331daba: Added optional `filter` prop to `EntityTechInsightsScorecardContent` and `EntityTechInsightsScorecardCard` for easier and more flexible filtering of what checks to display.
+- Updated dependencies [331daba]
+  - @backstage-community/plugin-tech-insights-common@0.2.21
+
 ## 0.3.39
 
 ### Patch Changes

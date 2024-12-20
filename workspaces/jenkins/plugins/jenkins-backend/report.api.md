@@ -16,7 +16,7 @@ import { LoggerService } from '@backstage/backend-plugin-api';
 import { PermissionAuthorizer } from '@backstage/plugin-permission-common';
 import { PermissionEvaluator } from '@backstage/plugin-permission-common';
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 export function createRouter(options: RouterOptions): Promise<express.Router>;
 
 // @public
@@ -142,7 +142,7 @@ export interface JenkinsInstanceConfig {
 const jenkinsPlugin: BackendFeature;
 export default jenkinsPlugin;
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 export interface RouterOptions {
   // (undocumented)
   auth?: AuthService;

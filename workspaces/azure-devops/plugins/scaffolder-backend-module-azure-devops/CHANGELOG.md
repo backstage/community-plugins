@@ -1,5 +1,17 @@
 # @backstage-community/plugin-scaffolder-backend-module-azure-devops
 
+## 0.3.0
+
+### Minor Changes
+
+- 5b2427d: Adds support for template parameters to the `azure:pipeline:run` action
+
+## 0.2.0
+
+### Minor Changes
+
+- 7ce46dc: Backstage version bump to v1.33.5
+
 ## 0.1.2
 
 ### Patch Changes

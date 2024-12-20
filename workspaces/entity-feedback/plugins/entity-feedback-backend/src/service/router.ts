@@ -15,10 +15,6 @@
  */
 
 import {
-  createLegacyAuthAdapters,
-  errorHandler,
-} from '@backstage/backend-common';
-import {
   AuthService,
   DatabaseService,
   DiscoveryService,
@@ -35,8 +31,9 @@ import {
 import { InputError } from '@backstage/errors';
 import express from 'express';
 import Router from 'express-promise-router';
-
+import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 import { DatabaseHandler } from './DatabaseHandler';
+import { Config } from '@backstage/config';
 
 /**
  * @public
@@ -46,8 +43,9 @@ export interface RouterOptions {
   discovery: DiscoveryService;
   identity?: IdentityApi;
   logger: LoggerService;
-  auth?: AuthService;
-  httpAuth?: HttpAuthService;
+  auth: AuthService;
+  httpAuth: HttpAuthService;
+  config: Config;
 }
 
 /**
@@ -56,10 +54,9 @@ export interface RouterOptions {
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
-  const { database, discovery, logger } = options;
+  const { database, discovery, logger, httpAuth, auth, config } = options;
 
   logger.info('Initializing Entity Feedback backend');
-  const { auth, httpAuth } = createLegacyAuthAdapters(options);
 
   const catalogClient = new CatalogClient({ discoveryApi: discovery });
   const db = await database.getClient();
@@ -231,6 +228,6 @@ export async function createRouter(
     res.json(responses.filter(r => accessibleEntityRefs.includes(r.userRef)));
   });
 
-  router.use(errorHandler());
+  router.use(MiddlewareFactory.create({ config, logger }).error());
   return router;
 }

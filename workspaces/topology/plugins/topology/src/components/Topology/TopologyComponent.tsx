@@ -35,6 +35,7 @@ const THEME_DARK = 'dark';
 const THEME_DARK_CLASS = 'pf-v5-theme-dark';
 
 const savedStylesheets = new Set<HTMLLinkElement>();
+const firstLinkOrScript = document.head.querySelector('link, script');
 
 export const TopologyComponent = () => {
   const {
@@ -57,7 +58,11 @@ export const TopologyComponent = () => {
 
     savedStylesheets.forEach(link => {
       if (!document.head.contains(link)) {
-        document.head.appendChild(link);
+        if (firstLinkOrScript) {
+          document.head.insertBefore(link, firstLinkOrScript);
+        } else {
+          document.head.insertBefore(link, document.head.firstChild);
+        }
       }
     });
 

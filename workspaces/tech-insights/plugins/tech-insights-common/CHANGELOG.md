@@ -1,5 +1,17 @@
 # @backstage-community/plugin-tech-insights-common
 
+## 0.3.0
+
+### Minor Changes
+
+- 5289c38: Add metadata to TechInsightCheck
+
+## 0.2.21
+
+### Patch Changes
+
+- 331daba: Cache identical API calls for a few seconds. This prevents fetching the same checks multiple times when having several Scorecards with the same (or all) checks, although with different filters.
+
 ## 0.2.20
 
 ### Patch Changes

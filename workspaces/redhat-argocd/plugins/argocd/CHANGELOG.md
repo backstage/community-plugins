@@ -1,5 +1,35 @@
 ## @backstage-community/plugin-redhat-argocd
 
+## 1.11.1
+
+### Patch Changes
+
+- b7f5849: Change argocd to Argo CD in comments or description
+
+## 1.11.0
+
+### Minor Changes
+
+- 8c8ab01: Update Patternfly deps to v6
+
+## 1.10.5
+
+### Patch Changes
+
+- aa02f04: Updated dependency `@playwright/test` to `1.49.0`.
+
+## 1.10.4
+
+### Patch Changes
+
+- a6e850f: Updated dependency `msw` to `1.3.5`.
+
+## 1.10.3
+
+### Patch Changes
+
+- d1cae81: Removed `export-dynamic` script and Janus IDP cli from the build process and npm release.
+
 ## 1.10.2
 
 ### Patch Changes

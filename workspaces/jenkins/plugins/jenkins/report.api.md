@@ -19,6 +19,7 @@ import { TableColumn } from '@backstage/core-components';
 
 // @public (undocumented)
 export const EntityJenkinsContent: (props: {
+  title?: string | undefined;
   columns?: TableColumn<Project>[] | undefined;
 }) => JSX_2.Element;
 
@@ -29,6 +30,7 @@ export const EntityJobRunsTable: () => JSX_2.Element;
 export const EntityLatestJenkinsRunCard: (props: {
   branch: string;
   variant?: InfoCardVariants | undefined;
+  title?: string | ((branch: string) => string) | undefined;
 }) => JSX_2.Element;
 
 // @public (undocumented)
@@ -51,6 +53,12 @@ export interface JenkinsApi {
     jobFullName: string;
     buildNumber: string;
   }): Promise<Build>;
+  // Warning: (ae-forgotten-export) The symbol "BuildConsoleText" needs to be exported by the entry point index.d.ts
+  getBuildConsoleText(options: {
+    entity: CompoundEntityRef;
+    jobFullName: string;
+    buildNumber: string;
+  }): Promise<BuildConsoleText>;
   // Warning: (ae-forgotten-export) The symbol "Job" needs to be exported by the entry point index.d.ts
   //
   // (undocumented)
@@ -89,6 +97,12 @@ export class JenkinsClient implements JenkinsApi {
     buildNumber: string;
   }): Promise<Build>;
   // (undocumented)
+  getBuildConsoleText(options: {
+    entity: CompoundEntityRef;
+    jobFullName: string;
+    buildNumber: string;
+  }): Promise<BuildConsoleText>;
+  // (undocumented)
   getJobBuilds(options: {
     entity: CompoundEntityRef;
     jobFullName: string;
@@ -124,7 +138,8 @@ export { jenkinsPlugin as plugin };
 // @public (undocumented)
 export const LatestRunCard: (props: {
   branch: string;
-  variant?: InfoCardVariants;
+  variant?: InfoCardVariants | undefined;
+  title?: string | ((branch: string) => string) | undefined;
 }) => React_2.JSX.Element;
 
 // Warning: (ae-missing-release-tag) "LEGACY_JENKINS_ANNOTATION" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -154,6 +169,7 @@ export interface Project {
 //
 // @public (undocumented)
 export const Router: (props: {
+  title?: string;
   columns?: TableColumn<Project>[];
 }) => React_2.JSX.Element;
 ```

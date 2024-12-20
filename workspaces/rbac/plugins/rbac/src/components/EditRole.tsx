@@ -18,8 +18,10 @@ import React from 'react';
 import { parseEntityRef } from '@backstage/catalog-model';
 import { Link } from '@backstage/core-components';
 
-import { IconButton, Tooltip, Typography } from '@material-ui/core';
-import EditIcon from '@material-ui/icons/Edit';
+import EditIcon from '@mui/icons-material/Edit';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
+import Typography from '@mui/material/Typography';
 
 type EditRoleProps = {
   roleName: string;
@@ -38,15 +40,16 @@ const EditRole = ({
 }: EditRoleProps) => {
   const { name, namespace, kind } = parseEntityRef(roleName);
   return (
-    <Tooltip title={tooltip || ''}>
+    <Tooltip title={tooltip ?? ''}>
       <Typography component="span" data-testid={dataTestId}>
         <IconButton
-          color="inherit"
           component={Link}
           aria-label="Update"
           disabled={disable}
-          title={tooltip || 'Edit Role'}
-          to={to || `../role/${kind}/${namespace}/${name}`}
+          title={tooltip ?? 'Edit Role'}
+          to={to ?? `../role/${kind}/${namespace}/${name}`}
+          style={{ padding: '0.5rem', color: 'inherit', borderRadius: '50%' }}
+          sx={{ '&:hover': { borderRadius: '50%' } }}
         >
           <EditIcon />
         </IconButton>

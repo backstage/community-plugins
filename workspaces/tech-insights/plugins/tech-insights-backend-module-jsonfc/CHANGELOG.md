@@ -1,5 +1,32 @@
 # @backstage-community/plugin-tech-insights-backend-module-jsonfc
 
+## 0.2.0
+
+### Minor Changes
+
+- 5289c38: Add metadata to TechInsightCheck
+
+### Patch Changes
+
+- Updated dependencies [5289c38]
+  - @backstage-community/plugin-tech-insights-common@0.3.0
+  - @backstage-community/plugin-tech-insights-node@2.1.0
+
+## 0.1.61
+
+### Patch Changes
+
+- Updated dependencies [c3bbe0f]
+  - @backstage-community/plugin-tech-insights-node@2.0.0
+
+## 0.1.60
+
+### Patch Changes
+
+- Updated dependencies [331daba]
+  - @backstage-community/plugin-tech-insights-common@0.2.21
+  - @backstage-community/plugin-tech-insights-node@1.0.3
+
 ## 0.1.59
 
 ### Patch Changes

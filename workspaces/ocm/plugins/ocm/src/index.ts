@@ -19,4 +19,5 @@ export {
   ClusterContextProvider,
   useCluster,
 } from './components/ClusterContext';
+export type { ClusterContextType } from './components/ClusterContext';
 export { ClusterInfoCard } from './components/ClusterInfoCard';

@@ -1,5 +1,31 @@
 ### Dependencies
 
+## 1.29.9
+
+### Patch Changes
+
+- b133709: fix status text and icon alignment issue
+
+## 1.29.8
+
+### Patch Changes
+
+- e815da7: Clean up api report warnings and remove unnecessary files
+- Updated dependencies [e815da7]
+  - @backstage-community/plugin-topology-common@1.4.4
+
+## 1.29.7
+
+### Patch Changes
+
+- aaeb7fc: Fixed tab button margin, text color, and text background color issues.
+
+## 1.29.6
+
+### Patch Changes
+
+- a6e850f: Updated dependency `msw` to `1.3.5`.
+
 ## 1.29.5
 
 ### Patch Changes

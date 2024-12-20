@@ -1,5 +1,13 @@
 # @backstage-community/plugin-kafka-backend
 
+## 0.3.22
+
+### Patch Changes
+
+- 179ee02: Removed usages and references of `@backstage/backend-common`
+
+  Deprecated `createRouter` and its router options in favour of the new backend system.
+
 ## 0.3.21
 
 ### Patch Changes

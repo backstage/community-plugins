@@ -19,23 +19,15 @@ import { parseEntityRef } from '@backstage/catalog-model';
 import { Table, WarningPanel } from '@backstage/core-components';
 import { usePermission } from '@backstage/plugin-permission-react';
 
-import { Card, CardContent, makeStyles } from '@material-ui/core';
-import CachedIcon from '@material-ui/icons/Cached';
+import CachedIcon from '@mui/icons-material/Cached';
+import Box from '@mui/material/Box';
 
 import { policyEntityUpdatePermission } from '@backstage-community/plugin-rbac-common';
 
 import { usePermissionPolicies } from '../../hooks/usePermissionPolicies';
-import { PermissionsData } from '../../types';
+import { filterTableData } from '../../utils/filter-table-data';
 import EditRole from '../EditRole';
 import { columns } from './PermissionsListColumns';
-
-const useStyles = makeStyles(theme => ({
-  empty: {
-    padding: theme.spacing(2),
-    display: 'flex',
-    justifyContent: 'center',
-  },
-}));
 
 type PermissionsCardProps = {
   entityReference: string;
@@ -62,27 +54,25 @@ export const PermissionsCard = ({
 }: PermissionsCardProps) => {
   const { data, loading, retry, error } =
     usePermissionPolicies(entityReference);
-  const [permissions, setPermissions] = React.useState<PermissionsData[]>();
+  const [searchText, setSearchText] = React.useState<string>();
   const permissionResult = usePermission({
     permission: policyEntityUpdatePermission,
     resourceRef: policyEntityUpdatePermission.resourceType,
   });
-  const classes = useStyles();
 
-  const onSearchResultsChange = (searchResults: PermissionsData[]) => {
-    setPermissions(searchResults);
-  };
+  const numberOfPolicies = React.useMemo(() => {
+    const filteredPermissions = filterTableData({ data, columns, searchText });
+    let policies = 0;
+    filteredPermissions.forEach(p => {
+      if (p.conditions) {
+        policies++;
+        return;
+      }
+      policies += p.policies.filter(pol => pol.effect === 'allow').length;
+    });
+    return policies;
+  }, [data, searchText]);
 
-  let numberOfPolicies = 0;
-  (permissions || data)?.forEach(p => {
-    if (p.conditions) {
-      numberOfPolicies++;
-      return;
-    }
-    numberOfPolicies =
-      numberOfPolicies +
-      p.policies.filter(pol => pol.effect === 'allow').length;
-  });
   const actions = [
     {
       icon: getRefreshIcon,
@@ -110,36 +100,37 @@ export const PermissionsCard = ({
   ];
 
   return (
-    <Card>
-      <CardContent>
-        {error?.name && error.name !== 404 && (
-          <div style={{ paddingBottom: '16px' }}>
-            <WarningPanel
-              message={error?.message}
-              title="Something went wrong while fetching the permission policies"
-              severity="error"
-            />
-          </div>
-        )}
-        <Table
-          title={
-            !loading && data.length > 0
-              ? `Permission Policies (${numberOfPolicies})`
-              : 'Permission Policies'
-          }
-          actions={actions}
-          renderSummaryRow={summary => onSearchResultsChange(summary.data)}
-          options={{ padding: 'default', search: true, paging: true }}
-          data={data}
-          columns={columns}
-          isLoading={loading}
-          emptyContent={
-            <div data-testid="permission-table-empty" className={classes.empty}>
-              No records found
-            </div>
-          }
-        />
-      </CardContent>
-    </Card>
+    <Box>
+      {error?.name && error.name !== 404 && (
+        <Box style={{ paddingBottom: '16px' }}>
+          <WarningPanel
+            message={error?.message}
+            title="Something went wrong while fetching the permission policies"
+            severity="error"
+          />
+        </Box>
+      )}
+      <Table
+        title={
+          !loading && data.length > 0
+            ? `Permission Policies (${numberOfPolicies})`
+            : 'Permission Policies'
+        }
+        actions={actions}
+        options={{ padding: 'default', search: true, paging: true }}
+        data={data}
+        columns={columns}
+        isLoading={loading}
+        emptyContent={
+          <Box
+            data-testid="permission-table-empty"
+            sx={{ display: 'flex', justifyContent: 'center', p: 2 }}
+          >
+            No records found
+          </Box>
+        }
+        onSearchChange={setSearchText}
+      />
+    </Box>
   );
 };

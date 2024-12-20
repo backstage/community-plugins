@@ -18,7 +18,8 @@ import React from 'react';
 import { parseEntityRef } from '@backstage/catalog-model';
 import { Link, TableColumn } from '@backstage/core-components';
 
-import { Tooltip, Typography } from '@material-ui/core';
+import Tooltip from '@mui/material/Tooltip';
+import Typography from '@mui/material/Typography';
 
 import { RolesData } from '../../types';
 import { getMembers } from '../../utils/rbac-utils';

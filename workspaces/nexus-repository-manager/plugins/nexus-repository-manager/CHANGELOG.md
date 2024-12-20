@@ -1,5 +1,29 @@
 ### Dependencies
 
+## 1.10.8
+
+### Patch Changes
+
+- 3d5311f: Updated dependency `@redhat-developer/red-hat-developer-hub-theme` to `0.4.0`.
+
+## 1.10.7
+
+### Patch Changes
+
+- 8e9239f: Clean up api report warnings and remove unnecessary files
+
+## 1.10.6
+
+### Patch Changes
+
+- 3d6256e: Updated dependency `@hey-api/openapi-ts` to `0.55.3`.
+
+## 1.10.5
+
+### Patch Changes
+
+- a6e850f: Updated dependency `msw` to `1.3.5`.
+
 ## 1.10.4
 
 ### Patch Changes

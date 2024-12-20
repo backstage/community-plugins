@@ -19,11 +19,17 @@ import type { Config } from '@backstage/config';
 
 import express from 'express';
 
+/**
+ * @public
+ */
 export interface RouterOptions {
   logger: LoggerService;
   config: Config;
 }
 
+/**
+ * @public
+ */
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {

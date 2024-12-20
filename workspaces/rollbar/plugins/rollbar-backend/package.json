@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-rollbar-backend",
-  "version": "0.1.69",
+  "version": "0.1.70",
   "description": "A Backstage backend plugin that integrates towards Rollbar",
   "backstage": {
     "role": "backend-plugin",
@@ -42,7 +42,7 @@
     "test": "backstage-cli package test"
   },
   "dependencies": {
-    "@backstage/backend-common": "^0.25.0",
+    "@backstage/backend-defaults": "^0.5.2",
     "@backstage/backend-plugin-api": "^1.0.1",
     "@backstage/config": "^1.2.0",
     "@types/express": "^4.17.6",
@@ -58,7 +58,6 @@
     "yn": "^4.0.0"
   },
   "devDependencies": {
-    "@backstage/backend-defaults": "^0.5.2",
     "@backstage/backend-test-utils": "^1.0.2",
     "@backstage/cli": "^0.28.0",
     "@backstage/plugin-auth-backend": "^0.23.1",

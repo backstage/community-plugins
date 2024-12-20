@@ -1,7 +1,7 @@
 {
   "name": "@backstage-community/plugin-rbac-node",
   "description": "Node.js library for the rbac plugin",
-  "version": "1.8.2",
+  "version": "1.8.3",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "license": "Apache-2.0",
@@ -36,7 +36,7 @@
   "devDependencies": {
     "@backstage/cli": "0.28.2",
     "@spotify/prettier-config": "^15.0.0",
-    "prettier": "3.3.3"
+    "prettier": "3.4.2"
   },
   "files": [
     "dist"
@@ -58,5 +58,15 @@
   "keywords": [
     "support:production",
     "lifecycle:active"
-  ]
+  ],
+  "prettier": "@spotify/prettier-config",
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,mjs,cjs}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ]
+  }
 }

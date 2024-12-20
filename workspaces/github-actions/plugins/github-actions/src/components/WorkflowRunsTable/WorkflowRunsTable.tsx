@@ -39,6 +39,12 @@ import { useRouteRef } from '@backstage/core-plugin-api';
 import { getHostnameFromEntity } from '../getHostnameFromEntity';
 import { getStatusDescription } from '../WorkflowRunStatus/WorkflowRunStatus';
 
+// Utility function to truncate string at the first newline character
+const truncateAtNewline = (str: string) => {
+  const newlineIndex = str.indexOf('\n');
+  return newlineIndex !== -1 ? str.substring(0, newlineIndex) : str;
+};
+
 const generatedColumns: TableColumn<Partial<WorkflowRun>>[] = [
   {
     title: 'ID',
@@ -53,9 +59,14 @@ const generatedColumns: TableColumn<Partial<WorkflowRun>>[] = [
     render: row => {
       const LinkWrapper = () => {
         const routeLink = useRouteRef(buildRouteRef);
+        const truncatedMessage = truncateAtNewline(row.message!);
         return (
-          <Link component={RouterLink} to={routeLink({ id: row.id! })}>
-            {row.message}
+          <Link
+            component={RouterLink}
+            to={routeLink({ id: row.id! })}
+            title={row.message} // display full message on hover
+          >
+            {truncatedMessage}
           </Link>
         );
       };

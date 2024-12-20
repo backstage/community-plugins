@@ -1,5 +1,29 @@
 # @backstage-community/plugin-jenkins
 
+## 0.13.0
+
+### Minor Changes
+
+- dfe7569: Add an API to retrieve the consoleText for a build.
+
+## 0.12.2
+
+### Patch Changes
+
+- 69f11c0: Fix typo in the readme
+
+## 0.12.1
+
+### Patch Changes
+
+- e657f8d: Add default filtering based on required annotation to the new frontend system components
+
+## 0.12.0
+
+### Minor Changes
+
+- 6bde043: Add title property to Jenkins components.
+
 ## 0.11.1
 
 ### Patch Changes

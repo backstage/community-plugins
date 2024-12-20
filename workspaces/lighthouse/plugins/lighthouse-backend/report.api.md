@@ -12,7 +12,7 @@ import { LoggerService } from '@backstage/backend-plugin-api';
 import { PluginTaskScheduler } from '@backstage/backend-tasks';
 import { TokenManager } from '@backstage/backend-common';
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 export interface CreateLighthouseSchedulerOptions {
   // (undocumented)
   auth?: AuthService;
@@ -30,7 +30,7 @@ export interface CreateLighthouseSchedulerOptions {
   tokenManager?: TokenManager;
 }
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 export function createScheduler(
   options: CreateLighthouseSchedulerOptions,
 ): Promise<void>;

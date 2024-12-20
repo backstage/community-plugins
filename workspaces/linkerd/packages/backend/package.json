@@ -1,6 +1,6 @@
 {
   "name": "backend",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "main": "dist/index.cjs.js",
   "types": "src/index.ts",
   "private": true,
@@ -22,7 +22,6 @@
   },
   "dependencies": {
     "@backstage-community/plugin-linkerd-backend": "workspace:^",
-    "@backstage/backend-common": "^0.25.0",
     "@backstage/backend-defaults": "^0.5.2",
     "@backstage/backend-tasks": "^0.6.1",
     "@backstage/config": "^1.2.0",

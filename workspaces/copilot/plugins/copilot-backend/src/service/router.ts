@@ -24,11 +24,20 @@ import {
   SchedulerServiceTaskScheduleDefinition,
 } from '@backstage/backend-plugin-api';
 import { Config } from '@backstage/config';
+import { NotFoundError } from '@backstage/errors';
 import { Metric } from '@backstage-community/plugin-copilot-common';
 import { DatabaseHandler } from '../db/DatabaseHandler';
-import Scheduler from '../task/Scheduler';
+import TaskManagement from '../task/TaskManagement';
 import { GithubClient } from '../client/GithubClient';
-import { DateTime } from 'luxon';
+import { validateQuery } from './validation/validateQuery';
+import {
+  MetricsQuery,
+  metricsQuerySchema,
+  PeriodRangeQuery,
+  periodRangeQuerySchema,
+  TeamQuery,
+  teamQuerySchema,
+} from './validation/schema';
 
 /**
  * Options for configuring the Copilot plugin.
@@ -115,7 +124,8 @@ async function createRouter(
   await scheduler.scheduleTask({
     id: 'copilot-metrics',
     ...(schedule ?? defaultSchedule),
-    fn: async () => await Scheduler.create({ db, logger, api, config }).run(),
+    fn: async () =>
+      await TaskManagement.create({ db, logger, api, config }).runAsync(),
   });
 
   const router = Router();
@@ -126,38 +136,48 @@ async function createRouter(
     response.json({ status: 'ok' });
   });
 
-  router.get('/metrics', async (request, response) => {
-    const { startDate, endDate } = request.query;
+  router.get(
+    '/metrics',
+    validateQuery(metricsQuerySchema),
+    async (req, res) => {
+      const { startDate, endDate, type, team } = req.query as MetricsQuery;
 
-    if (typeof startDate !== 'string' || typeof endDate !== 'string') {
-      return response.status(400).json('Invalid query parameters');
-    }
+      const result = await db.getMetrics(startDate, endDate, type, team);
 
-    const parsedStartDate = DateTime.fromISO(startDate);
-    const parsedEndDate = DateTime.fromISO(endDate);
+      const metrics: Metric[] = result.map(metric => ({
+        ...metric,
+        breakdown: JSON.parse(metric.breakdown),
+      }));
 
-    if (!parsedStartDate.isValid || !parsedEndDate.isValid) {
-      return response.status(400).json('Invalid date format');
-    }
+      return res.json(metrics);
+    },
+  );
 
-    const result = await db.getMetricsByPeriod(startDate, endDate);
+  router.get(
+    '/metrics/period-range',
+    validateQuery(periodRangeQuerySchema),
+    async (req, res) => {
+      const { type } = req.query as PeriodRangeQuery;
+      const result = await db.getPeriodRange(type);
 
-    const metrics: Metric[] = result.map(metric => ({
-      ...metric,
-      breakdown: JSON.parse(metric.breakdown),
-    }));
+      if (!result) {
+        throw new NotFoundError();
+      }
 
-    return response.json(metrics);
-  });
+      return res.json(result);
+    },
+  );
 
-  router.get('/metrics/period-range', async (_, response) => {
-    const result = await db.getPeriodRange();
+  router.get('/teams', validateQuery(teamQuerySchema), async (req, res) => {
+    const { type, startDate, endDate } = req.query as TeamQuery;
+
+    const result = await db.getTeams(type, startDate, endDate);
 
     if (!result) {
-      return response.status(400).json('No available data');
+      throw new NotFoundError();
     }
 
-    return response.json(result);
+    return res.json(result);
   });
 
   router.use(MiddlewareFactory.create({ config, logger }).error);

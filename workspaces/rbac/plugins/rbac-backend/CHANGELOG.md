@@ -1,5 +1,27 @@
 ### Dependencies
 
+## 5.2.7
+
+### Patch Changes
+
+- 7843798: Updated dependency `qs` to `6.13.1`.
+- 4b3653a: Clean up api report warnings and remove unnecessary files
+- Updated dependencies [4b3653a]
+  - @backstage-community/plugin-rbac-common@1.12.3
+  - @backstage-community/plugin-rbac-node@1.8.3
+
+## 5.2.6
+
+### Patch Changes
+
+- 4084738: Ensures that the permissions and roles are properly synced during request handling. This is important in high availability scenarios as we need to ensure data is up to date during scaling.
+
+## 5.2.5
+
+### Patch Changes
+
+- a6e850f: Updated dependency `msw` to `1.3.5`.
+
 ## 5.2.4
 
 ### Patch Changes

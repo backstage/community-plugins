@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-periskop-backend",
-  "version": "0.2.21",
+  "version": "0.2.22",
   "backstage": {
     "role": "backend-plugin",
     "pluginId": "periskop",
@@ -50,7 +50,7 @@
     "test": "backstage-cli package test"
   },
   "dependencies": {
-    "@backstage/backend-common": "^0.25.0",
+    "@backstage/backend-defaults": "^0.5.2",
     "@backstage/backend-plugin-api": "^1.0.1",
     "@backstage/config": "^1.2.0",
     "@types/express": "*",
@@ -60,7 +60,7 @@
     "yn": "^4.0.0"
   },
   "devDependencies": {
-    "@backstage/backend-defaults": "^0.5.2",
+    "@backstage/backend-test-utils": "1.0.2",
     "@backstage/cli": "^0.28.0",
     "@backstage/plugin-auth-backend": "^0.23.1",
     "@backstage/plugin-auth-backend-module-guest-provider": "^0.2.1",

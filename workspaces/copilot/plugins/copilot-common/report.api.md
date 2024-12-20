@@ -18,6 +18,7 @@ export interface Breakdown {
 export interface Metric {
   breakdown: Breakdown[];
   day: string;
+  team_name?: string;
   total_acceptances_count: number;
   total_active_chat_users: number;
   total_active_users: number;
@@ -26,11 +27,22 @@ export interface Metric {
   total_lines_accepted: number;
   total_lines_suggested: number;
   total_suggestions_count: number;
+  type: MetricsType;
 }
+
+// @public
+export type MetricsType = 'enterprise' | 'organization';
 
 // @public
 export interface PeriodRange {
   maxDate: string;
   minDate: string;
+}
+
+// @public
+export interface TeamInfo {
+  id: number;
+  name: string;
+  slug: string;
 }
 ```

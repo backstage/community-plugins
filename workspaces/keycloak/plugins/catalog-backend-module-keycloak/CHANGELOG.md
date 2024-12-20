@@ -1,5 +1,18 @@
 ### Dependencies
 
+## 3.2.3
+
+### Patch Changes
+
+- 74902d9: Clean up api report warnings and remove unnecessary files
+
+## 3.2.2
+
+### Patch Changes
+
+- 3c72e65: Update Keycloak metadata to reflect dual maintenance support
+- d3d078b: Updated dependency `@types/lodash` to `4.17.13`.
+
 ## 3.2.1
 
 ### Patch Changes
