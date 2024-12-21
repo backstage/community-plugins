@@ -1,5 +1,11 @@
 # @backstage-community/plugin-quay-common
 
+## 1.3.5
+
+### Patch Changes
+
+- 0f5c451: Updated dependency `prettier` to `3.4.2`.
+
 ## 1.3.4
 
 ### Patch Changes
