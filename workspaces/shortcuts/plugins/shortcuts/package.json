@@ -57,7 +57,7 @@
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^15.0.0",
     "@types/react-dom": "^18.2.19",
-    "@types/uuid": "^9.0.0",
+    "@types/uuid": "^10.0.0",
     "@types/zen-observable": "^0.8.2",
     "canvas": "^2.11.2",
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
