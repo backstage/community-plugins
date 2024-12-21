@@ -15,7 +15,7 @@
  */
 import * as React from 'react';
 
-import { global_palette_red_200 as criticalColor } from '@patternfly/react-tokens/dist/js/global_palette_red_200';
+import { t_color_red_60 as criticalColor } from '@patternfly/react-tokens/dist/js/t_color_red_60';
 
 const CriticalRiskIcon = ({
   className,
