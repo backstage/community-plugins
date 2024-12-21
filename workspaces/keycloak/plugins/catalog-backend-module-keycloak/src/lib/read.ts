@@ -76,7 +76,7 @@ export const parseUser = async (
   user: UserRepresentation,
   realm: string,
   keycloakGroups: GroupRepresentationWithParentAndEntity[],
-
+  groupIndex: Map<string, string[]>,
   userTransformer?: UserTransformer,
 ): Promise<UserEntity | undefined> => {
   const transformer = userTransformer ?? noopUserTransformer;
@@ -101,9 +101,7 @@ export const parseUser = async (
             }
           : {}),
       },
-      memberOf: keycloakGroups
-        .filter(g => g.members?.includes(user.username!))
-        .map(g => g.entity.metadata.name),
+      memberOf: groupIndex.get(user.username!) ?? [],
     },
   };
 
@@ -321,6 +319,7 @@ export const readKeycloakRealm = async (
   let serverVersion: number;
 
   try {
+    await ensureTokenValid(client, config);
     const serverInfo = await client.serverInfo.find();
     serverVersion = parseInt(
       serverInfo.systemInfo?.version?.slice(0, 2) || '',
@@ -334,6 +333,7 @@ export const readKeycloakRealm = async (
 
   let rawKGroups: GroupRepresentationWithParent[] = [];
 
+  logger.info(`Processing groups recursively`);
   if (isVersion23orHigher) {
     rawKGroups = await processGroupsRecursively(
       client,
@@ -347,6 +347,7 @@ export const readKeycloakRealm = async (
     );
   }
 
+  logger.info(`Fetching group members for keycloak groups and list subgroups`);
   const kGroups = await Promise.all(
     rawKGroups.map(g =>
       limit(async () => {
@@ -386,67 +387,87 @@ export const readKeycloakRealm = async (
     ),
   );
 
-  const parsedGroups = await kGroups.reduce(
-    async (promise, g) => {
-      const partial = await promise;
+  logger.info(`Parsing groups`);
+  const parsedGroups = await Promise.all(
+    kGroups.map(async g => {
+      // it is possible if fetch request failed
+      if (!g) {
+        return null;
+      }
       const entity = await parseGroup(
         g,
         config.realm,
         options?.groupTransformer,
       );
       if (entity) {
-        const group = {
-          ...g,
-          entity,
-        } as GroupRepresentationWithParentAndEntity;
-        partial.push(group);
+        return { ...g, entity } as GroupRepresentationWithParentAndEntity;
       }
-      return partial;
-    },
-    Promise.resolve([] as GroupRepresentationWithParentAndEntity[]),
+      return null;
+    }),
+  );
+  const filteredParsedGroups = parsedGroups.filter(
+    (group): group is GroupRepresentationWithParentAndEntity => group !== null,
   );
 
-  const parsedUsers = await kUsers.reduce(
-    async (promise, u) => {
-      const partial = await promise;
+  const groupIndex = new Map<string, string[]>();
+  filteredParsedGroups.forEach(group => {
+    if (group.members) {
+      group.members.forEach(member => {
+        if (!groupIndex.has(member)) {
+          groupIndex.set(member, []);
+        }
+        groupIndex.get(member)?.push(group.entity.metadata.name);
+      });
+    }
+  });
+
+  logger.info('Parsing users');
+  const parsedUsers = await Promise.all(
+    kUsers.map(async u => {
+      // it is possible if fetch request failed
+      if (!u) {
+        return null;
+      }
       const entity = await parseUser(
         u,
         config.realm,
-        parsedGroups,
+        filteredParsedGroups,
+        groupIndex,
         options?.userTransformer,
       );
       if (entity) {
-        const user = { ...u, entity } as UserRepresentationWithEntity;
-        partial.push(user);
+        return { ...u, entity } as UserRepresentationWithEntity;
       }
-      return partial;
-    },
-    Promise.resolve([] as UserRepresentationWithEntity[]),
+      return null;
+    }),
+  );
+  const filteredParsedUsers = parsedUsers.filter(
+    (user): user is UserRepresentationWithEntity => user !== null,
   );
 
-  const groups = parsedGroups.map(g => {
+  logger.info(`Set up group members and children information`);
+
+  const userMap = new Map(
+    filteredParsedUsers.map(user => [user.username, user.entity.metadata.name]),
+  );
+
+  const groupMap = new Map(
+    filteredParsedGroups.map(group => [group.name, group.entity.metadata.name]),
+  );
+
+  const groups = filteredParsedGroups.map(g => {
     const entity = g.entity;
     entity.spec.members =
-      g.entity.spec.members?.flatMap(m => {
-        const name = parsedUsers.find(p => p.username === m)?.entity.metadata
-          .name;
-        return name ? [name] : [];
-      }) ?? [];
+      g.entity.spec.members?.flatMap(m => userMap.get(m) ?? []) ?? [];
     entity.spec.children =
-      g.entity.spec.children?.flatMap(c => {
-        const child = parsedGroups.find(p => p.name === c)?.entity.metadata
-          .name;
-        return child ? [child] : [];
-      }) ?? [];
-    entity.spec.parent = parsedGroups.find(
-      p => p.name === entity.spec.parent,
-    )?.entity.metadata.name;
+      g.entity.spec.children?.flatMap(c => groupMap.get(c) ?? []) ?? [];
+    entity.spec.parent = groupMap.get(entity.spec.parent);
     return entity;
   });
 
   logger.info(
-    `Fetched and parsed ${parsedUsers.length} users and ${groups.length} groups from Keycloak`,
+    `Prepared to ingest  ${parsedUsers.length} users and ${groups.length} groups into the catalog from Keycloak`,
   );
 
-  return { users: parsedUsers.map(u => u.entity), groups };
+  return { users: filteredParsedUsers.map(u => u.entity), groups };
 };
