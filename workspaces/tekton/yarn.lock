@@ -2830,7 +2830,7 @@ __metadata:
     "@material-ui/core": ^4.9.13
     "@material-ui/icons": ^4.11.3
     "@material-ui/lab": ^4.0.0-alpha.45
-    "@mui/icons-material": 5.15.17
+    "@mui/icons-material": 5.16.12
     "@patternfly/patternfly": ^5.1.0
     "@patternfly/react-charts": ^7.1.1
     "@patternfly/react-core": ^5.1.2
@@ -8458,6 +8458,22 @@ __metadata:
     "@types/react":
       optional: true
   checksum: 6ac49529cbf6d2b2b6d955e4ade4f35fb52c4d25ca66159a5033919173ea8392ebf1ddbfe28a8d8609e40d638e08fc377d5c9fab4e016e3e1d3746cfba957d38
+  languageName: node
+  linkType: hard
+
+"@mui/icons-material@npm:5.16.12":
+  version: 5.16.12
+  resolution: "@mui/icons-material@npm:5.16.12"
+  dependencies:
+    "@babel/runtime": ^7.23.9
+  peerDependencies:
+    "@mui/material": ^5.0.0
+    "@types/react": ^17.0.0 || ^18.0.0 || ^19.0.0
+    react: ^17.0.0 || ^18.0.0 || ^19.0.0
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+  checksum: 932b48e64e80ff6c01f359fe469a36f1195127abe42cdc4dcfc444b79e861e018dfc3a86c13f6158ba43997b1fdbee5fab337c728b05833f9d66875f4250c3e0
   languageName: node
   linkType: hard
 
