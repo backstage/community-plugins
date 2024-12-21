@@ -1,5 +1,11 @@
 ## @backstage-community/plugin-ocm-common [3.3.0](https://github.com/janus-idp/backstage-plugins/compare/@backstage-community/plugin-ocm-common@3.2.0...@backstage-community/plugin-ocm-common@3.3.0) (2024-07-26)
 
+## 3.6.3
+
+### Patch Changes
+
+- 0f5c451: Updated dependency `prettier` to `3.4.2`.
+
 ## 3.6.2
 
 ### Patch Changes
