@@ -1,5 +1,12 @@
 ### Dependencies
 
+## 2.2.3
+
+### Patch Changes
+
+- 0f5c451: Updated dependency `prettier` to `3.4.2`.
+- 40e2594: Updated dependency `msw` to `1.3.5`.
+
 ## 2.2.2
 
 ### Patch Changes
