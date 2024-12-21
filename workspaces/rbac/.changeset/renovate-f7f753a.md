@@ -1,0 +1,7 @@
+---
+'@backstage-community/plugin-rbac': patch
+---
+
+Updated dependency `@mui/icons-material` to `5.16.12`.
+Updated dependency `@mui/lab` to `5.0.0-alpha.175`.
+Updated dependency `@mui/styles` to `5.16.12`.

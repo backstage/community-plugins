@@ -2759,7 +2759,7 @@ __metadata:
     "@backstage/test-utils": 1.7.0
     "@backstage/theme": ^0.6.0
     "@janus-idp/shared-react": ^2.13.1
-    "@mui/icons-material": 5.16.4
+    "@mui/icons-material": 5.16.12
     "@mui/material": ^5.14.18
     "@mui/styles": ^6.1.7
     "@playwright/test": 1.49.1
@@ -8352,19 +8352,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mui/icons-material@npm:5.16.4":
-  version: 5.16.4
-  resolution: "@mui/icons-material@npm:5.16.4"
+"@mui/icons-material@npm:5.16.12":
+  version: 5.16.12
+  resolution: "@mui/icons-material@npm:5.16.12"
   dependencies:
     "@babel/runtime": ^7.23.9
   peerDependencies:
     "@mui/material": ^5.0.0
-    "@types/react": ^17.0.0 || ^18.0.0
-    react: ^17.0.0 || ^18.0.0
+    "@types/react": ^17.0.0 || ^18.0.0 || ^19.0.0
+    react: ^17.0.0 || ^18.0.0 || ^19.0.0
   peerDependenciesMeta:
     "@types/react":
       optional: true
-  checksum: b0559215a10819a082539a7ae43aedafb30bc109c5d6994ac6d748e46688d705e6b44b62693f89aea1fca3afdc6deb665d884c6bad0a2cffde9c5443027e3019
+  checksum: 932b48e64e80ff6c01f359fe469a36f1195127abe42cdc4dcfc444b79e861e018dfc3a86c13f6158ba43997b1fdbee5fab337c728b05833f9d66875f4250c3e0
   languageName: node
   linkType: hard
 
