@@ -1,0 +1,193 @@
+{
+  "namespace": {
+    "name": "travel-control",
+    "cluster": "",
+    "isAmbient": false,
+    "labels": null,
+    "annotations": null
+  },
+  "destinationRules": [
+    {
+      "kind": "DestinationRule",
+      "apiVersion": "networking.istio.io/v1beta1",
+      "metadata": {
+        "name": "control",
+        "namespace": "travel-control",
+        "uid": "a89f69da-5778-46be-b200-4085b6b4c356",
+        "resourceVersion": "811967",
+        "generation": 1,
+        "creationTimestamp": "2024-03-20T12:45:22Z",
+        "labels": {
+          "kiali_wizard": "request_routing"
+        },
+        "managedFields": [
+          {
+            "manager": "kiali",
+            "operation": "Update",
+            "apiVersion": "networking.istio.io/v1beta1",
+            "time": "2024-03-20T12:45:22Z",
+            "fieldsType": "FieldsV1",
+            "fieldsV1": {
+              "f:metadata": {
+                "f:labels": {
+                  ".": {},
+                  "f:kiali_wizard": {}
+                }
+              },
+              "f:spec": {
+                ".": {},
+                "f:host": {},
+                "f:subsets": {}
+              }
+            }
+          }
+        ]
+      },
+      "spec": {
+        "host": "control.travel-control.svc.cluster.local",
+        "subsets": [
+          {
+            "name": "v1",
+            "labels": {
+              "version": "v1"
+            }
+          }
+        ]
+      },
+      "status": {}
+    }
+  ],
+  "envoyFilters": [],
+  "gateways": [
+    {
+      "kind": "Gateway",
+      "apiVersion": "networking.istio.io/v1beta1",
+      "metadata": {
+        "name": "control-gateway",
+        "namespace": "travel-control",
+        "uid": "185675fa-6cca-45ab-a194-e64a57569452",
+        "resourceVersion": "812011",
+        "generation": 2,
+        "creationTimestamp": "2024-03-20T12:45:22Z",
+        "labels": {
+          "kiali_wizard": "request_routing"
+        },
+        "managedFields": [
+          {
+            "manager": "kiali",
+            "operation": "Update",
+            "apiVersion": "networking.istio.io/v1beta1",
+            "time": "2024-03-20T12:45:49Z",
+            "fieldsType": "FieldsV1",
+            "fieldsV1": {
+              "f:metadata": {
+                "f:labels": {
+                  ".": {},
+                  "f:kiali_wizard": {}
+                }
+              },
+              "f:spec": {
+                ".": {},
+                "f:selector": {
+                  ".": {},
+                  "f:istio": {}
+                },
+                "f:servers": {}
+              }
+            }
+          }
+        ]
+      },
+      "spec": {
+        "servers": [
+          {
+            "port": {
+              "number": 8080,
+              "protocol": "HTTP",
+              "name": "http"
+            },
+            "hosts": ["*"]
+          }
+        ],
+        "selector": {
+          "istio": "ingressgateway"
+        }
+      },
+      "status": {}
+    }
+  ],
+  "serviceEntries": [],
+  "sidecars": [],
+  "virtualServices": [
+    {
+      "kind": "VirtualService",
+      "apiVersion": "networking.istio.io/v1beta1",
+      "metadata": {
+        "name": "control",
+        "namespace": "travel-control",
+        "uid": "05468816-71ed-437d-9fc5-c0120d6ab61a",
+        "resourceVersion": "811969",
+        "generation": 1,
+        "creationTimestamp": "2024-03-20T12:45:22Z",
+        "labels": {
+          "kiali_wizard": "request_routing"
+        },
+        "managedFields": [
+          {
+            "manager": "kiali",
+            "operation": "Update",
+            "apiVersion": "networking.istio.io/v1beta1",
+            "time": "2024-03-20T12:45:22Z",
+            "fieldsType": "FieldsV1",
+            "fieldsV1": {
+              "f:metadata": {
+                "f:labels": {
+                  ".": {},
+                  "f:kiali_wizard": {}
+                }
+              },
+              "f:spec": {
+                ".": {},
+                "f:gateways": {},
+                "f:hosts": {},
+                "f:http": {}
+              }
+            }
+          }
+        ]
+      },
+      "spec": {
+        "hosts": ["*"],
+        "gateways": ["travel-control/control-gateway"],
+        "http": [
+          {
+            "route": [
+              {
+                "destination": {
+                  "host": "control.travel-control.svc.cluster.local",
+                  "subset": "v1"
+                },
+                "weight": 100
+              }
+            ]
+          }
+        ]
+      },
+      "status": {}
+    }
+  ],
+  "workloadEntries": [],
+  "workloadGroups": [],
+  "wasmPlugins": [],
+  "telemetries": [],
+  "k8sGateways": [],
+  "k8sGRPCRoutes": [],
+  "k8sHTTPRoutes": [],
+  "k8sReferenceGrants": [],
+  "k8sTCPRoutes": [],
+  "k8sTLSRoutes": [],
+  "authorizationPolicies": [],
+  "peerAuthentications": [],
+  "requestAuthentications": [],
+  "validations": {}
+}

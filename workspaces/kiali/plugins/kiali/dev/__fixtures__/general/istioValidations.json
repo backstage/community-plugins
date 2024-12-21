@@ -1,0 +1,44 @@
+{
+  "Kubernetes": {
+    "bookinfo": {
+      "errors": 1,
+      "objectCount": 2,
+      "warnings": 1
+    },
+    "default": {
+      "errors": 0,
+      "objectCount": 0,
+      "warnings": 0
+    },
+    "hostpath-provisioner": {
+      "errors": 0,
+      "objectCount": 0,
+      "warnings": 0
+    },
+    "istio-system": {
+      "errors": 0,
+      "objectCount": 0,
+      "warnings": 0
+    },
+    "kiali": {
+      "errors": 0,
+      "objectCount": 0,
+      "warnings": 0
+    },
+    "travel-agency": {
+      "errors": 0,
+      "objectCount": 2,
+      "warnings": 0
+    },
+    "travel-control": {
+      "errors": 0,
+      "objectCount": 1,
+      "warnings": 1
+    },
+    "travel-portal": {
+      "errors": 0,
+      "objectCount": 0,
+      "warnings": 0
+    }
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "cars": {
+    "requests": {
+      "inbound": {
+        "http": {
+          "200": 0.260085535042735
+        }
+      },
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  },
+  "discounts": {
+    "requests": {
+      "inbound": {
+        "http": {
+          "200": 1.3299145299145296
+        }
+      },
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  },
+  "flights": {
+    "requests": {
+      "inbound": {
+        "http": {
+          "200": 0.26561828319088315
+        }
+      },
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  },
+  "hotels": {
+    "requests": {
+      "inbound": {
+        "http": {
+          "200": 0.7984701908831908
+        }
+      },
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  },
+  "insurances": {
+    "requests": {
+      "inbound": {
+        "http": {
+          "200": 0.3991372467236467
+        }
+      },
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  },
+  "mysqldb": {
+    "requests": {
+      "inbound": {},
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  },
+  "travels": {
+    "requests": {
+      "inbound": {
+        "http": {
+          "200": 0.793200482030932
+        }
+      },
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  }
+}

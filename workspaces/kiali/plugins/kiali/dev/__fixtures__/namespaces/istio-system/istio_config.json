@@ -1,0 +1,35 @@
+{
+  "namespace": {
+    "name": "istio-system",
+    "cluster": "",
+    "isAmbient": false,
+    "labels": null,
+    "annotations": null
+  },
+  "destinationRules": [],
+  "envoyFilters": [],
+  "gateways": [],
+  "serviceEntries": [],
+  "sidecars": [],
+  "virtualServices": [],
+  "workloadEntries": [],
+  "workloadGroups": [],
+  "wasmPlugins": [],
+  "telemetries": [],
+  "k8sGateways": [],
+  "k8sHTTPRoutes": [],
+  "authorizationPolicies": [],
+  "peerAuthentications": [],
+  "requestAuthentications": [],
+  "validations": {
+    "gateway": {
+      "bookinfo-gateway.bookinfo": {
+        "name": "bookinfo-gateway",
+        "objectType": "gateway",
+        "valid": true,
+        "checks": [],
+        "references": null
+      }
+    }
+  }
+}

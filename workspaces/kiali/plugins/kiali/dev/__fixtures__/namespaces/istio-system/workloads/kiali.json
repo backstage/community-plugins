@@ -1,0 +1,187 @@
+{
+  "name": "kiali",
+  "cluster": "Kubernetes",
+  "type": "Deployment",
+  "createdAt": "2024-02-15T09:25:30Z",
+  "resourceVersion": "16310",
+  "istioInjectionAnnotation": false,
+  "istioSidecar": false,
+  "istioAmbient": false,
+  "additionalDetailSample": null,
+  "labels": {
+    "app": "kiali",
+    "app.kubernetes.io/instance": "kiali",
+    "app.kubernetes.io/managed-by": "Helm",
+    "app.kubernetes.io/name": "kiali",
+    "app.kubernetes.io/part-of": "kiali",
+    "app.kubernetes.io/version": "v1.76.0",
+    "helm.sh/chart": "kiali-server-1.76.0",
+    "sidecar.istio.io/inject": "false",
+    "version": "v1.76.0"
+  },
+  "appLabel": true,
+  "versionLabel": true,
+  "podCount": 0,
+  "annotations": {
+    "deployment.kubernetes.io/revision": "1",
+    "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"apps/v1\",\"kind\":\"Deployment\",\"metadata\":{\"annotations\":{},\"labels\":{\"app\":\"kiali\",\"app.kubernetes.io/instance\":\"kiali\",\"app.kubernetes.io/managed-by\":\"Helm\",\"app.kubernetes.io/name\":\"kiali\",\"app.kubernetes.io/part-of\":\"kiali\",\"app.kubernetes.io/version\":\"v1.76.0\",\"helm.sh/chart\":\"kiali-server-1.76.0\",\"version\":\"v1.76.0\"},\"name\":\"kiali\",\"namespace\":\"istio-system\"},\"spec\":{\"replicas\":1,\"selector\":{\"matchLabels\":{\"app.kubernetes.io/instance\":\"kiali\",\"app.kubernetes.io/name\":\"kiali\"}},\"strategy\":{\"rollingUpdate\":{\"maxSurge\":1,\"maxUnavailable\":1},\"type\":\"RollingUpdate\"},\"template\":{\"metadata\":{\"annotations\":{\"checksum/config\":\"aebd819b94172ef9b148702b7bb438ac35bd1eb284bbb9b13769d8576374fbda\",\"kiali.io/dashboards\":\"go,kiali\",\"prometheus.io/port\":\"9090\",\"prometheus.io/scrape\":\"true\"},\"labels\":{\"app\":\"kiali\",\"app.kubernetes.io/instance\":\"kiali\",\"app.kubernetes.io/managed-by\":\"Helm\",\"app.kubernetes.io/name\":\"kiali\",\"app.kubernetes.io/part-of\":\"kiali\",\"app.kubernetes.io/version\":\"v1.76.0\",\"helm.sh/chart\":\"kiali-server-1.76.0\",\"sidecar.istio.io/inject\":\"false\",\"version\":\"v1.76.0\"},\"name\":\"kiali\"},\"spec\":{\"containers\":[{\"command\":[\"/opt/kiali/kiali\",\"-config\",\"/kiali-configuration/config.yaml\"],\"env\":[{\"name\":\"ACTIVE_NAMESPACE\",\"valueFrom\":{\"fieldRef\":{\"fieldPath\":\"metadata.namespace\"}}},{\"name\":\"LOG_LEVEL\",\"value\":\"info\"},{\"name\":\"LOG_FORMAT\",\"value\":\"text\"},{\"name\":\"LOG_TIME_FIELD_FORMAT\",\"value\":\"2006-01-02T15:04:05Z07:00\"},{\"name\":\"LOG_SAMPLER_RATE\",\"value\":\"1\"}],\"image\":\"quay.io/kiali/kiali:v1.76\",\"imagePullPolicy\":\"Always\",\"livenessProbe\":{\"httpGet\":{\"path\":\"/kiali/healthz\",\"port\":\"api-port\",\"scheme\":\"HTTP\"},\"initialDelaySeconds\":5,\"periodSeconds\":30},\"name\":\"kiali\",\"ports\":[{\"containerPort\":20001,\"name\":\"api-port\"},{\"containerPort\":9090,\"name\":\"http-metrics\"}],\"readinessProbe\":{\"httpGet\":{\"path\":\"/kiali/healthz\",\"port\":\"api-port\",\"scheme\":\"HTTP\"},\"initialDelaySeconds\":5,\"periodSeconds\":30},\"resources\":{\"limits\":{\"memory\":\"1Gi\"},\"requests\":{\"cpu\":\"10m\",\"memory\":\"64Mi\"}},\"securityContext\":{\"allowPrivilegeEscalation\":false,\"capabilities\":{\"drop\":[\"ALL\"]},\"privileged\":false,\"readOnlyRootFilesystem\":true,\"runAsNonRoot\":true},\"volumeMounts\":[{\"mountPath\":\"/kiali-configuration\",\"name\":\"kiali-configuration\"},{\"mountPath\":\"/kiali-cert\",\"name\":\"kiali-cert\"},{\"mountPath\":\"/kiali-secret\",\"name\":\"kiali-secret\"},{\"mountPath\":\"/kiali-cabundle\",\"name\":\"kiali-cabundle\"}]}],\"serviceAccountName\":\"kiali\",\"volumes\":[{\"configMap\":{\"name\":\"kiali\"},\"name\":\"kiali-configuration\"},{\"name\":\"kiali-cert\",\"secret\":{\"optional\":true,\"secretName\":\"istio.kiali-service-account\"}},{\"name\":\"kiali-secret\",\"secret\":{\"optional\":true,\"secretName\":\"kiali\"}},{\"configMap\":{\"name\":\"kiali-cabundle\",\"optional\":true},\"name\":\"kiali-cabundle\"}]}}}}\n"
+  },
+  "healthAnnotations": {},
+  "istioReferences": null,
+  "dashboardAnnotations": {},
+  "serviceAccountNames": null,
+  "desiredReplicas": 1,
+  "currentReplicas": 1,
+  "availableReplicas": 1,
+  "pods": [
+    {
+      "name": "kiali-545878ddbb-swl5j",
+      "labels": {
+        "app": "kiali",
+        "app.kubernetes.io/instance": "kiali",
+        "app.kubernetes.io/managed-by": "Helm",
+        "app.kubernetes.io/name": "kiali",
+        "app.kubernetes.io/part-of": "kiali",
+        "app.kubernetes.io/version": "v1.76.0",
+        "helm.sh/chart": "kiali-server-1.76.0",
+        "pod-template-hash": "545878ddbb",
+        "sidecar.istio.io/inject": "false",
+        "version": "v1.76.0"
+      },
+      "createdAt": "2024-02-15T09:25:30Z",
+      "createdBy": [
+        {
+          "name": "kiali-545878ddbb",
+          "kind": "ReplicaSet"
+        }
+      ],
+      "containers": [
+        {
+          "name": "kiali",
+          "image": "quay.io/kiali/kiali:v1.76",
+          "isProxy": false,
+          "isReady": true,
+          "isAmbient": false
+        }
+      ],
+      "istioContainers": null,
+      "istioInitContainers": null,
+      "status": "Running",
+      "statusMessage": "",
+      "statusReason": "",
+      "appLabel": true,
+      "versionLabel": true,
+      "annotations": {
+        "checksum/config": "aebd819b94172ef9b148702b7bb438ac35bd1eb284bbb9b13769d8576374fbda",
+        "kiali.io/dashboards": "go,kiali",
+        "prometheus.io/port": "9090",
+        "prometheus.io/scrape": "true"
+      },
+      "proxyStatus": null,
+      "serviceAccountName": "kiali"
+    }
+  ],
+  "services": [
+    {
+      "name": "kiali",
+      "namespace": "istio-system",
+      "istioSidecar": true,
+      "cluster": "Kubernetes",
+      "istioAmbient": false,
+      "appLabel": false,
+      "additionalDetailSample": null,
+      "annotations": null,
+      "healthAnnotations": {},
+      "ports": null,
+      "labels": {
+        "app": "kiali",
+        "app.kubernetes.io/instance": "kiali",
+        "app.kubernetes.io/managed-by": "Helm",
+        "app.kubernetes.io/name": "kiali",
+        "app.kubernetes.io/part-of": "kiali",
+        "app.kubernetes.io/version": "v1.76.0",
+        "helm.sh/chart": "kiali-server-1.76.0",
+        "version": "v1.76.0"
+      },
+      "selector": {
+        "app.kubernetes.io/instance": "kiali",
+        "app.kubernetes.io/name": "kiali"
+      },
+      "istioReferences": [],
+      "kialiWizard": "",
+      "serviceRegistry": "Kubernetes",
+      "health": {
+        "requests": {
+          "inbound": {},
+          "outbound": {},
+          "healthAnnotations": {}
+        }
+      }
+    }
+  ],
+  "runtimes": [
+    {
+      "name": "Go",
+      "dashboardRefs": [
+        {
+          "template": "go",
+          "title": "Go Metrics"
+        }
+      ]
+    },
+    {
+      "name": "",
+      "dashboardRefs": [
+        {
+          "template": "kiali",
+          "title": "Kiali Internal Metrics"
+        }
+      ]
+    }
+  ],
+  "additionalDetails": [],
+  "validations": {
+    "gateway": {
+      "bookinfo-gateway.bookinfo": {
+        "name": "bookinfo-gateway",
+        "objectType": "gateway",
+        "valid": true,
+        "checks": [],
+        "references": null
+      }
+    },
+    "virtualservice": {
+      "bookinfo.bookinfo": {
+        "name": "bookinfo",
+        "objectType": "virtualservice",
+        "valid": true,
+        "checks": [],
+        "references": null
+      }
+    },
+    "workload": {
+      "kiali.istio-system": {
+        "name": "kiali",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      }
+    }
+  },
+  "waypointWorkloads": null,
+  "health": {
+    "workloadStatus": {
+      "name": "kiali",
+      "desiredReplicas": 1,
+      "currentReplicas": 1,
+      "availableReplicas": 1,
+      "syncedProxies": -1
+    },
+    "requests": {
+      "inbound": {},
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  }
+}

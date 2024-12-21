@@ -1,0 +1,114 @@
+{
+  "grafana": {
+    "workloadStatuses": [
+      {
+        "name": "grafana",
+        "desiredReplicas": 1,
+        "currentReplicas": 1,
+        "availableReplicas": 1,
+        "syncedProxies": -1
+      }
+    ],
+    "requests": {
+      "inbound": {},
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  },
+  "istio-egressgateway": {
+    "workloadStatuses": [
+      {
+        "name": "istio-egressgateway",
+        "desiredReplicas": 1,
+        "currentReplicas": 1,
+        "availableReplicas": 1,
+        "syncedProxies": -1
+      }
+    ],
+    "requests": {
+      "inbound": {},
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  },
+  "istio-ingressgateway": {
+    "workloadStatuses": [
+      {
+        "name": "istio-ingressgateway",
+        "desiredReplicas": 1,
+        "currentReplicas": 1,
+        "availableReplicas": 1,
+        "syncedProxies": -1
+      }
+    ],
+    "requests": {
+      "inbound": {},
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  },
+  "istiod": {
+    "workloadStatuses": [
+      {
+        "name": "istiod",
+        "desiredReplicas": 1,
+        "currentReplicas": 1,
+        "availableReplicas": 1,
+        "syncedProxies": -1
+      }
+    ],
+    "requests": {
+      "inbound": {},
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  },
+  "jaeger": {
+    "workloadStatuses": [
+      {
+        "name": "jaeger",
+        "desiredReplicas": 1,
+        "currentReplicas": 1,
+        "availableReplicas": 1,
+        "syncedProxies": -1
+      }
+    ],
+    "requests": {
+      "inbound": {},
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  },
+  "kiali": {
+    "workloadStatuses": [
+      {
+        "name": "kiali",
+        "desiredReplicas": 1,
+        "currentReplicas": 1,
+        "availableReplicas": 1,
+        "syncedProxies": -1
+      }
+    ],
+    "requests": {
+      "inbound": {},
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  },
+  "prometheus": {
+    "workloadStatuses": [
+      {
+        "name": "prometheus",
+        "desiredReplicas": 1,
+        "currentReplicas": 1,
+        "availableReplicas": 1,
+        "syncedProxies": -1
+      }
+    ],
+    "requests": {
+      "inbound": {},
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  }
+}
