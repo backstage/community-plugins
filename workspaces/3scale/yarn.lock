@@ -14109,7 +14109,7 @@ __metadata:
     "@backstage/plugin-catalog-backend-module-scaffolder-entity-model": ^0.2.1
     "@backstage/plugin-scaffolder-backend": ^1.26.2
     "@types/express": ^4.17.6
-    "@types/express-serve-static-core": ^4.17.5
+    "@types/express-serve-static-core": ^5.0.0
     "@types/luxon": ^2.0.4
     app: "link:../app"
     better-sqlite3: ^9.0.0
