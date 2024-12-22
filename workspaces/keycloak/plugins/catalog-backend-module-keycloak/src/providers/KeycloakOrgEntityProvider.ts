@@ -31,7 +31,6 @@ import type {
   EntityProviderConnection,
 } from '@backstage/plugin-catalog-node';
 
-import type { Credentials } from '@keycloak/keycloak-admin-client/lib/utils/auth';
 // @ts-ignore
 import inclusion from 'inclusion';
 import { merge } from 'lodash';
@@ -46,6 +45,7 @@ import {
 } from '../lib';
 import { readProviderConfigs } from '../lib/config';
 import { readKeycloakRealm } from '../lib/read';
+import { authenticate } from '../lib/authenticate';
 
 /**
  * Options for {@link KeycloakOrgEntityProvider}.
@@ -222,29 +222,7 @@ export class KeycloakOrgEntityProvider implements EntityProvider {
       baseUrl: provider.baseUrl,
       realmName: provider.loginRealm,
     });
-
-    let credentials: Credentials;
-
-    if (provider.username && provider.password) {
-      credentials = {
-        grantType: 'password',
-        clientId: provider.clientId ?? 'admin-cli',
-        username: provider.username,
-        password: provider.password,
-      };
-    } else if (provider.clientId && provider.clientSecret) {
-      credentials = {
-        grantType: 'client_credentials',
-        clientId: provider.clientId,
-        clientSecret: provider.clientSecret,
-      };
-    } else {
-      throw new InputError(
-        `username and password or clientId and clientSecret must be provided.`,
-      );
-    }
-
-    await kcAdminClient.auth(credentials);
+    await authenticate(kcAdminClient, provider);
 
     const pLimitCJSModule = await inclusion('p-limit');
     const limitFunc = pLimitCJSModule.default;

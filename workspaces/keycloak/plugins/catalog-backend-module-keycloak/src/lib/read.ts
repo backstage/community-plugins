@@ -38,8 +38,7 @@ import {
   UserRepresentationWithEntity,
   UserTransformer,
 } from './types';
-import { Credentials } from '@keycloak/keycloak-admin-client/lib/utils/auth';
-import { InputError } from '@backstage/errors';
+import { ensureTokenValid } from './authenticate';
 
 export const parseGroup = async (
   keycloakGroup: GroupRepresentationWithParent,
@@ -220,60 +219,6 @@ export function* traverseGroups(
   for (const g of group.subGroups ?? []) {
     (g as GroupRepresentationWithParent).parent = group.name!;
     yield* traverseGroups(g);
-  }
-}
-
-// update token with refresh token.
-async function ensureTokenValid(
-  kcAdminClient: KeycloakAdminClient,
-  provider: KeycloakProviderConfig,
-) {
-  if (!kcAdminClient.accessToken) {
-    await authenticate(kcAdminClient, provider);
-  } else {
-    const tokenData = JSON.parse(
-      Buffer.from(kcAdminClient.accessToken.split('.')[1], 'base64').toString(),
-    );
-
-    const tokenExpiry = tokenData.exp * 1000; // Convert to milliseconds
-    const now = Date.now();
-
-    // update token with refresh token.
-    if (now > tokenExpiry - 30000) {
-      await authenticate(kcAdminClient, provider);
-    }
-  }
-}
-
-async function authenticate(
-  kcAdminClient: KeycloakAdminClient,
-  provider: KeycloakProviderConfig,
-) {
-  try {
-    let credentials: Credentials;
-    if (provider.username && provider.password) {
-      credentials = {
-        grantType: 'password',
-        clientId: provider.clientId ?? 'admin-cli',
-        username: provider.username,
-        password: provider.password,
-      };
-    } else if (provider.clientId && provider.clientSecret) {
-      credentials = {
-        grantType: 'client_credentials',
-        clientId: provider.clientId,
-        clientSecret: provider.clientSecret,
-      };
-    } else {
-      throw new InputError(
-        `username and password or clientId and clientSecret must be provided.`,
-      );
-    }
-    await kcAdminClient.auth(credentials);
-    console.log('Authenticated successfully');
-  } catch (error) {
-    console.error('Failed to authenticate', error);
-    throw error;
   }
 }
 
