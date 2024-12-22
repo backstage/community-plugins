@@ -244,7 +244,7 @@ describe('parseGroup', () => {
 
 describe('parseUser', () => {
   it('should parse an user', async () => {
-    const entity = await parseUser(usersFixture[0], 'test', []);
+    const entity = await parseUser(usersFixture[0], 'test', [], new Map());
 
     expect(entity).toEqual({
       apiVersion: 'backstage.io/v1beta1',
@@ -266,13 +266,13 @@ describe('parseUser', () => {
   });
 
   it('should parse an user with displayName', async () => {
-    const entity = await parseUser(usersFixture[2], 'test', []);
+    const entity = await parseUser(usersFixture[2], 'test', [], new Map());
 
     expect(entity?.spec.profile?.displayName).toEqual('John Doe');
   });
 
   it('should parse an user without displayName', async () => {
-    const entity = await parseUser(usersFixture[0], 'test', []);
+    const entity = await parseUser(usersFixture[0], 'test', [], new Map());
 
     expect(entity?.spec.profile?.displayName).toBeUndefined();
   });
@@ -282,7 +282,13 @@ describe('parseUser', () => {
       e.metadata.name = `${e.metadata.name}_${r}`;
       return e;
     };
-    const entity = await parseUser(usersFixture[0], 'test', [], transformer);
+    const entity = await parseUser(
+      usersFixture[0],
+      'test',
+      [],
+      new Map(),
+      transformer,
+    );
 
     expect(entity).toBeDefined();
     expect(entity?.metadata.name).toEqual('jamesdoe_test');
