@@ -1,5 +1,12 @@
 # @backstage-community/plugin-github-actions
 
+## 0.6.27
+
+### Patch Changes
+
+- ede35ca: Use a consistent empty state in the workflow runs card regardless of the reason
+  for the card being empty.
+
 ## 0.6.26
 
 ### Patch Changes
