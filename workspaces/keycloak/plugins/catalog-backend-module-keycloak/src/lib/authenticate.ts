@@ -18,7 +18,8 @@ import { KeycloakProviderConfig } from './config';
 import { Credentials } from '@keycloak/keycloak-admin-client/lib/utils/auth';
 import { InputError } from '@backstage/errors';
 
-// update token with refresh token.
+let refreshTokenPromise: Promise<void> | null = null;
+
 export async function ensureTokenValid(
   kcAdminClient: KeycloakAdminClient,
   provider: KeycloakProviderConfig,
@@ -35,7 +36,14 @@ export async function ensureTokenValid(
 
     // update token with refresh token.
     if (now > tokenExpiry - 30000) {
-      await authenticate(kcAdminClient, provider);
+      if (!refreshTokenPromise) {
+        refreshTokenPromise = authenticate(kcAdminClient, provider).finally(
+          () => {
+            refreshTokenPromise = null;
+          },
+        );
+      }
+      await refreshTokenPromise;
     }
   }
 }

@@ -132,7 +132,9 @@ export async function getEntities<T extends Users | Groups>(
             first: i * entityQuerySize,
           })
           .then(ents => {
-            console.log(`index ${i} from ${pageCount}`);
+            logger.info(
+              `Importing keycloak entities batch with index ${i} from pages: ${pageCount}`,
+            );
             return ents;
           })
           .catch(err =>
