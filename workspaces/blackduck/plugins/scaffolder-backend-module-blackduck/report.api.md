@@ -5,7 +5,7 @@
 ```ts
 import { BackendFeature } from '@backstage/backend-plugin-api';
 import { BlackDuckConfig } from '@backstage-community/plugin-blackduck-node';
-import { JsonObject } from '@backstage/types';
+import { JsonObject } from '@backstage/types/index';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { TemplateAction } from '@backstage/plugin-scaffolder-node';
 
