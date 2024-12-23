@@ -1,5 +1,11 @@
 # @backstage-community/plugin-allure
 
+## 0.2.0
+
+### Minor Changes
+
+- ea5a446: Backstage version bump to v1.34.1
+
 ## 0.1.55
 
 ### Patch Changes
