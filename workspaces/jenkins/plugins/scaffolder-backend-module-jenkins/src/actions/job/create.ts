@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 import { createTemplateAction } from '@backstage/plugin-scaffolder-node';
+import fs from 'fs/promises';
+import { resolveSafeChildPath } from '@backstage/backend-plugin-api';
 import Jenkins from 'jenkins';
 
 /**
@@ -34,7 +36,7 @@ export function createJob(jenkins: Jenkins) {
     schema: {
       input: {
         type: 'object',
-        required: ['jobName', 'jobXml'],
+        required: ['jobName'],
         properties: {
           jobName: {
             title: 'Jenkins job name',
@@ -46,19 +48,49 @@ export function createJob(jenkins: Jenkins) {
             description: 'XML of job used by jenkins to create the job',
             type: 'string',
           },
+          folderName: {
+            type: 'string',
+            title: 'Folder of jobName',
+          },
+          configPath: {
+            type: 'string',
+            title: 'Path to config file of job',
+          },
         },
       },
     },
     async handler(ctx) {
       ctx.logger.info(`Creating jenkins job ${ctx.input.jobName}`);
+      
 
       try {
         ctx.logger.debug(
           'Trying to create job jenkins with this xml {}',
           ctx.input.jobXml,
         );
+        
+        const { configPath, folderName } = ctx.input;
 
-        await jenkins.job.create(ctx.input.jobName, ctx.input.jobXml);
+        let jobXml = ctx.input.jobXml;
+        if (configPath) {
+          jobXml = await fs.readFile(
+            resolveSafeChildPath(ctx.workspacePath, configPath),
+            'utf8',
+          );
+        }
+
+        let jobName;
+        if (folderName) {
+          jobName = `${folderName}/${ctx.input.jobName}`;
+        } else {
+          jobName = ctx.input.jobName;
+        }
+
+        if (jobXml == '' || jobXml == null) {
+          throw "JobXml cannot be null or empty, please configure with inline content or from xml file!"
+        }
+
+        await jenkins.job.create(jobName, jobXml);
         ctx.logger.info('Job created successfully!');
       } catch (err) {
         ctx.logger.error('Error creating job please check', err);

@@ -126,6 +126,8 @@ Below, there is an example for each action
   | --------- | ------------------------- |
   | _jobName_ | Name of job               |
   | _jobXml_  | Jenkins xml to create job |
+  | _configPath_ | Jenkins xml file to create job, should be a file under ./job/config.xml under skeleton folder |
+  | _folderName_ | Jenkins folder name, in this case the job will be create under this folder (Optional)         |
 
   ```yaml
   - id: jenkins-job-create
@@ -139,24 +141,16 @@ Below, there is an example for each action
         </flow-definition>
   ```
 
-- Create job with file
-
-  **Action input parameters**
-
-  | Action       | Description                                                                                   |
-  | ------------ | --------------------------------------------------------------------------------------------- |
-  | _jobName_    | Name of job                                                                                   |
-  | _configPath_ | Jenkins xml file to create job, should be a file under ./job/config.xml under skeleton folder |
-  | _folderName_ | Jenkins folder name, in this case the job will be create under this folder (Optional)         |
+  Or
 
   ```yaml
-  - id: jenkins-job-create-file
-    name: Jenkins Job Create with file
-    action: jenkins:job:create-file
+  - id: jenkins-job-create
+    name: Jenkins Job Create
+    action: jenkins:job:create
     input:
-      configPath: ./job/config.xml
-      folderName: 'folder'
       jobName: first-job
+      folderName: folder
+      folderPath: config/job.xml
   ```
 
 - Destroy job
