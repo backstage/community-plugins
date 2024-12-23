@@ -1,7 +1,7 @@
 ---
-'@backstage-community/plugin-sonarqube-backend': patch
-'@backstage-community/plugin-sonarqube-react': patch
-'@backstage-community/plugin-sonarqube': patch
+'@backstage-community/plugin-sonarqube-backend': minor
+'@backstage-community/plugin-sonarqube-react': minor
+'@backstage-community/plugin-sonarqube': minor
 ---
 
 Backstage version bump to v1.34.1
