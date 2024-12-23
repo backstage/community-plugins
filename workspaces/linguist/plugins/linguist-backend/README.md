@@ -56,7 +56,7 @@ Here's how to get the backend up and running:
 
 ## Linguist Backend API
 
-The linguist backend provides API documentation through OpenAPI. To view the OpenAPI spec for your backstage instance, consider installing `@backstage/plugin-catalog-backend-module-backstage-openapi`.
+The linguist backend provides API documentation through OpenAPI. To view the OpenAPI spec for your backstage instance, consider installing [`@backstage/plugin-catalog-backend-module-backstage-openapi`](https://github.com/backstage/backstage/blob/master/plugins/catalog-backend-module-backstage-openapi/README.md).
 
 ## Plugin Options
 
