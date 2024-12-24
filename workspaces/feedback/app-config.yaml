@@ -12,10 +12,30 @@ backend:
     allow:
       - host: localhost
 
+  database:
+    pluginDivisionMode: database
+    client: 'better-sqlite3'
+    connection: ':memory:'
+      
+
+auth:
+  providers:
+    guest: 
+      userEntityRef: user:default/guest
+
+catalog:
+  readonly: true
+  locations:
+    - target: ../../catalog-info.yaml
+      type: 'file'
+      rules:
+        - allow:
+            - Component
+
 feedback:
   # A ref to base entity under which global feedbacks gets stored
   # in format: kind:namespace/name
-  baseEntityRef: 'component:default/example-website'
+  baseEntityRef: 'component:default/example-website-for-feedback-plugin'
 
   # Limit the number of characters for summary field
   # should be between 1-255

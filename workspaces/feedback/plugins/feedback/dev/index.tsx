@@ -16,7 +16,12 @@
 import React from 'react';
 
 import { createDevApp } from '@backstage/dev-utils';
-import { EntityProvider } from '@backstage/plugin-catalog-react';
+import {
+  CatalogEntityPage,
+  CatalogIndexPage,
+  catalogPlugin,
+  EntityLayout,
+} from '@backstage/plugin-catalog';
 
 import { getAllThemes } from '@redhat-developer/red-hat-developer-hub-theme';
 
@@ -30,6 +35,7 @@ import {
 
 createDevApp()
   .registerPlugin(feedbackPlugin)
+  .registerPlugin(catalogPlugin)
   .addThemes(getAllThemes())
   .addPage({
     element: (
@@ -42,14 +48,29 @@ createDevApp()
   })
   .addPage({
     element: (
-      <div style={{ padding: '1rem' }}>
-        <EntityProvider entity={mockEntity}>
-          <EntityFeedbackPage />
-        </EntityProvider>
+      <>
+        <CatalogIndexPage />
         <OpcFeedbackComponent />
-      </div>
+      </>
     ),
+    title: 'Catalog',
+    path: '/catalog',
+  })
+  .addPage({
     title: 'Entity Page',
-    path: '/catalog/default/component/example-website-for-feedback-plugin',
+    path: '/catalog/:namespace/:kind/:name',
+    element: (
+      <>
+        <CatalogEntityPage />
+        <OpcFeedbackComponent />
+      </>
+    ),
+    children: (
+      <EntityLayout>
+        <EntityLayout.Route path="feedback" title="Feedback">
+          <EntityFeedbackPage />
+        </EntityLayout.Route>
+      </EntityLayout>
+    ),
   })
   .render();
