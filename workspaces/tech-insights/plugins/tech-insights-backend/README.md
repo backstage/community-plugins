@@ -70,7 +70,7 @@ lifecycle: { timeToLive: { weeks: 2 } }; # Human readable value
 
 #### Running fact retrievers in a multi-instance installation
 
-The Tech Insights plugin utilizes `PluginTaskScheduler` to schedule and coordinate task invocation across instances. See [the PluginTaskScheduler documentation](https://backstage.io/docs/reference/backend-tasks.plugintaskscheduler) for more information.
+The Tech Insights plugin utilizes `SchedulerService` to schedule and coordinate task invocation across instances. See [the SchedulerService documentation](https://backstage.io/docs/reference/backend-plugin-api.schedulerservice/) for more information.
 
 ### Included FactChecker
 
