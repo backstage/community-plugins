@@ -1,5 +1,16 @@
 # @backstage-community/plugin-tech-insights-node
 
+## 2.2.0
+
+### Minor Changes
+
+- 5abfb11: Backstage version bump to v1.34.2
+
+### Patch Changes
+
+- Updated dependencies [5abfb11]
+  - @backstage-community/plugin-tech-insights-common@0.4.0
+
 ## 2.1.1
 
 ### Patch Changes
