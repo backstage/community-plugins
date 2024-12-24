@@ -1,5 +1,11 @@
 # @backstage-community/plugin-rollbar
 
+## 0.5.0
+
+### Minor Changes
+
+- 0aec63d: Backstage version bump to v1.34.1
+
 ## 0.4.39
 
 ### Patch Changes

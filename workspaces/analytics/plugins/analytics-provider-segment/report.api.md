@@ -8,6 +8,7 @@ import { AnalyticsEvent } from '@backstage/core-plugin-api';
 import { ApiFactory } from '@backstage/core-plugin-api';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { Config } from '@backstage/config';
+import { Config as Config_2 } from '@backstage/config/index';
 import { IdentityApi } from '@backstage/core-plugin-api';
 
 // @public
@@ -28,7 +29,7 @@ export const SegmentAnalyticsApi: ApiFactory<
   AnalyticsApi,
   SegmentAnalytics,
   {
-    configApi: Config;
+    configApi: Config_2;
     identityApi: IdentityApi;
   }
 >;

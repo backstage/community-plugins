@@ -1,5 +1,11 @@
 # @backstage-community/plugin-analytics-module-ga
 
+## 0.3.0
+
+### Minor Changes
+
+- ac6e8f9: Backstage version bump to v1.34.1
+
 ## 0.2.9
 
 ### Patch Changes
