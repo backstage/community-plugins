@@ -1,5 +1,11 @@
 ## @backstage-community/plugin-rbac-node [1.4.0](https://github.com/janus-idp/backstage-plugins/compare/@backstage-community/plugin-rbac-node@1.3.1...@backstage-community/plugin-rbac-node@1.4.0) (2024-07-26)
 
+## 1.8.4
+
+### Patch Changes
+
+- 0f5c451: Updated dependency `prettier` to `3.4.2`.
+
 ## 1.8.3
 
 ### Patch Changes
