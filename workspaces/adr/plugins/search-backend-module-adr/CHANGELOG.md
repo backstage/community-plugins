@@ -1,5 +1,22 @@
 # @backstage-community/search-backend-module-adr
 
+## 0.3.1
+
+### Patch Changes
+
+- 9e92818: Removed usages of `@backstage/backend-tasks`
+
+## 0.3.0
+
+### Minor Changes
+
+- d5e54af: Backstage version bump to v1.34.1
+
+### Patch Changes
+
+- Updated dependencies [d5e54af]
+  - @backstage-community/plugin-adr-common@0.3.0
+
 ## 0.2.1
 
 ### Patch Changes
