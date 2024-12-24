@@ -38,7 +38,7 @@
     "@backstage/theme": "^0.6.0",
     "@mui/icons-material": "^5.15.18",
     "@mui/material": "^5.15.18",
-    "@one-platform/opc-feedback": "0.1.1-alpha",
+    "@one-platform/opc-feedback": "0.2.3-alpha",
     "axios": "^1.6.4",
     "react-use": "^17.2.4"
   },
