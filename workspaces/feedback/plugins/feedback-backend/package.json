@@ -43,6 +43,7 @@
   },
   "dependencies": {
     "@backstage/backend-common": "^0.25.0",
+    "@backstage/backend-defaults": "^0.5.2",
     "@backstage/backend-dynamic-feature-service": "^0.4.3",
     "@backstage/backend-plugin-api": "^1.0.1",
     "@backstage/backend-test-utils": "^1.0.2",
@@ -61,9 +62,7 @@
     "yn": "^4.0.0"
   },
   "devDependencies": {
-    "@backstage/backend-defaults": "^0.6.2",
     "@backstage/cli": "^0.28.0",
-    "@backstage/plugin-app-backend": "^0.4.3",
     "@backstage/plugin-auth-backend": "^0.23.1",
     "@backstage/plugin-auth-backend-module-guest-provider": "^0.2.1",
     "@backstage/plugin-catalog-backend": "^1.29.0",

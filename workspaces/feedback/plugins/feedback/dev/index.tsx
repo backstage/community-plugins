@@ -25,7 +25,6 @@ import {
 
 import { getAllThemes } from '@redhat-developer/red-hat-developer-hub-theme';
 
-import { mockEntity } from '../src/mocks';
 import {
   EntityFeedbackPage,
   feedbackPlugin,
