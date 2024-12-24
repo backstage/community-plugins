@@ -42,7 +42,7 @@
   },
   "dependencies": {
     "@backstage/backend-plugin-api": "^1.0.1",
-    "@backstage/plugin-scaffolder-node": "^0.5.0",
+    "@backstage/plugin-scaffolder-node": "^0.6.0",
     "abort-controller": "^3.0.0",
     "axios": "^1.7.4",
     "form-data": "^4.0.0",
