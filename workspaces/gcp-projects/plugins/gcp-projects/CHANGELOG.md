@@ -1,5 +1,11 @@
 # @backstage-community/plugin-gcp-projects
 
+## 0.4.0
+
+### Minor Changes
+
+- afc695d: Backstage version bump to v1.34.1
+
 ## 0.3.55
 
 ### Patch Changes
