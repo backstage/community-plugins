@@ -1,5 +1,11 @@
 # @backstage-community/plugin-confluence
 
+## 0.1.4
+
+### Patch Changes
+
+- f4ea9a2: Adding support for the new frontend system, available at the `/alpha` export.
+
 ## 0.1.3
 
 ### Patch Changes
