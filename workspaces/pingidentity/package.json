@@ -20,7 +20,7 @@
     "postinstall": "cd ../../ && yarn install",
     "prettier:check": "prettier --check .",
     "new": "backstage-cli new --scope @backstage-community",
-    "dev": "concurrently \"yarn start\" \"yarn start-backend\"",
+    "dev": "yarn workspaces foreach -A --include backend --include app --parallel -v -i run start",
     "start": "yarn workspace app start",
     "start-backend": "yarn workspace backend start"
   },
@@ -41,7 +41,6 @@
     "@backstage/repo-tools": "^0.10.0",
     "@changesets/cli": "^2.27.1",
     "@spotify/prettier-config": "^15.0.0",
-    "concurrently": "^8.2.2",
     "node-gyp": "^9.0.0",
     "prettier": "^2.3.2",
     "typescript": "~5.3.0"
