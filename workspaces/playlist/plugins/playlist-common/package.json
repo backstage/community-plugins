@@ -39,9 +39,9 @@
     "test": "backstage-cli package test"
   },
   "dependencies": {
-    "@backstage/plugin-permission-common": "^0.8.1"
+    "@backstage/plugin-permission-common": "^0.8.3"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.28.0"
+    "@backstage/cli": "^0.29.4"
   }
 }
