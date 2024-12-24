@@ -1,5 +1,11 @@
 # @backstage-community/plugin-mend
 
+## 0.1.1
+
+### Patch Changes
+
+- 9f04c05: Updated dependency `@material-table/core` to `4.3.46`.
+
 ## 0.1.0
 
 ### Minor Changes

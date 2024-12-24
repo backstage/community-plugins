@@ -6,6 +6,7 @@
 import { BackendFeature } from '@backstage/backend-plugin-api';
 import { JsonObject } from '@backstage/types/index';
 import { TemplateAction } from '@backstage/plugin-scaffolder-node';
+import { TemplateAction as TemplateAction_2 } from '@backstage/plugin-scaffolder-node/index';
 
 // Warning: (ae-missing-release-tag) "createAnnotatorAction" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -64,7 +65,7 @@ export const createAnnotatorAction: (
 // Warning: (ae-missing-release-tag) "createScaffoldedFromAction" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export const createScaffoldedFromAction: () => TemplateAction<
+export const createScaffoldedFromAction: () => TemplateAction_2<
   {
     labels?:
       | {
@@ -95,7 +96,7 @@ export const createScaffoldedFromAction: () => TemplateAction<
 // Warning: (ae-missing-release-tag) "createTimestampAction" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export const createTimestampAction: () => TemplateAction<
+export const createTimestampAction: () => TemplateAction_2<
   {
     labels?:
       | {
