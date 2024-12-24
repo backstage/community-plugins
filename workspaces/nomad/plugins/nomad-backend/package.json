@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-nomad-backend",
-  "version": "0.1.26",
+  "version": "0.2.0",
   "backstage": {
     "role": "backend-plugin",
     "pluginId": "nomad",
