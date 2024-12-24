@@ -93,7 +93,7 @@ feedback:
         user: ${EMAIL_USER}
         pass: ${EMAIL_PASS}
 
-      # boolean
+      # boolean, Set to false if port: 587
       secure: false
 
       # Path to ca certificate if required by mail server

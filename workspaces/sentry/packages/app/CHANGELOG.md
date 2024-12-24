@@ -1,5 +1,12 @@
 # app
 
+## 0.0.6
+
+### Patch Changes
+
+- Updated dependencies [0243137]
+  - @backstage-community/plugin-sentry@1.1.0
+
 ## 0.0.5
 
 ### Patch Changes
