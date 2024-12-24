@@ -1,5 +1,11 @@
 # @backstage-community/plugin-linkerd-backend
 
+## 0.4.0
+
+### Minor Changes
+
+- 96375b8: Backstage version bump to v1.34.1
+
 ## 0.3.7
 
 ### Patch Changes
