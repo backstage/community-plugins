@@ -1,5 +1,11 @@
 # @backstage-community/plugin-tech-insights-common
 
+## 0.4.0
+
+### Minor Changes
+
+- 5abfb11: Backstage version bump to v1.34.2
+
 ## 0.3.0
 
 ### Minor Changes
