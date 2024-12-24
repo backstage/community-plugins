@@ -21,6 +21,7 @@ import {
 } from '@procore-oss/backstage-plugin-announcements-react';
 
 /**
+   @public
  * @deprecated Use `AnnouncementsApi` from `@procore-oss/backstage-plugin-announcements-react` instead
  */
 export type AnnouncementsApi = AnnouncementsApi_;

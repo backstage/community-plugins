@@ -32,6 +32,9 @@ import { rootRouteRef } from './routes';
 import { announcementsApiRef } from '@procore-oss/backstage-plugin-announcements-react';
 import { AnnouncementsClient } from './api';
 
+/**
+ * @public
+ */
 export const announcementsPlugin = createPlugin({
   id: 'announcements',
   routes: {
@@ -58,6 +61,9 @@ export const announcementsPlugin = createPlugin({
   ],
 });
 
+/**
+ * @public
+ */
 export const AnnouncementsPage = announcementsPlugin.provide(
   createRoutableExtension({
     name: 'AnnouncementsPage',
@@ -66,6 +72,9 @@ export const AnnouncementsPage = announcementsPlugin.provide(
   }),
 );
 
+/**
+ * @public
+ */
 export const AnnouncementsAdminPortal = announcementsPlugin.provide(
   createRoutableExtension({
     name: 'AnnouncementsAdminPortal',
@@ -74,6 +83,9 @@ export const AnnouncementsAdminPortal = announcementsPlugin.provide(
   }),
 );
 
+/**
+ * @public
+ */
 export const AnnouncementsTimeline = announcementsPlugin.provide(
   createComponentExtension({
     name: 'AnnouncementsTimeline',
@@ -83,6 +95,9 @@ export const AnnouncementsTimeline = announcementsPlugin.provide(
   }),
 );
 
+/**
+ * @public
+ */
 export const AnnouncementsCard = announcementsPlugin.provide(
   createComponentExtension({
     name: 'AnnouncementsCard',
@@ -93,6 +108,9 @@ export const AnnouncementsCard = announcementsPlugin.provide(
   }),
 );
 
+/**
+ * @public
+ */
 export const NewAnnouncementBanner = announcementsPlugin.provide(
   createComponentExtension({
     name: 'NewAnnouncementBanner',
@@ -105,6 +123,9 @@ export const NewAnnouncementBanner = announcementsPlugin.provide(
   }),
 );
 
+/**
+ * @public
+ */
 export const AnnouncementSearchResultListItem: (
   props: SearchResultListItemExtensionProps<AnnouncementSearchResultProps>,
 ) => JSX.Element | null = announcementsPlugin.provide(
