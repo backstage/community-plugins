@@ -1,5 +1,11 @@
 # @backstage-community/plugin-sentry
 
+## 1.1.0
+
+### Minor Changes
+
+- 0243137: Backstage version bump to v1.34.1
+
 ## 1.0.3
 
 ### Patch Changes

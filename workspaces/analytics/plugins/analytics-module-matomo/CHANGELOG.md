@@ -1,5 +1,17 @@
 ### Dependencies
 
+## 1.10.0
+
+### Minor Changes
+
+- ac6e8f9: Backstage version bump to v1.34.1
+
+### Patch Changes
+
+- 350250c: Updated dependency `@testing-library/jest-dom` to `6.6.3`.
+- 0f5c451: Updated dependency `prettier` to `3.4.2`.
+- 18f9d9d: Updated dependency `@types/node` to `18.19.68`.
+
 ## 1.9.1
 
 ### Patch Changes
