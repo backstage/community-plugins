@@ -49,7 +49,6 @@
     "@backstage-community/plugin-tech-insights-node": "workspace:^",
     "@backstage/backend-defaults": "^0.6.2",
     "@backstage/backend-plugin-api": "^1.1.0",
-    "@backstage/backend-tasks": "^0.6.1",
     "@backstage/backend-test-utils": "^1.2.0",
     "@backstage/catalog-client": "^1.9.0",
     "@backstage/catalog-model": "^1.7.2",
