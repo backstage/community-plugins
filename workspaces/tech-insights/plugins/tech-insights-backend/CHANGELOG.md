@@ -1,5 +1,11 @@
 # @backstage-community/plugin-tech-insights-backend
 
+## 2.1.1
+
+### Patch Changes
+
+- 47284ff: Removed usages of `@backstage/backend-tasks`
+
 ## 2.1.0
 
 ### Minor Changes
