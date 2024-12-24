@@ -1,5 +1,21 @@
 ### Dependencies
 
+## 1.15.0
+
+### Minor Changes
+
+- 7daf65a: Backstage version bump to v1.34.2
+
+### Patch Changes
+
+- 0f5c451: Updated dependency `prettier` to `3.4.2`.
+- 064b809: Updated dependency `start-server-and-test` to `2.0.9`.
+- 18f9d9d: Updated dependency `@types/node` to `18.19.68`.
+- 4eef4d1: Updated dependency `@playwright/test` to `1.49.1`.
+- Updated dependencies [0f5c451]
+- Updated dependencies [7daf65a]
+  - @backstage-community/plugin-quay-common@1.4.0
+
 ## 1.14.6
 
 ### Patch Changes
