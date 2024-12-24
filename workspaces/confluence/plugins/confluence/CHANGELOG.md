@@ -1,5 +1,11 @@
 # @backstage-community/plugin-confluence
 
+## 0.2.0
+
+### Minor Changes
+
+- cfd4174: Backstage version bump to v1.34.2
+
 ## 0.1.4
 
 ### Patch Changes
