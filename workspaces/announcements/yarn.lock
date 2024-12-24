@@ -2443,17 +2443,40 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@backstage-community/plugin-announcements-common@workspace:^, @backstage-community/plugin-announcements-common@workspace:plugins/announcements-common":
+  version: 0.0.0-use.local
+  resolution: "@backstage-community/plugin-announcements-common@workspace:plugins/announcements-common"
+  dependencies:
+    "@backstage/cli": ^0.29.0
+    "@backstage/plugin-permission-common": ^0.8.2
+  languageName: unknown
+  linkType: soft
+
+"@backstage-community/plugin-announcements-node@workspace:plugins/announcements-node":
+  version: 0.0.0-use.local
+  resolution: "@backstage-community/plugin-announcements-node@workspace:plugins/announcements-node"
+  dependencies:
+    "@backstage-community/plugin-announcements-common": "workspace:^"
+    "@backstage/backend-plugin-api": ^1.0.2
+    "@backstage/backend-test-utils": ^1.1.0
+    "@backstage/cli": ^0.29.0
+    "@backstage/errors": ^1.2.6
+    "@backstage/test-utils": ^1.7.2
+    msw: ^1.3.2
+  languageName: unknown
+  linkType: soft
+
 "@backstage-community/plugin-search-backend-module-announcements@workspace:plugins/search-backend-module-announcements":
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-search-backend-module-announcements@workspace:plugins/search-backend-module-announcements"
   dependencies:
+    "@backstage-community/plugin-announcements-common": "workspace:^"
     "@backstage/backend-plugin-api": ^1.0.2
     "@backstage/backend-test-utils": ^1.1.0
     "@backstage/cli": ^0.29.0
     "@backstage/plugin-search-backend-node": ^1.3.5
     "@backstage/plugin-search-common": ^1.2.15
     "@backstage/test-utils": ^1.7.2
-    "@procore-oss/backstage-plugin-announcements-common": ^0.2.8
     "@procore-oss/backstage-plugin-announcements-node": ^0.3.3
     "@testing-library/react": ^14.0.0
     msw: ^1.3.2
@@ -3016,13 +3039,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/errors@npm:^1.2.4, @backstage/errors@npm:^1.2.5":
-  version: 1.2.5
-  resolution: "@backstage/errors@npm:1.2.5"
+"@backstage/errors@npm:^1.2.4, @backstage/errors@npm:^1.2.5, @backstage/errors@npm:^1.2.6":
+  version: 1.2.6
+  resolution: "@backstage/errors@npm:1.2.6"
   dependencies:
     "@backstage/types": ^1.2.0
     serialize-error: ^8.0.1
-  checksum: 8b4411cca1a9038b136ffa766d3ec284d0dac730ef27b1f565dc7f471249ce87a3d6599fe5c21c7643363ee13f0b0457d5c4fa29d20da64ca3a09fecec3ccd31
+  checksum: 9867157464cf5f8821109faa46c101a30f94b701e08b7cb23c5884a2e83aa4b06ff7118b62210da84db1a770b1171ec219b161caf04748ad4b8c2f90a9f0fdc5
   languageName: node
   linkType: hard
 
