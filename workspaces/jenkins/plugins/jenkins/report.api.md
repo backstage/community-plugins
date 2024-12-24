@@ -11,11 +11,13 @@ import type { CompoundEntityRef } from '@backstage/catalog-model';
 import { DiscoveryApi } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
 import { FetchApi } from '@backstage/core-plugin-api';
-import { InfoCardVariants } from '@backstage/core-components';
+import { InfoCardVariants } from '@backstage/core-components/index';
+import { InfoCardVariants as InfoCardVariants_2 } from '@backstage/core-components';
 import { JSX as JSX_2 } from 'react';
 import { default as React_2 } from 'react';
 import { RouteRef } from '@backstage/core-plugin-api';
-import { TableColumn } from '@backstage/core-components';
+import { TableColumn } from '@backstage/core-components/index';
+import { TableColumn as TableColumn_2 } from '@backstage/core-components';
 
 // @public (undocumented)
 export const EntityJenkinsContent: (props: {
@@ -138,7 +140,7 @@ export { jenkinsPlugin as plugin };
 // @public (undocumented)
 export const LatestRunCard: (props: {
   branch: string;
-  variant?: InfoCardVariants | undefined;
+  variant?: InfoCardVariants_2 | undefined;
   title?: string | ((branch: string) => string) | undefined;
 }) => React_2.JSX.Element;
 
@@ -170,6 +172,6 @@ export interface Project {
 // @public (undocumented)
 export const Router: (props: {
   title?: string;
-  columns?: TableColumn<Project>[];
+  columns?: TableColumn_2<Project>[];
 }) => React_2.JSX.Element;
 ```

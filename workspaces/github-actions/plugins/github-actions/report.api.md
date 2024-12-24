@@ -5,11 +5,12 @@
 ```ts
 /// <reference types="react" />
 
-import { ApiRef } from '@backstage/core-plugin-api';
+import { ApiRef } from '@backstage/core-plugin-api/index';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { ConfigApi } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
-import { InfoCardVariants } from '@backstage/core-components';
+import { InfoCardVariants } from '@backstage/core-components/index';
+import { InfoCardVariants as InfoCardVariants_2 } from '@backstage/core-components';
 import { JSX as JSX_2 } from 'react';
 import { default as React_2 } from 'react';
 import { RestEndpointMethodTypes } from '@octokit/rest';
@@ -252,13 +253,13 @@ export type Jobs = {
 // @public (undocumented)
 export const LatestWorkflowRunCard: (props: {
   branch?: string;
-  variant?: InfoCardVariants;
+  variant?: InfoCardVariants_2;
 }) => React_2.JSX.Element;
 
 // @public (undocumented)
 export const LatestWorkflowsForBranchCard: (props: {
   branch?: string;
-  variant?: InfoCardVariants;
+  variant?: InfoCardVariants_2;
 }) => React_2.JSX.Element;
 
 // @public (undocumented)
@@ -266,7 +267,7 @@ export const RecentWorkflowRunsCard: (props: {
   branch?: string;
   dense?: boolean;
   limit?: number;
-  variant?: InfoCardVariants;
+  variant?: InfoCardVariants_2;
 }) => React_2.JSX.Element;
 
 // @public (undocumented)
