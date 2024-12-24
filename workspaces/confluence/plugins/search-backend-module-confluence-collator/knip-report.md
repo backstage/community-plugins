@@ -5,7 +5,6 @@
 | Name                      | Location     | Severity |
 | :------------------------ | :----------- | :------- |
 | @backstage/backend-common | package.json | error    |
-| @backstage/backend-tasks  | package.json | error    |
 
 ## Unused devDependencies (1)
 
