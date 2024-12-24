@@ -16,11 +16,10 @@ backend:
     pluginDivisionMode: database
     client: 'better-sqlite3'
     connection: ':memory:'
-      
 
 auth:
   providers:
-    guest: 
+    guest:
       userEntityRef: user:default/guest
 
 catalog:
