@@ -16,6 +16,7 @@ type ResourceProps = {
   resourceRef: string;
 };
 
+/** @public */
 export type FilterProps = {
   ids: string[];
   exclude?: boolean;

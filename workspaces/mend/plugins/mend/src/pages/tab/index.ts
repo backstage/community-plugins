@@ -1,1 +1,1 @@
-export { TabProvider as Tab } from './TabProvider';
+export { MendTab } from './TabProvider';
