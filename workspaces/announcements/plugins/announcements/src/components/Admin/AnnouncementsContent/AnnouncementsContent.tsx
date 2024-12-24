@@ -34,7 +34,7 @@ import {
   announcementUpdatePermission,
   Category,
 } from '@backstage-community/plugin-announcements-common';
-import { useAsyncRetry } from 'react-use';
+import useAsyncRetry from 'react-use/esm/useAsyncRetry';
 import { useDeleteAnnouncementDialogState } from '../../AnnouncementsPage/useDeleteAnnouncementDialogState';
 import { DeleteAnnouncementDialog } from '../../AnnouncementsPage/DeleteAnnouncementDialog';
 import { useNavigate } from 'react-router-dom';

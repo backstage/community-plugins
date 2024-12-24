@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import React, { ReactNode } from 'react';
-import { useAsync } from 'react-use';
+import useAsync from 'react-use/esm/useAsync';
 import { Page, Header, Content, Progress } from '@backstage/core-components';
 import {
   alertApiRef,
