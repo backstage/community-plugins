@@ -11,8 +11,18 @@
     "main": "dist/index.cjs.js",
     "types": "dist/index.d.ts"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/announcements/plugins/announcements-node"
+  },
   "backstage": {
-    "role": "node-library"
+    "role": "node-library",
+    "pluginId": "announcements",
+    "pluginPackages": [
+      "@backstage-community/plugin-announcements-common",
+      "@backstage-community/plugin-announcements-node"
+    ]
   },
   "scripts": {
     "build": "backstage-cli package build",
