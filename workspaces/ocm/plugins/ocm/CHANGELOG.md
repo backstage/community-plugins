@@ -1,5 +1,14 @@
 ### Dependencies
 
+## 5.2.6
+
+### Patch Changes
+
+- 0f5c451: Updated dependency `prettier` to `3.4.2`.
+- 18f9d9d: Updated dependency `@types/node` to `18.19.68`.
+- Updated dependencies [0f5c451]
+  - @backstage-community/plugin-ocm-common@3.6.3
+
 ## 5.2.5
 
 ### Patch Changes
