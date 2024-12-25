@@ -24,7 +24,7 @@ import { rootRouteRef } from '../../routes';
 import { permissionApiRef } from '@backstage/plugin-permission-react';
 import { catalogApiRef, entityRouteRef } from '@backstage/plugin-catalog-react';
 import { fireEvent, screen } from '@testing-library/react';
-import { announcementsApiRef } from '@procore-oss/backstage-plugin-announcements-react';
+import { announcementsApiRef } from '@backstage-community/plugin-announcements-react';
 
 const mockAnnouncements = [
   {

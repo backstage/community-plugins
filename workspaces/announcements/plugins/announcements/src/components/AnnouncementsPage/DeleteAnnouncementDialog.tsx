@@ -16,7 +16,7 @@
 import { usePermission } from '@backstage/plugin-permission-react';
 import { Button, Dialog, DialogActions, DialogTitle } from '@material-ui/core';
 import { announcementDeletePermission } from '@backstage-community/plugin-announcements-common';
-import { useAnnouncementsTranslation } from '@procore-oss/backstage-plugin-announcements-react';
+import { useAnnouncementsTranslation } from '@backstage-community/plugin-announcements-react';
 import React from 'react';
 
 type DeleteAnnouncementDialogProps = {

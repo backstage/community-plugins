@@ -2536,7 +2536,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@backstage-community/plugin-announcements-react@workspace:plugins/announcements-react":
+"@backstage-community/plugin-announcements-react@workspace:^, @backstage-community/plugin-announcements-react@workspace:plugins/announcements-react":
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-announcements-react@workspace:plugins/announcements-react"
   dependencies:
@@ -2560,6 +2560,7 @@ __metadata:
   resolution: "@backstage-community/plugin-announcements@workspace:plugins/announcements"
   dependencies:
     "@backstage-community/plugin-announcements-common": "workspace:^"
+    "@backstage-community/plugin-announcements-react": "workspace:^"
     "@backstage/catalog-model": ^1.7.1
     "@backstage/cli": ^0.29.2
     "@backstage/core-app-api": ^1.15.2
@@ -2582,7 +2583,6 @@ __metadata:
     "@material-ui/icons": ^4.11.3
     "@material-ui/lab": 4.0.0-alpha.57
     "@mui/material": ^5.15.6
-    "@procore-oss/backstage-plugin-announcements-react": ^0.5.0
     "@testing-library/jest-dom": ^6.3.0
     "@testing-library/react": ^14.0.0
     "@testing-library/user-event": ^14.5.1
@@ -6510,21 +6510,6 @@ __metadata:
     "@backstage/errors": ^1.2.5
     "@procore-oss/backstage-plugin-announcements-common": ^0.2.9
   checksum: d1609b68dd6c8c40939066e8137264bf44096dfec1bcd3b105f3de542d8bf23060e0dd9e0dd99b6f1f9396918ad3742ac7f3c7c812fe9c0801b7ee0524bcde41
-  languageName: node
-  linkType: hard
-
-"@procore-oss/backstage-plugin-announcements-react@npm:^0.5.0":
-  version: 0.5.0
-  resolution: "@procore-oss/backstage-plugin-announcements-react@npm:0.5.0"
-  dependencies:
-    "@backstage/core-plugin-api": ^1.10.1
-    "@backstage/errors": ^1.2.5
-    "@procore-oss/backstage-plugin-announcements-common": ^0.2.9
-    luxon: ^3.4.4
-    react-use: ^17.2.4
-  peerDependencies:
-    react: ^17.0.0 || ^18.0.0
-  checksum: ade94ab3d8617d0931f61b21c466edad53492f4fc9d101a65efe89a79580ffa731856376904bddc3b36c2515684414172e73dab73926ffda104d689310381a78
   languageName: node
   linkType: hard
 

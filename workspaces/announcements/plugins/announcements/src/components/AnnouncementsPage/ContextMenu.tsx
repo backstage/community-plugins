@@ -20,7 +20,7 @@ import {
   announcementAdminRouteRef,
   categoriesListRouteRef,
 } from '../../routes';
-import { useAnnouncementsTranslation } from '@procore-oss/backstage-plugin-announcements-react';
+import { useAnnouncementsTranslation } from '@backstage-community/plugin-announcements-react';
 import {
   makeStyles,
   Box,

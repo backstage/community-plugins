@@ -26,7 +26,7 @@ import {
   CreateAnnouncementRequest,
   useAnnouncementsTranslation,
   useCategories,
-} from '@procore-oss/backstage-plugin-announcements-react';
+} from '@backstage-community/plugin-announcements-react';
 import {
   Announcement,
   announcementCreatePermission,

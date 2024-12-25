@@ -33,7 +33,7 @@ import {
   announcementsApiRef,
   useAnnouncements,
   useAnnouncementsTranslation,
-} from '@procore-oss/backstage-plugin-announcements-react';
+} from '@backstage-community/plugin-announcements-react';
 import {
   makeStyles,
   List,

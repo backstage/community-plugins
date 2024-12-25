@@ -18,7 +18,7 @@ export { announcementsPlugin, AnnouncementsPage } from './plugin';
 import {
   announcementsApiRef as announcementsApiRef_,
   AnnouncementsApi as AnnouncementsApi_,
-} from '@procore-oss/backstage-plugin-announcements-react';
+} from '@backstage-community/plugin-announcements-react';
 
 /**
    @public
