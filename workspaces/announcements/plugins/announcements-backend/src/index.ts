@@ -13,17 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+export { announcementsPlugin as default } from './plugin';
+
+import { AnnouncementCollatorFactory as AnnouncementCollatorFactory_ } from '@backstage-community/plugin-search-backend-module-announcements';
 
 /**
- * The announcements backend module for the search plugin.
- *
- * @packageDocumentation
+ * @public
+ * @deprecated Use `AnnouncementCollatorFactory` from `@backstage-community/plugin-search-backend-module-announcements` instead
  */
-
-export { searchModuleAnnouncementsCollator as default } from './module';
-
-export { AnnouncementCollatorFactory } from './collators/AnnouncementCollatorFactory';
-export type {
-  IndexableAnnouncementDocument,
-  AnnouncementCollatorOptions,
-} from './collators/AnnouncementCollatorFactory';
+export type AnnouncementCollatorFactory = AnnouncementCollatorFactory_;

@@ -18,8 +18,8 @@ import {
   DocumentCollatorFactory,
   IndexableDocument,
 } from '@backstage/plugin-search-common';
-import { DefaultAnnouncementsService } from '@procore-oss/backstage-plugin-announcements-node';
-import { Announcement } from '@procore-oss/backstage-plugin-announcements-common';
+import { DefaultAnnouncementsService } from '@backstage-community/plugin-announcements-node';
+import { Announcement } from '@backstage-community/plugin-announcements-common';
 import {
   AuthService,
   DiscoveryService,
@@ -31,7 +31,7 @@ import {
  *
  * @public
  */
-type IndexableAnnouncementDocument = IndexableDocument & {
+export type IndexableAnnouncementDocument = IndexableDocument & {
   excerpt: string;
   createdAt: string;
 };
@@ -41,7 +41,7 @@ type IndexableAnnouncementDocument = IndexableDocument & {
  *
  * @public
  */
-type AnnouncementCollatorOptions = {
+export type AnnouncementCollatorOptions = {
   logger: LoggerService;
   discoveryApi: DiscoveryService;
   auth: AuthService;

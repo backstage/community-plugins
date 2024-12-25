@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-/**
- * The announcements backend module for the search plugin.
- *
- * @packageDocumentation
- */
-
-export { searchModuleAnnouncementsCollator as default } from './module';
-
-export { AnnouncementCollatorFactory } from './collators/AnnouncementCollatorFactory';
-export type {
-  IndexableAnnouncementDocument,
-  AnnouncementCollatorOptions,
-} from './collators/AnnouncementCollatorFactory';
+module.exports = {
+  development: {
+    client: 'better-sqlite3',
+    connection: {
+      filename: './db/local.sqlite',
+    },
+    useNullAsDefault: true,
+    seeds: {
+      directory: './db/seeds',
+    },
+    migrations: {
+      directory: './db/migrations',
+    },
+  },
+};
