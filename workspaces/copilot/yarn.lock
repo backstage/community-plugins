@@ -7081,8 +7081,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@internal/copilot@workspace:."
   dependencies:
-    "@backstage-community/plugin-copilot": "workspace:^"
-    "@backstage-community/plugin-copilot-backend": "workspace:^"
     "@backstage/cli": ^0.29.4
     "@backstage/e2e-test-utils": ^0.1.1
     "@backstage/errors": ^1.2.6
