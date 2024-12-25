@@ -13,17 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Announcement } from '@backstage-community/plugin-announcements-common';
+import { DateTime } from 'luxon';
 
 /**
- * The announcements backend module for the search plugin.
+ * A model representing an Announcement on the backend.
  *
- * @packageDocumentation
+ * @internal
  */
-
-export { searchModuleAnnouncementsCollator as default } from './module';
-
-export { AnnouncementCollatorFactory } from './collators/AnnouncementCollatorFactory';
-export type {
-  IndexableAnnouncementDocument,
-  AnnouncementCollatorOptions,
-} from './collators/AnnouncementCollatorFactory';
+export type AnnouncementModel = Omit<Announcement, 'created_at'> & {
+  created_at: DateTime;
+};

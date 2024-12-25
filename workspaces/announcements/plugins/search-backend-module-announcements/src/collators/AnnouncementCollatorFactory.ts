@@ -31,7 +31,7 @@ import {
  *
  * @public
  */
-type IndexableAnnouncementDocument = IndexableDocument & {
+export type IndexableAnnouncementDocument = IndexableDocument & {
   excerpt: string;
   createdAt: string;
 };
@@ -41,7 +41,7 @@ type IndexableAnnouncementDocument = IndexableDocument & {
  *
  * @public
  */
-type AnnouncementCollatorOptions = {
+export type AnnouncementCollatorOptions = {
   logger: LoggerService;
   discoveryApi: DiscoveryService;
   auth: AuthService;
