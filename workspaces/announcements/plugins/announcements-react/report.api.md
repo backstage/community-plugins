@@ -10,6 +10,7 @@ import { ApiRef } from '@backstage/core-plugin-api';
 import { Category } from '@backstage-community/plugin-announcements-common';
 import { DateTime } from 'luxon';
 import { TranslationFunction } from '@backstage/core-plugin-api/alpha';
+import { TranslationRef } from '@backstage/core-plugin-api/alpha';
 
 // @public
 export interface AnnouncementsApi {
@@ -50,6 +51,94 @@ export const announcementsApiRef: ApiRef<AnnouncementsApi>;
 export type AnnouncementsOptions = {
   dependencies?: any[];
 };
+
+// @public (undocumented)
+export const announcementsTranslationRef: TranslationRef<
+  'announcements',
+  {
+    readonly 'announcementForm.active': 'Active';
+    readonly 'announcementForm.title': 'Title';
+    readonly 'announcementForm.submit': 'Submit';
+    readonly 'announcementForm.excerpt': 'Excerpt';
+    readonly 'announcementForm.editAnnouncement': 'Edit announcement';
+    readonly 'announcementForm.newAnnouncement': 'New announcement';
+    readonly 'announcementForm.categoryInput.label': 'Category';
+    readonly 'announcementForm.categoryInput.create': 'Create';
+    readonly 'announcementsPage.grid.announcementDeleted': 'Announcement deleted.';
+    readonly 'announcementsPage.contextMenu.admin': 'Admin';
+    readonly 'announcementsPage.contextMenu.categories': 'Categories';
+    readonly 'announcementsPage.newAnnouncement': 'New announcement';
+    readonly 'announcementsPage.genericNew': 'New';
+    readonly 'announcementsPage.card.by': 'By';
+    readonly 'announcementsPage.card.in': 'in';
+    readonly 'announcementsPage.card.delete': 'DELETE';
+    readonly 'announcementsPage.card.edit': 'EDIT';
+    readonly 'admin.adminPortal.title': 'Admin Portal for Announcements';
+    readonly 'admin.adminPortal.subtitle': 'Manage announcements and categories';
+    readonly 'admin.adminPortal.announcementsLabels': 'Announcements';
+    readonly 'admin.adminPortal.categoriesLabel': 'Categories';
+    readonly 'admin.announecementsContent.table.active': 'Active';
+    readonly 'admin.announecementsContent.table.inactive': 'Inactive';
+    readonly 'admin.announecementsContent.table.body': 'Body';
+    readonly 'admin.announecementsContent.table.title': 'Title';
+    readonly 'admin.announecementsContent.table.status': 'Status';
+    readonly 'admin.announecementsContent.table.actions': 'Actions';
+    readonly 'admin.announecementsContent.table.category': 'Category';
+    readonly 'admin.announecementsContent.table.publisher': 'Publisher';
+    readonly 'admin.announecementsContent.announcements': 'Announcements';
+    readonly 'admin.announecementsContent.alertMessage': 'Announcement created.';
+    readonly 'admin.announecementsContent.alertMessageWithNewCategory': 'with new category';
+    readonly 'admin.announecementsContent.cancelButton': 'Cancel';
+    readonly 'admin.announecementsContent.createButton': 'Create Announcement';
+    readonly 'admin.announecementsContent.noAnnouncementsFound': 'No announcements found';
+    readonly 'admin.categoriesContent.table.title': 'Title';
+    readonly 'admin.categoriesContent.table.actions': 'Actions';
+    readonly 'admin.categoriesContent.table.categoryDeleted': 'Category deleted.';
+    readonly 'admin.categoriesContent.table.slug': 'Slug';
+    readonly 'admin.categoriesContent.table.addTooltip': 'Add';
+    readonly 'admin.categoriesContent.table.noCategoriesFound': 'No categories found.';
+    readonly 'admin.categoriesContent.createdMessage': 'created';
+    readonly 'admin.categoriesContent.cancelButton': 'Cancel';
+    readonly 'admin.categoriesContent.createButton': 'Create category';
+    readonly 'admin.categoriesContent.deletedMessage': 'Category deleted.';
+    readonly 'deleteDialog.cancel': 'Cancel';
+    readonly 'deleteDialog.title': 'Are you sure you want to delete this announcement?';
+    readonly 'deleteDialog.delete': 'Delete';
+    readonly 'announcementsCard.new': 'New';
+    readonly 'announcementsCard.in': 'in';
+    readonly 'announcementsCard.announcements': 'Announcements';
+    readonly 'announcementsCard.seeAll': 'See all';
+    readonly 'announcementsCard.noAnnouncements': 'No announcements yet, want to';
+    readonly 'announcementsCard.addOne': 'add one';
+    readonly 'announcementSearchResultListItem.published': 'Published';
+    readonly 'announcementSearchResultListItem.announcement': 'Announcement';
+    readonly 'announcementsTimeline.error': 'Error';
+    readonly 'announcementsTimeline.noAnnouncements': 'No announcements';
+    readonly 'categoriesForm.submit': 'Submit';
+    readonly 'categoriesForm.newCategory': 'New category';
+    readonly 'categoriesForm.editCategory': 'Edit category';
+    readonly 'categoriesForm.titleLabel': 'Title';
+    readonly 'categoriesTable.title': 'Title';
+    readonly 'categoriesTable.actions': 'Actions';
+    readonly 'categoriesTable.categoryDeleted': 'Category deleted.';
+    readonly 'categoriesTable.slug': 'Slug';
+    readonly 'categoriesTable.addTooltip': 'Add';
+    readonly 'categoriesTable.noCategoriesFound': 'No categories found.';
+    readonly 'categoriesPage.title': 'Categories';
+    readonly 'categoriesPage.subtitle': 'Manage announcement categories';
+    readonly 'createAnnouncementPage.alertMessage': 'Announcement created.';
+    readonly 'createAnnouncementPage.alertMessageWithNewCategory': 'with new category';
+    readonly 'editAnnouncementPage.edit': 'Edit';
+    readonly 'editAnnouncementPage.updatedMessage': 'Announcement updated.';
+    readonly 'editAnnouncementPage.notFoundMessage': 'Unable to find announcement';
+    readonly 'newAnnouncementBanner.markAsSeen': 'Mark as seen';
+    readonly 'newCategoryDialog.title': 'Title';
+    readonly 'newCategoryDialog.newCategory': 'New category';
+    readonly 'newCategoryDialog.createdMessage': 'Category created.';
+    readonly 'newCategoryDialog.cancelButton': 'Cancel';
+    readonly 'newCategoryDialog.createButton': 'Create';
+  }
+>;
 
 // @public
 export type CreateAnnouncementRequest = Omit<
