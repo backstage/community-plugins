@@ -1,5 +1,11 @@
 # @backstage-community/plugin-kiali-backend
 
+## 1.19.4
+
+### Patch Changes
+
+- fc7e652: Updated dependency `@janus-idp/cli` to `1.19.1`.
+
 ## 1.19.3
 
 ### Patch Changes
