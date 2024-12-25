@@ -1,5 +1,11 @@
 ## @backstage-community/plugin-redhat-argocd
 
+## 1.11.3
+
+### Patch Changes
+
+- 693ed35: Updated dependency `react-use` to `17.6.0`.
+
 ## 1.11.2
 
 ### Patch Changes
