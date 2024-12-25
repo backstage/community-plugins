@@ -19,7 +19,7 @@ export interface Config {
   search?: {
     collators?: {
       /**
-       * Configuration options for `@procore-oss/backstage-plugin-search-backend-module-announcements`
+       * Configuration options for `@backstage-community/plugin-search-backend-module-announcements`
        */
       announcements?: {
         /**

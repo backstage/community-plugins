@@ -25,3 +25,5 @@
 
 export * from './apis';
 export * from './hooks';
+
+export { announcementsTranslationRef } from './translation';
