@@ -16,7 +16,7 @@
 import { createTranslationRef } from '@backstage/core-plugin-api/alpha';
 
 /** @public */
-export const translationRef = createTranslationRef({
+export const announcementsTranslationRef = createTranslationRef({
   id: 'announcements',
   messages: {
     announcementForm: {

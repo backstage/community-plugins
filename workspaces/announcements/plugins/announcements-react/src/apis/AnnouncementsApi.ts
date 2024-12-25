@@ -22,10 +22,18 @@ import {
   Category,
 } from '@procore-oss/backstage-plugin-announcements-common';
 
+/**
+ * @public
+ */
 export const announcementsApiRef = createApiRef<AnnouncementsApi>({
   id: 'plugin.announcements.service',
 });
 
+/**
+ * API interface for managing announcements and categories.
+ *
+ * @public
+ */
 export interface AnnouncementsApi {
   announcements(opts: {
     max?: number;

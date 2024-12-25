@@ -14,8 +14,15 @@
  * limitations under the License.
  */
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { translationRef } from '../translation';
+import { announcementsTranslationRef } from '../translation';
 
+/**
+ * Hook to get the announcements translation API.
+ *
+ * @returns The announcements translation API
+ *
+ * @public
+ */
 export const useAnnouncementsTranslation = () => {
-  return useTranslationRef(translationRef);
+  return useTranslationRef(announcementsTranslationRef);
 };

@@ -19,15 +19,27 @@ import {
   AnnouncementsFilters,
   AnnouncementsList,
 } from '@procore-oss/backstage-plugin-announcements-common';
-import { useAsyncRetry } from 'react-use';
+import useAsyncRetry from 'react-use/esm/useAsyncRetry';
 
-type UseAnnouncementsPropOptions = {
+/**
+ * Options for the useAnnouncements hook
+ *
+ * @public
+ */
+export type AnnouncementsOptions = {
   dependencies?: any[];
 };
 
+/**
+ * Hook to retrieve list of announcements.
+ *
+ * @returns A list of announcements and loading state
+ *
+ * @public
+ */
 export const useAnnouncements = (
   props: AnnouncementsFilters,
-  options?: UseAnnouncementsPropOptions,
+  options?: AnnouncementsOptions,
 ): {
   announcements: AnnouncementsList;
   loading: boolean;

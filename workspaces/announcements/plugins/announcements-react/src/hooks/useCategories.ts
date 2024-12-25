@@ -16,8 +16,15 @@
 import { useApi } from '@backstage/core-plugin-api';
 import { announcementsApiRef } from '../apis';
 import { Category } from '@procore-oss/backstage-plugin-announcements-common';
-import { useAsyncRetry } from 'react-use';
+import useAsyncRetry from 'react-use/esm/useAsyncRetry';
 
+/**
+ * Hook to get all categories.
+ *
+ * @returns a list of all categories
+ *
+ * @public
+ */
 export const useCategories = (): {
   categories: Category[];
   loading: boolean;

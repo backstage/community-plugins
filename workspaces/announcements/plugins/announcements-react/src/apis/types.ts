@@ -15,6 +15,11 @@
  */
 import { Announcement } from '@procore-oss/backstage-plugin-announcements-common';
 
+/**
+ * Request to create an announcement
+ *
+ * @public
+ */
 export type CreateAnnouncementRequest = Omit<
   Announcement,
   'id' | 'category' | 'created_at'
@@ -22,6 +27,11 @@ export type CreateAnnouncementRequest = Omit<
   category?: string;
 };
 
+/**
+ * Request to create a category
+ *
+ * @public
+ */
 export type CreateCategoryRequest = {
   title: string;
 };
