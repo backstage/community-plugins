@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Announcement } from '@procore-oss/backstage-plugin-announcements-common';
+import { Announcement } from '@backstage-community/plugin-announcements-common';
 
 /**
  * Request to create an announcement

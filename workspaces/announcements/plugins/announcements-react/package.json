@@ -41,7 +41,6 @@
     "@backstage-community/plugin-announcements-common": "workspace:^",
     "@backstage/core-plugin-api": "^1.10.1",
     "@backstage/errors": "^1.2.5",
-    "@procore-oss/backstage-plugin-announcements-common": "^0.2.9",
     "luxon": "^3.4.4",
     "react-use": "^17.2.4"
   },

@@ -15,7 +15,7 @@
  */
 import { useApi } from '@backstage/core-plugin-api';
 import { announcementsApiRef } from '../apis';
-import { Category } from '@procore-oss/backstage-plugin-announcements-common';
+import { Category } from '@backstage-community/plugin-announcements-common';
 import useAsyncRetry from 'react-use/esm/useAsyncRetry';
 
 /**

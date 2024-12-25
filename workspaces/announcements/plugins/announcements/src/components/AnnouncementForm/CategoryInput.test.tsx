@@ -25,8 +25,8 @@ const categories = [
   { title: 'World', slug: 'world' },
 ];
 
-jest.mock('@procore-oss/backstage-plugin-announcements-react', () => ({
-  ...jest.requireActual('@procore-oss/backstage-plugin-announcements-react'),
+jest.mock('@backstage-community/plugin-announcements-react', () => ({
+  ...jest.requireActual('@backstage-community/plugin-announcements-react'),
   useCategories: () => {
     return {
       categories,

@@ -22,12 +22,12 @@ import {
 
 /**
    @public
- * @deprecated Use `AnnouncementsApi` from `@procore-oss/backstage-plugin-announcements-react` instead
+ * @deprecated Use `AnnouncementsApi` from `@backstage-community/plugin-announcements-react` instead
  */
 export type AnnouncementsApi = AnnouncementsApi_;
 
 /**
  * @public
- * @deprecated Use `announcementsApiRef` from `@procore-oss/backstage-plugin-announcements-react` instead
+ * @deprecated Use `announcementsApiRef` from `@backstage-community/plugin-announcements-react` instead
  */
 export const announcementsApiRef = announcementsApiRef_;
