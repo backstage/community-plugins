@@ -2793,7 +2793,7 @@ __metadata:
     "@backstage/types": ^1.2.0
     "@types/lodash": ^4.14.151
     ajv: ^8.10.0
-    json-rules-engine: ^6.1.2
+    json-rules-engine: ^7.0.0
     lodash: ^4.17.21
     luxon: ^3.0.0
   languageName: unknown
@@ -23420,16 +23420,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"json-rules-engine@npm:^6.1.2":
-  version: 6.5.0
-  resolution: "json-rules-engine@npm:6.5.0"
+"json-rules-engine@npm:^7.0.0":
+  version: 7.2.1
+  resolution: "json-rules-engine@npm:7.2.1"
   dependencies:
     clone: ^2.1.2
     eventemitter2: ^6.4.4
     hash-it: ^6.0.0
-    jsonpath-plus: ^7.2.0
-    lodash.isobjectlike: ^4.0.0
-  checksum: c1a6fa2bb65743397c838c4e4a9157f184e0c24423031fa4bab6b83b5edbb64341f9197ccad9fdd44fcd6c58ac329c0c77882a64acf0d90ee1d856768a4154e3
+    jsonpath-plus: ^10.2.0
+  checksum: 203035c98528fe741befb07daaab5cd7766fa01a51a4d2dd771a77b9be89acd9fd86b1d40d0c7f739dd5f36e5c261458709a9a801a6a3ff50f22b77484333f42
   languageName: node
   linkType: hard
 
@@ -23591,7 +23590,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsonpath-plus@npm:10.2.0, jsonpath-plus@npm:^10.0.0, jsonpath-plus@npm:^6.0.1 || ^10.1.0":
+"jsonpath-plus@npm:10.2.0, jsonpath-plus@npm:^10.0.0, jsonpath-plus@npm:^10.2.0, jsonpath-plus@npm:^6.0.1 || ^10.1.0":
   version: 10.2.0
   resolution: "jsonpath-plus@npm:10.2.0"
   dependencies:
@@ -24360,13 +24359,6 @@ __metadata:
   version: 3.0.3
   resolution: "lodash.isnumber@npm:3.0.3"
   checksum: 913784275b565346255e6ae6a6e30b760a0da70abc29f3e1f409081585875105138cda4a429ff02577e1bc0a7ae2a90e0a3079a37f3a04c3d6c5aaa532f4cab2
-  languageName: node
-  linkType: hard
-
-"lodash.isobjectlike@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "lodash.isobjectlike@npm:4.0.0"
-  checksum: eabcd968b1bd11208a90b27f9b167bd5ce30165a5b20d7886b94df95acfbc929dbe00cf16f2ce7a7779bdaf3f0ef4ee705e671782599ab73097307d2b8b488c5
   languageName: node
   linkType: hard
 
