@@ -13,17 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-/**
- * The announcements backend module for the search plugin.
- *
- * @packageDocumentation
- */
-
-export { searchModuleAnnouncementsCollator as default } from './module';
-
-export { AnnouncementCollatorFactory } from './collators/AnnouncementCollatorFactory';
-export type {
-  IndexableAnnouncementDocument,
-  AnnouncementCollatorOptions,
-} from './collators/AnnouncementCollatorFactory';
+export {
+  type PersistenceContext,
+  initializePersistenceContext,
+} from './persistenceContext';

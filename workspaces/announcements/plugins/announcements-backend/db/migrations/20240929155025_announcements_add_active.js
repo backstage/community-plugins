@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
+exports.up = async function up(knex) {
+  await knex.schema.alterTable('announcements', table => {
+    table.boolean('active');
+  });
+};
+
 /**
- * The announcements backend module for the search plugin.
- *
- * @packageDocumentation
+ * @param { import("knex").Knex } knex
+ * @returns { Promise<void> }
  */
-
-export { searchModuleAnnouncementsCollator as default } from './module';
-
-export { AnnouncementCollatorFactory } from './collators/AnnouncementCollatorFactory';
-export type {
-  IndexableAnnouncementDocument,
-  AnnouncementCollatorOptions,
-} from './collators/AnnouncementCollatorFactory';
+exports.down = async function down(knex) {
+  await knex.schema.alterTable('announcements', table => {
+    table.dropColumn('active');
+  });
+};

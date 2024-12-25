@@ -13,17 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+export { buildAnnouncementsContext } from './announcementsContextBuilder';
 
-/**
- * The announcements backend module for the search plugin.
- *
- * @packageDocumentation
- */
-
-export { searchModuleAnnouncementsCollator as default } from './module';
-
-export { AnnouncementCollatorFactory } from './collators/AnnouncementCollatorFactory';
 export type {
-  IndexableAnnouncementDocument,
-  AnnouncementCollatorOptions,
-} from './collators/AnnouncementCollatorFactory';
+  AnnouncementsContext,
+  AnnouncementsContextOptions,
+} from './announcementsContextBuilder';
