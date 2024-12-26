@@ -18,7 +18,7 @@ import { Page, Header, Content } from '@backstage/core-components';
 import { AnnouncementsContent } from '../AnnouncementsContent';
 import { CategoriesContent } from '../CategoriesContent';
 import { RequirePermission } from '@backstage/plugin-permission-react';
-import { useAnnouncementsTranslation } from '@procore-oss/backstage-plugin-announcements-react';
+import { useAnnouncementsTranslation } from '@backstage-community/plugin-announcements-react';
 import { makeStyles, Tab } from '@material-ui/core';
 import { TabContext, TabList, TabPanel } from '@material-ui/lab';
 import { announcementCreatePermission } from '@backstage-community/plugin-announcements-common';

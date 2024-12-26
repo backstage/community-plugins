@@ -27,7 +27,7 @@ import {
   useAnnouncementsTranslation,
   useCategories,
   announcementsApiRef,
-} from '@procore-oss/backstage-plugin-announcements-react';
+} from '@backstage-community/plugin-announcements-react';
 import { Category } from '@backstage-community/plugin-announcements-common';
 import { useDeleteCategoryDialogState } from './useDeleteCategoryDialogState';
 import { alertApiRef, useApi } from '@backstage/core-plugin-api';

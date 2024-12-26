@@ -13,21 +13,5 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { announcementsPlugin, AnnouncementsPage } from './plugin';
-
-import {
-  announcementsApiRef as announcementsApiRef_,
-  AnnouncementsApi as AnnouncementsApi_,
-} from '@backstage-community/plugin-announcements-react';
-
-/**
-   @public
- * @deprecated Use `AnnouncementsApi` from `@backstage-community/plugin-announcements-react` instead
- */
-export type AnnouncementsApi = AnnouncementsApi_;
-
-/**
- * @public
- * @deprecated Use `announcementsApiRef` from `@backstage-community/plugin-announcements-react` instead
- */
-export const announcementsApiRef = announcementsApiRef_;
+export { announcementsApiRef, type AnnouncementsApi } from './AnnouncementsApi';
+export type { CreateAnnouncementRequest, CreateCategoryRequest } from './types';

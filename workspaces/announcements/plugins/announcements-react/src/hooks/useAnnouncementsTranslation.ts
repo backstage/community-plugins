@@ -13,21 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { announcementsPlugin, AnnouncementsPage } from './plugin';
-
-import {
-  announcementsApiRef as announcementsApiRef_,
-  AnnouncementsApi as AnnouncementsApi_,
-} from '@backstage-community/plugin-announcements-react';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { announcementsTranslationRef } from '../translation';
 
 /**
-   @public
- * @deprecated Use `AnnouncementsApi` from `@backstage-community/plugin-announcements-react` instead
- */
-export type AnnouncementsApi = AnnouncementsApi_;
-
-/**
+ * Hook to get the announcements translation API.
+ *
+ * @returns The announcements translation API
+ *
  * @public
- * @deprecated Use `announcementsApiRef` from `@backstage-community/plugin-announcements-react` instead
  */
-export const announcementsApiRef = announcementsApiRef_;
+export const useAnnouncementsTranslation = () => {
+  return useTranslationRef(announcementsTranslationRef);
+};

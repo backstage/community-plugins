@@ -18,7 +18,7 @@ import { alertApiRef, useApi } from '@backstage/core-plugin-api';
 import {
   announcementsApiRef,
   useAnnouncementsTranslation,
-} from '@procore-oss/backstage-plugin-announcements-react';
+} from '@backstage-community/plugin-announcements-react';
 import {
   Button,
   Dialog,

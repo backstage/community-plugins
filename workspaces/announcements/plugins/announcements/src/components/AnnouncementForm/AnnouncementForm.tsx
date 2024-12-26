@@ -20,7 +20,7 @@ import { identityApiRef, useApi } from '@backstage/core-plugin-api';
 import {
   CreateAnnouncementRequest,
   useAnnouncementsTranslation,
-} from '@procore-oss/backstage-plugin-announcements-react';
+} from '@backstage-community/plugin-announcements-react';
 import { Announcement } from '@backstage-community/plugin-announcements-common';
 import CategoryInput from './CategoryInput';
 import {
