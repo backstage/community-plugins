@@ -35,7 +35,8 @@
       "@backstage-community/plugin-announcements",
       "@backstage-community/plugin-announcements-backend",
       "@backstage-community/plugin-announcements-common",
-      "@backstage-community/plugin-announcements-node"
+      "@backstage-community/plugin-announcements-node",
+      "@backstage-community/plugin-announcements-react"
     ]
   },
   "sideEffects": false,
@@ -50,6 +51,7 @@
   },
   "dependencies": {
     "@backstage-community/plugin-announcements-common": "workspace:^",
+    "@backstage-community/plugin-announcements-react": "workspace:^",
     "@backstage/catalog-model": "^1.7.1",
     "@backstage/core-app-api": "^1.15.2",
     "@backstage/core-compat-api": "^0.3.3",
@@ -67,7 +69,6 @@
     "@material-ui/icons": "^4.11.3",
     "@material-ui/lab": "4.0.0-alpha.57",
     "@mui/material": "^5.15.6",
-    "@procore-oss/backstage-plugin-announcements-react": "^0.5.0",
     "@types/react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "@uiw/react-md-editor": "^4.0.3",
     "add": "^2.0.6",

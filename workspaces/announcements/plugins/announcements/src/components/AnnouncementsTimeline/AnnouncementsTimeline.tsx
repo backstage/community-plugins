@@ -21,7 +21,7 @@ import { announcementViewRouteRef } from '../../routes';
 import {
   useAnnouncements,
   useAnnouncementsTranslation,
-} from '@procore-oss/backstage-plugin-announcements-react';
+} from '@backstage-community/plugin-announcements-react';
 import { Progress } from '@backstage/core-components';
 import {
   Timeline,

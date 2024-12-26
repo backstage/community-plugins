@@ -20,7 +20,7 @@ import { Category } from '@backstage-community/plugin-announcements-common';
 import {
   useAnnouncementsTranslation,
   useCategories,
-} from '@procore-oss/backstage-plugin-announcements-react';
+} from '@backstage-community/plugin-announcements-react';
 import CircularProgress from '@mui/material/CircularProgress';
 
 type CategoryInputProps = {

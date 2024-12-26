@@ -18,7 +18,7 @@ import { InfoCard } from '@backstage/core-components';
 import {
   CreateCategoryRequest,
   useAnnouncementsTranslation,
-} from '@procore-oss/backstage-plugin-announcements-react';
+} from '@backstage-community/plugin-announcements-react';
 import {
   announcementCreatePermission,
   Category,

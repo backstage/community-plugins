@@ -37,7 +37,7 @@ import {
   entityRouteRef,
 } from '@backstage/plugin-catalog-react';
 import { announcementViewRouteRef, rootRouteRef } from '../../routes';
-import { announcementsApiRef } from '@procore-oss/backstage-plugin-announcements-react';
+import { announcementsApiRef } from '@backstage-community/plugin-announcements-react';
 import { Announcement } from '@backstage-community/plugin-announcements-common';
 import { Grid } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';

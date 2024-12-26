@@ -18,15 +18,15 @@ import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { TestApiProvider, renderInTestApp } from '@backstage/test-utils';
 import CategoryInput from './CategoryInput';
-import { announcementsApiRef } from '@procore-oss/backstage-plugin-announcements-react';
+import { announcementsApiRef } from '@backstage-community/plugin-announcements-react';
 
 const categories = [
   { title: 'Hello', slug: 'hello' },
   { title: 'World', slug: 'world' },
 ];
 
-jest.mock('@procore-oss/backstage-plugin-announcements-react', () => ({
-  ...jest.requireActual('@procore-oss/backstage-plugin-announcements-react'),
+jest.mock('@backstage-community/plugin-announcements-react', () => ({
+  ...jest.requireActual('@backstage-community/plugin-announcements-react'),
   useCategories: () => {
     return {
       categories,

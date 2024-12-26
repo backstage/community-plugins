@@ -24,7 +24,8 @@
       "@backstage-community/plugin-announcements",
       "@backstage-community/plugin-announcements-backend",
       "@backstage-community/plugin-announcements-common",
-      "@backstage-community/plugin-announcements-node"
+      "@backstage-community/plugin-announcements-node",
+      "@backstage-community/plugin-announcements-react"
     ]
   },
   "sideEffects": false,

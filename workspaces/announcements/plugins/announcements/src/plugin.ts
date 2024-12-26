@@ -29,7 +29,7 @@ import {
 } from '@backstage/plugin-search-react';
 import { AnnouncementSearchResultProps } from './components/AnnouncementSearchResultListItem';
 import { rootRouteRef } from './routes';
-import { announcementsApiRef } from '@procore-oss/backstage-plugin-announcements-react';
+import { announcementsApiRef } from '@backstage-community/plugin-announcements-react';
 import { AnnouncementsClient } from './api';
 
 /**

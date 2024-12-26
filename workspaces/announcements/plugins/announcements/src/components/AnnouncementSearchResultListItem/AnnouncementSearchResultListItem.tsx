@@ -21,7 +21,7 @@ import {
   ResultHighlight,
 } from '@backstage/plugin-search-common';
 import { HighlightedSearchResultText } from '@backstage/plugin-search-react';
-import { useAnnouncementsTranslation } from '@procore-oss/backstage-plugin-announcements-react';
+import { useAnnouncementsTranslation } from '@backstage-community/plugin-announcements-react';
 import {
   makeStyles,
   ListItem,

@@ -5,7 +5,7 @@
 ```ts
 /// <reference types="react" />
 
-import { AnnouncementsApi as AnnouncementsApi_2 } from '@procore-oss/backstage-plugin-announcements-react';
+import { AnnouncementsApi as AnnouncementsApi_2 } from '@backstage-community/plugin-announcements-react';
 import { ApiRef } from '@backstage/core-plugin-api/index';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { JSX as JSX_2 } from 'react';
