@@ -1,6 +1,6 @@
 # announcements
 
-This is the frontend for the Announcements plugin. This plugin provides:
+The frontend for the Announcements plugin. This plugin provides:
 
 - a component to display the latest announcements, for example on a homepage
 - pages to list, view, create, edit and delete announcements
@@ -15,7 +15,7 @@ yarn --cwd packages/app add @backstage-community/plugin-announcements
 
 Expose the announcements page:
 
-```ts
+```tsx
 // packages/app/src/App.tsx
 import { AnnouncementsPage } from '@backstage-community/plugin-announcements';
 
@@ -42,7 +42,7 @@ yarn --cwd packages/app add @backstage-community/plugin-announcements
 
 Add the plugin to `packages/app/src/App.tsx`:
 
-```ts
+```tsx
 import announcementsPlugin from '@backstage-community/plugin-announcements/alpha';
 
 // ...
@@ -76,6 +76,54 @@ app:
     - entity-card:announcements/announcements:
         config:
           filter: kind:component,system,group,api
+```
+
+## Components
+
+- [Display latest announcements on a page](./docs/latest-announcements-on-page.md)
+- [Display a banner for the latest announcement](./docs/latest-announcement-banner.md)
+- [Display announcements in a timeline](./docs/announcement-timeline.md)
+
+## Customization
+
+### Overriding the AnnouncementCard
+
+It is possible to specify the length of the title for announcements rendered on the `AnnouncementsPage`. You can do this by passing a `cardOptions` prop to the `AnnouncementsPage` component. The `cardOptions` prop accepts an object with the following properties:
+
+```ts
+{
+  titleLength: number; // defaults to 50
+}
+```
+
+Example
+
+```tsx
+<AnnouncementsPage cardOptions={{ titleLength: 10 }} />
+```
+
+### Overriding the AnnouncementsPage
+
+It is possible to specify the Announcements within a specific category rendered on the `AnnouncementsPage`. You can do this by passing a `category` prop to the `AnnouncementsPage` component. The `AnnouncementsPage` prop accepts an value such as:
+
+```ts
+category = 'conferences';
+```
+
+Example
+
+```tsx
+<AnnouncementsPage category="conferences" />
+```
+
+### Overriding the AnnouncementCreateButton
+
+It is possible to specify the text for the "New announcement" button rendered on the `AnnouncementsPage`. You can do this by passing a `buttonOptions` prop to the `AnnouncementsPage` component. The `buttonOptions` prop accepts an object with the following properties:
+
+```ts
+{
+  name: string; // defaults to 'announcement'
+}
 ```
 
 ## Development
