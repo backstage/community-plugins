@@ -1,6 +1,6 @@
-# announcements
+# announcements-backend
 
-This is the backend for the Announcements plugin. This plugin provides:
+The backend for the Announcements plugin. This plugin provides:
 
 - REST APIs for managing announcements and categories
 - Integration with the [`@backstage/plugin-search`](https://github.com/backstage/backstage/tree/master/plugins/search) plugin
@@ -8,7 +8,7 @@ This is the backend for the Announcements plugin. This plugin provides:
 
 ## Installation
 
-This plugin is installed via the `@backstage-community/plugin-announcements-backend` package. To install it to your backend package, run the following command:
+To install it to your backend package, run the following command:
 
 ```bash
 # From your root directory
