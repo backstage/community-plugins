@@ -4,6 +4,7 @@
   "engines": {
     "node": "18 || 20"
   },
+  "private": true,
   "scripts": {
     "dev": "yarn workspaces foreach -A --include @backstage-community/plugin-announcements-backend --include @backstage-community/plugin-announcements --parallel -v -i run start",
     "start": "yarn workspace @backstage-community/plugin-announcements start",
