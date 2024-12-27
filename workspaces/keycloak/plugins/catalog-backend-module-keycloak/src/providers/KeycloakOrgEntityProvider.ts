@@ -222,11 +222,11 @@ export class KeycloakOrgEntityProvider implements EntityProvider {
       baseUrl: provider.baseUrl,
       realmName: provider.loginRealm,
     });
-    await authenticate(kcAdminClient, provider);
+    await authenticate(kcAdminClient, provider, logger);
 
     const pLimitCJSModule = await inclusion('p-limit');
     const limitFunc = pLimitCJSModule.default;
-    const concurrency = provider.maxConcurrency ?? Number.POSITIVE_INFINITY;
+    const concurrency = provider.maxConcurrency ?? 20;
     const limit: LimitFunction = limitFunc(concurrency);
 
     const { users, groups } = await readKeycloakRealm(

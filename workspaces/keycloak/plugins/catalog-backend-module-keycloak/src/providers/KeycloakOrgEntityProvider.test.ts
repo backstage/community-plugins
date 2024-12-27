@@ -72,7 +72,7 @@ describe.each([
   let schedule: SchedulerServiceTaskRunnerMock;
 
   const mockPLimit = jest.fn().mockImplementation((_concurrency: number) => {
-    // Create function repetedly calling the original function without limit implementation
+    // Create function repeatedly calling the original function without limit implementation
     const limit = jest
       .fn()
       .mockImplementation(

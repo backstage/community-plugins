@@ -188,6 +188,7 @@ async function getAllGroupMembers<T extends Groups>(
 export async function processGroupsRecursively(
   kcAdminClient: KeycloakAdminClient,
   config: KeycloakProviderConfig,
+  logger: LoggerService,
   topLevelGroups: GroupRepresentationWithParent[],
 ) {
   const allGroups: GroupRepresentationWithParent[] = [];
@@ -195,7 +196,7 @@ export async function processGroupsRecursively(
     allGroups.push(group);
 
     if (group.subGroupCount! > 0) {
-      await ensureTokenValid(kcAdminClient, config);
+      await ensureTokenValid(kcAdminClient, config, logger);
       const subgroups = await kcAdminClient.groups.listSubGroups({
         parentId: group.id!,
         first: 0,
@@ -205,6 +206,7 @@ export async function processGroupsRecursively(
       const subGroupResults = await processGroupsRecursively(
         kcAdminClient,
         config,
+        logger,
         subgroups,
       );
       allGroups.push(...subGroupResults);
@@ -241,7 +243,7 @@ export const readKeycloakRealm = async (
 }> => {
   const kUsers = await getEntities(
     async () => {
-      await ensureTokenValid(client, config);
+      await ensureTokenValid(client, config, logger);
       return client.users;
     },
     config,
@@ -253,7 +255,7 @@ export const readKeycloakRealm = async (
 
   const topLevelKGroups = (await getEntities(
     async () => {
-      await ensureTokenValid(client, config);
+      await ensureTokenValid(client, config, logger);
       return client.groups;
     },
     config,
@@ -266,7 +268,7 @@ export const readKeycloakRealm = async (
   let serverVersion: number;
 
   try {
-    await ensureTokenValid(client, config);
+    await ensureTokenValid(client, config, logger);
     const serverInfo = await client.serverInfo.find();
     serverVersion = parseInt(
       serverInfo.systemInfo?.version?.slice(0, 2) || '',
@@ -285,6 +287,7 @@ export const readKeycloakRealm = async (
     rawKGroups = await processGroupsRecursively(
       client,
       config,
+      logger,
       topLevelKGroups,
     );
   } else {
@@ -300,7 +303,7 @@ export const readKeycloakRealm = async (
       limit(async () => {
         g.members = await getAllGroupMembers(
           async () => {
-            await ensureTokenValid(client, config);
+            await ensureTokenValid(client, config, logger);
             return client.groups as Groups;
           },
           g.id!,
@@ -310,7 +313,7 @@ export const readKeycloakRealm = async (
 
         if (isVersion23orHigher) {
           if (g.subGroupCount! > 0) {
-            await ensureTokenValid(client, config);
+            await ensureTokenValid(client, config, logger);
             g.subGroups = await client.groups.listSubGroups({
               parentId: g.id!,
               first: 0,
@@ -320,7 +323,7 @@ export const readKeycloakRealm = async (
             });
           }
           if (g.parentId) {
-            await ensureTokenValid(client, config);
+            await ensureTokenValid(client, config, logger);
             const groupParent = await client.groups.findOne({
               id: g.parentId,
               realm: config.realm,

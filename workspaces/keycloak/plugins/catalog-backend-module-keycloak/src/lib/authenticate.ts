@@ -17,15 +17,17 @@ import KeycloakAdminClient from '@keycloak/keycloak-admin-client';
 import { KeycloakProviderConfig } from './config';
 import { Credentials } from '@keycloak/keycloak-admin-client/lib/utils/auth';
 import { InputError } from '@backstage/errors';
+import { LoggerService } from '@backstage/backend-plugin-api';
 
 let refreshTokenPromise: Promise<void> | null = null;
 
 export async function ensureTokenValid(
   kcAdminClient: KeycloakAdminClient,
   provider: KeycloakProviderConfig,
+  logger: LoggerService,
 ) {
   if (!kcAdminClient.accessToken) {
-    await authenticate(kcAdminClient, provider);
+    await authenticate(kcAdminClient, provider, logger);
   } else {
     const tokenData = JSON.parse(
       Buffer.from(kcAdminClient.accessToken.split('.')[1], 'base64').toString(),
@@ -37,11 +39,13 @@ export async function ensureTokenValid(
     // update token with refresh token.
     if (now > tokenExpiry - 30000) {
       if (!refreshTokenPromise) {
-        refreshTokenPromise = authenticate(kcAdminClient, provider).finally(
-          () => {
-            refreshTokenPromise = null;
-          },
-        );
+        refreshTokenPromise = authenticate(
+          kcAdminClient,
+          provider,
+          logger,
+        ).finally(() => {
+          refreshTokenPromise = null;
+        });
       }
       await refreshTokenPromise;
     }
@@ -51,6 +55,7 @@ export async function ensureTokenValid(
 export async function authenticate(
   kcAdminClient: KeycloakAdminClient,
   provider: KeycloakProviderConfig,
+  logger: LoggerService,
 ) {
   try {
     let credentials: Credentials;
@@ -73,9 +78,8 @@ export async function authenticate(
       );
     }
     await kcAdminClient.auth(credentials);
-    console.log('Authenticated successfully');
   } catch (error) {
-    console.error('Failed to authenticate', error);
+    logger.error('Failed to authenticate', error.message);
     throw error;
   }
 }
