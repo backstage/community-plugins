@@ -1,5 +1,14 @@
 # @backstage-community/plugin-search-backend-module-announcements
 
+## 0.1.2
+
+### Patch Changes
+
+- 126b459: Minor bump to fix release process - this should kick off the first release of the announcements plugins under the @backstage-community scope.
+- Updated dependencies [126b459]
+  - @backstage-community/plugin-announcements-common@0.1.2
+  - @backstage-community/plugin-announcements-node@0.1.2
+
 ## 0.1.1
 
 ### Patch Changes
