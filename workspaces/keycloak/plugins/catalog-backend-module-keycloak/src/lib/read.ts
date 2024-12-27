@@ -137,9 +137,10 @@ export async function getEntities<T extends Users | Groups>(
             );
             return ents;
           })
-          .catch(err =>
-            logger.warn('Failed to retieve Keycloak entities.', err),
-          ) as ReturnType<T['find']>;
+          .catch(err => {
+            logger.warn('Failed to retieve Keycloak entities.', err);
+            return [];
+          }) as ReturnType<T['find']>;
       }),
     ),
   );
