@@ -378,6 +378,7 @@ describe('fetch subgroups', () => {
     const groups = await processGroupsRecursively(
       client,
       config,
+      logger,
       topLevelGroups23orHigher,
     );
 
