@@ -175,7 +175,7 @@ git clone https://github.com/source-repo/existing-plugins.git
 git clone https://github.com/backstage/community-plugins.git
 ```
 
-2. Identify the plugin(s) you wish to migrate. If you're migrating multiple plugins, is recommended to group the migration of these by workspace.
+2. Identify the plugin(s) you wish to migrate. If you're migrating multiple plugins, it's recommended to group the migration of these by workspace.
 
 3. Within the `backstage/community-plugins` repository create a new branch for your changes:
 
@@ -183,25 +183,34 @@ git clone https://github.com/backstage/community-plugins.git
 git checkout -b migrate-workspace
 ```
 
-3. Create a new workspace in the community plugins repository.
+4. Create a new workspace in the community plugins repository. See the [Creating a new Workspace](#creating-a-new-workspace) section for more information.
 
-4. Copy the plugin files from the source repository to the `backstage/community-plugins` repository.
+5. Copy the plugin files from the source repository to the `backstage/community-plugins` repository.
 
 ```sh
 cp -r ../existing-plugins/plugins/plugin-name plugins/
 ```
 
-5. Ensure all metadata files (`package.json`) are updated to reflect the new repository. This includes updating repository URLs, issues URLs, and other references.
+6. Ensure all metadata files (`package.json`) are updated to reflect the new repository. This includes updating repository URLs, issues URLs, and other references.
 
-6. Add maintainers to the `CODEOWNERS` file for the new workspace.
+7. Generate API reports for the new plugin(s) in the workspace. See the [API Reports](#api-reports) section for more information.
+
+8. Add required Backstage metadata to the `package.json` file for the new plugin(s) in the workspace. This can usually be resolved by running the command below.
+
+```sh
+# navigate to the root of the workspace
+yarn backstage-cli repo fix --publish
+```
+
+9. Add maintainers to the `CODEOWNERS` file for the new workspace.
 
 > **Note:** The `CODEOWNERS` file will have errors until the [Organization Membership Request for CODEOWNERS](#organization-membership-request-for-codeowners) has been approved. However, it is still useful to add `CODEOWNERS` as this point as it provides a documented reference as to who owns/maintains the plugin.
 
-7. Create a new pull request from your branch.
+10. Create a new pull request from your branch.
 
-8. Update external references to the old plugin location such as documentation to point to the new location in the `backstage/community-plugins` repository.
+11. Update external references to the old plugin location such as documentation to point to the new location in the `backstage/community-plugins` repository.
 
-9. In the original repository, update the plugin to indicate that it has been moved to the `backstage/community-plugins` repository. You may wish to deprecate the old version on npm.
+12. In the original repository, update the plugin to indicate that it has been moved to the `backstage/community-plugins` repository. It's recommended you deprecate the old plugin packages on npm.
 
 ## Organization Membership Request for CODEOWNERS
 
@@ -252,6 +261,11 @@ There are two ways you can do this:
 > Note: the above commands assume you've run `yarn install` before hand or recently
 
 Each plugin/package has its own API Report which means you might see more then one file updated or created depending on your changes. These changes will then need to be committed as well.
+
+> [!WARNING]
+> "The API Report for _plugin_ is not allowed to have warnings"
+>
+> Open the API report to view more details about the warning(s) and resolve them before committing the changes.
 
 ## Submitting a Pull Request
 
@@ -308,4 +322,4 @@ Here are a few things that can help as you go through the review process:
 - You'll want to make sure all the automated checks are passing as generally the PR won't get a review if something like the CI build is failing
 - PRs get automatically assigned so you don't need to ping people, they will be notified and have a process of their own for this
 - If you are waiting for a review or mid-review and your PR goes stale one of the easiest ways to clear the stale bot is by simply rebasing your PR
-- There are times where you might run into conflict with the `yarn.lock` during a rebase, to help with that make sure your `main` branch is up to date and then in your branch run `git checkout master yarn.lock` from the workspace too and then run `yarn install`, this will get you a conflict free `yarn.lock` file you can commit
+- There are times where you might run into conflict with the `yarn.lock` during a rebase, to help with that make sure your `main` branch is up to date and then in your branch run `git checkout main yarn.lock` from the workspace too and then run `yarn install`, this will get you a conflict free `yarn.lock` file you can commit
