@@ -14,3 +14,4 @@
  * limitations under the License.
  */
 export { AnnouncementsTimeline } from './AnnouncementsTimeline';
+export type { AnnouncementsTimelineProps } from './AnnouncementsTimeline';

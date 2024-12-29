@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { announcementsPlugin, AnnouncementsPage } from './plugin';
+export * from './plugin';
 
 import {
   announcementsApiRef as announcementsApiRef_,
@@ -31,3 +31,6 @@ export type AnnouncementsApi = AnnouncementsApi_;
  * @deprecated Use `announcementsApiRef` from `@backstage-community/plugin-announcements-react` instead
  */
 export const announcementsApiRef = announcementsApiRef_;
+
+export type { AnnouncementsTimelineProps } from './components';
+export type { AnnouncementSearchResultProps } from './components';
