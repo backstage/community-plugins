@@ -1,5 +1,11 @@
 # @backstage-community/search-backend-module-adr
 
+## 0.3.2
+
+### Patch Changes
+
+- 03913ac: Fixed backend-plugin-api import that caused an error at backend startup
+
 ## 0.3.1
 
 ### Patch Changes
