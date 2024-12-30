@@ -195,12 +195,14 @@ cp -r ../existing-plugins/plugins/plugin-name plugins/
 
 7. Generate API reports for the new plugin(s) in the workspace. See the [API Reports](#api-reports) section for more information.
 
-8. Add required Backstage metadata to the `package.json` file for the new plugin(s) in the workspace. This can usually be resolved by running the command below.
+8. If migrating older plugins, the `package.json` file may not contain the required Backstage metadata. This can usually be resolved by running the command below.
 
 ```sh
 # navigate to the root of the workspace
 yarn backstage-cli repo fix --publish
 ```
+
+Visit the [Package Metadata documentation](https://backstage.io/docs/tooling/package-metadata/#backstagepluginpackages) for more information.
 
 9. Add maintainers to the `CODEOWNERS` file for the new workspace.
 
@@ -267,6 +269,7 @@ Each plugin/package has its own API Report which means you might see more then o
 > "The API Report for _plugin_ is not allowed to have warnings"
 >
 > Open the API report to view more details about the warning(s), resolve them, and regenerate the api reports with `yarn build:api-reports` before committing the changes.
+
 ## Submitting a Pull Request
 
 When you've got your contribution working, tested, and committed to your branch it's time to create a Pull Request (PR). If you are unsure how to do this GitHub's [Creating a pull request from a fork](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork) documentation will help you with that. Once you create your PR you will be presented with a template in the PR's description that looks like this:
