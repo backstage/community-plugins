@@ -17,7 +17,7 @@
 import {
   readSchedulerServiceTaskScheduleDefinitionFromConfig,
   SchedulerServiceTaskScheduleDefinition,
-} from '@backstage/backend-plugin-api/index';
+} from '@backstage/backend-plugin-api';
 import { Config } from '@backstage/config';
 import { InputError } from '@backstage/errors';
 
