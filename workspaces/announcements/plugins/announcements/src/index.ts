@@ -31,3 +31,6 @@ export type AnnouncementsApi = AnnouncementsApi_;
  * @deprecated Use `announcementsApiRef` from `@backstage-community/plugin-announcements-react` instead
  */
 export const announcementsApiRef = announcementsApiRef_;
+
+export type { AnnouncementsTimelineProps } from './components';
+export type { AnnouncementSearchResultProps } from './components';

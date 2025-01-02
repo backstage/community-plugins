@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 3.17.0
+
+### Minor Changes
+
+- e9600c4: Update Patternfly Dependencies to V6 and also use the latest version of aonic-ui/pipelines.
+
 ## 3.16.5
 
 ### Patch Changes
