@@ -51,6 +51,7 @@ type IndexableAnnouncement = IndexableDocument & {
   createdAt: string;
 };
 
+/** @public */
 export interface AnnouncementSearchResultProps {
   result?: IndexableDocument;
   highlight?: ResultHighlight;
