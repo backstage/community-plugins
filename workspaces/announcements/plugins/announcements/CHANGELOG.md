@@ -1,5 +1,11 @@
 # @backstage-community/plugin-announcements
 
+## 0.1.3
+
+### Patch Changes
+
+- d08164d: Exported missing items to match documentation
+
 ## 0.1.2
 
 ### Patch Changes
