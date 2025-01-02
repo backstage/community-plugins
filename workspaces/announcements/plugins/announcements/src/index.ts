@@ -13,7 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { announcementsPlugin, AnnouncementsPage } from './plugin';
+export {
+  announcementsPlugin,
+  AnnouncementsPage,
+  NewAnnouncementBanner,
+  AnnouncementsCard,
+  AnnouncementsTimeline,
+  AnnouncementSearchResultListItem,
+  AnnouncementsAdminPortal,
+} from './plugin';
 
 import {
   announcementsApiRef as announcementsApiRef_,
