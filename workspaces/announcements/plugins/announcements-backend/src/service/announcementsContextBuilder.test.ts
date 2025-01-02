@@ -69,6 +69,8 @@ describe('buildAnnouncementsContext', () => {
       persistenceContext: await initializePersistenceContext(database),
       permissions,
       httpAuth,
+      events,
+      signals,
     });
   });
 });

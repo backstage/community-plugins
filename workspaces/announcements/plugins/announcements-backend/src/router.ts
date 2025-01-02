@@ -61,7 +61,7 @@ type GetAnnouncementsQueryParams = {
 };
 
 export async function createRouter(
-  options: AnnouncementsContext,
+  context: AnnouncementsContext,
 ): Promise<express.Router> {
   const {
     persistenceContext,
@@ -71,7 +71,7 @@ export async function createRouter(
     logger,
     events,
     signals,
-  } = options;
+  } = context;
 
   const permissionIntegrationRouter = createPermissionIntegrationRouter({
     permissions: Object.values(announcementEntityPermissions),
