@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2025 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,21 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export * from './plugin';
-
 import {
-  announcementsApiRef as announcementsApiRef_,
-  AnnouncementsApi as AnnouncementsApi_,
-} from '@backstage-community/plugin-announcements-react';
+  ScmIntegrationsApi,
+  scmIntegrationsApiRef,
+  ScmAuth,
+} from '@backstage/integration-react';
+import {
+  AnyApiFactory,
+  configApiRef,
+  createApiFactory,
+} from '@backstage/core-plugin-api';
 
-/**
-   @public
- * @deprecated Use `AnnouncementsApi` from `@backstage-community/plugin-announcements-react` instead
- */
-export type AnnouncementsApi = AnnouncementsApi_;
-
-/**
- * @public
- * @deprecated Use `announcementsApiRef` from `@backstage-community/plugin-announcements-react` instead
- */
-export const announcementsApiRef = announcementsApiRef_;
+export const apis: AnyApiFactory[] = [
+  createApiFactory({
+    api: scmIntegrationsApiRef,
+    deps: { configApi: configApiRef },
+    factory: ({ configApi }) => ScmIntegrationsApi.fromConfig(configApi),
+  }),
+  ScmAuth.createDefaultApiFactory(),
+];
