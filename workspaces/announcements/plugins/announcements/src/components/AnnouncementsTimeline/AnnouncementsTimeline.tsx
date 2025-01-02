@@ -37,6 +37,8 @@ import Stack from '@mui/material/Stack';
 
 /**
  * Props for the AnnouncementsTimeline component.
+ *
+ * @public
  */
 export type AnnouncementsTimelineProps = {
   /**

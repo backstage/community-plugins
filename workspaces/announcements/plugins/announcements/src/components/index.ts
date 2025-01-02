@@ -15,3 +15,5 @@
  */
 export * from './AnnouncementsTimeline';
 export { AdminPortal, AnnouncementsContent } from './Admin';
+export type { AnnouncementsTimelineProps } from './AnnouncementsTimeline';
+export type { AnnouncementSearchResultProps } from './AnnouncementSearchResultListItem';
