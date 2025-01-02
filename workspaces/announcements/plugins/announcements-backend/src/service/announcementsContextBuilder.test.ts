@@ -20,6 +20,8 @@ import {
   HttpAuthService,
   PermissionsService,
 } from '@backstage/backend-plugin-api';
+import { EventsService } from '@backstage/plugin-events-node/index';
+import { SignalsService } from '@backstage/plugin-signals-node/index';
 
 jest.mock('./persistence/persistenceContext', () => ({
   initializePersistenceContext: jest.fn(),
@@ -42,12 +44,23 @@ describe('buildAnnouncementsContext', () => {
       issueUserCookie: jest.fn(),
     };
 
+    const events: EventsService = {
+      publish: jest.fn(),
+      subscribe: jest.fn(),
+    };
+
+    const signals: SignalsService = {
+      publish: jest.fn(),
+    };
+
     const context = await buildAnnouncementsContext({
       logger,
       config,
       database,
       permissions,
       httpAuth,
+      events,
+      signals,
     });
 
     expect(context).toStrictEqual({

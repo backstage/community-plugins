@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { EventsService } from '@backstage/plugin-events-node/index';
 import {
   initializePersistenceContext,
   PersistenceContext,
@@ -24,19 +25,7 @@ import {
   PermissionsService,
   RootConfigService,
 } from '@backstage/backend-plugin-api';
-
-/**
- * Options to build the context for the announcements plugin.
- *
- * @public
- */
-export type AnnouncementsContextOptions = {
-  logger: LoggerService;
-  config: RootConfigService;
-  database: DatabaseService;
-  permissions: PermissionsService;
-  httpAuth: HttpAuthService;
-};
+import { SignalsService } from '@backstage/plugin-signals-node/index';
 
 /**
  * Context for the announcements plugin.
@@ -49,6 +38,20 @@ export type AnnouncementsContext = {
   persistenceContext: PersistenceContext;
   permissions: PermissionsService;
   httpAuth: HttpAuthService;
+  events?: EventsService;
+  signals?: SignalsService;
+};
+
+/**
+ * Options to build the context for the announcements plugin.
+ *
+ * @public
+ */
+export type AnnouncementsContextOptions = Omit<
+  AnnouncementsContext,
+  'persistenceContext'
+> & {
+  database: DatabaseService;
 };
 
 /**
@@ -62,6 +65,8 @@ export const buildAnnouncementsContext = async ({
   database,
   permissions,
   httpAuth,
+  events,
+  signals,
 }: AnnouncementsContextOptions): Promise<AnnouncementsContext> => {
   return {
     logger,
@@ -69,5 +74,7 @@ export const buildAnnouncementsContext = async ({
     persistenceContext: await initializePersistenceContext(database),
     permissions,
     httpAuth,
+    events,
+    signals,
   };
 };
