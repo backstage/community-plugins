@@ -13,7 +13,6 @@ spec:
   lifecycle: experimental
 
 ---
-
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:

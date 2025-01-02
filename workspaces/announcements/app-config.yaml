@@ -50,8 +50,6 @@ backend:
   #     - host: localhost
   # workingDirectory: /tmp # Use this to configure a working directory for the scaffolder, defaults to the OS temp-dir
 
-
-
 catalog:
   import:
     entityFilename: catalog-info.yaml
