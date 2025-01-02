@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { EventsService } from '@backstage/plugin-events-node/index';
 import {
   initializePersistenceContext,
   PersistenceContext,
@@ -25,7 +24,8 @@ import {
   PermissionsService,
   RootConfigService,
 } from '@backstage/backend-plugin-api';
-import { SignalsService } from '@backstage/plugin-signals-node/index';
+import { EventsService } from '@backstage/plugin-events-node';
+import { SignalsService } from '@backstage/plugin-signals-node';
 
 /**
  * Context for the announcements plugin.
