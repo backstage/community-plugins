@@ -1,0 +1,6 @@
+{
+  "currentVersion": "1.3",
+  "upgradeVersion": "1.4",
+  "migratedNamespaces": ["bookinfo"],
+  "pendingNamespaces": ["travel-agency"]
+}

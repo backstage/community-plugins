@@ -1,0 +1,188 @@
+{
+  "namespace": {
+    "name": "bookinfo",
+    "cluster": "",
+    "isAmbient": false,
+    "labels": null,
+    "annotations": null
+  },
+  "services": [
+    {
+      "name": "details",
+      "namespace": "bookinfo",
+      "istioSidecar": true,
+      "cluster": "Kubernetes",
+      "istioAmbient": false,
+      "appLabel": true,
+      "additionalDetailSample": null,
+      "annotations": null,
+      "healthAnnotations": {},
+      "ports": null,
+      "labels": {
+        "app": "details",
+        "service": "details"
+      },
+      "selector": {
+        "app": "details"
+      },
+      "istioReferences": [],
+      "kialiWizard": "",
+      "serviceRegistry": "Kubernetes",
+      "health": {
+        "requests": {
+          "inbound": {
+            "http": {
+              "200": 1.0000222227160604
+            }
+          },
+          "outbound": {},
+          "healthAnnotations": {}
+        }
+      }
+    },
+    {
+      "name": "productpage",
+      "namespace": "bookinfo",
+      "istioSidecar": true,
+      "cluster": "Kubernetes",
+      "istioAmbient": false,
+      "appLabel": true,
+      "additionalDetailSample": null,
+      "annotations": null,
+      "healthAnnotations": {},
+      "ports": null,
+      "labels": {
+        "app": "productpage",
+        "service": "productpage"
+      },
+      "selector": {
+        "app": "productpage"
+      },
+      "istioReferences": [
+        {
+          "objectType": "VirtualService",
+          "name": "bookinfo",
+          "namespace": "bookinfo",
+          "cluster": ""
+        },
+        {
+          "objectType": "Gateway",
+          "name": "bookinfo-gateway",
+          "namespace": "bookinfo",
+          "cluster": ""
+        }
+      ],
+      "kialiWizard": "",
+      "serviceRegistry": "Kubernetes",
+      "health": {
+        "requests": {
+          "inbound": {
+            "http": {
+              "200": 0.9999999999999999
+            }
+          },
+          "outbound": {},
+          "healthAnnotations": {}
+        }
+      }
+    },
+    {
+      "name": "ratings",
+      "namespace": "bookinfo",
+      "istioSidecar": true,
+      "cluster": "Kubernetes",
+      "istioAmbient": false,
+      "appLabel": true,
+      "additionalDetailSample": null,
+      "annotations": null,
+      "healthAnnotations": {},
+      "ports": null,
+      "labels": {
+        "app": "ratings",
+        "service": "ratings"
+      },
+      "selector": {
+        "app": "ratings"
+      },
+      "istioReferences": [],
+      "kialiWizard": "",
+      "serviceRegistry": "Kubernetes",
+      "health": {
+        "requests": {
+          "inbound": {
+            "http": {
+              "200": 0.711111111111111
+            }
+          },
+          "outbound": {},
+          "healthAnnotations": {}
+        }
+      }
+    },
+    {
+      "name": "reviews",
+      "namespace": "bookinfo",
+      "istioSidecar": true,
+      "cluster": "Kubernetes",
+      "istioAmbient": false,
+      "appLabel": true,
+      "additionalDetailSample": null,
+      "annotations": null,
+      "healthAnnotations": {},
+      "ports": null,
+      "labels": {
+        "app": "reviews",
+        "service": "reviews"
+      },
+      "selector": {
+        "app": "reviews"
+      },
+      "istioReferences": [],
+      "kialiWizard": "",
+      "serviceRegistry": "Kubernetes",
+      "health": {
+        "requests": {
+          "inbound": {
+            "http": {
+              "200": 0.9999999999999999
+            }
+          },
+          "outbound": {},
+          "healthAnnotations": {}
+        }
+      }
+    }
+  ],
+  "validations": {
+    "service": {
+      "details.bookinfo": {
+        "name": "details",
+        "objectType": "service",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "productpage.bookinfo": {
+        "name": "productpage",
+        "objectType": "service",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "ratings.bookinfo": {
+        "name": "ratings",
+        "objectType": "service",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "reviews.bookinfo": {
+        "name": "reviews",
+        "objectType": "service",
+        "valid": true,
+        "checks": [],
+        "references": null
+      }
+    }
+  }
+}

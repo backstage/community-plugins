@@ -1,0 +1,120 @@
+{
+  "details": {
+    "workloadStatuses": [
+      {
+        "name": "details-v1",
+        "desiredReplicas": 1,
+        "currentReplicas": 1,
+        "availableReplicas": 1,
+        "syncedProxies": 1
+      }
+    ],
+    "requests": {
+      "inbound": {
+        "http": {
+          "200": 0.9999999999999999
+        }
+      },
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  },
+  "kiali-traffic-generator": {
+    "workloadStatuses": [
+      {
+        "name": "kiali-traffic-generator",
+        "desiredReplicas": 1,
+        "currentReplicas": 1,
+        "availableReplicas": 1,
+        "syncedProxies": 1
+      }
+    ],
+    "requests": {
+      "inbound": {},
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  },
+  "productpage": {
+    "workloadStatuses": [
+      {
+        "name": "productpage-v1",
+        "desiredReplicas": 1,
+        "currentReplicas": 1,
+        "availableReplicas": 1,
+        "syncedProxies": 1
+      }
+    ],
+    "requests": {
+      "inbound": {
+        "http": {
+          "200": 0.9999999999999999
+        }
+      },
+      "outbound": {
+        "http": {
+          "200": 1.9999999999999998
+        }
+      },
+      "healthAnnotations": {}
+    }
+  },
+  "ratings": {
+    "workloadStatuses": [
+      {
+        "name": "ratings-v1",
+        "desiredReplicas": 1,
+        "currentReplicas": 1,
+        "availableReplicas": 1,
+        "syncedProxies": 1
+      }
+    ],
+    "requests": {
+      "inbound": {
+        "http": {
+          "200": 0.711111111111111
+        }
+      },
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  },
+  "reviews": {
+    "workloadStatuses": [
+      {
+        "name": "reviews-v1",
+        "desiredReplicas": 1,
+        "currentReplicas": 1,
+        "availableReplicas": 1,
+        "syncedProxies": 1
+      },
+      {
+        "name": "reviews-v2",
+        "desiredReplicas": 1,
+        "currentReplicas": 1,
+        "availableReplicas": 1,
+        "syncedProxies": 1
+      },
+      {
+        "name": "reviews-v3",
+        "desiredReplicas": 1,
+        "currentReplicas": 1,
+        "availableReplicas": 1,
+        "syncedProxies": 1
+      }
+    ],
+    "requests": {
+      "inbound": {
+        "http": {
+          "200": 0.9999999999999999
+        }
+      },
+      "outbound": {
+        "http": {
+          "200": 0.711111111111111
+        }
+      },
+      "healthAnnotations": {}
+    }
+  }
+}
