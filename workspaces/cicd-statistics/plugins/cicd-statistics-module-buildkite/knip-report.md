@@ -1,10 +1,12 @@
 # Knip report
 
-## Unused dependencies (1)
+## Unused dependencies (3)
 
 | Name                                        | Location     | Severity |
 | :------------------------------------------ | :----------- | :------- |
 | @backstage-community/plugin-cicd-statistics | package.json | error    |
+| @gitbeaker/browser                          | package.json | error    |
+| @gitbeaker/core                             | package.json | error    |
 
 ## Unused devDependencies (5)
 
