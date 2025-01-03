@@ -2706,8 +2706,6 @@ __metadata:
     "@roadiehq/backstage-plugin-buildkite": ^2.3.1
     "@types/react": ^16.13.1 || ^17.0.0
     "@types/react-dom": ^18.2.19
-    luxon: ^3.0.0
-    p-limit: ^3.1.0
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-router-dom: 6.0.0-beta.0 || ^6.3.0
@@ -2731,7 +2729,6 @@ __metadata:
     "@gitbeaker/core": ^35.6.0
     "@types/react": ^16.13.1 || ^17.0.0
     "@types/react-dom": ^18.2.19
-    luxon: ^3.0.0
     p-limit: ^3.1.0
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
@@ -11583,13 +11580,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/luxon@npm:^2.0.4":
-  version: 2.4.0
-  resolution: "@types/luxon@npm:2.4.0"
-  checksum: eeb16a1bfe5440464c1a9635700d103cd18d3cd8da6063a1938478e435cfba6ab8e893aa80c95a407e541187c1e997c3e4481322726bc1258551cb8606d0e5ad
-  languageName: node
-  linkType: hard
-
 "@types/luxon@npm:^3.0.0, @types/luxon@npm:~3.4.0":
   version: 3.4.2
   resolution: "@types/luxon@npm:3.4.2"
@@ -12866,8 +12856,6 @@ __metadata:
     "@testing-library/react": ^14.0.0
     "@testing-library/user-event": ^14.0.0
     "@types/react-dom": "*"
-    cross-env: ^7.0.0
-    history: ^5.0.0
     react: ^18.0.2
     react-dom: ^18.0.2
     react-router: ^6.3.0
@@ -12915,8 +12903,6 @@ __metadata:
     "@testing-library/react": ^14.0.0
     "@testing-library/user-event": ^14.0.0
     "@types/react-dom": "*"
-    cross-env: ^7.0.0
-    history: ^5.0.0
     react: ^18.0.2
     react-dom: ^18.0.2
     react-router: ^6.3.0
@@ -13546,10 +13532,6 @@ __metadata:
     "@backstage/plugin-auth-node": ^0.5.5
     "@backstage/plugin-catalog-backend": ^1.29.0
     "@backstage/plugin-proxy-backend": ^0.5.9
-    "@types/dockerode": ^3.3.0
-    "@types/express": ^4.17.6
-    "@types/express-serve-static-core": ^4.17.5
-    "@types/luxon": ^2.0.4
     app: "link:../app"
     better-sqlite3: ^9.0.0
     dockerode: ^3.3.1
@@ -15284,18 +15266,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cross-env@npm:^7.0.0":
-  version: 7.0.3
-  resolution: "cross-env@npm:7.0.3"
-  dependencies:
-    cross-spawn: ^7.0.1
-  bin:
-    cross-env: src/bin/cross-env.js
-    cross-env-shell: src/bin/cross-env-shell.js
-  checksum: 26f2f3ea2ab32617f57effb70d329c2070d2f5630adc800985d8b30b56e8bf7f5f439dd3a0358b79cee6f930afc23cf8e23515f17ccfb30092c6b62c6b630a79
-  languageName: node
-  linkType: hard
-
 "cross-fetch@npm:^3.1.5":
   version: 3.1.8
   resolution: "cross-fetch@npm:3.1.8"
@@ -15334,7 +15304,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cross-spawn@npm:^7.0.0, cross-spawn@npm:^7.0.1, cross-spawn@npm:^7.0.2, cross-spawn@npm:^7.0.3":
+"cross-spawn@npm:^7.0.0, cross-spawn@npm:^7.0.2, cross-spawn@npm:^7.0.3":
   version: 7.0.3
   resolution: "cross-spawn@npm:7.0.3"
   dependencies:
