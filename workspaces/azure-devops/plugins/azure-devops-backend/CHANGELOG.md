@@ -1,5 +1,11 @@
 # @backstage-community/plugin-azure-devops-backend
 
+## 0.10.1
+
+### Patch Changes
+
+- c9e8956: remove unused dependencies: lodash and yn
+
 ## 0.10.0
 
 ### Minor Changes
