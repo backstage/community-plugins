@@ -42,8 +42,7 @@
     "@backstage/plugin-permission-common": "^0.8.3",
     "@backstage/plugin-permission-node": "^0.8.6",
     "express": "^4.17.1",
-    "express-promise-router": "^4.1.0",
-    "node-fetch": "^2.6.7"
+    "express-promise-router": "^4.1.0"
   },
   "devDependencies": {
     "@backstage/backend-test-utils": "^1.2.0",
@@ -52,7 +51,6 @@
     "@backstage/plugin-auth-backend-module-guest-provider": "^0.2.3",
     "@types/express": "*",
     "@types/supertest": "^6.0.0",
-    "msw": "^2.3.1",
     "supertest": "^7.0.0"
   },
   "files": [
