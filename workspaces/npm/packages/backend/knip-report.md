@@ -15,11 +15,3 @@
 | winston                                               | package.json | error    |
 | app                                                   | package.json | error    |
 | pg                                                    | package.json | error    |
-
-## Unused devDependencies (3)
-
-| Name                             | Location     | Severity |
-| :------------------------------- | :----------- | :------- |
-| @types/express-serve-static-core | package.json | error    |
-| @types/express                   | package.json | error    |
-| @types/luxon                     | package.json | error    |
