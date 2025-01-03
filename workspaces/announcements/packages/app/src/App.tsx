@@ -20,7 +20,7 @@ import {
   CatalogIndexPage,
   catalogPlugin,
 } from '@backstage/plugin-catalog';
-import { scaffolderPlugin } from '@backstage/plugin-scaffolder';
+// import { scaffolderPlugin } from '@backstage/plugin-scaffolder';
 import { SearchPage } from '@backstage/plugin-search';
 import { UserSettingsPage } from '@backstage/plugin-user-settings';
 import { apis } from './apis';
@@ -45,10 +45,7 @@ import { SignalsDisplay } from '@backstage/plugin-signals';
 const app = createApp({
   apis,
   bindRoutes({ bind }) {
-    bind(catalogPlugin.externalRoutes, {
-      createComponent: scaffolderPlugin.routes.root,
-      createFromTemplate: scaffolderPlugin.routes.selectedTemplate,
-    });
+    bind(catalogPlugin.externalRoutes, {});
   },
   components: {
     SignInPage: props => <SignInPage {...props} auto providers={['guest']} />,
@@ -57,6 +54,7 @@ const app = createApp({
 
 const routes = (
   <FlatRoutes>
+    {/* home page to showcase different announcements components */}
     <Route path="/" element={<Home />} />
 
     <Route path="/catalog" element={<CatalogIndexPage />} />
@@ -67,16 +65,18 @@ const routes = (
       {entityPage}
     </Route>
 
-    <Route path="/search" element={<SearchPage />}>
-      {searchPage}
-    </Route>
-    <Route path="/settings" element={<UserSettingsPage />} />
-
     {/* announcements route */}
     <Route path="/announcements" element={<AnnouncementsPage />} />
 
     {/* announcement admin route */}
     <Route path="/announcements/admin" element={<AnnouncementsAdminPortal />} />
+
+    {/* search page with example search result component */}
+    <Route path="/search" element={<SearchPage />}>
+      {searchPage}
+    </Route>
+
+    <Route path="/settings" element={<UserSettingsPage />} />
   </FlatRoutes>
 );
 
