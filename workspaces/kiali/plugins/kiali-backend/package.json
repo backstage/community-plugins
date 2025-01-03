@@ -12,6 +12,7 @@
     "supported-versions": "1.31.3",
     "pluginId": "kiali",
     "pluginPackages": [
+      "@backstage-community/plugin-kiali",
       "@backstage-community/plugin-kiali-backend"
     ]
   },
@@ -37,10 +38,7 @@
     "test": "backstage-cli package test --passWithNoTests --coverage",
     "clean": "backstage-cli package clean",
     "prepack": "backstage-cli package prepack",
-    "postpack": "backstage-cli package postpack",
-    "postversion": "yarn run export-dynamic",
-    "export-dynamic": "janus-cli package export-dynamic-plugin",
-    "export-dynamic:clean": "janus-cli package export-dynamic-plugin --clean"
+    "postpack": "backstage-cli package postpack"
   },
   "configSchema": "config.d.ts",
   "dependencies": {
@@ -59,7 +57,6 @@
   "devDependencies": {
     "@backstage/backend-test-utils": "1.0.0",
     "@backstage/cli": "0.27.1",
-    "@janus-idp/cli": "1.19.1",
     "@types/express": "4.17.21",
     "@types/supertest": "2.0.16",
     "msw": "1.3.5",

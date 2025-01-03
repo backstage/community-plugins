@@ -1,5 +1,11 @@
 # @backstage-community/plugin-cicd-statistics-module-gitlab
 
+## 0.2.1
+
+### Patch Changes
+
+- 43cf7dc: remove unused dependency: luxon
+
 ## 0.2.0
 
 ### Minor Changes

@@ -1,5 +1,11 @@
 # @backstage-community/plugin-cicd-statistics-module-buildkite
 
+## 0.1.1
+
+### Patch Changes
+
+- 43cf7dc: remove unused dependencies: p-limit and luxon
+
 ## 0.1.0
 
 ### Minor Changes

@@ -1,0 +1,141 @@
+{
+  "container_cpu_usage_seconds_total": [
+    {
+      "labels": {},
+      "datapoints": [
+        [1697023560, "0.012649111781990258"],
+        [1697023620, "0.0028395890688735514"],
+        [1697023680, "0.0029086472614529356"],
+        [1697023740, "0.003109156035267781"],
+        [1697023800, "0.002981445175995798"],
+        [1697023860, "0.0030650943556152"],
+        [1697023920, "0.002949315857020238"],
+        [1697023980, "0.0030294256967151605"],
+        [1697024040, "0.003211951468553024"],
+        [1697024100, "0.0031811090223253153"],
+        [1697024160, "0.009876169457103496"]
+      ],
+      "name": "container_cpu_usage_seconds_total"
+    }
+  ],
+  "container_memory_working_set_bytes": [
+    {
+      "labels": {
+        "__name__": "container_memory_working_set_bytes",
+        "beta_kubernetes_io_arch": "amd64",
+        "beta_kubernetes_io_os": "linux",
+        "container": "discovery",
+        "id": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod86ae28e5_296a_4c6f_81ae_e3102580203a.slice/crio-311ddafa211336c162b5aeb91d70fbd048f94c9f18142285c0473eae845da2de.scope",
+        "image": "gcr.io/istio-release/pilot:1.18.2",
+        "instance": "crc-8cf2w-master-0",
+        "job": "kubernetes-nodes-cadvisor",
+        "kubernetes_io_arch": "amd64",
+        "kubernetes_io_hostname": "crc-8cf2w-master-0",
+        "kubernetes_io_os": "linux",
+        "name": "k8s_discovery_istiod-7548d4ff85-9czcn_istio-system_86ae28e5-296a-4c6f-81ae-e3102580203a_2",
+        "namespace": "istio-system",
+        "node_openshift_io_os_id": "rhcos",
+        "pod": "istiod-7548d4ff85-9czcn",
+        "topology_hostpath_csi_node": "crc-8cf2w-master-0"
+      },
+      "datapoints": [
+        [1697023560, "144.203776"],
+        [1697023620, "144.191488"],
+        [1697023680, "144.859136"],
+        [1697023740, "145.522688"],
+        [1697023800, "146.18624"],
+        [1697023860, "144.982016"],
+        [1697023920, "145.51449599999998"],
+        [1697023980, "144.396288"],
+        [1697024040, "145.055744"],
+        [1697024100, "143.683584"],
+        [1697024160, "143.683584"]
+      ],
+      "name": "container_memory_working_set_bytes"
+    }
+  ],
+  "grpc_received": null,
+  "grpc_sent": null,
+  "pilot_proxy_convergence_time": [
+    {
+      "labels": {},
+      "datapoints": [
+        [1697023560, "NaN"],
+        [1697023620, "NaN"],
+        [1697023680, "NaN"],
+        [1697023740, "NaN"],
+        [1697023800, "NaN"],
+        [1697023860, "0.0002625923636363643"],
+        [1697023920, "NaN"],
+        [1697023980, "NaN"],
+        [1697024040, "NaN"],
+        [1697024100, "NaN"],
+        [1697024160, "NaN"]
+      ],
+      "stat": "avg",
+      "name": "pilot_proxy_convergence_time"
+    }
+  ],
+  "process_cpu_seconds_total": [
+    {
+      "labels": {},
+      "datapoints": [
+        [1697023560, "0.004888888888888863"],
+        [1697023620, "0.0015555555555555618"],
+        [1697023680, "0.0015555555555555618"],
+        [1697023740, "0.0015555555555555618"],
+        [1697023800, "0.0015555555555555618"],
+        [1697023860, "0.0019999999999999966"],
+        [1697023920, "0.0015555555555555618"],
+        [1697023980, "0.0013333333333333836"],
+        [1697024040, "0.0015555555555555618"],
+        [1697024100, "0.0017777777777778186"],
+        [1697024160, "0.00511111111111112"]
+      ],
+      "name": "process_cpu_seconds_total"
+    }
+  ],
+  "process_resident_memory_bytes": [
+    {
+      "labels": {
+        "__name__": "process_resident_memory_bytes",
+        "app": "istiod",
+        "install_operator_istio_io_owning_resource": "unknown",
+        "instance": "10.217.0.34:15014",
+        "istio": "pilot",
+        "istio_io_rev": "default",
+        "job": "kubernetes-pods",
+        "namespace": "istio-system",
+        "operator_istio_io_component": "Pilot",
+        "pod": "istiod-7548d4ff85-9czcn",
+        "pod_template_hash": "7548d4ff85",
+        "sidecar_istio_io_inject": "false"
+      },
+      "datapoints": [
+        [1697023560, "164.35609599999998"],
+        [1697023620, "164.35609599999998"],
+        [1697023680, "164.892672"],
+        [1697023740, "165.70368"],
+        [1697023800, "166.244352"],
+        [1697023860, "164.769792"],
+        [1697023920, "165.58079999999998"],
+        [1697023980, "164.462592"],
+        [1697024040, "165.003264"],
+        [1697024100, "163.6352"],
+        [1697024160, "163.6352"]
+      ],
+      "name": "process_resident_memory_bytes"
+    }
+  ],
+  "request_count": null,
+  "request_duration_millis": null,
+  "request_error_count": null,
+  "request_size": null,
+  "request_throughput": null,
+  "response_size": null,
+  "response_throughput": null,
+  "tcp_closed": null,
+  "tcp_opened": null,
+  "tcp_received": null,
+  "tcp_sent": null
+}

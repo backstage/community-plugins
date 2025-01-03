@@ -1,0 +1,54 @@
+{
+  "namespace": {
+    "name": "bookinfo",
+    "cluster": "Kubernetes",
+    "isAmbient": false,
+    "labels": {
+      "istio-injection": "enabled",
+      "kubernetes.io/metadata.name": "bookinfo"
+    },
+    "annotations": null
+  },
+  "name": "kiali-traffic-generator",
+  "cluster": "Kubernetes",
+  "workloads": [
+    {
+      "workloadName": "kiali-traffic-generator",
+      "istioSidecar": true,
+      "istioAmbient": false,
+      "labels": {
+        "app": "kiali-traffic-generator",
+        "kiali-test": "traffic-generator"
+      },
+      "serviceAccountNames": ["default"]
+    }
+  ],
+  "serviceNames": [],
+  "runtimes": [
+    {
+      "name": "",
+      "dashboardRefs": [
+        {
+          "template": "envoy",
+          "title": "Envoy Metrics"
+        }
+      ]
+    }
+  ],
+  "health": {
+    "workloadStatuses": [
+      {
+        "name": "kiali-traffic-generator",
+        "desiredReplicas": 1,
+        "currentReplicas": 1,
+        "availableReplicas": 1,
+        "syncedProxies": 1
+      }
+    ],
+    "requests": {
+      "inbound": {},
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  }
+}
