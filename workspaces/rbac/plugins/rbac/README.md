@@ -126,4 +126,4 @@ permission:
       - permission
 ```
 
-For more information on the available permissions within Showcase and RHDH, refer to the [permissions documentation](../rbac-backend/docs/permissions.md).
+For more information on the available permissions, refer to the [RBAC permissions documentation](../rbac-backend/docs/permissions.md).

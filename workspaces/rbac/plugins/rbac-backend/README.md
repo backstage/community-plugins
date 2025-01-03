@@ -106,7 +106,7 @@ permission:
         - name: group:default/admins
 ```
 
-For more information on the available permissions within Showcase and RHDH, refer to the [permissions documentation](./docs/permissions.md).
+For more information on the available permissions, refer to the [RBAC permissions documentation](./docs/permissions.md).
 
 ### Configuring policies via file
 
@@ -148,7 +148,7 @@ permission:
     policyFileReload: true
 ```
 
-For more information on the available permissions within Showcase and RHDH, refer to the [permissions documentation](./docs/permissions.md).
+For more information on the available permissions, refer to the [RBAC permissions documentation](./docs/permissions.md).
 
 We also have a fairly strict validation for permission policies and roles based on the originating role's source information, refer to the [api documentation](./docs/apis.md).
 
