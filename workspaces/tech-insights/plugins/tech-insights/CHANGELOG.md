@@ -1,5 +1,29 @@
 # @backstage-community/plugin-tech-insights
 
+## 0.4.0
+
+### Minor Changes
+
+- 5abfb11: Backstage version bump to v1.34.2
+
+### Patch Changes
+
+- Updated dependencies [5abfb11]
+  - @backstage-community/plugin-tech-insights-common@0.4.0
+
+## 0.3.42
+
+### Patch Changes
+
+- Updated dependencies [5289c38]
+  - @backstage-community/plugin-tech-insights-common@0.3.0
+
+## 0.3.41
+
+### Patch Changes
+
+- 9a09c39: Remove use of react 18 `useId` hook to maintain compatibility with react 17.
+
 ## 0.3.40
 
 ### Patch Changes

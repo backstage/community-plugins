@@ -234,7 +234,7 @@ export async function createRouter(
               <br/> 
               We have received your feedback for 
                 <b>
-                  ${reqData.projectId?.split('/')[1]}
+                  ${entityRef.metadata.title ?? entityRef.metadata.name}
                 </b>, 
               and here are the details:
               <br/>

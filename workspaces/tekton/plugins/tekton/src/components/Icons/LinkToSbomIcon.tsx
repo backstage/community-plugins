@@ -21,7 +21,7 @@ import classNames from 'classnames';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     icon: {
-      fill: 'var(--pf-v5-global--Color--100)',
+      fill: 'var(--pf-t--global--icon--color--100)',
     },
     disabledButton: {
       fill: theme.palette.grey[600],

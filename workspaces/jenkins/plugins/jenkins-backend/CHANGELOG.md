@@ -1,5 +1,22 @@
 # @backstage-community/plugin-jenkins-backend
 
+## 0.8.0
+
+### Minor Changes
+
+- 9527e9e: Backstage version bump to v1.34.1
+
+### Patch Changes
+
+- Updated dependencies [9527e9e]
+  - @backstage-community/plugin-jenkins-common@0.2.0
+
+## 0.7.0
+
+### Minor Changes
+
+- dfe7569: Add an API to retrieve the consoleText for a build.
+
 ## 0.6.3
 
 ### Patch Changes

@@ -19,8 +19,8 @@ import { makeStyles, Theme } from '@material-ui/core';
 import AngleDoubleDownIcon from '@mui/icons-material/KeyboardDoubleArrowDownOutlined';
 import AngleDoubleUpIcon from '@mui/icons-material/KeyboardDoubleArrowUpOutlined';
 import { Tooltip } from '@patternfly/react-core';
-import { global_palette_gold_400 as mediumColor } from '@patternfly/react-tokens/dist/js/global_palette_gold_400';
-import { global_palette_orange_300 as highColor } from '@patternfly/react-tokens/dist/js/global_palette_orange_300';
+import { t_color_yellow_40 as mediumColor } from '@patternfly/react-tokens/dist/js/t_color_yellow_40';
+import { t_color_orange_40 as highColor } from '@patternfly/react-tokens/dist/js/t_color_orange_40';
 import classNames from 'classnames';
 
 import { PipelineRunKind } from '@janus-idp/shared-react';

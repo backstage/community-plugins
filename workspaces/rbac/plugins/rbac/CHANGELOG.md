@@ -1,5 +1,20 @@
 ### Dependencies
 
+## 1.33.5
+
+### Patch Changes
+
+- 0f5c451: Updated dependency `prettier` to `3.4.2`.
+- 064b809: Updated dependency `start-server-and-test` to `2.0.9`.
+- 18f9d9d: Updated dependency `@types/node` to `18.19.68`.
+- 4eef4d1: Updated dependency `@playwright/test` to `1.49.1`.
+
+## 1.33.4
+
+### Patch Changes
+
+- 27c3f1f: Fix role overview page styling issues
+
 ## 1.33.3
 
 ### Patch Changes

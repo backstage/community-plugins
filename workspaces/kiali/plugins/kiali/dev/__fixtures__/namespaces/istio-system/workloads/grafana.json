@@ -1,0 +1,155 @@
+{
+  "name": "grafana",
+  "cluster": "Kubernetes",
+  "type": "Deployment",
+  "createdAt": "2024-02-15T09:24:58Z",
+  "resourceVersion": "1095",
+  "istioInjectionAnnotation": false,
+  "istioSidecar": false,
+  "istioAmbient": false,
+  "additionalDetailSample": null,
+  "labels": {
+    "app": "grafana",
+    "app.kubernetes.io/instance": "grafana",
+    "app.kubernetes.io/name": "grafana",
+    "sidecar.istio.io/inject": "false"
+  },
+  "appLabel": true,
+  "versionLabel": false,
+  "podCount": 0,
+  "annotations": {
+    "deployment.kubernetes.io/revision": "1",
+    "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"apps/v1\",\"kind\":\"Deployment\",\"metadata\":{\"annotations\":{},\"labels\":{\"app.kubernetes.io/instance\":\"grafana\",\"app.kubernetes.io/managed-by\":\"Helm\",\"app.kubernetes.io/name\":\"grafana\",\"app.kubernetes.io/version\":\"9.5.5\",\"helm.sh/chart\":\"grafana-6.57.4\"},\"name\":\"grafana\",\"namespace\":\"istio-system\"},\"spec\":{\"replicas\":1,\"revisionHistoryLimit\":10,\"selector\":{\"matchLabels\":{\"app.kubernetes.io/instance\":\"grafana\",\"app.kubernetes.io/name\":\"grafana\"}},\"strategy\":{\"type\":\"RollingUpdate\"},\"template\":{\"metadata\":{\"annotations\":{\"checksum/config\":\"aec3d18ca2ea82d1d48f8965db1440aba0680ed2f32c5a29e6cdb5e7afc8b395\",\"checksum/dashboards-json-config\":\"01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b\",\"checksum/sc-dashboard-provider-config\":\"01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b\",\"kubectl.kubernetes.io/default-container\":\"grafana\"},\"labels\":{\"app\":\"grafana\",\"app.kubernetes.io/instance\":\"grafana\",\"app.kubernetes.io/name\":\"grafana\",\"sidecar.istio.io/inject\":\"false\"}},\"spec\":{\"automountServiceAccountToken\":true,\"containers\":[{\"env\":[{\"name\":\"POD_IP\",\"valueFrom\":{\"fieldRef\":{\"fieldPath\":\"status.podIP\"}}},{\"name\":\"GF_PATHS_DATA\",\"value\":\"/var/lib/grafana/\"},{\"name\":\"GF_PATHS_LOGS\",\"value\":\"/var/log/grafana\"},{\"name\":\"GF_PATHS_PLUGINS\",\"value\":\"/var/lib/grafana/plugins\"},{\"name\":\"GF_PATHS_PROVISIONING\",\"value\":\"/etc/grafana/provisioning\"},{\"name\":\"GF_AUTH_ANONYMOUS_ENABLED\",\"value\":\"true\"},{\"name\":\"GF_AUTH_ANONYMOUS_ORG_ROLE\",\"value\":\"Admin\"},{\"name\":\"GF_AUTH_BASIC_ENABLED\",\"value\":\"false\"},{\"name\":\"GF_SECURITY_ADMIN_PASSWORD\",\"value\":\"admin\"},{\"name\":\"GF_SECURITY_ADMIN_USER\",\"value\":\"admin\"}],\"image\":\"docker.io/grafana/grafana:9.5.5\",\"imagePullPolicy\":\"IfNotPresent\",\"livenessProbe\":{\"failureThreshold\":10,\"httpGet\":{\"path\":\"/api/health\",\"port\":3000},\"initialDelaySeconds\":60,\"timeoutSeconds\":30},\"name\":\"grafana\",\"ports\":[{\"containerPort\":3000,\"name\":\"grafana\",\"protocol\":\"TCP\"},{\"containerPort\":9094,\"name\":\"gossip-tcp\",\"protocol\":\"TCP\"},{\"containerPort\":9094,\"name\":\"gossip-udp\",\"protocol\":\"UDP\"}],\"readinessProbe\":{\"httpGet\":{\"path\":\"/api/health\",\"port\":3000}},\"securityContext\":{\"allowPrivilegeEscalation\":false,\"capabilities\":{\"drop\":[\"ALL\"]},\"seccompProfile\":{\"type\":\"RuntimeDefault\"}},\"volumeMounts\":[{\"mountPath\":\"/etc/grafana/grafana.ini\",\"name\":\"config\",\"subPath\":\"grafana.ini\"},{\"mountPath\":\"/var/lib/grafana\",\"name\":\"storage\"},{\"mountPath\":\"/var/lib/grafana/dashboards/istio\",\"name\":\"dashboards-istio\"},{\"mountPath\":\"/var/lib/grafana/dashboards/istio-services\",\"name\":\"dashboards-istio-services\"},{\"mountPath\":\"/etc/grafana/provisioning/datasources/datasources.yaml\",\"name\":\"config\",\"subPath\":\"datasources.yaml\"},{\"mountPath\":\"/etc/grafana/provisioning/dashboards/dashboardproviders.yaml\",\"name\":\"config\",\"subPath\":\"dashboardproviders.yaml\"}]}],\"enableServiceLinks\":true,\"securityContext\":{\"fsGroup\":472,\"runAsGroup\":472,\"runAsNonRoot\":true,\"runAsUser\":472},\"serviceAccountName\":\"grafana\",\"volumes\":[{\"configMap\":{\"name\":\"grafana\"},\"name\":\"config\"},{\"configMap\":{\"name\":\"istio-grafana-dashboards\"},\"name\":\"dashboards-istio\"},{\"configMap\":{\"name\":\"istio-services-grafana-dashboards\"},\"name\":\"dashboards-istio-services\"},{\"emptyDir\":{},\"name\":\"storage\"}]}}}}\n"
+  },
+  "healthAnnotations": {},
+  "istioReferences": null,
+  "dashboardAnnotations": {},
+  "serviceAccountNames": null,
+  "desiredReplicas": 1,
+  "currentReplicas": 1,
+  "availableReplicas": 1,
+  "pods": [
+    {
+      "name": "grafana-b8bbdc84d-pgmx4",
+      "labels": {
+        "app": "grafana",
+        "app.kubernetes.io/instance": "grafana",
+        "app.kubernetes.io/name": "grafana",
+        "pod-template-hash": "b8bbdc84d",
+        "sidecar.istio.io/inject": "false"
+      },
+      "createdAt": "2024-02-15T09:24:58Z",
+      "createdBy": [
+        {
+          "name": "grafana-b8bbdc84d",
+          "kind": "ReplicaSet"
+        }
+      ],
+      "containers": [
+        {
+          "name": "grafana",
+          "image": "docker.io/grafana/grafana:9.5.5",
+          "isProxy": false,
+          "isReady": true,
+          "isAmbient": false
+        }
+      ],
+      "istioContainers": null,
+      "istioInitContainers": null,
+      "status": "Running",
+      "statusMessage": "",
+      "statusReason": "",
+      "appLabel": true,
+      "versionLabel": false,
+      "annotations": {
+        "checksum/config": "aec3d18ca2ea82d1d48f8965db1440aba0680ed2f32c5a29e6cdb5e7afc8b395",
+        "checksum/dashboards-json-config": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+        "checksum/sc-dashboard-provider-config": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+        "kubectl.kubernetes.io/default-container": "grafana"
+      },
+      "proxyStatus": null,
+      "serviceAccountName": "grafana"
+    }
+  ],
+  "services": [
+    {
+      "name": "grafana",
+      "namespace": "istio-system",
+      "istioSidecar": true,
+      "cluster": "Kubernetes",
+      "istioAmbient": false,
+      "appLabel": false,
+      "additionalDetailSample": null,
+      "annotations": null,
+      "healthAnnotations": {},
+      "ports": null,
+      "labels": {
+        "app.kubernetes.io/instance": "grafana",
+        "app.kubernetes.io/managed-by": "Helm",
+        "app.kubernetes.io/name": "grafana",
+        "app.kubernetes.io/version": "9.5.5",
+        "helm.sh/chart": "grafana-6.57.4"
+      },
+      "selector": {
+        "app.kubernetes.io/instance": "grafana",
+        "app.kubernetes.io/name": "grafana"
+      },
+      "istioReferences": [],
+      "kialiWizard": "",
+      "serviceRegistry": "Kubernetes",
+      "health": {
+        "requests": {
+          "inbound": {},
+          "outbound": {},
+          "healthAnnotations": {}
+        }
+      }
+    }
+  ],
+  "runtimes": [],
+  "additionalDetails": [],
+  "validations": {
+    "gateway": {
+      "bookinfo-gateway.bookinfo": {
+        "name": "bookinfo-gateway",
+        "objectType": "gateway",
+        "valid": true,
+        "checks": [],
+        "references": null
+      }
+    },
+    "virtualservice": {
+      "bookinfo.bookinfo": {
+        "name": "bookinfo",
+        "objectType": "virtualservice",
+        "valid": true,
+        "checks": [],
+        "references": null
+      }
+    },
+    "workload": {
+      "grafana.istio-system": {
+        "name": "grafana",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      }
+    }
+  },
+  "waypointWorkloads": null,
+  "health": {
+    "workloadStatus": {
+      "name": "grafana",
+      "desiredReplicas": 1,
+      "currentReplicas": 1,
+      "availableReplicas": 1,
+      "syncedProxies": -1
+    },
+    "requests": {
+      "inbound": {},
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  }
+}

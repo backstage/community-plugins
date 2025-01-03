@@ -76,7 +76,6 @@ export const AboutCard = ({ roleName }: AboutCardProps) => {
       <CardContent
         sx={{
           flex: 1,
-          padding: theme => theme.spacing(4),
         }}
       >
         {roleError.name ? (
@@ -88,28 +87,31 @@ export const AboutCard = ({ roleName }: AboutCardProps) => {
             />
           </div>
         ) : (
-          <Grid container>
-            <AboutField label="Description" gridSizes={{ xs: 4, sm: 8, lg: 4 }}>
-              <MarkdownContent
-                className={classes.text}
-                content={role?.metadata?.description ?? 'No description'}
-              />
-            </AboutField>
-            <AboutField label="Modified By" gridSizes={{ xs: 4, sm: 8, lg: 4 }}>
-              <MarkdownContent
-                className={classes.text}
-                content={role?.metadata?.modifiedBy ?? 'No information'}
-              />
-            </AboutField>
-            <AboutField
-              label="Last Modified"
-              gridSizes={{ xs: 4, sm: 8, lg: 4 }}
-            >
-              <MarkdownContent
-                className={classes.text}
-                content={lastModified}
-              />
-            </AboutField>
+          <Grid container spacing={2}>
+            <Grid item xs={4} sm={8} lg={4}>
+              <AboutField label="Description">
+                <MarkdownContent
+                  className={classes.text}
+                  content={role?.metadata?.description ?? 'No description'}
+                />
+              </AboutField>
+            </Grid>
+            <Grid item xs={4} sm={8} lg={4}>
+              <AboutField label="Modified By">
+                <MarkdownContent
+                  className={classes.text}
+                  content={role?.metadata?.modifiedBy ?? 'No information'}
+                />
+              </AboutField>
+            </Grid>
+            <Grid item xs={4} sm={8} lg={4}>
+              <AboutField label="Last Modified">
+                <MarkdownContent
+                  className={classes.text}
+                  content={lastModified}
+                />
+              </AboutField>
+            </Grid>
           </Grid>
         )}
       </CardContent>

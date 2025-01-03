@@ -1,0 +1,131 @@
+{
+  "namespace": {
+    "name": "bookinfo",
+    "cluster": "",
+    "isAmbient": false,
+    "labels": null,
+    "annotations": null
+  },
+  "objectType": "virtualservices",
+  "authorizationPolicy": null,
+  "destinationRule": null,
+  "envoyFilter": null,
+  "gateway": null,
+  "peerAuthentication": null,
+  "requestAuthentication": null,
+  "serviceEntry": null,
+  "sidecar": null,
+  "virtualService": {
+    "kind": "VirtualService",
+    "apiVersion": "networking.istio.io/v1beta1",
+    "metadata": {
+      "name": "bookinfo",
+      "namespace": "bookinfo",
+      "uid": "16c9b2e6-4bc2-426c-9464-853a4148435f",
+      "resourceVersion": "784735",
+      "generation": 9,
+      "creationTimestamp": "2024-03-05T14:38:05Z",
+      "annotations": {
+        "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"networking.istio.io/v1alpha3\",\"kind\":\"VirtualService\",\"metadata\":{\"annotations\":{},\"name\":\"bookinfo\",\"namespace\":\"bookinfo\"},\"spec\":{\"gateways\":[\"bookinfo-gateway\"],\"hosts\":[\"*\"],\"http\":[{\"match\":[{\"uri\":{\"exact\":\"/productpage\"}},{\"uri\":{\"prefix\":\"/static\"}},{\"uri\":{\"exact\":\"/login\"}},{\"uri\":{\"exact\":\"/logout\"}},{\"uri\":{\"prefix\":\"/api/v1/products\"}}],\"route\":[{\"destination\":{\"host\":\"productpage\",\"port\":{\"number\":9080}}}]}]}}\n"
+      },
+      "managedFields": [
+        {
+          "manager": "kubectl-client-side-apply",
+          "operation": "Update",
+          "apiVersion": "networking.istio.io/v1alpha3",
+          "time": "2024-03-05T14:38:05Z",
+          "fieldsType": "FieldsV1",
+          "fieldsV1": {
+            "f:metadata": {
+              "f:annotations": {
+                ".": {},
+                "f:kubectl.kubernetes.io/last-applied-configuration": {}
+              }
+            },
+            "f:spec": {
+              ".": {},
+              "f:hosts": {},
+              "f:http": {}
+            }
+          }
+        },
+        {
+          "manager": "kiali",
+          "operation": "Update",
+          "apiVersion": "networking.istio.io/v1beta1",
+          "time": "2024-03-19T14:43:01Z",
+          "fieldsType": "FieldsV1",
+          "fieldsV1": {
+            "f:spec": {
+              "f:gateways": {}
+            }
+          }
+        }
+      ]
+    },
+    "spec": {
+      "hosts": ["*"],
+      "gateways": ["bookinfo-gateway"],
+      "http": [
+        {
+          "match": [
+            {
+              "uri": {
+                "exact": "/productpage"
+              }
+            },
+            {
+              "uri": {
+                "prefix": "/static"
+              }
+            },
+            {
+              "uri": {
+                "exact": "/login"
+              }
+            },
+            {
+              "uri": {
+                "exact": "/logout"
+              }
+            },
+            {
+              "uri": {
+                "prefix": "/api/v1/products"
+              }
+            }
+          ],
+          "route": [
+            {
+              "destination": {
+                "host": "productpage",
+                "port": {
+                  "number": 9080
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "status": {}
+  },
+  "workloadEntry": null,
+  "workloadGroup": null,
+  "wasmPlugin": null,
+  "telemetry": null,
+  "k8sGateway": null,
+  "k8sGRPCRoute": null,
+  "k8sHTTPRoute": null,
+  "k8sReferenceGrant": null,
+  "k8sTCPRoute": null,
+  "k8sTLSRoute": null,
+  "permissions": {
+    "create": true,
+    "update": true,
+    "delete": true
+  },
+  "validation": null,
+  "references": null,
+  "help": null
+}

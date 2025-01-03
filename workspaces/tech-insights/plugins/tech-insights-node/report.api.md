@@ -4,6 +4,8 @@
 
 ```ts
 import { AuthService } from '@backstage/backend-plugin-api';
+import { BulkCheckResponse } from '@backstage-community/plugin-tech-insights-common';
+import { Check } from '@backstage-community/plugin-tech-insights-common/client';
 import { CheckLink } from '@backstage-community/plugin-tech-insights-common';
 import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
 import { CompoundEntityRef } from '@backstage/catalog-model';
@@ -15,8 +17,10 @@ import { DurationLike } from 'luxon';
 import { ExtensionPoint } from '@backstage/backend-plugin-api';
 import { FactSchema } from '@backstage-community/plugin-tech-insights-common';
 import { HumanDuration } from '@backstage/types';
+import { InsightFacts } from '@backstage-community/plugin-tech-insights-common/client';
 import { JsonValue } from '@backstage/types';
 import { LoggerService } from '@backstage/backend-plugin-api';
+import { ServiceRef } from '@backstage/backend-plugin-api';
 import { UrlReaderService } from '@backstage/backend-plugin-api';
 
 // @public
@@ -123,6 +127,7 @@ export interface TechInsightCheck {
   failureMetadata?: Record<string, any>;
   id: string;
   links?: CheckLink[];
+  metadata?: Record<string, any>;
   name: string;
   successMetadata?: Record<string, any>;
   type: string;
@@ -202,6 +207,33 @@ export interface TechInsightsPersistenceContextExtensionPoint {
 
 // @public
 export const techInsightsPersistenceContextExtensionPoint: ExtensionPoint<TechInsightsPersistenceContextExtensionPoint>;
+
+// @public
+export interface TechInsightsService {
+  // (undocumented)
+  getAllChecks(): Promise<Check[]>;
+  // (undocumented)
+  getFacts(entity: CompoundEntityRef, facts: string[]): Promise<InsightFacts>;
+  // (undocumented)
+  getFactSchemas(): Promise<FactSchema[]>;
+  // (undocumented)
+  runBulkChecks(
+    entities: CompoundEntityRef[],
+    checks?: Check[],
+  ): Promise<BulkCheckResponse>;
+  // (undocumented)
+  runChecks(
+    entityParams: CompoundEntityRef,
+    checks?: string[],
+  ): Promise<CheckResult[]>;
+}
+
+// @public
+export const techInsightsServiceRef: ServiceRef<
+  TechInsightsService,
+  'plugin',
+  'singleton'
+>;
 
 // @public
 export interface TechInsightsStore {

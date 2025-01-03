@@ -46,7 +46,7 @@ export abstract class FactRetrieverEngine {
   /**
    * Schedules fact retriever run cycles based on configuration provided in the registration.
    *
-   * Default implementation uses backend-tasks to handle scheduling. This function can be called multiple
+   * Default implementation uses SchedulerService to handle scheduling. This function can be called multiple
    * times, where initial calls schedule the tasks and subsequent invocations update the schedules.
    */
   abstract schedule(): Promise<void>;

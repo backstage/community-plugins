@@ -1,0 +1,54 @@
+{
+  "namespace": {
+    "name": "travel-control",
+    "cluster": "Kubernetes",
+    "isAmbient": false,
+    "labels": {
+      "istio-injection": "enabled",
+      "kubernetes.io/metadata.name": "travel-control"
+    },
+    "annotations": null
+  },
+  "name": "control",
+  "cluster": "Kubernetes",
+  "workloads": [
+    {
+      "workloadName": "control",
+      "istioSidecar": true,
+      "istioAmbient": false,
+      "labels": {
+        "app": "control",
+        "version": "v1"
+      },
+      "serviceAccountNames": ["default"]
+    }
+  ],
+  "serviceNames": ["control"],
+  "runtimes": [
+    {
+      "name": "",
+      "dashboardRefs": [
+        {
+          "template": "envoy",
+          "title": "Envoy Metrics"
+        }
+      ]
+    }
+  ],
+  "health": {
+    "workloadStatuses": [
+      {
+        "name": "control",
+        "desiredReplicas": 1,
+        "currentReplicas": 1,
+        "availableReplicas": 1,
+        "syncedProxies": 1
+      }
+    ],
+    "requests": {
+      "inbound": {},
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  }
+}

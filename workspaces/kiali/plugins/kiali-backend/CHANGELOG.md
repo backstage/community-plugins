@@ -1,5 +1,17 @@
 # @backstage-community/plugin-kiali-backend
 
+## 1.19.4
+
+### Patch Changes
+
+- fc7e652: Updated dependency `@janus-idp/cli` to `1.19.1`.
+
+## 1.19.3
+
+### Patch Changes
+
+- 0f5c451: Updated dependency `prettier` to `3.4.2`.
+
 ## 1.19.2
 
 ### Patch Changes

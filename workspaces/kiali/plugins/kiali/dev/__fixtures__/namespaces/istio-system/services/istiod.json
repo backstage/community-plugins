@@ -1,0 +1,390 @@
+{
+  "cluster": "Kubernetes",
+  "destinationRules": [],
+  "endpoints": [
+    {
+      "addresses": [
+        {
+          "kind": "Pod",
+          "name": "istiod-75d89c99b6-kvnb8",
+          "ip": "10.244.0.23",
+          "port": 0
+        }
+      ],
+      "ports": [
+        {
+          "name": "https-dns",
+          "protocol": "TCP",
+          "port": 15012
+        },
+        {
+          "name": "grpc-xds",
+          "protocol": "TCP",
+          "port": 15010
+        },
+        {
+          "name": "https-webhook",
+          "protocol": "TCP",
+          "port": 15017
+        },
+        {
+          "name": "http-monitoring",
+          "protocol": "TCP",
+          "port": 15014
+        }
+      ]
+    }
+  ],
+  "istioPermissions": {
+    "create": true,
+    "update": true,
+    "delete": true
+  },
+  "istioSidecar": false,
+  "k8sHTTPRoutes": [],
+  "k8sReferenceGrants": null,
+  "service": {
+    "name": "istiod",
+    "createdAt": "2024-02-26T09:49:41Z",
+    "resourceVersion": "474",
+    "namespace": {
+      "name": "istio-system",
+      "cluster": "",
+      "isAmbient": false,
+      "labels": null,
+      "annotations": null
+    },
+    "labels": {
+      "app": "istiod",
+      "install.operator.istio.io/owning-resource": "installed-state",
+      "install.operator.istio.io/owning-resource-namespace": "istio-system",
+      "istio": "pilot",
+      "istio.io/rev": "default",
+      "operator.istio.io/component": "Pilot",
+      "operator.istio.io/managed": "Reconcile",
+      "operator.istio.io/version": "1.21.0-rc.0",
+      "release": "istio"
+    },
+    "selectors": {
+      "app": "istiod",
+      "istio": "pilot"
+    },
+    "type": "ClusterIP",
+    "ip": "10.101.0.116",
+    "ports": [
+      {
+        "name": "grpc-xds",
+        "protocol": "TCP",
+        "port": 15010
+      },
+      {
+        "name": "https-dns",
+        "protocol": "TCP",
+        "port": 15012
+      },
+      {
+        "name": "https-webhook",
+        "protocol": "TCP",
+        "port": 443
+      },
+      {
+        "name": "http-monitoring",
+        "protocol": "TCP",
+        "port": 15014
+      }
+    ],
+    "externalName": "",
+    "annotations": {},
+    "healthAnnotations": {},
+    "additionalDetails": []
+  },
+  "serviceEntries": null,
+  "virtualServices": [],
+  "workloads": [
+    {
+      "name": "istiod",
+      "cluster": "Kubernetes",
+      "type": "Deployment",
+      "createdAt": "2024-02-26T09:49:41Z",
+      "resourceVersion": "24541",
+      "istioSidecar": false,
+      "istioAmbient": false,
+      "additionalDetailSample": null,
+      "labels": {
+        "app": "istiod",
+        "install.operator.istio.io/owning-resource": "unknown",
+        "istio": "pilot",
+        "istio.io/rev": "default",
+        "operator.istio.io/component": "Pilot",
+        "sidecar.istio.io/inject": "false"
+      },
+      "appLabel": true,
+      "versionLabel": false,
+      "podCount": 1,
+      "annotations": {
+        "deployment.kubernetes.io/revision": "1"
+      },
+      "healthAnnotations": {},
+      "istioReferences": [],
+      "dashboardAnnotations": null,
+      "serviceAccountNames": ["istiod"],
+      "health": {
+        "workloadStatus": null,
+        "requests": {
+          "inbound": null,
+          "outbound": null,
+          "healthAnnotations": null
+        }
+      }
+    }
+  ],
+  "health": {
+    "requests": {
+      "inbound": {},
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  },
+  "namespaceMTLS": {
+    "status": "MTLS_NOT_ENABLED",
+    "autoMTLSEnabled": true,
+    "minTLS": ""
+  },
+  "subServices": [
+    {
+      "name": "istiod",
+      "namespace": "",
+      "istioSidecar": false,
+      "cluster": "",
+      "istioAmbient": false,
+      "appLabel": false,
+      "additionalDetailSample": null,
+      "annotations": null,
+      "healthAnnotations": null,
+      "ports": {
+        "grpc-xds": 15010,
+        "http-monitoring": 15014,
+        "https-dns": 15012,
+        "https-webhook": 443
+      },
+      "labels": null,
+      "selector": null,
+      "istioReferences": null,
+      "kialiWizard": "",
+      "serviceRegistry": "",
+      "health": {
+        "requests": {
+          "inbound": null,
+          "outbound": null,
+          "healthAnnotations": null
+        }
+      }
+    }
+  ],
+  "validations": {
+    "gateway": {
+      "bookinfo-gateway.bookinfo": {
+        "name": "bookinfo-gateway",
+        "objectType": "gateway",
+        "valid": true,
+        "checks": [],
+        "references": null
+      }
+    },
+    "service": {
+      "istiod.istio-system": {
+        "name": "istiod",
+        "objectType": "service",
+        "valid": true,
+        "checks": [],
+        "references": null
+      }
+    },
+    "virtualservice": {
+      "bookinfo.bookinfo": {
+        "name": "bookinfo",
+        "objectType": "virtualservice",
+        "valid": true,
+        "checks": [],
+        "references": null
+      }
+    },
+    "workload": {
+      "cars-v1.travel-agency": {
+        "name": "cars-v1",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "control.travel-control": {
+        "name": "control",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "details-v1.bookinfo": {
+        "name": "details-v1",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "discounts-v1.travel-agency": {
+        "name": "discounts-v1",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "flights-v1.travel-agency": {
+        "name": "flights-v1",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "grafana.istio-system": {
+        "name": "grafana",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "hotels-v1.travel-agency": {
+        "name": "hotels-v1",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "insurances-v1.travel-agency": {
+        "name": "insurances-v1",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "istio-egressgateway.istio-system": {
+        "name": "istio-egressgateway",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "istio-ingressgateway.istio-system": {
+        "name": "istio-ingressgateway",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "istiod.istio-system": {
+        "name": "istiod",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "jaeger.istio-system": {
+        "name": "jaeger",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "kiali-traffic-generator.bookinfo": {
+        "name": "kiali-traffic-generator",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "kiali.istio-system": {
+        "name": "kiali",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "mysqldb-v1.travel-agency": {
+        "name": "mysqldb-v1",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "productpage-v1.bookinfo": {
+        "name": "productpage-v1",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "prometheus.istio-system": {
+        "name": "prometheus",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "ratings-v1.bookinfo": {
+        "name": "ratings-v1",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "reviews-v1.bookinfo": {
+        "name": "reviews-v1",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "reviews-v2.bookinfo": {
+        "name": "reviews-v2",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "reviews-v3.bookinfo": {
+        "name": "reviews-v3",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "travels-v1.travel-agency": {
+        "name": "travels-v1",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "travels.travel-portal": {
+        "name": "travels",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "viaggi.travel-portal": {
+        "name": "viaggi",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "voyages.travel-portal": {
+        "name": "voyages",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      }
+    }
+  }
+}

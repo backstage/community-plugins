@@ -1,5 +1,24 @@
 ### Dependencies
 
+## 1.10.9
+
+### Patch Changes
+
+- 350250c: Updated dependency `@testing-library/jest-dom` to `6.6.3`.
+- 18f9d9d: Updated dependency `@types/node` to `18.19.68`.
+
+## 1.10.8
+
+### Patch Changes
+
+- 3d5311f: Updated dependency `@redhat-developer/red-hat-developer-hub-theme` to `0.4.0`.
+
+## 1.10.7
+
+### Patch Changes
+
+- 8e9239f: Clean up api report warnings and remove unnecessary files
+
 ## 1.10.6
 
 ### Patch Changes
