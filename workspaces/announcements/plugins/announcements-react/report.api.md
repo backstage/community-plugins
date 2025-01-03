@@ -56,23 +56,6 @@ export type AnnouncementsOptions = {
 export const announcementsTranslationRef: TranslationRef<
   'announcements',
   {
-    readonly 'announcementForm.active': 'Active';
-    readonly 'announcementForm.title': 'Title';
-    readonly 'announcementForm.submit': 'Submit';
-    readonly 'announcementForm.excerpt': 'Excerpt';
-    readonly 'announcementForm.editAnnouncement': 'Edit announcement';
-    readonly 'announcementForm.newAnnouncement': 'New announcement';
-    readonly 'announcementForm.categoryInput.label': 'Category';
-    readonly 'announcementForm.categoryInput.create': 'Create';
-    readonly 'announcementsPage.grid.announcementDeleted': 'Announcement deleted.';
-    readonly 'announcementsPage.contextMenu.admin': 'Admin';
-    readonly 'announcementsPage.contextMenu.categories': 'Categories';
-    readonly 'announcementsPage.newAnnouncement': 'New announcement';
-    readonly 'announcementsPage.genericNew': 'New';
-    readonly 'announcementsPage.card.by': 'By';
-    readonly 'announcementsPage.card.in': 'in';
-    readonly 'announcementsPage.card.delete': 'DELETE';
-    readonly 'announcementsPage.card.edit': 'EDIT';
     readonly 'admin.adminPortal.title': 'Admin Portal for Announcements';
     readonly 'admin.adminPortal.subtitle': 'Manage announcements and categories';
     readonly 'admin.adminPortal.announcementsLabels': 'Announcements';
@@ -101,6 +84,23 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'admin.categoriesContent.cancelButton': 'Cancel';
     readonly 'admin.categoriesContent.createButton': 'Create category';
     readonly 'admin.categoriesContent.deletedMessage': 'Category deleted.';
+    readonly 'announcementForm.active': 'Active';
+    readonly 'announcementForm.title': 'Title';
+    readonly 'announcementForm.submit': 'Submit';
+    readonly 'announcementForm.excerpt': 'Excerpt';
+    readonly 'announcementForm.editAnnouncement': 'Edit announcement';
+    readonly 'announcementForm.newAnnouncement': 'New announcement';
+    readonly 'announcementForm.categoryInput.label': 'Category';
+    readonly 'announcementForm.categoryInput.create': 'Create';
+    readonly 'announcementsPage.grid.announcementDeleted': 'Announcement deleted.';
+    readonly 'announcementsPage.contextMenu.admin': 'Admin';
+    readonly 'announcementsPage.contextMenu.categories': 'Categories';
+    readonly 'announcementsPage.newAnnouncement': 'New announcement';
+    readonly 'announcementsPage.genericNew': 'New';
+    readonly 'announcementsPage.card.by': 'By';
+    readonly 'announcementsPage.card.in': 'in';
+    readonly 'announcementsPage.card.delete': 'DELETE';
+    readonly 'announcementsPage.card.edit': 'EDIT';
     readonly 'deleteDialog.cancel': 'Cancel';
     readonly 'deleteDialog.title': 'Are you sure you want to delete this announcement?';
     readonly 'deleteDialog.delete': 'Delete';
@@ -167,23 +167,6 @@ export const useAnnouncements: (
 // @public
 export const useAnnouncementsTranslation: () => {
   t: TranslationFunction<{
-    readonly 'announcementForm.active': 'Active';
-    readonly 'announcementForm.title': 'Title';
-    readonly 'announcementForm.submit': 'Submit';
-    readonly 'announcementForm.excerpt': 'Excerpt';
-    readonly 'announcementForm.editAnnouncement': 'Edit announcement';
-    readonly 'announcementForm.newAnnouncement': 'New announcement';
-    readonly 'announcementForm.categoryInput.label': 'Category';
-    readonly 'announcementForm.categoryInput.create': 'Create';
-    readonly 'announcementsPage.grid.announcementDeleted': 'Announcement deleted.';
-    readonly 'announcementsPage.contextMenu.admin': 'Admin';
-    readonly 'announcementsPage.contextMenu.categories': 'Categories';
-    readonly 'announcementsPage.newAnnouncement': 'New announcement';
-    readonly 'announcementsPage.genericNew': 'New';
-    readonly 'announcementsPage.card.by': 'By';
-    readonly 'announcementsPage.card.in': 'in';
-    readonly 'announcementsPage.card.delete': 'DELETE';
-    readonly 'announcementsPage.card.edit': 'EDIT';
     readonly 'admin.adminPortal.title': 'Admin Portal for Announcements';
     readonly 'admin.adminPortal.subtitle': 'Manage announcements and categories';
     readonly 'admin.adminPortal.announcementsLabels': 'Announcements';
@@ -212,6 +195,23 @@ export const useAnnouncementsTranslation: () => {
     readonly 'admin.categoriesContent.cancelButton': 'Cancel';
     readonly 'admin.categoriesContent.createButton': 'Create category';
     readonly 'admin.categoriesContent.deletedMessage': 'Category deleted.';
+    readonly 'announcementForm.active': 'Active';
+    readonly 'announcementForm.title': 'Title';
+    readonly 'announcementForm.submit': 'Submit';
+    readonly 'announcementForm.excerpt': 'Excerpt';
+    readonly 'announcementForm.editAnnouncement': 'Edit announcement';
+    readonly 'announcementForm.newAnnouncement': 'New announcement';
+    readonly 'announcementForm.categoryInput.label': 'Category';
+    readonly 'announcementForm.categoryInput.create': 'Create';
+    readonly 'announcementsPage.grid.announcementDeleted': 'Announcement deleted.';
+    readonly 'announcementsPage.contextMenu.admin': 'Admin';
+    readonly 'announcementsPage.contextMenu.categories': 'Categories';
+    readonly 'announcementsPage.newAnnouncement': 'New announcement';
+    readonly 'announcementsPage.genericNew': 'New';
+    readonly 'announcementsPage.card.by': 'By';
+    readonly 'announcementsPage.card.in': 'in';
+    readonly 'announcementsPage.card.delete': 'DELETE';
+    readonly 'announcementsPage.card.edit': 'EDIT';
     readonly 'deleteDialog.cancel': 'Cancel';
     readonly 'deleteDialog.title': 'Are you sure you want to delete this announcement?';
     readonly 'deleteDialog.delete': 'Delete';

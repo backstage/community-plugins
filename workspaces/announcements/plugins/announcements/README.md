@@ -1,9 +1,15 @@
 # announcements
 
-The frontend for the Announcements plugin. This plugin provides:
+The frontend for the Announcements plugin.
 
-- a component to display the latest announcements, for example on a homepage
+## Features
+
+This plugin provides:
+
 - pages to list, view, create, edit and delete announcements
+- a component to display the latest announcements, for example on a homepage
+- a component to display the latest announcement as a banner, if there is one
+- an admin portal to manage announcements
 
 ## Installation
 
