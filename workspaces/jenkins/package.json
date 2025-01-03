@@ -61,11 +61,5 @@
     "*.{json,md}": [
       "prettier --write"
     ]
-  },
-  "dependencies": {
-    "@backstage-community/plugin-jenkins": "workspace:^",
-    "@backstage-community/plugin-jenkins-backend": "workspace:^",
-    "@backstage-community/plugin-scaffolder-backend-module-jenkins": "workspace:^",
-    "@backstage/frontend-plugin-api": "^0.9.3"
   }
 }
