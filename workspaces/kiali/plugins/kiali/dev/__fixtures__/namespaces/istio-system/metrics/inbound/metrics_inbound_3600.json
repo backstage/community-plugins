@@ -1,0 +1,115 @@
+{
+  "container_cpu_usage_seconds_total": [
+    {
+      "labels": {},
+      "datapoints": [
+        [1697021640, "0.0022837365589533235"],
+        [1697022000, "0.003630157034545756"],
+        [1697022360, "0.0034882143205133696"],
+        [1697022720, "0.003109542147831563"],
+        [1697023080, "0.004421874876878809"],
+        [1697023440, "0.0031209359563211837"],
+        [1697023800, "0.004399331006493985"],
+        [1697024160, "0.004336317402418327"]
+      ],
+      "name": "container_cpu_usage_seconds_total"
+    }
+  ],
+  "container_memory_working_set_bytes": [
+    {
+      "labels": {
+        "__name__": "container_memory_working_set_bytes",
+        "beta_kubernetes_io_arch": "amd64",
+        "beta_kubernetes_io_os": "linux",
+        "container": "discovery",
+        "id": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod86ae28e5_296a_4c6f_81ae_e3102580203a.slice/crio-311ddafa211336c162b5aeb91d70fbd048f94c9f18142285c0473eae845da2de.scope",
+        "image": "gcr.io/istio-release/pilot:1.18.2",
+        "instance": "crc-8cf2w-master-0",
+        "job": "kubernetes-nodes-cadvisor",
+        "kubernetes_io_arch": "amd64",
+        "kubernetes_io_hostname": "crc-8cf2w-master-0",
+        "kubernetes_io_os": "linux",
+        "name": "k8s_discovery_istiod-7548d4ff85-9czcn_istio-system_86ae28e5-296a-4c6f-81ae-e3102580203a_2",
+        "namespace": "istio-system",
+        "node_openshift_io_os_id": "rhcos",
+        "pod": "istiod-7548d4ff85-9czcn",
+        "topology_hostpath_csi_node": "crc-8cf2w-master-0"
+      },
+      "datapoints": [
+        [1697021640, "143.09376"],
+        [1697022000, "145.137664"],
+        [1697022360, "145.154048"],
+        [1697022720, "146.763776"],
+        [1697023080, "152.662016"],
+        [1697023440, "146.354176"],
+        [1697023800, "146.18624"],
+        [1697024160, "143.683584"]
+      ],
+      "name": "container_memory_working_set_bytes"
+    }
+  ],
+  "pilot_proxy_convergence_time": [
+    {
+      "labels": {},
+      "datapoints": [
+        [1697021640, "NaN"],
+        [1697022000, "NaN"],
+        [1697022360, "NaN"],
+        [1697022720, "NaN"],
+        [1697023080, "0.00021478099999999977"],
+        [1697023440, "NaN"],
+        [1697023800, "NaN"],
+        [1697024160, "0.0002625923636363643"]
+      ],
+      "stat": "avg",
+      "name": "pilot_proxy_convergence_time"
+    }
+  ],
+  "process_cpu_seconds_total": [
+    {
+      "labels": {},
+      "datapoints": [
+        [1697021640, "0.001045284722222216"],
+        [1697022000, "0.0018260869565217364"],
+        [1697022360, "0.0017971014492753651"],
+        [1697022720, "0.0015652173913043557"],
+        [1697023080, "0.002173913043478261"],
+        [1697023440, "0.0015942028985507267"],
+        [1697023800, "0.002202898550724642"],
+        [1697024160, "0.002202898550724642"]
+      ],
+      "name": "process_cpu_seconds_total"
+    }
+  ],
+  "process_resident_memory_bytes": [
+    {
+      "labels": {
+        "__name__": "process_resident_memory_bytes",
+        "app": "istiod",
+        "install_operator_istio_io_owning_resource": "unknown",
+        "instance": "10.217.0.34:15014",
+        "istio": "pilot",
+        "istio_io_rev": "default",
+        "job": "kubernetes-pods",
+        "namespace": "istio-system",
+        "operator_istio_io_component": "Pilot",
+        "pod": "istiod-7548d4ff85-9czcn",
+        "pod_template_hash": "7548d4ff85",
+        "sidecar_istio_io_inject": "false"
+      },
+      "datapoints": [
+        [1697021640, "163.19692799999999"],
+        [1697022000, "165.09747199999998"],
+        [1697022360, "165.09747199999998"],
+        [1697022720, "165.851136"],
+        [1697023080, "172.531712"],
+        [1697023440, "166.641664"],
+        [1697023800, "166.244352"],
+        [1697024160, "163.6352"]
+      ],
+      "name": "process_resident_memory_bytes"
+    }
+  ],
+  "request_count": null,
+  "request_error_count": null
+}

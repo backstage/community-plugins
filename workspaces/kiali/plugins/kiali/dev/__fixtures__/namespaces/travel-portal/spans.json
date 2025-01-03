@@ -1,0 +1,1542 @@
+[
+  {
+    "traceID": "d3abae60e2de780002abaaac84a3da98",
+    "spanID": "02abaaac84a3da98",
+    "operationName": "travels.travel-agency.svc.cluster.local:8000/*",
+    "references": [],
+    "startTime": 1710323687159038,
+    "duration": 4769,
+    "tags": [
+      {
+        "key": "request_size",
+        "type": "string",
+        "value": "0"
+      },
+      {
+        "key": "istio.mesh_id",
+        "type": "string",
+        "value": "cluster.local"
+      },
+      {
+        "key": "guid:x-request-id",
+        "type": "string",
+        "value": "576c3b27-83a2-9200-93a1-a295876c50b0"
+      },
+      {
+        "key": "istio.canonical_service",
+        "type": "string",
+        "value": "travels"
+      },
+      {
+        "key": "http.status_code",
+        "type": "string",
+        "value": "200"
+      },
+      {
+        "key": "http.protocol",
+        "type": "string",
+        "value": "HTTP/1.1"
+      },
+      {
+        "key": "http.header.travel",
+        "type": "string",
+        "value": "t1"
+      },
+      {
+        "key": "http.header.device",
+        "type": "string",
+        "value": "web"
+      },
+      {
+        "key": "http.url",
+        "type": "string",
+        "value": "http://travels.travel-agency:8000/travels"
+      },
+      {
+        "key": "user_agent",
+        "type": "string",
+        "value": "Go-http-client/1.1"
+      },
+      {
+        "key": "http.header.user",
+        "type": "string",
+        "value": "new"
+      },
+      {
+        "key": "response_size",
+        "type": "string",
+        "value": "2286"
+      },
+      {
+        "key": "http.header.portal",
+        "type": "string",
+        "value": "travels.uk"
+      },
+      {
+        "key": "response_flags",
+        "type": "string",
+        "value": "-"
+      },
+      {
+        "key": "peer.address",
+        "type": "string",
+        "value": "10.244.0.27"
+      },
+      {
+        "key": "downstream_cluster",
+        "type": "string",
+        "value": "-"
+      },
+      {
+        "key": "node_id",
+        "type": "string",
+        "value": "sidecar~10.244.0.27~travels-969557fd4-pvsqw.travel-portal~travel-portal.svc.cluster.local"
+      },
+      {
+        "key": "upstream_cluster.name",
+        "type": "string",
+        "value": "outbound|8000||travels.travel-agency.svc.cluster.local"
+      },
+      {
+        "key": "istio.namespace",
+        "type": "string",
+        "value": "travel-portal"
+      },
+      {
+        "key": "component",
+        "type": "string",
+        "value": "proxy"
+      },
+      {
+        "key": "istio.canonical_revision",
+        "type": "string",
+        "value": "v1"
+      },
+      {
+        "key": "http.method",
+        "type": "string",
+        "value": "GET"
+      },
+      {
+        "key": "upstream_cluster",
+        "type": "string",
+        "value": "outbound|8000||travels.travel-agency.svc.cluster.local"
+      },
+      {
+        "key": "istio.cluster_id",
+        "type": "string",
+        "value": "Kubernetes"
+      },
+      {
+        "key": "span.kind",
+        "type": "string",
+        "value": "client"
+      },
+      {
+        "key": "internal.span.format",
+        "type": "string",
+        "value": "zipkin"
+      }
+    ],
+    "logs": [],
+    "processID": "p1",
+    "process": {
+      "serviceName": "travels.travel-portal",
+      "tags": [
+        {
+          "key": "ip",
+          "type": "int64",
+          "value": 183762971
+        }
+      ]
+    },
+    "warnings": null,
+    "traceSize": 4
+  },
+  {
+    "traceID": "a8cfad5ab9d2bf9899fe60f3fe4e68f3",
+    "spanID": "99fe60f3fe4e68f3",
+    "operationName": "travels.travel-agency.svc.cluster.local:8000/*",
+    "references": [],
+    "startTime": 1710323604497093,
+    "duration": 4332,
+    "tags": [
+      {
+        "key": "component",
+        "type": "string",
+        "value": "proxy"
+      },
+      {
+        "key": "response_flags",
+        "type": "string",
+        "value": "-"
+      },
+      {
+        "key": "response_size",
+        "type": "string",
+        "value": "2286"
+      },
+      {
+        "key": "http.method",
+        "type": "string",
+        "value": "GET"
+      },
+      {
+        "key": "http.header.device",
+        "type": "string",
+        "value": "mobile"
+      },
+      {
+        "key": "http.url",
+        "type": "string",
+        "value": "http://travels.travel-agency:8000/travels"
+      },
+      {
+        "key": "peer.address",
+        "type": "string",
+        "value": "10.244.0.27"
+      },
+      {
+        "key": "istio.cluster_id",
+        "type": "string",
+        "value": "Kubernetes"
+      },
+      {
+        "key": "http.header.user",
+        "type": "string",
+        "value": "registered"
+      },
+      {
+        "key": "istio.canonical_service",
+        "type": "string",
+        "value": "travels"
+      },
+      {
+        "key": "http.header.travel",
+        "type": "string",
+        "value": "t2"
+      },
+      {
+        "key": "http.header.portal",
+        "type": "string",
+        "value": "travels.uk"
+      },
+      {
+        "key": "http.status_code",
+        "type": "string",
+        "value": "200"
+      },
+      {
+        "key": "istio.mesh_id",
+        "type": "string",
+        "value": "cluster.local"
+      },
+      {
+        "key": "guid:x-request-id",
+        "type": "string",
+        "value": "44360457-e6d8-97bc-84f3-133ba2d7ca91"
+      },
+      {
+        "key": "istio.canonical_revision",
+        "type": "string",
+        "value": "v1"
+      },
+      {
+        "key": "istio.namespace",
+        "type": "string",
+        "value": "travel-portal"
+      },
+      {
+        "key": "request_size",
+        "type": "string",
+        "value": "0"
+      },
+      {
+        "key": "downstream_cluster",
+        "type": "string",
+        "value": "-"
+      },
+      {
+        "key": "upstream_cluster",
+        "type": "string",
+        "value": "outbound|8000||travels.travel-agency.svc.cluster.local"
+      },
+      {
+        "key": "upstream_cluster.name",
+        "type": "string",
+        "value": "outbound|8000||travels.travel-agency.svc.cluster.local"
+      },
+      {
+        "key": "http.protocol",
+        "type": "string",
+        "value": "HTTP/1.1"
+      },
+      {
+        "key": "node_id",
+        "type": "string",
+        "value": "sidecar~10.244.0.27~travels-969557fd4-pvsqw.travel-portal~travel-portal.svc.cluster.local"
+      },
+      {
+        "key": "user_agent",
+        "type": "string",
+        "value": "Go-http-client/1.1"
+      },
+      {
+        "key": "span.kind",
+        "type": "string",
+        "value": "client"
+      },
+      {
+        "key": "internal.span.format",
+        "type": "string",
+        "value": "zipkin"
+      }
+    ],
+    "logs": [],
+    "processID": "p1",
+    "process": {
+      "serviceName": "travels.travel-portal",
+      "tags": [
+        {
+          "key": "ip",
+          "type": "int64",
+          "value": 183762971
+        }
+      ]
+    },
+    "warnings": null,
+    "traceSize": 4
+  },
+  {
+    "traceID": "d9abc75e35d9ccc3a522d02c3ed9be79",
+    "spanID": "a522d02c3ed9be79",
+    "operationName": "travels.travel-agency.svc.cluster.local:8000/*",
+    "references": [],
+    "startTime": 1710323566923628,
+    "duration": 6153,
+    "tags": [
+      {
+        "key": "user_agent",
+        "type": "string",
+        "value": "Go-http-client/1.1"
+      },
+      {
+        "key": "http.header.user",
+        "type": "string",
+        "value": "new"
+      },
+      {
+        "key": "component",
+        "type": "string",
+        "value": "proxy"
+      },
+      {
+        "key": "downstream_cluster",
+        "type": "string",
+        "value": "-"
+      },
+      {
+        "key": "istio.namespace",
+        "type": "string",
+        "value": "travel-portal"
+      },
+      {
+        "key": "http.header.portal",
+        "type": "string",
+        "value": "travels.uk"
+      },
+      {
+        "key": "http.header.travel",
+        "type": "string",
+        "value": "t3"
+      },
+      {
+        "key": "http.url",
+        "type": "string",
+        "value": "http://travels.travel-agency:8000/travels/Podgorica"
+      },
+      {
+        "key": "request_size",
+        "type": "string",
+        "value": "0"
+      },
+      {
+        "key": "istio.mesh_id",
+        "type": "string",
+        "value": "cluster.local"
+      },
+      {
+        "key": "http.header.device",
+        "type": "string",
+        "value": "web"
+      },
+      {
+        "key": "http.method",
+        "type": "string",
+        "value": "GET"
+      },
+      {
+        "key": "response_flags",
+        "type": "string",
+        "value": "-"
+      },
+      {
+        "key": "node_id",
+        "type": "string",
+        "value": "sidecar~10.244.0.27~travels-969557fd4-pvsqw.travel-portal~travel-portal.svc.cluster.local"
+      },
+      {
+        "key": "http.protocol",
+        "type": "string",
+        "value": "HTTP/1.1"
+      },
+      {
+        "key": "istio.cluster_id",
+        "type": "string",
+        "value": "Kubernetes"
+      },
+      {
+        "key": "upstream_cluster.name",
+        "type": "string",
+        "value": "outbound|8000||travels.travel-agency.svc.cluster.local"
+      },
+      {
+        "key": "http.status_code",
+        "type": "string",
+        "value": "200"
+      },
+      {
+        "key": "upstream_cluster",
+        "type": "string",
+        "value": "outbound|8000||travels.travel-agency.svc.cluster.local"
+      },
+      {
+        "key": "istio.canonical_service",
+        "type": "string",
+        "value": "travels"
+      },
+      {
+        "key": "response_size",
+        "type": "string",
+        "value": "400"
+      },
+      {
+        "key": "istio.canonical_revision",
+        "type": "string",
+        "value": "v1"
+      },
+      {
+        "key": "guid:x-request-id",
+        "type": "string",
+        "value": "ff4596aa-d521-96f5-b0a0-f4bcb93f4c50"
+      },
+      {
+        "key": "peer.address",
+        "type": "string",
+        "value": "10.244.0.27"
+      },
+      {
+        "key": "span.kind",
+        "type": "string",
+        "value": "client"
+      },
+      {
+        "key": "internal.span.format",
+        "type": "string",
+        "value": "zipkin"
+      }
+    ],
+    "logs": [],
+    "processID": "p1",
+    "process": {
+      "serviceName": "travels.travel-portal",
+      "tags": [
+        {
+          "key": "ip",
+          "type": "int64",
+          "value": 183762971
+        }
+      ]
+    },
+    "warnings": null,
+    "traceSize": 14
+  },
+  {
+    "traceID": "5424f3eba001d557b89e05103ebfda06",
+    "spanID": "b89e05103ebfda06",
+    "operationName": "travels.travel-agency.svc.cluster.local:8000/*",
+    "references": [],
+    "startTime": 1710323491773586,
+    "duration": 5640,
+    "tags": [
+      {
+        "key": "http.header.device",
+        "type": "string",
+        "value": "web"
+      },
+      {
+        "key": "http.header.user",
+        "type": "string",
+        "value": "new"
+      },
+      {
+        "key": "upstream_cluster",
+        "type": "string",
+        "value": "outbound|8000||travels.travel-agency.svc.cluster.local"
+      },
+      {
+        "key": "upstream_cluster.name",
+        "type": "string",
+        "value": "outbound|8000||travels.travel-agency.svc.cluster.local"
+      },
+      {
+        "key": "http.status_code",
+        "type": "string",
+        "value": "200"
+      },
+      {
+        "key": "response_flags",
+        "type": "string",
+        "value": "-"
+      },
+      {
+        "key": "istio.cluster_id",
+        "type": "string",
+        "value": "Kubernetes"
+      },
+      {
+        "key": "peer.address",
+        "type": "string",
+        "value": "10.244.0.27"
+      },
+      {
+        "key": "http.method",
+        "type": "string",
+        "value": "GET"
+      },
+      {
+        "key": "istio.canonical_revision",
+        "type": "string",
+        "value": "v1"
+      },
+      {
+        "key": "http.header.travel",
+        "type": "string",
+        "value": "t2"
+      },
+      {
+        "key": "http.url",
+        "type": "string",
+        "value": "http://travels.travel-agency:8000/travels/Sarajevo"
+      },
+      {
+        "key": "user_agent",
+        "type": "string",
+        "value": "Go-http-client/1.1"
+      },
+      {
+        "key": "http.header.portal",
+        "type": "string",
+        "value": "travels.uk"
+      },
+      {
+        "key": "istio.mesh_id",
+        "type": "string",
+        "value": "cluster.local"
+      },
+      {
+        "key": "downstream_cluster",
+        "type": "string",
+        "value": "-"
+      },
+      {
+        "key": "guid:x-request-id",
+        "type": "string",
+        "value": "79bd2bc1-7270-97f2-8c78-07e7348a331c"
+      },
+      {
+        "key": "component",
+        "type": "string",
+        "value": "proxy"
+      },
+      {
+        "key": "response_size",
+        "type": "string",
+        "value": "448"
+      },
+      {
+        "key": "request_size",
+        "type": "string",
+        "value": "0"
+      },
+      {
+        "key": "istio.namespace",
+        "type": "string",
+        "value": "travel-portal"
+      },
+      {
+        "key": "node_id",
+        "type": "string",
+        "value": "sidecar~10.244.0.27~travels-969557fd4-pvsqw.travel-portal~travel-portal.svc.cluster.local"
+      },
+      {
+        "key": "http.protocol",
+        "type": "string",
+        "value": "HTTP/1.1"
+      },
+      {
+        "key": "istio.canonical_service",
+        "type": "string",
+        "value": "travels"
+      },
+      {
+        "key": "span.kind",
+        "type": "string",
+        "value": "client"
+      },
+      {
+        "key": "internal.span.format",
+        "type": "string",
+        "value": "zipkin"
+      }
+    ],
+    "logs": [],
+    "processID": "p1",
+    "process": {
+      "serviceName": "travels.travel-portal",
+      "tags": [
+        {
+          "key": "ip",
+          "type": "int64",
+          "value": 183762971
+        }
+      ]
+    },
+    "warnings": null,
+    "traceSize": 14
+  },
+  {
+    "traceID": "fb8ddad357b57b17045ac738470a8ad5",
+    "spanID": "045ac738470a8ad5",
+    "operationName": "travels.travel-agency.svc.cluster.local:8000/*",
+    "references": [],
+    "startTime": 1710323717227392,
+    "duration": 15185,
+    "tags": [
+      {
+        "key": "upstream_cluster.name",
+        "type": "string",
+        "value": "outbound|8000||travels.travel-agency.svc.cluster.local"
+      },
+      {
+        "key": "istio.mesh_id",
+        "type": "string",
+        "value": "cluster.local"
+      },
+      {
+        "key": "node_id",
+        "type": "string",
+        "value": "sidecar~10.244.0.27~travels-969557fd4-pvsqw.travel-portal~travel-portal.svc.cluster.local"
+      },
+      {
+        "key": "istio.canonical_service",
+        "type": "string",
+        "value": "travels"
+      },
+      {
+        "key": "response_flags",
+        "type": "string",
+        "value": "-"
+      },
+      {
+        "key": "peer.address",
+        "type": "string",
+        "value": "10.244.0.27"
+      },
+      {
+        "key": "request_size",
+        "type": "string",
+        "value": "0"
+      },
+      {
+        "key": "component",
+        "type": "string",
+        "value": "proxy"
+      },
+      {
+        "key": "user_agent",
+        "type": "string",
+        "value": "Go-http-client/1.1"
+      },
+      {
+        "key": "http.header.user",
+        "type": "string",
+        "value": "new"
+      },
+      {
+        "key": "istio.canonical_revision",
+        "type": "string",
+        "value": "v1"
+      },
+      {
+        "key": "response_size",
+        "type": "string",
+        "value": "2286"
+      },
+      {
+        "key": "http.header.travel",
+        "type": "string",
+        "value": "t2"
+      },
+      {
+        "key": "istio.namespace",
+        "type": "string",
+        "value": "travel-portal"
+      },
+      {
+        "key": "istio.cluster_id",
+        "type": "string",
+        "value": "Kubernetes"
+      },
+      {
+        "key": "http.status_code",
+        "type": "string",
+        "value": "200"
+      },
+      {
+        "key": "guid:x-request-id",
+        "type": "string",
+        "value": "0d84b3c3-0cfc-93b4-a869-3087d4e8194a"
+      },
+      {
+        "key": "http.url",
+        "type": "string",
+        "value": "http://travels.travel-agency:8000/travels"
+      },
+      {
+        "key": "http.header.portal",
+        "type": "string",
+        "value": "travels.uk"
+      },
+      {
+        "key": "http.protocol",
+        "type": "string",
+        "value": "HTTP/1.1"
+      },
+      {
+        "key": "http.header.device",
+        "type": "string",
+        "value": "web"
+      },
+      {
+        "key": "upstream_cluster",
+        "type": "string",
+        "value": "outbound|8000||travels.travel-agency.svc.cluster.local"
+      },
+      {
+        "key": "http.method",
+        "type": "string",
+        "value": "GET"
+      },
+      {
+        "key": "downstream_cluster",
+        "type": "string",
+        "value": "-"
+      },
+      {
+        "key": "span.kind",
+        "type": "string",
+        "value": "client"
+      },
+      {
+        "key": "internal.span.format",
+        "type": "string",
+        "value": "zipkin"
+      }
+    ],
+    "logs": [],
+    "processID": "p1",
+    "process": {
+      "serviceName": "travels.travel-portal",
+      "tags": [
+        {
+          "key": "ip",
+          "type": "int64",
+          "value": 183762971
+        }
+      ]
+    },
+    "warnings": null,
+    "traceSize": 4
+  },
+  {
+    "traceID": "ac54b021ecb80039c0a465d1300183b1",
+    "spanID": "c0a465d1300183b1",
+    "operationName": "travels.travel-agency.svc.cluster.local:8000/*",
+    "references": [],
+    "startTime": 1710323702196354,
+    "duration": 5222,
+    "tags": [
+      {
+        "key": "http.method",
+        "type": "string",
+        "value": "GET"
+      },
+      {
+        "key": "http.header.user",
+        "type": "string",
+        "value": "new"
+      },
+      {
+        "key": "request_size",
+        "type": "string",
+        "value": "0"
+      },
+      {
+        "key": "http.header.travel",
+        "type": "string",
+        "value": "t3"
+      },
+      {
+        "key": "response_flags",
+        "type": "string",
+        "value": "-"
+      },
+      {
+        "key": "upstream_cluster",
+        "type": "string",
+        "value": "outbound|8000||travels.travel-agency.svc.cluster.local"
+      },
+      {
+        "key": "istio.mesh_id",
+        "type": "string",
+        "value": "cluster.local"
+      },
+      {
+        "key": "upstream_cluster.name",
+        "type": "string",
+        "value": "outbound|8000||travels.travel-agency.svc.cluster.local"
+      },
+      {
+        "key": "http.url",
+        "type": "string",
+        "value": "http://travels.travel-agency:8000/travels/Moscow"
+      },
+      {
+        "key": "istio.canonical_revision",
+        "type": "string",
+        "value": "v1"
+      },
+      {
+        "key": "downstream_cluster",
+        "type": "string",
+        "value": "-"
+      },
+      {
+        "key": "http.header.device",
+        "type": "string",
+        "value": "web"
+      },
+      {
+        "key": "http.status_code",
+        "type": "string",
+        "value": "200"
+      },
+      {
+        "key": "guid:x-request-id",
+        "type": "string",
+        "value": "0f862aae-9cb9-9271-8c4c-52d4094ba473"
+      },
+      {
+        "key": "istio.cluster_id",
+        "type": "string",
+        "value": "Kubernetes"
+      },
+      {
+        "key": "http.header.portal",
+        "type": "string",
+        "value": "travels.uk"
+      },
+      {
+        "key": "istio.canonical_service",
+        "type": "string",
+        "value": "travels"
+      },
+      {
+        "key": "node_id",
+        "type": "string",
+        "value": "sidecar~10.244.0.27~travels-969557fd4-pvsqw.travel-portal~travel-portal.svc.cluster.local"
+      },
+      {
+        "key": "response_size",
+        "type": "string",
+        "value": "402"
+      },
+      {
+        "key": "component",
+        "type": "string",
+        "value": "proxy"
+      },
+      {
+        "key": "user_agent",
+        "type": "string",
+        "value": "Go-http-client/1.1"
+      },
+      {
+        "key": "istio.namespace",
+        "type": "string",
+        "value": "travel-portal"
+      },
+      {
+        "key": "peer.address",
+        "type": "string",
+        "value": "10.244.0.27"
+      },
+      {
+        "key": "http.protocol",
+        "type": "string",
+        "value": "HTTP/1.1"
+      },
+      {
+        "key": "span.kind",
+        "type": "string",
+        "value": "client"
+      },
+      {
+        "key": "internal.span.format",
+        "type": "string",
+        "value": "zipkin"
+      }
+    ],
+    "logs": [],
+    "processID": "p1",
+    "process": {
+      "serviceName": "travels.travel-portal",
+      "tags": [
+        {
+          "key": "ip",
+          "type": "int64",
+          "value": 183762971
+        }
+      ]
+    },
+    "warnings": null,
+    "traceSize": 14
+  },
+  {
+    "traceID": "99cde2f70a2692fc1b402354ca3cb11d",
+    "spanID": "1b402354ca3cb11d",
+    "operationName": "travels.travel-agency.svc.cluster.local:8000/*",
+    "references": [],
+    "startTime": 1710323589468941,
+    "duration": 4208,
+    "tags": [
+      {
+        "key": "downstream_cluster",
+        "type": "string",
+        "value": "-"
+      },
+      {
+        "key": "http.url",
+        "type": "string",
+        "value": "http://travels.travel-agency:8000/travels"
+      },
+      {
+        "key": "http.method",
+        "type": "string",
+        "value": "GET"
+      },
+      {
+        "key": "peer.address",
+        "type": "string",
+        "value": "10.244.0.27"
+      },
+      {
+        "key": "istio.mesh_id",
+        "type": "string",
+        "value": "cluster.local"
+      },
+      {
+        "key": "istio.cluster_id",
+        "type": "string",
+        "value": "Kubernetes"
+      },
+      {
+        "key": "request_size",
+        "type": "string",
+        "value": "0"
+      },
+      {
+        "key": "user_agent",
+        "type": "string",
+        "value": "Go-http-client/1.1"
+      },
+      {
+        "key": "istio.namespace",
+        "type": "string",
+        "value": "travel-portal"
+      },
+      {
+        "key": "component",
+        "type": "string",
+        "value": "proxy"
+      },
+      {
+        "key": "guid:x-request-id",
+        "type": "string",
+        "value": "572e6c2a-2e66-95cd-9343-0c01b49e202b"
+      },
+      {
+        "key": "http.header.portal",
+        "type": "string",
+        "value": "travels.uk"
+      },
+      {
+        "key": "upstream_cluster.name",
+        "type": "string",
+        "value": "outbound|8000||travels.travel-agency.svc.cluster.local"
+      },
+      {
+        "key": "http.status_code",
+        "type": "string",
+        "value": "200"
+      },
+      {
+        "key": "http.header.travel",
+        "type": "string",
+        "value": "t3"
+      },
+      {
+        "key": "istio.canonical_revision",
+        "type": "string",
+        "value": "v1"
+      },
+      {
+        "key": "http.header.user",
+        "type": "string",
+        "value": "registered"
+      },
+      {
+        "key": "node_id",
+        "type": "string",
+        "value": "sidecar~10.244.0.27~travels-969557fd4-pvsqw.travel-portal~travel-portal.svc.cluster.local"
+      },
+      {
+        "key": "http.header.device",
+        "type": "string",
+        "value": "mobile"
+      },
+      {
+        "key": "istio.canonical_service",
+        "type": "string",
+        "value": "travels"
+      },
+      {
+        "key": "http.protocol",
+        "type": "string",
+        "value": "HTTP/1.1"
+      },
+      {
+        "key": "upstream_cluster",
+        "type": "string",
+        "value": "outbound|8000||travels.travel-agency.svc.cluster.local"
+      },
+      {
+        "key": "response_size",
+        "type": "string",
+        "value": "2286"
+      },
+      {
+        "key": "response_flags",
+        "type": "string",
+        "value": "-"
+      },
+      {
+        "key": "span.kind",
+        "type": "string",
+        "value": "client"
+      },
+      {
+        "key": "internal.span.format",
+        "type": "string",
+        "value": "zipkin"
+      }
+    ],
+    "logs": [],
+    "processID": "p1",
+    "process": {
+      "serviceName": "travels.travel-portal",
+      "tags": [
+        {
+          "key": "ip",
+          "type": "int64",
+          "value": 183762971
+        }
+      ]
+    },
+    "warnings": null,
+    "traceSize": 4
+  },
+  {
+    "traceID": "812e5fd0f48d8236b82d646fb363c422",
+    "spanID": "b82d646fb363c422",
+    "operationName": "travels.travel-agency.svc.cluster.local:8000/*",
+    "references": [],
+    "startTime": 1710323446674823,
+    "duration": 6370,
+    "tags": [
+      {
+        "key": "http.protocol",
+        "type": "string",
+        "value": "HTTP/1.1"
+      },
+      {
+        "key": "istio.canonical_revision",
+        "type": "string",
+        "value": "v1"
+      },
+      {
+        "key": "peer.address",
+        "type": "string",
+        "value": "10.244.0.27"
+      },
+      {
+        "key": "node_id",
+        "type": "string",
+        "value": "sidecar~10.244.0.27~travels-969557fd4-pvsqw.travel-portal~travel-portal.svc.cluster.local"
+      },
+      {
+        "key": "response_flags",
+        "type": "string",
+        "value": "-"
+      },
+      {
+        "key": "http.status_code",
+        "type": "string",
+        "value": "200"
+      },
+      {
+        "key": "request_size",
+        "type": "string",
+        "value": "0"
+      },
+      {
+        "key": "istio.namespace",
+        "type": "string",
+        "value": "travel-portal"
+      },
+      {
+        "key": "http.header.portal",
+        "type": "string",
+        "value": "travels.uk"
+      },
+      {
+        "key": "upstream_cluster",
+        "type": "string",
+        "value": "outbound|8000||travels.travel-agency.svc.cluster.local"
+      },
+      {
+        "key": "downstream_cluster",
+        "type": "string",
+        "value": "-"
+      },
+      {
+        "key": "http.header.device",
+        "type": "string",
+        "value": "web"
+      },
+      {
+        "key": "istio.canonical_service",
+        "type": "string",
+        "value": "travels"
+      },
+      {
+        "key": "http.header.travel",
+        "type": "string",
+        "value": "t2"
+      },
+      {
+        "key": "response_size",
+        "type": "string",
+        "value": "456"
+      },
+      {
+        "key": "http.method",
+        "type": "string",
+        "value": "GET"
+      },
+      {
+        "key": "component",
+        "type": "string",
+        "value": "proxy"
+      },
+      {
+        "key": "istio.mesh_id",
+        "type": "string",
+        "value": "cluster.local"
+      },
+      {
+        "key": "user_agent",
+        "type": "string",
+        "value": "Go-http-client/1.1"
+      },
+      {
+        "key": "http.url",
+        "type": "string",
+        "value": "http://travels.travel-agency:8000/travels/Bucharest"
+      },
+      {
+        "key": "guid:x-request-id",
+        "type": "string",
+        "value": "d920914f-f442-9f41-a7ad-7b0fa864c9bf"
+      },
+      {
+        "key": "http.header.user",
+        "type": "string",
+        "value": "new"
+      },
+      {
+        "key": "istio.cluster_id",
+        "type": "string",
+        "value": "Kubernetes"
+      },
+      {
+        "key": "upstream_cluster.name",
+        "type": "string",
+        "value": "outbound|8000||travels.travel-agency.svc.cluster.local"
+      },
+      {
+        "key": "span.kind",
+        "type": "string",
+        "value": "client"
+      },
+      {
+        "key": "internal.span.format",
+        "type": "string",
+        "value": "zipkin"
+      }
+    ],
+    "logs": [],
+    "processID": "p1",
+    "process": {
+      "serviceName": "travels.travel-portal",
+      "tags": [
+        {
+          "key": "ip",
+          "type": "int64",
+          "value": 183762971
+        }
+      ]
+    },
+    "warnings": null,
+    "traceSize": 14
+  },
+  {
+    "traceID": "7a675338186614c325358ff74d719464",
+    "spanID": "25358ff74d719464",
+    "operationName": "travels.travel-agency.svc.cluster.local:8000/*",
+    "references": [],
+    "startTime": 1710323664619789,
+    "duration": 6186,
+    "tags": [
+      {
+        "key": "upstream_cluster.name",
+        "type": "string",
+        "value": "outbound|8000||travels.travel-agency.svc.cluster.local"
+      },
+      {
+        "key": "http.header.travel",
+        "type": "string",
+        "value": "t1"
+      },
+      {
+        "key": "istio.canonical_service",
+        "type": "string",
+        "value": "travels"
+      },
+      {
+        "key": "http.header.user",
+        "type": "string",
+        "value": "registered"
+      },
+      {
+        "key": "upstream_cluster",
+        "type": "string",
+        "value": "outbound|8000||travels.travel-agency.svc.cluster.local"
+      },
+      {
+        "key": "http.url",
+        "type": "string",
+        "value": "http://travels.travel-agency:8000/travels/Nicosia"
+      },
+      {
+        "key": "http.status_code",
+        "type": "string",
+        "value": "200"
+      },
+      {
+        "key": "istio.canonical_revision",
+        "type": "string",
+        "value": "v1"
+      },
+      {
+        "key": "istio.namespace",
+        "type": "string",
+        "value": "travel-portal"
+      },
+      {
+        "key": "http.method",
+        "type": "string",
+        "value": "GET"
+      },
+      {
+        "key": "istio.mesh_id",
+        "type": "string",
+        "value": "cluster.local"
+      },
+      {
+        "key": "response_flags",
+        "type": "string",
+        "value": "-"
+      },
+      {
+        "key": "component",
+        "type": "string",
+        "value": "proxy"
+      },
+      {
+        "key": "downstream_cluster",
+        "type": "string",
+        "value": "-"
+      },
+      {
+        "key": "response_size",
+        "type": "string",
+        "value": "525"
+      },
+      {
+        "key": "http.protocol",
+        "type": "string",
+        "value": "HTTP/1.1"
+      },
+      {
+        "key": "guid:x-request-id",
+        "type": "string",
+        "value": "1a1eb77c-5eb4-99b4-93a9-9b9fa7dc5a22"
+      },
+      {
+        "key": "http.header.portal",
+        "type": "string",
+        "value": "travels.uk"
+      },
+      {
+        "key": "node_id",
+        "type": "string",
+        "value": "sidecar~10.244.0.27~travels-969557fd4-pvsqw.travel-portal~travel-portal.svc.cluster.local"
+      },
+      {
+        "key": "istio.cluster_id",
+        "type": "string",
+        "value": "Kubernetes"
+      },
+      {
+        "key": "http.header.device",
+        "type": "string",
+        "value": "mobile"
+      },
+      {
+        "key": "request_size",
+        "type": "string",
+        "value": "0"
+      },
+      {
+        "key": "user_agent",
+        "type": "string",
+        "value": "Go-http-client/1.1"
+      },
+      {
+        "key": "peer.address",
+        "type": "string",
+        "value": "10.244.0.27"
+      },
+      {
+        "key": "span.kind",
+        "type": "string",
+        "value": "client"
+      },
+      {
+        "key": "internal.span.format",
+        "type": "string",
+        "value": "zipkin"
+      }
+    ],
+    "logs": [],
+    "processID": "p1",
+    "process": {
+      "serviceName": "travels.travel-portal",
+      "tags": [
+        {
+          "key": "ip",
+          "type": "int64",
+          "value": 183762971
+        }
+      ]
+    },
+    "warnings": null,
+    "traceSize": 18
+  },
+  {
+    "traceID": "a1a5c8fbb45c23173c7cafec27ed735b",
+    "spanID": "3c7cafec27ed735b",
+    "operationName": "travels.travel-agency.svc.cluster.local:8000/*",
+    "references": [],
+    "startTime": 1710323619531704,
+    "duration": 6138,
+    "tags": [
+      {
+        "key": "node_id",
+        "type": "string",
+        "value": "sidecar~10.244.0.27~travels-969557fd4-pvsqw.travel-portal~travel-portal.svc.cluster.local"
+      },
+      {
+        "key": "http.status_code",
+        "type": "string",
+        "value": "200"
+      },
+      {
+        "key": "http.protocol",
+        "type": "string",
+        "value": "HTTP/1.1"
+      },
+      {
+        "key": "response_flags",
+        "type": "string",
+        "value": "-"
+      },
+      {
+        "key": "user_agent",
+        "type": "string",
+        "value": "Go-http-client/1.1"
+      },
+      {
+        "key": "http.header.portal",
+        "type": "string",
+        "value": "travels.uk"
+      },
+      {
+        "key": "response_size",
+        "type": "string",
+        "value": "525"
+      },
+      {
+        "key": "istio.canonical_service",
+        "type": "string",
+        "value": "travels"
+      },
+      {
+        "key": "istio.cluster_id",
+        "type": "string",
+        "value": "Kubernetes"
+      },
+      {
+        "key": "http.method",
+        "type": "string",
+        "value": "GET"
+      },
+      {
+        "key": "peer.address",
+        "type": "string",
+        "value": "10.244.0.27"
+      },
+      {
+        "key": "http.url",
+        "type": "string",
+        "value": "http://travels.travel-agency:8000/travels/Nicosia"
+      },
+      {
+        "key": "http.header.travel",
+        "type": "string",
+        "value": "t1"
+      },
+      {
+        "key": "component",
+        "type": "string",
+        "value": "proxy"
+      },
+      {
+        "key": "istio.namespace",
+        "type": "string",
+        "value": "travel-portal"
+      },
+      {
+        "key": "http.header.device",
+        "type": "string",
+        "value": "mobile"
+      },
+      {
+        "key": "guid:x-request-id",
+        "type": "string",
+        "value": "03213dca-6a36-910b-930e-cfa919b66b28"
+      },
+      {
+        "key": "request_size",
+        "type": "string",
+        "value": "0"
+      },
+      {
+        "key": "istio.canonical_revision",
+        "type": "string",
+        "value": "v1"
+      },
+      {
+        "key": "istio.mesh_id",
+        "type": "string",
+        "value": "cluster.local"
+      },
+      {
+        "key": "upstream_cluster",
+        "type": "string",
+        "value": "outbound|8000||travels.travel-agency.svc.cluster.local"
+      },
+      {
+        "key": "downstream_cluster",
+        "type": "string",
+        "value": "-"
+      },
+      {
+        "key": "upstream_cluster.name",
+        "type": "string",
+        "value": "outbound|8000||travels.travel-agency.svc.cluster.local"
+      },
+      {
+        "key": "http.header.user",
+        "type": "string",
+        "value": "registered"
+      },
+      {
+        "key": "span.kind",
+        "type": "string",
+        "value": "client"
+      },
+      {
+        "key": "internal.span.format",
+        "type": "string",
+        "value": "zipkin"
+      }
+    ],
+    "logs": [],
+    "processID": "p1",
+    "process": {
+      "serviceName": "travels.travel-portal",
+      "tags": [
+        {
+          "key": "ip",
+          "type": "int64",
+          "value": 183762971
+        }
+      ]
+    },
+    "warnings": null,
+    "traceSize": 18
+  }
+]
