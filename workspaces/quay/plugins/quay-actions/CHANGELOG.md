@@ -1,5 +1,15 @@
 ### Dependencies
 
+## 2.3.0
+
+### Minor Changes
+
+- 7daf65a: Backstage version bump to v1.34.2
+
+### Patch Changes
+
+- 0f5c451: Updated dependency `prettier` to `3.4.2`.
+
 ## 2.2.3
 
 ### Patch Changes

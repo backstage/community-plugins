@@ -1,5 +1,14 @@
 ### Dependencies
 
+## 5.2.8
+
+### Patch Changes
+
+- 0f5c451: Updated dependency `prettier` to `3.4.2`.
+- 18f9d9d: Updated dependency `@types/node` to `18.19.68`.
+- Updated dependencies [0f5c451]
+  - @backstage-community/plugin-rbac-node@1.8.4
+
 ## 5.2.7
 
 ### Patch Changes

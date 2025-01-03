@@ -7,7 +7,7 @@ import { AnalyticsApi } from '@backstage/core-plugin-api';
 import { AnalyticsEvent } from '@backstage/core-plugin-api';
 import { ApiFactory } from '@backstage/core-plugin-api';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
-import { Config } from '@backstage/config';
+import { Config } from '@backstage/config/index';
 import { ConfigApi } from '@backstage/core-plugin-api';
 
 // @public (undocumented)

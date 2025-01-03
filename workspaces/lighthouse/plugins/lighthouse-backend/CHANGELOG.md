@@ -1,5 +1,16 @@
 # @backstage-community/plugin-lighthouse-backend
 
+## 0.5.0
+
+### Minor Changes
+
+- 009e5b1: Backstage version bump to v1.34.1
+
+### Patch Changes
+
+- Updated dependencies [009e5b1]
+  - @backstage-community/plugin-lighthouse-common@0.2.0
+
 ## 0.4.17
 
 ### Patch Changes

@@ -1,5 +1,12 @@
 # @backstage-community/plugin-analytics-module-ga4
 
+## 0.3.0
+
+### Minor Changes
+
+- cab1716: Allow defining custom cookie flags and setting it to 'SameSite=Lax' by default to make every browser behave similarly.
+- ac6e8f9: Backstage version bump to v1.34.1
+
 ## 0.2.11
 
 ### Patch Changes

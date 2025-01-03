@@ -1,5 +1,30 @@
 # @backstage-community/plugin-tech-insights-backend-module-jsonfc
 
+## 0.3.1
+
+### Patch Changes
+
+- 4e5dcbc: Bump json-rules-engine to solve [CVE-2024-21534](https://github.com/backstage/backstage/issues/27386)
+
+## 0.3.0
+
+### Minor Changes
+
+- 5abfb11: Backstage version bump to v1.34.2
+
+### Patch Changes
+
+- Updated dependencies [5abfb11]
+  - @backstage-community/plugin-tech-insights-common@0.4.0
+  - @backstage-community/plugin-tech-insights-node@2.2.0
+
+## 0.2.1
+
+### Patch Changes
+
+- Updated dependencies [d9d9039]
+  - @backstage-community/plugin-tech-insights-node@2.1.1
+
 ## 0.2.0
 
 ### Minor Changes
