@@ -32,9 +32,6 @@ backend.add(import('@backstage/plugin-auth-backend-module-guest-provider'));
 
 // catalog plugin
 backend.add(import('@backstage/plugin-catalog-backend'));
-backend.add(
-  import('@backstage/plugin-catalog-backend-module-scaffolder-entity-model'),
-);
 backend.add(import('@backstage/plugin-catalog-backend-module-logs'));
 
 // permission plugin
@@ -43,14 +40,9 @@ backend.add(
   import('@backstage/plugin-permission-backend-module-allow-all-policy'),
 );
 
-// search plugin
+// search plugins
 backend.add(import('@backstage/plugin-search-backend'));
-
-// search engine
-// See https://backstage.io/docs/features/search/search-engines
 backend.add(import('@backstage/plugin-search-backend-module-pg'));
-
-// search collators
 backend.add(import('@backstage/plugin-search-backend-module-catalog'));
 
 // announcements
