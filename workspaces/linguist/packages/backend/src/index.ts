@@ -40,6 +40,11 @@ backend.add(
   ),
 );
 
+// openapi plugin
+backend.add(
+  import('@backstage/plugin-catalog-backend-module-backstage-openapi'),
+);
+
 // permission plugin
 backend.add(import('@backstage/plugin-permission-backend/alpha'));
 backend.add(
