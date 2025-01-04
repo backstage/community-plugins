@@ -2,7 +2,7 @@
   "name": "@internal/announcements",
   "version": "1.0.0",
   "engines": {
-    "node": "18 || 20"
+    "node": "22"
   },
   "private": true,
   "scripts": {
