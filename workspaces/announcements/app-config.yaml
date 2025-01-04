@@ -2,13 +2,6 @@ app:
   title: Announcements Dev App
   baseUrl: http://localhost:3000
 
-organization:
-  name: My Company
-
-auth:
-  providers:
-    guest: {}
-
 permission:
   enabled: true
 
@@ -16,25 +9,33 @@ backend:
   baseUrl: http://localhost:7007
   listen:
     port: 7007
-  cache:
-    store: memory
-  csp:
-    connect-src: ["'self'", 'http:', 'https:']
-  cors:
-    origin: http://localhost:3000
-    methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
-    credentials: true
   database:
     # uncomment for sqlite
     # client: better-sqlite3
     # connection: ':memory:'
     client: pg
     connection:
-      # defaults are located in env.sample
       host: ${POSTGRES_HOST}
       port: ${POSTGRES_POST}
       user: ${POSTGRES_USER}
       password: ${POSTGRES_PASSWORD}
+  cache:
+    store: memory
+  cors:
+    origin: http://localhost:3000
+    methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
+    credentials: true
+  csp:
+    connect-src: ["'self'", 'http:', 'https:']
+    # Content-Security-Policy directives follow the Helmet format: https://helmetjs.github.io/#reference
+    # Default Helmet Content-Security-Policy values can be removed by setting the key to false
+  reading:
+    allow:
+      - host: localhost
+
+auth:
+  providers:
+    guest: {}
 
 catalog:
   import:
