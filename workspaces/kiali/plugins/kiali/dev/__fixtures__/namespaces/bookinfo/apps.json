@@ -1,0 +1,223 @@
+{
+  "namespace": {
+    "name": "bookinfo",
+    "cluster": "",
+    "isAmbient": false,
+    "labels": null,
+    "annotations": null
+  },
+  "cluster": "",
+  "applications": [
+    {
+      "name": "details",
+      "cluster": "Kubernetes",
+      "istioSidecar": true,
+      "istioAmbient": false,
+      "labels": {
+        "app": "details",
+        "service": "details",
+        "version": "v1"
+      },
+      "istioReferences": [
+        {
+          "objectType": "Gateway",
+          "name": "bookinfo-gateway",
+          "namespace": "bookinfo",
+          "cluster": ""
+        }
+      ],
+      "health": {
+        "workloadStatuses": [
+          {
+            "name": "details-v1",
+            "desiredReplicas": 1,
+            "currentReplicas": 1,
+            "availableReplicas": 1,
+            "syncedProxies": 1
+          }
+        ],
+        "requests": {
+          "inbound": {
+            "http": {
+              "200": 0.9999999999999999
+            }
+          },
+          "outbound": {},
+          "healthAnnotations": {}
+        }
+      }
+    },
+    {
+      "name": "kiali-traffic-generator",
+      "cluster": "Kubernetes",
+      "istioSidecar": true,
+      "istioAmbient": false,
+      "labels": {
+        "app": "kiali-traffic-generator",
+        "kiali-test": "traffic-generator"
+      },
+      "istioReferences": [],
+      "health": {
+        "workloadStatuses": [
+          {
+            "name": "kiali-traffic-generator",
+            "desiredReplicas": 1,
+            "currentReplicas": 1,
+            "availableReplicas": 1,
+            "syncedProxies": 1
+          }
+        ],
+        "requests": {
+          "inbound": {},
+          "outbound": {},
+          "healthAnnotations": {}
+        }
+      }
+    },
+    {
+      "name": "productpage",
+      "cluster": "Kubernetes",
+      "istioSidecar": true,
+      "istioAmbient": false,
+      "labels": {
+        "app": "productpage",
+        "service": "productpage",
+        "version": "v1"
+      },
+      "istioReferences": [
+        {
+          "objectType": "VirtualService",
+          "name": "bookinfo",
+          "namespace": "bookinfo",
+          "cluster": ""
+        },
+        {
+          "objectType": "Gateway",
+          "name": "bookinfo-gateway",
+          "namespace": "bookinfo",
+          "cluster": ""
+        }
+      ],
+      "health": {
+        "workloadStatuses": [
+          {
+            "name": "productpage-v1",
+            "desiredReplicas": 1,
+            "currentReplicas": 1,
+            "availableReplicas": 1,
+            "syncedProxies": 1
+          }
+        ],
+        "requests": {
+          "inbound": {
+            "http": {
+              "200": 0.9999999999999999
+            }
+          },
+          "outbound": {
+            "http": {
+              "200": 1.9999999999999998
+            }
+          },
+          "healthAnnotations": {}
+        }
+      }
+    },
+    {
+      "name": "ratings",
+      "cluster": "Kubernetes",
+      "istioSidecar": true,
+      "istioAmbient": false,
+      "labels": {
+        "app": "ratings",
+        "service": "ratings",
+        "version": "v1"
+      },
+      "istioReferences": [
+        {
+          "objectType": "Gateway",
+          "name": "bookinfo-gateway",
+          "namespace": "bookinfo",
+          "cluster": ""
+        }
+      ],
+      "health": {
+        "workloadStatuses": [
+          {
+            "name": "ratings-v1",
+            "desiredReplicas": 1,
+            "currentReplicas": 1,
+            "availableReplicas": 1,
+            "syncedProxies": 1
+          }
+        ],
+        "requests": {
+          "inbound": {
+            "http": {
+              "200": 0.6444444444444444
+            }
+          },
+          "outbound": {},
+          "healthAnnotations": {}
+        }
+      }
+    },
+    {
+      "name": "reviews",
+      "cluster": "Kubernetes",
+      "istioSidecar": true,
+      "istioAmbient": false,
+      "labels": {
+        "app": "reviews",
+        "service": "reviews",
+        "version": "v1,v2,v3"
+      },
+      "istioReferences": [
+        {
+          "objectType": "Gateway",
+          "name": "bookinfo-gateway",
+          "namespace": "bookinfo",
+          "cluster": ""
+        }
+      ],
+      "health": {
+        "workloadStatuses": [
+          {
+            "name": "reviews-v1",
+            "desiredReplicas": 1,
+            "currentReplicas": 1,
+            "availableReplicas": 1,
+            "syncedProxies": 1
+          },
+          {
+            "name": "reviews-v2",
+            "desiredReplicas": 1,
+            "currentReplicas": 1,
+            "availableReplicas": 1,
+            "syncedProxies": 1
+          },
+          {
+            "name": "reviews-v3",
+            "desiredReplicas": 1,
+            "currentReplicas": 1,
+            "availableReplicas": 1,
+            "syncedProxies": 1
+          }
+        ],
+        "requests": {
+          "inbound": {
+            "http": {
+              "200": 1.0222222222222221
+            }
+          },
+          "outbound": {
+            "http": {
+              "200": 0.5999999999999999
+            }
+          },
+          "healthAnnotations": {}
+        }
+      }
+    }
+  ]
+}

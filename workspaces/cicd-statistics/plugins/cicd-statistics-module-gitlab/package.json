@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-cicd-statistics-module-gitlab",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "CI/CD Statistics plugin module; Gitlab CICD",
   "backstage": {
     "role": "frontend-plugin-module",
@@ -58,7 +58,6 @@
     "@backstage/frontend-plugin-api": "^0.9.3",
     "@gitbeaker/browser": "^35.6.0",
     "@gitbeaker/core": "^35.6.0",
-    "luxon": "^3.0.0",
     "p-limit": "^3.1.0"
   },
   "devDependencies": {
