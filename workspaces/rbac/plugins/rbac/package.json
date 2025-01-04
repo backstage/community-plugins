@@ -46,7 +46,7 @@
     "@backstage/plugin-permission-react": "^0.4.27",
     "@backstage/theme": "^0.6.0",
     "@janus-idp/shared-react": "^2.13.1",
-    "@mui/icons-material": "5.16.4",
+    "@mui/icons-material": "5.16.13",
     "@mui/material": "^5.14.18",
     "@mui/styles": "^6.1.7",
     "@rjsf/core": "^5.21.2",
