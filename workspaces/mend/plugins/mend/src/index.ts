@@ -1,3 +1,3 @@
-export { Page as MendPage, plugin } from './plugin';
-export { Sidebar as MendSidebar } from './components';
-export { Tab as MendTab } from './pages/tab';
+export { MendPage, plugin } from './plugin';
+export { MendSidebar } from './components';
+export { MendTab } from './pages/tab';

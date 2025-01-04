@@ -2,7 +2,8 @@ import React from 'react';
 import { SvgIcon } from '@material-ui/core';
 import { SidebarItem } from '@backstage/core-components';
 
-export const Sidebar = () => {
+/** @public */
+export const MendSidebar = () => {
   const icon = () => (
     <SvgIcon viewBox="0 0 16 16">
       <path
