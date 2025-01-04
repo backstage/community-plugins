@@ -15,14 +15,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apidevtools/json-schema-ref-parser@npm:11.7.2":
-  version: 11.7.2
-  resolution: "@apidevtools/json-schema-ref-parser@npm:11.7.2"
+"@apidevtools/json-schema-ref-parser@npm:11.7.3":
+  version: 11.7.3
+  resolution: "@apidevtools/json-schema-ref-parser@npm:11.7.3"
   dependencies:
     "@jsdevtools/ono": ^7.1.3
     "@types/json-schema": ^7.0.15
     js-yaml: ^4.1.0
-  checksum: 44096e5cd5a03b17ee5eb0a3b9e9a4db85d87da8ae2abda264eae615f2a43e3e6ba5ca208e1161d4d946755b121c10a9550e88792a725951f2c4cff6df0d8a19
+  checksum: 3496edfb2c3d2f9a5a7a49795b4d560f1e4957015aef473775f4b5f2db55a4ddfb3778783401ddd24e7db2930a67a370fb8c68840d8bae0a2a581e0e57fc2f58
   languageName: node
   linkType: hard
 
@@ -2547,7 +2547,7 @@ __metadata:
     "@backstage/plugin-scaffolder-node": ^0.6.2
     "@backstage/plugin-scaffolder-node-test-utils": ^0.1.17
     "@backstage/types": ^1.2.0
-    "@hey-api/openapi-ts": 0.55.3
+    "@hey-api/openapi-ts": 0.60.1
     "@types/node-fetch": 2.6.12
     abort-controller: ^3.0.0
     axios: ^1.7.4
@@ -4021,11 +4021,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hey-api/openapi-ts@npm:0.55.3":
-  version: 0.55.3
-  resolution: "@hey-api/openapi-ts@npm:0.55.3"
+"@hey-api/openapi-ts@npm:0.60.1":
+  version: 0.60.1
+  resolution: "@hey-api/openapi-ts@npm:0.60.1"
   dependencies:
-    "@apidevtools/json-schema-ref-parser": 11.7.2
+    "@apidevtools/json-schema-ref-parser": 11.7.3
     c12: 2.0.1
     commander: 12.1.0
     handlebars: 4.7.8
@@ -4033,7 +4033,7 @@ __metadata:
     typescript: ^5.x
   bin:
     openapi-ts: bin/index.cjs
-  checksum: 1bce3e572d26d728a9e5d93b760ed518b9def2b47d544517e92da817e2b66c16dc45ff1633e344fa36251b778d2a3195e525dad5fb10bdcba3351bc36a8e419a
+  checksum: 68bfe993db539c1a4c2ffe6044c771fe814141952273b03272ddfdb7a994b48317d950c49466c133139687cb4e7dc48c0db428442a84fb7fb3b0075f60e33e07
   languageName: node
   linkType: hard
 
