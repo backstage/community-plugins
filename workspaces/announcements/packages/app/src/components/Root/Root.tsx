@@ -76,8 +76,6 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
         {/* Global nav, not org-specific */}
         <SidebarItem icon={HomeIcon} to="/" text="Home" />
 
-        <SidebarItem icon={SearchIcon} to="search" text="Search" />
-
         {/* Announcements sidebar item */}
         <SidebarItem
           icon={LibraryBooks}
@@ -90,6 +88,8 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
           to="announcements/admin"
           text="Admin Portal"
         />
+
+        <SidebarItem icon={SearchIcon} to="search" text="Search" />
 
         {/* End global nav */}
         <SidebarDivider />
