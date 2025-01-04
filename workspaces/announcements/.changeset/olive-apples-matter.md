@@ -1,4 +1,5 @@
 ---
+'@backstage-community/plugin-announcements-backend': patch
 ---
 
-This is an internal refactor that updates the plugin init to use `buildAnnouncementsContext` to build an announcements context required for the backend router.
+An internal refactor to create the announcements context with persistence via the `buildAnnouncementsContext` function.
