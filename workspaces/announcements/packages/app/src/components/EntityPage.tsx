@@ -17,7 +17,6 @@ import React from 'react';
 import { Grid } from '@material-ui/core';
 import {
   EntityConsumedApisCard,
-  EntityHasApisCard,
   EntityProvidedApisCard,
 } from '@backstage/plugin-api-docs';
 import {
@@ -25,7 +24,6 @@ import {
   EntityDependsOnComponentsCard,
   EntityDependsOnResourcesCard,
   EntityHasComponentsCard,
-  EntityHasResourcesCard,
   EntityHasSystemsCard,
   EntityLayout,
   EntityLinksCard,
@@ -73,25 +71,6 @@ const serviceEntityPage = (
   </EntityLayout>
 );
 
-const websiteEntityPage = (
-  <EntityLayout>
-    <EntityLayout.Route path="/" title="Overview">
-      {overviewContent}
-    </EntityLayout.Route>
-
-    <EntityLayout.Route path="/dependencies" title="Dependencies">
-      <Grid container spacing={3} alignItems="stretch">
-        <Grid item md={6}>
-          <EntityDependsOnComponentsCard variant="gridItem" />
-        </Grid>
-        <Grid item md={6}>
-          <EntityDependsOnResourcesCard variant="gridItem" />
-        </Grid>
-      </Grid>
-    </EntityLayout.Route>
-  </EntityLayout>
-);
-
 const defaultEntityPage = (
   <EntityLayout>
     <EntityLayout.Route path="/" title="Overview">
@@ -104,10 +83,6 @@ const componentPage = (
   <EntitySwitch>
     <EntitySwitch.Case if={isComponentType('service')}>
       {serviceEntityPage}
-    </EntitySwitch.Case>
-
-    <EntitySwitch.Case if={isComponentType('website')}>
-      {websiteEntityPage}
     </EntitySwitch.Case>
 
     <EntitySwitch.Case>{defaultEntityPage}</EntitySwitch.Case>
@@ -129,12 +104,6 @@ const systemPage = (
         </Grid>
         <Grid item md={8}>
           <EntityHasComponentsCard variant="gridItem" />
-        </Grid>
-        <Grid item md={6}>
-          <EntityHasApisCard variant="gridItem" />
-        </Grid>
-        <Grid item md={6}>
-          <EntityHasResourcesCard variant="gridItem" />
         </Grid>
       </Grid>
     </EntityLayout.Route>

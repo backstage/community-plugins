@@ -30,7 +30,6 @@ import {
   SidebarGroup,
   SidebarItem,
   SidebarPage,
-  SidebarScrollWrapper,
   SidebarSpace,
   useSidebarOpenState,
   Link,
@@ -73,10 +72,10 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
       <SidebarLogo />
       <SidebarDivider />
       <SidebarGroup label="Menu" icon={<MenuIcon />}>
-        {/* Global nav, not org-specific */}
+        {/* Home - show case individual announcement components here */}
         <SidebarItem icon={HomeIcon} to="/" text="Home" />
 
-        {/* Announcements sidebar item */}
+        {/* Announcements sidebar items */}
         <SidebarItem
           icon={LibraryBooks}
           to="announcements"
@@ -89,13 +88,10 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
           text="Admin Portal"
         />
 
+        {/* Search - show case search-related announcement results */}
         <SidebarItem icon={SearchIcon} to="search" text="Search" />
 
-        {/* End global nav */}
         <SidebarDivider />
-        <SidebarScrollWrapper>
-          {/* Items in this group will be scrollable if they run out of space */}
-        </SidebarScrollWrapper>
       </SidebarGroup>
       <SidebarSpace />
       <SidebarDivider />

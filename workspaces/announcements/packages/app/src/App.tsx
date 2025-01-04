@@ -20,12 +20,11 @@ import {
   CatalogIndexPage,
   catalogPlugin,
 } from '@backstage/plugin-catalog';
-// import { scaffolderPlugin } from '@backstage/plugin-scaffolder';
 import { SearchPage } from '@backstage/plugin-search';
 import { UserSettingsPage } from '@backstage/plugin-user-settings';
 import { apis } from './apis';
-import { entityPage } from './components/catalog/EntityPage';
-import { searchPage } from './components/search/SearchPage';
+import { entityPage } from './components/EntityPage';
+import { searchPage } from './components/SearchPage';
 import { Root } from './components/Root';
 
 import {
@@ -39,7 +38,7 @@ import {
   AnnouncementsPage,
   AnnouncementsAdminPortal,
 } from '@backstage-community/plugin-announcements';
-import { Home } from './components/home/HomePage';
+import { Home } from './components/HomePage';
 import { SignalsDisplay } from '@backstage/plugin-signals';
 
 const app = createApp({
