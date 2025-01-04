@@ -18,9 +18,9 @@ import {
   coreServices,
 } from '@backstage/backend-plugin-api';
 import { createRouter } from './router';
-import { initializePersistenceContext } from './service/persistence/persistenceContext';
 import { signalsServiceRef } from '@backstage/plugin-signals-node';
 import { eventsServiceRef } from '@backstage/plugin-events-node';
+import { buildAnnouncementsContext } from './service';
 
 /**
  * A backend for the announcements plugin.
@@ -50,17 +50,19 @@ export const announcementsPlugin = createBackendPlugin({
         events,
         signals,
       }) {
-        http.use(
-          await createRouter({
-            permissions,
-            logger,
-            config,
-            persistenceContext: await initializePersistenceContext(database),
-            httpAuth,
-            events,
-            signals,
-          }),
-        );
+        const context = await buildAnnouncementsContext({
+          events,
+          logger,
+          config,
+          database,
+          permissions,
+          signals,
+          httpAuth,
+        });
+
+        const router = await createRouter(context);
+
+        http.use(router);
       },
     });
   },
