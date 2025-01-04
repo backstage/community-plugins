@@ -60,7 +60,7 @@
     "@backstage/cli": "^0.29.4",
     "@types/body-parser-xml": "^2.0.2",
     "@types/supertest": "^6.0.0",
-    "@types/uuid": "^9.0.0",
+    "@types/uuid": "^10.0.0",
     "supertest": "^7.0.0",
     "xml2js": "^0.6.0"
   }

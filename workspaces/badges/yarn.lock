@@ -2599,7 +2599,7 @@ __metadata:
     "@types/express": ^4.17.6
     "@types/lodash": ^4.14.151
     "@types/supertest": ^6.0.0
-    "@types/uuid": ^9.0.0
+    "@types/uuid": ^10.0.0
     badge-maker: ^3.3.0
     cors: ^2.8.5
     express: ^4.17.1
@@ -8912,10 +8912,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/uuid@npm:^9.0.0":
-  version: 9.0.8
-  resolution: "@types/uuid@npm:9.0.8"
-  checksum: b8c60b7ba8250356b5088302583d1704a4e1a13558d143c549c408bf8920535602ffc12394ede77f8a8083511b023704bc66d1345792714002bfa261b17c5275
+"@types/uuid@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "@types/uuid@npm:10.0.0"
+  checksum: e3958f8b0fe551c86c14431f5940c3470127293280830684154b91dc7eb3514aeb79fe3216968833cf79d4d1c67f580f054b5be2cd562bebf4f728913e73e944
   languageName: node
   linkType: hard
 
