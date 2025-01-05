@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { errorHandler } from '@backstage/backend-common';
 import express from 'express';
 import Router from 'express-promise-router';
 import { createProxyMiddleware } from 'http-proxy-middleware';
@@ -94,7 +93,5 @@ export async function createRouter(
       pathRewrite: generateAirbrakePathRewrite(options),
     }),
   );
-
-  router.use(errorHandler());
   return router;
 }
