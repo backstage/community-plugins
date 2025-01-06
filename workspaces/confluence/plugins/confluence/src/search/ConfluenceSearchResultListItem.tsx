@@ -125,16 +125,21 @@ export const ConfluenceSearchResultListItem = ({
       <>
         {highlight?.fields.text ? (
           <HighlightedSearchResultText
-            text={`${highlight.fields.text
-              .slice(excerptStartIndex, excerptEndIndex)
-              .trim()}...`}
+            text={`${
+              highlight.fields.text
+                .slice(excerptStartIndex, excerptEndIndex)
+                .trim() +
+              (highlight.fields.text.length > maxExcerptLength ? '...' : '')
+            }`}
             preTag={highlight.preTag}
             postTag={highlight.postTag}
           />
         ) : (
-          `${result.text
-            .slice(0, Math.min(result.text.length, maxExcerptLength))
-            .trim()}...`
+          `${
+            result.text
+              .slice(0, Math.min(result.text.length, maxExcerptLength))
+              .trim() + (result.text.length > maxExcerptLength ? '...' : '')
+          }`
         )}
       </>
 

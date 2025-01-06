@@ -146,7 +146,7 @@ describe('<ConfluenceSearchResultListItem/>', () => {
         highlight={highlight}
       />,
     );
-    // should start at the pretag, and stop after maxExcerptLength
+    // Should start at the pretag, and stop after maxExcerptLength. Includes ellipses since text is longer than the excerpt.
     const highlightedExcerpt = 'b'.repeat(100);
     const remainingExcerpt = `${'c'.repeat(
       maxExcerptLength -
