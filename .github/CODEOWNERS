@@ -27,6 +27,7 @@ yarn.lock                                           @backstage/community-plugins
 /workspaces/fossa                                   @backstage/community-plugins-maintainers  @backstage/sda-se-reviewers
 /workspaces/git-release-manager                     @backstage/community-plugins-maintainers  @erikengervall
 /workspaces/github-pull-requests-board              @backstage/community-plugins-maintainers  @gregorytalita
+/workspaces/inventory                               @backstage/community-plugins-maintainers  @christoph-jerolimov @ciiay @karthikjeeyar
 /workspaces/jfrog-artifactory                       @backstage/community-plugins-maintainers  @BethGriggs
 /workspaces/kafka                                   @backstage/community-plugins-maintainers  @andrewthauer
 /workspaces/keycloak                                @backstage/community-plugins-maintainers  @AndrienkoAleksandr @schultzp2020
