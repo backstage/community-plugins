@@ -1,0 +1,9 @@
+{
+  "control": {
+    "requests": {
+      "inbound": {},
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  }
+}

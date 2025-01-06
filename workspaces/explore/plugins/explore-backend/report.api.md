@@ -7,13 +7,8 @@ import { BackendFeature } from '@backstage/backend-plugin-api';
 import { Config } from '@backstage/config';
 import { ExploreTool } from '@backstage-community/plugin-explore-common';
 import { ExploreToolProvider as ExploreToolProvider_2 } from '@backstage-community/plugin-explore-node';
-import express from 'express';
 import { GetExploreToolsRequest } from '@backstage-community/plugin-explore-common';
 import { GetExploreToolsResponse } from '@backstage-community/plugin-explore-common';
-import { LoggerService } from '@backstage/backend-plugin-api';
-
-// @public @deprecated (undocumented)
-export function createRouter(options: RouterOptions): Promise<express.Router>;
 
 // @public
 const explorePlugin: BackendFeature;
@@ -21,14 +16,6 @@ export default explorePlugin;
 
 // @public @deprecated (undocumented)
 export type ExploreToolProvider = ExploreToolProvider_2;
-
-// @public @deprecated (undocumented)
-export interface RouterOptions {
-  // (undocumented)
-  logger: LoggerService;
-  // (undocumented)
-  toolProvider: ExploreToolProvider_2;
-}
 
 // @public
 export class StaticExploreToolProvider implements ExploreToolProvider_2 {

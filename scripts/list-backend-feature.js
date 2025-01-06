@@ -60,7 +60,7 @@ async function main(args) {
         backendFeatureReport.package = pkg.packageJson.name;
         backendFeatureReport.role = pkgRole;
         backendFeatureReport.readme = `[README](${pkg.packageJson.repository.url}/blob/master/${pkg.packageJson.repository.directory}/README.md)`;
-        const apiReportPath = join(pkg.dir, 'api-report.md');
+        const apiReportPath = join(pkg.dir, 'report.api.md');
         const apiReport = (await fs.readFile(apiReportPath)).toString();
         if (
           apiReport.includes(BACKEND_FEATURE) ||
@@ -70,7 +70,7 @@ async function main(args) {
           backendFeatureReport.alpha = false;
         }
 
-        const apiReportAlphaPath = join(pkg.dir, 'api-report-alpha.md');
+        const apiReportAlphaPath = join(pkg.dir, 'report-alpha.api.md');
         if (fs.existsSync(apiReportAlphaPath)) {
           const apiReportAlpha = (
             await fs.readFile(apiReportAlphaPath)
