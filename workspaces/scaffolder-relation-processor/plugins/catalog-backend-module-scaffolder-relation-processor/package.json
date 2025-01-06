@@ -40,14 +40,14 @@
     "tsc": "tsc"
   },
   "dependencies": {
-    "@backstage/backend-plugin-api": "^1.0.1",
-    "@backstage/catalog-model": "^1.7.0",
-    "@backstage/plugin-catalog-node": "^1.13.1"
+    "@backstage/backend-plugin-api": "^1.1.0",
+    "@backstage/catalog-model": "^1.7.2",
+    "@backstage/plugin-catalog-node": "^1.15.0"
   },
   "devDependencies": {
-    "@backstage/backend-test-utils": "^1.0.2",
-    "@backstage/cli": "^0.28.0",
-    "@backstage/plugin-catalog-common": "^1.1.0"
+    "@backstage/backend-test-utils": "^1.2.0",
+    "@backstage/cli": "^0.29.4",
+    "@backstage/plugin-catalog-common": "^1.1.2"
   },
   "files": [
     "config.d.ts",
