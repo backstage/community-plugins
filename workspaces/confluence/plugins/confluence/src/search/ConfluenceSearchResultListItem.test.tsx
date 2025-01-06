@@ -65,6 +65,7 @@ describe('<ConfluenceSearchResultListItem/>', () => {
       <ConfluenceSearchResultListItem result={mockResult} />,
     );
     expect(screen.getByText(/Developer Portal/i)).toBeInTheDocument();
+    expect(screen.getByText(/COE/i)).toBeInTheDocument();
   });
 
   it('should not render if result is not provided', async () => {

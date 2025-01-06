@@ -132,7 +132,9 @@ export const ConfluenceSearchResultListItem = ({
             postTag={highlight.postTag}
           />
         ) : (
-          `${result.text.slice(0, maxExcerptLength).trim()}...`
+          `${result.text
+            .slice(0, Math.min(result.text.length, maxExcerptLength))
+            .trim()}...`
         )}
       </>
 
