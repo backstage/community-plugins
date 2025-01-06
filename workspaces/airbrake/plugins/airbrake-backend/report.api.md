@@ -25,7 +25,8 @@ export function extractAirbrakeConfig(config: Config): AirbrakeConfig;
 
 // @public @deprecated (undocumented)
 export interface RouterOptions {
-  airbrakeConfig: AirbrakeConfig;
+  // (undocumented)
+  config: Config;
   logger: LoggerService;
 }
 ```

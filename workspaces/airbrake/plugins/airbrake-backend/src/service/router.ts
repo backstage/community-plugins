@@ -17,9 +17,11 @@
 import express from 'express';
 import Router from 'express-promise-router';
 import { createProxyMiddleware } from 'http-proxy-middleware';
-import { AirbrakeConfig } from '../config';
+import { extractAirbrakeConfig } from '../config';
 import { Options } from 'http-proxy-middleware/dist/types';
 import { LoggerService } from '@backstage/backend-plugin-api';
+import { Config } from '@backstage/config';
+import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 
 /**
  * @deprecated Please migrate to the new backend system as this will be removed in the future.
@@ -34,10 +36,7 @@ export interface RouterOptions {
    */
   logger: LoggerService;
 
-  /**
-   * The Airbrake config obtained from {@link extractAirbrakeConfig}
-   */
-  airbrakeConfig: AirbrakeConfig;
+  config: Config;
 }
 
 /**
@@ -50,7 +49,8 @@ export interface RouterOptions {
 export const generateAirbrakePathRewrite = (
   options: RouterOptions,
 ): Options['pathRewrite'] => {
-  const apiKey = options.airbrakeConfig.apiKey;
+  const airbrakeConfig = extractAirbrakeConfig(options.config);
+  const apiKey = airbrakeConfig.apiKey;
 
   return path => {
     let newPath = path.replace(/.+?(\/api)/g, '');
@@ -75,7 +75,7 @@ export const generateAirbrakePathRewrite = (
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
-  const { logger } = options;
+  const { logger, config } = options;
 
   const router = Router();
   router.use(express.json());
@@ -93,5 +93,8 @@ export async function createRouter(
       pathRewrite: generateAirbrakePathRewrite(options),
     }),
   );
+  const middleware = MiddlewareFactory.create({ logger, config });
+
+  router.use(middleware.error());
   return router;
 }
