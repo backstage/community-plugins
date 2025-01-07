@@ -34,6 +34,8 @@ import {
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import { ConfluenceSearchIcon } from '../icons';
 
+export const maxExcerptLength = 290;
+
 const useStyles = makeStyles({
   lastUpdated: {
     display: 'block',
@@ -105,6 +107,15 @@ export const ConfluenceSearchResultListItem = ({
       )}
     </Link>
   );
+  // Calculate the start index of the excerpt based on the first index of the pretag, defaulting to 0
+  // if not found. We use this to ensure the excerpt displayed includes the found search term.
+  const firstPreTagIndex = highlight?.fields.text?.indexOf(highlight.preTag);
+  const excerptStartIndex = firstPreTagIndex === -1 ? 0 : firstPreTagIndex ?? 0;
+  const textLength = highlight?.fields.text?.length;
+  // Calculate the end index so the slice doesn't overflow past the end of the text result.
+  const excerptEndIndex = textLength
+    ? Math.min(textLength, excerptStartIndex + maxExcerptLength)
+    : undefined;
   const excerpt = (
     <>
       <Typography className={classes.lastUpdated}>
@@ -114,12 +125,21 @@ export const ConfluenceSearchResultListItem = ({
       <>
         {highlight?.fields.text ? (
           <HighlightedSearchResultText
-            text={highlight.fields.text}
+            text={`${
+              highlight.fields.text
+                .slice(excerptStartIndex, excerptEndIndex)
+                .trim() +
+              (highlight.fields.text.length > maxExcerptLength ? '...' : '')
+            }`}
             preTag={highlight.preTag}
             postTag={highlight.postTag}
           />
         ) : (
-          result.text
+          `${
+            result.text
+              .slice(0, Math.min(result.text.length, maxExcerptLength))
+              .trim() + (result.text.length > maxExcerptLength ? '...' : '')
+          }`
         )}
       </>
 
