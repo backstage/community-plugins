@@ -1,5 +1,12 @@
 # @backstage-community/plugin-npm
 
+## 1.1.0
+
+### Minor Changes
+
+- 1271dac: add support for the new frontend-system (alpha)
+- 9dd37d9: Backstage version bump to v1.34.2
+
 ## 1.0.2
 
 ### Patch Changes
