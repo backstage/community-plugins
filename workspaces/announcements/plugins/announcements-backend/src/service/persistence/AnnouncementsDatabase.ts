@@ -27,16 +27,21 @@ const announcementsTable = 'announcements';
 /**
  * @internal
  */
-type AnnouncementUpsert = Omit<Announcement, 'category' | 'created_at'> & {
+type AnnouncementUpsert = Omit<
+  Announcement,
+  'category' | 'created_at' | 'start_at'
+> & {
   category?: string;
   created_at: DateTime;
+  start_at: DateTime;
 };
 
 /**
  * @internal
  */
-type DbAnnouncement = Omit<Announcement, 'category'> & {
+type DbAnnouncement = Omit<Announcement, 'category' | 'start_at'> & {
   category?: string;
+  start_at: string;
 };
 
 /**
@@ -89,6 +94,7 @@ const announcementUpsertToDB = (
     publisher: announcement.publisher,
     created_at: announcement.created_at.toSQL()!,
     active: announcement.active,
+    start_at: announcement.start_at.toSQL()!,
   };
 };
 
@@ -113,6 +119,7 @@ const DBToAnnouncementWithCategory = (
     publisher: announcementDb.publisher,
     created_at: timestampToDateTime(announcementDb.created_at),
     active: announcementDb.active,
+    start_at: timestampToDateTime(announcementDb.start_at),
   };
 };
 
@@ -164,6 +171,7 @@ export class AnnouncementsDatabase {
         'created_at',
         'categories.title as category_title',
         'active',
+        'start_at',
       )
       .orderBy('created_at', 'desc')
       .leftJoin('categories', 'announcements.category', 'categories.slug');
@@ -202,6 +210,7 @@ export class AnnouncementsDatabase {
           'created_at',
           'categories.title as category_title',
           'active',
+          'start_at',
         )
         .leftJoin('categories', 'announcements.category', 'categories.slug')
         .where('id', id)

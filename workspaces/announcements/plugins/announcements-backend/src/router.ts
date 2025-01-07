@@ -47,6 +47,7 @@ interface AnnouncementRequest {
   excerpt: string;
   body: string;
   active: boolean;
+  start_at: string;
 }
 
 interface CategoryRequest {
@@ -176,6 +177,7 @@ export async function createRouter(
           ...{
             id: uuid(),
             created_at: DateTime.now(),
+            start_at: DateTime.fromISO(req.body.start_at),
           },
         });
 
@@ -204,7 +206,7 @@ export async function createRouter(
 
       const {
         params: { id },
-        body: { title, excerpt, body, publisher, category, active },
+        body: { title, excerpt, body, publisher, category, active, start_at },
       } = req;
 
       const initialAnnouncement =
@@ -223,6 +225,7 @@ export async function createRouter(
             publisher,
             category,
             active,
+            start_at: DateTime.fromISO(start_at),
           },
         });
 
