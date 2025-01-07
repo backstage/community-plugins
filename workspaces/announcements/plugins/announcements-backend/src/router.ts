@@ -37,16 +37,8 @@ import {
   EVENTS_ACTION_DELETE_CATEGORY,
 } from '@backstage-community/plugin-announcements-common';
 import { createPermissionIntegrationRouter } from '@backstage/plugin-permission-node';
-import {
-  HttpAuthService,
-  LoggerService,
-  PermissionsService,
-  RootConfigService,
-} from '@backstage/backend-plugin-api';
-import { PersistenceContext } from './service/persistence/persistenceContext';
-import { EventsService } from '@backstage/plugin-events-node';
 import { signalAnnouncement } from './service/signal';
-import { SignalsService } from '@backstage/plugin-signals-node';
+import { AnnouncementsContext } from './service';
 
 interface AnnouncementRequest {
   publisher: string;
@@ -61,16 +53,6 @@ interface CategoryRequest {
   title: string;
 }
 
-type RouterOptions = {
-  httpAuth: HttpAuthService;
-  config: RootConfigService;
-  logger: LoggerService;
-  permissions: PermissionsService;
-  persistenceContext: PersistenceContext;
-  events?: EventsService;
-  signals?: SignalsService;
-};
-
 type GetAnnouncementsQueryParams = {
   category?: string;
   page?: number;
@@ -79,7 +61,7 @@ type GetAnnouncementsQueryParams = {
 };
 
 export async function createRouter(
-  options: RouterOptions,
+  context: AnnouncementsContext,
 ): Promise<express.Router> {
   const {
     persistenceContext,
@@ -89,7 +71,7 @@ export async function createRouter(
     logger,
     events,
     signals,
-  } = options;
+  } = context;
 
   const permissionIntegrationRouter = createPermissionIntegrationRouter({
     permissions: Object.values(announcementEntityPermissions),
@@ -114,10 +96,6 @@ export async function createRouter(
   router.use(express.json());
   router.use(permissionIntegrationRouter);
 
-  // eslint-disable-next-line spaced-comment
-  /*****************
-   * Announcements *
-   ****************/
   router.get(
     '/announcements',
     async (req: Request<{}, {}, {}, GetAnnouncementsQueryParams>, res) => {
@@ -262,10 +240,6 @@ export async function createRouter(
     },
   );
 
-  // eslint-disable-next-line spaced-comment
-  /**************
-   * Categories *
-   **************/
   router.get('/categories', async (_req, res) => {
     const results = await persistenceContext.categoriesStore.categories();
 
