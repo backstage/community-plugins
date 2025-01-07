@@ -1,16 +1,69 @@
-# [Backstage](https://backstage.io)
+# 🚧 WIP Inventory Plugin for Backstage 👷 🏗️
 
-This is your newly scaffolded Backstage App, Good Luck!
+This is a work-in-process plugin to save inventory items in the ~~software~~ catalog of Backstage.
 
-To start the app, run:
+This plugin is in an super early stage and is looking for any kind of feedback, input and contributions.
 
-```sh
-yarn install
-yarn dev
+The goal is scaleable plugin that address personal and (simple) corporate needs.
+
+## Roadmap
+
+- 0.1 / Jan 2025: Catalog module to enable inventory types.
+- 0.2 / Q1 2025: Custom UI, backend and DB schema to create and edit items.
+- 0.3 / Q2 2025: Permissions framework
+- 0.4 / Q2 2025: Audit logs
+- 2025: Support for pictures
+- 2025: Rent items
+
+## Architecture goal
+
+1. **Reuse the catalog**
+
+   This will allow users to start using the inventory 'the Backstage GitOps' way.
+
+   Similar to the catalog, and other catalog-driven plugins,
+   users can import items and places from YAML files (see current status below).
+
+   Other plugins (incl. the own inventory backend, see 3) have then the opportuniy
+   to add, link or extend this items and places.
+
+2. **Frontend**
+
+   The catalog UI is a great start to use the inventory.
+
+   But this plugin will have a UI with a focus on seeing items together with pictures,
+   creating and editing items and places.
+
+3. **Backend**
+
+   The catalog itself will not allow users to store data, upload pictures, add notes.
+
+   For all this a custom backend will be required.
+
+## Current status
+
+Currently it supports different places and items (without any kind of validation!):
+
+```yaml
+apiVersion: inventory.backstage.io/v1alpha1
+kind: Place
+metadata:
+  name: kitchen
+spec:
+  type: room
+---
+apiVersion: inventory.backstage.io/v1alpha1
+kind: Item
+metadata:
+  name: coffee-machine
+spec:
+  place: kitchen
 ```
 
-To generate knip reports for this app, run:
+Planned catalog types:
 
-```sh
-yarn backstage-repo-tools knip-reports
-```
+1. `Item` for objects and containers
+2. `Place` for rooms, floors, buildings, campuses\*
+
+I'm currently unsure if we should have one `Place` with different `type`s
+or multiple catalog types for `Room`s, `Floor`s, etc...

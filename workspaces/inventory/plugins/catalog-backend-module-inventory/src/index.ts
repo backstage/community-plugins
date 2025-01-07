@@ -13,4 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-console.log('Hello from ${{ values.name }}!');
+
+/**
+ * The inventory backend module for the catalog plugin.
+ *
+ * @packageDocumentation
+ */
+export { catalogModuleInventory as default } from './module';

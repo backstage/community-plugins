@@ -1,0 +1,13 @@
+apiVersion: inventory.backstage.io/v1alpha1
+kind: Place
+metadata:
+  name: kitchen
+spec:
+  type: room
+---
+apiVersion: inventory.backstage.io/v1alpha1
+kind: Item
+metadata:
+  name: coffee-machine
+spec:
+  place: kitchen
