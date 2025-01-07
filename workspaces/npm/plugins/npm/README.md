@@ -52,7 +52,7 @@ metadata:
 
 ## For administrators
 
-### Install on Backstage
+### Install frontend and manual integrate into catalog
 
 1. Install the frontend plugin:
 
@@ -101,6 +101,34 @@ metadata:
    >
      <EntityNpmReleaseTableCard />
    </EntityLayout.Route>
+   ```
+
+### Use new frontend system
+
+1. Install the frontend plugin:
+
+   ```sh
+   yarn workspace app add @backstage-community/plugin-npm
+   ```
+
+2. Enable the plugin in your `packages/app(-next)/src/App.tsx`:
+
+   After all other imports:
+
+   ```tsx
+   import npmPlugin from '@backstage-community/plugin-npm/alpha';
+   ```
+
+   ```tsx
+   export const app = createApp({
+     features: [
+       catalogPlugin,
+       catalogImportPlugin,
+       userSettingsPlugin,
+       npmPlugin,
+       // ...
+     ],
+   });
    ```
 
 ### Test catalog entities

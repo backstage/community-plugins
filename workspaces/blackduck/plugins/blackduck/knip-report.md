@@ -11,7 +11,7 @@
 | @backstage/backend-common                    | package.json | error    |
 | @backstage/config                            | package.json | error    |
 
-## Unused devDependencies (5)
+## Unused devDependencies (4)
 
 | Name                        | Location     | Severity |
 | :-------------------------- | :----------- | :------- |
@@ -19,4 +19,3 @@
 | @backstage/core-app-api     | package.json | error    |
 | @testing-library/react      | package.json | error    |
 | @backstage/test-utils       | package.json | error    |
-| msw                         | package.json | error    |
