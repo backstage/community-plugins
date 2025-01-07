@@ -1,5 +1,11 @@
 # @backstage-community/plugin-confluence
 
+## 0.2.1
+
+### Patch Changes
+
+- 6757d87: Truncate confluence search result item text to 290 characters, which will include the highlighted section if found.
+
 ## 0.2.0
 
 ### Minor Changes
