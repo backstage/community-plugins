@@ -1,5 +1,15 @@
 # @backstage-community/plugin-announcements-backend
 
+## 0.1.3
+
+### Patch Changes
+
+- 22fd3a1: An internal refactor to create the announcements context with persistence via the `buildAnnouncementsContext` function.
+- e282a2d: Minor improvements to README documentation
+- Updated dependencies [e282a2d]
+  - @backstage-community/plugin-announcements-common@0.1.3
+  - @backstage-community/plugin-search-backend-module-announcements@0.1.3
+
 ## 0.1.2
 
 ### Patch Changes
