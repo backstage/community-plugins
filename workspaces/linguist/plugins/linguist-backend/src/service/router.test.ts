@@ -16,7 +16,9 @@
 
 import express from 'express';
 import request from 'supertest';
+import { Server } from 'http';
 import { createRouter } from './router';
+import { wrapServer } from '@backstage/backend-openapi-utils';
 import { LinguistBackendApi } from '../api';
 import { mockServices, TestDatabases } from '@backstage/backend-test-utils';
 import { UrlReaderService } from '@backstage/backend-plugin-api';
@@ -36,7 +38,7 @@ const databases = TestDatabases.create();
 
 describe('createRouter', () => {
   let linguistBackendApi: jest.Mocked<LinguistBackendApi>;
-  let app: express.Express;
+  let app: express.Express | Server;
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -55,7 +57,7 @@ describe('createRouter', () => {
         config: mockServices.rootConfig(),
         auth: mockServices.auth(),
       });
-      app = express().use(router);
+      app = await wrapServer(express().use(router));
     });
     it('returns ok', async () => {
       const response = await request(app).get('/health');

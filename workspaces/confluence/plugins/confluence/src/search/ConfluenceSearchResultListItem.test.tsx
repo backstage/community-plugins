@@ -16,7 +16,10 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
 import { renderInTestApp } from '@backstage/test-utils';
-import { ConfluenceSearchResultListItem } from './ConfluenceSearchResultListItem';
+import {
+  ConfluenceSearchResultListItem,
+  maxExcerptLength,
+} from './ConfluenceSearchResultListItem';
 
 const mockResult = {
   location: '/test-location',
@@ -62,6 +65,7 @@ describe('<ConfluenceSearchResultListItem/>', () => {
       <ConfluenceSearchResultListItem result={mockResult} />,
     );
     expect(screen.getByText(/Developer Portal/i)).toBeInTheDocument();
+    expect(screen.getByText(/COE/i)).toBeInTheDocument();
   });
 
   it('should not render if result is not provided', async () => {
@@ -90,5 +94,73 @@ describe('<ConfluenceSearchResultListItem/>', () => {
 
     expect(screen.getByText(/Highlighted Title/i)).toBeInTheDocument();
     expect(screen.getByText(/Highlighted Text/i)).toBeInTheDocument();
+  });
+
+  it('should render maxExcerptLength of the result text (instead of a full wall of text)', async () => {
+    const longResult = {
+      location: '/test-location',
+      title: 'Getting Started Developer Portal',
+      text: 'a'.repeat(1000000),
+      spaceName: 'SWCOE',
+      lastModified: '2024-02-22',
+      lastModifiedFriendly: '22 Feb 2024',
+      lastModifiedBy: 'Test User',
+      ancestors: [
+        {
+          title: 'Ancestor Title',
+          location: '/ancestor-location',
+        },
+      ],
+    };
+
+    await renderInTestApp(
+      <ConfluenceSearchResultListItem result={longResult} />,
+    );
+    const truncatedExcerpt = `${'a'.repeat(maxExcerptLength)}...`;
+
+    expect(
+      screen.getByText(new RegExp(truncatedExcerpt, 'i')),
+    ).toBeInTheDocument();
+  });
+
+  it('should render maxExcerptLength of the text which includes a highlighted portion (instead of a full wall of text)', async () => {
+    const preTag = '<xyz>';
+    const postTag = '</xyz>';
+    const highlight = {
+      fields: {
+        title: 'Highlighted Title',
+        text:
+          'a'.repeat(1000) +
+          preTag +
+          'b'.repeat(100) +
+          postTag +
+          'c'.repeat(1000),
+      },
+      preTag: preTag,
+      postTag: postTag,
+    };
+
+    await renderInTestApp(
+      <ConfluenceSearchResultListItem
+        result={mockResult}
+        highlight={highlight}
+      />,
+    );
+    // Should start at the pretag, and stop after maxExcerptLength. Includes ellipses since text is longer than the excerpt.
+    const highlightedExcerpt = 'b'.repeat(100);
+    const remainingExcerpt = `${'c'.repeat(
+      maxExcerptLength -
+        highlightedExcerpt.length -
+        preTag.length -
+        postTag.length,
+    )}...`;
+
+    expect(screen.getByText(/Highlighted Title/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(new RegExp(highlightedExcerpt, 'i')),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(new RegExp(remainingExcerpt, 'i')),
+    ).toBeInTheDocument();
   });
 });

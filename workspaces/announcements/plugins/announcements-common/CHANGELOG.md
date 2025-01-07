@@ -1,5 +1,11 @@
 # @backstage-community/plugin-announcements-common
 
+## 0.1.3
+
+### Patch Changes
+
+- e282a2d: Minor improvements to README documentation
+
 ## 0.1.2
 
 ### Patch Changes
