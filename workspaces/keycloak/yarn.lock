@@ -2483,7 +2483,6 @@ __metadata:
     open-cli: ^8.0.0
     p-limit: ^6.1.0
     pg-format: ^1.0.4
-    prettier: 3.4.2
     uuid: ^9.0.1
   languageName: unknown
   linkType: soft
