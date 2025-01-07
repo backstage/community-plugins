@@ -1,5 +1,15 @@
 # @backstage-community/plugin-announcements-common
 
-Welcome to the common package for the announcements plugin!
+This package provides shared types and utilities for the Announcements plugin.
 
-_This plugin was created through the Backstage CLI_
+## Installation
+
+```bash
+yarn add @backstage-community/plugin-announcements-common
+```
+
+## Resources
+
+- [Constants](./src/constants.ts) - Shared constants for functionality across the plugin (ex: event topics, signal channel)
+- [Permissions](./src/permissions.ts) - Shared permissions used across the plugin
+- [Types](./src/types.ts) - Shared types used across the plugin
