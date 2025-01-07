@@ -2,12 +2,12 @@ apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: inventory
-  description: An example of a Backstage application.
-  # Example for optional annotations
-  # annotations:
-  #   github.com/project-slug: backstage/backstage
-  #   backstage.io/techdocs-ref: dir:.
+  title: Inventory Plugin
+  description: The Inventory Plugin allows you to save physical items and their locations in your Backstage catalog.
+  annotations:
+    github.com/project-slug: backstage/community-plugins
+    backstage.io/techdocs-ref: dir:.
 spec:
-  type: website
-  owner: john@example.com
+  type: plugin
+  owner: guest
   lifecycle: experimental

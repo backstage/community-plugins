@@ -80,6 +80,10 @@ catalog:
   locations:
     # Local example data, file locations are relative to the backend process, typically `packages/backend`
     - type: file
+      target: ../../catalog-info.yaml
+      rules:
+        - allow: [Component]
+    - type: file
       target: ../../examples/org.yaml
       rules:
         - allow: [User, Group]

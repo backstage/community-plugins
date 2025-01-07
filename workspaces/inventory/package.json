@@ -1,5 +1,6 @@
 {
   "name": "@internal/inventory",
+  "description": "The Inventory Plugin allows you to save physical items and their locations in your Backstage catalog.",
   "version": "1.0.0",
   "private": true,
   "engines": {
