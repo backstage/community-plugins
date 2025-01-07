@@ -13,7 +13,6 @@
     "build:all": "backstage-cli repo build --all",
     "build:api-reports": "yarn build:api-reports:only --tsc",
     "build:api-reports:only": "backstage-repo-tools api-reports -o ae-wrong-input-file-type,ae-undocumented --validate-release-tags",
-    "build-image": "yarn workspace backend build-image",
     "tsc": "tsc",
     "tsc:full": "tsc --skipLibCheck false --incremental false",
     "clean": "backstage-cli repo clean",
@@ -63,6 +62,5 @@
     "*.{json,md}": [
       "prettier --write"
     ]
-  },
-  "packageManager": "yarn@4.4.1"
+  }
 }
