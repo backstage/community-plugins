@@ -36,9 +36,7 @@
     "start:keycloak": "podman run -p 8080:8080 -e 'KEYCLOAK_ADMIN=admin' -e 'KEYCLOAK_ADMIN_PASSWORD=admin' -v ./__fixtures__/keycloak-realm.json:/opt/keycloak/data/import/keycloak-realm.json$([[ $OSTYPE = linux* ]] && echo ':z') quay.io/keycloak/keycloak:22.0.1 start-dev --import-realm",
     "start:plugin": "backstage-cli package start",
     "test": "backstage-cli package test --passWithNoTests --coverage",
-    "tsc": "tsc",
-    "prettier:check": "prettier --ignore-unknown --check .",
-    "prettier:fix": "prettier --ignore-unknown --write ."
+    "tsc": "tsc"
   },
   "dependencies": {
     "@backstage/backend-plugin-api": "^1.0.1",
@@ -58,7 +56,6 @@
     "@backstage/cli": "0.28.2",
     "@backstage/config": "1.2.0",
     "@backstage/plugin-catalog-backend": "1.27.1",
-    "@spotify/prettier-config": "^15.0.0",
     "@types/lodash": "4.17.13",
     "@types/uuid": "9.0.8",
     "deepmerge": "4.3.1",
