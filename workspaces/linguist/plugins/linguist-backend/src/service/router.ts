@@ -23,7 +23,7 @@ import {
   UrlReaderService,
 } from '@backstage/backend-plugin-api';
 import express from 'express';
-import Router from 'express-promise-router';
+import { createOpenApiRouter } from '../schema/openapi.generated';
 import { LinguistBackendApi } from '../api';
 import { LinguistBackendDatabase } from '../db';
 import { HumanDuration, JsonObject } from '@backstage/types';
@@ -110,17 +110,16 @@ export async function createRouter(
     });
   }
 
-  const router = Router();
-  router.use(express.json());
+  const apiRouter = await createOpenApiRouter();
 
-  router.get('/health', (_, response) => {
+  apiRouter.get('/health', (_, response) => {
     response.send({ status: 'ok' });
   });
 
   /**
-   * /entity-languages?entity=component:default/my-component
+   * /entity-languages?entityRef=component:default/my-component
    */
-  router.get('/entity-languages', async (req, res) => {
+  apiRouter.get('/entity-languages', async (req, res) => {
     const { entityRef: entityRef } = req.query;
 
     if (!entityRef) {
@@ -134,7 +133,7 @@ export async function createRouter(
   });
 
   const middleware = MiddlewareFactory.create({ logger, config });
+  apiRouter.use(middleware.error());
 
-  router.use(middleware.error());
-  return router;
+  return apiRouter;
 }

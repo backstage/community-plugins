@@ -32,6 +32,7 @@
   "scripts": {
     "build": "backstage-cli package build",
     "clean": "backstage-cli package clean",
+    "generate": "backstage-repo-tools package schema openapi generate --server",
     "lint": "backstage-cli package lint",
     "prepack": "backstage-cli package prepack",
     "postpack": "backstage-cli package postpack",
@@ -41,6 +42,7 @@
   "dependencies": {
     "@backstage-community/plugin-linguist-common": "workspace:^",
     "@backstage/backend-defaults": "^0.6.1",
+    "@backstage/backend-openapi-utils": "^0.4.0",
     "@backstage/backend-plugin-api": "^1.1.0",
     "@backstage/catalog-client": "^1.9.0",
     "@backstage/catalog-model": "^1.7.2",
@@ -62,6 +64,7 @@
   "devDependencies": {
     "@backstage/backend-test-utils": "^1.2.0",
     "@backstage/cli": "^0.29.4",
+    "@backstage/repo-tools": "^0.12.0",
     "@types/fs-extra": "^11.0.0",
     "@types/node-fetch": "^2.5.12",
     "@types/supertest": "^6.0.0",
