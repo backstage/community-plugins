@@ -18,7 +18,6 @@
     "lint": "backstage-cli repo lint --since origin/main",
     "lint:all": "backstage-cli repo lint",
     "prettier:check": "prettier --check .",
-    "prettier:fix": "prettier --ignore-unknown --write .",
     "new": "backstage-cli new --scope @backstage-community",
     "postinstall": "cd ../../ && yarn install"
   },
@@ -46,8 +45,7 @@
   },
   "resolutions": {
     "@types/react": "^18",
-    "@types/react-dom": "^18",
-    "prettier": "2.8.8"
+    "@types/react-dom": "^18"
   },
   "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {
