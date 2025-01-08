@@ -61,7 +61,10 @@ The Azure Container Registry (ACR) plugin displays information about your contai
 
    ```tsx title="packages/app/src/components/catalog/EntityPage.tsx"
    /* highlight-add-start */
-   import { AcrPage, isAcrAvailable } from '@backstage-community/plugin-acr';
+   import {
+     AcrImagesEntityContent,
+     isAcrAvailable,
+   } from '@backstage-community/plugin-acr';
 
    /* highlight-add-end */
 
@@ -69,12 +72,8 @@ The Azure Container Registry (ACR) plugin displays information about your contai
      <EntityLayout>
        // ...
        {/* highlight-add-start */}
-       <EntityLayout.Route
-         if={e => Boolean(isAcrAvailable(e))}
-         path="/acr"
-         title="ACR"
-       >
-         <AcrPage />
+       <EntityLayout.Route if={isAcrAvailable} path="/acr" title="ACR images">
+         <AcrImagesEntityContent />
        </EntityLayout.Route>
        {/* highlight-add-end */}
      </EntityLayout>

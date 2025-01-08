@@ -15,15 +15,28 @@
  */
 import React from 'react';
 
-import { CodeSnippet, WarningPanel } from '@backstage/core-components';
+import {
+  MissingAnnotationEmptyState,
+  useEntity,
+} from '@backstage/plugin-catalog-react';
 
-type ErrorReportProps = {
-  title: string;
-  errorText: string;
+import { AZURE_CONTAINER_REGISTRY_ANNOTATION_IMAGE_NAME } from '../../annotations';
+import { AcrImages } from '../AcrImages';
+
+export const AcrImagesEntityContent = () => {
+  const { entity } = useEntity();
+  const imageName =
+    entity.metadata.annotations?.[
+      AZURE_CONTAINER_REGISTRY_ANNOTATION_IMAGE_NAME
+    ];
+
+  if (!imageName) {
+    return (
+      <MissingAnnotationEmptyState
+        annotation={AZURE_CONTAINER_REGISTRY_ANNOTATION_IMAGE_NAME}
+      />
+    );
+  }
+
+  return <AcrImages image={imageName} />;
 };
-
-export const ErrorReport = ({ title, errorText }: ErrorReportProps) => (
-  <WarningPanel severity="error" title={title}>
-    <CodeSnippet language="text" text={errorText} />
-  </WarningPanel>
-);

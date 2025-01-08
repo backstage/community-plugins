@@ -69,7 +69,7 @@ import {
 import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
 import { ReportIssue } from '@backstage/plugin-techdocs-module-addons-contrib';
 
-import { AcrPage } from '@backstage-community/plugin-acr';
+import { AcrImagesEntityContent } from '@backstage-community/plugin-acr';
 
 const techdocsContent = (
   <EntityTechdocsContent>
@@ -168,8 +168,8 @@ const serviceEntityPage = (
       {cicdContent}
     </EntityLayout.Route>
 
-    <EntityLayout.Route path="/acr" title="ACR">
-      <AcrPage />
+    <EntityLayout.Route path="/acr" title="ACR images">
+      <AcrImagesEntityContent />
     </EntityLayout.Route>
 
     <EntityLayout.Route path="/api" title="API">

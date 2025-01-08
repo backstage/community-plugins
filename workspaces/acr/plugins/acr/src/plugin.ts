@@ -26,7 +26,6 @@ import {
   AzureContainerRegistryApiClient,
   AzureContainerRegistryApiRef,
 } from './api';
-import { rootRouteRef } from './routes';
 
 /**
  * Backstage plugin.
@@ -35,9 +34,6 @@ import { rootRouteRef } from './routes';
  */
 export const acrPlugin = createPlugin({
   id: 'acr',
-  routes: {
-    root: rootRouteRef,
-  },
   apis: [
     createApiFactory({
       api: AzureContainerRegistryApiRef,
@@ -57,17 +53,26 @@ export const acrPlugin = createPlugin({
 });
 
 /**
- * Page content for the catalog (entity page) that shows
- * latest container images.
+ * A catalog entity content (tab) that shows the ACR container images.
  *
  * @public
  */
-export const AcrPage = acrPlugin.provide(
+export const AcrImagesEntityContent = acrPlugin.provide(
   createComponentExtension({
-    name: 'AzureContainerRegistryPage',
+    name: 'AcrImagesEntityContent',
     component: {
       lazy: () =>
-        import('./components/AcrDashboardPage').then(m => m.AcrDashboardPage),
+        import('./components/AcrImagesEntityContent').then(
+          m => m.AcrImagesEntityContent,
+        ),
     },
   }),
 );
+
+/**
+ * A catalog entity content (tab) that shows the ACR container images.
+ *
+ * @public
+ * @deprecated Please use `AcrImagesEntityContent` instead of `AcrPage`.
+ */
+export const AcrPage = AcrImagesEntityContent;

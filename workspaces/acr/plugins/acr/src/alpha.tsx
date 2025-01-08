@@ -67,7 +67,9 @@ export const acrImagesEntityContent = EntityContentBlueprint.make({
     defaultTitle: 'ACR images',
     filter: isAcrAvailable,
     loader: () =>
-      import('./components/AcrDashboardPage').then(m => <m.AcrDashboardPage />),
+      import('./components/AcrImagesEntityContent').then(m => (
+        <m.AcrImagesEntityContent />
+      )),
   },
 });
 
