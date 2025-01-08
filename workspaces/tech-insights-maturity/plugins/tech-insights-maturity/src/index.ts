@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 export {
-  techInsightsMaturityPlugin as maturityPlugin,
-  MaturityScorePage,
-  MaturitySummaryPage,
+  techInsightsMaturityPlugin,
+  EntityMaturityScorecardContent,
   MaturityPage,
-  MaturityRankWidget,
-  MaturityRankAvatar,
-  MaturityBreakdownTable,
-  MaturitySummaryInfoCard,
+  EntityMaturityRankWidget,
+  EntityMaturitySummaryCard as EntityMaturityScoreCard,
 } from './plugin';

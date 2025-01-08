@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { Entity } from '@backstage/catalog-model';
-import { InfoCard, Link } from '@backstage/core-components';
+import { InfoCard } from '@backstage/core-components';
 import {
   MaturitySummary,
   Rank,
@@ -104,11 +104,9 @@ export const MaturityRankInfoCard = ({ entity }: Props) => {
             progress={value.rankProgress}
             className={content}
           />
-          <Link to="/docs/default/component/devops-central/maturity/#maturity-ranks">
-            <Typography variant="h6" align="center">
-              {Rank[value.rank]}
-            </Typography>
-          </Link>
+          <Typography variant="h6" align="center">
+            {Rank[value.rank]}
+          </Typography>
           <Typography variant="subtitle2" align="center">
             {RankDescription.get(value.rank)}
           </Typography>

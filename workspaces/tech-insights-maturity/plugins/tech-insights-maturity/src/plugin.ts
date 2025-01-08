@@ -49,25 +49,26 @@ export const techInsightsMaturityPlugin = createPlugin({
   ],
 });
 
-export const MaturityScorePage = techInsightsMaturityPlugin.provide(
-  createRoutableExtension({
-    name: 'MaturityScorePage',
-    component: () => import('./ScoreRouter').then(m => m.ScoreRouter),
-    mountPoint: rootRouteRef,
-  }),
-);
+export const EntityMaturityScorecardContent =
+  techInsightsMaturityPlugin.provide(
+    createRoutableExtension({
+      name: 'EntityMaturityScorecardContent',
+      component: () => import('./ScoreRouter').then(m => m.ScoreRouter),
+      mountPoint: rootRouteRef,
+    }),
+  );
 
-export const MaturitySummaryPage = techInsightsMaturityPlugin.provide(
+export const EntityMaturitySummaryContent = techInsightsMaturityPlugin.provide(
   createRoutableExtension({
-    name: 'MaturitySummaryPage',
+    name: 'EntityMaturitySummaryContent',
     component: () => import('./SummaryRouter').then(m => m.SummaryRouter),
     mountPoint: rootRouteRef,
   }),
 );
 
-export const MaturityRankWidget = techInsightsMaturityPlugin.provide(
+export const EntityMaturityRankWidget = techInsightsMaturityPlugin.provide(
   createComponentExtension({
-    name: 'MaturityRankWidget',
+    name: 'EntityMaturityRankWidget',
     component: {
       lazy: () =>
         import('./components/MaturityRankWidget').then(
@@ -86,7 +87,7 @@ export const MaturityPage = techInsightsMaturityPlugin.provide(
   }),
 );
 
-export const MaturitySummaryInfoCard = techInsightsMaturityPlugin.provide(
+export const EntityMaturitySummaryCard = techInsightsMaturityPlugin.provide(
   createComponentExtension({
     name: 'MaturitySummaryInfoCard',
     component: {
@@ -98,60 +99,12 @@ export const MaturitySummaryInfoCard = techInsightsMaturityPlugin.provide(
   }),
 );
 
-export const MaturityRankAvatar = techInsightsMaturityPlugin.provide(
-  createComponentExtension({
-    name: 'MaturityRankAvatar',
-    component: {
-      lazy: () =>
-        import('./components/MaturityRankAvatar').then(
-          m => m.MaturityRankAvatar,
-        ),
-    },
-  }),
-);
-
-export const MaturityBreakdownTable = techInsightsMaturityPlugin.provide(
-  createComponentExtension({
-    name: 'MaturityBreakdownTable',
-    component: {
-      lazy: () =>
-        import('./components/MaturityBreakdownTable').then(
-          m => m.MaturityBreakdownTable,
-        ),
-    },
-  }),
-);
-
 export const MaturityChartCard = techInsightsMaturityPlugin.provide(
   createComponentExtension({
     name: 'MaturityChartCard',
     component: {
       lazy: () =>
         import('./components/MaturityChartCard').then(m => m.MaturityChartCard),
-    },
-  }),
-);
-
-export const MaturityRankInfoCard = techInsightsMaturityPlugin.provide(
-  createComponentExtension({
-    name: 'MaturityChartCard',
-    component: {
-      lazy: () =>
-        import('./components/MaturityRankInfoCard').then(
-          m => m.MaturityRankInfoCard,
-        ),
-    },
-  }),
-);
-
-export const MaturitySummaryTable = techInsightsMaturityPlugin.provide(
-  createComponentExtension({
-    name: 'MaturityChartCard',
-    component: {
-      lazy: () =>
-        import('./components/MaturitySummaryTable').then(
-          m => m.MaturitySummaryTable,
-        ),
     },
   }),
 );

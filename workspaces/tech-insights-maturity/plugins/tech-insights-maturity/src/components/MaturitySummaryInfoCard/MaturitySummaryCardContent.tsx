@@ -19,7 +19,7 @@ import Typography from '@mui/material/Typography';
 
 import Stack from '@mui/material/Stack';
 import React from 'react';
-import { AreaProgress } from './AreaProgress';
+import { AreaProgress } from '../../helpers/AreaProgress';
 
 type Props = {
   summary: MaturitySummary | undefined;

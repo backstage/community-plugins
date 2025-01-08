@@ -43,7 +43,7 @@ const entity = {
   },
 };
 
-describe('<MaturitySummaryInfoCard />', () => {
+describe('<MaturityOverviewCard />', () => {
   const result: MaturitySummary = {
     rank: Rank.Bronze,
     maxRank: Rank.Silver,

@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 import {
-  MaturityBreakdownTable,
-  MaturityPage,
   techInsightsMaturityPlugin,
-  MaturityRankAvatar,
-  MaturityRankWidget,
-  MaturityScorePage,
-  MaturitySummaryInfoCard,
-  MaturitySummaryPage,
+  EntityMaturityRankWidget,
+  EntityMaturityScorecardContent,
+  EntityMaturitySummaryContent,
+  EntityMaturitySummaryCard,
+  MaturityPage,
 } from './plugin';
 
 describe('maturity', () => {
@@ -29,12 +27,10 @@ describe('maturity', () => {
     expect(techInsightsMaturityPlugin).toBeDefined();
   });
   it('should export components', () => {
-    expect(MaturityScorePage).toBeDefined();
-    expect(MaturitySummaryPage).toBeDefined();
+    expect(EntityMaturitySummaryCard).toBeDefined();
+    expect(EntityMaturityRankWidget).toBeDefined();
+    expect(EntityMaturityScorecardContent).toBeDefined();
+    expect(EntityMaturitySummaryContent).toBeDefined();
     expect(MaturityPage).toBeDefined();
-    expect(MaturityRankWidget).toBeDefined();
-    expect(MaturityRankAvatar).toBeDefined();
-    expect(MaturityBreakdownTable).toBeDefined();
-    expect(MaturitySummaryInfoCard).toBeDefined();
   });
 });

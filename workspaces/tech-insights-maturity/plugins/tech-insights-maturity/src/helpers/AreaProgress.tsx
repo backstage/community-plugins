@@ -24,8 +24,8 @@ import Stack from '@mui/material/Stack';
 import Tooltip from '@mui/material/Tooltip';
 import { Line } from 'rc-progress';
 import React from 'react';
-import { getNextRankColor, pluralize } from '../../helpers/utils';
-import { MaturityRankAvatar } from '../MaturityRankAvatar';
+import { getNextRankColor, pluralize } from './utils';
+import { MaturityRankAvatar } from '../components/MaturityRankAvatar';
 
 type Props = {
   areaSummary: MaturitySummaryByArea;
