@@ -32,7 +32,7 @@ const ResourceBadge = ({
 }) => {
   return (
     <Split className="bs-tkn-pipeline-visualization__label">
-      <SplitItem style={{ marginRight: 'var(--pf-v5-global--spacer--sm)' }}>
+      <SplitItem style={{ marginRight: 'var(--pf-t--global--spacer--sm)' }}>
         <span className="badge" style={{ backgroundColor: color }}>
           {abbr}
         </span>
@@ -41,7 +41,7 @@ const ResourceBadge = ({
         <span>{name}</span>
       </SplitItem>
       {suffix ? (
-        <SplitItem style={{ marginLeft: 'var(--pf-v5-global--spacer--sm)' }}>
+        <SplitItem style={{ marginLeft: 'var(--pf-t--global--spacer--sm)' }}>
           {suffix}
         </SplitItem>
       ) : null}

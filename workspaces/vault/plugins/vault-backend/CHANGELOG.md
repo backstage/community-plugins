@@ -1,5 +1,22 @@
 # @backstage-community/plugin-vault-backend
 
+## 0.5.1
+
+### Patch Changes
+
+- e0cedc6: Removed dependency `@backstage/backend-tasks`
+
+## 0.5.0
+
+### Minor Changes
+
+- 5bbd06d: Backstage version bump to v1.34.1
+
+### Patch Changes
+
+- Updated dependencies [5bbd06d]
+  - @backstage-community/plugin-vault-node@0.2.0
+
 ## 0.4.21
 
 ### Patch Changes

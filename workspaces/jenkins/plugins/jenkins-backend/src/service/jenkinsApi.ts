@@ -371,4 +371,24 @@ export class JenkinsApiImpl {
     const jobBuilds = await response.json();
     return jobBuilds;
   }
+
+  /**
+   * Get the console text for a single build.
+   * @see ../../../jenkins/src/api/JenkinsApi.ts#getBuildConsoleText
+   */
+  async getBuildConsoleText(
+    jenkinsInfo: JenkinsInfo,
+    jobFullName: string,
+    buildNumber: number,
+  ) {
+    const buildUrl = this.getBuildUrl(jenkinsInfo, jobFullName, buildNumber);
+
+    const response = await fetch(`${buildUrl}/consoleText`, {
+      method: 'get',
+      headers: jenkinsInfo.headers as HeaderInit,
+    });
+
+    const consoleText = await response.text();
+    return consoleText;
+  }
 }

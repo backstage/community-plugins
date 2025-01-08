@@ -2796,7 +2796,7 @@ __metadata:
     "@backstage/plugin-permission-react": ^0.4.27
     "@backstage/test-utils": ^1.7.0
     "@backstage/theme": ^0.6.0
-    "@janus-idp/shared-react": ^2.13.1
+    "@janus-idp/shared-react": ^2.14.1
     "@kubernetes/client-node": ^0.22.1
     "@mui/icons-material": 5.15.17
     "@mui/lab": 5.0.0-alpha.173
@@ -2809,12 +2809,12 @@ __metadata:
     "@patternfly/react-tokens": ^5.1.1
     "@patternfly/react-topology": ^5.1.0
     "@redhat-developer/red-hat-developer-hub-theme": 0.4.0
-    "@testing-library/jest-dom": 6.6.2
+    "@testing-library/jest-dom": 6.6.3
     "@testing-library/react": 14.3.1
     "@testing-library/react-hooks": 8.0.1
     "@testing-library/user-event": 14.5.2
     "@types/git-url-parse": 9.0.3
-    "@types/node": 18.19.64
+    "@types/node": 18.19.68
     "@types/react": ^18.3.11
     classnames: 2.x
     cross-fetch: 4.0.0
@@ -7252,9 +7252,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@janus-idp/shared-react@npm:^2.13.1":
-  version: 2.13.1
-  resolution: "@janus-idp/shared-react@npm:2.13.1"
+"@janus-idp/shared-react@npm:^2.14.1":
+  version: 2.14.1
+  resolution: "@janus-idp/shared-react@npm:2.14.1"
   dependencies:
     "@backstage/catalog-model": ^1.7.0
     "@backstage/core-components": ^0.15.1
@@ -7264,6 +7264,7 @@ __metadata:
     "@kubernetes/client-node": ^0.22.1
     "@material-ui/core": ^4.12.4
     "@mui/icons-material": 5.15.17
+    "@mui/material": ^5.15.17
     classnames: ^2.3.2
     date-fns: ^2.30.0
     file-saver: ^2.0.5
@@ -7272,7 +7273,7 @@ __metadata:
     react-use: ^17.5.0
   peerDependencies:
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
-  checksum: 7b19a31ca484ec89a77e926406105e34af56ded97832c8afd8cdac4205173ed3d61b578deca0bb74760c4cdb7ae962e294dd8bf42a853fbd6a8e1ffda695a737
+  checksum: 65cbbb9b4e5bd03674df903be358093988d4d95ed3e0527f38e069ac07e21dd004f0d9ac2fac2243d9e022b4158908bf025bfbab3f038deef980e073c1ecc6dc
   languageName: node
   linkType: hard
 
@@ -12533,9 +12534,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/jest-dom@npm:6.6.2, @testing-library/jest-dom@npm:^6.0.0":
-  version: 6.6.2
-  resolution: "@testing-library/jest-dom@npm:6.6.2"
+"@testing-library/jest-dom@npm:6.6.3, @testing-library/jest-dom@npm:^6.0.0":
+  version: 6.6.3
+  resolution: "@testing-library/jest-dom@npm:6.6.3"
   dependencies:
     "@adobe/css-tools": ^4.4.0
     aria-query: ^5.0.0
@@ -12544,7 +12545,7 @@ __metadata:
     dom-accessibility-api: ^0.6.3
     lodash: ^4.17.21
     redent: ^3.0.0
-  checksum: 23fc4de90035b7acaa13839adb8e31e5f5ad0306623f59be4907fe48050a5d148cd927ff6b6c13c49e392cc06bdd9f16e7d4766263dd7b42d5a342897e32bb6f
+  checksum: c1dc4260b05309a0084416639006cd105849acc5b102bef682a3b19bd6fce07ff6762085fc7f2599546c995a2fc66fdb1d70e50e22a634a0098524056cc9e511
   languageName: node
   linkType: hard
 
@@ -13497,12 +13498,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:18.19.64, @types/node@npm:^18.11.18, @types/node@npm:^18.11.9":
-  version: 18.19.64
-  resolution: "@types/node@npm:18.19.64"
+"@types/node@npm:18.19.68, @types/node@npm:^18.11.18, @types/node@npm:^18.11.9":
+  version: 18.19.68
+  resolution: "@types/node@npm:18.19.68"
   dependencies:
     undici-types: ~5.26.4
-  checksum: e7680215b03c9bee8a33947f03d06048e8e460f23b1b7b29c45350cf437faa5f8fcb7d8c3eb8dfec8427923e7a184df42bc710c1b6252b4852e3ed7064c6228f
+  checksum: 84e1cd61b719405aa3b9cc42fbdd8821696684150be04cbd35ebed3b92363a83e904cd89dec5b50dd6a8ff0ea9f26c60436109900b485dbd5b93a81fd6374ccb
   languageName: node
   linkType: hard
 

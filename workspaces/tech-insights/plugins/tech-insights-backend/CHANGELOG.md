@@ -1,5 +1,53 @@
 # @backstage-community/plugin-tech-insights-backend
 
+## 2.1.1
+
+### Patch Changes
+
+- 47284ff: Removed usages of `@backstage/backend-tasks`
+
+## 2.1.0
+
+### Minor Changes
+
+- 5abfb11: Backstage version bump to v1.34.2
+
+### Patch Changes
+
+- Updated dependencies [5abfb11]
+  - @backstage-community/plugin-tech-insights-common@0.4.0
+  - @backstage-community/plugin-tech-insights-node@2.2.0
+
+## 2.0.2
+
+### Patch Changes
+
+- Updated dependencies [d9d9039]
+  - @backstage-community/plugin-tech-insights-node@2.1.1
+
+## 2.0.1
+
+### Patch Changes
+
+- Updated dependencies [5289c38]
+  - @backstage-community/plugin-tech-insights-common@0.3.0
+  - @backstage-community/plugin-tech-insights-node@2.1.0
+
+## 2.0.0
+
+### Major Changes
+
+- c3bbe0f: In order to use UrlReaderService in fact retrievers, UrlReaderService has been added to FactRetrieverContext.
+
+### Minor Changes
+
+- 306121a: Allow tech insights backend to schedule a single job.
+
+### Patch Changes
+
+- Updated dependencies [c3bbe0f]
+  - @backstage-community/plugin-tech-insights-node@2.0.0
+
 ## 1.2.3
 
 ### Patch Changes

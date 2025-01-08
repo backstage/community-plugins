@@ -1,0 +1,378 @@
+{
+  "namespace": {
+    "name": "istio-system",
+    "cluster": "",
+    "isAmbient": false,
+    "labels": null,
+    "annotations": null
+  },
+  "services": [
+    {
+      "name": "kiali",
+      "namespace": "istio-system",
+      "istioSidecar": false,
+      "cluster": "Kubernetes",
+      "istioAmbient": false,
+      "appLabel": false,
+      "additionalDetailSample": null,
+      "annotations": null,
+      "healthAnnotations": {},
+      "ports": null,
+      "labels": {
+        "app": "kiali",
+        "app.kubernetes.io/instance": "kiali",
+        "app.kubernetes.io/managed-by": "Helm",
+        "app.kubernetes.io/name": "kiali",
+        "app.kubernetes.io/part-of": "kiali",
+        "app.kubernetes.io/version": "v1.79.0",
+        "helm.sh/chart": "kiali-server-1.79.0",
+        "version": "v1.79.0"
+      },
+      "selector": {
+        "app.kubernetes.io/instance": "kiali",
+        "app.kubernetes.io/name": "kiali"
+      },
+      "istioReferences": [],
+      "kialiWizard": "",
+      "serviceRegistry": "Kubernetes",
+      "health": {
+        "requests": {
+          "inbound": {},
+          "outbound": {},
+          "healthAnnotations": {}
+        }
+      }
+    },
+    {
+      "name": "zipkin",
+      "namespace": "istio-system",
+      "istioSidecar": false,
+      "cluster": "Kubernetes",
+      "istioAmbient": false,
+      "appLabel": true,
+      "additionalDetailSample": null,
+      "annotations": null,
+      "healthAnnotations": {},
+      "ports": null,
+      "labels": {
+        "name": "zipkin"
+      },
+      "selector": {
+        "app": "jaeger"
+      },
+      "istioReferences": [],
+      "kialiWizard": "",
+      "serviceRegistry": "Kubernetes",
+      "health": {
+        "requests": {
+          "inbound": {},
+          "outbound": {},
+          "healthAnnotations": {}
+        }
+      }
+    },
+    {
+      "name": "grafana",
+      "namespace": "istio-system",
+      "istioSidecar": false,
+      "cluster": "Kubernetes",
+      "istioAmbient": false,
+      "appLabel": false,
+      "additionalDetailSample": null,
+      "annotations": null,
+      "healthAnnotations": {},
+      "ports": null,
+      "labels": {
+        "app.kubernetes.io/instance": "grafana",
+        "app.kubernetes.io/managed-by": "Helm",
+        "app.kubernetes.io/name": "grafana",
+        "app.kubernetes.io/version": "10.1.5",
+        "helm.sh/chart": "grafana-6.61.1"
+      },
+      "selector": {
+        "app.kubernetes.io/instance": "grafana",
+        "app.kubernetes.io/name": "grafana"
+      },
+      "istioReferences": [],
+      "kialiWizard": "",
+      "serviceRegistry": "Kubernetes",
+      "health": {
+        "requests": {
+          "inbound": {},
+          "outbound": {},
+          "healthAnnotations": {}
+        }
+      }
+    },
+    {
+      "name": "istiod",
+      "namespace": "istio-system",
+      "istioSidecar": false,
+      "cluster": "Kubernetes",
+      "istioAmbient": false,
+      "appLabel": true,
+      "additionalDetailSample": null,
+      "annotations": null,
+      "healthAnnotations": {},
+      "ports": null,
+      "labels": {
+        "app": "istiod",
+        "install.operator.istio.io/owning-resource": "installed-state",
+        "install.operator.istio.io/owning-resource-namespace": "istio-system",
+        "istio": "pilot",
+        "istio.io/rev": "default",
+        "operator.istio.io/component": "Pilot",
+        "operator.istio.io/managed": "Reconcile",
+        "operator.istio.io/version": "1.21.0-rc.0",
+        "release": "istio"
+      },
+      "selector": {
+        "app": "istiod",
+        "istio": "pilot"
+      },
+      "istioReferences": [],
+      "kialiWizard": "",
+      "serviceRegistry": "Kubernetes",
+      "health": {
+        "requests": {
+          "inbound": {},
+          "outbound": {},
+          "healthAnnotations": {}
+        }
+      }
+    },
+    {
+      "name": "jaeger-collector",
+      "namespace": "istio-system",
+      "istioSidecar": false,
+      "cluster": "Kubernetes",
+      "istioAmbient": false,
+      "appLabel": true,
+      "additionalDetailSample": null,
+      "annotations": null,
+      "healthAnnotations": {},
+      "ports": null,
+      "labels": {
+        "app": "jaeger"
+      },
+      "selector": {
+        "app": "jaeger"
+      },
+      "istioReferences": [],
+      "kialiWizard": "",
+      "serviceRegistry": "Kubernetes",
+      "health": {
+        "requests": {
+          "inbound": {},
+          "outbound": {},
+          "healthAnnotations": {}
+        }
+      }
+    },
+    {
+      "name": "prometheus",
+      "namespace": "istio-system",
+      "istioSidecar": false,
+      "cluster": "Kubernetes",
+      "istioAmbient": false,
+      "appLabel": false,
+      "additionalDetailSample": null,
+      "annotations": null,
+      "healthAnnotations": {},
+      "ports": null,
+      "labels": {
+        "app.kubernetes.io/component": "server",
+        "app.kubernetes.io/instance": "prometheus",
+        "app.kubernetes.io/managed-by": "Helm",
+        "app.kubernetes.io/name": "prometheus",
+        "app.kubernetes.io/part-of": "prometheus",
+        "app.kubernetes.io/version": "v2.48.0",
+        "helm.sh/chart": "prometheus-25.8.0"
+      },
+      "selector": {
+        "app.kubernetes.io/component": "server",
+        "app.kubernetes.io/instance": "prometheus",
+        "app.kubernetes.io/name": "prometheus"
+      },
+      "istioReferences": [],
+      "kialiWizard": "",
+      "serviceRegistry": "Kubernetes",
+      "health": {
+        "requests": {
+          "inbound": {},
+          "outbound": {},
+          "healthAnnotations": {}
+        }
+      }
+    },
+    {
+      "name": "tracing",
+      "namespace": "istio-system",
+      "istioSidecar": false,
+      "cluster": "Kubernetes",
+      "istioAmbient": false,
+      "appLabel": true,
+      "additionalDetailSample": null,
+      "annotations": null,
+      "healthAnnotations": {},
+      "ports": null,
+      "labels": {
+        "app": "jaeger"
+      },
+      "selector": {
+        "app": "jaeger"
+      },
+      "istioReferences": [],
+      "kialiWizard": "",
+      "serviceRegistry": "Kubernetes",
+      "health": {
+        "requests": {
+          "inbound": {},
+          "outbound": {},
+          "healthAnnotations": {}
+        }
+      }
+    },
+    {
+      "name": "istio-egressgateway",
+      "namespace": "istio-system",
+      "istioSidecar": false,
+      "cluster": "Kubernetes",
+      "istioAmbient": false,
+      "appLabel": true,
+      "additionalDetailSample": null,
+      "annotations": null,
+      "healthAnnotations": {},
+      "ports": null,
+      "labels": {
+        "app": "istio-egressgateway",
+        "install.operator.istio.io/owning-resource": "installed-state",
+        "install.operator.istio.io/owning-resource-namespace": "istio-system",
+        "istio": "egressgateway",
+        "istio.io/rev": "default",
+        "operator.istio.io/component": "EgressGateways",
+        "operator.istio.io/managed": "Reconcile",
+        "operator.istio.io/version": "1.21.0-rc.0",
+        "release": "istio"
+      },
+      "selector": {
+        "app": "istio-egressgateway",
+        "istio": "egressgateway"
+      },
+      "istioReferences": [],
+      "kialiWizard": "",
+      "serviceRegistry": "Kubernetes",
+      "health": {
+        "requests": {
+          "inbound": {},
+          "outbound": {},
+          "healthAnnotations": {}
+        }
+      }
+    },
+    {
+      "name": "istio-ingressgateway",
+      "namespace": "istio-system",
+      "istioSidecar": false,
+      "cluster": "Kubernetes",
+      "istioAmbient": false,
+      "appLabel": true,
+      "additionalDetailSample": null,
+      "annotations": null,
+      "healthAnnotations": {},
+      "ports": null,
+      "labels": {
+        "app": "istio-ingressgateway",
+        "install.operator.istio.io/owning-resource": "installed-state",
+        "install.operator.istio.io/owning-resource-namespace": "istio-system",
+        "istio": "ingressgateway",
+        "istio.io/rev": "default",
+        "operator.istio.io/component": "IngressGateways",
+        "operator.istio.io/managed": "Reconcile",
+        "operator.istio.io/version": "1.21.0-rc.0",
+        "release": "istio"
+      },
+      "selector": {
+        "app": "istio-ingressgateway",
+        "istio": "ingressgateway"
+      },
+      "istioReferences": [],
+      "kialiWizard": "",
+      "serviceRegistry": "Kubernetes",
+      "health": {
+        "requests": {
+          "inbound": {},
+          "outbound": {},
+          "healthAnnotations": {}
+        }
+      }
+    }
+  ],
+  "validations": {
+    "service": {
+      "grafana.istio-system": {
+        "name": "grafana",
+        "objectType": "service",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "istio-egressgateway.istio-system": {
+        "name": "istio-egressgateway",
+        "objectType": "service",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "istio-ingressgateway.istio-system": {
+        "name": "istio-ingressgateway",
+        "objectType": "service",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "istiod.istio-system": {
+        "name": "istiod",
+        "objectType": "service",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "jaeger-collector.istio-system": {
+        "name": "jaeger-collector",
+        "objectType": "service",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "kiali.istio-system": {
+        "name": "kiali",
+        "objectType": "service",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "prometheus.istio-system": {
+        "name": "prometheus",
+        "objectType": "service",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "tracing.istio-system": {
+        "name": "tracing",
+        "objectType": "service",
+        "valid": true,
+        "checks": [],
+        "references": null
+      },
+      "zipkin.istio-system": {
+        "name": "zipkin",
+        "objectType": "service",
+        "valid": true,
+        "checks": [],
+        "references": null
+      }
+    }
+  }
+}

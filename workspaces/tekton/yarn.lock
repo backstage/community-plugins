@@ -22,20 +22,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@aonic-ui/pipelines@npm:^1.1.1":
-  version: 1.1.1
-  resolution: "@aonic-ui/pipelines@npm:1.1.1"
+"@aonic-ui/pipelines@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@aonic-ui/pipelines@npm:3.0.0"
   dependencies:
-    "@patternfly/react-table": ^5.1.2
+    "@patternfly/react-table": ^6.0.0
     js-yaml: ^4.1.0
   peerDependencies:
-    "@patternfly/react-core": ^5.1.2
-    "@patternfly/react-icons": ^5.1.2
-    "@patternfly/react-table": ^5.1.2
-    "@patternfly/react-tokens": ^5.1.2
+    "@patternfly/react-core": ^6.0.0
+    "@patternfly/react-icons": ^6.0.0
+    "@patternfly/react-table": ^6.0.0
+    "@patternfly/react-tokens": ^6.0.0
     "@testing-library/jest-dom": ^6.2.0
     react: ^18.2.0
-  checksum: c1e65ca7923efbb107d816f5d7028b855baa67c7f6c93377adc20c2dff28ca397f32420ca17379d92f2e70118ca9efd16c01a883624a5c5861e70ff73a551e23
+  checksum: 979464b65b6b21da54f210d6e210e330b96ef56202aa9a102951f041f38a8f94a86130441e776b4d4b02140f7d99b199ed3d20d9874d6741862630a28797990b
   languageName: node
   linkType: hard
 
@@ -2810,7 +2810,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-tekton@workspace:plugins/tekton"
   dependencies:
-    "@aonic-ui/pipelines": ^1.1.1
+    "@aonic-ui/pipelines": ^3.0.0
     "@backstage-community/plugin-tekton-common": "workspace:^"
     "@backstage/catalog-model": ^1.7.0
     "@backstage/cli": 0.28.2
@@ -2831,29 +2831,29 @@ __metadata:
     "@material-ui/icons": ^4.11.3
     "@material-ui/lab": ^4.0.0-alpha.45
     "@mui/icons-material": 5.15.17
-    "@patternfly/patternfly": ^5.1.0
+    "@patternfly/patternfly": ^6.0.0
     "@patternfly/react-charts": ^7.1.1
-    "@patternfly/react-core": ^5.1.2
-    "@patternfly/react-tokens": ^5.1.2
-    "@patternfly/react-topology": ^5.1.0
-    "@playwright/test": 1.49.0
+    "@patternfly/react-core": ^6.0.0
+    "@patternfly/react-tokens": ^6.0.0
+    "@patternfly/react-topology": ^6.0.0
+    "@playwright/test": 1.49.1
     "@redhat-developer/red-hat-developer-hub-theme": 0.4.0
-    "@testing-library/jest-dom": 6.4.8
+    "@testing-library/jest-dom": 6.6.3
     "@testing-library/react": 14.3.1
     "@testing-library/react-hooks": 8.0.1
     "@testing-library/user-event": 14.5.2
     "@types/dagre": ^0.7.52
     "@types/lodash": 4.17.13
-    "@types/node": 18.19.34
+    "@types/node": 18.19.68
     classnames: ^2.3.2
     cross-fetch: 4.0.0
     dagre: ^0.8.5
     lodash: ^4.17.21
     msw: 1.3.5
-    prettier: 3.3.3
+    prettier: 3.4.2
     react-measure: ^2.5.2
     react-use: ^17.4.0
-    start-server-and-test: 2.0.8
+    start-server-and-test: 2.0.9
   peerDependencies:
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
@@ -9438,10 +9438,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@patternfly/patternfly@npm:^5.1.0":
-  version: 5.4.2
-  resolution: "@patternfly/patternfly@npm:5.4.2"
-  checksum: 1cc2c3f7020f050eb4bd72d57a48473c7fad9c931b16e3c8e8ba7f0d94654d22a1944b3593b6b118a1b28f14749ae6a630622efd6c1cd54b6f08cd360b186cb3
+"@patternfly/patternfly@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "@patternfly/patternfly@npm:6.0.0"
+  checksum: 035ce47e43ed408fed1116721b0217855d4d522305fd0ad9a162798bdccecb980558a730f11b9a9c180a1b8f885a322752aa987a94a43562197a2fcae1a0464b
   languageName: node
   linkType: hard
 
@@ -9478,72 +9478,86 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@patternfly/react-core@npm:^5.1.1, @patternfly/react-core@npm:^5.1.2, @patternfly/react-core@npm:^5.4.8":
-  version: 5.4.8
-  resolution: "@patternfly/react-core@npm:5.4.8"
+"@patternfly/react-core@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "@patternfly/react-core@npm:6.0.0"
   dependencies:
-    "@patternfly/react-icons": ^5.4.2
-    "@patternfly/react-styles": ^5.4.1
-    "@patternfly/react-tokens": ^5.4.1
+    "@patternfly/react-icons": ^6.0.0
+    "@patternfly/react-styles": ^6.0.0
+    "@patternfly/react-tokens": ^6.0.0
     focus-trap: 7.6.0
     react-dropzone: ^14.2.3
     tslib: ^2.7.0
   peerDependencies:
     react: ^17 || ^18
     react-dom: ^17 || ^18
-  checksum: 5a22903a7ef0a129a13b58133a1a09f78c78b8cd26a0ed8c20519fce167d5ba2c4d48e998003a4536d770698bd36e1ecb2bcf171a38646f80447a587266afd48
+  checksum: 196ca777d06df73945cfa0c8c11d3d54d303012bf5b15e67fabb6b996c217a5326b58a7be6c9eaf2a7055391b71065c27ab34ddc4b88fd6cc69760b237444864
   languageName: node
   linkType: hard
 
-"@patternfly/react-icons@npm:^5.1.1, @patternfly/react-icons@npm:^5.4.2":
-  version: 5.4.2
-  resolution: "@patternfly/react-icons@npm:5.4.2"
+"@patternfly/react-icons@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "@patternfly/react-icons@npm:6.0.0"
   peerDependencies:
     react: ^17 || ^18
     react-dom: ^17 || ^18
-  checksum: 3f23a2e52f962b923ac28eccc4bdabbc0f2f698f8ff1dc9fec8c164123ebf921501ba86a6a4566607118f38c8924974a1d7976f9ab87c33b318be507b1e34946
+  checksum: 39ddcda5a0f0a3840cc8b499a9b68f0ea133ea369a6412dfaabb38af0095ed9eef5df3171de3d0990dc0130720d4fbe3e6b28d70fdb6668c1507cd1cbdc6750d
   languageName: node
   linkType: hard
 
-"@patternfly/react-styles@npm:^5.1.1, @patternfly/react-styles@npm:^5.4.1":
+"@patternfly/react-styles@npm:^5.4.1":
   version: 5.4.1
   resolution: "@patternfly/react-styles@npm:5.4.1"
   checksum: 6fb1ec38a017acd1cf1262b39c69f70a650ed7f205d5433c83087957395e6e487914ed1992a67de37718ea536145fc974d7d9dbc6460ae38d668035f4c6d0c1b
   languageName: node
   linkType: hard
 
-"@patternfly/react-table@npm:^5.1.2":
-  version: 5.4.9
-  resolution: "@patternfly/react-table@npm:5.4.9"
+"@patternfly/react-styles@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "@patternfly/react-styles@npm:6.0.0"
+  checksum: 40f6e169eea6b412e8bea3c220c4e29923106fa65363c5e07068db37eaa55f6088411ed0bd36c9befaa3486f108ca8d097ee39bd55276855a4387e6713d484c8
+  languageName: node
+  linkType: hard
+
+"@patternfly/react-table@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "@patternfly/react-table@npm:6.0.0"
   dependencies:
-    "@patternfly/react-core": ^5.4.8
-    "@patternfly/react-icons": ^5.4.2
-    "@patternfly/react-styles": ^5.4.1
-    "@patternfly/react-tokens": ^5.4.1
+    "@patternfly/react-core": ^6.0.0
+    "@patternfly/react-icons": ^6.0.0
+    "@patternfly/react-styles": ^6.0.0
+    "@patternfly/react-tokens": ^6.0.0
     lodash: ^4.17.21
     tslib: ^2.7.0
   peerDependencies:
     react: ^17 || ^18
     react-dom: ^17 || ^18
-  checksum: 9a319fa18255294d77fca24f1839fc1294fbb6e2712ec99fe1bf950a6664878b75754b8b53e1d952158741c079002deac23adf776ad394c2f25a9b2d6286a030
+  checksum: b213cfef68f7a39e34516820b523492d65e7f00eb69a4af660124d1233ff1b0be27e6ae9980fba1ee7126f7ad59d316ce8b987c9e1b9036e83483d91284f5184
   languageName: node
   linkType: hard
 
-"@patternfly/react-tokens@npm:^5.1.2, @patternfly/react-tokens@npm:^5.4.1":
+"@patternfly/react-tokens@npm:^5.4.1":
   version: 5.4.1
   resolution: "@patternfly/react-tokens@npm:5.4.1"
   checksum: d6f51cbd31db797ed42b148f58ecb28bcc93bdcdf39d0f20b8db5ac40ac2998002ddfad764af38c2f00bc366ac57b1c12fdd42a55e7a30fe3b01e26739e770cf
   languageName: node
   linkType: hard
 
-"@patternfly/react-topology@npm:^5.1.0":
-  version: 5.4.0
-  resolution: "@patternfly/react-topology@npm:5.4.0"
+"@patternfly/react-tokens@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "@patternfly/react-tokens@npm:6.0.0"
+  checksum: 3390651a7ea0d2664adb1f760cb54e40200ac63b54269ba3f28002c01cd108c57a7bf142c894cfc510f400c950c239f93fb9ca47c00515dda44ec386b6aec972
+  languageName: node
+  linkType: hard
+
+"@patternfly/react-topology@npm:^6.0.0":
+  version: 6.0.1
+  resolution: "@patternfly/react-topology@npm:6.0.1"
   dependencies:
     "@dagrejs/dagre": 1.1.2
-    "@patternfly/react-core": ^5.1.1
-    "@patternfly/react-icons": ^5.1.1
-    "@patternfly/react-styles": ^5.1.1
+    "@patternfly/react-core": ^6.0.0
+    "@patternfly/react-icons": ^6.0.0
+    "@patternfly/react-styles": ^6.0.0
     "@types/d3": ^7.4.0
     "@types/d3-force": ^1.2.1
     "@types/react-measure": ^2.0.6
@@ -9558,7 +9572,7 @@ __metadata:
   peerDependencies:
     react: ^17 || ^18
     react-dom: ^17 || ^18
-  checksum: 3b5a4469ba7cf02499d57bc7a82e419895aeba38ce2b35579faf414e763e90ff7a0c599fc6b9b09c9ceb7313f61f2c61aad1a5c20d74fc2cf5b6ae1b299d739a
+  checksum: 174647a84f796c162915baf8b3e4320cc7cb4d04f5955f6eebc7c19eb2e461ce250f5001c560308d8cd10c667d5da65463fbea4c8a3f1f5af2775c3eba2197d2
   languageName: node
   linkType: hard
 
@@ -9569,14 +9583,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@playwright/test@npm:1.49.0, @playwright/test@npm:^1.32.3":
-  version: 1.49.0
-  resolution: "@playwright/test@npm:1.49.0"
+"@playwright/test@npm:1.49.1, @playwright/test@npm:^1.32.3":
+  version: 1.49.1
+  resolution: "@playwright/test@npm:1.49.1"
   dependencies:
-    playwright: 1.49.0
+    playwright: 1.49.1
   bin:
     playwright: cli.js
-  checksum: f8477aa61d59fd22c6161c48221ab246340dc37bbe2804e1a7d1be8cbd0fd861747fcb7ca559f4bc7328226ff2c90ccb7efa588a7d7d7829f3e57902b28fe39a
+  checksum: cdbd16df3d773dc8e522d79b4b961e25c2e1b1d4f3ec45eb711078ab5d11bca47caafe833e2be2f923328fbd012405a9ee31d9b449d184077598546a36847e69
   languageName: node
   linkType: hard
 
@@ -12516,23 +12530,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/jest-dom@npm:6.4.8":
-  version: 6.4.8
-  resolution: "@testing-library/jest-dom@npm:6.4.8"
-  dependencies:
-    "@adobe/css-tools": ^4.4.0
-    "@babel/runtime": ^7.9.2
-    aria-query: ^5.0.0
-    chalk: ^3.0.0
-    css.escape: ^1.5.1
-    dom-accessibility-api: ^0.6.3
-    lodash: ^4.17.21
-    redent: ^3.0.0
-  checksum: b601688950e522557c2c6bbc0f026ae31a10583577c8a557814b0eb33648fe82afc06299f3cdb79ff0c5076fd1a6106f3d76e2ca0dde6f7ee0555e63008fbd72
-  languageName: node
-  linkType: hard
-
-"@testing-library/jest-dom@npm:^6.0.0":
+"@testing-library/jest-dom@npm:6.6.3, @testing-library/jest-dom@npm:^6.0.0":
   version: 6.6.3
   resolution: "@testing-library/jest-dom@npm:6.6.3"
   dependencies:
@@ -13516,12 +13514,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:18.19.34":
-  version: 18.19.34
-  resolution: "@types/node@npm:18.19.34"
+"@types/node@npm:18.19.68, @types/node@npm:^18.11.18, @types/node@npm:^18.11.9":
+  version: 18.19.68
+  resolution: "@types/node@npm:18.19.68"
   dependencies:
     undici-types: ~5.26.4
-  checksum: ae6369baa1529ec3564da29611ec7eb8ccb219080d717292151b6b899820d25290243d01c9240f11a63d1a42e47198cd6310fab67b6d17bea723221fea07b644
+  checksum: 84e1cd61b719405aa3b9cc42fbdd8821696684150be04cbd35ebed3b92363a83e904cd89dec5b50dd6a8ff0ea9f26c60436109900b485dbd5b93a81fd6374ccb
   languageName: node
   linkType: hard
 
@@ -13529,15 +13527,6 @@ __metadata:
   version: 12.20.55
   resolution: "@types/node@npm:12.20.55"
   checksum: e4f86785f4092706e0d3b0edff8dca5a13b45627e4b36700acd8dfe6ad53db71928c8dee914d4276c7fd3b6ccd829aa919811c9eb708a2c8e4c6eb3701178c37
-  languageName: node
-  linkType: hard
-
-"@types/node@npm:^18.11.18, @types/node@npm:^18.11.9":
-  version: 18.19.64
-  resolution: "@types/node@npm:18.19.64"
-  dependencies:
-    undici-types: ~5.26.4
-  checksum: e7680215b03c9bee8a33947f03d06048e8e460f23b1b7b29c45350cf437faa5f8fcb7d8c3eb8dfec8427923e7a184df42bc710c1b6252b4852e3ed7064c6228f
   languageName: node
   linkType: hard
 
@@ -18179,15 +18168,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"debug@npm:4, debug@npm:4.3.7, debug@npm:^4.0.0, debug@npm:^4.1.0, debug@npm:^4.1.1, debug@npm:^4.3.1, debug@npm:^4.3.2, debug@npm:^4.3.3, debug@npm:^4.3.4, debug@npm:^4.3.6":
-  version: 4.3.7
-  resolution: "debug@npm:4.3.7"
+"debug@npm:4, debug@npm:4.4.0, debug@npm:^4.0.0, debug@npm:^4.1.0, debug@npm:^4.1.1, debug@npm:^4.3.1, debug@npm:^4.3.2, debug@npm:^4.3.3, debug@npm:^4.3.4, debug@npm:^4.3.6":
+  version: 4.4.0
+  resolution: "debug@npm:4.4.0"
   dependencies:
     ms: ^2.1.3
   peerDependenciesMeta:
     supports-color:
       optional: true
-  checksum: 822d74e209cd910ef0802d261b150314bbcf36c582ccdbb3e70f0894823c17e49a50d3e66d96b633524263975ca16b6a833f3e3b7e030c157169a5fabac63160
+  checksum: fb42df878dd0e22816fc56e1fdca9da73caa85212fbe40c868b1295a6878f9101ae684f4eeef516c13acfc700f5ea07f1136954f43d4cd2d477a811144136479
   languageName: node
   linkType: hard
 
@@ -28267,27 +28256,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright-core@npm:1.49.0":
-  version: 1.49.0
-  resolution: "playwright-core@npm:1.49.0"
+"playwright-core@npm:1.49.1":
+  version: 1.49.1
+  resolution: "playwright-core@npm:1.49.1"
   bin:
     playwright-core: cli.js
-  checksum: d8423ad0cab2e672856529bf6b98b406e7e605da098b847b9b54ee8ebd8d716ed8880a9afff4b38f0a2e3f59b95661c74589116ce3ff2b5e0ae3561507086c94
+  checksum: a940f4b10ff1de033b4b8594b5104b02849a892d9adda0d42330a872cd3d8d287ffd2b01fc33f33ccd34f8904bb8ae8220b878b62e899f3d9bcd1b0945ab45c7
   languageName: node
   linkType: hard
 
-"playwright@npm:1.49.0":
-  version: 1.49.0
-  resolution: "playwright@npm:1.49.0"
+"playwright@npm:1.49.1":
+  version: 1.49.1
+  resolution: "playwright@npm:1.49.1"
   dependencies:
     fsevents: 2.3.2
-    playwright-core: 1.49.0
+    playwright-core: 1.49.1
   dependenciesMeta:
     fsevents:
       optional: true
   bin:
     playwright: cli.js
-  checksum: f1bfb2fff65cad2ce996edab74ec231dfd21aeb5961554b765ce1eaec27efb87eaba37b00e91ecd27727b82861e5d8c230abe4960e93f6ada8be5ad1020df306
+  checksum: c136d42d625e32614f90e5228a165dc8be48c5bfb52aca9210c6ff04161a409dbe42fe5ae4f05a2653f6a1b836876a04d3b0f24bcbbc053d1509c1d605b7c8d5
   languageName: node
   linkType: hard
 
@@ -28845,12 +28834,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:3.3.3":
-  version: 3.3.3
-  resolution: "prettier@npm:3.3.3"
+"prettier@npm:3.4.2":
+  version: 3.4.2
+  resolution: "prettier@npm:3.4.2"
   bin:
     prettier: bin/prettier.cjs
-  checksum: bc8604354805acfdde6106852d14b045bb20827ad76a5ffc2455b71a8257f94de93f17f14e463fe844808d2ccc87248364a5691488a3304f1031326e62d9276e
+  checksum: 061c84513db62d3944c8dc8df36584dad82883ce4e49efcdbedd8703dce5b173c33fd9d2a4e1725d642a3b713c932b55418342eaa347479bc4a9cca114a04cd0
   languageName: node
   linkType: hard
 
@@ -31721,14 +31710,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"start-server-and-test@npm:2.0.8":
-  version: 2.0.8
-  resolution: "start-server-and-test@npm:2.0.8"
+"start-server-and-test@npm:2.0.9":
+  version: 2.0.9
+  resolution: "start-server-and-test@npm:2.0.9"
   dependencies:
     arg: ^5.0.2
     bluebird: 3.7.2
     check-more-types: 2.24.0
-    debug: 4.3.7
+    debug: 4.4.0
     execa: 5.1.1
     lazy-ass: 1.6.0
     ps-tree: 1.2.0
@@ -31737,7 +31726,7 @@ __metadata:
     server-test: src/bin/start.js
     start-server-and-test: src/bin/start.js
     start-test: src/bin/start.js
-  checksum: 64cd27598348d8b276f489fa2b394b1141819719f729118b2ba19cfce32df134491c889163a1709013e630cbd988384be9b3e501e3062604b66b1fb3f4db9e50
+  checksum: 7b0451fd6f1a9fb819e36cb7c3644854734c2151ba01fa1cdfcc661eea7d5b7a437a82787988ec8536c118f641ba52fd3841e00035c3c06f3c29310ec22c3b7b
   languageName: node
   linkType: hard
 

@@ -1,5 +1,11 @@
 # @backstage-community/plugin-entity-feedback-common
 
+## 0.2.0
+
+### Minor Changes
+
+- dd40023: Backstage version bump to v1.34.1
+
 ## 0.1.11
 
 ### Patch Changes

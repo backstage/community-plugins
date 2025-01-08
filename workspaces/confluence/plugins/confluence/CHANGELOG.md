@@ -1,5 +1,23 @@
 # @backstage-community/plugin-confluence
 
+## 0.2.1
+
+### Patch Changes
+
+- 6757d87: Truncate confluence search result item text to 290 characters, which will include the highlighted section if found.
+
+## 0.2.0
+
+### Minor Changes
+
+- cfd4174: Backstage version bump to v1.34.2
+
+## 0.1.4
+
+### Patch Changes
+
+- f4ea9a2: Adding support for the new frontend system, available at the `/alpha` export.
+
 ## 0.1.3
 
 ### Patch Changes

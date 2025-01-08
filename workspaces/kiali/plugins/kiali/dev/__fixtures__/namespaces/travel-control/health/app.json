@@ -1,0 +1,18 @@
+{
+  "control": {
+    "workloadStatuses": [
+      {
+        "name": "control",
+        "desiredReplicas": 1,
+        "currentReplicas": 0,
+        "availableReplicas": 1,
+        "syncedProxies": 1
+      }
+    ],
+    "requests": {
+      "inbound": {},
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  }
+}

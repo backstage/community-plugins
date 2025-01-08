@@ -1,5 +1,24 @@
 ## @backstage-community/plugin-redhat-argocd
 
+## 1.11.3
+
+### Patch Changes
+
+- 693ed35: Updated dependency `react-use` to `17.6.0`.
+
+## 1.11.2
+
+### Patch Changes
+
+- 350250c: Updated dependency `@testing-library/jest-dom` to `6.6.3`.
+- 4eef4d1: Updated dependency `@playwright/test` to `1.49.1`.
+
+## 1.11.1
+
+### Patch Changes
+
+- b7f5849: Change argocd to Argo CD in comments or description
+
 ## 1.11.0
 
 ### Minor Changes

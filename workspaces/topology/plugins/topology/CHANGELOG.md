@@ -1,5 +1,18 @@
 ### Dependencies
 
+## 1.29.10
+
+### Patch Changes
+
+- 350250c: Updated dependency `@testing-library/jest-dom` to `6.6.3`.
+- 18f9d9d: Updated dependency `@types/node` to `18.19.68`.
+
+## 1.29.9
+
+### Patch Changes
+
+- b133709: fix status text and icon alignment issue
+
 ## 1.29.8
 
 ### Patch Changes

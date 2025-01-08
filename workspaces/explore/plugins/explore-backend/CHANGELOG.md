@@ -1,5 +1,23 @@
 # @backstage-community/plugin-explore-backend
 
+## 0.3.0
+
+### Minor Changes
+
+- 088f904: Remove support for old backend system
+
+## 0.2.0
+
+### Minor Changes
+
+- 082fc58: Backstage version bump to v1.34.1
+
+### Patch Changes
+
+- Updated dependencies [082fc58]
+  - @backstage-community/plugin-explore-common@0.1.0
+  - @backstage-community/plugin-explore-node@0.2.0
+
 ## 0.1.8
 
 ### Patch Changes
