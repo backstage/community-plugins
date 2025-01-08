@@ -90,17 +90,20 @@ catalog:
     - type: file
       target: ../../examples/inventory.yaml
       rules:
-        - allow: [Item, Place]
+        - allow: [Item, Container, Shelf, Room, Floor, Building, Campus]
 
-    ## Uncomment these lines to add more example data
-    # - type: url
-    #   target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/all.yaml
-
-    ## Uncomment these lines to add an example org
-    # - type: url
-    #   target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/acme-corp.yaml
-    #   rules:
-    #     - allow: [User, Group]
+  providers:
+    inventory:
+      kinds:
+        items:
+          - Item
+          - Container
+        locations:
+          - Shelf
+          - Room
+          - Floor
+          - Building
+          - Campus
 
 kubernetes:
   # see https://backstage.io/docs/features/kubernetes/configuration for kubernetes configuration options

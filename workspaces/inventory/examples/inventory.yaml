@@ -1,13 +1,18 @@
 apiVersion: inventory.backstage.io/v1alpha1
-kind: Place
+kind: Building
+metadata:
+  name: home
+---
+apiVersion: inventory.backstage.io/v1alpha1
+kind: Room
 metadata:
   name: kitchen
 spec:
-  type: room
+  parent: building:home
 ---
 apiVersion: inventory.backstage.io/v1alpha1
 kind: Item
 metadata:
   name: coffee-machine
 spec:
-  place: kitchen
+  location: room:kitchen

@@ -20,10 +20,11 @@ import {
 import { catalogProcessingExtensionPoint } from '@backstage/plugin-catalog-node/alpha';
 
 import { InventoryItemProcessor } from './processors/InventoryItemProcessor';
-import { InventoryPlaceProcessor } from './processors/InventoryPlaceProcessor';
+import { InventoryLocationProcessor } from './processors/InventoryLocationProcessor';
 
 /**
- * A catalog plugin that adds support for inventory types `Item` and `Place`.
+ * A catalog plugin that adds support for inventory items and locations.
+ * The kinds for both types are configable.
  *
  * @public
  */
@@ -34,12 +35,18 @@ export const catalogModuleInventory = createBackendModule({
     reg.registerInit({
       deps: {
         catalog: catalogProcessingExtensionPoint,
+        rootConfig: coreServices.rootConfig,
         logger: coreServices.logger,
       },
-      async init({ catalog, logger }) {
+      async init({ catalog, rootConfig, logger }) {
+        const config = rootConfig.getOptionalConfig(
+          'catalog.provider.inventory',
+        );
+
         logger.info('Enable catalog inventory extension!');
-        catalog.addProcessor(new InventoryItemProcessor());
-        catalog.addProcessor(new InventoryPlaceProcessor());
+
+        catalog.addProcessor(new InventoryItemProcessor({ config }));
+        catalog.addProcessor(new InventoryLocationProcessor({ config }));
       },
     });
   },
