@@ -4,7 +4,7 @@
 
 | Name                            | Location     | Severity |
 | :------------------------------ | :----------- | :------- |
-| @backstage-community/plugin-npm | package.json | error    |
+| @backstage-community/plugin-acr | package.json | error    |
 | react-router                    | package.json | error    |
 | react-use                       | package.json | error    |
 | history                         | package.json | error    |

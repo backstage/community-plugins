@@ -89,6 +89,34 @@ The Azure Container Registry (ACR) plugin displays information about your contai
        'azure-container-registry/repository-name': `<REPOSITORY-NAME>',
    ```
 
+### Use new frontend system
+
+1. Install the frontend plugin:
+
+   ```sh
+   yarn workspace app add @backstage-community/plugin-acr
+   ```
+
+2. Enable the plugin in your `packages/app(-next)/src/App.tsx`:
+
+   After all other imports:
+
+   ```tsx
+   import acrPlugin from '@backstage-community/plugin-acr/alpha';
+   ```
+
+   ```tsx
+   export const app = createApp({
+     features: [
+       catalogPlugin,
+       catalogImportPlugin,
+       userSettingsPlugin,
+       acrPlugin,
+       // ...
+     ],
+   });
+   ```
+
 ## For users
 
 ### Using the ACR plugin in Backstage

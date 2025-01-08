@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2025 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,33 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import React from 'react';
 import {
+  ApiBlueprint,
   configApiRef,
   createApiFactory,
-  createComponentExtension,
-  createPlugin,
+  createFrontendPlugin,
   discoveryApiRef,
   identityApiRef,
-} from '@backstage/core-plugin-api';
+} from '@backstage/frontend-plugin-api';
+import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
 
+import { isAcrAvailable } from './utils/isAcrAvailable';
 import {
   AzureContainerRegistryApiClient,
   AzureContainerRegistryApiRef,
 } from './api';
-import { rootRouteRef } from './routes';
 
 /**
- * Backstage plugin.
+ * An API to communicate via the proxy to an ACR container registry.
  *
- * @public
+ * @alpha
  */
-export const acrPlugin = createPlugin({
-  id: 'acr',
-  routes: {
-    root: rootRouteRef,
-  },
-  apis: [
-    createApiFactory({
+export const acrApi = ApiBlueprint.make({
+  name: 'acrApi',
+  params: {
+    factory: createApiFactory({
       api: AzureContainerRegistryApiRef,
       deps: {
         discoveryApi: discoveryApiRef,
@@ -53,21 +52,31 @@ export const acrPlugin = createPlugin({
           identityApi,
         }),
     }),
-  ],
+  },
 });
 
 /**
- * Page content for the catalog (entity page) that shows
- * latest container images.
+ * A catalog entity content (tab) that shows the ACR container images.
  *
- * @public
+ * @alpha
  */
-export const AcrPage = acrPlugin.provide(
-  createComponentExtension({
-    name: 'AzureContainerRegistryPage',
-    component: {
-      lazy: () =>
-        import('./components/AcrDashboardPage').then(m => m.AcrDashboardPage),
-    },
-  }),
-);
+export const acrImagesEntityContent = EntityContentBlueprint.make({
+  name: 'acrImagesEntityContent',
+  params: {
+    defaultPath: 'acr-images',
+    defaultTitle: 'ACR images',
+    filter: isAcrAvailable,
+    loader: () =>
+      import('./components/AcrDashboardPage').then(m => <m.AcrDashboardPage />),
+  },
+});
+
+/**
+ * Backstage frontend plugin.
+ *
+ * @alpha
+ */
+export default createFrontendPlugin({
+  id: 'acr',
+  extensions: [acrApi, acrImagesEntityContent],
+});

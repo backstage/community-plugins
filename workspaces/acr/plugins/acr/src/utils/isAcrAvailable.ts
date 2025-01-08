@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2025 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useEntity } from '@backstage/plugin-catalog-react';
+
+import { Entity } from '@backstage/catalog-model';
 
 import { AZURE_CONTAINER_REGISTRY_ANNOTATION_IMAGE_NAME } from '../annotations';
 
-export const useAcrAppData = () => {
-  const { entity } = useEntity();
-  const imageName =
-    entity?.metadata?.annotations?.[
+/**
+ * Function that returns true if the given entity contains at least one
+ * Azure Container Registry related annotation.
+ *
+ * @public
+ */
+export const isAcrAvailable = (entity: Entity) =>
+  Boolean(
+    entity?.metadata.annotations?.[
       AZURE_CONTAINER_REGISTRY_ANNOTATION_IMAGE_NAME
-    ] ?? '';
-
-  if (!imageName) {
-    throw new Error("'Azure container registry' annotations are missing");
-  }
-  return { imageName };
-};
+    ],
+  );
