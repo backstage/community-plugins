@@ -36,3 +36,20 @@ backend:
 auth:
   providers:
     guest: {}
+
+catalog:
+  import:
+    entityFilename: catalog-info.yaml
+    pullRequestBranchName: backstage-integration
+  rules:
+    - allow: [Component, System, Domain, Location]
+  locations:
+    # Local example data, file locations are relative to the backend process, typically `packages/backend`
+    - type: file
+      target: ../../examples/entities.yaml
+
+    # Local example organizational data
+    - type: file
+      target: ../../examples/org.yaml
+      rules:
+        - allow: [User, Group]
