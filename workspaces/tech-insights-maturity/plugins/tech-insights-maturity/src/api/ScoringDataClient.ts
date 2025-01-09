@@ -37,58 +37,30 @@ import {
   MaturityCheckResult,
   MaturityRank,
   MaturitySummary,
-} from '@backstage-community/plugin-tech-insights-maturity-common';
+} from '@internal/plugin-maturity-common';
 import { ScoringDataApi } from './ScoringDataApi';
 import { ScoringDataFormatter } from './ScoringDataFormatter';
 
 const SDF = new ScoringDataFormatter();
 
-export class ScoringDataClient implements ScoringDataApi {
-  discoveryApi: DiscoveryApi;
-  identityApi: IdentityApi;
+export class ScoringDataClient
+  extends TechInsightsClient
+  implements ScoringDataApi
+{
   catalogApi: CatalogApi;
-  techInsightsClient: TechInsightsClient;
 
-  constructor({
-    catalogApi,
-    discoveryApi,
-    identityApi,
-  }: {
-    catalogApi: CatalogApi;
+  constructor(options: {
     discoveryApi: DiscoveryApi;
     identityApi: IdentityApi;
+    catalogApi: CatalogApi;
   }) {
-    this.catalogApi = catalogApi;
-    this.discoveryApi = discoveryApi;
-    this.identityApi = identityApi;
-    this.techInsightsClient = new TechInsightsClient({
-      discoveryApi,
-      identityApi,
-    });
+    super(options);
+    this.catalogApi = options.catalogApi;
   }
 
   public async getMaturityRank(entity: Entity): Promise<MaturityRank> {
     const checksResult = await this.getCheckResults(entity);
     return SDF.getMaturityRank(checksResult);
-  }
-
-  public async getMaturityCheckResults(
-    entity: Entity,
-  ): Promise<MaturityCheckResult[]> {
-    const results = await this.getCheckResults(entity);
-    return Promise.all(
-      results.map(async x => {
-        // Get facts information
-        const fact = await this.techInsightsClient.getFacts(
-          getCompoundEntityRef(entity),
-          x.check.factIds,
-        );
-        return {
-          ...x,
-          updated: Object.values(fact)[0].timestamp,
-        };
-      }),
-    );
   }
 
   public async getBulkMaturityCheckResults(
@@ -134,7 +106,7 @@ export class ScoringDataClient implements ScoringDataApi {
     entity: Entity,
   ): Promise<MaturityCheckResult[]> {
     if (isComponentEntity(entity)) {
-      return (await this.techInsightsClient.runChecks(
+      return (await this.runChecks(
         getCompoundEntityRef(entity),
       )) as MaturityCheckResult[];
     }
@@ -144,7 +116,7 @@ export class ScoringDataClient implements ScoringDataApi {
   }
 
   private async getBulkCheckResults(entities: CompoundEntityRef[]) {
-    const bulkResponse = await this.techInsightsClient.runBulkChecks(entities);
+    const bulkResponse = await this.runBulkChecks(entities);
     return Promise.all(
       bulkResponse.map(async x => {
         const checks = x.results as MaturityCheckResult[];
@@ -173,7 +145,7 @@ export class ScoringDataClient implements ScoringDataApi {
     }
 
     const results: MaturityCheckResult[] = [];
-    const bulkResponse = await this.techInsightsClient.runBulkChecks(entities);
+    const bulkResponse = await this.runBulkChecks(entities);
     for (const response of bulkResponse) {
       Array.prototype.push.apply(results, response.results);
     }

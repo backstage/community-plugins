@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { TechInsightsApi } from '@backstage-community/plugin-tech-insights';
 import { Entity } from '@backstage/catalog-model';
 import { createApiRef } from '@backstage/core-plugin-api';
 import {
   BulkMaturityCheckResponse,
   BulkMaturitySummary,
-  MaturityCheckResult,
   MaturityRank,
   MaturitySummary,
 } from '@backstage-community/plugin-tech-insights-maturity-common';
@@ -27,9 +27,8 @@ export const scoringDataApiRef = createApiRef<ScoringDataApi>({
   id: 'plugin.scoringdata.service',
 });
 
-export type ScoringDataApi = {
+export type ScoringDataApi = TechInsightsApi & {
   getMaturityRank(entity: Entity): Promise<MaturityRank>;
-  getMaturityCheckResults(entity: Entity): Promise<MaturityCheckResult[]>;
   getBulkMaturityCheckResults(
     entities: Entity[],
   ): Promise<BulkMaturityCheckResponse>;

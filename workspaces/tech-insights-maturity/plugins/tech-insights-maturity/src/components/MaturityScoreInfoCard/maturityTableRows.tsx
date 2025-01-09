@@ -19,11 +19,11 @@ import {
   MaturityRank,
   Rank,
 } from '@backstage-community/plugin-tech-insights-maturity-common';
-import CancelTwoToneIcon from '@mui/icons-material/Cancel';
-import CheckCircleTwoToneIcon from '@mui/icons-material/CheckCircleTwoTone';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
+import CancelTwoToneIcon from '@mui/icons-material/Cancel';
 import CategoryIcon from '@mui/icons-material/Category';
+import CheckCircleTwoToneIcon from '@mui/icons-material/CheckCircleTwoTone';
 import EmojiObjectsIcon from '@mui/icons-material/EmojiObjects';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import MuiAccordion, { AccordionProps } from '@mui/material/Accordion';
@@ -33,11 +33,16 @@ import MuiAccordionSummary, {
 } from '@mui/material/AccordionSummary';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
-import { makeStyles, styled } from '@mui/styles';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
+import { makeStyles, styled } from '@mui/styles';
 import React from 'react';
 import { MaturityRankAvatar } from '../MaturityRankAvatar';
+import { useApi } from '@backstage/core-plugin-api';
+import { useAsyncRetry } from 'react-use';
+import { getCompoundEntityRef } from '@backstage/catalog-model';
+import { useEntity } from '@backstage/plugin-catalog-react';
+import { scoringDataApiRef } from '../../api';
 
 const Accordion = styled((props: AccordionProps) => (
   <MuiAccordion disableGutters elevation={0} square {...props} />
@@ -84,6 +89,14 @@ const MaturityCheckTableRow = ({
 }) => {
   const [expanded, setExpanded] = React.useState<boolean>(
     checkResult.result === false,
+  );
+
+  const api = useApi(scoringDataApiRef);
+  const { entity } = useEntity();
+  const { value: facts } = useAsyncRetry(
+    async () =>
+      api.getFacts(getCompoundEntityRef(entity), checkResult.check.factIds),
+    [api, entity, checkResult],
   );
 
   const handleChange =
@@ -157,7 +170,9 @@ const MaturityCheckTableRow = ({
                     <AccessTimeIcon color="primary" />
                   </Tooltip>
                   <Typography variant="subtitle2" className={filters}>
-                    {`Updated ${checkResult.updated}`}
+                    {facts
+                      ? `Updated ${Object.values(facts)[0].timestamp}`
+                      : 'Not yet run'}
                   </Typography>
                 </Stack>
               </Stack>

@@ -32,7 +32,7 @@ import {
   MaturityRank,
   MaturitySummary,
   Rank,
-} from '@backstage-community/plugin-tech-insights-maturity-common';
+} from '@internal/plugin-maturity-common';
 import { ScoringDataClient } from './ScoringDataClient';
 import {
   activeOwnershipCheckResult,
@@ -79,6 +79,7 @@ const entity: Entity = {
     teams: [
       {
         name: 'SRE',
+        number: 248,
         email: 'sre@mdsol.com',
       },
     ],
@@ -92,11 +93,11 @@ const entity: Entity = {
     stakeholders: [
       {
         role: 'technical owner',
-        email: 'maica@email.com',
+        email: 'bvillanueva@mdsol.com',
       },
       {
         role: 'product owner',
-        email: 'some@email.com',
+        email: 'jcarres@mdsol.com',
       },
     ],
     tags: ['csharp', 'gherkin'],
@@ -143,7 +144,6 @@ const awsWarningsCheckResult: MaturityCheckResult = {
       exp: 100,
     },
   },
-  updated: 'updated today',
 };
 
 // Check Result for System/Domain
@@ -182,7 +182,6 @@ const mockSystemCheckResult: MaturityCheckResult[] = [
           'Add medidata engineer with "technical owner" role to metadata.people list in the factbook',
       },
     },
-    updated: 'updated today',
   },
   {
     facts: {
@@ -214,7 +213,6 @@ const mockSystemCheckResult: MaturityCheckResult[] = [
         exp: 300,
       },
     },
-    updated: 'updated today',
   },
   {
     facts: {
@@ -252,7 +250,6 @@ const mockSystemCheckResult: MaturityCheckResult[] = [
           'Add active medidata engineer with "technical owner" role to metadata.people list in the factbook',
       },
     },
-    updated: 'updated today',
   },
   {
     facts: {
@@ -284,7 +281,6 @@ const mockSystemCheckResult: MaturityCheckResult[] = [
           'Add active medidata engineer with "technical owner" role to metadata.people list in the factbook',
       },
     },
-    updated: 'updated today',
   },
 ];
 
@@ -406,12 +402,6 @@ describe('ScoringDataClient', () => {
       expect(await sdc.getChildMaturityCheckResults(mockUser)).toEqual(
         expected,
       );
-    });
-  });
-
-  describe('getMaturityCheckResults', () => {
-    it('generates a maturity score for a given component', async () => {
-      expect((await sdc.getMaturityCheckResults(mockSystem)).length).toEqual(8); // Number of checks
     });
   });
 

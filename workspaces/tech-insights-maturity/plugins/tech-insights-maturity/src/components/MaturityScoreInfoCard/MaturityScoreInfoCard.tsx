@@ -15,7 +15,10 @@
  */
 import { Entity } from '@backstage/catalog-model';
 import { EmptyState, InfoCard, Progress } from '@backstage/core-components';
-import { Rank } from '@backstage-community/plugin-tech-insights-maturity-common';
+import {
+  MaturityCheckResult,
+  Rank,
+} from '@backstage-community/plugin-tech-insights-maturity-common';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import React from 'react';
@@ -62,23 +65,29 @@ export const MaturityScoreInfoCard = ({ entity }: Props) => {
             <Box sx={{ flexGrow: 1 }}>
               <Grid item>
                 <MaturityCheckTable
-                  checks={value.filter(
-                    x => x.check.metadata.rank === Rank.Bronze,
-                  )}
+                  checks={
+                    value.filter(
+                      x => x.check.metadata!.rank === Rank.Bronze,
+                    ) as MaturityCheckResult[]
+                  }
                   category={Rank.Bronze}
                   rank={rank}
                 />
                 <MaturityCheckTable
-                  checks={value.filter(
-                    x => x.check.metadata.rank === Rank.Silver,
-                  )}
+                  checks={
+                    value.filter(
+                      x => x.check.metadata!.rank === Rank.Silver,
+                    ) as MaturityCheckResult[]
+                  }
                   category={Rank.Silver}
                   rank={rank}
                 />
                 <MaturityCheckTable
-                  checks={value.filter(
-                    x => x.check.metadata.rank === Rank.Gold,
-                  )}
+                  checks={
+                    value.filter(
+                      x => x.check.metadata!.rank === Rank.Gold,
+                    ) as MaturityCheckResult[]
+                  }
                   category={Rank.Gold}
                   rank={rank}
                 />

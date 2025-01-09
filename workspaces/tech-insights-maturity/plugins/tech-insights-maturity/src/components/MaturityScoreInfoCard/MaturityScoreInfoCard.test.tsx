@@ -38,7 +38,7 @@ const entity = {
     stakeholders: [
       {
         role: 'architect',
-        email: 'some@email.com',
+        email: 'jcarres@mdsol.com',
       },
     ],
     tags: ['python', 'csharp'],
@@ -64,7 +64,7 @@ describe('<MaturityScoreInfoCard />', () => {
   ];
 
   const scoringApi: Partial<ScoringDataApi> = {
-    getMaturityCheckResults: jest.fn().mockResolvedValue(result),
+    runChecks: jest.fn().mockResolvedValue(result),
     getMaturityRank: jest.fn().mockResolvedValue(rank),
   };
 
