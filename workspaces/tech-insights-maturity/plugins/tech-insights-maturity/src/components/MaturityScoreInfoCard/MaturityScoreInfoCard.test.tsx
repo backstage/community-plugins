@@ -34,13 +34,6 @@ const entity = {
     namespace: 'default',
     name: 'bingaux-sources',
     title: 'Bingaux Sources',
-    stakeholders: [
-      {
-        role: 'architect',
-        email: 'jcarres@mdsol.com',
-      },
-    ],
-    tags: ['python', 'csharp'],
   },
   spec: {
     type: 'service',

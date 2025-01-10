@@ -29,13 +29,14 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
-    "@backstage-community/plugin-tech-insights": "^0.4.0",
+    "@backstage-community/plugin-tech-insights": "^0.3.33",
     "@backstage-community/plugin-tech-insights-maturity-common": "^0.1.0",
     "@backstage/catalog-client": "^1.7.1",
     "@backstage/catalog-model": "^1.7.0",
     "@backstage/core-components": "^0.16.2",
     "@backstage/core-plugin-api": "^1.10.2",
     "@backstage/plugin-catalog-react": "^1.15.0",
+    "@backstage/repo-tools": "0.3.5",
     "@backstage/theme": "^0.6.3",
     "@backstage/version-bridge": "^1.0.10",
     "@mui/icons-material": "5.14.1",
@@ -59,7 +60,7 @@
     "@testing-library/react": "^14.0.0",
     "@testing-library/user-event": "^14.0.0",
     "cross-fetch": "^4.1.0",
-    "msw": "^1.0.0",
+    "msw": "^2.7.0",
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-router-dom": "6.0.0-beta.0 || ^6.3.0"
