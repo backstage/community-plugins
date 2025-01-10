@@ -64,8 +64,10 @@ confluence:
     type: 'bearer' # can also be 'basic' or 'userpass'
     token: '${CONFLUENCE_TOKEN}'
   spaces: [] # It is highly recommended to safely list the spaces that you want to index, otherwise all spaces will be indexed.
-  query: '' # If your spaces contain documents you don't want to index, you can use a CQL query to more precisely select them. This is combined with the spaces parameter above. Documentation about CQL can be found here `https://developer.atlassian.com/server/confluence/advanced-searching-using-cql`
+  query: '' # If your spaces contain documents you don't want to index, you can use a CQL query to more precisely select them. This is combined with the spaces parameter above.
 ```
+
+Documentation about CQL can be found [here](https://developer.atlassian.com/server/confluence/advanced-searching-using-cql)
 
 The sections below will go into more details about the Base URL and Auth Methods.
 
