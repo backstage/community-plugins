@@ -13,7 +13,11 @@
     "types": "dist/index.d.ts"
   },
   "backstage": {
-    "role": "common-library"
+    "role": "common-library",
+    "pluginPackages": [
+      "@backstage-community/plugin-tech-insights-maturity",
+      "@backstage-community/plugin-tech-insights-maturity-common"
+    ]
   },
   "sideEffects": false,
   "scripts": {

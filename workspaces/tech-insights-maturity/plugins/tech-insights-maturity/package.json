@@ -14,6 +14,7 @@
     "role": "frontend-plugin",
     "pluginId": "tech-insights-maturity",
     "pluginPackages": [
+      "@backstage-community/plugin-tech-insights-maturity",
       "@backstage-community/plugin-tech-insights-maturity-common"
     ]
   },
@@ -29,7 +30,7 @@
   },
   "dependencies": {
     "@backstage-community/plugin-tech-insights": "^0.3.33",
-    "@backstage-community/plugin-tech-insights-maturity-common": "^0.1.0",
+    "@backstage-community/plugin-tech-insights-maturity-common": "workspace:^",
     "@backstage/catalog-client": "^1.7.1",
     "@backstage/catalog-model": "^1.7.0",
     "@backstage/core-components": "^0.16.2",
