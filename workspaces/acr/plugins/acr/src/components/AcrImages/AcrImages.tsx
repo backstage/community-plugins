@@ -16,45 +16,30 @@
 import React from 'react';
 import useAsync from 'react-use/esm/useAsync';
 
-import { Progress, Table } from '@backstage/core-components';
+import { ErrorPanel, Table } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
+import { Box } from '@material-ui/core';
 
 import { formatDate } from '@janus-idp/shared-react';
 
 import { AzureContainerRegistryApiRef } from '../../api';
 import { Tag, TagRow } from '../../types';
-import { ErrorReport } from './ErrorReport';
-import { columns, useStyles } from './tableHeading';
+import { columns } from './tableHeading';
 
-type AzureContainerRegistryProps = {
+type AcrImagesProps = {
   image: string;
 };
 
-export const AzureContainerRegistry = ({
-  image,
-}: AzureContainerRegistryProps) => {
+export const AcrImages = ({ image }: AcrImagesProps) => {
   const AzureContainerRegistryClient = useApi(AzureContainerRegistryApiRef);
-  const classes = useStyles();
   const title = `Azure Container Registry Repository: ${image}`;
   const { loading, value, error } = useAsync(() =>
     AzureContainerRegistryClient.getTags(image),
   );
 
-  if (loading) {
-    return (
-      <div data-testid="acr-repository-loading">
-        <Progress />
-      </div>
-    );
-  }
-
-  if (!loading && error) {
-    return (
-      <ErrorReport title="Could not fetch data." errorText={error.toString()} />
-    );
-  }
-
-  const data: TagRow[] = (value?.tags || []).map((tag: Tag) => {
+  // TODO: it should be possible to just pass the tags to the table.
+  const tags = value?.tags || [];
+  const data = tags.map<TagRow>((tag: Tag) => {
     return {
       name: tag.name,
       createdTime: formatDate(tag.createdTime),
@@ -64,15 +49,20 @@ export const AzureContainerRegistry = ({
     };
   });
 
+  const emptyContent = error ? (
+    <Box padding={2}>
+      <ErrorPanel error={error} />
+    </Box>
+  ) : null;
+
   return (
-    <div data-testid="acr-repository-view" style={{ border: '1px solid #ddd' }}>
-      <Table
-        title={title}
-        options={{ paging: true, padding: 'dense' }}
-        data={data}
-        columns={columns}
-        emptyContent={<div className={classes.empty}>No data found.</div>}
-      />
-    </div>
+    <Table
+      title={title}
+      columns={columns}
+      isLoading={loading}
+      data={data}
+      options={{ paging: true, padding: 'dense' }}
+      emptyContent={emptyContent}
+    />
   );
 };
