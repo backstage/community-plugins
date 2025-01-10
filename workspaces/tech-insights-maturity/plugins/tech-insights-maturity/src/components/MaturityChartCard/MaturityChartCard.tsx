@@ -23,7 +23,7 @@ import { styled } from '@mui/material/styles';
 import { useDrawingArea } from '@mui/x-charts/hooks';
 import { PieChart } from '@mui/x-charts/PieChart';
 import React from 'react';
-import { useAsyncRetry } from 'react-use';
+import useAsyncRetry from 'react-use/lib/useAsync';
 import { maturityApiRef } from '../../api';
 import { getRankColor } from '../../helpers/utils';
 

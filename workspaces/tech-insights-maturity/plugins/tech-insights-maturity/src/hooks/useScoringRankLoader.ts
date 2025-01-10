@@ -15,7 +15,7 @@
  */
 import { Entity } from '@backstage/catalog-model';
 import { useApi } from '@backstage/core-plugin-api';
-import { useAsyncRetry } from 'react-use';
+import useAsyncRetry from 'react-use/lib/useAsync';
 import { maturityApiRef } from '../api';
 
 export const useScoringRankLoader = (entity: Entity) => {

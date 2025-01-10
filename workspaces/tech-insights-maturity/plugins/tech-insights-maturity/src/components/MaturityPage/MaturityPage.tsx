@@ -18,13 +18,13 @@ import { useApi } from '@backstage/core-plugin-api';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import Grid from '@mui/material/Grid';
 import React from 'react';
-import { useAsync } from 'react-use';
+import useAsyncRetry from 'react-use/lib/useAsync';
 import { MaturityChartCard } from '../MaturityChartCard';
 
 export const MaturityPage = () => {
   const catalogApi = useApi(catalogApiRef);
 
-  const { value: entities } = useAsync(async () => {
+  const { value: entities } = useAsyncRetry(async () => {
     const entitiesList = await catalogApi.getEntities({
       filter: { kind: ['Component'] },
     });

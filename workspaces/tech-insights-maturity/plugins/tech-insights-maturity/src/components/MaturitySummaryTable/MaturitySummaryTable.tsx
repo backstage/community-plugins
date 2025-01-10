@@ -29,7 +29,7 @@ import Typography from '@mui/material/Typography';
 import { Circle, Line } from 'rc-progress';
 import React from 'react';
 
-import { useAsyncRetry } from 'react-use';
+import useAsyncRetry from 'react-use/lib/useAsync';
 import { maturityApiRef } from '../../api';
 import { getNextRankColor, pluralize } from '../../helpers/utils';
 import { MaturityLink } from '../../helpers/MaturityLink';
