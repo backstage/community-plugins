@@ -18,6 +18,16 @@
       "@backstage-community/plugin-tech-insights-maturity-common"
     ]
   },
+  "keywords": [
+    "backstage",
+    "tech-insights",
+    "tech-insights-maturity"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/tech-insights-maturity/plugins/tech-insights-maturity"
+  },
   "sideEffects": false,
   "scripts": {
     "start": "backstage-cli package start",

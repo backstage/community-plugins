@@ -7,17 +7,25 @@
   "license": "Apache-2.0",
   "private": true,
   "publishConfig": {
-    "access": "public",
-    "main": "dist/index.cjs.js",
-    "module": "dist/index.esm.js",
-    "types": "dist/index.d.ts"
+    "access": "public"
   },
   "backstage": {
     "role": "common-library",
+    "pluginId": "tech-insights-maturity",
     "pluginPackages": [
       "@backstage-community/plugin-tech-insights-maturity",
       "@backstage-community/plugin-tech-insights-maturity-common"
     ]
+  },
+  "keywords": [
+    "backstage",
+    "tech-insights",
+    "tech-insights-maturity"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/tech-insights-maturity/plugins/tech-insights-maturity-common"
   },
   "sideEffects": false,
   "scripts": {
