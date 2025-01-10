@@ -16,6 +16,7 @@
 export {
   techInsightsMaturityPlugin,
   EntityMaturityScorecardContent,
+  EntityMaturitySummaryContent,
   MaturityPage,
   EntityMaturityRankWidget,
   EntityMaturitySummaryCard,
