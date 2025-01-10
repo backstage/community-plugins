@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2025 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,29 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import React from 'react';
 import {
+  ApiBlueprint,
   configApiRef,
   createApiFactory,
-  createComponentExtension,
-  createPlugin,
+  createFrontendPlugin,
   discoveryApiRef,
   identityApiRef,
-} from '@backstage/core-plugin-api';
+} from '@backstage/frontend-plugin-api';
+import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
 
+import { isAcrAvailable } from './utils/isAcrAvailable';
 import {
   AzureContainerRegistryApiClient,
   AzureContainerRegistryApiRef,
 } from './api';
 
 /**
- * Backstage plugin.
+ * An API to communicate via the proxy to an ACR container registry.
  *
- * @public
+ * @alpha
  */
-export const acrPlugin = createPlugin({
-  id: 'acr',
-  apis: [
-    createApiFactory({
+export const acrApi = ApiBlueprint.make({
+  name: 'acrApi',
+  params: {
+    factory: createApiFactory({
       api: AzureContainerRegistryApiRef,
       deps: {
         discoveryApi: discoveryApiRef,
@@ -49,30 +52,33 @@ export const acrPlugin = createPlugin({
           identityApi,
         }),
     }),
-  ],
+  },
 });
 
 /**
  * A catalog entity content (tab) that shows the ACR container images.
  *
- * @public
+ * @alpha
  */
-export const AcrImagesEntityContent = acrPlugin.provide(
-  createComponentExtension({
-    name: 'AcrImagesEntityContent',
-    component: {
-      lazy: () =>
-        import('./components/AcrImagesEntityContent').then(
-          m => m.AcrImagesEntityContent,
-        ),
-    },
-  }),
-);
+export const acrImagesEntityContent = EntityContentBlueprint.make({
+  name: 'acrImagesEntityContent',
+  params: {
+    defaultPath: 'acr-images',
+    defaultTitle: 'ACR images',
+    filter: isAcrAvailable,
+    loader: () =>
+      import('./components/AcrImagesEntityContent').then(m => (
+        <m.AcrImagesEntityContent />
+      )),
+  },
+});
 
 /**
- * A catalog entity content (tab) that shows the ACR container images.
+ * Backstage frontend plugin.
  *
- * @public
- * @deprecated Please use `AcrImagesEntityContent` instead of `AcrPage`.
+ * @alpha
  */
-export const AcrPage = AcrImagesEntityContent;
+export default createFrontendPlugin({
+  id: 'acr',
+  extensions: [acrApi, acrImagesEntityContent],
+});

@@ -16,26 +16,23 @@
 import React from 'react';
 import useAsync from 'react-use/esm/useAsync';
 
+import { ErrorPanelProps } from '@backstage/core-components';
+
 import { render } from '@testing-library/react';
 
 import { mockAcrTagsData } from '../../__fixtures__/acrTagsObject';
-import { AzureContainerRegistry } from './AzureContainerRegistry';
+import { AcrImages } from './AcrImages';
+
+jest.mock('@backstage/core-components', () => ({
+  ...jest.requireActual('@backstage/core-components'),
+  ErrorPanel: ({ error }: ErrorPanelProps) => <div>{error.toString()}</div>,
+}));
 
 jest.mock('@backstage/core-plugin-api', () => ({
   ...jest.requireActual('@backstage/core-plugin-api'),
   useApi: jest.fn().mockReturnValue({
     getTags: jest.fn(),
   }),
-}));
-
-jest.mock('./tableHeading', () => ({
-  ...jest.requireActual('./tableHeading'),
-  useStyles: jest.fn().mockReturnValue({ empty: '' }),
-}));
-
-jest.mock('@material-ui/core', () => ({
-  ...jest.requireActual('@material-ui/core'),
-  makeStyles: () => jest.fn().mockReturnValue({ chip: '' }),
 }));
 
 jest.mock('@material-ui/core', () => ({
@@ -47,7 +44,7 @@ jest.mock('react-use/esm/useAsync', () =>
   jest.fn().mockReturnValue({ loading: true }),
 );
 
-describe('AzureContainerRegistry', () => {
+describe('AcrImages', () => {
   beforeEach(() => {
     (useAsync as jest.Mock).mockClear();
   });
@@ -60,10 +57,11 @@ describe('AzureContainerRegistry', () => {
       },
     };
     (useAsync as jest.Mock).mockReturnValue(mockAsyncData);
-    const { queryByTestId } = render(
-      <AzureContainerRegistry image="sample/node" />,
+    const { queryByRole, getByText } = render(
+      <AcrImages image="sample/node" />,
     );
-    expect(queryByTestId('acr-repository-view')).toBeInTheDocument();
+    expect(queryByRole('progressbar')).not.toBeInTheDocument();
+    expect(getByText('1.0.0')).toBeInTheDocument();
   });
 
   it('should show loading', () => {
@@ -71,11 +69,8 @@ describe('AzureContainerRegistry', () => {
       loading: true,
     };
     (useAsync as jest.Mock).mockReturnValue(mockAsyncData);
-    const { queryByTestId } = render(
-      <AzureContainerRegistry image="sample/node" />,
-    );
-    expect(queryByTestId('acr-repository-view')).not.toBeInTheDocument();
-    expect(queryByTestId('acr-repository-loading')).toBeInTheDocument();
+    const { queryByRole } = render(<AcrImages image="sample/node" />);
+    expect(queryByRole('progressbar')).toBeInTheDocument();
   });
 
   it('should show error', () => {
@@ -84,11 +79,10 @@ describe('AzureContainerRegistry', () => {
       error: 'something went wrong!!',
     };
     (useAsync as jest.Mock).mockReturnValue(mockAsyncData);
-    const { queryByTestId, getByText } = render(
-      <AzureContainerRegistry image="sample/node" />,
+    const { queryByRole, getByText } = render(
+      <AcrImages image="sample/node" />,
     );
+    expect(queryByRole('progressbar')).not.toBeInTheDocument();
     getByText(/something went wrong!!/i);
-    expect(queryByTestId('acr-repository-view')).not.toBeInTheDocument();
-    expect(queryByTestId('acr-repository-loading')).not.toBeInTheDocument();
   });
 });
