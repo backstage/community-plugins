@@ -45,7 +45,7 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
 
   private loadPolicyPromise: Promise<void> | null = null;
   private semaphore: number = 0;
-  private editOperationsQueue: Promise<void>[] = []; // Queue to track edit operations
+  private editOperationsQueue: Promise<any>[] = []; // Queue to track edit operations
 
   constructor(
     private readonly enforcer: Enforcer,
@@ -89,15 +89,17 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
     await Promise.all(this.editOperationsQueue);
   }
 
-  async execEditOperation(operation: Promise<void>): Promise<void> {
+  async execOperation<T>(operation: Promise<T>): Promise<T> {
     this.editOperationsQueue.push(operation);
 
-    await operation;
+    const result = await operation;
 
     const index = this.editOperationsQueue.indexOf(operation);
     if (index !== -1) {
       this.editOperationsQueue.splice(index, 1);
     }
+
+    return result;
   }
 
   on(event: RoleEvents, listener: (role: string) => void): this {
@@ -258,7 +260,7 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
         throw err;
       }
     })();
-    await this.execEditOperation(addPoliciesOperation);
+    await this.execOperation(addPoliciesOperation);
   }
 
   async addGroupingPolicy(
@@ -316,7 +318,7 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
         throw err;
       }
     })();
-    await this.execEditOperation(addGroupingPolicyOperation);
+    await this.execOperation(addGroupingPolicyOperation);
   }
 
   async addGroupingPolicies(
@@ -370,7 +372,7 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
         throw err;
       }
     })();
-    await this.execEditOperation(addGroupingPoliciesOperation);
+    await this.execOperation(addGroupingPoliciesOperation);
   }
 
   async updateGroupingPolicies(
@@ -411,7 +413,7 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
         throw err;
       }
     })();
-    await this.execEditOperation(updateGroupingPoliciesOperation);
+    await this.execOperation(updateGroupingPoliciesOperation);
   }
 
   async updatePolicies(
@@ -437,7 +439,7 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
         throw err;
       }
     })();
-    await this.execEditOperation(updatePoliciesOperation);
+    await this.execOperation(updatePoliciesOperation);
   }
 
   async removePolicy(policy: string[], externalTrx?: Knex.Transaction) {
@@ -463,7 +465,7 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
         throw err;
       }
     })();
-    await this.execEditOperation(removePolicyOperation);
+    await this.execOperation(removePolicyOperation);
   }
 
   async removePolicies(
@@ -495,7 +497,7 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
         throw err;
       }
     })();
-    await this.execEditOperation(removePoliciesOperation);
+    await this.execOperation(removePoliciesOperation);
   }
 
   async removeGroupingPolicy(
@@ -550,7 +552,7 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
         throw err;
       }
     })();
-    await this.execEditOperation(removeGroupingPolicyOperation);
+    await this.execOperation(removeGroupingPolicyOperation);
   }
 
   async removeGroupingPolicies(
@@ -608,7 +610,7 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
         throw err;
       }
     })();
-    await this.execEditOperation(removeGroupingPolicyOperation);
+    await this.execOperation(removeGroupingPolicyOperation);
   }
 
   /**
@@ -625,7 +627,8 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
    * The temporary enforcer has lazy loading of the permission policies enabled to reduce the amount
    * of time it takes to initialize the temporary enforcer.
    * The justification for lazy loading is because permission policies are already present in the
-   * role manager / database and it will be filtered and loaded whenever `loadFilteredPolicy` is called.
+   * role manager / database and it will be filtered and loaded whenever `getFilteredPolicy` is called
+   * and permissions / roles are applied to the temp enforcer
    * @param entityRef The user to enforce
    * @param resourceType The resource type / name of the permission policy
    * @param action The action of the permission policy
@@ -639,35 +642,59 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
     action: string,
     roles: string[],
   ): Promise<boolean> {
-    const filter = [];
-    if (roles.length > 0) {
-      roles.forEach(role => {
-        filter.push({ ptype: 'p', v0: role, v1: resourceType, v2: action });
-      });
-    } else {
-      filter.push({ ptype: 'p', v1: resourceType, v2: action });
+    if (this.loadPolicyPromise) {
+      await this.loadPolicyPromise;
     }
 
-    const adapt = this.enforcer.getAdapter();
-    const roleManager = this.enforcer.getRoleManager();
-    const tempEnforcer = new Enforcer();
-    await tempEnforcer.initWithModelAndAdapter(
-      newModelFromString(MODEL),
-      adapt,
-      true,
-    );
-    tempEnforcer.setRoleManager(roleManager);
+    const evaluatePermissionOperation = (async () => {
+      const filter = [];
+      if (roles.length > 0) {
+        roles.forEach(role => {
+          filter.push({ ptype: 'p', v0: role, v1: resourceType, v2: action });
+        });
+      } else {
+        filter.push({ ptype: 'p', v1: resourceType, v2: action });
+      }
 
-    await tempEnforcer.loadFilteredPolicy(filter);
+      const adapt = this.enforcer.getAdapter();
+      const roleManager = this.enforcer.getRoleManager();
+      const tempEnforcer = new Enforcer();
+      await tempEnforcer.initWithModelAndAdapter(
+        newModelFromString(MODEL),
+        adapt,
+        true,
+      );
+      tempEnforcer.setRoleManager(roleManager);
 
-    return await tempEnforcer.enforce(entityRef, resourceType, action);
+      await tempEnforcer.loadFilteredPolicy(filter);
+
+      return await tempEnforcer.enforce(entityRef, resourceType, action);
+    })();
+
+    return await this.execOperation(evaluatePermissionOperation);
   }
 
   async getImplicitPermissionsForUser(user: string): Promise<string[][]> {
-    return this.enforcer.getImplicitPermissionsForUser(user);
+    if (this.loadPolicyPromise) {
+      await this.loadPolicyPromise;
+    }
+
+    const getPermissionsForUserOperation = (async () => {
+      return this.enforcer.getImplicitPermissionsForUser(user);
+    })();
+
+    return await this.execOperation(getPermissionsForUserOperation);
   }
 
   async getAllRoles(): Promise<string[]> {
-    return this.enforcer.getAllRoles();
+    if (this.loadPolicyPromise) {
+      await this.loadPolicyPromise;
+    }
+
+    const getRolesOperation = (async () => {
+      return this.enforcer.getAllRoles();
+    })();
+
+    return await this.execOperation(getRolesOperation);
   }
 }
