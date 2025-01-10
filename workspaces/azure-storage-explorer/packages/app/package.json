@@ -20,8 +20,6 @@
   },
   "dependencies": {
     "@backstage-community/plugin-azure-storage-explorer": "workspace:^",
-    "@backstage-community/plugin-github-actions": "^0.6.16",
-    "@backstage-community/plugin-tech-radar": "^0.7.4",
     "@backstage/app-defaults": "^1.5.15",
     "@backstage/catalog-model": "^1.7.2",
     "@backstage/cli": "^0.29.4",
