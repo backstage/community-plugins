@@ -13,15 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Entity, getCompoundEntityRef } from '@backstage/catalog-model';
+import { Entity } from '@backstage/catalog-model';
 import { useApi } from '@backstage/core-plugin-api';
 import { useAsyncRetry } from 'react-use';
-import { scoringDataApiRef } from '../api';
+import { maturityApiRef } from '../api';
 
 export const useScoringDataLoader = (entity: Entity) => {
-  const api = useApi(scoringDataApiRef);
-  return useAsyncRetry(
-    async () => api.runChecks(getCompoundEntityRef(entity)),
-    [api, entity],
-  );
+  const api = useApi(maturityApiRef);
+  return useAsyncRetry(async () => api.getMaturityScore(entity), [api, entity]);
 };

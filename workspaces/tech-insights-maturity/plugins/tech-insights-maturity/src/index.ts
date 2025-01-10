@@ -18,5 +18,6 @@ export {
   EntityMaturityScorecardContent,
   MaturityPage,
   EntityMaturityRankWidget,
-  EntityMaturitySummaryCard as EntityMaturityScoreCard,
+  EntityMaturitySummaryCard,
 } from './plugin';
+export * from './api';

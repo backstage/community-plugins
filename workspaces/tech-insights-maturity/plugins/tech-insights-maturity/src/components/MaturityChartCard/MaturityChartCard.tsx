@@ -24,7 +24,7 @@ import { useDrawingArea } from '@mui/x-charts/hooks';
 import { PieChart } from '@mui/x-charts/PieChart';
 import React from 'react';
 import { useAsyncRetry } from 'react-use';
-import { scoringDataApiRef } from '../../api';
+import { maturityApiRef } from '../../api';
 import { getRankColor } from '../../helpers/utils';
 
 type Props = {
@@ -53,7 +53,7 @@ function PieCenterLabel({ children }: { children: React.ReactNode }) {
 }
 
 export const MaturityChartCard = ({ entities }: Props) => {
-  const api = useApi(scoringDataApiRef);
+  const api = useApi(maturityApiRef);
   const { loading, value } = useAsyncRetry(
     async () => api.getBulkMaturityCheckResults(entities),
     [api],

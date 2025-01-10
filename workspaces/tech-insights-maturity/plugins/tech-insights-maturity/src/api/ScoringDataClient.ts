@@ -37,17 +37,14 @@ import {
   MaturityCheckResult,
   MaturityRank,
   MaturitySummary,
-} from '@internal/plugin-maturity-common';
-import { ScoringDataApi } from './ScoringDataApi';
+} from '@backstage-community/plugin-tech-insights-maturity-common';
+import { MaturityApi } from './ScoringDataApi';
 import { ScoringDataFormatter } from './ScoringDataFormatter';
 
 const SDF = new ScoringDataFormatter();
 
-export class ScoringDataClient
-  extends TechInsightsClient
-  implements ScoringDataApi
-{
-  catalogApi: CatalogApi;
+export class MaturityClient extends TechInsightsClient implements MaturityApi {
+  private catalogApi: CatalogApi;
 
   constructor(options: {
     discoveryApi: DiscoveryApi;
@@ -68,6 +65,24 @@ export class ScoringDataClient
   ): Promise<BulkMaturityCheckResponse> {
     return await this.getBulkCheckResults(
       entities.map(x => getCompoundEntityRef(x)),
+    );
+  }
+
+  public async getMaturityScore(
+    entity: Entity,
+  ): Promise<MaturityCheckResult[]> {
+    const results = await this.getCheckResults(entity);
+    const facts = await this.getFacts(
+      getCompoundEntityRef(entity),
+      results?.flatMap(x => x.check.factIds),
+    );
+    return Promise.all(
+      results.map(async x => {
+        return {
+          ...x,
+          updated: facts[x.check.factIds[0]].timestamp,
+        };
+      }),
     );
   }
 
@@ -160,7 +175,7 @@ export class ScoringDataClient
       case 'System':
         return this.getComponentsForSystem(entity);
       case 'Domain':
-        return this.getComponentsForDomain(entity.metadata.name);
+        return this.getComponentsForDomain(entity);
       case 'Group':
         return this.getComponentsForGroup(entity);
       case 'User':
@@ -177,20 +192,24 @@ export class ScoringDataClient
   }
 
   private async getComponentsForDomain(
-    domainName: string,
+    entity: Entity,
   ): Promise<CompoundEntityRef[]> {
-    const request: GetEntitiesRequest = {
-      filter: [
-        {
-          kind: 'component',
-          'metadata.annotations.mdsol/domain': domainName,
-        },
-      ],
-    };
-    const response: GetEntitiesResponse = await this.catalogApi.getEntities(
-      request,
-    );
-    return response.items.map(x => getCompoundEntityRef(x));
+    const systemRefs = getEntityRelations(entity, RELATION_HAS_PART, {
+      kind: 'System',
+    });
+    const { items } = await this.catalogApi.getEntitiesByRefs({
+      entityRefs: systemRefs.map(x => stringifyEntityRef(x)),
+    });
+
+    const components: CompoundEntityRef[] = [];
+    for (const system of items.filter(x => x !== undefined)) {
+      Array.prototype.push.apply(
+        components,
+        await this.getComponentsForSystem(system),
+      );
+    }
+
+    return components;
   }
 
   private async getComponentsForOrganization(): Promise<CompoundEntityRef[]> {
@@ -207,15 +226,18 @@ export class ScoringDataClient
   private async getComponentsSolutonLine(
     entity: Entity,
   ): Promise<CompoundEntityRef[]> {
-    const components: CompoundEntityRef[] = [];
-
-    const domains = getEntityRelations(entity, RELATION_OWNER_OF, {
+    const domainRefs = getEntityRelations(entity, RELATION_OWNER_OF, {
       kind: 'Domain',
     });
-    for (const domain of domains) {
+    const { items } = await this.catalogApi.getEntitiesByRefs({
+      entityRefs: domainRefs.map(x => stringifyEntityRef(x)),
+    });
+
+    const components: CompoundEntityRef[] = [];
+    for (const domain of items.filter(x => x !== undefined)) {
       Array.prototype.push.apply(
         components,
-        await this.getComponentsForDomain(domain.name),
+        await this.getComponentsForSystem(domain),
       );
     }
 

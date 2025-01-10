@@ -19,16 +19,18 @@ import { createApiRef } from '@backstage/core-plugin-api';
 import {
   BulkMaturityCheckResponse,
   BulkMaturitySummary,
+  MaturityCheckResult,
   MaturityRank,
   MaturitySummary,
 } from '@backstage-community/plugin-tech-insights-maturity-common';
 
-export const scoringDataApiRef = createApiRef<ScoringDataApi>({
+export const maturityApiRef = createApiRef<MaturityApi>({
   id: 'plugin.scoringdata.service',
 });
 
-export type ScoringDataApi = TechInsightsApi & {
+export type MaturityApi = TechInsightsApi & {
   getMaturityRank(entity: Entity): Promise<MaturityRank>;
+  getMaturityScore(entity: Entity): Promise<MaturityCheckResult[]>;
   getBulkMaturityCheckResults(
     entities: Entity[],
   ): Promise<BulkMaturityCheckResponse>;

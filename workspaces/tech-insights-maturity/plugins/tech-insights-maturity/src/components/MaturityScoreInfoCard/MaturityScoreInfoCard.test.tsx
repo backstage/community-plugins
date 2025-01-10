@@ -21,9 +21,8 @@ import {
 } from '@backstage-community/plugin-tech-insights-maturity-common';
 import React from 'react';
 import { MaturityScoreInfoCard } from './MaturityScoreInfoCard';
-import { ScoringDataApi, scoringDataApiRef } from '../../api';
+import { MaturityApi, maturityApiRef } from '../../api';
 import {
-  hasReadMeCheckResult,
   productOwnershipCheckResult,
   technicalOwnershipCheckResult,
 } from '../../api/testData';
@@ -51,28 +50,52 @@ const entity = {
   },
 };
 
+const rank = {
+  rank: Rank.Bronze,
+  isMaxRank: false,
+};
+
+const result: MaturityCheckResult[] = [
+  productOwnershipCheckResult, // bronze
+  technicalOwnershipCheckResult, // silver
+  {
+    facts: {
+      hasReadme: {
+        id: 'hasReadme',
+        value: false,
+        type: 'boolean' as const,
+        description: 'The entity has valid README file',
+      },
+    },
+    result: false,
+    check: {
+      id: 'readmeValidationCheck',
+      type: 'Documentation',
+      name: 'Entity Documentation',
+      description: 'Entity is thoroughly documented',
+      factIds: ['hasReadme'],
+      metadata: {
+        exp: 100,
+        rank: Rank.Bronze,
+        category: 'Documentation',
+        solution: '',
+      },
+    },
+    updated: 'today',
+  },
+];
+
 describe('<MaturityScoreInfoCard />', () => {
-  const rank = {
-    rank: Rank.Bronze,
-    isMaxRank: false,
-  };
+  afterEach(() => jest.resetAllMocks());
 
-  const result: MaturityCheckResult[] = [
-    productOwnershipCheckResult, // bronze
-    technicalOwnershipCheckResult, // silver
-    hasReadMeCheckResult, // bronze
-  ];
-
-  const scoringApi: Partial<ScoringDataApi> = {
-    runChecks: jest.fn().mockResolvedValue(result),
+  const maturityApi: Partial<MaturityApi> = {
+    getMaturityScore: jest.fn().mockResolvedValue(result),
     getMaturityRank: jest.fn().mockResolvedValue(rank),
   };
 
-  afterEach(() => jest.resetAllMocks());
-
   it('shows maturity score table', async () => {
     const { getByText, queryByText, getAllByText } = await renderInTestApp(
-      <TestApiProvider apis={[[scoringDataApiRef, scoringApi]]}>
+      <TestApiProvider apis={[[maturityApiRef, maturityApi]]}>
         <MaturityScoreInfoCard entity={entity} />
       </TestApiProvider>,
       {
@@ -91,5 +114,8 @@ describe('<MaturityScoreInfoCard />', () => {
 
     expect(queryByText('Silver')).toBeInTheDocument(); // area Rank widget
     expect(getByText(/technicalOwnershipCheck/)).toBeInTheDocument();
+
+    expect(getAllByText('Not yet run')).toHaveLength(2); // update timestamp
+    expect(queryByText('Updated today')).toBeInTheDocument(); // hasReadme update timestamp
   });
 });

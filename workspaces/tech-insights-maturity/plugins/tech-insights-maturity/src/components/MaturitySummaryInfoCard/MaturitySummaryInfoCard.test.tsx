@@ -24,7 +24,7 @@ import {
 } from '@backstage-community/plugin-tech-insights-maturity-common';
 import React from 'react';
 import { MaturitySummaryInfoCard } from './MaturitySummaryInfoCard';
-import { ScoringDataApi, scoringDataApiRef } from '../../api';
+import { MaturityApi, maturityApiRef } from '../../api';
 
 const entity = {
   apiVersion: 'backstage.io/v1alpha1',
@@ -79,7 +79,7 @@ describe('<MaturityOverviewCard />', () => {
     ],
   };
 
-  const scoringApi: Partial<ScoringDataApi> = {
+  const scoringApi: Partial<MaturityApi> = {
     getMaturitySummary: jest.fn().mockResolvedValue(result),
   };
 
@@ -87,7 +87,7 @@ describe('<MaturityOverviewCard />', () => {
 
   it('shows maturity summary Info card', async () => {
     const { getByText, getByAltText, getAllByTestId } = await renderInTestApp(
-      <TestApiProvider apis={[[scoringDataApiRef, scoringApi]]}>
+      <TestApiProvider apis={[[maturityApiRef, scoringApi]]}>
         <EntityProvider entity={entity}>
           <MaturitySummaryInfoCard />
         </EntityProvider>

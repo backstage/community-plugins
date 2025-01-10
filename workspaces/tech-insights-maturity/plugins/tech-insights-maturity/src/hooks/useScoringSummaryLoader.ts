@@ -16,10 +16,10 @@
 import { Entity } from '@backstage/catalog-model';
 import { useApi } from '@backstage/core-plugin-api';
 import { useAsyncRetry } from 'react-use';
-import { scoringDataApiRef } from '../api';
+import { maturityApiRef } from '../api';
 
 export const useScoringSummaryLoader = (entity: Entity) => {
-  const api = useApi(scoringDataApiRef);
+  const api = useApi(maturityApiRef);
   return useAsyncRetry(
     async () => api.getMaturitySummary(entity),
     [api, entity],

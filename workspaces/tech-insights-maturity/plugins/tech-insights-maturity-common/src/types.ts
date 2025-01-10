@@ -58,7 +58,7 @@ export interface MaturityCheckResponse extends CheckResponse {
 export interface MaturityCheckResult extends BooleanCheckResult {
   // JsonRuleBooleanCheckResult
   check: MaturityCheckResponse;
-  updated: string;
+  updated?: string;
 }
 
 export interface MaturityRank {

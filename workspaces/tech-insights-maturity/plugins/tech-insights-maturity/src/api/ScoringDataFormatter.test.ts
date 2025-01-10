@@ -20,7 +20,6 @@ import {
 import { ScoringDataFormatter } from './ScoringDataFormatter';
 import {
   activeOwnershipCheckResult,
-  hasReadMeCheckResult,
   productOwnershipCheckResult,
   technicalOwnershipCheckResult,
 } from './testData';
@@ -38,7 +37,30 @@ const multipleAreasMultipleChecksCheckResult: MaturityCheckResult[] = [
   productOwnershipCheckResult,
   technicalOwnershipCheckResult,
   activeOwnershipCheckResult,
-  hasReadMeCheckResult,
+  {
+    facts: {
+      hasReadme: {
+        id: 'hasReadme',
+        value: false,
+        type: 'boolean' as const,
+        description: 'The entity has valid README file',
+      },
+    },
+    result: false,
+    check: {
+      id: 'readmeValidationCheck',
+      type: 'Documentation',
+      name: 'Entity Documentation',
+      description: 'Entity is thoroughly documented',
+      factIds: ['hasReadme'],
+      metadata: {
+        exp: 100,
+        rank: Rank.Bronze,
+        category: 'Documentation',
+        solution: '',
+      },
+    },
+  },
 ];
 
 describe('ScoringDataFormatter', () => {

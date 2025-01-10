@@ -30,7 +30,7 @@ import { Circle, Line } from 'rc-progress';
 import React from 'react';
 
 import { useAsyncRetry } from 'react-use';
-import { scoringDataApiRef } from '../../api';
+import { maturityApiRef } from '../../api';
 import { getNextRankColor, pluralize } from '../../helpers/utils';
 import { MaturityLink } from '../../helpers/MaturityLink';
 import { MaturityRankAvatar } from '../MaturityRankAvatar';
@@ -125,7 +125,7 @@ export function MaturitySummaryTable({
 }: Readonly<{ entities: Entity[] }>) {
   const theme = useTheme();
 
-  const api = useApi(scoringDataApiRef);
+  const api = useApi(maturityApiRef);
   const { value } = useAsyncRetry(
     async () => api.getBulkMaturitySummary(entities),
     [api, entities],

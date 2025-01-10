@@ -48,7 +48,6 @@ export const productOwnershipCheckResult: MaturityCheckResult = {
         'Add a person with "product owner" role to metadata.people list in the factbook',
     },
   },
-  updated: 'updated today',
 };
 
 export const technicalOwnershipCheckResult: MaturityCheckResult = {
@@ -81,7 +80,6 @@ export const technicalOwnershipCheckResult: MaturityCheckResult = {
         'Add a person with "technical owner" role to metadata.people list in the factbook',
     },
   },
-  updated: 'updated today',
 };
 
 export const activeOwnershipCheckResult: MaturityCheckResult = {
@@ -114,31 +112,4 @@ export const activeOwnershipCheckResult: MaturityCheckResult = {
     },
     factIds: ['entityStakeholdersFactRetriever'],
   },
-  updated: 'updated today',
-};
-
-export const hasReadMeCheckResult: MaturityCheckResult = {
-  facts: {
-    hasReadme: {
-      id: 'hasReadme',
-      value: false,
-      type: 'boolean' as const,
-      description: 'The entity has valid README file',
-    },
-  },
-  result: false,
-  check: {
-    id: 'readmeValidationCheck',
-    type: 'Documentation',
-    name: 'Entity Documentation',
-    description: 'Entity is thoroughly documented',
-    factIds: ['hasReadme'],
-    metadata: {
-      exp: 100,
-      rank: Rank.Bronze,
-      category: 'Documentation',
-      solution: '',
-    },
-  },
-  updated: 'updated today',
 };

@@ -34,7 +34,7 @@ import {
 
 import React from 'react';
 import { MaturitySummaryTable } from './MaturitySummaryTable';
-import { ScoringDataApi, scoringDataApiRef } from '../../api';
+import { MaturityApi, maturityApiRef } from '../../api';
 
 const mockSystem: Entity = {
   apiVersion: 'backstage.io/v1alpha1',
@@ -125,7 +125,7 @@ describe('<MaturitySummaryTable />', () => {
     getEntitiesByRefs: jest.fn().mockResolvedValue({ items: [mockComponent] }),
   };
 
-  const scoringDataApi: Partial<ScoringDataApi> = {
+  const scoringDataApi: Partial<MaturityApi> = {
     getBulkMaturitySummary: jest.fn().mockResolvedValue(bulkSummary),
   };
 
@@ -137,7 +137,7 @@ describe('<MaturitySummaryTable />', () => {
         <TestApiProvider
           apis={[
             [catalogApiRef, catalogApi],
-            [scoringDataApiRef, scoringDataApi],
+            [maturityApiRef, scoringDataApi],
           ]}
         >
           <EntityProvider entity={mockSystem}>

@@ -14,31 +14,21 @@
  * limitations under the License.
  */
 import { CatalogApi } from '@backstage/catalog-client';
-import {
-  Entity,
-  RELATION_HAS_MEMBER,
-  RELATION_HAS_PART,
-  RELATION_MEMBER_OF,
-  RELATION_OWNED_BY,
-  RELATION_OWNER_OF,
-  RELATION_PART_OF,
-  stringifyEntityRef,
-} from '@backstage/catalog-model';
-import { DiscoveryApi, IdentityApi } from '@backstage/core-plugin-api';
-
+import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import {
   BulkMaturityCheckResponse,
   MaturityCheckResult,
   MaturityRank,
   MaturitySummary,
   Rank,
-} from '@internal/plugin-maturity-common';
-import { ScoringDataClient } from './ScoringDataClient';
+} from '@backstage-community/plugin-tech-insights-maturity-common';
+import { MaturityClient } from './';
 import {
   activeOwnershipCheckResult,
   productOwnershipCheckResult,
   technicalOwnershipCheckResult,
 } from './testData';
+import { mockApis } from '@backstage/test-utils';
 
 const mockSystem = {
   apiVersion: 'backstage.io/v1alpha1',
@@ -50,8 +40,8 @@ const mockSystem = {
   },
   relations: [
     {
-      type: RELATION_HAS_PART,
-      targetRef: 'component:default/ampridatvir',
+      type: 'hasPart',
+      targetRef: 'component:default/mock-component',
     },
   ],
   spec: {
@@ -65,50 +55,18 @@ const entity: Entity = {
   kind: 'Component',
   metadata: {
     namespace: 'default',
-    annotations: {
-      'fossa.io/project-name': 'Ampridatvir',
-      'mdsol/medistrano-id': '219',
-      'sonarqube.org/project-key': 'com.mdsol:Medidata.Ampridatvir',
-    },
-    json_schema:
-      'https://github.com/mdsol/platform-standards/blob/main/schemas/factbook.v1.json',
-    name: 'ampridatvir',
-    title: 'Ampridatvir (Self Help Service)',
+    name: 'mock-component',
+    title: 'mock-component (Self Help Service)',
     description:
       'A service that helps users of our platform report issues, and helps customer service and Medidata engineers to debug issues by providing essential information from backend services.',
-    teams: [
-      {
-        name: 'SRE',
-        number: 248,
-        email: 'sre@mdsol.com',
-      },
-    ],
-    channels: [
-      {
-        url: 'https://mdsol.slack.com/archives/team-51',
-        automated_messaging: false,
-        role: 'slack',
-      },
-    ],
-    stakeholders: [
-      {
-        role: 'technical owner',
-        email: 'bvillanueva@mdsol.com',
-      },
-      {
-        role: 'product owner',
-        email: 'jcarres@mdsol.com',
-      },
-    ],
-    tags: ['csharp', 'gherkin'],
   },
   relations: [
     {
-      type: RELATION_PART_OF,
+      type: 'partOf',
       targetRef: 'system:default/mock-system',
     },
     {
-      type: RELATION_OWNED_BY,
+      type: 'ownedBy',
       targetRef: 'group:test/mock-team',
     },
   ],
@@ -146,151 +104,6 @@ const awsWarningsCheckResult: MaturityCheckResult = {
   },
 };
 
-// Check Result for System/Domain
-const mockSystemCheckResult: MaturityCheckResult[] = [
-  awsWarningsCheckResult,
-  productOwnershipCheckResult,
-  technicalOwnershipCheckResult,
-  activeOwnershipCheckResult,
-  {
-    facts: {
-      hasTechnicalOwner: {
-        id: 'hasTechnicalOwner',
-        type: 'boolean' as const,
-        description: 'Technical owner is present in factbook',
-        value: false,
-      },
-    },
-    result: false,
-    check: {
-      id: 'technicalOwnershipCheck',
-      type: 'json-rules-engine',
-      name: 'Technical Ownership',
-      description: 'Entity has a full technical ownership',
-      factIds: ['entityStakeholdersFactRetriever'],
-      links: [
-        {
-          title: 'ownership',
-          url: 'https://devops.imedidata.net/docs/default/component/observability/practices/ownership/authoring-factbook/#ownership',
-        },
-      ],
-      metadata: {
-        exp: 200,
-        rank: Rank.Silver,
-        category: 'Ownership',
-        solution:
-          'Add medidata engineer with "technical owner" role to metadata.people list in the factbook',
-      },
-    },
-  },
-  {
-    facts: {
-      technicalOwnersAreActive: {
-        id: 'technicalOwnersAreActive',
-        type: 'boolean' as const,
-        description: 'Technical owners are currently present in Medidata',
-        value: true,
-      },
-    },
-    result: true,
-    check: {
-      id: 'technicalOwnershipCheck',
-      type: 'Ownership',
-      name: 'Technical Ownership',
-      description: 'Entity has a full technical ownership',
-      factIds: ['entityStakeholdersFactRetriever'],
-      links: [
-        {
-          title: 'ownership',
-          url: 'https://devops.imedidata.net/docs/default/component/observability/practices/ownership/authoring-factbook/#ownership',
-        },
-      ],
-      metadata: {
-        category: 'Ownership',
-        rank: Rank.Gold,
-        solution:
-          'Add active medidata engineer with "technical owner" role to metadata.people list in the factbook',
-        exp: 300,
-      },
-    },
-  },
-  {
-    facts: {
-      hasTechnicalOwner: {
-        id: 'hasTechnicalOwner',
-        type: 'boolean' as const,
-        description: 'Technical owner is present in factbook',
-        value: true,
-      },
-      technicalOwnersAreActive: {
-        id: 'technicalOwnersAreActive',
-        type: 'boolean' as const,
-        description: 'Technical owners are currently present in Medidata',
-        value: true,
-      },
-    },
-    result: true,
-    check: {
-      id: 'technicalOwnershipCheck',
-      type: 'Ownership',
-      name: 'Technical Ownership',
-      description: 'Entity has a full technical ownership',
-      factIds: ['entityStakeholdersFactRetriever'],
-      links: [
-        {
-          title: 'ownership',
-          url: 'https://devops.imedidata.net/docs/default/component/observability/practices/ownership/authoring-factbook/#ownership',
-        },
-      ],
-      metadata: {
-        category: 'Ownership',
-        exp: 200,
-        rank: Rank.Silver,
-        solution:
-          'Add active medidata engineer with "technical owner" role to metadata.people list in the factbook',
-      },
-    },
-  },
-  {
-    facts: {
-      technicalOwnersAreActive: {
-        id: 'technicalOwnersAreActive',
-        type: 'boolean' as const,
-        description: 'Technical owners are currently present in Medidata',
-        value: false,
-      },
-    },
-    result: false,
-    check: {
-      id: 'technicalOwnershipCheck',
-      type: 'Ownership',
-      name: 'Technical Ownership',
-      description: 'Entity has a full technical ownership',
-      factIds: ['entityStakeholdersFactRetriever'],
-      links: [
-        {
-          title: 'ownership',
-          url: 'https://devops.imedidata.net/docs/default/component/observability/practices/ownership/authoring-factbook/#ownership',
-        },
-      ],
-      metadata: {
-        category: 'Ownership',
-        rank: Rank.Gold,
-        exp: 300,
-        solution:
-          'Add active medidata engineer with "technical owner" role to metadata.people list in the factbook',
-      },
-    },
-  },
-];
-
-const bulkSystemCheckResult = [
-  {
-    entity: stringifyEntityRef(mockSystem),
-    results: mockSystemCheckResult,
-  },
-];
-
 const checkResults = [
   awsWarningsCheckResult,
   productOwnershipCheckResult,
@@ -298,7 +111,7 @@ const checkResults = [
   activeOwnershipCheckResult,
 ];
 
-const bulkComponentCheckResult = [
+const bulkCheckResult = [
   {
     entity: stringifyEntityRef(entity),
     results: checkResults,
@@ -315,7 +128,7 @@ const mockUser: Entity = {
   },
   relations: [
     {
-      type: RELATION_MEMBER_OF,
+      type: 'memberOf',
       targetRef: 'group:test/mock-team',
     },
   ],
@@ -334,12 +147,12 @@ const mockTeam: Entity = {
   },
   relations: [
     {
-      type: RELATION_HAS_MEMBER,
+      type: 'hasMember',
       targetRef: 'user:test/mock-user',
     },
     {
-      type: RELATION_OWNER_OF,
-      targetRef: 'component:default/ampridatvir',
+      type: 'ownerOf',
+      targetRef: 'component:default/mock-component',
     },
   ],
 };
@@ -359,94 +172,58 @@ const mockCatalogApi: Partial<CatalogApi> = {
   },
 };
 
-let mockDiscoveryApi: jest.Mocked<DiscoveryApi>;
-let mockIdentityApi: jest.Mocked<IdentityApi>;
+const sdc = new MaturityClient({
+  catalogApi: mockCatalogApi as CatalogApi,
+  discoveryApi: mockApis.discovery.mock(),
+  identityApi: mockApis.identity.mock(),
+});
 
-jest.mock('@backstage-community/plugin-tech-insights', () => ({
-  TechInsightsClient: jest.fn(() => ({
-    runChecks: jest.fn().mockResolvedValue(checkResults),
-    runBulkChecks: jest
-      .fn()
-      .mockResolvedValueOnce(bulkComponentCheckResult)
-      .mockResolvedValue(bulkSystemCheckResult),
-  })),
-}));
-
-describe('ScoringDataClient', () => {
-  const sdc = new ScoringDataClient({
-    catalogApi: mockCatalogApi as CatalogApi,
-    discoveryApi: mockDiscoveryApi,
-    identityApi: mockIdentityApi,
-  });
-
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
-  describe('getBulkMaturityCheckResults', () => {
-    it('generates bulk maturity scores for a given user', async () => {
-      const expected: BulkMaturityCheckResponse = [
-        {
-          entity: 'component:default/ampridatvir',
-          checks: [
-            awsWarningsCheckResult,
-            productOwnershipCheckResult,
-            technicalOwnershipCheckResult,
-            activeOwnershipCheckResult,
-          ],
-          rank: Rank.Silver,
-          isMaxRank: false,
-        },
-      ];
-
-      expect(await sdc.getChildMaturityCheckResults(mockUser)).toEqual(
-        expected,
-      );
-    });
-  });
-
+describe('MaturityClient', () => {
   describe('getMaturityRank', () => {
     it('generates a  maturity rank for a given component', async () => {
       const expected: MaturityRank = {
-        rank: Rank.Bronze,
+        rank: Rank.Silver,
         isMaxRank: false,
       };
+      jest.spyOn(sdc, 'runChecks').mockResolvedValue(checkResults);
 
       expect(await sdc.getMaturityRank(mockSystem)).toMatchObject(expected);
     });
   });
 
   describe('getMaturitySummary', () => {
+    jest.spyOn(sdc, 'runBulkChecks').mockResolvedValue(bulkCheckResult);
+
     it('generates a maturity summary for a given system', async () => {
       const expected: MaturitySummary = {
-        rank: Rank.Bronze,
+        rank: Rank.Silver,
         maxRank: Rank.Gold,
-        points: 900,
+        points: 400,
         isMaxRank: false,
         progress: {
-          passedChecks: 5,
-          totalChecks: 8,
-          percentage: 63,
+          passedChecks: 3,
+          totalChecks: 4,
+          percentage: 75,
         },
         rankProgress: {
-          passedChecks: 2,
-          totalChecks: 3,
-          percentage: 67,
+          passedChecks: 0,
+          totalChecks: 1,
+          percentage: 0,
         },
         areaSummaries: [
           {
             area: 'Ownership',
             progress: {
-              passedChecks: 4,
-              totalChecks: 7,
-              percentage: 57,
-            },
-            rankProgress: {
               passedChecks: 2,
               totalChecks: 3,
               percentage: 67,
             },
-            rank: Rank.Bronze,
+            rankProgress: {
+              passedChecks: 0,
+              totalChecks: 1,
+              percentage: 0,
+            },
+            rank: Rank.Silver,
             maxRank: Rank.Gold,
             isMaxRank: false,
           },
@@ -470,6 +247,30 @@ describe('ScoringDataClient', () => {
       };
 
       expect(await sdc.getMaturitySummary(mockSystem)).toEqual(expected);
+    });
+  });
+
+  describe('getBulkMaturityCheckResults', () => {
+    jest.spyOn(sdc, 'runBulkChecks').mockResolvedValue(bulkCheckResult);
+
+    it('generates bulk maturity scores for a given user', async () => {
+      const expected: BulkMaturityCheckResponse = [
+        {
+          entity: 'component:default/mock-component',
+          checks: [
+            awsWarningsCheckResult,
+            productOwnershipCheckResult,
+            technicalOwnershipCheckResult,
+            activeOwnershipCheckResult,
+          ],
+          rank: Rank.Silver,
+          isMaxRank: false,
+        },
+      ];
+
+      expect(await sdc.getChildMaturityCheckResults(mockUser)).toEqual(
+        expected,
+      );
     });
   });
 });

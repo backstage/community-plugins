@@ -38,11 +38,6 @@ import Typography from '@mui/material/Typography';
 import { makeStyles, styled } from '@mui/styles';
 import React from 'react';
 import { MaturityRankAvatar } from '../MaturityRankAvatar';
-import { useApi } from '@backstage/core-plugin-api';
-import { useAsyncRetry } from 'react-use';
-import { getCompoundEntityRef } from '@backstage/catalog-model';
-import { useEntity } from '@backstage/plugin-catalog-react';
-import { scoringDataApiRef } from '../../api';
 
 const Accordion = styled((props: AccordionProps) => (
   <MuiAccordion disableGutters elevation={0} square {...props} />
@@ -91,14 +86,6 @@ const MaturityCheckTableRow = ({
     checkResult.result === false,
   );
 
-  const api = useApi(scoringDataApiRef);
-  const { entity } = useEntity();
-  const { value: facts } = useAsyncRetry(
-    async () =>
-      api.getFacts(getCompoundEntityRef(entity), checkResult.check.factIds),
-    [api, entity, checkResult],
-  );
-
   const handleChange =
     () => (_event: React.SyntheticEvent, newExpanded: boolean) => {
       setExpanded(newExpanded);
@@ -118,7 +105,6 @@ const MaturityCheckTableRow = ({
   });
 
   const { check, solution, filters } = useStyles();
-
   return (
     <div>
       <Accordion expanded={expanded} onChange={handleChange()}>
@@ -170,8 +156,8 @@ const MaturityCheckTableRow = ({
                     <AccessTimeIcon color="primary" />
                   </Tooltip>
                   <Typography variant="subtitle2" className={filters}>
-                    {facts
-                      ? `Updated ${Object.values(facts)[0].timestamp}`
+                    {checkResult.updated
+                      ? `Updated ${checkResult.updated}`
                       : 'Not yet run'}
                   </Typography>
                 </Stack>

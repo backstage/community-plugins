@@ -24,7 +24,7 @@ import {
 } from '@backstage-community/plugin-tech-insights-maturity-common';
 import React from 'react';
 import { MaturityRankWidget } from './MaturityRankWidget';
-import { ScoringDataApi, scoringDataApiRef } from '../../api';
+import { MaturityApi, maturityApiRef } from '../../api';
 
 const entity = {
   apiVersion: 'backstage.io/v1alpha1',
@@ -57,12 +57,12 @@ describe('<MaturityRankWidget />', () => {
       isMaxRank: true,
     };
 
-    const scoringApi: Partial<ScoringDataApi> = {
+    const scoringApi: Partial<MaturityApi> = {
       getMaturityRank: jest.fn().mockResolvedValue(rank),
     };
 
     const { getByAltText } = await renderInTestApp(
-      <TestApiProvider apis={[[scoringDataApiRef, scoringApi]]}>
+      <TestApiProvider apis={[[maturityApiRef, scoringApi]]}>
         <EntityProvider entity={entity}>
           <MaturityRankWidget entity={entity} />
         </EntityProvider>
@@ -83,12 +83,12 @@ describe('<MaturityRankWidget />', () => {
       isMaxRank: false,
     };
 
-    const scoringApi: Partial<ScoringDataApi> = {
+    const scoringApi: Partial<MaturityApi> = {
       getMaturityRank: jest.fn().mockResolvedValue(rank),
     };
 
     const { getByAltText } = await renderInTestApp(
-      <TestApiProvider apis={[[scoringDataApiRef, scoringApi]]}>
+      <TestApiProvider apis={[[maturityApiRef, scoringApi]]}>
         <EntityProvider entity={entity}>
           <MaturityRankWidget entity={entity} />
         </EntityProvider>
@@ -109,12 +109,12 @@ describe('<MaturityRankWidget />', () => {
       isMaxRank: true,
     };
 
-    const scoringApi: Partial<ScoringDataApi> = {
+    const scoringApi: Partial<MaturityApi> = {
       getMaturityRank: jest.fn().mockResolvedValue(rank),
     };
 
     const { getByAltText } = await renderInTestApp(
-      <TestApiProvider apis={[[scoringDataApiRef, scoringApi]]}>
+      <TestApiProvider apis={[[maturityApiRef, scoringApi]]}>
         <EntityProvider entity={entity}>
           <MaturityRankWidget entity={entity} />
         </EntityProvider>
@@ -135,12 +135,12 @@ describe('<MaturityRankWidget />', () => {
       isMaxRank: true,
     };
 
-    const scoringApi: Partial<ScoringDataApi> = {
+    const scoringApi: Partial<MaturityApi> = {
       getMaturityRank: jest.fn().mockResolvedValue(rank),
     };
 
     const { getByAltText } = await renderInTestApp(
-      <TestApiProvider apis={[[scoringDataApiRef, scoringApi]]}>
+      <TestApiProvider apis={[[maturityApiRef, scoringApi]]}>
         <EntityProvider entity={entity}>
           <MaturityRankWidget entity={entity} />
         </EntityProvider>

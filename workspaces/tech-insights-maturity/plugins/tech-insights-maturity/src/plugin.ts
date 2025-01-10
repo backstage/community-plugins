@@ -23,7 +23,7 @@ import {
 } from '@backstage/core-plugin-api';
 
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
-import { scoringDataApiRef, ScoringDataClient } from './api';
+import { maturityApiRef, MaturityClient } from './api';
 import { rootRouteRef } from './routes';
 
 export const techInsightsMaturityPlugin = createPlugin({
@@ -33,14 +33,14 @@ export const techInsightsMaturityPlugin = createPlugin({
   },
   apis: [
     createApiFactory({
-      api: scoringDataApiRef,
+      api: maturityApiRef,
       deps: {
         catalogApi: catalogApiRef,
         discoveryApi: discoveryApiRef,
         identityApi: identityApiRef,
       },
       factory: ({ catalogApi, discoveryApi, identityApi }) =>
-        new ScoringDataClient({
+        new MaturityClient({
           catalogApi,
           discoveryApi,
           identityApi,
