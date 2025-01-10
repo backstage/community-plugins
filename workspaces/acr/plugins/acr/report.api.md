@@ -10,10 +10,10 @@ import { Entity } from '@backstage/catalog-model';
 import { JSX as JSX_2 } from 'react';
 import { RouteRef } from '@backstage/core-plugin-api';
 
-// @public (undocumented)
+// @public
 export const AcrPage: () => JSX_2.Element;
 
-// @public (undocumented)
+// @public
 export const acrPlugin: BackstagePlugin<
   {
     root: RouteRef<undefined>;
@@ -22,8 +22,6 @@ export const acrPlugin: BackstagePlugin<
   {}
 >;
 
-// @public (undocumented)
+// @public
 export const isAcrAvailable: (entity: Entity) => boolean;
-
-// (No @packageDocumentation comment for this package)
 ```
