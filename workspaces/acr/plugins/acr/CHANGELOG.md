@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.8.8
+
+### Patch Changes
+
+- f9270df: fix `react-use` compile issue and update plugin description
+
 ## 1.8.7
 
 ### Patch Changes
