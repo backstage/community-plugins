@@ -61,10 +61,13 @@ There is some configuration that needs to be setup to use this action, these are
 confluence:
   baseUrl: 'http://confluence.example.com'
   auth:
+    type: 'bearer' # can also be 'basic' or 'userpass'
     token: '${CONFLUENCE_TOKEN}'
-  spaces: [] # Warning, it is highly recommended to safely list the spaces that you want to index, either all documents will be indexed.
-  query: '' # If your spaces contain documents you don't want to index, you can use a CQL query to more precisely select them. This is combined with the spaces parameter above
+  spaces: [] # It is highly recommended to safely list the spaces that you want to index, otherwise all spaces will be indexed.
+  query: '' # If your spaces contain documents you don't want to index, you can use a CQL query to more precisely select them. This is combined with the spaces parameter above.
 ```
+
+Documentation about CQL can be found [here](https://developer.atlassian.com/server/confluence/advanced-searching-using-cql)
 
 The sections below will go into more details about the Base URL and Auth Methods.
 
@@ -110,7 +113,7 @@ confluence:
     password: 'your-password'
 ```
 
-**Note:** For `basic` and `bearer` authorization methods you will need an access token for authorization with `Read` permissions. You can create a Personal Access Token (PAT) in Confluence. The value used should be the raw token as it will be encoded for you by the action.
+**Note:** For `basic` and `bearer` authorization methods you will need an access token for authorization with `Read` permissions. You can create a Personal Access Token (PAT) [in Confluence](https://support.atlassian.com/atlassian-account/docs/manage-api-tokens-for-your-atlassian-account/). The value used should be the raw token as it will be encoded for you by the action.
 
 #### Search Schedule
 
