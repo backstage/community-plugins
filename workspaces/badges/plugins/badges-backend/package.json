@@ -42,7 +42,7 @@
     "test": "backstage-cli package test"
   },
   "dependencies": {
-    "@backstage/backend-common": "^0.25.0",
+    "@backstage/backend-defaults": "^0.6.2",
     "@backstage/backend-plugin-api": "^1.1.0",
     "@backstage/catalog-client": "^1.9.0",
     "@backstage/catalog-model": "^1.7.2",

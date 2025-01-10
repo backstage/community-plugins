@@ -16,18 +16,17 @@
 
 import express from 'express';
 import request from 'supertest';
-import {
-  getVoidLogger,
-  PluginEndpointDiscovery,
-  HostDiscovery,
-} from '@backstage/backend-common';
 import { CatalogApi } from '@backstage/catalog-client';
 import type { Entity } from '@backstage/catalog-model';
 import { Config, ConfigReader } from '@backstage/config';
 import { createRouter } from './router';
 import { BadgeBuilder } from '../lib';
 import { BadgesStore } from '../database/badgesStore';
-import { mockCredentials, mockServices } from '@backstage/backend-test-utils';
+import {
+  mockCredentials,
+  mockServices,
+  TestDatabases,
+} from '@backstage/backend-test-utils';
 
 describe('createRouter', () => {
   let app: express.Express;
@@ -68,8 +67,6 @@ describe('createRouter', () => {
       },
     },
   });
-
-  let discovery: PluginEndpointDiscovery;
 
   const entity: Entity = {
     apiVersion: 'v1',
@@ -115,16 +112,20 @@ describe('createRouter', () => {
     }),
   };
 
+  const databases = TestDatabases.create();
+
   beforeAll(async () => {
-    discovery = HostDiscovery.fromConfig(config);
+    const knex = await databases.init('SQLITE_3');
+    const getClient = jest.fn(async () => knex);
     const router = await createRouter({
       badgeBuilder,
       catalog: catalog as Partial<CatalogApi> as CatalogApi,
       config,
-      discovery,
-      logger: getVoidLogger(),
+      discovery: mockServices.discovery.mock(),
+      logger: mockServices.logger.mock(),
       auth: mockServices.auth(),
-      httpAuth: mockServices.httpAuth(),
+      httpAuth: mockServices.httpAuth.mock(),
+      database: mockServices.database.mock({ getClient }),
     });
     app = express().use(router);
   });
@@ -134,15 +135,17 @@ describe('createRouter', () => {
   });
 
   it('works with provided badgeStore', async () => {
+    const knex = await databases.init('SQLITE_3');
+    const getClient = jest.fn(async () => knex);
     const router = await createRouter({
       badgeBuilder,
       catalog: catalog as Partial<CatalogApi> as CatalogApi,
       config,
-      discovery,
-      logger: getVoidLogger(),
-      badgeStore: badgeStore,
+      discovery: mockServices.discovery.mock(),
+      logger: mockServices.logger.mock(),
       auth: mockServices.auth(),
-      httpAuth: mockServices.httpAuth(),
+      httpAuth: mockServices.httpAuth.mock(),
+      database: mockServices.database.mock({ getClient }),
     });
     expect(router).toBeDefined();
   });
