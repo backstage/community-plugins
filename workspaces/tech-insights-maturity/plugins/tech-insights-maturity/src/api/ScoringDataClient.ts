@@ -44,7 +44,7 @@ import { ScoringDataFormatter } from './ScoringDataFormatter';
 const SDF = new ScoringDataFormatter();
 
 export class MaturityClient extends TechInsightsClient implements MaturityApi {
-  private catalogApi: CatalogApi;
+  readonly catalogApi: CatalogApi;
 
   constructor(options: {
     discoveryApi: DiscoveryApi;
@@ -77,12 +77,10 @@ export class MaturityClient extends TechInsightsClient implements MaturityApi {
       results?.flatMap(x => x.check.factIds),
     );
     return Promise.all(
-      results.map(async x => {
-        return {
-          ...x,
-          updated: facts[x.check.factIds[0]].timestamp,
-        };
-      }),
+      results.map(async x => ({
+        ...x,
+        updated: facts[x.check.factIds[0]].timestamp,
+      })),
     );
   }
 
@@ -202,11 +200,13 @@ export class MaturityClient extends TechInsightsClient implements MaturityApi {
     });
 
     const components: CompoundEntityRef[] = [];
-    for (const system of items.filter(x => x !== undefined)) {
-      Array.prototype.push.apply(
-        components,
-        await this.getComponentsForSystem(system),
-      );
+    for (const system of items) {
+      if (system) {
+        Array.prototype.push.apply(
+          components,
+          await this.getComponentsForSystem(system),
+        );
+      }
     }
 
     return components;
@@ -234,11 +234,13 @@ export class MaturityClient extends TechInsightsClient implements MaturityApi {
     });
 
     const components: CompoundEntityRef[] = [];
-    for (const domain of items.filter(x => x !== undefined)) {
-      Array.prototype.push.apply(
-        components,
-        await this.getComponentsForSystem(domain),
-      );
+    for (const domain of items) {
+      if (domain) {
+        Array.prototype.push.apply(
+          components,
+          await this.getComponentsForSystem(domain),
+        );
+      }
     }
 
     return components;
