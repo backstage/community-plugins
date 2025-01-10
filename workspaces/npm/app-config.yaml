@@ -97,7 +97,9 @@ catalog:
     - type: file
       target: ../../examples/npmjs-examples.yaml
     - type: file
-      target: ../../examples/github-packages-examples.yaml
+      target: ../../examples/github-examples.yaml
+    - type: file
+      target: ../../examples/gitlab-examples.yaml
 
     ## Uncomment these lines to add more example data
     # - type: url
@@ -116,6 +118,8 @@ npm:
       url: https://registry.npmjs.com
     - name: github
       url: https://npm.pkg.github.com
+    - name: gitlab
+      url: https://gitlab.com/api/v4/packages/npm
 
 # see https://backstage.io/docs/permissions/getting-started for more on the permission framework
 permission:

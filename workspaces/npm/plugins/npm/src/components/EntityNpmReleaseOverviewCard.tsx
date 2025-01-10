@@ -35,7 +35,7 @@ import { usePackageInfo } from '../hooks/usePackageInfo';
 interface TagRow {
   tag: string;
   version: string;
-  published: string;
+  published?: string;
 }
 
 const tagColumns: TableColumn<TagRow>[] = [
@@ -53,11 +53,14 @@ const tagColumns: TableColumn<TagRow>[] = [
     title: 'Published',
     field: 'published',
     type: 'datetime',
-    render: row => (
-      <time dateTime={row.published} title={row.published}>
-        {DateTime.fromISO(row.published).toRelative()}
-      </time>
-    ),
+    render: row =>
+      row.published ? (
+        <time dateTime={row.published} title={row.published}>
+          {DateTime.fromISO(row.published).toRelative()}
+        </time>
+      ) : (
+        '-'
+      ),
   },
 ];
 
@@ -92,7 +95,7 @@ export const EntityNpmReleaseOverviewCard = () => {
       if (showTags && showTags.length > 0 && !showTags.includes(tag)) {
         continue;
       }
-      const published = packageInfo.time[version];
+      const published = packageInfo.time?.[version];
       data.push({ tag, version, published });
     }
   }

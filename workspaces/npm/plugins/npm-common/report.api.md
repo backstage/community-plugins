@@ -79,7 +79,7 @@ export interface NpmRegistryPackageInfo {
   // (undocumented)
   _rev: string;
   // (undocumented)
-  time: {
+  time?: {
     created: string;
     modified: string;
     [version: string]: string;

@@ -44,7 +44,8 @@ export interface NpmRegistryPackageInfo {
   versions: {
     [version: string]: NpmRegistryPackageInfoVersion;
   };
-  time: {
+  // Available on npmjs and GitHub, not available on GitLab
+  time?: {
     created: string;
     modified: string;
     [version: string]: string;

@@ -82,7 +82,7 @@ npm:
 
 ## Use GitHub npm registry
 
-The GitHub npm registry reqires also a GitHub token for public entries.
+The GitHub npm registry requires also a GitHub token for public packages.
 
 You need to create a token at https://github.com/settings/tokens
 
@@ -93,6 +93,21 @@ npm:
     - name: github
       url: https://npm.pkg.github.com
       token: ghp_...
+```
+
+## Use GitLab npm registry
+
+The GitLab npm registry might requires a token for private packages.
+
+You need to create a token at https://github.com/settings/tokens
+
+```yaml
+# app-config.yaml
+npm:
+  registries:
+    - name: gitlab
+      url: https://gitlab.com/api/v4/packages/npm
+      token: ...
 ```
 
 ## Other npm registries

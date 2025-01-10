@@ -36,12 +36,12 @@ import { usePackageInfo } from '../hooks/usePackageInfo';
 interface TagRow {
   tag: string;
   version: string;
-  published: string;
+  published?: string;
 }
 
 interface TableData {
   version: string;
-  published: string;
+  published?: string;
 }
 
 const tagColumns: TableColumn<TagRow>[] = [
@@ -59,11 +59,14 @@ const tagColumns: TableColumn<TagRow>[] = [
     title: 'Published',
     field: 'published',
     type: 'datetime',
-    render: row => (
-      <time dateTime={row.published} title={row.published}>
-        {DateTime.fromISO(row.published).toRelative()}
-      </time>
-    ),
+    render: row =>
+      row.published ? (
+        <time dateTime={row.published} title={row.published}>
+          {DateTime.fromISO(row.published).toRelative()}
+        </time>
+      ) : (
+        '-'
+      ),
   },
 ];
 
@@ -77,11 +80,14 @@ const columns: TableColumn<TableData>[] = [
     title: 'Published',
     field: 'published',
     type: 'datetime',
-    render: row => (
-      <time dateTime={row.published} title={row.published}>
-        {DateTime.fromISO(row.published).toRelative()}
-      </time>
-    ),
+    render: row =>
+      row.published ? (
+        <time dateTime={row.published} title={row.published}>
+          {DateTime.fromISO(row.published).toRelative()}
+        </time>
+      ) : (
+        '-'
+      ),
   },
 ];
 
@@ -117,18 +123,26 @@ export const EntityNpmReleaseTableCard = () => {
       if (showTags && showTags.length > 0 && !showTags.includes(tag)) {
         continue;
       }
-      const published = packageInfo.time[version];
+      const published = packageInfo.time?.[version];
       tagData.push({ tag, version, published });
     }
   }
 
   const data: TableData[] = [];
+  // npmjs, GitHub has a time history, GitLab not
   if (packageInfo?.time) {
     for (const [version, published] of Object.entries(packageInfo.time)) {
       if (version === 'created' || version === 'modified') {
         continue;
       }
       data.push({ version, published });
+    }
+    data.reverse();
+  } else if (packageInfo?.versions) {
+    for (const [version, _releasePackageInfo] of Object.entries(
+      packageInfo.versions,
+    )) {
+      data.push({ version });
     }
     data.reverse();
   }
