@@ -385,66 +385,40 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
     newRole: string[][],
     newRoleMetadata: RoleMetadataDao,
   ): Promise<void> {
-    if (this.loadPolicyPromise) {
-      await this.loadPolicyPromise;
-    }
-
-    const updateGroupingPoliciesOperation = (async () => {
-      const oldRoleName = oldRole.at(0)?.at(1)!;
-
-      const trx = await this.knex.transaction();
-      try {
-        const currentMetadata = await this.roleMetadataStorage.findRoleMetadata(
-          oldRoleName,
-          trx,
-        );
-        if (!currentMetadata) {
-          throw new Error(`Role metadata ${oldRoleName} was not found`);
-        }
-
-        for (let i = 0; i < oldRole.length; i++) {
-          const oldPolicy = oldRole[i];
-          const newPolicy = newRole[i];
-          await this.enforcer.updateGroupingPolicy(oldPolicy, newPolicy);
-          await this.roleMetadataStorage.updateRoleMetadata(
-            mergeRoleMetadata(currentMetadata, newRoleMetadata),
-            oldRoleName,
-            trx,
-          );
-        }
-        await trx.commit();
-      } catch (err) {
-        await trx.rollback(err);
-        throw err;
+    const oldRoleName = oldRole.at(0)?.at(1)!;
+    const trx = await this.knex.transaction();
+    try {
+      const currentMetadata = await this.roleMetadataStorage.findRoleMetadata(
+        oldRoleName,
+        trx,
+      );
+      if (!currentMetadata) {
+        throw new Error(`Role metadata ${oldRoleName} was not found`);
       }
-    })();
-    await this.execOperation(updateGroupingPoliciesOperation);
+
+      await this.removeGroupingPolicies(oldRole, currentMetadata, true, trx);
+      await this.addGroupingPolicies(newRole, newRoleMetadata, trx);
+      await trx.commit();
+    } catch (err) {
+      await trx.rollback(err);
+      throw err;
+    }
   }
 
   async updatePolicies(
     oldPolicies: string[][],
     newPolicies: string[][],
   ): Promise<void> {
-    if (this.loadPolicyPromise) {
-      await this.loadPolicyPromise;
+    const trx = await this.knex.transaction();
+
+    try {
+      await this.removePolicies(oldPolicies, trx);
+      await this.addPolicies(newPolicies, trx);
+      await trx.commit();
+    } catch (err) {
+      await trx.rollback(err);
+      throw err;
     }
-
-    const updatePoliciesOperation = (async () => {
-      const trx = await this.knex.transaction();
-
-      try {
-        for (let i = 0; i < oldPolicies.length; i++) {
-          const oldPolicy = oldPolicies[i];
-          const newPolicy = newPolicies[i];
-          await this.enforcer.updatePolicy(oldPolicy, newPolicy);
-        }
-        await trx.commit();
-      } catch (err) {
-        await trx.rollback(err);
-        throw err;
-      }
-    })();
-    await this.execOperation(updatePoliciesOperation);
   }
 
   async removePolicy(policy: string[], externalTrx?: Knex.Transaction) {
