@@ -23,13 +23,7 @@ import { LoggerService } from '@backstage/backend-plugin-api';
 import { Config } from '@backstage/config';
 import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 
-/**
- * @deprecated Please migrate to the new backend system as this will be removed in the future.
- *
- * The router options that are needed when creating a router.
- *
- * @public
- */
+/** @internal */
 export interface RouterOptions {
   /**
    * A logger object
@@ -63,15 +57,7 @@ export const generateAirbrakePathRewrite = (
   };
 };
 
-/**
- * @deprecated Please migrate to the new backend system as this will be removed in the future.
- *
- * Create the Airbrake Router, used for making API calls to the Airbrake API.
- *
- * @public
- *
- * @param options - Router options
- */
+/** @internal */
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
