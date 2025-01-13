@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 5.2.9
+
+### Patch Changes
+
+- 5b19b0d: Update documentation information about `pluginsWithPermission` setting. In order for the RBAC UI to display available permissions provided by installed plugins, this setting needs to be configured.
+
 ## 5.2.8
 
 ### Patch Changes
