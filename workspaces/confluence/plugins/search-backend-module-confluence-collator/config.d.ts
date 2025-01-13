@@ -19,11 +19,11 @@ export interface Config {
   search?: {
     collators?: {
       /**
-       * Configuration options for `@backstage/plugin-search-backend-module-techdocs`
+       * Configuration options for `@backstage/plugin-search-backend-module-confluence-collator`
        */
       confluence?: {
         /**
-         * The schedule for how often to run the collation job.
+         * The schedule for how often to run the collation job for Confluence.
          */
         schedule?: SchedulerServiceTaskScheduleDefinitionConfig;
       };
@@ -40,27 +40,29 @@ export interface Config {
      */
     auth: {
       /**
-       * Authentication method - basic, userpass
+       * Authentication method - basic, bearer, or userpass
        */
       type: 'basic' | 'bearer' | 'userpass';
       /**
-       * Confluence bearer authentication token
+       * Confluence bearer authentication token with `Read` permissions, only required if type is set to 'basic' or 'bearer'.
+       * Reference the Confluence documentation to generate an API token:
+       * https://support.atlassian.com/atlassian-account/docs/manage-api-tokens-for-your-atlassian-account/
        * @visibility secret
        */
       token?: string;
       /**
-       * Email used with the token for the basic auth method
+       * Email associated with the token, only required if type is set to 'basic'.
        * @visibility secret
        */
       email?: string;
       /**
-       * Confluence basic authentication username.
+       * Confluence basic authentication username, only required if type is set to 'userpass'.
        * While Confluence supports BASIC authentication, using an API token is preferred.
        * See: https://support.atlassian.com/atlassian-account/docs/manage-api-tokens-for-your-atlassian-account/
        */
       username?: string;
       /**
-       * Confluence basic authentication password.
+       * Confluence basic authentication password, only required if type is set to 'userpass'.
        * While Confluence supports BASIC authentication, using an API token is preferred.
        * See: https://support.atlassian.com/atlassian-account/docs/manage-api-tokens-for-your-atlassian-account/
        * @visibility secret
@@ -68,11 +70,14 @@ export interface Config {
       password?: string;
     };
     /**
-     * Spaces to index
+     * Array of Confluence spaces to index. If omitted, all spaces will be indexed.
+     * See: https://support.atlassian.com/confluence-cloud/docs/use-spaces-to-organize-your-work/
      */
     spaces?: string[];
     /**
-     * CQL query to select the pages to index. It is combined with spaces parameter above when finding documents.
+     * CQL query to select the pages to index. It is combined via 'AND' with spaces parameter above when finding documents.
+     * Reference the Confluence documentation for information about CQL syntax:
+     * https://developer.atlassian.com/server/confluence/advanced-searching-using-cql/
      */
     query?: string;
     /**

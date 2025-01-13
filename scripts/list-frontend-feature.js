@@ -58,14 +58,14 @@ async function main(args) {
         frontendFeatureReport.package = pkg.packageJson.name;
         frontendFeatureReport.role = pkgRole;
         frontendFeatureReport.readme = `[README](${pkg.packageJson.repository.url}/blob/master/${pkg.packageJson.repository.directory}/README.md)`;
-        const apiReportPath = join(pkg.dir, 'api-report.md');
+        const apiReportPath = join(pkg.dir, 'report.api.md');
         const apiReport = (await fs.readFile(apiReportPath)).toString();
         if (apiReport.includes(BACKSTAGE_PLUGIN)) {
           frontendFeatureReport.supported = true;
           frontendFeatureReport.alpha = false;
         }
 
-        const apiReportAlphaPath = join(pkg.dir, 'api-report-alpha.md');
+        const apiReportAlphaPath = join(pkg.dir, 'report-alpha.api.md');
         if (fs.existsSync(apiReportAlphaPath)) {
           const apiReportAlpha = (
             await fs.readFile(apiReportAlphaPath)

@@ -1,5 +1,11 @@
 # @backstage-community/plugin-explore-backend
 
+## 0.3.0
+
+### Minor Changes
+
+- 088f904: Remove support for old backend system
+
 ## 0.2.0
 
 ### Minor Changes

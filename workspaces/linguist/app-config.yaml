@@ -51,7 +51,12 @@ catalog:
       target: ../../examples/org.yaml
       rules:
         - allow: [User, Group]
-
+  providers:
+    backstageOpenapi:
+      plugins:
+        - catalog
+        - search
+        - linguist
 linguist:
   linguistJsOptions:
     categories: ['programming']

@@ -52,10 +52,12 @@ async function main(args) {
       o => o !== '@backstage/community-plugins-maintainers',
     );
     filteredOwners.forEach((owner, index) => {
-      if (owner === '@backstage/sda-se-reviewers') {
+      if (owner.includes('/')) {
+        const org = owner.substring(1, owner.indexOf('/'));
+        const team = owner.substring(owner.indexOf('/') + 1);
         filteredOwners[
           index
-        ] = `[@backstage/sda-se-reviewers](https://github.com/orgs/backstage/teams/sda-se-reviewers)`;
+        ] = `[${owner}](https://github.com/orgs/${org}/teams/${team})`;
       } else {
         filteredOwners[
           index
