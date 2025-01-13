@@ -2737,7 +2737,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@backstage-community/plugin-scaffolder-backend-module-jenkins@workspace:^, @backstage-community/plugin-scaffolder-backend-module-jenkins@workspace:plugins/scaffolder-backend-module-jenkins":
+"@backstage-community/plugin-scaffolder-backend-module-jenkins@workspace:plugins/scaffolder-backend-module-jenkins":
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-scaffolder-backend-module-jenkins@workspace:plugins/scaffolder-backend-module-jenkins"
   dependencies:
@@ -7119,12 +7119,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@internal/jenkins@workspace:."
   dependencies:
-    "@backstage-community/plugin-jenkins": "workspace:^"
-    "@backstage-community/plugin-jenkins-backend": "workspace:^"
-    "@backstage-community/plugin-scaffolder-backend-module-jenkins": "workspace:^"
     "@backstage/cli": ^0.29.4
     "@backstage/e2e-test-utils": ^0.1.1
-    "@backstage/frontend-plugin-api": ^0.9.3
     "@backstage/repo-tools": ^0.12.0
     "@changesets/cli": ^2.27.1
     knip: ^5.27.4
