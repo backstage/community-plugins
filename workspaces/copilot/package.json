@@ -60,9 +60,5 @@
     "*.{json,md}": [
       "prettier --write"
     ]
-  },
-  "dependencies": {
-    "@backstage-community/plugin-copilot": "workspace:^",
-    "@backstage-community/plugin-copilot-backend": "workspace:^"
   }
 }

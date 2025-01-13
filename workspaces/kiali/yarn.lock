@@ -7772,8 +7772,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@internal/kiali@workspace:."
   dependencies:
-    "@backstage-community/plugin-kiali": "workspace:^"
-    "@backstage-community/plugin-kiali-backend": "workspace:^"
     "@backstage/cli": ^0.28.0
     "@backstage/e2e-test-utils": ^0.1.1
     "@backstage/repo-tools": ^0.10.0

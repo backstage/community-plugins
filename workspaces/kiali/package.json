@@ -50,10 +50,6 @@
     "prettier": "^2.3.2",
     "typescript": "~5.3.0"
   },
-  "dependencies": {
-    "@backstage-community/plugin-kiali": "workspace:^",
-    "@backstage-community/plugin-kiali-backend": "workspace:^"
-  },
   "resolutions": {
     "@types/react": "^18",
     "@types/react-dom": "^18"
