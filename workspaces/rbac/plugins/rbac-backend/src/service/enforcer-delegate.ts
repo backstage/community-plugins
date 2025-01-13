@@ -92,11 +92,16 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
   async execOperation<T>(operation: Promise<T>): Promise<T> {
     this.editOperationsQueue.push(operation);
 
-    const result = await operation;
-
-    const index = this.editOperationsQueue.indexOf(operation);
-    if (index !== -1) {
-      this.editOperationsQueue.splice(index, 1);
+    let result;
+    try {
+      result = await operation;
+    } catch (err) {
+      throw err;
+    } finally {
+      const index = this.editOperationsQueue.indexOf(operation);
+      if (index !== -1) {
+        this.editOperationsQueue.splice(index, 1);
+      }
     }
 
     return result;

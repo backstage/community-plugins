@@ -120,7 +120,7 @@ export const RBAC_BACKEND = 'rbac-backend';
 // Audit log stage for processing Role-Based Access Control (RBAC) data
 export const HANDLE_RBAC_DATA_STAGE = 'handleRBACData';
 
-// Audit log stageto refresh Role-Based Access Control (RBAC) data
+// Audit log stage to refresh Role-Based Access Control (RBAC) data
 export const FETCH_NEWER_PERMISSIONS_STAGE = 'fetchNewerPermissions';
 
 // Audit log stage for determining access rights based on user permissions and resource information
