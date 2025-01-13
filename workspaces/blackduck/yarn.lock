@@ -7232,8 +7232,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@internal/blackduck@workspace:."
   dependencies:
-    "@backstage-community/plugin-blackduck": "workspace:^"
-    "@backstage-community/plugin-blackduck-backend": "workspace:^"
     "@backstage/cli": ^0.29.4
     "@backstage/e2e-test-utils": ^0.1.1
     "@backstage/repo-tools": ^0.12.0
