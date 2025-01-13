@@ -1,5 +1,11 @@
 # @backstage-community/plugin-linguist-backend
 
+## 0.10.0
+
+### Minor Changes
+
+- 8585c65: Added openapi spec for linguist backend
+
 ## 0.9.0
 
 ### Minor Changes
