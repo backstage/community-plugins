@@ -14,16 +14,24 @@
  * limitations under the License.
  */
 
-// From https://github.com/npm/registry/blob/main/docs/REGISTRY-API.md
-export interface NpmRegistryVersion {
+/**
+ * NPM package info `versions` type definition based on https://github.com/npm/registry/blob/main/docs/REGISTRY-API.md
+ *
+ * @public
+ */
+export interface NpmRegistryPackageInfoVersion {
   name: string;
   version: string;
   homepage: string;
   description: string;
 }
 
-// From https://github.com/npm/registry/blob/main/docs/REGISTRY-API.md
-export interface NpmRegistryPackage {
+/**
+ * NPM registry package info type definition based on https://github.com/npm/registry/blob/main/docs/REGISTRY-API.md
+ *
+ * @public
+ */
+export interface NpmRegistryPackageInfo {
   _id: string;
   _rev: string;
   name: string;
@@ -34,9 +42,10 @@ export interface NpmRegistryPackage {
     [tag: string]: string;
   };
   versions: {
-    [version: string]: NpmRegistryVersion;
+    [version: string]: NpmRegistryPackageInfoVersion;
   };
-  time: {
+  // Available on npmjs and GitHub, not available on GitLab
+  time?: {
     created: string;
     modified: string;
     [version: string]: string;
@@ -65,28 +74,3 @@ export interface NpmRegistryPackage {
   };
   readme?: string;
 }
-
-const fetchNpmPackage = async (packageName: string | undefined) => {
-  if (!packageName) {
-    throw new Error('No package name provided');
-  }
-  const response = await fetch(
-    `https://registry.npmjs.org/${encodeURIComponent(packageName)}`,
-  );
-  if (response.status === 404) {
-    throw new Error(
-      `Package ${packageName} not found (private repositories are not supported yet)`,
-    );
-  }
-  if (!response.ok) {
-    throw new Error(
-      `Failed to fetch info for package ${packageName}: ${response.status} ${response.statusText}`,
-    );
-  }
-  const json = await response.json();
-  return json as NpmRegistryPackage;
-};
-
-export const API = {
-  fetchNpmPackage,
-};
