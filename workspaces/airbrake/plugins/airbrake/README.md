@@ -63,62 +63,7 @@ The Airbrake plugin provides connectivity between Backstage and Airbrake (https:
    );
    ```
 
-4. Create `packages/backend/src/plugins/airbrake.ts` with these contents:
-
-   ```typescript
-   import { Router } from 'express';
-   import { PluginEnvironment } from '../types';
-   import {
-     createRouter,
-     extractAirbrakeConfig,
-   } from '@backstage-community/plugin-airbrake-backend';
-
-   export default async function createPlugin(
-     env: PluginEnvironment,
-   ): Promise<Router> {
-     return createRouter({
-       logger: env.logger,
-       airbrakeConfig: extractAirbrakeConfig(env.config),
-     });
-   }
-   ```
-
-5. Setup the Backend code in `packages/backend/src/index.ts`:
-
-   ```typescript
-   import airbrake from './plugins/airbrake';
-
-   async function main() {
-     //... After const createEnv = makeCreateEnv(config) ...
-
-     const airbrakeEnv = useHotMemoize(module, () => createEnv('airbrake'));
-
-     //... After const apiRouter = Router() ...
-     apiRouter.use('/airbrake', await airbrake(airbrakeEnv));
-   }
-   ```
-
-6. Add this config as a top level section in your `app-config.yaml`:
-
-   ```yaml
-   airbrake:
-     apiKey: ${AIRBRAKE_API_KEY}
-   ```
-
-7. Set an environment variable `AIRBRAKE_API_KEY` with your [API key](https://airbrake.io/docs/api/#authentication)
-   before starting Backstage backend.
-
-8. Add the following annotation to the `catalog-info.yaml` for a repo you want to link to an Airbrake project:
-
-   ```yaml
-   metadata:
-     annotations:
-       airbrake.io/project-id: '123456'
-   ```
-
-#### New Backend System
-
-The Airbrake backend plugin has support for the [new backend system](https://backstage.io/docs/backend-system/), here's how you can set that up:
+4. The Airbrake backend plugin has support for the [new backend system](https://backstage.io/docs/backend-system/), here's how you can set that up:
 
 In your `packages/backend/src/index.ts` make the following changes:
 
@@ -133,6 +78,24 @@ In your `packages/backend/src/index.ts` make the following changes:
 
   backend.start();
 ```
+
+5. Add this config as a top level section in your `app-config.yaml`:
+
+   ```yaml
+   airbrake:
+     apiKey: ${AIRBRAKE_API_KEY}
+   ```
+
+6. Set an environment variable `AIRBRAKE_API_KEY` with your [API key](https://airbrake.io/docs/api/#authentication)
+   before starting Backstage backend.
+
+7. Add the following annotation to the `catalog-info.yaml` for a repo you want to link to an Airbrake project:
+
+   ```yaml
+   metadata:
+     annotations:
+       airbrake.io/project-id: '123456'
+   ```
 
 ## Local Development
 

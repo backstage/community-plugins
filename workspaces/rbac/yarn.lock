@@ -7107,10 +7107,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@internal/rbac@workspace:."
   dependencies:
-    "@backstage-community/plugin-rbac": "workspace:^"
-    "@backstage-community/plugin-rbac-backend": "workspace:^"
-    "@backstage-community/plugin-rbac-common": "workspace:^"
-    "@backstage-community/plugin-rbac-node": "workspace:^"
     "@backstage/cli": ^0.28.0
     "@backstage/e2e-test-utils": ^0.1.1
     "@backstage/repo-tools": ^0.10.0
