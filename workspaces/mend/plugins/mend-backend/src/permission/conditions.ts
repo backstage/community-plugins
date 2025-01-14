@@ -14,8 +14,10 @@ const { conditions, createConditionalDecision } = createConditionExports({
   rules,
 });
 
+/** @public */
 export const mendConditions = conditions;
 
+/** @public */
 export const createMendProjectConditionalDecision = createConditionalDecision;
 
 export const permissionIntegrationRouter: express.Router =
