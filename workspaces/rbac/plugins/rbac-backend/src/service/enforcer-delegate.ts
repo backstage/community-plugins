@@ -28,7 +28,7 @@ import { MODEL } from './permission-model';
 import { AuditLogger } from '@janus-idp/backstage-plugin-audit-log-node';
 import {
   FETCH_NEWER_PERMISSIONS_STAGE,
-  PolisiesData,
+  PoliciesData,
 } from '../audit-log/audit-logger';
 
 export type RoleEvents = 'roleAdded';
@@ -71,7 +71,7 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
       } catch (err) {
         this.auditLogger.auditLog({
           message: 'Failed to load newer policies from database',
-          eventName: PolisiesData.FAILED_TO_FETCH_NEWER_PERMISSIONS,
+          eventName: PoliciesData.FAILED_TO_FETCH_NEWER_PERMISSIONS,
           stage: FETCH_NEWER_PERMISSIONS_STAGE,
           status: 'failed',
           errors: [err],

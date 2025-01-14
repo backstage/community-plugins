@@ -92,7 +92,7 @@ export type EvaluationAuditInfo = {
   decision?: PolicyDecision;
 };
 
-export const PolisiesData = {
+export const PoliciesData = {
   FAILED_TO_FETCH_NEWER_PERMISSIONS: 'FailedToFetchNewerPermissions',
 };
 
