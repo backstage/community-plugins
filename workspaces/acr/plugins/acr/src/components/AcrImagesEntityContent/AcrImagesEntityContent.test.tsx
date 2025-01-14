@@ -17,21 +17,29 @@ import React from 'react';
 
 import { render } from '@testing-library/react';
 
-import { AcrDashboardPage } from './AcrDashboardPage';
+import { AZURE_CONTAINER_REGISTRY_ANNOTATION_IMAGE_NAME } from '../../annotations';
+import { AcrImagesEntityContent } from './AcrImagesEntityContent';
 
-jest.mock('../useAcrAppData', () => ({
-  useAcrAppData: jest.fn().mockReturnValue({ imageName: 'sample/node' }),
+// TODO use backstage catalog test-utils
+jest.mock('@backstage/plugin-catalog-react', () => ({
+  useEntity: jest.fn().mockReturnValue({
+    entity: {
+      metadata: {
+        annotations: {
+          [AZURE_CONTAINER_REGISTRY_ANNOTATION_IMAGE_NAME]: 'sample/node',
+        },
+      },
+    },
+  }),
 }));
 
-jest.mock('../AzureContainerRegistry', () => ({
-  AzureContainerRegistry: () => (
-    <div data-testid="acr-registry">acr registry</div>
-  ),
+jest.mock('../AcrImages', () => ({
+  AcrImages: () => <div data-testid="acr-registry">acr registry</div>,
 }));
 
-describe('AcrDashboardPage', () => {
-  it('should render AcrDashboardPage', () => {
-    const { queryByTestId } = render(<AcrDashboardPage />);
+describe('AcrImagesEntityContent', () => {
+  it('should render AcrImages', () => {
+    const { queryByTestId } = render(<AcrImagesEntityContent />);
     expect(queryByTestId('acr-registry')).toBeInTheDocument();
   });
 });

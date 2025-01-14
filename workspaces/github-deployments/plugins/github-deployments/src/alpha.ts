@@ -13,17 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { convertLegacyRouteRefs } from '@backstage/core-compat-api';
+import { createFrontendPlugin } from '@backstage/frontend-plugin-api';
+import {
+  entityGithubDeploymentsCard,
+  githubDeploymentsApiExtension,
+} from './alpha/index';
+import { rootRouteRef } from './routes';
 
-import { CodeSnippet, WarningPanel } from '@backstage/core-components';
-
-type ErrorReportProps = {
-  title: string;
-  errorText: string;
-};
-
-export const ErrorReport = ({ title, errorText }: ErrorReportProps) => (
-  <WarningPanel severity="error" title={title}>
-    <CodeSnippet language="text" text={errorText} />
-  </WarningPanel>
-);
+/**
+ * @alpha
+ */
+export default createFrontendPlugin({
+  id: 'github-deployments',
+  routes: convertLegacyRouteRefs({
+    entityContent: rootRouteRef,
+  }),
+  extensions: [entityGithubDeploymentsCard, githubDeploymentsApiExtension],
+});

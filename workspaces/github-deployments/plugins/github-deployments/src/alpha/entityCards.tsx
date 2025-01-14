@@ -13,8 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { createRouteRef } from '@backstage/core-plugin-api';
+import React from 'react';
+import { EntityCardBlueprint } from '@backstage/plugin-catalog-react/alpha';
 
-export const rootRouteRef = createRouteRef({
-  id: 'acr',
+/**
+ * @alpha
+ */
+export const entityGithubDeploymentsCard = EntityCardBlueprint.make({
+  name: 'overview',
+  params: {
+    filter: 'kind:component',
+    loader: () =>
+      import('../components/GithubDeploymentsCard').then(m => (
+        <m.GithubDeploymentsCard />
+      )),
+  },
 });

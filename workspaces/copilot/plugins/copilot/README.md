@@ -1,7 +1,3 @@
-Aqui está o README ajustado, agora incluindo a nova funcionalidade para selecionar um time e comparar suas métricas com os dados gerais:
-
----
-
 # GitHub Copilot Plugin
 
 Welcome to the GitHub Copilot Plugin!

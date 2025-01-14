@@ -13,4 +13,5 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { AcrDashboardPage } from './AcrDashboardPage';
+export * from './apis';
+export * from './entityCards';

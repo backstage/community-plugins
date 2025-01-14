@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2025 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 
-import { AzureContainerRegistry } from '../AzureContainerRegistry';
-import { useAcrAppData } from '../useAcrAppData';
+import { Entity } from '@backstage/catalog-model';
 
-export const AcrDashboardPage = () => {
-  const { imageName } = useAcrAppData();
+import { AZURE_CONTAINER_REGISTRY_ANNOTATION_IMAGE_NAME } from '../annotations';
 
-  return <AzureContainerRegistry image={imageName} />;
-};
+/**
+ * Function that returns true if the given entity contains at least one
+ * Azure Container Registry related annotation.
+ *
+ * @public
+ */
+export const isAcrAvailable = (entity: Entity) =>
+  Boolean(
+    entity?.metadata.annotations?.[
+      AZURE_CONTAINER_REGISTRY_ANNOTATION_IMAGE_NAME
+    ],
+  );
