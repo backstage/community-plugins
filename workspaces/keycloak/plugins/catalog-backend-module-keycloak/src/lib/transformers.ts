@@ -17,6 +17,7 @@ import type { GroupTransformer, UserTransformer } from './types';
 
 /**
  * @public
+ * Group transformer that does nothing.
  */
 export const noopGroupTransformer: GroupTransformer = async (
   entity,
@@ -26,6 +27,7 @@ export const noopGroupTransformer: GroupTransformer = async (
 
 /**
  * @public
+ * User transformer that does nothing.
  */
 export const noopUserTransformer: UserTransformer = async (
   entity,
