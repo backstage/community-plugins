@@ -42,4 +42,5 @@ export interface StatusState {
   externalServices: ExternalServiceInfo[];
   warningMessages: string[];
   istioEnvironment: IstioEnvironment;
+  providers: string[];
 }

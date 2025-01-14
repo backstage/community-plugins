@@ -98,6 +98,12 @@ export class MockKialiClient implements KialiApi {
     this.entity = entity;
   }
 
+  setAnnotation(key: string, value: string): void {
+    if (this.entity && this.entity.metadata.annotations) {
+      this.entity.metadata.annotations[key] = value;
+    }
+  }
+
   async status(): Promise<StatusState> {
     return kialiData.status;
   }
@@ -112,7 +118,7 @@ export class MockKialiClient implements KialiApi {
   async getNamespaces(): Promise<Namespace[]> {
     return filterNsByAnnotation(
       kialiData.namespaces as Namespace[],
-      this.entity,
+      this.entity?.metadata.annotations || {},
     );
   }
 
