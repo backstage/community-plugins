@@ -1,5 +1,11 @@
 # @backstage-community/plugin-copilot-backend
 
+## 0.3.2
+
+### Patch Changes
+
+- e9b265d: Removed usages of `@backstage/backend-tasks`
+
 ## 0.3.1
 
 ### Patch Changes
