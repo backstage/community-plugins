@@ -1,5 +1,11 @@
 # @backstage-community/plugin-kiali-backend
 
+## 1.20.0
+
+### Minor Changes
+
+- 117f8e0: Support multi providers in Kiali
+
 ## 1.19.5
 
 ### Patch Changes
