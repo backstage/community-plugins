@@ -54,9 +54,10 @@ import { TechPreviewWarning } from './Banners/TechPreviewWarning';
 
 export const KIALI_ANNOTATION = 'kiali.io/id';
 export const KIALI_NAMESPACE = 'kiali.io/namespace';
+export const KIALI_PROVIDER = 'kiali.io/provider';
 export const KIALI_LABEL_SELECTOR_QUERY_ANNOTATION = 'kiali.io/label-selector';
 
-export const ANNOTATION_SUPPORTED = [KIALI_NAMESPACE];
+export const ANNOTATION_SUPPORTED = [KIALI_NAMESPACE, KIALI_PROVIDER];
 
 const validateAnnotation = (entity: Entity) => {
   let validated = false;

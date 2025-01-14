@@ -48,7 +48,7 @@ export const EntityKialiGraphCard = () => {
       }
     />
   ) : (
-    <KialiProvider>
+    <KialiProvider entity={entity}>
       <TrafficGraphCard />
     </KialiProvider>
   );
