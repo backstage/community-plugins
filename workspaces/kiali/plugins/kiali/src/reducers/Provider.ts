@@ -15,34 +15,30 @@
  */
 import { getType } from 'typesafe-actions';
 
-import { HelpDropdownActions } from '../actions/HelpDropdownActions';
 import { KialiAppAction } from '../actions/KialiAppAction';
-import { StatusState } from '../types/StatusState';
+import { ProviderActions } from '../actions/ProviderAction';
+import { ProviderState } from '../store/Store';
+import { updateState } from '../utils/Reducer';
 
-export const INITIAL_STATUS_STATE: StatusState = {
-  status: {},
-  externalServices: [],
-  warningMessages: [],
-  istioEnvironment: {
-    isMaistra: false,
-    istioAPIEnabled: true,
-  },
-  providers: [],
+export const INITIAL_PROVIDER_STATE: ProviderState = {
+  activeProvider: '',
+  items: [],
 };
 
-export const HelpDropdownStateReducer = (
-  state: StatusState = INITIAL_STATUS_STATE,
+export const ProviderStateReducer = (
+  state: ProviderState = INITIAL_PROVIDER_STATE,
   action: KialiAppAction,
-): StatusState => {
+): ProviderState => {
   switch (action.type) {
-    case getType(HelpDropdownActions.statusRefresh):
-      return {
-        ...INITIAL_STATUS_STATE,
-        status: action.payload.status,
-        externalServices: action.payload.externalServices,
-        warningMessages: action.payload.warningMessages,
-        istioEnvironment: action.payload.istioEnvironment,
-      };
+    case getType(ProviderActions.setActiveProvider):
+      return updateState(state, {
+        activeProvider: action.payload,
+      });
+
+    case getType(ProviderActions.setProviders):
+      return updateState(state, {
+        items: action.payload,
+      });
     default:
       return state;
   }

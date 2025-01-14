@@ -28,6 +28,7 @@ describe('kiali Fetch', () => {
       it('should get a true', async () => {
         const kialiFetch = new KialiFetcher(
           {
+            name: 'default',
             url: 'https://localhost:4000',
             urlExternal: 'https://localhost:4000',
           },
@@ -49,6 +50,7 @@ describe('kiali Fetch', () => {
       it('should get a false when `serviceAccountToken` is missed', async () => {
         const kialiFetch = new KialiFetcher(
           {
+            name: 'default',
             url: 'https://localhost:4000',
             urlExternal: 'https://localhost:4000',
           },
@@ -74,6 +76,7 @@ describe('kiali Fetch', () => {
       it('should get a true when `serviceAccountToken` is set', async () => {
         const kialiFetch = new KialiFetcher(
           {
+            name: 'default',
             url: 'https://localhost:4000',
             serviceAccountToken: '<token>',
             urlExternal: 'https://localhost:4000',
@@ -97,6 +100,7 @@ describe('kiali Fetch', () => {
       it('should get a true', async () => {
         const kialiFetch = new KialiFetcher(
           {
+            name: 'default',
             url: 'https://localhost:4000',
             urlExternal: 'https://localhost:4000',
           },
@@ -122,6 +126,7 @@ describe('kiali Fetch', () => {
       it('No file or data passed', () => {
         const kialiFetch = new KialiFetcher(
           {
+            name: 'default',
             url: 'https://localhost:4000',
             urlExternal: 'https://localhost:4000',
           },
@@ -135,6 +140,7 @@ describe('kiali Fetch', () => {
       it('Read from file', () => {
         const kialiFetch = new KialiFetcher(
           {
+            name: 'default',
             url: 'https://localhost:4000',
             urlExternal: 'https://localhost:4000',
           },
@@ -151,6 +157,7 @@ describe('kiali Fetch', () => {
       it('Read from data', () => {
         const kialiFetch = new KialiFetcher(
           {
+            name: 'default',
             url: 'https://localhost:4000',
             urlExternal: 'https://localhost:4000',
           },
@@ -171,6 +178,7 @@ describe('kiali Fetch', () => {
     it('Respond with verify category to network', async () => {
       const kialiFetch = new KialiFetcher(
         {
+          name: 'default',
           url: 'https://localhost:4000',
           urlExternal: 'https://localhost:4000',
         },
@@ -191,6 +199,7 @@ describe('kiali Fetch', () => {
     it('Respond with a readable message with endpoint', () => {
       const kialiFetch = new KialiFetcher(
         {
+          name: 'default',
           url: 'https://localhost:4000',
           urlExternal: 'https://localhost:4000',
         },
@@ -213,6 +222,7 @@ describe('kiali Fetch', () => {
     it('Respond with a readable message without endpoint', () => {
       const kialiFetch = new KialiFetcher(
         {
+          name: 'default',
           url: 'https://localhost:4000',
           urlExternal: 'https://localhost:4000',
         },
