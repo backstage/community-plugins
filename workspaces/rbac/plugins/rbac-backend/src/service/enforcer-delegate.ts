@@ -336,6 +336,10 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
     }
 
     const addGroupingPoliciesOperation = (async () => {
+      if (policies.length === 0) {
+        return;
+      }
+
       const trx = externalTrx ?? (await this.knex.transaction());
 
       try {
@@ -386,6 +390,7 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
     newRoleMetadata: RoleMetadataDao,
   ): Promise<void> {
     const oldRoleName = oldRole.at(0)?.at(1)!;
+
     const trx = await this.knex.transaction();
     try {
       const currentMetadata = await this.roleMetadataStorage.findRoleMetadata(
