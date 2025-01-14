@@ -12,16 +12,16 @@ The current version can show two cards and one additional tab for an catalog ent
 
 ### Npm info card
 
-![Screenshot](https://raw.githubusercontent.com/backstage/community-plugins/main/workspaces/npm/plugins/npm/docs/npm-info-card.png)
+![Screenshot](https://raw.githubusercontent.com/backstage/community-plugins/main/workspaces/npm/docs/npm-info-card.png)
 
 ### Npm release overview card
 
-![Screenshot](https://raw.githubusercontent.com/backstage/community-plugins/main/workspaces/npm/plugins/npm/docs/npm-release-overview-card.png)
+![Screenshot](https://raw.githubusercontent.com/backstage/community-plugins/main/workspaces/npm/docs/npm-release-overview-card.png)
 
 ### Extended catalog entity overview tab (example)
 
-![Screenshot](https://raw.githubusercontent.com/backstage/community-plugins/main/workspaces/npm/plugins/npm/docs/catalog-entity-overview-tab.png)
+![Screenshot](https://raw.githubusercontent.com/backstage/community-plugins/main/workspaces/npm/docs/catalog-entity-overview-tab.png)
 
 ### New catalog entity npm release tab
 
-![Screenshot](https://raw.githubusercontent.com/backstage/community-plugins/main/workspaces/npm/plugins/npm/docs/catalog-entity-npm-release-tab.png)
+![Screenshot](https://raw.githubusercontent.com/backstage/community-plugins/main/workspaces/npm/docs/catalog-entity-npm-release-tab.png)
