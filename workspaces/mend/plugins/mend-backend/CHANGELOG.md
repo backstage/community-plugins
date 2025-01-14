@@ -1,5 +1,11 @@
 # @backstage-community/plugin-mend-backend
 
+## 0.1.1
+
+### Patch Changes
+
+- 31e9be5: Updates to fix the API Reports
+
 ## 0.1.0
 
 ### Minor Changes
