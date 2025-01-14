@@ -1,5 +1,12 @@
 # @backstage-community/plugin-airbrake-backend
 
+## 0.5.0
+
+### Minor Changes
+
+- 99ac249: Removed usages and references of `@backstage/backend-common`
+  Removed deprecated exports for createRouter and RouterOptions
+
 ## 0.4.0
 
 ### Minor Changes
