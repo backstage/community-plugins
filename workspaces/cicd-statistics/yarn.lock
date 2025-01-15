@@ -13372,7 +13372,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "backend@workspace:packages/backend"
   dependencies:
-    "@backstage/backend-common": ^0.25.0
     "@backstage/backend-defaults": ^0.6.1
     "@backstage/backend-plugin-api": ^1.1.0
     "@backstage/catalog-model": ^1.7.2
