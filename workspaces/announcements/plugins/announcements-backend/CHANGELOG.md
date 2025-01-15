@@ -1,5 +1,11 @@
 # @backstage-community/plugin-announcements-backend
 
+## 0.1.4
+
+### Patch Changes
+
+- 59eab31: Removed reference to `@backstage/backend-common`
+
 ## 0.1.3
 
 ### Patch Changes
