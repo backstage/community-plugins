@@ -40,7 +40,6 @@
   "dependencies": {
     "@backstage-community/plugin-announcements-common": "workspace:^",
     "@backstage-community/plugin-search-backend-module-announcements": "workspace:^",
-    "@backstage/backend-common": "^0.25.0",
     "@backstage/backend-defaults": "^0.6.2",
     "@backstage/backend-plugin-api": "^1.1.0",
     "@backstage/backend-test-utils": "^1.2.0",
