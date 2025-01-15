@@ -56,8 +56,9 @@ export async function readTechRadarResponseFromURL(
           validationResult.error,
         )}. URL must serve JSON that is compatible with the TechRadarLoaderResponse schema.`;
         logger.error(errorMessage);
+      } else {
+        return validationResult.data;
       }
-      return validationResult.data;
     } catch (e) {
       logger.error(
         `Failed to parse JSON from remote resource ${url}, data will not be loaded!`,
