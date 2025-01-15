@@ -14520,7 +14520,6 @@ __metadata:
   resolution: "backend@workspace:packages/backend"
   dependencies:
     "@backstage-community/plugin-catalog-backend-module-pingidentity": "workspace:^"
-    "@backstage/backend-common": ^0.25.0
     "@backstage/backend-defaults": ^0.5.2
     "@backstage/cli": ^0.28.0
     "@backstage/config": ^1.2.0

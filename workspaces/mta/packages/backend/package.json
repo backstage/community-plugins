@@ -24,7 +24,6 @@
     "@backstage-community/backstage-plugin-catalog-backend-module-mta-entity-provider": "workspace:^",
     "@backstage-community/backstage-plugin-mta-backend": "workspace:^",
     "@backstage-community/backstage-plugin-scaffolder-backend-module-mta": "workspace:^",
-    "@backstage/backend-common": "^0.21.7",
     "@backstage/backend-defaults": "^0.3.3",
     "@backstage/backend-dynamic-feature-service": "^0.2.15",
     "@backstage/config": "^1.2.0",

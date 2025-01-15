@@ -14660,7 +14660,6 @@ __metadata:
   resolution: "backend@workspace:packages/backend"
   dependencies:
     "@backstage-community/plugin-azure-storage-explorer-backend": "workspace:^"
-    "@backstage/backend-common": ^0.25.0
     "@backstage/backend-defaults": ^0.6.1
     "@backstage/catalog-client": ^1.9.0
     "@backstage/cli": ^0.29.4

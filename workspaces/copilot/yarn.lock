@@ -14896,7 +14896,6 @@ __metadata:
   resolution: "backend@workspace:packages/backend"
   dependencies:
     "@backstage-community/plugin-copilot-backend": "workspace:^"
-    "@backstage/backend-common": ^0.25.0
     "@backstage/backend-defaults": ^0.6.2
     "@backstage/backend-plugin-api": ^1.1.0
     "@backstage/cli": ^0.29.4
