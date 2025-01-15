@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.36.1
+
+### Patch Changes
+
+- 06a5884: Updated dependency `@types/node` to `22.10.5`.
+
 ## 1.36.0
 
 ### Minor Changes
