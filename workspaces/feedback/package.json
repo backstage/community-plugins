@@ -34,11 +34,10 @@
     "directory": "workspaces/feedback"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.28.0",
+    "@backstage/cli": "^0.29.4",
     "@backstage/e2e-test-utils": "^0.1.1",
-    "@backstage/repo-tools": "^0.10.0",
+    "@backstage/repo-tools": "^0.12.0",
     "@changesets/cli": "^2.27.1",
-    "@spotify/prettier-config": "^15.0.0",
     "node-gyp": "^9.0.0",
     "prettier": "^2.3.2",
     "react-router-dom": "^6.26.1",
@@ -48,7 +47,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18"
   },
-  "prettier": "@spotify/prettier-config",
+  "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {
     "*.{js,jsx,ts,tsx,mjs,cjs}": [
       "eslint --fix",
