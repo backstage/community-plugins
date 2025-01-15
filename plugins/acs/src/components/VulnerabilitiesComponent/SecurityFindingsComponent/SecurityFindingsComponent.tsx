@@ -5,6 +5,8 @@ import { useTheme } from '@material-ui/core/styles';
 
 import { CVEEntityDetailsComponent } from '../CVEEntityDetailsComponent';
 
+import { CompoundSearchFilter } from '../../CompoundSearchFilterComponent';
+
 
 export const SecurityFindingsComponent = (data: Array<String>) => {
     const [dataRows, setDataRows] = useState([]);
@@ -75,7 +77,7 @@ export const SecurityFindingsComponent = (data: Array<String>) => {
 
         if (differenceInDays === 1) return `${Math.floor(differenceInDays)} day ago`;
         if (differenceInDays < 1) return "PLACEHOLDER";
-    
+
         return `${Math.floor(differenceInDays)} days ago`
     }
 
@@ -124,18 +126,96 @@ export const SecurityFindingsComponent = (data: Array<String>) => {
         setDataRows(rows);
     }
 
+    const [config, setConfig] = useState([]);
+    const [searchFilter, setSearchFilter] = useState({});
+    const [onSearch, setOnSearch] = useState({});
+
+    const testingsomething = () => {
+            const config = [
+        {
+            displayName: "Image",
+            searchCategory: "IMAGE",
+            attributes: [
+                {
+                    displayName: "Name",
+                    filterChipLabel: "Image name",
+                    searchTerm: "Image",
+                    inputType: "autocomplete"
+                },
+                {
+                    displayName: "Tag",
+                    filterChipLabel: "Image tag",
+                    searchTerm: "Image Tag",
+                    inputType: "text"
+                }
+            ]
+        },
+        {
+            displayName: "Deployment",
+            searchCategory: "DEPLOYMENT",
+            attributes: [
+                {
+                    displayName: "Name",
+                    filterChipLabel: "Deployment name",
+                    searchTerm: "Deployment",
+                    inputType: "autocomplete"
+                },
+                {
+                    displayName: "Status",
+                    filterChipLabel: "Deployment status",
+                    searchTerm: "Inactive Deployment",
+                    inputType: "select",
+                    inputProps: {
+                        options: [
+                            { value: "false", label: "Active" },
+                            { value: "true", label: "Inactive" },
+                        ]
+                    }
+                }
+            ]
+        }
+    ]
+
+    const searchFilter = {
+        "Image": "quay.io/rhacs-eng/scanner-slim:2.35.x-25-g5526c406eb",
+        "Namespace": "backend"
+    }
+    const onSearch = (payload: OnSearchPayload) => {
+    // Depending on the action of the payload ("ADD" or "REMOVE") we can update our search state. You can look at the "onURLSearch" util function to see an example of that. It is specifically for URL state, but you can do this another way if you want to keep state somewhere else.
+    }
+
+
+    setConfig(config)
+    setSearchFilter(searchFilter)
+    setOnSearch(onSearch)
+
+    }
+
     useEffect(() => {
         organizeData();
     }, []);
 
+    useEffect(() => {
+        testingsomething();
+    }, [config, searchFilter, onSearch])
+
     return (
         <div>
+            <CompoundSearchFilter
+                config={config}
+                searchFilter={searchFilter}
+                onSearch={onSearch}
+            />
+
             <DataTable
                 data={dataRows}
                 columns={columns}
                 expandableRows
                 expandableRowsComponent={CVEEntityDetailsComponent}
-                expandableRowsComponentProps={{"cveDetails": "CVE details", "entityDetails": "Entity details"}}
+                expandableRowsComponentProps={{
+                    "cveDetails": "CVE details",
+                    "entityDetails": "Entity details"
+                }}
                 progressPending={pending}
                 sortIcon={<ArrowDownward />}
                 theme={isDarkMode ? 'dark' : 'light'}

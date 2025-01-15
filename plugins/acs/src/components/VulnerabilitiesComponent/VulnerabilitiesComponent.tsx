@@ -36,7 +36,7 @@ export const VulnerabilitiesComponent = (serviceName: any) => {
             </InfoCard>
         );
     }
-    
+ 
     if (!ACSDataLoaded) {
         return (
             <InfoCard className={classes.root}>

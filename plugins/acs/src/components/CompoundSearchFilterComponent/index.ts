@@ -1,0 +1,1 @@
+export { CompoundSearchFilter } from './CompoundSearchFilter';
