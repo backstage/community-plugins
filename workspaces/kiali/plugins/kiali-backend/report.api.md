@@ -19,6 +19,25 @@ const kialiPlugin: BackendFeature;
 export default kialiPlugin;
 export { kialiPlugin }
 
+// Warning: (ae-missing-release-tag) "KialiProvidersApi" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface KialiProvidersApi {
+    // Warning: (ae-forgotten-export) The symbol "KialiApiImpl" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    api: KialiApiImpl;
+    // (undocumented)
+    name: string;
+    // (undocumented)
+    urlExternal: string;
+}
+
+// Warning: (ae-missing-release-tag) "makeRouter" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export const makeRouter: (logger: LoggerService, kialiApis: KialiProvidersApi[], config: Config) => express.Router;
+
 // Warning: (ae-missing-release-tag) "RouterOptions" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)

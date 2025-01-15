@@ -1,5 +1,11 @@
 # @backstage-community/plugin-copilot
 
+## 0.4.2
+
+### Patch Changes
+
+- 8007ea2: Removes Portuguese from the README
+
 ## 0.4.1
 
 ### Patch Changes

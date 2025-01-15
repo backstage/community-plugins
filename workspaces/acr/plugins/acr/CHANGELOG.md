@@ -1,5 +1,12 @@
 ### Dependencies
 
+## 1.9.0
+
+### Minor Changes
+
+- 0c1e93a: add support for the new frontend-system (alpha)
+- 0c1e93a: Aligned the exported component names with other plugins and the Backstage recommendations. Please use the exported `AcrImagesEntityContent` component instead of `AcrPage`. `AcrPage` is still exported, but deprecated and might be removed in the future.
+
 ## 1.8.8
 
 ### Patch Changes

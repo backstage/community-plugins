@@ -1,9 +1,9 @@
 app:
-  title: Npm Plugin Example App
+  title: npm plugin example app
   baseUrl: http://localhost:3000
 
 organization:
-  name: Npm Plugin Example
+  name: npm plugin example
 
 backend:
   # Used for enabling authentication, secret is shared by all backend plugins
@@ -78,21 +78,28 @@ catalog:
   rules:
     - allow: [Component, System, API, Resource, Location]
   locations:
-    # Local example data, file locations are relative to the backend process, typically `packages/backend`
+    # Plugin itself for techdocs
     - type: file
-      target: ../../examples/entities.yaml
-
-    # Local example template
+      target: ../../catalog-info.yaml
     - type: file
-      target: ../../examples/template/template.yaml
-      rules:
-        - allow: [Template]
-
-    # Local example organizational data
+      target: ../../plugins/npm/catalog-info.yaml
+    - type: file
+      target: ../../plugins/npm-backend/catalog-info.yaml
+    - type: file
+      target: ../../plugins/npm-common/catalog-info.yaml
+    # Local example data
     - type: file
       target: ../../examples/org.yaml
       rules:
         - allow: [User, Group]
+    - type: file
+      target: ../../examples/system.yaml
+    - type: file
+      target: ../../examples/npmjs-examples.yaml
+    - type: file
+      target: ../../examples/github-examples.yaml
+    - type: file
+      target: ../../examples/gitlab-examples.yaml
 
     ## Uncomment these lines to add more example data
     # - type: url
@@ -103,6 +110,16 @@ catalog:
     #   target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/acme-corp.yaml
     #   rules:
     #     - allow: [User, Group]
+
+npm:
+  defaultRegistry: npmjs
+  registries:
+    - name: npmjs
+      url: https://registry.npmjs.com
+    - name: github
+      url: https://npm.pkg.github.com
+    - name: gitlab
+      url: https://gitlab.com/api/v4/packages/npm
 
 # see https://backstage.io/docs/permissions/getting-started for more on the permission framework
 permission:

@@ -23,6 +23,7 @@ const logger = mockServices.logger.mock();
 const kialiApi = new KialiApiImpl({
   logger,
   kiali: {
+    name: 'default',
     url: 'https://localhost:4000',
     urlExternal: 'https://localhost:4000',
   },
