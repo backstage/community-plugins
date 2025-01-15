@@ -28,7 +28,7 @@ import {
   AzureContainerRegistryApiRef,
   AzureContainerRegistryApiV1,
 } from '../src/api';
-import { AcrPage, acrPlugin } from '../src/plugin';
+import { AcrImagesEntityContent, acrPlugin } from '../src/plugin';
 import { TagsResponse } from '../src/types';
 
 class MockAzureContainerRegistryApiClient
@@ -62,8 +62,8 @@ createDevApp()
           <Page themeId="service">
             <Header type="component — service" title="ACR demo application" />
             <TabbedLayout>
-              <TabbedLayout.Route path="/" title="ACR">
-                <AcrPage />
+              <TabbedLayout.Route path="/" title="ACR images">
+                <AcrImagesEntityContent />
               </TabbedLayout.Route>
             </TabbedLayout>
           </Page>

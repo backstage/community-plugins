@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.36.0
+
+### Minor Changes
+
+- 117f8e0: Support multi providers in Kiali
+
 ## 1.35.1
 
 ### Patch Changes

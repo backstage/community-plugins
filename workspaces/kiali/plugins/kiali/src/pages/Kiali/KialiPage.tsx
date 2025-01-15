@@ -40,7 +40,6 @@ const getPathPage = () => {
 
 export const KialiPage = () => {
   const [selectedTab, _] = React.useState<string>(getPathPage());
-
   const renderPath = () => {
     switch (selectedTab) {
       case 'overview':

@@ -60,9 +60,5 @@
     "*.{json,md}": [
       "prettier --write"
     ]
-  },
-  "dependencies": {
-    "@backstage-community/plugin-blackduck": "workspace:^",
-    "@backstage-community/plugin-blackduck-backend": "workspace:^"
   }
 }
