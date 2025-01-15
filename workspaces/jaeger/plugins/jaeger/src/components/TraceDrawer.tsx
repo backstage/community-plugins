@@ -29,6 +29,7 @@ import {
 } from '@material-ui/core/styles';
 import CloseIcon from '@material-ui/icons/Close';
 import { Span, Process } from '@backstage-community/plugin-jaeger-common';
+import { SpansTable } from './SpansTable';
 
 const useDrawerContentStyles = makeStyles((_theme: Theme) =>
   createStyles({
@@ -59,9 +60,7 @@ const TraceDrawerContent = ({ trace, close }: TraceDrawerContentProps) => {
       <div className={classes.header}>
         <Grid container justifyContent="flex-start" alignItems="flex-start">
           <Grid item xs={11}>
-            <Typography variant="h5">
-              Trace Details - {Object.keys(trace.processes)}
-            </Typography>
+            <Typography variant="h5">Trace Details</Typography>
           </Grid>
           <Grid item xs={1}>
             <IconButton
@@ -76,6 +75,9 @@ const TraceDrawerContent = ({ trace, close }: TraceDrawerContentProps) => {
           <Grid item xs={12}>
             Trace Id: {trace.traceID} <br />
             Span Count: {trace.spans.length}
+          </Grid>
+          <Grid item xs={12}>
+            <SpansTable spans={trace.spans} processes={trace.processes} />
           </Grid>
         </Grid>
       </div>

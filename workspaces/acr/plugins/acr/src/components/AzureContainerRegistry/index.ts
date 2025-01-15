@@ -1,1 +1,0 @@
-export { AzureContainerRegistry } from './AzureContainerRegistry';

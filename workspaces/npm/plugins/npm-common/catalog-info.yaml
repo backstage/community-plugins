@@ -1,0 +1,18 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: backstage-plugin-npm-common
+  title: '@backstage-community/plugin-npm-common'
+  description: A Backstage plugin that shows meta info and latest versions from a npm registry
+  annotations:
+    backstage.io/techdocs-entity: component:default/backstage-plugin-npm
+    npm/package: '@backstage-community/plugin-npm-common'
+  links:
+    - url: https://github.com/backstage/community-plugins/tree/main/workspaces/npm/plugins/npm-common
+      title: GitHub
+      icon: sourcecode
+spec:
+  lifecycle: production
+  type: backstage-common-library
+  owner: maintainers
+  subcomponentOf: backstage-plugin-npm

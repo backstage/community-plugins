@@ -1,0 +1,30 @@
+---
+apiVersion: backstage.io/v1alpha1
+kind: Domain
+metadata:
+  name: runtime-platform
+spec:
+  owner: family
+relations:
+  - type: hasPart
+    targetRef: system:default/software-deployment
+---
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: software-deployment
+spec:
+  owner: family
+  domain: runtime
+relations:
+  - type: partOf
+    targetRef: domain:default/runtime-platform
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: ci-runner
+spec:
+  type: service
+  owner: family
+  system: software-deployment

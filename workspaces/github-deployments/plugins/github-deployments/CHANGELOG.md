@@ -1,5 +1,11 @@
 # @backstage-community/plugin-github-deployments
 
+## 0.2.1
+
+### Patch Changes
+
+- 9063139: Adding support for the new frontend system, available at the `/alpha` export.
+
 ## 0.2.0
 
 ### Minor Changes

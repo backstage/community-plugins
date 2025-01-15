@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "engines": {
-    "node": "18 || 20"
+    "node": "22"
   },
   "scripts": {
     "start:backstage": "concurrently -c auto -n \"fe,be\" -p \"{name}:{pid}\" \"yarn start-app\" \"yarn start-backend\"",
@@ -49,10 +49,6 @@
     "node-gyp": "^9.0.0",
     "prettier": "^2.3.2",
     "typescript": "~5.3.0"
-  },
-  "dependencies": {
-    "@backstage-community/plugin-kiali": "workspace:^",
-    "@backstage-community/plugin-kiali-backend": "workspace:^"
   },
   "resolutions": {
     "@types/react": "^18",

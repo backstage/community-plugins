@@ -4,6 +4,7 @@
 
 ```ts
 import { FrontendPlugin } from '@backstage/frontend-plugin-api';
+import { isNpmAvailable } from '@backstage-community/plugin-npm-common';
 
 // @alpha
 const _default: FrontendPlugin<{}, {}, {}>;
@@ -17,6 +18,8 @@ export const entityNpmReleaseOverviewCard: any;
 
 // @alpha
 export const entityNpmReleaseTableCard: any;
+
+export { isNpmAvailable };
 
 // (No @packageDocumentation comment for this package)
 ```

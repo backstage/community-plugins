@@ -1,5 +1,13 @@
 # @backstage-community/plugin-search-backend-module-announcements
 
+## 0.1.3
+
+### Patch Changes
+
+- Updated dependencies [e282a2d]
+  - @backstage-community/plugin-announcements-common@0.1.3
+  - @backstage-community/plugin-announcements-node@0.1.3
+
 ## 0.1.2
 
 ### Patch Changes

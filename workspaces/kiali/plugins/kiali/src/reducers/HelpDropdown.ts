@@ -27,6 +27,7 @@ export const INITIAL_STATUS_STATE: StatusState = {
     isMaistra: false,
     istioAPIEnabled: true,
   },
+  providers: [],
 };
 
 export const HelpDropdownStateReducer = (

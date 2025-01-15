@@ -1,11 +1,18 @@
 {
   "name": "@internal/acr",
+  "description": "A Backstage plugin that displays information about your container images available in the Azure Container Registry",
   "version": "1.0.0",
   "private": true,
   "engines": {
     "node": "18 || 20"
   },
   "scripts": {
+    "dev": "yarn workspaces foreach -A --include backend --include app --parallel -v -i run start",
+    "dev-next": "yarn workspaces foreach -A --include backend --include app-next --parallel -v -i run start",
+    "start": "yarn workspace app start",
+    "start-backend": "yarn workspace backend start",
+    "build:backend": "yarn workspace backend build",
+    "build-image": "yarn workspace backend build-image",
     "tsc": "tsc",
     "tsc:full": "tsc --skipLibCheck true --incremental false",
     "build:all": "backstage-cli repo build --all",
@@ -14,10 +21,12 @@
     "clean": "backstage-cli repo clean",
     "test": "backstage-cli repo test",
     "test:all": "backstage-cli repo test --coverage",
+    "test:e2e": "playwright test",
     "fix": "backstage-cli repo fix",
     "lint": "backstage-cli repo lint --since origin/main",
     "lint:all": "backstage-cli repo lint",
     "prettier:check": "prettier --check .",
+    "prettier:fix": "prettier --write .",
     "new": "backstage-cli new --scope @backstage-community",
     "postinstall": "cd ../../ && yarn install"
   },
@@ -37,6 +46,7 @@
     "@backstage/e2e-test-utils": "^0.1.1",
     "@backstage/repo-tools": "^0.10.0",
     "@changesets/cli": "^2.27.1",
+    "@playwright/test": "^1.32.3",
     "@spotify/prettier-config": "^12.0.0",
     "knip": "^5.27.4",
     "node-gyp": "^9.0.0",

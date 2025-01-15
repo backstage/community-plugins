@@ -1,0 +1,45 @@
+---
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-system
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: backstage
+spec:
+  owner: guests
+---
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: acr-example
+  annotations:
+    azure-container-registry/repository-name: samples/hello-world
+spec:
+  type: service
+  lifecycle: testing
+  owner: guests
+  system: backstage
+---
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: acr-not-found-example
+  annotations:
+    azure-container-registry/repository-name: samples/container-not-found
+spec:
+  type: service
+  lifecycle: testing
+  owner: guests
+  system: backstage
+---
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: no-acr-annotation
+spec:
+  type: service
+  lifecycle: testing
+  owner: guests
+  system: backstage
