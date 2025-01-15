@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 import { TechInsightCheck } from '@backstage-community/plugin-tech-insights-node';
-import { TechInsightJsonRuleCheck } from '@backstage-community/plugin-tech-insights-backend-module-jsonfc/index';
+import { TechInsightJsonRuleCheck } from '@backstage-community/plugin-tech-insights-backend-module-jsonfc';
 import {
   BooleanCheckResult,
   CheckResponse,
 } from '@backstage-community/plugin-tech-insights-common';
 
+/**
+ * @public
+ */
 export enum Rank {
   Stone,
   Bronze,
@@ -27,6 +30,9 @@ export enum Rank {
   Gold,
 }
 
+/**
+ * @public
+ */
 export interface MaturityCheck extends TechInsightCheck {
   metadata: {
     category: string;
@@ -37,6 +43,9 @@ export interface MaturityCheck extends TechInsightCheck {
   };
 }
 
+/**
+ * @public
+ */
 export interface MaturityJsonRuleCheck extends TechInsightJsonRuleCheck {
   metadata: {
     category: string;
@@ -45,6 +54,9 @@ export interface MaturityJsonRuleCheck extends TechInsightJsonRuleCheck {
   };
 }
 
+/**
+ * @public
+ */
 export interface MaturityCheckResponse extends CheckResponse {
   metadata: {
     category: string;
@@ -54,6 +66,9 @@ export interface MaturityCheckResponse extends CheckResponse {
   };
 }
 
+/**
+ * @public
+ */
 // Custom Maturity CheckResult
 export interface MaturityCheckResult extends BooleanCheckResult {
   // JsonRuleBooleanCheckResult
@@ -61,17 +76,26 @@ export interface MaturityCheckResult extends BooleanCheckResult {
   updated?: string;
 }
 
+/**
+ * @public
+ */
 export interface MaturityRank {
   rank: Rank;
   isMaxRank: boolean;
 }
 
+/**
+ * @public
+ */
 export interface MaturityProgress {
   passedChecks: number;
   totalChecks: number;
   percentage: number;
 }
 
+/**
+ * @public
+ */
 export interface MaturitySummaryByArea extends MaturityRank {
   area: string;
   progress: MaturityProgress;
@@ -79,6 +103,9 @@ export interface MaturitySummaryByArea extends MaturityRank {
   maxRank: Rank;
 }
 
+/**
+ * @public
+ */
 export interface MaturitySummary extends MaturityRank {
   points: number;
   progress: MaturityProgress;
@@ -87,16 +114,28 @@ export interface MaturitySummary extends MaturityRank {
   areaSummaries: MaturitySummaryByArea[];
 }
 
+/**
+ * @public
+ */
 export interface EntityMaturityCheckResult extends MaturityRank {
   entity: string;
   checks: MaturityCheckResult[];
 }
 
+/**
+ * @public
+ */
 export interface EntityMaturitySummary {
   entity: string;
   summary: MaturitySummary;
 }
 
+/**
+ * @public
+ */
 export type BulkMaturityCheckResponse = EntityMaturityCheckResult[];
 
+/**
+ * @public
+ */
 export type BulkMaturitySummary = EntityMaturitySummary[];

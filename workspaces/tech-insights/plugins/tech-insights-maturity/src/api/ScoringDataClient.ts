@@ -43,6 +43,9 @@ import { ScoringDataFormatter } from './ScoringDataFormatter';
 
 const SDF = new ScoringDataFormatter();
 
+/**
+ * @public
+ */
 export class MaturityClient extends TechInsightsClient implements MaturityApi {
   readonly catalogApi: CatalogApi;
 

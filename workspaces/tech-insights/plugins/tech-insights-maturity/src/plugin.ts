@@ -26,6 +26,9 @@ import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import { maturityApiRef, MaturityClient } from './api';
 import { rootRouteRef } from './routes';
 
+/**
+ * @public
+ */
 export const techInsightsMaturityPlugin = createPlugin({
   id: 'tech-insights-maturity',
   routes: {
@@ -49,6 +52,9 @@ export const techInsightsMaturityPlugin = createPlugin({
   ],
 });
 
+/**
+ * @public
+ */
 export const EntityMaturityScorecardContent =
   techInsightsMaturityPlugin.provide(
     createRoutableExtension({
@@ -58,6 +64,9 @@ export const EntityMaturityScorecardContent =
     }),
   );
 
+/**
+ * @public
+ */
 export const EntityMaturitySummaryContent = techInsightsMaturityPlugin.provide(
   createRoutableExtension({
     name: 'EntityMaturitySummaryContent',
@@ -66,6 +75,9 @@ export const EntityMaturitySummaryContent = techInsightsMaturityPlugin.provide(
   }),
 );
 
+/**
+ * @public
+ */
 export const EntityMaturityRankWidget = techInsightsMaturityPlugin.provide(
   createComponentExtension({
     name: 'EntityMaturityRankWidget',
@@ -78,6 +90,9 @@ export const EntityMaturityRankWidget = techInsightsMaturityPlugin.provide(
   }),
 );
 
+/**
+ * @public
+ */
 export const MaturityPage = techInsightsMaturityPlugin.provide(
   createComponentExtension({
     name: 'MaturityPage',
@@ -87,6 +102,9 @@ export const MaturityPage = techInsightsMaturityPlugin.provide(
   }),
 );
 
+/**
+ * @public
+ */
 export const EntityMaturitySummaryCard = techInsightsMaturityPlugin.provide(
   createComponentExtension({
     name: 'MaturitySummaryInfoCard',

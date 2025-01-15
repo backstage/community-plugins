@@ -24,10 +24,16 @@ import {
   MaturitySummary,
 } from '@backstage-community/plugin-tech-insights-maturity-common';
 
+/**
+ * @public
+ */
 export const maturityApiRef = createApiRef<MaturityApi>({
   id: 'plugin.scoringdata.service',
 });
 
+/**
+ * @public
+ */
 export type MaturityApi = TechInsightsApi & {
   getMaturityRank(entity: Entity): Promise<MaturityRank>;
   getMaturityScore(entity: Entity): Promise<MaturityCheckResult[]>;

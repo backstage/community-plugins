@@ -22,8 +22,6 @@ import { RouteRef } from '@backstage/core-plugin-api';
 import { TechInsightsApi } from '@backstage-community/plugin-tech-insights';
 import { TechInsightsClient } from '@backstage-community/plugin-tech-insights';
 
-// Warning: (ae-missing-release-tag) "EntityMaturityRankWidget" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const EntityMaturityRankWidget: ({
   entity,
@@ -35,23 +33,15 @@ export const EntityMaturityRankWidget: ({
   chip?: boolean | undefined;
 }) => JSX_2.Element;
 
-// Warning: (ae-missing-release-tag) "EntityMaturityScorecardContent" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const EntityMaturityScorecardContent: () => JSX_2.Element;
 
-// Warning: (ae-missing-release-tag) "EntityMaturitySummaryCard" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const EntityMaturitySummaryCard: () => JSX_2.Element;
 
-// Warning: (ae-missing-release-tag) "EntityMaturitySummaryContent" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const EntityMaturitySummaryContent: () => JSX_2.Element;
 
-// Warning: (ae-missing-release-tag) "MaturityApi" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type MaturityApi = TechInsightsApi & {
   getMaturityRank(entity: Entity_2): Promise<MaturityRank>;
@@ -66,13 +56,9 @@ export type MaturityApi = TechInsightsApi & {
   getBulkMaturitySummary(entities: Entity_2[]): Promise<BulkMaturitySummary>;
 };
 
-// Warning: (ae-missing-release-tag) "maturityApiRef" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const maturityApiRef: ApiRef<MaturityApi>;
 
-// Warning: (ae-missing-release-tag) "MaturityClient" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export class MaturityClient extends TechInsightsClient implements MaturityApi {
   constructor(options: {
@@ -100,13 +86,9 @@ export class MaturityClient extends TechInsightsClient implements MaturityApi {
   getMaturitySummary(entity: Entity_2): Promise<MaturitySummary>;
 }
 
-// Warning: (ae-missing-release-tag) "MaturityPage" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const MaturityPage: () => JSX_2.Element;
 
-// Warning: (ae-missing-release-tag) "techInsightsMaturityPlugin" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const techInsightsMaturityPlugin: BackstagePlugin<
   {

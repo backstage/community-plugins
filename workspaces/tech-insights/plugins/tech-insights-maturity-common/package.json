@@ -2,18 +2,31 @@
   "name": "@backstage-community/plugin-tech-insights-maturity-common",
   "description": "Common functionalities for the tech-insights-maturity plugin",
   "version": "0.1.0",
-  "main": "src/index.ts",
-  "types": "src/index.ts",
+  "main": "./dist/index.cjs.js",
+  "types": "./dist/index.d.ts",
   "license": "Apache-2.0",
   "private": true,
   "publishConfig": {
     "access": "public"
   },
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "package.json": [
+        "package.json"
+      ]
+    }
+  },
   "backstage": {
     "role": "common-library",
-    "pluginId": "tech-insights-maturity",
+    "pluginId": "tech-insights",
     "pluginPackages": [
-      "@backstage-community/plugin-tech-insights-maturity",
+      "@backstage-community/plugin-tech-insights-common",
+      "@backstage-community/plugin-tech-insights-node",
+      "@backstage-community/plugin-tech-insights-backend-module-jsonfc",
       "@backstage-community/plugin-tech-insights-maturity-common"
     ]
   },
@@ -25,7 +38,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/backstage/community-plugins",
-    "directory": "workspaces/tech-insights-maturity/plugins/tech-insights-maturity-common"
+    "directory": "workspaces/tech-insights/plugins/tech-insights-maturity-common"
   },
   "sideEffects": false,
   "scripts": {
@@ -37,10 +50,9 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
-    "@backstage-community/plugin-tech-insights": "^0.3.33",
-    "@backstage-community/plugin-tech-insights-backend-module-jsonfc": "^0.3.1",
-    "@backstage-community/plugin-tech-insights-common": "^0.4.0",
-    "@backstage-community/plugin-tech-insights-node": "^2.2.0",
+    "@backstage-community/plugin-tech-insights-backend-module-jsonfc": "workspace:^",
+    "@backstage-community/plugin-tech-insights-common": "workspace:^",
+    "@backstage-community/plugin-tech-insights-node": "workspace:^",
     "@backstage/repo-tools": "0.3.5",
     "msw": "2.7.0"
   },
@@ -49,5 +61,6 @@
   },
   "files": [
     "dist"
-  ]
+  ],
+  "module": "./dist/index.esm.js"
 }

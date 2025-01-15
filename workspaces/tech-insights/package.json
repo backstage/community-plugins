@@ -65,6 +65,8 @@
     "@backstage-community/plugin-tech-insights": "workspace:^",
     "@backstage-community/plugin-tech-insights-backend": "workspace:^",
     "@backstage-community/plugin-tech-insights-backend-module-jsonfc": "workspace:^",
+    "@backstage-community/plugin-tech-insights-maturity": "workspace:^",
+    "@backstage-community/plugin-tech-insights-maturity-common": "workspace:^",
     "fast-json-stable-stringify": "^2.1.0"
   }
 }

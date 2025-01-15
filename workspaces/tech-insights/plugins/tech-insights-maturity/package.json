@@ -12,8 +12,9 @@
   },
   "backstage": {
     "role": "frontend-plugin",
-    "pluginId": "tech-insights-maturity",
+    "pluginId": "tech-insights",
     "pluginPackages": [
+      "@backstage-community/plugin-tech-insights",
       "@backstage-community/plugin-tech-insights-maturity",
       "@backstage-community/plugin-tech-insights-maturity-common"
     ]
@@ -26,7 +27,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/backstage/community-plugins",
-    "directory": "workspaces/tech-insights-maturity/plugins/tech-insights-maturity"
+    "directory": "workspaces/tech-insights/plugins/tech-insights-maturity"
   },
   "sideEffects": false,
   "scripts": {
@@ -39,7 +40,7 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
-    "@backstage-community/plugin-tech-insights": "^0.3.33",
+    "@backstage-community/plugin-tech-insights": "workspace:^",
     "@backstage-community/plugin-tech-insights-maturity-common": "workspace:^",
     "@backstage/catalog-client": "^1.7.1",
     "@backstage/catalog-model": "^1.7.0",
@@ -57,6 +58,7 @@
     "@mui/styles": "5.14.1",
     "@mui/x-charts": "6.18.0",
     "@types/d3-scale": "^4.0.8",
+    "@types/d3-shape": "^3.1.7",
     "rc-progress": "^4.0.0",
     "react-use": "^17.2.4"
   },

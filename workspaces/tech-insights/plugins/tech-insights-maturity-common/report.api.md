@@ -6,20 +6,14 @@
 import { BooleanCheckResult } from '@backstage-community/plugin-tech-insights-common';
 import { CheckResponse } from '@backstage-community/plugin-tech-insights-common';
 import { TechInsightCheck } from '@backstage-community/plugin-tech-insights-node';
-import { TechInsightJsonRuleCheck } from '@backstage-community/plugin-tech-insights-backend-module-jsonfc/index';
+import { TechInsightJsonRuleCheck } from '@backstage-community/plugin-tech-insights-backend-module-jsonfc';
 
-// Warning: (ae-missing-release-tag) "BulkMaturityCheckResponse" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type BulkMaturityCheckResponse = EntityMaturityCheckResult[];
 
-// Warning: (ae-missing-release-tag) "BulkMaturitySummary" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type BulkMaturitySummary = EntityMaturitySummary[];
 
-// Warning: (ae-missing-release-tag) "EntityMaturityCheckResult" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface EntityMaturityCheckResult extends MaturityRank {
   // (undocumented)
@@ -28,8 +22,6 @@ export interface EntityMaturityCheckResult extends MaturityRank {
   entity: string;
 }
 
-// Warning: (ae-missing-release-tag) "EntityMaturitySummary" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface EntityMaturitySummary {
   // (undocumented)
@@ -38,8 +30,6 @@ export interface EntityMaturitySummary {
   summary: MaturitySummary;
 }
 
-// Warning: (ae-missing-release-tag) "MaturityCheck" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface MaturityCheck extends TechInsightCheck {
   // (undocumented)
@@ -52,8 +42,6 @@ export interface MaturityCheck extends TechInsightCheck {
   };
 }
 
-// Warning: (ae-missing-release-tag) "MaturityCheckResponse" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface MaturityCheckResponse extends CheckResponse {
   // (undocumented)
@@ -65,8 +53,6 @@ export interface MaturityCheckResponse extends CheckResponse {
   };
 }
 
-// Warning: (ae-missing-release-tag) "MaturityCheckResult" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface MaturityCheckResult extends BooleanCheckResult {
   // (undocumented)
@@ -75,8 +61,6 @@ export interface MaturityCheckResult extends BooleanCheckResult {
   updated?: string;
 }
 
-// Warning: (ae-missing-release-tag) "MaturityJsonRuleCheck" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface MaturityJsonRuleCheck extends TechInsightJsonRuleCheck {
   // (undocumented)
@@ -87,8 +71,6 @@ export interface MaturityJsonRuleCheck extends TechInsightJsonRuleCheck {
   };
 }
 
-// Warning: (ae-missing-release-tag) "MaturityProgress" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface MaturityProgress {
   // (undocumented)
@@ -99,8 +81,6 @@ export interface MaturityProgress {
   totalChecks: number;
 }
 
-// Warning: (ae-missing-release-tag) "MaturityRank" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface MaturityRank {
   // (undocumented)
@@ -109,8 +89,6 @@ export interface MaturityRank {
   rank: Rank;
 }
 
-// Warning: (ae-missing-release-tag) "MaturitySummary" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface MaturitySummary extends MaturityRank {
   // (undocumented)
@@ -125,8 +103,6 @@ export interface MaturitySummary extends MaturityRank {
   rankProgress: MaturityProgress;
 }
 
-// Warning: (ae-missing-release-tag) "MaturitySummaryByArea" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface MaturitySummaryByArea extends MaturityRank {
   // (undocumented)
@@ -139,8 +115,6 @@ export interface MaturitySummaryByArea extends MaturityRank {
   rankProgress: MaturityProgress;
 }
 
-// Warning: (ae-missing-release-tag) "Rank" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export enum Rank {
   // (undocumented)
