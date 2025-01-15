@@ -13,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import { Card, CardContent, Grid } from '@material-ui/core';
-
+import React from 'react';
 import * as FilterHelper from '../../../components/FilterList/FilterHelper';
 import { NamespaceMTLSStatus } from '../../../components/MTls/NamespaceMTLSStatus';
 import { TLSInfo } from '../../../components/Overview/TLSInfo';

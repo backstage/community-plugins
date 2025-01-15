@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import _isEqual from 'lodash/isEqual';
-
 import {
   JaegerTrace,
   KeyValuePair,

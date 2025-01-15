@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import { Grid, IconButton, Tooltip } from '@material-ui/core';
 import Refresh from '@material-ui/icons/Refresh';
+import React from 'react';
 
 type DefaultProps = {
   hideNamespaceSelector?: boolean;

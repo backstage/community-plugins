@@ -13,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
-
 import { Badge, Button, Drawer } from '@material-ui/core';
-
+import * as React from 'react';
 import { KialiIcon } from '../../config/KialiIcon';
 import { KialiAppState, KialiContext } from '../../store';
 import { kialiStyle } from '../../styles/StyleUtils';

@@ -13,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
-
 import { List, Typography } from '@material-ui/core';
-
+import * as React from 'react';
 import { ComponentStatus, Status } from '../../types/IstioStatus';
 import { IstioComponentStatus } from './IstioComponentStatus';
 

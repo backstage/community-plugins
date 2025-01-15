@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-import { useLocation } from 'react-router-dom';
-
 import { Content, Link, Page, WarningPanel } from '@backstage/core-components';
 import { useRouteRef } from '@backstage/core-plugin-api';
-
+import React from 'react';
+import { useLocation } from 'react-router-dom';
 import { rootRouteRef } from '../../routes';
 
 export const KialiNoPath = () => {

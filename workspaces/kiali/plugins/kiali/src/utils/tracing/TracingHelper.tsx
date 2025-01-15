@@ -15,7 +15,6 @@
  */
 import _round from 'lodash/round';
 import moment from 'moment';
-
 import { retrieveTimeRange } from '../../components/Time/TimeRangeHelper';
 import {
   DurationInSeconds,

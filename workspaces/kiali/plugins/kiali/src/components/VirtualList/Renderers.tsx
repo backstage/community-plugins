@@ -13,10 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
-
 import { Link } from '@backstage/core-components';
-
 import {
   Button,
   Chip,
@@ -27,7 +24,7 @@ import {
 } from '@material-ui/core';
 // eslint-disable-next-line no-restricted-imports
 import { Close } from '@material-ui/icons';
-
+import * as React from 'react';
 import { KialiIcon, serverConfig } from '../../config';
 import { isWaypoint } from '../../helpers/LabelFilterHelper';
 import { infoStyle } from '../../pages/Overview/OverviewCard/CanaryUpgradeProgress';

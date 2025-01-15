@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
-
 import { Tooltip } from '@material-ui/core';
 import { ResourcesFullIcon } from '@patternfly/react-icons';
 import { SVGIconProps } from '@patternfly/react-icons/dist/esm/createIcon';
-
+import * as React from 'react';
 import { ComponentStatus, Status } from '../../types/IstioStatus';
 import { PFColors } from '../Pf/PfColors';
 import { IstioStatusList } from './IstioStatusList';

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { NodeModel } from '@patternfly/react-topology';
-
 import { PFBadges, PFBadgeType } from '../../../components/Pf/PfBadges';
 import { BoxByType, GraphType, NodeType, UNKNOWN } from '../../../types/Graph';
 import { GraphPFSettings } from '../types/GraphPFSettings';

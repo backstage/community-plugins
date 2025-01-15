@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import type { LoggerService } from '@backstage/backend-plugin-api';
-
 import supported from '../kiali_supported.json';
 import { KialiDetails } from '../service/config';
 import { KialiFetcher, KialiValidations, ValidationCategory } from './fetch';

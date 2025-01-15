@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
-
 import { KeyIcon, TopologyIcon } from '@patternfly/react-icons';
 import {
   DefaultNode,
@@ -27,7 +25,7 @@ import {
   WithSelectionProps,
 } from '@patternfly/react-topology';
 import useDetailsLevel from '@patternfly/react-topology/dist/esm/hooks/useDetailsLevel';
-
+import * as React from 'react';
 import { PFColors } from '../../../components/Pf/PfColors';
 import { kialiStyle } from '../../../styles/StyleUtils';
 

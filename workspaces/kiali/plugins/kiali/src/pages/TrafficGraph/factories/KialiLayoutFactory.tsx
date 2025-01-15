@@ -19,7 +19,6 @@ import {
   Layout,
   LayoutFactory,
 } from '@patternfly/react-topology';
-
 import { KialiDagreLayout } from '../layouts/KialiDagreLayout';
 
 export const KialiLayoutFactory: LayoutFactory = (

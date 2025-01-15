@@ -13,13 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { useApi } from '@backstage/core-plugin-api';
+import { CircularProgress, Grid } from '@material-ui/core';
 import React from 'react';
 import { useAsyncFn, useDebounce } from 'react-use';
-
-import { useApi } from '@backstage/core-plugin-api';
-
-import { CircularProgress, Grid } from '@material-ui/core';
-
 import { IstioConfigCard } from '../../components/IstioConfigCard/IstioConfigCard';
 import { isIstioNamespace, serverConfig } from '../../config';
 import { kialiApiRef } from '../../services/Api';

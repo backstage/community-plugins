@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { ActionType, createAction } from 'typesafe-actions';
-
 import { StatusState } from '../types/StatusState';
 import { ActionKeys } from './ActionKeys';
 

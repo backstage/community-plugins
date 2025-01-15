@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { YAMLException } from 'js-yaml';
 import { IMarker } from 'react-ace';
 import { Annotation } from 'react-ace/types';
-
-import { YAMLException } from 'js-yaml';
-
 import {
   istioValidationErrorStyle,
   istioValidationInfoStyle,

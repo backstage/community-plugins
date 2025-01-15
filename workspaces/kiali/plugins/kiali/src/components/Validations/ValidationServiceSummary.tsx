@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import * as React from 'react';
-
 import { ObjectValidation, ValidationTypes } from '../../types/IstioObjects';
 import { ValidationSummary } from './ValidationSummary';
 

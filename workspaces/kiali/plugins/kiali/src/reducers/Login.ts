@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { getType } from 'typesafe-actions';
-
 import { LoginActions } from '../actions/LoginActions';
 import { LoginState as LoginStateInterface, LoginStatus } from '../store/Store';
 import { updateState } from '../utils/Reducer';

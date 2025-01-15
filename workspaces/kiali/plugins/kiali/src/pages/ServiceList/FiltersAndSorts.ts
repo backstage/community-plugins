@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { TextInputTypes } from '@patternfly/react-core';
-
 import {
   filterByHealth,
   getFilterSelectedValues,

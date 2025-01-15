@@ -13,12 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { useAsyncFn, useDebounce } from 'react-use';
-
 import { useApi } from '@backstage/core-plugin-api';
-
 import {
   Button,
   Card,
@@ -37,8 +32,10 @@ import MenuItem from '@material-ui/core/MenuItem';
 import { Alert } from '@material-ui/lab';
 import memoize from 'micro-memoize';
 import moment from 'moment';
+import * as React from 'react';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { useAsyncFn, useDebounce } from 'react-use';
 import screenfull, { Screenfull } from 'screenfull';
-
 import { history, URLParam } from '../../app/History';
 import { AccessLogModal } from '../../components/Envoy/AccessLogModal';
 import { RenderComponentScroll } from '../../components/Nav/Page/RenderComponentScroll';

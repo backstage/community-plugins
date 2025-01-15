@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import * as React from 'react';
-
 import { PFBadge, PFBadges } from '../../components/Pf/PfBadges';
 import { BackstageObjectLink } from '../../utils/backstageLinks';
 
