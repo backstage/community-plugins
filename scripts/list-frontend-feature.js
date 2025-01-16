@@ -34,7 +34,7 @@ async function main(args) {
   const frontendFeatureReports = [];
 
   // Get workspaces
-  const workspaces = listWorkspaces();
+  const workspaces = await listWorkspaces();
 
   // Loop through workspaces
   for (const workspace of workspaces) {
