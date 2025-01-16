@@ -1,0 +1,34 @@
+app:
+  title: Dependency-Track Example App
+  baseUrl: http://localhost:3000
+
+organization:
+  name: Dependency-Track Example
+
+backend:
+  baseUrl: http://localhost:7007
+  listen:
+    port: 7007
+  csp:
+    connect-src: ["'self'", 'http:', 'https:']
+  cors:
+    origin: http://localhost:3000
+    methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
+    credentials: true
+  database:
+    client: better-sqlite3
+    connection: ':memory:'
+
+techdocs:
+  builder: 'local'
+  generator:
+    runIn: 'local'
+  publisher:
+    type: 'local'
+
+auth:
+  providers:
+    guest: {}
+
+dependencytrack:
+  baseUrl: https://deptrack.example.com
