@@ -42,8 +42,8 @@ export const DashboardCards = ({
     data.reduce((acc, item) => acc + (item[property] || 0), 0);
 
   const calculateAcceptanceRate = (metricsData: Metric[]) => {
-    const totalSuggested = sumProperty(metricsData, 'total_lines_suggested');
-    const totalAccepted = sumProperty(metricsData, 'total_lines_accepted');
+    const totalSuggested = sumProperty(metricsData, 'total_suggestions_count');
+    const totalAccepted = sumProperty(metricsData, 'total_acceptances_count');
     return totalSuggested > 0
       ? ((totalAccepted / totalSuggested) * 100).toFixed(2).concat('%')
       : 'N/A';
