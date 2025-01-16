@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { getType } from 'typesafe-actions';
-
 import { HelpDropdownActions } from '../actions/HelpDropdownActions';
 import { KialiAppAction } from '../actions/KialiAppAction';
 import { StatusState } from '../types/StatusState';

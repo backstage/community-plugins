@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import { EmptyState } from '@backstage/core-components';
+import React from 'react';
 
 const containerStyle = { width: '100%', height: '100%' };
 

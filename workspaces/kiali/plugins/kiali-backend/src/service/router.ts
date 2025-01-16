@@ -16,10 +16,8 @@
 import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 import type { LoggerService } from '@backstage/backend-plugin-api';
 import { Config } from '@backstage/config';
-
 import express from 'express';
 import _ from 'lodash';
-
 import { ValidationCategory } from '../clients/fetch';
 import { KialiApiImpl } from '../clients/KialiAPIConnector';
 import { readKialiConfigs } from './config';

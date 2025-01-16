@@ -15,7 +15,6 @@
  */
 
 import { AceOptions } from 'react-ace/types';
-
 import {
   AuthorizationPolicy,
   DestinationRule,

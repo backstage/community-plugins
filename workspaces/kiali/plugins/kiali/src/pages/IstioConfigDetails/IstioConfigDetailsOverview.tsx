@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import {
   Card,
   CardContent,
@@ -23,7 +21,7 @@ import {
   Tooltip,
   Typography,
 } from '@material-ui/core';
-
+import React from 'react';
 import { HistoryManager } from '../../app/History';
 import { Labels } from '../../components/Label/Labels';
 import { PFBadge } from '../../components/Pf/PfBadges';

@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
-
 import {
   ChartArea,
   ChartBar,
@@ -30,7 +28,7 @@ import {
   EmptyStateVariant,
 } from '@patternfly/react-core';
 import { CubesIcon, ErrorCircleOIcon } from '@patternfly/react-icons';
-
+import * as React from 'react';
 import { PFColors } from '../../components/Pf/PfColors';
 import { KialiIcon } from '../../config/KialiIcon';
 import { kialiStyle } from '../../styles/StyleUtils';

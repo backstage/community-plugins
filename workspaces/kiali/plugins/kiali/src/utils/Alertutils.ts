@@ -13,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Dispatch } from 'react';
-
 import axios, { AxiosError } from 'axios';
-
+import { Dispatch } from 'react';
 import { KialiAppAction } from '../actions/KialiAppAction';
 import { MessageCenterActions } from '../actions/MessageCenterActions';
 import * as API from '../services/Api';

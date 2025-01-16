@@ -13,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
-
 import { PopoverPosition, Tooltip } from '@patternfly/react-core';
-
+import * as React from 'react';
 import { createTooltipIcon } from '../../config/KialiIcon';
 import * as H from '../../types/Health';
 import { HealthDetails } from './HealthDetails';

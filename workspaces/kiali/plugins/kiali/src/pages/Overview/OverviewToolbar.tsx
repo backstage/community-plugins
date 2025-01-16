@@ -13,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import { Select, SelectItem } from '@backstage/core-components';
-
+import React from 'react';
 import { HistoryManager, URLParam } from '../../app/History';
 import { DefaultSecondaryMasthead } from '../../components/DefaultSecondaryMasthead/DefaultSecondaryMasthead';
 import { TimeDurationComponent } from '../../components/Time/TimeDurationComponent';

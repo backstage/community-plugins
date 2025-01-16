@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-import * as React from 'react';
-
 import {
   ApplicationsIcon,
   BundleIcon,
   ServiceIcon,
 } from '@patternfly/react-icons';
-
+import * as React from 'react';
 import { kialiStyle } from '../../styles/StyleUtils';
 import { MissingSidecar } from '../MissingSidecar/MissingSidecar';
 

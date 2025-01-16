@@ -15,7 +15,6 @@
  */
 
 import _ from 'lodash';
-
 import { MeshCluster } from '../types/Mesh';
 import { ServerConfig } from '../types/ServerConfig';
 import { parseHealthConfig } from './HealthConfig';

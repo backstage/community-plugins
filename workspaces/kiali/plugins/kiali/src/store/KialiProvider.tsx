@@ -13,15 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-import { useAsyncFn, useDebounce } from 'react-use';
-
 import { Entity } from '@backstage/catalog-model';
 import { useApi } from '@backstage/core-plugin-api';
-
 import { CircularProgress } from '@material-ui/core';
 import axios from 'axios';
-
+import React from 'react';
+import { useAsyncFn, useDebounce } from 'react-use';
 import {
   HelpDropdownActions,
   LoginActions,

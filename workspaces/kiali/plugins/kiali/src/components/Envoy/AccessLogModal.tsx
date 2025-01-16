@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
-
 import {
   Table,
   TableBody,
@@ -29,8 +27,8 @@ import {
   Split,
   SplitItem,
 } from '@patternfly/react-core';
+import * as React from 'react';
 import { classes } from 'typestyle';
-
 import { PFColors } from '../../components/Pf/PfColors';
 import { kialiStyle } from '../../styles/StyleUtils';
 import { AccessLog } from '../../types/IstioObjects';

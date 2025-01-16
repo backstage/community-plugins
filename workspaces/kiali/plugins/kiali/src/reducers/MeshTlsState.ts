@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { getType } from 'typesafe-actions';
-
 import { KialiAppAction } from '../actions/KialiAppAction';
 import { MeshTlsActions } from '../actions/MeshTlsActions';
 import { TLSStatus } from '../types/TLSStatus';

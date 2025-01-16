@@ -18,7 +18,6 @@ import {
   createAction,
   createStandardAction,
 } from 'typesafe-actions';
-
 import {
   DurationInSeconds,
   IntervalInMilliseconds,
