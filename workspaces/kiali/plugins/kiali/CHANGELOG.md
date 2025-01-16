@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.36.2
+
+### Patch Changes
+
+- 0b73ce1: Upgrade backstage to 1.35.0 and remove @spotify/prettier-config
+
 ## 1.36.1
 
 ### Patch Changes
