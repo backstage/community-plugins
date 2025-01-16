@@ -21,10 +21,9 @@ import { resolve } from 'path';
 import arrayToTable from 'array-to-table';
 import * as url from 'url';
 import * as codeowners from 'codeowners-utils';
+import { listWorkspaces } from './list-workspaces.js';
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
-
-const EXCLUDED_WORKSPACES = ['noop', 'repo-tools'];
 
 async function main(args) {
   const rootPath = resolve(__dirname, '..');
@@ -37,9 +36,7 @@ async function main(args) {
   const codeOwnerEntries = await codeowners.loadOwners(codeownersPath);
 
   // Get workspaces
-  const workspaces = (await fs.readdir(workspacePath, { withFileTypes: true }))
-    .filter(w => w.isDirectory() && !EXCLUDED_WORKSPACES.includes(w.name))
-    .map(w => w.name);
+  const workspaces = await listWorkspaces();
 
   // Loop through workspaces
   for (const workspace of workspaces) {
