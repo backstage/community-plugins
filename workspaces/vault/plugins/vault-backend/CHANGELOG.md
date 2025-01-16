@@ -1,5 +1,11 @@
 # @backstage-community/plugin-vault-backend
 
+## 0.5.2
+
+### Patch Changes
+
+- e7dea45: Fixed typo under the "New Backend System" instructions
+
 ## 0.5.1
 
 ### Patch Changes
