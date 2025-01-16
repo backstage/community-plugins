@@ -141,7 +141,7 @@ export function transformPolicyGroupToLowercase(policyArray: string[]) {
     policyArray[0].startsWith('g') &&
     (policyArray[1].startsWith('user') || policyArray[1].startsWith('group'))
   ) {
-    policyArray[1] = policyArray[1].toLowerCase();
+    policyArray[1] = policyArray[1].toLocaleLowerCase('en-US');
   }
 }
 

@@ -27,7 +27,7 @@ export class LowercaseFileAdapter extends FileAdapter {
     if (line.trim().startsWith('g')) {
       const policyArray = line.split(',');
       if (policyArray.length >= 1 && policyArray[0].trim().startsWith('g')) {
-        policyArray[1] = policyArray[1].toLowerCase();
+        policyArray[1] = policyArray[1].toLocaleLowerCase('en-US');
       }
       return policyArray.join(',');
     }
