@@ -1,5 +1,11 @@
 ## @janus-idp/backstage-plugin-feedback-backend [1.7.0](https://github.com/janus-idp/backstage-plugins/compare/@janus-idp/backstage-plugin-feedback-backend@1.6.0...@janus-idp/backstage-plugin-feedback-backend@1.7.0) (2024-07-26)
 
+## 1.7.11
+
+### Patch Changes
+
+- 4b2e17c: update backstage to 1.34.2 and replace `@spotify/prettier-config` by `@backstage/cli/config/prettier`
+
 ## 1.7.10
 
 ### Patch Changes
