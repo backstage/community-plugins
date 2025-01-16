@@ -1,0 +1,18 @@
+apiVersion: inventory.backstage.io/v1alpha1
+kind: Building
+metadata:
+  name: home
+---
+apiVersion: inventory.backstage.io/v1alpha1
+kind: Room
+metadata:
+  name: kitchen
+spec:
+  parent: building:home
+---
+apiVersion: inventory.backstage.io/v1alpha1
+kind: Item
+metadata:
+  name: coffee-machine
+spec:
+  location: room:kitchen
