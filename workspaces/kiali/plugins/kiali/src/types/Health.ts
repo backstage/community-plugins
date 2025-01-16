@@ -21,7 +21,6 @@ import {
   UnknownIcon,
 } from '@patternfly/react-icons';
 import { SVGIconProps } from '@patternfly/react-icons/dist/js/createIcon';
-
 import { PFColors } from '../components/Pf/PfColors';
 import { serverConfig } from '../config';
 import { getName } from '../utils/RateIntervals';

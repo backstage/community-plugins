@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
-
 import { Tooltip } from '@material-ui/core';
 import {
   Chart,
@@ -30,11 +28,11 @@ import {
 } from '@patternfly/react-charts';
 import { Button, ButtonVariant } from '@patternfly/react-core';
 import { format as d3Format } from 'd3-format';
+import * as React from 'react';
 import regression from 'regression';
 import { VictoryBoxPlot } from 'victory-box-plot';
 import { VictoryPortal } from 'victory-core';
 import { VictoryVoronoiContainer } from 'victory-voronoi-container';
-
 import { PFColors } from '../../components/Pf/PfColors';
 import { KialiIcon } from '../../config/KialiIcon';
 import { kialiStyle } from '../../styles/StyleUtils';

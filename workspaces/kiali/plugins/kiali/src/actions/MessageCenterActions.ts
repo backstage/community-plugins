@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { ActionType, createAction } from 'typesafe-actions';
-
 import { MessageType } from '../types/MessageCenter';
 import { ActionKeys } from './ActionKeys';
 

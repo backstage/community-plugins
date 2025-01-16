@@ -18,7 +18,6 @@ import {
   GraphElement,
   NodeStatus,
 } from '@patternfly/react-topology';
-
 import { DecoratedGraphEdgeData } from '../../../types/Graph';
 import { Span } from '../../../types/Tracing';
 

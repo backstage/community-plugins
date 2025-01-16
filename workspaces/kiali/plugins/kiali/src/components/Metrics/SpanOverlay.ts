@@ -13,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
-
 import { useApi } from '@backstage/core-plugin-api';
-
+import * as React from 'react';
 import { PFColors } from '../../components/Pf/PfColors';
 import { kialiApiRef } from '../../services/Api';
 import { KialiAppState, KialiContext } from '../../store';

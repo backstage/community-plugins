@@ -13,16 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Content, EmptyState } from '@backstage/core-components';
+import { useApi } from '@backstage/core-plugin-api';
+import { CircularProgress, Tab, Tabs } from '@material-ui/core';
+import { AxiosError } from 'axios';
 import * as React from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAsyncFn, useDebounce } from 'react-use';
-
-import { Content, EmptyState } from '@backstage/core-components';
-import { useApi } from '@backstage/core-plugin-api';
-
-import { CircularProgress, Tab, Tabs } from '@material-ui/core';
-import { AxiosError } from 'axios';
-
 import { HistoryManager } from '../../app/History';
 import {
   BreadcrumbView,

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { mockServices } from '@backstage/backend-test-utils';
-
 import supported from '../kiali_supported.json';
 import { KIALI_CORE_VERSION, KialiApiImpl } from './KialiAPIConnector';
 

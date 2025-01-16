@@ -13,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { CSSProperties } from 'react';
-
 import { Badge, Tooltip, TooltipPosition } from '@patternfly/react-core';
-
+import React, { CSSProperties } from 'react';
 import { kialiStyle } from '../../styles/StyleUtils';
 import { PFColors } from './PfColors';
 

@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 import React from 'react';
-
 import { classes } from 'typestyle';
-
 import { kialiStyle } from '../../../styles/StyleUtils';
 
 // TOP_PADDING constant is used to adjust the height of the main div to allow scrolling in the inner container layer.

@@ -20,7 +20,6 @@ import {
   NodeShape,
   NodeStatus,
 } from '@patternfly/react-topology';
-
 import {
   BoxByType,
   DecoratedGraphNodeData,

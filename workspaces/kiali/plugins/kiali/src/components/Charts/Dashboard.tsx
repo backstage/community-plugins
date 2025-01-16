@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
-
 import { Grid } from '@material-ui/core';
 import { ChartThemeColor, getTheme } from '@patternfly/react-charts';
 import { isArray } from 'lodash';
-
+import * as React from 'react';
 import { ChartModel, DashboardModel } from '../../types/Dashboards';
 import { AllPromLabelsValues } from '../../types/Metrics';
 import { Overlay } from '../../types/Overlay';

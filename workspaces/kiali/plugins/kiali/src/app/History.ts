@@ -18,7 +18,6 @@ import {
   createHashHistory,
   createMemoryHistory,
 } from 'history';
-
 import { toValidDuration } from '../config/ServerConfig';
 import { BoundsInMilliseconds } from '../types/Common';
 

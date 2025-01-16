@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
-
 import BlockIcon from '@material-ui/icons/Block';
 import BuildIcon from '@material-ui/icons/Build';
 import CodeIcon from '@material-ui/icons/Code';
@@ -29,7 +27,7 @@ import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline';
 import ScheduleIcon from '@material-ui/icons/Schedule';
 import SecurityIcon from '@material-ui/icons/Security';
 import ShareIcon from '@material-ui/icons/Share';
-
+import React from 'react';
 import hollowPinIcon from '../assets/img/hollow-pin.png';
 import solidPinIcon from '../assets/img/solid-pin.png';
 

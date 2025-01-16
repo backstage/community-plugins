@@ -13,15 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
-
 import {
   CheckCircleIcon,
   ExclamationCircleIcon,
   ExclamationTriangleIcon,
   MinusCircleIcon,
 } from '@patternfly/react-icons';
-
+import * as React from 'react';
 import { ComponentStatus } from '../../types/IstioStatus';
 import { IstioStatus } from './IstioStatus';
 

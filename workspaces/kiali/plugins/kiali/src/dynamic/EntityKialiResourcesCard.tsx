@@ -13,10 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
-import { useRef } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-
 import {
   CardTab,
   CodeSnippet,
@@ -24,9 +20,10 @@ import {
   TabbedCard,
 } from '@backstage/core-components';
 import { useEntity } from '@backstage/plugin-catalog-react';
-
 import { Box } from '@material-ui/core';
-
+import * as React from 'react';
+import { useRef } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { AppListPage } from '../pages/AppList/AppListPage';
 import { ServiceListPage } from '../pages/ServiceList/ServiceListPage';
 import { WorkloadListPage } from '../pages/WorkloadList/WorkloadListPage';

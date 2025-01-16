@@ -13,13 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { useApi } from '@backstage/core-plugin-api';
+import { CircularProgress } from '@material-ui/core';
 import * as React from 'react';
 import { useAsyncFn, useDebounce } from 'react-use';
-
-import { useApi } from '@backstage/core-plugin-api';
-
-import { CircularProgress } from '@material-ui/core';
-
 import { HistoryManager } from '../../app/History';
 import { ServiceInfo } from '../../pages/ServiceDetails/ServiceInfo';
 import { kialiApiRef } from '../../services/Api';

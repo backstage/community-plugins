@@ -19,10 +19,8 @@ import {
   DiscoveryApi,
   IdentityApi,
 } from '@backstage/core-plugin-api';
-
 import { AxiosError } from 'axios';
 import { Record } from 'victory-core/lib/victory-util/immutable-types';
-
 import { KIALI_PROVIDER } from '../components/Router';
 import { config } from '../config';
 import { App, AppQuery } from '../types/App';

@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
-
 import {
   ChartCursorFlyout,
   ChartLabel,
@@ -22,7 +20,7 @@ import {
   ChartTooltip,
   ChartTooltipProps,
 } from '@patternfly/react-charts';
-
+import * as React from 'react';
 import { VCDataPoint } from '../../types/VictoryChartInfo';
 import { toLocaleStringWithConditionalDate } from '../../utils/Date';
 

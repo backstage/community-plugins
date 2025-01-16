@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import * as React from 'react';
-
 import { kialiStyle } from '../../styles/StyleUtils';
 import { MTLSStatuses } from '../../types/TLSStatus';
 import { MTLSIconTypes } from './MTLSIcon';

@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
-
 import { useTheme } from '@material-ui/core/styles';
 import {
   Chart,
@@ -27,7 +25,7 @@ import {
   ChartThreshold,
   ChartVoronoiContainer,
 } from '@patternfly/react-charts';
-
+import * as React from 'react';
 import {
   RichDataPoint,
   VCDataPoint,

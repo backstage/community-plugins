@@ -13,13 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { LoggerService } from '@backstage/backend-plugin-api';
-
-import axios, { AxiosError, AxiosRequestConfig } from 'axios';
-
 import fs from 'fs';
 import https from 'https';
-
+import type { LoggerService } from '@backstage/backend-plugin-api';
+import axios, { AxiosError, AxiosRequestConfig } from 'axios';
 import { KialiDetails } from '../service/config';
 import {
   AuthInfo,

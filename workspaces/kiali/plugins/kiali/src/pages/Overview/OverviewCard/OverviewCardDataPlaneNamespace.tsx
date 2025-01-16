@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import * as React from 'react';
-
 import { SparklineChart } from '../../../components/Charts/SparklineChart';
 import { PFColors } from '../../../components/Pf/PfColors';
 import { DurationInSeconds } from '../../../types/Common';

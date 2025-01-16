@@ -21,7 +21,6 @@ import {
   withPanZoom,
   withSelection,
 } from '@patternfly/react-topology';
-
 import { KialiEdge } from '../styles/KialiEdge';
 import { KialiNode } from '../styles/KialiNode';
 
