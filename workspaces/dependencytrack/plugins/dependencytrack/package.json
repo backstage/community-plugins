@@ -1,0 +1,78 @@
+{
+  "name": "@backstage-community/plugin-dependencytrack",
+  "version": "0.3.1",
+  "description": "A Backstage plugin that integrates with Dependency Track",
+  "backstage": {
+    "role": "frontend-plugin",
+    "pluginId": "dependencyTrack",
+    "pluginPackages": [
+      "@backstage-community/plugin-dependencytrack"
+    ]
+  },
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.esm.js",
+    "types": "dist/index.d.ts"
+  },
+  "keywords": [
+    "backstage",
+    "dependencyTrack"
+  ],
+  "homepage": "https://backstage.io",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/dependencytrack/plugins\\dependencytrack"
+  },
+  "license": "Apache-2.0",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "sideEffects": false,
+  "scripts": {
+    "build": "backstage-cli package build",
+    "clean": "backstage-cli package clean",
+    "lint": "backstage-cli package lint",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack",
+    "start": "backstage-cli package start",
+    "test": "backstage-cli package test"
+  },
+  "dependencies": {
+    "@backstage/catalog-model": "^1.7.3",
+    "@backstage/core-components": "^0.14.7",
+    "@backstage/core-plugin-api": "^1.9.2",
+    "@backstage/plugin-catalog-react": "^1.15.1",
+    "@backstage/theme": "^0.5.5",
+    "@material-table/core": "^3.1.0",
+    "@material-ui/core": "^4.12.2",
+    "@material-ui/icons": "^4.9.1",
+    "@material-ui/lab": "4.0.0-alpha.61",
+    "react-use": "^17.3.2"
+  },
+  "peerDependencies": {
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0"
+  },
+  "devDependencies": {
+    "@backstage/cli": "^0.26.6",
+    "@backstage/core-app-api": "^1.12.5",
+    "@backstage/dev-utils": "^1.0.32",
+    "@backstage/plugin-auth-backend-module-guest-provider": "^0.1.4",
+    "@backstage/plugin-catalog": "^1.20.0",
+    "@backstage/test-utils": "^1.5.5",
+    "@testing-library/jest-dom": "^6.0.0",
+    "@testing-library/react": "^14.0.0",
+    "@testing-library/user-event": "^14.0.0",
+    "cross-fetch": "^3.1.8",
+    "msw": "^1.0.0",
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-router-dom": "6.0.0-beta.0 || ^6.3.0",
+    "typescript": "^5.4.5"
+  },
+  "files": [
+    "dist",
+    "config.d.ts"
+  ],
+  "configSchema": "config.d.ts",
+  "packageManager": "yarn@3.8.2"
+}
