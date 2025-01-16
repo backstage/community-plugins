@@ -2696,6 +2696,7 @@ __metadata:
     "@janus-idp/backstage-plugin-audit-log-node": ^1.7.1
     "@spotify/prettier-config": ^15.0.0
     "@types/express": 4.17.21
+    "@types/knex": ^0.16.1
     "@types/lodash": ^4.14.151
     "@types/node": 18.19.68
     "@types/supertest": 2.0.16
@@ -13091,6 +13092,15 @@ __metadata:
   dependencies:
     keyv: "*"
   checksum: 8713da9382b9346d664866a6cab2f91b0fd479f61379af891303a618e9a2abad6f347adc38a0850540e3f2dad278427de24e7555339264fddb04d1d17d3b50e0
+  languageName: node
+  linkType: hard
+
+"@types/knex@npm:^0.16.1":
+  version: 0.16.1
+  resolution: "@types/knex@npm:0.16.1"
+  dependencies:
+    knex: "*"
+  checksum: daf16bef279e68a11c74ad5d351237c6667ea9921ebe73e613d24b26acc25ba86b40fdc9d8adddfe1a0d234f20336adde6e4a2d062ae7ebe74a2c288ac6ccdc5
   languageName: node
   linkType: hard
 
@@ -24005,7 +24015,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"knex@npm:3, knex@npm:^3.0.0":
+"knex@npm:*, knex@npm:3, knex@npm:^3.0.0":
   version: 3.1.0
   resolution: "knex@npm:3.1.0"
   dependencies:

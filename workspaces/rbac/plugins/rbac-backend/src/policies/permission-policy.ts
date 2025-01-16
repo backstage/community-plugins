@@ -216,6 +216,7 @@ export class RBACPermissionPolicy implements PermissionPolicy {
       }
 
       const permissionName = request.permission.name;
+      await this.enforcer.loadPolicy();
       const roles = await this.enforcer.getRolesForUser(userEntityRef);
 
       if (isResourcePermission(request.permission)) {
