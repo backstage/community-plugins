@@ -65,7 +65,7 @@
     "@backstage/plugin-auth-backend-module-guest-provider": "^0.2.3",
     "@types/node-fetch": "^2.5.12",
     "@types/supertest": "^6.0.0",
-    "@types/uuid": "^9.0.0",
+    "@types/uuid": "^10.0.0",
     "supertest": "^7.0.0"
   }
 }
