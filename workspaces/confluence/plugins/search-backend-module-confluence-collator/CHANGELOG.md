@@ -1,5 +1,11 @@
 # @backstage-community/plugin-search-backend-module-confluence-collator
 
+## 0.3.2
+
+### Patch Changes
+
+- 18c36d8: Removed usages of `@backstage/backend-tasks`
+
 ## 0.3.1
 
 ### Patch Changes
