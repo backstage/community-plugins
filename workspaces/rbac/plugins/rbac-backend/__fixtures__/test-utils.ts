@@ -140,7 +140,12 @@ export async function newEnforcerDelegate(
     await enf.addGroupingPolicies(storedGroupingPolicies);
   }
 
-  return new EnforcerDelegate(enf, roleMetadataStorageMock, mockClientKnex);
+  return new EnforcerDelegate(
+    enf,
+    auditLogger(),
+    roleMetadataStorageMock,
+    mockClientKnex,
+  );
 }
 
 export async function newPermissionPolicy(

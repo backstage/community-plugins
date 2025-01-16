@@ -125,17 +125,17 @@ export class PolicyBuilder {
     const conditionStorage = new DataBaseConditionalStorage(databaseClient);
 
     const roleMetadataStorage = new DataBaseRoleMetadataStorage(databaseClient);
-    const enforcerDelegate = new EnforcerDelegate(
-      enf,
-      roleMetadataStorage,
-      databaseClient,
-    );
-
     const defAuditLog = new DefaultAuditLogger({
       logger: env.logger,
       authService: env.auth,
       httpAuthService: env.httpAuth,
     });
+    const enforcerDelegate = new EnforcerDelegate(
+      enf,
+      defAuditLog,
+      roleMetadataStorage,
+      databaseClient,
+    );
 
     if (rbacProviders) {
       await connectRBACProviders(
