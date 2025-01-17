@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Entity } from '@backstage/catalog-model';
+import React from 'react';
 import { InfoCard } from '@backstage/core-components';
 import {
   MaturitySummary,
@@ -24,14 +24,12 @@ import Typography from '@mui/material/Typography';
 import CardContent from '@mui/material/CardContent';
 import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
-import React from 'react';
 import { MaturitySummaryCardContent } from '../MaturitySummaryInfoCard/MaturitySummaryCardContent';
-import { useScoringSummaryLoader } from '../../hooks/useScoringSummaryLoader';
 import { MaturityHelp } from '../../helpers/MaturityHelp';
 import { MaturityRankAvatar } from '../MaturityRankAvatar';
 
 type Props = {
-  entity: Entity;
+  summary: MaturitySummary;
 };
 
 const useStyles = makeStyles({
@@ -81,43 +79,8 @@ function getRankAvatarProgress(rank: Rank, value: MaturitySummary) {
   );
 }
 
-export const MaturityRankInfoCard = ({ entity }: Props) => {
+export const MaturityRankInfoCard = ({ summary }: Props) => {
   const { content } = useStyles();
-  const { value } = useScoringSummaryLoader(entity);
-
-  let cardContent = <></>;
-  if (value) {
-    cardContent = (
-      <>
-        <CardContent>
-          <Stack direction="row" spacing={5}>
-            {getRankAvatarProgress(Rank.Stone, value)}
-            {getRankAvatarProgress(Rank.Bronze, value)}
-            {getRankAvatarProgress(Rank.Silver, value)}
-            {getRankAvatarProgress(Rank.Gold, value)}
-          </Stack>
-        </CardContent>
-        <CardContent>
-          <MaturityRankAvatar
-            value={value}
-            size={80}
-            progress={value.rankProgress}
-            className={content}
-          />
-          <Typography variant="h6" align="center">
-            {Rank[value.rank]}
-          </Typography>
-          <Typography variant="subtitle2" align="center">
-            {RankDescription.get(value.rank)}
-          </Typography>
-        </CardContent>
-        <Divider />
-        <CardContent>
-          <MaturitySummaryCardContent summary={value} variant="infoCard" />
-        </CardContent>
-      </>
-    );
-  }
 
   return (
     <InfoCard
@@ -128,7 +91,32 @@ export const MaturityRankInfoCard = ({ entity }: Props) => {
         </React.Fragment>
       }
     >
-      {cardContent}
+      <CardContent>
+        <Stack direction="row" spacing={5}>
+          {getRankAvatarProgress(Rank.Stone, summary)}
+          {getRankAvatarProgress(Rank.Bronze, summary)}
+          {getRankAvatarProgress(Rank.Silver, summary)}
+          {getRankAvatarProgress(Rank.Gold, summary)}
+        </Stack>
+      </CardContent>
+      <CardContent>
+        <MaturityRankAvatar
+          value={summary}
+          size={80}
+          progress={summary.rankProgress}
+          className={content}
+        />
+        <Typography variant="h6" align="center">
+          {Rank[summary.rank]}
+        </Typography>
+        <Typography variant="subtitle2" align="center">
+          {RankDescription.get(summary.rank)}
+        </Typography>
+      </CardContent>
+      <Divider />
+      <CardContent>
+        <MaturitySummaryCardContent summary={summary} variant="infoCard" />
+      </CardContent>
     </InfoCard>
   );
 };

@@ -41,7 +41,7 @@ import {
 import { MaturityApi } from './ScoringDataApi';
 import { ScoringDataFormatter } from './ScoringDataFormatter';
 
-const SDF = new ScoringDataFormatter();
+export const SDF = new ScoringDataFormatter();
 
 /**
  * @public
@@ -74,17 +74,7 @@ export class MaturityClient extends TechInsightsClient implements MaturityApi {
   public async getMaturityScore(
     entity: Entity,
   ): Promise<MaturityCheckResult[]> {
-    const results = await this.getCheckResults(entity);
-    const facts = await this.getFacts(
-      getCompoundEntityRef(entity),
-      results?.flatMap(x => x.check.factIds),
-    );
-    return Promise.all(
-      results.map(async x => ({
-        ...x,
-        updated: facts[x.check.factIds[0]].timestamp,
-      })),
-    );
+    return await this.getCheckResults(entity);
   }
 
   public async getChildMaturityCheckResults(

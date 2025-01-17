@@ -13,23 +13,98 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Entity } from '@backstage/catalog-model';
-import Grid from '@mui/material/Grid';
 import React from 'react';
+import useAsyncRetry from 'react-use/lib/useAsync';
+
+import { EmptyState, InfoCard, Progress } from '@backstage/core-components';
+import { useApi } from '@backstage/core-plugin-api';
+import { getCompoundEntityRef } from '@backstage/catalog-model';
+import { useEntity } from '@backstage/plugin-catalog-react';
+import Grid from '@mui/material/Grid';
+import Alert from '@mui/material/Alert';
+import { maturityApiRef, SDF } from '../../api';
 import { MaturityRankInfoCard } from '../MaturityRankInfoCard';
-import { MaturityScoreInfoCard } from '../MaturityScoreInfoCard';
+import { Rank } from '@backstage-community/plugin-tech-insights-maturity-common';
+import { Box } from '@material-ui/core';
+import { MaturityCheckTable } from './maturityTableRows';
 
-type Props = {
-  entity: Entity;
+export const MaturityScorePage = () => {
+  const { entity } = useEntity();
+  const api = useApi(maturityApiRef);
+
+  const { loading, error, value } = useAsyncRetry(async () => {
+    const checks = await api.getMaturityScore(entity);
+    const rank = SDF.getMaturityRank(checks);
+    const summary = SDF.getMaturitySummary(checks);
+
+    const facts = await api.getFacts(
+      getCompoundEntityRef(entity),
+      checks?.flatMap(x => x.check.factIds),
+    );
+
+    return {
+      checks,
+      summary,
+      facts,
+      rank,
+    };
+  }, [api, SDF]);
+
+  if (loading) {
+    return <Progress />;
+  } else if (error) {
+    return <Alert severity="error">{error.message}</Alert>;
+  } else if (!value) {
+    return <EmptyState missing="info" title="No information to display" />;
+  }
+
+  return (
+    <Grid container>
+      <Grid item md={3}>
+        <MaturityRankInfoCard summary={value.summary} />
+      </Grid>
+      <Grid item md={9}>
+        <InfoCard title="Checks" variant="fullHeight">
+          <Grid
+            item
+            container
+            direction="column"
+            justifyContent="space-between"
+            alignItems="stretch"
+            style={{ height: '100%' }}
+            spacing={0}
+          >
+            <Box sx={{ flexGrow: 1 }}>
+              <Grid item>
+                <MaturityCheckTable
+                  checks={value.checks.filter(
+                    x => x.check.metadata.rank === Rank.Bronze,
+                  )}
+                  facts={value.facts}
+                  category={Rank.Bronze}
+                  rank={value.rank}
+                />
+                <MaturityCheckTable
+                  checks={value.checks.filter(
+                    x => x.check.metadata.rank === Rank.Silver,
+                  )}
+                  facts={value.facts}
+                  category={Rank.Silver}
+                  rank={value.rank}
+                />
+                <MaturityCheckTable
+                  checks={value.checks.filter(
+                    x => x.check.metadata.rank === Rank.Gold,
+                  )}
+                  facts={value.facts}
+                  category={Rank.Gold}
+                  rank={value.rank}
+                />
+              </Grid>
+            </Box>
+          </Grid>
+        </InfoCard>
+      </Grid>
+    </Grid>
+  );
 };
-
-export const MaturityScorePage = ({ entity }: Props) => (
-  <Grid container>
-    <Grid item md={3}>
-      <MaturityRankInfoCard entity={entity} />
-    </Grid>
-    <Grid item md={9}>
-      <MaturityScoreInfoCard entity={entity} />
-    </Grid>
-  </Grid>
-);

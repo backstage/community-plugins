@@ -13,41 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  EntityProvider,
-  entityRouteRef,
-} from '@backstage/plugin-catalog-react';
-import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
+import { renderInTestApp } from '@backstage/test-utils';
 import {
   MaturitySummary,
   Rank,
 } from '@backstage-community/plugin-tech-insights-maturity-common';
 import React from 'react';
 import { MaturityRankInfoCard } from './MaturityRankInfoCard';
-import { MaturityApi, maturityApiRef } from '../../api';
-
-const entity = {
-  apiVersion: 'backstage.io/v1alpha1',
-  kind: 'Component',
-  metadata: {
-    namespace: 'default',
-    name: 'bingaux-sources',
-    title: 'Bingaux Sources',
-    stakeholders: [
-      {
-        role: 'architect',
-        email: 'some@email.com',
-      },
-    ],
-    tags: ['python', 'csharp'],
-  },
-  spec: {
-    type: 'service',
-    lifecycle: 'production',
-    owner: 'team-119',
-    system: 'api-tools',
-  },
-};
 
 describe('<MaturityRankInfoCard />', () => {
   afterEach(() => jest.resetAllMocks());
@@ -87,21 +59,8 @@ describe('<MaturityRankInfoCard />', () => {
       ],
     };
 
-    const scoringApi: Partial<MaturityApi> = {
-      getMaturitySummary: jest.fn().mockResolvedValue(summary),
-    };
-
     const { getByText, getByAltText, getAllByAltText } = await renderInTestApp(
-      <TestApiProvider apis={[[maturityApiRef, scoringApi]]}>
-        <EntityProvider entity={entity}>
-          <MaturityRankInfoCard entity={entity} />
-        </EntityProvider>
-      </TestApiProvider>,
-      {
-        mountedRoutes: {
-          '/catalog/:namespace/:kind/:name': entityRouteRef,
-        },
-      },
+      <MaturityRankInfoCard summary={summary} />,
     );
 
     expect(getByText('Maturity Rank')).toBeInTheDocument(); // Title

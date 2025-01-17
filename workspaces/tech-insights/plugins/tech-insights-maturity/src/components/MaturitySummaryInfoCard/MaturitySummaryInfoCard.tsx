@@ -13,19 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import React from 'react';
+import useAsyncRetry from 'react-use/lib/useAsync';
+
 import { InfoCard } from '@backstage/core-components';
+import { useApi } from '@backstage/core-plugin-api';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import Grid from '@mui/material/Grid';
 import CardContent from '@mui/material/CardContent';
-import React from 'react';
 import { MaturitySummaryCardContent } from './MaturitySummaryCardContent';
-import { useScoringSummaryLoader } from '../../hooks/useScoringSummaryLoader';
 import { MaturityHelp } from '../../helpers/MaturityHelp';
 import { MaturityRankAvatar } from '../MaturityRankAvatar';
+import { maturityApiRef } from '../../api';
 
 export const MaturitySummaryInfoCard = () => {
   const { entity } = useEntity();
-  const { value, loading } = useScoringSummaryLoader(entity);
+
+  const api = useApi(maturityApiRef);
+  const { value, loading } = useAsyncRetry(
+    async () => api.getMaturitySummary(entity),
+    [api, entity],
+  );
 
   if (!value || loading) return <></>;
 
@@ -33,11 +41,11 @@ export const MaturitySummaryInfoCard = () => {
     <InfoCard
       title={
         <Grid container>
-          <Grid item md={8}>
+          <Grid item md={7}>
             Maturity
             <MaturityHelp />
           </Grid>
-          <Grid item md={4} style={{ padding: 2 }}>
+          <Grid item md={5}>
             <MaturityRankAvatar value={value} entity={entity} variant="chip" />
           </Grid>
         </Grid>

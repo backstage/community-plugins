@@ -13,22 +13,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useEntity, useRelatedEntities } from '@backstage/plugin-catalog-react';
-import Grid from '@mui/material/Grid';
 import React from 'react';
+import useAsyncRetry from 'react-use/lib/useAsync';
 
+import { useApi } from '@backstage/core-plugin-api';
+import { useEntity, useRelatedEntities } from '@backstage/plugin-catalog-react';
+import { EmptyState, Progress } from '@backstage/core-components';
+import Alert from '@mui/material/Alert';
+import Grid from '@mui/material/Grid';
 import { MaturityRankInfoCard } from '../MaturityRankInfoCard';
 import { MaturitySummaryTable } from '../MaturitySummaryTable';
 import { getSubEntityFilter } from '../../helpers/utils';
+import { maturityApiRef } from '../../api';
 
 export const MaturitySummaryPage = () => {
   const { entity } = useEntity();
   const { entities } = useRelatedEntities(entity, getSubEntityFilter(entity));
 
+  const api = useApi(maturityApiRef);
+  const { value, loading, error } = useAsyncRetry(
+    async () => api.getMaturitySummary(entity),
+    [api, entity],
+  );
+
+  if (loading) {
+    return <Progress />;
+  } else if (error) {
+    return <Alert severity="error">{error.message}</Alert>;
+  } else if (!value) {
+    return <EmptyState missing="info" title="No information to display" />;
+  }
+
   return (
     <Grid container>
       <Grid item md={3}>
-        <MaturityRankInfoCard entity={entity} />
+        <MaturityRankInfoCard summary={value} />
       </Grid>
       <Grid item md={9}>
         {entities && <MaturitySummaryTable entities={entities} />}

@@ -38,6 +38,14 @@ import Typography from '@mui/material/Typography';
 import { makeStyles, styled } from '@mui/styles';
 import React from 'react';
 import { MaturityRankAvatar } from '../MaturityRankAvatar';
+import { InsightFacts } from '@backstage-community/plugin-tech-insights-common';
+
+interface Props {
+  checks: MaturityCheckResult[];
+  facts: InsightFacts;
+  rank: MaturityRank;
+  category: Rank;
+}
 
 const Accordion = styled((props: AccordionProps) => (
   <MuiAccordion disableGutters elevation={0} square {...props} />
@@ -79,8 +87,10 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 
 const MaturityCheckTableRow = ({
   checkResult,
+  updated,
 }: {
   checkResult: MaturityCheckResult;
+  updated: string;
 }) => {
   const [expanded, setExpanded] = React.useState<boolean>(
     checkResult.result === false,
@@ -156,9 +166,7 @@ const MaturityCheckTableRow = ({
                     <AccessTimeIcon color="primary" />
                   </Tooltip>
                   <Typography variant="subtitle2" className={filters}>
-                    {checkResult.updated
-                      ? `Updated ${checkResult.updated}`
-                      : 'Not yet run'}
+                    {updated ? `Updated ${updated}` : 'Not yet run'}
                   </Typography>
                 </Stack>
               </Stack>
@@ -193,14 +201,11 @@ const MaturityCheckTableRow = ({
 };
 
 export const MaturityCheckTable = ({
-  checks,
   rank,
   category,
-}: {
-  checks: MaturityCheckResult[];
-  rank: MaturityRank;
-  category: Rank;
-}) => {
+  checks,
+  facts,
+}: Props) => {
   // Expand only the next rank Category needed to level up
   const [expanded, setExpanded] = React.useState<boolean>(
     rank.rank + 1 === category,
@@ -231,6 +236,7 @@ export const MaturityCheckTable = ({
               {checks?.map(entry => (
                 <MaturityCheckTableRow
                   key={entry.check.id}
+                  updated={facts[entry.check.factIds[0]]?.timestamp}
                   checkResult={entry}
                 />
               ))}

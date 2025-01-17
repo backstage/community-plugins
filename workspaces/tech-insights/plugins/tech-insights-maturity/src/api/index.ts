@@ -15,4 +15,4 @@
  */
 export type { MaturityApi } from './ScoringDataApi';
 export { maturityApiRef } from './ScoringDataApi';
-export { MaturityClient } from './ScoringDataClient';
+export { SDF, MaturityClient } from './ScoringDataClient';
