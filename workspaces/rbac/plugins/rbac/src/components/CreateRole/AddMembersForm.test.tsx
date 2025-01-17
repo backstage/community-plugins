@@ -15,13 +15,7 @@
  */
 import React from 'react';
 
-import {
-  fireEvent,
-  render,
-  screen,
-  waitFor,
-  within,
-} from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import '@testing-library/jest-dom';
@@ -105,38 +99,44 @@ describe('AddMembersForm', () => {
       />,
     );
 
-    const input = screen.getByPlaceholderText(
-      'Search by user name or group name',
-    );
-    await userEvent.type(input, 'John Doe');
+    const autocompleteInput = screen
+      .getByTestId('users-and-groups-text-field')
+      .querySelector('input');
+    if (!autocompleteInput) {
+      throw new Error('Input field not found');
+    }
+    await userEvent.type(autocompleteInput, 'John Doe');
 
-    expect(input).toHaveValue('John Doe');
+    expect(autocompleteInput).toHaveValue('John Doe');
   });
 
   it('allows selecting multiple members from the dropdown', async () => {
     const user = userEvent.setup();
 
-    const { getByPlaceholderText, findByText } = render(
+    const { findByText, getByRole, getByTestId } = render(
       <AddMembersForm
         selectedMembers={[]}
         membersData={membersData}
         setFieldValue={mockSetFieldValue}
       />,
     );
-
+    const autocompleteInput = getByTestId(
+      'users-and-groups-text-field',
+    ).querySelector('input');
+    if (!autocompleteInput) {
+      throw new Error('Input field not found');
+    }
     // Open the dropdown
-    const memberOptions = getByPlaceholderText(
-      'Search by user name or group name',
-    );
-    await user.click(memberOptions);
-    screen.debug();
+    await user.click(autocompleteInput);
+
+    // Assert the dropdown listbox is displayed
+    const memberOptions = getByRole('listbox');
+    expect(memberOptions).toBeInTheDocument();
     // Select the first member
     const memberOption1 = await findByText('test user1');
     await user.click(memberOption1);
 
-    // Open the dropdown and Select the second member
-    await user.click(memberOptions);
-    screen.debug();
+    // Select the second member
     const memberOption2 = await screen.findByText('test user2');
 
     await user.click(memberOption2);
@@ -151,38 +151,46 @@ describe('AddMembersForm', () => {
     });
   });
 
-  test('clears search when HighlightOffIcon is clicked', () => {
-    const { getByPlaceholderText, getByLabelText } = render(
+  it('clears search when HighlightOffIcon is clicked', async () => {
+    const user = userEvent.setup();
+    const { getByLabelText } = render(
       <AddMembersForm
         selectedMembers={selectedMembers}
         membersData={membersData}
         setFieldValue={mockSetFieldValue}
       />,
     );
+    const autocompleteInput = screen
+      .getByTestId('users-and-groups-text-field')
+      .querySelector('input');
+    if (!autocompleteInput) {
+      throw new Error('Input field not found');
+    }
+    await userEvent.type(autocompleteInput, 'John Doe');
+    expect(autocompleteInput).toHaveValue('John Doe');
 
-    const input = getByPlaceholderText('Search by user name or group name');
-    fireEvent.change(input, { target: { value: 'User 1' } });
-    expect(input).toHaveValue('User 1');
     const clearButton = getByLabelText('clear search');
-    fireEvent.click(clearButton);
-    expect(input).toHaveValue('');
+    await user.click(clearButton);
+    expect(autocompleteInput).toHaveValue('');
   });
   it('filters members as the user types in the search input', async () => {
     const user = userEvent.setup();
-    const { getByPlaceholderText } = render(
+    const { getByTestId, getAllByTestId } = render(
       <AddMembersForm
         selectedMembers={[]}
         membersData={membersData}
         setFieldValue={mockSetFieldValue}
       />,
     );
+    const autocompleteInput = getByTestId(
+      'users-and-groups-text-field',
+    ).querySelector('input');
+    if (!autocompleteInput) {
+      throw new Error('Input field not found');
+    }
+    await user.type(autocompleteInput, 'er1');
 
-    await user.type(
-      getByPlaceholderText('Search by user name or group name'),
-      'er1',
-    );
-
-    const elements = screen.getAllByTestId('test user1');
+    const elements = getAllByTestId('test user1');
     const combinedText = elements.map(el => el.textContent).join('');
     expect(combinedText).toBe('test user1');
   });
@@ -190,15 +198,20 @@ describe('AddMembersForm', () => {
   it('updates the selected member and calls setFieldValue on selection', async () => {
     const user = userEvent.setup();
 
-    const { getByPlaceholderText, findByText } = render(
+    const { findByText, getByTestId } = render(
       <AddMembersForm
         selectedMembers={[]}
         membersData={membersData}
         setFieldValue={mockSetFieldValue}
       />,
     );
-
-    await user.click(getByPlaceholderText('Search by user name or group name'));
+    const autocompleteInput = getByTestId(
+      'users-and-groups-text-field',
+    ).querySelector('input');
+    if (!autocompleteInput) {
+      throw new Error('Input field not found');
+    }
+    await user.click(autocompleteInput);
 
     const memberOption = await findByText('test user2');
     const listboxElement = memberOption.closest('ul');
@@ -241,37 +254,37 @@ describe('AddMembersForm', () => {
     expect(screen.getByText(selectedMembersError)).toBeInTheDocument();
   });
 
-  it('is able to clear the search input after selection', async () => {
+  it('is able to clear the search input after each selection', async () => {
     const user = userEvent.setup();
-    const { getByPlaceholderText, findByText } = render(
+
+    const { findByText, getByRole } = render(
       <AddMembersForm
         selectedMembers={[]}
         membersData={membersData}
         setFieldValue={mockSetFieldValue}
       />,
     );
-
-    await user.click(getByPlaceholderText('Search by user name or group name'));
-
-    const memberOption = await findByText('test user1');
-    const listboxElement = memberOption.closest('ul');
-
-    if (!listboxElement) {
-      throw new Error('Unable to find the listbox element.');
+    const autocompleteInput = screen
+      .getByTestId('users-and-groups-text-field')
+      .querySelector('input');
+    if (!autocompleteInput) {
+      throw new Error('Input field not found');
     }
+    // Open the dropdown
+    user.click(autocompleteInput);
 
-    const listbox = within(listboxElement);
+    await userEvent.type(autocompleteInput, 'er1');
+    let memberOptions = getByRole('listbox');
+    await user.click(memberOptions);
+    const memberOption1 = await findByText('er1');
+    await user.click(memberOption1);
+    expect(autocompleteInput).toHaveValue('');
+    await userEvent.type(autocompleteInput, 'er2');
+    memberOptions = getByRole('listbox');
+    await user.click(memberOptions);
+    const memberOption2 = await screen.findByText('er2');
 
-    // user selected one option
-    await user.click(listbox.getByText(/test user1/));
-    // user cleared the search input
-    await user.clear(getByPlaceholderText('Search by user name or group name'));
-    // user unfocused the search input
-    await user.click(document.body);
-
-    // check if the selected member is cleared in search input
-    expect(
-      getByPlaceholderText('Search by user name or group name'),
-    ).toHaveValue('');
+    await user.click(memberOption2);
+    expect(autocompleteInput).toHaveValue('');
   });
 });

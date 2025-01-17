@@ -92,7 +92,7 @@ describe('MembersCard', () => {
         membersInfo={membersInfo}
       />,
     );
-    expect(queryByText('Users and groups (2 users, 2 groups)')).not.toBeNull();
+    expect(queryByText('Users and groups (2 groups, 2 users)')).not.toBeNull();
     expect(queryByText('Calum Leavy')).not.toBeNull();
     expect(queryByText('Amelia Park')).not.toBeNull();
     expect(queryByText('Team B')).not.toBeNull();
