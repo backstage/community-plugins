@@ -41,14 +41,14 @@ export const AddedMembersTable = ({
     <Table
       title={
         selectedMembers.length > 0
-          ? `Users and groups (${getMembers(selectedMembers)})`
-          : 'Users and groups'
+          ? `${getMembers(selectedMembers)}`
+          : 'No users and groups selected'
       }
       data={selectedMembers}
       columns={selectedMembersColumns(selectedMembers, setFieldValue)}
       emptyContent={
         <Box sx={{ display: 'flex', justifyContent: 'center', p: 2 }}>
-          No records. Selected users and groups appear here.
+          Selected users and groups appear here.
         </Box>
       }
     />
