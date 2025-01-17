@@ -2878,6 +2878,7 @@ __metadata:
   resolution: "@backstage-community/plugin-tech-insights-maturity@workspace:plugins/tech-insights-maturity"
   dependencies:
     "@backstage-community/plugin-tech-insights": "workspace:^"
+    "@backstage-community/plugin-tech-insights-common": "workspace:^"
     "@backstage-community/plugin-tech-insights-maturity-common": "workspace:^"
     "@backstage/catalog-client": ^1.7.1
     "@backstage/catalog-model": ^1.7.0
