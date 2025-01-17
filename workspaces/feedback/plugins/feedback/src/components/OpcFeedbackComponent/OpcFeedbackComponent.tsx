@@ -62,9 +62,10 @@ export const OpcFeedbackComponent = () => {
       analytics.captureEvent('click', `submit - ${event.detail.data.summary}`);
       const userEntity = (await identityApi.getBackstageIdentity())
         .userEntityRef;
+      const lines = event.detail.data.summary.split('\n') as string[];
       const resp = await feedbackApi.createFeedback({
-        summary: event.detail.data.summary,
-        description: '',
+        summary: lines[0],
+        description: lines.slice(1).join('\n'),
         projectId: projectId,
         url: window.location.href,
         userAgent: window.navigator.userAgent,
