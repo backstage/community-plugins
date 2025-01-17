@@ -38,9 +38,9 @@ export interface JenkinsInfoProvider {
      */
     entityRef: CompoundEntityRef;
     /**
-     * A specific job to get. This is only passed in when we know about a job name we are interested in.
+     * Specific job(s) to get. This is only passed in when we know the job name(s) we are interested in.
      */
-    jobFullName?: string;
+    fullJobNames?: string[];
 
     credentials?: BackstageCredentials;
     logger?: LoggerService;
@@ -51,7 +51,7 @@ export interface JenkinsInfoProvider {
 export interface JenkinsInfo {
   baseUrl: string;
   headers?: Record<string, string | string[]>;
-  jobFullName: string; // TODO: make this an array
+  fullJobNames: string[];
   projectCountLimit: number;
   crumbIssuer?: boolean;
 }
@@ -230,7 +230,7 @@ export class DefaultJenkinsInfoProvider implements JenkinsInfoProvider {
 
   async getInstance(opt: {
     entityRef: CompoundEntityRef;
-    jobFullName?: string;
+    fullJobNames?: string[];
     credentials?: BackstageCredentials;
   }): Promise<JenkinsInfo> {
     // default limitation of projects
@@ -252,9 +252,9 @@ export class DefaultJenkinsInfoProvider implements JenkinsInfoProvider {
     }
 
     // lookup `[jenkinsName#]jobFullName` from entity annotation
-    const jenkinsAndJobName =
+    const jenkinsAndJobNames =
       DefaultJenkinsInfoProvider.getEntityAnnotationValue(entity);
-    if (!jenkinsAndJobName) {
+    if (!jenkinsAndJobNames || jenkinsAndJobNames.length === 0) {
       throw new Error(
         `Couldn't find jenkins annotation (${
           DefaultJenkinsInfoProvider.NEW_JENKINS_ANNOTATION
@@ -262,20 +262,40 @@ export class DefaultJenkinsInfoProvider implements JenkinsInfoProvider {
       );
     }
 
-    let jobFullName;
-    let jenkinsName: string | undefined;
-    const splitIndex = jenkinsAndJobName.indexOf(':');
-    if (splitIndex === -1) {
-      // no jenkinsName specified, use default
-      jobFullName = jenkinsAndJobName;
-    } else {
-      // There is a jenkinsName specified
-      jenkinsName = jenkinsAndJobName.substring(0, splitIndex);
-      jobFullName = jenkinsAndJobName.substring(
-        splitIndex + 1,
-        jenkinsAndJobName.length,
+    // Group job names by their Jenkins instances.
+    const jobsByInstance = jenkinsAndJobNames.reduce(
+      (acc: Record<string, string[]>, name) => {
+        const splitIndex = name.indexOf(':');
+
+        const { default: defaultJobs = [] } = acc;
+
+        // No instance specified, default
+        if (splitIndex === -1) {
+          acc.default = [...defaultJobs, name];
+        } else {
+          const instanceName = name.substring(0, splitIndex);
+          const jobName = name.substring(splitIndex + 1);
+
+          acc[instanceName] = [...(acc[instanceName] || []), jobName];
+        }
+
+        return acc;
+      },
+      {},
+    );
+
+    // Ensure that all jobs belong to a single Jenkins instance.
+    const instancesFound: string[] = Object.keys(jobsByInstance);
+    if (instancesFound.length > 1) {
+      throw new Error(
+        `More than one Jenkins instance found: (${instancesFound}) ` +
+          `on entity with name: ${stringifyEntityRef(opt.entityRef)}. ` +
+          `Please use the same instance for all jobs.`,
       );
     }
+
+    const jenkinsName: string = instancesFound.pop() ?? 'default';
+    const fullJobNames = jobsByInstance[jenkinsName];
 
     // lookup baseURL + creds from config
     const instanceConfig = this.config.getInstanceConfig(jenkinsName);
@@ -306,7 +326,7 @@ export class DefaultJenkinsInfoProvider implements JenkinsInfoProvider {
         Authorization: `Basic ${creds}`,
         ...instanceConfig.extraRequestHeaders,
       },
-      jobFullName,
+      fullJobNames,
       projectCountLimit:
         instanceConfig.projectCountLimit ?? DEFAULT_LIMITATION_OF_PROJECTS,
       crumbIssuer: instanceConfig.crumbIssuer,
@@ -314,14 +334,21 @@ export class DefaultJenkinsInfoProvider implements JenkinsInfoProvider {
   }
 
   private static getEntityAnnotationValue(entity: Entity) {
-    return (
+    const oldAnnotation =
       entity.metadata.annotations?.[
         DefaultJenkinsInfoProvider.OLD_JENKINS_ANNOTATION
-      ] ||
+      ];
+    const newAnnotation =
       entity.metadata.annotations?.[
         DefaultJenkinsInfoProvider.NEW_JENKINS_ANNOTATION
-      ]
-    );
+      ];
+
+    if (oldAnnotation) return [oldAnnotation];
+    if (newAnnotation) {
+      return newAnnotation.split(',');
+    }
+
+    return [];
   }
 
   private static getEntityOverrideURL(entity: Entity) {
