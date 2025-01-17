@@ -22,7 +22,7 @@ import {
   MaturitySummary,
   Rank,
 } from '@backstage-community/plugin-tech-insights-maturity-common';
-import { MaturityClient } from './';
+import { MaturityClient } from './ScoringDataClient';
 import {
   activeOwnershipCheckResult,
   productOwnershipCheckResult,

@@ -24,9 +24,7 @@
     "role": "common-library",
     "pluginId": "tech-insights",
     "pluginPackages": [
-      "@backstage-community/plugin-tech-insights-common",
-      "@backstage-community/plugin-tech-insights-node",
-      "@backstage-community/plugin-tech-insights-backend-module-jsonfc",
+      "@backstage-community/plugin-tech-insights-maturity",
       "@backstage-community/plugin-tech-insights-maturity-common"
     ]
   },

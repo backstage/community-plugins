@@ -30,19 +30,17 @@ export interface EntityMaturitySummary {
   summary: MaturitySummary;
 }
 
-// @public (undocumented)
+// @public
 export interface MaturityCheck extends TechInsightCheck {
   // (undocumented)
   metadata: {
     category: string;
     rank: Rank;
-    exp: number;
-    schedule: string;
     solution: string;
   };
 }
 
-// @public (undocumented)
+// @public
 export interface MaturityCheckResponse extends CheckResponse {
   // (undocumented)
   metadata: {
@@ -53,12 +51,10 @@ export interface MaturityCheckResponse extends CheckResponse {
   };
 }
 
-// @public (undocumented)
+// @public
 export interface MaturityCheckResult extends BooleanCheckResult {
   // (undocumented)
   check: MaturityCheckResponse;
-  // (undocumented)
-  updated?: string;
 }
 
 // @public (undocumented)
@@ -89,6 +85,16 @@ export interface MaturityRank {
   rank: Rank;
 }
 
+// @public
+export interface MaturityScore {
+  // (undocumented)
+  checks: MaturityCheckResult[];
+  // (undocumented)
+  rank: MaturityRank;
+  // (undocumented)
+  summary: MaturitySummary;
+}
+
 // @public (undocumented)
 export interface MaturitySummary extends MaturityRank {
   // (undocumented)
@@ -115,7 +121,7 @@ export interface MaturitySummaryByArea extends MaturityRank {
   rankProgress: MaturityProgress;
 }
 
-// @public (undocumented)
+// @public
 export enum Rank {
   // (undocumented)
   Bronze = 1,

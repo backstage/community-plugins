@@ -22,7 +22,7 @@ import { getCompoundEntityRef } from '@backstage/catalog-model';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import Grid from '@mui/material/Grid';
 import Alert from '@mui/material/Alert';
-import { maturityApiRef, SDF } from '../../api';
+import { maturityApiRef } from '../../api';
 import { MaturityRankInfoCard } from '../MaturityRankInfoCard';
 import { Rank } from '@backstage-community/plugin-tech-insights-maturity-common';
 import { Box } from '@material-ui/core';
@@ -33,22 +33,19 @@ export const MaturityScorePage = () => {
   const api = useApi(maturityApiRef);
 
   const { loading, error, value } = useAsyncRetry(async () => {
-    const checks = await api.getMaturityScore(entity);
-    const rank = SDF.getMaturityRank(checks);
-    const summary = SDF.getMaturitySummary(checks);
-
+    const score = await api.getMaturityScore(entity);
     const facts = await api.getFacts(
       getCompoundEntityRef(entity),
-      checks?.flatMap(x => x.check.factIds),
+      score.checks?.flatMap(x => x.check.factIds),
     );
 
     return {
-      checks,
-      summary,
+      checks: score.checks,
+      rank: score.rank,
+      summary: score.summary,
       facts,
-      rank,
     };
-  }, [api, SDF]);
+  }, [api]);
 
   if (loading) {
     return <Progress />;

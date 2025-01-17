@@ -19,12 +19,14 @@ import { createApiRef } from '@backstage/core-plugin-api';
 import {
   BulkMaturityCheckResponse,
   BulkMaturitySummary,
-  MaturityCheckResult,
   MaturityRank,
+  MaturityScore,
   MaturitySummary,
 } from '@backstage-community/plugin-tech-insights-maturity-common';
 
 /**
+ *  {@link @backstage/core-plugin-api#ApiRef} for the {@link MaturityApi}
+ *
  * @public
  */
 export const maturityApiRef = createApiRef<MaturityApi>({
@@ -32,11 +34,13 @@ export const maturityApiRef = createApiRef<MaturityApi>({
 });
 
 /**
+ * Maturity API client interface extention of TechInsightsApi
+ *
  * @public
  */
 export type MaturityApi = TechInsightsApi & {
   getMaturityRank(entity: Entity): Promise<MaturityRank>;
-  getMaturityScore(entity: Entity): Promise<MaturityCheckResult[]>;
+  getMaturityScore(entity: Entity): Promise<MaturityScore>;
   getBulkMaturityCheckResults(
     entities: Entity[],
   ): Promise<BulkMaturityCheckResponse>;

@@ -15,8 +15,8 @@ import { Entity } from '@backstage/catalog-model/index';
 import { Entity as Entity_2 } from '@backstage/catalog-model';
 import { IdentityApi } from '@backstage/core-plugin-api';
 import { JSX as JSX_2 } from 'react';
-import { MaturityCheckResult } from '@backstage-community/plugin-tech-insights-maturity-common';
 import { MaturityRank } from '@backstage-community/plugin-tech-insights-maturity-common';
+import { MaturityScore } from '@backstage-community/plugin-tech-insights-maturity-common';
 import { MaturitySummary } from '@backstage-community/plugin-tech-insights-maturity-common';
 import { RouteRef } from '@backstage/core-plugin-api';
 import { TechInsightsApi } from '@backstage-community/plugin-tech-insights';
@@ -30,6 +30,9 @@ export const EntityMaturityRankWidget: ({
 }: {
   entity: Entity;
   size?: number | undefined;
+  /**
+   * @public
+   */
   chip?: boolean | undefined;
 }) => JSX_2.Element;
 
@@ -42,10 +45,10 @@ export const EntityMaturitySummaryCard: () => JSX_2.Element;
 // @public (undocumented)
 export const EntityMaturitySummaryContent: () => JSX_2.Element;
 
-// @public (undocumented)
+// @public
 export type MaturityApi = TechInsightsApi & {
   getMaturityRank(entity: Entity_2): Promise<MaturityRank>;
-  getMaturityScore(entity: Entity_2): Promise<MaturityCheckResult[]>;
+  getMaturityScore(entity: Entity_2): Promise<MaturityScore>;
   getBulkMaturityCheckResults(
     entities: Entity_2[],
   ): Promise<BulkMaturityCheckResponse>;
@@ -56,10 +59,10 @@ export type MaturityApi = TechInsightsApi & {
   getBulkMaturitySummary(entities: Entity_2[]): Promise<BulkMaturitySummary>;
 };
 
-// @public (undocumented)
+// @public
 export const maturityApiRef: ApiRef<MaturityApi>;
 
-// @public (undocumented)
+// @public
 export class MaturityClient extends TechInsightsClient implements MaturityApi {
   constructor(options: {
     discoveryApi: DiscoveryApi;
@@ -81,7 +84,7 @@ export class MaturityClient extends TechInsightsClient implements MaturityApi {
   // (undocumented)
   getMaturityRank(entity: Entity_2): Promise<MaturityRank>;
   // (undocumented)
-  getMaturityScore(entity: Entity_2): Promise<MaturityCheckResult[]>;
+  getMaturityScore(entity: Entity_2): Promise<MaturityScore>;
   // (undocumented)
   getMaturitySummary(entity: Entity_2): Promise<MaturitySummary>;
 }

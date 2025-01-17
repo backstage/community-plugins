@@ -36,14 +36,17 @@ import {
   BulkMaturitySummary,
   MaturityCheckResult,
   MaturityRank,
+  MaturityScore,
   MaturitySummary,
 } from '@backstage-community/plugin-tech-insights-maturity-common';
 import { MaturityApi } from './ScoringDataApi';
 import { ScoringDataFormatter } from './ScoringDataFormatter';
 
-export const SDF = new ScoringDataFormatter();
+const SDF = new ScoringDataFormatter();
 
 /**
+ * MaturityClient extension of TechInsightsClient
+ *
  * @public
  */
 export class MaturityClient extends TechInsightsClient implements MaturityApi {
@@ -71,10 +74,15 @@ export class MaturityClient extends TechInsightsClient implements MaturityApi {
     );
   }
 
-  public async getMaturityScore(
-    entity: Entity,
-  ): Promise<MaturityCheckResult[]> {
-    return await this.getCheckResults(entity);
+  public async getMaturityScore(entity: Entity): Promise<MaturityScore> {
+    const checks = await this.getCheckResults(entity);
+    const rank = SDF.getMaturityRank(checks);
+    const summary = SDF.getMaturitySummary(checks);
+    return {
+      checks,
+      summary,
+      rank,
+    };
   }
 
   public async getChildMaturityCheckResults(

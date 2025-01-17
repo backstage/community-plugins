@@ -14,7 +14,6 @@
     "role": "frontend-plugin",
     "pluginId": "tech-insights",
     "pluginPackages": [
-      "@backstage-community/plugin-tech-insights",
       "@backstage-community/plugin-tech-insights-maturity",
       "@backstage-community/plugin-tech-insights-maturity-common"
     ]

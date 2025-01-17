@@ -21,6 +21,8 @@ import {
 } from '@backstage-community/plugin-tech-insights-common';
 
 /**
+ * Maturity Rank enum
+ *
  * @public
  */
 export enum Rank {
@@ -31,14 +33,14 @@ export enum Rank {
 }
 
 /**
+ * MaturityCheck definition of a check for Tech Insights
+ *
  * @public
  */
 export interface MaturityCheck extends TechInsightCheck {
   metadata: {
     category: string;
     rank: Rank;
-    exp: number;
-    schedule: string;
     solution: string;
   };
 }
@@ -55,6 +57,8 @@ export interface MaturityJsonRuleCheck extends TechInsightJsonRuleCheck {
 }
 
 /**
+ * MaturityCheckResponse with maturity metadata
+ *
  * @public
  */
 export interface MaturityCheckResponse extends CheckResponse {
@@ -67,12 +71,23 @@ export interface MaturityCheckResponse extends CheckResponse {
 }
 
 /**
+ * Maturity CheckResult
+ *
  * @public
  */
-// Custom Maturity CheckResult
 export interface MaturityCheckResult extends BooleanCheckResult {
-  // JsonRuleBooleanCheckResult
   check: MaturityCheckResponse;
+}
+
+/**
+ * Maturity Score
+ *
+ * @public
+ */
+export interface MaturityScore {
+  checks: MaturityCheckResult[];
+  summary: MaturitySummary;
+  rank: MaturityRank;
 }
 
 /**
