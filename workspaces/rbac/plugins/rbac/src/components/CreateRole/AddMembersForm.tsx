@@ -23,6 +23,7 @@ import LinearProgress from '@mui/material/LinearProgress';
 import TextField from '@mui/material/TextField';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import IconButton from '@mui/material/IconButton';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { FormikErrors } from 'formik';
 
 import { MemberEntity } from '../../types';
@@ -64,7 +65,7 @@ export const AddMembersForm = ({
     const childCount = getChildGroupsCount(member);
 
     return member.kind === 'Group'
-      ? `${memberCount} members, ${parentCount} parent group, ${childCount} child groups`
+      ? `${memberCount > 0 ? `${memberCount} members` : ''}${parentCount > 0 ? `, ${parentCount} parent group` : ''}${childCount > 0 ? `, ${childCount} child groups` : ''}`
       : undefined;
   };
 
@@ -114,10 +115,12 @@ export const AddMembersForm = ({
     <>
       <FormHelperText>
         Search and select users and groups to be added. Selected users and
-        groups will appear in the members table.
+        groups will appear in the table below..
       </FormHelperText>
       <br />
       <Autocomplete
+        disableCloseOnSelect
+        popupIcon={<ArrowDropDownIcon />}
         data-testid="users-and-groups-autocomplete"
         sx={{ width: '30%' }}
         multiple
@@ -145,11 +148,11 @@ export const AddMembersForm = ({
         clearOnEscape
         renderInput={params => (
           <TextField
+            data-testid="users-and-groups-text-field"
             {...params}
             name="add-users-and-groups"
             variant="outlined"
-            label="Users and groups"
-            placeholder="Search by user name or group name"
+            label="Select users and groups"
             error={!!selectedMembersError}
             helperText={selectedMembersError ?? ''}
             required

@@ -48,34 +48,43 @@ export const MembersDropdownOption = ({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'flex-start',
+        width: 'auto',
       }}
     >
-      <Box sx={{ display: 'flex' }}>
-        <Checkbox style={{ marginRight: 8 }} checked={state.selected} />
-        <Typography component="span" sx={{ marginTop: '0.5rem' }}>
-          {parts.map(part => (
-            <Typography
-              key={`${part.text}-${etag}`}
-              component="span"
-              sx={{
-                fontWeight: part.highlight ? 400 : 700,
-                color: theme => theme.palette.text.primary,
-              }}
-              data-testid={option.label}
-            >
-              {part.text}
+      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <div>
+          <Checkbox style={{ marginRight: 8 }} checked={state.selected} />
+        </div>
+        <div>
+          <div>
+            <Typography component="span" sx={{ marginTop: '0.5rem' }}>
+              {parts.map(part => (
+                <Typography
+                  key={`${part.text}-${etag}`}
+                  component="span"
+                  sx={{
+                    fontWeight: !state.inputValue || part.highlight ? 400 : 700,
+                    color: theme => theme.palette.text.primary,
+                  }}
+                  data-testid={option.label}
+                >
+                  {part.text}
+                </Typography>
+              ))}
             </Typography>
-          ))}
-        </Typography>
+          </div>
+          <div>
+            <Typography
+              sx={{
+                color: theme => theme.palette.text.secondary,
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {option.description}
+            </Typography>{' '}
+          </div>
+        </div>
       </Box>
-      <Typography
-        sx={{
-          color: theme => theme.palette.text.secondary,
-          marginLeft: '50px',
-        }}
-      >
-        {option.description}
-      </Typography>{' '}
     </li>
   );
 };
