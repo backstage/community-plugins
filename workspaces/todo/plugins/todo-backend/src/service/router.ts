@@ -24,25 +24,24 @@ import {
   parseOrderByParam,
 } from '../lib/utils';
 import { createOpenApiRouter } from '../schema/openapi.generated';
+import { Config } from '@backstage/config';
+import { MiddlewareFactory } from '@backstage/backend-defaults';
+import { LoggerService } from '@backstage/backend-plugin-api';
 
-/**
- * @deprecated Please migrate to the new backend system as this will be removed in the future.
- *
- * @public */
+/** internal */
 export interface RouterOptions {
   todoService: TodoService;
+  config: Config;
+  logger: LoggerService;
 }
 
-/**
- * @deprecated Please migrate to the new backend system as this will be removed in the future.
- *
- * @public */
+/** internal */
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
   const router = await createOpenApiRouter();
   router.use(express.json());
-  const { todoService } = options;
+  const { todoService, config, logger } = options;
 
   router.get('/v1/todos', async (req, res) => {
     const { offset, limit } = req.query;
@@ -77,5 +76,6 @@ export async function createRouter(
     res.json(todos);
   });
 
+  router.use(MiddlewareFactory.create({ config, logger }).error());
   return router;
 }

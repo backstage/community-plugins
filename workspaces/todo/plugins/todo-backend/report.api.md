@@ -13,7 +13,9 @@ import { ScmIntegrations } from '@backstage/integration';
 import { ServiceRef } from '@backstage/backend-plugin-api';
 import { UrlReaderService } from '@backstage/backend-plugin-api';
 
-// @public @deprecated (undocumented)
+// Warning: (ae-missing-release-tag) "createRouter" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
 export function createRouter(options: RouterOptions): Promise<express.Router>;
 
 // @public (undocumented)
@@ -52,8 +54,14 @@ export type ReadTodosResult = {
   items: TodoItem[];
 };
 
-// @public @deprecated (undocumented)
+// Warning: (ae-missing-release-tag) "RouterOptions" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
 export interface RouterOptions {
+  // (undocumented)
+  config: Config;
+  // (undocumented)
+  logger: LoggerService;
   // (undocumented)
   todoService: TodoService;
 }

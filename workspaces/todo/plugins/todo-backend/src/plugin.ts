@@ -33,11 +33,15 @@ export const todoPlugin = createBackendPlugin({
       deps: {
         todoReader: todoServiceRef,
         http: coreServices.httpRouter,
+        config: coreServices.rootConfig,
+        logger: coreServices.rootLogger,
       },
-      async init({ http, todoReader }) {
+      async init({ http, todoReader, config, logger }) {
         http.use(
           await createRouter({
             todoService: todoReader,
+            config: config,
+            logger: logger,
           }),
         );
       },
