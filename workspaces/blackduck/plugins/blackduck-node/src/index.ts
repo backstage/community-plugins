@@ -29,3 +29,4 @@
  */
 export * from './BlackDuckRestApi';
 export * from './BlackDuckConfig';
+export * from './types';

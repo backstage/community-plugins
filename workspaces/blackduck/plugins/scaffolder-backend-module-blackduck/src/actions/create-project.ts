@@ -19,7 +19,7 @@ import {
   BlackDuckRestApi,
   BlackDuckConfig,
 } from '@backstage-community/plugin-blackduck-node';
-import { BD_CREATE_PROJECT_API_RESPONSE } from '@backstage-community/plugin-blackduck-common';
+import { BD_CREATE_PROJECT_API_RESPONSE } from '@backstage-community/plugin-blackduck-node';
 
 /**
  * @public
