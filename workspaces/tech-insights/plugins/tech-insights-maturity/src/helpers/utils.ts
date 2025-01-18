@@ -32,36 +32,15 @@ export const entityTitleCompare = (a: Entity, b: Entity) => {
   return toRef(a).localeCompare(toRef(b));
 };
 
-export const getSubEntityFilter = (
-  entity: Entity,
-): { type: string; kind: string } => {
+export const getSubEntityFilter = (entity: Entity): { type: string } => {
   let type = RELATION_HAS_PART;
-  let kind = 'Component';
-
-  switch (entity.kind) {
-    case 'Group':
-      if (entity.spec?.type === 'organization') {
-        type = RELATION_PARENT_OF;
-        kind = 'Group';
-      } else {
-        type = RELATION_OWNER_OF;
-        if (entity.spec?.type === 'solution-line') {
-          kind = 'Domain';
-        }
-      }
-      break;
-    case 'Domain':
-      kind = 'System';
-      break;
-    case 'Component':
-      type = '';
-      kind = '';
-      break;
-    default:
-      break;
+  if (entity.kind === 'Group') {
+    type =
+      entity.relations?.find(x =>
+        [RELATION_PARENT_OF, RELATION_OWNER_OF].includes(x.type),
+      )?.type ?? RELATION_OWNER_OF;
   }
-
-  return { type, kind };
+  return { type };
 };
 
 export const getRankColor = (rank: Rank) => {

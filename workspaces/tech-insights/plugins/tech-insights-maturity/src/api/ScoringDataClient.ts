@@ -13,19 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  CatalogApi,
-  GetEntitiesRequest,
-  GetEntitiesResponse,
-} from '@backstage/catalog-client';
+import { CatalogApi } from '@backstage/catalog-client';
 import {
   CompoundEntityRef,
   Entity,
   getCompoundEntityRef,
   isComponentEntity,
   RELATION_HAS_PART,
-  RELATION_MEMBER_OF,
   RELATION_OWNER_OF,
+  RELATION_PARENT_OF,
   stringifyEntityRef,
 } from '@backstage/catalog-model';
 import { DiscoveryApi, IdentityApi } from '@backstage/core-plugin-api';
@@ -172,106 +168,41 @@ export class MaturityClient extends TechInsightsClient implements MaturityApi {
   ): Promise<CompoundEntityRef[]> {
     switch (entity.kind) {
       case 'System':
-        return this.getComponentsForSystem(entity);
+        return getEntityRelations(entity, RELATION_HAS_PART);
       case 'Domain':
-        return this.getComponentsForDomain(entity);
+        return await this.getRelatedComponentsByRefs(
+          getEntityRelations(entity, RELATION_HAS_PART),
+        );
       case 'Group':
         return this.getComponentsForGroup(entity);
-      case 'User':
-        return this.getComponentsForUser(entity);
       default:
-        return [];
+        return [getCompoundEntityRef(entity)];
     }
-  }
-
-  private async getComponentsForSystem(
-    entity: Entity,
-  ): Promise<CompoundEntityRef[]> {
-    return getEntityRelations(entity, RELATION_HAS_PART, { kind: 'Component' });
-  }
-
-  private async getComponentsForDomain(
-    entity: Entity,
-  ): Promise<CompoundEntityRef[]> {
-    const systemRefs = getEntityRelations(entity, RELATION_HAS_PART, {
-      kind: 'System',
-    });
-    const { items } = await this.catalogApi.getEntitiesByRefs({
-      entityRefs: systemRefs.map(x => stringifyEntityRef(x)),
-    });
-
-    const components: CompoundEntityRef[] = [];
-    for (const system of items) {
-      if (system) {
-        Array.prototype.push.apply(
-          components,
-          await this.getComponentsForSystem(system),
-        );
-      }
-    }
-
-    return components;
-  }
-
-  private async getComponentsForOrganization(): Promise<CompoundEntityRef[]> {
-    // Getting all component entities would be the fastest
-    const request: GetEntitiesRequest = {
-      filter: [{ kind: 'component' }],
-    };
-    const response: GetEntitiesResponse = await this.catalogApi.getEntities(
-      request,
-    );
-    return response.items.map(x => getCompoundEntityRef(x));
-  }
-
-  private async getComponentsSolutonLine(
-    entity: Entity,
-  ): Promise<CompoundEntityRef[]> {
-    const domainRefs = getEntityRelations(entity, RELATION_OWNER_OF, {
-      kind: 'Domain',
-    });
-    const { items } = await this.catalogApi.getEntitiesByRefs({
-      entityRefs: domainRefs.map(x => stringifyEntityRef(x)),
-    });
-
-    const components: CompoundEntityRef[] = [];
-    for (const domain of items) {
-      if (domain) {
-        Array.prototype.push.apply(
-          components,
-          await this.getComponentsForSystem(domain),
-        );
-      }
-    }
-
-    return components;
   }
 
   private async getComponentsForGroup(
     entity: Entity,
   ): Promise<CompoundEntityRef[]> {
-    if (entity.spec?.type === 'solution-line') {
-      return this.getComponentsSolutonLine(entity);
-    } else if (entity.spec?.type === 'organization') {
-      return this.getComponentsForOrganization();
+    const childEntities = getEntityRelations(entity, RELATION_PARENT_OF);
+    if (childEntities.length > 0) {
+      return await this.getRelatedComponentsByRefs(childEntities);
     }
-
-    return getEntityRelations(entity, RELATION_OWNER_OF, { kind: 'Component' });
+    const entityPartsRef = getEntityRelations(entity, RELATION_OWNER_OF);
+    return await this.getRelatedComponentsByRefs(entityPartsRef);
   }
 
-  private async getComponentsForUser(
-    entity: Entity,
-  ): Promise<CompoundEntityRef[]> {
-    const teams = getEntityRelations(entity, RELATION_MEMBER_OF, {
-      kind: 'Group',
-    });
-    const components = teams.map(async team => {
-      const teamEntity = await this.catalogApi.getEntityByRef(team);
-      return getEntityRelations(teamEntity, RELATION_OWNER_OF, {
-        kind: 'Component',
-      });
+  private async getRelatedComponentsByRefs(refs: CompoundEntityRef[]) {
+    const { items } = await this.catalogApi.getEntitiesByRefs({
+      entityRefs: refs.map(x => stringifyEntityRef(x)),
     });
 
-    return (await Promise.all(components)).flat();
+    const entityParts: CompoundEntityRef[] = [];
+    for (const item of items) {
+      Array.prototype.push.apply(
+        entityParts,
+        await this.getRelatedComponents(item!),
+      );
+    }
+    return entityParts;
   }
 }

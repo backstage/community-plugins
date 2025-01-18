@@ -37,7 +37,7 @@ export const productOwnershipCheckResult: MaturityCheckResult = {
     links: [
       {
         title: 'ownership',
-        url: 'https://devops.imedidata.net/docs/default/component/observability/practices/ownership/authoring-factbook/#ownership',
+        url: 'https://test.net/docs/ownership/authoring-factbook/#ownership',
       },
     ],
     metadata: {
@@ -69,7 +69,7 @@ export const technicalOwnershipCheckResult: MaturityCheckResult = {
     links: [
       {
         title: 'ownership',
-        url: 'https://devops.imedidata.net/docs/default/component/observability/practices/ownership/authoring-factbook/#ownership',
+        url: 'https://test.net/docs/ownership/authoring-factbook/#ownership',
       },
     ],
     metadata: {
@@ -87,7 +87,7 @@ export const activeOwnershipCheckResult: MaturityCheckResult = {
     technicalOwnersAreActive: {
       id: 'technicalOwnersAreActive',
       type: 'boolean' as const,
-      description: 'Technical owners are currently present in Medidata',
+      description: 'Technical owners are currently present',
       value: false,
     },
   },
@@ -100,7 +100,7 @@ export const activeOwnershipCheckResult: MaturityCheckResult = {
     links: [
       {
         title: 'ownership',
-        url: 'https://devops.imedidata.net/docs/default/component/observability/practices/ownership/authoring-factbook/#ownership',
+        url: 'https://test.net/docs/ownership/authoring-factbook/#ownership',
       },
     ],
     metadata: {
@@ -108,7 +108,7 @@ export const activeOwnershipCheckResult: MaturityCheckResult = {
       rank: Rank.Gold,
       category: 'Ownership',
       solution:
-        'Add active medidata engineer with "technical owner" role to metadata.people list in the factbook',
+        'Add active engineer with "technical owner" role to metadata.people list in the factbook',
     },
     factIds: ['entityStakeholdersFactRetriever'],
   },

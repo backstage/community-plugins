@@ -57,8 +57,7 @@ const entity: Entity = {
     namespace: 'default',
     name: 'mock-component',
     title: 'mock-component (Self Help Service)',
-    description:
-      'A service that helps users of our platform report issues, and helps customer service and Medidata engineers to debug issues by providing essential information from backend services.',
+    description: 'A service that helps users of our platform report issues',
   },
   relations: [
     {
