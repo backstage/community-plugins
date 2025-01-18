@@ -21,7 +21,7 @@ import {
   BD_VERSIONS_API_RESPONSE,
   BD_PROJECTS_API_RESPONSE,
   BD_CREATE_PROJECT_API_RESPONSE,
-} from '@backstage-community/plugin-blackduck-common';
+} from './types';
 
 /**
  * @public
