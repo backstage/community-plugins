@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import { Select, SelectOption, SelectList, MenuToggle, MenuToggleElement, Badge } from '@patternfly/react-core';
 
-export const CheckboxSelectComponent: React.FunctionComponent = ({ setValueOptions, options, dropdownName }) => {
+export const CheckboxSelectComponent: React.FunctionComponent = ({ setSelectedOptions, options, dropdownName }) => {
     console.log("options: ", options)
     console.log("dropdownName: ", dropdownName)
-    console.log("setValueOptions: ", setValueOptions)
+    console.log("setSelectedOptions: ", setSelectedOptions)
 
   const [isOpen, setIsOpen] = React.useState(false);
   const [selectedItems, setSelectedItems] = React.useState<number[]>([]);
@@ -41,7 +41,7 @@ export const CheckboxSelectComponent: React.FunctionComponent = ({ setValueOptio
   );
 
   useEffect(() => {
-    setValueOptions(selectedItems); 
+    setSelectedOptions(selectedItems); 
   }, [selectedItems]);
 
   return (

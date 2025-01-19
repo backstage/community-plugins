@@ -8,12 +8,13 @@ import '@patternfly/react-styles';
 import { CVEEntityDetailsComponent } from '../CVEEntityDetailsComponent';
 
 export const SecurityFindingsComponent = (data: Array<String>) => {
+    console.log("THIS IS MY DATA: ", data)
     const [dataRows, setDataRows] = useState([]);
     const [pending, setPending] = React.useState(true);
     const theme = useTheme();
     const isDarkMode = theme.palette.type === 'dark';
 
-    const columns: [] = [
+    const columns: Array<any> = [
         { name: 'CVE', selector: row => row.row_data.cve, sortable: true, wrap: true, width: '140px', button: true, cell: row => (
 			<a href={row.row_data.link} target="_blank" rel="noopener noreferrer">
 				{row.row_data.cve}
@@ -127,7 +128,7 @@ export const SecurityFindingsComponent = (data: Array<String>) => {
 
     useEffect(() => {
         organizeData();
-    }, []);
+    }, [data]);
 
     return (
         <div>

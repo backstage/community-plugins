@@ -18,10 +18,12 @@ import {
     MenuToggleElement,
 } from '@patternfly/react-core';
 
-export const SimpleSelect = (options: any) => {
+export const SimpleSelect = ({ options, setSelectedOptions }) => {
   const [isOpen, setIsOpen] = React.useState(false);
   const [selected, setSelected] = React.useState<string>('Select a value');
   const [isDisabled, setIsDisabled] = React.useState<boolean>(false);
+
+  console.log(options)
 
   const onToggleClick = () => {
     setIsOpen(!isOpen);
@@ -32,6 +34,7 @@ export const SimpleSelect = (options: any) => {
     console.log('selected', value);
 
     setSelected(value as string);
+    setSelectedOptions(value as string)
     setIsOpen(false);
   };
 
@@ -64,7 +67,7 @@ export const SimpleSelect = (options: any) => {
       >
         <SelectList>
         
-        {options.options.map((value) => (
+        {options.map((value) => (
           <SelectOption value={value}>{value}</SelectOption>
         ))}
         </SelectList>

@@ -10,6 +10,7 @@ import { queryACSData } from '../../common/QueryACS';
 import { SecurityFindingsComponent } from './SecurityFindingsComponent';
 
 import { DataFilterComponent } from '../DataFilterComponent';
+import { wrap } from 'raven-js';
 
 export const VulnerabilitiesComponent = (serviceName: any) => {
     const {
@@ -17,6 +18,8 @@ export const VulnerabilitiesComponent = (serviceName: any) => {
         loaded: ACSDataLoaded,
         error: ACSDataError,
     } = queryACSData(serviceName);
+
+    console.log("ACSDataResult: ", ACSDataResult)
 
     const useStyles = makeStyles(theme => ({
         root: {
@@ -29,11 +32,11 @@ export const VulnerabilitiesComponent = (serviceName: any) => {
 
     const classes = useStyles();
 
-    const [filteredACSDataResult, setFilteredACSDataResult] = useState();
+    const [filters, setFilters] = useState();
 
-    const updateWithFilteredData = (updatedData: any) => {
-        setFilteredACSDataResult(updatedData)  
-    }
+    useEffect(() => {
+
+    }, [setFilters])
 
     if (ACSDataError) {
         return (
@@ -44,7 +47,7 @@ export const VulnerabilitiesComponent = (serviceName: any) => {
             </InfoCard>
         );
     }
- 
+
     if (!ACSDataLoaded) {
         return (
             <InfoCard className={classes.root}>
@@ -55,11 +58,11 @@ export const VulnerabilitiesComponent = (serviceName: any) => {
 
     return (
         <Box>
-            <DataFilterComponent 
-                updateWithFilteredData={updateWithFilteredData}
-                data={ACSDataResult} 
-            /> 
- 
+            <DataFilterComponent
+                filters={setFilters}
+                data={ACSDataResult}
+            />
+
             <SecurityFindingsComponent data={ACSDataResult} />
         </Box>
     );
