@@ -15,17 +15,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apidevtools/json-schema-ref-parser@npm:11.7.2":
-  version: 11.7.2
-  resolution: "@apidevtools/json-schema-ref-parser@npm:11.7.2"
-  dependencies:
-    "@jsdevtools/ono": ^7.1.3
-    "@types/json-schema": ^7.0.15
-    js-yaml: ^4.1.0
-  checksum: 44096e5cd5a03b17ee5eb0a3b9e9a4db85d87da8ae2abda264eae615f2a43e3e6ba5ca208e1161d4d946755b121c10a9550e88792a725951f2c4cff6df0d8a19
-  languageName: node
-  linkType: hard
-
 "@apidevtools/json-schema-ref-parser@npm:9.0.6":
   version: 9.0.6
   resolution: "@apidevtools/json-schema-ref-parser@npm:9.0.6"
@@ -2547,7 +2536,7 @@ __metadata:
     "@backstage/plugin-scaffolder-node": ^0.6.2
     "@backstage/plugin-scaffolder-node-test-utils": ^0.1.17
     "@backstage/types": ^1.2.0
-    "@hey-api/openapi-ts": 0.55.3
+    "@hey-api/openapi-ts": 0.62.1
     "@types/node-fetch": 2.6.12
     abort-controller: ^3.0.0
     axios: ^1.7.4
@@ -4021,19 +4010,30 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hey-api/openapi-ts@npm:0.55.3":
-  version: 0.55.3
-  resolution: "@hey-api/openapi-ts@npm:0.55.3"
+"@hey-api/json-schema-ref-parser@npm:1.0.1":
+  version: 1.0.1
+  resolution: "@hey-api/json-schema-ref-parser@npm:1.0.1"
   dependencies:
-    "@apidevtools/json-schema-ref-parser": 11.7.2
+    "@jsdevtools/ono": ^7.1.3
+    "@types/json-schema": ^7.0.15
+    js-yaml: ^4.1.0
+  checksum: 2c2e550f58d0d3be2daea5bb04e49f78ef649055bd8012c5d9522f41101761a8e6d61c8b5faa3f46a126df21b654e28340984a59793010c56f2044095f121559
+  languageName: node
+  linkType: hard
+
+"@hey-api/openapi-ts@npm:0.62.1":
+  version: 0.62.1
+  resolution: "@hey-api/openapi-ts@npm:0.62.1"
+  dependencies:
+    "@hey-api/json-schema-ref-parser": 1.0.1
     c12: 2.0.1
-    commander: 12.1.0
+    commander: 13.0.0
     handlebars: 4.7.8
   peerDependencies:
-    typescript: ^5.x
+    typescript: ^5.5.3
   bin:
     openapi-ts: bin/index.cjs
-  checksum: 1bce3e572d26d728a9e5d93b760ed518b9def2b47d544517e92da817e2b66c16dc45ff1633e344fa36251b778d2a3195e525dad5fb10bdcba3351bc36a8e419a
+  checksum: 67e5ce27971ed838d3bf2d7495ce8dc91824881ff68b42f6ec366e374b1b57af4ff6afa774ad778d1b25d5924041bb73858e489ddc66bb7baa975bbf0429dabc
   languageName: node
   linkType: hard
 
@@ -10007,10 +10007,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"commander@npm:12.1.0, commander@npm:^12.0.0":
-  version: 12.1.0
-  resolution: "commander@npm:12.1.0"
-  checksum: 68e9818b00fc1ed9cdab9eb16905551c2b768a317ae69a5e3c43924c2b20ac9bb65b27e1cab36aeda7b6496376d4da908996ba2c0b5d79463e0fb1e77935d514
+"commander@npm:13.0.0":
+  version: 13.0.0
+  resolution: "commander@npm:13.0.0"
+  checksum: 3981c8c197c93ceeb949f6e2250785ea319209c502b7c53d6dc36148347739c72b15de2e4bcad80bedc3f8e1e5544a89ca4e7d673b2f3238ac51b44292ad08d6
   languageName: node
   linkType: hard
 
@@ -10025,6 +10025,13 @@ __metadata:
   version: 10.0.1
   resolution: "commander@npm:10.0.1"
   checksum: 436901d64a818295803c1996cd856621a74f30b9f9e28a588e726b2b1670665bccd7c1a77007ebf328729f0139838a88a19265858a0fa7a8728c4656796db948
+  languageName: node
+  linkType: hard
+
+"commander@npm:^12.0.0":
+  version: 12.1.0
+  resolution: "commander@npm:12.1.0"
+  checksum: 68e9818b00fc1ed9cdab9eb16905551c2b768a317ae69a5e3c43924c2b20ac9bb65b27e1cab36aeda7b6496376d4da908996ba2c0b5d79463e0fb1e77935d514
   languageName: node
   linkType: hard
 
