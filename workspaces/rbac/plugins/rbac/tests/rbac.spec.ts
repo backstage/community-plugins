@@ -145,9 +145,7 @@ test.describe('RBAC plugin', () => {
     await expect(page.getByRole('heading', { name: 'Edit Role' })).toBeVisible({
       timeout: 20000,
     });
-    await page
-      .getByPlaceholder('Search by user name or group name')
-      .fill('Guest User');
+    await page.getByPlaceholder('Select users and groups').fill('Guest User');
     await page.getByText('Guest User').click();
     await expect(
       page.getByRole('heading', {
@@ -219,9 +217,7 @@ test.describe('RBAC plugin', () => {
     await page.fill('textarea[name="description"]', 'Test Description data');
     await common.clickButton('Next');
 
-    await page
-      .getByPlaceholder('Search by user name or group name')
-      .fill('Guest Use');
+    await page.getByPlaceholder('Select users and groups').fill('Guest Use');
     await page.getByText('Guest User').click();
     await expect(
       page.getByRole('heading', {
