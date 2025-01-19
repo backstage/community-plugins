@@ -369,7 +369,7 @@ export class JsonRulesEngineFactCheckerFactory {
     config: Config,
     options: Omit<JsonRulesEngineFactCheckerFactoryOptions, 'checks'>,
   ): JsonRulesEngineFactCheckerFactory {
-    const checks = readChecksFromConfig(config);
+    const checks = readChecksFromConfig(config, { logger: options.logger });
 
     return new JsonRulesEngineFactCheckerFactory({
       ...options,

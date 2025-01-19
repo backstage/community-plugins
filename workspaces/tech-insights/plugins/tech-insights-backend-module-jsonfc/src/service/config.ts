@@ -17,6 +17,8 @@
 import { Config } from '@backstage/config';
 import { TopLevelCondition } from 'json-rules-engine';
 import { Rule, TechInsightJsonRuleCheck } from '../types';
+import { CheckLink } from '@backstage-community/plugin-tech-insights-common';
+import { LoggerService } from '@backstage/backend-plugin-api/index';
 
 // copy of non-exported `ConditionProperties` from 'json-rules-engine'
 interface ConditionProperties {
@@ -51,6 +53,10 @@ function readRuleConditionProperties(config: Config): ConditionProperties {
     value,
   };
 }
+
+type ReadChecksFromConfigOptions = {
+  logger: LoggerService;
+};
 
 function readRuleNestedCondition(config: Config): NestedCondition {
   if (config.has('fact')) {
@@ -114,9 +120,34 @@ function readRuleFromRuleConfig(config: Config): Rule {
   };
 }
 
+function readLinksForCheck(
+  linkConfig: Config[] | undefined,
+  opts: ReadChecksFromConfigOptions,
+): CheckLink[] | undefined {
+  const checkLinks: CheckLink[] = [];
+
+  linkConfig?.map(link => {
+    try {
+      checkLinks.push({
+        title: link.getString('title'),
+        url: link.getString('url'),
+      });
+    } catch (e) {
+      opts.logger.error('Missing required fields for link in check config', e);
+    }
+  });
+
+  if (checkLinks.length === 0) {
+    return undefined;
+  }
+
+  return checkLinks;
+}
+
 function readCheckFromCheckConfig(
   id: string,
   config: Config,
+  opts: ReadChecksFromConfigOptions,
 ): TechInsightJsonRuleCheck {
   const type = config.getString('type');
   const name = config.getString('name');
@@ -132,6 +163,7 @@ function readCheckFromCheckConfig(
     .getOptionalConfig('failureMetadata')
     ?.get<Record<string, any>>();
   const rule = readRuleFromRuleConfig(config.getConfig('rule'));
+  const links = readLinksForCheck(config.getOptionalConfigArray('links'), opts);
 
   return {
     description,
@@ -143,11 +175,13 @@ function readCheckFromCheckConfig(
     rule,
     successMetadata,
     type,
+    links,
   };
 }
 
 export function readChecksFromConfig(
   config: Config,
+  opts: ReadChecksFromConfigOptions,
 ): TechInsightJsonRuleCheck[] {
   const key = 'techInsights.factChecker.checks';
   if (!config.has(key)) {
@@ -159,7 +193,7 @@ export function readChecksFromConfig(
   checksConfig.keys().forEach(checkId => {
     const checkConfig = checksConfig.getConfig(checkId);
 
-    checks.push(readCheckFromCheckConfig(checkId, checkConfig));
+    checks.push(readCheckFromCheckConfig(checkId, checkConfig, opts));
   });
 
   return checks;
