@@ -1,0 +1,15 @@
+site_name: 'Inventory'
+site_description: 'Inventory Plugin for Backstage'
+repo_url: https://github.com/backstage/community-plugins
+edit_uri: edit/main/workspaces/inventory/docs
+
+plugins:
+  - techdocs-core
+  - redirects:
+      redirect_maps:
+        'index.md': 'goal.md'
+
+nav:
+  - Goal: 'goal.md'
+  - Items: 'items.md'
+  - Locations: 'locations.md'
