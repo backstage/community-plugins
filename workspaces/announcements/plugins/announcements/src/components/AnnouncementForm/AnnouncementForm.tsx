@@ -31,6 +31,12 @@ import {
   Switch,
   Button,
 } from '@material-ui/core';
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+} from '@material-ui/pickers';
+import LuxonUtils from '@date-io/luxon';
+import { DateTime } from 'luxon';
 
 const useStyles = makeStyles(theme => ({
   formRoot: {
@@ -56,6 +62,7 @@ export const AnnouncementForm = ({
   const [form, setForm] = React.useState({
     ...initialData,
     category: initialData.category?.slug,
+    start_at: initialData.start_at || DateTime.now().toISO(),
   });
   const [loading, setLoading] = useState(false);
 
@@ -128,6 +135,29 @@ export const AnnouncementForm = ({
           style={{ minHeight: '30rem' }}
           onChange={value => setForm({ ...form, ...{ body: value || '' } })}
         />
+        <MuiPickersUtilsProvider utils={LuxonUtils}>
+          <KeyboardDatePicker
+            disableToolbar
+            variant="inline"
+            format="MM/dd/yyyy"
+            margin="normal"
+            id="start_at-date-picker"
+            label={t('announcementForm.startAt')}
+            value={form.start_at}
+            onChange={date =>
+              setForm({
+                ...form,
+                start_at: date
+                  ? date.toISO() || ''
+                  : DateTime.now().toISO() || '',
+              })
+            }
+            KeyboardButtonProps={{
+              'aria-label': 'change date',
+            }}
+            required
+          />
+        </MuiPickersUtilsProvider>
         <FormGroup>
           <FormControlLabel
             control={

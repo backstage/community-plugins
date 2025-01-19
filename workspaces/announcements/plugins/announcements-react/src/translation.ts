@@ -26,6 +26,7 @@ export const announcementsTranslationRef = createTranslationRef({
       submit: 'Submit',
       editAnnouncement: 'Edit announcement',
       newAnnouncement: 'New announcement',
+      startAt: 'Announcement start date',
       categoryInput: {
         create: 'Create',
         label: 'Category',

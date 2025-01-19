@@ -92,6 +92,7 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'announcementForm.excerpt': 'Excerpt';
     readonly 'announcementForm.editAnnouncement': 'Edit announcement';
     readonly 'announcementForm.newAnnouncement': 'New announcement';
+    readonly 'announcementForm.start_at': 'Announcement start date';
     readonly 'announcementForm.categoryInput.label': 'Category';
     readonly 'announcementForm.categoryInput.create': 'Create';
     readonly 'announcementsPage.grid.announcementDeleted': 'Announcement deleted.';
@@ -205,6 +206,7 @@ export const useAnnouncementsTranslation: () => {
     readonly 'announcementForm.excerpt': 'Excerpt';
     readonly 'announcementForm.editAnnouncement': 'Edit announcement';
     readonly 'announcementForm.newAnnouncement': 'New announcement';
+    readonly 'announcementForm.start_at': 'Announcement start date';
     readonly 'announcementForm.categoryInput.label': 'Category';
     readonly 'announcementForm.categoryInput.create': 'Create';
     readonly 'announcementsPage.grid.announcementDeleted': 'Announcement deleted.';
