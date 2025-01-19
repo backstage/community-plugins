@@ -135,6 +135,24 @@ export function transformArrayToPolicy(policyArray: string[]): RoleBasedPolicy {
   return { entityReference, permission, policy, effect };
 }
 
+export function transformPolicyGroupToLowercase(policyArray: string[]) {
+  if (
+    policyArray.length > 1 &&
+    policyArray[0].startsWith('g') &&
+    (policyArray[1].startsWith('user') || policyArray[1].startsWith('group'))
+  ) {
+    policyArray[1] = policyArray[1].toLocaleLowerCase('en-US');
+  }
+}
+
+export function transformRolesGroupToLowercase(roles: string[][]) {
+  return roles.map(role =>
+    role.length >= 1
+      ? [role[0].toLocaleLowerCase('en-US'), ...role.slice(1)]
+      : role,
+  );
+}
+
 export function deepSortedEqual(
   obj1: Record<string, any>,
   obj2: Record<string, any>,
