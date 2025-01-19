@@ -48,6 +48,8 @@ export type Announcement = {
   created_at: string;
   /** Whether the announcement is currently active */
   active: boolean;
+  /** Date indicating when then announcement start */
+  start_at: string;
 };
 
 /**

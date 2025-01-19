@@ -68,6 +68,8 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'admin.announcementsContent.table.actions': 'Actions';
     readonly 'admin.announcementsContent.table.category': 'Category';
     readonly 'admin.announcementsContent.table.publisher': 'Publisher';
+    readonly 'admin.announcementsContent.table.created_at': 'Created';
+    readonly 'admin.announcementsContent.table.start_at': 'Start';
     readonly 'admin.announcementsContent.announcements': 'Announcements';
     readonly 'admin.announcementsContent.alertMessage': 'Announcement created.';
     readonly 'admin.announcementsContent.alertMessageWithNewCategory': 'with new category';
@@ -179,6 +181,8 @@ export const useAnnouncementsTranslation: () => {
     readonly 'admin.announcementsContent.table.actions': 'Actions';
     readonly 'admin.announcementsContent.table.category': 'Category';
     readonly 'admin.announcementsContent.table.publisher': 'Publisher';
+    readonly 'admin.announcementsContent.table.created_at': 'Created';
+    readonly 'admin.announcementsContent.table.start_at': 'Start';
     readonly 'admin.announcementsContent.announcements': 'Announcements';
     readonly 'admin.announcementsContent.alertMessage': 'Announcement created.';
     readonly 'admin.announcementsContent.alertMessageWithNewCategory': 'with new category';

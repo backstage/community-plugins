@@ -129,6 +129,8 @@ export const announcementsTranslationRef = createTranslationRef({
           actions: 'Actions',
           active: 'Active',
           inactive: 'Inactive',
+          created_at: 'Created',
+          start_at: 'Start',
         },
       },
       categoriesContent: {
