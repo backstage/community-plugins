@@ -20,8 +20,12 @@ import {
   BD_VERISON_DETAIL,
   BD_VERSIONS_API_RESPONSE,
   BD_PROJECTS_API_RESPONSE,
-} from '@backstage-community/plugin-blackduck-common';
+  BD_CREATE_PROJECT_API_RESPONSE,
+} from './types';
 
+/**
+ * @public
+ */
 export class BlackDuckRestApi {
   private _bearer: string;
   private _limit: number;
@@ -165,5 +169,48 @@ export class BlackDuckRestApi {
       `Fetched Project : ${projectName}, Version: ${projectVersion} risk profile`,
     );
     return risk_profile.json();
+  }
+
+  public async createProject(
+    projectName: string,
+    projectVersion?: string,
+    versionPhase: string = 'DEVELOPMENT',
+    versionDistribution: string = 'INTERNAL',
+  ): Promise<BD_CREATE_PROJECT_API_RESPONSE> {
+    const create_project_api = `${this.host}/projects`;
+    const versionRequest = projectVersion
+      ? {
+          versionName: projectVersion,
+          phase: versionPhase,
+          distribution: versionDistribution,
+        }
+      : undefined;
+    const payload = { name: projectName, versionRequest };
+    // const payload: any = {};
+    payload.name = projectName;
+    if (projectVersion) {
+      payload.versionRequest = {
+        versionName: projectVersion,
+        phase: versionPhase,
+        distribution: versionDistribution,
+      };
+    }
+    const res = await fetch(create_project_api, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${this._bearer}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      const body = await res.json();
+      this.logger.error(`Status Code: ${res.status}`);
+      this.logger.error(`Error Message ${JSON.stringify(body.errorMessage)}`);
+      throw new Error(`Unable to create project!`);
+    }
+
+    return { status: res.status, location: res.headers.get('Location')! };
   }
 }
