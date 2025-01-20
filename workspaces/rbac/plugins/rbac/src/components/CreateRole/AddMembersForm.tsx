@@ -23,7 +23,6 @@ import LinearProgress from '@mui/material/LinearProgress';
 import TextField from '@mui/material/TextField';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import IconButton from '@mui/material/IconButton';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { FormikErrors } from 'formik';
 
 import { MemberEntity } from '../../types';
@@ -111,6 +110,7 @@ export const AddMembersForm = ({
       ? option.etag === value.etag
       : selectedMember.etag === value.etag;
 
+  const [isFocused, setIsFocused] = React.useState(false);
   return (
     <>
       <FormHelperText>
@@ -120,7 +120,6 @@ export const AddMembersForm = ({
       <br />
       <Autocomplete
         disableCloseOnSelect
-        popupIcon={<ArrowDropDownIcon />}
         data-testid="users-and-groups-autocomplete"
         sx={{ width: '30%' }}
         multiple
@@ -153,9 +152,12 @@ export const AddMembersForm = ({
             name="add-users-and-groups"
             variant="outlined"
             label="Select users and groups"
+            placeholder={!isFocused ? 'Select users and groups' : ''}
             error={!!selectedMembersError}
             helperText={selectedMembersError ?? ''}
             required
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
             InputProps={{
               ...params.InputProps,
               endAdornment: (
