@@ -631,26 +631,40 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
     }
 
     const evaluatePermissionOperation = (async () => {
-      const filter = [];
-      if (roles.length > 0) {
-        roles.forEach(role => {
-          filter.push({ ptype: 'p', v0: role, v1: resourceType, v2: action });
-        });
-      } else {
-        filter.push({ ptype: 'p', v1: resourceType, v2: action });
-      }
-
-      const adapt = this.enforcer.getAdapter();
-      const roleManager = this.enforcer.getRoleManager();
       const tempEnforcer = new Enforcer();
-      await tempEnforcer.initWithModelAndAdapter(
-        newModelFromString(MODEL),
-        adapt,
-        true,
-      );
-      tempEnforcer.setRoleManager(roleManager);
+      const model = newModelFromString(MODEL);
 
-      await tempEnforcer.loadFilteredPolicy(filter);
+      // copy filtered policies from enforcer to tempEnforcer
+      // model.addPolicies('p', 'p', [['role:admin', 'data:resource', 'read', 'allow']]);
+      let policies: string[][] = [];
+      if (roles.length > 0) {
+        for (const role of roles) {
+          const filteredRolePolicies = await this.enforcer.getFilteredPolicy(
+            0,
+            ...[role, resourceType, action],
+          );
+          policies.push(...filteredRolePolicies);
+        }
+      } else {
+        const enforcePolicies = await this.enforcer.getFilteredPolicy(
+          1,
+          ...[resourceType, action],
+        );
+
+        policies = enforcePolicies.filter(
+          policy =>
+            policy[0].startsWith('user:') || policy[0].startsWith('group:'),
+        );
+      }
+      model.addPolicies('p', 'p', policies);
+
+      // init temp enforce with model only, without adapter at all...
+      await tempEnforcer.initWithModelAndAdapter(model);
+      // set up role manager for temp enforcer
+      const roleManager = this.enforcer.getRoleManager();
+      tempEnforcer.setRoleManager(roleManager);
+      tempEnforcer.enableAutoBuildRoleLinks(false);
+      await tempEnforcer.buildRoleLinks();
 
       return await tempEnforcer.enforce(entityRef, resourceType, action);
     })();

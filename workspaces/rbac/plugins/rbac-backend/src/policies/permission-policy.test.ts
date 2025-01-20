@@ -40,7 +40,6 @@ import type { RoleMetadata } from '@backstage-community/plugin-rbac-common';
 
 import { resolve } from 'path';
 
-import { auditLogger } from '../../__fixtures__/test-utils';
 import { ADMIN_ROLE_NAME } from '../admin-permissions/admin-creation';
 import { CasbinDBAdapterFactory } from '../database/casbin-adapter-factory';
 import { ConditionalStorage } from '../database/conditional-storage';
@@ -53,6 +52,7 @@ import { EnforcerDelegate } from '../service/enforcer-delegate';
 import { MODEL } from '../service/permission-model';
 import { PluginPermissionMetadataCollector } from '../service/plugin-endpoints';
 import { RBACPermissionPolicy } from './permission-policy';
+import { auditLoggerMock } from '../../__fixtures__/mock-utils';
 
 type PermissionAction = 'create' | 'read' | 'update' | 'delete';
 
@@ -109,8 +109,6 @@ const csvPermFile = resolve(
 const mockClientKnex = Knex.knex({ client: MockClient });
 
 const mockAuthService = mockServices.auth();
-
-const auditLoggerMock = auditLogger();
 
 const pluginMetadataCollectorMock: Partial<PluginPermissionMetadataCollector> =
   {
