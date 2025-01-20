@@ -26,5 +26,11 @@ export interface Config {
      * @visibility frontend
      */
     baseUrl: string;
+
+    /**
+     * If true, it will use the Backstage proxy to communicate with the OpenCost service
+     * @visibility frontend
+     */
+    useBackstageProxy?: boolean;
   };
 }

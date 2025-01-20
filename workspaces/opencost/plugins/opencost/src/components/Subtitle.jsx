@@ -15,11 +15,11 @@
  */
 
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import { upperFirst } from 'lodash';
-import Breadcrumbs from '@material-ui/core/Breadcrumbs';
-import NavigateNextIcon from '@material-ui/icons/NavigateNext';
-import Typography from '@material-ui/core/Typography';
+import Breadcrumbs from '@mui/material/Breadcrumbs';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import Typography from '@mui/material/Typography';
 import { toVerboseTimeRange } from '../util';
 
 const useStyles = makeStyles({

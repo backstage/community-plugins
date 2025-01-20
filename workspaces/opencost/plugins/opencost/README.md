@@ -32,7 +32,7 @@ and
 
     ```typescript
     // packages/app/src/components/Root/Root.tsx
-     import MoneyIcon from '@material-ui/icons/MonetizationOn';
+     import MoneyIcon from '@mui/icons-material/MonetizationOn';
 
      ...
 
@@ -65,11 +65,22 @@ opencost:
   baseUrl: http://localhost:9003
 ```
 
+If you want to use the Backstage proxy to communicate with the OpenCost service, add the the following to your `app-config.yaml`:
+
+```yaml
+proxy:
+  endpoints:
+    /opencost: http://localhost:9003
+---
+opencost:
+  baseUrl: /opencost
+  useBackstageProxy: true
+```
+
 ## Ideas/Next Steps
 
 - More testing
 - Use the OpenCost mascot for the sidebar logo
-- Use the Backstage proxy to communicate with the OpenCost API if necessary for authentication
 - Convert AllocationReport.js to use the [Backstage Table](https://backstage.io/storybook/?path=/story/data-display-table--default-table)
 - Allow for user-provided default reports and/or disabling controls
 - Support multiple hard-coded reports

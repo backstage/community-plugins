@@ -16,14 +16,14 @@
 // code ported from https://github.com/opencost/opencost/blob/develop/ui/src/Reports.js
 
 import React, { useEffect, useState } from 'react';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import IconButton from '@material-ui/core/IconButton';
-import Paper from '@material-ui/core/Paper';
-import RefreshIcon from '@material-ui/icons/Refresh';
-import Typography from '@material-ui/core/Typography';
+import CircularProgress from '@mui/material/CircularProgress';
+import IconButton from '@mui/material/IconButton';
+import Paper from '@mui/material/Paper';
+import RefreshIcon from '@mui/icons-material/Refresh';
+import Typography from '@mui/material/Typography';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { find, get, sortBy, toArray } from 'lodash';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import AllocationReport from '../AllocationReport';
 import AllocationService from '../../services/allocation';
 import Controls from '../Controls';
@@ -37,7 +37,12 @@ import {
   toVerboseTimeRange,
 } from '../../util';
 import { currencyCodes } from '../../constants/currencyCodes';
-import { useApi, configApiRef } from '@backstage/core-plugin-api';
+import {
+  useApi,
+  configApiRef,
+  discoveryApiRef,
+  fetchApiRef,
+} from '@backstage/core-plugin-api';
 
 const windowOptions = [
   { name: 'Today', value: 'today' },
@@ -180,16 +185,31 @@ export const OpenCostReport = () => {
 
   const configApi = useApi(configApiRef);
   const baseUrl = configApi.getConfig('opencost').getString('baseUrl');
+  const useBackstageProxy = configApi
+    .getConfig('opencost')
+    .getOptionalBoolean('useBackstageProxy');
   /* eslint no-console: 0 */
   console.log(`baseUrl:${baseUrl}`);
+
+  const discoveryApi = useApi(discoveryApiRef);
+  const fetchApi = useApi(fetchApiRef);
 
   async function fetchData() {
     setLoading(true);
     setErrors([]);
 
+    let url = baseUrl;
+    if (useBackstageProxy) {
+      url = `${await discoveryApi.getBaseUrl('proxy')}/${baseUrl.replace(
+        /^\/|\/$/g,
+        '',
+      )}`;
+    }
+
     try {
       const resp = await AllocationService.fetchAllocation(
-        baseUrl,
+        fetchApi,
+        url,
         window,
         aggregateBy,
         { accumulate },

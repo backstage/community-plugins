@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { makeStyles } from '@material-ui/core/styles';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
+import { makeStyles } from '@mui/styles';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
 
 import React from 'react';
 
@@ -26,6 +26,9 @@ import SelectWindow from '../SelectWindow';
 const useStyles = makeStyles({
   wrapper: {
     display: 'inline-flex',
+  },
+  item: {
+    display: 'block',
   },
   formControl: {
     margin: 8,
@@ -65,7 +68,11 @@ function EditControl({
           }}
         >
           {aggregationOptions.map(opt => (
-            <MenuItem key={opt.value} value={opt.value}>
+            <MenuItem
+              key={opt.value}
+              value={opt.value}
+              className={classes.item}
+            >
               {opt.name}
             </MenuItem>
           ))}
@@ -79,7 +86,11 @@ function EditControl({
           onChange={e => setAccumulate(e.target.value)}
         >
           {accumulateOptions.map(opt => (
-            <MenuItem key={opt.value} value={opt.value}>
+            <MenuItem
+              key={opt.value}
+              value={opt.value}
+              className={classes.item}
+            >
               {opt.name}
             </MenuItem>
           ))}
@@ -93,7 +104,11 @@ function EditControl({
           onChange={e => setCurrency(e.target.value)}
         >
           {currencyOptions?.map(currencyVal => (
-            <MenuItem key={currencyVal} value={currencyVal}>
+            <MenuItem
+              key={currencyVal}
+              value={currencyVal}
+              className={classes.item}
+            >
               {currencyVal}
             </MenuItem>
           ))}
