@@ -42,7 +42,7 @@ const buildNumber = 19;
 const jenkinsInfo: JenkinsInfo = {
   baseUrl: 'https://jenkins.example.com',
   headers: { headerName: 'headerValue' },
-  jobFullName: 'example-jobName',
+  fullJobNames: ['example-jobName'],
   projectCountLimit: 60,
 };
 
@@ -128,7 +128,7 @@ describe('JenkinsApi', () => {
           promisify: true,
         });
         expect(mockedJenkinsClient.job.get).toHaveBeenCalledWith({
-          name: jenkinsInfo.jobFullName,
+          name: jenkinsInfo.fullJobNames[0],
           tree: expect.anything(),
         });
         expect(result).toHaveLength(1);
@@ -169,7 +169,7 @@ describe('JenkinsApi', () => {
           promisify: true,
         });
         expect(mockedJenkinsClient.job.get).toHaveBeenCalledWith({
-          name: `${jenkinsInfo.jobFullName}/testBranchName`,
+          name: `${jenkinsInfo.fullJobNames[0]}/testBranchName`,
           tree: expect.anything(),
         });
         expect(result).toHaveLength(1);
@@ -185,28 +185,31 @@ describe('JenkinsApi', () => {
           'with-a/slash',
         ]);
 
-        expect(mockedJenkins).toHaveBeenCalledWith({
-          baseUrl: jenkinsInfo.baseUrl,
-          headers: jenkinsInfo.headers,
-          promisify: true,
-        });
-        expect(mockedJenkinsClient.job.get).toHaveBeenCalledWith({
-          name: `${jenkinsInfo.jobFullName}/foo`,
-          tree: expect.anything(),
-        });
-        expect(mockedJenkinsClient.job.get).toHaveBeenCalledWith({
-          name: `${jenkinsInfo.jobFullName}/bar`,
-          tree: expect.anything(),
-        });
-        expect(mockedJenkinsClient.job.get).toHaveBeenCalledWith({
-          name: `${jenkinsInfo.jobFullName}/catpants`,
-          tree: expect.anything(),
-        });
-        expect(mockedJenkinsClient.job.get).toHaveBeenCalledWith({
-          name: `${jenkinsInfo.jobFullName}/with-a%2Fslash`,
-          tree: expect.anything(),
-        });
-        expect(result).toHaveLength(1);
+        for (const jobName of jenkinsInfo.fullJobNames) {
+          expect(mockedJenkins).toHaveBeenCalledWith({
+            baseUrl: jenkinsInfo.baseUrl,
+            headers: jenkinsInfo.headers,
+            promisify: true,
+          });
+          expect(mockedJenkinsClient.job.get).toHaveBeenCalledWith({
+            name: `${jobName}/foo`,
+            tree: expect.anything(),
+          });
+          expect(mockedJenkinsClient.job.get).toHaveBeenCalledWith({
+            name: `${jobName}/bar`,
+            tree: expect.anything(),
+          });
+          expect(mockedJenkinsClient.job.get).toHaveBeenCalledWith({
+            name: `${jobName}/catpants`,
+            tree: expect.anything(),
+          });
+          expect(mockedJenkinsClient.job.get).toHaveBeenCalledWith({
+            name: `${jobName}/with-a%2Fslash`,
+            tree: expect.anything(),
+          });
+        }
+
+        expect(result).toHaveLength(jenkinsInfo.fullJobNames.length);
       });
     });
     describe('augmented', () => {
