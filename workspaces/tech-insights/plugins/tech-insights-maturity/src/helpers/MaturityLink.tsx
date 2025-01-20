@@ -34,29 +34,22 @@ const entityRouteRef = getOrCreateGlobalSingleton(
 );
 
 type Props = {
-  entity?: Entity;
-  entityRefString?: string;
+  entity: Entity | string;
 };
 
 export const MaturityLink = ({
   entity,
-  entityRefString,
   children,
 }: PropsWithChildren<Props>) => {
   const entityRoute = useRouteRef(entityRouteRef);
-  let entityRef;
-
-  if (entity) {
-    entityRef = getCompoundEntityRef(entity);
-  } else if (entityRefString) {
-    entityRef = parseEntityRef(entityRefString);
-  } else {
-    return <></>;
-  }
+  const compoundEntityRef =
+    typeof entity === 'string'
+      ? parseEntityRef(entity)
+      : getCompoundEntityRef(entity);
 
   return (
-    <Link to={`${entityRoute(entityRef)}/maturity`}>
-      {children ?? <EntityDisplayName entityRef={entityRef} />}
+    <Link to={`${entityRoute(compoundEntityRef)}/maturity`}>
+      {children ?? <EntityDisplayName entityRef={compoundEntityRef} />}
     </Link>
   );
 };

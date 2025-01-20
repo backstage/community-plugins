@@ -20,7 +20,7 @@ import React from 'react';
 
 export const MaturityHelp = () => (
   <Tooltip title="Click here to learn more about Maturity!">
-    <Link to="/docs/default/component/devops-central/maturity">
+    <Link to="https://github.com/backstage/community-plugins/blob/main/workspaces/tech-insights/plugins/tech-insights-maturity/README.md">
       <HelpOutline color="info" style={{ paddingLeft: '0.2rem' }} />
     </Link>
   </Tooltip>

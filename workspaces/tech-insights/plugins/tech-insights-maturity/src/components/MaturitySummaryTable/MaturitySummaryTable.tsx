@@ -165,7 +165,7 @@ export function MaturitySummaryTable({
       ...style,
       render: row => (
         <b>
-          <MaturityLink entityRefString={row.entity} />
+          <MaturityLink entity={row.entity} />
         </b>
       ),
     },
