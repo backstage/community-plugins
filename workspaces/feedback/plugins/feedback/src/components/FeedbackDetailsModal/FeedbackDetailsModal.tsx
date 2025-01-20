@@ -252,7 +252,7 @@ export const FeedbackDetailsModal = () => {
                 </Typography>
               </Grid>
               <Grid item xs={12}>
-                <Typography variant="body1">
+                <Typography variant="body1" style={{ whiteSpace: 'pre-line' }}>
                   {modalData.description
                     ? getDescription(modalData.description)
                     : 'No description provided'}
