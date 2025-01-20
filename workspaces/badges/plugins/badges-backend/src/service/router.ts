@@ -16,13 +16,6 @@
 
 import express from 'express';
 import Router from 'express-promise-router';
-import {
-  createLegacyAuthAdapters,
-  DatabaseManager,
-  errorHandler,
-  PluginEndpointDiscovery,
-  TokenManager,
-} from '@backstage/backend-common';
 import { CatalogApi, CatalogClient } from '@backstage/catalog-client';
 import { Config } from '@backstage/config';
 import { NotFoundError } from '@backstage/errors';
@@ -39,32 +32,29 @@ import { BadgesStore, DatabaseBadgesStore } from '../database/badgesStore';
 import { createDefaultBadgeFactories } from '../badges';
 import {
   AuthService,
+  DiscoveryService,
   HttpAuthService,
   LoggerService,
+  DatabaseService,
 } from '@backstage/backend-plugin-api';
+import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 
-/**
- * @deprecated Please migrate to the new backend system as this will be removed in the future.
- *
- * @public */
-export interface RouterOptions {
+/** @internal */
+interface RouterOptions {
   badgeBuilder?: BadgeBuilder;
   badgeFactories?: BadgeFactories;
   catalog?: CatalogApi;
   config: Config;
-  discovery: PluginEndpointDiscovery;
-  tokenManager?: TokenManager;
-  auth?: AuthService;
-  httpAuth?: HttpAuthService;
+  discovery: DiscoveryService;
+  auth: AuthService;
+  httpAuth: HttpAuthService;
   logger: LoggerService;
   identity?: IdentityApi;
   badgeStore?: BadgesStore;
+  database: DatabaseService;
 }
 
-/**
- * @deprecated Please migrate to the new backend system as this will be removed in the future.
- *
- * @public */
+/** @internal */
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
@@ -77,10 +67,8 @@ export async function createRouter(
     );
   const router = Router();
 
-  const { config, logger, discovery } = options;
+  const { config, logger, discovery, auth, httpAuth, database } = options;
   const baseUrl = await discovery.getExternalBaseUrl('badges');
-
-  const { auth, httpAuth } = createLegacyAuthAdapters(options);
 
   if (config.getOptionalBoolean('app.badges.obfuscate')) {
     return obfuscatedRoute(
@@ -93,6 +81,7 @@ export async function createRouter(
       baseUrl,
       auth,
       httpAuth,
+      database,
     );
   }
   return nonObfuscatedRoute(
@@ -102,6 +91,7 @@ export async function createRouter(
     config,
     baseUrl,
     auth,
+    logger,
   );
 }
 
@@ -115,13 +105,14 @@ async function obfuscatedRoute(
   baseUrl: string,
   auth: AuthService,
   httpAuth: HttpAuthService,
+  database: DatabaseService,
 ) {
   logger.info('Badges obfuscation is enabled');
 
   const store = options.badgeStore
     ? options.badgeStore
     : await DatabaseBadgesStore.create({
-        database: DatabaseManager.fromConfig(config).forPlugin('badges'),
+        database,
       });
 
   router.get('/entity/:entityUuid/badge-specs', async (req, res) => {
@@ -287,7 +278,8 @@ async function obfuscatedRoute(
     },
   );
 
-  router.use(errorHandler());
+  const middleware = MiddlewareFactory.create({ logger, config });
+  router.use(middleware.error());
 
   return router;
 }
@@ -299,6 +291,7 @@ async function nonObfuscatedRoute(
   config: Config,
   baseUrl: string,
   auth: AuthService,
+  logger: LoggerService,
 ) {
   router.get('/entity/:namespace/:kind/:name/badge-specs', async (req, res) => {
     const { token } = await auth.getPluginRequestToken({
@@ -399,7 +392,8 @@ async function nonObfuscatedRoute(
     },
   );
 
-  router.use(errorHandler());
+  const middleware = MiddlewareFactory.create({ logger, config });
+  router.use(middleware.error());
 
   return router;
 }
