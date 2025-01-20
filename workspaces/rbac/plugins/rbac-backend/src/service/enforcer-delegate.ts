@@ -329,6 +329,7 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
   async addGroupingPolicies(
     policies: string[][],
     roleMetadata: RoleMetadataDao,
+    oldRoleEntityRef?: string,
     externalTrx?: Knex.Transaction,
   ): Promise<void> {
     if (this.loadPolicyPromise) {
@@ -345,13 +346,13 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
       try {
         const currentRoleMetadata =
           await this.roleMetadataStorage.findRoleMetadata(
-            roleMetadata.roleEntityRef,
+            oldRoleEntityRef ?? roleMetadata.roleEntityRef,
             trx,
           );
         if (currentRoleMetadata) {
           await this.roleMetadataStorage.updateRoleMetadata(
             mergeRoleMetadata(currentRoleMetadata, roleMetadata),
-            roleMetadata.roleEntityRef,
+            oldRoleEntityRef ?? roleMetadata.roleEntityRef,
             trx,
           );
         } else {
@@ -402,7 +403,26 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
       }
 
       await this.removeGroupingPolicies(oldRole, currentMetadata, true, trx);
-      await this.addGroupingPolicies(newRole, newRoleMetadata, trx);
+      await this.addGroupingPolicies(
+        newRole,
+        newRoleMetadata,
+        currentMetadata.roleEntityRef,
+        trx,
+      );
+
+      // Role name changed -> update roleEntityRef in policies
+      if (newRoleMetadata.roleEntityRef !== currentMetadata.roleEntityRef) {
+        const oldPolicies = await this.enforcer.getFilteredPolicy(
+          0,
+          currentMetadata.roleEntityRef,
+        );
+        const updatedPolicies = oldPolicies.map(oldPolicy => [
+          newRoleMetadata.roleEntityRef,
+          ...oldPolicy.slice(1),
+        ]);
+        await this.updatePolicies(oldPolicies, updatedPolicies, trx);
+      }
+
       await trx.commit();
     } catch (err) {
       await trx.rollback(err);
@@ -413,15 +433,20 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
   async updatePolicies(
     oldPolicies: string[][],
     newPolicies: string[][],
+    externalTrx?: Knex.Transaction,
   ): Promise<void> {
-    const trx = await this.knex.transaction();
+    const trx = externalTrx ?? (await this.knex.transaction());
 
     try {
       await this.removePolicies(oldPolicies, trx);
       await this.addPolicies(newPolicies, trx);
-      await trx.commit();
+      if (!externalTrx) {
+        await trx.commit();
+      }
     } catch (err) {
-      await trx.rollback(err);
+      if (!externalTrx) {
+        await trx.rollback(err);
+      }
       throw err;
     }
   }
