@@ -111,7 +111,7 @@ const systemEntityPage = (
 
 <img src="./img/maturityPage.png" width="700" height="350" />
 
-First make the Scorecard page available as route
+First make the Maturity page available as route
 
 ```tsx
 // packages/app/src/App.tsx
