@@ -130,7 +130,6 @@ export default function CategoryInput({
           label={t('announcementForm.categoryInput.label')}
           variant="outlined"
           fullWidth
-          required
           InputProps={{
             ...params.InputProps,
             endAdornment: (

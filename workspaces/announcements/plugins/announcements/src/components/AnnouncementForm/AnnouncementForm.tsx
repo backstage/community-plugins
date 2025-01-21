@@ -30,11 +30,16 @@ import {
   FormControlLabel,
   Switch,
   Button,
+  Box,
+  Grid,
+  Typography,
+  Divider,
 } from '@material-ui/core';
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
 } from '@material-ui/pickers';
+import SaveAltIcon from '@material-ui/icons/SaveAlt';
 import LuxonUtils from '@date-io/luxon';
 import { DateTime } from 'luxon';
 
@@ -55,7 +60,6 @@ export const AnnouncementForm = ({
   initialData,
   onSubmit,
 }: AnnouncementFormProps) => {
-  const classes = useStyles();
   const identityApi = useApi(identityApiRef);
   const { t } = useAnnouncementsTranslation();
 
@@ -97,88 +101,116 @@ export const AnnouncementForm = ({
   };
 
   return (
-    <InfoCard
-      title={
-        initialData.title
-          ? t('announcementForm.editAnnouncement')
-          : t('announcementForm.newAnnouncement')
-      }
-    >
-      <form className={classes.formRoot} onSubmit={handleSubmit}>
-        <TextField
-          id="title"
-          type="text"
-          label={t('announcementForm.title')}
-          value={form.title}
-          onChange={handleChange}
-          variant="outlined"
-          fullWidth
-          required
-        />
-        <CategoryInput
-          setForm={setForm}
-          form={form}
-          initialValue={initialData.category?.title ?? ''}
-        />
-        <TextField
-          id="excerpt"
-          type="text"
-          label={t('announcementForm.excerpt')}
-          value={form.excerpt}
-          onChange={handleChange}
-          variant="outlined"
-          fullWidth
-          required
-        />
-        <MDEditor
-          value={form.body}
-          style={{ minHeight: '30rem' }}
-          onChange={value => setForm({ ...form, ...{ body: value || '' } })}
-        />
-        <MuiPickersUtilsProvider utils={LuxonUtils}>
-          <KeyboardDatePicker
-            disableToolbar
-            variant="inline"
-            format="MM/dd/yyyy"
-            margin="normal"
-            id="start_at-date-picker"
-            label={t('announcementForm.startAt')}
-            value={form.start_at}
-            onChange={date =>
-              setForm({
-                ...form,
-                start_at: date
-                  ? date.toISO() || ''
-                  : DateTime.now().toISO() || '',
-              })
-            }
-            KeyboardButtonProps={{
-              'aria-label': 'change date',
-            }}
-            required
-          />
-        </MuiPickersUtilsProvider>
-        <FormGroup>
-          <FormControlLabel
-            control={
-              <Switch
-                name="active"
-                checked={form.active}
-                onChange={handleChangeActive}
+    <InfoCard>
+      <Box p={3}>
+        <Typography variant="h5" gutterBottom>
+          {initialData.title
+            ? t('announcementForm.editAnnouncement')
+            : t('announcementForm.newAnnouncement')}
+        </Typography>
+        <form onSubmit={handleSubmit}>
+          <Grid container spacing={3}>
+            <Grid item xs={12}>
+              <TextField
+                id="title"
+                label={t('announcementForm.title')}
+                value={form.title}
+                onChange={handleChange}
+                variant="outlined"
+                fullWidth
+                required
               />
-            }
-            label={t('announcementForm.active')}
-          />
-        </FormGroup>
-        <Button
-          variant="contained"
-          color="primary"
-          type="submit"
-          disabled={loading || !form.body}
-        >
-          {t('announcementForm.submit')}
-        </Button>
-      </form>
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CategoryInput
+                setForm={setForm}
+                form={form}
+                initialValue={initialData.category?.title ?? ''}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <MuiPickersUtilsProvider utils={LuxonUtils}>
+                <KeyboardDatePicker
+                  disableToolbar
+                  variant="inline"
+                  inputVariant="outlined"
+                  format="MM/dd/yyyy"
+                  id="start_at-date-picker"
+                  label={t('announcementForm.startAt')}
+                  value={form.start_at}
+                  onChange={date =>
+                    setForm({
+                      ...form,
+                      start_at: date
+                        ? date.toISO() || ''
+                        : DateTime.now().toISO() || '',
+                    })
+                  }
+                  KeyboardButtonProps={{
+                    'aria-label': 'change date',
+                  }}
+                  required
+                />
+              </MuiPickersUtilsProvider>
+            </Grid>
+
+            <Grid item xs={12}>
+              <TextField
+                id="excerpt"
+                label={t('announcementForm.excerpt')}
+                value={form.excerpt}
+                onChange={handleChange}
+                variant="outlined"
+                fullWidth
+                required
+                multiline
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <MDEditor
+                value={form.body}
+                style={{ minHeight: '30rem' }}
+                onChange={value =>
+                  setForm({ ...form, ...{ body: value || '' } })
+                }
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <Divider />
+            </Grid>
+
+            <Grid item xs={12}>
+              <FormGroup row style={{ justifyContent: 'flex-end' }}>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      name="active"
+                      checked={form.active}
+                      onChange={handleChangeActive}
+                      color="primary"
+                    />
+                  }
+                  label={t('announcementForm.active')}
+                />
+                <Button
+                  variant="contained"
+                  color="primary"
+                  type="submit"
+                  disabled={loading || !form.body}
+                  size="large"
+                  startIcon={<SaveAltIcon />}
+                >
+                  {t('announcementForm.submit')}
+                </Button>
+              </FormGroup>
+            </Grid>
+          </Grid>
+        </form>
+      </Box>
     </InfoCard>
   );
 };

@@ -87,7 +87,6 @@ export const CategoriesForm = ({
           onChange={handleChange}
           variant="outlined"
           fullWidth
-          required
         />
         <Button
           variant="contained"
