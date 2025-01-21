@@ -28,7 +28,7 @@ if no configuration is provided, the service will try to use the default azure c
 ## Usage
 
 ```typescript
-import { azureResourcesServiceRef } from '@internal/backstage-plugin-azure-resources-node';
+import { azureResourcesServiceRef } from 'backstage-community/plugin-azure-resources-node';
 
 // Add it as dependency on your plugin or module
 deps: {
