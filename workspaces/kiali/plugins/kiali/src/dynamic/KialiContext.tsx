@@ -13,14 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { useApi } from '@backstage/core-plugin-api';
+import { useEntity } from '@backstage/plugin-catalog-react';
 import React, { createContext, useContext, useMemo } from 'react';
 import useAsyncFn from 'react-use/lib/useAsyncFn';
 import useDebounce from 'react-use/lib/useDebounce';
-
-import { useApi } from '@backstage/core-plugin-api';
-import { useEntity } from '@backstage/plugin-catalog-react';
-
-import { KIALI_NAMESPACE } from '../components/Router';
+import { KIALI_NAMESPACE, KIALI_PROVIDER } from '../components/Router';
 import { NamespaceInfo } from '../pages/Overview/NamespaceInfo';
 import { getNamespaces } from '../pages/Overview/OverviewPage';
 import { kialiApiRef } from '../services/Api';
@@ -38,6 +36,12 @@ const KialiEntityContext = createContext<KialiEntityContextType>(
 export const KialiContextProvider = (props: any) => {
   const { entity } = useEntity();
   const kialiClient = useApi(kialiApiRef);
+  if (entity.metadata.annotations) {
+    kialiClient.setAnnotation(
+      KIALI_PROVIDER,
+      entity.metadata.annotations[KIALI_PROVIDER],
+    );
+  }
 
   const [{ value: namespace, loading, error: asyncError }, refresh] =
     useAsyncFn(

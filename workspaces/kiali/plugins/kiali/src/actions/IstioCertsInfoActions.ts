@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { ActionType, createStandardAction } from 'typesafe-actions';
-
 import { CertsInfo } from '../types/CertsInfo';
 import { ActionKeys } from './ActionKeys';
 

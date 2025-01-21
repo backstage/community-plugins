@@ -1,5 +1,17 @@
 # @backstage-community/plugin-kiali-backend
 
+## 1.20.1
+
+### Patch Changes
+
+- 0b73ce1: Upgrade backstage to 1.35.0 and remove @spotify/prettier-config
+
+## 1.20.0
+
+### Minor Changes
+
+- 117f8e0: Support multi providers in Kiali
+
 ## 1.19.5
 
 ### Patch Changes

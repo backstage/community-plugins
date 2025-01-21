@@ -13,17 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import {
   CodeSnippet,
   InfoCard,
   Link,
   WarningPanel,
 } from '@backstage/core-components';
-
 import HelpRounded from '@material-ui/icons/HelpRounded';
-
+import React from 'react';
 import { KialiChecker } from '../../store/KialiProvider';
 
 export const KialiHelper = (props: { check: KialiChecker }) => {

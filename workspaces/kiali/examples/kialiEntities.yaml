@@ -10,7 +10,8 @@ metadata:
     - core
     - servicemesh
   annotations:
-    'kiali.io/namespace': istio-system
+    kiali.io/provider: default
+    kiali.io/namespace: istio-system
 spec:
   type: service
   lifecycle: production
@@ -27,7 +28,44 @@ metadata:
     - core
     - servicemesh
   annotations:
-    'kiali.io/namespace': bookinfo
+    kiali.io/provider: default
+    kiali.io/namespace: bookinfo
+spec:
+  type: service
+  lifecycle: production
+  owner: user:guest
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: bookinfo-kubernetes
+  description: Bookinfo In Kubernetes
+  tags:
+    - bookinfo
+    - kiali
+    - core
+    - servicemesh
+  annotations:
+    kiali.io/provider: kubernetes
+    kiali.io/namespace: bookinfo
+spec:
+  type: service
+  lifecycle: production
+  owner: user:guest
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: bookinfo-mocked
+  description: Bookinfo In Kubernetes
+  tags:
+    - bookinfo
+    - kiali
+    - core
+    - servicemesh
+  annotations:
+    kiali.io/provider: mocked
+    kiali.io/namespace: bookinfo
 spec:
   type: service
   lifecycle: production

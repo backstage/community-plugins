@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { NestedCSSProperties } from 'typestyle/lib/types';
-
 import { PFColors } from '../components/Pf/PfColors';
 import { kialiStyle } from './StyleUtils';
 

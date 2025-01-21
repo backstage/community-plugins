@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { LoggerService } from '@backstage/backend-plugin-api/index';
 import { Config } from '@backstage/config';
 
 const KIALI_PREFIX = 'kiali';
 
 export type KialiDetails = {
+  name: string;
   url: string;
   urlExternal: string;
   skipTLSVerify?: boolean;
@@ -37,47 +39,65 @@ const isValidUrl = (url: string): boolean => {
   return true;
 };
 
-export const getFromKialiConfig = (config: Config): Config => {
+export const getFromKialiConfig = (config: Config): Config[] => {
   // Check if required values are valid
-  const requiredValues = ['url'];
-  requiredValues.forEach(key => {
-    if (!config.has(key)) {
+  const requiredValues = ['name', 'url'];
+  config.getConfigArray('providers').forEach(provider => {
+    // Check presence of required values
+    requiredValues.forEach(key => {
+      if (!provider.has(key)) {
+        throw new Error(
+          `[${key}] Value must be specified in config at '${KIALI_PREFIX}.providers objects, the name of provider is ${provider.getString(
+            'name',
+          )}'`,
+        );
+      }
+    });
+    // Check if url is valid
+    const url = provider.getString('url');
+    if (!isValidUrl(url)) {
       throw new Error(
-        `Value must be specified in config at '${KIALI_PREFIX}.${key}'`,
+        `"${url}" is not a valid url in config at '${KIALI_PREFIX}.providers.${provider}.url'`,
+      );
+    }
+    // Check if urlExternal is valid
+    const kialiExternal = provider.getOptionalString('urlExternal');
+    if (kialiExternal && kialiExternal !== '' && !isValidUrl(kialiExternal)) {
+      throw new Error(
+        `"${kialiExternal}" is not a valid url in config at '${KIALI_PREFIX}.providers.${provider}.urlExternal'`,
       );
     }
   });
-  return config;
+  return config.getConfigArray('providers');
 };
 
-export const getHubClusterFromConfig = (config: Config): KialiDetails => {
-  const hub = getFromKialiConfig(config);
-
-  const url = hub.getString('url');
-  if (!isValidUrl(url)) {
-    throw new Error(`"${url}" is not a valid url`);
-  }
-  /*
-    new URL(url).href => guarantees that the url will end in '/' 
-    - If the user does not indicate the last character as /, URL class will put it
-  */
-  const kialiExternal = hub.getOptionalString('urlExternal');
-  if (kialiExternal && kialiExternal !== '' && !isValidUrl(kialiExternal)) {
-    throw new Error(`"${kialiExternal}" is not a valid url`);
-  }
-  const externalUrl = kialiExternal ? kialiExternal : url;
-  return {
-    url: new URL(url).href,
-    urlExternal: new URL(externalUrl).href,
-    serviceAccountToken: hub.getOptionalString('serviceAccountToken'),
-    skipTLSVerify: hub.getOptionalBoolean('skipTLSVerify') || false,
-    caData: hub.getOptionalString('caData'),
-    caFile: hub.getOptionalString('caFile'),
-    sessionTime: hub.getOptionalNumber('sessionTime'),
-  };
+export const getHubClusterFromConfig = (
+  config: Config,
+  logger: LoggerService,
+): KialiDetails[] => {
+  const hubs = getFromKialiConfig(config);
+  logger.debug(`Found ${hubs.length} Kiali configurations`);
+  return hubs.map(hub => {
+    return {
+      name: hub.getString('name'),
+      url: new URL(hub.getString('url')).href,
+      urlExternal: hub.getOptionalString('urlExternal')
+        ? new URL(hub.getOptionalString('urlExternal')!).href
+        : undefined,
+      skipTLSVerify: hub.getOptionalBoolean('skipTLSVerify') || false,
+      sessionTime: hub.getOptionalNumber('sessionTime'),
+      serviceAccountToken: hub.getOptionalString('serviceAccountToken'),
+      caData: hub.getOptionalString('caData'),
+      caFile: hub.getOptionalString('caFile'),
+    } as KialiDetails;
+  });
 };
 
-export const readKialiConfigs = (config: Config): KialiDetails => {
+export const readKialiConfigs = (
+  config: Config,
+  logger: LoggerService,
+): KialiDetails[] => {
   const kialiConfigs = config.getConfig(KIALI_PREFIX);
-  return getHubClusterFromConfig(kialiConfigs);
+  logger.debug(`Reading Kiali configurations`);
+  return getHubClusterFromConfig(kialiConfigs, logger);
 };

@@ -184,7 +184,12 @@ describe('Connection', () => {
 
     const knex = Knex.knex({ client: MockClient });
 
-    enforcerDelegate = new EnforcerDelegate(enf, roleMetadataStorageMock, knex);
+    enforcerDelegate = new EnforcerDelegate(
+      enf,
+      auditLoggerMock,
+      roleMetadataStorageMock,
+      knex,
+    );
 
     await enforcerDelegate.addGroupingPolicy(
       roleToBeRemoved,
@@ -243,23 +248,29 @@ describe('Connection', () => {
       );
 
       const roles = [
-        ['user:default/test', 'role:default/test-provider'],
+        ['user:default/test', 'role:default/test-provider'], // to add
         ['user:default/bruce', 'role:default/existing-provider-role'],
         ['user:default/tony', 'role:default/existing-provider-role'],
+        ['user:default/Adam', 'role:default/test-provider'], // to add
       ];
 
-      const roleToAdd = [['user:default/test', 'role:default/test-provider']];
       const roleMeta = {
         createdAt: new Date().toUTCString(),
         lastModified: new Date().toUTCString(),
         modifiedBy: 'test',
         source: 'test',
-        roleEntityRef: roleToAdd[0][1],
+        roleEntityRef: roles[0][1],
       };
 
       await provider.applyRoles(roles);
-      expect(enfAddGroupingPolicySpy).toHaveBeenCalledWith(
-        ...roleToAdd,
+      expect(enfAddGroupingPolicySpy).toHaveBeenNthCalledWith(
+        1,
+        ['user:default/test', 'role:default/test-provider'],
+        roleMeta,
+      );
+      expect(enfAddGroupingPolicySpy).toHaveBeenNthCalledWith(
+        2,
+        ['user:default/adam', 'role:default/test-provider'],
         roleMeta,
       );
     });
@@ -478,6 +489,7 @@ describe('connectRBACProviders', () => {
 
     const enforcerDelegate = new EnforcerDelegate(
       enf,
+      auditLoggerMock,
       roleMetadataStorageMock,
       knex,
     );

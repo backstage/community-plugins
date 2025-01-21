@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { Entity } from '@backstage/catalog-model';
-
 import { KIALI_NAMESPACE } from '../components/Router';
 
 export const nsEqual = (ns: string[], ns2: string[]): boolean => {

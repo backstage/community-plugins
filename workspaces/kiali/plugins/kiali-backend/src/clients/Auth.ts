@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import moment from 'moment';
-
 import { KialiDetails } from '../service/config';
 
 export const MILLISECONDS = 1000;
