@@ -29,7 +29,7 @@ metadata:
   annotations:
     jaegertracing.io/service: petstore
     jaegertracing.io/lookback: 30m
-    jaegertracing.io/limit: 20
+    jaegertracing.io/limit: '20'
     jaegertracing.io/operation: /
   description: |
     [The Petstore](http://petstore.example.com) is an example API used to show features of the OpenAPI spec.

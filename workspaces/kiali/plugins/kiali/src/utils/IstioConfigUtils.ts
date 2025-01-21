@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import _ from 'lodash';
-
 import { IstioConfigDetails } from '../types/IstioConfigDetails';
 import { IstioConfigItem } from '../types/IstioConfigList';
 import {

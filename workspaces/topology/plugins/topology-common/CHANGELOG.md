@@ -1,5 +1,11 @@
 ## @janus-idp/backstage-plugin-topology-common [1.3.0](https://github.com/janus-idp/backstage-plugins/compare/@janus-idp/backstage-plugin-topology-common@1.2.2...@janus-idp/backstage-plugin-topology-common@1.3.0) (2024-07-26)
 
+## 1.5.0
+
+### Minor Changes
+
+- df7804a: bump backstage to 1.34.2 and remove @spotify/prettier-config
+
 ## 1.4.4
 
 ### Patch Changes

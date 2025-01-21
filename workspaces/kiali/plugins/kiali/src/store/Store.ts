@@ -24,6 +24,11 @@ import { TLSStatus } from '../types/TLSStatus';
 import { JaegerTrace, TracingInfo } from '../types/TracingInfo';
 import { AlertUtils } from '../utils/Alertutils';
 
+export interface ProviderState {
+  activeProvider: string;
+  items?: string[];
+}
+
 export interface NamespaceState {
   readonly activeNamespaces: Namespace[];
   readonly filter: string;
@@ -91,6 +96,7 @@ export interface KialiAppState {
   messageCenter: MessageCenterState;
   meshTLSStatus: TLSStatus;
   namespaces: NamespaceState;
+  providers: ProviderState;
   statusState: StatusState;
   /** User Settings */
   userSettings: UserSettings;

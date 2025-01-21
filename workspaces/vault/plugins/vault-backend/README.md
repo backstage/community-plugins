@@ -114,7 +114,7 @@ In your `packages/backend/src/index.ts` make the following changes:
   import { createBackend } from '@backstage/backend-defaults';
   const backend = createBackend();
   // ... other feature additions
-+ backend.add(import('@backstage-community/plugin-vault-backend');
++ backend.add(import('@backstage-community/plugin-vault-backend'));
   backend.start();
 ```
 

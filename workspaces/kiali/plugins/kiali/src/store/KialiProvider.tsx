@@ -13,15 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-import { useAsyncFn, useDebounce } from 'react-use';
-
 import { Entity } from '@backstage/catalog-model';
 import { useApi } from '@backstage/core-plugin-api';
-
 import { CircularProgress } from '@material-ui/core';
 import axios from 'axios';
-
+import React from 'react';
+import { useAsyncFn, useDebounce } from 'react-use';
 import {
   HelpDropdownActions,
   LoginActions,
@@ -30,6 +27,8 @@ import {
 import { IstioCertsInfoActions } from '../actions/IstioCertsInfoActions';
 import { IstioStatusActions } from '../actions/IstioStatusActions';
 import { MeshTlsActions } from '../actions/MeshTlsActions';
+import { ProviderActions } from '../actions/ProviderAction';
+import { KIALI_PROVIDER } from '../components/Router';
 import { setServerConfig } from '../config/ServerConfig';
 import { KialiHelper } from '../pages/Kiali/KialiHelper';
 import { KialiNoResources } from '../pages/Kiali/KialiNoResources';
@@ -43,6 +42,7 @@ import {
   UserSettingsStateReducer,
 } from '../reducers';
 import { MeshTlsStateReducer } from '../reducers/MeshTlsState';
+import { ProviderStateReducer } from '../reducers/Provider';
 import { kialiApiRef } from '../services/Api';
 import { AuthInfo } from '../types/Auth';
 import { MessageType } from '../types/MessageCenter';
@@ -109,6 +109,10 @@ export const KialiProvider: React.FC<Props> = ({
     NamespaceStateReducer,
     initialStore.namespaces,
   );
+  const [providerState, providerDispatch] = React.useReducer(
+    ProviderStateReducer,
+    initialStore.providers,
+  );
   const [userSettingState, userSettingDispatch] = React.useReducer(
     UserSettingsStateReducer,
     initialStore.userSettings,
@@ -125,7 +129,6 @@ export const KialiProvider: React.FC<Props> = ({
   const kialiClient = useApi(kialiApiRef);
   kialiClient.setEntity(entity);
   const alertUtils = new AlertUtils(messageDispatch);
-
   const fetchNamespaces = async () => {
     if (!namespaceState || !namespaceState.isFetching) {
       namespaceDispatch(NamespaceActions.requestStarted());
@@ -208,6 +211,13 @@ export const KialiProvider: React.FC<Props> = ({
         alertUtils.addError('Could not check configuration and authenticate');
         setKialiCheck(status);
       } else {
+        if ('providers' in status) {
+          providerDispatch(ProviderActions.setProviders(status.providers));
+          providerDispatch(
+            ProviderActions.setActiveProvider(status.providers[0]),
+          );
+          kialiClient.setAnnotation(KIALI_PROVIDER, status.providers[0]);
+        }
         fetchPostLogin();
       }
     } catch (err) {
@@ -271,12 +281,14 @@ export const KialiProvider: React.FC<Props> = ({
         messageCenter: messageState,
         meshTLSStatus: meshTLSStatusState,
         namespaces: namespaceState,
+        providers: providerState,
         userSettings: userSettingState,
         istioStatus: istioStatusState,
         istioCertsState: istioCertsState,
         dispatch: {
           messageDispatch: messageDispatch,
           namespaceDispatch: namespaceDispatch,
+          providerDispatch: providerDispatch,
           userSettingDispatch: userSettingDispatch,
           istioStatusDispatch: istioStatusDispatch,
         },

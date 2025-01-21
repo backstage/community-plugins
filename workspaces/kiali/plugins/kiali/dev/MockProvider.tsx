@@ -13,13 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import { Entity } from '@backstage/catalog-model';
 import { Content, HeaderTabs, Page } from '@backstage/core-components';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { TestApiProvider } from '@backstage/test-utils';
-
+import React from 'react';
 import { getEntityRoutes } from '../src/components/Router';
 import { AppDetailsPage } from '../src/pages/AppDetails/AppDetailsPage';
 import { AppListPage } from '../src/pages/AppList/AppListPage';
@@ -98,6 +96,12 @@ export class MockKialiClient implements KialiApi {
     this.entity = entity;
   }
 
+  setAnnotation(key: string, value: string): void {
+    if (this.entity && this.entity.metadata.annotations) {
+      this.entity.metadata.annotations[key] = value;
+    }
+  }
+
   async status(): Promise<StatusState> {
     return kialiData.status;
   }
@@ -112,7 +116,7 @@ export class MockKialiClient implements KialiApi {
   async getNamespaces(): Promise<Namespace[]> {
     return filterNsByAnnotation(
       kialiData.namespaces as Namespace[],
-      this.entity,
+      this.entity?.metadata.annotations || {},
     );
   }
 

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import * as React from 'react';
-
 import { PFColors } from '../../components/Pf/PfColors';
 import { kialiStyle } from '../../styles/StyleUtils';
 import {

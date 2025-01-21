@@ -20,7 +20,9 @@ import {
   EntityContentBlueprint,
 } from '@backstage/plugin-catalog-react/alpha';
 
-import { isNpmAvailable } from './utils/isNpmAvailable';
+import { isNpmAvailable } from '@backstage-community/plugin-npm-common';
+
+export { isNpmAvailable } from '@backstage-community/plugin-npm-common';
 
 /**
  * Card for the catalog (entity page) that shows the npm

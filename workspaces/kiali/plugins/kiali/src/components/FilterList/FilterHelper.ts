@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { camelCase } from 'lodash';
-
 import { history, HistoryManager, URLParam } from '../../app/History';
 import { config } from '../../config';
 import {
