@@ -1,0 +1,4 @@
+# The following configuration is for the news-navigator plugin
+newsAPI:
+  # Create a new API key at https://newsapi.org/ and set it as the value for NEWS_API_KEY
+  apiKey: ${NEWS_API_KEY}

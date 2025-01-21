@@ -1,0 +1,71 @@
+{
+  "name": "@backstage-community/plugin-news-navigator-backend",
+  "version": "0.0.0",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.cjs.js",
+    "types": "dist/index.d.ts"
+  },
+  "backstage": {
+    "role": "backend-plugin",
+    "supported-versions": "1.28.0",
+    "pluginId": "news-navigator-backend",
+    "pluginPackage": "@backstage-community/plugin-news-navigator-backend",
+    "pluginPackages": [
+      "@backstage-community/plugin-news-navigator",
+      "@backstage-community/plugin-news-navigator-backend"
+    ]
+  },
+  "scripts": {
+    "start": "backstage-cli package start",
+    "build": "backstage-cli package build",
+    "lint": "backstage-cli package lint",
+    "test": "backstage-cli package test",
+    "clean": "backstage-cli package clean",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack"
+  },
+  "dependencies": {
+    "@backstage/backend-defaults": "^0.7.0",
+    "@backstage/backend-plugin-api": "^1.1.1",
+    "@backstage/catalog-client": "^1.9.1",
+    "@backstage/errors": "^1.2.7",
+    "@backstage/plugin-catalog-node": "^1.15.1",
+    "express": "^4.17.1",
+    "express-promise-router": "^4.1.0",
+    "newsapi": "^2.4.1",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@backstage/backend-test-utils": "^1.2.1",
+    "@backstage/cli": "^0.29.5",
+    "@types/express": "^4.17.6",
+    "@types/supertest": "^2.0.12",
+    "supertest": "^6.2.4"
+  },
+  "files": [
+    "dist",
+    "app-config.yaml",
+    "config.d.ts"
+  ],
+  "configSchema": "config.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/news-navigator/plugins/news-navigator-backend"
+  },
+  "keywords": [
+    "backstage",
+    "plugin",
+    "news-navigator"
+  ],
+  "homepage": "https://github.com/backstage/community-plugins/tree/main/workspaces/news-navigator/plugins/news-navigator-backend",
+  "bugs": "https://github.com/backstage/community-plugins/issues",
+  "maintainers": [
+    "Lucifergene"
+  ],
+  "author": "Avik Kundu"
+}
