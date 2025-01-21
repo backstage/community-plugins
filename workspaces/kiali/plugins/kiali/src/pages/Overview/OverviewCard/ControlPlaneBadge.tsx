@@ -13,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
-
 import { Chip, makeStyles } from '@material-ui/core';
-
+import * as React from 'react';
 import { AmbientBadge } from '../../../components/Ambient/AmbientBadge';
 import { IstioStatusInline } from '../../../components/IstioStatus/IstioStatusInline';
 import { serverConfig } from '../../../config';

@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Entity } from '@backstage/catalog-model';
+import { Content, InfoCard } from '@backstage/core-components';
+import { useApi } from '@backstage/core-plugin-api';
 import * as React from 'react';
 import { useRef } from 'react';
 import { useAsyncFn, useDebounce } from 'react-use';
-
-import { Entity } from '@backstage/catalog-model';
-import { Content } from '@backstage/core-components';
-import { useApi } from '@backstage/core-plugin-api';
-
 import { DefaultSecondaryMasthead } from '../../components/DefaultSecondaryMasthead/DefaultSecondaryMasthead';
 import * as FilterHelper from '../../components/FilterList/FilterHelper';
+import { KIALI_PROVIDER } from '../../components/Router';
 import { TimeDurationComponent } from '../../components/Time/TimeDurationComponent';
 import { VirtualList } from '../../components/VirtualList/VirtualList';
 import { isMultiCluster } from '../../config';
@@ -42,14 +41,26 @@ export const AppListPage = (props: {
 }): React.JSX.Element => {
   const kialiClient = useApi(kialiApiRef);
   const [namespaces, setNamespaces] = React.useState<NamespaceInfo[]>([]);
+  const [errorProvider, setErrorProvider] = React.useState<string | undefined>(
+    undefined,
+  );
   const [allApps, setApps] = React.useState<AppListItem[]>([]);
   const [duration, setDuration] = React.useState<number>(
     FilterHelper.currentDuration(),
   );
   const kialiState = React.useContext(KialiContext) as KialiAppState;
+  kialiClient.setAnnotation(
+    KIALI_PROVIDER,
+    props.entity?.metadata.annotations?.[KIALI_PROVIDER] ||
+      kialiState.providers.activeProvider,
+  );
   const activeNs = props.entity
     ? getEntityNs(props.entity)
     : kialiState.namespaces.activeNamespaces.map(ns => ns.name);
+  const activeProvider =
+    props.entity?.metadata.annotations?.[KIALI_PROVIDER] ||
+    kialiState.providers.activeProvider;
+  const prevActiveProvider = useRef(activeProvider);
   const prevActiveNs = useRef(activeNs);
   const prevDuration = useRef(duration);
   const [loadingD, setLoading] = React.useState<boolean>(true);
@@ -107,17 +118,32 @@ export const AppListPage = (props: {
   };
 
   const getNS = async () => {
-    kialiClient.getNamespaces().then(namespacesResponse => {
-      const allNamespaces: NamespaceInfo[] = getNamespaces(
-        namespacesResponse,
-        namespaces,
+    kialiClient.setAnnotation(
+      KIALI_PROVIDER,
+      props.entity?.metadata.annotations?.[KIALI_PROVIDER] ||
+        kialiState.providers.activeProvider,
+    );
+    kialiClient
+      .getNamespaces()
+      .then(namespacesResponse => {
+        const allNamespaces: NamespaceInfo[] = getNamespaces(
+          namespacesResponse,
+          namespaces,
+        );
+        const namespaceInfos = allNamespaces.filter(ns =>
+          activeNs.includes(ns.name),
+        );
+        setNamespaces(namespaceInfos);
+        fetchApps(namespaceInfos, duration);
+      })
+      .catch(err =>
+        setErrorProvider(
+          `Error providing namespaces for ${
+            kialiState.providers.activeProvider
+          }, verify configuration for this provider: ${err.toString()}`,
+        ),
       );
-      const namespaceInfos = allNamespaces.filter(ns =>
-        activeNs.includes(ns.name),
-      );
-      setNamespaces(namespaceInfos);
-      fetchApps(namespaceInfos, duration);
-    });
+
     setTimeout(() => {
       setLoading(false);
     }, 400);
@@ -135,18 +161,23 @@ export const AppListPage = (props: {
   React.useEffect(() => {
     if (
       duration !== prevDuration.current ||
-      !nsEqual(activeNs, prevActiveNs.current)
+      !nsEqual(activeNs, prevActiveNs.current) ||
+      activeProvider !== prevActiveProvider.current
     ) {
+      setErrorProvider(undefined);
       setLoading(true);
       getNS();
       prevDuration.current = duration;
       prevActiveNs.current = activeNs;
+      prevActiveProvider.current = activeProvider;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeNs, duration]);
+  }, [activeNs, duration, activeProvider]);
 
   const appContent = () => {
-    return (
+    return errorProvider ? (
+      <InfoCard>{errorProvider}</InfoCard>
+    ) : (
       <>
         {props.view !== ENTITY && (
           <DefaultSecondaryMasthead

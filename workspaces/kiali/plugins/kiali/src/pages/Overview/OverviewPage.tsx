@@ -13,15 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useRef } from 'react';
-
-import { CardTab, Content, TabbedCard } from '@backstage/core-components';
+import { Entity } from '@backstage/catalog-model';
+import {
+  CardTab,
+  Content,
+  InfoCard,
+  TabbedCard,
+} from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
-
 import { CircularProgress, Grid } from '@material-ui/core';
 import _ from 'lodash';
-
+import React, { useRef, useState } from 'react';
 import * as FilterHelper from '../../components/FilterList/FilterHelper';
+import { KIALI_PROVIDER } from '../../components/Router';
 import { isMultiCluster, serverConfig } from '../../config';
 import { nsEqual } from '../../helpers/namespaces';
 import { getErrorString, kialiApiRef } from '../../services/Api';
@@ -82,12 +86,23 @@ export const getNamespaces = (
   });
 };
 
-export const OverviewPage = (props: { entity?: boolean }) => {
+export const OverviewPage = (props: { entity?: Entity }) => {
   const kialiClient = useApi(kialiApiRef);
+  const [errorProvider, setErrorProvider] = useState<string | undefined>(
+    undefined,
+  );
   const kialiState = React.useContext(KialiContext) as KialiAppState;
+  if (!props.entity) {
+    kialiClient.setAnnotation(
+      KIALI_PROVIDER,
+      kialiState.providers.activeProvider,
+    );
+  }
   const activeNsName = kialiState.namespaces.activeNamespaces.map(
     ns => ns.name,
   );
+  const activeProvider = kialiState.providers.activeProvider;
+  const prevActiveProvider = useRef(activeProvider);
   const prevActiveNs = useRef(activeNsName);
   const promises = new PromisesRegistry();
   const [namespaces, setNamespaces] = React.useState<NamespaceInfo[]>([]);
@@ -419,37 +434,64 @@ export const OverviewPage = (props: { entity?: boolean }) => {
   };
 
   const load = async () => {
-    await kialiClient.getNamespaces().then(namespacesResponse => {
-      const allNamespaces: NamespaceInfo[] = getNamespaces(
-        namespacesResponse,
-        namespaces,
-      );
-
-      // Calculate information
-      const isAscending = FilterHelper.isCurrentSortAscending();
-      const sortField = FilterHelper.currentSortField(Sorts.sortFields);
-      const sortNs = sortedNamespaces(allNamespaces);
-      if (!props.entity) {
-        fetchHealth(sortNs, isAscending, sortField);
-        fetchTLS(sortNs, isAscending, sortField);
-        fetchValidations(sortNs, isAscending, sortField);
-        fetchOutboundTrafficPolicyMode();
-        fetchCanariesStatus();
-        fetchIstiodResourceThresholds();
+    if (props.entity) {
+      if (props.entity?.metadata.annotations?.[KIALI_PROVIDER]) {
+        kialiClient.setAnnotation(
+          KIALI_PROVIDER,
+          props.entity?.metadata.annotations?.[KIALI_PROVIDER],
+        );
       }
-      fetchMetrics(sortNs);
-      promises.waitAll();
-      setNamespaces(sortNs);
-    });
+    } else {
+      kialiClient.setAnnotation(
+        KIALI_PROVIDER,
+        kialiState.providers.activeProvider,
+      );
+    }
+    await kialiClient
+      .getNamespaces()
+      .then(namespacesResponse => {
+        const allNamespaces: NamespaceInfo[] = getNamespaces(
+          namespacesResponse,
+          namespaces,
+        );
+
+        // Calculate information
+        const isAscending = FilterHelper.isCurrentSortAscending();
+        const sortField = FilterHelper.currentSortField(Sorts.sortFields);
+        const sortNs = sortedNamespaces(allNamespaces);
+        if (!props.entity) {
+          fetchHealth(sortNs, isAscending, sortField);
+          fetchTLS(sortNs, isAscending, sortField);
+          fetchValidations(sortNs, isAscending, sortField);
+          fetchOutboundTrafficPolicyMode();
+          fetchCanariesStatus();
+          fetchIstiodResourceThresholds();
+        }
+        fetchMetrics(sortNs);
+        promises.waitAll();
+        setNamespaces(sortNs);
+      })
+      .catch(error => {
+        setErrorProvider(
+          `Error providing namespaces for ${
+            kialiState.providers.activeProvider
+          }, verify configuration for this provider: ${error.toString()}`,
+        );
+      });
   };
 
   React.useEffect(() => {
-    if (!nsEqual(activeNsName, prevActiveNs.current)) {
+    if (
+      !nsEqual(activeNsName, prevActiveNs.current) ||
+      activeProvider !== prevActiveProvider.current
+    ) {
+      setErrorProvider(undefined);
       prevActiveNs.current = activeNsName;
+      prevActiveProvider.current = activeProvider;
       load();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeNsName]);
+  }, [activeNsName, activeProvider]);
 
   React.useEffect(() => {
     load();
@@ -491,41 +533,50 @@ export const OverviewPage = (props: { entity?: boolean }) => {
       ) : (
         <div className={baseStyle}>
           <Content>
-            <OverviewToolbar
-              onRefresh={() => load()}
-              overviewType={overviewType}
-              setOverviewType={setOverviewType}
-              directionType={directionType}
-              setDirectionType={setDirectionType}
-              duration={duration}
-              setDuration={setDuration}
-            />
-            <Grid container spacing={2}>
-              {activeNs.map((ns, i) => (
-                <Grid
-                  key={`Card_${ns.name}_${i}`}
-                  item
-                  xs={ns.name === serverConfig.istioNamespace ? 12 : 4}
-                >
-                  <OverviewCard
-                    namespace={ns}
-                    canaryUpgradeStatus={canaryUpgradeStatus}
-                    istioAPIEnabled={
-                      kialiState.statusState.istioEnvironment.istioAPIEnabled
-                    }
-                    type={overviewType}
-                    direction={directionType}
-                    duration={duration}
-                    refreshInterval={kialiState.userSettings.refreshInterval}
-                    certsInfo={kialiState.istioCertsInfo}
-                    minTLS={kialiState.meshTLSStatus.minTLS}
-                    istiodResourceThresholds={istiodResourceThresholds}
-                    istioStatus={kialiState.istioStatus}
-                    outboundTrafficPolicy={outboundTrafficPolicy}
-                  />
+            {errorProvider ? (
+              <InfoCard>{errorProvider}</InfoCard>
+            ) : (
+              <>
+                <OverviewToolbar
+                  onRefresh={() => load()}
+                  overviewType={overviewType}
+                  setOverviewType={setOverviewType}
+                  directionType={directionType}
+                  setDirectionType={setDirectionType}
+                  duration={duration}
+                  setDuration={setDuration}
+                />
+                <Grid container spacing={2}>
+                  {activeNs.map((ns, i) => (
+                    <Grid
+                      key={`Card_${ns.name}_${i}`}
+                      item
+                      xs={ns.name === serverConfig.istioNamespace ? 12 : 4}
+                    >
+                      <OverviewCard
+                        namespace={ns}
+                        canaryUpgradeStatus={canaryUpgradeStatus}
+                        istioAPIEnabled={
+                          kialiState.statusState.istioEnvironment
+                            .istioAPIEnabled
+                        }
+                        type={overviewType}
+                        direction={directionType}
+                        duration={duration}
+                        refreshInterval={
+                          kialiState.userSettings.refreshInterval
+                        }
+                        certsInfo={kialiState.istioCertsInfo}
+                        minTLS={kialiState.meshTLSStatus.minTLS}
+                        istiodResourceThresholds={istiodResourceThresholds}
+                        istioStatus={kialiState.istioStatus}
+                        outboundTrafficPolicy={outboundTrafficPolicy}
+                      />
+                    </Grid>
+                  ))}
                 </Grid>
-              ))}
-            </Grid>
+              </>
+            )}
           </Content>
         </div>
       )}

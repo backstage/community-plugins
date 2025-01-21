@@ -13,15 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Content, InfoCard } from '@backstage/core-components';
+import { useApi } from '@backstage/core-plugin-api';
+import { CircularProgress } from '@material-ui/core';
 import * as React from 'react';
 import { useAsyncFn, useDebounce } from 'react-use';
-
-import { Content } from '@backstage/core-components';
-import { useApi } from '@backstage/core-plugin-api';
-
-import { CircularProgress } from '@material-ui/core';
-
 import { DefaultSecondaryMasthead } from '../../components/DefaultSecondaryMasthead/DefaultSecondaryMasthead';
+import { KIALI_PROVIDER } from '../../components/Router';
 import { VirtualList } from '../../components/VirtualList/VirtualList';
 import { isMultiCluster } from '../../config';
 import { nsEqual } from '../../helpers/namespaces';
@@ -38,10 +36,15 @@ export const IstioConfigListPage = (props: {
 }): React.JSX.Element => {
   const kialiClient = useApi(kialiApiRef);
   const kialiState = React.useContext(KialiContext) as KialiAppState;
+  const [errorProvider, setErrorProvider] = React.useState<string | undefined>(
+    undefined,
+  );
   const [namespaces, setNamespaces] = React.useState<NamespaceInfo[]>([]);
   const [allIstioConfigs, setIstioConfigs] = React.useState<IstioConfigItem[]>(
     [],
   );
+  const activeProvider = kialiState.providers.activeProvider;
+  const prevActiveProvider = React.useRef(activeProvider);
   const activeNs = kialiState.namespaces.activeNamespaces.map(ns => ns.name);
   const prevActiveNs = React.useRef(activeNs);
   const [loadingD, setLoading] = React.useState<boolean>(true);
@@ -69,15 +72,28 @@ export const IstioConfigListPage = (props: {
   };
 
   const load = async () => {
-    kialiClient.getNamespaces().then(namespacesResponse => {
-      const allNamespaces: NamespaceInfo[] = getNamespaces(
-        namespacesResponse,
-        namespaces,
+    kialiClient.setAnnotation(
+      KIALI_PROVIDER,
+      kialiState.providers.activeProvider,
+    );
+    kialiClient
+      .getNamespaces()
+      .then(namespacesResponse => {
+        const allNamespaces: NamespaceInfo[] = getNamespaces(
+          namespacesResponse,
+          namespaces,
+        );
+        const nsl = allNamespaces.filter(ns => activeNs.includes(ns.name));
+        setNamespaces(nsl);
+        fetchIstioConfigs(nsl);
+      })
+      .catch(err =>
+        setErrorProvider(
+          `Error providing namespaces for ${
+            kialiState.providers.activeProvider
+          }, verify configuration for this provider: ${err.toString()}`,
+        ),
       );
-      const nsl = allNamespaces.filter(ns => activeNs.includes(ns.name));
-      setNamespaces(nsl);
-      fetchIstioConfigs(nsl);
-    });
     setTimeout(() => {
       setLoading(false);
     }, 400);
@@ -94,13 +110,18 @@ export const IstioConfigListPage = (props: {
   useDebounce(refresh, 10);
 
   React.useEffect(() => {
-    if (!nsEqual(activeNs, prevActiveNs.current)) {
+    if (
+      !nsEqual(activeNs, prevActiveNs.current) ||
+      activeProvider !== prevActiveProvider.current
+    ) {
       setLoading(true);
+      setErrorProvider(undefined);
       load();
       prevActiveNs.current = activeNs;
+      prevActiveProvider.current = activeProvider;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeNs]);
+  }, [activeNs, activeProvider]);
 
   if (loading) {
     return <CircularProgress />;
@@ -114,14 +135,18 @@ export const IstioConfigListPage = (props: {
         {props.view !== ENTITY && (
           <DefaultSecondaryMasthead elements={[]} onRefresh={() => load()} />
         )}
-        <VirtualList
-          activeNamespaces={namespaces}
-          rows={allIstioConfigs}
-          type="istio"
-          hiddenColumns={hiddenColumns}
-          view={props.view}
-          loading={loadingD}
-        />
+        {errorProvider ? (
+          <InfoCard>{errorProvider}</InfoCard>
+        ) : (
+          <VirtualList
+            activeNamespaces={namespaces}
+            rows={allIstioConfigs}
+            type="istio"
+            hiddenColumns={hiddenColumns}
+            view={props.view}
+            loading={loadingD}
+          />
+        )}
       </Content>
     </div>
   );

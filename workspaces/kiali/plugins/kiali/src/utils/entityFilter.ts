@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Entity } from '@backstage/catalog-model';
-
 import {
   KIALI_ANNOTATION,
   KIALI_LABEL_SELECTOR_QUERY_ANNOTATION,
@@ -47,12 +45,8 @@ const filterByNs = (ns: Namespace[], value: string): Namespace[] => {
 
 export const filterNsByAnnotation = (
   ns: Namespace[],
-  entity: Entity | undefined,
+  annotations: Record<string, string>,
 ): Namespace[] => {
-  if (!entity) {
-    return ns;
-  }
-  const annotations = entity?.metadata?.annotations || undefined;
   if (!annotations) {
     return [];
   }

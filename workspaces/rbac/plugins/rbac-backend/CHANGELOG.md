@@ -1,5 +1,17 @@
 ### Dependencies
 
+## 5.2.10
+
+### Patch Changes
+
+- ba4b3e9: Use loadPolicy to keep the enforcer in sync for edit operations. It should keep the RBAC plugin in sync when the Backstage instance is scaled to multiple deployment replicas. Reuse the maximum database pool size value from the application configuration in the RBAC Casbin adapter.
+
+## 5.2.9
+
+### Patch Changes
+
+- 5b19b0d: Update documentation information about `pluginsWithPermission` setting. In order for the RBAC UI to display available permissions provided by installed plugins, this setting needs to be configured.
+
 ## 5.2.8
 
 ### Patch Changes

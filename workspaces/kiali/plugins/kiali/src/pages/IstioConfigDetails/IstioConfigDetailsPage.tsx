@@ -13,16 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Content } from '@backstage/core-components';
+import { useApi } from '@backstage/core-plugin-api';
+import { Grid } from '@material-ui/core';
+import jsYaml from 'js-yaml';
 import * as React from 'react';
 import AceEditor from 'react-ace';
 import { useLocation } from 'react-router-dom';
-
-import { Content } from '@backstage/core-components';
-import { useApi } from '@backstage/core-plugin-api';
-
-import { Grid } from '@material-ui/core';
-import jsYaml from 'js-yaml';
-
 import {
   BreadcrumbView,
   getPath,
@@ -38,11 +35,8 @@ import 'ace-builds/src-noconflict/ace';
 import 'ace-builds/src-noconflict/mode-yaml';
 import 'ace-builds/src-noconflict/theme-eclipse';
 import 'ace-builds/src-noconflict/theme-twilight';
-
-import { useCallback, useEffect } from 'react';
-
 import { useTheme } from '@material-ui/core/styles';
-
+import { useCallback, useEffect } from 'react';
 import {
   AceValidations,
   parseKialiValidations,

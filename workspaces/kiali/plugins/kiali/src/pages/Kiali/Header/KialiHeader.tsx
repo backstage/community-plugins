@@ -13,24 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import { Header } from '@backstage/core-components';
-
-import { Chip, Tooltip } from '@material-ui/core';
+import { Chip, Tooltip, Typography } from '@material-ui/core';
 import { ClusterIcon } from '@patternfly/react-icons';
-
+import React from 'react';
 import { MessageCenter } from '../../../components/MessageCenter/MessageCenter';
 import { homeCluster } from '../../../config';
 import { KialiAppState, KialiContext } from '../../../store';
 import { HelpKiali } from './HelpKiali';
 import { NamespaceSelector } from './NamespaceSelector';
+import { ProviderSelector } from './ProviderSelector';
 
 export const KialiHeader = () => {
   const kialiState = React.useContext(KialiContext) as KialiAppState;
 
   return (
-    <Header title="Kiali" subtitle={<NamespaceSelector page />}>
+    <Header
+      title="Kiali"
+      subtitle={
+        <>
+          <ProviderSelector page />
+          <NamespaceSelector page />
+        </>
+      }
+    >
       <Tooltip
         title={<div>Kiali home cluster: {homeCluster?.name}</div>}
         style={{ marginTop: '10px', color: 'white' }}
@@ -55,10 +61,10 @@ export const KialiHeader = () => {
           }}
           data-test="user"
         >
-          <span style={{ margin: '10px' }}>
+          <Typography style={{ margin: '10px' }}>
             <b>User : </b>
             {kialiState.authentication.session.username || 'anonymous'}
-          </span>
+          </Typography>
         </div>
       )}
     </Header>

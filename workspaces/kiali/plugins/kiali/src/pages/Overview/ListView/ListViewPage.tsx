@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { CardTab, TabbedCard } from '@backstage/core-components';
 import * as React from 'react';
 import { useSearchParams } from 'react-router-dom';
-
-import { CardTab, TabbedCard } from '@backstage/core-components';
-
 import { ENTITY } from '../../../types/types';
 import { AppListPage } from '../../AppList/AppListPage';
 import { ServiceListPage } from '../../ServiceList/ServiceListPage';

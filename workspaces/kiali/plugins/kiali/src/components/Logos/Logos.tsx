@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import React from 'react';
-
 import GraphqlIcon from '../../assets/img/api/graphql.svg';
 import GrpcIcon from '../../assets/img/api/grpc.svg';
 import RestIcon from '../../assets/img/api/rest.svg';

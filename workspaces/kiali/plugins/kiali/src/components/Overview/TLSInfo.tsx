@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
-
 import { Chip, Tooltip } from '@material-ui/core';
 import { useTheme } from '@material-ui/core/styles';
-
+import * as React from 'react';
 import { KialiIcon } from '../../config/KialiIcon';
 import { infoStyle } from '../../pages/Overview/OverviewCard/OverviewCardControlPlaneNamespace';
 import { getChipStyle, kialiStyle } from '../../styles/StyleUtils';

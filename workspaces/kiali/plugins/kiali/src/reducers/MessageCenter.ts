@@ -15,7 +15,6 @@
  */
 import _ from 'lodash';
 import { getType } from 'typesafe-actions';
-
 import { KialiAppAction } from '../actions/KialiAppAction';
 import { LoginActions } from '../actions/LoginActions';
 import { MessageCenterActions } from '../actions/MessageCenterActions';

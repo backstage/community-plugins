@@ -2921,7 +2921,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/backend-common@npm:^0.21.6, @backstage/backend-common@npm:^0.21.7":
+"@backstage/backend-common@npm:^0.21.6":
   version: 0.21.7
   resolution: "@backstage/backend-common@npm:0.21.7"
   dependencies:
@@ -3588,7 +3588,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/backend-tasks@npm:^0.5.22, @backstage/backend-tasks@npm:^0.5.26, @backstage/backend-tasks@npm:^0.5.27":
+"@backstage/backend-tasks@npm:^0.5.26, @backstage/backend-tasks@npm:^0.5.27":
   version: 0.5.27
   resolution: "@backstage/backend-tasks@npm:0.5.27"
   dependencies:
@@ -16207,10 +16207,8 @@ __metadata:
     "@backstage-community/backstage-plugin-catalog-backend-module-mta-entity-provider": "workspace:^"
     "@backstage-community/backstage-plugin-mta-backend": "workspace:^"
     "@backstage-community/backstage-plugin-scaffolder-backend-module-mta": "workspace:^"
-    "@backstage/backend-common": ^0.21.7
     "@backstage/backend-defaults": ^0.3.3
     "@backstage/backend-dynamic-feature-service": ^0.2.15
-    "@backstage/backend-tasks": ^0.5.22
     "@backstage/cli": ^0.26.11
     "@backstage/config": ^1.2.0
     "@backstage/plugin-app-backend": ^0.3.65

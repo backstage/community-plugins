@@ -210,7 +210,7 @@ Visit the [Package Metadata documentation](https://backstage.io/docs/tooling/pac
 
 10. Create a new pull request from your branch.
 
-11. Update external references to the old plugin location such as documentation to point to the new location in the `backstage/community-plugins` repository.
+11. Update external references to the old plugin location such as documentation to point to the new location in the `backstage/community-plugins` repository. If applicable, update the [Backstage Plugin directory](https://backstage.io/plugins/) to reflect the new location ([example](https://github.com/backstage/backstage/pull/28502)).
 
 12. In the original repository, update the plugin to indicate that it has been moved to the `backstage/community-plugins` repository. It's recommended you deprecate the old plugin packages on npm.
 

@@ -1,0 +1,13 @@
+site_name: npm plugin for Backstage
+site_description: A Backstage plugin that shows meta info and latest versions from a npm registry
+repo_url: https://github.com/backstage/community-plugins
+edit_uri: edit/main/workspaces/npm/docs
+
+plugins:
+  - techdocs-core
+
+nav:
+  - About: index.md
+  - Installation: install.md
+  - Usage: usage.md
+  - Registries: registries.md
