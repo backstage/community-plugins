@@ -32,7 +32,9 @@ export const VulnerabilitiesComponent = (serviceName: any) => {
 
     const classes = useStyles();
 
-    const [filters, setFilters] = useState();
+    const [filters, setFilters] = useState({});
+
+    console.log("filters: ", filters)
 
     useEffect(() => {
 
@@ -59,11 +61,11 @@ export const VulnerabilitiesComponent = (serviceName: any) => {
     return (
         <Box>
             <DataFilterComponent
-                filters={setFilters}
+                setFilters={setFilters}
                 data={ACSDataResult}
             />
 
-            <SecurityFindingsComponent data={ACSDataResult} />
+            <SecurityFindingsComponent data={ACSDataResult} filters={filters} />
         </Box>
     );
 };

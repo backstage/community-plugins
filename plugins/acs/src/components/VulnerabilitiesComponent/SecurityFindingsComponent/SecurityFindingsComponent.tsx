@@ -76,28 +76,80 @@ export const SecurityFindingsComponent = (data: Array<String>) => {
         const differenceInDays = differenceInMilliseconds / (1000 * 60 * 60 * 24);
 
         if (differenceInDays === 1) return `${Math.floor(differenceInDays)} day ago`;
+
+        // TODO: Calculate time that is less than 1 day
         if (differenceInDays < 1) return "PLACEHOLDER";
 
         return `${Math.floor(differenceInDays)} days ago`
     }
 
+    const checkIsFixable = (vulnItem: any) => {
+        for (let i = 0; i < data?.filters?.option4.length; i++) {
+            if (vulnItem?.row_data?.status === data?.filters?.option4[i]) return true;
+        };
+
+        return false;
+    }
+
+    const checkVulnSev = (vulnItem: any) => {
+        for (let i = 0; i < data?.filters?.option3.length; i++) {
+            console.log("SEVERITY", vulnItem?.row_data?.severity)
+            console.log("OPTION3:", data?.filters?.option3)
+            if (vulnItem?.row_data?.severity === data?.filters?.option3[i]) return true;
+        };
+
+        return false;
+    }
+
+    const checkSearch = (vulnItem: any) => {
+        if (data?.filters?.option2 === "CVSS") return data?.filters?.optionText === vulnItem?.row_data?.cvss.toString();
+
+        console.log("discovered: ", vulnItem?.row_data?.discovered)
+        if (data?.filters?.option2 === "Discovered time") return vulnItem?.row_data?.discovered.includes(data?.filters?.optionText);
+
+        let isTrue = false;
+        switch (data?.filters?.option1) {
+            case "Image":
+                isTrue = vulnItem?.expanded_data?.image.includes(data?.filters.optionText);
+                break;
+            case "CVE":
+                isTrue = vulnItem?.row_data?.cve.includes(data?.filters.optionText);
+                break;
+            case "Image Component":
+                isTrue = vulnItem?.expanded_data?.component.includes(data?.filters.optionText);
+                break;
+            case "Deployment":
+                isTrue = vulnItem?.expanded_data?.deployment.includes(data?.filters.optionText);
+                break;
+            case "Namespace":
+                isTrue = vulnItem?.expanded_data?.namespace.includes(data?.filters.optionText);
+                break;
+            case "Cluster":
+                isTrue = vulnItem?.expanded_data?.cluster.includes(data?.filters.optionText);
+                break
+        }
+
+        return isTrue;
+    }
+
     const organizeData = () => {
         const rows: any = [];
 
-        data?.data?.forEach((element: Object) => {
+        data?.data?.forEach((element: String[]) => {
             element?.result?.images?.forEach((element1: Object) => {
                 for (const [Key, DeploymentValue2] of Object.entries(element1?.scan?.components)) {
-                    if (DeploymentValue2.vulns.length === 0) continue;
+                    if (DeploymentValue2?.vulns.length === 0) continue;
 
                     DeploymentValue2?.vulns?.forEach((vulns: Array) => {
-                        rows.push({
+
+                        const currItem = {
                             row_data: {
                                 cve: vulns?.cve,
                                 severity: checkVulnSeverity(vulns?.severity),
                                 status: isFixable(vulns?.fixedBy),
                                 workload: element?.result?.deployment?.name,
                                 image: element1?.name?.fullName,
-                                cvss: vulns?.cvss,
+                                cvss: vulns?.cvss.toString(),
                                 discovered: getDiscovered(vulns?.firstImageOccurrence),
                                 link: vulns?.link,
                             },
@@ -116,7 +168,22 @@ export const SecurityFindingsComponent = (data: Array<String>) => {
                                 source: DeploymentValue2?.source,
                                 location: DeploymentValue2?.location || "N/A",
                             }
-                        });
+                        }
+
+                        // Check data against various user selected filters
+                        if (data?.filters?.option4?.length > 0) {
+                            if (!checkIsFixable(currItem)) return;
+                        }
+
+                        if (data?.filters?.option3?.length > 0) {
+                            if (!checkVulnSev(currItem)) return;
+                        }
+
+                        if (data?.filters?.optionText !== "") {
+                            if (!checkSearch(currItem)) return;
+                        }
+
+                        rows.push(currItem);
                     })
                 }
             })

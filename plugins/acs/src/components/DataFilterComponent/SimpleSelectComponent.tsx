@@ -20,7 +20,7 @@ import {
 
 export const SimpleSelect = ({ options, setSelectedOptions }) => {
   const [isOpen, setIsOpen] = React.useState(false);
-  const [selected, setSelected] = React.useState<string>('Select a value');
+  const [selected, setSelected] = React.useState<string>(options[0]);
   const [isDisabled, setIsDisabled] = React.useState<boolean>(false);
 
   console.log(options)

@@ -13,13 +13,16 @@ export const DataFilterComponent = ({ setFilters, data }) => {
     const cveSeverityOptions = ['Critical', 'Important', 'Moderate', 'Low'];
     const cveStatusOptions = ['Fixable', 'Not fixable'];
 
-    const [currentOptions1, setCurrentOptions1] = useState("Select a value");
-    const [currentOptions2, setCurrentOptions2] = useState("Select a value");
+    const [currentOptions1, setCurrentOptions1] = useState(options1[0]);
+    const [currentOptions2, setCurrentOptions2] = useState(options2[0]);
+
+    const [optionSearch, setOptionSearch] = useState("");
     const [currentCveSeverityOptions, setCurrentCveSeverityOptions] = useState([]);
     const [currentCveStatusOptions, setCurrentCveStatusOptions] = useState([]);
 
     console.log("currentOptions1: ", currentOptions1)
     console.log("currentOptions2: ", currentOptions2)
+    console.log("optionSearch: ", optionSearch)
     console.log("currentCveSeverityOptions: ", currentCveSeverityOptions)
     console.log("currentCveStatusOptions: ", currentCveStatusOptions)
 
@@ -49,9 +52,19 @@ export const DataFilterComponent = ({ setFilters, data }) => {
         return severityLevel;
     }
 
-    useEffect(() => {
+    const updateFilters = () => {
+        setFilters({
+            "option1": currentOptions1,
+            "option2": currentOptions2,
+            "optionText": optionSearch,
+            "option3": currentCveSeverityOptions,
+            "option4": currentCveStatusOptions
+        })
+    }
 
-    }, [currentOptions1, currentOptions2, currentCveSeverityOptions, currentCveStatusOptions]);
+    useEffect(() => {
+        updateFilters();
+    }, [currentOptions1, currentOptions2, optionSearch, currentCveSeverityOptions, currentCveStatusOptions]);
 
     return (
         <Flex
@@ -70,7 +83,7 @@ export const DataFilterComponent = ({ setFilters, data }) => {
                 setSelectedOptions={setCurrentOptions2}
             />
 
-            <InputFieldComponent />
+            <InputFieldComponent setOptionSearch={setOptionSearch} />
 
             <CheckboxSelectComponent
                 options={cveSeverityOptions}
