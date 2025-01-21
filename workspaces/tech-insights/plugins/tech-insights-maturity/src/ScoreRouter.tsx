@@ -17,10 +17,8 @@ import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { MaturityScorePage } from './components/MaturityScorePage';
 
-export const ScoreRouter = () => {
-  return (
-    <Routes>
-      <Route path="/" element={<MaturityScorePage />} />
-    </Routes>
-  );
-};
+export const ScoreRouter = () => (
+  <Routes>
+    <Route path="/" element={<MaturityScorePage />} />
+  </Routes>
+);

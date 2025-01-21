@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { TechInsightCheck } from '@backstage-community/plugin-tech-insights-node';
-import { TechInsightJsonRuleCheck } from '@backstage-community/plugin-tech-insights-backend-module-jsonfc';
 import {
   BooleanCheckResult,
   CheckResponse,
@@ -30,30 +28,6 @@ export enum Rank {
   Bronze,
   Silver,
   Gold,
-}
-
-/**
- * MaturityCheck definition of a check for Tech Insights
- *
- * @public
- */
-export interface MaturityCheck extends TechInsightCheck {
-  metadata: {
-    category: string;
-    rank: Rank;
-    solution: string;
-  };
-}
-
-/**
- * @public
- */
-export interface MaturityJsonRuleCheck extends TechInsightJsonRuleCheck {
-  metadata: {
-    category: string;
-    rank: Rank;
-    solution: string;
-  };
 }
 
 /**
