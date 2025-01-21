@@ -43,7 +43,7 @@ An interface to create/update/edit/delete announcements is now available at `/an
 Add the plugin to your frontend app:
 
 ```bash
-yarn --cwd packages/app add @backstage-community/plugin-announcements
+yarn --cwd packages/app add @backstage-community/plugin-announcements/alpha
 ```
 
 Add the plugin to `packages/app/src/App.tsx`:
