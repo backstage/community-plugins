@@ -64,7 +64,13 @@ export const AddMembersForm = ({
     const childCount = getChildGroupsCount(member);
 
     return member.kind === 'Group'
-      ? `${memberCount > 0 ? `${memberCount} members` : ''}${parentCount > 0 ? `, ${parentCount} parent group` : ''}${childCount > 0 ? `, ${childCount} child groups` : ''}`
+      ? [
+          memberCount > 0 ? `${memberCount} members` : '',
+          parentCount > 0 ? `${parentCount} parent group` : '',
+          childCount > 0 ? `${childCount} child groups` : '',
+        ]
+          .filter(Boolean) // Remove any empty strings
+          .join(', ')
       : undefined;
   };
 
@@ -110,7 +116,6 @@ export const AddMembersForm = ({
       ? option.etag === value.etag
       : selectedMember.etag === value.etag;
 
-  const [isFocused, setIsFocused] = React.useState(false);
   return (
     <>
       <FormHelperText>
@@ -135,7 +140,7 @@ export const AddMembersForm = ({
           setFieldValue('selectedMembers', value);
           setSearch('');
         }}
-        renderTags={() => []}
+        renderTags={() => ''}
         inputValue={search}
         onInputChange={(_e, newSearch: string, reason) =>
           reason === 'input' && setSearch(newSearch)
@@ -152,12 +157,9 @@ export const AddMembersForm = ({
             name="add-users-and-groups"
             variant="outlined"
             label="Select users and groups"
-            placeholder={!isFocused ? 'Select users and groups' : ''}
             error={!!selectedMembersError}
             helperText={selectedMembersError ?? ''}
             required
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
             InputProps={{
               ...params.InputProps,
               endAdornment: (
