@@ -1,5 +1,11 @@
 # @backstage-community/plugin-copilot
 
+## 0.4.3
+
+### Patch Changes
+
+- 46c4837: Fix division by zero in language stats
+
 ## 0.4.2
 
 ### Patch Changes
