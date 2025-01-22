@@ -2,4 +2,4 @@
 '@backstage-community/plugin-announcements': patch
 ---
 
-Fixed bug in AnnouncementPage where subheader spacing was missing
+Fixed bug in AnnouncementPage component where subheader spacing was missing
