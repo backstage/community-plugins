@@ -21,10 +21,8 @@ import {
   discoveryApiRef,
   identityApiRef,
 } from '@backstage/core-plugin-api';
-
 import { overviewRouteRef, rootRouteRef, workloadsRouteRef } from './routes';
 import { KialiApiClient, kialiApiRef } from './services/Api';
-
 import '@patternfly/patternfly/patternfly.css';
 
 export const pluginName = 'kiali';

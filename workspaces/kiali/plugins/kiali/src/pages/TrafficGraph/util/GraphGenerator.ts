@@ -19,7 +19,6 @@ import {
   EdgeStyle,
   NodeModel,
 } from '@patternfly/react-topology';
-
 import { DecoratedGraphElements } from '../../../types/Graph';
 import { EdgeData } from '../types/EdgeData';
 import { getNodeShape, getNodeStatus, NodeData } from '../types/NodeData';

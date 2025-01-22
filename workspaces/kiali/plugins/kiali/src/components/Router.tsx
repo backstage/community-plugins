@@ -13,13 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-import { Route, Routes } from 'react-router-dom';
-
 import { Entity } from '@backstage/catalog-model';
 import { Content, Page } from '@backstage/core-components';
 import { useEntity } from '@backstage/plugin-catalog-react';
-
+import React from 'react';
+import { Route, Routes } from 'react-router-dom';
 import { AppDetailsPage } from '../pages/AppDetails/AppDetailsPage';
 import { AppListPage } from '../pages/AppList/AppListPage';
 import { IstioConfigDetailsPage } from '../pages/IstioConfigDetails/IstioConfigDetailsPage';

@@ -15,7 +15,6 @@
  */
 import { mockServices } from '@backstage/backend-test-utils';
 import { ConfigReader } from '@backstage/config';
-
 import { readKialiConfigs } from './config';
 
 const logger = mockServices.logger.mock();

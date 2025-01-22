@@ -13,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
-
 import { Select } from '@backstage/core-components';
-
+import * as React from 'react';
 import { HistoryManager, URLParam } from '../../app/History';
 import { getDurationType } from '../../pages/Overview/OverviewToolbar';
 

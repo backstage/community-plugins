@@ -13,10 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
-
 import { ItemCardHeader } from '@backstage/core-components';
-
 import {
   Accordion,
   AccordionDetails,
@@ -28,7 +25,7 @@ import {
 } from '@material-ui/core';
 import ExpandMoreRounded from '@material-ui/icons/ExpandMoreRounded';
 import { InfoIcon } from '@patternfly/react-icons';
-
+import * as React from 'react';
 import { KialiAppAction } from '../../actions/KialiAppAction';
 import { MessageCenterState } from '../../store';
 import { kialiStyle } from '../../styles/StyleUtils';

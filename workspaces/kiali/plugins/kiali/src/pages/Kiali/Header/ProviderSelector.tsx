@@ -13,12 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import { useApi } from '@backstage/core-plugin-api';
-
 import { InputLabel, MenuItem, Select } from '@material-ui/core';
-
+import React from 'react';
 import { NamespaceActions } from '../../../actions';
 import { ProviderActions } from '../../../actions/ProviderAction';
 import { KIALI_PROVIDER } from '../../../components/Router';

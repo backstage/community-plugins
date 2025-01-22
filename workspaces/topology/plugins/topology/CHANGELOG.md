@@ -1,5 +1,16 @@
 ### Dependencies
 
+## 1.30.0
+
+### Minor Changes
+
+- df7804a: bump backstage to 1.34.2 and remove @spotify/prettier-config
+
+### Patch Changes
+
+- Updated dependencies [df7804a]
+  - @backstage-community/plugin-topology-common@1.5.0
+
 ## 1.29.10
 
 ### Patch Changes

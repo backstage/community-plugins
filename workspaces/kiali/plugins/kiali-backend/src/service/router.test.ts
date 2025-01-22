@@ -15,11 +15,9 @@
  */
 import { mockServices } from '@backstage/backend-test-utils';
 import { ConfigReader } from '@backstage/config';
-
 import express from 'express';
 import { setupServer } from 'msw/node';
 import request from 'supertest';
-
 import { handlers } from '../../__fixtures__/handlers';
 import { createRouter } from './router';
 

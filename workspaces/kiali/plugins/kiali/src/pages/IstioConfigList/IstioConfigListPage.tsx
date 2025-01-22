@@ -13,14 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
-import { useAsyncFn, useDebounce } from 'react-use';
-
 import { Content, InfoCard } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
-
 import { CircularProgress } from '@material-ui/core';
-
+import * as React from 'react';
+import { useAsyncFn, useDebounce } from 'react-use';
 import { DefaultSecondaryMasthead } from '../../components/DefaultSecondaryMasthead/DefaultSecondaryMasthead';
 import { KIALI_PROVIDER } from '../../components/Router';
 import { VirtualList } from '../../components/VirtualList/VirtualList';

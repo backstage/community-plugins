@@ -16,7 +16,6 @@
 import { format as d3Format } from 'd3-format';
 import { DomainTuple } from 'victory-core';
 import { VictoryVoronoiContainerProps } from 'victory-voronoi-container';
-
 import { RichDataPoint } from '../../types/VictoryChartInfo';
 import { getFormatter } from '../../utils/Formatter';
 
