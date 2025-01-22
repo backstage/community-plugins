@@ -1,11 +1,11 @@
 import React from 'react';
 import { SearchInput } from '@patternfly/react-core';
 
-export const InputFieldComponent: React.FunctionComponent = ({setOptionSearch}) => {
-  const [value, setValue] = React.useState('');
+export const InputFieldComponent: React.FunctionComponent = ({ setUserText }) => {
+  const value = "";
 
   const onChange = (value: string) => {
-    setOptionSearch(value);
+    setUserText(value);
   };
 
   return (

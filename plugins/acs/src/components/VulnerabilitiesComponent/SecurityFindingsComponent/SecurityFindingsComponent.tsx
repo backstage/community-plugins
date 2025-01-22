@@ -8,7 +8,7 @@ import '@patternfly/react-styles';
 import { CVEEntityDetailsComponent } from '../CVEEntityDetailsComponent';
 
 export const SecurityFindingsComponent = (data: Array<String>) => {
-    console.log("THIS IS MY DATA: ", data)
+    console.log("CHECK DATA:", data)
     const [dataRows, setDataRows] = useState([]);
     const [pending, setPending] = React.useState(true);
     const theme = useTheme();
@@ -68,10 +68,10 @@ export const SecurityFindingsComponent = (data: Array<String>) => {
     }
 
     const getDiscovered = (occurenceDate: string) => {
-        const d1 = new Date();
-        const d2 = new Date(occurenceDate);
+        const currDate = new Date();
+        const incidentDate = new Date(occurenceDate);
 
-        const differenceInMilliseconds = d1 - d2;
+        const differenceInMilliseconds = currDate - incidentDate;
 
         const differenceInDays = differenceInMilliseconds / (1000 * 60 * 60 * 24);
 
@@ -102,13 +102,13 @@ export const SecurityFindingsComponent = (data: Array<String>) => {
     }
 
     const checkSearch = (vulnItem: any) => {
-        if (data?.filters?.option2 === "CVSS") return data?.filters?.optionText === vulnItem?.row_data?.cvss.toString();
+        if (data?.filters?.selectedAttribute === "CVSS") return data?.filters?.optionText === vulnItem?.row_data?.cvss.toString();
 
         console.log("discovered: ", vulnItem?.row_data?.discovered)
-        if (data?.filters?.option2 === "Discovered time") return vulnItem?.row_data?.discovered.includes(data?.filters?.optionText);
+        if (data?.filters?.selectedAttribute === "Discovered time") return vulnItem?.row_data?.discovered.includes(data?.filters?.optionText);
 
         let isTrue = false;
-        switch (data?.filters?.option1) {
+        switch (data?.filters?.selectedEntity) {
             case "Image":
                 isTrue = vulnItem?.expanded_data?.image.includes(data?.filters.optionText);
                 break;

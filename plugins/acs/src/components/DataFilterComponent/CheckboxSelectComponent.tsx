@@ -35,13 +35,13 @@ export const CheckboxSelectComponent: React.FunctionComponent = ({ setSelectedOp
         } as React.CSSProperties
       }
     >
-    {options.dropdownName}
+      {dropdownName}
       {selectedItems.length > 0 && <Badge isRead>{selectedItems.length}</Badge>}
     </MenuToggle>
   );
 
   useEffect(() => {
-    setSelectedOptions(selectedItems); 
+    setSelectedOptions(selectedItems);
   }, [selectedItems]);
 
   return (

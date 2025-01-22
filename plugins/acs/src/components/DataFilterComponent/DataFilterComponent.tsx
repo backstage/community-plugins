@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { SimpleSelect } from './SimpleSelectComponent';
 import { InputFieldComponent } from './InputFieldComponent';
 import { CheckboxSelectComponent } from './CheckboxSelectComponent';
+import Grid from '@mui/material/Grid2';
 
 import {
     Flex,
@@ -13,18 +14,18 @@ export const DataFilterComponent = ({ setFilters, data }) => {
     const cveSeverityOptions = ['Critical', 'Important', 'Moderate', 'Low'];
     const cveStatusOptions = ['Fixable', 'Not fixable'];
 
-    const [currentOptions1, setCurrentOptions1] = useState(options1[0]);
-    const [currentOptions2, setCurrentOptions2] = useState(options2[0]);
+    const [selectedEntity, setSelectedEntity] = useState(options1[0]);
+    const [selectedAttribute, setSelectedAttribute] = useState(options2[0]);
 
-    const [optionSearch, setOptionSearch] = useState("");
-    const [currentCveSeverityOptions, setCurrentCveSeverityOptions] = useState([]);
-    const [currentCveStatusOptions, setCurrentCveStatusOptions] = useState([]);
+    const [userText, setUserText] = useState("");
+    const [selectedCveSeverityOptions, setSelectedCveSeverityOptions] = useState([]);
+    const [selectedCveStatusOptions, setSelectedCveStatusOptions] = useState([]);
 
-    console.log("currentOptions1: ", currentOptions1)
-    console.log("currentOptions2: ", currentOptions2)
-    console.log("optionSearch: ", optionSearch)
-    console.log("currentCveSeverityOptions: ", currentCveSeverityOptions)
-    console.log("currentCveStatusOptions: ", currentCveStatusOptions)
+    console.log("currentOptions1: ", selectedEntity)
+    console.log("currentOptions2: ", selectedAttribute)
+    console.log("optionSearch: ", userText)
+    console.log("currentCveSeverityOptions: ", selectedCveSeverityOptions)
+    console.log("currentCveStatusOptions: ", selectedCveStatusOptions)
 
     console.log("data: ", data);
 
@@ -54,49 +55,59 @@ export const DataFilterComponent = ({ setFilters, data }) => {
 
     const updateFilters = () => {
         setFilters({
-            "option1": currentOptions1,
-            "option2": currentOptions2,
-            "optionText": optionSearch,
-            "option3": currentCveSeverityOptions,
-            "option4": currentCveStatusOptions
+            "selectedEntity": selectedEntity,
+            "selectedAttribute": selectedAttribute,
+            "optionText": userText,
+            "option3": selectedCveSeverityOptions,
+            "option4": selectedCveStatusOptions
         })
     }
 
     useEffect(() => {
         updateFilters();
-    }, [currentOptions1, currentOptions2, optionSearch, currentCveSeverityOptions, currentCveStatusOptions]);
+    }, [selectedEntity, selectedAttribute, userText, selectedCveSeverityOptions, selectedCveStatusOptions]);
 
     return (
-        <Flex
-            direction={{ default: 'row' }}
-            spaceItems={{ default: 'spaceItemsNone' }}
-            flexWrap={{ default: 'nowrap' }}
-            className="pf-v5-u-w-100"
-        >
-            <SimpleSelect
-                options={options1}
-                setSelectedOptions={setCurrentOptions1}
-            />
+        <Grid container spacing={5}>
+          <Grid size={8}>
+            <Flex
+                direction={{ default: 'row' }}
+                spaceItems={{ default: 'spaceItemsNone' }}
+                flexWrap={{ default: 'nowrap' }}
+           //     className="pf-v5-u-w-100"
+            >
+                <SimpleSelect
+                    menuToggleClassName="pf-v5-u-flex-shrink-0"
+                    options={options1}
+                    setSelectedOptions={setSelectedEntity}
+                />
 
-            <SimpleSelect
-                options={options2}
-                setSelectedOptions={setCurrentOptions2}
-            />
+                <SimpleSelect
+                    menuToggleClassName="pf-v5-u-flex-shrink-0"
+                    options={options2}
+                    setSelectedOptions={setSelectedAttribute}
+                />
 
-            <InputFieldComponent setOptionSearch={setOptionSearch} />
+                <InputFieldComponent setUserText={setUserText} />
+            </Flex>
+          </ Grid>
 
+          <Grid size={2}>
             <CheckboxSelectComponent
                 options={cveSeverityOptions}
                 dropdownName={"CVE severity"}
-                setSelectedOptions={setCurrentCveSeverityOptions}
+                setSelectedOptions={setSelectedCveSeverityOptions}
             />
+          </ Grid>
 
+          <Grid size={2}>
             <CheckboxSelectComponent
                 options={cveStatusOptions}
                 dropdownName={"CVE status"}
-                setSelectedOptions={setCurrentCveStatusOptions}
+                setSelectedOptions={setSelectedCveStatusOptions}
             />
-        </Flex>
+          </ Grid>
+        </ Grid>
     )
 }
 
