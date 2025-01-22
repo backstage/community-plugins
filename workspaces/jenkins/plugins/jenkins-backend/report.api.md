@@ -33,7 +33,7 @@ export class DefaultJenkinsInfoProvider implements JenkinsInfoProvider {
   // (undocumented)
   getInstance(opt: {
     entityRef: CompoundEntityRef;
-    jobFullName?: string;
+    fullJobNames?: string[];
     credentials?: BackstageCredentials;
   }): Promise<JenkinsInfo>;
   // (undocumented)
@@ -102,9 +102,9 @@ export interface JenkinsInfo {
   // (undocumented)
   crumbIssuer?: boolean;
   // (undocumented)
-  headers?: Record<string, string | string[]>;
+  fullJobNames: string[];
   // (undocumented)
-  jobFullName: string;
+  headers?: Record<string, string | string[]>;
   // (undocumented)
   projectCountLimit: number;
 }
@@ -114,7 +114,7 @@ export interface JenkinsInfoProvider {
   // (undocumented)
   getInstance(options: {
     entityRef: CompoundEntityRef;
-    jobFullName?: string;
+    fullJobNames?: string[];
     credentials?: BackstageCredentials;
     logger?: LoggerService;
   }): Promise<JenkinsInfo>;
