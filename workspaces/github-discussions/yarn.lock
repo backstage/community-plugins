@@ -2661,7 +2661,7 @@ __metadata:
     "@backstage/integration": ^1.15.1
     "@backstage/plugin-search-backend-node": ^1.3.3
     "@backstage/plugin-search-common": ^1.2.14
-    "@guidanti/backstage-github-discussions-fetcher": ^0.6.0
+    "@guidanti/backstage-github-discussions-fetcher": ^0.7.0
     "@types/fs-extra": ^11
     "@types/luxon": ^3
     "@types/parse-github-url": ^1
@@ -6075,13 +6075,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@guidanti/backstage-github-discussions-fetcher@npm:^0.6.0":
-  version: 0.6.0
-  resolution: "@guidanti/backstage-github-discussions-fetcher@npm:0.6.0"
+"@guidanti/backstage-github-discussions-fetcher@npm:^0.7.0":
+  version: 0.7.0
+  resolution: "@guidanti/backstage-github-discussions-fetcher@npm:0.7.0"
   dependencies:
-    effection: 4.0.0-alpha.3
-    github-discussions-fetcher: 0.10.0
-  checksum: 3ece94bd515b8fb0daac1ef4bd1f6e0c36042dbd121f534e511a878125958e70183dd6947aecb2e41e0d334cf1e7c27172482e0e0ad6b2eda293c77501983349
+    effection: 4.0.0-alpha.5
+    github-discussions-fetcher: 0.11.0
+  checksum: b848e31e57b45c3357b8d92709632c4321b9bcdb5a31c38060217e51abd6c8e9efec41586a499140913cb8e244d19aa5e137b6fc1a2f8d06bff185c1ba44bd49
   languageName: node
   linkType: hard
 
@@ -15303,10 +15303,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"effection@npm:4.0.0-alpha.3":
-  version: 4.0.0-alpha.3
-  resolution: "effection@npm:4.0.0-alpha.3"
-  checksum: 65f5790f8e7cb1912c2ae27b7ddc9d06224bc1a8584daafa69f5402663c2124387c0897430a9428b4f7a89a1ee4837c4589e79463698278515b31305cafad0e7
+"effection@npm:4.0.0-alpha.5":
+  version: 4.0.0-alpha.5
+  resolution: "effection@npm:4.0.0-alpha.5"
+  checksum: f6e481ba8196594920d12454fecc1cf9a17167e0b2f35b14edf9b760df084be8d0932a823d646f280bd3e0cc487540f6032b2546b64047c5932d413bc73f84d8
   languageName: node
   linkType: hard
 
@@ -17364,9 +17364,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"github-discussions-fetcher@npm:0.10.0":
-  version: 0.10.0
-  resolution: "github-discussions-fetcher@npm:0.10.0"
+"github-discussions-fetcher@npm:0.11.0":
+  version: 0.11.0
+  resolution: "github-discussions-fetcher@npm:0.11.0"
   dependencies:
     "@deno/shim-deno": ~0.18.0
     "@graphql-codegen/cli": ^4.0.0
@@ -17379,11 +17379,11 @@ __metadata:
     "@octokit/types": 13.6.1
     "@types/node": ^22.7.4
     chalk: 4.1.2
-    effection: 4.0.0-alpha.3
+    effection: 4.0.0-alpha.5
     graphql: 16.8.2
     pretty-ms: 7.0.1
     typescript: ^5.6.2
-  checksum: 113c9118e4fb37c5febd722bb38f0d4d0b9b15a8b09803f6cfadd1e9e4fc09279146f94d64d84e53769eb8b669edf13fa9891d1ef2b761f312627886e78d5baf
+  checksum: ce11454c84844f54ebd6eec0a630595389af4d476498eddf1c7169edf501ee94214de8ebda8d64443ec7721e3ceb921e53d4e8c981aac0d9e182900df82d1fc7
   languageName: node
   linkType: hard
 
