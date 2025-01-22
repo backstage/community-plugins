@@ -19,8 +19,19 @@
  * @returns { Promise<void> }
  */
 exports.up = async function up(knex) {
+  // Add the new column as nullable initially
   await knex.schema.alterTable('announcements', table => {
-    table.timestamp('start_at').notNullable();
+    table.timestamp('start_at').nullable();
+  });
+
+  // Backfill the start_at column with values from created_at
+  await knex('announcements').update({
+    start_at: knex.raw('created_at'),
+  });
+
+  // Alter the column to be not nullable
+  await knex.schema.alterTable('announcements', table => {
+    table.timestamp('start_at').notNullable().alter();
   });
 };
 
