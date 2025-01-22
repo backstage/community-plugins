@@ -80,6 +80,10 @@ export type AnnouncementsFilters = {
   page?: number;
   /** Filter by active status */
   active?: boolean;
+  /** Field to sort by (e.g., "created_at", "start_at") */
+  sortBy?: 'created_at' | 'start_at';
+  /** Sorting order: "asc" for ascending or "desc" for descending */
+  order?: 'asc' | 'desc';
 };
 
 /**

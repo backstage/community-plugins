@@ -59,6 +59,8 @@ type GetAnnouncementsQueryParams = {
   page?: number;
   max?: number;
   active?: boolean;
+  sortby?: 'created_at' | 'start_at';
+  order?: 'asc' | 'desc';
 };
 
 export async function createRouter(
@@ -101,7 +103,14 @@ export async function createRouter(
     '/announcements',
     async (req: Request<{}, {}, {}, GetAnnouncementsQueryParams>, res) => {
       const {
-        query: { category, max, page, active },
+        query: {
+          category,
+          max,
+          page,
+          active,
+          sortby = 'created_at',
+          order = 'desc',
+        },
       } = req;
 
       const results = await persistenceContext.announcementsStore.announcements(
@@ -110,6 +119,10 @@ export async function createRouter(
           max,
           offset: page ? (page - 1) * (max ?? 10) : undefined,
           active,
+          sortBy: ['created_at', 'start_at'].includes(sortby)
+            ? sortby
+            : 'created_at',
+          order: ['asc', 'desc'].includes(order) ? order : 'desc',
         },
       );
 

@@ -133,7 +133,14 @@ export class AnnouncementsDatabase {
   async announcements(
     request: AnnouncementsFilters,
   ): Promise<AnnouncementModelsList> {
-    const { category, offset, max, active } = request;
+    const {
+      category,
+      offset,
+      max,
+      active,
+      sortBy = 'created_at',
+      order = 'desc',
+    } = request;
 
     // Filter the query by states
     // Used for both the result query and the count query
@@ -173,7 +180,7 @@ export class AnnouncementsDatabase {
         'active',
         'start_at',
       )
-      .orderBy('created_at', 'desc')
+      .orderBy(sortBy, order)
       .leftJoin('categories', 'announcements.category', 'categories.slug');
     filterState(queryBuilder);
     filterRange(queryBuilder);

@@ -465,5 +465,175 @@ describe('AnnouncementsDatabase', () => {
         ],
       });
     });
+    it('sortBy start_at desc', async () => {
+      await store.insertAnnouncement({
+        id: 'id1',
+        publisher: 'publisher1',
+        title: 'title1',
+        excerpt: 'excerpt1',
+        body: 'body1',
+        created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+        active: true,
+        start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
+      });
+
+      await store.insertAnnouncement({
+        id: 'id2',
+        publisher: 'publisher2',
+        title: 'title2',
+        excerpt: 'excerpt2',
+        body: 'body2',
+        created_at: DateTime.fromISO('2023-10-27T15:28:08.539Z'),
+        active: true,
+        start_at: DateTime.fromISO('2025-01-19T13:00:00.708Z'),
+      });
+
+      const announcements = await store.announcements({
+        sortBy: 'start_at',
+        order: 'desc',
+      });
+
+      expect(announcements).toEqual({
+        count: 2,
+        results: [
+          {
+            id: 'id2',
+            publisher: 'publisher2',
+            title: 'title2',
+            excerpt: 'excerpt2',
+            body: 'body2',
+            category: undefined,
+            created_at: timestampToDateTime('2023-10-27T15:28:08.539Z'),
+            active: 1,
+            start_at: timestampToDateTime('2025-01-19T13:00:00.708Z'),
+          },
+          {
+            id: 'id1',
+            publisher: 'publisher1',
+            title: 'title1',
+            excerpt: 'excerpt1',
+            body: 'body1',
+            category: undefined,
+            created_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
+            active: 1,
+            start_at: timestampToDateTime('2025-01-18T13:00:00.708Z'),
+          },
+        ],
+      });
+    });
+
+    it('sortBy start_at asc', async () => {
+      await store.insertAnnouncement({
+        id: 'id1',
+        publisher: 'publisher1',
+        title: 'title1',
+        excerpt: 'excerpt1',
+        body: 'body1',
+        created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+        active: true,
+        start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
+      });
+
+      await store.insertAnnouncement({
+        id: 'id2',
+        publisher: 'publisher2',
+        title: 'title2',
+        excerpt: 'excerpt2',
+        body: 'body2',
+        created_at: DateTime.fromISO('2023-10-27T15:28:08.539Z'),
+        active: true,
+        start_at: DateTime.fromISO('2025-01-19T13:00:00.708Z'),
+      });
+
+      const announcements = await store.announcements({
+        sortBy: 'start_at',
+        order: 'asc',
+      });
+
+      expect(announcements).toEqual({
+        count: 2,
+        results: [
+          {
+            id: 'id1',
+            publisher: 'publisher1',
+            title: 'title1',
+            excerpt: 'excerpt1',
+            body: 'body1',
+            category: undefined,
+            created_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
+            active: 1,
+            start_at: timestampToDateTime('2025-01-18T13:00:00.708Z'),
+          },
+          {
+            id: 'id2',
+            publisher: 'publisher2',
+            title: 'title2',
+            excerpt: 'excerpt2',
+            body: 'body2',
+            category: undefined,
+            created_at: timestampToDateTime('2023-10-27T15:28:08.539Z'),
+            active: 1,
+            start_at: timestampToDateTime('2025-01-19T13:00:00.708Z'),
+          },
+        ],
+      });
+    });
+
+    it('sortBy created_at desc', async () => {
+      await store.insertAnnouncement({
+        id: 'id1',
+        publisher: 'publisher1',
+        title: 'title1',
+        excerpt: 'excerpt1',
+        body: 'body1',
+        created_at: DateTime.fromISO('2023-10-25T15:28:08.539Z'),
+        active: true,
+        start_at: DateTime.fromISO('2025-01-17T13:00:00.708Z'),
+      });
+
+      await store.insertAnnouncement({
+        id: 'id2',
+        publisher: 'publisher2',
+        title: 'title2',
+        excerpt: 'excerpt2',
+        body: 'body2',
+        created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+        active: true,
+        start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
+      });
+
+      const announcements = await store.announcements({
+        sortBy: 'created_at',
+        order: 'desc',
+      });
+
+      expect(announcements).toEqual({
+        count: 2,
+        results: [
+          {
+            id: 'id2',
+            publisher: 'publisher2',
+            title: 'title2',
+            excerpt: 'excerpt2',
+            body: 'body2',
+            category: undefined,
+            created_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
+            active: 1,
+            start_at: timestampToDateTime('2025-01-18T13:00:00.708Z'),
+          },
+          {
+            id: 'id1',
+            publisher: 'publisher1',
+            title: 'title1',
+            excerpt: 'excerpt1',
+            body: 'body1',
+            category: undefined,
+            created_at: timestampToDateTime('2023-10-25T15:28:08.539Z'),
+            active: 1,
+            start_at: timestampToDateTime('2025-01-17T13:00:00.708Z'),
+          },
+        ],
+      });
+    });
   });
 });
