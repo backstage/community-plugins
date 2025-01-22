@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { getType } from 'typesafe-actions';
-
 import { KialiAppAction } from '../actions/KialiAppAction';
 import { NamespaceActions } from '../actions/NamespaceAction';
 import { NamespaceState } from '../store/Store';

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { getType } from 'typesafe-actions';
-
 import { KialiAppAction } from '../actions/KialiAppAction';
 import { ProviderActions } from '../actions/ProviderAction';
 import { ProviderState } from '../store/Store';

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import * as React from 'react';
-
 import { StatefulFilters } from '../../components/Filters/StatefulFilters';
 import { serverConfig } from '../../config';
 import { isGateway, isWaypoint } from '../../helpers/LabelFilterHelper';

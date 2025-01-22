@@ -27,6 +27,7 @@ import {
 import { BackstageRoleManager } from '../role-manager/role-manager';
 import { EnforcerDelegate } from './enforcer-delegate';
 import { MODEL } from './permission-model';
+import { auditLoggerMock } from '../../__fixtures__/mock-utils';
 
 // TODO: Move to 'catalogServiceMock' from '@backstage/plugin-catalog-node/testUtils'
 // once '@backstage/plugin-catalog-node' is upgraded
@@ -179,7 +180,12 @@ describe('EnforcerDelegate', () => {
       await enf.addGroupingPolicies(groupingPolicies);
     }
 
-    return new EnforcerDelegate(enf, roleMetadataStorageMock, knex);
+    return new EnforcerDelegate(
+      enf,
+      auditLoggerMock,
+      roleMetadataStorageMock,
+      knex,
+    );
   }
 
   describe('hasPolicy', () => {

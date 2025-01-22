@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import { Button } from '@material-ui/core';
 import { QuestionCircleIcon } from '@patternfly/react-icons';
-
+import React from 'react';
 import { AboutUIModal } from '../../../components/About/AboutUIModal';
 import { KialiAppState, KialiContext } from '../../../store';
 

@@ -54,6 +54,7 @@ export class CasbinDBAdapterFactory {
         ssl,
         database: dbName,
         schema: schema,
+        poolSize: databaseConfig?.getOptionalNumber('knexConfig.pool.max'),
       });
     }
 

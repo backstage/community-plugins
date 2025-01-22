@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Breadcrumbs } from '@material-ui/core';
 import * as React from 'react';
 import { Location, useLocation } from 'react-router-dom';
-
-import { Breadcrumbs } from '@material-ui/core';
-
 import { HistoryManager } from '../../app/History';
 import { Paths } from '../../config';
 import { kialiStyle } from '../../styles/StyleUtils';

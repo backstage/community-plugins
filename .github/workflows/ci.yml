@@ -84,7 +84,7 @@ jobs:
         run: yarn fix --check
 
       - name: validate config
-        if: ${{ hashFiles('app-config.yaml') != '' }}
+        if: ${{ hashFiles(format('workspaces/{0}/app-config.yaml', matrix.workspace)) != '' }}
         run: yarn backstage-cli config:check --lax
 
       - name: type checking and declarations

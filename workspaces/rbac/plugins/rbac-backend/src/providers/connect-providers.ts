@@ -37,7 +37,11 @@ import {
   RoleEvents,
 } from '../audit-log/audit-logger';
 import { RoleMetadataStorage } from '../database/role-metadata';
-import { transformArrayToPolicy, typedPoliciesToString } from '../helper';
+import {
+  transformArrayToPolicy,
+  transformRolesGroupToLowercase,
+  typedPoliciesToString,
+} from '../helper';
 import { EnforcerDelegate } from '../service/enforcer-delegate';
 import { MODEL } from '../service/permission-model';
 import {
@@ -56,8 +60,8 @@ export class Connection implements RBACProviderConnection {
   ) {}
 
   async applyRoles(roles: string[][]): Promise<void> {
-    const stringPolicy = typedPoliciesToString(roles, 'g');
-
+    const lowercasedRoles = transformRolesGroupToLowercase(roles);
+    const stringPolicy = typedPoliciesToString(lowercasedRoles, 'g');
     const providerRolesforRemoval: string[][] = [];
 
     const tempEnforcer = await newEnforcer(
@@ -67,6 +71,7 @@ export class Connection implements RBACProviderConnection {
 
     const providerRoles = await this.getProviderRoles();
 
+    await this.enforcer.loadPolicy();
     // Get the roles for this provider coming from rbac plugin
     for (const providerRole of providerRoles) {
       providerRolesforRemoval.push(
@@ -80,7 +85,7 @@ export class Connection implements RBACProviderConnection {
 
     // Add the role
     // role exists in provider but does not exist in rbac
-    await this.addRoles(roles);
+    await this.addRoles(lowercasedRoles);
   }
 
   async applyPermissions(permissions: string[][]): Promise<void> {
@@ -95,6 +100,7 @@ export class Connection implements RBACProviderConnection {
 
     const providerRoles = await this.getProviderRoles();
 
+    await this.enforcer.loadPolicy();
     // Get the roles for this provider coming from rbac plugin
     for (const providerRole of providerRoles) {
       providerPermissions.push(
@@ -157,7 +163,9 @@ export class Connection implements RBACProviderConnection {
   ): Promise<void> {
     // Remove role
     // role exists in rbac but does not exist in provider
-    for (const role of providerRoles) {
+    const lowercasedProviderRoles =
+      transformRolesGroupToLowercase(providerRoles);
+    for (const role of lowercasedProviderRoles) {
       if (!(await tempEnforcer.hasGroupingPolicy(...role))) {
         const roleMeta = await this.roleMetadataStorage.findRoleMetadata(
           role[1],

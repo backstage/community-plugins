@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { ActionType, createStandardAction } from 'typesafe-actions';
-
 import { ActionKeys } from './ActionKeys';
 
 export const ProviderActions = {

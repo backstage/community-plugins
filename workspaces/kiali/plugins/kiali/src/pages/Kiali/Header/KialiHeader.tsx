@@ -13,13 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import { Header } from '@backstage/core-components';
-
 import { Chip, Tooltip, Typography } from '@material-ui/core';
 import { ClusterIcon } from '@patternfly/react-icons';
-
+import React from 'react';
 import { MessageCenter } from '../../../components/MessageCenter/MessageCenter';
 import { homeCluster } from '../../../config';
 import { KialiAppState, KialiContext } from '../../../store';

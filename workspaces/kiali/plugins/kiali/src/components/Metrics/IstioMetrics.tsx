@@ -13,13 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { useApi } from '@backstage/core-plugin-api';
+import { Checkbox, FormControlLabel, Toolbar } from '@material-ui/core';
 import * as React from 'react';
 import { useAsyncFn, useDebounce } from 'react-use';
-
-import { useApi } from '@backstage/core-plugin-api';
-
-import { Checkbox, FormControlLabel, Toolbar } from '@material-ui/core';
-
 import { history, URLParam } from '../../app/History';
 import { Dashboard } from '../../components/Charts/Dashboard';
 import { kialiApiRef } from '../../services/Api';

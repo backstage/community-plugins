@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 import { mockServices } from '@backstage/backend-test-utils';
-
 import { AxiosError } from 'axios';
-
 import { AuthStrategy } from './Auth';
 import { KialiFetcher, ValidationCategory } from './fetch';
 
