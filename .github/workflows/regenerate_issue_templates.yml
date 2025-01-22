@@ -1,0 +1,47 @@
+name: Regenerate Issue Templates
+
+permissions:
+  contents: write
+  pull-requests: write
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Run at midnight UTC every day
+  workflow_dispatch: # Allow manual triggers
+
+jobs:
+  update-templates:
+    name: Update Issue Templates
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org/ # Needed for auth
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Generate workspace dropdown
+        run: node scripts/create-workspaces-dropdown.js
+
+      - name: Update issue templates
+        run: node scripts/create-issue-template-with-workspaces-dropdown.js
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          commit-message: 'chore: update issue templates with latest workspaces'
+          title: 'chore: update issue templates with latest workspaces'
+          body: |
+            This PR updates the issue templates with the latest workspace list.
+
+            This is an automated PR created by the regenerate_issue_templates workflow.
+          branch: automated-update-issue-templates
+          delete-branch: true
+          labels: |
+            automated
+            workspaces
