@@ -33,23 +33,20 @@ async function main(_args) {
   const workspaces = await listWorkspaces();
 
   // Creates a dropdown issue template field for selecting a workspace
-  const dropdown = `name: Workspaces Dropdown
-description: Select a workspace
-body:
-  - type: dropdown
-    id: workspace
-    attributes:
-      label: Workspace
-      options:
-${workspaces.map(w => `        - ${w}`).join('\n')}
-      default: 0
-    validations:
-      required: true
+  const dropdown = `type: dropdown
+id: workspace
+attributes:
+  label: Workspace
+  options:
+${workspaces.map(w => `    - ${w}`).join('\n')}
+  default: 0
+validations:
+  required: true
 `;
 
   // Save workspaces to a file
   await fs.writeFile(
-    resolve(githubIssueSnippetsPath, 'workspaces-dropdown.yml'),
+    resolve(githubIssueSnippetsPath, 'workspaces-dropdown.yaml'),
     dropdown,
   );
 }
