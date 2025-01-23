@@ -19,7 +19,7 @@ import {
   CheckResult,
   FactSchema,
 } from '@backstage-community/plugin-tech-insights-common';
-import { Check, InsightFacts } from './types';
+import { Check, InsightFacts } from '../types';
 import { DiscoveryApi, IdentityApi } from '@backstage/core-plugin-api';
 import { ResponseError } from '@backstage/errors';
 import {
