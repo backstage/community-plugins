@@ -85,13 +85,13 @@ index f2b14b2..2c64f47 100644
    apiRouter.use('/scaffolder', await scaffolder(scaffolderEnv));
 ```
 
-This plugin must be provided with a JenkinsInfoProvider, this is a strategy object for finding the Jenkins instance and job for an entity.
+This plugin must be provided with a JenkinsInfoProvider, this is a strategy object for finding the Jenkins instance and job(s) for an entity.
 
 There is a standard one provided, but the Integrator is free to build their own.
 
 ### DefaultJenkinsInfoProvider
 
-Allows configuration of either a single or multiple global Jenkins instances and annotating entities with the job name on that instance (and optionally the name of the instance).
+Allows configuration of either a single or multiple global Jenkins instances and annotating entities with the job name(s) on that instance (and optionally the name of the instance).
 
 #### Example - Single global instance
 
@@ -208,6 +208,47 @@ This will set the instance's base url to 'https://other.example.com' when loadin
 sent in is not null, along with the regex string list, and then compares the url to all regex strings to make sure one of them match.
 
 This use case is for Jenkins systems where there are a lot of Jenkins instances configured from a base instance, which share the same API keys. Therefore a user does not have to define all of the instances here, but in the catalog for ease of use.
+
+#### Example - Defining Multiple Jenkins Jobs for a Single instance
+
+You can configure multiple Jenkins jobs for a **single** component by specifying multiple project names in the `jenkins.io/job-full-name` annotation.
+
+This is useful when you want to track different types of jobs for the same component.
+
+Config
+
+```yaml
+jenkins:
+  instances:
+    - name: default
+      baseUrl: https://jenkins.example.com
+      username: backstage-bot
+      projectCountLimit: 100
+      apiKey: 123456789abcdef0123456789abcedf012
+    - name: departmentFoo
+      baseUrl: https://jenkins-foo.example.com
+      username: backstage-bot
+      projectCountLimit: 100
+      apiKey: 123456789abcdef0123456789abcedf012
+```
+
+Catalog
+
+```yaml
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: artist-lookup
+  annotations:
+    'jenkins.io/job-full-name': departmentFoo:teamA/artistLookup-build,departmentFoo:teamA/artistLookup-test
+```
+
+This configuration will track jobs at:
+
+- `https://jenkins-foo.example.com/job/teamA/job/artistLookup-build`
+- `https://jenkins-foo.example.com/job/teamA/job/artistLookup-test`
+
+**Limitation:** Currently you cannot associate jobs from different Jenkins instances with the same component. All jobs must belong to the same Jenkins instance.
 
 ### Custom JenkinsInfoProvider
 
