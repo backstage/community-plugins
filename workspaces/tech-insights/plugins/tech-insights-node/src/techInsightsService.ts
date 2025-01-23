@@ -19,11 +19,9 @@ import {
   CheckResult,
   BulkCheckResponse,
   FactSchema,
-} from '@backstage-community/plugin-tech-insights-common';
-import {
   Check,
   InsightFacts,
-} from '@backstage-community/plugin-tech-insights-common/client';
+} from '@backstage-community/plugin-tech-insights-common';
 import {
   createServiceFactory,
   createServiceRef,
