@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "engines": {
-    "node": "18 || 20"
+    "node": "22"
   },
   "scripts": {
     "start:backstage": "concurrently -c auto -n \"fe,be\" -p \"{name}:{pid}\" \"yarn start-app\" \"yarn start-backend\"",
@@ -37,12 +37,11 @@
     "directory": "workspaces/kiali"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.28.0",
+    "@backstage/cli": "^0.29.5",
     "@backstage/e2e-test-utils": "^0.1.1",
-    "@backstage/repo-tools": "^0.10.0",
+    "@backstage/repo-tools": "^0.12.1",
     "@changesets/cli": "^2.27.1",
     "@ianvs/prettier-plugin-sort-imports": "^4.3.1",
-    "@spotify/prettier-config": "^12.0.0",
     "@types/deep-freeze": "^0.1.5",
     "concurrently": "^8.2.2",
     "knip": "^5.27.4",
@@ -54,7 +53,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18"
   },
-  "prettier": "@spotify/prettier-config",
+  "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {
     "*.{js,jsx,ts,tsx,mjs,cjs}": [
       "eslint --fix",

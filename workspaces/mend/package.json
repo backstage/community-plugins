@@ -10,7 +10,7 @@
     "tsc:full": "tsc --skipLibCheck false --incremental false",
     "build:all": "backstage-cli repo build --all",
     "build:api-reports": "yarn build:api-reports:only --tsc",
-    "build:api-reports:only": "backstage-repo-tools api-reports -o ae-wrong-input-file-type --validate-release-tags",
+    "build:api-reports:only": "backstage-repo-tools api-reports -o ae-wrong-input-file-type,ae-undocumented --validate-release-tags",
     "clean": "backstage-cli repo clean",
     "test": "backstage-cli repo test",
     "test:all": "backstage-cli repo test --coverage",
@@ -35,7 +35,7 @@
   "devDependencies": {
     "@backstage/cli": "^0.26.11",
     "@backstage/e2e-test-utils": "^0.1.1",
-    "@backstage/repo-tools": "^0.8.0",
+    "@backstage/repo-tools": "^0.10.0",
     "@changesets/cli": "^2.27.1",
     "@spotify/prettier-config": "^12.0.0",
     "node-gyp": "^9.0.0",

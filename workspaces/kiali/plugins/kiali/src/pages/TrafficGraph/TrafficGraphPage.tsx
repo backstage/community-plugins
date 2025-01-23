@@ -13,13 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useRef, useState } from 'react';
-import { useAsyncFn, useDebounce } from 'react-use';
-
 import { Entity } from '@backstage/catalog-model';
-import { Content } from '@backstage/core-components';
+import { Content, InfoCard } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
-
 import { CircularProgress, useTheme } from '@material-ui/core';
 import {
   action,
@@ -32,15 +28,22 @@ import {
   VisualizationProvider,
   VisualizationSurface,
 } from '@patternfly/react-topology';
-
+import React, { useRef, useState } from 'react';
+import { useAsyncFn, useDebounce } from 'react-use';
 import { DefaultSecondaryMasthead } from '../../components/DefaultSecondaryMasthead/DefaultSecondaryMasthead';
 import * as FilterHelper from '../../components/FilterList/FilterHelper';
+import { KIALI_PROVIDER } from '../../components/Router';
 import { TimeDurationComponent } from '../../components/Time/TimeDurationComponent';
 import { getEntityNs, nsEqual } from '../../helpers/namespaces';
 import { getErrorString, kialiApiRef } from '../../services/Api';
 import { KialiAppState, KialiContext } from '../../store';
 import { kialiStyle } from '../../styles/StyleUtils';
-import { EdgeLabelMode, GraphType, TrafficRate } from '../../types/Graph';
+import {
+  EdgeLabelMode,
+  GraphDefinition,
+  GraphType,
+  TrafficRate,
+} from '../../types/Graph';
 import { ENTITY } from '../../types/types';
 import { KialiComponentFactory } from './factories/KialiComponentFactory';
 import { KialiLayoutFactory } from './factories/KialiLayoutFactory';
@@ -77,8 +80,16 @@ const getNamespaces = (
   return kialiState.namespaces.activeNamespaces.map(ns => ns.name);
 };
 
+const getProvider = (entity: Entity | undefined, kialiState: KialiAppState) => {
+  return entity?.metadata?.annotations
+    ? entity.metadata.annotations[KIALI_PROVIDER]
+    : kialiState.providers.activeProvider;
+};
 function TrafficGraphPage(props: { view?: string; entity?: Entity }) {
   const kialiState = React.useContext(KialiContext) as KialiAppState;
+  const [errorProvider, setErrorProvider] = React.useState<string | undefined>(
+    undefined,
+  );
   const kialiClient = useApi(kialiApiRef);
   const theme = useTheme();
 
@@ -94,6 +105,8 @@ function TrafficGraphPage(props: { view?: string; entity?: Entity }) {
   const [duration, setDuration] = useState(FilterHelper.currentDuration());
 
   const activeNamespaces = getNamespaces(props.entity, kialiState);
+  const activeProvider = getProvider(props.entity, kialiState);
+  const prevProvider = useRef(activeProvider);
   const prevActiveNs = useRef(activeNamespaces);
   const prevDuration = useRef(duration);
 
@@ -106,6 +119,11 @@ function TrafficGraphPage(props: { view?: string; entity?: Entity }) {
   const [controller] = useState(getVisualization());
 
   const fetchGraph = async () => {
+    kialiClient.setAnnotation(
+      KIALI_PROVIDER,
+      props.entity?.metadata.annotations?.[KIALI_PROVIDER] ||
+        kialiState.providers.activeProvider,
+    );
     if (activeNamespaces.length === 0) {
       setModel({
         nodes: [],
@@ -138,8 +156,22 @@ function TrafficGraphPage(props: { view?: string; entity?: Entity }) {
     };
 
     try {
-      const data = await kialiClient.getGraphElements(graphQueryElements);
-      const graphData = decorateGraphData(data.elements, data.duration);
+      const data = await kialiClient
+        .getGraphElements(graphQueryElements)
+        .then(response => {
+          if ('verify' in response) {
+            setErrorProvider(
+              `Error providing namespaces for ${activeProvider}, verify configuration for this provider: ${response.verify}`,
+            );
+            return { elements: [], duration: 0 };
+          }
+          return response;
+        })
+        .catch(error => setErrorProvider(error.toString()));
+      const graphData = decorateGraphData(
+        (data as GraphDefinition).elements,
+        (data as GraphDefinition).duration,
+      );
       const g = generateDataModel(graphData, graphQueryElements);
       setModel({
         nodes: g.nodes,
@@ -167,14 +199,17 @@ function TrafficGraphPage(props: { view?: string; entity?: Entity }) {
   React.useEffect(() => {
     if (
       duration !== prevDuration.current ||
-      !nsEqual(activeNamespaces, prevActiveNs.current)
+      !nsEqual(activeNamespaces, prevActiveNs.current) ||
+      activeProvider !== prevProvider.current
     ) {
+      setErrorProvider(undefined);
       fetchGraph();
       prevDuration.current = duration;
       prevActiveNs.current = activeNamespaces;
+      prevProvider.current = activeProvider;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeNamespaces, duration]);
+  }, [activeNamespaces, duration, activeProvider]);
 
   React.useEffect(() => {
     controller.fromModel(model, false);
@@ -196,47 +231,53 @@ function TrafficGraphPage(props: { view?: string; entity?: Entity }) {
 
   return (
     <Content className={graphStyle} data-test="kiali-graph-card">
-      {props.view !== ENTITY && (
-        <DefaultSecondaryMasthead
-          elements={[timeDuration]}
-          onRefresh={refresh}
-        />
+      {errorProvider ? (
+        <InfoCard>{errorProvider}</InfoCard>
+      ) : (
+        <>
+          {props.view !== ENTITY && (
+            <DefaultSecondaryMasthead
+              elements={[timeDuration]}
+              onRefresh={refresh}
+            />
+          )}
+          <TopologyView
+            controlBar={
+              <TopologyControlBar
+                controlButtons={createTopologyControlButtons({
+                  ...defaultControlButtonsOptions,
+                  zoomInCallback: action(() => {
+                    controller.getGraph().scaleBy(4 / 3);
+                  }),
+                  zoomOutCallback: action(() => {
+                    controller.getGraph().scaleBy(0.75);
+                  }),
+                  fitToScreenCallback: action(() => {
+                    controller.getGraph().fit(80);
+                  }),
+                  resetViewCallback: action(() => {
+                    controller.getGraph().reset();
+                    controller.getGraph().layout();
+                  }),
+                  legend: false,
+                  zoomInAriaLabel: '',
+                  zoomOutAriaLabel: '',
+                  fitToScreenAriaLabel: '',
+                  resetViewAriaLabel: '',
+                  zoomInTip: '',
+                  zoomOutTip: '',
+                  fitToScreenTip: '',
+                  resetViewTip: '',
+                })}
+              />
+            }
+          >
+            <VisualizationProvider controller={controller}>
+              <VisualizationSurface state={model} />
+            </VisualizationProvider>
+          </TopologyView>
+        </>
       )}
-      <TopologyView
-        controlBar={
-          <TopologyControlBar
-            controlButtons={createTopologyControlButtons({
-              ...defaultControlButtonsOptions,
-              zoomInCallback: action(() => {
-                controller.getGraph().scaleBy(4 / 3);
-              }),
-              zoomOutCallback: action(() => {
-                controller.getGraph().scaleBy(0.75);
-              }),
-              fitToScreenCallback: action(() => {
-                controller.getGraph().fit(80);
-              }),
-              resetViewCallback: action(() => {
-                controller.getGraph().reset();
-                controller.getGraph().layout();
-              }),
-              legend: false,
-              zoomInAriaLabel: '',
-              zoomOutAriaLabel: '',
-              fitToScreenAriaLabel: '',
-              resetViewAriaLabel: '',
-              zoomInTip: '',
-              zoomOutTip: '',
-              fitToScreenTip: '',
-              resetViewTip: '',
-            })}
-          />
-        }
-      >
-        <VisualizationProvider controller={controller}>
-          <VisualizationSurface state={model} />
-        </VisualizationProvider>
-      </TopologyView>
     </Content>
   );
 }

@@ -16,9 +16,9 @@
 import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 import type { LoggerService } from '@backstage/backend-plugin-api';
 import { Config } from '@backstage/config';
-
 import express from 'express';
-
+import _ from 'lodash';
+import { ValidationCategory } from '../clients/fetch';
 import { KialiApiImpl } from '../clients/KialiAPIConnector';
 import { readKialiConfigs } from './config';
 
@@ -26,6 +26,76 @@ export interface RouterOptions {
   logger: LoggerService;
   config: Config;
 }
+
+export interface KialiProvidersApi {
+  name: string;
+  urlExternal: string;
+  api: KialiApiImpl;
+}
+
+export const makeRouter = (
+  logger: LoggerService,
+  kialiApis: KialiProvidersApi[],
+  config: Config,
+): express.Router => {
+  const router = express.Router();
+  router.use(express.json());
+
+  const kialiApiByProviderName = _.keyBy(kialiApis, item => item.name);
+  router.post('/proxy', async (req, res) => {
+    const endpoint = req.body.endpoint;
+    const providerName = req.body.provider;
+    const kialiApi = kialiApiByProviderName[providerName];
+    if (!kialiApi) {
+      const candidates = Object.keys(kialiApiByProviderName)
+        .map(n => `"${n}"`)
+        .join(', ');
+      res.json({
+        verify: false,
+        category: ValidationCategory.configuration,
+        title: `Found no configured provider "${providerName}", candidates are ${candidates}`,
+        message: `Found no configured provider "${providerName}", candidates are ${candidates}`,
+      });
+    }
+    logger.info(`[${providerName}] Call to ${endpoint}`);
+
+    kialiApi.api.proxy(endpoint).then((response: any) => {
+      if (endpoint.includes('api/status')) {
+        // Include kiali external url to status
+        response.status.kialiExternalUrl = kialiApi.urlExternal;
+      }
+      res.json(response);
+    });
+  });
+
+  router.post('/status', async (req, res) => {
+    let providerName = req.body.provider;
+    if (providerName === undefined) {
+      providerName = kialiApis[0].name;
+    }
+    const kialiApi = kialiApiByProviderName[providerName];
+    if (!kialiApi) {
+      const candidates = Object.keys(kialiApiByProviderName)
+        .map(n => `"${n}"`)
+        .join(', ');
+      res.json({
+        verify: false,
+        category: ValidationCategory.configuration,
+        title: `Found no configured provider "${providerName}", candidates are ${candidates}`,
+        message: `Found no configured provider "${providerName}", candidates are ${candidates}`,
+      });
+    }
+    logger.info(`Call to Kiali Status`);
+    const response = await kialiApi.api.status();
+    response.providers = kialiApis.map(item => item.name);
+    res.json(response);
+  });
+
+  const middleware = MiddlewareFactory.create({ logger, config });
+
+  router.use(middleware.error());
+  return router;
+};
 
 /** @public */
 export async function createRouter(
@@ -36,34 +106,12 @@ export async function createRouter(
 
   logger.info('Initializing Kiali backend');
 
-  const kiali = readKialiConfigs(config);
-
-  const kialiAPI = new KialiApiImpl({ logger, kiali });
-
-  const router = express.Router();
-  router.use(express.json());
-
-  // curl -H "Content-type: application/json" -H "Accept: application/json" -X GET localhost:7007/api/kiali/proxy --data '{"endpoint": "api/namespaces"}'
-  router.post('/proxy', async (req, res) => {
-    const endpoint = req.body.endpoint;
-    logger.info(`Call to Kiali ${endpoint}`);
-
-    kialiAPI.proxy(endpoint).then((response: any) => {
-      if (endpoint.includes('api/status')) {
-        // Include kiali external url to status
-        response.status.kialiExternalUrl = kiali.urlExternal;
-      }
-      res.json(response);
-    });
-  });
-
-  router.post('/status', async (_, res) => {
-    logger.info(`Call to Kiali Status`);
-    res.json(await kialiAPI.status());
-  });
-
-  const middleware = MiddlewareFactory.create({ logger, config });
-
-  router.use(middleware.error());
-  return router;
+  const providers = readKialiConfigs(config, logger);
+  logger.info(JSON.stringify(providers));
+  const kialiApis = providers.map(provider => ({
+    name: provider.name,
+    urlExternal: provider.urlExternal,
+    api: new KialiApiImpl({ logger, kiali: provider }),
+  }));
+  return makeRouter(logger, kialiApis, config);
 }

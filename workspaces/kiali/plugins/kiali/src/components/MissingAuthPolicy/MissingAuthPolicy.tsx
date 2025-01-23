@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
-
 import { Tooltip, TooltipPosition } from '@patternfly/react-core';
 import { SVGIconProps } from '@patternfly/react-icons/dist/js/createIcon';
-
+import * as React from 'react';
 import { icons } from '../../config/Icons';
 import { KialiIcon } from '../../config/KialiIcon';
 import { isIstioNamespace } from '../../config/ServerConfig';

@@ -13,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
-
 import { Tooltip } from '@material-ui/core';
-
+import * as React from 'react';
 import { icons } from '../../config/Icons';
 import { KialiIcon } from '../../config/KialiIcon';
 import { serverConfig } from '../../config/ServerConfig';

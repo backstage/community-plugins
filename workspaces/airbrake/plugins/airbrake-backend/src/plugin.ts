@@ -19,7 +19,6 @@ import {
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
 import { createRouter } from './service/router';
-import { extractAirbrakeConfig } from './config';
 
 /**
  * The Airbrake Backend plugin.
@@ -38,7 +37,7 @@ export const airbrakePlugin = createBackendPlugin({
       async init({ logger, httpRouter, config }) {
         httpRouter.use(
           await createRouter({
-            airbrakeConfig: extractAirbrakeConfig(config),
+            config,
             logger,
           }),
         );

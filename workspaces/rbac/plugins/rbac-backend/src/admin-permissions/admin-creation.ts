@@ -63,7 +63,7 @@ export const useAdminsFromConfig = async (
   const newGroupPolicies = new Map<string, string>();
 
   for (const admin of admins) {
-    const entityRef = admin.getString('name');
+    const entityRef = admin.getString('name').toLocaleLowerCase('en-US');
     validateEntityReference(entityRef);
 
     addedGroupPolicies.set(entityRef, ADMIN_ROLE_NAME);

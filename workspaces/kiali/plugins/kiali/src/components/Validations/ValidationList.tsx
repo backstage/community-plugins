@@ -13,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import { Tooltip } from '@material-ui/core';
-
+import React from 'react';
 import { ObjectCheck, ValidationTypes } from '../../types/IstioObjects';
 import { highestSeverity } from '../../types/ServiceInfo';
 import { Validation } from './Validation';

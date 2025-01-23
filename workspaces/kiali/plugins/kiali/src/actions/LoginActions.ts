@@ -18,7 +18,6 @@ import {
   createAction,
   createStandardAction,
 } from 'typesafe-actions';
-
 import { LoginSession, LoginStatus } from '../store/Store';
 import { ActionKeys } from './ActionKeys';
 

@@ -1,10 +1,11 @@
 # Knip report
 
-## Unused dependencies (11)
+## Unused dependencies (12)
 
 | Name                                                  | Location     | Severity |
 | :---------------------------------------------------- | :----------- | :------- |
 | @backstage/plugin-auth-backend-module-github-provider | package.json | error    |
+| @backstage-community/plugin-npm-backend               | package.json | error    |
 | @backstage/plugin-search-backend-node                 | package.json | error    |
 | @backstage/plugin-permission-common                   | package.json | error    |
 | @backstage/plugin-permission-node                     | package.json | error    |
