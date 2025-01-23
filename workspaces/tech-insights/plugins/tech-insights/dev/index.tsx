@@ -22,7 +22,10 @@ import {
   TechInsightsApi,
   TechInsightsScorecardPage,
 } from '../src';
-import { Check } from '@backstage-community/plugin-tech-insights-common/client';
+import {
+  Check,
+  CheckResult,
+} from '@backstage-community/plugin-tech-insights-common';
 import { CompoundEntityRef, Entity } from '@backstage/catalog-model';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import {
@@ -30,7 +33,6 @@ import {
   checkResultRenderers,
   runChecksResponse,
 } from './mocks';
-import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
 
 const entity = {
   apiVersion: 'backstage.io/v1alpha1',
