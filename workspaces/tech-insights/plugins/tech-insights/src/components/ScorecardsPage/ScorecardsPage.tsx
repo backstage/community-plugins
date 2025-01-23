@@ -27,7 +27,7 @@ import {
 } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { techInsightsApiRef } from '../../api';
-import { Check } from '@backstage-community/plugin-tech-insights-common/client';
+import { Check } from '@backstage-community/plugin-tech-insights-common';
 import useAsync from 'react-use/lib/useAsync';
 import { BulkCheckResponse } from '@backstage-community/plugin-tech-insights-common';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
