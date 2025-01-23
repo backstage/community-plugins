@@ -16,7 +16,7 @@
 import React from 'react';
 
 import { V1DaemonSet, V1Deployment, V1Pod } from '@kubernetes/client-node';
-import { ChartLabel } from '@patternfly/react-charts';
+import { ChartLabel } from '@patternfly/react-charts/victory';
 import classNames from 'classnames';
 
 import { AllPodStatus } from '../components/Pods/pod';
