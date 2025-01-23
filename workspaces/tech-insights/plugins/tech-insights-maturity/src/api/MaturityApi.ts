@@ -30,7 +30,7 @@ import {
  * @public
  */
 export const maturityApiRef = createApiRef<MaturityApi>({
-  id: 'plugin.scoringdata.service',
+  id: 'plugin.maturity.service',
 });
 
 /**
