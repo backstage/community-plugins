@@ -26,7 +26,10 @@ export type CheckLink = {
   url: string;
 };
 
-export type Check = {
+/**
+ * @public
+ */
+export interface Check {
   /**
    * Unique identifier of the check
    *
@@ -81,7 +84,7 @@ export type Check = {
    * more about the check.
    */
   links?: CheckLink[];
-};
+}
 
 /**
  * @public
