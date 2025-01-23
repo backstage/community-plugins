@@ -21,8 +21,7 @@ import {
 import { AzureResourceGraphClient } from './AzureResourceGraphClient';
 
 /**
- * The {@link EventsService} that allows to publish events, and subscribe to topics.
- * Uses the `root` scope so that events can be shared across all plugins, modules, and more.
+ * The {@link AzureResourceGraphClient} that is used to interact with Azure resources.
  *
  * @public
  */

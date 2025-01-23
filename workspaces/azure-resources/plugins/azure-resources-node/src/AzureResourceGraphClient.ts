@@ -21,6 +21,10 @@ import { ResourceGraphClient } from '@azure/arm-resourcegraph';
 import { Config } from '@backstage/config';
 import { LoggerService } from '@backstage/backend-plugin-api';
 
+/**
+ * Azure resources credentials configuration.
+ * @public
+ */
 export type AzureResourceConfig = {
   tenantId: string;
   clientId: string;
@@ -46,7 +50,7 @@ function getAzureCredentialConfig(
     !azureConfig.tenantId
   ) {
     logger.warn(
-      'The azure resources credentials provided are empty opr invalid, using default credential. check credentials in app-config.yaml under `azure-resources.credentials` path',
+      'The azure resources credentials provided are empty or invalid, using default credential. check credentials in app-config.yaml under `azure-resources.credentials` path',
     );
     return undefined;
   }
@@ -54,6 +58,10 @@ function getAzureCredentialConfig(
   return azureConfig;
 }
 
+/**
+ * A '\@azure/arm-resourcegraph' wrapper that takes azure credentials from backstage config
+ * @public
+ */
 export class AzureResourceGraphClient extends ResourceGraphClient {
   public static fromConfig(
     logger: LoggerService,

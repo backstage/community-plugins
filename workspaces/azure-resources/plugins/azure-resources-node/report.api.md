@@ -8,18 +8,14 @@ import { LoggerService } from '@backstage/backend-plugin-api';
 import { ResourceGraphClient } from '@azure/arm-resourcegraph';
 import { ServiceRef } from '@backstage/backend-plugin-api';
 
-// Warning: (ae-missing-release-tag) "AzureResourceConfig" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type AzureResourceConfig = {
   tenantId: string;
   clientId: string;
   clientSecret: string;
 };
 
-// Warning: (ae-missing-release-tag) "AzureResourceGraphClient" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export class AzureResourceGraphClient extends ResourceGraphClient {
   // (undocumented)
   static fromConfig(
@@ -28,8 +24,6 @@ export class AzureResourceGraphClient extends ResourceGraphClient {
   ): AzureResourceGraphClient;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@backstage-community/plugin-azure-resources-node" does not have an export "EventsService"
-//
 // @public
 export const azureResourcesServiceRef: ServiceRef<
   AzureResourceGraphClient,
