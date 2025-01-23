@@ -15,12 +15,12 @@
  */
 
 import { JsonValue } from '@backstage/types';
-import { Check as Check$1 } from '@backstage-community/plugin-tech-insights-common/client';
+import { Check as Check$1 } from '@backstage-community/plugin-tech-insights-common';
 /**
  * Represents a single check defined on the TechInsights backend.
  *
  * @public
- * @deprecated Import from \@backstage-community/plugin-tech-insights-common/client
+ * @deprecated Import from \@backstage-community/plugin-tech-insights-common
  */
 export type Check = Check$1;
 
@@ -28,7 +28,7 @@ export type Check = Check$1;
  * Represents a Fact defined on the TechInsights backend.
  *
  * @public
- * @deprecated Import from \@backstage-community/plugin-tech-insights-common/client
+ * @deprecated Import from \@backstage-community/plugin-tech-insights-common
  */
 export interface InsightFacts {
   [factId: string]: {

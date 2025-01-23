@@ -18,14 +18,16 @@ import {
   coreServices,
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
-import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
+import {
+  CheckResult,
+  Check,
+} from '@backstage-community/plugin-tech-insights-common';
 import {
   FactCheckerFactory,
   FactRetriever,
   FactRetrieverRegistration,
   FactRetrieverRegistry,
   PersistenceContext,
-  TechInsightCheck,
   techInsightsFactCheckerFactoryExtensionPoint,
   techInsightsFactRetrieverRegistryExtensionPoint,
   techInsightsFactRetrieversExtensionPoint,
@@ -48,12 +50,11 @@ import { createFactRetrieverRegistrationFromConfig } from './config';
 export const techInsightsPlugin = createBackendPlugin({
   pluginId: 'tech-insights',
   register(env) {
-    let factCheckerFactory:
-      | FactCheckerFactory<TechInsightCheck, CheckResult>
-      | undefined = undefined;
+    let factCheckerFactory: FactCheckerFactory<Check, CheckResult> | undefined =
+      undefined;
     env.registerExtensionPoint(techInsightsFactCheckerFactoryExtensionPoint, {
       setFactCheckerFactory<
-        CheckType extends TechInsightCheck,
+        CheckType extends Check,
         CheckResultType extends CheckResult,
       >(factory: FactCheckerFactory<CheckType, CheckResultType>): void {
         factCheckerFactory = factory;
