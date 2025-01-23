@@ -16,7 +16,7 @@
 import type { LoggerService } from '@backstage/backend-plugin-api';
 
 import type { AuditLogger } from '@janus-idp/backstage-plugin-audit-log-node';
-import { Enforcer, FileAdapter, newEnforcer, newModelFromString } from 'casbin';
+import { Enforcer, newEnforcer, newModelFromString } from 'casbin';
 import { parse } from 'csv-parse/sync';
 import { difference } from 'lodash';
 
@@ -37,6 +37,7 @@ import {
   metadataStringToPolicy,
   policyToString,
   transformArrayToPolicy,
+  transformPolicyGroupToLowercase,
 } from '../helper';
 import { EnforcerDelegate } from '../service/enforcer-delegate';
 import { MODEL } from '../service/permission-model';
@@ -48,6 +49,7 @@ import {
   validateSource,
 } from '../validation/policies-validation';
 import { AbstractFileWatcher } from './file-watcher';
+import { LowercaseFileAdapter } from './lowercase-file-adapter';
 
 export const CSV_PERMISSION_POLICY_FILE_AUTHOR = 'csv permission policy file';
 
@@ -86,13 +88,17 @@ export class CSVFileWatcher extends AbstractFileWatcher<string[][]> {
    */
   parse(): string[][] {
     const content = this.getCurrentContents();
-    const parser = parse(content, {
+    const data = parse(content, {
       skip_empty_lines: true,
       relax_column_count: true,
       trim: true,
     });
 
-    return parser;
+    for (const policy of data) {
+      transformPolicyGroupToLowercase(policy);
+    }
+
+    return data;
   }
 
   /**
@@ -114,7 +120,7 @@ export class CSVFileWatcher extends AbstractFileWatcher<string[][]> {
 
     const tempEnforcer = await newEnforcer(
       newModelFromString(MODEL),
-      new FileAdapter(this.filePath),
+      new LowercaseFileAdapter(this.filePath),
     );
 
     // Check for any old policies that will need to be removed
@@ -197,7 +203,7 @@ export class CSVFileWatcher extends AbstractFileWatcher<string[][]> {
 
     const tempEnforcer = await newEnforcer(
       newModelFromString(MODEL),
-      new FileAdapter(this.filePath!),
+      new LowercaseFileAdapter(this.filePath!),
     );
 
     const currentFlatContent = this.currentContent.flatMap(data => {
