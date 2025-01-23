@@ -18,6 +18,19 @@ export type BulkCheckResponse = Array<{
   results: CheckResult[];
 }>;
 
+// @public (undocumented)
+export interface Check {
+  description: string;
+  factIds: string[];
+  failureMetadata?: Record<string, unknown>;
+  id: string;
+  links?: CheckLink[];
+  metadata?: Record<string, any>;
+  name: string;
+  successMetadata?: Record<string, unknown>;
+  type: string;
+}
+
 // @public
 export type CheckLink = {
   title: string;
@@ -70,6 +83,15 @@ export type FactSchema = {
     metadata?: Record<string, any>;
   };
 };
+
+// @public
+export interface InsightFacts {
+  [factId: string]: {
+    timestamp: string;
+    version: string;
+    facts: Record<string, JsonValue>;
+  };
+}
 
 // (No @packageDocumentation comment for this package)
 ```
