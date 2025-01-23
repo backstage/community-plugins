@@ -15,13 +15,14 @@
  */
 import React from 'react';
 
-import { ToolbarItem } from '@patternfly/react-core';
+import { LabelGroup, ToolbarItem, Label } from '@patternfly/react-core';
 import {
   Select,
   SelectOption,
-  SelectOptionObject,
-  SelectVariant,
-} from '@patternfly/react-core/deprecated';
+  SelectList,
+  MenuToggle,
+  MenuToggleElement,
+} from '@patternfly/react-core';
 
 import { FilterContext } from '../../hooks/FilterContext';
 import { K8sResourcesContext } from '../../hooks/K8sResourcesContext';
@@ -47,7 +48,7 @@ const TopologyToolbar = ({ showFilters }: TopologyToolbarProps) => {
     React.useState<boolean>(false);
 
   const [clusterSelected, setClusterSelected] = React.useState<
-    string | SelectOptionObject
+    string | number | undefined
   >();
 
   const onClusterFilterToggle = (isClusterFilterExpanded: boolean) => {
@@ -59,8 +60,8 @@ const TopologyToolbar = ({ showFilters }: TopologyToolbarProps) => {
   };
 
   const onClusterChange = (
-    _e: React.ChangeEvent | React.MouseEvent,
-    selection: string | SelectOptionObject,
+    _e: React.MouseEvent | undefined,
+    selection: string | number | undefined,
   ) => {
     const index = k8sClusters.findIndex(cluster => cluster === selection);
     setClusterContext(index);
@@ -69,23 +70,17 @@ const TopologyToolbar = ({ showFilters }: TopologyToolbarProps) => {
   };
 
   const onDisplayOptionChange = (
-    e: React.ChangeEvent | React.MouseEvent,
-    selection: string | SelectOptionObject,
+    e: React.MouseEvent | undefined,
+    selection: string | number | undefined,
   ) => {
-    if (filters && filters.length !== 0) {
-      const index = filters?.findIndex(f => f.id === selection);
-
-      if (index !== undefined && index > -1) {
-        const filter = {
-          ...filters[index],
-          value: (e.target as HTMLInputElement).checked,
-        };
-        setAppliedTopologyFilters?.([
-          ...filters.slice(0, index),
-          filter,
-          ...filters.slice(index + 1),
-        ] as TopologyDisplayOption[]);
-      }
+    if (filters && filters.length !== 0 && selection && e) {
+      const index = filters.findIndex(filter => filter.value === selection);
+      const newFilters = [...filters];
+      newFilters[index] = {
+        ...newFilters[index],
+        isSelected: !newFilters[index].isSelected,
+      };
+      setAppliedTopologyFilters?.(newFilters as TopologyDisplayOption[]);
     }
   };
 
@@ -96,46 +91,83 @@ const TopologyToolbar = ({ showFilters }: TopologyToolbarProps) => {
       </ToolbarItem>
       <ToolbarItem>
         <Select
-          variant={SelectVariant.single}
           aria-label="Select Cluster"
-          onToggle={(_event, isClusterFilterExpanded: boolean) =>
-            onClusterFilterToggle(isClusterFilterExpanded)
-          }
+          onOpenChange={onClusterFilterToggle}
           onSelect={onClusterChange}
-          selections={clusterSelected}
           isOpen={clusterFilterIsExpanded}
-          aria-labelledby="select-cluster"
+          toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+            <MenuToggle
+              ref={toggleRef}
+              isExpanded={clusterFilterIsExpanded}
+              onClick={() => onClusterFilterToggle(!clusterFilterIsExpanded)}
+            >
+              {clusterSelected || 'Select Cluster'}
+            </MenuToggle>
+          )}
         >
-          {clusterOptions.map((option, index) => (
-            <SelectOption
-              isDisabled={option.disabled}
-              key={index}
-              value={option.value}
-            />
-          ))}
+          <SelectList>
+            {clusterOptions.map(option => (
+              <SelectOption key={option.value} {...option}>
+                {option.value}
+              </SelectOption>
+            ))}
+          </SelectList>
         </Select>
       </ToolbarItem>
       {showFilters && (
-        <Select
-          variant={SelectVariant.checkbox}
-          aria-label="Display options"
-          onToggle={(_event, isDisplayOptionsExpanded: boolean) =>
-            onDisplayOptionsToggle(isDisplayOptionsExpanded)
-          }
-          onSelect={(event, value) => onDisplayOptionChange(event, value)}
-          isOpen={displayOptionsIsExpanded}
-          aria-labelledby="display-options"
-          placeholderText="Display options"
-          customContent={filters?.map((filter, _) => (
-            <SelectOption
-              key={filter.id}
-              value={filter.id}
-              isChecked={filter.value}
-            >
-              {filter.label}
-            </SelectOption>
-          ))}
-        />
+        <ToolbarItem>
+          <Select
+            aria-label="Display options"
+            onOpenChange={onDisplayOptionsToggle}
+            onSelect={(event, value) => onDisplayOptionChange(event, value)}
+            isOpen={displayOptionsIsExpanded}
+            toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+              <MenuToggle
+                ref={toggleRef}
+                isExpanded={displayOptionsIsExpanded}
+                onClick={() =>
+                  onDisplayOptionsToggle(!displayOptionsIsExpanded)
+                }
+              >
+                {(filters ?? []).filter(f => f?.isSelected)?.length > 0 ? (
+                  <LabelGroup aria-label="Current display options">
+                    {filters?.map(
+                      filter =>
+                        filter.isSelected && (
+                          <Label
+                            key={filter.value}
+                            isCompact
+                            variant="outline"
+                            onClose={() =>
+                              onDisplayOptionChange(undefined, filter.value)
+                            }
+                          >
+                            {filter.content}
+                          </Label>
+                        ),
+                    )}
+                  </LabelGroup>
+                ) : (
+                  'Display options'
+                )}
+              </MenuToggle>
+            )}
+          >
+            <SelectList>
+              {filters?.map(filter => (
+                <SelectOption
+                  hasCheckbox
+                  key={filter.value}
+                  value={filter.value}
+                  isDisabled={filter.isDisabled}
+                  isSelected={filter.isSelected}
+                >
+                  {filter.content}
+                </SelectOption>
+              ))}
+            </SelectList>
+          </Select>
+        </ToolbarItem>
       )}
     </>
   );

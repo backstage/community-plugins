@@ -19,12 +19,8 @@ import TopologyIcon from '@mui/icons-material/HubOutlined';
 import {
   EmptyState,
   EmptyStateBody,
-  EmptyStateHeader,
-  EmptyStateIcon,
   EmptyStateVariant,
 } from '@patternfly/react-core';
-
-import './TopologyEmptyState.css';
 
 type TopologyEmptyStateProps = {
   title?: string;
@@ -40,19 +36,11 @@ export const TopologyEmptyState = ({
       variant={EmptyStateVariant.full}
       isFullHeight
       className="pf-topology-visualization-surface"
+      titleText={title || 'No resources found'}
+      icon={TopologyIcon}
+      headingLevel="h3"
     >
-      <EmptyStateHeader
-        titleText={title || 'No resources found'}
-        icon={
-          <EmptyStateIcon
-            icon={TopologyIcon}
-            className="bs-topology-empty-state"
-          />
-        }
-        headingLevel="h3"
-      >
-        <EmptyStateBody>{description}</EmptyStateBody>
-      </EmptyStateHeader>
+      <EmptyStateBody>{description}</EmptyStateBody>
     </EmptyState>
   );
 };
