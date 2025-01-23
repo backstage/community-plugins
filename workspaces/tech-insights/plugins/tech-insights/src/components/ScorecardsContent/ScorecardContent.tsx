@@ -24,7 +24,7 @@ import { techInsightsApiRef } from '../../api/TechInsightsApi';
 import { makeStyles } from '@material-ui/core/styles';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { getCompoundEntityRef } from '@backstage/catalog-model';
-import { Check } from '@backstage-community/plugin-tech-insights-common/client';
+import { Check } from '@backstage-community/plugin-tech-insights-common';
 
 const useStyles = makeStyles(() => ({
   contentScorecards: {
