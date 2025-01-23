@@ -126,7 +126,7 @@ export async function createRouter(
         if (err.errors) {
           throw new Error(
             `Unable to fetch projects, for ${
-              jenkinsInfo.jobFullName
+              jenkinsInfo.fullJobNames
             }: ${stringifyError(err.errors)}`,
           );
         }
@@ -147,7 +147,7 @@ export async function createRouter(
           namespace,
           name,
         },
-        jobFullName,
+        fullJobNames: [jobFullName],
         credentials: await httpAuth.credentials(request),
       });
 
@@ -174,7 +174,7 @@ export async function createRouter(
           namespace,
           name,
         },
-        jobFullName,
+        fullJobNames: [jobFullName],
         credentials: await httpAuth.credentials(request),
       });
 
@@ -197,7 +197,7 @@ export async function createRouter(
           namespace,
           name,
         },
-        jobFullName,
+        fullJobNames: [jobFullName],
         credentials: await httpAuth.credentials(request),
       });
 
@@ -227,7 +227,7 @@ export async function createRouter(
           namespace,
           name,
         },
-        jobFullName,
+        fullJobNames: [jobFullName],
         credentials: await httpAuth.credentials(request),
       });
 
