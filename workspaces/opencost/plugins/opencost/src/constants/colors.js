@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-import { blue } from '@mui/material/colors';
-import { brown } from '@mui/material/colors';
-import { cyan } from '@mui/material/colors';
-import { deepOrange } from '@mui/material/colors';
-import { deepPurple } from '@mui/material/colors';
-import { green } from '@mui/material/colors';
-import { grey } from '@mui/material/colors';
-import { indigo } from '@mui/material/colors';
-import { orange } from '@mui/material/colors';
-import { red } from '@mui/material/colors';
-import { teal } from '@mui/material/colors';
-import { yellow } from '@mui/material/colors';
+import blue from '@material-ui/core/colors/blue';
+import brown from '@material-ui/core/colors/brown';
+import cyan from '@material-ui/core/colors/cyan';
+import deepOrange from '@material-ui/core/colors/deepOrange';
+import deepPurple from '@material-ui/core/colors/deepPurple';
+import green from '@material-ui/core/colors/green';
+import grey from '@material-ui/core/colors/grey';
+import indigo from '@material-ui/core/colors/indigo';
+import orange from '@material-ui/core/colors/orange';
+import red from '@material-ui/core/colors/red';
+import teal from '@material-ui/core/colors/teal';
+import yellow from '@material-ui/core/colors/yellow';
 
 export const primary = [
   blue[500],

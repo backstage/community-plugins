@@ -15,18 +15,18 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { makeStyles } from '@mui/styles';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import Button from '@mui/material/Button';
-import FormControl from '@mui/material/FormControl';
-import Link from '@mui/material/Link';
-import Popover from '@mui/material/Popover';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
+import { makeStyles } from '@material-ui/core/styles';
+import MuiPickersUtilsProvider from '@material-ui/pickers/MuiPickersUtilsProvider';
+import { KeyboardDatePicker } from '@material-ui/pickers/DatePicker';
+import Button from '@material-ui/core/Button';
+import LuxonUtils from '@date-io/luxon';
+import FormControl from '@material-ui/core/FormControl';
+import Link from '@material-ui/core/Link';
+import Popover from '@material-ui/core/Popover';
+import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
 import { isValid } from 'date-fns';
 import { find, get } from 'lodash';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
 const useStyles = makeStyles({
   dateContainer: {
@@ -64,14 +64,14 @@ const SelectWindow = ({ windowOptions, window, setWindow }) => {
   };
 
   const handleStartDateChange = date => {
-    if (isValid(date)) {
-      setStartDate(new Date(date.setHours(0, 0, 0, 0)));
+    if (isValid(date.toJSDate())) {
+      setStartDate(date.startOf('day').toJSDate());
     }
   };
 
   const handleEndDateChange = date => {
-    if (isValid(date)) {
-      setEndDate(new Date(date.setHours(0, 0, 0, 0)));
+    if (isValid(date.toJSDate())) {
+      setEndDate(date.endOf('day').toJSDate());
     }
   };
 
@@ -138,8 +138,8 @@ const SelectWindow = ({ windowOptions, window, setWindow }) => {
       >
         <div className={classes.dateContainer}>
           <div className={classes.dateContainerColumn}>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <DatePicker
+            <MuiPickersUtilsProvider utils={LuxonUtils}>
+              <KeyboardDatePicker
                 style={{ width: '144px' }}
                 autoOk
                 disableToolbar
@@ -156,7 +156,7 @@ const SelectWindow = ({ windowOptions, window, setWindow }) => {
                   'aria-label': 'change date',
                 }}
               />
-              <DatePicker
+              <KeyboardDatePicker
                 style={{ width: '144px' }}
                 autoOk
                 disableToolbar
@@ -173,7 +173,7 @@ const SelectWindow = ({ windowOptions, window, setWindow }) => {
                   'aria-label': 'change date',
                 }}
               />
-            </LocalizationProvider>
+            </MuiPickersUtilsProvider>
             <div>
               <Button
                 style={{ marginTop: 16 }}

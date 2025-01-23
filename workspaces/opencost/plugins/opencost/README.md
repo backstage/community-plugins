@@ -32,7 +32,7 @@ and
 
     ```typescript
     // packages/app/src/components/Root/Root.tsx
-     import MoneyIcon from '@mui/icons-material/MonetizationOn';
+     import MoneyIcon from '@material-ui/icons/MonetizationOn';
 
      ...
 

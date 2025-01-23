@@ -16,14 +16,14 @@
 // code ported from https://github.com/opencost/opencost/blob/develop/ui/src/Reports.js
 
 import React, { useEffect, useState } from 'react';
-import CircularProgress from '@mui/material/CircularProgress';
-import IconButton from '@mui/material/IconButton';
-import Paper from '@mui/material/Paper';
-import RefreshIcon from '@mui/icons-material/Refresh';
-import Typography from '@mui/material/Typography';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import IconButton from '@material-ui/core/IconButton';
+import Paper from '@material-ui/core/Paper';
+import RefreshIcon from '@material-ui/icons/Refresh';
+import Typography from '@material-ui/core/Typography';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { find, get, sortBy, toArray } from 'lodash';
-import { makeStyles } from '@mui/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import AllocationReport from '../AllocationReport';
 import AllocationService from '../../services/allocation';
 import Controls from '../Controls';
@@ -188,8 +188,6 @@ export const OpenCostReport = () => {
   const useBackstageProxy = configApi
     .getConfig('opencost')
     .getOptionalBoolean('useBackstageProxy');
-  /* eslint no-console: 0 */
-  console.log(`baseUrl:${baseUrl}`);
 
   const discoveryApi = useApi(discoveryApiRef);
   const fetchApi = useApi(fetchApiRef);
