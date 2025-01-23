@@ -35,7 +35,7 @@ import {
   MaturityScore,
   MaturitySummary,
 } from '@backstage-community/plugin-tech-insights-maturity-common';
-import { MaturityApi } from './ScoringDataApi';
+import { MaturityApi } from './MaturityApi';
 import { ScoringDataFormatter } from './ScoringDataFormatter';
 
 const SDF = new ScoringDataFormatter();

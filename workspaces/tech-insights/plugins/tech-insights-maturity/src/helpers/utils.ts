@@ -19,18 +19,7 @@ import {
   RELATION_OWNER_OF,
   RELATION_PARENT_OF,
 } from '@backstage/catalog-model';
-import { humanizeEntityRef } from '@backstage/plugin-catalog-react';
 import { Rank } from '@backstage-community/plugin-tech-insights-maturity-common';
-
-export const entityTitleCompare = (a: Entity, b: Entity) => {
-  const toRef = (entity: Entity) =>
-    entity.metadata.title ??
-    humanizeEntityRef(entity, {
-      defaultKind: 'Component',
-    });
-
-  return toRef(a).localeCompare(toRef(b));
-};
 
 export const getSubEntityFilter = (entity: Entity): { type: string } => {
   let type = RELATION_HAS_PART;

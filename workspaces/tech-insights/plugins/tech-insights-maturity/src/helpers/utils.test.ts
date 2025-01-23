@@ -25,12 +25,7 @@ import {
   RELATION_PART_OF,
 } from '@backstage/catalog-model';
 import { Rank } from '@backstage-community/plugin-tech-insights-maturity-common';
-import {
-  entityTitleCompare,
-  getNextRankColor,
-  getSubEntityFilter,
-  pluralize,
-} from './utils';
+import { getNextRankColor, getSubEntityFilter, pluralize } from './utils';
 
 const relations: EntityRelation[] = [
   {
@@ -180,30 +175,6 @@ describe('Utility functions', () => {
         type: '',
         kind: '',
       });
-    });
-  });
-
-  describe('entityTitleCompare()', () => {
-    it('should compare entities by display title', () => {
-      expect(entityTitleCompare(mockComponent, mockSystem)).toEqual(-1);
-      expect(entityTitleCompare(mockSystem, mockComponent)).toEqual(1);
-      expect(entityTitleCompare(mockComponent, mockComponent)).toEqual(0);
-    });
-
-    it('should use name if title is missing on entity a', () => {
-      expect(entityTitleCompare(mockSolutionLine, mockDomain)).toEqual(-1);
-      expect(entityTitleCompare(mockSolutionLine, mockTeam)).toEqual(1);
-    });
-
-    it('should use name if title is missing on entity b', () => {
-      expect(entityTitleCompare(mockComponent, mockSolutionLine)).toEqual(-1);
-      expect(entityTitleCompare(mockDomain, mockSolutionLine)).toEqual(1);
-    });
-
-    it('should use name if title is missing on both entities', () => {
-      expect(entityTitleCompare(mockOrg, mockSolutionLine)).toEqual(-1);
-      expect(entityTitleCompare(mockSolutionLine, mockOrg)).toEqual(1);
-      expect(entityTitleCompare(mockOrg, mockOrg)).toEqual(0);
     });
   });
 

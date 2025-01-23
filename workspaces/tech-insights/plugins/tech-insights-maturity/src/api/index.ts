@@ -13,6 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export type { MaturityApi } from './ScoringDataApi';
-export { maturityApiRef } from './ScoringDataApi';
-export { MaturityClient } from './ScoringDataClient';
+export type { MaturityApi } from './MaturityApi';
+export { maturityApiRef } from './MaturityApi';
+export { MaturityClient } from './MaturityClient';
