@@ -13,9 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 import { JsonValue } from '@backstage/types';
-import { Check as _Check } from '../types';
 
 /**
  * Represents a single check defined on the TechInsights backend.
@@ -23,9 +21,58 @@ import { Check as _Check } from '../types';
  * @public
  * @deprecated
  *
- * Use Check directly from `@backstage-community/plugin-tech-insights-common` instead
+ * Use the Check interface from `@backstage-community/plugin-tech-insights-common` instead
  */
-export type Check = _Check;
+export type Check = {
+  /**
+   * Unique identifier of the check
+   *
+   * Used to identify which checks to use when running checks.
+   */
+  id: string;
+
+  /**
+   * Type identifier for the check.
+   * Can be used to determine storage options, logical routing to correct FactChecker implementation
+   * or to help frontend render correct component types based on this
+   */
+  type: string;
+
+  /**
+   * Human readable name of the check, may be displayed in the UI
+   */
+  name: string;
+
+  /**
+   * Human readable description of the check, may be displayed in the UI
+   */
+  description: string;
+
+  /**
+   * A collection of strings referencing fact rows that a check will be run against.
+   *
+   * References the fact container, aka fact retriever itself which may or may not contain multiple individual facts and values
+   */
+  factIds: string[];
+
+  /**
+   * General Metadata to be returned
+   * Can contain links, description texts or other actionable items
+   */
+  metadata?: Record<string, any>;
+
+  /**
+   * Metadata to be returned in case a check has been successfully evaluated
+   * Can contain links, description texts or other actionable items
+   */
+  successMetadata?: Record<string, unknown>;
+
+  /**
+   * Metadata to be returned in case a check evaluation has ended in failure
+   * Can contain links, description texts or other actionable items
+   */
+  failureMetadata?: Record<string, unknown>;
+};
 
 /**
  * Represents a Fact defined on the TechInsights backend.
