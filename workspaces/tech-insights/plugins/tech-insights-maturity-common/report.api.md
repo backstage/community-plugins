@@ -5,8 +5,6 @@
 ```ts
 import { BooleanCheckResult } from '@backstage-community/plugin-tech-insights-common';
 import { CheckResponse } from '@backstage-community/plugin-tech-insights-common';
-import { TechInsightCheck } from '@backstage-community/plugin-tech-insights-node';
-import { TechInsightJsonRuleCheck } from '@backstage-community/plugin-tech-insights-backend-module-jsonfc';
 
 // @public (undocumented)
 export type BulkMaturityCheckResponse = EntityMaturityCheckResult[];
@@ -31,16 +29,6 @@ export interface EntityMaturitySummary {
 }
 
 // @public
-export interface MaturityCheck extends TechInsightCheck {
-  // (undocumented)
-  metadata: {
-    category: string;
-    rank: Rank;
-    solution: string;
-  };
-}
-
-// @public
 export interface MaturityCheckResponse extends CheckResponse {
   // (undocumented)
   metadata: {
@@ -55,16 +43,6 @@ export interface MaturityCheckResponse extends CheckResponse {
 export interface MaturityCheckResult extends BooleanCheckResult {
   // (undocumented)
   check: MaturityCheckResponse;
-}
-
-// @public (undocumented)
-export interface MaturityJsonRuleCheck extends TechInsightJsonRuleCheck {
-  // (undocumented)
-  metadata: {
-    category: string;
-    rank: Rank;
-    solution: string;
-  };
 }
 
 // @public (undocumented)
