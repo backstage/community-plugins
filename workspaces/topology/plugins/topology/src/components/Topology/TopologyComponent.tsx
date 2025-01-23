@@ -27,7 +27,7 @@ import { TopologyWorkloadView } from './TopologyWorkloadView';
 
 import '@patternfly/react-core/dist/styles/base-no-reset.css';
 import '@patternfly/patternfly/patternfly.min.css';
-// import '@patternfly/patternfly/patternfly-charts-theme-dark.css';
+import '@patternfly/patternfly/patternfly-charts.css';
 import '@patternfly/patternfly/utilities/Accessibility/accessibility.css';
 import './TopologyComponent.css';
 

@@ -107,7 +107,11 @@ const TopologyToolbar = ({ showFilters }: TopologyToolbarProps) => {
         >
           <SelectList>
             {clusterOptions.map(option => (
-              <SelectOption key={option.value} {...option}>
+              <SelectOption
+                key={option.value}
+                isSelected={option.value === clusterSelected}
+                value={option.value}
+              >
                 {option.value}
               </SelectOption>
             ))}

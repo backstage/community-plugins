@@ -106,7 +106,7 @@ const BaseNode = ({
           scaleNode={hover && detailsLevel !== ScaleDetailsLevel.high}
           badge={kindData && kindData.kindAbbr}
           badgeColor={kindData && kindData.kindColor}
-          badgeTextColor="var(--pf-t--temp--dev--tbd)" /* CODEMODS: original v5 color was --pf-v5-global--palette--white */
+          badgeTextColor="var(--pf-t--color--white)"
           showStatusBackground={!showDetails}
           badgeClassName={badgeClassName}
           {...rest}
@@ -115,7 +115,7 @@ const BaseNode = ({
             {icon && showDetails && (
               <>
                 <circle
-                  fill="var(--pf-t--temp--dev--tbd)" /* CODEMODS: original v5 color was --pf-v5-global--palette--white */
+                  fill="var(--pf-t--color--white)"
                   cx={cx}
                   cy={cy}
                   r={innerRadius + 6}
