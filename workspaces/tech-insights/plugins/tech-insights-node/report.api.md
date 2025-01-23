@@ -5,7 +5,7 @@
 ```ts
 import { AuthService } from '@backstage/backend-plugin-api';
 import { BulkCheckResponse } from '@backstage-community/plugin-tech-insights-common';
-import { Check } from '@backstage-community/plugin-tech-insights-common/client';
+import { Check } from '@backstage-community/plugin-tech-insights-common';
 import { CheckLink } from '@backstage-community/plugin-tech-insights-common';
 import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
 import { CompoundEntityRef } from '@backstage/catalog-model';
@@ -17,7 +17,7 @@ import { DurationLike } from 'luxon';
 import { ExtensionPoint } from '@backstage/backend-plugin-api';
 import { FactSchema } from '@backstage-community/plugin-tech-insights-common';
 import { HumanDuration } from '@backstage/types';
-import { InsightFacts } from '@backstage-community/plugin-tech-insights-common/client';
+import { InsightFacts } from '@backstage-community/plugin-tech-insights-common';
 import { JsonValue } from '@backstage/types';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { ServiceRef } from '@backstage/backend-plugin-api';
@@ -32,7 +32,7 @@ export type CheckValidationResponse = {
 
 // @public
 export interface FactChecker<
-  CheckType extends TechInsightCheck,
+  CheckType extends Check,
   CheckResultType extends CheckResult,
 > {
   getChecks(): Promise<CheckType[]>;
@@ -42,7 +42,7 @@ export interface FactChecker<
 
 // @public
 export interface FactCheckerFactory<
-  CheckType extends TechInsightCheck,
+  CheckType extends Check,
   CheckResultType extends CheckResult,
 > {
   // (undocumented)
@@ -120,7 +120,7 @@ export type PersistenceContext = {
   techInsightsStore: TechInsightsStore;
 };
 
-// @public
+// @public @deprecated
 export interface TechInsightCheck {
   description: string;
   factIds: string[];
@@ -134,7 +134,7 @@ export interface TechInsightCheck {
 }
 
 // @public
-export interface TechInsightCheckRegistry<CheckType extends TechInsightCheck> {
+export interface TechInsightCheckRegistry<CheckType extends Check> {
   // (undocumented)
   get(checkId: string): Promise<CheckType>;
   // (undocumented)
@@ -171,7 +171,7 @@ export type TechInsightFact = {
 export interface TechInsightsFactCheckerFactoryExtensionPoint {
   // (undocumented)
   setFactCheckerFactory<
-    CheckType extends TechInsightCheck,
+    CheckType extends Check,
     CheckResultType extends CheckResult,
   >(
     factory: FactCheckerFactory<CheckType, CheckResultType>,
