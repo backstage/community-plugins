@@ -30,6 +30,10 @@ import {
   type GithubIntegration,
   ScmIntegrations,
 } from '@backstage/integration';
+import {
+  createPermission,
+  Permission,
+} from '@backstage/plugin-permission-common';
 import gh from 'parse-github-url';
 import { Duration } from 'luxon';
 
@@ -84,6 +88,7 @@ export class GithubDiscussionsCollatorFactory
   private readonly discussionsBatchSize?: number;
   private readonly commentsBatchSize?: number;
   private readonly repliesBatchSize?: number;
+  public visibilityPermission: Permission;
 
   private constructor(options: GithubDiscussionsCollatorFactoryOptions) {
     this.logger = options.logger.child({ documentType: this.type });
@@ -98,6 +103,13 @@ export class GithubDiscussionsCollatorFactory
     this.repliesBatchSize = options.repliesBatchSize;
     this.org = options.org;
     this.repo = options.repo;
+    this.visibilityPermission = createPermission({
+      name: 'search.discussions.read',
+      attributes: {
+        action: 'read',
+      },
+      resourceType: 'github-discussions',
+    });
   }
 
   static async fromConfig({

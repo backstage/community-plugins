@@ -2659,6 +2659,7 @@ __metadata:
     "@backstage/cli": "npm:^0.28.0"
     "@backstage/config": "npm:^1.2.0"
     "@backstage/integration": "npm:^1.15.1"
+    "@backstage/plugin-permission-common": "npm:^0.8.1"
     "@backstage/plugin-search-backend-node": "npm:^1.3.3"
     "@backstage/plugin-search-common": "npm:^1.2.14"
     "@guidanti/backstage-github-discussions-fetcher": "npm:^0.7.0"
