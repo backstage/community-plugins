@@ -41,7 +41,6 @@ export const InputFieldComponent: React.FunctionComponent = ({ setUserText }) =>
       value={value}
       onChange={(_event, value) => onChange(value)}
       onClear={() => onChange('')}
-      className="mattk"
     />
   );
 };
