@@ -31,6 +31,10 @@ export type AdrRouterOptions = {
   logger: LoggerService;
 };
 
+const isFulfilled = <T>(
+  p: PromiseSettledResult<T>,
+): p is PromiseFulfilledResult<T> => p.status === 'fulfilled';
+
 /** @public */
 export async function createRouter(
   options: AdrRouterOptions,
@@ -63,7 +67,7 @@ export async function createRouter(
         etag: cachedTree?.etag,
       });
       const files = await treeGetResponse.files();
-      const data = await Promise.all(
+      const results = await Promise.allSettled(
         files
           .map(async file => {
             const fileContent = await file.content();
@@ -77,6 +81,7 @@ export async function createRouter(
           })
           .reverse(),
       );
+      const data = results.filter(isFulfilled).map(result => result.value);
 
       await cacheClient.set(urlToProcess, {
         data,

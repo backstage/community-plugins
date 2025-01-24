@@ -52,6 +52,10 @@ const testingUrlFakeFileTree: UrlReaderServiceReadTreeResponseFile[] = [
     path: 'testFile002.txt',
     content: makeBufferFromString('testFile001.txt content'),
   },
+  {
+    path: '.gitkeep',
+    content: makeBufferFromString(''),
+  },
 ];
 
 const makeFileContent = async (fileContent: string) => {
