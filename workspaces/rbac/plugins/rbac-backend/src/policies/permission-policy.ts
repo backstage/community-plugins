@@ -193,7 +193,7 @@ export class RBACPermissionPolicy implements PermissionPolicy {
       userEntityRef,
       request,
     );
-    this.auditLogger.auditLog(auditOptions);
+    await this.auditLogger.auditLog(auditOptions);
 
     try {
       let status = false;
@@ -213,6 +213,24 @@ export class RBACPermissionPolicy implements PermissionPolicy {
         );
         await this.auditLogger.auditLog(auditOptions);
         return { result: AuthorizeResult.DENY };
+      }
+
+      if (this.superUserList!.includes(userEntityRef)) {
+        const msg = evaluatePermMsg(
+          userEntityRef,
+          AuthorizeResult.ALLOW,
+          request.permission,
+        );
+
+        auditOptions = createPermissionEvaluationOptions(
+          msg,
+          userEntityRef,
+          request,
+          { result: AuthorizeResult.ALLOW },
+        );
+        await this.auditLogger.auditLog(auditOptions);
+
+        return { result: AuthorizeResult.ALLOW };
       }
 
       const permissionName = request.permission.name;
@@ -300,10 +318,6 @@ export class RBACPermissionPolicy implements PermissionPolicy {
     action: string,
     roles: string[],
   ): Promise<boolean> => {
-    if (this.superUserList!.includes(userIdentity)) {
-      return true;
-    }
-
     return await this.enforcer.enforce(userIdentity, permission, action, roles);
   };
 
