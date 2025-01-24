@@ -29,10 +29,10 @@ export const EntityMaturityRankWidget: ({
   chip,
 }: {
   entity: Entity;
-  size?: number | undefined;
+  size?: number | undefined
   /**
    * @public
-   */
+   */;
   chip?: boolean | undefined;
 }) => JSX_2.Element;
 
