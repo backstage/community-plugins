@@ -25,15 +25,8 @@ import { TechInsightsClient } from '@backstage-community/plugin-tech-insights';
 // @public (undocumented)
 export const EntityMaturityRankWidget: ({
   entity,
-  size,
-  chip,
 }: {
   entity: Entity;
-  size?: number | undefined
-  /**
-   * @public
-   */;
-  chip?: boolean | undefined;
 }) => JSX_2.Element;
 
 // @public (undocumented)

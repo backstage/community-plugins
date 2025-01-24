@@ -23,11 +23,9 @@ import { MaturityRankAvatar } from '../MaturityRankAvatar';
 
 type Props = {
   entity: Entity;
-  size?: number;
-  chip?: boolean;
 };
 
-export const MaturityRankWidget = ({ entity, size, chip }: Props) => {
+export const MaturityRankWidget = ({ entity }: Props) => {
   const api = useApi(maturityApiRef);
   const { value, loading } = useAsyncRetry(
     async () => api.getMaturityRank(entity),
@@ -35,12 +33,5 @@ export const MaturityRankWidget = ({ entity, size, chip }: Props) => {
   );
 
   if (loading || !value) return <></>;
-  return (
-    <MaturityRankAvatar
-      entity={entity}
-      value={value}
-      size={size}
-      variant={chip ? 'chip' : undefined}
-    />
-  );
+  return <MaturityRankAvatar entity={entity} value={value} variant="chip" />;
 };
