@@ -24,7 +24,7 @@ export const CheckboxSelectComponent: React.FunctionComponent = ({ setSelectedOp
       isExpanded={isOpen}
       style={
         {
-          width: '200px'
+          width: '100px'
         } as React.CSSProperties
       }
     >

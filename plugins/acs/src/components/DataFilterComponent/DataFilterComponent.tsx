@@ -3,6 +3,7 @@ import { SimpleSelect } from './SimpleSelectComponent';
 import { InputFieldComponent } from './InputFieldComponent';
 import { CheckboxSelectComponent } from './CheckboxSelectComponent';
 import Grid from '@mui/material/Grid2';
+import { Toolbar, ToolbarGroup, ToolbarItem, ToolbarContent, ToolbarToggleGroup } from '@patternfly/react-core';
 
 import {
     Flex,
@@ -60,43 +61,46 @@ export const DataFilterComponent = ({ setFilters, data }) => {
     }, [selectedEntity, selectedAttribute, userText, selectedCveSeverityOptions, selectedCveStatusOptions]);
 
     return (
-        <Grid container spacing={5}>
-          <Grid size={8}>
-            <Flex
-                direction={{ default: 'row' }}
-                spaceItems={{ default: 'spaceItemsNone' }}
-                flexWrap={{ default: 'nowrap' }}
-            >
-                <SimpleSelect
-                    options={entities}
-                    setSelectedOptions={setSelectedEntity}
-                />
+        <Toolbar className="pf-m-toggle-group-container">
+            <ToolbarContent>
+                <ToolbarGroup variant="filter-group">
+                    <ToolbarItem>
+                        <SimpleSelect
+                            options={entities}
+                            setSelectedOptions={setSelectedEntity}
+                        />
 
-                <SimpleSelect
-                    options={attributes}
-                    setSelectedOptions={setSelectedAttribute}
-                />
+                        <SimpleSelect
+                            options={attributes}
+                            setSelectedOptions={setSelectedAttribute}
+                        />
 
-                <InputFieldComponent setUserText={setUserText} />
-            </Flex>
-          </ Grid>
+                        <InputFieldComponent setUserText={setUserText} />
+                    </ToolbarItem>
+                </ToolbarGroup>
 
-          <Grid size={2}>
-            <CheckboxSelectComponent
-                options={cveSeverityOptions}
-                dropdownName={"CVE severity"}
-                setSelectedOptions={setSelectedCveSeverityOptions}
-            />
-          </ Grid>
+                <ToolbarItem variant="search-filter">
+                </ToolbarItem>
 
-          <Grid size={2}>
-            <CheckboxSelectComponent
-                options={cveStatusOptions}
-                dropdownName={"CVE status"}
-                setSelectedOptions={setSelectedCveStatusOptions}
-            />
-          </ Grid>
-        </ Grid>
+                <ToolbarGroup variant="button-group">
+                    <ToolbarItem spacer="spacerMd">
+                        <CheckboxSelectComponent
+                            options={cveSeverityOptions}
+                            dropdownName={"CVE severity"}
+                            setSelectedOptions={setSelectedCveSeverityOptions}
+                        />
+                    </ToolbarItem>
+                    <ToolbarItem>
+                        <CheckboxSelectComponent
+                            options={cveStatusOptions}
+                            dropdownName={"CVE status"}
+                            setSelectedOptions={setSelectedCveStatusOptions}
+                        />
+                    </ToolbarItem>
+                </ToolbarGroup>
+
+            </ToolbarContent>
+        </Toolbar>
     )
 }
 
