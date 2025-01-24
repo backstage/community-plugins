@@ -1,5 +1,11 @@
 # @backstage-community/plugin-copilot
 
+## 0.5.0
+
+### Minor Changes
+
+- dab14da: Fix incorrectly reporting acceptance rate
+
 ## 0.4.3
 
 ### Patch Changes
