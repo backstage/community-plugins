@@ -1,5 +1,11 @@
 # @backstage-community/plugin-tech-radar-backend
 
+## 1.1.1
+
+### Patch Changes
+
+- 2ac2a8b: Adds an explict else case inside the response retrieval function to future-proof against potential changes from the zod dependency.
+
 ## 1.1.0
 
 ### Minor Changes
