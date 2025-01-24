@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 5.3.1
+
+### Patch Changes
+
+- 1d5dd17: Evaluate the permissions for a superuser earlier in the process to avoid the unintended consequence of having conditional permissions policies applied to a superuser.
+
 ## 5.3.0
 
 ### Minor Changes
