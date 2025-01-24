@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Typography,
@@ -9,6 +9,9 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import { queryACSData } from '../../common/QueryACS';
 import { SecurityFindingsComponent } from './SecurityFindingsComponent';
 
+import { DataFilterComponent } from '../DataFilterComponent';
+import { wrap } from 'raven-js';
+
 export const VulnerabilitiesComponent = (serviceName: any) => {
     const {
         result: ACSDataResult,
@@ -18,14 +21,16 @@ export const VulnerabilitiesComponent = (serviceName: any) => {
 
     const useStyles = makeStyles(theme => ({
         root: {
-        width: '100%',
-        '& > * + *': {
-            marginTop: theme.spacing(2),
-        },
+            width: '100%',
+            '& > * + *': {
+                marginTop: theme.spacing(2),
+            },
         },
     }));
 
     const classes = useStyles();
+
+    const [filters, setFilters] = useState({});
 
     if (ACSDataError) {
         return (
@@ -36,7 +41,7 @@ export const VulnerabilitiesComponent = (serviceName: any) => {
             </InfoCard>
         );
     }
-    
+
     if (!ACSDataLoaded) {
         return (
             <InfoCard className={classes.root}>
@@ -47,7 +52,12 @@ export const VulnerabilitiesComponent = (serviceName: any) => {
 
     return (
         <Box>
-            <SecurityFindingsComponent data={ACSDataResult} />
+            <DataFilterComponent
+                setFilters={setFilters}
+                data={ACSDataResult}
+            />
+
+            <SecurityFindingsComponent data={ACSDataResult} filters={filters} />
         </Box>
     );
 };

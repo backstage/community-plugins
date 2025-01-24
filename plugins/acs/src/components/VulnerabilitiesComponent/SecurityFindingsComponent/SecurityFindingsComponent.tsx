@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
 import { useTheme } from '@material-ui/core/styles';
+import '@patternfly/react-core/dist/styles/base.css';
+import '@patternfly/react-styles';
 
 import { CVEEntityDetailsComponent } from '../CVEEntityDetailsComponent';
-
 
 export const SecurityFindingsComponent = (data: Array<String>) => {
     const [dataRows, setDataRows] = useState([]);
@@ -12,7 +13,7 @@ export const SecurityFindingsComponent = (data: Array<String>) => {
     const theme = useTheme();
     const isDarkMode = theme.palette.type === 'dark';
 
-    const columns: [] = [
+    const columns: Array<any> = [
         { name: 'CVE', selector: row => row.row_data.cve, sortable: true, wrap: true, width: '140px', button: true, cell: row => (
 			<a href={row.row_data.link} target="_blank" rel="noopener noreferrer">
 				{row.row_data.cve}
@@ -66,36 +67,85 @@ export const SecurityFindingsComponent = (data: Array<String>) => {
     }
 
     const getDiscovered = (occurenceDate: string) => {
-        const d1 = new Date();
-        const d2 = new Date(occurenceDate);
+        const currDate = new Date();
+        const incidentDate = new Date(occurenceDate);
 
-        const differenceInMilliseconds = d1 - d2;
+        const differenceInMilliseconds = currDate - incidentDate;
 
         const differenceInDays = differenceInMilliseconds / (1000 * 60 * 60 * 24);
 
         if (differenceInDays === 1) return `${Math.floor(differenceInDays)} day ago`;
+
+        // TODO: Calculate time that is less than 1 day
         if (differenceInDays < 1) return "PLACEHOLDER";
-    
+
         return `${Math.floor(differenceInDays)} days ago`
+    }
+
+    const checkIsFixable = (vulnItem: any) => {
+        for (let i = 0; i < data?.filters?.selectedCveStatusOptions.length; i++) {
+            if (vulnItem?.row_data?.status === data?.filters?.selectedCveStatusOptions[i]) return true;
+        };
+
+        return false;
+    }
+
+    const checkVulnSev = (vulnItem: any) => {
+        for (let i = 0; i < data?.filters?.selectedCveSeverityOptions.length; i++) {
+            if (vulnItem?.row_data?.severity === data?.filters?.selectedCveSeverityOptions[i]) return true;
+        };
+
+        return false;
+    }
+
+    const checkSearch = (vulnItem: any) => {
+        if (data?.filters?.selectedAttribute === "CVSS") return data?.filters?.optionText === vulnItem?.row_data?.cvss.toString();
+
+        if (data?.filters?.selectedAttribute === "Discovered time") return vulnItem?.row_data?.discovered.includes(data?.filters?.optionText);
+
+        let isTrue = false;
+        switch (data?.filters?.selectedEntity) {
+            case "Image":
+                isTrue = vulnItem?.expanded_data?.image.includes(data?.filters.optionText);
+                break;
+            case "CVE":
+                isTrue = vulnItem?.row_data?.cve.includes(data?.filters.optionText);
+                break;
+            case "Image Component":
+                isTrue = vulnItem?.expanded_data?.component.includes(data?.filters.optionText);
+                break;
+            case "Deployment":
+                isTrue = vulnItem?.expanded_data?.deployment.includes(data?.filters.optionText);
+                break;
+            case "Namespace":
+                isTrue = vulnItem?.expanded_data?.namespace.includes(data?.filters.optionText);
+                break;
+            case "Cluster":
+                isTrue = vulnItem?.expanded_data?.cluster.includes(data?.filters.optionText);
+                break
+        }
+
+        return isTrue;
     }
 
     const organizeData = () => {
         const rows: any = [];
 
-        data?.data?.forEach((element: Object) => {
+        data?.data?.forEach((element: String[]) => {
             element?.result?.images?.forEach((element1: Object) => {
                 for (const [Key, DeploymentValue2] of Object.entries(element1?.scan?.components)) {
-                    if (DeploymentValue2.vulns.length === 0) continue;
+                    if (DeploymentValue2?.vulns.length === 0) continue;
 
                     DeploymentValue2?.vulns?.forEach((vulns: Array) => {
-                        rows.push({
+
+                        const currItem = {
                             row_data: {
                                 cve: vulns?.cve,
                                 severity: checkVulnSeverity(vulns?.severity),
                                 status: isFixable(vulns?.fixedBy),
                                 workload: element?.result?.deployment?.name,
                                 image: element1?.name?.fullName,
-                                cvss: vulns?.cvss,
+                                cvss: vulns?.cvss.toString(),
                                 discovered: getDiscovered(vulns?.firstImageOccurrence),
                                 link: vulns?.link,
                             },
@@ -114,7 +164,22 @@ export const SecurityFindingsComponent = (data: Array<String>) => {
                                 source: DeploymentValue2?.source,
                                 location: DeploymentValue2?.location || "N/A",
                             }
-                        });
+                        }
+
+                        // Check data against various user selected filters
+                        if (data?.filters?.selectedCveStatusOptions?.length > 0) {
+                            if (!checkIsFixable(currItem)) return;
+                        }
+
+                        if (data?.filters?.selectedCveSeverityOptions?.length > 0) {
+                            if (!checkVulnSev(currItem)) return;
+                        }
+
+                        if (data?.filters?.optionText !== "") {
+                            if (!checkSearch(currItem)) return;
+                        }
+
+                        rows.push(currItem);
                     })
                 }
             })
@@ -126,7 +191,7 @@ export const SecurityFindingsComponent = (data: Array<String>) => {
 
     useEffect(() => {
         organizeData();
-    }, []);
+    }, [data]);
 
     return (
         <div>
@@ -135,7 +200,10 @@ export const SecurityFindingsComponent = (data: Array<String>) => {
                 columns={columns}
                 expandableRows
                 expandableRowsComponent={CVEEntityDetailsComponent}
-                expandableRowsComponentProps={{"cveDetails": "CVE details", "entityDetails": "Entity details"}}
+                expandableRowsComponentProps={{
+                    "cveDetails": "CVE details",
+                    "entityDetails": "Entity details"
+                }}
                 progressPending={pending}
                 sortIcon={<ArrowDownward />}
                 theme={isDarkMode ? 'dark' : 'light'}
