@@ -2864,9 +2864,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-tech-insights-maturity-common@workspace:plugins/tech-insights-maturity-common"
   dependencies:
-    "@backstage-community/plugin-tech-insights-backend-module-jsonfc": "workspace:^"
     "@backstage-community/plugin-tech-insights-common": "workspace:^"
-    "@backstage-community/plugin-tech-insights-node": "workspace:^"
     "@backstage/cli": ^0.29.4
     "@backstage/repo-tools": 0.3.5
     msw: 2.7.0
