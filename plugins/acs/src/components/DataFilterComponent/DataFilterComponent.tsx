@@ -9,25 +9,17 @@ import {
 } from '@patternfly/react-core';
 
 export const DataFilterComponent = ({ setFilters, data }) => {
-    const options1 = ['Image', 'CVE', 'Image Component', 'Deployment', 'Namespace', 'Cluster'];
-    const options2 = ['Name', 'Discovered time', 'CVSS'];
+    const entities = ['Image', 'CVE', 'Image Component', 'Deployment', 'Namespace', 'Cluster'];
+    const attributes = ['Name', 'Discovered time', 'CVSS'];
     const cveSeverityOptions = ['Critical', 'Important', 'Moderate', 'Low'];
     const cveStatusOptions = ['Fixable', 'Not fixable'];
 
-    const [selectedEntity, setSelectedEntity] = useState(options1[0]);
-    const [selectedAttribute, setSelectedAttribute] = useState(options2[0]);
+    const [selectedEntity, setSelectedEntity] = useState(entities[0]);
+    const [selectedAttribute, setSelectedAttribute] = useState(attributes[0]);
 
     const [userText, setUserText] = useState("");
     const [selectedCveSeverityOptions, setSelectedCveSeverityOptions] = useState([]);
     const [selectedCveStatusOptions, setSelectedCveStatusOptions] = useState([]);
-
-    console.log("currentOptions1: ", selectedEntity)
-    console.log("currentOptions2: ", selectedAttribute)
-    console.log("optionSearch: ", userText)
-    console.log("currentCveSeverityOptions: ", selectedCveSeverityOptions)
-    console.log("currentCveStatusOptions: ", selectedCveStatusOptions)
-
-    console.log("data: ", data);
 
     const checkVulnSeverity = (vulnSeverity: string) => {
         let severityLevel: string = "";
@@ -58,8 +50,8 @@ export const DataFilterComponent = ({ setFilters, data }) => {
             "selectedEntity": selectedEntity,
             "selectedAttribute": selectedAttribute,
             "optionText": userText,
-            "option3": selectedCveSeverityOptions,
-            "option4": selectedCveStatusOptions
+            "selectedCveSeverityOptions": selectedCveSeverityOptions,
+            "selectedCveStatusOptions": selectedCveStatusOptions
         })
     }
 
@@ -74,17 +66,14 @@ export const DataFilterComponent = ({ setFilters, data }) => {
                 direction={{ default: 'row' }}
                 spaceItems={{ default: 'spaceItemsNone' }}
                 flexWrap={{ default: 'nowrap' }}
-           //     className="pf-v5-u-w-100"
             >
                 <SimpleSelect
-                    menuToggleClassName="pf-v5-u-flex-shrink-0"
-                    options={options1}
+                    options={entities}
                     setSelectedOptions={setSelectedEntity}
                 />
 
                 <SimpleSelect
-                    menuToggleClassName="pf-v5-u-flex-shrink-0"
-                    options={options2}
+                    options={attributes}
                     setSelectedOptions={setSelectedAttribute}
                 />
 

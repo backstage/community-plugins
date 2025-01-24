@@ -11,8 +11,6 @@ export const SimpleSelect = ({ options, setSelectedOptions }) => {
   const [isOpen, setIsOpen] = React.useState(false);
   const [selected, setSelected] = React.useState<string>(options[0]);
 
-  console.log(options)
-
   const onToggleClick = () => {
     setIsOpen(!isOpen);
   };

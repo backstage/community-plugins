@@ -19,8 +19,6 @@ export const VulnerabilitiesComponent = (serviceName: any) => {
         error: ACSDataError,
     } = queryACSData(serviceName);
 
-    console.log("ACSDataResult: ", ACSDataResult)
-
     const useStyles = makeStyles(theme => ({
         root: {
             width: '100%',
@@ -33,12 +31,6 @@ export const VulnerabilitiesComponent = (serviceName: any) => {
     const classes = useStyles();
 
     const [filters, setFilters] = useState({});
-
-    console.log("filters: ", filters)
-
-    useEffect(() => {
-
-    }, [setFilters])
 
     if (ACSDataError) {
         return (

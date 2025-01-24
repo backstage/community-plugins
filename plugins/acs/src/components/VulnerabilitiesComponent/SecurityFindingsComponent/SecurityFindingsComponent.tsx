@@ -8,7 +8,6 @@ import '@patternfly/react-styles';
 import { CVEEntityDetailsComponent } from '../CVEEntityDetailsComponent';
 
 export const SecurityFindingsComponent = (data: Array<String>) => {
-    console.log("CHECK DATA:", data)
     const [dataRows, setDataRows] = useState([]);
     const [pending, setPending] = React.useState(true);
     const theme = useTheme();
@@ -84,18 +83,16 @@ export const SecurityFindingsComponent = (data: Array<String>) => {
     }
 
     const checkIsFixable = (vulnItem: any) => {
-        for (let i = 0; i < data?.filters?.option4.length; i++) {
-            if (vulnItem?.row_data?.status === data?.filters?.option4[i]) return true;
+        for (let i = 0; i < data?.filters?.selectedCveStatusOptions.length; i++) {
+            if (vulnItem?.row_data?.status === data?.filters?.selectedCveStatusOptions[i]) return true;
         };
 
         return false;
     }
 
     const checkVulnSev = (vulnItem: any) => {
-        for (let i = 0; i < data?.filters?.option3.length; i++) {
-            console.log("SEVERITY", vulnItem?.row_data?.severity)
-            console.log("OPTION3:", data?.filters?.option3)
-            if (vulnItem?.row_data?.severity === data?.filters?.option3[i]) return true;
+        for (let i = 0; i < data?.filters?.selectedCveSeverityOptions.length; i++) {
+            if (vulnItem?.row_data?.severity === data?.filters?.selectedCveSeverityOptions[i]) return true;
         };
 
         return false;
@@ -104,7 +101,6 @@ export const SecurityFindingsComponent = (data: Array<String>) => {
     const checkSearch = (vulnItem: any) => {
         if (data?.filters?.selectedAttribute === "CVSS") return data?.filters?.optionText === vulnItem?.row_data?.cvss.toString();
 
-        console.log("discovered: ", vulnItem?.row_data?.discovered)
         if (data?.filters?.selectedAttribute === "Discovered time") return vulnItem?.row_data?.discovered.includes(data?.filters?.optionText);
 
         let isTrue = false;
@@ -171,11 +167,11 @@ export const SecurityFindingsComponent = (data: Array<String>) => {
                         }
 
                         // Check data against various user selected filters
-                        if (data?.filters?.option4?.length > 0) {
+                        if (data?.filters?.selectedCveStatusOptions?.length > 0) {
                             if (!checkIsFixable(currItem)) return;
                         }
 
-                        if (data?.filters?.option3?.length > 0) {
+                        if (data?.filters?.selectedCveSeverityOptions?.length > 0) {
                             if (!checkVulnSev(currItem)) return;
                         }
 

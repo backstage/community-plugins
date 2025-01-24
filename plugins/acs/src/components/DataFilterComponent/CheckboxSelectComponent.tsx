@@ -2,10 +2,6 @@ import React, { useEffect } from 'react';
 import { Select, SelectOption, SelectList, MenuToggle, MenuToggleElement, Badge } from '@patternfly/react-core';
 
 export const CheckboxSelectComponent: React.FunctionComponent = ({ setSelectedOptions, options, dropdownName }) => {
-    console.log("options: ", options)
-    console.log("dropdownName: ", dropdownName)
-    console.log("setSelectedOptions: ", setSelectedOptions)
-
   const [isOpen, setIsOpen] = React.useState(false);
   const [selectedItems, setSelectedItems] = React.useState<number[]>([]);
 
@@ -14,9 +10,6 @@ export const CheckboxSelectComponent: React.FunctionComponent = ({ setSelectedOp
   };
 
   const onSelect = (_event: React.MouseEvent<Element, MouseEvent> | undefined, value: string | number | undefined) => {
-    // eslint-disable-next-line no-console
-    console.log('selected', value);
-
     if (selectedItems.includes(value as number)) {
       setSelectedItems(selectedItems.filter((id) => id !== value));
     } else {
