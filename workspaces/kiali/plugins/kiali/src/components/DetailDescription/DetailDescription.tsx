@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Tooltip } from '@material-ui/core';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
-
-import { Tooltip } from '@material-ui/core';
-
 import { isMultiCluster, serverConfig } from '../../config';
 import { createIcon, KialiIcon } from '../../config/KialiIcon';
 import { isGateway, isWaypoint } from '../../helpers/LabelFilterHelper';

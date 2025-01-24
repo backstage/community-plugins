@@ -1,5 +1,29 @@
 ### Dependencies
 
+## 1.36.2
+
+### Patch Changes
+
+- 0b73ce1: Upgrade backstage to 1.35.0 and remove @spotify/prettier-config
+
+## 1.36.1
+
+### Patch Changes
+
+- 06a5884: Updated dependency `@types/node` to `22.10.5`.
+
+## 1.36.0
+
+### Minor Changes
+
+- 117f8e0: Support multi providers in Kiali
+
+## 1.35.1
+
+### Patch Changes
+
+- 59cab9a: The `kiali` and `kiali-backend` plugins from the [janus-idp/backstage-plugins](https://github.com/janus-idp/backstage-plugins) repository were migrated to the community plugins, based on commit [92a16c5](https://github.com/janus-idp/backstage-plugins/commit/92a16c5). The migration was performed by following the manual migration steps outlined in the [Community Plugins CONTRIBUTING guide](https://github.com/backstage/community-plugins/blob/main/CONTRIBUTING.md#migrating-a-plugin)
+
 ## 1.35.0
 
 ### Minor Changes

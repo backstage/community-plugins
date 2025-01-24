@@ -22,7 +22,7 @@ import { ScorecardInfo } from '../ScorecardsInfo';
 import { techInsightsApiRef } from '../../api';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { getCompoundEntityRef } from '@backstage/catalog-model';
-import { Check } from '@backstage-community/plugin-tech-insights-common/client';
+import { Check } from '@backstage-community/plugin-tech-insights-common';
 
 export const ScorecardsCard = (props: {
   title: string;

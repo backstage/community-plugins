@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "engines": {
-    "node": "18 || 20"
+    "node": "20 || 22"
   },
   "scripts": {
     "start:backstage": "concurrently -c auto -n \"fe,be\" -p \"{name}:{pid}\" \"yarn start-app\" \"yarn start-backend\"",
@@ -37,11 +37,10 @@
     "directory": "workspaces/redhat-argocd"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.28.0",
+    "@backstage/cli": "^0.29.4",
     "@backstage/e2e-test-utils": "^0.1.1",
-    "@backstage/repo-tools": "^0.10.0",
+    "@backstage/repo-tools": "^0.12.0",
     "@changesets/cli": "^2.27.1",
-    "@spotify/prettier-config": "^15.0.0",
     "concurrently": "^9.0.0",
     "knip": "^5.27.4",
     "node-gyp": "^9.0.0",
@@ -52,7 +51,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18"
   },
-  "prettier": "@spotify/prettier-config",
+  "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {
     "*.{js,jsx,ts,tsx,mjs,cjs}": [
       "eslint --fix",
@@ -61,8 +60,5 @@
     "*.{json,md}": [
       "prettier --write"
     ]
-  },
-  "dependencies": {
-    "@emotion/styled": "^11.13.0"
   }
 }

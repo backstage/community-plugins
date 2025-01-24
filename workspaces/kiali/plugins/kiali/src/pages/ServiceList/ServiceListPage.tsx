@@ -13,19 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Entity } from '@backstage/catalog-model';
+import { Content, InfoCard } from '@backstage/core-components';
+import { useApi } from '@backstage/core-plugin-api';
+import { CircularProgress } from '@material-ui/core';
 import * as React from 'react';
 import { useRef } from 'react';
 import { useAsyncFn, useDebounce } from 'react-use';
-
-import { Entity } from '@backstage/catalog-model';
-import { Content } from '@backstage/core-components';
-import { useApi } from '@backstage/core-plugin-api';
-
-import { CircularProgress } from '@material-ui/core';
-
 import { DefaultSecondaryMasthead } from '../../components/DefaultSecondaryMasthead/DefaultSecondaryMasthead';
 import * as FilterHelper from '../../components/FilterList/FilterHelper';
 import { Toggles } from '../../components/Filters/StatefulFilters';
+import { KIALI_PROVIDER } from '../../components/Router';
 import { TimeDurationComponent } from '../../components/Time/TimeDurationComponent';
 import { VirtualList } from '../../components/VirtualList/VirtualList';
 import { isMultiCluster } from '../../config';
@@ -49,14 +47,26 @@ export const ServiceListPage = (props: {
 }): React.JSX.Element => {
   const kialiClient = useApi(kialiApiRef);
   const [namespaces, setNamespaces] = React.useState<NamespaceInfo[]>([]);
+  const [errorProvider, setErrorProvider] = React.useState<string | undefined>(
+    undefined,
+  );
   const [allServices, setServices] = React.useState<ServiceListItem[]>([]);
   const [duration, setDuration] = React.useState<number>(
     FilterHelper.currentDuration(),
   );
   const kialiState = React.useContext(KialiContext) as KialiAppState;
+  kialiClient.setAnnotation(
+    KIALI_PROVIDER,
+    props.entity?.metadata.annotations?.[KIALI_PROVIDER] ||
+      kialiState.providers.activeProvider,
+  );
   const activeNs = props.entity
     ? getEntityNs(props.entity)
     : kialiState.namespaces.activeNamespaces.map(ns => ns.name);
+  const activeProviders =
+    props.entity?.metadata.annotations?.[KIALI_PROVIDER] ||
+    kialiState.providers.activeProvider;
+  const prevActiveProvider = useRef(activeProviders);
   const prevActiveNs = useRef(activeNs);
   const prevDuration = useRef(duration);
   const activeToggles: ActiveTogglesInfo = Toggles.getToggles();
@@ -147,41 +157,56 @@ export const ServiceListPage = (props: {
     const onlyDefinitions = 'false';
     return Promise.all(
       nss.map(async nsInfo => {
-        return await kialiClient.getServices(nsInfo.name, {
-          rateInterval: `${String(timeDuration)}s`,
-          health: health,
-          istioResources: istioResources,
-          onlyDefinitions: onlyDefinitions,
-        });
-      }),
-    )
-      .then(results => {
-        let serviceListItems: ServiceListItem[] = [];
-
-        results.forEach(response => {
-          serviceListItems = serviceListItems.concat(
-            getServiceItem(response, duration),
+        return await kialiClient
+          .getServices(nsInfo.name, {
+            rateInterval: `${String(timeDuration)}s`,
+            health: health,
+            istioResources: istioResources,
+            onlyDefinitions: onlyDefinitions,
+          })
+          .then(servicesResponse => servicesResponse)
+          .catch(err =>
+            setErrorProvider(
+              `Could not fetch services: ${getErrorString(err)}`,
+            ),
           );
-        });
-        setServices(serviceListItems);
-      })
-      .catch(err =>
-        kialiState.alertUtils?.add(
-          `Could not fetch services: ${getErrorString(err)}`,
-        ),
-      );
+      }),
+    ).then(results => {
+      let serviceListItems: ServiceListItem[] = [];
+
+      results.forEach(response => {
+        serviceListItems = serviceListItems.concat(
+          getServiceItem(response as ServiceList, duration),
+        );
+      });
+      setServices(serviceListItems);
+    });
   };
 
   const load = async () => {
-    kialiClient.getNamespaces().then(namespacesResponse => {
-      const allNamespaces: NamespaceInfo[] = getNamespaces(
-        namespacesResponse,
-        namespaces,
+    kialiClient.setAnnotation(
+      KIALI_PROVIDER,
+      props.entity?.metadata.annotations?.[KIALI_PROVIDER] ||
+        kialiState.providers.activeProvider,
+    );
+    kialiClient
+      .getNamespaces()
+      .then(namespacesResponse => {
+        const allNamespaces: NamespaceInfo[] = getNamespaces(
+          namespacesResponse,
+          namespaces,
+        );
+        const nsl = allNamespaces.filter(ns => activeNs.includes(ns.name));
+        setNamespaces(nsl);
+        fetchServices(nsl, duration, activeToggles);
+      })
+      .catch(err =>
+        setErrorProvider(
+          `Error providing namespaces for ${
+            kialiState.providers.activeProvider
+          }, verify configuration for this provider: ${err.toString()}`,
+        ),
       );
-      const nsl = allNamespaces.filter(ns => activeNs.includes(ns.name));
-      setNamespaces(nsl);
-      fetchServices(nsl, duration, activeToggles);
-    });
     setTimeout(() => {
       setLoading(false);
     }, 400);
@@ -190,15 +215,18 @@ export const ServiceListPage = (props: {
   React.useEffect(() => {
     if (
       duration !== prevDuration.current ||
-      !nsEqual(activeNs, prevActiveNs.current)
+      !nsEqual(activeNs, prevActiveNs.current) ||
+      activeProviders !== prevActiveProvider.current
     ) {
+      setErrorProvider(undefined);
       setLoading(true);
       load();
       prevDuration.current = duration;
       prevActiveNs.current = activeNs;
+      prevActiveProvider.current = activeProviders;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeNs, duration]);
+  }, [activeNs, duration, activeProviders]);
 
   const [{ loading }, refresh] = useAsyncFn(
     async () => {
@@ -215,7 +243,9 @@ export const ServiceListPage = (props: {
   }
 
   const serviceContent = () => {
-    return (
+    return errorProvider ? (
+      <InfoCard>{errorProvider}</InfoCard>
+    ) : (
       <>
         {props.view !== ENTITY && (
           <DefaultSecondaryMasthead

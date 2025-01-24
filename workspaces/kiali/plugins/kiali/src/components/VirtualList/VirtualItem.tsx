@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { TableRow } from '@material-ui/core';
 import * as React from 'react';
 import { CSSProperties } from 'react';
-
-import { TableRow } from '@material-ui/core';
-
 import { useLinkStyle } from '../../styles/StyleUtils';
 import { hasHealth, Health } from '../../types/Health';
 import { StatefulFiltersProps } from '../Filters/StatefulFilters';

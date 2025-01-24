@@ -17,12 +17,15 @@
 import { ConfigReader } from '@backstage/config';
 import { JSON_RULE_ENGINE_CHECK_TYPE } from '../constants';
 import { readChecksFromConfig } from './config';
+import { mockServices } from '@backstage/backend-test-utils';
 
 describe('config', () => {
   describe('readChecksFromConfig', () => {
     it('no config return empty checks array', () => {
       const config = new ConfigReader({});
-      const checks = readChecksFromConfig(config);
+      const checks = readChecksFromConfig(config, {
+        logger: mockServices.logger.mock(),
+      });
 
       expect(checks).toHaveLength(0);
     });
@@ -33,7 +36,9 @@ describe('config', () => {
           factChecker: {},
         },
       });
-      const checks = readChecksFromConfig(config);
+      const checks = readChecksFromConfig(config, {
+        logger: mockServices.logger.mock(),
+      });
 
       expect(checks).toHaveLength(0);
     });
@@ -64,6 +69,12 @@ describe('config', () => {
                     ],
                   },
                 },
+                links: [
+                  {
+                    title: 'Foo Link',
+                    url: 'https://example.com/foo',
+                  },
+                ],
               },
               barCheck: {
                 type: JSON_RULE_ENGINE_CHECK_TYPE,
@@ -86,6 +97,11 @@ describe('config', () => {
                     ],
                   },
                 },
+                links: [
+                  {
+                    wrong: 'wrong',
+                  },
+                ],
               },
               bazCheck: {
                 type: JSON_RULE_ENGINE_CHECK_TYPE,
@@ -107,7 +123,9 @@ describe('config', () => {
         },
       });
 
-      const checks = readChecksFromConfig(config);
+      const checks = readChecksFromConfig(config, {
+        logger: mockServices.logger.mock(),
+      });
 
       expect(checks).toHaveLength(3);
       expect(checks.map(check => check.id)).toEqual([
@@ -132,6 +150,12 @@ describe('config', () => {
           },
         ],
       });
+      expect(fooCheck.links).toEqual([
+        {
+          title: 'Foo Link',
+          url: 'https://example.com/foo',
+        },
+      ]);
 
       const barCheck = checks.find(check => check.id === 'barCheck')!;
       expect(barCheck.name).toEqual('Bar Check');

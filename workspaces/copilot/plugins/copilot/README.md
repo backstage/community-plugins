@@ -1,7 +1,3 @@
-Aqui está o README ajustado, agora incluindo a nova funcionalidade para selecionar um time e comparar suas métricas com os dados gerais:
-
----
-
 # GitHub Copilot Plugin
 
 Welcome to the GitHub Copilot Plugin!
@@ -34,7 +30,8 @@ To start using the GitHub Copilot Plugin, follow these steps:
 1. **Install Dependencies**:
 
    ```bash
-   yarn add @backstage-community/plugin-copilot
+   # From your Backstage root directory
+   yarn --cwd packages/app add @backstage-community/plugin-copilot
    ```
 
 2. **Configure Routes**:

@@ -26,10 +26,11 @@ yarn.lock                                           @backstage/community-plugins
 /workspaces/feedback                                @backstage/community-plugins-maintainers  @riginoommen @deshmukhmayur @yashoswalyo
 /workspaces/fossa                                   @backstage/community-plugins-maintainers  @backstage/sda-se-reviewers
 /workspaces/git-release-manager                     @backstage/community-plugins-maintainers  @erikengervall
+/workspaces/github-discussions                      @backstage/community-plugins-maintainers  @minkimcello @taras
 /workspaces/github-pull-requests-board              @backstage/community-plugins-maintainers  @gregorytalita
 /workspaces/jfrog-artifactory                       @backstage/community-plugins-maintainers  @BethGriggs
 /workspaces/kafka                                   @backstage/community-plugins-maintainers  @andrewthauer
-/workspaces/keycloak                                @backstage/community-plugins-maintainers  @AndrienkoAleksandr @schultzp2020
+/workspaces/keycloak                                @backstage/community-plugins-maintainers  @AndrienkoAleksandr @schultzp2020 @dzemanov
 /workspaces/kiali                                   @backstage/community-plugins-maintainers  @aljesusg @josunect
 /workspaces/linguist                                @backstage/community-plugins-maintainers  @awanlin
 /workspaces/matomo                                  @backstage/community-plugins-maintainers  @yashoswalyo @deshmukhmayur @riginoommen

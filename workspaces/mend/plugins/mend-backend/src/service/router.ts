@@ -34,6 +34,7 @@ import {
   type FilterProps,
 } from '../permission';
 
+/** @internal */
 export type RouterOptions = {
   logger: LoggerService;
   config: Config;
@@ -48,6 +49,7 @@ enum ROUTE {
   FINDING = '/finding',
 }
 
+/** @internal */
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {

@@ -1,5 +1,23 @@
 # @backstage-community/plugin-copilot
 
+## 0.4.3
+
+### Patch Changes
+
+- 46c4837: Fix division by zero in language stats
+
+## 0.4.2
+
+### Patch Changes
+
+- 8007ea2: Removes Portuguese from the README
+
+## 0.4.1
+
+### Patch Changes
+
+- 6bf6fe4: Updated READMEs to clarify installation instructions including locations to run commands from and steps for new backend system
+
 ## 0.4.0
 
 ### Minor Changes

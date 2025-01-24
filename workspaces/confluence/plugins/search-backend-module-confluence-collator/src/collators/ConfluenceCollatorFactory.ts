@@ -254,6 +254,14 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
     if (additionalQuery !== '') {
       query = `(${spaceQuery}) and (${additionalQuery})`;
     }
+    // If no query is provided, default to fetching all pages, blogposts, comments and attachments (which encompasses all content)
+    // https://developer.atlassian.com/server/confluence/advanced-searching-using-cql/#type
+    if (query === '') {
+      this.logger.info(
+        `No confluence query nor spaces provided via config, so will index all pages, blogposts, comments and attachments`,
+      );
+      query = 'type IN (page, blogpost, comment, attachment)';
+    }
     return query;
   }
 

@@ -19,7 +19,6 @@ import {
   NodeStatus,
 } from '@patternfly/react-topology';
 import _ from 'lodash';
-
 import { PFColors } from '../../../components/Pf/PfColors';
 import { icons } from '../../../config/Icons';
 import { Rate, RequestTolerance } from '../../../types/ErrorRate/types';

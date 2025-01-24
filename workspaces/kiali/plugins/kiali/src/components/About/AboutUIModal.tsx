@@ -13,10 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
-
 import { Link } from '@backstage/core-components';
-
 import {
   Card,
   CardContent,
@@ -32,7 +29,7 @@ import {
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { Alert } from '@material-ui/lab';
-
+import * as React from 'react';
 import { config, KialiIcon, KialiLogo } from '../../config';
 import { kialiStyle } from '../../styles/StyleUtils';
 import {

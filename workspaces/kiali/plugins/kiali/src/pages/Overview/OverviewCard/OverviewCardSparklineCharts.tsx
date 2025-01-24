@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import * as React from 'react';
-
 import { serverConfig } from '../../../config';
 import { DurationInSeconds } from '../../../types/Common';
 import { IstiodResourceThresholds } from '../../../types/IstioStatus';

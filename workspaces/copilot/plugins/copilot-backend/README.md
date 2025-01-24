@@ -4,6 +4,15 @@ This GitHub Copilot plugin integrates with Backstage to provide metrics and insi
 
 ## Installation
 
+### Install Dependencies
+
+Add the `@backstage-community/plugin-copilot-backend` package to your backend:
+
+```sh
+# From your Backstage root directory
+yarn --cwd packages/backend add @backstage-community/plugin-copilot-backend
+```
+
 ### New Backend System
 
 To configure the plugin using the new backend system:
@@ -24,20 +33,14 @@ To configure the plugin using the new backend system:
 
 To install the plugin using the old method:
 
-1. Add the `@backstage-community/plugin-copilot-backend` package to your backend:
-
-   ```sh
-   yarn --cwd packages/backend add @backstage-community/plugin-copilot-backend
-   ```
-
-2. In your `packages/backend/src/plugins/copilot.ts` file, add the following code:
+1. In your `packages/backend/src/plugins/copilot.ts` file, add the following code:
 
    ```typescript
-   import { TaskScheduleDefinition } from '@backstage/backend-tasks';
+   import { SchedulerServiceTaskScheduleDefinition } from '@backstage/backend-plugin-api';
    import { createRouterFromConfig } from '@backstage-community/plugin-copilot-backend';
 
    export default async function createPlugin(): Promise<void> {
-     const schedule: TaskScheduleDefinition = {
+     const schedule: SchedulerServiceTaskScheduleDefinition = {
        frequency: { cron: '0 2 * * *' },
        timeout: { minutes: 15 },
        initialDelay: { seconds: 15 },
@@ -47,7 +50,7 @@ To install the plugin using the old method:
    }
    ```
 
-3. Integrate the plugin into the main backend router in `packages/backend/src/index.ts`:
+1. Integrate the plugin into the main backend router in `packages/backend/src/index.ts`:
 
    ```typescript
    import { createRouterFromConfig } from './plugins/copilot';

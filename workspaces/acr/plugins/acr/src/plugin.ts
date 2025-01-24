@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Entity } from '@backstage/catalog-model';
 import {
   configApiRef,
   createApiFactory,
@@ -27,8 +26,6 @@ import {
   AzureContainerRegistryApiClient,
   AzureContainerRegistryApiRef,
 } from './api';
-import { AZURE_CONTAINER_REGISTRY_ANNOTATION_IMAGE_NAME } from './consts';
-import { rootRouteRef } from './routes';
 
 /**
  * Backstage plugin.
@@ -37,9 +34,6 @@ import { rootRouteRef } from './routes';
  */
 export const acrPlugin = createPlugin({
   id: 'acr',
-  routes: {
-    root: rootRouteRef,
-  },
   apis: [
     createApiFactory({
       api: AzureContainerRegistryApiRef,
@@ -59,30 +53,26 @@ export const acrPlugin = createPlugin({
 });
 
 /**
- * Page content for the catalog (entity page) that shows
- * latest container images.
+ * A catalog entity content (tab) that shows the ACR container images.
  *
  * @public
  */
-export const AcrPage = acrPlugin.provide(
+export const AcrImagesEntityContent = acrPlugin.provide(
   createComponentExtension({
-    name: 'AzureContainerRegistryPage',
+    name: 'AcrImagesEntityContent',
     component: {
       lazy: () =>
-        import('./components/AcrDashboardPage').then(m => m.AcrDashboardPage),
+        import('./components/AcrImagesEntityContent').then(
+          m => m.AcrImagesEntityContent,
+        ),
     },
   }),
 );
 
 /**
- * Function that returns true if the given entity contains at least one
- * Azure Container Registry related annotation.
+ * A catalog entity content (tab) that shows the ACR container images.
  *
  * @public
+ * @deprecated Please use `AcrImagesEntityContent` instead of `AcrPage`.
  */
-export const isAcrAvailable = (entity: Entity) =>
-  Boolean(
-    entity?.metadata.annotations?.[
-      AZURE_CONTAINER_REGISTRY_ANNOTATION_IMAGE_NAME
-    ],
-  );
+export const AcrPage = AcrImagesEntityContent;

@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { CSSProperties } from 'react';
-
 import { Typography } from '@material-ui/core';
 import {
   CheckCircleIcon,
@@ -23,7 +21,7 @@ import {
   InfoCircleIcon,
 } from '@patternfly/react-icons';
 import { SVGIconProps } from '@patternfly/react-icons/dist/js/createIcon';
-
+import React, { CSSProperties } from 'react';
 import { kialiStyle } from '../../styles/StyleUtils';
 import { ValidationTypes } from '../../types/IstioObjects';
 import { PFColors } from '../Pf/PfColors';

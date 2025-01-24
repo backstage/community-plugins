@@ -21,7 +21,6 @@ import {
   CheckLink,
   CheckResult,
 } from '@backstage-community/plugin-tech-insights-common';
-
 import {
   CheckResultRenderer,
   jsonRulesEngineCheckResultRenderer,

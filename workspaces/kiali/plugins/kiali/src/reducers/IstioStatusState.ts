@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { getType } from 'typesafe-actions';
-
 import { IstioStatusActions } from '../actions/IstioStatusActions';
 import { KialiAppAction } from '../actions/KialiAppAction';
 import { ComponentStatus } from '../types/IstioStatus';

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { getType } from 'typesafe-actions';
-
 import { IstioCertsInfoActions } from '../actions/IstioCertsInfoActions';
 import { KialiAppAction } from '../actions/KialiAppAction';
 import { CertsInfo } from '../types/CertsInfo';

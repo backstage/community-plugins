@@ -7,7 +7,6 @@
 | @backstage-community/plugin-copilot-common | package.json | error    |
 | @backstage/backend-app-api                 | package.json | error    |
 | @backstage/backend-common                  | package.json | error    |
-| @backstage/backend-tasks                   | package.json | error    |
 | winston                                    | package.json | error    |
 | yn                                         | package.json | error    |
 

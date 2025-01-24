@@ -13,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import { Content, Page } from '@backstage/core-components';
-
+import React from 'react';
 import { AppListPage } from '../AppList/AppListPage';
 import { IstioConfigListPage } from '../IstioConfigList/IstioConfigListPage';
 import { OverviewPage } from '../Overview/OverviewPage';
@@ -40,7 +38,6 @@ const getPathPage = () => {
 
 export const KialiPage = () => {
   const [selectedTab, _] = React.useState<string>(getPathPage());
-
   const renderPath = () => {
     switch (selectedTab) {
       case 'overview':

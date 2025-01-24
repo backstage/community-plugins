@@ -19,9 +19,9 @@ import {
   DiscoveryApi,
   IdentityApi,
 } from '@backstage/core-plugin-api';
-
 import { AxiosError } from 'axios';
-
+import { Record } from 'victory-core/lib/victory-util/immutable-types';
+import { KIALI_PROVIDER } from '../components/Router';
 import { config } from '../config';
 import { App, AppQuery } from '../types/App';
 import { AppList, AppListQuery } from '../types/AppList';
@@ -189,6 +189,7 @@ export interface KialiApi {
     cluster?: string,
   ): Promise<IstioConfigDetails>;
   setEntity(entity?: Entity): void;
+  setAnnotation(key: string, value: string): void;
   status(): Promise<any>;
   getPodLogs(
     namespace: string,
@@ -289,13 +290,13 @@ export class KialiApiClient implements KialiApi {
   private readonly discoveryApi: DiscoveryApi;
   private readonly identityApi: IdentityApi;
   private kialiUrl?: string;
-  private entity?: Entity;
+  private annotations: Record<string, string>;
 
   constructor(options: Options) {
     this.kialiUrl = '';
     this.discoveryApi = options.discoveryApi;
     this.identityApi = options.identityApi;
-    this.entity = undefined;
+    this.annotations = {};
   }
 
   private newRequest = async <T>(
@@ -323,6 +324,7 @@ export class KialiApiClient implements KialiApi {
     const dataRequest = data ? data : {};
     dataRequest.endpoint = endpoint;
     dataRequest.method = method;
+    dataRequest.provider = this.annotations?.[KIALI_PROVIDER];
 
     const jsonResponse = await fetch(
       `${this.kialiUrl}/${proxy ? 'proxy' : 'status'}`,
@@ -392,7 +394,7 @@ export class KialiApiClient implements KialiApi {
       urls.namespaces,
       {},
       {},
-    ).then(resp => filterNsByAnnotation(resp, this.entity));
+    ).then(resp => filterNsByAnnotation(resp, this.annotations));
   };
 
   getServerConfig = async (): Promise<ServerConfig> => {
@@ -679,7 +681,11 @@ export class KialiApiClient implements KialiApi {
   };
 
   setEntity = (entity?: Entity) => {
-    this.entity = entity;
+    this.annotations = entity?.metadata.annotations || {};
+  };
+
+  setAnnotation = (key: string, value: string) => {
+    this.annotations[key] = value;
   };
 
   getWorkloads = async (
@@ -1076,6 +1082,7 @@ export class KialiApiClient implements KialiApi {
       HTTP_VERBS.GET,
       urls.namespacesGraphElements,
       params,
+      {},
     );
   };
 }

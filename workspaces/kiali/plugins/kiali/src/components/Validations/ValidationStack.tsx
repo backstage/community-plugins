@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import React from 'react';
-
 import { kialiStyle } from '../../styles/StyleUtils';
 import { ObjectCheck, ValidationTypes } from '../../types/IstioObjects';
 import { highestSeverity } from '../../types/ServiceInfo';

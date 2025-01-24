@@ -21,4 +21,5 @@
  * @packageDocumentation
  */
 
-export { acrPlugin, AcrPage, isAcrAvailable } from './plugin';
+export { acrPlugin, AcrImagesEntityContent, AcrPage } from './plugin';
+export { isAcrAvailable } from './utils/isAcrAvailable';

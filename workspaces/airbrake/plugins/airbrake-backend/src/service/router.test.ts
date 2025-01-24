@@ -16,35 +16,33 @@
 
 import express from 'express';
 import request from 'supertest';
-import { ConfigReader } from '@backstage/config';
+import { ConfigReader, Config } from '@backstage/config';
 import {
   createRouter,
   generateAirbrakePathRewrite,
   RouterOptions,
 } from './router';
-import { AirbrakeConfig, extractAirbrakeConfig } from '../config';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { mockServices } from '@backstage/backend-test-utils';
 
 describe('createRouter', () => {
   let app: express.Express;
-  let airbrakeConfig: AirbrakeConfig;
+  let config: Config;
   let voidLogger: LoggerService;
 
   beforeEach(async () => {
     jest.resetAllMocks();
 
     voidLogger = mockServices.logger.mock();
-    const config = new ConfigReader({
+    config = new ConfigReader({
       airbrake: {
         apiKey: 'fakeApiKey',
       },
     });
-    airbrakeConfig = extractAirbrakeConfig(config);
 
     const router = await createRouter({
       logger: voidLogger,
-      airbrakeConfig,
+      config,
     });
     app = express().use(router);
   });
@@ -62,7 +60,7 @@ describe('createRouter', () => {
     it('appends the API Key properly with no other url parameters', () => {
       const options: RouterOptions = {
         logger: voidLogger,
-        airbrakeConfig,
+        config,
       };
       const pathRewrite = generateAirbrakePathRewrite(options) as (
         path: string,
@@ -76,7 +74,7 @@ describe('createRouter', () => {
     it('appends the API Key properly despite there being other URL parameters', () => {
       const options: RouterOptions = {
         logger: voidLogger,
-        airbrakeConfig,
+        config,
       };
       const pathRewrite = generateAirbrakePathRewrite(options) as (
         path: string,

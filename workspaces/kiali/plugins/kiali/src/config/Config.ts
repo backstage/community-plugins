@@ -15,7 +15,6 @@
  */
 
 import deepFreeze from 'deep-freeze';
-
 import { MILLISECONDS, UNIT_TIME } from '../types/Common';
 
 // We assume this is always defined in the .env file

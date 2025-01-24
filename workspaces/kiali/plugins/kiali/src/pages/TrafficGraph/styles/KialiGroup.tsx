@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import { CubesIcon } from '@patternfly/react-icons';
 import {
   DefaultGroup,
@@ -24,7 +22,7 @@ import {
   WithSelectionProps,
 } from '@patternfly/react-topology';
 import useDetailsLevel from '@patternfly/react-topology/dist/esm/hooks/useDetailsLevel';
-
+import React from 'react';
 import { PFColors } from '../../../components/Pf/PfColors';
 
 const ICON_PADDING = 20;

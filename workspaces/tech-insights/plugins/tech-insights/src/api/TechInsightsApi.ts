@@ -20,11 +20,9 @@ import {
   BulkCheckResponse,
   FactSchema,
   CheckLink,
-} from '@backstage-community/plugin-tech-insights-common';
-import {
   Check,
   InsightFacts,
-} from '@backstage-community/plugin-tech-insights-common/client';
+} from '@backstage-community/plugin-tech-insights-common';
 import { CheckResultRenderer } from '../components/CheckResultRenderer';
 import { CompoundEntityRef, Entity } from '@backstage/catalog-model';
 
