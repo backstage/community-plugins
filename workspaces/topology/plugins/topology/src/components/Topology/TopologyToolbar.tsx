@@ -26,7 +26,6 @@ import {
 
 import { FilterContext } from '../../hooks/FilterContext';
 import { K8sResourcesContext } from '../../hooks/K8sResourcesContext';
-import { TopologyDisplayOption } from '../../types/types';
 
 type TopologyToolbarProps = {
   showFilters: boolean;
@@ -80,7 +79,7 @@ const TopologyToolbar = ({ showFilters }: TopologyToolbarProps) => {
         ...newFilters[index],
         isSelected: !newFilters[index].isSelected,
       };
-      setAppliedTopologyFilters?.(newFilters as TopologyDisplayOption[]);
+      setAppliedTopologyFilters?.(newFilters);
     }
   };
 
