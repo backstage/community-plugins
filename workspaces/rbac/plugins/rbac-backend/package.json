@@ -48,6 +48,7 @@
     "@dagrejs/graphlib": "^2.1.13",
     "@janus-idp/backstage-plugin-audit-log-node": "^1.7.1",
     "casbin": "^5.27.1",
+    "casbin-pg-watcher": "^0.2.0",
     "chokidar": "^3.6.0",
     "csv-parse": "^5.5.5",
     "express": "^4.18.2",

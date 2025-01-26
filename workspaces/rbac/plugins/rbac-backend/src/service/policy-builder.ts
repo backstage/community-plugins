@@ -28,7 +28,8 @@ import type { PermissionEvaluator } from '@backstage/plugin-permission-common';
 import { PermissionPolicy } from '@backstage/plugin-permission-node';
 
 import { DefaultAuditLogger } from '@janus-idp/backstage-plugin-audit-log-node';
-import { newEnforcer, newModelFromString } from 'casbin';
+import { newModelFromString, newSyncedEnforcer } from 'casbin';
+import { newWatcher } from 'casbin-pg-watcher';
 import type { Router } from 'express';
 
 import type {
@@ -99,7 +100,26 @@ export class PolicyBuilder {
       databaseClient,
     ).createAdapter();
 
-    const enf = await newEnforcer(newModelFromString(MODEL), adapter);
+    const enf = await newSyncedEnforcer(newModelFromString(MODEL), adapter);
+    const dbConfig = env.config.getOptionalConfig('backend.database');
+    const client = dbConfig?.getOptionalString('client');
+    if (client === 'pg') {
+      console.log(`==== Create pg watcher`);
+      const host = dbConfig?.getString('connection.host');
+      const port = dbConfig?.getNumber('connection.port');
+      const username = dbConfig?.getString('connection.user');
+      const password = dbConfig?.getString('connection.password');
+      const dbName = await databaseClient.client.config.connection.database;
+      const connectionString = `postgresql://${username}:${password}@${host}:${port}/${dbName}`;
+      console.log(`==== Connection string: ${connectionString}`);
+      const watcher = await newWatcher({ connectionString });
+      enf.setWatcher(watcher);
+      watcher.setUpdateCallback(async () => {
+        console.log('==== Update policy!!!');
+        await enf.loadPolicy();
+      });
+    }
+
     await enf.loadPolicy();
     enf.enableAutoSave(true);
 

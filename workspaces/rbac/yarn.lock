@@ -2701,6 +2701,7 @@ __metadata:
     "@types/node": 18.19.68
     "@types/supertest": 2.0.16
     casbin: ^5.27.1
+    casbin-pg-watcher: ^0.2.0
     chokidar: ^3.6.0
     csv-parse: ^5.5.5
     express: ^4.18.2
@@ -16041,6 +16042,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"casbin-pg-watcher@npm:^0.2.0":
+  version: 0.2.0
+  resolution: "casbin-pg-watcher@npm:0.2.0"
+  dependencies:
+    pg-listen: ^1.6.0
+  checksum: 577986e5130f30257298e92df43c36896577e33a52e7ad2d0a455678fa120b89c41c7c826913eb4ac821cb0ca35421e045e34d77d06e4e523b7d80a99c830629
+  languageName: node
+  linkType: hard
+
 "casbin@npm:^5.27.0, casbin@npm:^5.27.1":
   version: 5.34.0
   resolution: "casbin@npm:5.34.0"
@@ -27685,6 +27695,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"pg-listen@npm:^1.6.0":
+  version: 1.7.0
+  resolution: "pg-listen@npm:1.7.0"
+  dependencies:
+    debug: ^4.1.1
+    pg-format: ^1.0.4
+    typed-emitter: ^0.1.0
+  peerDependencies:
+    pg: 7.x || 8.x
+  checksum: 900997272d939f0db073143e9b3d27871997deeb5d5fc5d8118fdc95cdbc2ae072e126290cfdea1b5755c1883332395eb67e93fdcf53a345e5121d063ef537c4
+  languageName: node
+  linkType: hard
+
 "pg-pool@npm:^3.7.0":
   version: 3.7.0
   resolution: "pg-pool@npm:3.7.0"
@@ -32881,6 +32904,13 @@ __metadata:
     is-typed-array: ^1.1.13
     possible-typed-array-names: ^1.0.0
   checksum: f0315e5b8f0168c29d390ff410ad13e4d511c78e6006df4a104576844812ee447fcc32daab1f3a76c9ef4f64eff808e134528b5b2439de335586b392e9750e5c
+  languageName: node
+  linkType: hard
+
+"typed-emitter@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "typed-emitter@npm:0.1.0"
+  checksum: b0878795f0443a14cdef7a7b2f87692637230a40dd35ce337f716e1a26f45ea3a929f339c7577afbe6974fcae587397f9b8599ea72ea3647bb5c01d2788633a9
   languageName: node
   linkType: hard
 
