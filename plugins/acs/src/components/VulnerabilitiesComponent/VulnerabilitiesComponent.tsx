@@ -12,7 +12,7 @@ import { SecurityFindingsComponent } from './SecurityFindingsComponent';
 import { DataFilterComponent } from '../DataFilterComponent';
 import { wrap } from 'raven-js';
 
-export const VulnerabilitiesComponent = (serviceName: any) => {
+export const VulnerabilitiesComponent = ({ serviceName }) => {
     const {
         result: ACSDataResult,
         loaded: ACSDataLoaded,
@@ -37,6 +37,16 @@ export const VulnerabilitiesComponent = (serviceName: any) => {
             <InfoCard>
                 <Typography align="center" variant="button">
                     Error retrieving data from ACS.
+                </Typography>
+            </InfoCard>
+        );
+    }
+
+    if (ACSDataResult.length === 0) {
+        return (
+            <InfoCard>
+                <Typography align="center" variant="button">
+                    No results found for query {serviceName}. The annotation `rhdh/acs-deployment:` followed by the deployment name of the entity will need to be added to the entity for data to display.
                 </Typography>
             </InfoCard>
         );
