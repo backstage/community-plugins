@@ -5,7 +5,6 @@ This plugin provides the UI for the `@backstage/tech-insights-backend` plugin, i
 Main areas covered by this plugin currently are:
 
 - Providing an overview for default boolean checks in a form of Scorecards.
-
 - Providing an option to render different custom components based on type of the checks running in the backend.
 
 ## Installation
@@ -17,7 +16,7 @@ Main areas covered by this plugin currently are:
 yarn --cwd packages/app add @backstage-community/plugin-tech-insights
 ```
 
-### Add boolean checks overview (Scorecards) page to the EntityPage:
+### Add boolean checks overview (Scorecards) page to the EntityPage
 
 ```tsx
 // packages/app/src/components/catalog/EntityPage.tsx
@@ -59,7 +58,7 @@ You can pass an array `checksId` as a prop with the [Fact Retrievers ids](../tec
 
 You can also pass a `filter` function to both `EntityTechInsightsScorecardContent` and `EntityTechInsightsScorecardCard` which filters in/out check result after they have been fetched. This can be useful to filter by more logical conditions on fields like `id` or `name`, e.g. the first characters in a name.
 
-To only show failed checks, you can pass the boolan `onlyFailed` to these components.
+To only show failed checks, you can pass the boolean `onlyFailed` to these components.
 
 If you want to show checks in the overview of an entity use `EntityTechInsightsScorecardCard`.
 
@@ -95,67 +94,7 @@ If you follow the [Backend Example](../tech-insights-backend#backend-example), o
 
 ![Boolean Scorecard Example](./docs/boolean-scorecard-example.png)
 
-## Adding custom rendering components
-
-Default scorecard implementation displays only `json-rules-engine` check results. If you would like to support different types, you need to inject custom rendering components to the `TechInsightsClient` constructor.
-
-```ts
-// packages/app/src/apis.ts
-
-export const apis: AnyApiFactory[] = [
-...
-  createApiFactory({
-    api: techInsightsApiRef,
-    deps: { discoveryApi: discoveryApiRef, identityApi: identityApiRef },
-    factory: ({ discoveryApi, identityApi }) =>
-      new TechInsightsClient({
-        discoveryApi,
-        identityApi,
-        renderers: [
-          jsonRulesEngineCheckResultRenderer, // default json-rules-engine renderer
-          myCustomBooleanRenderer, // custom renderer
-        ],
-      }),
-  }),
-...
-];
-```
-
-```tsx
-// packages/app/src/components/myCustomBooleanRenderer.tsx
-
-export const myCustomBooleanRenderer: CheckResultRenderer = {
-  type: 'boolean',
-  component: (checkResult: CheckResult) => (
-    <BooleanCheck checkResult={checkResult} />
-  ),
-};
-```
-
-It's also possible to customize the description. Both strings and React components are accepted. As an example, you would like
-to display another information if the check has failed. In such cases, you could do something like the following:
-
-```tsx
-// packages/app/src/components/myCustomBooleanRenderer.tsx
-
-export const myCustomBooleanRenderer: CheckResultRenderer = {
-  type: 'boolean',
-  component: (checkResult: CheckResult) => (
-    <BooleanCheck checkResult={checkResult} />
-  ),
-  description: (checkResult: CheckResult) => (
-    <>
-      {
-        checkResult.result
-          ? checkResult.check.description // In case of success, return the same description
-          : `The check has failed! ${checkResult.check.description}` // Add a prefix text if the check failed
-      }
-    </>
-  ),
-};
-```
-
-### Add overview (Scorecards) page:
+### Add overview (Scorecards) page
 
 ![Scorecard Overview](./docs/scorecard-overview.png)
 
@@ -190,54 +129,4 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
 
 ## Custom views rendering tech-insights results
 
-If you create a custom view which renders tech-insights results, you can use the `TechInsightsCheckIcon`, which also (by default) is clickable and opens a popup menu with links for this particular check and entity.
-
-You can also render the icon using the tech-insights renderer or pass the `disableLinksMenu` prop to `TechInsightsCheckIcon` to disable the menu, and render it elsewhere, by importing `TechInsightsLinksMenu`.
-
-### Render the check icon with a popup menu for links
-
-```tsx
-import { TechInsightsCheckIcon } from '@backstage-community/plugin-tech-insights';
-
-export const MyComponent = () => {
-  const entity = getEntitySomehow();
-  const result = getCheckResultSomehow();
-
-  return <TechInsightsCheckIcon result={result} entity={entity} />;
-};
-```
-
-### Render the popup menu for links
-
-You can render a custom component (like a button) which opens the popup menu with links.
-
-The menu will be anchored to an element, likely the button being pressed, or icon being clicked. The `setMenu` prop is used to get a function to open the menu.
-
-```tsx
-import {
-  TechInsightsLinksMenu,
-  ResultLinksMenuInfo,
-} from '@backstage-community/plugin-tech-insights';
-
-export const MyComponent = () => {
-  const entity = getEntitySomehow();
-  const result = getCheckResultSomehow();
-
-  const [menu, setMenu] = useState<ResultLinksMenuInfo | undefined>();
-
-  return (
-    <>
-      <Button
-        title="Show links"
-        disabled={!menu}
-        onClick={event => menu?.open(event.currentTarget)}
-      />
-      <TechInsightsLinksMenu
-        result={result}
-        entity={entity}
-        setMenu={setMenu}
-      />
-    </>
-  );
-};
-```
+The `@backstage-community/plugin-tech-insights-react` package contains reusable frontend components for rendering tech-insights results, along with a reference implementation (techInsightsApiRef) for the tech-insights api. See the [README](../tech-insights-react/README.md) for more information.

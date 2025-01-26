@@ -13,6 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-// The index file in ./components/ is typically responsible for selecting
-// which components are public API and should be exported from the package.
+export { BooleanCheck, isBooleanCheckFailed } from './BooleanCheck';
+export {
+  type CheckResultRenderer,
+  jsonRulesEngineCheckResultRenderer,
+} from './CheckResultRenderer';
+export {
+  type ResultCheckIconProps,
+  type ResultCheckIconBaseComponentProps,
+  ResultCheckIcon,
+} from './ResultCheckIcon';
+export { ResultLinksMenu, type ResultLinksMenuInfo } from './ResultLinksMenu';

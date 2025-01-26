@@ -41,6 +41,7 @@
   },
   "dependencies": {
     "@backstage-community/plugin-tech-insights-common": "workspace:^",
+    "@backstage-community/plugin-tech-insights-react": "workspace:^",
     "@backstage/catalog-model": "^1.7.2",
     "@backstage/core-components": "^0.16.2",
     "@backstage/core-plugin-api": "^1.10.2",
