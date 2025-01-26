@@ -130,14 +130,17 @@ export const SecurityFindingsComponent = (data: Array<String>) => {
 
     const organizeData = () => {
         const rows: any = [];
-
+        console.log("TEST")
         data?.data?.forEach((element: String[]) => {
+            console.log("TEST2")
             element?.result?.images?.forEach((element1: Object) => {
+
+                if (!element1?.scan) return;
+
                 for (const [Key, DeploymentValue2] of Object.entries(element1?.scan?.components)) {
-                    if (DeploymentValue2?.vulns.length === 0) continue;
+                    if (DeploymentValue2?.vulns?.length === 0) continue;
 
                     DeploymentValue2?.vulns?.forEach((vulns: Array) => {
-
                         const currItem = {
                             row_data: {
                                 cve: vulns?.cve,
