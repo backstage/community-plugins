@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 The Backstage Authors
+ * Copyright 2024 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +14,7 @@
  * limitations under the License.
  */
 
-import * as anything from './';
-
-describe('tech-insights-common', () => {
-  // Types only
-  it('should exist', () => {
-    expect(anything).toBeTruthy();
-  });
-});
+export {
+  GithubDiscussionsSearchResultListItem,
+  type GithubDiscussionsSearchResultListItemProps,
+} from './GithubDiscussionsSearchResultListItem';

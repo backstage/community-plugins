@@ -5,14 +5,16 @@
 ```ts
 import { AuthService } from '@backstage/backend-plugin-api';
 import { BulkCheckResponse } from '@backstage-community/plugin-tech-insights-common';
+import { Check as Check_2 } from '@backstage-community/plugin-tech-insights-common';
 import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
 import { CompoundEntityRef } from '@backstage/catalog-model';
 import { DiscoveryApi } from '@backstage/core-plugin-api';
 import { FactSchema } from '@backstage-community/plugin-tech-insights-common';
 import { IdentityApi } from '@backstage/core-plugin-api';
+import { InsightFacts as InsightFacts_2 } from '@backstage-community/plugin-tech-insights-common';
 import { JsonValue } from '@backstage/types';
 
-// @public
+// @public @deprecated
 export type Check = {
   id: string;
   type: string;
@@ -24,7 +26,7 @@ export type Check = {
   failureMetadata?: Record<string, unknown>;
 };
 
-// @public
+// @public @deprecated
 export interface InsightFacts {
   [factId: string]: {
     timestamp: string;
@@ -39,12 +41,12 @@ export class TechInsightsClient {
     discoveryApi: DiscoveryApi;
     identityApi: IdentityApi | AuthService;
   });
-  getAllChecks(): Promise<Check[]>;
-  getFacts(entity: CompoundEntityRef, facts: string[]): Promise<InsightFacts>;
+  getAllChecks(): Promise<Check_2[]>;
+  getFacts(entity: CompoundEntityRef, facts: string[]): Promise<InsightFacts_2>;
   getFactSchemas(): Promise<FactSchema[]>;
   runBulkChecks(
     entities: CompoundEntityRef[],
-    checks?: Check[],
+    checks?: Check_2[],
   ): Promise<BulkCheckResponse>;
   runChecks(
     entityParams: CompoundEntityRef,

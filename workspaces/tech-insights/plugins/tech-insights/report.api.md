@@ -8,7 +8,7 @@
 import { ApiRef } from '@backstage/core-plugin-api';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { BulkCheckResponse } from '@backstage-community/plugin-tech-insights-common';
-import { Check as Check_2 } from '@backstage-community/plugin-tech-insights-common/client';
+import { Check as Check_2 } from '@backstage-community/plugin-tech-insights-common';
 import { CheckLink } from '@backstage-community/plugin-tech-insights-common';
 import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
 import { CompoundEntityRef } from '@backstage/catalog-model';
@@ -18,7 +18,7 @@ import { Entity } from '@backstage/catalog-model';
 import { Entity as Entity_2 } from '@backstage/catalog-model/index';
 import { FactSchema } from '@backstage-community/plugin-tech-insights-common';
 import { IdentityApi } from '@backstage/core-plugin-api';
-import { InsightFacts as InsightFacts_2 } from '@backstage-community/plugin-tech-insights-common/client';
+import { InsightFacts as InsightFacts_2 } from '@backstage-community/plugin-tech-insights-common';
 import { JsonValue } from '@backstage/types';
 import { JSX as JSX_2 } from 'react';
 import { MouseEventHandler } from 'react';
