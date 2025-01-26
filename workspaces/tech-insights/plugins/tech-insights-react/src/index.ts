@@ -15,13 +15,12 @@
  */
 
 /**
- * Web library for the tech-insights plugin.
+ * This package provides React components for displaying Tech Insights check results,
+ * as well as the API interfaces and client implementation used to interact with
+ * the Tech Insights backend.
  *
  * @packageDocumentation
  */
-
-// In this package you might for example export components or hooks
-// that are useful to other plugins or modules.
 
 export * from './api';
 export * from './components';

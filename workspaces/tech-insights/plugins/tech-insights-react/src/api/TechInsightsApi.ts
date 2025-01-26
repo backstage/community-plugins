@@ -36,7 +36,7 @@ export const techInsightsApiRef = createApiRef<TechInsightsApi>({
 });
 
 /**
- * API client interface for the Tech Insights plugin
+ * Tech Insights API client interface
  *
  * @public
  */

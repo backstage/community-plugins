@@ -86,6 +86,12 @@ export interface ResultCheckIconProps<
   missingRendererComponent?: ReactNode;
 }
 
+/**
+ * A component that renders an icon representing a check result, optionally with a popup menu
+ * containing links related to the check.
+ *
+ * @public
+ */
 export const ResultCheckIcon = <P extends ResultCheckIconBaseComponentProps>(
   props: ResultCheckIconProps<P>,
 ) => {

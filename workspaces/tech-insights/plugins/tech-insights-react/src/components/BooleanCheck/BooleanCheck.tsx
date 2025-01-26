@@ -19,6 +19,8 @@ import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
 import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
 
 /**
+ * A component that renders a boolean check result as either a success or failure icon.
+ *
  * @public
  */
 export const BooleanCheck = (props: { checkResult: CheckResult }) => {
@@ -30,6 +32,10 @@ export const BooleanCheck = (props: { checkResult: CheckResult }) => {
 };
 
 /**
+ * Helper function to determine if a boolean check result represents a failure.
+ *
+ * @returns true if the check result represents a failure (result is false), false otherwise
+ *
  * @public
  */
 export const isBooleanCheckFailed = (checkResult: CheckResult) =>

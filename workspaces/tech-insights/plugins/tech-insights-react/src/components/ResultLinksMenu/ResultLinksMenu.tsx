@@ -28,7 +28,7 @@ import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 
 /**
- * TechInsightsLinksMenu setMenu receiver.
+ * ResultLinksMenu setMenu receiver.
  *
  * This object contains an {@link ResultLinksMenuInfo.open | open} function,
  * which can be used to open the popup menu. It closes automatically on
@@ -44,6 +44,11 @@ export type ResultLinksMenuInfo = {
   open: (element: Element) => void;
 };
 
+/**
+ * A component that renders a popup menu with links related to a check result.
+ *
+ * @public
+ */
 export const ResultLinksMenu = (
   props: PropsWithChildren<{
     result: CheckResult;
@@ -52,7 +57,6 @@ export const ResultLinksMenu = (
   }>,
 ) => {
   const { result, entity, setMenu } = props;
-
   const api = useApi(techInsightsApiRef);
 
   const links = useMemo(

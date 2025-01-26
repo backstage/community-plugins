@@ -13,6 +13,5 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export * from './TechInsightsApi';
-export * from './TechInsightsClient';
-export * from './types';
+export { type TechInsightsApi, techInsightsApiRef } from './TechInsightsApi';
+export { TechInsightsClient } from './TechInsightsClient';
