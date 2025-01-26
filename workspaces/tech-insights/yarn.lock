@@ -2868,6 +2868,22 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@backstage-community/plugin-tech-insights-react@workspace:plugins/tech-insights-react":
+  version: 0.0.0-use.local
+  resolution: "@backstage-community/plugin-tech-insights-react@workspace:plugins/tech-insights-react"
+  dependencies:
+    "@backstage/cli": ^0.29.4
+    "@backstage/core-plugin-api": ^1.9.3
+    "@backstage/test-utils": ^1.7.3
+    "@material-ui/core": ^4.9.13
+    "@testing-library/jest-dom": ^6.0.0
+    "@testing-library/react": ^14.0.0
+    react: ^16.13.1 || ^17.0.0 || ^18.0.0
+  peerDependencies:
+    react: ^16.13.1 || ^17.0.0 || ^18.0.0
+  languageName: unknown
+  linkType: soft
+
 "@backstage-community/plugin-tech-insights@workspace:^, @backstage-community/plugin-tech-insights@workspace:plugins/tech-insights":
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-tech-insights@workspace:plugins/tech-insights"

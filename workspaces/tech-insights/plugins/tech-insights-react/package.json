@@ -1,0 +1,57 @@
+{
+  "name": "@backstage-community/plugin-tech-insights-react",
+  "description": "Web library for the tech-insights plugin",
+  "version": "0.1.0",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "license": "Apache-2.0",
+  "private": true,
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.esm.js",
+    "types": "dist/index.d.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/tech-insights/plugins/tech-insights-react"
+  },
+  "backstage": {
+    "role": "web-library",
+    "pluginId": "tech-insights",
+    "pluginPackages": [
+      "@backstage-community/plugin-tech-insights",
+      "@backstage-community/plugin-tech-insights-backend",
+      "@backstage-community/plugin-tech-insights-common",
+      "@backstage-community/plugin-tech-insights-node",
+      "@backstage-community/plugin-tech-insights-react"
+    ]
+  },
+  "sideEffects": false,
+  "scripts": {
+    "start": "backstage-cli package start",
+    "build": "backstage-cli package build",
+    "lint": "backstage-cli package lint",
+    "test": "backstage-cli package test",
+    "clean": "backstage-cli package clean",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack"
+  },
+  "dependencies": {
+    "@backstage/core-plugin-api": "^1.9.3",
+    "@material-ui/core": "^4.9.13"
+  },
+  "peerDependencies": {
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0"
+  },
+  "devDependencies": {
+    "@backstage/cli": "^0.29.4",
+    "@backstage/test-utils": "^1.7.3",
+    "@testing-library/jest-dom": "^6.0.0",
+    "@testing-library/react": "^14.0.0",
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0"
+  },
+  "files": [
+    "dist"
+  ]
+}
