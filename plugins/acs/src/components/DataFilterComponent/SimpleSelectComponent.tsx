@@ -28,7 +28,7 @@ export const SimpleSelect = ({ options, setSelectedOptions }) => {
       isExpanded={isOpen}
       style={
         {
-          width: '300px'
+          width: '250px'
         } as React.CSSProperties
       }
     >
