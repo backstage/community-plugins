@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
 import { useTheme } from '@material-ui/core/styles';
 import Box from '@mui/material/Box';
-import Chip from '@mui/material/Chip';
+import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
+import { styled } from '@mui/material/styles';
+import Chip from '@mui/material/Chip';
 
 
 export const CVEEntityDetailsComponent: React.FC<Props> = ({ data, cveDetails, entityDetails }) => {
@@ -45,21 +47,21 @@ export const CVEEntityDetailsComponent: React.FC<Props> = ({ data, cveDetails, e
 
     const CVEDetails = () => {
         return (
-            <div>
-                <p><b>{cveDetails}</b></p>
-                <Stack direction="row" spacing={1}>
+            <Stack spacing={2}>
+               <p><b>{cveDetails}</b></p>
+                  <Stack direction="row" spacing={1}>
                     <Chip label={severityLabel} color="error" size="small" variant="outlined" />
                     <Chip label={firstDiscoveredLabel} color="default" size="small" variant="outlined" />
                     <Chip label={publishedLabel} color="default" size="small" variant="outlined" />
-                </Stack>
+                  </Stack>
                 <p>{data.expanded_data.summary}</p>
-            </div>
+            </Stack>
         )
     }
 
     const EntityDetails = () => {
         return (
-            <div>
+            <Stack spacing={2}>
                 <p><b>{entityDetails}</b></p>
                 <Stack direction="row" spacing={1}>
                     <Chip label={workloadLabel} color="default" size="small" variant="outlined" />
@@ -74,7 +76,7 @@ export const CVEEntityDetailsComponent: React.FC<Props> = ({ data, cveDetails, e
                         theme={isDarkMode ? 'dark' : 'light'}
                     />
                 </Box>
-            </div>
+            </Stack>
         )
     }
 
@@ -84,8 +86,10 @@ export const CVEEntityDetailsComponent: React.FC<Props> = ({ data, cveDetails, e
 
     return (
         <Box component="section" sx={{ p: 2 }}>
+          <Stack spacing={2}>
             <CVEDetails />
             <EntityDetails />
+          </Stack>
         </Box>
     );
 };

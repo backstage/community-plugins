@@ -130,11 +130,8 @@ export const SecurityFindingsComponent = (data: Array<String>) => {
 
     const organizeData = () => {
         const rows: any = [];
-        console.log("TEST")
         data?.data?.forEach((element: String[]) => {
-            console.log("TEST2")
             element?.result?.images?.forEach((element1: Object) => {
-
                 if (!element1?.scan) return;
 
                 for (const [Key, DeploymentValue2] of Object.entries(element1?.scan?.components)) {

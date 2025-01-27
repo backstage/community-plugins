@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useApi, configApiRef } from '@backstage/core-plugin-api';
 
-export const queryACSData = (data: string) => {
+export const queryACSData = (serviceName: string) => {
     const [result, setResult] = useState([]);
     const [loaded, setLoaded] = useState<boolean>(false);
     const [error, setError] = useState<boolean>(false);
@@ -11,10 +11,9 @@ export const queryACSData = (data: string) => {
     const backendUrl = config.getString('backend.baseUrl');
 
     const getACSData = async() => {
-        await fetch(`${backendUrl}/api/proxy/acs/v1/export/vuln-mgmt/workloads?query=Deployment%3A${data?.serviceName}`)
+        await fetch(`${backendUrl}/api/proxy/acs/v1/export/vuln-mgmt/workloads?query=Deployment%3A${serviceName}`)
             .then(response => response.text())
             .then(text => {
-
                 const lines = text.split('\n');
 
                 const jsonData = lines.map(line => {
@@ -23,7 +22,6 @@ export const queryACSData = (data: string) => {
                     }
                 });
 
-                // TODO: fix issue where additional index is added which is just an undefined
                 jsonData.pop()
 
                 setLoaded(true)
