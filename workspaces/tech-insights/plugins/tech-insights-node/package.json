@@ -8,6 +8,8 @@
       "@backstage-community/plugin-tech-insights",
       "@backstage-community/plugin-tech-insights-backend",
       "@backstage-community/plugin-tech-insights-common",
+      "@backstage-community/plugin-tech-insights-maturity",
+      "@backstage-community/plugin-tech-insights-maturity-common",
       "@backstage-community/plugin-tech-insights-node"
     ]
   },
