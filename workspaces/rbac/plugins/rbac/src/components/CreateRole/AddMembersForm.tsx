@@ -114,7 +114,7 @@ export const AddMembersForm = ({
   ) =>
     value.etag
       ? option.etag === value.etag
-      : selectedMember.etag === value.etag;
+      : selectedMember?.[0].etag === value.etag;
 
   return (
     <>
