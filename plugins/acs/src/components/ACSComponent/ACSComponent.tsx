@@ -3,7 +3,6 @@ import {
   Button,
   Typography,
 } from '@material-ui/core';
-import Stack from '@mui/material/Stack';
 import Grid from '@mui/material/Grid2';
 import {
     InfoCard
