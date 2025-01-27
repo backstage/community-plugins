@@ -26,10 +26,7 @@ import {
   LoggerService,
 } from '@backstage/backend-plugin-api';
 
-/**
- * @deprecated Please migrate to the new backend system as this will be removed in the future.
- *
- * @public **/
+/** @internal */
 export interface CreateLighthouseSchedulerOptions {
   logger: LoggerService;
   config: Config;
@@ -39,10 +36,7 @@ export interface CreateLighthouseSchedulerOptions {
   auth: AuthService;
 }
 
-/**
- * @deprecated Please migrate to the new backend system as this will be removed in the future.
- *
- * @public **/
+/** @internal */
 export async function createScheduler(
   options: CreateLighthouseSchedulerOptions,
 ) {
