@@ -22,6 +22,14 @@ export function ACSComponent() {
         return entity?.metadata?.name
     }
 
+    // TODO: add deployment name label to app interface
+    const retrieveEntityDeploymentName = () => {
+        console.log("deployment name:", entity?.metadata?.annotations?.["acs/deployment-name"]);
+        return entity?.metadata?.annotations?.["acs/deployment-name"];
+    }
+
+    retrieveEntityDeploymentName();
+
     return (
       <div>
         <Grid container spacing={2}>
