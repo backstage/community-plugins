@@ -56,9 +56,11 @@ describe('AddedMembersTable component', () => {
       />,
     );
 
-    expect(screen.queryByText('Users and groups')).toBeInTheDocument();
     expect(
-      screen.queryByText('No records. Selected users and groups appear here.'),
+      screen.queryByText('No users and groups selected'),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText('Selected users and groups appear here.'),
     ).toBeInTheDocument();
   });
 
@@ -72,7 +74,7 @@ describe('AddedMembersTable component', () => {
 
     expect(mockedTable).toHaveBeenCalledWith(
       expect.objectContaining({
-        title: 'Users and groups (1 user, 1 group)',
+        title: '1 group, 1 user',
         data: selectedMembers,
       }),
       expect.anything(),
