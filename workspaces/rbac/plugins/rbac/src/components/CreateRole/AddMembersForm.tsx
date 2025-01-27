@@ -120,7 +120,7 @@ export const AddMembersForm = ({
     <>
       <FormHelperText>
         Search and select users and groups to be added. Selected users and
-        groups will appear in the table below..
+        groups will appear in the table below.
       </FormHelperText>
       <br />
       <Autocomplete
