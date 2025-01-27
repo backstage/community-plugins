@@ -32,7 +32,7 @@ describe('extractBreakDownData', () => {
       self: 'url',
       summary: 'Issue 1',
       assignee: 'user1',
-      labels: ['APIRP-Marketing'],
+      labels: ['Marketing'],
       issuetype: 'Task',
       status: { name: 'To Do' },
       timespent: '0',
@@ -42,7 +42,7 @@ describe('extractBreakDownData', () => {
   ];
 
   const filteredViews = new Map<string, string[]>([
-    ['Marketing', ['APIRP-Marketing']],
+    ['Marketing', ['Marketing']],
   ]);
 
   it('categorizes issues based on their labels', () => {
@@ -107,7 +107,7 @@ describe('extractLabelProgress', () => {
           self: 'url',
           summary: 'Issue 1',
           assignee: 'user1',
-          labels: ['APIRP-Marketing'],
+          labels: ['Marketing'],
           issuetype: 'Task',
           status: { name: 'To Do' },
           timespent: '0',

@@ -36,17 +36,16 @@ const issuesBreakdown: Map<string, Issue[]> = new Map([
     [
       {
         id: 'Issue-1',
-        self: 'https://jira.autodesk.com/rest/api/2/issue/Issue-1',
+        self: 'https://jira.com/rest/api/2/issue/Issue-1',
         key: 'Issue-1',
         summary: 'Marketing Issue',
         assignee: 'abc',
-        labels: ['APIRP-Marketing'],
+        labels: ['Marketing'],
         issuetype: 'Task',
         status: {
-          self: 'https://jira.autodesk.com/rest/api/2/status/100',
+          self: 'https://jira.com/rest/api/2/status/100',
           description: '',
-          iconUrl:
-            'https://jira.autodesk.com/images/icons/statuses/generic.png',
+          iconUrl: 'https://jira.com/images/icons/statuses/generic.png',
           name: 'To Do',
           id: '1000',
         },
@@ -62,17 +61,16 @@ const issuesBreakdown: Map<string, Issue[]> = new Map([
     [
       {
         id: 'Issue-4',
-        self: 'https://jira.autodesk.com/rest/api/2/issue/Issue-1',
+        self: 'https://jira.com/rest/api/2/issue/Issue-1',
         key: 'Issue-4',
         summary: 'Documentation Review Issue',
         assignee: 'abc',
-        labels: ['APIRP-DocumentationReview'],
+        labels: ['DocumentationReview'],
         issuetype: 'Task',
         status: {
-          self: 'https://jira.autodesk.com/rest/api/2/status/100',
+          self: 'https://jira.com/rest/api/2/status/100',
           description: '',
-          iconUrl:
-            'https://jira.autodesk.com/images/icons/statuses/generic.png',
+          iconUrl: 'https://jira.com/images/icons/statuses/generic.png',
           name: 'Blocked',
           id: '1000',
         },
@@ -88,17 +86,16 @@ const issuesBreakdown: Map<string, Issue[]> = new Map([
     [
       {
         id: 'Issue-2',
-        self: 'https://jira.autodesk.com/rest/api/2/issue/Issue-2',
+        self: 'https://jira.com/rest/api/2/issue/Issue-2',
         key: 'Issue-3',
         summary: 'Documentation API Review Issue',
         assignee: 'abc',
-        labels: ['APIRP-DocAPIReview'],
+        labels: ['DocAPIReview'],
         issuetype: 'Task',
         status: {
-          self: 'https://jira.autodesk.com/rest/api/2/status/100',
+          self: 'https://jira.com/rest/api/2/status/100',
           description: '',
-          iconUrl:
-            'https://jira.autodesk.com/images/icons/statuses/generic.png',
+          iconUrl: 'https://jira.com/images/icons/statuses/generic.png',
           name: 'Testing',
           id: '1000',
         },
@@ -109,17 +106,16 @@ const issuesBreakdown: Map<string, Issue[]> = new Map([
       },
       {
         id: 'Issue-3',
-        self: 'https://jira.autodesk.com/rest/api/2/issue/Issue-1',
+        self: 'https://jira.com/rest/api/2/issue/Issue-1',
         key: 'Issue-3',
         summary: 'Devloper Advoctaes API Review Issue',
         assignee: 'abc',
-        labels: ['APIRP-DevAdvAPIReview'],
+        labels: ['DevAdvAPIReview'],
         issuetype: 'Task',
         status: {
-          self: 'https://jira.autodesk.com/rest/api/2/status/100',
+          self: 'https://jira.com/rest/api/2/status/100',
           description: '',
-          iconUrl:
-            'https://jira.autodesk.com/images/icons/statuses/generic.png',
+          iconUrl: 'https://jira.com/images/icons/statuses/generic.png',
           name: 'In Progress',
           id: '1000',
         },

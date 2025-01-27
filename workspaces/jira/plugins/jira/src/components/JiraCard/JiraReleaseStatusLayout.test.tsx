@@ -129,7 +129,7 @@ describe('JiraReleaseStatusLayout', () => {
             key: 'APSAPITEST-1',
             summary: 'Documentation Review',
             assignee: 'abc',
-            labels: ['APIRP-DocumentationReview'],
+            labels: ['DocumentationReview'],
             issuetype: 'Task',
             status: {
               name: 'Done',
