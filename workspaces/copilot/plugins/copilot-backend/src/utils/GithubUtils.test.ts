@@ -86,7 +86,7 @@ describe('getCopilotConfig', () => {
   });
 });
 
-describe('getGithubInfo', () => {
+describe('getGithubCredentials', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });

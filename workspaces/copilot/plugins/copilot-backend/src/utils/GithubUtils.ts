@@ -26,10 +26,6 @@ export type CopilotCredentials = {
   organization?: GithubCredentials;
 };
 
-export type GithubInfo = {
-  credentials: CopilotCredentials;
-};
-
 export type CopilotConfig = {
   host: string;
   enterprise?: string;
