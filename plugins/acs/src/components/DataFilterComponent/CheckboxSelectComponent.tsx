@@ -35,7 +35,7 @@ export const CheckboxSelectComponent: React.FunctionComponent = ({ setSelectedOp
 
   useEffect(() => {
     setSelectedOptions(selectedItems);
-  }, [selectedItems]);
+  }, [selectedItems, setSelectedOptions]);
 
   return (
     <Select

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { SimpleSelect } from './SimpleSelectComponent';
 import { InputFieldComponent } from './InputFieldComponent';
 import { CheckboxSelectComponent } from './CheckboxSelectComponent';
@@ -45,7 +45,7 @@ export const DataFilterComponent = ({ setFilters, data }) => {
         return severityLevel;
     }
 
-    const updateFilters = () => {
+    useEffect(() => {
         setFilters({
             "selectedEntity": selectedEntity,
             "selectedAttribute": selectedAttribute,
@@ -53,10 +53,6 @@ export const DataFilterComponent = ({ setFilters, data }) => {
             "selectedCveSeverityOptions": selectedCveSeverityOptions,
             "selectedCveStatusOptions": selectedCveStatusOptions
         })
-    }
-
-    useEffect(() => {
-        updateFilters();
     }, [selectedEntity, selectedAttribute, userText, selectedCveSeverityOptions, selectedCveStatusOptions]);
 
     return (

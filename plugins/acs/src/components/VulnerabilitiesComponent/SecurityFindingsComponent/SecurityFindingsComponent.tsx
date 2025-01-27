@@ -123,6 +123,8 @@ export const SecurityFindingsComponent = (data: Array<String>) => {
             case "Cluster":
                 isTrue = vulnItem?.expanded_data?.cluster.includes(data?.filters.optionText);
                 break
+            default:
+                break;
         }
 
         return isTrue;
@@ -191,7 +193,7 @@ export const SecurityFindingsComponent = (data: Array<String>) => {
 
     useEffect(() => {
         organizeData();
-    }, [data]);
+    }, [data, organizeData]);
 
     return (
         <div>
