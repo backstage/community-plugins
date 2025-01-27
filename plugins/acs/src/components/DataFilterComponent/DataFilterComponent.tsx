@@ -2,18 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { SimpleSelect } from './SimpleSelectComponent';
 import { InputFieldComponent } from './InputFieldComponent';
 import { CheckboxSelectComponent } from './CheckboxSelectComponent';
-import Grid from '@mui/material/Grid2';
-import { Toolbar, ToolbarGroup, ToolbarItem, ToolbarContent, ToolbarToggleGroup } from '@patternfly/react-core';
-
-import {
-    Flex,
-} from '@patternfly/react-core';
+import { Toolbar, ToolbarGroup, ToolbarItem, ToolbarContent } from '@patternfly/react-core';
+import { useTheme } from '@material-ui/core/styles';
 
 export const DataFilterComponent = ({ setFilters, data }) => {
     const entities = ['Image', 'CVE', 'Image Component', 'Deployment', 'Namespace', 'Cluster'];
     const attributes = ['Name', 'Discovered time', 'CVSS'];
     const cveSeverityOptions = ['Critical', 'Important', 'Moderate', 'Low'];
     const cveStatusOptions = ['Fixable', 'Not fixable'];
+
+    const theme = useTheme();
+    const isDarkMode = theme.palette.type === 'dark';
 
     const [selectedEntity, setSelectedEntity] = useState(entities[0]);
     const [selectedAttribute, setSelectedAttribute] = useState(attributes[0]);
@@ -61,7 +60,7 @@ export const DataFilterComponent = ({ setFilters, data }) => {
     }, [selectedEntity, selectedAttribute, userText, selectedCveSeverityOptions, selectedCveStatusOptions]);
 
     return (
-        <Toolbar className="pf-m-toggle-group-container">
+        <Toolbar className={isDarkMode ? 'pf-v5-theme-dark' : 'pf-v5-theme-light' }>
             <ToolbarContent>
                 <ToolbarGroup variant="filter-group">
                     <ToolbarItem>

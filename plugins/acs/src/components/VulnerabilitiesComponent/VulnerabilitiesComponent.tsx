@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Typography,
@@ -10,7 +10,6 @@ import { queryACSData } from '../../common/QueryACS';
 import { SecurityFindingsComponent } from './SecurityFindingsComponent';
 
 import { DataFilterComponent } from '../DataFilterComponent';
-import { wrap } from 'raven-js';
 
 export const VulnerabilitiesComponent = ({ serviceName }) => {
     const {
