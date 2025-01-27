@@ -10,12 +10,11 @@ import { Config } from '@backstage/config';
 import { DiscoveryService } from '@backstage/backend-plugin-api';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { PluginTaskScheduler } from '@backstage/backend-tasks';
-import { TokenManager } from '@backstage/backend-common';
 
 // @public @deprecated (undocumented)
 export interface CreateLighthouseSchedulerOptions {
   // (undocumented)
-  auth?: AuthService;
+  auth: AuthService;
   // (undocumented)
   catalogClient: CatalogApi;
   // (undocumented)
@@ -26,8 +25,6 @@ export interface CreateLighthouseSchedulerOptions {
   logger: LoggerService;
   // (undocumented)
   scheduler?: PluginTaskScheduler;
-  // (undocumented)
-  tokenManager?: TokenManager;
 }
 
 // @public @deprecated (undocumented)

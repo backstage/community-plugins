@@ -21,10 +21,6 @@ import { LighthouseRestApi } from '@backstage-community/plugin-lighthouse-common
 import { stringifyEntityRef } from '@backstage/catalog-model';
 import { LighthouseAuditScheduleImpl } from '../config';
 import {
-  createLegacyAuthAdapters,
-  TokenManager,
-} from '@backstage/backend-common';
-import {
   AuthService,
   DiscoveryService,
   LoggerService,
@@ -40,8 +36,7 @@ export interface CreateLighthouseSchedulerOptions {
   discovery: DiscoveryService;
   scheduler?: PluginTaskScheduler;
   catalogClient: CatalogApi;
-  tokenManager?: TokenManager;
-  auth?: AuthService;
+  auth: AuthService;
 }
 
 /**
@@ -51,8 +46,7 @@ export interface CreateLighthouseSchedulerOptions {
 export async function createScheduler(
   options: CreateLighthouseSchedulerOptions,
 ) {
-  const { logger, scheduler, catalogClient, config } = options;
-  const { auth } = createLegacyAuthAdapters(options);
+  const { logger, scheduler, catalogClient, config, auth } = options;
   const lighthouseApi = LighthouseRestApi.fromConfig(config);
 
   const lighthouseAuditConfig = LighthouseAuditScheduleImpl.fromConfig(config, {
