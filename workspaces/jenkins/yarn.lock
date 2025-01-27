@@ -2664,7 +2664,6 @@ __metadata:
   resolution: "@backstage-community/plugin-jenkins-backend@workspace:plugins/jenkins-backend"
   dependencies:
     "@backstage-community/plugin-jenkins-common": "workspace:^"
-    "@backstage/backend-common": ^0.25.0
     "@backstage/backend-defaults": ^0.7.0
     "@backstage/backend-plugin-api": ^1.1.1
     "@backstage/backend-test-utils": ^1.2.1
