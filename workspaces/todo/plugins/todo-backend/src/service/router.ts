@@ -25,7 +25,7 @@ import {
 } from '../lib/utils';
 import { createOpenApiRouter } from '../schema/openapi.generated';
 import { Config } from '@backstage/config';
-import { MiddlewareFactory } from '@backstage/backend-defaults';
+import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 import { LoggerService } from '@backstage/backend-plugin-api';
 
 /** internal */
