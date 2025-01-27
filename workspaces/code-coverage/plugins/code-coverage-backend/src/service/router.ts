@@ -19,7 +19,6 @@ import Router from 'express-promise-router';
 import BodyParser from 'body-parser';
 import bodyParserXml from 'body-parser-xml';
 import { CatalogApi, CatalogClient } from '@backstage/catalog-client';
-import { createLegacyAuthAdapters } from '@backstage/backend-common';
 import { InputError, NotFoundError } from '@backstage/errors';
 import { Config } from '@backstage/config';
 import { ScmIntegrations } from '@backstage/integration';
@@ -37,39 +36,35 @@ import {
 } from '@backstage/backend-plugin-api';
 import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 
-/**
- * @deprecated Please migrate to the new backend system as this will be removed in the future.
- *
- * Options for {@link createRouter}.
- *
- * @public
- */
+/** @internal */
 export interface RouterOptions {
   config: Config;
   discovery: DiscoveryService;
   database: DatabaseService;
   urlReader: UrlReaderService;
   logger: LoggerService;
+  auth: AuthService;
+  httpAuth: HttpAuthService;
   catalogApi?: CatalogApi;
-  auth?: AuthService;
-  httpAuth?: HttpAuthService;
 }
 
+/** @internal */
 export interface CodeCoverageApi {
   name: string;
 }
 
+/** @internal */
 export const makeRouter = async (
   options: RouterOptions,
 ): Promise<express.Router> => {
-  const { config, logger, discovery, database, urlReader } = options;
+  const { config, logger, discovery, database, urlReader, auth, httpAuth } =
+    options;
 
   const codeCoverageDatabase = await CodeCoverageDatabase.create(database);
   const codecovUrl = await discovery.getExternalBaseUrl('code-coverage');
   const catalogApi =
     options.catalogApi ?? new CatalogClient({ discoveryApi: discovery });
   const scm = ScmIntegrations.fromConfig(config);
-  const { auth, httpAuth } = createLegacyAuthAdapters(options);
 
   const bodySizeLimit =
     config.getOptionalString('codeCoverage.bodySizeLimit') ?? '100kb';
@@ -264,13 +259,7 @@ export const makeRouter = async (
   return router;
 };
 
-/**
- * @deprecated Please migrate to the new backend system as this will be removed in the future.
- *
- * Creates a code-coverage plugin backend router.
- *
- * @public
- */
+/** @internal */
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
