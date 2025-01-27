@@ -2542,7 +2542,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-feedback-backend@workspace:plugins/feedback-backend"
   dependencies:
-    "@backstage/backend-common": ^0.25.0
     "@backstage/backend-defaults": ^0.6.2
     "@backstage/backend-dynamic-feature-service": ^0.5.2
     "@backstage/backend-plugin-api": ^1.1.0
