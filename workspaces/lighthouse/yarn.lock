@@ -4708,7 +4708,6 @@ __metadata:
     "@backstage/e2e-test-utils": ^0.1.1
     "@backstage/repo-tools": ^0.12.0
     "@changesets/cli": ^2.27.1
-    changeset: ^0.2.6
     knip: ^5.27.4
     node-gyp: ^10.0.0
     prettier: ^2.3.2
@@ -10770,16 +10769,6 @@ __metadata:
     ansi-styles: ^4.1.0
     supports-color: ^7.1.0
   checksum: fe75c9d5c76a7a98d45495b91b2172fa3b7a09e0cc9370e5c8feb1c567b85c4288e2b3fded7cfdd7359ac28d6b3844feb8b82b8686842e93d23c827c417e83fc
-  languageName: node
-  linkType: hard
-
-"changeset@npm:^0.2.6":
-  version: 0.2.6
-  resolution: "changeset@npm:0.2.6"
-  dependencies:
-    udc: ^1.0.0
-    underscore: ^1.8.3
-  checksum: bb916eff7dc8d281f91762a4e0d324cc3a527535263fd4d0345be9def20e1b112184c29e4312bec4de34814574b33c271ca5d759c4466acd5dc9b9f1733b434f
   languageName: node
   linkType: hard
 
@@ -24443,13 +24432,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"udc@npm:^1.0.0":
-  version: 1.0.1
-  resolution: "udc@npm:1.0.1"
-  checksum: 302b4bd08feab3f75683bcebfe0dde9eabdb2579400ef3feef09132169842ea83e64441e075b0523c91be3ba1f4668fbb8c7d6918e3032be56a967629c4e7db2
-  languageName: node
-  linkType: hard
-
 "uglify-js@npm:^3.1.4":
   version: 3.17.0
   resolution: "uglify-js@npm:3.17.0"
@@ -24484,13 +24466,6 @@ __metadata:
   version: 1.12.1
   resolution: "underscore@npm:1.12.1"
   checksum: ec327603aa112b99fe9d74cd9bf3b3b7451465a9d2610ceab269a532e3f191650ab017903be34dc86fe406a11d04d8905a3b04dd4c129493e51bee09a3f3074c
-  languageName: node
-  linkType: hard
-
-"underscore@npm:^1.8.3":
-  version: 1.13.7
-  resolution: "underscore@npm:1.13.7"
-  checksum: 174b011af29e4fbe2c70eb2baa8bfab0d0336cf2f5654f364484967bc6264a86224d0134b9176e4235c8cceae00d11839f0fd4824268de04b11c78aca1241684
   languageName: node
   linkType: hard
 
