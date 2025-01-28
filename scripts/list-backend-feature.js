@@ -20,10 +20,10 @@ import { getPackages } from '@manypkg/get-packages';
 import { resolve, join } from 'path';
 import arrayToTable from 'array-to-table';
 import * as url from 'url';
+import { listWorkspaces } from './list-workspaces.js';
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
-const EXCLUDED_WORKSPACES = ['noop', 'repo-tools'];
 const BACKEND_FEATURE =
   "import { BackendFeature } from '@backstage/backend-plugin-api';";
 const BACKEND_FEATURE_COMPAT =
@@ -36,9 +36,7 @@ async function main(args) {
   const backendFeatureReports = [];
 
   // Get workspaces
-  const workspaces = (await fs.readdir(workspacePath, { withFileTypes: true }))
-    .filter(w => w.isDirectory() && !EXCLUDED_WORKSPACES.includes(w.name))
-    .map(w => w.name);
+  const workspaces = await listWorkspaces();
 
   // Loop through workspaces
   for (const workspace of workspaces) {
