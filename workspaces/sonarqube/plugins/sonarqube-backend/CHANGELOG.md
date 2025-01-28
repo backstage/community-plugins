@@ -1,5 +1,11 @@
 # @backstage-community/plugin-sonarqube-backend
 
+## 0.4.1
+
+### Patch Changes
+
+- a8acb68: Added missing `instanceKey` to the documentation examples
+
 ## 0.4.0
 
 ### Minor Changes

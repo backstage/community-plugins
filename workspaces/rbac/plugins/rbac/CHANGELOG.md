@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.34.0
+
+### Minor Changes
+
+- 622dcb6: Allow admin to select multiple users/groups
+
 ## 1.33.6
 
 ### Patch Changes
