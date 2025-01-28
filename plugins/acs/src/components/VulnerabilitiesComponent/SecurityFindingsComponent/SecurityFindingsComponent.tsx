@@ -99,29 +99,28 @@ export const SecurityFindingsComponent = (data: Array<String>) => {
     }
 
     const checkSearch = (vulnItem: any) => {
-        if (data?.filters?.selectedAttribute === "CVSS") return data?.filters?.optionText === vulnItem?.row_data?.cvss.toString();
-
-        if (data?.filters?.selectedAttribute === "Discovered time") return vulnItem?.row_data?.discovered.includes(data?.filters?.optionText);
-
         let isTrue = false;
+        const attribute = data?.filters?.selectedAttribute;
         switch (data?.filters?.selectedEntity) {
             case "Image":
-                isTrue = vulnItem?.expanded_data?.image.includes(data?.filters.optionText);
+                if (attribute === "Name") isTrue = vulnItem?.expanded_data?.image.includes(data?.filters.optionText);
                 break;
             case "CVE":
-                isTrue = vulnItem?.row_data?.cve.includes(data?.filters.optionText);
+                if (attribute === "Name") isTrue = vulnItem?.row_data?.cve.includes(data?.filters.optionText);
+                if (attribute === "Discovered time") isTrue = vulnItem?.row_data?.discovered.includes(data?.filters.optionText);
+                if (attribute === "CVSS") isTrue = vulnItem?.row_data?.cvss.toString().includes(data?.filters.optionText);
                 break;
             case "Image Component":
-                isTrue = vulnItem?.expanded_data?.component.includes(data?.filters.optionText);
+                if (attribute === "Name") isTrue = vulnItem?.expanded_data?.component.includes(data?.filters.optionText);
                 break;
             case "Deployment":
-                isTrue = vulnItem?.expanded_data?.deployment.includes(data?.filters.optionText);
+                if (attribute === "Name") isTrue = vulnItem?.expanded_data?.deployment.includes(data?.filters.optionText);
                 break;
             case "Namespace":
-                isTrue = vulnItem?.expanded_data?.namespace.includes(data?.filters.optionText);
+                if (attribute === "Name") isTrue = vulnItem?.expanded_data?.namespace.includes(data?.filters.optionText);
                 break;
             case "Cluster":
-                isTrue = vulnItem?.expanded_data?.cluster.includes(data?.filters.optionText);
+                if (attribute === "Name") isTrue = vulnItem?.expanded_data?.cluster.includes(data?.filters.optionText);
                 break
             default:
                 break;

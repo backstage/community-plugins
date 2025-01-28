@@ -7,9 +7,9 @@ import {
     MenuToggleElement,
 } from '@patternfly/react-core';
 
-export const SimpleSelect = ({ options, setSelectedOptions }) => {
+export const EntitySelectComponent = ({ options, setSelectedEntity }) => {
   const [isOpen, setIsOpen] = React.useState(false);
-  const [selected, setSelected] = React.useState<string>(options[0]);
+  const [selected, setSelected] = React.useState<string>(Object.keys(options)[0]);
 
   const onToggleClick = () => {
     setIsOpen(!isOpen);
@@ -17,7 +17,7 @@ export const SimpleSelect = ({ options, setSelectedOptions }) => {
 
   const onSelect = (_event: React.MouseEvent<Element, MouseEvent> | undefined, value: string | number | undefined) => {
     setSelected(value as string);
-    setSelectedOptions(value as string)
+    setSelectedEntity(value as string)
     setIsOpen(false);
   };
 
@@ -39,7 +39,7 @@ export const SimpleSelect = ({ options, setSelectedOptions }) => {
   return (
     <React.Fragment>
       <Select
-        id="single-select"
+        id="simple-select"
         isOpen={isOpen}
         selected={selected}
         onSelect={onSelect}
@@ -49,8 +49,8 @@ export const SimpleSelect = ({ options, setSelectedOptions }) => {
       >
         <SelectList>
 
-        {options.map((value: string) => (
-          <SelectOption value={value}>{value}</SelectOption>
+        {Object.entries(options).map(([key, value]) => (
+          <SelectOption value={key}>{key}</SelectOption>
         ))}
         </SelectList>
       </Select>
@@ -58,4 +58,4 @@ export const SimpleSelect = ({ options, setSelectedOptions }) => {
   );
 }
 
-export default SimpleSelect;
+export default EntitySelectComponent;

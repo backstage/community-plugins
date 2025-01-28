@@ -1,49 +1,38 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { SimpleSelect } from './SimpleSelectComponent';
+import React, { useEffect, useState } from 'react';
+import { EntitySelectComponent} from './EntitySelectComponent';
+import { AttributeSelectComponent } from './AttributeSelectComponent';
 import { InputFieldComponent } from './InputFieldComponent';
 import { CheckboxSelectComponent } from './CheckboxSelectComponent';
 import { Toolbar, ToolbarGroup, ToolbarItem, ToolbarContent } from '@patternfly/react-core';
 import { useTheme } from '@material-ui/core/styles';
 
 export const DataFilterComponent = ({ setFilters, data }) => {
-    const entities = ['Image', 'CVE', 'Image Component', 'Deployment', 'Namespace', 'Cluster'];
     const attributes = ['Name', 'Discovered time', 'CVSS'];
+    const entities = {
+        'Image': [ 'Name'],
+        'CVE': ['Name', 'Discovered time', 'CVSS'],
+        'Image Component': ['Name'],
+        'Deployment': ['Name'],
+        'Namespace': ['Name'],
+        'Cluster': ['Name']
+    };
+
     const cveSeverityOptions = ['Critical', 'Important', 'Moderate', 'Low'];
     const cveStatusOptions = ['Fixable', 'Not fixable'];
 
     const theme = useTheme();
     const isDarkMode = theme.palette.type === 'dark';
 
-    const [selectedEntity, setSelectedEntity] = useState(entities[0]);
-    const [selectedAttribute, setSelectedAttribute] = useState(attributes[0]);
+    const [selectedEntity, setSelectedEntity] = useState("Image");
+    const [selectedAttribute, setSelectedAttribute] = useState("Name");
 
     const [userText, setUserText] = useState("");
     const [selectedCveSeverityOptions, setSelectedCveSeverityOptions] = useState([]);
     const [selectedCveStatusOptions, setSelectedCveStatusOptions] = useState([]);
 
-    const checkVulnSeverity = (vulnSeverity: string) => {
-        let severityLevel: string = "";
-
-        switch (vulnSeverity) {
-            case "LOW_VULNERABILITY_SEVERITY":
-                severityLevel = "Low"
-                break;
-            case "MODERATE_VULNERABILITY_SEVERITY":
-                severityLevel = "Moderate"
-                break;
-            case "IMPORTANT_VULNERABILITY_SEVERITY":
-                severityLevel = "Important"
-                break;
-            case "CRITICAL_VULNERABILITY_SEVERITY":
-                severityLevel = "Critical"
-                break;
-            default:
-                severityLevel = "N/A"
-                break;
-        }
-
-        return severityLevel;
-    }
+    const getSelectedAttributes = () => {
+        return entities[selectedEntity]
+    };
 
     useEffect(() => {
         setFilters({
@@ -60,14 +49,15 @@ export const DataFilterComponent = ({ setFilters, data }) => {
             <ToolbarContent>
                 <ToolbarGroup variant="filter-group">
                     <ToolbarItem>
-                        <SimpleSelect
+                        <EntitySelectComponent
                             options={entities}
-                            setSelectedOptions={setSelectedEntity}
+                            setSelectedEntity={setSelectedEntity}
                         />
 
-                        <SimpleSelect
+                        <AttributeSelectComponent
                             options={attributes}
-                            setSelectedOptions={setSelectedAttribute}
+                            displayAttributes={getSelectedAttributes()}
+                            setSelectedAttribute={setSelectedAttribute}
                         />
 
                         <InputFieldComponent setUserText={setUserText} />

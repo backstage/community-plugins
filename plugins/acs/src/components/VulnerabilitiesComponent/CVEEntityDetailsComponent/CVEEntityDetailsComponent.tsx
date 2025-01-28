@@ -29,7 +29,7 @@ export const CVEEntityDetailsComponent: React.FC<Props> = ({ data, cveDetails, e
     const namespaceLabel = `Namespace: ${data.expanded_data.namespace}`;
     const clusterLabel = `Cluster: ${data.expanded_data.cluster}`;
 
-    const populateRows = useCallback(() => {
+    const populateRows = () => {
         const rows = []
 
         rows.push({
@@ -42,7 +42,7 @@ export const CVEEntityDetailsComponent: React.FC<Props> = ({ data, cveDetails, e
         })
 
         setDataRows(rows)
-    }, [populateRows]);
+    }
 
     const CVEDetails = () => {
         return (
