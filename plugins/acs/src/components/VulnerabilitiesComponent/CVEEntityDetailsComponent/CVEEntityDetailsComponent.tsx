@@ -2,9 +2,8 @@ import React, { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
 import { useTheme } from '@material-ui/core/styles';
 import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
-import { styled } from '@mui/material/styles';
 import Chip from '@mui/material/Chip';
 
 
@@ -48,13 +47,13 @@ export const CVEEntityDetailsComponent: React.FC<Props> = ({ data, cveDetails, e
     const CVEDetails = () => {
         return (
             <Stack spacing={2}>
-               <p><b>{cveDetails}</b></p>
+               <Typography><b>{cveDetails}</b></Typography>
                   <Stack direction="row" spacing={1}>
                     <Chip label={severityLabel} color="error" size="small" variant="outlined" />
                     <Chip label={firstDiscoveredLabel} color="default" size="small" variant="outlined" />
                     <Chip label={publishedLabel} color="default" size="small" variant="outlined" />
                   </Stack>
-                <p>{data.expanded_data.summary}</p>
+                <Typography>{data.expanded_data.summary}</Typography>
             </Stack>
         )
     }
@@ -62,7 +61,7 @@ export const CVEEntityDetailsComponent: React.FC<Props> = ({ data, cveDetails, e
     const EntityDetails = () => {
         return (
             <Stack spacing={2}>
-                <p><b>{entityDetails}</b></p>
+                <Typography><b>{entityDetails}</b></Typography>
                 <Stack direction="row" spacing={1}>
                     <Chip label={workloadLabel} color="default" size="small" variant="outlined" />
                     <Chip label={namespaceLabel} color="default" size="small" variant="outlined" />
@@ -82,7 +81,7 @@ export const CVEEntityDetailsComponent: React.FC<Props> = ({ data, cveDetails, e
 
     useEffect(() => {
         populateRows()
-    }, []);
+    }, [populateRows]);
 
     return (
         <Box component="section" sx={{ p: 2 }}>

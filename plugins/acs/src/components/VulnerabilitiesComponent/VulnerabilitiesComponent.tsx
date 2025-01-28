@@ -6,7 +6,7 @@ import {
 import { InfoCard } from '@backstage/core-components';
 import { makeStyles } from '@material-ui/core/styles';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import { queryACSData } from '../../common/QueryACS';
+import QueryACSData from '../../common/QueryACS';
 import { SecurityFindingsComponent } from './SecurityFindingsComponent';
 
 import { DataFilterComponent } from '../DataFilterComponent';
@@ -16,7 +16,7 @@ export const VulnerabilitiesComponent = ({ serviceName }) => {
         result: ACSDataResult,
         loaded: ACSDataLoaded,
         error: ACSDataError,
-    } = queryACSData(serviceName);
+    } = QueryACSData(serviceName);
 
     const useStyles = makeStyles(theme => ({
         root: {
