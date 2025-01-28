@@ -10,7 +10,7 @@
   },
   "backstage": {
     "role": "backend-plugin-module",
-    "supported-versions": "1.32.5",
+    "supported-versions": "1.35.0",
     "pluginId": "scaffolder",
     "pluginPackage": "@backstage/plugin-scaffolder-backend"
   },

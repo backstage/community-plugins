@@ -12,7 +12,7 @@
   },
   "backstage": {
     "role": "common-library",
-    "supported-versions": "1.32.5",
+    "supported-versions": "1.35.0",
     "pluginId": "quay",
     "pluginPackage": "@backstage-community/plugin-quay-common",
     "pluginPackages": [
