@@ -2,13 +2,10 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: backstage-community-jfrog-artifactory
-  title: Jfrog Artifactory plugin
+  name: backstage-community-jfrog-artifactory-frontend
+  title: '@backstage-community/plugin-jfrog-artifactory'
   description: Jfrog Artifactory plugin for Backstage
   annotations:
-    backstage.io/source-location: url:https://github.com/backstage/community-plugins/tree/main/workspaces/jfrog-artifactory
-    backstage.io/view-url: https://github.com/backstage/community-plugins/tree/main/workspaces/jfrog-artifactory/plugins/jfrog-artifactory/catalog-info.yaml
-    backstage.io/edit-url: https://github.com/backstage/community-plugins/edit/main/workspaces/jfrog-artifactory/plugins/jfrog-artifactory/catalog-info.yaml
     github.com/project-slug: backstage/community-plugins
     github.com/team-slug: backstage/community-plugins-maintainers
   links:
@@ -17,33 +14,7 @@ metadata:
       icon: source
       type: source
 spec:
-  type: backstage-plugin
-  lifecycle: production
-  owner: owner-unknown
-  system: rhdh
-  subcomponentOf: backstage-community-jfrog-artifactory
----
-# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component
-apiVersion: backstage.io/v1alpha1
-kind: Component
-metadata:
-  name: backstage-community-jfrog-artifactory-frontend
-  title: '@backstage-community/plugin-jfrog-artifactory'
-  description: Jfrog Artifactory plugin for Backstage
-  annotations:
-    backstage.io/source-location: url:https://github.com/backstage/community-plugins/tree/main/workspaces/jfrog-artifactory
-    backstage.io/view-url: https://github.com/backstage/community-plugins/tree/main/workspaces/jfrog-artifactory/plugins/jfrog-artifactory/catalog-info.yaml
-    backstage.io/edit-url: https://github.com/backstage/community-plugins/edit/main/workspaces/jfrog-artifactory/plugins/jfrog-artifactory/catalog-info.yaml
-    github.com/project-slug: backstage/community-plugins
-    github.com/team-slug: ckstage/community-plugins-maintainers
-  links:
-    - url: https://github.com/backstage/community-plugins/edit/main/workspaces/jfrog-artifactory
-      title: GitHub Source
-      icon: source
-      type: source
-spec:
   type: backstage-frontend-plugin
   lifecycle: production
-  owner: owner-unknown
-  system: rhdh
+  owner: rhdh-team
   subcomponentOf: backstage-community-jfrog-artifactory

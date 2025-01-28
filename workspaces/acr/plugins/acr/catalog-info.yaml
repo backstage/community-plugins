@@ -1,28 +1,3 @@
-# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component
-apiVersion: backstage.io/v1alpha1
-kind: Component
-metadata:
-  name: backstage-community-acr
-  title: Azure Container Registry plugin
-  description: A Backstage plugin that displays information about your container images available in the Azure Container Registry
-  annotations:
-    backstage.io/source-location: url:https://github.com/backstage/community-plugins/tree/main/workspaces/acr/plugins/acr
-    backstage.io/view-url: https://github.com/backstage/community-plugins/tree/main/workspaces/acr/plugins/acr/catalog-info.yaml
-    backstage.io/edit-url: https://github.com/backstage/community-plugins/tree/main/workspaces/acr/plugins/acr/catalog-info.yaml
-    github.com/project-slug: backstage/community-plugins
-    github.com/team-slug: backstage-community/acr-plugin-maintainers
-    sonarqube.org/project-key: backstage-community_plugins
-  links:
-    - url: https://github.com/backstage/community-plugins/tree/main/workspaces/acr/plugins/acr
-      title: GitHub Source
-      icon: source
-      type: source
-spec:
-  type: backstage-plugin
-  lifecycle: production
-  owner: owner-unknown
-  system: rhdh
-  subcomponentOf: backstage-community-plugins
 ---
 # https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component
 apiVersion: backstage.io/v1alpha1
@@ -32,11 +7,8 @@ metadata:
   title: '@backstage-community/plugin-acr'
   description: A Backstage plugin that displays information about your container images available in the Azure Container Registry
   annotations:
-    backstage.io/source-location: url:https://github.com/backstage/community-plugins/tree/main/workspaces/acr/plugins/acr
-    backstage.io/view-url: https://github.com/backstage/community-plugins/tree/main/workspaces/acr/plugins/acr/catalog-info.yaml
-    backstage.io/edit-url: https://github.com/backstage/community-plugins/tree/main/workspaces/acr/plugins/acr/catalog-info.yaml
     github.com/project-slug: backstage/community-plugins
-    github.com/team-slug: backstage-community/acr-plugin-maintainers
+    github.com/team-slug: backstage/community-plugins-maintainers
     sonarqube.org/project-key: backstage-community_plugins
   links:
     - url: https://github.com/backstage/community-plugins/tree/main/workspaces/acr/plugins/acr
@@ -46,6 +18,5 @@ metadata:
 spec:
   type: backstage-frontend-plugin
   lifecycle: production
-  owner: owner-unknown
-  system: rhdh
+  owner: rhdh-team
   subcomponentOf: backstage-community-acr

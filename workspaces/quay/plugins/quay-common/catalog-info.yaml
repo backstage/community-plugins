@@ -6,14 +6,9 @@ metadata:
   title: '@backstage-community/backstage-plugin-quay-common'
   description: Quay Common plugin
   annotations:
-    backstage.io/source-location: url:https://github.com/backstage/community-plugins/tree/main/workspaces/quay/plugins/quay-common
-    backstage.io/view-url: https://github.com/backstage/community-plugins/blob/main/workspaces/quay/plugins/quay-common/catalog-info.yaml
-    backstage.io/edit-url: https://github.com/backstage/community-plugins/edit/main/workspaces/quay/plugins/quay-common/catalog-info.yaml
     github.com/project-slug: backstage-community/backstage-plugins
     github.com/team-slug: backstage-community/rhtap
     sonarqube.org/project-key: backstage-community_plugins
-  tags:
-    - quay
   links:
     - url: https://github.com/backstage/community-plugins/tree/main/workspaces/quay/plugins/quay-common
       title: GitHub Source
@@ -23,5 +18,4 @@ spec:
   type: backstage-common-library
   lifecycle: production
   owner: rhtap-team
-  system: backstage
   subcomponentOf: backstage-community-quay

@@ -23,6 +23,5 @@ metadata:
 spec:
   type: backstage-common-library
   lifecycle: production
-  owner: backstage-team
-  system: backstage
+  owner: rhdh-team
   subcomponentOf: backstage-community-ocm

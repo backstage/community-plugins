@@ -2,42 +2,10 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: backstage-community-rbac
-  title: RBAC plugin
-  description: RBAC for Backstage and RHDH
-  annotations:
-    backstage.io/source-location: url:https://github.com/backstage/community-plugins/tree/main/workspaces/rbac/plugins/rbac
-    backstage.io/view-url: https://github.com/backstage/community-plugins/blob/main/workspaces/rbac/plugins/rbac/catalog-info.yaml
-    backstage.io/edit-url: https://github.com/backstage/community-plugins/edit/main/workspaces/rbac/plugins/rbac/catalog-info.yaml
-    github.com/project-slug: backstage-community/backstage-plugins
-    github.com/team-slug: backstage/maintainers-plugins
-    sonarqube.org/project-key: backstage-community_plugins
-  tags:
-    - security
-    - rbac
-  links:
-    - url: https://github.com/backstage/community-plugins/tree/main/workspaces/rbac/plugins/rbac
-      title: GitHub Source
-      icon: source
-      type: source
-spec:
-  type: backstage-plugin
-  lifecycle: production
-  owner: backstage-team
-  system: backstage
-  subcomponentOf: backstage-community-plugins
----
-# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component
-apiVersion: backstage.io/v1alpha1
-kind: Component
-metadata:
   name: backstage-community-rbac-frontend
   title: '@backstage-community/backstage-plugin-rbac'
   description: RBAC frontend plugin for Backstage
   annotations:
-    backstage.io/source-location: url:https://github.com/backstage/community-plugins/tree/main/workspaces/rbac/plugins/rbac
-    backstage.io/view-url: https://github.com/backstage/community-plugins/blob/main/workspaces/rbac/plugins/rbac/catalog-info.yaml
-    backstage.io/edit-url: https://github.com/backstage/community-plugins/edit/main/workspaces/rbac/plugins/rbac/catalog-info.yaml
     github.com/project-slug: backstage-community/backstage-plugins
     github.com/team-slug: backstage/maintainers-plugins
     sonarqube.org/project-key: backstage-community_plugins
@@ -52,6 +20,5 @@ metadata:
 spec:
   type: backstage-frontend-plugin
   lifecycle: production
-  owner: backstage-ui-team
-  system: backstage
+  owner: rhdh-team
   subcomponentOf: backstage-community-rbac

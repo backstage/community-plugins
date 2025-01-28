@@ -2,10 +2,11 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: backstage-community-3scale
-  title: 3scale plugin
+  name: backstage-community-3scale-backend
+  title: '@backstage-community/plugin-3scale-backend'
   description: The 3scale Backstage provider plugin synchronizes the 3scale content into the Backstage catalog.
 spec:
-  type: backstage-plugin
+  type: backstage-backend-plugin
   lifecycle: production
   owner: rhdh-team
+  subcomponentOf: backstage-community-3scale

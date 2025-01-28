@@ -1,13 +1,23 @@
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: scaffolder-backend-module-regex
-  description: An example of a Backstage application.
-  # Example for optional annotations
-  # annotations:
-  #   github.com/project-slug: backstage/backstage
-  #   backstage.io/techdocs-ref: dir:.
+  name: backstage-community-regex-actions
+  title: Regex scaffolder actions
+  description: The regex custom scaffolder (software template) actions
+  annotations:
+    github.com/project-slug: backstage/community-plugins
+    github.com/team-slug: backstage-community/maintainers-plugins
+    sonarqube.org/project-key: backstage-community_plugins
+  tags:
+    - scaffolder
+    - actions
+  links:
+    - url: https://github.com/backstage/community-plugins/tree/main/workspaces/scaffolder-backend-module-regex/plugins/regex-actions
+      title: GitHub Source
+      icon: source
+      type: source
 spec:
-  type: website
-  owner: john@example.com
-  lifecycle: experimental
+  type: backstage-plugin
+  lifecycle: production
+  owner: maintainers

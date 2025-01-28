@@ -2,42 +2,10 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: backstage-community-regex-actions
-  title: Regex scaffolder actions
-  description: The regex custom actions
-  annotations:
-    backstage.io/source-location: url:https://github.com/backstage/community-plugins/tree/main/workspaces/scaffolder-backend-module-regex/plugins/regex-actions
-    backstage.io/view-url: https://github.com/backstage/community-plugins/blob/main/workspaces/scaffolder-backend-module-regex/plugins/regex-actions/catalog-info.yaml
-    backstage.io/edit-url: https://github.com/backstage/community-plugins/edit/main/workspaces/scaffolder-backend-module-regex/plugins/regex-actions/catalog-info.yaml
-    github.com/project-slug: backstage/community-plugins
-    github.com/team-slug: backstage-community/maintainers-plugins
-    sonarqube.org/project-key: backstage-community_plugins
-  tags:
-    - scaffolder
-    - actions
-  links:
-    - url: https://github.com/backstage/community-plugins/tree/main/workspaces/scaffolder-backend-module-regex/plugins/regex-actions
-      title: GitHub Source
-      icon: source
-      type: source
-spec:
-  type: backstage-plugin
-  lifecycle: production
-  owner: community-plugins-core-team
-  system: community-plugins
-  subcomponentOf: backstage-community-plugins
----
-# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component
-apiVersion: backstage.io/v1alpha1
-kind: Component
-metadata:
   name: backstage-community-regex-actions-module
   title: '@backstage-community/plugin-scaffolder-backend-module-regex'
   description: The regex custom actions
   annotations:
-    backstage.io/source-location: url:https://github.com/backstage/community-plugins/tree/main/workspaces/scaffolder-backend-module-regex/plugins/regex-actions
-    backstage.io/view-url: https://github.com/backstage/community-plugins/blob/main/workspaces/scaffolder-backend-module-regex/plugins/regex-actions/catalog-info.yaml
-    backstage.io/edit-url: https://github.com/backstage/community-plugins/edit/main/workspaces/scaffolder-backend-module-regex/plugins/regex-actions/catalog-info.yaml
     github.com/project-slug: backstage/community-plugins
     github.com/team-slug: backstage-community/maintainers-plugins
     sonarqube.org/project-key: backstage-community_plugins
@@ -50,8 +18,7 @@ metadata:
       icon: source
       type: source
 spec:
-  type: backstage-plugin
+  type: backstage-backend-plugin-module
   lifecycle: production
-  owner: community-plugins-core-team
-  system: community-plugins
-  subcomponentOf: backstage-community-plugins
+  owner: maintainers
+  subcomponentOf: backstage-community-regex-actions

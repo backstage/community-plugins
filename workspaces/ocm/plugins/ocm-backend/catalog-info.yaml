@@ -23,8 +23,7 @@ metadata:
 spec:
   type: backstage-backend-plugin
   lifecycle: production
-  owner: backstage-team
-  system: backstage
+  owner: rhdh-team
   subcomponentOf: backstage-community-ocm
   providesApis:
     - backstage-community-ocm-backend-api
@@ -41,7 +40,7 @@ metadata:
     backstage.io/view-url: https://github.com/backstage/community-plugins/blob/main/workspaces/ocm/plugins/ocm-backend/catalog-info.yaml
     backstage.io/edit-url: https://github.com/backstage/community-plugins/edit/main/workspaces/ocm/plugins/ocm-backend/catalog-info.yaml
     github.com/project-slug: backstage-community/backstage-plugins
-    #github.com/team-slug: backstage-community/maintainers
+    github.com/team-slug: backstage/community-plugins-maintainers
     sonarqube.org/project-key: backstage-community_plugins
   tags:
     - kubernetes
@@ -54,8 +53,7 @@ metadata:
 spec:
   type: openapi
   lifecycle: production
-  owner: backstage-team
-  system: backstage
+  owner: rhdh-team
   subcomponentOf: backstage-community-ocm
   definition:
     $text: https://github.com/backstage/community-plugins/blob/main/workspaces/ocm/plugins/ocm-backend/src/schema/openapi.yaml

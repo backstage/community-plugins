@@ -1,10 +1,23 @@
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: backstage-plugin-acr-workspace
-  title: 'Azure Container Registry plugin for Backstage'
+  name: backstage-community-acr
+  title: Azure Container Registry plugin
   description: A Backstage plugin that displays information about your container images available in the Azure Container Registry
+  annotations:
+    github.com/project-slug: backstage/community-plugins
+    github.com/team-slug: backstage/community-plugins-maintainers
+    sonarqube.org/project-key: backstage-community_plugins
+  tags:
+    - azure
+    - container-registry
+  links:
+    - url: https://github.com/backstage/community-plugins/tree/main/workspaces/acr/plugins/acr
+      title: GitHub Source
+      icon: source
+      type: source
 spec:
-  lifecycle: experimental
   type: backstage-plugin
-  owner: maintainers
+  lifecycle: production
+  owner: rhdh-team

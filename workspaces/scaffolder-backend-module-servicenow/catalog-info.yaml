@@ -1,13 +1,12 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: scaffolder-backend-module-servicenow
-  description: An example of a Backstage application.
-  # Example for optional annotations
-  # annotations:
-  #   github.com/project-slug: backstage/backstage
-  #   backstage.io/techdocs-ref: dir:.
+  name: backstage-plugin-scaffolder-servicenow
+  title: ServiceNow scaffolder actions
+  description: This plugin provides Backstage template actions for ServiceNow.
+  tags:
+    - scaffolder
 spec:
-  type: website
-  owner: john@example.com
-  lifecycle: experimental
+  type: backstage-plugin
+  lifecycle: production
+  owner: rhdh-team

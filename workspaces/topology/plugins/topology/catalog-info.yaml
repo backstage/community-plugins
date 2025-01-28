@@ -1,33 +1,3 @@
-# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component
-apiVersion: backstage.io/v1alpha1
-kind: Component
-metadata:
-  name: backstage-community-plugin-topology
-  title: Topology plugin
-  description: Topology plugin for Backstage
-  annotations:
-    backstage.io/source-location: url:https://github.com/backstage/community-plugins/tree/main/workspaces/topology/plugins/topology-common
-    backstage.io/view-url: https://github.com/backstage/community-plugins/blob/main/workspaces/topology/plugins/topology/catalog-info.yaml
-    backstage.io/edit-url: https://github.com/backstage/community-plugins/edit/main/workspaces/topology/plugins/topology/catalog-info.yaml
-    github.com/project-slug: backstage/community-plugins
-    github.com/team-slug: backstage-community/community-plugins-maintainers
-    sonarqube.org/project-key: backstage-community_plugins
-  tags:
-    - kubernetes
-    - openshift
-  links:
-    - url: https://github.com/backstage/community-plugins/tree/main/workspaces/topology/plugins/topology
-      title: GitHub Source
-      icon: source
-      type: source
-spec:
-  type: backstage-plugin
-  lifecycle: production
-  owner: maintainers
-  system: rhdh
-  subcomponentOf: backstage-community-plugins
----
-# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
@@ -35,9 +5,6 @@ metadata:
   title: '@backstage-community/plugin-topology'
   description: Topology plugin for Backstage
   annotations:
-    backstage.io/source-location: url:https://github.com/backstage/community-plugins/tree/main/workspaces/topology/plugins/topology
-    backstage.io/view-url: https://github.com/backstage/community-plugins/blob/main/workspaces/topology/plugins/topology/catalog-info.yaml
-    backstage.io/edit-url: https://github.com/backstage/community-plugins/edit/main/workspaces/topology/plugins/topology/catalog-info.yaml
     github.com/project-slug: backstage/community-plugins
     githubworkspaces/topology/.com/team-slug: backstage-community/topology-plugin-maintainers
     sonarqube.org/project-key: backstage-community_plugins
@@ -52,6 +19,5 @@ metadata:
 spec:
   type: backstage-frontend-plugin
   lifecycle: production
-  owner: maintainers
-  system: rhdh
+  owner: rhdh-team
   subcomponentOf: backstage-community-plugin-topology

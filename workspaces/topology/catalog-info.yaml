@@ -1,9 +1,22 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: topology
-  description: TODO
+  name: backstage-community-plugin-topology
+  title: Topology plugin
+  description: The Topology plugin enables you to visualize the workloads such as Deployment, Job, Daemonset, Statefulset, CronJob, Pods and Virtual Machines powering any service on the Kubernetes cluster.
+  annotations:
+    github.com/project-slug: backstage/community-plugins
+    github.com/team-slug: backstage-community/community-plugins-maintainers
+    sonarqube.org/project-key: backstage-community_plugins
+  tags:
+    - kubernetes
+    - openshift
+  links:
+    - url: https://github.com/backstage/community-plugins/tree/main/workspaces/topology/plugins/topology
+      title: GitHub Source
+      icon: source
+      type: source
 spec:
   type: backstage-plugin
-  owner: maintainers
   lifecycle: production
+  owner: rhdh-team

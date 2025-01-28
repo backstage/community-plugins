@@ -1,0 +1,11 @@
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: backstage-community-redhat-resource-optimization-common
+  title: '@backstage-community/plugin-redhat-resource-optimization-common'
+spec:
+  type: backstage-common-library
+  lifecycle: production
+  owner: rhdh-team
+  subcomponentOf: backstage-community-redhat-resource-optimization

@@ -1,0 +1,14 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: backstage-plugin-scaffolder-backend-module-kubernetes
+  title: '@backstage-community/plugin-scaffolder-backend-module-kubernetes'
+  description: This module provides Backstage template actions for Kubernetes.
+  tags:
+    - scaffolder
+    - kubernetes
+spec:
+  type: backstage-backend-plugin-module
+  lifecycle: production
+  owner: rhdh-team
+  subcomponentOf: backstage-plugin-scaffolder-kubernetes
