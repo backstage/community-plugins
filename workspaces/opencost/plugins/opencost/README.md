@@ -65,7 +65,7 @@ opencost:
   baseUrl: http://localhost:9003
 ```
 
-If you want to use the Backstage proxy to communicate with the OpenCost service, add the the following to your `app-config.yaml`:
+If your OpenCost service is private and not directly accessible from the client side, consider using the Backstage proxy to communicate with it. To do so, add the following configs to your `app-config.yaml`:
 
 ```yaml
 proxy:

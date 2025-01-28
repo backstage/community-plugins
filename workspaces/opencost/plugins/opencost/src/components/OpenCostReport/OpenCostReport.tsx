@@ -185,9 +185,9 @@ export const OpenCostReport = () => {
 
   const configApi = useApi(configApiRef);
   const baseUrl = configApi.getConfig('opencost').getString('baseUrl');
-  const useBackstageProxy = configApi
-    .getConfig('opencost')
-    .getOptionalBoolean('useBackstageProxy');
+  const useBackstageProxy = configApi.getOptionalBoolean(
+    'opencost.useBackstageProxy',
+  );
 
   const discoveryApi = useApi(discoveryApiRef);
   const fetchApi = useApi(fetchApiRef);
