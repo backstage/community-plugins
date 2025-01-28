@@ -30,10 +30,10 @@
     "tsc": "tsc"
   },
   "dependencies": {
-    "@backstage/plugin-permission-common": "^0.8.3"
+    "@backstage/plugin-permission-common": "^0.8.4"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.29.4"
+    "@backstage/cli": "^0.29.5"
   },
   "files": [
     "dist"
