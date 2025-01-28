@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 
-import {
-  createLegacyAuthAdapters,
-  errorHandler,
-} from '@backstage/backend-common';
 import express from 'express';
 import Router from 'express-promise-router';
 
@@ -39,30 +35,34 @@ import {
   LoggerService,
   PermissionsService,
 } from '@backstage/backend-plugin-api';
+import { Config } from '@backstage/config';
+import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 
-/**
- * @deprecated Please migrate to the new backend system as this will be removed in the future.
- *
- * @public */
+/** @internal */
 export interface RouterOptions {
   logger: LoggerService;
   azureSitesApi: AzureSitesApi;
   catalogApi: CatalogApi;
   permissions: PermissionsService;
   discovery: DiscoveryService;
-  auth?: AuthService;
-  httpAuth?: HttpAuthService;
+  auth: AuthService;
+  httpAuth: HttpAuthService;
+  config: Config;
 }
 
-/**
- * @deprecated Please migrate to the new backend system as this will be removed in the future.
- *
- * @public */
+/** @internal */
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
-  const { logger, azureSitesApi, permissions, catalogApi } = options;
-  const { auth, httpAuth } = createLegacyAuthAdapters(options);
+  const {
+    logger,
+    azureSitesApi,
+    permissions,
+    catalogApi,
+    config,
+    auth,
+    httpAuth,
+  } = options;
 
   const permissionIntegrationRouter = createPermissionIntegrationRouter({
     permissions: azureSitesPermissions,
@@ -200,6 +200,9 @@ export async function createRouter(
       }
     },
   );
-  router.use(errorHandler());
+
+  const middleware = MiddlewareFactory.create({ logger, config });
+
+  router.use(middleware.error());
   return router;
 }
