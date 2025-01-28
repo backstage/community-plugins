@@ -2,7 +2,7 @@
 
 ## Overview
 
-This library provide an azure resource graph service wrap that uses credentials from config and can be used to fetch resources from Azure.
+This library provides an azure resource graph service wrap that uses credentials from config and can be used to fetch resources from Azure.
 
 ## Installation
 
