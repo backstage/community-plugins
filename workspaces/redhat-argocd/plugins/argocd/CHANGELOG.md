@@ -1,5 +1,16 @@
 ## @backstage-community/plugin-redhat-argocd
 
+## 1.12.0
+
+### Minor Changes
+
+- 5b0553e: bump backstage to 1.34.2 and remove @spotify/prettier-config
+
+### Patch Changes
+
+- Updated dependencies [5b0553e]
+  - @backstage-community/plugin-redhat-argocd-common@1.1.0
+
 ## 1.11.3
 
 ### Patch Changes
