@@ -60,6 +60,7 @@ export const azureSitesPlugin = createBackendPlugin({
             discovery,
             auth,
             httpAuth,
+            config,
           }),
         );
         httpRouter.addAuthPolicy({
