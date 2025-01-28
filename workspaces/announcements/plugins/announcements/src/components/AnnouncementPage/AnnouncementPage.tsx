@@ -39,7 +39,7 @@ import {
 import { announcementViewRouteRef, rootRouteRef } from '../../routes';
 import { announcementsApiRef } from '@backstage-community/plugin-announcements-react';
 import { Announcement } from '@backstage-community/plugin-announcements-common';
-import { Grid } from '@material-ui/core';
+import { Grid, Typography } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 
 const AnnouncementDetails = ({
@@ -56,7 +56,7 @@ const AnnouncementDetails = ({
 
   const publisherRef = parseEntityRef(announcement.publisher);
   const subHeader = (
-    <>
+    <Typography>
       By{' '}
       <EntityPeekAheadPopover entityRef={announcement.publisher}>
         <Link to={entityLink(publisherRef)}>
@@ -64,7 +64,7 @@ const AnnouncementDetails = ({
         </Link>
       </EntityPeekAheadPopover>
       , {DateTime.fromISO(announcement.created_at).toRelative()}
-    </>
+    </Typography>
   );
 
   return (
@@ -87,8 +87,9 @@ type AnnouncementPageProps = {
 export const AnnouncementPage = (props: AnnouncementPageProps) => {
   const announcementsApi = useApi(announcementsApiRef);
   const { id } = useRouteRefParams(announcementViewRouteRef);
-  const { value, loading, error } = useAsync(async () =>
-    announcementsApi.announcementByID(id),
+  const { value, loading, error } = useAsync(
+    async () => announcementsApi.announcementByID(id),
+    [id],
   );
 
   let title = props.title;

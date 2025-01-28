@@ -78,13 +78,13 @@ export const getMembersString = (res: {
   groups: number;
 }): string => {
   let membersString = '';
-  if (res.users > 0) {
-    membersString = `${res.users} ${res.users > 1 ? 'users' : 'user'}`;
-  }
   if (res.groups > 0) {
+    membersString = `${res.groups} ${res.groups > 1 ? 'groups' : 'group'}`;
+  }
+  if (res.users > 0) {
     membersString = membersString.concat(
       membersString.length > 0 ? ', ' : '',
-      `${res.groups} ${res.groups > 1 ? 'groups' : 'group'}`,
+      `${res.users} ${res.users > 1 ? 'users' : 'user'}`,
     );
   }
   return membersString;
