@@ -1,5 +1,13 @@
 ## @janus-idp/backstage-plugin-feedback-backend [1.7.0](https://github.com/janus-idp/backstage-plugins/compare/@janus-idp/backstage-plugin-feedback-backend@1.6.0...@janus-idp/backstage-plugin-feedback-backend@1.7.0) (2024-07-26)
 
+## 2.0.0
+
+### Major Changes
+
+- 1140bf4: **BREAKING** Removed support for the legacy backend system. Please refer to the [README](https://github.com/backstage/community-plugins/blob/main/workspaces/feedback/plugins/feedback-backend/README.md) for instructions on how to use the new backend system.
+
+  Removed usages and references of `@backstage/backend-common`
+
 ## 1.7.11
 
 ### Patch Changes
