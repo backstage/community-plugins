@@ -11,12 +11,12 @@ import { SecurityFindingsComponent } from './SecurityFindingsComponent';
 
 import { DataFilterComponent } from '../DataFilterComponent';
 
-export const VulnerabilitiesComponent = ({ serviceName }) => {
+export const VulnerabilitiesComponent = ({ deploymentName }) => {
     const {
         result: ACSDataResult,
         loaded: ACSDataLoaded,
         error: ACSDataError,
-    } = QueryACSData(serviceName);
+    } = QueryACSData(deploymentName);
 
     const useStyles = makeStyles(theme => ({
         root: {
@@ -45,7 +45,7 @@ export const VulnerabilitiesComponent = ({ serviceName }) => {
         return (
             <InfoCard>
                 <Typography align="center" variant="button">
-                    No results found for query {serviceName}. The annotation `rhdh/acs-deployment:` followed by the deployment name of the entity will need to be added to the entity for data to display.
+                    No results found for query {deploymentName}. The annotation `rhdh/acs-deployment:` followed by the deployment name of the entity will need to be added to the entity for data to display.
                 </Typography>
             </InfoCard>
         );
