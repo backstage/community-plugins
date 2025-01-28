@@ -87,8 +87,9 @@ type AnnouncementPageProps = {
 export const AnnouncementPage = (props: AnnouncementPageProps) => {
   const announcementsApi = useApi(announcementsApiRef);
   const { id } = useRouteRefParams(announcementViewRouteRef);
-  const { value, loading, error } = useAsync(async () =>
-    announcementsApi.announcementByID(id),
+  const { value, loading, error } = useAsync(
+    async () => announcementsApi.announcementByID(id),
+    [id],
   );
 
   let title = props.title;
