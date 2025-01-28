@@ -1,7 +1,7 @@
 import react, { useCallback, useState, useEffect } from 'react';
 import { useApi, configApiRef } from '@backstage/core-plugin-api';
 
-const QueryACSData = (serviceName: string) => {
+const QueryACSData = (deploymentName: string) => {
     const [result, setResult] = useState([]);
     const [loaded, setLoaded] = useState<boolean>(false);
     const [error, setError] = useState<boolean>(false);
@@ -11,7 +11,7 @@ const QueryACSData = (serviceName: string) => {
     const backendUrl = config.getString('backend.baseUrl');
 
     const getACSData = useCallback(() => {
-        fetch(`${backendUrl}/api/proxy/acs/v1/export/vuln-mgmt/workloads?query=Deployment%3A${serviceName}`)
+        fetch(`${backendUrl}/api/proxy/acs/v1/export/vuln-mgmt/workloads?query=Deployment%3A${deploymentName}`)
             .then(response => response.text())
             .then(text => {
                 const lines = text.split('\n');
@@ -32,7 +32,7 @@ const QueryACSData = (serviceName: string) => {
             })
 
         return null;
-    }, [backendUrl, serviceName]);
+    }, [backendUrl, deploymentName]);
 
     useEffect(() => {
         getACSData()
