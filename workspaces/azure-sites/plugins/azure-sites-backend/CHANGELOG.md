@@ -1,5 +1,11 @@
 # @backstage-community/plugin-azure-sites-backend
 
+## 0.5.0
+
+### Minor Changes
+
+- 5bf8850: Removed support for the legacy backend system.
+
 ## 0.4.0
 
 ### Minor Changes
