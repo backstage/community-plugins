@@ -148,6 +148,8 @@ integrations:
           privateKey: PRIVATE_KEY
 ```
 
+[You can find more about the integrations config in the official docs](https://backstage.io/docs/integrations/github/locations/)
+
 ### API Documentation
 
 For more details on using the GitHub Copilot and Teams APIs, refer to the following documentation:
