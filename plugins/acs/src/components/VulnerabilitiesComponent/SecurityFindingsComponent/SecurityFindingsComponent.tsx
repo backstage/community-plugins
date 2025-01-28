@@ -7,7 +7,7 @@ import '@patternfly/react-styles';
 
 import { CVEEntityDetailsComponent } from '../CVEEntityDetailsComponent';
 
-export const SecurityFindingsComponent = (data: Array<String>) => {
+export const SecurityFindingsComponent = ({ data, filters }) => {
     const [dataRows, setDataRows] = useState([]);
     const [pending, setPending] = React.useState(true);
     const theme = useTheme();
@@ -83,16 +83,16 @@ export const SecurityFindingsComponent = (data: Array<String>) => {
     }
 
     const checkIsFixable = (vulnItem: any) => {
-        for (let i = 0; i < data?.filters?.selectedCveStatusOptions.length; i++) {
-            if (vulnItem?.row_data?.status === data?.filters?.selectedCveStatusOptions[i]) return true;
+        for (let i = 0; i < filters?.selectedCveStatusOptions.length; i++) {
+            if (vulnItem?.row_data?.status === filters?.selectedCveStatusOptions[i]) return true;
         };
 
         return false;
     }
 
     const checkVulnSev = (vulnItem: any) => {
-        for (let i = 0; i < data?.filters?.selectedCveSeverityOptions.length; i++) {
-            if (vulnItem?.row_data?.severity === data?.filters?.selectedCveSeverityOptions[i]) return true;
+        for (let i = 0; i < filters?.selectedCveSeverityOptions.length; i++) {
+            if (vulnItem?.row_data?.severity === filters?.selectedCveSeverityOptions[i]) return true;
         };
 
         return false;
@@ -100,27 +100,27 @@ export const SecurityFindingsComponent = (data: Array<String>) => {
 
     const checkSearch = (vulnItem: any) => {
         let isTrue = false;
-        const attribute = data?.filters?.selectedAttribute;
-        switch (data?.filters?.selectedEntity) {
+        const attribute = filters?.selectedAttribute;
+        switch (filters?.selectedEntity) {
             case "Image":
-                if (attribute === "Name") isTrue = vulnItem?.expanded_data?.image.includes(data?.filters.optionText);
+                if (attribute === "Name") isTrue = vulnItem?.expanded_data?.image.includes(filters.optionText);
                 break;
             case "CVE":
-                if (attribute === "Name") isTrue = vulnItem?.row_data?.cve.includes(data?.filters.optionText);
-                if (attribute === "Discovered time") isTrue = vulnItem?.row_data?.discovered.includes(data?.filters.optionText);
-                if (attribute === "CVSS") isTrue = vulnItem?.row_data?.cvss.toString().includes(data?.filters.optionText);
+                if (attribute === "Name") isTrue = vulnItem?.row_data?.cve.includes(filters.optionText);
+                if (attribute === "Discovered time") isTrue = vulnItem?.row_data?.discovered.includes(filters.optionText);
+                if (attribute === "CVSS") isTrue = vulnItem?.row_data?.cvss.toString().includes(filters.optionText);
                 break;
             case "Image Component":
-                if (attribute === "Name") isTrue = vulnItem?.expanded_data?.component.includes(data?.filters.optionText);
+                if (attribute === "Name") isTrue = vulnItem?.expanded_data?.component.includes(filters.optionText);
                 break;
             case "Deployment":
-                if (attribute === "Name") isTrue = vulnItem?.expanded_data?.deployment.includes(data?.filters.optionText);
+                if (attribute === "Name") isTrue = vulnItem?.expanded_data?.deployment.includes(filters.optionText);
                 break;
             case "Namespace":
-                if (attribute === "Name") isTrue = vulnItem?.expanded_data?.namespace.includes(data?.filters.optionText);
+                if (attribute === "Name") isTrue = vulnItem?.expanded_data?.namespace.includes(filters.optionText);
                 break;
             case "Cluster":
-                if (attribute === "Name") isTrue = vulnItem?.expanded_data?.cluster.includes(data?.filters.optionText);
+                if (attribute === "Name") isTrue = vulnItem?.expanded_data?.cluster.includes(filters.optionText);
                 break
             default:
                 break;
@@ -131,21 +131,25 @@ export const SecurityFindingsComponent = (data: Array<String>) => {
 
     const organizeData = () => {
         const rows: any = [];
-        data?.data?.forEach((element: String[]) => {
-            element?.result?.images?.forEach((element1: Object) => {
-                if (!element1?.scan) return;
 
-                for (const [Key, DeploymentValue2] of Object.entries(element1?.scan?.components)) {
-                    if (DeploymentValue2?.vulns?.length === 0) continue;
+        console.log("data", data)
 
-                    DeploymentValue2?.vulns?.forEach((vulns: Array) => {
+        data?.forEach((deployment: String[]) => {
+            deployment?.result?.images?.forEach((item: Object) => {
+                console.log("item:", item)
+                if (!item?.scan) return;
+
+                for (const [_, component] of Object.entries(item?.scan?.components)) {
+                    if (component?.vulns?.length === 0) continue;
+
+                    component?.vulns?.forEach((vulns: Array) => {
                         const currItem = {
                             row_data: {
                                 cve: vulns?.cve,
                                 severity: checkVulnSeverity(vulns?.severity),
                                 status: isFixable(vulns?.fixedBy),
-                                workload: element?.result?.deployment?.name,
-                                image: element1?.name?.fullName,
+                                workload: deployment?.result?.deployment?.name,
+                                image: item?.name?.fullName,
                                 cvss: vulns?.cvss.toString(),
                                 discovered: getDiscovered(vulns?.firstImageOccurrence),
                                 link: vulns?.link,
@@ -155,28 +159,28 @@ export const SecurityFindingsComponent = (data: Array<String>) => {
                                 first_discovered: formatISODateTime(vulns?.firstImageOccurrence),
                                 published: formatISODateTime(vulns?.publishedOn) || "N/A",
                                 summary: vulns?.summary,
-                                workload: element?.result?.deployment?.name,
-                                namespace: element?.result?.deployment?.namespace,
-                                cluster: element?.result?.deployment?.clusterName,
-                                image: element1?.name?.fullName,
-                                component: DeploymentValue2?.name,
-                                version: DeploymentValue2?.version,
+                                workload: deployment?.result?.deployment?.name,
+                                namespace: deployment?.result?.deployment?.namespace,
+                                cluster: deployment?.result?.deployment?.clusterName,
+                                image: item?.name?.fullName,
+                                component: component?.name,
+                                version: component?.version,
                                 cveFixedIn: vulns?.fixedBy,
-                                source: DeploymentValue2?.source,
-                                location: DeploymentValue2?.location || "N/A",
+                                source: component?.source,
+                                location: component?.location || "N/A",
                             }
                         }
 
                         // Check data against various user selected filters
-                        if (data?.filters?.selectedCveStatusOptions?.length > 0) {
+                        if (filters?.selectedCveStatusOptions?.length > 0) {
                             if (!checkIsFixable(currItem)) return;
                         }
 
-                        if (data?.filters?.selectedCveSeverityOptions?.length > 0) {
+                        if (filters?.selectedCveSeverityOptions?.length > 0) {
                             if (!checkVulnSev(currItem)) return;
                         }
 
-                        if (data?.filters?.optionText !== "") {
+                        if (filters?.optionText !== "") {
                             if (!checkSearch(currItem)) return;
                         }
 
@@ -192,7 +196,7 @@ export const SecurityFindingsComponent = (data: Array<String>) => {
 
     useEffect(() => {
         organizeData();
-    }, [data, organizeData]);
+    }, [data, filters]);
 
     return (
         <div>
