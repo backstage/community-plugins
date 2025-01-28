@@ -38,11 +38,11 @@ import { NotificationService } from '@backstage/plugin-notifications-node';
 
 const handlers = [
   rest.get(
-    'http://localhost:7007/api/catalog/entities/by-name/component/default/example-website',
+    'http://**/api/catalog/entities/by-name/component/default/example-website',
     (_, res, ctx) => res(ctx.json(mockEntity)),
   ),
   rest.get(
-    'http://localhost:7007/api/catalog/entities/by-name/user/default/guest',
+    'http://**/api/catalog/entities/by-name/user/default/guest',
     (_, res, ctx) => res(ctx.json(mockUser)),
   ),
   rest.get('https://jira.host/rest/api/latest/issue/ticket-id', (_, res, ctx) =>
