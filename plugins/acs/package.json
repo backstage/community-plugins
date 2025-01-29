@@ -52,12 +52,13 @@
   "devDependencies": {
     "@backstage/cli": "^0.29.0",
     "@backstage/core-app-api": "^1.15.2",
-    "@backstage/dev-utils": "^1.1.4",
-    "@backstage/test-utils": "^1.7.2",
+    "@backstage/dev-utils": "^1.0.30",
+    "@backstage/test-utils": "^1.7.0",
     "@janus-idp/cli": "^1.19.1",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^14.0.0",
     "@testing-library/user-event": "^14.0.0",
+    "@types/jest": "^29.5.14",
     "msw": "^1.0.0",
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0"
   },

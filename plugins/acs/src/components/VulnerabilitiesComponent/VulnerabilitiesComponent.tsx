@@ -6,7 +6,7 @@ import {
 import { InfoCard } from '@backstage/core-components';
 import { makeStyles } from '@material-ui/core/styles';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import QueryACSData from '../../common/QueryACS';
+import { QueryACSData } from '../../common/QueryACSData';
 import { SecurityFindingsComponent } from './SecurityFindingsComponent';
 
 import { DataFilterComponent } from '../DataFilterComponent';
@@ -59,6 +59,10 @@ export const VulnerabilitiesComponent = ({ deploymentName }) => {
         );
     }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 63546a5 (adding simple tests and github workflow)
     return (
         <Box>
             <DataFilterComponent
