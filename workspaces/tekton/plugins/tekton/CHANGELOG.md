@@ -1,5 +1,16 @@
 ### Dependencies
 
+## 3.18.0
+
+### Minor Changes
+
+- 2f344ca: Backstage version bump to v1.35.0
+
+### Patch Changes
+
+- Updated dependencies [2f344ca]
+  - @backstage-community/plugin-tekton-common@1.5.0
+
 ## 3.17.0
 
 ### Minor Changes
