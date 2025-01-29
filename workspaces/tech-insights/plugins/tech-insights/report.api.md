@@ -20,6 +20,7 @@ import { ResultCheckIconBaseComponentProps } from '@backstage-community/plugin-t
 import { ResultCheckIconProps } from '@backstage-community/plugin-tech-insights-react';
 import { ResultLinksMenuInfo } from '@backstage-community/plugin-tech-insights-react';
 import { RouteRef } from '@backstage/core-plugin-api';
+import { TechInsightsApi } from '@backstage-community/plugin-tech-insights-react';
 import { techInsightsApiRef } from '@backstage-community/plugin-tech-insights-react';
 import { TechInsightsClient } from '@backstage-community/plugin-tech-insights-react';
 
@@ -72,6 +73,8 @@ export const ScorecardsList: (props: {
   checkResults: CheckResult[];
   entity?: Entity | undefined;
 }) => JSX_2.Element;
+
+export { TechInsightsApi };
 
 export { techInsightsApiRef };
 
