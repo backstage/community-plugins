@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 import React from 'react';
 import CheckCircleOutline from '@material-ui/icons/CheckCircleOutline';
 import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
 import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
 
 /**
+ * A component that renders a boolean check result as either a success or failure icon.
+ *
  * @public
  */
 export const BooleanCheck = (props: { checkResult: CheckResult }) => {
@@ -31,6 +32,10 @@ export const BooleanCheck = (props: { checkResult: CheckResult }) => {
 };
 
 /**
+ * Helper function to determine if a boolean check result represents a failure.
+ *
+ * @returns true if the check result represents a failure (result is false), false otherwise
+ *
  * @public
  */
 export const isBooleanCheckFailed = (checkResult: CheckResult) =>

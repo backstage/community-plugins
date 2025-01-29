@@ -27,8 +27,8 @@ import AccordionDetails from '@material-ui/core/AccordionDetails';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import { useApi } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
-import { techInsightsApiRef } from '../../api';
 import { MarkdownContent } from '@backstage/core-components';
+import { techInsightsApiRef } from '@backstage-community/plugin-tech-insights-react';
 
 const useStyles = makeStyles(theme => ({
   subheader: {

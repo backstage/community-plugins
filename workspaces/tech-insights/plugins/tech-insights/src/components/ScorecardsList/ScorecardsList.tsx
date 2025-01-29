@@ -21,11 +21,13 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import { makeStyles } from '@material-ui/core/styles';
-import { techInsightsApiRef } from '../../api';
 import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
 import { MarkdownContent } from '@backstage/core-components';
 import { Entity } from '@backstage/catalog-model';
-import { ResultCheckIcon } from '../ResultCheckIcon';
+import {
+  ResultCheckIcon,
+  techInsightsApiRef,
+} from '@backstage-community/plugin-tech-insights-react';
 
 const useStyles = makeStyles(theme => ({
   listItemText: {
