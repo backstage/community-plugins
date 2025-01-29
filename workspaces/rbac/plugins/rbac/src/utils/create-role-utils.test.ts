@@ -59,6 +59,7 @@ describe('getRoleData', () => {
           ref: 'group:default/group1',
         },
       ],
+      selectedPlugins: [],
       permissionPoliciesRows: [
         {
           plugin: '',
@@ -104,6 +105,7 @@ describe('getRoleData', () => {
           ref: 'group:default/group1',
         },
       ],
+      selectedPlugins: [],
       permissionPoliciesRows: [
         {
           plugin: '',
@@ -210,24 +212,19 @@ describe('getPermissionPolicies', () => {
         name: 'catalog.entity.create',
         policy: 'create',
       },
-      {
-        resourceType: 'catalog-entity',
-        name: 'catalog.entity.delete',
-        policy: 'delete',
-      },
-      {
-        resourceType: 'catalog-entity',
-        name: 'catalog.entity.update',
-        policy: 'update',
-      },
     ];
     const result = getPermissionPolicies(policies);
     expect(result).toEqual({
-      'catalog-entity': {
-        policies: ['Read', 'Delete', 'Update'],
+      'catalog.entity.read': {
+        policies: ['Read'],
         isResourced: true,
+        resourceType: 'catalog-entity',
       },
-      'catalog.entity.create': { policies: ['Create'], isResourced: false },
+      'catalog.entity.create': {
+        policies: ['Create'],
+        isResourced: false,
+        resourceType: '',
+      },
     });
   });
 });
@@ -240,53 +237,89 @@ describe('getPluginsPermissionPoliciesData', () => {
 
   it('correctly transforms pluginsPermissionPolicies', () => {
     const result = getPluginsPermissionPoliciesData(mockPermissionPolicies);
+
     expect(result).toEqual({
       plugins: ['catalog', 'scaffolder', 'permission'],
       pluginsPermissions: {
         catalog: {
           permissions: [
-            'catalog-entity',
+            'catalog.entity.read',
             'catalog.entity.create',
+            'catalog.entity.delete',
+            'catalog.entity.update',
             'catalog.location.read',
             'catalog.location.create',
             'catalog.location.delete',
           ],
           policies: {
-            'catalog-entity': {
-              policies: ['Read', 'Delete', 'Update'],
+            'catalog.entity.read': {
+              policies: ['Read'],
               isResourced: true,
+              resourceType: 'catalog-entity',
+            },
+            'catalog.entity.delete': {
+              policies: ['Delete'],
+              isResourced: true,
+              resourceType: 'catalog-entity',
+            },
+            'catalog.entity.update': {
+              policies: ['Update'],
+              isResourced: true,
+              resourceType: 'catalog-entity',
             },
             'catalog.entity.create': {
               policies: ['Create'],
               isResourced: false,
+              resourceType: '',
             },
             'catalog.location.read': {
               policies: ['Read'],
               isResourced: false,
+              resourceType: '',
             },
             'catalog.location.create': {
               policies: ['Create'],
               isResourced: false,
+              resourceType: '',
             },
             'catalog.location.delete': {
               policies: ['Delete'],
               isResourced: false,
+              resourceType: '',
             },
           },
         },
         scaffolder: {
-          permissions: ['scaffolder-template', 'scaffolder-action'],
+          permissions: [
+            'scaffolder.template.read',
+            'scaffolder.template.read',
+            'scaffolder.action.use',
+          ],
           policies: {
-            'scaffolder-template': { policies: ['Read'], isResourced: true },
-            'scaffolder-action': { policies: ['Use'], isResourced: true },
+            'scaffolder.template.read': {
+              policies: ['Read'],
+              isResourced: true,
+              resourceType: 'scaffolder-template',
+            },
+            'scaffolder.action.use': {
+              policies: ['Use'],
+              isResourced: true,
+              resourceType: 'scaffolder-action',
+            },
           },
         },
         permission: {
-          permissions: ['policy-entity'],
+          permissions: [
+            'policy-entity',
+            'policy-entity',
+            'policy-entity',
+            'policy-entity',
+          ],
           policies: {
             'policy-entity': {
               policies: ['Read', 'Create', 'Delete', 'Update'],
               isResourced: false,
+              resourceType: '',
             },
           },
         },
@@ -302,6 +335,7 @@ describe('getPermissionPoliciesData', () => {
       name: 'testRole',
       namespace: 'default',
       selectedMembers: [],
+      selectedPlugins: [],
       permissionPoliciesRows: [],
     });
     expect(result).toEqual([]);
@@ -313,6 +347,10 @@ describe('getPermissionPoliciesData', () => {
       namespace: 'default',
       kind: 'role',
       selectedMembers: [],
+      selectedPlugins: [
+        { label: 'Scaffolder', value: 'scaffolder' },
+        { label: 'Catalog', value: 'catalog' },
+      ],
       permissionPoliciesRows: [
         {
           plugin: 'scaffolder',
@@ -404,6 +442,7 @@ describe('getConditionalPermissionPoliciesData', () => {
       name: 'div',
       namespace: 'default',
       selectedMembers: [],
+      selectedPlugins: [],
       permissionPoliciesRows: [],
     };
 
@@ -420,11 +459,13 @@ describe('getUpdatedConditionalPolicies', () => {
       name: 'div',
       namespace: 'default',
       selectedMembers: [],
+      selectedPlugins: [{ label: 'Catalog', value: 'catalog' }],
       permissionPoliciesRows: [
         {
           id: 1,
-          permission: 'catalog-entity',
-          policies: [{ policy: 'update', effect: 'allow' }],
+          permission: 'catalog.entity.read',
+          resourceType: 'catalog-entity',
+          policies: [{ policy: 'read', effect: 'allow' }],
           isResourced: true,
           plugin: 'catalog',
           conditions: {
@@ -461,7 +502,7 @@ describe('getUpdatedConditionalPolicies', () => {
           roleEntityRef: 'user:default/div',
           pluginId: 'catalog',
           resourceType: 'catalog-entity',
-          permissionMapping: ['update'],
+          permissionMapping: ['read'],
           conditions: {
             allOf: [
               {
@@ -491,6 +532,7 @@ describe('getUpdatedConditionalPolicies', () => {
       name: 'div',
       namespace: 'default',
       selectedMembers: [],
+      selectedPlugins: [],
       permissionPoliciesRows: [],
     };
 
@@ -532,6 +574,7 @@ describe('getNewConditionalPolicies', () => {
       name: 'div',
       namespace: 'default',
       selectedMembers: [],
+      selectedPlugins: [],
       permissionPoliciesRows: [],
     };
 
@@ -548,6 +591,7 @@ describe('getRemovedConditionalPoliciesIds', () => {
       name: 'div',
       namespace: 'default',
       selectedMembers: [],
+      selectedPlugins: [],
       permissionPoliciesRows: [],
     };
 
@@ -564,6 +608,7 @@ describe('getRemovedConditionalPoliciesIds', () => {
       name: 'div',
       namespace: 'default',
       selectedMembers: [],
+      selectedPlugins: [],
       permissionPoliciesRows: [],
     };
 
@@ -572,6 +617,7 @@ describe('getRemovedConditionalPoliciesIds', () => {
       name: 'div',
       namespace: 'default',
       selectedMembers: [],
+      selectedPlugins: [],
       permissionPoliciesRows: [],
     };
 
