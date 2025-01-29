@@ -12,7 +12,7 @@
   },
   "backstage": {
     "role": "common-library",
-    "supported-versions": "1.32.5",
+    "supported-versions": "1.35.0",
     "pluginId": "quay",
     "pluginPackage": "@backstage-community/plugin-quay-common",
     "pluginPackages": [
@@ -54,12 +54,12 @@
     "dist"
   ],
   "peerDependencies": {
-    "@backstage/plugin-permission-common": "^0.8.3",
+    "@backstage/plugin-permission-common": "^0.8.4",
     "react": "16.13.1 || ^17.0.0 || ^18.0.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.29.4",
-    "@backstage/plugin-permission-common": "^0.8.3",
+    "@backstage/cli": "^0.29.5",
+    "@backstage/plugin-permission-common": "^0.8.4",
     "@spotify/prettier-config": "^15.0.0",
     "@types/react": "^18.2.58",
     "prettier": "3.4.2",
