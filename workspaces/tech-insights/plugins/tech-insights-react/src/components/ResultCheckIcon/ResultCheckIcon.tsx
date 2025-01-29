@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 import React, {
   ElementType,
   MouseEventHandler,
@@ -21,17 +20,14 @@ import React, {
   ReactNode,
   useState,
 } from 'react';
-
 import { useApi } from '@backstage/core-plugin-api';
 import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
 import { Entity } from '@backstage/catalog-model';
-
 import IconButton from '@material-ui/core/IconButton';
 import Alert from '@material-ui/lab/Alert';
-
 import { techInsightsApiRef } from '../../api';
-import { CheckResultRenderer } from '../CheckResultRenderer';
 import { ResultLinksMenu, ResultLinksMenuInfo } from '../ResultLinksMenu';
+import { CheckResultRenderer } from '../CheckResultRenderer';
 
 /** @public */
 export type ResultCheckIconBaseComponentProps = PropsWithChildren<{
@@ -90,6 +86,12 @@ export interface ResultCheckIconProps<
   missingRendererComponent?: ReactNode;
 }
 
+/**
+ * A component that renders an icon representing a check result, optionally with a popup menu
+ * containing links related to the check.
+ *
+ * @public
+ */
 export const ResultCheckIcon = <P extends ResultCheckIconBaseComponentProps>(
   props: ResultCheckIconProps<P>,
 ) => {

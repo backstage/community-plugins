@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 The Backstage Authors
+ * Copyright 2025 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export * from './TechInsightsApi';
-export * from './TechInsightsClient';
-export * from './types';
+
+/**
+ * This package provides React components for displaying Tech Insights check results,
+ * as well as the API interfaces and client implementation used to interact with
+ * the Tech Insights backend.
+ *
+ * @packageDocumentation
+ */
+
+export * from './api';
+export * from './components';

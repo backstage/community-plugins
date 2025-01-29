@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
 import React from 'react';
+import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
 import { BooleanCheck, isBooleanCheckFailed } from './BooleanCheck';
 
 /**
