@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2025 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-export { githubDiscussionsReadPermission } from './permissions';
 import {
   SearchDocument,
   IndexableDocument,
 } from '@backstage/plugin-search-common';
 
-/**
- * @public
- */
-export interface GithubDiscussionsDocument {
+interface GithubDiscussionsDocument {
   author: string;
   category: string;
   labels: {
@@ -40,13 +35,7 @@ export interface GithubDiscussionsDocument {
   }[];
 }
 
-/**
- * @public
- */
 export type GithubDiscussionsSearchDocument = GithubDiscussionsDocument &
   SearchDocument;
-/**
- * @public
- */
 export type GithubDiscussionIndexableDocument = GithubDiscussionsDocument &
   IndexableDocument;

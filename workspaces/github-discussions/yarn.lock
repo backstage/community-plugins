@@ -2702,6 +2702,7 @@ __metadata:
   resolution: "@backstage-community/plugin-github-discussions-common@workspace:plugins/github-discussions-common"
   dependencies:
     "@backstage/cli": "npm:^0.30.0"
+    "@backstage/plugin-permission-common": "npm:^0.8.4"
     "@backstage/plugin-search-common": "npm:^1.2.17"
   languageName: unknown
   linkType: soft
