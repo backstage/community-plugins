@@ -13,5 +13,4 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { createRouter, type RouterOptions } from './service/router';
 export { feedbackPlugin as default } from './plugin';

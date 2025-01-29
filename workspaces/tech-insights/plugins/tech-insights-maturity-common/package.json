@@ -1,0 +1,65 @@
+{
+  "name": "@backstage-community/plugin-tech-insights-maturity-common",
+  "description": "Common functionalities for the tech-insights-maturity plugin",
+  "version": "0.1.0",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "package.json": [
+        "package.json"
+      ]
+    }
+  },
+  "backstage": {
+    "role": "common-library",
+    "pluginId": "tech-insights",
+    "pluginPackages": [
+      "@backstage-community/plugin-tech-insights",
+      "@backstage-community/plugin-tech-insights-backend",
+      "@backstage-community/plugin-tech-insights-common",
+      "@backstage-community/plugin-tech-insights-maturity",
+      "@backstage-community/plugin-tech-insights-maturity-common",
+      "@backstage-community/plugin-tech-insights-node",
+      "@backstage-community/plugin-tech-insights-react"
+    ]
+  },
+  "keywords": [
+    "backstage",
+    "tech-insights",
+    "tech-insights-maturity"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/tech-insights/plugins/tech-insights-maturity-common"
+  },
+  "sideEffects": false,
+  "scripts": {
+    "build": "backstage-cli package build",
+    "lint": "backstage-cli package lint",
+    "test": "backstage-cli package test",
+    "clean": "backstage-cli package clean",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack"
+  },
+  "dependencies": {
+    "@backstage-community/plugin-tech-insights-common": "workspace:^",
+    "@backstage/repo-tools": "0.3.5",
+    "msw": "2.7.0"
+  },
+  "devDependencies": {
+    "@backstage/cli": "^0.29.4"
+  },
+  "files": [
+    "dist"
+  ]
+}
