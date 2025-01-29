@@ -55,7 +55,7 @@ backend.add(legacyPlugin('argocd', import('./plugins/argocd')));
 backend.add(import('@backstage/plugin-kubernetes-backend/alpha'));
 
 // search collators
-backend.add(import('@backstage/plugin-search-backend-module-catalog/alpha'));
+backend.add(import('@backstage/plugin-search-backend-module-catalog'));
 backend.add(import('@backstage/plugin-search-backend-module-techdocs/alpha'));
 
 backend.start();

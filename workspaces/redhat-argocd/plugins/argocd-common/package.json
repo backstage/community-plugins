@@ -12,7 +12,7 @@
   },
   "backstage": {
     "role": "common-library",
-    "supported-versions": "1.29.2",
+    "supported-versions": "1.35.0",
     "pluginId": "redhat-argocd-common",
     "pluginPackage": "@backstage-community/plugin-redhat-argocd-common",
     "pluginPackages": [
@@ -30,10 +30,10 @@
     "tsc": "tsc"
   },
   "dependencies": {
-    "@backstage/plugin-permission-common": "^0.8.3"
+    "@backstage/plugin-permission-common": "^0.8.4"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.29.4"
+    "@backstage/cli": "^0.29.5"
   },
   "files": [
     "dist"
