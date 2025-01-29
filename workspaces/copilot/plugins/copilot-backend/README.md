@@ -63,9 +63,9 @@ To install the plugin using the old method:
 
 ## Configuration
 
-### Environment Variables
+### App Config
 
-To configure the GitHub Copilot plugin, you need to set the following environment variables:
+To configure the GitHub Copilot plugin, you need to set the following values in the app-config:
 
 - **`copilot.host`**: The host URL for your GitHub Copilot instance (e.g., `github.com` or `github.enterprise.com`).
 - **`copilot.enterprise`**: The name of your GitHub Enterprise instance (e.g., `my-enterprise`).
@@ -75,9 +75,14 @@ These variables are used to configure the plugin and ensure it communicates with
 
 ### GitHub Credentials
 
-**Important:** The GitHub token, necessary for authentication, should be managed within your Backstage integrations configuration. Ensure that your GitHub integration in the Backstage configuration includes the necessary token for the `GithubCredentialsProvider` to function correctly.
+GitHub support different auth methods depending on which API you are using.
 
-### GitHub Token Scopes
+- Enterprise API - [only supports "classic" PAT tokens](https://docs.github.com/en/enterprise-cloud@latest/rest/copilot/copilot-usage?apiVersion=2022-11-28#get-a-summary-of-copilot-usage-for-enterprise-members)
+- Org Api - [Supports app tokens, "classic", and fine grained PAT tokens](https://docs.github.com/en/enterprise-cloud@latest/rest/copilot/copilot-usage?apiVersion=2022-11-28#get-a-summary-of-copilot-usage-for-organization-members)
+
+This plugin supports both schemes and detects the best scheme based on which API(s) you have configured for use.
+
+### GitHub Token/App Scopes
 
 To ensure the GitHub Copilot plugin operates correctly within your organization or enterprise, your GitHub access token must include specific scopes. These scopes grant the plugin the necessary permissions to interact with your GitHub organization and manage Copilot usage.
 
@@ -95,10 +100,18 @@ To ensure the GitHub Copilot plugin operates correctly within your organization 
 
 #### How to Configure Token Scopes
 
-1. **Generate a Personal Access Token (PAT):**
-   - Navigate to [GitHub Personal Access Tokens](https://github.com/settings/tokens).
-   - Click on **Generate new token**.
-   - Select the scopes according to your needs
+**Generate a Personal Access Token (PAT) (Entperise only supports "classic" PAT tokens)**
+
+- Navigate to [GitHub Personal Access Tokens](https://github.com/settings/tokens).
+- Click on **Generate new token**.
+- Select the scopes according to your needs
+
+**Using a GitHub App**
+
+- Create or reuse an existing GitHub App that you own.
+- Navigate to the app permissions
+- Select the permissions to read the org and manage billing for copilot and save
+- Install and update permissions in your oeg.
 
 ### YAML Configuration Example
 
@@ -115,11 +128,27 @@ copilot:
   enterprise: YOUR_ENTERPRISE_NAME_HERE
   organization: YOUR_ORGANIZATION_NAME_HERE
 
+# Using a PAT
 integrations:
   github:
     - host: YOUR_GITHUB_HOST_HERE
       token: YOUR_GENERATED_TOKEN
+
+# Using a GitHub App
+integrations:
+  github:
+    - host: github.com
+      apps:
+        - appId: YOUR_APP_ID
+          allowedInstallationOwners:
+            - YOUR_ORG_NAME
+          clientId: CLIENT_ID
+          clientSecret: CLIENT_SECRET
+          webhookSecret: WEBHOOK_SECRET
+          privateKey: PRIVATE_KEY
 ```
+
+[You can find more about the integrations config in the official docs](https://backstage.io/docs/integrations/github/locations/)
 
 ### API Documentation
 
