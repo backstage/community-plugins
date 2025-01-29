@@ -35,6 +35,10 @@ const isFulfilled = <T>(
   p: PromiseSettledResult<T>,
 ): p is PromiseFulfilledResult<T> => p.status === 'fulfilled';
 
+const isRejected = <T>(
+  p: PromiseSettledResult<T>,
+): p is PromiseRejectedResult => p.status === 'rejected';
+
 /** @public */
 export async function createRouter(
   options: AdrRouterOptions,
@@ -81,8 +85,15 @@ export async function createRouter(
           })
           .reverse(),
       );
-      const data = results.filter(isFulfilled).map(result => result.value);
 
+      results.forEach((result, index) => {
+        if (isRejected(result)) {
+          const file = files[files.length - index - 1];
+          logger.error(`Failed to parse ${file.path}: ${result.reason}`);
+        }
+      });
+
+      const data = results.filter(isFulfilled).map(result => result.value);
       await cacheClient.set(urlToProcess, {
         data,
         etag: treeGetResponse.etag,

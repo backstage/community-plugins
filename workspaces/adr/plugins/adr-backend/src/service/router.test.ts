@@ -128,6 +128,7 @@ class MockCacheClient implements CacheService {
 
 describe('createRouter', () => {
   let app: express.Express;
+  const routerErrorLoggerMock = jest.fn((message: string) => message);
 
   beforeEach(async () => {
     jest.resetAllMocks();
@@ -136,7 +137,7 @@ describe('createRouter', () => {
       reader: mockUrlReader,
       cacheClient: new MockCacheClient(),
       logger: {
-        error: (message: any) => message,
+        error: routerErrorLoggerMock as unknown,
       } as LoggerService,
     });
     app = express().use(router);
@@ -192,6 +193,8 @@ describe('createRouter', () => {
       expect(error).toBeFalsy();
       expect(status).toBe(expectedStatusCode);
       expect(body).toEqual(expectedBody);
+      expect(routerErrorLoggerMock.mock.calls).toHaveLength(1);
+      expect(routerErrorLoggerMock.mock.calls[0][0]).toContain('.gitkeep');
     });
   });
 
