@@ -24,16 +24,16 @@ import {
   createGithubGraphqlClient,
   fetchDiscussionDocuments,
 } from '@guidanti/backstage-github-discussions-fetcher';
-import { type GithubDiscussionIndexableDocument } from '@backstage-community/plugin-github-discussions-common';
+import {
+  type GithubDiscussionIndexableDocument,
+  githubDiscussionsDocumentReadPermission,
+} from '@backstage-community/plugin-github-discussions-common';
 import {
   DefaultGithubCredentialsProvider,
   type GithubIntegration,
   ScmIntegrations,
 } from '@backstage/integration';
-import {
-  createPermission,
-  Permission,
-} from '@backstage/plugin-permission-common';
+import { Permission } from '@backstage/plugin-permission-common';
 import gh from 'parse-github-url';
 import { Duration } from 'luxon';
 
@@ -88,7 +88,8 @@ export class GithubDiscussionsCollatorFactory
   private readonly discussionsBatchSize?: number;
   private readonly commentsBatchSize?: number;
   private readonly repliesBatchSize?: number;
-  public visibilityPermission: Permission;
+  public visibilityPermission: Permission =
+    githubDiscussionsDocumentReadPermission;
 
   private constructor(options: GithubDiscussionsCollatorFactoryOptions) {
     this.logger = options.logger.child({ documentType: this.type });
@@ -103,13 +104,6 @@ export class GithubDiscussionsCollatorFactory
     this.repliesBatchSize = options.repliesBatchSize;
     this.org = options.org;
     this.repo = options.repo;
-    this.visibilityPermission = createPermission({
-      name: 'search.discussions.read',
-      attributes: {
-        action: 'read',
-      },
-      resourceType: 'github-discussions',
-    });
   }
 
   static async fromConfig({
