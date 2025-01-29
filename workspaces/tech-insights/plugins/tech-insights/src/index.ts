@@ -54,6 +54,12 @@ export {
    *
    * @deprecated import from `@backstage-community/plugin-tech-insights-react` instead
    */
+  type TechInsightsApi,
+  /**
+   * @public
+   *
+   * @deprecated import from `@backstage-community/plugin-tech-insights-react` instead
+   */
   techInsightsApiRef,
   /**
    * @public
