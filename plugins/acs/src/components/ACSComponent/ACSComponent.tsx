@@ -17,18 +17,9 @@ export function ACSComponent() {
     // Get catalog data
     const { entity } = useEntity();
 
-    // TODO: Discuss potential differences in catalog entity data format across different backstage instances
-    //const retrieveServiceName = () => {
-    //    return entity?.metadata?.name
-    //}
-
-    // TODO: add deployment name label to app interface
     const retrieveEntityDeploymentName = () => {
-        console.log("deployment name:", entity?.metadata?.annotations?.["acs/deployment-name"]);
         return entity?.metadata?.annotations?.["acs/deployment-name"];
     }
-
-    retrieveEntityDeploymentName();
 
     return (
       <div>
