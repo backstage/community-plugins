@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-topology",
-  "version": "1.30.0",
+  "version": "1.31.0",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "license": "Apache-2.0",
