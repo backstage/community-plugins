@@ -73,15 +73,11 @@ export const SecurityFindingsComponent = ({ data, filters }) => {
         const incidentDate = new Date(occurenceDate);
 
         const differenceInMilliseconds = currDate - incidentDate;
-
         const differenceInDays = differenceInMilliseconds / (1000 * 60 * 60 * 24);
 
-        if (differenceInDays === 1) return `${Math.floor(differenceInDays)} day ago`;
+        if (differenceInDays < 1) return `${Math.floor(24 * differenceInDays)} hour(s) ago`;
 
-        // TODO: Calculate time that is less than 1 day
-        if (differenceInDays < 1) return "PLACEHOLDER";
-
-        return `${Math.floor(differenceInDays)} days ago`
+        return `${Math.floor(differenceInDays)} day(s) ago`
     }
 
     const checkIsFixable = (vulnItem: any) => {
