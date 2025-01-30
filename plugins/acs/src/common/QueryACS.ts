@@ -10,34 +10,45 @@ const QueryACSData = (deploymentName: string) => {
     const config = useApi(configApiRef);
     const backendUrl = config.getString('backend.baseUrl');
 
+    const convertDeploymentNameStringToArray = () => {
+        return deploymentName.split(",")
+    }
+
     const getACSData = useCallback(() => {
-        fetch(`${backendUrl}/api/proxy/acs/v1/export/vuln-mgmt/workloads?query=Deployment%3A${deploymentName}`)
-            .then(response => response.text())
-            .then(text => {
-                const lines = text.split('\n');
+        const deploymentNameArr = convertDeploymentNameStringToArray();
 
-                const jsonData = lines.map(line => {
-                    if (line.trim()) {  // Skip empty lines
-                        return JSON.parse(line);
-                    }
-                });
+        deploymentNameArr.forEach((name: string) => {
+            fetch(`${backendUrl}/api/proxy/acs/v1/export/vuln-mgmt/workloads?query=Deployment%3A${name}`)
+                .then(response => response.text())
+                .then(text => {
+                    const lines = text.split('\n');
 
-                jsonData.pop()
+                    const jsonData = lines.map(line => {
+                        if (line.trim()) {  // Skip empty lines
+                            return JSON.parse(line);
+                        }
+                    });
 
-                setLoaded(true)
-                setResult(jsonData)
-            })
-            .catch((_error) => {
-                setError(true)
-            })
+                    jsonData.pop()
 
-        return null;
-    }, [backendUrl, deploymentName]);
+
+
+                    setLoaded(true)
+                    setResult(
+                        ...result,
+                        jsonData
+                    );
+                })
+                .catch((_error) => {
+                    setError(true)
+                })
+        });
+    }, [backendUrl]);
 
     useEffect(() => {
         getACSData()
 
-    }, [getACSData]);
+    }, []);
 
     return { result, loaded, error }
 }

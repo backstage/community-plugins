@@ -132,11 +132,8 @@ export const SecurityFindingsComponent = ({ data, filters }) => {
     const organizeData = () => {
         const rows: any = [];
 
-        console.log("data", data)
-
         data?.forEach((deployment: String[]) => {
             deployment?.result?.images?.forEach((item: Object) => {
-                console.log("item:", item)
                 if (!item?.scan) return;
 
                 for (const [_, component] of Object.entries(item?.scan?.components)) {
