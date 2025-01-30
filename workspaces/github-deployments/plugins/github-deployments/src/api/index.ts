@@ -83,6 +83,7 @@ type QueryParams = {
   host: string | undefined;
   owner: string;
   repo: string;
+  environments: string[] | undefined;
   last: number;
   lastStatuses: number;
 };
@@ -101,9 +102,9 @@ export type Options = {
 };
 
 const deploymentsQuery = `
-query deployments($owner: String!, $repo: String!, $last: Int, $lastStatuses: Int) {
+query deployments($owner: String!, $repo: String!, environments: [String!] $last: Int, $lastStatuses: Int) {
   repository(owner: $owner, name: $repo) {
-    deployments(last: $last) {
+    deployments(last: $last, environments: $environments) {
       nodes {
         state
         environment
