@@ -1,5 +1,11 @@
 # @backstage-community/plugin-adr-backend
 
+## 0.5.3
+
+### Patch Changes
+
+- eb6cbef: Fixed a bug that caused no ADRs to be returned from `/list` if at least one failed to parse.
+
 ## 0.5.2
 
 ### Patch Changes
