@@ -2914,11 +2914,33 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@backstage-community/plugin-tech-insights-react@workspace:^, @backstage-community/plugin-tech-insights-react@workspace:plugins/tech-insights-react":
+  version: 0.0.0-use.local
+  resolution: "@backstage-community/plugin-tech-insights-react@workspace:plugins/tech-insights-react"
+  dependencies:
+    "@backstage-community/plugin-tech-insights-common": "workspace:^"
+    "@backstage/catalog-model": ^1.7.2
+    "@backstage/cli": ^0.29.4
+    "@backstage/core-plugin-api": ^1.9.3
+    "@backstage/test-utils": ^1.7.3
+    "@backstage/types": ^1.2.1
+    "@material-ui/core": ^4.9.13
+    "@material-ui/icons": ^4.9.1
+    "@material-ui/lab": 4.0.0-alpha.61
+    "@testing-library/jest-dom": ^6.0.0
+    "@testing-library/react": ^14.0.0
+    react: ^16.13.1 || ^17.0.0 || ^18.0.0
+  peerDependencies:
+    react: ^16.13.1 || ^17.0.0 || ^18.0.0
+  languageName: unknown
+  linkType: soft
+
 "@backstage-community/plugin-tech-insights@workspace:^, @backstage-community/plugin-tech-insights@workspace:plugins/tech-insights":
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-tech-insights@workspace:plugins/tech-insights"
   dependencies:
     "@backstage-community/plugin-tech-insights-common": "workspace:^"
+    "@backstage-community/plugin-tech-insights-react": "workspace:^"
     "@backstage/catalog-model": ^1.7.2
     "@backstage/cli": ^0.29.4
     "@backstage/core-components": ^0.16.2

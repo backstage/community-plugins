@@ -1,5 +1,15 @@
 # @backstage-community/plugin-announcements
 
+## 0.1.5
+
+### Patch Changes
+
+- 1909e4d: Added announcement ID to the useAsync dependency array in the AnnouncementPage component.
+
+  This fixes an issue where the AnnouncementPage component did not re-fetch the announcement details when the ID in the routing path changed. As a result the user who was on the AnnouncementPage couldn't see the details of the next announcement they accessed, e.g. from the search dialogue.
+
+- ef67a29: Fixed bug in AnnouncementPage component where subheader spacing was missing
+
 ## 0.1.4
 
 ### Patch Changes

@@ -28,7 +28,8 @@
       "@backstage-community/plugin-tech-insights-common",
       "@backstage-community/plugin-tech-insights-maturity",
       "@backstage-community/plugin-tech-insights-maturity-common",
-      "@backstage-community/plugin-tech-insights-node"
+      "@backstage-community/plugin-tech-insights-node",
+      "@backstage-community/plugin-tech-insights-react"
     ]
   },
   "keywords": [

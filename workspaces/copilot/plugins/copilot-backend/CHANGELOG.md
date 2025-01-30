@@ -1,5 +1,11 @@
 # @backstage-community/plugin-copilot-backend
 
+## 0.4.0
+
+### Minor Changes
+
+- 6e44ae3: Added ability to use GitHub App authentication for organization level metrics
+
 ## 0.3.2
 
 ### Patch Changes
