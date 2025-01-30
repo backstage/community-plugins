@@ -194,7 +194,9 @@ describe('createRouter', () => {
       expect(status).toBe(expectedStatusCode);
       expect(body).toEqual(expectedBody);
       expect(routerErrorLoggerMock.mock.calls).toHaveLength(1);
-      expect(routerErrorLoggerMock.mock.calls[0][0]).toContain('.gitkeep');
+      expect(routerErrorLoggerMock.mock.calls[0][0]).toBe(
+        'Failed to parse .gitkeep: ADR has no content',
+      );
     });
   });
 

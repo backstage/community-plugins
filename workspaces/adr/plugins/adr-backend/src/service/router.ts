@@ -77,7 +77,7 @@ export async function createRouter(
                 ...adrInfo,
               };
             } catch (e: any) {
-              logger.error(`Failed to parse ${file.path}: ${e.reason}`);
+              logger.error(`Failed to parse ${file.path}: ${e.message}`);
               return null;
             }
           })
