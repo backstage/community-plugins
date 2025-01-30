@@ -34,6 +34,7 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
         with:
+          token: ${{secrets.GH_SERVICE_ACCOUNT_TOKEN}}
           commit-message: 'chore: update issue templates with latest workspaces'
           title: 'chore: update issue templates with latest workspaces'
           body: |
@@ -42,6 +43,7 @@ jobs:
             This is an automated PR created by the regenerate_issue_templates workflow.
           branch: automated-update-issue-templates
           delete-branch: true
+          signoff: true
           labels: |
             automated
             workspaces
