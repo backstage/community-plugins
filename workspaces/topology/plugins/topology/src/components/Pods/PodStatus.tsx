@@ -15,7 +15,7 @@
  */
 import React from 'react';
 
-import { ChartDonut } from '@patternfly/react-charts';
+import { ChartDonut } from '@patternfly/react-charts/victory';
 import { Tooltip } from '@patternfly/react-core';
 import * as _ from 'lodash';
 
