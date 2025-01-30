@@ -1,11 +1,8 @@
-.pf-v6-c-toolbar {
-  padding-bottom: 0px;
-}
-
-.pf-v6-c-toolbar__content-section {
-  padding: var(--pf-t--global--spacer--sm) 0 0 0;
-}
-
 .bs-topology-wrapper {
   height: 100%;
+}
+
+.bs-topology-wrapper > div,
+.bs-topology-wrapper > div:last-child {
+  padding: 16px;
 }
