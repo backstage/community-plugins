@@ -1,0 +1,172 @@
+name: Prior Version Release Workspace
+
+on:
+  # ADDED: Only trigger on PR closed event on workspace/** branch.
+  #        The assumption is that branch protection rules and CODEOWNERS are configured.
+
+  pull_request:
+    types:
+      - closed
+    branches:
+      - 'workspace/**'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+    # ADDED: Checks if PR is a Version Packages PR on workspace/** branch
+    #        and validates PR title, author, branch and merged status.
+  check-merged-pr:
+    name: Check if PR is a Version Packages PR on workspace/** branch
+    runs-on: ubuntu-latest
+    outputs:
+        is_version_pr: ${{ steps.check_pr.outputs.is_version_pr }}
+        workspace_name: ${{ steps.extract_workspace.outputs.workspace_name }}
+    steps:
+        - name: Check PR title, author, branch and merged status
+          id: check_pr
+          run: |
+              if [[ "${{ github.event.pull_request.title }}" == Version*Packages* \
+              && "${{ github.event.pull_request.user.login }}" == "backstage-service" ]] \
+              && "${{ github.event.pull_request.head.ref }}" == changesets-release/* \
+              && "${{ github.event.pull_request.merged }}" == "true" ]]; then
+                echo "is_version_pr=true" >> $GITHUB_ENV
+              else
+                echo "is_version_pr=false" >> $GITHUB_ENV
+                exit 1
+            # ADDED: Extracts workspace name from branch, ensuring it is a workspace/** branch
+        - name: Extract Workspace name from branch
+          id: extract_workspace
+          run: |
+              WORKSPACE_NAME=$(echo "${{ github.ref }}" | cut -d'/' -f2)
+              echo "workspace_name=$WORKSPACE_NAME" >> $GITHUB_ENV
+
+  changesets-pr:
+    name: Update Version Packages PR for ${{ needs.check-merged-pr.outputs.workspace_name }} on branch ${{ github.ref }}
+    runs-on: ubuntu-latest
+    needs: check-merged-pr
+    defaults:
+    run:
+        working-directory: ./workspaces/${{ needs.check-merged-pr.outputs.workspace_name }}
+    env:
+        CI: true
+        NODE_OPTIONS: --max-old-space-size=4096
+    outputs:
+        needs_release: ${{ steps.release_check.outputs.needs_release }}
+        steps:
+            - name: Checkout
+              uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f # v4
+              with:
+                ref: ${{ github.ref }}
+            - name: Set up Node
+              uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
+              with:
+                node-version: 20
+                registry-url: https://registry.npmjs.org/ # Needed for auth
+
+            - name: Get yarn cache directory path
+              id: yarn-cache-dir-path
+              run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
+             
+              uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4
+              id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
+              with:
+                path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+                key: ${{ runner.os }}-yarn-${{ hashFiles(format('workspaces/${0}/**/yarn.lock', needs.check-merged-pr.outputs.workspace_name)) }}
+                restore-keys: |
+                    ${{ runner.os }}-yarn-
+
+            - name: yarn install
+              run: yarn install --immutable
+
+            - name: Fetch previous commit for release check
+            run: git fetch origin '${{ github.event.before }}'
+            
+            - name: Fetch the commit that triggered the workflow (used by backstage/changesets-action)
+            run: git fetch origin ${{ github.sha }}
+            continue-on-error: true
+
+            - name: Check if release
+              id: release_check
+              run: |
+                yarn install
+                node scripts/ci/check-if-release.js
+              working-directory: ./
+              env:
+                WORKSPACE_NAME: ${{ needs.check-merged-pr.outputs.workspace_name }}
+                COMMIT_SHA_BEFORE: '${{ github.event.before }}'
+        
+            - name: Update Version Packages (${{ inputs.workspace }}) PR
+            id: changesets-pr
+            if: steps.release_check.outputs.needs_release != 'true'
+            uses: backstage/changesets-action@291bfc1f76d1dcfbf967f5810dc0423592eae09a # v2.3.1
+            with:
+                title: Version Packages (${{ inputs.workspace }})
+                cwd: workspaces/${{ inputs.workspace }}
+                version: yarn changeset version
+                versionBranch: changesets-release/${{ inputs.workspace }}
+                skipRootChangelogUpdate: true
+            env:
+                GITHUB_TOKEN: ${{ secrets.GH_SERVICE_ACCOUNT_TOKEN }}
+
+  release:
+    name: Prior Version Release workspace ${{ needs.check-merged-pr.outputs.workspace_name }} on branch ${{ github.ref }}
+    runs-on: ubuntu-latest
+    needs: changesets-pr
+    if: needs.changesets-pr.outputs.needs_release == 'true'
+    defaults:
+      run:
+        working-directory: ./workspaces/${{ needs.check-merged-pr.outputs.workspace_name }}
+    env:
+      CI: true
+      NODE_OPTIONS: --max-old-space-size=4096
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f # v4
+        with:
+          ref: ${{ github.ref }}
+      - name: Set up Node
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org/  # Needed for auth
+
+      - name: Install root dependencies
+        run: yarn install --immutable
+        working-directory: ${{ github.workspace }}
+
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
+
+      - uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4
+        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
+        with:
+            path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+            key: ${{ runner.os }}-yarn-${{ hashFiles(format('workspaces/${0}/**/yarn.lock', inputs.workspace)) }}
+            restore-keys: |
+                ${{ runner.os }}-yarn-
+      - name: yarn install
+        run: yarn install --immutable
+
+      - name: Compile TypeScript
+        run: yarn tsc:full
+
+      - name: Build all packages
+        run: yarn build:all
+
+      # CHANGED: Publish with tag "maintenance" to avoid overwriting the latest npm tag
+      - name: publish
+        run: |
+          yarn config set -H 'npmAuthToken' "${{secrets.NPM_TOKEN}}"
+          yarn workspaces foreach -v --no-private --include "${{ needs.check-merged-pr.outputs.workspace_name }}" npm publish --access public --tolerate-republish --tag "maintenance"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      
+      - name: Create tag
+        working-directory: ${{ github.workspace }}/scripts/ci
+        run: node create-tag.js
+        env:
+            WORKSPACE_NAME: ${{ inputs.workspace }}
+            GITHUB_TOKEN: ${{ secrets.GH_SERVICE_ACCOUNT_TOKEN }}
