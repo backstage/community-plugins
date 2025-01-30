@@ -35,6 +35,17 @@ const OverviewContent = () => (
 );
 ```
 
+You can filter for environemt names via a environment parameter.
+
+```typescript
+// packages/app/src/components/catalog/EntityPage.tsx
+// ...
+<Grid item xs={12} sm={6} md={4}>
+  <EntityGithubDeploymentsCard environments={['env-a', 'env-b']} />
+</Grid>
+// ...
+```
+
 3. Add the `github.com/project-slug` annotation to your `catalog-info.yaml` file:
 
 ```yaml
