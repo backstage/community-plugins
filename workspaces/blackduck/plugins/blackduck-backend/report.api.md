@@ -4,8 +4,6 @@
 
 ```ts
 import { BackendFeature } from '@backstage/backend-plugin-api';
-import { BlackDuckConfig } from '@backstage-community/plugin-blackduck-node';
-import { Config } from '@backstage/config';
 
 // @public
 const blackduckPlugin: BackendFeature;

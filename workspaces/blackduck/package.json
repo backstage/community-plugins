@@ -62,9 +62,6 @@
     ]
   },
   "dependencies": {
-    "@backstage-community/plugin-blackduck": "workspace:^",
-    "@backstage-community/plugin-blackduck-backend": "workspace:^",
-    "@backstage-community/plugin-scaffolder-backend-module-blackduck": "workspace:^",
     "knip": "^5.27.4"
   }
 }

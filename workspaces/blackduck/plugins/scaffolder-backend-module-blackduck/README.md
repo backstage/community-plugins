@@ -26,17 +26,17 @@ This backend plugin has support for the [new backend system](https://backstage.i
 In your `packages/backend/src/index.ts` make the following changes:
 
 ```diff
-import { createBackend } from '@backstage/backend-defaults';
+  import { createBackend } from '@backstage/backend-defaults';
 
-const backend = createBackend();
+  const backend = createBackend();
 
-// ... other feature additions
+  // ... other feature additions
 
-+backend.add(import('@backstage-community/plugin-scaffolder-backend-module-blackduck'));
++ backend.add(import('@backstage-community/plugin-scaffolder-backend-module-blackduck'));
 
-// ...
+  // ...
 
-backend.start();
+  backend.start();
 ```
 
 ### Example template
