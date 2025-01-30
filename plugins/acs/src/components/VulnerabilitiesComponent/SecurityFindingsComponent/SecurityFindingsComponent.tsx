@@ -8,6 +8,8 @@ import '@patternfly/react-styles';
 import { CVEEntityDetailsComponent } from '../CVEEntityDetailsComponent';
 
 export const SecurityFindingsComponent = ({ data, filters }) => {
+    console.log("DATA:", data)
+
     const [dataRows, setDataRows] = useState([]);
     const [pending, setPending] = React.useState(true);
     const theme = useTheme();
@@ -114,7 +116,7 @@ export const SecurityFindingsComponent = ({ data, filters }) => {
                 if (attribute === "Name") isTrue = vulnItem?.expanded_data?.component.includes(filters.optionText);
                 break;
             case "Deployment":
-                if (attribute === "Name") isTrue = vulnItem?.expanded_data?.deployment.includes(filters.optionText);
+                if (attribute === "Name") isTrue = vulnItem?.row_data?.workload.includes(filters.optionText);
                 break;
             case "Namespace":
                 if (attribute === "Name") isTrue = vulnItem?.expanded_data?.namespace.includes(filters.optionText);
