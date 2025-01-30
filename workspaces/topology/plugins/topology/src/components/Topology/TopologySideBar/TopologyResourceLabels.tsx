@@ -33,7 +33,7 @@ const TopologyResourceLabels = ({
       {Object.keys(labels ?? {}).map((key: string) => (
         <li key={key}>
           <Label className="topology-resource-labels-list-item" color="blue">
-            <span className="pf-v5-c-label__content">
+            <span className="pf-v6-c-label__content">
               <span className="label-key">{key}</span>
               <span>=</span>
               <span className="label-value">{labels[key]}</span>
