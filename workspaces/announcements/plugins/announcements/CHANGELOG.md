@@ -1,5 +1,11 @@
 # @backstage-community/plugin-announcements
 
+## 0.1.6
+
+### Patch Changes
+
+- 9cea4f3: Removed divider from AnnouncementSearchResultListItem
+
 ## 0.1.5
 
 ### Patch Changes
