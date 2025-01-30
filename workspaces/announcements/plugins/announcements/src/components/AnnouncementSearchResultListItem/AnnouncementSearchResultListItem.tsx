@@ -27,7 +27,6 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  Divider,
   Typography,
 } from '@material-ui/core';
 import RecordVoiceOverIcon from '@material-ui/icons/RecordVoiceOver';
@@ -108,22 +107,16 @@ export const AnnouncementSearchResultListItem = ({
   );
 
   return (
-    <>
-      <ListItem alignItems="center">
-        <ListItemIcon
-          title={t('announcementSearchResultListItem.announcement')}
-        >
-          <RecordVoiceOverIcon />
-        </ListItemIcon>
-        <ListItemText
-          primary={title}
-          secondary={excerpt}
-          className={classes.itemText}
-          primaryTypographyProps={{ variant: 'h6' }}
-        />
-      </ListItem>
-
-      <Divider component="li" />
-    </>
+    <ListItem alignItems="center">
+      <ListItemIcon title={t('announcementSearchResultListItem.announcement')}>
+        <RecordVoiceOverIcon />
+      </ListItemIcon>
+      <ListItemText
+        primary={title}
+        secondary={excerpt}
+        className={classes.itemText}
+        primaryTypographyProps={{ variant: 'h6' }}
+      />
+    </ListItem>
   );
 };
