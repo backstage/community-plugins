@@ -1,5 +1,16 @@
 # @backstage-community/plugin-npm
 
+## 1.3.0
+
+### Minor Changes
+
+- 4b7f4b6: Update dependencies to Backstage 1.35
+
+### Patch Changes
+
+- Updated dependencies [4b7f4b6]
+  - @backstage-community/plugin-npm-common@1.3.0
+
 ## 1.2.0
 
 ### Minor Changes
