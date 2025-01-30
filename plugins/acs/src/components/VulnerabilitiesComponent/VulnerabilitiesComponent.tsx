@@ -41,20 +41,20 @@ export const VulnerabilitiesComponent = ({ deploymentName }) => {
         );
     }
 
+    if (!ACSDataLoaded) {
+        return (
+            <InfoCard className={classes.root}>
+                <LinearProgress />
+            </InfoCard>
+        );
+    }
+
     if (ACSDataResult.length === 0) {
         return (
             <InfoCard>
                 <Typography align="center" variant="button">
                     No results found for query {deploymentName}. The annotation `rhdh/acs-deployment:` followed by the deployment name of the entity will need to be added to the entity for data to display.
                 </Typography>
-            </InfoCard>
-        );
-    }
-
-    if (!ACSDataLoaded) {
-        return (
-            <InfoCard className={classes.root}>
-                <LinearProgress />
             </InfoCard>
         );
     }
