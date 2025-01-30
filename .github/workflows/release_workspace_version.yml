@@ -46,68 +46,68 @@ jobs:
     runs-on: ubuntu-latest
     needs: check-merged-pr
     defaults:
-    run:
+      run:
         working-directory: ./workspaces/${{ needs.check-merged-pr.outputs.workspace_name }}
     env:
-        CI: true
-        NODE_OPTIONS: --max-old-space-size=4096
+      CI: true
+      NODE_OPTIONS: --max-old-space-size=4096
     outputs:
-        needs_release: ${{ steps.release_check.outputs.needs_release }}
-        steps:
-            - name: Checkout
-              uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f # v4
-              with:
-                ref: ${{ github.ref }}
-            - name: Set up Node
-              uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
-              with:
-                node-version: 20
-                registry-url: https://registry.npmjs.org/ # Needed for auth
+      needs_release: ${{ steps.release_check.outputs.needs_release }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f # v4
+        with:
+         ref: ${{ github.ref }}
+      - name: Set up Node
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org/ # Needed for auth
 
-            - name: Get yarn cache directory path
-              id: yarn-cache-dir-path
-              run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
              
-              uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4
-              id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
-              with:
-                path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-                key: ${{ runner.os }}-yarn-${{ hashFiles(format('workspaces/${0}/**/yarn.lock', needs.check-merged-pr.outputs.workspace_name)) }}
-                restore-keys: |
-                    ${{ runner.os }}-yarn-
+      - uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4
+        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles(format('workspaces/${0}/**/yarn.lock', needs.check-merged-pr.outputs.workspace_name)) }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
 
-            - name: yarn install
-              run: yarn install --immutable
+      - name: yarn install
+        run: yarn install --immutable
 
-            - name: Fetch previous commit for release check
-            run: git fetch origin '${{ github.event.before }}'
-            
-            - name: Fetch the commit that triggered the workflow (used by backstage/changesets-action)
-            run: git fetch origin ${{ github.sha }}
-            continue-on-error: true
+      - name: Fetch previous commit for release check
+        run: git fetch origin '${{ github.event.before }}'
 
-            - name: Check if release
-              id: release_check
-              run: |
-                yarn install
-                node scripts/ci/check-if-release.js
-              working-directory: ./
-              env:
-                WORKSPACE_NAME: ${{ needs.check-merged-pr.outputs.workspace_name }}
-                COMMIT_SHA_BEFORE: '${{ github.event.before }}'
+      - name: Fetch the commit that triggered the workflow (used by backstage/changesets-action)
+        run: git fetch origin ${{ github.sha }}
+        continue-on-error: true
+
+      - name: Check if release
+        id: release_check
+        run: |
+          yarn install
+          node scripts/ci/check-if-release.js
+        working-directory: ./
+        env:
+          WORKSPACE_NAME: ${{ needs.check-merged-pr.outputs.workspace_name }}
+          COMMIT_SHA_BEFORE: '${{ github.event.before }}'
         
-            - name: Update Version Packages (${{ inputs.workspace }}) PR
-            id: changesets-pr
-            if: steps.release_check.outputs.needs_release != 'true'
-            uses: backstage/changesets-action@291bfc1f76d1dcfbf967f5810dc0423592eae09a # v2.3.1
-            with:
-                title: Version Packages (${{ inputs.workspace }})
-                cwd: workspaces/${{ inputs.workspace }}
-                version: yarn changeset version
-                versionBranch: changesets-release/${{ inputs.workspace }}
-                skipRootChangelogUpdate: true
-            env:
-                GITHUB_TOKEN: ${{ secrets.GH_SERVICE_ACCOUNT_TOKEN }}
+      - name: Update Version Packages (${{ needs.check-merged-pr.outputs.workspace_name }}) PR
+        id: changesets-pr
+        if: steps.release_check.outputs.needs_release != 'true'
+        uses: backstage/changesets-action@291bfc1f76d1dcfbf967f5810dc0423592eae09a # v2.3.1
+        with:
+          title: Version Packages (${{ needs.check-merged-pr.outputs.workspace_name }})
+          cwd: workspaces/${{ needs.check-merged-pr.outputs.workspace_name }}
+          version: yarn changeset version
+          versionBranch: changesets-release/${{ needs.check-merged-pr.outputs.workspace_name }}
+          skipRootChangelogUpdate: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_SERVICE_ACCOUNT_TOKEN }}
 
   release:
     name: Prior Version Release workspace ${{ needs.check-merged-pr.outputs.workspace_name }} on branch ${{ github.ref }}
@@ -144,7 +144,7 @@ jobs:
         id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
         with:
             path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-            key: ${{ runner.os }}-yarn-${{ hashFiles(format('workspaces/${0}/**/yarn.lock', inputs.workspace)) }}
+            key: ${{ runner.os }}-yarn-${{ hashFiles(format('workspaces/${0}/**/yarn.lock', needs.check-merged-pr.outputs.workspace_name)) }}
             restore-keys: |
                 ${{ runner.os }}-yarn-
       - name: yarn install
@@ -168,5 +168,5 @@ jobs:
         working-directory: ${{ github.workspace }}/scripts/ci
         run: node create-tag.js
         env:
-            WORKSPACE_NAME: ${{ inputs.workspace }}
+            WORKSPACE_NAME: ${{ needs.check-merged-pr.outputs.workspace_name }}
             GITHUB_TOKEN: ${{ secrets.GH_SERVICE_ACCOUNT_TOKEN }}
