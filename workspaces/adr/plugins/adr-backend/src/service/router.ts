@@ -31,14 +31,6 @@ export type AdrRouterOptions = {
   logger: LoggerService;
 };
 
-const isFulfilled = <T>(
-  p: PromiseSettledResult<T>,
-): p is PromiseFulfilledResult<T> => p.status === 'fulfilled';
-
-const isRejected = <T>(
-  p: PromiseSettledResult<T>,
-): p is PromiseRejectedResult => p.status === 'rejected';
-
 /** @public */
 export async function createRouter(
   options: AdrRouterOptions,
@@ -71,29 +63,28 @@ export async function createRouter(
         etag: cachedTree?.etag,
       });
       const files = await treeGetResponse.files();
-      const results = await Promise.allSettled(
+      const results = await Promise.all(
         files
           .map(async file => {
             const fileContent = await file.content();
-            const adrInfo = madrParser(fileContent.toString());
-            return {
-              type: 'file',
-              name: file.path.substring(file.path.lastIndexOf('/') + 1),
-              path: file.path,
-              ...adrInfo,
-            };
+
+            try {
+              const adrInfo = madrParser(fileContent.toString());
+              return {
+                type: 'file',
+                name: file.path.substring(file.path.lastIndexOf('/') + 1),
+                path: file.path,
+                ...adrInfo,
+              };
+            } catch (e: any) {
+              logger.error(`Failed to parse ${file.path}: ${e.reason}`);
+              return null;
+            }
           })
           .reverse(),
       );
 
-      results.forEach((result, index) => {
-        if (isRejected(result)) {
-          const file = files[files.length - index - 1];
-          logger.error(`Failed to parse ${file.path}: ${result.reason}`);
-        }
-      });
-
-      const data = results.filter(isFulfilled).map(result => result.value);
+      const data = results.filter(Boolean);
       await cacheClient.set(urlToProcess, {
         data,
         etag: treeGetResponse.etag,
