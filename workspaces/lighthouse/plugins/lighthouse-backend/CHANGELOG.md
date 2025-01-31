@@ -1,5 +1,11 @@
 # @backstage-community/plugin-lighthouse-backend
 
+## 0.6.0
+
+### Minor Changes
+
+- ce2f38e: **BREAKING** Removed support for the legacy backend system. Please refer to the [README](https://github.com/backstage/community-plugins/blob/main/workspaces/lighthouse/plugins/lighthouse-backend/README.md) for instructions on how to use the new backend system.
+
 ## 0.5.0
 
 ### Minor Changes
