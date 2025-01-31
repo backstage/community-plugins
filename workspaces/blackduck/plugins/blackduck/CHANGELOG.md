@@ -1,5 +1,12 @@
 # @backstage-community/plugin-blackduck
 
+## 0.2.0
+
+### Minor Changes
+
+- 7cd9866: Removed usages and references of @backstage/backend-common
+  Removed support for legacy backend system
+
 ## 0.1.0
 
 ### Minor Changes
