@@ -102,7 +102,7 @@ export type Options = {
 };
 
 const deploymentsQuery = `
-query deployments($owner: String!, $repo: String!, environments: [String!] $last: Int, $lastStatuses: Int) {
+query deployments($owner: String!, $repo: String!, $environments: [String!] $last: Int, $lastStatuses: Int) {
   repository(owner: $owner, name: $repo) {
     deployments(last: $last, environments: $environments) {
       nodes {
