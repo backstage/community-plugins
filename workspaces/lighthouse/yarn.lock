@@ -2588,7 +2588,6 @@ __metadata:
   resolution: "@backstage-community/plugin-lighthouse-backend@workspace:plugins/lighthouse-backend"
   dependencies:
     "@backstage-community/plugin-lighthouse-common": "workspace:^"
-    "@backstage/backend-common": ^0.25.0
     "@backstage/backend-plugin-api": ^1.1.0
     "@backstage/backend-tasks": ^0.6.1
     "@backstage/catalog-client": ^1.9.0
