@@ -22,7 +22,7 @@
     "@backstage-community/plugin-github-actions": "workspace:^",
     "@backstage/app-defaults": "^1.5.16",
     "@backstage/catalog-model": "^1.7.3",
-    "@backstage/cli": "^0.29.5",
+    "@backstage/cli": "^0.29.6",
     "@backstage/core-app-api": "^1.15.4",
     "@backstage/core-compat-api": "^0.3.5",
     "@backstage/core-components": "^0.16.3",
