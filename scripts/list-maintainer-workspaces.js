@@ -52,7 +52,15 @@ async function main() {
     }
   }
 
-  console.log(maintainerWorkspaces);
+  // How many workspaces do we own?
+  console.log(`Workspace count: ${maintainerWorkspaces.length} \n`);
+
+  // Output in chunks of 10
+  const chunkSize = 10;
+  for (let i = 0; i < maintainerWorkspaces.length; i += chunkSize) {
+    const chunk = maintainerWorkspaces.slice(i, i + chunkSize);
+    console.log(`${JSON.stringify(chunk)}\n`);
+  }
 }
 
 main(process.argv.slice(2)).catch(error => {

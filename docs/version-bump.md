@@ -21,6 +21,18 @@ When a Plugin Owner or Community Plugins Maintainer wants to upgrade one or many
 5. The workflow will then run and create a PR for each workspace provided with the workspaces upgraded to the latest `main` release at the time of it being ran.
 6. At this point you can review the created PR(s) like any other PR
 
+### For Community Maintainers
+
+Any workspace that does not have an owner defined in the [`CODEOWNERS`](https://github.com/backstage/community-plugins/blob/main/.github/CODEOWNERS) file are assumed to be owned by the [Community Plugins Maintainers](https://github.com/orgs/backstage/teams/community-plugins-maintainers). The responsibility for version bumping these workspaces will fall to them, though the Community is more than welcome to take on this task.
+
+To simplify this process your can use the `list-maintainer-workspaces.js` script to get a list of the workspaces owned by this team. It looks at the current workspaces and uses that against the `CODEOWNERS` file and then outputs a total count of workspaces owned by this team and the needed JSON Array of workspaces in chunks of 10 to be used for the Version Bump workflow.
+
+To run the script:
+
+1. Run `yarn install` at the root
+2. Then run `node ./scripts/list-maintainer-workspaces.js`
+3. You can then copy the arrays as needed
+
 ### Generate List of All Workspaces
 
 > [!WARNING]
