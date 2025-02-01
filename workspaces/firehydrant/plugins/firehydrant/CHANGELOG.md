@@ -1,5 +1,11 @@
 # @backstage-community/plugin-firehydrant
 
+## 0.4.0
+
+### Minor Changes
+
+- d64f01f: Backstage version bump to v1.35.1
+
 ## 0.3.0
 
 ### Minor Changes
