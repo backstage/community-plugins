@@ -8,6 +8,8 @@ import '@patternfly/react-styles';
 import { CVEEntityDetailsComponent } from '../CVEEntityDetailsComponent';
 
 export const SecurityFindingsComponent = ({ data, filters }) => {
+    console.log("DATA:", data)
+
     const [dataRows, setDataRows] = useState([]);
     const [pending, setPending] = React.useState(true);
     const theme = useTheme();
@@ -71,15 +73,11 @@ export const SecurityFindingsComponent = ({ data, filters }) => {
         const incidentDate = new Date(occurenceDate);
 
         const differenceInMilliseconds = currDate - incidentDate;
-
         const differenceInDays = differenceInMilliseconds / (1000 * 60 * 60 * 24);
 
-        if (differenceInDays === 1) return `${Math.floor(differenceInDays)} day ago`;
+        if (differenceInDays < 1) return `${Math.floor(24 * differenceInDays)} hour(s) ago`;
 
-        // TODO: Calculate time that is less than 1 day
-        if (differenceInDays < 1) return "PLACEHOLDER";
-
-        return `${Math.floor(differenceInDays)} days ago`
+        return `${Math.floor(differenceInDays)} day(s) ago`
     }
 
     const checkIsFixable = (vulnItem: any) => {
@@ -114,7 +112,7 @@ export const SecurityFindingsComponent = ({ data, filters }) => {
                 if (attribute === "Name") isTrue = vulnItem?.expanded_data?.component.includes(filters.optionText);
                 break;
             case "Deployment":
-                if (attribute === "Name") isTrue = vulnItem?.expanded_data?.deployment.includes(filters.optionText);
+                if (attribute === "Name") isTrue = vulnItem?.row_data?.workload.includes(filters.optionText);
                 break;
             case "Namespace":
                 if (attribute === "Name") isTrue = vulnItem?.expanded_data?.namespace.includes(filters.optionText);

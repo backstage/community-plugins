@@ -1,7 +1,7 @@
 import react, { useCallback, useState, useEffect } from 'react';
 import { useApi, configApiRef } from '@backstage/core-plugin-api';
 
-const QueryACSData = (deploymentName: string) => {
+export const QueryACSData = (deploymentName: string) => {
     const [result, setResult] = useState([]);
     const [loaded, setLoaded] = useState<boolean>(false);
     const [error, setError] = useState<boolean>(false);
@@ -31,8 +31,6 @@ const QueryACSData = (deploymentName: string) => {
 
                     jsonData.pop()
 
-
-
                     setLoaded(true)
                     setResult(
                         ...result,
@@ -41,6 +39,7 @@ const QueryACSData = (deploymentName: string) => {
                 })
                 .catch((_error) => {
                     setError(true)
+                    console.error(`Error fetching ACS data`);
                 })
         });
     }, [backendUrl]);
@@ -48,9 +47,8 @@ const QueryACSData = (deploymentName: string) => {
     useEffect(() => {
         getACSData()
 
-    }, []);
+    }, [backendUrl]);
 
     return { result, loaded, error }
 }
 
-export default QueryACSData;
