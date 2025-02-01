@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
 import { useTheme } from '@material-ui/core/styles';
@@ -8,8 +8,6 @@ import '@patternfly/react-styles';
 import { CVEEntityDetailsComponent } from '../CVEEntityDetailsComponent';
 
 export const SecurityFindingsComponent = ({ data, filters }) => {
-    console.log("DATA:", data)
-
     const [dataRows, setDataRows] = useState([]);
     const [pending, setPending] = React.useState(true);
     const theme = useTheme();
@@ -127,7 +125,7 @@ export const SecurityFindingsComponent = ({ data, filters }) => {
         return isTrue;
     }
 
-    const organizeData = () => {
+    const organizeData = useCallback(() => {
         const rows: any = [];
 
         data?.forEach((deployment: String[]) => {
@@ -187,11 +185,13 @@ export const SecurityFindingsComponent = ({ data, filters }) => {
 
         setPending(false)
         setDataRows(rows);
-    }
+        // eslint-disable-next-line
+    }, [data, filters]);
 
     useEffect(() => {
         organizeData();
-    }, [data, filters]);
+        // eslint-disable-next-line
+    }, [organizeData]);
 
     return (
         <div>

@@ -14,7 +14,7 @@ export const QueryACSData = (deploymentName: string) => {
         return deploymentName.split(",")
     }
 
-    const getACSData = useCallback(() => {
+    const getACSData = () => {
         const deploymentNameArr = convertDeploymentNameStringToArray();
 
         deploymentNameArr.forEach((name: string) => {
@@ -42,7 +42,9 @@ export const QueryACSData = (deploymentName: string) => {
                     console.error(`Error fetching ACS data`);
                 })
         });
-    }, [backendUrl]);
+
+        return;
+    };
 
     useEffect(() => {
         getACSData()

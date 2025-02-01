@@ -81,7 +81,8 @@ export const CVEEntityDetailsComponent: React.FC<Props> = ({ data, cveDetails, e
 
     useEffect(() => {
         populateRows()
-    }, [populateRows]);
+        // eslint-disable-next-line
+    }, []);
 
     return (
         <Box component="section" sx={{ p: 2 }}>

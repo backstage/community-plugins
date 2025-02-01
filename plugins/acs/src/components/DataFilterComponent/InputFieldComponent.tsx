@@ -3,10 +3,10 @@ import { SearchInput } from '@patternfly/react-core';
 import { Toolbar, ToolbarItem, ToolbarContent } from '@patternfly/react-core';
 
 export const InputFieldComponent: React.FunctionComponent = ({ setUserText }) => {
-  const value = "";
+  const inputFieldValue = "";
 
-  const onChange = (value: string) => {
-    setUserText(value);
+  const onChange = (inputFieldValue: string) => {
+    setUserText(inputFieldValue);
   };
 
   const modifyPFStyle = () => {
@@ -38,8 +38,8 @@ export const InputFieldComponent: React.FunctionComponent = ({ setUserText }) =>
   return (
     <SearchInput
       placeholder="Find by name"
-      value={value}
-      onChange={(_event, value) => onChange(value)}
+      value={inputFieldValue}
+      onChange={(_event) => onChange(inputFieldValue)}
       onClear={() => onChange('')}
     />
   );
