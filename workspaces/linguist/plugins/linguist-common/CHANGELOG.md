@@ -1,5 +1,11 @@
 # @backstage-community/plugin-linguist-common
 
+## 0.4.0
+
+### Minor Changes
+
+- cf27ad1: Backstage version bump to v1.35.1
+
 ## 0.3.0
 
 ### Minor Changes
