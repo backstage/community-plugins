@@ -67,6 +67,7 @@ import {
   Menu,
   MenuItem,
   Tooltip,
+  Typography,
 } from '@material-ui/core';
 import { Alert, Pagination } from '@material-ui/lab';
 
@@ -125,26 +126,38 @@ const AnnouncementCard = ({
     </Tooltip>
   );
   const subTitle = (
-    <>
-      {t('announcementsPage.card.by')}{' '}
-      <EntityPeekAheadPopover entityRef={announcement.publisher}>
-        <Link to={entityLink(publisherRef)}>
-          <EntityDisplayName entityRef={announcement.publisher} hideIcon />
-        </Link>
-      </EntityPeekAheadPopover>
-      {announcement.category && (
-        <>
-          {' '}
-          {t('announcementsPage.card.in')}{' '}
-          <Link
-            to={`${announcementsLink()}?category=${announcement.category.slug}`}
-          >
-            {announcement.category.title}
+    <div>
+      <Typography variant="body2" color="textSecondary" component="span">
+        {t('announcementsPage.card.by')}{' '}
+        <EntityPeekAheadPopover entityRef={announcement.publisher}>
+          <Link to={entityLink(publisherRef)}>
+            <EntityDisplayName entityRef={announcement.publisher} hideIcon />
           </Link>
-        </>
-      )}
-      , {DateTime.fromISO(announcement.created_at).toRelative()}
-    </>
+        </EntityPeekAheadPopover>
+        {announcement.category && (
+          <>
+            {' '}
+            {t('announcementsPage.card.in')}{' '}
+            <Link
+              to={`${announcementsLink()}?category=${
+                announcement.category.slug
+              }`}
+            >
+              {announcement.category.title}
+            </Link>
+          </>
+        )}
+        , {DateTime.fromISO(announcement.created_at).toRelative()}
+      </Typography>
+      <Typography variant="body2" color="textSecondary">
+        <small>
+          {DateTime.fromISO(announcement.start_at) < DateTime.now()
+            ? `${t('announcementsPage.card.occurred')} `
+            : `${t('announcementsPage.card.scheduled')} `}
+          {DateTime.fromISO(announcement.start_at).toRelative()}
+        </small>
+      </Typography>
+    </div>
   );
   const { loading: loadingDeletePermission, allowed: canDelete } =
     usePermission({ permission: announcementDeletePermission });
@@ -225,11 +238,15 @@ const AnnouncementsGrid = ({
   category,
   cardTitleLength,
   active,
+  sortBy,
+  order,
 }: {
   maxPerPage: number;
   category?: string;
   cardTitleLength?: number;
   active?: boolean;
+  sortBy?: 'createdAt' | 'startAt';
+  order?: 'asc' | 'desc';
 }) => {
   const classes = useStyles();
   const announcementsApi = useApi(announcementsApiRef);
@@ -251,6 +268,8 @@ const AnnouncementsGrid = ({
       page: page,
       category,
       active,
+      sortBy,
+      order,
     },
     { dependencies: [maxPerPage, page, category] },
   );
@@ -340,6 +359,8 @@ export type AnnouncementsPageProps = {
   cardOptions?: AnnouncementCardProps;
   hideContextMenu?: boolean;
   hideInactive?: boolean;
+  sortby?: 'createdAt' | 'startAt';
+  order?: 'asc' | 'desc';
 };
 
 export const AnnouncementsPage = (props: AnnouncementsPageProps) => {
@@ -360,6 +381,8 @@ export const AnnouncementsPage = (props: AnnouncementsPageProps) => {
     maxPerPage,
     category,
     cardOptions,
+    sortby,
+    order,
   } = props;
 
   return (
@@ -389,6 +412,8 @@ export const AnnouncementsPage = (props: AnnouncementsPageProps) => {
           category={category ?? queryParams.get('category') ?? undefined}
           cardTitleLength={cardOptions?.titleLength}
           active={hideInactive ? true : false}
+          sortBy={sortby ?? 'createdAt'}
+          order={order ?? 'desc'}
         />
       </Content>
     </Page>

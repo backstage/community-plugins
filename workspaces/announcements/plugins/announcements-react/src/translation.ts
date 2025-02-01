@@ -26,6 +26,7 @@ export const announcementsTranslationRef = createTranslationRef({
       submit: 'Submit',
       editAnnouncement: 'Edit announcement',
       newAnnouncement: 'New announcement',
+      startAt: 'Announcement start date',
       categoryInput: {
         create: 'Create',
         label: 'Category',
@@ -39,6 +40,8 @@ export const announcementsTranslationRef = createTranslationRef({
         in: 'in',
         edit: 'EDIT',
         delete: 'DELETE',
+        occurred: 'Occurred ',
+        scheduled: 'Scheduled ',
       },
       grid: {
         announcementDeleted: 'Announcement deleted.',
@@ -60,6 +63,8 @@ export const announcementsTranslationRef = createTranslationRef({
       in: 'in',
       noAnnouncements: 'No announcements yet, want to',
       addOne: 'add one',
+      occurred: 'Occurred',
+      scheduled: 'Scheduled',
     },
     announcementSearchResultListItem: {
       published: 'Published',
@@ -129,6 +134,8 @@ export const announcementsTranslationRef = createTranslationRef({
           actions: 'Actions',
           active: 'Active',
           inactive: 'Inactive',
+          created_at: 'Created',
+          start_at: 'Start',
         },
       },
       categoriesContent: {

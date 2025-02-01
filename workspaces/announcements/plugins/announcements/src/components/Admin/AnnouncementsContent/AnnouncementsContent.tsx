@@ -48,6 +48,7 @@ import { Button, Grid, IconButton, Typography } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import PreviewIcon from '@material-ui/icons/Visibility';
+import { DateTime } from 'luxon';
 
 export const AnnouncementsContent = () => {
   const alertApi = useApi(alertApiRef);
@@ -207,6 +208,30 @@ export const AnnouncementsContent = () => {
         rowData.active
           ? t('admin.announecementsContent.table.active')
           : t('admin.announecementsContent.table.inactive'),
+    },
+    {
+      title: (
+        <Typography>
+          {t('admin.announecementsContent.table.created_at')}
+        </Typography>
+      ),
+      sorting: true,
+      field: 'created_at',
+      type: 'date',
+      render: rowData =>
+        DateTime.fromISO(rowData.created_at).toFormat('M/d/yyyy'),
+    },
+    {
+      title: (
+        <Typography>
+          {t('admin.announecementsContent.table.start_at')}
+        </Typography>
+      ),
+      sorting: true,
+      field: 'startAt',
+      type: 'date',
+      render: rowData =>
+        DateTime.fromISO(rowData.start_at).toFormat('M/d/yyyy'),
     },
     {
       title: (

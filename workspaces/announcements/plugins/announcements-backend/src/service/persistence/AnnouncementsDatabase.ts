@@ -21,22 +21,28 @@ import {
   Announcement,
 } from '@backstage-community/plugin-announcements-common';
 import slugify from 'slugify';
+import { snakeCase } from 'lodash';
 
 const announcementsTable = 'announcements';
 
 /**
  * @internal
  */
-type AnnouncementUpsert = Omit<Announcement, 'category' | 'created_at'> & {
+type AnnouncementUpsert = Omit<
+  Announcement,
+  'category' | 'created_at' | 'start_at'
+> & {
   category?: string;
   created_at: DateTime;
+  start_at: DateTime;
 };
 
 /**
  * @internal
  */
-type DbAnnouncement = Omit<Announcement, 'category'> & {
+type DbAnnouncement = Omit<Announcement, 'category' | 'start_at'> & {
   category?: string;
+  start_at: string;
 };
 
 /**
@@ -89,6 +95,7 @@ const announcementUpsertToDB = (
     publisher: announcement.publisher,
     created_at: announcement.created_at.toSQL()!,
     active: announcement.active,
+    start_at: announcement.start_at.toSQL()!,
   };
 };
 
@@ -113,6 +120,7 @@ const DBToAnnouncementWithCategory = (
     publisher: announcementDb.publisher,
     created_at: timestampToDateTime(announcementDb.created_at),
     active: announcementDb.active,
+    start_at: timestampToDateTime(announcementDb.start_at),
   };
 };
 
@@ -126,7 +134,14 @@ export class AnnouncementsDatabase {
   async announcements(
     request: AnnouncementsFilters,
   ): Promise<AnnouncementModelsList> {
-    const { category, offset, max, active } = request;
+    const {
+      category,
+      offset,
+      max,
+      active,
+      sortBy = 'createdAt',
+      order = 'desc',
+    } = request;
 
     // Filter the query by states
     // Used for both the result query and the count query
@@ -164,8 +179,9 @@ export class AnnouncementsDatabase {
         'created_at',
         'categories.title as category_title',
         'active',
+        'start_at',
       )
-      .orderBy('created_at', 'desc')
+      .orderBy(snakeCase(sortBy), order)
       .leftJoin('categories', 'announcements.category', 'categories.slug');
     filterState(queryBuilder);
     filterRange(queryBuilder);
@@ -202,6 +218,7 @@ export class AnnouncementsDatabase {
           'created_at',
           'categories.title as category_title',
           'active',
+          'start_at',
         )
         .leftJoin('categories', 'announcements.category', 'categories.slug')
         .where('id', id)

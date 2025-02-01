@@ -31,6 +31,7 @@ exports.seed = async function (knex) {
       created_at: '2020-01-02T15:28:08.539+00:00',
       category: 'internal-developer-portal',
       active: 1,
+      start_at: '2025-01-01T15:00:00.539+00:00',
     },
     {
       id: '1',
@@ -41,6 +42,7 @@ exports.seed = async function (knex) {
       created_at: '2021-03-02T04:30:08.539+00:00',
       category: 'infrastructure',
       active: 1,
+      start_at: '2025-01-01T15:00:00.539+00:00',
     },
     {
       id: '2',
@@ -50,16 +52,17 @@ exports.seed = async function (knex) {
       body: `Today we will dive into some strategies you can use to scale Ruby on Rails applications to a huge user base.
 
       One obvious way of scaling applications is to throw more money at them. And it works amazingly well — add a few more servers, upgrade your database server, and voila, a lot of the performance issues just go poof!
-      
+
       But it is often also possible to scale applications without adding more servers. That's what we will discuss today.
-      
+
       Let's get going!
-      
+
       Randomly taken from [this](https://blog.appsignal.com/2022/11/09/how-to-scale-ruby-on-rails-applications.html) blog post.
       `,
       category: 'infrastructure',
       created_at: '2021-03-17T18:28:08.539+00:00',
       active: 1,
+      start_at: '2025-01-01T15:00:00.539+00:00',
     },
     {
       id: '3',
@@ -69,6 +72,7 @@ exports.seed = async function (knex) {
       body: 'You will find the incident response metrics for the last quarter here. Our average time to resolve an incident is 2 hours. We are aiming to reduce this to 1 hour by the end of the year.',
       created_at: '2022-01-02T15:28:08.539+00:00',
       active: 1,
+      start_at: '2025-01-01T15:00:00.539+00:00',
     },
     {
       id: '4',
@@ -78,6 +82,7 @@ exports.seed = async function (knex) {
       body: 'We are happy to announce the new Announcements feature!',
       created_at: '2022-02-04T14:47:08.539+00:00',
       active: 1,
+      start_at: '2025-01-01T15:00:00.539+00:00',
     },
     {
       id: '5',
@@ -88,6 +93,7 @@ exports.seed = async function (knex) {
       created_at: '2022-03-26T01:28:08.539+00:00',
       category: 'internal-developer-portal',
       active: 1,
+      start_at: '2025-01-01T15:00:00.539+00:00',
     },
     {
       id: '6',
@@ -97,6 +103,7 @@ exports.seed = async function (knex) {
       body: 'We are happy to announce the new Announcements feature!',
       created_at: '2022-04-04T01:28:08.539+00:00',
       active: 1,
+      start_at: '2025-01-01T15:00:00.539+00:00',
     },
     {
       id: '7',
@@ -107,6 +114,7 @@ exports.seed = async function (knex) {
       category: 'javascript',
       created_at: '2023-02-26T01:52:01.539+00:00',
       active: 1,
+      start_at: '2025-01-01T15:00:00.539+00:00',
     },
     {
       id: '8',
@@ -117,6 +125,7 @@ exports.seed = async function (knex) {
       created_at: '2023-03-01T03:28:08.539+00:00',
       category: 'product-updates',
       active: 1,
+      start_at: '2025-01-01T15:00:00.539+00:00',
     },
     {
       id: '9',
@@ -128,6 +137,7 @@ exports.seed = async function (knex) {
       created_at: '2023-04-15T01:28:08.539+00:00',
       category: 'product-updates',
       active: 1,
+      start_at: '2025-01-01T15:00:00.539+00:00',
     },
     {
       id: '10',
@@ -138,6 +148,7 @@ exports.seed = async function (knex) {
       created_at: '2023-06-04T01:28:08.539+00:00',
       category: 'infrastructure',
       active: 1,
+      start_at: '2025-01-01T15:00:00.539+00:00',
     },
     {
       id: '11',
@@ -149,6 +160,7 @@ exports.seed = async function (knex) {
       created_at: '2023-06-10T08:00:00.000+00:00',
       category: 'infrastructure',
       active: 1,
+      start_at: '2025-01-01T15:00:00.539+00:00',
     },
     {
       id: '12',
@@ -159,6 +171,7 @@ exports.seed = async function (knex) {
       created_at: '2023-06-15T14:30:00.000+00:00',
       category: 'internal-developer-portal',
       active: 1,
+      start_at: '2025-01-01T15:00:00.539+00:00',
     },
     {
       id: '13',
@@ -168,6 +181,7 @@ exports.seed = async function (knex) {
       body: "We invite you to join us for an upcoming webinar on the basics of Backstage. This webinar is designed for both new and existing users who want to learn more about the features and capabilities of Backstage. Don't miss out!",
       created_at: '2023-06-20T10:00:00.000+00:00',
       active: 1,
+      start_at: '2025-01-01T15:00:00.539+00:00',
     },
     {
       id: '14',
@@ -178,6 +192,7 @@ exports.seed = async function (knex) {
       created_at: '2023-06-25T16:45:00.000+00:00',
       category: 'infrastructure',
       active: 1,
+      start_at: '2025-01-01T15:00:00.539+00:00',
     },
     {
       id: '15',
@@ -188,6 +203,7 @@ exports.seed = async function (knex) {
       created_at: '2023-06-30T09:15:00.000+00:00',
       category: 'security',
       active: 1,
+      start_at: '2025-01-01T15:00:00.539+00:00',
     },
     {
       id: '16',
@@ -198,6 +214,7 @@ exports.seed = async function (knex) {
       created_at: '2023-07-05T13:30:00.000+00:00',
       category: 'documentation',
       active: 1,
+      start_at: '2025-01-01T15:00:00.539+00:00',
     },
     {
       id: '17',
@@ -208,6 +225,7 @@ exports.seed = async function (knex) {
       created_at: '2023-07-10T07:45:00.000+00:00',
       category: 'infrastructure',
       active: 1,
+      start_at: '2025-01-01T15:00:00.539+00:00',
     },
     {
       id: '18',
@@ -218,6 +236,7 @@ exports.seed = async function (knex) {
       created_at: '2023-07-15T15:00:00.000+00:00',
       category: 'infrastructure',
       active: 1,
+      start_at: '2025-01-01T15:00:00.539+00:00',
     },
     {
       id: '19',
@@ -228,6 +247,7 @@ exports.seed = async function (knex) {
       created_at: '2023-07-20T11:30:00.000+00:00',
       category: 'events',
       active: 1,
+      start_at: '2025-01-01T15:00:00.539+00:00',
     },
     {
       id: '20',
@@ -238,6 +258,7 @@ exports.seed = async function (knex) {
       created_at: '2023-07-25T17:15:00.000+00:00',
       category: 'internal-developer-portal',
       active: 1,
+      start_at: '2025-01-01T15:00:00.539+00:00',
     },
     {
       id: '21',
@@ -247,6 +268,7 @@ exports.seed = async function (knex) {
       body: 'We will be performing a system upgrade to enhance performance and introduce new features. During this time, there may be temporary service disruptions. We apologize for any inconvenience caused and appreciate your patience.',
       created_at: '2023-07-30T10:45:00.000+00:00',
       active: 1,
+      start_at: '2025-01-01T15:00:00.539+00:00',
     },
     {
       id: '22',
@@ -256,6 +278,7 @@ exports.seed = async function (knex) {
       body: 'We are excited to announce the release of the Incident Analysis Dashboard. This dashboard provides detailed insights into past incidents, allowing us to analyze root causes, identify trends, and implement preventive measures. Explore the dashboard and gain valuable insights!',
       created_at: '2023-08-04T16:30:00.000+00:00',
       active: 1,
+      start_at: '2025-01-01T15:00:00.539+00:00',
     },
     {
       id: '23',
@@ -266,6 +289,7 @@ exports.seed = async function (knex) {
       created_at: '2023-08-09T12:00:00.000+00:00',
       category: 'documentation',
       active: 1,
+      start_at: '2025-01-01T15:00:00.539+00:00',
     },
     {
       id: '24',
@@ -276,6 +300,7 @@ exports.seed = async function (knex) {
       created_at: '2023-08-14T08:30:00.000+00:00',
       category: 'infrastructure',
       active: 1,
+      start_at: '2025-01-01T15:00:00.539+00:00',
     },
     {
       id: '25',
@@ -286,6 +311,7 @@ exports.seed = async function (knex) {
       created_at: '2023-08-19T14:45:00.000+00:00',
       category: 'internal-developer-portal',
       active: 1,
+      start_at: '2025-01-01T15:00:00.539+00:00',
     },
     {
       id: '26',
@@ -296,6 +322,7 @@ exports.seed = async function (knex) {
       created_at: '2023-08-24T10:15:00.000+00:00',
       category: 'events',
       active: 1,
+      start_at: '2025-01-01T15:00:00.539+00:00',
     },
     {
       id: '27',
@@ -306,6 +333,7 @@ exports.seed = async function (knex) {
       created_at: '2023-08-29T16:00:00.000+00:00',
       category: 'infrastructure',
       active: 1,
+      start_at: '2025-01-01T15:00:00.539+00:00',
     },
     {
       id: '28',
@@ -316,6 +344,7 @@ exports.seed = async function (knex) {
       created_at: '2023-09-03T09:30:00.000+00:00',
       category: 'infrastructure',
       active: 1,
+      start_at: '2025-01-01T15:00:00.539+00:00',
     },
     {
       id: '29',
@@ -326,6 +355,7 @@ exports.seed = async function (knex) {
       created_at: '2023-09-08T15:45:00.000+00:00',
       category: 'documentation',
       active: 1,
+      start_at: '2025-01-01T15:00:00.539+00:00',
     },
     {
       id: '30',
@@ -336,6 +366,7 @@ exports.seed = async function (knex) {
       created_at: '2023-09-13T11:00:00.000+00:00',
       category: 'infrastructure',
       active: 1,
+      start_at: '2025-01-01T15:00:00.539+00:00',
     },
     {
       id: '31',
@@ -346,6 +377,7 @@ exports.seed = async function (knex) {
       created_at: '2023-09-18T17:15:00.000+00:00',
       category: 'infrastructure',
       active: 1,
+      start_at: '2025-01-01T15:00:00.539+00:00',
     },
     {
       id: '32',
@@ -357,6 +389,7 @@ exports.seed = async function (knex) {
       created_at: '2023-09-23T12:30:00.000+00:00',
       category: 'documentation',
       active: 1,
+      start_at: '2025-01-01T15:00:00.539+00:00',
     },
     {
       id: '33',
@@ -367,6 +400,7 @@ exports.seed = async function (knex) {
       created_at: '2023-09-28T08:45:00.000+00:00',
       category: 'internal-developer-portal',
       active: 1,
+      start_at: '2025-01-01T15:00:00.539+00:00',
     },
     {
       id: '34',
@@ -377,6 +411,7 @@ exports.seed = async function (knex) {
       created_at: '2023-10-03T15:00:00.000+00:00',
       category: 'events',
       active: 1,
+      start_at: '2025-01-01T15:00:00.539+00:00',
     },
     {
       id: '35',
@@ -387,6 +422,7 @@ exports.seed = async function (knex) {
       created_at: '2023-10-08T11:15:00.000+00:00',
       category: 'infrastructure',
       active: 1,
+      start_at: '2025-01-01T15:00:00.539+00:00',
     },
     {
       id: '36',
@@ -397,6 +433,7 @@ exports.seed = async function (knex) {
       created_at: '2023-10-13T17:30:00.000+00:00',
       category: 'infrastructure',
       active: 1,
+      start_at: '2025-01-01T15:00:00.539+00:00',
     },
     {
       id: '37',
@@ -407,6 +444,7 @@ exports.seed = async function (knex) {
       created_at: '2023-10-18T13:45:00.000+00:00',
       category: 'documentation',
       active: 1,
+      start_at: '2025-01-01T15:00:00.539+00:00',
     },
     {
       id: '38',
@@ -417,6 +455,7 @@ exports.seed = async function (knex) {
       created_at: '2023-10-23T10:00:00.000+00:00',
       category: 'infrastructure',
       active: 1,
+      start_at: '2025-01-01T15:00:00.539+00:00',
     },
     {
       id: '39',
@@ -427,6 +466,7 @@ exports.seed = async function (knex) {
       created_at: '2023-10-28T16:15:00.000+00:00',
       category: 'infrastructure',
       active: 1,
+      start_at: '2025-01-01T15:00:00.539+00:00',
     },
     {
       id: '40',
@@ -438,6 +478,7 @@ exports.seed = async function (knex) {
       created_at: '2023-11-02T12:30:00.000+00:00',
       category: 'documentation',
       active: 1,
+      start_at: '2025-01-01T15:00:00.539+00:00',
     },
     {
       id: '41',
@@ -448,6 +489,7 @@ exports.seed = async function (knex) {
       created_at: '2023-11-07T09:15:00.000+00:00',
       category: 'infrastructure',
       active: 1,
+      start_at: '2025-01-01T15:00:00.539+00:00',
     },
     {
       id: '42',
@@ -458,6 +500,7 @@ exports.seed = async function (knex) {
       created_at: '2023-11-12T14:30:00.000+00:00',
       category: 'infrastructure',
       active: 1,
+      start_at: '2025-01-01T15:00:00.539+00:00',
     },
     {
       id: '43',
@@ -468,6 +511,7 @@ exports.seed = async function (knex) {
       created_at: '2023-11-17T11:45:00.000+00:00',
       category: 'documentation',
       active: 1,
+      start_at: '2025-01-01T15:00:00.539+00:00',
     },
     {
       id: '44',
@@ -478,6 +522,7 @@ exports.seed = async function (knex) {
       created_at: '2023-11-22T17:00:00.000+00:00',
       category: 'documentation',
       active: 1,
+      start_at: '2025-01-01T15:00:00.539+00:00',
     },
     {
       id: '45',
@@ -488,6 +533,7 @@ exports.seed = async function (knex) {
       created_at: '2023-11-27T13:15:00.000+00:00',
       category: 'events',
       active: 1,
+      start_at: '2025-01-01T15:00:00.539+00:00',
     },
     {
       id: '46',
@@ -498,6 +544,7 @@ exports.seed = async function (knex) {
       created_at: '2023-12-02T09:30:00.000+00:00',
       category: 'infrastructure',
       active: 1,
+      start_at: '2025-01-01T15:00:00.539+00:00',
     },
     {
       id: '47',
@@ -508,6 +555,7 @@ exports.seed = async function (knex) {
       created_at: '2023-12-07T15:45:00.000+00:00',
       category: 'infrastructure',
       active: 1,
+      start_at: '2025-01-01T15:00:00.539+00:00',
     },
     {
       id: '48',
@@ -518,6 +566,7 @@ exports.seed = async function (knex) {
       created_at: '2023-12-12T12:00:00.000+00:00',
       category: 'documentation',
       active: 1,
+      start_at: '2025-01-01T15:00:00.539+00:00',
     },
     {
       id: '49',
@@ -528,6 +577,7 @@ exports.seed = async function (knex) {
       created_at: '2023-12-17T08:15:00.000+00:00',
       category: 'infrastructure',
       active: 1,
+      start_at: '2025-01-01T15:00:00.539+00:00',
     },
     {
       id: '50',
@@ -538,6 +588,7 @@ exports.seed = async function (knex) {
       created_at: '2023-12-22T14:30:00.000+00:00',
       category: 'infrastructure',
       active: 1,
+      start_at: '2025-01-01T15:00:00.539+00:00',
     },
   ]);
 };

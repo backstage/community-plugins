@@ -39,12 +39,16 @@ export const AnnouncementsCard: ({
   category,
   active,
   variant,
+  sortBy,
+  order,
 }: {
   title?: string | undefined;
   max?: number | undefined;
   category?: string | undefined;
   active?: boolean | undefined;
   variant?: InfoCardVariants | undefined;
+  sortBy?: 'createdAt' | 'startAt' | undefined;
+  order?: 'desc' | 'asc' | undefined;
 }) => JSX_2.Element;
 
 // @public (undocumented)
@@ -97,6 +101,8 @@ export const AnnouncementsTimeline: ({
   timelineAlignment,
   timelineMinWidth,
   hideInactive,
+  sortBy,
+  order,
 }: AnnouncementsTimelineProps) => JSX_2.Element;
 
 // @public
@@ -105,6 +111,8 @@ export type AnnouncementsTimelineProps = {
   timelineAlignment?: 'left' | 'right' | 'alternate';
   timelineMinWidth?: string;
   hideInactive?: boolean;
+  sortBy?: 'createdAt' | 'startAt';
+  order?: 'asc' | 'desc';
 };
 
 // @public (undocumented)
