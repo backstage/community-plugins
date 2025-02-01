@@ -59,10 +59,6 @@ export const VulnerabilitiesComponent = ({ deploymentName }) => {
         );
     }
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 63546a5 (adding simple tests and github workflow)
     return (
         <Box>
             <DataFilterComponent

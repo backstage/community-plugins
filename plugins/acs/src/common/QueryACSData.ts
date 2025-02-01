@@ -47,11 +47,7 @@ export const QueryACSData = (deploymentName: string) => {
     useEffect(() => {
         getACSData()
 
-<<<<<<< HEAD:plugins/acs/src/common/QueryACS.ts
-    }, []);
-=======
     }, [backendUrl]);
->>>>>>> 63546a5 (adding simple tests and github workflow):plugins/acs/src/common/QueryACSData.ts
 
     return { result, loaded, error }
 }
