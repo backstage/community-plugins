@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-lighthouse-backend",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Backend functionalities for lighthouse",
   "backstage": {
     "role": "backend-plugin",
@@ -46,7 +46,6 @@
   },
   "dependencies": {
     "@backstage-community/plugin-lighthouse-common": "workspace:^",
-    "@backstage/backend-common": "^0.25.0",
     "@backstage/backend-plugin-api": "^1.1.0",
     "@backstage/backend-tasks": "^0.6.1",
     "@backstage/catalog-client": "^1.9.0",
