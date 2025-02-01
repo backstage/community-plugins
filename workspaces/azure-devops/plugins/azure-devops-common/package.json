@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-azure-devops-common",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "backstage": {
     "role": "common-library",
     "pluginId": "azure-devops",
