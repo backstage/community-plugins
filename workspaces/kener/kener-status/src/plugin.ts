@@ -25,7 +25,7 @@ export const EntityKenerStatusCard = kenerStatusPlugin.provide(
     name: 'EntityKenerStatusCard',
     component: {
       lazy: () =>
-        import('./components/KenerStatusCard').then((m) => m.KenerStatusCard),
+        import('./components/KenerStatusCard').then(m => m.KenerStatusCard),
     },
   }),
 );
