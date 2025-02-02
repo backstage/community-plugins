@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-explore-common",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Common functionalities for the explore plugin",
   "backstage": {
     "role": "common-library",
