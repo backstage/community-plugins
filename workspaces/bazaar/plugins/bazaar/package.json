@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-bazaar",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "backstage": {
     "role": "frontend-plugin",
     "pluginId": "bazaar",
@@ -37,12 +37,12 @@
     "test": "backstage-cli package test"
   },
   "dependencies": {
-    "@backstage/catalog-client": "^1.9.0",
-    "@backstage/catalog-model": "^1.7.2",
-    "@backstage/core-components": "^0.16.2",
-    "@backstage/core-plugin-api": "^1.10.2",
-    "@backstage/errors": "^1.2.6",
-    "@backstage/plugin-catalog-react": "^1.15.0",
+    "@backstage/catalog-client": "^1.9.1",
+    "@backstage/catalog-model": "^1.7.3",
+    "@backstage/core-components": "^0.16.3",
+    "@backstage/core-plugin-api": "^1.10.3",
+    "@backstage/errors": "^1.2.7",
+    "@backstage/plugin-catalog-react": "^1.15.1",
     "@date-io/luxon": "1.x",
     "@material-ui/core": "^4.12.2",
     "@material-ui/icons": "^4.9.1",
@@ -57,9 +57,9 @@
     "react-window": "^1.8.10"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.29.4",
-    "@backstage/dev-utils": "^1.1.5",
-    "@backstage/plugin-catalog": "^1.26.0",
+    "@backstage/cli": "^0.29.6",
+    "@backstage/dev-utils": "^1.1.6",
+    "@backstage/plugin-catalog": "^1.26.1",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^15.0.0",
