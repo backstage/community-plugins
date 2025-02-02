@@ -1,5 +1,11 @@
 # @backstage-community/plugin-github-actions
 
+## 0.7.2
+
+### Patch Changes
+
+- 58d4734: Fixed plugin setup documentation to show example of use with availability check in the catalog EntityPage
+
 ## 0.7.1
 
 ### Patch Changes

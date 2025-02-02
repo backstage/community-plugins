@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-github-actions",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "description": "A Backstage plugin that integrates towards GitHub Actions",
   "backstage": {
     "role": "frontend-plugin",
@@ -73,7 +73,7 @@
     "react-use": "^17.2.4"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.29.5",
+    "@backstage/cli": "^0.29.6",
     "@backstage/core-app-api": "^1.15.4",
     "@backstage/dev-utils": "^1.1.6",
     "@backstage/frontend-test-utils": "^0.2.5",
