@@ -1,5 +1,16 @@
 # @backstage-community/plugin-adr
 
+## 0.8.0
+
+### Minor Changes
+
+- d527ea3: Backstage version bump to v1.35.1
+
+### Patch Changes
+
+- Updated dependencies [d527ea3]
+  - @backstage-community/plugin-adr-common@0.4.0
+
 ## 0.7.0
 
 ### Minor Changes
