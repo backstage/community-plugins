@@ -5031,7 +5031,6 @@ __metadata:
     "@backstage/e2e-test-utils": ^0.1.1
     "@backstage/repo-tools": ^0.12.1
     "@changesets/cli": ^2.27.1
-    "@spotify/prettier-config": ^12.0.0
     node-gyp: ^9.0.0
     prettier: ^2.3.2
     typescript: ~5.3.0
@@ -7867,15 +7866,6 @@ __metadata:
     "@typescript-eslint/parser": ">=5"
     eslint: ">=8.x"
   checksum: d30d07e1e2e0e18cc583a72ca74b5fdb80ee26e6529de26e1e85d1416ca5396c942efaccc2613287365c7ac3659378b0ba0cdda3df25c7e5cdbd7317f1cbe885
-  languageName: node
-  linkType: hard
-
-"@spotify/prettier-config@npm:^12.0.0":
-  version: 12.0.0
-  resolution: "@spotify/prettier-config@npm:12.0.0"
-  peerDependencies:
-    prettier: 2.x
-  checksum: 04732b96af895269bb8a988ba309e80bd7b87c785837e06f72ff938e8895c5a3a3211fa37b54c6a2b502e88587a437c2be3ccb486a84aff02c2f6fb4582a4a97
   languageName: node
   linkType: hard
 
