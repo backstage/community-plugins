@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-rollbar-backend",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "A Backstage backend plugin that integrates towards Rollbar",
   "backstage": {
     "role": "backend-plugin",
