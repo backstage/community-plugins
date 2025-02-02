@@ -8,9 +8,12 @@ This is the backend half of the 2 Jenkins plugins and is responsible for:
 - finding the appropriate job(s) on that instance for an entity
 - connecting to Jenkins and gathering data to present to the frontend
 
-## New Backend System
+## Integrating into a backstage instance
 
-The jenkins backend plugin has support for the [new backend system](https://backstage.io/docs/backend-system/), here's how you can set that up:
+```bash
+# From your Backstage root directory
+yarn --cwd packages/backend add @backstage-community/plugin-jenkins-backend
+```
 
 In your `packages/backend/src/index.ts` make the following changes:
 
