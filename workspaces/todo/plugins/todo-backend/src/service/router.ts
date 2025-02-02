@@ -28,14 +28,14 @@ import { Config } from '@backstage/config';
 import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 import { LoggerService } from '@backstage/backend-plugin-api';
 
-/** internal */
+/** @internal */
 export interface RouterOptions {
   todoService: TodoService;
   config: Config;
   logger: LoggerService;
 }
 
-/** internal */
+/** @internal */
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {

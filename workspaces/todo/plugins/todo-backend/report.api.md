@@ -7,16 +7,10 @@ import { BackendFeature } from '@backstage/backend-plugin-api';
 import { CatalogApi } from '@backstage/catalog-client';
 import { CompoundEntityRef } from '@backstage/catalog-model';
 import { Config } from '@backstage/config';
-import express from 'express';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { ScmIntegrations } from '@backstage/integration';
 import { ServiceRef } from '@backstage/backend-plugin-api';
 import { UrlReaderService } from '@backstage/backend-plugin-api';
-
-// Warning: (ae-missing-release-tag) "createRouter" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public
-export function createRouter(options: RouterOptions): Promise<express.Router>;
 
 // @public (undocumented)
 export function createTodoParser(options?: TodoParserOptions): TodoParser;
@@ -53,18 +47,6 @@ export type ReadTodosOptions = {
 export type ReadTodosResult = {
   items: TodoItem[];
 };
-
-// Warning: (ae-missing-release-tag) "RouterOptions" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public
-export interface RouterOptions {
-  // (undocumented)
-  config: Config;
-  // (undocumented)
-  logger: LoggerService;
-  // (undocumented)
-  todoService: TodoService;
-}
 
 // @public (undocumented)
 export type TodoItem = {
