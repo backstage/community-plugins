@@ -1,5 +1,11 @@
 # @backstage-community/plugin-mend-backend
 
+## 0.2.0
+
+### Minor Changes
+
+- 0d01419: Backstage version bump to v1.35.1
+
 ## 0.1.1
 
 ### Patch Changes
