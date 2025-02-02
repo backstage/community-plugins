@@ -4,7 +4,10 @@ This is the backend part of the `code-coverage` plugin. It takes care of process
 
 ## Installation
 
-The code coverage backend plugin has support for the [new backend system](https://backstage.io/docs/backend-system/), here's how you can set that up:
+```sh
+# From your Backstage root directory
+yarn --cwd packages/backend add @backstage-community/plugin-code-coverage-backend
+```
 
 In your `packages/backend/src/index.ts` make the following changes:
 
