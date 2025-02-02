@@ -18,6 +18,7 @@ import { KeycloakProviderConfig } from './config';
 import { Credentials } from '@keycloak/keycloak-admin-client/lib/utils/auth';
 import { InputError } from '@backstage/errors';
 import { LoggerService } from '@backstage/backend-plugin-api';
+import jwt from 'jsonwebtoken';
 
 let refreshTokenPromise: Promise<void> | null = null;
 
@@ -29,16 +30,13 @@ export async function ensureTokenValid(
   if (!kcAdminClient.accessToken) {
     await authenticate(kcAdminClient, provider, logger);
   } else {
-    const tokenData = JSON.parse(
-      Buffer.from(kcAdminClient.accessToken.split('.')[1], 'base64').toString(),
-    );
+    // returns null if token is not a JWT, string if payload is empty string, object if payload is a valid JSON
+    const decodedToken = jwt.decode(kcAdminClient.accessToken);
+    if (decodedToken && typeof decodedToken === 'object' && decodedToken.exp) {
+      const tokenExpiry = decodedToken.exp * 1000; // Convert to milliseconds
+      const now = Date.now();
 
-    const tokenExpiry = tokenData.exp * 1000; // Convert to milliseconds
-    const now = Date.now();
-
-    // update token with refresh token.
-    if (now > tokenExpiry - 30000) {
-      if (!refreshTokenPromise) {
+      if (now > tokenExpiry - 30000) {
         refreshTokenPromise = authenticate(
           kcAdminClient,
           provider,
