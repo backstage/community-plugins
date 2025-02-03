@@ -63,21 +63,28 @@ export async function createRouter(
         etag: cachedTree?.etag,
       });
       const files = await treeGetResponse.files();
-      const data = await Promise.all(
+      const results = await Promise.all(
         files
           .map(async file => {
             const fileContent = await file.content();
-            const adrInfo = madrParser(fileContent.toString());
-            return {
-              type: 'file',
-              name: file.path.substring(file.path.lastIndexOf('/') + 1),
-              path: file.path,
-              ...adrInfo,
-            };
+
+            try {
+              const adrInfo = madrParser(fileContent.toString());
+              return {
+                type: 'file',
+                name: file.path.substring(file.path.lastIndexOf('/') + 1),
+                path: file.path,
+                ...adrInfo,
+              };
+            } catch (e: any) {
+              logger.error(`Failed to parse ${file.path}: ${e.message}`);
+              return null;
+            }
           })
           .reverse(),
       );
 
+      const data = results.filter(Boolean);
       await cacheClient.set(urlToProcess, {
         data,
         etag: treeGetResponse.etag,
