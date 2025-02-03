@@ -39,7 +39,7 @@
     "winston": "^3.2.1"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.29.6",
+    "@backstage/cli": "^0.29.5",
     "@types/dockerode": "^3.3.0",
     "@types/express": "^4.17.6",
     "@types/express-serve-static-core": "^4.17.5",
