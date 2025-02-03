@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 2.4.0
+
+### Minor Changes
+
+- bf9a400: Backstage version bump to v1.35.0
+
 ## 2.3.0
 
 ### Minor Changes
