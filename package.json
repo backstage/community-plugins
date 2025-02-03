@@ -65,6 +65,7 @@
       "prettier --write"
     ]
   },
+  "packageManager": "yarn@4.4.0",
   "dependencies": {
     "@eslint/eslintrc": "^3.2.0",
     "@nx/eslint-plugin": "^20.4.0",

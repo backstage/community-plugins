@@ -8,6 +8,8 @@ import Chip from '@mui/material/Chip';
 
 
 export const CVEEntityDetailsComponent: React.FC<Props> = ({ data, cveDetails, entityDetails }) => {
+    console.log(data)
+
     const [dataRows, setDataRows] = useState([]);
     const theme = useTheme();
     const isDarkMode = theme.palette.type === 'dark';

@@ -10,7 +10,7 @@ import {
 import { VulnerabilitiesComponent } from '../VulnerabilitiesComponent';
 import { useEntity } from '@backstage/plugin-catalog-react';
 
-export function ACSComponent() {
+export const ACSComponent = () => {
     const title: string = "Security findings"
     const subheader: string = "Assess vulnerabilities and policy violations for your component workloads"
 
@@ -39,5 +39,3 @@ export function ACSComponent() {
       </div>
     )
 }
-
-export default ACSComponent;
