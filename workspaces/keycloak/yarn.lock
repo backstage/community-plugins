@@ -2537,7 +2537,7 @@ __metadata:
     "@backstage/errors": ^1.2.6
     "@backstage/plugin-catalog-backend": ^1.29.0
     "@backstage/plugin-catalog-node": ^1.15.0
-    "@keycloak/keycloak-admin-client": 24.0.5
+    "@keycloak/keycloak-admin-client": 26.1.0
     "@spotify/prettier-config": ^15.0.0
     "@types/lodash": 4.17.13
     "@types/uuid": 9.0.8
@@ -4623,14 +4623,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@keycloak/keycloak-admin-client@npm:24.0.5":
-  version: 24.0.5
-  resolution: "@keycloak/keycloak-admin-client@npm:24.0.5"
+"@keycloak/keycloak-admin-client@npm:26.1.0":
+  version: 26.1.0
+  resolution: "@keycloak/keycloak-admin-client@npm:26.1.0"
   dependencies:
     camelize-ts: ^3.0.0
     url-join: ^5.0.0
     url-template: ^3.1.1
-  checksum: bafbf888c2974ef09fcf2a97dd3d06aa3f8cba663befe35a1379962336a229ac55b6152b9e784ea591d765e23611858f87e786e5d3e75d6e33b69215ff343291
+  checksum: 04a573b48e24f31d2f409aee17894e70389e7eb3df0ef8fd7b169d8a8966feba6db287b3e88e403507455f20f9f6d3d1c60e80ac99d99e7e718bc8f8ec7ba2cf
   languageName: node
   linkType: hard
 
