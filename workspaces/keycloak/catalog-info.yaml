@@ -1,13 +1,18 @@
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: keycloak
-  description: An example of a Backstage application.
-  # Example for optional annotations
-  # annotations:
-  #   github.com/project-slug: backstage/backstage
-  #   backstage.io/techdocs-ref: dir:.
+  name: backstage-community-keycloak
+  title: Keycloak plugin
+  description: Keycloak backend plugin for Backstage
+  annotations:
+    github.com/project-slug: backstage-community/backstage-plugins
+  links:
+    - url: https://github.com/backstage/community-plugins/tree/main/workspaces/keycloak/plugins/catalog-backend-module-keycloak
+      title: GitHub Source
+      icon: source
+      type: source
 spec:
-  type: website
-  owner: john@example.com
-  lifecycle: experimental
+  type: backstage-plugin
+  lifecycle: production
+  owner: rhdh-team

@@ -7,8 +7,6 @@ metadata:
   description: Quay actions for Backstage
   annotations:
     github.com/project-slug: backstage/community-plugins
-    github.com/team-slug: backstage-community/maintainers-plugins
-    sonarqube.org/project-key: backstage-community_backstage-plugins
   tags:
     - scaffolder
     - actions
@@ -31,8 +29,6 @@ metadata:
   description: Quay actions for Backstage
   annotations:
     github.com/project-slug: backstage/community-plugins
-    github.com/team-slug: backstage-community/maintainers-plugins
-    sonarqube.org/project-key: backstage-community_backstage-plugins
   tags:
     - scaffolder
     - actions

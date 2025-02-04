@@ -2,41 +2,11 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: backstage-community-nexus-repository-manager
-  title: Nexus Repository Manager
-  description: Nexus Repository Manager plugin for Backstage
-  annotations:
-    backstage.io/source-location: url:https://github.com/backstage/community-plugins/tree/main/workspaces/nexus-repository-manager/plugins/nexus-repository-manager
-    backstage.io/view-url: https://github.com/backstage/community-plugins/tree/main/workspaces/nexus-repository-manager/plugins/nexus-repository-manager/catalog-info.yaml
-    backstage.io/edit-url: https://github.com/backstage/community-plugins/tree/main/workspaces/nexus-repository-manager/plugins/nexus-repository-manager/catalog-info.yaml
-    github.com/project-slug: backstage/community-plugins
-    github.com/team-slug: backstage-community/community-plugins-maintainers
-    sonarqube.org/project-key: backstage/community-plugins
-  links:
-    - url: https://github.com/backstage/community-plugins/tree/main/workspaces/nexus-repository-manager/plugins/nexus-repository-manager
-      title: GitHub Source
-      icon: source
-      type: source
-spec:
-  type: backstage-plugin
-  lifecycle: production
-  owner: rhdh-team
-  subcomponentOf: backstage-community-plugins
----
-# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component
-apiVersion: backstage.io/v1alpha1
-kind: Component
-metadata:
-  name: backstage-community-nexus-repository-manager
+  name: backstage-community-nexus-repository-manager-frontend
   title: '@backstage-community/plugin-nexus-repository-manager'
   description: Nexus Repository Manager plugin for Backstage
   annotations:
-    backstage.io/source-location: url:https://github.com/backstage/community-plugins/tree/main/workspaces/nexus-repository-manager/plugins/nexus-repository-manager
-    backstage.io/view-url: https://github.com/backstage/community-plugins/tree/main/workspaces/nexus-repository-manager/plugins/nexus-repository-manager/catalog-info.yaml
-    backstage.io/edit-url: https://github.com/backstage/community-plugins/tree/main/workspaces/nexus-repository-manager/plugins/nexus-repository-manager/catalog-info.yaml
     github.com/project-slug: backstage/community-plugins
-    github.com/team-slug: backstage-community/community-plugins-maintainers
-    sonarqube.org/project-key: backstage/community-plugins
   links:
     - url: https://github.com/backstage/community-plugins/tree/main/workspaces/nexus-repository-manager/plugins/nexus-repository-manager
       title: GitHub Source

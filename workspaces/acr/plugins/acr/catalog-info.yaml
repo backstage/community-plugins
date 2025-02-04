@@ -1,4 +1,3 @@
----
 # https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component
 apiVersion: backstage.io/v1alpha1
 kind: Component
@@ -8,8 +7,6 @@ metadata:
   description: A Backstage plugin that displays information about your container images available in the Azure Container Registry
   annotations:
     github.com/project-slug: backstage/community-plugins
-    github.com/team-slug: backstage/community-plugins-maintainers
-    sonarqube.org/project-key: backstage-community_plugins
   links:
     - url: https://github.com/backstage/community-plugins/tree/main/workspaces/acr/plugins/acr
       title: GitHub Source

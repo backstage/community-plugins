@@ -6,8 +6,6 @@ metadata:
   description: Topology plugin for Backstage
   annotations:
     github.com/project-slug: backstage/community-plugins
-    githubworkspaces/topology/.com/team-slug: backstage-community/topology-plugin-maintainers
-    sonarqube.org/project-key: backstage-community_plugins
   tags:
     - kubernetes
     - openshift

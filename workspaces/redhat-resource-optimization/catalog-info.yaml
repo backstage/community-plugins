@@ -7,8 +7,6 @@ metadata:
   description: Red Hat Resource Optimization plugin for Backstage
   annotations:
     github.com/project-slug: backstage-community/backstage-plugins
-    github.com/team-slug: backstage/maintainers-plugins
-    sonarqube.org/project-key: backstage-community_plugins
 spec:
   type: backstage-plugin
   lifecycle: production

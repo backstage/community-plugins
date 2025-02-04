@@ -6,12 +6,7 @@ metadata:
   title: '@backstage-community/backstage-plugin-ocm-backend'
   description: Open Cluster Management backend plugin for Backstage
   annotations:
-    backstage.io/source-location: url:https://github.com/backstage/community-plugins/tree/main/workspaces/ocm/plugins/ocm-backend
-    backstage.io/view-url: https://github.com/backstage/community-plugins/blob/main/workspaces/ocm/plugins/ocm-backend/catalog-info.yaml
-    backstage.io/edit-url: https://github.com/backstage/community-plugins/edit/main/workspaces/ocm/plugins/ocm-backend/catalog-info.yaml
     github.com/project-slug: backstage-community/backstage-plugins
-    github.com/team-slug: backstage/maintainers-plugins
-    sonarqube.org/project-key: backstage-community_plugins
   tags:
     - kubernetes
     - openshift
@@ -36,12 +31,7 @@ metadata:
   title: '@backstage-community/backstage-plugin-ocm-backend'
   description: Open Cluster Management backend plugin OpenAPI specs for Backstage
   annotations:
-    backstage.io/source-location: url:https://github.com/backstage/community-plugins/tree/main/workspaces/ocm/plugins/ocm-backend
-    backstage.io/view-url: https://github.com/backstage/community-plugins/blob/main/workspaces/ocm/plugins/ocm-backend/catalog-info.yaml
-    backstage.io/edit-url: https://github.com/backstage/community-plugins/edit/main/workspaces/ocm/plugins/ocm-backend/catalog-info.yaml
     github.com/project-slug: backstage-community/backstage-plugins
-    github.com/team-slug: backstage/community-plugins-maintainers
-    sonarqube.org/project-key: backstage-community_plugins
   tags:
     - kubernetes
     - openshift

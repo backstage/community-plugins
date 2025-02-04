@@ -7,8 +7,6 @@ metadata:
   description: The regex custom actions
   annotations:
     github.com/project-slug: backstage/community-plugins
-    github.com/team-slug: backstage-community/maintainers-plugins
-    sonarqube.org/project-key: backstage-community_plugins
   tags:
     - scaffolder
     - actions

@@ -7,8 +7,6 @@ metadata:
   description: 'Analytics Module: Matomo'
   annotations:
     github.com/project-slug: backstage-community/backstage-plugins
-    github.com/team-slug: backstage-community/maintainers-plugins
-    sonarqube.org/project-key: backstage-community_backstage-plugins
   tags:
     - analytics
   links:
@@ -30,8 +28,6 @@ metadata:
   description: 'Analytics Module: Matomo'
   annotations:
     github.com/project-slug: backstage/community-plugins
-    github.com/team-slug: backstage-community/maintainers-plugins
-    sonarqube.org/project-key: backstage_community-plugins
   tags:
     - analytics
   links:

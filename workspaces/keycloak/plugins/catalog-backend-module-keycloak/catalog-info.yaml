@@ -2,42 +2,11 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: backstage-community-keycloak
-  title: Keycloak plugin
-  description: Keycloak backend plugin for Backstage
-  annotations:
-    backstage.io/source-location: url:https://github.com/backstage/community-plugins/tree/main/workspaces/keycloak/plugins/catalog-backend-module-keycloak
-    backstage.io/view-url: https://github.com/backstage/community-plugins/blob/main/workspaces/keycloak/plugins/catalog-backend-module-keycloak/catalog-info.yaml
-    backstage.io/edit-url: https://github.com/backstage/community-plugins/edit/main/workspaces/keycloak/plugins/catalog-backend-module-keycloak/catalog-info.yaml
-    github.com/project-slug: backstage-community/backstage-plugins
-    github.com/team-slug: backstage/maintainers-plugins
-    sonarqube.org/project-key: backstage-community_plugins
-  links:
-    - url: https://github.com/backstage/community-plugins/tree/main/workspaces/keycloak/plugins/catalog-backend-module-keycloak
-      title: GitHub Source
-      icon: source
-      type: source
-spec:
-  type: backstage-plugin
-  lifecycle: production
-  owner: backstage-core-team
-  system: backstage
-  subcomponentOf: backstage-community-plugins
----
-# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component
-apiVersion: backstage.io/v1alpha1
-kind: Component
-metadata:
   name: backstage-community-catalog-backend-module-keycloak
   title: '@backstage-community/backstage-plugin-catalog-backend-module-keycloak'
   description: Keycloak backend plugin for Backstage
   annotations:
-    backstage.io/source-location: url:https://github.com/backstage/community-plugins/tree/main/workspaces/keycloak/plugins/catalog-backend-module-keycloak
-    backstage.io/view-url: https://github.com/backstage/community-plugins/blob/main/workspaces/keycloak/plugins/catalog-backend-module-keycloak/catalog-info.yaml
-    backstage.io/edit-url: https://github.com/backstage/community-plugins/edit/main/workspaces/keycloak/plugins/catalog-backend-module-keycloak/catalog-info.yaml
     github.com/project-slug: backstage-community/backstage-plugins
-    github.com/team-slug: backstage/maintainers-plugins
-    sonarqube.org/project-key: backstage-community_plugins
   links:
     - url: https://github.com/backstage/community-plugins/tree/main/workspaces/keycloak/plugins/catalog-backend-module-keycloak
       title: GitHub Source
@@ -46,6 +15,5 @@ metadata:
 spec:
   type: backstage-backend-plugin
   lifecycle: production
-  owner: backstage-core-team
-  system: backstage
+  owner: rhdh-team
   subcomponentOf: backstage-community-keycloak

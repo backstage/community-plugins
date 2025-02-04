@@ -7,8 +7,6 @@ metadata:
   description: Quay plugin to show container images
   annotations:
     github.com/project-slug: backstage/community-plugins
-    github.com/team-slug: backstage-community/maintainers-plugins
-    sonarqube.org/project-key: backstage-community_backstage-plugins
   links:
     - url: https://github.com/backstage/community-plugins/blob/main/workspaces/quay/plugins/quay
       title: GitHub Source

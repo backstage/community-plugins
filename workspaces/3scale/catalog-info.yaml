@@ -5,6 +5,8 @@ metadata:
   name: backstage-community-3scale
   title: 3scale plugin
   description: The 3scale Backstage provider plugin synchronizes the 3scale content into the Backstage catalog.
+  annotations:
+    github.com/project-slug: backstage/community-plugins
 spec:
   type: backstage-plugin
   lifecycle: production

@@ -7,7 +7,6 @@ metadata:
   description: Jfrog Artifactory plugin for Backstage
   annotations:
     github.com/project-slug: backstage/community-plugins
-    github.com/team-slug: backstage/community-plugins-maintainers
   links:
     - url: https://github.com/backstage/community-plugins/edit/main/workspaces/jfrog-artifactory
       title: GitHub Source
