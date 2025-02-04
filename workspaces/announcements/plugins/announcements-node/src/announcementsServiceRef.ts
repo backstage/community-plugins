@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2025 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,43 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import {
+  coreServices,
   createServiceFactory,
   createServiceRef,
-  coreServices,
 } from '@backstage/backend-plugin-api';
-import { Announcement } from '@backstage-community/plugin-announcements-common';
+import { AnnouncementsService } from './AnnouncementsService';
 import { DefaultAnnouncementsService } from './DefaultAnnouncementsService';
 
-/**
- * Options for making announcement requests.
- *
- * @public
- */
-export type AnnouncementRequestOptions = {
-  token?: string;
-};
-
-/**
- * Service responsible for managing announcements.
- *
- * @public
- */
-export interface AnnouncementsService {
-  /**
-   * Fetches announcements from the backend.
-   */
-  announcements(options?: AnnouncementRequestOptions): Promise<Announcement[]>;
-}
-
-/**
- * Reference to the Announcements Service, providing functionality for managing announcements.
- *
- * @public
- *
- * @deprecated - Use announcementsServiceRef from '@backstage-community/plugin-announcements-node' instead
- */
-export const announcementsService = createServiceRef<AnnouncementsService>({
+export const announcementsServiceRef = createServiceRef<AnnouncementsService>({
   id: 'announcements.service',
   scope: 'plugin',
   defaultFactory: async service =>
@@ -60,7 +33,7 @@ export const announcementsService = createServiceRef<AnnouncementsService>({
       },
       factory({ discovery }) {
         return DefaultAnnouncementsService.create({
-          discoveryApi: discovery,
+          discovery,
         });
       },
     }),
