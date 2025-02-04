@@ -121,7 +121,7 @@ export const AnnouncementsContent = () => {
     const { category } = request;
 
     const slugs = categories.map((c: Category) => c.slug);
-    let alertMsg = t('admin.announecementsContent.alertMessage') as string;
+    let alertMsg = t('admin.announcementsContent.alertMessage') as string;
 
     try {
       if (category) {
@@ -131,7 +131,7 @@ export const AnnouncementsContent = () => {
         if (slugs.indexOf(categorySlug) === -1) {
           alertMsg = alertMsg.replace('.', '');
           alertMsg = `${alertMsg} ${t(
-            'admin.announecementsContent.alertMessage',
+            'admin.announcementsContent.alertMessage',
           )} ${category}.`;
 
           await announcementsApi.createCategory({
@@ -163,7 +163,7 @@ export const AnnouncementsContent = () => {
   const columns: TableColumn<Announcement>[] = [
     {
       title: (
-        <Typography>{t('admin.announecementsContent.table.title')}</Typography>
+        <Typography>{t('admin.announcementsContent.table.title')}</Typography>
       ),
       sorting: true,
       field: 'title',
@@ -171,7 +171,7 @@ export const AnnouncementsContent = () => {
     },
     {
       title: (
-        <Typography>{t('admin.announecementsContent.table.body')}</Typography>
+        <Typography>{t('admin.announcementsContent.table.body')}</Typography>
       ),
       sorting: true,
       field: 'body',
@@ -180,7 +180,7 @@ export const AnnouncementsContent = () => {
     {
       title: (
         <Typography>
-          {t('admin.announecementsContent.table.publisher')}
+          {t('admin.announcementsContent.table.publisher')}
         </Typography>
       ),
       sorting: true,
@@ -190,7 +190,7 @@ export const AnnouncementsContent = () => {
     {
       title: (
         <Typography>
-          {t('admin.announecementsContent.table.category')}
+          {t('admin.announcementsContent.table.category')}
         </Typography>
       ),
       sorting: true,
@@ -199,20 +199,18 @@ export const AnnouncementsContent = () => {
     },
     {
       title: (
-        <Typography>{t('admin.announecementsContent.table.status')}</Typography>
+        <Typography>{t('admin.announcementsContent.table.status')}</Typography>
       ),
       sorting: true,
       field: 'category',
       render: rowData =>
         rowData.active
-          ? t('admin.announecementsContent.table.active')
-          : t('admin.announecementsContent.table.inactive'),
+          ? t('admin.announcementsContent.table.active')
+          : t('admin.announcementsContent.table.inactive'),
     },
     {
       title: (
-        <Typography>
-          {t('admin.announecementsContent.table.actions')}
-        </Typography>
+        <Typography>{t('admin.announcementsContent.table.actions')}</Typography>
       ),
       render: rowData => {
         return (
@@ -255,8 +253,8 @@ export const AnnouncementsContent = () => {
             onClick={() => onCreateButtonClick()}
           >
             {showCreateAnnouncementForm
-              ? t('admin.announecementsContent.cancelButton')
-              : t('admin.announecementsContent.createButton')}
+              ? t('admin.announcementsContent.cancelButton')
+              : t('admin.announcementsContent.createButton')}
           </Button>
         </Grid>
 
@@ -271,13 +269,13 @@ export const AnnouncementsContent = () => {
 
         <Grid item xs={12}>
           <Table
-            title={t('admin.announecementsContent.announcements')}
+            title={t('admin.announcementsContent.announcements')}
             options={{ pageSize: 20, search: true }}
             columns={columns}
             data={announcements?.results ?? []}
             emptyContent={
               <Typography style={{ padding: 2 }}>
-                {t('admin.announecementsContent.noAnnouncementsFound')}
+                {t('admin.announcementsContent.noAnnouncementsFound')}
               </Typography>
             }
           />

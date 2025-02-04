@@ -113,7 +113,7 @@ export const announcementsTranslationRef = createTranslationRef({
         title: 'Admin Portal for Announcements',
         subtitle: 'Manage announcements and categories',
       },
-      announecementsContent: {
+      announcementsContent: {
         alertMessage: 'Announcement created.',
         alertMessageWithNewCategory: 'with new category',
         cancelButton: 'Cancel',
