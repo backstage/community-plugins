@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-catalog-backend-module-keycloak",
-  "version": "3.3.0",
+  "version": "3.4.0",
   "description": "A Backend backend plugin for Keycloak",
   "main": "src/index.ts",
   "types": "src/index.ts",
@@ -45,7 +45,7 @@
     "@backstage/catalog-model": "^1.7.2",
     "@backstage/errors": "^1.2.6",
     "@backstage/plugin-catalog-node": "^1.15.0",
-    "@keycloak/keycloak-admin-client": "24.0.5",
+    "@keycloak/keycloak-admin-client": "26.1.0",
     "inclusion": "^1.0.1",
     "lodash": "^4.17.21",
     "pg-format": "^1.0.4",
