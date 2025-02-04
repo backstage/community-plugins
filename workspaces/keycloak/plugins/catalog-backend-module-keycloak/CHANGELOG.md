@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 3.4.0
+
+### Minor Changes
+
+- f7dfe8e: Update keycloak-admin-client to the latest version.
+
 ## 3.3.0
 
 ### Minor Changes
