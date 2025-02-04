@@ -4,11 +4,11 @@ import '@testing-library/jest-dom';
 import { CVEEntityDetailsComponent } from './CVEEntityDetailsComponent';
 
 const mockData = {
-    expanded_data: {
+    expandedData: {
         cluster: "test",
         component: "test",
         cveFixedIn: "test",
-        first_discovered: "test",
+        firstDiscovered: "test",
         image: "test",
         location: "test",
         namespace: "test",
@@ -19,7 +19,7 @@ const mockData = {
         version: "test",
         workload: "test",
     },
-    row_data: {
+    rowData: {
         cve: "test",
         cvss: "test",
         discovered: "test",

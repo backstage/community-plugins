@@ -4,6 +4,7 @@ import { Toolbar, ToolbarItem, ToolbarContent } from '@patternfly/react-core';
 
 export const InputFieldComponent: React.FunctionComponent = ({ setUserText }) => {
   const inputFieldValue = "";
+  /* eslint @typescript-eslint/no-shadow: ["error", { "allow": ["inputFieldValue"] }]*/
 
   const onChange = (inputFieldValue: string) => {
     setUserText(inputFieldValue);

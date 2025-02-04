@@ -12,11 +12,13 @@ import { SecurityFindingsComponent } from './SecurityFindingsComponent';
 import { DataFilterComponent } from '../DataFilterComponent';
 
 export const VulnerabilitiesComponent = ({ deploymentName }) => {
+    /* eslint-disable new-cap */
     const {
         result: ACSDataResult,
         loaded: ACSDataLoaded,
         error: ACSDataError,
     } = QueryACSData(deploymentName);
+    /* eslint-enable new-cap */
 
     const useStyles = makeStyles(theme => ({
         root: {

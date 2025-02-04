@@ -14,17 +14,17 @@ export const SecurityFindingsComponent = ({ data, filters }) => {
     const isDarkMode = theme.palette.type === 'dark';
 
     const columns: Array<any> = [
-        { name: 'CVE', selector: row => row.row_data.cve, sortable: true, wrap: true, width: '140px', button: true, cell: row => (
-			<a href={row.row_data.link} target="_blank" rel="noopener noreferrer">
-				{row.row_data.cve}
+        { name: 'CVE', selector: row => row.rowData.cve, sortable: true, wrap: true, width: '140px', button: true, cell: row => (
+			<a href={row.rowData.link} target="_blank" rel="noopener noreferrer">
+				{row.rowData.cve}
 			</a>
 		), },
-        { name: 'Severity', selector: row => row.row_data.severity, sortable: true, wrap: true },
-        { name: 'Status', selector: row => row.row_data.status, sortable: true, wrap: true },
-        { name: 'Workload', selector: row => row.row_data.workload, sortable: true, wrap: true, grow: 2 },
-        { name: 'Image', selector: row => row.row_data.image, sortable: true, wrap: true, grow: 2 },
-        { name: 'CVSS', selector: row => row.row_data.cvss, sortable: true, wrap: true },
-        { name: 'Discovered', selector: row => row.row_data.discovered, sortable: true, wrap: true },
+        { name: 'Severity', selector: row => row.rowData.severity, sortable: true, wrap: true },
+        { name: 'Status', selector: row => row.rowData.status, sortable: true, wrap: true },
+        { name: 'Workload', selector: row => row.rowData.workload, sortable: true, wrap: true, grow: 2 },
+        { name: 'Image', selector: row => row.rowData.image, sortable: true, wrap: true, grow: 2 },
+        { name: 'CVSS', selector: row => row.rowData.cvss, sortable: true, wrap: true },
+        { name: 'Discovered', selector: row => row.rowData.discovered, sortable: true, wrap: true },
     ];
 
     const checkVulnSeverity = (vulnSeverity: string) => {
@@ -80,7 +80,7 @@ export const SecurityFindingsComponent = ({ data, filters }) => {
 
     const checkIsFixable = (vulnItem: any) => {
         for (let i = 0; i < filters?.selectedCveStatusOptions.length; i++) {
-            if (vulnItem?.row_data?.status === filters?.selectedCveStatusOptions[i]) return true;
+            if (vulnItem?.rowData?.status === filters?.selectedCveStatusOptions[i]) return true;
         };
 
         return false;
@@ -88,7 +88,7 @@ export const SecurityFindingsComponent = ({ data, filters }) => {
 
     const checkVulnSev = (vulnItem: any) => {
         for (let i = 0; i < filters?.selectedCveSeverityOptions.length; i++) {
-            if (vulnItem?.row_data?.severity === filters?.selectedCveSeverityOptions[i]) return true;
+            if (vulnItem?.rowData?.severity === filters?.selectedCveSeverityOptions[i]) return true;
         };
 
         return false;
@@ -99,24 +99,24 @@ export const SecurityFindingsComponent = ({ data, filters }) => {
         const attribute = filters?.selectedAttribute;
         switch (filters?.selectedEntity) {
             case "Image":
-                if (attribute === "Name") isTrue = vulnItem?.expanded_data?.image.includes(filters.optionText);
+                if (attribute === "Name") isTrue = vulnItem?.expandedData?.image.includes(filters.optionText);
                 break;
             case "CVE":
-                if (attribute === "Name") isTrue = vulnItem?.row_data?.cve.includes(filters.optionText);
-                if (attribute === "Discovered time") isTrue = vulnItem?.row_data?.discovered.includes(filters.optionText);
-                if (attribute === "CVSS") isTrue = vulnItem?.row_data?.cvss.toString().includes(filters.optionText);
+                if (attribute === "Name") isTrue = vulnItem?.rowData?.cve.includes(filters.optionText);
+                if (attribute === "Discovered time") isTrue = vulnItem?.rowData?.discovered.includes(filters.optionText);
+                if (attribute === "CVSS") isTrue = vulnItem?.rowData?.cvss.toString().includes(filters.optionText);
                 break;
             case "Image Component":
-                if (attribute === "Name") isTrue = vulnItem?.expanded_data?.component.includes(filters.optionText);
+                if (attribute === "Name") isTrue = vulnItem?.expandedData?.component.includes(filters.optionText);
                 break;
             case "Deployment":
-                if (attribute === "Name") isTrue = vulnItem?.row_data?.workload.includes(filters.optionText);
+                if (attribute === "Name") isTrue = vulnItem?.rowData?.workload.includes(filters.optionText);
                 break;
             case "Namespace":
-                if (attribute === "Name") isTrue = vulnItem?.expanded_data?.namespace.includes(filters.optionText);
+                if (attribute === "Name") isTrue = vulnItem?.expandedData?.namespace.includes(filters.optionText);
                 break;
             case "Cluster":
-                if (attribute === "Name") isTrue = vulnItem?.expanded_data?.cluster.includes(filters.optionText);
+                if (attribute === "Name") isTrue = vulnItem?.expandedData?.cluster.includes(filters.optionText);
                 break
             default:
                 break;
@@ -137,7 +137,7 @@ export const SecurityFindingsComponent = ({ data, filters }) => {
 
                     component?.vulns?.forEach((vulns: Array) => {
                         const currItem = {
-                            row_data: {
+                            rowData: {
                                 cve: vulns?.cve,
                                 severity: checkVulnSeverity(vulns?.severity),
                                 status: isFixable(vulns?.fixedBy),
@@ -147,9 +147,9 @@ export const SecurityFindingsComponent = ({ data, filters }) => {
                                 discovered: getDiscovered(vulns?.firstImageOccurrence),
                                 link: vulns?.link,
                             },
-                            expanded_data: {
+                            expandedData: {
                                 severity: checkVulnSeverity(vulns?.severity),
-                                first_discovered: formatISODateTime(vulns?.firstImageOccurrence),
+                                firstDiscovered: formatISODateTime(vulns?.firstImageOccurrence),
                                 published: formatISODateTime(vulns?.publishedOn) || "N/A",
                                 summary: vulns?.summary,
                                 workload: deployment?.result?.deployment?.name,

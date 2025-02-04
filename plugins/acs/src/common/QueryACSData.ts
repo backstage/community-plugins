@@ -2,6 +2,7 @@ import react, { useCallback, useState, useEffect } from 'react';
 import { useApi, configApiRef } from '@backstage/core-plugin-api';
 
 export const QueryACSData = (deploymentName: string) => {
+    /* eslint-disable consistent-return */
     const [result, setResult] = useState([]);
     const [loaded, setLoaded] = useState<boolean>(false);
     const [error, setError] = useState<boolean>(false);
@@ -39,16 +40,14 @@ export const QueryACSData = (deploymentName: string) => {
                 })
                 .catch((_error) => {
                     setError(true)
-                    console.error(`Error fetching ACS data`);
+                    throw new Error(`Error fetching ACS data`);
                 })
         });
-
-        return;
     };
 
     useEffect(() => {
         getACSData()
-
+        // eslint-disable-next-line
     }, [backendUrl]);
 
     return { result, loaded, error }

@@ -9,6 +9,7 @@ import {
 
 export const AttributeSelectComponent = ({ options, displayAttributes, setSelectedAttribute }) => {
   const [isOpen, setIsOpen] = React.useState(false);
+  /* eslint @typescript-eslint/no-shadow: ["error", { "allow": ["isOpen"] }]*/
   const [selected, setSelected] = React.useState<string>(options[0]);
 
   const onToggleClick = () => {

@@ -8,8 +8,6 @@ import Chip from '@mui/material/Chip';
 
 
 export const CVEEntityDetailsComponent: React.FC<Props> = ({ data, cveDetails, entityDetails }) => {
-    console.log(data)
-
     const [dataRows, setDataRows] = useState([]);
     const theme = useTheme();
     const isDarkMode = theme.palette.type === 'dark';
@@ -23,24 +21,24 @@ export const CVEEntityDetailsComponent: React.FC<Props> = ({ data, cveDetails, e
         { name: 'Location', selector: row => row.location, sortable: true, wrap: true },
     ];
 
-    const severityLabel = `Severity: ${data.expanded_data.severity}`;
-    const firstDiscoveredLabel = `First discovered: ${data.expanded_data.first_discovered}`;
-    const publishedLabel = `Published: ${data.expanded_data.published}`;
+    const severityLabel = `Severity: ${data.expandedData.severity}`;
+    const firstDiscoveredLabel = `First discovered: ${data.expandedData.firstDiscovered}`;
+    const publishedLabel = `Published: ${data.expandedData.published}`;
 
-    const workloadLabel = `Workload: ${data.expanded_data.workload}`;
-    const namespaceLabel = `Namespace: ${data.expanded_data.namespace}`;
-    const clusterLabel = `Cluster: ${data.expanded_data.cluster}`;
+    const workloadLabel = `Workload: ${data.expandedData.workload}`;
+    const namespaceLabel = `Namespace: ${data.expandedData.namespace}`;
+    const clusterLabel = `Cluster: ${data.expandedData.cluster}`;
 
     const populateRows = () => {
         const rows = []
 
         rows.push({
-            image: data?.expanded_data?.image || "N/A",
-            component: data?.expanded_data?.component || "N/A",
-            version: data?.expanded_data?.version || "N/A",
-            cveFixedIn: data?.expanded_data?.cveFixedIn || "N/A",
-            source: data?.expanded_data?.source || "N/A",
-            location: data?.expanded_data?.location || "N/A",
+            image: data?.expandedData?.image || "N/A",
+            component: data?.expandedData?.component || "N/A",
+            version: data?.expandedData?.version || "N/A",
+            cveFixedIn: data?.expandedData?.cveFixedIn || "N/A",
+            source: data?.expandedData?.source || "N/A",
+            location: data?.expandedData?.location || "N/A",
         })
 
         setDataRows(rows)
@@ -55,7 +53,7 @@ export const CVEEntityDetailsComponent: React.FC<Props> = ({ data, cveDetails, e
                     <Chip label={firstDiscoveredLabel} color="default" size="small" variant="outlined" />
                     <Chip label={publishedLabel} color="default" size="small" variant="outlined" />
                   </Stack>
-                <Typography>{data.expanded_data.summary}</Typography>
+                <Typography>{data.expandedData.summary}</Typography>
             </Stack>
         )
     }
