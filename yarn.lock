@@ -9120,7 +9120,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mui/material@npm:^6.1.10":
+"@mui/material@npm:^6.4.2":
   version: 6.4.2
   resolution: "@mui/material@npm:6.4.2"
   dependencies:
@@ -9342,7 +9342,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mui/x-data-grid@npm:^7.22.3":
+"@mui/x-data-grid@npm:^7.25.0":
   version: 7.25.0
   resolution: "@mui/x-data-grid@npm:7.25.0"
   dependencies:
@@ -11206,11 +11206,11 @@ __metadata:
     "@backstage/test-utils": "npm:^1.7.0"
     "@backstage/theme": "npm:^0.6.2"
     "@janus-idp/cli": "npm:^1.19.1"
-    "@material-ui/core": "npm:^4.9.13"
-    "@material-ui/icons": "npm:^4.9.1"
+    "@material-ui/core": "npm:^4.12.4"
+    "@material-ui/icons": "npm:^4.11.3"
     "@material-ui/lab": "npm:^4.0.0-alpha.61"
-    "@mui/material": "npm:^6.1.10"
-    "@mui/x-data-grid": "npm:^7.22.3"
+    "@mui/material": "npm:^6.4.2"
+    "@mui/x-data-grid": "npm:^7.25.0"
     "@patternfly/react-charts": "npm:7.2.2"
     "@patternfly/react-component-groups": "npm:^5.2.0"
     "@patternfly/react-core": "npm:5.2.2"
@@ -16083,8 +16083,8 @@ __metadata:
     "@backstage/plugin-user-settings": "npm:^0.8.12"
     "@backstage/test-utils": "npm:^1.6.0"
     "@backstage/theme": "npm:^0.5.7"
-    "@material-ui/core": "npm:^4.12.2"
-    "@material-ui/icons": "npm:^4.9.1"
+    "@material-ui/core": "npm:^4.12.4"
+    "@material-ui/icons": "npm:^4.11.3"
     "@playwright/test": "npm:^1.32.3"
     "@redhatinsights/backstage-plugin-acs": "npm:^0.1.0"
     "@testing-library/dom": "npm:^9.0.0"
