@@ -42,6 +42,7 @@ export const DataFilterComponent = ({ setFilters, data }) => {
             "selectedCveSeverityOptions": selectedCveSeverityOptions,
             "selectedCveStatusOptions": selectedCveStatusOptions
         })
+        // eslint-disable-next-line
     }, [selectedEntity, selectedAttribute, userText, selectedCveSeverityOptions, selectedCveStatusOptions]);
 
     return (
