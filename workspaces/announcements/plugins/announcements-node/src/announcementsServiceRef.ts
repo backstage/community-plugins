@@ -22,6 +22,11 @@ import {
 import { AnnouncementsService } from './AnnouncementsService';
 import { DefaultAnnouncementsService } from './DefaultAnnouncementsService';
 
+/**
+ * Reference to a default implementation of the AnnouncementsService.
+ *
+ * @public
+ */
 export const announcementsServiceRef = createServiceRef<AnnouncementsService>({
   id: 'announcements.service',
   scope: 'plugin',

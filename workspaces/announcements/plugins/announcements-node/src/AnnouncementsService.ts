@@ -60,7 +60,7 @@ export const announcementsService = createServiceRef<AnnouncementsService>({
       },
       factory({ discovery }) {
         return DefaultAnnouncementsService.create({
-          discoveryApi: discovery,
+          discovery,
         });
       },
     }),
