@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-explore-react",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A frontend library for Backstage plugins that want to interact with the explore plugin",
   "backstage": {
     "role": "web-library",
@@ -45,10 +45,10 @@
   },
   "dependencies": {
     "@backstage-community/plugin-explore-common": "workspace:^",
-    "@backstage/core-plugin-api": "^1.10.2"
+    "@backstage/core-plugin-api": "^1.10.3"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.29.4",
+    "@backstage/cli": "^0.29.6",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^15.0.0",
