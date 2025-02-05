@@ -5,8 +5,6 @@
 ```ts
 /// <reference types="react" />
 
-import { AnnouncementsApi as AnnouncementsApi_2 } from '@backstage-community/plugin-announcements-react';
-import { ApiRef } from '@backstage/core-plugin-api/index';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { IndexableDocument } from '@backstage/plugin-search-common';
 import { InfoCardVariants } from '@backstage/core-components/index';
@@ -25,12 +23,6 @@ export const AnnouncementsAdminPortal: (
       }
     | undefined,
 ) => JSX_2.Element;
-
-// @public @deprecated (undocumented)
-export type AnnouncementsApi = AnnouncementsApi_2;
-
-// @public @deprecated (undocumented)
-export const announcementsApiRef: ApiRef<AnnouncementsApi_2>;
 
 // @public (undocumented)
 export const AnnouncementsCard: ({
