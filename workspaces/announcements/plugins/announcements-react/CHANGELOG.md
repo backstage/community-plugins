@@ -1,5 +1,11 @@
 # @backstage-community/plugin-announcements-react
 
+## 0.3.0
+
+### Minor Changes
+
+- 5c2483c: **BREAKING** Fixed a typo in translation keys (announecementsContent → announcementsContent), requiring all references to be updated to prevent missing translations.
+
 ## 0.2.0
 
 ### Minor Changes
