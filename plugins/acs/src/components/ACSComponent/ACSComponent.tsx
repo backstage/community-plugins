@@ -1,9 +1,9 @@
 import React from 'react';
 import {
   Button,
+  Grid,
   Typography,
 } from '@material-ui/core';
-import Grid from '@mui/material/Grid2';
 import {
     InfoCard
 } from '@backstage/core-components';
