@@ -16,4 +16,4 @@
 
 export { JiraWrapper } from './JiraWrapper';
 export { JiraEntityWrapper } from './JiraEntityWrapper';
-export { JiraReleaseStatusLayout } from './JiraReleaseStatusLayout';
+export { JiraStatusLayout } from './JiraStatusLayout';

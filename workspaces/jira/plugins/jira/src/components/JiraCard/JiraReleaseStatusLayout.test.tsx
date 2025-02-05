@@ -18,7 +18,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { Issue } from '../../types';
-import { JiraReleaseStatusLayout } from './JiraReleaseStatusLayout';
+import { JiraStatusLayout } from './JiraStatusLayout';
 
 jest.mock('../LatestUpateCard', () => ({
   JiraUpdatesContent: jest.fn(() => <div>Mocked JiraUpdatesContent</div>),
@@ -34,10 +34,10 @@ jest.mock('../JiraIssueBreakDownCard/JiraStatusBreakDownCard', () => ({
   )),
 }));
 
-describe('JiraReleaseStatusLayout', () => {
+describe('JiraStatusLayout', () => {
   it('should render the issue breakdown content', () => {
     render(
-      <JiraReleaseStatusLayout
+      <JiraStatusLayout
         jiraEpic="PROJECT-123"
         jiraEpicSummary="Jira Summary"
         loading={false}
@@ -61,7 +61,7 @@ describe('JiraReleaseStatusLayout', () => {
 
   it('should render with an error message when no issues and not loading', () => {
     render(
-      <JiraReleaseStatusLayout
+      <JiraStatusLayout
         jiraEpic="PROJECT-123"
         jiraEpicSummary="Jira Summary"
         loading={false}
@@ -81,7 +81,7 @@ describe('JiraReleaseStatusLayout', () => {
 
   it('should render the latest updates content when not loading', () => {
     render(
-      <JiraReleaseStatusLayout
+      <JiraStatusLayout
         jiraEpic="PROJECT-123"
         jiraEpicSummary="Jira Summary"
         loading={false}
@@ -101,7 +101,7 @@ describe('JiraReleaseStatusLayout', () => {
 
   it('should render JiraChartContent with correct props', () => {
     render(
-      <JiraReleaseStatusLayout
+      <JiraStatusLayout
         jiraEpic="PROJECT-123"
         jiraEpicSummary="Jira Summary"
         loading={false}
@@ -129,7 +129,7 @@ describe('JiraReleaseStatusLayout', () => {
             key: 'APSAPITEST-1',
             summary: 'Documentation Review',
             assignee: 'abc',
-            labels: ['DocumentationReview'],
+            labels: ['APIRP-DocumentationReview'],
             issuetype: 'Task',
             status: {
               name: 'Done',
@@ -145,7 +145,7 @@ describe('JiraReleaseStatusLayout', () => {
     ]);
 
     render(
-      <JiraReleaseStatusLayout
+      <JiraStatusLayout
         jiraEpic="PROJECT-123"
         jiraEpicSummary="Jira Summary"
         loading={false}

@@ -16,11 +16,17 @@
 
 import React from 'react';
 import { useEntity } from '@backstage/plugin-catalog-react';
+import { InfoCard } from '@backstage/core-components';
 import { useAPIEntity, useJiraDetails, useAppConfig } from '../../hooks';
 import { useJiraInfo } from '../../hooks/useJiraInfo';
 import { Issue } from '../../types';
 import { extractBreakDownData, extractEpicSummary } from '../../utils';
-import { JiraReleaseStatusLayout } from './JiraReleaseStatusLayout';
+import { JiraStatusLayout } from './JiraStatusLayout';
+
+type JiraEntityWrapperProps = {
+  title?: string;
+  subheader?: any;
+};
 
 /**
  * @public
@@ -34,12 +40,12 @@ import { JiraReleaseStatusLayout } from './JiraReleaseStatusLayout';
  * - `useJiraInfo` to get additional Jira information.
  *
  * The component processes the fetched data to extract breakdown data and epic summary.
- * It then renders the `JiraReleaseStatusLayout` component with the processed data.
+ * It then renders the `JiraStatusLayout` component with the processed data.
  *
- * @returns `{JSX.Element}` - The rendered JiraReleaseStatusLayout component with Jira details.
+ * @returns `{JSX.Element}` - The rendered JiraStatusLayout component with Jira details.
  *
  */
-export const JiraEntityWrapper = () => {
+export const JiraEntityWrapper = (props: JiraEntityWrapperProps) => {
   const { entity } = useEntity();
   const project_res = useAPIEntity(entity);
   const filteredViews = useAppConfig();
@@ -67,18 +73,22 @@ export const JiraEntityWrapper = () => {
       extractEpicSummary(jiraDetails.issues, project_res.epicKey) || '';
   }
   return (
-    <JiraReleaseStatusLayout
-      jiraEpic={project_res.epicKey}
-      jiraEpicSummary={jiraEpicSummary}
-      issues={issues}
-      projectKey={project_res.projectKey}
-      loading={loading}
-      issuesBreakdowns={issuesBreakdowns}
-      jiraBreakdownTodoStatus={project_res.jiraBreakdownTodoStatus}
-      jiraBreakdownInProgressStatus={project_res.jiraBreakdownInProgressStatus}
-      jiraBreakdownBlockStatus={project_res.jiraBreakdownBlockStatus}
-      jiraBreakdownDoneStatus={project_res.jiraBreakdownDoneStatus}
-      errorMessage={error}
-    />
+    <InfoCard title={props.title} subheader={props.subheader}>
+      <JiraStatusLayout
+        jiraEpic={project_res.epicKey}
+        jiraEpicSummary={jiraEpicSummary}
+        issues={issues}
+        projectKey={project_res.projectKey}
+        loading={loading}
+        issuesBreakdowns={issuesBreakdowns}
+        jiraBreakdownTodoStatus={project_res.jiraBreakdownTodoStatus}
+        jiraBreakdownInProgressStatus={
+          project_res.jiraBreakdownInProgressStatus
+        }
+        jiraBreakdownBlockStatus={project_res.jiraBreakdownBlockStatus}
+        jiraBreakdownDoneStatus={project_res.jiraBreakdownDoneStatus}
+        errorMessage={error}
+      />
+    </InfoCard>
   );
 };

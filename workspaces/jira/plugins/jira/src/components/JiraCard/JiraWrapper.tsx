@@ -15,11 +15,12 @@
  */
 
 import React from 'react';
+import { InfoCard } from '@backstage/core-components';
 import { extractBreakDownData, extractEpicSummary } from '../../utils';
 import { useJiraInfo } from '../../hooks/useJiraInfo';
 import { Issue } from '../../types';
 import { useJiraDetails, useAppConfig } from '../../hooks';
-import { JiraReleaseStatusLayout } from './JiraReleaseStatusLayout';
+import { JiraStatusLayout } from './JiraStatusLayout';
 
 /**
  * @public
@@ -32,6 +33,8 @@ export type JiraWrapperProps = {
   jiraBreakdownInProgressStatus?: string;
   jiraBreakdownBlockStatus?: string;
   jiraBreakdownDoneStatus?: string;
+  title?: string;
+  subheader?: any;
 };
 
 /**
@@ -43,7 +46,7 @@ export type JiraWrapperProps = {
  *
  * @param props - The properties passed to the JiraWrapper component.
  *
- * @returns JSX.Element The rendered JiraReleaseStatusLayout component with the fetched and processed Jira details.
+ * @returns JSX.Element The rendered JiraStatusLayout component with the fetched and processed Jira details.
  */
 export const JiraWrapper = (props: JiraWrapperProps) => {
   const projectKey = props.jiraEpic.split('-')[0];
@@ -69,18 +72,20 @@ export const JiraWrapper = (props: JiraWrapperProps) => {
   }
 
   return (
-    <JiraReleaseStatusLayout
-      jiraEpic={props.jiraEpic}
-      jiraEpicSummary={jiraEpicSummary}
-      issues={issues}
-      projectKey={projectKey}
-      loading={loading || jiraDetails.loading}
-      issuesBreakdowns={issuesBreakdowns}
-      jiraBreakdownTodoStatus={props.jiraBreakdownTodoStatus}
-      jiraBreakdownInProgressStatus={props.jiraBreakdownInProgressStatus}
-      jiraBreakdownBlockStatus={props.jiraBreakdownBlockStatus}
-      jiraBreakdownDoneStatus={props.jiraBreakdownDoneStatus}
-      errorMessage={error}
-    />
+    <InfoCard title={props.title} subheader={props.subheader}>
+      <JiraStatusLayout
+        jiraEpic={props.jiraEpic}
+        jiraEpicSummary={jiraEpicSummary}
+        issues={issues}
+        projectKey={projectKey}
+        loading={loading || jiraDetails.loading}
+        issuesBreakdowns={issuesBreakdowns}
+        jiraBreakdownTodoStatus={props.jiraBreakdownTodoStatus}
+        jiraBreakdownInProgressStatus={props.jiraBreakdownInProgressStatus}
+        jiraBreakdownDoneStatus={props.jiraBreakdownDoneStatus}
+        jiraBreakdownBlockStatus={props.jiraBreakdownBlockStatus}
+        errorMessage={error}
+      />
+    </InfoCard>
   );
 };

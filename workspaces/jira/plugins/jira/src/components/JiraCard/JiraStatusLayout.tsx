@@ -40,7 +40,7 @@ type JiraLayoutProps = {
  * @public
  */
 /**
- * JiraReleaseStatusLayout component displays the release status of a Jira epic.
+ * JiraStatusLayout component displays the release status of a Jira epic.
  * It shows a breakdown of issues and their statuses, review tasks, and the latest updates.
  *
  * @param {JiraLayoutProps} props - The properties for the component.
@@ -58,7 +58,7 @@ type JiraLayoutProps = {
  *
  * @returns {JSX.Element} The rendered component.
  */
-export const JiraReleaseStatusLayout = ({
+export const JiraStatusLayout = ({
   jiraEpic,
   jiraEpicSummary,
   issues,

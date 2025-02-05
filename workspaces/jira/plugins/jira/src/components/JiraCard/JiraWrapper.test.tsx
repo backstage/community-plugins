@@ -19,7 +19,7 @@ import { render } from '@testing-library/react';
 import { useJiraDetails } from '../../hooks';
 import { useJiraInfo } from '../../hooks/useJiraInfo';
 import { JiraWrapper } from './JiraWrapper';
-import { JiraReleaseStatusLayout } from './JiraReleaseStatusLayout';
+import { JiraStatusLayout } from './JiraStatusLayout';
 
 jest.mock('../../hooks/useJiraDetails');
 jest.mock('../../hooks/useAppConfig', () => ({
@@ -32,10 +32,8 @@ jest.mock('../../hooks/useJiraInfo', () => ({
     error: null,
   })),
 }));
-jest.mock('./JiraReleaseStatusLayout', () => ({
-  JiraReleaseStatusLayout: jest.fn(() => (
-    <div>Mocked JiraReleaseStatusLayout</div>
-  )),
+jest.mock('./JiraStatusLayout', () => ({
+  JiraStatusLayout: jest.fn(() => <div>Mocked JiraStatusLayout</div>),
 }));
 
 describe('JiraWrapper', () => {
@@ -46,7 +44,7 @@ describe('JiraWrapper', () => {
     jest.clearAllMocks(); // Clear mocks between tests
   });
 
-  it('renders JiraReleaseStatusLayout with correct issues and projectKey when data is loaded', () => {
+  it('renders JiraStatusLayout with correct issues and projectKey when data is loaded', () => {
     const mockIssues = [
       { id: '1', title: 'Issue 1' },
       { id: '2', title: 'Issue 2' },
@@ -67,7 +65,7 @@ describe('JiraWrapper', () => {
 
     render(<JiraWrapper jiraEpic="ABC-123" />);
 
-    expect(JiraReleaseStatusLayout).toHaveBeenCalledWith(
+    expect(JiraStatusLayout).toHaveBeenCalledWith(
       expect.objectContaining({
         issues: mockIssues,
         projectKey: 'ABC',
@@ -78,7 +76,7 @@ describe('JiraWrapper', () => {
     );
   });
 
-  it('passes correct props to JiraReleaseStatusLayout when loading', () => {
+  it('passes correct props to JiraStatusLayout when loading', () => {
     mockUseJiraStories.mockReturnValue({
       issues: [],
       projectKey: 'PROJECT-456',
@@ -93,16 +91,16 @@ describe('JiraWrapper', () => {
 
     render(<JiraWrapper jiraEpic="XYZ-456" />);
 
-    const callsWithLoading = (
-      JiraReleaseStatusLayout as jest.Mock
-    ).mock.calls.filter(call => call[0].loading === true);
+    const callsWithLoading = (JiraStatusLayout as jest.Mock).mock.calls.filter(
+      call => call[0].loading === true,
+    );
 
     expect(callsWithLoading.length).toBeGreaterThan(0);
     expect(callsWithLoading[0][0].issues).toEqual([]);
     expect(callsWithLoading[0][0].projectKey).toEqual('XYZ');
   });
 
-  it('renders JiraReleaseStatusLayout with errorMessage when error occurs', () => {
+  it('renders JiraStatusLayout with errorMessage when error occurs', () => {
     const mockError = 'Error Message';
 
     mockUseJiraStories.mockReturnValue({
@@ -120,7 +118,7 @@ describe('JiraWrapper', () => {
 
     render(<JiraWrapper jiraEpic="INVALID-789" />);
 
-    expect(JiraReleaseStatusLayout).toHaveBeenCalledWith(
+    expect(JiraStatusLayout).toHaveBeenCalledWith(
       expect.objectContaining({
         issues: [],
         projectKey: 'INVALID',
@@ -154,7 +152,7 @@ describe('JiraWrapper', () => {
       />,
     );
 
-    expect(JiraReleaseStatusLayout).toHaveBeenCalledWith(
+    expect(JiraStatusLayout).toHaveBeenCalledWith(
       expect.objectContaining({
         jiraBreakdownTodoStatus: 'To Do',
         jiraBreakdownInProgressStatus: 'In Progress',
@@ -179,7 +177,7 @@ describe('JiraWrapper', () => {
 
     render(<JiraWrapper jiraEpic="XYZ-456" />);
 
-    expect(JiraReleaseStatusLayout).toHaveBeenCalledWith(
+    expect(JiraStatusLayout).toHaveBeenCalledWith(
       expect.objectContaining({
         jiraBreakdownTodoStatus: undefined,
         jiraBreakdownInProgressStatus: undefined,

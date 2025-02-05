@@ -16,6 +16,7 @@
 
 import React from 'react';
 import { render, screen } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import { Issue } from '../../types';
 import { JiraChartContent } from './JiraChartContent';
 
@@ -40,7 +41,7 @@ const issuesBreakdown: Map<string, Issue[]> = new Map([
         key: 'Issue-1',
         summary: 'Marketing Issue',
         assignee: 'abc',
-        labels: ['Marketing'],
+        labels: ['APIRP-Marketing'],
         issuetype: 'Task',
         status: {
           self: 'https://jira.com/rest/api/2/status/100',
@@ -65,7 +66,7 @@ const issuesBreakdown: Map<string, Issue[]> = new Map([
         key: 'Issue-4',
         summary: 'Documentation Review Issue',
         assignee: 'abc',
-        labels: ['DocumentationReview'],
+        labels: ['APIRP-DocumentationReview'],
         issuetype: 'Task',
         status: {
           self: 'https://jira.com/rest/api/2/status/100',
@@ -90,7 +91,7 @@ const issuesBreakdown: Map<string, Issue[]> = new Map([
         key: 'Issue-3',
         summary: 'Documentation API Review Issue',
         assignee: 'abc',
-        labels: ['DocAPIReview'],
+        labels: ['APIRP-DocAPIReview'],
         issuetype: 'Task',
         status: {
           self: 'https://jira.com/rest/api/2/status/100',
@@ -110,7 +111,7 @@ const issuesBreakdown: Map<string, Issue[]> = new Map([
         key: 'Issue-3',
         summary: 'Devloper Advoctaes API Review Issue',
         assignee: 'abc',
-        labels: ['DevAdvAPIReview'],
+        labels: ['APIRP-DevAdvAPIReview'],
         issuetype: 'Task',
         status: {
           self: 'https://jira.com/rest/api/2/status/100',

@@ -88,6 +88,12 @@ export class JiraAPI {
         throw new Error(
           'The Epic Key seems to be invalid. Please check and try again.',
         );
+      } else if (request.status === 401) {
+        throw new Error('Unauthorized access. Please check your Jira token.');
+      } else if (request.status === 403) {
+        throw new Error('Please check your jira proxy origin header');
+      } else if (request.status === 404) {
+        throw new Error('Please check your jira proxy configuration');
       } else {
         throw new Error(
           'Something went wrong. Please try again later or reach out to support.',
