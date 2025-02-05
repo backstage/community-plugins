@@ -4,7 +4,7 @@ import { useTheme } from '@material-ui/core/styles';
 import {
   Box,
   Chip,
-  Stack,
+  Grid,
   Typography,
 } from '@material-ui/core';
 
@@ -47,27 +47,27 @@ export const CVEEntityDetailsComponent: React.FC<Props> = ({ data, cveDetails, e
 
     const CVEDetails = () => {
         return (
-            <Stack spacing={2}>
+            <Box component="section" sx={{ p: 2 }}>
                <Typography><b>{cveDetails}</b></Typography>
-                  <Stack direction="row" spacing={1}>
+                  <Grid direction="row">
                     <Chip label={severityLabel} color="error" size="small" variant="outlined" />
                     <Chip label={firstDiscoveredLabel} color="default" size="small" variant="outlined" />
                     <Chip label={publishedLabel} color="default" size="small" variant="outlined" />
-                  </Stack>
+                  </Grid>
                 <Typography>{data.expandedData.summary}</Typography>
-            </Stack>
+            </Box>
         )
     }
 
     const EntityDetails = () => {
         return (
-            <Stack spacing={2}>
+            <Box component="section" sx={{ p: 2 }}>
                 <Typography><b>{entityDetails}</b></Typography>
-                <Stack direction="row" spacing={1}>
+                <Grid direction="row">
                     <Chip label={workloadLabel} color="default" size="small" variant="outlined" />
                     <Chip label={namespaceLabel} color="default" size="small" variant="outlined" />
                     <Chip label={clusterLabel} color="default" size="small" variant="outlined" />
-                </Stack>
+                </Grid>
 
                 <Box component="section" border={1} borderColor="grey.500" sx={{ p: 2, marginTop: '10px' }}>
                     <DataTable
@@ -76,7 +76,7 @@ export const CVEEntityDetailsComponent: React.FC<Props> = ({ data, cveDetails, e
                         theme={isDarkMode ? 'dark' : 'light'}
                     />
                 </Box>
-            </Stack>
+            </Box>
         )
     }
 
@@ -86,11 +86,9 @@ export const CVEEntityDetailsComponent: React.FC<Props> = ({ data, cveDetails, e
     }, []);
 
     return (
-        <Box component="section" sx={{ p: 2 }}>
-          <Stack spacing={2}>
+          <Grid direction="column" justifyContent="space-between">
             <CVEDetails />
             <EntityDetails />
-          </Stack>
-        </Box>
+          </Grid>
     );
 };
