@@ -1,5 +1,16 @@
 # @backstage-community/plugin-announcements
 
+## 0.4.0
+
+### Minor Changes
+
+- f253ff9: **breaking** - previously deprecated exports have been removed
+
+### Patch Changes
+
+- Updated dependencies [f253ff9]
+  - @backstage-community/plugin-announcements-react@0.3.1
+
 ## 0.3.0
 
 ### Minor Changes
