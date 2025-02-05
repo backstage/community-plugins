@@ -65,7 +65,7 @@ export const JiraWrapperCard = jiraPlugin.provide(
   createComponentExtension({
     name: 'JiraWrapperCard',
     component: {
-      lazy: () => import('./components/JiraCard').then(m => m.JiraWrapper),
+      lazy: () => import('./components/JiraCard').then(m => m.JiraCard),
     },
   }),
 );
@@ -83,8 +83,7 @@ export const JiraEntityWrapperCard = jiraPlugin.provide(
   createComponentExtension({
     name: 'JiraEntityWrapperCard',
     component: {
-      lazy: () =>
-        import('./components/JiraCard').then(m => m.JiraEntityWrapper),
+      lazy: () => import('./components/JiraCard').then(m => m.JiraEntityCard),
     },
   }),
 );

@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 
-export { JiraWrapper } from './JiraWrapper';
-export { JiraEntityWrapper } from './JiraEntityWrapper';
+export { JiraCard } from './JiraCard';
+export { JiraEntityCard } from './JiraEntityCard';
 export { JiraStatusLayout } from './JiraStatusLayout';

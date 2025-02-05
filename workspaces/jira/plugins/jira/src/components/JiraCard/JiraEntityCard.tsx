@@ -23,14 +23,14 @@ import { Issue } from '../../types';
 import { extractBreakDownData, extractEpicSummary } from '../../utils';
 import { JiraStatusLayout } from './JiraStatusLayout';
 
-type JiraEntityWrapperProps = {
+type JiraEntityCardProps = {
   title?: string;
   subheader?: any;
 };
 
 /**
  * @public
- * JiraEntityWrapper component fetches and displays Jira details for a specific entity.
+ * JiraEntityCard component fetches and displays Jira details for a specific entity.
  *
  * This component uses several hooks to retrieve data:
  * - `useEntity` to get the current entity.
@@ -45,7 +45,7 @@ type JiraEntityWrapperProps = {
  * @returns `{JSX.Element}` - The rendered JiraStatusLayout component with Jira details.
  *
  */
-export const JiraEntityWrapper = (props: JiraEntityWrapperProps) => {
+export const JiraEntityCard = (props: JiraEntityCardProps) => {
   const { entity } = useEntity();
   const project_res = useAPIEntity(entity);
   const filteredViews = useAppConfig();

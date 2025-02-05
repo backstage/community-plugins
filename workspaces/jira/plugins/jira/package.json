@@ -54,7 +54,7 @@
     "@backstage/test-utils": "^1.7.4",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
-    "@testing-library/react": "^16.1.0",
+    "@testing-library/react": "^12.1.2",
     "msw": "^1.0.0"
   },
   "files": [

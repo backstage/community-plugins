@@ -18,7 +18,7 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import { useJiraDetails } from '../../hooks';
 import { useJiraInfo } from '../../hooks/useJiraInfo';
-import { JiraWrapper } from './JiraWrapper';
+import { JiraCard } from './JiraCard';
 import { JiraStatusLayout } from './JiraStatusLayout';
 
 jest.mock('../../hooks/useJiraDetails');
@@ -63,7 +63,7 @@ describe('JiraWrapper', () => {
       loading: false,
     });
 
-    render(<JiraWrapper jiraEpic="ABC-123" />);
+    render(<JiraCard jiraEpic="ABC-123" />);
 
     expect(JiraStatusLayout).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -89,7 +89,7 @@ describe('JiraWrapper', () => {
       loading: true,
     });
 
-    render(<JiraWrapper jiraEpic="XYZ-456" />);
+    render(<JiraCard jiraEpic="XYZ-456" />);
 
     const callsWithLoading = (JiraStatusLayout as jest.Mock).mock.calls.filter(
       call => call[0].loading === true,
@@ -116,7 +116,7 @@ describe('JiraWrapper', () => {
       error: mockError,
     });
 
-    render(<JiraWrapper jiraEpic="INVALID-789" />);
+    render(<JiraCard jiraEpic="INVALID-789" />);
 
     expect(JiraStatusLayout).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -143,7 +143,7 @@ describe('JiraWrapper', () => {
     });
 
     render(
-      <JiraWrapper
+      <JiraCard
         jiraEpic="ABC-123"
         jiraBreakdownTodoStatus="To Do"
         jiraBreakdownInProgressStatus="In Progress"
@@ -175,7 +175,7 @@ describe('JiraWrapper', () => {
       loading: false,
     });
 
-    render(<JiraWrapper jiraEpic="XYZ-456" />);
+    render(<JiraCard jiraEpic="XYZ-456" />);
 
     expect(JiraStatusLayout).toHaveBeenCalledWith(
       expect.objectContaining({

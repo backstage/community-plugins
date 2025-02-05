@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 export { jiraPlugin, JiraWrapperCard, JiraEntityWrapperCard } from './plugin';
-export { JiraWrapper, JiraEntityWrapper } from './components/JiraCard';
+export { JiraCard, JiraEntityCard } from './components/JiraCard';
 export { isJiraAvailable } from './components/Router';
 export { jiraApiRef, JiraAPI } from './api';
 export type { Options } from './api';
-export type { JiraWrapperProps } from './components/JiraCard/JiraWrapper';
+export type { JiraCardProps } from './components/JiraCard/JiraCard';
 export * from './types';

@@ -25,9 +25,9 @@ import { JiraStatusLayout } from './JiraStatusLayout';
 /**
  * @public
  *
- * Props for the JiraWrapper component.
+ * Props for the JiraCard component.
  */
-export type JiraWrapperProps = {
+export type JiraCardProps = {
   jiraEpic: string;
   jiraBreakdownTodoStatus?: string;
   jiraBreakdownInProgressStatus?: string;
@@ -40,15 +40,15 @@ export type JiraWrapperProps = {
 /**
  * @public
  *
- * JiraWrapper component is responsible for fetching and displaying Jira details
+ * JiraCard component is responsible for fetching and displaying Jira details
  * for a given Jira epic. It uses custom hooks to fetch Jira details and
  * processes the data to extract breakdown information and epic summary.
  *
- * @param props - The properties passed to the JiraWrapper component.
+ * @param props - The properties passed to the JiraCard component.
  *
  * @returns JSX.Element The rendered JiraStatusLayout component with the fetched and processed Jira details.
  */
-export const JiraWrapper = (props: JiraWrapperProps) => {
+export const JiraCard = (props: JiraCardProps) => {
   const projectKey = props.jiraEpic.split('-')[0];
   const filteredViews = useAppConfig();
   let issuesBreakdowns = new Map<string, Issue[]>();
