@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
 import { useTheme } from '@material-ui/core/styles';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import Stack from '@mui/material/Stack';
-import Chip from '@mui/material/Chip';
-
+import {
+  Box,
+  Chip,
+  Stack,
+  Typography,
+} from '@material-ui/core';
 
 export const CVEEntityDetailsComponent: React.FC<Props> = ({ data, cveDetails, entityDetails }) => {
     const [dataRows, setDataRows] = useState([]);
