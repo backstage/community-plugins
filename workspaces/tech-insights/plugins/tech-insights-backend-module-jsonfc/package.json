@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-tech-insights-backend-module-jsonfc",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "backstage": {
     "role": "backend-plugin-module",
     "pluginId": "tech-insights",
