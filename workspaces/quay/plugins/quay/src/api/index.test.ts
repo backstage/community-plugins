@@ -22,10 +22,10 @@ import { setupServer } from 'msw/node';
 
 import { QuayApiClient, QuayApiV1 } from './index';
 
-const LOCAL_ADDR = 'https://localhost:5050/quay/api/';
+const LOCAL_ADDR = 'https://localhost:7070/api/quay';
 
 const handlers = [
-  rest.get(`${LOCAL_ADDR}api/v1/repository/foo/bar/tag/`, (req, res, ctx) => {
+  rest.get(`${LOCAL_ADDR}/repository/foo/bar/tag?`, (req, res, ctx) => {
     if (req.url.searchParams.get('limit') === '1') {
       return res(
         ctx.status(200),
@@ -44,7 +44,7 @@ const handlers = [
     );
   }),
 
-  rest.get(`${LOCAL_ADDR}api/v1/repository/not/found/tag/`, (_, res, ctx) => {
+  rest.get(`${LOCAL_ADDR}/repository/not/found/tag?`, (_, res, ctx) => {
     return res(
       ctx.status(404),
       ctx.json(require(`${__dirname}/fixtures/tags/not_found.json`)),
@@ -52,7 +52,7 @@ const handlers = [
   }),
 
   rest.get(
-    `${LOCAL_ADDR}api/v1/repository/foo/bar/manifest/sha256:e766248d812bcdadc1ee293b564af1f2517dd6c0327eefab2411e4f11e980d54`,
+    `${LOCAL_ADDR}/repository/foo/bar/manifest/sha256:e766248d812bcdadc1ee293b564af1f2517dd6c0327eefab2411e4f11e980d54`,
     (_, res, ctx) => {
       return res(
         ctx.status(200),
@@ -62,7 +62,7 @@ const handlers = [
   ),
 
   rest.get(
-    `${LOCAL_ADDR}api/v1/repository/foo/bar/manifest/sha256:e461dc54b4e2469bb7f5bf85a4b7445c175548ba9d56c3f617dd25bc3adf3752`,
+    `${LOCAL_ADDR}/repository/foo/bar/manifest/sha256:e461dc54b4e2469bb7f5bf85a4b7445c175548ba9d56c3f617dd25bc3adf3752`,
     (_, res, ctx) => {
       return res(
         ctx.status(200),
@@ -72,7 +72,7 @@ const handlers = [
   ),
 
   rest.get(
-    `${LOCAL_ADDR}api/v1/repository/foo/bar/manifest/sha256:e766248d812bcdadc1ee293b564af1f2517dd6c0327eefab2411e4f11e980d54/labels`,
+    `${LOCAL_ADDR}/repository/foo/bar/manifest/sha256:e766248d812bcdadc1ee293b564af1f2517dd6c0327eefab2411e4f11e980d54/labels`,
     (_, res, ctx) => {
       return res(
         ctx.status(200),
@@ -82,7 +82,7 @@ const handlers = [
   ),
 
   rest.get(
-    `${LOCAL_ADDR}api/v1/repository/foo/bar/manifest/sha256:e766248d812bcdadc1ee293b564af1f2517dd6c0327eefab2411e4f11e980d54/security`,
+    `${LOCAL_ADDR}/repository/foo/bar/manifest/sha256:e766248d812bcdadc1ee293b564af1f2517dd6c0327eefab2411e4f11e980d54/security`,
     (_, res, ctx) => {
       return res(
         ctx.status(200),
@@ -100,26 +100,6 @@ afterAll(() => server.close());
 
 describe('QuayApiClient', () => {
   let quayApi: QuayApiV1;
-
-  const getConfigApi = (getOptionalStringFn: any) => ({
-    has: jest.fn(),
-    keys: jest.fn(),
-    get: jest.fn(),
-    getBoolean: jest.fn(),
-    getConfig: jest.fn(),
-    getConfigArray: jest.fn(),
-    getNumber: jest.fn(),
-    getString: jest.fn(),
-    getStringArray: jest.fn(),
-    getOptional: jest.fn(),
-    getOptionalStringArray: jest.fn(),
-    getOptionalBoolean: jest.fn(),
-    getOptionalConfig: jest.fn(),
-    getOptionalConfigArray: jest.fn(),
-    getOptionalNumber: jest.fn(),
-    getOptionalString: getOptionalStringFn,
-  });
-
   const bearerToken = 'Bearer token';
 
   const identityApi = {
@@ -130,18 +110,18 @@ describe('QuayApiClient', () => {
 
   beforeEach(() => {
     quayApi = new QuayApiClient({
-      configApi: getConfigApi(() => {
-        return '/quay/api';
-      }),
-      discoveryApi: UrlPatternDiscovery.compile('https://localhost:5050'),
+      discoveryApi: UrlPatternDiscovery.compile(
+        'https://localhost:7070/api/quay',
+      ),
       identityApi: identityApi,
     });
   });
 
-  it('should use a correct default proxy path', async () => {
+  it('should use a correct default api', async () => {
     quayApi = new QuayApiClient({
-      configApi: getConfigApi(jest.fn()),
-      discoveryApi: UrlPatternDiscovery.compile('https://localhost:5050'),
+      discoveryApi: UrlPatternDiscovery.compile(
+        'https://localhost:7070/api/quay',
+      ),
       identityApi: identityApi,
     });
 

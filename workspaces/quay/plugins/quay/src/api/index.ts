@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import {
-  ConfigApi,
   createApiRef,
   DiscoveryApi,
   IdentityApi,
@@ -26,8 +25,6 @@ import {
   SecurityDetailsResponse,
   TagsResponse,
 } from '../types';
-
-const DEFAULT_PROXY_PATH = '/quay/api';
 
 export interface QuayApiV1 {
   getTags(
@@ -55,7 +52,6 @@ export const quayApiRef = createApiRef<QuayApiV1>({
 
 export type Options = {
   discoveryApi: DiscoveryApi;
-  configApi: ConfigApi;
   identityApi: IdentityApi;
 };
 
@@ -63,20 +59,15 @@ export class QuayApiClient implements QuayApiV1 {
   // @ts-ignore
   private readonly discoveryApi: DiscoveryApi;
 
-  private readonly configApi: ConfigApi;
-
   private readonly identityApi: IdentityApi;
 
   constructor(options: Options) {
     this.discoveryApi = options.discoveryApi;
-    this.configApi = options.configApi;
     this.identityApi = options.identityApi;
   }
 
   private async getBaseUrl() {
-    const proxyPath =
-      this.configApi.getOptionalString('quay.proxyPath') || DEFAULT_PROXY_PATH;
-    return `${await this.discoveryApi.getBaseUrl('proxy')}${proxyPath}`;
+    return `${await this.discoveryApi.getBaseUrl('quay')}`;
   }
 
   private async fetcher(url: string) {
@@ -110,47 +101,42 @@ export class QuayApiClient implements QuayApiV1 {
     repo: string,
     page?: number,
     limit?: number,
-    specifcTag?: string,
+    specificTag?: string,
   ) {
-    const proxyUrl = await this.getBaseUrl();
-
+    const baseUrl = await this.getBaseUrl();
     const params = this.encodeGetParams({
       limit,
       page,
-      onlyActiveTags: true,
-      specifcTag,
+      specificTag,
+      // onlyActiveTags is true on the backend.
     });
 
     return (await this.fetcher(
-      `${proxyUrl}/api/v1/repository/${org}/${repo}/tag/?${params}`,
+      `${baseUrl}/repository/${org}/${repo}/tag?${params}`,
     )) as TagsResponse;
   }
 
   async getLabels(org: string, repo: string, digest: string) {
-    const proxyUrl = await this.getBaseUrl();
+    const baseUrl = await this.getBaseUrl();
 
     return (await this.fetcher(
-      `${proxyUrl}/api/v1/repository/${org}/${repo}/manifest/${digest}/labels`,
+      `${baseUrl}/repository/${org}/${repo}/manifest/${digest}/labels`,
     )) as LabelsResponse;
   }
 
   async getManifestByDigest(org: string, repo: string, digest: string) {
-    const proxyUrl = await this.getBaseUrl();
+    const baseUrl = await this.getBaseUrl();
 
     return (await this.fetcher(
-      `${proxyUrl}/api/v1/repository/${org}/${repo}/manifest/${digest}`,
+      `${baseUrl}/repository/${org}/${repo}/manifest/${digest}`,
     )) as ManifestByDigestResponse;
   }
 
   async getSecurityDetails(org: string, repo: string, digest: string) {
-    const proxyUrl = await this.getBaseUrl();
-
-    const params = this.encodeGetParams({
-      vulnerabilities: true,
-    });
+    const baseUrl = await this.getBaseUrl();
 
     return (await this.fetcher(
-      `${proxyUrl}/api/v1/repository/${org}/${repo}/manifest/${digest}/security?${params}`,
+      `${baseUrl}/repository/${org}/${repo}/manifest/${digest}/security`,
     )) as SecurityDetailsResponse;
   }
 }
