@@ -48,6 +48,8 @@ export type Announcement = {
   created_at: string;
   /** Whether the announcement is currently active */
   active: boolean;
+  /** Date indicating when the announcement starts (is visible to end users) */
+  start_at: string;
 };
 
 /**
@@ -78,6 +80,10 @@ export type AnnouncementsFilters = {
   page?: number;
   /** Filter by active status */
   active?: boolean;
+  /** Field to sort by (e.g., "created_at", "start_at") */
+  sortBy?: 'createdAt' | 'startAt';
+  /** Sorting order: "asc" for ascending or "desc" for descending */
+  order?: 'asc' | 'desc';
 };
 
 /**

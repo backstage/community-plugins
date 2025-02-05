@@ -15,6 +15,7 @@ export type Announcement = {
   body: string;
   created_at: string;
   active: boolean;
+  start_at: string;
 };
 
 // @public
@@ -37,6 +38,8 @@ export type AnnouncementsFilters = {
   category?: string;
   page?: number;
   active?: boolean;
+  sortBy?: 'createdAt' | 'startAt';
+  order?: 'asc' | 'desc';
 };
 
 // @public

@@ -47,6 +47,7 @@ interface AnnouncementRequest {
   excerpt: string;
   body: string;
   active: boolean;
+  start_at: string;
 }
 
 interface CategoryRequest {
@@ -58,6 +59,8 @@ type GetAnnouncementsQueryParams = {
   page?: number;
   max?: number;
   active?: boolean;
+  sortby?: 'createdAt' | 'startAt';
+  order?: 'asc' | 'desc';
 };
 
 export async function createRouter(
@@ -100,7 +103,14 @@ export async function createRouter(
     '/announcements',
     async (req: Request<{}, {}, {}, GetAnnouncementsQueryParams>, res) => {
       const {
-        query: { category, max, page, active },
+        query: {
+          category,
+          max,
+          page,
+          active,
+          sortby = 'createdAt',
+          order = 'desc',
+        },
       } = req;
 
       const results = await persistenceContext.announcementsStore.announcements(
@@ -109,6 +119,10 @@ export async function createRouter(
           max,
           offset: page ? (page - 1) * (max ?? 10) : undefined,
           active,
+          sortBy: ['createdAt', 'startAt'].includes(sortby)
+            ? sortby
+            : 'createdAt',
+          order: ['asc', 'desc'].includes(order) ? order : 'desc',
         },
       );
 
@@ -176,6 +190,7 @@ export async function createRouter(
           ...{
             id: uuid(),
             created_at: DateTime.now(),
+            start_at: DateTime.fromISO(req.body.start_at),
           },
         });
 
@@ -204,7 +219,7 @@ export async function createRouter(
 
       const {
         params: { id },
-        body: { title, excerpt, body, publisher, category, active },
+        body: { title, excerpt, body, publisher, category, active, start_at },
       } = req;
 
       const initialAnnouncement =
@@ -223,6 +238,7 @@ export async function createRouter(
             publisher,
             category,
             active,
+            start_at: DateTime.fromISO(start_at),
           },
         });
 
