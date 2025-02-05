@@ -49,10 +49,9 @@ export const EntitySelectComponent = ({ options, setSelectedEntity }) => {
         shouldFocusToggleOnSelect
       >
         <SelectList>
-
-        {Object.entries(options).map(([key, value]) => (
-          <SelectOption value={key}>{key}</SelectOption>
-        ))}
+          {Object.entries(options).map(([key, value]) => (
+            <SelectOption value={key}>{key}</SelectOption>
+          ))}
         </SelectList>
       </Select>
     </React.Fragment>

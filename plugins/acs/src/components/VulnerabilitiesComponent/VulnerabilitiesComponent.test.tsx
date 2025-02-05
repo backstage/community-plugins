@@ -30,7 +30,6 @@ describe('VulnerabilitiesComponent', () => {
 
     render(<VulnerabilitiesComponent deploymentName={"Test"}/>);
 
-    // Check for error message
     expect(
       screen.getByText(/error retrieving data from ACS./i),
     ).toBeInTheDocument();
