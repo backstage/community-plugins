@@ -90,4 +90,3 @@ export const DataFilterComponent = ({ setFilters, data }) => {
     )
 }
 
-export default DataFilterComponent;
