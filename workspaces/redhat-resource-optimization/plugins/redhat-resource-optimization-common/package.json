@@ -16,8 +16,8 @@
   },
   "description": "Common functionalities for the redhat-resource-optimization plugin",
   "devDependencies": {
-    "@backstage/cli": "^0.28.0",
-    "@backstage/types": "^1.1.1",
+    "@backstage/cli": "^0.29.4",
+    "@backstage/types": "^1.2.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@types/lodash": "^4.17.5",
     "msw": "^2.3.4",
@@ -69,5 +69,5 @@
       ]
     }
   },
-  "version": "1.0.3"
+  "version": "1.1.0"
 }

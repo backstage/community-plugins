@@ -15,6 +15,7 @@
  */
 import { TechInsightsStore } from './persistence';
 import {
+  Check,
   CheckLink,
   CheckResult,
 } from '@backstage-community/plugin-tech-insights-common';
@@ -23,11 +24,11 @@ import {
  * A factory wrapper to construct FactChecker implementations.
  *
  * @public
- * @typeParam CheckType - Implementation specific Check. Can extend TechInsightCheck with additional information
+ * @typeParam CheckType - Implementation specific Check. Can extend Check with additional information
  * @typeParam CheckResultType - Implementation specific result of a check. Can extend CheckResult with additional information
  */
 export interface FactCheckerFactory<
-  CheckType extends TechInsightCheck,
+  CheckType extends Check,
   CheckResultType extends CheckResult,
 > {
   /**
@@ -46,11 +47,11 @@ export interface FactCheckerFactory<
  * This is used especially when creating Scorecards and displaying results of rules when run against facts.
  *
  * @public
- * @typeParam CheckType - Implementation specific Check. Can extend TechInsightCheck with additional information
+ * @typeParam CheckType - Implementation specific Check. Can extend Check with additional information
  * @typeParam CheckResultType - Implementation specific result of a check. Can extend CheckResult with additional information
  */
 export interface FactChecker<
-  CheckType extends TechInsightCheck,
+  CheckType extends Check,
   CheckResultType extends CheckResult,
 > {
   /**
@@ -83,10 +84,10 @@ export interface FactChecker<
  * Registry containing checks for tech insights.
  *
  * @public
- * @typeParam CheckType - Implementation specific Check. Can extend TechInsightCheck with additional information
+ * @typeParam CheckType - Implementation specific Check. Can extend Check with additional information
  *
  */
-export interface TechInsightCheckRegistry<CheckType extends TechInsightCheck> {
+export interface TechInsightCheckRegistry<CheckType extends Check> {
   register(check: CheckType): Promise<CheckType>;
   get(checkId: string): Promise<CheckType>;
   getAll(checks: string[]): Promise<CheckType[]>;
@@ -97,6 +98,10 @@ export interface TechInsightCheckRegistry<CheckType extends TechInsightCheck> {
  * Generic definition of a check for Tech Insights
  *
  * @public
+ *
+ * @deprecated
+ *
+ * Use Check from `@backstage-community/plugin-tech-insights-common` instead
  */
 export interface TechInsightCheck {
   /**

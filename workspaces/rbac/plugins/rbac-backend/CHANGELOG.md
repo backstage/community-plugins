@@ -1,5 +1,23 @@
 ### Dependencies
 
+## 5.3.1
+
+### Patch Changes
+
+- 1d5dd17: Evaluate the permissions for a superuser earlier in the process to avoid the unintended consequence of having conditional permissions policies applied to a superuser.
+
+## 5.3.0
+
+### Minor Changes
+
+- 53daff0: Roles and permissions were not correctly applied for users and groups with names containing uppercase letters. To address this issue, we now convert user and group references in all user inputs to lowercase. This change migrates `v0` column in `casbin_rule` table in `backstage_plugin_permission` database. Conditions containing claims with uppercase letters are not resolved yet.
+
+## 5.2.10
+
+### Patch Changes
+
+- ba4b3e9: Use loadPolicy to keep the enforcer in sync for edit operations. It should keep the RBAC plugin in sync when the Backstage instance is scaled to multiple deployment replicas. Reuse the maximum database pool size value from the application configuration in the RBAC Casbin adapter.
+
 ## 5.2.9
 
 ### Patch Changes

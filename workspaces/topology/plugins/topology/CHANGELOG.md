@@ -1,5 +1,29 @@
 ### Dependencies
 
+## 1.31.0
+
+### Minor Changes
+
+- c6207a6: Backstage version bump to v1.35.0
+- 8ab6e45: upgraded @backstage-community/plugin-topology plugin to PatternFly 6
+
+### Patch Changes
+
+- 8ab6e45: Long annotations doesn't overflow the sidebar content for Pods anymore
+- Updated dependencies [c6207a6]
+  - @backstage-community/plugin-topology-common@1.6.0
+
+## 1.30.0
+
+### Minor Changes
+
+- df7804a: bump backstage to 1.34.2 and remove @spotify/prettier-config
+
+### Patch Changes
+
+- Updated dependencies [df7804a]
+  - @backstage-community/plugin-topology-common@1.5.0
+
 ## 1.29.10
 
 ### Patch Changes

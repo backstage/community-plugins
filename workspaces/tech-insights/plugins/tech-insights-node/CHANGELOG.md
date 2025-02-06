@@ -1,5 +1,30 @@
 # @backstage-community/plugin-tech-insights-node
 
+## 2.3.0
+
+### Minor Changes
+
+- e919e53: Backstage version bump to v1.35.1
+
+### Patch Changes
+
+- f015469: Introducing a new tech insights react plugin for reusuable frontend utilities. All migrated components and APIs have been marked as deprecated. Please update your imports to come from `@backstage-community/plugin-tech-insights-react`
+
+  Package json files for each plugin have been updated to reflect the new plugin in the Backstage `pluginPackages` metadata.
+
+- c107e0f: Deprecates `TechInsightCheck` from the `tech-insights-node` library in favor of `Check` coming from the `tech-insights-common` library.
+
+  With this change comes a refactor of `Check` from a type to an interface.
+
+  The `TechInsightCheck` interface will be removed from the `tech-insights-node` plugin in it's next major release.
+
+  Importing `Check` from `@backstage-community/plugin-tech-insights-common/client` has been deprecated in favor of importing directly from `@backstage-community/plugin-tech-insights-common`.
+
+- Updated dependencies [f015469]
+- Updated dependencies [e919e53]
+- Updated dependencies [c107e0f]
+  - @backstage-community/plugin-tech-insights-common@0.5.0
+
 ## 2.2.0
 
 ### Minor Changes

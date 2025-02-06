@@ -1,5 +1,22 @@
 # @backstage-community/plugin-vault-backend
 
+## 0.6.0
+
+### Minor Changes
+
+- 9c6bac1: Backstage version bump to v1.35.1
+
+### Patch Changes
+
+- Updated dependencies [9c6bac1]
+  - @backstage-community/plugin-vault-node@0.3.0
+
+## 0.5.2
+
+### Patch Changes
+
+- e7dea45: Fixed typo under the "New Backend System" instructions
+
 ## 0.5.1
 
 ### Patch Changes

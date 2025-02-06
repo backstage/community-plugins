@@ -26,15 +26,17 @@ import {
   TableOptions,
 } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
-import { techInsightsApiRef } from '../../api';
-import { Check } from '@backstage-community/plugin-tech-insights-common/client';
+import {
+  Check,
+  BulkCheckResponse,
+} from '@backstage-community/plugin-tech-insights-common';
 import useAsync from 'react-use/lib/useAsync';
-import { BulkCheckResponse } from '@backstage-community/plugin-tech-insights-common';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
 import { ScorecardsList } from '../ScorecardsList';
 import Grid from '@material-ui/core/Grid';
 import { Filters } from './Filters';
 import { ExportCsv as exportCsv } from '@material-table/exporters';
+import { techInsightsApiRef } from '@backstage-community/plugin-tech-insights-react';
 
 export const ScorecardsPage = () => {
   const api = useApi(techInsightsApiRef);

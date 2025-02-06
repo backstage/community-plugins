@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 
-import {
-  createLegacyAuthAdapters,
-  errorHandler,
-} from '@backstage/backend-common';
 import express from 'express';
 import Router from 'express-promise-router';
 import { JenkinsInfoProvider } from './jenkinsInfoProvider';
@@ -32,33 +28,29 @@ import { stringifyError } from '@backstage/errors';
 import { createPermissionIntegrationRouter } from '@backstage/plugin-permission-node';
 import { jenkinsPermissions } from '@backstage-community/plugin-jenkins-common';
 import {
-  AuthService,
   DiscoveryService,
   HttpAuthService,
   LoggerService,
 } from '@backstage/backend-plugin-api';
+import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
+import { Config } from '@backstage/config';
 
-/**
- * @deprecated Please migrate to the new backend system as this will be removed in the future.
- *
- * @public */
+/** @internal */
 export interface RouterOptions {
   logger: LoggerService;
   jenkinsInfoProvider: JenkinsInfoProvider;
   permissions?: PermissionEvaluator | PermissionAuthorizer;
   discovery: DiscoveryService;
-  auth?: AuthService;
-  httpAuth?: HttpAuthService;
+  httpAuth: HttpAuthService;
+  config: Config;
 }
 
-/**
- * @deprecated Please migrate to the new backend system as this will be removed in the future.
- *
- * @public */
+/** @internal */
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
-  const { jenkinsInfoProvider, permissions, logger } = options;
+  const { jenkinsInfoProvider, permissions, logger, httpAuth, config } =
+    options;
 
   let permissionEvaluator: PermissionEvaluator | undefined;
   if (permissions && 'authorizeConditional' in permissions) {
@@ -71,8 +63,6 @@ export async function createRouter(
       ? toPermissionEvaluator(permissions)
       : undefined;
   }
-
-  const { httpAuth } = createLegacyAuthAdapters(options);
 
   const jenkinsApi = new JenkinsApiImpl(permissionEvaluator);
 
@@ -126,7 +116,7 @@ export async function createRouter(
         if (err.errors) {
           throw new Error(
             `Unable to fetch projects, for ${
-              jenkinsInfo.jobFullName
+              jenkinsInfo.fullJobNames
             }: ${stringifyError(err.errors)}`,
           );
         }
@@ -147,7 +137,7 @@ export async function createRouter(
           namespace,
           name,
         },
-        jobFullName,
+        fullJobNames: [jobFullName],
         credentials: await httpAuth.credentials(request),
       });
 
@@ -174,7 +164,7 @@ export async function createRouter(
           namespace,
           name,
         },
-        jobFullName,
+        fullJobNames: [jobFullName],
         credentials: await httpAuth.credentials(request),
       });
 
@@ -197,7 +187,7 @@ export async function createRouter(
           namespace,
           name,
         },
-        jobFullName,
+        fullJobNames: [jobFullName],
         credentials: await httpAuth.credentials(request),
       });
 
@@ -227,7 +217,7 @@ export async function createRouter(
           namespace,
           name,
         },
-        jobFullName,
+        fullJobNames: [jobFullName],
         credentials: await httpAuth.credentials(request),
       });
 
@@ -243,6 +233,6 @@ export async function createRouter(
     },
   );
 
-  router.use(errorHandler());
+  router.use(MiddlewareFactory.create({ config, logger }).error());
   return router;
 }
