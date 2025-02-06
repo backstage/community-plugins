@@ -342,7 +342,6 @@ export class DefaultMtaApi implements MTAApi {
         response.status,
       );
     }
-
     return await response.json();
   }
 
