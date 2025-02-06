@@ -51,8 +51,8 @@ export class QuayService {
   private readonly logger: LoggerService;
 
   constructor(config: Config, logger: LoggerService) {
-    this.apiUrl = config.getString('quay.uiUrl') || DEFAULT_QUAY_URL;
-    this.token = config.getString('quay.apiKey');
+    this.apiUrl = config.getOptionalString('quay.uiUrl') || DEFAULT_QUAY_URL;
+    this.token = config.getOptionalString('quay.apiKey');
     this.logger = logger;
   }
 
