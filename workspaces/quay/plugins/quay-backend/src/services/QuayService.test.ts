@@ -41,7 +41,7 @@ describe('QuayService', () => {
 
   beforeEach(() => {
     const mockConfig = new ConfigReader({
-      quay: { uiUrl: 'https://quay.example.com', apiKey: 'test-token' },
+      quay: { apiUrl: 'https://quay.example.com', apiKey: 'test-token' },
     });
     quayService = new QuayService(mockConfig, mockLogger);
     fetchMock = jest.spyOn(global, 'fetch');
