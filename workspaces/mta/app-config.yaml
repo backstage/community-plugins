@@ -36,10 +36,9 @@ backend:
   # workingDirectory: /tmp # Use this to configure a working directory for the scaffolder, defaults to the OS temp-dir
 
 mta:
-  url: <MTA_URL>
+  url: https://mta-openshift-mta.ianbolton-1-3626522b15eedb880d7b99992e225c1b-0000.us-east.containers.appdomain.cloud
   providerAuth:
-    # realm: mta
-    realm: tackle
+    realm: mta
     secret: backstage-provider-secret
     clientID: backstage-provider
 
