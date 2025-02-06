@@ -2,4 +2,4 @@
 '@backstage-community/plugin-copilot': patch
 ---
 
-Fix small bug described here: https://github.com/backstage/community-plugins/issues/2468
+Fix small bug so that the "Accepted Rate %" chart will show the trend line
