@@ -43,15 +43,13 @@ export interface QuayService {
   ): Promise<SecurityDetailsResponse>;
 }
 
-const DEFAULT_QUAY_URL = 'https://quay.io';
-
 export class QuayService {
   private readonly apiUrl: string;
   private readonly token?: string;
   private readonly logger: LoggerService;
 
   constructor(config: Config, logger: LoggerService) {
-    this.apiUrl = config.getOptionalString('quay.uiUrl') || DEFAULT_QUAY_URL;
+    this.apiUrl = config.getString('quay.apiUrl');
     this.token = config.getOptionalString('quay.apiKey');
     this.logger = logger;
   }
@@ -67,7 +65,7 @@ export class QuayService {
       const response = await fetch(url, {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.token}`,
+          ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}),
         },
       });
 
