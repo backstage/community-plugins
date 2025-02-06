@@ -15,6 +15,7 @@
  */
 import { Entity } from '@backstage/catalog-model';
 import {
+  configApiRef,
   createApiFactory,
   createPlugin,
   createRoutableExtension,
@@ -42,10 +43,11 @@ export const quayPlugin = createPlugin({
       api: quayApiRef,
       deps: {
         discoveryApi: discoveryApiRef,
+        configApi: configApiRef,
         identityApi: identityApiRef,
       },
-      factory: ({ discoveryApi, identityApi }) =>
-        new QuayApiClient({ discoveryApi, identityApi }),
+      factory: ({ discoveryApi, configApi, identityApi }) =>
+        new QuayApiClient({ discoveryApi, configApi, identityApi }),
     }),
   ],
 });

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import {
+  ConfigApi,
   createApiRef,
   DiscoveryApi,
   IdentityApi,
@@ -25,6 +26,8 @@ import {
   SecurityDetailsResponse,
   TagsResponse,
 } from '../types';
+
+const DEFAULT_PROXY_PATH = '/quay/api';
 
 export interface QuayApiV1 {
   getTags(
@@ -52,6 +55,7 @@ export const quayApiRef = createApiRef<QuayApiV1>({
 
 export type Options = {
   discoveryApi: DiscoveryApi;
+  configApi: ConfigApi;
   identityApi: IdentityApi;
 };
 
@@ -59,15 +63,27 @@ export class QuayApiClient implements QuayApiV1 {
   // @ts-ignore
   private readonly discoveryApi: DiscoveryApi;
 
+  private readonly configApi: ConfigApi;
+
   private readonly identityApi: IdentityApi;
 
   constructor(options: Options) {
     this.discoveryApi = options.discoveryApi;
+    this.configApi = options.configApi;
     this.identityApi = options.identityApi;
   }
 
   private async getBaseUrl() {
-    return `${await this.discoveryApi.getBaseUrl('quay')}`;
+    // Check if the user opted into the quay-backend
+    // Default to proxy if not
+    const apiUrl = this.configApi.getOptionalString('quay.apiUrl');
+    const proxyPath =
+      this.configApi.getOptionalString('quay.proxyPath') ?? DEFAULT_PROXY_PATH;
+    const baseUrl = await this.discoveryApi.getBaseUrl(
+      apiUrl ? 'quay' : 'proxy',
+    );
+
+    return apiUrl ? baseUrl : `${baseUrl}${proxyPath}/api/v1`;
   }
 
   private async fetcher(url: string) {
@@ -107,12 +123,12 @@ export class QuayApiClient implements QuayApiV1 {
     const params = this.encodeGetParams({
       limit,
       page,
+      onlyActiveTags: true,
       specificTag,
-      // onlyActiveTags is true on the backend.
     });
 
     return (await this.fetcher(
-      `${baseUrl}/repository/${org}/${repo}/tag?${params}`,
+      `${baseUrl}/repository/${org}/${repo}/tag/?${params}`,
     )) as TagsResponse;
   }
 
