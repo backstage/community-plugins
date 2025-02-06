@@ -36,9 +36,12 @@ export const createAcceptanceRateSeries = (
       id: 'total_lines_suggested',
       label: 'Acceptance Rate (Overall)',
       valueFormatter: (v: number | null) => v?.toFixed(2).concat('%') ?? 'N/A',
-      data: metrics.map(
-        x => (x.total_lines_accepted / x.total_lines_suggested) * 100,
-      ),
+      data: metrics.map(x => {
+        if (x.total_lines_suggested === 0) {
+          return 0;
+        }
+        return (x.total_lines_accepted / x.total_lines_suggested) * 100;
+      }),
     },
   ];
 
@@ -52,6 +55,7 @@ export const createAcceptanceRateSeries = (
       );
 
       if (!metricByteam) return null;
+      if (metricByteam.total_lines_suggested === 0) return 0;
 
       return (
         (metricByteam.total_lines_accepted /
