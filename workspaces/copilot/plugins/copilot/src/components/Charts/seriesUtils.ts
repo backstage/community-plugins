@@ -55,6 +55,7 @@ export const createAcceptanceRateSeries = (
       );
 
       if (!metricByteam) return null;
+      if (metricByteam.total_lines_suggested === 0) return 0;
 
       return (
         (metricByteam.total_lines_accepted /
