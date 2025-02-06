@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-export { githubDiscussionsDocumentReadPermission } from './permissions';
+export { githubDiscussionsReadPermission } from './permissions';
 
 export type {
   GithubDiscussionsSearchDocument,

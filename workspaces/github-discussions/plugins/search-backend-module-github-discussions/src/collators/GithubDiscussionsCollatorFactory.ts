@@ -26,7 +26,7 @@ import {
 } from '@guidanti/backstage-github-discussions-fetcher';
 import {
   type GithubDiscussionIndexableDocument,
-  githubDiscussionsDocumentReadPermission,
+  githubDiscussionsReadPermission,
 } from '@backstage-community/plugin-github-discussions-common';
 import {
   DefaultGithubCredentialsProvider,
@@ -88,8 +88,7 @@ export class GithubDiscussionsCollatorFactory
   private readonly discussionsBatchSize?: number;
   private readonly commentsBatchSize?: number;
   private readonly repliesBatchSize?: number;
-  public visibilityPermission: Permission =
-    githubDiscussionsDocumentReadPermission;
+  public visibilityPermission: Permission = githubDiscussionsReadPermission;
 
   private constructor(options: GithubDiscussionsCollatorFactoryOptions) {
     this.logger = options.logger.child({ documentType: this.type });
