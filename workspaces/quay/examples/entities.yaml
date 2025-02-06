@@ -13,7 +13,7 @@ kind: Component
 metadata:
   name: quay-site
   annotations:
-    quay.io/repository-slug: '<organization>/<repository>'
+    quay.io/repository-slug: 'rhdh-community/rhdh'
 spec:
   type: website
   lifecycle: experimental
