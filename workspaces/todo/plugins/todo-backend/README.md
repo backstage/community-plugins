@@ -4,50 +4,25 @@ Backend for the `@backstage-community/plugin-todo` plugin. Assists in scanning f
 
 ## Installation
 
-Install the `@backstage-community/plugin-todo-backend` package in your backend packages, and then integrate the plugin using the following default setup for `src/plugins/todo.ts`:
+Install the `@backstage-community/plugin-todo-backend` package in your backend packages:
 
-```ts
-import { Router } from 'express';
-import { CatalogClient } from '@backstage/catalog-client';
-import {
-  createRouter,
-  TodoReaderService,
-  TodoScmReader,
-} from '@backstage-community/plugin-todo-backend';
-import { PluginEnvironment } from '../types';
-
-export default async function createPlugin(
-  env: PluginEnvironment,
-): Promise<Router> {
-  const todoReader = TodoScmReader.fromConfig(env.config, {
-    logger: env.logger,
-    reader: env.reader,
-  });
-
-  const catalogClient = new CatalogClient({
-    discoveryApi: env.discovery,
-  });
-
-  const todoService = new TodoReaderService({
-    todoReader,
-    catalogClient,
-  });
-
-  return await createRouter({ todoService });
-}
+```bash
+# From your Backstage root directory
+yarn --cwd packages/backend add @backstage-community/plugin-todo-backend
 ```
 
-And then add to `packages/backend/src/index.ts`:
+In your `packages/backend/src/index.ts` make the following changes:
 
-```js
-// In packages/backend/src/index.ts
-import todo from './plugins/todo';
-// ...
-async function main() {
-  // ...
-  const todoEnv = useHotMemoize(module, () => createEnv('todo'));
-  // ...
-  apiRouter.use('/todo', await todo(todoEnv));
+```diff
+  import { createBackend } from '@backstage/backend-defaults';
+
+  const backend = createBackend();
+
+  // ... other feature additions
+
++ backend.add(import('@backstage-community/plugin-todo-backend'));
+
+  backend.start();
 ```
 
 ## Scanned Files
