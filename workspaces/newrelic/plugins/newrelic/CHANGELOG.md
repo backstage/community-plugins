@@ -1,5 +1,11 @@
 # @backstage-community/plugin-newrelic
 
+## 0.5.0
+
+### Minor Changes
+
+- ad331d5: Backstage version bump to v1.35.1
+
 ## 0.4.0
 
 ### Minor Changes

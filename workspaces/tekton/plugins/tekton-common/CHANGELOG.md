@@ -1,5 +1,11 @@
 # @janus-idp/backstage-plugin-tekton-common
 
+## 1.5.0
+
+### Minor Changes
+
+- 2f344ca: Backstage version bump to v1.35.0
+
 ## 1.4.0
 
 ### Minor Changes

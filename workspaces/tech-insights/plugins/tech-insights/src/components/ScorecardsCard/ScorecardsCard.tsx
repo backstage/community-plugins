@@ -19,10 +19,10 @@ import useAsync from 'react-use/esm/useAsync';
 import { ErrorPanel, Progress } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { ScorecardInfo } from '../ScorecardsInfo';
-import { techInsightsApiRef } from '../../api';
+import { techInsightsApiRef } from '@backstage-community/plugin-tech-insights-react';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { getCompoundEntityRef } from '@backstage/catalog-model';
-import { Check } from '@backstage-community/plugin-tech-insights-common/client';
+import { Check } from '@backstage-community/plugin-tech-insights-common';
 
 export const ScorecardsCard = (props: {
   title: string;

@@ -1,5 +1,27 @@
 # @backstage-community/plugin-jaeger
 
+## 0.3.0
+
+### Minor Changes
+
+- af1e404: Backstage version bump to v1.35.1
+
+### Patch Changes
+
+- Updated dependencies [af1e404]
+  - @backstage-community/plugin-jaeger-common@0.3.0
+
+## 0.2.0
+
+### Minor Changes
+
+- 69897a1: bump backstage to 1.34.2 and remove @spotify/prettier-config
+
+### Patch Changes
+
+- Updated dependencies [69897a1]
+  - @backstage-community/plugin-jaeger-common@0.2.0
+
 ## 0.1.2
 
 ### Patch Changes

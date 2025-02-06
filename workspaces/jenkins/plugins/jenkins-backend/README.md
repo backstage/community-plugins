@@ -8,9 +8,12 @@ This is the backend half of the 2 Jenkins plugins and is responsible for:
 - finding the appropriate job(s) on that instance for an entity
 - connecting to Jenkins and gathering data to present to the frontend
 
-## New Backend System
+## Integrating into a backstage instance
 
-The jenkins backend plugin has support for the [new backend system](https://backstage.io/docs/backend-system/), here's how you can set that up:
+```bash
+# From your Backstage root directory
+yarn --cwd packages/backend add @backstage-community/plugin-jenkins-backend
+```
 
 In your `packages/backend/src/index.ts` make the following changes:
 
@@ -22,76 +25,9 @@ In your `packages/backend/src/index.ts` make the following changes:
   backend.start();
 ```
 
-## Integrating into a backstage instance
-
-This plugin needs to be added to an existing backstage instance.
-
-```bash
-# From your Backstage root directory
-yarn --cwd packages/backend add @backstage-community/plugin-jenkins-backend
-```
-
-Typically, this means creating a `src/plugins/jenkins.ts` file and adding a reference to it to `src/index.ts`
-
-### jenkins.ts
-
-```typescript
-import {
-  createRouter,
-  DefaultJenkinsInfoProvider,
-} from '@backstage-community/plugin-jenkins-backend';
-import { CatalogClient } from '@backstage/catalog-client';
-import { Router } from 'express';
-import { PluginEnvironment } from '../types';
-
-export default async function createPlugin(
-  env: PluginEnvironment,
-): Promise<Router> {
-  const catalog = new CatalogClient({
-    discoveryApi: env.discovery,
-  });
-
-  return await createRouter({
-    logger: env.logger,
-    jenkinsInfoProvider: DefaultJenkinsInfoProvider.fromConfig({
-      config: env.config,
-      catalog,
-    }),
-    permissions: env.permissions,
-  });
-}
-```
-
-### src/index.ts
-
-```diff
-diff --git a/packages/backend/src/index.ts b/packages/backend/src/index.ts
-index f2b14b2..2c64f47 100644
---- a/packages/backend/src/index.ts
-+++ b/packages/backend/src/index.ts
-@@ -22,6 +22,7 @@ import { Config } from '@backstage/config';
- import app from './plugins/app';
-+import jenkins from './plugins/jenkins';
- import scaffolder from './plugins/scaffolder';
-@@ -56,6 +57,7 @@ async function main() {
-   const authEnv = useHotMemoize(module, () => createEnv('auth'));
-+  const jenkinsEnv = useHotMemoize(module, () => createEnv('jenkins'));
-   const proxyEnv = useHotMemoize(module, () => createEnv('proxy'));
-@@ -63,6 +65,7 @@ async function main() {
-
-   const apiRouter = Router();
-   apiRouter.use('/catalog', await catalog(catalogEnv));
-+  apiRouter.use('/jenkins', await jenkins(jenkinsEnv));
-   apiRouter.use('/scaffolder', await scaffolder(scaffolderEnv));
-```
-
-This plugin must be provided with a JenkinsInfoProvider, this is a strategy object for finding the Jenkins instance and job for an entity.
-
-There is a standard one provided, but the Integrator is free to build their own.
-
 ### DefaultJenkinsInfoProvider
 
-Allows configuration of either a single or multiple global Jenkins instances and annotating entities with the job name on that instance (and optionally the name of the instance).
+Allows configuration of either a single or multiple global Jenkins instances and annotating entities with the job name(s) on that instance (and optionally the name of the instance).
 
 #### Example - Single global instance
 
@@ -208,6 +144,47 @@ This will set the instance's base url to 'https://other.example.com' when loadin
 sent in is not null, along with the regex string list, and then compares the url to all regex strings to make sure one of them match.
 
 This use case is for Jenkins systems where there are a lot of Jenkins instances configured from a base instance, which share the same API keys. Therefore a user does not have to define all of the instances here, but in the catalog for ease of use.
+
+#### Example - Defining Multiple Jenkins Jobs for a Single instance
+
+You can configure multiple Jenkins jobs for a **single** component by specifying multiple project names in the `jenkins.io/job-full-name` annotation.
+
+This is useful when you want to track different types of jobs for the same component.
+
+Config
+
+```yaml
+jenkins:
+  instances:
+    - name: default
+      baseUrl: https://jenkins.example.com
+      username: backstage-bot
+      projectCountLimit: 100
+      apiKey: 123456789abcdef0123456789abcedf012
+    - name: departmentFoo
+      baseUrl: https://jenkins-foo.example.com
+      username: backstage-bot
+      projectCountLimit: 100
+      apiKey: 123456789abcdef0123456789abcedf012
+```
+
+Catalog
+
+```yaml
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: artist-lookup
+  annotations:
+    'jenkins.io/job-full-name': departmentFoo:teamA/artistLookup-build,departmentFoo:teamA/artistLookup-test
+```
+
+This configuration will track jobs at:
+
+- `https://jenkins-foo.example.com/job/teamA/job/artistLookup-build`
+- `https://jenkins-foo.example.com/job/teamA/job/artistLookup-test`
+
+**Limitation:** Currently you cannot associate jobs from different Jenkins instances with the same component. All jobs must belong to the same Jenkins instance.
 
 ### Custom JenkinsInfoProvider
 

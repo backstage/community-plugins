@@ -72,7 +72,7 @@ describe('TopologyComponent', () => {
     });
     render(<TopologyComponent />);
     const htmlTagElement = document.documentElement;
-    expect(htmlTagElement.classList.contains('pf-v5-theme-dark')).toBe(true);
+    expect(htmlTagElement.classList.contains('pf-v6-theme-dark')).toBe(true);
   });
 
   it('should show light theme', () => {
@@ -83,6 +83,6 @@ describe('TopologyComponent', () => {
     });
     render(<TopologyComponent />);
     const htmlTagElement = document.documentElement;
-    expect(htmlTagElement.classList.contains('pf-v5-theme-dark')).toBe(false);
+    expect(htmlTagElement.classList.contains('pf-v6-theme-dark')).toBe(false);
   });
 });

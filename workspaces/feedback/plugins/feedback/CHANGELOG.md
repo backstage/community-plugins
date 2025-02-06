@@ -1,5 +1,17 @@
 ## @janus-idp/backstage-plugin-feedback [1.6.0](https://github.com/janus-idp/backstage-plugins/compare/@janus-idp/backstage-plugin-feedback@1.5.0...@janus-idp/backstage-plugin-feedback@1.6.0) (2024-07-26)
 
+## 1.6.15
+
+### Patch Changes
+
+- f34426f: fixed newline characters causing error in summary field
+
+## 1.6.14
+
+### Patch Changes
+
+- 4b2e17c: update backstage to 1.34.2 and replace `@spotify/prettier-config` by `@backstage/cli/config/prettier`
+
 ## 1.6.13
 
 ### Patch Changes
