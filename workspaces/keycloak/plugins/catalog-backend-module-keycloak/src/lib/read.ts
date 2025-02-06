@@ -132,7 +132,7 @@ export async function getEntities<T extends Users | Groups>(
             first: i * entityQuerySize,
           })
           .then(ents => {
-            logger.info(
+            logger.debug(
               `Importing keycloak entities batch with index ${i} from pages: ${pageCount}`,
             );
             return ents;
@@ -252,7 +252,7 @@ export const readKeycloakRealm = async (
     limit,
     options?.userQuerySize,
   );
-  logger.info(`Fetched ${kUsers.length} users from Keycloak`);
+  logger.debug(`Fetched ${kUsers.length} users from Keycloak`);
 
   const topLevelKGroups = (await getEntities(
     async () => {
@@ -264,7 +264,7 @@ export const readKeycloakRealm = async (
     limit,
     options?.groupQuerySize,
   )) as GroupRepresentationWithParent[];
-  logger.info(`Fetched ${topLevelKGroups.length} groups from Keycloak`);
+  logger.debug(`Fetched ${topLevelKGroups.length} groups from Keycloak`);
 
   let serverVersion: number;
 
@@ -283,7 +283,7 @@ export const readKeycloakRealm = async (
 
   let rawKGroups: GroupRepresentationWithParent[] = [];
 
-  logger.info(`Processing groups recursively`);
+  logger.debug(`Processing groups recursively`);
   if (isVersion23orHigher) {
     rawKGroups = await processGroupsRecursively(
       client,
@@ -298,7 +298,7 @@ export const readKeycloakRealm = async (
     );
   }
 
-  logger.info(`Fetching group members for keycloak groups and list subgroups`);
+  logger.debug(`Fetching group members for keycloak groups and list subgroups`);
   const kGroups = await Promise.all(
     rawKGroups.map(g =>
       limit(async () => {
@@ -338,7 +338,7 @@ export const readKeycloakRealm = async (
     ),
   );
 
-  logger.info(`Parsing groups`);
+  logger.debug(`Parsing groups`);
   const parsedGroups = await Promise.all(
     kGroups.map(async g => {
       // it is possible if fetch request failed
@@ -372,7 +372,7 @@ export const readKeycloakRealm = async (
     }
   });
 
-  logger.info('Parsing users');
+  logger.debug('Parsing users');
   const parsedUsers = await Promise.all(
     kUsers.map(async u => {
       // it is possible if fetch request failed
@@ -396,7 +396,7 @@ export const readKeycloakRealm = async (
     (user): user is UserRepresentationWithEntity => user !== null,
   );
 
-  logger.info(`Set up group members and children information`);
+  logger.debug(`Set up group members and children information`);
 
   const userMap = new Map(
     filteredParsedUsers.map(user => [user.username, user.entity.metadata.name]),
