@@ -14,8 +14,17 @@
  * limitations under the License.
  */
 export interface Config {
+  /** Configurations for the Quay backend plugin */
   quay: {
-    uiUrl?: string;
+    /**
+     * The api url of the Quay instance.
+     * @visibility backend
+     */
+    apiUrl: string;
+    /**
+     * The api token of the Quay instance.
+     * @visibility secret
+     */
     apiKey?: string;
   };
 }
