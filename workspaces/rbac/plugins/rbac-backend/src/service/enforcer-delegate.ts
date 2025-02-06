@@ -632,14 +632,17 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
       for (const role of roles) {
         const filteredPolicy = await this.enforcer.getFilteredPolicy(
           0,
-          ...[role, resourceType, action],
+          role,
+          resourceType,
+          action,
         );
         policies.push(...filteredPolicy);
       }
     } else {
       const enforcePolicies = await this.enforcer.getFilteredPolicy(
         1,
-        ...[resourceType, action],
+        resourceType,
+        action,
       );
       policies = enforcePolicies.filter(
         policy =>
