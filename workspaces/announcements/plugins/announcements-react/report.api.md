@@ -9,6 +9,10 @@ import { AnnouncementsList } from '@backstage-community/plugin-announcements-com
 import { ApiRef } from '@backstage/core-plugin-api';
 import { Category } from '@backstage-community/plugin-announcements-common';
 import { DateTime } from 'luxon';
+import { DiscoveryApi } from '@backstage/core-plugin-api';
+import { ErrorApi } from '@backstage/core-plugin-api';
+import { FetchApi } from '@backstage/core-plugin-api';
+import { IdentityApi } from '@backstage/core-plugin-api';
 import { TranslationFunction } from '@backstage/core-plugin-api/alpha';
 import { TranslationRef } from '@backstage/core-plugin-api/alpha';
 
@@ -46,6 +50,52 @@ export interface AnnouncementsApi {
 
 // @public (undocumented)
 export const announcementsApiRef: ApiRef<AnnouncementsApi>;
+
+// @public
+export class AnnouncementsClient implements AnnouncementsApi {
+  constructor(opts: AnnouncementsClientOptions);
+  // (undocumented)
+  announcementByID(id: string): Promise<Announcement>;
+  // (undocumented)
+  announcements({
+    max,
+    page,
+    category,
+    active,
+  }: {
+    max?: number;
+    page?: number;
+    category?: string;
+    active?: boolean;
+  }): Promise<AnnouncementsList>;
+  // (undocumented)
+  categories(): Promise<Category[]>;
+  // (undocumented)
+  createAnnouncement(request: CreateAnnouncementRequest): Promise<Announcement>;
+  // (undocumented)
+  createCategory(request: CreateCategoryRequest): Promise<void>;
+  // (undocumented)
+  deleteAnnouncementByID(id: string): Promise<void>;
+  // (undocumented)
+  deleteCategory(slug: string): Promise<void>;
+  // (undocumented)
+  lastSeenDate(): DateTime;
+  // (undocumented)
+  markLastSeenDate(date: DateTime): void;
+  // (undocumented)
+  updateAnnouncement(
+    id: string,
+    request: CreateAnnouncementRequest,
+  ): Promise<Announcement>;
+}
+
+// @public
+export type AnnouncementsClientOptions = {
+  discoveryApi: DiscoveryApi;
+  identityApi: IdentityApi;
+  errorApi: ErrorApi;
+  fetchApi: FetchApi;
+};
 
 // @public
 export type AnnouncementsOptions = {
