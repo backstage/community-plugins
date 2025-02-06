@@ -3,4 +3,4 @@
 '@backstage-community/plugin-github-discussions-common': minor
 ---
 
-Add visibility permissions for github-discussions search documents
+Added `githubDiscussionsReadPermission` permission for github-discussions search documents
