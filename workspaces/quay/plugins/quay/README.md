@@ -14,37 +14,26 @@ The Quay plugin displays the information about your container images within the 
 
 ### Configuration
 
-1. Set the proxy to the desired Quay server in the `app-config.yaml` file as follows:
+1. Set `uiUrl` to the desired Quay server in the `app-config.yaml` file as follows:
 
    ```yaml title="app-config.yaml"
-   proxy:
-     endpoints:
-       '/quay/api':
-         target: 'https://quay.io'
-         credentials: require
-         headers:
-           X-Requested-With: 'XMLHttpRequest'
-           # Uncomment and use the Authorization header below to access a private Quay
-           # Repository using a token. Refer to the "Applications and Tokens" section
-           # at https://docs.quay.io/api/ to find the instructions to generate a token
-           # Authorization: 'Bearer <YOUR TOKEN>'
-         changeOrigin: true
-         # Change to "false" in case of using self hosted quay instance with a self-signed certificate
-         secure: true
-
    quay:
      # The UI url for Quay, used to generate the link to Quay
      uiUrl: 'https://quay.io'
    ```
 
 > [!NOTE]
-> The value inside each route is either a simple URL string, or an object on the format accepted by [http-proxy-middleware](https://www.npmjs.com/package/http-proxy-middleware). Additionally, it has an optional `credentials` key which can have the following values:
+> If you are trying to access a private repository in a Quay organization, set the `apiKey` value to your Application's OAuth token.
+> For example:
 >
-> - `require`: Callers must provide Backstage user or service credentials with each request. The credentials are not forwarded to the proxy target. This is the **default**.
-> - `forward`: Callers must provide Backstage user or service credentials with each request, and those credentials are forwarded to the proxy target.
-> - `dangerously-allow-unauthenticated`: No Backstage credentials are required to access this proxy target. The target can still apply its own credentials checks, but the proxy will not help block non-Backstage-blessed callers. If you also add allowedHeaders: ['Authorization'] to an endpoint configuration, then the Backstage token (if provided) WILL be forwarded.
+> ```
+> quay:
+>   uiUrl: 'https://quay.io'
+>   apiKey: 'abc123'
+> ```
 >
-> Note that if you have `backend.auth.dangerouslyDisableDefaultAuthPolicy` set to true, the credentials value does not apply; the proxy will behave as if all endpoints were set to dangerously-allow-unauthenticated.
+> **Robot tokens will not work for this, you will need an Application OAuth token**.
+> For more information on creating OAuth tokens, see https://docs.redhat.com/en/documentation/red_hat_quay/3/html-single/red_hat_quay_api_guide/index#creating-oauth-access-token
 
 2. Enable an additional tab on the entity view page in `packages/app/src/components/catalog/EntityPage.tsx`:
 

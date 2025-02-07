@@ -1,5 +1,20 @@
 # @backstage-community/plugin-announcements-node
 
+## 0.3.0
+
+### Minor Changes
+
+- f253ff9: **breaking** - replace `discoveryApi` param with `discovery` in `DefaultAnnouncementsService.create({})`. This better aligns with Backstage naming conventions.
+
+  ```diff
+  const announcementsService = DefaultAnnouncementsService.create({
+  -   discoveryApi: discoveryServiceRef,
+  +   discovery: discoveryServiceRef,
+  });
+  ```
+
+  This does not impact most users, but if you are using the `DefaultAnnouncementsService` in a custom service, you will need to update your code.
+
 ## 0.2.0
 
 ### Minor Changes
