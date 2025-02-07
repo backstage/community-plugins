@@ -6,7 +6,7 @@ metadata:
   title: '@backstage-community/backstage-plugin-ocm-backend'
   description: Open Cluster Management backend plugin for Backstage
   annotations:
-    github.com/project-slug: backstage-community/backstage-plugins
+    github.com/project-slug: backstage/community-plugins
   tags:
     - kubernetes
     - openshift
@@ -31,7 +31,7 @@ metadata:
   title: '@backstage-community/backstage-plugin-ocm-backend'
   description: Open Cluster Management backend plugin OpenAPI specs for Backstage
   annotations:
-    github.com/project-slug: backstage-community/backstage-plugins
+    github.com/project-slug: backstage/community-plugins
   tags:
     - kubernetes
     - openshift

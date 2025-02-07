@@ -6,7 +6,7 @@ metadata:
   title: '@backstage-community/backstage-plugin-quay-common'
   description: Quay Common plugin
   annotations:
-    github.com/project-slug: backstage-community/backstage-plugins
+    github.com/project-slug: backstage/community-plugins
   links:
     - url: https://github.com/backstage/community-plugins/tree/main/workspaces/quay/plugins/quay-common
       title: GitHub Source

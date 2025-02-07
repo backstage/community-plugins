@@ -6,7 +6,7 @@ metadata:
   title: Keycloak plugin
   description: Keycloak backend plugin for Backstage
   annotations:
-    github.com/project-slug: backstage-community/backstage-plugins
+    github.com/project-slug: backstage/community-plugins
   links:
     - url: https://github.com/backstage/community-plugins/tree/main/workspaces/keycloak/plugins/catalog-backend-module-keycloak
       title: GitHub Source

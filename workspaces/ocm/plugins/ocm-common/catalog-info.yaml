@@ -6,7 +6,7 @@ metadata:
   title: '@backstage-community/backstage-plugin-ocm-common'
   description: Open Cluster Management common package for Backstage
   annotations:
-    github.com/project-slug: backstage-community/backstage-plugins
+    github.com/project-slug: backstage/community-plugins
   tags:
     - kubernetes
     - openshift

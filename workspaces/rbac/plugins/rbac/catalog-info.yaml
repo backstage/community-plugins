@@ -6,7 +6,7 @@ metadata:
   title: '@backstage-community/backstage-plugin-rbac'
   description: RBAC frontend plugin for Backstage
   annotations:
-    github.com/project-slug: backstage-community/backstage-plugins
+    github.com/project-slug: backstage/community-plugins
   tags:
     - security
     - rbac

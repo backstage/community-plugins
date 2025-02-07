@@ -6,7 +6,7 @@ metadata:
   title: Red Hat Resource Optimization plugin
   description: Red Hat Resource Optimization plugin for Backstage
   annotations:
-    github.com/project-slug: backstage-community/backstage-plugins
+    github.com/project-slug: backstage/community-plugins
 spec:
   type: backstage-plugin
   lifecycle: production
