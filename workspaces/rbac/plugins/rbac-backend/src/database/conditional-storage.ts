@@ -43,6 +43,7 @@ export interface ConditionalStorage {
     resourceType?: string,
     actions?: PermissionAction[],
     permissionNames?: string[],
+    trx?: Knex.Transaction | Knex,
   ): Promise<RoleConditionalPolicyDecision<PermissionInfo>[]>;
   createCondition(
     conditionalDecision: RoleConditionalPolicyDecision<PermissionInfo>,
@@ -56,11 +57,13 @@ export interface ConditionalStorage {
   ): Promise<void>;
   getCondition(
     id: number,
+    trx?: Knex.Transaction | Knex,
   ): Promise<RoleConditionalPolicyDecision<PermissionInfo> | undefined>;
   deleteCondition(id: number): Promise<void>;
   updateCondition(
     id: number,
     conditionalDecision: RoleConditionalPolicyDecision<PermissionInfo>,
+    trx?: Knex.Transaction,
   ): Promise<void>;
 }
 
@@ -73,8 +76,10 @@ export class DataBaseConditionalStorage implements ConditionalStorage {
     resourceType?: string,
     actions?: PermissionAction[],
     permissionNames?: string[],
+    trx?: Knex.Transaction | Knex,
   ): Promise<RoleConditionalPolicyDecision<PermissionInfo>[]> {
-    const daoRaws = await this.knex.table(CONDITIONAL_TABLE).where(builder => {
+    const db = trx ?? this.knex;
+    const daoRaws = await db.table(CONDITIONAL_TABLE).where(builder => {
       if (pluginId) {
         builder.where('pluginId', pluginId);
       }
@@ -146,11 +151,16 @@ export class DataBaseConditionalStorage implements ConditionalStorage {
     pluginId: string,
     queryConditionActions: PermissionAction[],
     idToExclude?: number,
+    trx?: Knex.Transaction | Knex,
   ): Promise<void> {
+    const db = trx ?? this.knex;
     let conditionsForTheSameResource = await this.filterConditions(
       roleEntityRef,
       pluginId,
       resourceType,
+      undefined,
+      undefined,
+      db,
     );
     conditionsForTheSameResource = conditionsForTheSameResource.filter(
       c => c.id !== idToExclude,
@@ -184,11 +194,10 @@ export class DataBaseConditionalStorage implements ConditionalStorage {
 
   async getCondition(
     id: number,
+    trx?: Knex.Transaction | Knex,
   ): Promise<RoleConditionalPolicyDecision<PermissionInfo> | undefined> {
-    const daoRaw = await this.knex
-      .table(CONDITIONAL_TABLE)
-      .where('id', id)
-      .first();
+    const db = trx ?? this.knex;
+    const daoRaw = await db.table(CONDITIONAL_TABLE).where('id', id).first();
 
     if (daoRaw) {
       return this.daoToConditionalDecision(daoRaw);
@@ -207,8 +216,10 @@ export class DataBaseConditionalStorage implements ConditionalStorage {
   async updateCondition(
     id: number,
     conditionalDecision: RoleConditionalPolicyDecision<PermissionInfo>,
+    trx?: Knex.Transaction,
   ): Promise<void> {
-    const condition = await this.getCondition(id);
+    const db = trx ?? this.knex;
+    const condition = await this.getCondition(id, db);
     if (!condition) {
       throw new NotFoundError(`Condition with id ${id} was not found`);
     }
@@ -219,11 +230,12 @@ export class DataBaseConditionalStorage implements ConditionalStorage {
       conditionalDecision.pluginId,
       conditionalDecision.permissionMapping.map(perm => perm.action),
       id,
+      db,
     );
 
     const conditionRaw = this.toDAO(conditionalDecision);
     conditionRaw.id = id;
-    const result = await this.knex
+    const result = await db
       .table(CONDITIONAL_TABLE)
       .where('id', conditionRaw.id)
       .update<ConditionalPolicyDecisionDAO>(conditionRaw)
