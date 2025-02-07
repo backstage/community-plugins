@@ -36,13 +36,13 @@
     "postpack": "backstage-cli package postpack"
   },
   "peerDependencies": {
-    "@backstage/errors": "^1.2.4",
-    "@backstage/plugin-permission-common": "^0.8.1"
+    "@backstage/errors": "^1.2.7",
+    "@backstage/plugin-permission-common": "^0.8.4"
   },
   "devDependencies": {
-    "@backstage/cli": "0.28.2",
-    "@backstage/errors": "^1.2.4",
-    "@backstage/plugin-permission-common": "^0.8.1",
+    "@backstage/cli": "^0.29.5",
+    "@backstage/errors": "^1.2.7",
+    "@backstage/plugin-permission-common": "^0.8.4",
     "@spotify/prettier-config": "^15.0.0",
     "prettier": "^3.3.3"
   },
