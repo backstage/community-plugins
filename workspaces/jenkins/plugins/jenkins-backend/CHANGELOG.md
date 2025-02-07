@@ -1,5 +1,24 @@
 # @backstage-community/plugin-jenkins-backend
 
+## 0.11.0
+
+### Minor Changes
+
+- 29de0c4: **BREAKING** Removed support for the legacy backend system. Please refer to the [README](https://github.com/backstage/community-plugins/blob/main/workspaces/jenkins/plugins/jenkins-backend/README.md) for instructions on how to use the new backend system.
+
+  Removed usages and references of `@backstage/backend-common`
+
+## 0.10.0
+
+### Minor Changes
+
+- 07ef31b: Backstage version bump to v1.35.1
+
+### Patch Changes
+
+- Updated dependencies [07ef31b]
+  - @backstage-community/plugin-jenkins-common@0.3.0
+
 ## 0.9.0
 
 ### Minor Changes
