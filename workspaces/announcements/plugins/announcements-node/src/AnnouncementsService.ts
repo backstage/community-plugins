@@ -46,6 +46,8 @@ export interface AnnouncementsService {
  * Reference to the Announcements Service, providing functionality for managing announcements.
  *
  * @public
+ *
+ * @deprecated - Use announcementsServiceRef from '@backstage-community/plugin-announcements-node' instead
  */
 export const announcementsService = createServiceRef<AnnouncementsService>({
   id: 'announcements.service',
@@ -58,7 +60,7 @@ export const announcementsService = createServiceRef<AnnouncementsService>({
       },
       factory({ discovery }) {
         return DefaultAnnouncementsService.create({
-          discoveryApi: discovery,
+          discovery,
         });
       },
     }),

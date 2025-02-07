@@ -2702,6 +2702,7 @@ __metadata:
   dependencies:
     "@backstage-community/plugin-announcements-common": "workspace:^"
     "@backstage/cli": ^0.29.6
+    "@backstage/core-app-api": ^1.15.4
     "@backstage/core-plugin-api": ^1.10.3
     "@backstage/errors": ^1.2.7
     "@testing-library/jest-dom": ^5.10.1

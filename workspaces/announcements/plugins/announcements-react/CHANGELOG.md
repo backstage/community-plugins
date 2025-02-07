@@ -1,5 +1,17 @@
 # @backstage-community/plugin-announcements-react
 
+## 0.3.1
+
+### Patch Changes
+
+- f253ff9: Now exports the default AnnouncementsClient used by the frontend package. Most consumers will continue to consume via the `announcementsApiRef`.
+
+## 0.3.0
+
+### Minor Changes
+
+- 5c2483c: **BREAKING** Fixed a typo in translation keys (announecementsContent → announcementsContent), requiring all references to be updated to prevent missing translations.
+
 ## 0.2.0
 
 ### Minor Changes

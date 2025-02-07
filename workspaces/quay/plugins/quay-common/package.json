@@ -17,6 +17,7 @@
     "pluginPackage": "@backstage-community/plugin-quay-common",
     "pluginPackages": [
       "@backstage-community/plugin-quay",
+      "@backstage-community/plugin-quay-backend",
       "@backstage-community/plugin-quay-common"
     ]
   },

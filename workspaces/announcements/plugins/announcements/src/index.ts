@@ -15,22 +15,7 @@
  */
 export * from './plugin';
 
-import {
-  announcementsApiRef as announcementsApiRef_,
-  AnnouncementsApi as AnnouncementsApi_,
-} from '@backstage-community/plugin-announcements-react';
-
-/**
-   @public
- * @deprecated Use `AnnouncementsApi` from `@backstage-community/plugin-announcements-react` instead
- */
-export type AnnouncementsApi = AnnouncementsApi_;
-
-/**
- * @public
- * @deprecated Use `announcementsApiRef` from `@backstage-community/plugin-announcements-react` instead
- */
-export const announcementsApiRef = announcementsApiRef_;
-
-export type { AnnouncementsTimelineProps } from './components';
-export type { AnnouncementSearchResultProps } from './components';
+export type {
+  AnnouncementsTimelineProps,
+  AnnouncementSearchResultProps,
+} from './components';
