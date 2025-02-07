@@ -34,12 +34,10 @@ import {
   Typography,
   Divider,
 } from '@material-ui/core';
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from '@material-ui/pickers';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import SaveAltIcon from '@material-ui/icons/SaveAlt';
-import LuxonUtils from '@date-io/luxon';
 import { DateTime } from 'luxon';
 
 type AnnouncementFormProps = {
@@ -122,29 +120,23 @@ export const AnnouncementForm = ({
             </Grid>
 
             <Grid item xs={12} sm={6}>
-              <MuiPickersUtilsProvider utils={LuxonUtils}>
-                <KeyboardDatePicker
-                  disableToolbar
-                  variant="inline"
-                  inputVariant="outlined"
-                  format="MM/dd/yyyy"
-                  id="start_at-date-picker"
+              <LocalizationProvider dateAdapter={AdapterLuxon}>
+                <DatePicker
                   label={t('announcementForm.startAt')}
-                  value={form.start_at}
-                  onChange={date =>
+                  value={DateTime.fromISO(form.start_at)}
+                  onChange={(date: DateTime | null) =>
                     setForm({
                       ...form,
-                      start_at: date
-                        ? date.toISO() || ''
-                        : DateTime.now().toISO() || '',
+                      start_at: date?.toISO() ?? DateTime.now().toISO(),
                     })
                   }
-                  KeyboardButtonProps={{
-                    'aria-label': 'change date',
+                  slotProps={{
+                    textField: {
+                      required: true,
+                    },
                   }}
-                  required
                 />
-              </MuiPickersUtilsProvider>
+              </LocalizationProvider>
             </Grid>
 
             <Grid item xs={12}>

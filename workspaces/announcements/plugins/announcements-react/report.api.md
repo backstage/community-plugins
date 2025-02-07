@@ -64,11 +64,15 @@ export class AnnouncementsClient implements AnnouncementsApi {
     page,
     category,
     active,
+    sortBy,
+    order,
   }: {
     max?: number;
     page?: number;
     category?: string;
     active?: boolean;
+    sortBy?: 'createdAt' | 'startAt';
+    order?: 'asc' | 'desc';
   }): Promise<AnnouncementsList>;
   // (undocumented)
   categories(): Promise<Category[]>;
