@@ -86,7 +86,6 @@ export const RoleForm = ({
   const rbacApi = useApi(rbacApiRef);
 
   const updateRole = async (
-    name: string,
     values: RoleFormValues,
     formikHelpers: FormikHelpers<RoleFormValues>,
   ) => {
@@ -123,7 +122,7 @@ export const RoleForm = ({
           isSamePermissionPolicy,
         );
 
-        await removePermissions(name, deletePermissions, rbacApi);
+        await removePermissions(newName, deletePermissions, rbacApi);
         await createPermissions(newPermissions, rbacApi);
 
         await removeConditions(deleteConditions, rbacApi);
@@ -181,7 +180,7 @@ export const RoleForm = ({
       formikHelpers: FormikHelpers<RoleFormValues>,
     ) => {
       if (roleName) {
-        updateRole(roleName, values, formikHelpers);
+        updateRole(values, formikHelpers);
       } else {
         newRole(values, formikHelpers);
       }
