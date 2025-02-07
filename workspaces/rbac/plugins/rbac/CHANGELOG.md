@@ -1,5 +1,16 @@
 ### Dependencies
 
+## 1.35.0
+
+### Minor Changes
+
+- 5d5c02a: Backstage version bump to v1.35.0
+
+### Patch Changes
+
+- Updated dependencies [5d5c02a]
+  - @backstage-community/plugin-rbac-common@1.13.0
+
 ## 1.34.0
 
 ### Minor Changes
