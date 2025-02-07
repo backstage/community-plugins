@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2025 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,25 +14,17 @@
  * limitations under the License.
  */
 export interface Config {
-  /** Configurations for the Quay plugin */
-  quay?: {
+  /** Configurations for the Quay backend plugin */
+  quay: {
     /**
-     * The proxy path for the Quay instance.
-     * @visibility frontend
+     * The api url of the Quay instance.
+     * @visibility backend
      */
-    proxyPath?: string;
+    apiUrl: string;
     /**
-     * The UI url of the Quay instance.
-     * @visibility frontend
+     * The api token of the Quay instance.
+     * @visibility secret
      */
-    uiUrl?: string;
-    /**
-     * The API URl for a quay instance.
-     * This is set for the quay-backend plugin.
-     * If this is set, we use the quay-backend plugin.
-     * If not, we default to using the proxy config.
-     * @visibility frontend
-     */
-    apiUrl?: string;
+    apiKey?: string;
   };
 }
