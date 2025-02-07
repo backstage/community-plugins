@@ -419,6 +419,25 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
           ...oldPolicy.slice(1),
         ]);
         await this.updatePolicies(oldPolicies, updatedPolicies, trx);
+
+        const oldConditions = await this.conditionalStorage.filterConditions(
+          currentMetadata.roleEntityRef,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          trx,
+        );
+        for (const condition of oldConditions) {
+          await this.conditionalStorage.updateCondition(
+            condition.id,
+            {
+              ...condition,
+              roleEntityRef: newRoleMetadata.roleEntityRef,
+            },
+            trx,
+          );
+        }
       }
 
       await trx.commit();
