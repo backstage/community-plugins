@@ -1,5 +1,23 @@
 # @backstage-community/plugin-github-deployments
 
+## 0.3.0
+
+### Minor Changes
+
+- eb947f4: Backstage version bump to v1.35.1
+
+## 0.2.1
+
+### Patch Changes
+
+- 9063139: Adding support for the new frontend system, available at the `/alpha` export.
+
+## 0.2.0
+
+### Minor Changes
+
+- 3492406: Backstage version bump to v1.34.2
+
 ## 0.1.70
 
 ### Patch Changes

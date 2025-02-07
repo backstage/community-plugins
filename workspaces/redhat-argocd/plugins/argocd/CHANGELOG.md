@@ -1,5 +1,58 @@
 ## @backstage-community/plugin-redhat-argocd
 
+## 1.13.0
+
+### Minor Changes
+
+- b1f7d58: Backstage version bump to v1.35.0
+
+### Patch Changes
+
+- Updated dependencies [b1f7d58]
+  - @backstage-community/plugin-redhat-argocd-common@1.2.0
+
+## 1.12.0
+
+### Minor Changes
+
+- 5b0553e: bump backstage to 1.34.2 and remove @spotify/prettier-config
+
+### Patch Changes
+
+- Updated dependencies [5b0553e]
+  - @backstage-community/plugin-redhat-argocd-common@1.1.0
+
+## 1.11.3
+
+### Patch Changes
+
+- 693ed35: Updated dependency `react-use` to `17.6.0`.
+
+## 1.11.2
+
+### Patch Changes
+
+- 350250c: Updated dependency `@testing-library/jest-dom` to `6.6.3`.
+- 4eef4d1: Updated dependency `@playwright/test` to `1.49.1`.
+
+## 1.11.1
+
+### Patch Changes
+
+- b7f5849: Change argocd to Argo CD in comments or description
+
+## 1.11.0
+
+### Minor Changes
+
+- 8c8ab01: Update Patternfly deps to v6
+
+## 1.10.5
+
+### Patch Changes
+
+- aa02f04: Updated dependency `@playwright/test` to `1.49.0`.
+
 ## 1.10.4
 
 ### Patch Changes

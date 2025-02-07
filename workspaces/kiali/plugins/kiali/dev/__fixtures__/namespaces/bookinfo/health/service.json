@@ -1,0 +1,46 @@
+{
+  "details": {
+    "requests": {
+      "inbound": {
+        "http": {
+          "200": 0.9999999999999999
+        }
+      },
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  },
+  "productpage": {
+    "requests": {
+      "inbound": {
+        "http": {
+          "200": 0.9999999999999999
+        }
+      },
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  },
+  "ratings": {
+    "requests": {
+      "inbound": {
+        "http": {
+          "200": 0.7555555555555555
+        }
+      },
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  },
+  "reviews": {
+    "requests": {
+      "inbound": {
+        "http": {
+          "200": 1
+        }
+      },
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  }
+}

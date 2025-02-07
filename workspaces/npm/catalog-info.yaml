@@ -1,10 +1,16 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: backstage-plugin-npm-workspace
-  title: 'Backstage Community Npm Plugin'
+  name: backstage-plugin-npm
+  title: npm plugin for Backstage
   description: A Backstage plugin that shows meta info and latest versions from a npm registry
+  annotations:
+    backstage.io/techdocs-ref: dir:.
+  links:
+    - url: https://github.com/backstage/community-plugins/tree/main/workspaces/npm
+      title: GitHub
+      icon: sourcecode
 spec:
-  lifecycle: experimental
+  lifecycle: production
   type: backstage-plugin
   owner: maintainers

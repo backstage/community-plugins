@@ -1,0 +1,58 @@
+{
+  "namespace": {
+    "name": "travel-portal",
+    "cluster": "Kubernetes",
+    "isAmbient": false,
+    "labels": {
+      "istio-injection": "enabled",
+      "kubernetes.io/metadata.name": "travel-portal"
+    },
+    "annotations": null
+  },
+  "name": "viaggi",
+  "cluster": "Kubernetes",
+  "workloads": [
+    {
+      "workloadName": "viaggi",
+      "istioSidecar": true,
+      "istioAmbient": false,
+      "labels": {
+        "app": "viaggi",
+        "version": "v1"
+      },
+      "serviceAccountNames": ["default"]
+    }
+  ],
+  "serviceNames": ["viaggi"],
+  "runtimes": [
+    {
+      "name": "",
+      "dashboardRefs": [
+        {
+          "template": "envoy",
+          "title": "Envoy Metrics"
+        }
+      ]
+    }
+  ],
+  "health": {
+    "workloadStatuses": [
+      {
+        "name": "viaggi",
+        "desiredReplicas": 1,
+        "currentReplicas": 1,
+        "availableReplicas": 1,
+        "syncedProxies": 1
+      }
+    ],
+    "requests": {
+      "inbound": {},
+      "outbound": {
+        "http": {
+          "200": 0.2666666666666666
+        }
+      },
+      "healthAnnotations": {}
+    }
+  }
+}

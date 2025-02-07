@@ -1,0 +1,156 @@
+{
+  "name": "kiali-traffic-generator",
+  "cluster": "Kubernetes",
+  "type": "ReplicaSet",
+  "createdAt": "2024-02-15T09:26:32Z",
+  "resourceVersion": "16299",
+  "istioSidecar": true,
+  "istioAmbient": false,
+  "additionalDetailSample": null,
+  "labels": {
+    "app": "kiali-traffic-generator",
+    "kiali-test": "traffic-generator"
+  },
+  "appLabel": true,
+  "versionLabel": false,
+  "podCount": 0,
+  "annotations": null,
+  "healthAnnotations": {},
+  "istioReferences": null,
+  "dashboardAnnotations": {},
+  "serviceAccountNames": null,
+  "desiredReplicas": 1,
+  "currentReplicas": 1,
+  "availableReplicas": 1,
+  "pods": [
+    {
+      "name": "kiali-traffic-generator-nsgk4",
+      "labels": {
+        "app": "kiali-traffic-generator",
+        "kiali-test": "traffic-generator",
+        "security.istio.io/tlsMode": "istio",
+        "service.istio.io/canonical-name": "kiali-traffic-generator",
+        "service.istio.io/canonical-revision": "latest"
+      },
+      "createdAt": "2024-02-15T09:26:32Z",
+      "createdBy": [
+        {
+          "name": "kiali-traffic-generator",
+          "kind": "ReplicaSet"
+        }
+      ],
+      "containers": [
+        {
+          "name": "kiali-traffic-generator",
+          "image": "quay.io/kiali/kiali-test-mesh-traffic-generator:latest",
+          "isProxy": false,
+          "isReady": true,
+          "isAmbient": false
+        }
+      ],
+      "istioContainers": [
+        {
+          "name": "istio-proxy",
+          "image": "gcr.io/istio-release/proxyv2:1.20.1",
+          "isProxy": true,
+          "isReady": true,
+          "isAmbient": false
+        }
+      ],
+      "istioInitContainers": [
+        {
+          "name": "istio-init",
+          "image": "gcr.io/istio-release/proxyv2:1.20.1",
+          "isProxy": true,
+          "isReady": true,
+          "isAmbient": false
+        }
+      ],
+      "status": "Running",
+      "statusMessage": "",
+      "statusReason": "",
+      "appLabel": true,
+      "versionLabel": false,
+      "annotations": {
+        "istio.io/rev": "default",
+        "kubectl.kubernetes.io/default-container": "kiali-traffic-generator",
+        "kubectl.kubernetes.io/default-logs-container": "kiali-traffic-generator",
+        "prometheus.io/path": "/stats/prometheus",
+        "prometheus.io/port": "15020",
+        "prometheus.io/scrape": "true",
+        "sidecar.istio.io/status": "{\"initContainers\":[\"istio-init\"],\"containers\":[\"istio-proxy\"],\"volumes\":[\"workload-socket\",\"credential-socket\",\"workload-certs\",\"istio-envoy\",\"istio-data\",\"istio-podinfo\",\"istio-token\",\"istiod-ca-cert\"],\"imagePullSecrets\":null,\"revision\":\"default\"}"
+      },
+      "proxyStatus": {
+        "CDS": "Synced",
+        "EDS": "Synced",
+        "LDS": "Synced",
+        "RDS": "Synced"
+      },
+      "serviceAccountName": "default"
+    }
+  ],
+  "services": [],
+  "runtimes": [
+    {
+      "name": "",
+      "dashboardRefs": [
+        {
+          "template": "envoy",
+          "title": "Envoy Metrics"
+        }
+      ]
+    }
+  ],
+  "additionalDetails": [],
+  "validations": {
+    "gateway": {
+      "bookinfo-gateway.bookinfo": {
+        "name": "bookinfo-gateway",
+        "objectType": "gateway",
+        "valid": false,
+        "checks": [
+          {
+            "code": "KIA0302",
+            "message": "No matching workload found for gateway selector in this namespace",
+            "severity": "warning",
+            "path": "spec/selector"
+          }
+        ],
+        "references": null
+      }
+    },
+    "virtualservice": {
+      "bookinfo.bookinfo": {
+        "name": "bookinfo",
+        "objectType": "virtualservice",
+        "valid": true,
+        "checks": [],
+        "references": null
+      }
+    },
+    "workload": {
+      "kiali-traffic-generator.bookinfo": {
+        "name": "kiali-traffic-generator",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      }
+    }
+  },
+  "waypointWorkloads": null,
+  "health": {
+    "workloadStatus": {
+      "name": "kiali-traffic-generator",
+      "desiredReplicas": 1,
+      "currentReplicas": 1,
+      "availableReplicas": 1,
+      "syncedProxies": 1
+    },
+    "requests": {
+      "inbound": {},
+      "outbound": {},
+      "healthAnnotations": {}
+    }
+  }
+}

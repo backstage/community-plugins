@@ -1,10 +1,11 @@
 # Knip report
 
-## Unused dependencies (11)
+## Unused dependencies (12)
 
 | Name                                                  | Location     | Severity |
 | :---------------------------------------------------- | :----------- | :------- |
 | @backstage/plugin-auth-backend-module-github-provider | package.json | error    |
+| @backstage-community/plugin-npm-backend               | package.json | error    |
 | @backstage/plugin-search-backend-node                 | package.json | error    |
 | @backstage/plugin-permission-common                   | package.json | error    |
 | @backstage/plugin-permission-node                     | package.json | error    |
@@ -15,11 +16,3 @@
 | winston                                               | package.json | error    |
 | app                                                   | package.json | error    |
 | pg                                                    | package.json | error    |
-
-## Unused devDependencies (3)
-
-| Name                             | Location     | Severity |
-| :------------------------------- | :----------- | :------- |
-| @types/express-serve-static-core | package.json | error    |
-| @types/express                   | package.json | error    |
-| @types/luxon                     | package.json | error    |

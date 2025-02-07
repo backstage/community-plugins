@@ -1,0 +1,72 @@
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: istio-system
+  description: Namespace istio-system.
+  tags:
+    - istio
+    - kiali
+    - core
+    - servicemesh
+  annotations:
+    kiali.io/provider: default
+    kiali.io/namespace: istio-system
+spec:
+  type: service
+  lifecycle: production
+  owner: user:guest
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: bookinfo
+  description: Bookinfo Application
+  tags:
+    - bookinfo
+    - kiali
+    - core
+    - servicemesh
+  annotations:
+    kiali.io/provider: default
+    kiali.io/namespace: bookinfo
+spec:
+  type: service
+  lifecycle: production
+  owner: user:guest
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: bookinfo-kubernetes
+  description: Bookinfo In Kubernetes
+  tags:
+    - bookinfo
+    - kiali
+    - core
+    - servicemesh
+  annotations:
+    kiali.io/provider: kubernetes
+    kiali.io/namespace: bookinfo
+spec:
+  type: service
+  lifecycle: production
+  owner: user:guest
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: bookinfo-mocked
+  description: Bookinfo In Kubernetes
+  tags:
+    - bookinfo
+    - kiali
+    - core
+    - servicemesh
+  annotations:
+    kiali.io/provider: mocked
+    kiali.io/namespace: bookinfo
+spec:
+  type: service
+  lifecycle: production
+  owner: user:guest

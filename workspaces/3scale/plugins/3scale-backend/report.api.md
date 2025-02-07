@@ -11,44 +11,10 @@ import type { LoggerService } from '@backstage/backend-plugin-api';
 import type { SchedulerService } from '@backstage/backend-plugin-api';
 import type { SchedulerServiceTaskRunner } from '@backstage/backend-plugin-api';
 
-// Warning: (ae-missing-release-tag) "catalogModule3ScaleEntityProvider" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 const catalogModule3ScaleEntityProvider: BackendFeature;
 export default catalogModule3ScaleEntityProvider;
 
-// Warning: (ae-forgotten-export) The symbol "Proxy_2" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "getProxyConfig" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
-export function getProxyConfig(
-  baseUrl: string,
-  access_token: string,
-  service_id: number,
-): Promise<Proxy_2>;
-
-// Warning: (ae-forgotten-export) The symbol "APIDocs" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "listApiDocs" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
-export function listApiDocs(
-  baseUrl: string,
-  access_token: string,
-): Promise<APIDocs>;
-
-// Warning: (ae-forgotten-export) The symbol "Services" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "listServices" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
-export function listServices(
-  baseUrl: string,
-  access_token: string,
-  page: number,
-  size: number,
-): Promise<Services>;
-
-// Warning: (ae-missing-release-tag) "ThreeScaleApiEntityProvider" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export class ThreeScaleApiEntityProvider implements EntityProvider {
   // (undocumented)

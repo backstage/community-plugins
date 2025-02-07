@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ToolbarChip, ToolbarChipGroup } from '@patternfly/react-core';
+import { ToolbarLabel, ToolbarLabelGroup } from '@patternfly/react-core';
 import { FiltersType, ResourcesFilters } from '../../../../../types/resources';
 
 const getResourcesFilterByValue = (
@@ -27,8 +27,8 @@ const getResourcesFilterByValue = (
 };
 
 export const handleDelete = (
-  category: string | ToolbarChipGroup,
-  chip: string | ToolbarChip,
+  category: string | ToolbarLabelGroup,
+  label: string | ToolbarLabel,
   setFilters: React.Dispatch<React.SetStateAction<FiltersType>>,
 ) => {
   setFilters(prevFilters => {
@@ -40,7 +40,7 @@ export const handleDelete = (
 
     if (filterKey) {
       updatedFilters[filterKey] = prevFilters[filterKey].filter(
-        (fil: string) => fil !== chip,
+        (fil: string) => fil !== label,
       );
     }
 
@@ -49,7 +49,7 @@ export const handleDelete = (
 };
 
 export const handleDeleteGroup = (
-  category: string | ToolbarChipGroup,
+  category: string | ToolbarLabelGroup,
   setFilters: React.Dispatch<React.SetStateAction<FiltersType>>,
 ) => {
   setFilters(prevFilters => {

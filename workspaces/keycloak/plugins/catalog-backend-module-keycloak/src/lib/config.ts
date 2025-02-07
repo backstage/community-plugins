@@ -91,6 +91,11 @@ export type KeycloakProviderConfig = {
    * @see https://www.keycloak.org/docs-api/11.0/rest-api/index.html#_groups_resource
    */
   groupQuerySize?: number;
+
+  /**
+   * Maximum request concurrency to prevent DoS attacks on the Keycloak server.
+   */
+  maxConcurrency?: number;
 };
 
 const readProviderConfig = (
@@ -109,6 +114,8 @@ const readProviderConfig = (
     providerConfigInstance.getOptionalNumber('userQuerySize');
   const groupQuerySize =
     providerConfigInstance.getOptionalNumber('groupQuerySize');
+  const maxConcurrency =
+    providerConfigInstance.getOptionalNumber('maxConcurrency');
 
   if (clientId && !clientSecret) {
     throw new InputError(
@@ -148,6 +155,7 @@ const readProviderConfig = (
     schedule,
     userQuerySize,
     groupQuerySize,
+    maxConcurrency,
   };
 };
 

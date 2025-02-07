@@ -282,8 +282,8 @@ export class JsonRulesEngineFactChecker
       description: techInsightCheck.description,
       factIds: techInsightCheck.factIds,
       metadata: result.result
-        ? techInsightCheck.successMetadata
-        : techInsightCheck.failureMetadata,
+        ? { ...techInsightCheck.metadata, ...techInsightCheck.successMetadata }
+        : { ...techInsightCheck.metadata, ...techInsightCheck.failureMetadata },
       rule: { conditions: {} },
       links: techInsightCheck.links,
     };
@@ -369,7 +369,7 @@ export class JsonRulesEngineFactCheckerFactory {
     config: Config,
     options: Omit<JsonRulesEngineFactCheckerFactoryOptions, 'checks'>,
   ): JsonRulesEngineFactCheckerFactory {
-    const checks = readChecksFromConfig(config);
+    const checks = readChecksFromConfig(config, { logger: options.logger });
 
     return new JsonRulesEngineFactCheckerFactory({
       ...options,

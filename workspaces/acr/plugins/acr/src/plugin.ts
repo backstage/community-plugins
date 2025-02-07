@@ -1,4 +1,18 @@
-import { Entity } from '@backstage/catalog-model';
+/*
+ * Copyright 2024 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import {
   configApiRef,
   createApiFactory,
@@ -12,17 +26,14 @@ import {
   AzureContainerRegistryApiClient,
   AzureContainerRegistryApiRef,
 } from './api';
-import { AZURE_CONTAINER_REGISTRY_ANNOTATION_IMAGE_NAME } from './consts';
-import { rootRouteRef } from './routes';
 
 /**
+ * Backstage plugin.
+ *
  * @public
  */
 export const acrPlugin = createPlugin({
   id: 'acr',
-  routes: {
-    root: rootRouteRef,
-  },
   apis: [
     createApiFactory({
       api: AzureContainerRegistryApiRef,
@@ -40,24 +51,28 @@ export const acrPlugin = createPlugin({
     }),
   ],
 });
+
 /**
+ * A catalog entity content (tab) that shows the ACR container images.
+ *
  * @public
  */
-export const AcrPage = acrPlugin.provide(
+export const AcrImagesEntityContent = acrPlugin.provide(
   createComponentExtension({
-    name: 'AzureContainerRegistryPage',
+    name: 'AcrImagesEntityContent',
     component: {
       lazy: () =>
-        import('./components/AcrDashboardPage').then(m => m.AcrDashboardPage),
+        import('./components/AcrImagesEntityContent').then(
+          m => m.AcrImagesEntityContent,
+        ),
     },
   }),
 );
+
 /**
+ * A catalog entity content (tab) that shows the ACR container images.
+ *
  * @public
+ * @deprecated Please use `AcrImagesEntityContent` instead of `AcrPage`.
  */
-export const isAcrAvailable = (entity: Entity) =>
-  Boolean(
-    entity?.metadata.annotations?.[
-      AZURE_CONTAINER_REGISTRY_ANNOTATION_IMAGE_NAME
-    ],
-  );
+export const AcrPage = AcrImagesEntityContent;

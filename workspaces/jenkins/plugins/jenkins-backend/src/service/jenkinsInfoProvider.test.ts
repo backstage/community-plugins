@@ -235,7 +235,7 @@ describe('DefaultJenkinsInfoProvider', () => {
           'Basic YmFja3N0YWdlIC0gYm90OjEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNlZGYwMTI=',
         'extra-header': 'extra-value',
       },
-      jobFullName: 'teamA/artistLookup-build',
+      fullJobNames: ['teamA/artistLookup-build'],
       projectCountLimit: 50,
     });
   });
@@ -270,7 +270,7 @@ describe('DefaultJenkinsInfoProvider', () => {
     );
     expect(info).toMatchObject({
       baseUrl: 'https://jenkins.example.com',
-      jobFullName: 'teamA/artistLookup-build',
+      fullJobNames: ['teamA/artistLookup-build'],
     });
   });
 
@@ -310,7 +310,7 @@ describe('DefaultJenkinsInfoProvider', () => {
     );
     expect(info).toMatchObject({
       baseUrl: 'https://jenkins.example.com',
-      jobFullName: 'teamA/artistLookup-build',
+      fullJobNames: ['teamA/artistLookup-build'],
     });
   });
 
@@ -350,7 +350,7 @@ describe('DefaultJenkinsInfoProvider', () => {
     );
     expect(info).toMatchObject({
       baseUrl: 'https://jenkins-other.example.com',
-      jobFullName: 'teamA/artistLookup-build',
+      fullJobNames: ['teamA/artistLookup-build'],
     });
   });
 
@@ -379,7 +379,7 @@ describe('DefaultJenkinsInfoProvider', () => {
     );
     expect(info).toMatchObject({
       baseUrl: 'https://jenkins.example.com',
-      jobFullName: 'teamA/artistLookup-build',
+      fullJobNames: ['teamA/artistLookup-build'],
     });
   });
 
@@ -408,7 +408,37 @@ describe('DefaultJenkinsInfoProvider', () => {
     );
     expect(info).toMatchObject({
       baseUrl: 'https://jenkins.example.com',
-      jobFullName: 'teamA/artistLookup-build',
+      fullJobNames: ['teamA/artistLookup-build'],
+    });
+  });
+
+  it('Reads simple config and default named annotation containing multiple values', async () => {
+    const provider = configureProvider(
+      {
+        jenkins: {
+          baseUrl: 'https://jenkins.example.com',
+          username: 'backstage - bot',
+          apiKey: '123456789abcdef0123456789abcedf012',
+        },
+      },
+      {
+        metadata: {
+          annotations: {
+            'jenkins.io/job-full-name':
+              'default:teamA/artistLookup-build,default:teamA/artistLookup-test',
+          },
+        },
+      },
+    );
+    const info: JenkinsInfo = await provider.getInstance({ entityRef });
+
+    expect(mockCatalog.getEntityByRef).toHaveBeenCalledWith(
+      entityRef,
+      undefined,
+    );
+    expect(info).toMatchObject({
+      baseUrl: 'https://jenkins.example.com',
+      fullJobNames: ['teamA/artistLookup-build', 'teamA/artistLookup-test'],
     });
   });
 
@@ -442,7 +472,42 @@ describe('DefaultJenkinsInfoProvider', () => {
     );
     expect(info).toMatchObject({
       baseUrl: 'https://jenkins-other.example.com',
-      jobFullName: 'teamA/artistLookup-build',
+      fullJobNames: ['teamA/artistLookup-build'],
+    });
+  });
+
+  it('Reads named other config (with on default config) and named annotation containing multiple values', async () => {
+    const provider = configureProvider(
+      {
+        jenkins: {
+          instances: [
+            {
+              name: 'other',
+              baseUrl: 'https://jenkins-other.example.com',
+              username: 'backstage - bot',
+              apiKey: '123456789abcdef0123456789abcedf012',
+            },
+          ],
+        },
+      },
+      {
+        metadata: {
+          annotations: {
+            'jenkins.io/job-full-name':
+              'other:teamA/artistLookup-build,other:teamA/artistLookup-test',
+          },
+        },
+      },
+    );
+    const info: JenkinsInfo = await provider.getInstance({ entityRef });
+
+    expect(mockCatalog.getEntityByRef).toHaveBeenCalledWith(
+      entityRef,
+      undefined,
+    );
+    expect(info).toMatchObject({
+      baseUrl: 'https://jenkins-other.example.com',
+      fullJobNames: ['teamA/artistLookup-build', 'teamA/artistLookup-test'],
     });
   });
 
@@ -479,7 +544,7 @@ describe('DefaultJenkinsInfoProvider', () => {
     );
     expect(info).toMatchObject({
       baseUrl: 'https://jenkinsOverriden.example.com',
-      jobFullName: 'teamA/artistLookup-build',
+      fullJobNames: ['teamA/artistLookup-build'],
     });
   });
 
@@ -515,7 +580,7 @@ describe('DefaultJenkinsInfoProvider', () => {
     );
     expect(info).toMatchObject({
       baseUrl: 'https://jenkins.example.com',
-      jobFullName: 'teamA/artistLookup-build',
+      fullJobNames: ['teamA/artistLookup-build'],
     });
   });
 
@@ -550,7 +615,7 @@ describe('DefaultJenkinsInfoProvider', () => {
     );
     expect(info).toMatchObject({
       baseUrl: 'https://jenkins.example.com',
-      jobFullName: 'teamA/artistLookup-build',
+      fullJobNames: ['teamA/artistLookup-build'],
     });
   });
 
@@ -586,7 +651,7 @@ describe('DefaultJenkinsInfoProvider', () => {
     );
     expect(info).toMatchObject({
       baseUrl: 'https://jenkins.example.com',
-      jobFullName: 'teamA/artistLookup-build',
+      fullJobNames: ['teamA/artistLookup-build'],
     });
   });
 });

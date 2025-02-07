@@ -1,5 +1,55 @@
 ### Dependencies
 
+## 1.17.0
+
+### Minor Changes
+
+- e541edd: Adds a new quay-backend plugin and updates the frontend quay plugin to use this new backend.
+- e541edd: Add a quay-backend plugin to query the quay.io API
+- 4a04fa7: Update documentation on the Proxy and new Quay backend functionality
+
+### Patch Changes
+
+- Updated dependencies [e541edd]
+- Updated dependencies [e541edd]
+  - @backstage-community/plugin-quay-common@1.6.0
+
+## 1.16.0
+
+### Minor Changes
+
+- 7226329: Backstage version bump to v1.35.0
+
+### Patch Changes
+
+- Updated dependencies [7226329]
+  - @backstage-community/plugin-quay-common@1.5.0
+
+## 1.15.0
+
+### Minor Changes
+
+- 7daf65a: Backstage version bump to v1.34.2
+
+### Patch Changes
+
+- 0f5c451: Updated dependency `prettier` to `3.4.2`.
+- 064b809: Updated dependency `start-server-and-test` to `2.0.9`.
+- 18f9d9d: Updated dependency `@types/node` to `18.19.68`.
+- 4eef4d1: Updated dependency `@playwright/test` to `1.49.1`.
+- Updated dependencies [0f5c451]
+- Updated dependencies [7daf65a]
+  - @backstage-community/plugin-quay-common@1.4.0
+
+## 1.14.6
+
+### Patch Changes
+
+- 1af220c: Clean up api report warnings and remove unnecessary files
+- aa02f04: Updated dependency `@playwright/test` to `1.49.0`.
+- Updated dependencies [1af220c]
+  - @backstage-community/plugin-quay-common@1.3.4
+
 ## 1.14.5
 
 ### Patch Changes

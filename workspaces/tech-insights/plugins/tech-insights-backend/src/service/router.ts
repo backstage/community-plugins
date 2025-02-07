@@ -20,10 +20,12 @@ import { Config } from '@backstage/config';
 import {
   FactChecker,
   PersistenceContext,
-  TechInsightCheck,
 } from '@backstage-community/plugin-tech-insights-node';
 
-import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
+import {
+  CheckResult,
+  Check,
+} from '@backstage-community/plugin-tech-insights-common';
 import { DateTime } from 'luxon';
 import {
   CompoundEntityRef,
@@ -43,7 +45,7 @@ import pLimit from 'p-limit';
  * @typeParam CheckResultType - Type of the check result for the fact checker this builder returns
  */
 export interface RouterOptions<
-  CheckType extends TechInsightCheck,
+  CheckType extends Check,
   CheckResultType extends CheckResult,
 > {
   /**
@@ -78,7 +80,7 @@ export interface RouterOptions<
  * @param options - RouterOptions object
  */
 export async function createRouter<
-  CheckType extends TechInsightCheck,
+  CheckType extends Check,
   CheckResultType extends CheckResult,
 >(options: RouterOptions<CheckType, CheckResultType>): Promise<express.Router> {
   const router = Router();

@@ -147,6 +147,7 @@ const currentPermissionPolicies = [
   ['role:default/catalog-writer', 'catalog-entity', 'read', 'allow'],
   ['role:default/catalog-writer', 'catalog.entity.create', 'use', 'allow'],
   ['role:default/catalog-deleter', 'catalog-entity', 'delete', 'deny'],
+  ['role:default/CATALOG-USER', 'catalog-entity', 'read', 'allow'],
   ['role:default/known_role', 'test.resource.deny', 'use', 'allow'],
 ];
 
@@ -156,6 +157,8 @@ const currentRoles = [
   ['user:default/guest', 'role:default/catalog-reader'],
   ['user:default/guest', 'role:default/catalog-deleter'],
   ['user:default/known_user', 'role:default/known_role'],
+  ['user:default/tom', 'role:default/CATALOG-USER'],
+  ['group:default/reader-group', 'role:default/CATALOG-USER'],
 ];
 
 describe('CSVFileWatcher', () => {
@@ -180,7 +183,12 @@ describe('CSVFileWatcher', () => {
 
     const knex = Knex.knex({ client: MockClient });
 
-    enforcerDelegate = new EnforcerDelegate(enf, roleMetadataStorageMock, knex);
+    enforcerDelegate = new EnforcerDelegate(
+      enf,
+      auditLoggerMock,
+      roleMetadataStorageMock,
+      knex,
+    );
 
     auditLoggerMock.auditLog.mockReset();
     (roleMetadataStorageMock.updateRoleMetadata as jest.Mock).mockClear();
@@ -201,6 +209,27 @@ describe('CSVFileWatcher', () => {
       auditLoggerMock,
     );
   }
+
+  describe('parse', () => {
+    test('should parse users and groups in lowercase', async () => {
+      csvFileName = resolve(
+        __dirname,
+        '../../__fixtures__/data/valid-csv/uppercase-policy.csv',
+      );
+
+      const csvFileWatcher = createCSVFileWatcher(csvFileName);
+      const content = await csvFileWatcher.parse();
+      const expected = [
+        ['p', 'role:default/CATALOG-USER', 'catalog-entity', 'read', 'allow'],
+        ['p', 'role:default/known_role', 'test.resource.deny', 'use', 'allow'],
+        ['g', 'user:default/known_user', 'role:default/known_role'],
+        ['g', 'user:default/tom', 'role:default/CATALOG-USER'],
+        ['g', 'group:default/reader-group', 'role:default/CATALOG-USER'],
+        ['g', 'group:default/reader-group', 'role:default/known_role'],
+      ];
+      expect(content).toStrictEqual(expected);
+    });
+  });
 
   describe('initialize', () => {
     it('should be able to add permission policies during initialization', async () => {
@@ -233,6 +262,7 @@ describe('CSVFileWatcher', () => {
           'allow',
         ],
         ['role:default/catalog-deleter', 'catalog-entity', 'delete', 'deny'],
+        ['role:default/CATALOG-USER', 'catalog-entity', 'read', 'allow'],
         ['role:default/known_role', 'test.resource.deny', 'use', 'allow'],
       ];
 
@@ -274,6 +304,8 @@ describe('CSVFileWatcher', () => {
         ['user:default/guest', 'role:default/catalog-reader'],
         ['user:default/guest', 'role:default/catalog-deleter'],
         ['user:default/known_user', 'role:default/known_role'],
+        ['user:default/tom', 'role:default/CATALOG-USER'],
+        ['group:default/reader-group', 'role:default/CATALOG-USER'],
       ];
 
       await enforcerDelegate.addGroupingPolicy(legacyRole, legacyRoleMetadata);
@@ -322,6 +354,10 @@ describe('CSVFileWatcher', () => {
         'user:default/guest',
         'role:default/catalog-deleter',
       ];
+      const duplicateGroupRole = [
+        'group:default/reader-group', // changed to lowercase
+        'role:default/CATALOG-USER',
+      ];
 
       const duplicatePolicyWithDifferentEffect = [
         'role:default/duplication-effect',
@@ -354,6 +390,10 @@ describe('CSVFileWatcher', () => {
       expect(mockLoggerService.warn).toHaveBeenNthCalledWith(
         6,
         `Duplicate role: ${duplicateRole} found in the file ${csvFileName}`,
+      );
+      expect(mockLoggerService.warn).toHaveBeenNthCalledWith(
+        7,
+        `Duplicate role: ${duplicateGroupRole} found in the file ${csvFileName}`,
       );
     });
 

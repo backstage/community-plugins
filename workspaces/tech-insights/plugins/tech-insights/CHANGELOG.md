@@ -1,5 +1,48 @@
 # @backstage-community/plugin-tech-insights
 
+## 0.5.0
+
+### Minor Changes
+
+- e919e53: Backstage version bump to v1.35.1
+
+### Patch Changes
+
+- f015469: Introducing a new tech insights react plugin for reusuable frontend utilities. All migrated components and APIs have been marked as deprecated. Please update your imports to come from `@backstage-community/plugin-tech-insights-react`
+
+  Package json files for each plugin have been updated to reflect the new plugin in the Backstage `pluginPackages` metadata.
+
+- f015469: Several symbols have been migrated and marked deprecated. Please update all deprecated symbols to import from `@backstage-community/plugin-tech-insights-react` instead.
+- Updated dependencies [f015469]
+- Updated dependencies [e919e53]
+- Updated dependencies [c107e0f]
+  - @backstage-community/plugin-tech-insights-common@0.5.0
+  - @backstage-community/plugin-tech-insights-react@1.1.0
+
+## 0.4.0
+
+### Minor Changes
+
+- 5abfb11: Backstage version bump to v1.34.2
+
+### Patch Changes
+
+- Updated dependencies [5abfb11]
+  - @backstage-community/plugin-tech-insights-common@0.4.0
+
+## 0.3.42
+
+### Patch Changes
+
+- Updated dependencies [5289c38]
+  - @backstage-community/plugin-tech-insights-common@0.3.0
+
+## 0.3.41
+
+### Patch Changes
+
+- 9a09c39: Remove use of react 18 `useId` hook to maintain compatibility with react 17.
+
 ## 0.3.40
 
 ### Patch Changes

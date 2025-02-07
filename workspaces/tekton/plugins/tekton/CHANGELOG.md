@@ -1,5 +1,38 @@
 ### Dependencies
 
+## 3.18.0
+
+### Minor Changes
+
+- 2f344ca: Backstage version bump to v1.35.0
+
+### Patch Changes
+
+- Updated dependencies [2f344ca]
+  - @backstage-community/plugin-tekton-common@1.5.0
+
+## 3.17.0
+
+### Minor Changes
+
+- e9600c4: Update Patternfly Dependencies to V6 and also use the latest version of aonic-ui/pipelines.
+
+## 3.16.5
+
+### Patch Changes
+
+- 350250c: Updated dependency `@testing-library/jest-dom` to `6.6.3`.
+- 0f5c451: Updated dependency `prettier` to `3.4.2`.
+- 064b809: Updated dependency `start-server-and-test` to `2.0.9`.
+- 18f9d9d: Updated dependency `@types/node` to `18.19.68`.
+- 4eef4d1: Updated dependency `@playwright/test` to `1.49.1`.
+
+## 3.16.4
+
+### Patch Changes
+
+- aa02f04: Updated dependency `@playwright/test` to `1.49.0`.
+
 ## 3.16.3
 
 ### Patch Changes

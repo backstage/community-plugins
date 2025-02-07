@@ -81,7 +81,8 @@ export class Common {
     clickOpts?: Parameters<Locator['click']>[0],
     getByTextOpts: Parameters<Locator['getByText']>[1] = { exact: true },
   ) {
-    const muiButtonLabel = 'span[class^="MuiButton-label"]';
+    const muiButtonLabel =
+      'span[class^="MuiButton-label"],button[class*="MuiButton-root"]';
     const selector = `${muiButtonLabel}:has-text("${label}")`;
     const button = this.page
       .locator(selector)

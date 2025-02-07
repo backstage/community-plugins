@@ -1,13 +1,15 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: feedback
-  description: An example of a Backstage application.
-  # Example for optional annotations
-  # annotations:
-  #   github.com/project-slug: backstage/backstage
-  #   backstage.io/techdocs-ref: dir:.
+  name: 'example-website-for-feedback-plugin'
+  title: 'Example App'
+  namespace: 'default'
+  annotations:
+    'feedback/type': 'MAIL'
+    'feedback/host': 'https://jira-host-url'
+    'feedback/email-to': 'example@email.com'
+    'jira/project-key': 'XYZ'
 spec:
-  type: website
-  owner: john@example.com
+  type: service
+  owner: 'user:guest'
   lifecycle: experimental

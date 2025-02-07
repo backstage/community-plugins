@@ -14,3 +14,4 @@
  * limitations under the License.
  */
 export { createQuayRepositoryAction } from './createQuayRepository';
+export type { TemplateActionParameters } from './createQuayRepository';

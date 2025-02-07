@@ -119,6 +119,95 @@ describe('publish:azure', () => {
     );
   });
 
+  it('should use template parameters from input if provided', async () => {
+    mockPipelineClient.runPipeline.mockImplementation(() => ({
+      _links: { web: { href: 'http://pipeline-run-url.com' } },
+    }));
+
+    const templateParameters = {
+      templateParameterKey: 'templateParameterValue',
+    };
+
+    await action.handler({
+      ...mockContext,
+      input: {
+        host: 'dev.azure.com',
+        organization: 'org',
+        pipelineId: '1',
+        project: 'project',
+        token: 'input-token',
+        templateParameters,
+      },
+    });
+
+    expect(WebApi).toHaveBeenCalledWith(
+      'https://dev.azure.com/org',
+      expect.any(Function),
+    );
+
+    expect(mockContext.output).toHaveBeenCalledWith(
+      'pipelineRunUrl',
+      'http://pipeline-run-url.com',
+    );
+
+    expect(mockPipelineClient.runPipeline).toHaveBeenCalledWith(
+      expect.objectContaining({
+        resources: expect.objectContaining({
+          repositories: expect.objectContaining({
+            self: expect.objectContaining({
+              refName: 'refs/heads/main',
+            }),
+          }),
+        }),
+        templateParameters, // Ensure template parameters were passed correctly
+      }),
+      'project',
+      1,
+    );
+  });
+
+  it('should use branch branch if provided', async () => {
+    mockPipelineClient.runPipeline.mockImplementation(() => ({
+      _links: { web: { href: 'http://pipeline-run-url.com' } },
+    }));
+
+    await action.handler({
+      ...mockContext,
+      input: {
+        host: 'dev.azure.com',
+        organization: 'org',
+        pipelineId: '1',
+        project: 'project',
+        token: 'input-token',
+        branch: 'master',
+      },
+    });
+
+    expect(WebApi).toHaveBeenCalledWith(
+      'https://dev.azure.com/org',
+      expect.any(Function),
+    );
+
+    expect(mockContext.output).toHaveBeenCalledWith(
+      'pipelineRunUrl',
+      'http://pipeline-run-url.com',
+    );
+
+    expect(mockPipelineClient.runPipeline).toHaveBeenCalledWith(
+      expect.objectContaining({
+        resources: expect.objectContaining({
+          repositories: expect.objectContaining({
+            self: expect.objectContaining({
+              refName: 'refs/heads/master',
+            }),
+          }),
+        }),
+      }),
+      'project',
+      1,
+    );
+  });
+
   it('should throw if runPipeline fails', async () => {
     mockPipelineClient.runPipeline.mockImplementation(() => {
       throw new Error('Pipeline run failed');

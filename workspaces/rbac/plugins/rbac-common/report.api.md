@@ -9,132 +9,88 @@ import { NotAllowedError } from '@backstage/errors';
 import { PermissionAttributes } from '@backstage/plugin-permission-common';
 import { ResourcePermission } from '@backstage/plugin-permission-common';
 
-// Warning: (ae-missing-release-tag) "CONDITION_ALIAS_SIGN" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const CONDITION_ALIAS_SIGN = "$";
 
-// Warning: (ae-missing-release-tag) "ConditionalAliases" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const ConditionalAliases: {
     readonly CURRENT_USER: "currentUser";
     readonly OWNER_REFS: "ownerRefs";
 };
 
-// Warning: (ae-missing-release-tag) "isResourcedPolicy" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export function isResourcedPolicy(policy: PolicyDetails): policy is ResourcedPolicy;
 
-// Warning: (ae-missing-release-tag) "isValidPermissionAction" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export function isValidPermissionAction(action: string): action is PermissionAction;
 
-// Warning: (ae-missing-release-tag) "NamedPolicy" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type NamedPolicy = {
     name: string;
     policy: string;
 };
 
-// Warning: (ae-missing-release-tag) "NonEmptyArray" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type NonEmptyArray<T> = [T, ...T[]];
 
-// Warning: (ae-missing-release-tag) "PermissionAction" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type PermissionAction = (typeof PermissionActionValues)[number];
 
-// Warning: (ae-missing-release-tag) "PermissionActionValues" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export const PermissionActionValues: readonly ["create", "read", "update", "delete", "use"];
 
-// Warning: (ae-missing-release-tag) "PermissionInfo" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type PermissionInfo = {
     name: string;
     action: PermissionAction;
 };
 
-// Warning: (ae-missing-release-tag) "PermissionPolicyMetadata" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type PermissionPolicyMetadata = {
     source: Source;
 };
 
-// Warning: (ae-missing-release-tag) "PluginPermissionMetaData" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type PluginPermissionMetaData = {
     pluginId: string;
     policies: PolicyDetails[];
 };
 
-// Warning: (ae-missing-release-tag) "Policy" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type Policy = {
     permission?: string;
     policy?: string;
 };
 
-// Warning: (ae-missing-release-tag) "PolicyDetails" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type PolicyDetails = NamedPolicy | ResourcedPolicy;
 
-// Warning: (ae-missing-release-tag) "policyEntityCreatePermission" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export const policyEntityCreatePermission: ResourcePermission<"policy-entity">;
 
-// Warning: (ae-missing-release-tag) "policyEntityDeletePermission" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export const policyEntityDeletePermission: ResourcePermission<"policy-entity">;
 
-// Warning: (ae-missing-release-tag) "PolicyEntityPermission" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export type PolicyEntityPermission = ResourcePermission<typeof RESOURCE_TYPE_POLICY_ENTITY>;
 
-// Warning: (ae-missing-release-tag) "policyEntityPermissions" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export const policyEntityPermissions: ResourcePermission<"policy-entity">[];
 
-// Warning: (ae-missing-release-tag) "policyEntityReadPermission" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export const policyEntityReadPermission: ResourcePermission<"policy-entity">;
 
-// Warning: (ae-missing-release-tag) "policyEntityUpdatePermission" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export const policyEntityUpdatePermission: ResourcePermission<"policy-entity">;
 
-// Warning: (ae-missing-release-tag) "RESOURCE_TYPE_POLICY_ENTITY" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const RESOURCE_TYPE_POLICY_ENTITY = "policy-entity";
 
-// Warning: (ae-missing-release-tag) "ResourcedPolicy" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type ResourcedPolicy = NamedPolicy & {
     resourceType: string;
 };
 
-// Warning: (ae-missing-release-tag) "Role" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type Role = {
     memberReferences: string[];
@@ -142,8 +98,6 @@ export type Role = {
     metadata?: RoleMetadata;
 };
 
-// Warning: (ae-missing-release-tag) "RoleBasedPolicy" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type RoleBasedPolicy = Policy & {
     entityReference?: string;
@@ -151,17 +105,13 @@ export type RoleBasedPolicy = Policy & {
     metadata?: PermissionPolicyMetadata;
 };
 
-// Warning: (ae-missing-release-tag) "RoleConditionalPolicyDecision" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type RoleConditionalPolicyDecision<T extends PermissionAction | PermissionInfo> = ConditionalPolicyDecision & {
     id: number;
     roleEntityRef: string;
     permissionMapping: T[];
 };
 
-// Warning: (ae-missing-release-tag) "RoleMetadata" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type RoleMetadata = {
     description?: string;
@@ -172,56 +122,22 @@ export type RoleMetadata = {
     createdAt?: string;
 };
 
-// Warning: (ae-missing-release-tag) "Source" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type Source = string;
 
-// Warning: (ae-missing-release-tag) "toPermissionAction" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const toPermissionAction: (attr: PermissionAttributes) => PermissionAction;
 
-// Warning: (ae-missing-release-tag) "UnauthorizedError" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export class UnauthorizedError extends NotAllowedError {
     constructor();
 }
 
-// Warning: (ae-missing-release-tag) "UpdatePolicy" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type UpdatePolicy = {
     oldPolicy: Policy;
     newPolicy: Policy;
 };
-
-// Warnings were encountered during analysis:
-//
-// src/permissions.d.ts:2:22 - (ae-undocumented) Missing documentation for "RESOURCE_TYPE_POLICY_ENTITY".
-// src/types.d.ts:3:1 - (ae-undocumented) Missing documentation for "Source".
-// src/types.d.ts:4:1 - (ae-undocumented) Missing documentation for "PermissionPolicyMetadata".
-// src/types.d.ts:7:1 - (ae-undocumented) Missing documentation for "RoleMetadata".
-// src/types.d.ts:15:1 - (ae-undocumented) Missing documentation for "Policy".
-// src/types.d.ts:19:1 - (ae-undocumented) Missing documentation for "RoleBasedPolicy".
-// src/types.d.ts:24:1 - (ae-undocumented) Missing documentation for "Role".
-// src/types.d.ts:29:1 - (ae-undocumented) Missing documentation for "UpdatePolicy".
-// src/types.d.ts:33:1 - (ae-undocumented) Missing documentation for "NamedPolicy".
-// src/types.d.ts:37:1 - (ae-undocumented) Missing documentation for "ResourcedPolicy".
-// src/types.d.ts:40:1 - (ae-undocumented) Missing documentation for "PolicyDetails".
-// src/types.d.ts:41:1 - (ae-undocumented) Missing documentation for "isResourcedPolicy".
-// src/types.d.ts:42:1 - (ae-undocumented) Missing documentation for "PluginPermissionMetaData".
-// src/types.d.ts:46:1 - (ae-undocumented) Missing documentation for "NonEmptyArray".
-// src/types.d.ts:47:22 - (ae-undocumented) Missing documentation for "PermissionActionValues".
-// src/types.d.ts:48:1 - (ae-undocumented) Missing documentation for "PermissionAction".
-// src/types.d.ts:49:22 - (ae-undocumented) Missing documentation for "toPermissionAction".
-// src/types.d.ts:50:1 - (ae-undocumented) Missing documentation for "isValidPermissionAction".
-// src/types.d.ts:51:1 - (ae-undocumented) Missing documentation for "PermissionInfo".
-// src/types.d.ts:55:1 - (ae-undocumented) Missing documentation for "RoleConditionalPolicyDecision".
-// src/types.d.ts:60:22 - (ae-undocumented) Missing documentation for "ConditionalAliases".
-// src/types.d.ts:64:22 - (ae-undocumented) Missing documentation for "CONDITION_ALIAS_SIGN".
-// src/types.d.ts:65:1 - (ae-undocumented) Missing documentation for "UnauthorizedError".
 
 // (No @packageDocumentation comment for this package)
 

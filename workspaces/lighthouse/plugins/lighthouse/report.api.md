@@ -8,7 +8,8 @@
 import { ApiRef } from '@backstage/core-plugin-api';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
-import { InfoCardVariants } from '@backstage/core-components';
+import { InfoCardVariants } from '@backstage/core-components/index';
+import { InfoCardVariants as InfoCardVariants_2 } from '@backstage/core-components';
 import { JSX as JSX_2 } from 'react';
 import { LighthouseApi } from '@backstage-community/plugin-lighthouse-common';
 import { default as React_2 } from 'react';
@@ -34,7 +35,7 @@ export { isLighthouseAvailable as isPluginApplicableToEntity };
 // @public (undocumented)
 export const LastLighthouseAuditCard: (props: {
   dense?: boolean;
-  variant?: InfoCardVariants;
+  variant?: InfoCardVariants_2;
 }) => React_2.JSX.Element;
 
 // @public (undocumented)

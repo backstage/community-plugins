@@ -1,5 +1,24 @@
 ### Dependencies
 
+## 1.11.0
+
+### Minor Changes
+
+- 75e9202: bump backstage to 1.34.2 and remove @spotify/prettier-config
+
+## 1.10.6
+
+### Patch Changes
+
+- 350250c: Updated dependency `@testing-library/jest-dom` to `6.6.3`.
+- 18f9d9d: Updated dependency `@types/node` to `18.19.68`.
+
+## 1.10.5
+
+### Patch Changes
+
+- 3d5311f: Updated dependency `@redhat-developer/red-hat-developer-hub-theme` to `0.4.0`.
+
 ## 1.10.4
 
 ### Patch Changes

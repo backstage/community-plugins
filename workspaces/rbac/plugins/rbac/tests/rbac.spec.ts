@@ -110,7 +110,7 @@ test.describe('RBAC plugin', () => {
 
     // verify users and groups table
     await expect(
-      page.getByRole('heading', { name: 'Users and groups (1 user, 1 group)' }),
+      page.getByRole('heading', { name: '1 group, 1 user' }),
     ).toBeVisible({ timeout: 20000 });
 
     await verifyColumnHeading(['Name', 'Type', 'Members'], page);
@@ -146,12 +146,13 @@ test.describe('RBAC plugin', () => {
       timeout: 20000,
     });
     await page
-      .getByPlaceholder('Search by user name or group name')
+      .getByTestId('users-and-groups-text-field')
+      .locator('input')
       .fill('Guest User');
     await page.getByText('Guest User').click();
     await expect(
       page.getByRole('heading', {
-        name: 'Users and groups (2 users, 1 group)',
+        name: '1 group, 2 users',
       }),
     ).toBeVisible({
       timeout: 20000,
@@ -220,12 +221,13 @@ test.describe('RBAC plugin', () => {
     await common.clickButton('Next');
 
     await page
-      .getByPlaceholder('Search by user name or group name')
+      .getByTestId('users-and-groups-text-field')
+      .locator('input')
       .fill('Guest Use');
     await page.getByText('Guest User').click();
     await expect(
       page.getByRole('heading', {
-        name: 'Users and groups (1 user)',
+        name: '1 user',
       }),
     ).toBeVisible({
       timeout: 20000,

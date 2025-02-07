@@ -226,7 +226,7 @@ describe('ArtifactTable', () => {
     const user = userEvent.setup();
     const table = screen.getAllByRole('table')[0];
 
-    const filterInput = screen.getByPlaceholderText('Filter');
+    const filterInput = screen.getByPlaceholderText('Search');
     await user.type(filterInput, '-hash');
     await waitFor(() => {
       expect(getCellText(table, 0, 'Checksum')).toContain('-hash');

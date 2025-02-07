@@ -1,0 +1,146 @@
+[
+  {
+    "name": "bookinfo",
+    "cluster": "Kubernetes",
+    "isAmbient": false,
+    "labels": {
+      "istio-injection": "enabled",
+      "kubernetes.io/metadata.name": "bookinfo",
+      "pod-security.kubernetes.io/audit": "privileged",
+      "pod-security.kubernetes.io/audit-version": "v1.24",
+      "pod-security.kubernetes.io/warn": "privileged",
+      "pod-security.kubernetes.io/warn-version": "v1.24"
+    },
+    "annotations": {
+      "openshift.io/description": "",
+      "openshift.io/display-name": "",
+      "openshift.io/requester": "kubeadmin",
+      "openshift.io/sa.scc.mcs": "s0:c26,c10",
+      "openshift.io/sa.scc.supplemental-groups": "1000670000/10000",
+      "openshift.io/sa.scc.uid-range": "1000670000/10000"
+    }
+  },
+  {
+    "name": "default",
+    "cluster": "Kubernetes",
+    "isAmbient": false,
+    "labels": {
+      "kubernetes.io/metadata.name": "default"
+    },
+    "annotations": {
+      "openshift.io/sa.scc.mcs": "s0:c1,c0",
+      "openshift.io/sa.scc.supplemental-groups": "1000000000/10000",
+      "openshift.io/sa.scc.uid-range": "1000000000/10000"
+    }
+  },
+  {
+    "name": "hostpath-provisioner",
+    "cluster": "Kubernetes",
+    "isAmbient": false,
+    "labels": {
+      "kubernetes.io/metadata.name": "hostpath-provisioner",
+      "pod-security.kubernetes.io/audit": "privileged",
+      "pod-security.kubernetes.io/audit-version": "v1.24",
+      "pod-security.kubernetes.io/warn": "privileged",
+      "pod-security.kubernetes.io/warn-version": "v1.24"
+    },
+    "annotations": {
+      "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Namespace\",\"metadata\":{\"annotations\":{},\"name\":\"hostpath-provisioner\"}}\n",
+      "openshift.io/sa.scc.mcs": "s0:c25,c20",
+      "openshift.io/sa.scc.supplemental-groups": "1000640000/10000",
+      "openshift.io/sa.scc.uid-range": "1000640000/10000"
+    }
+  },
+  {
+    "name": "istio-system",
+    "cluster": "Kubernetes",
+    "isAmbient": false,
+    "labels": {
+      "kubernetes.io/metadata.name": "istio-system",
+      "pod-security.kubernetes.io/audit": "privileged",
+      "pod-security.kubernetes.io/audit-version": "v1.24",
+      "pod-security.kubernetes.io/warn": "privileged",
+      "pod-security.kubernetes.io/warn-version": "v1.24",
+      "topology.istio.io/network": ""
+    },
+    "annotations": {
+      "openshift.io/description": "",
+      "openshift.io/display-name": "",
+      "openshift.io/requester": "kubeadmin",
+      "openshift.io/sa.scc.mcs": "s0:c26,c0",
+      "openshift.io/sa.scc.supplemental-groups": "1000650000/10000",
+      "openshift.io/sa.scc.uid-range": "1000650000/10000"
+    }
+  },
+  {
+    "name": "kiali",
+    "cluster": "Kubernetes",
+    "isAmbient": false,
+    "labels": {
+      "kubernetes.io/metadata.name": "kiali",
+      "pod-security.kubernetes.io/audit": "restricted",
+      "pod-security.kubernetes.io/audit-version": "v1.24",
+      "pod-security.kubernetes.io/warn": "restricted",
+      "pod-security.kubernetes.io/warn-version": "v1.24"
+    },
+    "annotations": {
+      "openshift.io/sa.scc.mcs": "s0:c27,c4",
+      "openshift.io/sa.scc.supplemental-groups": "1000710000/10000",
+      "openshift.io/sa.scc.uid-range": "1000710000/10000"
+    }
+  },
+  {
+    "name": "travel-agency",
+    "cluster": "Kubernetes",
+    "isAmbient": false,
+    "labels": {
+      "istio-injection": "enabled",
+      "kubernetes.io/metadata.name": "travel-agency",
+      "pod-security.kubernetes.io/audit": "privileged",
+      "pod-security.kubernetes.io/audit-version": "v1.24",
+      "pod-security.kubernetes.io/warn": "privileged",
+      "pod-security.kubernetes.io/warn-version": "v1.24"
+    },
+    "annotations": {
+      "openshift.io/sa.scc.mcs": "s0:c27,c14",
+      "openshift.io/sa.scc.supplemental-groups": "1000730000/10000",
+      "openshift.io/sa.scc.uid-range": "1000730000/10000"
+    }
+  },
+  {
+    "name": "travel-control",
+    "cluster": "Kubernetes",
+    "isAmbient": false,
+    "labels": {
+      "istio-injection": "enabled",
+      "kubernetes.io/metadata.name": "travel-control",
+      "pod-security.kubernetes.io/audit": "privileged",
+      "pod-security.kubernetes.io/audit-version": "v1.24",
+      "pod-security.kubernetes.io/warn": "privileged",
+      "pod-security.kubernetes.io/warn-version": "v1.24"
+    },
+    "annotations": {
+      "openshift.io/sa.scc.mcs": "s0:c27,c24",
+      "openshift.io/sa.scc.supplemental-groups": "1000750000/10000",
+      "openshift.io/sa.scc.uid-range": "1000750000/10000"
+    }
+  },
+  {
+    "name": "travel-portal",
+    "cluster": "Kubernetes",
+    "isAmbient": false,
+    "labels": {
+      "istio-injection": "enabled",
+      "kubernetes.io/metadata.name": "travel-portal",
+      "pod-security.kubernetes.io/audit": "privileged",
+      "pod-security.kubernetes.io/audit-version": "v1.24",
+      "pod-security.kubernetes.io/warn": "privileged",
+      "pod-security.kubernetes.io/warn-version": "v1.24"
+    },
+    "annotations": {
+      "openshift.io/sa.scc.mcs": "s0:c27,c19",
+      "openshift.io/sa.scc.supplemental-groups": "1000740000/10000",
+      "openshift.io/sa.scc.uid-range": "1000740000/10000"
+    }
+  }
+]

@@ -1,5 +1,51 @@
 # @backstage-community/plugin-copilot
 
+## 0.6.0
+
+### Minor Changes
+
+- f5be5aa: Backstage version bump to v1.35.1
+
+### Patch Changes
+
+- Updated dependencies [f5be5aa]
+  - @backstage-community/plugin-copilot-common@0.5.0
+
+## 0.5.0
+
+### Minor Changes
+
+- dab14da: Fix incorrectly reporting acceptance rate
+
+## 0.4.3
+
+### Patch Changes
+
+- 46c4837: Fix division by zero in language stats
+
+## 0.4.2
+
+### Patch Changes
+
+- 8007ea2: Removes Portuguese from the README
+
+## 0.4.1
+
+### Patch Changes
+
+- 6bf6fe4: Updated READMEs to clarify installation instructions including locations to run commands from and steps for new backend system
+
+## 0.4.0
+
+### Minor Changes
+
+- 53e7191: Backstage version bump to v1.34.2
+
+### Patch Changes
+
+- Updated dependencies [53e7191]
+  - @backstage-community/plugin-copilot-common@0.4.0
+
 ## 0.3.0
 
 ### Minor Changes

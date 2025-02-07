@@ -5,11 +5,6 @@
 ```ts
 import { BackendFeature } from '@backstage/backend-plugin-api';
 import { Config } from '@backstage/config';
-import { DiscoveryService } from '@backstage/backend-plugin-api';
-import express from 'express';
-import { HttpAuthService } from '@backstage/backend-plugin-api';
-import { LoggerService } from '@backstage/backend-plugin-api';
-import { PermissionsService } from '@backstage/backend-plugin-api';
 
 // @public
 export class BlackDuckConfig {
@@ -33,25 +28,6 @@ export interface BlackDuckHostConfig {
 // @public
 const blackduckPlugin: BackendFeature;
 export default blackduckPlugin;
-
-// @public @deprecated (undocumented)
-export function createRouter(options: RouterOptions): Promise<express.Router>;
-
-// @public @deprecated (undocumented)
-export interface RouterOptions {
-  // (undocumented)
-  blackDuckConfig: BlackDuckConfig;
-  // (undocumented)
-  config: Config;
-  // (undocumented)
-  discovery: DiscoveryService;
-  // (undocumented)
-  httpAuth?: HttpAuthService;
-  // (undocumented)
-  logger: LoggerService;
-  // (undocumented)
-  permissions: PermissionsService;
-}
 
 // (No @packageDocumentation comment for this package)
 ```

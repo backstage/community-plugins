@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { mockServices } from '@backstage/backend-test-utils';
-
 import supported from '../kiali_supported.json';
 import { KIALI_CORE_VERSION, KialiApiImpl } from './KialiAPIConnector';
 
@@ -23,6 +22,7 @@ const logger = mockServices.logger.mock();
 const kialiApi = new KialiApiImpl({
   logger,
   kiali: {
+    name: 'default',
     url: 'https://localhost:4000',
     urlExternal: 'https://localhost:4000',
   },

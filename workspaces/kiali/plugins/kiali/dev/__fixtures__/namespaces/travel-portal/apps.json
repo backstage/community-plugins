@@ -1,0 +1,105 @@
+{
+  "namespace": {
+    "name": "travel-portal",
+    "cluster": "",
+    "isAmbient": false,
+    "labels": null,
+    "annotations": null
+  },
+  "cluster": "",
+  "applications": [
+    {
+      "name": "travels",
+      "cluster": "Kubernetes",
+      "istioSidecar": true,
+      "istioAmbient": false,
+      "labels": {
+        "app": "travels",
+        "version": "v1"
+      },
+      "istioReferences": [],
+      "health": {
+        "workloadStatuses": [
+          {
+            "name": "travels",
+            "desiredReplicas": 1,
+            "currentReplicas": 1,
+            "availableReplicas": 1,
+            "syncedProxies": 1
+          }
+        ],
+        "requests": {
+          "inbound": {},
+          "outbound": {
+            "http": {
+              "200": 0.17823555555555556
+            }
+          },
+          "healthAnnotations": {}
+        }
+      }
+    },
+    {
+      "name": "viaggi",
+      "cluster": "Kubernetes",
+      "istioSidecar": true,
+      "istioAmbient": false,
+      "labels": {
+        "app": "viaggi",
+        "version": "v1"
+      },
+      "istioReferences": [],
+      "health": {
+        "workloadStatuses": [
+          {
+            "name": "viaggi",
+            "desiredReplicas": 1,
+            "currentReplicas": 1,
+            "availableReplicas": 1,
+            "syncedProxies": 1
+          }
+        ],
+        "requests": {
+          "inbound": {},
+          "outbound": {
+            "http": {
+              "200": 0.2666666666666666
+            }
+          },
+          "healthAnnotations": {}
+        }
+      }
+    },
+    {
+      "name": "voyages",
+      "cluster": "Kubernetes",
+      "istioSidecar": true,
+      "istioAmbient": false,
+      "labels": {
+        "app": "voyages",
+        "version": "v1"
+      },
+      "istioReferences": [],
+      "health": {
+        "workloadStatuses": [
+          {
+            "name": "voyages",
+            "desiredReplicas": 1,
+            "currentReplicas": 1,
+            "availableReplicas": 1,
+            "syncedProxies": 1
+          }
+        ],
+        "requests": {
+          "inbound": {},
+          "outbound": {
+            "http": {
+              "200": 0.23781333333333332
+            }
+          },
+          "healthAnnotations": {}
+        }
+      }
+    }
+  ]
+}

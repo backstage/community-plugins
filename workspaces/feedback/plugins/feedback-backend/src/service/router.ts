@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 import {
-  DatabaseManager,
-  errorHandler,
-  PluginEndpointDiscovery,
-} from '@backstage/backend-common';
-import { AuthService, LoggerService } from '@backstage/backend-plugin-api';
+  AuthService,
+  DatabaseService,
+  DiscoveryService,
+  LoggerService,
+} from '@backstage/backend-plugin-api';
 import { CatalogClient } from '@backstage/catalog-client';
 import { Entity, UserEntityV1alpha1 } from '@backstage/catalog-model';
 import { Config } from '@backstage/config';
@@ -32,22 +32,26 @@ import { FeedbackCategory, FeedbackModel } from '../model/feedback.model';
 import { NodeMailer } from './emails';
 
 import { NotificationService } from '@backstage/plugin-notifications-node';
+import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 
+/** @internal */
 export interface RouterOptions {
   logger: LoggerService;
   config: Config;
-  discovery: PluginEndpointDiscovery;
+  discovery: DiscoveryService;
   auth: AuthService;
+  database: DatabaseService;
   notifications?: NotificationService;
 }
 
+/** @internal */
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
-  const { logger, config, discovery, auth, notifications } = options;
+  const { logger, config, discovery, auth, database, notifications } = options;
   const router = Router();
   const feedbackDB = await DatabaseFeedbackStore.create({
-    database: DatabaseManager.fromConfig(config).forPlugin('feedback'),
+    database,
     skipMigrations: false,
     logger,
   });
@@ -224,7 +228,7 @@ export async function createRouter(
               <br/> 
               We have received your feedback for 
                 <b>
-                  ${reqData.projectId?.split('/')[1]}
+                  ${entityRef.metadata.title ?? entityRef.metadata.name}
                 </b>, 
               and here are the details:
               <br/>
@@ -393,6 +397,6 @@ export async function createRouter(
     })();
   });
 
-  router.use(errorHandler());
+  router.use(MiddlewareFactory.create({ config, logger }).error());
   return router;
 }

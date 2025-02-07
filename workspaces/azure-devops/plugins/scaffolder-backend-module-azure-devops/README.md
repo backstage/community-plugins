@@ -146,5 +146,29 @@ spec:
       action: azure:pipeline:run
       input:
         #[...]
-        pipelineId: ${{ parameters.branch }}
+        branch: ${{ parameters.branch }}
+```
+
+### Example running a pipeline with template parameters using the `azure:pipeline:run` action
+
+```yaml
+spec:
+  parameters:
+    #[...]
+    properties:
+      #[...]
+      templateParameters:
+        type: object
+        title: Template Parameters
+        description: Azure DevOps pipeline template parameters in key-value pairs.
+
+  steps:
+    - id: runAzurePipeline
+      name: Run Pipeline
+      action: azure:pipeline:run
+      input:
+        #[...]
+        templateParameters:
+          projectRepo: ${{ (parameters.repoUrl | parseRepoUrl)['repo'] }}
+          sampleTemplateParameterKey: sampleTemplateParameterValue
 ```

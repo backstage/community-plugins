@@ -20,8 +20,6 @@ export type PluginIdProviderExtensionPoint = {
 // @public
 export const pluginIdProviderExtensionPoint: ExtensionPoint<PluginIdProviderExtensionPoint>;
 
-// Warning: (ae-missing-release-tag) "RBACProvider" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface RBACProvider {
     // (undocumented)
@@ -32,8 +30,6 @@ export interface RBACProvider {
     refresh(): Promise<void>;
 }
 
-// Warning: (ae-missing-release-tag) "RBACProviderConnection" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface RBACProviderConnection {
     // (undocumented)
@@ -42,29 +38,12 @@ export interface RBACProviderConnection {
     applyRoles(roles: string[][]): Promise<void>;
 }
 
-// Warning: (ae-missing-release-tag) "RBACProviderExtensionPoint" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type RBACProviderExtensionPoint = {
     addRBACProvider(...providers: Array<RBACProvider | Array<RBACProvider>>): void;
 };
 
-// Warning: (ae-missing-release-tag) "rbacProviderExtensionPoint" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const rbacProviderExtensionPoint: ExtensionPoint<RBACProviderExtensionPoint>;
-
-// Warnings were encountered during analysis:
-//
-// src/extensions.d.ts:16:22 - (ae-undocumented) Missing documentation for "rbacProviderExtensionPoint".
-// src/extensions.d.ts:17:1 - (ae-undocumented) Missing documentation for "RBACProviderExtensionPoint".
-// src/types/types.d.ts:6:5 - (ae-undocumented) Missing documentation for "getPluginIds".
-// src/types/types.d.ts:8:1 - (ae-undocumented) Missing documentation for "RBACProvider".
-// src/types/types.d.ts:9:5 - (ae-undocumented) Missing documentation for "getProviderName".
-// src/types/types.d.ts:10:5 - (ae-undocumented) Missing documentation for "connect".
-// src/types/types.d.ts:11:5 - (ae-undocumented) Missing documentation for "refresh".
-// src/types/types.d.ts:13:1 - (ae-undocumented) Missing documentation for "RBACProviderConnection".
-// src/types/types.d.ts:14:5 - (ae-undocumented) Missing documentation for "applyRoles".
-// src/types/types.d.ts:15:5 - (ae-undocumented) Missing documentation for "applyPermissions".
 
 ```

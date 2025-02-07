@@ -1,0 +1,158 @@
+{
+  "name": "",
+  "title": "Inbound Metrics",
+  "charts": [
+    {
+      "name": "Request volume",
+      "unit": "ops",
+      "spans": 3,
+      "startCollapsed": false,
+      "metrics": [],
+      "xAxis": null,
+      "error": ""
+    },
+    {
+      "name": "Request duration",
+      "unit": "seconds",
+      "spans": 3,
+      "startCollapsed": false,
+      "metrics": [],
+      "xAxis": null,
+      "error": ""
+    },
+    {
+      "name": "Request size",
+      "unit": "bytes",
+      "spans": 3,
+      "startCollapsed": false,
+      "metrics": [],
+      "xAxis": null,
+      "error": ""
+    },
+    {
+      "name": "Response size",
+      "unit": "bytes",
+      "spans": 3,
+      "startCollapsed": false,
+      "metrics": [],
+      "xAxis": null,
+      "error": ""
+    },
+    {
+      "name": "Request throughput",
+      "unit": "bitrate",
+      "spans": 3,
+      "startCollapsed": false,
+      "metrics": [],
+      "xAxis": null,
+      "error": ""
+    },
+    {
+      "name": "Response throughput",
+      "unit": "bitrate",
+      "spans": 3,
+      "startCollapsed": false,
+      "metrics": [],
+      "xAxis": null,
+      "error": ""
+    },
+    {
+      "name": "gRPC received",
+      "unit": "msgrate",
+      "spans": 3,
+      "startCollapsed": false,
+      "metrics": [],
+      "xAxis": null,
+      "error": ""
+    },
+    {
+      "name": "gRPC sent",
+      "unit": "msgrate",
+      "spans": 3,
+      "startCollapsed": false,
+      "metrics": [],
+      "xAxis": null,
+      "error": ""
+    },
+    {
+      "name": "TCP opened",
+      "unit": "connrate",
+      "spans": 3,
+      "startCollapsed": false,
+      "metrics": [],
+      "xAxis": null,
+      "error": ""
+    },
+    {
+      "name": "TCP closed",
+      "unit": "connrate",
+      "spans": 3,
+      "startCollapsed": false,
+      "metrics": [],
+      "xAxis": null,
+      "error": ""
+    },
+    {
+      "name": "TCP received",
+      "unit": "bitrate",
+      "spans": 3,
+      "startCollapsed": false,
+      "metrics": [],
+      "xAxis": null,
+      "error": ""
+    },
+    {
+      "name": "TCP sent",
+      "unit": "bitrate",
+      "spans": 3,
+      "startCollapsed": false,
+      "metrics": [],
+      "xAxis": null,
+      "error": ""
+    }
+  ],
+  "aggregations": [
+    {
+      "label": "destination_canonical_revision",
+      "displayName": "Local version",
+      "singleSelection": false
+    },
+    {
+      "label": "source_workload_namespace",
+      "displayName": "Remote namespace",
+      "singleSelection": false
+    },
+    {
+      "label": "source_canonical_service",
+      "displayName": "Remote app",
+      "singleSelection": false
+    },
+    {
+      "label": "source_canonical_revision",
+      "displayName": "Remote version",
+      "singleSelection": false
+    },
+    {
+      "label": "response_code",
+      "displayName": "Response code",
+      "singleSelection": false
+    },
+    {
+      "label": "grpc_response_status",
+      "displayName": "GRPC status",
+      "singleSelection": false
+    },
+    {
+      "label": "response_flags",
+      "displayName": "Response flags",
+      "singleSelection": false
+    },
+    {
+      "label": "connection_security_policy",
+      "displayName": "Connection Security Policy",
+      "singleSelection": false
+    }
+  ],
+  "externalLinks": null,
+  "rows": 3
+}

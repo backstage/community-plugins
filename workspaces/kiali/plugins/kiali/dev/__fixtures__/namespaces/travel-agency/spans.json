@@ -1,0 +1,642 @@
+[
+  {
+    "traceID": "21b3fb5a1b7f4aa6a2dce7ee01df8256",
+    "spanID": "b8a809b3bd8e7a1e",
+    "operationName": "cars.travel-agency.svc.cluster.local:8000/*",
+    "references": [
+      {
+        "refType": "CHILD_OF",
+        "traceID": "21b3fb5a1b7f4aa6a2dce7ee01df8256",
+        "spanID": "bf79904224b6f337"
+      }
+    ],
+    "startTime": 1710323468940697,
+    "duration": 4299,
+    "tags": [
+      {
+        "key": "peer.address",
+        "type": "string",
+        "value": "10.244.0.23"
+      },
+      {
+        "key": "http.protocol",
+        "type": "string",
+        "value": "HTTP/1.1"
+      },
+      {
+        "key": "istio.mesh_id",
+        "type": "string",
+        "value": "cluster.local"
+      },
+      {
+        "key": "http.method",
+        "type": "string",
+        "value": "GET"
+      },
+      {
+        "key": "node_id",
+        "type": "string",
+        "value": "sidecar~10.244.0.19~cars-v1-6c869ff769-t4rrl.travel-agency~travel-agency.svc.cluster.local"
+      },
+      {
+        "key": "user_agent",
+        "type": "string",
+        "value": "Go-http-client/1.1"
+      },
+      {
+        "key": "upstream_cluster.name",
+        "type": "string",
+        "value": "inbound|8000||"
+      },
+      {
+        "key": "http.url",
+        "type": "string",
+        "value": "http://cars.travel-agency:8000/cars/Moscow"
+      },
+      {
+        "key": "http.header.travel",
+        "type": "string",
+        "value": "t3"
+      },
+      {
+        "key": "response_size",
+        "type": "string",
+        "value": "84"
+      },
+      {
+        "key": "guid:x-request-id",
+        "type": "string",
+        "value": "45fb5a24-adff-95cf-a8a8-66dd859c4934"
+      },
+      {
+        "key": "istio.canonical_service",
+        "type": "string",
+        "value": "cars"
+      },
+      {
+        "key": "http.header.device",
+        "type": "string",
+        "value": "web"
+      },
+      {
+        "key": "istio.canonical_revision",
+        "type": "string",
+        "value": "v1"
+      },
+      {
+        "key": "http.header.portal",
+        "type": "string",
+        "value": "viaggi.it"
+      },
+      {
+        "key": "istio.namespace",
+        "type": "string",
+        "value": "travel-agency"
+      },
+      {
+        "key": "request_size",
+        "type": "string",
+        "value": "0"
+      },
+      {
+        "key": "downstream_cluster",
+        "type": "string",
+        "value": "-"
+      },
+      {
+        "key": "istio.cluster_id",
+        "type": "string",
+        "value": "Kubernetes"
+      },
+      {
+        "key": "upstream_cluster",
+        "type": "string",
+        "value": "inbound|8000||"
+      },
+      {
+        "key": "response_flags",
+        "type": "string",
+        "value": "-"
+      },
+      {
+        "key": "http.status_code",
+        "type": "string",
+        "value": "200"
+      },
+      {
+        "key": "http.header.user",
+        "type": "string",
+        "value": "new"
+      },
+      {
+        "key": "component",
+        "type": "string",
+        "value": "proxy"
+      },
+      {
+        "key": "span.kind",
+        "type": "string",
+        "value": "server"
+      },
+      {
+        "key": "internal.span.format",
+        "type": "string",
+        "value": "zipkin"
+      }
+    ],
+    "logs": [],
+    "processID": "p6",
+    "process": {
+      "serviceName": "cars.travel-agency",
+      "tags": [
+        {
+          "key": "ip",
+          "type": "int64",
+          "value": 183762963
+        }
+      ]
+    },
+    "warnings": null,
+    "traceSize": 14
+  },
+  {
+    "traceID": "21b3fb5a1b7f4aa6a2dce7ee01df8256",
+    "spanID": "8f8b16cc46a9ded4",
+    "operationName": "discounts.travel-agency.svc.cluster.local:8000/*",
+    "references": [
+      {
+        "refType": "CHILD_OF",
+        "traceID": "21b3fb5a1b7f4aa6a2dce7ee01df8256",
+        "spanID": "b8a809b3bd8e7a1e"
+      }
+    ],
+    "startTime": 1710323468943803,
+    "duration": 828,
+    "tags": [
+      {
+        "key": "http.url",
+        "type": "string",
+        "value": "http://discounts.travel-agency:8000/discounts/new"
+      },
+      {
+        "key": "istio.cluster_id",
+        "type": "string",
+        "value": "Kubernetes"
+      },
+      {
+        "key": "component",
+        "type": "string",
+        "value": "proxy"
+      },
+      {
+        "key": "http.header.portal",
+        "type": "string",
+        "value": "viaggi.it"
+      },
+      {
+        "key": "peer.address",
+        "type": "string",
+        "value": "10.244.0.19"
+      },
+      {
+        "key": "http.method",
+        "type": "string",
+        "value": "GET"
+      },
+      {
+        "key": "request_size",
+        "type": "string",
+        "value": "0"
+      },
+      {
+        "key": "http.status_code",
+        "type": "string",
+        "value": "200"
+      },
+      {
+        "key": "http.protocol",
+        "type": "string",
+        "value": "HTTP/1.1"
+      },
+      {
+        "key": "istio.mesh_id",
+        "type": "string",
+        "value": "cluster.local"
+      },
+      {
+        "key": "http.header.device",
+        "type": "string",
+        "value": "web"
+      },
+      {
+        "key": "istio.namespace",
+        "type": "string",
+        "value": "travel-agency"
+      },
+      {
+        "key": "http.header.travel",
+        "type": "string",
+        "value": "t3"
+      },
+      {
+        "key": "response_flags",
+        "type": "string",
+        "value": "-"
+      },
+      {
+        "key": "user_agent",
+        "type": "string",
+        "value": "Go-http-client/1.1"
+      },
+      {
+        "key": "node_id",
+        "type": "string",
+        "value": "sidecar~10.244.0.19~cars-v1-6c869ff769-t4rrl.travel-agency~travel-agency.svc.cluster.local"
+      },
+      {
+        "key": "istio.canonical_revision",
+        "type": "string",
+        "value": "v1"
+      },
+      {
+        "key": "istio.canonical_service",
+        "type": "string",
+        "value": "cars"
+      },
+      {
+        "key": "upstream_cluster",
+        "type": "string",
+        "value": "outbound|8000||discounts.travel-agency.svc.cluster.local"
+      },
+      {
+        "key": "upstream_cluster.name",
+        "type": "string",
+        "value": "outbound|8000||discounts.travel-agency.svc.cluster.local"
+      },
+      {
+        "key": "guid:x-request-id",
+        "type": "string",
+        "value": "45fb5a24-adff-95cf-a8a8-66dd859c4934"
+      },
+      {
+        "key": "http.header.user",
+        "type": "string",
+        "value": "new"
+      },
+      {
+        "key": "downstream_cluster",
+        "type": "string",
+        "value": "-"
+      },
+      {
+        "key": "response_size",
+        "type": "string",
+        "value": "31"
+      },
+      {
+        "key": "span.kind",
+        "type": "string",
+        "value": "client"
+      },
+      {
+        "key": "internal.span.format",
+        "type": "string",
+        "value": "zipkin"
+      }
+    ],
+    "logs": [],
+    "processID": "p10",
+    "process": {
+      "serviceName": "cars.travel-agency",
+      "tags": [
+        {
+          "key": "ip",
+          "type": "int64",
+          "value": 183762963
+        }
+      ]
+    },
+    "warnings": null,
+    "traceSize": 14
+  },
+  {
+    "traceID": "9131662e07e0b26b8fbcbffa54ec6c56",
+    "spanID": "2599b1f332ac58d9",
+    "operationName": "cars.travel-agency.svc.cluster.local:8000/*",
+    "references": [
+      {
+        "refType": "CHILD_OF",
+        "traceID": "9131662e07e0b26b8fbcbffa54ec6c56",
+        "spanID": "c98e45cbafa7b024"
+      }
+    ],
+    "startTime": 1710323453912140,
+    "duration": 5732,
+    "tags": [
+      {
+        "key": "response_flags",
+        "type": "string",
+        "value": "-"
+      },
+      {
+        "key": "peer.address",
+        "type": "string",
+        "value": "10.244.0.23"
+      },
+      {
+        "key": "request_size",
+        "type": "string",
+        "value": "0"
+      },
+      {
+        "key": "upstream_cluster.name",
+        "type": "string",
+        "value": "inbound|8000||"
+      },
+      {
+        "key": "http.method",
+        "type": "string",
+        "value": "GET"
+      },
+      {
+        "key": "http.protocol",
+        "type": "string",
+        "value": "HTTP/1.1"
+      },
+      {
+        "key": "response_size",
+        "type": "string",
+        "value": "84"
+      },
+      {
+        "key": "guid:x-request-id",
+        "type": "string",
+        "value": "8b3cb135-1481-91a0-9e1a-9c5d20fb2716"
+      },
+      {
+        "key": "istio.mesh_id",
+        "type": "string",
+        "value": "cluster.local"
+      },
+      {
+        "key": "http.header.portal",
+        "type": "string",
+        "value": "viaggi.it"
+      },
+      {
+        "key": "istio.cluster_id",
+        "type": "string",
+        "value": "Kubernetes"
+      },
+      {
+        "key": "upstream_cluster",
+        "type": "string",
+        "value": "inbound|8000||"
+      },
+      {
+        "key": "node_id",
+        "type": "string",
+        "value": "sidecar~10.244.0.19~cars-v1-6c869ff769-t4rrl.travel-agency~travel-agency.svc.cluster.local"
+      },
+      {
+        "key": "istio.canonical_service",
+        "type": "string",
+        "value": "cars"
+      },
+      {
+        "key": "http.status_code",
+        "type": "string",
+        "value": "200"
+      },
+      {
+        "key": "user_agent",
+        "type": "string",
+        "value": "Go-http-client/1.1"
+      },
+      {
+        "key": "downstream_cluster",
+        "type": "string",
+        "value": "-"
+      },
+      {
+        "key": "istio.canonical_revision",
+        "type": "string",
+        "value": "v1"
+      },
+      {
+        "key": "http.header.device",
+        "type": "string",
+        "value": "web"
+      },
+      {
+        "key": "component",
+        "type": "string",
+        "value": "proxy"
+      },
+      {
+        "key": "http.url",
+        "type": "string",
+        "value": "http://cars.travel-agency:8000/cars/Skopje"
+      },
+      {
+        "key": "istio.namespace",
+        "type": "string",
+        "value": "travel-agency"
+      },
+      {
+        "key": "http.header.travel",
+        "type": "string",
+        "value": "t1"
+      },
+      {
+        "key": "http.header.user",
+        "type": "string",
+        "value": "new"
+      },
+      {
+        "key": "span.kind",
+        "type": "string",
+        "value": "server"
+      },
+      {
+        "key": "internal.span.format",
+        "type": "string",
+        "value": "zipkin"
+      }
+    ],
+    "logs": [],
+    "processID": "p7",
+    "process": {
+      "serviceName": "cars.travel-agency",
+      "tags": [
+        {
+          "key": "ip",
+          "type": "int64",
+          "value": 183762963
+        }
+      ]
+    },
+    "warnings": null,
+    "traceSize": 18
+  },
+  {
+    "traceID": "9131662e07e0b26b8fbcbffa54ec6c56",
+    "spanID": "c000cb0edeaf1bbb",
+    "operationName": "discounts.travel-agency.svc.cluster.local:8000/*",
+    "references": [
+      {
+        "refType": "CHILD_OF",
+        "traceID": "9131662e07e0b26b8fbcbffa54ec6c56",
+        "spanID": "2599b1f332ac58d9"
+      }
+    ],
+    "startTime": 1710323453916126,
+    "duration": 1307,
+    "tags": [
+      {
+        "key": "istio.canonical_service",
+        "type": "string",
+        "value": "cars"
+      },
+      {
+        "key": "istio.mesh_id",
+        "type": "string",
+        "value": "cluster.local"
+      },
+      {
+        "key": "istio.cluster_id",
+        "type": "string",
+        "value": "Kubernetes"
+      },
+      {
+        "key": "upstream_cluster.name",
+        "type": "string",
+        "value": "outbound|8000||discounts.travel-agency.svc.cluster.local"
+      },
+      {
+        "key": "response_size",
+        "type": "string",
+        "value": "31"
+      },
+      {
+        "key": "http.status_code",
+        "type": "string",
+        "value": "200"
+      },
+      {
+        "key": "http.protocol",
+        "type": "string",
+        "value": "HTTP/1.1"
+      },
+      {
+        "key": "guid:x-request-id",
+        "type": "string",
+        "value": "8b3cb135-1481-91a0-9e1a-9c5d20fb2716"
+      },
+      {
+        "key": "http.method",
+        "type": "string",
+        "value": "GET"
+      },
+      {
+        "key": "http.header.device",
+        "type": "string",
+        "value": "web"
+      },
+      {
+        "key": "http.url",
+        "type": "string",
+        "value": "http://discounts.travel-agency:8000/discounts/new"
+      },
+      {
+        "key": "request_size",
+        "type": "string",
+        "value": "0"
+      },
+      {
+        "key": "http.header.travel",
+        "type": "string",
+        "value": "t1"
+      },
+      {
+        "key": "downstream_cluster",
+        "type": "string",
+        "value": "-"
+      },
+      {
+        "key": "node_id",
+        "type": "string",
+        "value": "sidecar~10.244.0.19~cars-v1-6c869ff769-t4rrl.travel-agency~travel-agency.svc.cluster.local"
+      },
+      {
+        "key": "istio.canonical_revision",
+        "type": "string",
+        "value": "v1"
+      },
+      {
+        "key": "component",
+        "type": "string",
+        "value": "proxy"
+      },
+      {
+        "key": "response_flags",
+        "type": "string",
+        "value": "-"
+      },
+      {
+        "key": "peer.address",
+        "type": "string",
+        "value": "10.244.0.19"
+      },
+      {
+        "key": "user_agent",
+        "type": "string",
+        "value": "Go-http-client/1.1"
+      },
+      {
+        "key": "http.header.user",
+        "type": "string",
+        "value": "new"
+      },
+      {
+        "key": "http.header.portal",
+        "type": "string",
+        "value": "viaggi.it"
+      },
+      {
+        "key": "istio.namespace",
+        "type": "string",
+        "value": "travel-agency"
+      },
+      {
+        "key": "upstream_cluster",
+        "type": "string",
+        "value": "outbound|8000||discounts.travel-agency.svc.cluster.local"
+      },
+      {
+        "key": "span.kind",
+        "type": "string",
+        "value": "client"
+      },
+      {
+        "key": "internal.span.format",
+        "type": "string",
+        "value": "zipkin"
+      }
+    ],
+    "logs": [],
+    "processID": "p11",
+    "process": {
+      "serviceName": "cars.travel-agency",
+      "tags": [
+        {
+          "key": "ip",
+          "type": "int64",
+          "value": 183762963
+        }
+      ]
+    },
+    "warnings": null,
+    "traceSize": 18
+  }
+]

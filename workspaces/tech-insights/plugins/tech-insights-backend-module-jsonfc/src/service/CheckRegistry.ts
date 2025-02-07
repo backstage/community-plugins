@@ -15,12 +15,10 @@
  */
 
 import { ConflictError, NotFoundError } from '@backstage/errors';
-import {
-  TechInsightCheck,
-  TechInsightCheckRegistry,
-} from '@backstage-community/plugin-tech-insights-node';
+import { TechInsightCheckRegistry } from '@backstage-community/plugin-tech-insights-node';
+import { Check } from '@backstage-community/plugin-tech-insights-common';
 
-export class DefaultCheckRegistry<CheckType extends TechInsightCheck>
+export class DefaultCheckRegistry<CheckType extends Check>
   implements TechInsightCheckRegistry<CheckType>
 {
   private readonly checks = new Map<string, CheckType>();

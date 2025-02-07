@@ -151,7 +151,7 @@ export class JenkinsBuilder {
           if (err.errors) {
             throw new Error(
               `Unable to fetch projects, for ${
-                jenkinsInfo.jobFullName
+                jenkinsInfo.fullJobNames
               }: ${stringifyError(err.errors)}`,
             );
           }
@@ -172,7 +172,7 @@ export class JenkinsBuilder {
             namespace,
             name,
           },
-          jobFullName,
+          fullJobNames: [jobFullName],
           credentials: await httpAuth.credentials(request),
         });
 
@@ -199,7 +199,7 @@ export class JenkinsBuilder {
             namespace,
             name,
           },
-          jobFullName,
+          fullJobNames: [jobFullName],
           credentials: await httpAuth.credentials(request),
         });
 
@@ -222,7 +222,7 @@ export class JenkinsBuilder {
             namespace,
             name,
           },
-          jobFullName,
+          fullJobNames: [jobFullName],
           credentials: await httpAuth.credentials(request),
         });
 
@@ -237,6 +237,34 @@ export class JenkinsBuilder {
           },
         );
         response.json({}).status(status);
+      },
+    );
+
+    router.get(
+      '/v1/entity/:namespace/:kind/:name/job/:jobFullName/:buildNumber/consoleText',
+      async (request, response) => {
+        const { namespace, kind, name, jobFullName, buildNumber } =
+          request.params;
+
+        const jenkinsInfo = await jenkinsInfoProvider.getInstance({
+          entityRef: {
+            kind,
+            namespace,
+            name,
+          },
+          fullJobNames: [jobFullName],
+          credentials: await httpAuth.credentials(request),
+        });
+
+        const consoleText = await jenkinsApi.getBuildConsoleText(
+          jenkinsInfo,
+          jobFullName,
+          parseInt(buildNumber, 10),
+        );
+
+        response.json({
+          consoleText: consoleText,
+        });
       },
     );
 

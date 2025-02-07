@@ -45,10 +45,10 @@ export const SHOW_POD_COUNT_FILTER_ID = 'show-pod-count';
 
 export const TOPOLOGY_FILTERS = [
   {
-    id: SHOW_POD_COUNT_FILTER_ID,
-    label: 'Pod count',
-    value: false,
-    disabled: false,
+    value: SHOW_POD_COUNT_FILTER_ID,
+    content: 'Pod count',
+    isSelected: false,
+    isDisabled: false,
   },
 ];
 

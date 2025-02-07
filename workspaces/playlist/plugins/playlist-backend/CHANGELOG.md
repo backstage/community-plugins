@@ -1,5 +1,27 @@
 # @backstage-community/plugin-playlist-backend
 
+## 0.6.0
+
+### Minor Changes
+
+- 79f848a: Backstage version bump to v1.35.1
+
+### Patch Changes
+
+- Updated dependencies [79f848a]
+  - @backstage-community/plugin-playlist-common@0.3.0
+
+## 0.5.0
+
+### Minor Changes
+
+- b33acbf: Backstage version bump to v1.34.1
+
+### Patch Changes
+
+- Updated dependencies [b33acbf]
+  - @backstage-community/plugin-playlist-common@0.2.0
+
 ## 0.4.0
 
 ### Minor Changes

@@ -7,103 +7,59 @@ import { BackendFeature } from '@backstage/backend-plugin-api';
 import type { Config } from '@backstage/config';
 import { TemplateAction } from '@backstage/plugin-scaffolder-node';
 
-// Warning: (tsdoc-escape-right-brace) The "}" character should be escaped using a backslash to avoid confusion with a TSDoc inline tag
-// Warning: (tsdoc-malformed-inline-tag) Expecting a TSDoc tag starting with "{@"
-// Warning: (ae-forgotten-export) The symbol "CreateActionOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "createNowActions" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
+// @public (undocumented)
+export type CreateActionOptions = {
+  config: Config;
+};
+
 // @public
 export function createNowActions(
   options: CreateActionOptions,
 ): TemplateAction[];
 
-// Warning: (tsdoc-param-tag-with-invalid-type) The @param block should not include a JSDoc-style '{type}'
-// Warning: (tsdoc-escape-right-brace) The "}" character should be escaped using a backslash to avoid confusion with a TSDoc inline tag
-// Warning: (tsdoc-malformed-inline-tag) Expecting a TSDoc tag starting with "{@"
-// Warning: (ae-missing-release-tag) "createRecordAction" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export const createRecordAction: (
   options: CreateActionOptions,
 ) => TemplateAction;
 
-// Warning: (tsdoc-escape-right-brace) The "}" character should be escaped using a backslash to avoid confusion with a TSDoc inline tag
-// Warning: (tsdoc-malformed-inline-tag) Expecting a TSDoc tag starting with "{@"
-// Warning: (ae-missing-release-tag) "createServiceNowActions" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export function createServiceNowActions(
   options: CreateActionOptions,
 ): TemplateAction[];
 
-// Warning: (tsdoc-escape-right-brace) The "}" character should be escaped using a backslash to avoid confusion with a TSDoc inline tag
-// Warning: (tsdoc-malformed-inline-tag) Expecting a TSDoc tag starting with "{@"
-// Warning: (ae-missing-release-tag) "createTableActions" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export function createTableActions(
   options: CreateActionOptions,
 ): TemplateAction[];
 
-// Warning: (tsdoc-param-tag-with-invalid-type) The @param block should not include a JSDoc-style '{type}'
-// Warning: (tsdoc-escape-right-brace) The "}" character should be escaped using a backslash to avoid confusion with a TSDoc inline tag
-// Warning: (tsdoc-malformed-inline-tag) Expecting a TSDoc tag starting with "{@"
-// Warning: (ae-missing-release-tag) "deleteRecordAction" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export const deleteRecordAction: (
   options: CreateActionOptions,
 ) => TemplateAction;
 
-// Warning: (tsdoc-param-tag-with-invalid-type) The @param block should not include a JSDoc-style '{type}'
-// Warning: (tsdoc-escape-right-brace) The "}" character should be escaped using a backslash to avoid confusion with a TSDoc inline tag
-// Warning: (tsdoc-malformed-inline-tag) Expecting a TSDoc tag starting with "{@"
-// Warning: (ae-missing-release-tag) "modifyRecordAction" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export const modifyRecordAction: (
   options: CreateActionOptions,
 ) => TemplateAction;
 
-// Warning: (tsdoc-param-tag-with-invalid-type) The @param block should not include a JSDoc-style '{type}'
-// Warning: (tsdoc-escape-right-brace) The "}" character should be escaped using a backslash to avoid confusion with a TSDoc inline tag
-// Warning: (tsdoc-malformed-inline-tag) Expecting a TSDoc tag starting with "{@"
-// Warning: (ae-missing-release-tag) "retrieveRecordAction" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export const retrieveRecordAction: (
   options: CreateActionOptions,
 ) => TemplateAction;
 
-// Warning: (tsdoc-param-tag-with-invalid-type) The @param block should not include a JSDoc-style '{type}'
-// Warning: (tsdoc-escape-right-brace) The "}" character should be escaped using a backslash to avoid confusion with a TSDoc inline tag
-// Warning: (tsdoc-malformed-inline-tag) Expecting a TSDoc tag starting with "{@"
-// Warning: (ae-missing-release-tag) "retrieveRecordsAction" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export const retrieveRecordsAction: (
   options: CreateActionOptions,
 ) => TemplateAction;
 
-// Warning: (ae-missing-release-tag) "scaffolderModuleServicenowActions" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 const scaffolderModuleServicenowActions: BackendFeature;
 export default scaffolderModuleServicenowActions;
 
-// Warning: (tsdoc-param-tag-with-invalid-type) The @param block should not include a JSDoc-style '{type}'
-// Warning: (tsdoc-escape-right-brace) The "}" character should be escaped using a backslash to avoid confusion with a TSDoc inline tag
-// Warning: (tsdoc-malformed-inline-tag) Expecting a TSDoc tag starting with "{@"
-// Warning: (ae-missing-release-tag) "updateRecordAction" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export const updateRecordAction: (
   options: CreateActionOptions,
 ) => TemplateAction;
-
-// Warnings were encountered during analysis:
-//
-// src/module.d.ts:1:22 - (ae-undocumented) Missing documentation for "scaffolderModuleServicenowActions".
 
 // (No @packageDocumentation comment for this package)
 ```

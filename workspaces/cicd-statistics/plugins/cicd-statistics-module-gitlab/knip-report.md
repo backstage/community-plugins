@@ -1,11 +1,10 @@
 # Knip report
 
-## Unused dependencies (2)
+## Unused dependencies (1)
 
 | Name                                        | Location     | Severity |
 | :------------------------------------------ | :----------- | :------- |
 | @backstage-community/plugin-cicd-statistics | package.json | error    |
-| luxon                                       | package.json | error    |
 
 ## Unused devDependencies (5)
 

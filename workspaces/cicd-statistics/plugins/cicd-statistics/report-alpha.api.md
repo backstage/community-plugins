@@ -7,7 +7,7 @@
 
 import { AnyRouteRefParams } from '@backstage/frontend-plugin-api';
 import { ConfigurableExtensionDataRef } from '@backstage/frontend-plugin-api';
-import { Entity } from '@backstage/catalog-model';
+import { Entity } from '@backstage/catalog-model/index';
 import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { FrontendPlugin } from '@backstage/frontend-plugin-api';
 import { JSX as JSX_2 } from 'react';

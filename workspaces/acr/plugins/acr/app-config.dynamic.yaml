@@ -14,7 +14,7 @@ dynamicPlugins:
     backstage-community.plugin-acr:
       mountPoints:
         - mountPoint: entity.page.image-registry/cards
-          importName: AcrPage
+          importName: AcrImagesEntityContent
           config:
             layout:
               gridColumn: 1 / -1

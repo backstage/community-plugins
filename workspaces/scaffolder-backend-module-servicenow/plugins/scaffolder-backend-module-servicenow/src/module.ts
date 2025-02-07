@@ -21,6 +21,9 @@ import { scaffolderActionsExtensionPoint } from '@backstage/plugin-scaffolder-no
 
 import { createServiceNowActions } from './actions';
 
+/**
+ * @public
+ */
 export const scaffolderModuleServicenowActions = createBackendModule({
   moduleId: 'scaffolder-backend-servicenow',
   pluginId: 'scaffolder',

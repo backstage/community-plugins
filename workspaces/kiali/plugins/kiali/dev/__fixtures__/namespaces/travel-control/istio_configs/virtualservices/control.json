@@ -1,0 +1,92 @@
+{
+  "namespace": {
+    "name": "travel-control",
+    "cluster": "",
+    "isAmbient": false,
+    "labels": null,
+    "annotations": null
+  },
+  "objectType": "virtualservices",
+  "authorizationPolicy": null,
+  "destinationRule": null,
+  "envoyFilter": null,
+  "gateway": null,
+  "peerAuthentication": null,
+  "requestAuthentication": null,
+  "serviceEntry": null,
+  "sidecar": null,
+  "virtualService": {
+    "kind": "VirtualService",
+    "apiVersion": "networking.istio.io/v1beta1",
+    "metadata": {
+      "name": "control",
+      "namespace": "travel-control",
+      "uid": "05468816-71ed-437d-9fc5-c0120d6ab61a",
+      "resourceVersion": "811969",
+      "generation": 1,
+      "creationTimestamp": "2024-03-20T12:45:22Z",
+      "labels": {
+        "kiali_wizard": "request_routing"
+      },
+      "managedFields": [
+        {
+          "manager": "kiali",
+          "operation": "Update",
+          "apiVersion": "networking.istio.io/v1beta1",
+          "time": "2024-03-20T12:45:22Z",
+          "fieldsType": "FieldsV1",
+          "fieldsV1": {
+            "f:metadata": {
+              "f:labels": {
+                ".": {},
+                "f:kiali_wizard": {}
+              }
+            },
+            "f:spec": {
+              ".": {},
+              "f:gateways": {},
+              "f:hosts": {},
+              "f:http": {}
+            }
+          }
+        }
+      ]
+    },
+    "spec": {
+      "hosts": ["*"],
+      "gateways": ["travel-control/control-gateway"],
+      "http": [
+        {
+          "route": [
+            {
+              "destination": {
+                "host": "control.travel-control.svc.cluster.local",
+                "subset": "v1"
+              },
+              "weight": 100
+            }
+          ]
+        }
+      ]
+    },
+    "status": {}
+  },
+  "workloadEntry": null,
+  "workloadGroup": null,
+  "wasmPlugin": null,
+  "telemetry": null,
+  "k8sGateway": null,
+  "k8sGRPCRoute": null,
+  "k8sHTTPRoute": null,
+  "k8sReferenceGrant": null,
+  "k8sTCPRoute": null,
+  "k8sTLSRoute": null,
+  "permissions": {
+    "create": true,
+    "update": true,
+    "delete": true
+  },
+  "validation": null,
+  "references": null,
+  "help": null
+}

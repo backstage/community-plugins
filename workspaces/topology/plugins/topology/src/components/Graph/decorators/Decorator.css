@@ -1,10 +1,7 @@
 .bs-topology-decorator__link:hover {
   text-decoration: none;
 }
-.bs-topology-decorator__bg {
-  fill: var(--pf-v5-global--BackgroundColor--light-100);
-}
 .bs-topology-decorator:hover,
 .bs-topology-decorator:active {
-  color: var(--pf-v5-global--link--Color--hover);
+  color: var(--pf-t--global--text--color--link--hover);
 }

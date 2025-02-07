@@ -27,7 +27,7 @@ const TopologyWorkloadDetails = ({
   children,
 }: React.PropsWithChildren<{ resource: K8sWorkloadResource }>) => {
   return (
-    <dl>
+    <dl style={{ maxWidth: '100%' }}>
       <TopologySideBarDetailsItem label="Name">
         {resource.metadata?.name}
       </TopologySideBarDetailsItem>

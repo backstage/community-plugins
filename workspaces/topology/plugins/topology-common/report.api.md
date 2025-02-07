@@ -5,13 +5,9 @@
 ```ts
 import { BasicPermission } from '@backstage/plugin-permission-common';
 
-// Warning: (ae-missing-release-tag) "topologyPermissions" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export const topologyPermissions: BasicPermission[];
 
-// Warning: (ae-missing-release-tag) "topologyViewPermission" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const topologyViewPermission: BasicPermission;
 ```

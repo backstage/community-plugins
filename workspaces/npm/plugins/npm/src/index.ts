@@ -20,6 +20,8 @@
  * @packageDocumentation
  */
 
+export { isNpmAvailable } from '@backstage-community/plugin-npm-common';
+
 export {
   npmPlugin,
   EntityNpmInfoCard,
@@ -29,5 +31,3 @@ export {
   NpmReleaseOverviewCard,
   NpmReleaseTableCard,
 } from './plugin';
-
-export { isNpmAvailable } from './utils/isNpmAvailable';

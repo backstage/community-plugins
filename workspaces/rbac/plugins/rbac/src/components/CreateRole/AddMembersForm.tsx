@@ -21,6 +21,8 @@ import Autocomplete from '@mui/material/Autocomplete';
 import FormHelperText from '@mui/material/FormHelperText';
 import LinearProgress from '@mui/material/LinearProgress';
 import TextField from '@mui/material/TextField';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import IconButton from '@mui/material/IconButton';
 import { FormikErrors } from 'formik';
 
 import { MemberEntity } from '../../types';
@@ -50,12 +52,11 @@ export const AddMembersForm = ({
   membersData,
 }: AddMembersFormProps) => {
   const [search, setSearch] = React.useState<string>('');
-  const [selectedMember, setSelectedMember] = React.useState<SelectedMember>({
-    label: '',
-    etag: '',
-    type: '',
-    ref: '',
-  } as SelectedMember);
+  const [selectedMember, setSelectedMember] =
+    React.useState<SelectedMember[]>(selectedMembers);
+  React.useEffect(() => {
+    setSelectedMember(selectedMembers);
+  }, [selectedMembers]);
 
   const getDescription = (member: MemberEntity) => {
     const memberCount = getMembersCount(member);
@@ -63,7 +64,13 @@ export const AddMembersForm = ({
     const childCount = getChildGroupsCount(member);
 
     return member.kind === 'Group'
-      ? `${memberCount} members, ${parentCount} parent group, ${childCount} child groups`
+      ? [
+          memberCount > 0 ? `${memberCount} members` : '',
+          parentCount > 0 ? `${parentCount} parent group` : '',
+          childCount > 0 ? `${childCount} child groups` : '',
+        ]
+          .filter(Boolean) // Remove any empty strings
+          .join(', ')
       : undefined;
   };
 
@@ -107,16 +114,20 @@ export const AddMembersForm = ({
   ) =>
     value.etag
       ? option.etag === value.etag
-      : selectedMember.etag === value.etag;
+      : selectedMember?.[0].etag === value.etag;
 
   return (
     <>
       <FormHelperText>
         Search and select users and groups to be added. Selected users and
-        groups will appear in the members table.
+        groups will appear in the table below.
       </FormHelperText>
       <br />
       <Autocomplete
+        disableCloseOnSelect
+        data-testid="users-and-groups-autocomplete"
+        sx={{ width: '30%' }}
+        multiple
         options={filteredMembers || []}
         getOptionLabel={(option: SelectedMember) => option.label ?? ''}
         isOptionEqualToValue={handleIsOptionEqualToValue}
@@ -124,21 +135,15 @@ export const AddMembersForm = ({
         loadingText={<LinearProgress />}
         disableClearable
         value={selectedMember}
-        onChange={(_e, value: SelectedMember) => {
+        onChange={(_e, value: SelectedMember[]) => {
           setSelectedMember(value);
-          if (value) {
-            setSearch(value.label);
-            setFieldValue('selectedMembers', [...selectedMembers, value]);
-          }
+          setFieldValue('selectedMembers', value);
+          setSearch('');
         }}
+        renderTags={() => ''}
         inputValue={search}
         onInputChange={(_e, newSearch: string, reason) =>
           reason === 'input' && setSearch(newSearch)
-        }
-        getOptionDisabled={(option: SelectedMember) =>
-          !!selectedMembers.find(
-            (sm: SelectedMember) => sm.etag === option.etag,
-          )
         }
         renderOption={(props, option: SelectedMember, state) => (
           <MembersDropdownOption props={props} option={option} state={state} />
@@ -147,14 +152,33 @@ export const AddMembersForm = ({
         clearOnEscape
         renderInput={params => (
           <TextField
+            data-testid="users-and-groups-text-field"
             {...params}
             name="add-users-and-groups"
             variant="outlined"
-            label="Users and groups"
-            placeholder="Search by user name or group name"
+            label="Select users and groups"
             error={!!selectedMembersError}
             helperText={selectedMembersError ?? ''}
             required
+            InputProps={{
+              ...params.InputProps,
+              endAdornment: (
+                <>
+                  {search && (
+                    <IconButton
+                      size="small"
+                      onClick={() => {
+                        setSearch('');
+                      }}
+                      aria-label="clear search"
+                    >
+                      <HighlightOffIcon fontSize="small" />
+                    </IconButton>
+                  )}
+                  {params.InputProps.endAdornment}
+                </>
+              ),
+            }}
           />
         )}
       />

@@ -42,7 +42,7 @@ const buildNumber = 19;
 const jenkinsInfo: JenkinsInfo = {
   baseUrl: 'https://jenkins.example.com',
   headers: { headerName: 'headerValue' },
-  jobFullName: 'example-jobName',
+  fullJobNames: ['example-jobName'],
   projectCountLimit: 60,
 };
 
@@ -61,6 +61,7 @@ describe('JenkinsApi', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+    mockFetch.mockReset();
   });
 
   describe('getProjects', () => {
@@ -127,7 +128,7 @@ describe('JenkinsApi', () => {
           promisify: true,
         });
         expect(mockedJenkinsClient.job.get).toHaveBeenCalledWith({
-          name: jenkinsInfo.jobFullName,
+          name: jenkinsInfo.fullJobNames[0],
           tree: expect.anything(),
         });
         expect(result).toHaveLength(1);
@@ -168,7 +169,7 @@ describe('JenkinsApi', () => {
           promisify: true,
         });
         expect(mockedJenkinsClient.job.get).toHaveBeenCalledWith({
-          name: `${jenkinsInfo.jobFullName}/testBranchName`,
+          name: `${jenkinsInfo.fullJobNames[0]}/testBranchName`,
           tree: expect.anything(),
         });
         expect(result).toHaveLength(1);
@@ -184,28 +185,31 @@ describe('JenkinsApi', () => {
           'with-a/slash',
         ]);
 
-        expect(mockedJenkins).toHaveBeenCalledWith({
-          baseUrl: jenkinsInfo.baseUrl,
-          headers: jenkinsInfo.headers,
-          promisify: true,
-        });
-        expect(mockedJenkinsClient.job.get).toHaveBeenCalledWith({
-          name: `${jenkinsInfo.jobFullName}/foo`,
-          tree: expect.anything(),
-        });
-        expect(mockedJenkinsClient.job.get).toHaveBeenCalledWith({
-          name: `${jenkinsInfo.jobFullName}/bar`,
-          tree: expect.anything(),
-        });
-        expect(mockedJenkinsClient.job.get).toHaveBeenCalledWith({
-          name: `${jenkinsInfo.jobFullName}/catpants`,
-          tree: expect.anything(),
-        });
-        expect(mockedJenkinsClient.job.get).toHaveBeenCalledWith({
-          name: `${jenkinsInfo.jobFullName}/with-a%2Fslash`,
-          tree: expect.anything(),
-        });
-        expect(result).toHaveLength(1);
+        for (const jobName of jenkinsInfo.fullJobNames) {
+          expect(mockedJenkins).toHaveBeenCalledWith({
+            baseUrl: jenkinsInfo.baseUrl,
+            headers: jenkinsInfo.headers,
+            promisify: true,
+          });
+          expect(mockedJenkinsClient.job.get).toHaveBeenCalledWith({
+            name: `${jobName}/foo`,
+            tree: expect.anything(),
+          });
+          expect(mockedJenkinsClient.job.get).toHaveBeenCalledWith({
+            name: `${jobName}/bar`,
+            tree: expect.anything(),
+          });
+          expect(mockedJenkinsClient.job.get).toHaveBeenCalledWith({
+            name: `${jobName}/catpants`,
+            tree: expect.anything(),
+          });
+          expect(mockedJenkinsClient.job.get).toHaveBeenCalledWith({
+            name: `${jobName}/with-a%2Fslash`,
+            tree: expect.anything(),
+          });
+        }
+
+        expect(result).toHaveLength(jenkinsInfo.fullJobNames.length);
       });
     });
     describe('augmented', () => {
@@ -788,6 +792,29 @@ describe('JenkinsApi', () => {
       await jenkinsApi.getJobBuilds(jenkinsInfo, fullJobName);
       expect(mockFetch).toHaveBeenCalledWith(
         'https://jenkins.example.com/job/test/job/folder/job/depth/job/foo/api/json?tree=name,description,url,fullName,displayName,fullDisplayName,inQueue,builds[*]',
+        { headers: { headerName: 'headerValue' }, method: 'get' },
+      );
+    });
+  });
+  describe('getBuildConsoleText', () => {
+    it('should return the console text for a build', async () => {
+      const mockedConsoleText = 'Build Ran';
+      mockFetch.mockResolvedValueOnce({
+        status: 200,
+        text: async () => {
+          return mockedConsoleText;
+        },
+      } as unknown as Response);
+
+      const consoleText = await jenkinsApi.getBuildConsoleText(
+        jenkinsInfo,
+        jobFullName,
+        buildNumber,
+      );
+
+      expect(consoleText).toBe('Build Ran');
+      expect(mockFetch).toHaveBeenCalledWith(
+        'https://jenkins.example.com/job/example-jobName/job/foo/19/consoleText',
         { headers: { headerName: 'headerValue' }, method: 'get' },
       );
     });

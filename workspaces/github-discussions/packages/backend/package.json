@@ -1,0 +1,48 @@
+{
+  "name": "backend",
+  "version": "0.0.0",
+  "main": "dist/index.cjs.js",
+  "types": "src/index.ts",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/github-discussions/packages/backend"
+  },
+  "backstage": {
+    "role": "backend"
+  },
+  "scripts": {
+    "start": "backstage-cli package start",
+    "build": "backstage-cli package build",
+    "lint": "backstage-cli package lint",
+    "test": "backstage-cli package test",
+    "clean": "backstage-cli package clean",
+    "build-image": "docker build ../.. -f Dockerfile --tag backstage"
+  },
+  "dependencies": {
+    "@backstage-community/plugin-search-backend-module-github-discussions": "workspace:^",
+    "@backstage/backend-defaults": "^0.5.1",
+    "@backstage/config": "^1.2.0",
+    "@backstage/plugin-app-backend": "^0.3.76",
+    "@backstage/plugin-auth-backend": "^0.23.1",
+    "@backstage/plugin-auth-backend-module-guest-provider": "^0.2.1",
+    "@backstage/plugin-auth-node": "^0.5.3",
+    "@backstage/plugin-permission-backend": "^0.5.50",
+    "@backstage/plugin-permission-backend-module-allow-all-policy": "^0.2.1",
+    "@backstage/plugin-permission-common": "^0.8.1",
+    "@backstage/plugin-permission-node": "^0.8.4",
+    "@backstage/plugin-search-backend": "^1.6.0",
+    "@backstage/plugin-search-backend-node": "^1.3.3",
+    "app": "link:../app",
+    "better-sqlite3": "^9.0.0",
+    "node-gyp": "^10.0.0",
+    "pg": "^8.11.3"
+  },
+  "devDependencies": {
+    "@backstage/cli": "^0.28.0"
+  },
+  "files": [
+    "dist"
+  ]
+}

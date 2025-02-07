@@ -1,5 +1,35 @@
 ### Dependencies
 
+## 3.4.1
+
+### Patch Changes
+
+- f64bb64: Fixed the token update issue when the plugin uses the Keycloak client library. Added the ability to configure a maxConcurrency limit to control the number of parallel requests to the Keycloak server, preventing potential DoS attacks. Significantly improved the performance of parsing Keycloak user and group information.
+
+## 3.4.0
+
+### Minor Changes
+
+- f7dfe8e: Update keycloak-admin-client to the latest version.
+
+## 3.3.0
+
+### Minor Changes
+
+- bd47f3a: Backstage version bump to v1.34.2
+
+## 3.2.4
+
+### Patch Changes
+
+- 0f5c451: Updated dependency `prettier` to `3.4.2`.
+
+## 3.2.3
+
+### Patch Changes
+
+- 74902d9: Clean up api report warnings and remove unnecessary files
+
 ## 3.2.2
 
 ### Patch Changes

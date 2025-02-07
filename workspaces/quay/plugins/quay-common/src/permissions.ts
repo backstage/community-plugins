@@ -15,6 +15,10 @@
  */
 import { createPermission } from '@backstage/plugin-permission-common';
 
+/**
+ * Quay View Permission
+ * @public
+ */
 export const quayViewPermission = createPermission({
   name: 'quay.view.read',
   attributes: {
@@ -24,5 +28,6 @@ export const quayViewPermission = createPermission({
 
 /**
  * List of all permissions on permission polices.
+ * @public
  */
 export const quayPermissions = [quayViewPermission];

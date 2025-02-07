@@ -5,13 +5,13 @@
 ```ts
 import { BackendFeature } from '@backstage/backend-plugin-api';
 import { BooleanCheckResult } from '@backstage-community/plugin-tech-insights-common';
+import { Check } from '@backstage-community/plugin-tech-insights-common';
 import { CheckResponse } from '@backstage-community/plugin-tech-insights-common';
 import { CheckValidationResponse } from '@backstage-community/plugin-tech-insights-node';
 import { Config } from '@backstage/config';
 import { FactChecker } from '@backstage-community/plugin-tech-insights-node';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { Operator } from 'json-rules-engine';
-import { TechInsightCheck } from '@backstage-community/plugin-tech-insights-node';
 import { TechInsightCheckRegistry } from '@backstage-community/plugin-tech-insights-node';
 import { TechInsightsStore } from '@backstage-community/plugin-tech-insights-node';
 import { TopLevelCondition } from 'json-rules-engine';
@@ -106,7 +106,7 @@ export type Rule = {
 };
 
 // @public (undocumented)
-export interface TechInsightJsonRuleCheck extends TechInsightCheck {
+export interface TechInsightJsonRuleCheck extends Check {
   // (undocumented)
   rule: Rule;
 }

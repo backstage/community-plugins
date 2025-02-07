@@ -1,5 +1,41 @@
 # @backstage-community/plugin-search-backend-module-confluence-collator
 
+## 0.4.1
+
+### Patch Changes
+
+- 0a80de6: update app-config example for confluence search collator schedule
+
+## 0.4.0
+
+### Minor Changes
+
+- 75f7435: Backstage version bump to v1.35.1
+
+## 0.3.2
+
+### Patch Changes
+
+- 18c36d8: Removed usages of `@backstage/backend-tasks`
+
+## 0.3.1
+
+### Patch Changes
+
+- 5431e37: Update config with links to confluence docs, and ensure omitting the optional 'spaces' & 'query' config sections returns all results (instead of throwing an error)
+
+## 0.3.0
+
+### Minor Changes
+
+- cfd4174: Backstage version bump to v1.34.2
+
+## 0.2.5
+
+### Patch Changes
+
+- f4ea9a2: Fix typo in readme
+
 ## 0.2.4
 
 ### Patch Changes

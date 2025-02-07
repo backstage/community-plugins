@@ -1,5 +1,11 @@
 # @backstage-community/plugin-redhat-resource-optimization-backend
 
+## 1.1.0
+
+### Minor Changes
+
+- 613061d: bump backstage to 1.34.2 and remove @spotify/prettier-config
+
 ## 1.0.6
 
 ### Patch Changes

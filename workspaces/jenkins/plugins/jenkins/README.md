@@ -93,7 +93,7 @@ metadata:
   description: 'a description'
   annotations:
     jenkins.io/github-folder: 'folder-name/project-name' # deprecated
-    jenkins.io/job-full-name: 'folder-name/project-name' # use this instead
+    jenkins.io/job-full-name: 'folder-name/project-name,folder-name/project-name' # use this instead
 
 spec:
   type: service

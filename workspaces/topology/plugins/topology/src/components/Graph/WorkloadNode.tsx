@@ -193,8 +193,8 @@ const InnerWorkloadNode = observer(
     const iconImageUrl = workloadData.builderImage;
 
     const showPodCount = filters?.find(
-      f => f.id === SHOW_POD_COUNT_FILTER_ID,
-    )?.value;
+      f => f.value === SHOW_POD_COUNT_FILTER_ID,
+    )?.isSelected;
 
     return (
       <g className="bs-topology-workload-node">

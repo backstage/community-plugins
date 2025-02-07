@@ -1,5 +1,23 @@
 # @backstage-community/plugin-shortcuts
 
+## 0.5.1
+
+### Patch Changes
+
+- 34a5da7: Fixed code example in the README.md file where a code line was lacking an apostrophe and a semicolon
+
+## 0.5.0
+
+### Minor Changes
+
+- c4f37bd: Backstage version bump to v1.35.1
+
+## 0.4.0
+
+### Minor Changes
+
+- 8df327b: Backstage version bump to v1.34.1
+
 ## 0.3.28
 
 ### Patch Changes

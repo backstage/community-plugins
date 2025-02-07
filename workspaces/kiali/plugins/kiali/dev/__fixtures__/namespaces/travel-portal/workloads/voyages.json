@@ -1,0 +1,195 @@
+{
+  "name": "voyages",
+  "cluster": "Kubernetes",
+  "type": "Deployment",
+  "createdAt": "2024-03-13T09:49:39Z",
+  "resourceVersion": "61506",
+  "istioSidecar": true,
+  "istioAmbient": false,
+  "additionalDetailSample": null,
+  "labels": {
+    "app": "voyages",
+    "version": "v1"
+  },
+  "appLabel": true,
+  "versionLabel": true,
+  "podCount": 0,
+  "annotations": {
+    "deployment.kubernetes.io/revision": "1",
+    "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"apps/v1\",\"kind\":\"Deployment\",\"metadata\":{\"annotations\":{},\"name\":\"voyages\",\"namespace\":\"travel-portal\"},\"spec\":{\"replicas\":1,\"selector\":{\"matchLabels\":{\"app\":\"voyages\",\"version\":\"v1\"}},\"template\":{\"metadata\":{\"annotations\":{\"proxy.istio.io/config\":\"tracing:\\n  zipkin:\\n    address: zipkin.istio-system:9411\\n  sampling: 10\\n  custom_tags:\\n    http.header.portal:\\n      header:\\n        name: portal\\n    http.header.device:\\n      header:\\n        name: device\\n    http.header.user:\\n      header:\\n        name: user\\n    http.header.travel:\\n      header:\\n        name: travel\\n\",\"readiness.status.sidecar.istio.io/applicationPorts\":\"\"},\"labels\":{\"app\":\"voyages\",\"version\":\"v1\"}},\"spec\":{\"containers\":[{\"env\":[{\"name\":\"LISTEN_ADDRESS\",\"value\":\":8000\"},{\"name\":\"PORTAL_COORDINATES\",\"value\":\"48.861310,2.337418\"},{\"name\":\"PORTAL_COUNTRY\",\"value\":\"France\"},{\"name\":\"PORTAL_NAME\",\"value\":\"voyages.fr\"},{\"name\":\"TRAVELS_AGENCY_SERVICE\",\"value\":\"http://travels.travel-agency:8000\"}],\"image\":\"quay.io/kiali/demo_travels_portal:v1\",\"imagePullPolicy\":\"IfNotPresent\",\"name\":\"voyages\",\"ports\":[{\"containerPort\":8000}],\"securityContext\":{\"allowPrivilegeEscalation\":false,\"capabilities\":{\"drop\":[\"ALL\"]},\"privileged\":false,\"readOnlyRootFilesystem\":true}}]}}}}\n"
+  },
+  "healthAnnotations": {},
+  "istioReferences": null,
+  "dashboardAnnotations": {},
+  "serviceAccountNames": null,
+  "desiredReplicas": 1,
+  "currentReplicas": 1,
+  "availableReplicas": 1,
+  "pods": [
+    {
+      "name": "voyages-59857896bf-86tq2",
+      "labels": {
+        "app": "voyages",
+        "pod-template-hash": "59857896bf",
+        "security.istio.io/tlsMode": "istio",
+        "service.istio.io/canonical-name": "voyages",
+        "service.istio.io/canonical-revision": "v1",
+        "version": "v1"
+      },
+      "createdAt": "2024-03-13T09:49:39Z",
+      "createdBy": [
+        {
+          "name": "voyages-59857896bf",
+          "kind": "ReplicaSet"
+        }
+      ],
+      "containers": [
+        {
+          "name": "voyages",
+          "image": "quay.io/kiali/demo_travels_portal:v1",
+          "isProxy": false,
+          "isReady": true,
+          "isAmbient": false
+        }
+      ],
+      "istioContainers": [
+        {
+          "name": "istio-proxy",
+          "image": "gcr.io/istio-release/proxyv2:1.21.0-rc.0",
+          "isProxy": true,
+          "isReady": true,
+          "isAmbient": false
+        }
+      ],
+      "istioInitContainers": [
+        {
+          "name": "istio-init",
+          "image": "gcr.io/istio-release/proxyv2:1.21.0-rc.0",
+          "isProxy": true,
+          "isReady": true,
+          "isAmbient": false
+        }
+      ],
+      "status": "Running",
+      "statusMessage": "",
+      "statusReason": "",
+      "appLabel": true,
+      "versionLabel": true,
+      "annotations": {
+        "istio.io/rev": "default",
+        "kubectl.kubernetes.io/default-container": "voyages",
+        "kubectl.kubernetes.io/default-logs-container": "voyages",
+        "prometheus.io/path": "/stats/prometheus",
+        "prometheus.io/port": "15020",
+        "prometheus.io/scrape": "true",
+        "proxy.istio.io/config": "tracing:\n  zipkin:\n    address: zipkin.istio-system:9411\n  sampling: 10\n  custom_tags:\n    http.header.portal:\n      header:\n        name: portal\n    http.header.device:\n      header:\n        name: device\n    http.header.user:\n      header:\n        name: user\n    http.header.travel:\n      header:\n        name: travel\n",
+        "readiness.status.sidecar.istio.io/applicationPorts": "",
+        "sidecar.istio.io/status": "{\"initContainers\":[\"istio-init\"],\"containers\":[\"istio-proxy\"],\"volumes\":[\"workload-socket\",\"credential-socket\",\"workload-certs\",\"istio-envoy\",\"istio-data\",\"istio-podinfo\",\"istio-token\",\"istiod-ca-cert\"],\"imagePullSecrets\":null,\"revision\":\"default\"}"
+      },
+      "proxyStatus": {
+        "CDS": "Synced",
+        "EDS": "Synced",
+        "LDS": "Synced",
+        "RDS": "Synced"
+      },
+      "serviceAccountName": "default"
+    }
+  ],
+  "services": [
+    {
+      "name": "voyages",
+      "namespace": "travel-portal",
+      "istioSidecar": true,
+      "cluster": "Kubernetes",
+      "istioAmbient": false,
+      "appLabel": true,
+      "additionalDetailSample": null,
+      "annotations": null,
+      "healthAnnotations": {},
+      "ports": null,
+      "labels": {
+        "app": "voyages"
+      },
+      "selector": {
+        "app": "voyages"
+      },
+      "istioReferences": [],
+      "kialiWizard": "",
+      "serviceRegistry": "Kubernetes",
+      "health": {
+        "requests": {
+          "inbound": {},
+          "outbound": {},
+          "healthAnnotations": {}
+        }
+      }
+    }
+  ],
+  "runtimes": [
+    {
+      "name": "",
+      "dashboardRefs": [
+        {
+          "template": "envoy",
+          "title": "Envoy Metrics"
+        }
+      ]
+    }
+  ],
+  "additionalDetails": [],
+  "validations": {
+    "gateway": {
+      "bookinfo-gateway.bookinfo": {
+        "name": "bookinfo-gateway",
+        "objectType": "gateway",
+        "valid": false,
+        "checks": [
+          {
+            "code": "KIA0302",
+            "message": "No matching workload found for gateway selector in this namespace",
+            "severity": "warning",
+            "path": "spec/selector"
+          }
+        ],
+        "references": null
+      }
+    },
+    "virtualservice": {
+      "bookinfo.bookinfo": {
+        "name": "bookinfo",
+        "objectType": "virtualservice",
+        "valid": true,
+        "checks": [],
+        "references": null
+      }
+    },
+    "workload": {
+      "voyages.travel-portal": {
+        "name": "voyages",
+        "objectType": "workload",
+        "valid": true,
+        "checks": [],
+        "references": null
+      }
+    }
+  },
+  "waypointWorkloads": null,
+  "health": {
+    "workloadStatus": {
+      "name": "voyages",
+      "desiredReplicas": 1,
+      "currentReplicas": 1,
+      "availableReplicas": 1,
+      "syncedProxies": 1
+    },
+    "requests": {
+      "inbound": {},
+      "outbound": {
+        "http": {
+          "200": 0.2666666666666666
+        }
+      },
+      "healthAnnotations": {}
+    }
+  }
+}

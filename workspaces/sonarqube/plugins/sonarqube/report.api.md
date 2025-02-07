@@ -7,10 +7,11 @@
 
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { DiscoveryApi } from '@backstage/core-plugin-api';
-import { Entity } from '@backstage/catalog-model';
+import { Entity } from '@backstage/catalog-model/index';
 import { FetchApi } from '@backstage/core-plugin-api';
 import { FindingSummary } from '@backstage-community/plugin-sonarqube-react';
 import { InfoCardVariants } from '@backstage/core-components';
+import { InfoCardVariants as InfoCardVariants_2 } from '@backstage/core-components/index';
 import { JSX as JSX_2 } from 'react';
 import { default as React_2 } from 'react';
 import { SonarQubeApi } from '@backstage-community/plugin-sonarqube-react';
@@ -23,7 +24,7 @@ export type DuplicationRating = {
 
 // @public (undocumented)
 export const EntitySonarQubeCard: (props: {
-  variant?: InfoCardVariants | undefined;
+  variant?: InfoCardVariants_2 | undefined;
   duplicationRatings?: DuplicationRating[] | undefined;
   missingAnnotationReadMoreUrl?: string | undefined;
 }) => JSX_2.Element;

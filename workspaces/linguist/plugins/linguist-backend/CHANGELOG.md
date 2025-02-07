@@ -1,5 +1,33 @@
 # @backstage-community/plugin-linguist-backend
 
+## 0.11.0
+
+### Minor Changes
+
+- cf27ad1: Backstage version bump to v1.35.1
+
+### Patch Changes
+
+- Updated dependencies [cf27ad1]
+  - @backstage-community/plugin-linguist-common@0.4.0
+
+## 0.10.0
+
+### Minor Changes
+
+- 8585c65: Added openapi spec for linguist backend
+
+## 0.9.0
+
+### Minor Changes
+
+- aef63f8: Backstage version bump to v1.34.1
+
+### Patch Changes
+
+- Updated dependencies [aef63f8]
+  - @backstage-community/plugin-linguist-common@0.3.0
+
 ## 0.8.0
 
 ### Minor Changes

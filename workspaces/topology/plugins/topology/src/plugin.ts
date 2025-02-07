@@ -38,6 +38,9 @@ import {
   kubernetesProxyApiRef,
 } from './types/types';
 
+/**
+ * @public
+ */
 export const topologyPlugin = createPlugin({
   id: 'topology',
   routes: {
@@ -102,6 +105,9 @@ export const topologyPlugin = createPlugin({
   ],
 });
 
+/**
+ * @public
+ */
 export const TopologyPage = topologyPlugin.provide(
   createRoutableExtension({
     name: 'TopologyPage',

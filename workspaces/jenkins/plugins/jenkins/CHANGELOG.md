@@ -1,5 +1,39 @@
 # @backstage-community/plugin-jenkins
 
+## 0.16.0
+
+### Minor Changes
+
+- 07ef31b: Backstage version bump to v1.35.1
+
+### Patch Changes
+
+- Updated dependencies [07ef31b]
+  - @backstage-community/plugin-jenkins-common@0.3.0
+
+## 0.15.0
+
+### Minor Changes
+
+- 92a0ff6: feature: allow support for defining multiple projects/job names
+
+## 0.14.0
+
+### Minor Changes
+
+- 9527e9e: Backstage version bump to v1.34.1
+
+### Patch Changes
+
+- Updated dependencies [9527e9e]
+  - @backstage-community/plugin-jenkins-common@0.2.0
+
+## 0.13.0
+
+### Minor Changes
+
+- dfe7569: Add an API to retrieve the consoleText for a build.
+
 ## 0.12.2
 
 ### Patch Changes

@@ -6,7 +6,7 @@
 /// <reference types="react" />
 
 import { BackstagePlugin } from '@backstage/core-plugin-api';
-import { Entity } from '@backstage/catalog-model';
+import { isNpmAvailable } from '@backstage-community/plugin-npm-common';
 import { JSX as JSX_2 } from 'react';
 import { RouteRef } from '@backstage/core-plugin-api';
 
@@ -19,8 +19,7 @@ export const EntityNpmReleaseOverviewCard: () => JSX_2.Element;
 // @public
 export const EntityNpmReleaseTableCard: () => JSX_2.Element;
 
-// @public
-export const isNpmAvailable: (entity: Entity) => boolean;
+export { isNpmAvailable };
 
 // @public @deprecated (undocumented)
 export const NpmInfoCard: () => JSX_2.Element;

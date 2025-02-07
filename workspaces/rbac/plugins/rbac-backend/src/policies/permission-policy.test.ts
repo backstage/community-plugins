@@ -277,6 +277,7 @@ describe('RBACPermissionPolicy Tests', () => {
       'role:default/catalog-reader',
       'role:default/catalog-deleter',
       'role:default/known_role',
+      'role:default/CATALOG-USER',
     ];
 
     const allEnfGroupPolicies = [
@@ -288,6 +289,8 @@ describe('RBACPermissionPolicy Tests', () => {
       ['user:default/guest', 'role:default/catalog-reader'],
       ['user:default/guest', 'role:default/catalog-deleter'],
       ['user:default/known_user', 'role:default/known_role'],
+      ['user:default/tom', 'role:default/CATALOG-USER'],
+      ['group:default/reader-group', 'role:default/CATALOG-USER'],
     ];
 
     const allEnfPolicies = [
@@ -299,6 +302,7 @@ describe('RBACPermissionPolicy Tests', () => {
       ['role:default/catalog-writer', 'catalog-entity', 'read', 'allow'],
       ['role:default/catalog-writer', 'catalog.entity.create', 'use', 'allow'],
       ['role:default/catalog-deleter', 'catalog-entity', 'delete', 'deny'],
+      ['role:default/CATALOG-USER', 'catalog-entity', 'read', 'allow'],
       ['role:default/known_role', 'test.resource.deny', 'use', 'allow'],
     ];
 
@@ -1187,6 +1191,58 @@ describe('Policy checks for resourced permissions defined by name', () => {
     );
   });
 
+  it('should allow access to resourced permission assigned by name, but user inherits policy from uppercase group', async () => {
+    const name = 'team-A';
+
+    const groupEntityMock: Entity = {
+      apiVersion: 'v1',
+      kind: 'Group',
+      metadata: {
+        name: name,
+        namespace: 'default',
+      },
+      spec: {
+        members: ['tor'],
+      },
+    };
+    catalogApiMock.getEntities.mockImplementation(_arg => {
+      return { items: [groupEntityMock] };
+    });
+
+    await enfDelegate.addGroupingPolicy(
+      [
+        `group:default/${name.toLocaleLowerCase('en-US')}`,
+        'role:default/catalog_user',
+      ],
+      {
+        source: 'csv-file',
+        roleEntityRef: 'role:default/catalog_user',
+        modifiedBy,
+      },
+    );
+
+    await enfDelegate.addPolicies([
+      ['role:default/catalog_user', 'catalog.entity.read', 'read', 'allow'],
+    ]);
+
+    const decision = await policy.handle(
+      newPolicyQueryWithResourcePermission(
+        'catalog.entity.read',
+        'catalog-entity',
+        'read',
+      ),
+      newPolicyQueryUser('user:default/tor'),
+    );
+    expect(decision.result).toBe(AuthorizeResult.ALLOW);
+    verifyAuditLogForNonResourcedPermission(
+      'user:default/tor',
+      'catalog.entity.read',
+      'catalog-entity',
+      'read',
+      AuthorizeResult.ALLOW,
+    );
+  });
+
   it('should allow access to resourced permission assigned by name, but user inherits policy from few groups', async () => {
     const groupEntityMock: Entity = {
       apiVersion: 'v1',
@@ -1750,6 +1806,7 @@ describe('Policy checks for conditional policies', () => {
 
     const enfDelegate = new EnforcerDelegate(
       enf,
+      auditLoggerMock,
       roleMetadataStorageMock,
       mockClientKnex,
     );
@@ -2173,7 +2230,12 @@ async function newEnforcerDelegate(
     await enf.addGroupingPolicies(storedGroupingPolicies);
   }
 
-  return new EnforcerDelegate(enf, roleMetadataStorageMock, mockClientKnex);
+  return new EnforcerDelegate(
+    enf,
+    auditLoggerMock,
+    roleMetadataStorageMock,
+    mockClientKnex,
+  );
 }
 
 async function newPermissionPolicy(

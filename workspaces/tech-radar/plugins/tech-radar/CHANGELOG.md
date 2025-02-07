@@ -1,5 +1,33 @@
 # @backstage-community/plugin-tech-radar
 
+## 1.2.0
+
+### Minor Changes
+
+- 55347e0: Backstage version bump to v1.35.1
+
+### Patch Changes
+
+- Updated dependencies [55347e0]
+  - @backstage-community/plugin-tech-radar-common@1.2.0
+
+## 1.1.0
+
+### Minor Changes
+
+- 8acb5d5: Backstage version bump to v1.34.1
+
+### Patch Changes
+
+- Updated dependencies [8acb5d5]
+  - @backstage-community/plugin-tech-radar-common@1.1.0
+
+## 1.0.1
+
+### Patch Changes
+
+- 188a7a5: Updated dependency `@types/color` to `^4.0.0`.
+
 ## 1.0.0
 
 ### Major Changes

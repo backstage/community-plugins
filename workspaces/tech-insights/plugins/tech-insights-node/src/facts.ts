@@ -22,6 +22,7 @@ import {
   AuthService,
   DiscoveryService,
   LoggerService,
+  UrlReaderService,
 } from '@backstage/backend-plugin-api';
 
 /**
@@ -93,6 +94,7 @@ export type FactRetrieverContext = {
   discovery: DiscoveryService;
   logger: LoggerService;
   auth: AuthService;
+  urlReader: UrlReaderService;
   entityFilter?:
     | Record<string, string | symbol | (string | symbol)[]>[]
     | Record<string, string | symbol | (string | symbol)[]>;

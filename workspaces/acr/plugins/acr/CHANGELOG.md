@@ -1,5 +1,31 @@
 ### Dependencies
 
+## 1.10.0
+
+### Minor Changes
+
+- 182e024: Backstage version bump to v1.35.0
+
+## 1.9.0
+
+### Minor Changes
+
+- 0c1e93a: add support for the new frontend-system (alpha)
+- 0c1e93a: Aligned the exported component names with other plugins and the Backstage recommendations. Please use the exported `AcrImagesEntityContent` component instead of `AcrPage`. `AcrPage` is still exported, but deprecated and might be removed in the future.
+
+## 1.8.8
+
+### Patch Changes
+
+- f9270df: fix `react-use` compile issue and update plugin description
+
+## 1.8.7
+
+### Patch Changes
+
+- 350250c: Updated dependency `@testing-library/jest-dom` to `6.6.3`.
+- 18f9d9d: Updated dependency `@types/node` to `18.19.68`.
+
 ## 1.8.6
 
 ### Patch Changes

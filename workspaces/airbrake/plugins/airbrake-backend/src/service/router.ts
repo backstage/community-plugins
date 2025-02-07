@@ -14,31 +14,23 @@
  * limitations under the License.
  */
 
-import { errorHandler } from '@backstage/backend-common';
 import express from 'express';
 import Router from 'express-promise-router';
 import { createProxyMiddleware } from 'http-proxy-middleware';
-import { AirbrakeConfig } from '../config';
+import { extractAirbrakeConfig } from '../config';
 import { Options } from 'http-proxy-middleware/dist/types';
 import { LoggerService } from '@backstage/backend-plugin-api';
+import { Config } from '@backstage/config';
+import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 
-/**
- * @deprecated Please migrate to the new backend system as this will be removed in the future.
- *
- * The router options that are needed when creating a router.
- *
- * @public
- */
+/** @internal */
 export interface RouterOptions {
   /**
    * A logger object
    */
   logger: LoggerService;
 
-  /**
-   * The Airbrake config obtained from {@link extractAirbrakeConfig}
-   */
-  airbrakeConfig: AirbrakeConfig;
+  config: Config;
 }
 
 /**
@@ -51,7 +43,8 @@ export interface RouterOptions {
 export const generateAirbrakePathRewrite = (
   options: RouterOptions,
 ): Options['pathRewrite'] => {
-  const apiKey = options.airbrakeConfig.apiKey;
+  const airbrakeConfig = extractAirbrakeConfig(options.config);
+  const apiKey = airbrakeConfig.apiKey;
 
   return path => {
     let newPath = path.replace(/.+?(\/api)/g, '');
@@ -64,19 +57,11 @@ export const generateAirbrakePathRewrite = (
   };
 };
 
-/**
- * @deprecated Please migrate to the new backend system as this will be removed in the future.
- *
- * Create the Airbrake Router, used for making API calls to the Airbrake API.
- *
- * @public
- *
- * @param options - Router options
- */
+/** @internal */
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
-  const { logger } = options;
+  const { logger, config } = options;
 
   const router = Router();
   router.use(express.json());
@@ -94,7 +79,8 @@ export async function createRouter(
       pathRewrite: generateAirbrakePathRewrite(options),
     }),
   );
+  const middleware = MiddlewareFactory.create({ logger, config });
 
-  router.use(errorHandler());
+  router.use(middleware.error());
   return router;
 }

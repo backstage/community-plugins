@@ -24,13 +24,72 @@ export {
   ScorecardsList,
 } from './plugin';
 
-export { techInsightsApiRef, TechInsightsClient } from './api';
-export type { TechInsightsApi, Check, InsightFacts } from './api';
-export { BooleanCheck } from './components/BooleanCheck';
-export { jsonRulesEngineCheckResultRenderer } from './components/CheckResultRenderer';
-export type { CheckResultRenderer } from './components/CheckResultRenderer';
+export {
+  /**
+   * @public
+   *
+   * @deprecated import from `@backstage-community/plugin-tech-insights-react` instead
+   */
+  type ResultCheckIconProps,
+  /**
+   * @public
+   *
+   * @deprecated import from `@backstage-community/plugin-tech-insights-react` instead
+   */
+  type ResultCheckIconBaseComponentProps,
+  /**
+   * @public
+   *
+   * @deprecated import from `@backstage-community/plugin-tech-insights-react` instead
+   */
+  type ResultLinksMenuInfo,
+  /**
+   * @public
+   *
+   * @deprecated import from `@backstage-community/plugin-tech-insights-react` instead
+   */
+  type CheckResultRenderer,
+  /**
+   * @public
+   *
+   * @deprecated import from `@backstage-community/plugin-tech-insights-react` instead
+   */
+  type TechInsightsApi,
+  /**
+   * @public
+   *
+   * @deprecated import from `@backstage-community/plugin-tech-insights-react` instead
+   */
+  techInsightsApiRef,
+  /**
+   * @public
+   *
+   * @deprecated import from `@backstage-community/plugin-tech-insights-react` instead
+   */
+  TechInsightsClient,
+  /**
+   * @public
+   *
+   * @deprecated import from `@backstage-community/plugin-tech-insights-react` instead
+   */
+  BooleanCheck,
+  /**
+   * @public
+   *
+   * @deprecated import from `@backstage-community/plugin-tech-insights-react` instead
+   */
+  jsonRulesEngineCheckResultRenderer,
+} from '@backstage-community/plugin-tech-insights-react';
+
 export type {
-  ResultCheckIconProps,
-  ResultCheckIconBaseComponentProps,
-} from './components/ResultCheckIcon';
-export type { ResultLinksMenuInfo } from './components/ResultLinksMenu';
+  /**
+   * @public
+   * @deprecated Import from `@backstage-community/plugin-tech-insights-common`
+   */
+  Check,
+  /**
+   * @public
+   * @deprecated Import from `@backstage-community/plugin-tech-insights-common`
+   */
+  InsightFacts,
+} from '@backstage-community/plugin-tech-insights-common';

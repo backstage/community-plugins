@@ -51,6 +51,9 @@ export function createAzureDevopsRunPipelineAction(options: {
     project: string;
     branch?: string;
     token?: string;
+    templateParameters?: {
+      [key: string]: string;
+    };
   }>({
     id: 'azure:pipeline:run',
     examples,
@@ -84,6 +87,12 @@ export function createAzureDevopsRunPipelineAction(options: {
             type: 'string',
             description: "The branch of the pipeline's repository.",
           },
+          templateParameters: {
+            type: 'object',
+            title: 'Template Parameters',
+            description:
+              'Azure DevOps pipeline template parameters in key-value pairs.',
+          },
         },
       },
       output: {
@@ -106,6 +115,7 @@ export function createAzureDevopsRunPipelineAction(options: {
         pipelineId,
         project,
         branch,
+        templateParameters,
       } = ctx.input;
 
       const url = `https://${host}/${organization}`;
@@ -135,6 +145,15 @@ export function createAzureDevopsRunPipelineAction(options: {
           },
         },
       };
+
+      // Add template parameters to RunPipelineParameters if available
+      if (templateParameters) {
+        // Log the templateParameters if available
+        ctx.logger.info(
+          `Template parameters: ${JSON.stringify(templateParameters, null, 2)}`,
+        );
+        createOptions.templateParameters = templateParameters;
+      }
 
       // Log the createOptions object in a readable format
       ctx.logger.debug(

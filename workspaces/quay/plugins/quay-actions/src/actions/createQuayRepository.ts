@@ -36,7 +36,10 @@ interface RequestBody {
   repo_kind?: string;
 }
 
-type TemplateActionParameters = {
+/**
+ * @public
+ */
+export type TemplateActionParameters = {
   name: string;
   visibility: string;
   description: string;
@@ -73,6 +76,9 @@ const isValueValid = (
   );
 };
 
+/**
+ * @public
+ */
 export function createQuayRepositoryAction() {
   return createTemplateAction<TemplateActionParameters>({
     id: 'quay:create-repository',

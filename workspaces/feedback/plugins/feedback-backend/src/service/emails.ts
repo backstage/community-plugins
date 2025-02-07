@@ -39,9 +39,7 @@ export class NodeMailer {
       port: config.getOptionalNumber('feedback.integrations.email.port') ?? 587,
       auth: {
         user: config.getOptionalString('feedback.integrations.email.auth.user'),
-        pass: config.getOptionalString(
-          'feedback.integrations.email.auth.password',
-        ),
+        pass: config.getOptionalString('feedback.integrations.email.auth.pass'),
       },
       secure: useSecure,
       tls: {

@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.13.0
+
+### Minor Changes
+
+- 8888b6f: bump backstage to 1.34.2 and remove @spotify/prettier-config
+
 ## 1.12.0
 
 ### Minor Changes

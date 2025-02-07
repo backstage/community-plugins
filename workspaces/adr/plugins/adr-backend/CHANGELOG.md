@@ -1,5 +1,49 @@
 # @backstage-community/plugin-adr-backend
 
+## 0.6.0
+
+### Minor Changes
+
+- d527ea3: Backstage version bump to v1.35.1
+
+### Patch Changes
+
+- Updated dependencies [d527ea3]
+  - @backstage-community/plugin-adr-common@0.4.0
+  - @backstage-community/search-backend-module-adr@0.4.0
+
+## 0.5.3
+
+### Patch Changes
+
+- eb6cbef: Fixed a bug that caused no ADRs to be returned from `/list` if at least one failed to parse.
+
+## 0.5.2
+
+### Patch Changes
+
+- Updated dependencies [03913ac]
+  - @backstage-community/search-backend-module-adr@0.3.2
+
+## 0.5.1
+
+### Patch Changes
+
+- Updated dependencies [9e92818]
+  - @backstage-community/search-backend-module-adr@0.3.1
+
+## 0.5.0
+
+### Minor Changes
+
+- d5e54af: Backstage version bump to v1.34.1
+
+### Patch Changes
+
+- Updated dependencies [d5e54af]
+  - @backstage-community/plugin-adr-common@0.3.0
+  - @backstage-community/search-backend-module-adr@0.3.0
+
 ## 0.4.27
 
 ### Patch Changes

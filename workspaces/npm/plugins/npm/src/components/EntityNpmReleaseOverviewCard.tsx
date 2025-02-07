@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import React from 'react';
+
 import {
   MissingAnnotationEmptyState,
   useEntity,
@@ -23,16 +24,18 @@ import {
   Table,
   type TableColumn,
 } from '@backstage/core-components';
+
+import { NpmAnnotation } from '@backstage-community/plugin-npm-common';
+
 import Box from '@material-ui/core/Box';
-import useAsync from 'react-use/esm/useAsync';
 import { DateTime } from 'luxon';
-import { NPM_PACKAGE_ANNOTATION } from '../annotations';
-import { API } from '../api';
+
+import { usePackageInfo } from '../hooks/usePackageInfo';
 
 interface TagRow {
   tag: string;
   version: string;
-  published: string;
+  published?: string;
 }
 
 const tagColumns: TableColumn<TagRow>[] = [
@@ -50,11 +53,14 @@ const tagColumns: TableColumn<TagRow>[] = [
     title: 'Published',
     field: 'published',
     type: 'datetime',
-    render: row => (
-      <time dateTime={row.published} title={row.published}>
-        {DateTime.fromISO(row.published).toRelative()}
-      </time>
-    ),
+    render: row =>
+      row.published ? (
+        <time dateTime={row.published} title={row.published}>
+          {DateTime.fromISO(row.published).toRelative()}
+        </time>
+      ) : (
+        '-'
+      ),
   },
 ];
 
@@ -66,19 +72,18 @@ const tagColumns: TableColumn<TagRow>[] = [
  */
 export const EntityNpmReleaseOverviewCard = () => {
   const { entity } = useEntity();
+  const { packageInfo, loading, error } = usePackageInfo();
 
-  const packageName = entity.metadata.annotations?.[NPM_PACKAGE_ANNOTATION];
-
-  const {
-    value: packageInfo,
-    loading,
-    error,
-  } = useAsync(() => API.fetchNpmPackage(packageName), [packageName]);
+  const packageName = entity.metadata.annotations?.[NpmAnnotation.PACKAGE_NAME];
+  const showTags = entity.metadata.annotations?.[NpmAnnotation.SHOW_TAGS]
+    ?.split(',')
+    .map(s => s.trim())
+    .filter(Boolean);
 
   if (!packageName) {
     return (
       <MissingAnnotationEmptyState
-        annotation={NPM_PACKAGE_ANNOTATION}
+        annotation={NpmAnnotation.PACKAGE_NAME}
         readMoreUrl="https://backstage.io/docs/features/software-catalog/descriptor-format"
       />
     );
@@ -87,7 +92,10 @@ export const EntityNpmReleaseOverviewCard = () => {
   const data: TagRow[] = [];
   if (packageInfo?.['dist-tags']) {
     for (const [tag, version] of Object.entries(packageInfo['dist-tags'])) {
-      const published = packageInfo.time[version];
+      if (showTags && showTags.length > 0 && !showTags.includes(tag)) {
+        continue;
+      }
+      const published = packageInfo.time?.[version];
       data.push({ tag, version, published });
     }
   }

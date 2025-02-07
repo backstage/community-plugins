@@ -4,7 +4,7 @@ kind: Component
 metadata:
   name: backstage-community-acr
   title: Azure Container Registry plugin
-  description: Azure Container Registry plugin for Backstage
+  description: A Backstage plugin that displays information about your container images available in the Azure Container Registry
   annotations:
     backstage.io/source-location: url:https://github.com/backstage/community-plugins/tree/main/workspaces/acr/plugins/acr
     backstage.io/view-url: https://github.com/backstage/community-plugins/tree/main/workspaces/acr/plugins/acr/catalog-info.yaml
@@ -30,7 +30,7 @@ kind: Component
 metadata:
   name: backstage-community-acr-frontend
   title: '@backstage-community/plugin-acr'
-  description: Azure Container Registry plugin for Backstage
+  description: A Backstage plugin that displays information about your container images available in the Azure Container Registry
   annotations:
     backstage.io/source-location: url:https://github.com/backstage/community-plugins/tree/main/workspaces/acr/plugins/acr
     backstage.io/view-url: https://github.com/backstage/community-plugins/tree/main/workspaces/acr/plugins/acr/catalog-info.yaml

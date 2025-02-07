@@ -6,7 +6,6 @@
 | :----------------------------------------------- | :----------- | :------- |
 | @backstage-community/plugin-tech-insights-common | package.json | error    |
 | @backstage-community/plugin-tech-insights-node   | package.json | error    |
-| @backstage/backend-tasks                         | package.json | error    |
 | uuid                                             | package.json | error    |
 | yn                                               | package.json | error    |
 

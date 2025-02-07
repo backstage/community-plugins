@@ -18,12 +18,12 @@ import fs from 'fs';
 import path from 'path';
 import { Jacoco } from './jacoco';
 import { JacocoXML } from './types';
-import { getVoidLogger } from '@backstage/backend-common';
+import { mockServices } from '@backstage/backend-test-utils';
 
 /* eslint-disable no-restricted-syntax */
 
 describe('convert jacoco', () => {
-  const converter = new Jacoco(getVoidLogger());
+  const converter = new Jacoco(mockServices.rootLogger());
   let fixture: JacocoXML;
   parseString(
     fs.readFileSync(

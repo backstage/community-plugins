@@ -56,6 +56,9 @@ import {
 } from './open-api-merger-converter';
 import { Swagger } from 'atlassian-openapi';
 
+/**
+ * @public
+ */
 export class ThreeScaleApiEntityProvider implements EntityProvider {
   private static SERVICES_FETCH_SIZE: number = 500;
   private readonly env: string;
