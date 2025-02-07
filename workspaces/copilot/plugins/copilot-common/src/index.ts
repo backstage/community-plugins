@@ -23,6 +23,7 @@
 /**
  * Represents metrics data for a day in the copilot plugin.
  *
+ * @deprecated See #2828
  * @public
  */
 export interface Breakdown {
@@ -72,6 +73,7 @@ export type MetricsType = 'enterprise' | 'organization';
 /**
  * Represents a detailed breakdown of metrics by language and editor.
  *
+ * @deprecated See #2828
  * @public
  */
 export interface Metric {
@@ -175,4 +177,174 @@ export interface TeamInfo {
    * The name of the team.
    */
   name: string;
+}
+
+/**
+ * Thin wrapper for the CopilotMetrics type
+ * @public
+ */
+export interface CopilotLanguages {
+  /**
+   * The language name
+   */
+  name: string;
+  /**
+   * The number of engaged users
+   */
+  total_engaged_users: number;
+  /**
+   * total number of code suggestions
+   */
+  total_code_suggestions: number;
+  /**
+   * total number of code acceptances
+   */
+  total_code_acceptances: number;
+  /**
+   * total number of code lines suggested
+   */
+  total_code_lines_suggested: number;
+  /**
+   * total number of code lines accepted
+   */
+  total_code_lines_accepted: number;
+}
+
+/**
+ * Thin wrapper for the CopilotMetrics type
+ * @public
+ */
+export interface CopilotModels {
+  /**
+   * The model name
+   */
+  name: string;
+  /**
+   * List of languages this model was used in
+   */
+  languages: CopilotLanguages[];
+}
+
+/**
+ * Thin wrapper for the CopilotMetrics type
+ * @public
+ */
+export interface CopilotEditors {
+  /**
+   * The editor name
+   */
+  name: string;
+  /**
+   * List of models this editor was used in
+   */
+  models: CopilotModels[];
+}
+
+/**
+ * Thin wrapper for the CopilotMetrics type
+ * @public
+ */
+export interface CopilotIdeCodeCompletions {
+  editors: CopilotEditors[];
+}
+
+/**
+ * Represents the metrics data for copilot
+ *
+ * Not entirely implemented. Only the stuff we needed to satisfy #2828
+ *
+ * https://docs.github.com/en/rest/copilot/copilot-metrics?apiVersion=2022-11-28
+ *
+ * @public
+ */
+export interface CopilotMetrics {
+  /**
+   * The date for the metrics reported.
+   */
+  date: string;
+
+  /**
+   * The total number of active users.
+   */
+  total_active_users: number;
+
+  /**
+   * The total number of engaged users.
+   */
+  total_engaged_users: number;
+
+  /**
+   * The total number of code suggestions for IDE users.
+   */
+  copilot_ide_code_completions: CopilotIdeCodeCompletions;
+}
+
+/**
+ * @internal
+ * @deprecated This is just a bridge function to make #2828 work on short notice, long term, we should rely on CopilotMetrics instead of Metric
+ **/
+export function convertToMetric(
+  copilot_metrics: CopilotMetrics[],
+  metric_type: MetricsType,
+  team_name: string | undefined,
+): Metric[] {
+  const metric: Metric[] = [];
+
+  copilot_metrics.forEach(copilot_metric => {
+    const breakdown: Breakdown[] = [];
+
+    copilot_metric.copilot_ide_code_completions.editors.forEach(editor => {
+      editor.models.forEach(model => {
+        model.languages.forEach(language => {
+          breakdown.push({
+            acceptances_count: language.total_code_acceptances,
+            active_users: language.total_engaged_users,
+            editor: editor.name,
+            language: language.name,
+            lines_accepted: language.total_code_lines_accepted,
+            lines_suggested: language.total_code_lines_suggested,
+            suggestions_count: language.total_code_suggestions,
+          });
+        });
+      });
+    });
+
+    metric.push({
+      breakdown: breakdown,
+      day: copilot_metric.date,
+      type: metric_type,
+      team_name: team_name,
+      total_acceptances_count: breakdown.reduce(
+        (acc, curr) => acc + curr.acceptances_count,
+        0,
+      ),
+      total_active_chat_users: 0,
+      total_active_users: breakdown.reduce(
+        (acc, curr) => acc + curr.active_users,
+        0,
+      ),
+      total_chat_acceptances: breakdown.reduce(
+        (acc, curr) => acc + curr.acceptances_count,
+        0,
+      ),
+      total_chat_turns: breakdown.reduce(
+        (acc, curr) => acc + curr.acceptances_count,
+        0,
+      ),
+      total_lines_accepted: breakdown.reduce(
+        (acc, curr) => acc + curr.lines_accepted,
+        0,
+      ),
+      total_lines_suggested: breakdown.reduce(
+        (acc, curr) => acc + curr.lines_suggested,
+        0,
+      ),
+      total_suggestions_count: breakdown.reduce(
+        (acc, curr) => acc + curr.suggestions_count,
+        0,
+      ),
+    });
+  });
+
+  return metric;
 }

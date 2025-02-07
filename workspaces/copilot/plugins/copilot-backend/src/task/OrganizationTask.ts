@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { MetricsType } from '@backstage-community/plugin-copilot-common';
+import {
+  convertToMetric,
+  MetricsType,
+} from '@backstage-community/plugin-copilot-common';
 import { MetricDbRow } from '../db/DatabaseHandler';
 import { batchInsertInChunks } from '../utils/batchInsert';
 import {
@@ -38,7 +41,9 @@ export async function discoverOrganizationMetrics({
   const type: MetricsType = 'organization';
 
   try {
-    const metrics = await api.fetchOrganizationCopilotUsage();
+    const copilot_metrics = await api.fetchOrganizationCopilotMetrics();
+    const metrics = convertToMetric(copilot_metrics, type, undefined);
+
     logger.info(
       `[discoverOrganizationMetrics] Fetched ${metrics.length} metrics`,
     );

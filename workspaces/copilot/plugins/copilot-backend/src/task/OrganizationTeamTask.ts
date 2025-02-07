@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-import { MetricsType } from '@backstage-community/plugin-copilot-common';
+import {
+  convertToMetric,
+  MetricsType,
+} from '@backstage-community/plugin-copilot-common';
 import { MetricDbRow } from '../db/DatabaseHandler';
 import { batchInsertInChunks } from '../utils/batchInsert';
 import {
@@ -50,7 +53,11 @@ export async function discoverOrganizationTeamMetrics({
           `[discoverOrganizationTeamMetrics] Fetching metrics for team: ${team.slug}`,
         );
 
-        const metrics = await api.fetchOrganizationTeamCopilotUsage(team.slug);
+        const copilot_metrics = await api.fetchOrganizationTeamCopilotMetrics(
+          team.slug,
+        );
+        const metrics = convertToMetric(copilot_metrics, type, team.slug);
+
         logger.info(
           `[discoverOrganizationTeamMetrics] Fetched ${metrics.length} metrics for team: ${team.slug}`,
         );
