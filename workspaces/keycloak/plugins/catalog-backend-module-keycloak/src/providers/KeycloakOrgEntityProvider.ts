@@ -31,10 +31,10 @@ import type {
   EntityProviderConnection,
 } from '@backstage/plugin-catalog-node';
 
-import type { Credentials } from '@keycloak/keycloak-admin-client/lib/utils/auth';
 // @ts-ignore
 import inclusion from 'inclusion';
 import { merge } from 'lodash';
+import { LimitFunction } from 'p-limit';
 import * as uuid from 'uuid';
 
 import {
@@ -45,6 +45,7 @@ import {
 } from '../lib';
 import { readProviderConfigs } from '../lib/config';
 import { readKeycloakRealm } from '../lib/read';
+import { authenticate } from '../lib/authenticate';
 
 /**
  * Options for {@link KeycloakOrgEntityProvider}.
@@ -121,6 +122,12 @@ export class KeycloakOrgEntityProvider implements EntityProvider {
   private connection?: EntityProviderConnection;
   private scheduleFn?: () => Promise<void>;
 
+  /**
+   * Static builder method to create multiple KeycloakOrgEntityProvider instances from a single config.
+   * @param deps - The dependencies required for the provider, including the configuration and logger.
+   * @param options - Options for scheduling tasks and transforming users and groups.
+   * @returns An array of KeycloakOrgEntityProvider instances.
+   */
   static fromConfig(
     deps: {
       config: Config;
@@ -177,10 +184,17 @@ export class KeycloakOrgEntityProvider implements EntityProvider {
     this.schedule(options.taskRunner);
   }
 
+  /**
+   * Returns the name of this entity provider.
+   */
   getProviderName(): string {
     return `KeycloakOrgEntityProvider:${this.options.id}`;
   }
 
+  /**
+   * Connect to Backstage catalog entity provider
+   * @param connection - The connection to the catalog API ingestor, which allows the provision of new entities.
+   */
   async connect(connection: EntityProviderConnection) {
     this.connection = connection;
     await this.scheduleFn?.();
@@ -208,34 +222,18 @@ export class KeycloakOrgEntityProvider implements EntityProvider {
       baseUrl: provider.baseUrl,
       realmName: provider.loginRealm,
     });
+    await authenticate(kcAdminClient, provider, logger);
 
-    let credentials: Credentials;
-
-    if (provider.username && provider.password) {
-      credentials = {
-        grantType: 'password',
-        clientId: provider.clientId ?? 'admin-cli',
-        username: provider.username,
-        password: provider.password,
-      };
-    } else if (provider.clientId && provider.clientSecret) {
-      credentials = {
-        grantType: 'client_credentials',
-        clientId: provider.clientId,
-        clientSecret: provider.clientSecret,
-      };
-    } else {
-      throw new InputError(
-        `username and password or clientId and clientSecret must be provided.`,
-      );
-    }
-
-    await kcAdminClient.auth(credentials);
+    const pLimitCJSModule = await inclusion('p-limit');
+    const limitFunc = pLimitCJSModule.default;
+    const concurrency = provider.maxConcurrency ?? 20;
+    const limit: LimitFunction = limitFunc(concurrency);
 
     const { users, groups } = await readKeycloakRealm(
       kcAdminClient,
       provider,
       logger,
+      limit,
       {
         userQuerySize: provider.userQuerySize,
         groupQuerySize: provider.groupQuerySize,
@@ -257,6 +255,10 @@ export class KeycloakOrgEntityProvider implements EntityProvider {
     markCommitComplete();
   }
 
+  /**
+   * Periodically schedules a task to read Keycloak user and group information, parse it, and provision it to the Backstage catalog.
+   * @param taskRunner - The task runner to use for scheduling tasks.
+   */
   schedule(taskRunner: SchedulerServiceTaskRunner) {
     this.scheduleFn = async () => {
       const id = `${this.getProviderName()}:refresh`;
