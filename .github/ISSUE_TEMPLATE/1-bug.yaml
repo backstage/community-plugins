@@ -22,6 +22,7 @@ body:
         - apache-airflow
         - apollo-explorer
         - azure-devops
+        - azure-resources
         - azure-sites
         - azure-storage-explorer
         - badges
@@ -48,6 +49,7 @@ body:
         - git-release-manager
         - github-actions
         - github-deployments
+        - github-discussions
         - github-issues
         - github-pull-requests-board
         - gitops-profiles
