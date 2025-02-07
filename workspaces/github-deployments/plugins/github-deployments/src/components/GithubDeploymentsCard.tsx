@@ -43,7 +43,7 @@ const GithubDeploymentsComponent = ({
   host,
 }: {
   projectSlug: string;
-  environments: string[];
+  environments?: string[];
   last: number;
   lastStatuses: number;
   columns: TableColumn<GithubDeployment>[];
@@ -103,7 +103,7 @@ export const GithubDeploymentsCard = (props: {
       projectSlug={
         entity?.metadata.annotations?.[GITHUB_PROJECT_SLUG_ANNOTATION] || ''
       }
-      environments={environments || []}
+      environments={environments}
       last={last || 10}
       lastStatuses={lastStatuses || 5}
       host={host}
