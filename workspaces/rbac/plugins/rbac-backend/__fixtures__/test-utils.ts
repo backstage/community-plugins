@@ -143,6 +143,7 @@ export async function newEnforcerDelegate(
   return new EnforcerDelegate(
     enf,
     auditLogger(),
+    conditionalStorageMock,
     roleMetadataStorageMock,
     mockClientKnex,
   );
