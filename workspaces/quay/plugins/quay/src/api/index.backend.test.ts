@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2025 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
+/**
+ * This file holds similar tests to index.test.ts but it tests using the quay backend
+ * instead of using the proxy.
+ */
+
 import { UrlPatternDiscovery } from '@backstage/core-app-api';
 import { IdentityApi } from '@backstage/core-plugin-api';
 
@@ -22,11 +27,13 @@ import { setupServer } from 'msw/node';
 
 import { QuayApiClient, QuayApiV1 } from './index';
 
-const LOCAL_PROXY_ADDR = 'https://localhost:5050/quay/api/';
+const LOCAL_API_ADDR = 'https://localhost:7070/api/quay';
+const DEFAULT_PROXY_ADDR = 'https://localhost:7070';
 
-const proxyHandlers = [
+const apiHandlers = [
+  // Default proxy request if apiUrl is not set.
   rest.get(
-    `${LOCAL_PROXY_ADDR}api/v1/repository/foo/bar/tag/`,
+    `${DEFAULT_PROXY_ADDR}/quay/api/api/v1/repository/foo/bar/tag/`,
     (req, res, ctx) => {
       if (req.url.searchParams.get('limit') === '1') {
         return res(
@@ -46,19 +53,34 @@ const proxyHandlers = [
       );
     },
   ),
-
-  rest.get(
-    `${LOCAL_PROXY_ADDR}api/v1/repository/not/found/tag?`,
-    (_, res, ctx) => {
+  rest.get(`${LOCAL_API_ADDR}/repository/foo/bar/tag?`, (req, res, ctx) => {
+    if (req.url.searchParams.get('limit') === '1') {
       return res(
-        ctx.status(404),
-        ctx.json(require(`${__dirname}/fixtures/tags/not_found.json`)),
+        ctx.status(200),
+        ctx.json(require(`${__dirname}/fixtures/tags/foo_limit.json`)),
       );
-    },
-  ),
+    } else if (req.url.searchParams.get('page') === '2') {
+      return res(
+        ctx.status(200),
+        ctx.json(require(`${__dirname}/fixtures/tags/foo_page2.json`)),
+      );
+    }
+
+    return res(
+      ctx.status(200),
+      ctx.json(require(`${__dirname}/fixtures/tags/foo_page1.json`)),
+    );
+  }),
+
+  rest.get(`${LOCAL_API_ADDR}/repository/not/found/tag?`, (_, res, ctx) => {
+    return res(
+      ctx.status(404),
+      ctx.json(require(`${__dirname}/fixtures/tags/not_found.json`)),
+    );
+  }),
 
   rest.get(
-    `${LOCAL_PROXY_ADDR}api/v1/repository/foo/bar/manifest/sha256:e766248d812bcdadc1ee293b564af1f2517dd6c0327eefab2411e4f11e980d54`,
+    `${LOCAL_API_ADDR}/repository/foo/bar/manifest/sha256:e766248d812bcdadc1ee293b564af1f2517dd6c0327eefab2411e4f11e980d54`,
     (_, res, ctx) => {
       return res(
         ctx.status(200),
@@ -68,7 +90,7 @@ const proxyHandlers = [
   ),
 
   rest.get(
-    `${LOCAL_PROXY_ADDR}api/v1/repository/foo/bar/manifest/sha256:e461dc54b4e2469bb7f5bf85a4b7445c175548ba9d56c3f617dd25bc3adf3752`,
+    `${LOCAL_API_ADDR}/repository/foo/bar/manifest/sha256:e461dc54b4e2469bb7f5bf85a4b7445c175548ba9d56c3f617dd25bc3adf3752`,
     (_, res, ctx) => {
       return res(
         ctx.status(200),
@@ -78,7 +100,7 @@ const proxyHandlers = [
   ),
 
   rest.get(
-    `${LOCAL_PROXY_ADDR}api/v1/repository/foo/bar/manifest/sha256:e766248d812bcdadc1ee293b564af1f2517dd6c0327eefab2411e4f11e980d54/labels`,
+    `${LOCAL_API_ADDR}/repository/foo/bar/manifest/sha256:e766248d812bcdadc1ee293b564af1f2517dd6c0327eefab2411e4f11e980d54/labels`,
     (_, res, ctx) => {
       return res(
         ctx.status(200),
@@ -88,7 +110,7 @@ const proxyHandlers = [
   ),
 
   rest.get(
-    `${LOCAL_PROXY_ADDR}api/v1/repository/foo/bar/manifest/sha256:e766248d812bcdadc1ee293b564af1f2517dd6c0327eefab2411e4f11e980d54/security`,
+    `${LOCAL_API_ADDR}/repository/foo/bar/manifest/sha256:e766248d812bcdadc1ee293b564af1f2517dd6c0327eefab2411e4f11e980d54/security`,
     (_, res, ctx) => {
       return res(
         ctx.status(200),
@@ -98,13 +120,13 @@ const proxyHandlers = [
   ),
 ];
 
-const server = setupServer(...proxyHandlers);
+const server = setupServer(...apiHandlers);
 
 beforeAll(() => server.listen());
 afterEach(() => server.restoreHandlers());
 afterAll(() => server.close());
 
-describe('QuayApiClient', () => {
+describe('QuayApiClient-Backend', () => {
   let quayApi: QuayApiV1;
   const bearerToken = 'Bearer token';
 
@@ -129,24 +151,27 @@ describe('QuayApiClient', () => {
 
   const identityApi = {
     async getCredentials() {
-      return { token: bearerToken };
+      return {
+        token: bearerToken,
+      };
     },
   } as IdentityApi;
 
   beforeEach(() => {
     quayApi = new QuayApiClient({
       configApi: getConfigApi({
-        'quay.proxyPath': '/quay/api',
+        'quay.apiUrl': 'https://quay.io',
       }),
-      discoveryApi: UrlPatternDiscovery.compile('https://localhost:5050'),
+      discoveryApi: UrlPatternDiscovery.compile(LOCAL_API_ADDR),
       identityApi: identityApi,
     });
   });
 
-  it('should use a correct default proxy path', async () => {
+  it('should default to proxy if apiUrl is not set.', async () => {
+    // Proxy
     quayApi = new QuayApiClient({
       configApi: getConfigApi({}),
-      discoveryApi: UrlPatternDiscovery.compile('https://localhost:5050'),
+      discoveryApi: UrlPatternDiscovery.compile(DEFAULT_PROXY_ADDR),
       identityApi: identityApi,
     });
 
