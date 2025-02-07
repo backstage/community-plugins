@@ -21,8 +21,6 @@ import {
   KubernetesListObject,
 } from '@kubernetes/client-node';
 
-import http from 'http';
-
 import { ManagedCluster, ManagedClusterInfo, OcmConfig } from '../types';
 
 export const hubApiClient = (
@@ -66,77 +64,84 @@ export const hubApiClient = (
   return kubeConfig.makeApiClient(CustomObjectsApi);
 };
 
-const kubeApiResponseHandler = <T extends Object>(
-  call: Promise<{
-    response: http.IncomingMessage;
-    body: object;
-  }>,
-) => {
+const kubeApiResponseHandler = <T>(call: Promise<T>) => {
   return call
     .then(r => {
-      return r.body as T;
+      return r;
     })
     .catch(r => {
-      if (!r.body) {
-        throw Object.assign(new Error(r.message), {
-          // If there is no body, there is no status code, default to 500
-          statusCode: 500,
-          name: r.message,
-        });
-      } else if (typeof r.body === 'string') {
-        throw Object.assign(new Error(r.body), {
-          statusCode: r.body.code || r.statusCode,
-          name: r.body,
-        });
+      if (r.body) {
+        if (typeof r.body === 'object') {
+          throw Object.assign(new Error(r.body.reason), {
+            // Name and statusCode are required by the backstage error handler
+            statusCode: r.body.code || r.statusCode,
+            name: r.body.reason,
+            ...r.body,
+          });
+        }
+        if (typeof r.body === 'string') {
+          const body = JSON.parse(r.body);
+          throw Object.assign(new Error(), {
+            name: body.reason,
+            message: body.message,
+            statusCode: body.code,
+            kind: body.kind,
+            apiVersion: body.apiVersion,
+            metadata: body.metadata,
+            status: body.status,
+            reason: body.reason,
+            details: body.details,
+            code: body.code,
+          });
+        }
       }
-      throw Object.assign(new Error(r.body.reason), {
-        // Name and statusCode are required by the backstage error handler
-        statusCode: r.body.code || r.statusCode,
-        name: r.body.reason,
-        ...r.body,
+      throw Object.assign(new Error(r.message), {
+        // If there is no body, there is no status code, default to 500
+        statusCode: 500,
+        name: r.message,
       });
     });
 };
 
 export const getManagedCluster = (api: CustomObjectsApi, name: string) => {
   return kubeApiResponseHandler<ManagedCluster>(
-    api.getClusterCustomObject(
-      'cluster.open-cluster-management.io',
-      'v1',
-      'managedclusters',
+    api.getClusterCustomObject({
+      plural: 'managedclusters',
+      version: 'v1',
+      group: 'cluster.open-cluster-management.io',
       name,
-    ),
+    }),
   );
 };
 
 export const listManagedClusters = (api: CustomObjectsApi) => {
   return kubeApiResponseHandler<KubernetesListObject<ManagedCluster>>(
-    api.listClusterCustomObject(
-      'cluster.open-cluster-management.io',
-      'v1',
-      'managedclusters',
-    ),
+    api.listClusterCustomObject({
+      group: 'cluster.open-cluster-management.io',
+      version: 'v1',
+      plural: 'managedclusters',
+    }),
   );
 };
 
 export const getManagedClusterInfo = (api: CustomObjectsApi, name: string) => {
   return kubeApiResponseHandler<ManagedClusterInfo>(
-    api.getNamespacedCustomObject(
-      'internal.open-cluster-management.io',
-      'v1beta1',
+    api.getNamespacedCustomObject({
+      group: 'internal.open-cluster-management.io',
+      version: 'v1beta1',
       name,
-      'managedclusterinfos',
-      name,
-    ),
+      namespace: name,
+      plural: 'managedclusterinfos',
+    }),
   );
 };
 
 export const listManagedClusterInfos = (api: CustomObjectsApi) => {
   return kubeApiResponseHandler<KubernetesListObject<ManagedClusterInfo>>(
-    api.listClusterCustomObject(
-      'internal.open-cluster-management.io',
-      'v1beta1',
-      'managedclusterinfos',
-    ),
+    api.listClusterCustomObject({
+      group: 'internal.open-cluster-management.io',
+      version: 'v1beta1',
+      plural: 'managedclusterinfos',
+    }),
   );
 };

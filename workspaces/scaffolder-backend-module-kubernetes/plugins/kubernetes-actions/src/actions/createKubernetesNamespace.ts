@@ -22,9 +22,8 @@ import {
 
 import {
   CoreV1Api,
+  CoreV1ApiCreateNamespaceRequest,
   KubeConfig,
-  V1Namespace,
-  type HttpError,
 } from '@kubernetes/client-node';
 
 const KUBERNETES_API_URL_ANNOTATION = 'kubernetes.io/api-server';
@@ -231,19 +230,32 @@ export function createKubernetesNamespaceAction(catalogClient: CatalogClient) {
       const namespaceLabels = convertLabelsToObject(labels);
 
       const api = kubeConfig.makeApiClient(CoreV1Api);
-      const k8sNamespace: V1Namespace = {
-        metadata: {
-          name: namespace,
-          labels: namespaceLabels,
+      const k8sNamespace: CoreV1ApiCreateNamespaceRequest = {
+        body: {
+          metadata: {
+            name: namespace,
+            labels: namespaceLabels,
+          },
         },
       };
-      await api.createNamespace(k8sNamespace).catch((e: HttpError) => {
-        const errorBody = e.body as HttpErrorBody;
-        const statusCode = errorBody?.code || e.statusCode;
-        const message = errorBody?.message || e.message;
-        throw new Error(
-          `Failed to create kubernetes namespace, ${statusCode} -- ${message}`,
-        );
+      await api.createNamespace(k8sNamespace).catch((e: Error) => {
+        if ('body' in e && typeof e.body === 'string') {
+          let body: HttpErrorBody | undefined;
+          try {
+            body = JSON.parse((e as { body: string }).body);
+          } catch (error) {
+            throw new Error(
+              `Failed to create kubernetes namespace, ${e.message}`,
+            );
+          }
+          if (body) {
+            const { code, message } = body;
+            throw new Error(
+              `Failed to create kubernetes namespace, API code: ${code} -- ${message}`,
+            );
+          }
+        }
+        throw new Error(`Failed to create kubernetes namespace, ${e.message}`);
       });
     },
   });
