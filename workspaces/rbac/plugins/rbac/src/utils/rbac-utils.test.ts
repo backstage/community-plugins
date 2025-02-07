@@ -54,19 +54,19 @@ const mockPolicies = [
   },
   {
     entityReference: 'user:default/xyz',
-    permission: 'policy-entity',
+    permission: 'policy.entity.read',
     policy: 'read',
     effect: 'allow',
   },
   {
     entityReference: 'user:default/xyz',
-    permission: 'policy-entity',
+    permission: 'policy.entity.create',
     policy: 'create',
     effect: 'allow',
   },
   {
     entityReference: 'user:default/xyz',
-    permission: 'policy-entity',
+    permission: 'policy.entity.delete',
     policy: 'delete',
     effect: 'allow',
   },
@@ -204,49 +204,29 @@ describe('rbac utils', () => {
   it('should return the permissions data', () => {
     let data = getPermissionsData(mockPolicies, mockPermissionPolicies);
     expect(data[0]).toEqual({
-      permission: 'policy-entity',
+      permission: 'policy.entity.read',
       plugin: 'permission',
       policies: [
         {
           effect: 'allow',
           policy: 'Read',
         },
-        {
-          effect: 'allow',
-          policy: 'Create',
-        },
-        {
-          effect: 'allow',
-          policy: 'Delete',
-        },
-        {
-          effect: 'deny',
-          policy: 'Update',
-        },
       ],
-      policyString: ['Read', ', Create', ', Delete'],
-      isResourced: false,
-      resourceType: '',
+      policyString: ['Read'],
+      isResourced: true,
+      resourceType: 'policy-entity',
     });
     data = getPermissionsData(mockPolicies, []);
     expect(data[0]).toEqual({
-      permission: 'policy-entity',
+      permission: 'policy.entity.read',
       plugin: '-',
       policies: [
         {
           effect: 'allow',
           policy: 'Read',
         },
-        {
-          effect: 'allow',
-          policy: 'Create',
-        },
-        {
-          effect: 'allow',
-          policy: 'Delete',
-        },
       ],
-      policyString: ['Read', ', Create', ', Delete'],
+      policyString: ['Read'],
       isResourced: false,
     });
   });

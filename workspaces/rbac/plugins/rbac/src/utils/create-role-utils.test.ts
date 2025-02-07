@@ -268,7 +268,7 @@ describe('getPluginsPermissionPoliciesData', () => {
               resourceType: 'catalog-entity',
             },
             'catalog.entity.create': {
-              policies: ['Create'],
+              policies: ['Use'],
               isResourced: false,
               resourceType: '',
             },
@@ -290,11 +290,7 @@ describe('getPluginsPermissionPoliciesData', () => {
           },
         },
         scaffolder: {
-          permissions: [
-            'scaffolder.template.read',
-            'scaffolder.template.read',
-            'scaffolder.action.use',
-          ],
+          permissions: ['scaffolder.template.read', 'scaffolder.action.use'],
           policies: {
             'scaffolder.template.read': {
               policies: ['Read'],
@@ -310,16 +306,31 @@ describe('getPluginsPermissionPoliciesData', () => {
         },
         permission: {
           permissions: [
-            'policy-entity',
-            'policy-entity',
-            'policy-entity',
-            'policy-entity',
+            'policy.entity.read',
+            'policy.entity.create',
+            'policy.entity.delete',
+            'policy.entity.update',
           ],
           policies: {
-            'policy-entity': {
-              policies: ['Read', 'Create', 'Delete', 'Update'],
-              isResourced: false,
-              resourceType: '',
+            'policy.entity.read': {
+              policies: ['Read'],
+              isResourced: true,
+              resourceType: 'policy-entity',
+            },
+            'policy.entity.delete': {
+              policies: ['Delete'],
+              isResourced: true,
+              resourceType: 'policy-entity',
+            },
+            'policy.entity.create': {
+              policies: ['Create'],
+              isResourced: true,
+              resourceType: 'policy-entity',
+            },
+            'policy.entity.update': {
+              policies: ['Update'],
+              isResourced: true,
+              resourceType: 'policy-entity',
             },
           },
         },
