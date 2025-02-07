@@ -27,6 +27,7 @@ import { mergeRoleMetadata, policiesToString, policyToString } from '../helper';
 import { MODEL } from './permission-model';
 import { PoliciesData } from '../auditor/auditor';
 import { AuditorService } from '@backstage/backend-plugin-api';
+import { ConditionalStorage } from '../database/conditional-storage';
 
 export type RoleEvents = 'roleAdded';
 export interface RoleEventEmitter<T extends RoleEvents> {
@@ -46,6 +47,7 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
   constructor(
     private readonly enforcer: Enforcer,
     private readonly auditor: AuditorService,
+    private readonly conditionalStorage: ConditionalStorage,
     private readonly roleMetadataStorage: RoleMetadataStorage,
     private readonly knex: Knex,
   ) {}

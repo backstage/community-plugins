@@ -46,6 +46,7 @@ import {
   expectAuditorLog,
 } from '../../__fixtures__/auditor-test-utils';
 import { ActionType, PermissionEvents } from '../auditor/auditor';
+import { conditionalStorageMock } from '../../__fixtures__/mock-utils';
 
 const mockLoggerService = mockServices.logger.mock();
 
@@ -188,6 +189,7 @@ describe('Connection', () => {
     enforcerDelegate = new EnforcerDelegate(
       enf,
       mockAuditorService,
+      conditionalStorageMock,
       roleMetadataStorageMock,
       knex,
     );
@@ -537,6 +539,7 @@ describe('connectRBACProviders', () => {
     const enforcerDelegate = new EnforcerDelegate(
       enf,
       mockAuditorService,
+      conditionalStorageMock,
       roleMetadataStorageMock,
       knex,
     );
