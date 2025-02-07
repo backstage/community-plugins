@@ -129,6 +129,7 @@ export class PolicyBuilder {
     const enforcerDelegate = new EnforcerDelegate(
       enf,
       env.auditor,
+      conditionStorage,
       roleMetadataStorage,
       databaseClient,
     );
