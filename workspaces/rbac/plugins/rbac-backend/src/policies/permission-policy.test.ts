@@ -1785,6 +1785,7 @@ describe('Policy checks for conditional policies', () => {
     const enfDelegate = new EnforcerDelegate(
       enf,
       auditLoggerMock,
+      conditionalStorageMock,
       roleMetadataStorageMock,
       mockClientKnex,
     );
@@ -2211,6 +2212,7 @@ async function newEnforcerDelegate(
   return new EnforcerDelegate(
     enf,
     auditLoggerMock,
+    conditionalStorageMock,
     roleMetadataStorageMock,
     mockClientKnex,
   );

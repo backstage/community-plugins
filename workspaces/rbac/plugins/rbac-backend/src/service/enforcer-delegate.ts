@@ -30,6 +30,7 @@ import {
   FETCH_NEWER_PERMISSIONS_STAGE,
   PoliciesData,
 } from '../audit-log/audit-logger';
+import { ConditionalStorage } from '../database/conditional-storage';
 
 export type RoleEvents = 'roleAdded';
 export interface RoleEventEmitter<T extends RoleEvents> {
@@ -49,6 +50,7 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
   constructor(
     private readonly enforcer: Enforcer,
     private readonly auditLogger: AuditLogger,
+    private readonly conditionalStorage: ConditionalStorage,
     private readonly roleMetadataStorage: RoleMetadataStorage,
     private readonly knex: Knex,
   ) {}
