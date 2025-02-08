@@ -1,5 +1,39 @@
 # @backstage-community/plugin-announcements
 
+## 0.4.0
+
+### Minor Changes
+
+- f253ff9: **breaking** - previously deprecated exports have been removed
+
+### Patch Changes
+
+- Updated dependencies [f253ff9]
+  - @backstage-community/plugin-announcements-react@0.3.1
+
+## 0.3.0
+
+### Minor Changes
+
+- 5c2483c: **BREAKING** Fixed a typo in translation keys (announecementsContent → announcementsContent), requiring all references to be updated to prevent missing translations.
+
+### Patch Changes
+
+- Updated dependencies [5c2483c]
+  - @backstage-community/plugin-announcements-react@0.3.0
+
+## 0.2.0
+
+### Minor Changes
+
+- e06ffa0: Backstage version bump to v1.35.1
+
+### Patch Changes
+
+- Updated dependencies [e06ffa0]
+  - @backstage-community/plugin-announcements-common@0.2.0
+  - @backstage-community/plugin-announcements-react@0.2.0
+
 ## 0.1.6
 
 ### Patch Changes

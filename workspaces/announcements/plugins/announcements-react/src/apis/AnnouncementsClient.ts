@@ -23,25 +23,32 @@ import {
 } from '@backstage/core-plugin-api';
 import { ResponseError } from '@backstage/errors';
 import {
-  CreateAnnouncementRequest,
-  CreateCategoryRequest,
-  AnnouncementsApi,
-} from '@backstage-community/plugin-announcements-react';
-import {
   Announcement,
   AnnouncementsList,
   Category,
 } from '@backstage-community/plugin-announcements-common';
+import { AnnouncementsApi } from './AnnouncementsApi';
+import { CreateAnnouncementRequest, CreateCategoryRequest } from './types';
 
 const lastSeenKey = 'user_last_seen_date';
 
-type AnnouncementsClientOptions = {
+/**
+ * Options for the AnnouncementsClient
+ *
+ * @public
+ */
+export type AnnouncementsClientOptions = {
   discoveryApi: DiscoveryApi;
   identityApi: IdentityApi;
   errorApi: ErrorApi;
   fetchApi: FetchApi;
 };
 
+/**
+ * Default client for the announcements API
+ *
+ * @public
+ */
 export class AnnouncementsClient implements AnnouncementsApi {
   private readonly discoveryApi: DiscoveryApi;
   private readonly identityApi: IdentityApi;
