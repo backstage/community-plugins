@@ -38,11 +38,10 @@ export const DataFilterComponent = ({ setFilters, data }) => {
     const style = document.createElement('style');
     style.id = 'filter-group-styles';
     style.innerHTML = `
-      [class*="pf-v5-c-"] {
+      [class*="pf-v5-c-toolbar"] {
         background-color: var(--p--pf-v5-global--palette--black-500) !important;
       }
-  ` ;
-    // Append the style element to the document head
+    `;    // Append the style element to the document head
     document.head.appendChild(style);
   };
 
