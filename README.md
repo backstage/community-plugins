@@ -43,6 +43,11 @@ Here's an example of how to configure all of the various plugins in your dynmaic
                         xs: "span 12"
 ```
 
+Each entity in the catalog will need to have an annotation added that references the deployment(s) in order to display vulnerability data for them. Here is an example:
+```
+acs/deployment-name: "test-deployment-1,test-deployment-2,test-deployment-3"
+```
+
 ## Local Development
 
 ### Prerequisites
@@ -72,7 +77,7 @@ First copy the `catalog_default` directory and rename it to `catalog`:
 cp -R catalog_default catalog
 ```
 
-Edit line 20 of `./catalog/components/test-app.yaml` to have the deployment name from the ACS API you wish to test.
+Edit line 20 of `./catalog/components/test-app.yaml` to have a comma separated string of deployment names from the ACS API you wish to test.
 
 ### Export Environment Variables
 
