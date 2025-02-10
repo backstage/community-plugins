@@ -21,11 +21,15 @@ yarn set version latest # or a specific version if is needed
 Bumping from version 3 to 4 implies changes on all the workspaces `yarn.lock` files, to update all the following command can be used:
 
 ```bash
-chmod +x ./scripts/yarn-install-all.sh
-./scripts/yarn-install-all.sh
+chmod +x ./scripts/run-in-all.sh
+./scripts/run-in-all.sh "yarn install && yarn dedupe --mode=update-lockfile && rm -rf node_modules"
 ```
 
-What this command does is to iterate over all the workspaces and run `yarn install --mode=update-lockfile` on each one. The `--mode=update-lockfile` flag is used to update the `yarn.lock` file only saving time form yarn link and other steps.
+What this command does is to iterate over all the workspaces and run `yarn install` on each one, full install is needed for some versions when yarn changes the checksums (i.e. from v3 to v4).
+The `yarn dedupe` command is used to update the `yarn.lock` file, this command will update the `yarn.lock` file with the new checksums and dependencies.
+The `rm -rf node_modules` command is used to remove the `node_modules` folder, this is optional but have in mind installing node modules in all golder will consume more than 100gb on disk.
+
+If for some version update the `--mode=update-lockfile` flag can be used to update the `yarn.lock` file only saving time form yarn link and other steps.
 
 ### 3. Create a PR
 
