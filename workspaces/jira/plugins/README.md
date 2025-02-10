@@ -18,15 +18,19 @@ Add the following proxy configuration to your app-config.yaml file to enable com
 
 ```
 proxy:
-  '/jira/api':
-    target: <JIRA_URL>
-    headers:
-      Authorization:
-        $env: JIRA_TOKEN
-      Accept: 'application/json'
-      Content-Type: 'application/json'
-      X-Atlassian-Token: 'no-check'
-      User-Agent: "dummyText"
+  endpoints:
+    '/jira/api':  # Ensure this matches the proxyPath
+      target: <JIRA_URL>
+      allowedMethods: ['GET', 'POST']
+      allowedHeaders: ['Authorization', 'X-Atlassian-Token', 'Content-Type']
+      headers:
+        Authorization: 'Bearer ${JIRA_TOKEN}'
+        Accept: 'application/json'
+        Content-Type: 'application/json'
+        X-Atlassian-Token: 'no-check'
+        Origin: <JIRA_URL>
+      User-Agent: "AnyDummyText"
+      changeOrigin: true
 ```
 
 - Replace <JIRA_URL> with the base URL of your Jira instance.

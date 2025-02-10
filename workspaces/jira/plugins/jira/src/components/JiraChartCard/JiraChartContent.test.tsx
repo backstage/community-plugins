@@ -41,7 +41,7 @@ const issuesBreakdown: Map<string, Issue[]> = new Map([
         key: 'Issue-1',
         summary: 'Marketing Issue',
         assignee: 'abc',
-        labels: ['APIRP-Marketing'],
+        labels: ['JIRA-Marketing'],
         issuetype: 'Task',
         status: {
           self: 'https://jira.com/rest/api/2/status/100',
@@ -66,7 +66,7 @@ const issuesBreakdown: Map<string, Issue[]> = new Map([
         key: 'Issue-4',
         summary: 'Documentation Review Issue',
         assignee: 'abc',
-        labels: ['APIRP-DocumentationReview'],
+        labels: ['JIRA-DocumentationReview'],
         issuetype: 'Task',
         status: {
           self: 'https://jira.com/rest/api/2/status/100',
@@ -91,7 +91,7 @@ const issuesBreakdown: Map<string, Issue[]> = new Map([
         key: 'Issue-3',
         summary: 'Documentation API Review Issue',
         assignee: 'abc',
-        labels: ['APIRP-DocAPIReview'],
+        labels: ['JIRA-DocAPIReview'],
         issuetype: 'Task',
         status: {
           self: 'https://jira.com/rest/api/2/status/100',
@@ -111,7 +111,7 @@ const issuesBreakdown: Map<string, Issue[]> = new Map([
         key: 'Issue-3',
         summary: 'Devloper Advoctaes API Review Issue',
         assignee: 'abc',
-        labels: ['APIRP-DevAdvAPIReview'],
+        labels: ['JIRA-DevAdvAPIReview'],
         issuetype: 'Task',
         status: {
           self: 'https://jira.com/rest/api/2/status/100',
