@@ -236,14 +236,17 @@ export const RoleForm = ({
 
   const canNextPermissionPoliciesStep = () => {
     return (
-      formik.values.permissionPoliciesRows.filter(pp => !!pp.plugin).length ===
+      !!formik.values.selectedPlugins.length &&
+      formik.values.permissionPoliciesRows.filter(pp => !!pp?.plugin).length ===
         formik.values.permissionPoliciesRows.length &&
+      !formik.errors.selectedPlugins &&
       (!formik.errors.permissionPoliciesRows ||
-        (
-          formik.errors.permissionPoliciesRows as unknown as FormikErrors<
-            PermissionsData[]
-          >[]
-        )?.filter(err => !!err)?.length === 0)
+        (Array.isArray(formik.errors.permissionPoliciesRows) &&
+          (
+            formik.errors.permissionPoliciesRows as unknown as FormikErrors<
+              PermissionsData[]
+            >[]
+          )?.filter(err => !!err)?.length === 0))
     );
   };
 
@@ -327,9 +330,9 @@ export const RoleForm = ({
           >
             <PermissionPoliciesForm
               permissionPoliciesRows={formik.values.permissionPoliciesRows}
-              permissionPoliciesRowsError={
-                formik.errors
-                  .permissionPoliciesRows as FormikErrors<PermissionsData>[]
+              selectedPlugins={formik.values.selectedPlugins}
+              selectedPluginsError={
+                formik.errors.selectedPlugins as FormikErrors<string>
               }
               setFieldValue={formik.setFieldValue}
               setFieldError={formik.setFieldError}
