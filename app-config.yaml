@@ -2,6 +2,9 @@ app:
   title: Scaffolded Backstage App
   baseUrl: http://localhost:3000
 
+  acs:
+    acsUrl: ${ACS_URL}
+
 organization:
   name: My Company
 
@@ -45,7 +48,6 @@ integrations:
 
 proxy:
   '/acs':
-    credentials: dangerously-allow-unauthenticated
     target: ${ACS_API_URL}
     headers:
       authorization: "Bearer ${ACS_API_KEY}"
