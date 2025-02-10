@@ -16,6 +16,7 @@ proxy:
       headers:
         authorization: "Bearer ${ACS_API_KEY}"
 ```
+
 ## RHDH Dynamic Plugin Config
 Here's an example of how to configure all of the various plugins in your dynmaic plugins config for RHDH.
 
@@ -42,7 +43,38 @@ Here's an example of how to configure all of the various plugins in your dynmaic
                         xs: "span 12"
 ```
 
-## Development
+## Local Development
+
+### Prerequisites
+
+Along with the NodeJS specific prerequisites we'll cover below you will need to have some bog-standard development tools installed:
+
+* Git
+* Make
+* Podman / Docker
+
+### Node CLI Tools
+
+NodeJS comes with `npm` the Node Package Manager. Use it to install `yarn` and `npx`
+
+```bash
+> npm install yarn npx
+
+added 2 packages in 6s
+```
+
+### Test Catalog Data
+
+This repo comes with test data at `./catalog_default`.
+
+First copy the `catalog_default` directory and rename it to `catalog`:
+```
+cp -R catalog_default catalog
+```
+
+Edit line 20 of `./catalog/components/test-app.yaml` to have the deployment name from the ACS API you wish to test.
+
+### Export Environment Variables
 
 The `ACS_API_URL` and `ACS_API_KEY` will need to be set in order for the route to work in the `app-config.yaml` file. The purpose of this route is to access data from the ACS endpoint.
 
