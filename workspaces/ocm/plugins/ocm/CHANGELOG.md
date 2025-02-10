@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 5.3.1
+
+### Patch Changes
+
+- 7ba7e60: Removed unused dependency PatternFly.
+
 ## 5.3.0
 
 ### Minor Changes
