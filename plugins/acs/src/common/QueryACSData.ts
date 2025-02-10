@@ -1,5 +1,5 @@
 import react, { useCallback, useState, useEffect } from 'react';
-import { useApi, configApiRef } from '@backstage/core-plugin-api';
+import { useApi,  fetchApiRef, configApiRef } from '@backstage/core-plugin-api';
 
 export const QueryACSData = (deploymentName: string) => {
     /* eslint-disable consistent-return */
@@ -11,6 +11,8 @@ export const QueryACSData = (deploymentName: string) => {
     const config = useApi(configApiRef);
     const backendUrl = config.getString('backend.baseUrl');
 
+    const fetchApi = useApi(fetchApiRef);
+
     const convertDeploymentNameStringToArray = () => {
         return deploymentName.split(",")
     }
@@ -19,7 +21,7 @@ export const QueryACSData = (deploymentName: string) => {
         const deploymentNameArr = convertDeploymentNameStringToArray();
 
         deploymentNameArr.forEach((name: string) => {
-            fetch(`${backendUrl}/api/proxy/acs/v1/export/vuln-mgmt/workloads?query=Deployment%3A${name}`)
+            fetchApi.fetch(`${backendUrl}/api/proxy/acs/v1/export/vuln-mgmt/workloads?query=Deployment%3A${name}`)
                 .then(response => response.text())
                 .then(text => {
                     const lines = text.split('\n');
