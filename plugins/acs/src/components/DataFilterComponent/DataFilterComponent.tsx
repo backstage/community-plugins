@@ -34,59 +34,83 @@ export const DataFilterComponent = ({ setFilters, data }) => {
         return entities[selectedEntity]
     };
 
-    useEffect(() => {
-        setFilters({
-            "selectedEntity": selectedEntity,
-            "selectedAttribute": selectedAttribute,
-            "optionText": userText,
-            "selectedCveSeverityOptions": selectedCveSeverityOptions,
-            "selectedCveStatusOptions": selectedCveStatusOptions
-        })
-        // eslint-disable-next-line
-    }, [selectedEntity, selectedAttribute, userText, selectedCveSeverityOptions, selectedCveStatusOptions]);
+    const modifyPFCardStyle = () => {
+    const style = document.createElement('style');
+    style.id = 'filter-group-styles';
+    style.innerHTML = `
+      [class*="pf-v5-c-"] {
+        background-color: var(--p--pf-v5-global--palette--black-500) !important;
+      }
+  ` ;
+    // Append the style element to the document head
+    document.head.appendChild(style);
+  };
 
-    return (
-        <Toolbar className={isDarkMode ? 'pf-v5-theme-dark' : 'pf-v5-theme-light' }>
-            <ToolbarContent>
-                <ToolbarGroup variant="filter-group">
-                    <ToolbarItem>
-                        <EntitySelectComponent
-                            options={entities}
-                            setSelectedEntity={setSelectedEntity}
-                        />
+  const removeCustomStyles = () => {
+    const style = document.getElementById('ai-search-styles');
+    if (style) {
+      style.remove();
+    }
+  };
 
-                        <AttributeSelectComponent
-                            options={attributes}
-                            displayAttributes={getSelectedAttributes()}
-                            setSelectedAttribute={setSelectedAttribute}
-                        />
+  useEffect(() => {
+    modifyPFCardStyle();
+    return () => {
+      removeCustomStyles();
+    };
+  }, []);
 
-                        <InputFieldComponent setUserText={setUserText} />
-                    </ToolbarItem>
-                </ToolbarGroup>
+  useEffect(() => {
+    setFilters({
+      "selectedEntity": selectedEntity,
+      "selectedAttribute": selectedAttribute,
+      "optionText": userText,
+      "selectedCveSeverityOptions": selectedCveSeverityOptions,
+      "selectedCveStatusOptions": selectedCveStatusOptions
+    })
+    // eslint-disable-next-line
+  }, [selectedEntity, selectedAttribute, userText, selectedCveSeverityOptions, selectedCveStatusOptions]);
 
-                <ToolbarItem variant="search-filter">
-                </ToolbarItem>
+  return (
+    <Toolbar className={isDarkMode ? 'pf-v5-theme-dark' : 'pf-v5-theme-light' }>
+      <ToolbarContent>
+        <ToolbarGroup variant="filter-group">
+          <ToolbarItem>
+            <EntitySelectComponent
+                options={entities}
+                setSelectedEntity={setSelectedEntity}
+            />
 
-                <ToolbarGroup variant="button-group">
-                    <ToolbarItem spacer="spacerMd">
-                        <CheckboxSelectComponent
-                            options={cveSeverityOptions}
-                            dropdownName={"CVE severity"}
-                            setSelectedOptions={setSelectedCveSeverityOptions}
-                        />
-                    </ToolbarItem>
-                    <ToolbarItem>
-                        <CheckboxSelectComponent
-                            options={cveStatusOptions}
-                            dropdownName={"CVE status"}
-                            setSelectedOptions={setSelectedCveStatusOptions}
-                        />
-                    </ToolbarItem>
-                </ToolbarGroup>
+            <AttributeSelectComponent
+                options={attributes}
+                displayAttributes={getSelectedAttributes()}
+                setSelectedAttribute={setSelectedAttribute}
+            />
 
-            </ToolbarContent>
-        </Toolbar>
-    )
+            <InputFieldComponent setUserText={setUserText} />
+          </ToolbarItem>
+        </ToolbarGroup>
+
+        <ToolbarGroup variant="button-group">
+          <ToolbarItem spacer="spacerMd">
+            <CheckboxSelectComponent
+                options={cveSeverityOptions}
+                dropdownName={"CVE severity"}
+                setSelectedOptions={setSelectedCveSeverityOptions}
+            />
+          </ToolbarItem>
+          <ToolbarItem>
+            <CheckboxSelectComponent
+                options={cveStatusOptions}
+                dropdownName={"CVE status"}
+                setSelectedOptions={setSelectedCveStatusOptions}
+            />
+          </ToolbarItem>
+        </ToolbarGroup>
+
+      </ToolbarContent>
+    </Toolbar>
+  )
 }
 
+export default DataFilterComponent;
