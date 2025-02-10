@@ -169,7 +169,7 @@ describe('kubernetes:create-namespace', () => {
         ...mockContext,
         input: {
           namespace: 'foo',
-          url: 'http://example.com',
+          url: 'https://example.com',
           clusterRef: 'foo',
           token: 'TOKEN',
         },
