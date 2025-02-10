@@ -79,6 +79,7 @@ describe('Create RoleForm', () => {
             kind: 'role',
             description: '',
             selectedMembers: [],
+            selectedPlugins: [],
             permissionPoliciesRows: [
               {
                 plugin: '',
@@ -133,6 +134,7 @@ describe('Create RoleForm', () => {
             kind: 'role',
             description: '',
             selectedMembers: [],
+            selectedPlugins: [],
             permissionPoliciesRows: [
               {
                 plugin: '',
@@ -194,6 +196,7 @@ describe('Edit RoleForm', () => {
                 namespace: 'default',
               },
             ],
+            selectedPlugins: [],
             permissionPoliciesRows: [
               {
                 plugin: '',
@@ -326,6 +329,7 @@ describe('Edit RoleForm', () => {
                 namespace: 'default',
               },
             ],
+            selectedPlugins: [],
             permissionPoliciesRows: [
               {
                 plugin: '',
@@ -386,6 +390,7 @@ describe('Edit RoleForm', () => {
             kind: 'role',
             description: '',
             selectedMembers: [],
+            selectedPlugins: [],
             permissionPoliciesRows: [
               {
                 plugin: '',
