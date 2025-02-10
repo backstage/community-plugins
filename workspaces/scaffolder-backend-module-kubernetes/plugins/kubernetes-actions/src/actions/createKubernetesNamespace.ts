@@ -239,22 +239,21 @@ export function createKubernetesNamespaceAction(catalogClient: CatalogClient) {
         },
       };
       await api.createNamespace(k8sNamespace).catch((e: Error) => {
+        // e.body should be string or blob binary
         if ('body' in e && typeof e.body === 'string') {
           let body: HttpErrorBody | undefined;
           try {
-            body = JSON.parse((e as { body: string }).body);
+            body = JSON.parse(e.body);
           } catch (error) {
-            throw new Error(
-              `Failed to create kubernetes namespace, ${e.message}`,
-            );
+            /* eslint-disable-line no-empty */
           }
           if (body) {
-            const { code, message } = body;
             throw new Error(
-              `Failed to create kubernetes namespace, API code: ${code} -- ${message}`,
+              `Failed to create kubernetes namespace, API code: ${body.code} -- ${body.message}`,
             );
           }
         }
+
         throw new Error(`Failed to create kubernetes namespace, ${e.message}`);
       });
     },

@@ -65,42 +65,31 @@ export const hubApiClient = (
 };
 
 const kubeApiResponseHandler = <T>(call: Promise<T>) => {
-  return call
-    .then(r => {
-      return r;
-    })
-    .catch(r => {
-      if (r.body) {
-        if (typeof r.body === 'object') {
-          throw Object.assign(new Error(r.body.reason), {
-            // Name and statusCode are required by the backstage error handler
-            statusCode: r.body.code || r.statusCode,
-            name: r.body.reason,
-            ...r.body,
-          });
-        }
-        if (typeof r.body === 'string') {
-          const body = JSON.parse(r.body);
-          throw Object.assign(new Error(), {
-            name: body.reason,
-            message: body.message,
-            statusCode: body.code,
-            kind: body.kind,
-            apiVersion: body.apiVersion,
-            metadata: body.metadata,
-            status: body.status,
-            reason: body.reason,
-            details: body.details,
-            code: body.code,
-          });
-        }
+  return call.catch(e => {
+    // r.body should be string or blob binary
+    if ('body' in e && typeof e.body === 'string') {
+      let body;
+      try {
+        body = JSON.parse(e.body);
+      } catch (error) {
+        /* eslint-disable-line no-empty */
       }
-      throw Object.assign(new Error(r.message), {
-        // If there is no body, there is no status code, default to 500
-        statusCode: 500,
-        name: r.message,
-      });
+      if (body) {
+        throw Object.assign(new Error(body.reason), {
+          // Name and statusCode are required by the backstage error handler
+          statusCode: body.code,
+          name: body.reason,
+          ...body,
+        });
+      }
+    }
+
+    throw Object.assign(new Error(e.message), {
+      // If there is no body, default to 500
+      statusCode: 500,
+      name: e.message,
     });
+  });
 };
 
 export const getManagedCluster = (api: CustomObjectsApi, name: string) => {
