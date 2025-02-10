@@ -2598,7 +2598,6 @@ __metadata:
     "@material-ui/icons": ^4.11.3
     "@material-ui/lab": ^4.0.0-alpha.45
     "@mui/icons-material": ^5.16.4
-    "@patternfly/patternfly": ^5.1.0
     "@redhat-developer/red-hat-developer-hub-theme": 0.4.0
     "@spotify/prettier-config": ^15.0.0
     "@testing-library/dom": ^10.0.0
@@ -6815,13 +6814,6 @@ __metadata:
   version: 1.9.0
   resolution: "@opentelemetry/api@npm:1.9.0"
   checksum: 9e88e59d53ced668f3daaecfd721071c5b85a67dd386f1c6f051d1be54375d850016c881f656ffbe9a03bedae85f7e89c2f2b635313f9c9b195ad033cdc31020
-  languageName: node
-  linkType: hard
-
-"@patternfly/patternfly@npm:^5.1.0":
-  version: 5.4.2
-  resolution: "@patternfly/patternfly@npm:5.4.2"
-  checksum: 1cc2c3f7020f050eb4bd72d57a48473c7fad9c931b16e3c8e8ba7f0d94654d22a1944b3593b6b118a1b28f14749ae6a630622efd6c1cd54b6f08cd360b186cb3
   languageName: node
   linkType: hard
 
