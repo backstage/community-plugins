@@ -55,7 +55,7 @@ export const VulnerabilitiesComponent = ({ deploymentName }) => {
         return (
             <InfoCard>
                 <Typography align="center" variant="button">
-                    No results found for query {deploymentName}. The annotation `rhdh/acs-deployment:` followed by the deployment name of the entity will need to be added to the entity for data to display.
+                    No results found for query {deploymentName}. To configure this component to display data from ACS, add the annotation `rhdh/acs-deployment:` followed by a comma separated string of deployment names to the entity.
                 </Typography>
             </InfoCard>
         );
