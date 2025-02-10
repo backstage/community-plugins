@@ -13,6 +13,7 @@ attributes:
     - apache-airflow
     - apollo-explorer
     - azure-devops
+    - azure-resources
     - azure-sites
     - azure-storage-explorer
     - badges
@@ -39,6 +40,7 @@ attributes:
     - git-release-manager
     - github-actions
     - github-deployments
+    - github-discussions
     - github-issues
     - github-pull-requests-board
     - gitops-profiles
