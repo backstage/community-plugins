@@ -1,5 +1,17 @@
 ### Dependencies
 
+## 3.5.0
+
+### Minor Changes
+
+- 75d5f97: Backstage version bump to v1.35.1
+
+## 3.4.1
+
+### Patch Changes
+
+- f64bb64: Fixed the token update issue when the plugin uses the Keycloak client library. Added the ability to configure a maxConcurrency limit to control the number of parallel requests to the Keycloak server, preventing potential DoS attacks. Significantly improved the performance of parsing Keycloak user and group information.
+
 ## 3.4.0
 
 ### Minor Changes
