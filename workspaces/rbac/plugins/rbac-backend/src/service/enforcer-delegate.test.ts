@@ -31,6 +31,11 @@ import {
   conditionalStorageMock,
   mockAuditorService,
 } from '../../__fixtures__/mock-utils';
+import { AuthorizeResult } from '@backstage/plugin-permission-common';
+import {
+  PermissionInfo,
+  RoleConditionalPolicyDecision,
+} from '@backstage-community/plugin-rbac-common';
 
 // TODO: Move to 'catalogServiceMock' from '@backstage/plugin-catalog-node/testUtils'
 // once '@backstage/plugin-catalog-node' is upgraded
@@ -879,6 +884,25 @@ describe('EnforcerDelegate', () => {
     it('should update grouping policies: role should be renamed', async () => {
       const oldRoleName = 'role:default/dev-team';
       const newRoleName = 'role:default/new-team-name';
+
+      const oldCondition = {
+        id: 1,
+        pluginId: 'catalog',
+        resourceType: 'catalog-entity',
+        actions: ['read'],
+        roleEntityRef: oldRoleName,
+        result: AuthorizeResult.CONDITIONAL,
+        conditions: {
+          rule: 'IS_ENTITY_OWNER',
+          resourceType: 'catalog-entity',
+          params: {
+            claims: ['group:default/team-a'],
+          },
+        },
+      };
+      (
+        conditionalStorageMock.filterConditions as jest.Mock
+      ).mockReturnValueOnce([oldCondition]);
       roleMetadataStorageMock.findRoleMetadata = jest
         .fn()
         .mockImplementation(
@@ -901,12 +925,17 @@ describe('EnforcerDelegate', () => {
         );
 
       const secondGroupingPolicyWithOldRole = ['user:default/tim', oldRoleName];
-      const firstRolePolicy = [oldRoleName, 'policy-entity', 'read', 'allow'];
-      const secondRolePolicy = [oldRoleName, 'policy-entity', 'write', 'allow'];
+      const firstRolePolicy = [oldRoleName, 'catalog-entity', 'read', 'allow'];
+      const secondRolePolicy = [
+        oldRoleName,
+        'catalog-entity',
+        'write',
+        'allow',
+      ];
       const expectedPolicies = [
         policy,
-        [newRoleName, 'policy-entity', 'read', 'allow'],
-        [newRoleName, 'policy-entity', 'write', 'allow'],
+        [newRoleName, 'catalog-entity', 'read', 'allow'],
+        [newRoleName, 'catalog-entity', 'write', 'allow'],
       ];
 
       const enfDelegate = await createEnfDelegate(
@@ -944,6 +973,14 @@ describe('EnforcerDelegate', () => {
         groupingPolicyWithRenamedRole,
         secondGroupingPolicyWithRenamedRole,
       ]);
+
+      const updatedCondition: RoleConditionalPolicyDecision<PermissionInfo> = (
+        conditionalStorageMock.updateCondition as jest.Mock
+      ).mock.calls[0][1];
+      expect(updatedCondition).toEqual({
+        ...oldCondition,
+        roleEntityRef: newRoleName,
+      });
 
       const metadata = (roleMetadataStorageMock.updateRoleMetadata as jest.Mock)
         .mock.calls[0][0];
