@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.37.0
+
+### Minor Changes
+
+- 5934dfe: Open confirmation modal with options to discard the entered information or continue with adding more information on create/edit role forms cancel button click.
+
 ## 1.36.0
 
 ### Minor Changes
