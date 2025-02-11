@@ -82,7 +82,6 @@ const PermissionPoliciesFormNestedRow = ({
             sx={{
               display: 'flex',
               alignItems: 'center',
-              color: theme => theme.palette.grey[700],
             }}
           >
             <Checkbox
