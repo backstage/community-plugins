@@ -20,7 +20,7 @@ import { translationApiRef } from '@backstage/core-plugin-api/alpha';
 import { MockErrorApi, TestApiProvider } from '@backstage/test-utils';
 import { MockTranslationApi } from '@backstage/test-utils/alpha';
 
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { useFormik } from 'formik';
 
 import { RoleForm } from './RoleForm';
@@ -160,6 +160,61 @@ describe('Create RoleForm', () => {
 
     expect(
       screen.getByText(/Unable to create role. unexpected error/i),
+    ).toBeInTheDocument();
+  });
+
+  it('opens confirmation modal on cancel button click', async () => {
+    useFormikMock.mockReturnValue({
+      errors: {},
+      values: {},
+      // mocked useFormik to return formik status with submitError
+      status: { submitError: '' },
+    });
+    const { getByRole } = render(
+      <TestApiProvider
+        apis={[
+          [translationApiRef, MockTranslationApi.create()],
+          [errorApiRef, new MockErrorApi()],
+        ]}
+      >
+        <RoleForm
+          membersData={{ members: [], loading: false, error: {} as Error }}
+          roleName=""
+          initialValues={{
+            name: '',
+            namespace: 'default',
+            kind: 'role',
+            description: '',
+            selectedMembers: [],
+            selectedPlugins: [],
+            permissionPoliciesRows: [
+              {
+                plugin: '',
+                permission: '',
+                policies: [
+                  { policy: 'Create', effect: 'deny' },
+                  { policy: 'Read', effect: 'deny' },
+                  { policy: 'Update', effect: 'deny' },
+                  { policy: 'Delete', effect: 'deny' },
+                ],
+              },
+            ],
+          }}
+          titles={{
+            formTitle: 'Create Role',
+            nameAndDescriptionTitle: 'Enter name and description of role ',
+            usersAndGroupsTitle: 'Add users and groups',
+            permissionPoliciesTitle: 'Add permission policies',
+          }}
+        />
+      </TestApiProvider>,
+    );
+    const cancelButton = getByRole('button', { name: /cancel/i });
+    fireEvent.click(cancelButton);
+    expect(
+      getByRole('button', {
+        name: /discard/i,
+      }),
     ).toBeInTheDocument();
   });
 });
