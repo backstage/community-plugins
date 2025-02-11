@@ -37,8 +37,17 @@ export const badgesPlugin = createBackendPlugin({
         httpRouter: coreServices.httpRouter,
         httpAuth: coreServices.httpAuth,
         auth: coreServices.auth,
+        database: coreServices.database,
       },
-      async init({ config, logger, discovery, httpRouter, httpAuth, auth }) {
+      async init({
+        config,
+        logger,
+        discovery,
+        httpRouter,
+        httpAuth,
+        auth,
+        database,
+      }) {
         httpRouter.use(
           await createRouter({
             config,
@@ -47,6 +56,7 @@ export const badgesPlugin = createBackendPlugin({
             discovery,
             httpAuth,
             auth,
+            database,
           }),
         );
         httpRouter.addAuthPolicy({
