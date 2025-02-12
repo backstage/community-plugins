@@ -3,7 +3,7 @@ app:
   baseUrl: http://localhost:3000
 
 acs:
-  acsUrl: ${ACS_URL}
+  acsUrl: ${ACS_API_URL}
 
 organization:
   name: My Company
