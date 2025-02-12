@@ -38,7 +38,7 @@ export const InputFieldComponent: React.FunctionComponent = ({ setUserText }) =>
 
   return (
     <SearchInput
-      placeholder="Find by name"
+      placeholder="Search"
       value={inputFieldValue}
       onChange={(_event) => onChange(inputFieldValue)}
       onClear={() => onChange('')}
