@@ -8,8 +8,6 @@ import '@patternfly/react-styles';
 import { CVEEntityDetailsComponent } from '../CVEEntityDetailsComponent';
 
 export const SecurityFindingsComponent = ({ data, filters }) => {
-    console.log(filters)
-
     const [dataRows, setDataRows] = useState([]);
     const [pending, setPending] = React.useState(true);
     const theme = useTheme();

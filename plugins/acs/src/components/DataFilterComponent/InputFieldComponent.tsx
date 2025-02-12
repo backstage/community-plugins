@@ -8,7 +8,6 @@ export const InputFieldComponent: React.FunctionComponent = ({ setUserText }) =>
 
   const onChange = (inputFieldValue: string) => {
     setUserText(inputFieldValue);
-    console.log(inputFieldValue)
   };
 
   const modifyPFStyle = () => {

@@ -1,9 +1,5 @@
 # Advanced Cluster Security Backstage Plugin
 
-This is a development mono-repo for the Advanced Cluster Security plugin. This mono-repo was created using @backstage/create-app to provide a frontend for the plugin to integrate with.
-
-You can find the plugin code in plugins/acs
-
 ![ACS plugin image 1](images/acs_plugin_screenshot_1.png)
 ![ACS plugin image 2](images/acs_plugin_screenshot_2.png)
 
