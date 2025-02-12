@@ -185,9 +185,6 @@ export const OpenCostReport = () => {
 
   const configApi = useApi(configApiRef);
   const baseUrl = configApi.getConfig('opencost').getString('baseUrl');
-  const useBackstageProxy = configApi.getOptionalBoolean(
-    'opencost.useBackstageProxy',
-  );
 
   const discoveryApi = useApi(discoveryApiRef);
   const fetchApi = useApi(fetchApiRef);
@@ -197,7 +194,7 @@ export const OpenCostReport = () => {
     setErrors([]);
 
     let url = baseUrl;
-    if (useBackstageProxy) {
+    if (baseUrl.startsWith('/')) {
       url = `${await discoveryApi.getBaseUrl('proxy')}/${baseUrl.replace(
         /^\/|\/$/g,
         '',

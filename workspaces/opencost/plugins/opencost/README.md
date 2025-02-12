@@ -70,11 +70,10 @@ If your OpenCost service is private and not directly accessible from the client 
 ```yaml
 proxy:
   endpoints:
-    /opencost: http://localhost:9003
+    /opencost: http://opencost-svc.opencost:9003
 ---
 opencost:
   baseUrl: /opencost
-  useBackstageProxy: true
 ```
 
 ## Ideas/Next Steps
