@@ -19,7 +19,12 @@ Along with the NodeJS specific prerequisites we'll cover below you will need to 
 
 ### Node CLI Tools
 
-NodeJS comes with `npm` the Node Package Manager. Use it to install `yarn` and `npx`
+You will want to use node verion 20. You can set the version with the following command:
+```
+nvm use 20
+```
+
+NodeJS comes with `npm` the Node Package Manager. Use it to install `yarn` and `npx`. 
 
 ```bash
 > npm install yarn npx
@@ -48,7 +53,11 @@ yarn install
 yarn dev
 ```
 
+The app will be available at `http://localhost:3000`.
+
 ## RHDH Dynamic Plugin Config
+
+The ACS plugin is also available as an [Red Hat Developer Hub](https://github.com/redhat-developer/rhdh) dynamic plugin. The following should be able to run within the [RHDH local](https://github.com/redhat-developer/rhdh-local) repo.
 
 ### Configuration
 In `app-config.yaml` first add the proxies:
@@ -63,11 +72,10 @@ proxy:
         authorization: "Bearer ${ACS_API_KEY}"
 ```
 
-Under the `app` stanza in `app-config.yaml`, add the acs url. The app stanza should look like this:
+Add the following top-level stanza to the `app-config.yaml` file:
 ```
-app:
-  acs:
-    acsUrl: ${ACS_URL}
+acs:
+  acsUrl: ${ACS_API_URL}
 ```
 
 Here's an example of how to configure all of the various plugins in your dynmaic plugins config for RHDH.

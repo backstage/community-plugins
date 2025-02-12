@@ -8,6 +8,7 @@ export const InputFieldComponent: React.FunctionComponent = ({ setUserText }) =>
 
   const onChange = (inputFieldValue: string) => {
     setUserText(inputFieldValue);
+    console.log(inputFieldValue)
   };
 
   const modifyPFStyle = () => {
@@ -38,9 +39,9 @@ export const InputFieldComponent: React.FunctionComponent = ({ setUserText }) =>
 
   return (
     <SearchInput
-      placeholder="Find by name"
+      placeholder="Search"
       value={inputFieldValue}
-      onChange={(_event) => onChange(inputFieldValue)}
+      onChange={(_event, inputFieldValue) => onChange(inputFieldValue)}
       onClear={() => onChange('')}
     />
   );

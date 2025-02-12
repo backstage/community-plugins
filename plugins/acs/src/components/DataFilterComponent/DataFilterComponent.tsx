@@ -63,7 +63,7 @@ export const DataFilterComponent = ({ setFilters, data }) => {
     setFilters({
       "selectedEntity": selectedEntity,
       "selectedAttribute": selectedAttribute,
-      "optionText": userText,
+      "userText": userText,
       "selectedCveSeverityOptions": selectedCveSeverityOptions,
       "selectedCveStatusOptions": selectedCveStatusOptions
     })

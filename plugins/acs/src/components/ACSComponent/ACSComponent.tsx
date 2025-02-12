@@ -15,7 +15,7 @@ export const ACSComponent = () => {
     const config = useApi(configApiRef);
 
     const title: string = "Security findings"
-    const subheader: string = "Assess vulnerabilities and policy violations for your component workloads"
+    const subheader: string = "Assess vulnerabilities for your component workloads"
     const acsUrl = config.getString('acs.acsUrl');
 
     // Get catalog data
