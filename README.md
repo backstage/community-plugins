@@ -53,7 +53,11 @@ yarn install
 yarn dev
 ```
 
+The app will be available at `http://localhost:3000`.
+
 ## RHDH Dynamic Plugin Config
+
+The ACS plugin is also available as an [Red Hat Developer Hub](https://github.com/redhat-developer/rhdh) dynamic plugin. The following should be able to run within the [RHDH local](https://github.com/redhat-developer/rhdh-local) repo.
 
 ### Configuration
 In `app-config.yaml` first add the proxies:
