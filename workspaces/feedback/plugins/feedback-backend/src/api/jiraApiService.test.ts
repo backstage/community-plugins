@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { getRootLogger } from '@backstage/backend-common';
 import { LoggerService } from '@backstage/backend-plugin-api';
-
+import { mockServices } from '@backstage/backend-test-utils';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 
@@ -44,7 +43,7 @@ const handlers = [
     res(ctx.json(mockJiraTicketDetailsResp)),
   ),
 ];
-const logger: LoggerService = getRootLogger().child({
+const logger: LoggerService = mockServices.rootLogger().child({
   service: 'feedback-backend',
 });
 

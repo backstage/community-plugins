@@ -1,5 +1,30 @@
 ### Dependencies
 
+## 1.17.0
+
+### Minor Changes
+
+- e541edd: Adds a new quay-backend plugin and updates the frontend quay plugin to use this new backend.
+- e541edd: Add a quay-backend plugin to query the quay.io API
+- 4a04fa7: Update documentation on the Proxy and new Quay backend functionality
+
+### Patch Changes
+
+- Updated dependencies [e541edd]
+- Updated dependencies [e541edd]
+  - @backstage-community/plugin-quay-common@1.6.0
+
+## 1.16.0
+
+### Minor Changes
+
+- 7226329: Backstage version bump to v1.35.0
+
+### Patch Changes
+
+- Updated dependencies [7226329]
+  - @backstage-community/plugin-quay-common@1.5.0
+
 ## 1.15.0
 
 ### Minor Changes

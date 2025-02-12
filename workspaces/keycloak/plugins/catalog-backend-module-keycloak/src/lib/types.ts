@@ -21,25 +21,43 @@ import type UserRepresentation from '@keycloak/keycloak-admin-client/lib/defs/us
 
 /**
  * @public
+ * The Keycloak group representation with parent and group members information.
  */
 export interface GroupRepresentationWithParent extends GroupRepresentation {
+  /**
+   * The parent group ID.
+   */
   parentId?: string;
+  /**
+   * The parent group name.
+   */
   parent?: string;
+  /**
+   * The group members.
+   */
   members?: string[];
 }
 
 /**
  * @public
+ * The Keycloak group representation with parent, group members, and conrresponding backstage entity information.
  */
 export interface GroupRepresentationWithParentAndEntity
   extends GroupRepresentationWithParent {
+  /**
+   * The corresponding backstage entity information.
+   */
   entity: GroupEntity;
 }
 
 /**
  * @public
+ * The Keycloak user representation with corresponding backstage entity information.
  */
 export interface UserRepresentationWithEntity extends UserRepresentation {
+  /**
+   * The corresponding backstage entity information.
+   */
   entity: UserEntity;
 }
 

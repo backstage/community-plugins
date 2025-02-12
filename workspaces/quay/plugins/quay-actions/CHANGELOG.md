@@ -1,5 +1,17 @@
 ### Dependencies
 
+## 2.5.0
+
+### Minor Changes
+
+- e541edd: Adds a new quay-backend plugin and updates the frontend quay plugin to use this new backend.
+
+## 2.4.0
+
+### Minor Changes
+
+- 7226329: Backstage version bump to v1.35.0
+
 ## 2.3.0
 
 ### Minor Changes

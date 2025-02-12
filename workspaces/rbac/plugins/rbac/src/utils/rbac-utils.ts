@@ -78,13 +78,13 @@ export const getMembersString = (res: {
   groups: number;
 }): string => {
   let membersString = '';
-  if (res.users > 0) {
-    membersString = `${res.users} ${res.users > 1 ? 'users' : 'user'}`;
-  }
   if (res.groups > 0) {
+    membersString = `${res.groups} ${res.groups > 1 ? 'groups' : 'group'}`;
+  }
+  if (res.users > 0) {
     membersString = membersString.concat(
       membersString.length > 0 ? ', ' : '',
-      `${res.groups} ${res.groups > 1 ? 'groups' : 'group'}`,
+      `${res.users} ${res.users > 1 ? 'users' : 'user'}`,
     );
   }
   return membersString;
@@ -135,18 +135,15 @@ export const getMembersFromGroup = (group: GroupEntity): number => {
 export const getPluginInfo = (
   permissions: PluginPermissionMetaData[],
   permissionName?: string,
-): { pluginId: string; isResourced: boolean } =>
+): { pluginId: string; isResourced: boolean; resourceType?: string } =>
   permissions.reduce(
     (
-      acc: { pluginId: string; isResourced: boolean },
+      acc: { pluginId: string; isResourced: boolean; resourceType?: string },
       p: PluginPermissionMetaData,
     ) => {
       const policy = p.policies.find(pol => {
         if (pol.name === permissionName) {
           return true;
-        }
-        if (isResourcedPolicy(pol)) {
-          return pol.resourceType === permissionName;
         }
         return false;
       });
@@ -154,6 +151,7 @@ export const getPluginInfo = (
         return {
           pluginId: p.pluginId || '-',
           isResourced: isResourcedPolicy(policy) || false,
+          resourceType: isResourcedPolicy(policy) ? policy.resourceType : '',
         };
       }
       return acc;
@@ -172,7 +170,7 @@ const getAllPolicies = (
   policies: PolicyDetails[],
 ) => {
   const deniedPolicies = policies?.reduce((acc, p) => {
-    const perm = isResourcedPolicy(p) ? p.resourceType : p.name;
+    const perm = p.name;
     if (
       permission === perm &&
       !allowedPolicies.find(
@@ -231,6 +229,8 @@ export const getPermissionsData = (
             }),
             isResourced: getPluginInfo(permissionPolicies, policy?.permission)
               .isResourced,
+            resourceType: getPluginInfo(permissionPolicies, policy?.permission)
+              .resourceType,
           });
         }
       }
@@ -316,16 +316,33 @@ export const getPoliciesData = (
 export const getConditionalPermissionsData = (
   conditionalPermissions: RoleConditionalPolicyDecision<PermissionAction>[],
   permissionPolicies: PluginsPermissionPoliciesData,
+  allPermissionPolicies: PluginPermissionMetaData[],
 ): PermissionsData[] => {
   return conditionalPermissions.reduce((acc: any, cp) => {
     const conditions = getConditionsData(cp.conditions);
-    const allPolicies =
-      permissionPolicies.pluginsPermissions?.[cp.pluginId]?.policies?.[
-        cp.resourceType
-      ]?.policies ?? [];
     const allowedPermissions = cp.permissionMapping.map(action =>
       action.toLocaleLowerCase('en-US'),
     );
+
+    const perm = allPermissionPolicies
+      .map(app => {
+        if (app.pluginId === cp.pluginId) {
+          return (
+            app.policies.find(
+              po =>
+                isResourcedPolicy(po) &&
+                po.resourceType === cp.resourceType &&
+                po.policy === cp.permissionMapping[0],
+            )?.name ?? ''
+          );
+        }
+        return '';
+      })
+      .filter(v => !!v);
+
+    const allPolicies = (pm: string) =>
+      permissionPolicies.pluginsPermissions?.[cp.pluginId]?.policies?.[pm]
+        ?.policies ?? [];
     const policyString = allowedPermissions
       .map(p => p[0].toLocaleUpperCase('en-US') + p.slice(1))
       .join(', ');
@@ -336,9 +353,13 @@ export const getConditionalPermissionsData = (
         ? [
             {
               plugin: cp.pluginId,
-              permission: cp.resourceType,
+              permission: perm[0],
+              resourceType: cp.resourceType,
               isResourced: true,
-              policies: getPoliciesData(allowedPermissions, allPolicies),
+              policies: getPoliciesData(
+                allowedPermissions,
+                allPolicies(perm[0]),
+              ),
               policyString,
               conditions,
               id: cp.id,

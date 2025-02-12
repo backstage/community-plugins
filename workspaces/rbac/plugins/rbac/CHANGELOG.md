@@ -1,5 +1,35 @@
 ### Dependencies
 
+## 1.37.0
+
+### Minor Changes
+
+- 5934dfe: Open confirmation modal with options to discard the entered information or continue with adding more information on create/edit role forms cancel button click.
+
+## 1.36.0
+
+### Minor Changes
+
+- 838db28: Redesigned RBAC form permissions section.
+  User will be able to select multiple plugins at once.
+
+## 1.35.0
+
+### Minor Changes
+
+- 5d5c02a: Backstage version bump to v1.35.0
+
+### Patch Changes
+
+- Updated dependencies [5d5c02a]
+  - @backstage-community/plugin-rbac-common@1.13.0
+
+## 1.34.0
+
+### Minor Changes
+
+- 622dcb6: Allow admin to select multiple users/groups
+
 ## 1.33.6
 
 ### Patch Changes

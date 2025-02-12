@@ -110,7 +110,7 @@ describe('RolesList', () => {
     expect(queryByText('All roles (2)')).not.toBeNull();
     expect(queryByText('role:default/guests')).not.toBeNull();
     expect(queryByText('role:default/rbac_admin')).not.toBeNull();
-    expect(queryByText('1 user, 1 group')).not.toBeNull();
+    expect(queryByText('1 group, 1 user')).not.toBeNull();
   });
 
   it('should show empty table when there are no roles', async () => {

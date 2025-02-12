@@ -2576,14 +2576,14 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-jfrog-artifactory@workspace:plugins/jfrog-artifactory"
   dependencies:
-    "@backstage/catalog-model": ^1.7.2
-    "@backstage/cli": ^0.29.4
-    "@backstage/core-app-api": ^1.15.3
-    "@backstage/core-components": ^0.16.2
-    "@backstage/core-plugin-api": ^1.10.2
-    "@backstage/dev-utils": ^1.1.5
-    "@backstage/plugin-catalog-react": ^1.15.0
-    "@backstage/test-utils": ^1.7.3
+    "@backstage/catalog-model": ^1.7.3
+    "@backstage/cli": ^0.29.6
+    "@backstage/core-app-api": ^1.15.4
+    "@backstage/core-components": ^0.16.3
+    "@backstage/core-plugin-api": ^1.10.3
+    "@backstage/dev-utils": ^1.1.6
+    "@backstage/plugin-catalog-react": ^1.15.1
+    "@backstage/test-utils": ^1.7.4
     "@backstage/theme": ^0.6.3
     "@janus-idp/shared-react": ^2.13.1
     "@material-ui/core": ^4.9.13
@@ -2741,7 +2741,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/catalog-model@npm:^1.7.0, @backstage/catalog-model@npm:^1.7.2, @backstage/catalog-model@npm:^1.7.3":
+"@backstage/catalog-model@npm:^1.7.0, @backstage/catalog-model@npm:^1.7.3":
   version: 1.7.3
   resolution: "@backstage/catalog-model@npm:1.7.3"
   dependencies:
@@ -2776,9 +2776,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/cli@npm:^0.29.4":
-  version: 0.29.5
-  resolution: "@backstage/cli@npm:0.29.5"
+"@backstage/cli@npm:^0.29.6":
+  version: 0.29.6
+  resolution: "@backstage/cli@npm:0.29.6"
   dependencies:
     "@backstage/catalog-model": ^1.7.3
     "@backstage/cli-common": ^0.1.15
@@ -2906,7 +2906,7 @@ __metadata:
       optional: true
   bin:
     backstage-cli: bin/backstage-cli
-  checksum: 629d4d225253292a723993e6f864a838aaba3306109320dd48b9022e15ba8bcf67a86cdb260d5dceb8dffaa916e54ae4aaad12aaea21f8e125ef9b5ba8cb314e
+  checksum: 5e9e1cd477a4fef5d780e9e234e669ec18b5735c25e23b85b3ccb58ac441cd9c7714407d7653c2e8dc73277108db9cf87c6a0f4e56d2008315d10d51bf89a89a
   languageName: node
   linkType: hard
 
@@ -2944,7 +2944,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/core-app-api@npm:^1.15.3, @backstage/core-app-api@npm:^1.15.4":
+"@backstage/core-app-api@npm:^1.15.4":
   version: 1.15.4
   resolution: "@backstage/core-app-api@npm:1.15.4"
   dependencies:
@@ -3044,7 +3044,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/core-components@npm:^0.16.2, @backstage/core-components@npm:^0.16.3":
+"@backstage/core-components@npm:^0.16.3":
   version: 0.16.3
   resolution: "@backstage/core-components@npm:0.16.3"
   dependencies:
@@ -3097,7 +3097,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/core-plugin-api@npm:^1.10.0, @backstage/core-plugin-api@npm:^1.10.2, @backstage/core-plugin-api@npm:^1.10.3":
+"@backstage/core-plugin-api@npm:^1.10.0, @backstage/core-plugin-api@npm:^1.10.3":
   version: 1.10.3
   resolution: "@backstage/core-plugin-api@npm:1.10.3"
   dependencies:
@@ -3118,7 +3118,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/dev-utils@npm:^1.1.5":
+"@backstage/dev-utils@npm:^1.1.6":
   version: 1.1.6
   resolution: "@backstage/dev-utils@npm:1.1.6"
   dependencies:
@@ -3393,7 +3393,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-catalog-react@npm:^1.15.0, @backstage/plugin-catalog-react@npm:^1.15.1":
+"@backstage/plugin-catalog-react@npm:^1.15.1":
   version: 1.15.1
   resolution: "@backstage/plugin-catalog-react@npm:1.15.1"
   dependencies:
@@ -3538,7 +3538,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/repo-tools@npm:^0.12.0":
+"@backstage/repo-tools@npm:^0.12.1":
   version: 0.12.1
   resolution: "@backstage/repo-tools@npm:0.12.1"
   dependencies:
@@ -3594,7 +3594,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/test-utils@npm:^1.7.3, @backstage/test-utils@npm:^1.7.4":
+"@backstage/test-utils@npm:^1.7.4":
   version: 1.7.4
   resolution: "@backstage/test-utils@npm:1.7.4"
   dependencies:
@@ -4570,9 +4570,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@internal/jfrog-artifactory@workspace:."
   dependencies:
-    "@backstage/cli": ^0.29.4
+    "@backstage/cli": ^0.29.6
     "@backstage/e2e-test-utils": ^0.1.1
-    "@backstage/repo-tools": ^0.12.0
+    "@backstage/repo-tools": ^0.12.1
     "@changesets/cli": ^2.27.1
     knip: ^5.27.4
     node-gyp: ^9.0.0

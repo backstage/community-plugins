@@ -1,5 +1,22 @@
 # @backstage-community/plugin-copilot-backend
 
+## 0.5.0
+
+### Minor Changes
+
+- f5be5aa: Backstage version bump to v1.35.1
+
+### Patch Changes
+
+- Updated dependencies [f5be5aa]
+  - @backstage-community/plugin-copilot-common@0.5.0
+
+## 0.4.0
+
+### Minor Changes
+
+- 6e44ae3: Added ability to use GitHub App authentication for organization level metrics
+
 ## 0.3.2
 
 ### Patch Changes

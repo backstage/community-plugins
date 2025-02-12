@@ -1,5 +1,22 @@
 # @backstage-community/plugin-jenkins
 
+## 0.16.0
+
+### Minor Changes
+
+- 07ef31b: Backstage version bump to v1.35.1
+
+### Patch Changes
+
+- Updated dependencies [07ef31b]
+  - @backstage-community/plugin-jenkins-common@0.3.0
+
+## 0.15.0
+
+### Minor Changes
+
+- 92a0ff6: feature: allow support for defining multiple projects/job names
+
 ## 0.14.0
 
 ### Minor Changes

@@ -151,7 +151,7 @@ export class JenkinsBuilder {
           if (err.errors) {
             throw new Error(
               `Unable to fetch projects, for ${
-                jenkinsInfo.jobFullName
+                jenkinsInfo.fullJobNames
               }: ${stringifyError(err.errors)}`,
             );
           }
@@ -172,7 +172,7 @@ export class JenkinsBuilder {
             namespace,
             name,
           },
-          jobFullName,
+          fullJobNames: [jobFullName],
           credentials: await httpAuth.credentials(request),
         });
 
@@ -199,7 +199,7 @@ export class JenkinsBuilder {
             namespace,
             name,
           },
-          jobFullName,
+          fullJobNames: [jobFullName],
           credentials: await httpAuth.credentials(request),
         });
 
@@ -222,7 +222,7 @@ export class JenkinsBuilder {
             namespace,
             name,
           },
-          jobFullName,
+          fullJobNames: [jobFullName],
           credentials: await httpAuth.credentials(request),
         });
 
@@ -252,7 +252,7 @@ export class JenkinsBuilder {
             namespace,
             name,
           },
-          jobFullName,
+          fullJobNames: [jobFullName],
           credentials: await httpAuth.credentials(request),
         });
 

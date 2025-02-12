@@ -1,5 +1,17 @@
 # @backstage-community/plugin-search-backend-module-confluence-collator
 
+## 0.4.1
+
+### Patch Changes
+
+- 0a80de6: update app-config example for confluence search collator schedule
+
+## 0.4.0
+
+### Minor Changes
+
+- 75f7435: Backstage version bump to v1.35.1
+
 ## 0.3.2
 
 ### Patch Changes

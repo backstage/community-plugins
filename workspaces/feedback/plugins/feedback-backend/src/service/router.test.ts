@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { getRootLogger, HostDiscovery } from '@backstage/backend-common';
 import {
   AuthService,
   DiscoveryService,
@@ -39,11 +38,11 @@ import { NotificationService } from '@backstage/plugin-notifications-node';
 
 const handlers = [
   rest.get(
-    'http://localhost:7007/api/catalog/entities/by-name/component/default/example-website',
+    'http://**/api/catalog/entities/by-name/component/default/example-website',
     (_, res, ctx) => res(ctx.json(mockEntity)),
   ),
   rest.get(
-    'http://localhost:7007/api/catalog/entities/by-name/user/default/guest',
+    'http://**/api/catalog/entities/by-name/user/default/guest',
     (_, res, ctx) => res(ctx.json(mockUser)),
   ),
   rest.get('https://jira.host/rest/api/latest/issue/ticket-id', (_, res, ctx) =>
@@ -86,11 +85,11 @@ describe('Router', () => {
   handlers.forEach(handler => mswMockServer.use(handler));
   mswMockServer.listen({ onUnhandledRequest: 'bypass' });
   const config: Config = new ConfigReader(mockConfig);
-  const discovery: DiscoveryService = HostDiscovery.fromConfig(config);
+  const discovery: DiscoveryService = mockServices.discovery();
   const notificationsMock: jest.Mocked<NotificationService> = {
     send: jest.fn(),
   };
-  const logger: LoggerService = getRootLogger().child({
+  const logger: LoggerService = mockServices.rootLogger().child({
     service: 'feedback-backend',
   });
   const auth: AuthService = mockServices.auth();
@@ -102,6 +101,7 @@ describe('Router', () => {
       config: config,
       discovery: discovery,
       auth: auth,
+      database: mockServices.database.mock(),
       notifications: notificationsMock,
     });
     app = express().use(router);

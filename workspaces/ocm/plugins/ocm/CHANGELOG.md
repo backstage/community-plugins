@@ -1,5 +1,22 @@
 ### Dependencies
 
+## 5.3.1
+
+### Patch Changes
+
+- 7ba7e60: Removed unused dependency PatternFly.
+
+## 5.3.0
+
+### Minor Changes
+
+- e0796ca: Backstage version bump to v1.35.0
+
+### Patch Changes
+
+- Updated dependencies [e0796ca]
+  - @backstage-community/plugin-ocm-common@3.7.0
+
 ## 5.2.6
 
 ### Patch Changes

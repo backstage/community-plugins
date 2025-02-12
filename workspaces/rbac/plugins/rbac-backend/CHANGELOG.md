@@ -1,5 +1,29 @@
 ### Dependencies
 
+## 5.4.0
+
+### Minor Changes
+
+- 5d5c02a: Backstage version bump to v1.35.0
+
+### Patch Changes
+
+- Updated dependencies [5d5c02a]
+  - @backstage-community/plugin-rbac-common@1.13.0
+  - @backstage-community/plugin-rbac-node@1.9.0
+
+## 5.3.1
+
+### Patch Changes
+
+- 1d5dd17: Evaluate the permissions for a superuser earlier in the process to avoid the unintended consequence of having conditional permissions policies applied to a superuser.
+
+## 5.3.0
+
+### Minor Changes
+
+- 53daff0: Roles and permissions were not correctly applied for users and groups with names containing uppercase letters. To address this issue, we now convert user and group references in all user inputs to lowercase. This change migrates `v0` column in `casbin_rule` table in `backstage_plugin_permission` database. Conditions containing claims with uppercase letters are not resolved yet.
+
 ## 5.2.10
 
 ### Patch Changes
