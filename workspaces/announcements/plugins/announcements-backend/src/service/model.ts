@@ -21,6 +21,10 @@ import { DateTime } from 'luxon';
  *
  * @internal
  */
-export type AnnouncementModel = Omit<Announcement, 'created_at'> & {
+export type AnnouncementModel = Omit<
+  Announcement,
+  'created_at' | 'start_at'
+> & {
   created_at: DateTime;
+  start_at: DateTime;
 };
