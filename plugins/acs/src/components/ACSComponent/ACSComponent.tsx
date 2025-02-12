@@ -16,7 +16,7 @@ export const ACSComponent = () => {
 
     const title: string = "Security findings"
     const subheader: string = "Assess vulnerabilities and policy violations for your component workloads"
-    const acsUrl = config.getString('app.acs.acsUrl');
+    const acsUrl = config.getString('acs.acsUrl');
 
     // Get catalog data
     const { entity } = useEntity();

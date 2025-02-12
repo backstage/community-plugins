@@ -2,8 +2,8 @@ app:
   title: Scaffolded Backstage App
   baseUrl: http://localhost:3000
 
-  acs:
-    acsUrl: ${ACS_URL}
+acs:
+  acsUrl: ${ACS_URL}
 
 organization:
   name: My Company
