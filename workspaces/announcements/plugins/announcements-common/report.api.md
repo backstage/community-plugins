@@ -38,7 +38,7 @@ export type AnnouncementsFilters = {
   category?: string;
   page?: number;
   active?: boolean;
-  sortBy?: 'createdAt' | 'startAt';
+  sortBy?: 'created_at' | 'start_at';
   order?: 'asc' | 'desc';
 };
 

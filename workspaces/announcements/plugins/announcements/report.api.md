@@ -39,7 +39,7 @@ export const AnnouncementsCard: ({
   category?: string | undefined;
   active?: boolean | undefined;
   variant?: InfoCardVariants | undefined;
-  sortBy?: 'createdAt' | 'startAt' | undefined;
+  sortBy?: 'created_at' | 'start_at' | undefined;
   order?: 'desc' | 'asc' | undefined;
 }) => JSX_2.Element;
 
@@ -103,7 +103,7 @@ export type AnnouncementsTimelineProps = {
   timelineAlignment?: 'left' | 'right' | 'alternate';
   timelineMinWidth?: string;
   hideInactive?: boolean;
-  sortBy?: 'createdAt' | 'startAt';
+  sortBy?: 'created_at' | 'start_at';
   order?: 'asc' | 'desc';
 };
 

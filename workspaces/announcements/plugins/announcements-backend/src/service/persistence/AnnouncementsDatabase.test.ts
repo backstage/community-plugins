@@ -489,7 +489,7 @@ describe('AnnouncementsDatabase', () => {
       });
 
       const announcements = await store.announcements({
-        sortBy: 'startAt',
+        sortBy: 'start_at',
         order: 'desc',
       });
 
@@ -546,7 +546,7 @@ describe('AnnouncementsDatabase', () => {
       });
 
       const announcements = await store.announcements({
-        sortBy: 'startAt',
+        sortBy: 'start_at',
         order: 'asc',
       });
 
@@ -603,7 +603,7 @@ describe('AnnouncementsDatabase', () => {
       });
 
       const announcements = await store.announcements({
-        sortBy: 'createdAt',
+        sortBy: 'created_at',
         order: 'desc',
       });
 

@@ -26,7 +26,7 @@ export interface AnnouncementsApi {
     page?: number;
     category?: string;
     active?: boolean;
-    sortBy?: 'createdAt' | 'startAt';
+    sortBy?: 'created_at' | 'start_at';
     order?: 'asc' | 'desc';
   }): Promise<AnnouncementsList>;
   // (undocumented)
@@ -71,7 +71,7 @@ export class AnnouncementsClient implements AnnouncementsApi {
     page?: number;
     category?: string;
     active?: boolean;
-    sortBy?: 'createdAt' | 'startAt';
+    sortBy?: 'created_at' | 'start_at';
     order?: 'asc' | 'desc';
   }): Promise<AnnouncementsList>;
   // (undocumented)
@@ -123,9 +123,9 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'admin.announcementsContent.table.status': 'Status';
     readonly 'admin.announcementsContent.table.actions': 'Actions';
     readonly 'admin.announcementsContent.table.created_at': 'Created';
+    readonly 'admin.announcementsContent.table.start_at': 'Start';
     readonly 'admin.announcementsContent.table.category': 'Category';
     readonly 'admin.announcementsContent.table.publisher': 'Publisher';
-    readonly 'admin.announcementsContent.table.start_at': 'Start';
     readonly 'admin.announcementsContent.announcements': 'Announcements';
     readonly 'admin.announcementsContent.alertMessage': 'Announcement created.';
     readonly 'admin.announcementsContent.alertMessageWithNewCategory': 'with new category';
@@ -145,10 +145,10 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'announcementForm.active': 'Active';
     readonly 'announcementForm.title': 'Title';
     readonly 'announcementForm.submit': 'Submit';
-    readonly 'announcementForm.startAt': 'Announcement start date';
     readonly 'announcementForm.excerpt': 'Excerpt';
     readonly 'announcementForm.editAnnouncement': 'Edit announcement';
     readonly 'announcementForm.newAnnouncement': 'New announcement';
+    readonly 'announcementForm.startAt': 'Announcement start date';
     readonly 'announcementForm.categoryInput.label': 'Category';
     readonly 'announcementForm.categoryInput.create': 'Create';
     readonly 'announcementsPage.grid.announcementDeleted': 'Announcement deleted.';
@@ -241,9 +241,9 @@ export const useAnnouncementsTranslation: () => {
     readonly 'admin.announcementsContent.table.status': 'Status';
     readonly 'admin.announcementsContent.table.actions': 'Actions';
     readonly 'admin.announcementsContent.table.created_at': 'Created';
+    readonly 'admin.announcementsContent.table.start_at': 'Start';
     readonly 'admin.announcementsContent.table.category': 'Category';
     readonly 'admin.announcementsContent.table.publisher': 'Publisher';
-    readonly 'admin.announcementsContent.table.start_at': 'Start';
     readonly 'admin.announcementsContent.announcements': 'Announcements';
     readonly 'admin.announcementsContent.alertMessage': 'Announcement created.';
     readonly 'admin.announcementsContent.alertMessageWithNewCategory': 'with new category';
@@ -263,10 +263,10 @@ export const useAnnouncementsTranslation: () => {
     readonly 'announcementForm.active': 'Active';
     readonly 'announcementForm.title': 'Title';
     readonly 'announcementForm.submit': 'Submit';
-    readonly 'announcementForm.startAt': 'Announcement start date';
     readonly 'announcementForm.excerpt': 'Excerpt';
     readonly 'announcementForm.editAnnouncement': 'Edit announcement';
     readonly 'announcementForm.newAnnouncement': 'New announcement';
+    readonly 'announcementForm.startAt': 'Announcement start date';
     readonly 'announcementForm.categoryInput.label': 'Category';
     readonly 'announcementForm.categoryInput.create': 'Create';
     readonly 'announcementsPage.grid.announcementDeleted': 'Announcement deleted.';

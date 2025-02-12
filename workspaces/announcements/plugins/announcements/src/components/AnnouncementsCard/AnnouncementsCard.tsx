@@ -57,7 +57,7 @@ type AnnouncementsCardOpts = {
   category?: string;
   active?: boolean;
   variant?: InfoCardVariants;
-  sortBy?: 'createdAt' | 'startAt';
+  sortBy?: 'created_at' | 'start_at';
   order?: 'asc' | 'desc';
 };
 

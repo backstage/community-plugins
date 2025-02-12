@@ -63,10 +63,10 @@ export type AnnouncementsTimelineProps = {
   hideInactive?: boolean;
   /**
    * The field by which date time to sort the announcements.
-   * Can be 'createdAt' or 'startAt'.
-   * Default: 'createdAt'
+   * Can be 'created_at' or 'start_at'.
+   * Default: 'created_at'
    */
-  sortBy?: 'createdAt' | 'startAt';
+  sortBy?: 'created_at' | 'start_at';
   /**
    * The order in which to sort the announcements.
    * Can be 'asc' for ascending (older first) or 'desc' for descending (new first).
@@ -98,7 +98,7 @@ const DEFAULT_INACTIVE = false;
 /**
  * Default sort by filter
  */
-const DEFAULT_SORTBY = 'createdAt';
+const DEFAULT_SORTBY = 'created_at';
 
 /**
  * Default order to display announcments. Newer announcements are display by default

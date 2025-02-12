@@ -100,7 +100,7 @@ describe('createRouter', () => {
         max: undefined,
         offset: undefined,
         active: undefined,
-        sortBy: 'createdAt', // Default sortBy
+        sortBy: 'created_at', // Default sortBy
         order: 'desc', // Default order
       });
 
@@ -148,7 +148,7 @@ describe('createRouter', () => {
         max: undefined,
         offset: undefined,
         active: undefined,
-        sortBy: 'createdAt',
+        sortBy: 'created_at',
         order: 'asc',
       });
 

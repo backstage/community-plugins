@@ -228,7 +228,7 @@ export const AnnouncementsContent = () => {
         </Typography>
       ),
       sorting: true,
-      field: 'startAt',
+      field: 'start_at',
       type: 'date',
       render: rowData =>
         DateTime.fromISO(rowData.start_at).toFormat('M/d/yyyy'),

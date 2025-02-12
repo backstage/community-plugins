@@ -59,7 +59,7 @@ type GetAnnouncementsQueryParams = {
   page?: number;
   max?: number;
   active?: boolean;
-  sortby?: 'createdAt' | 'startAt';
+  sortby?: 'created_at' | 'start_at';
   order?: 'asc' | 'desc';
 };
 
@@ -108,7 +108,7 @@ export async function createRouter(
           max,
           page,
           active,
-          sortby = 'createdAt',
+          sortby = 'created_at',
           order = 'desc',
         },
       } = req;
@@ -119,9 +119,9 @@ export async function createRouter(
           max,
           offset: page ? (page - 1) * (max ?? 10) : undefined,
           active,
-          sortBy: ['createdAt', 'startAt'].includes(sortby)
+          sortBy: ['created_at', 'start_at'].includes(sortby)
             ? sortby
-            : 'createdAt',
+            : 'created_at',
           order: ['asc', 'desc'].includes(order) ? order : 'desc',
         },
       );

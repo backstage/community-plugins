@@ -21,7 +21,6 @@ import {
   Announcement,
 } from '@backstage-community/plugin-announcements-common';
 import slugify from 'slugify';
-import { snakeCase } from 'lodash';
 
 const announcementsTable = 'announcements';
 
@@ -139,7 +138,7 @@ export class AnnouncementsDatabase {
       offset,
       max,
       active,
-      sortBy = 'createdAt',
+      sortBy = 'created_at',
       order = 'desc',
     } = request;
 
@@ -181,7 +180,7 @@ export class AnnouncementsDatabase {
         'active',
         'start_at',
       )
-      .orderBy(snakeCase(sortBy), order)
+      .orderBy(sortBy, order)
       .leftJoin('categories', 'announcements.category', 'categories.slug');
     filterState(queryBuilder);
     filterRange(queryBuilder);

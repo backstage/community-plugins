@@ -245,7 +245,7 @@ const AnnouncementsGrid = ({
   category?: string;
   cardTitleLength?: number;
   active?: boolean;
-  sortBy?: 'createdAt' | 'startAt';
+  sortBy?: 'created_at' | 'start_at';
   order?: 'asc' | 'desc';
 }) => {
   const classes = useStyles();
@@ -359,7 +359,7 @@ export type AnnouncementsPageProps = {
   cardOptions?: AnnouncementCardProps;
   hideContextMenu?: boolean;
   hideInactive?: boolean;
-  sortby?: 'createdAt' | 'startAt';
+  sortby?: 'created_at' | 'start_at';
   order?: 'asc' | 'desc';
 };
 
@@ -412,7 +412,7 @@ export const AnnouncementsPage = (props: AnnouncementsPageProps) => {
           category={category ?? queryParams.get('category') ?? undefined}
           cardTitleLength={cardOptions?.titleLength}
           active={hideInactive ? true : false}
-          sortBy={sortby ?? 'createdAt'}
+          sortBy={sortby ?? 'created_at'}
           order={order ?? 'desc'}
         />
       </Content>

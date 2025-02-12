@@ -2655,7 +2655,6 @@ __metadata:
     "@backstage/plugin-signals-backend": ^0.3.0
     "@backstage/plugin-signals-node": ^0.1.16
     "@backstage/test-utils": ^1.7.4
-    "@types/lodash": ^4.17.15
     "@types/supertest": ^2.0.15
     "@types/uuid": ^8.3.4
     better-sqlite3: ^11.3.0
@@ -2663,7 +2662,6 @@ __metadata:
     express: ^4.17.1
     express-promise-router: ^4.1.0
     knex: ^3.0.1
-    lodash: ^4.17.21
     luxon: ^3.2.0
     msw: ^1.3.2
     node-fetch: ^2.6.7
@@ -11755,13 +11753,6 @@ __metadata:
   dependencies:
     keyv: "npm:*"
   checksum: 8713da9382b9346d664866a6cab2f91b0fd479f61379af891303a618e9a2abad6f347adc38a0850540e3f2dad278427de24e7555339264fddb04d1d17d3b50e0
-  languageName: node
-  linkType: hard
-
-"@types/lodash@npm:^4.17.15":
-  version: 4.17.15
-  resolution: "@types/lodash@npm:4.17.15"
-  checksum: 5037564154411f4ac0b187b914031c150520a7ca037dea007f774b7123c97c0da55b2e41ae81dc1bc80ff09e8d6a236455ea676d5062af12c592b8e81baec7bf
   languageName: node
   linkType: hard
 

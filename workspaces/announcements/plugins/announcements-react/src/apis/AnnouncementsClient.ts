@@ -118,7 +118,7 @@ export class AnnouncementsClient implements AnnouncementsApi {
     page?: number;
     category?: string;
     active?: boolean;
-    sortBy?: 'createdAt' | 'startAt';
+    sortBy?: 'created_at' | 'start_at';
     order?: 'asc' | 'desc';
   }): Promise<AnnouncementsList> {
     const params = new URLSearchParams();
