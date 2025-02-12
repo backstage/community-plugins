@@ -25,6 +25,7 @@ export const SecurityFindingsComponent = ({ data, filters }) => {
         { name: 'Status', selector: row => row.rowData.status, sortable: true, wrap: true },
         { name: 'Workload', selector: row => row.rowData.workload, sortable: true, wrap: true, grow: 2 },
         { name: 'Image', selector: row => row.rowData.image, sortable: true, wrap: true, grow: 2 },
+        { name: 'EPSS', selector: row => row.rowData.epss, sortable: true, wrap: true },
         { name: 'CVSS', selector: row => row.rowData.cvss, sortable: true, wrap: true },
         { name: 'Discovered', selector: row => row.rowData.discovered, sortable: true, wrap: true },
     ];
@@ -145,6 +146,7 @@ export const SecurityFindingsComponent = ({ data, filters }) => {
                                 status: isFixable(vulns?.fixedBy),
                                 workload: deployment?.result?.deployment?.name,
                                 image: item?.name?.fullName,
+                                epss: item?.epss || "",
                                 cvss: vulns?.cvss.toString(),
                                 discovered: getDiscovered(vulns?.firstImageOccurrence),
                                 link: vulns?.link,
