@@ -8,6 +8,8 @@ import '@patternfly/react-styles';
 import { CVEEntityDetailsComponent } from '../CVEEntityDetailsComponent';
 
 export const SecurityFindingsComponent = ({ data, filters }) => {
+    console.log(filters)
+
     const [dataRows, setDataRows] = useState([]);
     const [pending, setPending] = React.useState(true);
     const theme = useTheme();
@@ -99,24 +101,24 @@ export const SecurityFindingsComponent = ({ data, filters }) => {
         const attribute = filters?.selectedAttribute;
         switch (filters?.selectedEntity) {
             case "Image":
-                if (attribute === "Name") isTrue = vulnItem?.expandedData?.image.includes(filters.optionText);
+                if (attribute === "Name") isTrue = vulnItem?.expandedData?.image.includes(filters.userText);
                 break;
             case "CVE":
-                if (attribute === "Name") isTrue = vulnItem?.rowData?.cve.includes(filters.optionText);
-                if (attribute === "Discovered time") isTrue = vulnItem?.rowData?.discovered.includes(filters.optionText);
-                if (attribute === "CVSS") isTrue = vulnItem?.rowData?.cvss.toString().includes(filters.optionText);
+                if (attribute === "Name") isTrue = vulnItem?.rowData?.cve.includes(filters.userText);
+                if (attribute === "Discovered time") isTrue = vulnItem?.rowData?.discovered.includes(filters.userText);
+                if (attribute === "CVSS") isTrue = vulnItem?.rowData?.cvss.toString().includes(filters.userText);
                 break;
             case "Image Component":
-                if (attribute === "Name") isTrue = vulnItem?.expandedData?.component.includes(filters.optionText);
+                if (attribute === "Name") isTrue = vulnItem?.expandedData?.component.includes(filters.userText);
                 break;
             case "Deployment":
-                if (attribute === "Name") isTrue = vulnItem?.rowData?.workload.includes(filters.optionText);
+                if (attribute === "Name") isTrue = vulnItem?.rowData?.workload.includes(filters.userText);
                 break;
             case "Namespace":
-                if (attribute === "Name") isTrue = vulnItem?.expandedData?.namespace.includes(filters.optionText);
+                if (attribute === "Name") isTrue = vulnItem?.expandedData?.namespace.includes(filters.userText);
                 break;
             case "Cluster":
-                if (attribute === "Name") isTrue = vulnItem?.expandedData?.cluster.includes(filters.optionText);
+                if (attribute === "Name") isTrue = vulnItem?.expandedData?.cluster.includes(filters.userText);
                 break
             default:
                 break;
@@ -173,7 +175,7 @@ export const SecurityFindingsComponent = ({ data, filters }) => {
                             if (!checkVulnSev(currItem)) return;
                         }
 
-                        if (filters?.optionText !== "") {
+                        if (filters?.userText !== "") {
                             if (!checkSearch(currItem)) return;
                         }
 
