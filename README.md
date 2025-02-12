@@ -19,7 +19,12 @@ Along with the NodeJS specific prerequisites we'll cover below you will need to 
 
 ### Node CLI Tools
 
-NodeJS comes with `npm` the Node Package Manager. Use it to install `yarn` and `npx`
+You will want to use node verion 20. You can set the version with the following command:
+```
+nvm use 20
+```
+
+NodeJS comes with `npm` the Node Package Manager. Use it to install `yarn` and `npx`. 
 
 ```bash
 > npm install yarn npx
