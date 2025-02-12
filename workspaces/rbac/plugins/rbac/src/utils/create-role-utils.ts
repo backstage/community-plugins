@@ -20,7 +20,6 @@ import {
   isResourcedPolicy,
   PluginPermissionMetaData,
   PolicyDetails,
-  ResourcedPolicy,
   Role,
   RoleBasedPolicy,
 } from '@backstage-community/plugin-rbac-common';
@@ -62,12 +61,25 @@ export const getRoleData = (values: RoleFormValues): Role => {
 export const validationSchema = yup.object({
   name: yup.string().required('Name is required'),
   selectedMembers: yup.array().min(1, 'No member selected'),
-  permissionPoliciesRows: yup.array().of(
-    yup.object().shape({
-      plugin: yup.string().required('Plugin is required'),
-      permission: yup.string().required('Permission is required'),
-    }),
-  ),
+  selectedPlugins: yup.array().min(1, 'No plugin selected'),
+  permissionPoliciesRows: yup
+    .array()
+    .of(
+      yup.object().shape({
+        plugin: yup.string().required('Plugin is required'),
+        permission: yup.string().required('Permission is required'),
+        policies: yup
+          .array()
+          .min(1)
+          .of(
+            yup
+              .object()
+              .shape({ policy: yup.string(), effect: yup.string() })
+              .test(p => p.effect === 'allow'),
+          ),
+      }),
+    )
+    .min(1),
 });
 
 export const getMembersCount = (member: MemberEntity) => {
@@ -111,16 +123,12 @@ export const getPermissionPolicies = (
 ): PermissionPolicies => {
   return policies.reduce(
     (ppsAcc: PermissionPolicies, policy: PolicyDetails) => {
-      const permission = isResourcedPolicy(policy)
-        ? (policy as ResourcedPolicy).resourceType
-        : policy.name;
+      const permission = policy.name;
       return {
         ...ppsAcc,
         [permission]: policies.reduce(
           (policiesAcc: { policies: string[]; isResourced: boolean }, pol) => {
-            const perm = isResourcedPolicy(pol)
-              ? (pol as ResourcedPolicy).resourceType
-              : pol.name;
+            const perm = pol.name;
             if (permission === perm)
               return {
                 policies: uniqBy(
@@ -128,6 +136,7 @@ export const getPermissionPolicies = (
                   val => val,
                 ),
                 isResourced: isResourcedPolicy(pol),
+                resourceType: isResourcedPolicy(pol) ? pol.resourceType : '',
               };
             return policiesAcc;
           },
@@ -148,15 +157,13 @@ export const getPluginsPermissionPoliciesData = (
   const pluginsPermissions = pluginsPermissionPolicies.reduce(
     (acc: PluginsPermissions, pp, index) => {
       const permissions = pp.policies.reduce((plcAcc: string[], plc) => {
-        const permission = isResourcedPolicy(plc)
-          ? (plc as ResourcedPolicy).resourceType
-          : plc.name;
+        const permission = plc.name;
         return [...plcAcc, permission];
       }, []);
       return {
         ...acc,
         [plugins[index]]: {
-          permissions: uniqBy(permissions ?? [], val => val),
+          permissions: permissions ?? [],
           policies: {
             ...(pp.policies ? getPermissionPolicies(pp.policies) : {}),
           },
@@ -206,7 +213,7 @@ export const getConditionalPermissionPoliciesData = (
 
   return permissionPoliciesRows.reduce(
     (acc: RoleBasedConditions[], permissionPolicyRow: PermissionsData) => {
-      const { permission, policies, isResourced, plugin, conditions } =
+      const { policies, isResourced, plugin, conditions, resourceType } =
         permissionPolicyRow;
       const permissionMapping = policies.reduce((pAcc: string[], policy) => {
         if (policy.effect === 'allow') {
@@ -221,7 +228,7 @@ export const getConditionalPermissionPoliciesData = (
               result: 'CONDITIONAL',
               roleEntityRef: `${kind}:${namespace}/${name}`,
               pluginId: `${plugin}`,
-              resourceType: `${permission}`,
+              resourceType: `${resourceType}`,
               permissionMapping,
               conditions:
                 Object.keys(conditions)[0] === criterias.condition

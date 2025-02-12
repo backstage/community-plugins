@@ -42,7 +42,7 @@ import {
 const mockPolicies = [
   {
     entityReference: 'role:default/guests',
-    permission: 'catalog-entity',
+    permission: 'catalog.entity.read',
     policy: 'read',
     effect: 'deny',
   },
@@ -72,7 +72,7 @@ const mockPolicies = [
   },
   {
     entityReference: 'user:default/xyz',
-    permission: 'catalog-entity',
+    permission: 'catalog.entity.read',
     policy: 'read',
     effect: 'allow',
   },
@@ -183,19 +183,21 @@ describe('rbac utils', () => {
 
   it('should return plugin-id of the policy', () => {
     expect(
-      getPluginInfo(mockPermissionPolicies, 'catalog-entity').pluginId,
+      getPluginInfo(mockPermissionPolicies, 'catalog.entity.read').pluginId,
     ).toBe('catalog');
     expect(
-      getPluginInfo(mockPermissionPolicies, 'scaffolder-template').pluginId,
+      getPluginInfo(mockPermissionPolicies, 'scaffolder.template.read')
+        .pluginId,
     ).toBe('scaffolder');
   });
 
   it('should return if the permission is resourced', () => {
     expect(
-      getPluginInfo(mockPermissionPolicies, 'catalog-entity').isResourced,
+      getPluginInfo(mockPermissionPolicies, 'catalog.entity.read').isResourced,
     ).toBe(true);
     expect(
-      getPluginInfo(mockPermissionPolicies, 'scaffolder-template').isResourced,
+      getPluginInfo(mockPermissionPolicies, 'scaffolder.template.read')
+        .isResourced,
     ).toBe(true);
   });
 
@@ -224,6 +226,7 @@ describe('rbac utils', () => {
       ],
       policyString: ['Read', ', Create', ', Delete'],
       isResourced: false,
+      resourceType: '',
     });
     data = getPermissionsData(mockPolicies, []);
     expect(data[0]).toEqual({
@@ -381,11 +384,12 @@ describe('getConditionalPermissionsData', () => {
       plugins: ['catalog'],
       pluginsPermissions: {
         ['catalog']: {
-          permissions: ['catalog-entity'],
+          permissions: ['catalog.entity.read'],
           policies: {
-            ['catalog-entity']: {
-              policies: ['read', 'update', 'delete'],
+            ['catalog.entity.read']: {
+              policies: ['read'],
               isResourced: true,
+              resourceType: 'catalog-entity',
             },
           },
         },
@@ -395,18 +399,16 @@ describe('getConditionalPermissionsData', () => {
     const result = getConditionalPermissionsData(
       conditionalPermissions,
       permissionPolicies,
+      mockPermissionPolicies,
     );
 
     expect(result).toEqual([
       {
         plugin: 'catalog',
-        permission: 'catalog-entity',
+        permission: 'catalog.entity.read',
         isResourced: true,
-        policies: [
-          { policy: 'read', effect: 'allow' },
-          { policy: 'update', effect: 'deny' },
-          { policy: 'delete', effect: 'deny' },
-        ],
+        resourceType: 'catalog-entity',
+        policies: [{ policy: 'read', effect: 'allow' }],
         policyString: 'Read',
         conditions: {
           condition: {
@@ -441,6 +443,7 @@ describe('getConditionalPermissionsData', () => {
     const result = getConditionalPermissionsData(
       conditionalPermissions,
       permissionPolicies,
+      mockPermissionPolicies,
     );
 
     expect(result).toEqual([]);
@@ -464,11 +467,12 @@ describe('getConditionalPermissionsData', () => {
       plugins: ['catalog'],
       pluginsPermissions: {
         ['catalog']: {
-          permissions: ['catalog-entity'],
+          permissions: ['catalog.entity.read'],
           policies: {
-            ['catalog-entity']: {
-              policies: ['read', 'update', 'delete'],
+            ['catalog.entity.read']: {
+              policies: ['read'],
               isResourced: true,
+              resourceType: 'catalog-entity',
             },
           },
         },
@@ -477,6 +481,7 @@ describe('getConditionalPermissionsData', () => {
     const result = getConditionalPermissionsData(
       conditionalPermissions,
       permissionPolicies,
+      mockPermissionPolicies,
     );
 
     const expectedResultConditions = {

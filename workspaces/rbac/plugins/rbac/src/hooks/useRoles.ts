@@ -20,7 +20,6 @@ import { useApi } from '@backstage/core-plugin-api';
 import { usePermission } from '@backstage/plugin-permission-react';
 
 import {
-  isResourcedPolicy,
   PluginPermissionMetaData,
   policyEntityCreatePermission,
   policyEntityDeletePermission,
@@ -184,11 +183,7 @@ export const useRoles = (
                   po =>
                     (permissionPolicies as PluginPermissionMetaData[]).find(
                       pp =>
-                        pp.policies?.find(pol =>
-                          isResourcedPolicy(pol)
-                            ? po.permission === pol.resourceType
-                            : po.permission === pol.name,
-                        ),
+                        pp.policies?.find(pol => po.permission === pol.name),
                     )?.pluginId,
                 );
                 accPls = [...accPls, ...pls].filter(val => !!val) as string[];
