@@ -1,5 +1,18 @@
 ### Dependencies
 
+## 1.37.0
+
+### Minor Changes
+
+- 5934dfe: Open confirmation modal with options to discard the entered information or continue with adding more information on create/edit role forms cancel button click.
+
+## 1.36.0
+
+### Minor Changes
+
+- 838db28: Redesigned RBAC form permissions section.
+  User will be able to select multiple plugins at once.
+
 ## 1.35.0
 
 ### Minor Changes
