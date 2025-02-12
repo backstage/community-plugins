@@ -124,8 +124,8 @@ export const AnnouncementsTimeline = ({
   const { announcements, loading, error } = useAnnouncements({
     max: maxResults,
     active: hideInactive,
-    sortBy: sortBy,
-    order: order,
+    sortBy,
+    order,
   });
   const { t } = useAnnouncementsTranslation();
 
