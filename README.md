@@ -63,11 +63,10 @@ proxy:
         authorization: "Bearer ${ACS_API_KEY}"
 ```
 
-Under the `app` stanza in `app-config.yaml`, add the acs url. The app stanza should look like this:
+Add the following top-level stanza to the `app-config.yaml` file:
 ```
-app:
-  acs:
-    acsUrl: ${ACS_URL}
+acs:
+  acsUrl: ${ACS_API_URL}
 ```
 
 Here's an example of how to configure all of the various plugins in your dynmaic plugins config for RHDH.
