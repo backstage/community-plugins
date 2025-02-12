@@ -62,7 +62,7 @@ export const VulnerabilitiesComponent = ({ deploymentName }) => {
     }
 
     return (
-        <Box>
+        <Box sx={{ minHeight: '500px' }}>
             <DataFilterComponent
                 setFilters={setFilters}
                 data={ACSDataResult}
