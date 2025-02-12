@@ -2879,7 +2879,7 @@ __metadata:
     ms: "npm:^2.1.3"
     msw: "npm:^1.0.0"
     node-fetch: "npm:^2.0.0"
-    parse-duration: "npm:^1.1.0"
+    parse-duration: "npm:^2.1.3"
     qs: "npm:^6.12.0"
     supertest: "npm:^7.0.0"
     winston: "npm:^3.2.1"
@@ -25987,10 +25987,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"parse-duration@npm:*, parse-duration@npm:^1.1.0":
+"parse-duration@npm:*":
   version: 1.1.0
   resolution: "parse-duration@npm:1.1.0"
   checksum: 10/c26ab1e3fdf1dc4b7006e87a82fd33c7dbee3116413a59369bbc3b160a8e7ed88616852c4c3dde23b7a857e270cb18fccf629ff52220803194239f8e092774a9
+  languageName: node
+  linkType: hard
+
+"parse-duration@npm:^2.1.3":
+  version: 2.1.3
+  resolution: "parse-duration@npm:2.1.3"
+  checksum: 10/9ae28c262beb634caf889139ecab997bad433f3cc9b2de6151a96ed4bddcd5a85f5e8b04a6637d8508b8986ceb6d182fd3c4c7897ce018467a88cac8462d47bc
   languageName: node
   linkType: hard
 
