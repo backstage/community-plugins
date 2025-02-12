@@ -34,12 +34,7 @@ import {
   Typography,
   Divider,
 } from '@material-ui/core';
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from '@material-ui/pickers';
 import SaveAltIcon from '@material-ui/icons/SaveAlt';
-import LuxonUtils from '@date-io/luxon';
 import { DateTime } from 'luxon';
 
 type AnnouncementFormProps = {
@@ -54,10 +49,15 @@ export const AnnouncementForm = ({
   const identityApi = useApi(identityApiRef);
   const { t } = useAnnouncementsTranslation();
 
+  // Ensure `start_at` is properly formatted as an ISO date string
+  const formattedStartAt = initialData.start_at
+    ? DateTime.fromISO(initialData.start_at).toISODate()
+    : DateTime.now().toISODate();
+
   const [form, setForm] = React.useState({
     ...initialData,
     category: initialData.category?.slug,
-    start_at: initialData.start_at || DateTime.now().toISO(),
+    start_at: formattedStartAt || '',
   });
   const [loading, setLoading] = useState(false);
 
@@ -122,29 +122,21 @@ export const AnnouncementForm = ({
             </Grid>
 
             <Grid item xs={12} sm={6}>
-              <MuiPickersUtilsProvider utils={LuxonUtils}>
-                <KeyboardDatePicker
-                  disableToolbar
-                  variant="inline"
-                  inputVariant="outlined"
-                  format="MM/dd/yyyy"
-                  id="start_at-date-picker"
-                  label={t('announcementForm.startAt')}
-                  value={form.start_at}
-                  onChange={date =>
-                    setForm({
-                      ...form,
-                      start_at: date
-                        ? date.toISO() || ''
-                        : DateTime.now().toISO() || '',
-                    })
-                  }
-                  KeyboardButtonProps={{
-                    'aria-label': 'change date',
-                  }}
-                  required
-                />
-              </MuiPickersUtilsProvider>
+              <TextField
+                variant="outlined"
+                label={t('announcementForm.startAt')}
+                id="start-at-date"
+                type="date"
+                value={form.start_at}
+                InputLabelProps={{ shrink: true }}
+                required
+                onChange={e =>
+                  setForm({
+                    ...form,
+                    start_at: e.target.value,
+                  })
+                }
+              />
             </Grid>
 
             <Grid item xs={12}>
