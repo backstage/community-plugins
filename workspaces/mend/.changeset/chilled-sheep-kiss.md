@@ -1,5 +1,5 @@
 ---
-'@backstage-community/plugin-mend': minor
+'@backstage-community/plugin-mend': patch
 ---
 
 Fix linter issues
