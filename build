@@ -1,6 +1,6 @@
 #!/bin/bash
 
-yarn workspace @redhatinsights/backstage-plugin-acs export-dynamic
+yarn workspace @backstage-community/plugin-acs export-dynamic
 cd plugins/acs/
 rm *.tgz
 npm pack ./dist-dynamic

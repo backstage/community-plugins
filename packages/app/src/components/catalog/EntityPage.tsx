@@ -59,7 +59,7 @@ import {
   isKubernetesAvailable,
 } from '@backstage/plugin-kubernetes';
 
-import { EntityACSContent } from '@redhatinsights/backstage-plugin-acs';
+import { EntityACSContent } from '@backstage-community/plugin-acs';
 
 const techdocsContent = (
   <EntityTechdocsContent>

@@ -23,4 +23,4 @@ jobs:
         run: yarn install
 
       - name: Run tests
-        run: yarn workspace @redhatinsights/backstage-plugin-acs test
+        run: yarn workspace @backstage-community/plugin-acs test

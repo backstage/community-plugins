@@ -90,3 +90,4 @@ export type SearchQueryOptions = {
     page: number;
     perPage: number;
 };
+

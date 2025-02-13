@@ -1,5 +1,5 @@
 {
-  "name": "@redhatinsights/backstage-plugin-acs",
+  "name": "@backstage-community/plugin-acs",
   "version": "0.1.1",
   "main": "src/index.ts",
   "types": "src/index.ts",
@@ -11,7 +11,11 @@
     "types": "dist/index.d.ts"
   },
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "acs",
+    "pluginPackages": [
+      "@backstage-community/plugin-acs"
+    ]
   },
   "sideEffects": false,
   "scripts": {
