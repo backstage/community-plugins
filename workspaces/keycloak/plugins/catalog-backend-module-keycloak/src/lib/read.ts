@@ -120,6 +120,7 @@ export async function getEntities<T extends Users | Groups>(
     typeof rawEntityCount === 'number' ? rawEntityCount : rawEntityCount.count;
 
   const pageCount = Math.ceil(entityCount / entityQuerySize);
+  const brief = config.briefRepresentation ?? true;
 
   // The next line acts like range in python
   const entityPromises = Array.from({ length: pageCount }, (_, i) =>
@@ -130,6 +131,7 @@ export async function getEntities<T extends Users | Groups>(
             realm: config.realm,
             max: entityQuerySize,
             first: i * entityQuerySize,
+            briefRepresentation: brief,
           })
           .then(ents => {
             logger.debug(
