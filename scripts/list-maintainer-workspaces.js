@@ -19,23 +19,19 @@ import fs from 'fs-extra';
 import { resolve } from 'path';
 import * as url from 'url';
 import * as codeowners from 'codeowners-utils';
+import { listWorkspaces } from './list-workspaces.js';
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
-const EXCLUDED_WORKSPACES = ['noop', 'repo-tools'];
-
 async function main() {
   const rootPath = resolve(__dirname, '..');
-  const workspacePath = resolve(rootPath, 'workspaces');
 
   // Get `CODEOWNERS` entries
   const codeownersPath = resolve(rootPath, '.github', 'CODEOWNERS');
   const codeOwnerEntries = await codeowners.loadOwners(codeownersPath);
 
   // Get workspaces
-  const workspaces = (await fs.readdir(workspacePath, { withFileTypes: true }))
-    .filter(w => w.isDirectory() && !EXCLUDED_WORKSPACES.includes(w.name))
-    .map(w => w.name);
+  const workspaces = await listWorkspaces();
 
   const maintainerWorkspaces = [];
 
