@@ -98,7 +98,7 @@ export type KeycloakProviderConfig = {
   maxConcurrency?: number;
 
   /**
-   * Whether if the API call will return a brief representation for groups.
+   * Whether the API call will return a brief representation for groups or not. Defaults to true.
    * A complete representation will include attributes
    */
   briefRepresentation?: boolean;
