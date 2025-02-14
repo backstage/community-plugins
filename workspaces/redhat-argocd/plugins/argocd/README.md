@@ -16,57 +16,7 @@ It is only meant for local development, and the setup for it can be found inside
 
 ### Argo CD backend
 
-- Install `@roadiehq/backstage-plugin-argo-cd-backend` plugin using the following command from the root directory
-<!-- configure it by following [Argo CD Backend Plugin docs](https://www.npmjs.com/package/@roadiehq/backstage-plugin-argo-cd-backend) -->
-
-```bash
-yarn workspace app add @roadiehq/backstage-plugin-argo-cd-backend
-```
-
-- Create plugin file for Argo CD backend in your `packages/backend/src/plugins/` directory.
-
-```ts
-// packages/backend/src/plugins/argocd.ts
-
-import { createRouter } from '@roadiehq/backstage-plugin-argo-cd-backend';
-
-import { PluginEnvironment } from '../types';
-
-export default async function createPlugin({
-  logger,
-  config,
-}: PluginEnvironment) {
-  return await createRouter({ logger, config });
-}
-```
-
-- Modify your backend router to expose the APIs for Argo CD backend
-
-```ts
-// packages/backend/src/index.ts
-
-import {legacyPlugin} from '@backstage/backend-common';
-...
-
-backend.add(legacyPlugin('argocd', import('./plugins/argocd')));
-```
-
-- add Argo CD instance information in app.config.yaml
-
-```ts
-argocd:
-  appLocatorMethods:
-    - type: 'config'
-      instances:
-        - name: argoInstance1
-          url: https://argoInstance1.com
-          username: ${ARGOCD_USERNAME}
-          password: ${ARGOCD_PASSWORD}
-        - name: argoInstance2
-          url: https://argoInstance2.com
-          username: ${ARGOCD_USERNAME}
-          password: ${ARGOCD_PASSWORD}
-```
+Please see [the backend documentation](../argocd-backend/README.md) for more information.
 
 ### [Optional] Enable Argo Rollouts feature
 
@@ -150,7 +100,7 @@ You can use the following code to grant the ClusterRole for custom resources:
     backstage.io/kubernetes-id: <BACKSTAGE_ENTITY_NAME>`
   ```
 
-- To Map the Argo rollous to a particular gitops Application, the following label is added to the rollout resources:
+- To Map the Argo rollouts to a particular GitOps Application, the following label is added to the rollout resources:
 
   ```yaml
   labels:
@@ -240,6 +190,11 @@ const cicdcontent = (
 
   > [!Note] > **You should not add both the annotations in the same catalog, adding both annotations will result in error in the plugin.**
 
+Using the `argocd/app-selector` annotation gives you access to these additional annotations:
+
+- `argocd/project-name`: The name of the Application's project
+- `appNamespace`: The namespace of the Application
+
 - To switch between argocd instances, you can use the following annotation
 
 ```yaml
@@ -260,7 +215,7 @@ global:
     includes:
       - dynamic-plugins.default.yaml
     plugins:
-      - package: ./dynamic-plugins/dist/roadiehq-backstage-plugin-argo-cd-backend-dynamic
+      - package: ./dynamic-plugins/dist/backstage-community-plugin-redhat-argo-cd-backend
         disabled: false
       - package: ./dynamic-plugins/dist/backstage-community-plugin-redhat-argocd
         disabled: false
