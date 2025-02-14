@@ -2540,7 +2540,7 @@ __metadata:
     "@common.js/p-limit": "npm:^6.1.0"
     "@keycloak/keycloak-admin-client": "npm:26.1.0"
     "@spotify/prettier-config": "npm:^15.0.0"
-    "@types/lodash": "npm:4.17.13"
+    "@types/lodash": "npm:4.17.15"
     "@types/uuid": "npm:9.0.8"
     deepmerge: "npm:4.3.1"
     inclusion: "npm:^1.0.1"
@@ -7552,10 +7552,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash@npm:4.17.13":
-  version: 4.17.13
-  resolution: "@types/lodash@npm:4.17.13"
-  checksum: 10/ddb34e20810c71be2d9445bcc4b64ec25b83976738454de709854b79c7f655b03704b76235445699956d65012987720e0e429a35489de65495cdb5420202d905
+"@types/lodash@npm:4.17.15":
+  version: 4.17.15
+  resolution: "@types/lodash@npm:4.17.15"
+  checksum: 10/27b348b5971b9c670215331b52448a13d7d65bf1fbd320a7049c9c153c1186ff5d116ba75f05f07d32d7ece8a992b26a30c7bdc9be22a3d1e4e3e6068aa04603
   languageName: node
   linkType: hard
 
