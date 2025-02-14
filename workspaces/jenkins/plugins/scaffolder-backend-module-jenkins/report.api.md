@@ -4,11 +4,66 @@
 
 ```ts
 import { BackendFeature } from '@backstage/backend-plugin-api';
+import Jenkins from 'jenkins';
+import { JsonObject } from '@backstage/types';
+import { TemplateAction } from '@backstage/plugin-scaffolder-node';
 
-// @public (undocumented)
-const jenkinsJobCreate: BackendFeature;
-export default jenkinsJobCreate;
-export { jenkinsJobCreate };
+// @public
+export function buildJob(jenkins: Jenkins): TemplateAction<
+  {
+    jobName: string;
+    jobParameters: any;
+  },
+  JsonObject
+>;
+
+// @public
+export function copyJob(jenkins: Jenkins): TemplateAction<
+  {
+    sourceJobName: string;
+    targetJobName: string;
+  },
+  JsonObject
+>;
+
+// @public
+export function createJob(jenkins: Jenkins): TemplateAction<
+  {
+    jobName: string;
+    jobXml: string;
+    folderName: string;
+    configPath: string;
+  },
+  JsonObject
+>;
+
+// @public
+export function destroyJob(jenkins: Jenkins): TemplateAction<
+  {
+    jobName: string;
+  },
+  JsonObject
+>;
+
+// @public
+export function disableJob(jenkins: Jenkins): TemplateAction<
+  {
+    jobName: string;
+  },
+  JsonObject
+>;
+
+// @public
+export function enableJob(jenkins: Jenkins): TemplateAction<
+  {
+    jobName: string;
+  },
+  JsonObject
+>;
+
+// @public
+const scaffolderBackendModuleJenkins: BackendFeature;
+export default scaffolderBackendModuleJenkins;
 
 // (No @packageDocumentation comment for this package)
 ```

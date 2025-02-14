@@ -13,7 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { RootConfigService } from '@backstage/backend-plugin-api';
+import Jenkins from 'jenkins';
 
-export * from './actions';
-
-export { scaffolderBackendModuleJenkins as default } from './module';
+export function buildJenkinsClient(config: RootConfigService) {
+  const baseUrl = new URL(config.getString('jenkins.baseUrl'));
+  baseUrl.username = config.getOptionalString('jenkins.username') as string;
+  baseUrl.password = config.getOptionalString('jenkins.apiKey') as string;
+  return new Jenkins({
+    baseUrl: baseUrl.toString(),
+    headers: config.getOptional<Record<string, string>>('jenkins.headers'),
+    crumbIssuer:
+      config.getOptionalBoolean('jenkins.crumbIssuerEnabled') ?? true,
+  });
+}

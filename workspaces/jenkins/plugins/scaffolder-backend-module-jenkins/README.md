@@ -61,3 +61,151 @@ spec:
 You can visit the `/create/actions` route in your Backstage application to find out more about the parameters this action accepts when it's installed to configure how you like.
 
 This scaffolder requires the path to a Jenkins job config.xml file. config.xml is the format Jenkins uses to store the project in the file system, you can see examples of them in the Jenkins home directory, or by retrieving the XML configuration of existing jobs from /job/JOBNAME/config.xml.
+
+## Supported Action
+
+| Action      | Description                   |
+| ----------- | ----------------------------- |
+| build       | Run a job                     |
+| copy        | Create a joby from another    |
+| create      | Create a job given a xml      |
+| create-file | Create a job given a xml file |
+| destroy     | Destroy a job                 |
+| disable     | Disable a job                 |
+| enable      | Enable a job                  |
+
+## How to use it
+
+Below, there is an example for each action
+
+- Build job
+
+  **Action input parameters**
+
+  | Action          | Description                                    |
+  | --------------- | ---------------------------------------------- |
+  | _jobName_       | Name of job                                    |
+  | _jobParameters_ | optional job parameters (object) to execute it |
+
+  **Template Step**
+
+  ```yaml
+  - id: jenkins-job-build
+    name: Jenkins Job Build
+    action: jenkins:job:build
+    input:
+      jobName: first-job
+      jobParameters: some-value
+  ```
+
+- Copy job
+
+  **Action input parameters**
+
+  | Action          | Description        |
+  | --------------- | ------------------ |
+  | _sourceJobName_ | Name of source job |
+  | _targetJobName_ | Name of target job |
+
+  **Template Step**
+
+  ```yaml
+  - id: jenkins-job-copy
+    name: Jenkins Job Copy
+    action: jenkins:job:copy
+    input:
+      sourceJobName: source-job
+      targetJobName: target-job
+  ```
+
+- Create job
+
+  **Action input parameters**
+
+  | Action       | Description                                                                                   |
+  | ------------ | --------------------------------------------------------------------------------------------- |
+  | _jobName_    | Name of job                                                                                   |
+  | _jobXml_     | Jenkins xml to create job                                                                     |
+  | _configPath_ | Jenkins xml file to create job, should be a file under ./job/config.xml under skeleton folder |
+  | _folderName_ | Jenkins folder name, in this case the job will be create under this folder (Optional)         |
+
+  ```yaml
+  - id: jenkins-job-create
+    name: Jenkins Job Create
+    action: jenkins:job:create
+    input:
+      jobName: first-job
+      jobXml: |
+        <flow-definition plugin="workflow-job@1447.v559b_c710cd2e">
+        ... Jenkins content XML, was omitted for semplicity
+        </flow-definition>
+  ```
+
+  Or
+
+  ```yaml
+  - id: jenkins-job-create
+    name: Jenkins Job Create
+    action: jenkins:job:create
+    input:
+      jobName: first-job
+      folderName: folder
+      folderPath: config/job.xml
+  ```
+
+- Destroy job
+
+  **Action input parameters**
+
+  | Action    | Description |
+  | --------- | ----------- |
+  | _jobName_ | Name of job |
+
+  ```yaml
+  - id: jenkins-job-destroy
+    name: Jenkins Job Destroy
+    action: jenkins:job:destroy
+    input:
+      jobName: first-job
+  ```
+
+- Disable job
+
+  **Action input parameters**
+
+  | Action    | Description |
+  | --------- | ----------- |
+  | _jobName_ | Name of job |
+
+  ```yaml
+  - id: jenkins-job-disable
+    name: Jenkins Job Disable
+    action: jenkins:job:disable
+    input:
+      jobName: first-job
+  ```
+
+- Enable job
+
+  **Action input parameters**
+
+  | Action          | Description                                    |
+  | --------------- | ---------------------------------------------- |
+  | _jobName_       | Name of job                                    |
+  | _jobParameters_ | optional job parameters (object) to execute it |
+
+  ```yaml
+  - id: jenkins-job-enable
+    name: Jenkins Job Enable
+    action: jenkins:job:enable
+    input:
+      jobName: first-job
+  ```
+
+**`NOTE: no output will be provided after action excution`**
+
+## Useful Links
+
+The jenkins client used is available here <https://github.com/silas/node-jenkins#readme>
+
+Here the link to npm package <https://www.npmjs.com/package/@robertonav20/backstage-plugin-scaffolder-jenkins-actions>

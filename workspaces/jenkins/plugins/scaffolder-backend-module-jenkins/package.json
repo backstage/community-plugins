@@ -34,7 +34,8 @@
     "@backstage/backend-plugin-api": "^1.1.1",
     "@backstage/errors": "^1.2.7",
     "@backstage/plugin-scaffolder-node": "^0.6.3",
-    "cross-fetch": "^4.0.0"
+    "cross-fetch": "^4.0.0",
+    "jenkins": "^1.1.0"
   },
   "devDependencies": {
     "@backstage/cli": "^0.29.6"
