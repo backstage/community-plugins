@@ -9,6 +9,7 @@ import { ApiFactory } from '@backstage/core-plugin-api';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { Config } from '@backstage/config/index';
 import { ConfigApi } from '@backstage/core-plugin-api';
+import { IdentityApi } from '@backstage/core-plugin-api';
 
 // @public (undocumented)
 export const analyticsModuleMatomoPlugin: BackstagePlugin<{}, {}, {}>;
@@ -18,7 +19,12 @@ export class MatomoAnalytics implements AnalyticsApi {
   // (undocumented)
   captureEvent(event: AnalyticsEvent): void;
   // (undocumented)
-  static fromConfig(config: ConfigApi): MatomoAnalytics;
+  static fromConfig(
+    config: ConfigApi,
+    options?: {
+      identityApi?: IdentityApi;
+    },
+  ): MatomoAnalytics;
 }
 
 // @public
@@ -27,6 +33,7 @@ export const MatomoAnalyticsApi: ApiFactory<
   MatomoAnalytics,
   {
     configApi: Config;
+    identityApi: IdentityApi;
   }
 >;
 
