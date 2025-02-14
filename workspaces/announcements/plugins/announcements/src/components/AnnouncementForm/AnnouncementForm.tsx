@@ -24,21 +24,18 @@ import {
 import { Announcement } from '@backstage-community/plugin-announcements-common';
 import CategoryInput from './CategoryInput';
 import {
-  makeStyles,
   TextField,
   FormGroup,
   FormControlLabel,
   Switch,
   Button,
+  Box,
+  Grid,
+  Typography,
+  Divider,
 } from '@material-ui/core';
-
-const useStyles = makeStyles(theme => ({
-  formRoot: {
-    '& > *': {
-      margin: theme.spacing(1) ?? '8px',
-    },
-  },
-}));
+import SaveAltIcon from '@material-ui/icons/SaveAlt';
+import { DateTime } from 'luxon';
 
 type AnnouncementFormProps = {
   initialData: Announcement;
@@ -49,13 +46,18 @@ export const AnnouncementForm = ({
   initialData,
   onSubmit,
 }: AnnouncementFormProps) => {
-  const classes = useStyles();
   const identityApi = useApi(identityApiRef);
   const { t } = useAnnouncementsTranslation();
+
+  // Ensure `start_at` is properly formatted as an ISO date string
+  const formattedStartAt = initialData.start_at
+    ? DateTime.fromISO(initialData.start_at).toISODate()
+    : DateTime.now().toISODate();
 
   const [form, setForm] = React.useState({
     ...initialData,
     category: initialData.category?.slug,
+    start_at: formattedStartAt || '',
   });
   const [loading, setLoading] = useState(false);
 
@@ -90,65 +92,108 @@ export const AnnouncementForm = ({
   };
 
   return (
-    <InfoCard
-      title={
-        initialData.title
-          ? t('announcementForm.editAnnouncement')
-          : t('announcementForm.newAnnouncement')
-      }
-    >
-      <form className={classes.formRoot} onSubmit={handleSubmit}>
-        <TextField
-          id="title"
-          type="text"
-          label={t('announcementForm.title')}
-          value={form.title}
-          onChange={handleChange}
-          variant="outlined"
-          fullWidth
-          required
-        />
-        <CategoryInput
-          setForm={setForm}
-          form={form}
-          initialValue={initialData.category?.title ?? ''}
-        />
-        <TextField
-          id="excerpt"
-          type="text"
-          label={t('announcementForm.excerpt')}
-          value={form.excerpt}
-          onChange={handleChange}
-          variant="outlined"
-          fullWidth
-          required
-        />
-        <MDEditor
-          value={form.body}
-          style={{ minHeight: '30rem' }}
-          onChange={value => setForm({ ...form, ...{ body: value || '' } })}
-        />
-        <FormGroup>
-          <FormControlLabel
-            control={
-              <Switch
-                name="active"
-                checked={form.active}
-                onChange={handleChangeActive}
+    <InfoCard>
+      <Box p={3}>
+        <Typography variant="h5" gutterBottom>
+          {initialData.title
+            ? t('announcementForm.editAnnouncement')
+            : t('announcementForm.newAnnouncement')}
+        </Typography>
+        <form onSubmit={handleSubmit}>
+          <Grid container spacing={3}>
+            <Grid item xs={12}>
+              <TextField
+                id="title"
+                label={t('announcementForm.title')}
+                value={form.title}
+                onChange={handleChange}
+                variant="outlined"
+                fullWidth
+                required
               />
-            }
-            label={t('announcementForm.active')}
-          />
-        </FormGroup>
-        <Button
-          variant="contained"
-          color="primary"
-          type="submit"
-          disabled={loading || !form.body}
-        >
-          {t('announcementForm.submit')}
-        </Button>
-      </form>
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <CategoryInput
+                setForm={setForm}
+                form={form}
+                initialValue={initialData.category?.title ?? ''}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <TextField
+                variant="outlined"
+                label={t('announcementForm.startAt')}
+                id="start-at-date"
+                type="date"
+                value={form.start_at}
+                InputLabelProps={{ shrink: true }}
+                required
+                onChange={e =>
+                  setForm({
+                    ...form,
+                    start_at: e.target.value,
+                  })
+                }
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <TextField
+                id="excerpt"
+                label={t('announcementForm.excerpt')}
+                value={form.excerpt}
+                onChange={handleChange}
+                variant="outlined"
+                fullWidth
+                required
+                multiline
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <MDEditor
+                value={form.body}
+                style={{ minHeight: '30rem' }}
+                onChange={value =>
+                  setForm({ ...form, ...{ body: value || '' } })
+                }
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <Divider />
+            </Grid>
+
+            <Grid item xs={12}>
+              <FormGroup row style={{ justifyContent: 'flex-end' }}>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      name="active"
+                      checked={form.active}
+                      onChange={handleChangeActive}
+                      color="primary"
+                    />
+                  }
+                  label={t('announcementForm.active')}
+                />
+                <Button
+                  variant="contained"
+                  color="primary"
+                  type="submit"
+                  disabled={loading || !form.body}
+                  size="large"
+                  startIcon={<SaveAltIcon />}
+                >
+                  {t('announcementForm.submit')}
+                </Button>
+              </FormGroup>
+            </Grid>
+          </Grid>
+        </form>
+      </Box>
     </InfoCard>
   );
 };
