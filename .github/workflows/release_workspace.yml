@@ -4,32 +4,32 @@ on:
   workflow_dispatch:
     inputs:
       workspace:
-        description: "Name of the Workspace"
+        description: 'Name of the Workspace'
         required: true
         type: string
       force_release:
-        description: "Force release even if no changesets are present"
+        description: 'Force release even if no changesets are present'
         required: false
         type: boolean
       branch:
-        description: "Branch to run the workflow on"
+        description: 'Branch to run the workflow on'
         required: false
-        default: "main"
+        default: 'main'
         type: string
   workflow_call:
     inputs:
       force_release:
-        description: "Force release even if no changesets are present"
+        description: 'Force release even if no changesets are present'
         required: false
         type: boolean
       workspace:
-        description: "Name of the Workspace"
+        description: 'Name of the Workspace'
         required: true
         type: string
       branch:
-        description: "Branch to run the workflow on"
+        description: 'Branch to run the workflow on'
         required: false
-        default: "main"
+        default: 'main'
         type: string
 
 concurrency:
@@ -154,10 +154,10 @@ jobs:
       - name: publish
         run: |
           yarn config set -H 'npmAuthToken' "${{secrets.NPM_TOKEN}}"
-          yarn workspaces foreach -v --no-private npm publish --access public --tolerate-republish
+          yarn workspaces foreach -W -v --no-private npm publish --access public --tolerate-republish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      
+
       - name: Create tag
         working-directory: ${{ github.workspace }}/scripts/ci
         run: node create-tag.js
