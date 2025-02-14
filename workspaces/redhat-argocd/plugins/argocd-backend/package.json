@@ -51,8 +51,10 @@
     "supertest": "^6.2.4"
   },
   "files": [
-    "dist"
+    "dist",
+    "config.d.ts"
   ],
+  "configSchema": "config.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/backstage/community-plugins",
