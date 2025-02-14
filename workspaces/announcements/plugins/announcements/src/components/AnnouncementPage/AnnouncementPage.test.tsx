@@ -66,6 +66,7 @@ describe('AnnouncementPage', () => {
     body: 'Announcement body',
     created_at: '2025-01-10T00:00:00.000Z',
     active: true,
+    start_at: '2025-01-10T00:00:00.000Z',
   };
 
   afterEach(() => {
