@@ -26,6 +26,8 @@ export interface AnnouncementsApi {
     page?: number;
     category?: string;
     active?: boolean;
+    sortBy?: 'created_at' | 'start_at';
+    order?: 'asc' | 'desc';
   }): Promise<AnnouncementsList>;
   // (undocumented)
   categories(): Promise<Category[]>;
@@ -62,11 +64,15 @@ export class AnnouncementsClient implements AnnouncementsApi {
     page,
     category,
     active,
+    sortBy,
+    order,
   }: {
     max?: number;
     page?: number;
     category?: string;
     active?: boolean;
+    sortBy?: 'created_at' | 'start_at';
+    order?: 'asc' | 'desc';
   }): Promise<AnnouncementsList>;
   // (undocumented)
   categories(): Promise<Category[]>;
@@ -116,6 +122,8 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'admin.announcementsContent.table.title': 'Title';
     readonly 'admin.announcementsContent.table.status': 'Status';
     readonly 'admin.announcementsContent.table.actions': 'Actions';
+    readonly 'admin.announcementsContent.table.created_at': 'Created';
+    readonly 'admin.announcementsContent.table.start_at': 'Start';
     readonly 'admin.announcementsContent.table.category': 'Category';
     readonly 'admin.announcementsContent.table.publisher': 'Publisher';
     readonly 'admin.announcementsContent.announcements': 'Announcements';
@@ -140,6 +148,7 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'announcementForm.excerpt': 'Excerpt';
     readonly 'announcementForm.editAnnouncement': 'Edit announcement';
     readonly 'announcementForm.newAnnouncement': 'New announcement';
+    readonly 'announcementForm.startAt': 'Announcement start date';
     readonly 'announcementForm.categoryInput.label': 'Category';
     readonly 'announcementForm.categoryInput.create': 'Create';
     readonly 'announcementsPage.grid.announcementDeleted': 'Announcement deleted.';
@@ -151,12 +160,16 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'announcementsPage.card.in': 'in';
     readonly 'announcementsPage.card.delete': 'DELETE';
     readonly 'announcementsPage.card.edit': 'EDIT';
+    readonly 'announcementsPage.card.occurred': 'Occurred ';
+    readonly 'announcementsPage.card.scheduled': 'Scheduled ';
     readonly 'deleteDialog.cancel': 'Cancel';
     readonly 'deleteDialog.title': 'Are you sure you want to delete this announcement?';
     readonly 'deleteDialog.delete': 'Delete';
     readonly 'announcementsCard.new': 'New';
     readonly 'announcementsCard.in': 'in';
     readonly 'announcementsCard.announcements': 'Announcements';
+    readonly 'announcementsCard.occurred': 'Occurred';
+    readonly 'announcementsCard.scheduled': 'Scheduled';
     readonly 'announcementsCard.seeAll': 'See all';
     readonly 'announcementsCard.noAnnouncements': 'No announcements yet, want to';
     readonly 'announcementsCard.addOne': 'add one';
@@ -227,6 +240,8 @@ export const useAnnouncementsTranslation: () => {
     readonly 'admin.announcementsContent.table.title': 'Title';
     readonly 'admin.announcementsContent.table.status': 'Status';
     readonly 'admin.announcementsContent.table.actions': 'Actions';
+    readonly 'admin.announcementsContent.table.created_at': 'Created';
+    readonly 'admin.announcementsContent.table.start_at': 'Start';
     readonly 'admin.announcementsContent.table.category': 'Category';
     readonly 'admin.announcementsContent.table.publisher': 'Publisher';
     readonly 'admin.announcementsContent.announcements': 'Announcements';
@@ -251,6 +266,7 @@ export const useAnnouncementsTranslation: () => {
     readonly 'announcementForm.excerpt': 'Excerpt';
     readonly 'announcementForm.editAnnouncement': 'Edit announcement';
     readonly 'announcementForm.newAnnouncement': 'New announcement';
+    readonly 'announcementForm.startAt': 'Announcement start date';
     readonly 'announcementForm.categoryInput.label': 'Category';
     readonly 'announcementForm.categoryInput.create': 'Create';
     readonly 'announcementsPage.grid.announcementDeleted': 'Announcement deleted.';
@@ -262,12 +278,16 @@ export const useAnnouncementsTranslation: () => {
     readonly 'announcementsPage.card.in': 'in';
     readonly 'announcementsPage.card.delete': 'DELETE';
     readonly 'announcementsPage.card.edit': 'EDIT';
+    readonly 'announcementsPage.card.occurred': 'Occurred ';
+    readonly 'announcementsPage.card.scheduled': 'Scheduled ';
     readonly 'deleteDialog.cancel': 'Cancel';
     readonly 'deleteDialog.title': 'Are you sure you want to delete this announcement?';
     readonly 'deleteDialog.delete': 'Delete';
     readonly 'announcementsCard.new': 'New';
     readonly 'announcementsCard.in': 'in';
     readonly 'announcementsCard.announcements': 'Announcements';
+    readonly 'announcementsCard.occurred': 'Occurred';
+    readonly 'announcementsCard.scheduled': 'Scheduled';
     readonly 'announcementsCard.seeAll': 'See all';
     readonly 'announcementsCard.noAnnouncements': 'No announcements yet, want to';
     readonly 'announcementsCard.addOne': 'add one';
