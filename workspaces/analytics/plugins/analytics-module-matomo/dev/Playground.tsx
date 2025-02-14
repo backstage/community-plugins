@@ -15,11 +15,23 @@
  */
 import React from 'react';
 import { LinkButton } from '@backstage/core-components';
+import { useAnalytics } from '@backstage/core-plugin-api';
 
 export const Playground = () => {
+  const analyticsApi = useAnalytics();
+
+  const handleEvent = () => {
+    analyticsApi.captureEvent('click', 'Test Button clicked');
+  };
+
   return (
     <div style={{ display: 'flex', margin: '4rem' }}>
-      <LinkButton variant="contained" color="primary" to="#clicked">
+      <LinkButton
+        variant="contained"
+        color="primary"
+        to="#clicked"
+        onClick={handleEvent}
+      >
         Click Here
       </LinkButton>
     </div>
