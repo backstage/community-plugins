@@ -2,17 +2,13 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: backstage-community-redhat-argocd
-  title: Red Hat ArgoCD plugin
+  name: backstage-community-redhat-argocd-common
+  title: '@backstage-community/plugin-redhat-argocd-common'
   description: Argo CD plugin for Backstage
   annotations:
     github.com/team-slug: redhat-developer/rhdh-plugins-contributers
-  tags:
-    - backstage
-    - redhat
-    - argocd
 spec:
-  type: backstage-plugin
+  type: backstage-common-library
   lifecycle: production
   owner: rhtap-team
-  subcomponentOf: rhdh-plugins
+  subcomponentOf: backstage-community-redhat-argocd

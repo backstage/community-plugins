@@ -1,0 +1,13 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: backstage-plugin-scaffolder-annotator
+  title: Annotator scaffolder actions
+  description: This module allows users to create custom actions for annotating their entity objects. Additionally, it enables users to utilize existing custom actions provided by the module for annotating entities with timestamps and scaffolder entity references.
+  tags:
+    - scaffolder
+    - annotator
+spec:
+  type: backstage-plugin
+  lifecycle: production
+  owner: rhdh-team

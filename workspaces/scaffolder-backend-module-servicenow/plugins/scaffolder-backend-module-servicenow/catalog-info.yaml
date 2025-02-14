@@ -1,0 +1,13 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: backstage-plugin-scaffolder-backend-module-servicenow
+  title: '@backstage-community/plugin-scaffolder-backend-module-servicenow'
+  description: This plugin provides Backstage template actions for ServiceNow.
+  tags:
+    - scaffolder
+spec:
+  type: backstage-backend-plugin-module
+  lifecycle: production
+  owner: rhdh-team
+  subcomponentOf: backstage-plugin-scaffolder-servicenow
