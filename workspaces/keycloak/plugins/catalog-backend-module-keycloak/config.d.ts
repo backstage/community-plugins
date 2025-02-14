@@ -55,7 +55,10 @@ export interface Config {
            * Maximum request concurrency to prevent DoS attacks on the Keycloak server.
            */
           maxConcurrency?: number;
-
+          /**
+           * Whether the API call will return a brief representation for groups or not. Defaults to true
+           */
+          briefRepresentation?: boolean;
           schedule?: SchedulerServiceTaskScheduleDefinitionConfig;
         } & (
           | {
