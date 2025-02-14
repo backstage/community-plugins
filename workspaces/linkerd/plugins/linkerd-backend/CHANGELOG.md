@@ -1,5 +1,11 @@
 # @backstage-community/plugin-linkerd-backend
 
+## 0.5.1
+
+### Patch Changes
+
+- 5d2de92: Updated dependency `parse-duration` to `^2.0.0`.
+
 ## 0.5.0
 
 ### Minor Changes
