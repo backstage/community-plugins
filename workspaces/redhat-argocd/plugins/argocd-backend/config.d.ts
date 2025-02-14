@@ -17,34 +17,34 @@ export interface Config {
   /** ArgoCD Configurations for the Red Hat ArgoCD backend plugin */
   argocd?: {
     /**
-     * @visibility secret
+     * @visibility backend
      */
     username?: string;
     /**
-     * @visibility secret
+     * @visibility backend
      */
     password?: string;
     /**
      * The URL to the ArgoCD instance
-     * @visibility frontend
+     * @visibility backend
      */
     baseUrl?: string;
     /**
-     * @visibility secret
+     * @visibility backend
      */
     appLocatorMethods?: Array<{
       /**
        * The frontend base url of the ArgoCD instance.
-       * @vsibility frontend
+       * @vsibility backend
        */
       type: string;
       instances: Array<{
         /**
-         * @visibility frontend
+         * @visibility backend
          */
         name: string;
         /**
-         * @visibility frontend
+         * @visibility backend
          */
         url: string;
         /**
