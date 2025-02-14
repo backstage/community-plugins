@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { createBackend } from '@backstage/backend-defaults';
-import { legacyPlugin } from '@backstage/backend-common'; // eslint-disable-line @backstage/no-undeclared-imports
+import { legacyPlugin } from '@backstage/backend-common';
 
 const backend = createBackend();
 

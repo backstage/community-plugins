@@ -21,6 +21,7 @@
     "clean": "backstage-cli package clean"
   },
   "dependencies": {
+    "@backstage/backend-common": "^0.25.0",
     "@backstage/backend-defaults": "^0.7.0",
     "@backstage/backend-dynamic-feature-service": "^0.5.3",
     "@backstage/cli-node": "^0.2.12",

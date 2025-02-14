@@ -15544,6 +15544,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "backend@workspace:packages/backend"
   dependencies:
+    "@backstage/backend-common": "npm:^0.25.0"
     "@backstage/backend-defaults": "npm:^0.7.0"
     "@backstage/backend-dynamic-feature-service": "npm:^0.5.3"
     "@backstage/cli": "npm:^0.29.5"
