@@ -14,7 +14,7 @@ export const SecurityFindingsComponent = ({ data, filters }) => {
     const isDarkMode = theme.palette.type === 'dark';
 
     const columns: Array<any> = [
-        { name: 'CVE', selector: row => row.rowData.cve, sortable: true, wrap: true, width: '140px', button: true, cell: row => (
+        { name: 'CVE', selector: row => row.rowData.cve, sortable: true, wrap: true, width: "140px", cell: row => (
 			<a href={row.rowData.link} target="_blank" rel="noopener noreferrer">
 				{row.rowData.cve}
 			</a>
