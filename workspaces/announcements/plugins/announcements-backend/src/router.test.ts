@@ -88,13 +88,22 @@ describe('createRouter', () => {
           body: 'body',
           publisher: 'user:default/name',
           created_at: DateTime.fromISO('2022-11-02T15:28:08.539Z'),
+          start_at: DateTime.fromISO('2022-11-02T15:28:08.539Z'),
         },
       ]);
 
       const response = await request(app).get('/announcements');
 
       expect(response.status).toEqual(200);
-      expect(announcementsMock).toHaveBeenCalledWith({});
+      expect(announcementsMock).toHaveBeenCalledWith({
+        category: undefined,
+        max: undefined,
+        offset: undefined,
+        active: undefined,
+        sortBy: 'created_at', // Default sortBy
+        order: 'desc', // Default order
+      });
+
       expect(response.body).toEqual([
         {
           id: 'uuid',
@@ -103,6 +112,64 @@ describe('createRouter', () => {
           body: 'body',
           publisher: 'user:default/name',
           created_at: '2022-11-02T15:28:08.539+00:00',
+          start_at: '2022-11-02T15:28:08.539+00:00',
+        },
+      ]);
+    });
+    it('supports sortby and order parameters', async () => {
+      announcementsMock.mockReturnValueOnce([
+        {
+          id: 'uuid1',
+          title: 'title1',
+          excerpt: 'excerpt1',
+          body: 'body1',
+          publisher: 'user:default/name',
+          created_at: DateTime.fromISO('2025-01-01T15:28:08.539Z'),
+          start_at: DateTime.fromISO('2025-01-01T15:28:08.539Z'),
+        },
+        {
+          id: 'uuid2',
+          title: 'title2',
+          excerpt: 'excerpt2',
+          body: 'body2',
+          publisher: 'user:default/name',
+          created_at: DateTime.fromISO('2025-01-02T15:28:08.539Z'),
+          start_at: DateTime.fromISO('2025-01-02T15:28:08.539Z'),
+        },
+      ]);
+
+      const response = await request(app).get(
+        '/announcements?sortby=createdAt&order=asc',
+      );
+
+      expect(response.status).toEqual(200);
+      expect(announcementsMock).toHaveBeenCalledWith({
+        category: undefined,
+        max: undefined,
+        offset: undefined,
+        active: undefined,
+        sortBy: 'created_at',
+        order: 'asc',
+      });
+
+      expect(response.body).toEqual([
+        {
+          id: 'uuid1',
+          title: 'title1',
+          excerpt: 'excerpt1',
+          body: 'body1',
+          publisher: 'user:default/name',
+          created_at: '2025-01-01T15:28:08.539+00:00',
+          start_at: '2025-01-01T15:28:08.539+00:00',
+        },
+        {
+          id: 'uuid2',
+          title: 'title2',
+          excerpt: 'excerpt2',
+          body: 'body2',
+          publisher: 'user:default/name',
+          created_at: '2025-01-02T15:28:08.539+00:00',
+          start_at: '2025-01-02T15:28:08.539+00:00',
         },
       ]);
     });
