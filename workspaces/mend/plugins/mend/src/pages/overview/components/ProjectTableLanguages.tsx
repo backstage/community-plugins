@@ -56,7 +56,7 @@ export const ProjectTableLanguages = ({
 
   const classes = useStyles();
 
-  const compare = () => {
+  const compare = React.useCallback(() => {
     const allChildren: HTMLElement[] | null = languagesNode?.current?.children
       ?.length
       ? Array.from(languagesNode?.current?.children).map(
@@ -80,7 +80,7 @@ export const ProjectTableLanguages = ({
       });
       setDisplayingLength(visibleItems?.length);
     }
-  };
+  }, []);
 
   useResize(compare);
 
