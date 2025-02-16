@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Entity } from '@backstage/catalog-model';
 import { AmplicationTemplatesProcessor } from './AmplicationTemplatesProcessor';
 import {
   LoggerService,
@@ -22,7 +21,6 @@ import {
 import { mockServices } from '@backstage/backend-test-utils';
 import { LocationSpec } from '@backstage/plugin-catalog-common';
 import { CatalogProcessorCache } from '@backstage/plugin-catalog-node/index';
-import { processingResult } from '@backstage/plugin-catalog-node';
 
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
