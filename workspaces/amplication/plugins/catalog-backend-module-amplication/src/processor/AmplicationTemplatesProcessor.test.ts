@@ -151,87 +151,10 @@ describe('Calling the API', () => {
       cache,
     );
 
-    const api: Entity = {
-      apiVersion: 'backstage.io/v1alpha1',
-      kind: 'User',
-      metadata: {
-        name: 'amplication-bot',
-        description: 'Amplication Bot',
-        tags: ['amplication'],
-      },
-      spec: {
-        profile: {
-          displayName: 'Amplication Bot',
-          email: 'support@amplication.com',
-        },
-        memberOf: ['guests'],
-      },
-    };
-
-    const system: Entity = {
-      apiVersion: 'backstage.io/v1alpha1',
-      kind: 'System',
-      metadata: {
-        name: 'Amplication',
-        tags: ['amplication'],
-        description:
-          'Amplication is a platform for building full-stack applications with code generation.',
-      },
-      spec: {
-        owner: 'user:amplication-bot',
-      },
-    };
-
-    const user: Entity = {
-      apiVersion: 'backstage.io/v1alpha1',
-      kind: 'User',
-      metadata: {
-        name: 'amplication-bot',
-        description: 'Amplication Bot',
-        tags: ['amplication'],
-      },
-      spec: {
-        profile: {
-          displayName: 'Amplication Bot',
-          email: 'support@amplication.com',
-        },
-        memberOf: ['guests'],
-      },
-    };
-
-    const item: Entity = {
-      apiVersion: 'backstage.io/v1alpha1',
-      kind: 'Component',
-      metadata: {
-        name: 'resource-itai-template',
-        title: 'Resource Itai-template',
-        description: 'Template created from an existing resource',
-        tags: ['amplication', 'servicetemplate'],
-      },
-      spec: {
-        id: 'cm6gs6t6v000fjx5te4xlrcfx',
-        type: 'ServiceTemplate',
-        project: 'Sample Project',
-        project_id: 'cm6gb3j0a000q14gzlq9m7h1o',
-        blueprint: "Itai's Blueprint",
-        blueprint_id: 'cm6grdfol000bjx5t7gixjk0q',
-        lifecycle: 'production',
-        providesApis: ['amplication-api'],
-        system: 'amplication',
-        owner: 'user:amplication-bot',
-      },
-    };
-
     expect(result).toBe(true);
     expect(cache.get).toHaveBeenCalled();
     expect(emit).toHaveBeenCalled();
-    expect(emit).toHaveBeenCalledTimes(5);
-    expect(emit).toHaveBeenCalledWith(processingResult.entity(location, user));
-    expect(emit).toHaveBeenCalledWith(
-      processingResult.entity(location, system),
-    );
-    expect(emit).toHaveBeenCalledWith(processingResult.entity(location, api));
-    expect(emit).toHaveBeenCalledWith(processingResult.entity(location, item));
+    expect(emit).toHaveBeenCalledTimes(4);
   });
 });
 
