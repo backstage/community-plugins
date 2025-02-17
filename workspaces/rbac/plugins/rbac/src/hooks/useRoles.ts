@@ -111,10 +111,12 @@ export const useRoles = (
     permission: policyEntityUpdatePermission,
     resourceRef: policyEntityUpdatePermission.resourceType,
   });
-
+  const [loadingConditionalPermission, setLoadingConditionalPermission] =
+    React.useState<boolean>(false);
   React.useEffect(() => {
     const fetchAllPermissionPolicies = async () => {
       if (!Array.isArray(roles)) return;
+      setLoadingConditionalPermission(true);
       const failedFetchConditionRoles: string[] = [];
       const conditionPromises = roles.map(async role => {
         try {
@@ -155,6 +157,7 @@ export const useRoles = (
 
       const updatedRoles = await Promise.all(conditionPromises);
       setNewRoles(updatedRoles);
+      setLoadingConditionalPermission(false);
     };
 
     fetchAllPermissionPolicies();
@@ -229,7 +232,11 @@ export const useRoles = (
       canReadUsersAndGroups,
     ],
   );
-  const loading = !rolesError && !policiesError && !roles && !policies;
+  const loading =
+    (!rolesError && !policiesError && !roles && !policies) ||
+    membersLoading ||
+    loadingPermissionPolicies ||
+    loadingConditionalPermission;
 
   useInterval(
     () => {
