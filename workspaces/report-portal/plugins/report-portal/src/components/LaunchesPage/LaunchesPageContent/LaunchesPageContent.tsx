@@ -27,15 +27,15 @@ import Launch from '@mui/icons-material/Launch';
 import { DateTime } from 'luxon';
 import useDebounce from 'react-use/lib/useDebounce';
 
-import {
-  LaunchDetailsResponse,
-  PageType,
-  reportPortalApiRef,
-} from '../../../api';
+import { reportPortalApiRef } from '../../../api';
 
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
+import {
+  PageType,
+  LaunchDetailsResponse,
+} from '@backstage-community/plugin-report-portal-common';
 
 type LaunchDetails = {
   id: number;
