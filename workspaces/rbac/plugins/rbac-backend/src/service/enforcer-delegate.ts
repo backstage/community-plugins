@@ -630,7 +630,7 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
     let policies: string[][] = [];
     if (roles.length > 0) {
       for (const role of roles) {
-        const filteredPolicy = await this.enforcer.getFilteredPolicy(
+        const filteredPolicy = await this.getFilteredPolicy(
           0,
           role,
           resourceType,
@@ -639,7 +639,7 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
         policies.push(...filteredPolicy);
       }
     } else {
-      const enforcePolicies = await this.enforcer.getFilteredPolicy(
+      const enforcePolicies = await this.getFilteredPolicy(
         1,
         resourceType,
         action,
