@@ -1,5 +1,11 @@
 # @backstage-community/plugin-azure-sites-backend
 
+## 0.6.1
+
+### Patch Changes
+
+- b5b8c39: Updated plugin so that config schema is being included with plugin
+
 ## 0.6.0
 
 ### Minor Changes
