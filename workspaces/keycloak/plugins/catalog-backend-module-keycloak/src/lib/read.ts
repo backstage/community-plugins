@@ -29,6 +29,7 @@ import {
   KEYCLOAK_ENTITY_QUERY_SIZE,
   KEYCLOAK_ID_ANNOTATION,
   KEYCLOAK_REALM_ANNOTATION,
+  KEYCLOAK_BRIEF_REPRESENTATION_DEFAULT,
 } from './constants';
 import { noopGroupTransformer, noopUserTransformer } from './transformers';
 import {
@@ -120,7 +121,8 @@ export async function getEntities<T extends Users | Groups>(
     typeof rawEntityCount === 'number' ? rawEntityCount : rawEntityCount.count;
 
   const pageCount = Math.ceil(entityCount / entityQuerySize);
-  const brief = config.briefRepresentation ?? true;
+  const brief =
+    config.briefRepresentation ?? KEYCLOAK_BRIEF_REPRESENTATION_DEFAULT;
 
   // The next line acts like range in python
   const entityPromises = Array.from({ length: pageCount }, (_, i) =>
@@ -195,6 +197,9 @@ export async function processGroupsRecursively(
   topLevelGroups: GroupRepresentationWithParent[],
 ) {
   const allGroups: GroupRepresentationWithParent[] = [];
+  const brief =
+    config.briefRepresentation ?? KEYCLOAK_BRIEF_REPRESENTATION_DEFAULT;
+
   for (const group of topLevelGroups) {
     allGroups.push(group);
 
@@ -204,7 +209,7 @@ export async function processGroupsRecursively(
         parentId: group.id!,
         first: 0,
         max: group.subGroupCount,
-        briefRepresentation: true,
+        briefRepresentation: brief,
       });
       const subGroupResults = await processGroupsRecursively(
         kcAdminClient,
@@ -301,6 +306,9 @@ export const readKeycloakRealm = async (
   }
 
   logger.debug(`Fetching group members for keycloak groups and list subgroups`);
+  const brief =
+    config.briefRepresentation ?? KEYCLOAK_BRIEF_REPRESENTATION_DEFAULT;
+
   const kGroups = await Promise.all(
     rawKGroups.map(g =>
       limit(async () => {
@@ -321,7 +329,7 @@ export const readKeycloakRealm = async (
               parentId: g.id!,
               first: 0,
               max: g.subGroupCount,
-              briefRepresentation: false,
+              briefRepresentation: brief,
               realm: config.realm,
             });
           }
