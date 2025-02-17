@@ -162,20 +162,21 @@ export const PermissionPoliciesForm = ({
               {
                 name: p.label,
                 plugin: p.value,
-                permissionPolicies: permissionPoliciesData?.pluginsPermissions[
-                  p.value
-                ].permissions.map(perm => ({
-                  permission: perm,
-                  actions:
-                    permissionPoliciesData?.pluginsPermissions[p.value]
-                      .policies[perm].policies,
-                  isResourced:
-                    permissionPoliciesData?.pluginsPermissions[p.value]
-                      .policies[perm].isResourced,
-                  resourceType:
-                    permissionPoliciesData?.pluginsPermissions[p.value]
-                      .policies[perm].resourceType,
-                })),
+                permissionPolicies:
+                  permissionPoliciesData?.pluginsPermissions[
+                    p.value
+                  ]?.permissions?.map(perm => ({
+                    permission: perm,
+                    actions:
+                      permissionPoliciesData?.pluginsPermissions[p.value]
+                        .policies[perm].policies,
+                    isResourced:
+                      permissionPoliciesData?.pluginsPermissions[p.value]
+                        .policies[perm].isResourced,
+                    resourceType:
+                      permissionPoliciesData?.pluginsPermissions[p.value]
+                        .policies[perm].resourceType,
+                  })) ?? [],
               },
             ]
           : [],

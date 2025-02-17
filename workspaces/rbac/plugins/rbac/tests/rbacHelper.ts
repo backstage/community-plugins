@@ -67,7 +67,7 @@ export class Common {
     this.page = page;
   }
 
-  async verifyHeading(heading: string) {
+  async verifyHeading(heading: string | RegExp) {
     const headingLocator = this.page
       .locator('h1, h2, h3, h4, h5, h6')
       .filter({ hasText: heading })
