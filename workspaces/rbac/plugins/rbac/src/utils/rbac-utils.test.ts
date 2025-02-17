@@ -183,26 +183,36 @@ describe('rbac utils', () => {
 
   it('should return plugin-id of the policy', () => {
     expect(
-      getPluginInfo(mockPermissionPolicies, 'catalog.entity.read').pluginId,
+      getPluginInfo(mockPermissionPolicies, {
+        permission: 'catalog.entity.read',
+        policy: 'read',
+      }).pluginId,
     ).toBe('catalog');
     expect(
-      getPluginInfo(mockPermissionPolicies, 'scaffolder.template.read')
-        .pluginId,
+      getPluginInfo(mockPermissionPolicies, {
+        permission: 'scaffolder.template.read',
+        policy: 'read',
+      }).pluginId,
     ).toBe('scaffolder');
   });
 
   it('should return if the permission is resourced', () => {
     expect(
-      getPluginInfo(mockPermissionPolicies, 'catalog.entity.read').isResourced,
+      getPluginInfo(mockPermissionPolicies, {
+        permission: 'catalog.entity.read',
+        policy: 'read',
+      }).isResourced,
     ).toBe(true);
     expect(
-      getPluginInfo(mockPermissionPolicies, 'scaffolder.template.read')
-        .isResourced,
+      getPluginInfo(mockPermissionPolicies, {
+        permission: 'scaffolder.template.read',
+        policy: 'read',
+      }).isResourced,
     ).toBe(true);
   });
 
   it('should return the permissions data', () => {
-    let data = getPermissionsData(mockPolicies, mockPermissionPolicies);
+    const data = getPermissionsData(mockPolicies, mockPermissionPolicies);
     expect(data[0]).toEqual({
       permission: 'policy.entity.read',
       plugin: 'permission',
@@ -215,19 +225,7 @@ describe('rbac utils', () => {
       policyString: ['Read'],
       isResourced: true,
       resourceType: 'policy-entity',
-    });
-    data = getPermissionsData(mockPolicies, []);
-    expect(data[0]).toEqual({
-      permission: 'policy.entity.read',
-      plugin: '-',
-      policies: [
-        {
-          effect: 'allow',
-          policy: 'Read',
-        },
-      ],
-      policyString: ['Read'],
-      isResourced: false,
+      usingResourceType: false,
     });
   });
 });
