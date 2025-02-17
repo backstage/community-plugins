@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.12.0
+
+### Minor Changes
+
+- 2e3d4af: Configurable user tracking for Matomo
+
 ## 1.11.0
 
 ### Minor Changes
