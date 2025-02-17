@@ -50,7 +50,7 @@ yarn.lock                                           @backstage/community-plugins
 /workspaces/rbac                                    @backstage/community-plugins-maintainers  @AndrienkoAleksandr @christoph-jerolimov @divyanshiGupta @PatAKnight
 /workspaces/redhat-argocd                           @backstage/community-plugins-maintainers  @caugello @cryptorodeo @Eswaraiahsapram @karthikjeeyar @rohitkrai03
 /workspaces/redhat-resource-optimization            @backstage/community-plugins-maintainers  @jkilzi @preetiw @christoph-jerolimov
-/workspaces/report-portal                           @backstage/community-plugins-maintainers  @yashoswalyo
+/workspaces/report-portal                           @backstage/community-plugins-maintainers  @yashoswalyo @deshmukhmayur @riginoommen
 /workspaces/rollbar                                 @backstage/community-plugins-maintainers  @andrewthauer
 /workspaces/scaffolder-backend-module-annotator     @backstage/community-plugins-maintainers  @BethGriggs
 /workspaces/scaffolder-backend-module-sonarqube     @backstage/community-plugins-maintainers  @04kash @schultzp2020
