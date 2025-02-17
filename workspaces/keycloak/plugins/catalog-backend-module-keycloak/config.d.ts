@@ -56,7 +56,8 @@ export interface Config {
            */
           maxConcurrency?: number;
           /**
-           * Whether the API call will return a brief representation for groups or not. Defaults to true
+           * Whether the API call will return a brief representation for groups and users or not. Defaults to true
+           * @defaultValue true
            */
           briefRepresentation?: boolean;
           schedule?: SchedulerServiceTaskScheduleDefinitionConfig;
