@@ -21,7 +21,7 @@ export interface Config {
      */
     username?: string;
     /**
-     * @visibility backend
+     * @visibility secret
      */
     password?: string;
     /**
