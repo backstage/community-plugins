@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.18.1
+
+### Patch Changes
+
+- 3e35324: Updated dependency `start-server-and-test` to `2.0.10`.
+
 ## 1.18.0
 
 ### Minor Changes

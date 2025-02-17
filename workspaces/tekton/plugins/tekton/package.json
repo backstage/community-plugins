@@ -34,7 +34,7 @@
     "prepublish": "./fix-style-inject-imports.sh"
   },
   "dependencies": {
-    "@aonic-ui/pipelines": "^3.0.0",
+    "@aonic-ui/pipelines": "^3.1.0",
     "@backstage-community/plugin-tekton-common": "workspace:^",
     "@backstage/catalog-model": "^1.7.3",
     "@backstage/core-components": "^0.16.3",
