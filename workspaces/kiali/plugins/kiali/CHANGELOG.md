@@ -1,5 +1,12 @@
 ### Dependencies
 
+## 1.36.3
+
+### Patch Changes
+
+- a4149db: Updated dependency `micro-memoize` to `4.1.3`.
+- 3e35324: Updated dependency `start-server-and-test` to `2.0.10`.
+
 ## 1.36.2
 
 ### Patch Changes
