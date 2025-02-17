@@ -1,5 +1,14 @@
 # @backstage-community/plugin-report-portal-backend
 
+## 1.0.6
+
+### Patch Changes
+
+- 89e994e: - major: created report portal search collator module.
+  - major: created common package for shared types.
+  - minor: added search bar for report portal projects and launches
+  - patch: added catalog to backend dev server.
+
 ## 1.0.5
 
 ### Patch Changes
