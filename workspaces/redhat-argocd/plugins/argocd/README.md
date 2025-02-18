@@ -193,7 +193,7 @@ const cicdcontent = (
 Using the `argocd/app-selector` annotation gives you access to these additional annotations:
 
 - `argocd/project-name`: The name of the Application's project
-- `appNamespace`: The namespace of the Application
+- `argocd/app-namespace`: The namespace of the Application
 
 - To switch between argocd instances, you can use the following annotation
 
@@ -215,7 +215,7 @@ global:
     includes:
       - dynamic-plugins.default.yaml
     plugins:
-      - package: ./dynamic-plugins/dist/backstage-community-plugin-redhat-argo-cd-backend
+      - package: ./dynamic-plugins/dist/backstage-community-plugin-redhat-argocd-backend
         disabled: false
       - package: ./dynamic-plugins/dist/backstage-community-plugin-redhat-argocd
         disabled: false
