@@ -1,5 +1,12 @@
 ### Dependencies
 
+## 1.38.1
+
+### Patch Changes
+
+- 152eb5f: In edit role form show selected permissions for a plugin based on resource-type and policy mapping if resource-type used in creation of simple permission policy via CLI/CSV file.
+- 3e35324: Updated dependency `start-server-and-test` to `2.0.10`.
+
 ## 1.38.0
 
 ### Minor Changes
