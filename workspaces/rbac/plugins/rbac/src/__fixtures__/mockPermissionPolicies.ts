@@ -26,7 +26,7 @@ export const mockPermissionPolicies: PluginPermissionMetaData[] = [
       },
       {
         name: 'catalog.entity.create',
-        policy: 'create',
+        policy: 'use',
       },
       {
         resourceType: 'catalog-entity',
@@ -61,11 +61,6 @@ export const mockPermissionPolicies: PluginPermissionMetaData[] = [
         policy: 'read',
       },
       {
-        resourceType: 'scaffolder-template',
-        name: 'scaffolder.template.read',
-        policy: 'read',
-      },
-      {
         resourceType: 'scaffolder-action',
         name: 'scaffolder.action.use',
         policy: 'use',
@@ -76,19 +71,23 @@ export const mockPermissionPolicies: PluginPermissionMetaData[] = [
     pluginId: 'permission',
     policies: [
       {
-        name: 'policy-entity',
+        resourceType: 'policy-entity',
+        name: 'policy.entity.read',
         policy: 'read',
       },
       {
-        name: 'policy-entity',
+        resourceType: 'policy-entity',
+        name: 'policy.entity.create',
         policy: 'create',
       },
       {
-        name: 'policy-entity',
+        resourceType: 'policy-entity',
+        name: 'policy.entity.delete',
         policy: 'delete',
       },
       {
-        name: 'policy-entity',
+        resourceType: 'policy-entity',
+        name: 'policy.entity.update',
         policy: 'update',
       },
     ],

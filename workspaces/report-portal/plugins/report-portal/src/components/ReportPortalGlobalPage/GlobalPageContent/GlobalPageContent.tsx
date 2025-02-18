@@ -105,13 +105,13 @@ export const GlobalPageContent = () => {
           const resp = await reportPortalApi.getInstanceDetails(h.host, {
             'filter.eq.type': h.filterType,
           });
-          setInstanceData(iData => {
-            return iData.map(instance =>
+          setInstanceData(iData =>
+            iData.map(instance =>
               instance.name === h.host
                 ? { ...instance, projects: resp.content.length }
                 : instance,
-            );
-          });
+            ),
+          );
         }
       };
       getProjectsCount();

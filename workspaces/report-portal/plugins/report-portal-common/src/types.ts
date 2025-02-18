@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2025 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,6 +12,36 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ */
+
+import { IndexableDocument } from '@backstage/plugin-search-common';
+
+/**
+ * The document type for search module
+ * @public
+ */
+export interface ReportPortalDocument extends IndexableDocument {
+  /**
+   * Type of resource being indexed
+   */
+  resourceType: 'Project' | 'Launch';
+  /**
+   * hostname of resource being indexed
+   */
+  host?: string;
+  /**
+   * Unique id for every resource
+   */
+  resourceId?: string | number;
+  /**
+   * Project name for launches that are indexed
+   */
+  projectName?: string;
+}
+
+/**
+ * Type for project api response
+ * @public
  */
 export type ProjectDetails = {
   projectId: number;
@@ -47,6 +77,11 @@ export type ProjectDetails = {
   creationDate: number;
 };
 
+/**
+ * Type for launches api response
+ * @public
+ */
+
 export type LaunchDetails = {
   owner: string;
   share: boolean;
@@ -79,6 +114,10 @@ export type LaunchDetails = {
   };
 };
 
+/**
+ * Common page type response
+ * @public
+ */
 export type PageType = {
   number: number;
   size: number;
@@ -86,11 +125,19 @@ export type PageType = {
   totalPages: number;
 };
 
+/**
+ * Launch details response type
+ * @public
+ */
 export type LaunchDetailsResponse = {
   content: LaunchDetails[];
   page: PageType;
 };
 
+/**
+ * Project details response type
+ * @public
+ */
 export type ProjectListResponse = {
   content: ProjectDetails[];
   page: PageType;
