@@ -1,5 +1,11 @@
 # @backstage-community/plugin-announcements-backend
 
+## 0.3.1
+
+### Patch Changes
+
+- 208e250: Updated dependency `@types/uuid` to `^10.0.0`.
+
 ## 0.3.0
 
 ### Minor Changes
