@@ -31,6 +31,7 @@ export interface Instance {
 
 export interface Spec {
   source: Source;
+  sources?: Source[];
   destination: Destination;
   project: string;
 }
@@ -70,6 +71,7 @@ export interface Health {
 
 export interface History {
   revision: string;
+  revisions?: string[];
   deployedAt: string;
   id: number;
   source: Source;

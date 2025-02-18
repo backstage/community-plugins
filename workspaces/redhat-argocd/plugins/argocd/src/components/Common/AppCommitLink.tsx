@@ -26,6 +26,7 @@ import GitLabIcon from '@patternfly/react-icons/dist/esm/icons/gitlab-icon';
 import { Skeleton } from '@material-ui/lab';
 import { getCommitUrl } from '../../utils/utils';
 import { Entity } from '@backstage/catalog-model';
+import { Revision } from '../../types/revision';
 
 interface CommitLinkProps {
   entity: Entity;
@@ -55,16 +56,22 @@ const AppCommitLink: React.FC<CommitLinkProps> = ({
 }) => {
   const classes = useCommitStyles();
 
-  const revisionInfo = revisionsMap?.[latestRevision?.revision];
+  const revisionInfo = latestRevision?.revisions
+    ? revisionsMap?.[latestRevision?.revisions[0]]
+    : revisionsMap?.[latestRevision?.revision];
+
   const revisionMessage = revisionInfo?.message;
   const revisionAuthor = revisionInfo?.author;
   const authorInfo = showAuthor ? `by ${revisionAuthor}` : '';
+  const revisionSha = latestRevision?.revisions
+    ? latestRevision.revisions[0]
+    : latestRevision.revision;
 
   const commitMessage = `${revisionMessage} ${authorInfo}`;
   return revisionsMap && latestRevision ? (
     <div className={classes.commitContainer}>
       <Chip
-        data-testid={`${latestRevision?.revision?.slice(0, 5)}-commit-link`}
+        data-testid={`${revisionSha.slice(0, 5)}-commit-link`}
         size="small"
         variant="outlined"
         onClick={e => {
@@ -73,14 +80,14 @@ const AppCommitLink: React.FC<CommitLinkProps> = ({
           const annotations = entity?.metadata?.annotations ?? {};
           if (repoUrl.length) {
             window.open(
-              getCommitUrl(repoUrl, latestRevision?.revision, annotations),
+              getCommitUrl(repoUrl, revisionSha, annotations),
               '_blank',
             );
           }
         }}
         icon={<GitLabIcon />}
         color="primary"
-        label={latestRevision?.revision.slice(0, 7)}
+        label={revisionSha.slice(0, 7)}
       />
       <Typography
         variant="body2"
@@ -89,10 +96,7 @@ const AppCommitLink: React.FC<CommitLinkProps> = ({
       >
         {!!revisionInfo ? (
           <Tooltip
-            data-testid={`${latestRevision?.revision?.slice(
-              0,
-              5,
-            )}-commit-message`}
+            data-testid={`${revisionSha?.slice(0, 5)}-commit-message`}
             title={commitMessage}
           >
             <Typography>{commitMessage}</Typography>
