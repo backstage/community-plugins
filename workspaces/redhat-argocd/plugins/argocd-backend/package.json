@@ -12,9 +12,11 @@
   "backstage": {
     "role": "backend-plugin",
     "supported-versions": "1.35.0",
-    "pluginId": "redhat-argocd-backend",
+    "pluginId": "redhat-argocd",
     "pluginPackage": "@backstage-community/plugin-redhat-argocd-backend",
     "pluginPackages": [
+      "@backstage-community/plugin-redhat-argocd",
+      "@backstage-community/plugin-redhat-argocd-common",
       "@backstage-community/plugin-redhat-argocd-backend"
     ]
   },
@@ -69,7 +71,9 @@
   "homepage": "https://red.ht/rhdh",
   "bugs": "https://github.com/backstage/community-plugins/issues",
   "maintainers": [
-    "karthikjeeyar"
+    "karthikjeeyar",
+    "caugello",
+    "CryptoRodeo"
   ],
   "author": "Red Hat"
 }
