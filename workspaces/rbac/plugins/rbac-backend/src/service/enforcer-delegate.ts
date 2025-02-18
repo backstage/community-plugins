@@ -44,7 +44,6 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
   private readonly roleEventEmitter = new EventEmitter<EventMap>();
 
   private loadPolicyPromise: Promise<void> | null = null;
-  private semaphore: number = 0;
   private editOperationsQueue: Promise<any>[] = []; // Queue to track edit operations
 
   constructor(
@@ -60,9 +59,6 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
       return this.loadPolicyPromise;
     }
 
-    // Increment semaphore to block edits during load
-    this.semaphore++;
-
     this.loadPolicyPromise = (async () => {
       try {
         await this.waitForEditOperationsToFinish();
@@ -77,7 +73,6 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
           errors: [err],
         });
       } finally {
-        this.semaphore--;
         this.loadPolicyPromise = null;
       }
     })();
@@ -239,6 +234,8 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
   ): Promise<void> {
     if (this.loadPolicyPromise) {
       await this.loadPolicyPromise;
+    } else {
+      await this.loadPolicy();
     }
 
     const addPoliciesOperation = (async () => {
@@ -275,6 +272,8 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
   ): Promise<void> {
     if (this.loadPolicyPromise) {
       await this.loadPolicyPromise;
+    } else {
+      await this.loadPolicy();
     }
 
     const addGroupingPolicyOperation = (async () => {
@@ -333,6 +332,8 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
   ): Promise<void> {
     if (this.loadPolicyPromise) {
       await this.loadPolicyPromise;
+    } else {
+      await this.loadPolicy();
     }
 
     const addGroupingPoliciesOperation = (async () => {
@@ -429,6 +430,8 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
   async removePolicy(policy: string[], externalTrx?: Knex.Transaction) {
     if (this.loadPolicyPromise) {
       await this.loadPolicyPromise;
+    } else {
+      await this.loadPolicy();
     }
 
     const removePolicyOperation = (async () => {
@@ -458,6 +461,8 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
   ): Promise<void> {
     if (this.loadPolicyPromise) {
       await this.loadPolicyPromise;
+    } else {
+      await this.loadPolicy();
     }
 
     const removePoliciesOperation = (async () => {
@@ -492,6 +497,8 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
   ): Promise<void> {
     if (this.loadPolicyPromise) {
       await this.loadPolicyPromise;
+    } else {
+      await this.loadPolicy();
     }
 
     const removeGroupingPolicyOperation = (async () => {
@@ -547,6 +554,8 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
   ): Promise<void> {
     if (this.loadPolicyPromise) {
       await this.loadPolicyPromise;
+    } else {
+      await this.loadPolicy();
     }
 
     const removeGroupingPolicyOperation = (async () => {
@@ -665,6 +674,8 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
   async getImplicitPermissionsForUser(user: string): Promise<string[][]> {
     if (this.loadPolicyPromise) {
       await this.loadPolicyPromise;
+    } else {
+      await this.loadPolicy();
     }
 
     const getPermissionsForUserOperation = (async () => {
@@ -677,6 +688,8 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
   async getAllRoles(): Promise<string[]> {
     if (this.loadPolicyPromise) {
       await this.loadPolicyPromise;
+    } else {
+      await this.loadPolicy();
     }
 
     const getRolesOperation = (async () => {
