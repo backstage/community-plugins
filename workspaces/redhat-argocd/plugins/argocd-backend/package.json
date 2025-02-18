@@ -16,7 +16,6 @@
     "pluginPackage": "@backstage-community/plugin-redhat-argocd-backend",
     "pluginPackages": [
       "@backstage-community/plugin-redhat-argocd",
-      "@backstage-community/plugin-redhat-argocd-common",
       "@backstage-community/plugin-redhat-argocd-backend"
     ]
   },
