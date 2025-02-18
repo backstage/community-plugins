@@ -15,8 +15,8 @@
  */
 import React from 'react';
 import {
-  MockPermissionApi,
   TestApiProvider,
+  mockApis,
   renderInTestApp,
 } from '@backstage/test-utils';
 import { AnnouncementsPage } from './AnnouncementsPage';
@@ -38,7 +38,6 @@ const mockAnnouncements = [
 ];
 
 describe('AnnouncementsPage', () => {
-  const mockPermissionApi = new MockPermissionApi();
   const mockAnnouncementsApi = {
     announcements: jest.fn().mockResolvedValue({
       count: 0,
@@ -54,7 +53,7 @@ describe('AnnouncementsPage', () => {
     await renderInTestApp(
       <TestApiProvider
         apis={[
-          [permissionApiRef, mockPermissionApi],
+          [permissionApiRef, mockApis.permission()],
           [announcementsApiRef, mockAnnouncementsApi],
           [catalogApiRef, mockCatalogApi],
         ]}
@@ -75,7 +74,7 @@ describe('AnnouncementsPage', () => {
     await renderInTestApp(
       <TestApiProvider
         apis={[
-          [permissionApiRef, mockPermissionApi],
+          [permissionApiRef, mockApis.permission()],
           [announcementsApiRef, mockAnnouncementsApi],
           [catalogApiRef, mockCatalogApi],
         ]}
@@ -102,7 +101,7 @@ describe('AnnouncementsPage', () => {
       await renderInTestApp(
         <TestApiProvider
           apis={[
-            [permissionApiRef, mockPermissionApi],
+            [permissionApiRef, mockApis.permission()],
             [announcementsApiRef, mockAnnouncementsApi],
             [catalogApiRef, mockCatalogApi],
           ]}
@@ -125,7 +124,7 @@ describe('AnnouncementsPage', () => {
       await renderInTestApp(
         <TestApiProvider
           apis={[
-            [permissionApiRef, mockPermissionApi],
+            [permissionApiRef, mockApis.permission()],
             [announcementsApiRef, mockAnnouncementsApi],
             [catalogApiRef, mockCatalogApi],
           ]}
