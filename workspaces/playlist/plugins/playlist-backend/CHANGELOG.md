@@ -1,5 +1,11 @@
 # @backstage-community/plugin-playlist-backend
 
+## 0.6.1
+
+### Patch Changes
+
+- 208e250: Updated dependency `@types/uuid` to `^10.0.0`.
+
 ## 0.6.0
 
 ### Minor Changes
