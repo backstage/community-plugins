@@ -86,7 +86,7 @@ export function createQuayRepositoryAction() {
     schema: {
       input: {
         type: 'object',
-        required: ['name', 'visibility', 'description', 'token'],
+        required: ['name', 'visibility', 'description'],
         properties: {
           name: {
             title: 'Repository name',
@@ -141,8 +141,8 @@ export function createQuayRepositoryAction() {
       },
     },
     async handler(ctx) {
-      const { token, name, visibility, namespace, description, repoKind } =
-        ctx.input;
+      const { name, visibility, namespace, description, repoKind } = ctx.input;
+      const token = ctx.secrets?.token;
       const baseUrl = getUrl(ctx.input.baseUrl);
       isValueValid(visibility, 'visibility', ['public', 'private']);
       isValueValid(repoKind, 'repository kind', [
