@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 3.5.3
+
+### Patch Changes
+
+- 208e250: Updated dependency `@types/uuid` to `^10.0.0`.
+
 ## 3.5.2
 
 ### Patch Changes
