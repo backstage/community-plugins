@@ -58,6 +58,7 @@ describe('NewAnnouncementBanner', () => {
           publisher: 'Publisher 1',
           created_at: DateTime.now().toISO(),
           active: true,
+          start_at: DateTime.now().toISO(),
         },
       ],
     };
@@ -80,6 +81,7 @@ describe('NewAnnouncementBanner', () => {
           publisher: 'Publisher 1',
           created_at: DateTime.now().toISO(),
           active: true,
+          start_at: DateTime.now().toISO(),
         },
       ],
     });

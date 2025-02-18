@@ -72,6 +72,7 @@ describe('AnnouncementsCard', () => {
           publisher: 'Publisher 1',
           created_at: '2025-01-01',
           active: true,
+          start_at: '2025-01-01',
         },
         {
           id: '2',
@@ -81,6 +82,7 @@ describe('AnnouncementsCard', () => {
           publisher: 'Publisher 2',
           created_at: '2025-01-02',
           active: true,
+          start_at: '2025-01-02',
         },
       ],
     };
