@@ -97,8 +97,8 @@ export function replaceAliases(
   if ('anyOf' in conditions) {
     for (const condition of conditions.anyOf) {
       replaceAliases(condition, userInfo);
-      return;
     }
+    return;
   }
 
   const params = (
@@ -106,8 +106,12 @@ export function replaceAliases(
   ).params;
   if (params) {
     for (const key of Object.keys(params)) {
+      const currentParams = (
+        conditions as PermissionCondition<string, PermissionRuleParams>
+      ).params;
+
       let modifiedParams = replaceAliasWithValue(
-        params,
+        currentParams,
         key,
         isCurrentUserAlias,
         userInfo.userEntityRef,
