@@ -1,5 +1,17 @@
 ### Dependencies
 
+## 1.18.1
+
+### Patch Changes
+
+- 3e35324: Updated dependency `start-server-and-test` to `2.0.10`.
+
+## 1.18.0
+
+### Minor Changes
+
+- a7730fc: Update shared react library @janus-idp/shared-react to version 2.16.0 with newer @kubernetes/client-node@1.0.0-rc7.
+
 ## 1.17.0
 
 ### Minor Changes

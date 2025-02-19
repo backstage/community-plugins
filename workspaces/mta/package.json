@@ -64,7 +64,6 @@
       "prettier --write"
     ]
   },
-  "packageManager": "yarn@3.8.1",
   "dependencies": {
     "dotenv": "^16.4.5"
   }

@@ -1,5 +1,11 @@
 # @backstage-community/plugin-shortcuts
 
+## 0.5.2
+
+### Patch Changes
+
+- 208e250: Updated dependency `@types/uuid` to `^10.0.0`.
+
 ## 0.5.1
 
 ### Patch Changes

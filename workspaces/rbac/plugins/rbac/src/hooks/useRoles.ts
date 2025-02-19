@@ -20,7 +20,6 @@ import { useApi } from '@backstage/core-plugin-api';
 import { usePermission } from '@backstage/plugin-permission-react';
 
 import {
-  isResourcedPolicy,
   PluginPermissionMetaData,
   policyEntityCreatePermission,
   policyEntityDeletePermission,
@@ -31,7 +30,11 @@ import {
 
 import { rbacApiRef } from '../api/RBACBackendClient';
 import { RolesData } from '../types';
-import { getPermissions, getPermissionsArray } from '../utils/rbac-utils';
+import {
+  getPermissions,
+  getPermissionsArray,
+  getPluginInfo,
+} from '../utils/rbac-utils';
 
 type RoleWithConditionalPoliciesCount = Role & {
   conditionalPoliciesCount: number;
@@ -182,14 +185,10 @@ export const useRoles = (
                   policies as RoleBasedPolicy[],
                 ).map(
                   po =>
-                    (permissionPolicies as PluginPermissionMetaData[]).find(
-                      pp =>
-                        pp.policies?.find(pol =>
-                          isResourcedPolicy(pol)
-                            ? po.permission === pol.resourceType
-                            : po.permission === pol.name,
-                        ),
-                    )?.pluginId,
+                    getPluginInfo(
+                      permissionPolicies as PluginPermissionMetaData[],
+                      po,
+                    ).pluginId,
                 );
                 accPls = [...accPls, ...pls].filter(val => !!val) as string[];
               }

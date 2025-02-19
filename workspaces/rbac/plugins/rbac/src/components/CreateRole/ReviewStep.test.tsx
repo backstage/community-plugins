@@ -30,6 +30,7 @@ describe('ReviewStep', () => {
     selectedMembers: [
       { label: 'User 1', etag: 'etag1', type: 'User', ref: 'User One' },
     ],
+    selectedPlugins: [{ label: 'Policy1', value: 'policy1' }],
     permissionPoliciesRows: [
       {
         plugin: 'policy1',

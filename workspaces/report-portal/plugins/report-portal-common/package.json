@@ -1,0 +1,46 @@
+{
+  "name": "@backstage-community/plugin-report-portal-common",
+  "description": "Common functionalities for the report-portal plugin",
+  "version": "1.0.0",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.cjs.js",
+    "module": "dist/index.esm.js",
+    "types": "dist/index.d.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/report-portal/plugins/report-portal-common"
+  },
+  "backstage": {
+    "role": "common-library",
+    "pluginId": "report-portal",
+    "pluginPackages": [
+      "@backstage-community/plugin-report-portal",
+      "@backstage-community/plugin-report-portal-backend",
+      "@backstage-community/plugin-report-portal-common"
+    ]
+  },
+  "sideEffects": false,
+  "scripts": {
+    "build": "backstage-cli package build",
+    "lint": "backstage-cli package lint",
+    "test": "backstage-cli package test",
+    "clean": "backstage-cli package clean",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack"
+  },
+  "devDependencies": {
+    "@backstage/cli": "^0.29.5"
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@backstage/plugin-search-common": "^1.2.17"
+  }
+}
