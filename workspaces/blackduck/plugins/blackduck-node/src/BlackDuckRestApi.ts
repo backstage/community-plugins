@@ -58,7 +58,7 @@ export class BlackDuckRestApi {
   }
   public async getProjects(name: string): Promise<BD_REST_API_RESPONSE> {
     const projects = await fetch(
-      `${this.host}/projects?limit=999&q=name:${encodeURI(name)}`,
+      `${this.host}/projects?limit=999&q=${encodeURIComponent(`name:${name}`)}`,
       {
         method: 'GET',
         headers: {
