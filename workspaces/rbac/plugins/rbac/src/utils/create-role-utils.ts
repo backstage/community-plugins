@@ -182,7 +182,13 @@ export const getPermissionPoliciesData = (
 
   return permissionPoliciesRows.reduce(
     (acc: RoleBasedPolicy[], permissionPolicyRow) => {
-      const { permission, policies, conditions } = permissionPolicyRow;
+      const {
+        permission,
+        policies,
+        conditions,
+        resourceType,
+        usingResourceType,
+      } = permissionPolicyRow;
       const permissionPoliciesData = policies.reduce(
         (pAcc: RoleBasedPolicy[], policy) => {
           if (policy.effect === 'allow' && !conditions) {
@@ -190,7 +196,10 @@ export const getPermissionPoliciesData = (
               ...pAcc,
               {
                 entityReference: `${kind}:${namespace}/${name}`,
-                permission: `${permission}`,
+                permission:
+                  resourceType && usingResourceType
+                    ? `${resourceType}`
+                    : `${permission}`,
                 policy: policy.policy.toLocaleLowerCase('en-US'),
                 effect: 'allow',
               },

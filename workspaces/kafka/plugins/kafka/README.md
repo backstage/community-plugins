@@ -59,7 +59,7 @@ const serviceEntityPage = (
 ```
 
 4. Add broker configs for the backend in your `app-config.yaml` (see
-   [kafka-backend](https://github.com/backstage/backstage/blob/master/plugins/kafka-backend/README.md)
+   [kafka-backend](https://github.com/backstage/community-plugins/tree/main/workspaces/kafka/plugins/kafka-backend/README.md)
    for more options):
 
 ```yaml
@@ -88,7 +88,7 @@ spec:
 
 6. Configure dashboard urls:
 
-You have two options.  
+You have two options.\
 Either configure it with an annotation called `kafka.apache.org/dashboard-urls`
 
 ```yaml
