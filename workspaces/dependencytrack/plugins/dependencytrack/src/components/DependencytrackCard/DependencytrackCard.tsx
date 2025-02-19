@@ -30,6 +30,12 @@ import { DEPENDENCYTRACK_PROJECT_ID_ANNOTATION, useProjectId } from '../hooks';
 import DependencytrackMetricsTable from '../DependencytrackTable/DependencytrackMetricsTable';
 import DependencytrackFindingTable from '../DependencytrackTable/DependencytrackFindingsTable';
 
+/**
+ * @param entity - the entity to use
+ * @param variant - the variant, e.g. 'flex' | 'fullHeight' | 'gridItem';
+ * @param tableOptions - tableOptions to use
+ * @public
+ */
 export const DependencytrackSummaryCard = ({
   entity,
   variant = 'gridItem',
@@ -83,6 +89,12 @@ export const DependencytrackSummaryCard = ({
   );
 };
 
+/**
+ * @param entity
+ * @param variant
+ * @param tableOptions
+ * @public
+ */
 export const DependencytrackFindingCard = ({
   entity,
   variant = 'gridItem',

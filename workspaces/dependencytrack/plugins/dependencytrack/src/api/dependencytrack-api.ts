@@ -21,10 +21,17 @@ import {
 import { createApiRef } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
 
+/**
+ * @public
+ */
 export const dependencytrackApiRef = createApiRef<DependencytrackApi>({
   id: 'plugin.dependencytrack.service',
 });
 
+/**
+ * Dependency Track API Interface
+ * @public
+ */
 export interface DependencytrackApi {
   fetchProject(entity: Entity): Promise<DependencytrackProject>;
 

@@ -23,10 +23,16 @@ import {
 } from '@backstage/core-plugin-api';
 import { Options } from '@material-table/core';
 
-type DependencytrackPageProps = {
+/**
+ * @public
+ */
+export type DependencytrackPageProps = {
   tableOptions?: Options<never>;
 };
 
+/**
+ * @public
+ */
 export const EntityDependencytrackSummaryCard = dependencytrackPlugin.provide(
   createComponentExtension({
     name: 'EntityDependencytrackSummaryCard',
@@ -59,6 +65,9 @@ export const EntityDependencytrackSummaryCard = dependencytrackPlugin.provide(
   }),
 );
 
+/**
+ * @public
+ */
 export const EntityDependencytrackFindingCard = dependencytrackPlugin.provide(
   createComponentExtension({
     name: 'EntityDependencytrackFindingCard',
@@ -91,6 +100,9 @@ export const EntityDependencytrackFindingCard = dependencytrackPlugin.provide(
   }),
 );
 
+/**
+ * @public
+ */
 export const EntityDependencytrackContent = dependencytrackPlugin.provide(
   createRoutableExtension({
     name: 'EntityDependencytrackContent',

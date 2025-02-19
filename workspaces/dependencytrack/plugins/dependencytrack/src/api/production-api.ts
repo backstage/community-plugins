@@ -23,6 +23,9 @@ import { getProjectId } from './annotations';
 import { DiscoveryApi, IdentityApi } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
 
+/**
+ * @public
+ */
 export class ProductionDependencytrackApi implements DependencytrackApi {
   constructor(
     private readonly discoveryApi: DiscoveryApi,

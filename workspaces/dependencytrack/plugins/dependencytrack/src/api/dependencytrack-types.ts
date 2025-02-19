@@ -13,6 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * @public
+ */
 export type DependencytrackProject = {
   author: string;
   publisher: string;
@@ -33,6 +37,9 @@ export type DependencytrackProject = {
   findings: Finding[];
 };
 
+/**
+ * @public
+ */
 export enum CLASSIFIER {
   APPLICATION,
   FRAMEWORK,
@@ -43,6 +50,10 @@ export enum CLASSIFIER {
   FIRMWARE,
   FILE,
 }
+
+/**
+ * @public
+ */
 export const metrictypes = [
   'critical',
   'high',
@@ -61,10 +72,16 @@ export const metrictypes = [
   'lastOccurrence',
 ] as const;
 
+/**
+ * @public
+ */
 export type ProjectMetrics = {
   [k in (typeof metrictypes)[number]]: number;
 };
 
+/**
+ * @public
+ */
 export type Finding = {
   component: Component;
   vulnerability: Vulnerability;
@@ -73,6 +90,9 @@ export type Finding = {
   matrix: string;
 };
 
+/**
+ * @public
+ */
 export type Component = {
   author?: string;
   publisher?: string;
@@ -85,6 +105,9 @@ export type Component = {
   project: string;
 };
 
+/**
+ * @public
+ */
 export enum SEVERITY {
   CRITICAL,
   HIGH,
@@ -94,6 +117,9 @@ export enum SEVERITY {
   UNASSIGNED,
 }
 
+/**
+ * @public
+ */
 export type Vulnerability = {
   uuid: string;
   source: string;
@@ -119,15 +145,24 @@ export type Vulnerability = {
   cvssV3Vector?: string;
 };
 
+/**
+ * @public
+ */
 export type cwe = {
   cweId: number;
   name: string;
 };
 
+/**
+ * @public
+ */
 export type Analyis = {
   isSuppressed: boolean;
 };
 
+/**
+ * @public
+ */
 export enum ANALYZER_IDENTITY {
   INTERNAL_ANALYZER,
   OSSINDEX_ANALYZER,
@@ -136,6 +171,9 @@ export enum ANALYZER_IDENTITY {
   NONE,
 }
 
+/**
+ * @public
+ */
 export type Attribution = {
   analyzerIdentity: ANALYZER_IDENTITY;
   attributedOn: number;

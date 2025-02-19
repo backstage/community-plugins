@@ -15,8 +15,19 @@
  */
 export type { DependencytrackApi } from './dependencytrack-api';
 export { dependencytrackApiRef } from './dependencytrack-api';
+export type { DependencytrackPageProps } from '../extensions';
 export type {
   DependencytrackProject,
   ProjectMetrics,
+  Finding,
+  metrictypes,
+  CLASSIFIER,
+  Component,
+  Vulnerability,
+  Analyis,
+  Attribution,
+  SEVERITY,
+  cwe,
+  ANALYZER_IDENTITY,
 } from './dependencytrack-types';
 export { ProductionDependencytrackApi } from './production-api';

@@ -23,6 +23,9 @@ import { ProductionDependencytrackApi, dependencytrackApiRef } from './api';
 
 import { rootRouteRef } from './routes';
 
+/**
+ * @public
+ */
 export const dependencytrackPlugin = createPlugin({
   id: 'dependencytrack',
   apis: [
