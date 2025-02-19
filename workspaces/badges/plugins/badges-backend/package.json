@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-badges-backend",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "A Backstage backend plugin that generates README badges for your entities",
   "backstage": {
     "role": "backend-plugin",
@@ -66,7 +66,7 @@
     "@backstage/cli": "^0.29.6",
     "@types/lodash": "^4.14.151",
     "@types/supertest": "^6.0.0",
-    "@types/uuid": "^9.0.0",
+    "@types/uuid": "^10.0.0",
     "supertest": "^7.0.0"
   }
 }

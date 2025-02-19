@@ -1,5 +1,14 @@
 # @backstage-community/plugin-announcements-common
 
+## 0.3.0
+
+### Minor Changes
+
+- 22d99d3: - Added a `start at` field to allow users to set the date when an announcement occurred.
+  - Announcements can now be sorted by `createdAt` (default) or `startAt` date, with customizable order (`desc` or `asc`).
+  - Updated the New Announcement form to accommodate `start at` and future fields.
+  - Added `Created at` and `Start at` columns to the admin view table.
+
 ## 0.2.0
 
 ### Minor Changes
