@@ -69,6 +69,10 @@ export type Options = {
 
 const APP_NAMESPACE_QUERY_PARAM = 'appNamespace';
 
+interface QueryParams {
+  [key: string]: string | undefined;
+}
+
 export class ArgoCDApiClient implements ArgoCDApi {
   private readonly backendBaseUrl: string;
   private readonly identityApi: IdentityApi;
@@ -84,17 +88,21 @@ export class ArgoCDApiClient implements ArgoCDApi {
     return `${this.backendBaseUrl}/api/argocd`;
   }
 
-  getQueryParams(params: { [p: string]: string | undefined }) {
-    const result = Object.keys(params)
-      .filter(key => params[key] !== undefined)
+  getQueryParams(params: QueryParams) {
+    const result = Object.entries(params)
+      // Remove undefined values
+      .filter(([_, value]) => value !== undefined)
+      // Handle namespace param based on config
       .filter(
-        key => key !== APP_NAMESPACE_QUERY_PARAM || this.useNamespacedApps,
+        ([key]) => this.useNamespacedApps || key !== APP_NAMESPACE_QUERY_PARAM,
       )
+      // Create encoded key-value pairs
       .map(
-        k =>
-          `${encodeURIComponent(k)}=${encodeURIComponent(params[k] as string)}`,
+        ([key, value]) =>
+          `${encodeURIComponent(key)}=${encodeURIComponent(value!)}`,
       )
       .join('&');
+
     return result ? `?${result}` : '';
   }
 
