@@ -1,0 +1,31 @@
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: test-app
+  title: Test App
+  description: |
+    Test App is a simple app that does nothing.
+
+  labels:
+    service: test-app
+    platform: test-platform
+
+  tags:
+    - test-app
+
+  annotations:
+    # Update this annotation value to match a deployment you want to test
+    acs/deployment-name: <INSERT DEPLOYMENT NAME HERE>
+
+    backstage.io/techdocs-ref: url:https://github.com/TestOrg/test-app
+    backstage.io/source-location: url:https://github.com/TestOrg/test-app
+    quay.io/repository-slug: TestOrg/test-app
+    github.com/project-slug: TestOrg/test-app
+
+spec:
+  type: service
+  system: test-app
+  owner: test-app-app-owners
+  lifecycle: OnBoarded
+  subcomponentOf: test-app-app
