@@ -19,10 +19,14 @@ import {
   ScmAuth,
 } from '@backstage/integration-react';
 import {
+  analyticsApiRef,
   AnyApiFactory,
   configApiRef,
   createApiFactory,
+  identityApiRef,
 } from '@backstage/core-plugin-api';
+
+import { InsightsAnalyticsApi } from '@backstage-community/plugin-analytics-module-insights';
 
 export const apis: AnyApiFactory[] = [
   createApiFactory({
@@ -31,4 +35,12 @@ export const apis: AnyApiFactory[] = [
     factory: ({ configApi }) => ScmIntegrationsApi.fromConfig(configApi),
   }),
   ScmAuth.createDefaultApiFactory(),
+  createApiFactory({
+    api: analyticsApiRef,
+    deps: { configApi: configApiRef, identityApi: identityApiRef },
+    factory: ({ configApi, identityApi }) =>
+      InsightsAnalyticsApi.fromConfig(configApi, {
+        identityApi,
+      }),
+  }),
 ];

@@ -14,25 +14,23 @@
  * limitations under the License.
  */
 import {
-  createPlugin,
-  createRoutableExtension,
+  analyticsApiRef,
+  configApiRef,
+  createApiFactory,
+  identityApiRef,
 } from '@backstage/core-plugin-api';
+import { InsightsAnalyticsApi } from './InsightsAnalyticsApi';
 
-import { rootRouteRef } from './routes';
-
-export const analyticsModuleInsightsPlugin = createPlugin({
-  id: 'analytics-module-insights',
-  routes: {
-    root: rootRouteRef,
-  },
-});
-
-export const AnalyticsModuleInsightsPage =
-  analyticsModuleInsightsPlugin.provide(
-    createRoutableExtension({
-      name: 'AnalyticsModuleInsightsPage',
-      component: () =>
-        import('./components/ExampleComponent').then(m => m.ExampleComponent),
-      mountPoint: rootRouteRef,
+/**
+ * API Factory for Insights Analytics API
+ *
+ * @public
+ */
+export const InsightsAnalyticsApiFactory = createApiFactory({
+  api: analyticsApiRef,
+  deps: { configApi: configApiRef, identityApi: identityApiRef },
+  factory: ({ configApi, identityApi }) =>
+    InsightsAnalyticsApi.fromConfig(configApi, {
+      identityApi,
     }),
-  );
+});

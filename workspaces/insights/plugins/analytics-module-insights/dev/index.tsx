@@ -16,15 +16,25 @@
 import React from 'react';
 import { createDevApp } from '@backstage/dev-utils';
 import {
-  analyticsModuleInsightsPlugin,
-  AnalyticsModuleInsightsPage,
-} from '../src/plugin';
+  analyticsApiRef,
+  configApiRef,
+  identityApiRef,
+} from '@backstage/core-plugin-api';
+import { InsightsAnalyticsApi } from '../src';
+import { Playground } from './Playground';
 
 createDevApp()
-  .registerPlugin(analyticsModuleInsightsPlugin)
+  .registerApi({
+    api: analyticsApiRef,
+    deps: { configApi: configApiRef, identityApi: identityApiRef },
+    factory: ({ configApi, identityApi }) =>
+      InsightsAnalyticsApi.fromConfig(configApi, {
+        identityApi,
+      }),
+  })
   .addPage({
-    element: <AnalyticsModuleInsightsPage />,
-    title: 'Root Page',
-    path: '/analytics-module-insights',
+    path: '/insights',
+    title: 'Insights',
+    element: <Playground />,
   })
   .render();

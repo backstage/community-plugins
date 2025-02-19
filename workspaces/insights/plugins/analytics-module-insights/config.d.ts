@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 The Backstage Authors
+ * Copyright 2024 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,4 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { ExampleFetchComponent } from './ExampleFetchComponent';
+export interface Config {
+  app?: {
+    analytics: {
+      insights: {
+        /**
+         * Maximum buffer size for event batching.
+         * default 20
+         * @visibility frontend
+         */
+        maxBufferSize?: number;
+        /**
+         * Flush interval in millisecond for event batching. All events will be flushed after this interval.
+         * default 5000ms
+         * @visibility frontend
+         */
+        flushInterval?: number;
+      };
+    };
+  };
+}

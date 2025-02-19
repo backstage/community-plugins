@@ -2757,7 +2757,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage-community/plugin-analytics-module-insights@workspace:plugins/analytics-module-insights":
+"@backstage-community/plugin-analytics-module-insights@workspace:^, @backstage-community/plugin-analytics-module-insights@workspace:plugins/analytics-module-insights":
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-analytics-module-insights@workspace:plugins/analytics-module-insights"
   dependencies:
@@ -14569,6 +14569,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "app@workspace:packages/app"
   dependencies:
+    "@backstage-community/plugin-analytics-module-insights": "workspace:^"
     "@backstage/app-defaults": "npm:^1.5.16"
     "@backstage/catalog-model": "npm:^1.7.3"
     "@backstage/cli": "npm:^0.29.5"
