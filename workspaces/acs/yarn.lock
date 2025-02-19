@@ -2835,6 +2835,7 @@ __metadata:
     "@backstage/core-components": "npm:^0.16.3"
     "@backstage/core-plugin-api": "npm:^1.10.3"
     "@backstage/dev-utils": "npm:^1.1.6"
+    "@backstage/plugin-catalog-react": "npm:^1.15.1"
     "@backstage/test-utils": "npm:^1.7.4"
     "@backstage/theme": "npm:^0.6.3"
     "@janus-idp/cli": "npm:^1.19.1"
@@ -2858,6 +2859,7 @@ __metadata:
     msw: "npm:^1.0.0"
     raven-js: "npm:^3.27.2"
     react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
+    react-data-table-component: "npm:^7.6.2"
     react-feather: "npm:^2.0.10"
     react-use: "npm:^17.2.4"
   peerDependencies:
