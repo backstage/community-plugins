@@ -60,6 +60,12 @@ catalog:
       rules:
         - allow: [User, Group]
 
+    # Quay template
+    - type: file
+      target: ../../plugins/quay-actions/examples/templates/01-quay-template.yaml
+      rules:
+        - allow: [Template]
+
 quay:
   uiUrl: 'https://quay.io'
   apiKey: ''
