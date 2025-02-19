@@ -23,8 +23,10 @@
 /**
  * Represents metrics data for a day in the copilot plugin.
  *
- * @deprecated See #2828
- * @public
+ * This used to be part of an API exposed by GitHub (/usage, see #2828),
+ * that was deprecated. At some point we should fully convert to the new CopilotMetrics way.
+ *
+ * @internal
  */
 export interface Breakdown {
   /**
@@ -73,8 +75,10 @@ export type MetricsType = 'enterprise' | 'organization';
 /**
  * Represents a detailed breakdown of metrics by language and editor.
  *
- * @deprecated See #2828
- * @public
+ * This used to be part of an API exposed by GitHub (/usage, see #2828),
+ * that was deprecated. At some point we should fully convert to the new CopilotMetrics way.
+ *
+ * @internal
  */
 export interface Metric {
   /**
@@ -277,74 +281,4 @@ export interface CopilotMetrics {
    * The total number of code suggestions for IDE users.
    */
   copilot_ide_code_completions: CopilotIdeCodeCompletions;
-}
-
-/**
- * @internal
- * @deprecated This is just a bridge function to make #2828 work on short notice, long term, we should rely on CopilotMetrics instead of Metric
- **/
-export function convertToMetric(
-  copilot_metrics: CopilotMetrics[],
-  metric_type: MetricsType,
-  team_name: string | undefined,
-): Metric[] {
-  const metric: Metric[] = [];
-
-  copilot_metrics.forEach(copilot_metric => {
-    const breakdown: Breakdown[] = [];
-
-    copilot_metric.copilot_ide_code_completions.editors.forEach(editor => {
-      editor.models.forEach(model => {
-        model.languages.forEach(language => {
-          breakdown.push({
-            acceptances_count: language.total_code_acceptances,
-            active_users: language.total_engaged_users,
-            editor: editor.name,
-            language: language.name,
-            lines_accepted: language.total_code_lines_accepted,
-            lines_suggested: language.total_code_lines_suggested,
-            suggestions_count: language.total_code_suggestions,
-          });
-        });
-      });
-    });
-
-    metric.push({
-      breakdown: breakdown,
-      day: copilot_metric.date,
-      type: metric_type,
-      team_name: team_name,
-      total_acceptances_count: breakdown.reduce(
-        (acc, curr) => acc + curr.acceptances_count,
-        0,
-      ),
-      total_active_chat_users: 0,
-      total_active_users: breakdown.reduce(
-        (acc, curr) => acc + curr.active_users,
-        0,
-      ),
-      total_chat_acceptances: breakdown.reduce(
-        (acc, curr) => acc + curr.acceptances_count,
-        0,
-      ),
-      total_chat_turns: breakdown.reduce(
-        (acc, curr) => acc + curr.acceptances_count,
-        0,
-      ),
-      total_lines_accepted: breakdown.reduce(
-        (acc, curr) => acc + curr.lines_accepted,
-        0,
-      ),
-      total_lines_suggested: breakdown.reduce(
-        (acc, curr) => acc + curr.lines_suggested,
-        0,
-      ),
-      total_suggestions_count: breakdown.reduce(
-        (acc, curr) => acc + curr.suggestions_count,
-        0,
-      ),
-    });
-  });
-
-  return metric;
 }

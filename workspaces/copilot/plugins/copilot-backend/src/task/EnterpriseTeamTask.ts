@@ -13,10 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  convertToMetric,
-  MetricsType,
-} from '@backstage-community/plugin-copilot-common';
+import { MetricsType } from '@backstage-community/plugin-copilot-common';
 import { MetricDbRow } from '../db/DatabaseHandler';
 import { batchInsertInChunks } from '../utils/batchInsert';
 import {
@@ -24,6 +21,7 @@ import {
   prepareMetricsForInsert,
 } from '../utils/metricHelpers';
 import { TaskOptions } from './TaskManagement';
+import { convertToMetric } from '../client/GithubClient';
 
 export async function discoverEnterpriseTeamMetrics({
   api,
@@ -52,10 +50,10 @@ export async function discoverEnterpriseTeamMetrics({
           `[discoverEnterpriseTeamMetrics] Fetching metrics for team: ${team.slug}`,
         );
 
-        const copilot_metrics = await api.fetchEnterpriseTeamCopilotMetrics(
+        const copilotMetrics = await api.fetchEnterpriseTeamCopilotMetrics(
           team.slug,
         );
-        const metrics = convertToMetric(copilot_metrics, type, team.slug);
+        const metrics = convertToMetric(copilotMetrics, type, team.slug);
 
         logger.info(
           `[discoverEnterpriseTeamMetrics] Fetched ${metrics.length} metrics for team: ${team.slug}`,

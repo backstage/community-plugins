@@ -17,7 +17,10 @@
 import { ResponseError } from '@backstage/errors';
 import { Config } from '@backstage/config';
 import {
+  Breakdown,
   CopilotMetrics,
+  Metric,
+  MetricsType,
   TeamInfo,
 } from '@backstage-community/plugin-copilot-common';
 import fetch from 'node-fetch';
@@ -111,4 +114,75 @@ export class GithubClient implements GithubApi {
 
     return response.json() as Promise<T>;
   }
+}
+
+/**
+ * @internal
+ *
+ * This is just a bridge function to make #2828 work on short notice, long term, we should rely on CopilotMetrics instead of Metric
+ **/
+export function convertToMetric(
+  copilotMetrics: CopilotMetrics[],
+  metricType: MetricsType,
+  teamName: string | undefined,
+): Metric[] {
+  const metric: Metric[] = [];
+
+  copilotMetrics.forEach(copilotMetric => {
+    const breakdown: Breakdown[] = [];
+
+    copilotMetric.copilot_ide_code_completions.editors.forEach(editor => {
+      editor.models.forEach(model => {
+        model.languages.forEach(language => {
+          breakdown.push({
+            acceptances_count: language.total_code_acceptances,
+            active_users: language.total_engaged_users,
+            editor: editor.name,
+            language: language.name,
+            lines_accepted: language.total_code_lines_accepted,
+            lines_suggested: language.total_code_lines_suggested,
+            suggestions_count: language.total_code_suggestions,
+          });
+        });
+      });
+    });
+
+    metric.push({
+      breakdown: breakdown,
+      day: copilotMetric.date,
+      type: metricType,
+      team_name: teamName,
+      total_acceptances_count: breakdown.reduce(
+        (acc, curr) => acc + curr.acceptances_count,
+        0,
+      ),
+      total_active_chat_users: 0,
+      total_active_users: breakdown.reduce(
+        (acc, curr) => acc + curr.active_users,
+        0,
+      ),
+      total_chat_acceptances: breakdown.reduce(
+        (acc, curr) => acc + curr.acceptances_count,
+        0,
+      ),
+      total_chat_turns: breakdown.reduce(
+        (acc, curr) => acc + curr.acceptances_count,
+        0,
+      ),
+      total_lines_accepted: breakdown.reduce(
+        (acc, curr) => acc + curr.lines_accepted,
+        0,
+      ),
+      total_lines_suggested: breakdown.reduce(
+        (acc, curr) => acc + curr.lines_suggested,
+        0,
+      ),
+      total_suggestions_count: breakdown.reduce(
+        (acc, curr) => acc + curr.suggestions_count,
+        0,
+      ),
+    });
+  });
+
+  return metric;
 }
