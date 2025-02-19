@@ -1,5 +1,11 @@
 # @backstage-community/plugin-badges-backend
 
+## 0.7.1
+
+### Patch Changes
+
+- 208e250: Updated dependency `@types/uuid` to `^10.0.0`.
+
 ## 0.7.0
 
 ### Minor Changes

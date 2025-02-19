@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 5.4.0
+
+### Minor Changes
+
+- 7bed8e0: Update @kubernetes/client-node.
+
 ## 5.3.0
 
 ### Minor Changes
