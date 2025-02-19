@@ -21,7 +21,7 @@ spec:
           description: Bearer token used for authorization
           ui:field: Secret
         visibility:
-          title: Visiblity
+          title: Visibility
           type: string
           description: Visibility setting for the created repository, either public or private
           ui:widget: select
