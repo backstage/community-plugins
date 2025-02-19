@@ -49,7 +49,7 @@ export class BlackDuckRestApi {
         },
       });
       const token = await auth.json();
-      this.logger.info('Auth Successfull');
+      this.logger.info('Auth Successful');
       this._bearer = token.bearerToken;
       return token.bearerToken;
     } catch (error) {
@@ -58,7 +58,7 @@ export class BlackDuckRestApi {
   }
   public async getProjects(name: string): Promise<BD_REST_API_RESPONSE> {
     const projects = await fetch(
-      `${this.host}/projects?limit=999&q=name:${name}`,
+      `${this.host}/projects?limit=999&q=name:${encodeURI(name)}`,
       {
         method: 'GET',
         headers: {
@@ -68,7 +68,7 @@ export class BlackDuckRestApi {
         },
       },
     );
-    this.logger.debug('Retrived Projects!!');
+    this.logger.debug('Retrieved Projects!!');
     return projects.json();
   }
 
@@ -87,7 +87,7 @@ export class BlackDuckRestApi {
         },
       },
     );
-    this.logger.debug('Retrived Versions!!');
+    this.logger.debug('Retrieved Versions!!');
     return versions.json();
   }
 
