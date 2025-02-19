@@ -1,3 +1,45 @@
+# Amplication backend plugin for Backstage
+
+The Amplication backend plugin integrates Amplication templates into Backstage.
+
+## Capabilities
+
+The Amplication backend plugin has the following capabilities:
+
+- Synchronization of Amplication templates in a workspace
+
+## Installation
+
+Run the following command to install the catalog backend module in your Backstage project
+
+```bash
+yarn workspace backend add @backstage-community/plugin-catalog-backend-module-amplication
+```
+
+## Configuration
+
+    1. Add the following configuration to the app-config.yaml file, and customize the schedule to fit your needs:
+
+    ```yaml title="app-config.yaml"
+    catalog:
+      locations:
+        - type: amplication
+          target: https://server.amplication.com/graphql
+    ```
+
+2. Register the plugin in the `packages/backend/src/index.ts` file:
+
+   ```ts title="packages/backend/src/index.ts"
+   const backend = createBackend();
+
+   /* highlight-add-next-line */
+   backend.add(
+     import('@backstage-community/plugin-catalog-backend-module-amplication'),
+   );
+
+   backend.start();
+   ```
+
 # Amplication Processor plugin
 
 Welcome to the Amplication Processor plugin!

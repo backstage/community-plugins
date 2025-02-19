@@ -1,10 +1,37 @@
-# Amplication custom action for Scaffolder Backstage
+# Amplication actions for Backstage
 
-The Amplication module for [@backstage/plugin-scaffolder-backend](https://www.npmjs.com/package/@backstage/plugin-scaffolder-backend).
+This module provides [Backstage](https://backstage.io/) template [actions](https://backstage.io/docs/features/software-templates/builtin-actions) for [Amplication](https://amplication.com/).
 
-This module allows users automate code generation using predefined templates, ensuring standardization for resource creation.
+The following actions are currently supported in this module:
+
+- Scaffold a new service
+
+## Setup
+
+You need to setup the [Amplication catalog backend plugin](../catalog-backend-module-amplication/README.md) before you move forward with any of the following steps if you haven't already.
 
 ## Installation
+
+Run the following command to install the action package in your Backstage project
+
+```bash
+yarn workspace backend add @backstage-community/plugin-scaffolder-backend-module-amplication
+```
+
+### Installing the action on the backend
+
+Add the following to your `packages/backend/src/index.ts` file:
+
+```ts title="packages/backend/src/index.ts"
+const backend = createBackend();
+
+// Add the following line
+backend.add(
+  import('@backstage-community/plugin-scaffolder-backend-module-amplication'),
+);
+
+backend.start();
+```
 
 ## Configuration
 
@@ -17,49 +44,37 @@ amplication:
   token: ${AMPLICATION_TOKEN}
 ```
 
-### Available custom actions
-
-| Action                    |                    Description                     |
-| ------------------------- | :------------------------------------------------: |
-| `amplication:new-service` | Allows you to creates a new service in Amplication |
-
-To begin, install the module package into the backend workspace of your backstage instance:
-
-```console
-yarn workspace backend add @backstage-community/plugin-scaffolder-backend-module-amplication
-```
-
-### Registering the annotator action plugin with the backend system
-
-To install the module into the [backend system](https://backstage.io/docs/backend-system/), add the following into the `packages/backend/src/index.ts` file:
-
-```ts title="packages/backend/src/index.ts
-const backend = createBackend();
-
-// highlight-add-start
-backend.add(
-  import('@backstage-community/plugin-scaffolder-backend-module-amplication'),
-);
-// highlight-add-end
-
-backend.start();
-```
-
-## Adding the Amplication template.yaml
-
-Import this catalog entity through the locations section in the `catalog-info.yaml` file:
+Add the Amplication actions to your templates, see the [example](./src/template/template.yaml) file in this repository for complete usage examples
 
 ```yaml
-# catalog-info.yaml
-catalog:
-  locations:
-    - type: url
-      target: https://github.com/backstage/community-plugins/blob/main/workspaces/amplication/plugins/scaffolder-backend-module-amplication/src/template/template.yaml
-      rules:
-        - allow: [System, Component]
+id: scaffoldService
+name: Scaffold a New Service
+action: amplication:scaffold-service
+input:
+  name: fooService
+  description: fooService description
+  project_id: 1a2b3c4d5e6f7g8h9i0j
+  serviceTemplate_id: 9i8h7g6f5e4d3c2b1a0
+  workspace_id: f1e2d3c4b5a6978685d4
 ```
 
-Alternatively, you can manually add the catalog entity which is located in the [plugin directory](./src/template/template.yaml).
+## Usage
+
+### Action: amplication:scaffold-service
+
+#### Input
+
+| Parameter Name     |  Type  | Required | Description         | Example              |
+| ------------------ | :----: | :------: | ------------------- | -------------------- |
+| name               | string |   Yes    | Service name        | foo                  |
+| description        | string |    No    | Service description | foo description      |
+| project_id         | string |   Yes    | Project ID          | 1a2b3c4d5e6f7g8h9i0j |
+| serviceTemplate_id | string |   Yes    | Service Template ID | 9i8h7g6f5e4d3c2b1a0  |
+| workspace_id       | string |   Yes    | Workspace ID        | f1e2d3c4b5a6978685d4 |
+
+#### Output
+
+This action doesn't have any outputs.
 
 ## Discover new services
 

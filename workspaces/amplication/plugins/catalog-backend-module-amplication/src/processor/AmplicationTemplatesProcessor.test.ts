@@ -35,7 +35,7 @@ describe('AmplicationTemplatesProcessor Name', () => {
 
 describe('Calling the API', () => {
   const handlers = [
-    http.post('https://amplication.com/templates', () => {
+    http.post('http://example.com/api/templates', () => {
       return HttpResponse.json({
         data: {
           catalog: {
@@ -85,7 +85,7 @@ describe('Calling the API', () => {
 
     const location: LocationSpec = {
       type: 'url',
-      target: 'https://amplication.com/templates',
+      target: 'http://example.com/api/templates',
     };
     const emit = jest.fn();
     const parser = jest.fn();
@@ -108,8 +108,8 @@ describe('Calling the API', () => {
     const processor = buildProcessor();
 
     const location: LocationSpec = {
-      type: 'graphql',
-      target: 'https://amplication.com/templates',
+      type: 'amplication',
+      target: 'http://example.com/api/templates',
     };
     const emit = jest.fn();
     const parser = jest.fn();
@@ -132,8 +132,8 @@ describe('Calling the API', () => {
     const processor = buildProcessor();
 
     const location: LocationSpec = {
-      type: 'graphql',
-      target: 'https://amplication.com/templates',
+      type: 'amplication',
+      target: 'http://example.com/api/templates',
     };
     const emit = jest.fn();
     const parser = jest.fn();
@@ -152,7 +152,7 @@ describe('Calling the API', () => {
     expect(result).toBe(true);
     expect(cache.get).toHaveBeenCalled();
     expect(emit).toHaveBeenCalled();
-    expect(emit).toHaveBeenCalledTimes(4);
+    expect(emit).toHaveBeenCalledTimes(1);
   });
 });
 

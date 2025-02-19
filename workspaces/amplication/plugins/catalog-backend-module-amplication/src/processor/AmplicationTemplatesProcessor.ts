@@ -40,7 +40,7 @@ export class AmplicationTemplatesProcessor implements CatalogProcessor {
     private readonly logger: LoggerService,
     private readonly config: RootConfigService,
   ) {
-    this.logger.info('AmplicationTemplatesProcessor: Hello');
+    this.logger.info(`${this.getProcessorName()} is loading...`);
   }
 
   getProcessorName(): string {
@@ -54,16 +54,12 @@ export class AmplicationTemplatesProcessor implements CatalogProcessor {
     _parser: CatalogProcessorParser,
     cache: CatalogProcessorCache,
   ): Promise<boolean> {
-    if (location.type !== 'graphql') {
+    if (location.type !== 'amplication') {
       return false;
     }
 
     const cacheItem = await cache.get<CacheItem>(CACHE_KEY);
     try {
-      this.emitUser(emit, location);
-      this.emitSystem(emit, location);
-      this.emitAPI(emit, location);
-
       const response = await this.getCatalog(location);
       const etag = response.headers.get('etag') || 'NO ETAG';
 
@@ -188,63 +184,5 @@ export class AmplicationTemplatesProcessor implements CatalogProcessor {
       spec: spec,
     };
     emit(processingResult.entity(location, entity));
-  }
-
-  private emitSystem(emit: CatalogProcessorEmit, location: LocationSpec) {
-    const system: Entity = {
-      apiVersion: 'backstage.io/v1alpha1',
-      kind: 'System',
-      metadata: {
-        name: 'Amplication',
-        tags: ['amplication'],
-        description:
-          'Amplication is a platform for building full-stack applications with code generation.',
-      },
-      spec: {
-        owner: 'user:amplication-bot',
-      },
-    };
-    emit(processingResult.entity(location, system));
-  }
-
-  private emitAPI(emit: CatalogProcessorEmit, location: LocationSpec) {
-    const api: Entity = {
-      apiVersion: 'backstage.io/v1alpha1',
-      kind: 'API',
-      metadata: {
-        name: 'amplication-api',
-        description: 'Amplication API',
-        tags: ['amplication'],
-      },
-      spec: {
-        type: 'graphql',
-        lifecycle: 'production',
-        owner: 'user:amplication-bot',
-        system: 'amplication',
-        definition:
-          'catalog(where: $where, take: $take, skip: $skip) {\ntotalCount\ndata {\n    id\n    name\n    description\n    resourceType\n    project {\n    id\n    name\n    }\n    blueprint {\n    id\n    name\n    }\n    serviceTemplate {\n    id\n    name\n    projectId\n    }\n    gitRepository {\n    name\n    gitOrganization {\n        name\n        provider\n    }\n    }\n}\n__typename\n}',
-      },
-    };
-    emit(processingResult.entity(location, api));
-  }
-
-  private emitUser(emit: CatalogProcessorEmit, location: LocationSpec) {
-    const user: Entity = {
-      apiVersion: 'backstage.io/v1alpha1',
-      kind: 'User',
-      metadata: {
-        name: 'amplication-bot',
-        description: 'Amplication Bot',
-        tags: ['amplication'],
-      },
-      spec: {
-        profile: {
-          displayName: 'Amplication Bot',
-          email: 'support@amplication.com',
-        },
-        memberOf: ['guests'],
-      },
-    };
-    emit(processingResult.entity(location, user));
   }
 }
