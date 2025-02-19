@@ -18,25 +18,25 @@ import { RoleBasedPolicy } from '@backstage-community/plugin-rbac-common';
 export const mockAssociatedPolicies: RoleBasedPolicy[] = [
   {
     entityReference: 'role:default/rbac_admin',
-    permission: 'policy-entity',
+    permission: 'policy.entity.read',
     policy: 'read',
     effect: 'allow',
   },
   {
     entityReference: 'role:default/rbac_admin',
-    permission: 'policy-entity',
+    permission: 'policy.entity.create',
     policy: 'create',
     effect: 'allow',
   },
   {
     entityReference: 'role:default/rbac_admin',
-    permission: 'policy-entity',
+    permission: 'policy.entity.delete',
     policy: 'delete',
     effect: 'allow',
   },
   {
     entityReference: 'role:default/rbac_admin',
-    permission: 'catalog-entity',
+    permission: 'catalog.entity.read',
     policy: 'read',
     effect: 'allow',
   },
@@ -51,7 +51,7 @@ export const mockAssociatedPolicies: RoleBasedPolicy[] = [
 export const mockPolicies: RoleBasedPolicy[] = [
   {
     entityReference: 'role:default/guests',
-    permission: 'catalog-entity',
+    permission: 'catalog.entity.read',
     policy: 'read',
     effect: 'deny',
   },
@@ -63,7 +63,7 @@ export const mockPolicies: RoleBasedPolicy[] = [
   },
   {
     entityReference: 'role:default/guests',
-    permission: 'catalog-entity',
+    permission: 'catalog.entity.read',
     policy: 'read',
     effect: 'allow',
   },
@@ -75,25 +75,19 @@ export const mockPolicies: RoleBasedPolicy[] = [
   },
   {
     entityReference: 'role:default/guests',
-    permission: 'policy-entity',
+    permission: 'policy.entity.create',
     policy: 'create',
     effect: 'allow',
   },
   {
     entityReference: 'role:default/guests',
-    permission: 'policy-entity',
+    permission: 'policy.entity.read',
     policy: 'read',
     effect: 'allow',
   },
   {
     entityReference: 'role:default/guests',
-    permission: 'policy.entity.read',
-    policy: 'use',
-    effect: 'allow',
-  },
-  {
-    entityReference: 'role:default/guests',
-    permission: 'policy-entity',
+    permission: 'policy.entity.delete',
     policy: 'delete',
     effect: 'allow',
   },

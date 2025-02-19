@@ -14,17 +14,12 @@
  * limitations under the License.
  */
 import React from 'react';
-
 import { createDevApp } from '@backstage/dev-utils';
-
-import { getAllThemes } from '@redhat-developer/red-hat-developer-hub-theme';
-
 import { MatomoAnalyticsApi } from '../src';
 import { Playground } from './Playground';
 
 createDevApp()
   .registerApi(MatomoAnalyticsApi)
-  .addThemes(getAllThemes())
   .addPage({
     title: 'Matomo Analytics Playground',
     path: '/analytics-module-matomo',

@@ -54,19 +54,19 @@ const mockPolicies = [
   },
   {
     entityReference: 'user:default/xyz',
-    permission: 'policy-entity',
+    permission: 'policy.entity.read',
     policy: 'read',
     effect: 'allow',
   },
   {
     entityReference: 'user:default/xyz',
-    permission: 'policy-entity',
+    permission: 'policy.entity.create',
     policy: 'create',
     effect: 'allow',
   },
   {
     entityReference: 'user:default/xyz',
-    permission: 'policy-entity',
+    permission: 'policy.entity.delete',
     policy: 'delete',
     effect: 'allow',
   },
@@ -183,71 +183,49 @@ describe('rbac utils', () => {
 
   it('should return plugin-id of the policy', () => {
     expect(
-      getPluginInfo(mockPermissionPolicies, 'catalog.entity.read').pluginId,
+      getPluginInfo(mockPermissionPolicies, {
+        permission: 'catalog.entity.read',
+        policy: 'read',
+      }).pluginId,
     ).toBe('catalog');
     expect(
-      getPluginInfo(mockPermissionPolicies, 'scaffolder.template.read')
-        .pluginId,
+      getPluginInfo(mockPermissionPolicies, {
+        permission: 'scaffolder.template.read',
+        policy: 'read',
+      }).pluginId,
     ).toBe('scaffolder');
   });
 
   it('should return if the permission is resourced', () => {
     expect(
-      getPluginInfo(mockPermissionPolicies, 'catalog.entity.read').isResourced,
+      getPluginInfo(mockPermissionPolicies, {
+        permission: 'catalog.entity.read',
+        policy: 'read',
+      }).isResourced,
     ).toBe(true);
     expect(
-      getPluginInfo(mockPermissionPolicies, 'scaffolder.template.read')
-        .isResourced,
+      getPluginInfo(mockPermissionPolicies, {
+        permission: 'scaffolder.template.read',
+        policy: 'read',
+      }).isResourced,
     ).toBe(true);
   });
 
   it('should return the permissions data', () => {
-    let data = getPermissionsData(mockPolicies, mockPermissionPolicies);
+    const data = getPermissionsData(mockPolicies, mockPermissionPolicies);
     expect(data[0]).toEqual({
-      permission: 'policy-entity',
+      permission: 'policy.entity.read',
       plugin: 'permission',
       policies: [
         {
           effect: 'allow',
           policy: 'Read',
         },
-        {
-          effect: 'allow',
-          policy: 'Create',
-        },
-        {
-          effect: 'allow',
-          policy: 'Delete',
-        },
-        {
-          effect: 'deny',
-          policy: 'Update',
-        },
       ],
-      policyString: ['Read', ', Create', ', Delete'],
-      isResourced: false,
-      resourceType: '',
-    });
-    data = getPermissionsData(mockPolicies, []);
-    expect(data[0]).toEqual({
-      permission: 'policy-entity',
-      plugin: '-',
-      policies: [
-        {
-          effect: 'allow',
-          policy: 'Read',
-        },
-        {
-          effect: 'allow',
-          policy: 'Create',
-        },
-        {
-          effect: 'allow',
-          policy: 'Delete',
-        },
-      ],
-      policyString: ['Read', ', Create', ', Delete'],
-      isResourced: false,
+      policyString: ['Read'],
+      isResourced: true,
+      resourceType: 'policy-entity',
+      usingResourceType: false,
     });
   });
 });

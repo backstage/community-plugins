@@ -30,7 +30,11 @@ import {
 
 import { rbacApiRef } from '../api/RBACBackendClient';
 import { RolesData } from '../types';
-import { getPermissions, getPermissionsArray } from '../utils/rbac-utils';
+import {
+  getPermissions,
+  getPermissionsArray,
+  getPluginInfo,
+} from '../utils/rbac-utils';
 
 type RoleWithConditionalPoliciesCount = Role & {
   conditionalPoliciesCount: number;
@@ -181,10 +185,10 @@ export const useRoles = (
                   policies as RoleBasedPolicy[],
                 ).map(
                   po =>
-                    (permissionPolicies as PluginPermissionMetaData[]).find(
-                      pp =>
-                        pp.policies?.find(pol => po.permission === pol.name),
-                    )?.pluginId,
+                    getPluginInfo(
+                      permissionPolicies as PluginPermissionMetaData[],
+                      po,
+                    ).pluginId,
                 );
                 accPls = [...accPls, ...pls].filter(val => !!val) as string[];
               }
