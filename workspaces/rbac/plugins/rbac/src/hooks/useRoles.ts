@@ -237,7 +237,11 @@ export const useRoles = (
     ],
   );
   const loading =
-    (!rolesError && !policiesError && !roleConditionError && !roles && !policies) ||
+    (!rolesError &&
+      !policiesError &&
+      !roleConditionError &&
+      !roles &&
+      !policies) ||
     membersLoading ||
     loadingPermissionPolicies ||
     loadingConditionalPermission;
