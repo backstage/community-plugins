@@ -98,6 +98,7 @@ export type KeycloakProviderConfig = {
   userQuerySize?: number;
   groupQuerySize?: number;
   maxConcurrency?: number;
+  briefRepresentation?: boolean;
 };
 
 // @public
