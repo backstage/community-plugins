@@ -199,7 +199,7 @@ export const ReleaseTable = ({
         <Box display="flex" alignItems="center">
           <OctopusDeployIcon style={{ fontSize: 30 }} />
           <Box mr={1} />
-          Octopus <Box mr={1} /> {projectTitle} <Box mr={1} /> deploys (
+          Octopus Deploy - <Box mr={1} /> {projectTitle} <Box mr={1} /> (
           {releases ? releases.length : 0})
         </Box>
       }
