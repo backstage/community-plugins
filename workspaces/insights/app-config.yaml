@@ -5,6 +5,7 @@ app:
     insights:
       maxBufferSize: 20
       flushInterval: 5000
+      debug: true
 
 organization:
   name: My Company

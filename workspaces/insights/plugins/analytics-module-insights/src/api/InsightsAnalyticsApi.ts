@@ -25,18 +25,21 @@ export class InsightsAnalyticsApi implements AnalyticsApi {
   private readonly backendUrl: string;
   private readonly flushInterval: number;
   private readonly maxBufferSize: number;
+  private readonly debug?: boolean;
   private userId?: string;
-  private userToken?: string | undefined;
+  private userToken?: string;
 
   private constructor(
     backendUrl: string,
     flushInterval: number,
     maxBufferSize: number,
     identityApi?: IdentityApi,
+    debug?: boolean,
   ) {
     this.backendUrl = backendUrl;
     this.flushInterval = flushInterval;
     this.maxBufferSize = maxBufferSize;
+    this.debug = debug;
 
     if (identityApi) {
       identityApi.getBackstageIdentity().then(async identity => {
@@ -55,11 +58,15 @@ export class InsightsAnalyticsApi implements AnalyticsApi {
       config.getOptionalNumber('app.analytics.inisghts.flushInterval') || 5000;
     const maxBufferSize =
       config.getOptionalNumber('app.analytics.insights.maxBufferSize') || 20;
+    const debug =
+      config.getOptionalBoolean('app.analytics.insights.debug') || false;
+
     return new InsightsAnalyticsApi(
       backendUrl,
       flushInterval,
       maxBufferSize,
       options.identityApi,
+      debug,
     );
   }
 
@@ -67,6 +74,10 @@ export class InsightsAnalyticsApi implements AnalyticsApi {
     if (this.userId) {
       event.context.userName = this.userId;
       event.context.userId = await this.hash(this.userId);
+    }
+    if (this.debug) {
+      // eslint-disable-next-line no-console
+      console.log('Analytics Event -', event);
     }
 
     this.eventBuffer.push(event);

@@ -29,6 +29,12 @@ export interface Config {
          * @visibility frontend
          */
         flushInterval?: number;
+        /**
+         * Flag to enable Debug mode which logs every event in the browser console.
+         * default false
+         * @visibility frontend
+         */
+        debug?: boolean;
       };
     };
   };
