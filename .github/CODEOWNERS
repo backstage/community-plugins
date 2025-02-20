@@ -28,6 +28,7 @@ yarn.lock                                                               @backsta
 /workspaces/confluence                                                  @backstage/community-plugins-maintainers  @fjudith
 /workspaces/copilot                                                     @backstage/community-plugins-maintainers  @esw-afabiano
 /workspaces/cost-insights                                               @backstage/community-plugins-maintainers  @backstage/silver-lining
+/workspaces/dependency-track                                            @backstage/community-plugins-maintainers  @harmenbrinkmanTRIMM
 /workspaces/entity-feedback                                             @backstage/community-plugins-maintainers  @kuangp
 /workspaces/explore                                                     @backstage/community-plugins-maintainers  @backstage/sda-se-reviewers
 /workspaces/feedback                                                    @backstage/community-plugins-maintainers  @riginoommen @deshmukhmayur @yashoswalyo
@@ -69,3 +70,4 @@ yarn.lock                                                               @backsta
 /workspaces/topology                                                    @backstage/community-plugins-maintainers  @christoph-jerolimov @ciiay @debsmita1 @divyanshiGupta @its-mitesh-kumar @logonoff
 /workspaces/multi-source-security-viewer                                @backstage/community-plugins-maintainers  @caugello @cryptorodeo
 /workspaces/wheel-of-names                                              @backstage/community-plugins-maintainers  @philippeckelintive @johannes-kirchner
+
