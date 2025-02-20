@@ -26,7 +26,6 @@ import GitLabIcon from '@patternfly/react-icons/dist/esm/icons/gitlab-icon';
 import { Skeleton } from '@material-ui/lab';
 import { getCommitUrl } from '../../utils/utils';
 import { Entity } from '@backstage/catalog-model';
-import { Revision } from '../../types/revision';
 
 interface CommitLinkProps {
   entity: Entity;
@@ -56,16 +55,22 @@ const AppCommitLink: React.FC<CommitLinkProps> = ({
 }) => {
   const classes = useCommitStyles();
 
+  // If we have a multi-source application,
+  // lets use the first source to keep things simple.
   const revisionInfo = latestRevision?.revisions
     ? revisionsMap?.[latestRevision?.revisions[0]]
     : revisionsMap?.[latestRevision?.revision];
 
+  const revisionSha = latestRevision?.revisions
+    ? latestRevision.revisions[0]
+    : latestRevision?.revision;
+
+  const repoUrl = application?.spec?.sources
+    ? application?.spec?.sources[0]?.repoURL
+    : application?.spec?.source?.repoURL;
   const revisionMessage = revisionInfo?.message;
   const revisionAuthor = revisionInfo?.author;
   const authorInfo = showAuthor ? `by ${revisionAuthor}` : '';
-  const revisionSha = latestRevision?.revisions
-    ? latestRevision.revisions[0]
-    : latestRevision.revision;
 
   const commitMessage = `${revisionMessage} ${authorInfo}`;
   return revisionsMap && latestRevision ? (
@@ -76,7 +81,6 @@ const AppCommitLink: React.FC<CommitLinkProps> = ({
         variant="outlined"
         onClick={e => {
           e.stopPropagation();
-          const repoUrl = application?.spec?.source?.repoURL ?? '';
           const annotations = entity?.metadata?.annotations ?? {};
           if (repoUrl.length) {
             window.open(

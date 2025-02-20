@@ -197,7 +197,7 @@ export const getUniqueRevisions = (apps: Application[]): string[] =>
           }
         });
 
-        // Filter any potential undefined metadata values from ArgoCD
+        // Filter any potential undefined values
         return acc.filter(Boolean);
       }, [] as string[])
     : [];

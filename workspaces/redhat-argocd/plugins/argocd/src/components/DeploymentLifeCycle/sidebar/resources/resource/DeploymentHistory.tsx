@@ -40,36 +40,42 @@ export const DeploymentHistory: React.FC<DeploymentHistoryProps> = ({
   annotations,
 }) => {
   const history = appHistory?.slice()?.reverse();
-
   return (
     <>
       <Typography color="textPrimary" variant="body1">
         Deployment history
       </Typography>
       <Box className={styleClasses.deploymentHistory}>
-        {history?.flatMap(dep =>
-          (dep?.revisions ?? [dep?.revision]).map(revision => {
-            const appSpec = application?.spec;
+        {history?.flatMap(dep => {
+          const appSpec = application?.spec;
+          const sources = appSpec?.sources
+            ? appSpec.sources
+            : [appSpec?.source];
+          const revisions = dep?.revisions ? dep.revisions : [dep?.revision];
 
-            return (appSpec?.sources ?? [appSpec.source]).map(repoSource => {
-              const commitUrl = repoSource.repoURL
-                ? getCommitUrl(repoSource.repoURL, revision, annotations ?? {})
-                : null;
+          // Match revisions to sources by index
+          // First revision should always be the main one.
+          return revisions.map((revision, index) => {
+            // X revision -> X source
+            const repoSource = sources[index];
 
-              return (
-                <DeploymentHistoryCommit
-                  key={revision}
-                  deploymentHistory={dep}
-                  styleClasses={styleClasses}
-                  application={application}
-                  commitMessage={revisionsMap[revision]?.message ?? ''}
-                  commitUrl={commitUrl}
-                  revisionSha={revision}
-                />
-              );
-            });
-          }),
-        )}
+            const commitUrl = repoSource?.repoURL
+              ? getCommitUrl(repoSource.repoURL, revision, annotations ?? {})
+              : null;
+
+            return (
+              <DeploymentHistoryCommit
+                key={`${revision}`}
+                deploymentHistory={dep}
+                styleClasses={styleClasses}
+                application={application}
+                commitMessage={revisionsMap[revision]?.message ?? ''}
+                commitUrl={commitUrl}
+                revisionSha={revision}
+              />
+            );
+          });
+        })}
       </Box>
     </>
   );

@@ -56,22 +56,25 @@ const DeploymentMetadata = ({ resource }: { resource: Resource }) => {
     useDrawerContext();
   const classes = useDeploymentInfoStyles();
 
-  const ImageLink = () => (
-    <Link
-      href={`https://${application?.status?.summary?.images?.[0]}`}
-      target="_blank"
-      rel="noopener"
-    >
-      {application?.status?.summary?.images?.[0].split('/').pop()}
-    </Link>
-  );
+  const ImageLinks = () => {
+    const images = application?.status?.summary?.images;
+    return images.map(image => {
+      return (
+        <div>
+          <Link href={`https://${image}`} target="_blank" rel="noopener">
+            {image.split('/').pop()}
+          </Link>
+        </div>
+      );
+    });
+  };
   return (
     <>
       <Metadata>
         <MetadataItem title="Namespace">{resource?.namespace}</MetadataItem>
         {appHistory.length > 0 ? (
-          <MetadataItem title="Image">
-            <ImageLink />
+          <MetadataItem title="Image(s)">
+            <ImageLinks />
           </MetadataItem>
         ) : (
           <></>
