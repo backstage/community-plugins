@@ -21,8 +21,9 @@ import type { Config } from '@backstage/config';
 import { RoleManager } from 'casbin';
 import { Knex } from 'knex';
 
-import { AncestorSearchMemo } from './ancestor-search-memo';
+import { AncestorSearchMemo, ASMGroup } from './ancestor-search-memo';
 import { RoleMemberList } from './member-list';
+import { AncestorSearchFactory } from './ancestor-search-factory';
 
 export class BackstageRoleManager implements RoleManager {
   private allRoles: Map<string, RoleMemberList>;
@@ -156,14 +157,15 @@ export class BackstageRoleManager implements RoleManager {
       return false;
     }
 
-    const memo = new AncestorSearchMemo(
+    const memo = await AncestorSearchFactory.createAncestorSearchMemo(
       name1,
+      this.config,
       this.catalogApi,
       this.catalogDBClient,
       this.auth,
       this.maxDepth,
     );
-    await memo.buildUserGraph(memo);
+    await memo.buildUserGraph();
 
     memo.debugNodesAndEdges(this.logger, name1);
     if (!memo.isAcyclic()) {
@@ -230,14 +232,15 @@ export class BackstageRoleManager implements RoleManager {
   async getRoles(name: string, ..._domain: string[]): Promise<string[]> {
     const { kind } = parseEntityRef(name);
     if (kind === 'user') {
-      const memo = new AncestorSearchMemo(
+      const memo = await AncestorSearchFactory.createAncestorSearchMemo(
         name,
+        this.config,
         this.catalogApi,
         this.catalogDBClient,
         this.auth,
         this.maxDepth,
       );
-      await memo.buildUserGraph(memo);
+      await memo.buildUserGraph();
       memo.debugNodesAndEdges(this.logger, name);
 
       if (this.isPGClient()) {
@@ -356,7 +359,7 @@ export class BackstageRoleManager implements RoleManager {
    */
   private hasMember(
     role: RoleMemberList | undefined,
-    memo: AncestorSearchMemo,
+    memo: AncestorSearchMemo<ASMGroup>,
   ): boolean {
     if (role === undefined) {
       return false;

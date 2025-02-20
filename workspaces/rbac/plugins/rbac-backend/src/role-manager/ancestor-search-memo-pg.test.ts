@@ -13,15 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { mockServices } from '@backstage/backend-test-utils';
-import type { Entity, GroupEntity } from '@backstage/catalog-model';
 
 import * as Knex from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 
-import { AncestorSearchMemo, Relation } from './ancestor-search-memo';
-
-const mockAuthService = mockServices.auth();
+import { AncestorSearchMemoPG } from './ancestor-search-memo-pg';
+import { Relation } from './ancestor-search-memo';
 
 describe('ancestor-search-memo', () => {
   const userRelations = [
@@ -58,40 +55,12 @@ describe('ancestor-search-memo', () => {
     },
   ];
 
-  const testGroups = [
-    createGroupEntity('team-a', 'team-b', [], ['adam']),
-    createGroupEntity('team-b', 'team-c', [], []),
-    createGroupEntity('team-c', '', [], []),
-    createGroupEntity('team-d', 'team-e', [], ['george']),
-    createGroupEntity('team-e', 'team-f', [], []),
-    createGroupEntity('team-f', '', [], []),
-  ];
-
-  const testUserGroups = [createGroupEntity('team-a', 'team-b', [], ['adam'])];
-
-  // TODO: Move to 'catalogServiceMock' from '@backstage/plugin-catalog-node/testUtils'
-  // once '@backstage/plugin-catalog-node' is upgraded
-  const catalogApiMock: any = {
-    getEntities: jest.fn().mockImplementation((arg: any) => {
-      const hasMember = arg.filter['relations.hasMember'];
-      if (hasMember && hasMember === 'user:default/adam') {
-        return { items: testUserGroups };
-      }
-      return { items: testGroups };
-    }),
-  };
-
   const catalogDBClient = Knex.knex({ client: MockClient });
 
-  let asm: AncestorSearchMemo;
+  let asm: AncestorSearchMemoPG;
 
   beforeEach(() => {
-    asm = new AncestorSearchMemo(
-      'user:default/adam',
-      catalogApiMock,
-      catalogDBClient,
-      mockAuthService,
-    );
+    asm = new AncestorSearchMemoPG('user:default/adam', catalogDBClient);
   });
 
   describe('getAllGroups and getAllRelations', () => {
@@ -111,17 +80,12 @@ describe('ancestor-search-memo', () => {
           /select "source_entity_ref", "target_entity_ref" from "relations" where "type" = ?/,
         )
         .response(allRelations);
-      const allRelationsTest = await asm.getAllRelations();
+      const allRelationsTest = await asm.getAllASMGroups();
       expect(allRelationsTest).toEqual(allRelations);
     });
 
-    it('should return all groups', async () => {
-      const allGroupsTest = await asm.getAllGroups();
-      expect(allGroupsTest).toEqual(testGroups);
-    });
-
     it('should fail to return anything when there is an error getting all relations', async () => {
-      const allRelationsTest = await asm.getAllRelations();
+      const allRelationsTest = await asm.getAllASMGroups();
       expect(allRelationsTest).toEqual([]);
     });
   });
@@ -143,18 +107,13 @@ describe('ancestor-search-memo', () => {
           /select "source_entity_ref", "target_entity_ref" from "relations" where "type" = ?/,
         )
         .response(userRelations);
-      const relations = await asm.getUserRelations();
+      const relations = await asm.getUserASMGroups();
 
       expect(relations).toEqual(userRelations);
     });
 
-    it('should return all user groups', async () => {
-      const userGroups = await asm.getUserGroups();
-      expect(userGroups).toEqual(testUserGroups);
-    });
-
     it('should fail to return anything when there is an error getting user relations', async () => {
-      const relations = await asm.getUserRelations();
+      const relations = await asm.getUserASMGroups();
 
       expect(relations).toEqual([]);
     });
@@ -178,7 +137,7 @@ describe('ancestor-search-memo', () => {
           /select "source_entity_ref", "target_entity_ref" from "relations" where "type" = ?/,
         )
         .response(userRelations);
-      const userRelationsTest = await asm.getUserRelations();
+      const userRelationsTest = await asm.getUserASMGroups();
 
       tracker.reset();
       tracker.on
@@ -186,15 +145,10 @@ describe('ancestor-search-memo', () => {
           /select "source_entity_ref", "target_entity_ref" from "relations" where "type" = ?/,
         )
         .response(allRelations);
-      const allRelationsTest = await asm.getAllRelations();
+      const allRelationsTest = await asm.getAllASMGroups();
 
       userRelationsTest.forEach(relation =>
-        asm.traverseRelations(
-          asm,
-          relation as Relation,
-          allRelationsTest as Relation[],
-          0,
-        ),
+        asm.traverse(relation as Relation, allRelationsTest as Relation[], 0),
       );
 
       expect(asm.hasEntityRef('user:default/adam')).toBeTruthy();
@@ -208,11 +162,9 @@ describe('ancestor-search-memo', () => {
     //                                                       |
     // user:default/adam -> group:default/team-a -> group:default/team-b -> group:default/team-c
     it('should build the graph but stop based on the maxDepth', async () => {
-      const asmMaxDepth = new AncestorSearchMemo(
+      const asmMaxDepth = new AncestorSearchMemoPG(
         'user:default/adam',
-        catalogApiMock,
         catalogDBClient,
-        mockAuthService,
         1,
       );
 
@@ -221,7 +173,7 @@ describe('ancestor-search-memo', () => {
           /select "source_entity_ref", "target_entity_ref" from "relations" where "type" = ?/,
         )
         .response(userRelations);
-      const userRelationsTest = await asmMaxDepth.getUserRelations();
+      const userRelationsTest = await asmMaxDepth.getUserASMGroups();
 
       tracker.reset();
       tracker.on
@@ -229,11 +181,10 @@ describe('ancestor-search-memo', () => {
           /select "source_entity_ref", "target_entity_ref" from "relations" where "type" = ?/,
         )
         .response(allRelations);
-      const allRelationsTest = await asmMaxDepth.getAllRelations();
+      const allRelationsTest = await asmMaxDepth.getAllASMGroups();
 
       userRelationsTest.forEach(relation =>
-        asmMaxDepth.traverseRelations(
-          asmMaxDepth,
+        asmMaxDepth.traverse(
           relation as Relation,
           allRelationsTest as Relation[],
           0,
@@ -248,78 +199,19 @@ describe('ancestor-search-memo', () => {
     });
   });
 
-  describe('traverseGroups', () => {
-    // user:default/adam -> group:default/team-a -> group:default/team-b -> group:default/team-c
-    it('should build a graph for a particular user', async () => {
-      const userGroupsTest = await asm.getUserGroups();
-
-      const allGroupsTest = await asm.getAllGroups();
-
-      userGroupsTest.forEach(group =>
-        asm.traverseGroups(
-          asm,
-          group as GroupEntity,
-          allGroupsTest as GroupEntity[],
-          0,
-        ),
-      );
-
-      expect(asm.hasEntityRef('group:default/team-a')).toBeTruthy();
-      expect(asm.hasEntityRef('group:default/team-b')).toBeTruthy();
-      expect(asm.hasEntityRef('group:default/team-c')).toBeTruthy();
-      expect(asm.hasEntityRef('group:default/team-d')).toBeFalsy();
-    });
-
-    // maxDepth of one                                  stops here
-    //                                                       |
-    // user:default/adam -> group:default/team-a -> group:default/team-b -> group:default/team-c
-    it('should build the graph but stop based on the maxDepth', async () => {
-      const asmMaxDepth = new AncestorSearchMemo(
-        'user:default/adam',
-        catalogApiMock,
-        catalogDBClient,
-        mockAuthService,
-        1,
-      );
-
-      const userGroupsTest = await asmMaxDepth.getUserGroups();
-
-      const allGroupsTest = await asmMaxDepth.getAllGroups();
-
-      userGroupsTest.forEach(group =>
-        asmMaxDepth.traverseGroups(
-          asmMaxDepth,
-          group as GroupEntity,
-          allGroupsTest as GroupEntity[],
-          0,
-        ),
-      );
-
-      expect(asmMaxDepth.hasEntityRef('group:default/team-a')).toBeTruthy();
-      expect(asmMaxDepth.hasEntityRef('group:default/team-b')).toBeTruthy();
-      expect(asmMaxDepth.hasEntityRef('group:default/team-c')).toBeFalsy();
-      expect(asmMaxDepth.hasEntityRef('group:default/team-d')).toBeFalsy();
-    });
-  });
-
   describe('buildUserGraph', () => {
     let tracker: Tracker;
 
-    const asmUserGraph = new AncestorSearchMemo(
+    const asmUserGraph = new AncestorSearchMemoPG(
       'user:default/adam',
-      catalogApiMock,
       catalogDBClient,
-      mockAuthService,
     );
 
-    const asmDBSpy = jest
-      .spyOn(asmUserGraph, 'doesRelationTableExist')
-      .mockImplementation(() => Promise.resolve(true));
     const userRelationsSpy = jest
-      .spyOn(asmUserGraph, 'getUserRelations')
+      .spyOn(asmUserGraph, 'getUserASMGroups')
       .mockImplementation(() => Promise.resolve(userRelations));
     const allRelationsSpy = jest
-      .spyOn(asmUserGraph, 'getAllRelations')
+      .spyOn(asmUserGraph, 'getAllASMGroups')
       .mockImplementation(() => Promise.resolve(allRelations));
 
     beforeAll(() => {
@@ -332,9 +224,8 @@ describe('ancestor-search-memo', () => {
 
     // user:default/adam -> group:default/team-a -> group:default/team-b -> group:default/team-c
     it('should build the user graph using relations table', async () => {
-      await asmUserGraph.buildUserGraph(asmUserGraph);
+      await asmUserGraph.buildUserGraph();
 
-      expect(asmDBSpy).toHaveBeenCalled();
       expect(userRelationsSpy).toHaveBeenCalled();
       expect(allRelationsSpy).toHaveBeenCalled();
       expect(asmUserGraph.hasEntityRef('user:default/adam')).toBeTruthy();
@@ -344,35 +235,4 @@ describe('ancestor-search-memo', () => {
       expect(asmUserGraph.hasEntityRef('group:default/team-d')).toBeFalsy();
     });
   });
-
-  function createGroupEntity(
-    name: string,
-    parent?: string,
-    children?: string[],
-    members?: string[],
-  ): Entity {
-    const entity: Entity = {
-      apiVersion: 'v1',
-      kind: 'Group',
-      metadata: {
-        name,
-        namespace: 'default',
-      },
-      spec: {},
-    };
-
-    if (children) {
-      entity.spec!.children = children;
-    }
-
-    if (members) {
-      entity.spec!.members = members;
-    }
-
-    if (parent) {
-      entity.spec!.parent = parent;
-    }
-
-    return entity;
-  }
 });
