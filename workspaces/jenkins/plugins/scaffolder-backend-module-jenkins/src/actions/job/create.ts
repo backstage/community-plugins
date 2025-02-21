@@ -58,6 +58,10 @@ export function createJob(jenkins: Jenkins) {
             type: 'string',
             title: 'Path to config file of job',
           },
+          serverUrl: {
+            type: 'string',
+            title: 'URL',
+          },
         },
       },
     },
