@@ -66,13 +66,12 @@ This scaffolder requires the path to a Jenkins job config.xml file. config.xml i
 
 | Action      | Description                   |
 | ----------- | ----------------------------- |
-| build       | Run a job                     |
-| copy        | Create a joby from another    |
-| create      | Create a job given a xml      |
-| create-file | Create a job given a xml file |
-| destroy     | Destroy a job                 |
-| disable     | Disable a job                 |
-| enable      | Enable a job                  |
+| jenking:job:build   | Run a job            |
+| jenking:job:copy    | Copy an existing job |
+| jenkins:job:create  | Create a job         |
+| jenkins:job:destroy | Destroy a job        |
+| jenkins:job:disable | Disable a job        |
+| jenkins:job:enable  | Enable a job         |
 
 ## How to use it
 
