@@ -19,7 +19,7 @@
     "lint": "backstage-cli package lint"
   },
   "dependencies": {
-    "@backstage-community/plugin-acs": "^0.1.0",
+    "@backstage-community/plugin-acs": "workspace:^",
     "@backstage/app-defaults": "^1.5.16",
     "@backstage/catalog-model": "^1.7.3",
     "@backstage/cli": "^0.29.6",
