@@ -86,7 +86,7 @@ export function createJob(jenkins: Jenkins) {
           jobName = ctx.input.jobName;
         }
 
-        if (jobXml === '' || jobXml === null) {
+        if (!jobXml) {
           throw new Error(
             'JobXml cannot be null or empty, please configure with inline content or from xml file!',
           );
