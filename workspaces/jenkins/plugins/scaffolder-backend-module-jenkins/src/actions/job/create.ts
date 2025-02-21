@@ -98,10 +98,6 @@ export function createJob(jenkins: Jenkins) {
 
         await jenkins.job.create(jobName, jobXml);
         ctx.logger.info('Job created successfully!');
-      } catch (err) {
-        ctx.logger.error('Error creating job please check', err);
-        throw err;
-      }
     },
   });
 }
