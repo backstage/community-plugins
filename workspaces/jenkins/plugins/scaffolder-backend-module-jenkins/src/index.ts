@@ -14,6 +14,5 @@
  * limitations under the License.
  */
 
-export * from './actions';
 
 export { scaffolderBackendModuleJenkins as default } from './module';
