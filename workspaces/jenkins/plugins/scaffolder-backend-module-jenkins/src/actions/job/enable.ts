@@ -46,13 +46,8 @@ export function enableJob(jenkins: Jenkins) {
     async handler(ctx) {
       ctx.logger.info(`Enabling jenkins job ${ctx.input.jobName}`);
 
-      try {
-        await jenkins.job.enable(ctx.input.jobName);
-        ctx.logger.info('Job enabled successfully!');
-      } catch (err) {
-        ctx.logger.error('Error enabling job please check', err);
-        throw err;
-      }
+      await jenkins.job.enable(ctx.input.jobName);
+      ctx.logger.info('Job enabled successfully!');
     },
   });
 }

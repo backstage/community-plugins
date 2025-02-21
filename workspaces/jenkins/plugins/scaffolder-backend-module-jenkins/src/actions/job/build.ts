@@ -51,13 +51,8 @@ export function buildJob(jenkins: Jenkins) {
     async handler(ctx) {
       ctx.logger.info(`Starting jenkins job ${ctx.input.jobName}`);
 
-      try {
-        await jenkins.job.build(ctx.input.jobName, ctx.input.jobParameters);
-        ctx.logger.info('Job started successfully!');
-      } catch (err) {
-        ctx.logger.error('Error creating job please check', err);
-        throw err;
-      }
+      await jenkins.job.build(ctx.input.jobName, ctx.input.jobParameters);
+      ctx.logger.info('Job started successfully!');
     },
   });
 }

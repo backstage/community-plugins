@@ -46,13 +46,8 @@ export function disableJob(jenkins: Jenkins) {
     async handler(ctx) {
       ctx.logger.info(`Disabling jenkins job ${ctx.input.jobName}`);
 
-      try {
-        await jenkins.job.disable(ctx.input.jobName);
-        ctx.logger.info('Job disabled successfully!');
-      } catch (err) {
-        ctx.logger.error('Error Disabling job please check', err);
-        throw err;
-      }
+      await jenkins.job.disable(ctx.input.jobName);
+      ctx.logger.info('Job disabled successfully!');
     },
   });
 }

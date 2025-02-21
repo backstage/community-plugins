@@ -46,13 +46,8 @@ export function destroyJob(jenkins: Jenkins) {
     async handler(ctx) {
       ctx.logger.info(`Destroying jenkins job ${ctx.input.jobName}`);
 
-      try {
-        await jenkins.job.destroy(ctx.input.jobName);
-        ctx.logger.info('Job destroyed successfully!');
-      } catch (err) {
-        ctx.logger.error('Error destroying job please check', err);
-        throw err;
-      }
+      await jenkins.job.destroy(ctx.input.jobName);
+      ctx.logger.info('Job destroyed successfully!');
     },
   });
 }

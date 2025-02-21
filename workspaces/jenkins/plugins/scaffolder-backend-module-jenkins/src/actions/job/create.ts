@@ -68,36 +68,35 @@ export function createJob(jenkins: Jenkins) {
     async handler(ctx) {
       ctx.logger.info(`Creating jenkins job ${ctx.input.jobName}`);
 
-      try {
-        ctx.logger.debug(
-          'Trying to create job jenkins with this xml {}',
-          ctx.input.jobXml,
+      ctx.logger.debug(
+        'Trying to create job jenkins with this xml {}',
+        ctx.input.jobXml,
+      );
+      const { configPath, folderName } = ctx.input;
+
+      let jobXml = ctx.input.jobXml;
+      if (configPath) {
+        jobXml = await fs.readFile(
+          resolveSafeChildPath(ctx.workspacePath, configPath),
+          'utf8',
         );
-        const { configPath, folderName } = ctx.input;
+      }
 
-        let jobXml = ctx.input.jobXml;
-        if (configPath) {
-          jobXml = await fs.readFile(
-            resolveSafeChildPath(ctx.workspacePath, configPath),
-            'utf8',
-          );
-        }
+      let jobName;
+      if (folderName) {
+        jobName = `${folderName}/${ctx.input.jobName}`;
+      } else {
+        jobName = ctx.input.jobName;
+      }
 
-        let jobName;
-        if (folderName) {
-          jobName = `${folderName}/${ctx.input.jobName}`;
-        } else {
-          jobName = ctx.input.jobName;
-        }
+      if (!jobXml) {
+        throw new Error(
+          'JobXml cannot be null or empty, please configure with inline content or from xml file!',
+        );
+      }
 
-        if (!jobXml) {
-          throw new Error(
-            'JobXml cannot be null or empty, please configure with inline content or from xml file!',
-          );
-        }
-
-        await jenkins.job.create(jobName, jobXml);
-        ctx.logger.info('Job created successfully!');
+      await jenkins.job.create(jobName, jobXml);
+      ctx.logger.info('Job created successfully!');
     },
   });
 }

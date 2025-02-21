@@ -54,16 +54,8 @@ export function copyJob(jenkins: Jenkins) {
         `Copying jenkins job ${ctx.input.sourceJobName} to ${ctx.input.targetJobName} to `,
       );
 
-      try {
-        await jenkins.job.copy(
-          ctx.input.targetJobName,
-          ctx.input.sourceJobName,
-        );
-        ctx.logger.info('Job copied successfully!');
-      } catch (err) {
-        ctx.logger.error('Error copying job please check', err);
-        throw err;
-      }
+      await jenkins.job.copy(ctx.input.targetJobName, ctx.input.sourceJobName);
+      ctx.logger.info('Job copied successfully!');
     },
   });
 }
