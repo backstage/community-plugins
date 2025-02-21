@@ -15,13 +15,6 @@
     "url": "https://github.com/backstage/community-plugins",
     "directory": "workspaces/acs/plugins/acs"
   },
-  "backstage": {
-    "role": "frontend-plugin",
-    "pluginId": "acs",
-    "pluginPackages": [
-      "@backstage-community/plugin-acs"
-    ]
-  },
   "sideEffects": false,
   "scripts": {
     "start": "backstage-cli package start",
