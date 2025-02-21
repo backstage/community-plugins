@@ -17,7 +17,6 @@ import { createTemplateAction } from '@backstage/plugin-scaffolder-node';
 import Jenkins from 'jenkins';
 
 /**
- * @public
  *
  * This buildJob function, creates a template action for running a Jenkins job
  *
