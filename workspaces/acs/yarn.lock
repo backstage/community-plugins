@@ -2825,7 +2825,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage-community/plugin-acs@npm:^0.1.0, @backstage-community/plugin-acs@workspace:plugins/acs":
+"@backstage-community/plugin-acs@workspace:^, @backstage-community/plugin-acs@workspace:plugins/acs":
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-acs@workspace:plugins/acs"
   dependencies:
@@ -16046,7 +16046,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "app@workspace:packages/app"
   dependencies:
-    "@backstage-community/plugin-acs": "npm:^0.1.0"
+    "@backstage-community/plugin-acs": "workspace:^"
     "@backstage/app-defaults": "npm:^1.5.16"
     "@backstage/catalog-model": "npm:^1.7.3"
     "@backstage/cli": "npm:^0.29.6"
