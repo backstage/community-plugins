@@ -119,7 +119,7 @@ export class GithubClient implements GithubApi {
 /**
  * @internal
  *
- * This is just a bridge function to make #2828 work on short notice, long term, we should rely on CopilotMetrics instead of Metric
+ * This is just a bridge function as the Usage API endpoint has been removed and this will make it work on short notice, long term, we should rely on CopilotMetrics instead of Metric
  **/
 export function convertToMetric(
   copilotMetrics: CopilotMetrics[],
