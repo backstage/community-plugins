@@ -1,5 +1,5 @@
 ---
-'@backstage-community/plugin-blackduck-backend': minor
+'@backstage-community/plugin-blackduck-backend': patch
 ---
 
 Fixed bug when project name contains special char.
