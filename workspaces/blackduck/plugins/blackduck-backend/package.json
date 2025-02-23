@@ -43,7 +43,7 @@
     "@backstage/plugin-permission-common": "^0.8.4",
     "@backstage/plugin-permission-node": "^0.8.7",
     "express": "^4.17.1",
-    "express-promise-router": "^4.1.1"
+    "express-promise-router": "^4.1.0"
   },
   "devDependencies": {
     "@backstage/backend-test-utils": "^1.2.1",
