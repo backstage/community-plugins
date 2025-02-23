@@ -32,7 +32,7 @@ const DEFAULT_HOST_NAME = 'default';
  * @public
  */
 export class BlackDuckConfig {
-  constructor(
+  private constructor(
     private readonly hosts: BlackDuckHostConfig[],
     private readonly defaultHost: string,
   ) {}
