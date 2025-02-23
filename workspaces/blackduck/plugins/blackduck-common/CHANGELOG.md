@@ -1,5 +1,11 @@
 # @backstage-community/plugin-blackduck-common
 
+## 0.2.1
+
+### Patch Changes
+
+- 638b35b: Implemented blackduck scaffolder - project creation action.
+
 ## 0.2.0
 
 ### Minor Changes
