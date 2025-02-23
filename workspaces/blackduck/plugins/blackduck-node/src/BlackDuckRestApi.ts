@@ -77,7 +77,9 @@ export class BlackDuckRestApi {
     versionName: string,
   ): Promise<BD_VERSIONS_API_RESPONSE> {
     const versions = await fetch(
-      `${projectUrl}/versions?limit=999&q=versionName:${versionName}`,
+      `${projectUrl}/versions?limit=999&q=${encodeURIComponent(
+        `versionName:${versionName}`,
+      )}`,
       {
         method: 'GET',
         headers: {
