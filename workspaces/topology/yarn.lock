@@ -2782,20 +2782,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage-community/plugin-topology-common@workspace:^, @backstage-community/plugin-topology-common@workspace:plugins/topology-common":
-  version: 0.0.0-use.local
-  resolution: "@backstage-community/plugin-topology-common@workspace:plugins/topology-common"
-  dependencies:
-    "@backstage/cli": "npm:^0.30.0"
-    "@backstage/plugin-permission-common": "npm:^0.8.4"
-  languageName: unknown
-  linkType: soft
-
 "@backstage-community/plugin-topology@workspace:^, @backstage-community/plugin-topology@workspace:plugins/topology":
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-topology@workspace:plugins/topology"
   dependencies:
-    "@backstage-community/plugin-topology-common": "workspace:^"
     "@backstage/catalog-model": "npm:^1.7.3"
     "@backstage/cli": "npm:^0.30.0"
     "@backstage/core-app-api": "npm:^1.15.5"
