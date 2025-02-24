@@ -119,6 +119,7 @@ export type OctopusProjectGroup = {
 export type OctopusRelease = {
   Id: string;
   Version: string;
+  Links: OctopusLinks;
 };
 
 // @public (undocumented)

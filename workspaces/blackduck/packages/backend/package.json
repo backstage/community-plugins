@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "@backstage-community/plugin-blackduck-backend": "workspace:^",
+    "@backstage-community/plugin-scaffolder-backend-module-blackduck": "workspace:^",
     "@backstage/backend-defaults": "^0.7.0",
     "@backstage/catalog-client": "^1.9.1",
     "@backstage/config": "^1.3.2",

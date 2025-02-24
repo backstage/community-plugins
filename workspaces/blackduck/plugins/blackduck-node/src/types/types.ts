@@ -93,3 +93,11 @@ export type BD_VERSIONS_API_RESPONSE = {
   appliedFilters: [];
   _meta: META;
 };
+
+/**
+ * @public
+ */
+export type BD_CREATE_PROJECT_API_RESPONSE = {
+  status: Number;
+  location?: String;
+};
