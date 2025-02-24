@@ -28,18 +28,27 @@ jobs:
           run: |
               if [[ "${{ github.event.pull_request.title }}" == Version*Packages* \
               && "${{ github.event.pull_request.user.login }}" == "backstage-service" ]] \
-              && "${{ github.event.pull_request.head.ref }}" == changesets-release/* \
-              && "${{ github.event.pull_request.merged }}" == "true" ]]; then
+              && [[ "${{ github.event.pull_request.head.ref }}" == changesets-release/* ]] \
+              && [[ "${{ github.event.pull_request.merged }}" == "true" ]]; then
                 echo "is_version_pr=true" >> $GITHUB_ENV
               else
                 echo "is_version_pr=false" >> $GITHUB_ENV
                 exit 1
+              fi
             # ADDED: Extracts workspace name from branch, ensuring it is a workspace/** branch
         - name: Extract Workspace name from branch
           id: extract_workspace
           run: |
               WORKSPACE_NAME=$(echo "${{ github.ref }}" | cut -d'/' -f2)
               echo "workspace_name=$WORKSPACE_NAME" >> $GITHUB_ENV
+
+        - name: Verify workspace match
+          run: |
+              PR_WORKSPACE=$(echo "${{ github.event.pull_request.head.ref }}" | cut -d'/' -f2)
+              if [[ "$PR_WORKSPACE" != "${{ env.workspace_name }}" ]]; then
+                echo "Workspace mismatch: PR workspace ($PR_WORKSPACE) does not match target branch workspace (${{ env.workspace_name }})"
+                exit 1
+              fi
 
   changesets-pr:
     name: Update Version Packages PR for ${{ needs.check-merged-pr.outputs.workspace_name }} on branch ${{ github.ref }}
@@ -58,6 +67,14 @@ jobs:
         uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f # v4
         with:
          ref: ${{ github.ref }}
+
+      - name: Verify maintenance-changesets-release branch does not exist
+        run: |
+          if git ls-remote --exit-code origin "refs/heads/maintenance-changesets-release/${{ needs.check-merged-pr.outputs.workspace_name }}"; then
+            echo "Error: changesets-release/${{ needs.check-merged-pr.outputs.workspace_name }} branch already exists. Please clean up the branch before proceeding."
+            exit 1
+          fi
+
       - name: Set up Node
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
         with:
@@ -104,7 +121,7 @@ jobs:
           title: Version Packages (${{ needs.check-merged-pr.outputs.workspace_name }})
           cwd: workspaces/${{ needs.check-merged-pr.outputs.workspace_name }}
           version: yarn changeset version
-          versionBranch: changesets-release/${{ needs.check-merged-pr.outputs.workspace_name }}
+          versionBranch: maintenance-changesets-release/${{ needs.check-merged-pr.outputs.workspace_name }}
           skipRootChangelogUpdate: true
         env:
           GITHUB_TOKEN: ${{ secrets.GH_SERVICE_ACCOUNT_TOKEN }}
