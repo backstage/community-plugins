@@ -101,17 +101,10 @@ export function replaceAliases(
     return;
   }
 
-  const params = (
-    conditions as PermissionCondition<string, PermissionRuleParams>
-  ).params;
-  if (params) {
-    for (const key of Object.keys(params)) {
-      const currentParams = (
-        conditions as PermissionCondition<string, PermissionRuleParams>
-      ).params;
-
+  if (conditions.params) {
+    for (const key of Object.keys(conditions.params)) {
       let modifiedParams = replaceAliasWithValue(
-        currentParams,
+        conditions.params,
         key,
         isCurrentUserAlias,
         userInfo.userEntityRef,
