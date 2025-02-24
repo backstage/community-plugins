@@ -71,7 +71,7 @@ jobs:
       - name: Verify maintenance-changesets-release branch does not exist
         run: |
           if git ls-remote --exit-code origin "refs/heads/maintenance-changesets-release/${{ needs.check-merged-pr.outputs.workspace_name }}"; then
-            echo "Error: changesets-release/${{ needs.check-merged-pr.outputs.workspace_name }} branch already exists. Please clean up the branch before proceeding."
+            echo "Error: maintenance-changesets-release/${{ needs.check-merged-pr.outputs.workspace_name }} branch already exists. Please clean up the branch before proceeding."
             exit 1
           fi
 
