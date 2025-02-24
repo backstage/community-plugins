@@ -1,0 +1,68 @@
+{
+  "name": "@backstage-community/plugin-manage-module-tech-insights",
+  "description": "Manage plugin - Tech Insights module",
+  "version": "0.1.0",
+  "backstage": {
+    "role": "frontend-plugin-module",
+    "pluginId": "manage",
+    "pluginPackages": [
+      "@backstage-community/plugin-manage-module-tech-insights"
+    ],
+    "pluginPackage": "@backstage-community/plugin-manage"
+  },
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.esm.js",
+    "types": "dist/index.d.ts"
+  },
+  "homepage": "https://backstage.io",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/backstage",
+    "directory": "plugins/manage-module-tech-insights"
+  },
+  "keywords": [
+    "backstage",
+    "manage",
+    "page",
+    "tech-insights",
+    "tech",
+    "insights"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "backstage-cli package build",
+    "lint": "backstage-cli package lint",
+    "test": "backstage-cli package test",
+    "clean": "backstage-cli package clean",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack"
+  },
+  "dependencies": {
+    "@backstage-community/plugin-manage-react": "workspace:^",
+    "@backstage-community/plugin-tech-insights": "^0.4.0",
+    "@backstage-community/plugin-tech-insights-common": "^0.4.0",
+    "@backstage/catalog-model": "^1.7.3",
+    "@backstage/core-components": "^0.16.3",
+    "@backstage/core-plugin-api": "^1.10.3",
+    "@backstage/plugin-catalog-react": "^1.15.1",
+    "@mui/material": "^5.15.16",
+    "@mui/styles": "^5",
+    "react-use": "^17.5.0"
+  },
+  "peerDependencies": {
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-router-dom": "6.0.0-beta.0 || ^6.3.0"
+  },
+  "devDependencies": {
+    "@backstage/cli": "^0.29.5",
+    "@types/react": "^18.3.12"
+  },
+  "files": [
+    "dist"
+  ]
+}
