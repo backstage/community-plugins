@@ -40,9 +40,11 @@ import TopologyToolbar from './TopologyToolbar';
 
 import './TopologyToolbar.css';
 
-import { usePermission } from '@backstage/plugin-permission-react';
-
-import { topologyViewPermission } from '@backstage-community/plugin-topology-common';
+import { useKubernetesReadPermissions } from '../../hooks/useKubernetesReadPermissions';
+import {
+  kubernetesClustersReadPermission,
+  kubernetesResourcesReadPermission,
+} from '@backstage/plugin-kubernetes-common';
 
 type TopologyViewWorkloadComponentProps = {
   useToolbar?: boolean;
@@ -68,9 +70,7 @@ const TopologyViewWorkloadComponent = ({
     removeSelectedIdParam,
   ] = useSideBar();
 
-  const topologyViewPermissionResult = usePermission({
-    permission: topologyViewPermission,
-  });
+  const kubernetesReadPermissionResult = useKubernetesReadPermissions();
 
   const allErrors: ClusterErrors = [
     ...(responseError ? [{ message: responseError }] : []),
@@ -138,11 +138,20 @@ const TopologyViewWorkloadComponent = ({
     if (isDataModelEmpty) {
       return <TopologyEmptyState />;
     }
-    if (!topologyViewPermissionResult.allowed) {
+    if (kubernetesReadPermissionResult.loading) {
+      return <Progress />;
+    }
+    if (!kubernetesReadPermissionResult.allowed) {
+      const permissions = [
+        kubernetesClustersReadPermission,
+        kubernetesResourcesReadPermission,
+      ]
+        .map(p => `'${p.name}'`)
+        .join(', ');
       return (
         <TopologyEmptyState
           title="Permission required"
-          description="To view Topology, contact your administrator to give you the topology.view.read permission"
+          description={`To view Topology, contact your administrator to give you the following permission(s): ${permissions}.`}
         />
       );
     }
