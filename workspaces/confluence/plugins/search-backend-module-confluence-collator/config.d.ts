@@ -89,5 +89,10 @@ export interface Config {
      * Defaults to `15`.
      */
     parallelismLimit?: number;
+    /**
+     * The number of requests per second to make to the Confluence API.
+     * @visibility backend
+     */
+    requestsPerSecond?: number;
   };
 }
