@@ -40,12 +40,6 @@ import TopologyToolbar from './TopologyToolbar';
 
 import './TopologyToolbar.css';
 
-import { useKubernetesReadPermissions } from '../../hooks/useKubernetesReadPermissions';
-import {
-  kubernetesClustersReadPermission,
-  kubernetesResourcesReadPermission,
-} from '@backstage/plugin-kubernetes-common';
-
 type TopologyViewWorkloadComponentProps = {
   useToolbar?: boolean;
 };
@@ -69,8 +63,6 @@ const TopologyViewWorkloadComponent = ({
     setSelectedNode,
     removeSelectedIdParam,
   ] = useSideBar();
-
-  const kubernetesReadPermissionResult = useKubernetesReadPermissions();
 
   const allErrors: ClusterErrors = [
     ...(responseError ? [{ message: responseError }] : []),
@@ -137,23 +129,6 @@ const TopologyViewWorkloadComponent = ({
   const getTopologyState = () => {
     if (isDataModelEmpty) {
       return <TopologyEmptyState />;
-    }
-    if (kubernetesReadPermissionResult.loading) {
-      return <Progress />;
-    }
-    if (!kubernetesReadPermissionResult.allowed) {
-      const permissions = [
-        kubernetesClustersReadPermission,
-        kubernetesResourcesReadPermission,
-      ]
-        .map(p => `'${p.name}'`)
-        .join(', ');
-      return (
-        <TopologyEmptyState
-          title="Permission required"
-          description={`To view Topology, contact your administrator to give you the following permission(s): ${permissions}.`}
-        />
-      );
     }
     return <VisualizationSurface state={{ selectedIds: [selectedId] }} />;
   };
