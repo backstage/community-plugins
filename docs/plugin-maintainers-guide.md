@@ -17,7 +17,7 @@ This guide will describe the steps needed to release on an older version.
 
 When patching an older release, follow the steps below to ensure the correct workflow is applied:
 
-1. Request a `workspace/${workspace}` branch by asking one of the @backstage/community-plugins-maintainers.
+1. Request a `workspace/${workspace}` branch by asking one of the [@backstage/community-plugins-maintainers](https://github.com/orgs/backstage/teams/community-plugins-maintainers).
 
    - Ensure that a branch named `workspace/${workspace}` exists, with appropriate branch protections in place. This branch will be used for patch releases.
    - The `${workspace}` should correspond to the specific plugin or component you are patching.
