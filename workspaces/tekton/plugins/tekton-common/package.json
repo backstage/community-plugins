@@ -13,7 +13,7 @@
   },
   "backstage": {
     "role": "common-library",
-    "supported-versions": "1.35.0",
+    "supported-versions": "1.36.0",
     "pluginId": "tekton",
     "pluginPackage": "@backstage-community/plugin-tekton",
     "pluginPackages": [
