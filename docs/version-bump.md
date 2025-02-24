@@ -23,7 +23,7 @@ When a Plugin Owner or Community Plugins Maintainer wants to upgrade one or many
 
 ### For Community Maintainers
 
-Any workspace that does not have an owner defined in the [`CODEOWNERS`](https://github.com/backstage/community-plugins/blob/main/.github/CODEOWNERS) file are assumed to be owned by the [Community Plugins Maintainers](https://github.com/orgs/backstage/teams/community-plugins-maintainers). The responsibility for version bumping these workspaces will fall to them, though the Community is more than welcome to take on this task.
+Any workspace that does not have an owner defined in the [`CODEOWNERS`](https://github.com/backstage/community-plugins/blob/main/.github/CODEOWNERS) file is assumed to be owned by the [Community Plugins Maintainers](https://github.com/orgs/backstage/teams/community-plugins-maintainers). The responsibility for version bumping these workspaces will fall to them, though the Community is more than welcome to take on this task.
 
 To simplify this process, you can use the `list-maintainer-workspaces.js` script to get a list of the workspaces owned by this team. It looks at the current workspaces and uses that against the `CODEOWNERS` file and then outputs a total count of workspaces owned by this team and the needed JSON Array of workspaces in chunks of 10 to be used for the Version Bump workflow.
 
