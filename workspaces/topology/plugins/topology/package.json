@@ -14,8 +14,7 @@
     "supported-versions": "1.36.0",
     "pluginId": "topology",
     "pluginPackages": [
-      "@backstage-community/plugin-topology",
-      "@backstage-community/plugin-topology-common"
+      "@backstage-community/plugin-topology"
     ]
   },
   "sideEffects": [
@@ -34,7 +33,6 @@
     "tsc": "tsc"
   },
   "dependencies": {
-    "@backstage-community/plugin-topology-common": "workspace:^",
     "@backstage/catalog-model": "^1.7.3",
     "@backstage/core-components": "^0.16.4",
     "@backstage/core-plugin-api": "^1.10.4",
