@@ -59,15 +59,18 @@ export const useRoles = (
   const [newRoles, setNewRoles] = React.useState<
     RoleWithConditionalPoliciesCount[]
   >([]);
+  const [firstLoad, setFirstLoad] = React.useState(true);
   const [roleConditionError, setRoleConditionError] =
     React.useState<string>('');
   const {
+    loading: loadingRoles,
     value: roles,
     retry: roleRetry,
     error: rolesError,
   } = useAsyncRetry(async () => await rbacApi.getRoles());
 
   const {
+    loading: loadingPolicies,
     value: policies,
     retry: policiesRetry,
     error: policiesError,
@@ -237,19 +240,18 @@ export const useRoles = (
     ],
   );
   const loading =
-    (!rolesError &&
-      !policiesError &&
-      !roleConditionError &&
-      !roles &&
-      !policies) ||
-    membersLoading ||
-    loadingPermissionPolicies ||
-    loadingConditionalPermission;
+    firstLoad &&
+    (loadingPolicies ||
+      loadingRoles ||
+      membersLoading ||
+      loadingPermissionPolicies ||
+      loadingConditionalPermission);
 
   useInterval(
     () => {
       roleRetry();
       policiesRetry();
+      setFirstLoad(false);
     },
     loading ? null : pollInterval || 10000,
   );
