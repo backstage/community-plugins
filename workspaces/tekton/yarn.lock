@@ -4514,7 +4514,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-kubernetes@npm:^0.12.3, @backstage/plugin-kubernetes@npm:^0.12.4":
+"@backstage/plugin-kubernetes@npm:^0.12.4":
   version: 0.12.4
   resolution: "@backstage/plugin-kubernetes@npm:0.12.4"
   dependencies:
@@ -15187,7 +15187,7 @@ __metadata:
     "@backstage/plugin-catalog-graph": "npm:^0.4.15"
     "@backstage/plugin-catalog-import": "npm:^0.12.9"
     "@backstage/plugin-catalog-react": "npm:^1.15.1"
-    "@backstage/plugin-kubernetes": "npm:^0.12.3"
+    "@backstage/plugin-kubernetes": "npm:^0.12.4"
     "@backstage/plugin-org": "npm:^0.6.35"
     "@backstage/plugin-permission-react": "npm:^0.4.30"
     "@backstage/plugin-scaffolder": "npm:^1.27.4"
