@@ -65,6 +65,7 @@ confluence:
     token: '${CONFLUENCE_TOKEN}'
   spaces: [] # It is highly recommended to safely list the spaces that you want to index, otherwise all spaces will be indexed.
   query: '' # If your spaces contain documents you don't want to index, you can use a CQL query to more precisely select them. This is combined with the spaces parameter above.
+  requestsPerSecond: 5 #If your Confluence Server is getting a lot of API requests hit, you can use this parameter to mention the api requests per second like mentioned in this example
 ```
 
 Documentation about CQL can be found [here](https://developer.atlassian.com/server/confluence/advanced-searching-using-cql)
