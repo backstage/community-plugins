@@ -30,11 +30,11 @@ export function TechRadarComponent(
 
 // @public
 export interface TechRadarComponentProps {
-  height: number;
+  height?: number;
   id?: string;
   searchText?: string;
   svgProps?: object;
-  width: number;
+  width?: number;
 }
 
 // @public
