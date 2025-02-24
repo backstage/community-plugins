@@ -1,0 +1,10 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: backstage-plugin-manage-react
+  title: '@backstage/plugin-manage-react'
+  description: Manage page. React components.
+spec:
+  lifecycle: experimental
+  type: backstage-frontend-plugin
+  owner: maintainers
