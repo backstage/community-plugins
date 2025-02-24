@@ -28,7 +28,7 @@ jobs:
           run: |
               if [[ "${{ github.event.pull_request.title }}" == Version*Packages* \
               && "${{ github.event.pull_request.user.login }}" == "backstage-service" ]] \
-              && [[ "${{ github.event.pull_request.head.ref }}" == changesets-release/* ]] \
+              && [[ "${{ github.event.pull_request.head.ref }}" == maintenance-changesets-release/* ]] \
               && [[ "${{ github.event.pull_request.merged }}" == "true" ]]; then
                 echo "is_version_pr=true" >> $GITHUB_ENV
               else
