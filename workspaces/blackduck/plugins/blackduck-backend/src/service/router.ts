@@ -31,8 +31,10 @@ import {
   blackduckRiskProfileReadPermission,
   blackduckVulnerabilitiesReadPermission,
 } from '@backstage-community/plugin-blackduck-common';
-import { BlackDuckRestApi } from '../api/BlackDuckRestApi';
-import { BlackDuckConfig } from './BlackDuckConfig';
+import {
+  BlackDuckRestApi,
+  BlackDuckConfig,
+} from '@backstage-community/plugin-blackduck-node';
 
 /** @internal */
 export interface RouterOptions {

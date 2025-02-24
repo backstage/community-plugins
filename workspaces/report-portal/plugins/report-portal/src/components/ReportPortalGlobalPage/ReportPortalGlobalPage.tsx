@@ -22,6 +22,7 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 
 import { GlobalPageContent } from './GlobalPageContent';
+import { ReportPortalSearchBar } from '../ReportPortalSearchBar';
 
 /** @public */
 export type ReportPortalGlobalPageProps = {
@@ -44,9 +45,19 @@ export const ReportPortalGlobalPage = (props: ReportPortalGlobalPageProps) => {
     >
       <Content>
         <Grid container>
+          <Grid item xs={8}>
+            <ReportPortalSearchBar
+              initialState={{
+                term: '',
+                filters: {},
+                types: ['report-portal'],
+                pageLimit: 10,
+              }}
+            />
+          </Grid>
           {emailTemplate && (
             <Grid
-              xs={12}
+              xs={4}
               item
               style={{
                 display: 'flex',

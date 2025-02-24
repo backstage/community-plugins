@@ -17,7 +17,8 @@ import React from 'react';
 
 import { useApi } from '@backstage/core-plugin-api';
 
-import { ProjectListResponse, reportPortalApiRef } from '../api';
+import { reportPortalApiRef } from '../api';
+import { ProjectListResponse } from '@backstage-community/plugin-report-portal-common';
 
 export function useInstanceDetails(host: string, filterType: string) {
   const reportPortalApi = useApi(reportPortalApiRef);

@@ -55,9 +55,10 @@ export const useApplications = ({
         url: `/argoInstance/${instanceName}`,
         appSelector,
         projectName,
+        appNamespace,
       })
       .then(applications => setApps(applications?.items ?? []));
-  }, [api, appSelector, instanceName, projectName]);
+  }, [api, appSelector, instanceName, projectName, appNamespace]);
 
   const getApplication = React.useCallback(async () => {
     return await api

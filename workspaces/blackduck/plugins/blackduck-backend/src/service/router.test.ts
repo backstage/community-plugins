@@ -16,7 +16,7 @@
 import { mockServices } from '@backstage/backend-test-utils';
 import express from 'express';
 import request from 'supertest';
-import { BlackDuckConfig } from './BlackDuckConfig';
+import { BlackDuckConfig } from '@backstage-community/plugin-blackduck-node';
 
 import { createRouter } from './router';
 import { ConfigReader } from '@backstage/config';

@@ -46,6 +46,10 @@ backend.add(import('@backstage/plugin-search-backend'));
 backend.add(import('@backstage/plugin-search-backend-module-catalog'));
 backend.add(import('@backstage/plugin-search-backend-module-techdocs'));
 
+// blackduck plugin & scaffolder module
 backend.add(import('@backstage-community/plugin-blackduck-backend'));
+backend.add(
+  import('@backstage-community/plugin-scaffolder-backend-module-blackduck'),
+);
 
 backend.start();

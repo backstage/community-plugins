@@ -40,6 +40,8 @@ export interface AnnouncementsApi {
     page?: number;
     category?: string;
     active?: boolean;
+    sortBy?: 'created_at' | 'start_at';
+    order?: 'asc' | 'desc';
   }): Promise<AnnouncementsList>;
   announcementByID(id: string): Promise<Announcement>;
 

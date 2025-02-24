@@ -35,12 +35,13 @@ import Skeleton from '@mui/material/Skeleton';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import { useNavigate } from 'react-router-dom';
-import {
-  ProjectDetails,
-  ProjectListResponse,
-  reportPortalApiRef,
-} from '../../../api';
+import { reportPortalApiRef } from '../../../api';
 import { launchRouteRef } from '../../../routes';
+import useAsync from 'react-use/lib/useAsync';
+import {
+  ProjectListResponse,
+  ProjectDetails,
+} from '@backstage-community/plugin-report-portal-common';
 
 export const ProjectsPageContent = (props: { host: string }) => {
   const { host } = props;
@@ -83,50 +84,47 @@ export const ProjectsPageContent = (props: { host: string }) => {
     defaultFilters,
   );
 
+  useAsync(async () => {
+    const launchCountPromises = tableData.content.map(project =>
+      reportPortalApi
+        .getLaunchResults(project.projectName, host, {})
+        .then(res2 => ({
+          projectName: project.projectName,
+          count: res2.content.length,
+        }))
+        .catch(() => {
+          alertApi.post({
+            message: `Failed to fetch launches for project ${project.projectName}, please check project permissions.`,
+            severity: 'error',
+            display: 'transient',
+          });
+          return { projectName: project.projectName, count: 0 };
+        }),
+    );
+    const launchCountsResults = await Promise.all(launchCountPromises);
+    const launchCountsMap = launchCountsResults.reduce(
+      (acc, { projectName, count }) => {
+        acc[projectName] = count;
+        return acc;
+      },
+      {} as { [key: string]: number },
+    );
+    setLaunchesCount(launchCountsMap);
+  }, [tableData]);
+
   useEffect(() => {
-    if (loading) {
-      const getTableData = async () => {
-        try {
-          const res = await reportPortalApi.getInstanceDetails(host, filters);
-          setTableData(res);
-          setLoading(false);
-
-          // Fetch counts
-          const launchCountPromises = res.content.map(project =>
-            reportPortalApi
-              .getLaunchResults(project.projectName, host, {})
-              .then(res2 => ({
-                projectName: project.projectName,
-                count: res2.content.length,
-              }))
-              .catch(() => {
-                alertApi.post({
-                  message: `Failed to fetch launches for project ${project.projectName}`,
-                  severity: 'error',
-                  display: 'transient',
-                });
-                return { projectName: project.projectName, count: 0 };
-              }),
-          );
-
-          const launchCountsResults = await Promise.all(launchCountPromises);
-
-          const launchCountsMap = launchCountsResults.reduce(
-            (acc, { projectName, count }) => {
-              acc[projectName] = count;
-              return acc;
-            },
-            {} as { [key: string]: number },
-          );
-          setLaunchesCount(launchCountsMap);
-        } catch (err) {
-          setLoading(false);
-          setError(err);
-        }
-      };
-      getTableData();
-    }
-  }, [reportPortalApi, filters, host, loading, alertApi]);
+    const getTableData = async () => {
+      try {
+        const res = await reportPortalApi.getInstanceDetails(host, filters);
+        setTableData(res);
+      } catch (err) {
+        setError(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    getTableData();
+  }, [reportPortalApi, filters, host, alertApi]);
 
   const columns: TableColumn<ProjectDetails>[] = [
     {
@@ -210,12 +208,14 @@ export const ProjectsPageContent = (props: { host: string }) => {
   const [searchText, setSearchText] = useState<string>();
   useDebounce(
     () => {
-      setFilters({
-        ...defaultFilters,
-        ...(searchText && { 'predefinedFilter.projects': searchText }),
-      });
+      if (searchText !== undefined) {
+        setFilters(prev => ({
+          ...prev,
+          'predefinedFilter.projects': searchText,
+        }));
+        setLoading(true);
+      }
       setLaunchesCount(undefined);
-      setLoading(true);
     },
     600,
     [searchText],

@@ -134,29 +134,54 @@ export const getMembersFromGroup = (group: GroupEntity): number => {
 
 export const getPluginInfo = (
   permissions: PluginPermissionMetaData[],
-  permissionName?: string,
-): { pluginId: string; isResourced: boolean; resourceType?: string } =>
+  policy: RoleBasedPolicy,
+): {
+  pluginId: string;
+  isResourced: boolean;
+  resourceType?: string;
+  permissionName: string;
+  usingResourceType?: boolean;
+} =>
   permissions.reduce(
     (
-      acc: { pluginId: string; isResourced: boolean; resourceType?: string },
+      acc: {
+        pluginId: string;
+        isResourced: boolean;
+        resourceType?: string;
+        permissionName: string;
+        usingResourceType?: boolean;
+      },
       p: PluginPermissionMetaData,
     ) => {
-      const policy = p.policies.find(pol => {
-        if (pol.name === permissionName) {
-          return true;
+      const policyData = p.policies.find(pol => {
+        if (pol.policy === policy.policy) {
+          if (isResourcedPolicy(pol)) {
+            if (pol.resourceType === policy.permission) {
+              return true;
+            }
+          }
+          if (pol.name === policy.permission) {
+            return true;
+          }
         }
         return false;
       });
-      if (policy) {
+      if (policyData) {
         return {
           pluginId: p.pluginId || '-',
-          isResourced: isResourcedPolicy(policy) || false,
-          resourceType: isResourcedPolicy(policy) ? policy.resourceType : '',
+          permissionName: policyData.name || '-',
+          isResourced: isResourcedPolicy(policyData) || false,
+          resourceType: isResourcedPolicy(policyData)
+            ? policyData.resourceType
+            : '',
+          usingResourceType:
+            isResourcedPolicy(policyData) &&
+            policyData.resourceType === policy.permission,
         };
       }
       return acc;
     },
-    { pluginId: '-', isResourced: false },
+    { pluginId: '-', isResourced: false, permissionName: '-' },
   );
 
 const getPolicy = (str: string) => {
@@ -199,40 +224,27 @@ export const getPermissionsData = (
         const policyStr =
           policy?.policy ?? getPolicy(policy.permission as string);
         const policyTitleCase = getTitleCase(policyStr);
-        const permission = acc.find(
-          plugin =>
-            plugin.permission === policy.permission &&
-            !plugin.policies.has({
-              policy: policyTitleCase || 'Use',
-              effect: 'allow',
-            }),
-        );
-        if (permission) {
-          permission.policyString?.add(
-            policyTitleCase ? `, ${policyTitleCase}` : ', Use',
-          );
-          permission.policies.add({
+        const policyString = new Set<string>();
+        const policiesSet = new Set<{ policy: string; effect: string }>();
+        const {
+          pluginId,
+          isResourced,
+          resourceType,
+          permissionName,
+          usingResourceType,
+        } = getPluginInfo(permissionPolicies, policy);
+        acc.push({
+          permission: permissionName,
+          plugin: pluginId,
+          policyString: policyString.add(policyTitleCase || 'Use'),
+          policies: policiesSet.add({
             policy: policyTitleCase || 'Use',
             effect: policy.effect,
-          });
-        } else {
-          const policyString = new Set<string>();
-          const policiesSet = new Set<{ policy: string; effect: string }>();
-          acc.push({
-            permission: policy.permission ?? '-',
-            plugin: getPluginInfo(permissionPolicies, policy?.permission)
-              .pluginId,
-            policyString: policyString.add(policyTitleCase || 'Use'),
-            policies: policiesSet.add({
-              policy: policyTitleCase || 'Use',
-              effect: policy.effect,
-            }),
-            isResourced: getPluginInfo(permissionPolicies, policy?.permission)
-              .isResourced,
-            resourceType: getPluginInfo(permissionPolicies, policy?.permission)
-              .resourceType,
-          });
-        }
+          }),
+          isResourced,
+          resourceType,
+          usingResourceType,
+        });
       }
       return acc;
     },

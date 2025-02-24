@@ -7,10 +7,14 @@
 
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
-import { InfoCardVariants } from '@backstage/core-components';
+import { InfoCardVariants } from '@backstage/core-components/index';
 import { JSX as JSX_2 } from 'react';
 import { default as React_2 } from 'react';
+import { ReportPortalDocument } from '@backstage-community/plugin-report-portal-common';
+import { ResultHighlight } from '@backstage/plugin-search-common';
 import { RouteRef } from '@backstage/core-plugin-api';
+import { SearchContextProviderProps } from '@backstage/plugin-search-react';
+import { SearchResultListItemExtensionProps } from '@backstage/plugin-search-react';
 import { SvgIconProps } from '@mui/material/SvgIcon';
 
 // @public
@@ -50,5 +54,21 @@ export const reportPortalPlugin: BackstagePlugin<
   {}
 >;
 
-// (No @packageDocumentation comment for this package)
+// @public (undocumented)
+export const ReportPortalSearchBar: (
+  props: SearchContextProviderProps,
+) => React_2.JSX.Element;
+
+// @public
+export const ReportPortalSearchResultItem: (
+  props: SearchResultListItemExtensionProps<ReportPortalSearchResultItemProps>,
+) => JSX.Element | null;
+
+// @public (undocumented)
+export type ReportPortalSearchResultItemProps = {
+  result?: ReportPortalDocument;
+  icon?: React_2.ReactNode;
+  rank?: number;
+  highlight?: ResultHighlight;
+};
 ```

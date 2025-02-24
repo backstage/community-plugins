@@ -47,6 +47,7 @@ export const signalAnnouncement = async (
       data: {
         ...announcement,
         created_at: announcement.created_at.toString(),
+        start_at: announcement.start_at.toString(),
       },
     },
   });
