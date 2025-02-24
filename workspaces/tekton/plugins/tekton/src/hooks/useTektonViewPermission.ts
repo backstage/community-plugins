@@ -15,12 +15,21 @@
  */
 import { usePermission } from '@backstage/plugin-permission-react';
 
-import { tektonViewPermission } from '@backstage-community/plugin-tekton-common';
+import {
+  kubernetesClustersReadPermission,
+  kubernetesResourcesReadPermission,
+} from '@backstage/plugin-kubernetes-common';
 
 export const useTektonViewPermission = () => {
-  const tektonViewPermissionResult = usePermission({
-    permission: tektonViewPermission,
+  const clusterReadPermission = usePermission({
+    permission: kubernetesClustersReadPermission,
   });
 
-  return tektonViewPermissionResult.allowed;
+  const clusterResourcesReadPermission = usePermission({
+    permission: kubernetesResourcesReadPermission,
+  });
+
+  return (
+    clusterReadPermission.allowed && clusterResourcesReadPermission.allowed
+  );
 };

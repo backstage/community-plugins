@@ -1,5 +1,19 @@
 ### Dependencies
 
+## 3.20.0
+
+### Minor Changes
+
+- 48e0647: Use Kubernetes plugin permissions for Tekton plugin, remove tekton-specific permissions from tekton-common plugin
+- 585f020: Update aonic-ui/pipelines version
+
+### Patch Changes
+
+- 0ac3320: Updated dependency `@types/lodash` to `4.17.15`.
+- 3e35324: Updated dependency `start-server-and-test` to `2.0.10`.
+- Updated dependencies [48e0647]
+  - @backstage-community/plugin-tekton-common@1.6.0
+
 ## 3.19.0
 
 ### Minor Changes

@@ -1,5 +1,16 @@
 # @backstage-community/plugin-octopus-deploy
 
+## 0.4.1
+
+### Patch Changes
+
+- aa488b9: UI tweaking release table
+
+  - added external links to the Octopus release version detail
+  - table title contains external link to the Octopus project (moved from the table footer to save some space)
+  - fixed searching for states in the table
+  - fixed state icon position next to state
+
 ## 0.4.0
 
 ### Minor Changes
