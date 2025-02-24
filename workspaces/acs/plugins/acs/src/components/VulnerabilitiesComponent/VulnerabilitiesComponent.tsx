@@ -23,7 +23,21 @@ import { SecurityFindingsComponent } from './SecurityFindingsComponent';
 
 import { DataFilterComponent } from '../DataFilterComponent';
 
-export const VulnerabilitiesComponent = ({ deploymentName }) => {
+interface Filters {
+  selectedEntity: string;
+  selectedAttribute: string;
+  userText: string;
+  selectedCveSeverityOptions: string[];
+  selectedCveStatusOptions: string[];
+}
+
+interface VulnerabilitiesProps {
+  deploymentName: string;
+}
+
+export const VulnerabilitiesComponent = ({
+  deploymentName,
+}: VulnerabilitiesProps) => {
   /* eslint-disable new-cap */
   const {
     result: ACSDataResult,
@@ -43,7 +57,13 @@ export const VulnerabilitiesComponent = ({ deploymentName }) => {
 
   const classes = useStyles();
 
-  const [filters, setFilters] = useState({});
+  const [filters, setFilters] = useState<Filters>({
+    selectedEntity: '',
+    selectedAttribute: '',
+    userText: '',
+    selectedCveSeverityOptions: [],
+    selectedCveStatusOptions: [],
+  });
 
   if (ACSDataError) {
     return (
@@ -84,9 +104,12 @@ export const VulnerabilitiesComponent = ({ deploymentName }) => {
 
   return (
     <Box sx={{ minHeight: '500px' }}>
-      <DataFilterComponent setFilters={setFilters} data={ACSDataResult} />
+      <DataFilterComponent setFilters={setFilters} />
 
-      <SecurityFindingsComponent data={ACSDataResult} filters={filters} />
+      <SecurityFindingsComponent
+        data={ACSDataResult.jsonData}
+        filters={filters}
+      />
     </Box>
   );
 };

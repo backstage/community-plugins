@@ -14,30 +14,25 @@
  * limitations under the License.
  */
 import React, { useEffect } from 'react';
-import {
-  createStyles,
-  makeStyles,
-  useTheme,
-  Theme,
-} from '@material-ui/core/styles';
 import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
 import ListItemText from '@material-ui/core/ListItemText';
 import Select from '@material-ui/core/Select';
 import Checkbox from '@material-ui/core/Checkbox';
-import Chip from '@material-ui/core/Chip';
-import FormHelperText from '@material-ui/core/FormHelperText';
 
-export const CheckboxSelectComponent: React.FunctionComponent = ({
+interface CheckboxSelectProps {
+  setSelectedOptions: any;
+  options: string[];
+  dropdownName: string;
+}
+
+export const CheckboxSelectComponent = ({
   setSelectedOptions,
   options,
   dropdownName,
-}) => {
+}: CheckboxSelectProps) => {
   /* eslint @typescript-eslint/no-shadow: ["error", { "allow": ["options"] }]*/
-  const [isOpen, setIsOpen] = React.useState(false);
-  const [selectedItems, setSelectedItems] = React.useState<number[]>([]);
+  const [selectedItems, setSelectedItems] = React.useState<string[]>([]);
 
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
@@ -52,19 +47,6 @@ export const CheckboxSelectComponent: React.FunctionComponent = ({
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     setSelectedItems(event.target.value as string[]);
-  };
-
-  const handleChangeMultiple = (
-    event: React.ChangeEvent<{ value: unknown }>,
-  ) => {
-    const { options } = event.target as HTMLSelectElement;
-    const value: string[] = [];
-    for (let i = 0, l = options.length; i < l; i += 1) {
-      if (options[i].selected) {
-        value.push(options[i].value);
-      }
-    }
-    setSelectedOptions(value);
   };
 
   useEffect(() => {

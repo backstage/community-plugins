@@ -14,35 +14,18 @@
  * limitations under the License.
  */
 import React from 'react';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    formControl: {
-      margin: theme.spacing(1),
-      minWidth: 120,
-      maxWidth: 300,
-    },
-    chips: {
-      display: 'flex',
-      flexWrap: 'wrap',
-    },
-    chip: {
-      margin: 2,
-    },
-    noLabel: {
-      marginTop: theme.spacing(3),
-    },
-  }),
-);
+interface EntitySelectProps {
+  options: Object;
+  setSelectedEntity: (value: string) => void;
+}
 
-export const EntitySelectComponent = ({ options, setSelectedEntity }) => {
-  const [isOpen, setIsOpen] = React.useState(false);
+export const EntitySelectComponent = ({
+  options,
+  setSelectedEntity,
+}: EntitySelectProps) => {
   /* eslint @typescript-eslint/no-shadow: ["error", { "allow": ["isOpen"] }]*/
   const [selected, setSelected] = React.useState<string>(
     Object.keys(options)[0],
@@ -60,7 +43,7 @@ export const EntitySelectComponent = ({ options, setSelectedEntity }) => {
       displayEmpty
       inputProps={{ 'aria-label': 'Without label' }}
     >
-      {Object.entries(options).map(([key, value]) => (
+      {Object.entries(options).map(([key, _]) => (
         <MenuItem value={key}>{key}</MenuItem>
       ))}
     </Select>

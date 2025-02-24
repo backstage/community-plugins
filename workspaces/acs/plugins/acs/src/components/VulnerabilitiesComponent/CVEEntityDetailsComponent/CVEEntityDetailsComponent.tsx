@@ -18,47 +18,52 @@ import DataTable from 'react-data-table-component';
 import { useTheme } from '@material-ui/core/styles';
 import { Box, Chip, Grid, Typography } from '@material-ui/core';
 
-export const CVEEntityDetailsComponent: React.FC<Props> = ({
+export const CVEEntityDetailsComponent = ({
   data,
   cveDetails,
   entityDetails,
-}) => {
+}: any) => {
   const [dataRows, setDataRows] = useState([]);
   const theme = useTheme();
   const isDarkMode = theme.palette.type === 'dark';
 
-  const columns: [] = [
+  const columns: any = [
     {
       name: 'Image',
-      selector: row => row.image,
+      selector: (row: any) => row.image,
       sortable: true,
       wrap: true,
       grow: 2,
     },
     {
       name: 'Component',
-      selector: row => row.component,
+      selector: (row: any) => row.component,
       sortable: true,
       wrap: true,
     },
     {
       name: 'Version',
-      selector: row => row.version,
+      selector: (row: any) => row.version,
       sortable: true,
       wrap: true,
       grow: 2,
     },
     {
       name: 'CVE fixed in',
-      selector: row => row.cveFixedIn,
+      selector: (row: any) => row.cveFixedIn,
       sortable: true,
       wrap: true,
       grow: 2,
     },
-    { name: 'Source', selector: row => row.source, sortable: true, wrap: true },
+    {
+      name: 'Source',
+      selector: (row: any) => row.source,
+      sortable: true,
+      wrap: true,
+    },
     {
       name: 'Location',
-      selector: row => row.location,
+      selector: (row: any) => row.location,
       sortable: true,
       wrap: true,
     },
@@ -73,7 +78,7 @@ export const CVEEntityDetailsComponent: React.FC<Props> = ({
   const clusterLabel = `Cluster: ${data.expandedData.cluster}`;
 
   const populateRows = () => {
-    const rows = [];
+    const rows: any = [];
 
     rows.push({
       image: data?.expandedData?.image || 'N/A',
@@ -94,12 +99,7 @@ export const CVEEntityDetailsComponent: React.FC<Props> = ({
           <b>{cveDetails}</b>
         </Typography>
         <Grid direction="row">
-          <Chip
-            label={severityLabel}
-            color="error"
-            size="small"
-            variant="outlined"
-          />
+          <Chip label={severityLabel} size="small" variant="outlined" />
           <Chip
             label={firstDiscoveredLabel}
             color="default"

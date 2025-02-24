@@ -22,7 +22,21 @@ import '@patternfly/react-styles';
 
 import { CVEEntityDetailsComponent } from '../CVEEntityDetailsComponent';
 
-export const SecurityFindingsComponent = ({ data, filters }) => {
+interface SecurityFindingsProps {
+  data: string[];
+  filters: {
+    selectedEntity: string;
+    selectedAttribute: string;
+    userText: string;
+    selectedCveSeverityOptions: string[];
+    selectedCveStatusOptions: string[];
+  };
+}
+
+export const SecurityFindingsComponent = ({
+  data,
+  filters,
+}: SecurityFindingsProps) => {
   const [dataRows, setDataRows] = useState([]);
   const [pending, setPending] = React.useState(true);
   const theme = useTheme();
@@ -31,11 +45,11 @@ export const SecurityFindingsComponent = ({ data, filters }) => {
   const columns: Array<any> = [
     {
       name: 'CVE',
-      selector: row => row.rowData.cve,
+      selector: (row: any) => row.rowData.cve,
       sortable: true,
       wrap: true,
       width: '140px',
-      cell: row => (
+      cell: (row: any) => (
         <a href={row.rowData.link} target="_blank" rel="noopener noreferrer">
           {row.rowData.cve}
         </a>
@@ -43,45 +57,45 @@ export const SecurityFindingsComponent = ({ data, filters }) => {
     },
     {
       name: 'Severity',
-      selector: row => row.rowData.severity,
+      selector: (row: any) => row.rowData.severity,
       sortable: true,
       wrap: true,
     },
     {
       name: 'Status',
-      selector: row => row.rowData.status,
+      selector: (row: any) => row.rowData.status,
       sortable: true,
       wrap: true,
     },
     {
       name: 'Workload',
-      selector: row => row.rowData.workload,
+      selector: (row: any) => row.rowData.workload,
       sortable: true,
       wrap: true,
       grow: 2,
     },
     {
       name: 'Image',
-      selector: row => row.rowData.image,
+      selector: (row: any) => row.rowData.image,
       sortable: true,
       wrap: true,
       grow: 2,
     },
     {
       name: 'EPSS',
-      selector: row => row.rowData.epss,
+      selector: (row: any) => row.rowData.epss,
       sortable: true,
       wrap: true,
     },
     {
       name: 'CVSS',
-      selector: row => row.rowData.cvss,
+      selector: (row: any) => row.rowData.cvss,
       sortable: true,
       wrap: true,
     },
     {
       name: 'Discovered',
-      selector: row => row.rowData.discovered,
+      selector: (row: any) => row.rowData.discovered,
       sortable: true,
       wrap: true,
     },
@@ -127,8 +141,8 @@ export const SecurityFindingsComponent = ({ data, filters }) => {
   };
 
   const getDiscovered = (occurenceDate: string) => {
-    const currDate = new Date();
-    const incidentDate = new Date(occurenceDate);
+    const currDate: any = new Date();
+    const incidentDate: any = new Date(occurenceDate);
 
     const differenceInMilliseconds = currDate - incidentDate;
     const differenceInDays = differenceInMilliseconds / (1000 * 60 * 60 * 24);
@@ -203,14 +217,16 @@ export const SecurityFindingsComponent = ({ data, filters }) => {
   const organizeData = useCallback(() => {
     const rows: any = [];
 
-    data?.forEach((deployment: String[]) => {
-      deployment?.result?.images?.forEach((item: Object) => {
+    data?.forEach((deployment: any) => {
+      deployment?.result?.images?.forEach((item: any) => {
         if (!item?.scan) return;
 
-        for (const [_, component] of Object.entries(item?.scan?.components)) {
+        for (const [_, component] of Object.entries(
+          item?.scan?.components,
+        ) as any) {
           if (component?.vulns?.length === 0) continue;
 
-          component?.vulns?.forEach((vulns: Array) => {
+          component?.vulns?.forEach((vulns: any) => {
             const currItem = {
               rowData: {
                 cve: vulns?.cve,

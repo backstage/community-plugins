@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useEffect } from 'react';
+import React from 'react';
 import TextField from '@material-ui/core/TextField';
 
-export const InputFieldComponent: React.FunctionComponent = ({
-  setUserText,
-}) => {
-  const inputFieldValue = '';
+interface InputFieldProps {
+  setUserText: (inputFieldValue: string) => void;
+}
+
+export const InputFieldComponent = ({ setUserText }: InputFieldProps) => {
   /* eslint @typescript-eslint/no-shadow: ["error", { "allow": ["inputFieldValue"] }]*/
 
   const onChange = (inputFieldValue: string) => {

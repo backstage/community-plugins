@@ -32,7 +32,12 @@ export const ACSComponent = () => {
   const { entity } = useEntity();
 
   const retrieveEntityDeploymentName = () => {
-    return entity?.metadata?.annotations?.['acs/deployment-name'];
+    const deploymentAnnotation =
+      entity?.metadata?.annotations?.['acs/deployment-name'];
+
+    if (deploymentAnnotation) return deploymentAnnotation;
+
+    return '';
   };
 
   return (

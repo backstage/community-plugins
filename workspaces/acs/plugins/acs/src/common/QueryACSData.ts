@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import react, { useCallback, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
   useApi,
   fetchApiRef,
-  configApiRef,
   discoveryApiRef,
 } from '@backstage/core-plugin-api';
 
@@ -26,9 +25,6 @@ export const QueryACSData = (deploymentName: string) => {
   const [result, setResult] = useState([]);
   const [loaded, setLoaded] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
-
-  // Get Backstage objects
-  const config = useApi(configApiRef);
 
   // Retrieve proxy url from api
   const discoveryApi = useApi(discoveryApiRef);
@@ -63,7 +59,7 @@ export const QueryACSData = (deploymentName: string) => {
           jsonData.pop();
 
           setLoaded(true);
-          setResult(...result, jsonData);
+          setResult(prevResult => ({ ...prevResult, jsonData }));
         })
         .catch(_error => {
           setError(true);

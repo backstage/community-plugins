@@ -2858,12 +2858,12 @@ __metadata:
     date-fns: "npm:1.30.1"
     msw: "npm:^1.0.0"
     raven-js: "npm:^3.27.2"
-    react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
+    react: "npm:^17.0.0 || ^18.0.0"
     react-data-table-component: "npm:^7.6.2"
     react-feather: "npm:^2.0.10"
     react-use: "npm:^17.2.4"
   peerDependencies:
-    react: ^16.13.1 || ^17.0.0 || ^18.0.0
+    react: ^17.0.0 || ^18.0.0
   languageName: unknown
   linkType: soft
 
@@ -3177,6 +3177,30 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@backstage/backend-openapi-utils@npm:^0.4.1":
+  version: 0.4.1
+  resolution: "@backstage/backend-openapi-utils@npm:0.4.1"
+  dependencies:
+    "@apidevtools/swagger-parser": "npm:^10.1.0"
+    "@backstage/backend-plugin-api": "npm:^1.1.1"
+    "@backstage/errors": "npm:^1.2.7"
+    "@backstage/types": "npm:^1.2.1"
+    "@types/express": "npm:^4.17.6"
+    "@types/express-serve-static-core": "npm:^4.17.5"
+    ajv: "npm:^8.16.0"
+    express: "npm:^4.17.1"
+    express-openapi-validator: "npm:^5.0.4"
+    express-promise-router: "npm:^4.1.0"
+    get-port: "npm:^5.1.1"
+    json-schema-to-ts: "npm:^3.0.0"
+    lodash: "npm:^4.17.21"
+    mockttp: "npm:^3.13.0"
+    openapi-merge: "npm:^1.3.2"
+    openapi3-ts: "npm:^3.1.2"
+  checksum: 10/fb1d406f51a093312a906a621cee891a164534deb3df3549b87027c482a78330411a54b7392dd7158834848f0facea7b2922658612c0d95226c7c4f3b3d78d92
+  languageName: node
+  linkType: hard
+
 "@backstage/backend-openapi-utils@npm:^0.5.0":
   version: 0.5.0
   resolution: "@backstage/backend-openapi-utils@npm:0.5.0"
@@ -3463,7 +3487,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/core-compat-api@npm:^0.3.6":
+"@backstage/core-compat-api@npm:^0.3.5, @backstage/core-compat-api@npm:^0.3.6":
   version: 0.3.6
   resolution: "@backstage/core-compat-api@npm:0.3.6"
   dependencies:
@@ -3668,7 +3692,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/frontend-plugin-api@npm:^0.9.5":
+"@backstage/frontend-plugin-api@npm:^0.9.4, @backstage/frontend-plugin-api@npm:^0.9.5":
   version: 0.9.5
   resolution: "@backstage/frontend-plugin-api@npm:0.9.5"
   dependencies:
@@ -4260,48 +4284,48 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-catalog-backend-module-logs@npm:^0.1.6":
-  version: 0.1.7
-  resolution: "@backstage/plugin-catalog-backend-module-logs@npm:0.1.7"
+"@backstage/plugin-catalog-backend-module-logs@npm:0.1.6":
+  version: 0.1.6
+  resolution: "@backstage/plugin-catalog-backend-module-logs@npm:0.1.6"
   dependencies:
-    "@backstage/backend-plugin-api": "npm:^1.2.0"
-    "@backstage/plugin-catalog-backend": "npm:^1.31.0"
-    "@backstage/plugin-events-node": "npm:^0.4.8"
-  checksum: 10/5b9a9ea8ebc8d5fcfeca0e84dbac046de9d691dbba601a3ea92300e581e4ec1b83ae34f9d35b578308f8e4a7b6820ed9ef943ef20da318702d4f22748e6769d9
+    "@backstage/backend-plugin-api": "npm:^1.1.1"
+    "@backstage/plugin-catalog-backend": "npm:^1.30.0"
+    "@backstage/plugin-events-node": "npm:^0.4.7"
+  checksum: 10/3ff574efce845259a8476b2b523832b48b95333f3ec0c21002391ed29ff5e1b0e559e95af9a65b78ba60f66aa13e5e8fc5dc9db5816c4529f0198e9c44b5a761
   languageName: node
   linkType: hard
 
-"@backstage/plugin-catalog-backend-module-scaffolder-entity-model@npm:^0.2.4, @backstage/plugin-catalog-backend-module-scaffolder-entity-model@npm:^0.2.5":
-  version: 0.2.5
-  resolution: "@backstage/plugin-catalog-backend-module-scaffolder-entity-model@npm:0.2.5"
+"@backstage/plugin-catalog-backend-module-scaffolder-entity-model@npm:0.2.4":
+  version: 0.2.4
+  resolution: "@backstage/plugin-catalog-backend-module-scaffolder-entity-model@npm:0.2.4"
   dependencies:
-    "@backstage/backend-plugin-api": "npm:^1.2.0"
+    "@backstage/backend-plugin-api": "npm:^1.1.1"
     "@backstage/catalog-model": "npm:^1.7.3"
     "@backstage/plugin-catalog-common": "npm:^1.1.3"
-    "@backstage/plugin-catalog-node": "npm:^1.16.0"
+    "@backstage/plugin-catalog-node": "npm:^1.15.1"
     "@backstage/plugin-scaffolder-common": "npm:^1.5.9"
-  checksum: 10/9d7b987e994afa07249a622f15978284de1de4a486a48363aab7ab05529bea76e40a544fe693429551a34a450ca2fef4a52fdbe74a56dbf697beda4889de5312
+  checksum: 10/49967f349369ccc0ae91b923fbf61e647ffdf7cb97b3e3494c7ce1bdb0f7cbbe56facc94357b62b93cbd7b2bf0d827316284b50383c8384ae462a01c4473573b
   languageName: node
   linkType: hard
 
-"@backstage/plugin-catalog-backend@npm:^1.30.0, @backstage/plugin-catalog-backend@npm:^1.31.0":
-  version: 1.31.0
-  resolution: "@backstage/plugin-catalog-backend@npm:1.31.0"
+"@backstage/plugin-catalog-backend@npm:1.30.0":
+  version: 1.30.0
+  resolution: "@backstage/plugin-catalog-backend@npm:1.30.0"
   dependencies:
     "@backstage/backend-common": "npm:^0.25.0"
-    "@backstage/backend-openapi-utils": "npm:^0.5.0"
-    "@backstage/backend-plugin-api": "npm:^1.2.0"
+    "@backstage/backend-openapi-utils": "npm:^0.4.1"
+    "@backstage/backend-plugin-api": "npm:^1.1.1"
     "@backstage/catalog-client": "npm:^1.9.1"
     "@backstage/catalog-model": "npm:^1.7.3"
     "@backstage/config": "npm:^1.3.2"
     "@backstage/errors": "npm:^1.2.7"
     "@backstage/integration": "npm:^1.16.1"
     "@backstage/plugin-catalog-common": "npm:^1.1.3"
-    "@backstage/plugin-catalog-node": "npm:^1.16.0"
-    "@backstage/plugin-events-node": "npm:^0.4.8"
+    "@backstage/plugin-catalog-node": "npm:^1.15.1"
+    "@backstage/plugin-events-node": "npm:^0.4.7"
     "@backstage/plugin-permission-common": "npm:^0.8.4"
-    "@backstage/plugin-permission-node": "npm:^0.8.8"
-    "@backstage/plugin-search-backend-module-catalog": "npm:^0.3.1"
+    "@backstage/plugin-permission-node": "npm:^0.8.7"
+    "@backstage/plugin-search-backend-module-catalog": "npm:^0.3.0"
     "@backstage/plugin-search-common": "npm:^1.2.17"
     "@backstage/types": "npm:^1.2.1"
     "@opentelemetry/api": "npm:^1.9.0"
@@ -4323,7 +4347,7 @@ __metadata:
     yaml: "npm:^2.0.0"
     yn: "npm:^4.0.0"
     zod: "npm:^3.22.4"
-  checksum: 10/0130d4e6cd745c733305d93e16d045056d5239587490654beceb67da27ee607dc0cafe6e599121ca62c31be53f8f207934e80fd85a7eda1164accd0877e1d8f4
+  checksum: 10/651e965598b8671173c7ea753a74f23925908d9a93f7640e53f9430132775faa4c93465ff6a75a8a91e0324d9d175b895687a9b9d432fc04b412ebfffe479c40
   languageName: node
   linkType: hard
 
@@ -4408,7 +4432,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-catalog-node@npm:^1.16.0":
+"@backstage/plugin-catalog-node@npm:^1.15.1, @backstage/plugin-catalog-node@npm:^1.16.0":
   version: 1.16.0
   resolution: "@backstage/plugin-catalog-node@npm:1.16.0"
   dependencies:
@@ -4822,7 +4846,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-scaffolder-backend-module-azure@npm:^0.2.6":
+"@backstage/plugin-scaffolder-backend-module-azure@npm:^0.2.5":
   version: 0.2.6
   resolution: "@backstage/plugin-scaffolder-backend-module-azure@npm:0.2.6"
   dependencies:
@@ -4837,7 +4861,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-scaffolder-backend-module-bitbucket-cloud@npm:^0.2.6":
+"@backstage/plugin-scaffolder-backend-module-bitbucket-cloud@npm:^0.2.5, @backstage/plugin-scaffolder-backend-module-bitbucket-cloud@npm:^0.2.6":
   version: 0.2.6
   resolution: "@backstage/plugin-scaffolder-backend-module-bitbucket-cloud@npm:0.2.6"
   dependencies:
@@ -4853,7 +4877,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-scaffolder-backend-module-bitbucket-server@npm:^0.2.6":
+"@backstage/plugin-scaffolder-backend-module-bitbucket-server@npm:^0.2.5, @backstage/plugin-scaffolder-backend-module-bitbucket-server@npm:^0.2.6":
   version: 0.2.6
   resolution: "@backstage/plugin-scaffolder-backend-module-bitbucket-server@npm:0.2.6"
   dependencies:
@@ -4868,7 +4892,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-scaffolder-backend-module-bitbucket@npm:^0.3.7":
+"@backstage/plugin-scaffolder-backend-module-bitbucket@npm:^0.3.6":
   version: 0.3.7
   resolution: "@backstage/plugin-scaffolder-backend-module-bitbucket@npm:0.3.7"
   dependencies:
@@ -4885,7 +4909,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-scaffolder-backend-module-gerrit@npm:^0.2.6":
+"@backstage/plugin-scaffolder-backend-module-gerrit@npm:^0.2.5":
   version: 0.2.6
   resolution: "@backstage/plugin-scaffolder-backend-module-gerrit@npm:0.2.6"
   dependencies:
@@ -4899,7 +4923,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-scaffolder-backend-module-gitea@npm:^0.2.6":
+"@backstage/plugin-scaffolder-backend-module-gitea@npm:^0.2.5":
   version: 0.2.6
   resolution: "@backstage/plugin-scaffolder-backend-module-gitea@npm:0.2.6"
   dependencies:
@@ -4913,75 +4937,75 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-scaffolder-backend-module-github@npm:^0.6.0":
-  version: 0.6.0
-  resolution: "@backstage/plugin-scaffolder-backend-module-github@npm:0.6.0"
+"@backstage/plugin-scaffolder-backend-module-github@npm:^0.5.5":
+  version: 0.5.5
+  resolution: "@backstage/plugin-scaffolder-backend-module-github@npm:0.5.5"
   dependencies:
     "@backstage/backend-common": "npm:^0.25.0"
-    "@backstage/backend-plugin-api": "npm:^1.2.0"
+    "@backstage/backend-plugin-api": "npm:^1.1.1"
     "@backstage/catalog-client": "npm:^1.9.1"
     "@backstage/catalog-model": "npm:^1.7.3"
     "@backstage/config": "npm:^1.3.2"
     "@backstage/errors": "npm:^1.2.7"
     "@backstage/integration": "npm:^1.16.1"
-    "@backstage/plugin-scaffolder-node": "npm:^0.7.0"
+    "@backstage/plugin-scaffolder-node": "npm:^0.6.3"
     "@octokit/webhooks": "npm:^10.9.2"
     libsodium-wrappers: "npm:^0.7.11"
     octokit: "npm:^3.0.0"
     octokit-plugin-create-pull-request: "npm:^5.0.0"
     yaml: "npm:^2.0.0"
-  checksum: 10/9666cf2b555be55e46b242651169d034c10f54592eafd6c79a3ca5b060b80da0216aef730581a1b8ac76602efcabae92ae897cd5e78c9b7751e0f105f25bc19f
+  checksum: 10/d77f8572a3f4e9dc06626e36b10d2ffdd6f176e95731887045fc695a185a06df441ffed384c11b5d03da8e56d122ba9588db7f5b7fc5a666d5f30ed525a08b78
   languageName: node
   linkType: hard
 
-"@backstage/plugin-scaffolder-backend-module-gitlab@npm:^0.8.0":
-  version: 0.8.0
-  resolution: "@backstage/plugin-scaffolder-backend-module-gitlab@npm:0.8.0"
+"@backstage/plugin-scaffolder-backend-module-gitlab@npm:^0.7.1":
+  version: 0.7.1
+  resolution: "@backstage/plugin-scaffolder-backend-module-gitlab@npm:0.7.1"
   dependencies:
     "@backstage/backend-common": "npm:^0.25.0"
-    "@backstage/backend-plugin-api": "npm:^1.2.0"
+    "@backstage/backend-plugin-api": "npm:^1.1.1"
     "@backstage/config": "npm:^1.3.2"
     "@backstage/errors": "npm:^1.2.7"
     "@backstage/integration": "npm:^1.16.1"
-    "@backstage/plugin-scaffolder-node": "npm:^0.7.0"
+    "@backstage/plugin-scaffolder-node": "npm:^0.6.3"
     "@gitbeaker/rest": "npm:^41.2.0"
     luxon: "npm:^3.0.0"
     winston: "npm:^3.2.1"
     yaml: "npm:^2.0.0"
     zod: "npm:^3.22.4"
-  checksum: 10/0a2d8abc5f4a042bdccef5ca956bc13ddf7b99a1242ed0ea7c2aff821bb47e11084342b2af717f2961d0606eb249c8a1d2f90d9682d838fad4c434d8688a1297
+  checksum: 10/220bdf8efb70a9469eb34d55bc53f0e9efbe01e6fc0ced324239201cce6b0e78bec8a6af526889eb87d8b5690425579f6104603327bdf4b89d40a33b576e8c42
   languageName: node
   linkType: hard
 
-"@backstage/plugin-scaffolder-backend@npm:^1.29.0":
-  version: 1.30.0
-  resolution: "@backstage/plugin-scaffolder-backend@npm:1.30.0"
+"@backstage/plugin-scaffolder-backend@npm:1.29.0":
+  version: 1.29.0
+  resolution: "@backstage/plugin-scaffolder-backend@npm:1.29.0"
   dependencies:
     "@backstage/backend-common": "npm:^0.25.0"
-    "@backstage/backend-defaults": "npm:^0.8.0"
-    "@backstage/backend-plugin-api": "npm:^1.2.0"
+    "@backstage/backend-defaults": "npm:^0.7.0"
+    "@backstage/backend-plugin-api": "npm:^1.1.1"
     "@backstage/catalog-client": "npm:^1.9.1"
     "@backstage/catalog-model": "npm:^1.7.3"
     "@backstage/config": "npm:^1.3.2"
     "@backstage/errors": "npm:^1.2.7"
     "@backstage/integration": "npm:^1.16.1"
-    "@backstage/plugin-auth-node": "npm:^0.6.0"
+    "@backstage/plugin-auth-node": "npm:^0.5.6"
     "@backstage/plugin-bitbucket-cloud-common": "npm:^0.2.27"
-    "@backstage/plugin-catalog-backend-module-scaffolder-entity-model": "npm:^0.2.5"
-    "@backstage/plugin-catalog-node": "npm:^1.16.0"
-    "@backstage/plugin-events-node": "npm:^0.4.8"
+    "@backstage/plugin-catalog-backend-module-scaffolder-entity-model": "npm:^0.2.4"
+    "@backstage/plugin-catalog-node": "npm:^1.15.1"
+    "@backstage/plugin-events-node": "npm:^0.4.7"
     "@backstage/plugin-permission-common": "npm:^0.8.4"
-    "@backstage/plugin-permission-node": "npm:^0.8.8"
-    "@backstage/plugin-scaffolder-backend-module-azure": "npm:^0.2.6"
-    "@backstage/plugin-scaffolder-backend-module-bitbucket": "npm:^0.3.7"
-    "@backstage/plugin-scaffolder-backend-module-bitbucket-cloud": "npm:^0.2.6"
-    "@backstage/plugin-scaffolder-backend-module-bitbucket-server": "npm:^0.2.6"
-    "@backstage/plugin-scaffolder-backend-module-gerrit": "npm:^0.2.6"
-    "@backstage/plugin-scaffolder-backend-module-gitea": "npm:^0.2.6"
-    "@backstage/plugin-scaffolder-backend-module-github": "npm:^0.6.0"
-    "@backstage/plugin-scaffolder-backend-module-gitlab": "npm:^0.8.0"
+    "@backstage/plugin-permission-node": "npm:^0.8.7"
+    "@backstage/plugin-scaffolder-backend-module-azure": "npm:^0.2.5"
+    "@backstage/plugin-scaffolder-backend-module-bitbucket": "npm:^0.3.6"
+    "@backstage/plugin-scaffolder-backend-module-bitbucket-cloud": "npm:^0.2.5"
+    "@backstage/plugin-scaffolder-backend-module-bitbucket-server": "npm:^0.2.5"
+    "@backstage/plugin-scaffolder-backend-module-gerrit": "npm:^0.2.5"
+    "@backstage/plugin-scaffolder-backend-module-gitea": "npm:^0.2.5"
+    "@backstage/plugin-scaffolder-backend-module-github": "npm:^0.5.5"
+    "@backstage/plugin-scaffolder-backend-module-gitlab": "npm:^0.7.1"
     "@backstage/plugin-scaffolder-common": "npm:^1.5.9"
-    "@backstage/plugin-scaffolder-node": "npm:^0.7.0"
+    "@backstage/plugin-scaffolder-node": "npm:^0.6.3"
     "@backstage/types": "npm:^1.2.1"
     "@opentelemetry/api": "npm:^1.9.0"
     "@types/express": "npm:^4.17.6"
@@ -5010,7 +5034,7 @@ __metadata:
     yaml: "npm:^2.0.0"
     zen-observable: "npm:^0.10.0"
     zod: "npm:^3.22.4"
-  checksum: 10/45e726698a57adbaafcb2a1bce5ce33a2c4b04de7c264f2beeefd82f3c514be78bde6d35e5e9506123814526112bc29dae4828f2456712f3f5869a869fcc94f9
+  checksum: 10/a47f121d2087cc89bcc533a5f30c5727435ef1fb0ecee0e080cefdeb1df32e7344a905ae2b4caa253df8a35e1dbc2f8bdcc589ac99c9b19abdf8700df8a82e02
   languageName: node
   linkType: hard
 
@@ -5022,6 +5046,31 @@ __metadata:
     "@backstage/plugin-permission-common": "npm:^0.8.4"
     "@backstage/types": "npm:^1.2.1"
   checksum: 10/ffea008b5ff6e6aad2c7e022eff5670a4b7ad3cee61fcd1351ba270e034b62cb5ed10d2f6263f83c6ae5fde335b9325c9ad84f92ae4709ed04cf2e269aac6810
+  languageName: node
+  linkType: hard
+
+"@backstage/plugin-scaffolder-node@npm:^0.6.3":
+  version: 0.6.3
+  resolution: "@backstage/plugin-scaffolder-node@npm:0.6.3"
+  dependencies:
+    "@backstage/backend-common": "npm:^0.25.0"
+    "@backstage/backend-plugin-api": "npm:^1.1.1"
+    "@backstage/catalog-model": "npm:^1.7.3"
+    "@backstage/errors": "npm:^1.2.7"
+    "@backstage/integration": "npm:^1.16.1"
+    "@backstage/plugin-scaffolder-common": "npm:^1.5.9"
+    "@backstage/types": "npm:^1.2.1"
+    concat-stream: "npm:^2.0.0"
+    fs-extra: "npm:^11.2.0"
+    globby: "npm:^11.0.0"
+    isomorphic-git: "npm:^1.23.0"
+    jsonschema: "npm:^1.2.6"
+    p-limit: "npm:^3.1.0"
+    tar: "npm:^6.1.12"
+    winston: "npm:^3.2.1"
+    zod: "npm:^3.22.4"
+    zod-to-json-schema: "npm:^3.20.4"
+  checksum: 10/5b5e7302cc2c02496d5844be95c920a7bb1d1cb5a7160a920466f82daec4671e6de76f26e136a780c513f9c2752cb80ad1f681f800fe27d5d751812748246569
   languageName: node
   linkType: hard
 
@@ -5050,7 +5099,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-scaffolder-react@npm:^1.14.5":
+"@backstage/plugin-scaffolder-react@npm:^1.14.4":
   version: 1.14.5
   resolution: "@backstage/plugin-scaffolder-react@npm:1.14.5"
   dependencies:
@@ -5102,24 +5151,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-scaffolder@npm:^1.27.5":
-  version: 1.28.0
-  resolution: "@backstage/plugin-scaffolder@npm:1.28.0"
+"@backstage/plugin-scaffolder@npm:1.27.5":
+  version: 1.27.5
+  resolution: "@backstage/plugin-scaffolder@npm:1.27.5"
   dependencies:
     "@backstage/catalog-client": "npm:^1.9.1"
     "@backstage/catalog-model": "npm:^1.7.3"
-    "@backstage/core-compat-api": "npm:^0.3.6"
-    "@backstage/core-components": "npm:^0.16.4"
-    "@backstage/core-plugin-api": "npm:^1.10.4"
+    "@backstage/core-compat-api": "npm:^0.3.5"
+    "@backstage/core-components": "npm:^0.16.3"
+    "@backstage/core-plugin-api": "npm:^1.10.3"
     "@backstage/errors": "npm:^1.2.7"
-    "@backstage/frontend-plugin-api": "npm:^0.9.5"
+    "@backstage/frontend-plugin-api": "npm:^0.9.4"
     "@backstage/integration": "npm:^1.16.1"
-    "@backstage/integration-react": "npm:^1.2.4"
+    "@backstage/integration-react": "npm:^1.2.3"
     "@backstage/plugin-catalog-common": "npm:^1.1.3"
-    "@backstage/plugin-catalog-react": "npm:^1.15.2"
-    "@backstage/plugin-permission-react": "npm:^0.4.31"
+    "@backstage/plugin-catalog-react": "npm:^1.15.1"
+    "@backstage/plugin-permission-react": "npm:^0.4.30"
     "@backstage/plugin-scaffolder-common": "npm:^1.5.9"
-    "@backstage/plugin-scaffolder-react": "npm:^1.14.5"
+    "@backstage/plugin-scaffolder-react": "npm:^1.14.4"
     "@backstage/types": "npm:^1.2.1"
     "@codemirror/language": "npm:^6.0.0"
     "@codemirror/legacy-modes": "npm:^6.1.0"
@@ -5152,18 +5201,18 @@ __metadata:
     zod: "npm:^3.22.4"
     zod-to-json-schema: "npm:^3.20.4"
   peerDependencies:
-    "@types/react": ^17.0.0 || ^18.0.0
-    react: ^17.0.0 || ^18.0.0
-    react-dom: ^17.0.0 || ^18.0.0
-    react-router-dom: ^6.3.0
+    "@types/react": ^16.13.1 || ^17.0.0 || ^18.0.0
+    react: ^16.13.1 || ^17.0.0 || ^18.0.0
+    react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
+    react-router-dom: 6.0.0-beta.0 || ^6.3.0
   peerDependenciesMeta:
     "@types/react":
       optional: true
-  checksum: 10/768b45343210a6065e1cc04cece60c5d064e888a0d967505bf6552c24feaa6ce9fda533ee4235bb8b49b48b1078f41cc8e300fedcdf69da3e5134b02dd4f7d53
+  checksum: 10/7f91e68519a85bec2db6255132806688eeec915bf82b608fa394a6fb272b2bce74a3de306f039e8ac46a048bcd2bdb5eb4f7e6575855506a8967854ff513428d
   languageName: node
   linkType: hard
 
-"@backstage/plugin-search-backend-module-catalog@npm:^0.3.0, @backstage/plugin-search-backend-module-catalog@npm:^0.3.1":
+"@backstage/plugin-search-backend-module-catalog@npm:^0.3.0":
   version: 0.3.1
   resolution: "@backstage/plugin-search-backend-module-catalog@npm:0.3.1"
   dependencies:
@@ -32361,7 +32410,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react@npm:^16.13.1 || ^17.0.0 || ^18.0.0, react@npm:^18.0.2":
+"react@npm:^17.0.0 || ^18.0.0, react@npm:^18.0.2":
   version: 18.3.1
   resolution: "react@npm:18.3.1"
   dependencies:

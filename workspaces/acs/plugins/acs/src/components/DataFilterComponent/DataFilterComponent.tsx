@@ -18,17 +18,10 @@ import { EntitySelectComponent } from './EntitySelectComponent';
 import { AttributeSelectComponent } from './AttributeSelectComponent';
 import { InputFieldComponent } from './InputFieldComponent';
 import { CheckboxSelectComponent } from './CheckboxSelectComponent';
-import {
-  Toolbar,
-  ToolbarGroup,
-  ToolbarItem,
-  ToolbarContent,
-} from '@patternfly/react-core';
-import { createStyles, makeStyles, useTheme } from '@material-ui/core/styles';
-import { Grid } from '@material-ui/core';
+import { createStyles, makeStyles } from '@material-ui/core/styles';
 import FormControl from '@material-ui/core/FormControl';
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles((theme: any) =>
   createStyles({
     dropDowns: {
       minWidth: 150,
@@ -47,7 +40,11 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-export const DataFilterComponent = ({ setFilters, data }) => {
+interface DataFilterProps {
+  setFilters: (value: any) => void;
+}
+
+export const DataFilterComponent = ({ setFilters }: DataFilterProps) => {
   const classes = useStyles();
   const attributes = ['Name', 'Discovered time', 'CVSS'];
   const entities = {
@@ -62,9 +59,6 @@ export const DataFilterComponent = ({ setFilters, data }) => {
   const cveSeverityOptions = ['Critical', 'Important', 'Moderate', 'Low'];
   const cveStatusOptions = ['Fixable', 'Not fixable'];
 
-  const theme = useTheme();
-  const isDarkMode = theme.palette.type === 'dark';
-
   const [selectedEntity, setSelectedEntity] = useState('Image');
   const [selectedAttribute, setSelectedAttribute] = useState('Name');
 
@@ -73,35 +67,6 @@ export const DataFilterComponent = ({ setFilters, data }) => {
     [],
   );
   const [selectedCveStatusOptions, setSelectedCveStatusOptions] = useState([]);
-
-  const getSelectedAttributes = () => {
-    return entities[selectedEntity];
-  };
-
-  const modifyPFCardStyle = () => {
-    const style = document.createElement('style');
-    style.id = 'filter-group-styles';
-    style.innerHTML = `
-      [class*="pf-v5-c-toolbar"] {
-        background-color: var(--p--pf-v5-global--palette--black-500) !important;
-      }
-    `; // Append the style element to the document head
-    document.head.appendChild(style);
-  };
-
-  const removeCustomStyles = () => {
-    const style = document.getElementById('ai-search-styles');
-    if (style) {
-      style.remove();
-    }
-  };
-
-  useEffect(() => {
-    modifyPFCardStyle();
-    return () => {
-      removeCustomStyles();
-    };
-  }, []);
 
   useEffect(() => {
     setFilters({
@@ -131,7 +96,6 @@ export const DataFilterComponent = ({ setFilters, data }) => {
       <FormControl className={classes.dropDowns}>
         <AttributeSelectComponent
           options={attributes}
-          displayAttributes={getSelectedAttributes()}
           setSelectedAttribute={setSelectedAttribute}
         />
       </FormControl>

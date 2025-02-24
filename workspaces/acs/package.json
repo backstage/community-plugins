@@ -61,7 +61,13 @@
   "resolutions": {
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "@swagger-api/apidom-json-pointer": "1.0.0-alpha.10"
+    "@swagger-api/apidom-json-pointer": "1.0.0-alpha.10",
+    "@backstage/plugin-catalog-backend": "1.30.0",
+    "@backstage/plugin-catalog-backend-module-logs": "0.1.6",
+    "@backstage/plugin-catalog-backend-module-scaffolder-entity-model": "0.2.4",
+    "@backstage/plugin-catalog-backend-module-unprocessed": "0.5.4",
+    "@backstage/plugin-scaffolder": "1.27.5",
+    "@backstage/plugin-scaffolder-backend": "1.29.0"
   },
   "prettier": "@spotify/prettier-config",
   "lint-staged": {

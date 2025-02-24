@@ -51,7 +51,14 @@
     "react-use": "^17.2.4"
   },
   "peerDependencies": {
-    "react": "^16.13.1 || ^17.0.0 || ^18.0.0"
+    "react": "^17.0.0 || ^18.0.0"
+  },
+  "backstage": {
+    "role": "frontend-plugin",
+    "pluginId": "acs",
+    "pluginPackages": [
+      "@backstage-community/plugin-acs"
+    ]
   },
   "devDependencies": {
     "@backstage/cli": "^0.29.6",
@@ -64,7 +71,7 @@
     "@testing-library/user-event": "^14.0.0",
     "@types/jest": "^29.5.14",
     "msw": "^1.0.0",
-    "react": "^16.13.1 || ^17.0.0 || ^18.0.0"
+    "react": "^17.0.0 || ^18.0.0"
   },
   "configSchema": "config.d.ts",
   "files": [
