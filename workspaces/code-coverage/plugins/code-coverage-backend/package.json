@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-code-coverage-backend",
-  "version": "0.5.0",
+  "version": "0.6.1",
   "description": "A Backstage backend plugin that helps you keep track of your code coverage",
   "backstage": {
     "role": "backend-plugin",
@@ -59,7 +59,7 @@
     "@backstage/cli": "^0.29.6",
     "@types/body-parser-xml": "^2.0.2",
     "@types/supertest": "^6.0.0",
-    "@types/uuid": "^9.0.0",
+    "@types/uuid": "^10.0.0",
     "supertest": "^7.0.0",
     "xml2js": "^0.6.0"
   }

@@ -3,7 +3,7 @@
   "kind": "Resource",
   "metadata": {
     "annotations": {
-      "kubernetes.io/api-server": "http://localhost:5000"
+      "kubernetes.io/api-server": "https://kube-api:5000"
     },
     "name": "bar"
   },

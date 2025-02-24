@@ -32,6 +32,7 @@ const BASE_URL = 'http://confluence.example.com';
 const CONFLUENCE_API_PATH =
   '/rest/api/content/search?limit=1000&status=current&cql=';
 
+/* eslint jest/expect-expect: ["warn", { "assertFunctionNames": ["expect", "testSearchQuery"] }]  */
 const testSearchQuery = (
   request: RestRequest | undefined,
   expectedSearch: unknown,

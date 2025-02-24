@@ -1,5 +1,23 @@
 ### Dependencies
 
+## 5.5.0
+
+### Minor Changes
+
+- 36e2c6c: Reduces the number of times that we build the group hierarchy graphs during evaluation. Originally, during time of evaluation, we would build a graph to of all of the groups that a user was directly or indirectly a member of. Now, we only build the graph once and pass along all of the roles that the user is directly or indirectly attached to.
+
+## 5.4.0
+
+### Minor Changes
+
+- 5d5c02a: Backstage version bump to v1.35.0
+
+### Patch Changes
+
+- Updated dependencies [5d5c02a]
+  - @backstage-community/plugin-rbac-common@1.13.0
+  - @backstage-community/plugin-rbac-node@1.9.0
+
 ## 5.3.1
 
 ### Patch Changes

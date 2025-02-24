@@ -71,6 +71,22 @@ describe.each([
   let keycloakLogger: ServiceMock<LoggerService>;
   let schedule: SchedulerServiceTaskRunnerMock;
 
+  const mockPLimit = jest.fn().mockImplementation((_concurrency: number) => {
+    // Create function repeatedly calling the original function without limit implementation
+    const limit = jest
+      .fn()
+      .mockImplementation(
+        async <Arguments extends unknown[], ReturnType>(
+          fn: (...args: Arguments) => ReturnType | PromiseLike<ReturnType>,
+          ...args: Arguments
+        ): Promise<ReturnType> => {
+          const result = fn(...args);
+          return result instanceof Promise ? result : Promise.resolve(result); // Ensure result is always a Promise
+        },
+      );
+    return limit;
+  });
+
   beforeEach(() => {
     jest.clearAllMocks();
     authMock.mockReset();
@@ -78,7 +94,15 @@ describe.each([
     logger = mockServices.logger.mock({
       child: () => keycloakLogger,
     });
-    inclusion.mockImplementation(() => ({ default: mockImplementation })); // Return the correct mock based on the version
+    inclusion.mockImplementation((libName: string) => {
+      if (libName === '@keycloak/keycloak-admin-client') {
+        return { default: mockImplementation };
+      }
+      if (libName === 'p-limit') {
+        return { default: mockPLimit };
+      }
+      throw new Error(`Unexpected inclusion of ${libName}`);
+    }); // Return the correct mock based on the version
     schedule = scheduler.createScheduledTaskRunner(
       '' as unknown as SchedulerServiceTaskScheduleDefinition,
     ) as SchedulerServiceTaskRunnerMock;
@@ -170,7 +194,7 @@ describe.each([
 
     await runProvider(validConfig);
 
-    expect(authMock).toHaveBeenCalledTimes(1);
+    expect(authMock).toHaveBeenCalled();
     expect(authMock).toHaveBeenCalledWith({
       grantType: 'client_credentials',
       clientId: 'myclientid',
@@ -205,14 +229,14 @@ describe.each([
   it('should read with grantType password', async () => {
     await runProvider(PASSWORD_CONFIG);
 
-    expect(authMock).toHaveBeenCalledTimes(1);
+    expect(authMock).toHaveBeenCalled();
     expect(authMock).toHaveBeenCalledWith({
       grantType: 'password',
       clientId: 'admin-cli',
       username: 'myusername',
       password: 'mypassword', // NOSONAR
     });
-    expect(connection.applyMutation).toHaveBeenCalledTimes(1);
+    expect(connection.applyMutation).toHaveBeenCalled();
     expect(
       (connection.applyMutation as jest.Mock).mock.calls,
     ).toMatchSnapshot();

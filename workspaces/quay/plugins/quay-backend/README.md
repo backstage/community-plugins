@@ -1,6 +1,9 @@
 # Quay Plugin (Backend)
 
-Simple plugin that queries the quay.io api.
+A simple plugin that queries the quay.io api, but provides additional features like:
+
+- setting permissions
+- using OAuth2 access tokens for authentication
 
 ## Setup
 
@@ -28,10 +31,15 @@ Define the following in `app-config.yaml`:
 ```yaml
 quay:
   uiUrl: 'https://quay.io'
+  apiUrl: 'https://quay.io'
   apiKey: 'abc123'
 ```
 
-For the `apiKey` value please create a Quay Application OAuth 2 access token using [these instructions](https://docs.redhat.com/en/documentation/red_hat_quay/3/html-single/red_hat_quay_api_guide/index#creating-oauth-access-token).
+If you require access to a private repository in a Quay organization, set the `apiKey` value to your Application's OAuth 2 access token.
+
+For more information on OAuth access tokens in Quay, please see [the official documentation](https://docs.redhat.com/en/documentation/red_hat_quay/3/html-single/red_hat_quay_api_guide/index#creating-oauth-access-token).
+
+**Note**: Robot tokens will not work for the `apiKey` value.
 
 ### Catalog
 

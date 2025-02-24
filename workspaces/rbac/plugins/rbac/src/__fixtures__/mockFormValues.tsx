@@ -18,11 +18,13 @@ export const mockFormCurrentValues = {
   name: 'div',
   namespace: 'default',
   selectedMembers: [],
+  selectedPlugins: [{ label: 'Catalog', value: 'catalog' }],
   permissionPoliciesRows: [
     {
-      permission: 'catalog-entity',
+      permission: 'catalog.entity.read',
       policies: [{ policy: 'read', effect: 'allow' }],
       policyString: 'Read',
+      resourceType: 'catalog-entity',
       isResourced: true,
       plugin: 'catalog',
       conditions: {
@@ -43,10 +45,12 @@ export const mockFormInitialValues = {
   name: 'div',
   namespace: 'default',
   selectedMembers: [],
+  selectedPlugins: [{ label: 'Catalog', value: 'catalog' }],
   permissionPoliciesRows: [
     {
       id: 1,
-      permission: 'catalog-entity',
+      permission: 'catalog.entity.read',
+      resourceType: 'catalog-entity',
       policies: [{ policy: 'read', effect: 'allow' }],
       policyString: 'Read',
       isResourced: true,

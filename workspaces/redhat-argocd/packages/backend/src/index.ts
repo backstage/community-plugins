@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { createBackend } from '@backstage/backend-defaults';
-import { legacyPlugin } from '@backstage/backend-common';
 
 const backend = createBackend();
 
@@ -51,11 +50,12 @@ backend.add(import('@backstage/plugin-search-backend-module-pg'));
 // backend.add(import('@backstage/plugin-scaffolder-backend-module-github'))
 backend.add(import('@backstage/plugin-auth-backend-module-github-provider'));
 
-backend.add(legacyPlugin('argocd', import('./plugins/argocd')));
 backend.add(import('@backstage/plugin-kubernetes-backend'));
 
 // search collators
 backend.add(import('@backstage/plugin-search-backend-module-catalog'));
 backend.add(import('@backstage/plugin-search-backend-module-techdocs'));
 
+// argoCD backend
+backend.add(import('@backstage-community/plugin-redhat-argocd-backend'));
 backend.start();

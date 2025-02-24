@@ -1,5 +1,42 @@
 ### Dependencies
 
+## 1.38.1
+
+### Patch Changes
+
+- 152eb5f: In edit role form show selected permissions for a plugin based on resource-type and policy mapping if resource-type used in creation of simple permission policy via CLI/CSV file.
+- 3e35324: Updated dependency `start-server-and-test` to `2.0.10`.
+
+## 1.38.0
+
+### Minor Changes
+
+- a7730fc: Update shared react library @janus-idp/shared-react to version 2.16.0 with newer @kubernetes/client-node@1.0.0-rc7.
+
+## 1.37.0
+
+### Minor Changes
+
+- 5934dfe: Open confirmation modal with options to discard the entered information or continue with adding more information on create/edit role forms cancel button click.
+
+## 1.36.0
+
+### Minor Changes
+
+- 838db28: Redesigned RBAC form permissions section.
+  User will be able to select multiple plugins at once.
+
+## 1.35.0
+
+### Minor Changes
+
+- 5d5c02a: Backstage version bump to v1.35.0
+
+### Patch Changes
+
+- Updated dependencies [5d5c02a]
+  - @backstage-community/plugin-rbac-common@1.13.0
+
 ## 1.34.0
 
 ### Minor Changes

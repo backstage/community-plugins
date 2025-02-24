@@ -1,5 +1,19 @@
 # @backstage-community/plugin-code-coverage-backend
 
+## 0.6.1
+
+### Patch Changes
+
+- 208e250: Updated dependency `@types/uuid` to `^10.0.0`.
+
+## 0.6.0
+
+### Minor Changes
+
+- 02cdb81: **BREAKING** Removed support for the legacy backend system. Please refer to the [README](https://github.com/backstage/community-plugins/blob/main/workspaces/code-coverage/plugins/code-coverage-backend/README.md) for instructions on how to use the new backend system.
+
+  Removed usages and references of `@backstage/backend-common`
+
 ## 0.5.0
 
 ### Minor Changes

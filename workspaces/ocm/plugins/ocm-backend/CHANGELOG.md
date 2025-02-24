@@ -1,5 +1,22 @@
 ### Dependencies
 
+## 5.4.0
+
+### Minor Changes
+
+- 7bed8e0: Update @kubernetes/client-node.
+
+## 5.3.0
+
+### Minor Changes
+
+- e0796ca: Backstage version bump to v1.35.0
+
+### Patch Changes
+
+- Updated dependencies [e0796ca]
+  - @backstage-community/plugin-ocm-common@3.7.0
+
 ## 5.2.5
 
 ### Patch Changes
