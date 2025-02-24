@@ -1,5 +1,17 @@
 ## @backstage-community/plugin-redhat-argocd
 
+## 1.15.0
+
+### Minor Changes
+
+- 8322199: Introduce new Red Hat ArgoCD Backend for the Red Hat ArgoCD Plugin
+
+## 1.14.0
+
+### Minor Changes
+
+- a7730fc: Update shared react library @janus-idp/shared-react to version 2.16.0 with newer @kubernetes/client-node@1.0.0-rc7.
+
 ## 1.13.0
 
 ### Minor Changes

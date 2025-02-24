@@ -21,20 +21,16 @@ import type UserRepresentation from '@keycloak/keycloak-admin-client/lib/defs/us
 const catalogModuleKeycloakEntityProvider: BackendFeature;
 export default catalogModuleKeycloakEntityProvider;
 
-// @public (undocumented)
+// @public
 export interface GroupRepresentationWithParent extends GroupRepresentation {
-  // (undocumented)
   members?: string[];
-  // (undocumented)
   parent?: string;
-  // (undocumented)
   parentId?: string;
 }
 
-// @public (undocumented)
+// @public
 export interface GroupRepresentationWithParentAndEntity
   extends GroupRepresentationWithParent {
-  // (undocumented)
   entity: GroupEntity;
 }
 
@@ -55,9 +51,7 @@ export class KeycloakOrgEntityProvider implements EntityProvider {
     userTransformer?: UserTransformer;
     groupTransformer?: GroupTransformer;
   });
-  // (undocumented)
   connect(connection: EntityProviderConnection): Promise<void>;
-  // (undocumented)
   static fromConfig(
     deps: {
       config: Config;
@@ -75,10 +69,8 @@ export class KeycloakOrgEntityProvider implements EntityProvider {
       groupTransformer?: GroupTransformer;
     },
   ): KeycloakOrgEntityProvider[];
-  // (undocumented)
   getProviderName(): string;
   read(options?: { logger?: LoggerService }): Promise<void>;
-  // (undocumented)
   schedule(taskRunner: SchedulerServiceTaskRunner): void;
 }
 
@@ -105,6 +97,8 @@ export type KeycloakProviderConfig = {
   schedule?: SchedulerServiceTaskScheduleDefinition;
   userQuerySize?: number;
   groupQuerySize?: number;
+  maxConcurrency?: number;
+  briefRepresentation?: boolean;
 };
 
 // @public
@@ -116,18 +110,17 @@ export type KeycloakTransformerExtensionPoint = {
 // @public
 export const keycloakTransformerExtensionPoint: ExtensionPoint<KeycloakTransformerExtensionPoint>;
 
-// @public (undocumented)
+// @public
 export const noopGroupTransformer: GroupTransformer;
 
-// @public (undocumented)
+// @public
 export const noopUserTransformer: UserTransformer;
 
 // @public
 export const sanitizeEmailTransformer: UserTransformer;
 
-// @public (undocumented)
+// @public
 export interface UserRepresentationWithEntity extends UserRepresentation {
-  // (undocumented)
   entity: UserEntity;
 }
 

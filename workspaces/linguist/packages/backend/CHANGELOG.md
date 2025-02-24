@@ -1,5 +1,12 @@
 # backend
 
+## 0.0.19
+
+### Patch Changes
+
+- Updated dependencies [208e250]
+  - @backstage-community/plugin-linguist-backend@0.11.1
+
 ## 0.0.18
 
 ### Patch Changes

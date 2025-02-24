@@ -121,6 +121,7 @@ export class RoleMemberList {
     try {
       const roles: string[] = await client
         .table('casbin_rule')
+        .where('ptype', 'g')
         .whereIn('v0', userAndGroups)
         .pluck('v1')
         .distinct();

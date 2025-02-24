@@ -44,6 +44,7 @@ integrations:
     #   token: ${GHE_TOKEN}
 
 proxy:
+  {}
   ### Example for how to add a proxy endpoint for the frontend.
   ### A typical reason to do this is to handle HTTPS and CORS for internal services.
   # endpoints:
@@ -69,6 +70,7 @@ auth:
     guest: {}
 
 scaffolder:
+  {}
   # see https://backstage.io/docs/features/software-templates/configuration for software template options
 
 catalog:
