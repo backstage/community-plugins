@@ -13,23 +13,4 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { createPermission } from '@backstage/plugin-permission-common';
-
-/**
- * Permission to view tekton resources.
- *
- * @public
- */
-export const tektonViewPermission = createPermission({
-  name: 'tekton.view.read',
-  attributes: {
-    action: 'read',
-  },
-});
-
-/**
- * List of all permissions on permission polices.
- *
- * @public
- */
-export const tektonPermissions = [tektonViewPermission];
+export * from './create-project';
