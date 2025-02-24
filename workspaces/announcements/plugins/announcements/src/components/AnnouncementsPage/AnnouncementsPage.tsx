@@ -15,7 +15,10 @@
  */
 import React, { ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
-import { usePermission } from '@backstage/plugin-permission-react';
+import {
+  RequirePermission,
+  usePermission,
+} from '@backstage/plugin-permission-react';
 import {
   announcementCreatePermission,
   announcementUpdatePermission,
@@ -388,7 +391,7 @@ export const AnnouncementsPage = (props: AnnouncementsPageProps) => {
   return (
     <Page themeId={themeId}>
       <Header title={title} subtitle={subtitle}>
-        {!hideContextMenu && <ContextMenu />}
+        {!hideContextMenu && canCreate && <ContextMenu />}
       </Header>
 
       <Content>
