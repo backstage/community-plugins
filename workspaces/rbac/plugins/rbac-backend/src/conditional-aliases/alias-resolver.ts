@@ -45,11 +45,11 @@ function replaceAliasWithValue<
   K extends string,
   V extends JsonPrimitive | JsonPrimitive[],
 >(
-  params: Record<K, PermissionRuleParam> | undefined,
+  params: Record<K, PermissionRuleParam>,
   key: K,
   predicate: Predicate<PermissionRuleParam>,
   newValue: V,
-): Record<K, PermissionRuleParam> | undefined {
+): Record<K, PermissionRuleParam> {
   if (!params) {
     return params;
   }
@@ -101,17 +101,10 @@ export function replaceAliases(
     return;
   }
 
-  const params = (
-    conditions as PermissionCondition<string, PermissionRuleParams>
-  ).params;
-  if (params) {
-    for (const key of Object.keys(params)) {
-      const currentParams = (
-        conditions as PermissionCondition<string, PermissionRuleParams>
-      ).params;
-
-      let modifiedParams = replaceAliasWithValue(
-        currentParams,
+  if (conditions.params) {
+    for (const key of Object.keys(conditions.params)) {
+      let modifiedParams: PermissionRuleParams = replaceAliasWithValue(
+        conditions.params,
         key,
         isCurrentUserAlias,
         userInfo.userEntityRef,
@@ -124,8 +117,7 @@ export function replaceAliases(
         userInfo.ownershipEntityRefs,
       );
 
-      (conditions as PermissionCondition<string, PermissionRuleParams>).params =
-        modifiedParams;
+      conditions.params = modifiedParams;
     }
   }
 }
