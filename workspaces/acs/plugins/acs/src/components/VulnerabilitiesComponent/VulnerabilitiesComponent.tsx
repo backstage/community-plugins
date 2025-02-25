@@ -106,10 +106,7 @@ export const VulnerabilitiesComponent = ({
     <Box sx={{ minHeight: '500px' }}>
       <DataFilterComponent setFilters={setFilters} />
 
-      <SecurityFindingsComponent
-        data={ACSDataResult.jsonData}
-        filters={filters}
-      />
+      <SecurityFindingsComponent data={ACSDataResult} filters={filters} />
     </Box>
   );
 };

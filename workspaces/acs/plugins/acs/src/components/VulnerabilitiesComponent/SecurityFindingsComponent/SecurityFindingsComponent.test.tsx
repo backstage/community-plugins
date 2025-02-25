@@ -23,7 +23,18 @@ describe('SecurityFindingsComponent', () => {
     const organizeData = jest.fn();
     (organizeData as jest.Mock).mockReturnValue([]);
 
-    render(<SecurityFindingsComponent data={[]} filters="" />);
+    render(
+      <SecurityFindingsComponent
+        data={[]}
+        filters={{
+          selectedEntity: '',
+          selectedAttribute: '',
+          userText: '',
+          selectedCveSeverityOptions: [],
+          selectedCveStatusOptions: [],
+        }}
+      />,
+    );
 
     expect(screen.getByRole('table')).toBeInTheDocument();
   });

@@ -58,18 +58,23 @@ export const CheckboxSelectComponent = ({
       labelId="demo-mutiple-checkbox-label"
       id="demo-mutiple-checkbox"
       multiple
+      displayEmpty
       value={selectedItems}
       onChange={handleChange}
       input={<Input />}
       renderValue={selected => {
         if ((selected as string[]).length === 0) {
-          return <em>Placeholder</em>;
+          return <em>{dropdownName}</em>;
         }
 
         return (selected as string[]).join(', ');
       }}
       MenuProps={MenuProps}
+      inputProps={{ 'aria-label': 'Without label' }}
     >
+      <MenuItem disabled value="">
+        <em>{dropdownName}</em>
+      </MenuItem>
       {options.map(value => (
         <MenuItem key={value} value={value}>
           <Checkbox checked={selectedItems.indexOf(value) > -1} />

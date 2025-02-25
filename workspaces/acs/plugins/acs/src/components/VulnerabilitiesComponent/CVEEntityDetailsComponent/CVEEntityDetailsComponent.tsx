@@ -98,7 +98,7 @@ export const CVEEntityDetailsComponent = ({
         <Typography>
           <b>{cveDetails}</b>
         </Typography>
-        <Grid direction="row">
+        <Grid container direction="row">
           <Chip label={severityLabel} size="small" variant="outlined" />
           <Chip
             label={firstDiscoveredLabel}
@@ -124,7 +124,7 @@ export const CVEEntityDetailsComponent = ({
         <Typography>
           <b>{entityDetails}</b>
         </Typography>
-        <Grid direction="row">
+        <Grid container direction="row">
           <Chip
             label={workloadLabel}
             color="default"
@@ -167,7 +167,7 @@ export const CVEEntityDetailsComponent = ({
   }, []);
 
   return (
-    <Grid direction="column" justifyContent="space-between">
+    <Grid container direction="column" justifyContent="space-between">
       <CVEDetails />
       <EntityDetails />
     </Grid>

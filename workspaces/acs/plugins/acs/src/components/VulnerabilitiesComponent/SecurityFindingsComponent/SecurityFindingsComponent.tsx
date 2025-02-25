@@ -23,7 +23,7 @@ import '@patternfly/react-styles';
 import { CVEEntityDetailsComponent } from '../CVEEntityDetailsComponent';
 
 interface SecurityFindingsProps {
-  data: string[];
+  data: any;
   filters: {
     selectedEntity: string;
     selectedAttribute: string;
@@ -217,7 +217,7 @@ export const SecurityFindingsComponent = ({
   const organizeData = useCallback(() => {
     const rows: any = [];
 
-    data?.forEach((deployment: any) => {
+    data?.jsonData?.forEach((deployment: any) => {
       deployment?.result?.images?.forEach((item: any) => {
         if (!item?.scan) return;
 
