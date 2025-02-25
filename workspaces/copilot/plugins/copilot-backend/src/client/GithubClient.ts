@@ -16,21 +16,17 @@
 
 import { ResponseError } from '@backstage/errors';
 import { Config } from '@backstage/config';
-import { Metric, TeamInfo } from '@backstage-community/plugin-copilot-common';
+import { CopilotMetrics, TeamInfo } from '@backstage-community/plugin-copilot-common';
 import fetch from 'node-fetch';
-import {
-  CopilotConfig,
-  CopilotCredentials,
-  getCopilotConfig,
-  getGithubCredentials,
-} from '../utils/GithubUtils';
+import { CopilotConfig, CopilotCredentials, getCopilotConfig, getGithubCredentials } from '../utils/GithubUtils';
 
 interface GithubApi {
-  fetchEnterpriseCopilotUsage: () => Promise<Metric[]>;
-  fetchEnterpriseTeamCopilotUsage: (teamId: string) => Promise<Metric[]>;
+  fetchEnterpriseCopilotMetrics: () => Promise<CopilotMetrics[]>;
+  fetchEnterpriseTeamCopilotMetrics: (teamId: string) => Promise<CopilotMetrics[]>;
+  fetchOrganizationCopilotMetrics: () => Promise<CopilotMetrics[]>;
+  fetchOrganizationTeamCopilotMetrics: (teamId: string) => Promise<CopilotMetrics[]>;
+
   fetchEnterpriseTeams: () => Promise<TeamInfo[]>;
-  fetchOrganizationCopilotUsage: () => Promise<Metric[]>;
-  fetchOrganizationTeamCopilotUsage: (teamId: string) => Promise<Metric[]>;
   fetchOrganizationTeams: () => Promise<TeamInfo[]>;
 }
 
@@ -49,13 +45,13 @@ export class GithubClient implements GithubApi {
     return await getGithubCredentials(this.config, this.copilotConfig);
   }
 
-  async fetchEnterpriseCopilotUsage(): Promise<Metric[]> {
-    const path = `/enterprises/${this.copilotConfig.enterprise}/copilot/usage`;
+  async fetchEnterpriseCopilotMetrics(): Promise<CopilotMetrics[]> {
+    const path = `/enterprises/${this.copilotConfig.enterprise}/copilot/metrics`;
     return this.get(path);
   }
 
-  async fetchEnterpriseTeamCopilotUsage(teamId: string): Promise<Metric[]> {
-    const path = `/enterprises/${this.copilotConfig.enterprise}/team/${teamId}/copilot/usage`;
+  async fetchEnterpriseTeamCopilotMetrics(teamId: string): Promise<CopilotMetrics[]> {
+    const path = `/enterprises/${this.copilotConfig.enterprise}/team/${teamId}/copilot/metrics`;
     return this.get(path);
   }
 
@@ -64,13 +60,13 @@ export class GithubClient implements GithubApi {
     return this.get(path);
   }
 
-  async fetchOrganizationCopilotUsage(): Promise<Metric[]> {
-    const path = `/orgs/${this.copilotConfig.organization}/copilot/usage`;
+  async fetchOrganizationCopilotMetrics(): Promise<CopilotMetrics[]> {
+    const path = `/orgs/${this.copilotConfig.organization}/copilot/metrics`;
     return this.get(path);
   }
 
-  async fetchOrganizationTeamCopilotUsage(teamId: string): Promise<Metric[]> {
-    const path = `/orgs/${this.copilotConfig.organization}/team/${teamId}/copilot/usage`;
+  async fetchOrganizationTeamCopilotMetrics(teamId: string): Promise<CopilotMetrics[]> {
+    const path = `/orgs/${this.copilotConfig.organization}/team/${teamId}/copilot/metrics`;
     return this.get(path);
   }
 

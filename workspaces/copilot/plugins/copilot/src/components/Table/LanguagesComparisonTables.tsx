@@ -43,7 +43,7 @@ interface EnhancedTableProps {
 const headCells = [
   { id: 'language', label: 'Language', numeric: false },
   { id: 'totalAcceptances', label: 'Accepted Prompts', numeric: true },
-  { id: 'totalSuggestions', label: 'Accepted Lines of Code', numeric: true },
+  { id: 'totalSuggestions', label: 'Suggested Prompts', numeric: true },
   { id: 'acceptanceRate', label: 'Acceptance Rate (%)', numeric: true },
 ];
 
@@ -59,15 +59,11 @@ const StyledTableWrapper = styled(Box)(() => ({
 
 const EnhancedTable = ({ title, rows }: EnhancedTableProps) => {
   const [order, setOrder] = React.useState<Order>('desc');
-  const [orderBy, setOrderBy] =
-    React.useState<keyof LanguageStats>('totalAcceptances');
+  const [orderBy, setOrderBy] = React.useState<keyof LanguageStats>('totalAcceptances');
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
-  const handleRequestSort = (
-    _event: React.MouseEvent<unknown>,
-    property: keyof LanguageStats,
-  ) => {
+  const handleRequestSort = (_event: React.MouseEvent<unknown>, property: keyof LanguageStats) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
@@ -77,9 +73,7 @@ const EnhancedTable = ({ title, rows }: EnhancedTableProps) => {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
@@ -99,10 +93,7 @@ const EnhancedTable = ({ title, rows }: EnhancedTableProps) => {
     return 0;
   });
 
-  const paginatedRows = sortedRows.slice(
-    page * rowsPerPage,
-    page * rowsPerPage + rowsPerPage,
-  );
+  const paginatedRows = sortedRows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
   return (
     <StyledTableWrapper>
@@ -112,14 +103,10 @@ const EnhancedTable = ({ title, rows }: EnhancedTableProps) => {
         </Typography>
       )}
       <StyledTableContainer>
-        <Table
-          aria-labelledby="tableTitle"
-          size="medium"
-          aria-label="enhanced table"
-        >
+        <Table aria-labelledby="tableTitle" size="medium" aria-label="enhanced table">
           <TableHead>
             <TableRow>
-              {headCells.map(headCell => (
+              {headCells.map((headCell) => (
                 <TableCell
                   key={headCell.id}
                   align={headCell.numeric ? 'right' : 'left'}
@@ -128,12 +115,7 @@ const EnhancedTable = ({ title, rows }: EnhancedTableProps) => {
                   <TableSortLabel
                     active={orderBy === headCell.id}
                     direction={orderBy === headCell.id ? order : 'asc'}
-                    onClick={event =>
-                      handleRequestSort(
-                        event,
-                        headCell.id as keyof LanguageStats,
-                      )
-                    }
+                    onClick={(event) => handleRequestSort(event, headCell.id as keyof LanguageStats)}
                   >
                     {headCell.label}
                   </TableSortLabel>
@@ -142,16 +124,14 @@ const EnhancedTable = ({ title, rows }: EnhancedTableProps) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {paginatedRows.map(row => (
+            {paginatedRows.map((row) => (
               <TableRow hover tabIndex={-1} key={row.language}>
                 <TableCell component="th" scope="row">
                   {row.language}
                 </TableCell>
                 <TableCell align="right">{row.totalAcceptances}</TableCell>
                 <TableCell align="right">{row.totalSuggestions}</TableCell>
-                <TableCell align="right">
-                  {(row.acceptanceRate * 100).toFixed(2)}%
-                </TableCell>
+                <TableCell align="right">{(row.acceptanceRate * 100).toFixed(2)}%</TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -187,10 +167,7 @@ export function LanguagesComparisonTables({
         </Box>
       )}
       <Box flex={1}>
-        <EnhancedTable
-          title={team ? 'Overall' : undefined}
-          rows={overallRows}
-        />
+        <EnhancedTable title={team ? 'Overall' : undefined} rows={overallRows} />
       </Box>
     </Box>
   );

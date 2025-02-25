@@ -38,6 +38,7 @@ import {
   TeamQuery,
   teamQuerySchema,
 } from './validation/schema';
+import { DateTime } from 'luxon';
 
 /**
  * Options for configuring the Copilot plugin.
@@ -102,19 +103,13 @@ export async function createRouterFromConfig(routerOptions: RouterOptions) {
     schedule: defaultSchedule,
   };
   if (config && config.has('copilot.schedule')) {
-    pluginOptions.schedule =
-      readSchedulerServiceTaskScheduleDefinitionFromConfig(
-        config.getConfig('copilot.schedule'),
-      );
+    pluginOptions.schedule = readSchedulerServiceTaskScheduleDefinitionFromConfig(config.getConfig('copilot.schedule'));
   }
   return createRouter(routerOptions, pluginOptions);
 }
 
 /** @private */
-async function createRouter(
-  routerOptions: RouterOptions,
-  pluginOptions: PluginOptions,
-): Promise<express.Router> {
+async function createRouter(routerOptions: RouterOptions, pluginOptions: PluginOptions): Promise<express.Router> {
   const { logger, database, scheduler, config } = routerOptions;
   const { schedule } = pluginOptions;
 
@@ -124,8 +119,7 @@ async function createRouter(
   await scheduler.scheduleTask({
     id: 'copilot-metrics',
     ...(schedule ?? defaultSchedule),
-    fn: async () =>
-      await TaskManagement.create({ db, logger, api, config }).runAsync(),
+    fn: async () => await TaskManagement.create({ db, logger, api, config }).runAsync(),
   });
 
   const router = Router();
@@ -136,37 +130,61 @@ async function createRouter(
     response.json({ status: 'ok' });
   });
 
-  router.get(
-    '/metrics',
-    validateQuery(metricsQuerySchema),
-    async (req, res) => {
-      const { startDate, endDate, type, team } = req.query as MetricsQuery;
+  router.get('/metrics', validateQuery(metricsQuerySchema), async (req, res) => {
+    const { startDate, endDate, type, team } = req.query as MetricsQuery;
+    let metrics: Metric[] = [];
 
+    // if startDate is earlier than last date of MetricsV1, fetch the old data
+    const lastDayOfOldMetrics = await db.getMostRecentDayFromMetrics(type, team);
+
+    if (
+      startDate &&
+      lastDayOfOldMetrics &&
+      DateTime.fromISO(startDate) <= DateTime.fromJSDate(new Date(lastDayOfOldMetrics))
+    ) {
       const result = await db.getMetrics(startDate, endDate, type, team);
-
-      const metrics: Metric[] = result.map(metric => ({
+      metrics = result.map((metric) => ({
         ...metric,
         breakdown: JSON.parse(metric.breakdown),
       }));
+    }
 
-      return res.json(metrics);
-    },
-  );
+    // if endDate is later or equal to first day of new metrics, fetch those also and merge into metrics
+    const firstDayOfNewMetrics = await db.getEarliestDayFromMetricsV2(type, team);
+    if (
+      endDate &&
+      firstDayOfNewMetrics &&
+      DateTime.fromISO(endDate) >= DateTime.fromJSDate(new Date(firstDayOfNewMetrics))
+    ) {
+      const result = await db.getMetricsV2(startDate, endDate, type, team);
+      const breakdown = await db.getBreakdown(startDate, endDate, type, team);
 
-  router.get(
-    '/metrics/period-range',
-    validateQuery(periodRangeQuerySchema),
-    async (req, res) => {
-      const { type } = req.query as PeriodRangeQuery;
-      const result = await db.getPeriodRange(type);
+      const newMetrics = result.map((metric) => ({
+        ...metric,
+        breakdown: breakdown.filter((day) => {
+          const metricDate = DateTime.fromJSDate(new Date(metric.day));
+          const dayDate = DateTime.fromJSDate(new Date(day.day));
+          return metricDate.equals(dayDate);
+        }),
+      }));
 
-      if (!result) {
-        throw new NotFoundError();
-      }
+      // Merge new metrics with old metrics
+      metrics = [...metrics, ...newMetrics];
+    }
 
-      return res.json(result);
-    },
-  );
+    return res.json(metrics);
+  });
+
+  router.get('/metrics/period-range', validateQuery(periodRangeQuerySchema), async (req, res) => {
+    const { type } = req.query as PeriodRangeQuery;
+    const result = await db.getPeriodRangeV2(type);
+
+    if (!result) {
+      throw new NotFoundError();
+    }
+
+    return res.json(result);
+  });
 
   router.get('/teams', validateQuery(teamQuerySchema), async (req, res) => {
     const { type, startDate, endDate } = req.query as TeamQuery;
