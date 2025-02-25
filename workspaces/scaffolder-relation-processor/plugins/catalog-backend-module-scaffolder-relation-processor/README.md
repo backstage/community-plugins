@@ -12,7 +12,7 @@ This is an extension module to the catalog-backend plugin, providing an addition
 
 ### Installing on the new backend system
 
-To install this module into the [new backend system](https://backstage.io/docs/backend-system/), add the following into the `packages/backend/src/index.ts` file:
+To install this module into the [new backend system](https://backstage.io/docs/backend-system/) add the following into the `packages/backend/src/index.ts` file:
 
 ```ts title="packages/backend/src/index.ts
 const backend = createBackend();
