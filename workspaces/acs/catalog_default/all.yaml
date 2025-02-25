@@ -1,0 +1,9 @@
+---
+apiVersion: backstage.io/v1alpha1
+kind: Location
+metadata:
+  name: app-interface-all
+  description: A collection of all systems
+spec:
+  targets:
+  - ./components/test-app.yaml
