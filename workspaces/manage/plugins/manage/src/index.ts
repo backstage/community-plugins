@@ -31,6 +31,12 @@ export type {
   ManagePageImpl,
 } from './components/ManagePage';
 
+export type { SwitchColor } from './components/ManagePageFilters';
+export {
+  ManagePageFilters,
+  useManagePageCombined,
+} from './components/ManagePageFilters';
+
 export type {
   SubRouteTab,
   ManageTabsProps,
@@ -38,7 +44,10 @@ export type {
   ManageTabsImpl,
 } from './components/ManageTabs';
 
-export type { OrganizationGraphImpl } from './components/OrganizationGraph';
+export type {
+  OrganizationGraphProps,
+  OrganizationGraphImpl,
+} from './components/OrganizationGraph';
 
 export { MANAGE_KIND_COMMON } from './components/ManageTabs';
 
