@@ -68,6 +68,7 @@ body:
         - lighthouse
         - linguist
         - linkerd
+        - manage
         - matomo
         - mend
         - microsoft-calendar
