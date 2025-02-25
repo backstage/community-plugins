@@ -193,18 +193,10 @@ export const OpenCostReport = () => {
     setLoading(true);
     setErrors([]);
 
-    let url = baseUrl;
-    if (baseUrl.startsWith('/')) {
-      url = `${await discoveryApi.getBaseUrl('proxy')}/${baseUrl.replace(
-        /^\/|\/$/g,
-        '',
-      )}`;
-    }
-
     try {
       const resp = await AllocationService.fetchAllocation(
         fetchApi,
-        url,
+        baseUrl,
         window,
         aggregateBy,
         { accumulate },

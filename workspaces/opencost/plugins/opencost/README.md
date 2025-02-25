@@ -73,7 +73,7 @@ proxy:
     /opencost: http://opencost-svc.opencost:9003
 ---
 opencost:
-  baseUrl: /opencost
+  baseUrl: http://your-backstage-instance:7007/api/proxy/opencost
 ```
 
 ## Ideas/Next Steps
