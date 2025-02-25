@@ -35,8 +35,9 @@ yarn.lock                                           @backstage/community-plugins
 /workspaces/jfrog-artifactory                       @backstage/community-plugins-maintainers  @BethGriggs
 /workspaces/kafka                                   @backstage/community-plugins-maintainers  @andrewthauer
 /workspaces/keycloak                                @backstage/community-plugins-maintainers  @AndrienkoAleksandr @schultzp2020 @dzemanov
-/workspaces/kiali                                   @backstage/community-plugins-maintainers  @aljesusg @josunect
+/workspaces/kiali                                   @backstage/community-plugins-maintainers  @aljesusg @josunect @leandroberetta
 /workspaces/linguist                                @backstage/community-plugins-maintainers  @awanlin
+/workspaces/manage                                  @backstage/community-plugins-maintainers  @grantila
 /workspaces/matomo                                  @backstage/community-plugins-maintainers  @yashoswalyo @deshmukhmayur @riginoommen
 /workspaces/mend                                    @backstage/community-plugins-maintainers  @dariuszsobkowicz
 /workspaces/mta                                     @backstage/community-plugins-maintainers  @ibolton336

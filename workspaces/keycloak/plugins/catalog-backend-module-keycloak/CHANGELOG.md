@@ -1,5 +1,17 @@
 ### Dependencies
 
+## 3.6.0
+
+### Minor Changes
+
+- 984800c: Adding briefRepresentation flag to config to fetch additional group and user attributes
+
+## 3.5.3
+
+### Patch Changes
+
+- 208e250: Updated dependency `@types/uuid` to `^10.0.0`.
+
 ## 3.5.2
 
 ### Patch Changes
