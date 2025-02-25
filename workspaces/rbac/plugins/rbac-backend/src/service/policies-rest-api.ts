@@ -13,18 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { PermissionsService } from '@backstage/backend-plugin-api';
+import type {
+  BackstageCredentials,
+  BackstageServicePrincipal,
+  BackstageUserPrincipal,
+  PermissionsService,
+} from '@backstage/backend-plugin-api';
 import {
   ConflictError,
   InputError,
   NotAllowedError,
   NotFoundError,
-  ServiceUnavailableError,
 } from '@backstage/errors';
 import { createRouter } from '@backstage/plugin-permission-backend';
 import {
   AuthorizeResult,
-  PolicyDecision,
   ResourcePermission,
 } from '@backstage/plugin-permission-common';
 import { createPermissionIntegrationRouter } from '@backstage/plugin-permission-node';
@@ -100,7 +103,9 @@ export class PoliciesServer {
   private async authorize(
     request: Request,
     permission: ResourcePermission,
-  ): Promise<PolicyDecision> {
+  ): Promise<
+    BackstageCredentials<BackstageUserPrincipal | BackstageServicePrincipal>
+  > {
     const credentials = await this.options.httpAuth.credentials(request, {
       allow: ['user', 'service'],
     });
@@ -122,19 +127,15 @@ export class PoliciesServer {
       )
     )[0];
 
-    return decision;
+    if (decision.result === AuthorizeResult.DENY) {
+      throw new NotAllowedError(); // 403
+    }
+
+    return credentials;
   }
 
   async serve(): Promise<express.Router> {
     const router = await createRouter(this.options);
-
-    const { httpAuth } = this.options;
-
-    if (!httpAuth) {
-      throw new ServiceUnavailableError(
-        'httpAuth not found, ensure the correct configuration for the RBAC plugin',
-      );
-    }
 
     const permissionsIntegrationRouter = createPermissionIntegrationRouter({
       resourceType: RESOURCE_TYPE_POLICY_ENTITY,
@@ -149,28 +150,15 @@ export class PoliciesServer {
     }
 
     router.get('/', async (request, response) => {
-      const decision = await this.authorize(
-        request,
-        policyEntityReadPermission,
-      );
+      await this.authorize(request, policyEntityReadPermission);
 
-      if (decision.result === AuthorizeResult.DENY) {
-        throw new NotAllowedError(); // 403
-      }
       response.send({ status: 'Authorized' });
     });
 
     // Policy CRUD
 
     router.get('/policies', async (request, response) => {
-      const decision = await this.authorize(
-        request,
-        policyEntityReadPermission,
-      );
-
-      if (decision.result === AuthorizeResult.DENY) {
-        throw new NotAllowedError(); // 403
-      }
+      await this.authorize(request, policyEntityReadPermission);
 
       let policies: string[][];
       if (this.isPolicyFilterEnabled(request)) {
@@ -202,14 +190,7 @@ export class PoliciesServer {
     router.get(
       '/policies/:kind/:namespace/:name',
       async (request, response) => {
-        const decision = await this.authorize(
-          request,
-          policyEntityReadPermission,
-        );
-
-        if (decision.result === AuthorizeResult.DENY) {
-          throw new NotAllowedError(); // 403
-        }
+        await this.authorize(request, policyEntityReadPermission);
 
         const entityRef = this.getEntityReference(request);
 
@@ -236,14 +217,7 @@ export class PoliciesServer {
     router.delete(
       '/policies/:kind/:namespace/:name',
       async (request, response) => {
-        const decision = await this.authorize(
-          request,
-          policyEntityDeletePermission,
-        );
-
-        if (decision.result === AuthorizeResult.DENY) {
-          throw new NotAllowedError(); // 403
-        }
+        await this.authorize(request, policyEntityDeletePermission);
 
         const entityRef = this.getEntityReference(request);
 
@@ -275,14 +249,7 @@ export class PoliciesServer {
     );
 
     router.post('/policies', async (request, response) => {
-      const decision = await this.authorize(
-        request,
-        policyEntityCreatePermission,
-      );
-
-      if (decision.result === AuthorizeResult.DENY) {
-        throw new NotAllowedError(); // 403
-      }
+      await this.authorize(request, policyEntityCreatePermission);
 
       const policyRaw: RoleBasedPolicy[] = request.body;
 
@@ -316,14 +283,7 @@ export class PoliciesServer {
     router.put(
       '/policies/:kind/:namespace/:name',
       async (request, response) => {
-        const decision = await this.authorize(
-          request,
-          policyEntityUpdatePermission,
-        );
-
-        if (decision.result === AuthorizeResult.DENY) {
-          throw new NotAllowedError(); // 403
-        }
+        await this.authorize(request, policyEntityUpdatePermission);
 
         const entityRef = this.getEntityReference(request);
 
@@ -403,14 +363,7 @@ export class PoliciesServer {
     // Role CRUD
 
     router.get('/roles', async (request, response) => {
-      const decision = await this.authorize(
-        request,
-        policyEntityReadPermission,
-      );
-
-      if (decision.result === AuthorizeResult.DENY) {
-        throw new NotAllowedError(); // 403
-      }
+      await this.authorize(request, policyEntityReadPermission);
 
       const roles = await this.enforcer.getGroupingPolicy();
 
@@ -429,14 +382,8 @@ export class PoliciesServer {
     });
 
     router.get('/roles/:kind/:namespace/:name', async (request, response) => {
-      const decision = await this.authorize(
-        request,
-        policyEntityReadPermission,
-      );
+      await this.authorize(request, policyEntityReadPermission);
 
-      if (decision.result === AuthorizeResult.DENY) {
-        throw new NotAllowedError(); // 403
-      }
       const roleEntityRef = this.getEntityReference(request, true);
 
       const role = await this.enforcer.getFilteredGroupingPolicy(
@@ -464,14 +411,16 @@ export class PoliciesServer {
 
     router.post('/roles', async (request, response) => {
       const uniqueItems = new Set<string>();
-      const decision = await this.authorize(
+      const credentials = await this.authorize(
         request,
         policyEntityCreatePermission,
       );
-
-      if (decision.result === AuthorizeResult.DENY) {
-        throw new NotAllowedError(); // 403
+      if (credentials.principal.type !== 'user') {
+        throw new NotAllowedError(
+          `Only user credentials are allowed to create roles`,
+        );
       }
+
       const roleRaw: Role = request.body;
       let err = validateRole(roleRaw);
       if (err) {
@@ -507,9 +456,6 @@ export class PoliciesServer {
         }
       }
 
-      const credentials = await httpAuth.credentials(request, {
-        allow: ['user'],
-      });
       const modifiedBy = credentials.principal.userEntityRef;
       const metadata: RoleMetadataDao = {
         roleEntityRef: roleRaw.name,
@@ -539,14 +485,17 @@ export class PoliciesServer {
 
     router.put('/roles/:kind/:namespace/:name', async (request, response) => {
       const uniqueItems = new Set<string>();
-      const decision = await this.authorize(
+
+      const credentials = await this.authorize(
         request,
         policyEntityUpdatePermission,
       );
-
-      if (decision.result === AuthorizeResult.DENY) {
-        throw new NotAllowedError(); // 403
+      if (credentials.principal.type !== 'user') {
+        throw new NotAllowedError(
+          `Only user credentials are allowed to modify roles`,
+        );
       }
+
       const roleEntityRef = this.getEntityReference(request, true);
 
       const oldRoleRaw: Role = request.body.oldRole;
@@ -578,10 +527,6 @@ export class PoliciesServer {
       const oldRole = this.transformRoleToArray(oldRoleRaw);
       const newRole = this.transformRoleToArray(newRoleRaw);
       // todo shell we allow newRole with an empty array?...
-
-      const credentials = await httpAuth.credentials(request, {
-        allow: ['user'],
-      });
 
       const newMetadata: RoleMetadataDao = {
         ...newRoleRaw.metadata,
@@ -684,13 +629,14 @@ export class PoliciesServer {
     router.delete(
       '/roles/:kind/:namespace/:name',
       async (request, response) => {
-        const decision = await this.authorize(
+        const credentials = await this.authorize(
           request,
           policyEntityDeletePermission,
         );
-
-        if (decision.result === AuthorizeResult.DENY) {
-          throw new NotAllowedError(); // 403
+        if (credentials.principal.type !== 'user') {
+          throw new NotAllowedError(
+            `Only user credentials are allowed to delete roles`,
+          );
         }
 
         const roleEntityRef = this.getEntityReference(request, true);
@@ -732,10 +678,6 @@ export class PoliciesServer {
           throw new NotAllowedError(`Unable to delete role: ${err.message}`);
         }
 
-        const credentials = await httpAuth.credentials(request, {
-          allow: ['user'],
-        });
-
         const metadata: RoleMetadataDao = {
           roleEntityRef,
           source: 'rest',
@@ -766,14 +708,7 @@ export class PoliciesServer {
     );
 
     router.get('/plugins/policies', async (request, response) => {
-      const decision = await this.authorize(
-        request,
-        policyEntityReadPermission,
-      );
-
-      if (decision.result === AuthorizeResult.DENY) {
-        throw new NotAllowedError(); // 403
-      }
+      await this.authorize(request, policyEntityReadPermission);
 
       const body = await this.pluginPermMetaData.getPluginPolicies(
         this.options.auth,
@@ -792,14 +727,7 @@ export class PoliciesServer {
     });
 
     router.get('/plugins/condition-rules', async (request, response) => {
-      const decision = await this.authorize(
-        request,
-        policyEntityReadPermission,
-      );
-
-      if (decision.result === AuthorizeResult.DENY) {
-        throw new NotAllowedError(); // 403
-      }
+      await this.authorize(request, policyEntityReadPermission);
 
       const body = await this.pluginPermMetaData.getPluginConditionRules(
         this.options.auth,
@@ -818,14 +746,7 @@ export class PoliciesServer {
     });
 
     router.get('/roles/conditions', async (request, response) => {
-      const decision = await this.authorize(
-        request,
-        policyEntityReadPermission,
-      );
-
-      if (decision.result === AuthorizeResult.DENY) {
-        throw new NotAllowedError(); // 403
-      }
+      await this.authorize(request, policyEntityReadPermission);
 
       const conditions = await this.conditionalStorage.filterConditions(
         this.getFirstQuery(request.query.roleEntityRef),
@@ -855,14 +776,7 @@ export class PoliciesServer {
     });
 
     router.post('/roles/conditions', async (request, response) => {
-      const decision = await this.authorize(
-        request,
-        policyEntityCreatePermission,
-      );
-
-      if (decision.result === AuthorizeResult.DENY) {
-        throw new NotAllowedError(); // 403
-      }
+      await this.authorize(request, policyEntityCreatePermission);
 
       const roleConditionPolicy: RoleConditionalPolicyDecision<PermissionAction> =
         request.body;
@@ -893,14 +807,7 @@ export class PoliciesServer {
     });
 
     router.get('/roles/conditions/:id', async (request, response) => {
-      const decision = await this.authorize(
-        request,
-        policyEntityReadPermission,
-      );
-
-      if (decision.result === AuthorizeResult.DENY) {
-        throw new NotAllowedError(); // 403
-      }
+      await this.authorize(request, policyEntityReadPermission);
 
       const id: number = parseInt(request.params.id, 10);
       if (isNaN(id)) {
@@ -930,14 +837,7 @@ export class PoliciesServer {
     });
 
     router.delete('/roles/conditions/:id', async (request, response) => {
-      const decision = await this.authorize(
-        request,
-        policyEntityDeletePermission,
-      );
-
-      if (decision.result === AuthorizeResult.DENY) {
-        throw new NotAllowedError(); // 403
-      }
+      await this.authorize(request, policyEntityDeletePermission);
 
       const id: number = parseInt(request.params.id, 10);
       if (isNaN(id)) {
@@ -970,14 +870,7 @@ export class PoliciesServer {
     });
 
     router.put('/roles/conditions/:id', async (request, response) => {
-      const decision = await this.authorize(
-        request,
-        policyEntityUpdatePermission,
-      );
-
-      if (decision.result === AuthorizeResult.DENY) {
-        throw new NotAllowedError(); // 403
-      }
+      await this.authorize(request, policyEntityUpdatePermission);
 
       const id: number = parseInt(request.params.id, 10);
       if (isNaN(id)) {
@@ -1011,14 +904,7 @@ export class PoliciesServer {
     });
 
     router.post('/refresh/:id', async (request, response) => {
-      const decision = await this.authorize(
-        request,
-        policyEntityCreatePermission,
-      );
-
-      if (decision.result === AuthorizeResult.DENY) {
-        throw new NotAllowedError(); // 403
-      }
+      await this.authorize(request, policyEntityCreatePermission);
 
       if (!this.rbacProviders) {
         throw new NotFoundError(`No RBAC providers were found`);
