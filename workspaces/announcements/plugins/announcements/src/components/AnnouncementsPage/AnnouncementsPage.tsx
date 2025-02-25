@@ -15,10 +15,7 @@
  */
 import React, { ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
-import {
-  RequirePermission,
-  usePermission,
-} from '@backstage/plugin-permission-react';
+import { usePermission } from '@backstage/plugin-permission-react';
 import {
   announcementCreatePermission,
   announcementUpdatePermission,
