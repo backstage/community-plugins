@@ -45,7 +45,10 @@ export interface RouterOptions {
   config: Config;
 }
 
-/** @internal */
+/**
+ * @deprecated Please migrate to the new backend system as this will be removed in the future.
+ * @internal
+ * */
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
