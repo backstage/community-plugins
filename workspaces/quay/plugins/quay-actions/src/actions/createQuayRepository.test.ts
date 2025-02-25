@@ -28,7 +28,7 @@ describe('quay:create-repository', () => {
     jest.resetAllMocks();
   });
 
-  const mockContext = createMockActionContext();
+  const mockContext = createMockActionContext({ secrets: { token: 'TOKEN' } });
 
   it('should create a quay repository', async () => {
     const body: ResponseBody = {
