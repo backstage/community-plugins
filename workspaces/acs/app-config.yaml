@@ -50,7 +50,7 @@ proxy:
   '/acs':
     target: ${ACS_API_URL}
     headers:
-      authorization: "Bearer ${ACS_API_KEY}"
+      authorization: 'Bearer ${ACS_API_KEY}'
   ### Example for how to add a proxy endpoint for the frontend.
   ### A typical reason to do this is to handle HTTPS and CORS for internal services.
   # endpoints:

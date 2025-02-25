@@ -11,7 +11,6 @@ metadata:
     service: test-app
     platform: test-platform
 
-
   tags:
     - test-app
 

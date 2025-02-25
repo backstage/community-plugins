@@ -6,4 +6,4 @@ metadata:
   description: A collection of all systems
 spec:
   targets:
-  - ./components/test-app.yaml
+    - ./components/test-app.yaml
