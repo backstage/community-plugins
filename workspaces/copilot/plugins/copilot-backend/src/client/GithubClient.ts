@@ -16,15 +16,27 @@
 
 import { ResponseError } from '@backstage/errors';
 import { Config } from '@backstage/config';
-import { CopilotMetrics, TeamInfo } from '@backstage-community/plugin-copilot-common';
+import {
+  CopilotMetrics,
+  TeamInfo,
+} from '@backstage-community/plugin-copilot-common';
 import fetch from 'node-fetch';
-import { CopilotConfig, CopilotCredentials, getCopilotConfig, getGithubCredentials } from '../utils/GithubUtils';
+import {
+  CopilotConfig,
+  CopilotCredentials,
+  getCopilotConfig,
+  getGithubCredentials,
+} from '../utils/GithubUtils';
 
 interface GithubApi {
   fetchEnterpriseCopilotMetrics: () => Promise<CopilotMetrics[]>;
-  fetchEnterpriseTeamCopilotMetrics: (teamId: string) => Promise<CopilotMetrics[]>;
+  fetchEnterpriseTeamCopilotMetrics: (
+    teamId: string,
+  ) => Promise<CopilotMetrics[]>;
   fetchOrganizationCopilotMetrics: () => Promise<CopilotMetrics[]>;
-  fetchOrganizationTeamCopilotMetrics: (teamId: string) => Promise<CopilotMetrics[]>;
+  fetchOrganizationTeamCopilotMetrics: (
+    teamId: string,
+  ) => Promise<CopilotMetrics[]>;
 
   fetchEnterpriseTeams: () => Promise<TeamInfo[]>;
   fetchOrganizationTeams: () => Promise<TeamInfo[]>;
@@ -50,7 +62,9 @@ export class GithubClient implements GithubApi {
     return this.get(path);
   }
 
-  async fetchEnterpriseTeamCopilotMetrics(teamId: string): Promise<CopilotMetrics[]> {
+  async fetchEnterpriseTeamCopilotMetrics(
+    teamId: string,
+  ): Promise<CopilotMetrics[]> {
     const path = `/enterprises/${this.copilotConfig.enterprise}/team/${teamId}/copilot/metrics`;
     return this.get(path);
   }
@@ -65,7 +79,9 @@ export class GithubClient implements GithubApi {
     return this.get(path);
   }
 
-  async fetchOrganizationTeamCopilotMetrics(teamId: string): Promise<CopilotMetrics[]> {
+  async fetchOrganizationTeamCopilotMetrics(
+    teamId: string,
+  ): Promise<CopilotMetrics[]> {
     const path = `/orgs/${this.copilotConfig.organization}/team/${teamId}/copilot/metrics`;
     return this.get(path);
   }

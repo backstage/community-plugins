@@ -46,22 +46,30 @@ export default class TaskManagement {
   }
 
   async runAsync() {
-    this.options.logger.info(`[TaskManagement] Starting processing of ${this.tasks.length} tasks`);
+    this.options.logger.info(
+      `[TaskManagement] Starting processing of ${this.tasks.length} tasks`,
+    );
 
-    const taskPromises = this.tasks.map(async (task) => {
+    const taskPromises = this.tasks.map(async task => {
       try {
         await task();
       } catch (e) {
         if (e instanceof Error) {
-          this.options.logger.warn(`[TaskManagement] Failed to process task: ${e.message}`);
+          this.options.logger.warn(
+            `[TaskManagement] Failed to process task: ${e.message}`,
+          );
         } else {
-          this.options.logger.warn(`[TaskManagement] Failed to process task: ${e}`);
+          this.options.logger.warn(
+            `[TaskManagement] Failed to process task: ${e}`,
+          );
         }
       }
     });
 
     await Promise.all(taskPromises);
 
-    this.options.logger.info(`[TaskManagement] Completed processing of all tasks`);
+    this.options.logger.info(
+      `[TaskManagement] Completed processing of all tasks`,
+    );
   }
 }

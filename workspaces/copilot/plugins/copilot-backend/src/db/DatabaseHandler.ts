@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-import { resolvePackagePath, DatabaseService } from '@backstage/backend-plugin-api';
+import {
+  resolvePackagePath,
+  DatabaseService,
+} from '@backstage/backend-plugin-api';
 import {
   Metric,
   MetricsType,
@@ -31,7 +34,10 @@ import {
 } from '@backstage-community/plugin-copilot-common';
 import { Knex } from 'knex';
 
-const migrationsDir = resolvePackagePath('@backstage-community/plugin-copilot-backend', 'migrations');
+const migrationsDir = resolvePackagePath(
+  '@backstage-community/plugin-copilot-backend',
+  'migrations',
+);
 
 type Options = {
   database: DatabaseService;
@@ -50,7 +56,11 @@ export type Breakdown = {
 
 export type CopilotMetricsDb = Omit<
   CopilotMetrics,
-  'date' | 'copilot_ide_code_completions' | 'copilot_ide_chat' | 'copilot_dotcom_chat' | 'copilot_dotcom_pull_requests'
+  | 'date'
+  | 'copilot_ide_code_completions'
+  | 'copilot_ide_chat'
+  | 'copilot_dotcom_chat'
+  | 'copilot_dotcom_pull_requests'
 > & {
   day: string;
   /**
@@ -66,7 +76,10 @@ export type CopilotMetricsDb = Omit<
   team_name?: string;
 };
 
-export type CopilotIdeCodeCompletionsDb = Omit<CopilotIdeCodeCompletions, 'editors' | 'languages'> & {
+export type CopilotIdeCodeCompletionsDb = Omit<
+  CopilotIdeCodeCompletions,
+  'editors' | 'languages'
+> & {
   day: string;
   /**
    * The type of the metrics data.
@@ -81,7 +94,10 @@ export type CopilotIdeCodeCompletionsDb = Omit<CopilotIdeCodeCompletions, 'edito
   team_name?: string;
 };
 
-export type CopilotIdeCodeCompletionsLanguageDb = Omit<CopilotIdeLanguages, 'day' | 'name' | 'language'> & {
+export type CopilotIdeCodeCompletionsLanguageDb = Omit<
+  CopilotIdeLanguages,
+  'day' | 'name' | 'language'
+> & {
   day: string;
   /**
    * The type of the metrics data.
@@ -97,7 +113,10 @@ export type CopilotIdeCodeCompletionsLanguageDb = Omit<CopilotIdeLanguages, 'day
   language: string;
 };
 
-export type CopilotIdeCodeCompletionsEditorsDb = Omit<CopilotEditors, 'day' | 'name' | 'models'> & {
+export type CopilotIdeCodeCompletionsEditorsDb = Omit<
+  CopilotEditors,
+  'day' | 'name' | 'models'
+> & {
   day: string;
   /**
    * The type of the metrics data.
@@ -117,7 +136,10 @@ export type CopilotIdeChatsDb = Omit<CopilotChats, 'day' | 'editors'> & {
   day: string;
 };
 
-export type CopilotIdeChatsEditorsDb = Omit<CopilotChatEditors, 'day' | 'name' | 'models' | 'editor'> & {
+export type CopilotIdeChatsEditorsDb = Omit<
+  CopilotChatEditors,
+  'day' | 'name' | 'models' | 'editor'
+> & {
   day: string;
   /**
    * The type of the metrics data.
@@ -133,7 +155,10 @@ export type CopilotIdeChatsEditorsDb = Omit<CopilotChatEditors, 'day' | 'name' |
   editor: string;
 };
 
-export type CopilotIdeChatsEditorModelDb = Omit<CopilotChatModels, 'name' | 'day' | 'model' | 'editor'> & {
+export type CopilotIdeChatsEditorModelDb = Omit<
+  CopilotChatModels,
+  'name' | 'day' | 'model' | 'editor'
+> & {
   day: string;
   /**
    * The type of the metrics data.
@@ -233,7 +258,11 @@ export class DatabaseHandler {
     return { minDate: minDate.day, maxDate: maxDate.day };
   }
 
-  async getTeams(type: MetricsType, startDate: string, endDate: string): Promise<Array<string | undefined>> {
+  async getTeams(
+    type: MetricsType,
+    startDate: string,
+    endDate: string,
+  ): Promise<Array<string | undefined>> {
     const result = await this.db<MetricDbRow>('copilot_metrics')
       .where('type', type)
       .whereBetween('day', [startDate, endDate])
@@ -242,11 +271,14 @@ export class DatabaseHandler {
       .orderBy('team_name', 'asc')
       .select('team_name');
 
-    return result.map((x) => x.team_name);
+    return result.map(x => x.team_name);
   }
 
   async batchInsert(metrics: MetricDbRow[]): Promise<void> {
-    await this.db<MetricDbRow[]>('metrics').insert(metrics).onConflict(['day', 'type', 'team_name']).ignore();
+    await this.db<MetricDbRow[]>('metrics')
+      .insert(metrics)
+      .onConflict(['day', 'type', 'team_name'])
+      .ignore();
   }
 
   async batchInsertMetrics(metrics: CopilotMetricsDb[]): Promise<void> {
@@ -256,29 +288,43 @@ export class DatabaseHandler {
       .ignore();
   }
 
-  async batchInsertIdeCompletions(metrics: CopilotIdeCodeCompletionsDb[]): Promise<void> {
+  async batchInsertIdeCompletions(
+    metrics: CopilotIdeCodeCompletionsDb[],
+  ): Promise<void> {
     await this.db<CopilotIdeCodeCompletionsDb[]>('ide_completions')
       .insert(metrics)
       .onConflict(['day', 'type', 'team_name'])
       .ignore();
   }
 
-  async batchInsertIdeCompletionsLanguages(metrics: CopilotIdeCodeCompletionsLanguageDb[]): Promise<void> {
-    await this.db<CopilotIdeCodeCompletionsLanguageDb[]>('ide_completions_language_users')
+  async batchInsertIdeCompletionsLanguages(
+    metrics: CopilotIdeCodeCompletionsLanguageDb[],
+  ): Promise<void> {
+    await this.db<CopilotIdeCodeCompletionsLanguageDb[]>(
+      'ide_completions_language_users',
+    )
       .insert(metrics)
       .onConflict(['day', 'type', 'team_name', 'language'])
       .ignore();
   }
 
-  async batchInsertIdeCompletionsEditors(metrics: CopilotIdeCodeCompletionsEditorsDb[]): Promise<void> {
-    await this.db<CopilotIdeCodeCompletionsEditorsDb[]>('ide_completions_language_editors')
+  async batchInsertIdeCompletionsEditors(
+    metrics: CopilotIdeCodeCompletionsEditorsDb[],
+  ): Promise<void> {
+    await this.db<CopilotIdeCodeCompletionsEditorsDb[]>(
+      'ide_completions_language_editors',
+    )
       .insert(metrics)
       .onConflict(['day', 'type', 'team_name', 'editor'])
       .ignore();
   }
 
-  async batchInsertIdeCompletionsEditorModels(metrics: CopilotIdeCodeCompletionsEditorModelsDb[]): Promise<void> {
-    await this.db<CopilotIdeCodeCompletionsEditorModelsDb[]>('ide_completions_language_editors_model')
+  async batchInsertIdeCompletionsEditorModels(
+    metrics: CopilotIdeCodeCompletionsEditorModelsDb[],
+  ): Promise<void> {
+    await this.db<CopilotIdeCodeCompletionsEditorModelsDb[]>(
+      'ide_completions_language_editors_model',
+    )
       .insert(metrics)
       .onConflict(['day', 'type', 'team_name', 'editor', 'model'])
       .ignore();
@@ -287,31 +333,43 @@ export class DatabaseHandler {
   async batchInsertIdeCompletionsEditorModelLanguages(
     metrics: CopilotIdeCodeCompletionsEditorModelLanguagesDb[],
   ): Promise<void> {
-    await this.db<CopilotIdeCodeCompletionsEditorModelLanguagesDb[]>('ide_completions_language_editors_model_language')
+    await this.db<CopilotIdeCodeCompletionsEditorModelLanguagesDb[]>(
+      'ide_completions_language_editors_model_language',
+    )
       .insert(metrics)
       .onConflict(['day', 'type', 'team_name', 'editor', 'model', 'language'])
       .ignore();
   }
 
   async batchInsertIdeChats(metrics: CopilotIdeChatsDb[]): Promise<void> {
-    await this.db<CopilotIdeChatsDb[]>('ide_chats').insert(metrics).onConflict(['day', 'type', 'team_name']).ignore();
+    await this.db<CopilotIdeChatsDb[]>('ide_chats')
+      .insert(metrics)
+      .onConflict(['day', 'type', 'team_name'])
+      .ignore();
   }
 
-  async batchInsertIdeChatEditors(metrics: CopilotIdeChatsEditorsDb[]): Promise<void> {
+  async batchInsertIdeChatEditors(
+    metrics: CopilotIdeChatsEditorsDb[],
+  ): Promise<void> {
     await this.db<CopilotIdeChatsEditorsDb[]>('ide_chat_editors')
       .insert(metrics)
       .onConflict(['day', 'type', 'team_name', 'editor'])
       .ignore();
   }
 
-  async batchInsertIdeChatEditorModels(metrics: CopilotIdeChatsEditorModelDb[]): Promise<void> {
+  async batchInsertIdeChatEditorModels(
+    metrics: CopilotIdeChatsEditorModelDb[],
+  ): Promise<void> {
     await this.db<CopilotIdeChatsEditorModelDb[]>('ide_chat_editors_model')
       .insert(metrics)
       .onConflict(['day', 'type', 'team_name', 'editor', 'model'])
       .ignore();
   }
 
-  async getMostRecentDayFromMetrics(type: MetricsType, teamName?: string): Promise<string | undefined> {
+  async getMostRecentDayFromMetrics(
+    type: MetricsType,
+    teamName?: string,
+  ): Promise<string | undefined> {
     try {
       const query = await this.db<MetricDbRow>('metrics')
         .where('type', type)
@@ -324,7 +382,10 @@ export class DatabaseHandler {
     }
   }
 
-  async getMostRecentDayFromMetricsV2(type: MetricsType, teamName?: string): Promise<string | undefined> {
+  async getMostRecentDayFromMetricsV2(
+    type: MetricsType,
+    teamName?: string,
+  ): Promise<string | undefined> {
     try {
       const query = this.db('copilot_metrics')
         .where('type', type)
@@ -338,7 +399,10 @@ export class DatabaseHandler {
     }
   }
 
-  async getEarliestDayFromMetricsV2(type: MetricsType, teamName?: string): Promise<string | undefined> {
+  async getEarliestDayFromMetricsV2(
+    type: MetricsType,
+    teamName?: string,
+  ): Promise<string | undefined> {
     try {
       const query = this.db('copilot_metrics')
         .where('type', type)
@@ -352,7 +416,12 @@ export class DatabaseHandler {
     }
   }
 
-  async getMetrics(startDate: string, endDate: string, type: MetricsType, teamName?: string): Promise<MetricDbRow[]> {
+  async getMetrics(
+    startDate: string,
+    endDate: string,
+    type: MetricsType,
+    teamName?: string,
+  ): Promise<MetricDbRow[]> {
     if (teamName) {
       return await this.db<MetricDbRow>('metrics')
         .where('type', type)
@@ -365,32 +434,61 @@ export class DatabaseHandler {
       .whereBetween('day', [startDate, endDate]);
   }
 
-  async getMetricsV2(startDate: string, endDate: string, type: MetricsType, teamName?: string): Promise<MetricDbRow[]> {
+  async getMetricsV2(
+    startDate: string,
+    endDate: string,
+    type: MetricsType,
+    teamName?: string,
+  ): Promise<MetricDbRow[]> {
     let query = this.db('copilot_metrics as cm')
       .select(
         'cm.day',
         'cm.type',
         'cm.team_name',
-        this.db.raw('CAST(MIN(cm.total_active_users) AS INTEGER) as total_active_users'),
-        this.db.raw('CAST(MIN(ide_chats.total_engaged_users) AS INTEGER) as total_active_chat_users'),
-        this.db.raw('CAST(SUM(icelm.total_code_suggestions) AS INTEGER) as total_suggestions_count'),
-        this.db.raw('CAST(SUM(icelm.total_code_acceptances) AS INTEGER) as total_acceptances_count'),
-        this.db.raw('CAST(SUM(icelm.total_code_lines_suggested) AS INTEGER) as total_lines_suggested'),
-        this.db.raw('CAST(SUM(icelm.total_code_lines_accepted) AS INTEGER) as total_lines_accepted'),
-        this.db.raw('CAST(SUM(icem.total_chats) AS INTEGER) as total_chat_turns'),
-        this.db.raw('CAST(SUM(icem.total_chat_copy_events) AS INTEGER) as total_chat_acceptances'),
+        this.db.raw(
+          'CAST(MIN(cm.total_active_users) AS INTEGER) as total_active_users',
+        ),
+        this.db.raw(
+          'CAST(MIN(ide_chats.total_engaged_users) AS INTEGER) as total_active_chat_users',
+        ),
+        this.db.raw(
+          'CAST(SUM(icelm.total_code_suggestions) AS INTEGER) as total_suggestions_count',
+        ),
+        this.db.raw(
+          'CAST(SUM(icelm.total_code_acceptances) AS INTEGER) as total_acceptances_count',
+        ),
+        this.db.raw(
+          'CAST(SUM(icelm.total_code_lines_suggested) AS INTEGER) as total_lines_suggested',
+        ),
+        this.db.raw(
+          'CAST(SUM(icelm.total_code_lines_accepted) AS INTEGER) as total_lines_accepted',
+        ),
+        this.db.raw(
+          'CAST(SUM(icem.total_chats) AS INTEGER) as total_chat_turns',
+        ),
+        this.db.raw(
+          'CAST(SUM(icem.total_chat_copy_events) AS INTEGER) as total_chat_acceptances',
+        ),
         this.db.raw("'' as breakdown"),
       )
-      .join('ide_completions', (join) => {
-        join.on('ide_completions.day', '=', 'cm.day').andOn('ide_completions.type', '=', 'cm.type');
+      .join('ide_completions', join => {
+        join
+          .on('ide_completions.day', '=', 'cm.day')
+          .andOn('ide_completions.type', '=', 'cm.type');
         if (teamName) {
-          join.andOn('ide_completions.team_name', '=', this.db.raw('?', [teamName]));
+          join.andOn(
+            'ide_completions.team_name',
+            '=',
+            this.db.raw('?', [teamName]),
+          );
         } else {
           join.andOnNull('ide_completions.team_name');
         }
       })
-      .join('ide_chats', (join) => {
-        join.on('ide_chats.day', '=', 'cm.day').andOn('ide_chats.type', '=', 'cm.type');
+      .join('ide_chats', join => {
+        join
+          .on('ide_chats.day', '=', 'cm.day')
+          .andOn('ide_chats.type', '=', 'cm.type');
         if (teamName) {
           join.andOn('ide_chats.team_name', '=', this.db.raw('?', [teamName]));
         } else {
@@ -407,8 +505,10 @@ export class DatabaseHandler {
         FROM ide_completions_language_editors_model_language GROUP BY day, type, team_name) 
         as icelm`,
         ),
-        (join) => {
-          join.on('icelm.day', '=', 'cm.day').andOn('icelm.type', '=', 'cm.type');
+        join => {
+          join
+            .on('icelm.day', '=', 'cm.day')
+            .andOn('icelm.type', '=', 'cm.type');
           if (teamName) {
             join.andOn('icelm.team_name', '=', this.db.raw('?', [teamName]));
           } else {
@@ -422,7 +522,7 @@ export class DatabaseHandler {
       SUM(total_chat_copy_events) as total_chat_copy_events 
       FROM ide_chat_editors_model GROUP BY day, type, team_name) as icem`,
         ),
-        (join) => {
+        join => {
           join.on('icem.day', '=', 'cm.day').andOn('icem.type', '=', 'cm.type');
           if (teamName) {
             join.andOn('icem.team_name', '=', this.db.raw('?', [teamName]));
@@ -445,26 +545,46 @@ export class DatabaseHandler {
     return await query;
   }
 
-  async getBreakdown(startDate: string, endDate: string, type: MetricsType, teamName?: string): Promise<Breakdown[]> {
+  async getBreakdown(
+    startDate: string,
+    endDate: string,
+    type: MetricsType,
+    teamName?: string,
+  ): Promise<Breakdown[]> {
     let query = this.db<Breakdown>('copilot_metrics as cm')
       .select(
         'cm.day',
         'icleml.editor as editor',
         'icleml.language as language',
-        this.db.raw('CAST(SUM(icleml.total_engaged_users) AS INTEGER) as active_users'),
-        this.db.raw('CAST(SUM(icleml.total_code_lines_suggested) AS INTEGER) as lines_suggested'),
-        this.db.raw('CAST(SUM(icleml.total_code_lines_accepted) AS INTEGER) as lines_accepted'),
-        this.db.raw('CAST(SUM(icleml.total_code_suggestions) AS INTEGER) as suggestions_count'),
-        this.db.raw('CAST(SUM(icleml.total_code_acceptances) AS INTEGER) as acceptances_count'),
+        this.db.raw(
+          'CAST(SUM(icleml.total_engaged_users) AS INTEGER) as active_users',
+        ),
+        this.db.raw(
+          'CAST(SUM(icleml.total_code_lines_suggested) AS INTEGER) as lines_suggested',
+        ),
+        this.db.raw(
+          'CAST(SUM(icleml.total_code_lines_accepted) AS INTEGER) as lines_accepted',
+        ),
+        this.db.raw(
+          'CAST(SUM(icleml.total_code_suggestions) AS INTEGER) as suggestions_count',
+        ),
+        this.db.raw(
+          'CAST(SUM(icleml.total_code_acceptances) AS INTEGER) as acceptances_count',
+        ),
       )
-      .join('ide_completions_language_editors_model_language as icleml', (join) => {
-        join.on('icleml.day', '=', 'cm.day').andOn('icleml.type', '=', 'cm.type');
-        if (teamName) {
-          join.andOn('icleml.team_name', '=', this.db.raw('?', [teamName]));
-        } else {
-          join.andOnNull('icleml.team_name');
-        }
-      })
+      .join(
+        'ide_completions_language_editors_model_language as icleml',
+        join => {
+          join
+            .on('icleml.day', '=', 'cm.day')
+            .andOn('icleml.type', '=', 'cm.type');
+          if (teamName) {
+            join.andOn('icleml.team_name', '=', this.db.raw('?', [teamName]));
+          } else {
+            join.andOnNull('icleml.team_name');
+          }
+        },
+      )
       .whereBetween('cm.day', [startDate, endDate])
       .where('icleml.model', 'default')
       .where('cm.type', type)

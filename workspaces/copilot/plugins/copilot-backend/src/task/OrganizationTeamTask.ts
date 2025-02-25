@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-import { CopilotMetrics, MetricsType } from '@backstage-community/plugin-copilot-common';
+import {
+  CopilotMetrics,
+  MetricsType,
+} from '@backstage-community/plugin-copilot-common';
 import { batchInsertInChunks } from '../utils/batchInsert';
 import {
   filterBaseMetrics,
@@ -30,9 +33,16 @@ import {
 } from '../utils/metricHelpers';
 import { TaskOptions } from './TaskManagement';
 
-export async function discoverOrganizationTeamMetrics({ api, logger, db, config }: TaskOptions): Promise<void> {
+export async function discoverOrganizationTeamMetrics({
+  api,
+  logger,
+  db,
+  config,
+}: TaskOptions): Promise<void> {
   if (!config.getOptionalString('copilot.organization')) {
-    logger.info('[discoverOrganizationTeamMetrics] Skipping: Organization configuration not found.');
+    logger.info(
+      '[discoverOrganizationTeamMetrics] Skipping: Organization configuration not found.',
+    );
     return;
   }
 
@@ -40,70 +50,113 @@ export async function discoverOrganizationTeamMetrics({ api, logger, db, config 
 
   try {
     const teams = await api.fetchOrganizationTeams();
-    logger.info(`[discoverOrganizationTeamMetrics] Fetched ${teams.length} teams`);
+    logger.info(
+      `[discoverOrganizationTeamMetrics] Fetched ${teams.length} teams`,
+    );
 
     for (const team of teams) {
       try {
-        logger.info(`[discoverOrganizationTeamMetrics] Fetching metrics for team: ${team.slug}`);
+        logger.info(
+          `[discoverOrganizationTeamMetrics] Fetching metrics for team: ${team.slug}`,
+        );
 
-        const copilotMetrics = await api.fetchOrganizationTeamCopilotMetrics(team.slug);
+        const copilotMetrics = await api.fetchOrganizationTeamCopilotMetrics(
+          team.slug,
+        );
 
         const lastDay = await db.getMostRecentDayFromMetricsV2(type, team.slug);
-        logger.info(`[discoverOrganizationTeamMetrics] Found last day: ${lastDay}`);
+        logger.info(
+          `[discoverOrganizationTeamMetrics] Found last day: ${lastDay}`,
+        );
 
-        const newMetrics: CopilotMetrics[] = filterNewMetricsV2(copilotMetrics, lastDay);
+        const newMetrics: CopilotMetrics[] = filterNewMetricsV2(
+          copilotMetrics,
+          lastDay,
+        );
         logger.info(
           `[discoverOrganizationTeamMetrics] Found ${newMetrics.length} new metrics to insert for team: ${team.slug}`,
         );
 
         if (newMetrics.length > 0) {
           const coPilotMetrics = filterBaseMetrics(newMetrics, type, team.slug);
-          const ideCompletionsToInsert = filterIdeCompletionMetrics(newMetrics, type, team.slug);
-          const ideCompletionsLanguagesToInsert = filterIdeCompletionLanguageMetrics(newMetrics, type, team.slug);
-          const ideCompletionsEditorsToInsert = filterIdeCompletionEditorMetrics(newMetrics, type, team.slug);
-          const ideCompletionsEditorModelsToInsert = filterIdeCompletionEditorModelMetrics(newMetrics, type, team.slug);
-          const ideCompletionsEditorModelLanguagesToInsert = filterIdeCompletionEditorModelLanguageMetrics(
+          const ideCompletionsToInsert = filterIdeCompletionMetrics(
             newMetrics,
             type,
             team.slug,
           );
+          const ideCompletionsLanguagesToInsert =
+            filterIdeCompletionLanguageMetrics(newMetrics, type, team.slug);
+          const ideCompletionsEditorsToInsert =
+            filterIdeCompletionEditorMetrics(newMetrics, type, team.slug);
+          const ideCompletionsEditorModelsToInsert =
+            filterIdeCompletionEditorModelMetrics(newMetrics, type, team.slug);
+          const ideCompletionsEditorModelLanguagesToInsert =
+            filterIdeCompletionEditorModelLanguageMetrics(
+              newMetrics,
+              type,
+              team.slug,
+            );
           const ideChats = filterIdeChatMetrics(newMetrics, type, team.slug);
-          const ideChatEditors = filterIdeEditorMetrics(newMetrics, type, team.slug);
-          const ideChatEditorModels = filterIdeChatEditorModelMetrics(newMetrics, type, team.slug);
+          const ideChatEditors = filterIdeEditorMetrics(
+            newMetrics,
+            type,
+            team.slug,
+          );
+          const ideChatEditorModels = filterIdeChatEditorModelMetrics(
+            newMetrics,
+            type,
+            team.slug,
+          );
 
-          await batchInsertInChunks(coPilotMetrics, 30, async (chunk) => {
+          await batchInsertInChunks(coPilotMetrics, 30, async chunk => {
             await db.batchInsertMetrics(chunk);
           });
 
-          await batchInsertInChunks(ideCompletionsToInsert, 30, async (chunk) => {
+          await batchInsertInChunks(ideCompletionsToInsert, 30, async chunk => {
             await db.batchInsertIdeCompletions(chunk);
           });
 
-          await batchInsertInChunks(ideCompletionsLanguagesToInsert, 30, async (chunk) => {
-            await db.batchInsertIdeCompletionsLanguages(chunk);
-          });
+          await batchInsertInChunks(
+            ideCompletionsLanguagesToInsert,
+            30,
+            async chunk => {
+              await db.batchInsertIdeCompletionsLanguages(chunk);
+            },
+          );
 
-          await batchInsertInChunks(ideCompletionsEditorsToInsert, 30, async (chunk) => {
-            await db.batchInsertIdeCompletionsEditors(chunk);
-          });
+          await batchInsertInChunks(
+            ideCompletionsEditorsToInsert,
+            30,
+            async chunk => {
+              await db.batchInsertIdeCompletionsEditors(chunk);
+            },
+          );
 
-          await batchInsertInChunks(ideCompletionsEditorModelsToInsert, 30, async (chunk) => {
-            await db.batchInsertIdeCompletionsEditorModels(chunk);
-          });
+          await batchInsertInChunks(
+            ideCompletionsEditorModelsToInsert,
+            30,
+            async chunk => {
+              await db.batchInsertIdeCompletionsEditorModels(chunk);
+            },
+          );
 
-          await batchInsertInChunks(ideCompletionsEditorModelLanguagesToInsert, 30, async (chunk) => {
-            await db.batchInsertIdeCompletionsEditorModelLanguages(chunk);
-          });
+          await batchInsertInChunks(
+            ideCompletionsEditorModelLanguagesToInsert,
+            30,
+            async chunk => {
+              await db.batchInsertIdeCompletionsEditorModelLanguages(chunk);
+            },
+          );
 
-          await batchInsertInChunks(ideChats, 30, async (chunk) => {
+          await batchInsertInChunks(ideChats, 30, async chunk => {
             await db.batchInsertIdeChats(chunk);
           });
 
-          await batchInsertInChunks(ideChatEditors, 30, async (chunk) => {
+          await batchInsertInChunks(ideChatEditors, 30, async chunk => {
             await db.batchInsertIdeChatEditors(chunk);
           });
 
-          await batchInsertInChunks(ideChatEditorModels, 30, async (chunk) => {
+          await batchInsertInChunks(ideChatEditorModels, 30, async chunk => {
             await db.batchInsertIdeChatEditorModels(chunk);
           });
 
@@ -111,14 +164,20 @@ export async function discoverOrganizationTeamMetrics({ api, logger, db, config 
             `[discoverOrganizationTeamMetrics] Inserted new metrics into the database for team: ${team.slug}`,
           );
         } else {
-          logger.info(`[discoverOrganizationTeamMetrics] No new metrics found to insert for team: ${team.slug}`);
+          logger.info(
+            `[discoverOrganizationTeamMetrics] No new metrics found to insert for team: ${team.slug}`,
+          );
         }
       } catch (error) {
-        logger.error(`[discoverOrganizationTeamMetrics] Error processing metrics for team ${team.slug}: ${error}`);
+        logger.error(
+          `[discoverOrganizationTeamMetrics] Error processing metrics for team ${team.slug}: ${error}`,
+        );
       }
     }
   } catch (error) {
-    logger.error(`[discoverOrganizationTeamMetrics] Error fetching teams: ${error}`);
+    logger.error(
+      `[discoverOrganizationTeamMetrics] Error fetching teams: ${error}`,
+    );
     throw error;
   }
 }

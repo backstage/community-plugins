@@ -17,7 +17,11 @@
 import { DiscoveryApi, FetchApi } from '@backstage/core-plugin-api';
 import { ResponseError } from '@backstage/errors';
 import { CopilotApi } from './CopilotApi';
-import { Metric, MetricsType, PeriodRange } from '@backstage-community/plugin-copilot-common';
+import {
+  Metric,
+  MetricsType,
+  PeriodRange,
+} from '@backstage-community/plugin-copilot-common';
 import { DateTime } from 'luxon';
 
 export class CopilotClient implements CopilotApi {
@@ -28,11 +32,22 @@ export class CopilotClient implements CopilotApi {
     },
   ) {}
 
-  public async getMetrics(startDate: Date, endDate: Date, type: MetricsType, team?: string): Promise<Metric[]> {
+  public async getMetrics(
+    startDate: Date,
+    endDate: Date,
+    type: MetricsType,
+    team?: string,
+  ): Promise<Metric[]> {
     const queryString = new URLSearchParams();
 
-    queryString.append('startDate', DateTime.fromJSDate(startDate).toFormat('yyyy-MM-dd'));
-    queryString.append('endDate', DateTime.fromJSDate(endDate).toFormat('yyyy-MM-dd'));
+    queryString.append(
+      'startDate',
+      DateTime.fromJSDate(startDate).toFormat('yyyy-MM-dd'),
+    );
+    queryString.append(
+      'endDate',
+      DateTime.fromJSDate(endDate).toFormat('yyyy-MM-dd'),
+    );
 
     queryString.append('type', type);
 
@@ -54,11 +69,21 @@ export class CopilotClient implements CopilotApi {
     return await this.get<PeriodRange>(urlSegment);
   }
 
-  public async fetchTeams(startDate: Date, endDate: Date, type: MetricsType): Promise<string[]> {
+  public async fetchTeams(
+    startDate: Date,
+    endDate: Date,
+    type: MetricsType,
+  ): Promise<string[]> {
     const queryString = new URLSearchParams();
 
-    queryString.append('startDate', DateTime.fromJSDate(startDate).toFormat('yyyy-MM-dd'));
-    queryString.append('endDate', DateTime.fromJSDate(endDate).toFormat('yyyy-MM-dd'));
+    queryString.append(
+      'startDate',
+      DateTime.fromJSDate(startDate).toFormat('yyyy-MM-dd'),
+    );
+    queryString.append(
+      'endDate',
+      DateTime.fromJSDate(endDate).toFormat('yyyy-MM-dd'),
+    );
 
     queryString.append('type', type);
 
