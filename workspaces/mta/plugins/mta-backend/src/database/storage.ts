@@ -1,8 +1,8 @@
 import { resolvePackagePath } from '@backstage/backend-common';
 import { Knex } from 'knex';
-import { Logger } from 'winston';
 import path from 'path';
 import dotenv from 'dotenv';
+import { LoggerService } from '@backstage/backend-plugin-api';
 
 const ENTITY_APPLICATION_TABLE = 'entity-application-mapping';
 const OAUTH_MAPPING_TABLE = 'oauth-mapping';
@@ -11,11 +11,13 @@ const OAUTH_MAPPING_TABLE = 'oauth-mapping';
 dotenv.config();
 
 // Define default plugin root path using APP_ROOT if available
+// TODO: Change the plugin root path to the correct path
+
 const defaultPluginRoot = path.join(
   process.env.APP_ROOT || '/opt/app-root', // Fallback to a hardcoded default if APP_ROOT is not set
   'src',
   'dynamic-plugins-root',
-  'backstage-community-backstage-plugin-mta-backend-dynamic-0.1.1',
+  'backstage-community-backstage-plugin-mta-backend-dynamic-0.2.1',
 );
 
 // Check if running in development environment
@@ -42,7 +44,7 @@ export interface EntityApplicationStorage {
     backstageID: string,
     refreshToken: string,
   ): Promise<Boolean | undefined>;
-  getRefreshTokenForUser(backstageID: string): Promise<String | undefined>;
+  getRefreshTokenForUser(backstageID: string): Promise<string | undefined>;
 }
 
 export class DataBaseEntityApplicationStorage
@@ -50,12 +52,12 @@ export class DataBaseEntityApplicationStorage
 {
   public constructor(
     private readonly knex: Knex<any, any[]>,
-    private readonly logger: Logger,
+    private readonly logger: LoggerService,
   ) {}
 
   static async create(
     knex: Knex<any, any[]>,
-    logger: Logger,
+    logger: LoggerService,
   ): Promise<EntityApplicationStorage> {
     logger.info('Starting to migrate database');
     await knex.migrate.latest({
@@ -148,7 +150,7 @@ export class DataBaseEntityApplicationStorage
 
   async getRefreshTokenForUser(
     backstageID: string,
-  ): Promise<String | undefined> {
+  ): Promise<string | undefined> {
     if (!backstageID) {
       return undefined;
     }
