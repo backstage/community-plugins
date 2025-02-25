@@ -200,6 +200,7 @@ export class ArgoCDService {
     appName: string,
     revisionID: string,
     appNamespace?: string,
+    sourceIndex?: string,
   ): Promise<RevisionInfo | void> {
     try {
       const matchedInstance = this.validateInstance(instanceName);
@@ -209,12 +210,14 @@ export class ArgoCDService {
       const path = `applications/${appName}/revisions/${revisionID}/metadata`;
       const url = buildArgoUrl(matchedInstance.url, path, {
         ...(appNamespace && { appNamespace }),
+        ...(sourceIndex && { sourceIndex }),
       });
       const logMsg = formatOperationMessage(
         `Fetching Revision data for ${appName}`,
         instanceName,
         {
           appNamespace: appNamespace ?? 'N/A',
+          sourceIndex: sourceIndex ?? 'N/A',
         },
       );
       this.logger.info(logMsg);

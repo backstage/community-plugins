@@ -61,6 +61,9 @@ const DeploymentLifecycleCard: React.FC<DeploymentLifecycleCardProps> = ({
   const appName = app?.metadata?.instance?.name ?? 'default';
   const appHistory = app?.status?.history ?? [];
   const latestRevision = appHistory[appHistory.length - 1];
+  const commitTitle = latestRevision?.revisions?.length
+    ? `Commit (1 of ${latestRevision?.revisions?.length})`
+    : 'Commit';
 
   const classes = useCardStyles();
   const { entity } = useEntity();
@@ -99,7 +102,7 @@ const DeploymentLifecycleCard: React.FC<DeploymentLifecycleCardProps> = ({
           </MetadataItem>
 
           {!isAppHelmChartType(app) ? (
-            <MetadataItem title="Commit">
+            <MetadataItem title={commitTitle}>
               <AppCommitLink
                 application={app}
                 entity={entity}

@@ -159,6 +159,15 @@ export const getAppOperationState = (app: Application): OperationState => {
   return app.status.operationState;
 };
 
+const isSubset = (subset: any[], array: any[]): boolean => {
+  if (!array || !array.length) {
+    return false;
+  }
+
+  const targetSet = new Set(array);
+  return subset.every(element => targetSet.has(element));
+};
+
 export const getUniqueRevisions = (apps: Application[]): string[] =>
   apps
     ? apps.reduce((acc, app) => {
@@ -167,6 +176,12 @@ export const getUniqueRevisions = (apps: Application[]): string[] =>
 
         if (history.length > 0) {
           history.forEach(h => {
+            // Multi-source application
+            if (h.revisions && !isSubset(h.revisions, revisions)) {
+              revisions.push(...h.revisions);
+            }
+
+            // Single source application
             if (
               !revisions.includes(h.revision as string) &&
               !isAppHelmChartType(app)
@@ -182,7 +197,8 @@ export const getUniqueRevisions = (apps: Application[]): string[] =>
           }
         });
 
-        return acc;
+        // Filter any potential undefined values
+        return acc.filter(Boolean);
       }, [] as string[])
     : [];
 

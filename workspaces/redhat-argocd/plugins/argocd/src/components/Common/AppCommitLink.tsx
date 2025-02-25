@@ -55,7 +55,19 @@ const AppCommitLink: React.FC<CommitLinkProps> = ({
 }) => {
   const classes = useCommitStyles();
 
-  const revisionInfo = revisionsMap?.[latestRevision?.revision];
+  // If we have a multi-source application,
+  // lets use the first source to keep things simple.
+  const revisionInfo = latestRevision?.revisions
+    ? revisionsMap?.[latestRevision?.revisions[0]]
+    : revisionsMap?.[latestRevision?.revision];
+
+  const revisionSha = latestRevision?.revisions
+    ? latestRevision.revisions[0]
+    : latestRevision?.revision;
+
+  const repoUrl = application?.spec?.sources
+    ? application?.spec?.sources[0]?.repoURL
+    : application?.spec?.source?.repoURL;
   const revisionMessage = revisionInfo?.message;
   const revisionAuthor = revisionInfo?.author;
   const authorInfo = showAuthor ? `by ${revisionAuthor}` : '';
@@ -64,23 +76,22 @@ const AppCommitLink: React.FC<CommitLinkProps> = ({
   return revisionsMap && latestRevision ? (
     <div className={classes.commitContainer}>
       <Chip
-        data-testid={`${latestRevision?.revision?.slice(0, 5)}-commit-link`}
+        data-testid={`${revisionSha.slice(0, 5)}-commit-link`}
         size="small"
         variant="outlined"
         onClick={e => {
           e.stopPropagation();
-          const repoUrl = application?.spec?.source?.repoURL ?? '';
           const annotations = entity?.metadata?.annotations ?? {};
           if (repoUrl.length) {
             window.open(
-              getCommitUrl(repoUrl, latestRevision?.revision, annotations),
+              getCommitUrl(repoUrl, revisionSha, annotations),
               '_blank',
             );
           }
         }}
         icon={<GitLabIcon />}
         color="primary"
-        label={latestRevision?.revision.slice(0, 7)}
+        label={revisionSha.slice(0, 7)}
       />
       <Typography
         variant="body2"
@@ -89,10 +100,7 @@ const AppCommitLink: React.FC<CommitLinkProps> = ({
       >
         {!!revisionInfo ? (
           <Tooltip
-            data-testid={`${latestRevision?.revision?.slice(
-              0,
-              5,
-            )}-commit-message`}
+            data-testid={`${revisionSha?.slice(0, 5)}-commit-message`}
             title={commitMessage}
           >
             <Typography>{commitMessage}</Typography>
