@@ -91,7 +91,7 @@ Note: This only applies to entities of Kind: 'System', 'Domain', or 'Group'
 ```tsx
 // packages/app/src/components/catalog/EntityPage.tsx
 
-import { EntityMaturitySummaryCardContent } from '@backstage-community/plugin-tech-insight-maturity';
+import { EntityMaturitySummaryContent } from '@backstage-community/plugin-tech-insight-maturity';
 
 const systemEntityPage = (
   <EntityLayoutWrapper>
@@ -100,7 +100,7 @@ const systemEntityPage = (
     </EntityLayout.Route>
     ...
     <EntityLayout.Route path="/maturity" title="Maturity">
-      <EntityMaturitySummaryCardContent />
+      <EntityMaturitySummaryContent />
     </EntityLayout.Route>
     ...
   </EntityLayoutWrapper>

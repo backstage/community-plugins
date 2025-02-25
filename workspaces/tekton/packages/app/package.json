@@ -33,7 +33,7 @@
     "@backstage/plugin-catalog-graph": "^0.4.15",
     "@backstage/plugin-catalog-import": "^0.12.9",
     "@backstage/plugin-catalog-react": "^1.15.1",
-    "@backstage/plugin-kubernetes": "^0.12.3",
+    "@backstage/plugin-kubernetes": "^0.12.4",
     "@backstage/plugin-org": "^0.6.35",
     "@backstage/plugin-permission-react": "^0.4.30",
     "@backstage/plugin-scaffolder": "^1.27.4",
