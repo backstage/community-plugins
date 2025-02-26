@@ -11,7 +11,7 @@
   },
   "backstage": {
     "role": "backend-plugin",
-    "supported-versions": "1.35.0",
+    "supported-versions": "1.36.0",
     "pluginId": "redhat-argocd",
     "pluginPackage": "@backstage-community/plugin-redhat-argocd-backend",
     "pluginPackages": [
