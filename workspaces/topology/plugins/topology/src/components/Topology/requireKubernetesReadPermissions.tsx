@@ -39,9 +39,11 @@ export function RequireKubernetesReadPermissions(
     kubernetesClustersReadPermissionResult.loading ||
     kubernetesResourcesReadPermissionResult.loading
   ) {
-    <div data-testid="topology-progress">
-      <Progress />
-    </div>;
+    return (
+      <div data-testid="topology-progress">
+        <Progress />
+      </div>
+    );
   }
 
   if (
