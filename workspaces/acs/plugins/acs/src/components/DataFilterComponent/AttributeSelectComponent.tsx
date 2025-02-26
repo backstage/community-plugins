@@ -36,7 +36,6 @@ export const AttributeSelectComponent = ({
 
   return (
     <Select
-      select="attribute"
       value={selected}
       onChange={handleChange}
       displayEmpty

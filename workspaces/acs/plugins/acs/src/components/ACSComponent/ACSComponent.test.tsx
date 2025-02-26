@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { ACSComponent } from './ACSComponent';
-import { useApi, configApiRef } from '@backstage/core-plugin-api';
+import { configApiRef } from '@backstage/core-plugin-api';
 import {
   renderInTestApp,
   TestApiProvider,
@@ -26,13 +26,11 @@ import { waitFor } from '@testing-library/react';
 
 jest.mock('@backstage/plugin-catalog-react', () => ({
   ...jest.requireActual('@backstage/plugin-catalog-react'),
-  retrieveEntityDeploymentName: jest
-    .fn()
-    .mockReturnValue({
-      metadata: {
-        annotations: { 'acs/deployment-name': 'test-deployment-name' },
-      },
-    }),
+  retrieveEntityDeploymentName: jest.fn().mockReturnValue({
+    metadata: {
+      annotations: { 'acs/deployment-name': 'test-deployment-name' },
+    },
+  }),
 }));
 
 describe('DataFilterComponent', () => {
