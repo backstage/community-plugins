@@ -25,13 +25,9 @@ describe('DataFilterComponent', () => {
     render(<DataFilterComponent setFilters={setFilters} />);
 
     expect(screen.getByRole('textbox')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Image/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Name/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /entity/i })).toBeInTheDocument();
     expect(
-      screen.getByRole('button', { name: /CVE severity/i }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', { name: /CVE status/i }),
+      screen.getByRole('button', { name: /attribute/i }),
     ).toBeInTheDocument();
   });
 });

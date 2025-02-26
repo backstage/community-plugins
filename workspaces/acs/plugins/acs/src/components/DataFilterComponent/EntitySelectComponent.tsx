@@ -38,10 +38,11 @@ export const EntitySelectComponent = ({
 
   return (
     <Select
+      id="entity"
       value={selected}
       onChange={handleChange}
       displayEmpty
-      inputProps={{ 'aria-label': 'Without label' }}
+      inputProps={{ 'aria-label': 'entity' }}
     >
       {Object.entries(options).map(([key, _]) => (
         <MenuItem value={key}>{key}</MenuItem>

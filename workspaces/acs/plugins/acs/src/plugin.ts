@@ -18,10 +18,12 @@ import {
   createComponentExtension,
 } from '@backstage/core-plugin-api';
 
+/** @public */
 export const acsPlugin = createPlugin({
   id: 'acs',
 });
 
+/** @public */
 export const EntityACSContent = acsPlugin.provide(
   createComponentExtension({
     name: 'EntityACSContent',

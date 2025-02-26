@@ -36,10 +36,11 @@ export const AttributeSelectComponent = ({
 
   return (
     <Select
+      select="attribute"
       value={selected}
       onChange={handleChange}
       displayEmpty
-      inputProps={{ 'aria-label': 'Without label' }}
+      inputProps={{ 'aria-label': 'attribute' }}
     >
       {options?.map((value: string) => (
         <MenuItem value={value}>{value}</MenuItem>

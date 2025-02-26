@@ -70,7 +70,7 @@ export const CheckboxSelectComponent = ({
         return (selected as string[]).join(', ');
       }}
       MenuProps={MenuProps}
-      inputProps={{ 'aria-label': 'Without label' }}
+      inputProps={{ 'aria-label': dropdownName }}
     >
       <MenuItem disabled value="">
         <em>{dropdownName}</em>
