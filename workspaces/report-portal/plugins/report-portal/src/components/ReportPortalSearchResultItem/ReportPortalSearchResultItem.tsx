@@ -16,6 +16,7 @@
  */
 import { ReportPortalDocument } from '@backstage-community/plugin-report-portal-common';
 import { Link } from '@backstage/core-components';
+import { EntityRefLink } from '@backstage/plugin-catalog-react';
 import { ResultHighlight } from '@backstage/plugin-search-common';
 import { HighlightedSearchResultText } from '@backstage/plugin-search-react';
 import {
@@ -96,6 +97,13 @@ export const ReportPortalSearchResultItem = (
             <Chip label={`Project: ${result.projectName}`} size="small" />
           )}
           {result.host && <Chip label={`Host: ${result.host}`} size="small" />}
+          {result.entityRef && (
+            <Chip
+              label={<EntityRefLink entityRef={result.entityRef} />}
+              size="small"
+              clickable
+            />
+          )}
         </Box>
       </Box>
     </ListItem>
