@@ -27,7 +27,10 @@ import {
   Theme,
 } from '@material-ui/core';
 
-import { Application, RevisionInfo } from '../../types/application';
+import {
+  Application,
+  RevisionInfo,
+} from '@backstage-community/plugin-redhat-argocd-common';
 import { isAppHelmChartType } from '../../utils/utils';
 import AppNamespace from '../Common/AppNamespace';
 import StatusHeading from '../AppStatus/StatusHeading';
@@ -61,6 +64,9 @@ const DeploymentLifecycleCard: React.FC<DeploymentLifecycleCardProps> = ({
   const appName = app?.metadata?.instance?.name ?? 'default';
   const appHistory = app?.status?.history ?? [];
   const latestRevision = appHistory[appHistory.length - 1];
+  const commitTitle = latestRevision?.revisions?.length
+    ? `Commit (1 of ${latestRevision?.revisions?.length})`
+    : 'Commit';
 
   const classes = useCardStyles();
   const { entity } = useEntity();
@@ -99,7 +105,7 @@ const DeploymentLifecycleCard: React.FC<DeploymentLifecycleCardProps> = ({
           </MetadataItem>
 
           {!isAppHelmChartType(app) ? (
-            <MetadataItem title="Commit">
+            <MetadataItem title={commitTitle}>
               <AppCommitLink
                 application={app}
                 entity={entity}
