@@ -1,5 +1,11 @@
 # @backstage-community/plugin-announcements
 
+## 0.5.2
+
+### Patch Changes
+
+- d1e46c9: Updated context menu visibility logic to dynamically show or hide options based on the create permission.
+
 ## 0.5.1
 
 ### Patch Changes
