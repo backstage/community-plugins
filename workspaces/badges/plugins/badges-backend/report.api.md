@@ -6,6 +6,7 @@
 import { BackendFeature } from '@backstage/backend-plugin-api';
 import { Config } from '@backstage/config';
 import { Entity } from '@backstage/catalog-model';
+import { ExtensionPoint } from '@backstage/backend-plugin-api';
 
 // @public (undocumented)
 export interface Badge {
@@ -36,6 +37,9 @@ export type BadgeBuilder = {
 };
 
 // @public (undocumented)
+export const badgeBuildersExtensionPoint: ExtensionPoint<BadgeExtensionPoint>;
+
+// @public (undocumented)
 export interface BadgeContext {
   // (undocumented)
   badgeUrl: string;
@@ -47,6 +51,16 @@ export interface BadgeContext {
   entity?: Entity;
   // (undocumented)
   style?: BadgeStyle;
+}
+
+// @public (undocumented)
+export interface BadgeExtensionPoint {
+  // (undocumented)
+  setBadgeBuilder(builder: BadgeBuilder): void;
+  // (undocumented)
+  setBadgeFactories(factories: BadgeFactories): void;
+  // (undocumented)
+  setBadgeStore(store: BadgesStore): void;
 }
 
 // @public (undocumented)
