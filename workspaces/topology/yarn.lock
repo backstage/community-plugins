@@ -2793,7 +2793,6 @@ __metadata:
     "@backstage/core-plugin-api": "npm:^1.10.4"
     "@backstage/dev-utils": "npm:^1.1.7"
     "@backstage/plugin-catalog-react": "npm:^1.15.2"
-    "@backstage/plugin-kubernetes": "npm:^0.12.4"
     "@backstage/plugin-kubernetes-common": "npm:^0.9.3"
     "@backstage/plugin-kubernetes-react": "npm:^0.5.4"
     "@backstage/plugin-permission-common": "npm:^0.8.4"
