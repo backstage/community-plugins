@@ -21,6 +21,7 @@ import { isAppHelmChartType } from '../../../../../utils/utils';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import Metadata from '../../../../Common/Metadata';
 import MetadataItem from '../../../../Common/MetadataItem';
+import MetadataItemWithTooltip from '../../../../Common/MetadataItemWithTooltip';
 import AppCommitLink from '../../../../Common/AppCommitLink';
 import { DeploymentHistory } from './DeploymentHistory';
 
@@ -73,9 +74,12 @@ const DeploymentMetadata = ({ resource }: { resource: Resource }) => {
       <Metadata>
         <MetadataItem title="Namespace">{resource?.namespace}</MetadataItem>
         {appHistory.length > 0 ? (
-          <MetadataItem title="Image(s)">
+          <MetadataItemWithTooltip
+            title="Image(s)"
+            tooltipText="These are the images for all the deployments in the ArgoCD application."
+          >
             <ImageLinks />
-          </MetadataItem>
+          </MetadataItemWithTooltip>
         ) : (
           <></>
         )}
