@@ -1,0 +1,10 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: backstage-plugin-manage-module-tech-insights
+  title: '@backstage/plugin-manage-module-tech-insights'
+  description: Manage page, Tech Insights module
+spec:
+  lifecycle: experimental
+  type: backstage-frontend-plugin
+  owner: maintainers
