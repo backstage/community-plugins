@@ -90,7 +90,7 @@ jobs:
         run: yarn install --immutable
 
       - name: Fetch previous commit for release check
-        run: git fetch origin '${{ github.event.before }}'
+        run: git fetch origin '${{ github.event.pull_request.base.sha }}'
 
       - name: Fetch the commit that triggered the workflow (used by backstage/changesets-action)
         run: git fetch origin ${{ github.sha }}
@@ -104,7 +104,8 @@ jobs:
         working-directory: ./
         env:
           WORKSPACE_NAME: ${{ needs.check-merged-pr.outputs.workspace_name }}
-          COMMIT_SHA_BEFORE: '${{ github.event.before }}'
+          COMMIT_SHA_BEFORE: '${{ github.event.pull_request.base.sha }}'
+          TARGET_BRANCH: ${{ github.ref }}
 
       - name: Update Version Packages (${{ needs.check-merged-pr.outputs.workspace_name }}) PR
         id: changesets-pr
