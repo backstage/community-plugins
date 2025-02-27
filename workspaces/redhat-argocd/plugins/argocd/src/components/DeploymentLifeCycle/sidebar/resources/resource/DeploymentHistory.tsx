@@ -42,6 +42,7 @@ export const DeploymentHistory: React.FC<DeploymentHistoryProps> = ({
   const history = appHistory?.slice()?.reverse() || [];
   const { spec } = application || {};
   const sources = spec?.sources || (spec?.source ? [spec.source] : []);
+  const displayedRevisions = new Set<string>();
 
   return (
     <>
@@ -55,6 +56,14 @@ export const DeploymentHistory: React.FC<DeploymentHistoryProps> = ({
 
           return revisions
             .filter((rev): rev is string => typeof rev === 'string')
+            .filter(rev => {
+              // Only show each revision once
+              if (displayedRevisions.has(rev)) {
+                return false;
+              }
+              displayedRevisions.add(rev);
+              return true;
+            })
             .map((revision, index) => {
               // Match revisions to sources by index
               // First revision should always be the main one.
