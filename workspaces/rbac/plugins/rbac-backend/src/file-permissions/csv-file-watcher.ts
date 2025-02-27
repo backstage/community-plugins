@@ -364,7 +364,7 @@ export class CSVFileWatcher extends AbstractFileWatcher<string[][]> {
    * Otherwise, we will remove the role completely.
    */
   private async removeRoles(): Promise<void> {
-    this.csvFilePolicies.removedGroupPolicies.forEach(async (value, key) => {
+    for (const [key, value] of this.csvFilePolicies.removedGroupPolicies) {
       // This requires knowledge of whether or not it is an update
       const isUpdate = await this.enforcer.getFilteredGroupingPolicy(1, key);
 
@@ -408,7 +408,7 @@ export class CSVFileWatcher extends AbstractFileWatcher<string[][]> {
           `Failed to remove group policy ${groupPolicies} after modification ${this.filePath}. Cause: ${e}`,
         );
       }
-    });
+    }
 
     this.csvFilePolicies.removedGroupPolicies = new Map<string, string[]>();
   }
@@ -449,10 +449,10 @@ export class CSVFileWatcher extends AbstractFileWatcher<string[][]> {
   ) {
     // Check for any policies that need to be edited by comparing policies from
     // one enforcer to the other
-    const policiesToRemove = await enforcerOne.getPolicy();
-    const groupPoliciesToRemove = await enforcerOne.getGroupingPolicy();
+    const policiesToEdit = await enforcerOne.getPolicy();
+    const groupPoliciesToEdit = await enforcerOne.getGroupingPolicy();
 
-    for (const policy of policiesToRemove) {
+    for (const policy of policiesToEdit) {
       if (
         !(await enforcerTwo.hasPolicy(...policy)) &&
         (await this.validateAddedPolicy(
@@ -465,7 +465,7 @@ export class CSVFileWatcher extends AbstractFileWatcher<string[][]> {
       }
     }
 
-    for (const groupPolicy of groupPoliciesToRemove) {
+    for (const groupPolicy of groupPoliciesToEdit) {
       if (
         !(await enforcerTwo.hasGroupingPolicy(...groupPolicy)) &&
         (await this.validateAddedGroupPolicy(
@@ -579,20 +579,22 @@ export class CSVFileWatcher extends AbstractFileWatcher<string[][]> {
       }
     });
 
-    diffAdded.forEach(policy => {
+    for (const policy of diffAdded) {
       const convertedPolicy = metadataStringToPolicy(policy);
       if (convertedPolicy[0] === 'p') {
         convertedPolicy.splice(0, 1);
-        this.csvFilePolicies.addedPolicies.push(convertedPolicy);
+        if (await this.validateAddedPolicy(convertedPolicy, tempEnforcer))
+          this.csvFilePolicies.addedPolicies.push(convertedPolicy);
       } else if (convertedPolicy[0] === 'g') {
         convertedPolicy.splice(0, 1);
-        this.addGroupPolicyToMap(
-          this.csvFilePolicies.addedGroupPolicies,
-          convertedPolicy[1],
-          convertedPolicy[0],
-        );
+        if (await this.validateAddedGroupPolicy(convertedPolicy, tempEnforcer))
+          this.addGroupPolicyToMap(
+            this.csvFilePolicies.addedGroupPolicies,
+            convertedPolicy[1],
+            convertedPolicy[0],
+          );
       }
-    });
+    }
   }
 
   addGroupPolicyToMap(
