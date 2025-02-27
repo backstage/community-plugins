@@ -62,6 +62,11 @@ export type RoleAuditInfo = {
   members: string[];
 };
 
+export type RolesAuditInfo = {
+  groupingPolicies: string[][];
+  source: Source;
+};
+
 export type PermissionAuditInfo = {
   policies: string[][];
   source: Source;
