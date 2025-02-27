@@ -39,6 +39,7 @@ import MetadataItem from '../Common/MetadataItem';
 import Metadata from '../Common/Metadata';
 import AppServerLink from '../Common/AppServerLink';
 import AppCommitLink from '../Common/AppCommitLink';
+import MetadataItemWithTooltip from '../Common/MetadataItemWithTooltip';
 
 const useCardStyles = makeStyles<Theme>(theme =>
   createStyles({
@@ -64,9 +65,6 @@ const DeploymentLifecycleCard: React.FC<DeploymentLifecycleCardProps> = ({
   const appName = app?.metadata?.instance?.name ?? 'default';
   const appHistory = app?.status?.history ?? [];
   const latestRevision = appHistory[appHistory.length - 1];
-  const commitTitle = latestRevision?.revisions?.length
-    ? `Commit (1 of ${latestRevision?.revisions?.length})`
-    : 'Commit';
 
   const classes = useCardStyles();
   const { entity } = useEntity();
@@ -105,14 +103,17 @@ const DeploymentLifecycleCard: React.FC<DeploymentLifecycleCardProps> = ({
           </MetadataItem>
 
           {!isAppHelmChartType(app) ? (
-            <MetadataItem title={commitTitle}>
+            <MetadataItemWithTooltip
+              title="Commit"
+              tooltipText="The commit SHA shown below is the latest commit from the first defined Application source."
+            >
               <AppCommitLink
                 application={app}
                 entity={entity}
                 revisionsMap={revisionsMap}
                 latestRevision={latestRevision}
               />
-            </MetadataItem>
+            </MetadataItemWithTooltip>
           ) : (
             <></>
           )}
