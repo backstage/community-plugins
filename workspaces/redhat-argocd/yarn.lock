@@ -2809,6 +2809,7 @@ __metadata:
     "@material-ui/lab": "npm:^4.0.0-alpha.61"
     "@material-ui/styles": "npm:^4.11.5"
     "@mui/icons-material": "npm:^6.0.0"
+    "@mui/material": "npm:^5.15.16"
     "@patternfly/patternfly": "npm:^6.0.0"
     "@patternfly/react-core": "npm:^6.0.0"
     "@patternfly/react-icons": "npm:^6.0.0"

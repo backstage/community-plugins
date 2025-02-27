@@ -15,8 +15,7 @@
  */
 import { Typography, Tooltip } from '@material-ui/core';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-// eslint-disable-next-line no-restricted-imports
-import IconButton from '@mui/material';
+import IconButton from '@mui/material/IconButton';
 import { FlexItem } from '@patternfly/react-core';
 import * as React from 'react';
 import { HTMLAttributes } from 'react';
