@@ -38,6 +38,7 @@ import {
   TeamQuery,
   teamQuerySchema,
 } from './validation/schema';
+import { DateTime } from 'luxon';
 
 /**
  * Options for configuring the Copilot plugin.
@@ -141,13 +142,53 @@ async function createRouter(
     validateQuery(metricsQuerySchema),
     async (req, res) => {
       const { startDate, endDate, type, team } = req.query as MetricsQuery;
+      let metrics: Metric[] = [];
 
-      const result = await db.getMetrics(startDate, endDate, type, team);
+      // if startDate is earlier than last date of MetricsV1, fetch the old data
+      const lastDayOfOldMetrics = await db.getMostRecentDayFromMetrics(
+        type,
+        team,
+      );
 
-      const metrics: Metric[] = result.map(metric => ({
-        ...metric,
-        breakdown: JSON.parse(metric.breakdown),
-      }));
+      if (
+        startDate &&
+        lastDayOfOldMetrics &&
+        DateTime.fromISO(startDate) <=
+          DateTime.fromJSDate(new Date(lastDayOfOldMetrics))
+      ) {
+        const result = await db.getMetrics(startDate, endDate, type, team);
+        metrics = result.map(metric => ({
+          ...metric,
+          breakdown: JSON.parse(metric.breakdown),
+        }));
+      }
+
+      // if endDate is later or equal to first day of new metrics, fetch those also and merge into metrics
+      const firstDayOfNewMetrics = await db.getEarliestDayFromMetricsV2(
+        type,
+        team,
+      );
+      if (
+        endDate &&
+        firstDayOfNewMetrics &&
+        DateTime.fromISO(endDate) >=
+          DateTime.fromJSDate(new Date(firstDayOfNewMetrics))
+      ) {
+        const result = await db.getMetricsV2(startDate, endDate, type, team);
+        const breakdown = await db.getBreakdown(startDate, endDate, type, team);
+
+        const newMetrics = result.map(metric => ({
+          ...metric,
+          breakdown: breakdown.filter(day => {
+            const metricDate = DateTime.fromJSDate(new Date(metric.day));
+            const dayDate = DateTime.fromJSDate(new Date(day.day));
+            return metricDate.equals(dayDate);
+          }),
+        }));
+
+        // Merge new metrics with old metrics
+        metrics = [...metrics, ...newMetrics];
+      }
 
       return res.json(metrics);
     },
@@ -158,7 +199,7 @@ async function createRouter(
     validateQuery(periodRangeQuerySchema),
     async (req, res) => {
       const { type } = req.query as PeriodRangeQuery;
-      const result = await db.getPeriodRange(type);
+      const result = await db.getPeriodRangeV2(type);
 
       if (!result) {
         throw new NotFoundError();
