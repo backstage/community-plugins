@@ -249,3 +249,20 @@ export const sortValues = (
 
   return 0;
 };
+
+interface Commit {
+  author: string;
+  date: Date;
+  message: string;
+}
+
+export const removeDuplicateCommits = (commits: Commit[]) => {
+  const uniqueMap = new Map();
+
+  commits.forEach(commit => {
+    const key = JSON.stringify(commit);
+    uniqueMap.set(key, commit);
+  });
+
+  return Array.from(uniqueMap.values());
+};
