@@ -32,14 +32,6 @@ const MetadataItemWithTooltip: React.FC<MetadataItemWithTooltipProps> = ({
   children,
   ...props
 }) => {
-  const TooltipText = () => {
-    return (
-      <Typography variant="body1" color="textPrimary">
-        {tooltipText}
-      </Typography>
-    );
-  };
-
   return (
     <FlexItem {...props}>
       <Typography variant="body1" color="textPrimary">
@@ -49,7 +41,7 @@ const MetadataItemWithTooltip: React.FC<MetadataItemWithTooltipProps> = ({
             placement="top"
             disableFocusListener
             disableTouchListener
-            title={<TooltipText />}
+            title={tooltipText}
           >
             <IconButton>
               <HelpOutlineIcon />
