@@ -18,3 +18,10 @@
 | react-router-dom     | package.json | error    |
 | react-dom            | package.json | error    |
 | canvas               | package.json | error    |
+
+## Unlisted dependencies (2)
+
+| Name            | Location                        | Severity |
+| :-------------- | :------------------------------ | :------- |
+| @graphiql/react | src/lib/api/GraphQLEndpoints.ts | error    |
+| @graphiql/react | src/lib/api/types.ts            | error    |
