@@ -23,7 +23,7 @@ import { createRouter } from './service/router';
 /**
  * The Bazaar backend plugin.
  *
- * @alpha
+ * @public
  */
 export default createBackendPlugin({
   pluginId: 'bazaar',
