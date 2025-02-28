@@ -70,7 +70,7 @@
     "@types/supertest": "2.0.16",
     "knex-mock-client": "2.0.1",
     "msw": "1.3.5",
-    "prettier": "3.4.2",
+    "prettier": "3.5.2",
     "qs": "6.13.1",
     "supertest": "6.3.4"
   },

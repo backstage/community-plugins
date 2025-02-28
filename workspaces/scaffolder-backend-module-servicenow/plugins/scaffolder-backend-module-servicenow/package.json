@@ -57,7 +57,7 @@
     "@hey-api/openapi-ts": "0.55.3",
     "@types/node-fetch": "2.6.12",
     "msw": "1.3.5",
-    "prettier": "3.4.2"
+    "prettier": "3.5.2"
   },
   "files": [
     "dist",
