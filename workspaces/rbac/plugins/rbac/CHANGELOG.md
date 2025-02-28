@@ -1,5 +1,18 @@
 ### Dependencies
 
+## 1.38.2
+
+### Patch Changes
+
+- 3f80cbb: fixed no record found was being shown before the role list get displayed
+- a388178: Fix to show conditional permission policy with multiple CRUD actions on single resource-type created via CLI/CSV correctly in edit form.
+- a8e2f2c: Updated dependency `@material-ui/lab` to `4.0.0-alpha.61`.
+  Updated dependency `@mui/icons-material` to `5.16.14`.
+  Updated dependency `@mui/material` to `5.16.14`.
+  Updated dependency `@mui/styles` to `5.16.14`.
+  Updated dependency `@mui/x-charts` to `6.19.8`.
+  Updated dependency `@mui/lab` to `5.0.0-alpha.175`.
+
 ## 1.38.1
 
 ### Patch Changes
