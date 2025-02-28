@@ -13,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import axios from 'axios';
-
 class AllocationService {
-  async fetchAllocation(baseUrl, win, aggregate, options) {
+  async fetchAllocation(fetchApi, baseUrl, win, aggregate, options) {
     const { accumulate } = options;
     const params = {
       window: win,
@@ -27,9 +25,20 @@ class AllocationService {
       params.accumulate = accumulate;
     }
 
-    const result = await axios.get(`${baseUrl}/allocation/compute`, { params });
+    const searchParams = new URLSearchParams();
+    for (const [key, value] of Object.entries(params)) {
+      searchParams.append(key, value.toString());
+    }
 
-    return result.data;
+    const url = `${baseUrl}/allocation/compute?${searchParams.toString()}`;
+    const response = await fetchApi.fetch(url);
+
+    if (!response.ok) {
+      throw new Error(`Request failed with status ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
   }
 }
 
