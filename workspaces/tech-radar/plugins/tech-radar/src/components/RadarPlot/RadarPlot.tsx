@@ -27,6 +27,7 @@ export type Props = {
   width: number;
   height: number;
   radius: number;
+  columnCount: number;
   rings: Ring[];
   quadrants: Quadrant[];
   entries: Entry[];
@@ -41,6 +42,7 @@ const RadarPlot = (props: Props): JSX.Element => {
     width,
     height,
     radius,
+    columnCount,
     quadrants,
     rings,
     entries,
@@ -52,6 +54,7 @@ const RadarPlot = (props: Props): JSX.Element => {
   return (
     <g data-testid="radar-plot">
       <RadarLegend
+        columnCount={columnCount}
         quadrants={quadrants}
         rings={rings}
         entries={entries}
