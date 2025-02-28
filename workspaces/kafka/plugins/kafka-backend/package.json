@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-kafka-backend",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "A Backstage backend plugin that integrates towards Kafka",
   "backstage": {
     "role": "backend-plugin",
