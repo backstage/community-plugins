@@ -13,17 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import Knex from 'knex';
-
 import type {
   RoleBasedPolicy,
   Source,
 } from '@backstage-community/plugin-rbac-common';
 
-import {
-  RoleMetadataDao,
-  RoleMetadataStorage,
-} from '../database/role-metadata';
+import { RoleMetadataDao } from '../database/role-metadata';
 import {
   validateEntityReference,
   validateGroupingPolicy,
@@ -33,27 +28,6 @@ import {
 } from './policies-validation';
 
 const modifiedBy = 'user:default/some-admin';
-
-const roleMetadataStorageMock: RoleMetadataStorage = {
-  filterRoleMetadata: jest.fn().mockImplementation(() => []),
-  findRoleMetadata: jest
-    .fn()
-    .mockImplementation(
-      async (
-        _roleEntityRef: string,
-        _trx: Knex.Knex.Transaction,
-      ): Promise<RoleMetadataDao> => {
-        return {
-          roleEntityRef: 'role:default/catalog-reader',
-          source: 'rest',
-          modifiedBy,
-        };
-      },
-    ),
-  createRoleMetadata: jest.fn().mockImplementation(),
-  updateRoleMetadata: jest.fn().mockImplementation(),
-  removeRoleMetadata: jest.fn().mockImplementation(),
-};
 
 describe('rest data validation', () => {
   describe('validate entity referenced policy', () => {
@@ -352,11 +326,7 @@ describe('rest data validation', () => {
     };
 
     it('should not return an error during validation', async () => {
-      const err = await validateGroupingPolicy(
-        groupPolicy,
-        roleMetadataStorageMock,
-        source,
-      );
+      const err = await validateGroupingPolicy(groupPolicy, roleMeta, source);
 
       expect(err).toBeUndefined();
     });
@@ -368,11 +338,7 @@ describe('rest data validation', () => {
         'extra',
       ];
 
-      const err = await validateGroupingPolicy(
-        groupPolicy,
-        roleMetadataStorageMock,
-        source,
-      );
+      const err = await validateGroupingPolicy(groupPolicy, roleMeta, source);
 
       expect(err).toBeTruthy();
       expect(err?.message).toEqual(`Group policy should have length 2`);
@@ -381,11 +347,7 @@ describe('rest data validation', () => {
     it('should return an error if a member starts with role:', async () => {
       groupPolicy = ['role:default/test', 'role:default/catalog-reader'];
 
-      const err = await validateGroupingPolicy(
-        groupPolicy,
-        roleMetadataStorageMock,
-        source,
-      );
+      const err = await validateGroupingPolicy(groupPolicy, roleMeta, source);
 
       expect(err).toBeTruthy();
       expect(err?.message).toEqual(
@@ -396,11 +358,7 @@ describe('rest data validation', () => {
     it('should return an error for group inheritance (user to group)', async () => {
       groupPolicy = ['user:default/test', 'group:default/catalog-reader'];
 
-      const err = await validateGroupingPolicy(
-        groupPolicy,
-        roleMetadataStorageMock,
-        source,
-      );
+      const err = await validateGroupingPolicy(groupPolicy, roleMeta, source);
 
       expect(err).toBeTruthy();
       expect(err?.message).toEqual(
@@ -411,11 +369,7 @@ describe('rest data validation', () => {
     it('should return an error for group inheritance (group to group)', async () => {
       groupPolicy = ['group:default/test', 'group:default/catalog-reader'];
 
-      const err = await validateGroupingPolicy(
-        groupPolicy,
-        roleMetadataStorageMock,
-        source,
-      );
+      const err = await validateGroupingPolicy(groupPolicy, roleMeta, source);
 
       expect(err).toBeTruthy();
       expect(err?.message).toEqual(
@@ -427,11 +381,7 @@ describe('rest data validation', () => {
       groupPolicy = ['user:default/test', 'role:default/catalog-reader'];
       source = 'csv-file';
 
-      const err = await validateGroupingPolicy(
-        groupPolicy,
-        roleMetadataStorageMock,
-        source,
-      );
+      const err = await validateGroupingPolicy(groupPolicy, roleMeta, source);
 
       expect(err).toBeTruthy();
       expect(err?.name).toEqual('NotAllowedError');

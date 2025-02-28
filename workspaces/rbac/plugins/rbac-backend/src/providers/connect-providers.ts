@@ -116,11 +116,10 @@ export class Connection implements RBACProviderConnection {
   private async addRoles(roles: string[][]): Promise<void> {
     for (const role of roles) {
       if (!(await this.enforcer.hasGroupingPolicy(...role))) {
-        const err = await validateGroupingPolicy(
-          role,
-          this.roleMetadataStorage,
-          this.id,
+        const metadata = await this.roleMetadataStorage.findRoleMetadata(
+          role[1],
         );
+        const err = await validateGroupingPolicy(role, metadata, this.id);
 
         if (err) {
           this.logger.warn(err.message);
