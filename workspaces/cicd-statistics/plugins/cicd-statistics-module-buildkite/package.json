@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-cicd-statistics-module-buildkite",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "CI/CD Statistics plugin module; Buildkite CI/CD",
   "backstage": {
     "role": "frontend-plugin-module",
