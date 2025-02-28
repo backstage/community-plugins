@@ -1,12 +1,11 @@
 # Knip report
 
-## Unused dependencies (3)
+## Unused dependencies (2)
 
-| Name                            | Location     | Severity |
-| :------------------------------ | :----------- | :------- |
-| @backstage-community/plugin-acr | package.json | error    |
-| react-router                    | package.json | error    |
-| history                         | package.json | error    |
+| Name         | Location     | Severity |
+| :----------- | :----------- | :------- |
+| react-router | package.json | error    |
+| history      | package.json | error    |
 
 ## Unused devDependencies (4)
 

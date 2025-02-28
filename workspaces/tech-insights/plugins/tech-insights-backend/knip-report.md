@@ -1,13 +1,11 @@
 # Knip report
 
-## Unused dependencies (5)
+## Unused dependencies (2)
 
-| Name                                             | Location     | Severity |
-| :----------------------------------------------- | :----------- | :------- |
-| @backstage-community/plugin-tech-insights-common | package.json | error    |
-| @backstage-community/plugin-tech-insights-node   | package.json | error    |
-| uuid                                             | package.json | error    |
-| yn                                               | package.json | error    |
+| Name | Location     | Severity |
+| :--- | :----------- | :------- |
+| uuid | package.json | error    |
+| yn   | package.json | error    |
 
 ## Unused devDependencies (2)
 
