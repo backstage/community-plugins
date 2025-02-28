@@ -20421,12 +20421,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fastq@npm:^1.15.0, fastq@npm:^1.6.0":
+"fastq@npm:^1.15.0":
   version: 1.19.0
   resolution: "fastq@npm:1.19.0"
   dependencies:
     reusify: "npm:^1.0.4"
   checksum: 10/20457acfb15946f8ea80496da296a0d4930919638315627f093269d302f46fa97eaac3ad180746910edcd6f7163b8125620c30a41427267ffacd10ab67b1c806
+  languageName: node
+  linkType: hard
+
+"fastq@npm:^1.6.0":
+  version: 1.17.1
+  resolution: "fastq@npm:1.17.1"
+  dependencies:
+    reusify: "npm:^1.0.4"
+  checksum: 10/a443180068b527dd7b3a63dc7f2a47ceca2f3e97b9c00a1efe5538757e6cc4056a3526df94308075d7727561baf09ebaa5b67da8dcbddb913a021c5ae69d1f69
   languageName: node
   linkType: hard
 

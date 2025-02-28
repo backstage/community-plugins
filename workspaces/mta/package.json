@@ -41,10 +41,11 @@
   "devDependencies": {
     "@backstage/cli": "^0.26.11",
     "@backstage/e2e-test-utils": "^0.1.1",
-    "@backstage/repo-tools": "^0.10.0",
+    "@backstage/repo-tools": "^0.13.0",
     "@changesets/cli": "^2.27.7",
     "@playwright/test": "^1.32.3",
     "@spotify/prettier-config": "^15.0.0",
+    "knip": "^5.27.4",
     "lerna": "^7.3.0",
     "node-gyp": "^9.0.0",
     "prettier": "^3.3.3",
