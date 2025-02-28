@@ -101,12 +101,17 @@ const DeploymentLifecycle = () => {
           revisionIDs: uniqRevisions,
         })
         .then(data => {
-          uniqRevisions.forEach(rev => {
-            // The backend will return the revisionID with the metadata from ArgoCD.
-            // We can use the revisionID here to correctly assign data to the correct revision
-            // instead of traversing the data by index and assigning revisions to data that way.
-            revisionCache.current[rev] =
-              data.find(r => r.revisionID === rev) ?? ({} as RevisionInfo);
+          uniqRevisions.forEach((rev, i) => {
+            if (data.some(r => r.revisionID)) {
+              // The Red Hat ArgoCD backend will return the revisionID with the metadata from ArgoCD.
+              // We can use the revisionID here to correctly assign data to the correct revision
+              // instead of traversing the data by index and assigning revisions to data that way.
+              revisionCache.current[rev] =
+                data.find(r => r.revisionID === rev) ?? ({} as RevisionInfo);
+            } else {
+              // Fallback to using IDs in case this is not the Red Hat ArgoCD backend.
+              revisionCache.current[rev] = data[i];
+            }
           });
           setRevisions(revisionCache.current);
         })
