@@ -41,6 +41,7 @@ import { BackstageRoleManager } from '../role-manager/role-manager';
 import { EnforcerDelegate } from '../service/enforcer-delegate';
 import { MODEL } from '../service/permission-model';
 import { CSVFileWatcher } from './csv-file-watcher';
+import { conditionalStorageMock } from '../../__fixtures__/mock-utils';
 
 const legacyPermission = [
   'role:default/legacy',
@@ -186,6 +187,7 @@ describe('CSVFileWatcher', () => {
     enforcerDelegate = new EnforcerDelegate(
       enf,
       auditLoggerMock,
+      conditionalStorageMock,
       roleMetadataStorageMock,
       knex,
     );
