@@ -23,7 +23,7 @@ import { ModelsPlural } from '../../models';
 import PermissionAlert from '../common/PermissionAlert';
 import PipelineRunList from '../PipelineRunList/PipelineRunList';
 
-import '@patternfly/react-core/dist/styles/base.css';
+import '@patternfly/react-core/dist/styles/base-no-reset.css';
 import '@patternfly/patternfly/utilities/Accessibility/accessibility.css';
 
 const savedStylesheets = new Set<HTMLLinkElement>();
