@@ -47,9 +47,5 @@ backend.add(
 
 // Quay backend
 backend.add(import('@backstage-community/plugin-quay-backend'));
-// Quay scaffolder module
-backend.add(
-  import('@backstage-community/plugin-scaffolder-backend-module-quay'),
-);
 
 backend.start();
