@@ -108,6 +108,7 @@ Resource type permissions on the other hand are basic named permissions with a r
 | scaffolder.task.create             |                     | create | This permission is used to authorize actions that involve the creation of tasks in the scaffolder                               | scaffolder.template.parameter.read, scaffolder.template.step.read |
 | scaffolder.task.read               |                     | read   | This permission is used to authorize actions that involve reading one or more tasks in the scaffolder and reading logs of tasks | scaffolder.template.parameter.read, scaffolder.template.step.read |
 | scaffolder.task.cancel             |                     | use    | This permission is used to authorize actions that involve the cancellation of tasks in the scaffolder                           | scaffolder.template.parameter.read, scaffolder.template.step.read |
+| scaffolder.template.management     |                     | use    | Allows a user or role to access frontend template management features                                                           |                                                                   |
 
 ## OCM
 
