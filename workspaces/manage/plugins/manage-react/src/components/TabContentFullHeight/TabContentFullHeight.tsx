@@ -86,7 +86,7 @@ export function ManageTabContentFullHeight({
   }, []);
 
   return (
-    <div id="fpp" ref={setRef} style={style}>
+    <div ref={setRef} style={style}>
       {children}
     </div>
   );

@@ -15,6 +15,11 @@
  */
 import { useUserSettings } from '@backstage-community/plugin-manage-react';
 
+/**
+ * Hook to return whether the entity tabs are combined or not.
+ *
+ * @public
+ */
 export function useManagePageCombined(defaultValue?: boolean) {
   return useUserSettings<boolean>('$manage-page-filter', 'combined', {
     defaultValue,
