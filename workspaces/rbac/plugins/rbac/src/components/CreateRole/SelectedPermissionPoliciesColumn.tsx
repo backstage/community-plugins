@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import { getRulesNumber } from '../../utils/create-role-utils';
+import { getPolicyString } from '../../utils/rbac-utils';
 import { ConditionsData } from '../ConditionalAccess/types';
 import { RowPolicy } from './types';
 
@@ -29,13 +30,7 @@ export const selectedPermissionPoliciesColumn = () => [
   {
     title: 'Policies',
     field: 'policies',
-    render: (policies: RowPolicy[]) => {
-      const policyStr = policies.reduce((acc: string, p) => {
-        if (p.effect === 'allow') return acc.concat(`${p.policy}, `);
-        return acc;
-      }, '');
-      return policyStr.slice(0, policyStr.length - 2);
-    },
+    render: (policies: RowPolicy[]) => getPolicyString(policies),
   },
   {
     title: 'Conditional',
