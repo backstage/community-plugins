@@ -31,6 +31,7 @@ import {
   getUniqueRevisions,
   getResourceCreateTimestamp,
   sortValues,
+  removeDuplicateCommits,
 } from '../utils';
 
 describe('Utils', () => {
@@ -450,6 +451,52 @@ describe('Utils', () => {
       expect(sortValues({}, {}, 'asc')).toBe(0);
       expect(sortValues([], [], 'asc')).toBe(0);
       expect(sortValues(null, null, 'asc')).toBe(0);
+    });
+  });
+
+  describe('removeDuplicateCommits', () => {
+    it('should return an empty array if nothing is passed', () => {
+      expect(removeDuplicateCommits([])).toEqual([]);
+    });
+
+    it('should remove commits with duplicate entries', () => {
+      const date =
+        'Fri Feb 28 2025 21:11:22 GMT+0000 (Coordinated Universal Time)';
+      const duplicateCommits = [
+        {
+          author: 'user-a',
+          date: date,
+          message: 'commit sent to repo',
+        },
+        {
+          author: 'user-a',
+          date: date,
+          message: 'commit sent to repo',
+        },
+        {
+          author: 'user-a',
+          date: date,
+          message: 'commit sent to repo',
+        },
+        {
+          author: 'user-b',
+          date: date,
+          message: 'fixes bug issue',
+        },
+      ];
+
+      expect(removeDuplicateCommits(duplicateCommits as any)).toEqual([
+        {
+          author: 'user-a',
+          date: date,
+          message: 'commit sent to repo',
+        },
+        {
+          author: 'user-b',
+          date: date,
+          message: 'fixes bug issue',
+        },
+      ]);
     });
   });
 });
