@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-scaffolder-backend-module-odo",
-  "version": "0.23.0",
+  "version": "0.24.0",
   "description": "The odo module for @backstage/plugin-scaffolder-backend",
   "author": "Red Hat",
   "homepage": "https://odo.dev",
