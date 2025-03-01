@@ -144,7 +144,7 @@ The Tekton plugin enables you to visualize the `PipelineRun` resources available
 
 If you are using permissions, please ensure that the following Kubernetes permissions are enabled:
 
-- `kubernetes.clusters.read	`
+- `kubernetes.clusters.read`
 - `kubernetes.resources.read`
 
 Read [the documentation](https://github.com/backstage/backstage/blob/master/docs/features/kubernetes/permissions.md) for more info on these permissions.

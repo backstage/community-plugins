@@ -27,7 +27,7 @@ import {
   AnalysisRunPhase,
   AnalysisRunPhases,
 } from '../../../../types/analysisRuns';
-import { HealthStatus } from '../../../../types/application';
+import { HealthStatus } from '@backstage-community/plugin-redhat-argocd-common';
 import { RolloutPhase, RolloutPhaseType } from '../../../../types/rollouts';
 
 export const getStatusColor = (

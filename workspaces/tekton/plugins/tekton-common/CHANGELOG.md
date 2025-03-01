@@ -1,5 +1,11 @@
 # @janus-idp/backstage-plugin-tekton-common
 
+## 1.7.0
+
+### Minor Changes
+
+- d5a2be5: Update Kubernetes plugin dependencies
+
 ## 1.6.0
 
 ### Minor Changes

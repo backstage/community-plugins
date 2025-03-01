@@ -42,7 +42,7 @@ import {
   ArgocdDeploymentSummary,
   argocdPlugin,
 } from '../src/plugin';
-import { Application } from '../src/types/application';
+import { Application } from '@backstage-community/plugin-redhat-argocd-common';
 import { customResourceTypes } from '../src/types/resources';
 import {
   mockApplication,

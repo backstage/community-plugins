@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from 'react';
-import { Application } from '../../types/application';
+import { Application } from '@backstage-community/plugin-redhat-argocd-common';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 

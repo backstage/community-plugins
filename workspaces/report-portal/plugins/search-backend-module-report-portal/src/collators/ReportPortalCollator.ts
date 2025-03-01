@@ -15,6 +15,7 @@
  */
 
 import {
+  AuthService,
   LoggerService,
   RootConfigService,
 } from '@backstage/backend-plugin-api';
@@ -27,17 +28,23 @@ import {
 } from '@backstage-community/plugin-report-portal-common';
 import { Readable } from 'stream';
 import { ReportPortalIntegrationConfig } from './types';
+import { CatalogService } from '@backstage/plugin-catalog-node';
+import { stringifyEntityRef } from '@backstage/catalog-model';
 
 type ReportPortalCollatorFactoryOptions = {
   logger: LoggerService;
-  reportPortalIntegrations?: ReportPortalIntegrationConfig[];
   locationTemplate: string;
+  catalog: CatalogService;
+  auth: AuthService;
+  reportPortalIntegrations?: ReportPortalIntegrationConfig[];
 };
 
 export class ReportPortalCollatorFactory implements DocumentCollatorFactory {
   private readonly logger: LoggerService;
   private readonly reportPortalIntegrations: ReportPortalIntegrationConfig[];
   private readonly locationTemplate: string;
+  private readonly catalog: CatalogService;
+  private readonly auth: AuthService;
   type: string = 'report-portal';
 
   static fromConfig(
@@ -62,6 +69,8 @@ export class ReportPortalCollatorFactory implements DocumentCollatorFactory {
   constructor(options: ReportPortalCollatorFactoryOptions) {
     this.reportPortalIntegrations = options.reportPortalIntegrations!;
     this.locationTemplate = options.locationTemplate;
+    this.catalog = options.catalog;
+    this.auth = options.auth;
     this.logger = options.logger.child({
       documentType: this.type,
     });
@@ -69,6 +78,23 @@ export class ReportPortalCollatorFactory implements DocumentCollatorFactory {
 
   async getCollator() {
     return Readable.from(this.execute());
+  }
+
+  async getLinkedEntity(projectName: string, launchName: string) {
+    const { items } = await this.catalog.getEntities(
+      {
+        filter: [
+          {
+            kind: 'component',
+            'metadata.annotations.reportportal.io/project-name': projectName,
+            'metadata.annotations.reportportal.io/launch-name': launchName,
+          },
+        ],
+        limit: 1,
+      },
+      { credentials: await this.auth.getOwnServiceCredentials() },
+    );
+    return items.at(0);
   }
 
   async *execute(): AsyncGenerator<ReportPortalDocument> {
@@ -114,6 +140,10 @@ export class ReportPortalCollatorFactory implements DocumentCollatorFactory {
           });
           const launches = (await resp.json()) as LaunchDetailsResponse;
           for (const launch of launches.content) {
+            const entity = await this.getLinkedEntity(
+              project.projectName,
+              launch.name,
+            );
             yield {
               title: `${launch.name} #${launch.number}`,
               text: `Launch Status: ${launch.status}`,
@@ -122,6 +152,7 @@ export class ReportPortalCollatorFactory implements DocumentCollatorFactory {
               host: reportPortalIntegration.host,
               projectName: project.projectName,
               resourceId: launch.id,
+              entityRef: entity ? stringifyEntityRef(entity) : undefined,
             };
           }
         }
