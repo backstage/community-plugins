@@ -2745,6 +2745,7 @@ __metadata:
     "@backstage/errors": "npm:^1.2.7"
     "@backstage/plugin-scaffolder-node": "npm:^0.6.3"
     cross-fetch: "npm:^4.0.0"
+    jenkins: "npm:^1.1.0"
   languageName: unknown
   linkType: soft
 
@@ -21995,7 +21996,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jenkins@npm:^1.0.0":
+"jenkins@npm:^1.0.0, jenkins@npm:^1.1.0":
   version: 1.1.0
   resolution: "jenkins@npm:1.1.0"
   dependencies:
