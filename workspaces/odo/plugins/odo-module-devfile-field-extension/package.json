@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-odo-module-devfile-field-extension",
-  "version": "0.23.0",
+  "version": "0.24.0",
   "description": "The devfile modules for odo",
   "author": "Red Hat",
   "homepage": "https://odo.dev",
