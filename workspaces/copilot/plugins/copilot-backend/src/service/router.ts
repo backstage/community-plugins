@@ -25,7 +25,10 @@ import {
 } from '@backstage/backend-plugin-api';
 import { Config } from '@backstage/config';
 import { NotFoundError } from '@backstage/errors';
-import { Metric } from '@backstage-community/plugin-copilot-common';
+import {
+  Metric,
+  PeriodRange,
+} from '@backstage-community/plugin-copilot-common';
 import { DatabaseHandler } from '../db/DatabaseHandler';
 import TaskManagement from '../task/TaskManagement';
 import { GithubClient } from '../client/GithubClient';
@@ -199,11 +202,25 @@ async function createRouter(
     validateQuery(periodRangeQuerySchema),
     async (req, res) => {
       const { type } = req.query as PeriodRangeQuery;
-      const result = await db.getPeriodRangeV2(type);
+      const oldMetricRange = await db.getPeriodRange(type);
+      const newMetricRange = await db.getPeriodRangeV2(type);
 
-      if (!result) {
+      if (!oldMetricRange && !newMetricRange) {
         throw new NotFoundError();
       }
+
+      // Determine the minDate, prioritizing oldMetricRange if available
+      const minDate = oldMetricRange?.minDate || newMetricRange?.minDate;
+
+      // Determine the maxDate, prioritizing newMetricRange if available
+      const maxDate = newMetricRange?.maxDate || oldMetricRange?.maxDate;
+
+      // Make sure both minDate and maxDate are defined
+      if (!minDate || !maxDate) {
+        throw new NotFoundError('Unable to determine metric date range');
+      }
+
+      const result: PeriodRange = { minDate, maxDate };
 
       return res.json(result);
     },

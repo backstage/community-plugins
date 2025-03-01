@@ -27,7 +27,7 @@
  * that was deprecated. At some point we should fully convert to the new CopilotMetrics way.
  * Until the frontend is fully converted, we need to keep this type, since the new metrics converts its result to this type.
  *
- * @public
+ * @deprecated
  */
 export interface Breakdown {
   /**
@@ -79,7 +79,7 @@ export type MetricsType = 'enterprise' | 'organization';
  * Until the frontend is fully converted to the new CopilotMetrics way,
  * we need to keep this type, since the new metrics converts its result to this type.
  *
- * @public
+ * @deprecated
  */
 export interface Metric {
   /**
