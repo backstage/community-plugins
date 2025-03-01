@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-vault-backend",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "A Backstage backend plugin that integrates towards Vault",
   "backstage": {
     "role": "backend-plugin",
