@@ -1,7 +1,6 @@
 ---
 '@backstage-community/plugin-copilot-backend': minor
 '@backstage-community/plugin-copilot-common': minor
-'@backstage-community/plugin-copilot': minor
 ---
 
 Backend updated for using the new /metrics API that Github Provides.
