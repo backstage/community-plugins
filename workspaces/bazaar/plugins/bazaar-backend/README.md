@@ -1,5 +1,7 @@
 # bazaar-backend
 
+Welcome to the Bazaar backend plugin!
+
 ## Installation
 
 To install it to your backend package, run the following command:

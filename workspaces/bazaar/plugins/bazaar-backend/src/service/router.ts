@@ -33,6 +33,9 @@ export interface RouterOptions {
 }
 
 /**
+ * @public
+ *
+ * @deprecated
  * Migrate to the new backend system
  *
  * ```ts
@@ -40,8 +43,6 @@ export interface RouterOptions {
  * ```
  *
  * createRouter will be removed in an upcoming release
- *
- * @public
  */
 export async function createRouter(
   options: RouterOptions,

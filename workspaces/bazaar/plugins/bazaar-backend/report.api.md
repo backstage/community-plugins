@@ -11,9 +11,10 @@ import { HttpAuthService } from '@backstage/backend-plugin-api';
 import { LoggerService } from '@backstage/backend-plugin-api';
 
 // @public
-export const bazaarBackendPlugin: BackendFeature;
+const bazaarBackendPlugin: BackendFeature;
+export default bazaarBackendPlugin;
 
-// @public
+// @public @deprecated (undocumented)
 export function createRouter(options: RouterOptions): Promise<express.Router>;
 
 // @public (undocumented)

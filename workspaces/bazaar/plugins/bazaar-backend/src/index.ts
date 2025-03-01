@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 
-export { default as bazaarBackendPlugin } from './plugin';
+export { bazaarBackendPlugin as default } from './plugin';
 
 export * from './service/router';
