@@ -225,7 +225,6 @@ export class CSVFileWatcher extends AbstractFileWatcher<string[][]> {
    * methods for these.
    * It will also update the current contents of the CSV file to the most recent
    * @param newContent The new content present in the CSV file
-   * @param tempEnforcer Temporary enforcer for checking for duplicates when adding policies
    */
   private async updatePolicies(newContent: string[][]): Promise<void> {
     this.currentContent = newContent;
@@ -241,9 +240,6 @@ export class CSVFileWatcher extends AbstractFileWatcher<string[][]> {
 
   /**
    * addPermissionPolicies will add the new permission policies that are present in the CSV file.
-   * We will attempt to validate the permission policy and log any warnings that are encountered.
-   * If a warning is encountered, we will skip adding the permission policy to the enforcer.
-   * @param tempEnforcer Temporary enforcer for checking for duplicates when adding policies
    */
   private async addPermissionPolicies(): Promise<void> {
     try {
@@ -299,9 +295,6 @@ export class CSVFileWatcher extends AbstractFileWatcher<string[][]> {
 
   /**
    * addRoles will add the new roles that are present in the CSV file.
-   * We will attempt to validate the role and log any warnings that are encountered.
-   * If a warning is encountered, we will skip adding the role to the enforcer.
-   * @param tempEnforcer Temporary enforcer for checking for duplicates when adding policies
    */
   private async addRoles(): Promise<void> {
     const addedPolicies: string[][] = [];
@@ -420,11 +413,11 @@ export class CSVFileWatcher extends AbstractFileWatcher<string[][]> {
 
     if (fileRoles.length > 0) {
       for (const fileRole of fileRoles) {
-        const filteredpolicies = await this.enforcer.getFilteredGroupingPolicy(
+        const filteredPolicies = await this.enforcer.getFilteredGroupingPolicy(
           1,
           fileRole,
         );
-        for (const groupPolicy of filteredpolicies) {
+        for (const groupPolicy of filteredPolicies) {
           this.addGroupPolicyToMap(
             this.csvFilePolicies.removedGroupPolicies,
             groupPolicy[1],
