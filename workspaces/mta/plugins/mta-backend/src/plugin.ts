@@ -9,6 +9,7 @@ import { DataBaseEntityApplicationStorage } from './database/storage';
 import { errorHandler } from '@backstage/backend-common';
 import path from 'path';
 
+// @public (undocumented)
 export const mtaPlugin = createBackendPlugin({
   pluginId: 'mta',
   register(env) {
