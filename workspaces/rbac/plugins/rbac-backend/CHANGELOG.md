@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 5.5.1
+
+### Patch Changes
+
+- fcfaf89: Fixed an issue where aliases would not be applied across all conditional policy rules.
+
 ## 5.5.0
 
 ### Minor Changes
