@@ -5,7 +5,7 @@
 ```ts
 
 import { BackendFeatureCompat } from '@backstage/backend-plugin-api';
-import { JsonObject } from '@backstage/types';
+import { JsonObject } from '@backstage/types/index';
 import { TemplateAction } from '@backstage/plugin-scaffolder-node';
 
 // @public (undocumented)
