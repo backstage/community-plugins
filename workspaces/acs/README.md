@@ -7,11 +7,7 @@
 
 ### Prerequisites
 
-Along with the NodeJS specific prerequisites we'll cover below you will need to have some bog-standard development tools installed:
-
-- Git
-- Make
-- Podman / Docker
+Please refer to the [Backstage Prerequisites page](https://backstage.io/docs/getting-started/#prerequisites) regarding getting started.
 
 ### Node CLI Tools
 
