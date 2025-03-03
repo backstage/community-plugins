@@ -2831,9 +2831,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-tech-insights-maturity@workspace:plugins/tech-insights-maturity"
   dependencies:
-    "@backstage-community/plugin-tech-insights": "workspace:^"
     "@backstage-community/plugin-tech-insights-common": "workspace:^"
     "@backstage-community/plugin-tech-insights-maturity-common": "workspace:^"
+    "@backstage-community/plugin-tech-insights-react": "workspace:^"
     "@backstage/catalog-client": "npm:^1.9.1"
     "@backstage/catalog-model": "npm:^1.7.3"
     "@backstage/cli": "npm:^0.29.6"
