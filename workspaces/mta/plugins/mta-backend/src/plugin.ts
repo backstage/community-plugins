@@ -6,7 +6,6 @@ import express, { Router } from 'express';
 import { Issuer, generators } from 'openid-client';
 import { isTokenExpired } from './utils';
 import { DataBaseEntityApplicationStorage } from './database/storage';
-import { errorHandler } from '@backstage/backend-common';
 import path from 'path';
 
 // @public (undocumented)
@@ -310,7 +309,6 @@ export const mtaPlugin = createBackendPlugin({
         });
 
         // Attach error handler
-        router.use(errorHandler());
 
         // Register authentication policy
         http.addAuthPolicy({
