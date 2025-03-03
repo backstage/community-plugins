@@ -54,7 +54,7 @@ export const mtaPlugin = createBackendPlugin({
           response_types: ['code'],
         });
 
-        const mtaVersion = config.getOptionalString('mta.version') ?? '0.2.1'; // Set in config
+        const mtaVersion = config.getOptionalString('mta.version') ?? '0.2.2'; // Set in config
         const defaultBase = process.env.APP_ROOT ?? '/opt/app-root';
         const pluginRoot = path.join(
           defaultBase,
