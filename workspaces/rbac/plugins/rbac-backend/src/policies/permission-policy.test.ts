@@ -304,6 +304,24 @@ describe('RBACPermissionPolicy Tests', () => {
           };
           return [roleMetadataDao];
         });
+
+      roleMetadataStorageMock.findRoleMetadata = jest
+        .fn()
+        .mockImplementation(
+          async (
+            roleEntityRef: string,
+            _trx: Knex.Knex.Transaction,
+          ): Promise<RoleMetadata> => {
+            if (roleEntityRef.includes('rbac_admin')) {
+              return { source: 'configuration' };
+            }
+            if (roleEntityRef.includes('some-role')) {
+              return { source: 'rest' };
+            }
+            return { source: 'csv-file' };
+          },
+        );
+
       const storedGroupPolicies = [
         // should be removed
         ['user:default/user-old-1', 'role:default/old-role'],
