@@ -23,6 +23,7 @@ data:
 
     mta:
       url: <MTA_URL>
+      version: "<MTA_BACKEND_PLUGIN_PACKAGE_VERSION>"
       providerAuth:
         realm: mta
         secret: backstage-provider-secret

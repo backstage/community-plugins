@@ -27,6 +27,7 @@ data:
 
     mta:
       url: https://mta-openshift-mta.ianbolton-1-3626522b15eedb880d7b99992e225c1b-0000.us-east.containers.appdomain.cloud
+      version: "0.2.1"
       providerAuth:
         realm: mta
         secret: backstage-provider-secret

@@ -7,6 +7,7 @@ import { Issuer, generators } from 'openid-client';
 import { isTokenExpired } from './utils';
 import { DataBaseEntityApplicationStorage } from './database/storage';
 import { errorHandler } from '@backstage/backend-common';
+import path from 'path';
 
 export const mtaPlugin = createBackendPlugin({
   pluginId: 'mta',
@@ -52,10 +53,25 @@ export const mtaPlugin = createBackendPlugin({
           response_types: ['code'],
         });
 
+        const mtaVersion = config.getOptionalString('mta.version') ?? '0.2.1'; // Set in config
+        const defaultBase = process.env.APP_ROOT ?? '/opt/app-root';
+        const pluginRoot = path.join(
+          defaultBase,
+          'src',
+          'dynamic-plugins-root',
+          `backstage-community-backstage-plugin-mta-backend-dynamic-${mtaVersion}`,
+        );
+
+        const migrationsDir = path.join(pluginRoot, 'migrations');
+        logger.info(`Using migrations directory: ${migrationsDir}`);
+
         const databaseClient = await database.getClient();
         const entityApplicationStorage =
-          await DataBaseEntityApplicationStorage.create(databaseClient, logger);
-        // const cacheClient = await cache.getClient();
+          await DataBaseEntityApplicationStorage.create(
+            databaseClient,
+            logger,
+            migrationsDir,
+          );
 
         // OpenID Code Challenge
         const code_verifier = generators.codeVerifier();
