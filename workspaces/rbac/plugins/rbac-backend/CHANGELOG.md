@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 5.5.2
+
+### Patch Changes
+
+- 9aa839a: Fixes two issues that were impact the performance, the first was that we were individually adding and removing roles and the second was we were removing all policies and roles regardless of whether they should actually be removed.
+
 ## 5.5.1
 
 ### Patch Changes
