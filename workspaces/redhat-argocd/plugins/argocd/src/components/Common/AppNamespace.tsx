@@ -18,7 +18,7 @@ import React from 'react';
 import { Chip, Typography } from '@material-ui/core';
 import { Flex, FlexItem } from '@patternfly/react-core';
 
-import { Application } from '../../types/application';
+import { Application } from '@backstage-community/plugin-redhat-argocd-common';
 
 const AppNamespace: React.FC<{ app: Application }> = ({ app }) => {
   if (!app) {

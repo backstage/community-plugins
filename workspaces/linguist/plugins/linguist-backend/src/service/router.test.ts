@@ -18,7 +18,7 @@ import express from 'express';
 import request from 'supertest';
 import { Server } from 'http';
 import { createRouter } from './router';
-import { wrapServer } from '@backstage/backend-openapi-utils';
+import { wrapServer } from '@backstage/backend-openapi-utils/testUtils';
 import { LinguistBackendApi } from '../api';
 import { mockServices, TestDatabases } from '@backstage/backend-test-utils';
 import { UrlReaderService } from '@backstage/backend-plugin-api';
