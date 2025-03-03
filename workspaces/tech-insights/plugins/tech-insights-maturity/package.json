@@ -52,9 +52,9 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
-    "@backstage-community/plugin-tech-insights": "workspace:^",
     "@backstage-community/plugin-tech-insights-common": "workspace:^",
     "@backstage-community/plugin-tech-insights-maturity-common": "workspace:^",
+    "@backstage-community/plugin-tech-insights-react": "workspace:^",
     "@backstage/catalog-client": "^1.9.1",
     "@backstage/catalog-model": "^1.7.3",
     "@backstage/core-components": "^0.16.3",
