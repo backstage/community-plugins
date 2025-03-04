@@ -21,7 +21,10 @@ import { MockConfigApi, TestApiProvider } from '@backstage/test-utils';
 import { fireEvent, render, screen } from '@testing-library/react';
 
 import { mockApplication, mockEntity } from '../../../../dev/__data__';
-import { Application, Source } from '../../../types/application';
+import {
+  Application,
+  Source,
+} from '@backstage-community/plugin-redhat-argocd-common';
 import DeploymentLifecycleDrawer from '../DeploymentLifecycleDrawer';
 import { useArgoResources } from '../sidebar/rollouts/RolloutContext';
 import { useDrawerContext } from '../DrawerContext';

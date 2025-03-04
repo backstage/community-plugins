@@ -25,7 +25,10 @@ import { argoCDApiRef } from '../../api';
 import { useApplications } from '../../hooks/useApplications';
 import { useArgocdConfig } from '../../hooks/useArgocdConfig';
 import { useArgocdViewPermission } from '../../hooks/useArgocdViewPermission';
-import { Application, RevisionInfo } from '../../types/application';
+import {
+  Application,
+  RevisionInfo,
+} from '@backstage-community/plugin-redhat-argocd-common';
 import {
   getArgoCdAppConfig,
   getInstanceName,
@@ -98,8 +101,12 @@ const DeploymentLifecycle = () => {
           revisionIDs: uniqRevisions,
         })
         .then(data => {
-          uniqRevisions.forEach((rev, i) => {
-            revisionCache.current[rev] = data[i];
+          uniqRevisions.forEach(rev => {
+            // The backend will return the revisionID with the metadata from ArgoCD.
+            // We can use the revisionID here to correctly assign data to the correct revision
+            // instead of traversing the data by index and assigning revisions to data that way.
+            revisionCache.current[rev] =
+              data.find(r => r.revisionID === rev) ?? ({} as RevisionInfo);
           });
           setRevisions(revisionCache.current);
         })

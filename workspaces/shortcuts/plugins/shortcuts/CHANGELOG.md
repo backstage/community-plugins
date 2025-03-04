@@ -1,5 +1,11 @@
 # @backstage-community/plugin-shortcuts
 
+## 0.6.0
+
+### Minor Changes
+
+- aca1af5: Backstage version bump to v1.36.1
+
 ## 0.5.2
 
 ### Patch Changes

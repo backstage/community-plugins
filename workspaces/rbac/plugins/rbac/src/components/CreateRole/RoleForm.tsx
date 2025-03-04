@@ -220,10 +220,14 @@ export const RoleForm = ({
   };
 
   const canNextPermissionPoliciesStep = () => {
+    const selectedPluginsLength = formik.values.selectedPlugins.filter(
+      sp => !!sp.value,
+    ).length;
     return (
-      !!formik.values.selectedPlugins.length &&
-      formik.values.permissionPoliciesRows.filter(pp => !!pp?.plugin).length ===
-        formik.values.permissionPoliciesRows.length &&
+      selectedPluginsLength > 0 &&
+      formik.values.permissionPoliciesRows.filter(pp =>
+        formik.values.selectedPlugins.find(sp => sp.value === pp.plugin),
+      ).length >= selectedPluginsLength &&
       !formik.errors.selectedPlugins &&
       (!formik.errors.permissionPoliciesRows ||
         (Array.isArray(formik.errors.permissionPoliciesRows) &&

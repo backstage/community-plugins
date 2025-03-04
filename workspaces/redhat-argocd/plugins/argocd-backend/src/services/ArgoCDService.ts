@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 
-import { Instance, Application, RevisionInfo } from '../types';
+import {
+  Instance,
+  Application,
+  RevisionInfo,
+} from '@backstage-community/plugin-redhat-argocd-common';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { Config } from '@backstage/config';
 import {
@@ -192,33 +196,45 @@ export class ArgoCDService {
    * @param {string} instanceName  - Name of the ArgoCD instance
    * @param {string} appName - Name of the application
    * @param {string} revisionID - Revision identifier
-   * @param {string} appNamespace - ArgoCD Application namespace
+   * @param {Object} options - Filter options
+   * @param {string} [options.appNamespace] - ArgoCD Application namespace
+   * @param {string} [options.sourceIndex] - Source index (for multi source apps).
    * @returns {Promise<Revision | void>} Revision details or void if error occurs
    */
   async getRevisionDetails(
     instanceName: string,
     appName: string,
     revisionID: string,
-    appNamespace?: string,
+    options?: {
+      appNamespace?: string;
+      sourceIndex?: string;
+    },
   ): Promise<RevisionInfo | void> {
     try {
       const matchedInstance = this.validateInstance(instanceName);
+      const { appNamespace, sourceIndex } = options ?? {};
       const token =
         matchedInstance.token ?? (await this.getToken(matchedInstance));
 
       const path = `applications/${appName}/revisions/${revisionID}/metadata`;
       const url = buildArgoUrl(matchedInstance.url, path, {
         ...(appNamespace && { appNamespace }),
+        ...(sourceIndex && { sourceIndex }),
       });
       const logMsg = formatOperationMessage(
         `Fetching Revision data for ${appName}`,
         instanceName,
         {
           appNamespace: appNamespace ?? 'N/A',
+          sourceIndex: sourceIndex ?? 'N/A',
         },
       );
       this.logger.info(logMsg);
       const data = await makeArgoRequest(url, token);
+
+      // Add this small modification so we can identify the revision with the message
+      // in the front end.
+      data.revisionID = revisionID;
 
       return data;
     } catch (error) {
@@ -228,7 +244,8 @@ export class ArgoCDService {
         {
           revisionID,
           appName,
-          appNamespace: appNamespace ?? 'N/A',
+          appNamespace: options?.appNamespace ?? 'N/A',
+          sourceIndex: options?.sourceIndex ?? 'N/A',
         },
       );
       return this.handleError(baseMessage, error);

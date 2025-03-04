@@ -18,7 +18,7 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 
 import { ResourcesTableHeader } from '../ResourcesTableHeader';
-import { Order } from '../../../../../types/application';
+import { Order } from '@backstage-community/plugin-redhat-argocd-common';
 
 jest.mock('../ResourcesColumnHeader', () => ({
   ResourcesColumnHeaders: [

@@ -179,7 +179,10 @@ describe('router', () => {
         'test-instance',
         'test-app',
         'abc123',
-        undefined,
+        {
+          appNamespace: undefined,
+          sourceIndex: undefined,
+        },
       );
     });
 
@@ -203,7 +206,10 @@ describe('router', () => {
         'test-instance',
         'test-app',
         'abc123',
-        'staging',
+        {
+          appNamespace: 'staging',
+          sourceIndex: undefined,
+        },
       );
     });
   });

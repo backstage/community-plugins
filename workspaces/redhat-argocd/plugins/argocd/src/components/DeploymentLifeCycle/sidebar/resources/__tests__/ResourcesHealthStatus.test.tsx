@@ -18,7 +18,7 @@ import { render, screen } from '@testing-library/react';
 
 import { ResourceHealthStatus } from '../ResourcesHealthStatus';
 import { AppHealthIcon } from '../../../../AppStatus/StatusIcons';
-import { HealthStatus } from '../../../../../types/application';
+import { HealthStatus } from '@backstage-community/plugin-redhat-argocd-common';
 
 jest.mock('../../../../AppStatus/StatusIcons', () => ({
   AppHealthIcon: jest.fn(() => <span>Mocked Health Icon</span>),

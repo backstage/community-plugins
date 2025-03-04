@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 import React, { createContext, ReactNode } from 'react';
-import { Application, History, RevisionInfo } from '../../types/application';
+import {
+  Application,
+  History,
+  RevisionInfo,
+} from '@backstage-community/plugin-redhat-argocd-common';
 
 interface DrawerContextValue {
   application: Application;

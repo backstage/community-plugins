@@ -1,5 +1,11 @@
 # @backstage-community/plugin-puppetdb
 
+## 0.4.0
+
+### Minor Changes
+
+- 7beb5db: Backstage version bump to v1.36.1
+
 ## 0.3.0
 
 ### Minor Changes

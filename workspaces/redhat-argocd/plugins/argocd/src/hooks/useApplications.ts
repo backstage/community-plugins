@@ -19,7 +19,7 @@ import { useAsyncRetry, useInterval } from 'react-use';
 import { useApi } from '@backstage/core-plugin-api';
 
 import { argoCDApiRef } from '../api';
-import { Application } from '../types/application';
+import { Application } from '@backstage-community/plugin-redhat-argocd-common';
 
 interface AppOptions {
   instanceName: string;

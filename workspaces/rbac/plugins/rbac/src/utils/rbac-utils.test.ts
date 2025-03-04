@@ -365,7 +365,7 @@ describe('getConditionalPermissionsData', () => {
           permissions: ['catalog.entity.read'],
           policies: {
             ['catalog.entity.read']: {
-              policies: ['read'],
+              policies: ['Read'],
               isResourced: true,
               resourceType: 'catalog-entity',
             },
@@ -386,7 +386,7 @@ describe('getConditionalPermissionsData', () => {
         permission: 'catalog.entity.read',
         isResourced: true,
         resourceType: 'catalog-entity',
-        policies: [{ policy: 'read', effect: 'allow' }],
+        policies: [{ policy: 'Read', effect: 'allow' }],
         policyString: 'Read',
         conditions: {
           condition: {

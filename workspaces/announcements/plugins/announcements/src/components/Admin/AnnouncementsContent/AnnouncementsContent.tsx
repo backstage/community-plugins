@@ -19,6 +19,8 @@ import {
   Progress,
   Table,
   TableColumn,
+  StatusOK,
+  StatusPending,
 } from '@backstage/core-components';
 import { alertApiRef, useApi } from '@backstage/core-plugin-api';
 import {
@@ -203,11 +205,15 @@ export const AnnouncementsContent = () => {
         <Typography>{t('admin.announcementsContent.table.status')}</Typography>
       ),
       sorting: true,
-      field: 'category',
+      field: 'active',
       render: rowData =>
-        rowData.active
-          ? t('admin.announcementsContent.table.active')
-          : t('admin.announcementsContent.table.inactive'),
+        rowData.active ? (
+          <StatusOK>{t('admin.announcementsContent.table.active')}</StatusOK>
+        ) : (
+          <StatusPending>
+            {t('admin.announcementsContent.table.inactive')}
+          </StatusPending>
+        ),
     },
     {
       title: (

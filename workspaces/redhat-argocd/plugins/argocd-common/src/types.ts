@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2025 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,10 +27,15 @@ export interface Application {
 
 export interface Instance {
   name: string;
+  url: string;
+  password?: string;
+  token?: string;
+  username?: string;
 }
 
 export interface Spec {
   source: Source;
+  sources?: Source[];
   destination: Destination;
   project: string;
 }
@@ -43,7 +48,7 @@ export interface Destination {
 export interface Source {
   chart?: string;
   repoURL: string;
-  path: string;
+  path?: string;
   helm?: {
     parameters: {
       name: string;
@@ -61,6 +66,8 @@ export interface Status {
   history?: History[];
   reconciledAt?: string;
   sourceType?: string;
+  sourceTypes?: string[];
+  controllerNamespace?: string;
   summary: Summary;
 }
 
@@ -69,11 +76,14 @@ export interface Health {
 }
 
 export interface History {
-  revision: string;
+  revision?: string;
+  revisions?: string[];
   deployedAt: string;
   id: number;
   source: Source;
+  sources?: Source[];
   deployStartedAt: string;
+  initiatedBy?: InitiatedBy;
 }
 
 export interface OperationState {
@@ -97,7 +107,9 @@ export interface InitiatedBy {
 
 export interface OperationSync {
   prune?: boolean;
-  revision: string;
+  revision?: string;
+  sources?: Source[];
+  revisions?: string[];
   syncStrategy?: SyncStrategy;
   syncOptions?: string[];
 }
@@ -109,7 +121,9 @@ export interface SyncStrategy {
 export interface SyncResult {
   resources: SyncResultResource[];
   revision: string;
+  revisions?: string[];
   source: Source;
+  sources?: Source[];
 }
 
 export interface SyncResultResource {
@@ -132,15 +146,18 @@ export interface StatusSync {
   status: string;
   comparedTo?: {
     source: Source;
+    sources?: Source[];
     destination: Destination;
   };
   revision?: string;
+  revisions?: string[];
 }
 
 export interface RevisionInfo {
   author: string;
   date: Date;
   message: string;
+  revisionID?: string;
 }
 
 export enum HealthStatus {
@@ -189,7 +206,7 @@ export type OpenRowStatus = {
 export interface Resource {
   version: string;
   kind: string;
-  namespace: string;
+  namespace?: string;
   name: string;
   status: string;
   health?: Health;

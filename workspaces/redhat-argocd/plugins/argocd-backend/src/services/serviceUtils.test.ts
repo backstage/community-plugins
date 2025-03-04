@@ -21,7 +21,7 @@ import {
   buildArgoUrl,
 } from './serviceUtils';
 import { AuthenticationError } from '@backstage/errors';
-import { Instance } from '../types';
+import { Instance } from '@backstage-community/plugin-redhat-argocd-common';
 import { ConfigReader } from '@backstage/config';
 
 describe('serviceUtils', () => {

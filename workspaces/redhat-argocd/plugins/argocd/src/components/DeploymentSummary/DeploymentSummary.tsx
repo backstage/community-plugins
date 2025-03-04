@@ -29,7 +29,7 @@ import {
   Application,
   HealthStatus,
   SyncStatuses,
-} from '../../types/application';
+} from '@backstage-community/plugin-redhat-argocd-common';
 import {
   getArgoCdAppConfig,
   getCommitUrl,
@@ -121,7 +121,7 @@ const DeploymentSummary = () => {
           ? repoUrl
           : getCommitUrl(
               repoUrl,
-              latestRev?.revision,
+              latestRev?.revision ?? '',
               entity?.metadata?.annotations || {},
             );
         return (

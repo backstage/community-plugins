@@ -17,7 +17,10 @@ import React from 'react';
 
 import { Chip } from '@material-ui/core';
 
-import { Application, SyncStatusCode } from '../../types/application';
+import {
+  Application,
+  SyncStatusCode,
+} from '@backstage-community/plugin-redhat-argocd-common';
 import { SyncIcon } from './StatusIcons';
 
 const AppSyncStatus: React.FC<{

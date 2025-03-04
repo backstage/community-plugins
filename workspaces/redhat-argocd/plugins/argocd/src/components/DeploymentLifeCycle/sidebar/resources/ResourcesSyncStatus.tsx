@@ -16,7 +16,7 @@
 import React from 'react';
 
 import { SyncIcon } from '../../../AppStatus/StatusIcons';
-import { SyncStatusCode } from '../../../../types/application';
+import { SyncStatusCode } from '@backstage-community/plugin-redhat-argocd-common';
 
 interface ResourceSyncStatusProps {
   syncStatus: string;

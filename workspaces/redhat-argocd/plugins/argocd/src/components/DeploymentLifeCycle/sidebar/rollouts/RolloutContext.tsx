@@ -16,7 +16,7 @@
 import React, { createContext, ReactNode } from 'react';
 
 import { useArgocdRollouts } from '../../../../hooks/useArgoRollouts';
-import { Application } from '../../../../types/application';
+import { Application } from '@backstage-community/plugin-redhat-argocd-common';
 import { RolloutUI } from '../../../../types/revision';
 import { getRolloutUIResources } from '../../../../utils/rollout-utils';
 import { ArgoResources } from '../../../../types/resources';

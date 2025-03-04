@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Instance } from '../types';
+import { Instance } from '@backstage-community/plugin-redhat-argocd-common';
 import { Config } from '@backstage/config';
 import { AuthenticationError } from '@backstage/errors';
 
