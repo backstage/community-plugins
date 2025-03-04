@@ -388,7 +388,7 @@ export const AnnouncementsPage = (props: AnnouncementsPageProps) => {
   return (
     <Page themeId={themeId}>
       <Header title={title} subtitle={subtitle}>
-        {!hideContextMenu && <ContextMenu />}
+        {!hideContextMenu && canCreate && <ContextMenu />}
       </Header>
 
       <Content>

@@ -1,0 +1,49 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: blackduck-create-project
+  title: Blackduck Template to Create Project
+  description: Template to create projects in BlackDuck instance
+spec:
+  owner: guests
+  type: service
+
+  parameters:
+    - title: Provide informance to create project
+      required:
+        - projectName
+      properties:
+        projectName:
+          title: Name
+          type: string
+          description: Unique name of the project
+        projectVersion:
+          title: Version
+          type: string
+          description: 'Ex: v1, main, v1-alpha'
+        versionPhase:
+          title: Version Phase
+          type: string
+          description: 'Ex: DEV, QA, Prod'
+        versionDistribution:
+          title: Distribution
+          type: string
+          description: 'Ex: Internal, External'
+        instanceName:
+          title: Instance Name
+          type: string
+          description: Name of the blackduck instance
+          default: default
+          enum:
+            - default
+            - instanceA
+          enumNames:
+            - Default
+            - Instance A
+  steps:
+    - id: blackduck-create-project
+      name: Blackduck Create Project
+      action: blackduck:create:project
+      input:
+        projectName: ${{parameters.projectName}}
+        instanceName: ${{parameters.instanceName}}

@@ -1,5 +1,36 @@
 ### Dependencies
 
+## 3.21.0
+
+### Minor Changes
+
+- d5a2be5: Update Kubernetes plugin dependencies
+
+### Patch Changes
+
+- a8e2f2c: Updated dependency `@material-ui/lab` to `4.0.0-alpha.61`.
+  Updated dependency `@mui/icons-material` to `5.16.14`.
+  Updated dependency `@mui/material` to `5.16.14`.
+  Updated dependency `@mui/styles` to `5.16.14`.
+  Updated dependency `@mui/x-charts` to `6.19.8`.
+  Updated dependency `@mui/lab` to `5.0.0-alpha.175`.
+- Updated dependencies [d5a2be5]
+  - @backstage-community/plugin-tekton-common@1.7.0
+
+## 3.20.0
+
+### Minor Changes
+
+- 48e0647: Use Kubernetes plugin permissions for Tekton plugin, remove tekton-specific permissions from tekton-common plugin
+- 585f020: Update aonic-ui/pipelines version
+
+### Patch Changes
+
+- 0ac3320: Updated dependency `@types/lodash` to `4.17.15`.
+- 3e35324: Updated dependency `start-server-and-test` to `2.0.10`.
+- Updated dependencies [48e0647]
+  - @backstage-community/plugin-tekton-common@1.6.0
+
 ## 3.19.0
 
 ### Minor Changes

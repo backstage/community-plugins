@@ -325,6 +325,14 @@ export const getPoliciesData = (
   }));
 };
 
+export const getPolicyString = (policies: RowPolicy[]) => {
+  const policyStr = policies.reduce((acc: string, p) => {
+    if (p.effect === 'allow') return acc.concat(`${p.policy}, `);
+    return acc;
+  }, '');
+  return policyStr.slice(0, policyStr.length - 2);
+};
+
 export const getConditionalPermissionsData = (
   conditionalPermissions: RoleConditionalPolicyDecision<PermissionAction>[],
   permissionPolicies: PluginsPermissionPoliciesData,
@@ -336,47 +344,48 @@ export const getConditionalPermissionsData = (
       action.toLocaleLowerCase('en-US'),
     );
 
-    const perm = allPermissionPolicies
-      .map(app => {
-        if (app.pluginId === cp.pluginId) {
-          return (
-            app.policies.find(
-              po =>
-                isResourcedPolicy(po) &&
-                po.resourceType === cp.resourceType &&
-                po.policy === cp.permissionMapping[0],
-            )?.name ?? ''
-          );
-        }
-        return '';
-      })
-      .filter(v => !!v);
+    const pluginPermissionMetaData = allPermissionPolicies.find(
+      pp => pp.pluginId === cp.pluginId,
+    );
+
+    const perms =
+      pluginPermissionMetaData?.policies.filter(
+        po =>
+          isResourcedPolicy(po) &&
+          po.resourceType === cp.resourceType &&
+          allowedPermissions.includes(po.policy.toLocaleLowerCase('en-US')),
+      ) ?? [];
 
     const allPolicies = (pm: string) =>
       permissionPolicies.pluginsPermissions?.[cp.pluginId]?.policies?.[pm]
         ?.policies ?? [];
-    const policyString = allowedPermissions
-      .map(p => p[0].toLocaleUpperCase('en-US') + p.slice(1))
-      .join(', ');
 
     return [
       ...acc,
       ...(conditions
-        ? [
-            {
+        ? perms.map((perm, index, arr) => {
+            const policies = getPoliciesData(
+              allowedPermissions,
+              allPolicies(perm.name),
+            );
+            return {
               plugin: cp.pluginId,
-              permission: perm[0],
+              permission: perm.name,
               resourceType: cp.resourceType,
               isResourced: true,
-              policies: getPoliciesData(
-                allowedPermissions,
-                allPolicies(perm[0]),
-              ),
-              policyString,
+              policies,
+              policyString: getPolicyString(policies),
               conditions,
-              id: cp.id,
-            },
-          ]
+              ...(index === 0 ||
+              !!policies.find(
+                pl =>
+                  pl.policy.toLocaleLowerCase('en-US') ===
+                    arr[index - 1].policy && pl.effect === 'allow',
+              )
+                ? { id: cp.id }
+                : {}),
+            };
+          })
         : []),
     ];
   }, []);

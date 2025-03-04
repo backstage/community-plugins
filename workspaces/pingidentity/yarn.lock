@@ -2737,7 +2737,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-catalog-backend-module-pingidentity@workspace:plugins/catalog-backend-module-pingidentity"
   dependencies:
-    "@backstage/backend-common": "npm:^0.25.0"
     "@backstage/backend-defaults": "npm:^0.7.0"
     "@backstage/backend-plugin-api": "npm:^1.1.1"
     "@backstage/backend-test-utils": "npm:^1.2.1"
