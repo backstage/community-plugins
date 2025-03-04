@@ -1,15 +1,13 @@
 # Knip report
 
-## Unused dependencies (6)
+## Unused dependencies (4)
 
-| Name                                                      | Location     | Severity |
-| :-------------------------------------------------------- | :----------- | :------- |
-| @backstage-community/plugin-cicd-statistics-module-gitlab | package.json | error    |
-| @backstage-community/plugin-cicd-statistics               | package.json | error    |
-| @backstage/plugin-catalog-react                           | package.json | error    |
-| @backstage/catalog-model                                  | package.json | error    |
-| react-router                                              | package.json | error    |
-| react-use                                                 | package.json | error    |
+| Name                            | Location     | Severity |
+| :------------------------------ | :----------- | :------- |
+| @backstage/plugin-catalog-react | package.json | error    |
+| @backstage/catalog-model        | package.json | error    |
+| react-router                    | package.json | error    |
+| react-use                       | package.json | error    |
 
 ## Unused devDependencies (4)
 
