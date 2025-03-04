@@ -83,8 +83,9 @@
     "plugin",
     "works-with:rhsso:^7.6",
     "works-with:keycloak:~18",
-    "works-with:rhbk:^24",
-    "works-with:keycloak:~24"
+    "works-with:keycloak:~24",
+    "works-with:rhbk:^26",
+    "works-with:keycloak:~26"
   ],
   "homepage": "https://red.ht/rhdh",
   "bugs": "https://github.com/backstage/community-plugins/issues",
