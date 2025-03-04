@@ -1,5 +1,11 @@
 # @backstage-community/plugin-catalog-backend-module-scaffolder-relation-processor
 
+## 2.1.1
+
+### Patch Changes
+
+- 93ad936: This release will be functionally equivalent to 2.1.0.
+
 ## 2.1.0
 
 ### Minor Changes
