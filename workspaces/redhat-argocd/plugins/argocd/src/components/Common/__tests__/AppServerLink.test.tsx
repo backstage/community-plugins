@@ -18,7 +18,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 
 import { mockApplication } from '../../../../dev/__data__';
-import { Application } from '../../../types/application';
+import { Application } from '@backstage-community/plugin-redhat-argocd-common';
 import AppServerLink from '../AppServerLink';
 
 describe('AppServerLink', () => {

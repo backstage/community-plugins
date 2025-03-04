@@ -27,7 +27,10 @@ import { ResourcesTableBody } from './ResourcesTableBody';
 import { ResourcesTableHeader } from './ResourcesTableHeader';
 import { ResourcesColumnHeaders } from './ResourcesColumnHeader';
 import { ResourcesFilterBy } from './filters/ResourcesFilterBy';
-import { Order, Resource } from '../../../../types/application';
+import {
+  Order,
+  Resource,
+} from '@backstage-community/plugin-redhat-argocd-common';
 import { FiltersType } from '../../../../types/resources';
 import {
   getResourceCreateTimestamp,

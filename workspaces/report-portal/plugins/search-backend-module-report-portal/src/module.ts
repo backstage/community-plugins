@@ -21,6 +21,7 @@ import {
 } from '@backstage/backend-plugin-api';
 import { searchIndexRegistryExtensionPoint } from '@backstage/plugin-search-backend-node/alpha';
 import { ReportPortalCollatorFactory } from './collators/ReportPortalCollator';
+import { catalogServiceRef } from '@backstage/plugin-catalog-node';
 
 const defaults: {
   schedule: SchedulerServiceTaskScheduleDefinition;
@@ -48,8 +49,10 @@ export const searchModuleReportPortalCollator = createBackendModule({
         logger: coreServices.logger,
         config: coreServices.rootConfig,
         scheduler: coreServices.scheduler,
+        auth: coreServices.auth,
+        catalog: catalogServiceRef,
       },
-      async init({ logger, config, scheduler, indexRegistery }) {
+      async init({ logger, config, scheduler, indexRegistery, catalog, auth }) {
         if (!config.has('reportPortal.integrations')) {
           logger.error(
             'No reportPortal.integrations configured in you app-config.yaml',
@@ -73,6 +76,8 @@ export const searchModuleReportPortalCollator = createBackendModule({
           factory: ReportPortalCollatorFactory.fromConfig(config, {
             logger,
             locationTemplate,
+            catalog,
+            auth,
           }),
         });
       },

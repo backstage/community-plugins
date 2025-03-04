@@ -13,24 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  Box,
-  Card,
-  CardContent,
-  Link,
-  makeStyles,
-  Theme,
-  Typography,
-} from '@material-ui/core';
+import { Link, makeStyles, Theme } from '@material-ui/core';
 import React from 'react';
 import { useDrawerContext } from '../../../DrawerContext';
-import { Resource } from '../../../../../types/application';
-import { isAppHelmChartType, getCommitUrl } from '../../../../../utils/utils';
+import { Resource } from '@backstage-community/plugin-redhat-argocd-common';
+import { isAppHelmChartType } from '../../../../../utils/utils';
 import { useEntity } from '@backstage/plugin-catalog-react';
-import moment from 'moment';
 import Metadata from '../../../../Common/Metadata';
 import MetadataItem from '../../../../Common/MetadataItem';
+import MetadataItemWithTooltip from '../../../../Common/MetadataItemWithTooltip';
 import AppCommitLink from '../../../../Common/AppCommitLink';
+import { DeploymentHistory } from './DeploymentHistory';
 
 const useDeploymentInfoStyles = makeStyles((theme: Theme) => ({
   latestDeploymentContainer: {
@@ -64,24 +57,29 @@ const DeploymentMetadata = ({ resource }: { resource: Resource }) => {
     useDrawerContext();
   const classes = useDeploymentInfoStyles();
 
-  const ImageLink = () => (
-    <Link
-      href={`https://${application?.status?.summary?.images?.[0]}`}
-      target="_blank"
-      rel="noopener"
-    >
-      {application?.status?.summary?.images?.[0].split('/').pop()}
-    </Link>
-  );
-  const history = appHistory?.slice()?.reverse();
+  const ImageLinks = () => {
+    const images = application?.status?.summary?.images;
+    return images.map(image => {
+      return (
+        <div>
+          <Link href={`https://${image}`} target="_blank" rel="noopener">
+            {image.split('/').pop()}
+          </Link>
+        </div>
+      );
+    });
+  };
   return (
     <>
       <Metadata>
         <MetadataItem title="Namespace">{resource?.namespace}</MetadataItem>
         {appHistory.length > 0 ? (
-          <MetadataItem title="Image">
-            <ImageLink />
-          </MetadataItem>
+          <MetadataItemWithTooltip
+            title="Image(s)"
+            tooltipText="These are the images for all the deployments in the ArgoCD application."
+          >
+            <ImageLinks />
+          </MetadataItemWithTooltip>
         ) : (
           <></>
         )}
@@ -99,54 +97,13 @@ const DeploymentMetadata = ({ resource }: { resource: Resource }) => {
         )}
       </Metadata>
       {appHistory.length > 0 && (
-        <>
-          <Typography color="textPrimary" variant="body1">
-            Deployment history
-          </Typography>
-          <Box className={classes.deploymentHistory}>
-            {history?.map(dep => {
-              const annotations = entity?.metadata?.annotations ?? {};
-              const commitUrl = application?.spec?.source?.repoURL
-                ? getCommitUrl(
-                    application.spec.source.repoURL,
-                    dep?.revision,
-                    annotations,
-                  )
-                : null;
-              return (
-                <Card
-                  elevation={2}
-                  key={dep.id}
-                  style={{
-                    margin: '1px',
-                    padding: 0,
-                    width: '50rem',
-                    marginBottom: '5px',
-                  }}
-                >
-                  <CardContent>
-                    <Typography
-                      variant="body2"
-                      color="textSecondary"
-                      className={classes.commitMessage}
-                    >
-                      {revisionsMap[dep.revision]?.message}{' '}
-                      <Link
-                        aria-disabled={!!commitUrl}
-                        href={commitUrl ?? ''}
-                        target="_blank"
-                        rel="noopener"
-                      >
-                        {dep.revision.slice(0, 7)}
-                      </Link>{' '}
-                      deployed {moment(dep.deployedAt).local().fromNow()}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </Box>
-        </>
+        <DeploymentHistory
+          application={application}
+          revisionsMap={revisionsMap}
+          appHistory={appHistory}
+          styleClasses={classes}
+          annotations={entity?.metadata?.annotations}
+        />
       )}
     </>
   );

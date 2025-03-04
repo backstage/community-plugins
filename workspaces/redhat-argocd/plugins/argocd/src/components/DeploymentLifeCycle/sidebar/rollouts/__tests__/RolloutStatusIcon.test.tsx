@@ -18,7 +18,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 
 import { AnalysisRunPhases } from '../../../../../types/analysisRuns';
-import { HealthStatus } from '../../../../../types/application';
+import { HealthStatus } from '@backstage-community/plugin-redhat-argocd-common';
 import { RolloutPhase } from '../../../../../types/rollouts';
 import RolloutStatusIcon, { getStatusColor } from '../RolloutStatusIcon';
 

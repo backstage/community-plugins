@@ -30,30 +30,23 @@ jobs:
               && "${{ github.event.pull_request.user.login }}" == "backstage-service" ]] \
               && [[ "${{ github.event.pull_request.head.ref }}" == maintenance-changesets-release/* ]] \
               && [[ "${{ github.event.pull_request.merged }}" == "true" ]]; then
-                echo "is_version_pr=true" >> $GITHUB_ENV
+                echo "is_version_pr=true" >> $GITHUB_OUTPUT
               else
-                echo "is_version_pr=false" >> $GITHUB_ENV
-                exit 1
+                echo "is_version_pr=false" >> $GITHUB_OUTPUT
               fi
-            # ADDED: Extracts workspace name from branch, ensuring it is a workspace/** branch
+
+        # ADDED: Extracts workspace name from branch, ensuring it is a workspace/** branch
         - name: Extract Workspace name from branch
           id: extract_workspace
           run: |
-              WORKSPACE_NAME=$(echo "${{ github.ref }}" | cut -d'/' -f2)
-              echo "workspace_name=$WORKSPACE_NAME" >> $GITHUB_ENV
-
-        - name: Verify workspace match
-          run: |
-              PR_WORKSPACE=$(echo "${{ github.event.pull_request.head.ref }}" | cut -d'/' -f2)
-              if [[ "$PR_WORKSPACE" != "${{ env.workspace_name }}" ]]; then
-                echo "Workspace mismatch: PR workspace ($PR_WORKSPACE) does not match target branch workspace (${{ env.workspace_name }})"
-                exit 1
-              fi
+              WORKSPACE_NAME=$(echo "${{ github.event.pull_request.base.ref }}" | cut -d'/' -f2)
+              echo "workspace_name=$WORKSPACE_NAME" >> $GITHUB_OUTPUT
 
   changesets-pr:
     name: Update Version Packages PR for ${{ needs.check-merged-pr.outputs.workspace_name }} on branch ${{ github.ref }}
     runs-on: ubuntu-latest
     needs: check-merged-pr
+    if: needs.check-merged-pr.outputs.is_version_pr == 'false'
     defaults:
       run:
         working-directory: ./workspaces/${{ needs.check-merged-pr.outputs.workspace_name }}
@@ -97,7 +90,7 @@ jobs:
         run: yarn install --immutable
 
       - name: Fetch previous commit for release check
-        run: git fetch origin '${{ github.event.before }}'
+        run: git fetch origin '${{ github.event.pull_request.base.sha }}'
 
       - name: Fetch the commit that triggered the workflow (used by backstage/changesets-action)
         run: git fetch origin ${{ github.sha }}
@@ -111,8 +104,9 @@ jobs:
         working-directory: ./
         env:
           WORKSPACE_NAME: ${{ needs.check-merged-pr.outputs.workspace_name }}
-          COMMIT_SHA_BEFORE: '${{ github.event.before }}'
-        
+          COMMIT_SHA_BEFORE: '${{ github.event.pull_request.base.sha }}'
+          TARGET_BRANCH: ${{ github.ref }}
+
       - name: Update Version Packages (${{ needs.check-merged-pr.outputs.workspace_name }}) PR
         id: changesets-pr
         if: steps.release_check.outputs.needs_release != 'true'
@@ -129,8 +123,8 @@ jobs:
   release:
     name: Prior Version Release workspace ${{ needs.check-merged-pr.outputs.workspace_name }} on branch ${{ github.ref }}
     runs-on: ubuntu-latest
-    needs: changesets-pr
-    if: needs.changesets-pr.outputs.needs_release == 'true'
+    needs: check-merged-pr
+    if: needs.check-merged-pr.outputs.is_version_pr == 'true'
     defaults:
       run:
         working-directory: ./workspaces/${{ needs.check-merged-pr.outputs.workspace_name }}
@@ -177,7 +171,7 @@ jobs:
       - name: publish
         run: |
           yarn config set -H 'npmAuthToken' "${{secrets.NPM_TOKEN}}"
-          yarn workspaces foreach -v --no-private --include "${{ needs.check-merged-pr.outputs.workspace_name }}" npm publish --access public --tolerate-republish --tag "maintenance"
+          yarn workspaces foreach -v --no-private npm publish --access public --tolerate-republish --tag "maintenance"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       

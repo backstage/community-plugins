@@ -1,5 +1,12 @@
 # @backstage-community/plugin-report-portal-common
 
+## 1.0.1
+
+### Patch Changes
+
+- b32f843: Link launches page with catalog.
+  Added entity links in search results.
+
 ## 1.0.0
 
 ### Major Changes

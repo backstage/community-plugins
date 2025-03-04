@@ -17,7 +17,10 @@ import React from 'react';
 
 import { Chip } from '@material-ui/core';
 
-import { Application, HealthStatus } from '../../types/application';
+import {
+  Application,
+  HealthStatus,
+} from '@backstage-community/plugin-redhat-argocd-common';
 import { AppHealthIcon } from './StatusIcons';
 
 const AppHealthStatus: React.FC<{ app: Application; isChip?: boolean }> = ({
