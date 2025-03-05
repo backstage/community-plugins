@@ -22,7 +22,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/backstage/community-plugins",
-    "directory": "workspaces/dependencytrack/plugins\\dependencytrack"
+    "directory": "workspaces/dependencytrack/plugins/dependencytrack"
   },
   "license": "Apache-2.0",
   "main": "src/index.ts",
