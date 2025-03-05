@@ -3,4 +3,6 @@ dist-types
 coverage
 .vscode
 .eslintrc.js
+
+# TODO(maknop) - We should not need this but adding for the time being
 report.api.md

@@ -16,7 +16,7 @@ metadata:
 
   annotations:
     # Update this annotation value to match a deployment you want to test
-    acs/deployment-name: <INSERT DEPLOYMENT NAME HERE>
+    acs/deployment-name: <--- INSERT DEPLOYMENT NAME HERE --->
 
     backstage.io/techdocs-ref: url:https://github.com/TestOrg/test-app
     backstage.io/source-location: url:https://github.com/TestOrg/test-app
