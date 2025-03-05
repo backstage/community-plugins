@@ -35,7 +35,7 @@ const OverviewContent = () => (
 );
 ```
 
-You can filter for environemt names via a environment parameter.
+You can filter for environment names via an environment parameter.
 
 ```typescript
 // packages/app/src/components/catalog/EntityPage.tsx
