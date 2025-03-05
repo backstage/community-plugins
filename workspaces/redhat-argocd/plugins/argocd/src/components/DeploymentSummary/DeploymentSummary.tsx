@@ -116,7 +116,9 @@ const DeploymentSummary = () => {
       render: (row: Application): React.ReactNode => {
         const historyList = row.status?.history ?? [];
         const latestRev = historyList[historyList.length - 1];
-        const repoUrl = row?.spec?.source?.repoURL;
+        const repoUrl =
+          row?.spec?.sources?.[0]?.repoURL ?? row?.spec?.source?.repoURL ?? '';
+
         const commitUrl = isAppHelmChartType(row)
           ? repoUrl
           : getCommitUrl(
