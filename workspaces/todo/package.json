@@ -17,7 +17,7 @@
     "lint:all": "backstage-cli repo lint",
     "prettier:check": "prettier --check .",
     "build:api-reports": "yarn build:api-reports:only --tsc",
-    "build:api-reports:only": "backstage-repo-tools api-reports -o ae-wrong-input-file-type -o ae-undocumented --validate-release-tags",
+    "build:api-reports:only": "backstage-repo-tools api-reports -o ae-wrong-input-file-type -o ae-undocumented --validate-release-tags plugins/*",
     "new": "backstage-cli new --scope @backstage-community",
     "postinstall": "cd ../../ && yarn install"
   },
