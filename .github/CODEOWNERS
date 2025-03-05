@@ -62,3 +62,4 @@ yarn.lock                                           @backstage/community-plugins
 /workspaces/tech-insights                           @backstage/community-plugins-maintainers  @xantier
 /workspaces/tekton                                  @backstage/community-plugins-maintainers  @caugello @cryptorodeo @Eswaraiahsapram @karthikjeeyar @rohitkrai03
 /workspaces/topology                                @backstage/community-plugins-maintainers  @christoph-jerolimov @ciiay @debsmita1 @divyanshiGupta
+/workspaces/dependencytrack                         @backstage/community-plugins-maintainers  @harmenbrinkmanTRIMM
