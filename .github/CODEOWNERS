@@ -10,7 +10,7 @@ yarn.lock                                           @backstage/community-plugins
 
 /workspaces/3scale                                  @backstage/community-plugins-maintainers  @04kash @AndrienkoAleksandr
 /workspaces/acr                                     @backstage/community-plugins-maintainers  @christoph-jerolimov @ciiay @invincibleJai
-/workspaces/acs                                     @backstage/community-plugins-maintainers  @sachaudh @maknop
+/workspaces/acs                                     @backstage/community-plugins-maintainers  @sachaudh @alwayshooin @dvail @pedrottimark @bradr5 @maknop
 /workspaces/adr                                     @backstage/community-plugins-maintainers  @kuangp
 /workspaces/analytics                               @backstage/community-plugins-maintainers
 /workspaces/analytics/plugins/analytics-module-matomo                              @backstage/community-plugins-maintainers  @deshmukhmayur @yashoswalyo @riginoommen
