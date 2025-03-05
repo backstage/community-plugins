@@ -102,12 +102,15 @@ export async function createRouter(
     '/argoInstance/:instanceName/applications/name/:appName/revisions/:revisionID/metadata',
     async (req: express.Request, res: express.Response) => {
       const { instanceName, appName, revisionID } = req.params;
-      const { appNamespace } = req.query;
+      const { appNamespace, sourceIndex } = req.query;
       const result = await service.getRevisionDetails(
         instanceName,
         appName,
         revisionID,
-        appNamespace as string,
+        {
+          appNamespace: appNamespace as string,
+          sourceIndex: sourceIndex as string,
+        },
       );
       return res.json(result);
     },

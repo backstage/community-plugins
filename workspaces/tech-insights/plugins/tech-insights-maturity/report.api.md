@@ -19,8 +19,8 @@ import { MaturityRank } from '@backstage-community/plugin-tech-insights-maturity
 import { MaturityScore } from '@backstage-community/plugin-tech-insights-maturity-common';
 import { MaturitySummary } from '@backstage-community/plugin-tech-insights-maturity-common';
 import { RouteRef } from '@backstage/core-plugin-api';
-import { TechInsightsApi } from '@backstage-community/plugin-tech-insights';
-import { TechInsightsClient } from '@backstage-community/plugin-tech-insights';
+import { TechInsightsApi } from '@backstage-community/plugin-tech-insights-react';
+import { TechInsightsClient } from '@backstage-community/plugin-tech-insights-react';
 
 // @public (undocumented)
 export const EntityMaturityRankWidget: ({

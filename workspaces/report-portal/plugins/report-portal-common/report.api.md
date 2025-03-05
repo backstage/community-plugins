@@ -98,6 +98,7 @@ export type ProjectListResponse = {
 
 // @public
 export interface ReportPortalDocument extends IndexableDocument {
+  entityRef?: string;
   host?: string;
   projectName?: string;
   resourceId?: string | number;

@@ -59,15 +59,18 @@ export const useRoles = (
   const [newRoles, setNewRoles] = React.useState<
     RoleWithConditionalPoliciesCount[]
   >([]);
+  const [firstLoad, setFirstLoad] = React.useState(true);
   const [roleConditionError, setRoleConditionError] =
     React.useState<string>('');
   const {
+    loading: loadingRoles,
     value: roles,
     retry: roleRetry,
     error: rolesError,
   } = useAsyncRetry(async () => await rbacApi.getRoles());
 
   const {
+    loading: loadingPolicies,
     value: policies,
     retry: policiesRetry,
     error: policiesError,
@@ -115,10 +118,12 @@ export const useRoles = (
     permission: policyEntityUpdatePermission,
     resourceRef: policyEntityUpdatePermission.resourceType,
   });
-
+  const [loadingConditionalPermission, setLoadingConditionalPermission] =
+    React.useState<boolean>(false);
   React.useEffect(() => {
     const fetchAllPermissionPolicies = async () => {
       if (!Array.isArray(roles)) return;
+      setLoadingConditionalPermission(true);
       const failedFetchConditionRoles: string[] = [];
       const conditionPromises = roles.map(async role => {
         try {
@@ -159,6 +164,7 @@ export const useRoles = (
 
       const updatedRoles = await Promise.all(conditionPromises);
       setNewRoles(updatedRoles);
+      setLoadingConditionalPermission(false);
     };
 
     fetchAllPermissionPolicies();
@@ -233,12 +239,19 @@ export const useRoles = (
       canReadUsersAndGroups,
     ],
   );
-  const loading = !rolesError && !policiesError && !roles && !policies;
+  const loading =
+    firstLoad &&
+    (loadingPolicies ||
+      loadingRoles ||
+      membersLoading ||
+      loadingPermissionPolicies ||
+      loadingConditionalPermission);
 
   useInterval(
     () => {
       roleRetry();
       policiesRetry();
+      setFirstLoad(false);
     },
     loading ? null : pollInterval || 10000,
   );

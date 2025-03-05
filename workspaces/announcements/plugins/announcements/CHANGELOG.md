@@ -1,5 +1,29 @@
 # @backstage-community/plugin-announcements
 
+## 0.5.3
+
+### Patch Changes
+
+- 3b99ef7: - Fixed Active field column in announcements admin table, which was preventing proper sorting by `active` state.
+  - Enhanced readability of the Active status in the admin announcements table using `Status` components.
+
+## 0.5.2
+
+### Patch Changes
+
+- d1e46c9: Updated context menu visibility logic to dynamically show or hide options based on the create permission.
+
+## 0.5.1
+
+### Patch Changes
+
+- a8e2f2c: Updated dependency `@material-ui/lab` to `4.0.0-alpha.61`.
+  Updated dependency `@mui/icons-material` to `5.16.14`.
+  Updated dependency `@mui/material` to `5.16.14`.
+  Updated dependency `@mui/styles` to `5.16.14`.
+  Updated dependency `@mui/x-charts` to `6.19.8`.
+  Updated dependency `@mui/lab` to `5.0.0-alpha.175`.
+
 ## 0.5.0
 
 ### Minor Changes

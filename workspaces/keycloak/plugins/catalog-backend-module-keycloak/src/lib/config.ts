@@ -96,6 +96,13 @@ export type KeycloakProviderConfig = {
    * Maximum request concurrency to prevent DoS attacks on the Keycloak server.
    */
   maxConcurrency?: number;
+
+  /**
+   * Whether the API call will return a brief representation for groups and users or not. Defaults to true.
+   * A complete representation will include additional attributes
+   * @defaultValue true
+   */
+  briefRepresentation?: boolean;
 };
 
 const readProviderConfig = (
@@ -116,6 +123,9 @@ const readProviderConfig = (
     providerConfigInstance.getOptionalNumber('groupQuerySize');
   const maxConcurrency =
     providerConfigInstance.getOptionalNumber('maxConcurrency');
+  const briefRepresentation = providerConfigInstance.getOptionalBoolean(
+    'briefRepresentation',
+  );
 
   if (clientId && !clientSecret) {
     throw new InputError(
@@ -156,6 +166,7 @@ const readProviderConfig = (
     userQuerySize,
     groupQuerySize,
     maxConcurrency,
+    briefRepresentation,
   };
 };
 

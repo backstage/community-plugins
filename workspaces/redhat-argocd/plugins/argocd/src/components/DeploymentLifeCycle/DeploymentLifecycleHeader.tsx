@@ -19,7 +19,7 @@ import { IconButton } from '@material-ui/core';
 import ExternalLinkIcon from '@patternfly/react-icons/dist/esm/icons/external-link-alt-icon';
 
 import { useArgocdConfig } from '../../hooks/useArgocdConfig';
-import { Application } from '../../types/application';
+import { Application } from '@backstage-community/plugin-redhat-argocd-common';
 
 const DeploymentLifecycleHeader: React.FC<{ app: Application }> = ({ app }) => {
   const { instances, baseUrl } = useArgocdConfig();

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { RevisionInfo } from '../../src/types/application';
+import { RevisionInfo } from '@backstage-community/plugin-redhat-argocd-common';
 
 export const mockRevision: RevisionInfo = {
   author: 'author-name',
