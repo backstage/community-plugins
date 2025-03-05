@@ -17,21 +17,28 @@ import { useMemo, useState } from 'react';
 
 import { useResizeObserver } from './useResizeObserver';
 
+/** @public */
 export interface UsePositionClientSize {
   width: number;
   height: number;
 }
 
+/** @public */
 export interface UsePositionElementPosition {
   left: number;
   top: number;
 }
 
+/** @public */
 export interface UsePositionResult {
   client: UsePositionClientSize;
   element: UsePositionElementPosition;
 }
 
+/**
+ * Calculate the position of an element, and the size of the client window.
+ * @public
+ */
 export function usePosition(element: Element | undefined) {
   const [clientSize, setClientSize] = useState<
     UsePositionClientSize | undefined
