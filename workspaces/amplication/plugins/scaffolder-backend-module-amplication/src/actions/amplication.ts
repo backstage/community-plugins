@@ -107,7 +107,6 @@ export function scaffoldResourceFromAmplicationTemplate({
 
         const body = await response.json();
         if (body.errors) {
-          ctx.logger.error(JSON.stringify(httpOptions));
           throw new Error(`Error! ${body.errors[0].message}`);
         }
 
