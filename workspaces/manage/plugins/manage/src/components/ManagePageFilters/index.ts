@@ -13,5 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+export type { SwitchColor } from './ManagePageFilters';
 export { ManagePageFilters } from './ManagePageFilters';
 export { useManagePageCombined } from './useFilters';

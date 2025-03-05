@@ -21,6 +21,7 @@ import {
   OperationPhases,
   OperationState,
   Resource,
+  RevisionInfo,
 } from '@backstage-community/plugin-redhat-argocd-common';
 import { ArgoResources } from '../types/resources';
 
@@ -248,4 +249,39 @@ export const sortValues = (
   }
 
   return 0;
+};
+
+/**
+ * Removes duplicate commits based on their author, message and date.
+ */
+export const removeDuplicateRevisions = (revisions: RevisionInfo[]) => {
+  const uniqueMap = new Map<string, RevisionInfo>();
+
+  revisions.forEach(revision => {
+    const key = `${revision.author}-${
+      revision.message
+    }-${revision.date.toString()}`;
+    uniqueMap.set(key, revision);
+  });
+
+  return Array.from(uniqueMap.values());
+};
+
+/**
+ * Maps revisions to unique commits using revisionID when available.
+ * Falls back to mapping by index if the attribute revisionID is not provided.
+ */
+export const mapRevisions = (
+  revisions: string[],
+  data: RevisionInfo[],
+): Record<string, RevisionInfo> => {
+  const uniqRevisionInfo = removeDuplicateRevisions(data);
+  // Create a map for quick lookup by revisionID
+  const revisionMap = new Map(uniqRevisionInfo.map(r => [r.revisionID, r]));
+
+  return revisions.reduce((acc, rev, i) => {
+    acc[rev] =
+      revisionMap.get(rev) ?? uniqRevisionInfo[i] ?? ({} as RevisionInfo);
+    return acc;
+  }, {} as Record<string, RevisionInfo>);
 };

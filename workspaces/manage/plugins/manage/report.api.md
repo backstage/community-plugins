@@ -14,6 +14,7 @@ import { default as React_2 } from 'react';
 import { ReactNode } from 'react';
 import { RoutedTabs } from '@backstage/core-components';
 import { RouteRef } from '@backstage/core-plugin-api';
+import { SwitchProps } from '@mui/material/Switch';
 import { TableOptions } from '@backstage/core-components';
 
 // @public
@@ -72,6 +73,13 @@ export interface ManageKindOptions {
 export const ManagePage: ManagePageImpl;
 
 // @public
+export function ManagePageFilters({
+  switchColor,
+}: {
+  switchColor?: SwitchColor;
+}): React_2.JSX.Element;
+
+// @public
 export function ManagePageImpl<SupportedKinds extends string>(
   props: PropsWithChildren<ManagePageProps<SupportedKinds> & HeaderProps>,
 ): React_2.JSX.Element;
@@ -121,10 +129,20 @@ export interface ManageTabsProps {
 export const OrganizationGraph: OrganizationGraphImpl;
 
 // @public
-export function OrganizationGraphImpl(): React_2.JSX.Element;
+export function OrganizationGraphImpl({
+  enableWholeOrganization,
+}: OrganizationGraphProps): React_2.JSX.Element;
+
+// @public
+export interface OrganizationGraphProps {
+  enableWholeOrganization?: boolean;
+}
 
 // @public (undocumented)
 export type SubRouteTab = ComponentProps<typeof RoutedTabs>['routes'][number];
+
+// @public
+export type SwitchColor = SwitchProps['color'];
 
 // @public (undocumented)
 export type TableColumn = ManageColumnSimple | ManageColumnModule;
@@ -137,6 +155,15 @@ export type TableRow = {
 
 // @public
 export function TabOrderCard(): React_2.JSX.Element;
+
+// @public
+export function useManagePageCombined(
+  defaultValue?: boolean,
+): [
+  value: boolean | undefined,
+  setValue: (value: boolean) => void,
+  isSettled: boolean,
+];
 
 // (No @packageDocumentation comment for this package)
 ```

@@ -13,9 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 
 import { useNavigate } from 'react-router-dom';
+
+import { makeStyles } from '@mui/styles';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormGroup from '@mui/material/FormGroup';
+import Switch from '@mui/material/Switch';
+import Typography from '@mui/material/Typography';
 
 import {
   Direction,
@@ -29,14 +37,52 @@ import {
   entityRouteRef,
   humanizeEntityRef,
 } from '@backstage/plugin-catalog-react';
-import { useOwners } from '@backstage-community/plugin-manage-react';
+import {
+  useOwners,
+  usePosition,
+} from '@backstage-community/plugin-manage-react';
+
+const useStyles = makeStyles(theme => ({
+  controlsCard: {
+    position: 'absolute',
+    backgroundColor: `rgba(from ${theme.palette.background.paper} r g b / 0.8)`,
+  },
+  controlsCardContent: {
+    padding: `${theme.spacing(2)} !important`,
+  },
+  label: {
+    userSelect: 'none',
+  },
+}));
+
+/**
+ * Props for {@link OrganizationGraph}.
+ * @public
+ */
+export interface OrganizationGraphProps {
+  /**
+   * Whether to enable the whole organization view. Defaults to true.
+   */
+  enableWholeOrganization?: boolean;
+}
 
 /**
  * An organization view for the current user.
  *
  * @public
  */
-export function OrganizationGraphImpl() {
+export function OrganizationGraphImpl({
+  enableWholeOrganization = true,
+}: OrganizationGraphProps) {
+  const { label, controlsCard, controlsCardContent } = useStyles();
+  const [wholeOrg, setWholeOrg] = useState(false);
+  const [leftRight, setLeftRight] = useState(false);
+
+  const [graphElement, setGraphElement] = useState<Element | undefined>(
+    undefined,
+  );
+  const graphElementSize = usePosition(graphElement);
+
   const { ownedEntityRefs } = useOwners();
 
   const userEntityRef = useMemo(() => {
@@ -73,39 +119,83 @@ export function OrganizationGraphImpl() {
     [catalogEntityRoute, navigate, analytics],
   );
 
+  const setRef = useCallback((el: Element | null) => {
+    setGraphElement(el ?? undefined);
+  }, []);
+
+  const availHeight = useMemo(
+    () =>
+      !graphElementSize
+        ? 400
+        : graphElementSize.client.height - graphElementSize.element.top - 64,
+    [graphElementSize],
+  );
+
+  const renderLabel = useCallback(() => null, []);
+
   if (!userEntityRef) {
     return <EmptyState title="Current user not found" missing="data" />;
   }
 
   return (
     <div
+      ref={setRef}
       style={{
+        position: 'relative',
         display: 'flex',
         flexDirection: 'row',
-        minHeight: 400,
-        maxHeight: 600,
+        minHeight: availHeight,
+        maxHeight: availHeight,
       }}
     >
       <EntityRelationsGraph
         rootEntityNames={userEntityRef}
         kinds={['Group']}
         curve="curveMonotoneX"
-        direction={Direction.TOP_BOTTOM}
+        direction={leftRight ? Direction.LEFT_RIGHT : Direction.TOP_BOTTOM}
         mergeRelations
         maxDepth={Infinity}
         unidirectional
-        relations={[
-          'hasPart',
-          'partOf',
-          'parentOf',
-          'childOf',
-          'hasMember',
-          'memberOf',
-        ]}
+        relations={
+          wholeOrg
+            ? ['parentOf', 'childOf', 'memberOf']
+            : ['childOf', 'memberOf']
+        }
         onNodeClick={onNodeClick}
         showArrowHeads
-        zoom="enable-on-click"
+        renderLabel={renderLabel}
+        zoom="enabled"
       />
+      <Card className={controlsCard}>
+        <CardContent className={controlsCardContent}>
+          <FormGroup row={false}>
+            {enableWholeOrganization && (
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={wholeOrg}
+                    onChange={(_, checked) => setWholeOrg(checked)}
+                    color="primary"
+                  />
+                }
+                label={
+                  <Typography className={label}>Whole organization</Typography>
+                }
+              />
+            )}
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={leftRight}
+                  onChange={(_, checked) => setLeftRight(checked)}
+                  color="primary"
+                />
+              }
+              label={<Typography className={label}>Left to right</Typography>}
+            />
+          </FormGroup>
+        </CardContent>
+      </Card>
     </div>
   );
 }

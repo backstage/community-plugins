@@ -54,9 +54,15 @@ export default class TaskManagement {
       try {
         await task();
       } catch (e) {
-        this.options.logger.warn(
-          `[TaskManagement] Failed to process task: ${e.message}`,
-        );
+        if (e instanceof Error) {
+          this.options.logger.error(
+            `[TaskManagement] Failed to process task: ${e.message}`,
+          );
+        } else {
+          this.options.logger.error(
+            `[TaskManagement] Failed to process task: ${e}`,
+          );
+        }
       }
     });
 

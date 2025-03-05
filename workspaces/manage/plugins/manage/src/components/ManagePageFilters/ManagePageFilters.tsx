@@ -18,19 +18,36 @@ import React, { useCallback } from 'react';
 import { makeStyles } from '@mui/styles';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
+import Switch, { SwitchProps } from '@mui/material/Switch';
 import Typography from '@mui/material/Typography';
+
+import { HeaderLabel } from '@backstage/core-components';
 
 import { useManagePageCombined } from './useFilters';
 
-const useStyles = makeStyles(theme => ({
+/**
+ * Color of the page header switch
+ * @public
+ */
+export type SwitchColor = SwitchProps['color'];
+
+const useStyles = makeStyles(() => ({
   label: {
-    color: theme.page.fontColor,
     userSelect: 'none',
   },
 }));
 
-export function ManagePageFilters() {
+/**
+ * Filter component for the page header, showing a switch to toggle between
+ * combined and separate entity tabs.
+ *
+ * @public
+ */
+export function ManagePageFilters({
+  switchColor = 'primary',
+}: {
+  switchColor?: SwitchColor;
+}) {
   const { label } = useStyles();
   const [combined, setCombined] = useManagePageCombined();
 
@@ -42,18 +59,23 @@ export function ManagePageFilters() {
   );
 
   return (
-    <FormGroup row>
-      <FormControlLabel
-        control={
-          <Switch
-            checked={combined ?? false}
-            onChange={handleChange}
-            name="manage-page-combined"
-            color="primary"
+    <HeaderLabel
+      label="Entity tabs"
+      value={
+        <FormGroup row>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={combined ?? false}
+                onChange={handleChange}
+                name="manage-page-combined"
+                color={switchColor}
+              />
+            }
+            label={<Typography className={label}>Combine</Typography>}
           />
-        }
-        label={<Typography className={label}>Combine entities</Typography>}
-      />
-    </FormGroup>
+        </FormGroup>
+      }
+    />
   );
 }

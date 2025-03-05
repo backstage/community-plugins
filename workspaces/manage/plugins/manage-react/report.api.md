@@ -386,6 +386,35 @@ export function useOwnedKinds(onlyOwned?: boolean): string[];
 // @public
 export function useOwners(): Owners;
 
+// @public
+export function usePosition(
+  element: Element | undefined,
+): UsePositionResult | undefined;
+
+// @public (undocumented)
+export interface UsePositionClientSize {
+  // (undocumented)
+  height: number;
+  // (undocumented)
+  width: number;
+}
+
+// @public (undocumented)
+export interface UsePositionElementPosition {
+  // (undocumented)
+  left: number;
+  // (undocumented)
+  top: number;
+}
+
+// @public (undocumented)
+export interface UsePositionResult {
+  // (undocumented)
+  client: UsePositionClientSize;
+  // (undocumented)
+  element: UsePositionElementPosition;
+}
+
 // @public (undocumented)
 export interface UserSettingsContextResult<T extends JsonValue> {
   // (undocumented)
