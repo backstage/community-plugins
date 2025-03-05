@@ -2723,7 +2723,7 @@ __metadata:
     knex-mock-client: "npm:2.0.1"
     lodash: "npm:^4.17.21"
     msw: "npm:1.3.5"
-    prettier: "npm:3.4.2"
+    prettier: "npm:3.5.2"
     qs: "npm:6.13.1"
     supertest: "npm:6.3.4"
     typeorm-adapter: "npm:^1.6.1"
@@ -2752,7 +2752,7 @@ __metadata:
     "@backstage/backend-plugin-api": "npm:^1.1.1"
     "@backstage/cli": "npm:^0.29.5"
     "@spotify/prettier-config": "npm:^15.0.0"
-    prettier: "npm:3.4.2"
+    prettier: "npm:3.5.2"
   languageName: unknown
   linkType: soft
 
@@ -2795,7 +2795,7 @@ __metadata:
     autosuggest-highlight: "npm:^3.3.4"
     formik: "npm:^2.4.5"
     msw: "npm:1.3.5"
-    prettier: "npm:3.4.2"
+    prettier: "npm:3.5.2"
     react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
     react-dom: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
     react-router-dom: "npm:^6.0.0"

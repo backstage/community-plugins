@@ -46,7 +46,7 @@
   "devDependencies": {
     "@backstage/cli": "^0.29.5",
     "@backstage/plugin-scaffolder-node-test-utils": "^0.1.18",
-    "prettier": "3.4.2"
+    "prettier": "3.5.2"
   },
   "files": [
     "dist"
