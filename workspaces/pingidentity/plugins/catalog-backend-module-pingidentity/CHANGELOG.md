@@ -1,5 +1,11 @@
 # @backstage-community/plugin-catalog-backend-module-pingidentity
 
+## 0.2.1
+
+### Patch Changes
+
+- 1894560: removed unused dependency @backstage/backend-common
+
 ## 0.2.0
 
 ### Minor Changes

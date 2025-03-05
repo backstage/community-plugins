@@ -35,11 +35,13 @@ type InstanceData = {
 export const GlobalPageContent = () => {
   const configApi = useApi(configApiRef);
   const reportPortalApi = useApi(reportPortalApiRef);
-  const hostsConfig = configApi.getConfigArray('reportPortal.integrations');
+  const hostsConfig = configApi.getOptionalConfigArray(
+    'reportPortal.integrations',
+  );
   const [hosts, _] = useState<
     { host: string; filterType: string }[] | undefined
   >(
-    hostsConfig.map(value => ({
+    hostsConfig?.map(value => ({
       host: value.getString('host'),
       filterType: value.getString('filterType') ?? 'INTERNAL',
     })),

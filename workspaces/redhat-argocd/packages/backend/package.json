@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@backstage-community/plugin-redhat-argocd-backend": "workspace:^",
-    "@backstage/backend-defaults": "^0.7.0",
+    "@backstage/backend-defaults": "^0.8.1",
     "@backstage/backend-dynamic-feature-service": "^0.5.3",
     "@backstage/cli-node": "^0.2.12",
     "@backstage/plugin-app-backend": "^0.4.4",

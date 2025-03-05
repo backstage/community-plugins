@@ -1,5 +1,21 @@
 ### Dependencies
 
+## 3.7.0
+
+### Minor Changes
+
+- f32a370: Extend support to Keycloak v26 and RHBK v26
+
+### Patch Changes
+
+- 61697c6: Updated dependency `@keycloak/keycloak-admin-client` to `26.1.2`.
+
+## 3.6.0
+
+### Minor Changes
+
+- 984800c: Adding briefRepresentation flag to config to fetch additional group and user attributes
+
 ## 3.5.3
 
 ### Patch Changes

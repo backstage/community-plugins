@@ -26,7 +26,7 @@ import {
 } from '@backstage/catalog-model';
 import { DiscoveryApi, IdentityApi } from '@backstage/core-plugin-api';
 import { getEntityRelations } from '@backstage/plugin-catalog-react';
-import { TechInsightsClient } from '@backstage-community/plugin-tech-insights';
+import { TechInsightsClient } from '@backstage-community/plugin-tech-insights-react';
 import {
   BulkMaturityCheckResponse,
   BulkMaturitySummary,

@@ -27,10 +27,7 @@ import {
   Source,
 } from '@backstage-community/plugin-rbac-common';
 
-import {
-  RoleMetadataDao,
-  RoleMetadataStorage,
-} from '../database/role-metadata';
+import { RoleMetadataDao } from '../database/role-metadata';
 
 /**
  * validateSource validates the source to the role that is being modified. This includes comparing the source from the
@@ -192,7 +189,7 @@ export function validateEntityReference(
 
 export async function validateGroupingPolicy(
   groupPolicy: string[],
-  roleMetadataStorage: RoleMetadataStorage,
+  metadata: RoleMetadataDao | undefined,
   source: Source,
 ): Promise<Error | undefined> {
   if (groupPolicy.length !== 2) {
@@ -228,8 +225,6 @@ export async function validateGroupingPolicy(
       `Group policy is invalid: ${groupPolicy}. User membership information could be provided only with help of Catalog API.`,
     );
   }
-
-  const metadata = await roleMetadataStorage.findRoleMetadata(parent);
 
   err = await validateSource(source, metadata);
   if (metadata && err) {

@@ -1,5 +1,17 @@
 # @backstage-community/plugin-blackduck-backend
 
+## 0.3.1
+
+### Patch Changes
+
+- 638b35b: Added `@backstage-community/plugin-blackduck-node` as dependency
+
+  **BREAKING** `BlackDuckConfig` & `BlackDuckHostConfig` are moved to `@backstage-community/plugin-blackduck-node` package.
+
+- Updated dependencies [638b35b]
+  - @backstage-community/plugin-blackduck-common@0.2.1
+  - @backstage-community/plugin-blackduck-node@0.0.1
+
 ## 0.3.0
 
 ### Minor Changes
