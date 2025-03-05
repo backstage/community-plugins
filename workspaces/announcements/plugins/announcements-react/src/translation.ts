@@ -42,6 +42,7 @@ export const announcementsTranslationRef = createTranslationRef({
         delete: 'DELETE',
         occurred: 'Occurred ',
         scheduled: 'Scheduled ',
+        today: 'Today',
       },
       grid: {
         announcementDeleted: 'Announcement deleted.',
@@ -65,6 +66,7 @@ export const announcementsTranslationRef = createTranslationRef({
       addOne: 'add one',
       occurred: 'Occurred',
       scheduled: 'Scheduled',
+      today: 'Today',
     },
     announcementSearchResultListItem: {
       published: 'Published',
