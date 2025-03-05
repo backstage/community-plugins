@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-catalog-backend-module-keycloak",
-  "version": "3.6.0",
+  "version": "3.7.0",
   "description": "A Backend backend plugin for Keycloak",
   "main": "src/index.ts",
   "types": "src/index.ts",
@@ -83,8 +83,9 @@
     "plugin",
     "works-with:rhsso:^7.6",
     "works-with:keycloak:~18",
-    "works-with:rhbk:^24",
-    "works-with:keycloak:~24"
+    "works-with:keycloak:~24",
+    "works-with:rhbk:^26",
+    "works-with:keycloak:~26"
   ],
   "homepage": "https://red.ht/rhdh",
   "bugs": "https://github.com/backstage/community-plugins/issues",

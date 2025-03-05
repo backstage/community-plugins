@@ -15,3 +15,9 @@
  */
 export type { TabContentFullHeightProps } from './TabContentFullHeight';
 export { ManageTabContentFullHeight } from './TabContentFullHeight';
+export type {
+  UsePositionClientSize,
+  UsePositionElementPosition,
+  UsePositionResult,
+} from './usePosition';
+export { usePosition } from './usePosition';

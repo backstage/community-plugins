@@ -33,7 +33,9 @@ import {
   getArgoCdAppConfig,
   getInstanceName,
   getUniqueRevisions,
+  mapRevisions,
 } from '../../utils/utils';
+
 import PermissionAlert from '../Common/PermissionAlert';
 import DeploymentLifecycleCard from './DeploymentLifecycleCard';
 import DeploymentLifecycleDrawer from './DeploymentLifecycleDrawer';
@@ -101,13 +103,7 @@ const DeploymentLifecycle = () => {
           revisionIDs: uniqRevisions,
         })
         .then(data => {
-          uniqRevisions.forEach(rev => {
-            // The backend will return the revisionID with the metadata from ArgoCD.
-            // We can use the revisionID here to correctly assign data to the correct revision
-            // instead of traversing the data by index and assigning revisions to data that way.
-            revisionCache.current[rev] =
-              data.find(r => r.revisionID === rev) ?? ({} as RevisionInfo);
-          });
+          revisionCache.current = mapRevisions(uniqRevisions, data);
           setRevisions(revisionCache.current);
         })
         .catch(e => {
