@@ -1,5 +1,5 @@
 ---
-'@backstage-community/plugin-opencost': minor
+'@backstage-community/plugin-opencost': patch
 ---
 
-Fix KeyboardDatePicker import and enable the Backstage proxy to communicate with the OpenCost service
+Fixed an issue causing the build of a Backstage app to fail due to an issue when importing `KeyboardDatePicker` from `material-ui`.
