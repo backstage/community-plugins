@@ -1,7 +1,7 @@
 {
   "name": "@backstage-community/plugin-scaffolder-backend-module-annotator",
   "description": "The annotator module for @backstage/plugin-scaffolder-backend",
-  "version": "2.4.0",
+  "version": "2.5.0",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "license": "Apache-2.0",
