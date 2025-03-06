@@ -87,8 +87,71 @@ export class GithubClient implements GithubApi {
   }
 
   async fetchOrganizationTeams(): Promise<TeamInfo[]> {
-    const path = `/orgs/${this.copilotConfig.organization}/teams`;
-    return this.get(path);
+    // Start with the initial URL
+    let url = `/orgs/${this.copilotConfig.organization}/teams?per_page=100`;
+    let allTeams: TeamInfo[] = [];
+    let hasNextPage = true;
+    const nextPattern = /(?<=<)([\S]*)(?=>; rel="next")/i;
+
+    console.log(`[fetchOrganizationTeams] Starting to fetch teams for org: ${this.copilotConfig.organization}`);
+    let pageCount = 1;
+
+    while (hasNextPage) {
+      console.debug(`[fetchOrganizationTeams] Fetching page ${pageCount} from: ${url}`);
+      
+      // Don't append per_page again - use the URL directly
+      const response = await this.getRaw(url);
+      const teams = (await response.json()) as TeamInfo[];
+
+      if (Array.isArray(teams)) {
+        allTeams = [...allTeams, ...teams];
+        console.debug(`[fetchOrganizationTeams] Page ${pageCount}: Received ${teams.length} teams. Total collected: ${allTeams.length}`);
+      } else {
+        console.warn(`[fetchOrganizationTeams] Page ${pageCount}: Received non-array response:`, teams);
+      }
+
+      // Extract Link header and check for next page
+      const linkHeader = response.headers.get('link');
+      console.debug(`[fetchOrganizationTeams] Page ${pageCount} Link header: ${linkHeader}`);
+
+      if (linkHeader && linkHeader.includes('rel="next"')) {
+        const match = linkHeader.match(nextPattern);
+        if (match && match[0]) {
+          const fullNextUrl = match[0];
+          
+          // Parse the full URL to get just the path and query part
+          try {
+            const parsedUrl = new URL(fullNextUrl);
+            // Get just the pathname and search parts
+            url = parsedUrl.pathname + parsedUrl.search;
+            console.debug(`[fetchOrganizationTeams] Next page URL: ${url}`);
+          } catch (error) {
+            // If URL parsing fails, try to extract path directly
+            console.debug(`[fetchOrganizationTeams] Error parsing next URL: ${error}. Using raw URL: ${fullNextUrl}`);
+            
+            // Extract URL path from GitHub API URL
+            const apiBase = this.copilotConfig.apiBaseUrl;
+            if (fullNextUrl.startsWith(apiBase)) {
+              url = fullNextUrl.substring(apiBase.length);
+              console.debug(`[fetchOrganizationTeams] Extracted path from full URL: ${url}`);
+            } else {
+              url = fullNextUrl; // Use as-is if parsing fails
+              console.debug(`[fetchOrganizationTeams] Using full URL as-is: ${url}`);
+            }
+          }
+          pageCount++;
+        } else {
+          console.warn(`[fetchOrganizationTeams] Found 'next' in Link header but couldn't extract URL`);
+          hasNextPage = false;
+        }
+      } else {
+        hasNextPage = false;
+        console.debug('[fetchOrganizationTeams] No more pages to fetch');
+      }
+    }
+
+    console.log(`[fetchOrganizationTeams] Finished fetching teams. Total teams found: ${allTeams.length}`);
+    return allTeams;
   }
 
   private async get<T>(path: string): Promise<T> {
@@ -110,5 +173,27 @@ export class GithubClient implements GithubApi {
     }
 
     return response.json() as Promise<T>;
+  }
+
+  // Add this new private method to handle raw responses
+  private async getRaw(path: string): Promise<Response> {
+    const credentials = await this.getCredentials();
+    const headers = path.startsWith('/enterprises')
+      ? credentials.enterprise?.headers
+      : credentials.organization?.headers;
+
+    const response = await fetch(`${this.copilotConfig.apiBaseUrl}${path}`, {
+      headers: {
+        ...headers,
+        Accept: 'application/vnd.github+json',
+        'X-GitHub-Api-Version': '2022-11-28',
+      },
+    });
+
+    if (!response.ok) {
+      throw await ResponseError.fromResponse(response);
+    }
+
+    return response;
   }
 }
