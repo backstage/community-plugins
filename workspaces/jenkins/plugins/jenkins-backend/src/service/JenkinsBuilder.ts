@@ -32,6 +32,8 @@ import {
 } from '@backstage/backend-plugin-api';
 
 import { Config } from '@backstage/config';
+import { createPermissionIntegrationRouter } from '@backstage/plugin-permission-node';
+import { jenkinsPermissions } from '@backstage-community/plugin-jenkins-common';
 
 /** @public */
 export type JenkinsBuilderReturn = Promise<{
@@ -108,6 +110,11 @@ export class JenkinsBuilder {
 
     const router = Router();
     router.use(express.json());
+    router.use(
+      createPermissionIntegrationRouter({
+        permissions: jenkinsPermissions,
+      }),
+    );
 
     router.get(
       '/v1/entity/:namespace/:kind/:name/projects',
