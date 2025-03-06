@@ -58,5 +58,11 @@
   "maintainers": [
     "@karthikjeeyar"
   ],
+  "scalprum": {
+    "name": "backstage-community.plugin-quay-backend",
+    "exposedModules": {
+      "PluginRoot": "./src/index.ts"
+    }
+  },
   "author": "Red Hat"
 }
