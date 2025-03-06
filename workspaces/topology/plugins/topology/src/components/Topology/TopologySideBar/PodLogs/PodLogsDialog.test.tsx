@@ -20,6 +20,11 @@ import { fireEvent, render } from '@testing-library/react';
 
 import { mockKubernetesResponse } from '../../../../__fixtures__/1-deployments';
 import { PodLogsDialog } from './PodLogsDialog';
+import { RequirePermission } from '@backstage/plugin-permission-react';
+
+jest.mock('@backstage/plugin-permission-react', () => ({
+  RequirePermission: jest.fn(),
+}));
 
 jest.mock('react', () => ({
   ...jest.requireActual('react'),
@@ -65,6 +70,9 @@ jest.mock('./PodLogs', () => ({
   PodLogs: () => <div data-testid="pod-logs" />,
 }));
 jest.mock('@mui/icons-material/Close', () => () => <span>Close Icon</span>);
+const RequirePermissionMock = RequirePermission as jest.MockedFunction<
+  typeof RequirePermission
+>;
 
 describe('PodLogsDialog', () => {
   it('should show Dialog & View logs', () => {
@@ -72,6 +80,7 @@ describe('PodLogsDialog', () => {
       clusters: ['OCP'],
       selectedCluster: [0],
     });
+    RequirePermissionMock.mockImplementation(props => <>{props.children}</>);
     const { queryByText, queryByTestId, getByRole } = render(
       <PodLogsDialog podData={mockKubernetesResponse.pods[0] as V1Pod} />,
     );
@@ -86,6 +95,7 @@ describe('PodLogsDialog', () => {
     (useContext as jest.Mock).mockReturnValue({
       clusters: [],
     });
+    RequirePermissionMock.mockImplementation(props => <>{props.children}</>);
     const { queryByText, queryByTestId } = render(
       <PodLogsDialog podData={mockKubernetesResponse.pods[0] as V1Pod} />,
     );
