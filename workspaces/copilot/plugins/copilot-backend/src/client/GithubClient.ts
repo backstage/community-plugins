@@ -87,70 +87,37 @@ export class GithubClient implements GithubApi {
   }
 
   async fetchOrganizationTeams(): Promise<TeamInfo[]> {
-    // Start with the initial URL
-    let url = `/orgs/${this.copilotConfig.organization}/teams?per_page=100`;
+    const perPage = 100;
+    let page = 1;
     let allTeams: TeamInfo[] = [];
     let hasNextPage = true;
-    const nextPattern = /(?<=<)([\S]*)(?=>; rel="next")/i;
-
-    console.log(`[fetchOrganizationTeams] Starting to fetch teams for org: ${this.copilotConfig.organization}`);
-    let pageCount = 1;
 
     while (hasNextPage) {
-      console.debug(`[fetchOrganizationTeams] Fetching page ${pageCount} from: ${url}`);
-      
-      // Don't append per_page again - use the URL directly
-      const response = await this.getRaw(url);
+      const path = `/orgs/${this.copilotConfig.organization}/teams?per_page=${perPage}&page=${page}`;
+
+      // Use the raw response method to access headers
+      const response = await this.getRaw(path);
       const teams = (await response.json()) as TeamInfo[];
 
       if (Array.isArray(teams)) {
         allTeams = [...allTeams, ...teams];
-        console.debug(`[fetchOrganizationTeams] Page ${pageCount}: Received ${teams.length} teams. Total collected: ${allTeams.length}`);
       } else {
-        console.warn(`[fetchOrganizationTeams] Page ${pageCount}: Received non-array response:`, teams);
+        throw new Error(
+          `Invalid response format: expected array but got ${typeof teams}`,
+        );
       }
 
-      // Extract Link header and check for next page
+      // Check for pagination using GitHub's Link header
       const linkHeader = response.headers.get('link');
-      console.debug(`[fetchOrganizationTeams] Page ${pageCount} Link header: ${linkHeader}`);
+      hasNextPage = Boolean(linkHeader && linkHeader.includes('rel="next"'));
+      page++;
 
-      if (linkHeader && linkHeader.includes('rel="next"')) {
-        const match = linkHeader.match(nextPattern);
-        if (match && match[0]) {
-          const fullNextUrl = match[0];
-          
-          // Parse the full URL to get just the path and query part
-          try {
-            const parsedUrl = new URL(fullNextUrl);
-            // Get just the pathname and search parts
-            url = parsedUrl.pathname + parsedUrl.search;
-            console.debug(`[fetchOrganizationTeams] Next page URL: ${url}`);
-          } catch (error) {
-            // If URL parsing fails, try to extract path directly
-            console.debug(`[fetchOrganizationTeams] Error parsing next URL: ${error}. Using raw URL: ${fullNextUrl}`);
-            
-            // Extract URL path from GitHub API URL
-            const apiBase = this.copilotConfig.apiBaseUrl;
-            if (fullNextUrl.startsWith(apiBase)) {
-              url = fullNextUrl.substring(apiBase.length);
-              console.debug(`[fetchOrganizationTeams] Extracted path from full URL: ${url}`);
-            } else {
-              url = fullNextUrl; // Use as-is if parsing fails
-              console.debug(`[fetchOrganizationTeams] Using full URL as-is: ${url}`);
-            }
-          }
-          pageCount++;
-        } else {
-          console.warn(`[fetchOrganizationTeams] Found 'next' in Link header but couldn't extract URL`);
-          hasNextPage = false;
-        }
-      } else {
+      // Break if we got fewer results than requested (last page)
+      if (teams.length < perPage) {
         hasNextPage = false;
-        console.debug('[fetchOrganizationTeams] No more pages to fetch');
       }
     }
-
-    console.log(`[fetchOrganizationTeams] Finished fetching teams. Total teams found: ${allTeams.length}`);
+    console.log(`[copilot-backend] Fetched ${allTeams.length} teams`);
     return allTeams;
   }
 
