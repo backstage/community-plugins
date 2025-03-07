@@ -85,7 +85,8 @@ export const EntityFeedbackPage = feedbackPlugin.provide(
 );
 
 /**
- * @public
+ * This component is deprecated in favout of `GlobalFeedbackComponent`, it will be removed in future
+ * @public @deprecated use {@link GlobalFeedbackComponent}
  */
 export const OpcFeedbackComponent = feedbackPlugin.provide(
   createComponentExtension({
@@ -94,6 +95,22 @@ export const OpcFeedbackComponent = feedbackPlugin.provide(
       lazy: () =>
         import('./components/OpcFeedbackComponent').then(
           m => m.OpcFeedbackComponent,
+        ),
+    },
+  }),
+);
+
+/**
+ * Global feedback component which uses same modal as entiy page, eliminating dependecny on other web components
+ * @public
+ */
+export const GlobalFeedbackComponent = feedbackPlugin.provide(
+  createComponentExtension({
+    name: 'GlobalFeedbackComponent',
+    component: {
+      lazy: () =>
+        import('./components/GlobalFeedbackComponent').then(
+          m => m.GlobalFeedbackComponent,
         ),
     },
   }),
