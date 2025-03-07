@@ -1,4 +1,4 @@
-# bazaar-backend
+# Bazaar Backend
 
 Welcome to the Bazaar backend plugin!
 
