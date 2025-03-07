@@ -74,5 +74,11 @@
     "caugello",
     "CryptoRodeo"
   ],
+  "scalprum": {
+    "name": "backstage-community.plugin-redhat-argocd-backend",
+    "exposedModules": {
+      "PluginRoot": "./src/index.ts"
+    }
+  },
   "author": "Red Hat"
 }
