@@ -16,11 +16,12 @@
 
 import { ResponseError } from '@backstage/errors';
 import { Config } from '@backstage/config';
+import { LoggerService } from '@backstage/backend-plugin-api';
 import {
   CopilotMetrics,
   TeamInfo,
 } from '@backstage-community/plugin-copilot-common';
-import fetch from 'node-fetch';
+import fetch, { Response as NodeFetchResponse } from 'node-fetch';
 import {
   CopilotConfig,
   CopilotCredentials,
@@ -43,14 +44,25 @@ interface GithubApi {
 }
 
 export class GithubClient implements GithubApi {
+  private readonly logger: LoggerService;
+
   constructor(
     private readonly copilotConfig: CopilotConfig,
     private readonly config: Config,
-  ) {}
+    logger?: LoggerService,
+  ) {
+    this.logger = logger || {
+      debug: () => {},
+      info: () => {},
+      warn: () => {},
+      error: () => {},
+      child: () => this.logger,
+    };
+  }
 
-  static async fromConfig(config: Config) {
+  static async fromConfig(config: Config, logger?: LoggerService) {
     const info = getCopilotConfig(config);
-    return new GithubClient(info, config);
+    return new GithubClient(info, config, logger);
   }
 
   private async getCredentials(): Promise<CopilotCredentials> {
@@ -117,7 +129,7 @@ export class GithubClient implements GithubApi {
         hasNextPage = false;
       }
     }
-    console.log(`[copilot-backend] Fetched ${allTeams.length} teams`);
+    this.logger.info(`Fetched ${allTeams.length} teams`);
     return allTeams;
   }
 
@@ -143,7 +155,7 @@ export class GithubClient implements GithubApi {
   }
 
   // Add this new private method to handle raw responses
-  private async getRaw(path: string): Promise<Response> {
+  private async getRaw(path: string): Promise<NodeFetchResponse> {
     const credentials = await this.getCredentials();
     const headers = path.startsWith('/enterprises')
       ? credentials.enterprise?.headers
