@@ -16,7 +16,7 @@
 import React from 'react';
 
 import { AppHealthIcon } from '../../../AppStatus/StatusIcons';
-import { HealthStatus } from '../../../../types/application';
+import { HealthStatus } from '@backstage-community/plugin-redhat-argocd-common';
 
 interface ResourceHealthStatusProps {
   healthStatus: string;

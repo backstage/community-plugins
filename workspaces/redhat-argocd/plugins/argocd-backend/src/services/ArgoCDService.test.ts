@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { ArgoCDService } from './ArgoCDService';
-import { RevisionInfo } from '../types';
+import { RevisionInfo } from '@backstage-community/plugin-redhat-argocd-common';
 import { mockApplications, mockConfig } from '../__data__/mockdata';
 
 const mockLogger = {
@@ -255,11 +255,46 @@ describe('ArgoCDService', () => {
         'staging-instance',
         'staging-app',
         'abc123def456',
-        'staging',
+        {
+          appNamespace: 'staging',
+        },
       );
       expect(result).toEqual(expectedRevision);
       expect(fetchMock).toHaveBeenCalledWith(
         'https://argocd.staging.example.com/api/v1/applications/staging-app/revisions/abc123def456/metadata?appNamespace=staging',
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer test-staging-token',
+          },
+        },
+      );
+    });
+
+    it('should fetch revision details with sourceIndex param successfully', async () => {
+      const expectedRevision: RevisionInfo = {
+        author: 'test-user <test-user@mail.com>',
+        date: new Date('2025-01-02'),
+        message: 'Test commit',
+      };
+
+      fetchMock.mockResolvedValue({
+        ok: true,
+        json: async () => expectedRevision,
+      });
+
+      const result = await service.getRevisionDetails(
+        'staging-instance',
+        'staging-app',
+        'abc123def456',
+        {
+          sourceIndex: '1',
+        },
+      );
+      expect(result).toEqual(expectedRevision);
+      expect(fetchMock).toHaveBeenCalledWith(
+        'https://argocd.staging.example.com/api/v1/applications/staging-app/revisions/abc123def456/metadata?sourceIndex=1',
         {
           method: 'GET',
           headers: {
@@ -283,7 +318,7 @@ describe('ArgoCDService', () => {
           'fakeRevision',
         ),
       ).rejects.toThrow(
-        "Failed to fetch Revision data from Instance 'non-existent-instance' with revisionID 'fakeRevision' with appName 'fake-appName' with appNamespace 'N/A' : ArgoCD Instance non-existent-instance not found",
+        "Failed to fetch Revision data from Instance 'non-existent-instance' with revisionID 'fakeRevision' with appName 'fake-appName' with appNamespace 'N/A' with sourceIndex 'N/A' : ArgoCD Instance non-existent-instance not found",
       );
 
       expect(mockLogger.error).toHaveBeenCalledWith(

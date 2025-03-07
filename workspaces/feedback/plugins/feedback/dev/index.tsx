@@ -20,6 +20,7 @@ import {
   CatalogEntityPage,
   CatalogIndexPage,
   catalogPlugin,
+  EntityAboutCard,
   EntityLayout,
 } from '@backstage/plugin-catalog';
 
@@ -28,6 +29,7 @@ import { getAllThemes } from '@redhat-developer/red-hat-developer-hub-theme';
 import {
   EntityFeedbackPage,
   feedbackPlugin,
+  GlobalFeedbackComponent,
   GlobalFeedbackPage,
   OpcFeedbackComponent,
 } from '../src/plugin';
@@ -39,7 +41,8 @@ createDevApp()
   .addPage({
     element: (
       <>
-        <GlobalFeedbackPage /> <OpcFeedbackComponent />
+        <GlobalFeedbackPage /> <GlobalFeedbackComponent />{' '}
+        <OpcFeedbackComponent />
       </>
     ),
     title: 'Root Page',
@@ -49,6 +52,7 @@ createDevApp()
     element: (
       <>
         <CatalogIndexPage />
+        <GlobalFeedbackComponent />
         <OpcFeedbackComponent />
       </>
     ),
@@ -61,13 +65,17 @@ createDevApp()
     element: (
       <>
         <CatalogEntityPage />
+        <GlobalFeedbackComponent />
         <OpcFeedbackComponent />
       </>
     ),
     children: (
       <EntityLayout>
         <EntityLayout.Route path="feedback" title="Feedback">
-          <EntityFeedbackPage />
+          <>
+            <EntityAboutCard />
+            <EntityFeedbackPage />
+          </>
         </EntityLayout.Route>
       </EntityLayout>
     ),

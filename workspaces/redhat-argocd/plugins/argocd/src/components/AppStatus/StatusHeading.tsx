@@ -15,7 +15,7 @@
  */
 import React from 'react';
 
-import { Application } from '../../types/application';
+import { Application } from '@backstage-community/plugin-redhat-argocd-common';
 import AppHealthStatus from './AppHealthStatus';
 import AppSyncStatus from './AppSyncStatus';
 

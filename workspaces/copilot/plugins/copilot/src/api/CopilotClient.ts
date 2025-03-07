@@ -99,7 +99,6 @@ export class CopilotClient implements CopilotApi {
     if (!response.ok) {
       throw await ResponseError.fromResponse(response);
     }
-
     return response.json() as Promise<T>;
   }
 }

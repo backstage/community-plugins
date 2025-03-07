@@ -1,5 +1,17 @@
 ### Dependencies
 
+## 5.5.2
+
+### Patch Changes
+
+- 9aa839a: Fixes two issues that were impact the performance, the first was that we were individually adding and removing roles and the second was we were removing all policies and roles regardless of whether they should actually be removed.
+
+## 5.5.1
+
+### Patch Changes
+
+- fcfaf89: Fixed an issue where aliases would not be applied across all conditional policy rules.
+
 ## 5.5.0
 
 ### Minor Changes
