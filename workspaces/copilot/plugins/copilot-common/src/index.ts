@@ -185,6 +185,28 @@ export interface TeamInfo {
 }
 
 /**
+ * Represents information about seats.
+ *
+ * @public
+ */
+export interface SeatInfo {
+  /**
+   * The unique identifier of the team.
+   */
+  id: number;
+
+  /**
+   * The slug of the team, used for URL-friendly identifiers.
+   */
+  slug: string;
+
+  /**
+   * The name of the team.
+   */
+  name: string;
+}
+
+/**
  * Represents the metrics data for copilot ide language metrics
  *
  * @public
@@ -500,4 +522,58 @@ export interface CopilotMetrics {
    * The total number of pull requests for dotcom users.
    */
   copilot_dotcom_pull_requests: DotcomPullRequests;
+}
+
+export interface EngagementMetrics {
+  day: string;
+  /**
+   * The type of the metrics data.
+   * Can be 'enterprise', 'organization'.
+   */
+  type: MetricsType;
+
+  /**
+   * The name of the team, applicable when the metric is for a specific team.
+   * When null, it indicates metrics for all teams, aggregated at the 'enterprise' or 'organization' level.
+   */
+  team_name?: string;
+
+  total_active_users: number;
+  total_engaged_users: number;
+  ide_completions_engaged_users: number;
+  ide_chats_engaged_users: number;
+  dotcom_chats_engaged_users: number;
+  dotcom_prs_engaged_users: number;
+}
+
+export interface CopilotAssignee {
+  id: number;
+  login: string;
+}
+export interface CopilotAssgningTeam {
+  id: number;
+  slug: string;
+}
+export interface CopilotSeat {
+  created_at: string;
+  updated_at: string;
+  last_activity_at: string;
+  last_activity_editor: string;
+  plan_type: string;
+  assignee: CopilotAssignee;
+  assigning_team: CopilotAssgningTeam;
+}
+export interface CopilotSeats {
+  total_seats: number;
+  seats: CopilotSeat[];
+}
+export interface SeatAnalysis {
+  day: string;
+  type: MetricsType;
+  team_name: string;
+  total_seats: number;
+  seats_never_used: number;
+  seats_inactive_7_days: number;
+  seats_inactive_14_days: number;
+  seats_inactive_28_days: number;
 }
