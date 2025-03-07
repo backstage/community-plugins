@@ -32,12 +32,15 @@ export const feedbackPlugin: BackstagePlugin<
   {}
 >;
 
+// @public
+export const GlobalFeedbackComponent: () => JSX_2.Element;
+
 // @public (undocumented)
 export const GlobalFeedbackPage: (props: {
   themeId?: string | undefined;
 }) => JSX_2.Element;
 
-// @public (undocumented)
+// @public @deprecated
 export const OpcFeedbackComponent: () => JSX_2.Element;
 
 // (No @packageDocumentation comment for this package)
