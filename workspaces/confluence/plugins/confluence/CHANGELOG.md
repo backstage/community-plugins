@@ -1,5 +1,17 @@
 # @backstage-community/plugin-confluence
 
+## 0.4.1
+
+### Patch Changes
+
+- 53df32a: Adds a search result type for confluence in the new frontend system.
+
+## 0.4.0
+
+### Minor Changes
+
+- 53f211f: Backstage version bump to v1.36.1
+
 ## 0.3.0
 
 ### Minor Changes

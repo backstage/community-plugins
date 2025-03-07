@@ -17,6 +17,7 @@ body:
         - adr
         - airbrake
         - allure
+        - amplication
         - analytics
         - announcements
         - apache-airflow
