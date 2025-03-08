@@ -46,7 +46,7 @@ export const scaffolderBackendModuleJenkins = createBackendModule({
       async init({ config, logger, scaffolderActions }) {
         const jenkinsClient = buildJenkinsClient(config);
 
-        scaffolderActions.addActions(createJob(jenkinsClient));
+        scaffolderActions.addActions(createJob(jenkinsClient, config));
         scaffolderActions.addActions(copyJob(jenkinsClient));
         scaffolderActions.addActions(buildJob(jenkinsClient));
         scaffolderActions.addActions(enableJob(jenkinsClient));

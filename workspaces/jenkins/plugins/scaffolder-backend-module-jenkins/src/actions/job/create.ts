@@ -13,10 +13,62 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {
+  resolveSafeChildPath,
+  RootConfigService,
+} from '@backstage/backend-plugin-api';
+import { InputError } from '@backstage/errors';
 import { createTemplateAction } from '@backstage/plugin-scaffolder-node';
 import fs from 'fs/promises';
-import { resolveSafeChildPath } from '@backstage/backend-plugin-api';
 import Jenkins from 'jenkins';
+
+async function createJobByServerUrl(
+  config: RootConfigService,
+  ctx: any,
+  jobXml: string,
+) {
+  const { folderName, jobName, serverUrl } = ctx.input;
+  const username = config.getOptionalString('jenkins.username');
+  const apiKey = config.getOptionalString('jenkins.apiKey');
+  const server = serverUrl || config.getOptionalString('jenkins.baseUrl');
+  if (!username || !apiKey) {
+    throw new InputError(
+      `No valid Jenkins credentials given. Please add them to the config file.`,
+    );
+  }
+  if (!server) {
+    throw new InputError(
+      `No valid Jenkins server given. Please add it to the config file.`,
+    );
+  }
+  const token = Buffer.from(`${username}:${apiKey}`).toString('base64');
+  let url = `${server}`;
+  if (folderName) {
+    url = url.concat(`/job/${folderName}`);
+  }
+  url = url.concat(`/createItem?name=${jobName}`);
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      Authorization: `Basic ${token}`,
+      'Content-Type': 'application/xml',
+    },
+    body: jobXml,
+  });
+  if (response.ok) {
+    ctx.logger.info(`Successfully created job ${jobName}`);
+    ctx.logger.info(
+      `Job URL: ${server}${
+        folderName ? `/job/${folderName}` : ''
+      }/job/${jobName}`,
+    );
+  }
+  if (!response.ok) {
+    throw new Error(
+      `Failed to create job, ${response.status} ${response.statusText}`,
+    );
+  }
+}
 
 /**
  * @public
@@ -26,12 +78,13 @@ import Jenkins from 'jenkins';
  * @param jenkins - The client to interact with jenkins instance
  * @returns Empty response, in case of error an exception will be thrown by jenkins client
  */
-export function createJob(jenkins: Jenkins) {
+export function createJob(jenkins: Jenkins, config: RootConfigService) {
   return createTemplateAction<{
     jobName: string;
     jobXml: string;
     folderName: string;
     configPath: string;
+    serverUrl: string;
   }>({
     id: 'jenkins:job:create',
     description: 'Create a job jenkins given a name and gitlab repo',
@@ -72,7 +125,7 @@ export function createJob(jenkins: Jenkins) {
         'Trying to create job jenkins with this xml {}',
         ctx.input.jobXml,
       );
-      const { configPath, folderName } = ctx.input;
+      const { configPath, folderName, serverUrl } = ctx.input;
 
       let jobXml = ctx.input.jobXml;
       if (configPath) {
@@ -93,6 +146,11 @@ export function createJob(jenkins: Jenkins) {
         throw new Error(
           'JobXml cannot be null or empty, please configure with inline content or from xml file!',
         );
+      }
+
+      if (serverUrl) {
+        await createJobByServerUrl(config, ctx, jobXml);
+        return;
       }
 
       await jenkins.job.create(jobName, jobXml);
