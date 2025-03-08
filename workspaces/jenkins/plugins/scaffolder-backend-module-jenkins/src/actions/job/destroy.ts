@@ -17,8 +17,6 @@ import { createTemplateAction } from '@backstage/plugin-scaffolder-node';
 import Jenkins from 'jenkins';
 
 /**
- * @public
- *
  * This destroyJob function, deletes a job given a job name
  *
  * @param jenkins - The client to interact with jenkins instance
