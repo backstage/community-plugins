@@ -71,8 +71,6 @@ async function createJobByServerUrl(
 }
 
 /**
- * @public
- *
  * This createJob function, creates a job given a job name and own configuration file as xml format
  *
  * @param jenkins - The client to interact with jenkins instance
