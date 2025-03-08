@@ -17,8 +17,6 @@ import { createTemplateAction } from '@backstage/plugin-scaffolder-node';
 import Jenkins from 'jenkins';
 
 /**
- * @public
- *
  * This copyJob function, creates a job given a source job name
  *
  * @param jenkins - The client to interact with jenkins instance
