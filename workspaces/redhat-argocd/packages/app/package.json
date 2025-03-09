@@ -61,7 +61,7 @@
     "@backstage/cli": "^0.29.5",
     "@testing-library/jest-dom": "6.6.3",
     "@testing-library/react": "14.3.1",
-    "@types/node": "18.19.68",
+    "@types/node": "22.13.9",
     "@types/react": "18.3.18",
     "@types/react-dom": "18.3.5"
   },

@@ -2747,7 +2747,7 @@ __metadata:
     "@testing-library/react": "npm:^14.0.0"
     "@testing-library/user-event": "npm:^14.5.1"
     "@types/luxon": "npm:^3.3.3"
-    "@types/node": "npm:^18.18.7"
+    "@types/node": "npm:^22.0.0"
     "@types/react": "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
     "@uiw/react-md-editor": "npm:^4.0.3"
     add: "npm:^2.0.6"
@@ -11820,12 +11820,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:>=13.7.0":
-  version: 22.10.3
-  resolution: "@types/node@npm:22.10.3"
+"@types/node@npm:*, @types/node@npm:>=13.7.0, @types/node@npm:^22.0.0":
+  version: 22.13.10
+  resolution: "@types/node@npm:22.13.10"
   dependencies:
     undici-types: "npm:~6.20.0"
-  checksum: 10/c63bd7800b82a53efd3fc0e115d045ae539eaa6367a7804fc17db84a311995a2228b8dce3e8eed089b4f91ae28224cfcf86086ff1ecf48a16c3b9efc03a725f8
+  checksum: 10/57dc6a5e0110ca9edea8d7047082e649fa7fa813f79e4a901653b9174141c622f4336435648baced5b38d9f39843f404fa2d8d7a10981610da26066bc8caab48
   languageName: node
   linkType: hard
 
@@ -11836,7 +11836,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^18.11.18, @types/node@npm:^18.11.9, @types/node@npm:^18.18.7":
+"@types/node@npm:^18.11.18, @types/node@npm:^18.11.9":
   version: 18.19.68
   resolution: "@types/node@npm:18.19.68"
   dependencies:
