@@ -86,4 +86,23 @@ describe('AzureDevOpsClient', () => {
       'http://mocked-url/builds/project?entityRef=some-entity-ref&host=host&definitionName=def3',
     );
   });
+
+  it('should call get with correct parameters for a single build log', async () => {
+    const projectName = 'project';
+    const entityRef = 'some-entity-ref';
+    const hostName = 'host';
+    const buildId = 8;
+
+    await azureDevOpsClient.getBuildRunLog(
+      projectName,
+      entityRef,
+      buildId,
+      hostName,
+    );
+
+    expect(fetchApiMock.fetch).toHaveBeenCalledTimes(1);
+    expect(fetchApiMock.fetch).toHaveBeenCalledWith(
+      'http://mocked-url/builds/project/build/8/log?entityRef=some-entity-ref&host=host',
+    );
+  });
 });
