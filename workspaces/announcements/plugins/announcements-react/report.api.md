@@ -162,6 +162,7 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'announcementsPage.card.edit': 'EDIT';
     readonly 'announcementsPage.card.occurred': 'Occurred ';
     readonly 'announcementsPage.card.scheduled': 'Scheduled ';
+    readonly 'announcementsPage.card.today': 'Today';
     readonly 'deleteDialog.cancel': 'Cancel';
     readonly 'deleteDialog.title': 'Are you sure you want to delete this announcement?';
     readonly 'deleteDialog.delete': 'Delete';
@@ -170,6 +171,7 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'announcementsCard.announcements': 'Announcements';
     readonly 'announcementsCard.occurred': 'Occurred';
     readonly 'announcementsCard.scheduled': 'Scheduled';
+    readonly 'announcementsCard.today': 'Today';
     readonly 'announcementsCard.seeAll': 'See all';
     readonly 'announcementsCard.noAnnouncements': 'No announcements yet, want to';
     readonly 'announcementsCard.addOne': 'add one';
@@ -280,6 +282,7 @@ export const useAnnouncementsTranslation: () => {
     readonly 'announcementsPage.card.edit': 'EDIT';
     readonly 'announcementsPage.card.occurred': 'Occurred ';
     readonly 'announcementsPage.card.scheduled': 'Scheduled ';
+    readonly 'announcementsPage.card.today': 'Today';
     readonly 'deleteDialog.cancel': 'Cancel';
     readonly 'deleteDialog.title': 'Are you sure you want to delete this announcement?';
     readonly 'deleteDialog.delete': 'Delete';
@@ -288,6 +291,7 @@ export const useAnnouncementsTranslation: () => {
     readonly 'announcementsCard.announcements': 'Announcements';
     readonly 'announcementsCard.occurred': 'Occurred';
     readonly 'announcementsCard.scheduled': 'Scheduled';
+    readonly 'announcementsCard.today': 'Today';
     readonly 'announcementsCard.seeAll': 'See all';
     readonly 'announcementsCard.noAnnouncements': 'No announcements yet, want to';
     readonly 'announcementsCard.addOne': 'add one';
