@@ -5,35 +5,11 @@
 ```ts
 
 import { BackendFeatureCompat } from '@backstage/backend-plugin-api';
-import { Config } from '@backstage/config';
-import express from 'express';
-import { HttpAuthService } from '@backstage/backend-plugin-api';
-import { Logger } from 'winston';
-import { PluginCacheManager } from '@backstage/backend-common';
-import { PluginDatabaseManager } from '@backstage/backend-common';
-import { UserInfoService } from '@backstage/backend-plugin-api';
 
-// @public @deprecated (undocumented)
-export function createRouter(options: RouterOptions): Promise<express.Router>;
-
+// Warning: (ae-missing-release-tag) "mtaPlugin" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 const mtaPlugin: BackendFeatureCompat;
 export default mtaPlugin;
-
-// @public @deprecated (undocumented)
-export interface RouterOptions {
-    // (undocumented)
-    cache: PluginCacheManager;
-    // (undocumented)
-    config: Config;
-    // (undocumented)
-    database: PluginDatabaseManager;
-    // (undocumented)
-    httpAuth: HttpAuthService;
-    // (undocumented)
-    logger: Logger;
-    // (undocumented)
-    userInfo: UserInfoService;
-}
 
 ```
