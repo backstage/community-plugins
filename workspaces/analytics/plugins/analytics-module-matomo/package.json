@@ -46,7 +46,7 @@
     "@backstage/dev-utils": "^1.1.7",
     "@redhat-developer/red-hat-developer-hub-theme": "0.4.0",
     "@testing-library/jest-dom": "6.6.3",
-    "@types/node": "18.19.68",
+    "@types/node": "22.13.9",
     "cross-fetch": "4.0.0",
     "msw": "1.3.5",
     "prettier": "3.4.2"
