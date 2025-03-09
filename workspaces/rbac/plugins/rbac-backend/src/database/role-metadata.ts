@@ -67,7 +67,7 @@ export class DataBaseRoleMetadataStorage implements RoleMetadataStorage {
 
   async findRoleMetadata(
     roleEntityRef: string,
-    trx: Knex.Transaction,
+    trx?: Knex.Transaction,
   ): Promise<RoleMetadataDao | undefined> {
     const db = trx || this.knex;
     return await db
