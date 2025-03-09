@@ -16,11 +16,12 @@
 
 import { ResponseError } from '@backstage/errors';
 import { Config } from '@backstage/config';
+import { LoggerService } from '@backstage/backend-plugin-api';
 import {
   CopilotMetrics,
   TeamInfo,
 } from '@backstage-community/plugin-copilot-common';
-import fetch from 'node-fetch';
+import fetch, { Response as NodeFetchResponse } from 'node-fetch';
 import {
   CopilotConfig,
   CopilotCredentials,
@@ -43,14 +44,25 @@ interface GithubApi {
 }
 
 export class GithubClient implements GithubApi {
+  private readonly logger: LoggerService;
+
   constructor(
     private readonly copilotConfig: CopilotConfig,
     private readonly config: Config,
-  ) {}
+    logger?: LoggerService,
+  ) {
+    this.logger = logger || {
+      debug: () => {},
+      info: () => {},
+      warn: () => {},
+      error: () => {},
+      child: () => this.logger,
+    };
+  }
 
-  static async fromConfig(config: Config) {
+  static async fromConfig(config: Config, logger?: LoggerService) {
     const info = getCopilotConfig(config);
-    return new GithubClient(info, config);
+    return new GithubClient(info, config, logger);
   }
 
   private async getCredentials(): Promise<CopilotCredentials> {
@@ -87,8 +99,38 @@ export class GithubClient implements GithubApi {
   }
 
   async fetchOrganizationTeams(): Promise<TeamInfo[]> {
-    const path = `/orgs/${this.copilotConfig.organization}/teams`;
-    return this.get(path);
+    const perPage = 100;
+    let page = 1;
+    let allTeams: TeamInfo[] = [];
+    let hasNextPage = true;
+
+    while (hasNextPage) {
+      const path = `/orgs/${this.copilotConfig.organization}/teams?per_page=${perPage}&page=${page}`;
+
+      // Use the raw response method to access headers
+      const response = await this.getRaw(path);
+      const teams = (await response.json()) as TeamInfo[];
+
+      if (Array.isArray(teams)) {
+        allTeams = [...allTeams, ...teams];
+      } else {
+        throw new Error(
+          `Invalid response format: expected array but got ${typeof teams}`,
+        );
+      }
+
+      // Check for pagination using GitHub's Link header
+      const linkHeader = response.headers.get('link');
+      hasNextPage = Boolean(linkHeader && linkHeader.includes('rel="next"'));
+      page++;
+
+      // Break if we got fewer results than requested (last page)
+      if (teams.length < perPage) {
+        hasNextPage = false;
+      }
+    }
+    this.logger.info(`Fetched ${allTeams.length} teams`);
+    return allTeams;
   }
 
   private async get<T>(path: string): Promise<T> {
@@ -110,5 +152,27 @@ export class GithubClient implements GithubApi {
     }
 
     return response.json() as Promise<T>;
+  }
+
+  // Add this new private method to handle raw responses
+  private async getRaw(path: string): Promise<NodeFetchResponse> {
+    const credentials = await this.getCredentials();
+    const headers = path.startsWith('/enterprises')
+      ? credentials.enterprise?.headers
+      : credentials.organization?.headers;
+
+    const response = await fetch(`${this.copilotConfig.apiBaseUrl}${path}`, {
+      headers: {
+        ...headers,
+        Accept: 'application/vnd.github+json',
+        'X-GitHub-Api-Version': '2022-11-28',
+      },
+    });
+
+    if (!response.ok) {
+      throw await ResponseError.fromResponse(response);
+    }
+
+    return response;
   }
 }
