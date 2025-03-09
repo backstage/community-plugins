@@ -153,6 +153,20 @@ cd workspaces/adr
 yarn new
 ```
 
+### Local development of plugins
+
+We recommend setting up a local development environment for your plugin. New plugins come with a `dev/index.ts` file that can be used to run the plugin in a standalone environment. This is useful for developing the plugin in isolation, please make sure that the `dev/index.ts` file is set up correctly for your plugin. For example, this is how it has been setup in the linguist workspace [frontend dev environment](https://github.com/backstage/community-plugins/blob/main/workspaces/linguist/plugins/linguist/dev/index.tsx) and [backend dev environment](https://github.com/backstage/community-plugins/blob/main/workspaces/linguist/plugins/linguist-backend/dev/index.tsx).
+
+If your project is composed by multiple plugins you can run them all together by setting up a `yarn dev` command in the workspace root.
+
+For example, if your workspace contains a frontend plugin `@backstage-community/plugin-foo` that uses the entity page and a backend plugin `@backstage-community/plugin-foo-backend` you can add the following to the `package.json`:
+
+```diff
+  "scripts": {
++   "dev": "yarn workspaces foreach -A --include @backstage-community/plugin-foo --include @backstage-community/plugin-foo-backend --parallel -v -i run start",
+    "start": "yarn workspace app start",
+```
+
 ## Migrating a plugin
 
 Before proceeding with migrating a plugin, please review the following sections of the `README`:

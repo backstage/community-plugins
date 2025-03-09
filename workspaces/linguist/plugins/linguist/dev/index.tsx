@@ -13,15 +13,63 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 import { createDevApp } from '@backstage/dev-utils';
-import { linguistPlugin, EntityLinguistCard } from '../src/plugin';
+import {
+  linguistPlugin,
+  EntityLinguistCard,
+  isLinguistAvailable,
+} from '../src/plugin';
+import {
+  CatalogEntityPage,
+  CatalogIndexPage,
+  catalogPlugin,
+  EntityAboutCard,
+  EntityHasSubcomponentsCard,
+  EntityLayout,
+  EntitySwitch,
+} from '@backstage/plugin-catalog';
+import Grid from '@material-ui/core/Grid';
+
+const SampleEntityPage = ({ children }: PropsWithChildren<{}>) => (
+  <EntityLayout>
+    <EntityLayout.Route path="/" title="Overview">
+      <Grid container spacing={3} alignItems="stretch">
+        <Grid item md={12}>
+          <EntityAboutCard variant="gridItem" />
+        </Grid>
+        {children}
+        <Grid item xs={12}>
+          <EntityHasSubcomponentsCard variant="gridItem" />
+        </Grid>
+      </Grid>
+    </EntityLayout.Route>
+  </EntityLayout>
+);
 
 createDevApp()
-  .registerPlugin(linguistPlugin)
+  // We need the catalog plugin to get the example entities and make the front entity page functional
+  .registerPlugin(catalogPlugin)
   .addPage({
-    element: <EntityLinguistCard />,
-    title: 'Root Page',
-    path: '/linguist',
+    path: '/catalog',
+    title: 'Catalog',
+    element: <CatalogIndexPage />,
   })
+  // We need the entity page experience to see the linguist card
+  .addPage({
+    path: '/catalog/:namespace/:kind/:name',
+    element: <CatalogEntityPage />,
+    children: (
+      <SampleEntityPage>
+        <EntitySwitch>
+          <EntitySwitch.Case if={isLinguistAvailable}>
+            <Grid item md={12}>
+              <EntityLinguistCard />
+            </Grid>
+          </EntitySwitch.Case>
+        </EntitySwitch>
+      </SampleEntityPage>
+    ),
+  })
+  .registerPlugin(linguistPlugin)
   .render();
