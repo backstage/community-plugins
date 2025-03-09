@@ -2703,7 +2703,7 @@ __metadata:
     "@spotify/prettier-config": "npm:^15.0.0"
     "@testing-library/jest-dom": "npm:^6.0.0"
     "@testing-library/react": "npm:^15.0.0"
-    "@types/node": "npm:18.19.68"
+    "@types/node": "npm:18.19.79"
     "@types/react": "npm:^18.2.58"
     "@types/react-dom": "npm:^18.2.19"
     cross-fetch: "npm:4.0.0"
@@ -13220,12 +13220,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:18.19.68":
-  version: 18.19.68
-  resolution: "@types/node@npm:18.19.68"
+"@types/node@npm:18.19.79, @types/node@npm:^18.11.18, @types/node@npm:^18.11.9":
+  version: 18.19.79
+  resolution: "@types/node@npm:18.19.79"
   dependencies:
     undici-types: "npm:~5.26.4"
-  checksum: 10/024a4a8eeca21c0d1eaa575036dbc44528eae180821de71b77868ddc24d18032b988582046db4f7ea2643970a5169d790e1884153472145de07d629bc2ce2ec6
+  checksum: 10/6e1a25f7ce2a9eda07cccf715d7a32d0e765caf87170f6a9d0c870720e74a7a5424b2be51d4cb832405948e00a8d3db26d361b1aef8de2cea81ebaeef3fca37f
   languageName: node
   linkType: hard
 
@@ -13233,15 +13233,6 @@ __metadata:
   version: 12.20.55
   resolution: "@types/node@npm:12.20.55"
   checksum: 10/1f916a06fff02faadb09a16ed6e31820ce170798b202ef0b14fc244bfbd721938c54a3a99836e185e4414ca461fe96c5bb5c67c3d248f153555b7e6347f061dd
-  languageName: node
-  linkType: hard
-
-"@types/node@npm:^18.11.18, @types/node@npm:^18.11.9":
-  version: 18.19.75
-  resolution: "@types/node@npm:18.19.75"
-  dependencies:
-    undici-types: "npm:~5.26.4"
-  checksum: 10/641dc5fa408f1cec66cfa5eef015baf3051a5509ad7ab4b843023ca8b41530d3ef2e798479020d6da20cbe36b3cf150051af2f1786b40bcd2e8dfed1b2fdab9e
   languageName: node
   linkType: hard
 
