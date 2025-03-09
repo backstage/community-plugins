@@ -105,12 +105,22 @@ Create a custom explore page in
 ```tsx
 import {
   CatalogKindExploreContent,
+  ToolExplorerContent,
   ExploreLayout,
+  explorePlugin,
 } from '@backstage-community/plugin-explore';
+import {
+  createRoutableExtension,
+  createRouteRef,
+} from '@backstage/core-plugin-api';
 import React from 'react';
 import { InnerSourceExploreContent } from './InnerSourceExploreContent';
 
-export const ExplorePage = () => {
+export const exploreRouteRef = createRouteRef({
+  id: 'explore',
+});
+
+export const explorePageContent = () => {
   return (
     <ExploreLayout
       title="Explore the ACME corp ecosystem"
@@ -125,9 +135,20 @@ export const ExplorePage = () => {
       <ExploreLayout.Route path="inner-source" title="InnerSource">
         <InnerSourceExploreContent />
       </ExploreLayout.Route>
+      <ExploreLayout.Route path="tools" title="Tools">
+        <ToolExplorerContent />
+      </ExploreLayout.Route>
     </ExploreLayout>
   );
 };
+
+export const ExplorePage = explorePlugin.provide(
+  createRoutableExtension({
+    name: 'ExplorePage',
+    component: async () => explorePageContent,
+    mountPoint: exploreRouteRef,
+  }),
+);
 
 export const explorePage = <ExplorePage />;
 ```
