@@ -20,7 +20,6 @@ import {
   RootConfigService,
 } from '@backstage/backend-plugin-api';
 import { AuthorizeResult } from '@backstage/plugin-permission-common';
-// eslint-disable-next-line @backstage/no-undeclared-imports
 import { createPermissionIntegrationRouter } from '@backstage/plugin-permission-node';
 
 import express from 'express';
