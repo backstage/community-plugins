@@ -134,7 +134,7 @@ export async function createRouter(
     res.json(Object.values(entityRatingsMap));
   });
 
-  router.post('/ratings/:entityRef', async (req, res) => {
+  router.post('/ratings/:entityRef(*)', async (req, res) => {
     const credentials = await httpAuth.credentials(req, { allow: ['user'] });
 
     const rating = req.body.rating;
@@ -153,7 +153,18 @@ export async function createRouter(
     res.status(201).end();
   });
 
-  router.get('/ratings/:entityRef', async (req, res) => {
+  router.get('/ratings/:entityRef(*)/aggregate', async (req, res) => {
+    const entityRatings = (
+      await dbHandler.getRatings(req.params.entityRef)
+    ).reduce((ratings: Ratings, { rating }) => {
+      ratings[rating] = (ratings[rating] ?? 0) + 1;
+      return ratings;
+    }, {});
+
+    res.json(entityRatings);
+  });
+
+  router.get('/ratings/:entityRef(*)', async (req, res) => {
     const ratings = await dbHandler.getRatings(req.params.entityRef);
 
     const { token } = await auth.getPluginRequestToken({
@@ -177,18 +188,7 @@ export async function createRouter(
     res.json(ratings.filter(r => accessibleEntityRefs.includes(r.userRef)));
   });
 
-  router.get('/ratings/:entityRef/aggregate', async (req, res) => {
-    const entityRatings = (
-      await dbHandler.getRatings(req.params.entityRef)
-    ).reduce((ratings: Ratings, { rating }) => {
-      ratings[rating] = (ratings[rating] ?? 0) + 1;
-      return ratings;
-    }, {});
-
-    res.json(entityRatings);
-  });
-
-  router.post('/responses/:entityRef', async (req, res) => {
+  router.post('/responses/:entityRef(*)', async (req, res) => {
     const { response, comments, consent } = req.body;
     const credentials = await httpAuth.credentials(req, { allow: ['user'] });
 
@@ -203,7 +203,7 @@ export async function createRouter(
     res.status(201).end();
   });
 
-  router.get('/responses/:entityRef', async (req, res) => {
+  router.get('/responses/:entityRef(*)', async (req, res) => {
     const responses = await dbHandler.getResponses(req.params.entityRef);
 
     const { token } = await auth.getPluginRequestToken({
