@@ -43,7 +43,7 @@ const routes = (
     {/* ...other routes */}
     <Route
       path="/tech-radar"
-      element={<TechRadarPage width={1500} height={800} />}
+      element={<TechRadarPage />}
     />
 ```
 
@@ -57,8 +57,8 @@ export type TechRadarPageProps = TechRadarComponentProps & {
 };
 
 export interface TechRadarPageProps {
-  width: number;
-  height: number;
+  width?: number;
+  height?: number;
   svgProps?: object;
 }
 ```
