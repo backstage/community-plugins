@@ -7093,7 +7093,7 @@ __metadata:
     "@backstage/repo-tools": "npm:^0.12.1"
     "@changesets/cli": "npm:^2.27.1"
     "@ianvs/prettier-plugin-sort-imports": "npm:^4.3.1"
-    "@spotify/prettier-config": "npm:^12.0.0"
+    "@spotify/prettier-config": "npm:^15.0.0"
     knip: "npm:^5.27.4"
     node-gyp: "npm:^9.0.0"
     prettier: "npm:^2.3.2"
@@ -11374,15 +11374,6 @@ __metadata:
     "@typescript-eslint/parser": ">=5"
     eslint: ">=8.x"
   checksum: 10/33627cff3a7ff6360cd73e26d28c50b3a49cc027716e1e0044187cad1fbfd6f9da13c83d2ae16bffa4755c8004f2ee9dafa4d520906905a8c9a7209987c93e5d
-  languageName: node
-  linkType: hard
-
-"@spotify/prettier-config@npm:^12.0.0":
-  version: 12.0.0
-  resolution: "@spotify/prettier-config@npm:12.0.0"
-  peerDependencies:
-    prettier: 2.x
-  checksum: 10/435e16f6c376fddf008dc881907c25a8706546129a552162b707c060e167d62563279d885321bd62721327180fa033331ede8b4cfbc6c0b6017245ef6a8fc8a1
   languageName: node
   linkType: hard
 
