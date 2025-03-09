@@ -54,7 +54,9 @@ export interface GithubDiscussionsSearchResultListItemProps {
   lineClamp?: number;
 }
 
-/** @public */
+/**
+ * @internal
+ */
 export function GithubDiscussionsSearchResultListItem(
   props: GithubDiscussionsSearchResultListItemProps,
 ) {
