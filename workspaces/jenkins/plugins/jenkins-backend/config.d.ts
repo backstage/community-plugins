@@ -15,45 +15,47 @@
  */
 
 export interface Config {
-  jenkins?: {
-    /**
-     * Default instance baseUrl, can be specified on a named instance called "default"
-     */
-    baseUrl?: string;
-    /**
-     * Default instance username, can be specified on a named instance called "default"
-     */
-    username?: string;
-    /**
-     * Default instance projectCountLimit, can be specified on a named instance called "default"
-     */
-    projectCountLimit?: number;
-    /**
-     * Default Instance apiKey, can be specified on a named instance called "default"
-     * @visibility secret
-     */
-    apiKey?: string;
-
-    instances?: {
-      /**
-       * Name of the instance, this will be used in an annotation on catalog entities to refer to jobs on this instance.
-       *
-       * Use a name of "default" to specify the jenkins instance details if the annotation doesn't explicitly name an
-       * instance.
-       */
-      name: string;
-      baseUrl: string;
-      username: string;
-      projectCountLimit?: number;
-      /** @visibility secret */
-      apiKey: string;
-      extraRequestHeaders?: {
-        /** @visibility secret */
-        Authorization?: string;
-        /** @visibility secret */
-        authorization?: string;
-        [key: string]: string | undefined;
+  jenkins?:
+    | {
+        /**
+         * Default instance baseUrl, can be specified on a named instance called "default"
+         */
+        baseUrl: string;
+        /**
+         * Default instance username, can be specified on a named instance called "default"
+         */
+        username: string;
+        /**
+         * Default instance projectCountLimit, can be specified on a named instance called "default"
+         */
+        projectCountLimit?: number;
+        /**
+         * Default Instance apiKey, can be specified on a named instance called "default"
+         * @visibility secret
+         */
+        apiKey: string;
+      }
+    | {
+        instances: {
+          /**
+           * Name of the instance, this will be used in an annotation on catalog entities to refer to jobs on this instance.
+           *
+           * Use a name of "default" to specify the jenkins instance details if the annotation doesn't explicitly name an
+           * instance.
+           */
+          name: string;
+          baseUrl: string;
+          username: string;
+          projectCountLimit?: number;
+          /** @visibility secret */
+          apiKey: string;
+          extraRequestHeaders?: {
+            /** @visibility secret */
+            Authorization?: string;
+            /** @visibility secret */
+            authorization?: string;
+            [key: string]: string | undefined;
+          };
+        }[];
       };
-    }[];
-  };
 }
