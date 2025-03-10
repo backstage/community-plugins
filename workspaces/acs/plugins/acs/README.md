@@ -7,11 +7,46 @@
 
 ### Backstage Installation
 
-Run the following command to install the 3scale Backstage provider plugin:
+Run the following command to install the ACS Backstage provider plugin:
 
 ```console
-yarn workspace backend add @backstage-community/plugin-acs
+yarn --cwd packages/app add @backstage-community/plugin-acs
 ```
+
+### Entity Annotation
+
+to have a comma separated string of deployment names from the ACS API you wish to test.
+To be able to use the Advanced Cluster Security plugin you need to add the following annotation to any entities you want to use it with:
+
+```
+acs/deployment-name: <deployment name>
+```
+
+If multiple deployments can be linked to a catalog entity item, you can add a comma separated list of deployment names:
+
+```
+acs/deployment-name: "deployment-1,deployment-2,deployment-3"
+```
+
+Here's what that will look like in action:
+
+# Example catalog-info.yaml entity definition file
+
+```
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  # ...
+  annotations:
+    acs/deployment-name: <deployment name>
+spec:
+  type: service
+  # ...
+```
+
+### Export Environment Variables
+
+The `ACS_API_URL` and `ACS_API_KEY` will need to be set in order for the route to work in the `app-config.yaml` file. The purpose of this route is to access data from the ACS endpoint.
 
 ### Configuration
 
@@ -35,7 +70,7 @@ acs:
 
 ## RHDH Dynamic Plugin Config
 
-The ACS plugin is also available as an [Red Hat Developer Hub (RHDH)](https://github.com/redhat-developer/rhdh) dynamic plugin. The following should be able to run within the [RHDH local](https://github.com/redhat-developer/rhdh-local) repo.
+The ACS plugin is also available as a [Red Hat Developer Hub (RHDH)](https://github.com/redhat-developer/rhdh) dynamic plugin. The following should be able to run within the [RHDH local](https://github.com/redhat-developer/rhdh-local) repo.
 
 Here's an example of how to configure the ACS plugin as a dynamic plugin in RHDH:
 
@@ -73,22 +108,6 @@ acs/deployment-name: "test-deployment-1,test-deployment-2,test-deployment-3"
 
 Please refer to the [Backstage Prerequisites page](https://backstage.io/docs/getting-started/#prerequisites) regarding getting started.
 
-### Node CLI Tools
-
-You will want to use node verion 20. You can set the version with the following command:
-
-```
-nvm use 20
-```
-
-NodeJS comes with `npm` the Node Package Manager. Use it to install `yarn` and `npx`.
-
-```bash
-> npm install yarn npx
-
-added 2 packages in 6s
-```
-
 ### Test Catalog Data
 
 This repo comes with test data at `./catalog_default`.
@@ -99,13 +118,15 @@ First copy the `catalog_default` directory and rename it to `catalog`:
 cp -R catalog_default catalog
 ```
 
+### Entity Annotation
+
 In order for vulernability data to display, the annotation `acs/deployment-name` needs to be set. Edit line 19 of `./catalog/components/test-app.yaml` to have a comma separated string of deployment names from the ACS API you wish to test.
 
 ### Export Environment Variables
 
 The `ACS_API_URL` and `ACS_API_KEY` will need to be set in order for the route to work in the `app-config.yaml` file. The purpose of this route is to access data from the ACS endpoint.
 
-### Add Annotation
+### Run Backstage
 
 To start the app, run:
 
