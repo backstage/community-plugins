@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+import { useState, useCallback } from 'react';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import {
@@ -38,6 +38,7 @@ import { AzurePipelinesIcon } from '../AzurePipelinesIcon';
 import { DateTime } from 'luxon';
 import React from 'react';
 import { getDurationFromDates } from '../../utils/getDurationFromDates';
+import { BuildLogButton, BuildLogDrawer } from './lib/BuildLogDrawer';
 
 export const getBuildResultComponent = (result: number | undefined) => {
   switch (result) {
@@ -116,61 +117,6 @@ export const getBuildStateComponent = (
   }
 };
 
-const columns: TableColumn[] = [
-  {
-    title: 'ID',
-    field: 'id',
-    highlight: false,
-    width: 'auto',
-  },
-  {
-    title: 'Build',
-    field: 'title',
-    width: 'auto',
-    render: (row: Partial<BuildRun>) => (
-      <Link to={row.link || ''}>{row.title}</Link>
-    ),
-  },
-  {
-    title: 'Source',
-    field: 'source',
-    width: 'auto',
-  },
-  {
-    title: 'State',
-    width: 'auto',
-    render: (row: Partial<BuildRun>) => (
-      <Box display="flex" alignItems="center">
-        <Typography variant="button">
-          {getBuildStateComponent(row.status, row.result)}
-        </Typography>
-      </Box>
-    ),
-  },
-  {
-    title: 'Duration',
-    field: 'queueTime',
-    width: 'auto',
-    render: (row: Partial<BuildRun>) => (
-      <Box display="flex" alignItems="center">
-        <Typography>
-          {getDurationFromDates(row.startTime, row.finishTime)}
-        </Typography>
-      </Box>
-    ),
-  },
-  {
-    title: 'Age',
-    field: 'queueTime',
-    width: 'auto',
-    render: (row: Partial<BuildRun>) =>
-      (row.queueTime
-        ? DateTime.fromISO(row.queueTime)
-        : DateTime.now()
-      ).toRelative(),
-  },
-];
-
 type BuildTableProps = {
   items?: BuildRun[];
   loading: boolean;
@@ -178,6 +124,31 @@ type BuildTableProps = {
 };
 
 export const BuildTable = ({ items, loading, error }: BuildTableProps) => {
+  // State for log drawer
+  const [selectedBuildId, setSelectedBuildId] = useState<number | undefined>(
+    undefined,
+  );
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  const handleOpenDrawer = useCallback((buildId?: number) => {
+    setSelectedBuildId(buildId);
+    setIsDrawerOpen(true);
+  }, []);
+
+  const handleCloseDrawer = useCallback(() => {
+    setIsDrawerOpen(false);
+  }, []);
+
+  // Cache build logs
+  const [logsCache, setLogsCache] = useState<Record<number, string[]>>({});
+
+  const updateLogsCache = useCallback((buildId: number, logs: string[]) => {
+    setLogsCache(prev => ({
+      ...prev,
+      [buildId]: logs,
+    }));
+  }, []);
+
   if (error) {
     return (
       <div>
@@ -186,24 +157,99 @@ export const BuildTable = ({ items, loading, error }: BuildTableProps) => {
     );
   }
 
-  return (
-    <Table
-      isLoading={loading}
-      columns={columns}
-      options={{
-        search: true,
-        paging: true,
-        pageSize: 5,
-        showEmptyDataSourceMessage: !loading,
-      }}
-      title={
+  const columns: TableColumn[] = [
+    {
+      title: 'ID',
+      field: 'id',
+      highlight: false,
+      width: 'auto',
+    },
+    {
+      title: 'Build',
+      field: 'title',
+      width: 'auto',
+      render: (row: Partial<BuildRun>) => (
+        <Link to={row.link || ''}>{row.title}</Link>
+      ),
+    },
+    {
+      title: 'Source',
+      field: 'source',
+      width: 'auto',
+    },
+    {
+      title: 'State',
+      width: 'auto',
+      render: (row: Partial<BuildRun>) => (
         <Box display="flex" alignItems="center">
-          <AzurePipelinesIcon style={{ fontSize: 30 }} />
-          <Box mr={1} />
-          Azure Pipelines - Builds ({items ? items.length : 0})
+          <Typography variant="button">
+            {getBuildStateComponent(row.status, row.result)}
+          </Typography>
         </Box>
-      }
-      data={items ?? []}
-    />
+      ),
+    },
+    {
+      title: 'Duration',
+      field: 'queueTime',
+      width: 'auto',
+      render: (row: Partial<BuildRun>) => (
+        <Box display="flex" alignItems="center">
+          <Typography>
+            {getDurationFromDates(row.startTime, row.finishTime)}
+          </Typography>
+        </Box>
+      ),
+    },
+    {
+      title: 'Age',
+      field: 'queueTime',
+      width: 'auto',
+      render: (row: Partial<BuildRun>) =>
+        (row.queueTime
+          ? DateTime.fromISO(row.queueTime)
+          : DateTime.now()
+        ).toRelative(),
+    },
+    {
+      title: 'Logs',
+      width: 'auto',
+      render: (row: Partial<BuildRun>) => (
+        <BuildLogButton
+          buildId={row.id}
+          onOpen={() => handleOpenDrawer(row.id)}
+        />
+      ),
+    },
+  ];
+
+  return (
+    <>
+      <Table
+        isLoading={loading}
+        columns={columns}
+        options={{
+          search: true,
+          paging: true,
+          pageSize: 5,
+          showEmptyDataSourceMessage: !loading,
+        }}
+        title={
+          <Box display="flex" alignItems="center">
+            <AzurePipelinesIcon style={{ fontSize: 30 }} />
+            <Box mr={1} />
+            Azure Pipelines - Builds ({items ? items.length : 0})
+          </Box>
+        }
+        data={items ?? []}
+      />
+
+      <BuildLogDrawer
+        buildId={selectedBuildId}
+        open={isDrawerOpen}
+        onClose={handleCloseDrawer}
+        logsCache={logsCache}
+        updateCache={updateLogsCache}
+      />
+    </>
   );
 };
