@@ -19,4 +19,5 @@ export {
   GlobalFeedbackPage,
   EntityFeedbackPage,
   OpcFeedbackComponent,
+  GlobalFeedbackComponent,
 } from './plugin';

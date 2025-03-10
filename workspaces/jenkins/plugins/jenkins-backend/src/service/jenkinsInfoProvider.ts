@@ -89,11 +89,9 @@ export class JenkinsConfig {
   static fromConfig(config: Config): JenkinsConfig {
     const DEFAULT_JENKINS_NAME = 'default';
 
-    const jenkinsConfig = config.getConfig('jenkins');
-
     // load all named instance config
     const namedInstanceConfig: JenkinsInstanceConfig[] =
-      jenkinsConfig.getOptionalConfigArray('instances')?.map(c => ({
+      config.getOptionalConfigArray('jenkins.instances')?.map(c => ({
         name: c.getString('name'),
         baseUrl: c.getString('baseUrl'),
         username: c.getString('username'),
@@ -112,15 +110,15 @@ export class JenkinsConfig {
     );
 
     // Get these as optional strings and check to give a better error message
-    const baseUrl = jenkinsConfig.getOptionalString('baseUrl');
-    const username = jenkinsConfig.getOptionalString('username');
-    const apiKey = jenkinsConfig.getOptionalString('apiKey');
-    const crumbIssuer = jenkinsConfig.getOptionalBoolean('crumbIssuer');
-    const extraRequestHeaders = jenkinsConfig.getOptional<
+    const baseUrl = config.getOptionalString('jenkins.baseUrl');
+    const username = config.getOptionalString('jenkins.username');
+    const apiKey = config.getOptionalString('jenkins.apiKey');
+    const crumbIssuer = config.getOptionalBoolean('jenkins.crumbIssuer');
+    const extraRequestHeaders = config.getOptional<
       JenkinsInstanceConfig['extraRequestHeaders']
-    >('extraRequestHeaders');
-    const allowedBaseUrlOverrideRegex = jenkinsConfig.getOptionalString(
-      'allowedBaseUrlOverrideRegex',
+    >('jenkins.extraRequestHeaders');
+    const allowedBaseUrlOverrideRegex = config.getOptionalString(
+      'jenkins.allowedBaseUrlOverrideRegex',
     );
 
     if (hasNamedDefault && (baseUrl || username || apiKey)) {
