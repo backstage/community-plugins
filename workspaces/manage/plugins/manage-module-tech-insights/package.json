@@ -1,7 +1,7 @@
 {
   "name": "@backstage-community/plugin-manage-module-tech-insights",
   "description": "Manage plugin - Tech Insights module",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "backstage": {
     "role": "frontend-plugin-module",
     "pluginId": "manage",
