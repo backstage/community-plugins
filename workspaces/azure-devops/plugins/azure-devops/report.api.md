@@ -67,6 +67,16 @@ export interface AzureDevOpsApi {
   // (undocumented)
   getAllTeams(limit?: number): Promise<Team[]>;
   // (undocumented)
+  getBuildRunLog(
+    projectName: string,
+    entityRef: string,
+    buildId: number,
+    host?: string,
+    org?: string,
+  ): Promise<{
+    log: string[];
+  }>;
+  // (undocumented)
   getBuildRuns(
     projectName: string,
     entityRef: string,
