@@ -18,6 +18,7 @@ yarn.lock                                           @backstage/community-plugins
 /workspaces/analytics/plugins/analytics-provider-segment                           @backstage/community-plugins-maintainers  @AndrienkoAleksandr @PatAKnight @dzemanov 
 /workspaces/announcements                           @backstage/community-plugins-maintainers  @kurtaking
 /workspaces/azure-devops                            @backstage/community-plugins-maintainers  @awanlin
+/workspaces/azure-sites                             @backstage/community-plugins-maintainers  @deepan10, @sarabadu
 /workspaces/azure-storage-explorer                  @backstage/community-plugins-maintainers  @deepan10
 /workspaces/azure-resources                         @backstage/community-plugins-maintainers  @sarabadu
 /workspaces/bitrise                                 @backstage/community-plugins-maintainers  @backstage/sda-se-reviewers
@@ -44,6 +45,7 @@ yarn.lock                                           @backstage/community-plugins
 /workspaces/mta                                     @backstage/community-plugins-maintainers  @ibolton336
 /workspaces/nexus-repository-manager                @backstage/community-plugins-maintainers  @schultzp2020
 /workspaces/npm                                     @backstage/community-plugins-maintainers  @christoph-jerolimov @ciiay @karthikjeeyar
+/workspaces/odo                                     @backstage/community-plugins-maintainers  @schultzp2020
 /workspaces/ocm                                     @backstage/community-plugins-maintainers  @christoph-jerolimov @ciiay @debsmita1
 /workspaces/octopus-deploy                          @backstage/community-plugins-maintainers  @jmezach
 /workspaces/pingidentity                            @backstage/community-plugins-maintainers  @jessicajhee
@@ -55,6 +57,7 @@ yarn.lock                                           @backstage/community-plugins
 /workspaces/report-portal                           @backstage/community-plugins-maintainers  @yashoswalyo @deshmukhmayur @riginoommen
 /workspaces/rollbar                                 @backstage/community-plugins-maintainers  @andrewthauer
 /workspaces/scaffolder-backend-module-annotator     @backstage/community-plugins-maintainers  @BethGriggs
+/workspaces/scaffolder-backend-module-kubernetes    @backstage/community-plugins-maintainers  @BethGriggs
 /workspaces/scaffolder-backend-module-sonarqube     @backstage/community-plugins-maintainers  @04kash @schultzp2020
 /workspaces/scaffolder-backend-module-servicenow    @backstage/community-plugins-maintainers  @schultzp2020
 /workspaces/scaffolder-backend-module-regex         @backstage/community-plugins-maintainers  @04kash
