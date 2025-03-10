@@ -48,6 +48,13 @@ export class AzureDevOpsApi {
     org?: string,
   ): Promise<Build[]>;
   // (undocumented)
+  getBuildRunLog(
+    project: string,
+    buildId: number,
+    host?: string,
+    org?: string,
+  ): Promise<string[]>;
+  // (undocumented)
   getBuildRuns(
     projectName: string,
     top: number,
