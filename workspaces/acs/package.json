@@ -39,7 +39,7 @@
     "directory": "workspaces/acs"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.29.6",
+    "@backstage/cli": "^0.30.0",
     "@backstage/e2e-test-utils": "^0.1.1",
     "@backstage/repo-tools": "^0.13.0",
     "@eslint/js": "^9.19.0",
@@ -50,8 +50,7 @@
   },
   "resolutions": {
     "@types/react": "^18",
-    "@types/react-dom": "^18",
-    "@swagger-api/apidom-json-pointer": "1.0.0-alpha.10"
+    "@types/react-dom": "^18"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,mjs,cjs}": [
@@ -62,6 +61,5 @@
       "prettier --write"
     ]
   },
-  "prettier": "@backstage/cli/config/prettier",
-  "packageManager": "yarn@4.4.0"
+  "prettier": "@backstage/cli/config/prettier"
 }
