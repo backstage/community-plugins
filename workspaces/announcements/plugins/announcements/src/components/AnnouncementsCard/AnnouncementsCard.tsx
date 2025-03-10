@@ -29,6 +29,7 @@ import {
   announcementViewRouteRef,
   rootRouteRef,
 } from '../../routes';
+import { formatAnnouncementStartTime } from '../utils/announcementDateUtils';
 import {
   announcementsApiRef,
   useAnnouncements,
@@ -151,10 +152,14 @@ export const AnnouncementsCard = ({
                   </Typography>
                   <Typography variant="body2" color="textSecondary">
                     <small>
-                      {DateTime.fromISO(announcement.start_at) < DateTime.now()
-                        ? `${t('announcementsCard.occurred')} `
-                        : `${t('announcementsCard.scheduled')} `}
-                      {DateTime.fromISO(announcement.start_at).toRelative()}
+                      <small>
+                        {formatAnnouncementStartTime(
+                          announcement.start_at,
+                          t('announcementsCard.occurred'),
+                          t('announcementsCard.scheduled'),
+                          t('announcementsCard.today'),
+                        )}
+                      </small>
                     </small>
                   </Typography>
                 </div>
