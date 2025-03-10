@@ -6,9 +6,9 @@
     "node": "18 || 20"
   },
   "scripts": {
-    "dev": "yarn workspaces foreach -A --include backend --include app --parallel -v -i run start",
-    "start": "yarn workspace app start",
-    "start-backend": "yarn workspace backend start",
+    "dev": "yarn workspaces foreach -A --include @backstage-community/plugin-linguist-backend --include @backstage-community/plugin-linguist --parallel -v -i run start",
+    "start": "yarn workspace @backstage-community/plugin-linguist start",
+    "start-backend": "yarn workspace @backstage-community/plugin-linguist-backend start",
     "build:backend": "yarn workspace backend build",
     "tsc": "tsc",
     "tsc:full": "tsc --skipLibCheck false --incremental false",
