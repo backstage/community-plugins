@@ -1,5 +1,11 @@
 # @backstage-community/plugin-announcements-react
 
+## 0.4.1
+
+### Patch Changes
+
+- fe62f42: Improved relative date display for scheduled announcements. When the Start At date is set for the current day, it now shows "Scheduled Today" instead of "Occurred X hours ago"
+
 ## 0.4.0
 
 ### Minor Changes
