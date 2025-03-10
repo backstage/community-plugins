@@ -2682,7 +2682,7 @@ __metadata:
     "@backstage/plugin-permission-common": "npm:^0.8.4"
     "@backstage/plugin-permission-node": "npm:^0.8.8"
     "@kubernetes/client-node": "npm:1.0.0-rc7"
-    "@openapitools/openapi-generator-cli": "npm:2.16.3"
+    "@openapitools/openapi-generator-cli": "npm:2.17.0"
     "@spotify/prettier-config": "npm:^15.0.0"
     "@types/express": "npm:4.17.21"
     "@types/supertest": "npm:2.0.16"
@@ -9334,9 +9334,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@openapitools/openapi-generator-cli@npm:2.16.3, @openapitools/openapi-generator-cli@npm:^2.7.0":
-  version: 2.16.3
-  resolution: "@openapitools/openapi-generator-cli@npm:2.16.3"
+"@openapitools/openapi-generator-cli@npm:2.17.0, @openapitools/openapi-generator-cli@npm:^2.7.0":
+  version: 2.17.0
+  resolution: "@openapitools/openapi-generator-cli@npm:2.17.0"
   dependencies:
     "@nestjs/axios": "npm:3.1.3"
     "@nestjs/common": "npm:10.4.15"
@@ -9358,7 +9358,7 @@ __metadata:
     tslib: "npm:2.8.1"
   bin:
     openapi-generator-cli: main.js
-  checksum: 10/ae01a80ee4099a287e2e82c2cfefc77f5d421c49adb0c868cd660dfdfd281cc84db4a93b35a721f24e46aa212e71fcc884df8922c270bdd2f023e8c130894f55
+  checksum: 10/ff81ed87c0ccb988fd88506c6ed319bba41d8e58d2212a192c332e317cfcacc71b36f419ed34279f9483fbd4fcfaaff1bf45769763c1deb92246301587b0fde5
   languageName: node
   linkType: hard
 
