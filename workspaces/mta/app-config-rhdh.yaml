@@ -11,29 +11,33 @@ data:
   app-config-rhdh.yaml: |-
     app:
       title: Red Hat Developer Hub - Migration Toolkit for Applications
-      baseUrl: <BACKSTAGE_URL>
+      baseUrl: https://backstage-developer-hub-local-backstage.ianbolton-1-3626522b15eedb880d7b99992e225c1b-0000.us-east.containers.appdomain.cloud
     backend:
-      baseUrl: <BACKSTAGE_URL>
+      baseUrl: https://backstage-developer-hub-local-backstage.ianbolton-1-3626522b15eedb880d7b99992e225c1b-0000.us-east.containers.appdomain.cloud
       cors:
-        origin: <BACKSTAGE_URL>
+        origin: https://backstage-developer-hub-local-backstage.ianbolton-1-3626522b15eedb880d7b99992e225c1b-0000.us-east.containers.appdomain.cloud
         methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
         credentials: true
       auth:
-        dangerouslyDisableDefaultAuthPolicy: true
+        providers:
+          guest: 
+            dangerouslyAllowOutsideDevelopment: true
+            dangerouslyDisableDefaultAuthPolicy: true
+
 
     mta:
-      url: <MTA_URL>
-      version: "<MTA_BACKEND_PLUGIN_PACKAGE_VERSION>"
+      url: https://mta-openshift-mta.ianbolton-1-3626522b15eedb880d7b99992e225c1b-0000.us-east.containers.appdomain.cloud
+      version: "0.2.2"
       providerAuth:
         realm: mta
         secret: backstage-provider-secret
         clientID: backstage-provider
 
     auth:
-      dangerouslyDisableDefaultAuthPolicy: true
       providers:
         guest: 
           dangerouslyAllowOutsideDevelopment: true
+          dangerouslyDisableDefaultAuthPolicy: true
 
     dynamicPlugins:
       frontend: 

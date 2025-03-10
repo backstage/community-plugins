@@ -83,63 +83,7 @@ export class MTAProvider implements EntityProvider {
     }
   }
 
-  // if (!this.connection) {
-  //   throw new Error('Not initialized');
-  // }
-  // this.logger.info('here');
   async authenticate() {
-    // try {
-    //   //   const baseURLAuth = `${this.config.getString(
-    //   //     'mta.url',
-    //   //   )}/auth/realms/${this.config.getString('mta.providerAuth.realm')}`;
-    //   const baseUrl = this.config.getString('mta.url');
-    //   const baseUrlHub = `${baseUrl}/hub`;
-    //   const baseUrlMta = `${baseUrl}`;
-    //   const realm = this.config.getString('mta.providerAuth.realm');
-    //   const clientID = this.config.getString('mta.providerAuth.clientID');
-    //   const secret = this.config.getString('mta.providerAuth.secret');
-    //   const baseURLAuth = `${baseUrl}/auth/realms/${realm}`;
-    //   this.logger.info(`Discovering issuer from ${baseURLAuth}`);
-
-    //   //   const mtaAuthIssuer = await Issuer.discover(baseURLAuth);
-    //   custom.setHttpOptionsDefaults({
-    //     timeout: 5000, // Adjust the timeout to 5000ms or higher based on your requirements
-    //   });
-
-    //   try {
-    //     const mtaAuthIssuer = await Issuer.discover(baseURLAuth);
-    //     this.logger.info('Issuer discovered successfully');
-
-    //     const authClient = new mtaAuthIssuer.Client({
-    //       client_id: this.config.getString('mta.providerAuth.clientID'),
-    //       client_secret: this.config.getString('mta.providerAuth.secret'),
-    //       response_types: ['code'],
-    //     });
-
-    //     this.logger.info('Client created successfully');
-
-    //     const code_verifier = generators.codeVerifier();
-    //     const code_challenge = generators.codeChallenge(code_verifier);
-
-    //     this.logger.info('Attempting to obtain grant');
-
-    //     const grant = await authClient.grant({
-    //       grant_type: 'client_credentials',
-    //     });
-
-    //     this.logger.info('Grant obtained successfully');
-
-    //     return grant;
-    //   } catch (error) {
-    //     this.logger.error(
-    //       `Initial discovery failed: ${error.message}, retrying...`,
-    //     );
-    //     // Implement retry logic here
-    //   }
-    // } catch (error) {
-    //   this.logger.error(`Authentication error: ${error.message}`);
-    //   throw new Error(`Failed to authenticate: ${error.message}`);
-    // }
     const baseUrl = this.config.getString('mta.url');
     const realm = this.config.getString('mta.providerAuth.realm');
     const clientID = this.config.getString('mta.providerAuth.clientID');
