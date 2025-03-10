@@ -2,4 +2,4 @@
 '@backstage-community/plugin-quay-backend': patch
 ---
 
-declare missing dependencies
+Added missing `@backstage/plugin-permission-node` dependency
