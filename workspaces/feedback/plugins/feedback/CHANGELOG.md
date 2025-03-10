@@ -1,5 +1,11 @@
 ## @janus-idp/backstage-plugin-feedback [1.6.0](https://github.com/janus-idp/backstage-plugins/compare/@janus-idp/backstage-plugin-feedback@1.5.0...@janus-idp/backstage-plugin-feedback@1.6.0) (2024-07-26)
 
+## 1.7.1
+
+### Patch Changes
+
+- 32135b8: Updated dependency `@testing-library/user-event` to `14.6.1`.
+
 ## 1.7.0
 
 ### Minor Changes
