@@ -21,7 +21,6 @@ In `app-config.yaml` first add the proxies:
 proxy:
   endpoints:
     '/acs':
-      credentials: dangerously-allow-unauthenticated
       target: ${ACS_API_URL}
       headers:
         authorization: 'Bearer ${ACS_API_KEY}'
