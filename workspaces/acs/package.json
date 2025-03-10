@@ -62,5 +62,6 @@
       "prettier --write"
     ]
   },
+  "prettier": "@backstage/cli/config/prettier",
   "packageManager": "yarn@4.4.0"
 }
