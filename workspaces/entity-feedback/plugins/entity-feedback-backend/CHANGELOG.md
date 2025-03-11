@@ -1,5 +1,11 @@
 # @backstage-community/plugin-entity-feedback-backend
 
+## 0.7.1
+
+### Patch Changes
+
+- 19d1f27: Fixed bug where 404 errors were thrown in case entityRef in URI was decoded by middleware before reaching backend
+
 ## 0.7.0
 
 ### Minor Changes

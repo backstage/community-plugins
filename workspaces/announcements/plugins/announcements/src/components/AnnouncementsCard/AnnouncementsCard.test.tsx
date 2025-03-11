@@ -94,4 +94,26 @@ describe('AnnouncementsCard', () => {
       expect(screen.getByText(new RegExp(a.excerpt, 'i'))).toBeInTheDocument();
     });
   });
+
+  it('should display "today" when the announcement start date matches current date', async () => {
+    const today = DateTime.now().toISODate();
+    const announcementsList: AnnouncementsList = {
+      count: 1,
+      results: [
+        {
+          id: '1',
+          title: 'Today Announcement',
+          excerpt: 'This is happening today',
+          body: 'Body 1',
+          publisher: 'Body1',
+          created_at: today,
+          active: true,
+          start_at: today,
+        },
+      ],
+    };
+
+    await renderAnnouncementsCard(announcementsList);
+    expect(screen.getByText(/Scheduled Today/i)).toBeInTheDocument();
+  });
 });
