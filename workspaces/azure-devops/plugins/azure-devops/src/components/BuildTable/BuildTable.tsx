@@ -15,6 +15,7 @@
  */
 import { useState, useCallback } from 'react';
 import Box from '@material-ui/core/Box';
+import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import {
   BuildResult,
@@ -38,7 +39,7 @@ import { AzurePipelinesIcon } from '../AzurePipelinesIcon';
 import { DateTime } from 'luxon';
 import React from 'react';
 import { getDurationFromDates } from '../../utils/getDurationFromDates';
-import { BuildLogButton, BuildLogDrawer } from './lib/BuildLogDrawer';
+import { BuildLogDrawer } from './lib/BuildLogDrawer';
 
 export const getBuildResultComponent = (result: number | undefined) => {
   switch (result) {
@@ -214,10 +215,15 @@ export const BuildTable = ({ items, loading, error }: BuildTableProps) => {
       title: 'Logs',
       width: 'auto',
       render: (row: Partial<BuildRun>) => (
-        <BuildLogButton
-          buildId={row.id}
-          onOpen={() => handleOpenDrawer(row.id)}
-        />
+        <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          onClick={() => handleOpenDrawer(row.id)}
+          disabled={!row.id}
+        >
+          View Logs
+        </Button>
       ),
     },
   ];
