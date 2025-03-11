@@ -54,7 +54,7 @@ const useDrawerStyles = makeStyles(theme => ({
     borderRadius: theme.shape.borderRadius,
     marginTop: theme.spacing(2),
     fontFamily: theme.typography.fontFamily,
-    fontSize: '12px',
+    fontSize: theme.typography.fontSize,
   },
 }));
 
