@@ -1,5 +1,13 @@
 ### Dependencies
 
+## 5.5.1
+
+### Patch Changes
+
+- 973a5ef: remove prettier from devDependencies
+- Updated dependencies [973a5ef]
+  - @backstage-community/plugin-ocm-common@3.8.1
+
 ## 5.5.0
 
 ### Minor Changes
