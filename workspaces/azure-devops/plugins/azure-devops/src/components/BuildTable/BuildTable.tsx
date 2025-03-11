@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
@@ -131,24 +131,24 @@ export const BuildTable = ({ items, loading, error }: BuildTableProps) => {
   );
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  const handleOpenDrawer = useCallback((buildId?: number) => {
+  const handleOpenDrawer = (buildId?: number) => {
     setSelectedBuildId(buildId);
     setIsDrawerOpen(true);
-  }, []);
+  };
 
-  const handleCloseDrawer = useCallback(() => {
+  const handleCloseDrawer = () => {
     setIsDrawerOpen(false);
-  }, []);
+  };
 
   // Cache build logs
   const [logsCache, setLogsCache] = useState<Record<number, string[]>>({});
 
-  const updateLogsCache = useCallback((buildId: number, logs: string[]) => {
+  const updateLogsCache = (buildId: number, logs: string[]) => {
     setLogsCache(prev => ({
       ...prev,
       [buildId]: logs,
     }));
-  }, []);
+  };
 
   if (error) {
     return (
