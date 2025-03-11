@@ -1,17 +1,16 @@
 # Knip report
 
-## Unused dependencies (8)
+## Unused dependencies (7)
 
-| Name                                | Location     | Severity |
-| :---------------------------------- | :----------- | :------- |
-| @backstage-community/plugin-linkerd | package.json | error    |
-| @backstage/plugin-permission-react  | package.json | error    |
-| @backstage/plugin-catalog-common    | package.json | error    |
-| @backstage/plugin-catalog-react     | package.json | error    |
-| @backstage/plugin-search-react      | package.json | error    |
-| react-router                        | package.json | error    |
-| react-use                           | package.json | error    |
-| history                             | package.json | error    |
+| Name                               | Location     | Severity |
+| :--------------------------------- | :----------- | :------- |
+| @backstage/plugin-permission-react | package.json | error    |
+| @backstage/plugin-catalog-common   | package.json | error    |
+| @backstage/plugin-catalog-react    | package.json | error    |
+| @backstage/plugin-search-react     | package.json | error    |
+| react-router                       | package.json | error    |
+| react-use                          | package.json | error    |
+| history                            | package.json | error    |
 
 ## Unused devDependencies (4)
 
