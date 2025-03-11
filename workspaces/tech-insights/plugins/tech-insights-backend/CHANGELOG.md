@@ -1,5 +1,11 @@
 # @backstage-community/plugin-tech-insights-backend
 
+## 2.2.1
+
+### Patch Changes
+
+- 208e250: Updated dependency `@types/uuid` to `^10.0.0`.
+
 ## 2.2.0
 
 ### Minor Changes
