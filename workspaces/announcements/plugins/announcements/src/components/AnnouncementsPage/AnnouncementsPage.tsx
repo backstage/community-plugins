@@ -70,6 +70,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import { Alert, Pagination } from '@material-ui/lab';
+import { formatAnnouncementStartTime } from '../utils/announcementDateUtils';
 
 const useStyles = makeStyles(theme => {
   return {
@@ -151,10 +152,12 @@ const AnnouncementCard = ({
       </Typography>
       <Typography variant="body2" color="textSecondary">
         <small>
-          {DateTime.fromISO(announcement.start_at) < DateTime.now()
-            ? `${t('announcementsPage.card.occurred')} `
-            : `${t('announcementsPage.card.scheduled')} `}
-          {DateTime.fromISO(announcement.start_at).toRelative()}
+          {formatAnnouncementStartTime(
+            announcement.start_at,
+            t('announcementsCard.occurred'),
+            t('announcementsCard.scheduled'),
+            t('announcementsCard.today'),
+          )}
         </small>
       </Typography>
     </>
