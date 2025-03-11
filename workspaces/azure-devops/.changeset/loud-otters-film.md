@@ -3,4 +3,4 @@
 '@backstage-community/plugin-azure-devops': minor
 ---
 
-Adds an API to fetch the logs for a build run
+Add the ability to fetch and see a build's log
