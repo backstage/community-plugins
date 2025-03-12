@@ -130,6 +130,7 @@ export async function createRouter(
     async (request, response) => {
       const { namespace, kind, name, jobFullName, buildNumber } =
         request.params;
+      const jobs = jobFullNameParamToJobs(jobFullName);
 
       const jenkinsInfo = await jenkinsInfoProvider.getInstance({
         entityRef: {
@@ -143,7 +144,7 @@ export async function createRouter(
 
       const build = await jenkinsApi.getBuild(
         jenkinsInfo,
-        jobFullName,
+        jobs,
         parseInt(buildNumber, 10),
       );
 
@@ -157,6 +158,7 @@ export async function createRouter(
     '/v1/entity/:namespace/:kind/:name/job/:jobFullName',
     async (request, response) => {
       const { namespace, kind, name, jobFullName } = request.params;
+      const jobs = jobFullNameParamToJobs(jobFullName);
 
       const jenkinsInfo = await jenkinsInfoProvider.getInstance({
         entityRef: {
@@ -168,7 +170,7 @@ export async function createRouter(
         credentials: await httpAuth.credentials(request),
       });
 
-      const build = await jenkinsApi.getJobBuilds(jenkinsInfo, jobFullName);
+      const build = await jenkinsApi.getJobBuilds(jenkinsInfo, jobs);
 
       response.json({
         build: build,
@@ -181,6 +183,7 @@ export async function createRouter(
     async (request, response) => {
       const { namespace, kind, name, jobFullName, buildNumber } =
         request.params;
+      const jobs = jobFullNameParamToJobs(jobFullName);
       const jenkinsInfo = await jenkinsInfoProvider.getInstance({
         entityRef: {
           kind,
@@ -194,7 +197,7 @@ export async function createRouter(
       const resourceRef = stringifyEntityRef({ kind, namespace, name });
       const status = await jenkinsApi.rebuildProject(
         jenkinsInfo,
-        jobFullName,
+        jobs,
         parseInt(buildNumber, 10),
         resourceRef,
         {
@@ -210,6 +213,7 @@ export async function createRouter(
     async (request, response) => {
       const { namespace, kind, name, jobFullName, buildNumber } =
         request.params;
+      const jobs = jobFullNameParamToJobs(jobFullName);
 
       const jenkinsInfo = await jenkinsInfoProvider.getInstance({
         entityRef: {
@@ -223,7 +227,7 @@ export async function createRouter(
 
       const consoleText = await jenkinsApi.getBuildConsoleText(
         jenkinsInfo,
-        jobFullName,
+        jobs,
         parseInt(buildNumber, 10),
       );
 
@@ -232,6 +236,11 @@ export async function createRouter(
       });
     },
   );
+
+  function jobFullNameParamToJobs(jobFullName: string): string[] {
+    // jobFullName may contain a list of job names separated by '/'
+    return jobFullName.split('/').map((s: string) => encodeURIComponent(s));
+  }
 
   router.use(MiddlewareFactory.create({ config, logger }).error());
   return router;
