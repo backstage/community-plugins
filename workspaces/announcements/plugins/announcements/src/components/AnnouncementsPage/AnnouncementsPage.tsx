@@ -58,6 +58,7 @@ import {
   useAnnouncementsTranslation,
 } from '@backstage-community/plugin-announcements-react';
 import {
+  Box,
   Card,
   CardContent,
   CardHeader,
@@ -150,16 +151,16 @@ const AnnouncementCard = ({
         )}
         , {DateTime.fromISO(announcement.created_at).toRelative()}
       </Typography>
-      <Typography variant="body2" color="textSecondary">
-        <small>
+      <Box>
+        <Typography variant="caption" color="textSecondary">
           {formatAnnouncementStartTime(
             announcement.start_at,
             t('announcementsCard.occurred'),
             t('announcementsCard.scheduled'),
             t('announcementsCard.today'),
           )}
-        </small>
-      </Typography>
+        </Typography>
+      </Box>
     </>
   );
   const { loading: loadingDeletePermission, allowed: canDelete } =
