@@ -251,8 +251,8 @@ const AllocationReport = ({
         rowsPerPage={rowsPerPage}
         rowsPerPageOptions={[10, 25, 50]}
         page={Math.min(page, lastPage)}
-        onChangePage={handleChangePage}
-        onChangeRowsPerPage={handleChangeRowsPerPage}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
       />
     </div>
   );

@@ -1,16 +1,17 @@
 # Knip report
 
-## Unused dependencies (1)
+## Unused dependencies (3)
 
 | Name       | Location     | Severity |
 | :--------- | :----------- | :------- |
 | node-fetch | package.json | error    |
+| winston    | package.json | error    |
+| yn         | package.json | error    |
 
-## Unused devDependencies (4)
+## Unused devDependencies (3)
 
-| Name                          | Location     | Severity |
-| :---------------------------- | :----------- | :------- |
-| @backstage/backend-test-utils | package.json | error    |
-| @types/supertest              | package.json | error    |
-| supertest                     | package.json | error    |
-| msw                           | package.json | error    |
+| Name             | Location     | Severity |
+| :--------------- | :----------- | :------- |
+| @types/supertest | package.json | error    |
+| supertest        | package.json | error    |
+| msw              | package.json | error    |

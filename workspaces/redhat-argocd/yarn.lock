@@ -2813,11 +2813,11 @@ __metadata:
     "@patternfly/patternfly": "npm:^6.0.0"
     "@patternfly/react-core": "npm:^6.0.0"
     "@patternfly/react-icons": "npm:^6.0.0"
-    "@playwright/test": "npm:1.49.1"
+    "@playwright/test": "npm:1.51.0"
     "@redhat-developer/red-hat-developer-hub-theme": "npm:0.4.0"
     "@testing-library/jest-dom": "npm:6.6.3"
     "@testing-library/react": "npm:14.3.1"
-    "@testing-library/user-event": "npm:14.5.2"
+    "@testing-library/user-event": "npm:14.6.1"
     "@types/pluralize": "npm:^0.0.33"
     moment: "npm:^2.30.1"
     msw: "npm:1.3.5"
@@ -5678,18 +5678,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/repo-tools@npm:^0.12.1":
-  version: 0.12.1
-  resolution: "@backstage/repo-tools@npm:0.12.1"
+"@backstage/repo-tools@npm:^0.13.0":
+  version: 0.13.0
+  resolution: "@backstage/repo-tools@npm:0.13.0"
   dependencies:
     "@apidevtools/swagger-parser": "npm:^10.1.0"
     "@apisyouwonthate/style-guide": "npm:^1.4.0"
-    "@backstage/backend-plugin-api": "npm:^1.1.1"
+    "@backstage/backend-plugin-api": "npm:^1.2.0"
     "@backstage/catalog-model": "npm:^1.7.3"
     "@backstage/cli-common": "npm:^0.1.15"
-    "@backstage/cli-node": "npm:^0.2.12"
-    "@backstage/config-loader": "npm:^1.9.5"
+    "@backstage/cli-node": "npm:^0.2.13"
+    "@backstage/config-loader": "npm:^1.9.6"
     "@backstage/errors": "npm:^1.2.7"
+    "@electric-sql/pglite": "npm:^0.2.15"
     "@manypkg/get-packages": "npm:^1.1.3"
     "@microsoft/api-documenter": "npm:^7.25.7"
     "@microsoft/api-extractor": "npm:^7.47.2"
@@ -5711,6 +5712,10 @@ __metadata:
     glob: "npm:^8.0.3"
     is-glob: "npm:^4.0.3"
     js-yaml: "npm:^4.1.0"
+    just-diff: "npm:^6.0.2"
+    knex: "npm:^3.0.0"
+    knex-pglite: "npm:^0.11.0"
+    knip: "npm:^5.42.0"
     lodash: "npm:^4.17.21"
     minimatch: "npm:^9.0.0"
     p-limit: "npm:^3.0.2"
@@ -5724,13 +5729,16 @@ __metadata:
     "@microsoft/tsdoc-config": "*"
     "@useoptic/optic": ^1.0.0
     prettier: ^2.8.1
+    typedoc: ^0.27.0
     typescript: "> 3.0.0"
   peerDependenciesMeta:
     prettier:
       optional: true
+    typedoc:
+      optional: true
   bin:
     backstage-repo-tools: bin/backstage-repo-tools
-  checksum: 10/a4f77ae81f572163caee8ef35dc42603e520e44f5f081c26924ef0a7e3ecf77adb955d1ff6e3a48a9c9c4f390223d25ef046922fe06c931146fd35c54f1d3a85
+  checksum: 10/8dd32959d00efe800023fb4c57ccf0d8955ff0451a859a10e9261a1600c58e7801d98ac68a0efdcb08d74cf69302e0fd42aec3aebdac704a601bb7df73b47bab
   languageName: node
   linkType: hard
 
@@ -6289,6 +6297,13 @@ __metadata:
     pkginfo: "npm:^0.4.1"
     uid2: "npm:^1.0.0"
   checksum: 10/6932aca4213f1e47c41454cbb9ef1309643ffa14fa3da401f18e397e76f3fa1669be76d96db65dd6435854d7f05b30d3a27f645d10e3c6ed955ad30930d47b3e
+  languageName: node
+  linkType: hard
+
+"@electric-sql/pglite@npm:^0.2.14, @electric-sql/pglite@npm:^0.2.15":
+  version: 0.2.17
+  resolution: "@electric-sql/pglite@npm:0.2.17"
+  checksum: 10/cb04d18614c9a3d985fa63f5ca889104eab55b15a9aa569df264e335ea559f2279ee64c1284aa68d5b92ff516dd37ae553299cf55c226a3e541d6c46416c7160
   languageName: node
   linkType: hard
 
@@ -7505,7 +7520,7 @@ __metadata:
   dependencies:
     "@backstage/cli": "npm:^0.29.5"
     "@backstage/e2e-test-utils": "npm:^0.1.1"
-    "@backstage/repo-tools": "npm:^0.12.1"
+    "@backstage/repo-tools": "npm:^0.13.0"
     "@changesets/cli": "npm:^2.27.1"
     concurrently: "npm:^9.0.0"
     knip: "npm:^5.27.4"
@@ -9996,14 +10011,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@playwright/test@npm:1.49.1":
-  version: 1.49.1
-  resolution: "@playwright/test@npm:1.49.1"
+"@playwright/test@npm:1.51.0":
+  version: 1.51.0
+  resolution: "@playwright/test@npm:1.51.0"
   dependencies:
-    playwright: "npm:1.49.1"
+    playwright: "npm:1.51.0"
   bin:
     playwright: cli.js
-  checksum: 10/bb0d5eda58ee0b5bbca732d2aa57782fadf420d101e08e16d5760179459c667907bd8d224ee3d6f43f3088378e377ef63d32ed605fec37605debf217c3efe8da
+  checksum: 10/48916bb0af52430f0140dc3f110934d141acbb6c00a94b1295648cec8398f5599459704fc98e40445db74d12ca55a20ebf68a1d891cef2b8dfd5ee0a8f21b267
   languageName: node
   linkType: hard
 
@@ -13105,12 +13120,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/user-event@npm:14.5.2":
-  version: 14.5.2
-  resolution: "@testing-library/user-event@npm:14.5.2"
+"@testing-library/user-event@npm:14.6.1":
+  version: 14.6.1
+  resolution: "@testing-library/user-event@npm:14.6.1"
   peerDependencies:
     "@testing-library/dom": ">=7.21.4"
-  checksum: 10/49821459d81c6bc435d97128d6386ca24f1e4b3ba8e46cb5a96fe3643efa6e002d88c1b02b7f2ec58da593e805c59b78d7fdf0db565c1f02ba782f63ee984040
+  checksum: 10/34b74fff56a0447731a94b40d4cf246deb8dbc1c1e3aec93acd1c3377a760bb062e979f1572bb34ec164ad28ee2a391744b42d0d6d6cc16c4ce527e5e09610e1
   languageName: node
   linkType: hard
 
@@ -24421,6 +24436,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"just-diff@npm:^6.0.2":
+  version: 6.0.2
+  resolution: "just-diff@npm:6.0.2"
+  checksum: 10/4c6b14d6be2a3391b020ea2b3d1a0acf2f4c60fcb16681c7f6f76d4c0f1841fae5b00c1a2e719980992e46320e4b6c55a4713683cb1873dd41a2621f08c9f8e8
+  languageName: node
+  linkType: hard
+
 "jwa@npm:^1.4.1":
   version: 1.4.1
   resolution: "jwa@npm:1.4.1"
@@ -24511,7 +24533,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"knex@npm:3, knex@npm:^3.0.0":
+"knex-pglite@npm:^0.11.0":
+  version: 0.11.0
+  resolution: "knex-pglite@npm:0.11.0"
+  dependencies:
+    "@electric-sql/pglite": "npm:^0.2.14"
+    knex: "npm:3.1.0"
+  checksum: 10/87adaecb01fcc7d316c837efe2deb8cbb8501d5900bea27928cb6dca6218e0be479c30ec710aa65c85c8c2a6bbee56649615d52284795d98ccf8a9174a7406a1
+  languageName: node
+  linkType: hard
+
+"knex@npm:3, knex@npm:3.1.0, knex@npm:^3.0.0":
   version: 3.1.0
   resolution: "knex@npm:3.1.0"
   dependencies:
@@ -24550,7 +24582,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"knip@npm:^5.27.4":
+"knip@npm:^5.27.4, knip@npm:^5.42.0":
   version: 5.45.0
   resolution: "knip@npm:5.45.0"
   dependencies:
@@ -28397,27 +28429,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright-core@npm:1.49.1":
-  version: 1.49.1
-  resolution: "playwright-core@npm:1.49.1"
+"playwright-core@npm:1.51.0":
+  version: 1.51.0
+  resolution: "playwright-core@npm:1.51.0"
   bin:
     playwright-core: cli.js
-  checksum: 10/baa39a53024ec7744708410f2b952ac3aa2e1a6d311dabfa303523712848eba142fce5c20f1b2ed2a66fbd9a415d22ea8642b0f70423360aaebd4b41c47d364e
+  checksum: 10/2e2bb4e9625a7a08d305078d383200d9f3457fc4c51d3fac9443b94a0b820233ebe0dc0434f77da96a8ce278bc9806463194066dec942d1ac0de001d4b325bfb
   languageName: node
   linkType: hard
 
-"playwright@npm:1.49.1":
-  version: 1.49.1
-  resolution: "playwright@npm:1.49.1"
+"playwright@npm:1.51.0":
+  version: 1.51.0
+  resolution: "playwright@npm:1.51.0"
   dependencies:
     fsevents: "npm:2.3.2"
-    playwright-core: "npm:1.49.1"
+    playwright-core: "npm:1.51.0"
   dependenciesMeta:
     fsevents:
       optional: true
   bin:
     playwright: cli.js
-  checksum: 10/49fb063f4a107b8090f66d2d351ebd51fbb66843a8f95a161fa0c0e0b5156515961e75cc10f4249f61b9d2af51f762dda505c62b096d8f61cd47d1ff73ab39d2
+  checksum: 10/350f9e1cf8deff992f08d63aac88ed49aed1963d0b33a6f0a1354069734d028328acb3f156e25e57a78522bd3f42f687155ea3f39cb7fc4a83b15efce39b53f9
   languageName: node
   linkType: hard
 

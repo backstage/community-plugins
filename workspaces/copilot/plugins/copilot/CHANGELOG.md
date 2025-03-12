@@ -1,5 +1,24 @@
 # @backstage-community/plugin-copilot
 
+## 0.7.0
+
+### Minor Changes
+
+- 2bae2d2: Backstage version bump to v1.36.1
+
+### Patch Changes
+
+- Updated dependencies [2bae2d2]
+  - @backstage-community/plugin-copilot-common@0.7.0
+
+## 0.6.1
+
+### Patch Changes
+
+- 10cacf8: Updated a table header to match what it actually displays in the table
+- Updated dependencies [10cacf8]
+  - @backstage-community/plugin-copilot-common@0.6.0
+
 ## 0.6.0
 
 ### Minor Changes

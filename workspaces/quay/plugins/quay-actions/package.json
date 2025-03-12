@@ -39,15 +39,14 @@
     "prettier:fix": "prettier --ignore-unknown --write ."
   },
   "dependencies": {
-    "@backstage/backend-plugin-api": "^1.1.1",
-    "@backstage/plugin-scaffolder-node": "^0.6.3",
+    "@backstage/backend-plugin-api": "^1.2.0",
+    "@backstage/plugin-scaffolder-node": "^0.7.0",
     "yaml": "^2.6.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.29.5",
-    "@backstage/plugin-scaffolder-node-test-utils": "^0.1.18",
-    "@spotify/prettier-config": "^15.0.0",
-    "prettier": "3.4.2"
+    "@backstage/cli": "^0.30.0",
+    "@backstage/plugin-scaffolder-node-test-utils": "^0.1.19",
+    "@spotify/prettier-config": "^15.0.0"
   },
   "files": [
     "dist"

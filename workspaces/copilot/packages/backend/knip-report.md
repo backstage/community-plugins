@@ -1,15 +1,13 @@
 # Knip report
 
-## Unused dependencies (12)
+## Unused dependencies (9)
 
 | Name                                                  | Location     | Severity |
 | :---------------------------------------------------- | :----------- | :------- |
 | @backstage/plugin-auth-backend-module-github-provider | package.json | error    |
-| @backstage-community/plugin-copilot-backend           | package.json | error    |
 | @backstage/plugin-search-backend-node                 | package.json | error    |
 | @backstage/plugin-permission-node                     | package.json | error    |
 | @backstage/plugin-auth-node                           | package.json | error    |
-| @backstage/backend-common                             | package.json | error    |
 | better-sqlite3                                        | package.json | error    |
 | dockerode                                             | package.json | error    |
 | node-gyp                                              | package.json | error    |

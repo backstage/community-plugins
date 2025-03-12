@@ -1,11 +1,10 @@
 # Knip report
 
-## Unused dependencies (2)
+## Unused dependencies (1)
 
-| Name                                               | Location     | Severity |
-| :------------------------------------------------- | :----------- | :------- |
-| @backstage-community/plugin-azure-storage-explorer | package.json | error    |
-| react-router                                       | package.json | error    |
+| Name         | Location     | Severity |
+| :----------- | :----------- | :------- |
+| react-router | package.json | error    |
 
 ## Unused devDependencies (3)
 
