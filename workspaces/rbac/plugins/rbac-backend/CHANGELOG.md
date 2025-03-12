@@ -1,5 +1,13 @@
 ### Dependencies
 
+## 5.5.3
+
+### Patch Changes
+
+- 973a5ef: remove prettier from devDevpendencies
+- Updated dependencies [973a5ef]
+  - @backstage-community/plugin-rbac-node@1.9.1
+
 ## 5.5.2
 
 ### Patch Changes
