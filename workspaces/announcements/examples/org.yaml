@@ -9,16 +9,16 @@ spec:
 apiVersion: backstage.io/v1alpha1
 kind: User
 metadata:
-  name: cruz
+  name: user-1
 spec:
-  memberOf: [family]
+  memberOf: [team-a]
 ---
 apiVersion: backstage.io/v1alpha1
 kind: User
 metadata:
-  name: christina
+  name: user-2
 spec:
-  memberOf: [family]
+  memberOf: [team-a]
 ---
 apiVersion: backstage.io/v1alpha1
 kind: Group
@@ -26,14 +26,11 @@ metadata:
   name: guests
 spec:
   type: team
-  children: []
 ---
 apiVersion: backstage.io/v1alpha1
 kind: Group
 metadata:
-  name: family
+  name: team-a
 spec:
   type: team
-  children: []
 ---
-
