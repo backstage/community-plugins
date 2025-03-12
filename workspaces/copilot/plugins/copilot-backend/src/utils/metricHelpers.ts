@@ -108,14 +108,15 @@ export function filterIdeCompletionEditorMetrics(
   team?: string,
 ): CopilotIdeCodeCompletionsEditorsDb[] {
   return metrics
-    .flatMap((metric: CopilotMetrics) =>
-      metric.copilot_ide_code_completions.editors.map(editor => ({
-        day: metric.date,
-        type: type,
-        team_name: team,
-        editor: editor.name,
-        total_engaged_users: editor.total_engaged_users,
-      })),
+    .flatMap(
+      (metric: CopilotMetrics) =>
+        metric.copilot_ide_code_completions.editors?.map(editor => ({
+          day: metric.date,
+          type: type,
+          team_name: team,
+          editor: editor.name,
+          total_engaged_users: editor.total_engaged_users,
+        })) || [],
     )
     .filter(editor => editor.total_engaged_users > 0);
 }
@@ -126,17 +127,18 @@ export function filterIdeCompletionEditorModelMetrics(
   team?: string,
 ): CopilotIdeCodeCompletionsEditorModelsDb[] {
   return metrics
-    .flatMap((metric: CopilotMetrics) =>
-      metric.copilot_ide_code_completions.editors.flatMap(editor =>
-        editor.models.map(model => ({
-          day: metric.date,
-          type: type,
-          team_name: team,
-          editor: editor.name,
-          model: model.name,
-          total_engaged_users: model.total_engaged_users,
-        })),
-      ),
+    .flatMap(
+      (metric: CopilotMetrics) =>
+        metric.copilot_ide_code_completions.editors?.flatMap(editor =>
+          editor.models.map(model => ({
+            day: metric.date,
+            type: type,
+            team_name: team,
+            editor: editor.name,
+            model: model.name,
+            total_engaged_users: model.total_engaged_users,
+          })),
+        ) || [],
     )
     .filter(model => model.total_engaged_users > 0);
 }
@@ -146,24 +148,25 @@ export function filterIdeCompletionEditorModelLanguageMetrics(
   team?: string,
 ): CopilotIdeCodeCompletionsEditorModelLanguagesDb[] {
   return metrics
-    .flatMap((metric: CopilotMetrics) =>
-      metric.copilot_ide_code_completions.editors.flatMap(editor =>
-        editor.models.flatMap(model =>
-          model.languages.map(language => ({
-            day: metric.date,
-            type: type,
-            team_name: team,
-            editor: editor.name,
-            model: model.name,
-            language: language.name,
-            total_engaged_users: language.total_engaged_users,
-            total_code_acceptances: language.total_code_acceptances,
-            total_code_suggestions: language.total_code_suggestions,
-            total_code_lines_accepted: language.total_code_lines_accepted,
-            total_code_lines_suggested: language.total_code_lines_suggested,
-          })),
-        ),
-      ),
+    .flatMap(
+      (metric: CopilotMetrics) =>
+        metric.copilot_ide_code_completions.editors?.flatMap(editor =>
+          editor.models.flatMap(model =>
+            model.languages.map(language => ({
+              day: metric.date,
+              type: type,
+              team_name: team,
+              editor: editor.name,
+              model: model.name,
+              language: language.name,
+              total_engaged_users: language.total_engaged_users,
+              total_code_acceptances: language.total_code_acceptances,
+              total_code_suggestions: language.total_code_suggestions,
+              total_code_lines_accepted: language.total_code_lines_accepted,
+              total_code_lines_suggested: language.total_code_lines_suggested,
+            })),
+          ),
+        ) || [],
     )
     .filter(language => language.total_engaged_users > 0);
 }
@@ -189,14 +192,15 @@ export function filterIdeEditorMetrics(
   team?: string,
 ): CopilotIdeChatsEditorsDb[] {
   return metrics
-    .flatMap((metric: CopilotMetrics) =>
-      metric.copilot_ide_chat.editors.map(editor => ({
-        day: metric.date,
-        type: type,
-        team_name: team,
-        editor: editor.name,
-        total_engaged_users: editor.total_engaged_users,
-      })),
+    .flatMap(
+      (metric: CopilotMetrics) =>
+        metric.copilot_ide_chat.editors?.map(editor => ({
+          day: metric.date,
+          type: type,
+          team_name: team,
+          editor: editor.name,
+          total_engaged_users: editor.total_engaged_users,
+        })) || [],
     )
     .filter(editor => editor.total_engaged_users > 0);
 }
@@ -207,20 +211,21 @@ export function filterIdeChatEditorModelMetrics(
   team?: string,
 ): CopilotIdeChatsEditorModelDb[] {
   return metrics
-    .flatMap((metric: CopilotMetrics) =>
-      metric.copilot_ide_chat.editors.flatMap(editor =>
-        editor.models.map(model => ({
-          day: metric.date,
-          type: type,
-          team_name: team,
-          editor: editor.name,
-          model: model.name,
-          total_engaged_users: model.total_engaged_users,
-          total_chat_copy_events: model.total_chat_copy_events,
-          total_chats: model.total_chats,
-          total_chat_insertion_events: model.total_chat_insertion_events,
-        })),
-      ),
+    .flatMap(
+      (metric: CopilotMetrics) =>
+        metric.copilot_ide_chat.editors?.flatMap(editor =>
+          editor.models.map(model => ({
+            day: metric.date,
+            type: type,
+            team_name: team,
+            editor: editor.name,
+            model: model.name,
+            total_engaged_users: model.total_engaged_users,
+            total_chat_copy_events: model.total_chat_copy_events,
+            total_chats: model.total_chats,
+            total_chat_insertion_events: model.total_chat_insertion_events,
+          })),
+        ) || [],
     )
     .filter(model => model.total_engaged_users > 0);
 }
