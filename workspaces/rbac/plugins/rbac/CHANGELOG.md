@@ -1,5 +1,13 @@
 ### Dependencies
 
+## 1.38.3
+
+### Patch Changes
+
+- 32135b8: Updated dependency `@testing-library/user-event` to `14.6.1`.
+- c222ea4: Updated dependency `@playwright/test` to `1.51.0`.
+- 973a5ef: remove prettier from devDevpendencies
+
 ## 1.38.2
 
 ### Patch Changes
