@@ -1,5 +1,25 @@
 ### Dependencies
 
+## 5.6.0
+
+### Minor Changes
+
+- 0253db6: Backstage version bump to v1.36.1
+
+### Patch Changes
+
+- Updated dependencies [0253db6]
+  - @backstage-community/plugin-rbac-common@1.14.0
+  - @backstage-community/plugin-rbac-node@1.10.0
+
+## 5.5.3
+
+### Patch Changes
+
+- 973a5ef: remove prettier from devDevpendencies
+- Updated dependencies [973a5ef]
+  - @backstage-community/plugin-rbac-node@1.9.1
+
 ## 5.5.2
 
 ### Patch Changes
