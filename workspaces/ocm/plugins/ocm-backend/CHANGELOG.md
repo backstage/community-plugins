@@ -1,5 +1,16 @@
 ### Dependencies
 
+## 5.5.0
+
+### Minor Changes
+
+- fb29ca1: Backstage version bump to v1.36.1
+
+### Patch Changes
+
+- Updated dependencies [fb29ca1]
+  - @backstage-community/plugin-ocm-common@3.8.0
+
 ## 5.4.1
 
 ### Patch Changes
