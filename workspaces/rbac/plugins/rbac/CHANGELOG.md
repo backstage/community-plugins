@@ -1,5 +1,16 @@
 ### Dependencies
 
+## 1.39.0
+
+### Minor Changes
+
+- 0253db6: Backstage version bump to v1.36.1
+
+### Patch Changes
+
+- Updated dependencies [0253db6]
+  - @backstage-community/plugin-rbac-common@1.14.0
+
 ## 1.38.3
 
 ### Patch Changes
