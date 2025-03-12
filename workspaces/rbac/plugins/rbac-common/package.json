@@ -40,7 +40,7 @@
     "@backstage/plugin-permission-common": "^0.8.4"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.29.5",
+    "@backstage/cli": "^0.30.0",
     "@backstage/errors": "^1.2.7",
     "@backstage/plugin-permission-common": "^0.8.4",
     "@spotify/prettier-config": "^15.0.0",
