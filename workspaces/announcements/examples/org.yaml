@@ -34,3 +34,10 @@ metadata:
 spec:
   type: team
 ---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: team-b
+spec:
+  type: team
+---
