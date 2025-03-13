@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 5.6.1
+
+### Patch Changes
+
+- b2a5daa: Updated dependency `qs` to `6.14.0`.
+
 ## 5.6.0
 
 ### Minor Changes
