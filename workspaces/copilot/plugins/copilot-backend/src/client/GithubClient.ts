@@ -71,7 +71,7 @@ export class GithubClient implements GithubApi {
 
   async fetchEnterpriseTeams(): Promise<TeamInfo[]> {
     const path = `/enterprises/${this.copilotConfig.enterprise}/teams`;
-    return this.get(path);
+    return this.fetchAllPages(path);
   }
 
   async fetchOrganizationCopilotMetrics(): Promise<CopilotMetrics[]> {
@@ -88,7 +88,7 @@ export class GithubClient implements GithubApi {
 
   async fetchOrganizationTeams(): Promise<TeamInfo[]> {
     const path = `/orgs/${this.copilotConfig.organization}/teams`;
-    return this.get(path);
+    return this.fetchAllPages(path);
   }
 
   private async get<T>(path: string): Promise<T> {
@@ -110,5 +110,20 @@ export class GithubClient implements GithubApi {
     }
 
     return response.json() as Promise<T>;
+  }
+
+  private async fetchAllPages<T>(path: string): Promise<T[]> {
+    let results: T[] = [];
+    let page = 1;
+    let hasNextPage = true;
+
+    while (hasNextPage) {
+      const response = await this.get<T[]>(`${path}?page=${page}`);
+      results = results.concat(response);
+      hasNextPage = response.length > 0;
+      page++;
+    }
+
+    return results;
   }
 }
