@@ -15,11 +15,12 @@
  */
 import React, { ReactNode } from 'react';
 import { usePermission } from '@backstage/plugin-permission-react';
-import { Progress, WarningPanel } from '@backstage/core-components';
+import { Progress } from '@backstage/core-components';
 import {
   kubernetesClustersReadPermission,
   kubernetesResourcesReadPermission,
 } from '@backstage/plugin-kubernetes-common';
+import { MissingPermissionPage } from './MissingPermissionPage';
 
 export type RequireKubernetesPermissionProps = {
   children: ReactNode;
@@ -53,17 +54,5 @@ export function RequireKubernetesReadPermissions(
     return <>{props.children}</>;
   }
 
-  const requiredPermissions = [
-    kubernetesClustersReadPermission,
-    kubernetesResourcesReadPermission,
-  ]
-    .map(p => `'${p.name}'`)
-    .join(', ');
-
-  return (
-    <WarningPanel
-      title="Permission required"
-      message={`To view Topology, contact your administrator to give you the following permission(s): ${requiredPermissions}.`}
-    />
-  );
+  return <MissingPermissionPage />;
 }

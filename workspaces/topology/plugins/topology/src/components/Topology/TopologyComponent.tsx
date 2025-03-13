@@ -30,7 +30,7 @@ import '@patternfly/patternfly/patternfly.min.css';
 import '@patternfly/patternfly/patternfly-charts.css';
 import '@patternfly/patternfly/utilities/Accessibility/accessibility.css';
 import './TopologyComponent.css';
-import { RequireKubernetesReadPermissions } from './requireKubernetesReadPermissions';
+import { RequireKubernetesReadPermissions } from './permissions/requireKubernetesReadPermissions';
 
 const THEME_DARK = 'dark';
 const THEME_DARK_CLASS = 'pf-v6-theme-dark';

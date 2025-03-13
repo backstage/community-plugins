@@ -15,7 +15,7 @@
  */
 import React, { useState } from 'react';
 
-import { ErrorBoundary, WarningPanel } from '@backstage/core-components';
+import { ErrorBoundary } from '@backstage/core-components';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { kubernetesProxyPermission } from '@backstage/plugin-kubernetes-common';
 
@@ -35,6 +35,7 @@ import { ContainerSelector } from './ContainerSelector';
 import { PodLogs } from './PodLogs';
 import PodLogsDownload from './PodLogsDownload';
 import { ContainerScope } from './types';
+import { MissingPermissionPage } from '../../permissions/MissingPermissionPage';
 
 type PodLogsDialogProps = {
   podData: V1Pod;
@@ -119,12 +120,7 @@ const ViewLogs = ({ podData, onClose }: ViewLogsProps) => {
       <DialogContent>
         <RequirePermission
           permission={kubernetesProxyPermission}
-          errorPage={
-            <WarningPanel
-              title="Permission required"
-              message={`To view pod logs, contact your administrator to give you the following permission(s): '${kubernetesProxyPermission.name}'.`}
-            />
-          }
+          errorPage={<MissingPermissionPage />}
         >
           <ErrorBoundary>
             <PodLogs
