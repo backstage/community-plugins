@@ -19,6 +19,7 @@ import {
   filterIdeCompletionEditorModelLanguageMetrics,
   filterIdeEditorMetrics,
   filterIdeChatEditorModelMetrics,
+  filterIdeCompletionLanguageMetrics,
 } from './metricHelpers';
 import { CopilotMetrics } from '@backstage-community/plugin-copilot-common';
 
@@ -84,12 +85,6 @@ describe('metricHelperTest', () => {
       total_active_users: 25,
       copilot_ide_code_completions: {
         total_engaged_users: 7,
-        languages: [
-          {
-            name: 'TypeScript',
-            total_engaged_users: 2,
-          },
-        ],
       },
       copilot_ide_chat: {
         total_engaged_users: 7,
@@ -110,6 +105,23 @@ describe('metricHelperTest', () => {
         team_name: 'team1',
         editor: 'VSCode',
         total_engaged_users: 3,
+      },
+    ]);
+  });
+
+  it('should handle undefined languages in filterIdeCompletionLanguageMetrics', () => {
+    const result = filterIdeCompletionLanguageMetrics(
+      metrics,
+      'organization',
+      'team1',
+    );
+    expect(result).toEqual([
+      {
+        day: '2024-01-01',
+        type: 'organization',
+        team_name: 'team1',
+        total_engaged_users: 1,
+        language: 'JavaScript',
       },
     ]);
   });

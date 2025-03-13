@@ -91,14 +91,15 @@ export function filterIdeCompletionLanguageMetrics(
   team?: string,
 ): CopilotIdeCodeCompletionsLanguageDb[] {
   return metrics
-    .flatMap((metric: CopilotMetrics) =>
-      metric.copilot_ide_code_completions.languages.map(language => ({
-        day: metric.date,
-        type: type,
-        team_name: team,
-        language: language.name,
-        total_engaged_users: language.total_engaged_users,
-      })),
+    .flatMap(
+      (metric: CopilotMetrics) =>
+        metric.copilot_ide_code_completions.languages?.map(language => ({
+          day: metric.date,
+          type: type,
+          team_name: team,
+          language: language.name,
+          total_engaged_users: language.total_engaged_users,
+        })) || [],
     )
     .filter(language => language.total_engaged_users > 0);
 }
