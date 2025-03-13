@@ -1,10 +1,10 @@
 {
-  "name": "@backstage-community/plugin-dependencytrack",
+  "name": "@backstage-community/plugin-dependency-track",
   "version": "0.3.1",
   "description": "A Backstage plugin that integrates with Dependency Track",
   "backstage": {
     "role": "frontend-plugin",
-    "pluginId": "dependencyTrack",
+    "pluginId": "dependency-track",
     "pluginPackages": [
       "@backstage-community/plugin-dependencytrack"
     ]
@@ -16,7 +16,8 @@
   },
   "keywords": [
     "backstage",
-    "dependencyTrack"
+    "dependencyTrack",
+    "dependency-track"
   ],
   "homepage": "https://backstage.io",
   "repository": {
@@ -73,6 +74,5 @@
     "dist",
     "config.d.ts"
   ],
-  "configSchema": "config.d.ts",
-  "packageManager": "yarn@3.8.2"
+  "configSchema": "config.d.ts"
 }
