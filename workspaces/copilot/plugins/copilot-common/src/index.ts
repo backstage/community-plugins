@@ -524,7 +524,15 @@ export interface CopilotMetrics {
   copilot_dotcom_pull_requests: DotcomPullRequests;
 }
 
+/**
+ * Represents the engagement metrics for copilot.
+ *
+ * @public
+ */
 export interface EngagementMetrics {
+  /**
+   * The date for the metrics reported.
+   */
   day: string;
   /**
    * The type of the metrics data.
@@ -538,42 +546,154 @@ export interface EngagementMetrics {
    */
   team_name?: string;
 
+  /**
+   * The total number of users who have used Copilot.
+   */
   total_active_users: number;
+
+  /**
+   * The total number of users who have meaningfully interacted with Copilot features.
+   */
   total_engaged_users: number;
+
+  /**
+   * The number of users who have engaged with IDE code completions.
+   */
   ide_completions_engaged_users: number;
+
+  /**
+   * The number of users who have engaged with IDE chat features.
+   */
   ide_chats_engaged_users: number;
+
+  /**
+   * The number of users who have engaged with GitHub.com chat features.
+   */
   dotcom_chats_engaged_users: number;
+
+  /**
+   * The number of users who have engaged with pull request features.
+   */
   dotcom_prs_engaged_users: number;
 }
 
+/**
+ * Represents the assignee for a copilot seat
+ *
+ * @public
+ */
 export interface CopilotAssignee {
+  /**
+   * The unique identifier of the assignee.
+   */
   id: number;
+  /**
+   * The login username of the assignee.
+   */
   login: string;
 }
+
+/**
+ * Represents the assigning team for a copilot seat
+ *
+ * @public
+ */
 export interface CopilotAssgningTeam {
+  /**
+   * The unique identifier of the team.
+   */
   id: number;
+  /**
+   * The slug of the team, used for URL-friendly identifiers.
+   */
   slug: string;
 }
+/**
+ * Represents the a seat for copilot
+ *
+ * @public
+ */
 export interface CopilotSeat {
+  /**
+   * The date when the seat was created.
+   */
   created_at: string;
+  /**
+   * The date when the seat was last updated.
+   */
   updated_at: string;
+  /**
+   * The date when the seat was last active.
+   */
   last_activity_at: string;
+  /**
+   * The editor used in the last activity.
+   */
   last_activity_editor: string;
+  /**
+   * The type of plan for this seat.
+   */
   plan_type: string;
+  /**
+   * The user assigned to this seat.
+   */
   assignee: CopilotAssignee;
+  /**
+   * The team that assigned this seat.
+   */
   assigning_team: CopilotAssgningTeam;
 }
+/**
+ * Represents the base seat data for copilot
+ *
+ * @public
+ */
 export interface CopilotSeats {
+  /**
+   * The total number of seats available.
+   */
   total_seats: number;
+  /**
+   * The list of individual seats.
+   */
   seats: CopilotSeat[];
 }
+/**
+ * Represents the seat analysis data for copilot
+ *
+ * @public
+ */
 export interface SeatAnalysis {
+  /**
+   * The date for the analysis.
+   */
   day: string;
+  /**
+   * The type of the seat data (enterprise or organization).
+   */
   type: MetricsType;
+  /**
+   * The name of the team for this analysis.
+   */
   team_name: string;
+  /**
+   * The total number of seats available.
+   */
   total_seats: number;
+  /**
+   * The number of seats that have never been used.
+   */
   seats_never_used: number;
+  /**
+   * The number of seats inactive for 7 days.
+   */
   seats_inactive_7_days: number;
+  /**
+   * The number of seats inactive for 14 days.
+   */
   seats_inactive_14_days: number;
+  /**
+   * The number of seats inactive for 28 days.
+   */
   seats_inactive_28_days: number;
 }
