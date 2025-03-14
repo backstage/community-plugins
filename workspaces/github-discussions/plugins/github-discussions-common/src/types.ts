@@ -18,7 +18,10 @@ import {
   IndexableDocument,
 } from '@backstage/plugin-search-common';
 
-interface GithubDiscussionsDocument {
+/**
+ * @public
+ */
+export interface GithubDiscussionsDocument {
   author: string;
   category: string;
   labels: {
@@ -35,7 +38,13 @@ interface GithubDiscussionsDocument {
   }[];
 }
 
+/**
+ * @public
+ */
 export type GithubDiscussionsSearchDocument = GithubDiscussionsDocument &
   SearchDocument;
+/**
+ * @public
+ */
 export type GithubDiscussionIndexableDocument = GithubDiscussionsDocument &
   IndexableDocument;
