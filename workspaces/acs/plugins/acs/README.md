@@ -7,15 +7,30 @@
 
 ### Backstage Installation
 
-Run the following command to install the ACS Backstage provider plugin:
+1. Run the following command to install the ACS Backstage provider plugin:
 
 ```console
 yarn --cwd packages/app add @backstage-community/plugin-acs
 ```
 
+2. Second we need to add the EntityACSContent extension to the entity page in your app:
+
+```
+import { EntityACSContent } from '@backstage-community/plugin-acs';
+
+// For example in the Service section
+const serviceEntityPage = (
+  <EntityLayout>
+    // ...
+    <EntityLayout.Route path="/acs" title="Security">
+      <EntityACSContent />
+    </EntityLayout.Route>
+    // ...
+  </EntityLayout>
+```
+
 ### Entity Annotation
 
-to have a comma separated string of deployment names from the ACS API you wish to test.
 To be able to use the Advanced Cluster Security plugin you need to add the following annotation to any entities you want to use it with:
 
 ```
