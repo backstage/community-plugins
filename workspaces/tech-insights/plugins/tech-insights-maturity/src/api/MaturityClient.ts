@@ -37,8 +37,10 @@ import {
 } from '@backstage-community/plugin-tech-insights-maturity-common';
 import { MaturityApi } from './MaturityApi';
 import { ScoringDataFormatter } from './ScoringDataFormatter';
+import { BulkCheckResponse } from '@backstage-community/plugin-tech-insights-common';
 
 const SDF = new ScoringDataFormatter();
+const DEFAULT_CHUNKSIZE = 1000;
 
 /**
  * MaturityClient extension of TechInsightsClient
@@ -47,14 +49,17 @@ const SDF = new ScoringDataFormatter();
  */
 export class MaturityClient extends TechInsightsClient implements MaturityApi {
   readonly catalogApi: CatalogApi;
+  readonly chunkSize: number;
 
   constructor(options: {
     discoveryApi: DiscoveryApi;
     identityApi: IdentityApi;
     catalogApi: CatalogApi;
+    chunkSize?: number;
   }) {
     super(options);
     this.catalogApi = options.catalogApi;
+    this.chunkSize = options.chunkSize || DEFAULT_CHUNKSIZE;
   }
 
   public async getMaturityRank(entity: Entity): Promise<MaturityRank> {
@@ -126,7 +131,12 @@ export class MaturityClient extends TechInsightsClient implements MaturityApi {
   }
 
   private async getBulkCheckResults(entities: CompoundEntityRef[]) {
-    const bulkResponse = await this.runBulkChecks(entities);
+    let bulkResponse: BulkCheckResponse = [];
+    for (let i = 0; i < entities.length; i += this.chunkSize) {
+      const chunk = entities.slice(i, i + this.chunkSize);
+      const response = await this.runBulkChecks(chunk);
+      bulkResponse = bulkResponse.concat(response);
+    }
     return Promise.all(
       bulkResponse.map(async x => {
         const checks = x.results as MaturityCheckResult[];
@@ -155,7 +165,12 @@ export class MaturityClient extends TechInsightsClient implements MaturityApi {
     }
 
     const results: MaturityCheckResult[] = [];
-    const bulkResponse = await this.runBulkChecks(entities);
+    let bulkResponse: BulkCheckResponse = [];
+    for (let i = 0; i < entities.length; i += this.chunkSize) {
+      const chunk = entities.slice(i, i + this.chunkSize);
+      const response = await this.runBulkChecks(chunk);
+      bulkResponse = bulkResponse.concat(response);
+    }
     for (const response of bulkResponse) {
       Array.prototype.push.apply(results, response.results);
     }
@@ -166,6 +181,9 @@ export class MaturityClient extends TechInsightsClient implements MaturityApi {
   private async getRelatedComponents(
     entity: Entity,
   ): Promise<CompoundEntityRef[]> {
+    if (!entity?.kind) {
+      return [];
+    }
     switch (entity.kind) {
       case 'System':
         return getEntityRelations(entity, RELATION_HAS_PART);
