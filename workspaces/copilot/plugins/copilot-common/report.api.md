@@ -15,6 +15,18 @@ export interface Breakdown {
 }
 
 // @public
+export interface CopilotAssgningTeam {
+  id: number;
+  slug: string;
+}
+
+// @public
+export interface CopilotAssignee {
+  id: number;
+  login: string;
+}
+
+// @public
 export interface CopilotChatEditors {
   models: CopilotChatModels[];
   name: string;
@@ -101,6 +113,23 @@ export interface CopilotRepositoryModels {
 }
 
 // @public
+export interface CopilotSeat {
+  assignee: CopilotAssignee;
+  assigning_team: CopilotAssgningTeam;
+  created_at: string;
+  last_activity_at: string;
+  last_activity_editor: string;
+  plan_type: string;
+  updated_at: string;
+}
+
+// @public
+export interface CopilotSeats {
+  seats: CopilotSeat[];
+  total_seats: number;
+}
+
+// @public
 export interface DotcomChat {
   models: DotcomChatModels[];
   total_engaged_users: number;
@@ -118,6 +147,19 @@ export interface DotcomChatModels {
 export interface DotcomPullRequests {
   repositories: CopilotRepository[];
   total_engaged_users: number;
+}
+
+// @public
+export interface EngagementMetrics {
+  day: string;
+  dotcom_chats_engaged_users: number;
+  dotcom_prs_engaged_users: number;
+  ide_chats_engaged_users: number;
+  ide_completions_engaged_users: number;
+  team_name?: string;
+  total_active_users: number;
+  total_engaged_users: number;
+  type: MetricsType;
 }
 
 // @public @deprecated
@@ -143,6 +185,25 @@ export type MetricsType = 'enterprise' | 'organization';
 export interface PeriodRange {
   maxDate: string;
   minDate: string;
+}
+
+// @public
+export interface SeatAnalysis {
+  day: string;
+  seats_inactive_14_days: number;
+  seats_inactive_28_days: number;
+  seats_inactive_7_days: number;
+  seats_never_used: number;
+  team_name: string;
+  total_seats: number;
+  type: MetricsType;
+}
+
+// @public
+export interface SeatInfo {
+  id: number;
+  name: string;
+  slug: string;
 }
 
 // @public
