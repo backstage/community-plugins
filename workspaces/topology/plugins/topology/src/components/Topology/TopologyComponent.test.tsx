@@ -22,8 +22,14 @@ import { TopologyComponent } from './TopologyComponent';
 import { usePermission } from '@backstage/plugin-permission-react';
 
 jest.mock('@mui/material/styles', () => ({
-  ...jest.requireActual('@mmui/material/styles'),
+  ...jest.requireActual('@mui/material/styles'),
   makeStyles: jest.fn().mockReturnValue(() => ({})),
+  useTheme: jest.fn(),
+}));
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: jest.fn(),
 }));
 
 jest.mock('../../hooks/useK8sObjectsResponse', () => ({
@@ -42,10 +48,6 @@ jest.mock('../../hooks/useK8sObjectsResponse', () => ({
     clusters: [],
     setSelectedCluster: () => {},
   }),
-}));
-
-jest.mock('@mui/material/styles', () => ({
-  useTheme: jest.fn(),
 }));
 
 jest.mock('./TopologyWorkloadView', () => ({
@@ -73,7 +75,7 @@ describe('TopologyComponent', () => {
     expect(getByText(/topologyworkloadview/i)).not.toBeNull();
   });
 
-  it('should render permission alert when permissions are missing', () => {
+  it('should render PermissionMissing page when permissions are missing', () => {
     useThemeMock.mockReturnValue({
       palette: {
         mode: 'dark',
@@ -81,7 +83,7 @@ describe('TopologyComponent', () => {
     });
     mockUsePermission.mockReturnValue({ loading: false, allowed: false });
     const { getByText, queryByText } = render(<TopologyComponent />);
-    expect(getByText('Warning: Permission required')).toBeInTheDocument();
+    expect(getByText('Missing Permission')).toBeInTheDocument();
     expect(queryByText(/topologyworkloadview/i)).toBeNull();
   });
 
