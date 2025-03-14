@@ -1,5 +1,15 @@
 ### Dependencies
 
+## 2.5.0
+
+### Minor Changes
+
+- 35086d7: Backstage version bump to v1.36.1
+
+### Patch Changes
+
+- 973a5ef: remove prettier from devDevpendencies
+
 ## 2.4.0
 
 ### Minor Changes
