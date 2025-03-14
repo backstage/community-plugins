@@ -1,5 +1,11 @@
 # @backstage-community/plugin-announcements
 
+## 0.5.5
+
+### Patch Changes
+
+- 3d819b6: Replaced HTML elements with MUI components in `AnnouncementsCard` and `AnnouncementsPage` for uniform styling.
+
 ## 0.5.4
 
 ### Patch Changes
