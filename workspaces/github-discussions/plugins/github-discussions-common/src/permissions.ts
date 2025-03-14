@@ -15,6 +15,9 @@
  */
 import { createPermission } from '@backstage/plugin-permission-common';
 
+/**
+ * @public
+ */
 export const githubDiscussionsReadPermission = createPermission({
   name: 'github.discussions.read',
   attributes: {
