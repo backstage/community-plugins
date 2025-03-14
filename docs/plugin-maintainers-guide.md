@@ -14,7 +14,9 @@
 ## Plugin Owner Expectations
 
 Plugin ownership is codified by the [CODEOWNERS](https://github.com/backstage/community-plugins/blob/main/.github/CODEOWNERS) file.
+
 Plugin ownership is a responsibility often taken on voluntarily and/or in addition to primary job roles. While there are expectations outlined here, this is **not a support commitment**. Timely responses are appreciated, but replies may not be immediate and will depend on availability.
+
 ### PR Reviews & Merging
 
 Plugin owners are assumed to have full autonomy over reviewing and merging PRs for their workspace. This includes the merging of Version Packages PRs to trigger a new release.
