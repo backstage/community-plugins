@@ -42,6 +42,7 @@ import {
   ListItemIcon,
   ListItemText,
   Typography,
+  Box,
 } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import NewReleasesIcon from '@material-ui/icons/NewReleases';
@@ -131,7 +132,7 @@ export const AnnouncementsCard = ({
                 </Link>
               }
               secondary={
-                <div>
+                <Box>
                   <Typography variant="body2" color="textSecondary">
                     {DateTime.fromISO(announcement.created_at).toRelative()}
                     {announcement.category && (
@@ -150,19 +151,15 @@ export const AnnouncementsCard = ({
                   <Typography variant="body2" color="textSecondary">
                     {announcement.excerpt}
                   </Typography>
-                  <Typography variant="body2" color="textSecondary">
-                    <small>
-                      <small>
-                        {formatAnnouncementStartTime(
-                          announcement.start_at,
-                          t('announcementsCard.occurred'),
-                          t('announcementsCard.scheduled'),
-                          t('announcementsCard.today'),
-                        )}
-                      </small>
-                    </small>
+                  <Typography variant="caption" color="textSecondary">
+                    {formatAnnouncementStartTime(
+                      announcement.start_at,
+                      t('announcementsCard.occurred'),
+                      t('announcementsCard.scheduled'),
+                      t('announcementsCard.today'),
+                    )}
                   </Typography>
-                </div>
+                </Box>
               }
             />{' '}
           </ListItem>

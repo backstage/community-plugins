@@ -1,8 +1,7 @@
 # Knip report
 
-## Unused dependencies (2)
+## Unused dependencies (1)
 
-| Name                            | Location     | Severity |
-| :------------------------------ | :----------- | :------- |
-| @backstage-community/plugin-npm | package.json | error    |
-| react-router                    | package.json | error    |
+| Name         | Location     | Severity |
+| :----------- | :----------- | :------- |
+| react-router | package.json | error    |

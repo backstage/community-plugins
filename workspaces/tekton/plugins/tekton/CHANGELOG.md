@@ -1,5 +1,15 @@
 ### Dependencies
 
+## 3.21.1
+
+### Patch Changes
+
+- 76de75c: Remove CSS resets from PatternFly CSS import
+- 32135b8: Updated dependency `@testing-library/user-event` to `14.6.1`.
+- 3199ac1: Updated dependency `@types/lodash` to `4.17.16`.
+- c222ea4: Updated dependency `@playwright/test` to `1.51.0`.
+- 973a5ef: removed prettier from devDependencies
+
 ## 3.21.0
 
 ### Minor Changes
