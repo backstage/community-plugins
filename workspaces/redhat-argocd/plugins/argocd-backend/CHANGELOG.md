@@ -1,5 +1,11 @@
 # @backstage-community/plugin-redhat-argocd-backend
 
+## 0.4.0
+
+### Minor Changes
+
+- 110b103: Add scalprum configuration for generating OCI artifacts
+
 ## 0.3.0
 
 ### Minor Changes

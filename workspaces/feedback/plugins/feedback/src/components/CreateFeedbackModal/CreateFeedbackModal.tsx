@@ -38,6 +38,7 @@ import { styled, Theme } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
+import Dialog from '@mui/material/Dialog';
 import { feedbackApiRef } from '../../api';
 import { FeedbackCategory } from '../../models/feedback.model';
 
@@ -86,22 +87,15 @@ const StyledPaper = styled(Paper)(({ theme }: { theme: Theme }) => ({
   },
 }));
 
-const issueTags = [
-  'Slow Loading',
-  'Not Responsive',
-  'Navigation',
-  'UI Issues',
-  'Other',
-];
-const feedbackTags = ['Excellent', 'Good', 'Needs Improvement', 'Other'];
-
 export const CreateFeedbackModal = (props: {
   projectEntity: string;
-  userEntity: string;
-  serverType: string;
+  configType?: string;
+  open: boolean;
   handleModalCloseFn: (respObj?: any) => void;
 }) => {
-  const api = useApi(feedbackApiRef);
+  const feedbackApi = useApi(feedbackApiRef);
+  const issueTags = feedbackApi.getErrorList();
+  const feedbackTags = feedbackApi.getExperienceList();
   const analytics = useAnalytics();
   const [feedbackType, setFeedbackType] = useState('BUG');
   const [submitClicked, setSubmitClicked] = useState(false);
@@ -121,8 +115,7 @@ export const CreateFeedbackModal = (props: {
   });
 
   const projectEntity = props.projectEntity;
-  const userEntity = props.userEntity;
-  const serverType = props.serverType.toLocaleLowerCase('en-US');
+  const configType = (props.configType ?? 'MAIL').toLocaleLowerCase('en-US');
 
   function handleCategoryClick(event: any) {
     setFeedbackType(event.target.value);
@@ -140,13 +133,12 @@ export const CreateFeedbackModal = (props: {
 
   async function handleSubmitClick() {
     setSubmitClicked(true);
-    const resp = await api.createFeedback({
+    const resp = await feedbackApi.createFeedback({
       summary: summary.value,
       description: description.value,
       projectId: projectEntity,
       url: window.location.href,
       userAgent: window.navigator.userAgent,
-      createdBy: userEntity,
       feedbackType:
         feedbackType === 'BUG'
           ? FeedbackCategory.BUG
@@ -209,142 +201,152 @@ export const CreateFeedbackModal = (props: {
   }
 
   return (
-    <StyledPaper>
-      <DialogTitle>
-        {`Feedback for ${projectEntity.split('/').pop()}`}
-        {props.handleModalCloseFn ? (
-          <IconButton
-            aria-label="close"
-            className={classes.closeButton}
-            onClick={props.handleModalCloseFn}
-            size="large"
-          >
-            <CloseRounded />
-          </IconButton>
-        ) : null}
-      </DialogTitle>
-      <DialogContent dividers>
-        <Grid container justifyContent="flex-start" className={classes.root}>
-          {serverType !== 'mail' && !selectedTag.match(/(Excellent|Good)/g) ? (
-            <Grid xs={12}>
-              <Alert severity="warning" variant="outlined">
-                Note: By submitting&nbsp;
-                {feedbackType === 'FEEDBACK' ? 'feedback' : 'bug'} with this
-                tag, it will create an issue in {serverType}
-              </Alert>
-            </Grid>
+    <Dialog
+      open={props.open}
+      sx={{ position: 'fixed', right: 16, bottom: 30 }}
+      onClose={() => props.handleModalCloseFn(false)}
+      aria-labelledby="simple-modal-title"
+      aria-describedby="simple-modal-description"
+      maxWidth="md"
+    >
+      <StyledPaper>
+        <DialogTitle>
+          {`Feedback for ${projectEntity.split('/').pop()}`}
+          {props.handleModalCloseFn ? (
+            <IconButton
+              aria-label="close"
+              className={classes.closeButton}
+              onClick={props.handleModalCloseFn}
+              size="large"
+            >
+              <CloseRounded />
+            </IconButton>
           ) : null}
-          <Grid item xs={4}>
-            <Typography variant="h6">Select type</Typography>
-            <RadioGroup className={classes.radioGroup} row>
-              <FormControlLabel
-                value="BUG"
-                checked={feedbackType === 'BUG'}
-                onChange={handleCategoryClick}
-                label="Bug"
-                control={
-                  <Radio
-                    icon={<BugReportOutlined />}
-                    checkedIcon={<BugReportTwoToneIcon />}
-                    color="error"
-                  />
-                }
-              />
-              <FormControlLabel
-                value="FEEDBACK"
-                onChange={handleCategoryClick}
-                label="Feedback"
-                control={
-                  <Radio
-                    icon={<SmsOutlined />}
-                    checkedIcon={<SmsTwoTone />}
-                    color="primary"
-                  />
-                }
-              />
-            </RadioGroup>
-          </Grid>
-          <Grid item xs={12}>
-            <Typography variant="subtitle1">
-              Select {feedbackType === 'FEEDBACK' ? 'Feedback' : 'Bug'}
-              :&nbsp;
-              {feedbackType === 'BUG'
-                ? issueTags.map(issueTitle => (
-                    <Chip
-                      key={issueTitle}
-                      clickable
-                      variant={
-                        selectedTag === issueTitle ? 'filled' : 'outlined'
-                      }
+        </DialogTitle>
+        <DialogContent dividers>
+          <Grid container justifyContent="flex-start" className={classes.root}>
+            {configType !== 'mail' &&
+            !selectedTag.match(/(Excellent|Good)/g) ? (
+              <Grid xs={12}>
+                <Alert severity="warning" variant="outlined">
+                  Note: By submitting&nbsp;
+                  {feedbackType === 'FEEDBACK' ? 'feedback' : 'bug'} with this
+                  tag, it will create an issue in {configType}
+                </Alert>
+              </Grid>
+            ) : null}
+            <Grid item xs={4}>
+              <Typography variant="h6">Select type</Typography>
+              <RadioGroup className={classes.radioGroup} row>
+                <FormControlLabel
+                  value="BUG"
+                  checked={feedbackType === 'BUG'}
+                  onChange={handleCategoryClick}
+                  label="Bug"
+                  control={
+                    <Radio
+                      icon={<BugReportOutlined />}
+                      checkedIcon={<BugReportTwoToneIcon />}
                       color="error"
-                      onClick={() => handleChipSlection(issueTitle)}
-                      label={issueTitle}
                     />
-                  ))
-                : feedbackTags.map(feedbackTitle => (
-                    <Chip
-                      key={feedbackTitle}
-                      clickable
-                      variant={
-                        selectedTag === feedbackTitle ? 'filled' : 'outlined'
-                      }
+                  }
+                />
+                <FormControlLabel
+                  value="FEEDBACK"
+                  onChange={handleCategoryClick}
+                  label="Feedback"
+                  control={
+                    <Radio
+                      icon={<SmsOutlined />}
+                      checkedIcon={<SmsTwoTone />}
                       color="primary"
-                      onClick={() => handleChipSlection(feedbackTitle)}
-                      label={feedbackTitle}
                     />
-                  ))}
-            </Typography>
+                  }
+                />
+              </RadioGroup>
+            </Grid>
+            <Grid item xs={12}>
+              <Typography variant="h6">
+                Select {feedbackType === 'FEEDBACK' ? 'Feedback' : 'Bug'}
+              </Typography>
+              <div>
+                {feedbackType === 'BUG'
+                  ? issueTags.map(issueTitle => (
+                      <Chip
+                        key={issueTitle}
+                        clickable
+                        variant={
+                          selectedTag === issueTitle ? 'filled' : 'outlined'
+                        }
+                        color="error"
+                        onClick={() => handleChipSlection(issueTitle)}
+                        label={issueTitle}
+                      />
+                    ))
+                  : feedbackTags.map(feedbackTitle => (
+                      <Chip
+                        key={feedbackTitle}
+                        clickable
+                        variant={
+                          selectedTag === feedbackTitle ? 'filled' : 'outlined'
+                        }
+                        color="primary"
+                        onClick={() => handleChipSlection(feedbackTitle)}
+                        label={feedbackTitle}
+                      />
+                    ))}
+              </div>
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                autoComplete="off"
+                id="summary"
+                label="Summary"
+                value={summary.value}
+                variant="outlined"
+                placeholder="Enter Summary"
+                onChange={handleInputChange}
+                onBlur={handleValidation}
+                error={summary.error}
+                helperText={
+                  summary.error
+                    ? summary.errorMessage
+                    : `${summary.value.length}/${summaryLimit}`
+                }
+                required
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                inputMode="text"
+                autoComplete="off"
+                id="description"
+                label="Description"
+                value={description.value}
+                variant="outlined"
+                placeholder="Enter description"
+                multiline
+                minRows={6}
+                maxRows={10}
+                onChange={handleInputChange}
+              />
+            </Grid>
           </Grid>
-          <Grid item xs={12}>
-            <TextField
-              autoComplete="off"
-              id="summary"
-              label="Summary"
-              value={summary.value}
-              variant="outlined"
-              placeholder="Enter Summary"
-              onChange={handleInputChange}
-              onBlur={handleValidation}
-              error={summary.error}
-              helperText={
-                summary.error
-                  ? summary.errorMessage
-                  : `${summary.value.length}/${summaryLimit}`
-              }
-              required
-            />
-          </Grid>
-
-          <Grid item xs={12}>
-            <TextField
-              inputMode="text"
-              autoComplete="off"
-              id="description"
-              label="Description"
-              value={description.value}
-              variant="outlined"
-              placeholder="Enter description"
-              multiline
-              minRows={6}
-              maxRows={10}
-              onChange={handleInputChange}
-            />
-          </Grid>
-        </Grid>
-      </DialogContent>
-      <DialogActions className={classes.actions}>
-        <Button onClick={props.handleModalCloseFn}>Cancel</Button>
-        <Button
-          onClick={handleSubmitClick}
-          color="primary"
-          variant="contained"
-          disabled={
-            summary.error || summary.value.length === 0 || submitClicked
-          }
-        >
-          {feedbackType === 'FEEDBACK' ? 'Send Feedback' : 'Report Bug'}
-        </Button>
-      </DialogActions>
-    </StyledPaper>
+        </DialogContent>
+        <DialogActions className={classes.actions}>
+          <Button onClick={props.handleModalCloseFn}>Cancel</Button>
+          <Button
+            onClick={handleSubmitClick}
+            color="primary"
+            variant="contained"
+            disabled={
+              summary.error || summary.value.length === 0 || submitClicked
+            }
+          >
+            {feedbackType === 'FEEDBACK' ? 'Send Feedback' : 'Report Bug'}
+          </Button>
+        </DialogActions>
+      </StyledPaper>
+    </Dialog>
   );
 };

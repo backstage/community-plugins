@@ -1,0 +1,87 @@
+{
+  "name": "@backstage-community/plugin-multi-source-security-viewer",
+  "version": "0.1.0",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.esm.js",
+    "types": "dist/index.d.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/multi-source-security-viewer/plugins/multi-source-security-viewer"
+  },
+  "backstage": {
+    "role": "frontend-plugin",
+    "pluginId": "multi-source-security-viewer",
+    "pluginPackages": [
+      "@backstage-community/plugin-multi-source-security-viewer",
+      "@backstage-community/plugin-multi-source-security-viewer-common"
+    ]
+  },
+  "scalprum": {
+    "name": "backstage-community.plugin-multi-source-security-viewer",
+    "exposedModules": {
+      "PluginRoot": "./src/index.ts"
+    }
+  },
+  "sideEffects": false,
+  "scripts": {
+    "start": "backstage-cli package start",
+    "build": "backstage-cli package build",
+    "lint": "backstage-cli package lint",
+    "test": "backstage-cli package test",
+    "clean": "backstage-cli package clean",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack"
+  },
+  "dependencies": {
+    "@aonic-ui/pipelines": "^3.1.1",
+    "@backstage-community/plugin-github-actions": "^0.7.0",
+    "@backstage-community/plugin-jenkins": "^0.15.0",
+    "@backstage-community/plugin-multi-source-security-viewer-common": "workspace:^",
+    "@backstage/catalog-model": "^1.7.3",
+    "@backstage/core-components": "^0.16.4",
+    "@backstage/core-plugin-api": "^1.10.4",
+    "@backstage/integration-react": "^1.2.4",
+    "@backstage/plugin-catalog-react": "^1.15.2",
+    "@backstage/plugin-permission-react": "^0.4.31",
+    "@backstage/theme": "^0.6.4",
+    "@immobiliarelabs/backstage-plugin-gitlab": "^6.8.0",
+    "@janus-idp/shared-react": "^2.14.0",
+    "@material-ui/core": "^4.9.13",
+    "@material-ui/icons": "^4.9.1",
+    "@material-ui/lab": "^4.0.0-alpha.61",
+    "@mui/icons-material": "5.16.14",
+    "@mui/material": "5.16.14",
+    "@patternfly/patternfly": "^6.0.0",
+    "@patternfly/react-core": "^6.0.0",
+    "@patternfly/react-tokens": "^6.0.0",
+    "@tanstack/react-query": "^5.62.7",
+    "lodash": "^4.17.21"
+  },
+  "peerDependencies": {
+    "react": "^17.0.0 || ^18.0.0",
+    "react-dom": "^17.0.0 || ^18.0.0",
+    "react-router-dom": "^6.0.0"
+  },
+  "devDependencies": {
+    "@backstage/cli": "^0.30.0",
+    "@backstage/core-app-api": "^1.15.5",
+    "@backstage/dev-utils": "^1.1.7",
+    "@backstage/test-utils": "^1.7.5",
+    "@redhat-developer/red-hat-developer-hub-theme": "^0.4.0",
+    "@testing-library/jest-dom": "^6.0.0",
+    "@testing-library/react": "^14.0.0",
+    "@testing-library/user-event": "^14.0.0",
+    "@types/lodash": "^4.17.13",
+    "msw": "^1.0.0",
+    "react": "^17.0.0 || ^18.0.0"
+  },
+  "files": [
+    "dist"
+  ]
+}

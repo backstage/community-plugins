@@ -30,6 +30,7 @@ spec:
         token:
           title: Token
           type: string
+          ui:field: Secret
           description: Bearer token to authenticate with
         skipTLSVerify:
           title: Skip TLS verification
@@ -38,6 +39,7 @@ spec:
         caData:
           title: CA data
           type: string
+          ui:field: Secret
           description: Certificate Authority base64 encoded certificate
         labels:
           title: Labels
@@ -57,7 +59,7 @@ spec:
         namespace: ${{ parameters.namespace }}
         clusterRef: ${{ parameters.clusterRef }}
         url: ${{ parameters.url }}
-        token: ${{ parameters.token }}
+        token: ${{ secrets.token }}
         skipTLSVerify: ${{ parameters.skipTLSVerify }}
-        caData: ${{ parameters.caData }}
+        caData: ${{ secrets.caData }}
         labels: ${{ parameters.labels }}

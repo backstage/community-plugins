@@ -1,5 +1,11 @@
 # @backstage-community/plugin-azure-devops-backend
 
+## 0.13.0
+
+### Minor Changes
+
+- 32ab469: Add the ability to fetch and see a build's log
+
 ## 0.12.0
 
 ### Minor Changes

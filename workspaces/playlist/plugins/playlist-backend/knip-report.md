@@ -2,10 +2,10 @@
 
 ## Unused dependencies (2)
 
-| Name                                        | Location     | Severity |
-| :------------------------------------------ | :----------- | :------- |
-| @backstage-community/plugin-playlist-common | package.json | error    |
-| node-fetch                                  | package.json | error    |
+| Name       | Location     | Severity |
+| :--------- | :----------- | :------- |
+| node-fetch | package.json | error    |
+| yn         | package.json | error    |
 
 ## Unused devDependencies (1)
 

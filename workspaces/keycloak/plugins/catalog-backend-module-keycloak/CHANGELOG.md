@@ -1,5 +1,25 @@
 ### Dependencies
 
+## 3.8.0
+
+### Minor Changes
+
+- 9ab7992: Backstage version bump to v1.36.1
+
+### Patch Changes
+
+- 3199ac1: Updated dependency `@types/lodash` to `4.17.16`.
+
+## 3.7.0
+
+### Minor Changes
+
+- f32a370: Extend support to Keycloak v26 and RHBK v26
+
+### Patch Changes
+
+- 61697c6: Updated dependency `@keycloak/keycloak-admin-client` to `26.1.2`.
+
 ## 3.6.0
 
 ### Minor Changes

@@ -20,10 +20,10 @@ import {
 } from '@backstage/backend-plugin-api';
 import { createRouter } from './service/router';
 
-/**
- * The Bazaar backend plugin.
+/*
+ * @deprecated
  *
- * @alpha
+ * The plugin now supports the new backend system by default. You can now remove the `/alpha` suffix from the import path.
  */
 export default createBackendPlugin({
   pluginId: 'bazaar',

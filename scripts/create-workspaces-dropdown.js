@@ -38,6 +38,7 @@ id: workspace
 attributes:
   label: Workspace
   options:
+    - "Select a workspace..."
 ${workspaces.map(w => `    - ${w}`).join('\n')}
   default: 0
 validations:

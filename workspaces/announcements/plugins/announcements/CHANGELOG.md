@@ -1,5 +1,26 @@
 # @backstage-community/plugin-announcements
 
+## 0.5.5
+
+### Patch Changes
+
+- 3d819b6: Replaced HTML elements with MUI components in `AnnouncementsCard` and `AnnouncementsPage` for uniform styling.
+
+## 0.5.4
+
+### Patch Changes
+
+- fe62f42: Improved relative date display for scheduled announcements. When the Start At date is set for the current day, it now shows "Scheduled Today" instead of "Occurred X hours ago"
+- Updated dependencies [fe62f42]
+  - @backstage-community/plugin-announcements-react@0.4.1
+
+## 0.5.3
+
+### Patch Changes
+
+- 3b99ef7: - Fixed Active field column in announcements admin table, which was preventing proper sorting by `active` state.
+  - Enhanced readability of the Active status in the admin announcements table using `Status` components.
+
 ## 0.5.2
 
 ### Patch Changes

@@ -58,6 +58,7 @@ import {
   useAnnouncementsTranslation,
 } from '@backstage-community/plugin-announcements-react';
 import {
+  Box,
   Card,
   CardContent,
   CardHeader,
@@ -70,6 +71,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import { Alert, Pagination } from '@material-ui/lab';
+import { formatAnnouncementStartTime } from '../utils/announcementDateUtils';
 
 const useStyles = makeStyles(theme => {
   return {
@@ -149,14 +151,16 @@ const AnnouncementCard = ({
         )}
         , {DateTime.fromISO(announcement.created_at).toRelative()}
       </Typography>
-      <Typography variant="body2" color="textSecondary">
-        <small>
-          {DateTime.fromISO(announcement.start_at) < DateTime.now()
-            ? `${t('announcementsPage.card.occurred')} `
-            : `${t('announcementsPage.card.scheduled')} `}
-          {DateTime.fromISO(announcement.start_at).toRelative()}
-        </small>
-      </Typography>
+      <Box>
+        <Typography variant="caption" color="textSecondary">
+          {formatAnnouncementStartTime(
+            announcement.start_at,
+            t('announcementsCard.occurred'),
+            t('announcementsCard.scheduled'),
+            t('announcementsCard.today'),
+          )}
+        </Typography>
+      </Box>
     </>
   );
   const { loading: loadingDeletePermission, allowed: canDelete } =

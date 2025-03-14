@@ -17,7 +17,7 @@
 import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import MuiPickersUtilsProvider from '@material-ui/pickers/MuiPickersUtilsProvider';
-import KeyboardDatePicker from '@material-ui/pickers/KeyboardDatePicker';
+import { KeyboardDatePicker } from '@material-ui/pickers/DatePicker';
 import Button from '@material-ui/core/Button';
 import LuxonUtils from '@date-io/luxon';
 import FormControl from '@material-ui/core/FormControl';

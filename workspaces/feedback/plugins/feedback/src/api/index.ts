@@ -50,11 +50,37 @@ type feedbacksResp = {
 export class FeedbackAPI {
   private readonly discoveryApi: DiscoveryApi;
   private readonly fetchApi: FetchApi;
+  private readonly configApi: ConfigApi;
 
   constructor(options: Options) {
     this.discoveryApi = options.discoveryApi;
     this.fetchApi = options.fetchApi;
+    this.configApi = options.configApi;
   }
+
+  private readonly defaultErrorList = [
+    'Slow Loading',
+    'Not Responsive',
+    'Navigation',
+    'UI Issues',
+    'Other',
+  ];
+  private readonly defaultExperienceList = [
+    'Excellent',
+    'Good',
+    'Needs Improvement',
+    'Other',
+  ];
+
+  getErrorList = () =>
+    this.configApi.getOptionalStringArray(
+      'feedback.customizations.errorList',
+    ) ?? this.defaultErrorList;
+
+  getExperienceList = () =>
+    this.configApi.getOptionalStringArray(
+      'feedback.customizations.experienceList',
+    ) ?? this.defaultExperienceList;
 
   async getAllFeedbacks(
     page: number,
