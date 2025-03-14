@@ -26,5 +26,13 @@ export interface Config {
      * @visibility frontend
      */
     uiUrl?: string;
+    /**
+     * The API URl for a quay instance.
+     * This is set for the quay-backend plugin.
+     * If this is set, we use the quay-backend plugin.
+     * If not, we default to using the proxy config.
+     * @visibility frontend
+     */
+    apiUrl?: string;
   };
 }

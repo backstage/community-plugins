@@ -112,7 +112,11 @@ export const usePermissionPolicies = (
         ? getPluginsPermissionPoliciesData(allPermissionPolicies)
         : undefined;
     return pluginsPermissionsPoliciesData
-      ? getConditionalPermissionsData(cpp, pluginsPermissionsPoliciesData)
+      ? getConditionalPermissionsData(
+          cpp,
+          pluginsPermissionsPoliciesData,
+          allPermissionPolicies,
+        )
       : [];
   }, [allPermissionPolicies, conditionalPolicies]);
 

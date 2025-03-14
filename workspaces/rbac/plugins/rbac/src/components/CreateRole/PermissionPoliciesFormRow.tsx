@@ -15,231 +15,183 @@
  */
 import React from 'react';
 
-import ChecklistRtlIcon from '@mui/icons-material/ChecklistRtl';
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-import RemoveIcon from '@mui/icons-material/Remove';
-import Autocomplete from '@mui/material/Autocomplete';
-import FormLabel from '@mui/material/FormLabel';
 import IconButton from '@mui/material/IconButton';
-import TextField from '@mui/material/TextField';
-import Tooltip from '@mui/material/Tooltip';
-import Typography from '@mui/material/Typography';
-import { FormikErrors } from 'formik';
-
 import { PermissionsData } from '../../types';
 import { getRulesNumber } from '../../utils/create-role-utils';
-import { ConditionalAccessSidebar } from '../ConditionalAccess/ConditionalAccessSidebar';
-import { ConditionRules, ConditionsData } from '../ConditionalAccess/types';
-import { PoliciesCheckboxGroup } from './PoliciesCheckboxGroup';
-import { PluginsPermissionPoliciesData } from './types';
+import { ConditionRulesData, ConditionsData } from '../ConditionalAccess/types';
+import TableRow from '@mui/material/TableRow';
+import TableCell from '@mui/material/TableCell';
+import Collapse from '@mui/material/Collapse';
+import Box from '@mui/material/Box';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import DeleteIcon from '@mui/icons-material/Delete';
+import ArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import ArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import PermissionPoliciesFormNestedRow from './PermissionPoliciesFormNestedRow';
+import Link from '@mui/material/Link';
 
 type PermissionPoliciesFormRowProps = {
-  permissionPoliciesRowData: PermissionsData;
-  permissionPoliciesData?: PluginsPermissionPoliciesData;
-  permissionPoliciesRowError: FormikErrors<PermissionsData>;
-  rowCount: number;
-  rowName: string;
-  conditionRules: ConditionRules;
-  onRemove: () => void;
-  onChangePlugin: (plugin: string) => void;
-  onChangePermission: (
+  rowData: any;
+  conditionRulesData?: ConditionRulesData;
+  permissionPoliciesRows: PermissionsData[];
+  open: boolean;
+  onSelectPermission: (
+    plugin: string,
     permission: string,
     isResourced: boolean,
-    policies?: string[],
+    policies: string[],
+    resourceType?: string,
   ) => void;
-  onChangePolicy: (isChecked: boolean, policyIndex: number) => void;
-  handleBlur: React.FocusEventHandler<HTMLInputElement | HTMLTextAreaElement>;
-  getPermissionDisabled: (permission: string) => boolean;
-  onAddConditions: (conditions?: ConditionsData) => void;
+  onSelectPolicy: (
+    isChecked: boolean,
+    policyIndex: number,
+    pIndex: number,
+  ) => void;
+  onRemovePermission: (index: number) => void;
+  onRemovePlugin: (plugin: string) => void;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  onAddConditions: (index: number, conditions?: ConditionsData) => void;
 };
 
-export const PermissionPoliciesFormRow = ({
-  permissionPoliciesRowData,
-  permissionPoliciesData,
-  permissionPoliciesRowError,
-  rowCount,
-  rowName,
-  conditionRules,
-  onRemove,
-  onChangePermission,
-  onChangePolicy,
-  onChangePlugin,
-  handleBlur,
-  getPermissionDisabled,
+const PermissionPoliciesFormRow = ({
+  rowData,
+  permissionPoliciesRows,
+  conditionRulesData,
+  open,
+  onSelectPermission,
+  onSelectPolicy,
+  onRemovePermission,
+  onRemovePlugin,
   onAddConditions,
 }: PermissionPoliciesFormRowProps) => {
-  const { plugin: pluginError, permission: permissionError } =
-    permissionPoliciesRowError;
-  const { data: conditionRulesData, error: conditionRulesError } =
-    conditionRules;
-  const totalRules = getRulesNumber(permissionPoliciesRowData.conditions);
+  const [currentOpen, setCurrentOpen] = React.useState<boolean>(false);
 
-  const [sidebarOpen, setSidebarOpen] = React.useState<boolean>(false);
+  React.useEffect(() => {
+    setCurrentOpen(open);
+  }, [open]);
 
-  const tooltipTitle = () => (
-    <div>
-      <Typography component="p" align="center">
-        Define access conditions for the selected resource type using Rules.
-        Rules vary by resource type.{' '}
-        <b>Users have access to the resource type content by default</b> unless
-        configured otherwise.
-      </Typography>
-    </div>
-  );
+  const getTotalRules = (conditions?: ConditionsData): number => {
+    const totalRules = getRulesNumber(conditions);
+    return totalRules;
+  };
 
-  const getTotalRules = (): string => {
-    let accessMessage = 'Configure access';
+  const getPprIndex = (plugin: string, permission: string) => {
+    return permissionPoliciesRows.findIndex(ppr => {
+      return ppr.plugin === plugin && ppr.permission === permission;
+    });
+  };
 
-    if (totalRules > 0) {
-      accessMessage += ` (${totalRules} ${totalRules > 1 ? 'rules' : 'rule'})`;
+  const getPolicies = (plugin: string, pp: any) => {
+    const pprIndex = getPprIndex(plugin, pp.permission);
+    return (
+      permissionPoliciesRows?.[pprIndex]?.policies ||
+      pp.actions.map((ac: string) => ({ policy: ac, effect: 'deny' }))
+    );
+  };
+
+  const getPermissionCellLabel = (plugin: string) => {
+    if (permissionPoliciesRows.find(ppr => ppr.plugin === plugin)) {
+      return 'Edit...';
     }
-    return accessMessage;
+
+    return 'Select...';
   };
 
   return (
-    <div>
-      <div style={{ display: 'flex', flexFlow: 'column', gap: '15px' }}>
-        <FormLabel
-          style={{
-            fontWeight: 800,
-            fontSize: '0.8rem',
-          }}
-        >
-          What can users/groups access?
-        </FormLabel>
-        <div
-          style={{
+    <>
+      <TableRow>
+        <TableCell
+          align="left"
+          sx={{
+            borderBottom: 'none',
             display: 'flex',
-            gap: '20px',
-            marginBottom: '15px',
+            alignItems: 'center',
+            fontWeight: theme => theme.typography.fontWeightMedium,
           }}
         >
-          <Autocomplete
-            options={permissionPoliciesData?.plugins ?? []}
-            style={{ width: '35%', flexGrow: '1' }}
-            value={permissionPoliciesRowData.plugin || null}
-            onChange={(_e, value) => {
-              onChangePlugin(value ?? '');
-            }}
-            renderInput={(params: any) => (
-              <TextField
-                {...params}
-                label="Plugin"
-                name={`${rowName}.plugin`}
-                variant="outlined"
-                placeholder="Select a plugin"
-                error={!!pluginError}
-                helperText={pluginError ?? ''}
-                onBlur={handleBlur}
-                required
-              />
-            )}
-          />
-          <Autocomplete
-            disabled={!permissionPoliciesRowData.plugin}
-            options={
-              permissionPoliciesData?.pluginsPermissions?.[
-                permissionPoliciesRowData.plugin
-              ]?.permissions ?? []
-            }
-            style={{ width: '35%', flexGrow: '1' }}
-            value={permissionPoliciesRowData.permission || null}
-            onChange={(_e, value) =>
-              onChangePermission(
-                value ?? '',
-                permissionPoliciesData?.pluginsPermissions?.[
-                  permissionPoliciesRowData.plugin
-                ]?.policies[value ?? '']?.isResourced ?? false,
-                value
-                  ? permissionPoliciesData?.pluginsPermissions?.[
-                      permissionPoliciesRowData.plugin
-                    ]?.policies?.[value].policies
-                  : undefined,
-              )
-            }
-            getOptionDisabled={getPermissionDisabled}
-            getOptionLabel={option => option || ''}
-            renderInput={(params: any) => (
-              <TextField
-                {...params}
-                label="Resource type"
-                name={`${rowName}.permission`}
-                variant="outlined"
-                placeholder="Select a resource type"
-                error={!!permissionError}
-                helperText={permissionError ?? ''}
-                onBlur={handleBlur}
-                required
-              />
-            )}
-          />
-          <div style={{ width: '23%', alignSelf: 'center', flexGrow: 1 }}>
-            {permissionPoliciesRowData.isResourced &&
-              !!conditionRulesData?.[`${permissionPoliciesRowData.plugin}`]?.[
-                `${permissionPoliciesRowData.permission}`
-              ]?.rules.length && (
-                <IconButton
-                  title=""
-                  color="primary"
-                  hidden={
-                    !permissionPoliciesData?.pluginsPermissions[
-                      permissionPoliciesRowData.plugin
-                    ]?.policies[permissionPoliciesRowData.permission]
-                      ?.isResourced
-                  }
-                  aria-label="configure-access"
-                  sx={{
-                    fontSize: theme => theme.typography.fontSize,
-                  }}
-                  onClick={() => setSidebarOpen(true)}
-                  disabled={!!conditionRulesError}
-                >
-                  <ChecklistRtlIcon fontSize="small" />
-                  {getTotalRules()}
-                  &nbsp;
-                  <Tooltip title={tooltipTitle()} placement="top">
-                    <HelpOutlineIcon fontSize="inherit" />
-                  </Tooltip>
-                </IconButton>
-              )}
-          </div>
           <IconButton
-            title="Remove"
-            sx={{
-              color: theme => theme.palette.grey[500],
-              flexGrow: 0,
-              alignSelf: 'center',
-            }}
-            onClick={() => onRemove()}
-            disabled={rowCount === 1}
-            data-testid={`${rowName}-remove`}
+            aria-label="expand-row"
+            size="small"
+            onClick={() => setCurrentOpen(!currentOpen)}
+            data-testid={`expand-row-${rowData.plugin}`}
           >
-            <RemoveIcon id={`${rowName}-remove`} />
+            {currentOpen ? <ArrowDownIcon /> : <ArrowRightIcon />}
           </IconButton>
-        </div>
-      </div>
-      <PoliciesCheckboxGroup
-        permissionPoliciesRowData={permissionPoliciesRowData}
-        onChangePolicy={onChangePolicy}
-        rowName={rowName}
-      />
-      <ConditionalAccessSidebar
-        open={sidebarOpen}
-        onClose={() => {
-          setSidebarOpen(false);
-        }}
-        onSave={(conditions?: ConditionsData) => {
-          onAddConditions(conditions);
-          setSidebarOpen(false);
-        }}
-        conditionsFormVal={permissionPoliciesRowData.conditions}
-        selPluginResourceType={permissionPoliciesRowData.permission}
-        conditionRulesData={
-          conditionRulesData?.[`${permissionPoliciesRowData.plugin}`]?.[
-            `${permissionPoliciesRowData.permission}`
-          ]
-        }
-      />
-    </div>
+          {rowData.name}
+        </TableCell>
+        <TableCell align="left" sx={{ borderBottom: 'none' }}>
+          <Link
+            sx={{
+              cursor: 'pointer',
+              textDecoration: 'none',
+              color: theme => theme.palette.primary.main,
+            }}
+            onClick={() => setCurrentOpen(true)}
+          >
+            {getPermissionCellLabel(rowData.plugin)}
+          </Link>
+        </TableCell>
+        <TableCell align="right" sx={{ borderBottom: 'none' }}>
+          <IconButton
+            aria-label="remove"
+            size="small"
+            onClick={() => onRemovePlugin(rowData.plugin)}
+          >
+            <DeleteIcon />
+          </IconButton>
+        </TableCell>
+      </TableRow>
+      <TableRow>
+        <TableCell
+          sx={{ p: 0 }}
+          colSpan={6}
+          data-testid={`nested-row-${rowData.plugin}`}
+        >
+          <Collapse in={currentOpen} timeout="auto" unmountOnExit>
+            <Box>
+              <Table size="small" aria-label="permission-policies">
+                <TableBody>
+                  {rowData.permissionPolicies.map((pp: any) => (
+                    <PermissionPoliciesFormNestedRow
+                      key={pp.permission}
+                      plugin={rowData.plugin}
+                      permissionPolicy={pp}
+                      permissionPolicyRowIndex={getPprIndex(
+                        rowData.plugin,
+                        pp.permission,
+                      )}
+                      policies={getPolicies(rowData.plugin, pp)}
+                      conditionRulesLength={
+                        conditionRulesData?.[`${rowData.plugin}`]?.[
+                          `${pp.resourceType}`
+                        ]?.rules.length
+                      }
+                      totalRulesCount={getTotalRules(
+                        permissionPoliciesRows[
+                          getPprIndex(rowData.plugin, pp.permission)
+                        ]?.conditions,
+                      )}
+                      conditionsData={
+                        permissionPoliciesRows[
+                          getPprIndex(rowData.plugin, pp.permission)
+                        ]?.conditions
+                      }
+                      conditionRulesData={conditionRulesData}
+                      onSelectPermission={onSelectPermission}
+                      onSelectPolicy={onSelectPolicy}
+                      onRemovePermission={onRemovePermission}
+                      onAddConditions={onAddConditions}
+                    />
+                  ))}
+                </TableBody>
+              </Table>
+            </Box>
+          </Collapse>
+        </TableCell>
+      </TableRow>
+    </>
   );
 };
+
+export default PermissionPoliciesFormRow;

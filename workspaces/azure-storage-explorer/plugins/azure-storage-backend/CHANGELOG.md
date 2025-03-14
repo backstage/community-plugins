@@ -1,5 +1,11 @@
 # @backstage-community/plugin-azure-storage-explorer-backend
 
+## 0.2.0
+
+### Minor Changes
+
+- 52dcb41: Backstage version bump to v1.35.1
+
 ## 0.1.1
 
 ### Patch Changes

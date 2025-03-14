@@ -77,6 +77,7 @@ describe('AnnouncementsTimeline', () => {
           publisher: 'Publisher 1',
           created_at: '2022-01-01',
           active: true,
+          start_at: '2025-01-01',
         },
         {
           id: '2',
@@ -86,6 +87,7 @@ describe('AnnouncementsTimeline', () => {
           publisher: 'Publisher 2',
           created_at: '2022-01-02',
           active: true,
+          start_at: '2022-01-02',
         },
       ],
     };

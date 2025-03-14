@@ -1,7 +1,9 @@
 # Knip report
 
-## Unused dependencies (1)
+## Unused dependencies (3)
 
-| Name | Location     | Severity |
-| :--- | :----------- | :------- |
-| cors | package.json | error    |
+| Name    | Location     | Severity |
+| :------ | :----------- | :------- |
+| winston | package.json | error    |
+| cors    | package.json | error    |
+| yn      | package.json | error    |

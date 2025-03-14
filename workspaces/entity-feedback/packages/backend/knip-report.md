@@ -1,8 +1,7 @@
 # Knip report
 
-## Unused dependencies (2)
+## Unused dependencies (1)
 
-| Name                                                | Location     | Severity |
-| :-------------------------------------------------- | :----------- | :------- |
-| @backstage-community/plugin-entity-feedback-backend | package.json | error    |
-| @backstage/backend-plugin-api                       | package.json | error    |
+| Name                          | Location     | Severity |
+| :---------------------------- | :----------- | :------- |
+| @backstage/backend-plugin-api | package.json | error    |

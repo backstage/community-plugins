@@ -1,5 +1,17 @@
 # @backstage-community/plugin-mend
 
+## 0.2.1
+
+### Patch Changes
+
+- 6347c27: Fix linter issues
+
+## 0.2.0
+
+### Minor Changes
+
+- 0d01419: Backstage version bump to v1.35.1
+
 ## 0.1.2
 
 ### Patch Changes

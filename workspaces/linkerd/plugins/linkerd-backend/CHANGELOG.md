@@ -1,5 +1,23 @@
 # @backstage-community/plugin-linkerd-backend
 
+## 0.6.0
+
+### Minor Changes
+
+- 540a375: Backstage version bump to v1.36.1
+
+## 0.5.1
+
+### Patch Changes
+
+- 5d2de92: Updated dependency `parse-duration` to `^2.0.0`.
+
+## 0.5.0
+
+### Minor Changes
+
+- c7c7bd0: Backstage version bump to v1.35.1
+
 ## 0.4.0
 
 ### Minor Changes

@@ -1,5 +1,18 @@
 # @backstage-community/plugin-quay-common
 
+## 1.6.0
+
+### Minor Changes
+
+- e541edd: Adds a new quay-backend plugin and updates the frontend quay plugin to use this new backend.
+- e541edd: Add a quay-backend plugin to query the quay.io API
+
+## 1.5.0
+
+### Minor Changes
+
+- 7226329: Backstage version bump to v1.35.0
+
 ## 1.4.0
 
 ### Minor Changes

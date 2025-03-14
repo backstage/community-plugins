@@ -1,7 +1,7 @@
 # Kafka Backend
 
-This is the backend part of the Kafka plugin. It responds to Kafka requests
-from the frontend.
+This is the backend part of the Kafka plugin. It responds to Kafka requests from
+the frontend.
 
 ## Configuration
 
@@ -18,8 +18,8 @@ A list of the brokers' host names and ports to connect to.
 ### `ssl` (optional)
 
 Configure TLS connection to the Kafka cluster. The options are passed directly
-to [tls.connect] and used to create the TLS secure context. Normally these
-would include `key` and `cert`.
+to [tls.connect](https://kafka.js.org/docs/configuration#ssl) and used to create
+the TLS secure context. Normally these would include `key` and `cert`.
 
 Example:
 
@@ -52,4 +52,5 @@ kafka:
 
 ### ACLs
 
-If you are using ACLs on Kafka, you will need to have the `DESCRIBE` ACL on both consumer groups and topics.
+If you are using ACLs on Kafka, you will need to have the `DESCRIBE` ACL on both
+consumer groups and topics.

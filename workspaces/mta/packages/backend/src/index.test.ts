@@ -1,8 +1,6 @@
-import { PluginEnvironment } from './types';
-
 describe('test', () => {
   it('unbreaks the test runner', () => {
-    const unbreaker = {} as PluginEnvironment;
+    const unbreaker = {} as any;
     expect(unbreaker).toBeTruthy();
   });
 });

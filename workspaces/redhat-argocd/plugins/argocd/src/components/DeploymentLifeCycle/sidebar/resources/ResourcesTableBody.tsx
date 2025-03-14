@@ -15,7 +15,7 @@
  */
 import React from 'react';
 import { ResourcesTableRow } from './ResourcesTableRow';
-import { Resource } from '../../../../types/application';
+import { Resource } from '@backstage-community/plugin-redhat-argocd-common';
 
 interface ResourcesTableBodyProps {
   rows: Resource[];

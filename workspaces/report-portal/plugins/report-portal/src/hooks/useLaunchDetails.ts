@@ -17,7 +17,8 @@ import { useEffect, useState } from 'react';
 
 import { useApi } from '@backstage/core-plugin-api';
 
-import { LaunchDetails, reportPortalApiRef } from '../api';
+import { reportPortalApiRef } from '../api';
+import { LaunchDetails } from '@backstage-community/plugin-report-portal-common';
 
 export function useLaunchDetails(
   projectId: string,

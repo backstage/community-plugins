@@ -40,7 +40,6 @@ import type { RoleMetadata } from '@backstage-community/plugin-rbac-common';
 
 import { resolve } from 'path';
 
-import { auditLogger } from '../../__fixtures__/test-utils';
 import { ADMIN_ROLE_NAME } from '../admin-permissions/admin-creation';
 import { CasbinDBAdapterFactory } from '../database/casbin-adapter-factory';
 import { ConditionalStorage } from '../database/conditional-storage';
@@ -53,6 +52,7 @@ import { EnforcerDelegate } from '../service/enforcer-delegate';
 import { MODEL } from '../service/permission-model';
 import { PluginPermissionMetadataCollector } from '../service/plugin-endpoints';
 import { RBACPermissionPolicy } from './permission-policy';
+import { auditLoggerMock } from '../../__fixtures__/mock-utils';
 
 type PermissionAction = 'create' | 'read' | 'update' | 'delete';
 
@@ -109,8 +109,6 @@ const csvPermFile = resolve(
 const mockClientKnex = Knex.knex({ client: MockClient });
 
 const mockAuthService = mockServices.auth();
-
-const auditLoggerMock = auditLogger();
 
 const pluginMetadataCollectorMock: Partial<PluginPermissionMetadataCollector> =
   {
@@ -242,26 +240,6 @@ describe('RBACPermissionPolicy Tests', () => {
         AuthorizeResult.ALLOW,
       );
     });
-
-    // case2 with role
-    it('should allow update access to resource permission for role from csv file', async () => {
-      const decision = await policy.handle(
-        newPolicyQueryWithResourcePermission(
-          'catalog.entity.read',
-          'catalog-entity',
-          'update',
-        ),
-        newPolicyQueryUser('role:default/catalog-writer'),
-      );
-      expect(decision.result).toBe(AuthorizeResult.ALLOW);
-      verifyAuditLogForResourcedPermission(
-        'role:default/catalog-writer',
-        'catalog.entity.read',
-        'update',
-        'catalog-entity',
-        AuthorizeResult.ALLOW,
-      );
-    });
   });
 
   describe('Policy checks for clean up old policies for csv file', () => {
@@ -326,6 +304,24 @@ describe('RBACPermissionPolicy Tests', () => {
           };
           return [roleMetadataDao];
         });
+
+      roleMetadataStorageMock.findRoleMetadata = jest
+        .fn()
+        .mockImplementation(
+          async (
+            roleEntityRef: string,
+            _trx: Knex.Knex.Transaction,
+          ): Promise<RoleMetadata> => {
+            if (roleEntityRef.includes('rbac_admin')) {
+              return { source: 'configuration' };
+            }
+            if (roleEntityRef.includes('some-role')) {
+              return { source: 'rest' };
+            }
+            return { source: 'csv-file' };
+          },
+        );
+
       const storedGroupPolicies = [
         // should be removed
         ['user:default/user-old-1', 'role:default/old-role'],

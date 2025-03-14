@@ -16,7 +16,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { parseEntityRef } from '@backstage/catalog-model';
 import { SimpleStepper, SimpleStepperStep } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 
@@ -46,6 +45,7 @@ import {
   createConditions,
   createPermissions,
   modifyConditions,
+  navigateTo,
   removeConditions,
   removePermissions,
 } from '../../utils/role-form-utils';
@@ -55,6 +55,7 @@ import { PermissionPoliciesForm } from './PermissionPoliciesForm';
 import { ReviewStep } from './ReviewStep';
 import { RoleDetailsForm } from './RoleDetailsForm';
 import { RoleFormValues } from './types';
+import CancelDialog from './CancelDialog';
 
 type RoleFormProps = {
   membersData: { members: MemberEntity[]; loading: boolean; error: Error };
@@ -79,26 +80,10 @@ export const RoleForm = ({
   initialValues,
 }: RoleFormProps) => {
   const [activeStep, setActiveStep] = React.useState<number>(step || 0);
+  const [openCancelDialog, setOpenCancelDialog] =
+    React.useState<boolean>(false);
   const navigate = useNavigate();
   const rbacApi = useApi(rbacApiRef);
-
-  const navigateTo = (rName?: string, action?: string) => {
-    const currentRoleName = rName || roleName;
-    const stateProp =
-      currentRoleName && action
-        ? {
-            state: {
-              toastMessage: `Role ${currentRoleName} ${action} successfully`,
-            },
-          }
-        : undefined;
-    if (step && currentRoleName) {
-      const { kind, namespace, name } = parseEntityRef(currentRoleName);
-      navigate(`../roles/${kind}/${namespace}/${name}`, stateProp);
-    } else {
-      navigate('..', stateProp);
-    }
-  };
 
   const updateRole = async (
     name: string,
@@ -145,7 +130,7 @@ export const RoleForm = ({
         await modifyConditions(updateConditions, rbacApi);
         await createConditions(newConditions, rbacApi);
 
-        navigateTo(newName, 'updated');
+        navigateTo(navigate, roleName, newName, 'updated', step);
       }
     } catch (e) {
       formikHelpers.setStatus({ submitError: e });
@@ -181,7 +166,7 @@ export const RoleForm = ({
         'Role created successfully but unable to add conditions to the role.',
       );
 
-      navigateTo(newData.name, 'created');
+      navigateTo(navigate, roleName, newData.name, 'created', step);
     } catch (e) {
       formikHelpers.setStatus({ submitError: e });
     }
@@ -235,22 +220,26 @@ export const RoleForm = ({
   };
 
   const canNextPermissionPoliciesStep = () => {
+    const selectedPluginsLength = formik.values.selectedPlugins.filter(
+      sp => !!sp.value,
+    ).length;
     return (
-      formik.values.permissionPoliciesRows.filter(pp => !!pp.plugin).length ===
-        formik.values.permissionPoliciesRows.length &&
+      selectedPluginsLength > 0 &&
+      formik.values.permissionPoliciesRows.filter(pp =>
+        formik.values.selectedPlugins.find(sp => sp.value === pp.plugin),
+      ).length >= selectedPluginsLength &&
+      !formik.errors.selectedPlugins &&
       (!formik.errors.permissionPoliciesRows ||
-        (
-          formik.errors.permissionPoliciesRows as unknown as FormikErrors<
-            PermissionsData[]
-          >[]
-        )?.filter(err => !!err)?.length === 0)
+        (Array.isArray(formik.errors.permissionPoliciesRows) &&
+          (
+            formik.errors.permissionPoliciesRows as unknown as FormikErrors<
+              PermissionsData[]
+            >[]
+          )?.filter(err => !!err)?.length === 0))
     );
   };
 
   const handleBack = () => setActiveStep(Math.max(activeStep - 1, 0));
-  const handleCancel = () => {
-    navigateTo();
-  };
 
   const handleReset = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     setActiveStep(0);
@@ -327,9 +316,9 @@ export const RoleForm = ({
           >
             <PermissionPoliciesForm
               permissionPoliciesRows={formik.values.permissionPoliciesRows}
-              permissionPoliciesRowsError={
-                formik.errors
-                  .permissionPoliciesRows as FormikErrors<PermissionsData>[]
+              selectedPlugins={formik.values.selectedPlugins}
+              selectedPluginsError={
+                formik.errors.selectedPlugins as FormikErrors<string>
               }
               setFieldValue={formik.setFieldValue}
               setFieldError={formik.setFieldError}
@@ -364,12 +353,20 @@ export const RoleForm = ({
         )}
         <Button
           style={{ position: 'absolute', right: '2.75rem', bottom: '2.75rem' }}
-          onClick={handleCancel}
+          onClick={() => setOpenCancelDialog(true)}
           color="primary"
         >
           Cancel
         </Button>
       </CardContent>
+      <CancelDialog
+        open={openCancelDialog}
+        editForm={!!roleName}
+        closeDialog={() => setOpenCancelDialog(false)}
+        navigateTo={() =>
+          navigateTo(navigate, roleName, undefined, undefined, step)
+        }
+      />
     </Card>
   );
 };

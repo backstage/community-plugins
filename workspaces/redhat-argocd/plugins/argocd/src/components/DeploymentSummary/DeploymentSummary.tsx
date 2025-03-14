@@ -29,7 +29,7 @@ import {
   Application,
   HealthStatus,
   SyncStatuses,
-} from '../../types/application';
+} from '@backstage-community/plugin-redhat-argocd-common';
 import {
   getArgoCdAppConfig,
   getCommitUrl,
@@ -116,12 +116,14 @@ const DeploymentSummary = () => {
       render: (row: Application): React.ReactNode => {
         const historyList = row.status?.history ?? [];
         const latestRev = historyList[historyList.length - 1];
-        const repoUrl = row?.spec?.source?.repoURL;
+        const repoUrl =
+          row?.spec?.sources?.[0]?.repoURL ?? row?.spec?.source?.repoURL ?? '';
+
         const commitUrl = isAppHelmChartType(row)
           ? repoUrl
           : getCommitUrl(
               repoUrl,
-              latestRev?.revision,
+              latestRev?.revision ?? '',
               entity?.metadata?.annotations || {},
             );
         return (

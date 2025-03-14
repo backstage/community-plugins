@@ -29,6 +29,7 @@ import {
   announcementViewRouteRef,
   rootRouteRef,
 } from '../../routes';
+import { formatAnnouncementStartTime } from '../utils/announcementDateUtils';
 import {
   announcementsApiRef,
   useAnnouncements,
@@ -40,6 +41,8 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
+  Typography,
+  Box,
 } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import NewReleasesIcon from '@material-ui/icons/NewReleases';
@@ -56,6 +59,8 @@ type AnnouncementsCardOpts = {
   category?: string;
   active?: boolean;
   variant?: InfoCardVariants;
+  sortBy?: 'created_at' | 'start_at';
+  order?: 'asc' | 'desc';
 };
 
 export const AnnouncementsCard = ({
@@ -64,6 +69,8 @@ export const AnnouncementsCard = ({
   category,
   active,
   variant = 'gridItem',
+  sortBy,
+  order,
 }: AnnouncementsCardOpts) => {
   const classes = useStyles();
   const announcementsApi = useApi(announcementsApiRef);
@@ -77,6 +84,8 @@ export const AnnouncementsCard = ({
     max: max || 5,
     category,
     active,
+    sortBy,
+    order,
   });
 
   const { announcementCreatePermission } = announcementEntityPermissions;
@@ -104,24 +113,27 @@ export const AnnouncementsCard = ({
       <List dense>
         {announcements.results.map(announcement => (
           <ListItem key={announcement.id}>
-            <ListItem>
-              {lastSeen < DateTime.fromISO(announcement.created_at) && (
-                <ListItemIcon
-                  className={classes.newAnnouncementIcon}
-                  title={t('announcementsCard.new')}
-                >
-                  <NewReleasesIcon />
-                </ListItemIcon>
-              )}
-
-              <ListItemText
-                primary={
-                  <Link to={viewAnnouncementLink({ id: announcement.id })}>
-                    {announcement.title}
-                  </Link>
-                }
-                secondary={
-                  <>
+            <ListItemIcon
+              className={classes.newAnnouncementIcon}
+              style={{
+                visibility:
+                  lastSeen < DateTime.fromISO(announcement.created_at)
+                    ? 'visible'
+                    : 'hidden',
+              }}
+              title={t('announcementsCard.new')}
+            >
+              <NewReleasesIcon />
+            </ListItemIcon>
+            <ListItemText
+              primary={
+                <Link to={viewAnnouncementLink({ id: announcement.id })}>
+                  {announcement.title}
+                </Link>
+              }
+              secondary={
+                <Box>
+                  <Typography variant="body2" color="textSecondary">
                     {DateTime.fromISO(announcement.created_at).toRelative()}
                     {announcement.category && (
                       <>
@@ -134,12 +146,22 @@ export const AnnouncementsCard = ({
                           {announcement.category.title}
                         </Link>
                       </>
-                    )}{' '}
-                    – {announcement.excerpt}
-                  </>
-                }
-              />
-            </ListItem>
+                    )}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    {announcement.excerpt}
+                  </Typography>
+                  <Typography variant="caption" color="textSecondary">
+                    {formatAnnouncementStartTime(
+                      announcement.start_at,
+                      t('announcementsCard.occurred'),
+                      t('announcementsCard.scheduled'),
+                      t('announcementsCard.today'),
+                    )}
+                  </Typography>
+                </Box>
+              }
+            />{' '}
           </ListItem>
         ))}
         {announcements.count === 0 && !loadingPermission && canAdd && (

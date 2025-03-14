@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 import React from 'react';
-import { Application, RevisionInfo, History } from '../../types/application';
+import {
+  Application,
+  RevisionInfo,
+  History,
+} from '@backstage-community/plugin-redhat-argocd-common';
 import {
   Chip,
   Typography,
@@ -55,32 +59,49 @@ const AppCommitLink: React.FC<CommitLinkProps> = ({
 }) => {
   const classes = useCommitStyles();
 
-  const revisionInfo = revisionsMap?.[latestRevision?.revision];
-  const revisionMessage = revisionInfo?.message;
-  const revisionAuthor = revisionInfo?.author;
-  const authorInfo = showAuthor ? `by ${revisionAuthor}` : '';
+  // If we have a multi-source application,
+  // lets only use the first source to keep things simple for now.
+  const latestRevisionSha =
+    latestRevision?.revisions?.[0] ?? latestRevision?.revision ?? '';
 
-  const commitMessage = `${revisionMessage} ${authorInfo}`;
+  const revisionInfo = latestRevisionSha
+    ? revisionsMap?.[latestRevisionSha]
+    : undefined;
+
+  const repoUrl =
+    application?.spec?.sources?.[0]?.repoURL ??
+    application?.spec?.source?.repoURL ??
+    '';
+
+  const revisionMessage = revisionInfo?.message || '';
+  const revisionAuthor = revisionInfo?.author || '';
+  const authorInfo = showAuthor && revisionAuthor ? `by ${revisionAuthor}` : '';
+
+  const commitMessage = authorInfo
+    ? `${revisionMessage} ${authorInfo}`.trim()
+    : revisionMessage;
+
+  const handleClick = (e: React.MouseEvent) => {
+    if (!repoUrl) return;
+    e.stopPropagation();
+    const annotations = entity?.metadata?.annotations || {};
+    window.open(
+      getCommitUrl(repoUrl, latestRevisionSha, annotations),
+      '_blank',
+    );
+  };
+
   return revisionsMap && latestRevision ? (
     <div className={classes.commitContainer}>
       <Chip
-        data-testid={`${latestRevision?.revision?.slice(0, 5)}-commit-link`}
+        data-testid={`${latestRevisionSha.slice(0, 5)}-commit-link`}
         size="small"
         variant="outlined"
-        onClick={e => {
-          e.stopPropagation();
-          const repoUrl = application?.spec?.source?.repoURL ?? '';
-          const annotations = entity?.metadata?.annotations ?? {};
-          if (repoUrl.length) {
-            window.open(
-              getCommitUrl(repoUrl, latestRevision?.revision, annotations),
-              '_blank',
-            );
-          }
-        }}
+        onClick={handleClick}
         icon={<GitLabIcon />}
         color="primary"
-        label={latestRevision?.revision.slice(0, 7)}
+        label={latestRevisionSha.slice(0, 7)}
+        disabled={!repoUrl}
       />
       <Typography
         variant="body2"
@@ -89,10 +110,7 @@ const AppCommitLink: React.FC<CommitLinkProps> = ({
       >
         {!!revisionInfo ? (
           <Tooltip
-            data-testid={`${latestRevision?.revision?.slice(
-              0,
-              5,
-            )}-commit-message`}
+            data-testid={`${latestRevisionSha?.slice(0, 5)}-commit-message`}
             title={commitMessage}
           >
             <Typography>{commitMessage}</Typography>

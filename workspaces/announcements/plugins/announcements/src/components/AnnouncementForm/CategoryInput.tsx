@@ -34,6 +34,7 @@ type CategoryInputProps = {
       body: string;
       created_at: string;
       active: boolean;
+      start_at: string;
     }>,
   ) => void;
   form: {
@@ -45,6 +46,7 @@ type CategoryInputProps = {
     body: string;
     created_at: string;
     active: boolean;
+    start_at: string;
   };
   initialValue: string;
 };

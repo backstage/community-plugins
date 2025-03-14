@@ -19,7 +19,7 @@ import { useAsyncRetry, useInterval } from 'react-use';
 import { useApi } from '@backstage/core-plugin-api';
 
 import { argoCDApiRef } from '../api';
-import { Application } from '../types/application';
+import { Application } from '@backstage-community/plugin-redhat-argocd-common';
 
 interface AppOptions {
   instanceName: string;
@@ -55,9 +55,10 @@ export const useApplications = ({
         url: `/argoInstance/${instanceName}`,
         appSelector,
         projectName,
+        appNamespace,
       })
       .then(applications => setApps(applications?.items ?? []));
-  }, [api, appSelector, instanceName, projectName]);
+  }, [api, appSelector, instanceName, projectName, appNamespace]);
 
   const getApplication = React.useCallback(async () => {
     return await api

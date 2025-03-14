@@ -1,5 +1,16 @@
 # @backstage-community/search-backend-module-adr
 
+## 0.4.0
+
+### Minor Changes
+
+- d527ea3: Backstage version bump to v1.35.1
+
+### Patch Changes
+
+- Updated dependencies [d527ea3]
+  - @backstage-community/plugin-adr-common@0.4.0
+
 ## 0.3.2
 
 ### Patch Changes

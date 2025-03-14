@@ -32,7 +32,18 @@ export interface RouterOptions {
   httpAuth: HttpAuthService;
 }
 
-/** @public */
+/**
+ * @public
+ *
+ * @deprecated
+ * Migrate to the new backend system
+ *
+ * ```ts
+ * backend.add(import('@backstage-community/plugin-bazaar-backend'));
+ * ```
+ *
+ * createRouter will be removed in an upcoming release
+ */
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {

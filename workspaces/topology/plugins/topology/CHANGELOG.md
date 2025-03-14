@@ -1,5 +1,42 @@
 ### Dependencies
 
+## 1.33.0
+
+### Minor Changes
+
+- 075e059: Backstage version bump to v1.36.0
+
+### Patch Changes
+
+- 32135b8: Updated dependency `@testing-library/user-event` to `14.6.1`.
+- a8e2f2c: Updated dependency `@material-ui/lab` to `4.0.0-alpha.61`.
+  Updated dependency `@mui/icons-material` to `5.16.14`.
+  Updated dependency `@mui/material` to `5.16.14`.
+  Updated dependency `@mui/styles` to `5.16.14`.
+  Updated dependency `@mui/x-charts` to `6.19.8`.
+  Updated dependency `@mui/lab` to `5.0.0-alpha.175`.
+- Updated dependencies [075e059]
+  - @backstage-community/plugin-topology-common@1.7.0
+
+## 1.32.0
+
+### Minor Changes
+
+- a7730fc: Update shared react library @janus-idp/shared-react to version 2.16.0 with newer @kubernetes/client-node@1.0.0-rc7.
+
+## 1.31.0
+
+### Minor Changes
+
+- c6207a6: Backstage version bump to v1.35.0
+- 8ab6e45: upgraded @backstage-community/plugin-topology plugin to PatternFly 6
+
+### Patch Changes
+
+- 8ab6e45: Long annotations doesn't overflow the sidebar content for Pods anymore
+- Updated dependencies [c6207a6]
+  - @backstage-community/plugin-topology-common@1.6.0
+
 ## 1.30.0
 
 ### Minor Changes

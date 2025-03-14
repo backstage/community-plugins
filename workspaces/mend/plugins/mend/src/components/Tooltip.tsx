@@ -61,7 +61,7 @@ export const Tooltip = ({
 
   const [isEllipsis, setIsEllipsis] = React.useState(false);
 
-  const compare = () => {
+  const compare = React.useCallback(() => {
     const firstChild = node?.current?.children?.length
       ? Array.from(node?.current?.children)?.[0]
       : null;
@@ -74,7 +74,7 @@ export const Tooltip = ({
     }
 
     if (refChild) setIsEllipsis(refChild?.scrollWidth > refChild?.clientWidth);
-  };
+  }, []);
 
   useResize(compare);
 

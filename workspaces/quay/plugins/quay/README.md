@@ -14,6 +14,10 @@ The Quay plugin displays the information about your container images within the 
 
 ### Configuration
 
+By default you can use the Backstage proxy to make requests to your Quay instance.
+
+If you require more functionality like being able to set permissions, please see the [Quay backend plugin docs](../quay-backend/README.md) to configure that instead.
+
 1. Set the proxy to the desired Quay server in the `app-config.yaml` file as follows:
 
    ```yaml title="app-config.yaml"

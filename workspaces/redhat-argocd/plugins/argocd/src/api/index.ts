@@ -15,7 +15,10 @@
  */
 import { createApiRef, IdentityApi } from '@backstage/core-plugin-api';
 
-import { Application, RevisionInfo } from '../types/application';
+import {
+  Application,
+  RevisionInfo,
+} from '@backstage-community/plugin-redhat-argocd-common';
 
 export type ArgoCDAppDeployRevisionDetails = RevisionInfo;
 
@@ -31,6 +34,7 @@ export type RevisionDetailsOptions = {
   appNamespace?: string;
   revisionID: string;
   instanceName?: string;
+  sourceIndex?: number;
 };
 export type RevisionDetailsListOptions = {
   appNamespace?: string;
@@ -69,6 +73,10 @@ export type Options = {
 
 const APP_NAMESPACE_QUERY_PARAM = 'appNamespace';
 
+interface QueryParams {
+  [key: string]: string | number | undefined;
+}
+
 export class ArgoCDApiClient implements ArgoCDApi {
   private readonly backendBaseUrl: string;
   private readonly identityApi: IdentityApi;
@@ -84,17 +92,21 @@ export class ArgoCDApiClient implements ArgoCDApi {
     return `${this.backendBaseUrl}/api/argocd`;
   }
 
-  getQueryParams(params: { [p: string]: string | undefined }) {
-    const result = Object.keys(params)
-      .filter(key => params[key] !== undefined)
+  getQueryParams(params: QueryParams) {
+    const result = Object.entries(params)
+      // Remove undefined values
+      .filter(([_, value]) => value !== undefined)
+      // Handle namespace param based on config
       .filter(
-        key => key !== APP_NAMESPACE_QUERY_PARAM || this.useNamespacedApps,
+        ([key]) => this.useNamespacedApps || key !== APP_NAMESPACE_QUERY_PARAM,
       )
+      // Create encoded key-value pairs
       .map(
-        k =>
-          `${encodeURIComponent(k)}=${encodeURIComponent(params[k] as string)}`,
+        ([key, value]) =>
+          `${encodeURIComponent(key)}=${encodeURIComponent(value!)}`,
       )
       .join('&');
+
     return result ? `?${result}` : '';
   }
 
@@ -151,11 +163,13 @@ export class ArgoCDApiClient implements ArgoCDApi {
     appNamespace?: string;
     revisionID: string;
     instanceName: string;
+    sourceIndex?: number;
   }) {
     const proxyUrl = await this.getBaseUrl();
 
     const query = this.getQueryParams({
       appNamespace: options.appNamespace,
+      sourceIndex: options.sourceIndex,
     });
     return this.fetcher(
       `${proxyUrl}/argoInstance/${
@@ -176,10 +190,12 @@ export class ArgoCDApiClient implements ArgoCDApi {
       return Promise.resolve([]);
     }
     const promises: any = [];
+
     options.revisionIDs.forEach((revisionID: string) => {
       const application = options.apps.find(app =>
         app?.status?.history?.find(h => h.revision === revisionID),
       );
+
       if (application) {
         promises.push(
           this.getRevisionDetails({
@@ -189,6 +205,32 @@ export class ArgoCDApiClient implements ArgoCDApi {
             revisionID,
           }),
         );
+      }
+
+      const multiSourceApp = options.apps.find(app => {
+        return app?.status?.history?.find(h => {
+          return h?.revisions?.includes(revisionID);
+        });
+      });
+
+      if (multiSourceApp) {
+        const history = multiSourceApp.status?.history ?? [];
+        const relevantHistories = history.filter(h =>
+          h?.revisions?.includes(revisionID),
+        );
+
+        relevantHistories.forEach(h => {
+          const revisionSourceIndex = h.revisions?.indexOf(revisionID);
+          promises.push(
+            this.getRevisionDetails({
+              app: multiSourceApp.metadata.name as string,
+              appNamespace: options.appNamespace,
+              instanceName: options.instanceName,
+              revisionID: revisionID,
+              sourceIndex: revisionSourceIndex,
+            }),
+          );
+        });
       }
     });
 

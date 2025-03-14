@@ -28,7 +28,7 @@ import {
   HealthStatus,
   SyncStatusCode,
   SyncStatuses,
-} from '../../types/application';
+} from '@backstage-community/plugin-redhat-argocd-common';
 import useIconStyles from '../../hooks/useIconStyles';
 
 export const SyncIcon: React.FC<{ status: SyncStatusCode }> = ({

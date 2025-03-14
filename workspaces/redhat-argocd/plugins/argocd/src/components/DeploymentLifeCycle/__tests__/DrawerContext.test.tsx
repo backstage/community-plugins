@@ -17,7 +17,7 @@ import React from 'react';
 import { DrawerProvider, useDrawerContext } from '../DrawerContext';
 import { screen, render, renderHook } from '@testing-library/react';
 import { mockApplication } from '../../../../dev/__data__';
-import { Application } from '../../../types/application';
+import { Application } from '@backstage-community/plugin-redhat-argocd-common';
 
 const MockComponent = () => {
   const { application, appHistory, latestRevision } = useDrawerContext();

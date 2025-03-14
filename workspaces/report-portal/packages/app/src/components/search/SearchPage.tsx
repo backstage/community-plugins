@@ -39,6 +39,10 @@ import {
   Page,
 } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
+import {
+  ReportPortalSearchResultItem,
+  ReportPortalIcon,
+} from '@backstage-community/plugin-report-portal';
 
 const useStyles = makeStyles((theme: Theme) => ({
   bar: {
@@ -66,14 +70,12 @@ const SearchPage = () => {
       <Content>
         <Grid container direction="row">
           <Grid item xs={12}>
-            <Paper className={classes.bar}>
-              <SearchBar />
-            </Paper>
+            <SearchBar />
           </Grid>
           <Grid item xs={3}>
             <SearchType.Accordion
               name="Result Type"
-              defaultValue="software-catalog"
+              defaultValue="report-portal"
               types={[
                 {
                   value: 'software-catalog',
@@ -84,6 +86,11 @@ const SearchPage = () => {
                   value: 'techdocs',
                   name: 'Documentation',
                   icon: <DocsIcon />,
+                },
+                {
+                  value: 'report-portal',
+                  name: 'Report Portal Projects',
+                  icon: <ReportPortalIcon />,
                 },
               ]}
             />
@@ -121,6 +128,18 @@ const SearchPage = () => {
                 name="lifecycle"
                 values={['experimental', 'production']}
               />
+              <SearchFilter.Select
+                className={classes.filter}
+                label="Type"
+                name="resourceType"
+                values={['project', 'launch']}
+              />
+              <SearchFilter.Autocomplete
+                name="host"
+                values={['case-workflow', 'drupal']}
+                multiple
+                label="Host"
+              />
             </Paper>
           </Grid>
           <Grid item xs={9}>
@@ -128,6 +147,7 @@ const SearchPage = () => {
             <SearchResult>
               <CatalogSearchResultListItem icon={<CatalogIcon />} />
               <TechDocsSearchResultListItem icon={<DocsIcon />} />
+              <ReportPortalSearchResultItem icon={<ReportPortalIcon />} />
             </SearchResult>
           </Grid>
         </Grid>

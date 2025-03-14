@@ -1,5 +1,18 @@
 # @backstage-community/plugin-kafka
 
+## 0.5.1
+
+### Patch Changes
+
+- 381a2b0: Add link to a [kafkajs](https://kafka.js.org/docs/confiuration#ssl) docs with ssl options
+  Update Reference to the kafka-backend plugin in a Readme
+
+## 0.5.0
+
+### Minor Changes
+
+- b47c7a8: Backstage version bump to v1.35.1
+
 ## 0.4.0
 
 ### Minor Changes

@@ -5,8 +5,6 @@
 ```ts
 /// <reference types="react" />
 
-import { AnnouncementsApi as AnnouncementsApi_2 } from '@backstage-community/plugin-announcements-react';
-import { ApiRef } from '@backstage/core-plugin-api/index';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { IndexableDocument } from '@backstage/plugin-search-common';
 import { InfoCardVariants } from '@backstage/core-components/index';
@@ -26,12 +24,6 @@ export const AnnouncementsAdminPortal: (
     | undefined,
 ) => JSX_2.Element;
 
-// @public @deprecated (undocumented)
-export type AnnouncementsApi = AnnouncementsApi_2;
-
-// @public @deprecated (undocumented)
-export const announcementsApiRef: ApiRef<AnnouncementsApi_2>;
-
 // @public (undocumented)
 export const AnnouncementsCard: ({
   title,
@@ -39,12 +31,16 @@ export const AnnouncementsCard: ({
   category,
   active,
   variant,
+  sortBy,
+  order,
 }: {
   title?: string | undefined;
   max?: number | undefined;
   category?: string | undefined;
   active?: boolean | undefined;
   variant?: InfoCardVariants | undefined;
+  sortBy?: 'created_at' | 'start_at' | undefined;
+  order?: 'desc' | 'asc' | undefined;
 }) => JSX_2.Element;
 
 // @public (undocumented)
@@ -97,6 +93,8 @@ export const AnnouncementsTimeline: ({
   timelineAlignment,
   timelineMinWidth,
   hideInactive,
+  sortBy,
+  order,
 }: AnnouncementsTimelineProps) => JSX_2.Element;
 
 // @public
@@ -105,6 +103,8 @@ export type AnnouncementsTimelineProps = {
   timelineAlignment?: 'left' | 'right' | 'alternate';
   timelineMinWidth?: string;
   hideInactive?: boolean;
+  sortBy?: 'created_at' | 'start_at';
+  order?: 'asc' | 'desc';
 };
 
 // @public (undocumented)

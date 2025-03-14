@@ -1,7 +1,7 @@
 {
   "name": "@backstage-community/plugin-rbac-common",
   "description": "Common functionalities for the rbac-common plugin",
-  "version": "1.12.3",
+  "version": "1.14.0",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "license": "Apache-2.0",
@@ -36,13 +36,13 @@
     "postpack": "backstage-cli package postpack"
   },
   "peerDependencies": {
-    "@backstage/errors": "^1.2.4",
-    "@backstage/plugin-permission-common": "^0.8.1"
+    "@backstage/errors": "^1.2.7",
+    "@backstage/plugin-permission-common": "^0.8.4"
   },
   "devDependencies": {
-    "@backstage/cli": "0.28.2",
-    "@backstage/errors": "^1.2.4",
-    "@backstage/plugin-permission-common": "^0.8.1",
+    "@backstage/cli": "^0.30.0",
+    "@backstage/errors": "^1.2.7",
+    "@backstage/plugin-permission-common": "^0.8.4",
     "@spotify/prettier-config": "^15.0.0",
     "prettier": "^3.3.3"
   },

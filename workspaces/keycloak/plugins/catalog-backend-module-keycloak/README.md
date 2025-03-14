@@ -117,17 +117,18 @@ Communication between Backstage and Keycloak is enabled by using the Keycloak AP
 
 The following table describes the parameters that you can configure to enable the plugin under `catalog.providers.keycloakOrg.<ENVIRONMENT_NAME>` object in the `app-config.yaml` file:
 
-| Name             | Description                                                        | Default Value | Required                                             |
-| ---------------- | ------------------------------------------------------------------ | ------------- | ---------------------------------------------------- |
-| `baseUrl`        | Location of the Keycloak server, such as `https://localhost:8443`. | ""            | Yes                                                  |
-| `realm`          | Realm to synchronize                                               | `master`      | No                                                   |
-| `loginRealm`     | Realm used to authenticate                                         | `master`      | No                                                   |
-| `username`       | Username to authenticate                                           | ""            | Yes if using password based authentication           |
-| `password`       | Password to authenticate                                           | ""            | Yes if using password based authentication           |
-| `clientId`       | Client ID to authenticate                                          | ""            | Yes if using client credentials based authentication |
-| `clientSecret`   | Client Secret to authenticate                                      | ""            | Yes if using client credentials based authentication |
-| `userQuerySize`  | Number of users to query at a time                                 | `100`         | No                                                   |
-| `groupQuerySize` | Number of groups to query at a time                                | `100`         | No                                                   |
+| Name             | Description                                                               | Default Value | Required                                             |
+| ---------------- | ------------------------------------------------------------------------- | ------------- | ---------------------------------------------------- |
+| `baseUrl`        | Location of the Keycloak server, such as `https://localhost:8443`.        | ""            | Yes                                                  |
+| `realm`          | Realm to synchronize                                                      | `master`      | No                                                   |
+| `loginRealm`     | Realm used to authenticate                                                | `master`      | No                                                   |
+| `username`       | Username to authenticate                                                  | ""            | Yes if using password based authentication           |
+| `password`       | Password to authenticate                                                  | ""            | Yes if using password based authentication           |
+| `clientId`       | Client ID to authenticate                                                 | ""            | Yes if using client credentials based authentication |
+| `clientSecret`   | Client Secret to authenticate                                             | ""            | Yes if using client credentials based authentication |
+| `userQuerySize`  | Number of users to query at a time                                        | `100`         | No                                                   |
+| `groupQuerySize` | Number of groups to query at a time                                       | `100`         | No                                                   |
+| `maxConcurrency` | Maximum request concurrency to prevent DoS attacks on the Keycloak server | `20`          | No                                                   |
 
 When using client credentials, the access type must be set to `confidential` and service accounts must be enabled. You must also add the following roles from the `realm-management` client role:
 

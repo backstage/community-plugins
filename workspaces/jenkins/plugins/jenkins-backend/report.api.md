@@ -13,11 +13,7 @@ import { DiscoveryService } from '@backstage/backend-plugin-api';
 import express from 'express';
 import { HttpAuthService } from '@backstage/backend-plugin-api';
 import { LoggerService } from '@backstage/backend-plugin-api';
-import { PermissionAuthorizer } from '@backstage/plugin-permission-common';
 import { PermissionEvaluator } from '@backstage/plugin-permission-common';
-
-// @public @deprecated (undocumented)
-export function createRouter(options: RouterOptions): Promise<express.Router>;
 
 // @public
 export class DefaultJenkinsInfoProvider implements JenkinsInfoProvider {
@@ -26,7 +22,7 @@ export class DefaultJenkinsInfoProvider implements JenkinsInfoProvider {
     config: Config;
     catalog: CatalogApi;
     discovery: DiscoveryService;
-    auth?: AuthService;
+    auth: AuthService;
     httpAuth?: HttpAuthService;
     logger: LoggerService;
   }): DefaultJenkinsInfoProvider;
@@ -141,20 +137,4 @@ export interface JenkinsInstanceConfig {
 // @public
 const jenkinsPlugin: BackendFeature;
 export default jenkinsPlugin;
-
-// @public @deprecated (undocumented)
-export interface RouterOptions {
-  // (undocumented)
-  auth?: AuthService;
-  // (undocumented)
-  discovery: DiscoveryService;
-  // (undocumented)
-  httpAuth?: HttpAuthService;
-  // (undocumented)
-  jenkinsInfoProvider: JenkinsInfoProvider;
-  // (undocumented)
-  logger: LoggerService;
-  // (undocumented)
-  permissions?: PermissionEvaluator | PermissionAuthorizer;
-}
 ```

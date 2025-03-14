@@ -18,8 +18,6 @@ import { createDevApp } from '@backstage/dev-utils';
 import {
   techInsightsPlugin,
   EntityTechInsightsScorecardContent,
-  techInsightsApiRef,
-  TechInsightsApi,
   TechInsightsScorecardPage,
 } from '../src';
 import {
@@ -33,6 +31,10 @@ import {
   checkResultRenderers,
   runChecksResponse,
 } from './mocks';
+import {
+  TechInsightsApi,
+  techInsightsApiRef,
+} from '@backstage-community/plugin-tech-insights-react';
 
 const entity = {
   apiVersion: 'backstage.io/v1alpha1',

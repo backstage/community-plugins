@@ -34,6 +34,7 @@ import {
   useSidebarOpenState,
   Link,
 } from '@backstage/core-components';
+import { SidebarSearchModal } from '@backstage/plugin-search';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import RecordVoiceOverIcon from '@material-ui/icons/RecordVoiceOver';
@@ -89,7 +90,9 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
         />
 
         {/* Search - show case search-related announcement results */}
-        <SidebarItem icon={SearchIcon} to="search" text="Search" />
+        <SidebarGroup label="Search" icon={<SearchIcon />} to="/search">
+          <SidebarSearchModal />
+        </SidebarGroup>
 
         <SidebarDivider />
       </SidebarGroup>

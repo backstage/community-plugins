@@ -55,6 +55,13 @@ export const EditRolePage = () => {
     kind: roleKind || 'role',
     description: role?.metadata?.description ?? '',
     selectedMembers,
+    selectedPlugins: data
+      .map(pp => pp.plugin)
+      .filter((p, i, ar) => ar.indexOf(p) === i)
+      .map(sp => ({
+        label: sp.charAt(0).toLocaleUpperCase('en-US') + sp.substring(1),
+        value: sp,
+      })),
     permissionPoliciesRows: data,
   };
 

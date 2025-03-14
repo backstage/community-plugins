@@ -9,7 +9,8 @@ import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
 import { JSX as JSX_2 } from 'react';
 import { default as React_2 } from 'react';
-import { TableColumn } from '@backstage/core-components';
+import { TableColumn } from '@backstage/core-components/index';
+import { TableColumn as TableColumn_2 } from '@backstage/core-components';
 
 // @public (undocumented)
 export const EntityGithubDeploymentsCard: (props: {
@@ -51,16 +52,16 @@ export const GithubDeploymentsTable: {
     deployments: GithubDeployment[];
     isLoading: boolean;
     reload: () => void;
-    columns: TableColumn<GithubDeployment>[];
+    columns: TableColumn_2<GithubDeployment>[];
   }): React_2.JSX.Element;
   columns: Readonly<{
-    createEnvironmentColumn(): TableColumn<GithubDeployment>;
-    createStatusColumn(): TableColumn<GithubDeployment>;
-    createCommitColumn(): TableColumn<GithubDeployment>;
-    createCreatorColumn(): TableColumn<GithubDeployment>;
-    createLastUpdatedColumn(): TableColumn<GithubDeployment>;
+    createEnvironmentColumn(): TableColumn_2<GithubDeployment>;
+    createStatusColumn(): TableColumn_2<GithubDeployment>;
+    createCommitColumn(): TableColumn_2<GithubDeployment>;
+    createCreatorColumn(): TableColumn_2<GithubDeployment>;
+    createLastUpdatedColumn(): TableColumn_2<GithubDeployment>;
   }>;
-  defaultDeploymentColumns: TableColumn<GithubDeployment>[];
+  defaultDeploymentColumns: TableColumn_2<GithubDeployment>[];
 };
 
 // @public (undocumented)

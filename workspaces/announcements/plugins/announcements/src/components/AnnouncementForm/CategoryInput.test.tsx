@@ -48,6 +48,7 @@ describe('CategoryInput', () => {
       body: string;
       created_at: string;
       active: boolean;
+      start_at: string;
     }>,
   ) => void = jest.fn();
 
@@ -60,6 +61,7 @@ describe('CategoryInput', () => {
     body: 'body',
     created_at: 'created_at',
     active: true,
+    start_at: 'start_at',
   };
 
   const announcementsApiMock = { categories: jest.fn() };

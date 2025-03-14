@@ -28,7 +28,7 @@ describe('DefaultAnnouncementsService', () => {
   let client: DefaultAnnouncementsService;
   beforeEach(() => {
     client = new DefaultAnnouncementsService({
-      discoveryApi: mockServices.discovery.mock({
+      discovery: mockServices.discovery.mock({
         getBaseUrl: jest.fn().mockReturnValue(mockBaseUrl),
       }),
     });

@@ -58,6 +58,7 @@ import {
   useAnnouncementsTranslation,
 } from '@backstage-community/plugin-announcements-react';
 import {
+  Box,
   Card,
   CardContent,
   CardHeader,
@@ -67,8 +68,10 @@ import {
   Menu,
   MenuItem,
   Tooltip,
+  Typography,
 } from '@material-ui/core';
 import { Alert, Pagination } from '@material-ui/lab';
+import { formatAnnouncementStartTime } from '../utils/announcementDateUtils';
 
 const useStyles = makeStyles(theme => {
   return {
@@ -126,24 +129,38 @@ const AnnouncementCard = ({
   );
   const subTitle = (
     <>
-      {t('announcementsPage.card.by')}{' '}
-      <EntityPeekAheadPopover entityRef={announcement.publisher}>
-        <Link to={entityLink(publisherRef)}>
-          <EntityDisplayName entityRef={announcement.publisher} hideIcon />
-        </Link>
-      </EntityPeekAheadPopover>
-      {announcement.category && (
-        <>
-          {' '}
-          {t('announcementsPage.card.in')}{' '}
-          <Link
-            to={`${announcementsLink()}?category=${announcement.category.slug}`}
-          >
-            {announcement.category.title}
+      <Typography variant="body2" color="textSecondary" component="span">
+        {t('announcementsPage.card.by')}{' '}
+        <EntityPeekAheadPopover entityRef={announcement.publisher}>
+          <Link to={entityLink(publisherRef)}>
+            <EntityDisplayName entityRef={announcement.publisher} hideIcon />
           </Link>
-        </>
-      )}
-      , {DateTime.fromISO(announcement.created_at).toRelative()}
+        </EntityPeekAheadPopover>
+        {announcement.category && (
+          <>
+            {' '}
+            {t('announcementsPage.card.in')}{' '}
+            <Link
+              to={`${announcementsLink()}?category=${
+                announcement.category.slug
+              }`}
+            >
+              {announcement.category.title}
+            </Link>
+          </>
+        )}
+        , {DateTime.fromISO(announcement.created_at).toRelative()}
+      </Typography>
+      <Box>
+        <Typography variant="caption" color="textSecondary">
+          {formatAnnouncementStartTime(
+            announcement.start_at,
+            t('announcementsCard.occurred'),
+            t('announcementsCard.scheduled'),
+            t('announcementsCard.today'),
+          )}
+        </Typography>
+      </Box>
     </>
   );
   const { loading: loadingDeletePermission, allowed: canDelete } =
@@ -225,11 +242,15 @@ const AnnouncementsGrid = ({
   category,
   cardTitleLength,
   active,
+  sortBy,
+  order,
 }: {
   maxPerPage: number;
   category?: string;
   cardTitleLength?: number;
   active?: boolean;
+  sortBy?: 'created_at' | 'start_at';
+  order?: 'asc' | 'desc';
 }) => {
   const classes = useStyles();
   const announcementsApi = useApi(announcementsApiRef);
@@ -251,6 +272,8 @@ const AnnouncementsGrid = ({
       page: page,
       category,
       active,
+      sortBy,
+      order,
     },
     { dependencies: [maxPerPage, page, category] },
   );
@@ -340,6 +363,8 @@ export type AnnouncementsPageProps = {
   cardOptions?: AnnouncementCardProps;
   hideContextMenu?: boolean;
   hideInactive?: boolean;
+  sortby?: 'created_at' | 'start_at';
+  order?: 'asc' | 'desc';
 };
 
 export const AnnouncementsPage = (props: AnnouncementsPageProps) => {
@@ -360,12 +385,14 @@ export const AnnouncementsPage = (props: AnnouncementsPageProps) => {
     maxPerPage,
     category,
     cardOptions,
+    sortby,
+    order,
   } = props;
 
   return (
     <Page themeId={themeId}>
       <Header title={title} subtitle={subtitle}>
-        {!hideContextMenu && <ContextMenu />}
+        {!hideContextMenu && canCreate && <ContextMenu />}
       </Header>
 
       <Content>
@@ -389,6 +416,8 @@ export const AnnouncementsPage = (props: AnnouncementsPageProps) => {
           category={category ?? queryParams.get('category') ?? undefined}
           cardTitleLength={cardOptions?.titleLength}
           active={hideInactive ? true : false}
+          sortBy={sortby ?? 'created_at'}
+          order={order ?? 'desc'}
         />
       </Content>
     </Page>

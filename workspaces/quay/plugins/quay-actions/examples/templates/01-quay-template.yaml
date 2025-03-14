@@ -19,9 +19,9 @@ spec:
           title: Token
           type: string
           description: Bearer token used for authorization
-          ui:widget: password
+          ui:field: Secret
         visibility:
-          title: Visiblity
+          title: Visibility
           type: string
           description: Visibility setting for the created repository, either public or private
           ui:widget: select
@@ -51,7 +51,7 @@ spec:
       action: quay:create-repository
       input:
         baseUrl: ${{ parameters.baseUrl }}
-        token: ${{ parameters.token }}
+        token: ${{ secrets.token }}
         name: ${{ parameters.name }}
         visibility: ${{ parameters.visibility }}
         description: ${{ parameters.description }}

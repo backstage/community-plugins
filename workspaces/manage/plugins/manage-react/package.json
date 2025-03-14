@@ -1,0 +1,73 @@
+{
+  "name": "@backstage-community/plugin-manage-react",
+  "description": "Manage plugin - react package",
+  "version": "0.1.1",
+  "backstage": {
+    "role": "web-library",
+    "pluginId": "manage",
+    "pluginPackages": [
+      "@backstage-community/plugin-manage",
+      "@backstage-community/plugin-manage-react"
+    ]
+  },
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.esm.js",
+    "types": "dist/index.d.ts"
+  },
+  "homepage": "https://backstage.io",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/backstage",
+    "directory": "plugins/manage-react"
+  },
+  "keywords": [
+    "backstage",
+    "manage",
+    "page",
+    "manage-page",
+    "components"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "backstage-cli package build",
+    "lint": "backstage-cli package lint",
+    "test": "backstage-cli package test",
+    "clean": "backstage-cli package clean",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack"
+  },
+  "dependencies": {
+    "@backstage/catalog-model": "^1.7.3",
+    "@backstage/core-components": "^0.16.3",
+    "@backstage/core-plugin-api": "^1.10.3",
+    "@backstage/plugin-catalog-react": "^1.15.1",
+    "@backstage/types": "^1.2.1",
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/modifiers": "^9.0.0",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@mui/icons-material": "^5.16.7",
+    "@mui/material": "^5.15.16",
+    "@mui/styles": "^5",
+    "already": "^2.2.1",
+    "pluralize": "^8.0.0",
+    "react-use": "^17.5.0"
+  },
+  "peerDependencies": {
+    "@dnd-kit/utilities": "*",
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-router-dom": "6.0.0-beta.0 || ^6.3.0"
+  },
+  "devDependencies": {
+    "@backstage/cli": "^0.29.5",
+    "@types/pluralize": "^0.0.33",
+    "@types/react": "^18.3.12"
+  },
+  "files": [
+    "dist"
+  ]
+}

@@ -21,3 +21,4 @@ export {
   DefaultAnnouncementsService,
   type AnnouncementsServiceOptions,
 } from './DefaultAnnouncementsService';
+export { announcementsServiceRef } from './announcementsServiceRef';

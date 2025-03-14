@@ -5,10 +5,10 @@ metadata:
   title: 'Example App'
   namespace: 'default'
   annotations:
-    'feedback/type': 'MAIL'
-    'feedback/host': 'https://jira-host-url'
-    'feedback/email-to': 'example@email.com'
-    'jira/project-key': 'XYZ'
+    feedback/type: JIRA
+    feedback/host: 'https://jira-host-url'
+    feedback/email-to: example@email.com
+    jira/project-key: ABC
 spec:
   type: service
   owner: 'user:guest'

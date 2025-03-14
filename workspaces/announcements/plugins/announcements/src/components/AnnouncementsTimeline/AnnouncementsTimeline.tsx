@@ -61,6 +61,18 @@ export type AnnouncementsTimelineProps = {
    * Default: false
    */
   hideInactive?: boolean;
+  /**
+   * The field by which date time to sort the announcements.
+   * Can be 'created_at' or 'start_at'.
+   * Default: 'created_at'
+   */
+  sortBy?: 'created_at' | 'start_at';
+  /**
+   * The order in which to sort the announcements.
+   * Can be 'asc' for ascending (older first) or 'desc' for descending (new first).
+   * Default: 'desc'
+   */
+  order?: 'asc' | 'desc';
 };
 
 /**
@@ -84,6 +96,16 @@ const DEFAULT_RESULTS_MAX = 10;
 const DEFAULT_INACTIVE = false;
 
 /**
+ * Default sort by filter
+ */
+const DEFAULT_SORTBY = 'created_at';
+
+/**
+ * Default order to display announcments. Newer announcements are display by default
+ */
+const DEFAULT_ORDER = 'desc';
+
+/**
  * Timeline of most recent announcements.
  *
  * @param options - The options for the announcements timeline.
@@ -94,12 +116,16 @@ export const AnnouncementsTimeline = ({
   timelineAlignment = DEFAULT_TIMELINE_ALIGNMENT,
   timelineMinWidth = DEFAULT_TIMELINE_WIDTH,
   hideInactive = DEFAULT_INACTIVE,
+  sortBy = DEFAULT_SORTBY,
+  order = DEFAULT_ORDER,
 }: AnnouncementsTimelineProps) => {
   const viewAnnouncementLink = useRouteRef(announcementViewRouteRef);
 
   const { announcements, loading, error } = useAnnouncements({
     max: maxResults,
     active: hideInactive,
+    sortBy,
+    order,
   });
   const { t } = useAnnouncementsTranslation();
 

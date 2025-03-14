@@ -21,7 +21,10 @@ import {
   mockEntity,
   mockRevision,
 } from '../../../../dev/__data__';
-import { History, RevisionInfo } from '../../../types/application';
+import {
+  History,
+  RevisionInfo,
+} from '@backstage-community/plugin-redhat-argocd-common';
 
 describe('AppCommitLink', () => {
   it('should return null if application is not passed', () => {

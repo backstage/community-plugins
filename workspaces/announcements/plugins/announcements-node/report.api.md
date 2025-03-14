@@ -5,6 +5,7 @@
 ```ts
 import { Announcement } from '@backstage-community/plugin-announcements-common';
 import { DiscoveryService } from '@backstage/backend-plugin-api';
+import { ServiceRef } from '@backstage/backend-plugin-api';
 
 // @public
 export type AnnouncementRequestOptions = {
@@ -18,8 +19,15 @@ export interface AnnouncementsService {
 
 // @public
 export type AnnouncementsServiceOptions = {
-  discoveryApi: DiscoveryService;
+  discovery: DiscoveryService;
 };
+
+// @public
+export const announcementsServiceRef: ServiceRef<
+  AnnouncementsService,
+  'plugin',
+  'singleton'
+>;
 
 // @public
 export class DefaultAnnouncementsService implements AnnouncementsService {

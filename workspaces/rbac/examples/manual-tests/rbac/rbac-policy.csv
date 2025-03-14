@@ -1,0 +1,245 @@
+# Test one: user:default/ant_man, expect allow
+g, user:default/ant_man, role:default/ant_man
+p, role:default/ant_man, catalog-entity, read, allow
+
+# Test two: user:default/hulk, expect deny
+g, user:default/hulk, role:default/hulk
+p, role:default/hulk, catalog-entity, read, deny
+
+# Test three: user:default/thor, expect allow
+g, group:default/thor_group_0, role:default/thor_group_0
+p, role:default/thor_group_0, catalog-entity, read, allow
+
+# Test four: user:default/wasp, expect deny
+g, group:default/wasp_group_0, role:default/wasp_group_0
+p, role:default/wasp_group_0, catalog-entity, read, deny
+
+# Test five: user:default/moon_knight, expect allow
+g, group:default/moon_knight_group_1, role:default/moon_knight_group_1
+p, role:default/moon_knight_group_1, catalog-entity, read, allow
+
+# Test six: user:default/spiderman, expect deny
+g, group:default/spiderman_group_1, role:default/spiderman_group_1
+p, role:default/spiderman_group_1, catalog-entity, read, deny
+
+# Test seven: user:default/captain_america, expect allow
+g, group:default/captain_america_group_0, role:default/captain_america_group_0
+p, role:default/captain_america_group_0, catalog-entity, read, allow
+
+g, group:default/captain_america_group_1, role:default/captain_america_group_1
+p, role:default/captain_america_group_1, catalog-entity, read, allow
+
+# Test eight: user:default/hawkeye, expect deny
+g, group:default/hawkeye_group_0, role:default/hawkeye_group_0
+p, role:default/hawkeye_group_0, catalog-entity, read, deny
+
+g, group:default/hawkeye_group_1, role:default/hawkeye_group_1
+p, role:default/hawkeye_group_1, catalog-entity, read, deny
+
+# Test nine: user:default/quicksilver, expect deny
+g, group:default/quicksilver_group_0, role:default/quicksilver_group_0
+p, role:default/quicksilver_group_0, catalog-entity, read, deny
+
+g, group:default/quicksilver_group_1, role:default/quicksilver_group_1
+p, role:default/quicksilver_group_1, catalog-entity, read, allow
+
+# Test ten: user:default/scarlet_witch, expect deny
+g, group:default/scarlet_witch_group_0, role:default/scarlet_witch_group_0
+p, role:default/scarlet_witch_group_0, catalog-entity, read, allow
+
+g, group:default/scarlet_witch_group_1, role:default/scarlet_witch_group_1
+p, role:default/scarlet_witch_group_1, catalog-entity, read, deny
+
+# Test eleven: user:default/swordsman, expect allow
+g, user:default/swordsman, role:default/swordsman
+p, role:default/swordsman, catalog-entity, read, allow
+
+g, group:default/swordsman_group_0, role:default/swordsman_group_0
+p, role:default/swordsman_group_0, catalog-entity, read, allow
+
+# Test twelve: user:default/hercules, expect deny
+g, user:default/hercules, role:default/hercules
+p, role:default/hercules, catalog-entity, read, deny
+
+g, group:default/hercules_group_0, role:default/hercules_group_0
+p, role:default/hercules_group_0, catalog-entity, read, deny
+
+# Test thriteen: user:default/black_panther, expect deny
+g, user:default/black_panther, role:default/black_panther
+p, role:default/black_panther, catalog-entity, read, deny
+
+g, group:default/black_panther_group_0, role:default/black_panther_group_0
+p, role:default/black_panther_group_0, catalog-entity, read, allow
+
+# Test fourteen: user:default/vision, expect deny
+g, user:default/vision, role:default/vision
+p, role:default/vision, catalog-entity, read, allow
+
+g, group:default/vision_group_0, role:default/vision_group_0
+p, role:default/vision_group_0, catalog-entity, read, deny
+
+# Test fifteen: user:default/black_knight, expect allow
+g, group:default/black_knight_group_a, role:default/black_knight_group_a
+p, role:default/black_knight_group_a, catalog-entity, read, allow
+
+g, group:default/black_knight_group_b, role:default/black_knight_group_b
+p, role:default/black_knight_group_b, catalog-entity, read, allow
+
+# Test sixteen: user:default/black_widow, expect deny
+g, group:default/black_widow_group_a, role:default/black_widow_group_a
+p, role:default/black_widow_group_a, catalog-entity, read, deny
+
+g, group:default/black_widow_group_b, role:default/black_widow_group_b
+p, role:default/black_widow_group_b, catalog-entity, read, deny
+
+# Test seventeen: user:default/mantis, expect deny
+g, group:default/mantis_group_a, role:default/mantis_group_a
+p, role:default/mantis_group_a, catalog-entity, read, deny
+
+g, group:default/mantis_group_b, role:default/mantis_group_b
+p, role:default/mantis_group_b, catalog-entity, read, allow
+
+# Test eighteen: user:default/beast, expect deny
+g, group:default/beast_group_a, role:default/beast_group_a
+p, role:default/beast_group_a, catalog-entity, read, allow
+
+g, group:default/beast_group_b, role:default/beast_group_b
+p, role:default/beast_group_b, catalog-entity, read, deny
+
+# Test nineteen: user:default/moondragon, expect allow
+g, group:default/moondragon_group_a_1, role:default/moondragon_group_a_1
+p, role:default/moondragon_group_a_1, catalog-entity, read, allow
+
+g, group:default/moondragon_group_b_1, role:default/moondragon_group_b_1
+p, role:default/moondragon_group_b_1, catalog-entity, read, allow
+
+# Test twenty: user:default/hellcat, expect deny
+g, group:default/hellcat_group_a_1, role:default/hellcat_group_a_1
+p, role:default/hellcat_group_a_1, catalog-entity, read, deny
+
+g, group:default/hellcat_group_b_1, role:default/hellcat_group_b_1
+p, role:default/hellcat_group_b_1, catalog-entity, read, deny
+
+# Test twenty one: user:default/captain_marvel, expect deny
+g, group:default/captain_marvel_group_a_1, role:default/captain_marvel_group_a_1
+p, role:default/captain_marvel_group_a_1, catalog-entity, read, deny
+
+g, group:default/captain_marvel_group_b_1, role:default/captain_marvel_group_b_1
+p, role:default/captain_marvel_group_b_1, catalog-entity, read, allow
+
+# Test twenty two: user:default/falcon, expect deny
+g, group:default/falcon_group_a_1, role:default/falcon_group_a_1
+p, role:default/falcon_group_a_1, catalog-entity, read, allow
+
+g, group:default/falcon_group_b_1, role:default/falcon_group_b_1
+p, role:default/falcon_group_b_1, catalog-entity, read, deny
+
+# Test twenty three: user:default/wonder_man, expect deny
+g, group:default/wonder_man_group_1, role:default/wonder_man_group_1
+p, role:default/wonder_man_group_1, catalog-entity, read, allow
+
+# Test twenty four: user:default/tigra, expect deny
+g, group:default/tigra_group_1, role:default/tigra_group_1
+p, role:default/tigra_group_1, catalog-entity, read, deny
+
+# Test twenty five: user:default/she_hulk, expect deny
+g, group:default/she_hulk_group_0, role:default/she_hulk_group_0
+p, role:default/she_hulk_group_0, catalog-entity, read, allow
+
+g, group:default/she_hulk_group_1, role:default/she_hulk_group_1
+p, role:default/she_hulk_group_1, catalog-entity, read, allow
+
+# Test twenty six: user:default/starfox, expect deny
+g, group:default/starfox_group_0, role:default/starfox_group_0
+p, role:default/starfox_group_0, catalog-entity, read, deny
+
+g, group:default/starfox_group_1, role:default/starfox_group_1
+p, role:default/starfox_group_1, catalog-entity, read, deny
+
+# Test twenty seven: user:default/mockingbird, expect deny
+g, group:default/mockingbird_group_0, role:default/mockingbird_group_0
+p, role:default/mockingbird_group_0, catalog-entity, read, deny
+
+g, group:default/mockingbird_group_1, role:default/mockingbird_group_1
+p, role:default/mockingbird_group_1, catalog-entity, read, allow
+
+# Test twenty eight: user:default/war_machine, expect deny
+g, group:default/war_machine_group_0, role:default/war_machine_group_0
+p, role:default/war_machine_group_0, catalog-entity, read, allow
+
+g, group:default/war_machine_group_1, role:default/war_machine_group_1
+p, role:default/war_machine_group_1, catalog-entity, read, deny
+
+# Test twenty nine: user:default/namor, expect deny
+g, group:default/namor_group_a_1, role:default/namor_group_a_1
+p, role:default/namor_group_a_1, catalog-entity, read, allow
+
+g, group:default/namor_group_b_1, role:default/namor_group_b_1
+p, role:default/namor_group_b_1, catalog-entity, read, allow
+
+# Test thirty: user:default/thing, expect deny
+g, group:default/thing_group_a_1, role:default/thing_group_a_1
+p, role:default/thing_group_a_1, catalog-entity, read, deny
+
+g, group:default/thing_group_b_1, role:default/thing_group_b_1
+p, role:default/thing_group_b_1, catalog-entity, read, deny
+
+# Test thirty one: user:default/doctor_druid, expect deny
+g, group:default/doctor_druid_group_a_1, role:default/doctor_druid_group_a_1
+p, role:default/doctor_druid_group_a_1, catalog-entity, read, deny
+
+g, group:default/doctor_druid_group_b_1, role:default/doctor_druid_group_b_1
+p, role:default/doctor_druid_group_b_1, catalog-entity, read, allow
+
+# Test thirty two: user:default/firebird, expect deny
+g, group:default/firebird_group_a_1, role:default/firebird_group_a_1
+p, role:default/firebird_group_a_1, catalog-entity, read, allow
+
+g, group:default/firebird_group_b_1, role:default/firebird_group_b_1
+p, role:default/firebird_group_b_1, catalog-entity, read, deny
+
+# Test thirty three: user:default/valkyrie, expect deny
+g, group:default/valkyrie_group_a_1, role:default/valkyrie_group_a_1
+p, role:default/valkyrie_group_a_1, catalog-entity, read, allow
+
+g, group:default/valkyrie_group_b_1, role:default/valkyrie_group_b_1
+p, role:default/valkyrie_group_b_1, catalog-entity, read, allow
+
+# Test thirty four: user:default/nova, expect deny
+g, group:default/nova_group_a_1, role:default/nova_group_a_1
+p, role:default/nova_group_a_1, catalog-entity, read, deny
+
+g, group:default/nova_group_b_1, role:default/nova_group_b_1
+p, role:default/nova_group_b_1, catalog-entity, read, deny
+
+# Test thirty five: user:default/storm, expect deny
+g, group:default/storm_group_a_1, role:default/storm_group_a_1
+p, role:default/storm_group_a_1, catalog-entity, read, deny
+
+g, group:default/storm_group_b_1, role:default/storm_group_b_1
+p, role:default/storm_group_b_1, catalog-entity, read, allow
+
+# Test thirty six: user:default/daredevil, expect deny
+g, group:default/daredevil_group_a_1, role:default/daredevil_group_a_1
+p, role:default/daredevil_group_a_1, catalog-entity, read, allow
+
+g, group:default/daredevil_group_b_1, role:default/daredevil_group_b_1
+p, role:default/daredevil_group_b_1, catalog-entity, read, deny
+
+# Test thirty seven: user:default/psylocke, expect allow
+p, user:default/psylocke, catalog-entity, read, allow
+
+# Test thirty eight: user:default/penance, expect deny
+p, user:default/penance, catalog-entity, read, deny
+
+# Test thirty nine: user:default/cable, expect allow
+p, group:default/cable_group_0, catalog-entity, read, allow
+
+# Test fourty: user:default/ghost_rider, expect deny
+p, group:default/ghost_rider_group_0, catalog-entity, read, deny
+
+# Test fourty One: user:default/super_user: expect allow
+# Set user:default/super_user to `rbac.admin.superUsers`
+
+# Test fourty Two: user:default/admin: expect allow
+# Set user:default/admin to `rbac.admin.users`

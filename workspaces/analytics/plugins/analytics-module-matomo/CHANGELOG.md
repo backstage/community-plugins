@@ -1,5 +1,29 @@
 ### Dependencies
 
+## 1.13.1
+
+### Patch Changes
+
+- 973a5ef: remove prettier from devDependencies
+
+## 1.13.0
+
+### Minor Changes
+
+- 926f672: Backstage version bump to v1.36.1
+
+## 1.12.0
+
+### Minor Changes
+
+- 2e3d4af: Configurable user tracking for Matomo
+
+## 1.11.0
+
+### Minor Changes
+
+- b56df3f: Backstage version bump to v1.35.1
+
 ## 1.10.0
 
 ### Minor Changes

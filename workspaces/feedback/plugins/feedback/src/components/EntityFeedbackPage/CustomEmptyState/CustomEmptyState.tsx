@@ -109,7 +109,9 @@ const JIRA_YAML = `metadata:
     # while sending mail on feedback generation.  
     feedback/email-to: 'example@example.com';`;
 
-export const CustomEmptyState = (props: { [key: string]: string }) => {
+export const CustomEmptyState = (props: {
+  [key: string]: string | undefined;
+}) => {
   const [expanded, setExpanded] = React.useState<string | false>('jira');
 
   const handleChange =
@@ -184,7 +186,20 @@ export const CustomEmptyState = (props: { [key: string]: string }) => {
           </div>
         </Root>
       }
-      missing="field"
+      missing={{
+        customImage: (
+          <iframe
+            width="720"
+            height="480"
+            src="https://www.youtube.com/embed/irtitc4dy2g?si=IfOiu2ae0stL70V-"
+            title="YouTube video player"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerPolicy="strict-origin-when-cross-origin"
+            allowFullScreen
+          />
+        ),
+      }}
     />
   );
 };

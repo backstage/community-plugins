@@ -35,6 +35,12 @@ export const reportPortalPlugin = createBackendPlugin({
         http: coreServices.httpRouter,
       },
       async init({ config, logger, http }) {
+        if (!config.has('reportPortal.integrations')) {
+          logger.error(
+            `No 'reportPortal.integrations' configured in you app-config.yaml`,
+          );
+          return;
+        }
         http.use(
           await createRouter({
             config: config,

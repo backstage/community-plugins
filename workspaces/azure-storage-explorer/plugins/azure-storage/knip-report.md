@@ -1,6 +1,6 @@
 # Knip report
 
-## Unused devDependencies (7)
+## Unused devDependencies (4)
 
 | Name                        | Location     | Severity |
 | :-------------------------- | :----------- | :------- |
@@ -8,6 +8,3 @@
 | @backstage/core-app-api     | package.json | error    |
 | @testing-library/react      | package.json | error    |
 | @backstage/test-utils       | package.json | error    |
-| @types/react-dom            | package.json | error    |
-| react-router-dom            | package.json | error    |
-| react-dom                   | package.json | error    |

@@ -1,5 +1,46 @@
 # @backstage-community/plugin-announcements-backend
 
+## 0.3.1
+
+### Patch Changes
+
+- 208e250: Updated dependency `@types/uuid` to `^10.0.0`.
+
+## 0.3.0
+
+### Minor Changes
+
+- 22d99d3: - Added a `start at` field to allow users to set the date when an announcement occurred.
+  - Announcements can now be sorted by `createdAt` (default) or `startAt` date, with customizable order (`desc` or `asc`).
+  - Updated the New Announcement form to accommodate `start at` and future fields.
+  - Added `Created at` and `Start at` columns to the admin view table.
+
+### Patch Changes
+
+- 3e46343: Fix linting issues
+- Updated dependencies [22d99d3]
+  - @backstage-community/plugin-announcements-common@0.3.0
+  - @backstage-community/plugin-search-backend-module-announcements@0.3.1
+
+## 0.2.1
+
+### Patch Changes
+
+- Updated dependencies [f253ff9]
+  - @backstage-community/plugin-search-backend-module-announcements@0.3.0
+
+## 0.2.0
+
+### Minor Changes
+
+- e06ffa0: Backstage version bump to v1.35.1
+
+### Patch Changes
+
+- Updated dependencies [e06ffa0]
+  - @backstage-community/plugin-announcements-common@0.2.0
+  - @backstage-community/plugin-search-backend-module-announcements@0.2.0
+
 ## 0.1.4
 
 ### Patch Changes

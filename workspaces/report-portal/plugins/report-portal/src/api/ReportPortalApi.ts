@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ApiRef, createApiRef } from '@backstage/core-plugin-api';
-
 import {
   LaunchDetailsResponse,
   ProjectDetails,
   ProjectListResponse,
-} from './types';
+} from '@backstage-community/plugin-report-portal-common';
+import { ApiRef, createApiRef } from '@backstage/core-plugin-api';
 
 /** @public */
 export const reportPortalApiRef: ApiRef<ReportPortalApi> = createApiRef({

@@ -16,7 +16,7 @@
 import React from 'react';
 
 import { V1DaemonSet, V1Deployment, V1Pod } from '@kubernetes/client-node';
-import { ChartLabel } from '@patternfly/react-charts';
+import { ChartLabel } from '@patternfly/react-charts/victory';
 import classNames from 'classnames';
 
 import { AllPodStatus } from '../components/Pods/pod';
@@ -29,7 +29,7 @@ const getTitleComponent = (
   longSubtitle: boolean = false,
   reversed: boolean = false,
 ) => {
-  const labelClasses = classNames('pf-v5-chart-donut-title', {
+  const labelClasses = classNames('pf-v6-chart-donut-title', {
     'pod-ring__center-text--reversed': reversed,
     'pod-ring__center-text': !reversed,
     'pod-ring__long-text': longTitle,

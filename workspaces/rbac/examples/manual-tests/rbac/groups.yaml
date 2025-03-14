@@ -1,0 +1,847 @@
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: thor_group_0
+  title: Thor Group 0
+spec:
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: wasp_group_0
+  title: Wasp Group 0
+spec:
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: captain_america_group_0
+  title: Captain America Group 0
+spec:
+  parent: captain_america_group_1
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: captain_america_group_1
+  title: Captain America Group 1
+spec:
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: hawkeye_group_0
+  title: Hawkeye Group 0
+spec:
+  parent: hawkeye_group_1
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: hawkeye_group_1
+  title: Hawkeye Group 1
+spec:
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: quicksilver_group_0
+  title: Quicksilver Group 0
+spec:
+  parent: quicksilver_group_1
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: quicksilver_group_1
+  title: Quicksilver Group 1
+spec:
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: scarlet_witch_group_0
+  title: Scarlet Witch Group 0
+spec:
+  parent: scarlet_witch_group_1
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: scarlet_witch_group_1
+  title: Scarlet Witch Group 1
+spec:
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: swordsman_group_0
+  title: Swordsman Group 0
+spec:
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: hercules_group_0
+  title: Hercules Group 0
+spec:
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: black_panther_group_0
+  title: Black Panther Group 0
+spec:
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: vision_group_0
+  title: Vision Group 0
+spec:
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: black_knight_group_a
+  title: Black Knight Group A
+spec:
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: black_knight_group_b
+  title: Black Knight Group B
+spec:
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: black_widow_group_a
+  title: Black Widow Group A
+spec:
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: black_widow_group_b
+  title: Black Widow Group B
+spec:
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: mantis_group_a
+  title: Mantis Group A
+spec:
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: mantis_group_b
+  title: Mantis Group B
+spec:
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: beast_group_a
+  title: Beast Group A
+spec:
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: beast_group_b
+  title: Beast Group B
+spec:
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: moondragon_group_a_0
+  title: Moondragon Group A 0
+spec:
+  parent: moondragon_group_a_1
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: moondragon_group_a_1
+  title: Moondragon Group A 1
+spec:
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: moondragon_group_b_0
+  title: Moondragon Group B 0
+spec:
+  parent: moondragon_group_b_1
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: moondragon_group_b_1
+  title: Moondragon Group B 1
+spec:
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: hellcat_group_a_0
+  title: Hellcat Group A 0
+spec:
+  parent: hellcat_group_a_1
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: hellcat_group_a_1
+  title: Hellcat Group A 1
+spec:
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: hellcat_group_b_0
+  title: Hellcat Group B 0
+spec:
+  parent: hellcat_group_b_1
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: hellcat_group_b_1
+  title: Hellcat Group B 1
+spec:
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: captain_marvel_group_a_0
+  title: Captain Marvel Group A 0
+spec:
+  parent: captain_marvel_group_a_1
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: captain_marvel_group_a_1
+  title: Captain Marvel Group A 1
+spec:
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: captain_marvel_group_b_0
+  title: Captain Marvel Group B 0
+spec:
+  parent: captain_marvel_group_b_1
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: captain_marvel_group_b_1
+  title: Captain Marvel Group B 1
+spec:
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: falcon_group_a_0
+  title: Falcon Group A 0
+spec:
+  parent: falcon_group_a_1
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: falcon_group_a_1
+  title: Falcon Group A 1
+spec:
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: falcon_group_b_0
+  title: Falcon Group B 0
+spec:
+  parent: falcon_group_b_1
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: falcon_group_b_1
+  title: Falcon Group B 1
+spec:
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: wonder_man_group_0
+  title: Wonder Man Group 0
+spec:
+  parent: wonder_man_group_1
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: wonder_man_group_1
+  title: Wonder Man Group 1
+spec:
+  parent: wonder_man_group_0
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: tigra_group_0
+  title: Tigra Group 0
+spec:
+  parent: tigra_group_1
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: tigra_group_1
+  title: Tigra Group 1
+spec:
+  parent: tigra_group_0
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: she_hulk_group_0
+  title: She-Hulk Group 0
+spec:
+  parent: she_hulk_group_1
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: she_hulk_group_1
+  title: She-Hulk Group 1
+spec:
+  parent: she_hulk_group_0
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: starfox_group_0
+  title: Starfox Group 0
+spec:
+  parent: starfox_group_1
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: starfox_group_1
+  title: Starfox Group 1
+spec:
+  parent: starfox_group_0
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: mockingbird_group_0
+  title: Mockingbird Group 0
+spec:
+  parent: mockingbird_group_1
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: mockingbird_group_1
+  title: Mockingbird Group 1
+spec:
+  parent: mockingbird_group_0
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: war_machine_group_0
+  title: War Machine Group 0
+spec:
+  parent: war_machine_group_1
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: war_machine_group_1
+  title: War Machine Group 1
+spec:
+  parent: war_machine_group_0
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: namor_group_a_0
+  title: Namor Group A 0
+spec:
+  parent: namor_group_a_1
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: namor_group_a_1
+  title: Namor Group A 1
+spec:
+  parent: namor_group_a_0
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: namor_group_b_0
+  title: Namor Group B 0
+spec:
+  parent: namor_group_b_1
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: namor_group_b_1
+  title: Namor Group B 1
+spec:
+  parent: namor_group_b_0
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: thing_group_a_0
+  title: Thing Group A 0
+spec:
+  parent: thing_group_a_1
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: thing_group_a_1
+  title: Thing Group A 1
+spec:
+  parent: thing_group_a_0
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: thing_group_b_0
+  title: Thing Group B 0
+spec:
+  parent: thing_b_1
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: thing_group_b_1
+  title: Thing Group B 1
+spec:
+  parent: thing_b_0
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: doctor_druid_group_a_0
+  title: Doctor Druid Group A 0
+spec:
+  parent: doctor_druid_group_a_1
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: doctor_druid_group_a_1
+  title: Doctor Druid Group A 1
+spec:
+  parent: doctor_druid_group_a_0
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: doctor_druid_group_b_0
+  title: Doctor Druid Group B 0
+spec:
+  parent: doctor_druid_group_b_1
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: doctor_druid_group_b_1
+  title: Doctor Druid Group B 1
+spec:
+  parent: doctor_druid_group_b_0
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: firebird_group_a_0
+  title: Firebird Group A 0
+spec:
+  parent: firebird_group_a_1
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: firebird_group_a_1
+  title: Firebird Group A 1
+spec:
+  parent: firebird_group_a_0
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: firebird_group_b_0
+  title: Firebird Group B 0
+spec:
+  parent: firebird_group_b_1
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: firebird_group_b_1
+  title: Firebird Group B 1
+spec:
+  parent: firebird_group_b_0
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: valkyrie_group_a_0
+  title: Valkyrie Group A 0
+spec:
+  parent: valkyrie_group_a_1
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: valkyrie_group_a_1
+  title: Valkyrie Group A 1
+spec:
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: valkyrie_group_b_0
+  title: Valkyrie Group B 0
+spec:
+  parent: valkyrie_group_b_1
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: valkyrie_group_b_1
+  title: Valkyrie Group B 1
+spec:
+  parent: valkyrie_group_b_0
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: nova_group_a_0
+  title: Nova Group A 0
+spec:
+  parent: nova_group_a_1
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: nova_group_a_1
+  title: Nova Group A 1
+spec:
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: nova_group_b_0
+  title: Nova Group B 0
+spec:
+  parent: nova_group_b_1
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: nova_group_b_1
+  title: Nova Group B 1
+spec:
+  parent: nova_group_b_0
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: storm_group_a_0
+  title: Storm Group A 0
+spec:
+  parent: storm_group_a_1
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: storm_group_a_1
+  title: Storm Group A 1
+spec:
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: storm_group_b_0
+  title: Storm Group B 0
+spec:
+  parent: storm_group_b_1
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: storm_group_b_1
+  title: Storm Group B 1
+spec:
+  parent: storm_group_b_0
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: daredevil_group_a_0
+  title: Daredevil Group A 0
+spec:
+  parent: daredevil_group_a_1
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: daredevil_group_a_1
+  title: Daredevil Group A 1
+spec:
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: daredevil_group_b_0
+  title: Daredevil Group B 0
+spec:
+  parent: daredevil_group_b_1
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: daredevil_group_b_1
+  title: Daredevil Group B 1
+spec:
+  parent: daredevil_group_b_0
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: spiderman_group_0
+  title: Spiderman Group 0
+spec:
+  parent: spiderman_group_1
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: spiderman_group_1
+  title: Spiderman Group 1
+spec:
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: moon_knight_group_0
+  title: Moon Knight Group 0
+spec:
+  parent: moon_knight_group_1
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: moon_knight_group_1
+  title: Moon Knight Group 1
+spec:
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: cable_group_0
+  title: Cable Group 0
+spec:
+  children: []
+  type: team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: ghost_rider_group_0
+  title: Ghost Rider Group 0
+spec:
+  children: []
+  type: team
+---
+

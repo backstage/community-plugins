@@ -1,5 +1,27 @@
 # @backstage-community/plugin-jenkins
 
+## 0.17.0
+
+### Minor Changes
+
+- 09c00a5: Backstage version bump to v1.36.1
+
+### Patch Changes
+
+- Updated dependencies [09c00a5]
+  - @backstage-community/plugin-jenkins-common@0.4.0
+
+## 0.16.0
+
+### Minor Changes
+
+- 07ef31b: Backstage version bump to v1.35.1
+
+### Patch Changes
+
+- Updated dependencies [07ef31b]
+  - @backstage-community/plugin-jenkins-common@0.3.0
+
 ## 0.15.0
 
 ### Minor Changes

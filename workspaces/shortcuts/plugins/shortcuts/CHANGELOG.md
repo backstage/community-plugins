@@ -1,5 +1,29 @@
 # @backstage-community/plugin-shortcuts
 
+## 0.6.0
+
+### Minor Changes
+
+- aca1af5: Backstage version bump to v1.36.1
+
+## 0.5.2
+
+### Patch Changes
+
+- 208e250: Updated dependency `@types/uuid` to `^10.0.0`.
+
+## 0.5.1
+
+### Patch Changes
+
+- 34a5da7: Fixed code example in the README.md file where a code line was lacking an apostrophe and a semicolon
+
+## 0.5.0
+
+### Minor Changes
+
+- c4f37bd: Backstage version bump to v1.35.1
+
 ## 0.4.0
 
 ### Minor Changes

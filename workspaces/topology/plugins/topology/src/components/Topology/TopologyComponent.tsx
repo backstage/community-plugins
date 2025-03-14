@@ -25,14 +25,14 @@ import { ModelsPlural } from '../../models';
 import { ModelsPlural as TektonModels } from '../../pipeline-models';
 import { TopologyWorkloadView } from './TopologyWorkloadView';
 
-import '@patternfly/react-core/dist/styles/base.css';
-import '@patternfly/patternfly/patternfly-theme-dark.css';
-import '@patternfly/patternfly/patternfly-charts-theme-dark.css';
+import '@patternfly/react-core/dist/styles/base-no-reset.css';
+import '@patternfly/patternfly/patternfly.min.css';
+import '@patternfly/patternfly/patternfly-charts.css';
 import '@patternfly/patternfly/utilities/Accessibility/accessibility.css';
 import './TopologyComponent.css';
 
 const THEME_DARK = 'dark';
-const THEME_DARK_CLASS = 'pf-v5-theme-dark';
+const THEME_DARK_CLASS = 'pf-v6-theme-dark';
 
 const savedStylesheets = new Set<HTMLLinkElement>();
 const firstLinkOrScript = document.head.querySelector('link, script');

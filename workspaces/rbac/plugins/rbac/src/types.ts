@@ -56,7 +56,11 @@ export type PermissionsDataSet = {
   policies: Set<RowPolicy>;
   policyString?: Set<string>;
   isResourced?: boolean;
+  resourceType?: string;
+  usingResourceType?: boolean;
 };
+
+export type SelectedPlugin = { label: string; value: string };
 
 export type PermissionsData = {
   id?: number;
@@ -66,6 +70,8 @@ export type PermissionsData = {
   policyString?: string[] | string;
   isResourced?: boolean;
   conditions?: ConditionsData;
+  resourceType?: string;
+  usingResourceType?: boolean;
 };
 
 export type MemberEntity = UserEntity | GroupEntity;

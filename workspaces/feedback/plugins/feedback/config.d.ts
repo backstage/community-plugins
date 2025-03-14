@@ -29,7 +29,7 @@ export interface Config {
     baseEntityRef: string;
     /**
      * @visibility frontend
-     * */
+     */
     integrations: {
       /**
        * Configuration options for JIRA integration.
@@ -43,5 +43,9 @@ export interface Config {
         host: string;
       }>;
     };
+    /**
+     * @deepVisibility frontend
+     */
+    customizations?: object;
   };
 }

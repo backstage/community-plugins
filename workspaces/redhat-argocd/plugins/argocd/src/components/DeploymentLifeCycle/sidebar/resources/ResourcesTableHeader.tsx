@@ -23,7 +23,7 @@ import {
 } from '@material-ui/core';
 
 import { ResourcesColumnHeaders } from './ResourcesColumnHeader';
-import { Order } from '../../../../types/application';
+import { Order } from '@backstage-community/plugin-redhat-argocd-common';
 
 interface ResourcesTableHeaderProps {
   onRequestSort: (

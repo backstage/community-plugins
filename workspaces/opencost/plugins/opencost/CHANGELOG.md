@@ -1,5 +1,24 @@
 # @backstage-community/plugin-opencost
 
+## 0.5.1
+
+### Patch Changes
+
+- 3f3a60a: Added a section to the README to explain how to use the Backstage proxy to expose a private OpenCost service.
+- 3f3a60a: Fixed an issue causing the build of a Backstage app to fail due to an issue when importing `KeyboardDatePicker` from `material-ui`.
+
+## 0.5.0
+
+### Minor Changes
+
+- e03904a: Backstage version bump to v1.36.1
+
+## 0.4.0
+
+### Minor Changes
+
+- 034249c: Backstage version bump to v1.35.1
+
 ## 0.3.0
 
 ### Minor Changes

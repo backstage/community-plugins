@@ -14,4 +14,4 @@
  * limitations under the License.
  */
 
-export { MatomoAnalytics, MatomoAnalyticsApi } from './Matomo';
+export { MatomoAnalytics } from './Matomo';

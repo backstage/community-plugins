@@ -40,8 +40,14 @@ import {
 } from '@backstage/core-components';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
-import { ReportPortalIcon } from '@backstage-community/plugin-report-portal';
+import {
+  ReportPortalIcon,
+  ReportPortalSearchResultItem,
+} from '@backstage-community/plugin-report-portal';
 import { IconComponent } from '@backstage/core-plugin-api';
+import { SearchResult } from '@backstage/plugin-search-react';
+import { CatalogSearchResultListItem } from '@backstage/plugin-catalog';
+import { TechDocsSearchResultListItem } from '@backstage/plugin-techdocs';
 
 const useSidebarLogoStyles = makeStyles({
   root: {
@@ -76,7 +82,15 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
     <Sidebar>
       <SidebarLogo />
       <SidebarGroup label="Search" icon={<SearchIcon />} to="/search">
-        <SidebarSearchModal />
+        <SidebarSearchModal
+          resultItemComponents={
+            <SearchResult>
+              <CatalogSearchResultListItem />
+              <TechDocsSearchResultListItem />
+              <ReportPortalSearchResultItem />
+            </SearchResult>
+          }
+        />
       </SidebarGroup>
       <SidebarDivider />
       <SidebarGroup label="Menu" icon={<MenuIcon />}>

@@ -15,7 +15,11 @@
  */
 import * as React from 'react';
 
-import { ExpandableSection, Text, TextVariants } from '@patternfly/react-core';
+import {
+  ExpandableSection,
+  Content,
+  ContentVariants,
+} from '@patternfly/react-core';
 
 import { BootableDeviceType } from '../../../types/vm';
 import { deviceKey, deviceLabel } from '../../../utils/vm-utils';
@@ -37,15 +41,15 @@ export const BootOrderEmptySummary: React.FC<BootOrderEmptySummaryProps> = ({
   // Using <ol> because '@patternfly/react-core' <List> currently miss isOrder parameter.
   return (
     <>
-      <Text
-        component={TextVariants.p}
+      <Content
+        component={ContentVariants.p}
         className="kubevirt-boot-order-summary__empty-text"
       >
         No resource selected
-      </Text>
-      <Text component={TextVariants.small} className="text-secondary">
+      </Content>
+      <Content component={ContentVariants.small} className="text-secondary">
         VM will attempt to boot from disks by order of apearance in YAML file
-      </Text>
+      </Content>
       {options.length > 0 && (
         <ExpandableSection
           toggleText={

@@ -1,5 +1,18 @@
 ### Dependencies
 
+## 1.36.4
+
+### Patch Changes
+
+- c222ea4: Updated dependency `@playwright/test` to `1.51.0`.
+
+## 1.36.3
+
+### Patch Changes
+
+- a4149db: Updated dependency `micro-memoize` to `4.1.3`.
+- 3e35324: Updated dependency `start-server-and-test` to `2.0.10`.
+
 ## 1.36.2
 
 ### Patch Changes

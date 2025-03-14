@@ -93,10 +93,9 @@ export const ConditionalAccessSidebar = ({
               }}
               align="left"
             >
-              By default, the selected resource type will be visible to the
-              chosen users in step two. If you want to restrict or grant
-              permission to specific plugin resource type rule, select it and
-              add the required parameters.
+              By default, the selected resource type is visible to all added
+              users. If you want to restrict or grant permission to specific
+              plugin rules, select them and add the parameters.
             </Typography>
           </Box>
           <IconButton

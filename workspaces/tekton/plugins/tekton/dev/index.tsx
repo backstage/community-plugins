@@ -92,6 +92,10 @@ class MockKubernetesProxyApi implements KubernetesProxyApi {
     return delayedResponse(response, 500);
   }
 
+  async deletePod(): Promise<any> {
+    return {};
+  }
+
   async getEventsByInvolvedObjectName(): Promise<any> {
     return {};
   }

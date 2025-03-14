@@ -8,9 +8,12 @@ This is the backend half of the 2 Jenkins plugins and is responsible for:
 - finding the appropriate job(s) on that instance for an entity
 - connecting to Jenkins and gathering data to present to the frontend
 
-## New Backend System
+## Integrating into a backstage instance
 
-The jenkins backend plugin has support for the [new backend system](https://backstage.io/docs/backend-system/), here's how you can set that up:
+```bash
+# From your Backstage root directory
+yarn --cwd packages/backend add @backstage-community/plugin-jenkins-backend
+```
 
 In your `packages/backend/src/index.ts` make the following changes:
 
@@ -21,73 +24,6 @@ In your `packages/backend/src/index.ts` make the following changes:
   backend.add(import('@backstage-community/plugin-jenkins-backend'));
   backend.start();
 ```
-
-## Integrating into a backstage instance
-
-This plugin needs to be added to an existing backstage instance.
-
-```bash
-# From your Backstage root directory
-yarn --cwd packages/backend add @backstage-community/plugin-jenkins-backend
-```
-
-Typically, this means creating a `src/plugins/jenkins.ts` file and adding a reference to it to `src/index.ts`
-
-### jenkins.ts
-
-```typescript
-import {
-  createRouter,
-  DefaultJenkinsInfoProvider,
-} from '@backstage-community/plugin-jenkins-backend';
-import { CatalogClient } from '@backstage/catalog-client';
-import { Router } from 'express';
-import { PluginEnvironment } from '../types';
-
-export default async function createPlugin(
-  env: PluginEnvironment,
-): Promise<Router> {
-  const catalog = new CatalogClient({
-    discoveryApi: env.discovery,
-  });
-
-  return await createRouter({
-    logger: env.logger,
-    jenkinsInfoProvider: DefaultJenkinsInfoProvider.fromConfig({
-      config: env.config,
-      catalog,
-    }),
-    permissions: env.permissions,
-  });
-}
-```
-
-### src/index.ts
-
-```diff
-diff --git a/packages/backend/src/index.ts b/packages/backend/src/index.ts
-index f2b14b2..2c64f47 100644
---- a/packages/backend/src/index.ts
-+++ b/packages/backend/src/index.ts
-@@ -22,6 +22,7 @@ import { Config } from '@backstage/config';
- import app from './plugins/app';
-+import jenkins from './plugins/jenkins';
- import scaffolder from './plugins/scaffolder';
-@@ -56,6 +57,7 @@ async function main() {
-   const authEnv = useHotMemoize(module, () => createEnv('auth'));
-+  const jenkinsEnv = useHotMemoize(module, () => createEnv('jenkins'));
-   const proxyEnv = useHotMemoize(module, () => createEnv('proxy'));
-@@ -63,6 +65,7 @@ async function main() {
-
-   const apiRouter = Router();
-   apiRouter.use('/catalog', await catalog(catalogEnv));
-+  apiRouter.use('/jenkins', await jenkins(jenkinsEnv));
-   apiRouter.use('/scaffolder', await scaffolder(scaffolderEnv));
-```
-
-This plugin must be provided with a JenkinsInfoProvider, this is a strategy object for finding the Jenkins instance and job(s) for an entity.
-
-There is a standard one provided, but the Integrator is free to build their own.
 
 ### DefaultJenkinsInfoProvider
 

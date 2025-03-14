@@ -15,3 +15,4 @@
  */
 
 export { GithubDiscussionsSearchResultListItem } from './plugin';
+export type { GithubDiscussionsSearchResultListItemProps } from './components';

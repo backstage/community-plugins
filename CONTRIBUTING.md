@@ -11,7 +11,7 @@ If you have questions or feedback regarding Community Plugins, you can visit the
   - [Code of Conduct](#code-of-conduct)
   - [License](#license)
   - [Security Issues](#security-issues)
-  - [Get Started!](#get-started)
+  - [Get Started](#get-started)
     - [Forking the Repository](#forking-the-repository)
     - [Developing Plugins in Workspaces](#developing-plugins-in-workspaces)
   - [Coding Guidelines](#coding-guidelines)
@@ -83,7 +83,10 @@ There could be times when there is a need for a more rich development environmen
 
 ## Coding Guidelines
 
-All code is formatted with `prettier` using the configuration in the repo. If possible we recommend configuring your editor to format automatically, but you can also use the `yarn prettier --write <file>` command to format files.
+To keep the codebase consistent and maintainable, we have a some cross workspace tolling in place:
+
+- `yarn`: is the package manager used for all workspaces. We will regularly update the yarn version to keep up with the latest features and bug fixes. This version is managed in the root `package.json` and `.yarnrc.yml` files and should not be locked to a different version in any workspace. Updating the yarn version could imply changes on all the `yarn.lock` files.
+- `prettier`: All code is formatted with `prettier` using the configuration in the repo. If possible we recommend configuring your editor to format automatically, but you can also use the `yarn prettier --write <file>` command to format files.
 
 ## Versioning
 

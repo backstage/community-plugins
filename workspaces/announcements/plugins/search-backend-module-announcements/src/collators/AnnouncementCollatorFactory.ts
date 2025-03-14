@@ -66,7 +66,7 @@ export class AnnouncementCollatorFactory implements DocumentCollatorFactory {
   private constructor(options: AnnouncementCollatorOptions) {
     this.logger = options.logger;
     this.announcementsClient = new DefaultAnnouncementsService({
-      discoveryApi: options.discoveryApi,
+      discovery: options.discoveryApi,
     });
     this.auth = options.auth;
   }

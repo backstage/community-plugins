@@ -25,7 +25,7 @@ import {
   createKubernetesNamespaceAction,
 } from './createKubernetesNamespace';
 
-const LOCAL_ADDR = 'http://localhost:5000';
+const LOCAL_ADDR = 'https://kube-api:5000';
 const FIXTURES_DIR = `${__dirname}/../../__fixtures__/cluster-entities`;
 
 const handlers = [
@@ -169,7 +169,7 @@ describe('kubernetes:create-namespace', () => {
         ...mockContext,
         input: {
           namespace: 'foo',
-          url: 'http://example.com',
+          url: 'https://example.com',
           clusterRef: 'foo',
           token: 'TOKEN',
         },
@@ -185,12 +185,12 @@ describe('kubernetes:create-namespace', () => {
         ...mockContext,
         input: {
           namespace: 'error',
-          url: 'http://localhost:5000',
+          url: 'https://kube-api:5000',
           token: 'TOKEN',
         },
       });
     }).rejects.toThrow(
-      'Failed to create kubernetes namespace, 401 -- Unauthorized',
+      `Failed to create kubernetes namespace, HTTP-Code: 401\nMessage: Unauthorized\nBody: undefined\nHeaders: {\"content-type\":\"application/json\",\"x-powered-by\":\"msw\"}`,
     );
   });
 

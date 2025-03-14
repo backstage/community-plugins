@@ -17,7 +17,6 @@ import type { LoggerService } from '@backstage/backend-plugin-api';
 import { mockServices } from '@backstage/backend-test-utils';
 import { Config } from '@backstage/config';
 
-import { AuditLogger } from '@janus-idp/backstage-plugin-audit-log-node';
 import {
   Adapter,
   Enforcer,
@@ -36,6 +35,7 @@ import { EnforcerDelegate } from '../src/service/enforcer-delegate';
 import { MODEL } from '../src/service/permission-model';
 import { PluginPermissionMetadataCollector } from '../src/service/plugin-endpoints';
 import {
+  auditLoggerMock,
   catalogApiMock,
   conditionalStorageMock,
   csvPermFile,
@@ -44,14 +44,6 @@ import {
   pluginMetadataCollectorMock,
   roleMetadataStorageMock,
 } from './mock-utils';
-
-export function auditLogger(): AuditLogger {
-  return {
-    getActorId: jest.fn().mockImplementation(),
-    createAuditLogDetails: jest.fn().mockImplementation(),
-    auditLog: jest.fn().mockImplementation(),
-  };
-}
 
 export function newConfig(
   permFile?: string,
@@ -142,7 +134,7 @@ export async function newEnforcerDelegate(
 
   return new EnforcerDelegate(
     enf,
-    auditLogger(),
+    auditLoggerMock,
     roleMetadataStorageMock,
     mockClientKnex,
   );
@@ -154,7 +146,6 @@ export async function newPermissionPolicy(
   roleMock?: RoleMetadataStorage,
 ): Promise<RBACPermissionPolicy> {
   const logger = mockServices.logger.mock();
-  const auditLoggerMock = auditLogger();
   const permissionPolicy = await RBACPermissionPolicy.build(
     logger,
     auditLoggerMock,

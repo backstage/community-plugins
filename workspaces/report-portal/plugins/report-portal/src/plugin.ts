@@ -24,6 +24,11 @@ import {
 
 import { reportPortalApiRef, ReportPortalClient } from './api';
 import { entityRootRouteRef, rootRouteRef } from './routes';
+import {
+  createSearchResultListItemExtension,
+  SearchResultListItemExtensionProps,
+} from '@backstage/plugin-search-react';
+import { ReportPortalSearchResultItemProps } from './components/ReportPortalSearchResultItem';
 
 /** @public */
 export const reportPortalPlugin = createPlugin({
@@ -64,5 +69,21 @@ export const ReportPortalGlobalPage = reportPortalPlugin.provide(
     name: 'ReportPortalGlobalPage',
     mountPoint: rootRouteRef,
     component: () => import('./components/Router').then(m => m.Router),
+  }),
+);
+
+/** React extension used to render results on Search page or modal
+ * @public
+ */
+export const ReportPortalSearchResultItem: (
+  props: SearchResultListItemExtensionProps<ReportPortalSearchResultItemProps>,
+) => JSX.Element | null = reportPortalPlugin.provide(
+  createSearchResultListItemExtension({
+    name: 'ReportPortalSearchResultItem',
+    component: () =>
+      import('./components/ReportPortalSearchResultItem').then(
+        m => m.ReportPortalSearchResultItem,
+      ),
+    predicate: result => result.type === 'report-portal',
   }),
 );

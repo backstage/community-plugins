@@ -80,10 +80,7 @@ const StyledResults = styled(Typography)({
   '& > *': { fontWeight: '800' },
 });
 
-/** @public */
-export const ReportPortalOverviewCard = (props: {
-  variant: InfoCardVariants;
-}) => {
+const ReportPortalStatisticsCard = (props: { variant: InfoCardVariants }) => {
   const config = useApi(configApiRef);
   const theme = useTheme();
 
@@ -259,4 +256,17 @@ export const ReportPortalOverviewCard = (props: {
       </Grid>
     </InfoCard>
   );
+};
+
+/** @public */
+export const ReportPortalOverviewCard = (props: {
+  variant: InfoCardVariants;
+}) => {
+  const config = useApi(configApiRef);
+  const { entity } = useEntity();
+
+  if (!isReportPortalAvailable(entity)) return null;
+  if (!config.has('reportPortal.integrations')) return null;
+
+  return <ReportPortalStatisticsCard {...props} />;
 };

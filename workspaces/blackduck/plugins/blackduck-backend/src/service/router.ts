@@ -26,37 +26,31 @@ import Router from 'express-promise-router';
 import { createPermissionIntegrationRouter } from '@backstage/plugin-permission-node';
 import { InputError, NotAllowedError } from '@backstage/errors';
 import { AuthorizeResult } from '@backstage/plugin-permission-common';
-import { createLegacyAuthAdapters } from '@backstage/backend-common';
 import {
   blackduckPermissions,
   blackduckRiskProfileReadPermission,
   blackduckVulnerabilitiesReadPermission,
 } from '@backstage-community/plugin-blackduck-common';
-import { BlackDuckRestApi } from '../api/BlackDuckRestApi';
-import { BlackDuckConfig } from './BlackDuckConfig';
+import {
+  BlackDuckRestApi,
+  BlackDuckConfig,
+} from '@backstage-community/plugin-blackduck-node';
 
-/**
- * @deprecated Please migrate to the new backend system as this will be removed in the future.
- *
- * @public */
+/** @internal */
 export interface RouterOptions {
   logger: LoggerService;
   config: Config;
   permissions: PermissionsService;
   discovery: DiscoveryService;
-  httpAuth?: HttpAuthService;
+  httpAuth: HttpAuthService;
   blackDuckConfig: BlackDuckConfig;
 }
 
-/**
- * @deprecated Please migrate to the new backend system as this will be removed in the future.
- *
- * @public */
+/** @internal */
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
-  const { logger, permissions, config, blackDuckConfig } = options;
-  const { httpAuth } = createLegacyAuthAdapters(options);
+  const { logger, permissions, config, blackDuckConfig, httpAuth } = options;
   const permissionIntegrationRouter = createPermissionIntegrationRouter({
     permissions: blackduckPermissions,
   });

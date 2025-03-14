@@ -1,15 +1,13 @@
 # Knip report
 
-## Unused dependencies (6)
+## Unused dependencies (4)
 
-| Name                                         | Location     | Severity |
-| :------------------------------------------- | :----------- | :------- |
-| @backstage-community/plugin-blackduck-common | package.json | error    |
-| @backstage/plugin-permission-common          | package.json | error    |
-| @backstage/plugin-permission-node            | package.json | error    |
-| @backstage/backend-plugin-api                | package.json | error    |
-| @backstage/backend-common                    | package.json | error    |
-| @backstage/config                            | package.json | error    |
+| Name                                | Location     | Severity |
+| :---------------------------------- | :----------- | :------- |
+| @backstage/plugin-permission-common | package.json | error    |
+| @backstage/plugin-permission-node   | package.json | error    |
+| @backstage/backend-plugin-api       | package.json | error    |
+| @backstage/config                   | package.json | error    |
 
 ## Unused devDependencies (4)
 

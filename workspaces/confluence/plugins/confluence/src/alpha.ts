@@ -13,9 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import React from 'react';
 import { convertLegacyRouteRefs } from '@backstage/core-compat-api';
 import { createFrontendPlugin } from '@backstage/frontend-plugin-api';
-import { SearchResultListItemBlueprint } from '@backstage/plugin-search-react/alpha';
+import {
+  SearchFilterResultTypeBlueprint,
+  SearchResultListItemBlueprint,
+} from '@backstage/plugin-search-react/alpha';
+import { ConfluenceSearchIcon } from './icons';
 import { rootRouteRef } from './routes';
 
 const confluenceSearchResultListItem = SearchResultListItemBlueprint.make({
@@ -33,6 +38,15 @@ const confluenceSearchResultListItem = SearchResultListItemBlueprint.make({
   },
 });
 
+const confluenceSearchFilterResultType = SearchFilterResultTypeBlueprint.make({
+  name: 'confluence-results-type',
+  params: {
+    value: 'confluence',
+    name: 'Confluence',
+    icon: React.createElement(ConfluenceSearchIcon),
+  },
+});
+
 /**
  * @alpha
  */
@@ -41,5 +55,8 @@ export default createFrontendPlugin({
   routes: convertLegacyRouteRefs({
     entityContent: rootRouteRef,
   }),
-  extensions: [confluenceSearchResultListItem],
+  extensions: [
+    confluenceSearchResultListItem,
+    confluenceSearchFilterResultType,
+  ],
 });

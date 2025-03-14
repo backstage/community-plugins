@@ -43,7 +43,7 @@ interface EnhancedTableProps {
 const headCells = [
   { id: 'language', label: 'Language', numeric: false },
   { id: 'totalAcceptances', label: 'Accepted Prompts', numeric: true },
-  { id: 'totalSuggestions', label: 'Accepted Lines of Code', numeric: true },
+  { id: 'totalSuggestions', label: 'Suggested Prompts', numeric: true },
   { id: 'acceptanceRate', label: 'Acceptance Rate (%)', numeric: true },
 ];
 

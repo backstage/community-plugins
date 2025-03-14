@@ -1,5 +1,62 @@
 ## @backstage-community/plugin-redhat-argocd
 
+## 1.17.0
+
+### Minor Changes
+
+- df9d65d: Add backwards compatibility fixes to support RoadieHQ ArgoCD Backend
+
+### Patch Changes
+
+- 32135b8: Updated dependency `@testing-library/user-event` to `14.6.1`.
+- c222ea4: Updated dependency `@playwright/test` to `1.51.0`.
+- 989bd8c: Remove CSS resets from PatternFly CSS import
+
+## 1.16.0
+
+### Minor Changes
+
+- bba0c01: Add multi-source application support and move application types to plugin-redhat-argocd-common package.
+
+### Patch Changes
+
+- Updated dependencies [bba0c01]
+  - @backstage-community/plugin-redhat-argocd-common@1.3.0
+
+## 1.15.0
+
+### Minor Changes
+
+- 8322199: Introduce new Red Hat ArgoCD Backend for the Red Hat ArgoCD Plugin
+
+## 1.14.0
+
+### Minor Changes
+
+- a7730fc: Update shared react library @janus-idp/shared-react to version 2.16.0 with newer @kubernetes/client-node@1.0.0-rc7.
+
+## 1.13.0
+
+### Minor Changes
+
+- b1f7d58: Backstage version bump to v1.35.0
+
+### Patch Changes
+
+- Updated dependencies [b1f7d58]
+  - @backstage-community/plugin-redhat-argocd-common@1.2.0
+
+## 1.12.0
+
+### Minor Changes
+
+- 5b0553e: bump backstage to 1.34.2 and remove @spotify/prettier-config
+
+### Patch Changes
+
+- Updated dependencies [5b0553e]
+  - @backstage-community/plugin-redhat-argocd-common@1.1.0
+
 ## 1.11.3
 
 ### Patch Changes

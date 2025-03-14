@@ -5,51 +5,37 @@
 ```ts
 /// <reference types="react" />
 
-import { ApiRef } from '@backstage/core-plugin-api';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
-import { BulkCheckResponse } from '@backstage-community/plugin-tech-insights-common';
-import { Check as Check_2 } from '@backstage-community/plugin-tech-insights-common';
-import { CheckLink } from '@backstage-community/plugin-tech-insights-common';
+import { BooleanCheck } from '@backstage-community/plugin-tech-insights-react';
+import { Check } from '@backstage-community/plugin-tech-insights-common';
 import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
-import { CompoundEntityRef } from '@backstage/catalog-model';
-import { DiscoveryApi } from '@backstage/core-plugin-api';
-import { ElementType } from 'react';
-import { Entity } from '@backstage/catalog-model';
-import { Entity as Entity_2 } from '@backstage/catalog-model/index';
-import { FactSchema } from '@backstage-community/plugin-tech-insights-common';
-import { IdentityApi } from '@backstage/core-plugin-api';
-import { InsightFacts as InsightFacts_2 } from '@backstage-community/plugin-tech-insights-common';
-import { JsonValue } from '@backstage/types';
+import { CheckResultRenderer } from '@backstage-community/plugin-tech-insights-react';
+import { Entity } from '@backstage/catalog-model/index';
+import { InsightFacts } from '@backstage-community/plugin-tech-insights-common';
+import { jsonRulesEngineCheckResultRenderer } from '@backstage-community/plugin-tech-insights-react';
 import { JSX as JSX_2 } from 'react';
-import { MouseEventHandler } from 'react';
 import { PropsWithChildren } from 'react';
-import { default as React_2 } from 'react';
 import { ReactNode } from 'react';
+import { ResultCheckIconBaseComponentProps } from '@backstage-community/plugin-tech-insights-react';
+import { ResultCheckIconProps } from '@backstage-community/plugin-tech-insights-react';
+import { ResultLinksMenuInfo } from '@backstage-community/plugin-tech-insights-react';
 import { RouteRef } from '@backstage/core-plugin-api';
-import { TechInsightsClient as TechInsightsClient_2 } from '@backstage-community/plugin-tech-insights-common/client';
+import { TechInsightsApi } from '@backstage-community/plugin-tech-insights-react';
+import { techInsightsApiRef } from '@backstage-community/plugin-tech-insights-react';
+import { TechInsightsClient } from '@backstage-community/plugin-tech-insights-react';
 
-// @public (undocumented)
-export const BooleanCheck: (props: {
-  checkResult: CheckResult;
-}) => React_2.JSX.Element;
+export { BooleanCheck };
 
-// @public @deprecated
-export type Check = Check_2;
+export { Check };
 
-// @public
-export type CheckResultRenderer = {
-  type: string;
-  component: (check: CheckResult) => React_2.ReactElement;
-  description?: (check: CheckResult) => string | React_2.ReactElement;
-  isFailed?: (check: CheckResult) => boolean;
-};
+export { CheckResultRenderer };
 
 // @public (undocumented)
 export const EntityTechInsightsScorecardCard: (props: {
   title: string;
   description?: string | undefined;
   checksId?: string[] | undefined;
-  filter?: ((check: Check_2) => boolean) | undefined;
+  filter?: ((check: Check) => boolean) | undefined;
   onlyFailed?: boolean | undefined;
   expanded?: boolean | undefined;
 }) => JSX_2.Element;
@@ -59,50 +45,24 @@ export const EntityTechInsightsScorecardContent: (props: {
   title: string;
   description?: string | undefined;
   checksId?: string[] | undefined;
-  filter?: ((check: Check_2) => boolean) | undefined;
+  filter?: ((check: Check) => boolean) | undefined;
 }) => JSX_2.Element;
 
-// @public @deprecated
-export interface InsightFacts {
-  // (undocumented)
-  [factId: string]: {
-    timestamp: string;
-    version: string;
-    facts: Record<string, JsonValue>;
-  };
-}
+export { InsightFacts };
 
-// @public
-export const jsonRulesEngineCheckResultRenderer: CheckResultRenderer;
+export { jsonRulesEngineCheckResultRenderer };
 
-// @public (undocumented)
-export type ResultCheckIconBaseComponentProps = PropsWithChildren<{
-  onClick?: MouseEventHandler;
-}>;
+export { ResultCheckIconBaseComponentProps };
 
-// @public
-export interface ResultCheckIconProps<
-  P extends ResultCheckIconBaseComponentProps,
-> {
-  checkResultRenderer?: CheckResultRenderer;
-  component?: ElementType<P>;
-  componentProps?: Omit<P, 'onClick' | 'children'>;
-  disableLinksMenu?: boolean;
-  entity?: Entity;
-  missingRendererComponent?: ReactNode;
-  result: CheckResult;
-}
+export { ResultCheckIconProps };
 
-// @public
-export type ResultLinksMenuInfo = {
-  open: (element: Element) => void;
-};
+export { ResultLinksMenuInfo };
 
 // @public (undocumented)
 export const ScorecardInfo: (props: {
   checkResults: CheckResult[];
   title: ReactNode;
-  entity: Entity_2;
+  entity: Entity;
   description?: string | undefined;
   noWarning?: boolean | undefined;
   expanded?: boolean | undefined;
@@ -111,81 +71,27 @@ export const ScorecardInfo: (props: {
 // @public (undocumented)
 export const ScorecardsList: (props: {
   checkResults: CheckResult[];
-  entity?: Entity_2 | undefined;
+  entity?: Entity | undefined;
 }) => JSX_2.Element;
 
-// @public
-export interface TechInsightsApi {
-  // (undocumented)
-  getAllChecks(): Promise<Check_2[]>;
-  // (undocumented)
-  getCheckResultRenderers: (types: string[]) => CheckResultRenderer[];
-  // (undocumented)
-  getFacts(entity: CompoundEntityRef, facts: string[]): Promise<InsightFacts_2>;
-  // (undocumented)
-  getFactSchemas(): Promise<FactSchema[]>;
-  // (undocumented)
-  getLinksForEntity(
-    result: CheckResult,
-    entity: Entity,
-    options?: {
-      includeStaticLinks?: boolean;
-    },
-  ): CheckLink[];
-  // (undocumented)
-  isCheckResultFailed: (check: CheckResult) => boolean;
-  // (undocumented)
-  runBulkChecks(
-    entities: CompoundEntityRef[],
-    checks?: Check_2[],
-  ): Promise<BulkCheckResponse>;
-  // (undocumented)
-  runChecks(
-    entityParams: CompoundEntityRef,
-    checks?: string[],
-  ): Promise<CheckResult[]>;
-}
+export { TechInsightsApi };
 
-// @public
-export const techInsightsApiRef: ApiRef<TechInsightsApi>;
+export { techInsightsApiRef };
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 export const TechInsightsCheckIcon: <
   P extends ResultCheckIconBaseComponentProps,
 >(
   props: ResultCheckIconProps<P>,
 ) => JSX_2.Element;
 
-// @public (undocumented)
-export class TechInsightsClient
-  extends TechInsightsClient_2
-  implements TechInsightsApi
-{
-  constructor(options: {
-    discoveryApi: DiscoveryApi;
-    identityApi: IdentityApi;
-    renderers?: CheckResultRenderer[];
-    getEntityLinks?: (result: CheckResult, entity: Entity) => CheckLink[];
-  });
-  // (undocumented)
-  getCheckResultRenderers(types: string[]): CheckResultRenderer[];
-  // (undocumented)
-  getLinksForEntity(
-    result: CheckResult,
-    entity: Entity,
-    options?: {
-      includeStaticLinks?: boolean;
-    },
-  ): CheckLink[];
-  // (undocumented)
-  isCheckResultFailed(check: CheckResult): boolean;
-}
+export { TechInsightsClient };
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 export const TechInsightsLinksMenu: (
   props: PropsWithChildren<{
     result: CheckResult;
-    entity?: Entity_2 | undefined;
+    entity?: Entity | undefined;
     setMenu(opener: ResultLinksMenuInfo | undefined): void;
   }>,
 ) => JSX_2.Element | null;

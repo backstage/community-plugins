@@ -123,12 +123,13 @@ By default the Confluence documents indexing will run every two hours. Here's ho
 search:
   collators:
     confluence:
-      frequency:
-        minutes: 45
-      timeout:
-        minutes: 3
-      initialDelay:
-        minutes: 3
+      schedule:
+        frequency:
+          minutes: 45
+        timeout:
+          minutes: 3
+        initialDelay:
+          seconds: 3
 ```
 
 ## Special thanks & Disclaimer

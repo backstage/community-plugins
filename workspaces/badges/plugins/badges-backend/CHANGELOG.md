@@ -1,5 +1,23 @@
 # @backstage-community/plugin-badges-backend
 
+## 0.8.0
+
+### Minor Changes
+
+- c3a244e: Backstage version bump to v1.36.1
+
+## 0.7.1
+
+### Patch Changes
+
+- 208e250: Updated dependency `@types/uuid` to `^10.0.0`.
+
+## 0.7.0
+
+### Minor Changes
+
+- 0b09ae7: Backstage version bump to v1.35.1
+
 ## 0.6.0
 
 ### Minor Changes

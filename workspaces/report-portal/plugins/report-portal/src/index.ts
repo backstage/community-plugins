@@ -13,12 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * Report portal frontend plugin
+ * @packageDocumentation
+ */
 export {
-  reportPortalPlugin,
-  ReportPortalOverviewCard,
   ReportPortalGlobalPage,
+  ReportPortalOverviewCard,
+  reportPortalPlugin,
+  ReportPortalSearchResultItem,
 } from './plugin';
 
 export { isReportPortalAvailable } from './utils/isReportPortalAvailable';
 export { ReportPortalIcon } from './components/ReportPortalIcon';
-export type { ReportPortalGlobalPageProps } from './components/ReportPortalGlobalPage';
+export { ReportPortalSearchBar } from './components/ReportPortalSearchBar';
+export { type ReportPortalGlobalPageProps } from './components/ReportPortalGlobalPage';
+export { type ReportPortalSearchResultItemProps } from './components/ReportPortalSearchResultItem';

@@ -15,7 +15,14 @@
  */
 import React from 'react';
 import { createDevApp } from '@backstage/dev-utils';
-import { reportPortalPlugin, ReportPortalGlobalPage } from '../src/plugin';
+import {
+  reportPortalPlugin,
+  ReportPortalGlobalPage,
+  ReportPortalOverviewCard,
+} from '../src/plugin';
+import { EntityProvider } from '@backstage/plugin-catalog-react';
+import { mockEntity } from '../src/mocks';
+import Grid from '@mui/material/Grid';
 
 createDevApp()
   .registerPlugin(reportPortalPlugin)
@@ -23,5 +30,16 @@ createDevApp()
     element: <ReportPortalGlobalPage />,
     title: 'Root Page',
     path: '/report-portal',
+  })
+  .addPage({
+    element: (
+      <EntityProvider entity={mockEntity}>
+        <Grid container xs={6} padding={4}>
+          <ReportPortalOverviewCard variant="flex" />
+        </Grid>
+      </EntityProvider>
+    ),
+    title: 'Overview Card',
+    path: '/redacted/entitypage',
   })
   .render();

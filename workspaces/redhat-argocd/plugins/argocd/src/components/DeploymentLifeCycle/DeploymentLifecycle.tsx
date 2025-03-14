@@ -25,12 +25,17 @@ import { argoCDApiRef } from '../../api';
 import { useApplications } from '../../hooks/useApplications';
 import { useArgocdConfig } from '../../hooks/useArgocdConfig';
 import { useArgocdViewPermission } from '../../hooks/useArgocdViewPermission';
-import { Application, RevisionInfo } from '../../types/application';
+import {
+  Application,
+  RevisionInfo,
+} from '@backstage-community/plugin-redhat-argocd-common';
 import {
   getArgoCdAppConfig,
   getInstanceName,
   getUniqueRevisions,
+  mapRevisions,
 } from '../../utils/utils';
+
 import PermissionAlert from '../Common/PermissionAlert';
 import DeploymentLifecycleCard from './DeploymentLifecycleCard';
 import DeploymentLifecycleDrawer from './DeploymentLifecycleDrawer';
@@ -98,9 +103,7 @@ const DeploymentLifecycle = () => {
           revisionIDs: uniqRevisions,
         })
         .then(data => {
-          uniqRevisions.forEach((rev, i) => {
-            revisionCache.current[rev] = data[i];
-          });
+          revisionCache.current = mapRevisions(uniqRevisions, data);
           setRevisions(revisionCache.current);
         })
         .catch(e => {

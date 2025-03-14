@@ -25,6 +25,11 @@ import {
 import { mockServices } from '@backstage/backend-test-utils';
 
 describe('JenkinsConfig', () => {
+  it('Reads empty config', async () => {
+    const config = JenkinsConfig.fromConfig(new ConfigReader({}));
+    expect(config.instances).toEqual([]);
+  });
+
   it('Reads simple config and annotation', async () => {
     const config = JenkinsConfig.fromConfig(
       new ConfigReader({

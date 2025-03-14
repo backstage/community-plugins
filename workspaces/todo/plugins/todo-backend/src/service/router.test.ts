@@ -16,11 +16,12 @@
 
 import express from 'express';
 import request from 'supertest';
-import { errorHandler } from '@backstage/backend-common';
 
 import { createRouter } from './router';
 import { parseFilterParam, parseOrderByParam } from '../lib/utils';
 import { TodoService } from './types';
+
+import { mockServices } from '@backstage/backend-test-utils';
 
 const mockListBody = {
   items: [{ text: 'my todo', tag: 'TODO' }],
@@ -50,8 +51,10 @@ describe('createRouter', () => {
   beforeAll(async () => {
     const router = await createRouter({
       todoService: mockService,
+      config: mockServices.rootConfig(),
+      logger: mockServices.rootLogger(),
     });
-    app = express().use(router).use(errorHandler());
+    app = express().use(router);
   });
 
   beforeEach(() => {

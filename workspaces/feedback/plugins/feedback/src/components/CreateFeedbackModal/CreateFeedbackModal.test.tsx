@@ -20,17 +20,17 @@ import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
 import { fireEvent } from '@testing-library/react';
 
 import { FeedbackAPI, feedbackApiRef } from '../../api';
-import { mockEntity } from '../../mocks';
 import { CreateFeedbackModal } from './CreateFeedbackModal';
+import { mockErrorList, mockExperienceList } from '../../mocks';
 
 describe('Create Feedback Modal', () => {
   const feedbackApi: Partial<FeedbackAPI> = {
     createFeedback: jest.fn(),
+    getErrorList: jest.fn().mockReturnValue(mockErrorList),
+    getExperienceList: jest.fn().mockReturnValue(mockExperienceList),
   };
 
   const PROJECT_ID = 'component:default/example-website';
-  const USER_ID = 'user:default/guest';
-
   const handleModalClose = jest.fn().mockReturnValue(true);
 
   const render = async () =>
@@ -39,8 +39,7 @@ describe('Create Feedback Modal', () => {
         <CreateFeedbackModal
           handleModalCloseFn={handleModalClose}
           projectEntity={PROJECT_ID}
-          userEntity={USER_ID}
-          serverType={mockEntity.metadata.annotations?.['feedback/type']!}
+          open
         />
       </TestApiProvider>,
     );
@@ -66,11 +65,6 @@ describe('Create Feedback Modal', () => {
 
   it('should render all tags for bug', async () => {
     const rendered = await render();
-    expect(
-      rendered.getByRole('heading', {
-        name: 'Select Bug: Slow Loading Not Responsive Navigation UI Issues Other',
-      }),
-    ).toBeInTheDocument();
     expect(
       rendered.getByRole('button', { name: 'Slow Loading' }),
     ).toBeInTheDocument();
@@ -130,12 +124,6 @@ describe('Create Feedback Modal', () => {
   it('should render all tags for feedback', async () => {
     const rendered = await render();
     fireEvent.click(rendered.getByRole('radio', { name: 'Feedback' }));
-
-    expect(
-      rendered.getByRole('heading', {
-        name: 'Select Feedback: Excellent Good Needs Improvement Other',
-      }),
-    ).toBeInTheDocument();
     expect(
       rendered.getByRole('button', { name: 'Excellent' }),
     ).toBeInTheDocument();

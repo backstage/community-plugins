@@ -27,7 +27,6 @@ import { useApi } from '@backstage/core-plugin-api';
 
 import { rbacApiRef } from '../../api/RBACBackendClient';
 import { MemberEntity } from '../../types';
-import { initialPermissionPolicyRowValue } from './const';
 import { RoleForm } from './RoleForm';
 import { RoleFormValues } from './types';
 
@@ -53,7 +52,8 @@ export const CreateRolePage = () => {
     kind: 'role',
     description: '',
     selectedMembers: [],
-    permissionPoliciesRows: [initialPermissionPolicyRowValue],
+    selectedPlugins: [],
+    permissionPoliciesRows: [],
   };
 
   if (membersLoading) {
