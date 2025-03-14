@@ -42,52 +42,44 @@ import {
   kubernetesClustersReadPermission,
   kubernetesResourcesReadPermission,
 } from '@backstage/plugin-kubernetes-common';
-import { makeStyles } from '@mui/styles';
+import { styled } from '@mui/styles';
 
-const useStyles = makeStyles(() => ({
-  container: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    minHeight: '100%',
-    minWidth: '100%',
-  },
-  title: {
-    fontWeight: 400,
-  },
-  bold: {
-    fontWeight: 600,
-  },
-  button: {
-    textTransform: 'none',
-  },
+const StyledBox = styled(Box)(() => ({
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  minHeight: '100%',
+  minWidth: '100%',
 }));
 
+const StyledTypography = styled(Typography)(() => ({
+  fontWeight: 600,
+})) as typeof Typography;
+
 export const MissingPermissionPage = () => {
-  const classes = useStyles();
   const navigate = useNavigate();
 
   return (
-    <Box className={classes.container}>
+    <StyledBox>
       <Grid container alignItems="center" justifyContent="space-around">
         <Grid item xs={4} md={4}>
           <Stack spacing={3} alignItems="flex-start">
-            <Typography variant="h3" className={classes.title}>
+            <Typography variant="h3" style={{ fontWeight: 400 }}>
               Missing Permission
             </Typography>
             <Typography variant="body1">
               To view Topology, your administrator must grant you{' '}
-              <Typography component="span" className={classes.bold}>
+              <StyledTypography component="span">
                 {kubernetesClustersReadPermission.name}
-              </Typography>
+              </StyledTypography>
               {' and '}
-              <Typography component="span" className={classes.bold}>
+              <StyledTypography component="span">
                 {kubernetesResourcesReadPermission.name}
-              </Typography>{' '}
+              </StyledTypography>{' '}
               permissions.
             </Typography>
             <Button
-              className={classes.button}
+              style={{ textTransform: 'none' }}
               variant="outlined"
               color="primary"
               onClick={() => navigate(-1)}
@@ -100,6 +92,6 @@ export const MissingPermissionPage = () => {
           <img src={MissingPermissionImg} alt="permission icon" />
         </Grid>
       </Grid>
-    </Box>
+    </StyledBox>
   );
 };
