@@ -27,11 +27,11 @@ spec:
           type: string
           description: Severity level of the incident.
           enum:
-            - "1"
-            - "2"
-            - "3"
-            - "4"
-            - "5"
+            - '1'
+            - '2'
+            - '3'
+            - '4'
+            - '5'
   steps:
     - id: createRecord
       name: Create Record
@@ -45,4 +45,4 @@ spec:
   output:
     incidentId: ${{ steps.createRecord.output.id }}
     text:
-      - title: "Incident record created successfully."
+      - title: 'Incident record created successfully.'
