@@ -2624,7 +2624,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-todo-backend@workspace:plugins/todo-backend"
   dependencies:
-    "@backstage/backend-common": "npm:^0.25.0"
+    "@backstage/backend-defaults": "npm:^0.8.1"
     "@backstage/backend-openapi-utils": "npm:^0.5.0"
     "@backstage/backend-plugin-api": "npm:^1.2.0"
     "@backstage/backend-test-utils": "npm:^1.3.0"
@@ -2810,7 +2810,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/backend-defaults@npm:^0.8.0":
+"@backstage/backend-defaults@npm:^0.8.0, @backstage/backend-defaults@npm:^0.8.1":
   version: 0.8.1
   resolution: "@backstage/backend-defaults@npm:0.8.1"
   dependencies:
