@@ -1,5 +1,11 @@
 # @backstage-community/plugin-kiali-backend
 
+## 1.20.2
+
+### Patch Changes
+
+- 973a5ef: remove prettier from devDependencies
+
 ## 1.20.1
 
 ### Patch Changes
