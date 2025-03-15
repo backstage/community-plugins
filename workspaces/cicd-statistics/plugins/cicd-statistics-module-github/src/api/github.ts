@@ -38,7 +38,7 @@ export const getProjectNameFromEntity = (entity: Entity) =>
   entity?.metadata.annotations?.[GITHUB_ACTIONS_ANNOTATION] ?? '';
 
 /**
- * This type represents a initialized gitlab client with octokit
+ * This type represents a initialized github client with octokit
  *
  * @public
  */

@@ -53,7 +53,7 @@ const jobMock: Job = {
 } as Job;
 
 describe('util functionality', () => {
-  it('transforms the pipeline object to the build object', () => {
+  it('transforms the workflow object to the build object', () => {
     const builds = workflowToBuild(workflowMock);
     expect(builds).toEqual({
       id: '1000',
