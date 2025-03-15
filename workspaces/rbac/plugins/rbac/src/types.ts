@@ -74,15 +74,27 @@ export type PermissionsData = {
   usingResourceType?: boolean;
 };
 
+/**
+ * @public
+ */
 export type MemberEntity = UserEntity | GroupEntity;
 
+/**
+ * @public
+ */
 export type RoleError = { error: { name: string; message: string } };
 
+/**
+ * @public
+ */
 export type RoleBasedConditions = Omit<
   RoleConditionalPolicyDecision<PermissionAction>,
   'id'
 >;
 
+/**
+ * @public
+ */
 export type ConditionRule = {
   name: string;
   description?: string;
@@ -90,6 +102,9 @@ export type ConditionRule = {
   paramsSchema: RJSFSchema;
 };
 
+/**
+ * @public
+ */
 export type PluginConditionRules = {
   pluginId: string;
   rules: ConditionRule[];
