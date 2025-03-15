@@ -1,5 +1,19 @@
 # @backstage-community/plugin-tech-insights-maturity
 
+## 0.2.1
+
+### Patch Changes
+
+- d2113b3: Fixed entity page integration instructions
+- a8e2f2c: Updated dependency `@material-ui/lab` to `4.0.0-alpha.61`.
+  Updated dependency `@mui/icons-material` to `5.16.14`.
+  Updated dependency `@mui/material` to `5.16.14`.
+  Updated dependency `@mui/styles` to `5.16.14`.
+  Updated dependency `@mui/x-charts` to `6.19.8`.
+  Updated dependency `@mui/lab` to `5.0.0-alpha.175`.
+- 47f1713: - update imports to come from the tech-insights-react package
+  - remove direct dependency on `tech-insights` frontend package
+
 ## 0.2.0
 
 ### Minor Changes
