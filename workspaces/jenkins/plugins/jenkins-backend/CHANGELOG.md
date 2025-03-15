@@ -1,5 +1,13 @@
 # @backstage-community/plugin-jenkins-backend
 
+## 0.12.2
+
+### Patch Changes
+
+- 319b23a: Fixed a bug that prevented the backend from starting if no config was provided.
+- 319b23a: Updated config schema to indicate that _either_ a `jenkins.instances` array should be provided _or_ `jenkins.baseUrl`, `jenkins.username`, and `jenkins.apiKey`, but never both.
+- 5d074b1: Sanitize user input in router before using values in API
+
 ## 0.12.1
 
 ### Patch Changes
