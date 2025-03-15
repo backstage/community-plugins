@@ -18,57 +18,10 @@ import {
   RootConfigService,
 } from '@backstage/backend-plugin-api';
 import { InputError } from '@backstage/errors';
+import { buildJenkinsClient } from '../../config';
 import { createTemplateAction } from '@backstage/plugin-scaffolder-node';
 import fs from 'fs/promises';
 import Jenkins from 'jenkins';
-
-async function createJobByServerUrl(
-  config: RootConfigService,
-  ctx: any,
-  jobXml: string,
-) {
-  const { folderName, jobName, serverUrl } = ctx.input;
-  const username = config.getOptionalString('jenkins.username');
-  const apiKey = config.getOptionalString('jenkins.apiKey');
-  const server = serverUrl || config.getOptionalString('jenkins.baseUrl');
-  if (!username || !apiKey) {
-    throw new InputError(
-      `No valid Jenkins credentials given. Please add them to the config file.`,
-    );
-  }
-  if (!server) {
-    throw new InputError(
-      `No valid Jenkins server given. Please add it to the config file.`,
-    );
-  }
-  const token = Buffer.from(`${username}:${apiKey}`).toString('base64');
-  let url = `${server}`;
-  if (folderName) {
-    url = url.concat(`/job/${folderName}`);
-  }
-  url = url.concat(`/createItem?name=${jobName}`);
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: {
-      Authorization: `Basic ${token}`,
-      'Content-Type': 'application/xml',
-    },
-    body: jobXml,
-  });
-  if (response.ok) {
-    ctx.logger.info(`Successfully created job ${jobName}`);
-    ctx.logger.info(
-      `Job URL: ${server}${
-        folderName ? `/job/${folderName}` : ''
-      }/job/${jobName}`,
-    );
-  }
-  if (!response.ok) {
-    throw new Error(
-      `Failed to create job, ${response.status} ${response.statusText}`,
-    );
-  }
-}
 
 /**
  * This createJob function, creates a job given a job name and own configuration file as xml format
@@ -146,12 +99,8 @@ export function createJob(jenkins: Jenkins, config: RootConfigService) {
         );
       }
 
-      if (serverUrl) {
-        await createJobByServerUrl(config, ctx, jobXml);
-        return;
-      }
-
-      await jenkins.job.create(jobName, jobXml);
+      const client = serverUrl ? buildJenkinsClient(config, serverUrl) : jenkins;
+      await client.job.create(jobName, jobXml);
       ctx.logger.info('Job created successfully!');
     },
   });
