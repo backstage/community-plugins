@@ -19,10 +19,51 @@ import { forceCollide, forceSimulation } from 'd3-force';
 import Segment from '../../utils/segment';
 import type { Entry, Quadrant, Ring } from '../../utils/types';
 
+export const margin = 16;
+
+export const determineColumnWidth = (width: number): number => {
+  const minWidth = 110;
+  const maxWidth = 130;
+  const maxContainerWidth = 1600;
+
+  return Math.min(
+    maxWidth,
+    Math.max(
+      minWidth,
+      minWidth +
+        ((width - maxContainerWidth / 2) / maxContainerWidth) *
+          (maxWidth - minWidth),
+    ),
+  );
+};
+
+export const determineColumnCount = (
+  legendWidth: number,
+  columnWidth: number,
+): number => {
+  const columnWidths = [columnWidth, columnWidth * 2, columnWidth * 3];
+  return (
+    columnWidths.findIndex(width => legendWidth <= width) + 1 ||
+    columnWidths.length
+  );
+};
+
+export const determineLegendWidth = (
+  width: number,
+  columnWidth: number,
+): number => {
+  const thresholds = [850, 1250];
+  const columnWidths = [columnWidth, columnWidth * 2, columnWidth * 3];
+
+  if (width < thresholds[0]) return columnWidths[0];
+  if (width < thresholds[1]) return columnWidths[1];
+  return columnWidths[2];
+};
+
 export const adjustQuadrants = (
   quadrants: Quadrant[],
-  radius: number,
   width: number,
+  legendWidth: number,
   height: number,
 ) => {
   /*
@@ -43,40 +84,34 @@ export const adjustQuadrants = (
     ┼───────────┼─────────────────────────────┼───────────┼─3
      */
 
-  const margin = 16;
-  const xStops = [
-    margin,
-    width / 2 - radius - margin,
-    width / 2 + radius + margin,
-    width - margin,
-  ];
+  const xStarts = [margin, width - legendWidth - margin];
   const yStops = [margin, height / 2 - margin, height / 2, height - margin];
 
   // The quadrant parameters correspond to Q[0..3] above.  They are in this order because of the
   // original Zalando code; maybe we should refactor them to be in reverse order?
   const legendParams = [
     {
-      x: xStops[2],
+      x: xStarts[1],
       y: yStops[2],
-      width: xStops[3] - xStops[2],
+      width: legendWidth,
       height: yStops[3] - yStops[2],
     },
     {
-      x: xStops[0],
+      x: xStarts[0],
       y: yStops[2],
-      width: xStops[1] - xStops[0],
+      width: legendWidth,
       height: yStops[3] - yStops[2],
     },
     {
-      x: xStops[0],
+      x: xStarts[0],
       y: yStops[0],
-      width: xStops[1] - xStops[0],
+      width: legendWidth,
       height: yStops[1] - yStops[0],
     },
     {
-      x: xStops[2],
+      x: xStarts[1],
       y: yStops[0],
-      width: xStops[3] - xStops[2],
+      width: legendWidth,
       height: yStops[1] - yStops[0],
     },
   ];
