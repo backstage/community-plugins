@@ -40,6 +40,7 @@ import { BackstageRoleManager } from '../role-manager/role-manager';
 import { EnforcerDelegate } from '../service/enforcer-delegate';
 import { MODEL } from '../service/permission-model';
 import { Connection, connectRBACProviders } from './connect-providers';
+import { conditionalStorageMock } from '../../__fixtures__/mock-utils';
 
 const mockLoggerService = mockServices.logger.mock();
 
@@ -187,6 +188,7 @@ describe('Connection', () => {
     enforcerDelegate = new EnforcerDelegate(
       enf,
       auditLoggerMock,
+      conditionalStorageMock,
       roleMetadataStorageMock,
       knex,
     );
@@ -490,6 +492,7 @@ describe('connectRBACProviders', () => {
     const enforcerDelegate = new EnforcerDelegate(
       enf,
       auditLoggerMock,
+      conditionalStorageMock,
       roleMetadataStorageMock,
       knex,
     );

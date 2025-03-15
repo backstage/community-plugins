@@ -1116,6 +1116,7 @@ async function newEnforcerDelegate(
   return new EnforcerDelegate(
     enf,
     auditLoggerMock,
+    conditionalStorageMock,
     roleMetadataStorageMock,
     mockClientKnex,
   );
