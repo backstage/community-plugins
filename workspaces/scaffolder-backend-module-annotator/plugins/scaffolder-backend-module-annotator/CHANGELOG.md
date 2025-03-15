@@ -1,5 +1,11 @@
 ## @janus-idp/backstage-scaffolder-backend-module-annotator [1.3.0](https://github.com/janus-idp/backstage-plugins/compare/@janus-idp/backstage-scaffolder-backend-module-annotator@1.2.1...@janus-idp/backstage-scaffolder-backend-module-annotator@1.3.0) (2024-07-25)
 
+## 2.5.1
+
+### Patch Changes
+
+- 973a5ef: remove prettier from devDevpendencies
+
 ## 2.5.0
 
 ### Minor Changes
