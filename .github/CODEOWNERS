@@ -18,7 +18,7 @@ yarn.lock                                                               @backsta
 /workspaces/analytics/plugins/analytics-provider-segment                @backstage/community-plugins-maintainers  @AndrienkoAleksandr @PatAKnight @dzemanov 
 /workspaces/announcements                                               @backstage/community-plugins-maintainers  @kurtaking
 /workspaces/azure-devops                                                @backstage/community-plugins-maintainers  @awanlin
-/workspaces/azure-sites                                                 @backstage/community-plugins-maintainers  @deepan10, @sarabadu
+/workspaces/azure-sites                                                 @backstage/community-plugins-maintainers  @deepan10 @sarabadu
 /workspaces/azure-storage-explorer                                      @backstage/community-plugins-maintainers  @deepan10
 /workspaces/azure-resources                                             @backstage/community-plugins-maintainers  @sarabadu
 /workspaces/bitrise                                                     @backstage/community-plugins-maintainers  @backstage/sda-se-reviewers
