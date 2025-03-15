@@ -16,9 +16,11 @@
 
 import { createApiRef } from '@backstage/core-plugin-api';
 import {
+  EngagementMetrics,
   Metric,
   MetricsType,
   PeriodRange,
+  SeatAnalysis,
 } from '@backstage-community/plugin-copilot-common';
 
 export const copilotApiRef = createApiRef<CopilotApi>({
@@ -32,6 +34,18 @@ export interface CopilotApi {
     type: MetricsType,
     team?: string,
   ): Promise<Metric[]>;
+  getEngagementMetrics(
+    startDate: Date,
+    endDate: Date,
+    type: MetricsType,
+    team?: string,
+  ): Promise<EngagementMetrics[]>;
+  getSeatMetrics(
+    startDate: Date,
+    endDate: Date,
+    type: MetricsType,
+    team?: string,
+  ): Promise<SeatAnalysis[]>;
   fetchTeams(
     startDate: Date,
     endDate: Date,
