@@ -1,5 +1,12 @@
 ### Dependencies
 
+## 5.4.1
+
+### Patch Changes
+
+- Updated dependencies [973a5ef]
+  - @backstage-community/plugin-ocm-common@3.8.1
+
 ## 5.4.0
 
 ### Minor Changes
