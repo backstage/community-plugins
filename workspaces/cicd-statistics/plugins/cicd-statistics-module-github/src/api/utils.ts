@@ -44,8 +44,8 @@ const statusMap: Record<string, FilterStatusType> = {
   pending: 'running',
 };
 
-// all gitlab trigger reasons can be found here: https://docs.gitlab.com/ee/api/workflows.html#list-project-workflows
-const triggerReasonMap: Record<string, TriggerReason> = {
+// see https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows
+const triggerEventMap: Record<string, TriggerReason> = {
   push: 'scm',
   workflow_dispatch: 'manual',
   pull_request: 'scm',
@@ -55,9 +55,9 @@ const triggerReasonMap: Record<string, TriggerReason> = {
 };
 
 /**
- * Takes the Pipeline object from Gitlab and transforms it to the Build object
+ * Takes the Workflow object from Github and transforms it to the Build object
  *
- * @param workflows - Pipeline object that gets returned from Gitlab
+ * @param workflow - Workflow object that gets returned from Github
  *
  * @public
  */
@@ -70,17 +70,17 @@ export function workflowToBuild(
     branchType: ['main', 'master'].includes(workflow.head_branch ?? '')
       ? 'master'
       : 'branch',
-    duration: 0, // will get filled in later in a seperate API call
+    duration: 0, // will get filled in later in a separate API call
     requestedAt: new Date(workflow.created_at),
-    triggeredBy: triggerReasonMap[workflow.event] ?? 'other',
+    triggeredBy: triggerEventMap[workflow.event] ?? 'other',
     stages: [],
   };
 }
 
 /**
- * Takes the Job object from Gitlab and transforms it to the Stage object
+ * Takes the Job object from Github and transforms it to the Stage object
  *
- * @param jobs - Job object that gets returned from Gitlab
+ * @param jobs - Job object that gets returned from Github
  *
  * @public
  *

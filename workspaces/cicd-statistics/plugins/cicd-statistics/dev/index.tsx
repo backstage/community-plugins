@@ -44,7 +44,7 @@ createDevApp()
     element: <CatalogIndexPage />,
   })
 
-  // We need the entity page experience to see the linguist card
+  // We need one entity page tab to see the CICD statistics
   .addPage({
     path: '/catalog/:namespace/:kind/:name',
     element: <CatalogEntityPage />,
