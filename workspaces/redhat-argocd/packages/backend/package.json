@@ -21,7 +21,8 @@
     "clean": "backstage-cli package clean"
   },
   "dependencies": {
-    "@backstage/backend-defaults": "^0.7.0",
+    "@backstage-community/plugin-redhat-argocd-backend": "workspace:^",
+    "@backstage/backend-defaults": "^0.8.1",
     "@backstage/backend-dynamic-feature-service": "^0.5.3",
     "@backstage/cli-node": "^0.2.12",
     "@backstage/plugin-app-backend": "^0.4.4",
@@ -40,7 +41,6 @@
     "@backstage/plugin-search-backend-module-techdocs": "^0.3.5",
     "@backstage/plugin-techdocs-backend": "^1.11.5",
     "@janus-idp/backstage-plugin-rbac-backend": "*",
-    "@roadiehq/backstage-plugin-argo-cd-backend": "^3.0.3",
     "app": "link:../app"
   },
   "devDependencies": {

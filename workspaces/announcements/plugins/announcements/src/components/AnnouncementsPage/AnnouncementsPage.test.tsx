@@ -15,8 +15,8 @@
  */
 import React from 'react';
 import {
-  MockPermissionApi,
   TestApiProvider,
+  mockApis,
   renderInTestApp,
 } from '@backstage/test-utils';
 import { AnnouncementsPage } from './AnnouncementsPage';
@@ -25,6 +25,8 @@ import { permissionApiRef } from '@backstage/plugin-permission-react';
 import { catalogApiRef, entityRouteRef } from '@backstage/plugin-catalog-react';
 import { fireEvent, screen } from '@testing-library/react';
 import { announcementsApiRef } from '@backstage-community/plugin-announcements-react';
+import { DateTime } from 'luxon';
+import { AnnouncementsList } from '@backstage-community/plugin-announcements-common';
 
 const mockAnnouncements = [
   {
@@ -38,7 +40,6 @@ const mockAnnouncements = [
 ];
 
 describe('AnnouncementsPage', () => {
-  const mockPermissionApi = new MockPermissionApi();
   const mockAnnouncementsApi = {
     announcements: jest.fn().mockResolvedValue({
       count: 0,
@@ -54,7 +55,7 @@ describe('AnnouncementsPage', () => {
     await renderInTestApp(
       <TestApiProvider
         apis={[
-          [permissionApiRef, mockPermissionApi],
+          [permissionApiRef, mockApis.permission()],
           [announcementsApiRef, mockAnnouncementsApi],
           [catalogApiRef, mockCatalogApi],
         ]}
@@ -75,7 +76,7 @@ describe('AnnouncementsPage', () => {
     await renderInTestApp(
       <TestApiProvider
         apis={[
-          [permissionApiRef, mockPermissionApi],
+          [permissionApiRef, mockApis.permission()],
           [announcementsApiRef, mockAnnouncementsApi],
           [catalogApiRef, mockCatalogApi],
         ]}
@@ -102,7 +103,7 @@ describe('AnnouncementsPage', () => {
       await renderInTestApp(
         <TestApiProvider
           apis={[
-            [permissionApiRef, mockPermissionApi],
+            [permissionApiRef, mockApis.permission()],
             [announcementsApiRef, mockAnnouncementsApi],
             [catalogApiRef, mockCatalogApi],
           ]}
@@ -125,7 +126,7 @@ describe('AnnouncementsPage', () => {
       await renderInTestApp(
         <TestApiProvider
           apis={[
-            [permissionApiRef, mockPermissionApi],
+            [permissionApiRef, mockApis.permission()],
             [announcementsApiRef, mockAnnouncementsApi],
             [catalogApiRef, mockCatalogApi],
           ]}
@@ -152,6 +153,51 @@ describe('AnnouncementsPage', () => {
 
       fireEvent.mouseOver(screen.getByText('announcement-...'));
       expect(await screen.findByText('announcement-title')).toBeInTheDocument();
+    });
+
+    it('should display "today" when the announcement start date matches current date', async () => {
+      const today = DateTime.now().toISODate();
+      const todayAnnouncement: AnnouncementsList = {
+        count: 1,
+        results: [
+          {
+            id: '1',
+            title: 'Today Announcement',
+            excerpt: 'This is happening today',
+            body: 'This is the full body of the announcement.',
+            publisher: 'default:user/user',
+            created_at: today,
+            active: true,
+            start_at: today,
+          },
+        ],
+      };
+      const mockAnnouncementsTodayApi = {
+        announcements: jest.fn().mockResolvedValue(todayAnnouncement),
+      };
+      await renderInTestApp(
+        <TestApiProvider
+          apis={[
+            [permissionApiRef, mockApis.permission()],
+            [announcementsApiRef, mockAnnouncementsTodayApi],
+            [catalogApiRef, mockCatalogApi],
+          ]}
+        >
+          <AnnouncementsPage
+            themeId="home"
+            title="Announcements"
+            buttonOptions={{ name: 'customNoun' }}
+            cardOptions={{ titleLength: 13 }}
+          />
+        </TestApiProvider>,
+        {
+          mountedRoutes: {
+            '/announcements': rootRouteRef,
+            '/catalog/:namespace/:kind/:name': entityRouteRef,
+          },
+        },
+      );
+      expect(screen.getByText(/Scheduled Today/i)).toBeInTheDocument();
     });
   });
 });

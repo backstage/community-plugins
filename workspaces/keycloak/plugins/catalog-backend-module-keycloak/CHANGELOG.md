@@ -1,5 +1,43 @@
 ### Dependencies
 
+## 3.8.0
+
+### Minor Changes
+
+- 9ab7992: Backstage version bump to v1.36.1
+
+### Patch Changes
+
+- 3199ac1: Updated dependency `@types/lodash` to `4.17.16`.
+
+## 3.7.0
+
+### Minor Changes
+
+- f32a370: Extend support to Keycloak v26 and RHBK v26
+
+### Patch Changes
+
+- 61697c6: Updated dependency `@keycloak/keycloak-admin-client` to `26.1.2`.
+
+## 3.6.0
+
+### Minor Changes
+
+- 984800c: Adding briefRepresentation flag to config to fetch additional group and user attributes
+
+## 3.5.3
+
+### Patch Changes
+
+- 208e250: Updated dependency `@types/uuid` to `^10.0.0`.
+
+## 3.5.2
+
+### Patch Changes
+
+- 0ac3320: Updated dependency `@types/lodash` to `4.17.15`.
+
 ## 3.5.1
 
 ### Patch Changes

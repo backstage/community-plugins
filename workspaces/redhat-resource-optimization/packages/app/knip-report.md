@@ -1,10 +1,11 @@
 # Knip report
 
-## Unused dependencies (4)
+## Unused dependencies (5)
 
 | Name                                                     | Location     | Severity |
 | :------------------------------------------------------- | :----------- | :------- |
 | @backstage-community/plugin-redhat-resource-optimization | package.json | error    |
+| @backstage-community/plugin-tech-radar                   | package.json | error    |
 | react-router                                             | package.json | error    |
 | react-use                                                | package.json | error    |
 | history                                                  | package.json | error    |

@@ -19,7 +19,6 @@ import { Progress } from '@backstage/core-components';
 import {
   alertApiRef,
   configApiRef,
-  identityApiRef,
   useAnalytics,
   useApi,
 } from '@backstage/core-plugin-api';
@@ -31,7 +30,6 @@ import Sync from '@mui/icons-material/Sync';
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import CircularProgress from '@mui/material/CircularProgress';
-import Dialog from '@mui/material/Dialog';
 import Grid from '@mui/material/Grid';
 import { styled, Theme } from '@mui/material/styles';
 import Tooltip from '@mui/material/Tooltip';
@@ -41,6 +39,7 @@ import { CreateFeedbackModal } from '../CreateFeedbackModal/CreateFeedbackModal'
 import { FeedbackDetailsModal } from '../FeedbackDetailsModal';
 import { FeedbackTable } from '../FeedbackTable';
 import { CustomEmptyState } from './CustomEmptyState';
+import { stringifyEntityRef } from '@backstage/catalog-model';
 
 const PREFIX = 'EntityFeedbackPage';
 
@@ -61,14 +60,7 @@ export const EntityFeedbackPage = () => {
   const alertApi = useApi(alertApiRef);
 
   const { entity } = useEntity();
-  const user = useApi(identityApiRef);
   const analytics = useAnalytics();
-
-  const [modalProps, setModalProps] = useState<{
-    projectEntity: string;
-    userEntity: string;
-    serverType: string;
-  }>();
 
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -77,15 +69,12 @@ export const EntityFeedbackPage = () => {
     setReload(false);
   }, [reload]);
 
-  const projectEntity =
-    `${entity.kind}:${entity.metadata.namespace}/${entity.metadata.name}`.toLocaleLowerCase(
-      'en-US',
-    );
+  const projectEntity = stringifyEntityRef(entity);
 
   const pluginConfig = {
     feedbackType: entity.metadata.annotations!['feedback/type'],
     feedbackHost:
-      entity.metadata.annotations!['feedback/host'] ??
+      entity.metadata?.annotations?.['feedback/host'] ??
       config
         .getConfigArray('feedback.integrations.jira')[0]
         .getOptionalString('host'),
@@ -94,13 +83,7 @@ export const EntityFeedbackPage = () => {
   };
 
   async function handleModalOpen() {
-    const userEntity = (await user.getBackstageIdentity()).userEntityRef;
     analytics.captureEvent('click', 'open - create feedback modal');
-    setModalProps({
-      projectEntity: projectEntity,
-      userEntity: userEntity,
-      serverType: pluginConfig.feedbackType,
-    });
 
     return setModalOpen(true);
   }
@@ -178,19 +161,12 @@ export const EntityFeedbackPage = () => {
           </Tooltip>
         </ButtonGroup>
       </Grid>
-      <Dialog
+      <CreateFeedbackModal
+        projectEntity={projectEntity}
         open={modalOpen}
-        onClose={() => handleModalClose(false)}
-        aria-labelledby="simple-modal-title"
-        aria-describedby="simple-modal-description"
-        fullWidth
-        maxWidth="md"
-      >
-        <CreateFeedbackModal
-          {...modalProps!}
-          handleModalCloseFn={handleModalClose}
-        />
-      </Dialog>
+        configType={pluginConfig.feedbackType}
+        handleModalCloseFn={handleModalClose}
+      />
       <Grid item xs={12}>
         {reload ? <Progress /> : <FeedbackTable projectId={projectEntity} />}
       </Grid>

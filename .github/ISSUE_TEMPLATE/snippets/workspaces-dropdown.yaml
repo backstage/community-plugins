@@ -3,11 +3,13 @@ id: workspace
 attributes:
   label: Workspace
   options:
+    - "Select a workspace..."
     - 3scale
     - acr
     - adr
     - airbrake
     - allure
+    - amplication
     - analytics
     - announcements
     - apache-airflow
@@ -58,6 +60,7 @@ attributes:
     - lighthouse
     - linguist
     - linkerd
+    - manage
     - matomo
     - mend
     - microsoft-calendar

@@ -59,11 +59,10 @@
     "react": "16.13.1 || ^17.0.0 || ^18.0.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.29.5",
+    "@backstage/cli": "^0.30.0",
     "@backstage/plugin-permission-common": "^0.8.4",
     "@spotify/prettier-config": "^15.0.0",
     "@types/react": "^18.2.58",
-    "prettier": "3.4.2",
     "react": "16.13.1 || ^17.0.0 || ^18.0.0",
     "react-dom": "16.13.1 || ^17.0.0 || ^18.0.0",
     "react-router-dom": "^6.0.0"

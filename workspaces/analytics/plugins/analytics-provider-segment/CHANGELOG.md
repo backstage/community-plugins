@@ -1,5 +1,24 @@
 ### Dependencies
 
+## 1.13.1
+
+### Patch Changes
+
+- 973a5ef: remove prettier from devDependencies
+- 32135b8: Updated dependency `@testing-library/user-event` to `14.6.1`.
+
+## 1.13.0
+
+### Minor Changes
+
+- 926f672: Backstage version bump to v1.36.1
+
+## 1.12.1
+
+### Patch Changes
+
+- 5a38af3: Updated dependency `@types/react` to `18.3.18`.
+
 ## 1.12.0
 
 ### Minor Changes

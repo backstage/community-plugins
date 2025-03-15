@@ -17,7 +17,7 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 
 import { ResourcesTable } from '../ResourcesTable';
-import { Resource } from '../../../../../types/application';
+import { Resource } from '@backstage-community/plugin-redhat-argocd-common';
 import { useArgoResources } from '../../rollouts/RolloutContext';
 
 jest.mock('../../../sidebar/rollouts/RolloutContext', () => ({

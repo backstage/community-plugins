@@ -1,5 +1,23 @@
 ### Dependencies
 
+## 2.6.1
+
+### Patch Changes
+
+- 973a5ef: remove prettier from devDevpendencies
+
+## 2.6.0
+
+### Minor Changes
+
+- 6f4321d: Backstage version bump to v1.36.1
+
+## 2.5.0
+
+### Minor Changes
+
+- 7bed8e0: Update @kubernetes/client-node.
+
 ## 2.4.0
 
 ### Minor Changes

@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-redhat-argocd",
-  "version": "1.13.0",
+  "version": "1.17.0",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "license": "Apache-2.0",
@@ -11,11 +11,12 @@
   },
   "backstage": {
     "role": "frontend-plugin",
-    "supported-versions": "1.35.0",
+    "supported-versions": "1.36.0",
     "pluginId": "redhat-argocd",
     "pluginPackage": "@backstage-community/plugin-redhat-argocd",
     "pluginPackages": [
-      "@backstage-community/plugin-redhat-argocd"
+      "@backstage-community/plugin-redhat-argocd",
+      "@backstage-community/plugin-redhat-argocd-backend"
     ]
   },
   "sideEffects": false,
@@ -44,7 +45,9 @@
     "@material-ui/core": "^4.9.13",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.61",
+    "@material-ui/styles": "^4.11.5",
     "@mui/icons-material": "^6.0.0",
+    "@mui/material": "^5.15.16",
     "@patternfly/patternfly": "^6.0.0",
     "@patternfly/react-core": "^6.0.0",
     "@patternfly/react-icons": "^6.0.0",
@@ -62,11 +65,11 @@
     "@backstage/core-app-api": "^1.15.4",
     "@backstage/dev-utils": "^1.1.6",
     "@backstage/test-utils": "^1.7.4",
-    "@playwright/test": "1.49.1",
+    "@playwright/test": "1.51.0",
     "@redhat-developer/red-hat-developer-hub-theme": "0.4.0",
     "@testing-library/jest-dom": "6.6.3",
     "@testing-library/react": "14.3.1",
-    "@testing-library/user-event": "14.5.2",
+    "@testing-library/user-event": "14.6.1",
     "@types/pluralize": "^0.0.33",
     "msw": "1.3.5",
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0",

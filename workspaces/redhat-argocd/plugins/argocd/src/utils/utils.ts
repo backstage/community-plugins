@@ -21,7 +21,8 @@ import {
   OperationPhases,
   OperationState,
   Resource,
-} from '../types/application';
+  RevisionInfo,
+} from '@backstage-community/plugin-redhat-argocd-common';
 import { ArgoResources } from '../types/resources';
 
 export const enum ArgoCdLabels {
@@ -159,32 +160,44 @@ export const getAppOperationState = (app: Application): OperationState => {
   return app.status.operationState;
 };
 
-export const getUniqueRevisions = (apps: Application[]): string[] =>
-  apps
-    ? apps.reduce((acc, app) => {
-        const history = app?.status?.history ?? [];
-        const revisions: string[] = [];
+const isSubset = (subset: any[], array: any[]): boolean => {
+  if (!array || !array.length) {
+    return false;
+  }
 
-        if (history.length > 0) {
-          history.forEach(h => {
-            if (
-              !revisions.includes(h.revision as string) &&
-              !isAppHelmChartType(app)
-            ) {
-              revisions.push(h.revision);
-            }
-          });
+  const targetSet = new Set(array);
+  return subset.every(element => targetSet.has(element));
+};
+
+export const getUniqueRevisions = (apps: Application[]): string[] => {
+  if (!apps) return [];
+
+  return apps.reduce((acc: string[], app) => {
+    const history = app?.status?.history ?? [];
+    const revisions: string[] = [];
+
+    if (history.length > 0) {
+      history.forEach(h => {
+        // Multi-source application
+        if (h?.revisions && !isSubset(h?.revisions, revisions)) {
+          revisions.push(...h?.revisions);
         }
 
-        revisions.forEach((rev: string) => {
-          if (!acc.includes(rev)) {
-            acc.push(rev);
-          }
-        });
+        // Single source application
+        if (
+          h.revision &&
+          !revisions.includes(h.revision as string) &&
+          !isAppHelmChartType(app)
+        ) {
+          revisions.push(h?.revision);
+        }
+      });
+    }
 
-        return acc;
-      }, [] as string[])
-    : [];
+    // Add unique, defined revisions to accumulator
+    return [...new Set([...acc, ...revisions])].filter(Boolean);
+  }, []);
+};
 
 export const getResourceCreateTimestamp = (
   argoResources: ArgoResources,
@@ -236,4 +249,39 @@ export const sortValues = (
   }
 
   return 0;
+};
+
+/**
+ * Removes duplicate commits based on their author, message and date.
+ */
+export const removeDuplicateRevisions = (revisions: RevisionInfo[]) => {
+  const uniqueMap = new Map<string, RevisionInfo>();
+
+  revisions.forEach(revision => {
+    const key = `${revision.author}-${
+      revision.message
+    }-${revision.date.toString()}`;
+    uniqueMap.set(key, revision);
+  });
+
+  return Array.from(uniqueMap.values());
+};
+
+/**
+ * Maps revisions to unique commits using revisionID when available.
+ * Falls back to mapping by index if the attribute revisionID is not provided.
+ */
+export const mapRevisions = (
+  revisions: string[],
+  data: RevisionInfo[],
+): Record<string, RevisionInfo> => {
+  const uniqRevisionInfo = removeDuplicateRevisions(data);
+  // Create a map for quick lookup by revisionID
+  const revisionMap = new Map(uniqRevisionInfo.map(r => [r.revisionID, r]));
+
+  return revisions.reduce((acc, rev, i) => {
+    acc[rev] =
+      revisionMap.get(rev) ?? uniqRevisionInfo[i] ?? ({} as RevisionInfo);
+    return acc;
+  }, {} as Record<string, RevisionInfo>);
 };

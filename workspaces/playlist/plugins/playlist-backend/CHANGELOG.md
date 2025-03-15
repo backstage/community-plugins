@@ -1,5 +1,22 @@
 # @backstage-community/plugin-playlist-backend
 
+## 0.7.0
+
+### Minor Changes
+
+- b7910ae: Backstage version bump to v1.36.1
+
+### Patch Changes
+
+- Updated dependencies [b7910ae]
+  - @backstage-community/plugin-playlist-common@0.4.0
+
+## 0.6.1
+
+### Patch Changes
+
+- 208e250: Updated dependency `@types/uuid` to `^10.0.0`.
+
 ## 0.6.0
 
 ### Minor Changes

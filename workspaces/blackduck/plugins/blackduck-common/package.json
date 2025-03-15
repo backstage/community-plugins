@@ -1,7 +1,7 @@
 {
   "name": "@backstage-community/plugin-blackduck-common",
   "description": "Common functionalities for the blackduck plugin",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "license": "Apache-2.0",
@@ -22,7 +22,8 @@
     "pluginPackages": [
       "@backstage-community/plugin-blackduck",
       "@backstage-community/plugin-blackduck-backend",
-      "@backstage-community/plugin-blackduck-common"
+      "@backstage-community/plugin-blackduck-common",
+      "@backstage-community/plugin-blackduck-node"
     ]
   },
   "sideEffects": false,

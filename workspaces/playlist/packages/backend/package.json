@@ -1,6 +1,6 @@
 {
   "name": "backend",
-  "version": "0.0.9",
+  "version": "0.0.11",
   "main": "dist/index.cjs.js",
   "types": "src/index.ts",
   "private": true,
@@ -21,21 +21,21 @@
   },
   "dependencies": {
     "@backstage-community/plugin-playlist-backend": "workspace:^",
-    "@backstage/backend-defaults": "^0.7.0",
-    "@backstage/backend-plugin-api": "^1.1.1",
-    "@backstage/plugin-app-backend": "^0.4.4",
-    "@backstage/plugin-auth-backend": "^0.24.2",
-    "@backstage/plugin-auth-backend-module-guest-provider": "^0.2.4",
-    "@backstage/plugin-auth-node": "^0.5.6",
-    "@backstage/plugin-catalog-backend": "^1.30.0",
-    "@backstage/plugin-permission-backend": "^0.5.53",
+    "@backstage/backend-defaults": "^0.8.1",
+    "@backstage/backend-plugin-api": "^1.2.0",
+    "@backstage/plugin-app-backend": "^0.4.5",
+    "@backstage/plugin-auth-backend": "^0.24.3",
+    "@backstage/plugin-auth-backend-module-guest-provider": "^0.2.5",
+    "@backstage/plugin-auth-node": "^0.6.0",
+    "@backstage/plugin-catalog-backend": "^1.31.0",
+    "@backstage/plugin-permission-backend": "^0.5.54",
     "@backstage/plugin-permission-common": "^0.8.4",
-    "@backstage/plugin-permission-node": "^0.8.7",
-    "@backstage/plugin-search-backend": "^1.8.1",
-    "@backstage/plugin-search-backend-module-catalog": "^0.3.0"
+    "@backstage/plugin-permission-node": "^0.8.8",
+    "@backstage/plugin-search-backend": "^1.8.2",
+    "@backstage/plugin-search-backend-module-catalog": "^0.3.1"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.29.6"
+    "@backstage/cli": "^0.30.0"
   },
   "files": [
     "dist"

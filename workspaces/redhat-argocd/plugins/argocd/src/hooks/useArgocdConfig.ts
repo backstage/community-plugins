@@ -15,10 +15,10 @@
  */
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 
-import { Instances } from '../types/application';
+import { Instance } from '@backstage-community/plugin-redhat-argocd-common';
 
 export const useArgocdConfig = (): {
-  instances: Instances;
+  instances: Instance[];
   intervalMs: number;
   baseUrl: string | undefined;
 } => {
