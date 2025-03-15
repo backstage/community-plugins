@@ -34,6 +34,7 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
+    "@backstage/plugin-permission-common": "^0.8.4",
     "@backstage/plugin-search-common": "^1.2.17"
   },
   "devDependencies": {

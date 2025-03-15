@@ -9,6 +9,7 @@ import { BackendFeature } from '@backstage/backend-plugin-api';
 import { DocumentCollatorFactory } from '@backstage/plugin-search-common';
 import { GithubDiscussionIndexableDocument } from '@backstage-community/plugin-github-discussions-common';
 import { LoggerService } from '@backstage/backend-plugin-api';
+import { Permission } from '@backstage/plugin-permission-common';
 import { Readable } from 'stream';
 import { RootConfigService } from '@backstage/backend-plugin-api';
 
@@ -27,6 +28,8 @@ export class GithubDiscussionsCollatorFactory
   getCollator(): Promise<Readable>;
   // (undocumented)
   readonly type: string;
+  // (undocumented)
+  visibilityPermission: Permission;
 }
 
 // @public
