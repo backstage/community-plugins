@@ -1,5 +1,11 @@
 # @backstage-community/backstage-plugin-mta-backend
 
+## 0.3.0
+
+### Minor Changes
+
+- a26bb15: Removed usages and references of `@backstage/backend-common`
+
 ## 0.2.2
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @backstage-community/backstage-plugin-catalog-backend-module-mta-entity-provider
 
+## 0.2.0
+
+### Minor Changes
+
+- a26bb15: Removed usages and references of `@backstage/backend-common`
+
 ## 0.1.2
 
 ### Patch Changes
