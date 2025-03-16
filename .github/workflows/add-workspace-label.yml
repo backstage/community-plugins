@@ -1,30 +1,18 @@
 name: Add Workspace Label to Issues
-
 on:
   issues:
-    types: [opened]
+    types: [opened, edited]
+
+permissions:
+  issues: write
+  contents: read
 
 jobs:
-  label_issue:
+  triage:
     runs-on: ubuntu-latest
-    if: contains(github.event.issue.labels.*.name, 'bug') || contains(github.event.issue.labels.*.name, 'enhancement')
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f # v4.1.3
-
-      - name: Install dependencies
-        run: yarn install
-
-      - name: Extract issue body and number
-        run: |
-          {
-            echo "ISSUE_BODY<<EOF"
-            echo "${{ github.event.issue.body }}"
-            echo "EOF"
-          } >> $GITHUB_ENV
-          echo "ISSUE_NUMBER=${{ github.event.issue.number }}" >> $GITHUB_ENV
-
-      - name: Add workspace label
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_SERVICE_ACCOUNT_TOKEN }}
-        run: node ./scripts/add-workspace-label.js
+    - uses: github/issue-labeler@c1b0f9f52a63158c4adc09425e858e87b32e9685 #v3.4
+      with:
+        configuration-path: .github/labeler.yml
+        enable-versioned-regex: 0
+        repo-token: ${{ secrets.GH_SERVICE_ACCOUNT_TOKEN }}
