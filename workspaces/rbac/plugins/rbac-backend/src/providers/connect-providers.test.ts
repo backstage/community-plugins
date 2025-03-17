@@ -40,6 +40,7 @@ import { BackstageRoleManager } from '../role-manager/role-manager';
 import { EnforcerDelegate } from '../service/enforcer-delegate';
 import { MODEL } from '../service/permission-model';
 import { Connection, connectRBACProviders } from './connect-providers';
+import { mockAuditorService } from '../../__fixtures__/mock-utils';
 
 const mockLoggerService = mockServices.logger.mock();
 
@@ -97,12 +98,6 @@ const roleMetadataStorageMock: RoleMetadataStorage = {
   createRoleMetadata: jest.fn().mockImplementation(),
   updateRoleMetadata: jest.fn().mockImplementation(),
   removeRoleMetadata: jest.fn().mockImplementation(),
-};
-
-const auditLoggerMock = {
-  getActorId: jest.fn().mockImplementation(),
-  createAuditLogDetails: jest.fn().mockImplementation(),
-  auditLog: jest.fn().mockImplementation(() => Promise.resolve()),
 };
 
 // TODO: Move to 'catalogServiceMock' from '@backstage/plugin-catalog-node/testUtils'
@@ -186,7 +181,7 @@ describe('Connection', () => {
 
     enforcerDelegate = new EnforcerDelegate(
       enf,
-      auditLoggerMock,
+      mockAuditorService,
       roleMetadataStorageMock,
       knex,
     );
@@ -208,7 +203,7 @@ describe('Connection', () => {
       enforcerDelegate,
       roleMetadataStorageMock,
       mockLoggerService,
-      auditLoggerMock,
+      mockAuditorService,
     );
   });
 
@@ -288,6 +283,7 @@ describe('Connection', () => {
       expect(enfRemoveGroupingPolicySpy).toHaveBeenCalledWith(
         roleToBeRemoved,
         roleMetaToBeRemoved,
+        false,
       );
     });
 
@@ -332,6 +328,7 @@ describe('Connection', () => {
         1,
         roleToBeRemoved,
         roleMetaToBeRemoved,
+        false,
       );
       expect(enfRemoveGroupingPolicySpy).toHaveBeenNthCalledWith(
         2,
@@ -489,7 +486,7 @@ describe('connectRBACProviders', () => {
 
     const enforcerDelegate = new EnforcerDelegate(
       enf,
-      auditLoggerMock,
+      mockAuditorService,
       roleMetadataStorageMock,
       knex,
     );
@@ -499,7 +496,7 @@ describe('connectRBACProviders', () => {
       enforcerDelegate,
       roleMetadataStorageMock,
       mockLoggerService,
-      auditLoggerMock,
+      mockAuditorService,
     );
 
     expect(connectSpy).toHaveBeenCalled();

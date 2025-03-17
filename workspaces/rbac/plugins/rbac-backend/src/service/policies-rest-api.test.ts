@@ -50,6 +50,7 @@ import {
 } from './plugin-endpoints';
 import { PoliciesServer } from './policies-rest-api';
 import { RBACRouterOptions } from './policy-builder';
+import { mockAuditorService } from '../../__fixtures__/mock-utils';
 
 jest.setTimeout(60000);
 
@@ -128,12 +129,6 @@ jest.mock('../validation/condition-validation', () => {
       ),
   };
 });
-
-const auditLoggerMock = {
-  getActorId: jest.fn().mockImplementation(),
-  createAuditLogDetails: jest.fn().mockImplementation(),
-  auditLog: jest.fn().mockImplementation(() => Promise.resolve()),
-};
 
 const mockHttpAuth = mockServices.httpAuth({
   pluginId: 'permission',
@@ -291,7 +286,7 @@ describe('REST policies api', () => {
       auth: mockAuthService,
       policy: await RBACPermissionPolicy.build(
         logger,
-        auditLoggerMock,
+        mockAuditorService,
         config,
         conditionalStorageMock,
         enforcerDelegateMock as EnforcerDelegate,
@@ -310,14 +305,13 @@ describe('REST policies api', () => {
       conditionalStorageMock,
       pluginPermissionMetadataCollectorMock as PluginPermissionMetadataCollector,
       roleMetadataStorageMock,
-      auditLoggerMock,
+      mockAuditorService,
     );
     const router = await server.serve();
     app = express().use(router);
     app.use(MiddlewareFactory.create({ logger, config }).error());
     conditionalStorageMock.getCondition.mockReset();
     validateRoleConditionMock.mockReset();
-    auditLoggerMock.auditLog.mockClear();
     jest.clearAllMocks();
   });
 
@@ -3593,7 +3587,7 @@ describe('REST policies api', () => {
         auth: mockAuthService,
         policy: await RBACPermissionPolicy.build(
           logger,
-          auditLoggerMock,
+          mockAuditorService,
           config,
           conditionalStorageMock,
           enforcerDelegateMock as EnforcerDelegate,
@@ -3612,7 +3606,7 @@ describe('REST policies api', () => {
         conditionalStorageMock,
         pluginPermissionMetadataCollectorMock as PluginPermissionMetadataCollector,
         roleMetadataStorageMock,
-        auditLoggerMock,
+        mockAuditorService,
         [providerMock],
       );
       const router = await server.serve();

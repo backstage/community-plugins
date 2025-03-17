@@ -2707,7 +2707,6 @@ __metadata:
     "@backstage/plugin-permission-node": "npm:^0.8.8"
     "@backstage/types": "npm:^1.2.1"
     "@dagrejs/graphlib": "npm:^2.1.13"
-    "@janus-idp/backstage-plugin-audit-log-node": "npm:^1.7.1"
     "@spotify/prettier-config": "npm:^15.0.0"
     "@types/express": "npm:4.17.21"
     "@types/knex": "npm:^0.16.1"
@@ -7212,15 +7211,6 @@ __metadata:
   version: 0.1.3
   resolution: "@istanbuljs/schema@npm:0.1.3"
   checksum: 10/a9b1e49acdf5efc2f5b2359f2df7f90c5c725f2656f16099e8b2cd3a000619ecca9fc48cf693ba789cf0fd989f6e0df6a22bc05574be4223ecdbb7997d04384b
-  languageName: node
-  linkType: hard
-
-"@janus-idp/backstage-plugin-audit-log-node@npm:^1.7.1":
-  version: 1.7.1
-  resolution: "@janus-idp/backstage-plugin-audit-log-node@npm:1.7.1"
-  dependencies:
-    lodash: "npm:^4.17.21"
-  checksum: 10/6541b4faf1e7771521a015b1d82006548f864b42151a9ec2f005e55a662f9da0ec758daf8ca3548bb2c70e934b22a9981c470360ab3415dccb4c51d5891669f3
   languageName: node
   linkType: hard
 

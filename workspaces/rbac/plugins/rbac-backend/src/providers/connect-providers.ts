@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { LoggerService } from '@backstage/backend-plugin-api';
+import type {
+  AuditorService,
+  LoggerService,
+} from '@backstage/backend-plugin-api';
 
-import type { AuditLogger } from '@janus-idp/backstage-plugin-audit-log-node';
 import {
   Enforcer,
   newEnforcer,
@@ -28,14 +30,7 @@ import type {
   RBACProviderConnection,
 } from '@backstage-community/plugin-rbac-node';
 
-import {
-  HANDLE_RBAC_DATA_STAGE,
-  PermissionAuditInfo,
-  PermissionEvents,
-  RBAC_BACKEND,
-  RoleAuditInfo,
-  RoleEvents,
-} from '../audit-log/audit-logger';
+import { PermissionEvents, RoleEvents } from '../audit-log/audit-logger';
 import { RoleMetadataStorage } from '../database/role-metadata';
 import {
   transformArrayToPolicy,
@@ -56,7 +51,7 @@ export class Connection implements RBACProviderConnection {
     private readonly enforcer: EnforcerDelegate,
     private readonly roleMetadataStorage: RoleMetadataStorage,
     private readonly logger: LoggerService,
-    private readonly auditLogger: AuditLogger,
+    private readonly auditor: AuditorService,
   ) {}
 
   async applyRoles(roles: string[][]): Promise<void> {
@@ -129,8 +124,8 @@ export class Connection implements RBACProviderConnection {
         let roleMeta = await this.roleMetadataStorage.findRoleMetadata(role[1]);
 
         const eventName = roleMeta
-          ? RoleEvents.UPDATE_ROLE
-          : RoleEvents.CREATE_ROLE;
+          ? RoleEvents.ROLE_UPDATE
+          : RoleEvents.ROLE_CREATE;
         const message = roleMeta ? 'Updated role' : 'Created role';
 
         // role does not exist in rbac, create the metadata for it
@@ -142,16 +137,24 @@ export class Connection implements RBACProviderConnection {
           };
         }
 
-        await this.enforcer.addGroupingPolicy(role, roleMeta);
-
-        await this.auditLogger.auditLog<RoleAuditInfo>({
-          actorId: RBAC_BACKEND,
-          message,
-          eventName,
-          metadata: { ...roleMeta, members: [role[0]] },
-          stage: HANDLE_RBAC_DATA_STAGE,
-          status: 'succeeded',
+        const auditorEvent = await this.auditor.createEvent({
+          eventId: eventName,
+          severityLevel: 'medium',
+          meta: {
+            ...roleMeta,
+            members: [role[0]],
+          },
         });
+
+        try {
+          await this.enforcer.addGroupingPolicy(role, roleMeta);
+          await auditorEvent.success({ meta: { message } });
+        } catch (error) {
+          await auditorEvent.fail({
+            error,
+          });
+          throw error;
+        }
       }
     }
   }
@@ -181,39 +184,38 @@ export class Connection implements RBACProviderConnection {
         }
 
         const singleRole = roleMeta && currentRole.length === 1;
-
-        let eventName: string;
-        let message: string;
+        let eventName: (typeof RoleEvents)[keyof typeof RoleEvents] =
+          RoleEvents.ROLE_UPDATE;
+        let message = 'Updated role: deleted members';
 
         // Only one role exists in rbac remove role metadata as well
         if (singleRole) {
-          eventName = RoleEvents.DELETE_ROLE;
+          eventName = RoleEvents.ROLE_DELETE;
           message = 'Deleted role';
-          await this.enforcer.removeGroupingPolicy(role, roleMeta);
-
-          await this.auditLogger.auditLog<RoleAuditInfo>({
-            actorId: RBAC_BACKEND,
-            message,
-            eventName,
-            metadata: { ...roleMeta, members: [role[0]] },
-            stage: HANDLE_RBAC_DATA_STAGE,
-            status: 'succeeded',
-          });
-          continue; // Move on to the next role
         }
 
-        eventName = RoleEvents.UPDATE_ROLE;
-        message = 'Updated role: deleted members';
-        await this.enforcer.removeGroupingPolicy(role, roleMeta, true);
-
-        await this.auditLogger.auditLog<RoleAuditInfo>({
-          actorId: RBAC_BACKEND,
-          message,
-          eventName,
-          metadata: { ...roleMeta, members: [role[0]] },
-          stage: HANDLE_RBAC_DATA_STAGE,
-          status: 'succeeded',
+        const auditorEvent = await this.auditor?.createEvent({
+          eventId: eventName,
+          severityLevel: 'medium',
+          meta: {
+            ...roleMeta,
+            members: [role[0]],
+          },
         });
+
+        try {
+          await this.enforcer.removeGroupingPolicy(
+            role,
+            roleMeta,
+            eventName === RoleEvents.ROLE_UPDATE,
+          );
+          await auditorEvent?.success({ meta: { message } });
+        } catch (error) {
+          await auditorEvent?.fail({
+            error,
+          });
+          throw error;
+        }
       }
     }
   }
@@ -226,9 +228,19 @@ export class Connection implements RBACProviderConnection {
           permission[0],
         );
 
+        const auditorEvent = await this.auditor?.createEvent({
+          eventId: PermissionEvents.POLICY_CREATE,
+          severityLevel: 'medium',
+          meta: {
+            policies: [permission],
+            source: this.id,
+          },
+        });
+
         let err = validatePolicy(transformedPolicy);
         if (err) {
           this.logger.warn(`Invalid permission policy, ${err}`);
+          auditorEvent.fail({ error: err });
           continue; // Skip this invalid permission policy
         }
 
@@ -237,19 +249,19 @@ export class Connection implements RBACProviderConnection {
           this.logger.warn(
             `Unable to add policy ${permission}. Cause: ${err.message}`,
           );
+          auditorEvent.fail({ error: err });
           continue;
         }
 
-        await this.enforcer.addPolicy(permission);
-
-        await this.auditLogger.auditLog<PermissionAuditInfo>({
-          actorId: RBAC_BACKEND,
-          message: `Created policy`,
-          eventName: PermissionEvents.CREATE_POLICY,
-          metadata: { policies: [permission], source: this.id },
-          stage: HANDLE_RBAC_DATA_STAGE,
-          status: 'succeeded',
-        });
+        try {
+          await this.enforcer.addPolicy(permission);
+          await auditorEvent?.success({ meta: { message: 'Created policy' } });
+        } catch (error) {
+          await auditorEvent?.fail({
+            error,
+          });
+          throw error;
+        }
       }
     }
   }
@@ -258,25 +270,26 @@ export class Connection implements RBACProviderConnection {
     providerPermissions: string[][],
     tempEnforcer: Enforcer,
   ): Promise<void> {
-    const removedPermissions: string[][] = [];
     for (const permission of providerPermissions) {
       if (!(await tempEnforcer.hasPolicy(...permission))) {
-        await this.enforcer.removePolicy(permission);
-        removedPermissions.push(permission);
-      }
-
-      if (removedPermissions.length > 0) {
-        await this.auditLogger.auditLog<PermissionAuditInfo>({
-          actorId: RBAC_BACKEND,
-          message: `Deleted policies`,
-          eventName: PermissionEvents.DELETE_POLICY,
-          metadata: {
-            policies: removedPermissions,
+        const auditorEvent = await this.auditor?.createEvent({
+          eventId: PermissionEvents.POLICY_DELETE,
+          severityLevel: 'medium',
+          meta: {
+            policies: [permission],
             source: this.id,
           },
-          stage: HANDLE_RBAC_DATA_STAGE,
-          status: 'succeeded',
         });
+
+        try {
+          await this.enforcer.removePolicy(permission);
+          await auditorEvent?.success({ meta: { message: 'Deleted policy' } });
+        } catch (error) {
+          await auditorEvent?.fail({
+            error,
+          });
+          throw error;
+        }
       }
     }
   }
@@ -294,7 +307,7 @@ export async function connectRBACProviders(
   enforcer: EnforcerDelegate,
   roleMetadataStorage: RoleMetadataStorage,
   logger: LoggerService,
-  auditLogger: AuditLogger,
+  auditor: AuditorService,
 ) {
   await Promise.all(
     providers.map(async provider => {
@@ -304,7 +317,7 @@ export async function connectRBACProviders(
           enforcer,
           roleMetadataStorage,
           logger,
-          auditLogger,
+          auditor,
         );
         return provider.connect(connection);
       } catch (error) {

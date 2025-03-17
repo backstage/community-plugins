@@ -70,12 +70,6 @@ export const roleMetadataStorageMock: RoleMetadataStorage = {
   removeRoleMetadata: jest.fn().mockImplementation(),
 };
 
-export const auditLoggerMock = {
-  getActorId: jest.fn().mockImplementation(),
-  createAuditLogDetails: jest.fn().mockImplementation(),
-  auditLog: jest.fn().mockImplementation(),
-};
-
 export const pluginMetadataCollectorMock: Partial<PluginPermissionMetadataCollector> =
   {
     getPluginConditionRules: jest.fn().mockImplementation(),
@@ -129,6 +123,17 @@ export const mockClientKnex = Knex.knex({ client: MockClient });
 
 export const mockHttpAuth = mockServices.httpAuth();
 export const mockAuthService = mockServices.auth();
+
+export const createEventMock = {
+  success: jest.fn(),
+  fail: jest.fn(),
+};
+export const mockAuditorService = mockServices.auditor.mock({
+  createEvent: jest.fn(async _ => {
+    return createEventMock;
+  }),
+});
+
 export const credentials = mockCredentials.user();
 export const mockLoggerService = mockServices.logger.mock();
 export const mockUserInfoService = mockServices.userInfo();

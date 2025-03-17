@@ -41,6 +41,7 @@ import { BackstageRoleManager } from '../role-manager/role-manager';
 import { EnforcerDelegate } from '../service/enforcer-delegate';
 import { MODEL } from '../service/permission-model';
 import { CSVFileWatcher } from './csv-file-watcher';
+import { mockAuditorService } from '../../__fixtures__/mock-utils';
 
 const legacyPermission = [
   'role:default/legacy',
@@ -135,12 +136,6 @@ const mockClientKnex = Knex.knex({ client: MockClient });
 
 const mockAuthService = mockServices.auth();
 
-const auditLoggerMock = {
-  getActorId: jest.fn().mockImplementation(),
-  createAuditLogDetails: jest.fn().mockImplementation(),
-  auditLog: jest.fn().mockImplementation(),
-};
-
 const currentPermissionPolicies = [
   ['role:default/catalog-writer', 'catalog-entity', 'update', 'allow'],
   ['role:default/legacy', 'catalog-entity', 'update', 'allow'],
@@ -185,12 +180,11 @@ describe('CSVFileWatcher', () => {
 
     enforcerDelegate = new EnforcerDelegate(
       enf,
-      auditLoggerMock,
+      mockAuditorService,
       roleMetadataStorageMock,
       knex,
     );
 
-    auditLoggerMock.auditLog.mockReset();
     (roleMetadataStorageMock.updateRoleMetadata as jest.Mock).mockClear();
   });
 
@@ -206,7 +200,7 @@ describe('CSVFileWatcher', () => {
       mockLoggerService,
       enforcerDelegate,
       roleMetadataStorageMock,
-      auditLoggerMock,
+      mockAuditorService,
     );
   }
 
