@@ -20,6 +20,7 @@ import TextField from '@mui/material/TextField';
 type RoleDetailsFormProps = {
   name: string;
   description?: string;
+  owner?: string;
   nameError?: string;
   handleBlur: React.FocusEventHandler<HTMLInputElement | HTMLTextAreaElement>;
   handleChange: React.ChangeEventHandler<
@@ -30,6 +31,7 @@ type RoleDetailsFormProps = {
 export const RoleDetailsForm = ({
   name,
   description,
+  owner,
   nameError,
   handleBlur,
   handleChange,
@@ -65,6 +67,19 @@ export const RoleDetailsForm = ({
         id="role-description"
         name="description"
         aria-labelledby="description"
+        onChange={handleChange}
+        onBlur={handleBlur}
+        multiline
+      />
+      <TextField
+        label="Owner"
+        variant="outlined"
+        helperText="Optional: Choose a user or group who will have permission to edit this role and create additional roles. In the next step, specify which users they can assign to their roles and which plugins they can grant access to."
+        value={owner}
+        data-testid="role-owner"
+        id="role-owner"
+        name="owner"
+        aria-labelledby="owner"
         onChange={handleChange}
         onBlur={handleBlur}
         multiline

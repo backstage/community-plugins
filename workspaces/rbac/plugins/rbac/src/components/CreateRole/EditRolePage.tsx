@@ -54,6 +54,7 @@ export const EditRolePage = () => {
     namespace: roleNamespace || 'default',
     kind: roleKind || 'role',
     description: role?.metadata?.description ?? '',
+    owner: role?.metadata?.owner ?? '',
     selectedMembers,
     selectedPlugins: data
       .map(pp => pp.plugin)
