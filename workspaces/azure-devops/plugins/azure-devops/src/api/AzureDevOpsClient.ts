@@ -215,11 +215,33 @@ export class AzureDevOpsClient implements AzureDevOpsApi {
       queryString.append('path', opts.path);
     }
     queryString.append('entityRef', opts.entityRef);
+
     return await this.get(
       `readme/${encodeURIComponent(opts.project)}/${encodeURIComponent(
         opts.repo,
       )}?${queryString}`,
     );
+  }
+
+  public async getBuildRunLog(
+    projectName: string,
+    entityRef: string,
+    buildId: number,
+    host?: string,
+    org?: string,
+  ): Promise<{ log: string[] }> {
+    const queryString = new URLSearchParams();
+    queryString.append('entityRef', entityRef);
+    if (host) {
+      queryString.append('host', host);
+    }
+    if (org) {
+      queryString.append('org', org);
+    }
+    const urlSegment = `builds/${encodeURIComponent(
+      projectName,
+    )}/build/${buildId}/log?${queryString}`;
+    return await this.get<{ log: string[] }>(urlSegment);
   }
 
   private async get<T>(path: string): Promise<T> {
