@@ -26,7 +26,7 @@ npx -y @janus-idp/cli@^1.11.1 package export-dynamic-plugin --clean
 cd ../..
 
 cd plugins/mta-frontend
-npx -y @janus-idp/cli@^1.11.1 package export-dynamic-plugin --clean
+npx -y @janus-idp/cli@^1.11.1 package export-dynamic-plugin --clean --in-place
 cd ../..
 
 cd plugins/catalog-backend-module-mta-entity-provider

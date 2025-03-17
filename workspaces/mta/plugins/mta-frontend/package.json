@@ -70,6 +70,7 @@
   "files": [
     "app-config.dynamic.yaml",
     "dist",
+    "dist-scalprum",
     "migrations/**/*"
   ]
 }
