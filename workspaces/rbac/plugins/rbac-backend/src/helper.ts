@@ -40,6 +40,8 @@ import { ActionType, RoleEvents } from './auditor/auditor';
 import { RoleMetadataDao, RoleMetadataStorage } from './database/role-metadata';
 import { EnforcerDelegate } from './service/enforcer-delegate';
 import { PluginPermissionMetadataCollector } from './service/plugin-endpoints';
+import { RoleMetadata } from '@backstage-community/plugin-rbac-common';
+import { RBACFilters } from './permissions';
 
 export function policyToString(policy: string[]): string {
   return `[${policy.join(', ')}]`;
@@ -277,3 +279,30 @@ export function deepSort(value: any): any {
 export function deepSortEqual(obj1: any, obj2: any): boolean {
   return isEqual(deepSort(obj1), deepSort(obj2));
 }
+
+export const matches = (
+  role?: RoleMetadata,
+  filters?: RBACFilters,
+): boolean => {
+  if (!filters) {
+    return true;
+  }
+
+  if (!role) {
+    return false;
+  }
+
+  if ('allOf' in filters) {
+    return filters.allOf.every(filter => matches(role, filter));
+  }
+
+  if ('anyOf' in filters) {
+    return filters.anyOf.some(filter => matches(role, filter));
+  }
+
+  if ('not' in filters) {
+    return !matches(role, filters.not);
+  }
+
+  return filters.values.includes(role.owner);
+};
