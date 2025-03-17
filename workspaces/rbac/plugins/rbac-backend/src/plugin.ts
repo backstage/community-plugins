@@ -69,6 +69,7 @@ export const rbacPlugin = createBackendPlugin({
         permissions: coreServices.permissions,
         auth: coreServices.auth,
         httpAuth: coreServices.httpAuth,
+        auditor: coreServices.auditor,
         userInfo: coreServices.userInfo,
         lifecycle: coreServices.lifecycle,
       },
@@ -80,6 +81,7 @@ export const rbacPlugin = createBackendPlugin({
         permissions,
         auth,
         httpAuth,
+        auditor,
         userInfo,
         lifecycle,
       }) {
@@ -92,6 +94,7 @@ export const rbacPlugin = createBackendPlugin({
               permissions,
               auth,
               httpAuth,
+              auditor,
               userInfo,
               lifecycle,
             },

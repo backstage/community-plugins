@@ -13,9 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { AuthService, LoggerService } from '@backstage/backend-plugin-api';
+import type {
+  AuditorService,
+  AuthService,
+  LoggerService,
+} from '@backstage/backend-plugin-api';
 
-import type { AuditLogger } from '@janus-idp/backstage-plugin-audit-log-node';
 import yaml from 'js-yaml';
 import { omit } from 'lodash';
 
@@ -26,11 +29,7 @@ import type {
 
 import fs from 'fs';
 
-import {
-  ConditionAuditInfo,
-  ConditionEvents,
-  HANDLE_RBAC_DATA_STAGE,
-} from '../audit-log/audit-logger';
+import { ConditionEvents } from '../audit-log/audit-logger';
 import { ConditionalStorage } from '../database/conditional-storage';
 import { RoleMetadataStorage } from '../database/role-metadata';
 import { deepSortEqual, processConditionMapping } from '../helper';
@@ -54,7 +53,7 @@ export class YamlConditinalPoliciesFileWatcher extends AbstractFileWatcher<
     allowReload: boolean,
     logger: LoggerService,
     private readonly conditionalStorage: ConditionalStorage,
-    private readonly auditLogger: AuditLogger,
+    private readonly auditor: AuditorService,
     private readonly auth: AuthService,
     private readonly pluginMetadataCollector: PluginPermissionMetadataCollector,
     private readonly roleMetadataStorage: RoleMetadataStorage,
@@ -74,12 +73,13 @@ export class YamlConditinalPoliciesFileWatcher extends AbstractFileWatcher<
     }
     const fileExists = fs.existsSync(this.filePath);
     if (!fileExists) {
-      const err = new Error(`File '${this.filePath}' was not found`);
-      this.handleError(
-        err.message,
-        err,
-        ConditionEvents.CONDITIONAL_POLICIES_FILE_NOT_FOUND,
-      );
+      const auditorEvent = await this.auditor.createEvent({
+        eventId: ConditionEvents.CONDITIONAL_POLICIES_FILE_NOT_FOUND,
+        severityLevel: 'medium',
+      });
+      await auditorEvent.fail({
+        error: new Error(`File '${this.filePath}' was not found`),
+      });
       return;
     }
 
@@ -157,11 +157,13 @@ export class YamlConditinalPoliciesFileWatcher extends AbstractFileWatcher<
 
       await this.handleFileChanges();
     } catch (error) {
-      await this.handleError(
-        `Error handling changes from conditional policies file ${this.filePath}`,
+      const auditorEvent = await this.auditor.createEvent({
+        eventId: ConditionEvents.CONDITIONAL_POLICIES_FILE_CHANGE,
+        severityLevel: 'medium',
+      });
+      await auditorEvent.fail({
         error,
-        ConditionEvents.CHANGE_CONDITIONAL_POLICIES_FILE_ERROR,
-      );
+      });
     }
   }
 
@@ -188,8 +190,17 @@ export class YamlConditinalPoliciesFileWatcher extends AbstractFileWatcher<
   }
 
   private async addConditions(): Promise<void> {
-    try {
-      for (const condition of this.conditionsDiff.addedConditions) {
+    for (const condition of this.conditionsDiff.addedConditions) {
+      const meta = {
+        condition,
+      };
+      const auditorEvent = await this.auditor.createEvent({
+        eventId: ConditionEvents.CONDITION_CREATE,
+        severityLevel: 'medium',
+        meta,
+      });
+
+      try {
         const conditionToCreate = await processConditionMapping(
           condition,
           this.pluginMetadataCollector,
@@ -197,28 +208,28 @@ export class YamlConditinalPoliciesFileWatcher extends AbstractFileWatcher<
         );
 
         await this.conditionalStorage.createCondition(conditionToCreate);
-
-        await this.auditLogger.auditLog<ConditionAuditInfo>({
-          message: `Created conditional permission policy`,
-          eventName: ConditionEvents.CREATE_CONDITION,
-          metadata: { condition },
-          stage: HANDLE_RBAC_DATA_STAGE,
-          status: 'succeeded',
+        await auditorEvent.success({
+          meta,
         });
+      } catch (error) {
+        await auditorEvent.fail({ error, meta });
       }
-    } catch (error) {
-      await this.handleError(
-        'Failed to create condition',
-        error,
-        ConditionEvents.CREATE_CONDITION_ERROR,
-      );
+      this.conditionsDiff.addedConditions = [];
     }
-    this.conditionsDiff.addedConditions = [];
   }
 
   private async removeConditions(): Promise<void> {
-    try {
-      for (const condition of this.conditionsDiff.removedConditions) {
+    for (const condition of this.conditionsDiff.removedConditions) {
+      const meta = {
+        condition,
+      };
+      const auditorEvent = await this.auditor.createEvent({
+        eventId: ConditionEvents.CONDITION_DELETE,
+        severityLevel: 'medium',
+        meta,
+      });
+
+      try {
         const conditionToDelete = (
           await this.conditionalStorage.filterConditions(
             condition.roleEntityRef,
@@ -228,38 +239,16 @@ export class YamlConditinalPoliciesFileWatcher extends AbstractFileWatcher<
           )
         )[0];
         await this.conditionalStorage.deleteCondition(conditionToDelete.id!);
-
-        await this.auditLogger.auditLog<ConditionAuditInfo>({
-          message: `Deleted conditional permission policy`,
-          eventName: ConditionEvents.DELETE_CONDITION,
-          metadata: { condition },
-          stage: HANDLE_RBAC_DATA_STAGE,
-          status: 'succeeded',
+        await auditorEvent.success({ meta });
+      } catch (error) {
+        await auditorEvent.fail({
+          error,
+          meta,
         });
       }
-    } catch (error) {
-      await this.handleError(
-        'Failed to delete condition by id',
-        error,
-        ConditionEvents.DELETE_CONDITION_ERROR,
-      );
     }
 
     this.conditionsDiff.removedConditions = [];
-  }
-
-  private async handleError(
-    message: string,
-    error: unknown,
-    event: string,
-  ): Promise<void> {
-    await this.auditLogger.auditLog({
-      message,
-      eventName: event,
-      stage: HANDLE_RBAC_DATA_STAGE,
-      status: 'failed',
-      errors: [error],
-    });
   }
 
   async cleanUpConditionalPolicies(): Promise<void> {

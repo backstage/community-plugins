@@ -45,7 +45,7 @@ import { resolve } from 'path';
 import { GROUPS_FOR_TESTS } from '../../__fixtures__/data/hierarchy/groups';
 import { USERS_FOR_TEST } from '../../__fixtures__/data/hierarchy/users';
 import {
-  auditLoggerMock,
+  mockAuditorService,
   catalogApiMock,
   conditionalStorageMock,
   csvPermFile,
@@ -53,6 +53,7 @@ import {
   mockClientKnex,
   pluginMetadataCollectorMock,
   roleMetadataStorageMock,
+  createEventMock,
 } from '../../__fixtures__/mock-utils';
 import { CasbinDBAdapterFactory } from '../database/casbin-adapter-factory';
 import { RoleMetadataStorage } from '../database/role-metadata';
@@ -61,6 +62,8 @@ import { EnforcerDelegate } from '../service/enforcer-delegate';
 import { MODEL } from '../service/permission-model';
 import { PluginPermissionMetadataCollector } from '../service/plugin-endpoints';
 import { RBACPermissionPolicy } from './permission-policy';
+import { expectAuditorLog } from '../../__fixtures__/test-utils';
+import { EvaluationEvents } from '../audit-log/audit-logger';
 
 type PermissionAction = 'create' | 'read' | 'update' | 'delete';
 
@@ -1115,7 +1118,7 @@ async function newEnforcerDelegate(
 
   return new EnforcerDelegate(
     enf,
-    auditLoggerMock,
+    mockAuditorService,
     roleMetadataStorageMock,
     mockClientKnex,
   );
@@ -1129,7 +1132,7 @@ async function newPermissionPolicy(
   const logger = mockServices.logger.mock();
   const permissionPolicy = await RBACPermissionPolicy.build(
     logger,
-    auditLoggerMock,
+    mockAuditorService,
     config,
     conditionalStorageMock,
     enfDelegate,
@@ -1138,7 +1141,9 @@ async function newPermissionPolicy(
     pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
     mockAuthService,
   );
-  auditLoggerMock.auditLog.mockReset();
+  mockAuditorService.createEvent.mockClear();
+  createEventMock.fail.mockClear();
+  createEventMock.success.mockClear();
   return permissionPolicy;
 }
 
@@ -1150,41 +1155,20 @@ function verifyAuditLogForNonResourcedPermission(
   result: AuthorizeResult,
 ) {
   const expectedUser = user ?? 'user without entity';
-  expect(auditLoggerMock.auditLog).toHaveBeenNthCalledWith(1, {
-    actorId: expectedUser,
-    eventName: 'PermissionEvaluationStarted',
-    message: `Policy check for ${expectedUser}`,
-    metadata: {
-      action,
-      permissionName,
-      resourceType,
-      userEntityRef: expectedUser,
+  const meta = {
+    action,
+    permissionName,
+    resourceType,
+    userEntityRef: expectedUser,
+  };
+  expectAuditorLog([
+    {
+      event: { eventId: EvaluationEvents.PERMISSION_EVALUATION, meta },
+      success: {
+        meta: { ...meta, result },
+      },
     },
-    stage: 'evaluatePermissionAccess',
-    status: 'succeeded',
-  });
-
-  const message = resourceType
-    ? `${
-        expectedUser ?? 'user without entity'
-      } is ${result} for permission '${permissionName}', resource type '${resourceType}' and action '${action}'`
-    : `${
-        expectedUser ?? 'user without entity'
-      } is ${result} for permission '${permissionName}' and action '${action}'`;
-  expect(auditLoggerMock.auditLog).toHaveBeenNthCalledWith(2, {
-    actorId: expectedUser,
-    eventName: 'PermissionEvaluationCompleted',
-    message,
-    metadata: {
-      action,
-      decision: { result },
-      permissionName,
-      resourceType,
-      userEntityRef: expectedUser ?? 'user without entity',
-    },
-    stage: 'evaluatePermissionAccess',
-    status: 'succeeded',
-  });
+  ]);
 }
 
 function convertGroupsToEntity(): GroupEntityV1alpha1[] {

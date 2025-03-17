@@ -18,6 +18,7 @@
     "@backstage-community/cli": "portal:./workspaces/repo-tools/packages/cli",
     "@backstage/cli": "^0.27.0",
     "@backstage/cli-node": "^0.2.2",
+    "@backstage/types": "^1.2.1",
     "@changesets/parse": "^0.4.0",
     "@manypkg/get-packages": "^2.2.2",
     "@octokit/rest": "^20.1.1",

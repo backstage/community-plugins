@@ -52,7 +52,12 @@ import { EnforcerDelegate } from '../service/enforcer-delegate';
 import { MODEL } from '../service/permission-model';
 import { PluginPermissionMetadataCollector } from '../service/plugin-endpoints';
 import { RBACPermissionPolicy } from './permission-policy';
-import { auditLoggerMock } from '../../__fixtures__/mock-utils';
+import {
+  createEventMock,
+  mockAuditorService,
+} from '../../__fixtures__/mock-utils';
+import { expectAuditorLog } from '../../__fixtures__/test-utils';
+import { EvaluationEvents } from '../audit-log/audit-logger';
 
 type PermissionAction = 'create' | 'read' | 'update' | 'delete';
 
@@ -122,6 +127,7 @@ const modifiedBy = 'user:default/some-admin';
 describe('RBACPermissionPolicy Tests', () => {
   beforeEach(() => {
     roleMetadataStorageMock.updateRoleMetadata = jest.fn().mockImplementation();
+    jest.clearAllMocks();
   });
 
   it('should build', async () => {
@@ -862,7 +868,9 @@ describe('RBACPermissionPolicy Tests', () => {
           perm.resource,
           AuthorizeResult.ALLOW,
         );
-        (auditLoggerMock.auditLog as jest.Mock).mockReset();
+        mockAuditorService.createEvent.mockClear();
+        createEventMock.fail.mockClear();
+        createEventMock.success.mockClear();
       }
     });
   });
@@ -983,8 +991,9 @@ describe('RBACPermissionPolicy Tests', () => {
         'policy-entity',
         AuthorizeResult.ALLOW,
       );
-      (auditLoggerMock.auditLog as jest.Mock).mockReset();
-
+      mockAuditorService.createEvent.mockClear();
+      createEventMock.fail.mockClear();
+      createEventMock.success.mockClear();
       const decision2 = await policy.handle(
         newPolicyQueryWithResourcePermission(
           'catalog.entity.delete',
@@ -1802,14 +1811,14 @@ describe('Policy checks for conditional policies', () => {
 
     const enfDelegate = new EnforcerDelegate(
       enf,
-      auditLoggerMock,
+      mockAuditorService,
       roleMetadataStorageMock,
       mockClientKnex,
     );
 
     policy = await RBACPermissionPolicy.build(
       logger,
-      auditLoggerMock,
+      mockAuditorService,
       config,
       conditionalStorageMock,
       enfDelegate,
@@ -2228,7 +2237,7 @@ async function newEnforcerDelegate(
 
   return new EnforcerDelegate(
     enf,
-    auditLoggerMock,
+    mockAuditorService,
     roleMetadataStorageMock,
     mockClientKnex,
   );
@@ -2242,7 +2251,7 @@ async function newPermissionPolicy(
   const logger = mockServices.logger.mock();
   const permissionPolicy = await RBACPermissionPolicy.build(
     logger,
-    auditLoggerMock,
+    mockAuditorService,
     config,
     conditionalStorageMock,
     enfDelegate,
@@ -2251,7 +2260,9 @@ async function newPermissionPolicy(
     pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
     mockAuthService,
   );
-  (auditLoggerMock.auditLog as jest.Mock).mockReset();
+  mockAuditorService.createEvent.mockClear();
+  createEventMock.fail.mockClear();
+  createEventMock.success.mockClear();
   return permissionPolicy;
 }
 
@@ -2263,41 +2274,20 @@ function verifyAuditLogForNonResourcedPermission(
   result: AuthorizeResult,
 ) {
   const expectedUser = user ?? 'user without entity';
-  expect(auditLoggerMock.auditLog).toHaveBeenNthCalledWith(1, {
-    actorId: expectedUser,
-    eventName: 'PermissionEvaluationStarted',
-    message: `Policy check for ${expectedUser}`,
-    metadata: {
-      action,
-      permissionName,
-      resourceType,
-      userEntityRef: expectedUser,
+  const meta = {
+    action,
+    permissionName,
+    resourceType,
+    userEntityRef: expectedUser,
+  };
+  expectAuditorLog([
+    {
+      event: { eventId: EvaluationEvents.PERMISSION_EVALUATION, meta },
+      success: {
+        meta: { ...meta, result },
+      },
     },
-    stage: 'evaluatePermissionAccess',
-    status: 'succeeded',
-  });
-
-  const message = resourceType
-    ? `${
-        expectedUser ?? 'user without entity'
-      } is ${result} for permission '${permissionName}', resource type '${resourceType}' and action '${action}'`
-    : `${
-        expectedUser ?? 'user without entity'
-      } is ${result} for permission '${permissionName}' and action '${action}'`;
-  expect(auditLoggerMock.auditLog).toHaveBeenNthCalledWith(2, {
-    actorId: expectedUser,
-    eventName: 'PermissionEvaluationCompleted',
-    message,
-    metadata: {
-      action,
-      decision: { result },
-      permissionName,
-      resourceType,
-      userEntityRef: expectedUser ?? 'user without entity',
-    },
-    stage: 'evaluatePermissionAccess',
-    status: 'succeeded',
-  });
+  ]);
 }
 
 function verifyAuditLogForResourcedPermission(
@@ -2307,33 +2297,19 @@ function verifyAuditLogForResourcedPermission(
   resourceType: string,
   result: AuthorizeResult,
 ) {
-  expect(auditLoggerMock.auditLog).toHaveBeenNthCalledWith(1, {
-    actorId: user,
-    eventName: 'PermissionEvaluationStarted',
-    message: `Policy check for ${user}`,
-    metadata: {
-      action,
-      permissionName,
-      resourceType,
-      userEntityRef: user,
-    },
-    stage: 'evaluatePermissionAccess',
-    status: 'succeeded',
-  });
-  expect(auditLoggerMock.auditLog).toHaveBeenNthCalledWith(2, {
-    actorId: user,
-    eventName: 'PermissionEvaluationCompleted',
-    message: `${user} is ${result} for permission '${permissionName}', resource type '${resourceType}' and action '${action}'`,
-    metadata: {
-      action,
-      decision: {
-        result,
+  const expectedUser = user ?? 'user without entity';
+  const meta = {
+    action,
+    permissionName,
+    resourceType,
+    userEntityRef: expectedUser,
+  };
+  expectAuditorLog([
+    {
+      event: { eventId: EvaluationEvents.PERMISSION_EVALUATION, meta },
+      success: {
+        meta: { ...meta, result },
       },
-      permissionName,
-      resourceType,
-      userEntityRef: user,
     },
-    stage: 'evaluatePermissionAccess',
-    status: 'succeeded',
-  });
+  ]);
 }

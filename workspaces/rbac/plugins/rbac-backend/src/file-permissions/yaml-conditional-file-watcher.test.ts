@@ -28,6 +28,14 @@ import {
 import { RoleEventEmitter, RoleEvents } from '../service/enforcer-delegate';
 import { PluginPermissionMetadataCollector } from '../service/plugin-endpoints';
 import { YamlConditinalPoliciesFileWatcher } from './yaml-conditional-file-watcher'; // Adjust the import path as necessary
+import { mockAuditorService } from '../../__fixtures__/mock-utils';
+import { expectAuditorLog } from '../../__fixtures__/test-utils';
+import {
+  PermissionInfo,
+  RoleConditionalPolicyDecision,
+} from '@backstage-community/plugin-rbac-common';
+import { JsonObject } from '@backstage/types';
+import { NotFoundError } from '@backstage/errors';
 
 const mockLoggerService = mockServices.logger.mock();
 
@@ -40,12 +48,6 @@ const conditionalStorageMock: Partial<DataBaseConditionalStorage> = {
   getCondition: jest.fn().mockImplementation(),
   deleteCondition: jest.fn().mockImplementation(),
   updateCondition: jest.fn().mockImplementation(),
-};
-
-const auditLoggerMock = {
-  getActorId: jest.fn().mockImplementation(),
-  createAuditLogDetails: jest.fn().mockImplementation(),
-  auditLog: jest.fn().mockImplementation(),
 };
 
 const mockAuthService = mockServices.auth();
@@ -109,7 +111,12 @@ const testPluginMetadataResp: MetadataResponse = {
   ],
 };
 
-const conditionToStore1 = {
+const conditionToStore1: Partial<
+  RoleConditionalPolicyDecision<PermissionInfo>
+> &
+  Required<
+    Pick<RoleConditionalPolicyDecision<PermissionInfo>, 'permissionMapping'>
+  > = {
   result: AuthorizeResult.CONDITIONAL,
   roleEntityRef: 'role:default/test',
   pluginId: 'catalog',
@@ -124,7 +131,12 @@ const conditionToStore1 = {
   },
 };
 
-const conditionToStore2 = {
+const conditionToStore2: Partial<
+  RoleConditionalPolicyDecision<PermissionInfo>
+> &
+  Required<
+    Pick<RoleConditionalPolicyDecision<PermissionInfo>, 'permissionMapping'>
+  > = {
   result: AuthorizeResult.CONDITIONAL,
   roleEntityRef: 'role:default/test',
   pluginId: 'catalog',
@@ -142,7 +154,12 @@ const conditionToStore2 = {
   },
 };
 
-const conditionToRemove = {
+const conditionToRemove: Partial<
+  RoleConditionalPolicyDecision<PermissionInfo>
+> &
+  Required<
+    Pick<RoleConditionalPolicyDecision<PermissionInfo>, 'permissionMapping'>
+  > = {
   id: 2,
   result: AuthorizeResult.CONDITIONAL,
   roleEntityRef: 'role:default/dev',
@@ -200,10 +217,9 @@ describe('YamlConditionalFileWatcher', () => {
 
     loggerWarnSpy = jest.spyOn(mockLoggerService, 'warn');
 
-    auditLoggerMock.auditLog.mockClear();
     conditionalStorageMock.createCondition = jest.fn().mockImplementation();
     conditionalStorageMock.deleteCondition = jest.fn().mockImplementation();
-    loggerWarnSpy.mockClear();
+    jest.clearAllMocks();
   });
 
   function createWatcher(filePath?: string): YamlConditinalPoliciesFileWatcher {
@@ -212,7 +228,7 @@ describe('YamlConditionalFileWatcher', () => {
       false,
       mockLoggerService,
       conditionalStorageMock as DataBaseConditionalStorage,
-      auditLoggerMock,
+      mockAuditorService,
       mockAuthService,
       pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
       roleMetadataStorageMock,
@@ -225,11 +241,12 @@ describe('YamlConditionalFileWatcher', () => {
     const watcher = createWatcher(invalidFilePath);
     await watcher.initialize();
 
-    const auditEvents = auditLoggerMock.auditLog.mock.calls;
-    expect(auditEvents.length).toBe(1);
-    expect(auditEvents[0][0].message).toBe(
-      `File '${invalidFilePath}' was not found`,
-    );
+    expectAuditorLog([
+      {
+        event: { eventId: ConditionEvents.CONDITIONAL_POLICIES_FILE_NOT_FOUND },
+        fail: { error: new Error(`File '${invalidFilePath}' was not found`) },
+      },
+    ]);
   });
 
   test('handles error on parse invalid yaml file', async () => {
@@ -240,14 +257,16 @@ describe('YamlConditionalFileWatcher', () => {
     const watcher = createWatcher(invalidFilePath);
     await watcher.initialize();
 
-    const auditEvents = auditLoggerMock.auditLog.mock.calls;
-    expect(auditEvents.length).toBe(1);
-    expect(auditEvents[0][0].message).toBe(
-      `Error handling changes from conditional policies file ${invalidFilePath}`,
-    );
-    expect(auditEvents[0][0].errors[0].message).toBe(
-      `'roleEntityRef' must be specified in the role condition`,
-    );
+    expectAuditorLog([
+      {
+        event: { eventId: ConditionEvents.CONDITIONAL_POLICIES_FILE_CHANGE },
+        fail: {
+          error: new Error(
+            `'roleEntityRef' must be specified in the role condition`,
+          ),
+        },
+      },
+    ]);
   });
 
   test('should handle error on create condition', async () => {
@@ -259,21 +278,39 @@ describe('YamlConditionalFileWatcher', () => {
       .mockImplementation(() => csvFileRoles);
     conditionalStorageMock.createCondition = jest
       .fn()
-      .mockImplementation(() => {
-        throw new Error('unknow error message');
+      .mockImplementationOnce(() => {
+        throw new Error('unknown error message 1');
+      })
+      .mockImplementationOnce(() => {
+        throw new Error('unknown error message 2');
       });
 
     const watcher = createWatcher(csvFileName);
     await watcher.initialize();
 
     expect(conditionalStorageMock.createCondition).toHaveBeenCalled();
-
-    const auditEvents: any[] = auditLoggerMock.auditLog.mock.calls;
-    expect(auditEvents.length).toBe(1);
-    expect(auditEvents[0][0].eventName).toBe(
-      ConditionEvents.CREATE_CONDITION_ERROR,
-    );
-    expect(auditEvents[0][0].message).toBe(`Failed to create condition`);
+    expectAuditorLog([
+      {
+        event: {
+          eventId: ConditionEvents.CONDITION_CREATE,
+          ...mappedConditionMeta(conditionToStore1),
+        },
+        fail: {
+          error: new Error('unknown error message 1'),
+          ...mappedConditionMeta(conditionToStore1),
+        },
+      },
+      {
+        event: {
+          eventId: ConditionEvents.CONDITION_CREATE,
+          ...mappedConditionMeta(conditionToStore2),
+        },
+        fail: {
+          error: new Error('unknown error message 2'),
+          ...mappedConditionMeta(conditionToStore2),
+        },
+      },
+    ]);
   });
 
   test('should add conditional policies from the file on initialization', async () => {
@@ -293,10 +330,22 @@ describe('YamlConditionalFileWatcher', () => {
     expect(conditionalStorageMock.createCondition).toHaveBeenCalledWith(
       conditionToStore2,
     );
-    const auditEvents: any[] = auditLoggerMock.auditLog.mock.calls;
-    expect(auditEvents.length).toBe(2);
-    expect(auditEvents[0][0].eventName).toBe(ConditionEvents.CREATE_CONDITION);
-    expect(auditEvents[1][0].eventName).toBe(ConditionEvents.CREATE_CONDITION);
+    expectAuditorLog([
+      {
+        event: {
+          eventId: ConditionEvents.CONDITION_CREATE,
+          ...mappedConditionMeta(conditionToStore1),
+        },
+        success: { ...mappedConditionMeta(conditionToStore1) },
+      },
+      {
+        event: {
+          eventId: ConditionEvents.CONDITION_CREATE,
+          ...mappedConditionMeta(conditionToStore2),
+        },
+        success: { ...mappedConditionMeta(conditionToStore2) },
+      },
+    ]);
   });
 
   test('should not fail on initialization, when conditional policies contains empty array', async () => {
@@ -313,10 +362,7 @@ describe('YamlConditionalFileWatcher', () => {
     );
     const watcher = createWatcher(csvFileName);
     await watcher.initialize();
-
-    expect(conditionalStorageMock.createCondition).not.toHaveBeenCalled();
-    const auditEvents: any[] = auditLoggerMock.auditLog.mock.calls;
-    expect(auditEvents.length).toBe(0);
+    expectAuditorLog([]);
   });
 
   test(`should not apply conditions if corresponding role is present, but with non 'csv-file' source`, async () => {
@@ -337,8 +383,7 @@ describe('YamlConditionalFileWatcher', () => {
 
     expect(conditionalStorageMock.createCondition).not.toHaveBeenCalled();
 
-    const auditEvents: any[] = auditLoggerMock.auditLog.mock.calls;
-    expect(auditEvents.length).toBe(0);
+    expectAuditorLog([]);
     expect(loggerWarnSpy).toHaveBeenNthCalledWith(
       1,
       `skip to add condition for role 'role:default/test'. Role is not from csv-file`,
@@ -362,8 +407,7 @@ describe('YamlConditionalFileWatcher', () => {
 
     expect(conditionalStorageMock.createCondition).not.toHaveBeenCalled();
 
-    const auditEvents: any[] = auditLoggerMock.auditLog.mock.calls;
-    expect(auditEvents.length).toBe(0);
+    expectAuditorLog([]);
     expect(loggerWarnSpy).toHaveBeenNthCalledWith(
       1,
       `skip to add condition for role 'role:default/test'. The role either does not exist or was not created from a CSV file.`,
@@ -387,12 +431,15 @@ describe('YamlConditionalFileWatcher', () => {
 
     expect(conditionalStorageMock.createCondition).not.toHaveBeenCalled();
 
-    const auditEvents: any[] = auditLoggerMock.auditLog.mock.calls;
-    expect(auditEvents.length).toBe(1);
-    expect(auditEvents[0][0].eventName).toBe(ConditionEvents.DELETE_CONDITION);
-    expect(auditEvents[0][0].message).toBe(
-      `Deleted conditional permission policy`,
-    );
+    expectAuditorLog([
+      {
+        event: {
+          eventId: ConditionEvents.CONDITION_DELETE,
+          ...mappedConditionMeta(conditionToRemove),
+        },
+        success: { ...mappedConditionMeta(conditionToRemove) },
+      },
+    ]);
     expect(conditionalStorageMock.deleteCondition).toHaveBeenCalledWith(2);
   });
 
@@ -406,7 +453,7 @@ describe('YamlConditionalFileWatcher', () => {
     conditionalStorageMock.deleteCondition = jest
       .fn()
       .mockImplementation(() => {
-        throw new Error('unknow error message');
+        throw new NotFoundError('Condition was not found');
       });
 
     const watcher = createWatcher(csvFileName);
@@ -415,12 +462,18 @@ describe('YamlConditionalFileWatcher', () => {
     expect(conditionalStorageMock.createCondition).not.toHaveBeenCalled();
 
     expect(conditionalStorageMock.deleteCondition).toHaveBeenCalled();
-    const auditEvents: any[] = auditLoggerMock.auditLog.mock.calls;
-    expect(auditEvents.length).toBe(1);
-    expect(auditEvents[0][0].eventName).toBe(
-      ConditionEvents.DELETE_CONDITION_ERROR,
-    );
-    expect(auditEvents[0][0].message).toBe(`Failed to delete condition by id`);
+    expectAuditorLog([
+      {
+        event: {
+          eventId: ConditionEvents.CONDITION_DELETE,
+          ...mappedConditionMeta(conditionToRemove),
+        },
+        fail: {
+          error: new NotFoundError('Condition was not found'),
+          ...mappedConditionMeta(conditionToRemove),
+        },
+      },
+    ]);
   });
 
   test('should clean up conditions if conditional file was not specified', async () => {
@@ -436,20 +489,22 @@ describe('YamlConditionalFileWatcher', () => {
     await watcher.cleanUpConditionalPolicies();
 
     expect(conditionalStorageMock.createCondition).not.toHaveBeenCalled();
-
-    const auditEvents: any[] = auditLoggerMock.auditLog.mock.calls;
-    expect(auditEvents.length).toBe(1);
-    expect(auditEvents[0][0].eventName).toBe(ConditionEvents.DELETE_CONDITION);
-    expect(auditEvents[0][0].message).toBe(
-      `Deleted conditional permission policy`,
-    );
+    expectAuditorLog([
+      {
+        event: {
+          eventId: ConditionEvents.CONDITION_DELETE,
+          ...mappedConditionMeta(conditionToRemove),
+        },
+        success: { ...mappedConditionMeta(conditionToRemove) },
+      },
+    ]);
     expect(conditionalStorageMock.deleteCondition).toHaveBeenNthCalledWith(
       1,
       2,
     );
   });
 
-  test('should not clean up conditions if list contidions is empty', async () => {
+  test('should not clean up conditions if list conditions is empty', async () => {
     conditionalStorageMock.filterConditions = jest
       .fn()
       .mockImplementation(() => []);
@@ -462,10 +517,22 @@ describe('YamlConditionalFileWatcher', () => {
     await watcher.cleanUpConditionalPolicies();
 
     expect(conditionalStorageMock.createCondition).not.toHaveBeenCalled();
-
-    const auditEvents: any[] = auditLoggerMock.auditLog.mock.calls;
-    expect(auditEvents.length).toBe(0);
-
+    expectAuditorLog([]);
     expect(conditionalStorageMock.deleteCondition).not.toHaveBeenCalled();
   });
 });
+
+function mappedConditionMeta(
+  condition: Required<
+    Pick<RoleConditionalPolicyDecision<PermissionInfo>, 'permissionMapping'>
+  >,
+): JsonObject {
+  return {
+    meta: {
+      condition: {
+        ...condition,
+        permissionMapping: condition.permissionMapping.map(pm => pm.action),
+      },
+    },
+  };
+}

@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { LoggerService } from '@backstage/backend-plugin-api';
+import type {
+  AuditorServiceCreateEventOptions,
+  LoggerService,
+} from '@backstage/backend-plugin-api';
 import { mockServices } from '@backstage/backend-test-utils';
 import { Config } from '@backstage/config';
 
@@ -35,7 +38,7 @@ import { EnforcerDelegate } from '../src/service/enforcer-delegate';
 import { MODEL } from '../src/service/permission-model';
 import { PluginPermissionMetadataCollector } from '../src/service/plugin-endpoints';
 import {
-  auditLoggerMock,
+  mockAuditorService,
   catalogApiMock,
   conditionalStorageMock,
   csvPermFile,
@@ -43,7 +46,9 @@ import {
   mockClientKnex,
   pluginMetadataCollectorMock,
   roleMetadataStorageMock,
+  createEventMock,
 } from './mock-utils';
+import { type JsonObject } from '@backstage/types';
 
 export function newConfig(
   permFile?: string,
@@ -134,7 +139,7 @@ export async function newEnforcerDelegate(
 
   return new EnforcerDelegate(
     enf,
-    auditLoggerMock,
+    mockAuditorService,
     roleMetadataStorageMock,
     mockClientKnex,
   );
@@ -148,7 +153,7 @@ export async function newPermissionPolicy(
   const logger = mockServices.logger.mock();
   const permissionPolicy = await RBACPermissionPolicy.build(
     logger,
-    auditLoggerMock,
+    mockAuditorService,
     config,
     conditionalStorageMock,
     enfDelegate,
@@ -157,6 +162,32 @@ export async function newPermissionPolicy(
     pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
     mockAuthService,
   );
-  (auditLoggerMock.auditLog as jest.Mock).mockReset();
+  mockAuditorService.createEvent.mockClear();
+  createEventMock.fail.mockClear();
+  createEventMock.success.mockClear();
   return permissionPolicy;
+}
+
+export function expectAuditorLog(
+  events: {
+    event: AuditorServiceCreateEventOptions;
+    success?: { meta?: JsonObject };
+    fail?: { meta?: JsonObject; error: Error };
+  }[],
+) {
+  const auditEvents = mockAuditorService.createEvent.mock.calls;
+  const succeededEvents = createEventMock.success.mock.calls;
+  const failedEvents = createEventMock.fail.mock.calls;
+
+  expect(auditEvents.length).toBe(events.length);
+  for (let i = 0; i < events.length; i++) {
+    const expectedEvent = { ...events[i].event, severityLevel: 'medium' };
+    expect(auditEvents[i][0]).toEqual(expectedEvent); // verifies also eventId
+    if (events[i].success) {
+      expect(succeededEvents[i][0]).toEqual(events[i].success);
+    }
+    if (events[i].fail) {
+      expect(failedEvents[i][0]).toEqual(events[i].fail);
+    }
+  }
 }

@@ -13,6 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {
+  createEventMock,
+  mockAuditorService,
+} from '../__fixtures__/mock-utils';
 import { ADMIN_ROLE_AUTHOR } from './admin-permissions/admin-creation';
 import { RoleMetadataDao } from './database/role-metadata';
 import {
@@ -33,12 +37,6 @@ import {
 import { EnforcerDelegate } from './service/enforcer-delegate';
 
 const modifiedBy = 'user:default/some-user';
-
-const auditLoggerMock = {
-  getActorId: jest.fn().mockImplementation(),
-  createAuditLogDetails: jest.fn().mockImplementation(),
-  auditLog: jest.fn().mockImplementation(),
-};
 
 describe('helper.ts', () => {
   describe('policyToString', () => {
@@ -190,7 +188,9 @@ describe('helper.ts', () => {
 
     beforeEach(() => {
       (mockEnforcerDelegate.removeGroupingPolicies as jest.Mock).mockClear();
-      auditLoggerMock.auditLog.mockReset();
+      mockAuditorService.createEvent.mockClear();
+      createEventMock.fail.mockClear();
+      createEventMock.success.mockClear();
     });
 
     it('removes the difference between originalGroup and addedGroup', async () => {
@@ -209,7 +209,7 @@ describe('helper.ts', () => {
         source,
         roleName,
         mockEnforcerDelegate as EnforcerDelegate,
-        auditLoggerMock,
+        mockAuditorService,
         ADMIN_ROLE_AUTHOR,
       );
 
@@ -236,7 +236,7 @@ describe('helper.ts', () => {
         source,
         roleName,
         mockEnforcerDelegate as EnforcerDelegate,
-        auditLoggerMock,
+        mockAuditorService,
         ADMIN_ROLE_AUTHOR,
       );
 
@@ -257,7 +257,7 @@ describe('helper.ts', () => {
         source,
         roleName,
         mockEnforcerDelegate as EnforcerDelegate,
-        auditLoggerMock,
+        mockAuditorService,
         ADMIN_ROLE_AUTHOR,
       );
 

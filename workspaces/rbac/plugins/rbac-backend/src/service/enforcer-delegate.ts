@@ -25,11 +25,8 @@ import {
 } from '../database/role-metadata';
 import { mergeRoleMetadata, policiesToString, policyToString } from '../helper';
 import { MODEL } from './permission-model';
-import { AuditLogger } from '@janus-idp/backstage-plugin-audit-log-node';
-import {
-  FETCH_NEWER_PERMISSIONS_STAGE,
-  PoliciesData,
-} from '../audit-log/audit-logger';
+import { PoliciesData } from '../audit-log/audit-logger';
+import { AuditorService } from '@backstage/backend-plugin-api/index';
 
 export type RoleEvents = 'roleAdded';
 export interface RoleEventEmitter<T extends RoleEvents> {
@@ -48,7 +45,7 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
 
   constructor(
     private readonly enforcer: Enforcer,
-    private readonly auditLogger: AuditLogger,
+    private readonly auditor: AuditorService,
     private readonly roleMetadataStorage: RoleMetadataStorage,
     private readonly knex: Knex,
   ) {}
@@ -64,14 +61,12 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
         await this.waitForEditOperationsToFinish();
 
         await this.enforcer.loadPolicy();
-      } catch (err) {
-        this.auditLogger.auditLog({
-          message: 'Failed to load newer policies from database',
-          eventName: PoliciesData.FAILED_TO_FETCH_NEWER_PERMISSIONS,
-          stage: FETCH_NEWER_PERMISSIONS_STAGE,
-          status: 'failed',
-          errors: [err],
+      } catch (error) {
+        const auditorEvent = await this.auditor.createEvent({
+          eventId: PoliciesData.PERMISSIONS_FETCH,
+          severityLevel: 'medium',
         });
+        await auditorEvent.fail({ error });
       } finally {
         this.loadPolicyPromise = null;
       }

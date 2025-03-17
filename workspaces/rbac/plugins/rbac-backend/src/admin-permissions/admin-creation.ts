@@ -15,17 +15,9 @@
  */
 import type { Config } from '@backstage/config';
 
-import { AuditLogger } from '@janus-idp/backstage-plugin-audit-log-node';
 import { Knex } from 'knex';
 
-import {
-  HANDLE_RBAC_DATA_STAGE,
-  PermissionAuditInfo,
-  PermissionEvents,
-  RBAC_BACKEND,
-  RoleAuditInfo,
-  RoleEvents,
-} from '../audit-log/audit-logger';
+import { PermissionEvents, RoleEvents } from '../audit-log/audit-logger';
 import {
   RoleMetadataDao,
   RoleMetadataStorage,
@@ -33,6 +25,7 @@ import {
 import { removeTheDifference } from '../helper';
 import { EnforcerDelegate } from '../service/enforcer-delegate';
 import { validateEntityReference } from '../validation/policies-validation';
+import { AuditorService } from '@backstage/backend-plugin-api/index';
 
 export const ADMIN_ROLE_NAME = 'role:default/rbac_admin';
 export const ADMIN_ROLE_AUTHOR = 'application configuration';
@@ -55,7 +48,7 @@ const getAdminRoleMetadata = (): RoleMetadataDao => {
 export const useAdminsFromConfig = async (
   admins: Config[],
   enf: EnforcerDelegate,
-  auditLogger: AuditLogger,
+  auditor: AuditorService,
   roleMetadataStorage: RoleMetadataStorage,
   knex: Knex,
 ) => {
@@ -75,9 +68,18 @@ export const useAdminsFromConfig = async (
 
   const adminRoleMeta =
     await roleMetadataStorage.findRoleMetadata(ADMIN_ROLE_NAME);
+  const addedRoleMembers = Array.from<string[]>(newGroupPolicies.entries());
+  const meta = {
+    ...getAdminRoleMetadata(),
+    members: addedRoleMembers.map(gp => gp[0]),
+  };
+  const auditorEvent = await auditor.createEvent({
+    eventId: RoleEvents.ROLE_CREATE_OR_UPDATE,
+    severityLevel: 'medium',
+    meta,
+  });
 
   const trx = await knex.transaction();
-  let addedRoleMembers;
   try {
     if (!adminRoleMeta) {
       // even if there are no user, we still create default role metadata for admins
@@ -90,7 +92,6 @@ export const useAdminsFromConfig = async (
       );
     }
 
-    addedRoleMembers = Array.from<string[]>(newGroupPolicies.entries());
     await enf.addGroupingPolicies(
       addedRoleMembers,
       getAdminRoleMetadata(),
@@ -98,22 +99,17 @@ export const useAdminsFromConfig = async (
     );
 
     await trx.commit();
+    await auditorEvent.success({
+      meta,
+    });
   } catch (error) {
     await trx.rollback(error);
+    await auditorEvent.fail({
+      error,
+      meta,
+    });
     throw error;
   }
-
-  await auditLogger.auditLog<RoleAuditInfo>({
-    actorId: RBAC_BACKEND,
-    message: `Created or updated role`,
-    eventName: RoleEvents.CREATE_OR_UPDATE_ROLE,
-    metadata: {
-      ...getAdminRoleMetadata(),
-      members: addedRoleMembers.map(gp => gp[0]),
-    },
-    stage: HANDLE_RBAC_DATA_STAGE,
-    status: 'succeeded',
-  });
 
   const configGroupPolicies = await enf.getFilteredGroupingPolicy(
     1,
@@ -126,7 +122,7 @@ export const useAdminsFromConfig = async (
     'configuration',
     ADMIN_ROLE_NAME,
     enf,
-    auditLogger,
+    auditor,
     ADMIN_ROLE_AUTHOR,
   );
 };
@@ -134,7 +130,7 @@ export const useAdminsFromConfig = async (
 const addAdminPermissions = async (
   policies: string[][],
   enf: EnforcerDelegate,
-  auditLogger: AuditLogger,
+  auditor: AuditorService,
 ) => {
   const policiesToAdd: string[][] = [];
   for (const policy of policies) {
@@ -142,21 +138,31 @@ const addAdminPermissions = async (
       policiesToAdd.push(policy);
     }
   }
-  await enf.addPolicies(policiesToAdd);
 
-  await auditLogger.auditLog<PermissionAuditInfo>({
-    actorId: RBAC_BACKEND,
-    message: `Created RBAC admin permissions`,
-    eventName: PermissionEvents.CREATE_POLICY,
-    metadata: { policies: policies, source: 'configuration' },
-    stage: HANDLE_RBAC_DATA_STAGE,
-    status: 'succeeded',
+  const meta = { policies, source: 'configuration' };
+  const auditorEvent = await auditor.createEvent({
+    eventId: PermissionEvents.POLICY_CREATE,
+    severityLevel: 'medium',
+    meta,
   });
+
+  try {
+    await enf.addPolicies(policiesToAdd);
+    await auditorEvent.success({
+      meta,
+    });
+  } catch (error) {
+    await auditorEvent.fail({
+      error,
+      meta,
+    });
+    throw error;
+  }
 };
 
 export const setAdminPermissions = async (
   enf: EnforcerDelegate,
-  auditLogger: AuditLogger,
+  auditor: AuditorService,
 ) => {
   const adminPermissions = [
     [ADMIN_ROLE_NAME, 'policy-entity', 'read', 'allow'],
@@ -166,5 +172,5 @@ export const setAdminPermissions = async (
     // Needed for the RBAC frontend plugin.
     [ADMIN_ROLE_NAME, 'catalog-entity', 'read', 'allow'],
   ];
-  await addAdminPermissions(adminPermissions, enf, auditLogger);
+  await addAdminPermissions(adminPermissions, enf, auditor);
 };

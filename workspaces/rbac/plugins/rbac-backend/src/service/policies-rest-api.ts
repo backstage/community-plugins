@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { PermissionsService } from '@backstage/backend-plugin-api';
+import type {
+  AuditorService,
+  PermissionsService,
+} from '@backstage/backend-plugin-api';
 import {
   ConflictError,
   InputError,
@@ -29,7 +32,6 @@ import {
 } from '@backstage/plugin-permission-common';
 import { createPermissionIntegrationRouter } from '@backstage/plugin-permission-node';
 
-import type { AuditLogger } from '@janus-idp/backstage-plugin-audit-log-node';
 import express from 'express';
 import type { Request } from 'express-serve-static-core';
 import { isEmpty, isEqual } from 'lodash';
@@ -49,18 +51,7 @@ import {
 } from '@backstage-community/plugin-rbac-common';
 import type { RBACProvider } from '@backstage-community/plugin-rbac-node';
 
-import {
-  ConditionAuditInfo,
-  ConditionEvents,
-  ListConditionEvents,
-  ListPluginPoliciesEvents,
-  PermissionAuditInfo,
-  PermissionEvents,
-  RoleAuditInfo,
-  RoleEvents,
-  SEND_RESPONSE_STAGE,
-} from '../audit-log/audit-logger';
-import { auditError as logAuditError } from '../audit-log/rest-errors-interceptor';
+import { logAuditorEvent } from '../audit-log/rest-interceptor';
 import { ConditionalStorage } from '../database/conditional-storage';
 import {
   daoToMetadata,
@@ -93,7 +84,7 @@ export class PoliciesServer {
     private readonly conditionalStorage: ConditionalStorage,
     private readonly pluginPermMetaData: PluginPermissionMetadataCollector,
     private readonly roleMetadata: RoleMetadataStorage,
-    private readonly aLog: AuditLogger,
+    private readonly auditor: AuditorService,
     private readonly rbacProviders?: RBACProvider[],
   ) {}
 
@@ -141,6 +132,7 @@ export class PoliciesServer {
       permissions: policyEntityPermissions,
     });
     router.use(permissionsIntegrationRouter);
+    router.use(logAuditorEvent(this.auditor));
 
     const isPluginEnabled =
       this.options.config.getOptionalBoolean('permission.enabled');
@@ -186,16 +178,6 @@ export class PoliciesServer {
       }
 
       const body = await this.transformPolicyArray(...policies);
-
-      await this.aLog.auditLog({
-        message: `Return list permission policies`,
-        eventName: PermissionEvents.GET_POLICY,
-        stage: SEND_RESPONSE_STAGE,
-        status: 'succeeded',
-        request,
-        response: { status: 200, body },
-      });
-
       response.json(body);
     });
 
@@ -216,16 +198,6 @@ export class PoliciesServer {
         const policy = await this.enforcer.getFilteredPolicy(0, entityRef);
         if (policy.length !== 0) {
           const body = await this.transformPolicyArray(...policy);
-
-          await this.aLog.auditLog({
-            message: `Return permission policy`,
-            eventName: PermissionEvents.GET_POLICY,
-            stage: SEND_RESPONSE_STAGE,
-            status: 'succeeded',
-            request,
-            response: { status: 200, body },
-          });
-
           response.json(body);
         } else {
           throw new NotFoundError(); // 404
@@ -260,15 +232,7 @@ export class PoliciesServer {
 
         await this.enforcer.removePolicies(processedPolicies);
 
-        await this.aLog.auditLog<PermissionAuditInfo>({
-          message: `Deleted permission policies`,
-          eventName: PermissionEvents.DELETE_POLICY,
-          metadata: { policies: processedPolicies, source: 'rest' },
-          stage: SEND_RESPONSE_STAGE,
-          status: 'succeeded',
-          request,
-          response: { status: 204 },
-        });
+        response.locals.meta = { policies: processedPolicies }; // auditor
 
         response.status(204).end();
       },
@@ -300,15 +264,7 @@ export class PoliciesServer {
 
       await this.enforcer.addPolicies(processedPolicies);
 
-      await this.aLog.auditLog<PermissionAuditInfo>({
-        message: `Created permission policies`,
-        eventName: PermissionEvents.CREATE_POLICY,
-        metadata: { policies: processedPolicies, source: 'rest' },
-        stage: SEND_RESPONSE_STAGE,
-        status: 'succeeded',
-        request,
-        response: { status: 201 },
-      });
+      response.locals.meta = { policies: processedPolicies }; // auditor
 
       response.status(201).end();
     });
@@ -386,15 +342,7 @@ export class PoliciesServer {
           processedNewPolicy,
         );
 
-        await this.aLog.auditLog<PermissionAuditInfo>({
-          message: `Updated permission policies`,
-          eventName: PermissionEvents.UPDATE_POLICY,
-          metadata: { policies: processedNewPolicy, source: 'rest' },
-          stage: SEND_RESPONSE_STAGE,
-          status: 'succeeded',
-          request,
-          response: { status: 200 },
-        });
+        response.locals.meta = { policies: processedNewPolicy }; // auditor
 
         response.status(200).end();
       },
@@ -413,17 +361,7 @@ export class PoliciesServer {
       }
 
       const roles = await this.enforcer.getGroupingPolicy();
-
       const body = await this.transformRoleArray(...roles);
-
-      await this.aLog.auditLog({
-        message: `Return list roles`,
-        eventName: RoleEvents.GET_ROLE,
-        stage: SEND_RESPONSE_STAGE,
-        status: 'succeeded',
-        request,
-        response: { status: 200, body },
-      });
 
       response.json(body);
     });
@@ -446,15 +384,6 @@ export class PoliciesServer {
 
       if (role.length !== 0) {
         const body = await this.transformRoleArray(...role);
-
-        await this.aLog.auditLog({
-          message: `Return ${body[0].name}`,
-          eventName: RoleEvents.GET_ROLE,
-          stage: SEND_RESPONSE_STAGE,
-          status: 'succeeded',
-          request,
-          response: { status: 200, body },
-        });
 
         response.json(body);
       } else {
@@ -521,18 +450,7 @@ export class PoliciesServer {
 
       await this.enforcer.addGroupingPolicies(roles, metadata);
 
-      await this.aLog.auditLog<RoleAuditInfo>({
-        message: `Created ${metadata.roleEntityRef}`,
-        eventName: RoleEvents.CREATE_ROLE,
-        metadata: {
-          ...metadata,
-          members: roles.map(gp => gp[0]),
-        },
-        stage: SEND_RESPONSE_STAGE,
-        status: 'succeeded',
-        request,
-        response: { status: 201 },
-      });
+      response.locals.meta = { ...metadata, members: roles.map(gp => gp[0]) }; // auditor
 
       response.status(201).end();
     });
@@ -665,18 +583,10 @@ export class PoliciesServer {
       if (newMetadata.roleEntityRef !== oldMetadata.roleEntityRef) {
         message = `${message}. Role entity reference renamed to ${newMetadata.roleEntityRef}`;
       }
-      await this.aLog.auditLog<RoleAuditInfo>({
-        message,
-        eventName: RoleEvents.UPDATE_ROLE,
-        metadata: {
-          ...newMetadata,
-          members: newRole.map(gp => gp[0]),
-        },
-        stage: SEND_RESPONSE_STAGE,
-        status: 'succeeded',
-        request,
-        response: { status: 200 },
-      });
+      response.locals.meta = {
+        ...newMetadata,
+        members: newRole.map(gp => gp[0]),
+      }; // auditor
 
       response.status(200).end();
     });
@@ -748,18 +658,10 @@ export class PoliciesServer {
           false,
         );
 
-        await this.aLog.auditLog<RoleAuditInfo>({
-          message: `Deleted ${metadata.roleEntityRef}`,
-          eventName: RoleEvents.DELETE_ROLE,
-          metadata: {
-            ...metadata,
-            members: roleMembers.map(gp => gp[0]),
-          },
-          stage: SEND_RESPONSE_STAGE,
-          status: 'succeeded',
-          request,
-          response: { status: 204 },
-        });
+        response.locals.meta = {
+          ...metadata,
+          members: roleMembers.map(gp => gp[0]),
+        }; // auditor
 
         response.status(204).end();
       },
@@ -779,15 +681,6 @@ export class PoliciesServer {
         this.options.auth,
       );
 
-      await this.aLog.auditLog({
-        message: `Return list plugin policies`,
-        eventName: ListPluginPoliciesEvents.GET_PLUGINS_POLICIES,
-        stage: SEND_RESPONSE_STAGE,
-        status: 'succeeded',
-        request,
-        response: { status: 200, body },
-      });
-
       response.json(body);
     });
 
@@ -804,15 +697,6 @@ export class PoliciesServer {
       const body = await this.pluginPermMetaData.getPluginConditionRules(
         this.options.auth,
       );
-
-      await this.aLog.auditLog({
-        message: `Return list conditional rules and schemas`,
-        eventName: ListConditionEvents.GET_CONDITION_RULES,
-        stage: SEND_RESPONSE_STAGE,
-        status: 'succeeded',
-        request,
-        response: { status: 200, body },
-      });
 
       response.json(body);
     });
@@ -842,15 +726,6 @@ export class PoliciesServer {
           };
         });
 
-      await this.aLog.auditLog({
-        message: `Return list conditional permission policies`,
-        eventName: ConditionEvents.GET_CONDITION,
-        stage: SEND_RESPONSE_STAGE,
-        status: 'succeeded',
-        request,
-        response: { status: 200, body },
-      });
-
       response.json(body);
     });
 
@@ -879,15 +754,7 @@ export class PoliciesServer {
 
       const body = { id: id };
 
-      await this.aLog.auditLog<ConditionAuditInfo>({
-        message: `Created conditional permission policy`,
-        eventName: ConditionEvents.CREATE_CONDITION,
-        metadata: { condition: roleConditionPolicy },
-        stage: SEND_RESPONSE_STAGE,
-        status: 'succeeded',
-        request,
-        response: { status: 201, body },
-      });
+      response.locals.meta = { condition: roleConditionPolicy }; // auditor
 
       response.status(201).json(body);
     });
@@ -916,15 +783,6 @@ export class PoliciesServer {
         ...condition,
         permissionMapping: condition.permissionMapping.map(pm => pm.action),
       };
-
-      await this.aLog.auditLog({
-        message: `Return conditional permission policy by id`,
-        eventName: ConditionEvents.GET_CONDITION,
-        stage: SEND_RESPONSE_STAGE,
-        status: 'succeeded',
-        request,
-        response: { status: 200, body },
-      });
 
       response.json(body);
     });
@@ -955,16 +813,7 @@ export class PoliciesServer {
         };
 
       await this.conditionalStorage.deleteCondition(id);
-
-      await this.aLog.auditLog<ConditionAuditInfo>({
-        message: `Deleted conditional permission policy`,
-        eventName: ConditionEvents.DELETE_CONDITION,
-        metadata: { condition: conditionToDelete },
-        stage: SEND_RESPONSE_STAGE,
-        status: 'succeeded',
-        request,
-        response: { status: 204 },
-      });
+      response.locals.meta = { condition: conditionToDelete }; // auditor
 
       response.status(204).end();
     });
@@ -996,16 +845,7 @@ export class PoliciesServer {
       );
 
       await this.conditionalStorage.updateCondition(id, conditionToUpdate);
-
-      await this.aLog.auditLog<ConditionAuditInfo>({
-        message: `Updated conditional permission policy`,
-        eventName: ConditionEvents.UPDATE_CONDITION,
-        metadata: { condition: roleConditionPolicy },
-        stage: SEND_RESPONSE_STAGE,
-        status: 'succeeded',
-        request,
-        response: { status: 200 },
-      });
+      response.locals.meta = { condition: roleConditionPolicy }; // auditor
 
       response.status(200).end();
     });
@@ -1038,8 +878,6 @@ export class PoliciesServer {
       await idProvider.refresh();
       response.status(200).end();
     });
-
-    router.use(logAuditError(this.aLog));
 
     return router;
   }

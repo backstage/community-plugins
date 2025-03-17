@@ -14,13 +14,10 @@
  * limitations under the License.
  */
 import {
-  AuthorizeResult,
   PolicyDecision,
   ResourcePermission,
 } from '@backstage/plugin-permission-common';
 import type { PolicyQuery } from '@backstage/plugin-permission-node';
-
-import type { AuditLogOptions } from '@janus-idp/backstage-plugin-audit-log-node';
 
 import {
   PermissionAction,
@@ -28,37 +25,30 @@ import {
   Source,
   toPermissionAction,
 } from '@backstage-community/plugin-rbac-common';
+import {
+  AuditorService,
+  AuditorServiceEvent,
+} from '@backstage/backend-plugin-api/index';
 
 export const RoleEvents = {
-  CREATE_ROLE: 'CreateRole',
-  UPDATE_ROLE: 'UpdateRole',
-  DELETE_ROLE: 'DeleteRole',
-  CREATE_OR_UPDATE_ROLE: 'CreateOrUpdateRole',
-  GET_ROLE: 'GetRole',
-
-  CREATE_ROLE_ERROR: 'CreateRoleError',
-  UPDATE_ROLE_ERROR: 'UpdateRoleError',
-  DELETE_ROLE_ERROR: 'DeleteRoleError',
-  GET_ROLE_ERROR: 'GetRoleError',
+  ROLE_CREATE: 'role-create',
+  ROLE_UPDATE: 'role-update',
+  ROLE_DELETE: 'role-delete',
+  ROLE_CREATE_OR_UPDATE: 'role-create-or-update',
+  ROLE_GET: 'role-get',
 } as const;
 
 export const PermissionEvents = {
-  CREATE_POLICY: 'CreatePolicy',
-  UPDATE_POLICY: 'UpdatePolicy',
-  DELETE_POLICY: 'DeletePolicy',
-  GET_POLICY: 'GetPolicy',
-
-  CREATE_POLICY_ERROR: 'CreatePolicyError',
-  UPDATE_POLICY_ERROR: 'UpdatePolicyError',
-  DELETE_POLICY_ERROR: 'DeletePolicyError',
-  GET_POLICY_ERROR: 'GetPolicyError',
+  POLICY_CREATE: 'policy-create',
+  POLICY_UPDATE: 'policy-update',
+  POLICY_DELETE: 'policy-delete',
+  POLICY_GET: 'policy-get',
 } as const;
 
 export type RoleAuditInfo = {
   roleEntityRef: string;
   description?: string;
   source: Source;
-
   members: string[];
 };
 
@@ -73,20 +63,15 @@ export type PermissionAuditInfo = {
 };
 
 export const EvaluationEvents = {
-  PERMISSION_EVALUATION_STARTED: 'PermissionEvaluationStarted',
-  PERMISSION_EVALUATION_COMPLETED: 'PermissionEvaluationCompleted',
-  CONDITION_EVALUATION_COMPLETED: 'ConditionEvaluationCompleted',
-  PERMISSION_EVALUATION_FAILED: 'PermissionEvaluationFailed',
+  PERMISSION_EVALUATION: 'permission-evaluation',
 } as const;
 
 export const ListPluginPoliciesEvents = {
-  GET_PLUGINS_POLICIES: 'GetPluginsPolicies',
-  GET_PLUGINS_POLICIES_ERROR: 'GetPluginsPoliciesError',
+  PLUGIN_POLICIES_GET: 'plugin-policies-get',
 };
 
 export const ListConditionEvents = {
-  GET_CONDITION_RULES: 'GetConditionRules',
-  GET_CONDITION_RULES_ERROR: 'GetConditionRulesError',
+  CONDITION_RULES_GET: 'condition-rules-get',
 };
 
 export type EvaluationAuditInfo = {
@@ -98,22 +83,16 @@ export type EvaluationAuditInfo = {
 };
 
 export const PoliciesData = {
-  FAILED_TO_FETCH_NEWER_PERMISSIONS: 'FailedToFetchNewerPermissions',
+  PERMISSIONS_FETCH: 'permissions-fetch',
 };
 
 export const ConditionEvents = {
-  CREATE_CONDITION: 'CreateCondition',
-  UPDATE_CONDITION: 'UpdateCondition',
-  DELETE_CONDITION: 'DeleteCondition',
-  GET_CONDITION: 'GetCondition',
-
-  CREATE_CONDITION_ERROR: 'CreateConditionError',
-  UPDATE_CONDITION_ERROR: 'UpdateConditionError',
-  DELETE_CONDITION_ERROR: 'DeleteConditionError',
-  GET_CONDITION_ERROR: 'GetConditionError',
-  PARSE_CONDITION_ERROR: 'ParseConditionError',
-  CHANGE_CONDITIONAL_POLICIES_FILE_ERROR: 'ChangeConditionalPoliciesError',
-  CONDITIONAL_POLICIES_FILE_NOT_FOUND: 'ConditionalPoliciesFileNotFound',
+  CONDITION_CREATE: 'condition-create',
+  CONDITION_UPDATE: 'condition-update',
+  CONDITION_DELETE: 'condition-delete',
+  CONDITION_GET: 'condition-get',
+  CONDITIONAL_POLICIES_FILE_NOT_FOUND: 'conditional-policies-file-not-found',
+  CONDITIONAL_POLICIES_FILE_CHANGE: 'conditional-policies-file-change',
 };
 
 export type ConditionAuditInfo = {
@@ -122,25 +101,15 @@ export type ConditionAuditInfo = {
 
 export const RBAC_BACKEND = 'rbac-backend';
 
-// Audit log stage for processing Role-Based Access Control (RBAC) data
-export const HANDLE_RBAC_DATA_STAGE = 'handleRBACData';
-
-// Audit log stage to refresh Role-Based Access Control (RBAC) data
-export const FETCH_NEWER_PERMISSIONS_STAGE = 'fetchNewerPermissions';
-
-// Audit log stage for determining access rights based on user permissions and resource information
-export const EVALUATE_PERMISSION_ACCESS_STAGE = 'evaluatePermissionAccess';
-
-// Audit log stage for sending the response to the client about handled permission policies, roles, and condition policies
-export const SEND_RESPONSE_STAGE = 'sendResponse';
-export const RESPONSE_ERROR = 'responseError';
-
-export function createPermissionEvaluationOptions(
-  message: string,
+export async function createPermissionEvaluationAuditorEvent(
+  auditor: AuditorService,
   userEntityRef: string,
   request: PolicyQuery,
   policyDecision?: PolicyDecision,
-): AuditLogOptions<EvaluationAuditInfo> {
+): Promise<{
+  auditorEvent: AuditorServiceEvent;
+  auditInfo: EvaluationAuditInfo;
+}> {
   const auditInfo: EvaluationAuditInfo = {
     userEntityRef,
     permissionName: request.permission.name,
@@ -151,32 +120,16 @@ export function createPermissionEvaluationOptions(
   if (resourceType) {
     auditInfo.resourceType = resourceType;
   }
-
-  let eventName;
-  if (!policyDecision) {
-    eventName = EvaluationEvents.PERMISSION_EVALUATION_STARTED;
-  } else {
+  if (policyDecision) {
     auditInfo.decision = policyDecision;
-
-    switch (policyDecision.result) {
-      case AuthorizeResult.DENY:
-      case AuthorizeResult.ALLOW:
-        eventName = EvaluationEvents.PERMISSION_EVALUATION_COMPLETED;
-        break;
-      case AuthorizeResult.CONDITIONAL:
-        eventName = EvaluationEvents.CONDITION_EVALUATION_COMPLETED;
-        break;
-      default:
-        throw new Error('Unknown policy decision result');
-    }
   }
 
-  return {
-    actorId: userEntityRef,
-    message,
-    eventName,
-    metadata: auditInfo,
-    stage: EVALUATE_PERMISSION_ACCESS_STAGE,
-    status: 'succeeded',
-  };
+  const auditorEvent = await auditor.createEvent({
+    eventId: EvaluationEvents.PERMISSION_EVALUATION,
+    severityLevel: 'medium',
+    meta: {
+      ...auditInfo,
+    },
+  });
+  return { auditorEvent, auditInfo };
 }
