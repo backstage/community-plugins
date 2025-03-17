@@ -73,6 +73,7 @@ import {
   isPermissionAction,
   policyToString,
   processConditionMapping,
+  matches,
 } from '../helper';
 import { validateRoleCondition } from '../validation/condition-validation';
 import {
@@ -84,6 +85,7 @@ import {
 import { EnforcerDelegate } from './enforcer-delegate';
 import { PluginPermissionMetadataCollector } from './plugin-endpoints';
 import { RBACRouterOptions } from './policy-builder';
+import { RBACFilters, rules, transformConditions } from '../permissions';
 
 export class PoliciesServer {
   constructor(
@@ -97,7 +99,7 @@ export class PoliciesServer {
     private readonly rbacProviders?: RBACProvider[],
   ) {}
 
-  private async authorize(
+  private async authorizeConditional(
     request: Request,
     permission: ResourcePermission,
   ): Promise<PolicyDecision> {
@@ -116,8 +118,8 @@ export class PoliciesServer {
     }
 
     const decision = (
-      await this.permissions.authorize(
-        [{ permission: permission, resourceRef: permission.resourceType }],
+      await this.permissions.authorizeConditional(
+        [{ permission: permission }],
         { credentials },
       )
     )[0];
@@ -136,11 +138,20 @@ export class PoliciesServer {
       );
     }
 
-    const permissionsIntegrationRouter = createPermissionIntegrationRouter({
-      resourceType: RESOURCE_TYPE_POLICY_ENTITY,
-      permissions: policyEntityPermissions,
-    });
-    router.use(permissionsIntegrationRouter);
+    const policyPermissionsIntegrationRouter =
+      createPermissionIntegrationRouter({
+        resourceType: RESOURCE_TYPE_POLICY_ENTITY,
+        getResources: resourceRefs =>
+          Promise.all(
+            resourceRefs.map(ref => {
+              return this.roleMetadata.findRoleMetadata(ref);
+            }),
+          ),
+        permissions: policyEntityPermissions,
+        rules: Object.values(rules),
+      });
+
+    router.use(policyPermissionsIntegrationRouter);
 
     const isPluginEnabled =
       this.options.config.getOptionalBoolean('permission.enabled');
@@ -149,7 +160,7 @@ export class PoliciesServer {
     }
 
     router.get('/', async (request, response) => {
-      const decision = await this.authorize(
+      const decision = await this.authorizeConditional(
         request,
         policyEntityReadPermission,
       );
@@ -163,7 +174,8 @@ export class PoliciesServer {
     // Policy CRUD
 
     router.get('/policies', async (request, response) => {
-      const decision = await this.authorize(
+      let conditionsFilter: RBACFilters | undefined;
+      const decision = await this.authorizeConditional(
         request,
         policyEntityReadPermission,
       );
@@ -172,17 +184,37 @@ export class PoliciesServer {
         throw new NotAllowedError(); // 403
       }
 
-      let policies: string[][];
+      if (decision.result === AuthorizeResult.CONDITIONAL) {
+        conditionsFilter = transformConditions(decision.conditions);
+      }
+
+      const roleMetadata =
+        await this.roleMetadata.filterForOwnerRoleMetadata(conditionsFilter);
+
+      let policies: string[][] = [];
       if (this.isPolicyFilterEnabled(request)) {
         const entityRef = this.getFirstQuery(request.query.entityRef);
         const permission = this.getFirstQuery(request.query.permission);
         const policy = this.getFirstQuery(request.query.policy);
         const effect = this.getFirstQuery(request.query.effect);
 
+        const matchedRoleName = roleMetadata.flatMap(
+          role => role.roleEntityRef,
+        );
+
         const filter: string[] = [entityRef, permission, policy, effect];
-        policies = await this.enforcer.getFilteredPolicy(0, ...filter);
+        policies = matchedRoleName.includes(entityRef)
+          ? await this.enforcer.getFilteredPolicy(0, ...filter)
+          : [];
       } else {
-        policies = await this.enforcer.getPolicy();
+        for (const role of roleMetadata) {
+          policies.push(
+            ...(await this.enforcer.getFilteredPolicy(
+              0,
+              ...[role.roleEntityRef],
+            )),
+          );
+        }
       }
 
       const body = await this.transformPolicyArray(...policies);
@@ -202,7 +234,8 @@ export class PoliciesServer {
     router.get(
       '/policies/:kind/:namespace/:name',
       async (request, response) => {
-        const decision = await this.authorize(
+        let conditionsFilter: RBACFilters | undefined;
+        const decision = await this.authorizeConditional(
           request,
           policyEntityReadPermission,
         );
@@ -211,9 +244,22 @@ export class PoliciesServer {
           throw new NotAllowedError(); // 403
         }
 
+        if (decision.result === AuthorizeResult.CONDITIONAL) {
+          conditionsFilter = transformConditions(decision.conditions);
+        }
+
+        const roleMetadata =
+          await this.roleMetadata.filterForOwnerRoleMetadata(conditionsFilter);
+
+        const matchedRoleName = roleMetadata.flatMap(role => {
+          return role.roleEntityRef;
+        });
+
         const entityRef = this.getEntityReference(request);
 
-        const policy = await this.enforcer.getFilteredPolicy(0, entityRef);
+        const policy = matchedRoleName.includes(entityRef)
+          ? await this.enforcer.getFilteredPolicy(0, entityRef)
+          : [];
         if (policy.length !== 0) {
           const body = await this.transformPolicyArray(...policy);
 
@@ -236,13 +282,18 @@ export class PoliciesServer {
     router.delete(
       '/policies/:kind/:namespace/:name',
       async (request, response) => {
-        const decision = await this.authorize(
+        let conditionsFilter: RBACFilters | undefined;
+        const decision = await this.authorizeConditional(
           request,
           policyEntityDeletePermission,
         );
 
         if (decision.result === AuthorizeResult.DENY) {
           throw new NotAllowedError(); // 403
+        }
+
+        if (decision.result === AuthorizeResult.CONDITIONAL) {
+          conditionsFilter = transformConditions(decision.conditions);
         }
 
         const entityRef = this.getEntityReference(request);
@@ -256,7 +307,12 @@ export class PoliciesServer {
           element.entityReference = entityRef;
         });
 
-        const processedPolicies = await this.processPolicies(policyRaw, true);
+        const processedPolicies = await this.processPolicies(
+          policyRaw,
+          true,
+          undefined,
+          conditionsFilter,
+        );
 
         await this.enforcer.removePolicies(processedPolicies);
 
@@ -275,7 +331,8 @@ export class PoliciesServer {
     );
 
     router.post('/policies', async (request, response) => {
-      const decision = await this.authorize(
+      let conditionsFilter: RBACFilters | undefined;
+      const decision = await this.authorizeConditional(
         request,
         policyEntityCreatePermission,
       );
@@ -284,13 +341,22 @@ export class PoliciesServer {
         throw new NotAllowedError(); // 403
       }
 
+      if (decision.result === AuthorizeResult.CONDITIONAL) {
+        conditionsFilter = transformConditions(decision.conditions);
+      }
+
       const policyRaw: RoleBasedPolicy[] = request.body;
 
       if (isEmpty(policyRaw)) {
         throw new InputError(`permission policy must be present`); // 400
       }
 
-      const processedPolicies = await this.processPolicies(policyRaw);
+      const processedPolicies = await this.processPolicies(
+        policyRaw,
+        false,
+        undefined,
+        conditionsFilter,
+      );
 
       const entityRef = processedPolicies[0][0];
       const roleMetadata = await this.roleMetadata.findRoleMetadata(entityRef);
@@ -316,13 +382,18 @@ export class PoliciesServer {
     router.put(
       '/policies/:kind/:namespace/:name',
       async (request, response) => {
-        const decision = await this.authorize(
+        let conditionsFilter: RBACFilters | undefined;
+        const decision = await this.authorizeConditional(
           request,
           policyEntityUpdatePermission,
         );
 
         if (decision.result === AuthorizeResult.DENY) {
           throw new NotAllowedError(); // 403
+        }
+
+        if (decision.result === AuthorizeResult.CONDITIONAL) {
+          conditionsFilter = transformConditions(decision.conditions);
         }
 
         const entityRef = this.getEntityReference(request);
@@ -344,6 +415,7 @@ export class PoliciesServer {
           oldPolicyRaw,
           true,
           'old policy',
+          conditionsFilter,
         );
 
         oldPolicyRaw.sort((a, b) =>
@@ -373,6 +445,7 @@ export class PoliciesServer {
           newPolicyRaw,
           false,
           'new policy',
+          conditionsFilter,
         );
 
         const roleMetadata =
@@ -403,7 +476,8 @@ export class PoliciesServer {
     // Role CRUD
 
     router.get('/roles', async (request, response) => {
-      const decision = await this.authorize(
+      let conditionsFilter: RBACFilters | undefined;
+      const decision = await this.authorizeConditional(
         request,
         policyEntityReadPermission,
       );
@@ -412,9 +486,13 @@ export class PoliciesServer {
         throw new NotAllowedError(); // 403
       }
 
+      if (decision.result === AuthorizeResult.CONDITIONAL) {
+        conditionsFilter = transformConditions(decision.conditions);
+      }
+
       const roles = await this.enforcer.getGroupingPolicy();
 
-      const body = await this.transformRoleArray(...roles);
+      const body = await this.transformRoleArray(conditionsFilter, ...roles);
 
       await this.aLog.auditLog({
         message: `Return list roles`,
@@ -429,7 +507,8 @@ export class PoliciesServer {
     });
 
     router.get('/roles/:kind/:namespace/:name', async (request, response) => {
-      const decision = await this.authorize(
+      let conditionsFilter: RBACFilters | undefined;
+      const decision = await this.authorizeConditional(
         request,
         policyEntityReadPermission,
       );
@@ -437,6 +516,11 @@ export class PoliciesServer {
       if (decision.result === AuthorizeResult.DENY) {
         throw new NotAllowedError(); // 403
       }
+
+      if (decision.result === AuthorizeResult.CONDITIONAL) {
+        conditionsFilter = transformConditions(decision.conditions);
+      }
+
       const roleEntityRef = this.getEntityReference(request, true);
 
       const role = await this.enforcer.getFilteredGroupingPolicy(
@@ -445,7 +529,7 @@ export class PoliciesServer {
       );
 
       if (role.length !== 0) {
-        const body = await this.transformRoleArray(...role);
+        const body = await this.transformRoleArray(conditionsFilter, ...role);
 
         await this.aLog.auditLog({
           message: `Return ${body[0].name}`,
@@ -464,7 +548,7 @@ export class PoliciesServer {
 
     router.post('/roles', async (request, response) => {
       const uniqueItems = new Set<string>();
-      const decision = await this.authorize(
+      const decision = await this.authorizeConditional(
         request,
         policyEntityCreatePermission,
       );
@@ -472,6 +556,7 @@ export class PoliciesServer {
       if (decision.result === AuthorizeResult.DENY) {
         throw new NotAllowedError(); // 403
       }
+
       const roleRaw: Role = request.body;
       let err = validateRole(roleRaw);
       if (err) {
@@ -517,6 +602,7 @@ export class PoliciesServer {
         description: roleRaw.metadata?.description ?? '',
         author: modifiedBy,
         modifiedBy,
+        owner: roleRaw.metadata?.owner ?? '',
       };
 
       await this.enforcer.addGroupingPolicies(roles, metadata);
@@ -539,7 +625,9 @@ export class PoliciesServer {
 
     router.put('/roles/:kind/:namespace/:name', async (request, response) => {
       const uniqueItems = new Set<string>();
-      const decision = await this.authorize(
+      let conditionsFilter: RBACFilters | undefined;
+
+      const decision = await this.authorizeConditional(
         request,
         policyEntityUpdatePermission,
       );
@@ -547,6 +635,11 @@ export class PoliciesServer {
       if (decision.result === AuthorizeResult.DENY) {
         throw new NotAllowedError(); // 403
       }
+
+      if (decision.result === AuthorizeResult.CONDITIONAL) {
+        conditionsFilter = transformConditions(decision.conditions);
+      }
+
       const roleEntityRef = this.getEntityReference(request, true);
 
       const oldRoleRaw: Role = request.body.oldRole;
@@ -588,6 +681,7 @@ export class PoliciesServer {
         source: newRoleRaw.metadata?.source ?? 'rest',
         roleEntityRef: newRoleRaw.name,
         modifiedBy: credentials.principal.userEntityRef,
+        owner: newRoleRaw.metadata?.owner ?? '',
       };
 
       const oldMetadata =
@@ -601,6 +695,10 @@ export class PoliciesServer {
         throw new NotAllowedError(`Unable to edit role: ${err.message}`);
       }
 
+      if (!matches(oldMetadata, conditionsFilter)) {
+        throw new NotAllowedError(); // 403
+      }
+
       if (
         isEqual(oldRole, newRole) &&
         deepSortedEqual(oldMetadata, newMetadata, [
@@ -608,6 +706,7 @@ export class PoliciesServer {
           'modifiedBy',
           'createdAt',
           'lastModified',
+          'owner',
         ])
       ) {
         // no content: old role and new role are equal and their metadata too
@@ -684,7 +783,8 @@ export class PoliciesServer {
     router.delete(
       '/roles/:kind/:namespace/:name',
       async (request, response) => {
-        const decision = await this.authorize(
+        let conditionsFilter: RBACFilters | undefined;
+        const decision = await this.authorizeConditional(
           request,
           policyEntityDeletePermission,
         );
@@ -693,7 +793,23 @@ export class PoliciesServer {
           throw new NotAllowedError(); // 403
         }
 
+        if (decision.result === AuthorizeResult.CONDITIONAL) {
+          conditionsFilter = transformConditions(decision.conditions);
+        }
+
         const roleEntityRef = this.getEntityReference(request, true);
+
+        const currentMetadata =
+          await this.roleMetadata.findRoleMetadata(roleEntityRef);
+
+        if (!matches(currentMetadata, conditionsFilter)) {
+          throw new NotAllowedError(); // 403
+        }
+
+        const err = await validateSource('rest', currentMetadata);
+        if (err) {
+          throw new NotAllowedError(`Unable to delete role: ${err.message}`);
+        }
 
         let roleMembers = [];
         if (request.query.memberReferences) {
@@ -723,13 +839,6 @@ export class PoliciesServer {
           if (!(await this.enforcer.hasGroupingPolicy(...role))) {
             throw new NotFoundError(`role member '${role[0]}' was not found`);
           }
-        }
-
-        const currentMetadata =
-          await this.roleMetadata.findRoleMetadata(roleEntityRef);
-        const err = await validateSource('rest', currentMetadata);
-        if (err) {
-          throw new NotAllowedError(`Unable to delete role: ${err.message}`);
         }
 
         const credentials = await httpAuth.credentials(request, {
@@ -766,7 +875,7 @@ export class PoliciesServer {
     );
 
     router.get('/plugins/policies', async (request, response) => {
-      const decision = await this.authorize(
+      const decision = await this.authorizeConditional(
         request,
         policyEntityReadPermission,
       );
@@ -792,7 +901,7 @@ export class PoliciesServer {
     });
 
     router.get('/plugins/condition-rules', async (request, response) => {
-      const decision = await this.authorize(
+      const decision = await this.authorizeConditional(
         request,
         policyEntityReadPermission,
       );
@@ -818,7 +927,8 @@ export class PoliciesServer {
     });
 
     router.get('/roles/conditions', async (request, response) => {
-      const decision = await this.authorize(
+      let conditionsFilter: RBACFilters | undefined;
+      const decision = await this.authorizeConditional(
         request,
         policyEntityReadPermission,
       );
@@ -827,6 +937,17 @@ export class PoliciesServer {
         throw new NotAllowedError(); // 403
       }
 
+      if (decision.result === AuthorizeResult.CONDITIONAL) {
+        conditionsFilter = transformConditions(decision.conditions);
+      }
+
+      const roleMetadata =
+        await this.roleMetadata.filterForOwnerRoleMetadata(conditionsFilter);
+
+      const matchedRoleName = roleMetadata.flatMap(role => {
+        return role.roleEntityRef;
+      });
+
       const conditions = await this.conditionalStorage.filterConditions(
         this.getFirstQuery(request.query.roleEntityRef),
         this.getFirstQuery(request.query.pluginId),
@@ -834,12 +955,15 @@ export class PoliciesServer {
         this.getActionQueries(request.query.actions),
       );
 
-      const body: RoleConditionalPolicyDecision<PermissionAction>[] =
-        conditions.map(condition => {
+      const body: RoleConditionalPolicyDecision<PermissionAction>[] = conditions
+        .map(condition => {
           return {
             ...condition,
             permissionMapping: condition.permissionMapping.map(pm => pm.action),
           };
+        })
+        .filter(condition => {
+          return matchedRoleName.includes(condition.roleEntityRef);
         });
 
       await this.aLog.auditLog({
@@ -855,7 +979,8 @@ export class PoliciesServer {
     });
 
     router.post('/roles/conditions', async (request, response) => {
-      const decision = await this.authorize(
+      let conditionsFilter: RBACFilters | undefined;
+      const decision = await this.authorizeConditional(
         request,
         policyEntityCreatePermission,
       );
@@ -864,9 +989,21 @@ export class PoliciesServer {
         throw new NotAllowedError(); // 403
       }
 
+      if (decision.result === AuthorizeResult.CONDITIONAL) {
+        conditionsFilter = transformConditions(decision.conditions);
+      }
+
       const roleConditionPolicy: RoleConditionalPolicyDecision<PermissionAction> =
         request.body;
       validateRoleCondition(roleConditionPolicy);
+
+      const roleMetadata = await this.roleMetadata.findRoleMetadata(
+        roleConditionPolicy.roleEntityRef,
+      );
+
+      if (!matches(roleMetadata, conditionsFilter)) {
+        throw new NotAllowedError(); // 403
+      }
 
       const conditionToCreate = await processConditionMapping(
         roleConditionPolicy,
@@ -893,7 +1030,8 @@ export class PoliciesServer {
     });
 
     router.get('/roles/conditions/:id', async (request, response) => {
-      const decision = await this.authorize(
+      let conditionsFilter: RBACFilters | undefined;
+      const decision = await this.authorizeConditional(
         request,
         policyEntityReadPermission,
       );
@@ -912,10 +1050,23 @@ export class PoliciesServer {
         throw new NotFoundError();
       }
 
-      const body: RoleConditionalPolicyDecision<PermissionAction> = {
-        ...condition,
-        permissionMapping: condition.permissionMapping.map(pm => pm.action),
-      };
+      if (decision.result === AuthorizeResult.CONDITIONAL) {
+        conditionsFilter = transformConditions(decision.conditions);
+      }
+
+      const roleMetadata =
+        await this.roleMetadata.filterForOwnerRoleMetadata(conditionsFilter);
+
+      const matchedRoleName = roleMetadata.flatMap(role => {
+        return role.roleEntityRef;
+      });
+
+      const body = matchedRoleName.includes(condition.roleEntityRef)
+        ? {
+            ...condition,
+            permissionMapping: condition.permissionMapping.map(pm => pm.action),
+          }
+        : undefined;
 
       await this.aLog.auditLog({
         message: `Return conditional permission policy by id`,
@@ -930,13 +1081,18 @@ export class PoliciesServer {
     });
 
     router.delete('/roles/conditions/:id', async (request, response) => {
-      const decision = await this.authorize(
+      let conditionsFilter: RBACFilters | undefined;
+      const decision = await this.authorizeConditional(
         request,
         policyEntityDeletePermission,
       );
 
       if (decision.result === AuthorizeResult.DENY) {
         throw new NotAllowedError(); // 403
+      }
+
+      if (decision.result === AuthorizeResult.CONDITIONAL) {
+        conditionsFilter = transformConditions(decision.conditions);
       }
 
       const id: number = parseInt(request.params.id, 10);
@@ -954,6 +1110,14 @@ export class PoliciesServer {
           permissionMapping: condition.permissionMapping.map(pm => pm.action),
         };
 
+      const roleMetadata = await this.roleMetadata.findRoleMetadata(
+        conditionToDelete.roleEntityRef,
+      );
+
+      if (!matches(roleMetadata, conditionsFilter)) {
+        throw new NotAllowedError(); // 403
+      }
+
       await this.conditionalStorage.deleteCondition(id);
 
       await this.aLog.auditLog<ConditionAuditInfo>({
@@ -970,13 +1134,18 @@ export class PoliciesServer {
     });
 
     router.put('/roles/conditions/:id', async (request, response) => {
-      const decision = await this.authorize(
+      let conditionsFilter: RBACFilters | undefined;
+      const decision = await this.authorizeConditional(
         request,
         policyEntityUpdatePermission,
       );
 
       if (decision.result === AuthorizeResult.DENY) {
         throw new NotAllowedError(); // 403
+      }
+
+      if (decision.result === AuthorizeResult.CONDITIONAL) {
+        conditionsFilter = transformConditions(decision.conditions);
       }
 
       const id: number = parseInt(request.params.id, 10);
@@ -995,6 +1164,14 @@ export class PoliciesServer {
         this.options.auth,
       );
 
+      const roleMetadata = await this.roleMetadata.findRoleMetadata(
+        conditionToUpdate.roleEntityRef,
+      );
+
+      if (!matches(roleMetadata, conditionsFilter)) {
+        throw new NotAllowedError(); // 403
+      }
+
       await this.conditionalStorage.updateCondition(id, conditionToUpdate);
 
       await this.aLog.auditLog<ConditionAuditInfo>({
@@ -1011,7 +1188,7 @@ export class PoliciesServer {
     });
 
     router.post('/refresh/:id', async (request, response) => {
-      const decision = await this.authorize(
+      const decision = await this.authorizeConditional(
         request,
         policyEntityCreatePermission,
       );
@@ -1081,7 +1258,10 @@ export class PoliciesServer {
     return roleBasedPolices;
   }
 
-  async transformRoleArray(...roles: string[][]): Promise<Role[]> {
+  async transformRoleArray(
+    filter?: RBACFilters,
+    ...roles: string[][]
+  ): Promise<Role[]> {
     const combinedRoles: { [key: string]: string[] } = {};
 
     roles.forEach(([value, role]) => {
@@ -1093,7 +1273,7 @@ export class PoliciesServer {
     });
 
     const result: Role[] = await Promise.all(
-      Object.entries(combinedRoles).map(async ([role, value]) => {
+      Object.entries(combinedRoles).flatMap(async ([role, value]) => {
         const metadataDao = await this.roleMetadata.findRoleMetadata(role);
         const metadata = metadataDao ? daoToMetadata(metadataDao) : undefined;
         return Promise.resolve({
@@ -1103,7 +1283,12 @@ export class PoliciesServer {
         });
       }),
     );
-    return result;
+
+    const filteredResult = result.filter(role => {
+      return role.metadata && matches(role.metadata, filter);
+    });
+
+    return filteredResult;
   }
 
   transformPolicyToArray(policy: RoleBasedPolicy): string[] {
@@ -1192,6 +1377,7 @@ export class PoliciesServer {
     policyArray: RoleBasedPolicy[],
     isOld?: boolean,
     errorMessage?: string,
+    filter?: RBACFilters,
   ): Promise<string[][]> {
     const policies: string[][] = [];
     const uniqueItems = new Set<string>();
@@ -1208,6 +1394,10 @@ export class PoliciesServer {
       const metadata = await this.roleMetadata.findRoleMetadata(
         policy.entityReference!,
       );
+
+      if (!matches(metadata, filter)) {
+        throw new NotAllowedError(); // 403
+      }
 
       let action = errorMessage ? 'edit' : 'delete';
       action = isOld ? action : 'add';
