@@ -2,4 +2,4 @@
 
 Welcome to the common package for the multi-source-security-viewer plugin!
 
-_This plugin was created through the Backstage CLI_
+This package is intended to be used as a dependency for other multi-source-security-viewer plugins.
