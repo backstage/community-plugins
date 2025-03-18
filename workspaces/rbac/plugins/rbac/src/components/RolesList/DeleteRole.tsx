@@ -26,9 +26,16 @@ import { usePermission } from '@backstage/plugin-permission-react';
 type DeleteRoleProps = {
   roleName: string;
   canEdit: boolean;
+  dataTestId?: string;
+  tooltip?: string;
 };
 
-const DeleteRole = ({ roleName, canEdit }: DeleteRoleProps) => {
+const DeleteRole = ({
+  roleName,
+  canEdit,
+  dataTestId,
+  tooltip,
+}: DeleteRoleProps) => {
   const { setDeleteComponent, setOpenDialog } = useDeleteDialog();
 
   const openDialog = (name: string) => {
@@ -41,19 +48,19 @@ const DeleteRole = ({ roleName, canEdit }: DeleteRoleProps) => {
     resourceRef: roleName,
   });
 
-  const dataTestId = !(deletePermissionResult.allowed && canEdit)
+  const dataTestIdText = !(deletePermissionResult.allowed && canEdit)
     ? `disable-delete-role-${roleName}`
     : `delete-role-${roleName}`;
 
   const disable = !(deletePermissionResult.allowed && canEdit);
 
-  const tooltip = !(deletePermissionResult.allowed && canEdit)
+  const tooltipText = !(deletePermissionResult.allowed && canEdit)
     ? 'Role cannot be deleted'
     : '';
 
   return (
-    <Tooltip title={tooltip ?? ''}>
-      <Typography component="span" data-testid={dataTestId}>
+    <Tooltip title={tooltip ?? tooltipText}>
+      <Typography component="span" data-testid={dataTestId ?? dataTestIdText}>
         <IconButton
           onClick={() => openDialog(roleName)}
           aria-label="Delete"
