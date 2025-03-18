@@ -37,6 +37,7 @@ const getEditIcon = (isAllowed: boolean, roleName: string) => {
 
   return (
     <EditRole
+      dataTestId={isAllowed ? 'update-policies' : 'disable-update-policies'}
       canEdit={isAllowed}
       roleName={roleName}
       to={`../../role/${kind}/${namespace}/${name}?activeStep=${2}`}

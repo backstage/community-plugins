@@ -28,10 +28,18 @@ import { policyEntityUpdatePermission } from '@backstage-community/plugin-rbac-c
 type EditRoleProps = {
   roleName: string;
   canEdit: boolean;
+  dataTestId?: string;
+  tooltip?: string;
   to?: string;
 };
 
-const EditRole = ({ roleName, canEdit, to }: EditRoleProps) => {
+const EditRole = ({
+  roleName,
+  canEdit,
+  dataTestId,
+  tooltip,
+  to,
+}: EditRoleProps) => {
   const { name, namespace, kind } = parseEntityRef(roleName);
 
   const editPermissionResult = usePermission({
@@ -39,19 +47,19 @@ const EditRole = ({ roleName, canEdit, to }: EditRoleProps) => {
     resourceRef: roleName,
   });
 
-  const dataTestId = !(editPermissionResult.allowed && canEdit)
+  const dataTestIdText = !(editPermissionResult.allowed && canEdit)
     ? `disable-update-role-${roleName}`
     : `update-role-${roleName}`;
 
   const disable = !(editPermissionResult.allowed && canEdit);
 
-  const tooltip = !(editPermissionResult.allowed && canEdit)
+  const tooltipText = !(editPermissionResult.allowed && canEdit)
     ? 'Unauthorized to edit'
     : '';
 
   return (
-    <Tooltip title={tooltip ?? ''}>
-      <Typography component="span" data-testid={dataTestId}>
+    <Tooltip title={tooltip ?? tooltipText}>
+      <Typography component="span" data-testid={dataTestId ?? dataTestIdText}>
         <IconButton
           component={Link}
           aria-label="Update"
