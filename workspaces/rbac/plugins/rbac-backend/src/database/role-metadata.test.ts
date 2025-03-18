@@ -95,6 +95,7 @@ describe('role-metadata-db-table', () => {
             id: 1,
             lastModified: null,
             modifiedBy,
+            owner: null,
             roleEntityRef: 'role:default/some-super-important-role',
             source: 'rest',
           });
@@ -142,6 +143,7 @@ describe('role-metadata-db-table', () => {
           id: 1,
           lastModified: null,
           modifiedBy,
+          owner: null,
           source: 'configuration',
         });
       },
@@ -304,6 +306,7 @@ describe('role-metadata-db-table', () => {
           id: 1,
           lastModified: null,
           modifiedBy,
+          owner: null,
         });
       },
     );
@@ -380,6 +383,7 @@ describe('role-metadata-db-table', () => {
           id: 1,
           lastModified: null,
           modifiedBy,
+          owner: null,
         });
       },
     );
