@@ -38,7 +38,6 @@ export interface RoleMetadataDao extends RoleMetadata {
 export interface RoleMetadataStorage {
   filterRoleMetadata(source?: Source): Promise<RoleMetadataDao[]>;
   filterForOwnerRoleMetadata(filter?: RBACFilters): Promise<RoleMetadataDao[]>;
-  getRoleMetadata(): Promise<RoleMetadataDao[]>;
   findRoleMetadata(
     roleEntityRef: string,
     trx?: Knex.Transaction,
@@ -86,10 +85,6 @@ export class DataBaseRoleMetadataStorage implements RoleMetadataStorage {
     }
 
     return filteredRoleMeta;
-  }
-
-  async getRoleMetadata(): Promise<RoleMetadataDao[]> {
-    return await this.knex.table(ROLE_METADATA_TABLE);
   }
 
   async findRoleMetadata(

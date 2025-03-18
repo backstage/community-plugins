@@ -101,6 +101,27 @@ const enforcerDelegateMock: Partial<EnforcerDelegate> = {
 
 const roleMetadataStorageMock: RoleMetadataStorage = {
   filterRoleMetadata: jest.fn().mockImplementation(() => []),
+  filterForOwnerRoleMetadata: jest
+    .fn()
+    .mockImplementation(async (): Promise<RoleMetadataDao[]> => {
+      return [
+        {
+          source: 'rest',
+          roleEntityRef: 'role:default/permission_admin',
+          modifiedBy: 'user:default/some-user',
+        },
+        {
+          source: 'rest',
+          roleEntityRef: 'role:default/guest',
+          modifiedBy: 'user:default/some-user',
+        },
+        {
+          source: 'rest',
+          roleEntityRef: 'role:default/test',
+          modifiedBy: 'user:default/some-user',
+        },
+      ];
+    }),
   findRoleMetadata: jest.fn().mockImplementation(),
   createRoleMetadata: jest.fn().mockImplementation(),
   updateRoleMetadata: jest.fn().mockImplementation(),
@@ -334,16 +355,15 @@ describe('REST policies api', () => {
     });
 
     it('should return a status of Unauthorized', async () => {
-      mockedAuthorize.mockImplementationOnce(async () => [
+      mockedAuthorizeConditional.mockImplementationOnce(async () => [
         { result: AuthorizeResult.DENY },
       ]);
       const result = await request(app).get('/').send();
 
-      expect(mockedAuthorize).toHaveBeenCalledWith(
+      expect(mockedAuthorizeConditional).toHaveBeenCalledWith(
         [
           {
             permission: policyEntityReadPermission,
-            resourceRef: 'policy-entity',
           },
         ],
         {
@@ -364,16 +384,15 @@ describe('REST policies api', () => {
     });
 
     it('should return a status of Unauthorized', async () => {
-      mockedAuthorize.mockImplementationOnce(async () => [
+      mockedAuthorizeConditional.mockImplementationOnce(async () => [
         { result: AuthorizeResult.DENY },
       ]);
       const result = await request(app).post('/policies').send();
 
-      expect(mockedAuthorize).toHaveBeenCalledWith(
+      expect(mockedAuthorizeConditional).toHaveBeenCalledWith(
         [
           {
             permission: policyEntityCreatePermission,
-            resourceRef: 'policy-entity',
           },
         ],
         {
@@ -653,18 +672,17 @@ describe('REST policies api', () => {
 
   describe('GET /policies/:kind/:namespace/:name', () => {
     it('should return a status of Unauthorized', async () => {
-      mockedAuthorize.mockImplementationOnce(async () => [
+      mockedAuthorizeConditional.mockImplementationOnce(async () => [
         { result: AuthorizeResult.DENY },
       ]);
       const result = await request(app)
         .get('/policies/user/default/permission_admin')
         .send();
 
-      expect(mockedAuthorize).toHaveBeenCalledWith(
+      expect(mockedAuthorizeConditional).toHaveBeenCalledWith(
         [
           {
             permission: policyEntityReadPermission,
-            resourceRef: 'policy-entity',
           },
         ],
         {
@@ -685,7 +703,7 @@ describe('REST policies api', () => {
           async (_fieldIndex: number, ..._fieldValues: string[]) => {
             return [
               [
-                'user:default/permission_admin',
+                'role:default/permission_admin',
                 'policy-entity',
                 'create',
                 'allow',
@@ -694,12 +712,12 @@ describe('REST policies api', () => {
           },
         );
       const result = await request(app)
-        .get('/policies/user/default/permission_admin')
+        .get('/policies/role/default/permission_admin')
         .send();
       expect(result.statusCode).toBe(200);
       expect(result.body).toEqual([
         {
-          entityReference: 'user:default/permission_admin',
+          entityReference: 'role:default/permission_admin',
           permission: 'policy-entity',
           policy: 'create',
           effect: 'allow',
@@ -735,16 +753,15 @@ describe('REST policies api', () => {
 
   describe('GET /policies', () => {
     it('should return a status of Unauthorized', async () => {
-      mockedAuthorize.mockImplementationOnce(async () => [
+      mockedAuthorizeConditional.mockImplementationOnce(async () => [
         { result: AuthorizeResult.DENY },
       ]);
       const result = await request(app).get('/policies').send();
 
-      expect(mockedAuthorize).toHaveBeenCalledWith(
+      expect(mockedAuthorizeConditional).toHaveBeenCalledWith(
         [
           {
             permission: policyEntityReadPermission,
-            resourceRef: 'policy-entity',
           },
         ],
         {
@@ -759,25 +776,41 @@ describe('REST policies api', () => {
     });
 
     it('should be returned list all policies', async () => {
-      enforcerDelegateMock.getPolicy = jest
+      enforcerDelegateMock.getFilteredPolicy = jest
         .fn()
-        .mockImplementation(async () => {
-          return [
-            [
-              'user:default/permission_admin',
-              'policy-entity',
-              'create',
-              'allow',
-              'rest',
-            ],
-            ['user:default/guest', 'policy-entity', 'read', 'allow', 'rest'],
-          ];
-        });
+        .mockImplementation(
+          async (_fieldIndex: number, ...fieldValues: string[]) => {
+            if (fieldValues[0] === 'role:default/permission_admin') {
+              return [
+                [
+                  'role:default/permission_admin',
+                  'policy-entity',
+                  'create',
+                  'allow',
+                ],
+              ];
+            }
+
+            if (fieldValues[0] === 'role:default/guest') {
+              return [
+                [
+                  'role:default/guest',
+                  'policy-entity',
+                  'read',
+                  'allow',
+                  'rest',
+                ],
+              ];
+            }
+
+            return [];
+          },
+        );
       const result = await request(app).get('/policies').send();
       expect(result.statusCode).toBe(200);
       expect(result.body).toEqual([
         {
-          entityReference: 'user:default/permission_admin',
+          entityReference: 'role:default/permission_admin',
           permission: 'policy-entity',
           policy: 'create',
           effect: 'allow',
@@ -786,7 +819,7 @@ describe('REST policies api', () => {
           },
         },
         {
-          entityReference: 'user:default/guest',
+          entityReference: 'role:default/guest',
           permission: 'policy-entity',
           policy: 'read',
           effect: 'allow',
@@ -802,19 +835,19 @@ describe('REST policies api', () => {
         .mockImplementation(
           async (_fieldIndex: number, ..._fieldValues: string[]) => {
             return [
-              ['user:default/guest', 'policy-entity', 'read', 'allow', 'rest'],
+              ['role:default/guest', 'policy-entity', 'read', 'allow', 'rest'],
             ];
           },
         );
       const result = await request(app)
         .get(
-          '/policies?entityRef=user:default/guest&permission=policy-entity&policy=read&effect=allow',
+          '/policies?entityRef=role:default/guest&permission=policy-entity&policy=read&effect=allow',
         )
         .send();
       expect(result.statusCode).toBe(200);
       expect(result.body).toEqual([
         {
-          entityReference: 'user:default/guest',
+          entityReference: 'role:default/guest',
           permission: 'policy-entity',
           policy: 'read',
           effect: 'allow',
@@ -828,18 +861,17 @@ describe('REST policies api', () => {
 
   describe('DELETE /policies/:kind/:namespace/:name', () => {
     it('should return a status of Unauthorized', async () => {
-      mockedAuthorize.mockImplementationOnce(async () => [
+      mockedAuthorizeConditional.mockImplementationOnce(async () => [
         { result: AuthorizeResult.DENY },
       ]);
       const result = await request(app)
         .delete('/policies/user/default/permission_admin')
         .send();
 
-      expect(mockedAuthorize).toHaveBeenCalledWith(
+      expect(mockedAuthorizeConditional).toHaveBeenCalledWith(
         [
           {
             permission: policyEntityDeletePermission,
-            resourceRef: 'policy-entity',
           },
         ],
         {
@@ -1091,18 +1123,17 @@ describe('REST policies api', () => {
 
   describe('PUT /policies/:kind/:namespace/:name', () => {
     it('should return a status of Unauthorized', async () => {
-      mockedAuthorize.mockImplementationOnce(async () => [
+      mockedAuthorizeConditional.mockImplementationOnce(async () => [
         { result: AuthorizeResult.DENY },
       ]);
       const result = await request(app)
         .put('/policies/user/default/permission_admin')
         .send();
 
-      expect(mockedAuthorize).toHaveBeenCalledWith(
+      expect(mockedAuthorizeConditional).toHaveBeenCalledWith(
         [
           {
             permission: policyEntityUpdatePermission,
-            resourceRef: 'policy-entity',
           },
         ],
         {
@@ -1841,16 +1872,15 @@ describe('REST policies api', () => {
 
   describe('GET /roles', () => {
     it('should return a status of Unauthorized', async () => {
-      mockedAuthorize.mockImplementationOnce(async () => [
+      mockedAuthorizeConditional.mockImplementationOnce(async () => [
         { result: AuthorizeResult.DENY },
       ]);
       const result = await request(app).get('/roles').send();
 
-      expect(mockedAuthorize).toHaveBeenCalledWith(
+      expect(mockedAuthorizeConditional).toHaveBeenCalledWith(
         [
           {
             permission: policyEntityReadPermission,
-            resourceRef: 'policy-entity',
           },
         ],
         {
@@ -1898,18 +1928,17 @@ describe('REST policies api', () => {
 
   describe('GET /roles/:kind/:namespace/:name', () => {
     it('should return a status of Unauthorized', async () => {
-      mockedAuthorize.mockImplementationOnce(async () => [
+      mockedAuthorizeConditional.mockImplementationOnce(async () => [
         { result: AuthorizeResult.DENY },
       ]);
       const result = await request(app)
         .get('/roles/role/default/rbac_admin')
         .send();
 
-      expect(mockedAuthorize).toHaveBeenCalledWith(
+      expect(mockedAuthorizeConditional).toHaveBeenCalledWith(
         [
           {
             permission: policyEntityReadPermission,
-            resourceRef: 'policy-entity',
           },
         ],
         {
@@ -1977,21 +2006,20 @@ describe('REST policies api', () => {
 
   describe('POST /roles', () => {
     beforeEach(() => {
-      mockedAuthorize.mockImplementation(async () => [
+      mockedAuthorizeConditional.mockImplementation(async () => [
         { result: AuthorizeResult.ALLOW },
       ]);
     });
     it('should return a status of Unauthorized', async () => {
-      mockedAuthorize.mockImplementationOnce(async () => [
+      mockedAuthorizeConditional.mockImplementationOnce(async () => [
         { result: AuthorizeResult.DENY },
       ]);
       const result = await request(app).post('/roles').send();
 
-      expect(mockedAuthorize).toHaveBeenCalledWith(
+      expect(mockedAuthorizeConditional).toHaveBeenCalledWith(
         [
           {
             permission: policyEntityCreatePermission,
-            resourceRef: 'policy-entity',
           },
         ],
         {
@@ -2101,6 +2129,7 @@ describe('REST policies api', () => {
           source: 'rest',
           description: '',
           modifiedBy: 'user:default/guest',
+          owner: '',
         },
       );
     });
@@ -2127,6 +2156,7 @@ describe('REST policies api', () => {
             author: 'user:default/guest',
             description: 'some test description',
             modifiedBy: 'user:default/guest',
+            owner: '',
           },
         );
       },
@@ -2225,18 +2255,17 @@ describe('REST policies api', () => {
 
   describe('PUT /roles/:kind/:namespace/:name', () => {
     it('should return a status of Unauthorized', async () => {
-      mockedAuthorize.mockImplementationOnce(async () => [
+      mockedAuthorizeConditional.mockImplementationOnce(async () => [
         { result: AuthorizeResult.DENY },
       ]);
       const result = await request(app)
         .put('/roles/role/default/rbac_admin')
         .send();
 
-      expect(mockedAuthorize).toHaveBeenCalledWith(
+      expect(mockedAuthorizeConditional).toHaveBeenCalledWith(
         [
           {
             permission: policyEntityUpdatePermission,
-            resourceRef: 'policy-entity',
           },
         ],
         {
@@ -2482,6 +2511,7 @@ describe('REST policies api', () => {
           modifiedBy: 'user:default/guest',
           roleEntityRef: 'role:default/rbac_admin',
           source: 'rest',
+          owner: '',
         },
       );
     });
@@ -2525,6 +2555,7 @@ describe('REST policies api', () => {
           modifiedBy: 'user:default/guest',
           roleEntityRef: 'role:default/rbac_admin',
           source: 'rest',
+          owner: '',
         },
       );
     });
@@ -2897,18 +2928,17 @@ describe('REST policies api', () => {
 
   describe('DELETE /roles/:kind/:namespace/:name', () => {
     it('should return a status of Unauthorized', async () => {
-      mockedAuthorize.mockImplementationOnce(async () => [
+      mockedAuthorizeConditional.mockImplementationOnce(async () => [
         { result: AuthorizeResult.DENY },
       ]);
       const result = await request(app)
         .delete('/roles/role/default/rbac_admin')
         .send();
 
-      expect(mockedAuthorize).toHaveBeenCalledWith(
+      expect(mockedAuthorizeConditional).toHaveBeenCalledWith(
         [
           {
             permission: policyEntityDeletePermission,
-            resourceRef: 'policy-entity',
           },
         ],
         {
@@ -3136,12 +3166,16 @@ describe('REST policies api', () => {
             description: undefined,
             lastModified: undefined,
             modifiedBy: 'user:default/some-user',
+            owner: undefined,
             source: 'rest',
           },
         },
       ];
 
-      const transformedRoles = await server.transformRoleArray(...roles);
+      const transformedRoles = await server.transformRoleArray(
+        undefined,
+        ...roles,
+      );
       expect(transformedRoles).toStrictEqual(expectedResult);
     });
   });
@@ -3169,18 +3203,17 @@ describe('REST policies api', () => {
   // Define a test suite for the GET /conditions endpoint
   describe('GET /roles/conditions', () => {
     it('should return a status of Unauthorized', async () => {
-      mockedAuthorize.mockImplementationOnce(async () => [
+      mockedAuthorizeConditional.mockImplementationOnce(async () => [
         { result: AuthorizeResult.DENY },
       ]);
 
       // Perform the GET request to the endpoint
       const result = await request(app).get('/roles/conditions').send();
 
-      expect(mockedAuthorize).toHaveBeenCalledWith(
+      expect(mockedAuthorizeConditional).toHaveBeenCalledWith(
         [
           {
             permission: policyEntityReadPermission,
-            resourceRef: 'policy-entity',
           },
         ],
         {
@@ -3279,17 +3312,16 @@ describe('REST policies api', () => {
         });
     });
     it('should return a status of Unauthorized', async () => {
-      mockedAuthorize.mockImplementationOnce(async () => [
+      mockedAuthorizeConditional.mockImplementationOnce(async () => [
         { result: AuthorizeResult.DENY },
       ]);
 
       const result = await request(app).delete('/roles/conditions/1').send();
 
-      expect(mockedAuthorize).toHaveBeenCalledWith(
+      expect(mockedAuthorizeConditional).toHaveBeenCalledWith(
         [
           {
             permission: policyEntityDeletePermission,
-            resourceRef: 'policy-entity',
           },
         ],
         {
@@ -3340,17 +3372,16 @@ describe('REST policies api', () => {
 
   describe('GET /roles/condition/:id', () => {
     it('should return a status of Unauthorized', async () => {
-      mockedAuthorize.mockImplementationOnce(async () => [
+      mockedAuthorizeConditional.mockImplementationOnce(async () => [
         { result: AuthorizeResult.DENY },
       ]);
 
       const result = await request(app).get('/roles/conditions/1').send();
 
-      expect(mockedAuthorize).toHaveBeenCalledWith(
+      expect(mockedAuthorizeConditional).toHaveBeenCalledWith(
         [
           {
             permission: policyEntityReadPermission,
-            resourceRef: 'policy-entity',
           },
         ],
         {
@@ -3405,17 +3436,16 @@ describe('REST policies api', () => {
 
   describe('POST /roles/conditions', () => {
     it('should return a status of Unauthorized', async () => {
-      mockedAuthorize.mockImplementationOnce(async () => [
+      mockedAuthorizeConditional.mockImplementationOnce(async () => [
         { result: AuthorizeResult.DENY },
       ]);
 
       const result = await request(app).post('/roles/conditions').send();
 
-      expect(mockedAuthorize).toHaveBeenCalledWith(
+      expect(mockedAuthorizeConditional).toHaveBeenCalledWith(
         [
           {
             permission: policyEntityCreatePermission,
-            resourceRef: 'policy-entity',
           },
         ],
         {
@@ -3482,17 +3512,16 @@ describe('REST policies api', () => {
 
   describe('PUT /roles/conditions', () => {
     it('should return a status of Unauthorized', async () => {
-      mockedAuthorize.mockImplementationOnce(async () => [
+      mockedAuthorizeConditional.mockImplementationOnce(async () => [
         { result: AuthorizeResult.DENY },
       ]);
 
       const result = await request(app).put('/roles/conditions/1').send();
 
-      expect(mockedAuthorize).toHaveBeenCalledWith(
+      expect(mockedAuthorizeConditional).toHaveBeenCalledWith(
         [
           {
             permission: policyEntityUpdatePermission,
-            resourceRef: 'policy-entity',
           },
         ],
         {
@@ -3520,7 +3549,7 @@ describe('REST policies api', () => {
     });
 
     it('should update condition decision', async () => {
-      mockedAuthorize.mockImplementationOnce(async () => [
+      mockedAuthorizeConditional.mockImplementationOnce(async () => [
         { result: AuthorizeResult.ALLOW },
       ]);
       const conditionDecision: RoleConditionalPolicyDecision<PermissionAction> =
@@ -3541,11 +3570,10 @@ describe('REST policies api', () => {
         .put('/roles/conditions/1')
         .send(conditionDecision);
 
-      expect(mockedAuthorize).toHaveBeenCalledWith(
+      expect(mockedAuthorizeConditional).toHaveBeenCalledWith(
         [
           {
             permission: policyEntityUpdatePermission,
-            resourceRef: 'policy-entity',
           },
         ],
         {
@@ -3581,7 +3609,7 @@ describe('REST policies api', () => {
     let appWithProvider: express.Express;
 
     beforeEach(async () => {
-      mockedAuthorize.mockImplementation(async () => [
+      mockedAuthorizeConditional.mockImplementation(async () => [
         { result: AuthorizeResult.ALLOW },
       ]);
 
@@ -3621,16 +3649,15 @@ describe('REST policies api', () => {
     });
 
     it('should return a status of Unauthorized', async () => {
-      mockedAuthorize.mockImplementationOnce(async () => [
+      mockedAuthorizeConditional.mockImplementationOnce(async () => [
         { result: AuthorizeResult.DENY },
       ]);
       const result = await request(app).post('/refresh/test').send();
 
-      expect(mockedAuthorize).toHaveBeenCalledWith(
+      expect(mockedAuthorizeConditional).toHaveBeenCalledWith(
         [
           {
             permission: policyEntityCreatePermission,
-            resourceRef: 'policy-entity',
           },
         ],
         {
@@ -3697,16 +3724,15 @@ describe('REST policies api', () => {
     });
 
     it('should return a status of Unauthorized for /plugins/policies', async () => {
-      mockedAuthorize.mockImplementationOnce(async () => [
+      mockedAuthorizeConditional.mockImplementationOnce(async () => [
         { result: AuthorizeResult.DENY },
       ]);
       const result = await request(app).get('/plugins/policies').send();
 
-      expect(mockedAuthorize).toHaveBeenCalledWith(
+      expect(mockedAuthorizeConditional).toHaveBeenCalledWith(
         [
           {
             permission: policyEntityReadPermission,
-            resourceRef: 'policy-entity',
           },
         ],
         {
@@ -3756,16 +3782,15 @@ describe('REST policies api', () => {
     });
 
     it('should return a status of Unauthorized for /plugins/condition-rules', async () => {
-      mockedAuthorize.mockImplementationOnce(async () => [
+      mockedAuthorizeConditional.mockImplementationOnce(async () => [
         { result: AuthorizeResult.DENY },
       ]);
       const result = await request(app).get('/plugins/condition-rules').send();
 
-      expect(mockedAuthorize).toHaveBeenCalledWith(
+      expect(mockedAuthorizeConditional).toHaveBeenCalledWith(
         [
           {
             permission: policyEntityReadPermission,
-            resourceRef: 'policy-entity',
           },
         ],
         {
@@ -3876,17 +3901,17 @@ describe('REST policies api', () => {
     });
 
     it('should not return list all policies, because permission framework was disabled', async () => {
-      enforcerDelegateMock.getPolicy = jest
+      enforcerDelegateMock.getFilteredPolicy = jest
         .fn()
         .mockImplementation(async () => {
           return [
             [
-              'user:default/permission_admin',
+              'role:default/permission_admin',
               'policy-entity',
               'create',
               'allow',
             ],
-            ['user:default/guest', 'policy-entity', 'read', 'allow'],
+            ['role:default/guest', 'policy-entity', 'read', 'allow', 'rest'],
           ];
         });
       const result = await request(app).get('/policies').send();
