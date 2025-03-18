@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.39.1
+
+### Patch Changes
+
+- 85541c1: RBACApiRef should be exposed to support simulation / customization based on use-cases and to mock API implementation for feature testing. #2872
+
 ## 1.39.0
 
 ### Minor Changes
