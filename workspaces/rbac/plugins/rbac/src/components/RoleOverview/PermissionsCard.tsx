@@ -17,12 +17,9 @@ import React from 'react';
 
 import { parseEntityRef } from '@backstage/catalog-model';
 import { Table, WarningPanel } from '@backstage/core-components';
-import { usePermission } from '@backstage/plugin-permission-react';
 
 import CachedIcon from '@mui/icons-material/Cached';
 import Box from '@mui/material/Box';
-
-import { policyEntityUpdatePermission } from '@backstage-community/plugin-rbac-common';
 
 import { usePermissionPolicies } from '../../hooks/usePermissionPolicies';
 import { filterTableData } from '../../utils/filter-table-data';
@@ -40,9 +37,8 @@ const getEditIcon = (isAllowed: boolean, roleName: string) => {
 
   return (
     <EditRole
-      dataTestId={isAllowed ? 'update-policies' : 'disable-update-policies'}
+      canEdit={isAllowed}
       roleName={roleName}
-      disable={!isAllowed}
       to={`../../role/${kind}/${namespace}/${name}?activeStep=${2}`}
     />
   );
@@ -55,10 +51,6 @@ export const PermissionsCard = ({
   const { data, loading, retry, error } =
     usePermissionPolicies(entityReference);
   const [searchText, setSearchText] = React.useState<string>();
-  const permissionResult = usePermission({
-    permission: policyEntityUpdatePermission,
-    resourceRef: policyEntityUpdatePermission.resourceType,
-  });
 
   const numberOfPolicies = React.useMemo(() => {
     const filteredPermissions = filterTableData({ data, columns, searchText });
@@ -85,15 +77,8 @@ export const PermissionsCard = ({
       },
     },
     {
-      icon: () =>
-        getEditIcon(
-          permissionResult.allowed && canReadUsersAndGroups,
-          entityReference,
-        ),
-      tooltip:
-        permissionResult.allowed && canReadUsersAndGroups
-          ? 'Edit'
-          : 'Unauthorized to edit',
+      icon: () => getEditIcon(canReadUsersAndGroups, entityReference),
+      tooltip: canReadUsersAndGroups ? 'Edit' : 'Unauthorized to edit',
       isFreeAction: true,
       onClick: () => {},
     },
