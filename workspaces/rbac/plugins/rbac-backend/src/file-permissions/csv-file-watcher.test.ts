@@ -101,6 +101,7 @@ const legacyRoleMetadata: RoleMetadataDao = {
 
 const roleMetadataStorageMock: RoleMetadataStorage = {
   filterRoleMetadata: jest.fn().mockImplementation(() => []),
+  filterForOwnerRoleMetadata: jest.fn().mockImplementation(),
   findRoleMetadata: jest
     .fn()
     .mockImplementation(
