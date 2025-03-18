@@ -20,26 +20,36 @@ import Delete from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
+import { policyEntityDeletePermission } from '@backstage-community/plugin-rbac-common';
+import { usePermission } from '@backstage/plugin-permission-react';
 
 type DeleteRoleProps = {
   roleName: string;
-  disable: boolean;
-  tooltip?: string;
-  dataTestId: string;
+  canEdit: boolean;
 };
 
-const DeleteRole = ({
-  roleName,
-  tooltip,
-  disable,
-  dataTestId,
-}: DeleteRoleProps) => {
+const DeleteRole = ({ roleName, canEdit }: DeleteRoleProps) => {
   const { setDeleteComponent, setOpenDialog } = useDeleteDialog();
 
   const openDialog = (name: string) => {
     setDeleteComponent({ roleName: name });
     setOpenDialog(true);
   };
+
+  const deletePermissionResult = usePermission({
+    permission: policyEntityDeletePermission,
+    resourceRef: roleName,
+  });
+
+  const dataTestId = !(deletePermissionResult.allowed && canEdit)
+    ? `disable-delete-role-${roleName}`
+    : `delete-role-${roleName}`;
+
+  const disable = !(deletePermissionResult.allowed && canEdit);
+
+  const tooltip = !(deletePermissionResult.allowed && canEdit)
+    ? 'Role cannot be deleted'
+    : '';
 
   return (
     <Tooltip title={tooltip ?? ''}>
