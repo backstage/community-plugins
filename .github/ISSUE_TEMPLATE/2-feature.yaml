@@ -75,6 +75,7 @@ body:
         - mend
         - microsoft-calendar
         - mta
+        - multi-source-security-viewer
         - newrelic
         - nexus-repository-manager
         - nomad
