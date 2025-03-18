@@ -331,7 +331,6 @@ export class PoliciesServer {
     );
 
     router.post('/policies', async (request, response) => {
-      let conditionsFilter: RBACFilters | undefined;
       const decision = await this.authorizeConditional(
         request,
         policyEntityCreatePermission,
@@ -339,10 +338,6 @@ export class PoliciesServer {
 
       if (decision.result === AuthorizeResult.DENY) {
         throw new NotAllowedError(); // 403
-      }
-
-      if (decision.result === AuthorizeResult.CONDITIONAL) {
-        conditionsFilter = transformConditions(decision.conditions);
       }
 
       const policyRaw: RoleBasedPolicy[] = request.body;
@@ -355,7 +350,6 @@ export class PoliciesServer {
         policyRaw,
         false,
         undefined,
-        conditionsFilter,
       );
 
       const entityRef = processedPolicies[0][0];
@@ -979,7 +973,6 @@ export class PoliciesServer {
     });
 
     router.post('/roles/conditions', async (request, response) => {
-      let conditionsFilter: RBACFilters | undefined;
       const decision = await this.authorizeConditional(
         request,
         policyEntityCreatePermission,
@@ -989,21 +982,9 @@ export class PoliciesServer {
         throw new NotAllowedError(); // 403
       }
 
-      if (decision.result === AuthorizeResult.CONDITIONAL) {
-        conditionsFilter = transformConditions(decision.conditions);
-      }
-
       const roleConditionPolicy: RoleConditionalPolicyDecision<PermissionAction> =
         request.body;
       validateRoleCondition(roleConditionPolicy);
-
-      const roleMetadata = await this.roleMetadata.findRoleMetadata(
-        roleConditionPolicy.roleEntityRef,
-      );
-
-      if (!matches(roleMetadata, conditionsFilter)) {
-        throw new NotAllowedError(); // 403
-      }
 
       const conditionToCreate = await processConditionMapping(
         roleConditionPolicy,
