@@ -64,6 +64,7 @@ export const conditionalStorageMock: ConditionalStorage = {
 
 export const roleMetadataStorageMock: RoleMetadataStorage = {
   filterRoleMetadata: jest.fn().mockImplementation(() => []),
+  filterForOwnerRoleMetadata: jest.fn().mockImplementation(),
   findRoleMetadata: jest.fn().mockImplementation(),
   createRoleMetadata: jest.fn().mockImplementation(),
   updateRoleMetadata: jest.fn().mockImplementation(),
