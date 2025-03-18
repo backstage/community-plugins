@@ -45,7 +45,7 @@ yarn.lock                                                               @backsta
 /workspaces/mta                                                         @backstage/community-plugins-maintainers  @ibolton336
 /workspaces/nexus-repository-manager                                    @backstage/community-plugins-maintainers  @schultzp2020
 /workspaces/npm                                                         @backstage/community-plugins-maintainers  @christoph-jerolimov @ciiay @karthikjeeyar
-/workspaces/odo                                                         @backstage/community-plugins-maintainers  @schultzp2020
+/workspaces/odo                                                         @backstage/community-plugins-maintainers  @rm3l
 /workspaces/ocm                                                         @backstage/community-plugins-maintainers  @christoph-jerolimov @ciiay @debsmita1
 /workspaces/octopus-deploy                                              @backstage/community-plugins-maintainers  @jmezach
 /workspaces/pingidentity                                                @backstage/community-plugins-maintainers  @jessicajhee
