@@ -20,14 +20,14 @@ import { RequirePermission } from '@backstage/plugin-permission-react';
 
 import { DeleteDialogContextProvider } from '@janus-idp/shared-react';
 
-import { policyEntityReadPermission } from '@backstage-community/plugin-rbac-common';
+import { policyEntityCreatePermission } from '@backstage-community/plugin-rbac-common';
 
 import { RolesList } from './RolesList/RolesList';
 
 export const RbacPage = ({ useHeader = true }: { useHeader?: boolean }) => (
   <RequirePermission
-    permission={policyEntityReadPermission}
-    resourceRef={policyEntityReadPermission.resourceType}
+    permission={policyEntityCreatePermission}
+    resourceRef={policyEntityCreatePermission.resourceType}
   >
     <Page themeId="tool">
       {useHeader && <Header title="RBAC" />}

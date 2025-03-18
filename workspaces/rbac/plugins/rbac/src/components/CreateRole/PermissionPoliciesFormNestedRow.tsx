@@ -74,6 +74,7 @@ const PermissionPoliciesFormNestedRow = ({
       </Typography>
     </div>
   );
+
   return (
     <>
       <TableRow>
@@ -148,7 +149,8 @@ const PermissionPoliciesFormNestedRow = ({
                 disabled={
                   permissionPolicyRowIndex < 0 ||
                   !permissionPolicy.isResourced ||
-                  !conditionRulesLength
+                  !conditionRulesLength ||
+                  permissionPolicy.permission === 'policy.entity.create'
                 }
                 sx={{
                   ':disabled': { color: theme => theme.palette.grey[400] },
