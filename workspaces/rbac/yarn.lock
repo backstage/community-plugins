@@ -2725,6 +2725,7 @@ __metadata:
     qs: "npm:6.14.0"
     supertest: "npm:6.3.4"
     typeorm-adapter: "npm:^1.6.1"
+    zod: "npm:^3.22.4"
   languageName: unknown
   linkType: soft
 
