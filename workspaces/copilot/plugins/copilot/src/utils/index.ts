@@ -69,3 +69,14 @@ export const mappingRoutes: Record<string, MetricsType> = {
   '/copilot/enterprise': 'enterprise',
   '/copilot/organization': 'organization',
 };
+
+export function findMetricsTypeFromPath(
+  pathname: string,
+): MetricsType | undefined {
+  for (const [route, metricsType] of Object.entries(mappingRoutes)) {
+    if (pathname.includes(route)) {
+      return metricsType;
+    }
+  }
+  return undefined;
+}
