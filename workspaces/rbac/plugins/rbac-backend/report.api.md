@@ -4,6 +4,7 @@
 
 ```ts
 
+import type { AuditorService } from '@backstage/backend-plugin-api';
 import type { AuthService } from '@backstage/backend-plugin-api';
 import { BackendFeature } from '@backstage/backend-plugin-api';
 import type { Config } from '@backstage/config';
@@ -30,6 +31,7 @@ export type EnvOptions = {
     permissions: PermissionEvaluator;
     auth: AuthService;
     httpAuth: HttpAuthService;
+    auditor: AuditorService;
     userInfo: UserInfoService;
     lifecycle: LifecycleService;
 };
