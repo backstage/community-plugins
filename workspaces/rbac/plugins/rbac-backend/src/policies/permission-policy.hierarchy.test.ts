@@ -63,7 +63,7 @@ import { MODEL } from '../service/permission-model';
 import { PluginPermissionMetadataCollector } from '../service/plugin-endpoints';
 import { RBACPermissionPolicy } from './permission-policy';
 import { expectAuditorLog } from '../../__fixtures__/test-utils';
-import { EvaluationEvents } from '../audit-log/audit-logger';
+import { EvaluationEvents } from '../auditor/auditor';
 
 type PermissionAction = 'create' | 'read' | 'update' | 'delete';
 

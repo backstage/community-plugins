@@ -30,7 +30,7 @@ import type {
   RBACProviderConnection,
 } from '@backstage-community/plugin-rbac-node';
 
-import { PermissionEvents, RoleEvents } from '../audit-log/audit-logger';
+import { PermissionEvents, RoleEvents } from '../auditor/auditor';
 import { RoleMetadataStorage } from '../database/role-metadata';
 import {
   transformArrayToPolicy,

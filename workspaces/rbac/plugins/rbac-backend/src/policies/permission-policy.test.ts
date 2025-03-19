@@ -57,7 +57,7 @@ import {
   mockAuditorService,
 } from '../../__fixtures__/mock-utils';
 import { expectAuditorLog } from '../../__fixtures__/test-utils';
-import { EvaluationEvents } from '../audit-log/audit-logger';
+import { EvaluationEvents } from '../auditor/auditor';
 
 type PermissionAction = 'create' | 'read' | 'update' | 'delete';
 

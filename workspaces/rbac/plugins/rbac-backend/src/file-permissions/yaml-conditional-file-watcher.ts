@@ -29,7 +29,7 @@ import type {
 
 import fs from 'fs';
 
-import { ConditionEvents } from '../audit-log/audit-logger';
+import { ConditionEvents } from '../auditor/auditor';
 import { ConditionalStorage } from '../database/conditional-storage';
 import { RoleMetadataStorage } from '../database/role-metadata';
 import { deepSortEqual, processConditionMapping } from '../helper';

@@ -48,7 +48,7 @@ import {
   setAdminPermissions,
   useAdminsFromConfig,
 } from '../admin-permissions/admin-creation';
-import { createPermissionEvaluationAuditorEvent } from '../audit-log/audit-logger';
+import { createPermissionEvaluationAuditorEvent } from '../auditor/auditor';
 import { replaceAliases } from '../conditional-aliases/alias-resolver';
 import { ConditionalStorage } from '../database/conditional-storage';
 import { RoleMetadataStorage } from '../database/role-metadata';

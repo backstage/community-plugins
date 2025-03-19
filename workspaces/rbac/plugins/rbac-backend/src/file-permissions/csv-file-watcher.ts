@@ -22,7 +22,7 @@ import { Enforcer, newEnforcer, newModelFromString } from 'casbin';
 import { parse } from 'csv-parse/sync';
 import { difference } from 'lodash';
 
-import { PermissionEvents, RoleEvents } from '../audit-log/audit-logger';
+import { PermissionEvents, RoleEvents } from '../auditor/auditor';
 import {
   RoleMetadataDao,
   RoleMetadataStorage,

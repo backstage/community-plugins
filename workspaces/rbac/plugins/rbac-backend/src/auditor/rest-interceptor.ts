@@ -26,7 +26,7 @@ import {
   ListPluginPoliciesEvents,
   PermissionEvents,
   RoleEvents,
-} from './audit-logger';
+} from './auditor';
 import {
   AuditorService,
   AuditorServiceEvent,
