@@ -4,8 +4,7 @@ import {
   EntityProvider,
   EntityProviderConnection,
 } from '@backstage/plugin-catalog-node';
-import { Logger } from 'winston';
-import { SchedulerService } from '@backstage/backend-plugin-api';
+import { LoggerService, SchedulerService } from '@backstage/backend-plugin-api';
 //
 /**
  * Provides entities from fictional frobs service.
@@ -13,12 +12,12 @@ import { SchedulerService } from '@backstage/backend-plugin-api';
 export class MTAProvider implements EntityProvider {
   private connection?: EntityProviderConnection;
   private readonly config: Config;
-  private readonly logger: Logger;
+  private readonly logger: LoggerService;
   private readonly scheduler: SchedulerService;
 
   static newProvider(
     config: Config,
-    logger: Logger,
+    logger: LoggerService,
     scheduler: SchedulerService,
   ): MTAProvider {
     const p = new MTAProvider(config, logger, scheduler);
@@ -32,7 +31,11 @@ export class MTAProvider implements EntityProvider {
     return p;
   }
   /** [1] */
-  constructor(config: Config, logger: Logger, scheduler: SchedulerService) {
+  constructor(
+    config: Config,
+    logger: LoggerService,
+    scheduler: SchedulerService,
+  ) {
     this.config = config;
     this.logger = logger;
     this.scheduler = scheduler;
@@ -83,63 +86,7 @@ export class MTAProvider implements EntityProvider {
     }
   }
 
-  // if (!this.connection) {
-  //   throw new Error('Not initialized');
-  // }
-  // this.logger.info('here');
   async authenticate() {
-    // try {
-    //   //   const baseURLAuth = `${this.config.getString(
-    //   //     'mta.url',
-    //   //   )}/auth/realms/${this.config.getString('mta.providerAuth.realm')}`;
-    //   const baseUrl = this.config.getString('mta.url');
-    //   const baseUrlHub = `${baseUrl}/hub`;
-    //   const baseUrlMta = `${baseUrl}`;
-    //   const realm = this.config.getString('mta.providerAuth.realm');
-    //   const clientID = this.config.getString('mta.providerAuth.clientID');
-    //   const secret = this.config.getString('mta.providerAuth.secret');
-    //   const baseURLAuth = `${baseUrl}/auth/realms/${realm}`;
-    //   this.logger.info(`Discovering issuer from ${baseURLAuth}`);
-
-    //   //   const mtaAuthIssuer = await Issuer.discover(baseURLAuth);
-    //   custom.setHttpOptionsDefaults({
-    //     timeout: 5000, // Adjust the timeout to 5000ms or higher based on your requirements
-    //   });
-
-    //   try {
-    //     const mtaAuthIssuer = await Issuer.discover(baseURLAuth);
-    //     this.logger.info('Issuer discovered successfully');
-
-    //     const authClient = new mtaAuthIssuer.Client({
-    //       client_id: this.config.getString('mta.providerAuth.clientID'),
-    //       client_secret: this.config.getString('mta.providerAuth.secret'),
-    //       response_types: ['code'],
-    //     });
-
-    //     this.logger.info('Client created successfully');
-
-    //     const code_verifier = generators.codeVerifier();
-    //     const code_challenge = generators.codeChallenge(code_verifier);
-
-    //     this.logger.info('Attempting to obtain grant');
-
-    //     const grant = await authClient.grant({
-    //       grant_type: 'client_credentials',
-    //     });
-
-    //     this.logger.info('Grant obtained successfully');
-
-    //     return grant;
-    //   } catch (error) {
-    //     this.logger.error(
-    //       `Initial discovery failed: ${error.message}, retrying...`,
-    //     );
-    //     // Implement retry logic here
-    //   }
-    // } catch (error) {
-    //   this.logger.error(`Authentication error: ${error.message}`);
-    //   throw new Error(`Failed to authenticate: ${error.message}`);
-    // }
     const baseUrl = this.config.getString('mta.url');
     const realm = this.config.getString('mta.providerAuth.realm');
     const clientID = this.config.getString('mta.providerAuth.clientID');

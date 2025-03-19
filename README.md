@@ -6,9 +6,9 @@
 
 ## What is the community-plugins repository?
 
-The `community-plugins` repository is a place where members of the community can host a plugin or a set of plugins. The goal of community-plugins is to reduce the amount of pull requests and issues from `backstage/backstage`, which has become too big with the time.
+The `community-plugins` repository is a place where members of the community can collaborate to develop, maintain, and share plugins. This initiative was originally driven by the need to separate plugin maintenance from the `backstage/backstage` core repository.
 
-By creating community-plugins we give to plugin maintainers all the tools to easily manage and publish their plugins.
+This repository is designed to provide plugin maintainers with tools and workflows to efficiently manage and publish Backstage plugins.
 
 ## Contributing a plugin
 
