@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-badges-backend",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "description": "A Backstage backend plugin that generates README badges for your entities",
   "backstage": {
     "role": "backend-plugin",
@@ -42,7 +42,7 @@
     "test": "backstage-cli package test"
   },
   "dependencies": {
-    "@backstage/backend-common": "^0.25.0",
+    "@backstage/backend-defaults": "^0.7.0",
     "@backstage/backend-plugin-api": "^1.2.0",
     "@backstage/catalog-client": "^1.9.1",
     "@backstage/catalog-model": "^1.7.3",
