@@ -43,8 +43,8 @@ import {
   mockClientKnex,
   pluginMetadataCollectorMock,
   roleMetadataStorageMock,
-  createEventMock,
 } from './mock-utils';
+import { clearAuditorMock } from './auditor-test-utils';
 
 export function newConfig(
   permFile?: string,
@@ -158,8 +158,6 @@ export async function newPermissionPolicy(
     pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
     mockAuthService,
   );
-  mockAuditorService.createEvent.mockClear();
-  createEventMock.fail.mockClear();
-  createEventMock.success.mockClear();
+  clearAuditorMock();
   return permissionPolicy;
 }

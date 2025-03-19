@@ -52,11 +52,11 @@ import { EnforcerDelegate } from '../service/enforcer-delegate';
 import { MODEL } from '../service/permission-model';
 import { PluginPermissionMetadataCollector } from '../service/plugin-endpoints';
 import { RBACPermissionPolicy } from './permission-policy';
+import { mockAuditorService } from '../../__fixtures__/mock-utils';
 import {
-  createEventMock,
-  mockAuditorService,
-} from '../../__fixtures__/mock-utils';
-import { expectAuditorLogForPermission } from '../../__fixtures__/auditor-test-utils';
+  clearAuditorMock,
+  expectAuditorLogForPermission,
+} from '../../__fixtures__/auditor-test-utils';
 
 type PermissionAction = 'create' | 'read' | 'update' | 'delete';
 
@@ -867,9 +867,7 @@ describe('RBACPermissionPolicy Tests', () => {
           perm.action,
           AuthorizeResult.ALLOW,
         );
-        mockAuditorService.createEvent.mockClear();
-        createEventMock.fail.mockClear();
-        createEventMock.success.mockClear();
+        clearAuditorMock();
       }
     });
   });
@@ -990,9 +988,7 @@ describe('RBACPermissionPolicy Tests', () => {
         'read',
         AuthorizeResult.ALLOW,
       );
-      mockAuditorService.createEvent.mockClear();
-      createEventMock.fail.mockClear();
-      createEventMock.success.mockClear();
+      clearAuditorMock();
       const decision2 = await policy.handle(
         newPolicyQueryWithResourcePermission(
           'catalog.entity.delete',
@@ -2259,8 +2255,6 @@ async function newPermissionPolicy(
     pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
     mockAuthService,
   );
-  mockAuditorService.createEvent.mockClear();
-  createEventMock.fail.mockClear();
-  createEventMock.success.mockClear();
+  clearAuditorMock();
   return permissionPolicy;
 }

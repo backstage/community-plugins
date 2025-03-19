@@ -68,3 +68,9 @@ export function expectAuditorLogForPermission(
     },
   ]);
 }
+
+export function clearAuditorMock() {
+  mockAuditorService.createEvent.mockClear();
+  createEventMock.fail.mockClear();
+  createEventMock.success.mockClear();
+}
