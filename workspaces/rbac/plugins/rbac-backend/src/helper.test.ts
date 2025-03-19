@@ -13,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  createEventMock,
-  mockAuditorService,
-} from '../__fixtures__/mock-utils';
+import { clearAuditorMock } from '../__fixtures__/auditor-test-utils';
+import { mockAuditorService } from '../__fixtures__/mock-utils';
 import { ADMIN_ROLE_AUTHOR } from './admin-permissions/admin-creation';
 import { RoleMetadataDao } from './database/role-metadata';
 import {
@@ -188,9 +186,7 @@ describe('helper.ts', () => {
 
     beforeEach(() => {
       (mockEnforcerDelegate.removeGroupingPolicies as jest.Mock).mockClear();
-      mockAuditorService.createEvent.mockClear();
-      createEventMock.fail.mockClear();
-      createEventMock.success.mockClear();
+      clearAuditorMock();
     });
 
     it('removes the difference between originalGroup and addedGroup', async () => {

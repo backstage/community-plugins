@@ -53,7 +53,6 @@ import {
   mockClientKnex,
   pluginMetadataCollectorMock,
   roleMetadataStorageMock,
-  createEventMock,
 } from '../../__fixtures__/mock-utils';
 import { CasbinDBAdapterFactory } from '../database/casbin-adapter-factory';
 import { RoleMetadataStorage } from '../database/role-metadata';
@@ -62,7 +61,10 @@ import { EnforcerDelegate } from '../service/enforcer-delegate';
 import { MODEL } from '../service/permission-model';
 import { PluginPermissionMetadataCollector } from '../service/plugin-endpoints';
 import { RBACPermissionPolicy } from './permission-policy';
-import { expectAuditorLogForPermission } from '../../__fixtures__/auditor-test-utils';
+import {
+  clearAuditorMock,
+  expectAuditorLogForPermission,
+} from '../../__fixtures__/auditor-test-utils';
 
 type PermissionAction = 'create' | 'read' | 'update' | 'delete';
 
@@ -1140,9 +1142,7 @@ async function newPermissionPolicy(
     pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
     mockAuthService,
   );
-  mockAuditorService.createEvent.mockClear();
-  createEventMock.fail.mockClear();
-  createEventMock.success.mockClear();
+  clearAuditorMock();
   return permissionPolicy;
 }
 
