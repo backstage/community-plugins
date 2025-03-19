@@ -13,10 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type {
-  AuditorServiceCreateEventOptions,
-  LoggerService,
-} from '@backstage/backend-plugin-api';
+import type { LoggerService } from '@backstage/backend-plugin-api';
 import { mockServices } from '@backstage/backend-test-utils';
 import { Config } from '@backstage/config';
 
@@ -48,7 +45,6 @@ import {
   roleMetadataStorageMock,
   createEventMock,
 } from './mock-utils';
-import { type JsonObject } from '@backstage/types';
 
 export function newConfig(
   permFile?: string,
@@ -166,28 +162,4 @@ export async function newPermissionPolicy(
   createEventMock.fail.mockClear();
   createEventMock.success.mockClear();
   return permissionPolicy;
-}
-
-export function expectAuditorLog(
-  events: {
-    event: AuditorServiceCreateEventOptions;
-    success?: { meta?: JsonObject };
-    fail?: { meta?: JsonObject; error: Error };
-  }[],
-) {
-  const auditEvents = mockAuditorService.createEvent.mock.calls;
-  const succeededEvents = createEventMock.success.mock.calls;
-  const failedEvents = createEventMock.fail.mock.calls;
-
-  expect(auditEvents.length).toBe(events.length);
-  for (let i = 0; i < events.length; i++) {
-    const expectedEvent = { ...events[i].event, severityLevel: 'medium' };
-    expect(auditEvents[i][0]).toEqual(expectedEvent); // verifies also eventId
-    if (events[i].success) {
-      expect(succeededEvents[i][0]).toEqual(events[i].success);
-    }
-    if (events[i].fail) {
-      expect(failedEvents[i][0]).toEqual(events[i].fail);
-    }
-  }
 }

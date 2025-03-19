@@ -62,8 +62,7 @@ import { EnforcerDelegate } from '../service/enforcer-delegate';
 import { MODEL } from '../service/permission-model';
 import { PluginPermissionMetadataCollector } from '../service/plugin-endpoints';
 import { RBACPermissionPolicy } from './permission-policy';
-import { expectAuditorLog } from '../../__fixtures__/test-utils';
-import { EvaluationEvents } from '../auditor/auditor';
+import { expectAuditorLogForPermission } from '../../__fixtures__/auditor-test-utils';
 
 type PermissionAction = 'create' | 'read' | 'update' | 'delete';
 
@@ -120,7 +119,7 @@ describe('Policy checks for users and groups', () => {
       newPolicyQueryUser(userEntity),
     );
     expect(decision.result).toBe(AuthorizeResult.ALLOW);
-    verifyAuditLogForNonResourcedPermission(
+    expectAuditorLogForPermission(
       userEntity,
       'catalog.entity.read',
       'catalog-entity',
@@ -140,7 +139,7 @@ describe('Policy checks for users and groups', () => {
       newPolicyQueryUser(userEntity),
     );
     expect(decision.result).toBe(AuthorizeResult.DENY);
-    verifyAuditLogForNonResourcedPermission(
+    expectAuditorLogForPermission(
       userEntity,
       'catalog.entity.read',
       'catalog-entity',
@@ -161,7 +160,7 @@ describe('Policy checks for users and groups', () => {
       newPolicyQueryUser(userEntity),
     );
     expect(decision.result).toBe(AuthorizeResult.ALLOW);
-    verifyAuditLogForNonResourcedPermission(
+    expectAuditorLogForPermission(
       userEntity,
       'catalog.entity.read',
       'catalog-entity',
@@ -181,7 +180,7 @@ describe('Policy checks for users and groups', () => {
       newPolicyQueryUser(userEntity),
     );
     expect(decision.result).toBe(AuthorizeResult.DENY);
-    verifyAuditLogForNonResourcedPermission(
+    expectAuditorLogForPermission(
       userEntity,
       'catalog.entity.read',
       'catalog-entity',
@@ -202,7 +201,7 @@ describe('Policy checks for users and groups', () => {
       newPolicyQueryUser(userEntity),
     );
     expect(decision.result).toBe(AuthorizeResult.ALLOW);
-    verifyAuditLogForNonResourcedPermission(
+    expectAuditorLogForPermission(
       userEntity,
       'catalog.entity.read',
       'catalog-entity',
@@ -222,7 +221,7 @@ describe('Policy checks for users and groups', () => {
       newPolicyQueryUser(userEntity),
     );
     expect(decision.result).toBe(AuthorizeResult.DENY);
-    verifyAuditLogForNonResourcedPermission(
+    expectAuditorLogForPermission(
       userEntity,
       'catalog.entity.read',
       'catalog-entity',
@@ -242,7 +241,7 @@ describe('Policy checks for users and groups', () => {
       newPolicyQueryUser(userEntity),
     );
     expect(decision.result).toBe(AuthorizeResult.ALLOW);
-    verifyAuditLogForNonResourcedPermission(
+    expectAuditorLogForPermission(
       userEntity,
       'catalog.entity.read',
       'catalog-entity',
@@ -262,7 +261,7 @@ describe('Policy checks for users and groups', () => {
       newPolicyQueryUser(userEntity),
     );
     expect(decision.result).toBe(AuthorizeResult.DENY);
-    verifyAuditLogForNonResourcedPermission(
+    expectAuditorLogForPermission(
       userEntity,
       'catalog.entity.read',
       'catalog-entity',
@@ -282,7 +281,7 @@ describe('Policy checks for users and groups', () => {
       newPolicyQueryUser(userEntity),
     );
     expect(decision.result).toBe(AuthorizeResult.DENY);
-    verifyAuditLogForNonResourcedPermission(
+    expectAuditorLogForPermission(
       userEntity,
       'catalog.entity.read',
       'catalog-entity',
@@ -302,7 +301,7 @@ describe('Policy checks for users and groups', () => {
       newPolicyQueryUser(userEntity),
     );
     expect(decision.result).toBe(AuthorizeResult.DENY);
-    verifyAuditLogForNonResourcedPermission(
+    expectAuditorLogForPermission(
       userEntity,
       'catalog.entity.read',
       'catalog-entity',
@@ -323,7 +322,7 @@ describe('Policy checks for users and groups', () => {
       newPolicyQueryUser(userEntity),
     );
     expect(decision.result).toBe(AuthorizeResult.ALLOW);
-    verifyAuditLogForNonResourcedPermission(
+    expectAuditorLogForPermission(
       userEntity,
       'catalog.entity.read',
       'catalog-entity',
@@ -343,7 +342,7 @@ describe('Policy checks for users and groups', () => {
       newPolicyQueryUser(userEntity),
     );
     expect(decision.result).toBe(AuthorizeResult.DENY);
-    verifyAuditLogForNonResourcedPermission(
+    expectAuditorLogForPermission(
       userEntity,
       'catalog.entity.read',
       'catalog-entity',
@@ -363,7 +362,7 @@ describe('Policy checks for users and groups', () => {
       newPolicyQueryUser(userEntity),
     );
     expect(decision.result).toBe(AuthorizeResult.DENY);
-    verifyAuditLogForNonResourcedPermission(
+    expectAuditorLogForPermission(
       userEntity,
       'catalog.entity.read',
       'catalog-entity',
@@ -383,7 +382,7 @@ describe('Policy checks for users and groups', () => {
       newPolicyQueryUser(userEntity),
     );
     expect(decision.result).toBe(AuthorizeResult.DENY);
-    verifyAuditLogForNonResourcedPermission(
+    expectAuditorLogForPermission(
       userEntity,
       'catalog.entity.read',
       'catalog-entity',
@@ -404,7 +403,7 @@ describe('Policy checks for users and groups', () => {
       newPolicyQueryUser(userEntity),
     );
     expect(decision.result).toBe(AuthorizeResult.ALLOW);
-    verifyAuditLogForNonResourcedPermission(
+    expectAuditorLogForPermission(
       userEntity,
       'catalog.entity.read',
       'catalog-entity',
@@ -424,7 +423,7 @@ describe('Policy checks for users and groups', () => {
       newPolicyQueryUser(userEntity),
     );
     expect(decision.result).toBe(AuthorizeResult.DENY);
-    verifyAuditLogForNonResourcedPermission(
+    expectAuditorLogForPermission(
       userEntity,
       'catalog.entity.read',
       'catalog-entity',
@@ -444,7 +443,7 @@ describe('Policy checks for users and groups', () => {
       newPolicyQueryUser(userEntity),
     );
     expect(decision.result).toBe(AuthorizeResult.DENY);
-    verifyAuditLogForNonResourcedPermission(
+    expectAuditorLogForPermission(
       userEntity,
       'catalog.entity.read',
       'catalog-entity',
@@ -464,7 +463,7 @@ describe('Policy checks for users and groups', () => {
       newPolicyQueryUser(userEntity),
     );
     expect(decision.result).toBe(AuthorizeResult.DENY);
-    verifyAuditLogForNonResourcedPermission(
+    expectAuditorLogForPermission(
       userEntity,
       'catalog.entity.read',
       'catalog-entity',
@@ -485,7 +484,7 @@ describe('Policy checks for users and groups', () => {
       newPolicyQueryUser(userEntity),
     );
     expect(decision.result).toBe(AuthorizeResult.ALLOW);
-    verifyAuditLogForNonResourcedPermission(
+    expectAuditorLogForPermission(
       userEntity,
       'catalog.entity.read',
       'catalog-entity',
@@ -505,7 +504,7 @@ describe('Policy checks for users and groups', () => {
       newPolicyQueryUser(userEntity),
     );
     expect(decision.result).toBe(AuthorizeResult.DENY);
-    verifyAuditLogForNonResourcedPermission(
+    expectAuditorLogForPermission(
       userEntity,
       'catalog.entity.read',
       'catalog-entity',
@@ -525,7 +524,7 @@ describe('Policy checks for users and groups', () => {
       newPolicyQueryUser(userEntity),
     );
     expect(decision.result).toBe(AuthorizeResult.DENY);
-    verifyAuditLogForNonResourcedPermission(
+    expectAuditorLogForPermission(
       userEntity,
       'catalog.entity.read',
       'catalog-entity',
@@ -545,7 +544,7 @@ describe('Policy checks for users and groups', () => {
       newPolicyQueryUser(userEntity),
     );
     expect(decision.result).toBe(AuthorizeResult.DENY);
-    verifyAuditLogForNonResourcedPermission(
+    expectAuditorLogForPermission(
       userEntity,
       'catalog.entity.read',
       'catalog-entity',
@@ -567,7 +566,7 @@ describe('Policy checks for users and groups', () => {
       newPolicyQueryUser(userEntity),
     );
     expect(decision.result).toBe(AuthorizeResult.DENY);
-    verifyAuditLogForNonResourcedPermission(
+    expectAuditorLogForPermission(
       userEntity,
       'catalog.entity.read',
       'catalog-entity',
@@ -587,7 +586,7 @@ describe('Policy checks for users and groups', () => {
       newPolicyQueryUser(userEntity),
     );
     expect(decision.result).toBe(AuthorizeResult.DENY);
-    verifyAuditLogForNonResourcedPermission(
+    expectAuditorLogForPermission(
       userEntity,
       'catalog.entity.read',
       'catalog-entity',
@@ -608,7 +607,7 @@ describe('Policy checks for users and groups', () => {
       newPolicyQueryUser(userEntity),
     );
     expect(decision.result).toBe(AuthorizeResult.DENY);
-    verifyAuditLogForNonResourcedPermission(
+    expectAuditorLogForPermission(
       userEntity,
       'catalog.entity.read',
       'catalog-entity',
@@ -628,7 +627,7 @@ describe('Policy checks for users and groups', () => {
       newPolicyQueryUser(userEntity),
     );
     expect(decision.result).toBe(AuthorizeResult.DENY);
-    verifyAuditLogForNonResourcedPermission(
+    expectAuditorLogForPermission(
       userEntity,
       'catalog.entity.read',
       'catalog-entity',
@@ -648,7 +647,7 @@ describe('Policy checks for users and groups', () => {
       newPolicyQueryUser(userEntity),
     );
     expect(decision.result).toBe(AuthorizeResult.DENY);
-    verifyAuditLogForNonResourcedPermission(
+    expectAuditorLogForPermission(
       userEntity,
       'catalog.entity.read',
       'catalog-entity',
@@ -668,7 +667,7 @@ describe('Policy checks for users and groups', () => {
       newPolicyQueryUser(userEntity),
     );
     expect(decision.result).toBe(AuthorizeResult.DENY);
-    verifyAuditLogForNonResourcedPermission(
+    expectAuditorLogForPermission(
       userEntity,
       'catalog.entity.read',
       'catalog-entity',
@@ -689,7 +688,7 @@ describe('Policy checks for users and groups', () => {
       newPolicyQueryUser(userEntity),
     );
     expect(decision.result).toBe(AuthorizeResult.DENY);
-    verifyAuditLogForNonResourcedPermission(
+    expectAuditorLogForPermission(
       userEntity,
       'catalog.entity.read',
       'catalog-entity',
@@ -709,7 +708,7 @@ describe('Policy checks for users and groups', () => {
       newPolicyQueryUser(userEntity),
     );
     expect(decision.result).toBe(AuthorizeResult.DENY);
-    verifyAuditLogForNonResourcedPermission(
+    expectAuditorLogForPermission(
       userEntity,
       'catalog.entity.read',
       'catalog-entity',
@@ -729,7 +728,7 @@ describe('Policy checks for users and groups', () => {
       newPolicyQueryUser(userEntity),
     );
     expect(decision.result).toBe(AuthorizeResult.DENY);
-    verifyAuditLogForNonResourcedPermission(
+    expectAuditorLogForPermission(
       userEntity,
       'catalog.entity.read',
       'catalog-entity',
@@ -749,7 +748,7 @@ describe('Policy checks for users and groups', () => {
       newPolicyQueryUser(userEntity),
     );
     expect(decision.result).toBe(AuthorizeResult.DENY);
-    verifyAuditLogForNonResourcedPermission(
+    expectAuditorLogForPermission(
       userEntity,
       'catalog.entity.read',
       'catalog-entity',
@@ -770,7 +769,7 @@ describe('Policy checks for users and groups', () => {
       newPolicyQueryUser(userEntity),
     );
     expect(decision.result).toBe(AuthorizeResult.DENY);
-    verifyAuditLogForNonResourcedPermission(
+    expectAuditorLogForPermission(
       userEntity,
       'catalog.entity.read',
       'catalog-entity',
@@ -790,7 +789,7 @@ describe('Policy checks for users and groups', () => {
       newPolicyQueryUser(userEntity),
     );
     expect(decision.result).toBe(AuthorizeResult.DENY);
-    verifyAuditLogForNonResourcedPermission(
+    expectAuditorLogForPermission(
       userEntity,
       'catalog.entity.read',
       'catalog-entity',
@@ -810,7 +809,7 @@ describe('Policy checks for users and groups', () => {
       newPolicyQueryUser(userEntity),
     );
     expect(decision.result).toBe(AuthorizeResult.DENY);
-    verifyAuditLogForNonResourcedPermission(
+    expectAuditorLogForPermission(
       userEntity,
       'catalog.entity.read',
       'catalog-entity',
@@ -830,7 +829,7 @@ describe('Policy checks for users and groups', () => {
       newPolicyQueryUser(userEntity),
     );
     expect(decision.result).toBe(AuthorizeResult.DENY);
-    verifyAuditLogForNonResourcedPermission(
+    expectAuditorLogForPermission(
       userEntity,
       'catalog.entity.read',
       'catalog-entity',
@@ -851,7 +850,7 @@ describe('Policy checks for users and groups', () => {
       newPolicyQueryUser(userEntity),
     );
     expect(decision.result).toBe(AuthorizeResult.ALLOW);
-    verifyAuditLogForNonResourcedPermission(
+    expectAuditorLogForPermission(
       userEntity,
       'catalog.entity.read',
       'catalog-entity',
@@ -871,7 +870,7 @@ describe('Policy checks for users and groups', () => {
       newPolicyQueryUser(userEntity),
     );
     expect(decision.result).toBe(AuthorizeResult.DENY);
-    verifyAuditLogForNonResourcedPermission(
+    expectAuditorLogForPermission(
       userEntity,
       'catalog.entity.read',
       'catalog-entity',
@@ -892,7 +891,7 @@ describe('Policy checks for users and groups', () => {
       newPolicyQueryUser(userEntity),
     );
     expect(decision.result).toBe(AuthorizeResult.ALLOW);
-    verifyAuditLogForNonResourcedPermission(
+    expectAuditorLogForPermission(
       userEntity,
       'catalog.entity.read',
       'catalog-entity',
@@ -912,7 +911,7 @@ describe('Policy checks for users and groups', () => {
       newPolicyQueryUser(userEntity),
     );
     expect(decision.result).toBe(AuthorizeResult.DENY);
-    verifyAuditLogForNonResourcedPermission(
+    expectAuditorLogForPermission(
       userEntity,
       'catalog.entity.read',
       'catalog-entity',
@@ -933,7 +932,7 @@ describe('Policy checks for users and groups', () => {
       newPolicyQueryUser(userEntity),
     );
     expect(decision.result).toBe(AuthorizeResult.ALLOW);
-    verifyAuditLogForNonResourcedPermission(
+    expectAuditorLogForPermission(
       userEntity,
       'catalog.entity.read',
       'catalog-entity',
@@ -954,7 +953,7 @@ describe('Policy checks for users and groups', () => {
       newPolicyQueryUser(userEntity),
     );
     expect(decision.result).toBe(AuthorizeResult.ALLOW);
-    verifyAuditLogForNonResourcedPermission(
+    expectAuditorLogForPermission(
       userEntity,
       'catalog.entity.read',
       'catalog-entity',
@@ -975,7 +974,7 @@ describe('Policy checks for users and groups', () => {
       newPolicyQueryUser(userEntity),
     );
     expect(decision.result).toBe(AuthorizeResult.ALLOW);
-    verifyAuditLogForNonResourcedPermission(
+    expectAuditorLogForPermission(
       userEntity,
       'catalog.entity.read',
       'catalog-entity',
@@ -1145,30 +1144,6 @@ async function newPermissionPolicy(
   createEventMock.fail.mockClear();
   createEventMock.success.mockClear();
   return permissionPolicy;
-}
-
-function verifyAuditLogForNonResourcedPermission(
-  user: string | undefined,
-  permissionName: string,
-  resourceType: string | undefined,
-  action: string,
-  result: AuthorizeResult,
-) {
-  const expectedUser = user ?? 'user without entity';
-  const meta = {
-    action,
-    permissionName,
-    resourceType,
-    userEntityRef: expectedUser,
-  };
-  expectAuditorLog([
-    {
-      event: { eventId: EvaluationEvents.PERMISSION_EVALUATION, meta },
-      success: {
-        meta: { ...meta, result },
-      },
-    },
-  ]);
 }
 
 function convertGroupsToEntity(): GroupEntityV1alpha1[] {

@@ -29,7 +29,7 @@ import { RoleEventEmitter, RoleEvents } from '../service/enforcer-delegate';
 import { PluginPermissionMetadataCollector } from '../service/plugin-endpoints';
 import { YamlConditinalPoliciesFileWatcher } from './yaml-conditional-file-watcher'; // Adjust the import path as necessary
 import { mockAuditorService } from '../../__fixtures__/mock-utils';
-import { expectAuditorLog } from '../../__fixtures__/test-utils';
+import { expectAuditorLog } from '../../__fixtures__/auditor-test-utils';
 import {
   PermissionInfo,
   RoleConditionalPolicyDecision,
