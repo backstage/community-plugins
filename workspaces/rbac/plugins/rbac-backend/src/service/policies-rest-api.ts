@@ -51,7 +51,7 @@ import {
 } from '@backstage-community/plugin-rbac-common';
 import type { RBACProvider } from '@backstage-community/plugin-rbac-node';
 
-import { logAuditorEvent } from '../audit-log/rest-interceptor';
+import { logAuditorEvent } from '../auditor/rest-interceptor';
 import { ConditionalStorage } from '../database/conditional-storage';
 import {
   daoToMetadata,

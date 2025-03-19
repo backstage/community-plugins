@@ -19,7 +19,7 @@ import type { MetadataResponse } from '@backstage/plugin-permission-node';
 
 import { resolve } from 'path';
 
-import { ConditionEvents } from '../audit-log/audit-logger';
+import { ConditionEvents } from '../auditor/auditor';
 import { DataBaseConditionalStorage } from '../database/conditional-storage';
 import {
   RoleMetadataDao,

@@ -36,7 +36,7 @@ import {
   Source,
 } from '@backstage-community/plugin-rbac-common';
 
-import { RoleEvents } from './audit-log/audit-logger';
+import { RoleEvents } from './auditor/auditor';
 import { RoleMetadataDao, RoleMetadataStorage } from './database/role-metadata';
 import { EnforcerDelegate } from './service/enforcer-delegate';
 import { PluginPermissionMetadataCollector } from './service/plugin-endpoints';

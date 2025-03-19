@@ -17,7 +17,7 @@ import type { Config } from '@backstage/config';
 
 import { Knex } from 'knex';
 
-import { PermissionEvents, RoleEvents } from '../audit-log/audit-logger';
+import { PermissionEvents, RoleEvents } from '../auditor/auditor';
 import {
   RoleMetadataDao,
   RoleMetadataStorage,

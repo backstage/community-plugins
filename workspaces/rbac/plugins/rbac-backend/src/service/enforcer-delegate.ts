@@ -25,7 +25,7 @@ import {
 } from '../database/role-metadata';
 import { mergeRoleMetadata, policiesToString, policyToString } from '../helper';
 import { MODEL } from './permission-model';
-import { PoliciesData } from '../audit-log/audit-logger';
+import { PoliciesData } from '../auditor/auditor';
 import { AuditorService } from '@backstage/backend-plugin-api/index';
 
 export type RoleEvents = 'roleAdded';
