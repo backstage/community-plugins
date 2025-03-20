@@ -126,7 +126,6 @@ export class Connection implements RBACProviderConnection {
         const eventName = roleMeta
           ? RoleEvents.ROLE_UPDATE
           : RoleEvents.ROLE_CREATE;
-        const message = roleMeta ? 'Updated role' : 'Created role';
 
         // role does not exist in rbac, create the metadata for it
         if (!roleMeta) {
@@ -137,21 +136,23 @@ export class Connection implements RBACProviderConnection {
           };
         }
 
+        const auditorMeta = {
+          ...roleMeta,
+          members: [role[0]],
+        };
         const auditorEvent = await this.auditor.createEvent({
           eventId: eventName,
           severityLevel: 'medium',
-          meta: {
-            ...roleMeta,
-            members: [role[0]],
-          },
+          meta: { source: auditorMeta.source },
         });
 
         try {
           await this.enforcer.addGroupingPolicy(role, roleMeta);
-          await auditorEvent.success({ meta: { message } });
+          await auditorEvent.success({ meta: auditorMeta });
         } catch (error) {
           await auditorEvent.fail({
             error,
+            meta: auditorMeta,
           });
           throw error;
         }
@@ -186,21 +187,17 @@ export class Connection implements RBACProviderConnection {
         const singleRole = roleMeta && currentRole.length === 1;
         let eventName: (typeof RoleEvents)[keyof typeof RoleEvents] =
           RoleEvents.ROLE_UPDATE;
-        let message = 'Updated role: deleted members';
 
         // Only one role exists in rbac remove role metadata as well
         if (singleRole) {
           eventName = RoleEvents.ROLE_DELETE;
-          message = 'Deleted role';
         }
 
+        const auditorMeta = { ...roleMeta, members: [role[0]] };
         const auditorEvent = await this.auditor?.createEvent({
           eventId: eventName,
           severityLevel: 'medium',
-          meta: {
-            ...roleMeta,
-            members: [role[0]],
-          },
+          meta: { source: roleMeta.source },
         });
 
         try {
@@ -209,10 +206,11 @@ export class Connection implements RBACProviderConnection {
             roleMeta,
             eventName === RoleEvents.ROLE_UPDATE,
           );
-          await auditorEvent?.success({ meta: { message } });
+          await auditorEvent.success({ meta: auditorMeta });
         } catch (error) {
-          await auditorEvent?.fail({
+          await auditorEvent.fail({
             error,
+            meta: auditorMeta,
           });
           throw error;
         }
