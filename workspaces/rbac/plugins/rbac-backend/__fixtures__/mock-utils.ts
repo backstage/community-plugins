@@ -33,6 +33,7 @@ import {
   RoleEvents,
 } from '../src/service/enforcer-delegate';
 import { PluginPermissionMetadataCollector } from '../src/service/plugin-endpoints';
+import { AuthorizeResult } from '@backstage/plugin-permission-common';
 
 // TODO: Move to 'catalogServiceMock' from '@backstage/plugin-catalog-node/testUtils'
 // once '@backstage/plugin-catalog-node' is upgraded
@@ -115,7 +116,7 @@ export const dataBaseAdapterFactoryMock: Partial<CasbinDBAdapterFactory> = {
 };
 
 export const providerMock: RBACProvider = {
-  getProviderName: jest.fn().mockImplementation(),
+  getProviderName: jest.fn().mockImplementation(() => `testProvider`),
   connect: jest.fn().mockImplementation(),
   refresh: jest.fn().mockImplementation(),
 };
@@ -139,6 +140,25 @@ export const credentials = mockCredentials.user();
 export const mockLoggerService = mockServices.logger.mock();
 export const mockUserInfoService = mockServices.userInfo();
 export const mockDiscovery = mockServices.discovery.mock();
+
+export const mockedAuthorize = jest.fn().mockImplementation(async () => [
+  {
+    result: AuthorizeResult.ALLOW,
+  },
+]);
+
+export const mockedAuthorizeConditional = jest
+  .fn()
+  .mockImplementation(async () => [
+    {
+      result: AuthorizeResult.ALLOW,
+    },
+  ]);
+
+export const mockPermissionEvaluator = {
+  authorize: mockedAuthorize,
+  authorizeConditional: mockedAuthorizeConditional,
+};
 
 export const csvPermFile = resolve(
   __dirname,
