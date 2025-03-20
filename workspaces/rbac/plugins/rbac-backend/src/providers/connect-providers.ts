@@ -154,7 +154,6 @@ export class Connection implements RBACProviderConnection {
             error,
             meta: auditorMeta,
           });
-          throw error;
         }
       }
     }
@@ -212,7 +211,6 @@ export class Connection implements RBACProviderConnection {
             error,
             meta: auditorMeta,
           });
-          throw error;
         }
       }
     }
@@ -257,7 +255,6 @@ export class Connection implements RBACProviderConnection {
           await auditorEvent.success({ meta: auditorMeta });
         } catch (error) {
           await auditorEvent.fail({ error, meta: auditorMeta });
-          throw error;
         }
       }
     }
@@ -287,7 +284,6 @@ export class Connection implements RBACProviderConnection {
             error,
             meta: auditorMeta,
           });
-          throw error;
         }
       }
     }
