@@ -156,7 +156,6 @@ const addAdminPermissions = async (
       error,
       meta,
     });
-    throw error;
   }
 };
 
