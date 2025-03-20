@@ -522,9 +522,8 @@ export class PoliciesServer {
         roleEntityRef,
       );
 
-      if (role.length !== 0) {
-        const body = await this.transformRoleArray(conditionsFilter, ...role);
-
+      const body = await this.transformRoleArray(conditionsFilter, ...role);
+      if (body.length !== 0) {
         await this.aLog.auditLog({
           message: `Return ${body[0].name}`,
           eventName: RoleEvents.GET_ROLE,
@@ -1047,7 +1046,7 @@ export class PoliciesServer {
             ...condition,
             permissionMapping: condition.permissionMapping.map(pm => pm.action),
           }
-        : undefined;
+        : [];
 
       await this.aLog.auditLog({
         message: `Return conditional permission policy by id`,
@@ -1134,6 +1133,25 @@ export class PoliciesServer {
         throw new InputError('Id is not a valid number.');
       }
 
+      const condition = await this.conditionalStorage.getCondition(id);
+
+      if (!condition) {
+        throw new NotFoundError(`Condition with id ${id} was not found`);
+      }
+
+      const oldCondition: RoleConditionalPolicyDecision<PermissionAction> = {
+        ...condition,
+        permissionMapping: condition.permissionMapping.map(pm => pm.action),
+      };
+
+      const roleMetadata = await this.roleMetadata.findRoleMetadata(
+        oldCondition.roleEntityRef,
+      );
+
+      if (!matches(roleMetadata, conditionsFilter)) {
+        throw new NotAllowedError(); // 403
+      }
+
       const roleConditionPolicy: RoleConditionalPolicyDecision<PermissionAction> =
         request.body;
 
@@ -1144,14 +1162,6 @@ export class PoliciesServer {
         this.pluginPermMetaData,
         this.options.auth,
       );
-
-      const roleMetadata = await this.roleMetadata.findRoleMetadata(
-        conditionToUpdate.roleEntityRef,
-      );
-
-      if (!matches(roleMetadata, conditionsFilter)) {
-        throw new NotAllowedError(); // 403
-      }
 
       await this.conditionalStorage.updateCondition(id, conditionToUpdate);
 
