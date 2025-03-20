@@ -311,14 +311,7 @@ export class CSVFileWatcher extends AbstractFileWatcher<string[][]> {
     const auditorEvent = await this.auditor.createEvent({
       eventId: RoleEvents.ROLE_CREATE_OR_UPDATE,
       severityLevel: 'medium',
-      meta: {
-        source: 'csv-file',
-        policies: Object.entries(
-          this.csvFilePolicies.addedGroupPolicies,
-        ).flatMap(([role, members]: [string, string[]]) =>
-          members.map(member => [member, role]),
-        ),
-      },
+      meta: { source: 'csv-file' },
     });
 
     for (const [key, value] of this.csvFilePolicies.addedGroupPolicies) {
@@ -352,7 +345,7 @@ export class CSVFileWatcher extends AbstractFileWatcher<string[][]> {
         this.logger.warn(
           `Failed to add or update group policy ${groupPolicies} after modification ${this.filePath}. Cause: ${e}`,
         );
-        changedPolicies.failed.push({ error: `${e}`, policies: groupPolicies });
+        changedPolicies.failed.push({ error: e, policies: groupPolicies });
       }
     }
 
@@ -412,7 +405,7 @@ export class CSVFileWatcher extends AbstractFileWatcher<string[][]> {
       const auditorEvent = await this.auditor.createEvent({
         eventId: eventId,
         severityLevel: 'medium',
-        meta,
+        meta: { source: roleMetadata.source },
       });
 
       try {
@@ -423,11 +416,11 @@ export class CSVFileWatcher extends AbstractFileWatcher<string[][]> {
         );
         await auditorEvent.success({ meta });
       } catch (e) {
-        const errorMessage = `Failed to remove group policy ${groupPolicies} after modification ${this.filePath}.`;
-
-        this.logger.warn(`${errorMessage}. Cause: ${e}`);
+        this.logger.warn(
+          `Failed to remove group policy ${groupPolicies} after modification ${this.filePath}. Cause: ${e}`,
+        );
         await auditorEvent.fail({
-          meta: { ...meta, message: errorMessage },
+          meta,
           error: e,
         });
       }

@@ -76,7 +76,7 @@ export const useAdminsFromConfig = async (
   const auditorEvent = await auditor.createEvent({
     eventId: RoleEvents.ROLE_CREATE_OR_UPDATE,
     severityLevel: 'medium',
-    meta,
+    meta: { source: meta.source },
   });
 
   const trx = await knex.transaction();
@@ -143,7 +143,7 @@ const addAdminPermissions = async (
   const auditorEvent = await auditor.createEvent({
     eventId: PermissionEvents.POLICY_CREATE,
     severityLevel: 'medium',
-    meta,
+    meta: { source: meta.source },
   });
 
   try {
