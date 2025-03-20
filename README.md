@@ -6,9 +6,9 @@
 
 ## What is the community-plugins repository?
 
-The `community-plugins` repository is a place where members of the community can host a plugin or a set of plugins. The goal of community-plugins is to reduce the amount of pull requests and issues from `backstage/backstage`, which has become too big with the time.
+The `community-plugins` repository is a place where members of the community can collaborate to develop, maintain, and share plugins. This initiative was originally driven by the need to separate plugin maintenance from the `backstage/backstage` core repository.
 
-By creating community-plugins we give to plugin maintainers all the tools to easily manage and publish their plugins.
+This repository is designed to provide plugin maintainers with tools and workflows to efficiently manage and publish Backstage plugins.
 
 ## Contributing a plugin
 
@@ -99,13 +99,3 @@ A number of plugins that originally resided in `backstage/backstage` monorepo ha
 - `vault`
 - `xcmetrics`
 </details>
-
-### Migration process
-
-The migration of plugins from the `backstage/backstage` monorepo to the `community-plugins` repository was automated under the `community-cli` tool.
-
-You provide it with a path to the `monorepo` which should be cloned locally, and a plugin ID. It will then create a new workspace in the `community-plugins` repository with all of the plugins and modules that surround that workspace. For instance, if I use the `todo` plugin as an ID, It will automatically move over `@backstage/plugin-todo` as well as `@backstage/plugin-todo-backend` and any other `-common`, `-node` or `-modules` that are related.
-
-Once the code is copied over, the npm scopes and all code references are updated to reflect the new scopes of `@backstage-community/plugin-*`, and a changeset is created for the package to be published. The versions are kept the same for now, but the resulting changeset will publish the next version along, so if the package released at `1.25.0` was `0.10.0` then the new version will be `@backstage-community/plugin-todo` `0.10.1`.
-
-There is a commit that is created in the `monorepo` on either a specified branch as `--branch` or on a new branch that is created for the migration. In this commit is a deprecation and a changeset for this package to go out, so `0.10.1` in `@backstage/plugin-todo` will be marked as deprecated and replaced with `@backstage-community/plugin-todo` as the same version.
