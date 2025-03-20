@@ -25,7 +25,7 @@ exports.up = async function up(knex) {
       .notNullable()
       .defaultTo('organization')
       .comment('The type of metric');
-    table.string('team_name', 255).nullable().comment('Name of the team');
+    table.string('team_name', 255).notNullable().comment('Name of the team');
     table.integer('total_seats').notNullable().comment('Total seats');
     table
       .integer('seats_never_used')
