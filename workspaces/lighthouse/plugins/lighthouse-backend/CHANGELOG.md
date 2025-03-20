@@ -1,5 +1,33 @@
 # @backstage-community/plugin-lighthouse-backend
 
+## 0.8.0
+
+### Minor Changes
+
+- bb21ad3: Backstage version bump to v1.36.1
+
+### Patch Changes
+
+- Updated dependencies [bb21ad3]
+  - @backstage-community/plugin-lighthouse-common@0.4.0
+
+## 0.7.0
+
+### Minor Changes
+
+- 12894b9: Backstage version bump to v1.35.1
+
+### Patch Changes
+
+- Updated dependencies [12894b9]
+  - @backstage-community/plugin-lighthouse-common@0.3.0
+
+## 0.6.0
+
+### Minor Changes
+
+- ce2f38e: **BREAKING** Removed support for the legacy backend system. Please refer to the [README](https://github.com/backstage/community-plugins/blob/main/workspaces/lighthouse/plugins/lighthouse-backend/README.md) for instructions on how to use the new backend system.
+
 ## 0.5.0
 
 ### Minor Changes

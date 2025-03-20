@@ -20,7 +20,6 @@ import { useApi } from '@backstage/core-plugin-api';
 import { usePermission } from '@backstage/plugin-permission-react';
 
 import {
-  isResourcedPolicy,
   PluginPermissionMetaData,
   policyEntityCreatePermission,
   policyEntityDeletePermission,
@@ -31,7 +30,11 @@ import {
 
 import { rbacApiRef } from '../api/RBACBackendClient';
 import { RolesData } from '../types';
-import { getPermissions, getPermissionsArray } from '../utils/rbac-utils';
+import {
+  getPermissions,
+  getPermissionsArray,
+  getPluginInfo,
+} from '../utils/rbac-utils';
 
 type RoleWithConditionalPoliciesCount = Role & {
   conditionalPoliciesCount: number;
@@ -56,15 +59,18 @@ export const useRoles = (
   const [newRoles, setNewRoles] = React.useState<
     RoleWithConditionalPoliciesCount[]
   >([]);
+  const [firstLoad, setFirstLoad] = React.useState(true);
   const [roleConditionError, setRoleConditionError] =
     React.useState<string>('');
   const {
+    loading: loadingRoles,
     value: roles,
     retry: roleRetry,
     error: rolesError,
   } = useAsyncRetry(async () => await rbacApi.getRoles());
 
   const {
+    loading: loadingPolicies,
     value: policies,
     retry: policiesRetry,
     error: policiesError,
@@ -112,10 +118,12 @@ export const useRoles = (
     permission: policyEntityUpdatePermission,
     resourceRef: policyEntityUpdatePermission.resourceType,
   });
-
+  const [loadingConditionalPermission, setLoadingConditionalPermission] =
+    React.useState<boolean>(false);
   React.useEffect(() => {
     const fetchAllPermissionPolicies = async () => {
       if (!Array.isArray(roles)) return;
+      setLoadingConditionalPermission(true);
       const failedFetchConditionRoles: string[] = [];
       const conditionPromises = roles.map(async role => {
         try {
@@ -156,6 +164,7 @@ export const useRoles = (
 
       const updatedRoles = await Promise.all(conditionPromises);
       setNewRoles(updatedRoles);
+      setLoadingConditionalPermission(false);
     };
 
     fetchAllPermissionPolicies();
@@ -182,14 +191,10 @@ export const useRoles = (
                   policies as RoleBasedPolicy[],
                 ).map(
                   po =>
-                    (permissionPolicies as PluginPermissionMetaData[]).find(
-                      pp =>
-                        pp.policies?.find(pol =>
-                          isResourcedPolicy(pol)
-                            ? po.permission === pol.resourceType
-                            : po.permission === pol.name,
-                        ),
-                    )?.pluginId,
+                    getPluginInfo(
+                      permissionPolicies as PluginPermissionMetaData[],
+                      po,
+                    ).pluginId,
                 );
                 accPls = [...accPls, ...pls].filter(val => !!val) as string[];
               }
@@ -234,12 +239,19 @@ export const useRoles = (
       canReadUsersAndGroups,
     ],
   );
-  const loading = !rolesError && !policiesError && !roles && !policies;
+  const loading =
+    firstLoad &&
+    (loadingPolicies ||
+      loadingRoles ||
+      membersLoading ||
+      loadingPermissionPolicies ||
+      loadingConditionalPermission);
 
   useInterval(
     () => {
       roleRetry();
       policiesRetry();
+      setFirstLoad(false);
     },
     loading ? null : pollInterval || 10000,
   );

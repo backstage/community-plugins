@@ -21,23 +21,23 @@
     "build-image": "docker build ../.. -f Dockerfile --tag backstage"
   },
   "dependencies": {
-    "@backstage/backend-defaults": "^0.6.1",
-    "@backstage/plugin-app-backend": "^0.4.3",
-    "@backstage/plugin-auth-backend": "^0.24.1",
-    "@backstage/plugin-auth-backend-module-guest-provider": "^0.2.3",
-    "@backstage/plugin-catalog-backend": "^1.29.0",
-    "@backstage/plugin-catalog-backend-module-scaffolder-entity-model": "^0.2.3",
-    "@backstage/plugin-permission-backend": "^0.5.52",
-    "@backstage/plugin-permission-backend-module-allow-all-policy": "^0.2.3",
-    "@backstage/plugin-proxy-backend": "^0.5.9",
-    "@backstage/plugin-scaffolder-backend": "^1.28.0",
-    "@backstage/plugin-search-backend": "^1.8.0",
-    "@backstage/plugin-search-backend-module-catalog": "^0.2.6",
-    "@backstage/plugin-search-backend-module-techdocs": "^0.3.4",
-    "@backstage/plugin-techdocs-backend": "^1.11.4"
+    "@backstage/backend-defaults": "^0.8.1",
+    "@backstage/plugin-app-backend": "^0.4.5",
+    "@backstage/plugin-auth-backend": "^0.24.3",
+    "@backstage/plugin-auth-backend-module-guest-provider": "^0.2.5",
+    "@backstage/plugin-catalog-backend": "^1.31.0",
+    "@backstage/plugin-catalog-backend-module-scaffolder-entity-model": "^0.2.5",
+    "@backstage/plugin-permission-backend": "^0.5.54",
+    "@backstage/plugin-permission-backend-module-allow-all-policy": "^0.2.5",
+    "@backstage/plugin-proxy-backend": "^0.5.11",
+    "@backstage/plugin-scaffolder-backend": "^1.30.0",
+    "@backstage/plugin-search-backend": "^1.8.2",
+    "@backstage/plugin-search-backend-module-catalog": "^0.3.1",
+    "@backstage/plugin-search-backend-module-techdocs": "^0.3.6",
+    "@backstage/plugin-techdocs-backend": "^1.11.6"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.29.4"
+    "@backstage/cli": "^0.30.0"
   },
   "files": [
     "dist"

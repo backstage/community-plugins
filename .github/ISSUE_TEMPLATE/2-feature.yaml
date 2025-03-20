@@ -13,16 +13,19 @@ body:
     attributes:
       label: Workspace
       options:
+        - Select a workspace...
         - 3scale
         - acr
         - adr
         - airbrake
         - allure
+        - amplication
         - analytics
         - announcements
         - apache-airflow
         - apollo-explorer
         - azure-devops
+        - azure-resources
         - azure-sites
         - azure-storage-explorer
         - badges
@@ -49,6 +52,7 @@ body:
         - git-release-manager
         - github-actions
         - github-deployments
+        - github-discussions
         - github-issues
         - github-pull-requests-board
         - gitops-profiles
@@ -66,10 +70,12 @@ body:
         - lighthouse
         - linguist
         - linkerd
+        - manage
         - matomo
         - mend
         - microsoft-calendar
         - mta
+        - multi-source-security-viewer
         - newrelic
         - nexus-repository-manager
         - nomad

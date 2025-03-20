@@ -173,17 +173,17 @@ export class JenkinsApiImpl {
    */
   async getBuild(
     jenkinsInfo: JenkinsInfo,
-    jobFullName: string,
+    jobs: string[],
     buildNumber: number,
   ) {
     const client = await JenkinsApiImpl.getClient(jenkinsInfo);
 
     const project = await client.job.get({
-      name: jobFullName,
+      name: jobs,
       depth: 1,
     });
 
-    const build = await client.build.get(jobFullName, buildNumber);
+    const build = await client.build.get(jobs, buildNumber);
     const jobScmInfo = JenkinsApiImpl.extractScmDetailsFromJob(project);
 
     return this.augmentBuild(build, jobScmInfo);
@@ -195,7 +195,7 @@ export class JenkinsApiImpl {
    */
   async rebuildProject(
     jenkinsInfo: JenkinsInfo,
-    jobFullName: string,
+    jobs: string[],
     buildNumber: number,
     resourceRef: string,
     options: { credentials: BackstageCredentials },
@@ -212,7 +212,7 @@ export class JenkinsApiImpl {
       }
     }
 
-    const buildUrl = this.getBuildUrl(jenkinsInfo, jobFullName, buildNumber);
+    const buildUrl = this.getBuildUrl(jenkinsInfo, jobs, buildNumber);
 
     // the current SDK only supports triggering a new build
     // replay the job by triggering request directly from Jenkins api
@@ -372,29 +372,17 @@ export class JenkinsApiImpl {
 
   private getBuildUrl(
     jenkinsInfo: JenkinsInfo,
-    jobFullName: string,
+    jobs: string[],
     buildId: number,
   ): string {
-    const jobs = jobFullName.split('/');
     return `${jenkinsInfo.baseUrl}/job/${jobs.join('/job/')}/${buildId}`;
   }
 
-  async getJobBuilds(jenkinsInfo: JenkinsInfo, jobFullName: string) {
-    let jobName = jobFullName;
-    if (jobFullName.includes('/')) {
-      jobName = jobFullName
-        .split('/')
-        .map((s: string) => `${encodeURIComponent(s)}`)
-        .join('/job/');
-    }
-
+  async getJobBuilds(jenkinsInfo: JenkinsInfo, jobs: string[]) {
     const response = await fetch(
-      `${
-        jenkinsInfo.baseUrl
-      }/job/${jobName}/api/json?tree=${JenkinsApiImpl.jobBuildsTreeSpec.replace(
-        /\s/g,
-        '',
-      )}`,
+      `${jenkinsInfo.baseUrl}/job/${jobs.join(
+        '/job/',
+      )}/api/json?tree=${JenkinsApiImpl.jobBuildsTreeSpec.replace(/\s/g, '')}`,
       {
         method: 'get',
         headers: jenkinsInfo.headers as HeaderInit,
@@ -411,10 +399,10 @@ export class JenkinsApiImpl {
    */
   async getBuildConsoleText(
     jenkinsInfo: JenkinsInfo,
-    jobFullName: string,
+    jobs: string[],
     buildNumber: number,
   ) {
-    const buildUrl = this.getBuildUrl(jenkinsInfo, jobFullName, buildNumber);
+    const buildUrl = this.getBuildUrl(jenkinsInfo, jobs, buildNumber);
 
     const response = await fetch(`${buildUrl}/consoleText`, {
       method: 'get',

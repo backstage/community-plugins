@@ -38,7 +38,7 @@ import Typography from '@mui/material/Typography';
 import { makeStyles, styled } from '@mui/styles';
 import React from 'react';
 import { MaturityRankAvatar } from '../MaturityRankAvatar';
-import { InsightFacts } from '@backstage-community/plugin-tech-insights-common/client';
+import { InsightFacts } from '@backstage-community/plugin-tech-insights-common';
 
 interface Props {
   checks: MaturityCheckResult[];

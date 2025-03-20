@@ -1,5 +1,33 @@
 # @backstage-community/plugin-azure-devops
 
+## 0.11.0
+
+### Minor Changes
+
+- 32ab469: Add the ability to fetch and see a build's log
+
+## 0.10.0
+
+### Minor Changes
+
+- ff23f2f: Backstage version bump to v1.36.1
+
+### Patch Changes
+
+- Updated dependencies [ff23f2f]
+  - @backstage-community/plugin-azure-devops-common@0.8.0
+
+## 0.9.0
+
+### Minor Changes
+
+- 2ca3917: Backstage version bump to v1.35.1
+
+### Patch Changes
+
+- Updated dependencies [2ca3917]
+  - @backstage-community/plugin-azure-devops-common@0.7.0
+
 ## 0.8.0
 
 ### Minor Changes

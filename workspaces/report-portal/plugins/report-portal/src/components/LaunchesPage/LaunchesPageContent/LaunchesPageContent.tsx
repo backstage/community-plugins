@@ -16,26 +16,29 @@
 import React, { useEffect, useState } from 'react';
 
 import {
+  AppIcon,
   ErrorPanel,
+  Link,
   Table,
   TableColumn,
-  Link,
 } from '@backstage/core-components';
-import { useApi } from '@backstage/core-plugin-api';
+import { useApi, useRouteRef } from '@backstage/core-plugin-api';
 
 import Launch from '@mui/icons-material/Launch';
 import { DateTime } from 'luxon';
 import useDebounce from 'react-use/lib/useDebounce';
 
+import { reportPortalApiRef } from '../../../api';
+
 import {
   LaunchDetailsResponse,
   PageType,
-  reportPortalApiRef,
-} from '../../../api';
-
+} from '@backstage-community/plugin-report-portal-common';
+import { catalogApiRef, entityRouteRef } from '@backstage/plugin-catalog-react';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
+import useAsync from 'react-use/lib/useAsync';
 
 type LaunchDetails = {
   id: number;
@@ -63,11 +66,48 @@ const RenderTime = (props: { timeMillis: number }) => {
     <Grid
       onMouseEnter={() => setShowTime(true)}
       onMouseLeave={() => setShowTime(false)}
-      style={{ fontSize: '15px' }}
+      style={{ fontSize: '15px', minWidth: '150px' }}
     >
       {showTime ? dateTime : relativeTime}
     </Grid>
   );
+};
+
+const CatalogLink = (props: { projectName: string; launchName: string }) => {
+  const { projectName, launchName } = props;
+  const catalogApi = useApi(catalogApiRef);
+  const entityRoute = useRouteRef(entityRouteRef);
+
+  const { value, loading } = useAsync(async () => {
+    return await catalogApi.queryEntities({
+      filter: [
+        {
+          kind: 'component',
+          'metadata.annotations.reportportal.io/project-name': projectName,
+          'metadata.annotations.reportportal.io/launch-name': launchName,
+        },
+      ],
+    });
+  }, [catalogApi]);
+
+  if (loading) return null;
+
+  if (!value) return null;
+  const entity = value.items.at(0);
+
+  return entity ? (
+    <IconButton
+      href={entityRoute({
+        kind: entity.kind,
+        name: entity.metadata.name,
+        namespace: entity.metadata.namespace ?? 'default',
+      })}
+      size="medium"
+      centerRipple
+    >
+      <AppIcon id="catalog" />
+    </IconButton>
+  ) : null;
 };
 
 export const LaunchesPageContent = (props: {
@@ -154,7 +194,7 @@ export const LaunchesPageContent = (props: {
           {row.total === 0 && ` - (${row.status})`}
         </>
       ),
-      width: '50%',
+      width: '45%',
     },
     {
       id: 1,
@@ -231,20 +271,21 @@ export const LaunchesPageContent = (props: {
     {
       id: 5,
       title: 'Actions',
-      align: 'center',
+      align: 'right',
       sorting: false,
-      width: '5%',
+      width: '10%',
       render: row => (
-        <IconButton
-          target="_blank"
-          style={{ padding: 0 }}
-          href={`https://${host}/ui/#${project}/launches/latest/${row.id}`}
-          size="small"
-          centerRipple
-          color="inherit"
-        >
-          <Launch />
-        </IconButton>
+        <div>
+          <CatalogLink projectName={project} launchName={row.launchName} />
+          <IconButton
+            target="_blank"
+            href={`https://${host}/ui/#${project}/launches/latest/${row.id}`}
+            size="medium"
+            centerRipple
+          >
+            <Launch />
+          </IconButton>
+        </div>
       ),
     },
   ];
@@ -277,6 +318,10 @@ export const LaunchesPageContent = (props: {
         padding: 'dense',
         paginationPosition: 'both',
         emptyRowsWhenPaging: false,
+      }}
+      style={{
+        overflowX: 'auto',
+        whiteSpace: 'nowrap',
       }}
       title={`Latest Launches (${tableData.page.totalElements})`}
       columns={columns}

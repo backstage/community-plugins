@@ -40,8 +40,10 @@ jobs:
             This PR updates the issue templates with the latest workspace list.
 
             This is an automated PR created by the regenerate_issue_templates workflow.
+          author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
           branch: automated-update-issue-templates
           delete-branch: true
+          signoff: true
           labels: |
             automated
             workspaces

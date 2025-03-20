@@ -1,5 +1,33 @@
 # @backstage-community/plugin-linguist-backend
 
+## 0.12.0
+
+### Minor Changes
+
+- 4a2f2c1: Backstage version bump to v1.36.1
+
+### Patch Changes
+
+- Updated dependencies [4a2f2c1]
+  - @backstage-community/plugin-linguist-common@0.5.0
+
+## 0.11.1
+
+### Patch Changes
+
+- 208e250: Updated dependency `@types/uuid` to `^10.0.0`.
+
+## 0.11.0
+
+### Minor Changes
+
+- cf27ad1: Backstage version bump to v1.35.1
+
+### Patch Changes
+
+- Updated dependencies [cf27ad1]
+  - @backstage-community/plugin-linguist-common@0.4.0
+
 ## 0.10.0
 
 ### Minor Changes

@@ -17,6 +17,7 @@ import {
   AuthService,
   DatabaseService,
   DiscoveryService,
+  HttpAuthService,
   LoggerService,
 } from '@backstage/backend-plugin-api';
 import { CatalogClient } from '@backstage/catalog-client';
@@ -42,13 +43,15 @@ export interface RouterOptions {
   auth: AuthService;
   database: DatabaseService;
   notifications?: NotificationService;
+  httpAuth: HttpAuthService;
 }
 
 /** @internal */
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
-  const { logger, config, discovery, auth, database, notifications } = options;
+  const { logger, config, discovery, auth, database, notifications, httpAuth } =
+    options;
   const router = Router();
   const feedbackDB = await DatabaseFeedbackStore.create({
     database,
@@ -73,6 +76,14 @@ export async function createRouter(
         return res.status(500).json({ error: 'Summary field empty' });
       }
       reqData.createdAt = new Date().toISOString();
+
+      const reqCredentials = (await (
+        await httpAuth.credentials(req)
+      ).principal) as { type?: string; userEntityRef?: string };
+      if (reqCredentials.type === 'user') {
+        reqData.createdBy = reqCredentials.userEntityRef;
+      }
+
       reqData.updatedBy = reqData.createdBy;
       reqData.updatedAt = reqData.createdAt;
 

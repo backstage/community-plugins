@@ -9,6 +9,10 @@ import { AnnouncementsList } from '@backstage-community/plugin-announcements-com
 import { ApiRef } from '@backstage/core-plugin-api';
 import { Category } from '@backstage-community/plugin-announcements-common';
 import { DateTime } from 'luxon';
+import { DiscoveryApi } from '@backstage/core-plugin-api';
+import { ErrorApi } from '@backstage/core-plugin-api';
+import { FetchApi } from '@backstage/core-plugin-api';
+import { IdentityApi } from '@backstage/core-plugin-api';
 import { TranslationFunction } from '@backstage/core-plugin-api/alpha';
 import { TranslationRef } from '@backstage/core-plugin-api/alpha';
 
@@ -22,6 +26,8 @@ export interface AnnouncementsApi {
     page?: number;
     category?: string;
     active?: boolean;
+    sortBy?: 'created_at' | 'start_at';
+    order?: 'asc' | 'desc';
   }): Promise<AnnouncementsList>;
   // (undocumented)
   categories(): Promise<Category[]>;
@@ -48,6 +54,56 @@ export interface AnnouncementsApi {
 export const announcementsApiRef: ApiRef<AnnouncementsApi>;
 
 // @public
+export class AnnouncementsClient implements AnnouncementsApi {
+  constructor(opts: AnnouncementsClientOptions);
+  // (undocumented)
+  announcementByID(id: string): Promise<Announcement>;
+  // (undocumented)
+  announcements({
+    max,
+    page,
+    category,
+    active,
+    sortBy,
+    order,
+  }: {
+    max?: number;
+    page?: number;
+    category?: string;
+    active?: boolean;
+    sortBy?: 'created_at' | 'start_at';
+    order?: 'asc' | 'desc';
+  }): Promise<AnnouncementsList>;
+  // (undocumented)
+  categories(): Promise<Category[]>;
+  // (undocumented)
+  createAnnouncement(request: CreateAnnouncementRequest): Promise<Announcement>;
+  // (undocumented)
+  createCategory(request: CreateCategoryRequest): Promise<void>;
+  // (undocumented)
+  deleteAnnouncementByID(id: string): Promise<void>;
+  // (undocumented)
+  deleteCategory(slug: string): Promise<void>;
+  // (undocumented)
+  lastSeenDate(): DateTime;
+  // (undocumented)
+  markLastSeenDate(date: DateTime): void;
+  // (undocumented)
+  updateAnnouncement(
+    id: string,
+    request: CreateAnnouncementRequest,
+  ): Promise<Announcement>;
+}
+
+// @public
+export type AnnouncementsClientOptions = {
+  discoveryApi: DiscoveryApi;
+  identityApi: IdentityApi;
+  errorApi: ErrorApi;
+  fetchApi: FetchApi;
+};
+
+// @public
 export type AnnouncementsOptions = {
   dependencies?: any[];
 };
@@ -60,20 +116,22 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'admin.adminPortal.subtitle': 'Manage announcements and categories';
     readonly 'admin.adminPortal.announcementsLabels': 'Announcements';
     readonly 'admin.adminPortal.categoriesLabel': 'Categories';
-    readonly 'admin.announecementsContent.table.active': 'Active';
-    readonly 'admin.announecementsContent.table.inactive': 'Inactive';
-    readonly 'admin.announecementsContent.table.body': 'Body';
-    readonly 'admin.announecementsContent.table.title': 'Title';
-    readonly 'admin.announecementsContent.table.status': 'Status';
-    readonly 'admin.announecementsContent.table.actions': 'Actions';
-    readonly 'admin.announecementsContent.table.category': 'Category';
-    readonly 'admin.announecementsContent.table.publisher': 'Publisher';
-    readonly 'admin.announecementsContent.announcements': 'Announcements';
-    readonly 'admin.announecementsContent.alertMessage': 'Announcement created.';
-    readonly 'admin.announecementsContent.alertMessageWithNewCategory': 'with new category';
-    readonly 'admin.announecementsContent.cancelButton': 'Cancel';
-    readonly 'admin.announecementsContent.createButton': 'Create Announcement';
-    readonly 'admin.announecementsContent.noAnnouncementsFound': 'No announcements found';
+    readonly 'admin.announcementsContent.table.active': 'Active';
+    readonly 'admin.announcementsContent.table.inactive': 'Inactive';
+    readonly 'admin.announcementsContent.table.body': 'Body';
+    readonly 'admin.announcementsContent.table.title': 'Title';
+    readonly 'admin.announcementsContent.table.status': 'Status';
+    readonly 'admin.announcementsContent.table.actions': 'Actions';
+    readonly 'admin.announcementsContent.table.created_at': 'Created';
+    readonly 'admin.announcementsContent.table.start_at': 'Start';
+    readonly 'admin.announcementsContent.table.category': 'Category';
+    readonly 'admin.announcementsContent.table.publisher': 'Publisher';
+    readonly 'admin.announcementsContent.announcements': 'Announcements';
+    readonly 'admin.announcementsContent.alertMessage': 'Announcement created.';
+    readonly 'admin.announcementsContent.alertMessageWithNewCategory': 'with new category';
+    readonly 'admin.announcementsContent.cancelButton': 'Cancel';
+    readonly 'admin.announcementsContent.createButton': 'Create Announcement';
+    readonly 'admin.announcementsContent.noAnnouncementsFound': 'No announcements found';
     readonly 'admin.categoriesContent.table.title': 'Title';
     readonly 'admin.categoriesContent.table.actions': 'Actions';
     readonly 'admin.categoriesContent.table.categoryDeleted': 'Category deleted.';
@@ -90,6 +148,7 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'announcementForm.excerpt': 'Excerpt';
     readonly 'announcementForm.editAnnouncement': 'Edit announcement';
     readonly 'announcementForm.newAnnouncement': 'New announcement';
+    readonly 'announcementForm.startAt': 'Announcement start date';
     readonly 'announcementForm.categoryInput.label': 'Category';
     readonly 'announcementForm.categoryInput.create': 'Create';
     readonly 'announcementsPage.grid.announcementDeleted': 'Announcement deleted.';
@@ -101,12 +160,18 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'announcementsPage.card.in': 'in';
     readonly 'announcementsPage.card.delete': 'DELETE';
     readonly 'announcementsPage.card.edit': 'EDIT';
+    readonly 'announcementsPage.card.occurred': 'Occurred ';
+    readonly 'announcementsPage.card.scheduled': 'Scheduled ';
+    readonly 'announcementsPage.card.today': 'Today';
     readonly 'deleteDialog.cancel': 'Cancel';
     readonly 'deleteDialog.title': 'Are you sure you want to delete this announcement?';
     readonly 'deleteDialog.delete': 'Delete';
     readonly 'announcementsCard.new': 'New';
     readonly 'announcementsCard.in': 'in';
     readonly 'announcementsCard.announcements': 'Announcements';
+    readonly 'announcementsCard.occurred': 'Occurred';
+    readonly 'announcementsCard.scheduled': 'Scheduled';
+    readonly 'announcementsCard.today': 'Today';
     readonly 'announcementsCard.seeAll': 'See all';
     readonly 'announcementsCard.noAnnouncements': 'No announcements yet, want to';
     readonly 'announcementsCard.addOne': 'add one';
@@ -171,20 +236,22 @@ export const useAnnouncementsTranslation: () => {
     readonly 'admin.adminPortal.subtitle': 'Manage announcements and categories';
     readonly 'admin.adminPortal.announcementsLabels': 'Announcements';
     readonly 'admin.adminPortal.categoriesLabel': 'Categories';
-    readonly 'admin.announecementsContent.table.active': 'Active';
-    readonly 'admin.announecementsContent.table.inactive': 'Inactive';
-    readonly 'admin.announecementsContent.table.body': 'Body';
-    readonly 'admin.announecementsContent.table.title': 'Title';
-    readonly 'admin.announecementsContent.table.status': 'Status';
-    readonly 'admin.announecementsContent.table.actions': 'Actions';
-    readonly 'admin.announecementsContent.table.category': 'Category';
-    readonly 'admin.announecementsContent.table.publisher': 'Publisher';
-    readonly 'admin.announecementsContent.announcements': 'Announcements';
-    readonly 'admin.announecementsContent.alertMessage': 'Announcement created.';
-    readonly 'admin.announecementsContent.alertMessageWithNewCategory': 'with new category';
-    readonly 'admin.announecementsContent.cancelButton': 'Cancel';
-    readonly 'admin.announecementsContent.createButton': 'Create Announcement';
-    readonly 'admin.announecementsContent.noAnnouncementsFound': 'No announcements found';
+    readonly 'admin.announcementsContent.table.active': 'Active';
+    readonly 'admin.announcementsContent.table.inactive': 'Inactive';
+    readonly 'admin.announcementsContent.table.body': 'Body';
+    readonly 'admin.announcementsContent.table.title': 'Title';
+    readonly 'admin.announcementsContent.table.status': 'Status';
+    readonly 'admin.announcementsContent.table.actions': 'Actions';
+    readonly 'admin.announcementsContent.table.created_at': 'Created';
+    readonly 'admin.announcementsContent.table.start_at': 'Start';
+    readonly 'admin.announcementsContent.table.category': 'Category';
+    readonly 'admin.announcementsContent.table.publisher': 'Publisher';
+    readonly 'admin.announcementsContent.announcements': 'Announcements';
+    readonly 'admin.announcementsContent.alertMessage': 'Announcement created.';
+    readonly 'admin.announcementsContent.alertMessageWithNewCategory': 'with new category';
+    readonly 'admin.announcementsContent.cancelButton': 'Cancel';
+    readonly 'admin.announcementsContent.createButton': 'Create Announcement';
+    readonly 'admin.announcementsContent.noAnnouncementsFound': 'No announcements found';
     readonly 'admin.categoriesContent.table.title': 'Title';
     readonly 'admin.categoriesContent.table.actions': 'Actions';
     readonly 'admin.categoriesContent.table.categoryDeleted': 'Category deleted.';
@@ -201,6 +268,7 @@ export const useAnnouncementsTranslation: () => {
     readonly 'announcementForm.excerpt': 'Excerpt';
     readonly 'announcementForm.editAnnouncement': 'Edit announcement';
     readonly 'announcementForm.newAnnouncement': 'New announcement';
+    readonly 'announcementForm.startAt': 'Announcement start date';
     readonly 'announcementForm.categoryInput.label': 'Category';
     readonly 'announcementForm.categoryInput.create': 'Create';
     readonly 'announcementsPage.grid.announcementDeleted': 'Announcement deleted.';
@@ -212,12 +280,18 @@ export const useAnnouncementsTranslation: () => {
     readonly 'announcementsPage.card.in': 'in';
     readonly 'announcementsPage.card.delete': 'DELETE';
     readonly 'announcementsPage.card.edit': 'EDIT';
+    readonly 'announcementsPage.card.occurred': 'Occurred ';
+    readonly 'announcementsPage.card.scheduled': 'Scheduled ';
+    readonly 'announcementsPage.card.today': 'Today';
     readonly 'deleteDialog.cancel': 'Cancel';
     readonly 'deleteDialog.title': 'Are you sure you want to delete this announcement?';
     readonly 'deleteDialog.delete': 'Delete';
     readonly 'announcementsCard.new': 'New';
     readonly 'announcementsCard.in': 'in';
     readonly 'announcementsCard.announcements': 'Announcements';
+    readonly 'announcementsCard.occurred': 'Occurred';
+    readonly 'announcementsCard.scheduled': 'Scheduled';
+    readonly 'announcementsCard.today': 'Today';
     readonly 'announcementsCard.seeAll': 'See all';
     readonly 'announcementsCard.noAnnouncements': 'No announcements yet, want to';
     readonly 'announcementsCard.addOne': 'add one';

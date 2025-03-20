@@ -1,7 +1,7 @@
 {
   "name": "@backstage-community/plugin-announcements-common",
   "description": "Common functionalities for the announcements plugin",
-  "version": "0.1.3",
+  "version": "0.3.0",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "license": "Apache-2.0",
@@ -37,12 +37,12 @@
     "postpack": "backstage-cli package postpack"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.29.4"
+    "@backstage/cli": "^0.29.6"
   },
   "files": [
     "dist"
   ],
   "dependencies": {
-    "@backstage/plugin-permission-common": "^0.8.3"
+    "@backstage/plugin-permission-common": "^0.8.4"
   }
 }

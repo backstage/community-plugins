@@ -1,5 +1,80 @@
 ### Dependencies
 
+## 1.39.1
+
+### Patch Changes
+
+- 85541c1: RBACApiRef should be exposed to support simulation / customization based on use-cases and to mock API implementation for feature testing. #2872
+
+## 1.39.0
+
+### Minor Changes
+
+- 0253db6: Backstage version bump to v1.36.1
+
+### Patch Changes
+
+- Updated dependencies [0253db6]
+  - @backstage-community/plugin-rbac-common@1.14.0
+
+## 1.38.3
+
+### Patch Changes
+
+- 32135b8: Updated dependency `@testing-library/user-event` to `14.6.1`.
+- c222ea4: Updated dependency `@playwright/test` to `1.51.0`.
+- 973a5ef: remove prettier from devDevpendencies
+
+## 1.38.2
+
+### Patch Changes
+
+- 3f80cbb: fixed no record found was being shown before the role list get displayed
+- a388178: Fix to show conditional permission policy with multiple CRUD actions on single resource-type created via CLI/CSV correctly in edit form.
+- a8e2f2c: Updated dependency `@material-ui/lab` to `4.0.0-alpha.61`.
+  Updated dependency `@mui/icons-material` to `5.16.14`.
+  Updated dependency `@mui/material` to `5.16.14`.
+  Updated dependency `@mui/styles` to `5.16.14`.
+  Updated dependency `@mui/x-charts` to `6.19.8`.
+  Updated dependency `@mui/lab` to `5.0.0-alpha.175`.
+
+## 1.38.1
+
+### Patch Changes
+
+- 152eb5f: In edit role form show selected permissions for a plugin based on resource-type and policy mapping if resource-type used in creation of simple permission policy via CLI/CSV file.
+- 3e35324: Updated dependency `start-server-and-test` to `2.0.10`.
+
+## 1.38.0
+
+### Minor Changes
+
+- a7730fc: Update shared react library @janus-idp/shared-react to version 2.16.0 with newer @kubernetes/client-node@1.0.0-rc7.
+
+## 1.37.0
+
+### Minor Changes
+
+- 5934dfe: Open confirmation modal with options to discard the entered information or continue with adding more information on create/edit role forms cancel button click.
+
+## 1.36.0
+
+### Minor Changes
+
+- 838db28: Redesigned RBAC form permissions section.
+  User will be able to select multiple plugins at once.
+
+## 1.35.0
+
+### Minor Changes
+
+- 5d5c02a: Backstage version bump to v1.35.0
+
+### Patch Changes
+
+- Updated dependencies [5d5c02a]
+  - @backstage-community/plugin-rbac-common@1.13.0
+
 ## 1.34.0
 
 ### Minor Changes

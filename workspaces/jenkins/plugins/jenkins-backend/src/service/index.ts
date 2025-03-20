@@ -23,6 +23,5 @@ export type {
   JenkinsInfoProvider,
   JenkinsInstanceConfig,
 } from './jenkinsInfoProvider';
-export { createRouter } from './router';
-export type { RouterOptions } from './router';
+export * from './router';
 export * from './JenkinsBuilder';

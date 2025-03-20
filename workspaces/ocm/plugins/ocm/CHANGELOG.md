@@ -1,5 +1,47 @@
 ### Dependencies
 
+## 5.4.1
+
+### Patch Changes
+
+- Updated dependencies [973a5ef]
+  - @backstage-community/plugin-ocm-common@3.8.1
+
+## 5.4.0
+
+### Minor Changes
+
+- fb29ca1: Backstage version bump to v1.36.1
+
+### Patch Changes
+
+- 32135b8: Updated dependency `@testing-library/user-event` to `14.6.1`.
+- Updated dependencies [fb29ca1]
+  - @backstage-community/plugin-ocm-common@3.8.0
+
+## 5.3.2
+
+### Patch Changes
+
+- 89198dc: updated peer dependencies and added backstage app and backend to the workspace
+
+## 5.3.1
+
+### Patch Changes
+
+- 7ba7e60: Removed unused dependency PatternFly.
+
+## 5.3.0
+
+### Minor Changes
+
+- e0796ca: Backstage version bump to v1.35.0
+
+### Patch Changes
+
+- Updated dependencies [e0796ca]
+  - @backstage-community/plugin-ocm-common@3.7.0
+
 ## 5.2.6
 
 ### Patch Changes

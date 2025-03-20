@@ -35,11 +35,13 @@ type InstanceData = {
 export const GlobalPageContent = () => {
   const configApi = useApi(configApiRef);
   const reportPortalApi = useApi(reportPortalApiRef);
-  const hostsConfig = configApi.getConfigArray('reportPortal.integrations');
+  const hostsConfig = configApi.getOptionalConfigArray(
+    'reportPortal.integrations',
+  );
   const [hosts, _] = useState<
     { host: string; filterType: string }[] | undefined
   >(
-    hostsConfig.map(value => ({
+    hostsConfig?.map(value => ({
       host: value.getString('host'),
       filterType: value.getString('filterType') ?? 'INTERNAL',
     })),
@@ -105,13 +107,13 @@ export const GlobalPageContent = () => {
           const resp = await reportPortalApi.getInstanceDetails(h.host, {
             'filter.eq.type': h.filterType,
           });
-          setInstanceData(iData => {
-            return iData.map(instance =>
+          setInstanceData(iData =>
+            iData.map(instance =>
               instance.name === h.host
                 ? { ...instance, projects: resp.content.length }
                 : instance,
-            );
-          });
+            ),
+          );
         }
       };
       getProjectsCount();

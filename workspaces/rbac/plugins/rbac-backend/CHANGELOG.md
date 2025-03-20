@@ -1,5 +1,61 @@
 ### Dependencies
 
+## 5.6.1
+
+### Patch Changes
+
+- b2a5daa: Updated dependency `qs` to `6.14.0`.
+
+## 5.6.0
+
+### Minor Changes
+
+- 0253db6: Backstage version bump to v1.36.1
+
+### Patch Changes
+
+- Updated dependencies [0253db6]
+  - @backstage-community/plugin-rbac-common@1.14.0
+  - @backstage-community/plugin-rbac-node@1.10.0
+
+## 5.5.3
+
+### Patch Changes
+
+- 973a5ef: remove prettier from devDevpendencies
+- Updated dependencies [973a5ef]
+  - @backstage-community/plugin-rbac-node@1.9.1
+
+## 5.5.2
+
+### Patch Changes
+
+- 9aa839a: Fixes two issues that were impact the performance, the first was that we were individually adding and removing roles and the second was we were removing all policies and roles regardless of whether they should actually be removed.
+
+## 5.5.1
+
+### Patch Changes
+
+- fcfaf89: Fixed an issue where aliases would not be applied across all conditional policy rules.
+
+## 5.5.0
+
+### Minor Changes
+
+- 36e2c6c: Reduces the number of times that we build the group hierarchy graphs during evaluation. Originally, during time of evaluation, we would build a graph to of all of the groups that a user was directly or indirectly a member of. Now, we only build the graph once and pass along all of the roles that the user is directly or indirectly attached to.
+
+## 5.4.0
+
+### Minor Changes
+
+- 5d5c02a: Backstage version bump to v1.35.0
+
+### Patch Changes
+
+- Updated dependencies [5d5c02a]
+  - @backstage-community/plugin-rbac-common@1.13.0
+  - @backstage-community/plugin-rbac-node@1.9.0
+
 ## 5.3.1
 
 ### Patch Changes

@@ -28,7 +28,7 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
 import { ResourceSyncStatus } from './ResourcesSyncStatus';
 import { ResourceHealthStatus } from './ResourcesHealthStatus';
-import { Resource } from '../../../../types/application';
+import { Resource } from '@backstage-community/plugin-redhat-argocd-common';
 import ResourceMetadata from './resource/ResourceMetadata';
 
 type ResourcesTableRowProps = {

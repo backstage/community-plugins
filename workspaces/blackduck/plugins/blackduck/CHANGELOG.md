@@ -1,5 +1,30 @@
 # @backstage-community/plugin-blackduck
 
+## 0.3.1
+
+### Patch Changes
+
+- Updated dependencies [638b35b]
+  - @backstage-community/plugin-blackduck-common@0.2.1
+
+## 0.3.0
+
+### Minor Changes
+
+- 09a4282: Backstage version bump to v1.35.1
+
+### Patch Changes
+
+- Updated dependencies [09a4282]
+  - @backstage-community/plugin-blackduck-common@0.2.0
+
+## 0.2.0
+
+### Minor Changes
+
+- 7cd9866: Removed usages and references of @backstage/backend-common
+  Removed support for legacy backend system
+
 ## 0.1.0
 
 ### Minor Changes

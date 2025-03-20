@@ -25,6 +25,9 @@ export const githubDiscussionsPlugin = createPlugin({
   id: 'github-discussions',
 });
 
+/**
+ * @public
+ */
 export const GithubDiscussionsSearchResultListItem: (
   props: SearchResultListItemExtensionProps<GithubDiscussionsSearchResultListItemProps>,
 ) => JSX.Element | null = githubDiscussionsPlugin.provide(

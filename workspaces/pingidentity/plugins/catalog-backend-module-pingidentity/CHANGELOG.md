@@ -1,5 +1,23 @@
 # @backstage-community/plugin-catalog-backend-module-pingidentity
 
+## 0.3.0
+
+### Minor Changes
+
+- 4e6df64: Backstage version bump to v1.36.1
+
+## 0.2.1
+
+### Patch Changes
+
+- 1894560: removed unused dependency @backstage/backend-common
+
+## 0.2.0
+
+### Minor Changes
+
+- c328f9c: Backstage version bump to v1.35.0
+
 ## 0.1.6
 
 ### Patch Changes

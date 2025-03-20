@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-ilert",
-  "version": "0.4.0",
+  "version": "0.6.0",
   "description": "A Backstage plugin that integrates towards iLert",
   "backstage": {
     "role": "frontend-plugin",
@@ -38,11 +38,11 @@
     "test": "backstage-cli package test"
   },
   "dependencies": {
-    "@backstage/catalog-model": "^1.7.2",
-    "@backstage/core-components": "^0.16.2",
-    "@backstage/core-plugin-api": "^1.10.2",
-    "@backstage/errors": "^1.2.6",
-    "@backstage/plugin-catalog-react": "^1.15.0",
+    "@backstage/catalog-model": "^1.7.3",
+    "@backstage/core-components": "^0.16.4",
+    "@backstage/core-plugin-api": "^1.10.4",
+    "@backstage/errors": "^1.2.7",
+    "@backstage/plugin-catalog-react": "^1.15.2",
     "@date-io/luxon": "1.x",
     "@material-ui/core": "^4.12.2",
     "@material-ui/icons": "^4.9.1",
@@ -54,8 +54,8 @@
     "react-use": "^17.2.4"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.29.4",
-    "@backstage/dev-utils": "^1.1.5",
+    "@backstage/cli": "^0.30.0",
+    "@backstage/dev-utils": "^1.1.7",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^15.0.0",

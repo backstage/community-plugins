@@ -43,7 +43,7 @@ const config = mockServices.rootConfig.factory({
         ocm: {
           foo: {
             name: 'thisishub',
-            url: 'http://localhost:5000',
+            url: 'https://example.com',
             serviceAccountToken: 'TOKEN',
           },
         },

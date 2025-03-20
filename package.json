@@ -13,7 +13,7 @@
     "prettier:fix": "prettier --write ."
   },
   "type": "module",
-  "packageManager": "yarn@3.2.3",
+  "packageManager": "yarn@4.7.0",
   "devDependencies": {
     "@backstage-community/cli": "portal:./workspaces/repo-tools/packages/cli",
     "@backstage/cli": "^0.27.0",
@@ -29,7 +29,7 @@
     "eslint-plugin-notice": "^0.9.10",
     "eslint-plugin-react": "^7.28.0",
     "eslint-plugin-testing-library": "^6.0.0",
-    "fs-extra": "11.2.0",
+    "fs-extra": "11.3.0",
     "husky": "^9.0.11",
     "js-yaml": "^4.1.0",
     "lint-staged": "^15.2.2",

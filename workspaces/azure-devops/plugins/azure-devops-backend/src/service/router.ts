@@ -381,6 +381,47 @@ export async function createRouter(
     res.status(200).json(readme);
   });
 
+  router.get('/builds/:projectName/build/:buildId/log', async (req, res) => {
+    const { projectName } = req.params;
+    const buildId = Number(req.params.buildId);
+    const host = req.query.host?.toString();
+    const org = req.query.org?.toString();
+
+    if (isNaN(buildId)) {
+      throw new InputError('Invalid buildId parameter');
+    }
+
+    const entityRef = req.query.entityRef;
+    if (typeof entityRef !== 'string') {
+      throw new InputError('Invalid entityRef, not a string');
+    }
+
+    const decision = (
+      await permissions.authorize(
+        [
+          {
+            permission: azureDevOpsPipelineReadPermission,
+            resourceRef: entityRef,
+          },
+        ],
+        { credentials: await httpAuth.credentials(req) },
+      )
+    )[0];
+
+    if (decision.result === AuthorizeResult.DENY) {
+      throw new NotAllowedError('Unauthorized');
+    }
+
+    const logForBuild = await azureDevOpsApi.getBuildRunLog(
+      projectName,
+      Number(buildId),
+      host,
+      org,
+    );
+
+    res.status(200).json({ log: logForBuild });
+  });
+
   const middleware = MiddlewareFactory.create({ logger, config });
 
   router.use(middleware.error());

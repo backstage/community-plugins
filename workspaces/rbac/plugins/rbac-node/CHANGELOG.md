@@ -1,5 +1,23 @@
 ## @backstage-community/plugin-rbac-node [1.4.0](https://github.com/janus-idp/backstage-plugins/compare/@backstage-community/plugin-rbac-node@1.3.1...@backstage-community/plugin-rbac-node@1.4.0) (2024-07-26)
 
+## 1.10.0
+
+### Minor Changes
+
+- 0253db6: Backstage version bump to v1.36.1
+
+## 1.9.1
+
+### Patch Changes
+
+- 973a5ef: remove prettier from devDevpendencies
+
+## 1.9.0
+
+### Minor Changes
+
+- 5d5c02a: Backstage version bump to v1.35.0
+
 ## 1.8.4
 
 ### Patch Changes

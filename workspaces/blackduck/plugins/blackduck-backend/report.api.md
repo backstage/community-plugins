@@ -4,54 +4,10 @@
 
 ```ts
 import { BackendFeature } from '@backstage/backend-plugin-api';
-import { Config } from '@backstage/config';
-import { DiscoveryService } from '@backstage/backend-plugin-api';
-import express from 'express';
-import { HttpAuthService } from '@backstage/backend-plugin-api';
-import { LoggerService } from '@backstage/backend-plugin-api';
-import { PermissionsService } from '@backstage/backend-plugin-api';
-
-// @public
-export class BlackDuckConfig {
-  constructor(hosts: BlackDuckHostConfig[], defaultHost: string);
-  // (undocumented)
-  static fromConfig(config: Config): BlackDuckConfig;
-  // (undocumented)
-  getHostConfigByName(name: string): BlackDuckHostConfig;
-}
-
-// @public (undocumented)
-export interface BlackDuckHostConfig {
-  // (undocumented)
-  host: string;
-  // (undocumented)
-  name: string;
-  // (undocumented)
-  token: string;
-}
 
 // @public
 const blackduckPlugin: BackendFeature;
 export default blackduckPlugin;
-
-// @public @deprecated (undocumented)
-export function createRouter(options: RouterOptions): Promise<express.Router>;
-
-// @public @deprecated (undocumented)
-export interface RouterOptions {
-  // (undocumented)
-  blackDuckConfig: BlackDuckConfig;
-  // (undocumented)
-  config: Config;
-  // (undocumented)
-  discovery: DiscoveryService;
-  // (undocumented)
-  httpAuth?: HttpAuthService;
-  // (undocumented)
-  logger: LoggerService;
-  // (undocumented)
-  permissions: PermissionsService;
-}
 
 // (No @packageDocumentation comment for this package)
 ```
