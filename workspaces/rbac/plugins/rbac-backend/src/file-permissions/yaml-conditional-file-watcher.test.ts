@@ -291,20 +291,14 @@ describe('YamlConditionalFileWatcher', () => {
     expect(conditionalStorageMock.createCondition).toHaveBeenCalled();
     expectAuditorLog([
       {
-        event: {
-          eventId: ConditionEvents.CONDITION_CREATE,
-          ...mappedConditionMeta(conditionToStore1),
-        },
+        event: { eventId: ConditionEvents.CONDITION_CREATE },
         fail: {
           error: new Error('unknown error message 1'),
           ...mappedConditionMeta(conditionToStore1),
         },
       },
       {
-        event: {
-          eventId: ConditionEvents.CONDITION_CREATE,
-          ...mappedConditionMeta(conditionToStore2),
-        },
+        event: { eventId: ConditionEvents.CONDITION_CREATE },
         fail: {
           error: new Error('unknown error message 2'),
           ...mappedConditionMeta(conditionToStore2),
@@ -332,17 +326,11 @@ describe('YamlConditionalFileWatcher', () => {
     );
     expectAuditorLog([
       {
-        event: {
-          eventId: ConditionEvents.CONDITION_CREATE,
-          ...mappedConditionMeta(conditionToStore1),
-        },
+        event: { eventId: ConditionEvents.CONDITION_CREATE },
         success: { ...mappedConditionMeta(conditionToStore1) },
       },
       {
-        event: {
-          eventId: ConditionEvents.CONDITION_CREATE,
-          ...mappedConditionMeta(conditionToStore2),
-        },
+        event: { eventId: ConditionEvents.CONDITION_CREATE },
         success: { ...mappedConditionMeta(conditionToStore2) },
       },
     ]);
@@ -433,10 +421,7 @@ describe('YamlConditionalFileWatcher', () => {
 
     expectAuditorLog([
       {
-        event: {
-          eventId: ConditionEvents.CONDITION_DELETE,
-          ...mappedConditionMeta(conditionToRemove),
-        },
+        event: { eventId: ConditionEvents.CONDITION_DELETE },
         success: { ...mappedConditionMeta(conditionToRemove) },
       },
     ]);
@@ -464,10 +449,7 @@ describe('YamlConditionalFileWatcher', () => {
     expect(conditionalStorageMock.deleteCondition).toHaveBeenCalled();
     expectAuditorLog([
       {
-        event: {
-          eventId: ConditionEvents.CONDITION_DELETE,
-          ...mappedConditionMeta(conditionToRemove),
-        },
+        event: { eventId: ConditionEvents.CONDITION_DELETE },
         fail: {
           error: new NotFoundError('Condition was not found'),
           ...mappedConditionMeta(conditionToRemove),
@@ -491,10 +473,7 @@ describe('YamlConditionalFileWatcher', () => {
     expect(conditionalStorageMock.createCondition).not.toHaveBeenCalled();
     expectAuditorLog([
       {
-        event: {
-          eventId: ConditionEvents.CONDITION_DELETE,
-          ...mappedConditionMeta(conditionToRemove),
-        },
+        event: { eventId: ConditionEvents.CONDITION_DELETE },
         success: { ...mappedConditionMeta(conditionToRemove) },
       },
     ]);

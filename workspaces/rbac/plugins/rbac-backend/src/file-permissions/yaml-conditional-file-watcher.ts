@@ -197,7 +197,6 @@ export class YamlConditinalPoliciesFileWatcher extends AbstractFileWatcher<
       const auditorEvent = await this.auditor.createEvent({
         eventId: ConditionEvents.CONDITION_CREATE,
         severityLevel: 'medium',
-        meta,
       });
 
       try {
@@ -226,7 +225,6 @@ export class YamlConditinalPoliciesFileWatcher extends AbstractFileWatcher<
       const auditorEvent = await this.auditor.createEvent({
         eventId: ConditionEvents.CONDITION_DELETE,
         severityLevel: 'medium',
-        meta,
       });
 
       try {
