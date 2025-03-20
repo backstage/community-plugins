@@ -106,7 +106,7 @@ jobs:
         run: yarn backstage-cli repo fix --check --publish
 
       - name: test changed packages
-        run: yarn test:all
+        run: yarn test:all --maxWorkers=3
 
       - name: ensure clean working directory
         run: |
