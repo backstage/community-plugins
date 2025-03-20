@@ -20,6 +20,7 @@ import Box from '@mui/material/Box';
 import { Card } from './Card';
 import { EngagementCardsProps } from '../../types';
 import { styled } from '@mui/material/styles';
+import { DateTime } from 'luxon';
 
 const CardBox = styled(Box)({
   flex: '1 1 calc(20% - 10px)',
@@ -37,70 +38,101 @@ export const EngagementCards = ({
   startDate,
   endDate,
 }: PropsWithChildren<EngagementCardsProps>) => {
-  let primaryValue = 0;
-  if ((team && seatsByTeam.length > 0) || seats.length > 0) {
-    primaryValue = team ? seatsByTeam[0].total_seats : seats[0].total_seats;
+  // Helper function to find the data point for the end date
+  const findLatestDataPoint = (dataArray: any[]) => {
+    if (!dataArray || dataArray.length === 0) return null;
+
+    // Format endDate to YYYY-MM-DD for comparison
+    const endDateTime = DateTime.fromJSDate(endDate);
+    const formattedEndDate = endDateTime.toFormat('yyyy-MM-dd');
+
+    // Find the data point with day matching endDate
+    const matchingPoint = dataArray.find(item => {
+      if (!item.day) return false;
+      // Format item.day to YYYY-MM-DD for comparison
+      const itemDate = new Date(item.day).toISOString().split('T')[0];
+      return itemDate === formattedEndDate;
+    });
+
+    // Return matching point or null if not found
+    return matchingPoint || null;
+  };
+
+  // Get the most recent data points
+  const latestTeamSeat = findLatestDataPoint(seatsByTeam);
+  const latestSeat = findLatestDataPoint(seats);
+
+  let primaryValue = 'N/A';
+  if ((team && latestTeamSeat) || latestSeat) {
+    primaryValue =
+      team && latestTeamSeat
+        ? latestTeamSeat.total_seats
+        : latestSeat?.total_seats || 'N/A';
   }
 
-  let secondaryValue: number | undefined = 0;
-  if (seats.length > 0) {
-    secondaryValue = team ? seats[0].total_seats : undefined;
+  let secondaryValue: number | undefined = undefined;
+  if (latestSeat) {
+    secondaryValue = team ? latestSeat.total_seats : undefined;
   }
 
-  let primaryUnusedSeatValue = 0;
-  if ((team && seatsByTeam.length > 0) || seats.length > 0) {
-    primaryUnusedSeatValue = team
-      ? seatsByTeam[0].seats_never_used
-      : seats[0].seats_never_used;
+  let primaryUnusedSeatValue = 'N/A';
+  if ((team && latestTeamSeat) || latestSeat) {
+    primaryUnusedSeatValue =
+      team && latestTeamSeat
+        ? latestTeamSeat.seats_never_used
+        : latestSeat?.seats_never_used || 'N/A';
   }
 
-  let secondaryUnusedSeatValue: number | undefined = 0;
-  if (seats.length > 0) {
-    secondaryUnusedSeatValue = team ? seats[0].seats_never_used : undefined;
+  let secondaryUnusedSeatValue: number | undefined = undefined;
+  if (latestSeat) {
+    secondaryUnusedSeatValue = team ? latestSeat.seats_never_used : undefined;
   }
 
   // Seats inactive for 7 days
-  let primaryInactive7DaysValue = 0;
-  if ((team && seatsByTeam.length > 0) || seats.length > 0) {
-    primaryInactive7DaysValue = team
-      ? seatsByTeam[0].seats_inactive_7_days
-      : seats[0].seats_inactive_7_days;
+  let primaryInactive7DaysValue = 'N/A';
+  if ((team && latestTeamSeat) || latestSeat) {
+    primaryInactive7DaysValue =
+      team && latestTeamSeat
+        ? latestTeamSeat.seats_inactive_7_days
+        : latestSeat?.seats_inactive_7_days || 'N/A';
   }
 
-  let secondaryInactive7DaysValue: number | undefined = 0;
-  if (seats.length > 0) {
+  let secondaryInactive7DaysValue: number | undefined = undefined;
+  if (latestSeat) {
     secondaryInactive7DaysValue = team
-      ? seats[0].seats_inactive_7_days
+      ? latestSeat.seats_inactive_7_days
       : undefined;
   }
 
   // Seats inactive for 14 days
-  let primaryInactive14DaysValue = 0;
-  if ((team && seatsByTeam.length > 0) || seats.length > 0) {
-    primaryInactive14DaysValue = team
-      ? seatsByTeam[0].seats_inactive_14_days
-      : seats[0].seats_inactive_14_days;
+  let primaryInactive14DaysValue = 'N/A';
+  if ((team && latestTeamSeat) || latestSeat) {
+    primaryInactive14DaysValue =
+      team && latestTeamSeat
+        ? latestTeamSeat.seats_inactive_14_days
+        : latestSeat?.seats_inactive_14_days || 'N/A';
   }
 
-  let secondaryInactive14DaysValue: number | undefined = 0;
-  if (seats.length > 0) {
+  let secondaryInactive14DaysValue: number | undefined = undefined;
+  if (latestSeat) {
     secondaryInactive14DaysValue = team
-      ? seats[0].seats_inactive_14_days
+      ? latestSeat.seats_inactive_14_days
       : undefined;
   }
 
   // Seats inactive for 28 days
-  let primaryInactive28DaysValue = 0;
-  if ((team && seatsByTeam.length > 0) || seats.length > 0) {
-    primaryInactive28DaysValue = team
-      ? seatsByTeam[0].seats_inactive_28_days
-      : seats[0].seats_inactive_28_days;
+  let primaryInactive28DaysValue = 'N/A';
+  if ((team && latestTeamSeat) || latestSeat) {
+    primaryInactive28DaysValue =
+      team && latestTeamSeat
+        ? latestTeamSeat.seats_inactive_28_days
+        : latestSeat?.seats_inactive_28_days || 'N/A';
   }
 
-  let secondaryInactive28DaysValue: number | undefined = 0;
-  if (seats.length > 0) {
+  let secondaryInactive28DaysValue: number | undefined = undefined;
+  if (latestSeat) {
     secondaryInactive28DaysValue = team
-      ? seats[0].seats_inactive_28_days
+      ? latestSeat.seats_inactive_28_days
       : undefined;
   }
 
