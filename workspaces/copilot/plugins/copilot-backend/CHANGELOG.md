@@ -1,5 +1,11 @@
 # @backstage-community/plugin-copilot-backend
 
+## 0.7.1
+
+### Patch Changes
+
+- 86f6523: Fix handling of optional editors attribute
+
 ## 0.7.0
 
 ### Minor Changes
