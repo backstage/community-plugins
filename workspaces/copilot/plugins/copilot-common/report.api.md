@@ -15,15 +15,15 @@ export interface Breakdown {
 }
 
 // @public
-export interface CopilotAssgningTeam {
-  id: number;
-  slug: string;
-}
-
-// @public
 export interface CopilotAssignee {
   id: number;
   login: string;
+}
+
+// @public
+export interface CopilotAssigningTeam {
+  id: number;
+  slug: string;
 }
 
 // @public
@@ -115,7 +115,7 @@ export interface CopilotRepositoryModels {
 // @public
 export interface CopilotSeat {
   assignee: CopilotAssignee;
-  assigning_team: CopilotAssgningTeam;
+  assigning_team: CopilotAssigningTeam;
   created_at: string;
   last_activity_at: string;
   last_activity_editor: string;
@@ -197,13 +197,6 @@ export interface SeatAnalysis {
   team_name: string;
   total_seats: number;
   type: MetricsType;
-}
-
-// @public
-export interface SeatInfo {
-  id: number;
-  name: string;
-  slug: string;
 }
 
 // @public

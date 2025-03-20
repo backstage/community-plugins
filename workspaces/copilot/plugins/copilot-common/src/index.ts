@@ -185,28 +185,6 @@ export interface TeamInfo {
 }
 
 /**
- * Represents information about seats.
- *
- * @public
- */
-export interface SeatInfo {
-  /**
-   * The unique identifier of the team.
-   */
-  id: number;
-
-  /**
-   * The slug of the team, used for URL-friendly identifiers.
-   */
-  slug: string;
-
-  /**
-   * The name of the team.
-   */
-  name: string;
-}
-
-/**
  * Represents the metrics data for copilot ide language metrics
  *
  * @public
@@ -598,7 +576,7 @@ export interface CopilotAssignee {
  *
  * @public
  */
-export interface CopilotAssgningTeam {
+export interface CopilotAssigningTeam {
   /**
    * The unique identifier of the team.
    */
@@ -641,7 +619,7 @@ export interface CopilotSeat {
   /**
    * The team that assigned this seat.
    */
-  assigning_team: CopilotAssgningTeam;
+  assigning_team: CopilotAssigningTeam;
 }
 /**
  * Represents the base seat data for copilot
