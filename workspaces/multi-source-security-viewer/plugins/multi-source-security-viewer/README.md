@@ -25,35 +25,28 @@ yarn workspace app add @backstage-community/multi-source-security-viewer
 
 To enable the PipelineRun list in the Security tab on the entity view page, add the following snippet in the packages/app/src/components/catalog/EntityPage.tsx.
 
-```
-/* highlight-add-next-line */
-import {
-  isMultiCIAvailable,
-  EntityMultiCIPipelinesContent,
-} from '@backstage-community/plugin-multi-source-security-viewer';
-
-import { EntityJenkinsContent } from '@backstage-community/plugin-jenkins';
-import { EntityGithubActionsContent } from '@backstage-community/plugin-github-actions';
-
-const securityContent = (
-  <EntitySwitch
-    {/* ... */}
-    {/* highlight-add-start */}
-    <EntitySwitch.Case if={isMultiCIAvailable}>
-      <EntityMultiCIPipelinesContent />
-    </EntitySwitch.Case>
-    {/* highlight-add-end */}
-  </EntitySwitch>
-);
-
-const entityServicePage = (
-    {/* ... */}
-    {/* highlight-add-start */}
-    <EntityLayout.Route path="/security" title="Security">
-      {securityContent}
-    </EntityLayout.Route>
-    {/* highlight-add-end */}
-)
+```diff
++import {
++  isMultiCIAvailable,
++  EntityMultiCIPipelinesContent,
++} from '@backstage-community/plugin-multi-source-security-viewer';
++
++import { EntityJenkinsContent } from '@backstage-community/plugin-jenkins';
++import { EntityGithubActionsContent } from '@backstage-community/plugin-github-actions';
++
++const securityContent = (
++  <EntitySwitch>
++    <EntitySwitch.Case if={isMultiCIAvailable}>
++      <EntityMultiCIPipelinesContent />
++    </EntitySwitch.Case>
++  </EntitySwitch>
++);
++
++const entityServicePage = (
++  <EntityLayout.Route path="/security" title="Security">
++    {securityContent}
++  </EntityLayout.Route>
++);
 ```
 
 ## For users
