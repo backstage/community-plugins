@@ -34,7 +34,6 @@ export class DataBaseEntityApplicationStorage
     logger: LoggerService,
     migrationsDir: string,
   ): Promise<EntityApplicationStorage> {
-    logger.info('Starting to migrate database');
     await knex.migrate.latest({
       directory: migrationsDir,
     });

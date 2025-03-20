@@ -119,4 +119,6 @@ EOF
 # Step 6: Execute additional setup scripts and apply Kubernetes resources
 ./02-create-plugin-registry.sh
 oc apply -f app-config-rhdh.yaml
+oc apply -f github-secret.yaml
+# oc apply -f dynamic-plugins.yaml # This is done above if testing local builds. Comment out if using the plugin registry.
 oc apply -f backstage-operator-cr.yaml
