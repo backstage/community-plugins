@@ -21,8 +21,6 @@ import type { PolicyQuery } from '@backstage/plugin-permission-node';
 
 import {
   PermissionAction,
-  RoleConditionalPolicyDecision,
-  Source,
   toPermissionAction,
 } from '@backstage-community/plugin-rbac-common';
 import {
@@ -44,23 +42,6 @@ export const PermissionEvents = {
   POLICY_DELETE: 'policy-delete',
   POLICY_GET: 'policy-get',
 } as const;
-
-export type RoleAuditInfo = {
-  roleEntityRef: string;
-  description?: string;
-  source: Source;
-  members: string[];
-};
-
-export type RolesAuditInfo = {
-  groupingPolicies: string[][];
-  source: Source;
-};
-
-export type PermissionAuditInfo = {
-  policies: string[][];
-  source: Source;
-};
 
 export const EvaluationEvents = {
   PERMISSION_EVALUATION: 'permission-evaluation',
@@ -93,10 +74,6 @@ export const ConditionEvents = {
   CONDITION_GET: 'condition-get',
   CONDITIONAL_POLICIES_FILE_NOT_FOUND: 'conditional-policies-file-not-found',
   CONDITIONAL_POLICIES_FILE_CHANGE: 'conditional-policies-file-change',
-};
-
-export type ConditionAuditInfo = {
-  condition: RoleConditionalPolicyDecision<PermissionAction>;
 };
 
 export const RBAC_BACKEND = 'rbac-backend';
