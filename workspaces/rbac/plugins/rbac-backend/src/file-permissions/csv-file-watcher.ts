@@ -243,17 +243,18 @@ export class CSVFileWatcher extends AbstractFileWatcher<string[][]> {
     const auditorEvent = await this.auditor.createEvent({
       eventId: PermissionEvents.POLICY_CREATE,
       severityLevel: 'medium',
-      meta,
+      meta: { source: meta.source },
     });
 
     try {
       await this.enforcer.addPolicies(this.csvFilePolicies.addedPolicies);
-      await auditorEvent.success();
+      await auditorEvent.success({ meta });
     } catch (e) {
-      const message = `Failed to add or update policies ${this.csvFilePolicies.addedPolicies} after modification ${this.filePath}.`;
-      this.logger.warn(`${message} Cause: ${e}`);
+      this.logger.warn(
+        `Failed to add or update policies ${this.csvFilePolicies.addedPolicies} after modification ${this.filePath}. Cause: ${e}`,
+      );
       await auditorEvent.fail({
-        meta: { ...meta, message },
+        meta,
         error: e,
       });
     }
@@ -272,19 +273,20 @@ export class CSVFileWatcher extends AbstractFileWatcher<string[][]> {
     const auditorEvent = await this.auditor.createEvent({
       eventId: PermissionEvents.POLICY_DELETE,
       severityLevel: 'medium',
-      meta,
+      meta: { source: meta.source },
     });
 
     try {
       await this.enforcer.removePolicies(this.csvFilePolicies.removedPolicies);
       await auditorEvent.success({ meta });
     } catch (e) {
-      const message = `Failed to remove policies ${JSON.stringify(
-        this.csvFilePolicies.removedPolicies,
-      )} after modification ${this.filePath}.`;
-      this.logger.warn(`${message} Cause: ${e}`);
+      this.logger.warn(
+        `Failed to remove policies ${JSON.stringify(
+          this.csvFilePolicies.removedPolicies,
+        )} after modification ${this.filePath}. Cause: ${e}`,
+      );
       await auditorEvent.fail({
-        meta: { message, ...meta },
+        meta,
         error: e,
       });
     }
@@ -365,7 +367,7 @@ export class CSVFileWatcher extends AbstractFileWatcher<string[][]> {
       await auditorEvent.success({
         meta: {
           source: 'csv-file',
-          created: changedPolicies.added,
+          added: changedPolicies.added,
           updated: changedPolicies.updated,
         },
       });

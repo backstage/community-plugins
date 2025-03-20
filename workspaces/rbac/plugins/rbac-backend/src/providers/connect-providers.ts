@@ -228,19 +228,20 @@ export class Connection implements RBACProviderConnection {
           permission[0],
         );
 
-        const auditorEvent = await this.auditor?.createEvent({
+        const auditorMeta = {
+          policies: [permission],
+          source: this.id,
+        };
+        const auditorEvent = await this.auditor.createEvent({
           eventId: PermissionEvents.POLICY_CREATE,
           severityLevel: 'medium',
-          meta: {
-            policies: [permission],
-            source: this.id,
-          },
+          meta: { source: auditorMeta.source },
         });
 
         let err = validatePolicy(transformedPolicy);
         if (err) {
           this.logger.warn(`Invalid permission policy, ${err}`);
-          auditorEvent.fail({ error: err });
+          auditorEvent.fail({ error: err, meta: auditorMeta });
           continue; // Skip this invalid permission policy
         }
 
@@ -249,17 +250,15 @@ export class Connection implements RBACProviderConnection {
           this.logger.warn(
             `Unable to add policy ${permission}. Cause: ${err.message}`,
           );
-          auditorEvent.fail({ error: err });
+          auditorEvent.fail({ error: err, meta: auditorMeta });
           continue;
         }
 
         try {
           await this.enforcer.addPolicy(permission);
-          await auditorEvent?.success({ meta: { message: 'Created policy' } });
+          await auditorEvent.success({ meta: auditorMeta });
         } catch (error) {
-          await auditorEvent?.fail({
-            error,
-          });
+          await auditorEvent.fail({ error, meta: auditorMeta });
           throw error;
         }
       }
@@ -272,21 +271,23 @@ export class Connection implements RBACProviderConnection {
   ): Promise<void> {
     for (const permission of providerPermissions) {
       if (!(await tempEnforcer.hasPolicy(...permission))) {
+        const auditorMeta = {
+          policies: [permission],
+          source: this.id,
+        };
         const auditorEvent = await this.auditor?.createEvent({
           eventId: PermissionEvents.POLICY_DELETE,
           severityLevel: 'medium',
-          meta: {
-            policies: [permission],
-            source: this.id,
-          },
+          meta: { source: this.id },
         });
 
         try {
           await this.enforcer.removePolicy(permission);
-          await auditorEvent?.success({ meta: { message: 'Deleted policy' } });
+          await auditorEvent.success({ meta: auditorMeta });
         } catch (error) {
-          await auditorEvent?.fail({
+          await auditorEvent.fail({
             error,
+            meta: auditorMeta,
           });
           throw error;
         }
