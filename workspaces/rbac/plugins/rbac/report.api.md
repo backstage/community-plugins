@@ -7,17 +7,70 @@
 /// <reference types="react" />
 
 import { default as AdminPanelSettingsOutlinedIcon } from '@mui/icons-material/AdminPanelSettingsOutlined';
+import { ApiRef } from '@backstage/core-plugin-api';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
+import { GroupEntity } from '@backstage/catalog-model';
 import { JSX as JSX_2 } from 'react';
 import { PathParams } from '@backstage/core-plugin-api';
+import { PermissionAction } from '@backstage-community/plugin-rbac-common';
+import { PluginPermissionMetaData } from '@backstage-community/plugin-rbac-common';
 import { default as RbacIcon } from '@mui/icons-material/VpnKeyOutlined';
+import { RJSFSchema } from '@rjsf/utils';
+import { Role } from '@backstage-community/plugin-rbac-common';
+import { RoleBasedPolicy } from '@backstage-community/plugin-rbac-common';
+import { RoleConditionalPolicyDecision } from '@backstage-community/plugin-rbac-common';
 import { RouteRef } from '@backstage/core-plugin-api';
 import { SubRouteRef } from '@backstage/core-plugin-api';
+import { UserEntity } from '@backstage/catalog-model';
 
 // @public (undocumented)
 export const Administration: () => JSX_2.Element | null;
 
 export { AdminPanelSettingsOutlinedIcon }
+
+// @public (undocumented)
+export type ConditionRule = {
+    name: string;
+    description?: string;
+    resourceType: string;
+    paramsSchema: RJSFSchema;
+};
+
+// @public (undocumented)
+export type MemberEntity = UserEntity | GroupEntity;
+
+// @public (undocumented)
+export type PluginConditionRules = {
+    pluginId: string;
+    rules: ConditionRule[];
+};
+
+// @public (undocumented)
+export type RBACAPI = {
+    getUserAuthorization: () => Promise<{
+        status: string;
+    }>;
+    getRoles: () => Promise<Role[] | Response>;
+    getPolicies: () => Promise<RoleBasedPolicy[] | Response>;
+    getAssociatedPolicies: (entityReference: string) => Promise<RoleBasedPolicy[] | Response>;
+    deleteRole: (role: string) => Promise<Response>;
+    getRole: (role: string) => Promise<Role[] | Response>;
+    getMembers: () => Promise<MemberEntity[] | Response>;
+    listPermissions: () => Promise<PluginPermissionMetaData[] | Response>;
+    createRole: (role: Role) => Promise<RoleError | Response>;
+    updateRole: (oldRole: Role, newRole: Role) => Promise<RoleError | Response>;
+    updatePolicies: (entityReference: string, oldPolicy: RoleBasedPolicy[], newPolicy: RoleBasedPolicy[]) => Promise<RoleError | Response>;
+    createPolicies: (polices: RoleBasedPolicy[]) => Promise<RoleError | Response>;
+    deletePolicies: (entityReference: string, polices: RoleBasedPolicy[]) => Promise<RoleError | Response>;
+    getPluginsConditionRules: () => Promise<PluginConditionRules[] | Response>;
+    createConditionalPermission: (conditionalPermission: RoleBasedConditions) => Promise<RoleError | Response>;
+    getRoleConditions: (roleRef: string) => Promise<RoleConditionalPolicyDecision<PermissionAction>[] | Response>;
+    updateConditionalPolicies: (conditionId: number, data: RoleBasedConditions) => Promise<RoleError | Response>;
+    deleteConditionalPolicies: (conditionId: number) => Promise<RoleError | Response>;
+};
+
+// @public (undocumented)
+export const rbacApiRef: ApiRef<RBACAPI>;
 
 export { RbacIcon }
 
@@ -32,6 +85,17 @@ root: RouteRef<undefined>;
 role: SubRouteRef<PathParams<"/roles/:roleKind/:roleNamespace/:roleName">>;
 createRole: SubRouteRef<undefined>;
 }, {}, {}>;
+
+// @public (undocumented)
+export type RoleBasedConditions = Omit<RoleConditionalPolicyDecision<PermissionAction>, 'id'>;
+
+// @public (undocumented)
+export type RoleError = {
+    error: {
+        name: string;
+        message: string;
+    };
+};
 
 // (No @packageDocumentation comment for this package)
 
