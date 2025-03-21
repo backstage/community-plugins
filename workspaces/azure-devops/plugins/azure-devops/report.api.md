@@ -323,6 +323,16 @@ export enum FilterType {
 }
 
 // @public (undocumented)
+export function getAnnotationValuesFromEntity(entity: Entity): {
+  project: string;
+  repo?: string;
+  definition?: string;
+  host?: string;
+  org?: string;
+  readmePath?: string;
+};
+
+// @public (undocumented)
 export const isAzureDevOpsAvailable: (entity: Entity) => boolean;
 
 // @public (undocumented)
