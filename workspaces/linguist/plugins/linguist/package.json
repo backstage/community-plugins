@@ -69,6 +69,7 @@
   "devDependencies": {
     "@backstage/cli": "^0.30.0",
     "@backstage/dev-utils": "^1.1.7",
+    "@backstage/plugin-catalog": "^1.27.0",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^15.0.0",
