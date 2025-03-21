@@ -41,7 +41,7 @@
   "dependencies": {
     "@aonic-ui/pipelines": "^3.1.1",
     "@backstage-community/plugin-github-actions": "^0.7.0",
-    "@backstage-community/plugin-jenkins": "^0.15.0",
+    "@backstage-community/plugin-jenkins": "^0.17.0",
     "@backstage-community/plugin-multi-source-security-viewer-common": "workspace:^",
     "@backstage/catalog-model": "^1.7.3",
     "@backstage/core-components": "^0.16.4",
