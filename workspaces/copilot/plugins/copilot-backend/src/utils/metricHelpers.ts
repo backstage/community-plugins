@@ -24,10 +24,8 @@ import {
   CopilotIdeCodeCompletionsEditorsDb,
   CopilotIdeCodeCompletionsLanguageDb,
   CopilotMetricsDb,
-  MetricDbRow,
 } from '../db/DatabaseHandler';
 import {
-  Metric,
   MetricsType,
   CopilotMetrics,
 } from '@backstage-community/plugin-copilot-common';
@@ -62,7 +60,7 @@ export function filterBaseMetrics(
     .map(metric => ({
       day: metric.date,
       type: type,
-      team_name: team,
+      team_name: team ?? '',
       total_engaged_users: metric.total_engaged_users,
       total_active_users: metric.total_active_users,
     }))
@@ -78,7 +76,7 @@ export function filterIdeCompletionMetrics(
     .map(metric => ({
       day: metric.date,
       type: type,
-      team_name: team,
+      team_name: team ?? '',
       total_engaged_users:
         metric.copilot_ide_code_completions.total_engaged_users,
     }))
@@ -96,7 +94,7 @@ export function filterIdeCompletionLanguageMetrics(
         metric.copilot_ide_code_completions.languages?.map(language => ({
           day: metric.date,
           type: type,
-          team_name: team,
+          team_name: team ?? '',
           language: language.name,
           total_engaged_users: language.total_engaged_users,
         })) || [],
@@ -114,7 +112,7 @@ export function filterIdeCompletionEditorMetrics(
         metric.copilot_ide_code_completions.editors?.map(editor => ({
           day: metric.date,
           type: type,
-          team_name: team,
+          team_name: team ?? '',
           editor: editor.name,
           total_engaged_users: editor.total_engaged_users,
         })) || [],
@@ -134,7 +132,7 @@ export function filterIdeCompletionEditorModelMetrics(
           editor.models.map(model => ({
             day: metric.date,
             type: type,
-            team_name: team,
+            team_name: team ?? '',
             editor: editor.name,
             model: model.name,
             total_engaged_users: model.total_engaged_users,
@@ -156,7 +154,7 @@ export function filterIdeCompletionEditorModelLanguageMetrics(
             model.languages.map(language => ({
               day: metric.date,
               type: type,
-              team_name: team,
+              team_name: team ?? '',
               editor: editor.name,
               model: model.name,
               language: language.name,
@@ -181,7 +179,7 @@ export function filterIdeChatMetrics(
     .map((metric: CopilotMetrics) => ({
       day: metric.date,
       type: type,
-      team_name: team,
+      team_name: team ?? '',
       total_engaged_users: metric.copilot_ide_chat.total_engaged_users,
     }))
     .filter(chat => chat.total_engaged_users > 0);
@@ -198,7 +196,7 @@ export function filterIdeEditorMetrics(
         metric.copilot_ide_chat.editors?.map(editor => ({
           day: metric.date,
           type: type,
-          team_name: team,
+          team_name: team ?? '',
           editor: editor.name,
           total_engaged_users: editor.total_engaged_users,
         })) || [],
@@ -218,7 +216,7 @@ export function filterIdeChatEditorModelMetrics(
           editor.models.map(model => ({
             day: metric.date,
             type: type,
-            team_name: team,
+            team_name: team ?? '',
             editor: editor.name,
             model: model.name,
             total_engaged_users: model.total_engaged_users,
@@ -229,17 +227,4 @@ export function filterIdeChatEditorModelMetrics(
         ) || [],
     )
     .filter(model => model.total_engaged_users > 0);
-}
-
-export function prepareMetricsForInsert(
-  metrics: Metric[],
-  type: MetricsType,
-  team_name?: string,
-): MetricDbRow[] {
-  return metrics.map(({ breakdown, ...rest }) => ({
-    ...rest,
-    type,
-    team_name,
-    breakdown: JSON.stringify(breakdown),
-  })) as MetricDbRow[];
 }
