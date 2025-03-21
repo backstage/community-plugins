@@ -24,4 +24,3 @@
 | @backstage/plugin-auth-backend-module-guest-provider                       | dev/index.ts | error    |
 | @backstage/plugin-catalog-backend                                          | dev/index.ts | error    |
 | @backstage/plugin-auth-backend                                             | dev/index.ts | error    |
-
