@@ -18,45 +18,20 @@ import { createBackend } from '@backstage/backend-defaults';
 
 const backend = createBackend();
 
-backend.add(import('@backstage/plugin-app-backend'));
-backend.add(import('@backstage/plugin-proxy-backend'));
-backend.add(import('@backstage/plugin-scaffolder-backend'));
-backend.add(import('@backstage/plugin-techdocs-backend'));
-
-// auth plugin
+// the auth plugin is needed to setup a fully authenticated backend for the catalog backend
 backend.add(import('@backstage/plugin-auth-backend'));
-// See https://backstage.io/docs/backend-system/building-backends/migrating#the-auth-plugin
+// this is the simplest authentication provider
 backend.add(import('@backstage/plugin-auth-backend-module-guest-provider'));
 // See https://backstage.io/docs/auth/guest/provider
 
-// catalog plugin
+// We need the catalog plugin to get the example entities and make the front entity page functional
 backend.add(import('@backstage/plugin-catalog-backend'));
-backend.add(
-  import('@backstage/plugin-catalog-backend-module-scaffolder-entity-model'),
-);
+
+backend.add(import('../src/index'));
 backend.add(
   import(
     '@backstage-community/plugin-catalog-backend-module-linguist-tags-processor'
   ),
 );
-
-// openapi plugin
-backend.add(
-  import('@backstage/plugin-catalog-backend-module-backstage-openapi'),
-);
-
-// permission plugin
-backend.add(import('@backstage/plugin-permission-backend'));
-backend.add(
-  import('@backstage/plugin-permission-backend-module-allow-all-policy'),
-);
-
-// search plugin
-backend.add(import('@backstage/plugin-search-backend'));
-backend.add(import('@backstage/plugin-search-backend-module-catalog'));
-backend.add(import('@backstage/plugin-search-backend-module-techdocs'));
-
-// Linguist
-backend.add(import('@backstage-community/plugin-linguist-backend'));
 
 backend.start();
