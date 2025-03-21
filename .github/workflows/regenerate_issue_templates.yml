@@ -31,6 +31,9 @@ jobs:
       - name: Update issue templates
         run: node scripts/create-issue-template-with-workspaces-dropdown.js
 
+      - name: Update labeler.yaml
+        run: node scripts/update-issue-labeler-config.js
+
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
         with:
