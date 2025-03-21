@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dynamic-plugins-rhdh
+  namespace: local-backstage
+  labels:
+    rhdh.redhat.com/ext-config-sync: 'true'
+  annotations:
+    rhdh.redhat.com/backstage-name: 'developer-hub'
+data:
+  dynamic-plugins.yaml: |
+    includes:
+      - dynamic-plugins.default.yaml
+    plugins:
+      - disabled: false
+        package: ./dynamic-plugins/dist/backstage-plugin-catalog-backend-module-github-dynamic
+      - disabled: false
+        package: ./dynamic-plugins/dist/backstage-plugin-catalog-backend-module-github-org-dynamic
+      - disabled: false
+        package: "@backstage-community/backstage-plugin-mta-backend@0.3.0"
+        integrity: sha512-gEmEEa1Fuh+jRqGiLg5JgrBGj+rdRxohnGuIcXb6iTuv2kG0gqkLHu/U1smm+rdBZ78h8lnbrCsEMPKwvjWs+A==
+      - disabled: false
+        package: "@ianbolton/backstage-plugin-mta-frontend@0.1.8"
+        integrity: sha512-OIzO+6HMAv78sN4a6LjB928AX0StJXY3PlhkXJRt/Er+AO+2m2MGvTkS0QzZGvoBoquwQjV+s+CFWDnhrGCAAQ==
+      - disabled: false
+        package: "@backstage-community/backstage-plugin-catalog-backend-module-mta-entity-provider@0.2.0"
+        integrity: sha512-M2s8SN3/tgav+1q1RWVgxAA0V/bRFeT4GesMMWh7/WpFcrqAe65fUJ1YrTPeDavtjW27YE/RZCjwdM9xtPoc5w==
+      - disabled: false
+        package: "@backstage-community/backstage-plugin-scaffolder-backend-module-mta@0.3.0"
+        integrity: sha512-dGdjnBGmmMtvQ46LF1QUzlu+C1fnLyI0iljTJfwToOiZOxfb1vl/1gsPfT74kLSit1fYLPm8N+weS0i5+NqS8A==
