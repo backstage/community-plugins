@@ -1,5 +1,11 @@
 # @backstage-community/plugin-azure-devops
 
+## 0.12.0
+
+### Minor Changes
+
+- 1e8ea62: Export function `getAnnotationValuesFromEntity`
+
 ## 0.11.0
 
 ### Minor Changes
