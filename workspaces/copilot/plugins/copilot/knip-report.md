@@ -1,12 +1,5 @@
 # Knip report
 
-## Unused dependencies (2)
-
-| Name                                       | Location     | Severity |
-| :----------------------------------------- | :----------- | :------- |
-| @backstage-community/plugin-copilot-common | package.json | error    |
-| @emotion/styled                            | package.json | error    |
-
 ## Unused devDependencies (7)
 
 | Name                        | Location     | Severity |

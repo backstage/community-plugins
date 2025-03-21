@@ -1,5 +1,11 @@
 # @backstage-community/plugin-blackduck-backend
 
+## 0.3.2
+
+### Patch Changes
+
+- 455a018: Fixed a bug when the project name contains special characters and also fixed typos in log messages
+
 ## 0.3.1
 
 ### Patch Changes

@@ -9,10 +9,10 @@
 
 ## Unused devDependencies (5)
 
-| Name                    | Location     | Severity |
-| :---------------------- | :----------- | :------- |
-| @backstage/core-app-api | package.json | error    |
-| @backstage/dev-utils    | package.json | error    |
-| jest-canvas-mock        | package.json | error    |
-| jest                    | package.json | error    |
-| msw                     | package.json | error    |
+| Name                           | Location     | Severity |
+| :----------------------------- | :----------- | :------- |
+| @backstage/frontend-test-utils | package.json | error    |
+| @backstage/core-app-api        | package.json | error    |
+| @backstage/dev-utils           | package.json | error    |
+| jest-canvas-mock               | package.json | error    |
+| msw                            | package.json | error    |

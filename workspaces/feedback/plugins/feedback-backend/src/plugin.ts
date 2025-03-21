@@ -35,6 +35,7 @@ export const feedbackPlugin = createBackendPlugin({
         auth: coreServices.auth,
         database: coreServices.database,
         notifications: notificationService,
+        httpAuth: coreServices.httpAuth,
       },
       async init({
         logger,
@@ -44,6 +45,7 @@ export const feedbackPlugin = createBackendPlugin({
         auth,
         database,
         notifications,
+        httpAuth,
       }) {
         httpRouter.use(
           await createRouter({
@@ -53,6 +55,7 @@ export const feedbackPlugin = createBackendPlugin({
             auth: auth,
             database: database,
             notifications,
+            httpAuth,
           }),
         );
       },

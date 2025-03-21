@@ -1,5 +1,43 @@
 ### Dependencies
 
+## 5.6.1
+
+### Patch Changes
+
+- b2a5daa: Updated dependency `qs` to `6.14.0`.
+
+## 5.6.0
+
+### Minor Changes
+
+- 0253db6: Backstage version bump to v1.36.1
+
+### Patch Changes
+
+- Updated dependencies [0253db6]
+  - @backstage-community/plugin-rbac-common@1.14.0
+  - @backstage-community/plugin-rbac-node@1.10.0
+
+## 5.5.3
+
+### Patch Changes
+
+- 973a5ef: remove prettier from devDevpendencies
+- Updated dependencies [973a5ef]
+  - @backstage-community/plugin-rbac-node@1.9.1
+
+## 5.5.2
+
+### Patch Changes
+
+- 9aa839a: Fixes two issues that were impact the performance, the first was that we were individually adding and removing roles and the second was we were removing all policies and roles regardless of whether they should actually be removed.
+
+## 5.5.1
+
+### Patch Changes
+
+- fcfaf89: Fixed an issue where aliases would not be applied across all conditional policy rules.
+
 ## 5.5.0
 
 ### Minor Changes

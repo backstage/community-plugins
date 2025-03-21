@@ -42,7 +42,7 @@ const handlers = [
     (_, res, ctx) => res(ctx.json(mockEntity)),
   ),
   rest.get(
-    'http://**/api/catalog/entities/by-name/user/default/guest',
+    'http://**/api/catalog/entities/by-name/user/default/**',
     (_, res, ctx) => res(ctx.json(mockUser)),
   ),
   rest.get('https://jira.host/rest/api/latest/issue/ticket-id', (_, res, ctx) =>
@@ -103,6 +103,7 @@ describe('Router', () => {
       auth: auth,
       database: mockServices.database.mock(),
       notifications: notificationsMock,
+      httpAuth: mockServices.httpAuth(),
     });
     app = express().use(router);
   });

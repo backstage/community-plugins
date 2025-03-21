@@ -1,5 +1,11 @@
 # @backstage-community/backstage-plugin-scaffolder-backend-module-mta
 
+## 0.3.0
+
+### Minor Changes
+
+- a26bb15: Removed usages and references of `@backstage/backend-common`
+
 ## 0.2.1
 
 ### Patch Changes

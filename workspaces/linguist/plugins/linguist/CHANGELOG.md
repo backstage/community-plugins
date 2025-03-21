@@ -1,5 +1,16 @@
 # @backstage-community/plugin-linguist
 
+## 0.5.0
+
+### Minor Changes
+
+- 4a2f2c1: Backstage version bump to v1.36.1
+
+### Patch Changes
+
+- Updated dependencies [4a2f2c1]
+  - @backstage-community/plugin-linguist-common@0.5.0
+
 ## 0.4.0
 
 ### Minor Changes

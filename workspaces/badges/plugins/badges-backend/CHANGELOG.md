@@ -1,5 +1,17 @@
 # @backstage-community/plugin-badges-backend
 
+## 0.9.0
+
+### Minor Changes
+
+- b3f9a47: Removed support for the legacy backend system.
+
+## 0.8.0
+
+### Minor Changes
+
+- c3a244e: Backstage version bump to v1.36.1
+
 ## 0.7.1
 
 ### Patch Changes

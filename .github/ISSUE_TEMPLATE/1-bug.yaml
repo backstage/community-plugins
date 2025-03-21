@@ -12,11 +12,13 @@ body:
     attributes:
       label: Workspace
       options:
+        - Select a workspace...
         - 3scale
         - acr
         - adr
         - airbrake
         - allure
+        - amplication
         - analytics
         - announcements
         - apache-airflow
@@ -72,6 +74,7 @@ body:
         - mend
         - microsoft-calendar
         - mta
+        - multi-source-security-viewer
         - newrelic
         - nexus-repository-manager
         - nomad
