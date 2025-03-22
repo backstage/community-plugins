@@ -4,6 +4,9 @@ workspace/3scale:
 workspace/acr:
   - "Workspace\\s*acr"
 
+workspace/acs:
+  - "Workspace\\s*acs"
+
 workspace/adr:
   - "Workspace\\s*adr"
 
@@ -180,6 +183,9 @@ workspace/microsoft-calendar:
 
 workspace/mta:
   - "Workspace\\s*mta"
+
+workspace/multi-source-security-viewer:
+  - "Workspace\\s*multi-source-security-viewer"
 
 workspace/newrelic:
   - "Workspace\\s*newrelic"
