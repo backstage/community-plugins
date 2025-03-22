@@ -34,11 +34,11 @@ import {
 import MoreVert from '@material-ui/icons/MoreVert';
 import Description from '@material-ui/icons/Description';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
   button: {
-    color: 'white',
+    color: theme.page.fontColor,
   },
-});
+}));
 
 export function ContextMenu() {
   const classes = useStyles();
