@@ -5,10 +5,12 @@
 ```ts
 /// <reference types="react" />
 
-import { AnyApiFactory } from '@backstage/core-plugin-api/index';
+import { AnyApiFactory } from '@backstage/core-plugin-api/*';
 import { AnyRouteRefParams } from '@backstage/frontend-plugin-api';
 import { ConfigurableExtensionDataRef } from '@backstage/frontend-plugin-api';
 import { Entity } from '@backstage/catalog-model/index';
+import { EntityCardType } from '@backstage/plugin-catalog-react/alpha';
+import { EntityPredicate } from '@backstage/plugin-catalog-react/alpha';
 import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { FrontendPlugin } from '@backstage/frontend-plugin-api';
 import { JSX as JSX_2 } from 'react';
@@ -34,45 +36,16 @@ const plugin: FrontendPlugin<
         factory: AnyApiFactory;
       };
     }>;
-    'entity-card:linkerd/is-meshed': ExtensionDefinition<{
-      kind: 'entity-card';
-      name: 'is-meshed';
-      config: {
-        filter: string | undefined;
-      };
-      configInput: {
-        filter?: string | undefined;
-      };
-      output:
-        | ConfigurableExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
-        | ConfigurableExtensionDataRef<
-            (entity: Entity) => boolean,
-            'catalog.entity-filter-function',
-            {
-              optional: true;
-            }
-          >
-        | ConfigurableExtensionDataRef<
-            string,
-            'catalog.entity-filter-expression',
-            {
-              optional: true;
-            }
-          >;
-      inputs: {};
-      params: {
-        loader: () => Promise<JSX.Element>;
-        filter?: string | ((entity: Entity) => boolean) | undefined;
-      };
-    }>;
     'entity-card:linkerd/edges-table': ExtensionDefinition<{
       kind: 'entity-card';
       name: 'edges-table';
       config: {
-        filter: string | undefined;
+        filter: EntityPredicate | undefined;
+        type: 'content' | 'summary' | 'info' | undefined;
       };
       configInput: {
-        filter?: string | undefined;
+        filter?: EntityPredicate | undefined;
+        type?: 'content' | 'summary' | 'info' | undefined;
       };
       output:
         | ConfigurableExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
@@ -89,11 +62,60 @@ const plugin: FrontendPlugin<
             {
               optional: true;
             }
+          >
+        | ConfigurableExtensionDataRef<
+            EntityCardType,
+            'catalog.entity-card-type',
+            {
+              optional: true;
+            }
           >;
       inputs: {};
       params: {
         loader: () => Promise<JSX.Element>;
-        filter?: string | ((entity: Entity) => boolean) | undefined;
+        filter?: EntityPredicate | ((entity: Entity) => boolean) | undefined;
+        type?: EntityCardType | undefined;
+      };
+    }>;
+    'entity-card:linkerd/is-meshed': ExtensionDefinition<{
+      kind: 'entity-card';
+      name: 'is-meshed';
+      config: {
+        filter: EntityPredicate | undefined;
+        type: 'content' | 'summary' | 'info' | undefined;
+      };
+      configInput: {
+        filter?: EntityPredicate | undefined;
+        type?: 'content' | 'summary' | 'info' | undefined;
+      };
+      output:
+        | ConfigurableExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
+        | ConfigurableExtensionDataRef<
+            (entity: Entity) => boolean,
+            'catalog.entity-filter-function',
+            {
+              optional: true;
+            }
+          >
+        | ConfigurableExtensionDataRef<
+            string,
+            'catalog.entity-filter-expression',
+            {
+              optional: true;
+            }
+          >
+        | ConfigurableExtensionDataRef<
+            EntityCardType,
+            'catalog.entity-card-type',
+            {
+              optional: true;
+            }
+          >;
+      inputs: {};
+      params: {
+        loader: () => Promise<JSX.Element>;
+        filter?: EntityPredicate | ((entity: Entity) => boolean) | undefined;
+        type?: EntityCardType | undefined;
       };
     }>;
     'entity-content:linkerd': ExtensionDefinition<{
@@ -102,12 +124,14 @@ const plugin: FrontendPlugin<
       config: {
         path: string | undefined;
         title: string | undefined;
-        filter: string | undefined;
+        filter: EntityPredicate | undefined;
+        group: string | false | undefined;
       };
       configInput: {
-        filter?: string | undefined;
+        filter?: EntityPredicate | undefined;
         title?: string | undefined;
         path?: string | undefined;
+        group?: string | false | undefined;
       };
       output:
         | ConfigurableExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
@@ -137,14 +161,28 @@ const plugin: FrontendPlugin<
             {
               optional: true;
             }
+          >
+        | ConfigurableExtensionDataRef<
+            string,
+            'catalog.entity-content-group',
+            {
+              optional: true;
+            }
           >;
       inputs: {};
       params: {
         loader: () => Promise<JSX.Element>;
         defaultPath: string;
         defaultTitle: string;
+        defaultGroup?:
+          | (string & {})
+          | 'development'
+          | 'deployment'
+          | 'documentation'
+          | 'observability'
+          | undefined;
         routeRef?: RouteRef<AnyRouteRefParams> | undefined;
-        filter?: string | ((entity: Entity) => boolean) | undefined;
+        filter?: EntityPredicate | ((entity: Entity) => boolean) | undefined;
       };
     }>;
   }
