@@ -2646,7 +2646,7 @@ __metadata:
   dependencies:
     "@backstage-community/plugin-manage-react": "workspace:^"
     "@backstage-community/plugin-tech-insights": "npm:^0.5.0"
-    "@backstage-community/plugin-tech-insights-common": "npm:^0.4.0"
+    "@backstage-community/plugin-tech-insights-common": "npm:^0.5.0"
     "@backstage/catalog-model": "npm:^1.7.3"
     "@backstage/cli": "npm:^0.29.5"
     "@backstage/core-components": "npm:^0.16.3"
@@ -14472,7 +14472,7 @@ __metadata:
   dependencies:
     "@backstage-community/plugin-tech-insights-backend": "npm:^2.1.1"
     "@backstage-community/plugin-tech-insights-backend-module-jsonfc": "npm:^0.3.1"
-    "@backstage-community/plugin-tech-insights-common": "npm:^0.4.0"
+    "@backstage-community/plugin-tech-insights-common": "npm:^0.5.0"
     "@backstage-community/plugin-tech-insights-node": "npm:^2.2.0"
     "@backstage/backend-defaults": "npm:^0.6.2"
     "@backstage/backend-plugin-api": "npm:^1.1.1"
