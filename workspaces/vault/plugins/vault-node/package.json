@@ -36,9 +36,9 @@
     "test": "backstage-cli package test"
   },
   "dependencies": {
-    "@backstage/backend-plugin-api": "^1.2.0"
+    "@backstage/backend-plugin-api": "^1.2.1"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.30.0"
+    "@backstage/cli": "^0.31.0"
   }
 }
