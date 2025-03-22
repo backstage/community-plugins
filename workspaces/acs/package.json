@@ -61,5 +61,8 @@
       "prettier --write"
     ]
   },
-  "prettier": "@backstage/cli/config/prettier"
+  "prettier": "@backstage/cli/config/prettier",
+  "dependencies": {
+    "@changesets/cli": "^2.28.1"
+  }
 }
