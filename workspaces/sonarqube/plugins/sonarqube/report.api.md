@@ -11,7 +11,7 @@ import { Entity } from '@backstage/catalog-model/index';
 import { FetchApi } from '@backstage/core-plugin-api';
 import { FindingSummary } from '@backstage-community/plugin-sonarqube-react';
 import { InfoCardVariants } from '@backstage/core-components';
-import { InfoCardVariants as InfoCardVariants_2 } from '@backstage/core-components/index';
+import { InfoCardVariants as InfoCardVariants_2 } from '@backstage/core-components/*';
 import { JSX as JSX_2 } from 'react';
 import { default as React_2 } from 'react';
 import { SonarQubeApi } from '@backstage-community/plugin-sonarqube-react';
