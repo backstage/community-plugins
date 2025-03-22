@@ -18,9 +18,13 @@ import {
   coreServices,
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
-import { DefaultJenkinsInfoProvider } from './service/jenkinsInfoProvider';
+import {
+  DefaultJenkinsInfoProvider,
+  JenkinsInfoProvider,
+} from './service/jenkinsInfoProvider';
 import { catalogServiceRef } from '@backstage/plugin-catalog-node/alpha';
 import { JenkinsBuilder } from './service/JenkinsBuilder';
+import { jenkinsInfoProviderExtensionPoint } from './extensions';
 
 /**
  * Jenkins backend plugin
@@ -30,6 +34,17 @@ import { JenkinsBuilder } from './service/JenkinsBuilder';
 export const jenkinsPlugin = createBackendPlugin({
   pluginId: 'jenkins',
   register(env) {
+    let jenkinsInfoProvider: JenkinsInfoProvider | undefined;
+
+    env.registerExtensionPoint(jenkinsInfoProviderExtensionPoint, {
+      setInfoProvider(customInfoProvider: JenkinsInfoProvider) {
+        if (jenkinsInfoProvider) {
+          throw new Error('The JenkinsInfoProvider has been already set');
+        }
+        jenkinsInfoProvider = customInfoProvider;
+      },
+    });
+
     env.registerInit({
       deps: {
         logger: coreServices.logger,
@@ -51,14 +66,17 @@ export const jenkinsPlugin = createBackendPlugin({
         auth,
         httpAuth,
       }) {
-        const jenkinsInfoProvider = DefaultJenkinsInfoProvider.fromConfig({
-          auth,
-          httpAuth,
-          config,
-          catalog: catalogClient,
-          discovery,
-          logger,
-        });
+        jenkinsInfoProvider =
+          jenkinsInfoProvider ??
+          DefaultJenkinsInfoProvider.fromConfig({
+            auth,
+            httpAuth,
+            config,
+            catalog: catalogClient,
+            discovery,
+            logger,
+          });
+
         const builder = JenkinsBuilder.createBuilder({
           /**
            * Logger for logging purposes
