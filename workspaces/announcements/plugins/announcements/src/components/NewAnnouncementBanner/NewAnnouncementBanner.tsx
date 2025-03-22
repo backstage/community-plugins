@@ -96,10 +96,17 @@ const AnnouncementBanner = (props: AnnouncementBannerProps) => {
 
   const message = (
     <>
-      <Typography component="span" className={classes.bannerIcon}>
+      <Typography
+        component="span"
+        className={classes.bannerIcon}
+        variant="inherit"
+      >
         📣
       </Typography>
-      <Link to={viewAnnouncementLink({ id: announcement.id })}>
+      <Link
+        to={viewAnnouncementLink({ id: announcement.id })}
+        variant="inherit"
+      >
         {announcement.title}
       </Link>
       &nbsp;– {announcement.excerpt}
