@@ -59,7 +59,7 @@ const AnnouncementDetails = ({
     <Typography>
       By{' '}
       <EntityPeekAheadPopover entityRef={announcement.publisher}>
-        <Link to={entityLink(publisherRef)}>
+        <Link to={entityLink(publisherRef)} variant="inherit">
           <EntityDisplayName entityRef={announcement.publisher} hideIcon />
         </Link>
       </EntityPeekAheadPopover>
