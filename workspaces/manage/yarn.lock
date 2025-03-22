@@ -2645,7 +2645,7 @@ __metadata:
   resolution: "@backstage-community/plugin-manage-module-tech-insights@workspace:plugins/manage-module-tech-insights"
   dependencies:
     "@backstage-community/plugin-manage-react": "workspace:^"
-    "@backstage-community/plugin-tech-insights": "npm:^0.4.0"
+    "@backstage-community/plugin-tech-insights": "npm:^0.5.0"
     "@backstage-community/plugin-tech-insights-common": "npm:^0.4.0"
     "@backstage/catalog-model": "npm:^1.7.3"
     "@backstage/cli": "npm:^0.29.5"
@@ -2782,6 +2782,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@backstage-community/plugin-tech-insights-common@npm:^0.5.0":
+  version: 0.5.0
+  resolution: "@backstage-community/plugin-tech-insights-common@npm:0.5.0"
+  dependencies:
+    "@backstage/backend-plugin-api": "npm:^1.1.1"
+    "@backstage/catalog-model": "npm:^1.7.3"
+    "@backstage/core-plugin-api": "npm:^1.10.3"
+    "@backstage/errors": "npm:^1.2.7"
+    "@backstage/types": "npm:^1.2.1"
+    "@types/luxon": "npm:^3.0.0"
+    fast-json-stable-stringify: "npm:^2.1.0"
+    luxon: "npm:^3.0.0"
+    qs: "npm:^6.12.3"
+  checksum: 10/f75243e1cc7de7297d1ca13326a9f307fa3330939a749881cd639d948932ce950c78bda23d7700d4160626e6a521ab5d03b8d58f3033b0f82e35f88209bd0556
+  languageName: node
+  linkType: hard
+
 "@backstage-community/plugin-tech-insights-node@npm:^2.2.0":
   version: 2.2.0
   resolution: "@backstage-community/plugin-tech-insights-node@npm:2.2.0"
@@ -2797,17 +2814,35 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage-community/plugin-tech-insights@npm:^0.4.0":
-  version: 0.4.0
-  resolution: "@backstage-community/plugin-tech-insights@npm:0.4.0"
+"@backstage-community/plugin-tech-insights-react@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "@backstage-community/plugin-tech-insights-react@npm:1.1.0"
   dependencies:
-    "@backstage-community/plugin-tech-insights-common": "npm:^0.4.0"
-    "@backstage/catalog-model": "npm:^1.7.2"
-    "@backstage/core-components": "npm:^0.16.2"
-    "@backstage/core-plugin-api": "npm:^1.10.2"
-    "@backstage/errors": "npm:^1.2.6"
-    "@backstage/plugin-catalog-react": "npm:^1.15.0"
-    "@backstage/types": "npm:^1.2.0"
+    "@backstage-community/plugin-tech-insights-common": "npm:^0.5.0"
+    "@backstage/catalog-model": "npm:^1.7.3"
+    "@backstage/core-plugin-api": "npm:^1.10.3"
+    "@backstage/types": "npm:^1.2.1"
+    "@material-ui/core": "npm:^4.9.13"
+    "@material-ui/icons": "npm:^4.9.1"
+    "@material-ui/lab": "npm:4.0.0-alpha.61"
+  peerDependencies:
+    react: ^16.13.1 || ^17.0.0 || ^18.0.0
+  checksum: 10/7d038c2b1c211f46b6b070182ddf950d0f7697a37f871c3ad1e1c0ec52c79c467e69bb2b44081a3aac5c5a361eadf8500e571607fdbd5fb76bc94ab41e537016
+  languageName: node
+  linkType: hard
+
+"@backstage-community/plugin-tech-insights@npm:^0.5.0":
+  version: 0.5.0
+  resolution: "@backstage-community/plugin-tech-insights@npm:0.5.0"
+  dependencies:
+    "@backstage-community/plugin-tech-insights-common": "npm:^0.5.0"
+    "@backstage-community/plugin-tech-insights-react": "npm:^1.1.0"
+    "@backstage/catalog-model": "npm:^1.7.3"
+    "@backstage/core-components": "npm:^0.16.3"
+    "@backstage/core-plugin-api": "npm:^1.10.3"
+    "@backstage/errors": "npm:^1.2.7"
+    "@backstage/plugin-catalog-react": "npm:^1.15.1"
+    "@backstage/types": "npm:^1.2.1"
     "@material-table/exporters": "npm:^1.2.19"
     "@material-ui/core": "npm:^4.12.2"
     "@material-ui/icons": "npm:^4.9.1"
@@ -2818,7 +2853,7 @@ __metadata:
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-router-dom: 6.0.0-beta.0 || ^6.3.0
-  checksum: 10/9ea2c4ce605acb339792ca117159aa0ca3db0732fdf053200a9bb1ddd93fceda126d8b63d54e0d6645d4b56eb559397848dd02c2f543f9b979e43cf9eaff261c
+  checksum: 10/8857deb7c65507c560ebf6d1b9c0c731d8f837968dff22f2b59641a4eb97fe9bfb7efcfcf32997f5e741f45b45d869c4f1573c811697bd83f7684e954d105024
   languageName: node
   linkType: hard
 
@@ -3487,7 +3522,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/core-components@npm:^0.16.2, @backstage/core-components@npm:^0.16.3, @backstage/core-components@npm:^0.16.4":
+"@backstage/core-components@npm:^0.16.3, @backstage/core-components@npm:^0.16.4":
   version: 0.16.4
   resolution: "@backstage/core-components@npm:0.16.4"
   dependencies:
@@ -4435,7 +4470,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-catalog-react@npm:^1.15.0, @backstage/plugin-catalog-react@npm:^1.15.1, @backstage/plugin-catalog-react@npm:^1.16.0":
+"@backstage/plugin-catalog-react@npm:^1.15.1, @backstage/plugin-catalog-react@npm:^1.16.0":
   version: 1.16.0
   resolution: "@backstage/plugin-catalog-react@npm:1.16.0"
   dependencies:
@@ -13776,7 +13811,7 @@ __metadata:
     "@backstage-community/plugin-manage": "workspace:^"
     "@backstage-community/plugin-manage-module-tech-insights": "workspace:^"
     "@backstage-community/plugin-manage-react": "workspace:^"
-    "@backstage-community/plugin-tech-insights": "npm:^0.4.0"
+    "@backstage-community/plugin-tech-insights": "npm:^0.5.0"
     "@backstage-community/plugin-tech-radar": "npm:^0.7.4"
     "@backstage/app-defaults": "npm:^1.5.16"
     "@backstage/catalog-model": "npm:^1.7.3"
