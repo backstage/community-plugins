@@ -9,8 +9,8 @@ import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
 import { JSX as JSX_2 } from 'react';
 import { RouteRef } from '@backstage/core-plugin-api';
-import { TableColumn } from '@backstage/core-components/index';
-import { TableFilter } from '@backstage/core-components/index';
+import { TableColumn } from '@backstage/core-components/*';
+import { TableFilter } from '@backstage/core-components/*';
 
 // @public (undocumented)
 export const BlackDuckPage: ({
