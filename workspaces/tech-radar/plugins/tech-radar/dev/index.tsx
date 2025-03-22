@@ -22,6 +22,6 @@ createDevApp()
   .registerPlugin(techRadarPlugin)
   .addPage({
     title: 'Tech Radar',
-    element: <TechRadarPage width={1280} height={720} />,
+    element: <TechRadarPage />,
   })
   .render();
