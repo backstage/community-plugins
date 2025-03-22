@@ -21,7 +21,7 @@ import * as Knex from 'knex';
 import type { RoleMetadata } from '@backstage-community/plugin-rbac-common';
 
 import {
-  auditLoggerMock,
+  mockAuditorService,
   catalogApiMock,
   csvPermFile,
   mockClientKnex,
@@ -112,11 +112,11 @@ describe('Admin Creation', () => {
       await useAdminsFromConfig(
         adminUsers || [],
         enfDelegate,
-        auditLoggerMock,
+        mockAuditorService,
         roleMetadataStorageMock,
         mockClientKnex,
       );
-      await setAdminPermissions(enfDelegate, auditLoggerMock);
+      await setAdminPermissions(enfDelegate, mockAuditorService);
     });
 
     it('should assign an admin to the admin role and permissions', async () => {
@@ -128,7 +128,7 @@ describe('Admin Creation', () => {
 
     it(`should not assign an admin to the permissions if permissions are already assigned`, async () => {
       await expect(async () => {
-        await setAdminPermissions(enfDelegate, auditLoggerMock);
+        await setAdminPermissions(enfDelegate, mockAuditorService);
       }).not.toThrow();
     });
 
@@ -140,7 +140,7 @@ describe('Admin Creation', () => {
         'allow',
       ];
       await enfDelegate.addPolicy(newDefaultPermission);
-      await setAdminPermissions(enfDelegate, auditLoggerMock);
+      await setAdminPermissions(enfDelegate, mockAuditorService);
       const enfPermission = await enfDelegate.getFilteredPolicy(
         0,
         ...newDefaultPermission,

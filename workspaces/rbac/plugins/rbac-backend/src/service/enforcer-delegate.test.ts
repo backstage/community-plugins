@@ -27,7 +27,7 @@ import {
 import { BackstageRoleManager } from '../role-manager/role-manager';
 import { EnforcerDelegate } from './enforcer-delegate';
 import { MODEL } from './permission-model';
-import { auditLoggerMock } from '../../__fixtures__/mock-utils';
+import { mockAuditorService } from '../../__fixtures__/mock-utils';
 
 // TODO: Move to 'catalogServiceMock' from '@backstage/plugin-catalog-node/testUtils'
 // once '@backstage/plugin-catalog-node' is upgraded
@@ -182,7 +182,7 @@ describe('EnforcerDelegate', () => {
 
     return new EnforcerDelegate(
       enf,
-      auditLoggerMock,
+      mockAuditorService,
       roleMetadataStorageMock,
       knex,
     );
