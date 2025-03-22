@@ -17,9 +17,9 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TabbedCard, CardTab } from '@backstage/core-components';
-import { Metrics } from '../Metrics';
-import { LanguageCards, DashboardCards } from '../Cards';
-import { LanguageCharts, DashboardCharts } from '../Charts';
+import { Metrics, Usage } from '../Metrics';
+import { LanguageCards, DashboardCards, EngagementCards } from '../Cards';
+import { LanguageCharts, DashboardCharts, EngagementCharts } from '../Charts';
 import { SelectTeamFilter } from '../Filters';
 import { CopilotPage } from './CopilotPage';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
@@ -54,6 +54,13 @@ export const EnterprisePage = (): React.JSX.Element => {
             Filters={SelectTeamFilter}
             Cards={LanguageCards}
             Charts={LanguageCharts}
+          />
+        </CardTab>
+        <CardTab label="Engagement">
+          <Usage
+            Filters={SelectTeamFilter}
+            Cards={EngagementCards}
+            Charts={EngagementCharts}
           />
         </CardTab>
       </TabbedCard>

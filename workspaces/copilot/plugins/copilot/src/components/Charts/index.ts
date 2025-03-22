@@ -15,3 +15,4 @@
  */
 export { DashboardCharts } from './DashboardCharts';
 export { LanguageCharts } from './LanguageCharts';
+export { EngagementCharts } from './EngagementCharts';

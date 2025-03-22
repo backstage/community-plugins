@@ -32,6 +32,8 @@ type CardItemProps = {
   startDate: Date;
   endDate: Date;
   icon: ElementType<ReactNode>;
+  valueIsOnlyForLastDay?: boolean;
+  rangeSuffix?: string;
 };
 
 const format = 'dd/MM/yyyy';
@@ -53,9 +55,15 @@ export const Card = ({
   startDate,
   endDate,
   icon,
+  valueIsOnlyForLastDay = false,
+  rangeSuffix = '',
 }: CardItemProps) => {
   const message = useMemo(() => {
     if (primaryValue === 'N/A') return `No data available`;
+    if (valueIsOnlyForLastDay) {
+      const lastSelectedDay = DateTime.fromJSDate(endDate).toFormat(format);
+      return `@ ${lastSelectedDay}`;
+    }
 
     const endDateTime = DateTime.fromJSDate(endDate);
     const now = DateTime.now();
@@ -73,7 +81,7 @@ export const Card = ({
     return `From ${DateTime.fromJSDate(startDate).toFormat(
       format,
     )} to ${endDateTime.toFormat(format)}`;
-  }, [primaryValue, startDate, endDate]);
+  }, [primaryValue, startDate, endDate, valueIsOnlyForLastDay]);
 
   return (
     <InfoCard divider={false}>
@@ -110,7 +118,7 @@ export const Card = ({
       <Divider />
       <Box>
         <FooterText color="textSecondary" variant="caption">
-          {message}
+          {message} {rangeSuffix}
         </FooterText>
       </Box>
     </InfoCard>

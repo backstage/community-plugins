@@ -14,3 +14,4 @@
  * limitations under the License.
  */
 export { Metrics } from './Metrics';
+export { Usage } from './Usage';
