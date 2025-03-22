@@ -42,6 +42,7 @@
     "@backstage/cli": "^0.30.0",
     "@backstage/e2e-test-utils": "^0.1.1",
     "@backstage/repo-tools": "^0.13.0",
+    "@changesets/cli": "^2.28.1",
     "@eslint/js": "^9.19.0",
     "@playwright/test": "^1.32.3",
     "node-gyp": "^10.0.0",
