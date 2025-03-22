@@ -1,5 +1,11 @@
 # @backstage-community/plugin-github-deployments
 
+## 0.5.0
+
+### Minor Changes
+
+- aeeb3d2: Backstage version bump to v1.37.0
+
 ## 0.4.0
 
 ### Minor Changes
