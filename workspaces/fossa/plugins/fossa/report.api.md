@@ -6,7 +6,7 @@
 /// <reference types="react" />
 
 import { BackstagePlugin } from '@backstage/core-plugin-api';
-import { InfoCardVariants } from '@backstage/core-components/index';
+import { InfoCardVariants } from '@backstage/core-components/*';
 import { JSX as JSX_2 } from 'react';
 import { RouteRef } from '@backstage/core-plugin-api';
 
