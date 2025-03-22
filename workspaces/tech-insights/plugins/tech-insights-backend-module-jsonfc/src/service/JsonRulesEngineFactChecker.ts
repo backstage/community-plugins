@@ -31,7 +31,7 @@ import {
   Operator,
   TopLevelCondition,
 } from 'json-rules-engine';
-import { pick } from 'lodash';
+import { flatten, pick } from 'lodash';
 import { JSON_RULE_ENGINE_CHECK_TYPE } from '../constants';
 import { JsonRuleBooleanCheckResult, TechInsightJsonRuleCheck } from '../types';
 import { DefaultCheckRegistry } from './CheckRegistry';
@@ -104,14 +104,48 @@ export class JsonRulesEngineFactChecker
     const techInsightChecks = checks
       ? await this.checkRegistry.getAll(checks)
       : await this.checkRegistry.list();
-    const factIds = techInsightChecks.flatMap(it => it.factIds);
-    const facts = await this.repository.getLatestFactsByIds(factIds, entity);
+    const factRetrieversIds = techInsightChecks.flatMap(it => it.factIds);
+    const facts = await this.repository.getLatestFactsByIds(
+      factRetrieversIds,
+      entity,
+    );
+
+    const schemas = await this.repository.getLatestSchemas(factRetrieversIds);
+
+    // get list of available fact names
+    const factNames = flatten(schemas.map(schema => Object.keys(schema)));
+
+    const factValues = Object.values(facts).reduce(
+      (acc, it) => ({ ...acc, ...it.facts }),
+      {} as FlatTechInsightFact,
+    );
 
     techInsightChecks.forEach(techInsightCheck => {
       const rule = techInsightCheck.rule;
       rule.name = techInsightCheck.id;
+
       // Only run checks that have all the facts available:
-      const hasFacts = techInsightCheck.factIds.some(factId => facts[factId]);
+      const usedFacts = this.retrieveIndividualFactReferences(
+        techInsightCheck.rule.conditions,
+      );
+
+      // check if all facts are known - factNames are correct
+      const allFactsNamesArePresent = usedFacts.every(factId =>
+        factNames.includes(factId),
+      );
+      if (!allFactsNamesArePresent) {
+        // invalid facts - not included in factNames
+        throw new Error(
+          `Not all facts are defined: ${usedFacts.filter(
+            usedFact => !factNames.includes(usedFact),
+          )}`,
+        );
+      }
+
+      // Checks if all facts are present in the factValues
+      const hasFacts = usedFacts.every(factId =>
+        factValues.hasOwnProperty(factId),
+      );
       if (hasFacts) {
         engine.addRule({ ...techInsightCheck.rule, event: noopEvent });
       } else {
@@ -124,10 +158,6 @@ export class JsonRulesEngineFactChecker
         );
       }
     });
-    const factValues = Object.values(facts).reduce(
-      (acc, it) => ({ ...acc, ...it.facts }),
-      {},
-    );
 
     try {
       const results = await engine.run(factValues);
