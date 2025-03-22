@@ -40,10 +40,6 @@ import TopologyToolbar from './TopologyToolbar';
 
 import './TopologyToolbar.css';
 
-import { usePermission } from '@backstage/plugin-permission-react';
-
-import { topologyViewPermission } from '@backstage-community/plugin-topology-common';
-
 type TopologyViewWorkloadComponentProps = {
   useToolbar?: boolean;
 };
@@ -67,10 +63,6 @@ const TopologyViewWorkloadComponent = ({
     setSelectedNode,
     removeSelectedIdParam,
   ] = useSideBar();
-
-  const topologyViewPermissionResult = usePermission({
-    permission: topologyViewPermission,
-  });
 
   const allErrors: ClusterErrors = [
     ...(responseError ? [{ message: responseError }] : []),
@@ -137,14 +129,6 @@ const TopologyViewWorkloadComponent = ({
   const getTopologyState = () => {
     if (isDataModelEmpty) {
       return <TopologyEmptyState />;
-    }
-    if (!topologyViewPermissionResult.allowed) {
-      return (
-        <TopologyEmptyState
-          title="Permission required"
-          description="To view Topology, contact your administrator to give you the topology.view.read permission"
-        />
-      );
     }
     return <VisualizationSurface state={{ selectedIds: [selectedId] }} />;
   };
