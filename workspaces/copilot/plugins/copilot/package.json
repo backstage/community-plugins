@@ -35,8 +35,8 @@
   },
   "dependencies": {
     "@backstage-community/plugin-copilot-common": "workspace:^",
-    "@backstage/core-components": "^0.16.4",
-    "@backstage/core-plugin-api": "^1.10.4",
+    "@backstage/core-components": "^0.17.0",
+    "@backstage/core-plugin-api": "^1.10.5",
     "@backstage/errors": "^1.2.7",
     "@backstage/theme": "^0.6.4",
     "@emotion/react": "^11.13.0",
@@ -55,10 +55,10 @@
     "react-router-dom": "^6.3.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.30.0",
-    "@backstage/core-app-api": "^1.15.5",
-    "@backstage/dev-utils": "^1.1.7",
-    "@backstage/test-utils": "^1.7.5",
+    "@backstage/cli": "^0.31.0",
+    "@backstage/core-app-api": "^1.16.0",
+    "@backstage/dev-utils": "^1.1.8",
+    "@backstage/test-utils": "^1.7.6",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^14.0.0",
     "@testing-library/user-event": "^14.0.0",
