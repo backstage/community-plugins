@@ -1,5 +1,12 @@
 ### Dependencies
 
+## 3.21.2
+
+### Patch Changes
+
+- c31699d: Updated dependency `@playwright/test` to `1.51.1`.
+- f16f56e: Updated dependency `start-server-and-test` to `2.0.11`.
+
 ## 3.21.1
 
 ### Patch Changes
