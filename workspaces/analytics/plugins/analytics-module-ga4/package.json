@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-analytics-module-ga4",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "backstage": {
     "role": "frontend-plugin-module",
     "pluginId": "app",
