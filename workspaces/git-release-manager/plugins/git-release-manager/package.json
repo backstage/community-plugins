@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-git-release-manager",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "A Backstage plugin that helps you manage releases in git",
   "backstage": {
     "role": "frontend-plugin",
