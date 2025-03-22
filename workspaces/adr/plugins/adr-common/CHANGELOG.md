@@ -1,5 +1,11 @@
 # @backstage-community/plugin-adr-common
 
+## 0.5.0
+
+### Minor Changes
+
+- b075789: Backstage version bump to v1.37.0
+
 ## 0.4.0
 
 ### Minor Changes
