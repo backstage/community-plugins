@@ -1223,9 +1223,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/storage-blob@npm:12.26.0, @azure/storage-blob@npm:^12.5.0":
-  version: 12.26.0
-  resolution: "@azure/storage-blob@npm:12.26.0"
+"@azure/storage-blob@npm:12.27.0, @azure/storage-blob@npm:^12.5.0":
+  version: 12.27.0
+  resolution: "@azure/storage-blob@npm:12.27.0"
   dependencies:
     "@azure/abort-controller": "npm:^2.1.2"
     "@azure/core-auth": "npm:^1.4.0"
@@ -1240,7 +1240,7 @@ __metadata:
     "@azure/logger": "npm:^1.0.0"
     events: "npm:^3.0.0"
     tslib: "npm:^2.2.0"
-  checksum: 10/dfe2f708db3f205a2a1aaab3d3282b0e070f635a5da4b1f7d32056da6104bc7d1be2cc61931ff1c9b468e9804ab9f098fc89ac8c2ddf29219355f847e801d26e
+  checksum: 10/135c20f660ca836c5f3afeec957a8efa2d856f1e7ceba2ba42d079ebfb3f5393460433cb5a0797481f3981aba272e6904b81f844cb0553495cddad2716f565e5
   languageName: node
   linkType: hard
 
@@ -2730,7 +2730,7 @@ __metadata:
   resolution: "@backstage-community/plugin-azure-storage-explorer-backend@workspace:plugins/azure-storage-backend"
   dependencies:
     "@azure/identity": "npm:4.8.0"
-    "@azure/storage-blob": "npm:12.26.0"
+    "@azure/storage-blob": "npm:12.27.0"
     "@backstage/backend-common": "npm:^0.25.0"
     "@backstage/backend-defaults": "npm:^0.8.2"
     "@backstage/backend-plugin-api": "npm:^1.2.1"
