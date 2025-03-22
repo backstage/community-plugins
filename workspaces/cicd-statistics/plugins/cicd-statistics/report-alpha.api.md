@@ -8,6 +8,7 @@
 import { AnyRouteRefParams } from '@backstage/frontend-plugin-api';
 import { ConfigurableExtensionDataRef } from '@backstage/frontend-plugin-api';
 import { Entity } from '@backstage/catalog-model/index';
+import { EntityPredicate } from '@backstage/plugin-catalog-react/alpha';
 import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { FrontendPlugin } from '@backstage/frontend-plugin-api';
 import { JSX as JSX_2 } from 'react';
@@ -26,12 +27,14 @@ const _default: FrontendPlugin<
       config: {
         path: string | undefined;
         title: string | undefined;
-        filter: string | undefined;
+        filter: EntityPredicate | undefined;
+        group: string | false | undefined;
       };
       configInput: {
-        filter?: string | undefined;
+        filter?: EntityPredicate | undefined;
         title?: string | undefined;
         path?: string | undefined;
+        group?: string | false | undefined;
       };
       output:
         | ConfigurableExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
@@ -61,14 +64,28 @@ const _default: FrontendPlugin<
             {
               optional: true;
             }
+          >
+        | ConfigurableExtensionDataRef<
+            string,
+            'catalog.entity-content-group',
+            {
+              optional: true;
+            }
           >;
       inputs: {};
       params: {
         loader: () => Promise<JSX.Element>;
         defaultPath: string;
         defaultTitle: string;
+        defaultGroup?:
+          | (string & {})
+          | 'documentation'
+          | 'development'
+          | 'deployment'
+          | 'observability'
+          | undefined;
         routeRef?: RouteRef<AnyRouteRefParams> | undefined;
-        filter?: string | ((entity: Entity) => boolean) | undefined;
+        filter?: EntityPredicate | ((entity: Entity) => boolean) | undefined;
       };
     }>;
   }
