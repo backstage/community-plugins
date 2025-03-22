@@ -1,5 +1,11 @@
 # @backstage-community/plugin-gitops-profiles
 
+## 0.7.0
+
+### Minor Changes
+
+- ffc21e6: Backstage version bump to v1.37.0
+
 ## 0.6.0
 
 ### Minor Changes
