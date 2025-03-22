@@ -28,6 +28,7 @@ import {
   ROLE_METADATA_TABLE,
   RoleMetadataDao,
 } from './role-metadata';
+import { RBACFilter } from '../permissions';
 
 jest.setTimeout(60000);
 
@@ -95,11 +96,173 @@ describe('role-metadata-db-table', () => {
             id: 1,
             lastModified: null,
             modifiedBy,
+            owner: null,
             roleEntityRef: 'role:default/some-super-important-role',
             source: 'rest',
           });
         } catch (err) {
           await trx.rollback();
+          throw err;
+        }
+      },
+    );
+  });
+
+  describe('filterRoleMetadata', () => {
+    it.each(databases.eachSupportedId())(
+      'should return undefined',
+      async databasesId => {
+        const { db } = await createDatabase(databasesId);
+        try {
+          const roleMetadata = await db.filterRoleMetadata('rest');
+          expect(roleMetadata).toEqual([]);
+        } catch (err) {
+          throw err;
+        }
+      },
+    );
+
+    it.each(databases.eachSupportedId())(
+      'should return found metadata',
+      async databasesId => {
+        const { knex, db } = await createDatabase(databasesId);
+        await knex<RoleMetadataDao>(ROLE_METADATA_TABLE).insert({
+          roleEntityRef: 'role:default/some-super-important-role',
+          source: 'rest',
+          modifiedBy,
+        });
+
+        try {
+          const roleMetadata = await db.filterRoleMetadata('rest');
+          expect(roleMetadata).toEqual([
+            {
+              author: null,
+              createdAt: null,
+              description: null,
+              id: 1,
+              lastModified: null,
+              modifiedBy,
+              owner: null,
+              roleEntityRef: 'role:default/some-super-important-role',
+              source: 'rest',
+            },
+          ]);
+        } catch (err) {
+          throw err;
+        }
+      },
+    );
+  });
+
+  describe('filterForOwnerRoleMetadata', () => {
+    it.each(databases.eachSupportedId())(
+      'should return undefined',
+      async databasesId => {
+        const rbacFilter: RBACFilter = {
+          key: 'owner',
+          values: ['user:default/some_user'],
+        };
+        const { db } = await createDatabase(databasesId);
+        try {
+          const roleMetadata = await db.filterForOwnerRoleMetadata({
+            anyOf: [rbacFilter],
+          });
+          expect(roleMetadata).toEqual([]);
+        } catch (err) {
+          throw err;
+        }
+      },
+    );
+
+    it.each(databases.eachSupportedId())(
+      'should return found metadata for specified filter',
+      async databasesId => {
+        const rbacFilter: RBACFilter = {
+          key: 'owner',
+          values: ['user:default/some_user'],
+        };
+        const { knex, db } = await createDatabase(databasesId);
+        await knex<RoleMetadataDao>(ROLE_METADATA_TABLE).insert({
+          roleEntityRef: 'role:default/some-super-important-role',
+          source: 'rest',
+          modifiedBy,
+          owner: 'user:default/some_user',
+        });
+        await knex<RoleMetadataDao>(ROLE_METADATA_TABLE).insert({
+          roleEntityRef: 'role:default/role:default/some-important-role',
+          source: 'rest',
+          modifiedBy,
+          owner: 'user:default/some_other_user',
+        });
+
+        try {
+          const roleMetadata = await db.filterForOwnerRoleMetadata({
+            anyOf: [rbacFilter],
+          });
+          expect(roleMetadata).toEqual([
+            {
+              author: null,
+              createdAt: null,
+              description: null,
+              id: 1,
+              lastModified: null,
+              modifiedBy,
+              owner: 'user:default/some_user',
+              roleEntityRef: 'role:default/some-super-important-role',
+              source: 'rest',
+            },
+          ]);
+        } catch (err) {
+          throw err;
+        }
+      },
+    );
+
+    it.each(databases.eachSupportedId())(
+      'should return found metadata for no filter',
+      async databasesId => {
+        const { knex, db } = await createDatabase(databasesId);
+        await knex<RoleMetadataDao>(ROLE_METADATA_TABLE).insert({
+          roleEntityRef: 'role:default/some-super-important-role',
+          source: 'rest',
+          modifiedBy,
+          owner: 'user:default/some_user',
+        });
+
+        await knex<RoleMetadataDao>(ROLE_METADATA_TABLE).insert({
+          roleEntityRef: 'role:default/some-important-role',
+          source: 'rest',
+          modifiedBy,
+          owner: 'user:default/some_other_user',
+        });
+
+        try {
+          const roleMetadata = await db.filterForOwnerRoleMetadata();
+          expect(roleMetadata).toEqual([
+            {
+              author: null,
+              createdAt: null,
+              description: null,
+              id: 1,
+              lastModified: null,
+              modifiedBy,
+              owner: 'user:default/some_user',
+              roleEntityRef: 'role:default/some-super-important-role',
+              source: 'rest',
+            },
+            {
+              author: null,
+              createdAt: null,
+              description: null,
+              id: 2,
+              lastModified: null,
+              modifiedBy,
+              owner: 'user:default/some_other_user',
+              roleEntityRef: 'role:default/some-important-role',
+              source: 'rest',
+            },
+          ]);
+        } catch (err) {
           throw err;
         }
       },
@@ -142,6 +305,7 @@ describe('role-metadata-db-table', () => {
           id: 1,
           lastModified: null,
           modifiedBy,
+          owner: null,
           source: 'configuration',
         });
       },
@@ -304,6 +468,7 @@ describe('role-metadata-db-table', () => {
           id: 1,
           lastModified: null,
           modifiedBy,
+          owner: null,
         });
       },
     );
@@ -380,6 +545,7 @@ describe('role-metadata-db-table', () => {
           id: 1,
           lastModified: null,
           modifiedBy,
+          owner: null,
         });
       },
     );

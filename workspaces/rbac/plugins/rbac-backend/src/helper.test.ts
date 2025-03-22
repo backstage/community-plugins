@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { RoleMetadata } from '@backstage-community/plugin-rbac-common';
 import { ADMIN_ROLE_AUTHOR } from './admin-permissions/admin-creation';
 import { RoleMetadataDao } from './database/role-metadata';
 import {
   deepSortedEqual,
   isPermissionAction,
+  matches,
   mergeRoleMetadata,
   metadataStringToPolicy,
   policiesToString,
@@ -29,6 +31,7 @@ import {
   typedPoliciesToString,
   typedPolicyToString,
 } from './helper';
+import { RBACFilters } from './permissions';
 // Import the function to test
 import { EnforcerDelegate } from './service/enforcer-delegate';
 
@@ -448,6 +451,73 @@ describe('helper.ts', () => {
     it('should return false', () => {
       const result = isPermissionAction('unknown');
       expect(result).toBeFalsy();
+    });
+  });
+
+  describe('matches', () => {
+    const anyOfFilter: RBACFilters = {
+      anyOf: [
+        {
+          key: 'owner',
+          values: ['user:default/some_user'],
+        },
+      ],
+    };
+
+    const allOfFilter: RBACFilters = {
+      allOf: [
+        {
+          key: 'owner',
+          values: ['user:default/some_user'],
+        },
+      ],
+    };
+
+    const notFilter: RBACFilters = {
+      not: {
+        key: 'owner',
+        values: ['user:default/some_user'],
+      },
+    };
+
+    const matchedRole: RoleMetadata = {
+      owner: 'user:default/some_user',
+    };
+
+    const noMatchedRole: RoleMetadata = {
+      owner: 'user:default/some_other_user',
+    };
+
+    it('should return true when a filter is not supplied', () => {
+      expect(matches()).toBeTruthy();
+    });
+
+    it('should return false whenever a filter is supplied but a role is not', () => {
+      expect(matches(undefined, anyOfFilter)).toBeFalsy();
+    });
+
+    it('should return true with anyOf filter where role owner matches filter owner', () => {
+      expect(matches(matchedRole, anyOfFilter)).toBeTruthy();
+    });
+
+    it('shoule return false with anyOf filter where role owner does not match filter owner', () => {
+      expect(matches(noMatchedRole, anyOfFilter)).toBeFalsy();
+    });
+
+    it('should return true with allOf filter where role owner matches filter owner', () => {
+      expect(matches(matchedRole, allOfFilter)).toBeTruthy();
+    });
+
+    it('shoule return false with allOf filter where role owner does not match filter owner', () => {
+      expect(matches(noMatchedRole, allOfFilter)).toBeFalsy();
+    });
+
+    it('should return false with not filter where role owner matches filter owner', () => {
+      expect(matches(matchedRole, notFilter)).toBeFalsy();
+    });
+
+    it('shoule return true with not filter where role owner does not match filter owner', () => {
+      expect(matches(noMatchedRole, notFilter)).toBeTruthy();
     });
   });
 });
