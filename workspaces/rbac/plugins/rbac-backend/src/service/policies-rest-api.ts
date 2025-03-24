@@ -132,7 +132,6 @@ export class PoliciesServer {
       permissions: policyEntityPermissions,
     });
     router.use(permissionsIntegrationRouter);
-    router.use(logAuditorEvent(this.auditor));
 
     const isPluginEnabled =
       this.options.config.getOptionalBoolean('permission.enabled');
@@ -154,35 +153,40 @@ export class PoliciesServer {
 
     // Policy CRUD
 
-    router.get('/policies', async (request, response) => {
-      const decision = await this.authorize(
-        request,
-        policyEntityReadPermission,
-      );
+    router.get(
+      '/policies',
+      logAuditorEvent(this.auditor),
+      async (request, response) => {
+        const decision = await this.authorize(
+          request,
+          policyEntityReadPermission,
+        );
 
-      if (decision.result === AuthorizeResult.DENY) {
-        throw new NotAllowedError(); // 403
-      }
+        if (decision.result === AuthorizeResult.DENY) {
+          throw new NotAllowedError(); // 403
+        }
 
-      let policies: string[][];
-      if (this.isPolicyFilterEnabled(request)) {
-        const entityRef = this.getFirstQuery(request.query.entityRef);
-        const permission = this.getFirstQuery(request.query.permission);
-        const policy = this.getFirstQuery(request.query.policy);
-        const effect = this.getFirstQuery(request.query.effect);
+        let policies: string[][];
+        if (this.isPolicyFilterEnabled(request)) {
+          const entityRef = this.getFirstQuery(request.query.entityRef);
+          const permission = this.getFirstQuery(request.query.permission);
+          const policy = this.getFirstQuery(request.query.policy);
+          const effect = this.getFirstQuery(request.query.effect);
 
-        const filter: string[] = [entityRef, permission, policy, effect];
-        policies = await this.enforcer.getFilteredPolicy(0, ...filter);
-      } else {
-        policies = await this.enforcer.getPolicy();
-      }
+          const filter: string[] = [entityRef, permission, policy, effect];
+          policies = await this.enforcer.getFilteredPolicy(0, ...filter);
+        } else {
+          policies = await this.enforcer.getPolicy();
+        }
 
-      const body = await this.transformPolicyArray(...policies);
-      response.json(body);
-    });
+        const body = await this.transformPolicyArray(...policies);
+        response.json(body);
+      },
+    );
 
     router.get(
       '/policies/:kind/:namespace/:name',
+      logAuditorEvent(this.auditor),
       async (request, response) => {
         const decision = await this.authorize(
           request,
@@ -207,6 +211,7 @@ export class PoliciesServer {
 
     router.delete(
       '/policies/:kind/:namespace/:name',
+      logAuditorEvent(this.auditor),
       async (request, response) => {
         const decision = await this.authorize(
           request,
@@ -238,39 +243,45 @@ export class PoliciesServer {
       },
     );
 
-    router.post('/policies', async (request, response) => {
-      const decision = await this.authorize(
-        request,
-        policyEntityCreatePermission,
-      );
+    router.post(
+      '/policies',
+      logAuditorEvent(this.auditor),
+      async (request, response) => {
+        const decision = await this.authorize(
+          request,
+          policyEntityCreatePermission,
+        );
 
-      if (decision.result === AuthorizeResult.DENY) {
-        throw new NotAllowedError(); // 403
-      }
+        if (decision.result === AuthorizeResult.DENY) {
+          throw new NotAllowedError(); // 403
+        }
 
-      const policyRaw: RoleBasedPolicy[] = request.body;
+        const policyRaw: RoleBasedPolicy[] = request.body;
 
-      if (isEmpty(policyRaw)) {
-        throw new InputError(`permission policy must be present`); // 400
-      }
+        if (isEmpty(policyRaw)) {
+          throw new InputError(`permission policy must be present`); // 400
+        }
 
-      const processedPolicies = await this.processPolicies(policyRaw);
+        const processedPolicies = await this.processPolicies(policyRaw);
 
-      const entityRef = processedPolicies[0][0];
-      const roleMetadata = await this.roleMetadata.findRoleMetadata(entityRef);
-      if (entityRef.startsWith('role:default') && !roleMetadata) {
-        throw new Error(`Corresponding role ${entityRef} was not found`);
-      }
+        const entityRef = processedPolicies[0][0];
+        const roleMetadata =
+          await this.roleMetadata.findRoleMetadata(entityRef);
+        if (entityRef.startsWith('role:default') && !roleMetadata) {
+          throw new Error(`Corresponding role ${entityRef} was not found`);
+        }
 
-      await this.enforcer.addPolicies(processedPolicies);
+        await this.enforcer.addPolicies(processedPolicies);
 
-      response.locals.meta = { policies: processedPolicies }; // auditor
+        response.locals.meta = { policies: processedPolicies }; // auditor
 
-      response.status(201).end();
-    });
+        response.status(201).end();
+      },
+    );
 
     router.put(
       '/policies/:kind/:namespace/:name',
+      logAuditorEvent(this.auditor),
       async (request, response) => {
         const decision = await this.authorize(
           request,
@@ -350,249 +361,274 @@ export class PoliciesServer {
 
     // Role CRUD
 
-    router.get('/roles', async (request, response) => {
-      const decision = await this.authorize(
-        request,
-        policyEntityReadPermission,
-      );
+    router.get(
+      '/roles',
+      logAuditorEvent(this.auditor),
+      async (request, response) => {
+        const decision = await this.authorize(
+          request,
+          policyEntityReadPermission,
+        );
 
-      if (decision.result === AuthorizeResult.DENY) {
-        throw new NotAllowedError(); // 403
-      }
+        if (decision.result === AuthorizeResult.DENY) {
+          throw new NotAllowedError(); // 403
+        }
 
-      const roles = await this.enforcer.getGroupingPolicy();
-      const body = await this.transformRoleArray(...roles);
-
-      response.json(body);
-    });
-
-    router.get('/roles/:kind/:namespace/:name', async (request, response) => {
-      const decision = await this.authorize(
-        request,
-        policyEntityReadPermission,
-      );
-
-      if (decision.result === AuthorizeResult.DENY) {
-        throw new NotAllowedError(); // 403
-      }
-      const roleEntityRef = this.getEntityReference(request, true);
-
-      const role = await this.enforcer.getFilteredGroupingPolicy(
-        1,
-        roleEntityRef,
-      );
-
-      if (role.length !== 0) {
-        const body = await this.transformRoleArray(...role);
+        const roles = await this.enforcer.getGroupingPolicy();
+        const body = await this.transformRoleArray(...roles);
 
         response.json(body);
-      } else {
-        throw new NotFoundError(); // 404
-      }
-    });
+      },
+    );
 
-    router.post('/roles', async (request, response) => {
-      const uniqueItems = new Set<string>();
-      const decision = await this.authorize(
-        request,
-        policyEntityCreatePermission,
-      );
-
-      if (decision.result === AuthorizeResult.DENY) {
-        throw new NotAllowedError(); // 403
-      }
-      const roleRaw: Role = request.body;
-      let err = validateRole(roleRaw);
-      if (err) {
-        throw new InputError( // 400
-          `Invalid role definition. Cause: ${err.message}`,
+    router.get(
+      '/roles/:kind/:namespace/:name',
+      logAuditorEvent(this.auditor),
+      async (request, response) => {
+        const decision = await this.authorize(
+          request,
+          policyEntityReadPermission,
         );
-      }
-      this.transformMemberReferencesToLowercase(roleRaw);
 
-      const rMetadata = await this.roleMetadata.findRoleMetadata(roleRaw.name);
-
-      err = await validateSource('rest', rMetadata);
-      if (err) {
-        throw new NotAllowedError(`Unable to add role: ${err.message}`);
-      }
-
-      const roles = this.transformRoleToArray(roleRaw);
-
-      for (const role of roles) {
-        if (await this.enforcer.hasGroupingPolicy(...role)) {
-          throw new ConflictError(); // 409
+        if (decision.result === AuthorizeResult.DENY) {
+          throw new NotAllowedError(); // 403
         }
-        const roleString = JSON.stringify(role);
+        const roleEntityRef = this.getEntityReference(request, true);
 
-        if (uniqueItems.has(roleString)) {
-          throw new ConflictError(
-            `Duplicate role members found; ${role.at(0)}, ${role.at(
-              1,
-            )} is a duplicate`,
-          );
+        const role = await this.enforcer.getFilteredGroupingPolicy(
+          1,
+          roleEntityRef,
+        );
+
+        if (role.length !== 0) {
+          const body = await this.transformRoleArray(...role);
+
+          response.json(body);
         } else {
-          uniqueItems.add(roleString);
+          throw new NotFoundError(); // 404
         }
-      }
+      },
+    );
 
-      const credentials = await httpAuth.credentials(request, {
-        allow: ['user'],
-      });
-      const modifiedBy = credentials.principal.userEntityRef;
-      const metadata: RoleMetadataDao = {
-        roleEntityRef: roleRaw.name,
-        source: 'rest',
-        description: roleRaw.metadata?.description ?? '',
-        author: modifiedBy,
-        modifiedBy,
-      };
-
-      await this.enforcer.addGroupingPolicies(roles, metadata);
-
-      response.locals.meta = { ...metadata, members: roles.map(gp => gp[0]) }; // auditor
-
-      response.status(201).end();
-    });
-
-    router.put('/roles/:kind/:namespace/:name', async (request, response) => {
-      const uniqueItems = new Set<string>();
-      const decision = await this.authorize(
-        request,
-        policyEntityUpdatePermission,
-      );
-
-      if (decision.result === AuthorizeResult.DENY) {
-        throw new NotAllowedError(); // 403
-      }
-      const roleEntityRef = this.getEntityReference(request, true);
-
-      const oldRoleRaw: Role = request.body.oldRole;
-
-      if (!oldRoleRaw) {
-        throw new InputError(`'oldRole' object must be present`); // 400
-      }
-      const newRoleRaw: Role = request.body.newRole;
-      if (!newRoleRaw) {
-        throw new InputError(`'newRole' object must be present`); // 400
-      }
-
-      oldRoleRaw.name = roleEntityRef;
-      let err = validateRole(oldRoleRaw);
-      if (err) {
-        throw new InputError( // 400
-          `Invalid old role object. Cause: ${err.message}`,
+    router.post(
+      '/roles',
+      logAuditorEvent(this.auditor),
+      async (request, response) => {
+        const uniqueItems = new Set<string>();
+        const decision = await this.authorize(
+          request,
+          policyEntityCreatePermission,
         );
-      }
-      err = validateRole(newRoleRaw);
-      if (err) {
-        throw new InputError( // 400
-          `Invalid new role object. Cause: ${err.message}`,
+
+        if (decision.result === AuthorizeResult.DENY) {
+          throw new NotAllowedError(); // 403
+        }
+        const roleRaw: Role = request.body;
+        let err = validateRole(roleRaw);
+        if (err) {
+          throw new InputError( // 400
+            `Invalid role definition. Cause: ${err.message}`,
+          );
+        }
+        this.transformMemberReferencesToLowercase(roleRaw);
+
+        const rMetadata = await this.roleMetadata.findRoleMetadata(
+          roleRaw.name,
         );
-      }
-      this.transformMemberReferencesToLowercase(oldRoleRaw);
-      this.transformMemberReferencesToLowercase(newRoleRaw);
 
-      const oldRole = this.transformRoleToArray(oldRoleRaw);
-      const newRole = this.transformRoleToArray(newRoleRaw);
-      // todo shell we allow newRole with an empty array?...
+        err = await validateSource('rest', rMetadata);
+        if (err) {
+          throw new NotAllowedError(`Unable to add role: ${err.message}`);
+        }
 
-      const credentials = await httpAuth.credentials(request, {
-        allow: ['user'],
-      });
+        const roles = this.transformRoleToArray(roleRaw);
 
-      const newMetadata: RoleMetadataDao = {
-        ...newRoleRaw.metadata,
-        source: newRoleRaw.metadata?.source ?? 'rest',
-        roleEntityRef: newRoleRaw.name,
-        modifiedBy: credentials.principal.userEntityRef,
-      };
-
-      const oldMetadata =
-        await this.roleMetadata.findRoleMetadata(roleEntityRef);
-      if (!oldMetadata) {
-        throw new NotFoundError(`Unable to find metadata for ${roleEntityRef}`);
-      }
-
-      err = await validateSource('rest', oldMetadata);
-      if (err) {
-        throw new NotAllowedError(`Unable to edit role: ${err.message}`);
-      }
-
-      if (
-        isEqual(oldRole, newRole) &&
-        deepSortedEqual(oldMetadata, newMetadata, [
-          'author',
-          'modifiedBy',
-          'createdAt',
-          'lastModified',
-        ])
-      ) {
-        // no content: old role and new role are equal and their metadata too
-        response.status(204).end();
-        return;
-      }
-
-      for (const role of newRole) {
-        const hasRole = oldRole.some(element => {
-          return isEqual(element, role);
-        });
-        // if the role is already part of old role and is a grouping policy we want to skip returning a conflict error
-        // to allow for other roles to be checked and added
-        if (await this.enforcer.hasGroupingPolicy(...role)) {
-          if (!hasRole) {
+        for (const role of roles) {
+          if (await this.enforcer.hasGroupingPolicy(...role)) {
             throw new ConflictError(); // 409
           }
-        }
-        const roleString = JSON.stringify(role);
+          const roleString = JSON.stringify(role);
 
-        if (uniqueItems.has(roleString)) {
-          throw new ConflictError(
-            `Duplicate role members found; ${role.at(0)}, ${role.at(
-              1,
-            )} is a duplicate`,
+          if (uniqueItems.has(roleString)) {
+            throw new ConflictError(
+              `Duplicate role members found; ${role.at(0)}, ${role.at(
+                1,
+              )} is a duplicate`,
+            );
+          } else {
+            uniqueItems.add(roleString);
+          }
+        }
+
+        const credentials = await httpAuth.credentials(request, {
+          allow: ['user'],
+        });
+        const modifiedBy = credentials.principal.userEntityRef;
+        const metadata: RoleMetadataDao = {
+          roleEntityRef: roleRaw.name,
+          source: 'rest',
+          description: roleRaw.metadata?.description ?? '',
+          author: modifiedBy,
+          modifiedBy,
+        };
+
+        await this.enforcer.addGroupingPolicies(roles, metadata);
+
+        response.locals.meta = { ...metadata, members: roles.map(gp => gp[0]) }; // auditor
+
+        response.status(201).end();
+      },
+    );
+
+    router.put(
+      '/roles/:kind/:namespace/:name',
+      logAuditorEvent(this.auditor),
+      async (request, response) => {
+        const uniqueItems = new Set<string>();
+        const decision = await this.authorize(
+          request,
+          policyEntityUpdatePermission,
+        );
+
+        if (decision.result === AuthorizeResult.DENY) {
+          throw new NotAllowedError(); // 403
+        }
+        const roleEntityRef = this.getEntityReference(request, true);
+
+        const oldRoleRaw: Role = request.body.oldRole;
+
+        if (!oldRoleRaw) {
+          throw new InputError(`'oldRole' object must be present`); // 400
+        }
+        const newRoleRaw: Role = request.body.newRole;
+        if (!newRoleRaw) {
+          throw new InputError(`'newRole' object must be present`); // 400
+        }
+
+        oldRoleRaw.name = roleEntityRef;
+        let err = validateRole(oldRoleRaw);
+        if (err) {
+          throw new InputError( // 400
+            `Invalid old role object. Cause: ${err.message}`,
           );
-        } else {
-          uniqueItems.add(roleString);
         }
-      }
+        err = validateRole(newRoleRaw);
+        if (err) {
+          throw new InputError( // 400
+            `Invalid new role object. Cause: ${err.message}`,
+          );
+        }
+        this.transformMemberReferencesToLowercase(oldRoleRaw);
+        this.transformMemberReferencesToLowercase(newRoleRaw);
 
-      uniqueItems.clear();
-      for (const role of oldRole) {
-        if (!(await this.enforcer.hasGroupingPolicy(...role))) {
+        const oldRole = this.transformRoleToArray(oldRoleRaw);
+        const newRole = this.transformRoleToArray(newRoleRaw);
+        // todo shell we allow newRole with an empty array?...
+
+        const credentials = await httpAuth.credentials(request, {
+          allow: ['user'],
+        });
+
+        const newMetadata: RoleMetadataDao = {
+          ...newRoleRaw.metadata,
+          source: newRoleRaw.metadata?.source ?? 'rest',
+          roleEntityRef: newRoleRaw.name,
+          modifiedBy: credentials.principal.userEntityRef,
+        };
+
+        const oldMetadata =
+          await this.roleMetadata.findRoleMetadata(roleEntityRef);
+        if (!oldMetadata) {
           throw new NotFoundError(
-            `Member reference: ${role[0]} was not found for role ${roleEntityRef}`,
-          ); // 404
-        }
-        const roleString = JSON.stringify(role);
-
-        if (uniqueItems.has(roleString)) {
-          throw new ConflictError(
-            `Duplicate role members found; ${role.at(0)}, ${role.at(
-              1,
-            )} is a duplicate`,
+            `Unable to find metadata for ${roleEntityRef}`,
           );
-        } else {
-          uniqueItems.add(roleString);
         }
-      }
 
-      await this.enforcer.updateGroupingPolicies(oldRole, newRole, newMetadata);
+        err = await validateSource('rest', oldMetadata);
+        if (err) {
+          throw new NotAllowedError(`Unable to edit role: ${err.message}`);
+        }
 
-      let message = `Updated ${oldMetadata.roleEntityRef}.`;
-      if (newMetadata.roleEntityRef !== oldMetadata.roleEntityRef) {
-        message = `${message}. Role entity reference renamed to ${newMetadata.roleEntityRef}`;
-      }
-      response.locals.meta = {
-        ...newMetadata,
-        members: newRole.map(gp => gp[0]),
-      }; // auditor
+        if (
+          isEqual(oldRole, newRole) &&
+          deepSortedEqual(oldMetadata, newMetadata, [
+            'author',
+            'modifiedBy',
+            'createdAt',
+            'lastModified',
+          ])
+        ) {
+          // no content: old role and new role are equal and their metadata too
+          response.status(204).end();
+          return;
+        }
 
-      response.status(200).end();
-    });
+        for (const role of newRole) {
+          const hasRole = oldRole.some(element => {
+            return isEqual(element, role);
+          });
+          // if the role is already part of old role and is a grouping policy we want to skip returning a conflict error
+          // to allow for other roles to be checked and added
+          if (await this.enforcer.hasGroupingPolicy(...role)) {
+            if (!hasRole) {
+              throw new ConflictError(); // 409
+            }
+          }
+          const roleString = JSON.stringify(role);
+
+          if (uniqueItems.has(roleString)) {
+            throw new ConflictError(
+              `Duplicate role members found; ${role.at(0)}, ${role.at(
+                1,
+              )} is a duplicate`,
+            );
+          } else {
+            uniqueItems.add(roleString);
+          }
+        }
+
+        uniqueItems.clear();
+        for (const role of oldRole) {
+          if (!(await this.enforcer.hasGroupingPolicy(...role))) {
+            throw new NotFoundError(
+              `Member reference: ${role[0]} was not found for role ${roleEntityRef}`,
+            ); // 404
+          }
+          const roleString = JSON.stringify(role);
+
+          if (uniqueItems.has(roleString)) {
+            throw new ConflictError(
+              `Duplicate role members found; ${role.at(0)}, ${role.at(
+                1,
+              )} is a duplicate`,
+            );
+          } else {
+            uniqueItems.add(roleString);
+          }
+        }
+
+        await this.enforcer.updateGroupingPolicies(
+          oldRole,
+          newRole,
+          newMetadata,
+        );
+
+        let message = `Updated ${oldMetadata.roleEntityRef}.`;
+        if (newMetadata.roleEntityRef !== oldMetadata.roleEntityRef) {
+          message = `${message}. Role entity reference renamed to ${newMetadata.roleEntityRef}`;
+        }
+        response.locals.meta = {
+          ...newMetadata,
+          members: newRole.map(gp => gp[0]),
+        }; // auditor
+
+        response.status(200).end();
+      },
+    );
 
     router.delete(
       '/roles/:kind/:namespace/:name',
+      logAuditorEvent(this.auditor),
       async (request, response) => {
         const decision = await this.authorize(
           request,
@@ -667,156 +703,182 @@ export class PoliciesServer {
       },
     );
 
-    router.get('/plugins/policies', async (request, response) => {
-      const decision = await this.authorize(
-        request,
-        policyEntityReadPermission,
-      );
+    router.get(
+      '/plugins/policies',
+      logAuditorEvent(this.auditor),
+      async (request, response) => {
+        const decision = await this.authorize(
+          request,
+          policyEntityReadPermission,
+        );
 
-      if (decision.result === AuthorizeResult.DENY) {
-        throw new NotAllowedError(); // 403
-      }
+        if (decision.result === AuthorizeResult.DENY) {
+          throw new NotAllowedError(); // 403
+        }
 
-      const body = await this.pluginPermMetaData.getPluginPolicies(
-        this.options.auth,
-      );
+        const body = await this.pluginPermMetaData.getPluginPolicies(
+          this.options.auth,
+        );
 
-      response.json(body);
-    });
+        response.json(body);
+      },
+    );
 
-    router.get('/plugins/condition-rules', async (request, response) => {
-      const decision = await this.authorize(
-        request,
-        policyEntityReadPermission,
-      );
+    router.get(
+      '/plugins/condition-rules',
+      logAuditorEvent(this.auditor),
+      async (request, response) => {
+        const decision = await this.authorize(
+          request,
+          policyEntityReadPermission,
+        );
 
-      if (decision.result === AuthorizeResult.DENY) {
-        throw new NotAllowedError(); // 403
-      }
+        if (decision.result === AuthorizeResult.DENY) {
+          throw new NotAllowedError(); // 403
+        }
 
-      const body = await this.pluginPermMetaData.getPluginConditionRules(
-        this.options.auth,
-      );
+        const body = await this.pluginPermMetaData.getPluginConditionRules(
+          this.options.auth,
+        );
 
-      response.json(body);
-    });
+        response.json(body);
+      },
+    );
 
-    router.get('/roles/conditions', async (request, response) => {
-      const decision = await this.authorize(
-        request,
-        policyEntityReadPermission,
-      );
+    router.get(
+      '/roles/conditions',
+      logAuditorEvent(this.auditor),
+      async (request, response) => {
+        const decision = await this.authorize(
+          request,
+          policyEntityReadPermission,
+        );
 
-      if (decision.result === AuthorizeResult.DENY) {
-        throw new NotAllowedError(); // 403
-      }
+        if (decision.result === AuthorizeResult.DENY) {
+          throw new NotAllowedError(); // 403
+        }
 
-      const conditions = await this.conditionalStorage.filterConditions(
-        this.getFirstQuery(request.query.roleEntityRef),
-        this.getFirstQuery(request.query.pluginId),
-        this.getFirstQuery(request.query.resourceType),
-        this.getActionQueries(request.query.actions),
-      );
+        const conditions = await this.conditionalStorage.filterConditions(
+          this.getFirstQuery(request.query.roleEntityRef),
+          this.getFirstQuery(request.query.pluginId),
+          this.getFirstQuery(request.query.resourceType),
+          this.getActionQueries(request.query.actions),
+        );
 
-      const body: RoleConditionalPolicyDecision<PermissionAction>[] =
-        conditions.map(condition => {
-          return {
-            ...condition,
-            permissionMapping: condition.permissionMapping.map(pm => pm.action),
-          };
-        });
+        const body: RoleConditionalPolicyDecision<PermissionAction>[] =
+          conditions.map(condition => {
+            return {
+              ...condition,
+              permissionMapping: condition.permissionMapping.map(
+                pm => pm.action,
+              ),
+            };
+          });
 
-      response.json(body);
-    });
+        response.json(body);
+      },
+    );
 
-    router.post('/roles/conditions', async (request, response) => {
-      const decision = await this.authorize(
-        request,
-        policyEntityCreatePermission,
-      );
+    router.post(
+      '/roles/conditions',
+      logAuditorEvent(this.auditor),
+      async (request, response) => {
+        const decision = await this.authorize(
+          request,
+          policyEntityCreatePermission,
+        );
 
-      if (decision.result === AuthorizeResult.DENY) {
-        throw new NotAllowedError(); // 403
-      }
+        if (decision.result === AuthorizeResult.DENY) {
+          throw new NotAllowedError(); // 403
+        }
 
-      const roleConditionPolicy: RoleConditionalPolicyDecision<PermissionAction> =
-        request.body;
-      validateRoleCondition(roleConditionPolicy);
+        const roleConditionPolicy: RoleConditionalPolicyDecision<PermissionAction> =
+          request.body;
+        validateRoleCondition(roleConditionPolicy);
 
-      const conditionToCreate = await processConditionMapping(
-        roleConditionPolicy,
-        this.pluginPermMetaData,
-        this.options.auth,
-      );
+        const conditionToCreate = await processConditionMapping(
+          roleConditionPolicy,
+          this.pluginPermMetaData,
+          this.options.auth,
+        );
 
-      const id =
-        await this.conditionalStorage.createCondition(conditionToCreate);
+        const id =
+          await this.conditionalStorage.createCondition(conditionToCreate);
 
-      const body = { id: id };
+        const body = { id: id };
 
-      response.locals.meta = { condition: roleConditionPolicy }; // auditor
+        response.locals.meta = { condition: roleConditionPolicy }; // auditor
 
-      response.status(201).json(body);
-    });
+        response.status(201).json(body);
+      },
+    );
 
-    router.get('/roles/conditions/:id', async (request, response) => {
-      const decision = await this.authorize(
-        request,
-        policyEntityReadPermission,
-      );
+    router.get(
+      '/roles/conditions/:id',
+      logAuditorEvent(this.auditor),
+      async (request, response) => {
+        const decision = await this.authorize(
+          request,
+          policyEntityReadPermission,
+        );
 
-      if (decision.result === AuthorizeResult.DENY) {
-        throw new NotAllowedError(); // 403
-      }
+        if (decision.result === AuthorizeResult.DENY) {
+          throw new NotAllowedError(); // 403
+        }
 
-      const id: number = parseInt(request.params.id, 10);
-      if (isNaN(id)) {
-        throw new InputError('Id is not a valid number.');
-      }
+        const id: number = parseInt(request.params.id, 10);
+        if (isNaN(id)) {
+          throw new InputError('Id is not a valid number.');
+        }
 
-      const condition = await this.conditionalStorage.getCondition(id);
-      if (!condition) {
-        throw new NotFoundError();
-      }
+        const condition = await this.conditionalStorage.getCondition(id);
+        if (!condition) {
+          throw new NotFoundError();
+        }
 
-      const body: RoleConditionalPolicyDecision<PermissionAction> = {
-        ...condition,
-        permissionMapping: condition.permissionMapping.map(pm => pm.action),
-      };
-
-      response.json(body);
-    });
-
-    router.delete('/roles/conditions/:id', async (request, response) => {
-      const decision = await this.authorize(
-        request,
-        policyEntityDeletePermission,
-      );
-
-      if (decision.result === AuthorizeResult.DENY) {
-        throw new NotAllowedError(); // 403
-      }
-
-      const id: number = parseInt(request.params.id, 10);
-      if (isNaN(id)) {
-        throw new InputError('Id is not a valid number.');
-      }
-
-      const condition = await this.conditionalStorage.getCondition(id);
-      if (!condition) {
-        throw new NotFoundError(`Condition with id ${id} was not found`);
-      }
-      const conditionToDelete: RoleConditionalPolicyDecision<PermissionAction> =
-        {
+        const body: RoleConditionalPolicyDecision<PermissionAction> = {
           ...condition,
           permissionMapping: condition.permissionMapping.map(pm => pm.action),
         };
 
-      await this.conditionalStorage.deleteCondition(id);
-      response.locals.meta = { condition: conditionToDelete }; // auditor
+        response.json(body);
+      },
+    );
 
-      response.status(204).end();
-    });
+    router.delete(
+      '/roles/conditions/:id',
+      logAuditorEvent(this.auditor),
+      async (request, response) => {
+        const decision = await this.authorize(
+          request,
+          policyEntityDeletePermission,
+        );
+
+        if (decision.result === AuthorizeResult.DENY) {
+          throw new NotAllowedError(); // 403
+        }
+
+        const id: number = parseInt(request.params.id, 10);
+        if (isNaN(id)) {
+          throw new InputError('Id is not a valid number.');
+        }
+
+        const condition = await this.conditionalStorage.getCondition(id);
+        if (!condition) {
+          throw new NotFoundError(`Condition with id ${id} was not found`);
+        }
+        const conditionToDelete: RoleConditionalPolicyDecision<PermissionAction> =
+          {
+            ...condition,
+            permissionMapping: condition.permissionMapping.map(pm => pm.action),
+          };
+
+        await this.conditionalStorage.deleteCondition(id);
+        response.locals.meta = { condition: conditionToDelete }; // auditor
+
+        response.status(204).end();
+      },
+    );
 
     router.put('/roles/conditions/:id', async (request, response) => {
       const decision = await this.authorize(
@@ -850,34 +912,38 @@ export class PoliciesServer {
       response.status(200).end();
     });
 
-    router.post('/refresh/:id', async (request, response) => {
-      const decision = await this.authorize(
-        request,
-        policyEntityCreatePermission,
-      );
-
-      if (decision.result === AuthorizeResult.DENY) {
-        throw new NotAllowedError(); // 403
-      }
-
-      if (!this.rbacProviders) {
-        throw new NotFoundError(`No RBAC providers were found`);
-      }
-
-      const idProvider = this.rbacProviders.find(provider => {
-        const id = provider.getProviderName();
-        return id === request.params.id;
-      });
-
-      if (!idProvider) {
-        throw new NotFoundError(
-          `The RBAC provider ${request.params.id} was not found`,
+    router.post(
+      '/refresh/:id',
+      logAuditorEvent(this.auditor),
+      async (request, response) => {
+        const decision = await this.authorize(
+          request,
+          policyEntityCreatePermission,
         );
-      }
 
-      await idProvider.refresh();
-      response.status(200).end();
-    });
+        if (decision.result === AuthorizeResult.DENY) {
+          throw new NotAllowedError(); // 403
+        }
+
+        if (!this.rbacProviders) {
+          throw new NotFoundError(`No RBAC providers were found`);
+        }
+
+        const idProvider = this.rbacProviders.find(provider => {
+          const id = provider.getProviderName();
+          return id === request.params.id;
+        });
+
+        if (!idProvider) {
+          throw new NotFoundError(
+            `The RBAC provider ${request.params.id} was not found`,
+          );
+        }
+
+        await idProvider.refresh();
+        response.status(200).end();
+      },
+    );
 
     router.use(setAuditorError());
 

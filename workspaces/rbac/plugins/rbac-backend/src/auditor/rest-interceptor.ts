@@ -32,6 +32,7 @@ import {
   AuditorService,
   AuditorServiceEvent,
 } from '@backstage/backend-plugin-api';
+import type { JsonObject } from '@backstage/types';
 
 // Mapping paths and methods to corresponding events and messages
 const eventMap: {
@@ -63,6 +64,68 @@ const eventMap: {
   },
 };
 
+const eventToActionMap: {
+  [key: string]: string;
+} = {
+  POST: 'create',
+  PUT: 'update',
+  DELETE: 'delete',
+};
+
+function getRequestAuditorMeta(req: Request, eventId: string): JsonObject {
+  const meta = {
+    source: 'rest',
+    ...(req.method in eventToActionMap
+      ? { actionType: eventToActionMap[req.method] }
+      : {}),
+  };
+
+  if (req.method !== 'GET') {
+    return meta;
+  }
+
+  let extraMeta = {};
+  const hasQuery = Object.keys(req.query).length > 0;
+  const hasParams = Object.keys(req.params).length > 0;
+  switch (eventId) {
+    case PermissionEvents.POLICY_GET:
+      if (hasParams) {
+        extraMeta = {
+          queryType: 'by-role',
+          entityRef: `${req.params.kind}:${req.params.namespace}/${req.params.name}`,
+        };
+        break;
+      }
+      extraMeta = {
+        queryType: hasQuery ? 'by-query' : 'all',
+        ...(hasQuery ? { query: req.query } : {}),
+      };
+      break;
+    case RoleEvents.ROLE_GET:
+      if (hasParams) {
+        extraMeta = {
+          queryType: 'by-role',
+          entityRef: `${req.params.kind}:${req.params.namespace}/${req.params.name}`,
+        };
+        break;
+      }
+      extraMeta = {
+        queryType: hasQuery ? 'by-query' : 'all',
+        ...(hasQuery ? { query: req.query } : {}),
+      };
+      break;
+    case ConditionEvents.CONDITION_GET:
+      extraMeta = {
+        queryType: hasQuery ? 'by-query' : 'all',
+        ...(hasQuery ? { query: req.query } : {}),
+      };
+      break;
+    default:
+      break;
+  }
+  return { ...meta, ...extraMeta };
+}
+
 export function logAuditorEvent(auditor: AuditorService): RequestHandler {
   return async (req: Request, resp: Response, next: NextFunction) => {
     let auditorEvent: AuditorServiceEvent | undefined;
@@ -72,11 +135,12 @@ export function logAuditorEvent(auditor: AuditorService): RequestHandler {
     if (matchedPath) {
       const methodEvent = eventMap[matchedPath][req.method];
       if (methodEvent) {
+        const meta = getRequestAuditorMeta(req, methodEvent);
         auditorEvent = await auditor.createEvent({
           eventId: methodEvent,
           severityLevel: 'medium',
           request: req,
-          meta: { source: 'rest' },
+          meta,
         });
       }
     }
