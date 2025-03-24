@@ -2808,7 +2808,7 @@ __metadata:
     "@patternfly/react-charts": "npm:7.2.2"
     "@patternfly/react-component-groups": "npm:^5.2.0"
     "@patternfly/react-core": "npm:5.2.2"
-    "@patternfly/react-icons": "npm:5.2.1"
+    "@patternfly/react-icons": "npm:5.4.2"
     "@patternfly/react-styles": "npm:5.2.1"
     "@patternfly/react-table": "npm:5.2.2"
     "@patternfly/react-topology": "npm:5.2.1"
@@ -10439,17 +10439,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@patternfly/react-icons@npm:5.2.1":
-  version: 5.2.1
-  resolution: "@patternfly/react-icons@npm:5.2.1"
-  peerDependencies:
-    react: ^17 || ^18
-    react-dom: ^17 || ^18
-  checksum: 10/aecdd3f5c9399cb60aec63a6ab8ef2e9519e48d8eaf954abac65b91ddc0d82112439ac026437336cf0d3b89f186a42827b1d068528c1d502e6d6b779cb17f7e0
-  languageName: node
-  linkType: hard
-
-"@patternfly/react-icons@npm:^5.1.1, @patternfly/react-icons@npm:^5.2.1, @patternfly/react-icons@npm:^5.4.0, @patternfly/react-icons@npm:^5.4.2":
+"@patternfly/react-icons@npm:5.4.2, @patternfly/react-icons@npm:^5.1.1, @patternfly/react-icons@npm:^5.2.1, @patternfly/react-icons@npm:^5.4.0, @patternfly/react-icons@npm:^5.4.2":
   version: 5.4.2
   resolution: "@patternfly/react-icons@npm:5.4.2"
   peerDependencies:
