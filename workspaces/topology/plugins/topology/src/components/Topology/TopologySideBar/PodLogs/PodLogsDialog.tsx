@@ -120,7 +120,11 @@ const ViewLogs = ({ podData, onClose }: ViewLogsProps) => {
       <DialogContent>
         <RequirePermission
           permission={kubernetesProxyPermission}
-          errorPage={<MissingPermissionPage />}
+          errorPage={
+            <Box pb={3}>
+              <MissingPermissionPage />
+            </Box>
+          }
         >
           <ErrorBoundary>
             <PodLogs
