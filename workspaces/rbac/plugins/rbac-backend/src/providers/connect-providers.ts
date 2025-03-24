@@ -184,13 +184,9 @@ export class Connection implements RBACProviderConnection {
         }
 
         const singleRole = roleMeta && currentRole.length === 1;
-        let eventName: (typeof RoleEvents)[keyof typeof RoleEvents] =
-          RoleEvents.ROLE_UPDATE;
-
-        // Only one role exists in rbac remove role metadata as well
-        if (singleRole) {
-          eventName = RoleEvents.ROLE_DELETE;
-        }
+        const eventName = singleRole
+          ? RoleEvents.ROLE_DELETE
+          : RoleEvents.ROLE_UPDATE;
 
         const auditorMeta = { ...roleMeta, members: [role[0]] };
         const auditorEvent = await this.auditor?.createEvent({
