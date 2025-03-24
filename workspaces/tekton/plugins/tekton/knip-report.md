@@ -12,8 +12,8 @@
 
 | Name                         | Location          | Severity |
 | :--------------------------- | :---------------- | :------- |
-| @testing-library/react-hooks | package.json:78:6 | error    |
-| @testing-library/user-event  | package.json:79:6 | error    |
+| @testing-library/react-hooks | package.json:79:6 | error    |
+| @testing-library/user-event  | package.json:80:6 | error    |
 | @backstage/core-app-api      | package.json:72:6 | error    |
 | start-server-and-test        | package.json:85:6 | error    |
 | msw                          | package.json:84:6 | error    |
