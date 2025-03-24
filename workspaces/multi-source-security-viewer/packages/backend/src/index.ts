@@ -63,4 +63,7 @@ backend.add(import('@backstage/plugin-kubernetes-backend'));
 // jenkins
 backend.add(import('@backstage-community/plugin-jenkins-backend'));
 
+// azure
+backend.add(import('@backstage-community/plugin-azure-devops-backend'));
+
 backend.start();
