@@ -2761,6 +2761,7 @@ __metadata:
     "@backstage/plugin-auth-backend": "npm:^0.24.4"
     "@backstage/plugin-auth-backend-module-guest-provider": "npm:^0.2.6"
     "@backstage/test-utils": "npm:^1.7.6"
+    "@octokit/rest": "npm:20.1.0"
     "@types/express": "npm:*"
     "@types/node-fetch": "npm:^2.6.11"
     "@types/supertest": "npm:^2.0.8"
