@@ -144,7 +144,7 @@ The Keycloak backend plugin supports [OpenTelemetry](https://opentelemetry.io/) 
 
 | Metric Name                                             | Description                                                                                          |
 | ------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| `backend_keycloak_fetch_total_failure_count_total`      | Counts fetch task failures where no data was returned due to an error.                               |
+| `backend_keycloak_fetch_task_failure_count_total`       | Counts fetch task failures where no data was returned due to an error.                               |
 | `backend_keycloak_fetch_data_batch_failure_count_total` | Counts partial data batch failures. Even if some batches fail, the plugin continues fetching others. |
 
 The plugin is designed to tolerate partial failures and proceed with the data that can be successfully retrieved. Failed batches may be fetched in the next scheduled task.
