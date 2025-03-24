@@ -51,9 +51,9 @@ yarn.lock                                                               @backsta
 /workspaces/octopus-deploy                                              @backstage/community-plugins-maintainers  @jmezach
 /workspaces/pingidentity                                                @backstage/community-plugins-maintainers  @jessicajhee
 /workspaces/playlist                                                    @backstage/community-plugins-maintainers  @kuangp
-/workspaces/quay                                                        @backstage/community-plugins-maintainers  @caugello @cryptorodeo @Eswaraiahsapram @karthikjeeyar @rohitkrai03
+/workspaces/quay                                                        @backstage/community-plugins-maintainers  @caugello @cryptorodeo
 /workspaces/rbac                                                        @backstage/community-plugins-maintainers  @AndrienkoAleksandr @christoph-jerolimov @divyanshiGupta @PatAKnight
-/workspaces/redhat-argocd                                               @backstage/community-plugins-maintainers  @caugello @cryptorodeo @Eswaraiahsapram @karthikjeeyar @rohitkrai03
+/workspaces/redhat-argocd                                               @backstage/community-plugins-maintainers  @caugello @cryptorodeo
 /workspaces/redhat-resource-optimization                                @backstage/community-plugins-maintainers  @jkilzi @preetiw @christoph-jerolimov
 /workspaces/report-portal                                               @backstage/community-plugins-maintainers  @yashoswalyo @deshmukhmayur @riginoommen
 /workspaces/rollbar                                                     @backstage/community-plugins-maintainers  @andrewthauer
@@ -65,6 +65,6 @@ yarn.lock                                                               @backsta
 /workspaces/scaffolder-relation-processor                               @backstage/community-plugins-maintainers  @04kash
 /workspaces/sonarqube                                                   @backstage/community-plugins-maintainers  @backstage/sda-se-reviewers
 /workspaces/tech-insights                                               @backstage/community-plugins-maintainers  @xantier
-/workspaces/tekton                                                      @backstage/community-plugins-maintainers  @caugello @cryptorodeo @Eswaraiahsapram @karthikjeeyar @rohitkrai03
+/workspaces/tekton                                                      @backstage/community-plugins-maintainers  @caugello @cryptorodeo
 /workspaces/topology                                                    @backstage/community-plugins-maintainers  @christoph-jerolimov @ciiay @debsmita1 @divyanshiGupta
 /workspaces/multi-source-security-viewer                                @backstage/community-plugins-maintainers  @caugello @cryptorodeo
