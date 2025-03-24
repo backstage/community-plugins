@@ -89,7 +89,7 @@ export const MissingPermissionPage = () => {
           </Stack>
         </Grid>
         <Grid item>
-          <img src={MissingPermissionImg} alt="permission icon" />
+          <img src={MissingPermissionImg} alt="" />
         </Grid>
       </Grid>
     </StyledBox>
