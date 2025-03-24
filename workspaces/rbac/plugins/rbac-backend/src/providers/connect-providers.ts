@@ -236,16 +236,12 @@ export class Connection implements RBACProviderConnection {
 
         let err = validatePolicy(transformedPolicy);
         if (err) {
-          this.logger.warn(`Invalid permission policy, ${err}`);
           auditorEvent.fail({ error: err, meta: auditorMeta });
           continue; // Skip this invalid permission policy
         }
 
         err = await validateSource(this.id, metadata);
         if (err) {
-          this.logger.warn(
-            `Unable to add policy ${permission}. Cause: ${err.message}`,
-          );
           auditorEvent.fail({ error: err, meta: auditorMeta });
           continue;
         }

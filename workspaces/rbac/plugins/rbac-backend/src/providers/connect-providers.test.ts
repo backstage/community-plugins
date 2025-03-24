@@ -41,6 +41,11 @@ import { EnforcerDelegate } from '../service/enforcer-delegate';
 import { MODEL } from '../service/permission-model';
 import { Connection, connectRBACProviders } from './connect-providers';
 import { mockAuditorService } from '../../__fixtures__/mock-utils';
+import {
+  clearAuditorMock,
+  expectAuditorLog,
+} from '../../__fixtures__/auditor-test-utils';
+import { PermissionEvents } from '../auditor/auditor';
 
 const mockLoggerService = mockServices.logger.mock();
 
@@ -205,6 +210,8 @@ describe('Connection', () => {
       mockLoggerService,
       mockAuditorService,
     );
+
+    clearAuditorMock();
   });
 
   it('should initialize', () => {
@@ -431,32 +438,60 @@ describe('Connection', () => {
       expect(enfRemovePolicySpy).toHaveBeenCalledWith(...existingPolicy);
     });
 
-    it('should log an error for an invalid permission', async () => {
+    it('should audit log an error for an invalid permission', async () => {
       enfAddPolicySpy = jest.spyOn(enforcerDelegate, 'addPolicy');
 
       const policies = [
+        ...existingPolicy,
         ['role:default/provider-role', 'catalog-entity', 'read', 'temp'],
       ];
 
       await provider.applyPermissions(policies);
-      expect(mockLoggerService.warn).toHaveBeenCalledWith(
-        `Invalid permission policy, Error: 'effect' has invalid value: 'temp'. It should be: 'allow' or 'deny'`,
-      );
+      expectAuditorLog([
+        {
+          event: {
+            eventId: PermissionEvents.POLICY_CREATE,
+            meta: { source: 'test' },
+          },
+          fail: {
+            error: new Error(
+              `'effect' has invalid value: 'temp'. It should be: 'allow' or 'deny'`,
+            ),
+            meta: {
+              policies: [policies[1]],
+              source: 'test',
+            },
+          },
+        },
+      ]);
     });
 
-    it('should log an error for an invalid permission by source', async () => {
+    it('should audit log an error for an invalid permission by source', async () => {
       enfAddPolicySpy = jest.spyOn(enforcerDelegate, 'addPolicy');
 
       const policies = [
+        ...existingPolicy,
         ['role:default/csv-role', 'catalog-entity', 'read', 'allow'],
       ];
 
       await provider.applyPermissions(policies);
-      expect(mockLoggerService.warn).toHaveBeenCalledWith(
-        `Unable to add policy ${policies[0].toString()}. Cause: source does not match originating role ${
-          policies[0][0]
-        }, consider making changes to the 'CSV-FILE'`,
-      );
+      expectAuditorLog([
+        {
+          event: {
+            eventId: PermissionEvents.POLICY_CREATE,
+            meta: { source: 'test' },
+          },
+          fail: {
+            error: new Error(
+              `source does not match originating role role:default/csv-role, consider making changes to the 'CSV-FILE'`,
+            ),
+            meta: {
+              policies: [policies[1]],
+              source: 'test',
+            },
+          },
+        },
+      ]);
     });
 
     it('should still add new permission, even if there is an invalid permission in array', () => {

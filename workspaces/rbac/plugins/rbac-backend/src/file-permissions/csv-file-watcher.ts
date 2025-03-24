@@ -250,9 +250,6 @@ export class CSVFileWatcher extends AbstractFileWatcher<string[][]> {
       await this.enforcer.addPolicies(this.csvFilePolicies.addedPolicies);
       await auditorEvent.success({ meta });
     } catch (e) {
-      this.logger.warn(
-        `Failed to add or update policies ${this.csvFilePolicies.addedPolicies} after modification ${this.filePath}. Cause: ${e}`,
-      );
       await auditorEvent.fail({
         meta,
         error: e,
@@ -280,11 +277,6 @@ export class CSVFileWatcher extends AbstractFileWatcher<string[][]> {
       await this.enforcer.removePolicies(this.csvFilePolicies.removedPolicies);
       await auditorEvent.success({ meta });
     } catch (e) {
-      this.logger.warn(
-        `Failed to remove policies ${JSON.stringify(
-          this.csvFilePolicies.removedPolicies,
-        )} after modification ${this.filePath}. Cause: ${e}`,
-      );
       await auditorEvent.fail({
         meta,
         error: e,
@@ -342,9 +334,6 @@ export class CSVFileWatcher extends AbstractFileWatcher<string[][]> {
           changedPolicies.added.push(...groupPolicies);
         }
       } catch (e) {
-        this.logger.warn(
-          `Failed to add or update group policy ${groupPolicies} after modification ${this.filePath}. Cause: ${e}`,
-        );
         changedPolicies.failed.push({ error: e, policies: groupPolicies });
       }
     }
@@ -416,9 +405,6 @@ export class CSVFileWatcher extends AbstractFileWatcher<string[][]> {
         );
         await auditorEvent.success({ meta });
       } catch (e) {
-        this.logger.warn(
-          `Failed to remove group policy ${groupPolicies} after modification ${this.filePath}. Cause: ${e}`,
-        );
         await auditorEvent.fail({
           meta,
           error: e,
