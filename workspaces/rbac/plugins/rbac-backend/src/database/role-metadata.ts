@@ -73,9 +73,8 @@ export class DataBaseRoleMetadataStorage implements RoleMetadataStorage {
   ): Promise<RoleMetadataDao[]> {
     let filteredRoleMeta: RoleMetadataDao[];
 
-    const roleMetadata: RoleMetadataDao[] = await this.knex.table(
-      ROLE_METADATA_TABLE,
-    );
+    const roleMetadata: RoleMetadataDao[] =
+      await this.knex.table(ROLE_METADATA_TABLE);
 
     if (filter) {
       filteredRoleMeta = roleMetadata.filter(role => {
