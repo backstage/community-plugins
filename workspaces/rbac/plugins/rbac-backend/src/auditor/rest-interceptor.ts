@@ -18,6 +18,7 @@ import {
   type NextFunction,
   type Request,
   type Response,
+  type ErrorRequestHandler,
 } from 'express';
 
 import {
@@ -81,23 +82,34 @@ export function logAuditorEvent(auditor: AuditorService): RequestHandler {
     }
 
     resp.on('finish', async () => {
+      const meta = {
+        source: 'rest',
+        response: { status: resp.statusCode },
+        ...(resp.locals.meta ?? {}),
+      };
       if (resp.statusCode < 400) {
-        const meta = resp.locals.meta ?? {};
-        await auditorEvent?.success({
-          meta: {
-            source: 'rest',
-            response: { status: resp.statusCode },
-            ...meta,
-          },
-        });
+        await auditorEvent?.success({ meta });
       } else {
+        const error = resp.locals.error ?? new Error(resp.statusMessage);
         await auditorEvent?.fail({
-          error: Error(resp.statusMessage),
-          meta: { response: { status: resp.statusCode } },
+          error,
+          meta,
         });
       }
     });
 
     next();
+  };
+}
+
+export function setAuditorError(): ErrorRequestHandler {
+  return async (
+    err: Error,
+    _req: Request,
+    resp: Response,
+    next: NextFunction,
+  ) => {
+    resp.locals.error = err;
+    next(err);
   };
 }

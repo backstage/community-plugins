@@ -51,7 +51,7 @@ import {
 } from '@backstage-community/plugin-rbac-common';
 import type { RBACProvider } from '@backstage-community/plugin-rbac-node';
 
-import { logAuditorEvent } from '../auditor/rest-interceptor';
+import { setAuditorError, logAuditorEvent } from '../auditor/rest-interceptor';
 import { ConditionalStorage } from '../database/conditional-storage';
 import {
   daoToMetadata,
@@ -878,6 +878,8 @@ export class PoliciesServer {
       await idProvider.refresh();
       response.status(200).end();
     });
+
+    router.use(setAuditorError());
 
     return router;
   }
