@@ -26,7 +26,7 @@ import {
 import { mergeRoleMetadata, policiesToString, policyToString } from '../helper';
 import { MODEL } from './permission-model';
 import { PoliciesData } from '../auditor/auditor';
-import { AuditorService } from '@backstage/backend-plugin-api/index';
+import { AuditorService } from '@backstage/backend-plugin-api';
 
 export type RoleEvents = 'roleAdded';
 export interface RoleEventEmitter<T extends RoleEvents> {

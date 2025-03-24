@@ -18,7 +18,7 @@ import type { AuditorServiceCreateEventOptions } from '@backstage/backend-plugin
 
 import { mockAuditorService, createEventMock } from './mock-utils';
 import { type JsonObject } from '@backstage/types';
-import { AuthorizeResult } from '@backstage/plugin-permission-common/index';
+import { AuthorizeResult } from '@backstage/plugin-permission-common';
 import { EvaluationEvents } from '../src/auditor/auditor';
 
 export function expectAuditorLog(

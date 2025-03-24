@@ -31,7 +31,7 @@ import {
 import {
   AuditorService,
   AuditorServiceEvent,
-} from '@backstage/backend-plugin-api/index';
+} from '@backstage/backend-plugin-api';
 
 // Mapping paths and methods to corresponding events and messages
 const eventMap: {

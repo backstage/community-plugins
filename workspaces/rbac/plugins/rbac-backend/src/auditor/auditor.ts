@@ -26,7 +26,7 @@ import {
 import {
   AuditorService,
   AuditorServiceEvent,
-} from '@backstage/backend-plugin-api/index';
+} from '@backstage/backend-plugin-api';
 
 export const RoleEvents = {
   ROLE_CREATE: 'role-create',

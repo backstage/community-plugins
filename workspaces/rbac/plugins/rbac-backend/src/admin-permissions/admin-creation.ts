@@ -25,7 +25,7 @@ import {
 import { removeTheDifference } from '../helper';
 import { EnforcerDelegate } from '../service/enforcer-delegate';
 import { validateEntityReference } from '../validation/policies-validation';
-import { AuditorService } from '@backstage/backend-plugin-api/index';
+import { AuditorService } from '@backstage/backend-plugin-api';
 
 export const ADMIN_ROLE_NAME = 'role:default/rbac_admin';
 export const ADMIN_ROLE_AUTHOR = 'application configuration';
