@@ -44,17 +44,17 @@ const eventMap: {
     DELETE: PermissionEvents.POLICY_DELETE,
     GET: PermissionEvents.POLICY_GET,
   },
-  '/roles': {
-    POST: RoleEvents.ROLE_CREATE,
-    PUT: RoleEvents.ROLE_UPDATE,
-    DELETE: RoleEvents.ROLE_DELETE,
-    GET: RoleEvents.ROLE_GET,
-  },
   '/roles/conditions': {
     POST: ConditionEvents.CONDITION_CREATE,
     PUT: ConditionEvents.CONDITION_UPDATE,
     DELETE: ConditionEvents.CONDITION_DELETE,
     GET: ConditionEvents.CONDITION_GET,
+  },
+  '/roles': {
+    POST: RoleEvents.ROLE_CREATE,
+    PUT: RoleEvents.ROLE_UPDATE,
+    DELETE: RoleEvents.ROLE_DELETE,
+    GET: RoleEvents.ROLE_GET,
   },
   '/plugins/policies': {
     GET: ListPluginPoliciesEvents.PLUGIN_POLICIES_GET,
