@@ -211,7 +211,7 @@ describe('RBACPermissionPolicy Tests', () => {
     });
 
     // case3
-    it('should alloshould allow read access to resource permission for user from csv filew deny access to resource permission for user:default/known_user', async () => {
+    it('should allow deny access to resource permission for user:default/known_user', async () => {
       const decision = await policy.handle(
         newPolicyQueryWithBasicPermission('test.resource.deny'),
         newPolicyQueryUser('user:default/known_user'),
