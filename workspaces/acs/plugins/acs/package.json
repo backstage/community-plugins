@@ -75,8 +75,8 @@
   },
   "configSchema": "config.d.ts",
   "files": [
+    "app-config.dynamic.yaml",
     "dist",
-    "dist-scalprum",
     "config.d.ts"
   ]
 }
