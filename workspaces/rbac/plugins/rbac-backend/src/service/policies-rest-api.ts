@@ -880,37 +880,41 @@ export class PoliciesServer {
       },
     );
 
-    router.put('/roles/conditions/:id', async (request, response) => {
-      const decision = await this.authorize(
-        request,
-        policyEntityUpdatePermission,
-      );
+    router.put(
+      '/roles/conditions/:id',
+      logAuditorEvent(this.auditor),
+      async (request, response) => {
+        const decision = await this.authorize(
+          request,
+          policyEntityUpdatePermission,
+        );
 
-      if (decision.result === AuthorizeResult.DENY) {
-        throw new NotAllowedError(); // 403
-      }
+        if (decision.result === AuthorizeResult.DENY) {
+          throw new NotAllowedError(); // 403
+        }
 
-      const id: number = parseInt(request.params.id, 10);
-      if (isNaN(id)) {
-        throw new InputError('Id is not a valid number.');
-      }
+        const id: number = parseInt(request.params.id, 10);
+        if (isNaN(id)) {
+          throw new InputError('Id is not a valid number.');
+        }
 
-      const roleConditionPolicy: RoleConditionalPolicyDecision<PermissionAction> =
-        request.body;
+        const roleConditionPolicy: RoleConditionalPolicyDecision<PermissionAction> =
+          request.body;
 
-      validateRoleCondition(roleConditionPolicy);
+        validateRoleCondition(roleConditionPolicy);
 
-      const conditionToUpdate = await processConditionMapping(
-        roleConditionPolicy,
-        this.pluginPermMetaData,
-        this.options.auth,
-      );
+        const conditionToUpdate = await processConditionMapping(
+          roleConditionPolicy,
+          this.pluginPermMetaData,
+          this.options.auth,
+        );
 
-      await this.conditionalStorage.updateCondition(id, conditionToUpdate);
-      response.locals.meta = { condition: roleConditionPolicy }; // auditor
+        await this.conditionalStorage.updateCondition(id, conditionToUpdate);
+        response.locals.meta = { condition: roleConditionPolicy }; // auditor
 
-      response.status(200).end();
-    });
+        response.status(200).end();
+      },
+    );
 
     router.post(
       '/refresh/:id',
