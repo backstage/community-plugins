@@ -1,6 +1,6 @@
 # Audit logging
 
-The RBAC backend plugin supports audit logging with the help of the @janus-idp/backstage-plugin-audit-log-node library. Audit logging helps to track the latest changes and events from the RBAC plugin:
+The RBAC backend plugin supports audit logging with the help of the Auditor Service from [`@backstage/backend-plugin-api`](https://www.npmjs.com/package/@backstage/backend-plugin-api) package. Audit logging helps to track the latest changes and events from the RBAC plugin:
 
 - RBAC role changes;
 - RBAC permissions changes;
@@ -10,19 +10,17 @@ The RBAC backend plugin supports audit logging with the help of the @janus-idp/b
 - GET requests for RBAC permission information;
 - User authorization results to RBAC resources.
 
-The RBAC backend plugin logging doesn't provide information about the actual state of the permissions. The actual state of RBAC permissions can be found in the RBAC UI. Audit logging provides information about the event name, event message, RBAC permission changes, the actor who made these changes, time, log level, stage, status, some part of the request, response, and so on. You can use this information like a history of the RBAC permission hierarchy.
+The RBAC backend plugin logging doesn't provide information about the actual state of the permissions. The actual state of RBAC permissions can be found in the RBAC UI. Audit logging provides information about what operations were performed, by whom, when, and on which resources. Each operation to audit is recorded as an event with an `eventId` that represents the logical group of the action, such as `role-create`. The event contains information about event id, RBAC permission changes, the actor who made these changes, time, severityLevel, some part of the request if applicable, response if applicable, and so on. You can use this information like a history of the RBAC operations.
 
 Notice: RBAC permissions and conditions are bound to RBAC roles. However, the RBAC backend plugin logs information about permissions and conditions with the help of separated log messages. That's because for now, the RBAC plugin has a separated API for RBAC roles, RBAC permissions, and RBAC conditions.
 
 ## Audit log actor
 
-The audit log actor can be a real REST API user or the RBAC plugin itself. When the actor is a REST API user, then the RBAC plugin logs the user's IP, browser agent, and hostname. The RBAC plugin can also be the actor of the events. In this case, the actor has a name: "rbac-backend". In this case, the plugin typically applies changes from the configuration or permission policy file. Application configuration and permission policy files usually mount to the application deployment with the help of config maps. Unfortunately, the RBAC plugin cannot track who originally made modifications to these resources. But you can enable Kubernetes API audit log: https://kubernetes.io/docs/tasks/debug/debug-cluster/audit. Then you can match RBAC plugin audit log events to the events from Kubernetes logs by time.
+The audit log actor can be a real REST API user or the RBAC plugin itself. When the actor is a REST API user, then the RBAC plugin logs the user's IP, browser agent, and hostname. The RBAC plugin can also be the actor of the events. In this case, the actor has an actorId: "plugin:permission". In this case, the plugin typically applies changes from the configuration or permission policy file. Application configuration and permission policy files usually mount to the application deployment with the help of config maps. Unfortunately, the RBAC plugin cannot track who originally made modifications to these resources. But you can enable Kubernetes API audit log: https://kubernetes.io/docs/tasks/debug/debug-cluster/audit. Then you can match RBAC plugin audit log events to the events from Kubernetes logs by time.
 
 ## Audit log format
 
-The RBAC plugin prints information to the backend log in JSON format. The format of these messages is defined in the @janus-idp/backstage-plugin-audit-log-node library. Each audit log line contains the key "isAuditLog".
-
-You can change the log level with the help of the environment variable: LOG_LEVEL.
+The RBAC plugin prints information to the backend log in JSON format. The format of these messages is defined in the `@backstage/backend-plugin-api` library. Each audit log line contains the key "isAuditEvent".
 
 Example logged RBAC events:
 
@@ -44,6 +42,140 @@ backend:start: {"actor":{"actorId":"user:default/andrienkoaleksandr"},"eventName
 backend:start: {"actor":{"actorId":"user:default/andrienkoaleksandr"},"eventName":"PermissionEvaluationCompleted","isAuditLog":true,"level":"info","message":"user:default/andrienkoaleksandr is ALLOW for permission 'policy.entity.create', resource type 'policy-entity' and action 'create'","meta":{"action":"create","decision":{"result":"ALLOW"},"permissionName":"policy.entity.create","resourceType":"policy-entity","userEntityRef":"user:default/andrienkoaleksandr"},"plugin":"permission","service":"backstage","stage":"evaluatePermissionAccess","status":"succeeded","timestamp":"2024-06-04 16:51:45"}
 ```
 
-Most audit log lines contain a metadata object. The RBAC plugin includes information about RBAC roles, permissions, conditions, and authorization results in this metadata. Metadata types can be found in the RBAC plugin file audit-log/audit-logger.ts.
+Most audit log lines contain a metadata object. The RBAC plugin includes information about RBAC roles, permissions, conditions, and authorization results in this metadata.
 
 Notice: You need to properly configure the logger to see nested JSON objects in the audit log lines.
+
+## RBAC audit events
+
+The RBAC backend emits audit events for various operations. Events are grouped logically by `eventId`. Failed events contain `error` information.
+
+### Role Events
+
+- **`role-create`**: Creates roles. (POST `/roles`, extension point `applyRoles`, `rbac_admin` role from `configuration`)
+
+- **`role-read`**: Reads roles. (GET `/roles`)
+
+  Filter on `queryType`.
+
+  - **`all`**: Read all roles. (GET `/roles`)
+  - **`by-role`**: Read concrete role. (GET `/roles/:kind/:namespace/:name`)
+
+- **`role-update`**: Updates roles. (PUT `/roles`)
+
+- **`role-delete`**: Deletes roles. (DELETE `/roles`, extension point `applyRoles`)
+
+- **`role-mutate`**: Bulk creates or updates roles. (loading roles from `csv file`)
+
+  **Event meta:**
+
+  - source: string (source emitting the event: `csv-file`)
+
+  **Event fail/success meta:**
+
+  - source: string (source emitting the event: `csv-file`)
+  - addedPolicies: string[][]
+  - updatedPolicies: string[][]
+  - failedPolicies: string[][]
+
+**Role Event meta:**
+
+- source: string (source emitting the event, `rest`, `csv-file`, `configuration`, `externalProviderPluginId`)
+
+**Role Event fail/success meta:**
+
+- source: string (source emitting the event, `rest`, `csv-file`, `configuration`, `externalProviderPluginId`)
+- roleEntityRef: string
+- description?: string
+- members: string[]
+
+### Permission Events
+
+- **`policy-create`**: Creates permissions. (POST `/policies`, extension point `applyPermissions`)
+
+- **`policy-read`**: Reads permissions. (GET `/policies`)
+
+  Filter on `queryType`.
+
+  - **`all`**: Read all policies. (GET `/policies`)
+  - **`by-role`**: Read all policies associated with a role. (GET `/policies/:kind/:namespace/:name`)
+  - **`by-query`**: Read all policies that match query filter criteria. (GET `/policies`)
+
+- **`policy-update`**: Updates permissions. (PUT `/policies`)
+
+- **`policy-delete`**: Deletes permissions. (DELETE `/policies`, extension point `applyPermissions`)
+
+**Permission Event meta:**
+
+- source: string (source emitting the event, `rest`, `csv-file`, `configuration`, `externalProviderPluginId`)
+
+**Permission Event fail/success meta:**
+
+- source: string (source emitting the event, `rest`, `csv-file`, `configuration`, `externalProviderPluginId`)
+- policies: string[][]
+
+### Condition Events
+
+- **`condition-create`**: Creates conditions. (POST `/roles/conditions`, extension point `applyPermissions`)
+
+- **`condition-read`**: Reads conditions. (GET `/roles/conditions`)
+
+  Filter on `queryType`.
+
+  - **`all`**: Read all conditions. (GET `/roles/conditions`)
+  - **`by-id`**: Read condition with id. (GET `/roles/conditions/:id`)
+  - **`by-query`**: Read all conditions that match query filter criteria. (GET `/policies`)
+
+- **`condition-update`**: Updates conditions. (PUT `/roles/conditions`)
+
+- **`condition-delete`**: Deletes conditions. (DELETE `/roles/conditions`, extension point `applyPermissions`)
+
+**Condition Event meta:**
+
+- source?: string (source emitting the event, `rest` or not included for conditions from `yaml-conditional-file`)
+
+**Condition Event fail/success meta:**
+
+- source?: string (source emitting the event, `rest` or not included for conditions from `yaml-conditional-file`)
+- policies: string[][]
+
+### Conditional File Events
+
+- **`conditional-policies-file-not-found`**: Conditional policies file was not found.
+
+- **`conditional-policies-file-change`**: Conditional policies file changed.
+
+### Permission Evaluation Events
+
+- **`permission-evaluation`**: Evaluation of permissions.
+
+**Permission Evaluation Event meta:**
+
+- userEntityRef: string
+- permissionName: string
+- action: PermissionAction
+- resourceType?: string
+- decision?: PolicyDecision
+
+**Permission Evaluation Success/Fail meta:**
+
+- userEntityRef: string
+- permissionName: string
+- action: PermissionAction
+- resourceType?: string
+- decision?: PolicyDecision
+- result: AuthorizeResult
+
+### Plugins Events
+
+- **`plugin-policies-read`**: List available plugin permission policies. (GET `/plugins/policies`)
+
+- **`condition-rules-read`**: List conditional rule parameter schema. (GET `/condition-rules-read`)
+
+**Plugins Event meta:**
+
+- source: string (`rest`)
+
+**Plugins Event fail/success meta:**
+
+- source: string (`rest`)
