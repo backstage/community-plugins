@@ -70,7 +70,10 @@ export class KeycloakOrgEntityProvider implements EntityProvider {
     },
   ): KeycloakOrgEntityProvider[];
   getProviderName(): string;
-  read(options?: { logger?: LoggerService }): Promise<void>;
+  read(options: {
+    logger?: LoggerService;
+    taskInstanceId: string;
+  }): Promise<void>;
   schedule(taskRunner: SchedulerServiceTaskRunner): void;
 }
 
