@@ -40,6 +40,7 @@ import {
   UserTransformer,
 } from './types';
 import { ensureTokenValid } from './authenticate';
+import { Attributes, Counter } from '@opentelemetry/api';
 
 export const parseGroup = async (
   keycloakGroup: GroupRepresentationWithParent,
@@ -112,6 +113,8 @@ export async function getEntities<T extends Users | Groups>(
   getEntitiesFn: () => Promise<T>,
   config: KeycloakProviderConfig,
   logger: LoggerService,
+  dataBatchFailureCounter: Counter<Attributes>,
+  taskInstanceId: string,
   limit: LimitFunction,
   entityQuerySize: number = KEYCLOAK_ENTITY_QUERY_SIZE,
 ): Promise<Awaited<ReturnType<T['find']>>> {
@@ -142,7 +145,10 @@ export async function getEntities<T extends Users | Groups>(
             return ents;
           })
           .catch(err => {
-            logger.warn('Failed to retieve Keycloak entities.', err);
+            dataBatchFailureCounter.add(1, { taskInstanceId: taskInstanceId });
+            logger.warn(
+              `Failed to retieve Keycloak entities for taskInstanceId: ${taskInstanceId}. Error: ${err}`,
+            );
             return [];
           }) as ReturnType<T['find']>;
       }),
@@ -239,6 +245,8 @@ export const readKeycloakRealm = async (
   config: KeycloakProviderConfig,
   logger: LoggerService,
   limit: LimitFunction,
+  taskInstanceId: string,
+  dataBatchFailureCounter: Counter<Attributes>,
   options?: {
     userQuerySize?: number;
     groupQuerySize?: number;
@@ -256,6 +264,8 @@ export const readKeycloakRealm = async (
     },
     config,
     logger,
+    dataBatchFailureCounter,
+    taskInstanceId,
     limit,
     options?.userQuerySize,
   );
@@ -268,6 +278,8 @@ export const readKeycloakRealm = async (
     },
     config,
     logger,
+    dataBatchFailureCounter,
+    taskInstanceId,
     limit,
     options?.groupQuerySize,
   )) as GroupRepresentationWithParent[];

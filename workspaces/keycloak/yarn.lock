@@ -2538,6 +2538,7 @@ __metadata:
     "@backstage/plugin-catalog-backend": "npm:^1.31.0"
     "@backstage/plugin-catalog-node": "npm:^1.16.0"
     "@keycloak/keycloak-admin-client": "npm:26.1.4"
+    "@opentelemetry/api": "npm:^1.9.0"
     "@types/lodash": "npm:4.17.16"
     "@types/uuid": "npm:10.0.0"
     deepmerge: "npm:4.3.1"

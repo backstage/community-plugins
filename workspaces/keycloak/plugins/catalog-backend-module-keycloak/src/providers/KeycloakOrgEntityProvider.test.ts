@@ -144,7 +144,9 @@ describe.each([
     const keycloak = createProvider(CONFIG);
 
     for await (const k of keycloak) {
-      await expect(() => k.read()).rejects.toThrow('Not initialized');
+      await expect(() =>
+        k.read({ taskInstanceId: 'any-task-instance-id' }),
+      ).rejects.toThrow('Not initialized');
     }
     expect(authMock).toHaveBeenCalledTimes(0);
   });
