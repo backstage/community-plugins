@@ -1,0 +1,16 @@
+dynamicPlugins:
+  frontend:
+    backstage-community.plugin-acs:
+      entityTabs:
+        - path: /acs
+          title: RHACS
+          mountPoint: entity.page.acs
+      mountPoints:
+        - mountPoint: entity.page.acs/cards
+          importName: EntityACSContent
+          config:
+            layout:
+              gridColumnEnd:
+                lg: 'span 12'
+                md: 'span 12'
+                xs: 'span 12'
