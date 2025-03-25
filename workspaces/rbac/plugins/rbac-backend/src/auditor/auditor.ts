@@ -40,7 +40,7 @@ export const PermissionEvents = {
   POLICY_CREATE: 'policy-create',
   POLICY_UPDATE: 'policy-update',
   POLICY_DELETE: 'policy-delete',
-  POLICY_GET: 'policy-get',
+  POLICY_READ: 'policy-read',
 } as const;
 
 export const EvaluationEvents = {
@@ -48,11 +48,11 @@ export const EvaluationEvents = {
 } as const;
 
 export const ListPluginPoliciesEvents = {
-  PLUGIN_POLICIES_GET: 'plugin-policies-get',
+  PLUGIN_POLICIES_READ: 'plugin-policies-read',
 };
 
 export const ListConditionEvents = {
-  CONDITION_RULES_GET: 'condition-rules-get',
+  CONDITION_RULES_READ: 'condition-rules-read',
 };
 
 export type EvaluationAuditInfo = {
@@ -64,14 +64,14 @@ export type EvaluationAuditInfo = {
 };
 
 export const PoliciesData = {
-  PERMISSIONS_FETCH: 'permissions-fetch',
+  PERMISSIONS_READ: 'permissions-read',
 };
 
 export const ConditionEvents = {
   CONDITION_CREATE: 'condition-create',
   CONDITION_UPDATE: 'condition-update',
   CONDITION_DELETE: 'condition-delete',
-  CONDITION_GET: 'condition-get',
+  CONDITION_READ: 'condition-read',
   CONDITIONAL_POLICIES_FILE_NOT_FOUND: 'conditional-policies-file-not-found',
   CONDITIONAL_POLICIES_FILE_CHANGE: 'conditional-policies-file-change',
 };

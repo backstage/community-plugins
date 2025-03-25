@@ -42,13 +42,13 @@ const eventMap: {
     POST: PermissionEvents.POLICY_CREATE,
     PUT: PermissionEvents.POLICY_UPDATE,
     DELETE: PermissionEvents.POLICY_DELETE,
-    GET: PermissionEvents.POLICY_GET,
+    GET: PermissionEvents.POLICY_READ,
   },
   '/roles/conditions': {
     POST: ConditionEvents.CONDITION_CREATE,
     PUT: ConditionEvents.CONDITION_UPDATE,
     DELETE: ConditionEvents.CONDITION_DELETE,
-    GET: ConditionEvents.CONDITION_GET,
+    GET: ConditionEvents.CONDITION_READ,
   },
   '/roles': {
     POST: RoleEvents.ROLE_CREATE,
@@ -57,10 +57,10 @@ const eventMap: {
     GET: RoleEvents.ROLE_GET,
   },
   '/plugins/policies': {
-    GET: ListPluginPoliciesEvents.PLUGIN_POLICIES_GET,
+    GET: ListPluginPoliciesEvents.PLUGIN_POLICIES_READ,
   },
   '/plugins/condition-rules': {
-    GET: ListConditionEvents.CONDITION_RULES_GET,
+    GET: ListConditionEvents.CONDITION_RULES_READ,
   },
 };
 
@@ -88,7 +88,7 @@ function getRequestAuditorMeta(req: Request, eventId: string): JsonObject {
   const hasQuery = Object.keys(req.query).length > 0;
   const hasParams = Object.keys(req.params).length > 0;
   switch (eventId) {
-    case PermissionEvents.POLICY_GET:
+    case PermissionEvents.POLICY_READ:
       if (hasParams) {
         extraMeta = {
           queryType: 'by-role',
@@ -114,7 +114,7 @@ function getRequestAuditorMeta(req: Request, eventId: string): JsonObject {
         ...(hasQuery ? { query: req.query } : {}),
       };
       break;
-    case ConditionEvents.CONDITION_GET:
+    case ConditionEvents.CONDITION_READ:
       extraMeta = {
         queryType: hasQuery ? 'by-query' : 'all',
         ...(hasQuery ? { query: req.query } : {}),

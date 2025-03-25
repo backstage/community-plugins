@@ -63,7 +63,7 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
         await this.enforcer.loadPolicy();
       } catch (error) {
         const auditorEvent = await this.auditor.createEvent({
-          eventId: PoliciesData.PERMISSIONS_FETCH,
+          eventId: PoliciesData.PERMISSIONS_READ,
           severityLevel: 'medium',
         });
         await auditorEvent.fail({ error });
