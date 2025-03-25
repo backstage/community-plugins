@@ -133,6 +133,10 @@ sonarqube:
       instanceKey: mySonarqube
       baseUrl: https://special-project-sonarqube.example.com
       apiKey: abcdef0123456789abcedf0123456789ab
+    - name: cloud
+      instanceKey: sonarcloud
+      baseUrl: https://sonarcloud.io
+      apiKey: 0123456789abcedf012123456789abcdef
 ```
 
 ##### Catalog
