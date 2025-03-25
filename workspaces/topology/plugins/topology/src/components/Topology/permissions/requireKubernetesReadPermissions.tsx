@@ -54,5 +54,12 @@ export function RequireKubernetesReadPermissions(
     return <>{props.children}</>;
   }
 
-  return <MissingPermissionPage />;
+  return (
+    <MissingPermissionPage
+      permissions={[
+        kubernetesClustersReadPermission,
+        kubernetesResourcesReadPermission,
+      ]}
+    />
+  );
 }

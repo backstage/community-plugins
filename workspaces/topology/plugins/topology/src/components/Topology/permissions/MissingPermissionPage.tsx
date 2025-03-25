@@ -38,11 +38,8 @@ import Typography from '@mui/material/Typography';
 import MissingPermissionImg from '../../../imgs/MissingPermission.svg';
 import { useNavigate } from 'react-router-dom';
 import Stack from '@mui/material/Stack';
-import {
-  kubernetesClustersReadPermission,
-  kubernetesResourcesReadPermission,
-} from '@backstage/plugin-kubernetes-common';
 import { styled } from '@mui/styles';
+import type { Permission } from '@backstage/plugin-permission-common';
 
 const StyledBox = styled(Box)(() => ({
   display: 'flex',
@@ -56,7 +53,11 @@ const StyledTypography = styled(Typography)(() => ({
   fontWeight: 600,
 })) as typeof Typography;
 
-export const MissingPermissionPage = () => {
+type MissingPermissionPageProps = { permissions: Permission[] };
+
+export const MissingPermissionPage = ({
+  permissions,
+}: MissingPermissionPageProps) => {
   const navigate = useNavigate();
 
   return (
@@ -69,14 +70,22 @@ export const MissingPermissionPage = () => {
             </Typography>
             <Typography variant="body1">
               To view Topology, your administrator must grant you{' '}
-              <StyledTypography component="span">
-                {kubernetesClustersReadPermission.name}
-              </StyledTypography>
-              {' and '}
-              <StyledTypography component="span">
-                {kubernetesResourcesReadPermission.name}
-              </StyledTypography>{' '}
-              permissions.
+              {permissions.map((perm, i) => {
+                const isLast = i === permissions.length - 1;
+                const isSecondLast = i === permissions.length - 2;
+                let separator = ', ';
+                if (isSecondLast) separator = ' and ';
+                if (isLast) separator = ' ';
+                return (
+                  <>
+                    <StyledTypography key={perm.name} component="span">
+                      {perm.name}
+                    </StyledTypography>
+                    {separator}
+                  </>
+                );
+              })}
+              {permissions.length === 1 ? 'permission' : 'permissions'}.
             </Typography>
             <Button
               style={{ textTransform: 'none' }}

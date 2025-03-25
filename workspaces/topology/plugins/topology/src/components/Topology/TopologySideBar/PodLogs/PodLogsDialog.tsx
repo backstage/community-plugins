@@ -122,7 +122,9 @@ const ViewLogs = ({ podData, onClose }: ViewLogsProps) => {
           permission={kubernetesProxyPermission}
           errorPage={
             <Box pb={3}>
-              <MissingPermissionPage />
+              <MissingPermissionPage
+                permissions={[kubernetesProxyPermission]}
+              />
             </Box>
           }
         >
