@@ -102,16 +102,13 @@ function getRequestAuditorMeta(req: Request, eventId: string): JsonObject {
       };
       break;
     case RoleEvents.ROLE_GET:
-      if (hasParams) {
-        extraMeta = {
-          queryType: 'by-role',
-          entityRef: `${req.params.kind}:${req.params.namespace}/${req.params.name}`,
-        };
-        break;
-      }
       extraMeta = {
-        queryType: hasQuery ? 'by-query' : 'all',
-        ...(hasQuery ? { query: req.query } : {}),
+        queryType: hasParams ? 'by-role' : 'all',
+        ...(hasParams
+          ? {
+              entityRef: `${req.params.kind}:${req.params.namespace}/${req.params.name}`,
+            }
+          : {}),
       };
       break;
     case ConditionEvents.CONDITION_READ:
