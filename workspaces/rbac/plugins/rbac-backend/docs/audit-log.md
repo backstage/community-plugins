@@ -27,19 +27,41 @@ Example logged RBAC events:
 a) RBAC role created with corresponding basic permissions and conditional permission:
 
 ```json
-backend:start: {"actor":{"actorId":"user:default/andrienkoaleksandr","hostname":"localhost","ip":"::1","userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"},"eventName":"CreateRole","isAuditLog":true,"level":"info","message":"Created role:default/test","meta":{"author":"user:default/andrienkoaleksandr","createdAt":"Tue, 04 Jun 2024 13:51:45 GMT","description":"some test role","lastModified":"Tue, 04 Jun 2024 13:51:45 GMT","members":["user:default/logarifm","group:default/team-a"],"modifiedBy":"user:default/andrienkoaleksandr","roleEntityRef":"role:default/test","source":"rest"},"plugin":"permission","request":{"body":{"memberReferences":["user:default/logarifm","group:default/team-a"],"metadata":{"description":"some test role"},"name":"role:default/test"},"method":"POST","params":{},"query":{},"url":"/api/permission/roles"},"response":{"status":201},"service":"backstage","stage":"sendResponse","status":"succeeded","timestamp":"2024-06-04 16:51:45"}
+[backend]: 2025-03-25T17:24:17.438Z permission info permission.role-create isAuditEvent=true eventId="role-create" severityLevel="medium" actor={"actorId":"user:default/dzemanov","ip":"::1","hostname":"localhost","us
+erAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"} request={"url":"/api/permission/roles","method":"POST"} meta={"source":"rest"} status=
+"initiated"
+[backend]: 2025-03-25T17:24:17.458Z permission info permission.role-create isAuditEvent=true eventId="role-create" severityLevel="medium" actor={"actorId":"user:default/dzemanov","ip":"::1","hostname":"localhost","us
+erAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"} request={"url":"/api/permission/roles","method":"POST"} meta={"source":"rest","respons
+e":{"status":201},"roleEntityRef":"role:default/test","description":"some test role","author":"user:default/dzemanov","modifiedBy":"user:default/dzemanov","createdAt":"Tue, 25 Mar 2025 17:24:17 GMT","lastModified":"T
+ue, 25 Mar 2025 17:24:17 GMT","members":["user:default/dzemanov"]} status="succeeded"
 
-backend:start: {"actor":{"actorId":"user:default/andrienkoaleksandr","hostname":"localhost","ip":"::1","userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"},"eventName":"CreatePolicy","isAuditLog":true,"level":"info","message":"Created permission policies","meta":{"policies":[["role:default/test","scaffolder-template","read","allow"]],"source":"rest"},"plugin":"permission","request":{"body":[{"effect":"allow","entityReference":"role:default/test","permission":"scaffolder-template","policy":"read"}],"method":"POST","params":{},"query":{},"url":"/api/permission/policies"},"response":{"status":201},"service":"backstage","stage":"sendResponse","status":"succeeded","timestamp":"2024-06-04 16:51:45"}
+[backend]: 2025-03-25T17:24:17.461Z permission info permission.policy-create isAuditEvent=true eventId="policy-create" severityLevel="medium" actor={"actorId":"user:default/dzemanov","ip":"::1","hostname":"localhost"
+,"userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"} request={"url":"/api/permission/policies","method":"POST"} meta={"source":"rest"}
+status="initiated"
+[backend]: 2025-03-25T17:24:17.473Z permission info permission.policy-create isAuditEvent=true eventId="policy-create" severityLevel="medium" actor={"actorId":"user:default/dzemanov","ip":"::1","hostname":"localhost"
+,"userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"} request={"url":"/api/permission/policies","method":"POST"} meta={"source":"rest","
+response":{"status":201},"policies":[["role:default/test","catalog.entity.read","read","allow"],["role:default/test","catalog.entity.create","create","allow"],["role:default/test","catalog.entity.refresh","update","a
+llow"],["role:default/test","scaffolder.task.create","create","allow"],["role:default/test","scaffolder.task.read","read","allow"]]} status="succeeded"
 
-backend:start: {"actor":{"actorId":"user:default/andrienkoaleksandr","hostname":"localhost","ip":"::1","userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"},"eventName":"CreateCondition","isAuditLog":true,"level":"info","message":"Created conditional permission policy","meta":{"condition":{"conditions":{"params":{"claims":["group:default/team-a"]},"resourceType":"catalog-entity","rule":"IS_ENTITY_OWNER"},"permissionMapping":[{"action":"read","name":"catalog.entity.read"},{"action":"delete","name":"catalog.entity.delete"},{"action":"update","name":"catalog.entity.refresh"}],"pluginId":"catalog","resourceType":"catalog-entity","result":"CONDITIONAL","roleEntityRef":"role:default/test"}},"plugin":"permission","request":{"body":{"conditions":{"params":{"claims":["group:default/team-a"]},"resourceType":"catalog-entity","rule":"IS_ENTITY_OWNER"},"permissionMapping":["read","delete","update"],"pluginId":"catalog","resourceType":"catalog-entity","result":"CONDITIONAL","roleEntityRef":"role:default/test"},"method":"POST","params":{},"query":{},"url":"/api/permission/roles/conditions"},"response":{"body":{"id":9},"status":201},"service":"backstage","stage":"sendResponse","status":"succeeded","timestamp":"2024-06-04 16:51:45"}
+[backend]: 2025-03-25T17:24:17.476Z permission info permission.condition-create isAuditEvent=true eventId="condition-create" severityLevel="medium" actor={"actorId":"user:default/dzemanov","ip":"::1","hostname":"loca
+lhost","userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"} request={"url":"/api/permission/roles/conditions","method":"POST"} meta={"so
+urce":"rest"} status="initiated"
+[backend]: 2025-03-25T17:24:17.488Z permission info permission.condition-create isAuditEvent=true eventId="condition-create" severityLevel="medium" actor={"actorId":"user:default/dzemanov","ip":"::1","hostname":"loca
+lhost","userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"} request={"url":"/api/permission/roles/conditions","method":"POST"} meta={"so
+urce":"rest","response":{"status":201},"condition":{"result":"CONDITIONAL","roleEntityRef":"role:default/test","pluginId":"catalog","resourceType":"catalog-entity","permissionMapping":["delete"],"conditions":{"rule":
+"IS_ENTITY_OWNER","resourceType":"catalog-entity","params":{"claims":["group:default/team-a"]}}}} status="succeeded"
 ```
 
 b) Check access user to application resource:
 
 ```json
-backend:start: {"actor":{"actorId":"user:default/andrienkoaleksandr"},"eventName":"PermissionEvaluationStarted","isAuditLog":true,"level":"info","message":"Policy check for user:default/andrienkoaleksandr","meta":{"action":"create","permissionName":"policy.entity.create","resourceType":"policy-entity","userEntityRef":"user:default/andrienkoaleksandr"},"plugin":"permission","service":"backstage","stage":"evaluatePermissionAccess","status":"succeeded","timestamp":"2024-06-04 16:51:45"}
+[backend]: 2025-03-25T17:24:29.154Z permission info permission.permission-evaluation isAuditEvent=true eventId="permission-evaluation" severityLevel="medium" actor={"actorId":"plugin:permission"} request=undefined meta={"userEntityRef":"user:default/dzemanov","permissionName":"scaffolder.task.create","action":"create"} status="initiated"
+[backend]: 2025-03-25T17:24:29.171Z permission info permission.permission-evaluation isAuditEvent=true eventId="permission-evaluation" severityLevel="medium" actor={"actorId":"plugin:permission"} request=undefined meta={"userEntityRef":"user:default/dzemanov","permissionName":"scaffolder.task.create","action":"create","result":"ALLOW"} status="succeeded"
 
-backend:start: {"actor":{"actorId":"user:default/andrienkoaleksandr"},"eventName":"PermissionEvaluationCompleted","isAuditLog":true,"level":"info","message":"user:default/andrienkoaleksandr is ALLOW for permission 'policy.entity.create', resource type 'policy-entity' and action 'create'","meta":{"action":"create","decision":{"result":"ALLOW"},"permissionName":"policy.entity.create","resourceType":"policy-entity","userEntityRef":"user:default/andrienkoaleksandr"},"plugin":"permission","service":"backstage","stage":"evaluatePermissionAccess","status":"succeeded","timestamp":"2024-06-04 16:51:45"}
+[backend]: 2025-03-25T17:24:17.509Z permission info permission.permission-evaluation isAuditEvent=true eventId="permission-evaluation" severityLevel="medium" actor={"actorId":"plugin:permission"} request=undefined me
+ta={"userEntityRef":"user:default/dzemanov","permissionName":"policy.entity.delete","action":"delete","resourceType":"policy-entity"} status="initiated"
+[backend]: 2025-03-25T17:24:17.522Z permission info permission.permission-evaluation isAuditEvent=true eventId="permission-evaluation" severityLevel="medium" actor={"actorId":"plugin:permission"} request=undefined me
+ta={"userEntityRef":"user:default/dzemanov","permissionName":"policy.entity.delete","action":"delete","resourceType":"policy-entity","result":"ALLOW"} status="succeeded"
 ```
 
 Most audit log lines contain a metadata object. The RBAC plugin includes information about RBAC roles, permissions, conditions, and authorization results in this metadata.
@@ -170,7 +192,7 @@ The RBAC backend emits audit events for various operations. Events are grouped l
 
 - **`plugin-policies-read`**: List available plugin permission policies. (GET `/plugins/policies`)
 
-- **`condition-rules-read`**: List conditional rule parameter schema. (GET `/condition-rules-read`)
+- **`condition-rules-read`**: List conditional rule parameter schema. (GET `/plugins/condition-rules`)
 
 **Plugins Event meta:**
 
