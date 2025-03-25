@@ -74,7 +74,7 @@ export const RoleDetailsForm = ({
       <TextField
         label="Owner"
         variant="outlined"
-        helperText="Optional: Choose a user or group who will have permission to edit this role and create additional roles. In the next step, specify which users they can assign to their roles and which plugins they can grant access to."
+        helperText="Optional: Enter a user or group who will have permission to edit this role and create additional roles. In the next step, specify which users they can assign to their roles and which plugins they can grant access to."
         value={owner}
         data-testid="role-owner"
         id="role-owner"

@@ -15,7 +15,7 @@
  */
 import React from 'react';
 
-import { Content, Header, Page } from '@backstage/core-components';
+import { Content, Header, Page, Progress } from '@backstage/core-components';
 
 import { DeleteDialogContextProvider } from '@janus-idp/shared-react';
 
@@ -46,5 +46,5 @@ export const RbacPage = ({ useHeader = true }: { useHeader?: boolean }) => {
       <ErrorPage statusMessage="Not Found" />
     );
   }
-  return null;
+  return <Progress />;
 };

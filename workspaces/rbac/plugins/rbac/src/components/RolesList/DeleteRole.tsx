@@ -48,15 +48,11 @@ const DeleteRole = ({
     resourceRef: roleName,
   });
 
-  const dataTestIdText = !(deletePermissionResult.allowed && canEdit)
+  const disable = !(deletePermissionResult.allowed && canEdit);
+  const dataTestIdText = disable
     ? `disable-delete-role-${roleName}`
     : `delete-role-${roleName}`;
-
-  const disable = !(deletePermissionResult.allowed && canEdit);
-
-  const tooltipText = !(deletePermissionResult.allowed && canEdit)
-    ? 'Role cannot be deleted'
-    : '';
+  const tooltipText = disable ? 'Role cannot be deleted' : '';
 
   return (
     <Tooltip title={tooltip ?? tooltipText}>
