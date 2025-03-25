@@ -33,7 +33,7 @@ export const RoleEvents = {
   ROLE_UPDATE: 'role-update',
   ROLE_DELETE: 'role-delete',
   ROLE_MUTATE: 'role-mutate',
-  ROLE_GET: 'role-get',
+  ROLE_READ: 'role-read',
 } as const;
 
 export const PermissionEvents = {

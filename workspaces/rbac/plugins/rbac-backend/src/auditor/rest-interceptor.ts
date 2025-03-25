@@ -54,7 +54,7 @@ const eventMap: {
     POST: RoleEvents.ROLE_CREATE,
     PUT: RoleEvents.ROLE_UPDATE,
     DELETE: RoleEvents.ROLE_DELETE,
-    GET: RoleEvents.ROLE_GET,
+    GET: RoleEvents.ROLE_READ,
   },
   '/plugins/policies': {
     GET: ListPluginPoliciesEvents.PLUGIN_POLICIES_READ,
@@ -90,7 +90,7 @@ function getRequestAuditorMeta(req: Request, eventId: string): JsonObject {
         ...(hasQuery ? { query: req.query } : {}),
       };
       break;
-    case RoleEvents.ROLE_GET:
+    case RoleEvents.ROLE_READ:
       extraMeta = {
         queryType: hasParams ? 'by-role' : 'all',
         ...(hasParams
