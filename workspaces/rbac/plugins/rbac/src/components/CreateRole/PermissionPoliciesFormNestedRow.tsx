@@ -74,7 +74,6 @@ const PermissionPoliciesFormNestedRow = ({
       </Typography>
     </div>
   );
-
   return (
     <>
       <TableRow>

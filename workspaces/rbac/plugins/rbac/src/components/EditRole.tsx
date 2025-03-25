@@ -47,15 +47,11 @@ const EditRole = ({
     resourceRef: roleName,
   });
 
-  const dataTestIdText = !(editPermissionResult.allowed && canEdit)
+  const disable = !(editPermissionResult.allowed && canEdit);
+  const dataTestIdText = disable
     ? `disable-update-role-${roleName}`
     : `update-role-${roleName}`;
-
-  const disable = !(editPermissionResult.allowed && canEdit);
-
-  const tooltipText = !(editPermissionResult.allowed && canEdit)
-    ? 'Unauthorized to edit'
-    : '';
+  const tooltipText = disable ? 'Unauthorized to edit' : '';
 
   return (
     <Tooltip title={tooltip ?? tooltipText}>
