@@ -64,20 +64,9 @@ const eventMap: {
   },
 };
 
-const eventToActionMap: {
-  [key: string]: string;
-} = {
-  POST: 'create',
-  PUT: 'update',
-  DELETE: 'delete',
-};
-
 function getRequestAuditorMeta(req: Request, eventId: string): JsonObject {
   const meta = {
     source: 'rest',
-    ...(req.method in eventToActionMap
-      ? { actionType: eventToActionMap[req.method] }
-      : {}),
   };
 
   if (req.method !== 'GET') {
