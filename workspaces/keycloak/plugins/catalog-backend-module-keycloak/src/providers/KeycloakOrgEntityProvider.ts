@@ -32,7 +32,6 @@ import type {
 } from '@backstage/plugin-catalog-node';
 
 // @ts-ignore
-import inclusion from 'inclusion';
 import { merge } from 'lodash';
 import { LimitFunction } from 'p-limit';
 import * as uuid from 'uuid';
@@ -213,8 +212,8 @@ export class KeycloakOrgEntityProvider implements EntityProvider {
     const provider = this.options.provider;
 
     const { markReadComplete } = trackProgress(logger);
-    const KeyCloakAdminClientModule = await inclusion(
-      '@keycloak/keycloak-admin-client',
+    const KeyCloakAdminClientModule = await import(
+      '@keycloak/keycloak-admin-client'
     );
     const KeyCloakAdminClient = KeyCloakAdminClientModule.default;
 
@@ -224,7 +223,7 @@ export class KeycloakOrgEntityProvider implements EntityProvider {
     });
     await authenticate(kcAdminClient, provider, logger);
 
-    const pLimitCJSModule = await inclusion('p-limit');
+    const pLimitCJSModule = await import('p-limit');
     const limitFunc = pLimitCJSModule.default;
     const concurrency = provider.maxConcurrency ?? 20;
     const limit: LimitFunction = limitFunc(concurrency);
