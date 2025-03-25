@@ -213,8 +213,9 @@ export class YamlConditinalPoliciesFileWatcher extends AbstractFileWatcher<
       } catch (error) {
         await auditorEvent.fail({ error, meta });
       }
-      this.conditionsDiff.addedConditions = [];
     }
+
+    this.conditionsDiff.addedConditions = [];
   }
 
   private async removeConditions(): Promise<void> {
