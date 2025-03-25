@@ -1,5 +1,12 @@
 # sonarqube-backend
 
+This plugin needs to be added to an existing backstage instance.
+
+```bash
+# From your Backstage root directory
+yarn --cwd packages/backend add @backstage-community/plugin-sonarqube-backend
+```
+
 Welcome to the sonarqube-backend backend plugin!
 
 ## New Backend System
@@ -16,14 +23,7 @@ In your `packages/backend/src/index.ts` make the following changes:
   backend.start();
 ```
 
-## Integrating into a backstage instance
-
-This plugin needs to be added to an existing backstage instance.
-
-```bash
-# From your Backstage root directory
-yarn --cwd packages/backend add @backstage-community/plugin-sonarqube-backend
-```
+## Old Backend System
 
 Typically, this means creating a `src/plugins/sonarqube.ts` file and adding a reference to it to `src/index.ts` in the backend package.
 
@@ -83,6 +83,8 @@ index 1942c36ad1..7fdc48ba24 100644
    const service = createServiceBuilder(module)
 
 ```
+
+## SonarqubeInfoProvider
 
 This plugin must be provided with a `SonarqubeInfoProvider`, this is a strategy object for finding Sonarqube instances in configuration and retrieving data from an instance.
 
