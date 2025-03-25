@@ -1,5 +1,15 @@
 ### Dependencies
 
+## 3.9.0
+
+### Minor Changes
+
+- 3836318: remove inclusion and use dynamic imports to load ESM modules instead
+
+### Patch Changes
+
+- 3836318: remove unused dependencies (@spotify/prettier-config and @common.js/p-limit)
+
 ## 3.8.1
 
 ### Patch Changes
