@@ -73,8 +73,11 @@ export const useAdminsFromConfig = async (
     ...getAdminRoleMetadata(),
     members: addedRoleMembers.map(gp => gp[0]),
   };
+  const eventId = adminRoleMeta
+    ? RoleEvents.ROLE_UPDATE
+    : RoleEvents.ROLE_CREATE;
   const auditorEvent = await auditor.createEvent({
-    eventId: RoleEvents.ROLE_CREATE_OR_UPDATE,
+    eventId: eventId,
     severityLevel: 'medium',
     meta: { source: meta.source },
   });

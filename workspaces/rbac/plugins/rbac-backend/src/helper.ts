@@ -102,25 +102,23 @@ export async function removeTheDifference(
     existingMembers.length === missing.length
       ? RoleEvents.ROLE_DELETE
       : RoleEvents.ROLE_UPDATE;
-  const message =
-    existingMembers.length === missing.length
-      ? 'Deleted role'
-      : 'Updated role: deleted members';
+  const auditorMeta = {
+    ...roleMetadata,
+    members: groupPolicies.map(gp => gp[0]),
+  };
   const auditorEvent = await auditor.createEvent({
     eventId,
     severityLevel: 'medium',
-    meta: {
-      ...roleMetadata,
-      members: groupPolicies.map(gp => gp[0]),
-    },
+    meta: { source: auditorMeta.source },
   });
 
   try {
     await enf.removeGroupingPolicies(groupPolicies, roleMetadata, false);
-    await auditorEvent.success({ meta: { message } });
+    await auditorEvent.success({ meta: auditorMeta });
   } catch (error) {
     await auditorEvent.fail({
       error,
+      meta: auditorMeta,
     });
     throw error;
   }
