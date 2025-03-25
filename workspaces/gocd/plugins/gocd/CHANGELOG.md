@@ -1,5 +1,11 @@
 # @backstage-community/plugin-gocd
 
+## 0.5.0
+
+### Minor Changes
+
+- caf0306: Backstage version bump to v1.37.0
+
 ## 0.4.0
 
 ### Minor Changes

@@ -1,5 +1,16 @@
 # @backstage-community/plugin-sonarqube
 
+## 0.11.0
+
+### Minor Changes
+
+- a751abb: Backstage version bump to v1.37.0
+
+### Patch Changes
+
+- Updated dependencies [a751abb]
+  - @backstage-community/plugin-sonarqube-react@0.5.0
+
 ## 0.10.0
 
 ### Minor Changes

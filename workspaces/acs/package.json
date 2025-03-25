@@ -1,0 +1,66 @@
+{
+  "name": "@internal/acs",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": ">=20.17.0"
+  },
+  "scripts": {
+    "dev": "yarn workspaces foreach -A --include backend --include app --parallel -v -i run start",
+    "start": "yarn workspace app start",
+    "start-backend": "yarn workspace backend start",
+    "build:backend": "yarn workspace backend build",
+    "build:all": "backstage-cli repo build --all",
+    "build-image": "yarn workspace backend build-image",
+    "build:api-reports": "yarn build:api-reports:only",
+    "build:api-reports:only": "backstage-repo-tools api-reports -o ae-wrong-input-file-type,ae-undocumented --validate-release-tags",
+    "tsc": "tsc",
+    "tsc:full": "tsc --skipLibCheck false --incremental false",
+    "clean": "backstage-cli repo clean",
+    "test": "backstage-cli repo test",
+    "test:all": "backstage-cli repo test --coverage",
+    "test:e2e": "playwright test",
+    "fix": "backstage-cli repo fix",
+    "lint": "backstage-cli repo lint --since origin/main",
+    "lint:all": "backstage-cli repo lint",
+    "prettier:check": "prettier --check .",
+    "new": "backstage-cli new --scope internal",
+    "postinstall": "cd ../../ && yarn install"
+  },
+  "workspaces": {
+    "packages": [
+      "packages/*",
+      "plugins/*"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/acs"
+  },
+  "devDependencies": {
+    "@backstage/cli": "^0.30.0",
+    "@backstage/e2e-test-utils": "^0.1.1",
+    "@backstage/repo-tools": "^0.13.0",
+    "@changesets/cli": "^2.28.1",
+    "@eslint/js": "^9.19.0",
+    "@playwright/test": "^1.32.3",
+    "node-gyp": "^10.0.0",
+    "prettier": "3.5.3",
+    "typescript": "~5.3.0"
+  },
+  "resolutions": {
+    "@types/react": "^18",
+    "@types/react-dom": "^18"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,mjs,cjs}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ]
+  },
+  "prettier": "@backstage/cli/config/prettier"
+}

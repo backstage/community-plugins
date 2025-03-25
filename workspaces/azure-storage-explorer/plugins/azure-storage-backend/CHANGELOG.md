@@ -1,5 +1,23 @@
 # @backstage-community/plugin-azure-storage-explorer-backend
 
+## 0.3.1
+
+### Patch Changes
+
+- e41fa02: Updated dependency `@azure/storage-blob` to `12.27.0`.
+
+## 0.3.0
+
+### Minor Changes
+
+- c8ad6be: Backstage version bump to v1.37.0
+
+## 0.2.1
+
+### Patch Changes
+
+- a97343c: Updated dependency `@azure/identity` to `4.8.0`.
+
 ## 0.2.0
 
 ### Minor Changes

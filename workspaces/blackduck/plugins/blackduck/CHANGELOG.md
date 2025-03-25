@@ -1,5 +1,16 @@
 # @backstage-community/plugin-blackduck
 
+## 0.4.0
+
+### Minor Changes
+
+- 30c6a18: Backstage version bump to v1.37.0
+
+### Patch Changes
+
+- Updated dependencies [30c6a18]
+  - @backstage-community/plugin-blackduck-common@0.3.0
+
 ## 0.3.1
 
 ### Patch Changes

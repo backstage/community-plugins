@@ -8,7 +8,7 @@
 import { ApiRef } from '@backstage/core-plugin-api';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { default as default_2 } from 'react';
-import { DependencyGraphTypes } from '@backstage/core-components/index';
+import { DependencyGraphTypes } from '@backstage/core-components/*';
 import { DiscoveryApi } from '@backstage/core-plugin-api';
 import { DomainEntity } from '@backstage/catalog-model';
 import { ExploreToolsConfig } from '@backstage-community/plugin-explore-react';

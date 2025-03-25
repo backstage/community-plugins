@@ -19,11 +19,10 @@
     "lint": "backstage-cli package lint"
   },
   "dependencies": {
-    "@backstage-community/plugin-github-actions": "^0.6.16",
     "@backstage-community/plugin-manage": "workspace:^",
     "@backstage-community/plugin-manage-module-tech-insights": "workspace:^",
     "@backstage-community/plugin-manage-react": "workspace:^",
-    "@backstage-community/plugin-tech-insights": "^0.4.0",
+    "@backstage-community/plugin-tech-insights": "^0.5.0",
     "@backstage-community/plugin-tech-radar": "^0.7.4",
     "@backstage/app-defaults": "^1.5.16",
     "@backstage/catalog-model": "^1.7.3",

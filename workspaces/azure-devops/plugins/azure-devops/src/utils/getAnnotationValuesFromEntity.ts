@@ -23,6 +23,7 @@ import {
   AZURE_DEVOPS_HOST_ORG_ANNOTATION,
 } from '@backstage-community/plugin-azure-devops-common';
 
+/** @public **/
 export function getAnnotationValuesFromEntity(entity: Entity): {
   project: string;
   repo?: string;

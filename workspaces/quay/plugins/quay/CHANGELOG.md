@@ -1,5 +1,20 @@
 ### Dependencies
 
+## 1.19.0
+
+### Minor Changes
+
+- 110b103: Add scalprum configuration for generating OCI artifacts
+- 1f3ea2f: Backstage version bump to v1.36.1
+
+### Patch Changes
+
+- 973a5ef: remove prettier from devDevpendencies
+- c222ea4: Updated dependency `@playwright/test` to `1.51.0`.
+- Updated dependencies [973a5ef]
+- Updated dependencies [1f3ea2f]
+  - @backstage-community/plugin-quay-common@1.7.0
+
 ## 1.18.1
 
 ### Patch Changes
