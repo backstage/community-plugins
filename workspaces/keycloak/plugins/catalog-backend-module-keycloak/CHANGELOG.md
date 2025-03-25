@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 3.10.0
+
+### Minor Changes
+
+- 797add4: Implement open-telemetry metrics for catalog backend module keycloak.
+
 ## 3.9.0
 
 ### Minor Changes
