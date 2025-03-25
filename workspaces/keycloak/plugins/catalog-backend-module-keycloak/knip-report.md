@@ -1,17 +1,10 @@
 # Knip report
 
-## Unused dependencies (2)
+## Unused dependencies (1)
 
-| Name               | Location     | Severity |
-| :----------------- | :----------- | :------- |
-| @common.js/p-limit | package.json | error    |
-| pg-format          | package.json | error    |
-
-## Unused devDependencies (1)
-
-| Name                     | Location     | Severity |
-| :----------------------- | :----------- | :------- |
-| @spotify/prettier-config | package.json | error    |
+| Name      | Location          | Severity |
+| :-------- | :---------------- | :------- |
+| pg-format | package.json:50:6 | error    |
 
 ## Unlisted dependencies (1)
 
