@@ -301,7 +301,7 @@ export class CSVFileWatcher extends AbstractFileWatcher<string[][]> {
     };
 
     const auditorEvent = await this.auditor.createEvent({
-      eventId: RoleEvents.ROLE_CREATE_OR_UPDATE,
+      eventId: RoleEvents.ROLE_MUTATE,
       severityLevel: 'medium',
       meta: { source: 'csv-file' },
     });

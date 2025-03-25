@@ -32,7 +32,7 @@ export const RoleEvents = {
   ROLE_CREATE: 'role-create',
   ROLE_UPDATE: 'role-update',
   ROLE_DELETE: 'role-delete',
-  ROLE_CREATE_OR_UPDATE: 'role-create-or-update',
+  ROLE_MUTATE: 'role-mutate',
   ROLE_GET: 'role-get',
 } as const;
 
