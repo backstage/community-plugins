@@ -112,6 +112,13 @@ function getRequestAuditorMeta(req: Request, eventId: string): JsonObject {
       };
       break;
     case ConditionEvents.CONDITION_READ:
+      if (hasParams) {
+        extraMeta = {
+          queryType: 'by-id',
+          id: req.params.id,
+        };
+        break;
+      }
       extraMeta = {
         queryType: hasQuery ? 'by-query' : 'all',
         ...(hasQuery ? { query: req.query } : {}),
