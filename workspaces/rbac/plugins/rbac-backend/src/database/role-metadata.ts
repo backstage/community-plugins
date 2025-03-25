@@ -71,17 +71,13 @@ export class DataBaseRoleMetadataStorage implements RoleMetadataStorage {
   async filterForOwnerRoleMetadata(
     filter?: RBACFilters,
   ): Promise<RoleMetadataDao[]> {
-    let filteredRoleMeta: RoleMetadataDao[];
-
     const roleMetadata: RoleMetadataDao[] =
       await this.knex.table(ROLE_METADATA_TABLE);
 
     if (filter) {
-      filteredRoleMeta = roleMetadata.filter(role => {
+      return roleMetadata.filter(role => {
         return matches(role as RoleMetadata, filter);
       });
-
-      return filteredRoleMeta;
     }
 
     return roleMetadata;
