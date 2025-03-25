@@ -4,24 +4,10 @@
 
 ```ts
 import { BackendFeature } from '@backstage/backend-plugin-api';
-import { Config } from '@backstage/config';
-import { Logger } from 'winston';
-import { Router } from 'express';
 
 // @public (undocumented)
 const azureStoragePlugin: BackendFeature;
 export default azureStoragePlugin;
-
-// @public @deprecated (undocumented)
-export function createRouter(options: RouterOptions): Promise<Router>;
-
-// @public @deprecated (undocumented)
-export interface RouterOptions {
-  // (undocumented)
-  config: Config;
-  // (undocumented)
-  logger: Logger;
-}
 
 // (No @packageDocumentation comment for this package)
 ```
