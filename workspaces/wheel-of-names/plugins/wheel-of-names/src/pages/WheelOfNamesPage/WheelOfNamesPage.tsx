@@ -37,7 +37,6 @@ export const WheelOfNamesPage = () => {
   const [participants, setParticipants] = useState<
     Array<{ id: string; name: string }>
   >([]);
-  console.log(participants);
   return (
     <Page themeId="tool">
       <Content>

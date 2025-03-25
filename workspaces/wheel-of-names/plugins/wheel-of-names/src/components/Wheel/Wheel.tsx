@@ -189,8 +189,8 @@ export const Wheel = ({ participants }: WheelProps) => {
     <div className={classes.container}>
       <canvas
         ref={canvasRef}
-        width={500} // Increased width
-        height={500}
+        width={600} // Increased width
+        height={600}
         className={classes.canvas}
       />
       <Button

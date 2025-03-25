@@ -44,10 +44,11 @@ export const useParticipantsStyles = makeStyles(theme => ({
     alignItems: 'center',
   },
   selectedParticipantsContainer: {
+    maxHeight: '100vh',
     marginTop: theme.spacing(3),
   },
   selectedParticipantsList: {
-    maxHeight: '250px',
+    maxHeight: '90vh',
     overflow: 'auto',
     backgroundColor: theme.palette.background.paper,
   },

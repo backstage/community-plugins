@@ -19,6 +19,8 @@ import { wheelOfNamesPlugin, WheelOfNamesPage } from '../src/plugin';
 import { TestApiProvider } from '@backstage/test-utils';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import { Entity } from '@backstage/catalog-model';
+import { Content, Header, Page } from '@backstage/core-components';
+
  
 // Sample mock data
 const mockUsers: Entity[] = [
@@ -125,9 +127,16 @@ app.registerPlugin(wheelOfNamesPlugin);
 // Wrap the page with API providers
 app.addPage({
   element: (
-<TestApiProvider apis={[[catalogApiRef, mockCatalogApi]]}>
-<WheelOfNamesPage />
-</TestApiProvider>
+    (
+      <Page themeId="home">
+        <Header title="Wheel of Names" />
+        <Content>
+          <TestApiProvider apis={[[catalogApiRef, mockCatalogApi]]}>
+            <WheelOfNamesPage />
+          </TestApiProvider>
+        </Content>
+      </Page>
+    )
   ),
   title: 'Wheel of Names',
   path: '/wheel-of-names',
