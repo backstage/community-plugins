@@ -45,6 +45,7 @@ import {
 import { readProviderConfigs } from '../lib/config';
 import { readKeycloakRealm } from '../lib/read';
 import { authenticate } from '../lib/authenticate';
+import { Attributes, Counter, Meter, metrics } from '@opentelemetry/api';
 
 /**
  * Options for {@link KeycloakOrgEntityProvider}.
@@ -119,6 +120,8 @@ export const withLocations = (
  */
 export class KeycloakOrgEntityProvider implements EntityProvider {
   private connection?: EntityProviderConnection;
+  private meter: Meter;
+  private counter: Counter<Attributes>;
   private scheduleFn?: () => Promise<void>;
 
   /**
@@ -180,6 +183,14 @@ export class KeycloakOrgEntityProvider implements EntityProvider {
       groupTransformer?: GroupTransformer;
     },
   ) {
+    this.meter = metrics.getMeter('default');
+    this.counter = this.meter.createCounter(
+      'backend_keycloak.fetch.task.failure.count',
+      {
+        description:
+          'Counts the number of failed Keycloak data fetch tasks. Each increment indicates a complete failure of a fetch task, meaning no data was provided to the Catalog API. However, data may still be fetched in subsequent tasks, depending on the nature of the error.',
+      },
+    );
     this.schedule(options.taskRunner);
   }
 
@@ -203,7 +214,7 @@ export class KeycloakOrgEntityProvider implements EntityProvider {
    * Runs one complete ingestion loop. Call this method regularly at some
    * appropriate cadence.
    */
-  async read(options?: { logger?: LoggerService }) {
+  async read(options: { logger?: LoggerService; taskInstanceId: string }) {
     if (!this.connection) {
       throw new NotFoundError('Not initialized');
     }
@@ -228,11 +239,20 @@ export class KeycloakOrgEntityProvider implements EntityProvider {
     const concurrency = provider.maxConcurrency ?? 20;
     const limit: LimitFunction = limitFunc(concurrency);
 
+    const dataBatchFailureCounter = this.meter.createCounter(
+      'backend_keycloak.fetch.data.batch.failure.count',
+      {
+        description:
+          'Keycloak data batch fetch failure counter. Incremented for each batch fetch failure. Each failure means that a part of the data was not fetched due to an error, and thus the corresponding data batch was skipped during the current fetch task.',
+      },
+    );
     const { users, groups } = await readKeycloakRealm(
       kcAdminClient,
       provider,
       logger,
       limit,
+      options.taskInstanceId,
+      dataBatchFailureCounter,
       {
         userQuerySize: provider.userQuerySize,
         groupQuerySize: provider.groupQuerySize,
@@ -264,15 +284,17 @@ export class KeycloakOrgEntityProvider implements EntityProvider {
       await taskRunner.run({
         id,
         fn: async () => {
+          const taskInstanceId = uuid.v4();
           const logger = this.options.logger.child({
             class: KeycloakOrgEntityProvider.prototype.constructor.name,
             taskId: id,
-            taskInstanceId: uuid.v4(),
+            taskInstanceId: taskInstanceId,
           });
 
           try {
-            await this.read({ logger });
+            await this.read({ logger, taskInstanceId });
           } catch (error) {
+            this.counter.add(1, { taskInstanceId: taskInstanceId });
             if (isError(error)) {
               // Ensure that we don't log any sensitive internal data:
               logger.error('Error while syncing Keycloak users and groups', {

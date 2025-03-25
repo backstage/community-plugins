@@ -136,6 +136,45 @@ When using client credentials, the access type must be set to `confidential` and
 - `query-users`
 - `view-users`
 
+### 📊 Metrics
+
+The Keycloak backend plugin supports [OpenTelemetry](https://opentelemetry.io/) metrics to monitor fetch operations and diagnose potential issues.
+
+#### Available Counters
+
+| Metric Name                                             | Description                                                                                          |
+| ------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `backend_keycloak_fetch_task_failure_count_total`       | Counts fetch task failures where no data was returned due to an error.                               |
+| `backend_keycloak_fetch_data_batch_failure_count_total` | Counts partial data batch failures. Even if some batches fail, the plugin continues fetching others. |
+
+The plugin is designed to tolerate partial failures and proceed with the data that can be successfully retrieved. Failed batches may be fetched in the next scheduled task.
+
+#### 🏷 Labels
+
+All counters include the `taskInstanceId` label, which uniquely identifies each scheduled fetch task.  
+This allows you to trace failures back to individual task executions.
+
+Example:
+
+```text
+backend_keycloak_fetch_data_batch_failure_count_total{taskInstanceId="df040f82-2e80-44bd-83b0-06a984ca05ba"} 1
+```
+
+#### ⚠️ Use Case Example
+
+Imagine your Keycloak instance is under-provisioned (e.g., low CPU/RAM limits), and the plugin is configured to send many parallel API requests.  
+This could cause request timeouts or throttling. The metrics described above can help detect such behavior early, allowing administrators to:
+
+- Tune the plugin configuration (e.g., reduce parallelism)
+- Increase resources on the Keycloak server
+- Investigate network or permission issues
+
+#### 📥 Exporting Metrics
+
+You can export metrics using any OpenTelemetry-compatible backend, such as **Prometheus**.
+
+➡️ See the [Backstage OpenTelemetry setup guide](https://backstage.io/docs/tutorials/setup-opentelemetry) for integration instructions.
+
 ### Limitations
 
 If you have self-signed or corporate certificate issues, you can set the following environment variable before starting Backstage:
