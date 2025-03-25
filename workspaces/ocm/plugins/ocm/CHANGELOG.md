@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 5.4.2
+
+### Patch Changes
+
+- b58e6d7: remove unused dependencies: @material-ui/lab and @types/node
+
 ## 5.4.1
 
 ### Patch Changes
