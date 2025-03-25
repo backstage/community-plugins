@@ -291,13 +291,13 @@ export class CSVFileWatcher extends AbstractFileWatcher<string[][]> {
    */
   private async addRoles(): Promise<void> {
     const changedPolicies: {
-      added: string[][];
-      updated: string[][];
-      failed: { error: string; policies: string[][] }[];
+      addedPolicies: string[][];
+      updatedPolicies: string[][];
+      failedPolicies: { error: string; policies: string[][] }[];
     } = {
-      added: [],
-      updated: [],
-      failed: [],
+      addedPolicies: [],
+      updatedPolicies: [],
+      failedPolicies: [],
     };
 
     const auditorEvent = await this.auditor.createEvent({
@@ -329,28 +329,31 @@ export class CSVFileWatcher extends AbstractFileWatcher<string[][]> {
           : RoleEvents.ROLE_CREATE;
 
         if (eventName === RoleEvents.ROLE_UPDATE) {
-          changedPolicies.updated.push(...groupPolicies);
+          changedPolicies.updatedPolicies.push(...groupPolicies);
         } else {
-          changedPolicies.added.push(...groupPolicies);
+          changedPolicies.addedPolicies.push(...groupPolicies);
         }
       } catch (e) {
-        changedPolicies.failed.push({ error: e, policies: groupPolicies });
+        changedPolicies.failedPolicies.push({
+          error: e,
+          policies: groupPolicies,
+        });
       }
     }
 
-    if (changedPolicies.failed.length > 0) {
+    if (changedPolicies.failedPolicies.length > 0) {
       await auditorEvent.fail({
         error: new Error(
           `Failed to add or update group policies after modification ${this.filePath}.`,
         ),
-        meta: { source: 'csv-file', changedPolicies },
+        meta: { source: 'csv-file', ...changedPolicies },
       });
     } else {
       await auditorEvent.success({
         meta: {
           source: 'csv-file',
-          added: changedPolicies.added,
-          updated: changedPolicies.updated,
+          addedPolicies: changedPolicies.addedPolicies,
+          updatedPolicies: changedPolicies.updatedPolicies,
         },
       });
     }
