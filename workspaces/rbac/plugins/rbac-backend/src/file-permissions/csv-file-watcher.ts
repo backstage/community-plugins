@@ -338,7 +338,7 @@ export class CSVFileWatcher extends AbstractFileWatcher<string[][]> {
       }
     }
 
-    if (changedPolicies.failed) {
+    if (changedPolicies.failed.length > 0) {
       await auditorEvent.fail({
         error: new Error(
           `Failed to add or update group policies after modification ${this.filePath}.`,
