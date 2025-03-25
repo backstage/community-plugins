@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.33.1
+
+### Patch Changes
+
+- 1a6414e: remove unused dependency: @types/node
+
 ## 1.33.0
 
 ### Minor Changes
