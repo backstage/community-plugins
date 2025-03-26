@@ -45,7 +45,7 @@ import {
   clearAuditorMock,
   expectAuditorLog,
 } from '../../__fixtures__/auditor-test-utils';
-import { PermissionEvents } from '../auditor/auditor';
+import { ActionType, PermissionEvents } from '../auditor/auditor';
 
 const mockLoggerService = mockServices.logger.mock();
 
@@ -450,8 +450,8 @@ describe('Connection', () => {
       expectAuditorLog([
         {
           event: {
-            eventId: PermissionEvents.POLICY_CREATE,
-            meta: { source: 'test' },
+            eventId: PermissionEvents.POLICY_WRITE,
+            meta: { actionType: ActionType.CREATE, source: 'test' },
           },
           fail: {
             error: new Error(
@@ -459,7 +459,6 @@ describe('Connection', () => {
             ),
             meta: {
               policies: [policies[1]],
-              source: 'test',
             },
           },
         },
@@ -478,8 +477,8 @@ describe('Connection', () => {
       expectAuditorLog([
         {
           event: {
-            eventId: PermissionEvents.POLICY_CREATE,
-            meta: { source: 'test' },
+            eventId: PermissionEvents.POLICY_WRITE,
+            meta: { actionType: ActionType.CREATE, source: 'test' },
           },
           fail: {
             error: new Error(
@@ -487,7 +486,6 @@ describe('Connection', () => {
             ),
             meta: {
               policies: [policies[1]],
-              source: 'test',
             },
           },
         },

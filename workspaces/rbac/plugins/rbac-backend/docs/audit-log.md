@@ -10,7 +10,7 @@ The RBAC backend plugin supports audit logging with the help of the Auditor Serv
 - GET requests for RBAC permission information;
 - User authorization results to RBAC resources.
 
-The RBAC backend plugin logging doesn't provide information about the actual state of the permissions. The actual state of RBAC permissions can be found in the RBAC UI. Audit logging provides information about what operations were performed, by whom, when, and on which resources. Each operation to audit is recorded as an event with an `eventId` that represents the logical group of the action, such as `role-create`. The event contains information about event id, RBAC permission changes, the actor who made these changes, time, severityLevel, some part of the request if applicable, response if applicable, and so on. You can use this information like a history of the RBAC operations.
+The RBAC backend plugin logging doesn't provide information about the actual state of the permissions. The actual state of RBAC permissions can be found in the RBAC UI. Audit logging provides information about what operations were performed, by whom, when, and on which resources. Each operation to audit is recorded as an event with an `eventId` that represents the logical group of the action, such as `role-write`. The event contains information about event id, RBAC permission changes, the actor who made these changes, time, severityLevel, some part of the request if applicable, response if applicable, and so on. You can use this information like a history of the RBAC operations.
 
 Notice: RBAC permissions and conditions are bound to RBAC roles. However, the RBAC backend plugin logs information about permissions and conditions with the help of separated log messages. That's because for now, the RBAC plugin has a separated API for RBAC roles, RBAC permissions, and RBAC conditions.
 
@@ -27,27 +27,27 @@ Example logged RBAC events:
 a) RBAC role created with corresponding basic permissions and conditional permission:
 
 ```json
-[backend]: 2025-03-25T17:24:17.438Z permission info permission.role-create isAuditEvent=true eventId="role-create" severityLevel="medium" actor={"actorId":"user:default/dzemanov","ip":"::1","hostname":"localhost","us
-erAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"} request={"url":"/api/permission/roles","method":"POST"} meta={"source":"rest"} status=
+[backend]: 2025-03-25T17:24:17.438Z permission info permission.role-write isAuditEvent=true eventId="role-write" severityLevel="medium" actor={"actorId":"user:default/dzemanov","ip":"::1","hostname":"localhost","us
+erAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"} request={"url":"/api/permission/roles","method":"POST"} meta={"actionType":"create", "source":"rest"} status=
 "initiated"
-[backend]: 2025-03-25T17:24:17.458Z permission info permission.role-create isAuditEvent=true eventId="role-create" severityLevel="medium" actor={"actorId":"user:default/dzemanov","ip":"::1","hostname":"localhost","us
-erAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"} request={"url":"/api/permission/roles","method":"POST"} meta={"source":"rest","respons
-e":{"status":201},"roleEntityRef":"role:default/test","description":"some test role","author":"user:default/dzemanov","modifiedBy":"user:default/dzemanov","createdAt":"Tue, 25 Mar 2025 17:24:17 GMT","lastModified":"T
+[backend]: 2025-03-25T17:24:17.458Z permission info permission.role-write isAuditEvent=true eventId="role-write" severityLevel="medium" actor={"actorId":"user:default/dzemanov","ip":"::1","hostname":"localhost","us
+erAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"} request={"url":"/api/permission/roles","method":"POST"} meta={"actionType":"create", "source":"rest","respons
+e":{"status":201}, "roleEntityRef":"role:default/test","description":"some test role","author":"user:default/dzemanov","modifiedBy":"user:default/dzemanov","createdAt":"Tue, 25 Mar 2025 17:24:17 GMT","lastModified":"T
 ue, 25 Mar 2025 17:24:17 GMT","members":["user:default/dzemanov"]} status="succeeded"
 
-[backend]: 2025-03-25T17:24:17.461Z permission info permission.policy-create isAuditEvent=true eventId="policy-create" severityLevel="medium" actor={"actorId":"user:default/dzemanov","ip":"::1","hostname":"localhost"
-,"userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"} request={"url":"/api/permission/policies","method":"POST"} meta={"source":"rest"}
+[backend]: 2025-03-25T17:24:17.461Z permission info permission.policy-write isAuditEvent=true eventId="policy-write" severityLevel="medium" actor={"actorId":"user:default/dzemanov","ip":"::1","hostname":"localhost"
+,"userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"} request={"url":"/api/permission/policies","method":"POST"} meta={"actionType":"create", "source":"rest"}
 status="initiated"
-[backend]: 2025-03-25T17:24:17.473Z permission info permission.policy-create isAuditEvent=true eventId="policy-create" severityLevel="medium" actor={"actorId":"user:default/dzemanov","ip":"::1","hostname":"localhost"
-,"userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"} request={"url":"/api/permission/policies","method":"POST"} meta={"source":"rest","
+[backend]: 2025-03-25T17:24:17.473Z permission info permission.policy-write isAuditEvent=true eventId="policy-write" severityLevel="medium" actor={"actorId":"user:default/dzemanov","ip":"::1","hostname":"localhost"
+,"userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"} request={"url":"/api/permission/policies","method":"POST"} meta={"actionType":"create", "source":"rest","
 response":{"status":201},"policies":[["role:default/test","catalog.entity.read","read","allow"],["role:default/test","catalog.entity.create","create","allow"],["role:default/test","catalog.entity.refresh","update","a
 llow"],["role:default/test","scaffolder.task.create","create","allow"],["role:default/test","scaffolder.task.read","read","allow"]]} status="succeeded"
 
-[backend]: 2025-03-25T17:24:17.476Z permission info permission.condition-create isAuditEvent=true eventId="condition-create" severityLevel="medium" actor={"actorId":"user:default/dzemanov","ip":"::1","hostname":"loca
-lhost","userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"} request={"url":"/api/permission/roles/conditions","method":"POST"} meta={"so
+[backend]: 2025-03-25T17:24:17.476Z permission info permission.condition-write isAuditEvent=true eventId="condition-write" severityLevel="medium" actor={"actorId":"user:default/dzemanov","ip":"::1","hostname":"loca
+lhost","userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"} request={"url":"/api/permission/roles/conditions","method":"POST"} meta={"actionType":"create", "so
 urce":"rest"} status="initiated"
-[backend]: 2025-03-25T17:24:17.488Z permission info permission.condition-create isAuditEvent=true eventId="condition-create" severityLevel="medium" actor={"actorId":"user:default/dzemanov","ip":"::1","hostname":"loca
-lhost","userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"} request={"url":"/api/permission/roles/conditions","method":"POST"} meta={"so
+[backend]: 2025-03-25T17:24:17.488Z permission info permission.condition-write isAuditEvent=true eventId="condition-write" severityLevel="medium" actor={"actorId":"user:default/dzemanov","ip":"::1","hostname":"loca
+lhost","userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"} request={"url":"/api/permission/roles/conditions","method":"POST"} meta={"actionType":"create", "so
 urce":"rest","response":{"status":201},"condition":{"result":"CONDITIONAL","roleEntityRef":"role:default/test","pluginId":"catalog","resourceType":"catalog-entity","permissionMapping":["delete"],"conditions":{"rule":
 "IS_ENTITY_OWNER","resourceType":"catalog-entity","params":{"claims":["group:default/team-a"]}}}} status="succeeded"
 ```
@@ -70,11 +70,25 @@ Notice: You need to properly configure the logger to see nested JSON objects in 
 
 ## RBAC audit events
 
-The RBAC backend emits audit events for various operations. Events are grouped logically by `eventId`. Failed events contain `error` information.
+The RBAC backend emits audit events for various operations. Events are grouped logically by `eventId`. Audit event begins in the `initiated` state. The event then transitions to either `succeeded` state or `failed` state. All events can contain `meta` field with additional information. Event that is `succeeded` or `failed` can contain additional data in its `meta` field, in addition to event `meta`.
+Failed events contain `error` information.
 
 ### Role Events
 
-- **`role-create`**: Creates roles. (POST `/roles`, extension point `applyRoles`, `rbac_admin` role from `configuration`)
+- **`role-write`**: Modifies roles.
+
+  Filter on `actionType`.
+
+  - **`create`**: Creates roles. (POST `/roles`, extension point `applyRoles`, `rbac_admin` role from `configuration`)
+  - **`update`**: Updates roles. (PUT `/roles`)
+  - **`delete`**: Deletes roles. (DELETE `/roles`, extension point `applyRoles`)
+  - **`create_or_update`**: Bulk creates or updates roles. (loading roles from `csv file`)
+
+    **Role Event fail/success meta for `create_or_update`:**
+
+    - addedPolicies: string[][]
+    - updatedPolicies: string[][]
+    - failedPolicies: string[][]
 
 - **`role-read`**: Reads roles. (GET `/roles`)
 
@@ -82,23 +96,6 @@ The RBAC backend emits audit events for various operations. Events are grouped l
 
   - **`all`**: Read all roles. (GET `/roles`)
   - **`by-role`**: Read concrete role. (GET `/roles/:kind/:namespace/:name`)
-
-- **`role-update`**: Updates roles. (PUT `/roles`)
-
-- **`role-delete`**: Deletes roles. (DELETE `/roles`, extension point `applyRoles`)
-
-- **`role-mutate`**: Bulk creates or updates roles. (loading roles from `csv file`)
-
-  **Event meta:**
-
-  - source: string (source emitting the event: `csv-file`)
-
-  **Event fail/success meta:**
-
-  - source: string (source emitting the event: `csv-file`)
-  - addedPolicies: string[][]
-  - updatedPolicies: string[][]
-  - failedPolicies: string[][]
 
 **Role Event meta:**
 
@@ -113,7 +110,13 @@ The RBAC backend emits audit events for various operations. Events are grouped l
 
 ### Permission Events
 
-- **`policy-create`**: Creates permissions. (POST `/policies`, extension point `applyPermissions`)
+- **`policy-write`**: Modifies permissions.
+
+  Filter on `actionType`.
+
+  - **`create`**: Creates permissions. (POST `/policies`, extension point `applyPermissions`)
+  - **`update`**: Updates permissions. (PUT `/policies`)
+  - **`delete`**: Deletes permissions. (DELETE `/policies`, extension point `applyPermissions`)
 
 - **`policy-read`**: Reads permissions. (GET `/policies`)
 
@@ -122,10 +125,6 @@ The RBAC backend emits audit events for various operations. Events are grouped l
   - **`all`**: Read all policies. (GET `/policies`)
   - **`by-role`**: Read all policies associated with a role. (GET `/policies/:kind/:namespace/:name`)
   - **`by-query`**: Read all policies that match query filter criteria. (GET `/policies`)
-
-- **`policy-update`**: Updates permissions. (PUT `/policies`)
-
-- **`policy-delete`**: Deletes permissions. (DELETE `/policies`, extension point `applyPermissions`)
 
 **Permission Event meta:**
 
@@ -138,7 +137,13 @@ The RBAC backend emits audit events for various operations. Events are grouped l
 
 ### Condition Events
 
-- **`condition-create`**: Creates conditions. (POST `/roles/conditions`, extension point `applyPermissions`)
+- **`condition-write`**: Modifies conditions.
+
+  Filter on `actionType`.
+
+  - **`create`**: Creates conditions. (POST `/roles/conditions`, extension point `applyPermissions`)
+  - **`update`**: Updates conditions. (PUT `/roles/conditions`)
+  - **`delete`**: Deletes conditions. (DELETE `/roles/conditions`, extension point `applyPermissions`)
 
 - **`condition-read`**: Reads conditions. (GET `/roles/conditions`)
 
@@ -147,10 +152,6 @@ The RBAC backend emits audit events for various operations. Events are grouped l
   - **`all`**: Read all conditions. (GET `/roles/conditions`)
   - **`by-id`**: Read condition with id. (GET `/roles/conditions/:id`)
   - **`by-query`**: Read all conditions that match query filter criteria. (GET `/policies`)
-
-- **`condition-update`**: Updates conditions. (PUT `/roles/conditions`)
-
-- **`condition-delete`**: Deletes conditions. (DELETE `/roles/conditions`, extension point `applyPermissions`)
 
 **Condition Event meta:**
 

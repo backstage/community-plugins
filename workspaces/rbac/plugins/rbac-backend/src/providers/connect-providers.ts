@@ -30,7 +30,7 @@ import type {
   RBACProviderConnection,
 } from '@backstage-community/plugin-rbac-node';
 
-import { PermissionEvents, RoleEvents } from '../auditor/auditor';
+import { ActionType, PermissionEvents, RoleEvents } from '../auditor/auditor';
 import { RoleMetadataStorage } from '../database/role-metadata';
 import {
   transformArrayToPolicy,
@@ -122,11 +122,6 @@ export class Connection implements RBACProviderConnection {
         }
 
         let roleMeta = await this.roleMetadataStorage.findRoleMetadata(role[1]);
-
-        const eventName = roleMeta
-          ? RoleEvents.ROLE_UPDATE
-          : RoleEvents.ROLE_CREATE;
-
         // role does not exist in rbac, create the metadata for it
         if (!roleMeta) {
           roleMeta = {
@@ -141,9 +136,12 @@ export class Connection implements RBACProviderConnection {
           members: [role[0]],
         };
         const auditorEvent = await this.auditor.createEvent({
-          eventId: eventName,
+          eventId: RoleEvents.ROLE_WRITE,
           severityLevel: 'medium',
-          meta: { source: auditorMeta.source },
+          meta: {
+            actionType: roleMeta ? ActionType.UPDATE : ActionType.CREATE,
+            source: auditorMeta.source,
+          },
         });
 
         try {
@@ -184,22 +182,20 @@ export class Connection implements RBACProviderConnection {
         }
 
         const singleRole = roleMeta && currentRole.length === 1;
-        const eventName = singleRole
-          ? RoleEvents.ROLE_DELETE
-          : RoleEvents.ROLE_UPDATE;
+        const actionType = singleRole ? ActionType.DELETE : ActionType.UPDATE;
 
         const auditorMeta = { ...roleMeta, members: [role[0]] };
-        const auditorEvent = await this.auditor?.createEvent({
-          eventId: eventName,
+        const auditorEvent = await this.auditor.createEvent({
+          eventId: RoleEvents.ROLE_WRITE,
           severityLevel: 'medium',
-          meta: { source: roleMeta.source },
+          meta: { actionType, source: roleMeta.source },
         });
 
         try {
           await this.enforcer.removeGroupingPolicy(
             role,
             roleMeta,
-            eventName === RoleEvents.ROLE_UPDATE,
+            actionType === ActionType.UPDATE,
           );
           await auditorEvent.success({ meta: auditorMeta });
         } catch (error) {
@@ -222,12 +218,11 @@ export class Connection implements RBACProviderConnection {
 
         const auditorMeta = {
           policies: [permission],
-          source: this.id,
         };
         const auditorEvent = await this.auditor.createEvent({
-          eventId: PermissionEvents.POLICY_CREATE,
+          eventId: PermissionEvents.POLICY_WRITE,
           severityLevel: 'medium',
-          meta: { source: auditorMeta.source },
+          meta: { actionType: ActionType.CREATE, source: this.id },
         });
 
         let err = validatePolicy(transformedPolicy);
@@ -260,12 +255,11 @@ export class Connection implements RBACProviderConnection {
       if (!(await tempEnforcer.hasPolicy(...permission))) {
         const auditorMeta = {
           policies: [permission],
-          source: this.id,
         };
         const auditorEvent = await this.auditor?.createEvent({
-          eventId: PermissionEvents.POLICY_DELETE,
+          eventId: PermissionEvents.POLICY_WRITE,
           severityLevel: 'medium',
-          meta: { source: this.id },
+          meta: { actionType: ActionType.DELETE, source: this.id },
         });
 
         try {

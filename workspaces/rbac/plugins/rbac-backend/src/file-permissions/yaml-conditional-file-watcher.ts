@@ -29,7 +29,7 @@ import type {
 
 import fs from 'fs';
 
-import { ConditionEvents } from '../auditor/auditor';
+import { ActionType, ConditionEvents } from '../auditor/auditor';
 import { ConditionalStorage } from '../database/conditional-storage';
 import { RoleMetadataStorage } from '../database/role-metadata';
 import { deepSortEqual, processConditionMapping } from '../helper';
@@ -191,12 +191,10 @@ export class YamlConditinalPoliciesFileWatcher extends AbstractFileWatcher<
 
   private async addConditions(): Promise<void> {
     for (const condition of this.conditionsDiff.addedConditions) {
-      const meta = {
-        condition,
-      };
       const auditorEvent = await this.auditor.createEvent({
-        eventId: ConditionEvents.CONDITION_CREATE,
+        eventId: ConditionEvents.CONDITION_WRITE,
         severityLevel: 'medium',
+        meta: { actionType: ActionType.CREATE },
       });
 
       try {
@@ -208,10 +206,10 @@ export class YamlConditinalPoliciesFileWatcher extends AbstractFileWatcher<
 
         await this.conditionalStorage.createCondition(conditionToCreate);
         await auditorEvent.success({
-          meta,
+          meta: { condition },
         });
       } catch (error) {
-        await auditorEvent.fail({ error, meta });
+        await auditorEvent.fail({ error, meta: { condition } });
       }
     }
 
@@ -220,12 +218,10 @@ export class YamlConditinalPoliciesFileWatcher extends AbstractFileWatcher<
 
   private async removeConditions(): Promise<void> {
     for (const condition of this.conditionsDiff.removedConditions) {
-      const meta = {
-        condition,
-      };
       const auditorEvent = await this.auditor.createEvent({
-        eventId: ConditionEvents.CONDITION_DELETE,
+        eventId: ConditionEvents.CONDITION_WRITE,
         severityLevel: 'medium',
+        meta: { actionType: ActionType.DELETE },
       });
 
       try {
@@ -238,11 +234,11 @@ export class YamlConditinalPoliciesFileWatcher extends AbstractFileWatcher<
           )
         )[0];
         await this.conditionalStorage.deleteCondition(conditionToDelete.id!);
-        await auditorEvent.success({ meta });
+        await auditorEvent.success({ meta: { condition } });
       } catch (error) {
         await auditorEvent.fail({
           error,
-          meta,
+          meta: { condition },
         });
       }
     }

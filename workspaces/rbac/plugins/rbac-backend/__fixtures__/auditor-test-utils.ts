@@ -63,7 +63,7 @@ export function expectAuditorLogForPermission(
     {
       event: { eventId: EvaluationEvents.PERMISSION_EVALUATION, meta },
       success: {
-        meta: { ...meta, result },
+        meta: { result },
       },
     },
   ]);

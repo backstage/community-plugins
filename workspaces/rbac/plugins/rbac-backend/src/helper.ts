@@ -36,7 +36,7 @@ import {
   Source,
 } from '@backstage-community/plugin-rbac-common';
 
-import { RoleEvents } from './auditor/auditor';
+import { ActionType, RoleEvents } from './auditor/auditor';
 import { RoleMetadataDao, RoleMetadataStorage } from './database/role-metadata';
 import { EnforcerDelegate } from './service/enforcer-delegate';
 import { PluginPermissionMetadataCollector } from './service/plugin-endpoints';
@@ -98,18 +98,18 @@ export async function removeTheDifference(
 
   const roleMetadata = { source, modifiedBy, roleEntityRef };
   const existingMembers = await enf.getFilteredGroupingPolicy(1, roleEntityRef);
-  const eventId =
+  const actionType =
     existingMembers.length === missing.length
-      ? RoleEvents.ROLE_DELETE
-      : RoleEvents.ROLE_UPDATE;
+      ? ActionType.DELETE
+      : ActionType.UPDATE;
   const auditorMeta = {
     ...roleMetadata,
     members: groupPolicies.map(gp => gp[0]),
   };
   const auditorEvent = await auditor.createEvent({
-    eventId,
+    eventId: RoleEvents.ROLE_WRITE,
     severityLevel: 'medium',
-    meta: { source: auditorMeta.source },
+    meta: { actionType, source: auditorMeta.source },
   });
 
   try {

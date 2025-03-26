@@ -19,7 +19,7 @@ import type { MetadataResponse } from '@backstage/plugin-permission-node';
 
 import { resolve } from 'path';
 
-import { ConditionEvents } from '../auditor/auditor';
+import { ActionType, ConditionEvents } from '../auditor/auditor';
 import { DataBaseConditionalStorage } from '../database/conditional-storage';
 import {
   RoleMetadataDao,
@@ -291,14 +291,20 @@ describe('YamlConditionalFileWatcher', () => {
     expect(conditionalStorageMock.createCondition).toHaveBeenCalled();
     expectAuditorLog([
       {
-        event: { eventId: ConditionEvents.CONDITION_CREATE },
+        event: {
+          eventId: ConditionEvents.CONDITION_WRITE,
+          meta: { actionType: ActionType.CREATE },
+        },
         fail: {
           error: new Error('unknown error message 1'),
           ...mappedConditionMeta(conditionToStore1),
         },
       },
       {
-        event: { eventId: ConditionEvents.CONDITION_CREATE },
+        event: {
+          eventId: ConditionEvents.CONDITION_WRITE,
+          meta: { actionType: ActionType.CREATE },
+        },
         fail: {
           error: new Error('unknown error message 2'),
           ...mappedConditionMeta(conditionToStore2),
@@ -326,11 +332,17 @@ describe('YamlConditionalFileWatcher', () => {
     );
     expectAuditorLog([
       {
-        event: { eventId: ConditionEvents.CONDITION_CREATE },
+        event: {
+          eventId: ConditionEvents.CONDITION_WRITE,
+          meta: { actionType: ActionType.CREATE },
+        },
         success: { ...mappedConditionMeta(conditionToStore1) },
       },
       {
-        event: { eventId: ConditionEvents.CONDITION_CREATE },
+        event: {
+          eventId: ConditionEvents.CONDITION_WRITE,
+          meta: { actionType: ActionType.CREATE },
+        },
         success: { ...mappedConditionMeta(conditionToStore2) },
       },
     ]);
@@ -421,7 +433,10 @@ describe('YamlConditionalFileWatcher', () => {
 
     expectAuditorLog([
       {
-        event: { eventId: ConditionEvents.CONDITION_DELETE },
+        event: {
+          eventId: ConditionEvents.CONDITION_WRITE,
+          meta: { actionType: ActionType.DELETE },
+        },
         success: { ...mappedConditionMeta(conditionToRemove) },
       },
     ]);
@@ -449,7 +464,10 @@ describe('YamlConditionalFileWatcher', () => {
     expect(conditionalStorageMock.deleteCondition).toHaveBeenCalled();
     expectAuditorLog([
       {
-        event: { eventId: ConditionEvents.CONDITION_DELETE },
+        event: {
+          eventId: ConditionEvents.CONDITION_WRITE,
+          meta: { actionType: ActionType.DELETE },
+        },
         fail: {
           error: new NotFoundError('Condition was not found'),
           ...mappedConditionMeta(conditionToRemove),
@@ -473,7 +491,10 @@ describe('YamlConditionalFileWatcher', () => {
     expect(conditionalStorageMock.createCondition).not.toHaveBeenCalled();
     expectAuditorLog([
       {
-        event: { eventId: ConditionEvents.CONDITION_DELETE },
+        event: {
+          eventId: ConditionEvents.CONDITION_WRITE,
+          meta: { actionType: ActionType.DELETE },
+        },
         success: { ...mappedConditionMeta(conditionToRemove) },
       },
     ]);

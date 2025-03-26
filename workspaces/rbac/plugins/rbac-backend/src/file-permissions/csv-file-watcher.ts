@@ -22,7 +22,7 @@ import { Enforcer, newEnforcer, newModelFromString } from 'casbin';
 import { parse } from 'csv-parse/sync';
 import { difference } from 'lodash';
 
-import { PermissionEvents, RoleEvents } from '../auditor/auditor';
+import { ActionType, PermissionEvents, RoleEvents } from '../auditor/auditor';
 import {
   RoleMetadataDao,
   RoleMetadataStorage,
@@ -236,22 +236,20 @@ export class CSVFileWatcher extends AbstractFileWatcher<string[][]> {
    * addPermissionPolicies will add the new permission policies that are present in the CSV file.
    */
   private async addPermissionPolicies(): Promise<void> {
-    const meta = {
-      policies: this.csvFilePolicies.addedPolicies,
-      source: 'csv-file',
-    };
     const auditorEvent = await this.auditor.createEvent({
-      eventId: PermissionEvents.POLICY_CREATE,
+      eventId: PermissionEvents.POLICY_WRITE,
       severityLevel: 'medium',
-      meta: { source: meta.source },
+      meta: { actionType: ActionType.CREATE, source: 'csv-file' },
     });
 
     try {
       await this.enforcer.addPolicies(this.csvFilePolicies.addedPolicies);
-      await auditorEvent.success({ meta });
+      await auditorEvent.success({
+        meta: { policies: this.csvFilePolicies.addedPolicies },
+      });
     } catch (e) {
       await auditorEvent.fail({
-        meta,
+        meta: { policies: this.csvFilePolicies.addedPolicies },
         error: e,
       });
     }
@@ -263,22 +261,20 @@ export class CSVFileWatcher extends AbstractFileWatcher<string[][]> {
    * removePermissionPolicies will remove the permission policies that are no longer present in the CSV file.
    */
   private async removePermissionPolicies(): Promise<void> {
-    const meta = {
-      policies: this.csvFilePolicies.removedPolicies,
-      source: 'csv-file',
-    };
     const auditorEvent = await this.auditor.createEvent({
-      eventId: PermissionEvents.POLICY_DELETE,
+      eventId: PermissionEvents.POLICY_WRITE,
       severityLevel: 'medium',
-      meta: { source: meta.source },
+      meta: { actionType: ActionType.DELETE, source: 'csv-file' },
     });
 
     try {
       await this.enforcer.removePolicies(this.csvFilePolicies.removedPolicies);
-      await auditorEvent.success({ meta });
+      await auditorEvent.success({
+        meta: { policies: this.csvFilePolicies.removedPolicies },
+      });
     } catch (e) {
       await auditorEvent.fail({
-        meta,
+        meta: { policies: this.csvFilePolicies.removedPolicies },
         error: e,
       });
     }
@@ -301,9 +297,9 @@ export class CSVFileWatcher extends AbstractFileWatcher<string[][]> {
     };
 
     const auditorEvent = await this.auditor.createEvent({
-      eventId: RoleEvents.ROLE_MUTATE,
+      eventId: RoleEvents.ROLE_WRITE,
       severityLevel: 'medium',
-      meta: { source: 'csv-file' },
+      meta: { actionType: ActionType.CREATE_OR_UPDATE, source: 'csv-file' },
     });
 
     for (const [key, value] of this.csvFilePolicies.addedGroupPolicies) {
@@ -324,11 +320,8 @@ export class CSVFileWatcher extends AbstractFileWatcher<string[][]> {
         );
 
         await this.enforcer.addGroupingPolicies(groupPolicies, roleMetadata);
-        const eventName = currentMetadata
-          ? RoleEvents.ROLE_UPDATE
-          : RoleEvents.ROLE_CREATE;
 
-        if (eventName === RoleEvents.ROLE_UPDATE) {
+        if (currentMetadata) {
           changedPolicies.updatedPolicies.push(...groupPolicies);
         } else {
           changedPolicies.addedPolicies.push(...groupPolicies);
@@ -346,12 +339,11 @@ export class CSVFileWatcher extends AbstractFileWatcher<string[][]> {
         error: new Error(
           `Failed to add or update group policies after modification ${this.filePath}.`,
         ),
-        meta: { source: 'csv-file', ...changedPolicies },
+        meta: { ...changedPolicies },
       });
     } else {
       await auditorEvent.success({
         meta: {
-          source: 'csv-file',
           addedPolicies: changedPolicies.addedPolicies,
           updatedPolicies: changedPolicies.updatedPolicies,
         },
@@ -386,18 +378,16 @@ export class CSVFileWatcher extends AbstractFileWatcher<string[][]> {
       const isUpdate =
         oldGroupingPolicies.length > 1 &&
         oldGroupingPolicies.length !== groupPolicies.length;
-      const eventId = isUpdate
-        ? RoleEvents.ROLE_UPDATE
-        : RoleEvents.ROLE_DELETE;
+      const actionType = isUpdate ? ActionType.UPDATE : ActionType.DELETE;
 
       const meta = {
         ...roleMetadata,
         members: value,
       };
       const auditorEvent = await this.auditor.createEvent({
-        eventId: eventId,
+        eventId: RoleEvents.ROLE_WRITE,
         severityLevel: 'medium',
-        meta: { source: roleMetadata.source },
+        meta: { actionType, source: meta.source },
       });
 
       try {

@@ -17,7 +17,8 @@ import type { Config } from '@backstage/config';
 
 import { Knex } from 'knex';
 
-import { PermissionEvents, RoleEvents } from '../auditor/auditor';
+import { ActionType, PermissionEvents, RoleEvents } from '../auditor/auditor';
+
 import {
   RoleMetadataDao,
   RoleMetadataStorage,
@@ -73,13 +74,13 @@ export const useAdminsFromConfig = async (
     ...getAdminRoleMetadata(),
     members: addedRoleMembers.map(gp => gp[0]),
   };
-  const eventId = adminRoleMeta
-    ? RoleEvents.ROLE_UPDATE
-    : RoleEvents.ROLE_CREATE;
   const auditorEvent = await auditor.createEvent({
-    eventId: eventId,
+    eventId: RoleEvents.ROLE_WRITE,
     severityLevel: 'medium',
-    meta: { source: meta.source },
+    meta: {
+      actionType: adminRoleMeta ? ActionType.UPDATE : ActionType.CREATE,
+      source: meta.source,
+    },
   });
 
   const trx = await knex.transaction();
@@ -142,22 +143,21 @@ const addAdminPermissions = async (
     }
   }
 
-  const meta = { policies, source: 'configuration' };
   const auditorEvent = await auditor.createEvent({
-    eventId: PermissionEvents.POLICY_CREATE,
+    eventId: PermissionEvents.POLICY_WRITE,
     severityLevel: 'medium',
-    meta: { source: meta.source },
+    meta: { actionType: ActionType.CREATE, source: 'configuration' },
   });
 
   try {
     await enf.addPolicies(policiesToAdd);
     await auditorEvent.success({
-      meta,
+      meta: { policies: policiesToAdd },
     });
   } catch (error) {
     await auditorEvent.fail({
       error,
-      meta,
+      meta: { policies: policiesToAdd },
     });
   }
 };

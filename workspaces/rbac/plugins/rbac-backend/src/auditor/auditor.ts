@@ -28,18 +28,20 @@ import {
   AuditorServiceEvent,
 } from '@backstage/backend-plugin-api';
 
+export const ActionType = {
+  CREATE: 'create',
+  CREATE_OR_UPDATE: 'create_or_update',
+  UPDATE: 'update',
+  DELETE: 'delete',
+};
+
 export const RoleEvents = {
-  ROLE_CREATE: 'role-create',
-  ROLE_UPDATE: 'role-update',
-  ROLE_DELETE: 'role-delete',
-  ROLE_MUTATE: 'role-mutate',
+  ROLE_WRITE: 'role-write',
   ROLE_READ: 'role-read',
 } as const;
 
 export const PermissionEvents = {
-  POLICY_CREATE: 'policy-create',
-  POLICY_UPDATE: 'policy-update',
-  POLICY_DELETE: 'policy-delete',
+  POLICY_WRITE: 'policy-write',
   POLICY_READ: 'policy-read',
 } as const;
 
@@ -68,9 +70,7 @@ export const PoliciesData = {
 };
 
 export const ConditionEvents = {
-  CONDITION_CREATE: 'condition-create',
-  CONDITION_UPDATE: 'condition-update',
-  CONDITION_DELETE: 'condition-delete',
+  CONDITION_WRITE: 'condition-write',
   CONDITION_READ: 'condition-read',
   CONDITIONAL_POLICIES_FILE_NOT_FOUND: 'conditional-policies-file-not-found',
   CONDITIONAL_POLICIES_FILE_CHANGE: 'conditional-policies-file-change',
@@ -83,10 +83,7 @@ export async function createPermissionEvaluationAuditorEvent(
   userEntityRef: string,
   request: PolicyQuery,
   policyDecision?: PolicyDecision,
-): Promise<{
-  auditorEvent: AuditorServiceEvent;
-  auditInfo: EvaluationAuditInfo;
-}> {
+): Promise<AuditorServiceEvent> {
   const auditInfo: EvaluationAuditInfo = {
     userEntityRef,
     permissionName: request.permission.name,
@@ -101,12 +98,11 @@ export async function createPermissionEvaluationAuditorEvent(
     auditInfo.decision = policyDecision;
   }
 
-  const auditorEvent = await auditor.createEvent({
+  return await auditor.createEvent({
     eventId: EvaluationEvents.PERMISSION_EVALUATION,
     severityLevel: 'medium',
     meta: {
       ...auditInfo,
     },
   });
-  return { auditorEvent, auditInfo };
 }

@@ -22,6 +22,7 @@ import {
 } from 'express';
 
 import {
+  ActionType,
   ConditionEvents,
   ListConditionEvents,
   ListPluginPoliciesEvents,
@@ -39,21 +40,21 @@ const eventMap: {
   [key: string]: { [key: string]: string };
 } = {
   '/policies': {
-    POST: PermissionEvents.POLICY_CREATE,
-    PUT: PermissionEvents.POLICY_UPDATE,
-    DELETE: PermissionEvents.POLICY_DELETE,
+    POST: PermissionEvents.POLICY_WRITE,
+    PUT: PermissionEvents.POLICY_WRITE,
+    DELETE: PermissionEvents.POLICY_WRITE,
     GET: PermissionEvents.POLICY_READ,
   },
   '/roles/conditions': {
-    POST: ConditionEvents.CONDITION_CREATE,
-    PUT: ConditionEvents.CONDITION_UPDATE,
-    DELETE: ConditionEvents.CONDITION_DELETE,
+    POST: ConditionEvents.CONDITION_WRITE,
+    PUT: ConditionEvents.CONDITION_WRITE,
+    DELETE: ConditionEvents.CONDITION_WRITE,
     GET: ConditionEvents.CONDITION_READ,
   },
   '/roles': {
-    POST: RoleEvents.ROLE_CREATE,
-    PUT: RoleEvents.ROLE_UPDATE,
-    DELETE: RoleEvents.ROLE_DELETE,
+    POST: RoleEvents.ROLE_WRITE,
+    PUT: RoleEvents.ROLE_WRITE,
+    DELETE: RoleEvents.ROLE_WRITE,
     GET: RoleEvents.ROLE_READ,
   },
   '/plugins/policies': {
@@ -64,8 +65,19 @@ const eventMap: {
   },
 };
 
+const eventToActionMap: {
+  [key: string]: string;
+} = {
+  POST: ActionType.CREATE,
+  PUT: ActionType.UPDATE,
+  DELETE: ActionType.DELETE,
+};
+
 function getRequestAuditorMeta(req: Request, eventId: string): JsonObject {
   const meta = {
+    ...(req.method in eventToActionMap
+      ? { actionType: eventToActionMap[req.method] }
+      : {}),
     source: 'rest',
   };
 
@@ -140,7 +152,6 @@ export function logAuditorEvent(auditor: AuditorService): RequestHandler {
 
     resp.on('finish', async () => {
       const meta = {
-        source: 'rest',
         response: { status: resp.statusCode },
         ...(resp.locals.meta ?? {}),
       };

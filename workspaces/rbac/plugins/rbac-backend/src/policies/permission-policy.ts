@@ -173,12 +173,11 @@ export class RBACPermissionPolicy implements PermissionPolicy {
   ): Promise<PolicyDecision> {
     const userEntityRef = user?.info.userEntityRef ?? `user without entity`;
 
-    const { auditorEvent, auditInfo } =
-      await createPermissionEvaluationAuditorEvent(
-        this.auditor,
-        userEntityRef,
-        request,
-      );
+    const auditorEvent = await createPermissionEvaluationAuditorEvent(
+      this.auditor,
+      userEntityRef,
+      request,
+    );
 
     try {
       let status = false;
@@ -186,14 +185,14 @@ export class RBACPermissionPolicy implements PermissionPolicy {
 
       if (!user) {
         await auditorEvent.success({
-          meta: { ...auditInfo, result: AuthorizeResult.DENY },
+          meta: { result: AuthorizeResult.DENY },
         });
         return { result: AuthorizeResult.DENY };
       }
 
       if (this.superUserList!.includes(userEntityRef)) {
         await auditorEvent.success({
-          meta: { ...auditInfo, result: AuthorizeResult.ALLOW },
+          meta: { result: AuthorizeResult.ALLOW },
         });
         return { result: AuthorizeResult.ALLOW };
       }
@@ -241,10 +240,13 @@ export class RBACPermissionPolicy implements PermissionPolicy {
 
       const result = status ? AuthorizeResult.ALLOW : AuthorizeResult.DENY;
 
-      await auditorEvent.success({ meta: { ...auditInfo, result } });
+      await auditorEvent.success({ meta: { result } });
       return { result };
     } catch (error) {
-      await auditorEvent.fail({ error, meta: { ...auditInfo } });
+      await auditorEvent.fail({
+        error,
+        meta: { result: AuthorizeResult.DENY },
+      });
       return { result: AuthorizeResult.DENY };
     }
   }
