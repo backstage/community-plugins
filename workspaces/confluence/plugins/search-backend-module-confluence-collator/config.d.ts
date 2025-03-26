@@ -93,6 +93,6 @@ export interface Config {
      * The number of requests per second to make to the Confluence API.
      * @visibility backend
      */
-    requestsPerSecond?: number;
+    maxRequestsPerSecond?: number;
   };
 }
