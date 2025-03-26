@@ -799,4 +799,95 @@ describe('AzureDevOpsApi', () => {
       },
     ]);
   });
+
+  it('should get the build logs', async () => {
+    const getBuildLogsResultMock = [
+      {
+        lineCount: 4,
+        createdOn: '2025-01-21T18:20:14.220Z',
+        lastChangedOn: '2025-01-21T18:20:14.810Z',
+        id: 1,
+        type: 'Container',
+        url: 'https://dev.azure.com/some-org/123abc/_apis/build/builds/8/log/1',
+      },
+      {
+        lineCount: 4,
+        createdOn: '2025-01-21T18:20:14.220Z',
+        lastChangedOn: '2025-01-21T18:20:14.230Z',
+        id: 2,
+        type: 'Container',
+        url: 'https://dev.azure.com/some-org/123abc/_apis/build/builds/8/log/2',
+      },
+      {
+        lineCount: 4,
+        createdOn: '2025-01-21T18:20:15.733Z',
+        lastChangedOn: '2025-01-21T18:20:15.740Z',
+        id: 3,
+        type: 'Container',
+        url: 'https://dev.azure.com/some-org/123abc/_apis/build/builds/8/log/3',
+      },
+      {
+        lineCount: 4,
+        createdOn: '2025-01-21T18:20:22.580Z',
+        lastChangedOn: '2025-01-21T18:20:24.517Z',
+        id: 4,
+        type: 'Container',
+        url: 'https://dev.azure.com/some-org/123abc/_apis/build/builds/8/log/4',
+      },
+    ];
+
+    const getBuildLogLinesResultMock = [
+      'Log section - Step 1',
+      'Log section - Step 2',
+      'Log section - Step 3',
+      '====================',
+    ];
+
+    const mockBuildClient = {
+      getBuildLogs: jest.fn().mockResolvedValue(getBuildLogsResultMock),
+      getBuildLogLines: jest.fn().mockResolvedValue(getBuildLogLinesResultMock),
+    };
+
+    const mockApi = {
+      getBuildApi: jest.fn().mockReturnValue(mockBuildClient),
+    };
+
+    (WebApi as unknown as jest.Mock).mockImplementation(() => mockApi);
+
+    const api = AzureDevOpsApi.fromConfig(mockConfig, {
+      logger: mockLogger,
+      urlReader: mockUrlReader,
+    });
+
+    const result = await api.getBuildRunLog(
+      'demo-project',
+      8,
+      'dev.azure.com',
+      'some-org',
+    );
+
+    // We have four log entries and the mocked build logs
+    // return four log lines per entry.
+    // We should expect 16 lines total.
+    expect(result.length).toEqual(16);
+
+    expect(result).toEqual([
+      'Log section - Step 1',
+      'Log section - Step 2',
+      'Log section - Step 3',
+      '====================',
+      'Log section - Step 1',
+      'Log section - Step 2',
+      'Log section - Step 3',
+      '====================',
+      'Log section - Step 1',
+      'Log section - Step 2',
+      'Log section - Step 3',
+      '====================',
+      'Log section - Step 1',
+      'Log section - Step 2',
+      'Log section - Step 3',
+      '====================',
+    ]);
+  });
 });

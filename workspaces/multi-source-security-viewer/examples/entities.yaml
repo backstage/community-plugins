@@ -1,0 +1,12 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: example-component
+  annotations:
+    jenkins.io/job-full-name: 'test-pipeline'
+    github.com/project-slug: 'test/workflow'
+spec:
+  type: website
+  lifecycle: experimental
+  owner: guests
+  system: examples

@@ -1,5 +1,11 @@
 # @backstage-community/plugin-mend-backend
 
+## 0.3.0
+
+### Minor Changes
+
+- 6d13cab: Backstage version bump to v1.37.0
+
 ## 0.2.0
 
 ### Minor Changes

@@ -1,5 +1,18 @@
 # @backstage-community/plugin-todo-backend
 
+## 0.8.0
+
+### Minor Changes
+
+- b777866: Backstage version bump to v1.37.0
+
+## 0.7.0
+
+### Minor Changes
+
+- a1d6b70: Removed usages and references of `@backstage/backend-common`
+  Removed deprecated exports for createRouter and RouterOptions
+
 ## 0.6.0
 
 ### Minor Changes

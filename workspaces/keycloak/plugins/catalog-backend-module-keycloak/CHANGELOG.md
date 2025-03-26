@@ -1,5 +1,37 @@
 ### Dependencies
 
+## 3.10.0
+
+### Minor Changes
+
+- 797add4: Implement open-telemetry metrics for catalog backend module keycloak.
+
+## 3.9.0
+
+### Minor Changes
+
+- 3836318: remove inclusion and use dynamic imports to load ESM modules instead
+
+### Patch Changes
+
+- 3836318: remove unused dependencies (@spotify/prettier-config and @common.js/p-limit)
+
+## 3.8.1
+
+### Patch Changes
+
+- c55b868: Updated dependency `@keycloak/keycloak-admin-client` to `26.1.4`.
+
+## 3.8.0
+
+### Minor Changes
+
+- 9ab7992: Backstage version bump to v1.36.1
+
+### Patch Changes
+
+- 3199ac1: Updated dependency `@types/lodash` to `4.17.16`.
+
 ## 3.7.0
 
 ### Minor Changes

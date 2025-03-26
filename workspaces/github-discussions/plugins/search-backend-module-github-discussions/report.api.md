@@ -6,79 +6,41 @@
 /// <reference types="node" />
 
 import { BackendFeature } from '@backstage/backend-plugin-api';
-import { DefaultGithubCredentialsProvider } from '@backstage/integration';
 import { DocumentCollatorFactory } from '@backstage/plugin-search-common';
-import { GithubDiscussionsDocument } from '@backstage-community/plugin-github-discussions-common';
-import { GithubIntegration } from '@backstage/integration';
+import { GithubDiscussionIndexableDocument } from '@backstage-community/plugin-github-discussions-common';
 import { LoggerService } from '@backstage/backend-plugin-api';
+import { Permission } from '@backstage/plugin-permission-common';
 import { Readable } from 'stream';
-import { ScmIntegrationsGroup } from '@backstage/integration';
+import { RootConfigService } from '@backstage/backend-plugin-api';
 
 // @public
 export class GithubDiscussionsCollatorFactory
   implements DocumentCollatorFactory
 {
   // (undocumented)
-  execute(): AsyncGenerator<GithubDiscussionsDocument>;
+  execute(): AsyncGenerator<GithubDiscussionIndexableDocument>;
   // (undocumented)
   static fromConfig({
     logger,
-    credentialsProvider,
-    githubIntegration,
-    timeout,
-    url,
-    cacheBase,
-    clearCacheOnSuccess,
-    discussionsBatchSize,
-    commentsBatchSize,
-    repliesBatchSize,
-  }: GithubDiscussionsCollatorFactoryConstructorOptions): GithubDiscussionsCollatorFactory;
+    config,
+  }: GithubDiscussionsCollatorFactoryConstructorOptions): Promise<GithubDiscussionsCollatorFactory>;
   // (undocumented)
   getCollator(): Promise<Readable>;
   // (undocumented)
   readonly type: string;
+  // (undocumented)
+  visibilityPermission: Permission;
 }
 
 // @public
 export interface GithubDiscussionsCollatorFactoryConstructorOptions {
   // (undocumented)
-  cacheBase?: string;
+  config: RootConfigService;
   // (undocumented)
-  clearCacheOnSuccess?: boolean;
-  // (undocumented)
-  commentsBatchSize?: number;
-  // (undocumented)
-  credentialsProvider: DefaultGithubCredentialsProvider;
-  // (undocumented)
-  discussionsBatchSize?: number;
-  // (undocumented)
-  githubIntegration: ScmIntegrationsGroup<GithubIntegration>;
   logger: LoggerService;
-  // (undocumented)
-  repliesBatchSize?: number;
-  // (undocumented)
-  timeout: number;
-  // (undocumented)
-  url: string;
 }
 
 // @public
 const searchModuleGithubDiscussions: BackendFeature;
 export default searchModuleGithubDiscussions;
-
-// Warnings were encountered during analysis:
-//
-// src/collators/GithubDiscussionsCollatorFactory.d.ts:17:5 - (ae-undocumented) Missing documentation for "credentialsProvider".
-// src/collators/GithubDiscussionsCollatorFactory.d.ts:18:5 - (ae-undocumented) Missing documentation for "githubIntegration".
-// src/collators/GithubDiscussionsCollatorFactory.d.ts:19:5 - (ae-undocumented) Missing documentation for "timeout".
-// src/collators/GithubDiscussionsCollatorFactory.d.ts:20:5 - (ae-undocumented) Missing documentation for "url".
-// src/collators/GithubDiscussionsCollatorFactory.d.ts:21:5 - (ae-undocumented) Missing documentation for "cacheBase".
-// src/collators/GithubDiscussionsCollatorFactory.d.ts:22:5 - (ae-undocumented) Missing documentation for "clearCacheOnSuccess".
-// src/collators/GithubDiscussionsCollatorFactory.d.ts:23:5 - (ae-undocumented) Missing documentation for "discussionsBatchSize".
-// src/collators/GithubDiscussionsCollatorFactory.d.ts:24:5 - (ae-undocumented) Missing documentation for "commentsBatchSize".
-// src/collators/GithubDiscussionsCollatorFactory.d.ts:25:5 - (ae-undocumented) Missing documentation for "repliesBatchSize".
-// src/collators/GithubDiscussionsCollatorFactory.d.ts:47:5 - (ae-undocumented) Missing documentation for "type".
-// src/collators/GithubDiscussionsCollatorFactory.d.ts:56:5 - (ae-undocumented) Missing documentation for "fromConfig".
-// src/collators/GithubDiscussionsCollatorFactory.d.ts:57:5 - (ae-undocumented) Missing documentation for "getCollator".
-// src/collators/GithubDiscussionsCollatorFactory.d.ts:58:5 - (ae-undocumented) Missing documentation for "execute".
 ```

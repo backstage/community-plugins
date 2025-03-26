@@ -1,5 +1,28 @@
 # @backstage-community/plugin-azure-devops
 
+## 0.13.0
+
+### Minor Changes
+
+- 75f72bb: Backstage version bump to v1.37.0
+
+### Patch Changes
+
+- Updated dependencies [75f72bb]
+  - @backstage-community/plugin-azure-devops-common@0.9.0
+
+## 0.12.0
+
+### Minor Changes
+
+- 1e8ea62: Export function `getAnnotationValuesFromEntity`
+
+## 0.11.0
+
+### Minor Changes
+
+- 32ab469: Add the ability to fetch and see a build's log
+
 ## 0.10.0
 
 ### Minor Changes

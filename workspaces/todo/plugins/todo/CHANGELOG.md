@@ -1,5 +1,11 @@
 # @backstage-community/plugin-todo
 
+## 0.6.0
+
+### Minor Changes
+
+- b777866: Backstage version bump to v1.37.0
+
 ## 0.5.0
 
 ### Minor Changes

@@ -1,5 +1,11 @@
 # @backstage-community/plugin-explore-common
 
+## 0.3.0
+
+### Minor Changes
+
+- e1cc281: Backstage version bump to v1.37.0
+
 ## 0.2.0
 
 ### Minor Changes

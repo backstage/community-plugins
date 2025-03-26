@@ -4,8 +4,32 @@
 
 - [Plugin Maintainer Guide](#plugin-maintainer-guide)
   - [Table of Contents](#table-of-contents)
+  - [Plugin Owner Expectations](#plugin-owner-expectations)
+    - [PR Reviews \& Merging](#pr-reviews--merging)
+    - [Issue Triage](#issue-triage)
+  - [Version Bumping](#version-bumping)
   - [Maintaining and patching an older release line](#maintaining-and-patching-an-older-release-line)
     - [Patching an older release](#patching-an-older-release)
+
+## Plugin Owner Expectations
+
+Plugin ownership is codified by the [CODEOWNERS](https://github.com/backstage/community-plugins/blob/main/.github/CODEOWNERS) file.
+
+Plugin ownership is a responsibility often taken on voluntarily and/or in addition to primary job roles. While there are expectations outlined here, this is **not a support commitment**. Timely responses are appreciated, but replies may not be immediate and will depend on availability.
+
+### PR Reviews & Merging
+
+Plugin owners are assumed to have full autonomy over reviewing and merging PRs for their workspace. This includes the merging of Version Packages PRs to trigger a new release.
+
+It is also helpful for workspace owners to review and add approvals to PRs that touch multiple workspaces (such as dependency updates), as these may be landed by `@backstage/community-plugin-maintainers`.
+
+### Issue Triage
+
+Plugin owners should triage issues related to their plugin as needed. The `@backstage/community-plugin-maintainers` group may tag the listed owners on relevant issues.
+
+## Version Bumping
+
+Plugin owners are expected to run the Version Bump script for their workspace. The process follows the guidance outlined in the [Version Bumping Documentation](https://github.com/backstage/community-plugins/blob/main/docs/version-bump.md).
 
 ## Maintaining and patching an older release line
 

@@ -1,5 +1,30 @@
 ### Dependencies
 
+## 1.39.1
+
+### Patch Changes
+
+- 85541c1: RBACApiRef should be exposed to support simulation / customization based on use-cases and to mock API implementation for feature testing. #2872
+
+## 1.39.0
+
+### Minor Changes
+
+- 0253db6: Backstage version bump to v1.36.1
+
+### Patch Changes
+
+- Updated dependencies [0253db6]
+  - @backstage-community/plugin-rbac-common@1.14.0
+
+## 1.38.3
+
+### Patch Changes
+
+- 32135b8: Updated dependency `@testing-library/user-event` to `14.6.1`.
+- c222ea4: Updated dependency `@playwright/test` to `1.51.0`.
+- 973a5ef: remove prettier from devDevpendencies
+
 ## 1.38.2
 
 ### Patch Changes

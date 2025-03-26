@@ -4,21 +4,16 @@ kind: Domain
 metadata:
   name: runtime-platform
 spec:
-  owner: family
-relations:
-  - type: hasPart
-    targetRef: system:default/software-deployment
+  owner: team-b
+  system: software-deployment
 ---
 apiVersion: backstage.io/v1alpha1
 kind: System
 metadata:
   name: software-deployment
 spec:
-  owner: family
+  owner: team-b
   domain: runtime
-relations:
-  - type: partOf
-    targetRef: domain:default/runtime-platform
 ---
 apiVersion: backstage.io/v1alpha1
 kind: Component
@@ -26,5 +21,5 @@ metadata:
   name: ci-runner
 spec:
   type: service
-  owner: family
+  owner: team-a
   system: software-deployment

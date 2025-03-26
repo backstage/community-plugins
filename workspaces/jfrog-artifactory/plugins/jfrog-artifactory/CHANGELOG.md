@@ -1,5 +1,17 @@
 ### Dependencies
 
+## 1.13.2
+
+### Patch Changes
+
+- ac7a432: remove unused dependencies: @material-ui/lab and @types/node
+
+## 1.13.1
+
+### Patch Changes
+
+- 32135b8: Updated dependency `@testing-library/user-event` to `14.6.1`.
+
 ## 1.13.0
 
 ### Minor Changes

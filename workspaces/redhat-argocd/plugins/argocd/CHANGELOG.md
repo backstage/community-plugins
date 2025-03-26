@@ -1,5 +1,17 @@
 ## @backstage-community/plugin-redhat-argocd
 
+## 1.17.0
+
+### Minor Changes
+
+- df9d65d: Add backwards compatibility fixes to support RoadieHQ ArgoCD Backend
+
+### Patch Changes
+
+- 32135b8: Updated dependency `@testing-library/user-event` to `14.6.1`.
+- c222ea4: Updated dependency `@playwright/test` to `1.51.0`.
+- 989bd8c: Remove CSS resets from PatternFly CSS import
+
 ## 1.16.0
 
 ### Minor Changes

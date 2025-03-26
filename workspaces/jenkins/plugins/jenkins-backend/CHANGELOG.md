@@ -1,5 +1,11 @@
 # @backstage-community/plugin-jenkins-backend
 
+## 0.12.1
+
+### Patch Changes
+
+- 4dc7013: Fixed a bug when Jenkins permissions were not exposed by Jenkins at `/api/jenkins/.well-known/backstage/permissions/metadata`.
+
 ## 0.12.0
 
 ### Minor Changes

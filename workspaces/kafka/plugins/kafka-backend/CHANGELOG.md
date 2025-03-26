@@ -1,5 +1,18 @@
 # @backstage-community/plugin-kafka-backend
 
+## 0.6.0
+
+### Minor Changes
+
+- 0749afd: Backstage version bump to v1.37.0
+
+## 0.5.1
+
+### Patch Changes
+
+- 381a2b0: Add link to a [kafkajs](https://kafka.js.org/docs/confiuration#ssl) docs with ssl options
+  Update Reference to the kafka-backend plugin in a Readme
+
 ## 0.5.0
 
 ### Minor Changes

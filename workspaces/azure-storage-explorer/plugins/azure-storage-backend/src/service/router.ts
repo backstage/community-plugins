@@ -14,22 +14,16 @@
  * limitations under the License.
  */
 import { Config } from '@backstage/config';
-import { Logger } from 'winston';
 import { AzureStorageBuilder } from './AzureStorageBuilder';
+import { LoggerService } from '@backstage/backend-plugin-api';
 
-/**
- * @deprecated Please migrate to the new backend system as this will be removed in the future.
- *
- * @public */
+/** @internal */
 export interface RouterOptions {
-  logger: Logger;
+  logger: LoggerService;
   config: Config;
 }
 
-/**
- * @deprecated Please migrate to the new backend system as this will be removed in the future.
- *
- * @public */
+/** @internal */
 export async function createRouter(options: RouterOptions) {
   const { logger, config } = options;
   const { router } = await AzureStorageBuilder.createBuilder({

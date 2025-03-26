@@ -24,12 +24,16 @@ import {
   createGithubGraphqlClient,
   fetchDiscussionDocuments,
 } from '@guidanti/backstage-github-discussions-fetcher';
-import { type GithubDiscussionIndexableDocument } from '@backstage-community/plugin-github-discussions-common';
+import {
+  type GithubDiscussionIndexableDocument,
+  githubDiscussionsReadPermission,
+} from '@backstage-community/plugin-github-discussions-common';
 import {
   DefaultGithubCredentialsProvider,
   type GithubIntegration,
   ScmIntegrations,
 } from '@backstage/integration';
+import { Permission } from '@backstage/plugin-permission-common';
 import gh from 'parse-github-url';
 import { Duration } from 'luxon';
 
@@ -84,6 +88,7 @@ export class GithubDiscussionsCollatorFactory
   private readonly discussionsBatchSize?: number;
   private readonly commentsBatchSize?: number;
   private readonly repliesBatchSize?: number;
+  public visibilityPermission: Permission = githubDiscussionsReadPermission;
 
   private constructor(options: GithubDiscussionsCollatorFactoryOptions) {
     this.logger = options.logger.child({ documentType: this.type });

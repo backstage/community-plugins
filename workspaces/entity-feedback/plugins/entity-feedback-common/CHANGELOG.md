@@ -1,5 +1,17 @@
 # @backstage-community/plugin-entity-feedback-common
 
+## 0.5.0
+
+### Minor Changes
+
+- 1fc87de: Backstage version bump to v1.37.0
+
+## 0.4.0
+
+### Minor Changes
+
+- a5737fc: Backstage version bump to v1.36.1
+
 ## 0.3.0
 
 ### Minor Changes

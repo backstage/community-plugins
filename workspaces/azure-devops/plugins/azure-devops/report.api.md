@@ -67,6 +67,16 @@ export interface AzureDevOpsApi {
   // (undocumented)
   getAllTeams(limit?: number): Promise<Team[]>;
   // (undocumented)
+  getBuildRunLog(
+    projectName: string,
+    entityRef: string,
+    buildId: number,
+    host?: string,
+    org?: string,
+  ): Promise<{
+    log: string[];
+  }>;
+  // (undocumented)
   getBuildRuns(
     projectName: string,
     entityRef: string,
@@ -128,6 +138,16 @@ export class AzureDevOpsClient implements AzureDevOpsApi {
   constructor(options: { discoveryApi: DiscoveryApi; fetchApi: FetchApi });
   // (undocumented)
   getAllTeams(limit?: number): Promise<Team[]>;
+  // (undocumented)
+  getBuildRunLog(
+    projectName: string,
+    entityRef: string,
+    buildId: number,
+    host?: string,
+    org?: string,
+  ): Promise<{
+    log: string[];
+  }>;
   // (undocumented)
   getBuildRuns(
     projectName: string,
@@ -301,6 +321,16 @@ export enum FilterType {
   // (undocumented)
   CreatedByUser = 'CreatedByUser',
 }
+
+// @public (undocumented)
+export function getAnnotationValuesFromEntity(entity: Entity): {
+  project: string;
+  repo?: string;
+  definition?: string;
+  host?: string;
+  org?: string;
+  readmePath?: string;
+};
 
 // @public (undocumented)
 export const isAzureDevOpsAvailable: (entity: Entity) => boolean;
