@@ -63,6 +63,27 @@ export const AboutCard = ({ roleName }: AboutCardProps) => {
     lastModified = 'No information';
   }
 
+  let description;
+  if (role?.metadata?.description && role.metadata.description.length > 0) {
+    description = role.metadata.description;
+  } else {
+    description = 'No description';
+  }
+
+  let modifiedBy;
+  if (role?.metadata?.modifiedBy && role.metadata.modifiedBy.length > 0) {
+    modifiedBy = role.metadata.modifiedBy;
+  } else {
+    modifiedBy = 'No information';
+  }
+
+  let owner;
+  if (role?.metadata?.owner && role.metadata.owner.length > 0) {
+    owner = role.metadata.owner;
+  } else {
+    owner = 'No owner';
+  }
+
   return (
     <Card
       sx={{
@@ -92,7 +113,7 @@ export const AboutCard = ({ roleName }: AboutCardProps) => {
               <AboutField label="Description">
                 <MarkdownContent
                   className={classes.text}
-                  content={role?.metadata?.description ?? 'No description'}
+                  content={description}
                 />
               </AboutField>
             </Grid>
@@ -100,7 +121,7 @@ export const AboutCard = ({ roleName }: AboutCardProps) => {
               <AboutField label="Modified By">
                 <MarkdownContent
                   className={classes.text}
-                  content={role?.metadata?.modifiedBy ?? 'No information'}
+                  content={modifiedBy}
                 />
               </AboutField>
             </Grid>
@@ -114,10 +135,7 @@ export const AboutCard = ({ roleName }: AboutCardProps) => {
             </Grid>
             <Grid item xs={3} sm={6} lg={3}>
               <AboutField label="Owner">
-                <MarkdownContent
-                  className={classes.text}
-                  content={role?.metadata?.owner ?? 'No owner'}
-                />
+                <MarkdownContent className={classes.text} content={owner} />
               </AboutField>
             </Grid>
           </Grid>
