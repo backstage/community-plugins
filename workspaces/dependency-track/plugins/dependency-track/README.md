@@ -7,7 +7,7 @@ Thanks for using our plugin created for retrieving OWASP's Dependencytrack infor
 Run this command from the `app` package directory:
 
 ```shell
-yarn add @backstage-community/plugin-dependencytrack
+yarn add @backstage-community/plugin-dependency-track
 ```
 
 ## Configuration
@@ -18,7 +18,7 @@ Add config in `app-config.yaml`.
 Integration:
 
 ```yaml
-dependencytrack:
+dependency-track:
   baseUrl: ${DEPENDENCYTRACK_BASE_URL}
 ```
 
@@ -40,7 +40,7 @@ Don't forget to replace the variables with the values for your specific environm
 
 ```tsx
 // packages\app\src\components\catalog\EntityPage.tsx
-import { EntityDependencytrackSummaryCard, EntityDependencytrackFindingCard, isDependencytrackAvailable } from '@backstage-community/plugin-dependencytrack';
+import { EntityDependencytrackSummaryCard, EntityDependencytrackFindingCard, isDependencytrackAvailable } from '@backstage-community/plugin-dependency-track';
 
 // In the overviewContent. You can add one or both.
 

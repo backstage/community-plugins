@@ -30,5 +30,5 @@ auth:
   providers:
     guest: {}
 
-dependencytrack:
+dependency-track:
   baseUrl: https://deptrack.example.com

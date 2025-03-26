@@ -26,7 +26,7 @@ yarn.lock                                                               @backsta
 /workspaces/confluence                              @backstage/community-plugins-maintainers  @fjudith
 /workspaces/copilot                                 @backstage/community-plugins-maintainers  @esw-afabiano
 /workspaces/cost-insights                           @backstage/community-plugins-maintainers  @backstage/silver-lining
-/workspaces/dependencytrack                         @backstage/community-plugins-maintainers  @harmenbrinkmanTRIMM
+/workspaces/dependency-track                         @backstage/community-plugins-maintainers  @harmenbrinkmanTRIMM
 /workspaces/entity-feedback                         @backstage/community-plugins-maintainers  @kuangp
 /workspaces/explore                                 @backstage/community-plugins-maintainers  @backstage/sda-se-reviewers
 /workspaces/feedback                                @backstage/community-plugins-maintainers  @riginoommen @deshmukhmayur @yashoswalyo

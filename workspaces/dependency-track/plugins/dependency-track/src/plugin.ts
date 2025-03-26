@@ -27,7 +27,7 @@ import { rootRouteRef } from './routes';
  * @public
  */
 export const dependencytrackPlugin = createPlugin({
-  id: 'dependencytrack',
+  id: 'dependency-track',
   apis: [
     createApiFactory({
       api: dependencytrackApiRef,

@@ -1,7 +1,7 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: dependencytrack
+  name: dependency-track
   description: An example of a Backstage application.
   # Example for optional annotations
   # annotations:

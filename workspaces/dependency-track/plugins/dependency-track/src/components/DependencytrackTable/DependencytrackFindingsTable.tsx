@@ -23,7 +23,7 @@ import { configApiRef, useApi } from '@backstage/core-plugin-api';
 const getComponentUrl = (finding: Finding) => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   return `${useApi(configApiRef).getString(
-    'dependencytrack.baseUrl',
+    'dependency-track.baseUrl',
   )}/components/${finding.component.uuid}`;
 };
 

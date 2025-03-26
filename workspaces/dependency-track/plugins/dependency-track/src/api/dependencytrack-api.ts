@@ -25,7 +25,7 @@ import { Entity } from '@backstage/catalog-model';
  * @public
  */
 export const dependencytrackApiRef = createApiRef<DependencytrackApi>({
-  id: 'plugin.dependencytrack.service',
+  id: 'plugin.dependency-track.service',
 });
 
 /**
