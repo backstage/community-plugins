@@ -14,38 +14,5 @@
  * limitations under the License.
  */
 
-import {
-  SearchDocument,
-  IndexableDocument,
-} from '@backstage/plugin-search-common';
-
-/**
- * @public
- */
-export interface GithubDiscussionsDocument {
-  author: string;
-  category: string;
-  labels: {
-    name: string;
-    color: string;
-  }[];
-  comments: {
-    author: string;
-    bodyText: string;
-    replies: {
-      author: string;
-      bodyText: string;
-    }[];
-  }[];
-}
-
-/**
- * @public
- */
-export type GithubDiscussionsSearchDocument = GithubDiscussionsDocument &
-  SearchDocument;
-/**
- * @public
- */
-export type GithubDiscussionIndexableDocument = GithubDiscussionsDocument &
-  IndexableDocument;
+export { githubDiscussionsReadPermission } from './permissions';
+export * from './types';

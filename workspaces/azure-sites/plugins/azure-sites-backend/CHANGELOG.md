@@ -1,5 +1,16 @@
 # @backstage-community/plugin-azure-sites-backend
 
+## 0.8.0
+
+### Minor Changes
+
+- 044529a: Backstage version bump to v1.37.0
+
+### Patch Changes
+
+- Updated dependencies [044529a]
+  - @backstage-community/plugin-azure-sites-common@0.5.0
+
 ## 0.7.0
 
 ### Minor Changes

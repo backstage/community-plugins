@@ -16,11 +16,6 @@
 
 import express from 'express';
 import request from 'supertest';
-import {
-  getVoidLogger,
-  PluginEndpointDiscovery,
-  HostDiscovery,
-} from '@backstage/backend-common';
 import { CatalogApi } from '@backstage/catalog-client';
 import type { Entity } from '@backstage/catalog-model';
 import { Config, ConfigReader } from '@backstage/config';
@@ -31,6 +26,7 @@ import {
   IdentityApiGetIdentityRequest,
 } from '@backstage/plugin-auth-node';
 import { BadgesStore } from '../database/badgesStore';
+import { mockServices, TestDatabases } from '@backstage/backend-test-utils';
 
 describe('createRouter', () => {
   let app: express.Express;
@@ -53,7 +49,6 @@ describe('createRouter', () => {
   const getIdentity = jest.fn();
 
   let config: Config;
-  let discovery: PluginEndpointDiscovery;
 
   const entity: Entity = {
     apiVersion: 'v1',
@@ -78,7 +73,17 @@ describe('createRouter', () => {
     getBadgeUuid: jest.fn(),
   };
 
+  const databases = TestDatabases.create();
+
+  const discovery = mockServices.discovery.mock({
+    getExternalBaseUrl: jest
+      .fn()
+      .mockResolvedValue('http://127.0.0.1/api/badges'),
+  });
+
   beforeAll(async () => {
+    const knex = await databases.init('SQLITE_3');
+    const getClient = jest.fn(async () => knex);
     badgeBuilder = {
       getBadges: jest.fn(),
       createBadgeJson: jest.fn(),
@@ -112,13 +117,15 @@ describe('createRouter', () => {
       },
     );
 
-    discovery = HostDiscovery.fromConfig(config);
     const router = await createRouter({
       badgeBuilder,
       catalog: catalog as Partial<CatalogApi> as CatalogApi,
       config,
       discovery,
-      logger: getVoidLogger(),
+      logger: mockServices.logger.mock(),
+      auth: mockServices.auth(),
+      httpAuth: mockServices.httpAuth.mock(),
+      database: mockServices.database.mock({ getClient }),
     });
     app = express().use(router);
   });
@@ -128,13 +135,18 @@ describe('createRouter', () => {
   });
 
   it('works with badgeStore', async () => {
+    const knex = await databases.init('SQLITE_3');
+    const getClient = jest.fn(async () => knex);
     const router = await createRouter({
       badgeBuilder,
       catalog: catalog as Partial<CatalogApi> as CatalogApi,
       config,
       discovery,
-      logger: getVoidLogger(),
+      logger: mockServices.logger.mock(),
       badgeStore: badgeStore,
+      auth: mockServices.auth(),
+      httpAuth: mockServices.httpAuth.mock(),
+      database: mockServices.database.mock({ getClient }),
     });
     expect(router).toBeDefined();
   });
@@ -160,7 +172,9 @@ describe('createRouter', () => {
           kind: 'component',
           name: 'test',
         },
-        { token: '' },
+        {
+          token: 'mock-service-token:{"sub":"plugin:test","target":"catalog"}',
+        },
       );
 
       expect(badgeBuilder.getBadges).toHaveBeenCalledTimes(1);
@@ -198,7 +212,10 @@ describe('createRouter', () => {
             kind: 'component',
             name: 'test',
           },
-          { token: '' },
+          {
+            token:
+              'mock-service-token:{"sub":"plugin:test","target":"catalog"}',
+          },
         );
 
         expect(badgeBuilder.getBadges).toHaveBeenCalledTimes(0);

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { loggerToWinstonLogger } from '@backstage/backend-common';
+
 import {
   coreServices,
   createBackendPlugin,
@@ -33,7 +33,7 @@ export const azureStoragePlugin = createBackendPlugin({
       async init({ config, logger, httpRouter }) {
         httpRouter.use(
           await createRouter({
-            logger: loggerToWinstonLogger(logger),
+            logger,
             config,
           }),
         );

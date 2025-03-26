@@ -1,6 +1,6 @@
 {
   "name": "backend",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "main": "dist/index.cjs.js",
   "types": "src/index.ts",
   "private": true,
@@ -21,15 +21,15 @@
   },
   "dependencies": {
     "@backstage-community/plugin-entity-feedback-backend": "workspace:^",
-    "@backstage/backend-defaults": "^0.8.1",
-    "@backstage/backend-plugin-api": "^1.2.0",
-    "@backstage/plugin-app-backend": "^0.4.5",
-    "@backstage/plugin-auth-backend": "^0.24.3",
-    "@backstage/plugin-auth-backend-module-guest-provider": "^0.2.5",
-    "@backstage/plugin-catalog-backend": "^1.31.0"
+    "@backstage/backend-defaults": "^0.8.2",
+    "@backstage/backend-plugin-api": "^1.2.1",
+    "@backstage/plugin-app-backend": "^0.5.0",
+    "@backstage/plugin-auth-backend": "^0.24.4",
+    "@backstage/plugin-auth-backend-module-guest-provider": "^0.2.6",
+    "@backstage/plugin-catalog-backend": "^1.32.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.30.0"
+    "@backstage/cli": "^0.31.0"
   },
   "files": [
     "dist"

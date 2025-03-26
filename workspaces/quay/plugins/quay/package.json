@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-quay",
-  "version": "1.18.1",
+  "version": "1.19.0",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "license": "Apache-2.0",
@@ -61,7 +61,7 @@
     "@backstage/core-app-api": "^1.15.5",
     "@backstage/dev-utils": "^1.1.7",
     "@backstage/test-utils": "^1.7.5",
-    "@playwright/test": "1.51.0",
+    "@playwright/test": "1.51.1",
     "@redhat-developer/red-hat-developer-hub-theme": "0.4.0",
     "@spotify/prettier-config": "^15.0.0",
     "@testing-library/jest-dom": "^6.0.0",
@@ -74,7 +74,7 @@
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-router-dom": "^6.0.0",
-    "start-server-and-test": "2.0.10"
+    "start-server-and-test": "2.0.11"
   },
   "files": [
     "app-config.dynamic.yaml",

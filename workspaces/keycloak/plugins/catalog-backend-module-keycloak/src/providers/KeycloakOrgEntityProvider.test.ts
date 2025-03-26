@@ -24,9 +24,6 @@ import { ErrorLike } from '@backstage/errors';
 import type { EntityProviderConnection } from '@backstage/plugin-catalog-node';
 import type { JsonObject } from '@backstage/types';
 
-// @ts-ignore
-import inclusion from 'inclusion';
-
 import {
   assertLogMustNotInclude,
   authMock,
@@ -36,8 +33,6 @@ import {
   PASSWORD_CONFIG,
 } from '../../__fixtures__/helpers';
 import { KeycloakOrgEntityProvider } from './KeycloakOrgEntityProvider';
-
-jest.mock('inclusion', () => jest.fn());
 
 const connection = {
   applyMutation: jest.fn(),
@@ -90,19 +85,23 @@ describe.each([
   beforeEach(() => {
     jest.clearAllMocks();
     authMock.mockReset();
+    jest.resetModules(); // Clears require cache to allow re-mocking
+
+    // @ts-ignore
+    jest.unstable_mockModule('@keycloak/keycloak-admin-client', async () => ({
+      default: mockImplementation,
+    }));
+
+    // @ts-ignore
+    jest.unstable_mockModule('p-limit', () => {
+      return {
+        default: mockPLimit,
+      };
+    });
     keycloakLogger = mockServices.logger.mock();
     logger = mockServices.logger.mock({
       child: () => keycloakLogger,
     });
-    inclusion.mockImplementation((libName: string) => {
-      if (libName === '@keycloak/keycloak-admin-client') {
-        return { default: mockImplementation };
-      }
-      if (libName === 'p-limit') {
-        return { default: mockPLimit };
-      }
-      throw new Error(`Unexpected inclusion of ${libName}`);
-    }); // Return the correct mock based on the version
     schedule = scheduler.createScheduledTaskRunner(
       '' as unknown as SchedulerServiceTaskScheduleDefinition,
     ) as SchedulerServiceTaskRunnerMock;
@@ -133,13 +132,6 @@ describe.each([
     }
   };
 
-  it('should mock inclusion', async () => {
-    const KeyCloakAdminClient = await inclusion(
-      '@keycloak/keycloak-admin-client',
-    );
-    expect(KeyCloakAdminClient).toEqual({ default: mockImplementation });
-  });
-
   it('should connect', async () => {
     const keycloak = createProvider(CONFIG);
     const result = await Promise.all(
@@ -152,7 +144,9 @@ describe.each([
     const keycloak = createProvider(CONFIG);
 
     for await (const k of keycloak) {
-      await expect(() => k.read()).rejects.toThrow('Not initialized');
+      await expect(() =>
+        k.read({ taskInstanceId: 'any-task-instance-id' }),
+      ).rejects.toThrow('Not initialized');
     }
     expect(authMock).toHaveBeenCalledTimes(0);
   });

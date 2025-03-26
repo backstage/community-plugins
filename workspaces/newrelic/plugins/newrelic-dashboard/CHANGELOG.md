@@ -1,5 +1,11 @@
 # @backstage-community/plugin-newrelic-dashboard
 
+## 0.7.0
+
+### Minor Changes
+
+- 6add7d7: Backstage version bump to v1.37.0
+
 ## 0.6.0
 
 ### Minor Changes

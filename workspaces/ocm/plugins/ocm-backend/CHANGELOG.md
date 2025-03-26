@@ -1,5 +1,19 @@
 ### Dependencies
 
+## 5.5.2
+
+### Patch Changes
+
+- 48717e0: Updated dependency `@openapitools/openapi-generator-cli` to `2.18.4`.
+
+## 5.5.1
+
+### Patch Changes
+
+- 973a5ef: remove prettier from devDependencies
+- Updated dependencies [973a5ef]
+  - @backstage-community/plugin-ocm-common@3.8.1
+
 ## 5.5.0
 
 ### Minor Changes

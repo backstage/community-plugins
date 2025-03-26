@@ -39,6 +39,7 @@ import {
   traverseGroups,
 } from './read';
 import type { GroupTransformer, UserTransformer } from './types';
+import { Attributes, Counter, metrics } from '@opentelemetry/api';
 
 const config: KeycloakProviderConfig = {
   realm: 'myrealm',
@@ -61,7 +62,35 @@ const mockPLimit = jest
     },
   );
 
+jest.mock('@opentelemetry/api', () => ({
+  trace: {
+    getTracer: jest.fn().mockReturnValue({
+      startSpan: jest.fn(),
+    }),
+  },
+  metrics: {
+    getMeter: jest.fn().mockReturnValue({
+      createCounter: jest.fn().mockReturnValue({
+        add: jest.fn(),
+      }),
+    }),
+  },
+}));
+
 describe('readKeycloakRealm', () => {
+  let mockCounter: Counter<Attributes>;
+  const taskInstanceId = 'task123';
+
+  beforeEach(() => {
+    const mockMeter = metrics.getMeter('default');
+    mockCounter = mockMeter.createCounter(
+      'backend_keycloak.fetch.task.failure.count',
+      {
+        description: 'Test.',
+      },
+    );
+  });
+
   it('should return the correct number of users and groups (Version 23 or Higher)', async () => {
     const client =
       new KeycloakAdminClientMockServerv24() as unknown as KeycloakAdminClient;
@@ -70,6 +99,8 @@ describe('readKeycloakRealm', () => {
       config,
       logger,
       mockPLimit as unknown as LimitFunction,
+      taskInstanceId,
+      mockCounter,
     );
     expect(users).toHaveLength(3);
     expect(groups).toHaveLength(3);
@@ -83,6 +114,8 @@ describe('readKeycloakRealm', () => {
       config,
       logger,
       mockPLimit as unknown as LimitFunction,
+      taskInstanceId,
+      mockCounter,
     );
     expect(users).toHaveLength(3);
     expect(groups).toHaveLength(3);
@@ -101,6 +134,8 @@ describe('readKeycloakRealm', () => {
       config,
       logger,
       mockPLimit as unknown as LimitFunction,
+      taskInstanceId,
+      mockCounter,
     );
 
     for (const group of groups) {
@@ -126,6 +161,8 @@ describe('readKeycloakRealm', () => {
       config,
       logger,
       mockPLimit as unknown as LimitFunction,
+      taskInstanceId,
+      mockCounter,
       {
         userTransformer,
         groupTransformer,
@@ -156,6 +193,8 @@ describe('readKeycloakRealm', () => {
       config,
       logger,
       mockPLimit as unknown as LimitFunction,
+      taskInstanceId,
+      mockCounter,
       {
         userTransformer,
         groupTransformer,
@@ -296,6 +335,19 @@ describe('parseUser', () => {
 });
 
 describe('getEntitiesUser', () => {
+  let mockCounter: Counter<Attributes>;
+  const taskInstanceId = 'task123';
+
+  beforeEach(() => {
+    const mockMeter = metrics.getMeter('default');
+    mockCounter = mockMeter.createCounter(
+      'backend_keycloak.fetch.task.failure.count',
+      {
+        description: 'Test.',
+      },
+    );
+  });
+
   it('should fetch all users (version 23 or Higher)', async () => {
     const client =
       new KeycloakAdminClientMockServerv24() as unknown as KeycloakAdminClient;
@@ -308,6 +360,8 @@ describe('getEntitiesUser', () => {
         realm: '',
       },
       logger,
+      mockCounter,
+      taskInstanceId,
       mockPLimit as unknown as LimitFunction,
     );
 
@@ -326,6 +380,8 @@ describe('getEntitiesUser', () => {
         realm: '',
       },
       logger,
+      mockCounter,
+      taskInstanceId,
       mockPLimit as unknown as LimitFunction,
     );
 
@@ -344,6 +400,8 @@ describe('getEntitiesUser', () => {
         realm: '',
       },
       logger,
+      mockCounter,
+      taskInstanceId,
       mockPLimit as unknown as LimitFunction,
       1,
     );
@@ -363,6 +421,8 @@ describe('getEntitiesUser', () => {
         realm: '',
       },
       logger,
+      mockCounter,
+      taskInstanceId,
       mockPLimit as unknown as LimitFunction,
       1,
     );

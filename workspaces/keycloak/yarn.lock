@@ -2537,13 +2537,11 @@ __metadata:
     "@backstage/errors": "npm:^1.2.7"
     "@backstage/plugin-catalog-backend": "npm:^1.31.0"
     "@backstage/plugin-catalog-node": "npm:^1.16.0"
-    "@common.js/p-limit": "npm:^6.1.0"
-    "@keycloak/keycloak-admin-client": "npm:26.1.2"
-    "@spotify/prettier-config": "npm:^15.0.0"
+    "@keycloak/keycloak-admin-client": "npm:26.1.4"
+    "@opentelemetry/api": "npm:^1.9.0"
     "@types/lodash": "npm:4.17.16"
     "@types/uuid": "npm:10.0.0"
     deepmerge: "npm:4.3.1"
-    inclusion: "npm:^1.0.1"
     jsonwebtoken: "npm:^9.0.0"
     lodash: "npm:^4.17.21"
     open-cli: "npm:^8.0.0"
@@ -3665,22 +3663,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@common.js/p-limit@npm:^6.1.0":
-  version: 6.1.0
-  resolution: "@common.js/p-limit@npm:6.1.0"
-  dependencies:
-    "@common.js/yocto-queue": "npm:^1.1.1"
-  checksum: 10/7f477a74cad557d4a9a46ff214c0942d8713041e51b7b687a76a269dd156bd8f3611fccd3d474520fef7dc454eb790bbadc4fdf1d5e8f7735b00c763392df2f3
-  languageName: node
-  linkType: hard
-
-"@common.js/yocto-queue@npm:^1.1.1":
-  version: 1.1.1
-  resolution: "@common.js/yocto-queue@npm:1.1.1"
-  checksum: 10/132a091c1385011967ad684ac2e2b2546184cd6c6985548bdc5e80c1aad4379687f8994c0b3b8958debb33578b0c592eb8123b9ed287d8137f80cb04bb8392b4
-  languageName: node
-  linkType: hard
-
 "@cspotcode/source-map-support@npm:^0.8.0":
   version: 0.8.1
   resolution: "@cspotcode/source-map-support@npm:0.8.1"
@@ -4261,7 +4243,6 @@ __metadata:
     "@backstage/e2e-test-utils": "npm:^0.1.1"
     "@backstage/repo-tools": "npm:^0.13.0"
     "@changesets/cli": "npm:^2.27.1"
-    "@spotify/prettier-config": "npm:^15.0.0"
     knip: "npm:^5.27.4"
     node-gyp: "npm:^9.0.0"
     prettier: "npm:2.8.8"
@@ -4668,14 +4649,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@keycloak/keycloak-admin-client@npm:26.1.2":
-  version: 26.1.2
-  resolution: "@keycloak/keycloak-admin-client@npm:26.1.2"
+"@keycloak/keycloak-admin-client@npm:26.1.4":
+  version: 26.1.4
+  resolution: "@keycloak/keycloak-admin-client@npm:26.1.4"
   dependencies:
     camelize-ts: "npm:^3.0.0"
     url-join: "npm:^5.0.0"
     url-template: "npm:^3.1.1"
-  checksum: 10/39668e0a8c63fb876785d183e275518aeb540d7dc7f85f532565935461a055025c369495f16af21ddcf14b1c9bd8c51ec90ae35e413370a20e59ab50137c0010
+  checksum: 10/f671198b45159c76e48889ad29a0e1d35404fcd46fc9b43e69c714741c55529e7271969be12266c04fe8fef1631bce9c35ba8c624a53cefa5b09b38ed5185afc
   languageName: node
   linkType: hard
 
@@ -6603,15 +6584,6 @@ __metadata:
     "@typescript-eslint/parser": ">=5"
     eslint: ">=8.x"
   checksum: 10/33627cff3a7ff6360cd73e26d28c50b3a49cc027716e1e0044187cad1fbfd6f9da13c83d2ae16bffa4755c8004f2ee9dafa4d520906905a8c9a7209987c93e5d
-  languageName: node
-  linkType: hard
-
-"@spotify/prettier-config@npm:^15.0.0":
-  version: 15.0.0
-  resolution: "@spotify/prettier-config@npm:15.0.0"
-  peerDependencies:
-    prettier: 2.x
-  checksum: 10/ba91f65bc4ee884e8afa0b99eacb1fac27043efa0915ead007af571d66a0f53462d2a65f33e01d3b6e10a804b60ed2957708f939850bc6071e2d28f0e277ab7c
   languageName: node
   linkType: hard
 
@@ -9832,7 +9804,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"callsites@npm:^3.0.0, callsites@npm:^3.1.0":
+"callsites@npm:^3.0.0":
   version: 3.1.0
   resolution: "callsites@npm:3.1.0"
   checksum: 10/072d17b6abb459c2ba96598918b55868af677154bec7e73d222ef95a8fdb9bbf7dae96a8421085cdad8cd190d86653b5b6dc55a4484f2e5b2e27d5e0c3fc15b3
@@ -14494,15 +14466,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"inclusion@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "inclusion@npm:1.0.1"
-  dependencies:
-    parent-module: "npm:^2.0.0"
-  checksum: 10/1ee1d829d4f354797b3c7ccca2a5fb669e7d4dafb83aaa96837265bbb6041eb4f7a6cab075730ba77c6b7b78c2918124411ba48092fa1bd13ee18c4b408ef36c
-  languageName: node
-  linkType: hard
-
 "indent-string@npm:^4.0.0":
   version: 4.0.0
   resolution: "indent-string@npm:4.0.0"
@@ -18420,15 +18383,6 @@ __metadata:
   dependencies:
     callsites: "npm:^3.0.0"
   checksum: 10/6ba8b255145cae9470cf5551eb74be2d22281587af787a2626683a6c20fbb464978784661478dd2a3f1dad74d1e802d403e1b03c1a31fab310259eec8ac560ff
-  languageName: node
-  linkType: hard
-
-"parent-module@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "parent-module@npm:2.0.0"
-  dependencies:
-    callsites: "npm:^3.1.0"
-  checksum: 10/f131f13d687a938556a01033561fb1b274b39921eb4425c7a691f0d91dcfbe9b19759c2b8d425a3ee7c8a46874e57fa418a690643880c3c7c56827aba12f78dd
   languageName: node
   linkType: hard
 

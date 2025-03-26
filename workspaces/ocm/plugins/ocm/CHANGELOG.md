@@ -1,5 +1,18 @@
 ### Dependencies
 
+## 5.4.2
+
+### Patch Changes
+
+- b58e6d7: remove unused dependencies: @material-ui/lab and @types/node
+
+## 5.4.1
+
+### Patch Changes
+
+- Updated dependencies [973a5ef]
+  - @backstage-community/plugin-ocm-common@3.8.1
+
 ## 5.4.0
 
 ### Minor Changes
