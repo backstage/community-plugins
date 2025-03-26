@@ -17,7 +17,11 @@
 import { NotModifiedError, stringifyError } from '@backstage/errors';
 import express from 'express';
 import Router from 'express-promise-router';
-import { madrParser } from '@backstage-community/plugin-adr-common';
+import {
+  AdrInfo,
+  AdrInfoParser,
+  madrParser,
+} from '@backstage-community/plugin-adr-common';
 import {
   CacheService,
   LoggerService,
@@ -29,13 +33,14 @@ export type AdrRouterOptions = {
   reader: UrlReaderService;
   cacheClient: CacheService;
   logger: LoggerService;
+  parser?: AdrInfoParser;
 };
 
 /** @public */
 export async function createRouter(
   options: AdrRouterOptions,
 ): Promise<express.Router> {
-  const { reader, cacheClient, logger } = options;
+  const { reader, cacheClient, logger, parser } = options;
 
   const router = Router();
   router.use(express.json());
@@ -69,7 +74,9 @@ export async function createRouter(
             const fileContent = await file.content();
 
             try {
-              const adrInfo = madrParser(fileContent.toString());
+              const adrInfo: AdrInfo = parser
+                ? parser(fileContent.toString())
+                : madrParser(fileContent.toString());
               return {
                 type: 'file',
                 name: file.path.substring(file.path.lastIndexOf('/') + 1),
