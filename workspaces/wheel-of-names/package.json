@@ -37,6 +37,10 @@
     "@backstage/e2e-test-utils": "^0.1.1",
     "@backstage/repo-tools": "^0.13.1",
     "@changesets/cli": "^2.27.1",
+    "@testing-library/dom": "^10.0.0",
+    "@testing-library/react": "^15.0.0",
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.2.19",
     "knip": "^5.27.4",
     "node-gyp": "^10.0.0",
     "prettier": "^2.3.2",
@@ -44,7 +48,11 @@
   },
   "resolutions": {
     "@types/react": "^18",
-    "@types/react-dom": "^18"
+    "@types/react-dom": "^18",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-router-dom": "^6.3.0",
+    "@testing-library/react": "^15.0.0"
   },
   "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {

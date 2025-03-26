@@ -21,7 +21,6 @@ import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import { Entity } from '@backstage/catalog-model';
 import { Content, Header, Page } from '@backstage/core-components';
 
- 
 // Sample mock data
 const mockUsers: Entity[] = [
   {
@@ -55,7 +54,7 @@ const mockUsers: Entity[] = [
     },
   },
 ];
- 
+
 const mockGroups: Entity[] = [
   {
     apiVersion: 'backstage.io/v1alpha1',
@@ -79,67 +78,79 @@ const mockGroups: Entity[] = [
     ],
   },
 ];
- 
+
 // Create a mock catalog API
 const mockCatalogApi = {
-  getEntities: async ({ filter }) => {
+  getEntities: async ({
+    filter,
+  }: {
+    filter?:
+      | { kind?: string; 'relations.memberOf'?: string[] }
+      | Array<{ kind: string }>;
+  }) => {
     // Simplified filtering logic for the mock
     if (filter) {
       if (Array.isArray(filter)) {
         // Handle array filter (used in fetchEntities)
         const kindFilters = filter.map(f => f.kind);
-        const filteredEntities = [...mockUsers, ...mockGroups].filter(entity => 
-          kindFilters.includes(entity.kind)
+        const filteredEntities = [...mockUsers, ...mockGroups].filter(entity =>
+          kindFilters.includes(entity.kind),
         );
         return { items: filteredEntities };
-      } 
-        // Handle object filter (used in fetchGroupMembers)
-        if (filter.kind === 'User' && filter['relations.memberOf']) {
-          // Mock group membership filtering
-          const groupRef = filter['relations.memberOf'][0];
-          const groupName = groupRef.split('/')[1];
-          // Find users who are members of this group
-          const groupMembers = mockUsers.filter(user => {
-            // In real data, we'd check relations, but for mocking we'll just simulate
-            if (groupName === 'engineering' && user.metadata.name === 'john-doe') {
-              return true;
-            }
-            return false;
-          });
-          return { items: groupMembers };
-        }
-      
+      }
+      // Handle object filter (used in fetchGroupMembers)
+      if (filter.kind === 'User' && filter['relations.memberOf']) {
+        // Mock group membership filtering
+        const groupRef = filter['relations.memberOf'][0];
+        const groupName = groupRef.split('/')[1];
+        // Find users who are members of this group
+        const groupMembers = mockUsers.filter(user => {
+          // In real data, we'd check relations, but for mocking we'll just simulate
+          if (
+            groupName === 'engineering' &&
+            user.metadata.name === 'john-doe'
+          ) {
+            return true;
+          }
+          return false;
+        });
+        return { items: groupMembers };
+      }
     }
     // Default: return all entities
     return { items: [...mockUsers, ...mockGroups] };
   },
-  getEntityByRef: async (ref) => {
-    const [kind, namespace, name] = ref.split(':')[1].split('/');
+  getEntityByRef: async (ref: any) => {
+    const [kind, name] = ref.split(':')[1].split('/');
     const allEntities = [...mockUsers, ...mockGroups];
-    return allEntities.find(e => e.kind.toLowerCase() === kind && e.metadata.name === name) || null;
-  }
+    return (
+      allEntities.find(
+        e =>
+          e.kind.toLocaleLowerCase('en-US') === kind &&
+          e.metadata.name === name,
+      ) || undefined
+    );
+  },
 };
- 
+
 const app = createDevApp();
- 
+
 app.registerPlugin(wheelOfNamesPlugin);
- 
+
 // Wrap the page with API providers
 app.addPage({
   element: (
-    (
-      <Page themeId="home">
-        <Header title="Wheel of Names" />
-        <Content>
-          <TestApiProvider apis={[[catalogApiRef, mockCatalogApi]]}>
-            <WheelOfNamesPage />
-          </TestApiProvider>
-        </Content>
-      </Page>
-    )
+    <Page themeId="home">
+      <Header title="Wheel of Names" />
+      <Content>
+        <TestApiProvider apis={[[catalogApiRef, mockCatalogApi]]}>
+          <WheelOfNamesPage />
+        </TestApiProvider>
+      </Content>
+    </Page>
   ),
   title: 'Wheel of Names',
   path: '/wheel-of-names',
 });
- 
+
 app.render();
