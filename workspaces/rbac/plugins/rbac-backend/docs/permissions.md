@@ -85,9 +85,11 @@ Resource type permissions on the other hand are basic named permissions with a r
 
 ## Kubernetes
 
-| Name             | Resource Type | Policy | Description                                                                                                 | Requirements        |
-| ---------------- | ------------- | ------ | ----------------------------------------------------------------------------------------------------------- | ------------------- |
-| kubernetes.proxy |               |        | Allows the user to access the proxy endpoint (ability to read pod logs and events within Showcase and RHDH) | catalog.entity.read |
+| Name                      | Resource Type | Policy | Description                                                                                                 | Requirements        |
+| ------------------------- | ------------- | ------ | ----------------------------------------------------------------------------------------------------------- | ------------------- |
+| kubernetes.clusters.read  |               | read   | Allows the user to read Kubernetes clusters information under `/clusters`                                   | catalog.entity.read |
+| kubernetes.resources.read |               | read   | Allows the user to read Kubernetes resources information under `/services/:serviceId` and `/resources`      | catalog.entity.read |
+| kubernetes.proxy          |               |        | Allows the user to access the proxy endpoint (ability to read pod logs and events within Showcase and RHDH) | catalog.entity.read |
 
 ## RBAC
 
@@ -119,17 +121,19 @@ Resource type permissions on the other hand are basic named permissions with a r
 
 ## Tekton
 
-| Name             | Resource Type | Policy | Description                                                                                                        | Requirements        |
-| ---------------- | ------------- | ------ | ------------------------------------------------------------------------------------------------------------------ | ------------------- |
-| tekton.view.read |               | read   | Allows the user to view the tekton plugin                                                                          | catalog.entity.read |
-| kubernetes.proxy |               |        | Allows the user to access the proxy endpoint (ability to read tekton pod logs and events within Showcase and RHDH) | catalog.entity.read |
+| Name                      | Resource Type | Policy | Description                                                                                                        | Requirements        |
+| ------------------------- | ------------- | ------ | ------------------------------------------------------------------------------------------------------------------ | ------------------- |
+| kubernetes.clusters.read  |               | read   | Allows the user to read Kubernetes clusters information under `/clusters`                                          | catalog.entity.read |
+| kubernetes.resources.read |               | read   | Allows the user to read Kubernetes resources information under `/services/:serviceId` and `/resources`             | catalog.entity.read |
+| kubernetes.proxy          |               |        | Allows the user to access the proxy endpoint (ability to read tekton pod logs and events within Showcase and RHDH) | catalog.entity.read |
 
 ## Topology
 
-| Name               | Resource Type | Policy | Description                                                                                                 | Requirements        |
-| ------------------ | ------------- | ------ | ----------------------------------------------------------------------------------------------------------- | ------------------- |
-| topology.view.read |               | read   | Allows the user to view the topology plugin                                                                 | X                   |
-| kubernetes.proxy   |               |        | Allows the user to access the proxy endpoint (ability to read pod logs and events within Showcase and RHDH) | catalog.entity.read |
+| Name                      | Resource Type | Policy | Description                                                                                                 | Requirements        |
+| ------------------------- | ------------- | ------ | ----------------------------------------------------------------------------------------------------------- | ------------------- |
+| kubernetes.clusters.read  |               | read   | Allows the user to read Kubernetes clusters information under `/clusters`                                   | catalog.entity.read |
+| kubernetes.resources.read |               | read   | Allows the user to read Kubernetes resources information under `/services/:serviceId` and `/resources`      | catalog.entity.read |
+| kubernetes.proxy          |               |        | Allows the user to access the proxy endpoint (ability to read pod logs and events within Showcase and RHDH) | catalog.entity.read |
 
 ## Argocd
 
