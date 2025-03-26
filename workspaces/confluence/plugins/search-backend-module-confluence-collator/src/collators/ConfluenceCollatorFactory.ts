@@ -66,7 +66,7 @@ export type ConfluenceCollatorFactoryOptions = {
   spaces?: string[];
   query?: string;
   parallelismLimit?: number;
-  requestsPerSecond?: number;
+  maxRequestsPerSecond?: number;
   logger: LoggerService;
 };
 
@@ -157,9 +157,9 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
     this.parallelismLimit = options.parallelismLimit;
     this.logger = options.logger.child({ documentType: this.type });
 
-    if (options.requestsPerSecond) {
+    if (options.maxRequestsPerSecond) {
       const throttle = pThrottle({
-        limit: options.requestsPerSecond,
+        limit: options.maxRequestsPerSecond,
         interval: 1000,
       });
       this.fetch = throttle(async (url: RequestInfo, init?: RequestInit) => {
@@ -214,8 +214,8 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
       spaces,
       query,
       parallelismLimit,
-      requestsPerSecond: config.getOptionalNumber(
-        'confluence.requestsPerSecond',
+      maxRequestsPerSecond: config.getOptionalNumber(
+        'confluence.maxRequestsPerSecond',
       ),
     });
   }
