@@ -214,6 +214,7 @@ export function mergeRoleMetadata(
     newMetadata.description ?? currentMetadata.description;
   mergedMetaData.roleEntityRef = newMetadata.roleEntityRef;
   mergedMetaData.source = newMetadata.source;
+  mergedMetaData.owner = newMetadata.owner ?? currentMetadata.owner;
   return mergedMetaData;
 }
 
