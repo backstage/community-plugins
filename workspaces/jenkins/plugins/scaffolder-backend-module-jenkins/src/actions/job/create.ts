@@ -17,7 +17,6 @@ import {
   resolveSafeChildPath,
   RootConfigService,
 } from '@backstage/backend-plugin-api';
-import { InputError } from '@backstage/errors';
 import { buildJenkinsClient } from '../../config';
 import { createTemplateAction } from '@backstage/plugin-scaffolder-node';
 import fs from 'fs/promises';
@@ -99,7 +98,7 @@ export function createJob(jenkins: Jenkins, config: RootConfigService) {
         );
       }
 
-      const client = serverUrl ? buildJenkinsClient(config, serverUrl) : jenkins;
+      const client = serverUrl ? buildJenkinsClient(config) : jenkins;
       await client.job.create(jobName, jobXml);
       ctx.logger.info('Job created successfully!');
     },
