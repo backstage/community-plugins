@@ -1662,6 +1662,38 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@backstage-community/plugin-wheel-of-names@workspace:plugins/wheel-of-names":
+  version: 0.0.0-use.local
+  resolution: "@backstage-community/plugin-wheel-of-names@workspace:plugins/wheel-of-names"
+  dependencies:
+    "@backstage/catalog-client": "npm:^1.9.1"
+    "@backstage/catalog-model": "npm:^1.7.3"
+    "@backstage/cli": "npm:^0.30.0"
+    "@backstage/core-app-api": "npm:^1.15.5"
+    "@backstage/core-components": "npm:^0.16.4"
+    "@backstage/core-plugin-api": "npm:^1.10.4"
+    "@backstage/dev-utils": "npm:^1.1.7"
+    "@backstage/plugin-catalog-react": "npm:^1.16.0"
+    "@backstage/test-utils": "npm:^1.7.5"
+    "@backstage/theme": "npm:^0.6.4"
+    "@material-ui/core": "npm:^4.9.13"
+    "@material-ui/icons": "npm:^4.9.1"
+    "@material-ui/lab": "npm:^4.0.0-alpha.61"
+    "@testing-library/jest-dom": "npm:^6.0.0"
+    "@testing-library/react": "npm:^14.0.0"
+    "@testing-library/user-event": "npm:^14.0.0"
+    "@types/canvas-confetti": "npm:^1.9.0"
+    canvas-confetti: "npm:^1.9.3"
+    msw: "npm:^1.0.0"
+    react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
+    react-dom: "npm:^17.0.0 || ^18.0.0"
+    react-router-dom: "npm:^7.4.0"
+    react-use: "npm:^17.2.4"
+  peerDependencies:
+    react: ^16.13.1 || ^17.0.0 || ^18.0.0
+  languageName: unknown
+  linkType: soft
+
 "@backstage/app-defaults@npm:^1.6.0":
   version: 1.6.0
   resolution: "@backstage/app-defaults@npm:1.6.0"
@@ -3598,38 +3630,6 @@ __metadata:
   checksum: 10/05bb99ed06c16408a45a833f03a732f59bf6184795d4efadd33238ff8699190a8c871ad1121241bb6501589a9598dc83bf25b99dcbcf41e155cdf36e35e937a3
   languageName: node
   linkType: hard
-
-"@internal/backstage-plugin-wheel-of-names@workspace:plugins/wheel-of-names":
-  version: 0.0.0-use.local
-  resolution: "@internal/backstage-plugin-wheel-of-names@workspace:plugins/wheel-of-names"
-  dependencies:
-    "@backstage/catalog-client": "npm:^1.9.1"
-    "@backstage/catalog-model": "npm:^1.7.3"
-    "@backstage/cli": "npm:^0.30.0"
-    "@backstage/core-app-api": "npm:^1.15.5"
-    "@backstage/core-components": "npm:^0.16.4"
-    "@backstage/core-plugin-api": "npm:^1.10.4"
-    "@backstage/dev-utils": "npm:^1.1.7"
-    "@backstage/plugin-catalog-react": "npm:^1.16.0"
-    "@backstage/test-utils": "npm:^1.7.5"
-    "@backstage/theme": "npm:^0.6.4"
-    "@material-ui/core": "npm:^4.9.13"
-    "@material-ui/icons": "npm:^4.9.1"
-    "@material-ui/lab": "npm:^4.0.0-alpha.61"
-    "@testing-library/jest-dom": "npm:^6.0.0"
-    "@testing-library/react": "npm:^14.0.0"
-    "@testing-library/user-event": "npm:^14.0.0"
-    "@types/canvas-confetti": "npm:^1.9.0"
-    canvas-confetti: "npm:^1.9.3"
-    msw: "npm:^1.0.0"
-    react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
-    react-dom: "npm:^17.0.0 || ^18.0.0"
-    react-router-dom: "npm:^7.4.0"
-    react-use: "npm:^17.2.4"
-  peerDependencies:
-    react: ^16.13.1 || ^17.0.0 || ^18.0.0
-  languageName: unknown
-  linkType: soft
 
 "@internal/wheel-of-names@workspace:.":
   version: 0.0.0-use.local

@@ -1,6 +1,7 @@
 {
-  "name": "@internal/backstage-plugin-wheel-of-names",
+  "name": "@backstage-community/plugin-wheel-of-names",
   "version": "0.1.0",
+  "description": "A Backstage plugin that provides a wheel of names",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "license": "Apache-2.0",
@@ -10,8 +11,18 @@
     "main": "dist/index.esm.js",
     "types": "dist/index.d.ts"
   },
+  "homepage": "https://backstage.io",
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "wheel-of-names",
+    "pluginPackages": [
+      "@backstage-community/plugin-wheel-of-names"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/wheel-of-names/plugins/wheel-of-names"
   },
   "sideEffects": false,
   "scripts": {
@@ -28,6 +39,7 @@
     "@backstage/catalog-model": "^1.7.3",
     "@backstage/core-components": "^0.16.4",
     "@backstage/core-plugin-api": "^1.10.4",
+    "@backstage/plugin-catalog-react": "^1.16.0",
     "@backstage/theme": "^0.6.4",
     "@material-ui/core": "^4.9.13",
     "@material-ui/icons": "^4.9.1",
@@ -35,8 +47,7 @@
     "canvas-confetti": "^1.9.3",
     "react-dom": "^17.0.0 || ^18.0.0",
     "react-router-dom": "^7.4.0",
-    "react-use": "^17.2.4",
-    "@backstage/plugin-catalog-react": "^1.16.0"
+    "react-use": "^17.2.4"
   },
   "peerDependencies": {
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0"
