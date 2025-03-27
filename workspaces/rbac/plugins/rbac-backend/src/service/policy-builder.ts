@@ -15,6 +15,7 @@
  */
 import { DatabaseManager } from '@backstage/backend-defaults/database';
 import type {
+  AuditorService,
   AuthService,
   DiscoveryService,
   HttpAuthService,
@@ -27,7 +28,6 @@ import type { Config } from '@backstage/config';
 import type { PermissionEvaluator } from '@backstage/plugin-permission-common';
 import { PermissionPolicy } from '@backstage/plugin-permission-node';
 
-import { DefaultAuditLogger } from '@janus-idp/backstage-plugin-audit-log-node';
 import { newEnforcer, newModelFromString } from 'casbin';
 import type { Router } from 'express';
 
@@ -59,6 +59,7 @@ export type EnvOptions = {
   permissions: PermissionEvaluator;
   auth: AuthService;
   httpAuth: HttpAuthService;
+  auditor: AuditorService;
   userInfo: UserInfoService;
   lifecycle: LifecycleService;
 };
@@ -125,14 +126,9 @@ export class PolicyBuilder {
     const conditionStorage = new DataBaseConditionalStorage(databaseClient);
 
     const roleMetadataStorage = new DataBaseRoleMetadataStorage(databaseClient);
-    const defAuditLog = new DefaultAuditLogger({
-      logger: env.logger,
-      authService: env.auth,
-      httpAuthService: env.httpAuth,
-    });
     const enforcerDelegate = new EnforcerDelegate(
       enf,
-      defAuditLog,
+      env.auditor,
       roleMetadataStorage,
       databaseClient,
     );
@@ -143,7 +139,7 @@ export class PolicyBuilder {
         enforcerDelegate,
         roleMetadataStorage,
         env.logger,
-        defAuditLog,
+        env.auditor,
       );
     }
 
@@ -175,7 +171,7 @@ export class PolicyBuilder {
 
       policy = await RBACPermissionPolicy.build(
         env.logger,
-        defAuditLog,
+        env.auditor,
         env.config,
         conditionStorage,
         enforcerDelegate,
@@ -209,7 +205,7 @@ export class PolicyBuilder {
       conditionStorage,
       pluginPermMetaData,
       roleMetadataStorage,
-      defAuditLog,
+      env.auditor,
       rbacProviders,
     );
     return server.serve();
