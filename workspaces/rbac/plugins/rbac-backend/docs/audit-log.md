@@ -184,7 +184,7 @@ Failed events contain `error` information.
 
   - source?: string (source emitting the event, `rest` or not included for conditions from `yaml-conditional-file`)
   - actionType: string (further specifies type of modify action, `create`, `update`, `delete`)
-  - policies: string[][] (modified policies with conditions)
+  - condition: RoleConditionalPolicyDecision<"create" | "read" | "update" | "delete" | "use">
 
   Filter on `actionType`.
 
