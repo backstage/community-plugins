@@ -31,6 +31,8 @@ import {
   CopilotChats,
   CopilotChatEditors,
   CopilotChatModels,
+  EngagementMetrics,
+  SeatAnalysis,
 } from '@backstage-community/plugin-copilot-common';
 import { Knex } from 'knex';
 
@@ -366,6 +368,13 @@ export class DatabaseHandler {
       .ignore();
   }
 
+  async insertSeatAnalysys(metric: SeatAnalysis): Promise<void> {
+    await this.db<SeatAnalysis>('seats')
+      .insert(metric)
+      .onConflict(['day', 'type', 'team_name'])
+      .ignore();
+  }
+
   async getMostRecentDayFromMetrics(
     type: MetricsType,
     teamName?: string,
@@ -432,6 +441,111 @@ export class DatabaseHandler {
       .where('type', type)
       .whereNull('team_name')
       .whereBetween('day', [startDate, endDate]);
+  }
+
+  async getSeatMetrics(
+    startDate: string,
+    endDate: string,
+    type: MetricsType,
+    teamName?: string,
+  ): Promise<SeatAnalysis[]> {
+    return await this.db<SeatAnalysis>('seats')
+      .where('type', type)
+      .where('team_name', teamName ?? '')
+      .whereBetween('day', [startDate, endDate])
+      .orderBy('day', 'asc');
+  }
+
+  async getEngagementMetrics(
+    startDate: string,
+    endDate: string,
+    type: MetricsType,
+    teamName?: string,
+  ): Promise<EngagementMetrics[]> {
+    let query = this.db('copilot_metrics as cm')
+      .select(
+        'cm.day',
+        'cm.type',
+        'cm.team_name',
+        this.db.raw(
+          'CAST(MIN(cm.total_active_users) AS INTEGER) as total_active_users',
+        ),
+        this.db.raw(
+          'CAST(MIN(cm.total_engaged_users) AS INTEGER) as total_engaged_users',
+        ),
+        this.db.raw(
+          'CAST(MIN(ide_completions.total_engaged_users) AS INTEGER) as ide_completions_engaged_users',
+        ),
+        this.db.raw(
+          'CAST(MIN(ide_chats.total_engaged_users) AS INTEGER) as ide_chats_engaged_users',
+        ),
+        this.db.raw(
+          'CAST(MIN(dotcom_chats.total_engaged_users) AS INTEGER) as dotcom_chats_engaged_users',
+        ),
+        this.db.raw(
+          'CAST(MIN(dotcom_prs.total_engaged_users) AS INTEGER) as dotcom_prs_engaged_users',
+        ),
+      )
+      .leftJoin('ide_completions', join => {
+        join
+          .on('ide_completions.day', '=', 'cm.day')
+          .andOn('ide_completions.type', '=', 'cm.type');
+        if (teamName) {
+          join.andOn(
+            'ide_completions.team_name',
+            '=',
+            this.db.raw('?', [teamName]),
+          );
+        } else {
+          join.andOnNull('ide_completions.team_name');
+        }
+      })
+      .leftJoin('ide_chats', join => {
+        join
+          .on('ide_chats.day', '=', 'cm.day')
+          .andOn('ide_chats.type', '=', 'cm.type');
+        if (teamName) {
+          join.andOn('ide_chats.team_name', '=', this.db.raw('?', [teamName]));
+        } else {
+          join.andOnNull('ide_chats.team_name');
+        }
+      })
+      .leftJoin('dotcom_chats', join => {
+        join
+          .on('dotcom_chats.day', '=', 'cm.day')
+          .andOn('dotcom_chats.type', '=', 'cm.type');
+        if (teamName) {
+          join.andOn(
+            'dotcom_chats.team_name',
+            '=',
+            this.db.raw('?', [teamName]),
+          );
+        } else {
+          join.andOnNull('dotcom_chats.team_name');
+        }
+      })
+      .leftJoin('dotcom_prs', join => {
+        join
+          .on('dotcom_prs.day', '=', 'cm.day')
+          .andOn('dotcom_prs.type', '=', 'cm.type');
+        if (teamName) {
+          join.andOn('dotcom_prs.team_name', '=', this.db.raw('?', [teamName]));
+        } else {
+          join.andOnNull('dotcom_prs.team_name');
+        }
+      })
+      .where('cm.type', type)
+      .whereBetween('cm.day', [startDate, endDate])
+      .groupBy('cm.day', 'cm.type', 'cm.team_name')
+      .orderBy('cm.day', 'asc');
+
+    if (teamName) {
+      query = query.where('cm.team_name', teamName);
+    } else {
+      query = query.whereNull('cm.team_name');
+    }
+
+    return await query;
   }
 
   async getMetricsV2(

@@ -30,6 +30,8 @@ import {
   Metric,
   MetricsType,
   CopilotMetrics,
+  CopilotSeats,
+  SeatAnalysis,
 } from '@backstage-community/plugin-copilot-common';
 
 export function filterNewMetricsV2(
@@ -242,4 +244,64 @@ export function prepareMetricsForInsert(
     team_name,
     breakdown: JSON.stringify(breakdown),
   })) as MetricDbRow[];
+}
+
+export function convertToSeatAnalysis(
+  metrics: CopilotSeats,
+  type: MetricsType,
+  team?: string,
+): SeatAnalysis {
+  const totalSeats = metrics.total_seats;
+  const today = DateTime.now().startOf('day');
+
+  // Count seats with no activity
+  const seatsNeverUsed = metrics.seats.filter(
+    seat => !seat.last_activity_at,
+  ).length;
+
+  // Count seats with no activity in the last 7, 14, and 28 days
+  const seatsInactive7Days = metrics.seats.filter(seat => {
+    if (!seat.last_activity_at) return false;
+    const lastActivityDate = DateTime.fromISO(seat.last_activity_at);
+    return today.diff(lastActivityDate, 'days').days >= 7;
+  }).length;
+
+  const seatsInactive14Days = metrics.seats.filter(seat => {
+    if (!seat.last_activity_at) return false;
+    const lastActivityDate = DateTime.fromISO(seat.last_activity_at);
+    return today.diff(lastActivityDate, 'days').days >= 14;
+  }).length;
+
+  const seatsInactive28Days = metrics.seats.filter(seat => {
+    if (!seat.last_activity_at) return false;
+    const lastActivityDate = DateTime.fromISO(seat.last_activity_at);
+    return today.diff(lastActivityDate, 'days').days >= 28;
+  }).length;
+
+  return {
+    day: today.toISODate(),
+    type,
+    team_name: team ?? '',
+    total_seats: totalSeats,
+    seats_never_used: seatsNeverUsed,
+    seats_inactive_7_days: seatsInactive7Days,
+    seats_inactive_14_days: seatsInactive14Days,
+    seats_inactive_28_days: seatsInactive28Days,
+  };
+}
+
+export function convertToTeamSeatAnalysis(
+  metrics: CopilotSeats,
+  type: MetricsType,
+  team: string,
+): SeatAnalysis {
+  const teamSeatMetrics = metrics.seats.filter(
+    seat => seat.assigning_team?.slug === team,
+  );
+  const teamMetrics = {
+    total_seats: teamSeatMetrics.length,
+    seats: teamSeatMetrics,
+  };
+
+  return convertToSeatAnalysis(teamMetrics, type, team);
 }

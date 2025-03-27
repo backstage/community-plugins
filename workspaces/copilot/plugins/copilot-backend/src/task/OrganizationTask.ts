@@ -29,6 +29,7 @@ import {
   filterIdeChatMetrics,
   filterIdeEditorMetrics,
   filterIdeChatEditorModelMetrics,
+  convertToSeatAnalysis,
 } from '../utils/metricHelpers';
 import { TaskOptions } from './TaskManagement';
 
@@ -138,6 +139,10 @@ export async function discoverOrganizationMetrics({
       await batchInsertInChunks(ideChatEditorModels, 30, async chunk => {
         await db.batchInsertIdeChatEditorModels(chunk);
       });
+
+      const seats = await api.fetchOrganizationSeats();
+      const seatsToInsert = convertToSeatAnalysis(seats, type);
+      await db.insertSeatAnalysys(seatsToInsert);
 
       logger.info(
         '[discoverOrganizationMetrics] Inserted new metrics into the database',

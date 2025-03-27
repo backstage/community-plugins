@@ -198,6 +198,37 @@ async function createRouter(
   );
 
   router.get(
+    '/engagements',
+    validateQuery(metricsQuerySchema),
+    async (req, res) => {
+      const { startDate, endDate, type, team } = req.query as MetricsQuery;
+
+      const engagements = await db.getEngagementMetrics(
+        startDate,
+        endDate,
+        type,
+        team,
+      );
+      if (!engagements) {
+        throw new NotFoundError();
+      }
+
+      return res.json(engagements);
+    },
+  );
+
+  router.get('/seats', validateQuery(metricsQuerySchema), async (req, res) => {
+    const { startDate, endDate, type, team } = req.query as MetricsQuery;
+
+    const seats = await db.getSeatMetrics(startDate, endDate, type, team);
+    if (!seats) {
+      throw new NotFoundError();
+    }
+
+    return res.json(seats);
+  });
+
+  router.get(
     '/metrics/period-range',
     validateQuery(periodRangeQuerySchema),
     async (req, res) => {
