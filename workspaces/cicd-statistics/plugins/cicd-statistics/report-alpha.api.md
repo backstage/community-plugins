@@ -79,9 +79,9 @@ const _default: FrontendPlugin<
         defaultTitle: string;
         defaultGroup?:
           | (string & {})
-          | 'documentation'
-          | 'development'
           | 'deployment'
+          | 'development'
+          | 'documentation'
           | 'observability'
           | undefined;
         routeRef?: RouteRef<AnyRouteRefParams> | undefined;
