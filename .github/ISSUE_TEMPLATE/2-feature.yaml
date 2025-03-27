@@ -16,6 +16,7 @@ body:
         - Select a workspace...
         - 3scale
         - acr
+        - acs
         - adr
         - airbrake
         - allure
