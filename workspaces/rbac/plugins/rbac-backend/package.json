@@ -46,7 +46,6 @@
     "@backstage/plugin-permission-common": "^0.8.4",
     "@backstage/plugin-permission-node": "^0.8.8",
     "@dagrejs/graphlib": "^2.1.13",
-    "@janus-idp/backstage-plugin-audit-log-node": "^1.7.1",
     "casbin": "^5.27.1",
     "chokidar": "^3.6.0",
     "csv-parse": "^5.5.5",
