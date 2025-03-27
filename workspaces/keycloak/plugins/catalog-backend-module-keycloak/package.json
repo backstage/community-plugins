@@ -85,7 +85,6 @@
     "works-with:rhbk:^26",
     "works-with:keycloak:~26"
   ],
-  "homepage": "https://red.ht/rhdh",
   "bugs": "https://github.com/backstage/community-plugins/issues",
   "maintainers": [
     "@04kash"

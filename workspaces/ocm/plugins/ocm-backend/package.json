@@ -86,7 +86,6 @@
     "backstage",
     "plugin"
   ],
-  "homepage": "https://red.ht/rhdh",
   "bugs": "https://github.com/backstage/community-plugins/issues",
   "maintainers": [
     "@04kash"

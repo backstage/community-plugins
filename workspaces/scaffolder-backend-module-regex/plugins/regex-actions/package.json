@@ -65,7 +65,6 @@
     "backstage",
     "backend-plugin-module"
   ],
-  "homepage": "https://red.ht/rhdh",
   "bugs": "https://github.com/backstage/community-plugins/issues",
   "maintainers": [
     "@backstage-community/maintainers-plugins"

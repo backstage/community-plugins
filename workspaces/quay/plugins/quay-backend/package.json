@@ -54,7 +54,6 @@
     "dist"
   ],
   "configSchema": "config.d.ts",
-  "homepage": "https://red.ht/rhdh",
   "bugs": "https://github.com/backstage/community-plugins/issues",
   "maintainers": [
     "@karthikjeeyar"

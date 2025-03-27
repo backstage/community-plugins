@@ -82,10 +82,6 @@
     "backstage",
     "plugin"
   ],
-  "homepage": "https://red.ht/rhdh",
   "bugs": "https://github.com/backstage/community-plugins/issues",
-  "maintainers": [
-    "@janus-idp/maintainers-plugins"
-  ],
   "author": "Red Hat"
 }
