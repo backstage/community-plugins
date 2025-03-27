@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 6.0.0
+
+### Major Changes
+
+- 9cccb0d: **BREAKING**: Migration to the core Auditor service. The Auditor format has been updated. Audit fields and event names (ids) have been updated to conform with the new Auditor service conventions. Filtering queries based on the old format may no longer work.
+
 ## 5.6.1
 
 ### Patch Changes
