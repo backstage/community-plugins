@@ -107,6 +107,21 @@ describe('metricHelperTest', () => {
         total_engaged_users: 3,
       },
     ]);
+
+    const nullTeamResult = filterIdeCompletionEditorMetrics(
+      metrics,
+      'organization',
+      undefined,
+    );
+    expect(nullTeamResult).toEqual([
+      {
+        day: '2024-01-01',
+        type: 'organization',
+        team_name: '',
+        editor: 'VSCode',
+        total_engaged_users: 3,
+      },
+    ]);
   });
 
   it('should handle undefined languages in filterIdeCompletionLanguageMetrics', () => {
@@ -124,6 +139,21 @@ describe('metricHelperTest', () => {
         language: 'JavaScript',
       },
     ]);
+
+    const nullTeamResult = filterIdeCompletionLanguageMetrics(
+      metrics,
+      'organization',
+      undefined,
+    );
+    expect(nullTeamResult).toEqual([
+      {
+        day: '2024-01-01',
+        type: 'organization',
+        team_name: '',
+        total_engaged_users: 1,
+        language: 'JavaScript',
+      },
+    ]);
   });
 
   it('should handle undefined editors in filterIdeCompletionEditorModelMetrics', () => {
@@ -137,6 +167,22 @@ describe('metricHelperTest', () => {
         day: '2024-01-01',
         type: 'organization',
         team_name: 'team1',
+        editor: 'VSCode',
+        model: 'GPT-3',
+        total_engaged_users: 2,
+      },
+    ]);
+
+    const nullTeamResult = filterIdeCompletionEditorModelMetrics(
+      metrics,
+      'organization',
+      undefined,
+    );
+    expect(nullTeamResult).toEqual([
+      {
+        day: '2024-01-01',
+        type: 'organization',
+        team_name: '',
         editor: 'VSCode',
         model: 'GPT-3',
         total_engaged_users: 2,
@@ -165,6 +211,27 @@ describe('metricHelperTest', () => {
         total_code_lines_suggested: 40,
       },
     ]);
+
+    const nullTeamResult = filterIdeCompletionEditorModelLanguageMetrics(
+      metrics,
+      'organization',
+      undefined,
+    );
+    expect(nullTeamResult).toEqual([
+      {
+        day: '2024-01-01',
+        type: 'organization',
+        team_name: '',
+        editor: 'VSCode',
+        model: 'GPT-3',
+        language: 'JavaScript',
+        total_engaged_users: 1,
+        total_code_acceptances: 10,
+        total_code_suggestions: 20,
+        total_code_lines_accepted: 30,
+        total_code_lines_suggested: 40,
+      },
+    ]);
   });
 
   it('should handle undefined editors in filterIdeEditorMetrics', () => {
@@ -174,6 +241,21 @@ describe('metricHelperTest', () => {
         day: '2024-01-01',
         type: 'organization',
         team_name: 'team1',
+        editor: 'VSCode',
+        total_engaged_users: 3,
+      },
+    ]);
+
+    const nullTeamResult = filterIdeEditorMetrics(
+      metrics,
+      'organization',
+      undefined,
+    );
+    expect(nullTeamResult).toEqual([
+      {
+        day: '2024-01-01',
+        type: 'organization',
+        team_name: '',
         editor: 'VSCode',
         total_engaged_users: 3,
       },
@@ -191,6 +273,25 @@ describe('metricHelperTest', () => {
         day: '2024-01-01',
         type: 'organization',
         team_name: 'team1',
+        editor: 'VSCode',
+        model: 'GPT-3',
+        total_engaged_users: 2,
+        total_chat_copy_events: 10,
+        total_chats: 20,
+        total_chat_insertion_events: 30,
+      },
+    ]);
+
+    const nullTeamResult = filterIdeChatEditorModelMetrics(
+      metrics,
+      'organization',
+      undefined,
+    );
+    expect(nullTeamResult).toEqual([
+      {
+        day: '2024-01-01',
+        type: 'organization',
+        team_name: '',
         editor: 'VSCode',
         model: 'GPT-3',
         total_engaged_users: 2,
