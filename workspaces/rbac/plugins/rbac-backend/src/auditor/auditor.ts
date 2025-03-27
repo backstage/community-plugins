@@ -76,8 +76,6 @@ export const ConditionEvents = {
   CONDITIONAL_POLICIES_FILE_CHANGE: 'conditional-policies-file-change',
 };
 
-export const RBAC_BACKEND = 'rbac-backend';
-
 export async function createPermissionEvaluationAuditorEvent(
   auditor: AuditorService,
   userEntityRef: string,
