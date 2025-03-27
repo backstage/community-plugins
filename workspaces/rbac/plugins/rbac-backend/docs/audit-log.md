@@ -77,6 +77,19 @@ Failed events contain `error` information.
 
 - **`role-write`**: Modifies roles.
 
+  **Role Event meta for `role-write`:**
+
+  - source: string (source emitting the event, `rest`, `csv-file`, `configuration`, `externalProviderPluginId`)
+  - actionType: string (further specifies type of modify action, `create`, `update`, `delete`, `create_or_update`)
+
+  **Role Event fail/success meta for `role-write`:**
+
+  - source: string (source emitting the event, `rest`, `csv-file`, `configuration`, `externalProviderPluginId`)
+  - actionType: string (further specifies type of modify action, `create`, `update`, `delete`, `create_or_update`)
+  - roleEntityRef: string
+  - description?: string
+  - members: string[]
+
   Filter on `actionType`.
 
   - **`create`**: Creates roles. (POST `/roles`, extension point `applyRoles`, `rbac_admin` role from `configuration`)
@@ -92,25 +105,39 @@ Failed events contain `error` information.
 
 - **`role-read`**: Reads roles. (GET `/roles`)
 
+  **Role Event meta for `role-read`:**
+
+  - source: string (source emitting the event, `rest`)
+  - queryType: string (specifies type of query, `all`, `by-role`)
+
+  **Role Event fail/success meta for `role-read`:**
+
+  - source: string (source emitting the event, `rest`)
+  - queryType: string (specifies type of query, `all`, `by-role`)
+
   Filter on `queryType`.
 
   - **`all`**: Read all roles. (GET `/roles`)
   - **`by-role`**: Read concrete role. (GET `/roles/:kind/:namespace/:name`)
 
-**Role Event meta:**
+    **Role Event meta for `by-role`:**
 
-- source: string (source emitting the event, `rest`, `csv-file`, `configuration`, `externalProviderPluginId`)
-
-**Role Event fail/success meta:**
-
-- source: string (source emitting the event, `rest`, `csv-file`, `configuration`, `externalProviderPluginId`)
-- roleEntityRef: string
-- description?: string
-- members: string[]
+    - entityRef: string (role entity reference)
 
 ### Permission Events
 
 - **`policy-write`**: Modifies permissions.
+
+  **Permission Event meta for `policy-write`:**
+
+  - source: string (source emitting the event, `rest`, `csv-file`, `configuration`, `externalProviderPluginId`)
+  - actionType: string (further specifies type of modify action, `create`, `update`, `delete`)
+
+  **Permission Event fail/success meta for `policy-write`:**
+
+  - source: string (source emitting the event, `rest`, `csv-file`, `configuration`, `externalProviderPluginId`)
+  - actionType: string (further specifies type of modify action, `create`, `update`, `delete`)
+  - policies: string[][] (modified permissions)
 
   Filter on `actionType`.
 
@@ -120,24 +147,44 @@ Failed events contain `error` information.
 
 - **`policy-read`**: Reads permissions. (GET `/policies`)
 
+  **Policy Event meta for `policy-read`:**
+
+  - source: string (source emitting the event, `rest`)
+  - queryType: string (specifies type of query, `all`, `by-role`, `by-query`)
+
+  **Policy Event fail/success meta for `policy-read`:**
+
+  - source: string (source emitting the event, `rest`)
+  - queryType: string (specifies type of query, `all`, `by-role`, `by-query`)
+
   Filter on `queryType`.
 
   - **`all`**: Read all policies. (GET `/policies`)
   - **`by-role`**: Read all policies associated with a role. (GET `/policies/:kind/:namespace/:name`)
   - **`by-query`**: Read all policies that match query filter criteria. (GET `/policies`)
 
-**Permission Event meta:**
+    **Policy Event meta for `by-role`:**
 
-- source: string (source emitting the event, `rest`, `csv-file`, `configuration`, `externalProviderPluginId`)
+    - entityRef: string (role entity reference)
 
-**Permission Event fail/success meta:**
+    **Policy Event meta for `by-query`:**
 
-- source: string (source emitting the event, `rest`, `csv-file`, `configuration`, `externalProviderPluginId`)
-- policies: string[][]
+    - query: string
 
 ### Condition Events
 
 - **`condition-write`**: Modifies conditions.
+
+  **Condition Event meta for `condition-write`:**
+
+  - source?: string (source emitting the event, `rest` or not included for conditions from `yaml-conditional-file`)
+  - actionType: string (further specifies type of modify action, `create`, `update`, `delete`)
+
+  **Condition Event fail/success meta for `condition-write`:**
+
+  - source?: string (source emitting the event, `rest` or not included for conditions from `yaml-conditional-file`)
+  - actionType: string (further specifies type of modify action, `create`, `update`, `delete`)
+  - policies: string[][] (modified policies with conditions)
 
   Filter on `actionType`.
 
@@ -147,20 +194,29 @@ Failed events contain `error` information.
 
 - **`condition-read`**: Reads conditions. (GET `/roles/conditions`)
 
+  **Condition Event meta for `condition-read`:**
+
+  - source: string (source emitting the event, `rest`)
+  - queryType: string (specifies type of query, `all`, `by-id`, `by-query`)
+
+  **Condition Event fail/success meta for `condition-read`:**
+
+  - source: string (source emitting the event, `rest`)
+  - queryType: string (specifies type of query, `all`, `by-id`, `by-query`)
+
   Filter on `queryType`.
 
   - **`all`**: Read all conditions. (GET `/roles/conditions`)
   - **`by-id`**: Read condition with id. (GET `/roles/conditions/:id`)
   - **`by-query`**: Read all conditions that match query filter criteria. (GET `/policies`)
 
-**Condition Event meta:**
+    **Condition Event meta for `by-id`:**
 
-- source?: string (source emitting the event, `rest` or not included for conditions from `yaml-conditional-file`)
+    - id: string (condition id)
 
-**Condition Event fail/success meta:**
+    **Condition Event meta for `by-query`:**
 
-- source?: string (source emitting the event, `rest` or not included for conditions from `yaml-conditional-file`)
-- policies: string[][]
+    - query: string
 
 ### Conditional File Events
 
@@ -172,22 +228,22 @@ Failed events contain `error` information.
 
 - **`permission-evaluation`**: Evaluation of permissions.
 
-**Permission Evaluation Event meta:**
+  **Permission Evaluation Event meta for `permission-evaluation`:**
 
-- userEntityRef: string
-- permissionName: string
-- action: PermissionAction
-- resourceType?: string
-- decision?: PolicyDecision
+  - userEntityRef: string
+  - permissionName: string
+  - action: PermissionAction
+  - resourceType?: string
+  - decision?: PolicyDecision
 
-**Permission Evaluation Success/Fail meta:**
+  **Permission Evaluation Success/Fail meta for `permission-evaluation`:**
 
-- userEntityRef: string
-- permissionName: string
-- action: PermissionAction
-- resourceType?: string
-- decision?: PolicyDecision
-- result: AuthorizeResult
+  - userEntityRef: string
+  - permissionName: string
+  - action: PermissionAction
+  - resourceType?: string
+  - decision?: PolicyDecision
+  - result: AuthorizeResult
 
 ### Plugins Events
 
@@ -197,8 +253,8 @@ Failed events contain `error` information.
 
 **Plugins Event meta:**
 
-- source: string (`rest`)
+- source: string (source emitting the event, `rest`)
 
 **Plugins Event fail/success meta:**
 
-- source: string (`rest`)
+- source: string (source emitting the event, `rest`)
