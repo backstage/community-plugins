@@ -14,6 +14,7 @@ import { TableColumn as TableColumn_2 } from '@backstage/core-components';
 
 // @public (undocumented)
 export const EntityGithubDeploymentsCard: (props: {
+  environments?: string[] | undefined;
   last?: number | undefined;
   lastStatuses?: number | undefined;
   columns?: TableColumn<GithubDeployment>[] | undefined;
