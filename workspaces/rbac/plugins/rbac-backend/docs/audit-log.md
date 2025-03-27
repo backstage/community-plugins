@@ -20,7 +20,7 @@ The audit log actor can be a real REST API user or the RBAC plugin itself. When 
 
 ## Audit log format
 
-The RBAC plugin prints information to the backend log in JSON format. The format of these messages is defined in the `@backstage/backend-plugin-api` library. Each audit log line contains the key "isAuditEvent".
+The RBAC plugin prints information to the backend log. The format of these messages is defined in the `@backstage/backend-plugin-api` library. Each audit log line contains the key "isAuditEvent".
 
 Example logged RBAC events:
 
