@@ -2807,7 +2807,7 @@ __metadata:
     "@mui/x-data-grid": "npm:^7.25.0"
     "@patternfly/react-charts": "npm:7.2.2"
     "@patternfly/react-component-groups": "npm:^5.2.0"
-    "@patternfly/react-core": "npm:5.2.2"
+    "@patternfly/react-core": "npm:5.4.14"
     "@patternfly/react-icons": "npm:5.4.2"
     "@patternfly/react-styles": "npm:5.2.1"
     "@patternfly/react-table": "npm:5.2.2"
@@ -10405,26 +10405,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@patternfly/react-core@npm:5.2.2":
-  version: 5.2.2
-  resolution: "@patternfly/react-core@npm:5.2.2"
-  dependencies:
-    "@patternfly/react-icons": "npm:^5.2.1"
-    "@patternfly/react-styles": "npm:^5.2.1"
-    "@patternfly/react-tokens": "npm:^5.2.1"
-    focus-trap: "npm:7.5.2"
-    react-dropzone: "npm:^14.2.3"
-    tslib: "npm:^2.5.0"
-  peerDependencies:
-    react: ^17 || ^18
-    react-dom: ^17 || ^18
-  checksum: 10/7517e51277011850cb61bd98a6677b66bf53c084837521f8a7bac3ce9e7cfed3d83b6a0f8431599d53f6684c54fe2ecb68ff8fe477b9e1bede4cb4270e9e8e47
-  languageName: node
-  linkType: hard
-
-"@patternfly/react-core@npm:^5.1.1, @patternfly/react-core@npm:^5.2.2, @patternfly/react-core@npm:^5.4.1, @patternfly/react-core@npm:^5.4.13":
-  version: 5.4.13
-  resolution: "@patternfly/react-core@npm:5.4.13"
+"@patternfly/react-core@npm:5.4.14, @patternfly/react-core@npm:^5.1.1, @patternfly/react-core@npm:^5.2.2, @patternfly/react-core@npm:^5.4.1, @patternfly/react-core@npm:^5.4.13":
+  version: 5.4.14
+  resolution: "@patternfly/react-core@npm:5.4.14"
   dependencies:
     "@patternfly/react-icons": "npm:^5.4.2"
     "@patternfly/react-styles": "npm:^5.4.1"
@@ -10435,7 +10418,7 @@ __metadata:
   peerDependencies:
     react: ^17 || ^18
     react-dom: ^17 || ^18
-  checksum: 10/3bb45bb19959219807da954f48b3c67881dc55148aaad5c4eb24b7171c38f89ad2f42aed81944969720f3b38e0e29a6de0bc37fc4f5c34804662f6d189c8597b
+  checksum: 10/14d1bdcbfa941025b9368121c1b42dd88be7bb6e42abbd3284e788bc2a9524c4efde927076527640a2da3c308d01c8ea891aefe110db3a8a284a890357b0a9ab
   languageName: node
   linkType: hard
 
@@ -22039,15 +22022,6 @@ __metadata:
   version: 1.1.0
   resolution: "fn.name@npm:1.1.0"
   checksum: 10/000198af190ae02f0138ac5fa4310da733224c628e0230c81e3fff7c4e094af7e0e8bb9f4357cabd21db601759d89f3445da744afbae20623cfa41edf3888397
-  languageName: node
-  linkType: hard
-
-"focus-trap@npm:7.5.2":
-  version: 7.5.2
-  resolution: "focus-trap@npm:7.5.2"
-  dependencies:
-    tabbable: "npm:^6.2.0"
-  checksum: 10/9f51e15e1bcd9c92dd8172fd967977832c8d80738c5cf195d98ee8226498665152cd449a62ee62b0f90bbaa4509b648fb64389714ba52f2502d53e1272dfc3e9
   languageName: node
   linkType: hard
 
