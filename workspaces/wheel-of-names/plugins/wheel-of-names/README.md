@@ -28,7 +28,7 @@ import { WheelOfNamesPage } from '@backstage-community/plugin-wheel-of-names';
 
 // ...
 
-<Route path="/wheel-of-names" element={<WheelOfNamesPage />} />
+<Route path="/wheel-of-names" element={<WheelOfNamesPage />} />;
 ```
 
 2. Add a link to the sidebar:
@@ -39,7 +39,7 @@ import RouletteIcon from '@material-ui/icons/Casino'; // or any other suitable i
 
 // ...
 
-<SidebarItem icon={RouletteIcon} to="wheel-of-names" text="Wheel of Names" />
+<SidebarItem icon={RouletteIcon} to="wheel-of-names" text="Wheel of Names" />;
 ```
 
 ## Development
@@ -49,4 +49,3 @@ This plugin was created through the Backstage CLI.
 You can access it by running `yarn start` in the root directory, and then navigating to [/wheel-of-names](http://localhost:3000/wheel-of-names).
 
 To serve the plugin in isolation, run `yarn start` in the plugin directory. This provides quicker iteration speed, faster startup, and hot reloads. This setup is only meant for local development and can be found in the [/dev](./dev) directory.
-

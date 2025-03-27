@@ -2,7 +2,7 @@ app:
   title: Wheel of Names Example App
   baseUrl: http://localhost:3000
   experimental:
-    packages: "all"
+    packages: 'all'
 
 organization:
   name: Wheel of Names Example

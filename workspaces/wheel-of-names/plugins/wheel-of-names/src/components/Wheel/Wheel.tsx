@@ -1,4 +1,25 @@
-import React, { useRef, useEffect, useState } from 'react';
+/*
+ * Copyright 2025 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import React, {
+  useRef,
+  useEffect,
+  useState,
+  useCallback,
+  useMemo,
+} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Button, Dialog, DialogContent, DialogTitle } from '@material-ui/core';
 import confetti from 'canvas-confetti';
@@ -49,17 +70,34 @@ export const Wheel = ({ participants }: WheelProps) => {
 
   const numSectors = participants.length;
 
-  const colors = ['#cf3030', '#e58432', '#d2d456', '#9ccf57', '#88bbf7'];
+  const colors = useMemo(
+    () => [
+      '#FF6384',
+      '#36A2EB',
+      '#FFCE56',
+      '#4BC0C0',
+      '#9966FF',
+      '#FF9F40',
+      '#8AC349',
+      '#EA526F',
+      '#00CFDD',
+      '#FF6B8B',
+    ],
+    [],
+  );
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
-  useEffect(() => {
-    if (canvasRef.current) {
-      drawWheel();
-    }
-  }, [participants, rotation]);
+  const determineWinner = (finalRotation: number) => {
+    const sliceAngle = 360 / numSectors;
+    const normalizedRotation = ((finalRotation % 360) + 360) % 360;
+    const winningSector = Math.floor(normalizedRotation / sliceAngle);
 
-  const drawWheel = () => {
+    setPopupWinner(participants[winningSector]);
+    setShowPopup(true);
+  };
+
+  const drawWheel = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -117,7 +155,7 @@ export const Wheel = ({ participants }: WheelProps) => {
     ctx.fillStyle = 'black';
     ctx.fill();
     ctx.restore();
-  };
+  }, [participants, canvasRef, colors, numSectors, rotation]);
 
   const startSpin = () => {
     if (isSpinning) return;
@@ -156,15 +194,6 @@ export const Wheel = ({ participants }: WheelProps) => {
     requestAnimationFrame(animate);
   };
 
-  const determineWinner = (finalRotation: number) => {
-    const sliceAngle = 360 / numSectors;
-    const normalizedRotation = ((finalRotation % 360) + 360) % 360;
-    const winningSector = Math.floor(normalizedRotation / sliceAngle);
-
-    setPopupWinner(participants[winningSector]);
-    setShowPopup(true);
-  };
-
   const startConfetti = (): void => {
     confetti({
       particleCount: 100,
@@ -181,9 +210,14 @@ export const Wheel = ({ participants }: WheelProps) => {
     startConfetti();
     const timer = setTimeout(() => setShowPopup(false), 5000);
 
-    // Cleanup function
-    return () => clearTimeout(timer);
+    clearTimeout(timer);
   }, [showPopup]);
+
+  useEffect(() => {
+    if (canvasRef.current) {
+      drawWheel();
+    }
+  }, [drawWheel]);
 
   return (
     <div className={classes.container}>

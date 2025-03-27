@@ -3603,11 +3603,14 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@internal/backstage-plugin-wheel-of-names@workspace:plugins/wheel-of-names"
   dependencies:
+    "@backstage/catalog-client": "npm:^1.9.1"
+    "@backstage/catalog-model": "npm:^1.7.3"
     "@backstage/cli": "npm:^0.30.0"
     "@backstage/core-app-api": "npm:^1.15.5"
     "@backstage/core-components": "npm:^0.16.4"
     "@backstage/core-plugin-api": "npm:^1.10.4"
     "@backstage/dev-utils": "npm:^1.1.7"
+    "@backstage/plugin-catalog-react": "npm:^1.16.0"
     "@backstage/test-utils": "npm:^1.7.5"
     "@backstage/theme": "npm:^0.6.4"
     "@material-ui/core": "npm:^4.9.13"

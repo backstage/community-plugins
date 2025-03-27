@@ -24,6 +24,8 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
+    "@backstage/catalog-client": "^1.9.1",
+    "@backstage/catalog-model": "^1.7.3",
     "@backstage/core-components": "^0.16.4",
     "@backstage/core-plugin-api": "^1.10.4",
     "@backstage/theme": "^0.6.4",
@@ -33,7 +35,8 @@
     "canvas-confetti": "^1.9.3",
     "react-dom": "^17.0.0 || ^18.0.0",
     "react-router-dom": "^7.4.0",
-    "react-use": "^17.2.4"
+    "react-use": "^17.2.4",
+    "@backstage/plugin-catalog-react": "^1.16.0"
   },
   "peerDependencies": {
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0"
