@@ -61,5 +61,5 @@ catalog:
         - allow: [User, Group]
 
 quay:
-  uiUrl: 'https://quay.io'
+  apiUrl: 'https://quay.io'
   apiKey: ''
