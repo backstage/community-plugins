@@ -1,5 +1,13 @@
 # @backstage-community/plugin-tech-insights-backend-module-jsonfc
 
+## 0.5.0
+
+### Minor Changes
+
+- 6951c64: Fix handling not computed Fact references
+
+  - does not throw an error when a fact is valid, but it is not computed for the entity (yet)
+
 ## 0.4.0
 
 ### Minor Changes
