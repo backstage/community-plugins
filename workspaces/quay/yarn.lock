@@ -2719,7 +2719,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@backstage-community/plugin-scaffolder-backend-module-quay@workspace:plugins/quay-actions":
+"@backstage-community/plugin-scaffolder-backend-module-quay@workspace:^, @backstage-community/plugin-scaffolder-backend-module-quay@workspace:plugins/quay-actions":
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-scaffolder-backend-module-quay@workspace:plugins/quay-actions"
   dependencies:
@@ -15257,6 +15257,7 @@ __metadata:
   dependencies:
     "@backstage-community/plugin-quay-backend": "workspace:^"
     "@backstage-community/plugin-quay-common": "workspace:^"
+    "@backstage-community/plugin-scaffolder-backend-module-quay": "workspace:^"
     "@backstage/backend-defaults": "npm:^0.8.1"
     "@backstage/backend-plugin-api": "npm:^1.2.0"
     "@backstage/cli": "npm:^0.30.0"
