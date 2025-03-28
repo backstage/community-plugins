@@ -35,7 +35,7 @@ import { PluginPermissionMetadataCollector } from './plugin-endpoints';
 import { PoliciesServer } from './policies-rest-api';
 import { RBACRouterOptions } from './policy-builder';
 import {
-  auditLoggerMock,
+  mockAuditorService,
   conditionalStorageMock,
   credentials,
   enforcerDelegateMock,
@@ -304,7 +304,7 @@ describe('REST policies api with conditions', () => {
       auth: mockAuthService,
       policy: await RBACPermissionPolicy.build(
         mockLoggerService,
-        auditLoggerMock,
+        mockAuditorService,
         config,
         conditionalStorageMock,
         enforcerDelegateMock as EnforcerDelegate,
@@ -323,7 +323,7 @@ describe('REST policies api with conditions', () => {
       conditionalStorageMock,
       pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
       roleMetadataStorageMock,
-      auditLoggerMock,
+      mockAuditorService,
     );
 
     const router = await server.serve();
