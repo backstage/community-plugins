@@ -83,47 +83,6 @@ acs:
   acsUrl: ${ACS_API_URL}
 ```
 
-## RHDH Dynamic Plugin Config
-
-The ACS plugin is also available as a [Red Hat Developer Hub (RHDH)](https://github.com/redhat-developer/rhdh) dynamic plugin. The following should be able to run within the [RHDH local](https://github.com/redhat-developer/rhdh-local) repo.
-
-First, retrieve the sha for the NPM package of the ACS plugin:
-
-```
-npm view --registry npmjs.com/package/@backstage-community/plugin-acs @backstage-community/plugin-acs@<version> dist.integrity
-```
-
-Here's an example of how to configure the ACS plugin as a dynamic plugin in RHDH:
-
-```yaml
-- package: '@backstage-community/plugin-acs@0.1.0'
-  integrity: <integrity sha>
-  disabled: false
-  pluginConfig:
-    dynamicPlugins:
-      frontend:
-        redhatinsights.backstage-plugin-acs:
-          entityTabs:
-            - path: /acs
-              title: RHACS
-              mountPoint: entity.page.acs
-          mountPoints:
-            - mountPoint: entity.page.acs/cards
-              importName: EntityACSContent
-              config:
-                layout:
-                  gridColumnEnd:
-                    lg: 'span 12'
-                    md: 'span 12'
-                    xs: 'span 12'
-```
-
-Each service component entity in the catalog will need to have an annotation added that references the deployment(s) in order to display vulnerability data for them. Here is an example:
-
-```
-acs/deployment-name: "test-deployment-1,test-deployment-2,test-deployment-3"
-```
-
 ## Local Development
 
 ### Prerequisites

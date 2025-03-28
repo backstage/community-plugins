@@ -22,8 +22,7 @@
     "test": "backstage-cli package test",
     "clean": "backstage-cli package clean",
     "prepack": "backstage-cli package prepack",
-    "postpack": "backstage-cli package postpack",
-    "export-dynamic": "janus-cli package export-dynamic-plugin"
+    "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
     "@apollo/client": "^3.12.5",
@@ -65,7 +64,6 @@
     "@backstage/dev-utils": "^1.1.6",
     "@backstage/frontend-test-utils": "^0.2.6",
     "@backstage/test-utils": "^1.7.4",
-    "@janus-idp/cli": "^1.19.1",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^14.0.0",
     "@testing-library/user-event": "^14.0.0",
@@ -75,7 +73,6 @@
   },
   "configSchema": "config.d.ts",
   "files": [
-    "app-config.dynamic.yaml",
     "dist",
     "config.d.ts"
   ]
