@@ -26,6 +26,7 @@ import {
   UrlReaderServiceReadUrlResponse,
 } from '@backstage/backend-plugin-api';
 import { NotModifiedError } from '@backstage/errors';
+import { AdrInfoParser } from '@backstage-community/plugin-adr-common';
 
 const listEndpointName = '/list';
 const fileEndpointName = '/file';
@@ -331,5 +332,132 @@ describe('createRouter', () => {
       expect(imageStatus).toBe(expectedStatusCode);
       expect(imageData.toString('base64')).toBe(responseBody);
     });
+  });
+});
+
+let adrFilesFakeFileTree: UrlReaderServiceReadTreeResponseFile[] = [];
+
+const mockMinimalAdrUrlReader: UrlReaderService = {
+  readUrl() {
+    throw new Error('Not implemented.');
+  },
+  readTree() {
+    const result: UrlReaderServiceReadTreeResponse = {
+      files: async () => adrFilesFakeFileTree,
+      archive() {
+        throw new Error('Not implemented.');
+      },
+      dir() {
+        throw new Error('Not implemented.');
+      },
+      etag: '',
+    };
+
+    const resultPromise = async () => result;
+    return resultPromise();
+  },
+  search() {
+    throw new Error('not implemented.');
+  },
+};
+
+describe('createRouter with parsing', () => {
+  it('returns the list of ADRs with info computed by the default MADR parser', async () => {
+    // given
+    const adrTitle = 'MADR title';
+    const adrStatus = 'accepted';
+    const adrDate = '2025-03-26';
+    const fileName = '001-adr-with-madr-format.md';
+    const fileContent = `# ${adrTitle}\n\n* Status: ${adrStatus}\n* Date: ${adrDate}\n\n## Context and Problem Statement\n\nSome content\n\n## Considered Options\n\n* Some options\n\n## Decision Outcome\n\nSome decision`;
+    adrFilesFakeFileTree = [
+      {
+        path: fileName,
+        content: makeBufferFromString(fileContent),
+      },
+    ];
+    const parser = undefined;
+    const router = await createRouter({
+      reader: mockMinimalAdrUrlReader,
+      cacheClient: new MockCacheClient(),
+      logger: jest.fn() as unknown as LoggerService,
+      parser: parser,
+    });
+    const app: express.Express = express().use(router);
+
+    // when
+    const result = await request(app).get(`${listEndpointName}?url=testing`);
+    const { status, body, error } = result;
+
+    // then
+    const expectedStatusCode = 200;
+    const expectedBody = {
+      data: [
+        {
+          type: 'file',
+          name: fileName,
+          path: fileName,
+          title: adrTitle,
+          status: adrStatus,
+          date: adrDate,
+        },
+      ],
+    };
+
+    expect(error).toBeFalsy();
+    expect(status).toBe(expectedStatusCode);
+    expect(body).toEqual(expectedBody);
+  });
+
+  it('returns the list of ADRs with info computed by a custom parser', async () => {
+    // given
+    const adrTitle = 'Custom ADR title';
+    const adrStatus = 'accepted';
+    const adrDate = '2025-03-26';
+    const fileName = '001-adr-with-custom-format.md';
+    const fileContent = `Title: ${adrTitle}\nStatus: ${adrStatus}\nDate: ${adrDate}\n\nSome decision`;
+    adrFilesFakeFileTree = [
+      {
+        path: fileName,
+        content: makeBufferFromString(fileContent),
+      },
+    ];
+    const parser: AdrInfoParser = (content: string) => {
+      const lines = content.split('\n');
+      return {
+        title: lines[0].replace(/^Title: /, ''),
+        status: lines[1].replace(/^Status: /, ''),
+        date: lines[2].replace(/^Date: /, ''),
+      };
+    };
+    const router = await createRouter({
+      reader: mockMinimalAdrUrlReader,
+      cacheClient: new MockCacheClient(),
+      logger: jest.fn() as unknown as LoggerService,
+      parser: parser,
+    });
+    const app: express.Express = express().use(router);
+
+    // when
+    const result = await request(app).get(`${listEndpointName}?url=testing`);
+    const { status, body, error } = result;
+
+    // then
+    const expectedStatusCode = 200;
+    const expectedBody = {
+      data: [
+        {
+          type: 'file',
+          name: fileName,
+          path: fileName,
+          title: adrTitle,
+          status: adrStatus,
+          date: adrDate,
+        },
+      ],
+    };
+
+    expect(error).toBeFalsy();
+    expect(status).toBe(expectedStatusCode);
+    expect(body).toEqual(expectedBody);
   });
 });
