@@ -1,5 +1,11 @@
 # @backstage-community/plugin-github-deployments
 
+## 0.6.0
+
+### Minor Changes
+
+- c0c6866: Added the `environments` prop to the `<EntityGithubDeploymentsCard />` component to filter deployments by environment.
+
 ## 0.5.0
 
 ### Minor Changes
