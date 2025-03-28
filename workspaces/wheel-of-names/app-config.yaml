@@ -1,0 +1,11 @@
+app:
+  title: Wheel of Names Example App
+  baseUrl: http://localhost:3000
+  experimental:
+    packages: 'all'
+
+organization:
+  name: Wheel of Names Example
+
+backend:
+  baseUrl: http://localhost:7007
