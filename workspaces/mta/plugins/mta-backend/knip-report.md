@@ -18,4 +18,3 @@
 | @types/supertest | package.json:57:6 | error    |
 | supertest        | package.json:59:6 | error    |
 | msw              | package.json:58:6 | error    |
-

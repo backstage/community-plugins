@@ -29,4 +29,3 @@
 | @types/dockerode                 | package.json:57:6 | error    |
 | @types/express                   | package.json:58:6 | error    |
 | @types/luxon                     | package.json:60:6 | error    |
-
