@@ -1,5 +1,11 @@
 # @backstage-community/plugin-multi-source-security-viewer
 
+## 0.2.0
+
+### Minor Changes
+
+- 764e6f3: Support Azure pipelines
+
 ## 0.1.2
 
 ### Patch Changes
