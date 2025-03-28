@@ -1,5 +1,17 @@
 # @backstage-community/plugin-adr-backend
 
+## 0.8.0
+
+### Minor Changes
+
+- b397bd6: Added extension point to backend plugin so that a custom ADR parser can be provided in modules to support additional ADR formats.
+
+### Patch Changes
+
+- Updated dependencies [b397bd6]
+  - @backstage-community/plugin-adr-common@0.6.0
+  - @backstage-community/search-backend-module-adr@0.5.1
+
 ## 0.7.0
 
 ### Minor Changes
