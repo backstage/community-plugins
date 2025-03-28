@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
-import {
-  AdrDocument,
-  MADR_DATE_FORMAT,
-  parseMadrWithFrontmatter,
-} from './index';
 import { DateTime } from 'luxon';
 import { marked, Tokens, TokensList } from 'marked';
+import { IndexableDocument } from '@backstage/plugin-search-common';
+import frontMatter from 'front-matter';
+
+/**
+ * Standard luxon DateTime format string for MADR dates.
+ * @public
+ */
+export const MADR_DATE_FORMAT = 'yyyy-MM-dd';
 
 const getTitle = (tokens: TokensList): string | undefined => {
   return (
@@ -65,10 +68,78 @@ const getDate = (
 };
 
 /**
+ * ADR indexable document interface
+ * @public
+ */
+export interface AdrDocument extends IndexableDocument {
+  /**
+   * Ref of the entity associated with this ADR
+   */
+  entityRef: string;
+  /**
+   * Title of the entity associated with this ADR
+   */
+  entityTitle?: string;
+  /**
+   * ADR status label
+   */
+  status?: string;
+  /**
+   * ADR date
+   */
+  date?: string;
+}
+
+/**
+ * Parsed MADR document with front matter (if present) parsed and extracted from the main markdown content.
+ * @public
+ */
+export interface ParsedMadr {
+  /**
+   * Main body of ADR content (with any front matter removed)
+   */
+  content: string;
+  /**
+   * ADR status
+   */
+  status?: string;
+  /**
+   * ADR date
+   */
+  date?: string;
+  /**
+   * All attributes parsed from front matter
+   */
+  attributes: Record<string, unknown>;
+}
+
+/**
+ * Utility function to parse raw markdown content for an ADR and extract any metadata found as "front matter" at the top of the Markdown document.
+ * @param content - Raw markdown content which may (optionally) include front matter
+ * @public
+ */
+export const parseMadrWithFrontmatter = (content: string): ParsedMadr => {
+  const parsed = frontMatter<Record<string, unknown>>(content);
+  const status = parsed.attributes.status;
+  const date = parsed.attributes.date;
+  const luxdate = DateTime.fromJSDate(new Date(`${date}`));
+  const formattedDate = luxdate.toISODate();
+  return {
+    content: parsed.body,
+    status: status ? String(status) : undefined,
+    date: date ? String(formattedDate) : undefined,
+    attributes: parsed.attributes,
+  };
+};
+
+/**
  * The default MADR parser.
  * @public
  */
-export const madrParser = (content: string, dateFormat = MADR_DATE_FORMAT) => {
+export const madrParser = (
+  content: string,
+  dateFormat = MADR_DATE_FORMAT,
+): AdrInfo => {
   const preparsed = parseMadrWithFrontmatter(content);
   const tokens = marked.lexer(preparsed.content);
   if (!tokens.length) {
@@ -155,7 +226,7 @@ export const createMadrParser = (
   const dateFormat = options.dateFormat ?? MADR_DATE_FORMAT;
 
   return async ({ entity, content, path }) => {
-    const madr = madrParser(content, dateFormat);
+    const madr: AdrInfo = madrParser(content, dateFormat);
     return {
       title: madr.title ?? path.replace(/\.md$/, ''),
       text: content,
@@ -172,3 +243,19 @@ export const createMadrParser = (
     };
   };
 };
+
+/**
+ * ADR info interface
+ * @public
+ */
+export interface AdrInfo {
+  title?: string;
+  status?: string;
+  date?: string;
+}
+
+/**
+ * ADR info parser function type.
+ * @public
+ */
+export type AdrInfoParser = (content: string, dateFormat?: string) => AdrInfo;
