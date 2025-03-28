@@ -18,6 +18,8 @@ import { mockServices } from '@backstage/backend-test-utils';
 import { NotFoundError } from '@backstage/errors';
 
 import { PluginPermissionMetadataCollector } from './plugin-endpoints';
+import { policyEntityPermissions } from '@backstage-community/plugin-rbac-common';
+import { rules } from '../permissions';
 
 const backendPluginIDsProviderMock = {
   getPluginIds: jest.fn().mockImplementation(() => {
@@ -429,6 +431,34 @@ describe('plugin-endpoint', () => {
           resourceType: 'catalog-entity',
         },
       ]);
+    });
+
+    it('should return metadata by id (rbac-plugin)', async () => {
+      backendPluginIDsProviderMock.getPluginIds.mockReturnValue(['permission']);
+
+      const mockUrlReaderService = mockServices.urlReader.mock({
+        readUrl: async (_wellKnownURL: string) => {
+          throw new Error('Unexpected error');
+        },
+      });
+
+      const collector = new PluginPermissionMetadataCollector({
+        deps: {
+          discovery: mockPluginEndpointDiscovery,
+          pluginIdProvider: backendPluginIDsProviderMock,
+          logger: mockServices.logger.mock(),
+          config: mockServices.rootConfig(),
+        },
+        optional: { urlReader: mockUrlReaderService },
+      });
+      const metadata = await collector.getMetadataByPluginId(
+        'permission',
+        undefined,
+      );
+
+      expect(metadata).not.toBeUndefined();
+      expect(metadata?.permissions).toEqual(policyEntityPermissions);
+      expect(metadata?.rules).toEqual(Object.values(rules));
     });
   });
 });
