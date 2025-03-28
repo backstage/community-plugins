@@ -27,6 +27,8 @@ import { mssvGitlabCIApiRef } from '../api/gitlab';
 import { isGitlabAvailable } from '@immobiliarelabs/backstage-plugin-gitlab';
 import { MultiCIConfig } from '../types/multiCI';
 import { SecurityViewerMultiCIPipelines } from './SecurityViewer/SecurityViewerMultiCIPipelines';
+import { mssvAzureDevopsApiRef } from '../api/azure';
+import { isAzurePipelinesAvailable } from '@backstage-community/plugin-azure-devops';
 
 type ApiItem = {
   title: string;
@@ -49,6 +51,11 @@ const AVAILABLE_APIS: ApiItem[] = [
     title: 'Gitlab CI',
     apiRef: mssvGitlabCIApiRef,
     availabilityCallback: isGitlabAvailable,
+  },
+  {
+    title: 'Azure Pipelines',
+    apiRef: mssvAzureDevopsApiRef,
+    availabilityCallback: isAzurePipelinesAvailable,
   },
 ];
 
