@@ -1056,13 +1056,8 @@ export class PoliciesServer {
           throw new NotFoundError(`Condition with id ${id} was not found`);
         }
 
-        const oldCondition: RoleConditionalPolicyDecision<PermissionAction> = {
-          ...condition,
-          permissionMapping: condition.permissionMapping.map(pm => pm.action),
-        };
-
         const roleMetadata = await this.roleMetadata.findRoleMetadata(
-          oldCondition.roleEntityRef,
+          condition.roleEntityRef,
         );
 
         if (!matches(roleMetadata, conditionsFilter)) {
