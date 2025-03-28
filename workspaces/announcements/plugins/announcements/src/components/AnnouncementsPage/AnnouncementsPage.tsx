@@ -38,6 +38,7 @@ import { parseEntityRef } from '@backstage/catalog-model';
 import {
   EntityDisplayName,
   EntityPeekAheadPopover,
+  EntityRefLink,
   entityRouteRef,
 } from '@backstage/plugin-catalog-react';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -77,7 +78,6 @@ const useStyles = makeStyles(theme => {
   return {
     cardHeader: {
       color: theme?.palette?.text?.primary || '#000',
-      fontSize: '1.5rem',
     },
     pagination: {
       display: 'flex',
@@ -109,10 +109,8 @@ const AnnouncementCard = ({
   const announcementsLink = useRouteRef(rootRouteRef);
   const viewAnnouncementLink = useRouteRef(announcementViewRouteRef);
   const editAnnouncementLink = useRouteRef(announcementEditRouteRef);
-  const entityLink = useRouteRef(entityRouteRef);
   const { t } = useAnnouncementsTranslation();
 
-  const publisherRef = parseEntityRef(announcement.publisher);
   const title = (
     <Tooltip
       title={announcement.title}
@@ -132,9 +130,7 @@ const AnnouncementCard = ({
       <Typography variant="body2" color="textSecondary" component="span">
         {t('announcementsPage.card.by')}{' '}
         <EntityPeekAheadPopover entityRef={announcement.publisher}>
-          <Link to={entityLink(publisherRef)}>
-            <EntityDisplayName entityRef={announcement.publisher} hideIcon />
-          </Link>
+          <EntityRefLink entityRef={announcement.publisher} hideIcon />
         </EntityPeekAheadPopover>
         {announcement.category && (
           <>
