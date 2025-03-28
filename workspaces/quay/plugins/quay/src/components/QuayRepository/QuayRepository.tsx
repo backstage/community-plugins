@@ -29,7 +29,9 @@ export function QuayRepository(_props: QuayRepositoryProps) {
   const { repository, organization } = useRepository();
   const classes = useStyles();
   const configApi = useApi(configApiRef);
-  const quayUiUrl = configApi.getOptionalString('quay.uiUrl');
+  const quayUiUrl =
+    configApi.getOptionalString('quay.apiUrl') ??
+    configApi.getOptionalString('quay.uiUrl');
 
   const hasViewPermission = useQuayViewPermission();
 
