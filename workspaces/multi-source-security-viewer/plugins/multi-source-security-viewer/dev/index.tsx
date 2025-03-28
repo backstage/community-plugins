@@ -32,6 +32,7 @@ import { MssvApi, MssvApiResponse } from '../src/api/mssv';
 import { PipelineRunResult } from '../src/models/pipelineRunResult';
 import { mssvGithubActionsApiRef } from '../src/api/github';
 import { mssvGitlabCIApiRef } from '../src/api/gitlab';
+import { mssvAzureDevopsApiRef } from '../src/api/azure';
 
 class MockMssvJenkinsApiClient implements MssvApi {
   async getPipelineSummary(): Promise<MssvApiResponse> {
@@ -89,6 +90,25 @@ class MockMssvGitlabCIApiClient implements MssvApi {
   }
 }
 
+class MockMssvAzureDevopsClient implements MssvApi {
+  async getPipelineSummary(): Promise<MssvApiResponse> {
+    const results = mockPipelineRuns.map(
+      pr =>
+        new PipelineRunResult({
+          ...pr,
+          displayName: `${pr.displayName}-azure`,
+          logs: mockRawLogs,
+        }),
+    );
+
+    return { results, totalCount: results.length };
+  }
+
+  async getPipelineDetail(): Promise<MssvApiResponse> {
+    return this.getPipelineSummary();
+  }
+}
+
 createDevApp()
   .addThemes(getAllThemes())
   .addPage({
@@ -98,6 +118,7 @@ createDevApp()
           [mssvJenkinsApiRef, new MockMssvJenkinsApiClient()],
           [mssvGithubActionsApiRef, new MockMssvGithubActionsApiClient()],
           [mssvGitlabCIApiRef, new MockMssvGitlabCIApiClient()],
+          [mssvAzureDevopsApiRef, new MockMssvAzureDevopsClient()],
           [permissionApiRef, new MockPermissionApi()],
         ]}
       >
