@@ -26,11 +26,16 @@ import {
 import { LinguistClient, linguistApiRef } from '../api';
 import { compatWrapper } from '@backstage/core-compat-api';
 import { EntityCardBlueprint } from '@backstage/plugin-catalog-react/alpha';
+import { isLinguistAvailable } from '../plugin';
 
 /** @alpha */
 export const entityLinguistCard = EntityCardBlueprint.make({
   name: 'languages',
   params: {
+    filter: entity => {
+      if (!isLinguistAvailable(entity)) return false;
+      return true;
+    },
     loader: async () =>
       import('../components/LinguistCard').then(m =>
         compatWrapper(<m.LinguistCard />),
