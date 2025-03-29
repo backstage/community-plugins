@@ -20,10 +20,7 @@ import { ErrorPage } from '@backstage/core-components';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 
-import {
-  policyEntityCreatePermission,
-  policyEntityUpdatePermission,
-} from '@backstage-community/plugin-rbac-common';
+import { policyEntityCreatePermission } from '@backstage-community/plugin-rbac-common';
 
 import { createRoleRouteRef, editRoleRouteRef, roleRouteRef } from '../routes';
 import { CreateRolePage } from './CreateRole/CreateRolePage';
@@ -66,17 +63,7 @@ export const Router = ({ useHeader = true }: { useHeader?: boolean }) => {
             </RequirePermission>
           }
         />
-        <Route
-          path={editRoleRouteRef.path}
-          element={
-            <RequirePermission
-              permission={policyEntityUpdatePermission}
-              resourceRef={policyEntityUpdatePermission.resourceType}
-            >
-              <EditRolePage />
-            </RequirePermission>
-          }
-        />
+        <Route path={editRoleRouteRef.path} element={<EditRolePage />} />
       </Routes>
     </ToastContextProvider>
   );

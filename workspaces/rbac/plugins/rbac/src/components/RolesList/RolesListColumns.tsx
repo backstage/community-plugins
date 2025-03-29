@@ -88,32 +88,12 @@ export const columns: TableColumn<RolesData>[] = [
     render: (props: RolesData) => (
       <>
         <EditRole
-          dataTestId={
-            !props.actionsPermissionResults.edit.allowed
-              ? `disable-update-role-${props.name}`
-              : `update-role-${props.name}`
-          }
+          canEdit={props.actionsPermissionResults.edit.allowed}
           roleName={props.name}
-          disable={!props.actionsPermissionResults.edit.allowed}
-          tooltip={
-            !props.actionsPermissionResults.edit.allowed
-              ? 'Unauthorized to edit'
-              : ''
-          }
         />
         <DeleteRole
-          dataTestId={
-            !props.actionsPermissionResults.delete.allowed
-              ? `disable-delete-role-${props.name}`
-              : `delete-role-${props.name}`
-          }
+          canEdit={props.actionsPermissionResults.edit.allowed}
           roleName={props.name}
-          disable={!props.actionsPermissionResults.delete.allowed}
-          tooltip={
-            !props.actionsPermissionResults.delete.allowed
-              ? 'Role cannot be deleted'
-              : ''
-          }
         />
       </>
     ),

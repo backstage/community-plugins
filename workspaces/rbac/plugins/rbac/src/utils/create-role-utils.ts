@@ -54,6 +54,7 @@ export const getRoleData = (values: RoleFormValues): Role => {
     name: `${values.kind}:${values.namespace}/${values.name}`,
     metadata: {
       description: values.description,
+      owner: values.owner,
     },
   };
 };

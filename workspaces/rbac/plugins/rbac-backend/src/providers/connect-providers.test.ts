@@ -100,6 +100,7 @@ const roleMetadataStorageMock: RoleMetadataStorage = {
         return undefined;
       },
     ),
+  filterForOwnerRoleMetadata: jest.fn().mockImplementation(),
   createRoleMetadata: jest.fn().mockImplementation(),
   updateRoleMetadata: jest.fn().mockImplementation(),
   removeRoleMetadata: jest.fn().mockImplementation(),

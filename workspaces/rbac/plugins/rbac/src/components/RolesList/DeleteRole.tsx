@@ -20,19 +20,21 @@ import Delete from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
+import { policyEntityDeletePermission } from '@backstage-community/plugin-rbac-common';
+import { usePermission } from '@backstage/plugin-permission-react';
 
 type DeleteRoleProps = {
   roleName: string;
-  disable: boolean;
+  canEdit: boolean;
+  dataTestId?: string;
   tooltip?: string;
-  dataTestId: string;
 };
 
 const DeleteRole = ({
   roleName,
-  tooltip,
-  disable,
+  canEdit,
   dataTestId,
+  tooltip,
 }: DeleteRoleProps) => {
   const { setDeleteComponent, setOpenDialog } = useDeleteDialog();
 
@@ -41,9 +43,20 @@ const DeleteRole = ({
     setOpenDialog(true);
   };
 
+  const deletePermissionResult = usePermission({
+    permission: policyEntityDeletePermission,
+    resourceRef: roleName,
+  });
+
+  const disable = !(deletePermissionResult.allowed && canEdit);
+  const dataTestIdText = disable
+    ? `disable-delete-role-${roleName}`
+    : `delete-role-${roleName}`;
+  const tooltipText = disable ? 'Role cannot be deleted' : '';
+
   return (
-    <Tooltip title={tooltip ?? ''}>
-      <Typography component="span" data-testid={dataTestId}>
+    <Tooltip title={tooltip ?? tooltipText}>
+      <Typography component="span" data-testid={dataTestId ?? dataTestIdText}>
         <IconButton
           onClick={() => openDialog(roleName)}
           aria-label="Delete"

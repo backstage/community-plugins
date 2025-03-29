@@ -36,6 +36,7 @@ export type RoleFormValues = {
   namespace: string;
   kind: string;
   description?: string;
+  owner?: string;
   selectedMembers: SelectedMember[];
   selectedPlugins: SelectedPlugin[];
   permissionPoliciesRows: PermissionsData[];
