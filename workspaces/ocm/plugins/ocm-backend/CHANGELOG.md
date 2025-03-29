@@ -1,5 +1,13 @@
 ### Dependencies
 
+## 5.5.3
+
+### Patch Changes
+
+- f84ad73: chore: remove homepage field from package.json
+- Updated dependencies [f84ad73]
+  - @backstage-community/plugin-ocm-common@3.8.2
+
 ## 5.5.2
 
 ### Patch Changes
