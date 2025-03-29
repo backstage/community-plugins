@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "repository": "git@github.com:backstage/community-plugins.git",
   "engines": {
-    "node": "18 || 20"
+    "node": "22"
   },
   "scripts": {
     "create-workspace": "community-cli workspace create",
