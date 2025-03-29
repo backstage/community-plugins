@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.12.1
+
+### Patch Changes
+
+- f84ad73: chore: remove homepage field from package.json and remove legacy maintainers field.
+
 ## 1.12.0
 
 ### Minor Changes
