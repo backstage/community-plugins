@@ -22,17 +22,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apidevtools/json-schema-ref-parser@npm:11.7.2":
-  version: 11.7.2
-  resolution: "@apidevtools/json-schema-ref-parser@npm:11.7.2"
-  dependencies:
-    "@jsdevtools/ono": "npm:^7.1.3"
-    "@types/json-schema": "npm:^7.0.15"
-    js-yaml: "npm:^4.1.0"
-  checksum: 10/8e80207c28aad234d3710fcfcf307691000bfbda40edb2ea4fdaf8158d026eb2b15a6471076490c2f40304df5b7bdd4be33d9979acef6cbfaf459b8bd1d79bf2
-  languageName: node
-  linkType: hard
-
 "@apidevtools/json-schema-ref-parser@npm:9.0.6":
   version: 9.0.6
   resolution: "@apidevtools/json-schema-ref-parser@npm:9.0.6"
@@ -2596,7 +2585,7 @@ __metadata:
     "@backstage/plugin-catalog-react": "npm:^1.15.1"
     "@backstage/test-utils": "npm:^1.7.4"
     "@backstage/theme": "npm:^0.6.3"
-    "@hey-api/openapi-ts": "npm:0.55.3"
+    "@hey-api/openapi-ts": "npm:0.64.14"
     "@janus-idp/shared-react": "npm:^2.16.0"
     "@material-ui/core": "npm:^4.9.13"
     "@material-ui/icons": "npm:^4.11.3"
@@ -4562,19 +4551,30 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hey-api/openapi-ts@npm:0.55.3":
-  version: 0.55.3
-  resolution: "@hey-api/openapi-ts@npm:0.55.3"
+"@hey-api/json-schema-ref-parser@npm:1.0.3":
+  version: 1.0.3
+  resolution: "@hey-api/json-schema-ref-parser@npm:1.0.3"
   dependencies:
-    "@apidevtools/json-schema-ref-parser": "npm:11.7.2"
+    "@jsdevtools/ono": "npm:^7.1.3"
+    "@types/json-schema": "npm:^7.0.15"
+    js-yaml: "npm:^4.1.0"
+  checksum: 10/7ea54ad3ef0d892f6f69d26954cae667cb31df96e84233d049a3ea1a3ee4e5b45f6c3466d878b9cf4a77aa54427c1f54b0aaeb55811c1da8a420174aa38ac9b1
+  languageName: node
+  linkType: hard
+
+"@hey-api/openapi-ts@npm:0.64.14":
+  version: 0.64.14
+  resolution: "@hey-api/openapi-ts@npm:0.64.14"
+  dependencies:
+    "@hey-api/json-schema-ref-parser": "npm:1.0.3"
     c12: "npm:2.0.1"
-    commander: "npm:12.1.0"
+    commander: "npm:13.0.0"
     handlebars: "npm:4.7.8"
   peerDependencies:
-    typescript: ^5.x
+    typescript: ^5.5.3
   bin:
     openapi-ts: bin/index.cjs
-  checksum: 10/3bd65189035fc887e5a36b72e137a787a916102b80fb5261295cd7f1606a8b17a96d1e441892de5b30f7f00d81d7c774f231ee2190011e6a4d6a28af7984a873
+  checksum: 10/7a5992e98c818bd58ba92385fddd2f78ecdefb5a53a807b3d95ee8d64825d05ee317a74fc62d3a5d582c4cd16e34247da691fac4dfeec4e8a3864b055ef58e87
   languageName: node
   linkType: hard
 
@@ -11280,10 +11280,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"commander@npm:12.1.0, commander@npm:^12.0.0":
-  version: 12.1.0
-  resolution: "commander@npm:12.1.0"
-  checksum: 10/cdaeb672d979816853a4eed7f1310a9319e8b976172485c2a6b437ed0db0a389a44cfb222bfbde772781efa9f215bdd1b936f80d6b249485b465c6cb906e1f93
+"commander@npm:13.0.0":
+  version: 13.0.0
+  resolution: "commander@npm:13.0.0"
+  checksum: 10/e89d5bf61e84e65e0cfdfcfb740049cf6bcaba63fc32a610375957a2a57373d42f7b00fc64bec5bdde0e547593fa184f869dfabe8a415bc4fd4482edf2fb5ca8
   languageName: node
   linkType: hard
 
@@ -11298,6 +11298,13 @@ __metadata:
   version: 10.0.1
   resolution: "commander@npm:10.0.1"
   checksum: 10/8799faa84a30da985802e661cc9856adfaee324d4b138413013ef7f087e8d7924b144c30a1f1405475f0909f467665cd9e1ce13270a2f41b141dab0b7a58f3fb
+  languageName: node
+  linkType: hard
+
+"commander@npm:^12.0.0":
+  version: 12.1.0
+  resolution: "commander@npm:12.1.0"
+  checksum: 10/cdaeb672d979816853a4eed7f1310a9319e8b976172485c2a6b437ed0db0a389a44cfb222bfbde772781efa9f215bdd1b936f80d6b249485b465c6cb906e1f93
   languageName: node
   linkType: hard
 
