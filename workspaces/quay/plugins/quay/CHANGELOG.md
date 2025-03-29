@@ -1,5 +1,17 @@
 ### Dependencies
 
+## 1.19.1
+
+### Patch Changes
+
+- f84ad73: chore: remove homepage field from package.json
+- 3bd5e99: remove unused dependencies: @types/node
+- c31699d: Updated dependency `@playwright/test` to `1.51.1`.
+- f16f56e: Updated dependency `start-server-and-test` to `2.0.11`.
+- 61cf479: Fixed a bug where link to Quay repository was not displayed when `@backstage-community/plugin-quay-backend` was used with key `quay.apiUrl`
+- Updated dependencies [f84ad73]
+  - @backstage-community/plugin-quay-common@1.7.1
+
 ## 1.19.0
 
 ### Minor Changes

@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 2.6.1
+
+### Patch Changes
+
+- f84ad73: chore: remove homepage field from package.json
+
 ## 2.6.0
 
 ### Minor Changes
