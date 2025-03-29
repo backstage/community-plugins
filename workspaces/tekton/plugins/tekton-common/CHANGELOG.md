@@ -1,5 +1,11 @@
 # @janus-idp/backstage-plugin-tekton-common
 
+## 1.8.1
+
+### Patch Changes
+
+- f84ad73: chore: remove homepage field from package.json
+
 ## 1.8.0
 
 ### Minor Changes
