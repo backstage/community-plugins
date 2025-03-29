@@ -1,5 +1,18 @@
 # @backstage-community/plugin-redhat-argocd-backend
 
+## 0.5.0
+
+### Minor Changes
+
+- 1eafdb8: Bump backstage version to 1.36.1
+
+### Patch Changes
+
+- f84ad73: chore: remove homepage field from package.json
+- Updated dependencies [f84ad73]
+- Updated dependencies [1eafdb8]
+  - @backstage-community/plugin-redhat-argocd-common@1.4.0
+
 ## 0.4.0
 
 ### Minor Changes
