@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-jenkins-backend",
-  "version": "0.12.1",
+  "version": "0.13.0",
   "description": "A Backstage backend plugin that integrates towards Jenkins",
   "backstage": {
     "role": "backend-plugin",
