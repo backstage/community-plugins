@@ -68,10 +68,7 @@ export const azureDevOpsPipelinesEntityContent = EntityContentBlueprint.make({
   params: {
     defaultPath: '/pipelines',
     defaultTitle: 'Pipelines',
-    filter: entity => {
-      if (!isAzurePipelinesAvailable(entity)) return false;
-      return true;
-    },
+    filter: isAzurePipelinesAvailable,
     loader: () =>
       import('../components/EntityPageAzurePipelines').then(m =>
         compatWrapper(<m.EntityPageAzurePipelines />),
@@ -85,10 +82,7 @@ export const azureDevOpsGitTagsEntityContent = EntityContentBlueprint.make({
   params: {
     defaultPath: '/git-tags',
     defaultTitle: 'Git Tags',
-    filter: entity => {
-      if (!isAzureDevOpsAvailable(entity)) return false;
-      return true;
-    },
+    filter: isAzureDevOpsAvailable,
     loader: () =>
       import('../components/EntityPageAzureGitTags').then(m =>
         compatWrapper(<m.EntityPageAzureGitTags />),
@@ -103,10 +97,7 @@ export const azureDevOpsPullRequestsEntityContent = EntityContentBlueprint.make(
     params: {
       defaultPath: '/pull-requests',
       defaultTitle: 'Pull Requests',
-      filter: entity => {
-        if (!isAzureDevOpsAvailable(entity)) return false;
-        return true;
-      },
+      filter: isAzureDevOpsAvailable,
       loader: () =>
         import('../components/EntityPageAzurePullRequests').then(m =>
           compatWrapper(<m.EntityPageAzurePullRequests />),
@@ -119,10 +110,7 @@ export const azureDevOpsPullRequestsEntityContent = EntityContentBlueprint.make(
 export const azureDevOpsReadmeEntityCard = EntityCardBlueprint.make({
   name: 'readme',
   params: {
-    filter: entity => {
-      if (!isAzureDevOpsAvailable(entity)) return false;
-      return true;
-    },
+    filter: isAzureDevOpsAvailable,
     loader: async () =>
       import('../components/ReadmeCard').then(m =>
         compatWrapper(<m.ReadmeCard />),
