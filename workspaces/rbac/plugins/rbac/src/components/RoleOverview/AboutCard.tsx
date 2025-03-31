@@ -60,29 +60,21 @@ export const AboutCard = ({ roleName }: AboutCardProps) => {
       month: 'short',
     })} ${date.getUTCFullYear()}, ${time}`;
   } else {
-    lastModified = 'No information';
+    lastModified = '--';
   }
 
-  let description;
-  if (role?.metadata?.description && role.metadata.description.length > 0) {
-    description = role.metadata.description;
-  } else {
-    description = 'No description';
-  }
-
-  let modifiedBy;
-  if (role?.metadata?.modifiedBy && role.metadata.modifiedBy.length > 0) {
-    modifiedBy = role.metadata.modifiedBy;
-  } else {
-    modifiedBy = 'No information';
-  }
-
-  let owner;
-  if (role?.metadata?.owner && role.metadata.owner.length > 0) {
-    owner = role.metadata.owner;
-  } else {
-    owner = 'No owner';
-  }
+  const description =
+    role?.metadata?.description && role.metadata.description.length > 0
+      ? role.metadata.description
+      : '--';
+  const modifiedBy =
+    role?.metadata?.modifiedBy && role.metadata.modifiedBy.length > 0
+      ? role.metadata.modifiedBy
+      : '--';
+  const owner =
+    role?.metadata?.owner && role.metadata.owner.length > 0
+      ? role.metadata.owner
+      : '--';
 
   return (
     <Card
