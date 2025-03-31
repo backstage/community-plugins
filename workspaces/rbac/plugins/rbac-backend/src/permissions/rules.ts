@@ -19,6 +19,7 @@ import {
   RoleMetadata,
 } from '@backstage-community/plugin-rbac-common';
 import { z } from 'zod';
+import zodToJsonSchema from 'zod-to-json-schema';
 
 export type RBACFilter = {
   key: string;
@@ -56,5 +57,12 @@ const isOwner = createRBACPermissionRule({
     values: owners,
   }),
 });
+
+export const rbacRules = {
+  name: isOwner.name,
+  description: isOwner.description,
+  resourceType: isOwner.resourceType,
+  paramsSchema: zodToJsonSchema(isOwner.paramsSchema ?? z.object({})),
+};
 
 export const rules = { isOwner };

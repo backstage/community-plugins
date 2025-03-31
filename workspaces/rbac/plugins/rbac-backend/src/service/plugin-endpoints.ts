@@ -41,7 +41,7 @@ import {
   type PolicyDetails,
 } from '@backstage-community/plugin-rbac-common';
 import type { PluginIdProvider } from '@backstage-community/plugin-rbac-node';
-import { rules } from '../permissions';
+import { rbacRules } from '../permissions';
 
 type PluginMetadataResponse = {
   pluginId: string;
@@ -55,7 +55,7 @@ export type PluginMetadataResponseSerializedRule = {
 
 const rbacPermissionMetadata: MetadataResponse = {
   permissions: policyEntityPermissions,
-  rules: Object.values(rules),
+  rules: [rbacRules],
 };
 
 export class PluginPermissionMetadataCollector {
