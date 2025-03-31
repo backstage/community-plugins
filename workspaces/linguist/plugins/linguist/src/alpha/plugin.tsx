@@ -32,10 +32,7 @@ import { isLinguistAvailable } from '../plugin';
 export const entityLinguistCard = EntityCardBlueprint.make({
   name: 'languages',
   params: {
-    filter: entity => {
-      if (!isLinguistAvailable(entity)) return false;
-      return true;
-    },
+    filter: isLinguistAvailable,
     loader: async () =>
       import('../components/LinguistCard').then(m =>
         compatWrapper(<m.LinguistCard />),
