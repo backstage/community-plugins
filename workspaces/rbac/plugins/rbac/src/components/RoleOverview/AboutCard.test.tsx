@@ -80,8 +80,7 @@ describe('AboutCard', () => {
       <AboutCard roleName="role:default/rbac_admin" />,
     );
     expect(queryByText('About')).not.toBeNull();
-    expect(queryByText('No description')).not.toBeNull();
-    expect(queryAllByText('No information').length).toEqual(2);
+    expect(queryAllByText('--').length).toEqual(4);
   });
 
   it('should show an error if api call fails', async () => {
