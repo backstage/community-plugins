@@ -19,7 +19,7 @@ import { NotFoundError } from '@backstage/errors';
 
 import { PluginPermissionMetadataCollector } from './plugin-endpoints';
 import { policyEntityPermissions } from '@backstage-community/plugin-rbac-common';
-import { rules } from '../permissions';
+import { rbacRules } from '../permissions';
 
 const backendPluginIDsProviderMock = {
   getPluginIds: jest.fn().mockImplementation(() => {
@@ -458,7 +458,7 @@ describe('plugin-endpoint', () => {
 
       expect(metadata).not.toBeUndefined();
       expect(metadata?.permissions).toEqual(policyEntityPermissions);
-      expect(metadata?.rules).toEqual(Object.values(rules));
+      expect(metadata?.rules).toEqual([rbacRules]);
     });
   });
 });
