@@ -1,5 +1,13 @@
 ### Dependencies
 
+## 3.22.1
+
+### Patch Changes
+
+- f84ad73: chore: remove homepage field from package.json
+- Updated dependencies [f84ad73]
+  - @backstage-community/plugin-tekton-common@1.8.1
+
 ## 3.22.0
 
 ### Minor Changes
