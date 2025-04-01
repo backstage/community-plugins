@@ -1,5 +1,13 @@
 ### Dependencies
 
+## 1.39.3
+
+### Patch Changes
+
+- f84ad73: chore: remove homepage field from package.json
+- Updated dependencies [f84ad73]
+  - @backstage-community/plugin-rbac-common@1.14.1
+
 ## 1.39.2
 
 ### Patch Changes
