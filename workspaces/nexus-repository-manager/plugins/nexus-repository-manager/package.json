@@ -26,7 +26,7 @@
     "lint": "backstage-cli package lint",
     "postpack": "backstage-cli package postpack",
     "prepack": "backstage-cli package prepack",
-    "start": "backstage-cli package start",
+    "start": "backstage-cli package start --config ./app-config.example.yaml",
     "test": "backstage-cli package test --passWithNoTests --coverage",
     "tsc": "tsc"
   },
