@@ -1,5 +1,11 @@
 ## @backstage-community/plugin-rbac-common [1.8.2](https://github.com/janus-idp/backstage-plugins/compare/@backstage-community/plugin-rbac-common@1.8.1...@backstage-community/plugin-rbac-common@1.8.2) (2024-08-06)
 
+## 1.14.1
+
+### Patch Changes
+
+- f84ad73: chore: remove homepage field from package.json
+
 ## 1.14.0
 
 ### Minor Changes
