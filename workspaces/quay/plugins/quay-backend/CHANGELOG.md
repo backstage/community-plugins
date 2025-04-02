@@ -1,5 +1,11 @@
 # @backstage-community/plugin-quay-backend
 
+## 1.1.2
+
+### Patch Changes
+
+- 088781b: Publish config.d.ts
+
 ## 1.1.1
 
 ### Patch Changes
