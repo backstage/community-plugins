@@ -111,7 +111,7 @@ export function ManagePageImpl<SupportedKinds extends string>(
   return (
     <Page themeId={themeId ?? 'home'}>
       {headerComponent}
-      <Content>
+      <Content noPadding>
         <KindOrderProvider>
           <OwnedProvider kinds={kinds}>
             {providers.reduce(
