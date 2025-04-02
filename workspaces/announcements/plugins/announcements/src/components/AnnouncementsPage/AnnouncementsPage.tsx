@@ -62,6 +62,7 @@ import {
   Card,
   CardContent,
   CardHeader,
+  Chip,
   IconButton,
   ListItemIcon,
   makeStyles,
@@ -165,6 +166,25 @@ const AnnouncementCard = ({
           </Typography>
         )}
       </Box>
+      {announcement.tags && announcement.tags.length > 0 && (
+        <Typography variant="body2" color="textSecondary">
+          {announcement.tags && announcement.tags.length > 0 && (
+            <Box mt={1}>
+              {announcement.tags.map(tag => (
+                <Chip
+                  key={tag.slug}
+                  size="small"
+                  label={tag.title}
+                  component={Link}
+                  to={`${announcementsLink()}?tags=${tag.slug}`}
+                  clickable
+                  style={{ marginRight: 4, marginBottom: 4 }}
+                />
+              ))}
+            </Box>
+          )}
+        </Typography>
+      )}
     </>
   );
   const { loading: loadingDeletePermission, allowed: canDelete } =
@@ -366,6 +386,7 @@ export type AnnouncementsPageProps = {
   subtitle?: ReactNode;
   maxPerPage?: number;
   category?: string;
+  tags?: string[];
   buttonOptions?: AnnouncementCreateButtonProps;
   cardOptions?: AnnouncementCardProps;
   hideContextMenu?: boolean;
@@ -424,7 +445,7 @@ export const AnnouncementsPage = (props: AnnouncementsPageProps) => {
           maxPerPage={maxPerPage ?? 10}
           category={category ?? queryParams.get('category') ?? undefined}
           cardTitleLength={cardOptions?.titleLength}
-          active={hideInactive ? true : false}
+          active={!!hideInactive}
           sortBy={sortby ?? 'created_at'}
           order={order ?? 'desc'}
           hideStartAt={hideStartAt}

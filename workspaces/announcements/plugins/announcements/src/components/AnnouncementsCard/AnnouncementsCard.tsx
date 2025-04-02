@@ -42,6 +42,7 @@ import {
   ListItemText,
   Typography,
   Box,
+  Chip,
 } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import NewReleasesIcon from '@material-ui/icons/NewReleases';
@@ -151,6 +152,21 @@ export const AnnouncementsCard = ({
                   </Typography>
                   <Typography variant="body2" color="textSecondary">
                     {announcement.excerpt}
+                    {announcement.tags && announcement.tags.length > 0 && (
+                      <Box mt={1}>
+                        {announcement.tags.map(tag => (
+                          <Chip
+                            key={tag.slug}
+                            size="small"
+                            label={tag.title}
+                            component={Link}
+                            to={`${announcementsLink()}?tags=${tag.slug}`}
+                            clickable
+                            style={{ marginRight: 4, marginBottom: 4 }}
+                          />
+                        ))}
+                      </Box>
+                    )}
                   </Typography>
                   {!hideStartAt && (
                     <Typography variant="caption" color="textSecondary">
