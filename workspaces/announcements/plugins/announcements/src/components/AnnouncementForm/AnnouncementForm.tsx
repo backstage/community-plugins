@@ -23,16 +23,17 @@ import {
 } from '@backstage-community/plugin-announcements-react';
 import { Announcement } from '@backstage-community/plugin-announcements-common';
 import CategoryInput from './CategoryInput';
+import TagsInput from './TagsInput';
 import {
-  TextField,
-  FormGroup,
-  FormControlLabel,
-  Switch,
-  Button,
   Box,
-  Grid,
-  Typography,
+  Button,
   Divider,
+  FormControlLabel,
+  FormGroup,
+  Grid,
+  Switch,
+  TextField,
+  Typography,
 } from '@material-ui/core';
 import SaveAltIcon from '@material-ui/icons/SaveAlt';
 import { DateTime } from 'luxon';
@@ -54,11 +55,13 @@ export const AnnouncementForm = ({
     ? DateTime.fromISO(initialData.start_at).toISODate()
     : DateTime.now().toISODate();
 
-  const [form, setForm] = React.useState({
+  const [form, setForm] = useState({
     ...initialData,
     category: initialData.category?.slug,
     start_at: formattedStartAt || '',
+    tags: initialData.tags?.map(tag => tag.slug) || undefined,
   });
+
   const [loading, setLoading] = useState(false);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -80,11 +83,12 @@ export const AnnouncementForm = ({
     event.preventDefault();
 
     const userIdentity = await identityApi.getBackstageIdentity();
-    const createRequest = {
-      ...form,
-      ...{
-        publisher: userIdentity.userEntityRef,
-      },
+
+    const { id, created_at, ...announcementData } = form;
+
+    const createRequest: CreateAnnouncementRequest = {
+      ...announcementData,
+      publisher: userIdentity.userEntityRef,
     };
 
     await onSubmit(createRequest);
@@ -113,7 +117,7 @@ export const AnnouncementForm = ({
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={4}>
               <CategoryInput
                 setForm={setForm}
                 form={form}
@@ -121,7 +125,15 @@ export const AnnouncementForm = ({
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={4}>
+              <TagsInput
+                setForm={setForm}
+                form={form}
+                initialValue={initialData.tags?.[0]?.title ?? ''}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={4}>
               <TextField
                 variant="outlined"
                 label={t('announcementForm.startAt')}

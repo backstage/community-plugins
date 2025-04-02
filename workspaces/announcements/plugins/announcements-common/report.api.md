@@ -16,6 +16,7 @@ export type Announcement = {
   created_at: string;
   active: boolean;
   start_at: string;
+  tags?: Tag[];
 };
 
 // @public
@@ -36,6 +37,7 @@ export type AnnouncementsFilters = {
   max?: number;
   offset?: number;
   category?: string;
+  tags?: string[];
   page?: number;
   active?: boolean;
   sortBy?: 'created_at' | 'start_at';
@@ -69,10 +71,16 @@ export const EVENTS_ACTION_CREATE_ANNOUNCEMENT = 'create_announcement';
 export const EVENTS_ACTION_CREATE_CATEGORY = 'create_category';
 
 // @public
+export const EVENTS_ACTION_CREATE_TAG = 'create-tag';
+
+// @public
 export const EVENTS_ACTION_DELETE_ANNOUNCEMENT = 'delete_announcement';
 
 // @public
 export const EVENTS_ACTION_DELETE_CATEGORY = 'delete_category';
+
+// @public
+export const EVENTS_ACTION_DELETE_TAG = 'delete-tag';
 
 // @public
 export const EVENTS_ACTION_UPDATE_ANNOUNCEMENT = 'update_announcement';
@@ -82,4 +90,10 @@ export const EVENTS_TOPIC_ANNOUNCEMENTS = 'announcements';
 
 // @public
 export const SIGNALS_CHANNEL_ANNOUNCEMENTS = 'announcements:new';
+
+// @public
+export type Tag = {
+  slug: string;
+  title: string;
+};
 ```

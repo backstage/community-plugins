@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2025 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,19 +17,19 @@ import React from 'react';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { TestApiProvider, renderInTestApp } from '@backstage/test-utils';
-import CategoryInput from './CategoryInput';
+import TagsInput from './TagsInput';
 import { announcementsApiRef } from '@backstage-community/plugin-announcements-react';
 
-const categories = [
-  { title: 'Hello', slug: 'hello' },
-  { title: 'World', slug: 'world' },
+const tags = [
+  { title: 'Kubernetes', slug: 'kubernetes' },
+  { title: 'Docker', slug: 'docker' },
 ];
 
 jest.mock('@backstage-community/plugin-announcements-react', () => ({
   ...jest.requireActual('@backstage-community/plugin-announcements-react'),
-  useCategories: () => {
+  useTags: () => {
     return {
-      categories,
+      tags,
       loading: false,
       error: undefined,
       retry: jest.fn(),
@@ -37,7 +37,7 @@ jest.mock('@backstage-community/plugin-announcements-react', () => ({
   },
 }));
 
-describe('CategoryInput', () => {
+describe('TagsInput', () => {
   const mockSetForm: (
     value: React.SetStateAction<{
       category: string | undefined;
@@ -63,20 +63,24 @@ describe('CategoryInput', () => {
     created_at: 'created_at',
     active: true,
     start_at: 'start_at',
-    tags: ['kubernetes', 'go'],
+    tags: undefined,
   };
 
-  const announcementsApiMock = { categories: jest.fn() };
+  const announcementsApiMock = { tags: jest.fn() };
 
   const render = async () => {
     await renderInTestApp(
       <TestApiProvider apis={[[announcementsApiRef, announcementsApiMock]]}>
-        <CategoryInput setForm={mockSetForm} form={mockForm} initialValue="" />
+        <TagsInput setForm={mockSetForm} form={mockForm} initialValue="" />
       </TestApiProvider>,
     );
   };
 
-  it('should render the CategoryInput component', async () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('should render the TagsInput component', async () => {
     await render();
 
     await waitFor(() => {
@@ -86,26 +90,26 @@ describe('CategoryInput', () => {
     const autocomplete = screen.getByRole('combobox');
 
     expect(autocomplete).toBeInTheDocument();
-    expect(screen.getByLabelText('Category')).toBeInTheDocument();
+    expect(screen.getByLabelText('Tags')).toBeInTheDocument();
 
     await userEvent.click(autocomplete);
 
     const expectedOption1 = screen.getByRole('option', {
-      name: categories[0].title,
+      name: tags[0].title,
     });
 
     const expectedOption2 = screen.getByRole('option', {
-      name: categories[1].title,
+      name: tags[1].title,
     });
 
     expect(expectedOption1).toBeInTheDocument();
     expect(expectedOption2).toBeInTheDocument();
 
-    expect(expectedOption1.textContent).toEqual('Hello');
-    expect(expectedOption2.textContent).toEqual('World');
+    expect(expectedOption1.textContent).toEqual('Kubernetes');
+    expect(expectedOption2.textContent).toEqual('Docker');
   });
 
-  it('should set category when a category is selected', async () => {
+  it('should set tag when a tag is selected', async () => {
     await render();
 
     await waitFor(() => {
@@ -117,18 +121,18 @@ describe('CategoryInput', () => {
     await userEvent.click(autocomplete);
 
     const expectedOption = screen.getByRole('option', {
-      name: categories[0].title,
+      name: tags[0].title,
     });
 
     await userEvent.click(expectedOption);
 
     expect(mockSetForm).toHaveBeenCalledWith({
       ...mockForm,
-      category: 'Hello',
+      tags: ['Kubernetes'],
     });
   });
 
-  it('should set category when a new category is created', async () => {
+  it('should set tag when a new tag is created', async () => {
     await render();
 
     await waitFor(() => {
@@ -136,15 +140,60 @@ describe('CategoryInput', () => {
     });
 
     const autocomplete = screen.getByRole('combobox');
-    const newCategoryMock = 'New Category';
+    const newTagMock = 'New Tag';
 
     await userEvent.click(autocomplete);
-    await userEvent.type(autocomplete, 'New Category');
-    await userEvent.click(screen.getByText(`Create "${newCategoryMock}"`));
+    await userEvent.type(autocomplete, newTagMock);
+    await userEvent.click(screen.getByText(`Create "${newTagMock}"`));
 
     expect(mockSetForm).toHaveBeenCalledWith({
       ...mockForm,
-      category: 'New Category',
+      tags: ['New Tag'],
+    });
+  });
+
+  it('should clear tags when null is selected', async () => {
+    await render();
+
+    await waitFor(() => {
+      screen.getByRole('combobox');
+    });
+
+    const autocomplete = screen.getByRole('combobox');
+
+    await userEvent.click(autocomplete);
+    const option = screen.getByRole('option', { name: tags[0].title });
+    await userEvent.click(option);
+
+    await userEvent.click(autocomplete);
+    await userEvent.clear(autocomplete);
+
+    await userEvent.click(document.body);
+
+    expect(mockSetForm).toHaveBeenCalledWith({
+      ...mockForm,
+      tags: [],
+    });
+  });
+
+  it('should show loading indicator when tags are loading', async () => {
+    jest
+      .spyOn(
+        require('@backstage-community/plugin-announcements-react'),
+        'useTags',
+      )
+      .mockReturnValue({
+        tags: [],
+        loading: true,
+        error: undefined,
+        retry: jest.fn(),
+      });
+
+    await render();
+
+    await waitFor(() => {
+      const circularProgress = screen.getByRole('progressbar');
+      expect(circularProgress).toBeInTheDocument();
     });
   });
 });
