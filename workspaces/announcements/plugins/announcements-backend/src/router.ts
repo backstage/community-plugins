@@ -35,6 +35,8 @@ import {
   EVENTS_ACTION_UPDATE_ANNOUNCEMENT,
   EVENTS_ACTION_CREATE_CATEGORY,
   EVENTS_ACTION_DELETE_CATEGORY,
+  EVENTS_ACTION_CREATE_TAG,
+  EVENTS_ACTION_DELETE_TAG,
 } from '@backstage-community/plugin-announcements-common';
 import { createPermissionIntegrationRouter } from '@backstage/plugin-permission-node';
 import { signalAnnouncement } from './service/signal';
@@ -48,6 +50,7 @@ interface AnnouncementRequest {
   body: string;
   active: boolean;
   start_at: string;
+  tags?: string[];
 }
 
 interface CategoryRequest {
@@ -219,7 +222,16 @@ export async function createRouter(
 
       const {
         params: { id },
-        body: { title, excerpt, body, publisher, category, active, start_at },
+        body: {
+          title,
+          excerpt,
+          body,
+          publisher,
+          category,
+          active,
+          start_at,
+          tags,
+        },
       } = req;
 
       const initialAnnouncement =
@@ -238,6 +250,7 @@ export async function createRouter(
             publisher,
             category,
             active,
+            tags,
             start_at: DateTime.fromISO(start_at),
           },
         });
@@ -319,6 +332,77 @@ export async function createRouter(
             category: req.params.slug,
           },
           metadata: { action: EVENTS_ACTION_DELETE_CATEGORY },
+        });
+      }
+
+      return res.status(204).end();
+    },
+  );
+
+  router.get('/tags', async (_req, res) => {
+    const results = await persistenceContext.tagsStore.tags();
+    return res.json(results);
+  });
+
+  router.post(
+    '/tags',
+    async (req: Request<{}, {}, { title: string }, {}>, res) => {
+      if (!(await isRequestAuthorized(req, announcementCreatePermission))) {
+        throw new NotAllowedError('Unauthorized');
+      }
+
+      const tag = {
+        ...req.body,
+        ...{
+          slug: slugify(req.body.title, {
+            lower: true,
+          }),
+        },
+      };
+
+      await persistenceContext.tagsStore.insert(tag);
+
+      if (events) {
+        events.publish({
+          topic: EVENTS_TOPIC_ANNOUNCEMENTS,
+          eventPayload: {
+            tag: tag.slug,
+          },
+          metadata: { action: EVENTS_ACTION_CREATE_TAG },
+        });
+      }
+
+      return res.status(201).json(tag);
+    },
+  );
+
+  router.delete(
+    '/tags/:slug',
+    async (req: Request<{ slug: string }, {}, {}, {}>, res) => {
+      if (!(await isRequestAuthorized(req, announcementDeletePermission))) {
+        throw new NotAllowedError('Unauthorized');
+      }
+
+      const announcementsByTag =
+        await persistenceContext.announcementsStore.announcements({
+          tags: [req.params.slug],
+        });
+
+      if (announcementsByTag.count) {
+        throw new NotAllowedError(
+          'Tag to delete is used in some announcements',
+        );
+      }
+
+      await persistenceContext.tagsStore.delete(req.params.slug);
+
+      if (events) {
+        events.publish({
+          topic: EVENTS_TOPIC_ANNOUNCEMENTS,
+          eventPayload: {
+            tag: req.params.slug,
+          },
+          metadata: { action: EVENTS_ACTION_DELETE_TAG },
         });
       }
 

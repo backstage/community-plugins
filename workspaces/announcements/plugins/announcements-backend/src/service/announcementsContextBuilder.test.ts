@@ -15,13 +15,13 @@
  */
 import { mockServices } from '@backstage/backend-test-utils';
 import { buildAnnouncementsContext } from './announcementsContextBuilder';
-import { initializePersistenceContext } from './persistence/persistenceContext';
+import { initializePersistenceContext } from './persistence';
 import {
   HttpAuthService,
   PermissionsService,
 } from '@backstage/backend-plugin-api';
 import { EventsService } from '@backstage/plugin-events-node/index';
-import { SignalsService } from '@backstage/plugin-signals-node/index';
+import { SignalsService } from '@backstage/plugin-signals-node';
 
 jest.mock('./persistence/persistenceContext', () => ({
   initializePersistenceContext: jest.fn(),

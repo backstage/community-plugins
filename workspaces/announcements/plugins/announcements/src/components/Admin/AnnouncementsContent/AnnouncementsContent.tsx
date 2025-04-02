@@ -202,6 +202,14 @@ export const AnnouncementsContent = () => {
     },
     {
       title: (
+        <Typography>{t('admin.announcementsContent.table.tags')}</Typography>
+      ),
+      sorting: true,
+      field: 'tags',
+      render: rowData => rowData.tags?.map(tag => tag.title).join(', ') || '',
+    },
+    {
+      title: (
         <Typography>{t('admin.announcementsContent.table.status')}</Typography>
       ),
       sorting: true,

@@ -208,7 +208,7 @@ export const announcementsTranslationRef: TranslationRef<
 // @public
 export type CreateAnnouncementRequest = Omit<
   Announcement,
-  'id' | 'category' | 'created_at'
+  'id' | 'category' | 'tags' | 'created_at'
 > & {
   category?: string;
 };
