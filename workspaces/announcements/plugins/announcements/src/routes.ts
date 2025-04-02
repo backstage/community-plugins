@@ -48,3 +48,9 @@ export const categoriesListRouteRef = createSubRouteRef({
   path: '/categories',
   parent: rootRouteRef,
 });
+
+export const tagsListRouteRef = createSubRouteRef({
+  id: 'announcements/tags',
+  path: '/tags',
+  parent: rootRouteRef,
+});

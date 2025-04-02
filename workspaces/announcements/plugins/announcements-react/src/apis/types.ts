@@ -22,9 +22,10 @@ import { Announcement } from '@backstage-community/plugin-announcements-common';
  */
 export type CreateAnnouncementRequest = Omit<
   Announcement,
-  'id' | 'category' | 'created_at'
+  'id' | 'category' | 'tags' | 'created_at'
 > & {
   category?: string;
+  tags?: string[];
 };
 
 /**
@@ -33,5 +34,14 @@ export type CreateAnnouncementRequest = Omit<
  * @public
  */
 export type CreateCategoryRequest = {
+  title: string;
+};
+
+/**
+ * Request to create a tag
+ *
+ * @public
+ */
+export type CreateTagRequest = {
   title: string;
 };
