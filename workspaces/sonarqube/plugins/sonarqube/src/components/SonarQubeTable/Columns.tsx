@@ -34,6 +34,8 @@ import {
   VulnerabilitiesRatingCard,
 } from '../SonarQubeCard/MetricInsights';
 import { EntityLinkProps, SonarQubeTableRow } from './types';
+import { TranslationFunction } from '@backstage/core-plugin-api/alpha';
+import { sonarqubeTranslationRef } from '../../translation';
 
 const EntityLink = ({
   entityRef,
@@ -79,10 +81,12 @@ const EntityLink = ({
   );
 };
 
-export const getColumns = (): TableColumn<SonarQubeTableRow>[] => {
+export const getColumns = (
+  t: TranslationFunction<typeof sonarqubeTranslationRef.T>,
+): TableColumn<SonarQubeTableRow>[] => {
   return [
     {
-      title: 'Component',
+      title: t('sonarQubeTable.columnsTitle.component'),
       field: 'resolved.name',
       type: 'string',
       highlight: true,
@@ -103,7 +107,7 @@ export const getColumns = (): TableColumn<SonarQubeTableRow>[] => {
           <>
             <EntityLink
               entityRef={`component:default/${resolved?.name}`}
-              title="View Component details"
+              title={t('sonarQubeTable.entityLinkTitle')}
               url={scoreCardComponentUrl}
               kind="component"
               namespace="default"
@@ -113,7 +117,7 @@ export const getColumns = (): TableColumn<SonarQubeTableRow>[] => {
       },
     },
     {
-      title: 'Quality Gate',
+      title: t('sonarQubeTable.columnsTitle.qualityGate'),
       field: 'resolved?.findings?.metrics.alert_status',
       type: 'string',
       align: 'center',
@@ -133,7 +137,7 @@ export const getColumns = (): TableColumn<SonarQubeTableRow>[] => {
       },
     },
     {
-      title: 'Bugs',
+      title: t('sonarQubeTable.columnsTitle.bugs'),
       field: 'resolved.findings.metrics.bugs',
       align: 'center',
       type: 'numeric',
@@ -144,7 +148,7 @@ export const getColumns = (): TableColumn<SonarQubeTableRow>[] => {
         ),
     },
     {
-      title: 'Vulnerabilities',
+      title: t('sonarQubeTable.columnsTitle.vulnerabilities'),
       field: 'resolved.findings.metrics.vulnerabilities',
       align: 'center',
       width: '5%',
@@ -155,7 +159,7 @@ export const getColumns = (): TableColumn<SonarQubeTableRow>[] => {
         ),
     },
     {
-      title: 'Code Smells',
+      title: t('sonarQubeTable.columnsTitle.codeSmells'),
       field: 'resolved.findings.metrics.code_smells',
       align: 'center',
       type: 'numeric',
@@ -166,7 +170,7 @@ export const getColumns = (): TableColumn<SonarQubeTableRow>[] => {
         ),
     },
     {
-      title: 'Hotspots Reviewed',
+      title: t('sonarQubeTable.columnsTitle.hotspotsReviewed'),
       field: 'resolved.findings.metrics.security_hotspots_reviewed',
       align: 'center',
       type: 'numeric',
@@ -177,7 +181,7 @@ export const getColumns = (): TableColumn<SonarQubeTableRow>[] => {
         ),
     },
     {
-      title: 'Coverage',
+      title: t('sonarQubeTable.columnsTitle.coverage'),
       field: 'resolved.findings.metrics.coverage',
       align: 'center',
       type: 'numeric',
@@ -188,7 +192,7 @@ export const getColumns = (): TableColumn<SonarQubeTableRow>[] => {
         ),
     },
     {
-      title: 'Duplications',
+      title: t('sonarQubeTable.columnsTitle.duplications'),
       field: 'resolved.findings.metrics.duplicated_lines_density',
       type: 'numeric',
       width: '10%',
