@@ -20,19 +20,21 @@ import { identityApiRef, useApi } from '@backstage/core-plugin-api';
 import {
   CreateAnnouncementRequest,
   useAnnouncementsTranslation,
+  announcementsApiRef,
 } from '@backstage-community/plugin-announcements-react';
 import { Announcement } from '@backstage-community/plugin-announcements-common';
 import CategoryInput from './CategoryInput';
+import TagsInput from './TagsInput';
 import {
-  TextField,
-  FormGroup,
-  FormControlLabel,
-  Switch,
-  Button,
   Box,
-  Grid,
-  Typography,
+  Button,
   Divider,
+  FormControlLabel,
+  FormGroup,
+  Grid,
+  Switch,
+  TextField,
+  Typography,
 } from '@material-ui/core';
 import SaveAltIcon from '@material-ui/icons/SaveAlt';
 import { DateTime } from 'luxon';
@@ -47,6 +49,7 @@ export const AnnouncementForm = ({
   onSubmit,
 }: AnnouncementFormProps) => {
   const identityApi = useApi(identityApiRef);
+  const announcementsApi = useApi(announcementsApiRef);
   const { t } = useAnnouncementsTranslation();
 
   // Ensure `start_at` is properly formatted as an ISO date string
@@ -58,7 +61,9 @@ export const AnnouncementForm = ({
     ...initialData,
     category: initialData.category?.slug,
     start_at: formattedStartAt || '',
+    tags: initialData.tags?.map(tag => tag.slug) || undefined,
   });
+
   const [loading, setLoading] = useState(false);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -80,11 +85,23 @@ export const AnnouncementForm = ({
     event.preventDefault();
 
     const userIdentity = await identityApi.getBackstageIdentity();
-    const createRequest = {
-      ...form,
-      ...{
-        publisher: userIdentity.userEntityRef,
-      },
+
+    if (form.tags && form.tags.length > 0) {
+      const existingTags = await announcementsApi.tags();
+      const existingSlugs = existingTags.map(tag => tag.slug);
+
+      for (const tagSlug of form.tags) {
+        if (!existingSlugs.includes(tagSlug)) {
+          await announcementsApi.createTag({ title: tagSlug });
+        }
+      }
+    }
+
+    const { id, created_at, ...announcementData } = form;
+
+    const createRequest: CreateAnnouncementRequest = {
+      ...announcementData,
+      publisher: userIdentity.userEntityRef,
     };
 
     await onSubmit(createRequest);
@@ -113,7 +130,7 @@ export const AnnouncementForm = ({
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={4}>
               <CategoryInput
                 setForm={setForm}
                 form={form}
@@ -121,7 +138,11 @@ export const AnnouncementForm = ({
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={4}>
+              <TagsInput setForm={setForm} form={form} />
+            </Grid>
+
+            <Grid item xs={12} sm={4}>
               <TextField
                 variant="outlined"
                 label={t('announcementForm.startAt')}
@@ -172,7 +193,7 @@ export const AnnouncementForm = ({
                   control={
                     <Switch
                       name="active"
-                      checked={form.active}
+                      checked={!!form.active}
                       onChange={handleChangeActive}
                       color="primary"
                     />
