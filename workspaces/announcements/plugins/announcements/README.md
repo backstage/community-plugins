@@ -110,7 +110,7 @@ Example
 
 ### Overriding the AnnouncementsPage
 
-It is possible to specify the Announcements within a specific category rendered on the `AnnouncementsPage`. You can do this by passing a `category` prop to the `AnnouncementsPage` component. The `AnnouncementsPage` prop accepts an value such as:
+It is possible to specify the Announcements within a specific category or tags rendered on the `AnnouncementsPage`. You can do this by passing a `category` or `tags` prop to the `AnnouncementsPage` component. The `AnnouncementsPage` prop accepts a value such as:
 
 ```ts
 category = 'conferences';

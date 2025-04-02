@@ -57,8 +57,29 @@ export const EVENTS_ACTION_CREATE_CATEGORY = 'create_category';
 export const EVENTS_ACTION_DELETE_CATEGORY = 'delete_category';
 
 /**
+ * Event action for creating a tag
+ *
+ * @public
+ */
+export const EVENTS_ACTION_CREATE_TAG = 'create-tag';
+
+/**
+ * Event action for deleting a tag
+ *
+ * @public
+ */
+export const EVENTS_ACTION_DELETE_TAG = 'delete-tag';
+
+/**
  * Channel name for new announcement signals
  *
  * @public
  */
 export const SIGNALS_CHANNEL_ANNOUNCEMENTS = 'announcements:new';
+
+/**
+ * Maximum length for announcement tag title
+ *
+ * @public
+ */
+export const MAX_TITLE_TAG_LENGTH = 100;
