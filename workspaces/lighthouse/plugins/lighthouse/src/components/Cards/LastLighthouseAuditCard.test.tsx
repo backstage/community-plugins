@@ -57,7 +57,7 @@ describe('<LastLighthouseAuditCard />', () => {
     },
     spec: {
       owner: 'guest',
-      type: 'web',
+      type: 'Website',
       lifecycle: 'development',
     },
   };
