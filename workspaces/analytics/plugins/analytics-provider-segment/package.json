@@ -55,7 +55,6 @@
     "@backstage/dev-utils": "^1.1.8",
     "@backstage/test-utils": "^1.7.6",
     "@redhat-developer/red-hat-developer-hub-theme": "0.4.0",
-    "@spotify/prettier-config": "^15.0.0",
     "@testing-library/dom": "9.3.4",
     "@testing-library/jest-dom": "6.6.3",
     "@testing-library/react": "14.3.1",
