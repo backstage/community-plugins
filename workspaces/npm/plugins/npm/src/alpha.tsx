@@ -14,15 +14,46 @@
  * limitations under the License.
  */
 import React from 'react';
-import { createFrontendPlugin } from '@backstage/frontend-plugin-api';
+
+import {
+  ApiBlueprint,
+  createApiFactory,
+  createFrontendPlugin,
+  discoveryApiRef,
+  fetchApiRef,
+} from '@backstage/frontend-plugin-api';
 import {
   EntityCardBlueprint,
   EntityContentBlueprint,
 } from '@backstage/plugin-catalog-react/alpha';
-
 import { isNpmAvailable } from '@backstage-community/plugin-npm-common';
 
+import { NpmBackendApiRef, NpmBackendClient } from './api';
+
 export { isNpmAvailable } from '@backstage-community/plugin-npm-common';
+
+/**
+ * An API to communicate via the proxy to an ACR container registry.
+ *
+ * @alpha
+ */
+export const npmBackendApi = ApiBlueprint.make({
+  name: 'npmBackendApi',
+  params: {
+    factory: createApiFactory({
+      api: NpmBackendApiRef,
+      deps: {
+        discoveryApi: discoveryApiRef,
+        fetchApi: fetchApiRef,
+      },
+      factory: ({ discoveryApi, fetchApi }) =>
+        new NpmBackendClient({
+          discoveryApi,
+          fetchApi,
+        }),
+    }),
+  },
+});
 
 /**
  * Card for the catalog (entity page) that shows the npm
@@ -85,8 +116,9 @@ export const entityNpmReleaseTableCard: any = EntityContentBlueprint.make({
  * @alpha
  */
 export default createFrontendPlugin({
-  id: 'cicd-statistics',
+  id: 'npm',
   extensions: [
+    npmBackendApi,
     entityNpmReleaseTableCard,
     entityNpmInfoCard,
     entityNpmReleaseOverviewCard,
