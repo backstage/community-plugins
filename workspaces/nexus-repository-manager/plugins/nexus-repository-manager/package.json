@@ -26,7 +26,7 @@
     "lint": "backstage-cli package lint",
     "postpack": "backstage-cli package postpack",
     "prepack": "backstage-cli package prepack",
-    "start": "backstage-cli package start",
+    "start": "backstage-cli package start --config ./app-config.example.yaml",
     "test": "backstage-cli package test --passWithNoTests --coverage",
     "tsc": "tsc"
   },
@@ -47,10 +47,10 @@
     "react-router-dom": "^6.0.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.29.6",
-    "@backstage/core-app-api": "^1.15.4",
-    "@backstage/dev-utils": "^1.1.6",
-    "@backstage/test-utils": "^1.7.4",
+    "@backstage/cli": "^0.30.0",
+    "@backstage/core-app-api": "^1.15.5",
+    "@backstage/dev-utils": "^1.1.7",
+    "@backstage/test-utils": "^1.7.5",
     "@hey-api/openapi-ts": "0.55.3",
     "@redhat-developer/red-hat-developer-hub-theme": "0.4.0",
     "@testing-library/jest-dom": "6.6.3",
