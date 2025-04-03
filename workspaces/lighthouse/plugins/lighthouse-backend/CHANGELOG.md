@@ -1,5 +1,11 @@
 # @backstage-community/plugin-lighthouse-backend
 
+## 0.9.1
+
+### Patch Changes
+
+- 22816cf: remove filter for spectype
+
 ## 0.9.0
 
 ### Minor Changes
