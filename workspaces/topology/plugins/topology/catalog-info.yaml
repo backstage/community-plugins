@@ -6,7 +6,7 @@ metadata:
   title: Topology plugin
   description: Topology plugin for Backstage
   annotations:
-    backstage.io/source-location: url:https://github.com/backstage/community-plugins/tree/main/workspaces/topology/plugins/topology-common
+    backstage.io/source-location: url:https://github.com/backstage/community-plugins/tree/main/workspaces/topology/plugins/topology
     backstage.io/view-url: https://github.com/backstage/community-plugins/blob/main/workspaces/topology/plugins/topology/catalog-info.yaml
     backstage.io/edit-url: https://github.com/backstage/community-plugins/edit/main/workspaces/topology/plugins/topology/catalog-info.yaml
     github.com/project-slug: backstage/community-plugins

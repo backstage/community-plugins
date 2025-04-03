@@ -60,7 +60,7 @@ export const acrApi = ApiBlueprint.make({
  *
  * @alpha
  */
-export const acrImagesEntityContent = EntityContentBlueprint.make({
+export const acrImagesEntityContent: any = EntityContentBlueprint.make({
   name: 'acrImagesEntityContent',
   params: {
     defaultPath: 'acr-images',

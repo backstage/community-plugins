@@ -1,5 +1,20 @@
 ### Dependencies
 
+## 6.0.1
+
+### Patch Changes
+
+- f84ad73: chore: remove homepage field from package.json
+- Updated dependencies [f84ad73]
+  - @backstage-community/plugin-rbac-common@1.14.1
+  - @backstage-community/plugin-rbac-node@1.10.1
+
+## 6.0.0
+
+### Major Changes
+
+- 9cccb0d: **BREAKING**: Migration to the core Auditor service. The Auditor format has been updated. Audit fields and event names (ids) have been updated to conform with the new Auditor service conventions. Filtering queries based on the old format may no longer work.
+
 ## 5.6.1
 
 ### Patch Changes

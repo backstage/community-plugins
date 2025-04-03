@@ -1,5 +1,26 @@
 ### Dependencies
 
+## 1.39.3
+
+### Patch Changes
+
+- f84ad73: chore: remove homepage field from package.json
+- Updated dependencies [f84ad73]
+  - @backstage-community/plugin-rbac-common@1.14.1
+
+## 1.39.2
+
+### Patch Changes
+
+- c31699d: Updated dependency `@playwright/test` to `1.51.1`.
+- f16f56e: Updated dependency `start-server-and-test` to `2.0.11`.
+
+## 1.39.1
+
+### Patch Changes
+
+- 85541c1: RBACApiRef should be exposed to support simulation / customization based on use-cases and to mock API implementation for feature testing. #2872
+
 ## 1.39.0
 
 ### Minor Changes

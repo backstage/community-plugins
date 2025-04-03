@@ -82,4 +82,12 @@ export interface AzureDevOpsApi {
   ): Promise<{ items: BuildRun[] }>;
 
   getReadme(opts: ReadmeConfig): Promise<Readme>;
+
+  getBuildRunLog(
+    projectName: string,
+    entityRef: string,
+    buildId: number,
+    host?: string,
+    org?: string,
+  ): Promise<{ log: string[] }>;
 }

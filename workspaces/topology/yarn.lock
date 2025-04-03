@@ -2782,20 +2782,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage-community/plugin-topology-common@workspace:^, @backstage-community/plugin-topology-common@workspace:plugins/topology-common":
-  version: 0.0.0-use.local
-  resolution: "@backstage-community/plugin-topology-common@workspace:plugins/topology-common"
-  dependencies:
-    "@backstage/cli": "npm:^0.30.0"
-    "@backstage/plugin-permission-common": "npm:^0.8.4"
-  languageName: unknown
-  linkType: soft
-
 "@backstage-community/plugin-topology@workspace:^, @backstage-community/plugin-topology@workspace:plugins/topology":
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-topology@workspace:plugins/topology"
   dependencies:
-    "@backstage-community/plugin-topology-common": "workspace:^"
     "@backstage/catalog-model": "npm:^1.7.3"
     "@backstage/cli": "npm:^0.30.0"
     "@backstage/core-app-api": "npm:^1.15.5"
@@ -2803,7 +2793,6 @@ __metadata:
     "@backstage/core-plugin-api": "npm:^1.10.4"
     "@backstage/dev-utils": "npm:^1.1.7"
     "@backstage/plugin-catalog-react": "npm:^1.15.2"
-    "@backstage/plugin-kubernetes": "npm:^0.12.4"
     "@backstage/plugin-kubernetes-common": "npm:^0.9.3"
     "@backstage/plugin-kubernetes-react": "npm:^0.5.4"
     "@backstage/plugin-permission-common": "npm:^0.8.4"
@@ -2828,7 +2817,6 @@ __metadata:
     "@testing-library/react-hooks": "npm:8.0.1"
     "@testing-library/user-event": "npm:14.6.1"
     "@types/git-url-parse": "npm:9.0.3"
-    "@types/node": "npm:18.19.68"
     "@types/react": "npm:^18.3.11"
     classnames: "npm:2.x"
     cross-fetch: "npm:4.0.0"
@@ -13722,19 +13710,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:18.19.68, @types/node@npm:^18.11.18, @types/node@npm:^18.11.9":
+"@types/node@npm:^12.7.1":
+  version: 12.20.55
+  resolution: "@types/node@npm:12.20.55"
+  checksum: 10/1f916a06fff02faadb09a16ed6e31820ce170798b202ef0b14fc244bfbd721938c54a3a99836e185e4414ca461fe96c5bb5c67c3d248f153555b7e6347f061dd
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:^18.11.18, @types/node@npm:^18.11.9":
   version: 18.19.68
   resolution: "@types/node@npm:18.19.68"
   dependencies:
     undici-types: "npm:~5.26.4"
   checksum: 10/024a4a8eeca21c0d1eaa575036dbc44528eae180821de71b77868ddc24d18032b988582046db4f7ea2643970a5169d790e1884153472145de07d629bc2ce2ec6
-  languageName: node
-  linkType: hard
-
-"@types/node@npm:^12.7.1":
-  version: 12.20.55
-  resolution: "@types/node@npm:12.20.55"
-  checksum: 10/1f916a06fff02faadb09a16ed6e31820ce170798b202ef0b14fc244bfbd721938c54a3a99836e185e4414ca461fe96c5bb5c67c3d248f153555b7e6347f061dd
   languageName: node
   linkType: hard
 

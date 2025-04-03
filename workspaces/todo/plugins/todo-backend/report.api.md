@@ -7,14 +7,10 @@ import { BackendFeature } from '@backstage/backend-plugin-api';
 import { CatalogApi } from '@backstage/catalog-client';
 import { CompoundEntityRef } from '@backstage/catalog-model';
 import { Config } from '@backstage/config';
-import express from 'express';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { ScmIntegrations } from '@backstage/integration';
 import { ServiceRef } from '@backstage/backend-plugin-api';
 import { UrlReaderService } from '@backstage/backend-plugin-api';
-
-// @public @deprecated (undocumented)
-export function createRouter(options: RouterOptions): Promise<express.Router>;
 
 // @public (undocumented)
 export function createTodoParser(options?: TodoParserOptions): TodoParser;
@@ -51,12 +47,6 @@ export type ReadTodosOptions = {
 export type ReadTodosResult = {
   items: TodoItem[];
 };
-
-// @public @deprecated (undocumented)
-export interface RouterOptions {
-  // (undocumented)
-  todoService: TodoService;
-}
 
 // @public (undocumented)
 export type TodoItem = {

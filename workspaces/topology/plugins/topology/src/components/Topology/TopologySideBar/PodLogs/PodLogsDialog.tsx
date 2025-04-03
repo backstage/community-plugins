@@ -16,6 +16,8 @@
 import React, { useState } from 'react';
 
 import { ErrorBoundary } from '@backstage/core-components';
+import { RequirePermission } from '@backstage/plugin-permission-react';
+import { kubernetesProxyPermission } from '@backstage/plugin-kubernetes-common';
 
 import { V1Pod } from '@kubernetes/client-node';
 import Box from '@mui/material/Box';
@@ -33,6 +35,7 @@ import { ContainerSelector } from './ContainerSelector';
 import { PodLogs } from './PodLogs';
 import PodLogsDownload from './PodLogsDownload';
 import { ContainerScope } from './types';
+import { MissingPermissionPage } from '../../permissions/MissingPermissionPage';
 
 type PodLogsDialogProps = {
   podData: V1Pod;
@@ -115,13 +118,24 @@ const ViewLogs = ({ podData, onClose }: ViewLogsProps) => {
         </Box>
       </DialogTitle>
       <DialogContent>
-        <ErrorBoundary>
-          <PodLogs
-            podScope={podScope}
-            setLogText={setLogText}
-            stopPolling={stopPolling}
-          />
-        </ErrorBoundary>
+        <RequirePermission
+          permission={kubernetesProxyPermission}
+          errorPage={
+            <Box pb={3}>
+              <MissingPermissionPage
+                permissions={[kubernetesProxyPermission]}
+              />
+            </Box>
+          }
+        >
+          <ErrorBoundary>
+            <PodLogs
+              podScope={podScope}
+              setLogText={setLogText}
+              stopPolling={stopPolling}
+            />
+          </ErrorBoundary>
+        </RequirePermission>
       </DialogContent>
     </Dialog>
   );

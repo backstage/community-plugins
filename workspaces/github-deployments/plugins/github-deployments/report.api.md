@@ -9,11 +9,12 @@ import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
 import { JSX as JSX_2 } from 'react';
 import { default as React_2 } from 'react';
-import { TableColumn } from '@backstage/core-components/index';
+import { TableColumn } from '@backstage/core-components/*';
 import { TableColumn as TableColumn_2 } from '@backstage/core-components';
 
 // @public (undocumented)
 export const EntityGithubDeploymentsCard: (props: {
+  environments?: string[] | undefined;
   last?: number | undefined;
   lastStatuses?: number | undefined;
   columns?: TableColumn<GithubDeployment>[] | undefined;

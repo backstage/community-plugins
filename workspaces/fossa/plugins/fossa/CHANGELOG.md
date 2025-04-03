@@ -1,5 +1,11 @@
 # @backstage-community/plugin-fossa
 
+## 0.5.0
+
+### Minor Changes
+
+- 3aa5d96: Backstage version bump to v1.37.0
+
 ## 0.4.0
 
 ### Minor Changes

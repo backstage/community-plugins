@@ -40,6 +40,12 @@ import { BackstageRoleManager } from '../role-manager/role-manager';
 import { EnforcerDelegate } from '../service/enforcer-delegate';
 import { MODEL } from '../service/permission-model';
 import { Connection, connectRBACProviders } from './connect-providers';
+import { mockAuditorService } from '../../__fixtures__/mock-utils';
+import {
+  clearAuditorMock,
+  expectAuditorLog,
+} from '../../__fixtures__/auditor-test-utils';
+import { ActionType, PermissionEvents } from '../auditor/auditor';
 
 const mockLoggerService = mockServices.logger.mock();
 
@@ -97,12 +103,6 @@ const roleMetadataStorageMock: RoleMetadataStorage = {
   createRoleMetadata: jest.fn().mockImplementation(),
   updateRoleMetadata: jest.fn().mockImplementation(),
   removeRoleMetadata: jest.fn().mockImplementation(),
-};
-
-const auditLoggerMock = {
-  getActorId: jest.fn().mockImplementation(),
-  createAuditLogDetails: jest.fn().mockImplementation(),
-  auditLog: jest.fn().mockImplementation(() => Promise.resolve()),
 };
 
 // TODO: Move to 'catalogServiceMock' from '@backstage/plugin-catalog-node/testUtils'
@@ -186,7 +186,7 @@ describe('Connection', () => {
 
     enforcerDelegate = new EnforcerDelegate(
       enf,
-      auditLoggerMock,
+      mockAuditorService,
       roleMetadataStorageMock,
       knex,
     );
@@ -208,8 +208,10 @@ describe('Connection', () => {
       enforcerDelegate,
       roleMetadataStorageMock,
       mockLoggerService,
-      auditLoggerMock,
+      mockAuditorService,
     );
+
+    clearAuditorMock();
   });
 
   it('should initialize', () => {
@@ -288,6 +290,7 @@ describe('Connection', () => {
       expect(enfRemoveGroupingPolicySpy).toHaveBeenCalledWith(
         roleToBeRemoved,
         roleMetaToBeRemoved,
+        false,
       );
     });
 
@@ -332,6 +335,7 @@ describe('Connection', () => {
         1,
         roleToBeRemoved,
         roleMetaToBeRemoved,
+        false,
       );
       expect(enfRemoveGroupingPolicySpy).toHaveBeenNthCalledWith(
         2,
@@ -434,32 +438,58 @@ describe('Connection', () => {
       expect(enfRemovePolicySpy).toHaveBeenCalledWith(...existingPolicy);
     });
 
-    it('should log an error for an invalid permission', async () => {
+    it('should audit log an error for an invalid permission', async () => {
       enfAddPolicySpy = jest.spyOn(enforcerDelegate, 'addPolicy');
 
       const policies = [
+        ...existingPolicy,
         ['role:default/provider-role', 'catalog-entity', 'read', 'temp'],
       ];
 
       await provider.applyPermissions(policies);
-      expect(mockLoggerService.warn).toHaveBeenCalledWith(
-        `Invalid permission policy, Error: 'effect' has invalid value: 'temp'. It should be: 'allow' or 'deny'`,
-      );
+      expectAuditorLog([
+        {
+          event: {
+            eventId: PermissionEvents.POLICY_WRITE,
+            meta: { actionType: ActionType.CREATE, source: 'test' },
+          },
+          fail: {
+            error: new Error(
+              `'effect' has invalid value: 'temp'. It should be: 'allow' or 'deny'`,
+            ),
+            meta: {
+              policies: [policies[1]],
+            },
+          },
+        },
+      ]);
     });
 
-    it('should log an error for an invalid permission by source', async () => {
+    it('should audit log an error for an invalid permission by source', async () => {
       enfAddPolicySpy = jest.spyOn(enforcerDelegate, 'addPolicy');
 
       const policies = [
+        ...existingPolicy,
         ['role:default/csv-role', 'catalog-entity', 'read', 'allow'],
       ];
 
       await provider.applyPermissions(policies);
-      expect(mockLoggerService.warn).toHaveBeenCalledWith(
-        `Unable to add policy ${policies[0].toString()}. Cause: source does not match originating role ${
-          policies[0][0]
-        }, consider making changes to the 'CSV-FILE'`,
-      );
+      expectAuditorLog([
+        {
+          event: {
+            eventId: PermissionEvents.POLICY_WRITE,
+            meta: { actionType: ActionType.CREATE, source: 'test' },
+          },
+          fail: {
+            error: new Error(
+              `source does not match originating role role:default/csv-role, consider making changes to the 'CSV-FILE'`,
+            ),
+            meta: {
+              policies: [policies[1]],
+            },
+          },
+        },
+      ]);
     });
 
     it('should still add new permission, even if there is an invalid permission in array', () => {
@@ -489,7 +519,7 @@ describe('connectRBACProviders', () => {
 
     const enforcerDelegate = new EnforcerDelegate(
       enf,
-      auditLoggerMock,
+      mockAuditorService,
       roleMetadataStorageMock,
       knex,
     );
@@ -499,7 +529,7 @@ describe('connectRBACProviders', () => {
       enforcerDelegate,
       roleMetadataStorageMock,
       mockLoggerService,
-      auditLoggerMock,
+      mockAuditorService,
     );
 
     expect(connectSpy).toHaveBeenCalled();

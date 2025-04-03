@@ -21,7 +21,8 @@ export function createBlackduckProjectAction(
     versionDistribution?: string | undefined;
     instanceName?: string | undefined;
   },
-  JsonObject
+  JsonObject,
+  'v1'
 >;
 
 // @public (undocumented)

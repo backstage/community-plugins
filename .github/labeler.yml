@@ -1,0 +1,302 @@
+workspace/3scale:
+  - "Workspace\\s*3scale"
+
+workspace/acr:
+  - "Workspace\\s*acr"
+
+workspace/acs:
+  - "Workspace\\s*acs"
+
+workspace/adr:
+  - "Workspace\\s*adr"
+
+workspace/airbrake:
+  - "Workspace\\s*airbrake"
+
+workspace/allure:
+  - "Workspace\\s*allure"
+
+workspace/amplication:
+  - "Workspace\\s*amplication"
+
+workspace/analytics:
+  - "Workspace\\s*analytics"
+
+workspace/announcements:
+  - "Workspace\\s*announcements"
+
+workspace/apache-airflow:
+  - "Workspace\\s*apache-airflow"
+
+workspace/apollo-explorer:
+  - "Workspace\\s*apollo-explorer"
+
+workspace/azure-devops:
+  - "Workspace\\s*azure-devops"
+
+workspace/azure-resources:
+  - "Workspace\\s*azure-resources"
+
+workspace/azure-sites:
+  - "Workspace\\s*azure-sites"
+
+workspace/azure-storage-explorer:
+  - "Workspace\\s*azure-storage-explorer"
+
+workspace/badges:
+  - "Workspace\\s*badges"
+
+workspace/bazaar:
+  - "Workspace\\s*bazaar"
+
+workspace/bitrise:
+  - "Workspace\\s*bitrise"
+
+workspace/blackduck:
+  - "Workspace\\s*blackduck"
+
+workspace/cicd-statistics:
+  - "Workspace\\s*cicd-statistics"
+
+workspace/cloudbuild:
+  - "Workspace\\s*cloudbuild"
+
+workspace/code-climate:
+  - "Workspace\\s*code-climate"
+
+workspace/code-coverage:
+  - "Workspace\\s*code-coverage"
+
+workspace/codescene:
+  - "Workspace\\s*codescene"
+
+workspace/confluence:
+  - "Workspace\\s*confluence"
+
+workspace/copilot:
+  - "Workspace\\s*copilot"
+
+workspace/cost-insights:
+  - "Workspace\\s*cost-insights"
+
+workspace/dynatrace:
+  - "Workspace\\s*dynatrace"
+
+workspace/entity-feedback:
+  - "Workspace\\s*entity-feedback"
+
+workspace/entity-validation:
+  - "Workspace\\s*entity-validation"
+
+workspace/explore:
+  - "Workspace\\s*explore"
+
+workspace/feedback:
+  - "Workspace\\s*feedback"
+
+workspace/firehydrant:
+  - "Workspace\\s*firehydrant"
+
+workspace/fossa:
+  - "Workspace\\s*fossa"
+
+workspace/gcalendar:
+  - "Workspace\\s*gcalendar"
+
+workspace/gcp-projects:
+  - "Workspace\\s*gcp-projects"
+
+workspace/git-release-manager:
+  - "Workspace\\s*git-release-manager"
+
+workspace/github-actions:
+  - "Workspace\\s*github-actions"
+
+workspace/github-deployments:
+  - "Workspace\\s*github-deployments"
+
+workspace/github-discussions:
+  - "Workspace\\s*github-discussions"
+
+workspace/github-issues:
+  - "Workspace\\s*github-issues"
+
+workspace/github-pull-requests-board:
+  - "Workspace\\s*github-pull-requests-board"
+
+workspace/gitops-profiles:
+  - "Workspace\\s*gitops-profiles"
+
+workspace/gocd:
+  - "Workspace\\s*gocd"
+
+workspace/grafana:
+  - "Workspace\\s*grafana"
+
+workspace/graphiql:
+  - "Workspace\\s*graphiql"
+
+workspace/graphql-voyager:
+  - "Workspace\\s*graphql-voyager"
+
+workspace/ilert:
+  - "Workspace\\s*ilert"
+
+workspace/jaeger:
+  - "Workspace\\s*jaeger"
+
+workspace/jenkins:
+  - "Workspace\\s*jenkins"
+
+workspace/jfrog-artifactory:
+  - "Workspace\\s*jfrog-artifactory"
+
+workspace/kafka:
+  - "Workspace\\s*kafka"
+
+workspace/keycloak:
+  - "Workspace\\s*keycloak"
+
+workspace/kiali:
+  - "Workspace\\s*kiali"
+
+workspace/lighthouse:
+  - "Workspace\\s*lighthouse"
+
+workspace/linguist:
+  - "Workspace\\s*linguist"
+
+workspace/linkerd:
+  - "Workspace\\s*linkerd"
+
+workspace/manage:
+  - "Workspace\\s*manage"
+
+workspace/matomo:
+  - "Workspace\\s*matomo"
+
+workspace/mend:
+  - "Workspace\\s*mend"
+
+workspace/microsoft-calendar:
+  - "Workspace\\s*microsoft-calendar"
+
+workspace/mta:
+  - "Workspace\\s*mta"
+
+workspace/multi-source-security-viewer:
+  - "Workspace\\s*multi-source-security-viewer"
+
+workspace/newrelic:
+  - "Workspace\\s*newrelic"
+
+workspace/nexus-repository-manager:
+  - "Workspace\\s*nexus-repository-manager"
+
+workspace/nomad:
+  - "Workspace\\s*nomad"
+
+workspace/npm:
+  - "Workspace\\s*npm"
+
+workspace/ocm:
+  - "Workspace\\s*ocm"
+
+workspace/octopus-deploy:
+  - "Workspace\\s*octopus-deploy"
+
+workspace/odo:
+  - "Workspace\\s*odo"
+
+workspace/opencost:
+  - "Workspace\\s*opencost"
+
+workspace/periskop:
+  - "Workspace\\s*periskop"
+
+workspace/pingidentity:
+  - "Workspace\\s*pingidentity"
+
+workspace/playlist:
+  - "Workspace\\s*playlist"
+
+workspace/puppetdb:
+  - "Workspace\\s*puppetdb"
+
+workspace/quay:
+  - "Workspace\\s*quay"
+
+workspace/rbac:
+  - "Workspace\\s*rbac"
+
+workspace/redhat-argocd:
+  - "Workspace\\s*redhat-argocd"
+
+workspace/redhat-resource-optimization:
+  - "Workspace\\s*redhat-resource-optimization"
+
+workspace/report-portal:
+  - "Workspace\\s*report-portal"
+
+workspace/rollbar:
+  - "Workspace\\s*rollbar"
+
+workspace/scaffolder-backend-module-annotator:
+  - "Workspace\\s*scaffolder-backend-module-annotator"
+
+workspace/scaffolder-backend-module-kubernetes:
+  - "Workspace\\s*scaffolder-backend-module-kubernetes"
+
+workspace/scaffolder-backend-module-regex:
+  - "Workspace\\s*scaffolder-backend-module-regex"
+
+workspace/scaffolder-backend-module-servicenow:
+  - "Workspace\\s*scaffolder-backend-module-servicenow"
+
+workspace/scaffolder-backend-module-sonarqube:
+  - "Workspace\\s*scaffolder-backend-module-sonarqube"
+
+workspace/scaffolder-relation-processor:
+  - "Workspace\\s*scaffolder-relation-processor"
+
+workspace/sentry:
+  - "Workspace\\s*sentry"
+
+workspace/shortcuts:
+  - "Workspace\\s*shortcuts"
+
+workspace/sonarqube:
+  - "Workspace\\s*sonarqube"
+
+workspace/splunk:
+  - "Workspace\\s*splunk"
+
+workspace/stack-overflow:
+  - "Workspace\\s*stack-overflow"
+
+workspace/stackstorm:
+  - "Workspace\\s*stackstorm"
+
+workspace/tech-insights:
+  - "Workspace\\s*tech-insights"
+
+workspace/tech-radar:
+  - "Workspace\\s*tech-radar"
+
+workspace/tekton:
+  - "Workspace\\s*tekton"
+
+workspace/todo:
+  - "Workspace\\s*todo"
+
+workspace/topology:
+  - "Workspace\\s*topology"
+
+workspace/vault:
+  - "Workspace\\s*vault"
+
+workspace/xcmetrics:
+  - "Workspace\\s*xcmetrics"
+
+needs-triaging:
+  - "Workspace\\s*Select a workspace..."

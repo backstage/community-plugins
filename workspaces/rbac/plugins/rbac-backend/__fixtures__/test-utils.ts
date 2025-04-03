@@ -35,7 +35,7 @@ import { EnforcerDelegate } from '../src/service/enforcer-delegate';
 import { MODEL } from '../src/service/permission-model';
 import { PluginPermissionMetadataCollector } from '../src/service/plugin-endpoints';
 import {
-  auditLoggerMock,
+  mockAuditorService,
   catalogApiMock,
   conditionalStorageMock,
   csvPermFile,
@@ -44,6 +44,7 @@ import {
   pluginMetadataCollectorMock,
   roleMetadataStorageMock,
 } from './mock-utils';
+import { clearAuditorMock } from './auditor-test-utils';
 
 export function newConfig(
   permFile?: string,
@@ -134,7 +135,7 @@ export async function newEnforcerDelegate(
 
   return new EnforcerDelegate(
     enf,
-    auditLoggerMock,
+    mockAuditorService,
     roleMetadataStorageMock,
     mockClientKnex,
   );
@@ -148,7 +149,7 @@ export async function newPermissionPolicy(
   const logger = mockServices.logger.mock();
   const permissionPolicy = await RBACPermissionPolicy.build(
     logger,
-    auditLoggerMock,
+    mockAuditorService,
     config,
     conditionalStorageMock,
     enfDelegate,
@@ -157,6 +158,6 @@ export async function newPermissionPolicy(
     pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
     mockAuthService,
   );
-  (auditLoggerMock.auditLog as jest.Mock).mockReset();
+  clearAuditorMock();
   return permissionPolicy;
 }

@@ -38,7 +38,7 @@ export const app = createApp({
   features: [
     catalogPlugin,
     catalogImportPlugin,
-    userSettingsPlugin,
+    userSettingsPlugin as any,
     acrPlugin,
     createFrontendModule({
       pluginId: 'app',

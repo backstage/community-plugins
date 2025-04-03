@@ -16,16 +16,19 @@
 
 import { MetricsType } from '@backstage-community/plugin-copilot-common';
 import { useEffect, useState } from 'react';
-import { mappingRoutes } from '../utils';
+import { findMetricsTypeFromPath } from '../utils';
 
 export function useSetMetricsTypeFromRoute(): MetricsType | undefined {
   const [type, setType] = useState<MetricsType>();
 
   useEffect(() => {
-    if (!mappingRoutes[window.location.pathname])
-      throw Error('Mapping not implemented');
+    const metricsType = findMetricsTypeFromPath(window.location.pathname);
 
-    setType(mappingRoutes[window.location.pathname]);
+    if (!metricsType) {
+      throw Error('Mapping not implemented for this route');
+    }
+
+    setType(metricsType);
   }, []);
 
   return type;

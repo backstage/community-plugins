@@ -18,6 +18,82 @@ Install the `@backstage-community/plugin-badges-backend` package in your backend
 yarn --cwd packages/backend add @backstage-community/plugin-badges-backend
 ```
 
+In your `packages/backend/src/index.ts` make the following changes:
+
+```diff
+  import { createBackend } from '@backstage/backend-defaults';
+
+  const backend = createBackend();
+
+  // ... other feature additions
+
++ backend.add(import('@backstage-community/plugin-badges-backend'));
+
+  backend.start();
+```
+
+## Customization
+
+### Badge builder
+
+Badges are created by classes implementing the `BadgeBuilder` type. The default
+badge builder uses badge factories to turn a `BadgeContext` into a `Badge` spec
+for the `badge-maker` to create the SVG image.
+
+### Default badges
+
+A set of default badge factories are defined in
+[badges.ts](https://github.com/backstage/community-plugins/tree/main/workspaces/badges/plugins/badges-backend/src/badges.ts)
+as examples.
+
+Additional badges may be provided in your application by defining custom badge
+factories, and provide them to the badge builder.
+
+In your `packages/backend/src/index.ts` file, you can provide custom badge:
+
+```diff
+
++ import { createBackendModule } from '@backstage/backend-plugin-api';
++ import { badgeBuildersExtensionPoint } from '@backstage-community/plugin-badges-backend';
+
++ const badgeModule = createBackendModule({
++   pluginId: 'badges',
++   moduleId: 'custom-builders',
++   register(env) {
++     env.registerInit({
++       deps: {
++         badges: badgeBuildersExtensionPoint,
++       },
++       async init({ badges }) {
++         // Optional: Add your custom class implementing BadgeBuilder here
++         badges.setBadgeBuilder(myBuilder);
++         // Optional: Add your custom badge factories here
++         badges.setBadgeFactories({
++           <custom-badge-id>: {
++             createBadge(context) {
++               // ...
++               return {
++                 label: 'my-badge',
++                 message: 'custom stuff',
++                 // ...
++               };
++             },
++           },
++           // Optional: include the default badges
++           // ...createDefaultBadgeFactories(),
++         });
++         // Optional: Add your custom class implementing BadgesStore here
++         badges.setBadgeStore();
++       },
++     });
++   },
++ });
+
++ backend.add(badgeModule);
+```
+
+## Legacy Backend System
+
 Add the plugin using the following default setup for
 `src/plugins/badges.ts`:
 
@@ -75,39 +151,6 @@ const createEnv = makeCreateEnv(config);
   ...
   apiRouter.use(notFoundHandler());
 ```
-
-### New Backend System
-
-The Badges backend plugin has support for the [new backend system](https://backstage.io/docs/backend-system/), here's how you can set that up:
-
-In your `packages/backend/src/index.ts` make the following changes:
-
-```diff
-  import { createBackend } from '@backstage/backend-defaults';
-
-  const backend = createBackend();
-
-  // ... other feature additions
-
-+ backend.add(import('@backstage-community/plugin-badges-backend'));
-
-  backend.start();
-```
-
-## Badge builder
-
-Badges are created by classes implementing the `BadgeBuilder` type. The default
-badge builder uses badge factories to turn a `BadgeContext` into a `Badge` spec
-for the `badge-maker` to create the SVG image.
-
-### Default badges
-
-A set of default badge factories are defined in
-[badges.ts](https://github.com/backstage/backstage/tree/master/plugins/badges-backend/src/badges.ts)
-as examples.
-
-Additional badges may be provided in your application by defining custom badge
-factories, and provide them to the badge builder.
 
 ### Custom badges
 
@@ -191,5 +234,5 @@ GET /badge/entity/:entityUuid/badge-specs?style=flat&color=blue
 
 ## Links
 
-- [Frontend part of the plugin](https://github.com/backstage/backstage/tree/master/plugins/badges)
+- [Frontend part of the plugin](https://github.com/backstage/community-plugins/tree/main/workspaces/badges/plugins/badges)
 - [The Backstage homepage](https://backstage.io)

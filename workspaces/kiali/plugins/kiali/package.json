@@ -75,7 +75,7 @@
     "@backstage/cli": "^0.29.5",
     "@backstage/dev-utils": "^1.1.6",
     "@backstage/test-utils": "^1.7.4",
-    "@playwright/test": "1.51.0",
+    "@playwright/test": "1.51.1",
     "@redhat-developer/red-hat-developer-hub-theme": "0.4.0",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
@@ -92,7 +92,7 @@
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-router-dom": "^6.0.0",
-    "start-server-and-test": "2.0.10"
+    "start-server-and-test": "2.0.11"
   },
   "files": [
     "dist",
@@ -109,7 +109,6 @@
     "backstage",
     "plugin"
   ],
-  "homepage": "https://red.ht/rhdh",
   "bugs": "https://github.com/backstage/community-plugins/issues",
   "maintainers": [
     "@aljesusg"

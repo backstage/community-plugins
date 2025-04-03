@@ -15,6 +15,7 @@ body:
         - Select a workspace...
         - 3scale
         - acr
+        - acs
         - adr
         - airbrake
         - allure
@@ -74,6 +75,7 @@ body:
         - mend
         - microsoft-calendar
         - mta
+        - multi-source-security-viewer
         - newrelic
         - nexus-repository-manager
         - nomad
