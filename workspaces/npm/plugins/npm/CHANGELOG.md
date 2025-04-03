@@ -4,7 +4,7 @@
 
 ### Minor Changes
 
-- 4b7f4b6: Update dependencies to Backstage 1.35
+- 4b7f4b6: Backstage version bump to 1.35
 
 ### Patch Changes
 
