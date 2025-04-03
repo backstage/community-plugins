@@ -25,11 +25,11 @@ export const QueryACSData = (deploymentName: string) => {
   const [result, setResult] = useState([]);
   const [loaded, setLoaded] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
+  const [backendUrl, setBackendUrl] = useState('');
 
   // Retrieve proxy url from api
   const discoveryApi = useApi(discoveryApiRef);
-  let backendUrl = '';
-  discoveryApi.getBaseUrl('proxy').then(value => (backendUrl = value));
+  discoveryApi.getBaseUrl('proxy').then(value => setBackendUrl(value));
 
   const fetchApi = useApi(fetchApiRef);
 
@@ -39,6 +39,8 @@ export const QueryACSData = (deploymentName: string) => {
 
   const getACSData = () => {
     const deploymentNameArr = convertDeploymentNameStringToArray();
+
+    if (!backendUrl) return;
 
     deploymentNameArr.forEach((name: string) => {
       fetchApi
