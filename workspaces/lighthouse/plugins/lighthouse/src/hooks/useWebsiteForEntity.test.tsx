@@ -49,7 +49,7 @@ describe('useWebsiteForEntity', () => {
     },
     spec: {
       owner: 'guest',
-      type: 'Website',
+      type: 'webpage',
       lifecycle: 'development',
     },
   };
