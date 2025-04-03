@@ -1,5 +1,5 @@
 app:
-  title: RBAC Backstage App
+  title: JfrogArtifactory Backstage App
   baseUrl: http://localhost:3000
 proxy:
   endpoints:
