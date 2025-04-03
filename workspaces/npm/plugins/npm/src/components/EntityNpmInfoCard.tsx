@@ -15,7 +15,7 @@
  */
 import React from 'react';
 
-import { ErrorPanel, InfoCard } from '@backstage/core-components';
+import { ErrorPanel, InfoCard, Link } from '@backstage/core-components';
 import {
   MissingAnnotationEmptyState,
   useEntity,
@@ -197,9 +197,9 @@ export const EntityNpmInfoCard = () => {
           <GridItem
             label="Npm repository"
             value={
-              <a href={npmLink} target="_blank">
+              <Link to={npmLink} externalLinkIcon>
                 {npmLink}
-              </a>
+              </Link>
             }
           />
         ) : null}
@@ -208,9 +208,9 @@ export const EntityNpmInfoCard = () => {
           <GridItem
             label="Code repository"
             value={
-              <a href={repositoryLink} target="_blank">
+              <Link to={repositoryLink} externalLinkIcon>
                 {repositoryLink}
-              </a>
+              </Link>
             }
           />
         ) : null}
@@ -219,9 +219,9 @@ export const EntityNpmInfoCard = () => {
           <GridItem
             label="Issue tracker"
             value={
-              <a href={bugsLink} target="_blank">
+              <Link to={bugsLink} externalLinkIcon>
                 {bugsLink}
-              </a>
+              </Link>
             }
           />
         ) : null}
@@ -230,9 +230,9 @@ export const EntityNpmInfoCard = () => {
           <GridItem
             label="Homepage"
             value={
-              <a href={homepageLink} target="_blank">
+              <Link to={homepageLink} externalLinkIcon>
                 {homepageLink}
-              </a>
+              </Link>
             }
           />
         ) : null}
