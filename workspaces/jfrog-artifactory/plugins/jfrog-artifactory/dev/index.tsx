@@ -22,6 +22,10 @@ import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { getAllThemes } from '@redhat-developer/red-hat-developer-hub-theme';
 
 import { JfrogArtifactoryPage, jfrogArtifactoryPlugin } from '../src/plugin';
+import { jfrogArtifactoryApiRef, JfrogArtifactoryApiV1 } from '../src/api';
+import { mockTags } from '../src/__fixtures__/mockTags';
+import { TagsResponse } from '../src/types';
+import { TestApiProvider } from '@backstage/test-utils';
 
 const mockEntity: Entity = {
   apiVersion: 'backstage.io/v1alpha1',
@@ -30,7 +34,7 @@ const mockEntity: Entity = {
     name: 'backstage',
     description: 'backstage.io',
     annotations: {
-      'jfrog-artifactory/image-name': 'backstage',
+      'jfrog-artifactory/image-name': 'hello-world',
     },
   },
   spec: {
@@ -40,14 +44,25 @@ const mockEntity: Entity = {
   },
 };
 
+class MockJfrogArtifactoryApi implements JfrogArtifactoryApiV1 {
+  async getTags(_repo: string): Promise<TagsResponse> {
+    return Promise.resolve(mockTags as TagsResponse);
+  }
+}
+const mockJfrogArtifactoryApi = new MockJfrogArtifactoryApi();
+
 createDevApp()
   .registerPlugin(jfrogArtifactoryPlugin)
   .addThemes(getAllThemes())
   .addPage({
     element: (
-      <EntityProvider entity={mockEntity}>
-        <JfrogArtifactoryPage />
-      </EntityProvider>
+      <TestApiProvider
+        apis={[[jfrogArtifactoryApiRef, mockJfrogArtifactoryApi]]}
+      >
+        <EntityProvider entity={mockEntity}>
+          <JfrogArtifactoryPage />
+        </EntityProvider>
+      </TestApiProvider>
     ),
     title: 'Root Page',
     path: '/artifactory',

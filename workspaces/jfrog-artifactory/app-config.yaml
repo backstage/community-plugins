@@ -1,0 +1,39 @@
+app:
+  title: RBAC Backstage App
+  baseUrl: http://localhost:3000
+proxy:
+  endpoints:
+    '/jfrog-artifactory/api':
+      target: ${ARTIFACTORY_URL}
+      headers:
+        Authorization: Bearer ${ARTIFACTORY_TOKEN}
+      # Change to "false" in case of using self hosted artifactory instance with a self-signed certificate
+      secure: true
+
+organization:
+  name: My Company
+backend:
+  # Used for enabling authentication, secret is shared by all backend plugins
+  # See https://backstage.io/docs/auth/service-to-service-auth for
+  # information on the format
+  # auth:
+  #   keys:
+  #     - secret: ${BACKEND_SECRET}
+  baseUrl: http://localhost:7007
+  listen:
+    port: 7007
+    # Uncomment the following host directive to bind to specific interfaces
+    # host: 127.0.0.1
+  csp:
+    connect-src: ["'self'", 'http:', 'https:']
+    # Content-Security-Policy directives follow the Helmet format: https://helmetjs.github.io/#reference
+    # Default Helmet Content-Security-Policy values can be removed by setting the key to false
+  cors:
+    origin: http://localhost:3000
+    methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
+    credentials: true
+  # This is for local development only, it is not recommended to use this in production
+  # The production database configuration is stored in app-config.production.yaml
+  database:
+    client: better-sqlite3
+    connection: ':memory:'
