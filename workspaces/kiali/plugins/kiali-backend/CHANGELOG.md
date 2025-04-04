@@ -1,5 +1,12 @@
 # @backstage-community/plugin-kiali-backend
 
+## 1.20.2
+
+### Patch Changes
+
+- 973a5ef: remove prettier from devDependencies
+- f84ad73: chore: remove homepage field from package.json
+
 ## 1.20.1
 
 ### Patch Changes
