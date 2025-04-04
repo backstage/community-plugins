@@ -36,9 +36,9 @@ const homePageExtension = PageBlueprint.make({
 
 export const app = createApp({
   features: [
-    catalogPlugin as any,
-    catalogImportPlugin as any,
-    userSettingsPlugin as any,
+    catalogPlugin,
+    catalogImportPlugin,
+    userSettingsPlugin,
     npmPlugin,
     createFrontendModule({
       pluginId: 'app',
