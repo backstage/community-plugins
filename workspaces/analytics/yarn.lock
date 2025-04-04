@@ -1842,7 +1842,6 @@ __metadata:
     "@material-ui/lab": "npm:4.0.0-alpha.61"
     "@redhat-developer/red-hat-developer-hub-theme": "npm:0.4.0"
     "@segment/analytics-next": "npm:^1.58.0"
-    "@spotify/prettier-config": "npm:^15.0.0"
     "@testing-library/dom": "npm:9.3.4"
     "@testing-library/jest-dom": "npm:6.6.3"
     "@testing-library/react": "npm:14.3.1"
@@ -5810,15 +5809,6 @@ __metadata:
     "@typescript-eslint/parser": ">=5"
     eslint: ">=8.x"
   checksum: 10/33627cff3a7ff6360cd73e26d28c50b3a49cc027716e1e0044187cad1fbfd6f9da13c83d2ae16bffa4755c8004f2ee9dafa4d520906905a8c9a7209987c93e5d
-  languageName: node
-  linkType: hard
-
-"@spotify/prettier-config@npm:^15.0.0":
-  version: 15.0.0
-  resolution: "@spotify/prettier-config@npm:15.0.0"
-  peerDependencies:
-    prettier: 2.x
-  checksum: 10/ba91f65bc4ee884e8afa0b99eacb1fac27043efa0915ead007af571d66a0f53462d2a65f33e01d3b6e10a804b60ed2957708f939850bc6071e2d28f0e277ab7c
   languageName: node
   linkType: hard
 
