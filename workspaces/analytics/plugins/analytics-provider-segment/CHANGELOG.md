@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.14.4
+
+### Patch Changes
+
+- ac0349f: Updated dependency `@types/react` to `18.3.20`.
+
 ## 1.14.3
 
 ### Patch Changes
