@@ -28,7 +28,7 @@ const de = createTranslationMessages({
     'infoCard.license': 'Lizenz',
     'infoCard.description': 'Beschreibung',
     'infoCard.keywords': 'Stichwörter',
-    'infoCard.registryName': 'Registry-Name',
+    'infoCard.registryName': 'Registry Name',
     'infoCard.npmRepository': 'NPM Repository',
     'infoCard.codeRepository': 'Quellcode Repository',
     'infoCard.issueTracker': 'Fehlerverfolgung',
