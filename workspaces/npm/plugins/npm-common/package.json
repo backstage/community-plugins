@@ -39,7 +39,7 @@
     "@backstage/errors": "^1.2.7"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.30.0"
+    "@backstage/cli": "^0.31.1"
   },
   "files": [
     "dist"
