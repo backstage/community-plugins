@@ -8,6 +8,7 @@ import { ConfigurableExtensionDataRef } from '@backstage/frontend-plugin-api';
 import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { FrontendPlugin } from '@backstage/frontend-plugin-api';
 import { isNpmAvailable } from '@backstage-community/plugin-npm-common';
+import { TranslationResource } from '@backstage/core-plugin-api/alpha';
 
 // @alpha
 const _default: FrontendPlugin<{}, {}, {}>;
@@ -36,6 +37,9 @@ export const npmBackendApi: ExtensionDefinition<{
     factory: AnyApiFactory;
   };
 }>;
+
+// @alpha (undocumented)
+export const npmTranslations: TranslationResource<'plugin.npm.translation-ref'>;
 
 // (No @packageDocumentation comment for this package)
 ```

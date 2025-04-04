@@ -28,9 +28,11 @@ import {
 import { NpmAnnotation } from '@backstage-community/plugin-npm-common';
 
 import Box from '@material-ui/core/Box';
-import { DateTime } from 'luxon';
 
 import { usePackageInfo } from '../hooks/usePackageInfo';
+import { useTranslation } from '../hooks/useTranslation';
+import { RelativePublishedAt } from './RelativePublishedAt';
+import { Trans } from './Trans';
 
 interface TagRow {
   tag: string;
@@ -40,27 +42,22 @@ interface TagRow {
 
 const tagColumns: TableColumn<TagRow>[] = [
   {
-    title: 'Tag',
+    title: <Trans message="releaseOverviewCard.columns.tag" params={{}} />,
     field: 'tag',
     type: 'string',
   },
   {
-    title: 'Version',
+    title: <Trans message="releaseOverviewCard.columns.version" params={{}} />,
     field: 'version',
     type: 'string',
   },
   {
-    title: 'Published',
+    title: (
+      <Trans message="releaseOverviewCard.columns.published" params={{}} />
+    ),
     field: 'published',
     type: 'datetime',
-    render: row =>
-      row.published ? (
-        <time dateTime={row.published} title={row.published}>
-          {DateTime.fromISO(row.published).toRelative()}
-        </time>
-      ) : (
-        '-'
-      ),
+    render: row => <RelativePublishedAt dateTime={row.published} />,
   },
 ];
 
@@ -73,6 +70,7 @@ const tagColumns: TableColumn<TagRow>[] = [
 export const EntityNpmReleaseOverviewCard = () => {
   const { entity } = useEntity();
   const { packageInfo, loading, error } = usePackageInfo();
+  const { t } = useTranslation();
 
   const packageName = entity.metadata.annotations?.[NpmAnnotation.PACKAGE_NAME];
   const showTags = entity.metadata.annotations?.[NpmAnnotation.SHOW_TAGS]
@@ -108,8 +106,13 @@ export const EntityNpmReleaseOverviewCard = () => {
 
   return (
     <Table
-      title="Current Tags"
+      title={t('releaseOverviewCard.title')}
       options={{ paging: false, padding: 'dense' }}
+      localization={{
+        toolbar: {
+          searchPlaceholder: t('releaseOverviewCard.toolbar.searchPlaceholder'),
+        },
+      }}
       isLoading={loading}
       data={data}
       columns={tagColumns}

@@ -30,6 +30,8 @@ import { isNpmAvailable } from '@backstage-community/plugin-npm-common';
 
 import { NpmBackendApiRef, NpmBackendClient } from './api';
 
+export { npmTranslations } from './translations';
+
 export { isNpmAvailable } from '@backstage-community/plugin-npm-common';
 
 /**
