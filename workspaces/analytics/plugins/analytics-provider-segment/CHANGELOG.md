@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.14.3
+
+### Patch Changes
+
+- 2469b23: Remove @spotify/prettier-config from devDependencies.
+
 ## 1.14.2
 
 ### Patch Changes
