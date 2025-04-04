@@ -1,5 +1,11 @@
 # @backstage-community/plugin-acs
 
+## 0.0.3
+
+### Patch Changes
+
+- 7eb2266: Removed all references to RHDH from README and files
+
 ## 0.0.2
 
 ### Patch Changes
