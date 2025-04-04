@@ -21,6 +21,7 @@ export type Segments = {
 };
 
 export type RadarLegendProps = {
+  columnCount: number;
   quadrants: Quadrant[];
   rings: Ring[];
   entries: Entry[];
