@@ -17,6 +17,8 @@ import React from 'react';
 import Box from '@material-ui/core/Box';
 import { ErrorPanel, Table } from '@backstage/core-components';
 import { getColumns } from './Columns';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { sonarqubeTranslationRef } from '../../translation';
 
 /**
  * @public
@@ -38,6 +40,7 @@ export const SonarQubeTable = ({
   emptyContent,
   localization,
 }: SonarQubeTableProps) => {
+  const { t } = useTranslationRef(sonarqubeTranslationRef);
   if (!tableContent) {
     return <ErrorPanel error={Error('Table could not be rendered')} />;
   }
@@ -52,7 +55,7 @@ export const SonarQubeTable = ({
           title={<div>{`(${tableContent.length}) ${title}`}</div>}
           options={options}
           data={tableContent || []}
-          columns={getColumns()}
+          columns={getColumns(t)}
           emptyContent={emptyContent}
           localization={localization}
         />
