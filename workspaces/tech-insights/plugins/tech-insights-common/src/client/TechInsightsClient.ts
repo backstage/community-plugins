@@ -39,6 +39,7 @@ export class TechInsightsClient {
   private readonly discoveryApi: DiscoveryApi;
   private readonly identityApi: IdentityApi | AuthService;
   private readonly apiCache = new Map<string, Promise<any>>();
+  private readonly chunkSize = 750;
 
   constructor(options: {
     discoveryApi: DiscoveryApi;
@@ -117,14 +118,20 @@ export class TechInsightsClient {
     checks?: Check[],
   ): Promise<BulkCheckResponse> {
     const checkIds = checks ? checks.map(check => check.id) : [];
-    const requestBody = {
-      entities,
-      checks: checkIds.length > 0 ? checkIds : undefined,
-    };
-    return this.api('/checks/run', {
-      method: 'POST',
-      body: JSON.stringify(requestBody),
-    });
+    let bulkResponse: BulkCheckResponse = [];
+    for (let i = 0; i < entities.length; i += this.chunkSize) {
+      const chunk = entities.slice(i, i + this.chunkSize);
+      const requestBody = {
+        entities: chunk,
+        checks: checkIds.length > 0 ? checkIds : undefined,
+      };
+      const response = await this.api('/checks/run', {
+        method: 'POST',
+        body: JSON.stringify(requestBody),
+      });
+      bulkResponse = bulkResponse.concat(response as BulkCheckResponse);
+    }
+    return bulkResponse;
   }
 
   private getCacheKey(path: string, init?: RequestInit): string {
