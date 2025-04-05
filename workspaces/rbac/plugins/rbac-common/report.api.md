@@ -120,6 +120,7 @@ export type RoleMetadata = {
     author?: string;
     lastModified?: string;
     createdAt?: string;
+    owner?: string;
 };
 
 // @public

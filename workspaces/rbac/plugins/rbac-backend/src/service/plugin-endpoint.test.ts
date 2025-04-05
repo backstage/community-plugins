@@ -18,6 +18,8 @@ import { mockServices } from '@backstage/backend-test-utils';
 import { NotFoundError } from '@backstage/errors';
 
 import { PluginPermissionMetadataCollector } from './plugin-endpoints';
+import { policyEntityPermissions } from '@backstage-community/plugin-rbac-common';
+import { rbacRules } from '../permissions';
 
 const backendPluginIDsProviderMock = {
   getPluginIds: jest.fn().mockImplementation(() => {
@@ -50,14 +52,14 @@ describe('plugin-endpoint', () => {
     });
 
     it('should return non empty plugin policies list with resourced permission', async () => {
-      backendPluginIDsProviderMock.getPluginIds.mockReturnValue(['permission']);
+      backendPluginIDsProviderMock.getPluginIds.mockReturnValue(['catalog']);
 
       const mockUrlReaderService = mockServices.urlReader.mock({
         readUrl: async () => {
           return {
             buffer: async () => {
               return Buffer.from(
-                '{"permissions":[{"type":"resource","name":"policy.entity.read","attributes":{"action":"read"},"resourceType":"policy-entity"}]}',
+                '{"permissions":[{"type":"resource","name":"catalog.entity.read","attributes":{"action":"read"},"resourceType":"catalog-entity"}]}',
               );
             },
           } as UrlReaderServiceReadUrlResponse;
@@ -78,18 +80,18 @@ describe('plugin-endpoint', () => {
       );
 
       expect(policiesMetadata.length).toEqual(1);
-      expect(policiesMetadata[0].pluginId).toEqual('permission');
+      expect(policiesMetadata[0].pluginId).toEqual('catalog');
       expect(policiesMetadata[0].policies).toEqual([
         {
-          name: 'policy.entity.read',
-          resourceType: 'policy-entity',
+          name: 'catalog.entity.read',
+          resourceType: 'catalog-entity',
           policy: 'read',
         },
       ]);
     });
 
     it('should return non empty plugin policies list with non resourced permission', async () => {
-      backendPluginIDsProviderMock.getPluginIds.mockReturnValue(['permission']);
+      backendPluginIDsProviderMock.getPluginIds.mockReturnValue(['catalog']);
 
       const mockUrlReaderService = mockServices.urlReader.mock({
         readUrl: async () => {
@@ -117,7 +119,7 @@ describe('plugin-endpoint', () => {
       );
 
       expect(policiesMetadata.length).toEqual(1);
-      expect(policiesMetadata[0].pluginId).toEqual('permission');
+      expect(policiesMetadata[0].pluginId).toEqual('catalog');
       expect(policiesMetadata[0].policies).toEqual([
         {
           name: 'catalog.entity.create',
@@ -128,7 +130,7 @@ describe('plugin-endpoint', () => {
 
     it('should log warning for not found endpoint', async () => {
       backendPluginIDsProviderMock.getPluginIds.mockReturnValue([
-        'permission',
+        'catalog',
         'unknown-plugin-id',
       ]);
 
@@ -136,12 +138,12 @@ describe('plugin-endpoint', () => {
         readUrl: async (wellKnownURL: string) => {
           if (
             wellKnownURL ===
-            'https://localhost:7007/api/permission/.well-known/backstage/permissions/metadata'
+            'https://localhost:7007/api/catalog/.well-known/backstage/permissions/metadata'
           ) {
             return {
               buffer: async () => {
                 return Buffer.from(
-                  '{"permissions":[{"type":"resource","resourceType":"policy-entity","name":"policy.entity.read","attributes":{"action":"read"}}]}',
+                  '{"permissions":[{"type":"resource","resourceType":"catalog-entity","name":"catalog.entity.read","attributes":{"action":"read"}}]}',
                 );
               },
             } as UrlReaderServiceReadUrlResponse;
@@ -166,11 +168,11 @@ describe('plugin-endpoint', () => {
       );
 
       expect(policiesMetadata.length).toEqual(1);
-      expect(policiesMetadata[0].pluginId).toEqual('permission');
+      expect(policiesMetadata[0].pluginId).toEqual('catalog');
       expect(policiesMetadata[0].policies).toEqual([
         {
-          name: 'policy.entity.read',
-          resourceType: 'policy-entity',
+          name: 'catalog.entity.read',
+          resourceType: 'catalog-entity',
           policy: 'read',
         },
       ]);
@@ -182,7 +184,7 @@ describe('plugin-endpoint', () => {
 
     it('should log error when it is not possible to retrieve permission metadata for known endpoint', async () => {
       backendPluginIDsProviderMock.getPluginIds.mockReturnValue([
-        'permission',
+        'scaffolder',
         'catalog',
       ]);
 
@@ -190,12 +192,12 @@ describe('plugin-endpoint', () => {
         readUrl: async (wellKnownURL: string) => {
           if (
             wellKnownURL ===
-            'https://localhost:7007/api/permission/.well-known/backstage/permissions/metadata'
+            'https://localhost:7007/api/scaffolder/.well-known/backstage/permissions/metadata'
           ) {
             return {
               buffer: async () => {
                 return Buffer.from(
-                  '{"permissions":[{"type":"resource","resourceType":"policy-entity","name":"policy.entity.read","attributes":{"action":"read"}}]}',
+                  '{"permissions":[{"type":"resource","resourceType":"scaffolder-template","name":"scaffolder.template.parameter.read","attributes":{"action":"read"}}]}',
                 );
               },
             } as UrlReaderServiceReadUrlResponse;
@@ -221,11 +223,11 @@ describe('plugin-endpoint', () => {
       );
 
       expect(policiesMetadata.length).toEqual(1);
-      expect(policiesMetadata[0].pluginId).toEqual('permission');
+      expect(policiesMetadata[0].pluginId).toEqual('scaffolder');
       expect(policiesMetadata[0].policies).toEqual([
         {
-          name: 'policy.entity.read',
-          resourceType: 'policy-entity',
+          name: 'scaffolder.template.parameter.read',
+          resourceType: 'scaffolder-template',
           policy: 'read',
         },
       ]);
@@ -237,7 +239,7 @@ describe('plugin-endpoint', () => {
 
     it('should not log error caused by non json permission metadata for known endpoint', async () => {
       backendPluginIDsProviderMock.getPluginIds.mockReturnValue([
-        'permission',
+        'scaffolder',
         'catalog',
       ]);
 
@@ -245,12 +247,12 @@ describe('plugin-endpoint', () => {
         readUrl: async (wellKnownURL: string) => {
           if (
             wellKnownURL ===
-            'https://localhost:7007/api/permission/.well-known/backstage/permissions/metadata'
+            'https://localhost:7007/api/scaffolder/.well-known/backstage/permissions/metadata'
           ) {
             return {
               buffer: async () => {
                 return Buffer.from(
-                  '{"permissions":[{"type":"resource","resourceType":"policy-entity","name":"policy.entity.read","attributes":{"action":"read"}}]}',
+                  '{"permissions":[{"type":"resource","resourceType":"scaffolder-template","name":"scaffolder.template.parameter.read","attributes":{"action":"read"}}]}',
                 );
               },
             } as UrlReaderServiceReadUrlResponse;
@@ -286,11 +288,11 @@ describe('plugin-endpoint', () => {
       );
 
       expect(policiesMetadata.length).toEqual(1);
-      expect(policiesMetadata[0].pluginId).toEqual('permission');
+      expect(policiesMetadata[0].pluginId).toEqual('scaffolder');
       expect(policiesMetadata[0].policies).toEqual([
         {
-          name: 'policy.entity.read',
-          resourceType: 'policy-entity',
+          name: 'scaffolder.template.parameter.read',
+          resourceType: 'scaffolder-template',
           policy: 'read',
         },
       ]);
@@ -429,6 +431,34 @@ describe('plugin-endpoint', () => {
           resourceType: 'catalog-entity',
         },
       ]);
+    });
+
+    it('should return metadata by id (rbac-plugin)', async () => {
+      backendPluginIDsProviderMock.getPluginIds.mockReturnValue(['permission']);
+
+      const mockUrlReaderService = mockServices.urlReader.mock({
+        readUrl: async (_wellKnownURL: string) => {
+          throw new Error('Unexpected error');
+        },
+      });
+
+      const collector = new PluginPermissionMetadataCollector({
+        deps: {
+          discovery: mockPluginEndpointDiscovery,
+          pluginIdProvider: backendPluginIDsProviderMock,
+          logger: mockServices.logger.mock(),
+          config: mockServices.rootConfig(),
+        },
+        optional: { urlReader: mockUrlReaderService },
+      });
+      const metadata = await collector.getMetadataByPluginId(
+        'permission',
+        undefined,
+      );
+
+      expect(metadata).not.toBeUndefined();
+      expect(metadata?.permissions).toEqual(policyEntityPermissions);
+      expect(metadata?.rules).toEqual([rbacRules]);
     });
   });
 });

@@ -100,6 +100,7 @@ const roleMetadataStorageMock: RoleMetadataStorage = {
         return { source: 'csv-file' };
       },
     ),
+  filterForOwnerRoleMetadata: jest.fn().mockImplementation(),
   createRoleMetadata: jest.fn().mockImplementation(),
   updateRoleMetadata: jest.fn().mockImplementation(),
   removeRoleMetadata: jest.fn().mockImplementation(),
@@ -617,6 +618,7 @@ describe('RBACPermissionPolicy Tests', () => {
             return { source: 'csv-file' };
           },
         ),
+      filterForOwnerRoleMetadata: jest.fn().mockImplementation(),
       createRoleMetadata: jest.fn().mockImplementation(),
       updateRoleMetadata: jest.fn().mockImplementation(),
       removeRoleMetadata: jest.fn().mockImplementation(),
@@ -891,6 +893,7 @@ describe('RBACPermissionPolicy Tests', () => {
             };
           },
         ),
+      filterForOwnerRoleMetadata: jest.fn().mockImplementation(),
       createRoleMetadata: jest.fn().mockImplementation(),
       updateRoleMetadata: jest.fn().mockImplementation(),
       removeRoleMetadata: jest.fn().mockImplementation(),
@@ -1035,6 +1038,7 @@ describe('Policy checks for resourced permissions defined by name', () => {
           };
         },
       ),
+    filterForOwnerRoleMetadata: jest.fn().mockImplementation(),
     createRoleMetadata: jest.fn().mockImplementation(),
     updateRoleMetadata: jest.fn().mockImplementation(),
     removeRoleMetadata: jest.fn().mockImplementation(),
