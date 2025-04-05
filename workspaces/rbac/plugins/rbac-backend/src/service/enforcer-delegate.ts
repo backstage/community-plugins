@@ -162,16 +162,14 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
   ): Promise<string[][]> {
     const tempModel = newModelFromString(MODEL);
 
-    const filterArgs: Record<string, string>[] = [];
     const filterObj: Record<string, string> = { ptype: 'p' };
     for (let i = 0; i < filter.length; i++) {
       filterObj[`v${i + fieldIndex}`] = filter[i];
-      filterArgs.push(filterObj);
     }
 
     await (this.enforcer.getAdapter() as FilteredAdapter).loadFilteredPolicy(
       tempModel,
-      filterArgs,
+      [filterObj],
     );
 
     return await tempModel.getPolicy('p', 'p');
@@ -183,16 +181,14 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
   ): Promise<string[][]> {
     const tempModel = newModelFromString(MODEL);
 
-    const filterArgs: Record<string, string>[] = [];
     const filterObj: Record<string, string> = { ptype: 'g' };
     for (let i = 0; i < filter.length; i++) {
       filterObj[`v${i + fieldIndex}`] = filter[i];
-      filterArgs.push(filterObj);
     }
 
     await (this.enforcer.getAdapter() as FilteredAdapter).loadFilteredPolicy(
       tempModel,
-      filterArgs,
+      [filterObj],
     );
 
     return await tempModel.getPolicy('g', 'g');
