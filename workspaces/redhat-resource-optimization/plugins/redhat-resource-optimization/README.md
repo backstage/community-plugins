@@ -84,47 +84,6 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
 );
 ```
 
-#### Option 2: Dynamic plugin
-
-This option describes how to install this plugin in Red Hat Developer Hub (RHDH).
-It is advised to review the official documentation corresponding to your deployment.
-
-1. Open Red Hat Developer Hub:
-2. Navigate to the Helm Chart:
-   - Go to the Helm tab in your **Red Hat OpenShift console**.
-3. Edit the Helm Chart Values:
-   - Include the plugin in the Helm chart values as shown in the example below:
-
-```yaml
-global:
-  dynamic:
-    plugins:
-      - package: '@backstage-community/plugin-redhat-resource-optimization-dynamic@1.0.0'
-        integrity: 'sha512-Qd8pniy1yRx+x7LnwjzQ6k9zP+C1yex24MaCcx7dGDPT/XbTokwoSZr4baSSn8jUA6P45NUUevu1d629mG4JGQ=='
-      - package: '@backstage-community/plugin-redhat-resource-optimization-backend-dynamic@1.0.0'
-        integrity: 'sha512-Q1d629mG4JGd8pniy1yRx+x7LnwjzQ6k9zP+C1yex24MaCcx7dGDPT/XbTokwoSZr4baSSn8jUA6P45NUUevud8pniy1yRQx=='
-```
-
-4. Include the below configuration in the `app-config.yaml` ConfigMap to setup the front-end side of the plugin
-
-```yaml
-dynamicPlugins:
-  frontend:
-    backstage-community.plugin-redhat-resource-optimization:
-      appIcons:
-        - name: resourceOptimizationIconOutlined
-          importName: ResourceOptimizationIconOutlined
-      routeBindings:
-        targets:
-          - name: resourceOptimizationPlugin
-      dynamicRoutes:
-        - path: /redhat-resource-optimization
-          importName: ResourceOptimizationPage
-          menuItem:
-            icon: resourceOptimizationIconOutlined
-            text: Optimizations
-```
-
 ### Configuration
 
 #### Step 1: Create a service account in Red Hat Hybrid Cloud Console (RHHCC)
