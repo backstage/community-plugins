@@ -64,7 +64,7 @@ yarn.lock                                                               @backsta
 /workspaces/scaffolder-backend-module-regex                             @backstage/community-plugins-maintainers  @04kash
 /workspaces/scaffolder-relation-processor                               @backstage/community-plugins-maintainers  @04kash
 /workspaces/sonarqube                                                   @backstage/community-plugins-maintainers  @backstage/sda-se-reviewers
-/workspaces/tech-insights                                               @backstage/community-plugins-maintainers  @xantier
+/workspaces/tech-insights                                               @backstage/community-plugins-maintainers  @xantier @punkle
 /workspaces/tekton                                                      @backstage/community-plugins-maintainers  @caugello @cryptorodeo
 /workspaces/topology                                                    @backstage/community-plugins-maintainers  @christoph-jerolimov @ciiay @debsmita1 @divyanshiGupta
 /workspaces/multi-source-security-viewer                                @backstage/community-plugins-maintainers  @caugello @cryptorodeo
