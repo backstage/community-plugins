@@ -1,5 +1,14 @@
 # @backstage-community/plugin-announcements-backend
 
+## 0.3.2
+
+### Patch Changes
+
+- 1f34951: Upgraded to Backstage release 1.37.
+- Updated dependencies [1f34951]
+  - @backstage-community/plugin-search-backend-module-announcements@0.3.2
+  - @backstage-community/plugin-announcements-common@0.3.1
+
 ## 0.3.1
 
 ### Patch Changes
