@@ -186,42 +186,57 @@ export class ThreeScaleApiEntityProvider implements EntityProvider {
     let apiDocs: APIDocs;
     let fetchServices: boolean = true;
     while (fetchServices) {
-      services = await listServices(
-        this.baseUrl,
-        this.accessToken,
-        page,
-        ThreeScaleApiEntityProvider.SERVICES_FETCH_SIZE,
-      );
-      apiDocs = await listApiDocs(this.baseUrl, this.accessToken);
-      for (const element of services.services) {
-        const service = element;
-        this.logger.debug(`Find service ${service.service.name}`);
-
-        const docs = apiDocs.api_docs.filter(
-          obj => obj.api_doc.service_id === service.service.id,
-        );
-        const proxy = await getProxyConfig(
+      try {
+        services = await listServices(
           this.baseUrl,
           this.accessToken,
-          service.service.id,
+          page,
+          ThreeScaleApiEntityProvider.SERVICES_FETCH_SIZE,
         );
-        if (isNonEmptyArray(docs)) {
-          this.logger.info(JSON.stringify(docs));
-          const apiEntity: ApiEntity = await this.buildApiEntityFromService(
-            service,
-            docs,
-            proxy,
-          );
-          entities.push(apiEntity);
-          this.logger.debug(`Discovered ApiEntity ${service.service.name}`);
-        }
-      }
+        apiDocs = await listApiDocs(this.baseUrl, this.accessToken);
+        for (const element of services.services) {
+          const service = element;
+          this.logger.debug(`Find service ${service.service.name}`);
 
-      if (
-        services.services.length <
-        ThreeScaleApiEntityProvider.SERVICES_FETCH_SIZE
-      ) {
-        fetchServices = false;
+          const docs = apiDocs.api_docs.filter(
+            obj => obj.api_doc.service_id === service.service.id,
+          );
+          const proxy = await getProxyConfig(
+            this.baseUrl,
+            this.accessToken,
+            service.service.id,
+          );
+          if (isNonEmptyArray(docs)) {
+            this.logger.info(JSON.stringify(docs));
+            const apiEntity: ApiEntity = await this.buildApiEntityFromService(
+              service,
+              docs,
+              proxy,
+            );
+            entities.push(apiEntity);
+            this.logger.debug(`Discovered ApiEntity ${service.service.name}`);
+          }
+        }
+        if (
+          services.services.length <
+          ThreeScaleApiEntityProvider.SERVICES_FETCH_SIZE
+        ) {
+          fetchServices = false;
+        }
+      } catch (error: any) {
+        if (isError(error)) {
+          this.logger.error(
+            `Error while syncing 3scale API from ${this.baseUrl}`,
+            {
+              // Default Error properties:
+              name: error.name,
+              message: error.message,
+              stack: error.stack,
+              // Additional status code if available:
+              status: (error.response as { status?: string })?.status,
+            },
+          );
+        }
       }
       page++;
     }
