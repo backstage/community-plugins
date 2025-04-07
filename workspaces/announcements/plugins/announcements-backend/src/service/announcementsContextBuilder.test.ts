@@ -20,8 +20,8 @@ import {
   HttpAuthService,
   PermissionsService,
 } from '@backstage/backend-plugin-api';
-import { EventsService } from '@backstage/plugin-events-node/index';
-import { SignalsService } from '@backstage/plugin-signals-node/index';
+import { EventsService } from '@backstage/plugin-events-node';
+import { SignalsService } from '@backstage/plugin-signals-node';
 
 jest.mock('./persistence/persistenceContext', () => ({
   initializePersistenceContext: jest.fn(),
