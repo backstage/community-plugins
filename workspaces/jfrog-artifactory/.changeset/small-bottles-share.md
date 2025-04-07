@@ -2,4 +2,4 @@
 '@backstage-community/plugin-jfrog-artifactory': minor
 ---
 
-Backstage version bump to v1.37.0
+Backstage version bump to v1.36.1
