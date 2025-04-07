@@ -23,6 +23,8 @@ import { Status } from '@janus-idp/shared-react';
 import { StepStatus } from '../../types/taskRun';
 
 import './PipelineVisualizationStepList.css';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { tektonTranslationRef } from '../../translation';
 
 export type PipelineVisualizationStepListProps = {
   isSpecOverview: boolean;
@@ -50,6 +52,7 @@ export const PipelineVisualizationStepList = ({
   isFinallyTask,
   hideHeader,
 }: PipelineVisualizationStepListProps) => {
+  const { t } = useTranslationRef(tektonTranslationRef);
   return (
     <div className="bs-tkn-pipeline-visualization-step-list">
       {!hideHeader && (
@@ -59,7 +62,7 @@ export const PipelineVisualizationStepList = ({
       )}
       {isFinallyTask && (
         <div className="bs-tkn-pipeline-visualization-step-list__task-type">
-          Finally task
+          {t('pipelineVisualization.setpList.finallyTaskTitle')}
         </div>
       )}
       {steps?.map(({ duration, name, status }) => {

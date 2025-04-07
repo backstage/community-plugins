@@ -22,6 +22,8 @@ import { Paper } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 
 import { usePodLogsOfPipelineRun } from '../../hooks/usePodLogsOfPipelineRun';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { tektonTranslationRef } from '../../translation';
 
 type PipelineRunLogViewerProps = { pod: V1Pod };
 
@@ -29,6 +31,7 @@ export const PipelineRunLogViewer = ({ pod }: PipelineRunLogViewerProps) => {
   const { value, error, loading } = usePodLogsOfPipelineRun({
     pod,
   });
+  const { t } = useTranslationRef(tektonTranslationRef);
 
   const containersList = pod?.spec?.containers || [];
   let text = '';
@@ -69,7 +72,9 @@ export const PipelineRunLogViewer = ({ pod }: PipelineRunLogViewerProps) => {
             height="100%"
           />
         )}
-        {pod && !loading && <LogViewer text={text || 'No Logs found'} />}
+        {pod && !loading && (
+          <LogViewer text={text || t('pipelineRunLogs.noLogs')} />
+        )}
       </Paper>
     </>
   );

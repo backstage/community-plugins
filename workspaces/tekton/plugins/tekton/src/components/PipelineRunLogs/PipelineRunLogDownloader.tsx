@@ -26,6 +26,8 @@ import {
   TEKTON_PIPELINE_TASKRUN,
 } from '../../consts/tekton-const';
 import PodLogsDownloadLink from './PodLogsDownloadLink';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { tektonTranslationRef } from '../../translation';
 
 const PipelineRunLogDownloader: React.FC<{
   pods: V1Pod[];
@@ -47,6 +49,7 @@ const PipelineRunLogDownloader: React.FC<{
       ),
     [filteredPods],
   );
+  const { t } = useTranslationRef(tektonTranslationRef);
 
   const activeTaskPod: V1Pod =
     sortedPods.find(
@@ -66,7 +69,7 @@ const PipelineRunLogDownloader: React.FC<{
           fileName={`${
             activeTaskPod?.metadata?.labels?.[TEKTON_PIPELINE_TASK] ?? 'task'
           }.log`}
-          downloadTitle="Download"
+          downloadTitle={t('pipelineRunLogs.downloader.downloadTaskLogs')}
         />
       </FlexItem>
       <FlexItem>
@@ -74,7 +77,9 @@ const PipelineRunLogDownloader: React.FC<{
           data-testid="download-pipelinerun-logs"
           pods={sortedPods}
           fileName={`${pipelineRun?.metadata?.name ?? 'pipelinerun'}.log`}
-          downloadTitle="Download all tasks logs"
+          downloadTitle={t(
+            'pipelineRunLogs.downloader.downloadPipelineRunLogs',
+          )}
         />
       </FlexItem>
     </Flex>

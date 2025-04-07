@@ -36,6 +36,8 @@ import { tektonGroupColor } from '../../types/types';
 import ResourceBadge from '../PipelineRunList/ResourceBadge';
 import PipelineRunLogDownloader from './PipelineRunLogDownloader';
 import PipelineRunLogs from './PipelineRunLogs';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { tektonTranslationRef } from '../../translation';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -72,6 +74,7 @@ const PipelineRunLogDialog = ({
   const classes = useStyles();
 
   const [task, setTask] = React.useState(activeTask);
+  const { t } = useTranslationRef(tektonTranslationRef);
 
   return (
     <Dialog
@@ -81,7 +84,7 @@ const PipelineRunLogDialog = ({
       open={open}
       onClose={closeDialog}
     >
-      <DialogTitle id="pipelinerun-logs" title="PipelineRun Logs">
+      <DialogTitle id="pipelinerun-logs" title={t('pipelineRunLogs.title')}>
         <Box className={classes.titleContainer}>
           <ResourceBadge
             color={tektonGroupColor}
