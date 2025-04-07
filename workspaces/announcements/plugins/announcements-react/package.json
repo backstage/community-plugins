@@ -38,8 +38,8 @@
   },
   "dependencies": {
     "@backstage-community/plugin-announcements-common": "workspace:^",
-    "@backstage/core-app-api": "^1.15.4",
-    "@backstage/core-plugin-api": "^1.10.3",
+    "@backstage/core-app-api": "^1.16.0",
+    "@backstage/core-plugin-api": "^1.10.5",
     "@backstage/errors": "^1.2.7",
     "luxon": "^3.4.4",
     "react-use": "^17.2.4"
@@ -48,7 +48,7 @@
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.29.6",
+    "@backstage/cli": "^0.31.0",
     "@testing-library/jest-dom": "^5.10.1",
     "@testing-library/react": "^12.1.3",
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0"

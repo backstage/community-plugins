@@ -7,7 +7,7 @@
 
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { IndexableDocument } from '@backstage/plugin-search-common';
-import { InfoCardVariants } from '@backstage/core-components/index';
+import { InfoCardVariants } from '@backstage/core-components/*';
 import { JSX as JSX_2 } from 'react';
 import { ResultHighlight } from '@backstage/plugin-search-common';
 import { RouteRef } from '@backstage/core-plugin-api';

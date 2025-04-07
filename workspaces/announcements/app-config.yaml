@@ -10,15 +10,16 @@ backend:
   listen:
     port: 7007
   database:
-    # uncomment for sqlite
-    # client: better-sqlite3
-    # connection: ':memory:'
-    client: pg
-    connection:
-      host: ${POSTGRES_HOST}
-      port: ${POSTGRES_POST}
-      user: ${POSTGRES_USER}
-      password: ${POSTGRES_PASSWORD}
+    client: better-sqlite3
+    connection: ':memory:'
+
+    # duplicate this block in app-config.local.yaml for postgres
+    # client: pg
+    # connection:
+    #   host: ${POSTGRES_HOST}
+    #   port: ${POSTGRES_POST}
+    #   user: ${POSTGRES_USER}
+    #   password: ${POSTGRES_PASSWORD}
   cache:
     store: memory
   cors:
