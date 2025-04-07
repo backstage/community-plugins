@@ -2,4 +2,4 @@
 '@backstage-community/plugin-copilot': patch
 ---
 
-Converts date into correct timezone before check.
+Ensure that date is converted to the local timezone before performing comparison
