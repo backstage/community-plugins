@@ -199,5 +199,45 @@ describe('AnnouncementsPage', () => {
       );
       expect(screen.getByText(/Scheduled Today/i)).toBeInTheDocument();
     });
+
+    it('should hide start date when hideStartAt is true', async () => {
+      const today = DateTime.now().toISODate();
+      const todayAnnouncement: AnnouncementsList = {
+        count: 1,
+        results: [
+          {
+            id: '1',
+            title: 'Hidden Start Date Announcement',
+            excerpt: 'This announcement hides the start date.',
+            body: 'This is the full body of the announcement.',
+            publisher: 'default:user/user',
+            created_at: today,
+            active: true,
+            start_at: today,
+          },
+        ],
+      };
+      const mockAnnouncementsTodayApi = {
+        announcements: jest.fn().mockResolvedValue(todayAnnouncement),
+      };
+      await renderInTestApp(
+        <TestApiProvider
+          apis={[
+            [permissionApiRef, mockApis.permission()],
+            [announcementsApiRef, mockAnnouncementsTodayApi],
+            [catalogApiRef, mockCatalogApi],
+          ]}
+        >
+          <AnnouncementsPage themeId="home" title="Announcements" hideStartAt />
+        </TestApiProvider>,
+        {
+          mountedRoutes: {
+            '/announcements': rootRouteRef,
+            '/catalog/:namespace/:kind/:name': entityRouteRef,
+          },
+        },
+      );
+      expect(screen.queryByText(/Scheduled Today/i)).toBeNull();
+    });
   });
 });
