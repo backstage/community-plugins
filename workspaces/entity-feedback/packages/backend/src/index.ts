@@ -25,5 +25,6 @@ backend.add(import('@backstage/plugin-auth-backend-module-guest-provider'));
 backend.add(import('@backstage/plugin-catalog-backend'));
 
 backend.add(import('@backstage-community/plugin-entity-feedback-backend'));
+backend.add(import('@backstage/plugin-notifications-backend'));
 
 backend.start();
