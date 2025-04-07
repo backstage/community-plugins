@@ -50,7 +50,9 @@ export const EngagementCards = ({
     const matchingPoint = dataArray.find(item => {
       if (!item.day) return false;
       // Format item.day to YYYY-MM-DD for comparison
-      const itemDate = new Date(item.day).toISOString().split('T')[0];
+      const itemDate = DateTime.fromISO(item.day)
+        .toLocal()
+        .toFormat('yyyy-MM-dd');
       return itemDate === formattedEndDate;
     });
 
