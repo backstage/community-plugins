@@ -64,14 +64,14 @@ const _default: FrontendPlugin<
         title: string;
         subtitle: string;
         pageTitle: string;
-        width: number;
-        height: number;
+        width: number | undefined;
+        height: number | undefined;
       } & {
         path: string | undefined;
       };
       configInput: {
-        height: number;
-        width: number;
+        height?: number | undefined;
+        width?: number | undefined;
         title?: string | undefined;
         subtitle?: string | undefined;
         pageTitle?: string | undefined;
@@ -151,14 +151,14 @@ export const techRadarPage: ExtensionDefinition<{
     title: string;
     subtitle: string;
     pageTitle: string;
-    width: number;
-    height: number;
+    width: number | undefined;
+    height: number | undefined;
   } & {
     path: string | undefined;
   };
   configInput: {
-    height: number;
-    width: number;
+    height?: number | undefined;
+    width?: number | undefined;
     title?: string | undefined;
     subtitle?: string | undefined;
     pageTitle?: string | undefined;

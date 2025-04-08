@@ -55,8 +55,8 @@ export const techRadarPage = PageBlueprint.makeWithOverrides({
           .string()
           .default('Pick the recommended technologies for your projects'),
       pageTitle: z => z.string().default('Company Radar'),
-      width: z => z.number(),
-      height: z => z.number(),
+      width: z => z.number().optional(),
+      height: z => z.number().optional(),
     },
   },
   factory(originalFactory, { config }) {
