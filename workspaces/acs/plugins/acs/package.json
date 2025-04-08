@@ -41,7 +41,7 @@
     "@patternfly/react-icons": "5.4.2",
     "@patternfly/react-styles": "5.4.1",
     "@patternfly/react-table": "5.4.16",
-    "@patternfly/react-topology": "5.2.1",
+    "@patternfly/react-topology": "5.4.1",
     "date-fns": "1.30.1",
     "raven-js": "^3.27.2",
     "react-data-table-component": "^7.6.2",
