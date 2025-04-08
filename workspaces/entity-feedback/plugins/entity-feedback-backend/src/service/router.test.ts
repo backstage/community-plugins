@@ -20,7 +20,6 @@ import request from 'supertest';
 
 import { createRouter } from './router';
 import { mockCredentials, mockServices } from '@backstage/backend-test-utils';
-import { notificationService } from '@backstage/plugin-notifications-node';
 
 const sampleOwnedEntities = [
   {
@@ -72,6 +71,7 @@ jest.mock('@backstage/catalog-client', () => ({
   CatalogClient: jest.fn().mockImplementation(() => ({
     getEntities: mockGetEntities,
     getEntitiesByRefs: mockGetEnttiesByRefs,
+    getEntityByRef: () => sampleEntities[0],
   })),
 }));
 
@@ -125,6 +125,10 @@ jest.mock('./DatabaseHandler', () => ({
   DatabaseHandler: { create: async () => mockDbHandler },
 }));
 
+const mockNotificationService = {
+  send: jest.fn().mockImplementation(async () => {}),
+};
+
 describe('createRouter', () => {
   let app: express.Express;
 
@@ -136,7 +140,7 @@ describe('createRouter', () => {
       auth: mockServices.auth(),
       httpAuth: mockServices.httpAuth(),
       config: mockServices.rootConfig(),
-      notificationService: notificationService.T,
+      notificationService: mockNotificationService,
     });
 
     app = express().use(router);
@@ -302,7 +306,11 @@ describe('createRouter', () => {
 
   describe('POST /responses/:entityRef(*)', () => {
     it('should record a response correctly', async () => {
-      const body = { response: 'blah', comments: 'feedback', consent: true };
+      const body = {
+        response: 'blah',
+        comments: '{ "additionalComments": "feedback" }',
+        consent: true,
+      };
       const response = await request(app)
         .post('/responses/component%3Adefault%2Fservice')
         .set('authorization', mockCredentials.user.header())
@@ -312,11 +320,25 @@ describe('createRouter', () => {
         userRef: 'user:default/mock',
         ...body,
       });
+      expect(mockNotificationService.send).toHaveBeenCalledWith({
+        recipients: {
+          type: 'entity',
+          entityRef: '',
+        },
+        payload: {
+          title: 'New feedback for component:default/service',
+          description: 'Comments: feedback',
+        },
+      });
       expect(response.status).toEqual(201);
     });
 
     it('should handle non encoded entity refs', async () => {
-      const body = { response: 'blah', comments: 'feedback', consent: true };
+      const body = {
+        response: 'blah',
+        comments: '{ "additionalComments": "feedback" }',
+        consent: true,
+      };
       const response = await request(app)
         .post('/responses/component:default/service')
         .set('authorization', mockCredentials.user.header())
@@ -325,6 +347,16 @@ describe('createRouter', () => {
         entityRef: 'component:default/service',
         userRef: 'user:default/mock',
         ...body,
+      });
+      expect(mockNotificationService.send).toHaveBeenCalledWith({
+        recipients: {
+          type: 'entity',
+          entityRef: '',
+        },
+        payload: {
+          title: 'New feedback for component:default/service',
+          description: 'Comments: feedback',
+        },
       });
       expect(response.status).toEqual(201);
     });
