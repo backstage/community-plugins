@@ -20,6 +20,7 @@ import request from 'supertest';
 
 import { createRouter } from './router';
 import { mockCredentials, mockServices } from '@backstage/backend-test-utils';
+import { notificationService } from '@backstage/plugin-notifications-node';
 
 const sampleOwnedEntities = [
   {
@@ -135,6 +136,7 @@ describe('createRouter', () => {
       auth: mockServices.auth(),
       httpAuth: mockServices.httpAuth(),
       config: mockServices.rootConfig(),
+      notificationService: notificationService.T,
     });
 
     app = express().use(router);
