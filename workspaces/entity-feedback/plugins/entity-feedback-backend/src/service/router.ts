@@ -34,6 +34,11 @@ import Router from 'express-promise-router';
 import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 import { DatabaseHandler } from './DatabaseHandler';
 import { Config } from '@backstage/config';
+import {
+  NotificationRecipients,
+  NotificationService,
+} from '@backstage/plugin-notifications-node';
+import { NotificationPayload } from '@backstage/plugin-notifications-common';
 
 /**
  * @public
@@ -46,6 +51,7 @@ export interface RouterOptions {
   auth: AuthService;
   httpAuth: HttpAuthService;
   config: Config;
+  notificationService: NotificationService;
 }
 
 /**
@@ -54,7 +60,15 @@ export interface RouterOptions {
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
-  const { database, discovery, logger, httpAuth, auth, config } = options;
+  const {
+    database,
+    discovery,
+    logger,
+    httpAuth,
+    auth,
+    config,
+    notificationService,
+  } = options;
 
   logger.info('Initializing Entity Feedback backend');
 
@@ -191,6 +205,29 @@ export async function createRouter(
   router.post('/responses/:entityRef(*)', async (req, res) => {
     const { response, comments, consent } = req.body;
     const credentials = await httpAuth.credentials(req, { allow: ['user'] });
+    const { token } = await auth.getPluginRequestToken({
+      onBehalfOf: credentials,
+      targetPluginId: 'catalog',
+    });
+    const entityOwner =
+      (
+        await catalogClient.getEntityByRef(req.params.entityRef, {
+          token: token,
+        })
+      )?.relations?.find(rel => rel.type === 'ownedBy')?.targetRef || '';
+
+    const recipients: NotificationRecipients = {
+      type: 'entity',
+      entityRef: entityOwner,
+    };
+    const payload: NotificationPayload = {
+      title: `New feedback for ${req.params.entityRef}`,
+      description: `Comments: ${JSON.parse(comments).additionalComments}`,
+    };
+    await notificationService.send({
+      recipients,
+      payload,
+    });
 
     await dbHandler.recordResponse({
       entityRef: req.params.entityRef,
