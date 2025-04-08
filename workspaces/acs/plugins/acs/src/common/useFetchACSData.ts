@@ -20,16 +20,14 @@ import {
   discoveryApiRef,
 } from '@backstage/core-plugin-api';
 
-export const QueryACSData = (deploymentName: string) => {
+export const useFetchACSData = (deploymentName: string) => {
   /* eslint-disable consistent-return */
   const [result, setResult] = useState([]);
-  const [loaded, setLoaded] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
-  const [backendUrl, setBackendUrl] = useState('');
 
   // Retrieve proxy url from api
   const discoveryApi = useApi(discoveryApiRef);
-  discoveryApi.getBaseUrl('proxy').then(value => setBackendUrl(value));
 
   const fetchApi = useApi(fetchApiRef);
 
@@ -37,10 +35,9 @@ export const QueryACSData = (deploymentName: string) => {
     return deploymentName.split(',');
   };
 
-  const getACSData = () => {
+  const getACSData = async () => {
     const deploymentNameArr = convertDeploymentNameStringToArray();
-
-    if (!backendUrl) return;
+    const backendUrl = await discoveryApi.getBaseUrl('proxy');
 
     deploymentNameArr.forEach((name: string) => {
       fetchApi
@@ -60,7 +57,7 @@ export const QueryACSData = (deploymentName: string) => {
 
           jsonData.pop();
 
-          setLoaded(true);
+          setIsLoading(true);
           setResult(prevResult => ({ ...prevResult, jsonData }));
         })
         .catch(_error => {
@@ -73,7 +70,7 @@ export const QueryACSData = (deploymentName: string) => {
   useEffect(() => {
     getACSData();
     // eslint-disable-next-line
-  }, [backendUrl]);
+  }, []);
 
-  return { result, loaded, error };
+  return { result, isLoading, error };
 };
