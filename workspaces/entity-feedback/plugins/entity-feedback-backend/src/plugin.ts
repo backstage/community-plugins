@@ -19,7 +19,6 @@ import {
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
 import { createRouter } from './service/router';
-// import { notificationService } from '@backstage/plugin-notifications-node';
 
 /**
  * The Entity Feedback backend plugin.
