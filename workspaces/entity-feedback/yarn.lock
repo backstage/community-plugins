@@ -2610,6 +2610,8 @@ __metadata:
     "@backstage/plugin-auth-backend": "npm:^0.24.4"
     "@backstage/plugin-auth-backend-module-guest-provider": "npm:^0.2.6"
     "@backstage/plugin-auth-node": "npm:^0.6.1"
+    "@backstage/plugin-notifications-common": "npm:^0.0.8"
+    "@backstage/plugin-notifications-node": "npm:^0.2.13"
     "@types/express": "npm:*"
     "@types/node-fetch": "npm:^2.5.12"
     "@types/supertest": "npm:^6.0.0"
