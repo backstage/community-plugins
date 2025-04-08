@@ -45,7 +45,7 @@ export const tektonTranslationRef = createTranslationRef({
         description: 'No Pipeline Run to visualize',
       },
       noTasksDescription: 'This Pipeline Run has no tasks to visualize',
-      setpList: {
+      stepList: {
         finallyTaskTitle: 'Finally Task',
       },
     },

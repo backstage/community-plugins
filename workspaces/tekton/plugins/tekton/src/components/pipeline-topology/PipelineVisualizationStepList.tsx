@@ -62,7 +62,7 @@ export const PipelineVisualizationStepList = ({
       )}
       {isFinallyTask && (
         <div className="bs-tkn-pipeline-visualization-step-list__task-type">
-          {t('pipelineVisualization.setpList.finallyTaskTitle')}
+          {t('pipelineVisualization.stepList.finallyTaskTitle')}
         </div>
       )}
       {steps?.map(({ duration, name, status }) => {
