@@ -548,7 +548,7 @@ export class PoliciesServer {
           description: roleRaw.metadata?.description ?? '',
           author: modifiedBy,
           modifiedBy,
-          owner: roleRaw.metadata?.owner ?? '',
+          owner: roleRaw.metadata?.owner ?? modifiedBy,
         };
 
         await this.enforcer.addGroupingPolicies(roles, metadata);
