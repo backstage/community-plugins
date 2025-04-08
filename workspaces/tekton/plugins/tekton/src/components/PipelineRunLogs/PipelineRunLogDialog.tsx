@@ -60,6 +60,7 @@ type PipelineRunLogDialogProps = {
   taskRuns: TaskRunKind[];
   pods: V1Pod[];
   activeTask?: string;
+  setActiveTask: (t: string) => void;
 };
 const PipelineRunLogDialog = ({
   open,
@@ -68,10 +69,9 @@ const PipelineRunLogDialog = ({
   pods,
   taskRuns,
   activeTask,
+  setActiveTask,
 }: PipelineRunLogDialogProps) => {
   const classes = useStyles();
-
-  const [task, setTask] = React.useState(activeTask);
 
   return (
     <Dialog
@@ -101,15 +101,15 @@ const PipelineRunLogDialog = ({
         <ErrorBoundary>
           <PipelineRunLogDownloader
             pods={pods}
-            activeTask={task}
+            activeTask={activeTask}
             pipelineRun={pipelineRun}
           />
           <PipelineRunLogs
             pipelineRun={pipelineRun}
             taskRuns={taskRuns}
             pods={pods}
-            activeTask={task}
-            setActiveTask={setTask}
+            activeTask={activeTask}
+            setActiveTask={setActiveTask}
           />
         </ErrorBoundary>
       </DialogContent>
@@ -117,4 +117,4 @@ const PipelineRunLogDialog = ({
   );
 };
 
-export default React.memo(PipelineRunLogDialog);
+export default PipelineRunLogDialog;

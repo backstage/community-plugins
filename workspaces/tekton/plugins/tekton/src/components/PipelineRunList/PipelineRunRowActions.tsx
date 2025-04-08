@@ -48,7 +48,6 @@ const PipelineRunRowActions: React.FC<{ pipelineRun: PipelineRunKind }> = ({
   const [open, setOpen] = React.useState<boolean>(false);
 
   const [openOutput, setOpenOutput] = React.useState<boolean>(false);
-  const [noActiveTask, setNoActiveTask] = React.useState(false);
   const pods = watchResourcesData?.pods?.data || [];
   const taskRuns = watchResourcesData?.taskruns?.data || [];
   const { sbomTaskRun } = getTaskrunsOutputGroup(
@@ -56,13 +55,17 @@ const PipelineRunRowActions: React.FC<{ pipelineRun: PipelineRunKind }> = ({
     taskRuns,
   );
   const activeTaskName = sbomTaskRun?.metadata?.name;
+  const [task, setTask] = React.useState(activeTaskName);
+  const handleTaskChange = (newTask: string) => {
+    setTask(newTask);
+  };
 
   const hasKubernetesProxyAccess = usePermission({
     permission: kubernetesProxyPermission,
   });
 
-  const openDialog = (viewLogs?: boolean) => {
-    if (viewLogs) setNoActiveTask(true);
+  const openDialog = (forSBOM?: boolean) => {
+    if (forSBOM && activeTaskName) setTask(activeTaskName);
     setOpen(true);
   };
 
@@ -71,7 +74,6 @@ const PipelineRunRowActions: React.FC<{ pipelineRun: PipelineRunKind }> = ({
   };
 
   const closeDialog = () => {
-    setNoActiveTask(false);
     setOpen(false);
   };
 
@@ -109,7 +111,8 @@ const PipelineRunRowActions: React.FC<{ pipelineRun: PipelineRunKind }> = ({
         closeDialog={closeDialog}
         pods={pods}
         taskRuns={taskRuns}
-        activeTask={noActiveTask ? undefined : activeTaskName}
+        activeTask={task}
+        setActiveTask={handleTaskChange}
       />
 
       <PipelineRunOutputDialog
@@ -132,7 +135,7 @@ const PipelineRunRowActions: React.FC<{ pipelineRun: PipelineRunKind }> = ({
             <IconButton
               size="small"
               data-testid="view-logs-icon"
-              onClick={() => openDialog(true)}
+              onClick={() => openDialog()}
               disabled={!hasKubernetesProxyAccess.allowed}
               style={{ pointerEvents: 'auto', padding: 0 }}
             >
@@ -154,7 +157,9 @@ const PipelineRunRowActions: React.FC<{ pipelineRun: PipelineRunKind }> = ({
               disabled={!sbomTaskRun || !isSbomTaskRun(sbomTaskRun)}
               size="small"
               onClick={
-                !hasExternalLink(sbomTaskRun) ? () => openDialog() : undefined
+                !hasExternalLink(sbomTaskRun)
+                  ? () => openDialog(true)
+                  : undefined
               }
               style={{ pointerEvents: 'auto', padding: 0 }}
             >
@@ -185,4 +190,4 @@ const PipelineRunRowActions: React.FC<{ pipelineRun: PipelineRunKind }> = ({
     </>
   );
 };
-export default React.memo(PipelineRunRowActions);
+export default PipelineRunRowActions;
