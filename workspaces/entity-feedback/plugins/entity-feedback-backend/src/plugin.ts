@@ -19,6 +19,7 @@ import {
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
 import { createRouter } from './service/router';
+import { notificationService } from '@backstage/plugin-notifications-node';
 
 /**
  * The Entity Feedback backend plugin.
@@ -37,7 +38,7 @@ export const entityFeedbackPlugin = createBackendPlugin({
         httpRouter: coreServices.httpRouter,
         logger: coreServices.logger,
         config: coreServices.rootConfig,
-        notificationService: notificationService,
+        notificationServiceInstance: notificationService,
       },
       async init({
         database,
@@ -47,7 +48,7 @@ export const entityFeedbackPlugin = createBackendPlugin({
         auth,
         httpAuth,
         config,
-        notificationService,
+        notificationServiceInstance,
       }) {
         httpRouter.use(
           await createRouter({
@@ -57,7 +58,7 @@ export const entityFeedbackPlugin = createBackendPlugin({
             httpAuth,
             logger,
             config,
-            notificationService,
+            notificationService: notificationServiceInstance,
           }),
         );
       },
