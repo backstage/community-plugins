@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.14.0
+
+### Minor Changes
+
+- ea83bb6: Backstage version bump to v1.36.1
+
 ## 1.13.3
 
 ### Patch Changes
