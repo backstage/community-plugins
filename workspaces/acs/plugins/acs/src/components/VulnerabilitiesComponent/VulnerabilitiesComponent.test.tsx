@@ -17,7 +17,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { VulnerabilitiesComponent } from './VulnerabilitiesComponent';
-import { QueryACSData } from '../../common/QueryACSData';
+import { QueryACSData } from '../../common/useFetchACSData';
 
 jest.mock('../../common/QueryACSData', () => ({
   QueryACSData: jest.fn(),
