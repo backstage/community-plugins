@@ -25,7 +25,7 @@ import { TagsResponse } from '../types';
 const DEFAULT_PROXY_PATH = '/acr/api';
 
 export interface AzureContainerRegistryApiV1 {
-  getTags(repo: string): Promise<TagsResponse>;
+  getTags(repo: string, registryName?: string): Promise<TagsResponse>;
 }
 
 export const AzureContainerRegistryApiRef =
@@ -52,9 +52,12 @@ export class AzureContainerRegistryApiClient
     this.identityApi = options.identityApi;
   }
 
-  private async getBaseUrl() {
-    const proxyPath =
+  private async getBaseUrl(registryName?: string) {
+    const defaultPath =
       this.configApi.getOptionalString('acr.proxyPath') || DEFAULT_PROXY_PATH;
+
+    const proxyPath = registryName ? `/acr/api/${registryName}` : defaultPath;
+
     return `${await this.discoveryApi.getBaseUrl('proxy')}${proxyPath}`;
   }
 
@@ -75,8 +78,8 @@ export class AzureContainerRegistryApiClient
     return await response.json();
   }
 
-  async getTags(repo: string) {
-    const proxyUrl = await this.getBaseUrl();
+  async getTags(repo: string, registryName?: string) {
+    const proxyUrl = await this.getBaseUrl(registryName);
 
     return (await this.fetcher(
       `${proxyUrl}/${repo}/_tags?orderby=timedesc&n=100`,

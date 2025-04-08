@@ -19,7 +19,6 @@ import useAsync from 'react-use/esm/useAsync';
 import { ErrorPanel, Table } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { Box } from '@material-ui/core';
-
 import { formatDate } from '@janus-idp/shared-react';
 
 import { AzureContainerRegistryApiRef } from '../../api';
@@ -28,13 +27,15 @@ import { columns } from './tableHeading';
 
 type AcrImagesProps = {
   image: string;
+  registryName?: string;
 };
 
-export const AcrImages = ({ image }: AcrImagesProps) => {
+export const AcrImages = ({ image, registryName }: AcrImagesProps) => {
   const AzureContainerRegistryClient = useApi(AzureContainerRegistryApiRef);
+
   const title = `Azure Container Registry Repository: ${image}`;
   const { loading, value, error } = useAsync(() =>
-    AzureContainerRegistryClient.getTags(image),
+    AzureContainerRegistryClient.getTags(image, registryName),
   );
 
   // TODO: it should be possible to just pass the tags to the table.
