@@ -19,13 +19,13 @@ import '@testing-library/jest-dom';
 import { VulnerabilitiesComponent } from './VulnerabilitiesComponent';
 import { useFetchACSData } from '../../common/useFetchACSData';
 
-jest.mock('../../common/QueryACSData', () => ({
-  QueryACSData: jest.fn(),
+jest.mock('../../common/useFetchACSData', () => ({
+  useFetchACSData: jest.fn(),
 }));
 
 describe('VulnerabilitiesComponent', () => {
   test('displays loading state initially', () => {
-    (QueryACSData as jest.Mock).mockReturnValue({
+    (useFetchACSData as jest.Mock).mockReturnValue({
       result: null,
       loaded: false,
       error: null,
@@ -37,7 +37,7 @@ describe('VulnerabilitiesComponent', () => {
   });
 
   test('displays error message when data fetch fails', () => {
-    (QueryACSData as jest.Mock).mockReturnValue({
+    (useFetchACSData as jest.Mock).mockReturnValue({
       result: null,
       loaded: true,
       error: new Error('Test error'),
