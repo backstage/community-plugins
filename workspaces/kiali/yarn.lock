@@ -2815,7 +2815,7 @@ __metadata:
     "@patternfly/react-charts": "npm:^7.1.1"
     "@patternfly/react-core": "npm:^5.1.1"
     "@patternfly/react-icons": "npm:^5.1.1"
-    "@patternfly/react-topology": "npm:5.3.0"
+    "@patternfly/react-topology": "npm:5.4.1"
     "@playwright/test": "npm:1.51.1"
     "@redhat-developer/red-hat-developer-hub-theme": "npm:0.4.0"
     "@testing-library/dom": "npm:^10.0.0"
@@ -6067,6 +6067,22 @@ __metadata:
     enabled: "npm:2.0.x"
     kuler: "npm:^2.0.0"
   checksum: 10/14e449a7f42f063f959b472f6ce02d16457a756e852a1910aaa831b63fc21d86f6c32b2a1aa98a4835b856548c926643b51062d241fb6e9b2b7117996053e6b9
+  languageName: node
+  linkType: hard
+
+"@dagrejs/dagre@npm:1.1.2":
+  version: 1.1.2
+  resolution: "@dagrejs/dagre@npm:1.1.2"
+  dependencies:
+    "@dagrejs/graphlib": "npm:2.2.2"
+  checksum: 10/abd332d8921989acdd9db3c644758d48b669d2d2c35f59769a2e97b9242d1cc75af3addbbb9f24f1be78e35303cb03685d64798135367e8694c76a5449d54340
+  languageName: node
+  linkType: hard
+
+"@dagrejs/graphlib@npm:2.2.2":
+  version: 2.2.2
+  resolution: "@dagrejs/graphlib@npm:2.2.2"
+  checksum: 10/26329827d35115104566388200025f3e92611bd27a00b2a788fb308736dd67ecd1062af280c01e1860168d30c5057ea7b73b265643499f898cec1d4d99b1a789
   languageName: node
   linkType: hard
 
@@ -9716,19 +9732,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@patternfly/react-topology@npm:5.3.0":
-  version: 5.3.0
-  resolution: "@patternfly/react-topology@npm:5.3.0"
+"@patternfly/react-topology@npm:5.4.1":
+  version: 5.4.1
+  resolution: "@patternfly/react-topology@npm:5.4.1"
   dependencies:
+    "@dagrejs/dagre": "npm:1.1.2"
     "@patternfly/react-core": "npm:^5.1.1"
     "@patternfly/react-icons": "npm:^5.1.1"
     "@patternfly/react-styles": "npm:^5.1.1"
     "@types/d3": "npm:^7.4.0"
     "@types/d3-force": "npm:^1.2.1"
-    "@types/dagre": "npm:0.7.42"
     "@types/react-measure": "npm:^2.0.6"
     d3: "npm:^7.8.0"
-    dagre: "npm:0.8.2"
     mobx: "npm:^6.9.0"
     mobx-react: "npm:^7.6.0"
     point-in-svg-path: "npm:^1.0.1"
@@ -9739,7 +9754,7 @@ __metadata:
   peerDependencies:
     react: ^17 || ^18
     react-dom: ^17 || ^18
-  checksum: 10/5fd192181a02f3bce492019eb70e529712635ed6d5bd99a9011b43aeb5337d66e75a4a9c19521f1adaa1f73f0b64025afe11836f00a1fe5f309e451a266403e6
+  checksum: 10/ab81ad9f7dd7a6758acee12a44958779ffe85100b80f0a7ba48390b142dce82a6e03faf3f1fd1d54274fdeb1280b0c2e6aef8ec3cb8f3807e9a7342fba3ccd3e
   languageName: node
   linkType: hard
 
@@ -13340,13 +13355,6 @@ __metadata:
     "@types/d3-transition": "npm:*"
     "@types/d3-zoom": "npm:*"
   checksum: 10/12234aa093c8661546168becdd8956e892b276f525d96f65a7b32fed886fc6a569fe5a1171bff26fef2a5663960635f460c9504a6f2d242ba281a2b6c8c6465c
-  languageName: node
-  linkType: hard
-
-"@types/dagre@npm:0.7.42":
-  version: 0.7.42
-  resolution: "@types/dagre@npm:0.7.42"
-  checksum: 10/88d456e8b833676290bd64f3ea579729680085aa0abfb7183b1baf71c01938d412750ea3b1b4962aac2ba9d17b4c524f49398ceb18c28c6f6a8200fd1852cfe5
   languageName: node
   linkType: hard
 
@@ -18435,16 +18443,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dagre@npm:0.8.2":
-  version: 0.8.2
-  resolution: "dagre@npm:0.8.2"
-  dependencies:
-    graphlib: "npm:^2.1.5"
-    lodash: "npm:^4.17.4"
-  checksum: 10/bd568d9d7551c55c57fee5b98c882992902eadac10f468271442313571cd4b0e517dd2d1223f0e986bb378c1e5dd5d46f3136dd9a7af0b885b38bcb00ea60f2a
-  languageName: node
-  linkType: hard
-
 "dagre@npm:^0.8.5":
   version: 0.8.5
   resolution: "dagre@npm:0.8.5"
@@ -21846,7 +21844,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphlib@npm:^2.1.5, graphlib@npm:^2.1.8":
+"graphlib@npm:^2.1.8":
   version: 2.1.8
   resolution: "graphlib@npm:2.1.8"
   dependencies:
