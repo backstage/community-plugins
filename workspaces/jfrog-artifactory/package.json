@@ -18,6 +18,7 @@
     "lint": "backstage-cli repo lint --since origin/main",
     "lint:all": "backstage-cli repo lint",
     "prettier:check": "prettier --check .",
+    "prettier:fix": "prettier --write .",
     "new": "backstage-cli new --scope @backstage-community",
     "postinstall": "cd ../../ && yarn install"
   },
@@ -33,7 +34,7 @@
     "directory": "workspaces/jfrog-artifactory"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.29.6",
+    "@backstage/cli": "^0.30.0",
     "@backstage/e2e-test-utils": "^0.1.1",
     "@backstage/repo-tools": "^0.13.0",
     "@changesets/cli": "^2.27.1",
