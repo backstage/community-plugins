@@ -54,18 +54,15 @@ const PipelineRunRowActions: React.FC<{ pipelineRun: PipelineRunKind }> = ({
     pipelineRun?.metadata?.name,
     taskRuns,
   );
-  const activeTaskName = sbomTaskRun?.metadata?.name;
-  const [task, setTask] = React.useState(activeTaskName);
-  const handleTaskChange = (newTask: string) => {
-    setTask(newTask);
-  };
+  const activeTask = sbomTaskRun?.metadata?.name;
+  const [forSBOM, toggleForSBOM] = React.useState(activeTask !== undefined);
 
   const hasKubernetesProxyAccess = usePermission({
     permission: kubernetesProxyPermission,
   });
 
-  const openDialog = (forSBOM?: boolean) => {
-    if (forSBOM && activeTaskName) setTask(activeTaskName);
+  const openDialog = (opts: { forSBOM: boolean }) => {
+    toggleForSBOM(opts.forSBOM);
     setOpen(true);
   };
 
@@ -75,6 +72,7 @@ const PipelineRunRowActions: React.FC<{ pipelineRun: PipelineRunKind }> = ({
 
   const closeDialog = () => {
     setOpen(false);
+    toggleForSBOM(false);
   };
 
   const {
@@ -111,8 +109,8 @@ const PipelineRunRowActions: React.FC<{ pipelineRun: PipelineRunKind }> = ({
         closeDialog={closeDialog}
         pods={pods}
         taskRuns={taskRuns}
-        activeTask={task}
-        setActiveTask={handleTaskChange}
+        activeTask={activeTask}
+        forSBOM={forSBOM}
       />
 
       <PipelineRunOutputDialog
@@ -135,7 +133,7 @@ const PipelineRunRowActions: React.FC<{ pipelineRun: PipelineRunKind }> = ({
             <IconButton
               size="small"
               data-testid="view-logs-icon"
-              onClick={() => openDialog()}
+              onClick={() => openDialog({ forSBOM: false })}
               disabled={!hasKubernetesProxyAccess.allowed}
               style={{ pointerEvents: 'auto', padding: 0 }}
             >
@@ -158,7 +156,9 @@ const PipelineRunRowActions: React.FC<{ pipelineRun: PipelineRunKind }> = ({
               size="small"
               onClick={
                 !hasExternalLink(sbomTaskRun)
-                  ? () => openDialog(true)
+                  ? () => {
+                      openDialog({ forSBOM: true });
+                    }
                   : undefined
               }
               style={{ pointerEvents: 'auto', padding: 0 }}
