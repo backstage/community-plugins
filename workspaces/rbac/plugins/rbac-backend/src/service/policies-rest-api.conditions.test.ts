@@ -684,7 +684,7 @@ describe('REST policies api with conditions', () => {
       expect(result.body).toEqual([
         {
           entityReference: 'role:default/test',
-          permission: 'policy-entity',
+          permission: 'policy.entity.create',
           policy: 'create',
           effect: 'allow',
           metadata: {
@@ -743,7 +743,7 @@ describe('REST policies api with conditions', () => {
       expect(result.body).toEqual([
         {
           entityReference: 'role:default/test',
-          permission: 'policy-entity',
+          permission: 'policy.entity.create',
           policy: 'create',
           effect: 'allow',
           metadata: {

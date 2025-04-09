@@ -27,6 +27,7 @@ import {
 import { createRouter } from '@backstage/plugin-permission-backend';
 import {
   AuthorizeResult,
+  BasicPermission,
   PolicyDecision,
   ResourcePermission,
 } from '@backstage/plugin-permission-common';
@@ -92,7 +93,7 @@ export class PoliciesServer {
 
   private async authorizeConditional(
     request: Request,
-    permission: ResourcePermission,
+    permission: ResourcePermission<'policy-entity'> | BasicPermission,
   ): Promise<PolicyDecision> {
     const credentials = await this.options.httpAuth.credentials(request, {
       allow: ['user', 'service'],
@@ -108,12 +109,20 @@ export class PoliciesServer {
       );
     }
 
-    const decision = (
-      await this.permissions.authorizeConditional(
-        [{ permission: permission }],
-        { credentials },
-      )
-    )[0];
+    let decision: PolicyDecision;
+    if (permission.type === 'resource') {
+      decision = (
+        await this.permissions.authorizeConditional([{ permission }], {
+          credentials,
+        })
+      )[0];
+    } else {
+      decision = (
+        await this.permissions.authorize([{ permission }], {
+          credentials,
+        })
+      )[0];
+    }
 
     return decision;
   }
@@ -121,7 +130,7 @@ export class PoliciesServer {
   async serve(): Promise<express.Router> {
     const router = await createRouter(this.options);
 
-    const { httpAuth } = this.options;
+    const { httpAuth, logger } = this.options;
 
     if (!httpAuth) {
       throw new ServiceUnavailableError(
@@ -212,6 +221,19 @@ export class PoliciesServer {
         }
 
         const body = await this.transformPolicyArray(...policies);
+        // TODO: Temporary workaround to prevent breakages after the removal of the resource type `policy-entity` from the permission `policy.entity.create`
+        body.map(policy => {
+          if (
+            policy.permission === 'policy-entity' &&
+            policy.policy === 'create'
+          ) {
+            policy.permission = 'policy.entity.create';
+            logger.warn(
+              'Permission policy with resource type `policy-entity` and action `create` has been removed. Please consider updating the policy to the permission `policy.entity.create`',
+            );
+          }
+        });
+
         response.json(body);
       },
     );
@@ -248,6 +270,19 @@ export class PoliciesServer {
           : [];
         if (policy.length !== 0) {
           const body = await this.transformPolicyArray(...policy);
+          // TODO: Temporary workaround to prevent breakages after the removal of the resource type `policy-entity` from the permission `policy.entity.create`
+          body.map(bodyPolicy => {
+            if (
+              bodyPolicy.permission === 'policy-entity' &&
+              bodyPolicy.policy === 'create'
+            ) {
+              bodyPolicy.permission = 'policy.entity.create';
+              logger.warn(
+                'Permission policy with resource type `policy-entity` and action `create` has been removed. Please consider updating the policy to the permission `policy.entity.create`',
+              );
+            }
+          });
+
           response.json(body);
         } else {
           throw new NotFoundError(); // 404

@@ -98,7 +98,6 @@ export const useRoles = (
 
   const policyEntityCreatePermissionResult = usePermission({
     permission: policyEntityCreatePermission,
-    resourceRef: policyEntityCreatePermission.resourceType,
   });
 
   const createRoleLoading =

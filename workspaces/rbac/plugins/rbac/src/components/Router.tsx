@@ -55,10 +55,7 @@ export const Router = ({ useHeader = true }: { useHeader?: boolean }) => {
         <Route
           path={createRoleRouteRef.path}
           element={
-            <RequirePermission
-              permission={policyEntityCreatePermission}
-              resourceRef={policyEntityCreatePermission.resourceType}
-            >
+            <RequirePermission permission={policyEntityCreatePermission}>
               <CreateRolePage />
             </RequirePermission>
           }

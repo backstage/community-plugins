@@ -154,6 +154,7 @@ export class RBACPermissionPolicy implements PermissionPolicy {
       enforcerDelegate,
       auditor,
       conditionalStorage,
+      logger,
       superUserList,
     );
   }
@@ -162,6 +163,7 @@ export class RBACPermissionPolicy implements PermissionPolicy {
     private readonly enforcer: EnforcerDelegate,
     private readonly auditor: AuditorService,
     private readonly conditionStorage: ConditionalStorage,
+    private readonly logger: LoggerService,
     superUserList?: string[],
   ) {
     this.superUserList = superUserList;
@@ -199,6 +201,28 @@ export class RBACPermissionPolicy implements PermissionPolicy {
 
       const permissionName = request.permission.name;
       const roles = await this.enforcer.getRolesForUser(userEntityRef);
+      // handle permission with 'resource' type
+      const hasNamedPermission =
+        await this.hasImplicitPermissionSpecifiedByName(
+          permissionName,
+          action,
+          roles,
+        );
+
+      if (
+        request.permission.name === 'policy.entity.create' &&
+        !hasNamedPermission
+      ) {
+        request.permission = {
+          attributes: { action: 'create' },
+          type: 'resource',
+          resourceType: 'policy-entity',
+          name: 'policy.entity.create',
+        };
+        this.logger.warn(
+          'Permission policy with resource type `policy-entity` and action `create` has been removed. Please consider updating the policy to the permission `policy.entity.create`',
+        );
+      }
 
       if (isResourcePermission(request.permission)) {
         const resourceType = request.permission.resourceType;
@@ -217,13 +241,6 @@ export class RBACPermissionPolicy implements PermissionPolicy {
           }
         }
 
-        // handle permission with 'resource' type
-        const hasNamedPermission =
-          await this.hasImplicitPermissionSpecifiedByName(
-            permissionName,
-            action,
-            roles,
-          );
         // Let's set up higher priority for permission specified by name, than by resource type
         const obj = hasNamedPermission ? permissionName : resourceType;
 

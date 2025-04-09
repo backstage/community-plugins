@@ -127,7 +127,6 @@ describe('Router component', () => {
     expect(mockedPrequirePermission).toHaveBeenCalledWith(
       expect.objectContaining({
         permission: expect.objectContaining({ name: 'policy.entity.create' }),
-        resourceRef: expect.stringContaining('policy-entity'),
       }),
       expect.anything(),
     );

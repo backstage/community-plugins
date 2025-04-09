@@ -129,7 +129,7 @@ The following is an example from the team lead's point of view after they have b
 
 3. Create a new role for your team, ensuring you set yourself as the owner:
 
-   **NOTE**: Setting yourself the owner of the role is required as this is not done automatically for you. Missing this step will result in the inability to query this role.
+   **NOTE**: Ownership is automatically assigned to the user during creation but can be updated at anytime.
 
    ```bash
    curl -X POST 'http://localhost:7007/api/permission/roles' \

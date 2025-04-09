@@ -905,7 +905,7 @@ describe('RBACPermissionPolicy Tests', () => {
     ];
     const permissions = [
       ['role:default/rbac_admin', 'policy-entity', 'read', 'allow'],
-      ['role:default/rbac_admin', 'policy-entity', 'create', 'allow'],
+      ['role:default/rbac_admin', 'policy.entity.create', 'create', 'allow'],
       ['role:default/rbac_admin', 'policy-entity', 'delete', 'allow'],
       ['role:default/rbac_admin', 'policy-entity', 'update', 'allow'],
       ['role:default/rbac_admin', 'catalog-entity', 'read', 'allow'],
