@@ -1,5 +1,11 @@
 # @backstage-community/plugin-copilot
 
+## 0.9.1
+
+### Patch Changes
+
+- 6232241: Ensure that date is converted to the local timezone before performing comparison
+
 ## 0.9.0
 
 ### Minor Changes
