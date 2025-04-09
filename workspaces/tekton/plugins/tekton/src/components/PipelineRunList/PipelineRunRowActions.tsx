@@ -55,7 +55,7 @@ const PipelineRunRowActions: React.FC<{ pipelineRun: PipelineRunKind }> = ({
     taskRuns,
   );
   const activeTaskName = sbomTaskRun?.metadata?.name;
-  const [forSBOM, toggleForSBOM] = React.useState(activeTaskName !== undefined);
+  const [forSBOM, toggleForSBOM] = React.useState(false);
 
   const hasKubernetesProxyAccess = usePermission({
     permission: kubernetesProxyPermission,
