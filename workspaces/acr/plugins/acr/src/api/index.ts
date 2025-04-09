@@ -56,7 +56,9 @@ export class AzureContainerRegistryApiClient
     const defaultPath =
       this.configApi.getOptionalString('acr.proxyPath') || DEFAULT_PROXY_PATH;
 
-    const proxyPath = registryName ? `/acr/api/${registryName}` : defaultPath;
+    const proxyPath = registryName
+      ? `/acr/custom/api/${registryName}`
+      : defaultPath;
 
     return `${await this.discoveryApi.getBaseUrl('proxy')}${proxyPath}`;
   }
