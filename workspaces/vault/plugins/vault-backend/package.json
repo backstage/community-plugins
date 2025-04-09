@@ -65,6 +65,7 @@
     "@backstage/cli": "^0.31.0",
     "@backstage/plugin-auth-backend": "^0.24.4",
     "@backstage/plugin-auth-backend-module-guest-provider": "^0.2.6",
+    "@backstage/plugin-catalog-backend": "^1.32.0",
     "@types/compression": "^1.7.2",
     "@types/node-fetch": "^2.5.12",
     "@types/supertest": "^6.0.0",
