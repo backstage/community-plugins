@@ -1,0 +1,73 @@
+{
+  "name": "@backstage-community/plugin-scaffolder-backend-module-sonarqube-v2",
+  "description": "The sonarqube module for @backstage/plugin-scaffolder-backend",
+  "version": "1.0.0",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "backstage": {
+    "role": "backend-plugin-module",
+    "supported-versions": "1.32.5",
+    "pluginId": "scaffolder",
+    "pluginPackage": "@backstage/plugin-scaffolder-backend"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "package.json": [
+        "package.json"
+      ]
+    }
+  },
+  "scripts": {
+    "build": "backstage-cli package build",
+    "clean": "backstage-cli package clean",
+    "lint:check": "backstage-cli package lint",
+    "lint:fix": "backstage-cli package lint --fix",
+    "postpack": "backstage-cli package postpack",
+    "prepack": "backstage-cli package prepack",
+    "start": "backstage-cli package start",
+    "test": "backstage-cli package test --passWithNoTests --coverage",
+    "tsc": "tsc",
+    "prettier:check": "prettier --ignore-unknown --check .",
+    "prettier:fix": "prettier --ignore-unknown --write ."
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,mjs,cjs}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ]
+  },
+  "dependencies": {
+    "@backstage/backend-plugin-api": "^1.2.0",
+    "@backstage/plugin-scaffolder-node": "^0.7.0",
+    "yaml": "^2.3.3"
+  },
+  "devDependencies": {
+    "@backstage/cli": "^0.30.0",
+    "@backstage/plugin-scaffolder-node-test-utils": "^0.1.19"
+  },
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/scaffolder-backend-module-sonarqube-v2/plugins/scaffolder-backend-module-sonarqube-v2"
+  },
+  "author": "Red Hat",
+  "bugs": "https://github.com/backstage/community-plugins/issues",
+  "keywords": [
+    "support:tech-preview",
+    "lifecycle:active"
+  ]
+}
