@@ -73,12 +73,12 @@ const PipelineRunLogDialog = ({
 }: PipelineRunLogDialogProps) => {
   const classes = useStyles();
 
-  const [task, changeTask] = React.useState(activeTask);
+  const [task, setTask] = React.useState(activeTask);
 
   React.useEffect(() => {
     // If we trigger this dialog for the SBOM task, update the current active task.
     if (forSBOM && activeTask) {
-      changeTask(activeTask);
+      setTask(activeTask);
     }
   }, [forSBOM, activeTask]);
 
@@ -110,7 +110,7 @@ const PipelineRunLogDialog = ({
         <ErrorBoundary>
           <PipelineRunLogDownloader
             pods={pods}
-            activeTask={activeTask}
+            activeTask={task}
             pipelineRun={pipelineRun}
           />
           <PipelineRunLogs
@@ -118,7 +118,7 @@ const PipelineRunLogDialog = ({
             taskRuns={taskRuns}
             pods={pods}
             activeTask={task}
-            setActiveTask={changeTask}
+            setActiveTask={setTask}
           />
         </ErrorBoundary>
       </DialogContent>
