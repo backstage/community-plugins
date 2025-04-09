@@ -8,7 +8,7 @@ proxy:
         Authorization: 'Bearer ${ACR_AUTH_TOKEN}'
       # Change to "false" in case of using self hosted artifactory instance with a self-signed certificate
       secure: true
-    '/acr/api/otherrepository':
+    '/acr/custom/api/otherrepository':
       target: ${ACR_URL_2}
       changeOrigin: true
       headers:
