@@ -190,4 +190,4 @@ const PipelineRunRowActions: React.FC<{ pipelineRun: PipelineRunKind }> = ({
     </>
   );
 };
-export default PipelineRunRowActions;
+export default React.memo(PipelineRunRowActions);

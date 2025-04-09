@@ -123,4 +123,4 @@ const PipelineRunLogDialog = ({
   );
 };
 
-export default PipelineRunLogDialog;
+export default React.memo(PipelineRunLogDialog);
