@@ -58,6 +58,7 @@
     "@backstage/cli": "^0.31.0",
     "@backstage/core-app-api": "^1.16.0",
     "@backstage/dev-utils": "^1.1.8",
+    "@backstage/plugin-catalog": "^1.28.0",
     "@backstage/test-utils": "^1.7.6",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
