@@ -32,3 +32,13 @@ vault server -dev -dev-root-token-id=root
 # Configures sample data in Vault (secrets engine and secrets inside)
 ./scripts/configure-dev-vault.sh
 ```
+
+The sample dev app uses a Vault instance on `localhost:8200`, which you can setup in a separate terminal with:
+
+```sh
+# Start a Vault server, using "root" as the root token
+vault server -dev -dev-root-token-id=root
+
+# Configures sample data in Vault (secrets engine and secrets inside)
+./scripts/configure-dev-vault.sh
+```
