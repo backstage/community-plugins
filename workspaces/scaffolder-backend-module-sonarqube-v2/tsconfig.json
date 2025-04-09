@@ -1,0 +1,9 @@
+{
+  "extends": "@backstage/cli/config/tsconfig.json",
+  "include": ["plugins/*/src/**/*"],
+  "compilerOptions": {
+    "outDir": "dist-types",
+    "rootDir": "plugins",
+    "tsBuildInfoFile": "dist-types/.tsbuildinfo"
+  }
+}

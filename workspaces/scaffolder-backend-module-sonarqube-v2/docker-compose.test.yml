@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  sonarqube:
+    image: sonarqube:lts
+    ports:
+      - "9000:9000"
+    environment:
+      - SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_extensions:/opt/sonarqube/extensions
+      - sonarqube_logs:/opt/sonarqube/logs
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+  
+  # This would be your Backstage service that uses the module
+  # backstage:
+  #   build: .
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     - NODE_ENV=development
+  #     - BACKSTAGE_CONFIG_PATH=/app/app-config.yaml
+  #   volumes:
+  #     - ./app-config.yaml:/app/app-config.yaml
+  #   depends_on:
+  #     - sonarqube
+
+volumes:
+  sonarqube_data:
+  sonarqube_extensions:
+  sonarqube_logs: 

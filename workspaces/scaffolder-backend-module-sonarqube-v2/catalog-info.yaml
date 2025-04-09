@@ -1,0 +1,19 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: scaffolder-backend-module-sonarqube-v2
+  description: Backstage scaffolder module for SonarQube integration
+  annotations:
+    github.com/project-slug: backstage/scaffolder-backend-module-sonarqube-v2
+    backstage.io/techdocs-ref: dir:.
+  tags:
+    - sonarqube
+    - scaffolder
+    - quality
+spec:
+  type: library
+  lifecycle: production
+  owner: backstage
+  system: backstage
+  dependsOn: []
+  dependsOnResource: [] 

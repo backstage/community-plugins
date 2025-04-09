@@ -1,0 +1,23 @@
+{
+  "name": "@backstage-community/plugin-scaffolder-backend-module-sonarqube-v2",
+  "description": "The sonarqube module for @backstage/plugin-scaffolder-backend",
+  "version": "0.1.0",
+  "main": "dist/index.cjs.js",
+  "types": "dist/index.d.ts",
+  "license": "Apache-2.0",
+  "author": "Mirac Yilmaz",
+  "type": "module",
+  "scripts": {
+    "test": "cd plugins/scaffolder-backend-module-sonarqube-v2 && npm test",
+    "lint": "cd plugins/scaffolder-backend-module-sonarqube-v2 && npm run lint",
+    "build": "cd plugins/scaffolder-backend-module-sonarqube-v2 && npm run build",
+    "start:sonarqube": "docker-compose -f docker-compose.test.yml up sonarqube",
+    "stop:sonarqube": "docker-compose -f docker-compose.test.yml down",
+    "clean": "cd plugins/scaffolder-backend-module-sonarqube-v2 && npm run clean"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.24.0",
+    "eslint-config-prettier": "^10.1.1",
+    "typescript-eslint": "^8.29.1"
+  }
+}

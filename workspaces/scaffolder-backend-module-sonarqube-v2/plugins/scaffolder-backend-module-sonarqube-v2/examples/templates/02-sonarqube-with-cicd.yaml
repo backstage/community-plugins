@@ -1,0 +1,172 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: sonarqube-with-cicd-template
+  title: Create SonarQube Project with CI/CD Integration
+  description: Creates a new SonarQube project and configures CI/CD pipeline with SonarQube analysis
+spec:
+  type: service
+  parameters:
+    - title: SonarQube Configuration
+      required:
+        - baseUrl
+        - token
+        - projectName
+        - projectKey
+      properties:
+        baseUrl:
+          title: SonarQube Base URL
+          type: string
+          description: SonarQube server base URL
+          ui:autofocus: true
+          examples:
+            - https://sonarqube.example.com
+        token:
+          title: SonarQube Token
+          type: string
+          description: SonarQube authentication token
+          ui:widget: password
+        projectName:
+          title: Project Name
+          type: string
+          description: Name of the project to be created in SonarQube
+        projectKey:
+          title: Project Key
+          type: string
+          description: Key of the project to identify the project in SonarQube
+        branch:
+          title: Main Branch
+          type: string
+          description: Name of the main branch of the project
+          default: main
+        visibility:
+          title: Project Visibility
+          type: string
+          enum: ['public', 'private']
+          default: private
+          description: Whether the created project should be visible to everyone or only specific groups
+    
+    - title: CI/CD Configuration
+      required:
+        - cicdTool
+        - workspacePath
+      properties:
+        cicdTool:
+          title: CI/CD Tool
+          type: string
+          description: Select the CI/CD tool to integrate with SonarQube
+          enum:
+            - github-actions
+            - jenkins
+            - azure-devops
+            - gitlab-ci
+          enumNames:
+            - GitHub Actions
+            - Jenkins
+            - Azure DevOps
+            - GitLab CI/CD
+        workspacePath:
+          title: Workspace Path
+          type: string
+          description: Path to the workspace where the CI/CD configuration will be created
+          default: ./
+        repoUrl:
+          title: Repository URL
+          type: string
+          description: URL of the Git repository (required for GitHub Actions)
+          examples:
+            - https://github.com/myorg/myrepo
+        jenkinsCredentialsId:
+          title: Jenkins Credentials ID
+          type: string
+          description: Jenkins credentials ID for SonarQube authentication (for Jenkins integration)
+          default: sonarqube-token
+        azureServiceConnectionName:
+          title: Azure DevOps Service Connection Name
+          type: string
+          description: Name of the SonarQube service connection in Azure DevOps (for Azure DevOps integration)
+          default: SonarQube
+        gitlabTokenVariableName:
+          title: GitLab CI Variable Name
+          type: string
+          description: Name of the GitLab CI/CD variable containing the SonarQube token (for GitLab integration)
+          default: SONAR_TOKEN
+
+  steps:
+    # Step 1: Create SonarQube project
+    - id: create-sonarqube-project
+      name: Create SonarQube Project
+      action: sonarqube:create:project
+      input:
+        baseUrl: ${{ parameters.baseUrl }}
+        token: ${{ parameters.token }}
+        name: ${{ parameters.projectName }}
+        key: ${{ parameters.projectKey }}
+        branch: ${{ parameters.branch }}
+        visibility: ${{ parameters.visibility }}
+
+    # Step 2: Create CI/CD configuration based on selected tool
+    - id: create-github-actions
+      name: Configure GitHub Actions with SonarQube
+      if: ${{ parameters.cicdTool === 'github-actions' }}
+      action: sonarqube:create:github-action
+      input:
+        repoUrl: ${{ parameters.repoUrl }}
+        sonarqubeUrl: ${{ parameters.baseUrl }}
+        sonarqubeToken: ${{ parameters.token }}
+        projectKey: ${{ parameters.projectKey }}
+        projectName: ${{ parameters.projectName }}
+        workspacePath: ${{ parameters.workspacePath }}
+        branchName: ${{ parameters.branch }}
+
+    - id: create-jenkins-pipeline
+      name: Configure Jenkins Pipeline with SonarQube
+      if: ${{ parameters.cicdTool === 'jenkins' }}
+      action: sonarqube:create:jenkins-pipeline
+      input:
+        sonarqubeUrl: ${{ parameters.baseUrl }}
+        projectKey: ${{ parameters.projectKey }}
+        projectName: ${{ parameters.projectName }}
+        workspacePath: ${{ parameters.workspacePath }}
+        branchName: ${{ parameters.branch }}
+        credentialsId: ${{ parameters.jenkinsCredentialsId }}
+        scannerTool: SonarScanner
+
+    - id: create-azure-devops-pipeline
+      name: Configure Azure DevOps Pipeline with SonarQube
+      if: ${{ parameters.cicdTool === 'azure-devops' }}
+      action: sonarqube:create:azure-devops-pipeline
+      input:
+        sonarqubeUrl: ${{ parameters.baseUrl }}
+        projectKey: ${{ parameters.projectKey }}
+        projectName: ${{ parameters.projectName }}
+        workspacePath: ${{ parameters.workspacePath }}
+        serviceConnectionName: ${{ parameters.azureServiceConnectionName }}
+
+    - id: create-gitlab-ci
+      name: Configure GitLab CI/CD with SonarQube
+      if: ${{ parameters.cicdTool === 'gitlab-ci' }}
+      action: sonarqube:create:gitlab-ci
+      input:
+        sonarqubeUrl: ${{ parameters.baseUrl }}
+        projectKey: ${{ parameters.projectKey }}
+        projectName: ${{ parameters.projectName }}
+        workspacePath: ${{ parameters.workspacePath }}
+        tokenVariableName: ${{ parameters.gitlabTokenVariableName }}
+
+  output:
+    links:
+      - title: SonarQube Project URL
+        url: ${{ steps['create-sonarqube-project'].output.projectUrl }}
+      - title: GitHub Actions Workflow (if created)
+        if: ${{ parameters.cicdTool === 'github-actions' }}
+        url: ${{ steps['create-github-actions'].output.workflowPath }}
+      - title: Jenkins Pipeline (if created)
+        if: ${{ parameters.cicdTool === 'jenkins' }}
+        url: ${{ steps['create-jenkins-pipeline'].output.jenkinsfilePath }}
+      - title: Azure DevOps Pipeline (if created)
+        if: ${{ parameters.cicdTool === 'azure-devops' }}
+        url: ${{ steps['create-azure-devops-pipeline'].output.pipelinePath }}
+      - title: GitLab CI/CD Configuration (if created)
+        if: ${{ parameters.cicdTool === 'gitlab-ci' }}
+        url: ${{ steps['create-gitlab-ci'].output.gitlabCiPath }} 

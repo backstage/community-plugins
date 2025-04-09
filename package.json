@@ -6,6 +6,9 @@
   "engines": {
     "node": "18 || 20"
   },
+  "workspaces": [
+    "workspaces/scaffolder-backend-module-sonarqube-v2/plugins/scaffolder-backend-module-sonarqube-v2"
+  ],
   "scripts": {
     "create-workspace": "community-cli workspace create",
     "postinstall": "husky",
