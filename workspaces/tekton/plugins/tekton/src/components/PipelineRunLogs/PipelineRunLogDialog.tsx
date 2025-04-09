@@ -74,9 +74,12 @@ const PipelineRunLogDialog = ({
   const classes = useStyles();
 
   const [task, changeTask] = React.useState(activeTask);
+
   React.useEffect(() => {
-    // If we trigger this dialog for SBOM task, update the current active task.
-    changeTask(forSBOM ? activeTask : undefined);
+    // If we trigger this dialog for the SBOM task, update the current active task.
+    if (forSBOM && activeTask) {
+      changeTask(activeTask);
+    }
   }, [forSBOM, activeTask]);
 
   return (
