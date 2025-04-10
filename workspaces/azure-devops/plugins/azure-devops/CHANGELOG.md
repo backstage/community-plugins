@@ -1,5 +1,11 @@
 # @backstage-community/plugin-azure-devops
 
+## 0.13.1
+
+### Patch Changes
+
+- 7f32b36: Added New Frontend System filter for cards and tabs so they use `isAzureDevOpsAvailable` and `isAzurePipelinesAvailable` to control their visibility
+
 ## 0.13.0
 
 ### Minor Changes
