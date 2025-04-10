@@ -154,7 +154,6 @@ export class RBACPermissionPolicy implements PermissionPolicy {
       enforcerDelegate,
       auditor,
       conditionalStorage,
-      logger,
       superUserList,
     );
   }
@@ -163,7 +162,6 @@ export class RBACPermissionPolicy implements PermissionPolicy {
     private readonly enforcer: EnforcerDelegate,
     private readonly auditor: AuditorService,
     private readonly conditionStorage: ConditionalStorage,
-    private readonly logger: LoggerService,
     superUserList?: string[],
   ) {
     this.superUserList = superUserList;
@@ -209,6 +207,7 @@ export class RBACPermissionPolicy implements PermissionPolicy {
           roles,
         );
 
+      // TODO: Temporary workaround to prevent breakages after the removal of the resource type `policy-entity` from the permission `policy.entity.create`
       if (
         request.permission.name === 'policy.entity.create' &&
         !hasNamedPermission
@@ -219,9 +218,6 @@ export class RBACPermissionPolicy implements PermissionPolicy {
           resourceType: 'policy-entity',
           name: 'policy.entity.create',
         };
-        this.logger.warn(
-          'Permission policy with resource type `policy-entity` and action `create` has been removed. Please consider updating the policy to the permission `policy.entity.create`',
-        );
       }
 
       if (isResourcePermission(request.permission)) {
