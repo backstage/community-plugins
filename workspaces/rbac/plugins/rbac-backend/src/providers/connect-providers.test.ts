@@ -428,6 +428,22 @@ describe('Connection', () => {
       expect(enfAddPolicySpy).toHaveBeenCalledWith(...policies);
     });
 
+    // TODO: Temporary workaround to prevent breakages after the removal of the resource type `policy-entity` from the permission `policy.entity.create`
+    it('should add new permissions but log warning about `policy-entity, create` permission', async () => {
+      enfAddPolicySpy = jest.spyOn(enforcerDelegate, 'addPolicy');
+
+      const policies = [
+        ['role:default/provider-role', 'policy-entity', 'create', 'allow'],
+      ];
+
+      await provider.applyPermissions(policies);
+      expect(enfAddPolicySpy).toHaveBeenCalledWith(...policies);
+      expect(mockLoggerService.warn).toHaveBeenNthCalledWith(
+        1,
+        `Permission policy with resource type 'policy-entity' and action 'create' has been removed. Please consider updating policy ${policies[0]} to use 'policy.entity.create' instead of 'policy-entity' from source test`,
+      );
+    });
+
     it('should remove old permissions', async () => {
       enfRemovePolicySpy = jest.spyOn(enforcerDelegate, 'removePolicy');
 
