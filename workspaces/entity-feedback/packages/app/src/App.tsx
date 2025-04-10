@@ -27,6 +27,7 @@ import {
 } from '@backstage/core-components';
 import { createApp } from '@backstage/app-defaults';
 import { AppRouter, FlatRoutes } from '@backstage/core-app-api';
+import { NotificationsPage } from '@backstage/plugin-notifications';
 
 const app = createApp({
   apis,
@@ -45,6 +46,7 @@ const routes = (
     >
       {entityPage}
     </Route>
+    <Route path="/notifications" element={<NotificationsPage />} />
   </FlatRoutes>
 );
 
