@@ -60,6 +60,7 @@ type PipelineRunLogDialogProps = {
   taskRuns: TaskRunKind[];
   pods: V1Pod[];
   activeTask?: string;
+  forSBOM?: boolean;
 };
 const PipelineRunLogDialog = ({
   open,
@@ -68,10 +69,18 @@ const PipelineRunLogDialog = ({
   pods,
   taskRuns,
   activeTask,
+  forSBOM,
 }: PipelineRunLogDialogProps) => {
   const classes = useStyles();
 
   const [task, setTask] = React.useState(activeTask);
+
+  React.useEffect(() => {
+    // If we trigger this dialog for the SBOM task, update the current active task.
+    if (forSBOM && activeTask) {
+      setTask(activeTask);
+    }
+  }, [forSBOM, activeTask]);
 
   return (
     <Dialog
