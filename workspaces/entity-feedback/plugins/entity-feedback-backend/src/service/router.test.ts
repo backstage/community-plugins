@@ -29,6 +29,7 @@ const sampleOwnedEntities = [
       name: 'foo',
       title: 'Foo Component',
     },
+    relations: [{ type: 'ownedBy', targetRef: 'group:development/guests' }],
   },
   {
     kind: 'component',
@@ -323,7 +324,7 @@ describe('createRouter', () => {
       expect(mockNotificationService.send).toHaveBeenCalledWith({
         recipients: {
           type: 'entity',
-          entityRef: '',
+          entityRef: 'group:development/guests',
         },
         payload: {
           title: 'New feedback for component:default/service',
@@ -351,7 +352,7 @@ describe('createRouter', () => {
       expect(mockNotificationService.send).toHaveBeenCalledWith({
         recipients: {
           type: 'entity',
-          entityRef: '',
+          entityRef: 'group:development/guests',
         },
         payload: {
           title: 'New feedback for component:default/service',

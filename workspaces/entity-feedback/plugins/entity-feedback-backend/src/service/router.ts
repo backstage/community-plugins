@@ -22,7 +22,11 @@ import {
   LoggerService,
 } from '@backstage/backend-plugin-api';
 import { CatalogClient } from '@backstage/catalog-client';
-import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
+import {
+  Entity,
+  RELATION_OWNED_BY,
+  stringifyEntityRef,
+} from '@backstage/catalog-model';
 import { IdentityApi } from '@backstage/plugin-auth-node';
 import {
   EntityRatingsData,
@@ -209,25 +213,33 @@ export async function createRouter(
       onBehalfOf: credentials,
       targetPluginId: 'catalog',
     });
-    const entityOwner =
-      (
-        await catalogClient.getEntityByRef(req.params.entityRef, {
-          token: token,
-        })
-      )?.relations?.find(rel => rel.type === 'ownedBy')?.targetRef || '';
 
-    const recipients: NotificationRecipients = {
-      type: 'entity',
-      entityRef: entityOwner,
-    };
-    const payload: NotificationPayload = {
-      title: `New feedback for ${req.params.entityRef}`,
-      description: `Comments: ${JSON.parse(comments).additionalComments}`,
-    };
-    await notificationService.send({
-      recipients,
-      payload,
-    });
+    try {
+      const entityOwner =
+        (
+          await catalogClient.getEntityByRef(req.params.entityRef, {
+            token: token,
+          })
+        )?.relations?.find(rel => rel.type === RELATION_OWNED_BY)?.targetRef ||
+        '';
+
+      const recipients: NotificationRecipients = {
+        type: 'entity',
+        entityRef: entityOwner,
+      };
+      const payload: NotificationPayload = {
+        title: `New feedback for ${req.params.entityRef}`,
+        description: `Comments: ${JSON.parse(comments).additionalComments}`,
+      };
+      await notificationService.send({
+        recipients,
+        payload,
+      });
+    } catch (error) {
+      logger.error(
+        `Failed to send notification for feedback: ${error}, entityRef: ${req.params.entityRef}`,
+      );
+    }
 
     await dbHandler.recordResponse({
       entityRef: req.params.entityRef,
