@@ -1,5 +1,11 @@
 # @backstage-community/plugin-linguist
 
+## 0.6.1
+
+### Patch Changes
+
+- 560005e: Added New Frontend System filter for the Language card to use `isLinguistAvailable` to control its visibility
+
 ## 0.6.0
 
 ### Minor Changes
