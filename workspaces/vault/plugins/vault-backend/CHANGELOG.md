@@ -1,5 +1,11 @@
 # @backstage-community/plugin-vault-backend
 
+## 0.8.1
+
+### Patch Changes
+
+- bdf4d36: Add catalog plugins in devDependencies for development purposes.
+
 ## 0.8.0
 
 ### Minor Changes
