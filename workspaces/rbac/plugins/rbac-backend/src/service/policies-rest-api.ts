@@ -229,7 +229,7 @@ export class PoliciesServer {
           ) {
             policy.permission = 'policy.entity.create';
             logger.warn(
-              'Permission policy with resource type `policy-entity` and action `create` has been removed. Please consider updating the policy to the permission `policy.entity.create`',
+              `Permission policy with resource type 'policy-entity' and action 'create' has been removed. Please consider updating policy ${[policy.entityReference, 'policy-entity', policy.policy, policy.effect]} to use 'policy.entity.create' instead of 'policy-entity' from source ${policy.metadata?.source}`,
             );
           }
         });
@@ -278,7 +278,7 @@ export class PoliciesServer {
             ) {
               bodyPolicy.permission = 'policy.entity.create';
               logger.warn(
-                'Permission policy with resource type `policy-entity` and action `create` has been removed. Please consider updating the policy to the permission `policy.entity.create`',
+                `Permission policy with resource type 'policy-entity' and action 'create' has been removed. Please consider updating policy ${[bodyPolicy.entityReference, 'policy-entity', bodyPolicy.policy, bodyPolicy.effect]} to use 'policy.entity.create' instead of 'policy-entity' from source ${bodyPolicy.metadata?.source}`,
               );
             }
           });

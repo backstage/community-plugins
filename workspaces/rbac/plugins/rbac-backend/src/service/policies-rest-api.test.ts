@@ -666,6 +666,50 @@ describe('REST policies api', () => {
         },
       ]);
     });
+
+    // TODO:
+    it('should be returned permission policies with modified `policy-entity, create` permission by user reference', async () => {
+      const deprecatedPolicy = [
+        'role:default/permission_admin',
+        'policy-entity',
+        'create',
+        'allow',
+      ];
+      enforcerDelegateMock.getFilteredPolicy = jest
+        .fn()
+        .mockImplementation(
+          async (_fieldIndex: number, ..._fieldValues: string[]) => {
+            return [
+              [
+                'role:default/permission_admin',
+                'policy-entity',
+                'create',
+                'allow',
+              ],
+            ];
+          },
+        );
+      const result = await request(app)
+        .get('/policies/role/default/permission_admin')
+        .send();
+      expect(result.statusCode).toBe(200);
+      expect(result.body).toEqual([
+        {
+          entityReference: 'role:default/permission_admin',
+          permission: 'policy.entity.create',
+          policy: 'create',
+          effect: 'allow',
+          metadata: {
+            source: 'rest',
+          },
+        },
+      ]);
+      expect(mockLoggerService.warn).toHaveBeenNthCalledWith(
+        2,
+        `Permission policy with resource type 'policy-entity' and action 'create' has been removed. Please consider updating policy ${deprecatedPolicy} to use 'policy.entity.create' instead of 'policy-entity' from source rest`,
+      );
+    });
+
     it('should be returned policies by user reference not found', async () => {
       enforcerDelegateMock.getFilteredPolicy = jest
         .fn()
@@ -768,6 +812,89 @@ describe('REST policies api', () => {
         },
       ]);
     });
+
+    // TODO:
+    it('should be returned list all policies with modified `policy-entity, create` permission', async () => {
+      const deprecatedPolicy = [
+        'role:default/guest',
+        'policy-entity',
+        'create',
+        'allow',
+      ];
+      enforcerDelegateMock.getFilteredPolicy = jest
+        .fn()
+        .mockImplementation(
+          async (_fieldIndex: number, ...fieldValues: string[]) => {
+            if (fieldValues[0] === 'role:default/permission_admin') {
+              return [
+                [
+                  'role:default/permission_admin',
+                  'policy.entity.create',
+                  'create',
+                  'allow',
+                ],
+              ];
+            }
+
+            if (fieldValues[0] === 'role:default/guest') {
+              return [
+                [
+                  'role:default/guest',
+                  'policy-entity',
+                  'read',
+                  'allow',
+                  'rest',
+                ],
+                [
+                  'role:default/guest',
+                  'policy-entity',
+                  'create',
+                  'allow',
+                  'rest',
+                ],
+              ];
+            }
+
+            return [];
+          },
+        );
+      const result = await request(app).get('/policies').send();
+      expect(result.statusCode).toBe(200);
+      expect(result.body).toEqual([
+        {
+          entityReference: 'role:default/permission_admin',
+          permission: 'policy.entity.create',
+          policy: 'create',
+          effect: 'allow',
+          metadata: {
+            source: 'rest',
+          },
+        },
+        {
+          entityReference: 'role:default/guest',
+          permission: 'policy-entity',
+          policy: 'read',
+          effect: 'allow',
+          metadata: {
+            source: 'rest',
+          },
+        },
+        {
+          entityReference: 'role:default/guest',
+          permission: 'policy.entity.create',
+          policy: 'create',
+          effect: 'allow',
+          metadata: {
+            source: 'rest',
+          },
+        },
+      ]);
+      expect(mockLoggerService.warn).toHaveBeenNthCalledWith(
+        2,
+        `Permission policy with resource type 'policy-entity' and action 'create' has been removed. Please consider updating policy ${deprecatedPolicy} to use 'policy.entity.create' instead of 'policy-entity' from source rest`,
+      );
+    });
+
     it('should be returned list filtered policies', async () => {
       enforcerDelegateMock.getFilteredPolicy = jest
         .fn()
