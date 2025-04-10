@@ -85,6 +85,13 @@ const PipelineRunLogDialog = ({
     }
   }, [forSBOM, activeTask]);
 
+  React.useEffect(() => {
+    // If we trigger this dialog for the SBOM task, update the current active task.
+    if (forSBOM && activeTask) {
+      setTask(activeTask);
+    }
+  }, [forSBOM, activeTask]);
+
   return (
     <Dialog
       data-testid="pipelinerun-logs-dialog"
