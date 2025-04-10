@@ -12,6 +12,7 @@ import express from 'express';
 import { HttpAuthService } from '@backstage/backend-plugin-api';
 import { IdentityApi } from '@backstage/plugin-auth-node';
 import { LoggerService } from '@backstage/backend-plugin-api';
+import { NotificationService } from '@backstage/plugin-notifications-node';
 
 // @public (undocumented)
 export function createRouter(options: RouterOptions): Promise<express.Router>;
@@ -36,5 +37,7 @@ export interface RouterOptions {
   identity?: IdentityApi;
   // (undocumented)
   logger: LoggerService;
+  // (undocumented)
+  notificationService: NotificationService;
 }
 ```
