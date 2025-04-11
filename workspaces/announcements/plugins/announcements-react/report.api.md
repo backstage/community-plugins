@@ -330,9 +330,7 @@ export const useAnnouncementsTranslation: () => {
   }>;
 };
 
-// Warning: (ae-missing-release-tag) "useCatalogEntities" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export const useCatalogEntities: (refs: string[]) => {
   entities: Entity[];
   loading: boolean;
