@@ -1,5 +1,11 @@
 # @backstage-community/plugin-github-actions
 
+## 0.9.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
 ## 0.9.0
 
 ### Minor Changes
