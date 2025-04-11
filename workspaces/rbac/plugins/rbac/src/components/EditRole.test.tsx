@@ -16,6 +16,8 @@
 import React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 
+import { usePermission } from '@backstage/plugin-permission-react';
+
 import { render, screen } from '@testing-library/react';
 
 import '@testing-library/jest-dom';
@@ -31,11 +33,23 @@ jest.mock('@backstage/catalog-model', () => ({
   }),
 }));
 
+jest.mock('@backstage/plugin-permission-react', () => ({
+  usePermission: jest.fn(),
+  RequirePermission: jest.fn(),
+}));
+
+const mockUsePermission = usePermission as jest.MockedFunction<
+  typeof usePermission
+>;
+
 describe('EditRole', () => {
-  it('renders the button as disabled when disable is true', () => {
+  const isAllowed = true;
+
+  it('renders the button as disabled when canEdit is true', () => {
+    mockUsePermission.mockReturnValue({ loading: false, allowed: false });
     render(
       <Router>
-        <EditRole roleName="roleName" disable dataTestId="edit-role-btn" />
+        <EditRole roleName="roleName" canEdit={isAllowed} />
       </Router>,
     );
 
@@ -46,13 +60,15 @@ describe('EditRole', () => {
   });
 
   it('renders the button with correct tooltip and enabled state', () => {
+    mockUsePermission.mockReturnValue({ loading: false, allowed: true });
     const tooltipText = 'Edit Role Tooltip';
+    const dataTestIdText = 'edit-role-btn';
     render(
       <Router>
         <EditRole
           roleName="roleName"
-          disable={false}
-          dataTestId="edit-role-btn"
+          dataTestId={dataTestIdText}
+          canEdit={isAllowed}
           tooltip={tooltipText}
         />
       </Router>,
@@ -71,12 +87,7 @@ describe('EditRole', () => {
     const toPath = '/custom/path';
     render(
       <Router>
-        <EditRole
-          roleName="roleName"
-          disable={false}
-          dataTestId="edit-role-btn"
-          to={toPath}
-        />
+        <EditRole roleName="roleName" canEdit={isAllowed} to={toPath} />
       </Router>,
     );
 
@@ -86,11 +97,7 @@ describe('EditRole', () => {
   it('sets the correct default link path based on roleName', () => {
     render(
       <Router>
-        <EditRole
-          roleName="roleName"
-          disable={false}
-          dataTestId="edit-role-btn"
-        />
+        <EditRole roleName="roleName" canEdit={isAllowed} />
       </Router>,
     );
 

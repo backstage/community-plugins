@@ -100,6 +100,7 @@ const roleMetadataStorageMock: RoleMetadataStorage = {
         return { source: 'csv-file' };
       },
     ),
+  filterForOwnerRoleMetadata: jest.fn().mockImplementation(),
   createRoleMetadata: jest.fn().mockImplementation(),
   updateRoleMetadata: jest.fn().mockImplementation(),
   removeRoleMetadata: jest.fn().mockImplementation(),
@@ -617,6 +618,7 @@ describe('RBACPermissionPolicy Tests', () => {
             return { source: 'csv-file' };
           },
         ),
+      filterForOwnerRoleMetadata: jest.fn().mockImplementation(),
       createRoleMetadata: jest.fn().mockImplementation(),
       updateRoleMetadata: jest.fn().mockImplementation(),
       removeRoleMetadata: jest.fn().mockImplementation(),
@@ -803,6 +805,60 @@ describe('RBACPermissionPolicy Tests', () => {
         AuthorizeResult.ALLOW,
       );
     });
+    // case 5
+    // TODO: Temporary workaround to prevent breakages after the removal of the resource type `policy-entity` from the permission `policy.entity.create`
+    it('should allow access to basic permission policy.entity.create even though it is defined as `policy-entity, create` for user listed on policy', async () => {
+      await enfDelegate.addPolicy([
+        'user:default/known_user',
+        'policy-entity',
+        'create',
+        'allow',
+      ]);
+
+      const decision = await policy.handle(
+        newPolicyQueryWithBasicPermission('policy.entity.create', 'create'),
+        newPolicyQueryUser('user:default/known_user'),
+      );
+      expect(decision.result).toBe(AuthorizeResult.ALLOW);
+      expectAuditorLogForPermission(
+        'user:default/known_user',
+        'policy.entity.create',
+        undefined,
+        'create',
+        AuthorizeResult.ALLOW,
+      );
+    });
+    // case 6
+    // TODO: Temporary workaround to prevent breakages after the removal of the resource type `policy-entity` from the permission `policy.entity.create`
+    it('should allow access to basic permission policy.entity.create even though it is defined as `policy-entity, create` for role', async () => {
+      await enfDelegate.addGroupingPolicy(
+        ['user:default/known_user', 'role:default/known_user'],
+        {
+          source: 'csv-file',
+          roleEntityRef: 'role:default/known_user',
+          modifiedBy,
+        },
+      );
+      await enfDelegate.addPolicy([
+        'role:default/known_user',
+        'policy-entity',
+        'create',
+        'allow',
+      ]);
+
+      const decision = await policy.handle(
+        newPolicyQueryWithBasicPermission('policy.entity.create', 'create'),
+        newPolicyQueryUser('user:default/known_user'),
+      );
+      expect(decision.result).toBe(AuthorizeResult.ALLOW);
+      expectAuditorLogForPermission(
+        'user:default/known_user',
+        'policy.entity.create',
+        undefined,
+        'create',
+        AuthorizeResult.ALLOW,
+      );
+    });
 
     // Tests for actions on resource permissions
     it('should deny access to resource permission for unlisted action for user listed on policy', async () => {
@@ -891,6 +947,7 @@ describe('RBACPermissionPolicy Tests', () => {
             };
           },
         ),
+      filterForOwnerRoleMetadata: jest.fn().mockImplementation(),
       createRoleMetadata: jest.fn().mockImplementation(),
       updateRoleMetadata: jest.fn().mockImplementation(),
       removeRoleMetadata: jest.fn().mockImplementation(),
@@ -902,7 +959,7 @@ describe('RBACPermissionPolicy Tests', () => {
     ];
     const permissions = [
       ['role:default/rbac_admin', 'policy-entity', 'read', 'allow'],
-      ['role:default/rbac_admin', 'policy-entity', 'create', 'allow'],
+      ['role:default/rbac_admin', 'policy.entity.create', 'create', 'allow'],
       ['role:default/rbac_admin', 'policy-entity', 'delete', 'allow'],
       ['role:default/rbac_admin', 'policy-entity', 'update', 'allow'],
       ['role:default/rbac_admin', 'catalog-entity', 'read', 'allow'],
@@ -1035,6 +1092,7 @@ describe('Policy checks for resourced permissions defined by name', () => {
           };
         },
       ),
+    filterForOwnerRoleMetadata: jest.fn().mockImplementation(),
     createRoleMetadata: jest.fn().mockImplementation(),
     updateRoleMetadata: jest.fn().mockImplementation(),
     removeRoleMetadata: jest.fn().mockImplementation(),
@@ -2093,10 +2151,13 @@ describe('Policy checks for conditional policies', () => {
   });
 });
 
-function newPolicyQueryWithBasicPermission(name: string): PolicyQuery {
+function newPolicyQueryWithBasicPermission(
+  name: string,
+  action?: 'create' | 'read' | 'update' | 'delete',
+): PolicyQuery {
   const mockPermission = createPermission({
     name: name,
-    attributes: {},
+    attributes: { action },
   });
   return { permission: mockPermission };
 }

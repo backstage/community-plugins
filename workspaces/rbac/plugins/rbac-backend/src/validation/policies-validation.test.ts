@@ -263,6 +263,21 @@ describe('rest data validation', () => {
       );
     });
 
+    it('should return an error when "owner" param is in an invalid format', () => {
+      const request = {
+        memberReferences: ['user:default/guest'],
+        name: 'role:default/user',
+        metadata: {
+          owner: 'test:default/some_owner',
+        },
+      } as any;
+      const err = validateRole(request);
+      expect(err).toBeTruthy();
+      expect(err?.message).toEqual(
+        `Unsupported kind test. List supported values [\"user\", \"group\"]`,
+      );
+    });
+
     it('should pass validation when all required query params are present', () => {
       const request = {
         memberReferences: ['user:default/guest'],

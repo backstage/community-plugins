@@ -35,11 +35,15 @@ const tableMetadata = (values: RoleFormValues) => {
     values,
   )})`;
   return {
-    'Name and description of role': (
+    'Name, description, and owner of role': (
       <>
         <Typography sx={{ margin: '0px' }}>{values.name}</Typography>
         <br />
-        <Typography sx={{ margin: '0px' }}>{values.description}</Typography>
+        <Typography sx={{ margin: '0px' }}>
+          {values.description || '-'}
+        </Typography>
+        <br />
+        <Typography sx={{ margin: '0px' }}>{values.owner || '-'}</Typography>
       </>
     ),
     [membersKey]: (

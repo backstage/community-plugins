@@ -210,6 +210,13 @@ export class Connection implements RBACProviderConnection {
 
   private async addPermissions(permissions: string[][]): Promise<void> {
     for (const permission of permissions) {
+      // TODO: Temporary workaround to prevent breakages after the removal of the resource type `policy-entity` from the permission `policy.entity.create`
+      if (permission[1] === 'policy-entity' && permission[2] === 'create') {
+        this.logger.warn(
+          `Permission policy with resource type 'policy-entity' and action 'create' has been removed. Please consider updating policy ${permission} to use 'policy.entity.create' instead of 'policy-entity' from source ${this.id}`,
+        );
+      }
+
       if (!(await this.enforcer.hasPolicy(...permission))) {
         const transformedPolicy = transformArrayToPolicy(permission);
         const metadata = await this.roleMetadataStorage.findRoleMetadata(

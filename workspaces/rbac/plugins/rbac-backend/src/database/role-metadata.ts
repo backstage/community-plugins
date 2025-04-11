@@ -23,6 +23,8 @@ import type {
 } from '@backstage-community/plugin-rbac-common';
 
 import { deepSortedEqual } from '../helper';
+import { RBACFilters } from '../permissions';
+import { matches } from '../helper';
 
 export const ROLE_METADATA_TABLE = 'role-metadata';
 
@@ -35,6 +37,7 @@ export interface RoleMetadataDao extends RoleMetadata {
 
 export interface RoleMetadataStorage {
   filterRoleMetadata(source?: Source): Promise<RoleMetadataDao[]>;
+  filterForOwnerRoleMetadata(filter?: RBACFilters): Promise<RoleMetadataDao[]>;
   findRoleMetadata(
     roleEntityRef: string,
     trx?: Knex.Transaction,
@@ -63,6 +66,21 @@ export class DataBaseRoleMetadataStorage implements RoleMetadataStorage {
         builder.where('source', source);
       }
     });
+  }
+
+  async filterForOwnerRoleMetadata(
+    filter?: RBACFilters,
+  ): Promise<RoleMetadataDao[]> {
+    const roleMetadata: RoleMetadataDao[] =
+      await this.knex.table(ROLE_METADATA_TABLE);
+
+    if (filter) {
+      return roleMetadata.filter(role => {
+        return matches(role as RoleMetadata, filter);
+      });
+    }
+
+    return roleMetadata;
   }
 
   async findRoleMetadata(
@@ -166,6 +184,7 @@ export function daoToMetadata(dao: RoleMetadataDao): RoleMetadata {
   return {
     source: dao.source,
     description: dao.description,
+    owner: dao.owner,
     author: dao.author,
     modifiedBy: dao.modifiedBy,
     createdAt: dao.createdAt,

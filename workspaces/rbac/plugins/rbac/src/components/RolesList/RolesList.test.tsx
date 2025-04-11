@@ -48,8 +48,7 @@ const useRolesMockData: RolesData[] = [
     modifiedBy: '-',
     lastModified: '-',
     actionsPermissionResults: {
-      delete: { allowed: true, loading: false },
-      edit: { allowed: true, loading: false },
+      edit: { allowed: true },
     },
     accessiblePlugins: ['catalog'],
   },
@@ -61,8 +60,7 @@ const useRolesMockData: RolesData[] = [
     modifiedBy: '-',
     lastModified: '-',
     actionsPermissionResults: {
-      delete: { allowed: true, loading: false },
-      edit: { allowed: true, loading: false },
+      edit: { allowed: true },
     },
     accessiblePlugins: ['catalog', 'permission', 'scaffolder'],
   },
@@ -157,24 +155,24 @@ describe('RolesList', () => {
 
   it('should show disabled delete icon if user is not authorized to delete roles', async () => {
     RequirePermissionMock.mockImplementation(props => <>{props.children}</>);
-    mockUsePermission
-      .mockReturnValueOnce({ loading: false, allowed: true })
-      .mockReturnValue({ loading: false, allowed: false });
+    mockUsePermission.mockImplementation(input => {
+      if (input.permission.name === 'policy.entity.delete')
+        return { loading: false, allowed: false };
+      return { loading: false, allowed: true };
+    });
     mockUseRoles.mockReturnValue({
       loading: false,
       data: [
         {
           ...useRolesMockData[0],
           actionsPermissionResults: {
-            delete: { allowed: false, loading: false },
-            edit: { allowed: true, loading: false },
+            edit: { allowed: true },
           },
         },
         {
           ...useRolesMockData[1],
           actionsPermissionResults: {
-            delete: { allowed: false, loading: true },
-            edit: { allowed: true, loading: false },
+            edit: { allowed: true },
           },
         },
       ],
@@ -196,24 +194,24 @@ describe('RolesList', () => {
 
   it('should show disabled edit icon if user is not authorized to update roles', async () => {
     RequirePermissionMock.mockImplementation(props => <>{props.children}</>);
-    mockUsePermission
-      .mockReturnValueOnce({ loading: false, allowed: true })
-      .mockReturnValue({ loading: false, allowed: false });
+    mockUsePermission.mockImplementation(input => {
+      if (input.permission.name === 'policy.entity.update')
+        return { loading: false, allowed: false };
+      return { loading: false, allowed: true };
+    });
     mockUseRoles.mockReturnValue({
       loading: false,
       data: [
         {
           ...useRolesMockData[0],
           actionsPermissionResults: {
-            delete: { allowed: true, loading: false },
-            edit: { allowed: false, loading: false },
+            edit: { allowed: true },
           },
         },
         {
           ...useRolesMockData[1],
           actionsPermissionResults: {
-            delete: { allowed: true, loading: true },
-            edit: { allowed: false, loading: false },
+            edit: { allowed: true },
           },
         },
       ],

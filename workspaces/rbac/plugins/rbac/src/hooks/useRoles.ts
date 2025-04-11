@@ -22,8 +22,6 @@ import { usePermission } from '@backstage/plugin-permission-react';
 import {
   PluginPermissionMetaData,
   policyEntityCreatePermission,
-  policyEntityDeletePermission,
-  policyEntityUpdatePermission,
   Role,
   RoleBasedPolicy,
 } from '@backstage-community/plugin-rbac-common';
@@ -100,14 +98,8 @@ export const useRoles = (
     Array.isArray(members) &&
     members.length > 0;
 
-  const deletePermissionResult = usePermission({
-    permission: policyEntityDeletePermission,
-    resourceRef: policyEntityDeletePermission.resourceType,
-  });
-
   const policyEntityCreatePermissionResult = usePermission({
     permission: policyEntityCreatePermission,
-    resourceRef: policyEntityCreatePermission.resourceType,
   });
 
   const createRoleLoading =
@@ -116,10 +108,6 @@ export const useRoles = (
   const createRoleAllowed =
     policyEntityCreatePermissionResult.allowed && canReadUsersAndGroups;
 
-  const editPermissionResult = usePermission({
-    permission: policyEntityUpdatePermission,
-    resourceRef: policyEntityUpdatePermission.resourceType,
-  });
   const [loadingConditionalPermission, setLoadingConditionalPermission] =
     React.useState<boolean>(false);
   React.useEffect(() => {
@@ -219,11 +207,8 @@ export const useRoles = (
                   modifiedBy: '-',
                   lastModified: '-',
                   actionsPermissionResults: {
-                    delete: deletePermissionResult,
                     edit: {
-                      allowed:
-                        editPermissionResult.allowed && canReadUsersAndGroups,
-                      loading: editPermissionResult.loading,
+                      allowed: canReadUsersAndGroups,
                     },
                   },
                   accessiblePlugins,
@@ -239,9 +224,6 @@ export const useRoles = (
       loadingPermissionPolicies,
       permissionPoliciesError,
       permissionPolicies,
-      deletePermissionResult,
-      editPermissionResult.allowed,
-      editPermissionResult.loading,
       canReadUsersAndGroups,
       customDefaultPermissions,
     ],

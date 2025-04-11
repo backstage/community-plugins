@@ -35,11 +35,13 @@ import type {
   MetadataResponseSerializedRule,
 } from '@backstage/plugin-permission-node';
 
-import type {
-  PluginPermissionMetaData,
-  PolicyDetails,
+import {
+  policyEntityPermissions,
+  type PluginPermissionMetaData,
+  type PolicyDetails,
 } from '@backstage-community/plugin-rbac-common';
 import type { PluginIdProvider } from '@backstage-community/plugin-rbac-node';
+import { rbacRules } from '../permissions';
 
 type PluginMetadataResponse = {
   pluginId: string;
@@ -49,6 +51,11 @@ type PluginMetadataResponse = {
 export type PluginMetadataResponseSerializedRule = {
   pluginId: string;
   rules: MetadataResponseSerializedRule[];
+};
+
+const rbacPermissionMetadata: MetadataResponse = {
+  permissions: policyEntityPermissions,
+  rules: [rbacRules],
 };
 
 export class PluginPermissionMetadataCollector {
@@ -157,6 +164,15 @@ export class PluginPermissionMetadataCollector {
     token: string | undefined,
   ): Promise<MetadataResponse | undefined> {
     let permMetaData: MetadataResponse | undefined;
+
+    // Work around: This is needed for start up whenever a conditional policy for the plugin permission in the yaml file
+    // will make a check to the well known endpoint
+    // However, our plugin has not completely started and as such will throw a 503 error
+    // TODO: see if we are able to remove this after we migrate to the permission registry
+    if (pluginId === 'permission') {
+      return rbacPermissionMetadata;
+    }
+
     try {
       const baseEndpoint = await this.discovery.getBaseUrl(pluginId);
       const wellKnownURL = `${baseEndpoint}/.well-known/backstage/permissions/metadata`;

@@ -269,6 +269,7 @@ export const RoleForm = ({
             <RoleDetailsForm
               name={formik.values.name}
               description={formik.values.description}
+              owner={formik.values.owner}
               handleBlur={formik.handleBlur}
               handleChange={formik.handleChange}
               nameError={formik.errors.name}

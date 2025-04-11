@@ -22,26 +22,40 @@ import EditIcon from '@mui/icons-material/Edit';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
+import { usePermission } from '@backstage/plugin-permission-react';
+import { policyEntityUpdatePermission } from '@backstage-community/plugin-rbac-common';
 
 type EditRoleProps = {
   roleName: string;
-  disable: boolean;
+  canEdit: boolean;
+  dataTestId?: string;
   tooltip?: string;
-  dataTestId: string;
   to?: string;
 };
 
 const EditRole = ({
   roleName,
-  tooltip,
-  disable,
+  canEdit,
   dataTestId,
+  tooltip,
   to,
 }: EditRoleProps) => {
   const { name, namespace, kind } = parseEntityRef(roleName);
+
+  const editPermissionResult = usePermission({
+    permission: policyEntityUpdatePermission,
+    resourceRef: roleName,
+  });
+
+  const disable = !(editPermissionResult.allowed && canEdit);
+  const dataTestIdText = disable
+    ? `disable-update-role-${roleName}`
+    : `update-role-${roleName}`;
+  const tooltipText = disable ? 'Unauthorized to edit' : '';
+
   return (
-    <Tooltip title={tooltip ?? ''}>
-      <Typography component="span" data-testid={dataTestId}>
+    <Tooltip title={tooltip ?? tooltipText}>
+      <Typography component="span" data-testid={dataTestId ?? dataTestIdText}>
         <IconButton
           component={Link}
           aria-label="Update"
