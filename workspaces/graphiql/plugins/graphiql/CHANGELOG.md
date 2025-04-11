@@ -1,5 +1,11 @@
 # @backstage-community/plugin-graphiql
 
+## 0.4.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
 ## 0.4.0
 
 ### Minor Changes
