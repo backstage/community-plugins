@@ -1,5 +1,11 @@
 # @backstage-community/plugin-github-issues
 
+## 0.8.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
 ## 0.8.0
 
 ### Minor Changes
