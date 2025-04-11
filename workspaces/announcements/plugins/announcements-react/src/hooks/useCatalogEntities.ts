@@ -18,6 +18,14 @@ import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import { parseEntityRef } from '@backstage/catalog-model';
 import useAsyncRetry from 'react-use/esm/useAsyncRetry';
 
+/**
+ * Hook to fetch catalog entities based on entity references.
+ *
+ * @param refs - An array of entity reference strings.
+ * @returns An object containing the fetched entities, loading state, error, and a retry function.
+ *
+ * @public
+ */
 export const useCatalogEntities = (refs: string[]) => {
   const catalogApi = useApi(catalogApiRef);
 

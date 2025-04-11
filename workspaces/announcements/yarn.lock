@@ -2701,16 +2701,9 @@ __metadata:
   resolution: "@backstage-community/plugin-announcements-react@workspace:plugins/announcements-react"
   dependencies:
     "@backstage-community/plugin-announcements-common": "workspace:^"
-<<<<<<< HEAD
     "@backstage/cli": "npm:^0.32.0"
     "@backstage/core-app-api": "npm:^1.16.1"
     "@backstage/core-plugin-api": "npm:^1.10.6"
-=======
-    "@backstage/catalog-model": "npm:^1.7.3"
-    "@backstage/cli": "npm:^0.31.0"
-    "@backstage/core-app-api": "npm:^1.16.0"
-    "@backstage/core-plugin-api": "npm:^1.10.5"
->>>>>>> bacaa3f94 (feat(announcements): add support for submitting announcements on behalf of a team)
     "@backstage/errors": "npm:^1.2.7"
     "@backstage/plugin-catalog-react": "npm:^1.16.0"
     "@testing-library/jest-dom": "npm:^5.10.1"
@@ -4222,7 +4215,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-catalog-react@npm:^1.17.0":
+"@backstage/plugin-catalog-react@npm:^1.16.0, @backstage/plugin-catalog-react@npm:^1.17.0":
   version: 1.17.0
   resolution: "@backstage/plugin-catalog-react@npm:1.17.0"
   dependencies:
