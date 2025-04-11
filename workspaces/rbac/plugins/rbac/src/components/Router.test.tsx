@@ -127,7 +127,6 @@ describe('Router component', () => {
     expect(mockedPrequirePermission).toHaveBeenCalledWith(
       expect.objectContaining({
         permission: expect.objectContaining({ name: 'policy.entity.create' }),
-        resourceRef: expect.stringContaining('policy-entity'),
       }),
       expect.anything(),
     );
@@ -152,13 +151,6 @@ describe('Router component', () => {
       </MemoryRouter>,
     );
 
-    expect(mockedPrequirePermission).toHaveBeenCalledWith(
-      expect.objectContaining({
-        permission: expect.objectContaining({ name: 'policy.entity.update' }),
-        resourceRef: expect.stringContaining('policy-entity'),
-      }),
-      expect.anything(),
-    );
     expect(screen.queryByText('EditRole')).toBeInTheDocument();
   });
 

@@ -53,7 +53,6 @@ export const policyEntityCreatePermission = createPermission({
   attributes: {
     action: 'create',
   },
-  resourceType: RESOURCE_TYPE_POLICY_ENTITY,
 });
 
 /**

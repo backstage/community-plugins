@@ -199,6 +199,26 @@ export class RBACPermissionPolicy implements PermissionPolicy {
 
       const permissionName = request.permission.name;
       const roles = await this.enforcer.getRolesForUser(userEntityRef);
+      // handle permission with 'resource' type
+      const hasNamedPermission =
+        await this.hasImplicitPermissionSpecifiedByName(
+          permissionName,
+          action,
+          roles,
+        );
+
+      // TODO: Temporary workaround to prevent breakages after the removal of the resource type `policy-entity` from the permission `policy.entity.create`
+      if (
+        request.permission.name === 'policy.entity.create' &&
+        !hasNamedPermission
+      ) {
+        request.permission = {
+          attributes: { action: 'create' },
+          type: 'resource',
+          resourceType: 'policy-entity',
+          name: 'policy.entity.create',
+        };
+      }
 
       if (isResourcePermission(request.permission)) {
         const resourceType = request.permission.resourceType;
@@ -217,13 +237,6 @@ export class RBACPermissionPolicy implements PermissionPolicy {
           }
         }
 
-        // handle permission with 'resource' type
-        const hasNamedPermission =
-          await this.hasImplicitPermissionSpecifiedByName(
-            permissionName,
-            action,
-            roles,
-          );
         // Let's set up higher priority for permission specified by name, than by resource type
         const obj = hasNamedPermission ? permissionName : resourceType;
 

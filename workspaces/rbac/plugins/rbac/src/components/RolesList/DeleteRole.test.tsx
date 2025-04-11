@@ -16,6 +16,7 @@
 import React from 'react';
 
 import * as DeleteDialogContext from '@janus-idp/shared-react';
+import { usePermission } from '@backstage/plugin-permission-react';
 import { fireEvent, render, screen } from '@testing-library/react';
 
 import DeleteRole from './DeleteRole';
@@ -28,16 +29,27 @@ jest.mock('@janus-idp/shared-react', () => ({
     setOpenDialog: jest.fn(),
   }),
 }));
+
+jest.mock('@backstage/plugin-permission-react', () => ({
+  usePermission: jest.fn(),
+  RequirePermission: jest.fn(),
+}));
+
+const mockUsePermission = usePermission as jest.MockedFunction<
+  typeof usePermission
+>;
+
 describe('DeleteRole', () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
 
   it('renders the button with the correct tooltip', () => {
+    mockUsePermission.mockReturnValue({ loading: false, allowed: false });
     render(
       <DeleteRole
         roleName="Admin"
-        disable={false}
+        canEdit={false}
         tooltip="Delete Admin Role"
         dataTestId="delete-admin-role"
       />,
@@ -51,12 +63,9 @@ describe('DeleteRole', () => {
   });
 
   it('calls openDialog with the roleName when clicked', () => {
+    mockUsePermission.mockReturnValue({ loading: false, allowed: true });
     render(
-      <DeleteRole
-        roleName="Admin"
-        disable={false}
-        dataTestId="delete-admin-role"
-      />,
+      <DeleteRole roleName="Admin" canEdit dataTestId="delete-admin-role" />,
     );
 
     fireEvent.click(screen.getByRole('button'));
@@ -67,9 +76,10 @@ describe('DeleteRole', () => {
     expect(setOpenDialog).toHaveBeenCalledWith(true);
   });
 
-  it('disables the button when disable prop is true', () => {
+  it('disables the button when canEdit prop is true', () => {
+    mockUsePermission.mockReturnValue({ loading: false, allowed: false });
     render(
-      <DeleteRole roleName="Admin" disable dataTestId="delete-admin-role" />,
+      <DeleteRole roleName="Admin" canEdit dataTestId="delete-admin-role" />,
     );
 
     expect(screen.getByRole('button')).toBeDisabled();
