@@ -19,7 +19,6 @@ import { createTranslationRef } from '@backstage/core-plugin-api/alpha';
 /**
  * @public
  */
-
 export const tektonTranslationRef = createTranslationRef({
   id: 'tekton',
   messages: {

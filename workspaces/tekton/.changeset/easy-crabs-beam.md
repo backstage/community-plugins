@@ -1,5 +1,5 @@
 ---
-'@backstage-community/plugin-tekton': patch
+'@backstage-community/plugin-tekton': minor
 ---
 
-tekton plugin support i18n
+Added i18n support
