@@ -116,7 +116,7 @@ export const sonarqubeTranslationRef: TranslationRef<
     readonly 'sonarQubeCard.coverageRatingCardTitle': 'Coverage';
     readonly 'sonarQubeCard.duplicationsRatingCard': 'Duplications';
     readonly 'sonarQubeCard.emptyState.title': 'No information to display';
-    readonly 'sonarQubeCard.emptyState.description': 'There is no SonarQube project with key {{ projectTitle }}.';
+    readonly 'sonarQubeCard.emptyState.description': "There is no SonarQube project with key '{{ projectTitle }}'.";
     readonly 'sonarQubeCard.noSonarQubeError.hasAnnotation': 'Unable to access SonarQube project "{{project}}": Check project exists and permissions';
     readonly 'sonarQubeCard.noSonarQubeError.noAnnotation': '{{name}} has no DX-Hub annotation for SonarQube';
     readonly 'sonarQubeCard.qualityBadgeLabel.notComputed': 'Not computed';

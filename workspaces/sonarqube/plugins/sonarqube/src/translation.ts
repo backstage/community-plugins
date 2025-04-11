@@ -28,7 +28,7 @@ export const sonarqubeTranslationRef = createTranslationRef({
       emptyState: {
         title: 'No information to display',
         description:
-          'There is no SonarQube project with key {{ projectTitle }}.',
+          "There is no SonarQube project with key '{{ projectTitle }}'.",
       },
       noSonarQubeError: {
         hasAnnotation:
