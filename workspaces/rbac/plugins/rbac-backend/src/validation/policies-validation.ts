@@ -113,6 +113,14 @@ export function validateRole(role: Role): Error | undefined {
       return err;
     }
   }
+
+  if (role.metadata && role.metadata.owner) {
+    err = validateEntityReference(role.metadata.owner, false, true);
+    if (err) {
+      return err;
+    }
+  }
+
   return undefined;
 }
 
@@ -137,6 +145,7 @@ function isValidEntityNamespace(namespace: string): boolean {
 export function validateEntityReference(
   entityRef?: string,
   role?: boolean,
+  owner?: boolean,
 ): Error | undefined {
   if (!entityRef) {
     return new Error(`'entityReference' must not be empty`);
@@ -159,6 +168,16 @@ export function validateEntityReference(
   if (role && entityRefCompound.kind !== 'role') {
     return new Error(
       `Unsupported kind ${entityRefCompound.kind}. Supported value should be "role"`,
+    );
+  }
+
+  if (
+    owner &&
+    entityRefCompound.kind !== 'user' &&
+    entityRefCompound.kind !== 'group'
+  ) {
+    return new Error(
+      `Unsupported kind ${entityRefCompound.kind}. List supported values ["user", "group"]`,
     );
   }
 

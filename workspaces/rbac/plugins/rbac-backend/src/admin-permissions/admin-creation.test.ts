@@ -46,7 +46,7 @@ const adminRole = 'role:default/rbac_admin';
 const groupPolicy = [['user:default/test_admin', 'role:default/rbac_admin']];
 const permissions = [
   ['role:default/rbac_admin', 'policy-entity', 'read', 'allow'],
-  ['role:default/rbac_admin', 'policy-entity', 'create', 'allow'],
+  ['role:default/rbac_admin', 'policy.entity.create', 'create', 'allow'],
   ['role:default/rbac_admin', 'policy-entity', 'delete', 'allow'],
   ['role:default/rbac_admin', 'policy-entity', 'update', 'allow'],
   ['role:default/rbac_admin', 'catalog-entity', 'read', 'allow'],
