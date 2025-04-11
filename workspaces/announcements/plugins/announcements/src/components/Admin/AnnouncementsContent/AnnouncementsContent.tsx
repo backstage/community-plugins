@@ -193,6 +193,17 @@ export const AnnouncementsContent = () => {
     {
       title: (
         <Typography>
+          {t('admin.announcementsContent.table.onBehalfOf')}
+        </Typography>
+      ),
+      sorting: true,
+      field: 'on_behalf_of',
+      render: rowData => rowData.on_behalf_of,
+    },
+
+    {
+      title: (
+        <Typography>
           {t('admin.announcementsContent.table.category')}
         </Typography>
       ),

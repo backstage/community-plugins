@@ -114,7 +114,9 @@ const AnnouncementCard = ({
   const entityLink = useRouteRef(entityRouteRef);
   const { t } = useAnnouncementsTranslation();
 
-  const publisherRef = parseEntityRef(announcement.publisher);
+  const publisherRef = parseEntityRef(
+    announcement.on_behalf_of || announcement.publisher,
+  );
   const title = (
     <Tooltip
       title={announcement.title}
@@ -133,9 +135,14 @@ const AnnouncementCard = ({
     <>
       <Typography variant="body2" color="textSecondary" component="span">
         {t('announcementsPage.card.by')}{' '}
-        <EntityPeekAheadPopover entityRef={announcement.publisher}>
+        <EntityPeekAheadPopover
+          entityRef={announcement.on_behalf_of || announcement.publisher}
+        >
           <Link to={entityLink(publisherRef)}>
-            <EntityDisplayName entityRef={announcement.publisher} hideIcon />
+            <EntityDisplayName
+              entityRef={announcement.on_behalf_of || announcement.publisher}
+              hideIcon
+            />
           </Link>
         </EntityPeekAheadPopover>
         {announcement.category && (
