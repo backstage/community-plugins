@@ -1,5 +1,11 @@
 # @backstage-community/plugin-gcp-projects
 
+## 0.7.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
 ## 0.7.0
 
 ### Minor Changes
