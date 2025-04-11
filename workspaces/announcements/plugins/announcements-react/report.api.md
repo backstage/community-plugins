@@ -10,6 +10,7 @@ import { ApiRef } from '@backstage/core-plugin-api';
 import { Category } from '@backstage-community/plugin-announcements-common';
 import { DateTime } from 'luxon';
 import { DiscoveryApi } from '@backstage/core-plugin-api';
+import { Entity } from '@backstage/catalog-model';
 import { ErrorApi } from '@backstage/core-plugin-api';
 import { FetchApi } from '@backstage/core-plugin-api';
 import { IdentityApi } from '@backstage/core-plugin-api';
@@ -149,6 +150,7 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'announcementForm.editAnnouncement': 'Edit announcement';
     readonly 'announcementForm.newAnnouncement': 'New announcement';
     readonly 'announcementForm.startAt': 'Announcement start date';
+    readonly 'announcementForm.onBehalfOf': 'On behalf of';
     readonly 'announcementForm.categoryInput.label': 'Category';
     readonly 'announcementForm.categoryInput.create': 'Create';
     readonly 'announcementsPage.grid.announcementDeleted': 'Announcement deleted.';
@@ -269,6 +271,7 @@ export const useAnnouncementsTranslation: () => {
     readonly 'announcementForm.editAnnouncement': 'Edit announcement';
     readonly 'announcementForm.newAnnouncement': 'New announcement';
     readonly 'announcementForm.startAt': 'Announcement start date';
+    readonly 'announcementForm.onBehalfOf': 'On behalf of';
     readonly 'announcementForm.categoryInput.label': 'Category';
     readonly 'announcementForm.categoryInput.create': 'Create';
     readonly 'announcementsPage.grid.announcementDeleted': 'Announcement deleted.';
@@ -323,6 +326,16 @@ export const useAnnouncementsTranslation: () => {
     readonly 'newCategoryDialog.cancelButton': 'Cancel';
     readonly 'newCategoryDialog.createButton': 'Create';
   }>;
+};
+
+// Warning: (ae-missing-release-tag) "useCatalogEntities" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export const useCatalogEntities: (refs: string[]) => {
+  entities: Entity[];
+  loading: boolean;
+  error: Error | undefined;
+  retry: (() => void) | (() => void) | (() => void) | (() => void);
 };
 
 // @public

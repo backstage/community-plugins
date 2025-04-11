@@ -50,6 +50,8 @@ export type Announcement = {
   active: boolean;
   /** Date indicating when the announcement starts (is visible to end users) */
   start_at: string;
+  /** The team on whose behalf the announcement was published */
+  on_behalf_of?: string;
 };
 
 /**

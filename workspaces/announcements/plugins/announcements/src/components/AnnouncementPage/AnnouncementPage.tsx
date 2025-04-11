@@ -54,13 +54,20 @@ const AnnouncementDetails = ({
     title: 'Back to announcements',
   };
 
-  const publisherRef = parseEntityRef(announcement.publisher);
+  const publisherRef = parseEntityRef(
+    announcement.on_behalf_of || announcement.publisher,
+  );
   const subHeader = (
     <Typography>
       By{' '}
-      <EntityPeekAheadPopover entityRef={announcement.publisher}>
+      <EntityPeekAheadPopover
+        entityRef={announcement.on_behalf_of || announcement.publisher}
+      >
         <Link to={entityLink(publisherRef)}>
-          <EntityDisplayName entityRef={announcement.publisher} hideIcon />
+          <EntityDisplayName
+            entityRef={announcement.on_behalf_of || announcement.publisher}
+            hideIcon
+          />
         </Link>
       </EntityPeekAheadPopover>
       , {DateTime.fromISO(announcement.created_at).toRelative()}
