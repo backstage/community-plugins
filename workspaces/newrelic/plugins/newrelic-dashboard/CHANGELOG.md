@@ -1,5 +1,11 @@
 # @backstage-community/plugin-newrelic-dashboard
 
+## 0.7.1
+
+### Patch Changes
+
+- a99cd00: remove unused devDependency `canvas`
+
 ## 0.7.0
 
 ### Minor Changes
