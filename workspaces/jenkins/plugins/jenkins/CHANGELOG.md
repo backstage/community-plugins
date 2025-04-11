@@ -1,5 +1,11 @@
 # @backstage-community/plugin-jenkins
 
+## 0.18.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
 ## 0.18.0
 
 ### Minor Changes
