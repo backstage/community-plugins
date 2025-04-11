@@ -1,5 +1,11 @@
 # @backstage-community/plugin-vault
 
+## 0.5.2
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
 ## 0.5.1
 
 ### Patch Changes
