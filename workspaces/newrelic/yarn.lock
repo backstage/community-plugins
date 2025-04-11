@@ -1777,7 +1777,6 @@ __metadata:
     "@types/parse-link-header": "npm:^2.0.1"
     "@types/react": "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
     "@types/react-dom": "npm:^18.2.19"
-    canvas: "npm:^2.11.2"
     msw: "npm:^1.2.3"
     parse-link-header: "npm:^2.0.0"
     react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
