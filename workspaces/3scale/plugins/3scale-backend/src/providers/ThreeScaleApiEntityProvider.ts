@@ -74,7 +74,6 @@ export class ThreeScaleApiEntityProvider implements EntityProvider {
       config: Config;
       logger: LoggerService;
     },
-
     options: {
       schedule: SchedulerServiceTaskRunner;
       scheduler: SchedulerService;
@@ -194,35 +193,52 @@ export class ThreeScaleApiEntityProvider implements EntityProvider {
       );
       apiDocs = await listApiDocs(this.baseUrl, this.accessToken);
       for (const element of services.services) {
-        const service = element;
-        this.logger.debug(`Find service ${service.service.name}`);
+        try {
+          const service = element;
+          this.logger.debug(`Find service ${service.service.name}`);
 
-        const docs = apiDocs.api_docs.filter(
-          obj => obj.api_doc.service_id === service.service.id,
-        );
-        const proxy = await getProxyConfig(
-          this.baseUrl,
-          this.accessToken,
-          service.service.id,
-        );
-        if (isNonEmptyArray(docs)) {
-          this.logger.info(JSON.stringify(docs));
-          const apiEntity: ApiEntity = await this.buildApiEntityFromService(
-            service,
-            docs,
-            proxy,
+          const docs = apiDocs.api_docs.filter(
+            obj => obj.api_doc.service_id === service.service.id,
           );
-          entities.push(apiEntity);
-          this.logger.debug(`Discovered ApiEntity ${service.service.name}`);
+          const proxy = await getProxyConfig(
+            this.baseUrl,
+            this.accessToken,
+            service.service.id,
+          );
+          if (isNonEmptyArray(docs)) {
+            this.logger.info(JSON.stringify(docs));
+            const apiEntity: ApiEntity = await this.buildApiEntityFromService(
+              service,
+              docs,
+              proxy,
+            );
+            entities.push(apiEntity);
+            this.logger.debug(`Discovered ApiEntity ${service.service.name}`);
+          }
+        } catch (error: any) {
+          if (isError(error)) {
+            // Ensure that we don't log any sensitive internal data:
+            this.logger.error(
+              `Error while building API entity from ${element.service.id}: ${element.service.name}`,
+              {
+                // Default Error properties:
+                name: error.name,
+                message: error.message,
+                stack: error.stack,
+                // Additional status code if available:
+                status: (error.response as { status?: string })?.status,
+              },
+            );
+          }
         }
       }
-
       if (
         services.services.length <
         ThreeScaleApiEntityProvider.SERVICES_FETCH_SIZE
       ) {
         fetchServices = false;
       }
+
       page++;
     }
 
