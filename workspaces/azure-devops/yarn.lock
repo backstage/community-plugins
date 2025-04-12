@@ -33185,13 +33185,13 @@ __metadata:
   linkType: hard
 
 "xml-crypto@npm:^6.0.0":
-  version: 6.0.1
-  resolution: "xml-crypto@npm:6.0.1"
+  version: 6.1.0
+  resolution: "xml-crypto@npm:6.1.0"
   dependencies:
     "@xmldom/is-dom-node": "npm:^1.0.1"
     "@xmldom/xmldom": "npm:^0.8.10"
     xpath: "npm:^0.0.33"
-  checksum: 10/703d40b54333a50f74f2d4f3e37a7b9de7aa2dfde48b0418205261d2f66c9e3869babd96d7be18ec1661aaa3aea03a018279846f844cea607a57183a21a4748a
+  checksum: 10/70bdedf276038248906493047250c0e72d248b41c2626e8a563bb0e578f08f1028c850de53385988106d78e5bdbf9e6a3c685cc8d2b6ddf2b8b167fe5cc7587f
   languageName: node
   linkType: hard
 
