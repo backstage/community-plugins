@@ -1,5 +1,14 @@
 # @backstage-community/plugin-announcements
 
+## 0.5.6
+
+### Patch Changes
+
+- 1f34951: Upgraded to Backstage release 1.37.
+- Updated dependencies [1f34951]
+  - @backstage-community/plugin-announcements-common@0.3.1
+  - @backstage-community/plugin-announcements-react@0.4.2
+
 ## 0.5.5
 
 ### Patch Changes

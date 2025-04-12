@@ -1,5 +1,11 @@
 # @backstage-community/plugin-announcements-common
 
+## 0.3.1
+
+### Patch Changes
+
+- 1f34951: Upgraded to Backstage release 1.37.
+
 ## 0.3.0
 
 ### Minor Changes
