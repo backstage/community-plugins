@@ -17,6 +17,7 @@
 import { createTranslationRef } from '@backstage/core-plugin-api/alpha';
 
 /**
+ * Tekton translation reference.
  * @public
  */
 export const tektonTranslationRef = createTranslationRef({
