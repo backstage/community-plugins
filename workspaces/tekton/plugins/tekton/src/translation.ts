@@ -87,7 +87,7 @@ export const tektonTranslationRef = createTranslationRef({
       },
       podLogsDownloadLink: {
         title: 'Download',
-        downloading: 'Downloading logs',
+        downloading: 'downloading logs',
       },
       taskStatusStepper: {
         skipped: 'Skipped',

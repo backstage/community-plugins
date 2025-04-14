@@ -58,7 +58,7 @@ export const tektonTranslationRef: TranslationRef<
     readonly 'pipelineRunLogs.downloader.downloadTaskLogs': 'Download';
     readonly 'pipelineRunLogs.downloader.downloadPipelineRunLogs': 'Download all tasks logs';
     readonly 'pipelineRunLogs.podLogsDownloadLink.title': 'Download';
-    readonly 'pipelineRunLogs.podLogsDownloadLink.downloading': 'Downloading logs';
+    readonly 'pipelineRunLogs.podLogsDownloadLink.downloading': 'downloading logs';
     readonly 'pipelineRunLogs.taskStatusStepper.skipped': 'Skipped';
     readonly 'pipelineRunOutput.title': 'PipelineRun Output';
     readonly 'pipelineRunOutput.noOutput': 'No output';

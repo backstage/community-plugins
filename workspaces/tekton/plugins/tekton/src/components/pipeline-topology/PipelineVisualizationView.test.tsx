@@ -14,15 +14,12 @@
  * limitations under the License.
  */
 import React from 'react';
-import { BrowserRouter } from 'react-router-dom';
-
-import { render } from '@testing-library/react';
-
 import { ComputedStatus } from '@janus-idp/shared-react';
 
 import { mockKubernetesPlrResponse } from '../../__fixtures__/1-pipelinesData';
 import { TektonResourcesContext } from '../../hooks/TektonResourcesContext';
 import { PipelineVisualizationView } from './PipelineVisualizationView';
+import { renderInTestApp } from '@backstage/test-utils';
 
 jest.mock('@backstage/core-plugin-api', () => ({
   ...jest.requireActual('@backstage/core-plugin-api'),
@@ -30,7 +27,7 @@ jest.mock('@backstage/core-plugin-api', () => ({
 }));
 
 describe('PipelineVisualizationView', () => {
-  it('should render the pipeline run visualization when pipelineRun name exists in the params', () => {
+  it('should render the pipeline run visualization when pipelineRun name exists in the params', async () => {
     const mockContextData = {
       watchResourcesData: {
         pipelineruns: {
@@ -49,11 +46,9 @@ describe('PipelineVisualizationView', () => {
       setSelectedStatus: () => {},
       setIsExpanded: () => {},
     };
-    const { queryByTestId } = render(
+    const { queryByTestId } = await renderInTestApp(
       <TektonResourcesContext.Provider value={mockContextData}>
-        <BrowserRouter>
-          <PipelineVisualizationView pipelineRun="pipeline-test-wbvtlk" />
-        </BrowserRouter>
+        <PipelineVisualizationView pipelineRun="pipeline-test-wbvtlk" />
       </TektonResourcesContext.Provider>,
     );
     expect(queryByTestId('pipelineRun-visualization')).toBeInTheDocument();

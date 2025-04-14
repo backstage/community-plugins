@@ -15,13 +15,13 @@
  */
 import React from 'react';
 
-import { useApi } from '@backstage/core-plugin-api';
-
 import { Theme } from '@material-ui/core';
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 
 import { testPipelineRunPods } from '../../../__fixtures__/pods-data';
 import PipelineRunLogDialog from '../PipelineRunLogDialog';
+import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
+import { kubernetesProxyApiRef } from '../../../types/types';
 
 jest.mock('@material-ui/styles', () => ({
   ...jest.requireActual('@material-ui/styles'),
@@ -37,29 +37,31 @@ jest.mock('@backstage/core-components', () => ({
   ErrorBoundary: (props: any) => <>{props.children}</>,
 }));
 
-jest.mock('@backstage/core-plugin-api', () => ({
-  ...jest.requireActual('@backstage/core-plugin-api'),
-  useApi: jest.fn(),
-}));
-
 jest.mock('../PipelineRunLogs', () => () => <div>Pipeline run logs</div>);
 
 describe('PipelineRunLogDialog', () => {
-  beforeEach(() => {
-    (useApi as any).mockReturnValue({
-      getPodLogs: jest.fn().mockResolvedValue({ text: 'log data...' }),
-    });
-  });
-  it('should not show pipeline run logs modal', () => {
+  it('should not show pipeline run logs modal', async () => {
     const closeDialog = jest.fn();
-    render(
-      <PipelineRunLogDialog
-        open={false}
-        closeDialog={closeDialog}
-        pods={[]}
-        taskRuns={[]}
-        pipelineRun={testPipelineRunPods.pipelineRun}
-      />,
+    await renderInTestApp(
+      <TestApiProvider
+        apis={[
+          [
+            kubernetesProxyApiRef,
+            {
+              getPodLogs: jest.fn().mockResolvedValue({ text: 'log data...' }),
+            },
+          ],
+        ]}
+      >
+        <PipelineRunLogDialog
+          open={false}
+          closeDialog={closeDialog}
+          pods={[]}
+          taskRuns={[]}
+          pipelineRun={testPipelineRunPods.pipelineRun}
+        />
+        ,
+      </TestApiProvider>,
     );
 
     expect(
@@ -67,31 +69,53 @@ describe('PipelineRunLogDialog', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('should show pipeline run logs modal', () => {
+  it('should show pipeline run logs modal', async () => {
     const closeDialog = jest.fn();
-    render(
-      <PipelineRunLogDialog
-        open
-        closeDialog={closeDialog}
-        pods={[]}
-        taskRuns={[]}
-        pipelineRun={testPipelineRunPods.pipelineRun}
-      />,
+    await renderInTestApp(
+      <TestApiProvider
+        apis={[
+          [
+            kubernetesProxyApiRef,
+            {
+              getPodLogs: jest.fn().mockResolvedValue({ text: 'log data...' }),
+            },
+          ],
+        ]}
+      >
+        <PipelineRunLogDialog
+          open
+          closeDialog={closeDialog}
+          pods={[]}
+          taskRuns={[]}
+          pipelineRun={testPipelineRunPods.pipelineRun}
+        />
+      </TestApiProvider>,
     );
 
     expect(screen.getByTestId('pipelinerun-logs-dialog')).toBeInTheDocument();
   });
 
-  it('should not show download links in the logs modal if there are no pods', () => {
+  it('should not show download links in the logs modal if there are no pods', async () => {
     const closeDialog = jest.fn();
-    render(
-      <PipelineRunLogDialog
-        open
-        closeDialog={closeDialog}
-        pods={[]}
-        taskRuns={[]}
-        pipelineRun={testPipelineRunPods.pipelineRun}
-      />,
+    await renderInTestApp(
+      <TestApiProvider
+        apis={[
+          [
+            kubernetesProxyApiRef,
+            {
+              getPodLogs: jest.fn().mockResolvedValue({ text: 'log data...' }),
+            },
+          ],
+        ]}
+      >
+        <PipelineRunLogDialog
+          open
+          closeDialog={closeDialog}
+          pods={[]}
+          taskRuns={[]}
+          pipelineRun={testPipelineRunPods.pipelineRun}
+        />
+      </TestApiProvider>,
     );
 
     expect(screen.getByTestId('pipelinerun-logs-dialog')).toBeInTheDocument();
@@ -101,16 +125,27 @@ describe('PipelineRunLogDialog', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('should show download links in the logs modal if pods are available', () => {
+  it('should show download links in the logs modal if pods are available', async () => {
     const closeDialog = jest.fn();
-    render(
-      <PipelineRunLogDialog
-        open
-        closeDialog={closeDialog}
-        pods={testPipelineRunPods.pods}
-        taskRuns={[]}
-        pipelineRun={testPipelineRunPods.pipelineRun}
-      />,
+    await renderInTestApp(
+      <TestApiProvider
+        apis={[
+          [
+            kubernetesProxyApiRef,
+            {
+              getPodLogs: jest.fn().mockResolvedValue({ text: 'log data...' }),
+            },
+          ],
+        ]}
+      >
+        <PipelineRunLogDialog
+          open
+          closeDialog={closeDialog}
+          pods={testPipelineRunPods.pods}
+          taskRuns={[]}
+          pipelineRun={testPipelineRunPods.pipelineRun}
+        />
+      </TestApiProvider>,
     );
 
     expect(screen.getByTestId('pipelinerun-logs-dialog')).toBeInTheDocument();
