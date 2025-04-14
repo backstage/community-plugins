@@ -76,7 +76,7 @@ const PipelineRunLogViewer = ({ pod }: PipelineRunLogViewerProps) => {
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      retry: true,
+      retry: 5,
       refetchOnWindowFocus: false,
     },
   },
