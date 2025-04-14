@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 2.5.3
+
+### Patch Changes
+
+- 5ed7a38: chore: Remove usage of @spotify/prettier-config
+
 ## 2.5.2
 
 ### Patch Changes
