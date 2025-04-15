@@ -19,6 +19,8 @@ import {
   ScmIntegrationRegistry,
 } from '@backstage/integration';
 import { examples } from './devopsRunPipeline.examples';
+import yaml from 'yaml';
+import { z } from 'zod';
 
 import { InputError } from '@backstage/errors';
 import {
@@ -44,68 +46,75 @@ export function createAzureDevopsRunPipelineAction(options: {
 }) {
   const { integrations } = options;
 
-  return createTemplateAction<{
-    host?: string;
-    organization: string;
-    pipelineId: string;
-    project: string;
-    branch?: string;
-    token?: string;
-    templateParameters?: {
-      [key: string]: string;
-    };
-  }>({
+  return createTemplateAction({
     id: 'azure:pipeline:run',
+    description: '',
     examples,
     schema: {
       input: {
-        required: ['organization', 'pipelineId', 'project'],
-        type: 'object',
-        properties: {
-          host: {
-            type: 'string',
-            title: 'Host',
-            description: 'The host of Azure DevOps. Defaults to dev.azure.com',
-          },
-          organization: {
-            type: 'string',
-            title: 'Organization',
-            description: 'The name of the Azure DevOps organization.',
-          },
-          pipelineId: {
-            type: 'string',
-            title: 'Pipeline ID',
-            description: 'The pipeline ID.',
-          },
-          project: {
-            type: 'string',
-            title: 'Project',
-            description: 'The name of the Azure project.',
-          },
-          branch: {
-            title: 'Repository Branch',
-            type: 'string',
-            description: "The branch of the pipeline's repository.",
-          },
-          templateParameters: {
-            type: 'object',
-            title: 'Template Parameters',
-            description:
+        host: d =>
+          d
+            .string()
+            .describe('The host of Azure DevOps. Defaults to dev.azure.com')
+            .optional(),
+        organization: d =>
+          d.string().describe('The name of the Azure DevOps organization.'),
+        pipelineId: d => d.string().describe('The pipeline ID.'),
+        project: d => d.string().describe('The name of the Azure project.'),
+        branch: d =>
+          d
+            .string()
+            .describe("The branch of the pipeline's repository.")
+            .optional(),
+        token: d =>
+          d.string().describe('Token to use for Ado REST API.').optional(),
+        pollingInterval: d =>
+          d
+            .number()
+            .describe(
+              'Seconds between each poll for pipeline update. 0 = no polling.',
+            )
+            .optional(),
+        pipelineTimeout: d =>
+          d
+            .number()
+            .describe(
+              'Max. seconds to wait for pipeline completion. Only effective if `poolingInterval` is greater than zero.',
+            )
+            .optional(),
+        templateParameters: d =>
+          d
+            .record(z.string(), z.string())
+            .describe(
               'Azure DevOps pipeline template parameters in key-value pairs.',
-          },
-        },
+            )
+            .optional(),
       },
       output: {
-        type: 'object',
-        required: ['pipelineRunUrl'],
-        properties: {
-          pipelineRunUrl: {
-            type: 'string',
-          },
-          pipelineRunStatus: {
-            type: 'string',
-          },
-        },
+        pipelineRunUrl: d => d.string().describe('Url of the pipeline'),
+        pipelineRunStatus: d =>
+          d
+            .enum(['canceled', 'failed', 'succeeded', 'unknown'])
+            .describe('Pipeline Run status'),
+        pipelineRunId: d =>
+          d.number().describe('The pipeline Run ID.').optional(),
+        pipelineTimeoutExceeded: d =>
+          d
+            .boolean()
+            .describe(
+              'True is the pipeline did not complete within the defined timespan.',
+            ),
+        pipelineOutput: d =>
+          d
+            .record(
+              d.string(),
+              d.object({
+                isSecret: d.boolean().optional(),
+                value: d.string().optional(),
+              }),
+            )
+            .describe('Object containing output variables')
+            .optional(),
       },
     },
     async handler(ctx) {
@@ -116,6 +125,9 @@ export function createAzureDevopsRunPipelineAction(options: {
         project,
         branch,
         templateParameters,
+        pollingInterval,
+        pipelineTimeout,
+        token,
       } = ctx.input;
 
       const url = `https://${host}/${organization}`;
@@ -123,15 +135,15 @@ export function createAzureDevopsRunPipelineAction(options: {
         DefaultAzureDevOpsCredentialsProvider.fromIntegrations(integrations);
       const credentials = await credentialProvider.getCredentials({ url: url });
 
-      if (credentials === undefined && ctx.input.token === undefined) {
+      if (credentials === undefined && token === undefined) {
         throw new InputError(
           `No credentials provided ${url}, please check your integrations config`,
         );
       }
 
       const authHandler =
-        ctx.input.token || credentials?.type === 'pat'
-          ? getPersonalAccessTokenHandler(ctx.input.token ?? credentials!.token)
+        token || credentials?.type === 'pat'
+          ? getPersonalAccessTokenHandler(credentials!.token)
           : getBearerHandler(credentials!.token);
 
       const webApi = new WebApi(url, authHandler);
@@ -156,15 +168,16 @@ export function createAzureDevopsRunPipelineAction(options: {
       }
 
       // Log the createOptions object in a readable format
-      ctx.logger.debug(
-        'Create options for running the pipeline:',
-        JSON.stringify(createOptions, null, 2),
-      );
+      ctx.logger.debug('Create options for running the pipeline:', {
+        RunPipelineParameters: JSON.stringify(createOptions, null, 2),
+      });
 
-      const pipelineRun = await client.runPipeline(
+      const pipelineIdAsInt = parseInt(pipelineId, 10);
+
+      let pipelineRun = await client.runPipeline(
         createOptions,
         project,
-        parseInt(pipelineId, 10),
+        pipelineIdAsInt,
       );
 
       // Log the pipeline run URL
@@ -175,6 +188,35 @@ export function createAzureDevopsRunPipelineAction(options: {
         ctx.logger.info(`Pipeline run state: ${RunState[pipelineRun.state]}`);
       }
 
+      let timeoutExceeded = false;
+      if ((pollingInterval || 0) > 0) {
+        let totalRunningTime = 0;
+        const delayInSec = pollingInterval!;
+        do {
+          await new Promise(f => setTimeout(f, delayInSec * 1000));
+
+          pipelineRun = await client.getRun(
+            project,
+            pipelineIdAsInt,
+            pipelineRun.id!,
+          );
+          ctx.logger.info(
+            `Pipeline run state: ${
+              pipelineRun.state ? RunState[pipelineRun.state] : RunState.Unknown
+            }`,
+          );
+
+          totalRunningTime += delayInSec;
+          timeoutExceeded =
+            pipelineTimeout !== undefined && totalRunningTime > pipelineTimeout;
+        } while (pipelineRun.state === RunState.InProgress && !timeoutExceeded);
+      }
+
+      pipelineRun = await client.getRun(
+        project,
+        pipelineIdAsInt,
+        pipelineRun.id!,
+      );
       // Log the pipeline run result if available
       if (pipelineRun.result) {
         ctx.logger.info(
@@ -188,7 +230,10 @@ export function createAzureDevopsRunPipelineAction(options: {
       );
 
       ctx.output('pipelineRunUrl', pipelineRun._links.web.href);
+      ctx.output('pipelineRunId', pipelineRun.id!);
       ctx.output('pipelineRunStatus', pipelineRun.result?.toString());
+      ctx.output('pipelineTimeoutExceeded', timeoutExceeded);
+      ctx.output('pipelineOutput', pipelineRun.variables);
     },
   });
 }

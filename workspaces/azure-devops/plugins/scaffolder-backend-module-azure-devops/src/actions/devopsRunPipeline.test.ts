@@ -36,6 +36,11 @@ import { ScmIntegrations } from '@backstage/integration';
 import { ConfigReader } from '@backstage/config';
 import { WebApi } from 'azure-devops-node-api';
 import { createMockActionContext } from '@backstage/plugin-scaffolder-node-test-utils';
+import {
+  Run,
+  RunResult,
+  RunState,
+} from 'azure-devops-node-api/interfaces/PipelinesInterfaces';
 
 describe('publish:azure', () => {
   const config = new ConfigReader({
@@ -65,6 +70,7 @@ describe('publish:azure', () => {
 
   const mockPipelineClient = {
     runPipeline: jest.fn(),
+    getRun: jest.fn(),
   };
 
   const mockGitApi = {
@@ -96,6 +102,9 @@ describe('publish:azure', () => {
     mockPipelineClient.runPipeline.mockImplementation(() => ({
       _links: { web: { href: 'http://pipeline-run-url.com' } },
     }));
+    mockPipelineClient.getRun.mockImplementation(() => ({
+      _links: { web: { href: 'http://pipeline-run-url.com' } },
+    }));
 
     await action.handler({
       ...mockContext,
@@ -121,6 +130,9 @@ describe('publish:azure', () => {
 
   it('should use template parameters from input if provided', async () => {
     mockPipelineClient.runPipeline.mockImplementation(() => ({
+      _links: { web: { href: 'http://pipeline-run-url.com' } },
+    }));
+    mockPipelineClient.getRun.mockImplementation(() => ({
       _links: { web: { href: 'http://pipeline-run-url.com' } },
     }));
 
@@ -231,6 +243,10 @@ describe('publish:azure', () => {
       _links: { web: { href: 'http://pipeline-run-url.com' } },
       result: 'InProgress',
     }));
+    mockPipelineClient.getRun.mockImplementation(() => ({
+      _links: { web: { href: 'http://pipeline-run-url.com' } },
+      result: 'InProgress',
+    }));
 
     await action.handler({
       ...mockContext,
@@ -249,6 +265,116 @@ describe('publish:azure', () => {
     expect(mockContext.output).toHaveBeenCalledWith(
       'pipelineRunStatus',
       'InProgress',
+    );
+  });
+
+  it('should wait when polling is specified', async () => {
+    mockPipelineClient.runPipeline.mockImplementation(() => ({
+      _links: { web: { href: 'http://pipeline-run-url.com' } },
+    }));
+
+    let runCount = 0;
+    mockPipelineClient.getRun.mockImplementation(() => {
+      runCount++;
+      if (runCount === 3)
+        return {
+          _links: { web: { href: 'http://pipeline-run-url.com' } },
+          result: RunResult.Succeeded,
+          state: RunState.Completed,
+        } as Run;
+
+      return {
+        _links: { web: { href: 'http://pipeline-run-url.com' } },
+        state: RunState.InProgress,
+      } as Run;
+    });
+
+    await action.handler({
+      ...mockContext,
+      input: {
+        host: 'dev.azure.com',
+        organization: 'org',
+        pipelineId: '1',
+        project: 'project',
+        token: 'input-token',
+        branch: 'master',
+        pollingInterval: 1,
+      },
+    });
+
+    expect(mockPipelineClient.runPipeline).toHaveBeenCalledTimes(1);
+    expect(mockPipelineClient.getRun).toHaveBeenCalledTimes(4);
+    expect(mockContext.output).toHaveBeenCalledWith(
+      'pipelineTimeoutExceeded',
+      false,
+    );
+  });
+
+  it('should timeout when when pipeline timout is reached', async () => {
+    mockPipelineClient.runPipeline.mockImplementation(() => ({
+      _links: { web: { href: 'http://pipeline-run-url.com' } },
+    }));
+
+    mockPipelineClient.getRun.mockImplementation(() => {
+      return {
+        _links: { web: { href: 'http://pipeline-run-url.com' } },
+        state: RunState.InProgress,
+      } as Run;
+    });
+
+    await action.handler({
+      ...mockContext,
+      input: {
+        host: 'dev.azure.com',
+        organization: 'org',
+        pipelineId: '1',
+        project: 'project',
+        token: 'input-token',
+        branch: 'master',
+        pollingInterval: 1,
+        pipelineTimeout: 2,
+      },
+    });
+
+    expect(mockContext.output).toHaveBeenCalledWith(
+      'pipelineTimeoutExceeded',
+      true,
+    );
+    expect(mockPipelineClient.runPipeline).toHaveBeenCalledTimes(1);
+    expect(mockPipelineClient.getRun).toHaveBeenCalledTimes(4);
+  });
+
+  it('should output variables from pipeline if available', async () => {
+    mockPipelineClient.runPipeline.mockImplementation(() => ({
+      _links: { web: { href: 'http://pipeline-run-url.com' } },
+      result: 'InProgress',
+    }));
+    mockPipelineClient.getRun.mockImplementation(() => ({
+      _links: { web: { href: 'http://pipeline-run-url.com' } },
+      result: 'InProgress',
+      variables: {
+        var1: { isSecret: false, value: 'foo' },
+        var2: { isSecret: true, value: 'bar' },
+      },
+    }));
+
+    await action.handler({
+      ...mockContext,
+      input: {
+        host: 'dev.azure.com',
+        organization: 'org',
+        pipelineId: '1',
+        project: 'project',
+      },
+    });
+
+    expect(mockContext.output).toHaveBeenCalledWith(
+      'pipelineOutput',
+      expect.objectContaining({ var1: { isSecret: false, value: 'foo' } }),
+    );
+    expect(mockContext.output).toHaveBeenCalledWith(
+      'pipelineOutput',
+      expect.objectContaining({ var2: { isSecret: true, value: 'bar' } }),
     );
   });
 });
