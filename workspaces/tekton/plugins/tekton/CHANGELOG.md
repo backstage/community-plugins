@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 3.23.0
+
+### Minor Changes
+
+- 1d5f33d: Enhance fetching pod logs
+
 ## 3.22.2
 
 ### Patch Changes
