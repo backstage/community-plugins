@@ -17,7 +17,7 @@ import React from 'react';
 import { InfoCard, InfoCardVariants } from '@backstage/core-components';
 import { useRouteRef } from '@backstage/core-plugin-api';
 import { useAnnouncementsTranslation } from '@backstage-community/plugin-announcements-react';
-import { AnnouncementsList } from './AnnouncementsList';
+import { AnnouncementsCardContent } from '../AnnouncementsCardContent';
 import { rootRouteRef } from '../../routes';
 
 type AnnouncementsCardOpts = {
@@ -52,7 +52,7 @@ export const AnnouncementsCard = ({
       variant={variant}
       deepLink={deepLink}
     >
-      <AnnouncementsList
+      <AnnouncementsCardContent
         max={max}
         category={category}
         active={active}

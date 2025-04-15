@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 import React from 'react';
-import { AnnouncementsList } from './AnnouncementsList';
+import { AnnouncementsCardContent } from '../AnnouncementsCardContent';
 
 export const Content = () => {
-  return <AnnouncementsList />;
+  return <AnnouncementsCardContent />;
 };

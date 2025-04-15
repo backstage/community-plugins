@@ -56,7 +56,7 @@ type AnnouncementsListProps = {
   order?: 'asc' | 'desc';
 };
 
-export const AnnouncementsList = ({
+export const AnnouncementsCardContent = ({
   max,
   category,
   active,
