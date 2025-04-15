@@ -1,5 +1,11 @@
 # @backstage-community/plugin-azure-devops
 
+## 0.13.2
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
 ## 0.13.1
 
 ### Patch Changes
