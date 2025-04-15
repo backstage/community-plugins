@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 import React from 'react';
-
 import { DismissableBanner, LogViewer } from '@backstage/core-components';
-
 import { V1Container, V1Pod } from '@kubernetes/client-node';
 import { Paper } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
-
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { usePodLogsOfPipelineRun } from '../../hooks/usePodLogsOfPipelineRun';
 
 type PipelineRunLogViewerProps = { pod: V1Pod };
 
-export const PipelineRunLogViewer = ({ pod }: PipelineRunLogViewerProps) => {
+const PipelineRunLogViewer = ({ pod }: PipelineRunLogViewerProps) => {
   const { value, error, loading } = usePodLogsOfPipelineRun({
     pod,
   });
@@ -74,3 +72,24 @@ export const PipelineRunLogViewer = ({ pod }: PipelineRunLogViewerProps) => {
     </>
   );
 };
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 5,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
+
+const PipelineRunLogViewerWithQueryClient = ({
+  pod,
+}: PipelineRunLogViewerProps) => {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <PipelineRunLogViewer pod={pod} />
+    </QueryClientProvider>
+  );
+};
+
+export { PipelineRunLogViewerWithQueryClient as PipelineRunLogViewer };
