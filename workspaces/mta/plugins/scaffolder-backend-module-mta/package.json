@@ -30,14 +30,14 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
-    "@backstage/backend-dynamic-feature-service": "^0.2.15",
-    "@backstage/backend-plugin-api": "^0.6.17",
-    "@backstage/catalog-client": "^1.6.5",
-    "@backstage/plugin-scaffolder-node": "^0.4.2",
+    "@backstage/backend-dynamic-feature-service": "^0.6.1",
+    "@backstage/backend-plugin-api": "^1.2.1",
+    "@backstage/catalog-client": "^1.9.1",
+    "@backstage/plugin-scaffolder-node": "^0.8.0",
     "openid-client": "^5.6.5"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.26.11"
+    "@backstage/cli": "^0.31.1"
   },
   "files": [
     "dist"
