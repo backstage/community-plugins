@@ -14,44 +14,11 @@
  * limitations under the License.
  */
 import React from 'react';
-import { DateTime } from 'luxon';
-import { usePermission } from '@backstage/plugin-permission-react';
-import {
-  InfoCard,
-  InfoCardVariants,
-  Link,
-  Progress,
-} from '@backstage/core-components';
-import { useApi, useRouteRef } from '@backstage/core-plugin-api';
-import { announcementEntityPermissions } from '@backstage-community/plugin-announcements-common';
-import {
-  announcementCreateRouteRef,
-  announcementViewRouteRef,
-  rootRouteRef,
-} from '../../routes';
-import { formatAnnouncementStartTime } from '../utils/announcementDateUtils';
-import {
-  announcementsApiRef,
-  useAnnouncements,
-  useAnnouncementsTranslation,
-} from '@backstage-community/plugin-announcements-react';
-import {
-  makeStyles,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Typography,
-  Box,
-} from '@material-ui/core';
-import { Alert } from '@material-ui/lab';
-import NewReleasesIcon from '@material-ui/icons/NewReleases';
-
-const useStyles = makeStyles({
-  newAnnouncementIcon: {
-    minWidth: '36px',
-  },
-});
+import { InfoCard, InfoCardVariants } from '@backstage/core-components';
+import { useRouteRef } from '@backstage/core-plugin-api';
+import { useAnnouncementsTranslation } from '@backstage-community/plugin-announcements-react';
+import { AnnouncementsList } from './AnnouncementsList';
+import { rootRouteRef } from '../../routes';
 
 type AnnouncementsCardOpts = {
   title?: string;
@@ -61,7 +28,6 @@ type AnnouncementsCardOpts = {
   variant?: InfoCardVariants;
   sortBy?: 'created_at' | 'start_at';
   order?: 'asc' | 'desc';
-  hideStartAt?: boolean;
 };
 
 export const AnnouncementsCard = ({
@@ -72,35 +38,9 @@ export const AnnouncementsCard = ({
   variant = 'gridItem',
   sortBy,
   order,
-  hideStartAt,
 }: AnnouncementsCardOpts) => {
-  const classes = useStyles();
-  const announcementsApi = useApi(announcementsApiRef);
-  const announcementsLink = useRouteRef(rootRouteRef);
-  const viewAnnouncementLink = useRouteRef(announcementViewRouteRef);
-  const createAnnouncementLink = useRouteRef(announcementCreateRouteRef);
-  const lastSeen = announcementsApi.lastSeenDate();
   const { t } = useAnnouncementsTranslation();
-
-  const { announcements, loading, error } = useAnnouncements({
-    max: max || 5,
-    category,
-    active,
-    sortBy,
-    order,
-  });
-
-  const { announcementCreatePermission } = announcementEntityPermissions;
-  const { loading: loadingPermission, allowed: canAdd } = usePermission({
-    permission: announcementCreatePermission,
-  });
-
-  if (loading) {
-    return <Progress />;
-  } else if (error) {
-    return <Alert severity="error">{error.message}</Alert>;
-  }
-
+  const announcementsLink = useRouteRef(rootRouteRef);
   const deepLink = {
     link: announcementsLink(),
     title: t('announcementsCard.seeAll'),
@@ -112,74 +52,13 @@ export const AnnouncementsCard = ({
       variant={variant}
       deepLink={deepLink}
     >
-      <List dense>
-        {announcements.results.map(announcement => (
-          <ListItem key={announcement.id}>
-            <ListItemIcon
-              className={classes.newAnnouncementIcon}
-              style={{
-                visibility:
-                  lastSeen < DateTime.fromISO(announcement.created_at)
-                    ? 'visible'
-                    : 'hidden',
-              }}
-              title={t('announcementsCard.new')}
-            >
-              <NewReleasesIcon />
-            </ListItemIcon>
-            <ListItemText
-              primary={
-                <Link to={viewAnnouncementLink({ id: announcement.id })}>
-                  {announcement.title}
-                </Link>
-              }
-              secondary={
-                <Box>
-                  <Typography variant="body2" color="textSecondary">
-                    {DateTime.fromISO(announcement.created_at).toRelative()}
-                    {announcement.category && (
-                      <>
-                        {` ${t('announcementsCard.in')} `}
-                        <Link
-                          to={`${announcementsLink()}?category=${
-                            announcement.category.slug
-                          }`}
-                        >
-                          {announcement.category.title}
-                        </Link>
-                      </>
-                    )}
-                  </Typography>
-                  <Typography variant="body2" color="textSecondary">
-                    {announcement.excerpt}
-                  </Typography>
-                  {!hideStartAt && (
-                    <Typography variant="caption" color="textSecondary">
-                      {formatAnnouncementStartTime(
-                        announcement.start_at,
-                        t('announcementsCard.occurred'),
-                        t('announcementsCard.scheduled'),
-                        t('announcementsCard.today'),
-                      )}
-                    </Typography>
-                  )}
-                </Box>
-              }
-            />{' '}
-          </ListItem>
-        ))}
-        {announcements.count === 0 && !loadingPermission && canAdd && (
-          <ListItem>
-            <ListItemText>
-              {`${t('announcementsCard.noAnnouncements')} `}
-              <Link to={createAnnouncementLink()}>
-                {t('announcementsCard.addOne')}
-              </Link>
-              ?
-            </ListItemText>
-          </ListItem>
-        )}
-      </List>
+      <AnnouncementsList
+        max={max}
+        category={category}
+        active={active}
+        sortBy={sortBy}
+        order={order}
+      />
     </InfoCard>
   );
 };
