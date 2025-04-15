@@ -18,7 +18,7 @@ import { Box, Typography } from '@material-ui/core';
 import { InfoCard } from '@backstage/core-components';
 import { makeStyles } from '@material-ui/core/styles';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import { QueryACSData } from '../../common/QueryACSData';
+import { useFetchACSData } from '../../common/useFetchACSData';
 import { SecurityFindingsComponent } from './SecurityFindingsComponent';
 
 import { DataFilterComponent } from '../DataFilterComponent';
@@ -41,9 +41,9 @@ export const VulnerabilitiesComponent = ({
   /* eslint-disable new-cap */
   const {
     result: ACSDataResult,
-    loaded: ACSDataLoaded,
+    isLoading: ACSDataLoaded,
     error: ACSDataError,
-  } = QueryACSData(deploymentName);
+  } = useFetchACSData(deploymentName);
   /* eslint-enable new-cap */
 
   const useStyles = makeStyles(theme => ({
