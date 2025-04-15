@@ -1,5 +1,11 @@
 # @backstage-community/plugin-sonarqube
 
+## 0.11.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
 ## 0.11.0
 
 ### Minor Changes
