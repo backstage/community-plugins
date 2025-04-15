@@ -150,6 +150,6 @@ export const HomepageAnnouncements = announcementsPlugin.provide(
     name: 'HomepageAnnouncements',
     title: 'Announcements',
     components: () =>
-      import('./components/AnnouncementsCard/AnnouncementsHomepage'),
+      import('./components/AnnouncementsHomepage/AnnouncementsHomepage'),
   }),
 );

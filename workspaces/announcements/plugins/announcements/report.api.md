@@ -6,6 +6,7 @@
 /// <reference types="react" />
 
 import { BackstagePlugin } from '@backstage/core-plugin-api';
+import { CardExtensionProps } from '@backstage/plugin-home-react';
 import { IndexableDocument } from '@backstage/plugin-search-common';
 import { InfoCardVariants } from '@backstage/core-components/*';
 import { JSX as JSX_2 } from 'react';
@@ -109,6 +110,11 @@ export type AnnouncementsTimelineProps = {
   sortBy?: 'created_at' | 'start_at';
   order?: 'asc' | 'desc';
 };
+
+// @public (undocumented)
+export const HomepageAnnouncements: (
+  props: CardExtensionProps<{}>,
+) => JSX_2.Element;
 
 // @public (undocumented)
 export const NewAnnouncementBanner: (props: {
