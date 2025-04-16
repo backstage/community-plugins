@@ -39,9 +39,9 @@
     "directory": "workspaces/mta"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.28.2",
+    "@backstage/cli": "^0.29.3",
     "@backstage/e2e-test-utils": "^0.1.1",
-    "@backstage/repo-tools": "^0.10.0",
+    "@backstage/repo-tools": "^0.11.1",
     "@changesets/cli": "^2.27.7",
     "@playwright/test": "^1.32.3",
     "@spotify/prettier-config": "^15.0.0",
