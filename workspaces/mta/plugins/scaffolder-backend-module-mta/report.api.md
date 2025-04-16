@@ -14,7 +14,7 @@ name: string;
 url: string;
 branch: string;
 rootPath: string;
-}, JsonObject>;
+}, JsonObject, "v1">;
 
 // @public (undocumented)
 const mtaScaffolderModule: BackendFeature;
