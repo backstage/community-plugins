@@ -36427,23 +36427,23 @@ __metadata:
   linkType: hard
 
 "xml-crypto@npm:^3.0.1":
-  version: 3.2.0
-  resolution: "xml-crypto@npm:3.2.0"
+  version: 3.2.1
+  resolution: "xml-crypto@npm:3.2.1"
   dependencies:
     "@xmldom/xmldom": "npm:^0.8.8"
     xpath: "npm:0.0.32"
-  checksum: 10/ea9c3ecf60fbe54b947aff86f56f5b50ecc6713f5e514b268262610c97d1f602aacfff07bc4e972d1c1dd5ca4f591aeadb723abe081eae5033c701bcecfaa765
+  checksum: 10/488fe2a8cea138f8a49ac1bbc62613379d8e31802d5da2a865a5553f450fa5962ae7e37dac24a96c732d4df5adf3b03d3284c7e72d16cddc854cf62b1ecef315
   languageName: node
   linkType: hard
 
 "xml-crypto@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "xml-crypto@npm:6.0.0"
+  version: 6.1.0
+  resolution: "xml-crypto@npm:6.1.0"
   dependencies:
     "@xmldom/is-dom-node": "npm:^1.0.1"
     "@xmldom/xmldom": "npm:^0.8.10"
     xpath: "npm:^0.0.33"
-  checksum: 10/bc8f634618e8c30844546cf7a19d3c80634f8134118a2d2b9b76f0bb094b745c53ad94214cd3577fba93327d5d992c7570903e4463ce078d9699e45008246400
+  checksum: 10/70bdedf276038248906493047250c0e72d248b41c2626e8a563bb0e578f08f1028c850de53385988106d78e5bdbf9e6a3c685cc8d2b6ddf2b8b167fe5cc7587f
   languageName: node
   linkType: hard
 
