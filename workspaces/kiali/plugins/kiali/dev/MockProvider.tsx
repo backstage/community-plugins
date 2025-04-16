@@ -31,7 +31,7 @@ import { ServiceListPage } from '../src/pages/ServiceList/ServiceListPage';
 import TrafficGraphPage from '../src/pages/TrafficGraph/TrafficGraphPage';
 import { WorkloadDetailsPage } from '../src/pages/WorkloadDetails/WorkloadDetailsPage';
 import { WorkloadListPage } from '../src/pages/WorkloadList/WorkloadListPage';
-import { KialiApi, kialiApiRef } from '../src/services/Api';
+import { KialiApi, kialiApiRef, QueryParams } from '../src/services/Api';
 import { KialiProvider } from '../src/store/KialiProvider';
 import { App, AppQuery } from '../src/types/App';
 import { AppList, AppListQuery } from '../src/types/AppList';
@@ -50,7 +50,10 @@ import {
   WorkloadHealth,
 } from '../src/types/Health';
 import { IstioConfigDetails } from '../src/types/IstioConfigDetails';
-import { IstioConfigList, IstioConfigsMap } from '../src/types/IstioConfigList';
+import {
+  IstioConfigList,
+  IstioConfigsMapQuery,
+} from '../src/types/IstioConfigList';
 import {
   CanaryUpgradeStatus,
   OutboundTrafficPolicy,
@@ -71,6 +74,7 @@ import { StatusState } from '../src/types/StatusState';
 import { TLSStatus } from '../src/types/TLSStatus';
 import { Span, TracingQuery } from '../src/types/Tracing';
 import {
+  ClusterWorkloadsResponse,
   Workload,
   WorkloadListItem,
   WorkloadNamespaceResponse,
@@ -100,6 +104,32 @@ export class MockKialiClient implements KialiApi {
     if (this.entity && this.entity.metadata.annotations) {
       this.entity.metadata.annotations[key] = value;
     }
+  }
+
+  async getClustersWorkloads(): Promise<ClusterWorkloadsResponse> {
+    return { workloads: [], validations: {} };
+  }
+
+  async getClustersServices(): Promise<ServiceList> {
+    return { services: [], validations: {} };
+  }
+
+  async getClustersApps(): Promise<AppList> {
+    return { applications: [] };
+  }
+
+  async getClustersAppHealth(): Promise<Map<string, NamespaceAppHealth>> {
+    return new Map<string, NamespaceAppHealth>([]);
+  }
+  async getClustersServiceHealth(): Promise<
+    Map<string, NamespaceServiceHealth>
+  > {
+    return new Map<string, NamespaceServiceHealth>([]);
+  }
+  async getClustersWorkloadHealth(): Promise<
+    Map<string, NamespaceWorkloadHealth>
+  > {
+    return new Map<string, NamespaceWorkloadHealth>([]);
   }
 
   async status(): Promise<StatusState> {
@@ -288,17 +318,14 @@ export class MockKialiClient implements KialiApi {
   }
 
   async getAllIstioConfigs(
-    namespaces: string[],
     objects: string[],
     validate: boolean,
     labelSelector: string,
     workloadSelector: string,
     cluster?: string,
-  ): Promise<IstioConfigsMap> {
-    const params: any =
-      namespaces && namespaces.length > 0
-        ? { namespaces: namespaces.join(',') }
-        : {};
+  ): Promise<IstioConfigList> {
+    const params: QueryParams<IstioConfigsMapQuery> = {};
+
     if (objects && objects.length > 0) {
       params.objects = objects.join(',');
     }
@@ -410,7 +437,7 @@ export class MockKialiClient implements KialiApi {
       info.health = ServiceHealth.fromJson(namespace, service, info.health, {
         rateInterval: rateInterval ?? 600,
         hasSidecar: info.istioSidecar,
-        hasAmbient: info.istioAmbient,
+        hasAmbient: info.isAmbient,
       });
     }
     return info;

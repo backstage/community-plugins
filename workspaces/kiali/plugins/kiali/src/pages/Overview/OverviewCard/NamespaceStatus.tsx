@@ -34,6 +34,7 @@ type NamespaceStatusProps = {
 
 export const NamespaceStatus = (props: NamespaceStatusProps) => {
   const ns = props.namespace;
+  const health = props.namespace.status;
   const targetPage = switchType(
     props.type,
     Paths.APPLICATIONS,
@@ -42,13 +43,13 @@ export const NamespaceStatus = (props: NamespaceStatusProps) => {
   );
   const name = ns.name;
   let nbItems = 0;
-  if (ns.status) {
+  if (health) {
     nbItems =
-      ns.status.inError.length +
-      ns.status.inWarning.length +
-      ns.status.inSuccess.length +
-      ns.status.notAvailable.length +
-      ns.status.inNotReady.length;
+      health.inError.length +
+      health.inWarning.length +
+      health.inSuccess.length +
+      health.notAvailable.length +
+      health.inNotReady.length;
   }
   let text: string;
   if (nbItems === 1) {

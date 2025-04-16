@@ -35,7 +35,7 @@ import {
   ComponentStatus,
   IstiodResourceThresholds,
 } from '../../../types/IstioStatus';
-import { NamespaceInfo } from '../NamespaceInfo';
+import { NamespaceInfo, NamespaceInfoStatus } from '../NamespaceInfo';
 import { DirectionType, OverviewType } from '../OverviewToolbar';
 import { CanaryUpgradeProgress } from './CanaryUpgradeProgress';
 import { ControlPlaneNamespaceStatus } from './ControlPlaneNamespaceStatus';
@@ -58,6 +58,7 @@ type OverviewCardProps = {
   outboundTrafficPolicy: OutboundTrafficPolicy;
   istiodResourceThresholds?: IstiodResourceThresholds;
   istioStatus: ComponentStatus[];
+  healthNs?: NamespaceInfoStatus;
 };
 
 export const OverviewCard = (props: OverviewCardProps) => {
