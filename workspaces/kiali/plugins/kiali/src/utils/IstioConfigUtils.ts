@@ -15,8 +15,13 @@
  */
 import _ from 'lodash';
 import { IstioConfigDetails } from '../types/IstioConfigDetails';
-import { IstioConfigItem } from '../types/IstioConfigList';
 import {
+  dicTypeToGVK,
+  gvkType,
+  IstioConfigItem,
+} from '../types/IstioConfigList';
+import {
+  GroupVersionKind,
   IstioObject,
   ObjectCheck,
   OutlierDetection,
@@ -190,46 +195,8 @@ export const getIstioObject = (
   istioObjectDetails?: IstioConfigDetails | IstioConfigItem,
 ): IstioObject | undefined => {
   let istioObject: IstioObject | undefined;
-  if (istioObjectDetails) {
-    if (istioObjectDetails.gateway) {
-      istioObject = istioObjectDetails.gateway;
-    } else if (istioObjectDetails.k8sGateway) {
-      istioObject = istioObjectDetails.k8sGateway;
-    } else if (istioObjectDetails.k8sGRPCRoute) {
-      istioObject = istioObjectDetails.k8sGRPCRoute;
-    } else if (istioObjectDetails.k8sHTTPRoute) {
-      istioObject = istioObjectDetails.k8sHTTPRoute;
-    } else if (istioObjectDetails.k8sReferenceGrant) {
-      istioObject = istioObjectDetails.k8sReferenceGrant;
-    } else if (istioObjectDetails.k8sTCPRoute) {
-      istioObject = istioObjectDetails.k8sTCPRoute;
-    } else if (istioObjectDetails.k8sTLSRoute) {
-      istioObject = istioObjectDetails.k8sTLSRoute;
-    } else if (istioObjectDetails.virtualService) {
-      istioObject = istioObjectDetails.virtualService;
-    } else if (istioObjectDetails.destinationRule) {
-      istioObject = istioObjectDetails.destinationRule;
-    } else if (istioObjectDetails.serviceEntry) {
-      istioObject = istioObjectDetails.serviceEntry;
-    } else if (istioObjectDetails.workloadEntry) {
-      istioObject = istioObjectDetails.workloadEntry;
-    } else if (istioObjectDetails.workloadGroup) {
-      istioObject = istioObjectDetails.workloadGroup;
-    } else if (istioObjectDetails.envoyFilter) {
-      istioObject = istioObjectDetails.envoyFilter;
-    } else if (istioObjectDetails.authorizationPolicy) {
-      istioObject = istioObjectDetails.authorizationPolicy;
-    } else if (istioObjectDetails.peerAuthentication) {
-      istioObject = istioObjectDetails.peerAuthentication;
-    } else if (istioObjectDetails.requestAuthentication) {
-      istioObject = istioObjectDetails.requestAuthentication;
-    } else if (istioObjectDetails.sidecar) {
-      istioObject = istioObjectDetails.sidecar;
-    } else if (istioObjectDetails.wasmPlugin) {
-      istioObject = istioObjectDetails.wasmPlugin;
-    } else if (istioObjectDetails.telemetry) {
-      istioObject = istioObjectDetails.telemetry;
-    }
+  if (istioObjectDetails && istioObjectDetails.resource) {
+    istioObject = istioObjectDetails.resource;
   }
   return istioObject;
 };
@@ -242,3 +209,79 @@ export const getReconciliationCondition = (
     condition => condition.type === 'Reconciled',
   );
 };
+
+export function getIstioObjectGVK(
+  apiVersion?: string,
+  kind?: string,
+): GroupVersionKind {
+  if (!apiVersion || !kind) {
+    return { Group: '', Version: '', Kind: '' };
+  }
+  const parts = apiVersion.split('/');
+  if (parts.length !== 2) {
+    // should not happen, but not the best way, only an alternative
+    return dicTypeToGVK[kind as gvkType];
+  }
+  return { Group: parts[0], Version: parts[1], Kind: kind! };
+}
+
+export function getGVKTypeString(gvk: GroupVersionKind | gvkType): string {
+  if (typeof gvk === 'string') {
+    const gvkEntry = dicTypeToGVK[gvk];
+    if (!gvkEntry) {
+      throw new Error(`GVK type '${gvk}' not found in dicTypeToGVK.`);
+    }
+    return gvkToString(gvkEntry);
+  }
+  return gvkToString(gvk);
+}
+
+function gvkToString(gvk: GroupVersionKind): string {
+  if (!gvk || (!gvk.Group && !gvk.Version && !gvk.Kind)) {
+    return '';
+  }
+  if (!gvk.Group || !gvk.Version) {
+    return gvk.Kind;
+  }
+  return `${gvk.Group}/${gvk.Version}, Kind=${gvk.Kind}`;
+}
+
+export function stringToGVK(gvk: string): GroupVersionKind {
+  const parts = gvk.split(',');
+  if (parts.length !== 2) {
+    // for workloads, apps and services
+    return { Group: '', Version: '', Kind: gvk };
+  }
+  const apiParts = parts[0].split('/');
+  if (apiParts.length !== 2) {
+    // should not happen
+    return { Group: '', Version: '', Kind: parts[1] };
+  }
+  return { Group: apiParts[0], Version: apiParts[1], Kind: parts[1] };
+}
+
+export function kindToStringIncludeK8s(
+  apiVersion?: string,
+  kind?: string,
+): string {
+  if (!kind) {
+    return '';
+  }
+  if (apiVersion?.includes('k8s')) {
+    return `K8s${kind}`;
+  }
+  return kind;
+}
+
+export function istioTypesToGVKString(istioTypes: string[]): string[] {
+  return istioTypes.map(type => {
+    return gvkToString(dicTypeToGVK[type as gvkType]);
+  });
+}
+
+export function isGVKSupported(gvk: GroupVersionKind): boolean {
+  return (
+    getGVKTypeString(gvk) === getGVKTypeString(gvkType[gvk.Kind as gvkType]) &&
+    gvk.Kind !== gvkType.WorkloadGroup
+  );
+}

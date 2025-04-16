@@ -34,7 +34,7 @@ export const KialiEntity = () => {
               <OverviewPage entity={entity} />
             </Grid>
             <Grid xs={12}>
-              <ListViewPage />
+              <ListViewPage entity={entity} />
             </Grid>
           </Grid>
           <Grid xs={6}>

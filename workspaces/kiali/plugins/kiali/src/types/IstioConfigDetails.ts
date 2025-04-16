@@ -16,29 +16,11 @@
 
 import { AceOptions } from 'react-ace/types';
 import {
-  AuthorizationPolicy,
-  DestinationRule,
-  EnvoyFilter,
-  Gateway,
   HelpMessage,
   IstioObject,
-  K8sGateway,
-  K8sGRPCRoute,
-  K8sHTTPRoute,
-  K8sReferenceGrant,
-  K8sTCPRoute,
-  K8sTLSRoute,
+  K8sResource,
   ObjectValidation,
-  PeerAuthentication,
   References,
-  RequestAuthentication,
-  ServiceEntry,
-  Sidecar,
-  Telemetry,
-  VirtualService,
-  WasmPlugin,
-  WorkloadEntry,
-  WorkloadGroup,
 } from './IstioObjects';
 import { Namespace } from './Namespace';
 import { ResourcePermissions } from './Permissions';
@@ -50,31 +32,13 @@ export interface IstioConfigId {
 }
 
 export interface IstioConfigDetails {
-  authorizationPolicy: AuthorizationPolicy;
   cluster?: string;
-  destinationRule: DestinationRule;
-  envoyFilter: EnvoyFilter;
-  gateway: Gateway;
   help?: HelpMessage[];
-  k8sGRPCRoute: K8sGRPCRoute;
-  k8sGateway: K8sGateway;
-  k8sHTTPRoute: K8sHTTPRoute;
-  k8sReferenceGrant: K8sReferenceGrant;
-  k8sTCPRoute: K8sTCPRoute;
-  k8sTLSRoute: K8sTLSRoute;
   namespace: Namespace;
-  peerAuthentication: PeerAuthentication;
   permissions: ResourcePermissions;
   references?: References;
-  requestAuthentication: RequestAuthentication;
-  serviceEntry: ServiceEntry;
-  sidecar: Sidecar;
-  telemetry: Telemetry;
+  resource: K8sResource;
   validation: ObjectValidation;
-  virtualService: VirtualService;
-  wasmPlugin: WasmPlugin;
-  workloadEntry: WorkloadEntry;
-  workloadGroup: WorkloadGroup;
 }
 
 export const aceOptions: AceOptions = {

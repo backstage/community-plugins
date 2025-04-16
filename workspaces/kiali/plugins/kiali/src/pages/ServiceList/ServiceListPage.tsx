@@ -22,16 +22,14 @@ import { useRef } from 'react';
 import { useAsyncFn, useDebounce } from 'react-use';
 import { DefaultSecondaryMasthead } from '../../components/DefaultSecondaryMasthead/DefaultSecondaryMasthead';
 import * as FilterHelper from '../../components/FilterList/FilterHelper';
-import { Toggles } from '../../components/Filters/StatefulFilters';
 import { KIALI_PROVIDER } from '../../components/Router';
 import { TimeDurationComponent } from '../../components/Time/TimeDurationComponent';
 import { VirtualList } from '../../components/VirtualList/VirtualList';
 import { isMultiCluster } from '../../config';
 import { getEntityNs, nsEqual } from '../../helpers/namespaces';
-import { getErrorString, kialiApiRef } from '../../services/Api';
+import { kialiApiRef } from '../../services/Api';
 import { KialiAppState, KialiContext } from '../../store';
 import { baseStyle } from '../../styles/StyleUtils';
-import { ActiveTogglesInfo } from '../../types/Filters';
 import { ServiceHealth } from '../../types/Health';
 import { validationKey } from '../../types/IstioConfigList';
 import { ObjectValidation, Validations } from '../../types/IstioObjects';
@@ -69,7 +67,6 @@ export const ServiceListPage = (props: {
   const prevActiveProvider = useRef(activeProviders);
   const prevActiveNs = useRef(activeNs);
   const prevDuration = useRef(duration);
-  const activeToggles: ActiveTogglesInfo = Toggles.getToggles();
   const [loadingD, setLoading] = React.useState<boolean>(true);
 
   const hiddenColumns = isMultiCluster ? [] : ['cluster'];
@@ -118,10 +115,10 @@ export const ServiceListPage = (props: {
         name: service.name,
         istioSidecar: service.istioSidecar,
         istioAmbient: service.istioAmbient,
-        namespace: data.namespace.name,
+        namespace: service.namespace,
         cluster: service.cluster,
         health: ServiceHealth.fromJson(
-          data.namespace.name,
+          service.namespace,
           service.name,
           service.health,
           {
@@ -132,7 +129,7 @@ export const ServiceListPage = (props: {
         ),
         validation: getServiceValidation(
           service.name,
-          data.namespace.name,
+          service.namespace,
           data.validations,
         ),
         additionalDetailSample: service.additionalDetailSample,
@@ -148,28 +145,24 @@ export const ServiceListPage = (props: {
   };
 
   const fetchServices = async (
-    nss: NamespaceInfo[],
+    clusters: string[],
     timeDuration: number,
-    _: ActiveTogglesInfo,
   ): Promise<void> => {
     const health = 'true';
     const istioResources = 'true';
     const onlyDefinitions = 'false';
     return Promise.all(
-      nss.map(async nsInfo => {
-        return await kialiClient
-          .getServices(nsInfo.name, {
+      clusters.map(async cluster => {
+        return await kialiClient.getClustersServices(
+          activeNs.map(ns => ns).join(','),
+          {
             rateInterval: `${String(timeDuration)}s`,
             health: health,
             istioResources: istioResources,
             onlyDefinitions: onlyDefinitions,
-          })
-          .then(servicesResponse => servicesResponse)
-          .catch(err =>
-            setErrorProvider(
-              `Could not fetch services: ${getErrorString(err)}`,
-            ),
-          );
+          },
+          cluster,
+        );
       }),
     ).then(results => {
       let serviceListItems: ServiceListItem[] = [];
@@ -189,6 +182,12 @@ export const ServiceListPage = (props: {
       props.entity?.metadata.annotations?.[KIALI_PROVIDER] ||
         kialiState.providers.activeProvider,
     );
+    const serverConfig = await kialiClient.getServerConfig();
+
+    const uniqueClusters = new Set<string>();
+    Object.keys(serverConfig.clusters).forEach(cluster => {
+      uniqueClusters.add(cluster);
+    });
     kialiClient
       .getNamespaces()
       .then(namespacesResponse => {
@@ -198,7 +197,7 @@ export const ServiceListPage = (props: {
         );
         const nsl = allNamespaces.filter(ns => activeNs.includes(ns.name));
         setNamespaces(nsl);
-        fetchServices(nsl, duration, activeToggles);
+        fetchServices(Array.from(uniqueClusters), duration);
       })
       .catch(err =>
         setErrorProvider(

@@ -18,9 +18,14 @@ import * as React from 'react';
 import { CSSProperties } from 'react';
 import { useLinkStyle } from '../../styles/StyleUtils';
 import { hasHealth, Health } from '../../types/Health';
+import { IstioConfigItem } from '../../types/IstioConfigList';
+import {
+  getGVKTypeString,
+  getIstioObjectGVK,
+} from '../../utils/IstioConfigUtils';
 import { StatefulFiltersProps } from '../Filters/StatefulFilters';
 import { PFBadgeType } from '../Pf/PfBadges';
-import { IstioTypes, RenderResource, Resource } from './Config';
+import { GVKToBadge, RenderResource, Resource } from './Config';
 import { actionRenderer } from './Renderers';
 
 type VirtualItemProps = {
@@ -29,7 +34,7 @@ type VirtualItemProps = {
   columns: any[];
   config: Resource;
   index: number;
-  item: RenderResource & { type?: string }; // Add 'type' property to 'RenderResource' type
+  item: RenderResource; // Add 'type' property to 'RenderResource' type
   key: string;
   statefulFilterProps?: StatefulFiltersProps;
   style?: CSSProperties;
@@ -51,10 +56,15 @@ export const VirtualItem = (props: VirtualItemProps) => {
   const getBadge = (): React.ReactNode | PFBadgeType => {
     if (props.config.name !== 'istio') {
       return props.config.badge;
-    } else if (props.item.type) {
-      return IstioTypes[props.item.type].badge;
     }
-    return <></>;
+    return GVKToBadge[
+      getGVKTypeString(
+        getIstioObjectGVK(
+          (props.item as IstioConfigItem).apiVersion,
+          (props.item as IstioConfigItem).kind,
+        ),
+      )
+    ];
   };
 
   const linkColor = useLinkStyle();

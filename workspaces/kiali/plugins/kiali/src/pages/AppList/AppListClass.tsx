@@ -23,11 +23,11 @@ export const getAppItems = (
 ): AppListItem[] => {
   if (data.applications) {
     return data.applications.map(app => ({
-      namespace: data.namespace.name,
+      namespace: app.namespace,
       name: app.name,
       istioSidecar: app.istioSidecar,
       istioAmbient: app.istioAmbient,
-      health: AppHealth.fromJson(data.namespace.name, app.name, app.health, {
+      health: AppHealth.fromJson(app.namespace, app.name, app.health, {
         rateInterval: rateInterval,
         hasSidecar: app.istioSidecar,
         hasAmbient: app.istioAmbient,

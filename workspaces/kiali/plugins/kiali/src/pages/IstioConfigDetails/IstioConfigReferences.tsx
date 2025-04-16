@@ -104,7 +104,7 @@ export const IstioConfigReferences = (props: IstioConfigReferencesProps) => {
                 <ReferenceIstioObjectLink
                   name={reference.name}
                   namespace={reference.namespace}
-                  type={reference.objectType}
+                  objectGVK={reference.objectGVK}
                   cluster={props.cluster}
                 />
               </ListItem>
