@@ -4,12 +4,12 @@
 
 ```ts
 
-import { BackendFeatureCompat } from '@backstage/backend-plugin-api';
+import { BackendFeature } from '@backstage/backend-plugin-api';
 
 // Warning: (ae-missing-release-tag) "mtaPlugin" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-const mtaPlugin: BackendFeatureCompat;
+const mtaPlugin: BackendFeature;
 export default mtaPlugin;
 
 ```
