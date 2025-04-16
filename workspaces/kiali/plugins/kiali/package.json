@@ -44,7 +44,7 @@
     "@patternfly/react-topology": "5.4.1",
     "ace-builds": "^1.32.7",
     "axios": "^1.7.4",
-    "cytoscape": "3.30.2",
+    "cytoscape": "3.31.2",
     "d3-format": "^3.1.0",
     "d3-transition": "^3.0.1",
     "deep-freeze": "0.0.1",
