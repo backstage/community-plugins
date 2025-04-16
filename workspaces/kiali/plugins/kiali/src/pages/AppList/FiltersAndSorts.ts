@@ -19,7 +19,9 @@ export const compareObjectReference = (
   a: ObjectReference,
   b: ObjectReference,
 ): number => {
-  const cmpObjectType = a.objectType.localeCompare(b.objectType);
+  const cmpObjectType =
+    a.objectGVK.Kind.localeCompare(b.objectGVK.Kind) ||
+    a.objectGVK.Group.localeCompare(b.objectGVK.Group);
   if (cmpObjectType !== 0) {
     return cmpObjectType;
   }

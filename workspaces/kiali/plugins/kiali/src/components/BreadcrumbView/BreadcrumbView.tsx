@@ -19,8 +19,8 @@ import { Location, useLocation } from 'react-router-dom';
 import { HistoryManager } from '../../app/History';
 import { Paths } from '../../config';
 import { kialiStyle } from '../../styles/StyleUtils';
-import { dicIstioType } from '../../types/IstioConfigList';
 import { BackstageObjectLink } from '../../utils/backstageLinks';
+import { kindToStringIncludeK8s } from '../../utils/IstioConfigUtils';
 import { FilterSelected } from '../Filters/StatefulFilters';
 
 const ItemNames = {
@@ -65,14 +65,6 @@ export const BreadcrumbView = (props: { entity?: boolean }) => {
 
   const path = getPath(useLocation());
 
-  const istioTypeF = (rawType: string) => {
-    const istioType = Object.keys(dicIstioType).find(
-      // @ts-ignore
-      key => dicIstioType[key] === rawType,
-    );
-    return istioType || capitalize(rawType);
-  };
-
   const cleanFilters = () => {
     FilterSelected.resetFilters();
   };
@@ -83,7 +75,7 @@ export const BreadcrumbView = (props: { entity?: boolean }) => {
 
   const namespace = path ? path.namespace : '';
   const item = path ? path.item : '';
-  const istioType = path ? path.istioType : '';
+  const istioType = path ? kindToStringIncludeK8s(path.istioType) : '';
   const pathItem = path ? path.pathItem : '';
 
   const isIstio = isIstioF();
@@ -118,12 +110,12 @@ export const BreadcrumbView = (props: { entity?: boolean }) => {
             entity={props.entity}
             query={`${filterNs}&type=${
               // @ts-ignore
-              dicIstioType[istioType || '']
+              kindToStringIncludeK8s('', istioType)
             }`}
             onClick={cleanFilters}
             type="istio"
           >
-            {istioType ? istioTypeF(istioType) : istioType}
+            {istioType}
           </BackstageObjectLink>
         )}
         <>{item}</>

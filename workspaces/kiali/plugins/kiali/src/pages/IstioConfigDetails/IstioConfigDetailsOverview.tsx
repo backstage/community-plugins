@@ -27,7 +27,7 @@ import { Labels } from '../../components/Label/Labels';
 import { PFBadge } from '../../components/Pf/PfBadges';
 import { LocalTime } from '../../components/Time/LocalTime';
 import { ValidationObjectSummary } from '../../components/Validations/ValidationObjectSummary';
-import { IstioTypes } from '../../components/VirtualList/Config';
+import { GVKToBadge } from '../../components/VirtualList/Config';
 import { KialiIcon } from '../../config/KialiIcon';
 import { kialiStyle } from '../../styles/StyleUtils';
 import { IstioConfigDetails } from '../../types/IstioConfigDetails';
@@ -39,7 +39,9 @@ import {
   WorkloadReference,
 } from '../../types/IstioObjects';
 import {
+  getGVKTypeString,
   getIstioObject,
+  getIstioObjectGVK,
   getReconciliationCondition,
 } from '../../utils/IstioConfigUtils';
 import { IstioConfigReferences } from './IstioConfigReferences';
@@ -133,7 +135,11 @@ export const IstioConfigDetailsOverview = (
         {istioObject && istioObject.kind && (
           <PFBadge
             badge={
-              IstioTypes[istioObject.kind?.toLocaleLowerCase('en-US')].badge
+              GVKToBadge[
+                getGVKTypeString(
+                  getIstioObjectGVK(istioObject.apiVersion, istioObject.kind),
+                )
+              ]
             }
           />
         )}

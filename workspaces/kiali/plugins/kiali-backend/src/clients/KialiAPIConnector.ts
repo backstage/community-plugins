@@ -44,23 +44,47 @@ export class KialiApiImpl implements KialiApi {
     this.kialiFetcher = new KialiFetcher(options.kiali, options.logger);
   }
 
+  cleanVersion = (version: string): Number[] | undefined => {
+    const match = version.match(/^v?(\d+\.\d+\.\d+)/);
+    return match ? match[1].split('.').map(Number) : undefined;
+  };
+
+  /*
+   *  -1 => v1 is minor than v2
+   *  0 => v1 is equal v2
+   *  +1 => v1 is major than v2
+   */
+  compareVersions = (v1: string, v2: string): number => {
+    const parts1 = this.cleanVersion(v1);
+    const parts2 = this.cleanVersion(v2);
+
+    if (!parts1 || !parts2) {
+      return -1;
+    }
+
+    const length = Math.max(parts1.length, parts2.length);
+
+    for (let i = 0; i < length; i++) {
+      const a = parts1[i] || 0;
+      const b = parts2[i] || 0;
+
+      if (a > b) return 1;
+      if (a < b) return -1;
+    }
+
+    return 0;
+  };
+
   supportedVersion = (version: string): string | undefined => {
     this.logger.info('Validating kiali version');
-    const versionSupported = supported[KIALI_CORE_VERSION].replace(
-      /^./,
-      '',
-    ).split('.');
-    const versionClean = version.replace(/^./, '').split('.');
     this.logger.info(
       `Kiali Version supported ${supported[KIALI_CORE_VERSION]}`,
     );
-    if (
-      versionSupported[0] === versionClean[0] &&
-      versionSupported[1] === versionClean[1]
-    ) {
-      return undefined;
+    if (this.compareVersions(supported[KIALI_CORE_VERSION], version) > 0) {
+      return `Kiali version supported is ${supported[KIALI_CORE_VERSION]}, we found version ${version}`;
     }
-    return `Kiali version supported is ${supported[KIALI_CORE_VERSION]}, we found version ${version}`;
+
+    return undefined;
   };
 
   async proxy(endpoint: string): Promise<any> {

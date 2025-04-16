@@ -25,6 +25,7 @@ import {
 import {
   DestinationRule,
   getWizardUpdateLabel,
+  K8sGRPCRoute,
   K8sHTTPRoute,
   ObjectCheck,
   ObjectValidation,
@@ -36,7 +37,7 @@ import {
 import { ResourcePermissions } from './Permissions';
 import { ServiceOverview } from './ServiceList';
 import { TLSStatus } from './TLSStatus';
-import { AdditionalItem } from './Workload';
+import { AdditionalItem, WorkloadInfo } from './Workload';
 
 export interface ServicePort {
   name: string;
@@ -87,22 +88,22 @@ export interface Service {
 }
 
 export interface ServiceDetailsInfo {
-  service: Service;
-  endpoints?: Endpoints[];
-  istioSidecar: boolean;
-  istioAmbient: boolean;
-  virtualServices: VirtualService[];
-  k8sHTTPRoutes: K8sHTTPRoute[];
   destinationRules: DestinationRule[];
-  serviceEntries: ServiceEntry[];
-  istioPermissions: ResourcePermissions;
+  endpoints?: Endpoints[];
   health?: ServiceHealth;
-  workloads?: WorkloadOverview[];
-  subServices?: ServiceOverview[];
+  isAmbient: boolean;
+  istioPermissions: ResourcePermissions;
+  istioSidecar: boolean;
+  k8sGRPCRoutes: K8sGRPCRoute[];
+  k8sHTTPRoutes: K8sHTTPRoute[];
   namespaceMTLS?: TLSStatus;
+  service: Service;
+  serviceEntries: ServiceEntry[];
+  subServices?: ServiceOverview[];
   validations: Validations;
-  additionalDetails: AdditionalItem[];
-  cluster?: string;
+  virtualServices: VirtualService[];
+  waypointWorkloads?: WorkloadInfo[];
+  workloads?: WorkloadOverview[];
 }
 
 export interface ServiceDetailsQuery {

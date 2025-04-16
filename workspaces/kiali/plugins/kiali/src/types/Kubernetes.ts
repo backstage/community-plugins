@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2025 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,27 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { AppHealth } from './Health';
-import { ObjectReference } from './IstioObjects';
-
-export interface AppListItem {
-  cluster?: string;
-  health: AppHealth;
-  istioAmbient: boolean;
-  istioReferences: ObjectReference[];
-  istioSidecar: boolean;
-  labels: { [key: string]: string };
-  name: string;
-  namespace: string;
-}
-
-export interface AppList {
-  applications: AppListItem[];
-  cluster?: string;
-}
-
-export interface AppListQuery {
-  health: 'true' | 'false';
-  istioResources: 'true' | 'false';
-  rateInterval: string;
+export interface TypeMeta {
+  apiVersion: string;
+  kind: string;
 }
