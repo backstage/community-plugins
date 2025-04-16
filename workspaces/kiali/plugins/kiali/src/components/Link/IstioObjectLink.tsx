@@ -17,9 +17,11 @@ import { Tooltip } from '@material-ui/core';
 import React from 'react';
 import { KialiIcon } from '../../config';
 import { kialiStyle } from '../../styles/StyleUtils';
+import { GroupVersionKind } from '../../types/IstioObjects';
 import { BackstageObjectLink } from '../../utils/backstageLinks';
+import { getGVKTypeString } from '../../utils/IstioConfigUtils';
 import { PFBadge } from '../Pf/PfBadges';
-import { IstioTypes } from '../VirtualList/Config';
+import { GVKToBadge } from '../VirtualList/Config';
 
 type ReferenceIstioObjectProps = {
   cluster?: string;
@@ -27,7 +29,7 @@ type ReferenceIstioObjectProps = {
   namespace: string;
   query?: string;
   subType?: string;
-  type: string;
+  objectGVK: GroupVersionKind;
 };
 
 type IstioObjectProps = ReferenceIstioObjectProps & {
@@ -37,17 +39,16 @@ type IstioObjectProps = ReferenceIstioObjectProps & {
 export const IstioObjectLink: React.FC<IstioObjectProps> = (
   props: IstioObjectProps,
 ) => {
-  const { name, namespace, type, cluster, query } = props;
-  const istioType = IstioTypes[type];
+  const { name, namespace, objectGVK, cluster, query } = props;
   return (
     <BackstageObjectLink
       name={name}
       namespace={namespace}
       type="istio"
-      objectType={istioType.url}
+      objectGVK={objectGVK}
       cluster={cluster}
       query={query}
-      data-test={`${type}-${namespace}-${name}`}
+      data-test={`${objectGVK}-${namespace}-${name}`}
     >
       {props.children}
     </BackstageObjectLink>
@@ -55,8 +56,8 @@ export const IstioObjectLink: React.FC<IstioObjectProps> = (
 };
 
 export const ReferenceIstioObjectLink = (props: ReferenceIstioObjectProps) => {
-  const { name, namespace, cluster, type, subType } = props;
-  const istioType = IstioTypes[type];
+  const { name, namespace, cluster, objectGVK, subType } = props;
+  const istioType = objectGVK;
 
   let showLink = true;
   let showTooltip = false;
@@ -75,17 +76,17 @@ export const ReferenceIstioObjectLink = (props: ReferenceIstioObjectProps) => {
     tooltipMsg =
       'The reserved word, "mesh", implies all of the sidecars in the mesh';
   }
-
+  const badge = GVKToBadge[getGVKTypeString(istioType as GroupVersionKind)];
   return (
     <>
-      <PFBadge badge={istioType.badge} />
+      <PFBadge badge={badge} />
 
       {showLink && (
         <IstioObjectLink
           name={name}
           namespace={namespace}
           cluster={cluster}
-          type={type}
+          objectGVK={objectGVK}
           subType={subType}
         >
           {reference}

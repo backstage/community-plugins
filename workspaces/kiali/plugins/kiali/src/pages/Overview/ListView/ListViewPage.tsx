@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Entity } from '@backstage/catalog-model';
 import { CardTab, TabbedCard } from '@backstage/core-components';
 import * as React from 'react';
 import { useSearchParams } from 'react-router-dom';
@@ -21,11 +22,10 @@ import { AppListPage } from '../../AppList/AppListPage';
 import { ServiceListPage } from '../../ServiceList/ServiceListPage';
 import { WorkloadListPage } from '../../WorkloadList/WorkloadListPage';
 
-export const ListViewPage = () => {
+export const ListViewPage = (props: { entity: Entity }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const tabParam = searchParams.get('tabresources');
   const [tab, setTab] = React.useState<string>(tabParam || 'workloads');
-
   const updateTab = (tabvalue: string) => {
     setTab(tabvalue);
     setSearchParams({ ['tabresources']: tabvalue });
@@ -38,7 +38,6 @@ export const ListViewPage = () => {
   const cardStyle: React.CSSProperties = {
     marginRight: '20px',
   };
-
   return (
     <div style={cardStyle}>
       <TabbedCard value={tab} title="Resources">
@@ -48,7 +47,7 @@ export const ListViewPage = () => {
           label="Workloads"
         >
           <div style={tabStyle}>
-            <WorkloadListPage view={ENTITY} />
+            <WorkloadListPage view={ENTITY} entity={props.entity} />
           </div>
         </CardTab>
         <CardTab
@@ -57,7 +56,7 @@ export const ListViewPage = () => {
           label="Services"
         >
           <div style={tabStyle}>
-            <ServiceListPage view={ENTITY} />
+            <ServiceListPage view={ENTITY} entity={props.entity} />
           </div>
         </CardTab>
         <CardTab
@@ -66,7 +65,7 @@ export const ListViewPage = () => {
           label="Applications"
         >
           <div style={tabStyle}>
-            <AppListPage view={ENTITY} />
+            <AppListPage view={ENTITY} entity={props.entity} />
           </div>
         </CardTab>
       </TabbedCard>

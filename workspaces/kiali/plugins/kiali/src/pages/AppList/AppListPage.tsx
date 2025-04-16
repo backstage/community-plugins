@@ -86,18 +86,22 @@ export const AppListPage = (props: {
   };
 
   const fetchApps = async (
-    nss: NamespaceInfo[],
+    clusters: string[],
     timeDuration: number,
   ): Promise<void> => {
     const health = 'true';
     const istioResources = 'true';
     return Promise.all(
-      nss.map(async nsInfo => {
-        return await kialiClient.getApps(nsInfo.name, {
-          rateInterval: `${String(timeDuration)}s`,
-          health: health,
-          istioResources: istioResources,
-        });
+      clusters.map(async cluster => {
+        return await kialiClient.getClustersApps(
+          activeNs.map(ns => ns).join(','),
+          {
+            rateInterval: `${String(timeDuration)}s`,
+            health: health,
+            istioResources: istioResources,
+          },
+          cluster,
+        );
       }),
     )
       .then(results => {
@@ -118,6 +122,7 @@ export const AppListPage = (props: {
   };
 
   const getNS = async () => {
+    const serverConfig = await kialiClient.getServerConfig();
     kialiClient.setAnnotation(
       KIALI_PROVIDER,
       props.entity?.metadata.annotations?.[KIALI_PROVIDER] ||
@@ -126,6 +131,10 @@ export const AppListPage = (props: {
     kialiClient
       .getNamespaces()
       .then(namespacesResponse => {
+        const uniqueClusters = new Set<string>();
+        Object.keys(serverConfig.clusters).forEach(cluster => {
+          uniqueClusters.add(cluster);
+        });
         const allNamespaces: NamespaceInfo[] = getNamespaces(
           namespacesResponse,
           namespaces,
@@ -134,7 +143,7 @@ export const AppListPage = (props: {
           activeNs.includes(ns.name),
         );
         setNamespaces(namespaceInfos);
-        fetchApps(namespaceInfos, duration);
+        fetchApps(Array.from(uniqueClusters), duration);
       })
       .catch(err =>
         setErrorProvider(
