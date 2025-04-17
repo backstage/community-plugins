@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { renderHook, waitFor } from '@testing-library/react';
 import { Entity } from '@backstage/catalog-model';
 import { Readme } from '@backstage-community/plugin-azure-devops-common';

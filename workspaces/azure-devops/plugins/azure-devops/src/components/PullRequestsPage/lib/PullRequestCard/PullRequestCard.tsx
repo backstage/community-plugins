@@ -25,7 +25,6 @@ import { DashboardPullRequest } from '@backstage-community/plugin-azure-devops-c
 import { DateTime } from 'luxon';
 import { PullRequestCardPolicies } from './PullRequestCardPolicies';
 import { PullRequestCardReviewers } from './PullRequestCardReviewers';
-import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(

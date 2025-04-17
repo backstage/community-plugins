@@ -16,7 +16,6 @@
 
 import { azureDevOpsPullRequestReadPermission } from '@backstage-community/plugin-azure-devops-common';
 import { PullRequestTable } from '../PullRequestTable/PullRequestTable';
-import React from 'react';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { stringifyEntityRef } from '@backstage/catalog-model';
