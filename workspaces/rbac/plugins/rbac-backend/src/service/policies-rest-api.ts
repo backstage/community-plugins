@@ -96,7 +96,12 @@ export class PoliciesServer {
   private async authorizeConditional(
     request: Request,
     permission: ResourcePermission<'policy-entity'> | BasicPermission,
-  ): Promise<{ decision: PolicyDecision, credentials: BackstageCredentials<BackstageUserPrincipal | BackstageServicePrincipal> }> {
+  ): Promise<{
+    decision: PolicyDecision;
+    credentials: BackstageCredentials<
+      BackstageUserPrincipal | BackstageServicePrincipal
+    >;
+  }> {
     const credentials = await this.options.httpAuth.credentials(request, {
       allow: ['user', 'service'],
     });
@@ -160,10 +165,7 @@ export class PoliciesServer {
     }
 
     router.get('/', async (request, response) => {
-      await this.authorizeConditional(
-        request,
-        policyEntityReadPermission,
-      );
+      await this.authorizeConditional(request, policyEntityReadPermission);
 
       response.send({ status: 'Authorized' });
     });
@@ -323,10 +325,7 @@ export class PoliciesServer {
       '/policies',
       logAuditorEvent(this.auditor),
       async (request, response) => {
-        await this.authorizeConditional(
-          request,
-          policyEntityCreatePermission,
-        );
+        await this.authorizeConditional(request, policyEntityCreatePermission);
 
         const policyRaw: RoleBasedPolicy[] = request.body;
 
@@ -538,7 +537,9 @@ export class PoliciesServer {
           }
         }
 
-        const modifiedBy = (credentials as BackstageCredentials<BackstageUserPrincipal>).principal.userEntityRef;
+        const modifiedBy = (
+          credentials as BackstageCredentials<BackstageUserPrincipal>
+        ).principal.userEntityRef;
         const metadata: RoleMetadataDao = {
           roleEntityRef: roleRaw.name,
           source: 'rest',
@@ -603,7 +604,9 @@ export class PoliciesServer {
         const newRole = this.transformRoleToArray(newRoleRaw);
         // todo shell we allow newRole with an empty array?...
 
-        const modifiedBy = (credentials as BackstageCredentials<BackstageUserPrincipal>).principal.userEntityRef;
+        const modifiedBy = (
+          credentials as BackstageCredentials<BackstageUserPrincipal>
+        ).principal.userEntityRef;
         const newMetadata: RoleMetadataDao = {
           ...newRoleRaw.metadata,
           source: newRoleRaw.metadata?.source ?? 'rest',
@@ -765,7 +768,9 @@ export class PoliciesServer {
           }
         }
 
-        const modifiedBy = (credentials as BackstageCredentials<BackstageUserPrincipal>).principal.userEntityRef;
+        const modifiedBy = (
+          credentials as BackstageCredentials<BackstageUserPrincipal>
+        ).principal.userEntityRef;
         const metadata: RoleMetadataDao = {
           roleEntityRef,
           source: 'rest',
@@ -791,10 +796,7 @@ export class PoliciesServer {
       '/plugins/policies',
       logAuditorEvent(this.auditor),
       async (request, response) => {
-        await this.authorizeConditional(
-          request,
-          policyEntityReadPermission,
-        );
+        await this.authorizeConditional(request, policyEntityReadPermission);
 
         const body = await this.pluginPermMetaData.getPluginPolicies(
           this.options.auth,
@@ -808,10 +810,7 @@ export class PoliciesServer {
       '/plugins/condition-rules',
       logAuditorEvent(this.auditor),
       async (request, response) => {
-        await this.authorizeConditional(
-          request,
-          policyEntityReadPermission,
-        );
+        await this.authorizeConditional(request, policyEntityReadPermission);
 
         const body = await this.pluginPermMetaData.getPluginConditionRules(
           this.options.auth,
@@ -871,10 +870,7 @@ export class PoliciesServer {
       '/roles/conditions',
       logAuditorEvent(this.auditor),
       async (request, response) => {
-        await this.authorizeConditional(
-          request,
-          policyEntityCreatePermission,
-        );
+        await this.authorizeConditional(request, policyEntityCreatePermission);
 
         const roleConditionPolicy: RoleConditionalPolicyDecision<PermissionAction> =
           request.body;
@@ -1042,10 +1038,7 @@ export class PoliciesServer {
       '/refresh/:id',
       logAuditorEvent(this.auditor),
       async (request, response) => {
-        await this.authorizeConditional(
-          request,
-          policyEntityCreatePermission,
-        );
+        await this.authorizeConditional(request, policyEntityCreatePermission);
 
         if (!this.rbacProviders) {
           throw new NotFoundError(`No RBAC providers were found`);
