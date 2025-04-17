@@ -2887,27 +2887,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage-community/plugin-jenkins-backend@npm:^0.12.0":
-  version: 0.12.1
-  resolution: "@backstage-community/plugin-jenkins-backend@npm:0.12.1"
+"@backstage-community/plugin-jenkins-backend@npm:^0.13.0":
+  version: 0.13.0
+  resolution: "@backstage-community/plugin-jenkins-backend@npm:0.13.0"
   dependencies:
-    "@backstage-community/plugin-jenkins-common": "npm:^0.4.0"
-    "@backstage/backend-defaults": "npm:^0.8.1"
-    "@backstage/backend-plugin-api": "npm:^1.2.0"
+    "@backstage-community/plugin-jenkins-common": "npm:^0.5.0"
+    "@backstage/backend-defaults": "npm:^0.8.2"
+    "@backstage/backend-plugin-api": "npm:^1.2.1"
     "@backstage/catalog-client": "npm:^1.9.1"
     "@backstage/catalog-model": "npm:^1.7.3"
     "@backstage/config": "npm:^1.3.2"
     "@backstage/errors": "npm:^1.2.7"
-    "@backstage/plugin-catalog-node": "npm:^1.16.0"
+    "@backstage/plugin-catalog-node": "npm:^1.16.1"
     "@backstage/plugin-permission-common": "npm:^0.8.4"
-    "@backstage/plugin-permission-node": "npm:^0.8.8"
+    "@backstage/plugin-permission-node": "npm:^0.9.0"
     "@types/express": "npm:^4.17.6"
     express: "npm:^4.17.1"
     express-promise-router: "npm:^4.1.0"
     jenkins: "npm:^1.0.0"
     node-fetch: "npm:^2.6.7"
     yn: "npm:^4.0.0"
-  checksum: 10/e6bcbd15682c212fab0f967b480684ae421a8d384b795665f2f09e7c1201863c2f0bd6dac9a9c186cb666f41e18c8165b33e7e69afaf07856a42311f96cf6664
+  checksum: 10/6e8324b5d4acd7c38e6c7a49a6207e91aec444b479b080f78db262657944bd6616a60edeaeeb5b567fab90482773ed8e0cda07d7b3ada28078fbff5be6cf86b3
   languageName: node
   linkType: hard
 
@@ -2918,6 +2918,16 @@ __metadata:
     "@backstage/plugin-catalog-common": "npm:^1.1.3"
     "@backstage/plugin-permission-common": "npm:^0.8.4"
   checksum: 10/e2ac8b5c1e52b71c722c3448d2fcfcdb18a7f6979fe99c12be016e20c58ab6d3682b7b5ce5b593565cadcf0c8eff5d34b301f89a293d1a8ddaef4f9140f633f7
+  languageName: node
+  linkType: hard
+
+"@backstage-community/plugin-jenkins-common@npm:^0.5.0":
+  version: 0.5.0
+  resolution: "@backstage-community/plugin-jenkins-common@npm:0.5.0"
+  dependencies:
+    "@backstage/plugin-catalog-common": "npm:^1.1.3"
+    "@backstage/plugin-permission-common": "npm:^0.8.4"
+  checksum: 10/efbf357003c05a4bda2c95393948b4c3dea4a9d4db97a99e0d02dd3554f863e7e29c994deea5c949738866e8fcc7ade404b85be6529ae29be99b56f371c1ba69
   languageName: node
   linkType: hard
 
@@ -15773,7 +15783,7 @@ __metadata:
   resolution: "backend@workspace:packages/backend"
   dependencies:
     "@backstage-community/plugin-azure-devops-backend": "npm:^0.14.0"
-    "@backstage-community/plugin-jenkins-backend": "npm:^0.12.0"
+    "@backstage-community/plugin-jenkins-backend": "npm:^0.13.0"
     "@backstage/backend-defaults": "npm:^0.8.1"
     "@backstage/cli": "npm:^0.30.0"
     "@backstage/config": "npm:^1.3.2"
