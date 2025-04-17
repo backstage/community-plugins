@@ -43,7 +43,7 @@ export const AddNestedConditionButton = () => {
       }}
     >
       <Typography variant="body1" component="span">
-        Add Nested Condition
+        Add nested condition
       </Typography>
       <Tooltip title={tooltipTitle()} placement="top">
         <HelpOutlineIcon fontSize="inherit" style={{ marginLeft: '0.25rem' }} />

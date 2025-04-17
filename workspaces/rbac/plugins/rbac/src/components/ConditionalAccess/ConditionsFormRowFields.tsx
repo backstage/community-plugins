@@ -74,8 +74,9 @@ const makeConditionsFormRowFieldsStyles = makeStyles<Theme, StyleProps>(() => ({
   inputFieldContainer: {
     display: 'flex',
     flexFlow: 'row',
-    gap: '10px',
+    gap: '1rem',
     flexGrow: 1,
+    paddingLeft: 0,
     margin: ({ isNotSimpleCondition }) =>
       isNotSimpleCondition ? '-1.5rem 0 0 1.85rem' : '0',
   },

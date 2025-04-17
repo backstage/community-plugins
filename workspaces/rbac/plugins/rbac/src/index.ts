@@ -13,6 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { unstable_ClassNameGenerator as ClassNameGenerator } from '@mui/material/className';
+
+ClassNameGenerator.configure(componentName => {
+  return componentName.startsWith('v5-')
+    ? componentName
+    : `v5-${componentName}`;
+});
+
 export { rbacPlugin, RbacPage, Administration } from './plugin';
 export { rbacApiRef } from './api/RBACBackendClient';
 export type { RBACAPI } from './api/RBACBackendClient';

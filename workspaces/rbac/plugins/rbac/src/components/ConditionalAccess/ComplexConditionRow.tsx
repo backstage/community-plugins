@@ -252,7 +252,7 @@ export const ComplexConditionRow = ({
             color: theme => theme.palette.grey[500],
             flexGrow: 0,
             alignSelf: 'baseline',
-            marginTop: theme => theme.spacing(3.3),
+            marginTop: theme => theme.spacing(4.2),
           }}
           disabled={isNestedCondition ? nestedDisabled : disabled}
           onClick={
