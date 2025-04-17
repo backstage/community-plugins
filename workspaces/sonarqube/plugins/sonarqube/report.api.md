@@ -15,6 +15,7 @@ import { InfoCardVariants as InfoCardVariants_2 } from '@backstage/core-componen
 import { JSX as JSX_2 } from 'react';
 import { default as React_2 } from 'react';
 import { SonarQubeApi } from '@backstage-community/plugin-sonarqube-react';
+import { TranslationRef } from '@backstage/core-plugin-api/alpha';
 
 // @public (undocumented)
 export type DuplicationRating = {
@@ -100,4 +101,36 @@ export type SonarQubeTableProps = {
   emptyContent?: React_2.ReactNode;
   localization?: any;
 };
+
+// @public (undocumented)
+export const sonarqubeTranslationRef: TranslationRef<
+  'sonarqube',
+  {
+    readonly title: 'SonarQube Dashboard';
+    readonly 'sonarQubeCard.title': 'Code Quality';
+    readonly 'sonarQubeCard.deepLinkTitle': 'View more';
+    readonly 'sonarQubeCard.bugReportRatingCardTitle': 'Bugs';
+    readonly 'sonarQubeCard.vulnerabilitiesRatingCardTitle': 'Vulnerabilities';
+    readonly 'sonarQubeCard.codeSmellsRatingCardTitle': 'Code Smells';
+    readonly 'sonarQubeCard.hotspotsReviewedTitle': 'Hotspots Reviewed';
+    readonly 'sonarQubeCard.coverageRatingCardTitle': 'Coverage';
+    readonly 'sonarQubeCard.duplicationsRatingCard': 'Duplications';
+    readonly 'sonarQubeCard.emptyState.title': 'No information to display';
+    readonly 'sonarQubeCard.emptyState.description': "There is no SonarQube project with key '{{ projectTitle }}'.";
+    readonly 'sonarQubeCard.noSonarQubeError.hasAnnotation': 'Unable to access SonarQube project "{{project}}": Check project exists and permissions';
+    readonly 'sonarQubeCard.noSonarQubeError.noAnnotation': '{{name}} has no DX-Hub annotation for SonarQube';
+    readonly 'sonarQubeCard.qualityBadgeLabel.notComputed': 'Not computed';
+    readonly 'sonarQubeCard.qualityBadgeLabel.gatePassed': 'Gate passed';
+    readonly 'sonarQubeCard.qualityBadgeLabel.gateFailed': 'Gate failed';
+    readonly 'sonarQubeTable.entityLinkTitle': 'View Component details';
+    readonly 'sonarQubeTable.columnsTitle.component': 'Component';
+    readonly 'sonarQubeTable.columnsTitle.vulnerabilities': 'Vulnerabilities';
+    readonly 'sonarQubeTable.columnsTitle.bugs': 'Bugs';
+    readonly 'sonarQubeTable.columnsTitle.coverage': 'Coverage';
+    readonly 'sonarQubeTable.columnsTitle.qualityGate': 'Quality Gate';
+    readonly 'sonarQubeTable.columnsTitle.codeSmells': 'Code Smells';
+    readonly 'sonarQubeTable.columnsTitle.hotspotsReviewed': 'Hotspots Reviewed';
+    readonly 'sonarQubeTable.columnsTitle.duplications': 'Duplications';
+  }
+>;
 ```
