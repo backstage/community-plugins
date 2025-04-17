@@ -15,15 +15,9 @@
  */
 import React from 'react';
 
-import { render } from '@testing-library/react';
-
 import { mockKubernetesPlrResponse } from '../../__fixtures__/1-pipelinesData';
 import PipelineBars from './PipelineBars';
-
-jest.mock('react', () => ({
-  ...jest.requireActual('react'),
-  useContext: jest.fn(),
-}));
+import { renderInTestApp } from '@backstage/test-utils';
 
 jest.mock('@material-ui/core', () => ({
   ...jest.requireActual('@material-ui/core'),
@@ -37,17 +31,9 @@ jest.mock('@material-ui/core', () => ({
 }));
 
 describe('PipelineBars', () => {
-  it('should show PipelineBars & Dialog', () => {
-    (React.useContext as jest.Mock).mockReturnValue({
-      clusters: ['OCP'],
-      selectedCluster: [0],
-      watchResourcesData: {
-        pods: { data: mockKubernetesPlrResponse.pods },
-        taskruns: { data: mockKubernetesPlrResponse.taskruns },
-      },
-    });
+  it('should show PipelineBars & Dialog', async () => {
     const pipelineRun = mockKubernetesPlrResponse.pipelineruns[0];
-    const { queryByTestId } = render(
+    const { queryByTestId } = await renderInTestApp(
       <PipelineBars pipelineRun={pipelineRun} />,
     );
     expect(
