@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import {
