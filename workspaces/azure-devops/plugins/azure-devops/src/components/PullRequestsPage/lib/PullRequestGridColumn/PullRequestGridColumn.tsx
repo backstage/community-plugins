@@ -20,7 +20,6 @@ import { styled, withStyles } from '@material-ui/core/styles';
 
 import { PullRequestCard } from '../PullRequestCard';
 import { PullRequestGroup } from '../types';
-import React from 'react';
 
 const ColumnPaper = withStyles(theme => ({
   root: {

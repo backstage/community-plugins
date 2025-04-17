@@ -16,7 +16,6 @@
 
 import { azureDevOpsGitTagReadPermission } from '@backstage-community/plugin-azure-devops-common';
 import { GitTagTable } from '../GitTagTable/GitTagTable';
-import React from 'react';
 import { stringifyEntityRef } from '@backstage/catalog-model';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { RequirePermission } from '@backstage/plugin-permission-react';
