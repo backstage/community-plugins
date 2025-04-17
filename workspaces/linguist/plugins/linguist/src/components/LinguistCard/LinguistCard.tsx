@@ -23,7 +23,6 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { InfoCard, Progress } from '@backstage/core-components';
 import Alert from '@material-ui/lab/Alert';
 import { DateTime } from 'luxon';
-import React from 'react';
 import slugify from 'slugify';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { useLanguages } from '../../hooks';

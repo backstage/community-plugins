@@ -2602,7 +2602,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage-community/plugin-catalog-backend-module-linguist-tags-processor@workspace:plugins/catalog-backend-module-linguist-tags-processor":
+"@backstage-community/plugin-catalog-backend-module-linguist-tags-processor@workspace:^, @backstage-community/plugin-catalog-backend-module-linguist-tags-processor@workspace:plugins/catalog-backend-module-linguist-tags-processor":
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-catalog-backend-module-linguist-tags-processor@workspace:plugins/catalog-backend-module-linguist-tags-processor"
   dependencies:
@@ -2624,6 +2624,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-linguist-backend@workspace:plugins/linguist-backend"
   dependencies:
+    "@backstage-community/plugin-catalog-backend-module-linguist-tags-processor": "workspace:^"
     "@backstage-community/plugin-linguist-common": "workspace:^"
     "@backstage/backend-defaults": "npm:^0.9.0"
     "@backstage/backend-openapi-utils": "npm:^0.5.2"

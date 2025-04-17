@@ -62,6 +62,7 @@
     "yn": "^4.0.0"
   },
   "devDependencies": {
+    "@backstage-community/plugin-catalog-backend-module-linguist-tags-processor": "workspace:^",
     "@backstage/backend-test-utils": "^1.4.0",
     "@backstage/cli": "^0.32.0",
     "@backstage/plugin-auth-backend": "^0.24.5",
