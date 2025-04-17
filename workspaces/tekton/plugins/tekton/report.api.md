@@ -8,6 +8,7 @@
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
 import { JSX as JSX_2 } from 'react';
+import { TranslationRef } from '@backstage/core-plugin-api/alpha';
 
 // @public
 export const isTektonCIAvailable: (entity: Entity) => boolean;
@@ -17,6 +18,52 @@ export const TektonCI: () => JSX_2.Element | null;
 
 // @public
 export const tektonPlugin: BackstagePlugin<{}, {}, {}>;
+
+// @public
+export const tektonTranslationRef: TranslationRef<
+  'tekton',
+  {
+    readonly 'errorPanel.title': 'There was a problem retrieving Kubernetes objects';
+    readonly 'errorPanel.description': 'There was a problem retrieving some Kubernetes resources for the entity: {{entityName}}. This could mean that the Error Reporting card is not completely accurate.';
+    readonly 'permissionAlert.title': 'Permission required';
+    readonly 'permissionAlert.description': 'To view Tekton Pipeline Runs, contact your administrator to give you the following permission(s): {{permissions}}.';
+    readonly 'statusSelector.label': 'Status';
+    readonly 'tableExpandCollapse.collapseAll': 'Collapse all';
+    readonly 'tableExpandCollapse.expandAll': 'Expand all';
+    readonly 'pipelineVisualization.noTasksDescription': 'This Pipeline Run has no tasks to visualize';
+    readonly 'pipelineVisualization.emptyState.description': 'No Pipeline Run to visualize';
+    readonly 'pipelineVisualization.stepList.finallyTaskTitle': 'Finally Task';
+    readonly 'pipelineRunList.title': 'Pipeline Runs';
+    readonly 'pipelineRunList.noPipelineRuns': 'No Pipeline Runs found';
+    readonly 'pipelineRunList.searchBarPlaceholder': 'Search';
+    readonly 'pipelineRunList.rowActions.viewLogs': 'View logs';
+    readonly 'pipelineRunList.rowActions.unauthorizedViewLogs': 'Unauthorized to view logs';
+    readonly 'pipelineRunList.rowActions.viewSBOM': 'View SBOM';
+    readonly 'pipelineRunList.rowActions.SBOMNotApplicable': 'View SBOM is not applicable for this PipelineRun';
+    readonly 'pipelineRunList.rowActions.viewOutput': 'View output';
+    readonly 'pipelineRunList.rowActions.outputNotApplicable': 'View Output is not applicable for this PipelineRun';
+    readonly 'pipelineRunList.vulnerabilitySeverityTitle.critical': 'Critical';
+    readonly 'pipelineRunList.vulnerabilitySeverityTitle.high': 'High';
+    readonly 'pipelineRunList.vulnerabilitySeverityTitle.medium': 'Medium';
+    readonly 'pipelineRunList.vulnerabilitySeverityTitle.low': 'Low';
+    readonly 'pipelineRunList.tableHeaderTitle.status': 'STATUS';
+    readonly 'pipelineRunList.tableHeaderTitle.startTime': 'STARTED';
+    readonly 'pipelineRunList.tableHeaderTitle.name': 'NAME';
+    readonly 'pipelineRunList.tableHeaderTitle.duration': 'DURATION';
+    readonly 'pipelineRunList.tableHeaderTitle.vulnerabilities': 'VULNERABILITIES';
+    readonly 'pipelineRunList.tableHeaderTitle.taskStatus': 'TASK STATUS';
+    readonly 'pipelineRunList.tableHeaderTitle.actions': 'ACTIONS';
+    readonly 'pipelineRunLogs.title': 'PipelineRun Logs';
+    readonly 'pipelineRunLogs.noLogs': 'No logs found';
+    readonly 'pipelineRunLogs.downloader.downloadTaskLogs': 'Download';
+    readonly 'pipelineRunLogs.downloader.downloadPipelineRunLogs': 'Download all tasks logs';
+    readonly 'pipelineRunLogs.podLogsDownloadLink.title': 'Download';
+    readonly 'pipelineRunLogs.podLogsDownloadLink.downloading': 'downloading logs';
+    readonly 'pipelineRunLogs.taskStatusStepper.skipped': 'Skipped';
+    readonly 'pipelineRunOutput.title': 'PipelineRun Output';
+    readonly 'pipelineRunOutput.noOutput': 'No output';
+  }
+>;
 
 // (No @packageDocumentation comment for this package)
 ```

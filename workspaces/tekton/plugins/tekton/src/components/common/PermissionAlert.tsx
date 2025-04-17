@@ -20,6 +20,8 @@ import {
   kubernetesClustersReadPermission,
   kubernetesResourcesReadPermission,
 } from '@backstage/plugin-kubernetes-common';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { tektonTranslationRef } from '../../translation';
 
 const permissions = [
   kubernetesClustersReadPermission,
@@ -29,11 +31,12 @@ const permissions = [
   .join(', ');
 
 const PermissionAlert = () => {
+  const { t } = useTranslationRef(tektonTranslationRef);
+
   return (
     <Alert severity="warning" data-testid="no-permission-alert">
-      <AlertTitle>Permission required</AlertTitle>
-      To view Tekton Pipeline Runs, contact your administrator to give you the
-      following permission(s): {permissions}.
+      <AlertTitle>{t('permissionAlert.title')}</AlertTitle>
+      {t('permissionAlert.description', { permissions })}
     </Alert>
   );
 };

@@ -21,6 +21,8 @@ import { useEntity } from '@backstage/plugin-catalog-react';
 import { Typography } from '@material-ui/core';
 
 import { ClusterError, ClusterErrors } from '../../types/types';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { tektonTranslationRef } from '../../translation';
 
 type ErrorPanelProps = { allErrors: ClusterErrors };
 
@@ -30,11 +32,14 @@ export const ErrorPanel = ({ allErrors }: ErrorPanelProps) => {
       metadata: { name: entityName },
     },
   } = useEntity();
+  const { t } = useTranslationRef(tektonTranslationRef);
   return (
     <div className="warning-panel" style={{ marginBottom: '16px' }}>
       <WarningPanel
-        title="There was a problem retrieving Kubernetes objects"
-        message={`There was a problem retrieving some Kubernetes resources for the entity: ${entityName}. This could mean that the Error Reporting card is not completely accurate.`}
+        title={t('errorPanel.title')}
+        message={t('errorPanel.description', {
+          entityName,
+        })}
       >
         <div>
           Errors:

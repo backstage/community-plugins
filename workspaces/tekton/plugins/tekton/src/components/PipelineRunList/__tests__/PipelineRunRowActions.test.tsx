@@ -17,15 +17,12 @@ import React from 'react';
 
 import '@testing-library/jest-dom';
 
-import { BrowserRouter } from 'react-router-dom';
-
 import { LinkProps } from '@backstage/core-components';
 import { usePermission } from '@backstage/plugin-permission-react';
 
 import {
   act,
   fireEvent,
-  render,
   screen,
   waitFor,
   within,
@@ -37,6 +34,7 @@ import { mockKubernetesPlrResponse } from '../../../__fixtures__/1-pipelinesData
 import { TektonResourcesContext } from '../../../hooks/TektonResourcesContext';
 import { TektonResourcesContextData } from '../../../types/types';
 import PipelineRunRowActions from '../PipelineRunRowActions';
+import { renderInTestApp } from '@backstage/test-utils';
 
 jest.mock('@backstage/plugin-permission-react', () => ({
   usePermission: jest.fn(),
@@ -101,9 +99,7 @@ const TestPipelineRunRowActions = ({
   pipelineRun: PipelineRunKind;
 }) => (
   <TektonResourcesContext.Provider value={tektonResourceContextData}>
-    <BrowserRouter>
-      <PipelineRunRowActions pipelineRun={pipelineRun} />
-    </BrowserRouter>
+    <PipelineRunRowActions pipelineRun={pipelineRun} />
   </TektonResourcesContext.Provider>
 );
 
@@ -112,8 +108,8 @@ describe('PipelineRunRowActions', () => {
     mockUsePermission.mockReturnValue({ loading: false, allowed: true });
   });
 
-  it('should render the icon space holder', () => {
-    render(
+  it('should render the icon space holder', async () => {
+    await renderInTestApp(
       <TestPipelineRunRowActions
         pipelineRun={mockKubernetesPlrResponse.pipelineruns[0]}
       />,
@@ -122,8 +118,8 @@ describe('PipelineRunRowActions', () => {
     expect(screen.queryByTestId('icon-space-holder')).toBeInTheDocument();
   });
 
-  it('should render the internal sbom link', () => {
-    render(
+  it('should render the internal sbom link', async () => {
+    await renderInTestApp(
       <TestPipelineRunRowActions
         pipelineRun={mockKubernetesPlrResponse.pipelineruns[3]}
       />,
@@ -133,7 +129,7 @@ describe('PipelineRunRowActions', () => {
   });
 
   it('should open sbom logs modal when the view SBOM link is clicked', async () => {
-    render(
+    await renderInTestApp(
       <TestPipelineRunRowActions
         pipelineRun={mockKubernetesPlrResponse.pipelineruns[3]}
       />,
@@ -152,8 +148,8 @@ describe('PipelineRunRowActions', () => {
     });
   });
 
-  it('should render the external sbom link', () => {
-    render(
+  it('should render the external sbom link', async () => {
+    await renderInTestApp(
       <TestPipelineRunRowActions
         pipelineRun={mockKubernetesPlrResponse.pipelineruns[4]}
       />,
@@ -162,10 +158,10 @@ describe('PipelineRunRowActions', () => {
     expect(screen.queryByTestId('external-sbom-link')).toBeInTheDocument();
   });
 
-  it('should disable the view logs action if the user does not have enough permission', () => {
+  it('should disable the view logs action if the user does not have enough permission', async () => {
     mockUsePermission.mockReturnValue({ loading: false, allowed: false });
 
-    render(
+    await renderInTestApp(
       <TestPipelineRunRowActions
         pipelineRun={mockKubernetesPlrResponse.pipelineruns[1]}
       />,
@@ -178,7 +174,7 @@ describe('PipelineRunRowActions', () => {
   });
 
   it('should not open sbom logs modal when the view external SBOM link is clicked', async () => {
-    render(
+    await renderInTestApp(
       <TestPipelineRunRowActions
         pipelineRun={mockKubernetesPlrResponse.pipelineruns[4]}
       />,
@@ -199,8 +195,8 @@ describe('PipelineRunRowActions', () => {
     });
   });
 
-  it('should disable the view output action', () => {
-    render(
+  it('should disable the view output action', async () => {
+    await renderInTestApp(
       <TestPipelineRunRowActions
         pipelineRun={mockKubernetesPlrResponse.pipelineruns[1]}
       />,
@@ -213,8 +209,8 @@ describe('PipelineRunRowActions', () => {
     ).toBeDefined();
   });
 
-  it('should enable the view output action', () => {
-    render(
+  it('should enable the view output action', async () => {
+    await renderInTestApp(
       <TestPipelineRunRowActions
         pipelineRun={mockKubernetesPlrResponse.pipelineruns[2]}
       />,

@@ -42,10 +42,12 @@ import { getComparator } from '../../utils/tekton-utils';
 import { ClusterSelector, ErrorPanel } from '../common';
 import { StatusSelector } from '../common/StatusSelector';
 import { TableExpandCollapse } from '../common/TableExpandCollapse';
-import { PipelineRunColumnHeader } from './PipelineRunColumnHeader';
+import { getPipelineRunColumnHeader } from './PipelineRunColumnHeader';
 import { PipelineRunListSearchBar } from './PipelineRunListSearchBar';
 import { PipelineRunTableBody } from './PipelineRunTableBody';
 import { EnhancedTableHead } from './PipelineTableHeader';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { tektonTranslationRef } from '../../translation';
 
 type WrapperInfoCardProps = {
   allErrors?: ClusterErrors;
@@ -115,6 +117,8 @@ const PipelineRunList = () => {
   const [orderById, setOrderById] = React.useState<string>('startTime'); // 2 columns have the same field
   const [page, setPage] = React.useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = React.useState<number>(5);
+  const { t } = useTranslationRef(tektonTranslationRef);
+  const pipelineRunColumnHeader = getPipelineRunColumnHeader(t);
 
   // Jump to first page when cluster, status and search filter changed
   const updateStateOnFilterChanges = React.useRef(false);
@@ -217,7 +221,7 @@ const PipelineRunList = () => {
         <Paper>
           <Toolbar>
             <Typography variant="h5" component="h2">
-              Pipeline Runs
+              {t('pipelineRunList.title')}
             </Typography>
             <PipelineRunListSearchBar value={search} onChange={setSearch} />
           </Toolbar>
@@ -237,7 +241,7 @@ const PipelineRunList = () => {
                 <PipelineRunTableBody rows={visibleRows} />
                 {emptyRows > 0 && (
                   <TableRow style={{ height: 55 * emptyRows }}>
-                    <TableCell colSpan={PipelineRunColumnHeader.length} />
+                    <TableCell colSpan={pipelineRunColumnHeader.length} />
                   </TableRow>
                 )}
                 <TableRow className={classes.footer}>
@@ -259,12 +263,12 @@ const PipelineRunList = () => {
             ) : (
               <tbody>
                 <tr>
-                  <td colSpan={PipelineRunColumnHeader.length}>
+                  <td colSpan={pipelineRunColumnHeader.length}>
                     <div
                       data-testid="no-pipeline-runs"
                       className={classes.empty}
                     >
-                      No Pipeline Runs found
+                      {t('pipelineRunList.noPipelineRuns')}
                     </div>
                   </td>
                 </tr>

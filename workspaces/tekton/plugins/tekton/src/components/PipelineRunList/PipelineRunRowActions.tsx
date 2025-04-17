@@ -40,12 +40,15 @@ import ViewLogsIcon from '../Icons/ViewLogsIcon';
 import PipelineRunLogDialog from '../PipelineRunLogs/PipelineRunLogDialog';
 import PipelineRunOutputDialog from '../PipelineRunOutput/PipelineRunOutputDialog';
 import PipelineRunSBOMLink from './PipelineRunSBOMLink';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { tektonTranslationRef } from '../../translation';
 
 const PipelineRunRowActions: React.FC<{ pipelineRun: PipelineRunKind }> = ({
   pipelineRun,
 }) => {
   const { watchResourcesData } = React.useContext(TektonResourcesContext);
   const [open, setOpen] = React.useState<boolean>(false);
+  const { t } = useTranslationRef(tektonTranslationRef);
 
   const [openOutput, setOpenOutput] = React.useState<boolean>(false);
   const pods = watchResourcesData?.pods?.data || [];
@@ -126,8 +129,8 @@ const PipelineRunRowActions: React.FC<{ pipelineRun: PipelineRunKind }> = ({
           <Tooltip
             content={
               hasKubernetesProxyAccess.allowed
-                ? 'View logs'
-                : 'Unauthorized to view logs'
+                ? t('pipelineRunList.rowActions.viewLogs')
+                : t('pipelineRunList.rowActions.unauthorizedViewLogs')
             }
           >
             <IconButton
@@ -146,8 +149,8 @@ const PipelineRunRowActions: React.FC<{ pipelineRun: PipelineRunKind }> = ({
           <Tooltip
             content={
               !sbomTaskRun
-                ? 'View SBOM is not applicable for this PipelineRun'
-                : 'View SBOM'
+                ? t('pipelineRunList.rowActions.SBOMNotApplicable')
+                : t('pipelineRunList.rowActions.viewSBOM')
             }
           >
             <IconButton
@@ -171,8 +174,8 @@ const PipelineRunRowActions: React.FC<{ pipelineRun: PipelineRunKind }> = ({
           <Tooltip
             content={
               disabled
-                ? 'View Output is not applicable for this PipelineRun'
-                : 'View Output'
+                ? t('pipelineRunList.rowActions.outputNotApplicable')
+                : t('pipelineRunList.rowActions.viewOutput')
             }
           >
             <IconButton

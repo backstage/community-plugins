@@ -15,13 +15,14 @@
  */
 import React from 'react';
 
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 
 import { PipelineRunListSearchBar } from './PipelineRunListSearchBar';
+import { renderInTestApp } from '@backstage/test-utils';
 
 describe('PipelineRunListSearchBar', () => {
-  test('renders PipelineRunListSearchBar component', () => {
-    const { getByPlaceholderText } = render(
+  test('renders PipelineRunListSearchBar component', async () => {
+    const { getByPlaceholderText } = await renderInTestApp(
       <PipelineRunListSearchBar value="" onChange={() => {}} />,
     );
 
@@ -30,9 +31,9 @@ describe('PipelineRunListSearchBar', () => {
     expect(getByPlaceholderText('Search')).toBeInTheDocument();
   });
 
-  test('handles search input change', () => {
+  test('handles search input change', async () => {
     const onChange = jest.fn();
-    const { getByPlaceholderText, getByTestId } = render(
+    const { getByPlaceholderText, getByTestId } = await renderInTestApp(
       <PipelineRunListSearchBar value="" onChange={onChange} />,
     );
     const searchInput = getByPlaceholderText('Search');
@@ -44,9 +45,9 @@ describe('PipelineRunListSearchBar', () => {
     expect(onChange).toHaveBeenCalledWith('example');
   });
 
-  test('clears search input', () => {
+  test('clears search input', async () => {
     const onChange = jest.fn();
-    const { getByTestId } = render(
+    const { getByTestId } = await renderInTestApp(
       <PipelineRunListSearchBar value="example" onChange={onChange} />,
     );
     const clearButton = getByTestId('clear-search');

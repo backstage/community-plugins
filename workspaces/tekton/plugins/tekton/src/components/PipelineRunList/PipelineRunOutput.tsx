@@ -35,6 +35,8 @@ import {
   kubernetesProxyApiRef,
   TektonResourcesContextData,
 } from '../../types/types';
+import { tektonTranslationRef } from '../../translation';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 
 type PipelineRunOutputProps = {
   pipelineRun: PipelineRunKind;
@@ -48,6 +50,7 @@ const PipelineRunOutput: React.FC<PipelineRunOutputProps> = ({
   const { clusters, selectedCluster } =
     React.useContext<TektonResourcesContextData>(TektonResourcesContext);
   const kubernetesProxyApi = useApi(kubernetesProxyApiRef);
+  const { t } = useTranslationRef(tektonTranslationRef);
 
   const currCluster =
     (clusters.length > 0 && clusters[selectedCluster || 0]) || '';
@@ -95,7 +98,7 @@ const PipelineRunOutput: React.FC<PipelineRunOutputProps> = ({
     if (!stillLoading && noDataAvailable) {
       return (
         <Typography align="center" variant="body2">
-          No output found
+          {t('pipelineRunOutput.noOutput')}
         </Typography>
       );
     }
