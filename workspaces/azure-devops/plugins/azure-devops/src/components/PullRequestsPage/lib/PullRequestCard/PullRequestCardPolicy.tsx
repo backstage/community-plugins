@@ -24,7 +24,6 @@ import Typography from '@material-ui/core/Typography';
 
 import CancelIcon from '@material-ui/icons/Cancel';
 import GroupWorkIcon from '@material-ui/icons/GroupWork';
-import React from 'react';
 import WatchLaterIcon from '@material-ui/icons/WatchLater';
 
 const PolicyRequiredIcon = withStyles(
