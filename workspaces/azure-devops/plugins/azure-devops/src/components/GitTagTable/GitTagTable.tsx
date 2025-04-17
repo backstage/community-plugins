@@ -22,7 +22,6 @@ import {
   TableColumn,
 } from '@backstage/core-components';
 import { GitTag } from '@backstage-community/plugin-azure-devops-common';
-import React from 'react';
 
 import { AzureGitTagsIcon } from '../AzureGitTagsIcon';
 import { useEntity } from '@backstage/plugin-catalog-react';

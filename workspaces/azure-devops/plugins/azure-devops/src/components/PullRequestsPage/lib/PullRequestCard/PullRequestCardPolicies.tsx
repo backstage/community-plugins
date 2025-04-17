@@ -16,7 +16,6 @@
 
 import { Policy } from '@backstage-community/plugin-azure-devops-common';
 import { PullRequestCardPolicy } from './PullRequestCardPolicy';
-import React from 'react';
 
 type PullRequestCardProps = {
   policies: Policy[];

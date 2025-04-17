@@ -25,7 +25,6 @@ import {
   ErrorPanel,
 } from '@backstage/core-components';
 import { useEntity } from '@backstage/plugin-catalog-react';
-import React from 'react';
 
 import { useReadme } from '../../hooks';
 

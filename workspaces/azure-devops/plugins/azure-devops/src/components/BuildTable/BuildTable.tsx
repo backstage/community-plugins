@@ -37,7 +37,6 @@ import {
 
 import { AzurePipelinesIcon } from '../AzurePipelinesIcon';
 import { DateTime } from 'luxon';
-import React from 'react';
 import { getDurationFromDates } from '../../utils/getDurationFromDates';
 import { BuildLogDrawer } from './lib/BuildLogDrawer';
 
