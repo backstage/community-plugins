@@ -1,5 +1,11 @@
 # @backstage-community/plugin-github-actions
 
+## 0.9.2
+
+### Patch Changes
+
+- 58c5ad5: Start pagination at page 1 in `api.listBranches` to avoid duplicate branches in WorkflowRunsCard.
+
 ## 0.9.1
 
 ### Patch Changes
