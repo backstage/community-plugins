@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 3.24.0
+
+### Minor Changes
+
+- 6828dde: Added i18n support
+
 ## 3.23.0
 
 ### Minor Changes
