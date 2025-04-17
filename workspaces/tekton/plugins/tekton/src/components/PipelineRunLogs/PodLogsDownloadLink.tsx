@@ -31,6 +31,8 @@ import {
   TektonResourcesContextData,
 } from '../../types/types';
 import { getPodLogs } from '../../utils/log-downloader-utils';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { tektonTranslationRef } from '../../translation';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -55,6 +57,7 @@ const PodLogsDownloadLink: React.FC<{
   const classes = useStyles();
   const [downloading, setDownloading] = React.useState<boolean>(false);
   const kubernetesProxyApi = useApi(kubernetesProxyApiRef);
+  const { t } = useTranslationRef(tektonTranslationRef);
 
   const { clusters, selectedCluster = 0 } =
     React.useContext<TektonResourcesContextData>(TektonResourcesContext);
@@ -76,7 +79,11 @@ const PodLogsDownloadLink: React.FC<{
       variant="body2"
       underline="none"
       disabled={downloading}
-      title={downloading ? 'downloading logs' : downloadTitle}
+      title={
+        downloading
+          ? t('pipelineRunLogs.podLogsDownloadLink.downloading')
+          : downloadTitle
+      }
       onClick={() => {
         setDownloading(true);
         getPodLogs(pods, getLogs, currCluster)
@@ -96,7 +103,7 @@ const PodLogsDownloadLink: React.FC<{
       {...props}
     >
       <DownloadIcon style={{ verticalAlign: '-0.180em' }} />
-      {downloadTitle || 'Download '}
+      {downloadTitle || t('pipelineRunLogs.podLogsDownloadLink.title')}
     </Link>
   );
 };

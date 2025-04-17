@@ -24,7 +24,9 @@ import {
 } from '@material-ui/core';
 
 import { Order } from '../../types/types';
-import { PipelineRunColumnHeader } from './PipelineRunColumnHeader';
+import { getPipelineRunColumnHeader } from './PipelineRunColumnHeader';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { tektonTranslationRef } from '../../translation';
 
 type EnhancedTableProps = {
   onRequestSort: (
@@ -60,11 +62,13 @@ export const EnhancedTableHead = ({
       onRequestSort(event, property, id);
     };
   const classes = useStyles();
+  const { t } = useTranslationRef(tektonTranslationRef);
+  const pipelineRunColumnHeader = getPipelineRunColumnHeader(t);
 
   return (
     <TableHead>
       <TableRow>
-        {PipelineRunColumnHeader.map(headCell => {
+        {pipelineRunColumnHeader.map(headCell => {
           return (
             <TableCell
               className={classes.header}

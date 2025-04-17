@@ -24,6 +24,8 @@ import { getPipelineRun } from '../../utils/pipelineRun-utils';
 import { PipelineVisualization } from './PipelineVisualization';
 
 import './PipelineVisualization.css';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { tektonTranslationRef } from '../../translation';
 
 type PipelineVisualizationViewProps = {
   pipelineRun: string;
@@ -35,6 +37,7 @@ export const PipelineVisualizationView = ({
   const { loaded, responseError, watchResourcesData } = React.useContext(
     TektonResourcesContext,
   );
+  const { t } = useTranslationRef(tektonTranslationRef);
 
   const pipelineRunResource = React.useMemo(
     () =>
@@ -53,7 +56,7 @@ export const PipelineVisualizationView = ({
     return (
       <EmptyState
         missing="data"
-        description="No Pipeline Run to visualize"
+        description={t('pipelineVisualization.emptyState.description')}
         title=""
       />
     );

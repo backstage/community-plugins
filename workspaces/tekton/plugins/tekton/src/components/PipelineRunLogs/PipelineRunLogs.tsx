@@ -31,6 +31,8 @@ import {
 import { getActiveTaskRun, getSortedTaskRuns } from '../../utils/taskRun-utils';
 import { PipelineRunLogViewer } from './PipelineRunLogViewer';
 import { TaskStatusStepper } from './TaskStatusStepper';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { tektonTranslationRef } from '../../translation';
 
 type PipelineRunLogsProps = {
   pipelineRun: PipelineRunKind;
@@ -60,6 +62,7 @@ export const PipelineRunLogs = ({
 
   const completed = pipelineRunFilterReducer(pipelineRun);
   const [lastActiveStepId, setLastActiveStepId] = React.useState<string>('');
+  const { t } = useTranslationRef(tektonTranslationRef);
 
   React.useEffect(() => {
     const mostRecentFailedOrActiveStep = sortedTaskRuns.find(tr =>
@@ -107,7 +110,7 @@ export const PipelineRunLogs = ({
               elevation={1}
               style={{ height: '100%', width: '100%', minHeight: '30rem' }}
             >
-              <LogViewer text="No Logs found" />
+              <LogViewer text={t('pipelineRunLogs.noLogs')} />
             </Paper>
           ) : (
             <PipelineRunLogViewer pod={podData} />
