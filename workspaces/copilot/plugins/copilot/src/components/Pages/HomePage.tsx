@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { JSX } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import Box from '@mui/material/Box';
@@ -71,7 +71,7 @@ const InfoCard = ({
   </Card>
 );
 
-export const HomePage = (): React.JSX.Element => {
+export const HomePage = (): JSX.Element => {
   const configApi = useApi(configApiRef);
   const navigate = useNavigate();
 
