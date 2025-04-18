@@ -1,5 +1,16 @@
 # @backstage-community/plugin-lighthouse
 
+## 0.9.0
+
+### Minor Changes
+
+- c91184c: Backstage version bump to v1.38.1
+
+### Patch Changes
+
+- Updated dependencies [c91184c]
+  - @backstage-community/plugin-lighthouse-common@0.6.0
+
 ## 0.8.1
 
 ### Patch Changes
