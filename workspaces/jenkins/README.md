@@ -23,4 +23,4 @@ both cases, you'll want to configure Jenkins credentials so that you can connect
 - Adjust the `'jenkins.io/job-full-name'` annotation in the [catalog-info.yaml](./examples/entities.yaml#16) to point to your
   Jenkins job
 - Run `yarn install`
-- Run `yarn dev`
+- Run `yarn start`

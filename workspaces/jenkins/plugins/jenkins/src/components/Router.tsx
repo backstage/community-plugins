@@ -20,7 +20,6 @@ import {
   useEntity,
   MissingAnnotationEmptyState,
 } from '@backstage/plugin-catalog-react';
-import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { JENKINS_ANNOTATION, LEGACY_JENKINS_ANNOTATION } from '../constants';
 import { buildRouteRef, jobRunsRouteRef } from '../plugin';
