@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { GraphiQLPage } from './GraphiQLPage';
 import { act } from '@testing-library/react';
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
