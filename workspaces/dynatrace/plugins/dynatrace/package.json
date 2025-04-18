@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-dynatrace",
-  "version": "10.4.1",
+  "version": "10.5.0",
   "backstage": {
     "role": "frontend-plugin",
     "pluginId": "dynatrace",
