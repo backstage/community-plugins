@@ -18,7 +18,6 @@ import {
   SignInProviderConfig,
 } from '@backstage/core-components';
 import { githubAuthApiRef, SignInPageProps } from '@backstage/core-plugin-api';
-import React from 'react';
 
 const githubProvider: SignInProviderConfig = {
   id: 'github-auth-provider',
