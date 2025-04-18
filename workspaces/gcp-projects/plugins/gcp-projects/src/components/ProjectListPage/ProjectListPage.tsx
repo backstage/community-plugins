@@ -19,7 +19,6 @@ import Button from '@material-ui/core/Button';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
-import React from 'react';
 
 import { useAsync, useMountEffect } from '@react-hookz/web';
 import { gcpApiRef, Project } from '../../api';

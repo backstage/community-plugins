@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { NewProjectPage } from '../NewProjectPage';
 import { ProjectDetailsPage } from '../ProjectDetailsPage';
