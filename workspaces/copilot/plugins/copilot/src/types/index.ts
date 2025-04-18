@@ -19,7 +19,7 @@ import {
   Metric,
   SeatAnalysis,
 } from '@backstage-community/plugin-copilot-common';
-import React from 'react';
+import { SetStateAction, Dispatch } from 'react';
 
 export type LanguageStats = {
   language: string;
@@ -62,7 +62,7 @@ export type EngagementChartsProps = {
 
 export type FilterProps = {
   team?: string;
-  setTeam: React.Dispatch<React.SetStateAction<string | undefined>>;
+  setTeam: Dispatch<SetStateAction<string | undefined>>;
   options: FilterOptions;
 };
 
