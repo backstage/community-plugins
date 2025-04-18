@@ -7,11 +7,12 @@
 
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { JSX as JSX_2 } from 'react';
+import { JSX as JSX_3 } from 'react/jsx-runtime';
 import { RouteRef } from '@backstage/core-plugin-api';
 import { SubRouteRef } from '@backstage/core-plugin-api';
 
 // @public
-export const CopilotIndexPage: () => JSX_2.Element;
+export const CopilotIndexPage: () => JSX_3.Element;
 
 // @public
 export const copilotPlugin: BackstagePlugin<

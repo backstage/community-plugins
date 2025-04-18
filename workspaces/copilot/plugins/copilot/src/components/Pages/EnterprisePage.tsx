@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { useEffect } from 'react';
+import { JSX, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TabbedCard, CardTab } from '@backstage/core-components';
 import { Metrics, Usage } from '../Metrics';
@@ -24,7 +24,7 @@ import { SelectTeamFilter } from '../Filters';
 import { CopilotPage } from './CopilotPage';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 
-export const EnterprisePage = (): React.JSX.Element => {
+export const EnterprisePage = (): JSX.Element => {
   const navigate = useNavigate();
   const configApi = useApi(configApiRef);
 

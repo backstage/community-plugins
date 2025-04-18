@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { PropsWithChildren } from 'react';
+import { JSX, PropsWithChildren } from 'react';
 import { Header, Page, Content } from '@backstage/core-components';
 import { SharedDateRangeProvider, SharedTeamProvider } from '../../contexts';
 
@@ -29,7 +29,7 @@ export function CopilotPage({
   themeId,
   title,
   subtitle,
-}: PropsWithChildren<CopilotPageProps>): React.JSX.Element {
+}: PropsWithChildren<CopilotPageProps>): JSX.Element {
   return (
     <Page themeId={themeId}>
       <Header title={title} subtitle={subtitle} />
