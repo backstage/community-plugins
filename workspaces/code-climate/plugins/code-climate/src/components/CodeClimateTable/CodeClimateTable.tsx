@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { CodeClimateData } from '../../api';
 import { Link } from '@backstage/core-components';
 import Box from '@material-ui/core/Box';
