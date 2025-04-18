@@ -62,8 +62,8 @@ const _default: FrontendPlugin<
         title: string;
         subtitle: string;
         pageTitle: string;
-        width: number;
-        height: number;
+        width: number | undefined;
+        height: number | undefined;
       } & {
         path: string | undefined;
       };
@@ -153,8 +153,8 @@ export const techRadarPage: ExtensionDefinition<{
     title: string;
     subtitle: string;
     pageTitle: string;
-    width: number;
-    height: number;
+    width: number | undefined;
+    height: number | undefined;
   } & {
     path: string | undefined;
   };
