@@ -15,7 +15,6 @@
  */
 
 import { render } from '@testing-library/react';
-import React from 'react';
 import { CronExpression, RelativeDelta, TimeDelta } from '../../api/types';
 import { ScheduleIntervalLabel } from './ScheduleIntervalLabel';
 
