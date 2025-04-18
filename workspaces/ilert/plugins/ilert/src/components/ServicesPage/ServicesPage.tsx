@@ -19,7 +19,6 @@ import {
   ResponseErrorPanel,
   SupportButton,
 } from '@backstage/core-components';
-import React from 'react';
 import { useServices } from '../../hooks/useServices';
 import { MissingAuthorizationHeaderError } from '../Errors';
 import { ServicesTable } from './ServicesTable';
