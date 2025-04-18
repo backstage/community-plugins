@@ -23,7 +23,6 @@ import TableRow from '@material-ui/core/TableRow';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import ExternalLinkIcon from '@material-ui/icons/Launch';
-import React from 'react';
 import { buildRouteRef } from '../../plugin';
 import { JenkinsRunStatus } from '../BuildsPage/lib/Status';
 import { useBuildWithSteps } from '../useBuildWithSteps';
