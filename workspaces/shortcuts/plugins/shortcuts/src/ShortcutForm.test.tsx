@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { ShortcutForm } from './ShortcutForm';
 import { DefaultShortcutsApi, shortcutsApiRef } from './api';
