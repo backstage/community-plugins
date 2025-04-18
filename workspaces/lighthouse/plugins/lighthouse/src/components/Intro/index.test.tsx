@@ -16,7 +16,6 @@
 
 import { renderInTestApp } from '@backstage/test-utils';
 import { fireEvent, screen } from '@testing-library/react';
-import React from 'react';
 import LighthouseIntro from './index';
 
 describe('LighthouseIntro', () => {
