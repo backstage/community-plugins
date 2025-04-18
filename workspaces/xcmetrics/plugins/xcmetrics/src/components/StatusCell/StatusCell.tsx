@@ -16,7 +16,6 @@
 
 import Tooltip from '@material-ui/core/Tooltip';
 import { makeStyles, Theme } from '@material-ui/core/styles';
-import React from 'react';
 import { BuildStatus, BuildStatusResult, xcmetricsApiRef } from '../../api';
 import { cn, formatDuration, formatStatus } from '../../utils';
 import useAsync from 'react-use/esm/useAsync';
