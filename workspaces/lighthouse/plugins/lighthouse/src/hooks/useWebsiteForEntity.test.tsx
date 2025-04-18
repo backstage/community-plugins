@@ -16,7 +16,7 @@
 import { Entity } from '@backstage/catalog-model';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { renderHook, waitFor } from '@testing-library/react';
-import React, { PropsWithChildren } from 'react';
+import { PropsWithChildren } from 'react';
 import { WebsiteListResponse } from '@backstage-community/plugin-lighthouse-common';
 import { lighthouseApiRef } from '../api';
 import * as data from '../__fixtures__/website-list-response.json';
