@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import type { ReactElement, ReactNode } from 'react';
 import {
   Progress,
   TableColumn,
@@ -46,7 +46,7 @@ import {
 } from '../../constants';
 
 const AlertStatusBadge = ({ alert }: { alert: GrafanaAlert }) => {
-  let statusElmt: React.ReactElement;
+  let statusElmt: ReactElement;
 
   switch (alert.state) {
     case 'ok':
@@ -86,7 +86,7 @@ export const AlertsTable = ({
       title: 'Name',
       field: 'name',
       cellStyle: { width: '90%' },
-      render: (row: GrafanaAlert): React.ReactNode => (
+      render: (row: GrafanaAlert): ReactNode => (
         <Link to={row.url} target="_blank" rel="noopener">
           {row.name}
         </Link>
@@ -97,7 +97,7 @@ export const AlertsTable = ({
   if (opts.showState) {
     columns.push({
       title: 'State',
-      render: (row: GrafanaAlert): React.ReactNode => (
+      render: (row: GrafanaAlert): ReactNode => (
         <AlertStatusBadge alert={row} />
       ),
     });
