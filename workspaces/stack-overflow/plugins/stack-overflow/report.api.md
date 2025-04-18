@@ -8,8 +8,8 @@
 import { ApiRef } from '@backstage/core-plugin-api';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { CardExtensionProps } from '@backstage/plugin-home-react';
-import { JSX as JSX_2 } from 'react';
-import { default as React_2 } from 'react';
+import { JSX as JSX_2 } from 'react/jsx-runtime';
+import type { ReactNode } from 'react';
 import type { ResultHighlight } from '@backstage/plugin-search-common';
 import { SearchResultListItemExtensionProps } from '@backstage/plugin-search-react';
 
@@ -28,8 +28,8 @@ export type StackOverflowApi = {
 // @public (undocumented)
 export const stackOverflowApiRef: ApiRef<StackOverflowApi>;
 
-// @public
-export const StackOverflowIcon: () => React_2.JSX.Element;
+// @public (undocumented)
+export const StackOverflowIcon: () => JSX_2.Element;
 
 // @public
 export const stackOverflowPlugin: BackstagePlugin<{}, {}, {}>;
@@ -62,7 +62,7 @@ export const StackOverflowSearchResultListItem: (
 // @public
 export type StackOverflowSearchResultListItemProps = {
   result?: any;
-  icon?: React_2.ReactNode;
+  icon?: ReactNode;
   rank?: number;
   highlight?: ResultHighlight;
 };

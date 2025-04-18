@@ -16,7 +16,7 @@
 
 import { StackOverflowSearchResultListItem } from '../../plugin';
 import { wrapInTestApp } from '@backstage/test-utils';
-import React, { ComponentType, PropsWithChildren } from 'react';
+import { ComponentType, PropsWithChildren } from 'react';
 import { StackOverflowIcon } from '../../icons';
 
 export default {
