@@ -69,7 +69,6 @@
     "@backstage/test-utils": "^1.7.7",
     "@playwright/test": "1.51.1",
     "@redhat-developer/red-hat-developer-hub-theme": "0.4.0",
-    "@spotify/prettier-config": "^15.0.0",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^15.0.0",
@@ -104,7 +103,7 @@
     "@PatAKnight"
   ],
   "author": "Red Hat",
-  "prettier": "@spotify/prettier-config",
+  "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {
     "*.{js,jsx,ts,tsx,mjs,cjs}": [
       "eslint --fix",
