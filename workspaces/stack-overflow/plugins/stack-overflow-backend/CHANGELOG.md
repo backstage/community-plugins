@@ -1,5 +1,11 @@
 # @backstage-community/plugin-stack-overflow-backend
 
+## 0.7.0
+
+### Minor Changes
+
+- 8d80ddb: Backstage version bump to v1.38.1
+
 ## 0.6.0
 
 ### Minor Changes
