@@ -9,7 +9,7 @@ yarn.lock                                                               @backsta
 */yarn.lock                                                             @backstage/community-plugins-maintainers @backstage-service
 
 /workspaces/3scale                                                      @backstage/community-plugins-maintainers  @04kash @AndrienkoAleksandr
-/workspaces/acr                                                         @backstage/community-plugins-maintainers  @christoph-jerolimov @ciiay @invincibleJai
+/workspaces/acr                                                         @backstage/community-plugins-maintainers  @christoph-jerolimov @ciiay @debsmita1 @divyanshiGupta @its-mitesh-kumar @logonoff
 /workspaces/acs                                                         @backstage/community-plugins-maintainers  @sachaudh @alwayshooin @dvail @maknop
 /workspaces/adr                                                         @backstage/community-plugins-maintainers  @kuangp
 /workspaces/amplication                                                 @backstage/community-plugins-maintainers  @itainathaniel
@@ -47,7 +47,7 @@ yarn.lock                                                               @backsta
 /workspaces/nexus-repository-manager                                    @backstage/community-plugins-maintainers  @schultzp2020
 /workspaces/npm                                                         @backstage/community-plugins-maintainers  @christoph-jerolimov @ciiay @karthikjeeyar
 /workspaces/odo                                                         @backstage/community-plugins-maintainers  @rm3l
-/workspaces/ocm                                                         @backstage/community-plugins-maintainers  @christoph-jerolimov @ciiay @debsmita1
+/workspaces/ocm                                                         @backstage/community-plugins-maintainers  @christoph-jerolimov @ciiay @debsmita1 @divyanshiGupta @its-mitesh-kumar @logonoff
 /workspaces/octopus-deploy                                              @backstage/community-plugins-maintainers  @jmezach
 /workspaces/pingidentity                                                @backstage/community-plugins-maintainers  @jessicajhee
 /workspaces/playlist                                                    @backstage/community-plugins-maintainers  @kuangp
@@ -66,5 +66,5 @@ yarn.lock                                                               @backsta
 /workspaces/sonarqube                                                   @backstage/community-plugins-maintainers  @backstage/sda-se-reviewers
 /workspaces/tech-insights                                               @backstage/community-plugins-maintainers  @xantier @punkle
 /workspaces/tekton                                                      @backstage/community-plugins-maintainers  @caugello @cryptorodeo
-/workspaces/topology                                                    @backstage/community-plugins-maintainers  @christoph-jerolimov @ciiay @debsmita1 @divyanshiGupta
+/workspaces/topology                                                    @backstage/community-plugins-maintainers  @christoph-jerolimov @ciiay @debsmita1 @divyanshiGupta @its-mitesh-kumar @logonoff
 /workspaces/multi-source-security-viewer                                @backstage/community-plugins-maintainers  @caugello @cryptorodeo
