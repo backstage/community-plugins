@@ -17,7 +17,6 @@
 import { makeStyles } from '@material-ui/core/styles';
 import { useTheme } from '@material-ui/core/styles';
 import { Circle } from 'rc-progress';
-import React from 'react';
 
 const useStyles = makeStyles(theme => ({
   root: {

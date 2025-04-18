@@ -25,7 +25,6 @@ import {
 } from '@backstage-community/plugin-sonarqube-react';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
-import React from 'react';
 import useAsync from 'react-use/esm/useAsync';
 import {
   EmptyState,

@@ -23,7 +23,6 @@ import {
   useEntity,
   MissingAnnotationEmptyState,
 } from '@backstage/plugin-catalog-react';
-import React from 'react';
 import { SonarQubeCard } from '../SonarQubeCard';
 import {
   isSonarQubeAvailable,

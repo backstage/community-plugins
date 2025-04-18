@@ -16,7 +16,6 @@
 import { useMemo } from 'react';
 import Chip from '@material-ui/core/Chip';
 import { makeStyles } from '@material-ui/core/styles';
-import React from 'react';
 import { defaultDuplicationRatings } from '../SonarQubeTable/types';
 import BugReport from '@material-ui/icons/BugReport';
 import Lock from '@material-ui/icons/Lock';
