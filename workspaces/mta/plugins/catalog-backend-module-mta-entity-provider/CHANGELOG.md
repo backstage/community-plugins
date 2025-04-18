@@ -1,5 +1,17 @@
 # @backstage-community/backstage-plugin-catalog-backend-module-mta-entity-provider
 
+## 0.3.0
+
+### Minor Changes
+
+- 8a364c5: update Backstage to v1.36.1
+- 63609e9: update to Backstage v1.33.6
+- 03dde0e: update to Backstage v1.31.3
+- 440ab1a: update to Backstage v1.34.2
+- fea01d4: update to Backstage v1.37.1
+- 3a64cc5: update to Backstage v1.32.5
+- 8a364c5: update to Backstage v1.35.1
+
 ## 0.2.0
 
 ### Minor Changes

@@ -1,7 +1,7 @@
 {
   "name": "@backstage-community/backstage-plugin-catalog-backend-module-mta-entity-provider",
   "description": "The mta-entity-provider backend module for the catalog plugin.",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "license": "Apache-2.0",
