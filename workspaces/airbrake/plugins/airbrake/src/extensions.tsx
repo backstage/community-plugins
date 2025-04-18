@@ -15,7 +15,6 @@
  */
 
 import { useEntity } from '@backstage/plugin-catalog-react';
-import React from 'react';
 import { airbrakePlugin } from './plugin';
 import { createRoutableExtension } from '@backstage/core-plugin-api';
 import { rootRouteRef } from './routes';

@@ -5,7 +5,7 @@
 ```ts
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
-import { default as React_2 } from 'react';
+import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { RouteRef } from '@backstage/core-plugin-api';
 
 // @public
@@ -18,7 +18,7 @@ export const airbrakePlugin: BackstagePlugin<
 >;
 
 // @public
-export const EntityAirbrakeContent: () => React_2.JSX.Element;
+export const EntityAirbrakeContent: () => JSX_2.Element;
 
 // @public
 export const isAirbrakeAvailable: (entity: Entity) => boolean;
