@@ -1,5 +1,11 @@
 # @backstage-community/plugin-sonarqube
 
+## 0.11.2
+
+### Patch Changes
+
+- 4cb6cb9: sonarqube plugin support i18n
+
 ## 0.11.1
 
 ### Patch Changes
