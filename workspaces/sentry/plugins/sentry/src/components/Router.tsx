@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { Route, Routes } from 'react-router-dom';
 import { SentryIssuesWidget } from './SentryIssuesWidget';
