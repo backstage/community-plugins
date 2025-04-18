@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-import React, { useCallback, useState } from 'react';
+import type { ChangeEvent } from 'react';
+
+import { useCallback, useState } from 'react';
 import { SentryIssue } from '../../api';
 import { DateTime, Duration } from 'luxon';
 import { ErrorCell } from '../ErrorCell/ErrorCell';
@@ -90,7 +92,7 @@ const SentryIssuesTable = (props: SentryIssuesTableProps) => {
   );
 
   const handleFilterChange = (
-    event: React.ChangeEvent<{ name?: string; value: unknown }>,
+    event: ChangeEvent<{ name?: string; value: unknown }>,
   ) => {
     const item = event.target.value;
     if (typeof item === 'number') {
