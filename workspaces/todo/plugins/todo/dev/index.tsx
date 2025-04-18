@@ -19,7 +19,6 @@ import { createDevApp } from '@backstage/dev-utils';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import OnlineIcon from '@material-ui/icons/Cloud';
 import OfflineIcon from '@material-ui/icons/Storage';
-import React from 'react';
 import { EntityTodoContent, todoApiRef, todoPlugin } from '../src';
 
 import { Content, Header, HeaderLabel, Page } from '@backstage/core-components';
