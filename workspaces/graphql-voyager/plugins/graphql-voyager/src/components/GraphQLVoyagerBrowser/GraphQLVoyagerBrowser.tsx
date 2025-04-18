@@ -23,7 +23,7 @@ import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import React, { Suspense } from 'react';
+import { Suspense } from 'react';
 import { Content, ErrorPanel, Progress } from '@backstage/core-components';
 import { Voyager } from 'graphql-voyager';
 import useAsync from 'react-use/esm/useAsync';
