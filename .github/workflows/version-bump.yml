@@ -59,7 +59,7 @@ jobs:
       - name: find location of global yarn cache
         id: yarn-cache
         if: steps.cache-modules.outputs.cache-hit != 'true'
-        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
+        run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
       - name: cache global yarn cache
         uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
         if: steps.cache-modules.outputs.cache-hit != 'true'
@@ -97,7 +97,7 @@ jobs:
           YARN_ENABLE_IMMUTABLE_INSTALLS: false
       - name: Run dedupe
         working-directory: ./workspaces/${{ matrix.workspace }}
-        run: yarn dedupe    
+        run: yarn dedupe   
       - name: 'Check for changes'
         id: check_for_changes
         run: |
