@@ -19,7 +19,6 @@ import {
   renderInTestApp,
   TestApiRegistry,
 } from '@backstage/test-utils';
-import React from 'react';
 import { gitOpsApiRef, GitOpsRestApi } from '../../api';
 import ProfileCatalog from './ProfileCatalog';
 
