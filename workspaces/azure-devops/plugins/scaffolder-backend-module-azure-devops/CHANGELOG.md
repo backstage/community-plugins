@@ -1,5 +1,11 @@
 # @backstage-community/plugin-scaffolder-backend-module-azure-devops
 
+## 0.8.1
+
+### Patch Changes
+
+- 735b8a0: fix syntax error in install command in README
+
 ## 0.8.0
 
 ### Minor Changes
