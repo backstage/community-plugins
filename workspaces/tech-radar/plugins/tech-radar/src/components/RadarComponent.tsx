@@ -16,7 +16,7 @@
 
 import { Progress } from '@backstage/core-components';
 import { errorApiRef, useApi } from '@backstage/core-plugin-api';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import useAsync from 'react-use/esm/useAsync';
 import { techRadarApiRef } from '../api';
 import {
