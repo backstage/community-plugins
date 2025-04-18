@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Typography from '@material-ui/core/Typography';
 import { Website } from '@backstage-community/plugin-lighthouse-common';
 import { lighthouseApiRef } from '../../api';
