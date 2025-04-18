@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { Entity } from '@backstage/catalog-model';
-import React from 'react';
 import Button from '@material-ui/core/Button';
 import { NewRelicDashboard } from './components/NewRelicDashboard';
 import {
