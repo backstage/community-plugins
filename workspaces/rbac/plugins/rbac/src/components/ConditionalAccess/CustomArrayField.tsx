@@ -19,7 +19,7 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { getDefaultRegistry } from '@rjsf/core';
 import { FieldProps } from '@rjsf/utils';
-import { getInnerSchemaForArrayItem } from '@rjsf/utils/lib/schema/getDefaultFormState';
+import { getInnerSchemaForArrayItem } from '@rjsf/utils/lib/schema/getDefaultFormState.js';
 
 export const CustomArrayField = (props: FieldProps) => {
   const { name, required, schema: sch, formData, onChange } = props;
