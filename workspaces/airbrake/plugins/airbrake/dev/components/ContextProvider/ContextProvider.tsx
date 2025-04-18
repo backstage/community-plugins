@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, {
+import {
+  createContext,
   Dispatch,
   PropsWithChildren,
   SetStateAction,
@@ -25,7 +26,7 @@ interface ContextInterface {
   setProjectId?: Dispatch<SetStateAction<number | undefined>>;
 }
 
-export const Context = React.createContext<ContextInterface>({});
+export const Context = createContext<ContextInterface>({});
 
 export const ContextProvider = ({ children }: PropsWithChildren<{}>) => {
   const [projectId, setProjectId] = useState<number>();
