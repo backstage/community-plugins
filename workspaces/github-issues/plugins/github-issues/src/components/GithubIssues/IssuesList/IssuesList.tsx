@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import { useState, useMemo } from 'react';
 import Box from '@material-ui/core/Box';
 import Pagination from '@material-ui/lab/Pagination';
 import { IssueCard } from '../IssueCard';
@@ -40,10 +40,10 @@ export const IssuesList = ({
   itemsPerPage = 10,
   issuesByRepository,
 }: IssueListProps) => {
-  const [currentPage, setCurrentPage] = React.useState(1);
-  const [activeFilter, setActiveFilter] = React.useState<Array<string>>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [activeFilter, setActiveFilter] = useState<Array<string>>([]);
 
-  const filters = React.useMemo(
+  const filters = useMemo(
     () =>
       issuesByRepository
         ? Object.keys(issuesByRepository)
@@ -59,7 +59,7 @@ export const IssuesList = ({
     [issuesByRepository],
   );
 
-  const totalIssuesInGithub = React.useMemo(
+  const totalIssuesInGithub = useMemo(
     () =>
       issuesByRepository
         ? Object.values(issuesByRepository).reduce(
@@ -70,7 +70,7 @@ export const IssuesList = ({
     [issuesByRepository],
   );
 
-  const filteredRepos = React.useMemo(
+  const filteredRepos = useMemo(
     () =>
       issuesByRepository && activeFilter.length
         ? activeFilter.reduce<IssuesByRepo>(
@@ -84,7 +84,7 @@ export const IssuesList = ({
     [issuesByRepository, activeFilter],
   );
 
-  const issues = React.useMemo(
+  const issues = useMemo(
     () =>
       filteredRepos
         ? Object.values(filteredRepos)

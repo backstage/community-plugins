@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { EmptyState } from '@backstage/core-components';
 
 export const NoRepositoriesInfo = () => {
