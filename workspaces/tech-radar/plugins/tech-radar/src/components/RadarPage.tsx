@@ -26,7 +26,7 @@ import Grid from '@material-ui/core/Grid';
 import Input from '@material-ui/core/Input';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import React from 'react';
+import { useState } from 'react';
 import { RadarComponent, type TechRadarComponentProps } from './RadarComponent';
 
 const useStyles = makeStyles(() => ({
@@ -68,7 +68,7 @@ export function RadarPage(props: TechRadarPageProps) {
     ...componentProps
   } = props;
   const classes = useStyles();
-  const [searchText, setSearchText] = React.useState('');
+  const [searchText, setSearchText] = useState('');
 
   return (
     <Page themeId="tool">

@@ -5,12 +5,12 @@
 ```ts
 import { ApiRef } from '@backstage/core-plugin-api';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
-import { default as React_2 } from 'react';
+import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { RouteRef } from '@backstage/core-plugin-api';
 import { TechRadarLoaderResponse } from '@backstage-community/plugin-tech-radar-common';
 
 // @public
-export function RadarPage(props: TechRadarPageProps): React_2.JSX.Element;
+export function RadarPage(props: TechRadarPageProps): JSX_2.Element;
 
 // @public @deprecated (undocumented)
 export const Router: typeof RadarPage;
@@ -26,7 +26,7 @@ export const techRadarApiRef: ApiRef<TechRadarApi>;
 // @public
 export function TechRadarComponent(
   props: TechRadarComponentProps,
-): React_2.JSX.Element;
+): JSX_2.Element;
 
 // @public
 export interface TechRadarComponentProps {

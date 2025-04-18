@@ -32,7 +32,6 @@ import {
 import ExtensionIcon from '@material-ui/icons/Extension';
 import HomeIcon from '@material-ui/icons/Home';
 import MenuIcon from '@material-ui/icons/Menu';
-import React from 'react';
 
 export const navigationExtension = createExtension({
   name: 'nav',

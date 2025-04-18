@@ -15,7 +15,7 @@
  */
 import { ClassNameMap } from '@material-ui/core/styles/withStyles';
 import Typography from '@material-ui/core/Typography';
-import React from 'react';
+import { useState } from 'react';
 import { WithLink } from '../../utils/components';
 import { RadarDescription } from '../RadarDescription';
 import type { EntrySnapshot } from '../../utils/types';
@@ -41,7 +41,7 @@ export const RadarLegendLink = ({
   links,
   timeline,
 }: RadarLegendLinkProps) => {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
