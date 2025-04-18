@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 
 import Drawer from '@material-ui/core/Drawer';
 import Grid from '@material-ui/core/Grid';

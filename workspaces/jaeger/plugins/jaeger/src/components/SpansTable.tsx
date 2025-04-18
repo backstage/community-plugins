@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { Table, TableColumn } from '@backstage/core-components';
 import prettyMilliseconds from 'pretty-ms';
 import { Span } from '@backstage-community/plugin-jaeger-common';
