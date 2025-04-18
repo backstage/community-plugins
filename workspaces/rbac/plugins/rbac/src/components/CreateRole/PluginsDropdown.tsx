@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import Autocomplete from '@mui/material/Autocomplete';
-import React from 'react';
+import React, { useState } from 'react';
 import { SelectedPlugin } from '../../types';
 import { PluginsDropdownOption } from './PluginsDropdownOption';
 import TextField from '@mui/material/TextField';
@@ -44,6 +44,7 @@ const PluginsDropdown = ({
   onRemoveAllPlugins,
   selectedPluginsError,
 }: PluginsDropdownProps) => {
+  const [inputValue, setInputValue] = useState('');
   React.useEffect(() => {
     if (selectedPlugins.length === allPlugins.length - 1)
       setFieldValue(`selectedPlugins`, allPlugins, true);
@@ -52,6 +53,12 @@ const PluginsDropdown = ({
   return (
     <Autocomplete
       options={allPlugins}
+      inputValue={inputValue}
+      onInputChange={(_, newInputValue, reason) => {
+        if (reason !== 'reset') {
+          setInputValue(newInputValue);
+        }
+      }}
       renderTags={() => ''}
       isOptionEqualToValue={(option, value) => option.label === value.label}
       multiple
