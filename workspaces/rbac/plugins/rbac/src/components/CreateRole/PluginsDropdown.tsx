@@ -15,7 +15,7 @@
  */
 import Autocomplete from '@mui/material/Autocomplete';
 import type { FocusEventHandler } from 'react';
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { SelectedPlugin } from '../../types';
 import { PluginsDropdownOption } from './PluginsDropdownOption';
 import TextField from '@mui/material/TextField';
@@ -45,6 +45,7 @@ const PluginsDropdown = ({
   onRemoveAllPlugins,
   selectedPluginsError,
 }: PluginsDropdownProps) => {
+  const [inputValue, setInputValue] = useState('');
   useEffect(() => {
     if (selectedPlugins.length === allPlugins.length - 1)
       setFieldValue(`selectedPlugins`, allPlugins, true);
@@ -53,6 +54,12 @@ const PluginsDropdown = ({
   return (
     <Autocomplete
       options={allPlugins}
+      inputValue={inputValue}
+      onInputChange={(_, newInputValue, reason) => {
+        if (reason !== 'reset') {
+          setInputValue(newInputValue);
+        }
+      }}
       renderTags={() => ''}
       isOptionEqualToValue={(option, value) => option.label === value.label}
       multiple

@@ -138,7 +138,6 @@ export const AddMembersForm = ({
         onChange={(_e, value: SelectedMember[]) => {
           setSelectedMember(value);
           setFieldValue('selectedMembers', value);
-          setSearch('');
         }}
         renderTags={() => ''}
         inputValue={search}
