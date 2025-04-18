@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import type { MouseEvent } from 'react';
+
+import { useState } from 'react';
 import useObservable from 'react-use/esm/useObservable';
 import PlayListAddIcon from '@material-ui/icons/PlaylistAdd';
 import { ShortcutItem } from './ShortcutItem';
@@ -41,10 +43,10 @@ export interface ShortcutsProps {
 export const Shortcuts = (props: ShortcutsProps) => {
   const shortcutApi = useApi(shortcutsApiRef);
   const shortcuts = useObservable(shortcutApi.shortcut$(), shortcutApi.get());
-  const [anchorEl, setAnchorEl] = React.useState<Element | undefined>();
+  const [anchorEl, setAnchorEl] = useState<Element | undefined>();
   const loading = Boolean(!shortcuts);
 
-  const handleClick = (event: React.MouseEvent<Element>) => {
+  const handleClick = (event: MouseEvent<Element>) => {
     setAnchorEl(event.currentTarget);
   };
 
