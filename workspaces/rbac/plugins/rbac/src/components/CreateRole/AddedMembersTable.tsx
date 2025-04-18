@@ -49,6 +49,7 @@ export const AddedMembersTable = ({
           Selected users and groups appear here.
         </Box>
       }
+      options={{ emptyRowsWhenPaging: false }}
     />
   );
 };
