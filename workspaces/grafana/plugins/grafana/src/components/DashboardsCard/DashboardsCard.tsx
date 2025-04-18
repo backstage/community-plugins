@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { Progress, TableColumn, Table, Link } from '@backstage/core-components';
 import { Entity } from '@backstage/catalog-model';
 import {
