@@ -26,7 +26,6 @@ import {
   PageBlueprint,
   createFrontendPlugin,
 } from '@backstage/frontend-plugin-api';
-import React from 'react';
 import { techRadarApiRef } from './api';
 import { DefaultTechRadarApi } from './defaultApi';
 import {

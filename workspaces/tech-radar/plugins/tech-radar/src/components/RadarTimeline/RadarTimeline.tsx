@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import type { EntrySnapshot } from '../../utils/types';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';

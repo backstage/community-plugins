@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import type { Ring } from '../../utils/types';
 
