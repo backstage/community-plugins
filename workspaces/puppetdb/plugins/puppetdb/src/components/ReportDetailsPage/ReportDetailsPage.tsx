@@ -19,7 +19,7 @@ import { Breadcrumbs, Link } from '@backstage/core-components';
 import { makeStyles } from '@material-ui/core/styles';
 import { useRouteRef } from '@backstage/core-plugin-api';
 import { puppetDbRouteRef } from '../../routes';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Tab from '@material-ui/core/Tab';
