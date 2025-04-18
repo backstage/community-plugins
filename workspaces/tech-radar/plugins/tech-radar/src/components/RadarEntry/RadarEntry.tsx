@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import * as React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { WithLink } from '../../utils/components';
 import { RadarDescription } from '../RadarDescription';

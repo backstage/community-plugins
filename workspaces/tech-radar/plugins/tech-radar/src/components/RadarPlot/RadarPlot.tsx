@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import type { Quadrant, Ring, Entry } from '../../utils/types';
 
 import RadarGrid from '../RadarGrid';

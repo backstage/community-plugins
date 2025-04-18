@@ -15,7 +15,6 @@
  */
 
 import { makeStyles } from '@material-ui/core/styles';
-import React from 'react';
 import { RadarLegendQuadrant } from './RadarLegendQuadrant';
 import { RadarLegendProps } from './types';
 import { setupSegments } from './utils';

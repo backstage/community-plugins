@@ -15,7 +15,6 @@
  */
 
 import { renderInTestApp } from '@backstage/test-utils';
-import React from 'react';
 import GetBBoxPolyfill from '../../utils/polyfills/getBBox';
 
 import RadarLegend from './RadarLegend';

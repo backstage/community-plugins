@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { useRef, useLayoutEffect } from 'react';
+import { useRef, useLayoutEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 
 export type Props = {
