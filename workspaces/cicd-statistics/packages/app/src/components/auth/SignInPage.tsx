@@ -18,7 +18,6 @@ import {
   SignInProviderConfig,
 } from '@backstage/core-components';
 import { gitlabAuthApiRef, SignInPageProps } from '@backstage/core-plugin-api';
-import React from 'react';
 
 const gitlabProvider: SignInProviderConfig = {
   id: 'gitlab-auth-provider',
