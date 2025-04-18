@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import * as React from 'react';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';

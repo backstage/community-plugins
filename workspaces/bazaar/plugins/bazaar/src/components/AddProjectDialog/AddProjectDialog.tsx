@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import { UseFormReset, UseFormGetValues } from 'react-hook-form';
 import { useApi, alertApiRef } from '@backstage/core-plugin-api';
