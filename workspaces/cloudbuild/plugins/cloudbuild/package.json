@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-cloudbuild",
-  "version": "0.9.1",
+  "version": "0.10.0",
   "description": "A Backstage plugin that integrates towards Google Cloud Build",
   "backstage": {
     "role": "frontend-plugin",
