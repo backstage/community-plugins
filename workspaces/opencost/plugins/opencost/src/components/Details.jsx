@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { memo, useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { forEach, get, reverse, round, sortBy } from 'lodash';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import ClusterIcon from '@material-ui/icons/GroupWork';

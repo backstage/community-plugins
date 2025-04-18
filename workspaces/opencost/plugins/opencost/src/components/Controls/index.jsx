@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { memo } from 'react';
 import DownloadControl from './Download';
 import EditControl from './Edit';
 
@@ -54,4 +54,4 @@ const Controls = ({
   );
 };
 
-export default React.memo(Controls);
+export default memo(Controls);

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import MuiPickersUtilsProvider from '@material-ui/pickers/MuiPickersUtilsProvider';
 import { KeyboardDatePicker } from '@material-ui/pickers/DatePicker';
@@ -208,4 +208,4 @@ const SelectWindow = ({ windowOptions, window, setWindow }) => {
   );
 };
 
-export default React.memo(SelectWindow);
+export default memo(SelectWindow);
