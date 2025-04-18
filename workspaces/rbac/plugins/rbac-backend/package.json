@@ -42,7 +42,7 @@
     "@backstage/catalog-model": "^1.7.3",
     "@backstage/errors": "^1.2.7",
     "@backstage/plugin-auth-node": "^0.6.0",
-    "@backstage/plugin-permission-backend": "^0.5.54",
+    "@backstage/plugin-permission-backend": "^0.6.0",
     "@backstage/plugin-permission-common": "^0.8.4",
     "@backstage/plugin-permission-node": "^0.8.8",
     "@dagrejs/graphlib": "^2.1.13",

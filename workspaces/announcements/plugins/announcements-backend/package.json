@@ -71,7 +71,7 @@
     "@backstage/plugin-auth-backend": "^0.24.4",
     "@backstage/plugin-auth-backend-module-guest-provider": "^0.2.6",
     "@backstage/plugin-catalog-node": "^1.16.1",
-    "@backstage/plugin-permission-backend": "^0.5.55",
+    "@backstage/plugin-permission-backend": "^0.6.0",
     "@backstage/plugin-permission-backend-module-allow-all-policy": "^0.2.6",
     "@backstage/plugin-signals-backend": "^0.3.2",
     "@backstage/test-utils": "^1.7.6",
