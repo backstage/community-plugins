@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import { memo } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { upperFirst } from 'lodash';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
@@ -56,4 +56,4 @@ const Subtitle = ({ report }) => {
   );
 };
 
-export default React.memo(Subtitle);
+export default memo(Subtitle);

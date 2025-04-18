@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { memo } from 'react';
 import { get, forEach, reverse, round, sortBy } from 'lodash';
 import ExportIcon from '@material-ui/icons/GetApp';
 import IconButton from '@material-ui/core/IconButton';
@@ -107,4 +107,4 @@ const DownloadControl = ({ cumulativeData, title }) => {
   );
 };
 
-export default React.memo(DownloadControl);
+export default memo(DownloadControl);
