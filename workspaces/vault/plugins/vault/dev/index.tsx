@@ -24,7 +24,7 @@ import {
   EntityLayout,
 } from '@backstage/plugin-catalog';
 import Grid from '@material-ui/core/Grid';
-import React, { PropsWithChildren } from 'react';
+import { PropsWithChildren } from 'react';
 import { EntityVaultCard } from '../src/components/EntityVaultCard';
 import { vaultPlugin } from '../src/plugin';
 

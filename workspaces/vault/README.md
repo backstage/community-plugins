@@ -20,7 +20,7 @@ To test the plugin locally, you can start the development environment:
 
 ```sh
 yarn install
-yarn dev
+yarn start
 ```
 
 The sample dev app uses a Vault instance on `localhost:8200`, which you can setup in a separate terminal with:
