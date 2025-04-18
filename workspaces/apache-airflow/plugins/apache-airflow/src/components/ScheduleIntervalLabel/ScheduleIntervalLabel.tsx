@@ -15,7 +15,6 @@
  */
 
 import Chip from '@material-ui/core/Chip';
-import React from 'react';
 import { ScheduleInterval, TimeDelta, RelativeDelta } from '../../api/types';
 
 interface Props {
