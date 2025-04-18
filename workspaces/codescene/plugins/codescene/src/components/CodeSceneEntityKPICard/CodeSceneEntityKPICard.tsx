@@ -16,7 +16,6 @@
 import { EmptyState, GaugeCard, InfoCard } from '@backstage/core-components';
 import { configApiRef, useApi, useApp } from '@backstage/core-plugin-api';
 import Alert from '@material-ui/lab/Alert';
-import React from 'react';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import useAsync from 'react-use/esm/useAsync';
 import { codesceneApiRef } from '../../api/api';

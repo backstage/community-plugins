@@ -18,7 +18,7 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { Palette } from '@material-ui/core/styles/createPalette';
 import Tooltip from '@material-ui/core/Tooltip';
 import { Circle } from 'rc-progress';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const useStyles = makeStyles(
   theme => ({

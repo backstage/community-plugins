@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useState } from 'react';
 import {
   Content,
   ContentHeader,
@@ -78,7 +78,7 @@ export const ProjectsComponent = () => {
   const codesceneApi = useApi(codesceneApiRef);
 
   const classes = useStyles();
-  const [searchText, setSearchText] = React.useState('');
+  const [searchText, setSearchText] = useState('');
   const {
     value: projectsWithAnalyses,
     loading,
