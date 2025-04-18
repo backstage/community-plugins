@@ -23,7 +23,7 @@ import Typography from '@material-ui/core/Typography';
 import RetryIcon from '@material-ui/icons/Replay';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import HistoryIcon from '@material-ui/icons/History';
-import { default as React, useState } from 'react';
+import { useState } from 'react';
 import { Project } from '../../../../api/JenkinsApi';
 import { buildRouteRef, jobRunsRouteRef } from '../../../../plugin';
 import { JenkinsRunStatus } from '../Status';
