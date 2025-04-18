@@ -20,7 +20,7 @@ import {
   HeaderTabs,
   Page,
 } from '@backstage/core-components';
-import React from 'react';
+import { useState } from 'react';
 import { AlertsPage } from '../AlertsPage';
 import { OnCallSchedulesPage } from '../OnCallSchedulesPage';
 import { ServicesPage } from '../ServicesPage';
@@ -28,7 +28,7 @@ import { StatusPagesPage } from '../StatusPagePage';
 
 /** @public */
 export const ILertPage = () => {
-  const [selectedTab, setSelectedTab] = React.useState<number>(0);
+  const [selectedTab, setSelectedTab] = useState<number>(0);
   const tabs = [
     { label: 'Who is on call?' },
     { label: 'Alerts' },

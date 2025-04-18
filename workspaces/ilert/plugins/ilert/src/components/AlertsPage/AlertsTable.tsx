@@ -17,7 +17,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import humanizeDuration from 'humanize-duration';
 import { DateTime as dt, Interval } from 'luxon';
-import React from 'react';
 import { ilertApiRef, TableState } from '../../api';
 import { Alert, AlertStatus } from '../../types';
 import { AlertActionsMenu } from '../Alert/AlertActionsMenu';
