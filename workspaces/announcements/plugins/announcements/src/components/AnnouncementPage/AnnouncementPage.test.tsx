@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 import { AnnouncementPage } from './AnnouncementPage';
 import { rootRouteRef } from '../../routes';
 import {

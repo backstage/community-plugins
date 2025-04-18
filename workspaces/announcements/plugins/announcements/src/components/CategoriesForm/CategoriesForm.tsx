@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useState } from 'react';
+import { ChangeEvent, FormEvent, useState } from 'react';
 import { InfoCard } from '@backstage/core-components';
 import {
   CreateCategoryRequest,
@@ -55,14 +55,14 @@ export const CategoriesForm = ({
       permission: announcementCreatePermission,
     });
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setForm({
       ...form,
       [event.target.id]: event.target.value,
     });
   };
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     setLoading(true);
     event.preventDefault();
 

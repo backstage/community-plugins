@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { ChangeEvent, useState } from 'react';
 import { alertApiRef, useApi } from '@backstage/core-plugin-api';
 import {
   announcementsApiRef,
@@ -38,7 +38,7 @@ export const NewCategoryDialog = (props: NewCategoryDialogProps) => {
   const { t } = useAnnouncementsTranslation();
   const alertApi = useApi(alertApiRef);
 
-  const [title, setTitle] = React.useState('');
+  const [title, setTitle] = useState('');
 
   const onClose = () => {
     props.onClose();
@@ -59,7 +59,7 @@ export const NewCategoryDialog = (props: NewCategoryDialogProps) => {
     }
   };
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
   };
 

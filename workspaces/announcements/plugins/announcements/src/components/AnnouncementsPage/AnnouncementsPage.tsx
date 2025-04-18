@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { ReactNode } from 'react';
+import { MouseEvent, useState, ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
 import { usePermission } from '@backstage/plugin-permission-react';
 import {
@@ -169,12 +169,12 @@ const AnnouncementCard = ({
     usePermission({ permission: announcementUpdatePermission });
 
   const AnnouncementEditMenu = () => {
-    const [open, setOpen] = React.useState(false);
-    const [anchorEl, setAnchorEl] = React.useState<undefined | HTMLElement>(
+    const [open, setOpen] = useState(false);
+    const [anchorEl, setAnchorEl] = useState<undefined | HTMLElement>(
       undefined,
     );
 
-    const handleOpenEditMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const handleOpenEditMenu = (event: MouseEvent<HTMLButtonElement>) => {
       setAnchorEl(event.currentTarget);
       setOpen(true);
     };
@@ -256,7 +256,7 @@ const AnnouncementsGrid = ({
   const announcementsApi = useApi(announcementsApiRef);
   const alertApi = useApi(alertApiRef);
 
-  const [page, setPage] = React.useState(1);
+  const [page, setPage] = useState(1);
   const handleChange = (_event: any, value: number) => {
     setPage(value);
   };
