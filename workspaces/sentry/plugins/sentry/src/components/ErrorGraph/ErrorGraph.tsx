@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { SentryIssue } from '../../api';
 import { Sparklines, SparklinesBars } from 'react-sparklines';
 
