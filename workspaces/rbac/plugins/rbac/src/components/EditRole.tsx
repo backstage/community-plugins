@@ -60,8 +60,8 @@ const EditRole = ({
           disabled={disable}
           title={tooltip ?? 'Edit Role'}
           to={to ?? `../role/${kind}/${namespace}/${name}`}
-          style={{ padding: '0.5rem', color: 'inherit', borderRadius: '50%' }}
-          sx={{ '&:hover': { borderRadius: '50%' } }}
+          style={{ color: 'inherit' }}
+          sx={{ p: 1, borderRadius: '50%', '&:hover': { borderRadius: '50%' } }}
         >
           <EditIcon />
         </IconButton>

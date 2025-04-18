@@ -60,8 +60,12 @@ const DeleteRole = ({
           aria-label="Delete"
           disabled={disable}
           title={tooltip ?? 'Delete Role'}
-          style={{ padding: '0.5rem', borderRadius: '50%' }}
-          sx={{ '&:hover': { borderRadius: '50%' } }}
+          sx={{
+            p: 1,
+            color: 'inherit',
+            borderRadius: '50%',
+            '&:hover': { borderRadius: '50%' },
+          }}
         >
           <Delete />
         </IconButton>
