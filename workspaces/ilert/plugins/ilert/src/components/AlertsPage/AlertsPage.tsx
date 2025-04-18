@@ -21,7 +21,7 @@ import {
 } from '@backstage/core-components';
 import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
-import React from 'react';
+import { useState } from 'react';
 import { useAlerts } from '../../hooks/useAlerts';
 import { AlertNewModal } from '../Alert/AlertNewModal';
 import { MissingAuthorizationHeaderError } from '../Errors';
@@ -40,7 +40,7 @@ export const AlertsPage = () => {
     },
   ] = useAlerts(true);
 
-  const [isModalOpened, setIsModalOpened] = React.useState(false);
+  const [isModalOpened, setIsModalOpened] = useState(false);
 
   const handleCreateNewAlertClick = () => {
     setIsModalOpened(true);

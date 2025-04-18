@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useState } from 'react';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -39,7 +39,7 @@ export const ILertCardMaintenanceModal = ({
 }) => {
   const ilertApi = useApi(ilertApiRef);
   const alertApi = useApi(alertApiRef);
-  const [minutes, setMinutes] = React.useState(5);
+  const [minutes, setMinutes] = useState(5);
 
   const handleClose = () => {
     setIsModalOpened(false);

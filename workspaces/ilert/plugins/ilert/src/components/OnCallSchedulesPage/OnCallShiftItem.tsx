@@ -20,7 +20,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import RepeatIcon from '@material-ui/icons/Repeat';
 import { DateTime as dt } from 'luxon';
-import React from 'react';
+import { useState } from 'react';
 import { ilertApiRef } from '../../api';
 import { Shift } from '../../types';
 import { ShiftOverrideModal } from '../Shift/ShiftOverrideModal';
@@ -51,7 +51,7 @@ export const OnCallShiftItem = ({
 }) => {
   const classes = useStyles();
   const ilertApi = useApi(ilertApiRef);
-  const [isModalOpened, setIsModalOpened] = React.useState(false);
+  const [isModalOpened, setIsModalOpened] = useState(false);
 
   const handleOverride = () => {
     setIsModalOpened(true);

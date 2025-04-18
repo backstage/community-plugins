@@ -21,7 +21,7 @@ import CardContent from '@material-ui/core/CardContent';
 import CardHeader from '@material-ui/core/CardHeader';
 import Divider from '@material-ui/core/Divider';
 import { makeStyles } from '@material-ui/core/styles';
-import React from 'react';
+import { useState } from 'react';
 import { ILERT_INTEGRATION_KEY_ANNOTATION } from '../../constants';
 import { useILertEntity } from '../../hooks';
 import { useAlerts } from '../../hooks/useAlerts';
@@ -69,10 +69,9 @@ export const ILertCard = () => {
     },
   ] = useAlerts(false, true, alertSource);
 
-  const [isNewAlertModalOpened, setIsNewAlertModalOpened] =
-    React.useState(false);
+  const [isNewAlertModalOpened, setIsNewAlertModalOpened] = useState(false);
   const [isMaintenanceModalOpened, setIsMaintenanceModalOpened] =
-    React.useState(false);
+    useState(false);
 
   if (error) {
     if (error instanceof AuthenticationError) {
