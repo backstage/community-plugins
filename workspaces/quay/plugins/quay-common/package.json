@@ -60,7 +60,6 @@
   "devDependencies": {
     "@backstage/cli": "^0.30.0",
     "@backstage/plugin-permission-common": "^0.8.4",
-    "@spotify/prettier-config": "^15.0.0",
     "@types/react": "^18.2.58",
     "react": "16.13.1 || ^17.0.0 || ^18.0.0",
     "react-dom": "16.13.1 || ^17.0.0 || ^18.0.0",

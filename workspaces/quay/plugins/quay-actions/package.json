@@ -45,8 +45,7 @@
   },
   "devDependencies": {
     "@backstage/cli": "^0.30.0",
-    "@backstage/plugin-scaffolder-node-test-utils": "^0.1.19",
-    "@spotify/prettier-config": "^15.0.0"
+    "@backstage/plugin-scaffolder-node-test-utils": "^0.1.19"
   },
   "files": [
     "dist"

@@ -63,7 +63,6 @@
     "@backstage/test-utils": "^1.7.5",
     "@playwright/test": "1.51.1",
     "@redhat-developer/red-hat-developer-hub-theme": "0.4.0",
-    "@spotify/prettier-config": "^15.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^15.0.0",
     "@types/react": "^18.2.58",
