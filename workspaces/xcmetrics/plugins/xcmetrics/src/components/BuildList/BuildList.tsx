@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { Table } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { BuildFilters, xcmetricsApiRef } from '../../api';
