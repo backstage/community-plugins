@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import useAsync from 'react-use/esm/useAsync';
 import { codeClimateApiRef } from '../../api';
 import { CodeClimateTable } from '../CodeClimateTable';
