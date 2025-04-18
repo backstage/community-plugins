@@ -19,7 +19,6 @@ import {
   StatusRunning,
   StatusWarning,
 } from '@backstage/core-components';
-import React from 'react';
 
 export const Status = ({ status }: { status: string | undefined }) => {
   if (status === undefined) return null;
