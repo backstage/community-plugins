@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import { useState } from 'react';
 import Grid from '@material-ui/core/Grid';
 import ClusterTemplateCard from '../ClusterTemplateCard';
 
@@ -28,7 +28,7 @@ interface Props {
 }
 
 const ClusterTemplateCardList = (props: Props) => {
-  const [activeIndex, setActiveIndex] = React.useState(-1);
+  const [activeIndex, setActiveIndex] = useState(-1);
 
   const handleClicked = (index: number, repository: string) => {
     setActiveIndex(index);
