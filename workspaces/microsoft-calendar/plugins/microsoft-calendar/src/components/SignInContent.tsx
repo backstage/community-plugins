@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import type { MouseEventHandler } from 'react';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import { styled } from '@material-ui/core/styles';
@@ -23,7 +23,7 @@ import mockEvents from './eventMock.json';
 import { MicrosoftCalendarEvent } from '../api';
 
 type Props = {
-  handleAuthClick: React.MouseEventHandler<HTMLElement>;
+  handleAuthClick: MouseEventHandler<HTMLElement>;
 };
 
 const TransparentBox = styled(Box)({
