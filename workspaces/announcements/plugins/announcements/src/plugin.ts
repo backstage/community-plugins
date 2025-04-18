@@ -149,7 +149,10 @@ export const HomepageAnnouncements = announcementsPlugin.provide(
   createCardExtension<{}>({
     name: 'HomepageAnnouncements',
     title: 'Announcements',
-    components: () =>
-      import('./components/AnnouncementsHomepage/AnnouncementsHomepage'),
+    layout: {
+      height: { minRows: 2 },
+      width: { minColumns: 4 },
+    },
+    components: () => import('./components/AnnouncementsHomepage'),
   }),
 );
