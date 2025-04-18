@@ -15,7 +15,6 @@
  */
 
 import Typography from '@material-ui/core/Typography';
-import React from 'react';
 import { puppetDbApiRef, PuppetDbReportLog } from '../../api';
 import {
   ResponseErrorPanel,
