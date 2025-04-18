@@ -36,8 +36,7 @@
   },
   "devDependencies": {
     "@backstage/cli": "^0.30.0",
-    "@backstage/plugin-permission-common": "^0.8.4",
-    "@spotify/prettier-config": "^15.0.0"
+    "@backstage/plugin-permission-common": "^0.8.4"
   },
   "files": [
     "dist"
