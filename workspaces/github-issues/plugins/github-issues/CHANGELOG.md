@@ -1,5 +1,11 @@
 # @backstage-community/plugin-github-issues
 
+## 0.9.0
+
+### Minor Changes
+
+- c1cc759: Backstage version bump to v1.38.1
+
 ## 0.8.1
 
 ### Patch Changes
