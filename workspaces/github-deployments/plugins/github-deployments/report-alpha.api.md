@@ -5,7 +5,7 @@
 ```ts
 /// <reference types="react" />
 
-import { AnyApiFactory } from '@backstage/core-plugin-api/*';
+import { AnyApiFactory } from '@backstage/core-plugin-api';
 import { ConfigurableExtensionDataRef } from '@backstage/frontend-plugin-api';
 import { Entity } from '@backstage/catalog-model/index';
 import { EntityCardType } from '@backstage/plugin-catalog-react/alpha';
