@@ -15,7 +15,6 @@
  */
 
 import { renderInTestApp } from '@backstage/test-utils';
-import React from 'react';
 import { WorkflowRunsTableView } from './WorkflowRunsTable';
 import { WorkflowRun } from '../useWorkflowRuns';
 import { rootRouteRef } from '../../routes';
