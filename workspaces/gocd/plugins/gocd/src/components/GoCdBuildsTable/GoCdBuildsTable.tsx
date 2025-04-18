@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useState } from 'react';
+import { useState } from 'react';
+
+import * as React from 'react';
 import { Entity, getEntitySourceLocation } from '@backstage/catalog-model';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import Alert from '@material-ui/lab/Alert';
