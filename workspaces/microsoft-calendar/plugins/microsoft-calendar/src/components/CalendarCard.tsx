@@ -16,7 +16,7 @@
 
 import { sortBy } from 'lodash';
 import { DateTime } from 'luxon';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import { InfoCard, Progress } from '@backstage/core-components';
 

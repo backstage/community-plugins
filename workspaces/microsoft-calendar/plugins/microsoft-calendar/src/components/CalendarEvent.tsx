@@ -19,7 +19,7 @@ import {
   bindTrigger,
   usePopupState,
 } from 'material-ui-popup-state/hooks';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import { Link } from '@backstage/core-components';
 
