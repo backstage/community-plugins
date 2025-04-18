@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { sortBy } from 'lodash';
-import React from 'react';
 
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControl from '@material-ui/core/FormControl';

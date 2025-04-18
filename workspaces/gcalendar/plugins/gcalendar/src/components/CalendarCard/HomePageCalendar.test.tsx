@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { googleAuthApiRef, storageApiRef } from '@backstage/core-plugin-api';
 import {
   MockStorageApi,
