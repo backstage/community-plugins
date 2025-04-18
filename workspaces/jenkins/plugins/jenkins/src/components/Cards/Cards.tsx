@@ -18,7 +18,6 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import { makeStyles } from '@material-ui/core/styles';
 import ExternalLinkIcon from '@material-ui/icons/Launch';
 import { DateTime, Duration } from 'luxon';
-import React from 'react';
 import { JenkinsRunStatus } from '../BuildsPage/lib/Status';
 import { ErrorType, useBuilds } from '../useBuilds';
 import {
