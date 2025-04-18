@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { ReactChild } from 'react';
+import { ReactChild } from 'react';
 import {
   Content,
   Header,

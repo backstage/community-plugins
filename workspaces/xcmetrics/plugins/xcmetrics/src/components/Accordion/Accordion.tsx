@@ -19,7 +19,7 @@ import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
 import Typography from '@material-ui/core/Typography';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import { makeStyles, createStyles } from '@material-ui/core/styles';
-import React, { PropsWithChildren } from 'react';
+import { PropsWithChildren } from 'react';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 const useStyles = makeStyles(theme =>

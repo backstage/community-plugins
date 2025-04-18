@@ -22,7 +22,8 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import IconButton from '@material-ui/core/IconButton';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 import CloseIcon from '@material-ui/icons/Close';
-import React, { useState } from 'react';
+import type { KeyboardEvent } from 'react';
+import { useState } from 'react';
 import { cn } from '../../utils';
 
 const useStyles = makeStyles(theme =>
@@ -70,7 +71,7 @@ export const PreformattedText = ({
   const [open, setOpen] = useState(false);
   const classes = useStyles();
 
-  const handleKeyUp = (event: React.KeyboardEvent<HTMLDivElement>) => {
+  const handleKeyUp = (event: KeyboardEvent<HTMLDivElement>) => {
     if (expandable && event.key === 'Enter') {
       setOpen(true);
     }
