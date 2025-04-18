@@ -1,5 +1,14 @@
 # @backstage-community/plugin-copilot-backend
 
+## 0.9.1
+
+### Patch Changes
+
+- cd78d85: - Upgraded to Backstage release 1.38
+  - Applied migration to the [New JXS Transform](https://backstage.io/docs/tutorials/jsx-transform-migration/)
+- Updated dependencies [cd78d85]
+  - @backstage-community/plugin-copilot-common@0.9.1
+
 ## 0.9.0
 
 ### Minor Changes
