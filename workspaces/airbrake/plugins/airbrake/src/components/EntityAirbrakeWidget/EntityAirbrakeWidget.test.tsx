@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { EntityAirbrakeWidget } from './EntityAirbrakeWidget';
 import exampleData from '../../api/mock/airbrakeGroupsApiMock.json';
 import {
