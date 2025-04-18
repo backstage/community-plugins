@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-import React, { useState, useEffect } from 'react';
+import type { ChangeEvent } from 'react';
+
+import { useState, useEffect } from 'react';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
@@ -94,29 +96,25 @@ export const TriggerDialog = ({
     async (params: TriggerAlarmRequest) => await api.incidentAction(params),
   );
 
-  const handleIncidentType = (event: React.ChangeEvent<{ value: unknown }>) => {
+  const handleIncidentType = (event: ChangeEvent<{ value: unknown }>) => {
     setIncidentType(event.target.value as string);
   };
 
-  const handleIncidentId = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleIncidentId = (event: ChangeEvent<HTMLTextAreaElement>) => {
     setIncidentId(event.target.value as string);
   };
 
   const handleIncidentDisplayName = (
-    event: React.ChangeEvent<HTMLTextAreaElement>,
+    event: ChangeEvent<HTMLTextAreaElement>,
   ) => {
     setIncidentDisplayName(event.target.value);
   };
 
-  const handleIncidentMessage = (
-    event: React.ChangeEvent<HTMLTextAreaElement>,
-  ) => {
+  const handleIncidentMessage = (event: ChangeEvent<HTMLTextAreaElement>) => {
     setIncidentMessage(event.target.value);
   };
 
-  const handleIncidentStartTime = (
-    event: React.ChangeEvent<HTMLTextAreaElement>,
-  ) => {
+  const handleIncidentStartTime = (event: ChangeEvent<HTMLTextAreaElement>) => {
     const dateTime = new Date(event.target.value).getTime();
     const dateTimeInSeconds = Math.floor(dateTime / 1000);
     setIncidentStartTime(dateTimeInSeconds);
