@@ -15,7 +15,7 @@
  */
 import { errorApiRef, useApi } from '@backstage/core-plugin-api';
 import { AuthenticationError } from '@backstage/errors';
-import React from 'react';
+import { useState } from 'react';
 import useAsyncRetry from 'react-use/esm/useAsyncRetry';
 import { GetAlertsOpts, ilertApiRef, TableState } from '../api';
 import { ACCEPTED, Alert, AlertSource, AlertStatus, PENDING } from '../types';
@@ -28,17 +28,14 @@ export const useAlerts = (
   const ilertApi = useApi(ilertApiRef);
   const errorApi = useApi(errorApiRef);
 
-  const [tableState, setTableState] = React.useState<TableState>({
+  const [tableState, setTableState] = useState<TableState>({
     page: 0,
     pageSize: 10,
   });
-  const [states, setStates] = React.useState<AlertStatus[]>([
-    ACCEPTED,
-    PENDING,
-  ]);
-  const [alertsList, setAlertsList] = React.useState<Alert[]>([]);
-  const [alertsCount, setAlertsCount] = React.useState(0);
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [states, setStates] = useState<AlertStatus[]>([ACCEPTED, PENDING]);
+  const [alertsList, setAlertsList] = useState<Alert[]>([]);
+  const [alertsCount, setAlertsCount] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchAlertsCall = async () => {
     try {

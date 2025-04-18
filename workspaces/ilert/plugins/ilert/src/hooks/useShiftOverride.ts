@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useState } from 'react';
 import { ilertApiRef } from '../api';
 import { AuthenticationError } from '@backstage/errors';
 import useAsyncRetry from 'react-use/esm/useAsyncRetry';
@@ -24,9 +24,9 @@ export const useShiftOverride = (s: Shift, isModalOpened: boolean) => {
   const ilertApi = useApi(ilertApiRef);
   const errorApi = useApi(errorApiRef);
 
-  const [shift, setShift] = React.useState<Shift>(s);
-  const [usersList, setUsersList] = React.useState<User[]>([]);
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [shift, setShift] = useState<Shift>(s);
+  const [usersList, setUsersList] = useState<User[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const { error, retry } = useAsyncRetry(async () => {
     try {

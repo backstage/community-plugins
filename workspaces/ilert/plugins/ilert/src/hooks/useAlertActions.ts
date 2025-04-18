@@ -15,7 +15,7 @@
  */
 import { errorApiRef, useApi } from '@backstage/core-plugin-api';
 import { AuthenticationError } from '@backstage/errors';
-import React from 'react';
+import { useState } from 'react';
 import useAsyncRetry from 'react-use/esm/useAsyncRetry';
 import { ilertApiRef } from '../api';
 import { Alert, AlertAction } from '../types';
@@ -24,10 +24,8 @@ export const useAlertActions = (alert: Alert | null, open: boolean) => {
   const ilertApi = useApi(ilertApiRef);
   const errorApi = useApi(errorApiRef);
 
-  const [alertActionsList, setAlertActionsList] = React.useState<AlertAction[]>(
-    [],
-  );
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [alertActionsList, setAlertActionsList] = useState<AlertAction[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const { error, retry } = useAsyncRetry(async () => {
     try {
