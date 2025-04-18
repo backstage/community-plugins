@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { Entity } from '@backstage/catalog-model';
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
 import { BadgesApi, badgesApiRef } from '../api';
