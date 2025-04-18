@@ -87,7 +87,7 @@ export const MembersCard = ({ roleName, membersInfo }: MembersCardProps) => {
       <Table
         title={
           !loading && data?.length
-            ? `Users and groups (${getMembers(filteredData)})`
+            ? `${getMembers(filteredData)}`
             : 'Users and groups'
         }
         actions={actions}

@@ -99,7 +99,7 @@ export const PermissionsCard = ({
       <Table
         title={
           !loading && data.length > 0
-            ? `Permission Policies (${numberOfPolicies})`
+            ? `${numberOfPolicies} permissions`
             : 'Permission Policies'
         }
         actions={actions}
