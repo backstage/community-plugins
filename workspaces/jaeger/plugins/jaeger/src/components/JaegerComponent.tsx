@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { Grid } from '@material-ui/core';
 import { Content } from '@backstage/core-components';
 import { JaegerFetchComponent } from './JaegerFetchComponent';
