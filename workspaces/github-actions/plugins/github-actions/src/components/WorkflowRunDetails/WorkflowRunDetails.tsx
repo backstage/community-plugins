@@ -33,7 +33,6 @@ import { makeStyles, Theme } from '@material-ui/core/styles';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExternalLinkIcon from '@material-ui/icons/Launch';
 import { DateTime } from 'luxon';
-import React from 'react';
 import { Job, Jobs, Step } from '../../api';
 import { getProjectNameFromEntity } from '../getProjectNameFromEntity';
 import { WorkflowRunStatus } from '../WorkflowRunStatus';
