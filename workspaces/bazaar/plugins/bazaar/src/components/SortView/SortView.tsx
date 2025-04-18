@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { Content, SupportButton } from '@backstage/core-components';
 import { AddProjectDialog } from '../AddProjectDialog';
 import { ProjectPreview } from '../ProjectPreview/ProjectPreview';

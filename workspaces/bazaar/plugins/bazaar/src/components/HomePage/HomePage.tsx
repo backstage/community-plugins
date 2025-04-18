@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { Header, RoutedTabs } from '@backstage/core-components';
 import { SortView } from '../SortView';
 import { About } from '../About';
