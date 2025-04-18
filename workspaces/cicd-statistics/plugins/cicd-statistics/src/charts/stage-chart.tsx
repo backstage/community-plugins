@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { CSSProperties, Fragment, useMemo } from 'react';
+import { CSSProperties, Fragment, useMemo } from 'react';
 import {
   Area,
   Bar,
