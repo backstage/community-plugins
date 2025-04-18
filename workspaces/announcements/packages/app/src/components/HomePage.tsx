@@ -24,6 +24,28 @@ import { Grid, Typography } from '@material-ui/core';
 import { Content } from '@backstage/core-components';
 import { CustomHomepageGrid, HomePageRandomJoke } from '@backstage/plugin-home';
 
+const defaultCustomizableHomepage = [
+  {
+    component: <HomepageAnnouncements />,
+    x: 0,
+    y: 0,
+    width: 7,
+    height: 4,
+    movable: true,
+    resizable: true,
+    deletable: true,
+  },
+  {
+    component: <HomePageRandomJoke />,
+    x: 7,
+    y: 0,
+    width: 3,
+    height: 4,
+    movable: true,
+    resizable: true,
+    deletable: true,
+  },
+];
 export const Home = () => {
   return (
     <Content>
@@ -42,7 +64,7 @@ export const Home = () => {
         </Grid>
         <Grid item xs={12}>
           <Typography variant="h4">Customizable Homepage component</Typography>
-          <CustomHomepageGrid>
+          <CustomHomepageGrid config={defaultCustomizableHomepage}>
             <HomepageAnnouncements />
             <HomePageRandomJoke />
           </CustomHomepageGrid>
