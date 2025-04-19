@@ -55,12 +55,14 @@ export interface FactCheckerFactory<
 export type FactLifecycle = TTL | MaxItems;
 
 // @public
-export interface FactRetriever {
+export interface FactRetriever<
+  TContext extends FactRetrieverContext = FactRetrieverContext,
+> {
   description?: string;
   entityFilter?:
     | Record<string, string | symbol | (string | symbol)[]>[]
     | Record<string, string | symbol | (string | symbol)[]>;
-  handler: (ctx: FactRetrieverContext) => Promise<TechInsightFact[]>;
+  handler: (ctx: TContext) => Promise<TechInsightFact[]>;
   id: string;
   schema: FactSchema;
   title?: string;
@@ -68,7 +70,7 @@ export interface FactRetriever {
 }
 
 // @public
-export type FactRetrieverContext = {
+export type FactRetrieverContext<TExtension = {}> = {
   config: Config;
   discovery: DiscoveryService;
   logger: LoggerService;
@@ -77,11 +79,13 @@ export type FactRetrieverContext = {
   entityFilter?:
     | Record<string, string | symbol | (string | symbol)[]>[]
     | Record<string, string | symbol | (string | symbol)[]>;
-};
+} & TExtension;
 
 // @public
-export type FactRetrieverRegistration = {
-  factRetriever: FactRetriever;
+export type FactRetrieverRegistration<
+  TContext extends FactRetrieverContext = FactRetrieverContext,
+> = {
+  factRetriever: FactRetriever<TContext>;
   cadence?: string;
   timeout?: Duration | HumanDuration;
   lifecycle?: FactLifecycle;
@@ -99,7 +103,9 @@ export interface FactRetrieverRegistry {
   // (undocumented)
   listRetrievers(): Promise<FactRetriever[]>;
   // (undocumented)
-  register(registration: FactRetrieverRegistration): Promise<void>;
+  register<TContext extends FactRetrieverContext = FactRetrieverContext>(
+    registration: FactRetrieverRegistration<TContext>,
+  ): Promise<void>;
 }
 
 // @public
