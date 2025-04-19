@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2025 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,18 +16,19 @@
 import * as React from 'react';
 import TextField from '@mui/material/TextField';
 import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
-import { Category } from '@backstage-community/plugin-announcements-common';
+import { Tag } from '@backstage-community/plugin-announcements-common';
 import {
   useAnnouncementsTranslation,
-  useCategories,
+  useTags,
+  announcementsApiRef,
 } from '@backstage-community/plugin-announcements-react';
+import { useApi } from '@backstage/core-plugin-api';
 import CircularProgress from '@mui/material/CircularProgress';
 
-type CategoryInputProps = {
+type TagsInputProps = {
   setForm: (
     value: React.SetStateAction<{
       category: string | undefined;
-      tags: string[] | undefined;
       id: string;
       publisher: string;
       title: string;
@@ -36,11 +37,11 @@ type CategoryInputProps = {
       created_at: string;
       active: boolean;
       start_at: string;
+      tags: string[] | undefined;
     }>,
   ) => void;
   form: {
     category: string | undefined;
-    tags: string[] | undefined;
     id: string;
     publisher: string;
     title: string;
@@ -49,55 +50,92 @@ type CategoryInputProps = {
     created_at: string;
     active: boolean;
     start_at: string;
+    tags: string[] | undefined;
   };
   initialValue: string;
 };
 
-const filter = createFilterOptions<Category>();
-
-function prepareCategoryFromInput(
-  inputCategory: Category | string,
-  localizedCreate?: string,
-): string {
-  return (
-    typeof inputCategory === 'string' ? inputCategory : inputCategory.title
-  )
-    .replace(localizedCreate ? `${localizedCreate} ` : 'Create ', '')
-    .replaceAll('"', '');
+interface TagOption extends Tag {
+  inputValue?: string;
+  isNew?: boolean;
 }
 
-export default function CategoryInput({
-  setForm,
-  form,
-  initialValue,
-}: CategoryInputProps) {
-  const { categories, loading: categoriesLoading } = useCategories();
+const filter = createFilterOptions<TagOption>();
+
+function prepareTagFromInput(input: string | TagOption): string {
+  if (typeof input === 'string') {
+    return input.toLocaleLowerCase('en-US');
+  }
+
+  if (input.inputValue) {
+    return input.inputValue.toLocaleLowerCase('en-US');
+  }
+
+  return input.title.toLocaleLowerCase('en-US');
+}
+
+export default function TagsInput({ setForm, form }: TagsInputProps) {
+  const { tags, loading: tagsLoading, retry: refetchTags } = useTags();
+  const announcementsApi = useApi(announcementsApiRef);
   const { t } = useAnnouncementsTranslation();
+  const createLabel = t('announcementForm.tagsInput.create');
+  const [creatingTag, setCreatingTag] = React.useState(false);
+
+  const existingTags = React.useMemo(() => {
+    if (!form.tags || form.tags.length === 0) return [];
+
+    return form.tags.map(tagSlug => {
+      const foundTag = tags?.find(tag => tag.slug === tagSlug);
+      return foundTag || { title: tagSlug, slug: tagSlug };
+    });
+  }, [form.tags, tags]);
+
+  const handleTagChange = async (newValue: (string | TagOption)[]) => {
+    if (!newValue || newValue.length === 0) {
+      setForm({ ...form, tags: [] });
+      return;
+    }
+
+    setCreatingTag(true);
+
+    const processedTags = await Promise.all(
+      newValue.map(async item => {
+        if (typeof item === 'object' && item.isNew) {
+          try {
+            const title = item.inputValue || item.title;
+            await announcementsApi.createTag({ title });
+            return title.toLocaleLowerCase('en-US');
+          } catch (error) {
+            return prepareTagFromInput(item);
+          }
+        }
+
+        return prepareTagFromInput(item);
+      }),
+    );
+
+    setForm({ ...form, tags: processedTags });
+    refetchTags();
+    setCreatingTag(false);
+  };
 
   return (
     <Autocomplete
       fullWidth
-      value={initialValue ?? ''}
-      onChange={async (_, newValue) => {
-        if (!newValue) {
-          setForm({ ...form, category: undefined });
-          return;
-        }
-
-        const newCategory = prepareCategoryFromInput(
-          newValue,
-          t('announcementForm.categoryInput.create'),
-        );
-        setForm({ ...form, category: newCategory });
+      freeSolo
+      multiple
+      value={existingTags}
+      onChange={(_, newValue) => {
+        handleTagChange(newValue);
       }}
       filterOptions={(options, params) => {
         const filtered = filter(options, params);
         const { inputValue } = params;
 
-        /*
-          Suggest the creation of a new category. This adds the new value to the list of options
-          and creates the new category when the form is submitted.
-        */
+        if (!inputValue.trim()) {
+          return filtered;
+        }
+
         const isExisting = options.some(
           option =>
             inputValue.toLocaleLowerCase('en-US') ===
@@ -105,38 +143,36 @@ export default function CategoryInput({
         );
         if (inputValue !== '' && !isExisting) {
           filtered.push({
-            title: `${t(
-              'announcementForm.categoryInput.create',
-            )} "${inputValue}"`,
+            title: `${createLabel} "${inputValue}"`,
             slug: inputValue.toLocaleLowerCase('en-US'),
+            inputValue,
+            isNew: true,
           });
         }
-
         return filtered;
       }}
       selectOnFocus
       handleHomeEndKeys
-      loading={categoriesLoading}
-      id="category-input-field"
-      options={categories || []}
+      loading={tagsLoading || creatingTag}
+      id="tags-input-field"
+      options={tags || []}
       getOptionLabel={option => {
         // Value selected with enter, right from the input
-        return prepareCategoryFromInput(option);
+        return prepareTagFromInput(option);
       }}
       renderOption={(props, option) => <li {...props}>{option.title}</li>}
-      freeSolo
       renderInput={params => (
         <TextField
           {...params}
-          id="category"
-          label={t('announcementForm.categoryInput.label')}
+          id="tags"
+          label={t('announcementForm.tagsInput.label')}
           variant="outlined"
           fullWidth
           InputProps={{
             ...params.InputProps,
             endAdornment: (
               <>
-                {categoriesLoading ? (
+                {tagsLoading || creatingTag ? (
                   <CircularProgress color="inherit" size={20} />
                 ) : null}
                 {params.InputProps.endAdornment}
