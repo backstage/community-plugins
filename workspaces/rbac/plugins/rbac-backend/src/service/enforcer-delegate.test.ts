@@ -74,8 +74,13 @@ const config = mockServices.rootConfig({
     },
   },
 });
-const policy = ['user:default/tom', 'policy-entity', 'read', 'allow'];
-const secondPolicy = ['user:default/tim', 'catalog-entity', 'write', 'allow'];
+const policy = ['role:default/dev-team', 'policy-entity', 'read', 'allow'];
+const secondPolicy = [
+  'role:default/qa-team',
+  'catalog-entity',
+  'create',
+  'allow',
+];
 
 const groupingPolicy = ['user:default/tom', 'role:default/dev-team'];
 const secondGroupingPolicy = ['user:default/tim', 'role:default/qa-team'];
@@ -268,17 +273,69 @@ describe('EnforcerDelegate', () => {
       expect(policies.length).toEqual(0);
     });
 
-    it('should return filteredPolicy', async () => {
+    it('should return filtered policy by role name', async () => {
       const enfDelegate = await createEnfDelegate([policy, secondPolicy]);
 
       // filter by policy assignment person
       const policies = await enfDelegate.getFilteredPolicy(
         0,
-        'user:default/tim',
+        'role:default/qa-team',
       );
 
       expect(policies.length).toEqual(1);
       expect(policies[0]).toEqual(secondPolicy);
+    });
+
+    it('should return filtered policy by policy name', async () => {
+      const enfDelegate = await createEnfDelegate([policy, secondPolicy]);
+
+      const policyName = policy[1];
+      const policies = await enfDelegate.getFilteredPolicy(0, '', policyName);
+
+      expect(policies.length).toEqual(1);
+      expect(policies[0]).toEqual(policy);
+    });
+
+    it('should return filtered policy by policy name with index offset', async () => {
+      const enfDelegate = await createEnfDelegate([policy, secondPolicy]);
+
+      const policyName = policy[1];
+      const policies = await enfDelegate.getFilteredPolicy(1, policyName);
+
+      expect(policies.length).toEqual(1);
+      expect(policies[0]).toEqual(policy);
+    });
+
+    it('should return filtered policy by policy action', async () => {
+      const enfDelegate = await createEnfDelegate([policy, secondPolicy]);
+
+      const policyAction = policy[2];
+      const policies = await enfDelegate.getFilteredPolicy(
+        0,
+        '',
+        '',
+        policyAction,
+      );
+
+      expect(policies.length).toEqual(1);
+      expect(policies[0]).toEqual(policy);
+    });
+
+    it('should return filtered policy by policy effect', async () => {
+      const enfDelegate = await createEnfDelegate([policy, secondPolicy]);
+
+      const policyEffect = policy[3];
+      const policies = await enfDelegate.getFilteredPolicy(
+        0,
+        '',
+        '',
+        '',
+        policyEffect,
+      );
+
+      expect(policies.length).toEqual(2);
+      expect(policies[0]).toEqual(policy);
+      expect(policies[1]).toEqual(secondPolicy);
     });
   });
 
@@ -294,7 +351,7 @@ describe('EnforcerDelegate', () => {
       expect(policies.length).toEqual(0);
     });
 
-    it('should return filteredPolicy', async () => {
+    it('should return filtered grouping policy by role member', async () => {
       const enfDelegate = await createEnfDelegate(
         [],
         [groupingPolicy, secondGroupingPolicy],
@@ -304,6 +361,39 @@ describe('EnforcerDelegate', () => {
       const policies = await enfDelegate.getFilteredGroupingPolicy(
         0,
         'user:default/tim',
+      );
+
+      expect(policies.length).toEqual(1);
+      expect(policies[0]).toEqual(secondGroupingPolicy);
+    });
+
+    it('should return filtered grouping policy by role name', async () => {
+      const enfDelegate = await createEnfDelegate(
+        [],
+        [groupingPolicy, secondGroupingPolicy],
+      );
+
+      // filter by policy assignment person
+      const policies = await enfDelegate.getFilteredGroupingPolicy(
+        0,
+        '',
+        'role:default/qa-team',
+      );
+
+      expect(policies.length).toEqual(1);
+      expect(policies[0]).toEqual(secondGroupingPolicy);
+    });
+
+    it('should return filtered grouping policy by role name with index offset', async () => {
+      const enfDelegate = await createEnfDelegate(
+        [],
+        [groupingPolicy, secondGroupingPolicy],
+      );
+
+      // filter by policy assignment person
+      const policies = await enfDelegate.getFilteredGroupingPolicy(
+        1,
+        'role:default/qa-team',
       );
 
       expect(policies.length).toEqual(1);
