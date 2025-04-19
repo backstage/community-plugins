@@ -19,7 +19,7 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import ExternalLinkIcon from '@material-ui/icons/Launch';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { GITHUB_ACTIONS_ANNOTATION } from '../getProjectNameFromEntity';
 import { useWorkflowRuns, WorkflowRun } from '../useWorkflowRuns';
 import { WorkflowRunsTable } from '../WorkflowRunsTable';

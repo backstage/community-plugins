@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { setupServer } from 'msw/node';
 import {
   renderInTestApp,

@@ -1,5 +1,30 @@
 # @backstage-community/plugin-jenkins-backend
 
+## 0.14.0
+
+### Minor Changes
+
+- f0ef395: Backstage version bump to v1.38.1
+
+### Patch Changes
+
+- Updated dependencies [f0ef395]
+  - @backstage-community/plugin-jenkins-common@0.6.0
+
+## 0.13.0
+
+### Minor Changes
+
+- 9c592af: Backstage version bump to v1.37.0
+
+### Patch Changes
+
+- 319b23a: Fixed a bug that prevented the backend from starting if no config was provided.
+- 319b23a: Updated config schema to indicate that _either_ a `jenkins.instances` array should be provided _or_ `jenkins.baseUrl`, `jenkins.username`, and `jenkins.apiKey`, but never both.
+- 5d074b1: Sanitize user input in router before using values in API
+- Updated dependencies [9c592af]
+  - @backstage-community/plugin-jenkins-common@0.5.0
+
 ## 0.12.1
 
 ### Patch Changes

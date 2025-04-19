@@ -40,7 +40,7 @@ export const IstioConfigValidationReferences = (
                   name={reference.name}
                   namespace={reference.namespace}
                   cluster={props.cluster}
-                  type={reference.objectType}
+                  objectGVK={reference.objectGVK}
                 />
               </ListItem>
             );

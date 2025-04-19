@@ -20,7 +20,7 @@ import AccordionSummary from '@material-ui/core/AccordionSummary';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 
 const useStyles = makeStyles({
   accordionDetails: {

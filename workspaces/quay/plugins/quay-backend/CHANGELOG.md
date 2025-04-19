@@ -1,5 +1,19 @@
 # @backstage-community/plugin-quay-backend
 
+## 1.1.2
+
+### Patch Changes
+
+- 088781b: Publish config.d.ts
+
+## 1.1.1
+
+### Patch Changes
+
+- f84ad73: chore: remove homepage field from package.json
+- Updated dependencies [f84ad73]
+  - @backstage-community/plugin-quay-common@1.7.1
+
 ## 1.1.0
 
 ### Minor Changes

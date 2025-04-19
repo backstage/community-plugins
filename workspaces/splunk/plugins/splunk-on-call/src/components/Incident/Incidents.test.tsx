@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { screen, waitFor } from '@testing-library/react';
 import { Incidents } from './Incidents';
 import { TestApiRegistry, renderInTestApp } from '@backstage/test-utils';

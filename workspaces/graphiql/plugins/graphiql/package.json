@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-graphiql",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Backstage plugin for browsing GraphQL APIs",
   "backstage": {
     "role": "frontend-plugin",
@@ -75,7 +75,6 @@
     "@testing-library/user-event": "^14.5.2",
     "@types/codemirror": "^5.0.0",
     "@types/react-dom": "^18.2.19",
-    "canvas": "^2.11.2",
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-router-dom": "6.0.0-beta.0 || ^6.3.0"

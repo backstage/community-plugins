@@ -51,6 +51,7 @@ import { AppRouter, FlatRoutes } from '@backstage/core-app-api';
 import { CatalogGraphPage } from '@backstage/plugin-catalog-graph';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';
+import { npmTranslations } from '@backstage-community/plugin-npm/alpha';
 
 const app = createApp({
   apis,
@@ -73,6 +74,10 @@ const app = createApp({
   },
   components: {
     SignInPage: props => <SignInPage {...props} auto providers={['guest']} />,
+  },
+  __experimentalTranslations: {
+    availableLanguages: ['en', 'de'],
+    resources: [npmTranslations],
   },
 });
 

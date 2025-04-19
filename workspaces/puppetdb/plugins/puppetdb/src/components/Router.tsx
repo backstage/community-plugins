@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { puppetDbReportRouteRef } from '../routes';
 import { ANNOTATION_PUPPET_CERTNAME } from '../constants';

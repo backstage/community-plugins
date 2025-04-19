@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "private": true,
   "engines": {
-    "node": "18 || 20"
+    "node": "18 || 20 || 22"
   },
   "scripts": {
     "dev": "yarn workspaces foreach -A --include backend --include app --parallel -v -i run start",
@@ -42,12 +42,11 @@
     "directory": "workspaces/acr"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.29.5",
+    "@backstage/cli": "^0.30.0",
     "@backstage/e2e-test-utils": "^0.1.1",
     "@backstage/repo-tools": "^0.13.0",
     "@changesets/cli": "^2.27.1",
     "@playwright/test": "^1.32.3",
-    "@spotify/prettier-config": "^12.0.0",
     "knip": "^5.27.4",
     "node-gyp": "^9.0.0",
     "prettier": "^2.3.2",
@@ -57,7 +56,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18"
   },
-  "prettier": "@spotify/prettier-config",
+  "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {
     "*.{js,jsx,ts,tsx,mjs,cjs}": [
       "eslint --fix",

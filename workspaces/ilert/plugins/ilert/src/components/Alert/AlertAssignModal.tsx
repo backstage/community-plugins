@@ -24,7 +24,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import MUIAlert from '@material-ui/lab/Alert';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import React from 'react';
 import { ilertApiRef } from '../../api';
 import { useAssignAlert } from '../../hooks/useAssignAlert';
 import { Alert } from '../../types';

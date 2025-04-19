@@ -1,5 +1,35 @@
 ### Dependencies
 
+## 6.1.0
+
+### Minor Changes
+
+- d278b4c: Adds the ability to assign ownership to roles that can then be used to conditionally filter roles, permission policies, and conditional policies. The conditional filter can now be accomplished through the use of the new RBAC conditional rule `IS_OWNER`.
+
+  `IS_OWNER` can be used to grant limited access to the RBAC plugins where in admins might want leads to control their own team's access.
+
+  Removed the resource type from the `policy.entity.create` permission to prevent conditional rules being applied to the permission. At the moment, the plugins will still continue to work as expected. However, it is strongly recommended updating all permission policies that utilize the resource type `policy-entity` with the action `create` (ex. `role:default/some_role, policy-entity, create, allow` to `role:default/some_role, policy.entity.create, create, allow`) to prevent any future degradation in service. A migration has been supplied to automatically update all permission policies that have not originated from the CSV file. The CSV file was skipped as a duplication event could happen during reloads / restarts. This means that the CSV file will need to be updated manually to ensure that all references to the old permission policy, resource type `policy-entity` with an action of `create`, have been updated to the named permission `policy.entity.create` with an action of `create`.
+
+### Patch Changes
+
+- Updated dependencies [d278b4c]
+  - @backstage-community/plugin-rbac-common@1.15.0
+
+## 6.0.1
+
+### Patch Changes
+
+- f84ad73: chore: remove homepage field from package.json
+- Updated dependencies [f84ad73]
+  - @backstage-community/plugin-rbac-common@1.14.1
+  - @backstage-community/plugin-rbac-node@1.10.1
+
+## 6.0.0
+
+### Major Changes
+
+- 9cccb0d: **BREAKING**: Migration to the core Auditor service. The Auditor format has been updated. Audit fields and event names (ids) have been updated to conform with the new Auditor service conventions. Filtering queries based on the old format may no longer work.
+
 ## 5.6.1
 
 ### Patch Changes

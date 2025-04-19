@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-cost-insights",
-  "version": "0.15.0",
+  "version": "0.15.1",
   "description": "A Backstage plugin that helps you keep track of your cloud spend",
   "backstage": {
     "role": "frontend-plugin",
@@ -80,7 +80,6 @@
     "@types/recharts": "^1.8.14",
     "@types/regression": "^2.0.0",
     "@types/yup": "^0.32.0",
-    "canvas": "^2.10.2",
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-router-dom": "6.0.0-beta.0 || ^6.3.0"

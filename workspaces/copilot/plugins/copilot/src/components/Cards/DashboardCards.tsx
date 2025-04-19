@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { PropsWithChildren } from 'react';
+import { PropsWithChildren } from 'react';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';

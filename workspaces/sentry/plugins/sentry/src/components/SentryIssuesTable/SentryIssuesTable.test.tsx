@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import SentryIssuesTable from './SentryIssuesTable';
 import { SentryIssue } from '../../api';
 import mockIssue from '../../api/mock/sentry-issue-mock.json';

@@ -25,7 +25,7 @@ import PauseIcon from '@material-ui/icons/Pause';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import WebIcon from '@material-ui/icons/Web';
 import Alert from '@material-ui/lab/Alert';
-import React from 'react';
+import { useState } from 'react';
 import { ilertApiRef } from '../../api';
 import { AlertSource } from '../../types';
 
@@ -48,8 +48,8 @@ export const ILertCardActionsHeader = ({
 }) => {
   const ilertApi = useApi(ilertApiRef);
   const alertApi = useApi(alertApiRef);
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [isDisableModalOpened, setIsDisableModalOpened] = React.useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isDisableModalOpened, setIsDisableModalOpened] = useState(false);
 
   const handleCreateNewAlert = () => {
     setIsNewAlertModalOpened(true);

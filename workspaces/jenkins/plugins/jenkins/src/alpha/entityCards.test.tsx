@@ -23,7 +23,6 @@ import { EntityProvider } from '@backstage/plugin-catalog-react';
 import * as cards from './entityCards';
 import { JenkinsApi, jenkinsApiRef } from '../api';
 import { sampleEntity } from '../__fixtures__/entity';
-import React from 'react';
 
 jest.mock('@backstage/plugin-catalog-react', () => ({
   ...jest.requireActual('@backstage/plugin-catalog-react'),

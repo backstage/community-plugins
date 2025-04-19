@@ -10,7 +10,7 @@ It contains the following actions:
 From your Backstage instance root folder:
 
 ```shell
-yarn add --cwd packages/backend @backstage-community/plugin-scaffolder-backend-module-azure-devops
+yarn --cwd packages/backend add @backstage-community/plugin-scaffolder-backend-module-azure-devops
 ```
 
 ## Configuration

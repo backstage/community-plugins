@@ -18,7 +18,6 @@ import Box from '@material-ui/core/Box';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
-import { default as React } from 'react';
 import JenkinsLogo from './../../assets/JenkinsLogo.svg';
 import { useJobRuns } from './../useJobRuns';
 import { Job, JobBuild } from './../../api/JenkinsApi';

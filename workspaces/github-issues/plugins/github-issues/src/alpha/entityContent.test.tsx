@@ -27,7 +27,6 @@ import {
 } from '@backstage/plugin-catalog-react';
 import { GithubIssuesApi, githubIssuesApiRef } from '../api';
 import { Entity } from '@backstage/catalog-model';
-import React from 'react';
 
 const entityComponent = {
   metadata: {

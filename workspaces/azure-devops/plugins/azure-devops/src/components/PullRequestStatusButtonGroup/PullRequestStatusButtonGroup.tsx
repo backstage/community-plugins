@@ -18,7 +18,6 @@ import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 
 import { PullRequestStatus } from '@backstage-community/plugin-azure-devops-common';
-import React from 'react';
 
 export const PullRequestStatusButtonGroup = ({
   status,

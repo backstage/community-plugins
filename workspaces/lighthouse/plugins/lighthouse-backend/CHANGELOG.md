@@ -1,5 +1,22 @@
 # @backstage-community/plugin-lighthouse-backend
 
+## 0.10.0
+
+### Minor Changes
+
+- c91184c: Backstage version bump to v1.38.1
+
+### Patch Changes
+
+- Updated dependencies [c91184c]
+  - @backstage-community/plugin-lighthouse-common@0.6.0
+
+## 0.9.1
+
+### Patch Changes
+
+- 22816cf: remove filter for spectype
+
 ## 0.9.0
 
 ### Minor Changes

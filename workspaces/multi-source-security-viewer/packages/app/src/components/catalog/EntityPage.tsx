@@ -86,6 +86,10 @@ import {
   EntityGithubActionsContent,
   isGithubActionsAvailable,
 } from '@backstage-community/plugin-github-actions';
+import {
+  EntityAzurePipelinesContent,
+  isAzurePipelinesAvailable,
+} from '@backstage-community/plugin-azure-devops';
 
 const techdocsContent = (
   <EntityTechdocsContent>
@@ -105,6 +109,10 @@ const cicdContent = (
 
     <EntitySwitch.Case if={isJenkinsAvailable}>
       <EntityJenkinsContent />
+    </EntitySwitch.Case>
+
+    <EntitySwitch.Case if={isAzurePipelinesAvailable}>
+      <EntityAzurePipelinesContent />
     </EntitySwitch.Case>
 
     <EntitySwitch.Case>

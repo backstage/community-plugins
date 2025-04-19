@@ -1,5 +1,22 @@
 # @backstage-community/plugin-tech-radar
 
+## 1.5.0
+
+### Minor Changes
+
+- 65af06f: Backstage version bump to v1.38.1
+
+### Patch Changes
+
+- Updated dependencies [65af06f]
+  - @backstage-community/plugin-tech-radar-common@1.5.0
+
+## 1.4.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
 ## 1.4.0
 
 ### Minor Changes

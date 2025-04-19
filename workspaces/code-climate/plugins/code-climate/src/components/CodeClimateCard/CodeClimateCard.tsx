@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { InfoCard } from '@backstage/core-components';
 import { CodeClimateCardContents } from '../CodeClimateCardContents';
 

@@ -26,7 +26,12 @@ import { nsEqual } from '../../helpers/namespaces';
 import { kialiApiRef } from '../../services/Api';
 import { KialiAppState, KialiContext } from '../../store';
 import { baseStyle } from '../../styles/StyleUtils';
-import { IstioConfigItem, toIstioItems } from '../../types/IstioConfigList';
+import {
+  filterByName,
+  filterByNamespaces,
+  IstioConfigItem,
+  toIstioItems,
+} from '../../types/IstioConfigList';
 import { NamespaceInfo } from '../../types/NamespaceInfo';
 import { ENTITY } from '../../types/types';
 import { getNamespaces } from '../Overview/OverviewPage';
@@ -49,23 +54,20 @@ export const IstioConfigListPage = (props: {
   const prevActiveNs = React.useRef(activeNs);
   const [loadingD, setLoading] = React.useState<boolean>(true);
 
-  const fetchIstioConfigs = async (nss: NamespaceInfo[]): Promise<void> => {
+  const fetchIstioConfigs = (
+    nsl: NamespaceInfo[],
+    cluster?: string,
+  ): Promise<void> => {
     return kialiClient
-      .getAllIstioConfigs(
-        nss.map(ns => {
-          return ns.name;
-        }),
-        [],
-        true,
-        '',
-        '',
-      )
+      .getAllIstioConfigs([], true, '', '', cluster)
       .then(results => {
-        let istioItems: IstioConfigItem[] = [];
-
-        nss.forEach(ns => {
-          istioItems = istioItems.concat(toIstioItems(results[ns.name]));
-        });
+        const istioItems = toIstioItems(
+          filterByNamespaces(
+            filterByName(results, []),
+            nsl.map(ns => ns.name),
+          ),
+          cluster,
+        );
 
         setIstioConfigs(istioItems);
       });
@@ -78,14 +80,15 @@ export const IstioConfigListPage = (props: {
     );
     kialiClient
       .getNamespaces()
-      .then(namespacesResponse => {
+      .then(async namespacesResponse => {
         const allNamespaces: NamespaceInfo[] = getNamespaces(
           namespacesResponse,
           namespaces,
         );
-        const nsl = allNamespaces.filter(ns => activeNs.includes(ns.name));
-        setNamespaces(nsl);
-        fetchIstioConfigs(nsl);
+        // const nsl = allNamespaces.filter(ns => activeNs.includes(ns.name));
+        // Check filter when entity
+        setNamespaces(allNamespaces);
+        fetchIstioConfigs(allNamespaces);
       })
       .catch(err =>
         setErrorProvider(

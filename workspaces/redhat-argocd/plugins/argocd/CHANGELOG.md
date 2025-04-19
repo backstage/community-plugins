@@ -1,5 +1,19 @@
 ## @backstage-community/plugin-redhat-argocd
 
+## 1.18.0
+
+### Minor Changes
+
+- 1eafdb8: Bump backstage version to 1.36.1
+
+### Patch Changes
+
+- f84ad73: chore: remove homepage field from package.json
+- c31699d: Updated dependency `@playwright/test` to `1.51.1`.
+- Updated dependencies [f84ad73]
+- Updated dependencies [1eafdb8]
+  - @backstage-community/plugin-redhat-argocd-common@1.4.0
+
 ## 1.17.0
 
 ### Minor Changes

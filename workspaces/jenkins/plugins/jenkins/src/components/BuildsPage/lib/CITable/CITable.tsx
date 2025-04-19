@@ -17,7 +17,6 @@ import { Table, TableColumn } from '@backstage/core-components';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import RetryIcon from '@material-ui/icons/Replay';
-import { default as React } from 'react';
 import { Project } from '../../../../api/JenkinsApi';
 import JenkinsLogo from '../../../../assets/JenkinsLogo.svg';
 import { useBuilds } from '../../../useBuilds';

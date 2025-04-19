@@ -75,7 +75,6 @@ export async function createScheduler(
       fn: async () => {
         const filter: Record<string, symbol | string> = {
           kind: 'Component',
-          'spec.type': 'website',
           ['metadata.annotations.lighthouse.com/website-url']:
             CATALOG_FILTER_EXISTS,
         };

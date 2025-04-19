@@ -30,7 +30,6 @@ import TextField from '@material-ui/core/TextField';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Alert from '@material-ui/lab/Alert';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import React from 'react';
 import { ilertApiRef } from '../../api';
 import { useNewAlert } from '../../hooks/useNewAlert';
 import { AlertSource } from '../../types';

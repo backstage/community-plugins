@@ -33,8 +33,7 @@ export type RolesData = {
   modifiedBy: string;
   lastModified: string;
   actionsPermissionResults: {
-    delete: { allowed: boolean; loading: boolean };
-    edit: { allowed: boolean; loading: boolean };
+    edit: { allowed: boolean };
   };
   accessiblePlugins: string[];
 };

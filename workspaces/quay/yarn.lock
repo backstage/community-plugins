@@ -2703,7 +2703,6 @@ __metadata:
     "@spotify/prettier-config": "npm:^15.0.0"
     "@testing-library/jest-dom": "npm:^6.0.0"
     "@testing-library/react": "npm:^15.0.0"
-    "@types/node": "npm:18.19.68"
     "@types/react": "npm:^18.2.58"
     "@types/react-dom": "npm:^18.2.19"
     cross-fetch: "npm:4.0.0"
@@ -2720,7 +2719,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@backstage-community/plugin-scaffolder-backend-module-quay@workspace:plugins/quay-actions":
+"@backstage-community/plugin-scaffolder-backend-module-quay@workspace:^, @backstage-community/plugin-scaffolder-backend-module-quay@workspace:plugins/quay-actions":
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-scaffolder-backend-module-quay@workspace:plugins/quay-actions"
   dependencies:
@@ -13218,15 +13217,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:18.19.68":
-  version: 18.19.68
-  resolution: "@types/node@npm:18.19.68"
-  dependencies:
-    undici-types: "npm:~5.26.4"
-  checksum: 10/024a4a8eeca21c0d1eaa575036dbc44528eae180821de71b77868ddc24d18032b988582046db4f7ea2643970a5169d790e1884153472145de07d629bc2ce2ec6
-  languageName: node
-  linkType: hard
-
 "@types/node@npm:^12.7.1":
   version: 12.20.55
   resolution: "@types/node@npm:12.20.55"
@@ -15267,6 +15257,7 @@ __metadata:
   dependencies:
     "@backstage-community/plugin-quay-backend": "workspace:^"
     "@backstage-community/plugin-quay-common": "workspace:^"
+    "@backstage-community/plugin-scaffolder-backend-module-quay": "workspace:^"
     "@backstage/backend-defaults": "npm:^0.8.1"
     "@backstage/backend-plugin-api": "npm:^1.2.0"
     "@backstage/cli": "npm:^0.30.0"

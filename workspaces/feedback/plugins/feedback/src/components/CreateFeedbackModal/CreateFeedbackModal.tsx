@@ -131,6 +131,14 @@ export const CreateFeedbackModal = (props: {
     setSelectedTag(tag);
   }
 
+  function resetFields() {
+    setSummary(s => ({ ...s, value: '', error: false }));
+    setDescription(d => ({ ...d, value: '', error: false }));
+    setSubmitClicked(false);
+    setFeedbackType('BUG');
+    setSelectedTag(issueTags[0]);
+  }
+
   async function handleSubmitClick() {
     setSubmitClicked(true);
     const resp = await feedbackApi.createFeedback({
@@ -147,6 +155,7 @@ export const CreateFeedbackModal = (props: {
     });
     props.handleModalCloseFn(resp);
     analytics.captureEvent('click', `submit - ${summary.value}`);
+    resetFields();
   }
 
   function handleInputChange(

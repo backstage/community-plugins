@@ -80,7 +80,7 @@ export function useWorkflowRuns({
 
     const fetchBranches = async () => {
       let next = true;
-      let iteratePage = 0;
+      let iteratePage = 1;
       const branchSet: Branch[] = [];
 
       while (next) {

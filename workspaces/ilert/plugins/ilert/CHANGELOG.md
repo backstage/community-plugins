@@ -1,5 +1,17 @@
 # @backstage-community/plugin-ilert
 
+## 0.8.0
+
+### Minor Changes
+
+- 61d6306: Backstage version bump to v1.38.1
+
+## 0.7.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
 ## 0.7.0
 
 ### Minor Changes

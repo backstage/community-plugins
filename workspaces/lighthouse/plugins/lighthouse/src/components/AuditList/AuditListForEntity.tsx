@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { AuditListTable } from './AuditListTable';
 import { useWebsiteForEntity } from '../../hooks/useWebsiteForEntity';
 import { LIGHTHOUSE_WEBSITE_URL_ANNOTATION } from '../../../constants';

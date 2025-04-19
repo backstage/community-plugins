@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-import React, { useEffect } from 'react';
+import { JSX, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TabbedCard, CardTab } from '@backstage/core-components';
-import { Metrics } from '../Metrics';
-import { LanguageCards, DashboardCards } from '../Cards';
-import { LanguageCharts, DashboardCharts } from '../Charts';
+import { Metrics, Usage } from '../Metrics';
+import { LanguageCards, DashboardCards, EngagementCards } from '../Cards';
+import { LanguageCharts, DashboardCharts, EngagementCharts } from '../Charts';
 import { CopilotPage } from './CopilotPage';
 import { SelectTeamFilter } from '../Filters';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 
-export const OrganizationPage = (): React.JSX.Element => {
+export const OrganizationPage = (): JSX.Element => {
   const navigate = useNavigate();
   const configApi = useApi(configApiRef);
 
@@ -54,6 +54,13 @@ export const OrganizationPage = (): React.JSX.Element => {
             Filters={SelectTeamFilter}
             Cards={LanguageCards}
             Charts={LanguageCharts}
+          />
+        </CardTab>
+        <CardTab label="Engagement">
+          <Usage
+            Filters={SelectTeamFilter}
+            Cards={EngagementCards}
+            Charts={EngagementCharts}
           />
         </CardTab>
       </TabbedCard>

@@ -15,7 +15,7 @@
  */
 import { errorApiRef, useApi } from '@backstage/core-plugin-api';
 import { AuthenticationError } from '@backstage/errors';
-import React from 'react';
+import { useState } from 'react';
 import useAsyncRetry from 'react-use/esm/useAsyncRetry';
 import { GetStatusPagesOpts, ilertApiRef, TableState } from '../api';
 import { StatusPage } from '../types';
@@ -24,15 +24,13 @@ export const useStatusPages = (paging: boolean) => {
   const ilertApi = useApi(ilertApiRef);
   const errorApi = useApi(errorApiRef);
 
-  const [tableState, setTableState] = React.useState<TableState>({
+  const [tableState, setTableState] = useState<TableState>({
     page: 0,
     pageSize: 10,
   });
 
-  const [statusPagesList, setStatusPagesList] = React.useState<StatusPage[]>(
-    [],
-  );
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [statusPagesList, setStatusPagesList] = useState<StatusPage[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchStatusPagesCall = async () => {
     try {

@@ -23,7 +23,6 @@ import * as content from './entityContent';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { GithubActionsApi, githubActionsApiRef } from '../api';
 import { sampleEntity } from '../__fixtures__/entity';
-import React from 'react';
 
 const listBranchesMock = jest
   .fn()

@@ -23,7 +23,6 @@ import * as cards from './entityCards';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { GithubActionsApi, githubActionsApiRef } from '../api';
 import { sampleEntity } from '../__fixtures__/entity';
-import React from 'react';
 
 jest.mock('@backstage/core-plugin-api', () => ({
   ...jest.requireActual('@backstage/core-plugin-api'),

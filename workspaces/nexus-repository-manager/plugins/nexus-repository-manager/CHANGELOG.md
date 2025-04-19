@@ -1,5 +1,17 @@
 ### Dependencies
 
+## 1.13.0
+
+### Minor Changes
+
+- b0d13f7: Backstage version bump to v1.36.1
+
+## 1.12.2
+
+### Patch Changes
+
+- f84ad73: chore: remove homepage field from package.json and remove legacy maintainers field.
+
 ## 1.12.1
 
 ### Patch Changes

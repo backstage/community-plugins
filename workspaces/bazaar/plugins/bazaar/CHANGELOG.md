@@ -1,5 +1,17 @@
 # @backstage-community/plugin-bazaar
 
+## 0.10.0
+
+### Minor Changes
+
+- 5e5f531: Backstage version bump to v1.38.1
+
+## 0.9.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
 ## 0.9.0
 
 ### Minor Changes

@@ -22,6 +22,14 @@ export interface WorkloadId {
   workload: string;
 }
 
+export type WorkloadInfo = {
+  cluster: string;
+  labelType?: string;
+  name: string;
+  namespace: string;
+  type?: string;
+};
+
 export interface Workload {
   name: string;
   cluster?: string;
@@ -44,6 +52,18 @@ export interface Workload {
   additionalDetails: AdditionalItem[];
   validations?: Validations;
   waypointWorkloads: Workload[];
+}
+
+export interface WorkloadListQuery {
+  health: 'true' | 'false';
+  istioResources: 'true' | 'false';
+  rateInterval: string;
+}
+
+export interface ClusterWorkloadsResponse {
+  cluster?: string;
+  validations: Validations;
+  workloads: WorkloadListItem[];
 }
 
 export const emptyWorkload: Workload = {

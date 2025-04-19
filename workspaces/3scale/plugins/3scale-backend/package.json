@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-3scale-backend",
-  "version": "3.3.0",
+  "version": "3.3.2",
   "license": "Apache-2.0",
   "main": "src/index.ts",
   "types": "src/index.ts",
@@ -68,7 +68,6 @@
     "backstage",
     "plugin"
   ],
-  "homepage": "https://red.ht/rhdh",
   "bugs": "https://github.com/backstage/community-plugins/issues",
   "author": "Red Hat"
 }

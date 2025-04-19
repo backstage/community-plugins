@@ -37,25 +37,23 @@ export const extractJSON = (
   endAnchor: string,
 ): Record<string, any> | undefined => {
   const cleanedLogs = cleanLogs(logs);
-  const regex = new RegExp(`${startAnchor}(.*)${endAnchor}`, 's');
+  const regex = new RegExp(`${startAnchor}(.*?)${endAnchor}`, 's');
   const match = cleanedLogs.match(regex);
 
   if (!match) {
     return undefined;
   }
 
-  const lines = match[1].split('\n');
   // Remove log timestamp till timezone
   const timestampPattern = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d+Z/g;
-  const cleanMatch: string = lines
-    .reduce((acc: string[], cv: string) => {
-      acc.push(cv.replace(timestampPattern, ''));
-      return acc;
-    }, [])
-    .join(' ');
+  const cleanMatch: string = match[1].split('\n').reduce((acc, line) => {
+    const cleanedLine = line.replace(timestampPattern, '').trim();
+    if (!cleanedLine) return acc;
+    return `${acc} ${cleanedLine}`;
+  }, '');
 
   try {
-    return JSON.parse(cleanMatch.trim());
+    return JSON.parse(cleanMatch);
   } catch (e) {
     return undefined;
   }
@@ -72,11 +70,17 @@ export const extractPipelineSteps = (
   // TODO: Async logs may be in incorrect order
   const cleanedLogs = cleanLogs(stepLogs);
   const stepLines = cleanedLogs.split('Step: ');
+  const knownSteps = new Set<string>();
   // Skip the first line as it is not a step
-  return stepLines.slice(1).map((stepLine: string) => {
-    const lines = stepLine.split('\n');
-    const name = lines[0];
-    const logs = lines.slice(1).join('\n');
-    return { name, logs };
-  });
+  return stepLines
+    .slice(1)
+    .reduce((acc: PipelineRunLogStep[], stepLine: string) => {
+      const [name, ...logs] = stepLine.split('\n');
+      // Ignore dupes
+      if (!knownSteps.has(name)) {
+        acc.push({ name, logs: logs.join('\n') });
+        knownSteps.add(name);
+      }
+      return acc;
+    }, []);
 };

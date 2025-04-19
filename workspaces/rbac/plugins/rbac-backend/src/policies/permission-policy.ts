@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 import type {
+  AuditorService,
+  AuditorServiceEvent,
   AuthService,
   BackstageUserInfo,
   LoggerService,
@@ -23,7 +25,6 @@ import {
   AuthorizeResult,
   ConditionalPolicyDecision,
   isResourcePermission,
-  Permission,
   PermissionCondition,
   PermissionCriteria,
   PermissionRuleParams,
@@ -36,7 +37,6 @@ import type {
   PolicyQueryUser,
 } from '@backstage/plugin-permission-node';
 
-import type { AuditLogger } from '@janus-idp/backstage-plugin-audit-log-node';
 import type { Knex } from 'knex';
 
 import {
@@ -48,11 +48,7 @@ import {
   setAdminPermissions,
   useAdminsFromConfig,
 } from '../admin-permissions/admin-creation';
-import {
-  createPermissionEvaluationOptions,
-  EVALUATE_PERMISSION_ACCESS_STAGE,
-  EvaluationEvents,
-} from '../audit-log/audit-logger';
+import { createPermissionEvaluationAuditorEvent } from '../auditor/auditor';
 import { replaceAliases } from '../conditional-aliases/alias-resolver';
 import { ConditionalStorage } from '../database/conditional-storage';
 import { RoleMetadataStorage } from '../database/role-metadata';
@@ -61,23 +57,12 @@ import { YamlConditinalPoliciesFileWatcher } from '../file-permissions/yaml-cond
 import { EnforcerDelegate } from '../service/enforcer-delegate';
 import { PluginPermissionMetadataCollector } from '../service/plugin-endpoints';
 
-const evaluatePermMsg = (
-  userEntityRef: string | undefined,
-  result: AuthorizeResult,
-  permission: Permission,
-) =>
-  `${userEntityRef} is ${result} for permission '${permission.name}'${
-    isResourcePermission(permission)
-      ? `, resource type '${permission.resourceType}'`
-      : ''
-  } and action '${toPermissionAction(permission.attributes)}'`;
-
 export class RBACPermissionPolicy implements PermissionPolicy {
   private readonly superUserList?: string[];
 
   public static async build(
     logger: LoggerService,
-    auditLogger: AuditLogger,
+    auditor: AuditorService,
     configApi: ConfigApi,
     conditionalStorage: ConditionalStorage,
     enforcerDelegate: EnforcerDelegate,
@@ -116,11 +101,11 @@ export class RBACPermissionPolicy implements PermissionPolicy {
     await useAdminsFromConfig(
       adminUsers || [],
       enforcerDelegate,
-      auditLogger,
+      auditor,
       roleMetadataStorage,
       knex,
     );
-    await setAdminPermissions(enforcerDelegate, auditLogger);
+    await setAdminPermissions(enforcerDelegate, auditor);
 
     if (
       (!adminUsers || adminUsers.length === 0) &&
@@ -137,7 +122,7 @@ export class RBACPermissionPolicy implements PermissionPolicy {
       logger,
       enforcerDelegate,
       roleMetadataStorage,
-      auditLogger,
+      auditor,
     );
     await csvFile.initialize();
 
@@ -146,7 +131,7 @@ export class RBACPermissionPolicy implements PermissionPolicy {
       allowReload,
       logger,
       conditionalStorage,
-      auditLogger,
+      auditor,
       auth,
       pluginMetadataCollector,
       roleMetadataStorage,
@@ -167,7 +152,7 @@ export class RBACPermissionPolicy implements PermissionPolicy {
 
     return new RBACPermissionPolicy(
       enforcerDelegate,
-      auditLogger,
+      auditor,
       conditionalStorage,
       superUserList,
     );
@@ -175,7 +160,7 @@ export class RBACPermissionPolicy implements PermissionPolicy {
 
   private constructor(
     private readonly enforcer: EnforcerDelegate,
-    private readonly auditLogger: AuditLogger,
+    private readonly auditor: AuditorService,
     private readonly conditionStorage: ConditionalStorage,
     superUserList?: string[],
   ) {
@@ -188,53 +173,52 @@ export class RBACPermissionPolicy implements PermissionPolicy {
   ): Promise<PolicyDecision> {
     const userEntityRef = user?.info.userEntityRef ?? `user without entity`;
 
-    let auditOptions = createPermissionEvaluationOptions(
-      `Policy check for ${userEntityRef}`,
+    const auditorEvent = await createPermissionEvaluationAuditorEvent(
+      this.auditor,
       userEntityRef,
       request,
     );
-    await this.auditLogger.auditLog(auditOptions);
 
     try {
       let status = false;
-
       const action = toPermissionAction(request.permission.attributes);
+
       if (!user) {
-        const msg = evaluatePermMsg(
-          userEntityRef,
-          AuthorizeResult.DENY,
-          request.permission,
-        );
-        auditOptions = createPermissionEvaluationOptions(
-          msg,
-          userEntityRef,
-          request,
-          { result: AuthorizeResult.DENY },
-        );
-        await this.auditLogger.auditLog(auditOptions);
+        await auditorEvent.success({
+          meta: { result: AuthorizeResult.DENY },
+        });
         return { result: AuthorizeResult.DENY };
       }
 
       if (this.superUserList!.includes(userEntityRef)) {
-        const msg = evaluatePermMsg(
-          userEntityRef,
-          AuthorizeResult.ALLOW,
-          request.permission,
-        );
-
-        auditOptions = createPermissionEvaluationOptions(
-          msg,
-          userEntityRef,
-          request,
-          { result: AuthorizeResult.ALLOW },
-        );
-        await this.auditLogger.auditLog(auditOptions);
-
+        await auditorEvent.success({
+          meta: { result: AuthorizeResult.ALLOW },
+        });
         return { result: AuthorizeResult.ALLOW };
       }
 
       const permissionName = request.permission.name;
       const roles = await this.enforcer.getRolesForUser(userEntityRef);
+      // handle permission with 'resource' type
+      const hasNamedPermission =
+        await this.hasImplicitPermissionSpecifiedByName(
+          permissionName,
+          action,
+          roles,
+        );
+
+      // TODO: Temporary workaround to prevent breakages after the removal of the resource type `policy-entity` from the permission `policy.entity.create`
+      if (
+        request.permission.name === 'policy.entity.create' &&
+        !hasNamedPermission
+      ) {
+        request.permission = {
+          attributes: { action: 'create' },
+          type: 'resource',
+          resourceType: 'policy-entity',
+          name: 'policy.entity.create',
+        };
+      }
 
       if (isResourcePermission(request.permission)) {
         const resourceType = request.permission.resourceType;
@@ -242,6 +226,7 @@ export class RBACPermissionPolicy implements PermissionPolicy {
         // handle conditions if they are present
         if (user) {
           const conditionResult = await this.handleConditions(
+            auditorEvent,
             userEntityRef,
             request,
             roles,
@@ -252,13 +237,6 @@ export class RBACPermissionPolicy implements PermissionPolicy {
           }
         }
 
-        // handle permission with 'resource' type
-        const hasNamedPermission =
-          await this.hasImplicitPermissionSpecifiedByName(
-            permissionName,
-            action,
-            roles,
-          );
         // Let's set up higher priority for permission specified by name, than by resource type
         const obj = hasNamedPermission ? permissionName : resourceType;
 
@@ -275,22 +253,12 @@ export class RBACPermissionPolicy implements PermissionPolicy {
 
       const result = status ? AuthorizeResult.ALLOW : AuthorizeResult.DENY;
 
-      const msg = evaluatePermMsg(userEntityRef, result, request.permission);
-      auditOptions = createPermissionEvaluationOptions(
-        msg,
-        userEntityRef,
-        request,
-        { result },
-      );
-      await this.auditLogger.auditLog(auditOptions);
+      await auditorEvent.success({ meta: { result } });
       return { result };
     } catch (error) {
-      await this.auditLogger.auditLog({
-        message: 'Permission policy check failed',
-        eventName: EvaluationEvents.PERMISSION_EVALUATION_FAILED,
-        stage: EVALUATE_PERMISSION_ACCESS_STAGE,
-        status: 'failed',
-        errors: [error],
+      await auditorEvent.fail({
+        error,
+        meta: { result: AuthorizeResult.DENY },
       });
       return { result: AuthorizeResult.DENY };
     }
@@ -326,6 +294,7 @@ export class RBACPermissionPolicy implements PermissionPolicy {
   };
 
   private async handleConditions(
+    auditorEvent: AuditorServiceEvent,
     userEntityRef: string,
     request: PolicyQuery,
     roles: string[],
@@ -356,16 +325,14 @@ export class RBACPermissionPolicy implements PermissionPolicy {
 
       // this error is unexpected and should not happen, but just in case handle it.
       if (conditionalDecisions.length > 1) {
-        const msg = `Detected ${JSON.stringify(
-          conditionalDecisions,
-        )} collisions for conditional policies. Expected to find a stored single condition for permission with name ${permissionName}, resource type ${resourceType}, action ${action} for user ${userEntityRef}`;
-        const auditOptions = createPermissionEvaluationOptions(
-          msg,
-          userEntityRef,
-          request,
-          { result: AuthorizeResult.DENY },
-        );
-        await this.auditLogger.auditLog(auditOptions);
+        await auditorEvent.fail({
+          error: new Error(
+            `Detected ${JSON.stringify(
+              conditionalDecisions,
+            )} collisions for conditional policies. Expected to find a stored single condition for permission with name ${permissionName}, resource type ${resourceType}, action ${action} for user ${userEntityRef}`,
+          ),
+          meta: { result: AuthorizeResult.DENY },
+        });
         return {
           result: AuthorizeResult.DENY,
         };
@@ -388,14 +355,7 @@ export class RBACPermissionPolicy implements PermissionPolicy {
 
       replaceAliases(result.conditions, userInfo);
 
-      const msg = `Send condition to plugin with id ${pluginId} to evaluate permission ${permissionName} with resource type ${resourceType} and action ${action} for user ${userEntityRef}`;
-      const auditOptions = createPermissionEvaluationOptions(
-        msg,
-        userEntityRef,
-        request,
-        result,
-      );
-      await this.auditLogger.auditLog(auditOptions);
+      await auditorEvent.success({ meta: { ...result } });
       return result;
     }
     return undefined;

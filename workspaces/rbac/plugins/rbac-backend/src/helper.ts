@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { AuthService } from '@backstage/backend-plugin-api';
+import { AuditorService, AuthService } from '@backstage/backend-plugin-api';
 import type { MetadataResponse } from '@backstage/plugin-permission-node';
 
-import { AuditLogger } from '@janus-idp/backstage-plugin-audit-log-node';
 import {
   difference,
   fromPairs,
@@ -37,15 +36,12 @@ import {
   Source,
 } from '@backstage-community/plugin-rbac-common';
 
-import {
-  HANDLE_RBAC_DATA_STAGE,
-  RBAC_BACKEND,
-  RoleAuditInfo,
-  RoleEvents,
-} from './audit-log/audit-logger';
+import { ActionType, RoleEvents } from './auditor/auditor';
 import { RoleMetadataDao, RoleMetadataStorage } from './database/role-metadata';
 import { EnforcerDelegate } from './service/enforcer-delegate';
 import { PluginPermissionMetadataCollector } from './service/plugin-endpoints';
+import { RoleMetadata } from '@backstage-community/plugin-rbac-common';
+import { RBACFilters } from './permissions';
 
 export function policyToString(policy: string[]): string {
   return `[${policy.join(', ')}]`;
@@ -86,7 +82,7 @@ export async function removeTheDifference(
   source: Source,
   roleEntityRef: string,
   enf: EnforcerDelegate,
-  auditLogger: AuditLogger,
+  auditor: AuditorService,
   modifiedBy: string,
 ): Promise<void> {
   originalGroup.sort((a, b) => a.localeCompare(b));
@@ -103,31 +99,31 @@ export async function removeTheDifference(
   }
 
   const roleMetadata = { source, modifiedBy, roleEntityRef };
-  await enf.removeGroupingPolicies(groupPolicies, roleMetadata, false);
-
-  const remainingMembers = await enf.getFilteredGroupingPolicy(
-    1,
-    roleEntityRef,
-  );
-  const message =
-    remainingMembers.length > 0
-      ? 'Updated role: deleted members'
-      : 'Deleted role';
-  const eventName =
-    remainingMembers.length > 0
-      ? RoleEvents.UPDATE_ROLE
-      : RoleEvents.DELETE_ROLE;
-  await auditLogger.auditLog<RoleAuditInfo>({
-    actorId: RBAC_BACKEND,
-    message,
-    eventName,
-    metadata: {
-      ...roleMetadata,
-      members: groupPolicies.map(gp => gp[0]),
-    },
-    stage: HANDLE_RBAC_DATA_STAGE,
-    status: 'succeeded',
+  const existingMembers = await enf.getFilteredGroupingPolicy(1, roleEntityRef);
+  const actionType =
+    existingMembers.length === missing.length
+      ? ActionType.DELETE
+      : ActionType.UPDATE;
+  const auditorMeta = {
+    ...roleMetadata,
+    members: groupPolicies.map(gp => gp[0]),
+  };
+  const auditorEvent = await auditor.createEvent({
+    eventId: RoleEvents.ROLE_WRITE,
+    severityLevel: 'medium',
+    meta: { actionType, source: auditorMeta.source },
   });
+
+  try {
+    await enf.removeGroupingPolicies(groupPolicies, roleMetadata, false);
+    await auditorEvent.success({ meta: auditorMeta });
+  } catch (error) {
+    await auditorEvent.fail({
+      error,
+      meta: auditorMeta,
+    });
+    throw error;
+  }
 }
 
 export function transformArrayToPolicy(policyArray: string[]): RoleBasedPolicy {
@@ -218,6 +214,7 @@ export function mergeRoleMetadata(
     newMetadata.description ?? currentMetadata.description;
   mergedMetaData.roleEntityRef = newMetadata.roleEntityRef;
   mergedMetaData.source = newMetadata.source;
+  mergedMetaData.owner = newMetadata.owner ?? currentMetadata.owner;
   return mergedMetaData;
 }
 
@@ -283,3 +280,30 @@ export function deepSort(value: any): any {
 export function deepSortEqual(obj1: any, obj2: any): boolean {
   return isEqual(deepSort(obj1), deepSort(obj2));
 }
+
+export const matches = (
+  role?: RoleMetadata,
+  filters?: RBACFilters,
+): boolean => {
+  if (!filters) {
+    return true;
+  }
+
+  if (!role) {
+    return false;
+  }
+
+  if ('allOf' in filters) {
+    return filters.allOf.every(filter => matches(role, filter));
+  }
+
+  if ('anyOf' in filters) {
+    return filters.anyOf.some(filter => matches(role, filter));
+  }
+
+  if ('not' in filters) {
+    return !matches(role, filters.not);
+  }
+
+  return filters.values.includes(role.owner);
+};

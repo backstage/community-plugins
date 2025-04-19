@@ -74,7 +74,7 @@ const getNamespaces = (
   entity: Entity | undefined,
   kialiState: KialiAppState,
 ) => {
-  if (entity && !kialiState.namespaces) {
+  if (entity) {
     return getEntityNs(entity);
   }
   return kialiState.namespaces.activeNamespaces.map(ns => ns.name);

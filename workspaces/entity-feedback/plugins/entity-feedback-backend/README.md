@@ -8,6 +8,9 @@ Note: this plugin requires authentication and identity configured so Backstage c
 which user has rated the entity. If you are using the guest identity provider which comes
 out of the box, this plugin will not work when you test it.
 
+Also this plugin uses Backstage Notifications to notify the owners about feedback, to install
+it you can use it's [official guide](https://backstage.io/docs/notifications/).
+
 ### Install the package
 
 ```bash

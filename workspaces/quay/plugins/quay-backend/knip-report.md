@@ -2,13 +2,12 @@
 
 ## Unused dependencies (1)
 
-| Name                           | Location     | Severity |
-| :----------------------------- | :----------- | :------- |
-| @backstage/plugin-catalog-node | package.json | error    |
+| Name                           | Location          | Severity |
+| :----------------------------- | :---------------- | :------- |
+| @backstage/plugin-catalog-node | package.json:41:6 | error    |
 
-## Unlisted dependencies (2)
+## Unlisted dependencies (1)
 
-| Name                              | Location               | Severity |
-| :-------------------------------- | :--------------------- | :------- |
-| @backstage/plugin-permission-node | src/services/router.ts | error    |
-| @spotify/prettier-config          | .prettierrc.js         | error    |
+| Name                     | Location       | Severity |
+| :----------------------- | :------------- | :------- |
+| @spotify/prettier-config | .prettierrc.js | error    |

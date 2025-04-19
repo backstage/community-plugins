@@ -15,7 +15,6 @@
  */
 
 import { screen } from '@testing-library/react';
-import React from 'react';
 import { renderInTestApp } from '@backstage/test-utils';
 import { AttendeeChip } from './AttendeeChip';
 import { EventAttendee, ResponseStatus } from '../../api';

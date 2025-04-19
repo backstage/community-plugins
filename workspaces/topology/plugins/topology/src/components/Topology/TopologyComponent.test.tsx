@@ -19,10 +19,17 @@ import { useTheme } from '@mui/material/styles';
 import { render } from '@testing-library/react';
 
 import { TopologyComponent } from './TopologyComponent';
+import { usePermission } from '@backstage/plugin-permission-react';
 
 jest.mock('@mui/material/styles', () => ({
-  ...jest.requireActual('@mmui/material/styles'),
+  ...jest.requireActual('@mui/material/styles'),
   makeStyles: jest.fn().mockReturnValue(() => ({})),
+  useTheme: jest.fn(),
+}));
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: jest.fn(),
 }));
 
 jest.mock('../../hooks/useK8sObjectsResponse', () => ({
@@ -43,15 +50,18 @@ jest.mock('../../hooks/useK8sObjectsResponse', () => ({
   }),
 }));
 
-jest.mock('@mui/material/styles', () => ({
-  useTheme: jest.fn(),
-}));
-
 jest.mock('./TopologyWorkloadView', () => ({
   TopologyWorkloadView: () => <div>TopologyWorkloadView</div>,
 }));
 
 const useThemeMock = useTheme as jest.Mock;
+jest.mock('@backstage/plugin-permission-react', () => ({
+  usePermission: jest.fn(),
+}));
+
+const mockUsePermission = usePermission as jest.MockedFunction<
+  typeof usePermission
+>;
 
 describe('TopologyComponent', () => {
   it('should render TopologyComponent', () => {
@@ -60,8 +70,33 @@ describe('TopologyComponent', () => {
         mode: 'dark',
       },
     });
+    mockUsePermission.mockReturnValue({ loading: false, allowed: true });
     const { getByText } = render(<TopologyComponent />);
     expect(getByText(/topologyworkloadview/i)).not.toBeNull();
+  });
+
+  it('should render PermissionMissing page when permissions are missing', () => {
+    useThemeMock.mockReturnValue({
+      palette: {
+        mode: 'dark',
+      },
+    });
+    mockUsePermission.mockReturnValue({ loading: false, allowed: false });
+    const { getByText, queryByText } = render(<TopologyComponent />);
+    expect(getByText('Missing Permission')).toBeInTheDocument();
+    expect(queryByText(/topologyworkloadview/i)).toBeNull();
+  });
+
+  it('should render loading when permissions are loading', () => {
+    useThemeMock.mockReturnValue({
+      palette: {
+        mode: 'dark',
+      },
+    });
+    mockUsePermission.mockReturnValue({ loading: true, allowed: false });
+    const { queryByText, getByTestId } = render(<TopologyComponent />);
+    expect(getByTestId('topology-progress')).toBeInTheDocument();
+    expect(queryByText(/topologyworkloadview/i)).toBeNull();
   });
 
   it('should show dark theme', () => {
@@ -70,6 +105,7 @@ describe('TopologyComponent', () => {
         mode: 'dark',
       },
     });
+    mockUsePermission.mockReturnValue({ loading: false, allowed: true });
     render(<TopologyComponent />);
     const htmlTagElement = document.documentElement;
     expect(htmlTagElement.classList.contains('pf-v6-theme-dark')).toBe(true);
@@ -81,6 +117,7 @@ describe('TopologyComponent', () => {
         mode: 'light',
       },
     });
+    mockUsePermission.mockReturnValue({ loading: false, allowed: true });
     render(<TopologyComponent />);
     const htmlTagElement = document.documentElement;
     expect(htmlTagElement.classList.contains('pf-v6-theme-dark')).toBe(false);

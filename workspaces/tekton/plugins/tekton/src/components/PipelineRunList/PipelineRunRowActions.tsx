@@ -40,15 +40,17 @@ import ViewLogsIcon from '../Icons/ViewLogsIcon';
 import PipelineRunLogDialog from '../PipelineRunLogs/PipelineRunLogDialog';
 import PipelineRunOutputDialog from '../PipelineRunOutput/PipelineRunOutputDialog';
 import PipelineRunSBOMLink from './PipelineRunSBOMLink';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { tektonTranslationRef } from '../../translation';
 
 const PipelineRunRowActions: React.FC<{ pipelineRun: PipelineRunKind }> = ({
   pipelineRun,
 }) => {
   const { watchResourcesData } = React.useContext(TektonResourcesContext);
   const [open, setOpen] = React.useState<boolean>(false);
+  const { t } = useTranslationRef(tektonTranslationRef);
 
   const [openOutput, setOpenOutput] = React.useState<boolean>(false);
-  const [noActiveTask, setNoActiveTask] = React.useState(false);
   const pods = watchResourcesData?.pods?.data || [];
   const taskRuns = watchResourcesData?.taskruns?.data || [];
   const { sbomTaskRun } = getTaskrunsOutputGroup(
@@ -56,13 +58,14 @@ const PipelineRunRowActions: React.FC<{ pipelineRun: PipelineRunKind }> = ({
     taskRuns,
   );
   const activeTaskName = sbomTaskRun?.metadata?.name;
+  const [forSBOM, toggleForSBOM] = React.useState(false);
 
   const hasKubernetesProxyAccess = usePermission({
     permission: kubernetesProxyPermission,
   });
 
-  const openDialog = (viewLogs?: boolean) => {
-    if (viewLogs) setNoActiveTask(true);
+  const openDialog = (opts: { forSBOM: boolean }) => {
+    toggleForSBOM(opts.forSBOM);
     setOpen(true);
   };
 
@@ -71,8 +74,8 @@ const PipelineRunRowActions: React.FC<{ pipelineRun: PipelineRunKind }> = ({
   };
 
   const closeDialog = () => {
-    setNoActiveTask(false);
     setOpen(false);
+    toggleForSBOM(false);
   };
 
   const {
@@ -109,7 +112,8 @@ const PipelineRunRowActions: React.FC<{ pipelineRun: PipelineRunKind }> = ({
         closeDialog={closeDialog}
         pods={pods}
         taskRuns={taskRuns}
-        activeTask={noActiveTask ? undefined : activeTaskName}
+        activeTask={activeTaskName}
+        forSBOM={forSBOM}
       />
 
       <PipelineRunOutputDialog
@@ -125,14 +129,14 @@ const PipelineRunRowActions: React.FC<{ pipelineRun: PipelineRunKind }> = ({
           <Tooltip
             content={
               hasKubernetesProxyAccess.allowed
-                ? 'View logs'
-                : 'Unauthorized to view logs'
+                ? t('pipelineRunList.rowActions.viewLogs')
+                : t('pipelineRunList.rowActions.unauthorizedViewLogs')
             }
           >
             <IconButton
               size="small"
               data-testid="view-logs-icon"
-              onClick={() => openDialog(true)}
+              onClick={() => openDialog({ forSBOM: false })}
               disabled={!hasKubernetesProxyAccess.allowed}
               style={{ pointerEvents: 'auto', padding: 0 }}
             >
@@ -145,8 +149,8 @@ const PipelineRunRowActions: React.FC<{ pipelineRun: PipelineRunKind }> = ({
           <Tooltip
             content={
               !sbomTaskRun
-                ? 'View SBOM is not applicable for this PipelineRun'
-                : 'View SBOM'
+                ? t('pipelineRunList.rowActions.SBOMNotApplicable')
+                : t('pipelineRunList.rowActions.viewSBOM')
             }
           >
             <IconButton
@@ -154,7 +158,11 @@ const PipelineRunRowActions: React.FC<{ pipelineRun: PipelineRunKind }> = ({
               disabled={!sbomTaskRun || !isSbomTaskRun(sbomTaskRun)}
               size="small"
               onClick={
-                !hasExternalLink(sbomTaskRun) ? () => openDialog() : undefined
+                !hasExternalLink(sbomTaskRun)
+                  ? () => {
+                      openDialog({ forSBOM: true });
+                    }
+                  : undefined
               }
               style={{ pointerEvents: 'auto', padding: 0 }}
             >
@@ -166,8 +174,8 @@ const PipelineRunRowActions: React.FC<{ pipelineRun: PipelineRunKind }> = ({
           <Tooltip
             content={
               disabled
-                ? 'View Output is not applicable for this PipelineRun'
-                : 'View Output'
+                ? t('pipelineRunList.rowActions.outputNotApplicable')
+                : t('pipelineRunList.rowActions.viewOutput')
             }
           >
             <IconButton

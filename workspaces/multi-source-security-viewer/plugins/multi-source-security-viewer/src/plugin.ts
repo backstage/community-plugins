@@ -46,6 +46,11 @@ import {
 } from './api/gitlab';
 import { isGitlabAvailable } from '@immobiliarelabs/backstage-plugin-gitlab';
 import { Entity } from '@backstage/catalog-model';
+import {
+  AzureDevOpsClient,
+  isAzurePipelinesAvailable,
+} from '@backstage-community/plugin-azure-devops';
+import { MssvAzureDevopsClient, mssvAzureDevopsApiRef } from './api/azure';
 
 /** @public */
 export const multiSourceSecurityViewerPlugin = createPlugin({
@@ -101,6 +106,21 @@ export const multiSourceSecurityViewerPlugin = createPlugin({
         });
       },
     }),
+    createApiFactory({
+      api: mssvAzureDevopsApiRef,
+      deps: {
+        discoveryApi: discoveryApiRef,
+        fetchApi: fetchApiRef,
+      },
+      factory: ({ discoveryApi, fetchApi }) => {
+        return new MssvAzureDevopsClient({
+          azureDevopsApi: new AzureDevOpsClient({
+            discoveryApi,
+            fetchApi,
+          }),
+        });
+      },
+    }),
   ],
   routes: {
     entityContent: rootRouteRef,
@@ -111,7 +131,8 @@ export const multiSourceSecurityViewerPlugin = createPlugin({
 export const isMultiCIAvailable = (entity: Entity): boolean =>
   isJenkinsAvailable(entity) ||
   isGitlabAvailable(entity) ||
-  isGithubActionsAvailable(entity);
+  isGithubActionsAvailable(entity) ||
+  isAzurePipelinesAvailable(entity);
 
 /** @public */
 export const EntityMultiCIPipelinesContent =

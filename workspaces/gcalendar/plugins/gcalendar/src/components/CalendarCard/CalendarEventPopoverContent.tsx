@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { sortBy } from 'lodash';
-import React from 'react';
 import DOMPurify from 'dompurify';
 
 import { useAnalytics } from '@backstage/core-plugin-api';

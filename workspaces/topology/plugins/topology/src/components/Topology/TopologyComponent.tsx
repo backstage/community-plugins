@@ -30,6 +30,7 @@ import '@patternfly/patternfly/patternfly.min.css';
 import '@patternfly/patternfly/patternfly-charts.css';
 import '@patternfly/patternfly/utilities/Accessibility/accessibility.css';
 import './TopologyComponent.css';
+import { RequireKubernetesReadPermissions } from './permissions/requireKubernetesReadPermissions';
 
 const THEME_DARK = 'dark';
 const THEME_DARK_CLASS = 'pf-v6-theme-dark';
@@ -108,12 +109,14 @@ export const TopologyComponent = () => {
   const filterContextData = useFilterContextValues();
 
   return (
-    <K8sResourcesContext.Provider value={k8sResourcesContextData}>
-      <FilterContext.Provider value={filterContextData}>
-        <div className="pf-ri__topology">
-          <TopologyWorkloadView />
-        </div>
-      </FilterContext.Provider>
-    </K8sResourcesContext.Provider>
+    <RequireKubernetesReadPermissions>
+      <K8sResourcesContext.Provider value={k8sResourcesContextData}>
+        <FilterContext.Provider value={filterContextData}>
+          <div className="pf-ri__topology">
+            <TopologyWorkloadView />
+          </div>
+        </FilterContext.Provider>
+      </K8sResourcesContext.Provider>
+    </RequireKubernetesReadPermissions>
   );
 };

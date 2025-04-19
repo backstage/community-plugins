@@ -19,6 +19,7 @@ import {
 } from '@backstage-community/plugin-copilot-common';
 import { batchInsertInChunks } from '../utils/batchInsert';
 import {
+  convertToSeatAnalysis,
   filterBaseMetrics,
   filterIdeChatEditorModelMetrics,
   filterIdeChatMetrics,
@@ -138,6 +139,10 @@ export async function discoverEnterpriseMetrics({
       await batchInsertInChunks(ideChatEditorModels, 30, async chunk => {
         await db.batchInsertIdeChatEditorModels(chunk);
       });
+
+      const seats = await api.fetchOrganizationSeats();
+      const seatsToInsert = convertToSeatAnalysis(seats, type);
+      await db.insertSeatAnalysys(seatsToInsert);
 
       logger.info(
         '[discoverEnterpriseMetrics] Inserted new metrics into the database',

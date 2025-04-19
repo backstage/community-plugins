@@ -26,7 +26,6 @@ export async function loadLighthouseEntities(
 ) {
   const filter: Record<string, symbol | string> = {
     kind: 'Component',
-    'spec.type': 'website',
     ['lighthouse.com/website-url']: CATALOG_FILTER_EXISTS,
   };
 

@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useState } from 'react';
+import type { ReactNode, ChangeEvent } from 'react';
+
+import { useState } from 'react';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -27,7 +29,7 @@ import { DashboardEntitySummary } from '../../../api/NewRelicDashboardApi';
 import { ResultEntity } from '../../../types/DashboardEntity';
 
 interface TabPanelProps {
-  children?: React.ReactNode;
+  children?: ReactNode;
   index: number;
   value1: number;
 }
@@ -105,7 +107,7 @@ export const DashboardSnapshotList = (props: { guid: string }) => {
     return dashboardObject;
   }, [guid]);
   const [value1, setValue1] = useState<number>(0);
-  const handleChange = ({}: React.ChangeEvent<{}>, newValue: number) => {
+  const handleChange = ({}: ChangeEvent<{}>, newValue: number) => {
     setValue1(newValue);
   };
 

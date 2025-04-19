@@ -14,6 +14,7 @@ This plugin enables you to visualize pipeline security information from multiple
 - [Jenkins](../../../jenkins/plugins/jenkins-backend/README.md)
 - [Github Actions](../../../github-actions/plugins/github-actions/README.md)
 - [Gitlab CI](https://github.com/immobiliare/backstage-plugin-gitlab?tab=readme-ov-file#setup)
+- [Azure Pipelines](../../../azure-devops/plugins/azure-devops/README.md)
 
 #### Procedure
 

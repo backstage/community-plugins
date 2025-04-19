@@ -1,5 +1,23 @@
 # @backstage-community/plugin-github-actions
 
+## 0.10.0
+
+### Minor Changes
+
+- 5041897: Backstage version bump to v1.38.1
+
+## 0.9.2
+
+### Patch Changes
+
+- 58c5ad5: Start pagination at page 1 in `api.listBranches` to avoid duplicate branches in WorkflowRunsCard.
+
+## 0.9.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
 ## 0.9.0
 
 ### Minor Changes

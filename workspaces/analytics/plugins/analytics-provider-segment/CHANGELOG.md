@@ -1,5 +1,23 @@
 ### Dependencies
 
+## 1.14.4
+
+### Patch Changes
+
+- ac0349f: Updated dependency `@types/react` to `18.3.20`.
+
+## 1.14.3
+
+### Patch Changes
+
+- 2469b23: Remove @spotify/prettier-config from devDependencies.
+
+## 1.14.2
+
+### Patch Changes
+
+- f84ad73: chore: remove homepage field from package.json
+
 ## 1.14.1
 
 ### Patch Changes

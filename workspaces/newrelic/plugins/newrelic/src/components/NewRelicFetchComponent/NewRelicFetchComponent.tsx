@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import Alert from '@material-ui/lab/Alert';
 import useAsync from 'react-use/esm/useAsync';
 import { newRelicApiRef, NewRelicApplications } from '../../api';

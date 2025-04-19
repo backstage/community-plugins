@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "repository": "git@github.com:backstage/community-plugins.git",
   "engines": {
-    "node": "18 || 20"
+    "node": "20 || 22"
   },
   "scripts": {
     "create-workspace": "community-cli workspace create",
@@ -13,7 +13,7 @@
     "prettier:fix": "prettier --write ."
   },
   "type": "module",
-  "packageManager": "yarn@4.7.0",
+  "packageManager": "yarn@4.9.1",
   "devDependencies": {
     "@backstage-community/cli": "portal:./workspaces/repo-tools/packages/cli",
     "@backstage/cli": "^0.27.0",

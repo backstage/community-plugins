@@ -1,5 +1,11 @@
 # @backstage-community/plugin-azure-storage-explorer-backend
 
+## 0.4.0
+
+### Minor Changes
+
+- de15242: **BREAKING** Removed support for the legacy backend, please migrate to the new backend system
+
 ## 0.3.1
 
 ### Patch Changes

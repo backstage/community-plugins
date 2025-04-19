@@ -1,5 +1,18 @@
 # @backstage-community/plugin-acs
 
+## 0.0.3
+
+### Patch Changes
+
+- 7eb2266: Removed all references to RHDH from README and files
+
+## 0.0.2
+
+### Patch Changes
+
+- f879fa6: Updated dependency `@patternfly/react-core` to `5.4.14`.
+- 2eef873: Updated dependency `@patternfly/react-icons` to `5.4.2`.
+
 ## 0.0.1
 
 ### Patch Changes

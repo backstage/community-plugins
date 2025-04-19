@@ -15,7 +15,7 @@
  */
 import { errorApiRef, useApi } from '@backstage/core-plugin-api';
 import { AuthenticationError } from '@backstage/errors';
-import React from 'react';
+import { useState } from 'react';
 import useAsyncRetry from 'react-use/esm/useAsyncRetry';
 import { GetServicesOpts, ilertApiRef, TableState } from '../api';
 import { Service } from '../types';
@@ -24,13 +24,13 @@ export const useServices = (paging: boolean) => {
   const ilertApi = useApi(ilertApiRef);
   const errorApi = useApi(errorApiRef);
 
-  const [tableState, setTableState] = React.useState<TableState>({
+  const [tableState, setTableState] = useState<TableState>({
     page: 0,
     pageSize: 10,
   });
 
-  const [servicesList, setServicesList] = React.useState<Service[]>([]);
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [servicesList, setServicesList] = useState<Service[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchServicesCall = async () => {
     try {

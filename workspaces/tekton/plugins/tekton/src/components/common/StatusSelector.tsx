@@ -24,6 +24,8 @@ import './StatusSelector.css';
 import { ComputedStatus } from '@janus-idp/shared-react';
 
 import { TektonResourcesContext } from '../../hooks/TektonResourcesContext';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { tektonTranslationRef } from '../../translation';
 
 const useStyles = makeStyles<Theme>(theme => ({
   label: {
@@ -57,10 +59,13 @@ export const StatusSelector = () => {
   const onStatusChange = (status: SelectedItems) => {
     setSelectedStatus(status as ComputedStatus);
   };
+  const { t } = useTranslationRef(tektonTranslationRef);
 
   return (
     <div className="bs-tkn-status-selector">
-      <Typography className={classes.label}>Status</Typography>
+      <Typography className={classes.label}>
+        {t('statusSelector.label')}
+      </Typography>
       <Select
         onChange={onStatusChange}
         label=""

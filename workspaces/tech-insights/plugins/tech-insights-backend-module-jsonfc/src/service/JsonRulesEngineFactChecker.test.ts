@@ -25,6 +25,7 @@ import {
 import { TechInsightJsonRuleCheck } from '../types';
 import { Operator } from 'json-rules-engine';
 import { mockServices } from '@backstage/backend-test-utils';
+import { FactSchema } from '@backstage-community/plugin-tech-insights-common';
 
 const testChecks: Record<string, TechInsightJsonRuleCheck[]> = {
   broken: [
@@ -129,17 +130,34 @@ const testChecks: Record<string, TechInsightJsonRuleCheck[]> = {
     },
   ],
 
+  missingFactData: [
+    {
+      id: 'missingFactDataCheck',
+      name: 'missingFactDataCheck',
+      type: JSON_RULE_ENGINE_CHECK_TYPE,
+      description: 'Missing fact data, FactRetriever is defined OK.',
+      factIds: ['test-factretriever'],
+      rule: {
+        conditions: {
+          all: [
+            {
+              fact: 'dataNotDefinedDataFact',
+              operator: 'greaterThan',
+              value: 2,
+            },
+          ],
+        },
+      },
+    },
+  ],
+
   twoRetrieversSame: [
     {
       id: 'twoRetrieversSameCheck',
       name: 'twoRetrieversSameCheck',
       type: JSON_RULE_ENGINE_CHECK_TYPE,
       description: 'Two Retriever Check For Testing',
-      factIds: [
-        'test-factretriever',
-        'test-factretriever-same-fact',
-        'non-existing-factretriever',
-      ],
+      factIds: ['test-factretriever', 'test-factretriever-same-fact'],
       rule: {
         conditions: {
           all: [
@@ -202,11 +220,7 @@ const testChecks: Record<string, TechInsightJsonRuleCheck[]> = {
       name: 'twoRetrieversOnlyOneDataCheck',
       type: JSON_RULE_ENGINE_CHECK_TYPE,
       description: 'Two Retriever Check For Testing',
-      factIds: [
-        'test-factretriever',
-        'test-factretriever-no-fact',
-        'non-existing-factretriever',
-      ],
+      factIds: ['test-factretriever', 'test-factretriever-no-fact'],
       rule: {
         conditions: {
           all: [
@@ -290,48 +304,49 @@ const testChecks: Record<string, TechInsightJsonRuleCheck[]> = {
   ],
 };
 
-const latestSchemasMock = jest.fn().mockImplementation(() => [
-  {
-    version: '0.0.1',
-    id: 2,
-    ref: 'test-factretriever',
-    entityTypes: ['component'],
-    testnumberfact: {
-      type: 'integer',
-      description: '',
+const latestSchemasMock = jest.fn().mockImplementation((...args) => {
+  if (args[0].includes('non-existing-factretriever')) {
+    return [] as FactSchema[];
+  }
+  return [
+    {
+      testnumberfact: {
+        type: 'integer',
+        description: '',
+      },
     },
-  },
-  {
-    version: '0.0.1',
-    id: 3,
-    ref: 'test-factretriever-no-fact',
-    entityTypes: ['component'],
-    testnumberfact: {
-      type: 'integer',
-      description: '',
+    {
+      testnumberfact3: {
+        type: 'integer',
+        description: '',
+      },
     },
-  },
-  {
-    version: '0.0.1',
-    id: 4,
-    ref: 'test-factretriever-same-fact',
-    entityTypes: ['component'],
-    testnumberfact: {
-      type: 'integer',
-      description: '',
+    {
+      testnumberfact: {
+        type: 'integer',
+        description: '',
+      },
     },
-  },
-  {
-    version: '0.0.1',
-    id: 5,
-    ref: 'test-factretriever-different-fact',
-    entityTypes: ['users'],
-    testnumberfact: {
-      type: 'integer',
-      description: '',
+    {
+      testnumberfact: {
+        type: 'integer',
+        description: '',
+      },
     },
-  },
-]);
+    {
+      testnumberfact: {
+        type: 'integer',
+        description: '',
+      },
+    },
+    {
+      dataNotDefinedDataFact: {
+        type: 'integer',
+        description: '',
+      },
+    },
+  ] as FactSchema[];
+});
 const factsBetweenTimestampsByIdsMock = jest.fn();
 const latestFactsByIdsMock = jest
   .fn()
@@ -403,17 +418,17 @@ describe('JsonRulesEngineFactChecker', () => {
     it('should handle cases where wrong facts are referenced', async () => {
       const cur = async () => await factChecker.runChecks('a/a/a', ['broken2']);
       await expect(cur()).rejects.toThrow(
-        'Failed to run rules engine, Undefined fact: somefact',
+        'Not all facts are defined: somefact',
       );
     });
 
     it('should skip checks where fact data is missing', async () => {
       const skipped = async () =>
-        await factChecker.runChecks('a/a/a', ['brokennotfound']);
+        await factChecker.runChecks('a/a/a', ['missingFactData']);
       await expect(skipped()).resolves.toEqual([]);
 
       const partial = async () =>
-        await factChecker.runChecks('a/a/a', ['brokennotfound', 'simple']);
+        await factChecker.runChecks('a/a/a', ['missingFactData', 'simple']);
       await expect(partial()).resolves.toEqual([
         expect.objectContaining({
           check: expect.objectContaining({ id: 'simpleTestCheck' }),
@@ -476,11 +491,7 @@ describe('JsonRulesEngineFactChecker', () => {
           type: JSON_RULE_ENGINE_CHECK_TYPE,
           name: 'twoRetrieversSameCheck',
           description: 'Two Retriever Check For Testing',
-          factIds: [
-            'test-factretriever',
-            'test-factretriever-same-fact',
-            'non-existing-factretriever',
-          ],
+          factIds: ['test-factretriever', 'test-factretriever-same-fact'],
           rule: {
             conditions: {
               all: [
@@ -602,11 +613,7 @@ describe('JsonRulesEngineFactChecker', () => {
           type: JSON_RULE_ENGINE_CHECK_TYPE,
           name: 'twoRetrieversOnlyOneDataCheck',
           description: 'Two Retriever Check For Testing',
-          factIds: [
-            'test-factretriever',
-            'test-factretriever-no-fact',
-            'non-existing-factretriever',
-          ],
+          factIds: ['test-factretriever', 'test-factretriever-no-fact'],
           rule: {
             conditions: {
               all: [

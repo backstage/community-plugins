@@ -16,3 +16,12 @@ metadata:
 spec:
   type: team
   children: []
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  namespace: development
+  name: guests
+spec:
+  type: team
+  children: []

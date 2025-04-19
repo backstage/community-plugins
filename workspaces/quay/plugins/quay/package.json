@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-quay",
-  "version": "1.19.0",
+  "version": "1.19.1",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "license": "Apache-2.0",
@@ -66,7 +66,6 @@
     "@spotify/prettier-config": "^15.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^15.0.0",
-    "@types/node": "18.19.68",
     "@types/react": "^18.2.58",
     "@types/react-dom": "^18.2.19",
     "cross-fetch": "4.0.0",
@@ -93,7 +92,6 @@
     "backstage",
     "plugin"
   ],
-  "homepage": "https://red.ht/rhdh",
   "bugs": "https://github.com/backstage/community-plugins/issues",
   "maintainers": [
     "@karthikjeeyar"

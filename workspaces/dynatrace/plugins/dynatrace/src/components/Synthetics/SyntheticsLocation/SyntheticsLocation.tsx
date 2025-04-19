@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import useAsync from 'react-use/esm/useAsync';
 import { Progress, ResponseErrorPanel } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';

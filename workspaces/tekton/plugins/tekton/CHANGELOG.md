@@ -1,5 +1,45 @@
 ### Dependencies
 
+## 3.24.0
+
+### Minor Changes
+
+- 6828dde: Added i18n support
+
+## 3.23.0
+
+### Minor Changes
+
+- 1d5f33d: Enhance fetching pod logs
+
+## 3.22.2
+
+### Patch Changes
+
+- 0a0e19a: Fix issue where the SBOM link does not lead to the SBOM task in the pipeline run log dialog
+
+## 3.22.1
+
+### Patch Changes
+
+- f84ad73: chore: remove homepage field from package.json
+- Updated dependencies [f84ad73]
+  - @backstage-community/plugin-tekton-common@1.8.1
+
+## 3.22.0
+
+### Minor Changes
+
+- de82c49: Bump backstage version to 1.36.1
+
+### Patch Changes
+
+- 43ed904: remove unused dependency: @types/node
+- c31699d: Updated dependency `@playwright/test` to `1.51.1`.
+- f16f56e: Updated dependency `start-server-and-test` to `2.0.11`.
+- Updated dependencies [de82c49]
+  - @backstage-community/plugin-tekton-common@1.8.0
+
 ## 3.21.1
 
 ### Patch Changes

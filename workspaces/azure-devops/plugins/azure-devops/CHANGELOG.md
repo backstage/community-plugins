@@ -1,5 +1,28 @@
 # @backstage-community/plugin-azure-devops
 
+## 0.14.0
+
+### Minor Changes
+
+- 79f360a: Backstage version bump to v1.38.1
+
+### Patch Changes
+
+- Updated dependencies [79f360a]
+  - @backstage-community/plugin-azure-devops-common@0.10.0
+
+## 0.13.2
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
+## 0.13.1
+
+### Patch Changes
+
+- 7f32b36: Added New Frontend System filter for cards and tabs so they use `isAzureDevOpsAvailable` and `isAzurePipelinesAvailable` to control their visibility
+
 ## 0.13.0
 
 ### Minor Changes

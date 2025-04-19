@@ -227,6 +227,7 @@ export class RBACBackendClient implements RBACAPI {
     if (jsonResponse.status !== 200 && jsonResponse.status !== 204) {
       return jsonResponse;
     }
+
     return jsonResponse.json();
   }
 

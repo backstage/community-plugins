@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { NewRelicDashboard } from './NewRelicDashboard';
 import { MockStorageApi, TestApiProvider } from '@backstage/test-utils';
 import { EntityProvider } from '@backstage/plugin-catalog-react';

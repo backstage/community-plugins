@@ -24,7 +24,6 @@ import {
 
 import { MemoryRouter } from 'react-router-dom';
 import { PullRequestCard } from './PullRequestCard';
-import React from 'react';
 
 export default {
   title: 'Plugins/Azure Devops/Pull Request Card',

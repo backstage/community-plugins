@@ -1,5 +1,17 @@
 # @backstage-community/plugin-shortcuts
 
+## 0.8.0
+
+### Minor Changes
+
+- f1bfb28: Backstage version bump to v1.38.1
+
+## 0.7.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
 ## 0.7.0
 
 ### Minor Changes

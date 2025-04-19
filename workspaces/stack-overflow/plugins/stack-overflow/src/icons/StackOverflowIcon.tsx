@@ -13,12 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 
-/**
- * Stack Overflow Icon
- * @public
- */
+/** @public */
 export const StackOverflowIcon = () => {
   return (
     <svg

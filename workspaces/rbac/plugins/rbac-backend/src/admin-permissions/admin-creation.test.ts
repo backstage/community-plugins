@@ -21,7 +21,7 @@ import * as Knex from 'knex';
 import type { RoleMetadata } from '@backstage-community/plugin-rbac-common';
 
 import {
-  auditLoggerMock,
+  mockAuditorService,
   catalogApiMock,
   csvPermFile,
   mockClientKnex,
@@ -46,7 +46,7 @@ const adminRole = 'role:default/rbac_admin';
 const groupPolicy = [['user:default/test_admin', 'role:default/rbac_admin']];
 const permissions = [
   ['role:default/rbac_admin', 'policy-entity', 'read', 'allow'],
-  ['role:default/rbac_admin', 'policy-entity', 'create', 'allow'],
+  ['role:default/rbac_admin', 'policy.entity.create', 'create', 'allow'],
   ['role:default/rbac_admin', 'policy-entity', 'delete', 'allow'],
   ['role:default/rbac_admin', 'policy-entity', 'update', 'allow'],
   ['role:default/rbac_admin', 'catalog-entity', 'read', 'allow'],
@@ -112,11 +112,11 @@ describe('Admin Creation', () => {
       await useAdminsFromConfig(
         adminUsers || [],
         enfDelegate,
-        auditLoggerMock,
+        mockAuditorService,
         roleMetadataStorageMock,
         mockClientKnex,
       );
-      await setAdminPermissions(enfDelegate, auditLoggerMock);
+      await setAdminPermissions(enfDelegate, mockAuditorService);
     });
 
     it('should assign an admin to the admin role and permissions', async () => {
@@ -128,7 +128,7 @@ describe('Admin Creation', () => {
 
     it(`should not assign an admin to the permissions if permissions are already assigned`, async () => {
       await expect(async () => {
-        await setAdminPermissions(enfDelegate, auditLoggerMock);
+        await setAdminPermissions(enfDelegate, mockAuditorService);
       }).not.toThrow();
     });
 
@@ -140,7 +140,7 @@ describe('Admin Creation', () => {
         'allow',
       ];
       await enfDelegate.addPolicy(newDefaultPermission);
-      await setAdminPermissions(enfDelegate, auditLoggerMock);
+      await setAdminPermissions(enfDelegate, mockAuditorService);
       const enfPermission = await enfDelegate.getFilteredPolicy(
         0,
         ...newDefaultPermission,

@@ -15,7 +15,6 @@
  */
 import { ApacheAirflowApi, apacheAirflowApiRef } from '../../api';
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
-import React from 'react';
 import { DagTableComponent } from './DagTableComponent';
 
 describe('DagTableComponent', () => {

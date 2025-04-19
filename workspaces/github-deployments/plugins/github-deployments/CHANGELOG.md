@@ -1,5 +1,23 @@
 # @backstage-community/plugin-github-deployments
 
+## 0.7.0
+
+### Minor Changes
+
+- 8bda463: Backstage version bump to v1.38.1
+
+## 0.6.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
+## 0.6.0
+
+### Minor Changes
+
+- c0c6866: Added the `environments` prop to the `<EntityGithubDeploymentsCard />` component to filter deployments by environment.
+
 ## 0.5.0
 
 ### Minor Changes

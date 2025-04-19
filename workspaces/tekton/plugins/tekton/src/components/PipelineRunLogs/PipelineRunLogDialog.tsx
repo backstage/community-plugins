@@ -36,6 +36,8 @@ import { tektonGroupColor } from '../../types/types';
 import ResourceBadge from '../PipelineRunList/ResourceBadge';
 import PipelineRunLogDownloader from './PipelineRunLogDownloader';
 import PipelineRunLogs from './PipelineRunLogs';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { tektonTranslationRef } from '../../translation';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -60,6 +62,7 @@ type PipelineRunLogDialogProps = {
   taskRuns: TaskRunKind[];
   pods: V1Pod[];
   activeTask?: string;
+  forSBOM?: boolean;
 };
 const PipelineRunLogDialog = ({
   open,
@@ -68,10 +71,19 @@ const PipelineRunLogDialog = ({
   pods,
   taskRuns,
   activeTask,
+  forSBOM,
 }: PipelineRunLogDialogProps) => {
   const classes = useStyles();
 
   const [task, setTask] = React.useState(activeTask);
+  const { t } = useTranslationRef(tektonTranslationRef);
+
+  React.useEffect(() => {
+    // If we trigger this dialog for the SBOM task, update the current active task.
+    if (forSBOM && activeTask) {
+      setTask(activeTask);
+    }
+  }, [forSBOM, activeTask]);
 
   return (
     <Dialog
@@ -81,7 +93,7 @@ const PipelineRunLogDialog = ({
       open={open}
       onClose={closeDialog}
     >
-      <DialogTitle id="pipelinerun-logs" title="PipelineRun Logs">
+      <DialogTitle id="pipelinerun-logs" title={t('pipelineRunLogs.title')}>
         <Box className={classes.titleContainer}>
           <ResourceBadge
             color={tektonGroupColor}
