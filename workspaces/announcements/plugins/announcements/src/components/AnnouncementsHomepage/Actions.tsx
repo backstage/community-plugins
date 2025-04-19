@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2025 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,51 +14,21 @@
  * limitations under the License.
  */
 import React from 'react';
-import { InfoCard, InfoCardVariants } from '@backstage/core-components';
-import { useRouteRef } from '@backstage/core-plugin-api';
 import { useAnnouncementsTranslation } from '@backstage-community/plugin-announcements-react';
-import { AnnouncementsCardContent } from '../AnnouncementsCardContent';
+import { useRouteRef } from '@backstage/core-plugin-api';
 import { rootRouteRef } from '../../routes';
+import { LinkButton } from '@backstage/core-components';
 
-type AnnouncementsCardOpts = {
-  title?: string;
-  max?: number;
-  category?: string;
-  active?: boolean;
-  variant?: InfoCardVariants;
-  sortBy?: 'created_at' | 'start_at';
-  order?: 'asc' | 'desc';
-};
-
-export const AnnouncementsCard = ({
-  title,
-  max,
-  category,
-  active,
-  variant = 'gridItem',
-  sortBy,
-  order,
-}: AnnouncementsCardOpts) => {
+export const Actions = () => {
   const { t } = useAnnouncementsTranslation();
   const announcementsLink = useRouteRef(rootRouteRef);
   const deepLink = {
     link: announcementsLink(),
     title: t('announcementsCard.seeAll'),
   };
-
   return (
-    <InfoCard
-      title={title || t('announcementsCard.announcements')}
-      variant={variant}
-      deepLink={deepLink}
-    >
-      <AnnouncementsCardContent
-        max={max}
-        category={category}
-        active={active}
-        sortBy={sortBy}
-        order={order}
-      />
-    </InfoCard>
+    <LinkButton variant="contained" color="primary" to={deepLink.link}>
+      {deepLink.title}
+    </LinkButton>
   );
 };
