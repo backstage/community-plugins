@@ -50,6 +50,27 @@ const renderAnnouncementsCard = async (announcements: AnnouncementsList) => {
   );
 };
 
+const renderAnnouncementsCardWithProps = async (
+  announcements: AnnouncementsList,
+  props: any = {},
+) => {
+  await renderInTestApp(
+    <TestApiProvider
+      apis={[
+        [announcementsApiRef, mockAnnouncementsApi(announcements)],
+        [permissionApiRef, mockApis.permission()],
+      ]}
+    >
+      <AnnouncementsCard {...props} />
+    </TestApiProvider>,
+    {
+      mountedRoutes: {
+        '/announcements': rootRouteRef,
+      },
+    },
+  );
+};
+
 describe('AnnouncementsCard', () => {
   afterEach(() => {
     jest.resetAllMocks();
@@ -115,5 +136,29 @@ describe('AnnouncementsCard', () => {
 
     await renderAnnouncementsCard(announcementsList);
     expect(screen.getByText(/Scheduled Today/i)).toBeInTheDocument();
+  });
+
+  it('does not display start time when hideStartAt is true', async () => {
+    const announcementsList: AnnouncementsList = {
+      count: 1,
+      results: [
+        {
+          id: '1',
+          title: 'Hidden Start Time Announcement',
+          excerpt: 'This announcement hides start time',
+          body: 'Body 1',
+          publisher: 'Publisher 1',
+          created_at: '2025-01-01',
+          active: true,
+          start_at: '2025-01-01',
+        },
+      ],
+    };
+
+    await renderAnnouncementsCardWithProps(announcementsList, {
+      hideStartAt: true,
+    });
+
+    expect(screen.queryByText(/Scheduled/i)).not.toBeInTheDocument();
   });
 });

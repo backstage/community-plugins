@@ -33,6 +33,7 @@ export const AnnouncementsCard: ({
   variant,
   sortBy,
   order,
+  hideStartAt,
 }: {
   title?: string | undefined;
   max?: number | undefined;
@@ -41,6 +42,7 @@ export const AnnouncementsCard: ({
   variant?: InfoCardVariants | undefined;
   sortBy?: 'created_at' | 'start_at' | undefined;
   order?: 'desc' | 'asc' | undefined;
+  hideStartAt?: boolean | undefined;
 }) => JSX_2.Element;
 
 // @public (undocumented)
@@ -76,6 +78,7 @@ export const AnnouncementsPage: (props: {
       }
     | undefined;
   hideInactive?: boolean | undefined;
+  hideStartAt?: boolean | undefined;
 }) => JSX_2.Element;
 
 // @public (undocumented)

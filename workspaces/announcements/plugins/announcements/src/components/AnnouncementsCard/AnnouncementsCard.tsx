@@ -61,6 +61,7 @@ type AnnouncementsCardOpts = {
   variant?: InfoCardVariants;
   sortBy?: 'created_at' | 'start_at';
   order?: 'asc' | 'desc';
+  hideStartAt?: boolean;
 };
 
 export const AnnouncementsCard = ({
@@ -71,6 +72,7 @@ export const AnnouncementsCard = ({
   variant = 'gridItem',
   sortBy,
   order,
+  hideStartAt,
 }: AnnouncementsCardOpts) => {
   const classes = useStyles();
   const announcementsApi = useApi(announcementsApiRef);
@@ -151,14 +153,16 @@ export const AnnouncementsCard = ({
                   <Typography variant="body2" color="textSecondary">
                     {announcement.excerpt}
                   </Typography>
-                  <Typography variant="caption" color="textSecondary">
-                    {formatAnnouncementStartTime(
-                      announcement.start_at,
-                      t('announcementsCard.occurred'),
-                      t('announcementsCard.scheduled'),
-                      t('announcementsCard.today'),
-                    )}
-                  </Typography>
+                  {!hideStartAt && (
+                    <Typography variant="caption" color="textSecondary">
+                      {formatAnnouncementStartTime(
+                        announcement.start_at,
+                        t('announcementsCard.occurred'),
+                        t('announcementsCard.scheduled'),
+                        t('announcementsCard.today'),
+                      )}
+                    </Typography>
+                  )}
                 </Box>
               }
             />{' '}
