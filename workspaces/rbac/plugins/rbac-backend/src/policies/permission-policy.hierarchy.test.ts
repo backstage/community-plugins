@@ -1120,6 +1120,7 @@ async function newEnforcerDelegate(
   return new EnforcerDelegate(
     enf,
     mockAuditorService,
+    conditionalStorageMock,
     roleMetadataStorageMock,
     mockClientKnex,
   );
