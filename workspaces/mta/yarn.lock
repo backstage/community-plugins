@@ -7297,7 +7297,6 @@ __metadata:
     "@backstage/repo-tools": "npm:^0.13.1"
     "@changesets/cli": "npm:^2.27.7"
     "@playwright/test": "npm:^1.32.3"
-    "@spotify/prettier-config": "npm:^15.0.0"
     dotenv: "npm:^16.4.5"
     knip: "npm:^5.27.4"
     lerna: "npm:^7.3.0"
@@ -11639,15 +11638,6 @@ __metadata:
     "@typescript-eslint/parser": ">=5"
     eslint: ">=8.x"
   checksum: 10/33627cff3a7ff6360cd73e26d28c50b3a49cc027716e1e0044187cad1fbfd6f9da13c83d2ae16bffa4755c8004f2ee9dafa4d520906905a8c9a7209987c93e5d
-  languageName: node
-  linkType: hard
-
-"@spotify/prettier-config@npm:^15.0.0":
-  version: 15.0.0
-  resolution: "@spotify/prettier-config@npm:15.0.0"
-  peerDependencies:
-    prettier: 2.x
-  checksum: 10/ba91f65bc4ee884e8afa0b99eacb1fac27043efa0915ead007af571d66a0f53462d2a65f33e01d3b6e10a804b60ed2957708f939850bc6071e2d28f0e277ab7c
   languageName: node
   linkType: hard
 

@@ -44,7 +44,6 @@
     "@backstage/repo-tools": "^0.13.1",
     "@changesets/cli": "^2.27.7",
     "@playwright/test": "^1.32.3",
-    "@spotify/prettier-config": "^15.0.0",
     "knip": "^5.27.4",
     "lerna": "^7.3.0",
     "node-gyp": "^9.0.0",
@@ -55,7 +54,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18"
   },
-  "prettier": "@spotify/prettier-config",
+  "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {
     "*.{js,jsx,ts,tsx,mjs,cjs}": [
       "eslint --fix",
