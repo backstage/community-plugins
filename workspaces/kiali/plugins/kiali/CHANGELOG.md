@@ -1,5 +1,20 @@
 ### Dependencies
 
+## 1.37.0
+
+### Minor Changes
+
+- f181693: Support kiali > 1.86
+
+### Patch Changes
+
+- c31699d: Updated dependency `@playwright/test` to `1.51.1`.
+- d170116: Updated dependency `canvas` to `^3.0.0`.
+- 44ec099: Updated dependency `cytoscape` to `3.31.2`.
+- f16f56e: Updated dependency `start-server-and-test` to `2.0.11`.
+- 0d59491: Updated dependency `@patternfly/react-topology` to `5.4.1`.
+- f84ad73: chore: remove homepage field from package.json
+
 ## 1.36.4
 
 ### Patch Changes
