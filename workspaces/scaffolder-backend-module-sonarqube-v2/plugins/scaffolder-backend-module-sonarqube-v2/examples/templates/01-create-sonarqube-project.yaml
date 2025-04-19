@@ -1,0 +1,82 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: create-sonar-project-template
+  title: Create a SonarQube project
+  description: Creates a new SonarQube project
+  links:
+    - title: SonarQube
+      url: https://docs.sonarqube.org/latest/
+spec:
+  type: service
+  parameters:
+    - title: Fill in some steps
+      required:
+        - baseUrl
+        - name
+        - key
+      properties:
+        baseUrl:
+          title: Base URL
+          type: string
+          description: SonarQube base URL
+          ui:autofocus: true
+        authParams:
+          title: 'Authentication Method'
+          type: object
+          description: Select an authentication method
+          oneOf:
+            - title: Token
+              required: ['token']
+              properties:
+                token:
+                  title: Token
+                  type: string
+                  description: SonarQube auth token
+            - title: Username and Password
+              required: ['username', 'password']
+              properties:
+                username:
+                  title: Username
+                  type: string
+                  description: SonarQube username
+                password:
+                  title: Password
+                  type: string
+                  description: SonarQube password
+                  ui:widget: password
+        name:
+          title: Name
+          type: string
+          description: Project name
+        key:
+          title: Key
+          type: string
+          description: Project key
+        branch:
+          title: Branch
+          type: string
+          description: Project branch
+        visibility:
+          title: Visibility
+          type: string
+          description: Project visibility
+          ui:widget: select
+          enum: ['public', 'private']
+  steps:
+    - id: create-sonar-project
+      name: Create SonarQube project
+      action: sonarqube:create:project
+      input:
+        baseUrl: ${{ parameters.baseUrl }}
+        token: ${{ parameters.authParams.token }}
+        username: ${{ parameters.authParams.username }}
+        password: ${{ parameters.authParams.password }}
+        name: ${{ parameters.name }}
+        key: ${{ parameters.key }}
+        branch: ${{ parameters.branch }}
+        visibility: ${{ parameters.visibility }}
+  output:
+    links:
+      - title: SonarQube project URL
+        url: ${{ steps['create-sonar-project'].output.projectUrl }} 
