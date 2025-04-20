@@ -1,5 +1,15 @@
 # @backstage-community/plugin-acs
 
+## 0.0.4
+
+### Patch Changes
+
+- f9f43e2: This patch fixed local runs of the acs plugin by adding/updating the required resolution in the package.json file. This also fixes a bug where the backend url doesn't get set which causes the query to the ACS API to fail.
+- 74ec6eb: Updated dependency `@patternfly/react-styles` to `5.4.1`.
+- ba3a15f: Updated dependency `@patternfly/react-charts` to `7.4.9`.
+- 0d59491: Updated dependency `@patternfly/react-topology` to `5.4.1`.
+- 900a6d7: Updated dependency `@patternfly/react-table` to `5.4.16`.
+
 ## 0.0.3
 
 ### Patch Changes
