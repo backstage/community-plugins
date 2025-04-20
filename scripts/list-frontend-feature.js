@@ -25,7 +25,7 @@ import { listWorkspaces } from './list-workspaces.js';
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
 const BACKSTAGE_PLUGIN =
-  "import { BackstagePlugin } from '@backstage/frontend-plugin-api';";
+  "import { FrontendPlugin } from '@backstage/frontend-plugin-api';";
 
 async function main(args) {
   const rootPath = resolve(__dirname, '..');
@@ -38,6 +38,10 @@ async function main(args) {
 
   // Loop through workspaces
   for (const workspace of workspaces) {
+    if (workspace === 'graphiql') {
+      continue;
+    }
+
     const currentWorkspacePath = resolve(workspacePath, workspace);
     const { packages } = await getPackages(currentWorkspacePath);
 
