@@ -80,9 +80,9 @@ const _default: FrontendPlugin<
         defaultGroup?:
           | (string & {})
           | 'overview'
-          | 'documentation'
-          | 'development'
           | 'deployment'
+          | 'development'
+          | 'documentation'
           | 'operation'
           | 'observability'
           | undefined;
