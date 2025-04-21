@@ -25,6 +25,7 @@ import { usePermissionPolicies } from '../../hooks/usePermissionPolicies';
 import { filterTableData } from '../../utils/filter-table-data';
 import EditRole from '../EditRole';
 import { columns } from './PermissionsListColumns';
+import { StyledTableWrapper } from './StyledTableWrapper';
 
 type PermissionsCardProps = {
   entityReference: string;
@@ -96,27 +97,29 @@ export const PermissionsCard = ({
           />
         </Box>
       )}
-      <Table
-        title={
-          !loading && data.length > 0
-            ? `${numberOfPolicies} permissions`
-            : 'Permission Policies'
-        }
-        actions={actions}
-        options={{ padding: 'default', search: true, paging: true }}
-        data={data}
-        columns={columns}
-        isLoading={loading}
-        emptyContent={
-          <Box
-            data-testid="permission-table-empty"
-            sx={{ display: 'flex', justifyContent: 'center', p: 2 }}
-          >
-            No records found
-          </Box>
-        }
-        onSearchChange={setSearchText}
-      />
+      <StyledTableWrapper>
+        <Table
+          title={
+            !loading && data.length > 0
+              ? `${numberOfPolicies} permissions`
+              : 'Permission Policies'
+          }
+          actions={actions}
+          options={{ padding: 'default', search: true, paging: true }}
+          data={data}
+          columns={columns}
+          isLoading={loading}
+          emptyContent={
+            <Box
+              data-testid="permission-table-empty"
+              sx={{ display: 'flex', justifyContent: 'center', p: 2 }}
+            >
+              No records found
+            </Box>
+          }
+          onSearchChange={setSearchText}
+        />
+      </StyledTableWrapper>
     </Box>
   );
 };
