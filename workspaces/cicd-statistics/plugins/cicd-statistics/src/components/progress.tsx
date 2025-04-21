@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { CSSProperties, DependencyList } from 'react';
+import { CSSProperties, DependencyList } from 'react';
 import useAsync from 'react-use/esm/useAsync';
 import Box from '@material-ui/core/Box';
 import LinearProgress from '@material-ui/core/LinearProgress';

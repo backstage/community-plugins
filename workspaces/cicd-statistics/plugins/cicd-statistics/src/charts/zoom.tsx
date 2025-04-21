@@ -15,7 +15,8 @@
  */
 
 import { throttle } from 'lodash';
-import React, {
+import {
+  createContext,
   PropsWithChildren,
   Dispatch,
   SetStateAction,
@@ -45,7 +46,7 @@ interface ZoomContext {
   resetZoom: () => void;
 }
 
-const context = React.createContext<ZoomContext>(undefined as any);
+const context = createContext<ZoomContext>(undefined as any);
 
 export function ZoomProvider({ children }: PropsWithChildren<{}>) {
   const [registeredSelectors, setRegisteredSelectors] = useState<
