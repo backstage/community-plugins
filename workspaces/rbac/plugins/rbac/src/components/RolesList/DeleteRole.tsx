@@ -62,7 +62,6 @@ const DeleteRole = ({
           title={tooltip ?? 'Delete Role'}
           sx={{
             p: 1,
-            color: 'inherit',
             borderRadius: '50%',
             '&:hover': { borderRadius: '50%' },
           }}
