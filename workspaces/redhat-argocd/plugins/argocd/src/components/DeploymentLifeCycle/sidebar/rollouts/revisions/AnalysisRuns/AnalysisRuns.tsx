@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { FC } from 'react';
 
 import { Box, Chip, Tooltip, Typography } from '@material-ui/core';
 import moment from 'moment';
@@ -25,7 +25,7 @@ interface AnalysisRunsProps {
   analysisruns: AnalysisRun[];
 }
 
-const AnalysisRuns: React.FC<AnalysisRunsProps> = ({ analysisruns }) => {
+const AnalysisRuns: FC<AnalysisRunsProps> = ({ analysisruns }) => {
   if (!analysisruns || analysisruns?.length === 0) {
     return null;
   }

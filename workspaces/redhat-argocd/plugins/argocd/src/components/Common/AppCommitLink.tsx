@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { FC, MouseEvent } from 'react';
 import {
   Application,
   RevisionInfo,
@@ -50,7 +50,7 @@ const useCommitStyles = makeStyles<Theme>(theme => ({
   },
 }));
 
-const AppCommitLink: React.FC<CommitLinkProps> = ({
+const AppCommitLink: FC<CommitLinkProps> = ({
   entity,
   application,
   revisionsMap,
@@ -81,7 +81,7 @@ const AppCommitLink: React.FC<CommitLinkProps> = ({
     ? `${revisionMessage} ${authorInfo}`.trim()
     : revisionMessage;
 
-  const handleClick = (e: React.MouseEvent) => {
+  const handleClick = (e: MouseEvent) => {
     if (!repoUrl) return;
     e.stopPropagation();
     const annotations = entity?.metadata?.annotations || {};

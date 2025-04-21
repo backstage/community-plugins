@@ -6,10 +6,11 @@
     "node": "20 || 22"
   },
   "scripts": {
-    "start:backstage": "concurrently -c auto -n \"fe,be\" -p \"{name}:{pid}\" \"yarn start-app\" \"yarn start-backend\"",
+    "start": "backstage-cli repo start",
+    "start:backstage": "backstage-cli repo start",
     "start-app": "yarn workspace app start",
     "start-backend": "yarn workspace backend start",
-    "start:dev": "yarn workspace @backstage-community/plugin-redhat-argocd start",
+    "start:dev": "yarn start",
     "tsc": "tsc",
     "tsc:full": "tsc --skipLibCheck true --incremental false",
     "build:all": "backstage-cli repo build --all",
@@ -37,9 +38,9 @@
     "directory": "workspaces/redhat-argocd"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.30.0",
+    "@backstage/cli": "^0.32.0",
     "@backstage/e2e-test-utils": "^0.1.1",
-    "@backstage/repo-tools": "^0.13.0",
+    "@backstage/repo-tools": "^0.13.2",
     "@changesets/cli": "^2.27.1",
     "concurrently": "^9.0.0",
     "knip": "^5.27.4",

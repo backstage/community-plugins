@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { FC } from 'react';
 
 import { Box, Card, CardContent, Grid, Typography } from '@material-ui/core';
 
@@ -28,7 +28,7 @@ interface RevisionCardProps {
   revision: Revision;
 }
 
-const BlueGreenRevision: React.FC<RevisionCardProps> = ({ revision }) => {
+const BlueGreenRevision: FC<RevisionCardProps> = ({ revision }) => {
   const {
     revisionName,
     revisionNumber,

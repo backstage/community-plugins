@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { FC } from 'react';
 
 import {
   ArrowCircleDownIcon,
@@ -28,7 +28,7 @@ interface RevisionStatusProps {
   revision: ReplicaSet;
 }
 
-const RevisionStatus: React.FC<RevisionStatusProps> = ({ revision }) => {
+const RevisionStatus: FC<RevisionStatusProps> = ({ revision }) => {
   const classes = useIconStyles();
 
   const replicas = revision?.status?.replicas || 0;

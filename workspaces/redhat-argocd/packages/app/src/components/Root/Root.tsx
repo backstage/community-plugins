@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { PropsWithChildren, JSX } from 'react';
 import {
   Link,
   Sidebar,
@@ -74,9 +74,7 @@ const SidebarLogo = () => {
   );
 };
 
-export const Root = ({
-  children,
-}: React.PropsWithChildren): React.JSX.Element => (
+export const Root = ({ children }: PropsWithChildren): JSX.Element => (
   <SidebarPage>
     <Sidebar>
       <SidebarLogo />

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { FC, ReactNode } from 'react';
 
 import {
   CheckCircleIcon,
@@ -52,9 +52,9 @@ export const getStatusColor = (
   }
 };
 
-const RolloutStatusIcon: React.FC<{ status: keyof typeof RolloutPhase }> = ({
+const RolloutStatusIcon: FC<{ status: keyof typeof RolloutPhase }> = ({
   status,
-}): React.ReactNode => {
+}): ReactNode => {
   const classes = useIconStyles();
 
   const commonProps = {

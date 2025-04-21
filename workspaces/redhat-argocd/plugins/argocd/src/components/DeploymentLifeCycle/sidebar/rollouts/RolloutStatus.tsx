@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { FC } from 'react';
 
 import { Chip } from '@material-ui/core';
 
@@ -23,7 +23,7 @@ import RolloutStatusIcon from './RolloutStatusIcon';
 interface RolloutStatusProps {
   status: keyof typeof RolloutPhase;
 }
-const RolloutStatus: React.FC<RolloutStatusProps> = ({ status }) => {
+const RolloutStatus: FC<RolloutStatusProps> = ({ status }) => {
   if (!status) {
     return null;
   }

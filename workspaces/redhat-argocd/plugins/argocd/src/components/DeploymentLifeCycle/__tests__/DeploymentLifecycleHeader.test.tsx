@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { ReactNode } from 'react';
 
 import { configApiRef } from '@backstage/core-plugin-api';
 import { MockConfigApi, TestApiProvider } from '@backstage/test-utils';
@@ -24,7 +24,7 @@ import { mockApplication } from '../../../../dev/__data__';
 import DeploymentLifecycleHeader from '../DeploymentLifecycleHeader';
 
 describe('DeploymentLifecycleCardHeader', () => {
-  const wrapper = ({ children }: { children: React.ReactNode }) => {
+  const wrapper = ({ children }: { children: ReactNode }) => {
     return (
       <TestApiProvider
         apis={[
@@ -75,11 +75,7 @@ describe('DeploymentLifecycleCardHeader', () => {
   });
 
   test('should render the deployment lifecylce appliction header with base url', () => {
-    const apiProviderWrapper = ({
-      children,
-    }: {
-      children: React.ReactNode;
-    }) => {
+    const apiProviderWrapper = ({ children }: { children: ReactNode }) => {
       return (
         <TestApiProvider
           apis={[

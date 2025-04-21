@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { ReactNode } from 'react';
 
 import { Table, TableColumn } from '@backstage/core-components';
 import { useEntity } from '@backstage/plugin-catalog-react';
@@ -73,7 +73,7 @@ const DeploymentSummary = () => {
     {
       title: 'ArgoCD App',
       field: 'name',
-      render: (row: Application): React.ReactNode =>
+      render: (row: Application): ReactNode =>
         getBaseUrl(row) ? (
           <Link
             href={`${getBaseUrl(row)}/applications/${row?.metadata?.name}`}
@@ -92,28 +92,28 @@ const DeploymentSummary = () => {
     {
       title: 'Namespace',
       field: 'namespace',
-      render: (row: Application): React.ReactNode => {
+      render: (row: Application): ReactNode => {
         return <>{row.spec.destination.namespace}</>;
       },
     },
     {
       title: 'Instance',
       field: 'instance',
-      render: (row: Application): React.ReactNode => {
+      render: (row: Application): ReactNode => {
         return <>{row.metadata?.instance?.name || instanceName}</>;
       },
     },
     {
       title: 'Server',
       field: 'server',
-      render: (row: Application): React.ReactNode => {
+      render: (row: Application): ReactNode => {
         return <>{row.spec.destination.server}</>;
       },
     },
     {
       title: 'Revision',
       field: 'revision',
-      render: (row: Application): React.ReactNode => {
+      render: (row: Application): ReactNode => {
         const historyList = row.status?.history ?? [];
         const latestRev = historyList[historyList.length - 1];
         const repoUrl =
@@ -147,7 +147,7 @@ const DeploymentSummary = () => {
 
         return moment(aDeployedAt).diff(moment(bDeployedAt));
       },
-      render: (row: Application): React.ReactNode => {
+      render: (row: Application): ReactNode => {
         const history = row?.status?.history ?? [];
         const finishedAt = history[history.length - 1]?.deployedAt;
         return (
@@ -169,9 +169,7 @@ const DeploymentSummary = () => {
           syncStatusOrder.indexOf(b?.status?.sync?.status)
         );
       },
-      render: (row: Application): React.ReactNode => (
-        <AppSyncStatus app={row} />
-      ),
+      render: (row: Application): ReactNode => <AppSyncStatus app={row} />,
     },
     {
       title: 'Health status',
@@ -183,7 +181,7 @@ const DeploymentSummary = () => {
           healthStatusOrder.indexOf(b?.status?.health?.status)
         );
       },
-      render: (row: Application): React.ReactNode => (
+      render: (row: Application): ReactNode => (
         <>
           <AppHealthIcon status={row.status.health.status as HealthStatus} />{' '}
           {row?.status?.health?.status}

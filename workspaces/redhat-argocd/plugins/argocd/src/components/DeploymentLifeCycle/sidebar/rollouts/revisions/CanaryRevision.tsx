@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { FC } from 'react';
+
+import { memo } from 'react';
 
 import {
   Box,
@@ -47,7 +49,7 @@ const useCanaryRevisionStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const CanaryRevision: React.FC<RevisionCardProps> = ({
+const CanaryRevision: FC<RevisionCardProps> = ({
   revision,
   animateProgressBar = true,
 }) => {
@@ -104,4 +106,4 @@ const CanaryRevision: React.FC<RevisionCardProps> = ({
     </Card>
   );
 };
-export default React.memo(CanaryRevision);
+export default memo(CanaryRevision);

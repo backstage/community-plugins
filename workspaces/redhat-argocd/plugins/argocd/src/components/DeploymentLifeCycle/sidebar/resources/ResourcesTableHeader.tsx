@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { MouseEvent, FC } from 'react';
 import {
   makeStyles,
   TableCell,
@@ -27,7 +27,7 @@ import { Order } from '@backstage-community/plugin-redhat-argocd-common';
 
 interface ResourcesTableHeaderProps {
   onRequestSort: (
-    event: React.MouseEvent<unknown>,
+    event: MouseEvent<unknown>,
     property: string,
     id: string,
   ) => void;
@@ -47,7 +47,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export const ResourcesTableHeader: React.FC<ResourcesTableHeaderProps> = ({
+export const ResourcesTableHeader: FC<ResourcesTableHeaderProps> = ({
   order,
   orderBy,
   orderById,
@@ -56,7 +56,7 @@ export const ResourcesTableHeader: React.FC<ResourcesTableHeaderProps> = ({
   const classes = useStyles();
 
   const createSortHandler =
-    (property: string, id: string) => (event: React.MouseEvent<unknown>) => {
+    (property: string, id: string) => (event: MouseEvent<unknown>) => {
       onRequestSort(event, property, id);
     };
 

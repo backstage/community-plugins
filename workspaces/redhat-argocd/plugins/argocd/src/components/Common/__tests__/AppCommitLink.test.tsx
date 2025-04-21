@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 import { screen, render, fireEvent } from '@testing-library/react';
 import AppCommitLink from '../AppCommitLink';
 import {

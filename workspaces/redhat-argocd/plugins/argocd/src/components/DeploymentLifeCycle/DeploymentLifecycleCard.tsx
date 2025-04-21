@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
+import type { FC } from 'react';
 
 import { useEntity } from '@backstage/plugin-catalog-react';
 
@@ -57,7 +57,7 @@ interface DeploymentLifecycleCardProps {
   onclick?: () => void;
 }
 
-const DeploymentLifecycleCard: React.FC<DeploymentLifecycleCardProps> = ({
+const DeploymentLifecycleCard: FC<DeploymentLifecycleCardProps> = ({
   app,
   onclick,
   revisionsMap,

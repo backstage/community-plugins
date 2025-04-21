@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { FC, ReactNode } from 'react';
 
 import ArrowCircleUpIcon from '@patternfly/react-icons/dist/esm/icons/arrow-alt-circle-up-icon';
 import CheckCircleIcon from '@patternfly/react-icons/dist/esm/icons/check-circle-icon';
@@ -31,9 +31,9 @@ import {
 } from '@backstage-community/plugin-redhat-argocd-common';
 import useIconStyles from '../../hooks/useIconStyles';
 
-export const SyncIcon: React.FC<{ status: SyncStatusCode }> = ({
+export const SyncIcon: FC<{ status: SyncStatusCode }> = ({
   status,
-}): React.ReactNode => {
+}): ReactNode => {
   const classes = useIconStyles();
   switch (status) {
     case SyncStatuses.Synced:
@@ -65,9 +65,9 @@ export const SyncIcon: React.FC<{ status: SyncStatusCode }> = ({
   }
 };
 
-export const AppHealthIcon: React.FC<{ status: HealthStatus }> = ({
+export const AppHealthIcon: FC<{ status: HealthStatus }> = ({
   status,
-}): React.ReactNode => {
+}): ReactNode => {
   const classes = useIconStyles();
 
   switch (status) {

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { FC } from 'react';
 
 import {
   CheckCircleIcon,
@@ -28,7 +28,7 @@ import {
 } from '../../../../../../types/analysisRuns';
 import { getStatusColor } from '../../RolloutStatusIcon';
 
-const AnalysisRunStatus: React.FC<{ status: AnalysisRunPhase | undefined }> = ({
+const AnalysisRunStatus: FC<{ status: AnalysisRunPhase | undefined }> = ({
   status,
 }) => {
   const classes = useIconStyles();
