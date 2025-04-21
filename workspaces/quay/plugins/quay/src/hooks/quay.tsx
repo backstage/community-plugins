@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useAsync } from 'react-use';
 
 import { Entity } from '@backstage/catalog-model';
@@ -39,11 +39,11 @@ const useLocalStyles = makeStyles({
 
 export const useTags = (organization: string, repository: string) => {
   const quayClient = useApi(quayApiRef);
-  const [tags, setTags] = React.useState<Tag[]>([]);
-  const [tagManifestLayers, setTagManifestLayers] = React.useState<
+  const [tags, setTags] = useState<Tag[]>([]);
+  const [tagManifestLayers, setTagManifestLayers] = useState<
     Record<string, Layer>
   >({});
-  const [tagManifestStatuses, setTagManifestStatuses] = React.useState<
+  const [tagManifestStatuses, setTagManifestStatuses] = useState<
     Record<string, string>
   >({});
   const localClasses = useLocalStyles();

@@ -13,12 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-import { BrowserRouter } from 'react-router-dom';
-
+import { configApiRef } from '@backstage/core-plugin-api';
 import { usePermission } from '@backstage/plugin-permission-react';
-
-import { render } from '@testing-library/react';
+import { renderInTestApp } from '@backstage/test-utils';
 
 import { useTags } from '../../hooks';
 import { QuayRepository } from './QuayRepository';
@@ -28,12 +25,21 @@ jest.mock('react-use', () => ({
   useAsync: jest.fn().mockReturnValue({ loading: true }),
 }));
 
-jest.mock('@backstage/core-plugin-api', () => ({
-  ...jest.requireActual('@backstage/core-plugin-api'),
-  useApi: jest
-    .fn()
-    .mockReturnValue({ getOptionalString: (param: any) => param }),
-}));
+jest.mock('@backstage/core-plugin-api', () => {
+  const actual = jest.requireActual('@backstage/core-plugin-api');
+  return {
+    ...actual,
+    useApi: jest.fn(ref => {
+      if (ref === configApiRef) {
+        return {
+          getOptionalString: (param: any) => param,
+        };
+      }
+      // Fallback to original for other refs like appThemeApi
+      return actual.useApi(ref);
+    }),
+  };
+});
 
 jest.mock('../../hooks/', () => ({
   useRepository: () => ({
@@ -60,9 +66,9 @@ describe('QuayRepository', () => {
     jest.resetAllMocks();
   });
 
-  it('should render permission alert when user does not have view permission', () => {
+  it('should render permission alert when user does not have view permission', async () => {
     mockUsePermission.mockReturnValue({ loading: false, allowed: false });
-    const { queryByTestId } = render(<QuayRepository />);
+    const { queryByTestId } = await renderInTestApp(<QuayRepository />);
 
     expect(queryByTestId('no-permission-alert')).toBeInTheDocument();
 
@@ -70,18 +76,16 @@ describe('QuayRepository', () => {
     expect(queryByTestId('quay-repo-table')).toBeNull();
   });
 
-  it('should show loading if loading is true', () => {
+  it('should show loading if loading is true', async () => {
     (useTags as jest.Mock).mockReturnValue({ loading: true, data: [] });
-    const { getByTestId } = render(<QuayRepository />);
+    const { getByTestId } = await renderInTestApp(<QuayRepository />);
     expect(getByTestId('quay-repo-progress')).not.toBeNull();
   });
 
-  it('should show empty table if loaded and data is not present', () => {
+  it('should show empty table if loaded and data is not present', async () => {
     (useTags as jest.Mock).mockReturnValue({ loading: false, data: [] });
-    const { getByTestId, queryByText } = render(
-      <BrowserRouter>
-        <QuayRepository />
-      </BrowserRouter>,
+    const { getByTestId, queryByText } = await renderInTestApp(
+      <QuayRepository />,
     );
     expect(getByTestId('quay-repo-table')).not.toBeNull();
     expect(getByTestId('quay-repo-table-empty')).not.toBeNull();
@@ -89,7 +93,7 @@ describe('QuayRepository', () => {
     expect(queryByText('There are no images available.')).toBeInTheDocument();
   });
 
-  it('should show table if loaded and data is present', () => {
+  it('should show table if loaded and data is present', async () => {
     (useTags as jest.Mock).mockReturnValue({
       loading: false,
       data: [
@@ -102,10 +106,8 @@ describe('QuayRepository', () => {
         },
       ],
     });
-    const { queryByTestId, queryByText } = render(
-      <BrowserRouter>
-        <QuayRepository />
-      </BrowserRouter>,
+    const { queryByTestId, queryByText } = await renderInTestApp(
+      <QuayRepository />,
     );
     expect(queryByTestId('quay-repo-table')).not.toBeNull();
     expect(queryByTestId('quay-repo-table-empty')).toBeNull();
@@ -115,7 +117,7 @@ describe('QuayRepository', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('should show table if loaded and data is present but shows progress if security scan is not loaded', () => {
+  it('should show table if loaded and data is present but shows progress if security scan is not loaded', async () => {
     (useTags as jest.Mock).mockReturnValue({
       loading: false,
       data: [
@@ -127,10 +129,8 @@ describe('QuayRepository', () => {
         },
       ],
     });
-    const { queryByTestId, queryByText } = render(
-      <BrowserRouter>
-        <QuayRepository />
-      </BrowserRouter>,
+    const { queryByTestId, queryByText } = await renderInTestApp(
+      <QuayRepository />,
     );
     expect(queryByTestId('quay-repo-table')).not.toBeNull();
     expect(queryByTestId('quay-repo-table-empty')).toBeNull();
@@ -138,7 +138,7 @@ describe('QuayRepository', () => {
     expect(queryByTestId('quay-repo-security-scan-progress')).not.toBeNull();
   });
 
-  it('should show queued status for the tag that are waiting in the queue to be scanned', () => {
+  it('should show queued status for the tag that are waiting in the queue to be scanned', async () => {
     (useTags as jest.Mock).mockReturnValue({
       loading: false,
       data: [
@@ -151,10 +151,8 @@ describe('QuayRepository', () => {
         },
       ],
     });
-    const { queryByTestId, queryByText } = render(
-      <BrowserRouter>
-        <QuayRepository />
-      </BrowserRouter>,
+    const { queryByTestId, queryByText } = await renderInTestApp(
+      <QuayRepository />,
     );
 
     expect(queryByTestId('quay-repo-table')).not.toBeNull();
@@ -163,7 +161,7 @@ describe('QuayRepository', () => {
     expect(queryByTestId('quay-repo-queued-for-scan')).not.toBeNull();
   });
 
-  it('should show table if loaded and data is present but shows unsupported if security scan is not supported', () => {
+  it('should show table if loaded and data is present but shows unsupported if security scan is not supported', async () => {
     (useTags as jest.Mock).mockReturnValue({
       loading: false,
       data: [
@@ -176,10 +174,8 @@ describe('QuayRepository', () => {
         },
       ],
     });
-    const { queryByTestId, queryByText } = render(
-      <BrowserRouter>
-        <QuayRepository />
-      </BrowserRouter>,
+    const { queryByTestId, queryByText } = await renderInTestApp(
+      <QuayRepository />,
     );
     expect(queryByTestId('quay-repo-table')).not.toBeNull();
     expect(queryByTestId('quay-repo-table-empty')).toBeNull();

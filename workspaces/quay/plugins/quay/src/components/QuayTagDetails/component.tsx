@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { ReactNode } from 'react';
 
 import { Link, Table, TableColumn } from '@backstage/core-components';
 import type { RouteFunc } from '@backstage/core-plugin-api';
@@ -44,7 +44,7 @@ const columns: TableColumn<VulnerabilityListItem>[] = [
   {
     title: 'Advisory',
     field: 'name',
-    render: (rowData: VulnerabilityListItem): React.ReactNode => {
+    render: (rowData: VulnerabilityListItem): ReactNode => {
       return (
         <div style={{ display: 'flex', alignItems: 'center' }}>
           {rowData.Name}
@@ -68,7 +68,7 @@ const columns: TableColumn<VulnerabilityListItem>[] = [
 
       return severityA - severityB;
     },
-    render: (rowData: VulnerabilityListItem): React.ReactNode => {
+    render: (rowData: VulnerabilityListItem): ReactNode => {
       return (
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <WarningIcon
@@ -95,7 +95,7 @@ const columns: TableColumn<VulnerabilityListItem>[] = [
   {
     title: 'Fixed By',
     field: 'FixedBy',
-    render: (rowData: VulnerabilityListItem): React.ReactNode => {
+    render: (rowData: VulnerabilityListItem): ReactNode => {
       return (
         <>
           {rowData.FixedBy.length > 0 ? (
