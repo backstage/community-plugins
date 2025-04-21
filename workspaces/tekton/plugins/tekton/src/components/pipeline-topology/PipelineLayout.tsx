@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 
 import {
   action,
@@ -56,16 +56,16 @@ type PipelineLayoutProps = {
 };
 
 export const PipelineLayout = ({ model }: PipelineLayoutProps) => {
-  const [vis, setVis] = React.useState<Controller | null>(null);
-  const [maxSize, setMaxSize] = React.useState<{
+  const [vis, setVis] = useState<Controller | null>(null);
+  const [maxSize, setMaxSize] = useState<{
     height: number;
     width: number;
   }>({ height: 0, width: 0 });
-  const storedGraphModel = React.useRef<GraphModel | null>(null);
+  const storedGraphModel = useRef<GraphModel | null>(null);
 
   const layout: PipelineLayoutTypes = model.graph.layout as PipelineLayoutTypes;
 
-  const onLayoutUpdate = React.useCallback(
+  const onLayoutUpdate = useCallback(
     (nodes: Node[]) => {
       const nodeBounds = nodes.map((node: Node<NodeModel, any>) =>
         node.getBounds(),
@@ -117,14 +117,14 @@ export const PipelineLayout = ({ model }: PipelineLayoutProps) => {
     [setMaxSize, layout],
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (model.graph.id !== storedGraphModel?.current?.id) {
       storedGraphModel.current = null;
       setVis(null);
     }
   }, [vis, model]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     let mounted = true;
     if (vis === null) {
       const controller = new Visualization();
@@ -153,7 +153,7 @@ export const PipelineLayout = ({ model }: PipelineLayoutProps) => {
     };
   }, [vis, model, onLayoutUpdate]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (model && vis) {
       const graph = storedGraphModel.current;
       if (graph) {

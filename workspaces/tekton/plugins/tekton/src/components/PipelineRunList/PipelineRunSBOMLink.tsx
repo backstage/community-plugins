@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { FC, ReactElement } from 'react';
 import { Link } from 'react-router-dom';
 
 import { TaskRunKind } from '@janus-idp/shared-react';
@@ -25,9 +25,9 @@ import {
 } from '../../utils/taskRun-utils';
 import LinkToSBomIcon from '../Icons/LinkToSbomIcon';
 
-const PipelineRunSBOMLink: React.FC<{
+const PipelineRunSBOMLink: FC<{
   sbomTaskRun: TaskRunKind | undefined;
-}> = ({ sbomTaskRun }): React.ReactElement | null => {
+}> = ({ sbomTaskRun }): ReactElement | null => {
   const isSBOMTask = isSbomTaskRun(sbomTaskRun);
   const isExternalLink: boolean = hasExternalLink(sbomTaskRun);
   const linkToSbom = getSbomLink(sbomTaskRun);

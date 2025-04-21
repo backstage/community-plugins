@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { createContext } from 'react';
 
 import { ComputedStatus } from '@janus-idp/shared-react';
 
 import { TektonResourcesContextData } from '../types/types';
 
-export const TektonResourcesContext =
-  React.createContext<TektonResourcesContextData>({
+export const TektonResourcesContext = createContext<TektonResourcesContextData>(
+  {
     clusters: [],
     selectedStatus: ComputedStatus.All,
     setSelectedCluster: () => {},
     setSelectedStatus: () => {},
     setIsExpanded: () => {},
-  });
+  },
+);

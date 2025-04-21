@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
+import type { FC } from 'react';
+
+import { useContext, useState, memo } from 'react';
 
 import { kubernetesProxyPermission } from '@backstage/plugin-kubernetes-common';
 import { usePermission } from '@backstage/plugin-permission-react';
@@ -43,14 +45,14 @@ import PipelineRunSBOMLink from './PipelineRunSBOMLink';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { tektonTranslationRef } from '../../translation';
 
-const PipelineRunRowActions: React.FC<{ pipelineRun: PipelineRunKind }> = ({
+const PipelineRunRowActions: FC<{ pipelineRun: PipelineRunKind }> = ({
   pipelineRun,
 }) => {
-  const { watchResourcesData } = React.useContext(TektonResourcesContext);
-  const [open, setOpen] = React.useState<boolean>(false);
+  const { watchResourcesData } = useContext(TektonResourcesContext);
+  const [open, setOpen] = useState<boolean>(false);
   const { t } = useTranslationRef(tektonTranslationRef);
 
-  const [openOutput, setOpenOutput] = React.useState<boolean>(false);
+  const [openOutput, setOpenOutput] = useState<boolean>(false);
   const pods = watchResourcesData?.pods?.data || [];
   const taskRuns = watchResourcesData?.taskruns?.data || [];
   const { sbomTaskRun } = getTaskrunsOutputGroup(
@@ -58,7 +60,7 @@ const PipelineRunRowActions: React.FC<{ pipelineRun: PipelineRunKind }> = ({
     taskRuns,
   );
   const activeTaskName = sbomTaskRun?.metadata?.name;
-  const [forSBOM, toggleForSBOM] = React.useState(false);
+  const [forSBOM, toggleForSBOM] = useState(false);
 
   const hasKubernetesProxyAccess = usePermission({
     permission: kubernetesProxyPermission,
@@ -193,4 +195,4 @@ const PipelineRunRowActions: React.FC<{ pipelineRun: PipelineRunKind }> = ({
     </>
   );
 };
-export default React.memo(PipelineRunRowActions);
+export default memo(PipelineRunRowActions);

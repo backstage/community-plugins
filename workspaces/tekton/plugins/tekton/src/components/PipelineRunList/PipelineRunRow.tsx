@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { SetStateAction, Dispatch } from 'react';
+
+import { useEffect, Fragment } from 'react';
 
 import {
   Box,
@@ -68,7 +70,7 @@ type PipelineRunRowProps = {
   startTime: string;
   isExpanded?: boolean;
   open: boolean;
-  setOpen: React.Dispatch<React.SetStateAction<OpenRowStatus>>;
+  setOpen: Dispatch<SetStateAction<OpenRowStatus>>;
 };
 
 type PipelineRunNameProps = { row: PipelineRunKind };
@@ -118,7 +120,7 @@ export const PipelineRunRow = ({
   const classes = useStyles();
   const uid = row.metadata?.uid;
 
-  React.useEffect(() => {
+  useEffect(() => {
     return setOpen((val: OpenRowStatus) => {
       return {
         ...val,
@@ -139,7 +141,7 @@ export const PipelineRunRow = ({
   };
 
   return (
-    <React.Fragment key={uid}>
+    <Fragment key={uid}>
       <TableRow className={classes.plrRow}>
         <TableCell>
           <IconButton
@@ -186,6 +188,6 @@ export const PipelineRunRow = ({
           </Collapse>
         </TableCell>
       </TableRow>
-    </React.Fragment>
+    </Fragment>
   );
 };

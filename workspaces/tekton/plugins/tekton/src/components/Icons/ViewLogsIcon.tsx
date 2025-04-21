@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
+import type { ReactElement } from 'react';
 
 import { createStyles, makeStyles, Theme } from '@material-ui/core';
 import classNames from 'classnames';
@@ -29,11 +29,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-const ViewLogsIcon = ({
-  disabled,
-}: {
-  disabled?: boolean;
-}): React.ReactElement => {
+const ViewLogsIcon = ({ disabled }: { disabled?: boolean }): ReactElement => {
   const classes = useStyles();
   return (
     <svg

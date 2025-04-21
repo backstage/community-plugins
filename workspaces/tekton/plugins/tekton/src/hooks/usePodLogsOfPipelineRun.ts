@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useContext } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useApi } from '@backstage/core-plugin-api';
 import { V1Container, V1Pod } from '@kubernetes/client-node';
@@ -41,8 +41,9 @@ export const usePodLogsOfPipelineRun = ({
   intervalMs = 5000,
 }: PodLogsOptions) => {
   const kubernetesProxyApi = useApi(kubernetesProxyApiRef);
-  const { clusters, selectedCluster } =
-    React.useContext<TektonResourcesContextData>(TektonResourcesContext);
+  const { clusters, selectedCluster } = useContext<TektonResourcesContextData>(
+    TektonResourcesContext,
+  );
   const currCluster =
     (clusters.length > 0 && clusters[selectedCluster || 0]) || '';
   const containersList = pod?.spec?.containers || [];

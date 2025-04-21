@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 
 import { useEntity } from '@backstage/plugin-catalog-react';
 
@@ -44,20 +44,20 @@ export const useTektonObjectsResponse = (
     kubernetesApiRef,
     kubernetesAuthProvidersApiRef,
   );
-  const [selectedCluster, setSelectedCluster] = React.useState<number>(0);
-  const [selectedStatus, setSelectedStatus] = React.useState<ComputedStatus>(
+  const [selectedCluster, setSelectedCluster] = useState<number>(0);
+  const [selectedStatus, setSelectedStatus] = useState<ComputedStatus>(
     'All' as ComputedStatus,
   );
-  const [isExpanded, setIsExpanded] = React.useState<boolean>(false);
-  const [loaded, setLoaded] = React.useState<boolean>(false);
-  const [errorState, setErrorState] = React.useState<string>();
-  const [pipelinesData, setPipelinesData] = React.useState<
+  const [isExpanded, setIsExpanded] = useState<boolean>(false);
+  const [loaded, setLoaded] = useState<boolean>(false);
+  const [errorState, setErrorState] = useState<string>();
+  const [pipelinesData, setPipelinesData] = useState<
     TektonResponseData | undefined
   >();
 
-  const mounted = React.useRef(false);
+  const mounted = useRef(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     mounted.current = true;
     return () => {
       mounted.current = false;
@@ -76,7 +76,7 @@ export const useTektonObjectsResponse = (
     error,
   });
 
-  const updateResults = React.useCallback(
+  const updateResults = useCallback(
     (
       resData: TektonResponseData,
       isLoading: boolean,
@@ -100,7 +100,7 @@ export const useTektonObjectsResponse = (
 
   const debouncedUpdateResources = useDebounceCallback(updateResults, 250);
 
-  React.useEffect(() => {
+  useEffect(() => {
     debouncedUpdateResources?.(watchResourcesData, loading, error);
   }, [debouncedUpdateResources, watchResourcesData, loading, error]);
 

@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
+import type { HTMLProps, FC, ReactElement } from 'react';
 
-const SignedBadgeIcon: React.FC<React.HTMLProps<SVGElement>> = ({
+const SignedBadgeIcon: FC<HTMLProps<SVGElement>> = ({
   style,
-}): React.ReactElement => {
+}): ReactElement => {
   return (
     <svg version="1.1" viewBox="0 0 24 24" style={style}>
       <g fillRule="evenodd" stroke="none" strokeWidth="1" fill="none">

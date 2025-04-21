@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { PropsWithChildren } from 'react';
 
 import { BottomLinkProps, InfoCard } from '@backstage/core-components';
 
@@ -33,7 +33,7 @@ export const WrapperInfoCard = ({
   footerLink,
   title,
   showClusterSelector = true,
-}: React.PropsWithChildren<WrapperInfoCardProps>) => (
+}: PropsWithChildren<WrapperInfoCardProps>) => (
   <>
     {allErrors && allErrors.length > 0 && <ErrorPanel allErrors={allErrors} />}
     <InfoCard

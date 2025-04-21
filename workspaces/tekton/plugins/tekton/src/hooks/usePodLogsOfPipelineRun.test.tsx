@@ -19,14 +19,14 @@ import { renderHook, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { mockKubernetesPlrResponse } from '../__fixtures__/1-pipelinesData';
 import { usePodLogsOfPipelineRun } from './usePodLogsOfPipelineRun';
-import React from 'react';
+import type { ReactNode } from 'react';
 
 jest.mock('@backstage/core-plugin-api', () => ({
   ...jest.requireActual('@backstage/core-plugin-api'),
   useApi: jest.fn(),
 }));
 
-const wrapper = ({ children }: { children: React.ReactNode }) => {
+const wrapper = ({ children }: { children: ReactNode }) => {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { memo } from 'react';
 
 import { ErrorBoundary } from '@backstage/core-components';
 
@@ -101,4 +101,4 @@ const PipelineRunOutputDialog = ({
   );
 };
 
-export default React.memo(PipelineRunOutputDialog);
+export default memo(PipelineRunOutputDialog);

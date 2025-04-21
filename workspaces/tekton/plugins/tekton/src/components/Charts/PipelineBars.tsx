@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useContext, useState } from 'react';
 
 import { Tooltip } from '@patternfly/react-core';
 
@@ -34,8 +34,8 @@ import PipelineRunLogDialog from '../PipelineRunLogs/PipelineRunLogDialog';
 type PipelineBarProps = { pipelineRun: PipelineRunKind };
 
 const PipelineBars = ({ pipelineRun }: PipelineBarProps) => {
-  const { watchResourcesData } = React.useContext(TektonResourcesContext);
-  const [open, setOpen] = React.useState<boolean>(false);
+  const { watchResourcesData } = useContext(TektonResourcesContext);
+  const [open, setOpen] = useState<boolean>(false);
   const pods = watchResourcesData?.pods?.data || [];
   const taskRuns = watchResourcesData?.taskruns?.data || [];
   const plrTasks = getTaskRunsForPipelineRun(pipelineRun, taskRuns);
