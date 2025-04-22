@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 import { ReactNode } from 'react';
-
-import * as React from 'react';
 import useAsync from 'react-use/lib/useAsync';
 import { DateTime } from 'luxon';
 import {
@@ -95,7 +93,7 @@ export const AnnouncementPage = (props: AnnouncementPageProps) => {
   );
 
   let title = props.title;
-  let content: React.ReactNode;
+  let content: ReactNode;
 
   if (loading) {
     content = <Progress />;

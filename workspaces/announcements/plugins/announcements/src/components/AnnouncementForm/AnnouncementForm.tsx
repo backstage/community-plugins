@@ -13,9 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useState } from 'react';
-
-import * as React from 'react';
+import { useState, type ChangeEvent, type FormEvent } from 'react';
 import MDEditor from '@uiw/react-md-editor';
 import { InfoCard } from '@backstage/core-components';
 import { identityApiRef, useApi } from '@backstage/core-plugin-api';
@@ -56,28 +54,28 @@ export const AnnouncementForm = ({
     ? DateTime.fromISO(initialData.start_at).toISODate()
     : DateTime.now().toISODate();
 
-  const [form, setForm] = React.useState({
+  const [form, setForm] = useState({
     ...initialData,
     category: initialData.category?.slug,
     start_at: formattedStartAt || '',
   });
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setForm({
       ...form,
       [event.target.id]: event.target.value,
     });
   };
 
-  const handleChangeActive = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeActive = (event: ChangeEvent<HTMLInputElement>) => {
     setForm({
       ...form,
       [event.target.name]: event.target.checked,
     });
   };
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     setLoading(true);
     event.preventDefault();
 
