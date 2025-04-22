@@ -22,6 +22,6 @@
            - allow: [Template]
    ```
 
-4. Run `yarn dev`
+4. Run `yarn start`
 5. If you don't have a SonarQube instance available for testing, you can use the official SonarQube [container image](https://hub.docker.com/_/sonarqube/) and run it with [Podman](https://podman.io/) or [Docker](https://docker.io/) or you can use the sample Docker compose file from the [documentation](https://docs.sonarqube.org/latest/setup-and-upgrade/install-the-server/#installing-sonarqube-from-the-docker-image)
 6. :rocket: Start using the SonarQube actions in your templates

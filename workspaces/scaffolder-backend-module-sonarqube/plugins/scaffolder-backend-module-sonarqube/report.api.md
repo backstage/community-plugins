@@ -10,7 +10,8 @@ import { TemplateAction } from '@backstage/plugin-scaffolder-node';
 // @public (undocumented)
 export const createSonarQubeProjectAction: () => TemplateAction<
   TemplateActionParameters,
-  JsonObject
+  JsonObject,
+  'v1'
 >;
 
 // @public (undocumented)
