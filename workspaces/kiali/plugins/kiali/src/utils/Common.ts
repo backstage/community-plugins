@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Namespace } from '../types/Namespace';
+import type { Namespace } from '@backstage-community/plugin-kiali-common/types';
 
 // @ts-expect-error
 export const removeDuplicatesArray = a =>

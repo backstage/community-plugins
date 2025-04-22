@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import type { Namespace } from '@backstage-community/plugin-kiali-common/types';
 import { AppHealthResponse } from '../types/Health';
-import { Namespace } from './Namespace';
 import { Runtime } from './Workload';
 
 export interface AppId {

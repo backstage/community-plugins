@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { KIALI_PROVIDER } from '@backstage-community/plugin-kiali-common';
+import type { Namespace } from '@backstage-community/plugin-kiali-common/types';
 import { Entity } from '@backstage/catalog-model';
 import {
   createApiRef,
@@ -21,7 +23,6 @@ import {
 } from '@backstage/core-plugin-api';
 import { AxiosError } from 'axios';
 import { Record } from 'victory-core/lib/victory-util/immutable-types';
-import { KIALI_PROVIDER } from '../components/Router';
 import { config } from '../config';
 import { App, AppQuery } from '../types/App';
 import { AppList, AppListQuery } from '../types/AppList';
@@ -63,7 +64,6 @@ import {
 } from '../types/IstioStatus';
 import { IstioMetricsMap } from '../types/Metrics';
 import { IstioMetricsOptions } from '../types/MetricsOptions';
-import { Namespace } from '../types/Namespace';
 import { KialiCrippledFeatures, ServerConfig } from '../types/ServerConfig';
 import { ServiceDetailsInfo, ServiceDetailsQuery } from '../types/ServiceInfo';
 import { ServiceList, ServiceListQuery } from '../types/ServiceList';

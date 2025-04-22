@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { KIALI_PROVIDER } from '@backstage-community/plugin-kiali-common';
 import { Entity } from '@backstage/catalog-model';
 import {
   CardTab,
@@ -25,7 +26,6 @@ import { CircularProgress, Grid } from '@material-ui/core';
 import _ from 'lodash';
 import React, { useRef, useState } from 'react';
 import * as FilterHelper from '../../components/FilterList/FilterHelper';
-import { KIALI_PROVIDER } from '../../components/Router';
 import { isMultiCluster, serverConfig } from '../../config';
 import { nsEqual } from '../../helpers/namespaces';
 import { getErrorString, kialiApiRef } from '../../services/Api';

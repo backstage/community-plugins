@@ -24,11 +24,10 @@ import {
 import { overviewRouteRef, rootRouteRef, workloadsRouteRef } from './routes';
 import { KialiApiClient, kialiApiRef } from './services/Api';
 import '@patternfly/patternfly/patternfly.css';
-
-export const pluginName = 'kiali';
+import { pluginId } from '@backstage-community/plugin-kiali-common';
 
 export const kialiPlugin = createPlugin({
-  id: pluginName,
+  id: pluginId,
   routes: {
     root: rootRouteRef,
     overview: overviewRouteRef,

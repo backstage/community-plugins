@@ -13,6 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {
+  KIALI_NAMESPACE,
+  KIALI_PROVIDER,
+  pluginId,
+} from '@backstage-community/plugin-kiali-common';
 import { Entity } from '@backstage/catalog-model';
 import { Content, Page } from '@backstage/core-components';
 import { useEntity } from '@backstage/plugin-catalog-react';
@@ -34,7 +39,6 @@ import { ServiceListPage } from '../pages/ServiceList/ServiceListPage';
 import TrafficGraphPage from '../pages/TrafficGraph/TrafficGraphPage';
 import { WorkloadDetailsPage } from '../pages/WorkloadDetails/WorkloadDetailsPage';
 import { WorkloadListPage } from '../pages/WorkloadList/WorkloadListPage';
-import { pluginName } from '../plugin';
 import {
   appDetailRouteRef,
   appsRouteRef,
@@ -49,11 +53,6 @@ import {
 } from '../routes';
 import { KialiProvider } from '../store/KialiProvider';
 import { TechPreviewWarning } from './Banners/TechPreviewWarning';
-
-export const KIALI_ANNOTATION = 'kiali.io/id';
-export const KIALI_NAMESPACE = 'kiali.io/namespace';
-export const KIALI_PROVIDER = 'kiali.io/provider';
-export const KIALI_LABEL_SELECTOR_QUERY_ANNOTATION = 'kiali.io/label-selector';
 
 export const ANNOTATION_SUPPORTED = [KIALI_NAMESPACE, KIALI_PROVIDER];
 
@@ -118,33 +117,33 @@ export const getRoutes = (dev?: boolean) => {
     <Routes>
       <Route path="/*" element={<OverviewPage />} />
       <Route
-        path={dev ? `/${pluginName}/overview` : overviewRouteRef.path}
+        path={dev ? `/${pluginId}/overview` : overviewRouteRef.path}
         element={<OverviewPage />}
       />
       <Route
-        path={dev ? `/${pluginName}/workloads` : workloadsRouteRef.path}
+        path={dev ? `/${pluginId}/workloads` : workloadsRouteRef.path}
         element={<WorkloadListPage />}
       />
       <Route
-        path={dev ? `/${pluginName}/services` : servicesRouteRef.path}
+        path={dev ? `/${pluginId}/services` : servicesRouteRef.path}
         element={<ServiceListPage />}
       />
       <Route
-        path={dev ? `/${pluginName}/applications` : appsRouteRef.path}
+        path={dev ? `/${pluginId}/applications` : appsRouteRef.path}
         element={<AppListPage />}
       />
       <Route
-        path={dev ? `/${pluginName}/istio` : istioConfigRouteRef.path}
+        path={dev ? `/${pluginId}/istio` : istioConfigRouteRef.path}
         element={<IstioConfigListPage />}
       />
       <Route
-        path={dev ? `/${pluginName}/graph` : trafficGraphRouteRef.path}
+        path={dev ? `/${pluginId}/graph` : trafficGraphRouteRef.path}
         element={<TrafficGraphPage />}
       />
       <Route
         path={
           dev
-            ? `/${pluginName}/workloads/:namespace/:workload`
+            ? `/${pluginId}/workloads/:namespace/:workload`
             : workloadsDetailRouteRef.path
         }
         element={<WorkloadDetailsPage />}
@@ -152,7 +151,7 @@ export const getRoutes = (dev?: boolean) => {
       <Route
         path={
           dev
-            ? `/${pluginName}/services/:namespace/:service`
+            ? `/${pluginId}/services/:namespace/:service`
             : servicesDetailRouteRef.path
         }
         element={<ServiceDetailsPage />}
@@ -160,7 +159,7 @@ export const getRoutes = (dev?: boolean) => {
       <Route
         path={
           dev
-            ? `/${pluginName}/applications/:namespace/:app`
+            ? `/${pluginId}/applications/:namespace/:app`
             : appDetailRouteRef.path
         }
         element={<AppDetailsPage />}
@@ -168,13 +167,13 @@ export const getRoutes = (dev?: boolean) => {
       <Route
         path={
           dev
-            ? `/${pluginName}/istio/:namespace/:objectType/:object`
+            ? `/${pluginId}/istio/:namespace/:objectType/:object`
             : istioConfigDetailRouteRef.path
         }
         element={<IstioConfigDetailsPage />}
       />
       {dev && (
-        <Route path={`/${pluginName}/kiali/entity`} element={<KialiEntity />} />
+        <Route path={`/${pluginId}/kiali/entity`} element={<KialiEntity />} />
       )}
       <Route path="*" element={<KialiNoPath />} />
     </Routes>

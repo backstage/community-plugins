@@ -1,0 +1,51 @@
+{
+  "name": "@backstage-community/plugin-kiali-common",
+  "description": "Common functionalities for the kiali plugin",
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "private": true,
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "publishConfig": {
+    "access": "public"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./types": "./src/types/index.ts",
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "types": [
+        "src/types/index.ts"
+      ],
+      "package.json": [
+        "package.json"
+      ]
+    }
+  },
+  "backstage": {
+    "role": "common-library",
+    "pluginId": "kiali",
+    "pluginPackages": [
+      "@backstage-community/plugin-kiali",
+      "@backstage-community/plugin-kiali-common",
+      "@backstage-community/plugin-kiali-backend"
+    ]
+  },
+  "sideEffects": false,
+  "scripts": {
+    "build": "backstage-cli package build",
+    "lint": "backstage-cli package lint",
+    "test": "backstage-cli package test",
+    "clean": "backstage-cli package clean",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack"
+  },
+  "devDependencies": {
+    "@backstage/cli": "^0.32.0"
+  },
+  "files": [
+    "dist"
+  ]
+}

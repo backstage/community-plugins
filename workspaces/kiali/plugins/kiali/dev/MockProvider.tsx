@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import type { Namespace } from '@backstage-community/plugin-kiali-common/types';
 import { Entity } from '@backstage/catalog-model';
 import { Content, HeaderTabs, Page } from '@backstage/core-components';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
@@ -66,7 +67,6 @@ import {
 } from '../src/types/IstioStatus';
 import { IstioMetricsMap } from '../src/types/Metrics';
 import { IstioMetricsOptions } from '../src/types/MetricsOptions';
-import { Namespace } from '../src/types/Namespace';
 import { KialiCrippledFeatures, ServerConfig } from '../src/types/ServerConfig';
 import { ServiceDetailsInfo } from '../src/types/ServiceInfo';
 import { ServiceList, ServiceListQuery } from '../src/types/ServiceList';

@@ -3,6 +3,7 @@
   "include": [
     "packages/*/src",
     "plugins/*/src",
+    "plugins/*/src/types",
     "plugins/*/dev",
     "plugins/*/migrations"
   ],

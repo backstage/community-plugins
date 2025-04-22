@@ -1,7 +1,5 @@
-import type { Namespace } from '@backstage-community/plugin-kiali-common/types';
-
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2021 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +13,19 @@ import type { Namespace } from '@backstage-community/plugin-kiali-common/types';
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export const namespaceFromString = (namespace: string) => ({ name: namespace });
 
-export const namespacesFromString = (namespaces: string) => {
-  return namespaces.split(',').map(name => namespaceFromString(name));
-};
+/** @public */
+export const pluginId = 'kiali';
 
-export const namespacesToString = (namespaces: Namespace[]) =>
-  namespaces.map(namespace => namespace.name).join(',');
+/**
+ * Entity labels
+ */
+
+/** @public */
+export const KIALI_APP = 'kiali.io/id';
+/** @public */
+export const KIALI_NAMESPACE = 'kiali.io/namespace';
+/** @public */
+export const KIALI_PROVIDER = 'kiali.io/provider';
+/** @public */
+export const KIALI_LABEL_SELECTOR_QUERY_ANNOTATION = 'kiali.io/selector';

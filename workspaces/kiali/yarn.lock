@@ -2773,10 +2773,19 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@backstage-community/plugin-kiali-common@workspace:^, @backstage-community/plugin-kiali-common@workspace:plugins/kiali-common":
+  version: 0.0.0-use.local
+  resolution: "@backstage-community/plugin-kiali-common@workspace:plugins/kiali-common"
+  dependencies:
+    "@backstage/cli": "npm:^0.32.0"
+  languageName: unknown
+  linkType: soft
+
 "@backstage-community/plugin-kiali@workspace:^, @backstage-community/plugin-kiali@workspace:plugins/kiali":
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-kiali@workspace:plugins/kiali"
   dependencies:
+    "@backstage-community/plugin-kiali-common": "workspace:^"
     "@backstage/catalog-model": "npm:^1.7.3"
     "@backstage/cli": "npm:^0.32.0"
     "@backstage/core-components": "npm:^0.17.1"

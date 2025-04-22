@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { KIALI_NAMESPACE } from '@backstage-community/plugin-kiali-common';
 import { Entity } from '@backstage/catalog-model';
-import { KIALI_NAMESPACE } from '../components/Router';
 
 export const nsEqual = (ns: string[], ns2: string[]): boolean => {
   return (

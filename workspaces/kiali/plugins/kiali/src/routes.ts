@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { pluginId } from '@backstage-community/plugin-kiali-common';
 import {
   createRouteRef,
   createSubRouteRef,
@@ -20,7 +21,7 @@ import {
 } from '@backstage/core-plugin-api';
 
 export const rootRouteRef = createRouteRef({
-  id: 'kiali',
+  id: pluginId,
 });
 
 /* Kiali Page Routes */
