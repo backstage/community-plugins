@@ -1,5 +1,11 @@
 # @backstage-community/plugin-copilot-backend
 
+## 0.9.2
+
+### Patch Changes
+
+- 0595499: Change to fetch correct enterprise seats instead of organisation seats in EnterpriseTask
+
 ## 0.9.1
 
 ### Patch Changes
