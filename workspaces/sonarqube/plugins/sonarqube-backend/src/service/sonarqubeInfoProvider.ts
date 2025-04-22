@@ -298,17 +298,12 @@ export class DefaultSonarqubeInfoProvider implements SonarqubeInfoProvider {
     authToken: string,
     query: { [key in string]: any },
   ): Promise<T | undefined> {
-    // Sonarqube auth use basic with token as username and no password
-    // but standard dictate the colon (separator) need to stay here despite the
-    // lack of password
-    const encodedAuthToken = Buffer.from(`${authToken}:`).toString('base64');
-
     const fullUrl = `${url}/${path}?${new URLSearchParams(query).toString()}`;
 
     const response = await fetch(fullUrl, {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Basic ${encodedAuthToken}`,
+        Authorization: `Bearer ${authToken}`,
       },
     });
     if (!response.ok) {
