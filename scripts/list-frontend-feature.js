@@ -38,10 +38,6 @@ async function main(args) {
 
   // Loop through workspaces
   for (const workspace of workspaces) {
-    if (workspace === 'graphiql') {
-      continue;
-    }
-
     const currentWorkspacePath = resolve(workspacePath, workspace);
     const { packages } = await getPackages(currentWorkspacePath);
 
