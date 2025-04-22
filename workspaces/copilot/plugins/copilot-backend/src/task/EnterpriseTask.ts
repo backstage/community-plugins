@@ -140,7 +140,7 @@ export async function discoverEnterpriseMetrics({
         await db.batchInsertIdeChatEditorModels(chunk);
       });
 
-      const seats = await api.fetchOrganizationSeats();
+      const seats = await api.fetchEnterpriseSeats();
       const seatsToInsert = convertToSeatAnalysis(seats, type);
       await db.insertSeatAnalysys(seatsToInsert);
 
