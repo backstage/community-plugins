@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 import { Table } from '@backstage/core-components';
-
-import { render, screen } from '@testing-library/react';
+import { renderInTestApp } from '@backstage/test-utils';
 
 import { AddedMembersTable } from './AddedMembersTable';
 import { SelectedMember } from './types';
@@ -46,24 +45,22 @@ mockedTable.mockImplementation(
 );
 
 describe('AddedMembersTable component', () => {
-  it('renders with empty content when no selected members', () => {
-    render(
+  it('renders with empty content when no selected members', async () => {
+    const { queryByText } = await renderInTestApp(
       <AddedMembersTable
         selectedMembers={[]}
         setFieldValue={setFieldValueMock}
       />,
     );
 
+    expect(queryByText('No users and groups selected')).toBeInTheDocument();
     expect(
-      screen.queryByText('No users and groups selected'),
-    ).toBeInTheDocument();
-    expect(
-      screen.queryByText('Selected users and groups appear here.'),
+      queryByText('Selected users and groups appear here.'),
     ).toBeInTheDocument();
   });
 
-  it('renders with selected members and correct title', () => {
-    render(
+  it('renders with selected members and correct title', async () => {
+    await renderInTestApp(
       <AddedMembersTable
         selectedMembers={selectedMembers}
         setFieldValue={setFieldValueMock}
