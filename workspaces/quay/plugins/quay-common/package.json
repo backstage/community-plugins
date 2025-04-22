@@ -55,14 +55,14 @@
   ],
   "peerDependencies": {
     "@backstage/plugin-permission-common": "^0.8.4",
-    "react": "16.13.1 || ^17.0.0 || ^18.0.0"
+    "react": "^17.0.0 || ^18.0.0"
   },
   "devDependencies": {
     "@backstage/cli": "^0.32.0",
     "@backstage/plugin-permission-common": "^0.8.4",
     "@types/react": "^18.2.58",
-    "react": "16.13.1 || ^17.0.0 || ^18.0.0",
-    "react-dom": "16.13.1 || ^17.0.0 || ^18.0.0",
+    "react": "^17.0.0 || ^18.0.0",
+    "react-dom": "^17.0.0 || ^18.0.0",
     "react-router-dom": "^6.0.0"
   }
 }
