@@ -1,5 +1,11 @@
 # @backstage-community/plugin-tech-radar
 
+## 1.6.0
+
+### Minor Changes
+
+- 462f8a9: The plugin now responds better to small screens. The number of columns in the legend adjusts based on screen width; it will have 3 columns on wide screens and 1 column on narrow screens. The columns will never overlap and the legend will not disappear on very narrow screens.
+
 ## 1.5.0
 
 ### Minor Changes
