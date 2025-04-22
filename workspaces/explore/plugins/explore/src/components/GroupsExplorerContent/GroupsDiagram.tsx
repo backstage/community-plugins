@@ -37,7 +37,6 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import ZoomOutMap from '@material-ui/icons/ZoomOutMap';
 import classNames from 'classnames';
-import React from 'react';
 import useAsync from 'react-use/esm/useAsync';
 import { EntityFilterQuery } from '@backstage/catalog-client';
 

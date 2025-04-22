@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { GroupsDiagram } from './GroupsDiagram';
 import {
   Content,

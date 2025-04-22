@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { ExploreLayout } from '../ExploreLayout';
 import { GroupsExplorerContent } from '../GroupsExplorerContent';
 import { ToolExplorerContent } from '../ToolExplorerContent';

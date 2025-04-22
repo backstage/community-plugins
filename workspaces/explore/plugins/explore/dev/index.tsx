@@ -19,7 +19,6 @@ import { createDevApp } from '@backstage/dev-utils';
 import { CatalogEntityPage, EntityLayout } from '@backstage/plugin-catalog';
 import { CatalogApi, catalogApiRef } from '@backstage/plugin-catalog-react';
 import { exploreToolsConfigRef } from '@backstage-community/plugin-explore-react';
-import React from 'react';
 import { ExplorePage, explorePlugin } from '../src';
 import { exampleTools } from '../src/util/examples';
 

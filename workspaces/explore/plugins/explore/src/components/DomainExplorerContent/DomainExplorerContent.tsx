@@ -17,7 +17,6 @@
 import { DomainEntity } from '@backstage/catalog-model';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import Button from '@material-ui/core/Button';
-import React from 'react';
 import useAsync from 'react-use/esm/useAsync';
 import {
   Content,
