@@ -14,6 +14,7 @@
     "lib": ["DOM", "DOM.Iterable", "ScriptHost", "ES2022"],
     "target": "ES2022",
     "useUnknownInCatchVariables": false,
-    "allowArbitraryExtensions": true
+    "allowArbitraryExtensions": true,
+    "jsx": "react-jsx"
   }
 }
