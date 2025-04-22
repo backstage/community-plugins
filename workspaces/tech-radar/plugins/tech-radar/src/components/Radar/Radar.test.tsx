@@ -22,7 +22,12 @@ import Radar, { Props } from './Radar';
 const minProps: Props = {
   width: 500,
   height: 200,
-  quadrants: [{ id: 'languages', name: 'Languages' }],
+  quadrants: [
+    { id: 'infrastructure', name: 'Infrastructure' },
+    { id: 'frameworks', name: 'Frameworks' },
+    { id: 'languages', name: 'Languages' },
+    { id: 'process', name: 'Process' },
+  ],
   rings: [{ id: 'use', name: 'USE', color: '#93c47d' }],
   entries: [
     {

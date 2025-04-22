@@ -21,6 +21,7 @@ import RadarLegend from './RadarLegend';
 import { RadarLegendProps } from './types';
 
 const minProps: RadarLegendProps = {
+  columnCount: 2,
   quadrants: [{ id: 'languages', name: 'Languages' }],
   rings: [{ id: 'use', name: 'USE', color: '#93c47d' }],
   entries: [
