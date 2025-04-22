@@ -19,6 +19,7 @@ import { createdotnetNewAction } from './actions/dotnetNew';
 
 /**
  * A backend module that registers the action into the scaffolder
+ * @public
  */
 export const scaffolderModule = createBackendModule({
   moduleId: 'dotnet',

@@ -5,13 +5,7 @@
 ```ts
 import { BackendFeature } from '@backstage/backend-plugin-api';
 
-// Warning: (ae-missing-release-tag) "scaffolderModule" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 const scaffolderModule: BackendFeature;
 export default scaffolderModule;
-
-// Warnings were encountered during analysis:
-//
-// src/index.d.ts:2:26 - (tsdoc-characters-after-block-tag) The token "@backstage" looks like a TSDoc tag but contains an invalid character "/"; if it is not a tag, use a backslash to escape the "@"
 ```

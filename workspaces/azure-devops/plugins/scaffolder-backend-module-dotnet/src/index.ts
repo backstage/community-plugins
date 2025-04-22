@@ -15,7 +15,7 @@
  */
 
 /**
- * The dotnet module for @backstage/plugin-scaffolder-backend.
+ * The dotnet module for the Scaffolder.
  *
  * @packageDocumentation
  */
