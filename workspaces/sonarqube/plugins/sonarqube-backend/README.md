@@ -2,6 +2,13 @@
 
 Welcome to the sonarqube-backend backend plugin!
 
+This plugin needs to be added to an existing backstage instance.
+
+```bash
+# From your Backstage root directory
+yarn --cwd packages/backend add @backstage-community/plugin-sonarqube-backend
+```
+
 ## New Backend System
 
 The Sonarqube backend plugin has support for the [new backend system](https://backstage.io/docs/backend-system/), here's how you can set that up:
@@ -16,14 +23,7 @@ In your `packages/backend/src/index.ts` make the following changes:
   backend.start();
 ```
 
-## Integrating into a backstage instance
-
-This plugin needs to be added to an existing backstage instance.
-
-```bash
-# From your Backstage root directory
-yarn --cwd packages/backend add @backstage-community/plugin-sonarqube-backend
-```
+## Old Backend System
 
 Typically, this means creating a `src/plugins/sonarqube.ts` file and adding a reference to it to `src/index.ts` in the backend package.
 
@@ -84,6 +84,8 @@ index 1942c36ad1..7fdc48ba24 100644
 
 ```
 
+## SonarqubeInfoProvider
+
 This plugin must be provided with a `SonarqubeInfoProvider`, this is a strategy object for finding Sonarqube instances in configuration and retrieving data from an instance.
 
 There is a standard one provided (`DefaultSonarqubeInfoProvider`), but the Integrator is free to build their own.
@@ -131,6 +133,10 @@ sonarqube:
       instanceKey: mySonarqube
       baseUrl: https://special-project-sonarqube.example.com
       apiKey: abcdef0123456789abcedf0123456789ab
+    - name: cloud
+      instanceKey: sonarcloud
+      baseUrl: https://sonarcloud.io
+      apiKey: 0123456789abcedf012123456789abcdef
 ```
 
 ##### Catalog

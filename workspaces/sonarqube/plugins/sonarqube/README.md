@@ -10,7 +10,7 @@ The SonarQube Plugin displays code statistics from [SonarCloud](https://sonarclo
 
 ```bash
 # From your Backstage root directory
-yarn --cwd packages/app add @backstage-community/plugin-sonarqube
+yarn --cwd packages/app add @backstage-community/plugin-sonarqube @backstage-community/plugin-sonarqube-react
 ```
 
 2. Add the `EntitySonarQubeCard` to the EntityPage:
@@ -18,6 +18,7 @@ yarn --cwd packages/app add @backstage-community/plugin-sonarqube
 ```diff
   // packages/app/src/components/catalog/EntityPage.tsx
 + import { EntitySonarQubeCard } from '@backstage-community/plugin-sonarqube';
++ import { isSonarQubeAvailable } from '@backstage-community/plugin-sonarqube-react';
 
  ...
 
@@ -26,9 +27,13 @@ yarn --cwd packages/app add @backstage-community/plugin-sonarqube
      <Grid item md={6}>
        <EntityAboutCard variant="gridItem" />
      </Grid>
-+    <Grid item md={6}>
-+      <EntitySonarQubeCard variant="gridItem" />
-+    </Grid>
++    <EntitySwitch>
++      <EntitySwitch.Case if={isSonarQubeAvailable}>
++        <Grid item md={6}>
++          <EntitySonarQubeCard variant="gridItem" />
++        </Grid>
++      </EntitySwitch.Case>
++    </EntitySwitch>
    </Grid>
  );
 ```
