@@ -10,7 +10,14 @@ spec:
     - title: Choose your project
       required:
         - project
+        - component_id
       properties:
+        component_id:
+          title: Name
+          type: string
+          description: Unique name of your service. The name must contain only Alphabet characters (e.g MyPlugin)
+          maxLength: 20
+          pattern: '^[A-Za-z]+$'
         project:
           title: Project
           type: string
@@ -19,7 +26,7 @@ spec:
           enum:
             - webapi
             - aspire
-            - wepapp
+            - webapp
   # These steps are executed in the scaffolder backend, using data that we gathered
   # via the parameters above.
   steps:
@@ -28,4 +35,7 @@ spec:
       action: dotnet:new
       input:
         template:  ${{parameters.project}}
+        args:
+          - -n
+          - ${{parameters.component_id | replace("-", "_")}}
 ---

@@ -15,13 +15,13 @@
  */
 import { createBackendModule } from '@backstage/backend-plugin-api';
 import { scaffolderActionsExtensionPoint } from '@backstage/plugin-scaffolder-node/alpha';
-import { createdotnetNewAction } from './actions/dotnetnew';
+import { createdotnetNewAction } from './actions/dotnetNew';
 
 /**
  * A backend module that registers the action into the scaffolder
  */
 export const scaffolderModule = createBackendModule({
-  moduleId: 'example-action',
+  moduleId: 'dotnet',
   pluginId: 'scaffolder',
   register({ registerInit }) {
     registerInit({
