@@ -2822,12 +2822,12 @@ __metadata:
     moment: "npm:^2.30.1"
     msw: "npm:1.3.5"
     pluralize: "npm:^8.0.0"
-    react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
+    react: "npm:^17.0.0 || ^18.0.0"
     react-dom: "npm:^18"
     react-router-dom: "npm:^6.3.0"
     react-use: "npm:17.6.0"
   peerDependencies:
-    react: ^16.13.1 || ^17.0.0 || ^18.0.0
+    react: ^17.0.0 || ^18.0.0
     react-router-dom: ^6.3.0
   languageName: unknown
   linkType: soft
@@ -29801,7 +29801,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react@npm:^16.13.1 || ^17.0.0 || ^18.0.0, react@npm:^18.0.0":
+"react@npm:^17.0.0 || ^18.0.0, react@npm:^18.0.0":
   version: 18.3.1
   resolution: "react@npm:18.3.1"
   dependencies:
