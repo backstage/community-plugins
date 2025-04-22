@@ -2864,6 +2864,7 @@ __metadata:
     msw: "npm:^1.0.0"
     node-fetch: "npm:^2.6.7"
     p-limit: "npm:^3.1.0"
+    p-throttle: "npm:^4.1.1"
   languageName: unknown
   linkType: soft
 
