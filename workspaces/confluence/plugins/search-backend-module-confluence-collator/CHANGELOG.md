@@ -1,5 +1,11 @@
 # @backstage-community/plugin-search-backend-module-confluence-collator
 
+## 0.7.0
+
+### Minor Changes
+
+- 7f9ae73: Added configurable rate limiting to the Confluence plugin to mitigate excessive requests and improve performance under high load. Administrators can now set limits on API calls to better control usage. Please refer to the documentation for configuration details.
+
 ## 0.6.0
 
 ### Minor Changes
