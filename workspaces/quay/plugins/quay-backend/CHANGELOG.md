@@ -1,5 +1,13 @@
 # @backstage-community/plugin-quay-backend
 
+## 1.1.3
+
+### Patch Changes
+
+- 16c57cc: chore: Remove usage of @spotify/prettier-config
+- Updated dependencies [16c57cc]
+  - @backstage-community/plugin-quay-common@1.7.2
+
 ## 1.1.2
 
 ### Patch Changes
