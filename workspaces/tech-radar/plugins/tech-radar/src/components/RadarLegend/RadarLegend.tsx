@@ -34,7 +34,7 @@ const useStyles = makeStyles(theme => ({
     fontSize: '18px',
   },
   rings: {
-    columns: 3,
+    columns: (props: { columnCount: number }) => props.columnCount,
   },
   ring: {
     breakInside: 'avoid-column',
