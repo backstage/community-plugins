@@ -58,4 +58,9 @@ backend.add(
   import('@backstage-community/plugin-scaffolder-backend-module-azure-devops'),
 );
 
+backend.add(
+  import('@backstage-community/plugin-scaffolder-backend-module-dotnet'),
+);
+backend.add(import('@backstage/plugin-catalog-backend-module-logs'));
+
 backend.start();

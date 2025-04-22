@@ -1,0 +1,31 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-template
+kind: Template
+metadata:
+  name: dotnet-new-example
+  title: Create New Project Example
+spec:
+  type: service
+  parameters:
+    - title: Choose your project
+      required:
+        - project
+      properties:
+        project:
+          title: Project
+          type: string
+          description: Choose what dotnet project to create
+          default: None
+          enum:
+            - webapi
+            - aspire
+            - wepapp
+  # These steps are executed in the scaffolder backend, using data that we gathered
+  # via the parameters above.
+  steps:
+    - id: runAzurePipeline
+      name: Create New Project
+      action: dotnet:new
+      input:
+        template:  ${{parameters.project}}
+---
