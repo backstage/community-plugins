@@ -357,10 +357,10 @@ describe('DefaultSonarqubeInfoProvider', () => {
     const checkBasicAuthToken = (req: RestRequest<never>) => {
       if (req.headers && req.headers.has('Authorization')) {
         expect(req.headers.get('Authorization')).toEqual(
-          `Basic MTIzNDU2Nzg5YWJjZGVmMDEyMzQ1Njc4OWFiY2VkZjAxMjo=`,
+          `Bearer 123456789abcdef0123456789abcedf012`,
         );
       } else {
-        throw new Error('Basic auth token not provided');
+        throw new Error('Bearer token not provided');
       }
     };
 
