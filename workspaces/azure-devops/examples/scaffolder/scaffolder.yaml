@@ -34,8 +34,9 @@ spec:
       name: Create New Project
       action: dotnet:new
       input:
-        template:  ${{parameters.project}}
+        template: ${{parameters.project}}
         args:
           - -n
           - ${{parameters.component_id | replace("-", "_")}}
 ---
+

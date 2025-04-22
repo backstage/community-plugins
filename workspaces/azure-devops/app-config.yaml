@@ -19,11 +19,11 @@ backend:
     client: better-sqlite3
     connection: ':memory:'
 
-# integrations:
-#   azure:
-#     - host: dev.azure.com
-#       credentials:
-#         - personalAccessToken: ${PERSONAL_ACCESS_TOKEN}
+integrations:
+  azure:
+    - host: dev.azure.com
+      credentials:
+        - personalAccessToken: ${PERSONAL_ACCESS_TOKEN}
 
 techdocs:
   builder: 'local'
@@ -58,7 +58,7 @@ catalog:
       target: ../../examples/scaffolder/scaffolder.yaml
       rules:
         - allow: [Template]
-  # Local example scaffolder action
+    # Local example scaffolder action
     - type: file
       target: ../../examples/scaffolder/runAzurePipeline.yaml
       rules:
