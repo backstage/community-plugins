@@ -28,6 +28,7 @@ type AnnouncementsCardOpts = {
   variant?: InfoCardVariants;
   sortBy?: 'created_at' | 'start_at';
   order?: 'asc' | 'desc';
+  hideStartAt?: boolean;
 };
 
 export const AnnouncementsCard = ({
@@ -38,6 +39,7 @@ export const AnnouncementsCard = ({
   variant = 'gridItem',
   sortBy,
   order,
+  hideStartAt,
 }: AnnouncementsCardOpts) => {
   const { t } = useAnnouncementsTranslation();
   const announcementsLink = useRouteRef(rootRouteRef);
@@ -58,6 +60,7 @@ export const AnnouncementsCard = ({
         active={active}
         sortBy={sortBy}
         order={order}
+        hideStartAt={hideStartAt}
       />
     </InfoCard>
   );

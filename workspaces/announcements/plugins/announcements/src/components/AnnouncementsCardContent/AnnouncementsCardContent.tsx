@@ -54,6 +54,7 @@ type AnnouncementsListProps = {
   active?: boolean;
   sortBy?: 'created_at' | 'start_at';
   order?: 'asc' | 'desc';
+  hideStartAt?: boolean;
 };
 
 export const AnnouncementsCardContent = ({
@@ -62,6 +63,7 @@ export const AnnouncementsCardContent = ({
   active,
   sortBy,
   order,
+  hideStartAt,
 }: AnnouncementsListProps) => {
   const { t } = useAnnouncementsTranslation();
 
@@ -130,14 +132,16 @@ export const AnnouncementsCardContent = ({
                 <Typography variant="body2" color="textSecondary">
                   {announcement.excerpt}
                 </Typography>
-                <Typography variant="caption" color="textSecondary">
-                  {formatAnnouncementStartTime(
-                    announcement.start_at,
-                    t('announcementsCard.occurred'),
-                    t('announcementsCard.scheduled'),
-                    t('announcementsCard.today'),
-                  )}
-                </Typography>
+                {!hideStartAt && (
+                  <Typography variant="caption" color="textSecondary">
+                    {formatAnnouncementStartTime(
+                      announcement.start_at,
+                      t('announcementsCard.occurred'),
+                      t('announcementsCard.scheduled'),
+                      t('announcementsCard.today'),
+                    )}
+                  </Typography>
+                )}
               </Box>
             }
           />
