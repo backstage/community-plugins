@@ -2718,9 +2718,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@backstage-community/plugin-tech-insights-backend-module-jsonfc@npm:^0.4.0":
-  version: 0.4.0
-  resolution: "@backstage-community/plugin-tech-insights-backend-module-jsonfc@npm:0.4.0"
+"@backstage-community/plugin-tech-insights-backend-module-jsonfc@npm:^0.5.0":
+  version: 0.5.0
+  resolution: "@backstage-community/plugin-tech-insights-backend-module-jsonfc@npm:0.5.0"
   dependencies:
     "@backstage-community/plugin-tech-insights-common": "npm:^0.5.0"
     "@backstage-community/plugin-tech-insights-node": "npm:^2.3.0"
@@ -2732,7 +2732,7 @@ __metadata:
     json-rules-engine: "npm:^7.0.0"
     lodash: "npm:^4.17.21"
     luxon: "npm:^3.0.0"
-  checksum: 10/5b90a75def41f87cc444a4895d3424c7c48554cf9125023ec6cbf95c9ef1fa4684136a2f9735c8bdfebb02ce0aac2e88a2b6d3603a7ab7776a2fdf5ab83720c0
+  checksum: 10/dc2ba867b017e5fa4c9f300500368b89a438aae7c98ddf62a6542531e6fede417b46d039df763da1fb2858c7744df1ef8f21d8b60a12f20cd6654d27a11d6d88
   languageName: node
   linkType: hard
 
@@ -14471,7 +14471,7 @@ __metadata:
   resolution: "backend@workspace:packages/backend"
   dependencies:
     "@backstage-community/plugin-tech-insights-backend": "npm:^2.1.1"
-    "@backstage-community/plugin-tech-insights-backend-module-jsonfc": "npm:^0.4.0"
+    "@backstage-community/plugin-tech-insights-backend-module-jsonfc": "npm:^0.5.0"
     "@backstage-community/plugin-tech-insights-common": "npm:^0.5.0"
     "@backstage-community/plugin-tech-insights-node": "npm:^2.2.0"
     "@backstage/backend-defaults": "npm:^0.6.2"
