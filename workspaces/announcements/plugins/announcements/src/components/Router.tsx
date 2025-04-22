@@ -47,6 +47,7 @@ type RouterProps = {
     name: string | undefined;
   };
   hideInactive?: boolean;
+  hideStartAt?: boolean;
 };
 
 export const Router = (props: RouterProps) => {
@@ -54,6 +55,7 @@ export const Router = (props: RouterProps) => {
     themeId: 'home',
     title: 'Announcements',
     hideInactive: false,
+    hideStartAt: false,
     ...props,
   };
 
