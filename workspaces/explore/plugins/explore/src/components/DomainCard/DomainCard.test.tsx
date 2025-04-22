@@ -18,7 +18,6 @@ import { DomainEntity } from '@backstage/catalog-model';
 import { entityRouteRef } from '@backstage/plugin-catalog-react';
 import { renderInTestApp } from '@backstage/test-utils';
 import { screen } from '@testing-library/react';
-import React from 'react';
 import { DomainCard } from './DomainCard';
 
 describe('<DomainCard />', () => {

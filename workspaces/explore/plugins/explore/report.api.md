@@ -8,7 +8,7 @@
 import { ApiRef } from '@backstage/core-plugin-api';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { default as default_2 } from 'react';
-import { DependencyGraphTypes } from '@backstage/core-components/*';
+import { DependencyGraphTypes } from '@backstage/core-components';
 import { DiscoveryApi } from '@backstage/core-plugin-api';
 import { DomainEntity } from '@backstage/catalog-model';
 import { ExploreToolsConfig } from '@backstage-community/plugin-explore-react';
@@ -17,8 +17,7 @@ import { FetchApi } from '@backstage/core-plugin-api';
 import { GetExploreToolsRequest } from '@backstage-community/plugin-explore-common';
 import { GetExploreToolsResponse } from '@backstage-community/plugin-explore-common';
 import { IndexableDocument } from '@backstage/plugin-search-common';
-import { JSX as JSX_2 } from 'react';
-import { default as React_2 } from 'react';
+import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { ReactNode } from 'react';
 import { ResultHighlight } from '@backstage/plugin-search-common';
 import { RouteRef } from '@backstage/core-plugin-api';
@@ -39,12 +38,10 @@ export const catalogEntityRouteRef: ExternalRouteRef<
 export const CatalogKindExploreContent: (props: {
   title?: string;
   kind: string;
-}) => React_2.JSX.Element;
+}) => JSX_2.Element;
 
 // @public (undocumented)
-export const DomainCard: (props: {
-  entity: DomainEntity;
-}) => React_2.JSX.Element;
+export const DomainCard: (props: { entity: DomainEntity }) => JSX_2.Element;
 
 // @public (undocumented)
 export const DomainExplorerContent: (props: {
@@ -72,7 +69,7 @@ export class ExploreClient implements ExploreApi {
 
 // @public
 export const ExploreLayout: {
-  (props: ExploreLayoutProps): default_2.JSX.Element;
+  (props: ExploreLayoutProps): JSX_2.Element;
   Route: (props: SubRoute) => null;
 };
 
