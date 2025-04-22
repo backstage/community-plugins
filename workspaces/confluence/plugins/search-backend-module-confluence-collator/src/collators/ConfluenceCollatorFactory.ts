@@ -19,9 +19,10 @@ import {
 } from '@backstage/plugin-search-common';
 import { Config } from '@backstage/config';
 import { Readable } from 'stream';
-import fetch from 'node-fetch';
+import fetch, { RequestInfo, RequestInit, Response } from 'node-fetch';
 import pLimit from 'p-limit';
 import { LoggerService } from '@backstage/backend-plugin-api';
+import pThrottle from 'p-throttle';
 
 /**
  * Document metadata
@@ -65,6 +66,7 @@ export type ConfluenceCollatorFactoryOptions = {
   spaces?: string[];
   query?: string;
   parallelismLimit?: number;
+  maxRequestsPerSecond?: number;
   logger: LoggerService;
 };
 
@@ -138,6 +140,10 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
   private readonly parallelismLimit: number | undefined;
   private readonly logger: LoggerService;
   public readonly type: string = 'confluence';
+  private readonly fetch: (
+    url: RequestInfo,
+    init?: RequestInit,
+  ) => Promise<Response>;
 
   private constructor(options: ConfluenceCollatorFactoryOptions) {
     this.baseUrl = options.baseUrl;
@@ -150,6 +156,19 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
     this.query = options.query;
     this.parallelismLimit = options.parallelismLimit;
     this.logger = options.logger.child({ documentType: this.type });
+
+    if (options.maxRequestsPerSecond) {
+      const throttle = pThrottle({
+        limit: options.maxRequestsPerSecond,
+        interval: 1000,
+      });
+      this.fetch = throttle(async (url: RequestInfo, init?: RequestInit) => {
+        const response = await fetch(url, init);
+        return response;
+      });
+    } else {
+      this.fetch = fetch;
+    }
   }
 
   static fromConfig(config: Config, options: ConfluenceCollatorFactoryOptions) {
@@ -195,9 +214,11 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
       spaces,
       query,
       parallelismLimit,
+      maxRequestsPerSecond: config.getOptionalNumber(
+        'confluence.maxRequestsPerSecond',
+      ),
     });
   }
-
   async getCollator() {
     return Readable.from(this.execute());
   }
@@ -353,7 +374,7 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
   }
 
   private async get<T = any>(requestUrl: string): Promise<T> {
-    const res = await fetch(requestUrl, {
+    const res = await this.fetch(requestUrl, {
       method: 'get',
       headers: {
         Authorization: this.getAuthorizationHeader(),
@@ -369,7 +390,6 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
 
       throw new Error(`Request failed with ${res.status} ${res.statusText}`);
     }
-
     return await res.json();
   }
 }
