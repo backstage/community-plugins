@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useState } from 'react';
 
 import { PermissionCondition } from '@backstage/plugin-permission-common';
 
@@ -55,7 +55,7 @@ export const ConditionsForm = ({
   onClose,
   onSave,
 }: ConditionFormProps) => {
-  const [conditions, setConditions] = React.useState<ConditionsData>(
+  const [conditions, setConditions] = useState<ConditionsData>(
     conditionsFormVal ?? {
       condition: {
         rule: '',
@@ -64,15 +64,14 @@ export const ConditionsForm = ({
       },
     },
   );
-  const [criteria, setCriteria] = React.useState<keyof ConditionsData>(
+  const [criteria, setCriteria] = useState<keyof ConditionsData>(
     (Object.keys(conditions)[0] as keyof ConditionsData) ?? criterias.condition,
   );
-  const [errors, setErrors] = React.useState<
-    AccessConditionsErrors | undefined
-  >(initializeErrors(criteria, conditions));
+  const [errors, setErrors] = useState<AccessConditionsErrors | undefined>(
+    initializeErrors(criteria, conditions),
+  );
 
-  const [removeAllClicked, setRemoveAllClicked] =
-    React.useState<boolean>(false);
+  const [removeAllClicked, setRemoveAllClicked] = useState<boolean>(false);
 
   const flattenConditions = (
     conditionData: Condition[],

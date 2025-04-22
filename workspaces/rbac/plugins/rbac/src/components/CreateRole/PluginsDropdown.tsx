@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 import Autocomplete from '@mui/material/Autocomplete';
-import React from 'react';
+import type { FocusEventHandler } from 'react';
+import { useEffect } from 'react';
 import { SelectedPlugin } from '../../types';
 import { PluginsDropdownOption } from './PluginsDropdownOption';
 import TextField from '@mui/material/TextField';
@@ -29,7 +30,7 @@ type PluginsDropdownProps = {
     value: any,
     shouldValidate?: boolean,
   ) => Promise<FormikErrors<RoleFormValues>> | Promise<void>;
-  handleBlur: React.FocusEventHandler<HTMLInputElement | HTMLTextAreaElement>;
+  handleBlur: FocusEventHandler<HTMLInputElement | HTMLTextAreaElement>;
   onRemoveAllPlugins: () => void;
   onRemovePlugin: (plugin: string) => void;
   selectedPluginsError: string;
@@ -44,7 +45,7 @@ const PluginsDropdown = ({
   onRemoveAllPlugins,
   selectedPluginsError,
 }: PluginsDropdownProps) => {
-  React.useEffect(() => {
+  useEffect(() => {
     if (selectedPlugins.length === allPlugins.length - 1)
       setFieldValue(`selectedPlugins`, allPlugins, true);
     // eslint-disable-next-line react-hooks/exhaustive-deps

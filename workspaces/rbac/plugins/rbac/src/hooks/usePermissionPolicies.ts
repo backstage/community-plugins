@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useMemo } from 'react';
 import { useAsyncRetry, useInterval } from 'react-use';
 
 import { useApi } from '@backstage/core-plugin-api';
@@ -94,18 +94,18 @@ export const usePermissionPolicies = (
     !conditionalPoliciesError &&
     (!permissionPolicies || !policies || !conditionalPolicies);
 
-  const allPermissionPolicies = React.useMemo(
+  const allPermissionPolicies = useMemo(
     () => (Array.isArray(permissionPolicies) ? permissionPolicies : []),
     [permissionPolicies],
   );
 
-  const data = React.useMemo(() => {
+  const data = useMemo(() => {
     return Array.isArray(policies)
       ? getPermissionsData(policies, allPermissionPolicies)
       : [];
   }, [allPermissionPolicies, policies]);
 
-  const conditionsData = React.useMemo(() => {
+  const conditionsData = useMemo(() => {
     const cpp = Array.isArray(conditionalPolicies) ? conditionalPolicies : [];
     const pluginsPermissionsPoliciesData =
       allPermissionPolicies.length > 0

@@ -40,7 +40,7 @@ import LibraryBooks from '@material-ui/icons/LibraryBooks';
 import MenuIcon from '@material-ui/icons/Menu';
 import GroupIcon from '@material-ui/icons/People';
 import SearchIcon from '@material-ui/icons/Search';
-import React, { PropsWithChildren } from 'react';
+import { PropsWithChildren } from 'react';
 import LogoFull from './LogoFull';
 import LogoIcon from './LogoIcon';
 

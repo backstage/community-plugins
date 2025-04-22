@@ -18,7 +18,7 @@ import Checkbox from '@mui/material/Checkbox';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
-import React from 'react';
+import { useState } from 'react';
 import { RowPolicy } from './types';
 import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
@@ -65,7 +65,7 @@ const PermissionPoliciesFormNestedRow = ({
   onRemovePermission: (index: number) => void;
   onAddConditions: (index: number, conditions?: ConditionsData) => void;
 }) => {
-  const [sidebarOpen, setSidebarOpen] = React.useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const tooltipTitle = () => (
     <div>
       <Typography component="p" align="center">

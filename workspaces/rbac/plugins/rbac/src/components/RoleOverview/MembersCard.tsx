@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useState, useMemo } from 'react';
 
 import { parseEntityRef } from '@backstage/catalog-model';
 import { Table, WarningPanel } from '@backstage/core-components';
@@ -48,7 +48,7 @@ const getEditIcon = (isAllowed: boolean, roleName: string) => {
 
 export const MembersCard = ({ roleName, membersInfo }: MembersCardProps) => {
   const { data, loading, retry, error, canReadUsersAndGroups } = membersInfo;
-  const [searchText, setSearchText] = React.useState<string>();
+  const [searchText, setSearchText] = useState<string>();
 
   const actions = [
     {
@@ -68,7 +68,7 @@ export const MembersCard = ({ roleName, membersInfo }: MembersCardProps) => {
     },
   ];
 
-  const filteredData = React.useMemo(
+  const filteredData = useMemo(
     () => filterTableData({ data, columns, searchText }),
     [data, searchText],
   );

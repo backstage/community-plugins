@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { FocusEventHandler, ChangeEventHandler } from 'react';
 
 import TextField from '@mui/material/TextField';
 
@@ -22,10 +22,8 @@ type RoleDetailsFormProps = {
   description?: string;
   owner?: string;
   nameError?: string;
-  handleBlur: React.FocusEventHandler<HTMLInputElement | HTMLTextAreaElement>;
-  handleChange: React.ChangeEventHandler<
-    HTMLTextAreaElement | HTMLInputElement
-  >;
+  handleBlur: FocusEventHandler<HTMLInputElement | HTMLTextAreaElement>;
+  handleChange: ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement>;
 };
 
 export const RoleDetailsForm = ({

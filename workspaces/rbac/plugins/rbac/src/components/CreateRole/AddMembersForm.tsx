@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useState, useEffect, useMemo } from 'react';
 
 import { stringifyEntityRef } from '@backstage/catalog-model';
 
@@ -51,10 +51,10 @@ export const AddMembersForm = ({
   setFieldValue,
   membersData,
 }: AddMembersFormProps) => {
-  const [search, setSearch] = React.useState<string>('');
+  const [search, setSearch] = useState<string>('');
   const [selectedMember, setSelectedMember] =
-    React.useState<SelectedMember[]>(selectedMembers);
-  React.useEffect(() => {
+    useState<SelectedMember[]>(selectedMembers);
+  useEffect(() => {
     setSelectedMember(selectedMembers);
   }, [selectedMembers]);
 
@@ -74,7 +74,7 @@ export const AddMembersForm = ({
       : undefined;
   };
 
-  const membersOptions: SelectedMember[] = React.useMemo(() => {
+  const membersOptions: SelectedMember[] = useMemo(() => {
     return membersData.members
       ? membersData.members.map((member: MemberEntity, index: number) => {
           const tag =
@@ -94,7 +94,7 @@ export const AddMembersForm = ({
       : ([] as SelectedMember[]);
   }, [membersData.members]);
 
-  const filteredMembers = React.useMemo(() => {
+  const filteredMembers = useMemo(() => {
     if (search) {
       return membersOptions
         .filter(m =>

@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
+import type { SetStateAction, Dispatch, ChangeEvent } from 'react';
+
+import { useState, useEffect } from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -39,7 +41,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 interface PermissionPoliciesTableToolbarProps {
   numSelected: number;
   search: string;
-  setSearch: React.Dispatch<React.SetStateAction<string>>;
+  setSearch: Dispatch<SetStateAction<string>>;
 }
 
 const PermissionPoliciesFormTableToolbar = ({
@@ -122,13 +124,13 @@ const PermissionPoliciesFormTable = ({
   onRemovePlugin: (plugin: string) => void;
   onAddConditions: (index: number, conditions?: ConditionsData) => void;
 }) => {
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [open, setOpen] = React.useState<boolean>(false);
-  const [search, setSearch] = React.useState<string>('');
-  const [filteredData, setFilteredData] = React.useState<any>([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [open, setOpen] = useState<boolean>(false);
+  const [search, setSearch] = useState<string>('');
+  const [filteredData, setFilteredData] = useState<any>([]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (search)
       setFilteredData(
         data?.filter((row: any) => row.plugin.includes(search)) ?? [],
@@ -140,9 +142,7 @@ const PermissionPoliciesFormTable = ({
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };

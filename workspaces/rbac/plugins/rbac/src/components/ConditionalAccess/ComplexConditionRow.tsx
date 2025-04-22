@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { SetStateAction, Dispatch } from 'react';
 
 import { PermissionCondition } from '@backstage/plugin-permission-common';
 
@@ -45,10 +45,8 @@ type ComplexConditionRowProps = {
   criteria: keyof ConditionsData;
   onRuleChange: (newCondition: ConditionsData) => void;
   updateRules: (updatedNestedConditionRow: Condition[] | Condition) => void;
-  setErrors: React.Dispatch<
-    React.SetStateAction<AccessConditionsErrors | undefined>
-  >;
-  setRemoveAllClicked: React.Dispatch<React.SetStateAction<boolean>>;
+  setErrors: Dispatch<SetStateAction<AccessConditionsErrors | undefined>>;
+  setRemoveAllClicked: Dispatch<SetStateAction<boolean>>;
   conditionRulesData?: RulesData;
   notConditionType?: NotConditionType;
   currentCondition: Condition;

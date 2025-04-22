@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useState, useMemo } from 'react';
 
 import { parseEntityRef } from '@backstage/catalog-model';
 import { Table, WarningPanel } from '@backstage/core-components';
@@ -51,9 +51,9 @@ export const PermissionsCard = ({
 }: PermissionsCardProps) => {
   const { data, loading, retry, error } =
     usePermissionPolicies(entityReference);
-  const [searchText, setSearchText] = React.useState<string>();
+  const [searchText, setSearchText] = useState<string>();
 
-  const numberOfPolicies = React.useMemo(() => {
+  const numberOfPolicies = useMemo(() => {
     const filteredPermissions = filterTableData({ data, columns, searchText });
     let policies = 0;
     filteredPermissions.forEach(p => {

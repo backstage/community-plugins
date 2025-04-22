@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useState } from 'react';
 
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
@@ -23,9 +23,7 @@ import { getInnerSchemaForArrayItem } from '@rjsf/utils/lib/schema/getDefaultFor
 
 export const CustomArrayField = (props: FieldProps) => {
   const { name, required, schema: sch, formData, onChange } = props;
-  const [fieldVal, setFieldVal] = React.useState<string>(
-    formData?.toString() ?? '',
-  );
+  const [fieldVal, setFieldVal] = useState<string>(formData?.toString() ?? '');
 
   const arrayItemsType = getInnerSchemaForArrayItem(sch).type;
 
