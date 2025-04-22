@@ -6,8 +6,8 @@
     "node": "18 || 20 || 22"
   },
   "scripts": {
-    "dev": "yarn workspaces foreach -A --include backend --include app --parallel -v -i run start",
-    "start": "yarn workspace app start",
+    "start": "backstage-cli repo start",
+    "start-frontend": "yarn workspace app start",
     "start-backend": "yarn workspace backend start",
     "tsc": "tsc",
     "tsc:full": "tsc --skipLibCheck false --incremental false",
