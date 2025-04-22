@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.40.1
+
+### Patch Changes
+
+- 1adf6a6: resolve module import error while importing from `@rjsf/utils/lib/schema/getDefaultFormState`
+
 ## 1.40.0
 
 ### Minor Changes
