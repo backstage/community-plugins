@@ -30,9 +30,9 @@
   },
   "dependencies": {
     "@backstage/catalog-model": "^1.7.3",
-    "@backstage/core-components": "^0.17.0",
-    "@backstage/core-plugin-api": "^1.10.5",
-    "@backstage/plugin-catalog-react": "^1.16.0",
+    "@backstage/core-components": "^0.17.1",
+    "@backstage/core-plugin-api": "^1.10.6",
+    "@backstage/plugin-catalog-react": "^1.17.0",
     "@material-ui/core": "^4.9.13",
     "@material-ui/icons": "^4.11.3",
     "@material-ui/lab": "^4.0.0-alpha.45",
@@ -72,9 +72,9 @@
     "react-router-dom": "^6.0.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.31.1",
-    "@backstage/dev-utils": "^1.1.8",
-    "@backstage/test-utils": "^1.7.6",
+    "@backstage/cli": "^0.32.0",
+    "@backstage/dev-utils": "^1.1.9",
+    "@backstage/test-utils": "^1.7.7",
     "@playwright/test": "1.51.1",
     "@redhat-developer/red-hat-developer-hub-theme": "0.4.0",
     "@testing-library/dom": "^10.0.0",
