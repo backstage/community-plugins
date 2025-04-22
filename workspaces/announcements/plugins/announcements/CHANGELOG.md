@@ -1,5 +1,16 @@
 # @backstage-community/plugin-announcements
 
+## 0.5.7
+
+### Patch Changes
+
+- 32b99b3: - Add `hideStartAt` React prop to allow hiding the "Start at" date label on announcements card
+
+  ```diff
+  - <AnnouncementsCard max={2} />
+  + <AnnouncementsCard max={2} hideStartAt />
+  ```
+
 ## 0.5.6
 
 ### Patch Changes
