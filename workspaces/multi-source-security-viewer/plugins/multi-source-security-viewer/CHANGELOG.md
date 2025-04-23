@@ -1,5 +1,11 @@
 # @backstage-community/plugin-multi-source-security-viewer
 
+## 0.2.3
+
+### Patch Changes
+
+- 4b13a33: Fix installation documentation
+
 ## 0.2.2
 
 ### Patch Changes
