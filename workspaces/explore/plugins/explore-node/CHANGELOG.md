@@ -1,5 +1,16 @@
 # @backstage-community/plugin-explore-node
 
+## 0.5.0
+
+### Minor Changes
+
+- 849c872: Backstage version bump to v1.38.1
+
+### Patch Changes
+
+- Updated dependencies [849c872]
+  - @backstage-community/plugin-explore-common@0.4.0
+
 ## 0.4.0
 
 ### Minor Changes
