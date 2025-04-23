@@ -16,8 +16,8 @@ yarn.lock                                                               @backsta
 /workspaces/analytics                                                   @backstage/community-plugins-maintainers
 /workspaces/analytics/plugins/analytics-module-matomo                   @backstage/community-plugins-maintainers  @deshmukhmayur @yashoswalyo @riginoommen
 /workspaces/analytics/plugins/analytics-module-newrelic-browser         @backstage/community-plugins-maintainers  @jmezach
-/workspaces/analytics/plugins/analytics-provider-segment                @backstage/community-plugins-maintainers  @AndrienkoAleksandr @PatAKnight @dzemanov 
-/workspaces/announcements                                               @backstage/community-plugins-maintainers  @kurtaking
+/workspaces/analytics/plugins/analytics-provider-segment                @backstage/community-plugins-maintainers  @AndrienkoAleksandr @PatAKnight @dzemanov
+/workspaces/announcements                                               @backstage/community-plugins-maintainers  @kurtaking @gaelgoth
 /workspaces/azure-devops                                                @backstage/community-plugins-maintainers  @awanlin
 /workspaces/azure-sites                                                 @backstage/community-plugins-maintainers  @deepan10 @sarabadu
 /workspaces/azure-storage-explorer                                      @backstage/community-plugins-maintainers  @deepan10
