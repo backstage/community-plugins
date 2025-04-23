@@ -14,7 +14,7 @@ import { TemplateAction } from '@backstage/plugin-scaffolder-node';
 // @public (undocumented)
 export function createKubernetesNamespaceAction(
   catalogClient: CatalogClient,
-): TemplateAction<TemplateActionParameters, JsonObject>;
+): TemplateAction<TemplateActionParameters, JsonObject, 'v1'>;
 
 // Warning: (ae-missing-release-tag) "scaffolderModuleKubernetesAction" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //

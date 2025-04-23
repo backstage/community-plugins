@@ -19,6 +19,6 @@
            - allow: [Template]
    ```
 
-4. Run `yarn dev`
+4. Run `yarn start`
 5. Make sure you have an available kubernetes cluster
 6. Start using the Kubernetes actions in your templates
