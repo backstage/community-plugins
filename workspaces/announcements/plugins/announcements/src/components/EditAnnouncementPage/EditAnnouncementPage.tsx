@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import useAsync from 'react-use/esm/useAsync';
 import { Page, Header, Content, Progress } from '@backstage/core-components';
 import {
@@ -46,7 +46,7 @@ export const EditAnnouncementPage = (props: EditAnnouncementPageProps) => {
   const { t } = useAnnouncementsTranslation();
 
   let title = props.title;
-  let content: React.ReactNode = <Progress />;
+  let content: ReactNode = <Progress />;
 
   const onSubmit = async (request: CreateAnnouncementRequest) => {
     try {
