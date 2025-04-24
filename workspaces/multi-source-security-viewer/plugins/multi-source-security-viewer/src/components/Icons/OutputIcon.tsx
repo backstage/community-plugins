@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { FC } from 'react';
 import { Theme, createStyles, makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-export const OutputIcon: React.FC<{ disabled?: boolean }> = ({ disabled }) => {
+export const OutputIcon: FC<{ disabled?: boolean }> = ({ disabled }) => {
   const classes = useStyles();
   return (
     <svg

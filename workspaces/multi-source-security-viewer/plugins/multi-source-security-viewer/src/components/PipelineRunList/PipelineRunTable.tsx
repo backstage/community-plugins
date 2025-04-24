@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 import { PipelineRunTableColumns } from './PipelineRunTableColumns';
 import { PipelineRunTableBody } from './PipelineRunTableBody';
 import { EmptyStateSpinner } from '../EmptyState/EmptyStateSpinner';

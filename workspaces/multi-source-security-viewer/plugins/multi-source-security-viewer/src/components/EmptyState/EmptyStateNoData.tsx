@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { FunctionComponent } from 'react';
 import { EmptyState } from './EmptyState';
 import SettingsIcon from '@mui/icons-material/Settings';
 
-export const EmptyStateNoData: React.FunctionComponent = () => (
+export const EmptyStateNoData: FunctionComponent = () => (
   <EmptyState
     icon={SettingsIcon}
     title="No Pipeline Runs"

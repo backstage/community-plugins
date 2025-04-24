@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { FC } from 'react';
+
+import { Fragment } from 'react';
 import { downloadLogFile } from '@janus-idp/shared-react';
 import { Box, createStyles, makeStyles, Link, Theme } from '@material-ui/core';
 import DownloadIcon from '@mui/icons-material/FileDownloadOutlined';
@@ -33,9 +35,10 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-export const PipelineRunLogsDownloader: React.FC<
-  PipelineRunLogsDowloaderProps
-> = ({ pr, activeStep }) => {
+export const PipelineRunLogsDownloader: FC<PipelineRunLogsDowloaderProps> = ({
+  pr,
+  activeStep,
+}) => {
   const classes = useStyles();
   const fullLogsFilename = `${pr.id || 'pipelinerun'}-logs.txt`;
   const stepLogsFilename = `${pr.id || 'pipelinerun'}-step-${
@@ -43,7 +46,7 @@ export const PipelineRunLogsDownloader: React.FC<
   }-logs.txt`;
 
   return (
-    <React.Fragment>
+    <Fragment>
       <Box display="flex" justifyContent="flex-end" alignItems="center">
         <Link
           component="button"
@@ -69,6 +72,6 @@ export const PipelineRunLogsDownloader: React.FC<
           logs
         </Link>
       </Box>
-    </React.Fragment>
+    </Fragment>
   );
 };

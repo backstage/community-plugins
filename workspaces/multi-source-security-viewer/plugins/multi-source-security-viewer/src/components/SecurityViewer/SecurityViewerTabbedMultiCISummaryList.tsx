@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { FC, ChangeEvent, SyntheticEvent } from 'react';
+
+import { useState, Fragment } from 'react';
 import { Box, Tabs, Tab, makeStyles, Theme } from '@material-ui/core';
 import { MultiCIConfig } from '../../types/multiCI';
 import { SecurityViewerPipelineSummary } from './SecurityViewerPipelineSummaryList';
@@ -28,20 +30,20 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-export const SecurityViewerTabbedMultiCISummaryList: React.FC<
+export const SecurityViewerTabbedMultiCISummaryList: FC<
   SecurityViewerTabbedMultiCISummaryListProps
 > = ({ multiCIConfig }) => {
   const classes = useStyles();
-  const [tabValue, setTabValue] = React.useState(0);
+  const [tabValue, setTabValue] = useState(0);
   const handleChange = (
-    _event: React.ChangeEvent<{}> | React.SyntheticEvent,
+    _event: ChangeEvent<{}> | SyntheticEvent,
     newValue: number,
   ) => {
     setTabValue(newValue);
   };
 
   return (
-    <React.Fragment>
+    <Fragment>
       <Box>
         <Tabs value={tabValue} onChange={handleChange} aria-label="Multi CI">
           {(multiCIConfig ?? []).map((config, index) => (
@@ -62,6 +64,6 @@ export const SecurityViewerTabbedMultiCISummaryList: React.FC<
           ))}
         </Box>
       </Box>
-    </React.Fragment>
+    </Fragment>
   );
 };

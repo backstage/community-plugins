@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { FC } from 'react';
+
+import { Fragment } from 'react';
 import { ErrorBoundary } from '@backstage/core-components';
 import { Box, Paper, Typography, makeStyles, Theme } from '@material-ui/core';
 import Grid from '@mui/material/Grid';
@@ -46,7 +48,7 @@ type SecurityViewerMultiCIPipelinesProps = {
   isGithubActionsDetail?: boolean;
 };
 
-export const SecurityViewerMultiCIPipelines: React.FC<
+export const SecurityViewerMultiCIPipelines: FC<
   SecurityViewerMultiCIPipelinesProps
 > = ({ multiCIConfig, isJenkinsDetail, isGithubActionsDetail }) => {
   useDarkTheme();
@@ -61,7 +63,7 @@ export const SecurityViewerMultiCIPipelines: React.FC<
   }
 
   return (
-    <React.Fragment>
+    <Fragment>
       <Box className={classes.root}>
         <Paper>
           <Grid container>
@@ -94,6 +96,6 @@ export const SecurityViewerMultiCIPipelines: React.FC<
           </Grid>
         </Paper>
       </Box>
-    </React.Fragment>
+    </Fragment>
   );
 };

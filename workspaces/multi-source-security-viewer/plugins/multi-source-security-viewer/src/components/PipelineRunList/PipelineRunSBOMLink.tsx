@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import type { FC } from 'react';
+
+import { useState, useMemo, Fragment } from 'react';
 import { IconButton, makeStyles, Box } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { DialogLauncher } from '../DialogLauncher/DialogLauncher';
@@ -34,18 +36,16 @@ interface PipelineRunSBOMLinkProps {
   pr: PipelineRunResult;
 }
 
-export const PipelineRunSBOMLink: React.FC<PipelineRunSBOMLinkProps> = ({
-  pr,
-}) => {
+export const PipelineRunSBOMLink: FC<PipelineRunSBOMLinkProps> = ({ pr }) => {
   const classes = useStyles();
-  const [openSBOMLogs, setOpenSBOMLogs] = React.useState(false);
-  const step = React.useMemo(
+  const [openSBOMLogs, setOpenSBOMLogs] = useState(false);
+  const step = useMemo(
     () => pr.steps.findIndex(s => s.name === 'show-sbom-rhdh'),
     [pr.steps],
   );
 
   return (
-    <React.Fragment>
+    <Fragment>
       <DialogLauncher
         key={`${pr.id}-logs`}
         title={pr.id}
@@ -59,7 +59,6 @@ export const PipelineRunSBOMLink: React.FC<PipelineRunSBOMLinkProps> = ({
         fullWidth
         maxWidth="xl"
       />
-
       <Tooltip title="Link to SBOM" arrow>
         <Box>
           <IconButton
@@ -77,6 +76,6 @@ export const PipelineRunSBOMLink: React.FC<PipelineRunSBOMLinkProps> = ({
           </IconButton>
         </Box>
       </Tooltip>
-    </React.Fragment>
+    </Fragment>
   );
 };

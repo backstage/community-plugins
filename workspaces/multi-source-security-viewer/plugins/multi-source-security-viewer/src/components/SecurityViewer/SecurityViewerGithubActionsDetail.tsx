@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { useRouteRefParams } from '@backstage/core-plugin-api';
-import React from 'react';
 import { githubActionsJobRouteRef } from '../../routes';
 import { SecurityViewerPipelineDetailList } from './SecurityViewerPipelineDetailList';
 import { mssvGithubActionsApiRef } from '../../api/github';

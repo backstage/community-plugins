@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { FC, ChangeEvent } from 'react';
+
+import { useState, useMemo, useEffect, Fragment } from 'react';
 import {
   Box,
   IconButton,
@@ -49,7 +51,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export const PipelineRunTablePagination: React.FC<
+export const PipelineRunTablePagination: FC<
   PipelineRunTablePaginationProps
 > = ({
   count,
@@ -60,28 +62,25 @@ export const PipelineRunTablePagination: React.FC<
   handleChangeRowsPerPage,
 }) => {
   const classes = useStyles();
-  const [pageInput, setPageInput] = React.useState('1');
+  const [pageInput, setPageInput] = useState('1');
 
-  const handleRowsChange = (event: React.ChangeEvent<{ value: any }>) => {
+  const handleRowsChange = (event: ChangeEvent<{ value: any }>) => {
     handleChangeRowsPerPage(parseInt(event.target.value, 10));
   };
 
-  const totalPages = React.useMemo(
+  const totalPages = useMemo(
     () => Math.ceil(count / rowsPerPage),
     [count, rowsPerPage],
   );
 
-  const previousPage = React.useMemo(() => page - 1, [page]);
-  const nextPage = React.useMemo(() => page + 1, [page]);
-  const firstPage = React.useMemo(() => 0, []);
-  const lastPage = React.useMemo(() => totalPages - 1, [totalPages]);
-  const isFirstPage = React.useMemo(() => page === 0, [page]);
-  const isLastPage = React.useMemo(
-    () => page === totalPages - 1,
-    [totalPages, page],
-  );
+  const previousPage = useMemo(() => page - 1, [page]);
+  const nextPage = useMemo(() => page + 1, [page]);
+  const firstPage = useMemo(() => 0, []);
+  const lastPage = useMemo(() => totalPages - 1, [totalPages]);
+  const isFirstPage = useMemo(() => page === 0, [page]);
+  const isLastPage = useMemo(() => page === totalPages - 1, [totalPages, page]);
 
-  const selectItemText = React.useMemo(() => {
+  const selectItemText = useMemo(() => {
     // display for ex: 1 - 10 of 100
     return `${page === 0 ? 1 : page * rowsPerPage + 1} - ${
       rowsPerPage * (page + 1) > count ? count : rowsPerPage * (page + 1)
@@ -96,12 +95,12 @@ export const PipelineRunTablePagination: React.FC<
     setPageInput(isNaN(newPage) ? '' : newPage.toString());
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     setPageInput((page + 1).toString());
   }, [page]);
 
   return (
-    <React.Fragment>
+    <Fragment>
       <Box className={classes.actionsBox} data-testid="pipeline-run-pagination">
         <Select
           variant="standard"
@@ -178,6 +177,6 @@ export const PipelineRunTablePagination: React.FC<
           <LastPage />
         </IconButton>
       </Box>
-    </React.Fragment>
+    </Fragment>
   );
 };

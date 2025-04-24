@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { FC } from 'react';
 import { t_color_yellow_40 as mediumColor } from '@patternfly/react-tokens';
 import { SvgIconProps } from '@material-ui/core';
 
-export const EqualsIcon: React.FC<SvgIconProps> = ({ className }) => {
+export const EqualsIcon: FC<SvgIconProps> = ({ className }) => {
   return (
     <svg
       viewBox="0 -960 960 960"

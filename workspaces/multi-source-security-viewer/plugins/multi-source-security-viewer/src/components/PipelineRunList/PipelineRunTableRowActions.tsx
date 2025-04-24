@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { FC } from 'react';
+
+import { useState, Fragment } from 'react';
 import { Box, IconButton, makeStyles, Theme } from '@material-ui/core';
 import Tooltip from '@mui/material/Tooltip';
 import PipelineRunOutput from './PipelineRunOutput';
@@ -41,15 +43,15 @@ type PipelineRunTableRowActionsProps = {
   pr: PipelineRunResult;
 };
 
-export const PipelineRunTableRowActions: React.FC<
+export const PipelineRunTableRowActions: FC<
   PipelineRunTableRowActionsProps
 > = ({ pr }) => {
-  const [openOutput, setOpenOutput] = React.useState(false);
-  const [openLogs, setOpenLogs] = React.useState(false);
+  const [openOutput, setOpenOutput] = useState(false);
+  const [openLogs, setOpenLogs] = useState(false);
   const classes = useStyles();
 
   return (
-    <React.Fragment>
+    <Fragment>
       <DialogLauncher
         key={`${pr.id}-output`}
         title={pr.id}
@@ -60,7 +62,6 @@ export const PipelineRunTableRowActions: React.FC<
         fullWidth
         maxWidth="xl"
       />
-
       <DialogLauncher
         key={`${pr.id}-logs`}
         title={pr.id}
@@ -71,7 +72,6 @@ export const PipelineRunTableRowActions: React.FC<
         fullWidth
         maxWidth="xl"
       />
-
       <Box className={classes.boxActions}>
         <Tooltip
           title={
@@ -110,6 +110,6 @@ export const PipelineRunTableRowActions: React.FC<
           </Box>
         </Tooltip>
       </Box>
-    </React.Fragment>
+    </Fragment>
   );
 };

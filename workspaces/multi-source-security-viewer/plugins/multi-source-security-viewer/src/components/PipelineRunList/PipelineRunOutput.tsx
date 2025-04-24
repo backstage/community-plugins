@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { FC } from 'react';
+
+import { memo, Fragment } from 'react';
 import { Output } from '@aonic-ui/pipelines';
 import { PipelineRunResult } from '../../models/pipelineRunResult';
 import { Box } from '@material-ui/core';
@@ -23,9 +25,9 @@ type PipelineRunOutputProps = {
   pr: PipelineRunResult;
 };
 
-const PipelineRunOutput: React.FC<PipelineRunOutputProps> = ({ pr }) => {
+const PipelineRunOutput: FC<PipelineRunOutputProps> = ({ pr }) => {
   return (
-    <React.Fragment>
+    <Fragment>
       <Box data-testid="dialog-output">
         <ErrorBoundary>
           <Output
@@ -39,8 +41,8 @@ const PipelineRunOutput: React.FC<PipelineRunOutputProps> = ({ pr }) => {
           />
         </ErrorBoundary>
       </Box>
-    </React.Fragment>
+    </Fragment>
   );
 };
 
-export default React.memo(PipelineRunOutput);
+export default memo(PipelineRunOutput);

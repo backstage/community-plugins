@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 import { Box, Step, StepButton, StepLabel, Stepper } from '@material-ui/core';
-import React from 'react';
+import type { FC } from 'react';
+import { Fragment } from 'react';
 import { PipelineRunLogStep } from '../../types/pipelinerun';
 
 interface PipelineRunStepperProps {
@@ -23,13 +24,13 @@ interface PipelineRunStepperProps {
   handleStepChange: (step: number) => void;
 }
 
-export const PipelineRunStepper: React.FC<PipelineRunStepperProps> = ({
+export const PipelineRunStepper: FC<PipelineRunStepperProps> = ({
   steps,
   activeStep,
   handleStepChange,
 }) => {
   return (
-    <React.Fragment>
+    <Fragment>
       <Box sx={{ maxWidth: 400 }}>
         <Stepper activeStep={activeStep} orientation="vertical" nonLinear>
           {steps.map((step, index) => (
@@ -51,6 +52,6 @@ export const PipelineRunStepper: React.FC<PipelineRunStepperProps> = ({
           ))}
         </Stepper>
       </Box>
-    </React.Fragment>
+    </Fragment>
   );
 };

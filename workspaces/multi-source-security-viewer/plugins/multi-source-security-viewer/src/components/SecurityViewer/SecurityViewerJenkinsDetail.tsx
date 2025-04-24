@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 import { SecurityViewerPipelineDetailList } from './SecurityViewerPipelineDetailList';
 import { mssvJenkinsApiRef } from '../../api/jenkins';
 import { jenkinsJobRunRouteRef } from '../../routes';
