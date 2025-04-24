@@ -6,6 +6,7 @@
     "node": "18 || 20 || 22"
   },
   "scripts": {
+    "start": "backstage-cli repo start",
     "tsc": "tsc",
     "tsc:full": "tsc --skipLibCheck false --incremental false",
     "build:all": "backstage-cli repo build --all",
@@ -19,10 +20,7 @@
     "lint:all": "backstage-cli repo lint",
     "postinstall": "cd ../../ && yarn install",
     "prettier:check": "prettier --check .",
-    "new": "backstage-cli new --scope @backstage-community",
-    "start": "backstage-cli repo start",
-    "start-frontend": "yarn workspace app start",
-    "start-backend": "yarn workspace backend start"
+    "new": "backstage-cli new --scope @backstage-community"
   },
   "workspaces": {
     "packages": [
