@@ -1,17 +1,5 @@
 ### Dependencies
 
-## 6.2.0
-
-### Minor Changes
-
-- e8755f6: Backstage version bump to v1.38.1
-
-### Patch Changes
-
-- Updated dependencies [e8755f6]
-  - @backstage-community/plugin-rbac-common@1.16.0
-  - @backstage-community/plugin-rbac-node@1.11.0
-
 ## 6.1.1
 
 ### Patch Changes
