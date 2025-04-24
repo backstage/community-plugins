@@ -26,7 +26,6 @@ import {
 } from '@backstage-community/plugin-announcements-react';
 import { DateTime } from 'luxon';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
-import React from 'react';
 
 jest.mock('@backstage/core-plugin-api', () => {
   return {
