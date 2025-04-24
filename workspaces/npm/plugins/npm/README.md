@@ -177,7 +177,7 @@ Your Backstage frontend app must use that new frontend system which isn't the de
 1. Install the backend plugin:
 
    ```sh
-   yarn workspace backend add @backstage-community/plugin-npm
+   yarn workspace backend add @backstage-community/plugin-npm-backend
    ```
 
 2. Add it to `packages/backend/src/index.ts`:
