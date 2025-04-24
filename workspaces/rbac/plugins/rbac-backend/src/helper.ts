@@ -241,12 +241,19 @@ export async function processConditionMapping(
 
   const permInfo: PermissionInfo[] = [];
   for (const action of roleConditionPolicy.permissionMapping) {
-    const perm = rule.permissions.find(
-      permission =>
-        permission.type === 'resource' &&
-        (action === permission.attributes.action ||
-          (action === 'use' && permission.attributes.action === undefined)),
-    );
+    const perm = rule.permissions.find(permission => {
+      if (permission.type === 'resource') {
+        const isCorrectResourceType =
+          permission.resourceType === roleConditionPolicy.resourceType;
+        const isCorrectAction = action === permission.attributes.action;
+        const undefinedAction =
+          action === 'use' && permission.attributes.action === undefined;
+
+        return isCorrectResourceType && (isCorrectAction || undefinedAction);
+      }
+      return false;
+    });
+
     if (!perm) {
       throw new Error(
         `Unable to find permission to get permission name for resource type '${

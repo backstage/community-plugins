@@ -3525,6 +3525,168 @@ describe('REST policies api', () => {
       expect(result.body).toEqual({ id: 1 });
       expect(mockHttpAuth.credentials).toHaveBeenCalledTimes(1);
     });
+
+    it('should create condition with the correct permission name for different resource types but similar actions', async () => {
+      conditionalStorageMock.createCondition = jest
+        .fn()
+        .mockImplementation(() => {
+          return 1;
+        });
+      pluginMetadataCollectorMock.getMetadataByPluginId = jest
+        .fn()
+        .mockImplementation(() => {
+          const response: MetadataResponse = {
+            permissions: [
+              {
+                name: 'catalog.location.read',
+                attributes: {
+                  action: 'read',
+                },
+                type: 'resource',
+                resourceType: 'catalog-location',
+              },
+              {
+                name: 'catalog.entity.read',
+                attributes: {
+                  action: 'read',
+                },
+                type: 'resource',
+                resourceType: 'catalog-entity',
+              },
+            ],
+            rules: [],
+          };
+          return response;
+        });
+
+      const roleCondition: RoleConditionalPolicyDecision<PermissionAction> = {
+        id: 1,
+        pluginId: 'catalog',
+        roleEntityRef: 'role:default/test',
+        resourceType: 'catalog-entity',
+        permissionMapping: ['read'],
+        result: AuthorizeResult.CONDITIONAL,
+        conditions: {
+          rule: 'IS_ENTITY_OWNER',
+          resourceType: 'catalog-entity',
+          params: { claims: ['group:default/team-a'] },
+        },
+      };
+
+      const roleConditionToBeSaved: Partial<
+        RoleConditionalPolicyDecision<PermissionInfo>
+      > &
+        Required<
+          Pick<
+            RoleConditionalPolicyDecision<PermissionInfo>,
+            'permissionMapping'
+          >
+        > = {
+        id: 1,
+        pluginId: 'catalog',
+        roleEntityRef: 'role:default/test',
+        resourceType: 'catalog-entity',
+        permissionMapping: [{ action: 'read', name: 'catalog.entity.read' }],
+        result: AuthorizeResult.CONDITIONAL,
+        conditions: {
+          rule: 'IS_ENTITY_OWNER',
+          resourceType: 'catalog-entity',
+          params: { claims: ['group:default/team-a'] },
+        },
+      };
+
+      const result = await request(app)
+        .post('/roles/conditions')
+        .send(roleCondition);
+
+      expect(result.statusCode).toBe(201);
+      expect(validateRoleConditionMock).toHaveBeenCalledWith(roleCondition);
+      expect(result.body).toEqual({ id: 1 });
+      expect(mockHttpAuth.credentials).toHaveBeenCalledTimes(1);
+      expect(conditionalStorageMock.createCondition).toHaveBeenCalledWith(
+        roleConditionToBeSaved,
+      );
+    });
+
+    it('should create condition and set the action to use whenever there is no action', async () => {
+      conditionalStorageMock.createCondition = jest
+        .fn()
+        .mockImplementation(() => {
+          return 1;
+        });
+      pluginMetadataCollectorMock.getMetadataByPluginId = jest
+        .fn()
+        .mockImplementation(() => {
+          const response: MetadataResponse = {
+            permissions: [
+              {
+                name: 'catalog.location.use',
+                attributes: {},
+                type: 'resource',
+                resourceType: 'catalog-location',
+              },
+              {
+                name: 'catalog.entity.read',
+                attributes: {
+                  action: 'read',
+                },
+                type: 'resource',
+                resourceType: 'catalog-entity',
+              },
+            ],
+            rules: [],
+          };
+          return response;
+        });
+
+      const roleCondition: RoleConditionalPolicyDecision<PermissionAction> = {
+        id: 1,
+        pluginId: 'catalog',
+        roleEntityRef: 'role:default/test',
+        resourceType: 'catalog-location',
+        permissionMapping: ['use'],
+        result: AuthorizeResult.CONDITIONAL,
+        conditions: {
+          rule: 'IS_ENTITY_OWNER',
+          resourceType: 'catalog-location',
+          params: { claims: ['group:default/team-a'] },
+        },
+      };
+
+      const roleConditionToBeSaved: Partial<
+        RoleConditionalPolicyDecision<PermissionInfo>
+      > &
+        Required<
+          Pick<
+            RoleConditionalPolicyDecision<PermissionInfo>,
+            'permissionMapping'
+          >
+        > = {
+        id: 1,
+        pluginId: 'catalog',
+        roleEntityRef: 'role:default/test',
+        resourceType: 'catalog-location',
+        permissionMapping: [{ action: 'use', name: 'catalog.location.use' }],
+        result: AuthorizeResult.CONDITIONAL,
+        conditions: {
+          rule: 'IS_ENTITY_OWNER',
+          resourceType: 'catalog-location',
+          params: { claims: ['group:default/team-a'] },
+        },
+      };
+
+      const result = await request(app)
+        .post('/roles/conditions')
+        .send(roleCondition);
+
+      expect(result.statusCode).toBe(201);
+      expect(validateRoleConditionMock).toHaveBeenCalledWith(roleCondition);
+      expect(result.body).toEqual({ id: 1 });
+      expect(mockHttpAuth.credentials).toHaveBeenCalledTimes(1);
+      expect(conditionalStorageMock.createCondition).toHaveBeenCalledWith(
+        roleConditionToBeSaved,
+      );
+    });
   });
 
   describe('PUT /roles/conditions', () => {
@@ -4093,6 +4255,14 @@ describe('REST policies api', () => {
                 },
                 type: 'resource',
                 resourceType: 'catalog-entity',
+              },
+              {
+                name: 'catalog.location.read',
+                attributes: {
+                  action: 'read',
+                },
+                type: 'resource',
+                resourceType: 'catalog-location',
               },
             ],
             rules: [],
