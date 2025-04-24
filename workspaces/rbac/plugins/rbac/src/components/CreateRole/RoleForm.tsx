@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
+import { useState, MouseEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { SimpleStepper, SimpleStepperStep } from '@backstage/core-components';
@@ -79,9 +79,8 @@ export const RoleForm = ({
   submitLabel,
   initialValues,
 }: RoleFormProps) => {
-  const [activeStep, setActiveStep] = React.useState<number>(step || 0);
-  const [openCancelDialog, setOpenCancelDialog] =
-    React.useState<boolean>(false);
+  const [activeStep, setActiveStep] = useState<number>(step || 0);
+  const [openCancelDialog, setOpenCancelDialog] = useState<boolean>(false);
   const navigate = useNavigate();
   const rbacApi = useApi(rbacApiRef);
 
@@ -241,7 +240,9 @@ export const RoleForm = ({
 
   const handleBack = () => setActiveStep(Math.max(activeStep - 1, 0));
 
-  const handleReset = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const handleReset = (
+    e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>,
+  ) => {
     setActiveStep(0);
     formik.handleReset(e);
   };

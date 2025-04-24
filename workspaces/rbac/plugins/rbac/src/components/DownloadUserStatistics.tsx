@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
+import { MouseEvent } from 'react';
 
 import { useApi } from '@backstage/core-plugin-api';
 
@@ -24,7 +24,7 @@ import { licensedUsersApiRef } from '../api/LicensedUsersClient';
 function DownloadCSVLink() {
   const licensedUsersClient = useApi(licensedUsersApiRef);
   const handleDownload = async (
-    event: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+    event: MouseEvent<HTMLAnchorElement, globalThis.MouseEvent>,
   ) => {
     event.preventDefault(); // Prevent the default link behavior
 
