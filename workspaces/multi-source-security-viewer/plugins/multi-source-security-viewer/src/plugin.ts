@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import '@patternfly/react-core/dist/styles/base-no-reset.css';
-import '@patternfly/patternfly/patternfly.css';
 
 import {
   configApiRef,
