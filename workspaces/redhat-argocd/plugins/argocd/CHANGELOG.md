@@ -1,5 +1,16 @@
 ## @backstage-community/plugin-redhat-argocd
 
+## 1.19.0
+
+### Minor Changes
+
+- bfc2838: Bump backstage version to v1.38.1
+
+### Patch Changes
+
+- Updated dependencies [bfc2838]
+  - @backstage-community/plugin-redhat-argocd-common@1.5.0
+
 ## 1.18.0
 
 ### Minor Changes
