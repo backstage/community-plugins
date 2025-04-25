@@ -10,7 +10,8 @@ import { TemplateAction } from '@backstage/plugin-scaffolder-node';
 // @public (undocumented)
 export function createQuayRepositoryAction(): TemplateAction<
   TemplateActionParameters,
-  JsonObject
+  JsonObject,
+  'v1'
 >;
 
 // @public (undocumented)
