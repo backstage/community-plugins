@@ -1,5 +1,6 @@
 ---
 '@backstage-community/plugin-azure-devops-backend': patch
+'@backstage-community/plugin-azure-devops': patch
 ---
 
-Do not return any results when the specified build definition is not found
+If the specified build definition is not found, return no results and display a message explaining why.
