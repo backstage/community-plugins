@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { FC } from 'react';
+
+import { Fragment } from 'react';
 import {
   TableCell,
   TableRow,
@@ -67,14 +69,14 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-export const PipelineRunTableRow: React.FC<PipelineRunTableRowProps> = ({
+export const PipelineRunTableRow: FC<PipelineRunTableRowProps> = ({
   index,
   pr,
 }) => {
   const classes = useStyles();
 
   return (
-    <React.Fragment>
+    <Fragment>
       <TableRow key={index} className={classes.row}>
         <TableCell align="left">
           <Typography variant="body2">{pr.id}</Typography>
@@ -121,6 +123,6 @@ export const PipelineRunTableRow: React.FC<PipelineRunTableRowProps> = ({
           <PipelineRunTableRowActions pr={pr} />
         </TableCell>
       </TableRow>
-    </React.Fragment>
+    </Fragment>
   );
 };

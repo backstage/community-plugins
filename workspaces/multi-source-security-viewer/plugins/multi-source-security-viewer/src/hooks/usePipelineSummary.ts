@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useMemo } from 'react';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { ApiRef, errorApiRef, useApi } from '@backstage/core-plugin-api';
 import { useQuery } from '@tanstack/react-query';
@@ -54,7 +54,7 @@ export const usePipelineSummary = (
     totalCount: 0,
   };
 
-  return React.useMemo(() => {
+  return useMemo(() => {
     return [results, totalCount, isLoading, error];
   }, [results, totalCount, isLoading, error]);
 };
