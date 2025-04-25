@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 import { ComputedStatus } from '@janus-idp/shared-react';
 
 import { mockKubernetesPlrResponse } from '../../__fixtures__/1-pipelinesData';

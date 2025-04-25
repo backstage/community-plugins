@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useContext } from 'react';
 
 import { IconButton, makeStyles, Tooltip } from '@material-ui/core';
 import Collapse from '@material-ui/icons/UnfoldLess';
@@ -35,9 +35,7 @@ const useStyles = makeStyles({
 
 export const TableExpandCollapse = () => {
   const classes = useStyles();
-  const { isExpanded, setIsExpanded } = React.useContext(
-    TektonResourcesContext,
-  );
+  const { isExpanded, setIsExpanded } = useContext(TektonResourcesContext);
   const { t } = useTranslationRef(tektonTranslationRef);
 
   const handleExpandCollaspse = () => {
