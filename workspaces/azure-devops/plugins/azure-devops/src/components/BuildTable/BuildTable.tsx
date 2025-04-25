@@ -227,6 +227,17 @@ export const BuildTable = ({ items, loading, error }: BuildTableProps) => {
     },
   ];
 
+  const emptyContent = (
+    <div>
+      <Typography component="p" align="center">
+        No records to display
+      </Typography>
+      <Typography component="p" align="center">
+        The repo name or build definition you have specified could not be found
+      </Typography>
+    </div>
+  );
+
   return (
     <>
       <Table
@@ -246,6 +257,7 @@ export const BuildTable = ({ items, loading, error }: BuildTableProps) => {
           </Box>
         }
         data={items ?? []}
+        emptyContent={emptyContent}
       />
 
       <BuildLogDrawer
