@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 2.7.0
+
+### Minor Changes
+
+- e172aba: Bump backstage version to v1.38.1
+
 ## 2.6.2
 
 ### Patch Changes
