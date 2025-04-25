@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { FC } from 'react';
 import { ResourcesTableRow } from './ResourcesTableRow';
 import { Resource } from '@backstage-community/plugin-redhat-argocd-common';
 
@@ -21,9 +21,7 @@ interface ResourcesTableBodyProps {
   rows: Resource[];
 }
 
-export const ResourcesTableBody: React.FC<ResourcesTableBodyProps> = ({
-  rows,
-}) => {
+export const ResourcesTableBody: FC<ResourcesTableBodyProps> = ({ rows }) => {
   return (
     <>
       {rows.map((row: Resource, index: number) => {
