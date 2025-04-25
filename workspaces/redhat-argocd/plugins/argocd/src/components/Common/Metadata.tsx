@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { HTMLAttributes, ReactElement } from 'react';
+import type { FC } from 'react';
+
+import { HTMLAttributes, ReactElement } from 'react';
 import MetadataItem from './MetadataItem';
 import { Typography } from '@material-ui/core';
 import { Flex, FlexProps } from '@patternfly/react-core';
@@ -26,7 +28,7 @@ type MetadataProps = {
   gap?: FlexProps['gap'];
 } & HTMLAttributes<HTMLDivElement>;
 
-const Metadata: React.FC<MetadataProps> = ({
+const Metadata: FC<MetadataProps> = ({
   children,
   direction,
   gap = { sm: 'gap3xl' },

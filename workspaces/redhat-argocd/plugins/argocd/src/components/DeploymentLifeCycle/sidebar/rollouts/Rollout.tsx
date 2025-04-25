@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { FC } from 'react';
+
+import { useState, useEffect, memo } from 'react';
 
 import { Box, makeStyles, Theme } from '@material-ui/core';
 
@@ -44,11 +46,11 @@ interface RolloutProps {
   rollout: RolloutUI;
 }
 
-const Rollout: React.FC<RolloutProps> = ({ rollout }) => {
+const Rollout: FC<RolloutProps> = ({ rollout }) => {
   const classes = useRevisionStyles();
-  const [isFirstRender, setIsFirstRender] = React.useState(true);
+  const [isFirstRender, setIsFirstRender] = useState(true);
 
-  React.useEffect(() => {
+  useEffect(() => {
     let timer: NodeJS.Timeout;
 
     if (isFirstRender) {
@@ -88,4 +90,4 @@ const Rollout: React.FC<RolloutProps> = ({ rollout }) => {
     </Metadata>
   );
 };
-export default React.memo(Rollout);
+export default memo(Rollout);

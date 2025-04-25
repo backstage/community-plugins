@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { FC } from 'react';
 import { Card, CardContent, Typography, Link } from '@material-ui/core';
 import moment from 'moment';
 import { ClassNameMap } from '@material-ui/styles/withStyles';
@@ -30,9 +30,7 @@ type DeploymentHistoryCommitProps = {
   commitUrl: string | null;
   revisionSha: string;
 };
-export const DeploymentHistoryCommit: React.FC<
-  DeploymentHistoryCommitProps
-> = ({
+export const DeploymentHistoryCommit: FC<DeploymentHistoryCommitProps> = ({
   deploymentHistory,
   styleClasses,
   commitMessage,

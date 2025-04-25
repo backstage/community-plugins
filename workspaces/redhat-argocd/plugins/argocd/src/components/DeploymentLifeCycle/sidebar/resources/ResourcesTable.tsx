@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { FC, useCallback, useState } from 'react';
+import type { MouseEvent, ChangeEvent } from 'react';
+
+import { useMemo, FC, useCallback, useState } from 'react';
 import {
   makeStyles,
   Table,
@@ -94,7 +96,7 @@ export const ResourcesTable: FC<ResourcesTableProps> = ({
 
   const { argoResources } = useArgoResources();
 
-  const allResources = React.useMemo(() => {
+  const allResources = useMemo(() => {
     const getTimestamp = (row: Resource) =>
       getResourceCreateTimestamp(argoResources, row) || createdAt;
 
@@ -107,7 +109,7 @@ export const ResourcesTable: FC<ResourcesTableProps> = ({
     );
   }, [resources, argoResources, createdAt]);
 
-  const getAllKinds = React.useMemo(() => {
+  const getAllKinds = useMemo(() => {
     return resources.reduce((kinds: string[], resource) => {
       if (resource.kind && !kinds.includes(resource.kind)) {
         kinds.push(resource.kind);
@@ -116,7 +118,7 @@ export const ResourcesTable: FC<ResourcesTableProps> = ({
     }, []);
   }, [resources]);
 
-  const filteredResources = React.useMemo(() => {
+  const filteredResources = useMemo(() => {
     let items = allResources;
 
     // Filters
@@ -161,7 +163,7 @@ export const ResourcesTable: FC<ResourcesTableProps> = ({
     return items;
   }, [allResources, filters, orderById, order, orderBy, getSortableRowValues]);
 
-  const visibleRows = React.useMemo(
+  const visibleRows = useMemo(
     () =>
       filteredResources.slice(
         page * rowsPerPage,
@@ -172,7 +174,7 @@ export const ResourcesTable: FC<ResourcesTableProps> = ({
   );
 
   const handleRequestSort = useCallback(
-    (_event: React.MouseEvent<unknown>, property: string, id: string) => {
+    (_event: MouseEvent<unknown>, property: string, id: string) => {
       const isAsc = orderBy === property && order === 'asc';
       setOrder(isAsc ? 'desc' : 'asc');
       setOrderBy(property);
@@ -186,7 +188,7 @@ export const ResourcesTable: FC<ResourcesTableProps> = ({
   }, []);
 
   const handleChangeRowsPerPage = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
+    (event: ChangeEvent<HTMLInputElement>) => {
       setRowsPerPage(parseInt(event.target.value, 10));
       setPage(0);
     },
