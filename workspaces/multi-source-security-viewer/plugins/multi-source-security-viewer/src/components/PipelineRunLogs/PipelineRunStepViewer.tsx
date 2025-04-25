@@ -15,23 +15,24 @@
  */
 import { LogViewer } from '@backstage/core-components';
 import { Paper } from '@material-ui/core';
-import React from 'react';
+import type { FC } from 'react';
+import { Fragment } from 'react';
 
 interface PipelineRunStepViewerProps {
   activeStepLog: string;
 }
 
-export const PipelineRunStepViewer: React.FC<PipelineRunStepViewerProps> = ({
+export const PipelineRunStepViewer: FC<PipelineRunStepViewerProps> = ({
   activeStepLog,
 }) => {
   return (
-    <React.Fragment>
+    <Fragment>
       <Paper
         data-testid="step-log"
         style={{ height: '100%', width: '100%', minHeight: '30rem' }}
       >
         <LogViewer text={activeStepLog} />
       </Paper>
-    </React.Fragment>
+    </Fragment>
   );
 };

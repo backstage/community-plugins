@@ -13,14 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { ComponentType, FC } from 'react';
+
+import { Fragment } from 'react';
 import { SvgIconProps } from '@mui/material/SvgIcon';
 import { isNumber } from 'lodash';
 import Tooltip from '@mui/material/Tooltip';
 import { Box, Typography } from '@material-ui/core';
 
 type PipelineRunIconProps = {
-  iconComponent: React.ComponentType;
+  iconComponent: ComponentType;
   tooltip: string;
   iconProps?: SvgIconProps;
   value: string | number; // if value is a number, it will be displayed with the icon
@@ -29,14 +31,14 @@ type PipelineRunIconProps = {
 export interface IconWithValueProps
   extends Omit<PipelineRunIconProps, 'iconComponent'> {}
 
-export const IconWithValue: React.FC<PipelineRunIconProps> = ({
+export const IconWithValue: FC<PipelineRunIconProps> = ({
   iconComponent: IconComponent,
   tooltip,
   iconProps,
   value,
 }) => {
   return (
-    <React.Fragment>
+    <Fragment>
       <Tooltip title={tooltip} arrow placement="left">
         <Box display="flex" alignItems="center" style={{ gap: '.5em' }}>
           {isNumber(value) ? (
@@ -48,6 +50,6 @@ export const IconWithValue: React.FC<PipelineRunIconProps> = ({
           )}
         </Box>
       </Tooltip>
-    </React.Fragment>
+    </Fragment>
   );
 };

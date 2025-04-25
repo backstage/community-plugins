@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { FC } from 'react';
+
+import { useState, useRef, useMemo, useEffect, Fragment } from 'react';
 import { debounce } from 'lodash';
 import { PipelineRunTable } from './PipelineRunTable';
 import { PipelineRunToolbar } from './PipelineRunToolbar';
@@ -28,18 +30,18 @@ type PipelineRunListProps = {
   onUpdatePagination: (start: number, end: number) => void;
 };
 
-export const PipelineRunList: React.FC<PipelineRunListProps> = ({
+export const PipelineRunList: FC<PipelineRunListProps> = ({
   data,
   totalCount,
   loading,
   error,
   onUpdatePagination,
 }) => {
-  const [namefilter, setNameFilter] = React.useState('');
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [count, setCount] = React.useState(0);
-  const searchInputRef = React.useRef<HTMLInputElement | null>(null);
+  const [namefilter, setNameFilter] = useState('');
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [count, setCount] = useState(0);
+  const searchInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleChangePage = (newPage: number) => {
     setPage(newPage);
@@ -52,7 +54,7 @@ export const PipelineRunList: React.FC<PipelineRunListProps> = ({
     onUpdatePagination(0, page * rows + rows);
   };
 
-  const filteredData = React.useMemo(() => {
+  const filteredData = useMemo(() => {
     return data?.filter((row: PipelineRunResult) =>
       row?.id?.toString().toLocaleLowerCase().includes(namefilter),
     );
@@ -69,7 +71,7 @@ export const PipelineRunList: React.FC<PipelineRunListProps> = ({
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!loading) {
       // Keep count while fetching paginated data
       setCount(prev => (totalCount > 0 ? totalCount : prev));
@@ -77,7 +79,7 @@ export const PipelineRunList: React.FC<PipelineRunListProps> = ({
   }, [loading, totalCount]);
 
   return (
-    <React.Fragment>
+    <Fragment>
       <Box>
         <Box>
           <PipelineRunToolbar
@@ -101,6 +103,6 @@ export const PipelineRunList: React.FC<PipelineRunListProps> = ({
           />
         </Box>
       </Box>
-    </React.Fragment>
+    </Fragment>
   );
 };
