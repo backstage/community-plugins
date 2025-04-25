@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { FC } from 'react';
+
+import { useMemo } from 'react';
 
 import { V1Pod } from '@kubernetes/client-node';
 import { Flex, FlexItem } from '@patternfly/react-core';
@@ -29,7 +31,7 @@ import PodLogsDownloadLink from './PodLogsDownloadLink';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { tektonTranslationRef } from '../../translation';
 
-const PipelineRunLogDownloader: React.FC<{
+const PipelineRunLogDownloader: FC<{
   pods: V1Pod[];
   pipelineRun: PipelineRunKind;
   activeTask: string | undefined;
@@ -40,7 +42,7 @@ const PipelineRunLogDownloader: React.FC<{
       pipelineRun?.metadata?.name,
   );
 
-  const sortedPods: V1Pod[] = React.useMemo(
+  const sortedPods: V1Pod[] = useMemo(
     () =>
       Array.from(filteredPods)?.sort(
         (a: V1Pod, b: V1Pod) =>

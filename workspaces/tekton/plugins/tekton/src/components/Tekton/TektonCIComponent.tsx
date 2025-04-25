@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useLayoutEffect } from 'react';
 
 import { TektonResourcesContext } from '../../hooks/TektonResourcesContext';
 import { useDarkTheme } from '../../hooks/useDarkTheme';
@@ -31,7 +31,7 @@ const savedStylesheets = new Set<HTMLLinkElement>();
 export const TektonCIComponent = () => {
   useDarkTheme();
 
-  React.useLayoutEffect(() => {
+  useLayoutEffect(() => {
     const scalprumStyles = Array.from(
       document.querySelectorAll('link[rel="stylesheet"]'),
     ).filter(link =>

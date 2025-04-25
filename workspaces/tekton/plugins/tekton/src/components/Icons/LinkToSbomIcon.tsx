@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
+import type { ReactElement } from 'react';
 
 import { createStyles, makeStyles, Theme } from '@material-ui/core';
 import classNames from 'classnames';
@@ -35,7 +35,7 @@ const LinkToSBomIcon = ({
 }: {
   dataTestId: string;
   disabled?: boolean;
-}): React.ReactElement => {
+}): ReactElement => {
   const classes = useStyles();
   return (
     <svg
