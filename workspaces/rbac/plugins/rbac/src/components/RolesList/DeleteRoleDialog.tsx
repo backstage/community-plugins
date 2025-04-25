@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useState } from 'react';
 
 import { useApi } from '@backstage/core-plugin-api';
 
@@ -57,9 +57,9 @@ const DeleteRoleDialog = ({
   propOptions,
 }: DeleteRoleDialogProps) => {
   const { setToastMessage } = useToast();
-  const [deleteRoleValue, setDeleteRoleValue] = React.useState<string>();
-  const [disableDelete, setDisableDelete] = React.useState(false);
-  const [error, setError] = React.useState<string>('');
+  const [deleteRoleValue, setDeleteRoleValue] = useState<string>();
+  const [disableDelete, setDisableDelete] = useState(false);
+  const [error, setError] = useState<string>('');
 
   const rbacApi = useApi(rbacApiRef);
 

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useState, useEffect } from 'react';
 
 import { PermissionCondition } from '@backstage/plugin-permission-common';
 
@@ -66,13 +66,12 @@ export const ConditionsFormRow = ({
   setRemoveAllClicked,
 }: ConditionFormRowProps) => {
   const theme = useTheme();
-  const [nestedConditionRow, setNestedConditionRow] = React.useState<
-    Condition[]
-  >([]);
-  const [notConditionType, setNotConditionType] =
-    React.useState<NotConditionType>(NotConditionType.SimpleCondition);
+  const [nestedConditionRow, setNestedConditionRow] = useState<Condition[]>([]);
+  const [notConditionType, setNotConditionType] = useState<NotConditionType>(
+    NotConditionType.SimpleCondition,
+  );
 
-  React.useEffect(() => {
+  useEffect(() => {
     const nestedConditions: Condition[] = [];
     const criteriaTypes = [criterias.allOf, criterias.anyOf, criterias.not];
     switch (criteria) {

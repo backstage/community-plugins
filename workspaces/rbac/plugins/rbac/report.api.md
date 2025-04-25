@@ -4,13 +4,11 @@
 
 ```ts
 
-/// <reference types="react" />
-
 import { default as AdminPanelSettingsOutlinedIcon } from '@mui/icons-material/AdminPanelSettingsOutlined';
 import { ApiRef } from '@backstage/core-plugin-api';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { GroupEntity } from '@backstage/catalog-model';
-import { JSX as JSX_2 } from 'react';
+import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { PathParams } from '@backstage/core-plugin-api';
 import { PermissionAction } from '@backstage-community/plugin-rbac-common';
 import { PluginPermissionMetaData } from '@backstage-community/plugin-rbac-common';
