@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
+import { useContext, useState } from 'react';
 
 import { PipelineRunKind } from '@janus-idp/shared-react';
 
@@ -26,8 +26,8 @@ type PipelineRunTableBodyProps = {
 };
 
 export const PipelineRunTableBody = ({ rows }: PipelineRunTableBodyProps) => {
-  const { isExpanded } = React.useContext(TektonResourcesContext);
-  const [open, setOpen] = React.useState<OpenRowStatus>(
+  const { isExpanded } = useContext(TektonResourcesContext);
+  const [open, setOpen] = useState<OpenRowStatus>(
     rows.reduce((acc, row) => {
       if (row.metadata?.uid) {
         acc[row.metadata?.uid] = isExpanded ?? false;

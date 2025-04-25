@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useState, useEffect, memo } from 'react';
 
 import { ErrorBoundary } from '@backstage/core-components';
 
@@ -75,10 +75,10 @@ const PipelineRunLogDialog = ({
 }: PipelineRunLogDialogProps) => {
   const classes = useStyles();
 
-  const [task, setTask] = React.useState(activeTask);
+  const [task, setTask] = useState(activeTask);
   const { t } = useTranslationRef(tektonTranslationRef);
 
-  React.useEffect(() => {
+  useEffect(() => {
     // If we trigger this dialog for the SBOM task, update the current active task.
     if (forSBOM && activeTask) {
       setTask(activeTask);
@@ -129,4 +129,4 @@ const PipelineRunLogDialog = ({
   );
 };
 
-export default React.memo(PipelineRunLogDialog);
+export default memo(PipelineRunLogDialog);

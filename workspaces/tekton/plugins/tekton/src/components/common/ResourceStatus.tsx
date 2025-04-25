@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { PropsWithChildren } from 'react';
 
 import { Badge } from '@patternfly/react-core';
 import classNames from 'classnames';
@@ -43,7 +43,7 @@ export const ResourceStatus = ({
   additionalClassNames,
   badgeAlt,
   children,
-}: React.PropsWithChildren<ResourceStatusProps>) => {
+}: PropsWithChildren<ResourceStatusProps>) => {
   return (
     <span
       className={classNames('bs-tkn-resource-status', additionalClassNames)}

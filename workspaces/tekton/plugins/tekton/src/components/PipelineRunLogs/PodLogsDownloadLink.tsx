@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { FC, ReactElement } from 'react';
+
+import { useState, useContext } from 'react';
 
 import { useApi } from '@backstage/core-plugin-api';
 
@@ -49,18 +51,18 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-const PodLogsDownloadLink: React.FC<{
+const PodLogsDownloadLink: FC<{
   pods: V1Pod[];
   fileName: string;
   downloadTitle: string;
-}> = ({ pods, fileName, downloadTitle, ...props }): React.ReactElement => {
+}> = ({ pods, fileName, downloadTitle, ...props }): ReactElement => {
   const classes = useStyles();
-  const [downloading, setDownloading] = React.useState<boolean>(false);
+  const [downloading, setDownloading] = useState<boolean>(false);
   const kubernetesProxyApi = useApi(kubernetesProxyApiRef);
   const { t } = useTranslationRef(tektonTranslationRef);
 
   const { clusters, selectedCluster = 0 } =
-    React.useContext<TektonResourcesContextData>(TektonResourcesContext);
+    useContext<TektonResourcesContextData>(TektonResourcesContext);
   const currCluster = clusters.length > 0 ? clusters[selectedCluster] : '';
 
   const getLogs = (podScope: ContainerScope): Promise<{ text: string }> => {

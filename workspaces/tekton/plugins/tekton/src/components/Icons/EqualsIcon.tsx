@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
+import type { ReactElement } from 'react';
 
 import { t_color_yellow_40 as mediumColor } from '@patternfly/react-tokens/dist/js/t_color_yellow_40';
 
@@ -23,7 +23,7 @@ const EqualsIcon = ({
 }: {
   className: string;
   title?: string;
-}): React.ReactElement => {
+}): ReactElement => {
   return (
     <svg
       viewBox="0 -960 960 960"

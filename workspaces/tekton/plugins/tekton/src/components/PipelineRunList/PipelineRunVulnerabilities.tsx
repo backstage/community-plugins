@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
+import type { FC } from 'react';
 
 import { makeStyles, Theme } from '@material-ui/core';
 import AngleDoubleDownIcon from '@mui/icons-material/KeyboardDoubleArrowDownOutlined';
@@ -77,7 +77,7 @@ type PipelineRunVulnerabilitiesProps = {
   condensed?: boolean;
 };
 
-const PipelineRunVulnerabilities: React.FC<PipelineRunVulnerabilitiesProps> = ({
+const PipelineRunVulnerabilities: FC<PipelineRunVulnerabilitiesProps> = ({
   pipelineRun,
   condensed,
 }) => {
