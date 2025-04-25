@@ -38,5 +38,3 @@ spec:
         args:
           - -n
           - ${{parameters.component_id | replace("-", "_")}}
----
-
