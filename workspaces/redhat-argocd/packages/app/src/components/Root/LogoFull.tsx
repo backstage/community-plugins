@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { JSX } from 'react';
 import { makeStyles } from 'tss-react/mui';
 
 const useStyles = makeStyles()({
@@ -25,7 +25,7 @@ const useStyles = makeStyles()({
     fill: '#7df3e1',
   },
 });
-const LogoFull = (): React.JSX.Element => {
+const LogoFull = (): JSX.Element => {
   const { classes } = useStyles();
 
   return (

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { FC } from 'react';
 
 import { SyncIcon } from '../../../AppStatus/StatusIcons';
 import { SyncStatusCode } from '@backstage-community/plugin-redhat-argocd-common';
@@ -22,7 +22,7 @@ interface ResourceSyncStatusProps {
   syncStatus: string;
 }
 
-export const ResourceSyncStatus: React.FC<ResourceSyncStatusProps> = ({
+export const ResourceSyncStatus: FC<ResourceSyncStatusProps> = ({
   syncStatus,
 }) => {
   return (

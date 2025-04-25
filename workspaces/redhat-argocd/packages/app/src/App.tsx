@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { ReactNode, ComponentType } from 'react';
 import { Navigate, Route } from 'react-router-dom';
 
 import { createApp } from '@backstage/app-defaults';
@@ -132,8 +132,8 @@ const routes = (
   </FlatRoutes>
 );
 
-const AppRoot: React.ComponentType<{
-  children?: React.ReactNode;
+const AppRoot: ComponentType<{
+  children?: ReactNode;
 }> = app.createRoot(
   <>
     <AlertDisplay />

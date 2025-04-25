@@ -15,7 +15,7 @@
  */
 import { Box, Typography } from '@material-ui/core';
 import { ClassNameMap } from '@material-ui/styles';
-import React from 'react';
+import type { FC } from 'react';
 import { getCommitUrl } from '../../../../../utils/utils';
 import {
   Application,
@@ -32,7 +32,7 @@ type DeploymentHistoryProps = {
   annotations: any;
 };
 
-export const DeploymentHistory: React.FC<DeploymentHistoryProps> = ({
+export const DeploymentHistory: FC<DeploymentHistoryProps> = ({
   application,
   revisionsMap,
   appHistory,
