@@ -55,7 +55,7 @@ import { getMembersCount } from './create-role-utils';
 
 export const getPermissionsArray = (
   role: string,
-  policies: RoleBasedPolicy[],
+  policies: RoleBasedPolicy[] | undefined,
   useDefaultPermissions = false,
   customPermissions?: Array<{permission: string; policy: string; effect: string}>,
 ): RoleBasedPolicy[] => {
@@ -110,7 +110,7 @@ export const getDefaultPermissions = (
 
 export const getPermissions = (
   role: string,
-  policies: RoleBasedPolicy[],
+  policies: RoleBasedPolicy[] | undefined,
   useDefaultPermissions = false,
   customPermissions?: Array<{permission: string; policy: string; effect: string}>,
 ): number => {
@@ -259,7 +259,7 @@ const getAllPolicies = (
 };
 
 export const getPermissionsData = (
-  policies: RoleBasedPolicy[],
+  policies: RoleBasedPolicy[] | undefined,
   permissionPolicies: PluginPermissionMetaData[],
 ): PermissionsData[] => {
   const data = policies.reduce(
