@@ -1,5 +1,14 @@
 # @backstage-community/plugin-search-backend-module-announcements
 
+## 0.3.3
+
+### Patch Changes
+
+- 11be6bb: chore(deps): Upgrade to Backstage 1.38
+- Updated dependencies [11be6bb]
+  - @backstage-community/plugin-announcements-common@0.3.2
+  - @backstage-community/plugin-announcements-node@0.3.3
+
 ## 0.3.2
 
 ### Patch Changes
