@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { createContext, useContext } from 'react';
+import { useState, useMemo, createContext, useContext } from 'react';
 
 type ToastContextType = {
   toastMessage: string;
@@ -26,8 +26,8 @@ export const ToastContext = createContext<ToastContextType>({
 });
 
 export const ToastContextProvider = (props: any) => {
-  const [toastMessage, setToastMessage] = React.useState('');
-  const toastContextProviderValue = React.useMemo(
+  const [toastMessage, setToastMessage] = useState('');
+  const toastContextProviderValue = useMemo(
     () => ({ setToastMessage, toastMessage }),
     [setToastMessage, toastMessage],
   );

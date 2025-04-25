@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import { parseEntityRef } from '@backstage/catalog-model';
 import { Link, TableColumn } from '@backstage/core-components';
 
