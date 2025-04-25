@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { ChangeEvent, FC } from 'react';
 import {
   createStyles,
   InputAdornment,
@@ -35,11 +35,11 @@ const useStyles = makeStyles(theme =>
 
 interface ResourcesSearchBarProps {
   value: string;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
   onSearchClear: () => void;
 }
 
-export const ResourcesSearchBar: React.FC<ResourcesSearchBarProps> = ({
+export const ResourcesSearchBar: FC<ResourcesSearchBarProps> = ({
   value,
   onChange,
   onSearchClear,

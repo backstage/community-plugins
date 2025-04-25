@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import {
@@ -47,6 +46,7 @@ type RouterProps = {
     name: string | undefined;
   };
   hideInactive?: boolean;
+  hideStartAt?: boolean;
 };
 
 export const Router = (props: RouterProps) => {
@@ -54,6 +54,7 @@ export const Router = (props: RouterProps) => {
     themeId: 'home',
     title: 'Announcements',
     hideInactive: false,
+    hideStartAt: false,
     ...props,
   };
 

@@ -18,7 +18,8 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Typography from '@material-ui/core/Typography';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
-import React from 'react';
+import type { MouseEvent } from 'react';
+import { useState } from 'react';
 import { ilertApiRef } from '../../api';
 import { Service } from '../../types';
 
@@ -27,9 +28,9 @@ import { useApi } from '@backstage/core-plugin-api';
 
 export const ServiceActionsMenu = ({ service }: { service: Service }) => {
   const ilertApi = useApi(ilertApiRef);
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+  const handleClick = (event: MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 

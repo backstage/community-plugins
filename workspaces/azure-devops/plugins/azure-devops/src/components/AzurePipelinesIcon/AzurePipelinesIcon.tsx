@@ -16,8 +16,6 @@
 
 import SvgIcon, { SvgIconProps } from '@material-ui/core/SvgIcon';
 
-import React from 'react';
-
 export const AzurePipelinesIcon = (props: SvgIconProps) => (
   <SvgIcon {...props} viewBox="0 0 512 512">
     <path

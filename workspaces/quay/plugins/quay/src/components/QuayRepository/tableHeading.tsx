@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { ReactNode } from 'react';
 
 import { Link, Progress, TableColumn } from '@backstage/core-components';
 
@@ -38,7 +38,7 @@ export const columns: TableColumn<QuayTagData>[] = [
   {
     title: 'Security Scan',
     field: 'securityScan',
-    render: (rowData: QuayTagData): React.ReactNode => {
+    render: (rowData: QuayTagData): ReactNode => {
       if (!rowData.securityStatus && !rowData.securityDetails) {
         return (
           <span data-testid="quay-repo-security-scan-progress">

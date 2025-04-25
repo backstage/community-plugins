@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import useObservable from 'react-use/esm/useObservable';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import Button from '@material-ui/core/Button';

@@ -29,7 +29,7 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Typography from '@material-ui/core/Typography';
 import { useTheme } from '@material-ui/core/styles';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import useAsync from 'react-use/esm/useAsync';
 import { BadgeStyle, BADGE_STYLES, badgesApiRef } from '../api';
 

@@ -1,5 +1,23 @@
 # @backstage-community/plugin-vault
 
+## 0.6.0
+
+### Minor Changes
+
+- 6fed93a: Backstage version bump to v1.38.1
+
+## 0.5.2
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
+## 0.5.1
+
+### Patch Changes
+
+- bdf4d36: Add catalog plugins in devDependencies for development purposes.
+
 ## 0.5.0
 
 ### Minor Changes

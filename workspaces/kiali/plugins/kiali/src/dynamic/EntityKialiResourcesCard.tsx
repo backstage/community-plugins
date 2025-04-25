@@ -100,7 +100,6 @@ export const EntityKialiResourcesCard = () => {
       }, 1000);
     }
   }, [element, renderCount]);
-
   return !entity ? (
     <EmptyState
       missing="data"

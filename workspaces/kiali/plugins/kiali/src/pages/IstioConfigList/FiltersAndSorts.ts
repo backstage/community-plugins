@@ -42,7 +42,7 @@ export const sortFields: SortField<IstioConfigItem>[] = [
     isNumeric: false,
     param: 'it',
     compare: (a: IstioConfigItem, b: IstioConfigItem): number => {
-      return a.type.localeCompare(b.type) || a.name.localeCompare(b.name);
+      return a.kind.localeCompare(b.kind) || a.name.localeCompare(b.name);
     },
   },
   {
@@ -57,7 +57,7 @@ export const sortFields: SortField<IstioConfigItem>[] = [
       return (
         a.name.localeCompare(b.name) ||
         a.namespace.localeCompare(b.namespace) ||
-        a.type.localeCompare(b.type)
+        a.kind.localeCompare(b.kind)
       );
     },
   },

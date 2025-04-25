@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { ElementType, ReactNode, useMemo } from 'react';
+import { ElementType, ReactNode, useMemo } from 'react';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import Icon from '@mui/material/Icon';

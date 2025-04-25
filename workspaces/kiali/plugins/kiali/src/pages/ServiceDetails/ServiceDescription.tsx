@@ -21,6 +21,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import * as React from 'react';
+import { HistoryManager } from '../../app/History';
 import { DetailDescription } from '../../components/DetailDescription/DetailDescription';
 import { HealthIndicator } from '../../components/Health/HealthIndicator';
 import { Labels } from '../../components/Label/Labels';
@@ -75,7 +76,7 @@ export const ServiceDescription: React.FC<ServiceInfoDescriptionProps> = (
 ) => {
   const apps: string[] = [];
   const workloads: AppWorkload[] = [];
-
+  const cluster = HistoryManager.getClusterName();
   if (props.serviceDetails) {
     if (props.serviceDetails.workloads) {
       props.serviceDetails.workloads
@@ -216,10 +217,9 @@ export const ServiceDescription: React.FC<ServiceInfoDescriptionProps> = (
               </span>
             </Typography>
 
-            {props.serviceDetails?.cluster && isMultiCluster && (
+            {cluster && isMultiCluster && (
               <div key="cluster-icon" className={iconStyle}>
-                <PFBadge badge={PFBadges.Cluster} position="right" />{' '}
-                {props.serviceDetails.cluster}
+                <PFBadge badge={PFBadges.Cluster} position="right" /> {cluster}
               </div>
             )}
           </>
@@ -248,7 +248,7 @@ export const ServiceDescription: React.FC<ServiceInfoDescriptionProps> = (
           apps={apps}
           workloads={workloads}
           health={props.serviceDetails?.health}
-          cluster={props.serviceDetails?.cluster}
+          cluster={cluster}
           view={props.view}
         />
       </CardContent>

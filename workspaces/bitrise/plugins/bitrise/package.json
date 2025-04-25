@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-bitrise",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "A Backstage plugin that integrates towards Bitrise",
   "backstage": {
     "role": "frontend-plugin",
@@ -63,7 +63,6 @@
     "@types/lodash": "^4.14.151",
     "@types/react-dom": "^18.2.19",
     "@types/recharts": "^1.8.15",
-    "canvas": "^2.11.2",
     "msw": "^1.0.0",
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",

@@ -31,6 +31,8 @@ import { Rating } from './Rating';
 import { RatingCard } from './RatingCard';
 import { Value } from './Value';
 import { FindingSummary } from '@backstage-community/plugin-sonarqube-react';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { sonarqubeTranslationRef } from '../../translation';
 
 type MetricInsightsProps = {
   value: FindingSummary | any;
@@ -56,13 +58,16 @@ const useStyles = makeStyles(theme => ({
 
 export const QualityBadge = (props: MetricInsightsProps) => {
   const classes = useStyles();
+  const { t } = useTranslationRef(sonarqubeTranslationRef);
 
   const { value } = props;
-  let gateLabel = 'Not computed';
+  let gateLabel: string = t('sonarQubeCard.qualityBadgeLabel.notComputed');
   let gateColor = classes.badgeUnknown;
   if (value?.metrics.alert_status) {
     const gatePassed = value?.metrics.alert_status === 'OK';
-    gateLabel = gatePassed ? 'Gate passed' : 'Gate failed';
+    gateLabel = gatePassed
+      ? t('sonarQubeCard.qualityBadgeLabel.gatePassed')
+      : t('sonarQubeCard.qualityBadgeLabel.gateFailed');
     gateColor = gatePassed ? classes.badgeSuccess : classes.badgeError;
   }
   let clickableAttrs = {};
@@ -211,12 +216,17 @@ export const LastAnalyzedRatingCard = (props: MetricInsightsProps) => {
 
 export const NoSonarQubeCard = (props: MetricInsightsProps) => {
   const { value, sonarQubeComponentKey } = props;
+  const { t } = useTranslationRef(sonarqubeTranslationRef);
   return (
     <Typography color="error" variant="subtitle2">
       {value?.isSonarQubeAnnotationEnabled &&
-        `Unable to access SonarQube project "${sonarQubeComponentKey}": Check project exists and permissions`}
+        t('sonarQubeCard.noSonarQubeError.hasAnnotation', {
+          project: sonarQubeComponentKey || '',
+        })}
       {!value?.isSonarQubeAnnotationEnabled &&
-        `${value?.name} has no DX-Hub annotation for SonarQube`}
+        t('sonarQubeCard.noSonarQubeError.noAnnotation', {
+          name: value?.name,
+        })}
     </Typography>
   );
 };

@@ -13,7 +13,7 @@ yarn install
 ### 2. Run Both Frontend and Backend Together
 
 ```bash
-yarn dev
+yarn start
 ```
 
 ### 3. Run Frontend and Backend Separately

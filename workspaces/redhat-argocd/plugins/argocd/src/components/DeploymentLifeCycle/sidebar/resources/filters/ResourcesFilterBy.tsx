@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { Dispatch, FC, SetStateAction, useState } from 'react';
+import type { MouseEvent } from 'react';
+
+import { Dispatch, FC, SetStateAction, useState } from 'react';
 import {
   Toolbar,
   ToolbarItem,
@@ -66,7 +68,7 @@ export const ResourcesFilterBy: FC<ResourcesFilterByProps> = ({
   };
 
   const onResourcesFilterSelect = (
-    _event: React.MouseEvent | undefined,
+    _event: MouseEvent | undefined,
     selection: string | number | undefined,
   ) => {
     const selectedKey = selection as keyof typeof ResourcesFilters;
@@ -76,7 +78,7 @@ export const ResourcesFilterBy: FC<ResourcesFilterByProps> = ({
 
   const onSelect = (
     filterType: keyof FiltersType,
-    _event: React.MouseEvent | undefined,
+    _event: MouseEvent | undefined,
     selection: string | number | undefined,
   ) => {
     if (typeof selection === 'string') {

@@ -45,6 +45,8 @@ import {
   VulnerabilitiesRatingCard,
 } from './MetricInsights';
 import { DuplicationRating } from '../SonarQubeTable/types';
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { sonarqubeTranslationRef } from '../../translation';
 
 const useStyles = makeStyles(theme => ({
   header: {
@@ -67,6 +69,7 @@ export const SonarQubeCard = (props: {
   const { variant = 'gridItem', missingAnnotationReadMoreUrl } = props;
   const { entity } = useEntity();
   const sonarQubeApi = useApi(sonarQubeApiRef);
+  const { t } = useTranslationRef(sonarqubeTranslationRef);
 
   const { projectKey: projectTitle, projectInstance } = useProjectInfo(entity);
 
@@ -82,7 +85,7 @@ export const SonarQubeCard = (props: {
   const deepLink =
     !loading && summaryFinding?.metrics
       ? {
-          title: 'View more',
+          title: t('sonarQubeCard.deepLinkTitle'),
           link: summaryFinding.projectUrl,
         }
       : undefined;
@@ -90,7 +93,7 @@ export const SonarQubeCard = (props: {
   const classes = useStyles();
   return (
     <InfoCard
-      title="Code Quality"
+      title={t('sonarQubeCard.title')}
       deepLink={deepLink}
       variant={variant}
       headerProps={{
@@ -115,8 +118,10 @@ export const SonarQubeCard = (props: {
       {!loading && projectTitle && !summaryFinding?.metrics && (
         <EmptyState
           missing="info"
-          title="No information to display"
-          description={`There is no SonarQube project with key '${projectTitle}'.`}
+          title={t('sonarQubeCard.emptyState.title')}
+          description={t('sonarQubeCard.emptyState.description', {
+            projectTitle,
+          })}
         />
       )}
 
@@ -132,24 +137,30 @@ export const SonarQubeCard = (props: {
             spacing={0}
           >
             <Grid item container justifyContent="space-around">
-              <BugReportRatingCard value={summaryFinding} title="Bugs" />
+              <BugReportRatingCard
+                value={summaryFinding}
+                title={t('sonarQubeCard.bugReportRatingCardTitle')}
+              />
               <VulnerabilitiesRatingCard
                 value={summaryFinding}
-                title="Vulnerabilities"
+                title={t('sonarQubeCard.vulnerabilitiesRatingCardTitle')}
               />
               <CodeSmellsRatingCard
                 value={summaryFinding}
-                title="Code Smells"
+                title={t('sonarQubeCard.codeSmellsRatingCardTitle')}
               />
               <HotspotsReviewed
                 value={summaryFinding}
-                title="Hotspots Reviewed"
+                title={t('sonarQubeCard.hotspotsReviewedTitle')}
               />
               <div style={{ width: '100%' }} />
-              <CoverageRatingCard value={summaryFinding} title="Coverage" />
+              <CoverageRatingCard
+                value={summaryFinding}
+                title={t('sonarQubeCard.coverageRatingCardTitle')}
+              />
               <DuplicationsRatingCard
                 value={summaryFinding}
-                title="Duplications"
+                title={t('sonarQubeCard.duplicationsRatingCard')}
               />
             </Grid>
             <Grid item className={classes.lastAnalyzed}>

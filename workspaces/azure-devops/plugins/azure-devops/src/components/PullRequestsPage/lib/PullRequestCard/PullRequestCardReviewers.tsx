@@ -15,7 +15,6 @@
  */
 
 import { PullRequestCardReviewer } from './PullRequestCardReviewer';
-import React from 'react';
 import { Reviewer } from '@backstage-community/plugin-azure-devops-common';
 import { reviewerFilter } from '../utils';
 import { styled } from '@material-ui/core/styles';

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { PropsWithChildren } from 'react';
+import { PropsWithChildren } from 'react';
 import Box from '@mui/material/Box';
 import { styled } from '@mui/material/styles';
 import { BarChart, LineChart } from '@mui/x-charts';

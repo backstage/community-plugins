@@ -4,4 +4,4 @@
 '@backstage-community/plugin-redhat-argocd': minor
 ---
 
-Bump backstage version to 1.36.1
+Bump backstage version to v1.38.1

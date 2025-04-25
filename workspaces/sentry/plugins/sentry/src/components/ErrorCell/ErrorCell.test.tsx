@@ -15,7 +15,6 @@
  */
 
 import { ErrorCell } from './ErrorCell';
-import React from 'react';
 import mockIssue from '../../api/mock/sentry-issue-mock.json';
 import { renderInTestApp } from '@backstage/test-utils';
 

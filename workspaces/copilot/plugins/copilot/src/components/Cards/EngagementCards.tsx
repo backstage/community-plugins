@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { PropsWithChildren } from 'react';
+import { PropsWithChildren } from 'react';
 import FunctionsIcon from '@mui/icons-material/Functions';
 import TimelineIcon from '@mui/icons-material/Timeline';
 import Box from '@mui/material/Box';
@@ -50,7 +50,9 @@ export const EngagementCards = ({
     const matchingPoint = dataArray.find(item => {
       if (!item.day) return false;
       // Format item.day to YYYY-MM-DD for comparison
-      const itemDate = new Date(item.day).toISOString().split('T')[0];
+      const itemDate = DateTime.fromISO(item.day)
+        .toLocal()
+        .toFormat('yyyy-MM-dd');
       return itemDate === formattedEndDate;
     });
 

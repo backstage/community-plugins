@@ -1,5 +1,11 @@
 # @backstage-community/plugin-entity-feedback-backend
 
+## 0.9.0
+
+### Minor Changes
+
+- a3f300c: Support for Backstage Notifications added
+
 ## 0.8.0
 
 ### Minor Changes

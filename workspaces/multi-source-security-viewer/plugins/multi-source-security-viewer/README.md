@@ -21,7 +21,7 @@ This plugin enables you to visualize pipeline security information from multiple
 1. Install the plugin using the following command:
 
 ```
-yarn workspace app add @backstage-community/multi-source-security-viewer
+yarn workspace app add @backstage-community/plugin-multi-source-security-viewer
 ```
 
 To enable the PipelineRun list in the Security tab on the entity view page, add the following snippet in the packages/app/src/components/catalog/EntityPage.tsx.

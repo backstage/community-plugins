@@ -458,6 +458,13 @@ export class CSVFileWatcher extends AbstractFileWatcher<string[][]> {
       ) {
         policies.push(policy);
       }
+
+      // TODO: Temporary workaround to prevent breakages after the removal of the resource type `policy-entity` from the permission `policy.entity.create`
+      if (policy[1] === 'policy-entity' && policy[2] === 'create' && !remove) {
+        this.logger.warn(
+          `Permission policy with resource type 'policy-entity' and action 'create' has been removed. Please consider updating policy ${policy} to use 'policy.entity.create' instead of 'policy-entity' from source csv-file`,
+        );
+      }
     }
 
     for (const groupPolicy of groupPoliciesToEdit) {
@@ -580,6 +587,16 @@ export class CSVFileWatcher extends AbstractFileWatcher<string[][]> {
         convertedPolicy.splice(0, 1);
         if (await this.validateAddedPolicy(convertedPolicy, tempEnforcer))
           this.csvFilePolicies.addedPolicies.push(convertedPolicy);
+
+        // TODO: Temporary workaround to prevent breakages after the removal of the resource type `policy-entity` from the permission `policy.entity.create`
+        if (
+          convertedPolicy[1] === 'policy-entity' &&
+          convertedPolicy[2] === 'create'
+        ) {
+          this.logger.warn(
+            `Permission policy with resource type 'policy-entity' and action 'create' has been removed. Please consider updating policy ${convertedPolicy} to use 'policy.entity.create' instead of 'policy-entity' from source csv-file`,
+          );
+        }
       } else if (convertedPolicy[0] === 'g') {
         convertedPolicy.splice(0, 1);
         if (await this.validateAddedGroupPolicy(convertedPolicy, tempEnforcer))

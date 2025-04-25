@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { ComponentType, FC } from 'react';
+
+import { Fragment } from 'react';
 import { Box, Button, makeStyles, Theme, Typography } from '@material-ui/core';
 
 type EmptyStateProps = {
-  icon: React.ComponentType<any>;
+  icon: ComponentType<any>;
   title: string;
   helperText: string;
   action?: {
@@ -50,7 +52,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-export const EmptyState: React.FC<EmptyStateProps> = ({
+export const EmptyState: FC<EmptyStateProps> = ({
   icon: Icon,
   title,
   helperText,
@@ -59,7 +61,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   const classes = useStyles();
 
   return (
-    <React.Fragment>
+    <Fragment>
       <Box className={classes.box}>
         <Box
           sx={{
@@ -82,6 +84,6 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
           )}
         </Box>
       </Box>
-    </React.Fragment>
+    </Fragment>
   );
 };

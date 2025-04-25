@@ -162,13 +162,46 @@ const addAdminPermissions = async (
   }
 };
 
+const removeOldCreateAdminPermissions = async (
+  enf: EnforcerDelegate,
+  auditor: AuditorService,
+) => {
+  const policyEntityCreate = [
+    'role:default/rbac_admin',
+    'policy-entity',
+    'create',
+    'allow',
+  ];
+  if (await enf.hasPolicy(...policyEntityCreate)) {
+    const auditorEvent = await auditor.createEvent({
+      eventId: PermissionEvents.POLICY_WRITE,
+      severityLevel: 'medium',
+      meta: { actionType: ActionType.DELETE, source: 'configuration' },
+    });
+
+    try {
+      await enf.removePolicy(policyEntityCreate);
+      await auditorEvent.success({
+        meta: { policy: policyEntityCreate },
+      });
+    } catch (error) {
+      await auditorEvent.fail({
+        error,
+        meta: { policy: policyEntityCreate },
+      });
+    }
+  }
+};
+
 export const setAdminPermissions = async (
   enf: EnforcerDelegate,
   auditor: AuditorService,
 ) => {
+  // TODO: Temporary workaround to prevent breakages after the removal of the resource type `policy-entity` from the permission `policy.entity.create`
+  await removeOldCreateAdminPermissions(enf, auditor);
   const adminPermissions = [
     [ADMIN_ROLE_NAME, 'policy-entity', 'read', 'allow'],
-    [ADMIN_ROLE_NAME, 'policy-entity', 'create', 'allow'],
+    [ADMIN_ROLE_NAME, 'policy.entity.create', 'create', 'allow'],
     [ADMIN_ROLE_NAME, 'policy-entity', 'delete', 'allow'],
     [ADMIN_ROLE_NAME, 'policy-entity', 'update', 'allow'],
     // Needed for the RBAC frontend plugin.

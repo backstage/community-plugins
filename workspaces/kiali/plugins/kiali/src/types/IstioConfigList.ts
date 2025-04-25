@@ -13,81 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { getGVKTypeString, getIstioObjectGVK } from '../utils/IstioConfigUtils';
 import {
-  AuthorizationPolicy,
-  DestinationRule,
-  EnvoyFilter,
-  Gateway,
-  K8sGateway,
-  K8sGRPCRoute,
-  K8sHTTPRoute,
-  K8sReferenceGrant,
-  K8sTCPRoute,
-  K8sTLSRoute,
+  DestinationRule as DR,
+  GroupVersionKind,
+  Gateway as GW,
+  IstioObject,
+  K8sGRPCRoute as K8sGRPCR,
+  K8sGateway as K8sGW,
+  K8sHTTPRoute as K8sHTTPR,
+  K8sMetadata,
+  K8sResource,
   ObjectValidation,
-  PeerAuthentication,
-  RequestAuthentication,
-  ServiceEntry,
-  Sidecar,
-  Telemetry,
+  ServiceEntry as SE,
   Validations,
-  VirtualService,
-  WasmPlugin,
-  WorkloadEntry,
-  WorkloadGroup,
+  VirtualService as VS,
 } from './IstioObjects';
-import { Namespace } from './Namespace';
+import { TypeMeta } from './Kubernetes';
 import { ResourcePermissions } from './Permissions';
 
-export interface IstioConfigItem {
-  authorizationPolicy?: AuthorizationPolicy;
+export interface IstioConfigItem extends TypeMeta {
   cluster?: string;
   creationTimestamp?: string;
-  destinationRule?: DestinationRule;
-  envoyFilter?: EnvoyFilter;
-  gateway?: Gateway;
-  k8sGRPCRoute?: K8sGRPCRoute;
-  k8sGateway?: K8sGateway;
-  k8sHTTPRoute?: K8sHTTPRoute;
-  k8sReferenceGrant?: K8sReferenceGrant;
-  k8sTCPRoute?: K8sTCPRoute;
-  k8sTLSRoute?: K8sTLSRoute;
   name: string;
   namespace: string;
-  peerAuthentication?: PeerAuthentication;
-  requestAuthentication?: RequestAuthentication;
+  resource: K8sResource;
   resourceVersion?: string;
-  serviceEntry?: ServiceEntry;
-  sidecar?: Sidecar;
-  telemetry?: Telemetry;
-  type: string;
   validation?: ObjectValidation;
-  virtualService?: VirtualService;
-  wasmPlugin?: WasmPlugin;
-  workloadEntry?: WorkloadEntry;
-  workloadGroup?: WorkloadGroup;
 }
 
 export declare type IstioConfigsMap = { [key: string]: IstioConfigList };
 
 export interface IstioConfigList {
-  namespace: Namespace;
-  gateways: Gateway[];
-  k8sGateways: K8sGateway[];
-  k8sHTTPRoutes: K8sHTTPRoute[];
-  virtualServices: VirtualService[];
-  destinationRules: DestinationRule[];
-  serviceEntries: ServiceEntry[];
-  workloadEntries: WorkloadEntry[];
-  workloadGroups: WorkloadGroup[];
-  envoyFilters: EnvoyFilter[];
-  authorizationPolicies: AuthorizationPolicy[];
-  sidecars: Sidecar[];
-  wasmPlugins: WasmPlugin[];
-  telemetries: Telemetry[];
-  peerAuthentications: PeerAuthentication[];
-  requestAuthentications: RequestAuthentication[];
   permissions: { [key: string]: ResourcePermissions };
+  resources: { [key: string]: any[] }; // map of gvk to resource array
   validations: Validations;
 }
 
@@ -98,54 +57,164 @@ export interface IstioConfigListQuery {
   workloadSelector?: string;
 }
 
-export const dicIstioType = {
-  Sidecar: 'sidecars',
-  Gateway: 'gateways',
-  K8sGateway: 'k8sgateways',
-  K8sHTTPRoute: 'k8shttproutes',
-  VirtualService: 'virtualservices',
-  DestinationRule: 'destinationrules',
-  ServiceEntry: 'serviceentries',
-  AuthorizationPolicy: 'authorizationpolicies',
-  PeerAuthentication: 'peerauthentications',
-  RequestAuthentication: 'requestauthentications',
-  WorkloadEntry: 'workloadentries',
-  WorkloadGroup: 'workloadgroups',
-  EnvoyFilter: 'envoyfilters',
-  WasmPlugin: 'wasmPlugins',
-  Telemetry: 'telemetries',
+export enum gvkType {
+  AuthorizationPolicy = 'AuthorizationPolicy',
+  PeerAuthentication = 'PeerAuthentication',
+  RequestAuthentication = 'RequestAuthentication',
 
-  gateways: 'Gateway',
-  k8sgateways: 'K8sGateway',
-  k8shttproutes: 'K8sHTTPRoute',
-  virtualservices: 'VirtualService',
-  destinationrules: 'DestinationRule',
-  serviceentries: 'ServiceEntry',
-  authorizationpolicies: 'AuthorizationPolicy',
-  sidecars: 'Sidecar',
-  peerauthentications: 'PeerAuthentication',
-  requestauthentications: 'RequestAuthentication',
-  workloadentries: 'WorkloadEntry',
-  workloadgroups: 'WorkloadGroup',
-  envoyfilters: 'EnvoyFilter',
-  telemetries: 'Telemetry',
-  wasmplugins: 'WasmPlugin',
+  DestinationRule = 'DestinationRule',
+  Gateway = 'Gateway',
+  EnvoyFilter = 'EnvoyFilter',
+  Sidecar = 'Sidecar',
+  ServiceEntry = 'ServiceEntry',
+  VirtualService = 'VirtualService',
+  WorkloadEntry = 'WorkloadEntry',
+  WorkloadGroup = 'WorkloadGroup',
 
-  gateway: 'Gateway',
-  k8sgateway: 'K8sGateway',
-  k8shttproute: 'K8sHTTPRoute',
-  virtualservice: 'VirtualService',
-  destinationrule: 'DestinationRule',
-  serviceentry: 'ServiceEntry',
-  authorizationpolicy: 'AuthorizationPolicy',
-  sidecar: 'Sidecar',
-  wasmplugin: 'WasmPlugin',
-  telemetry: 'Telemetry',
-  peerauthentication: 'PeerAuthentication',
-  requestauthentication: 'RequestAuthentication',
-  workloadentry: 'WorkloadEntry',
-  workloadgroup: 'WorkloadGroup',
-  envoyfilter: 'EnvoyFilter',
+  WasmPlugin = 'WasmPlugin',
+  Telemetry = 'Telemetry',
+
+  K8sGateway = 'K8sGateway',
+  K8sGatewayClass = 'K8sGatewayClass',
+  K8sGRPCRoute = 'K8sGRPCRoute',
+  K8sHTTPRoute = 'K8sHTTPRoute',
+  K8sReferenceGrant = 'K8sReferenceGrant',
+  K8sTCPRoute = 'K8sTCPRoute',
+  K8sTLSRoute = 'K8sTLSRoute',
+
+  CronJob = 'CronJob',
+  DaemonSet = 'DaemonSet',
+  Deployment = 'Deployment',
+  DeploymentConfig = 'DeploymentConfig',
+  Job = 'Job',
+  Pod = 'Pod',
+  ReplicaSet = 'ReplicaSet',
+  ReplicationController = 'ReplicationController',
+  StatefulSet = 'StatefulSet',
+}
+
+export const dicTypeToGVK: { [key in gvkType]: GroupVersionKind } = {
+  [gvkType.AuthorizationPolicy]: {
+    Group: 'security.istio.io',
+    Version: 'v1',
+    Kind: gvkType.AuthorizationPolicy,
+  },
+  [gvkType.PeerAuthentication]: {
+    Group: 'security.istio.io',
+    Version: 'v1',
+    Kind: gvkType.PeerAuthentication,
+  },
+  [gvkType.RequestAuthentication]: {
+    Group: 'security.istio.io',
+    Version: 'v1',
+    Kind: gvkType.RequestAuthentication,
+  },
+
+  [gvkType.DestinationRule]: {
+    Group: 'networking.istio.io',
+    Version: 'v1',
+    Kind: gvkType.DestinationRule,
+  },
+  [gvkType.Gateway]: {
+    Group: 'networking.istio.io',
+    Version: 'v1',
+    Kind: gvkType.Gateway,
+  },
+  [gvkType.EnvoyFilter]: {
+    Group: 'networking.istio.io',
+    Version: 'v1alpha3',
+    Kind: gvkType.EnvoyFilter,
+  },
+  [gvkType.Sidecar]: {
+    Group: 'networking.istio.io',
+    Version: 'v1',
+    Kind: gvkType.Sidecar,
+  },
+  [gvkType.ServiceEntry]: {
+    Group: 'networking.istio.io',
+    Version: 'v1',
+    Kind: gvkType.ServiceEntry,
+  },
+  [gvkType.VirtualService]: {
+    Group: 'networking.istio.io',
+    Version: 'v1',
+    Kind: gvkType.VirtualService,
+  },
+  [gvkType.WorkloadEntry]: {
+    Group: 'networking.istio.io',
+    Version: 'v1',
+    Kind: gvkType.WorkloadEntry,
+  },
+  [gvkType.WorkloadGroup]: {
+    Group: 'networking.istio.io',
+    Version: 'v1',
+    Kind: gvkType.WorkloadGroup,
+  },
+
+  [gvkType.WasmPlugin]: {
+    Group: 'extensions.istio.io',
+    Version: 'v1alpha1',
+    Kind: gvkType.WasmPlugin,
+  },
+  [gvkType.Telemetry]: {
+    Group: 'telemetry.istio.io',
+    Version: 'v1',
+    Kind: gvkType.Telemetry,
+  },
+
+  [gvkType.K8sGateway]: {
+    Group: 'gateway.networking.k8s.io',
+    Version: 'v1',
+    Kind: 'Gateway',
+  },
+  [gvkType.K8sGatewayClass]: {
+    Group: 'gateway.networking.k8s.io',
+    Version: 'v1',
+    Kind: 'GatewayClass',
+  },
+  [gvkType.K8sGRPCRoute]: {
+    Group: 'gateway.networking.k8s.io',
+    Version: 'v1',
+    Kind: 'GRPCRoute',
+  },
+  [gvkType.K8sHTTPRoute]: {
+    Group: 'gateway.networking.k8s.io',
+    Version: 'v1',
+    Kind: 'HTTPRoute',
+  },
+  [gvkType.K8sReferenceGrant]: {
+    Group: 'gateway.networking.k8s.io',
+    Version: 'v1beta1',
+    Kind: 'ReferenceGrant',
+  },
+  [gvkType.K8sTCPRoute]: {
+    Group: 'gateway.networking.k8s.io',
+    Version: 'v1alpha2',
+    Kind: 'TCPRoute',
+  },
+  [gvkType.K8sTLSRoute]: {
+    Group: 'gateway.networking.k8s.io',
+    Version: 'v1alpha2',
+    Kind: 'TLSRoute',
+  },
+
+  [gvkType.CronJob]: { Group: 'batch', Version: 'v1', Kind: 'CronJob' },
+  [gvkType.DaemonSet]: { Group: 'apps', Version: 'v1', Kind: 'DaemonSet' },
+  [gvkType.Deployment]: { Group: 'apps', Version: 'v1', Kind: 'Deployment' },
+  [gvkType.DeploymentConfig]: {
+    Group: 'apps.openshift.io',
+    Version: 'v1',
+    Kind: 'DeploymentConfig',
+  },
+  [gvkType.Job]: { Group: 'batch', Version: 'v1', Kind: 'Job' },
+  [gvkType.Pod]: { Group: '', Version: 'v1', Kind: 'Pod' },
+  [gvkType.ReplicaSet]: { Group: 'apps', Version: 'v1', Kind: 'ReplicaSet' },
+  [gvkType.ReplicationController]: {
+    Group: '',
+    Version: 'v1',
+    Kind: 'ReplicationController',
+  },
+  [gvkType.StatefulSet]: { Group: 'apps', Version: 'v1', Kind: 'StatefulSet' },
 };
 
 export function validationKey(name: string, namespace?: string): string {
@@ -171,53 +240,63 @@ export const filterByName = (
   if (names && names.length === 0) {
     return unfiltered;
   }
+
+  const filteredResources: { [key: string]: any[] } = {};
+
+  // Iterate over the dicTypeToGVK to access each resource type dynamically
+  Object.values(dicTypeToGVK).forEach(value => {
+    const resourceKey = getGVKTypeString(value);
+
+    // Check if the resource exists in the unfiltered list, then filter by names
+    if (unfiltered.resources[resourceKey]) {
+      filteredResources[resourceKey] = unfiltered.resources[resourceKey].filter(
+        resource => includeName(resource.metadata.name, names),
+      );
+    }
+  });
+
   return {
-    namespace: unfiltered.namespace,
-    gateways: unfiltered.gateways.filter(gw =>
-      includeName(gw.metadata.name, names),
-    ),
-    k8sGateways: unfiltered.k8sGateways.filter(gw =>
-      includeName(gw.metadata.name, names),
-    ),
-    k8sHTTPRoutes: unfiltered.k8sHTTPRoutes.filter(route =>
-      includeName(route.metadata.name, names),
-    ),
-    virtualServices: unfiltered.virtualServices.filter(vs =>
-      includeName(vs.metadata.name, names),
-    ),
-    destinationRules: unfiltered.destinationRules.filter(dr =>
-      includeName(dr.metadata.name, names),
-    ),
-    serviceEntries: unfiltered.serviceEntries.filter(se =>
-      includeName(se.metadata.name, names),
-    ),
-    authorizationPolicies: unfiltered.authorizationPolicies.filter(rc =>
-      includeName(rc.metadata.name, names),
-    ),
-    sidecars: unfiltered.sidecars.filter(sc =>
-      includeName(sc.metadata.name, names),
-    ),
-    peerAuthentications: unfiltered.peerAuthentications.filter(pa =>
-      includeName(pa.metadata.name, names),
-    ),
-    requestAuthentications: unfiltered.requestAuthentications.filter(ra =>
-      includeName(ra.metadata.name, names),
-    ),
-    workloadEntries: unfiltered.workloadEntries.filter(we =>
-      includeName(we.metadata.name, names),
-    ),
-    workloadGroups: unfiltered.workloadGroups.filter(wg =>
-      includeName(wg.metadata.name, names),
-    ),
-    envoyFilters: unfiltered.envoyFilters.filter(ef =>
-      includeName(ef.metadata.name, names),
-    ),
-    wasmPlugins: unfiltered.wasmPlugins.filter(wp =>
-      includeName(wp.metadata.name, names),
-    ),
-    telemetries: unfiltered.telemetries.filter(tm =>
-      includeName(tm.metadata.name, names),
-    ),
+    resources: filteredResources,
+    validations: unfiltered.validations,
+    permissions: unfiltered.permissions,
+  };
+};
+
+interface ObjectWithMetadata {
+  metadata: K8sMetadata;
+}
+
+const includesNamespace = (
+  item: ObjectWithMetadata,
+  namespaces: Set<string>,
+): boolean => {
+  return (
+    item.metadata.namespace !== undefined &&
+    namespaces.has(item.metadata.namespace)
+  );
+};
+
+export const filterByNamespaces = (
+  unfiltered: IstioConfigList,
+  namespaces: string[],
+): IstioConfigList => {
+  const namespaceSet = new Set(namespaces);
+  const filteredResources: { [key: string]: any[] } = {};
+
+  // Iterate over dicTypeToGVK to dynamically filter each resource by namespace
+  Object.values(dicTypeToGVK).forEach(value => {
+    const resourceKey = getGVKTypeString(value);
+
+    // Check if the resource exists in the unfiltered list, then filter by namespace
+    if (unfiltered.resources[resourceKey]) {
+      filteredResources[resourceKey] = unfiltered.resources[resourceKey].filter(
+        resource => includesNamespace(resource, namespaceSet),
+      );
+    }
+  });
+
+  return {
+    resources: filteredResources,
     validations: unfiltered.validations,
     permissions: unfiltered.permissions,
   };
@@ -266,60 +345,56 @@ export const filterByConfigValidation = (
   return filtered;
 };
 
+export interface IstioConfigsMapQuery extends IstioConfigListQuery {
+  namespaces?: string;
+}
+
 export const toIstioItems = (
   istioConfigList: IstioConfigList,
   cluster?: string,
 ): IstioConfigItem[] => {
   const istioItems: IstioConfigItem[] = [];
 
-  const hasValidations = (type: string, name: string, namespace: string) =>
-    istioConfigList.validations[type] &&
-    istioConfigList.validations[type][validationKey(name, namespace)];
+  const hasValidations = (
+    objectGVK: string,
+    name: string,
+    namespace?: string,
+  ): ObjectValidation =>
+    istioConfigList.validations[objectGVK] &&
+    istioConfigList.validations[objectGVK][validationKey(name, namespace)];
 
-  const nonItems = ['validations', 'permissions', 'namespace', 'cluster'];
-
-  Object.keys(istioConfigList).forEach(field => {
-    if (nonItems.indexOf(field) > -1) {
-      // These items do not belong to the IstioConfigItem[]
-      return;
-    }
-    // @ts-expect-error
-    const typeNameProto = dicIstioType[field.toLocaleLowerCase('en-US')]; // ex. serviceEntries -> ServiceEntry
-    const typeName = typeNameProto?.toLocaleLowerCase('en-US'); // ex. ServiceEntry -> serviceentry
-    const entryName =
-      typeNameProto?.charAt(0).toLocaleLowerCase('en-US') +
-      typeNameProto?.slice(1);
-    // @ts-expect-error
-    let entries = istioConfigList[field];
-    if (entries && !(entries instanceof Array)) {
-      // VirtualServices, DestinationRules
-      entries = entries.items;
-    }
+  const resources = istioConfigList.resources;
+  Object.keys(resources).forEach(field => {
+    const entries = resources[field];
 
     if (!entries) {
       return;
     }
-    // @ts-expect-error
-    entries.forEach(entry => {
+
+    entries.forEach((entry: IstioObject) => {
+      const gvkString = getGVKTypeString(
+        getIstioObjectGVK(entry.apiVersion, entry.kind),
+      );
       const item = {
-        namespace: istioConfigList.namespace.name,
+        namespace: entry.metadata.namespace ?? '',
         cluster: cluster,
-        type: typeName,
+        kind: entry.kind,
+        apiVersion: entry.apiVersion,
         name: entry.metadata.name,
         creationTimestamp: entry.metadata.creationTimestamp,
+        resource: entry,
         resourceVersion: entry.metadata.resourceVersion,
         validation: hasValidations(
-          typeName,
+          gvkString,
           entry.metadata.name,
           entry.metadata.namespace,
         )
-          ? istioConfigList.validations[typeName][
+          ? istioConfigList.validations[gvkString][
               validationKey(entry.metadata.name, entry.metadata.namespace)
             ]
           : undefined,
       };
-      // @ts-expect-error
-      item[entryName] = entry;
+
       istioItems.push(item);
     });
   });
@@ -328,88 +403,82 @@ export const toIstioItems = (
 };
 
 export const vsToIstioItems = (
-  vss: VirtualService[],
+  vss: VS[],
   validations: Validations,
   cluster?: string,
 ): IstioConfigItem[] => {
   const istioItems: IstioConfigItem[] = [];
-  const hasValidations = (vKey: string) =>
-    validations.virtualservice && validations.virtualservice[vKey];
-
-  const typeNameProto = dicIstioType.virtualservices; // ex. serviceEntries -> ServiceEntry
-  const typeName = typeNameProto.toLocaleLowerCase('en-US'); // ex. ServiceEntry -> serviceentry
-  const entryName =
-    typeNameProto.charAt(0).toLocaleLowerCase('en-US') + typeNameProto.slice(1);
+  const objectGVK = getGVKTypeString(gvkType.VirtualService);
+  const hasValidations = (vKey: string): ObjectValidation =>
+    validations[objectGVK] && validations[objectGVK][vKey];
 
   vss.forEach(vs => {
     const vKey = validationKey(vs.metadata.name, vs.metadata.namespace);
+
     const item = {
       cluster: cluster,
-      namespace: vs.metadata.namespace || '',
-      type: typeName,
+      namespace: vs.metadata.namespace ?? '',
+      kind: vs.kind,
+      apiVersion: vs.apiVersion,
       name: vs.metadata.name,
       creationTimestamp: vs.metadata.creationTimestamp,
+      resource: vs,
       resourceVersion: vs.metadata.resourceVersion,
       validation: hasValidations(vKey)
-        ? validations.virtualservice[vKey]
+        ? validations[objectGVK][vKey]
         : undefined,
     };
-    // @ts-expect-error
-    item[entryName] = vs;
+
     istioItems.push(item);
   });
+
   return istioItems;
 };
 
 export const drToIstioItems = (
-  drs: DestinationRule[],
+  drs: DR[],
   validations: Validations,
   cluster?: string,
 ): IstioConfigItem[] => {
   const istioItems: IstioConfigItem[] = [];
-  const hasValidations = (vKey: string) =>
-    validations.destinationrule && validations.destinationrule[vKey];
-
-  const typeNameProto = dicIstioType.destinationrules; // ex. serviceEntries -> ServiceEntry
-  const typeName = typeNameProto.toLocaleLowerCase('en-US'); // ex. ServiceEntry -> serviceentry
-  const entryName =
-    typeNameProto.charAt(0).toLocaleLowerCase('en-US') + typeNameProto.slice(1);
+  const objectGVK = getGVKTypeString(gvkType.DestinationRule);
+  const hasValidations = (vKey: string): ObjectValidation =>
+    validations[objectGVK] && validations[objectGVK][vKey];
 
   drs.forEach(dr => {
     const vKey = validationKey(dr.metadata.name, dr.metadata.namespace);
+
     const item = {
       cluster: cluster,
-      namespace: dr.metadata.namespace || '',
-      type: typeName,
+      namespace: dr.metadata.namespace ?? '',
+      kind: dr.kind,
+      apiVersion: dr.apiVersion,
       name: dr.metadata.name,
       creationTimestamp: dr.metadata.creationTimestamp,
+      resource: dr,
       resourceVersion: dr.metadata.resourceVersion,
       validation: hasValidations(vKey)
-        ? validations.destinationrule[vKey]
+        ? validations[objectGVK][vKey]
         : undefined,
     };
-    // @ts-expect-error
-    item[entryName] = dr;
+
     istioItems.push(item);
   });
+
   return istioItems;
 };
 
 export const gwToIstioItems = (
-  gws: Gateway[],
-  vss: VirtualService[],
+  gws: GW[],
+  vss: VS[],
   validations: Validations,
   cluster?: string,
 ): IstioConfigItem[] => {
   const istioItems: IstioConfigItem[] = [];
-  const hasValidations = (vKey: string) =>
-    validations.gateway && validations.gateway[vKey];
+  const objectGVK = getGVKTypeString(gvkType.Gateway);
+  const hasValidations = (vKey: string): ObjectValidation =>
+    validations[objectGVK] && validations[objectGVK][vKey];
   const vsGateways = new Set();
-
-  const typeNameProto = dicIstioType.gateways; // ex. serviceEntries -> ServiceEntry
-  const typeName = typeNameProto.toLocaleLowerCase('en-US'); // ex. ServiceEntry -> serviceentry
-  const entryName =
-    typeNameProto.charAt(0).toLocaleLowerCase('en-US') + typeNameProto.slice(1);
 
   vss.forEach(vs => {
     vs.spec.gateways?.forEach(vsGatewayName => {
@@ -424,40 +493,41 @@ export const gwToIstioItems = (
   gws.forEach(gw => {
     if (vsGateways.has(`${gw.metadata.namespace}/${gw.metadata.name}`)) {
       const vKey = validationKey(gw.metadata.name, gw.metadata.namespace);
+
       const item = {
         cluster: cluster,
-        namespace: gw.metadata.namespace || '',
-        type: typeName,
+        namespace: gw.metadata.namespace ?? '',
+        kind: gw.kind,
+        apiVersion: gw.apiVersion,
         name: gw.metadata.name,
         creationTimestamp: gw.metadata.creationTimestamp,
+        resource: gw,
         resourceVersion: gw.metadata.resourceVersion,
         validation: hasValidations(vKey)
-          ? validations.gateway[vKey]
+          ? validations[objectGVK][vKey]
           : undefined,
       };
-      // @ts-expect-error
-      item[entryName] = gw;
+
       istioItems.push(item);
     }
   });
+
   return istioItems;
 };
 
 export const k8sGwToIstioItems = (
-  gws: K8sGateway[],
-  k8srs: K8sHTTPRoute[],
+  gws: K8sGW[],
+  k8srs: K8sHTTPR[],
+  k8sgrpcrs: K8sGRPCR[],
   validations: Validations,
   cluster?: string,
+  gatewayLabel?: string,
 ): IstioConfigItem[] => {
   const istioItems: IstioConfigItem[] = [];
-  const hasValidations = (vKey: string) =>
-    validations.k8sgateway && validations.k8sgateway[vKey];
+  const objectGVK = getGVKTypeString(gvkType.K8sGateway);
+  const hasValidations = (vKey: string): ObjectValidation =>
+    validations[objectGVK] && validations[objectGVK][vKey];
   const k8sGateways = new Set();
-
-  const typeNameProto = dicIstioType.k8sgateways; // ex. serviceEntries -> ServiceEntry
-  const typeName = typeNameProto.toLocaleLowerCase('en-US'); // ex. ServiceEntry -> serviceentry
-  const entryName =
-    typeNameProto.charAt(0).toLocaleLowerCase('en-US') + typeNameProto.slice(1);
 
   k8srs.forEach(k8sr => {
     k8sr.spec.parentRefs?.forEach(parentRef => {
@@ -469,92 +539,141 @@ export const k8sGwToIstioItems = (
     });
   });
 
+  k8sgrpcrs.forEach(k8sr => {
+    k8sr.spec.parentRefs?.forEach(parentRef => {
+      if (!parentRef.namespace) {
+        k8sGateways.add(`${k8sr.metadata.namespace}/${parentRef.name}`);
+      } else {
+        k8sGateways.add(`${parentRef.namespace}/${parentRef.name}`);
+      }
+    });
+  });
+
   gws.forEach(gw => {
-    if (k8sGateways.has(`${gw.metadata.namespace}/${gw.metadata.name}`)) {
+    // K8s Gateways which are listed in HTTP or GRPC Routes
+    // OR those K8 Gateways which name equals to service's gatewayLabel
+    if (
+      k8sGateways.has(`${gw.metadata.namespace}/${gw.metadata.name}`) ||
+      gatewayLabel === gw.metadata.name
+    ) {
       const vKey = validationKey(gw.metadata.name, gw.metadata.namespace);
+
       const item = {
         cluster: cluster,
-        namespace: gw.metadata.namespace || '',
-        type: typeName,
+        namespace: gw.metadata.namespace ?? '',
+        kind: gw.kind,
+        apiVersion: gw.apiVersion,
         name: gw.metadata.name,
         creationTimestamp: gw.metadata.creationTimestamp,
+        resource: gw,
         resourceVersion: gw.metadata.resourceVersion,
         validation: hasValidations(vKey)
-          ? validations.k8sgateway[vKey]
+          ? validations[objectGVK][vKey]
           : undefined,
       };
-      // @ts-expect-error
-      item[entryName] = gw;
+
       istioItems.push(item);
     }
   });
+
   return istioItems;
 };
 
 export const seToIstioItems = (
-  see: ServiceEntry[],
+  see: SE[],
   validations: Validations,
   cluster?: string,
 ): IstioConfigItem[] => {
   const istioItems: IstioConfigItem[] = [];
-  const hasValidations = (vKey: string) =>
-    validations.serviceentry && validations.serviceentry[vKey];
-
-  const typeNameProto = dicIstioType.serviceentries; // ex. serviceEntries -> ServiceEntry
-  const typeName = typeNameProto.toLocaleLowerCase('en-US'); // ex. ServiceEntry -> serviceentry
-  const entryName =
-    typeNameProto.charAt(0).toLocaleLowerCase('en-US') + typeNameProto.slice(1);
+  const objectGVK = getGVKTypeString(gvkType.ServiceEntry);
+  const hasValidations = (vKey: string): ObjectValidation =>
+    validations[objectGVK] && validations[objectGVK][vKey];
 
   see.forEach(se => {
     const vKey = validationKey(se.metadata.name, se.metadata.namespace);
+
     const item = {
       cluster: cluster,
-      namespace: se.metadata.namespace || '',
-      type: typeName,
+      namespace: se.metadata.namespace ?? '',
+      kind: se.kind,
+      apiVersion: se.apiVersion,
       name: se.metadata.name,
       creationTimestamp: se.metadata.creationTimestamp,
+      resource: se,
       resourceVersion: se.metadata.resourceVersion,
       validation: hasValidations(vKey)
-        ? validations.serviceentry[vKey]
+        ? validations[objectGVK][vKey]
         : undefined,
     };
-    // @ts-expect-error
-    item[entryName] = se;
+
     istioItems.push(item);
   });
+
   return istioItems;
 };
 
 export const k8sHTTPRouteToIstioItems = (
-  routes: K8sHTTPRoute[],
+  routes: K8sHTTPR[],
   validations: Validations,
   cluster?: string,
 ): IstioConfigItem[] => {
   const istioItems: IstioConfigItem[] = [];
-  const hasValidations = (vKey: string) =>
-    validations.k8shttproute && validations.k8shttproute[vKey];
-
-  const typeNameProto = dicIstioType.k8shttproutes; // ex. serviceEntries -> ServiceEntry
-  const typeName = typeNameProto.toLocaleLowerCase('en-US'); // ex. ServiceEntry -> serviceentry
-  const entryName =
-    typeNameProto.charAt(0).toLocaleLowerCase('en-US') + typeNameProto.slice(1);
+  const objectGVK = getGVKTypeString(gvkType.K8sHTTPRoute);
+  const hasValidations = (vKey: string): ObjectValidation =>
+    validations[objectGVK] && validations[objectGVK][vKey];
 
   routes.forEach(route => {
     const vKey = validationKey(route.metadata.name, route.metadata.namespace);
+
     const item = {
       cluster: cluster,
-      namespace: route.metadata.namespace || '',
-      type: typeName,
+      namespace: route.metadata.namespace ?? '',
+      kind: route.kind,
+      apiVersion: route.apiVersion,
       name: route.metadata.name,
       creationTimestamp: route.metadata.creationTimestamp,
+      resource: route,
       resourceVersion: route.metadata.resourceVersion,
       validation: hasValidations(vKey)
-        ? validations.k8shttproute[vKey]
+        ? validations[objectGVK][vKey]
         : undefined,
     };
-    // @ts-expect-error
-    item[entryName] = route;
+
     istioItems.push(item);
   });
+
+  return istioItems;
+};
+
+export const k8sGRPCRouteToIstioItems = (
+  grpcRoutes: K8sGRPCR[],
+  validations: Validations,
+  cluster?: string,
+): IstioConfigItem[] => {
+  const istioItems: IstioConfigItem[] = [];
+  const objectGVK = getGVKTypeString(gvkType.K8sGRPCRoute);
+  const hasValidations = (vKey: string): ObjectValidation =>
+    validations[objectGVK] && validations[objectGVK][vKey];
+
+  grpcRoutes.forEach(route => {
+    const vKey = validationKey(route.metadata.name, route.metadata.namespace);
+
+    const item = {
+      cluster: cluster,
+      namespace: route.metadata.namespace ?? '',
+      kind: route.kind,
+      apiVersion: route.apiVersion,
+      name: route.metadata.name,
+      creationTimestamp: route.metadata.creationTimestamp,
+      resource: route,
+      resourceVersion: route.metadata.resourceVersion,
+      validation: hasValidations(vKey)
+        ? validations[objectGVK][vKey]
+        : undefined,
+    };
+
+    istioItems.push(item);
+  });
+
   return istioItems;
 };

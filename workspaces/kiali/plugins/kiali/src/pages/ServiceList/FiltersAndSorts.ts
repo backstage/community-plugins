@@ -277,8 +277,9 @@ const filterByIstioType = (
 ): ServiceListItem[] => {
   return items.filter(
     item =>
-      item.istioReferences.filter(ref => istioTypes.includes(ref.objectType))
-        .length !== 0,
+      item.istioReferences.filter(ref =>
+        istioTypes.includes(ref.objectGVK.Kind),
+      ).length !== 0,
   );
 };
 

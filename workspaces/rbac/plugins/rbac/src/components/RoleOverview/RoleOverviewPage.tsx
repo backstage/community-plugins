@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 import { useParams } from 'react-router-dom';
 
 import { Header, Page, TabbedLayout } from '@backstage/core-components';
@@ -27,6 +26,8 @@ import { useToast } from '../ToastContext';
 import { AboutCard } from './AboutCard';
 import { MembersCard } from './MembersCard';
 import { PermissionsCard } from './PermissionsCard';
+import { RequirePermission } from '@backstage/plugin-permission-react';
+import { policyEntityReadPermission } from '@backstage-community/plugin-rbac-common';
 
 export const RoleOverviewPage = () => {
   const { roleName, roleNamespace, roleKind } = useParams();
@@ -40,7 +41,10 @@ export const RoleOverviewPage = () => {
   };
 
   return (
-    <>
+    <RequirePermission
+      permission={policyEntityReadPermission}
+      resourceRef={`${roleKind}:${roleNamespace}/${roleName}`}
+    >
       <SnackbarAlert toastMessage={toastMessage} onAlertClose={onAlertClose} />
       <Page themeId="tool">
         <Header
@@ -72,6 +76,6 @@ export const RoleOverviewPage = () => {
           </TabbedLayout.Route>
         </TabbedLayout>
       </Page>
-    </>
+    </RequirePermission>
   );
 };

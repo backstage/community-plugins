@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { FC } from 'react';
+
+import { useContext, useCallback } from 'react';
 
 import { Progress } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
@@ -35,24 +37,28 @@ import {
   kubernetesProxyApiRef,
   TektonResourcesContextData,
 } from '../../types/types';
+import { tektonTranslationRef } from '../../translation';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 
 type PipelineRunOutputProps = {
   pipelineRun: PipelineRunKind;
   taskRuns: TaskRunKind[];
 };
 
-const PipelineRunOutput: React.FC<PipelineRunOutputProps> = ({
+const PipelineRunOutput: FC<PipelineRunOutputProps> = ({
   pipelineRun,
   taskRuns,
 }) => {
-  const { clusters, selectedCluster } =
-    React.useContext<TektonResourcesContextData>(TektonResourcesContext);
+  const { clusters, selectedCluster } = useContext<TektonResourcesContextData>(
+    TektonResourcesContext,
+  );
   const kubernetesProxyApi = useApi(kubernetesProxyApiRef);
+  const { t } = useTranslationRef(tektonTranslationRef);
 
   const currCluster =
     (clusters.length > 0 && clusters[selectedCluster || 0]) || '';
 
-  const getLogs = React.useCallback(
+  const getLogs = useCallback(
     async (podName: string, containerName: string): Promise<string> => {
       return await kubernetesProxyApi
         .getPodLogs({
@@ -95,7 +101,7 @@ const PipelineRunOutput: React.FC<PipelineRunOutputProps> = ({
     if (!stillLoading && noDataAvailable) {
       return (
         <Typography align="center" variant="body2">
-          No output found
+          {t('pipelineRunOutput.noOutput')}
         </Typography>
       );
     }

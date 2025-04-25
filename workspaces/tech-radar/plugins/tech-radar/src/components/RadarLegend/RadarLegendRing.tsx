@@ -15,7 +15,6 @@
  */
 import { ClassNameMap } from '@material-ui/core/styles/withStyles';
 import Typography from '@material-ui/core/Typography/Typography';
-import React from 'react';
 import { Entry, Ring } from '../../utils/types';
 import { RadarLegendLink } from './RadarLegendLink';
 import { RadarLegendProps } from './types';

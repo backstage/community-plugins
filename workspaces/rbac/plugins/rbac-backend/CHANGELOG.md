@@ -1,5 +1,38 @@
 ### Dependencies
 
+## 6.2.0
+
+### Minor Changes
+
+- e8755f6: Backstage version bump to v1.38.1
+
+### Patch Changes
+
+- Updated dependencies [e8755f6]
+  - @backstage-community/plugin-rbac-common@1.16.0
+  - @backstage-community/plugin-rbac-node@1.11.0
+
+## 6.1.1
+
+### Patch Changes
+
+- 10a0d31: Fixes an issue where the correct permission name was not selected while processing new conditional policies to be added. This scenario happens whenever a plugin exports multiple permissions that have different resource types but similar actions. What would end up happening is the first matched action would be the one selected during processing even though it was not the correct permission and used for the conditional policy. This problem has been fixed and now the correct permission name and action are selected.
+
+## 6.1.0
+
+### Minor Changes
+
+- d278b4c: Adds the ability to assign ownership to roles that can then be used to conditionally filter roles, permission policies, and conditional policies. The conditional filter can now be accomplished through the use of the new RBAC conditional rule `IS_OWNER`.
+
+  `IS_OWNER` can be used to grant limited access to the RBAC plugins where in admins might want leads to control their own team's access.
+
+  Removed the resource type from the `policy.entity.create` permission to prevent conditional rules being applied to the permission. At the moment, the plugins will still continue to work as expected. However, it is strongly recommended updating all permission policies that utilize the resource type `policy-entity` with the action `create` (ex. `role:default/some_role, policy-entity, create, allow` to `role:default/some_role, policy.entity.create, create, allow`) to prevent any future degradation in service. A migration has been supplied to automatically update all permission policies that have not originated from the CSV file. The CSV file was skipped as a duplication event could happen during reloads / restarts. This means that the CSV file will need to be updated manually to ensure that all references to the old permission policy, resource type `policy-entity` with an action of `create`, have been updated to the named permission `policy.entity.create` with an action of `create`.
+
+### Patch Changes
+
+- Updated dependencies [d278b4c]
+  - @backstage-community/plugin-rbac-common@1.15.0
+
 ## 6.0.1
 
 ### Patch Changes

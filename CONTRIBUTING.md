@@ -20,9 +20,11 @@ If you have questions or feedback regarding Community Plugins, you can visit the
   - [Release](#release)
   - [Creating a new Workspace](#creating-a-new-workspace)
   - [Creating new plugins or packages in a Workspace](#creating-new-plugins-or-packages-in-a-workspace)
+    - [Local development of plugins](#local-development-of-plugins)
   - [Migrating a plugin](#migrating-a-plugin)
     - [Manual migration steps](#manual-migration-steps)
   - [Organization Membership Request for CODEOWNERS](#organization-membership-request-for-codeowners)
+    - [Adding Additional CODEOWNERS](#adding-additional-codeowners)
   - [Developer Certificate of Origin](#developer-certificate-of-origin)
   - [API Reports](#api-reports)
   - [Submitting a Pull Request](#submitting-a-pull-request)
@@ -235,34 +237,23 @@ Visit the [Package Metadata documentation](https://backstage.io/docs/tooling/pac
 
 This section outlines the process for plugin maintainers to request organization membership in the Backstage community, which is necessary for efficiently managing `CODEOWNERS` in this repository.
 
-Plugin maintainers can request organization membership by submitting a request through [this link](https://github.com/backstage/community/issues/new/choose) and filling out the provided form. In the request, they should:
+Plugin maintainers can request organization membership by submitting a request through [this link](https://github.com/backstage/community/issues/new/choose) and filling out the provided form. In the request:
 
-- List the plugins they have contributed and/or maintain within the 'Highlighted Contributions' section.
+- If you are requesting membership after migrating a plugin into this repository, include a link to the PR that performed the migration.
+- List the plugins you have contributed to and/or maintain.
 - Ping the [Community Plugins Area Maintainers](https://github.com/backstage/community/tree/main/project-areas/community-plugins#community-plugin-area-maintainers) for review and support of the request.
-
-As becoming an organization member provides elevated permissions, addition of new organization members follows a vetting process, while hoping not to create unnecessary barriers for new plugin maintainers. The following criteria are often used for the vetting process:
-
-- Is the individual a member of other teams in Backstage?
-- What is the length and consistency of their involvement with Backstage plugins and/or the Backstage community?
-- Are there other contributors or plugin maintainers who work with the individual and can vouch for them?
-- Do they have an employer with a vested interest in the Backstage community?
 
 The Community Plugins Area Maintainers will review the request. While the request is being processed, plugin maintainers are encouraged to review and approve PRs related to their plugins, even though it will not yet show up as a formal review in the GitHub UI.
 
-**Form Details:**
+Open requests will be routinely reviewed during Community Plugins SIG meetings. Community Plugin Area Maintainers must indicate support before a request is approved. Once approved, a Backstage organization admin will carry out the membership action.
 
-- **Name**: Organization Membership Request
-- **Description**: A request to become a Backstage organization member
-- **Title**: Org Member: `<your-github-login>`
-- **Labels**: `org-member-request`
+### Adding Additional CODEOWNERS
 
-The form includes fields to confirm adherence to the Code of Conduct, list highlighted contributions, and more. Please ensure you provide:
+New individuals can be added to a plugin’s `CODEOWNERS` entry to help support reviews, issue triage, and ongoing maintenance. To propose an addition, open a PR that updates the plugin's entry in the `CODEOWNERS` file and include a brief justification along with links to relevant contributions (such as authored PRs, reviews, or issue triage).
 
-1. The plugins you maintain within the community plugins section.
-2. Links to your notable contributions (PRs, issues, etc.).
-3. A list of other plugin maintainers who can vouch for your request.
+Agreement from the existing `CODEOWNERS` of the plugin is required before the change is approved.
 
-Once the form is submitted, the plugin maintainers will review your request and provide feedback or support as needed.
+Ideally, proposed codeowners have already been actively involved with the plugin. Providing this evidence also helps build a foundation for future organization membership requests.
 
 ## Developer Certificate of Origin
 

@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useContext } from 'react';
 
 import { IconButton, makeStyles, Tooltip } from '@material-ui/core';
 import Collapse from '@material-ui/icons/UnfoldLess';
 import Expand from '@material-ui/icons/UnfoldMore';
 
 import { TektonResourcesContext } from '../../hooks/TektonResourcesContext';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { tektonTranslationRef } from '../../translation';
 
 const useStyles = makeStyles({
   expandCollapse: {
@@ -33,16 +35,15 @@ const useStyles = makeStyles({
 
 export const TableExpandCollapse = () => {
   const classes = useStyles();
-  const { isExpanded, setIsExpanded } = React.useContext(
-    TektonResourcesContext,
-  );
+  const { isExpanded, setIsExpanded } = useContext(TektonResourcesContext);
+  const { t } = useTranslationRef(tektonTranslationRef);
 
   const handleExpandCollaspse = () => {
     setIsExpanded(!isExpanded);
   };
   return (
     <div className={classes.expandCollapse}>
-      <Tooltip title="Collapse all" placement="top">
+      <Tooltip title={t('tableExpandCollapse.collapseAll')} placement="top">
         <span>
           <IconButton
             onClick={() => handleExpandCollaspse()}
@@ -53,7 +54,7 @@ export const TableExpandCollapse = () => {
           </IconButton>
         </span>
       </Tooltip>
-      <Tooltip title="Expand all" placement="top">
+      <Tooltip title={t('tableExpandCollapse.expandAll')} placement="top">
         <span>
           <IconButton
             onClick={() => handleExpandCollaspse()}

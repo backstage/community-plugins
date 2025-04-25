@@ -23,13 +23,14 @@ import {
 } from '@material-ui/core';
 import { Search, FilterAlt } from '@mui/icons-material';
 import Input from '@mui/material/Input';
-import React from 'react';
+import type { ForwardedRef, FC } from 'react';
+import { Fragment } from 'react';
 import Grid from '@mui/material/Grid';
 import { PipelineRunTablePagination } from './PipelineRunTablePagination';
 
 type PipelineRunToolbarProps = {
   onSearch: (search: string) => void;
-  searchInputRef: React.ForwardedRef<HTMLInputElement>;
+  searchInputRef: ForwardedRef<HTMLInputElement>;
   page: number;
   rowSize: number[];
   rowsPerPage: number;
@@ -59,7 +60,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-export const PipelineRunToolbar: React.FC<PipelineRunToolbarProps> = ({
+export const PipelineRunToolbar: FC<PipelineRunToolbarProps> = ({
   onSearch,
   searchInputRef,
   page,
@@ -72,7 +73,7 @@ export const PipelineRunToolbar: React.FC<PipelineRunToolbarProps> = ({
   const classes = useStyles();
 
   return (
-    <React.Fragment>
+    <Fragment>
       <Grid container className={classes.toolbar}>
         <FormControl className={classes.formControl}>
           <Grid container>
@@ -120,6 +121,6 @@ export const PipelineRunToolbar: React.FC<PipelineRunToolbarProps> = ({
           handleChangeRowsPerPage={handleChangeRowsPerPage}
         />
       </Grid>
-    </React.Fragment>
+    </Fragment>
   );
 };

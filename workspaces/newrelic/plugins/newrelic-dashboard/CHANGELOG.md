@@ -1,5 +1,17 @@
 # @backstage-community/plugin-newrelic-dashboard
 
+## 0.8.0
+
+### Minor Changes
+
+- 360460d: Backstage version bump to v1.38.1
+
+## 0.7.1
+
+### Patch Changes
+
+- a99cd00: remove unused devDependency `canvas`
+
 ## 0.7.0
 
 ### Minor Changes

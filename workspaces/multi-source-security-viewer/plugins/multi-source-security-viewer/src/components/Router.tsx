@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { githubActionsJobRouteRef, jenkinsJobRunRouteRef } from '../routes';
 import { useEntity } from '@backstage/plugin-catalog-react';
-import { ApiRef } from '@backstage/core-plugin-api/index';
+import { ApiRef } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
 import { mssvJenkinsApiRef } from '../api/jenkins';
 import { isJenkinsAvailable } from '@backstage-community/plugin-jenkins';

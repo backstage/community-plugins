@@ -128,7 +128,6 @@ const conf = {
         `api/namespaces/${namespace}/aggregates/${aggregate}/${aggregateValue}/metrics`,
       authenticate: 'api/authenticate',
       authInfo: 'api/auth/info',
-      apps: (namespace: string) => `api/namespaces/${namespace}/apps`,
       app: (namespace: string, app: string) =>
         `api/namespaces/${namespace}/apps/${app}`,
       appGraphElements: (namespace: string, app: string, version?: string) => {
@@ -149,6 +148,8 @@ const conf = {
         `api/namespaces/${namespace}/apps/${app}/spans`,
       canaryUpgradeStatus: () => 'api/mesh/canaries/status',
       clusters: 'api/clusters',
+      clustersHealth: () => `api/clusters/health`,
+      clustersWorkloads: () => `api/clusters/workloads`,
       crippledFeatures: 'api/crippled',
       serviceSpans: (namespace: string, service: string) =>
         `api/namespaces/${namespace}/services/${service}/spans`,
@@ -192,8 +193,6 @@ const conf = {
       namespaces: 'api/namespaces',
       namespace: (namespace: string) => `api/namespaces/${namespace}`,
       namespacesGraphElements: `api/namespaces/graph`,
-      namespaceHealth: (namespace: string) =>
-        `api/namespaces/${namespace}/health`,
       namespaceMetrics: (namespace: string) =>
         `api/namespaces/${namespace}/metrics`,
       namespaceTls: (namespace: string) => `api/namespaces/${namespace}/tls`,
@@ -219,7 +218,6 @@ const conf = {
         resource: string,
       ) => `api/namespaces/${namespace}/pods/${pod}/config_dump/${resource}`,
       serverConfig: `api/config`,
-      services: (namespace: string) => `api/namespaces/${namespace}/services`,
       service: (namespace: string, service: string) =>
         `api/namespaces/${namespace}/services/${service}`,
       serviceGraphElements: (namespace: string, service: string) =>
@@ -230,8 +228,9 @@ const conf = {
         `api/namespaces/${namespace}/services/${service}/metrics`,
       serviceDashboard: (namespace: string, service: string) =>
         `api/namespaces/${namespace}/services/${service}/dashboard`,
+      clustersApps: () => `api/clusters/apps`,
+      clustersServices: () => `api/clusters/services`,
       status: 'api/status',
-      workloads: (namespace: string) => `api/namespaces/${namespace}/workloads`,
       workload: (namespace: string, workload: string) =>
         `api/namespaces/${namespace}/workloads/${workload}`,
       workloadGraphElements: (namespace: string, workload: string) =>

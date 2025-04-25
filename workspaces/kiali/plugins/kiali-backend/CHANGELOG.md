@@ -1,5 +1,17 @@
 # @backstage-community/plugin-kiali-backend
 
+## 1.21.0
+
+### Minor Changes
+
+- f181693: Support kiali > 1.86
+- a428c5d: Upgrade backstage to version 1.38.1
+
+### Patch Changes
+
+- 973a5ef: remove prettier from devDependencies
+- f84ad73: chore: remove homepage field from package.json
+
 ## 1.20.1
 
 ### Patch Changes

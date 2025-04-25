@@ -20,7 +20,6 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import React from 'react';
 import { ACCEPTED, AlertStatus, PENDING, RESOLVED } from '../../types';
 import { alertStatusLabels } from './StatusChip';
 

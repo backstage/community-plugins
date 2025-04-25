@@ -36,8 +36,10 @@ export const usePackageInfo = () => {
   const packageName = entity.metadata.annotations?.[NpmAnnotation.PACKAGE_NAME];
 
   const useBackend =
-    Boolean(config.getOptionalString('npm.defaultRegistry')) ||
-    Boolean(entity.metadata.annotations?.[NpmAnnotation.REGISTRY_NAME]);
+    // Workaround to disable backend communication in plugin-test-app
+    entity.metadata.annotations?.['npm/__devapp__'] !== 'true' &&
+    (Boolean(config.getOptionalString('npm.defaultRegistry')) ||
+      Boolean(entity.metadata.annotations?.[NpmAnnotation.REGISTRY_NAME]));
 
   const {
     value: packageInfo,
@@ -46,7 +48,7 @@ export const usePackageInfo = () => {
   } = useAsync(() => {
     if (!packageName) {
       throw new NotFoundError(
-        `No pacakge name found for entity ref '${entityRef}'`,
+        `No package name found for entity ref '${entityRef}'`,
       );
     }
     if (useBackend) {

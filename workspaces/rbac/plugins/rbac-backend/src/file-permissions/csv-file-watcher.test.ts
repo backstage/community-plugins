@@ -101,6 +101,7 @@ const legacyRoleMetadata: RoleMetadataDao = {
 
 const roleMetadataStorageMock: RoleMetadataStorage = {
   filterRoleMetadata: jest.fn().mockImplementation(() => []),
+  filterForOwnerRoleMetadata: jest.fn().mockImplementation(),
   findRoleMetadata: jest
     .fn()
     .mockImplementation(
@@ -330,6 +331,33 @@ describe('CSVFileWatcher', () => {
       expect(enfPolicies).toStrictEqual(roles);
     });
 
+    // TODO: Temporary workaround to prevent breakages after the removal of the resource type `policy-entity` from the permission `policy.entity.create`
+    it('should be able to add `policy-entity, create` permissions but log a warning roles during creation', async () => {
+      csvFileName = resolve(
+        __dirname,
+        '../../__fixtures__/data/invalid-csv/deprecated-policy.csv',
+      );
+      const csvFileWatcher = createCSVFileWatcher(csvFileName);
+
+      const deprecatedPolicy = [
+        'role:default/some_role',
+        'policy-entity',
+        'create',
+        'allow',
+      ];
+
+      await csvFileWatcher.initialize();
+
+      expect(mockLoggerService.warn).toHaveBeenNthCalledWith(
+        1,
+        `Permission policy with resource type 'policy-entity' and action 'create' has been removed. Please consider updating policy ${deprecatedPolicy} to use 'policy.entity.create' instead of 'policy-entity' from source csv-file`,
+      );
+
+      const enfPolicies = await enforcerDelegate.getPolicy();
+
+      expect(enfPolicies).toStrictEqual([deprecatedPolicy]);
+    });
+
     // Failing tests
     it('should fail to add duplicate policies', async () => {
       csvFileName = resolve(
@@ -463,6 +491,10 @@ describe('CSVFileWatcher', () => {
       await csvFileWatcher.initialize();
     });
 
+    afterEach(() => {
+      (csvFileWatcher.parse as jest.Mock).mockReset();
+    });
+
     it('should add new permission policies on change', async () => {
       const addContents = [
         ['g', 'user:default/guest', 'role:default/catalog-writer'],
@@ -496,6 +528,35 @@ describe('CSVFileWatcher', () => {
       const enfPolicies = await enforcerDelegate.getPolicy();
 
       expect(enfPolicies).toStrictEqual(policies);
+    });
+
+    // TODO: Temporary workaround to prevent breakages after the removal of the resource type `policy-entity` from the permission `policy.entity.create`
+    it('should be able to add `policy-entity, create` permissions but log a warning roles on change', async () => {
+      const addContents = [
+        ['p', 'role:default/some_role', 'policy-entity', 'create', 'allow'],
+      ];
+
+      csvFileWatcher.parse = jest.fn().mockImplementation(() => {
+        return addContents;
+      });
+
+      await csvFileWatcher.onChange();
+
+      const deprecatedPolicy = [
+        'role:default/some_role',
+        'policy-entity',
+        'create',
+        'allow',
+      ];
+
+      expect(mockLoggerService.warn).toHaveBeenNthCalledWith(
+        1,
+        `Permission policy with resource type 'policy-entity' and action 'create' has been removed. Please consider updating policy ${deprecatedPolicy} to use 'policy.entity.create' instead of 'policy-entity' from source csv-file`,
+      );
+
+      const enfPolicies = await enforcerDelegate.getPolicy();
+
+      expect(enfPolicies).toStrictEqual([deprecatedPolicy]);
     });
 
     it('should add new roles on change', async () => {

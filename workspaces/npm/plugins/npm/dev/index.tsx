@@ -30,6 +30,8 @@ const mockEntity = {
   metadata: {
     name: 'backstage-plugin-catalog',
     annotations: {
+      // Workaround to disable backend communication in plugin-test-app
+      'npm/__devapp__': 'true',
       'npm/package': '@backstage/plugin-catalog',
     },
   },

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { renderInTestApp } from '@backstage/test-utils';
 import GetBBoxPolyfill from '../../utils/polyfills/getBBox';
 
@@ -24,6 +23,7 @@ const minProps: Props = {
   width: 500,
   height: 200,
   radius: 50,
+  columnCount: 2,
   quadrants: [{ id: 'languages', name: 'Languages' }],
   rings: [{ id: 'use', name: 'USE', color: '#93c47d' }],
   entries: [

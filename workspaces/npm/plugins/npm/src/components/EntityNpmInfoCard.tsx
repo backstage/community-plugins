@@ -15,7 +15,7 @@
  */
 import React from 'react';
 
-import { ErrorPanel, InfoCard } from '@backstage/core-components';
+import { ErrorPanel, InfoCard, Link } from '@backstage/core-components';
 import {
   MissingAnnotationEmptyState,
   useEntity,
@@ -29,9 +29,9 @@ import Grid, { GridSize } from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 
-import { DateTime } from 'luxon';
-
 import { usePackageInfo } from '../hooks/usePackageInfo';
+import { useTranslation } from '../hooks/useTranslation';
+import { RelativePublishedAt } from './RelativePublishedAt';
 
 // From https://github.com/backstage/backstage/blob/master/plugins/catalog/src/components/AboutCard/AboutField.tsx
 const useStyles = makeStyles(theme => ({
@@ -84,6 +84,7 @@ function GridItem({
 export const EntityNpmInfoCard = () => {
   const { entity } = useEntity();
   const { packageInfo, loading, error } = usePackageInfo();
+  const { t } = useTranslation();
 
   const packageName = entity.metadata.annotations?.[NpmAnnotation.PACKAGE_NAME];
 
@@ -137,7 +138,7 @@ export const EntityNpmInfoCard = () => {
   const homepageLink = packageInfo?.homepage;
 
   return (
-    <InfoCard title={`Npm package ${packageName}`}>
+    <InfoCard title={t('infoCard.title', { packageName })}>
       <Grid container>
         {error ? (
           <Box sx={{ width: '100%' }}>
@@ -160,79 +161,89 @@ export const EntityNpmInfoCard = () => {
         ) : null}
 
         {latestVersion ? (
-          <GridItem label="Latest version" value={latestVersion} md={4} />
+          <GridItem
+            label={t('infoCard.latestVersion')}
+            value={latestVersion}
+            md={4}
+          />
         ) : null}
 
         {latestPublishedAt ? (
           <GridItem
-            label="Published at"
-            value={
-              <time dateTime={latestPublishedAt} title={latestPublishedAt}>
-                {DateTime.fromISO(latestPublishedAt).toRelative()}
-              </time>
-            }
+            label={t('infoCard.publishedAt')}
+            value={<RelativePublishedAt dateTime={latestPublishedAt} />}
             md={4}
           />
         ) : null}
 
         {packageInfo?.license ? (
-          <GridItem label="License" value={packageInfo.license} md={4} />
+          <GridItem
+            label={t('infoCard.license')}
+            value={packageInfo.license}
+            md={4}
+          />
         ) : null}
 
         {/* Markdown? */}
         {packageInfo?.description ? (
-          <GridItem label="Description" value={packageInfo.description} />
+          <GridItem
+            label={t('infoCard.description')}
+            value={packageInfo.description}
+          />
         ) : null}
 
         {/* Markdown? */}
         {packageInfo?.keywords?.length ? (
-          <GridItem label="Keywords" value={packageInfo.keywords.join(', ')} />
+          <GridItem
+            label={t('infoCard.keywords')}
+            value={packageInfo.keywords.join(', ')}
+          />
         ) : null}
 
         {registryName ? (
-          <GridItem label="Registry name" value={registryName} />
+          <GridItem label={t('infoCard.registryName')} value={registryName} />
         ) : null}
 
         {npmLink ? (
           <GridItem
-            label="Npm repository"
+            label={t('infoCard.npmRepository')}
             value={
-              <a href={npmLink} target="_blank">
+              <Link to={npmLink} externalLinkIcon>
                 {npmLink}
-              </a>
+              </Link>
             }
           />
         ) : null}
 
         {repositoryLink ? (
           <GridItem
-            label="Code repository"
+            label={t('infoCard.codeRepository')}
             value={
-              <a href={repositoryLink} target="_blank">
+              <Link to={repositoryLink} externalLinkIcon>
                 {repositoryLink}
-              </a>
+              </Link>
             }
           />
         ) : null}
 
         {bugsLink ? (
           <GridItem
-            label="Issue tracker"
+            label={t('infoCard.issueTracker')}
             value={
-              <a href={bugsLink} target="_blank">
+              <Link to={bugsLink} externalLinkIcon>
                 {bugsLink}
-              </a>
+              </Link>
             }
           />
         ) : null}
 
         {homepageLink ? (
           <GridItem
-            label="Homepage"
+            label={t('infoCard.homepage')}
             value={
-              <a href={homepageLink} target="_blank">
+              <Link to={homepageLink} externalLinkIcon>
                 {homepageLink}
-              </a>
+              </Link>
             }
           />
         ) : null}

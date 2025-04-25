@@ -1,5 +1,33 @@
 # @backstage-community/plugin-jenkins
 
+## 0.19.0
+
+### Minor Changes
+
+- f0ef395: Backstage version bump to v1.38.1
+
+### Patch Changes
+
+- Updated dependencies [f0ef395]
+  - @backstage-community/plugin-jenkins-common@0.6.0
+
+## 0.18.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
+## 0.18.0
+
+### Minor Changes
+
+- 9c592af: Backstage version bump to v1.37.0
+
+### Patch Changes
+
+- Updated dependencies [9c592af]
+  - @backstage-community/plugin-jenkins-common@0.5.0
+
 ## 0.17.0
 
 ### Minor Changes

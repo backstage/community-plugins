@@ -5,7 +5,7 @@
 ```ts
 /// <reference types="react" />
 
-import { AnyApiFactory } from '@backstage/core-plugin-api/*';
+import { AnyApiFactory } from '@backstage/core-plugin-api';
 import { AnyExtensionDataRef } from '@backstage/frontend-plugin-api';
 import { AnyRouteRefParams } from '@backstage/frontend-plugin-api';
 import { ConfigurableExtensionDataRef } from '@backstage/frontend-plugin-api';
@@ -322,7 +322,9 @@ const _default: FrontendPlugin<
           | (string & {})
           | 'development'
           | 'deployment'
+          | 'overview'
           | 'documentation'
+          | 'operation'
           | 'observability'
           | undefined;
         routeRef?: RouteRef<AnyRouteRefParams> | undefined;

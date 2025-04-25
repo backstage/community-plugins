@@ -21,7 +21,6 @@ import {
 } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import Alert from '@material-ui/lab/Alert';
-import React from 'react';
 import useAsync from 'react-use/esm/useAsync';
 import { apacheAirflowApiRef } from '../../api';
 import { InstanceVersion } from '../../api/types';

@@ -15,12 +15,12 @@
  */
 
 import { Link } from '@backstage/core-components';
-import React from 'react';
+import type { ReactNode } from 'react';
 
 type WithLinkProps = {
   url?: string;
   className: string;
-  children: React.ReactNode;
+  children: ReactNode;
 };
 
 export function isValidUrl(url: string | undefined): url is string {

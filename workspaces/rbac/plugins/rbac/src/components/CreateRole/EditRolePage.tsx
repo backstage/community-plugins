@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 import { useParams } from 'react-router-dom';
 
 import {
@@ -54,6 +53,7 @@ export const EditRolePage = () => {
     namespace: roleNamespace || 'default',
     kind: roleKind || 'role',
     description: role?.metadata?.description ?? '',
+    owner: role?.metadata?.owner ?? '',
     selectedMembers,
     selectedPlugins: data
       .map(pp => pp.plugin)

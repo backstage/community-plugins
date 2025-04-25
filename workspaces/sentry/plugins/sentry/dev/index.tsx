@@ -18,7 +18,6 @@ import { Entity } from '@backstage/catalog-model';
 import { createDevApp, EntityGridItem } from '@backstage/dev-utils';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import Grid from '@material-ui/core/Grid';
-import React from 'react';
 import {
   EntitySentryCard,
   EntitySentryContent,

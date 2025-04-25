@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { PropsWithChildren } from 'react';
 import { createDevApp } from '@backstage/dev-utils';
 import { copilotPlugin, CopilotSidebar, CopilotIndexPage } from '../src';
 import {
@@ -30,7 +30,7 @@ const customThemes: AppTheme[] = [
     title: 'Light Theme',
     variant: 'light',
     icon: <LightIcon />,
-    Provider: ({ children }: React.PropsWithChildren) => (
+    Provider: ({ children }: PropsWithChildren) => (
       <UnifiedThemeProvider theme={builtinThemes.light} children={children} />
     ),
   },
@@ -39,7 +39,7 @@ const customThemes: AppTheme[] = [
     title: 'Dark Theme',
     variant: 'dark',
     icon: <DarkIcon />,
-    Provider: ({ children }: React.PropsWithChildren) => (
+    Provider: ({ children }: PropsWithChildren) => (
       <UnifiedThemeProvider theme={builtinThemes.dark} children={children} />
     ),
   },

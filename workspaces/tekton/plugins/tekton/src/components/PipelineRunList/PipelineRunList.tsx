@@ -13,7 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { PropsWithChildren, MouseEvent, ChangeEvent } from 'react';
+
+import {
+  useContext,
+  useState,
+  useRef,
+  useEffect,
+  useMemo,
+  useCallback,
+  memo,
+} from 'react';
 
 import { InfoCard, Progress } from '@backstage/core-components';
 
@@ -42,10 +52,12 @@ import { getComparator } from '../../utils/tekton-utils';
 import { ClusterSelector, ErrorPanel } from '../common';
 import { StatusSelector } from '../common/StatusSelector';
 import { TableExpandCollapse } from '../common/TableExpandCollapse';
-import { PipelineRunColumnHeader } from './PipelineRunColumnHeader';
+import { getPipelineRunColumnHeader } from './PipelineRunColumnHeader';
 import { PipelineRunListSearchBar } from './PipelineRunListSearchBar';
 import { PipelineRunTableBody } from './PipelineRunTableBody';
 import { EnhancedTableHead } from './PipelineTableHeader';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { tektonTranslationRef } from '../../translation';
 
 type WrapperInfoCardProps = {
   allErrors?: ClusterErrors;
@@ -80,7 +92,7 @@ const WrapperInfoCard = ({
   allErrors,
   showClusterSelector = true,
   titleClassName,
-}: React.PropsWithChildren<WrapperInfoCardProps>) => (
+}: PropsWithChildren<WrapperInfoCardProps>) => (
   <>
     {allErrors && allErrors.length > 0 && <ErrorPanel allErrors={allErrors} />}
     <InfoCard
@@ -108,17 +120,19 @@ const PipelineRunList = () => {
     clusters,
     selectedCluster,
     selectedStatus,
-  } = React.useContext(TektonResourcesContext);
-  const [search, setSearch] = React.useState<string>('');
-  const [order, setOrder] = React.useState<Order>('desc');
-  const [orderBy, setOrderBy] = React.useState<string>('status.startTime');
-  const [orderById, setOrderById] = React.useState<string>('startTime'); // 2 columns have the same field
-  const [page, setPage] = React.useState<number>(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState<number>(5);
+  } = useContext(TektonResourcesContext);
+  const [search, setSearch] = useState<string>('');
+  const [order, setOrder] = useState<Order>('desc');
+  const [orderBy, setOrderBy] = useState<string>('status.startTime');
+  const [orderById, setOrderById] = useState<string>('startTime'); // 2 columns have the same field
+  const [page, setPage] = useState<number>(0);
+  const [rowsPerPage, setRowsPerPage] = useState<number>(5);
+  const { t } = useTranslationRef(tektonTranslationRef);
+  const pipelineRunColumnHeader = getPipelineRunColumnHeader(t);
 
   // Jump to first page when cluster, status and search filter changed
-  const updateStateOnFilterChanges = React.useRef(false);
-  React.useEffect(() => {
+  const updateStateOnFilterChanges = useRef(false);
+  useEffect(() => {
     if (updateStateOnFilterChanges.current) {
       setPage(0);
     } else {
@@ -126,7 +140,7 @@ const PipelineRunList = () => {
     }
   }, [selectedCluster, selectedStatus, search]);
 
-  const allPipelineRuns = React.useMemo(() => {
+  const allPipelineRuns = useMemo(() => {
     const plrs =
       watchResourcesData?.pipelineruns?.data?.map(d => ({
         ...d,
@@ -135,7 +149,7 @@ const PipelineRunList = () => {
     return plrs as PipelineRunKind[];
   }, [watchResourcesData]);
 
-  const filteredPipelineRuns = React.useMemo(() => {
+  const filteredPipelineRuns = useMemo(() => {
     let plrs = allPipelineRuns;
 
     if (selectedStatus && selectedStatus !== ComputedStatus.All) {
@@ -155,7 +169,7 @@ const PipelineRunList = () => {
     return plrs;
   }, [allPipelineRuns, selectedStatus, search, order, orderBy, orderById]);
 
-  const visibleRows = React.useMemo(() => {
+  const visibleRows = useMemo(() => {
     return filteredPipelineRuns.slice(
       page * rowsPerPage,
       page * rowsPerPage + rowsPerPage,
@@ -163,8 +177,8 @@ const PipelineRunList = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filteredPipelineRuns, page, rowsPerPage, order, orderById]);
 
-  const handleRequestSort = React.useCallback(
-    (_event: React.MouseEvent<unknown>, property: string, id: string) => {
+  const handleRequestSort = useCallback(
+    (_event: MouseEvent<unknown>, property: string, id: string) => {
       const isAsc = orderBy === property && order === 'asc';
       setOrder(isAsc ? 'desc' : 'asc');
       setOrderBy(property);
@@ -177,9 +191,7 @@ const PipelineRunList = () => {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
@@ -217,7 +229,7 @@ const PipelineRunList = () => {
         <Paper>
           <Toolbar>
             <Typography variant="h5" component="h2">
-              Pipeline Runs
+              {t('pipelineRunList.title')}
             </Typography>
             <PipelineRunListSearchBar value={search} onChange={setSearch} />
           </Toolbar>
@@ -237,7 +249,7 @@ const PipelineRunList = () => {
                 <PipelineRunTableBody rows={visibleRows} />
                 {emptyRows > 0 && (
                   <TableRow style={{ height: 55 * emptyRows }}>
-                    <TableCell colSpan={PipelineRunColumnHeader.length} />
+                    <TableCell colSpan={pipelineRunColumnHeader.length} />
                   </TableRow>
                 )}
                 <TableRow className={classes.footer}>
@@ -259,12 +271,12 @@ const PipelineRunList = () => {
             ) : (
               <tbody>
                 <tr>
-                  <td colSpan={PipelineRunColumnHeader.length}>
+                  <td colSpan={pipelineRunColumnHeader.length}>
                     <div
                       data-testid="no-pipeline-runs"
                       className={classes.empty}
                     >
-                      No Pipeline Runs found
+                      {t('pipelineRunList.noPipelineRuns')}
                     </div>
                   </td>
                 </tr>
@@ -277,4 +289,4 @@ const PipelineRunList = () => {
   );
 };
 
-export default React.memo(PipelineRunList);
+export default memo(PipelineRunList);

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 import { Button, Grid } from '@material-ui/core';
 import {
   EntityApiDefinitionCard,
@@ -89,7 +88,6 @@ const sentryContent = (
     <EntitySwitch.Case if={isSentryAvailable}>
       <EntitySentryContent />
     </EntitySwitch.Case>
-
     <EntitySwitch.Case>
       <EmptyState
         title="No CI/CD available for this entity"

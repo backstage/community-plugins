@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { MouseEvent, ChangeEvent, useState } from 'react';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -58,14 +58,14 @@ const StyledTableWrapper = styled(Box)(() => ({
 }));
 
 const EnhancedTable = ({ title, rows }: EnhancedTableProps) => {
-  const [order, setOrder] = React.useState<Order>('desc');
+  const [order, setOrder] = useState<Order>('desc');
   const [orderBy, setOrderBy] =
-    React.useState<keyof LanguageStats>('totalAcceptances');
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+    useState<keyof LanguageStats>('totalAcceptances');
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const handleRequestSort = (
-    _event: React.MouseEvent<unknown>,
+    _event: MouseEvent<unknown>,
     property: keyof LanguageStats,
   ) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -77,9 +77,7 @@ const EnhancedTable = ({ title, rows }: EnhancedTableProps) => {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };

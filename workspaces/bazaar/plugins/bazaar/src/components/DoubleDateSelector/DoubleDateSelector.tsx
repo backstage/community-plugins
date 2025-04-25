@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { Control, UseFormSetValue } from 'react-hook-form';
 import { FormValues } from '../../types';
 import { DateSelector } from '../DateSelector/DateSelector';

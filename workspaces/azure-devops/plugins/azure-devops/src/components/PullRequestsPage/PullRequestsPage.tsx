@@ -22,7 +22,7 @@ import {
   ResponseErrorPanel,
 } from '@backstage/core-components';
 import { PullRequestColumnConfig, PullRequestGroup } from './lib/types';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { getPullRequestGroupConfigs, getPullRequestGroups } from './lib/utils';
 import { FilterType } from './lib/filters';
 import { PullRequestGrid } from './lib/PullRequestGrid';

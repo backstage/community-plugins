@@ -1,5 +1,17 @@
 # @backstage-community/plugin-apache-airflow
 
+## 0.7.0
+
+### Minor Changes
+
+- 0847350: Backstage version bump to v1.38.1
+
+## 0.6.1
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
 ## 0.6.0
 
 ### Minor Changes

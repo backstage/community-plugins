@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useState, useMemo } from 'react';
 
 import { Progress, Table, WarningPanel } from '@backstage/core-components';
 
@@ -37,7 +37,7 @@ export const RolesList = () => {
   const { toastMessage, setToastMessage } = useToast();
   const { openDialog, setOpenDialog, deleteComponent } = useDeleteDialog();
   useLocationToast(setToastMessage);
-  const [searchText, setSearchText] = React.useState<string>();
+  const [searchText, setSearchText] = useState<string>();
   const configApi = useApi(configApiRef);
   
   // Read RBAC default permissions configuration
@@ -69,7 +69,7 @@ export const RolesList = () => {
   const onAlertClose = () => {
     setToastMessage('');
   };
-  const filteredRoles = React.useMemo(
+  const filteredRoles = useMemo(
     () => filterTableData({ data, columns, searchText }),
     [data, searchText],
   );

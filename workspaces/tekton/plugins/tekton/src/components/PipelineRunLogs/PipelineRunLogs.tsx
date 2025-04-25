@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useState, useEffect, useMemo } from 'react';
 
 import { LogViewer, Progress } from '@backstage/core-components';
 
@@ -31,6 +31,8 @@ import {
 import { getActiveTaskRun, getSortedTaskRuns } from '../../utils/taskRun-utils';
 import { PipelineRunLogViewer } from './PipelineRunLogViewer';
 import { TaskStatusStepper } from './TaskStatusStepper';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { tektonTranslationRef } from '../../translation';
 
 type PipelineRunLogsProps = {
   pipelineRun: PipelineRunKind;
@@ -59,9 +61,10 @@ export const PipelineRunLogs = ({
   );
 
   const completed = pipelineRunFilterReducer(pipelineRun);
-  const [lastActiveStepId, setLastActiveStepId] = React.useState<string>('');
+  const [lastActiveStepId, setLastActiveStepId] = useState<string>('');
+  const { t } = useTranslationRef(tektonTranslationRef);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const mostRecentFailedOrActiveStep = sortedTaskRuns.find(tr =>
       ['Failed', 'Running'].includes(tr.status),
     );
@@ -80,7 +83,7 @@ export const PipelineRunLogs = ({
   const activeItem = getActiveTaskRun(sortedTaskRuns, currentStepId);
   const podName =
     activeItem && taskRunFromYaml?.[currentStepId]?.status?.podName;
-  const podData = React.useMemo(
+  const podData = useMemo(
     () =>
       pods.find(pod => {
         return pod?.metadata?.name === podName;
@@ -107,7 +110,7 @@ export const PipelineRunLogs = ({
               elevation={1}
               style={{ height: '100%', width: '100%', minHeight: '30rem' }}
             >
-              <LogViewer text="No Logs found" />
+              <LogViewer text={t('pipelineRunLogs.noLogs')} />
             </Paper>
           ) : (
             <PipelineRunLogViewer pod={podData} />

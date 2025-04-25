@@ -659,3 +659,9 @@ export type WithHealth<T> =
   | WithWorkloadHealth<T>;
 // @ts-expect-error
 export const hasHealth = <T>(val: T): val is WithHealth<T> => !!val.health;
+
+export interface NamespaceHealthQuery {
+  queryTime?: string;
+  rateInterval?: string;
+  type: string;
+}

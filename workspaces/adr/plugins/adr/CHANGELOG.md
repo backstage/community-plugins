@@ -1,5 +1,11 @@
 # @backstage-community/plugin-adr
 
+## 0.9.2
+
+### Patch Changes
+
+- 4aad9f3: remove unused devDependency `canvas`
+
 ## 0.9.1
 
 ### Patch Changes

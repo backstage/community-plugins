@@ -1,5 +1,23 @@
 ### Dependencies
 
+## 3.24.0
+
+### Minor Changes
+
+- 6828dde: Added i18n support
+
+## 3.23.0
+
+### Minor Changes
+
+- 1d5f33d: Enhance fetching pod logs
+
+## 3.22.2
+
+### Patch Changes
+
+- 0a0e19a: Fix issue where the SBOM link does not lead to the SBOM task in the pipeline run log dialog
+
 ## 3.22.1
 
 ### Patch Changes

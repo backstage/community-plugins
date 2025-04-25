@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 import { DateTime } from 'luxon';
 import { usePermission } from '@backstage/plugin-permission-react';
 import {
@@ -61,6 +60,7 @@ type AnnouncementsCardOpts = {
   variant?: InfoCardVariants;
   sortBy?: 'created_at' | 'start_at';
   order?: 'asc' | 'desc';
+  hideStartAt?: boolean;
 };
 
 export const AnnouncementsCard = ({
@@ -71,6 +71,7 @@ export const AnnouncementsCard = ({
   variant = 'gridItem',
   sortBy,
   order,
+  hideStartAt,
 }: AnnouncementsCardOpts) => {
   const classes = useStyles();
   const announcementsApi = useApi(announcementsApiRef);
@@ -151,14 +152,16 @@ export const AnnouncementsCard = ({
                   <Typography variant="body2" color="textSecondary">
                     {announcement.excerpt}
                   </Typography>
-                  <Typography variant="caption" color="textSecondary">
-                    {formatAnnouncementStartTime(
-                      announcement.start_at,
-                      t('announcementsCard.occurred'),
-                      t('announcementsCard.scheduled'),
-                      t('announcementsCard.today'),
-                    )}
-                  </Typography>
+                  {!hideStartAt && (
+                    <Typography variant="caption" color="textSecondary">
+                      {formatAnnouncementStartTime(
+                        announcement.start_at,
+                        t('announcementsCard.occurred'),
+                        t('announcementsCard.scheduled'),
+                        t('announcementsCard.today'),
+                      )}
+                    </Typography>
+                  )}
                 </Box>
               }
             />{' '}

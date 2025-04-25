@@ -17,8 +17,13 @@ import { createBackend } from '@backstage/backend-defaults';
 
 const backend = createBackend();
 
+// the auth plugin is needed to setup a fully authenticated backend for the catalog backend
 backend.add(import('@backstage/plugin-auth-backend'));
 backend.add(import('@backstage/plugin-auth-backend-module-guest-provider'));
+
+// We need the catalog plugin to get the example entities and make the front entity page functional
+backend.add(import('@backstage/plugin-catalog-backend'));
+
 backend.add(import('../src'));
 
 backend.start();

@@ -92,12 +92,16 @@ export const ServiceInfo = (serviceProps: Props) => {
         )
       : [];
   const k8sGwIstioConfigItems =
-    serviceProps?.k8sGateways && serviceProps.serviceDetails?.k8sHTTPRoutes
+    serviceProps?.k8sGateways &&
+    (serviceProps.serviceDetails?.k8sHTTPRoutes ||
+      serviceProps.serviceDetails?.k8sGRPCRoutes)
       ? k8sGwToIstioItems(
           serviceProps?.k8sGateways,
           serviceProps.serviceDetails.k8sHTTPRoutes,
+          serviceProps.serviceDetails.k8sGRPCRoutes,
           serviceProps.serviceDetails.validations,
           serviceProps.cluster,
+          '',
         )
       : [];
   const seIstioConfigItems = serviceProps.serviceDetails?.serviceEntries

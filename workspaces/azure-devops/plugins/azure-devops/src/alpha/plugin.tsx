@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import {
   ApiBlueprint,
   createApiFactory,
@@ -33,6 +32,7 @@ import {
   EntityContentBlueprint,
 } from '@backstage/plugin-catalog-react/alpha';
 import { azurePullRequestDashboardRouteRef } from '../routes';
+import { isAzureDevOpsAvailable, isAzurePipelinesAvailable } from '../plugin';
 
 /** @alpha */
 export const azureDevOpsApi = ApiBlueprint.make({
@@ -67,6 +67,7 @@ export const azureDevOpsPipelinesEntityContent = EntityContentBlueprint.make({
   params: {
     defaultPath: '/pipelines',
     defaultTitle: 'Pipelines',
+    filter: isAzurePipelinesAvailable,
     loader: () =>
       import('../components/EntityPageAzurePipelines').then(m =>
         compatWrapper(<m.EntityPageAzurePipelines />),
@@ -80,6 +81,7 @@ export const azureDevOpsGitTagsEntityContent = EntityContentBlueprint.make({
   params: {
     defaultPath: '/git-tags',
     defaultTitle: 'Git Tags',
+    filter: isAzureDevOpsAvailable,
     loader: () =>
       import('../components/EntityPageAzureGitTags').then(m =>
         compatWrapper(<m.EntityPageAzureGitTags />),
@@ -94,6 +96,7 @@ export const azureDevOpsPullRequestsEntityContent = EntityContentBlueprint.make(
     params: {
       defaultPath: '/pull-requests',
       defaultTitle: 'Pull Requests',
+      filter: isAzureDevOpsAvailable,
       loader: () =>
         import('../components/EntityPageAzurePullRequests').then(m =>
           compatWrapper(<m.EntityPageAzurePullRequests />),
@@ -106,6 +109,7 @@ export const azureDevOpsPullRequestsEntityContent = EntityContentBlueprint.make(
 export const azureDevOpsReadmeEntityCard = EntityCardBlueprint.make({
   name: 'readme',
   params: {
+    filter: isAzureDevOpsAvailable,
     loader: async () =>
       import('../components/ReadmeCard').then(m =>
         compatWrapper(<m.ReadmeCard />),

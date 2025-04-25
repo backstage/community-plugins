@@ -13,20 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 
 import { downloadLogFile } from '@janus-idp/shared-react';
 
 import { testPipelineRunPods } from '../../../__fixtures__/pods-data';
 import { getPodLogs } from '../../../utils/log-downloader-utils';
 import PodLogsDownloadLink from '../PodLogsDownloadLink';
-
-jest.mock('@backstage/core-plugin-api', () => ({
-  ...jest.requireActual('@backstage/core-plugin-api'),
-  useApi: jest.fn(),
-}));
+import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
+import { kubernetesProxyApiRef } from '../../../types/types';
 
 jest.mock('../../../utils/log-downloader-utils', () => ({
   getPodLogs: jest.fn(),
@@ -49,13 +44,24 @@ describe('PodLogsDownloadLink', () => {
   it('should download the pipelineRun logs', async () => {
     const { pods } = testPipelineRunPods;
 
-    render(
-      <PodLogsDownloadLink
-        data-testid="download-pipelinerun-logs"
-        pods={pods}
-        fileName="pipelinerun.log"
-        downloadTitle="Download all task logs"
-      />,
+    await renderInTestApp(
+      <TestApiProvider
+        apis={[
+          [
+            kubernetesProxyApiRef,
+            {
+              getPodLogs: jest.fn().mockResolvedValue({ text: 'log data...' }),
+            },
+          ],
+        ]}
+      >
+        <PodLogsDownloadLink
+          data-testid="download-pipelinerun-logs"
+          pods={pods}
+          fileName="pipelinerun.log"
+          downloadTitle="Download all task logs"
+        />
+      </TestApiProvider>,
     );
     fireEvent.click(screen.getByTestId('download-pipelinerun-logs'));
 
@@ -74,13 +80,24 @@ describe('PodLogsDownloadLink', () => {
     downloadLogFileMock.mockResolvedValue('download complete');
 
     const { pods } = testPipelineRunPods;
-    render(
-      <PodLogsDownloadLink
-        data-testid="download-pipelinerun-logs"
-        pods={pods}
-        fileName="pipelinerun.log"
-        downloadTitle="Download all task logs"
-      />,
+    await renderInTestApp(
+      <TestApiProvider
+        apis={[
+          [
+            kubernetesProxyApiRef,
+            {
+              getPodLogs: jest.fn().mockResolvedValue({ text: 'log data...' }),
+            },
+          ],
+        ]}
+      >
+        <PodLogsDownloadLink
+          data-testid="download-pipelinerun-logs"
+          pods={pods}
+          fileName="pipelinerun.log"
+          downloadTitle="Download all task logs"
+        />
+      </TestApiProvider>,
     );
 
     fireEvent.click(screen.getByTestId('download-pipelinerun-logs'));
@@ -108,13 +125,24 @@ describe('PodLogsDownloadLink', () => {
     downloadLogFileMock.mockResolvedValue('');
 
     const { pods } = testPipelineRunPods;
-    render(
-      <PodLogsDownloadLink
-        data-testid="download-pipelinerun-logs"
-        pods={pods}
-        fileName="pipelinerun.log"
-        downloadTitle="Download all task logs"
-      />,
+    await renderInTestApp(
+      <TestApiProvider
+        apis={[
+          [
+            kubernetesProxyApiRef,
+            {
+              getPodLogs: jest.fn().mockResolvedValue({ text: 'log data...' }),
+            },
+          ],
+        ]}
+      >
+        <PodLogsDownloadLink
+          data-testid="download-pipelinerun-logs"
+          pods={pods}
+          fileName="pipelinerun.log"
+          downloadTitle="Download all task logs"
+        />
+      </TestApiProvider>,
     );
 
     fireEvent.click(screen.getByTestId('download-pipelinerun-logs'));

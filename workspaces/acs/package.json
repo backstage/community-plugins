@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "engines": {
-    "node": ">=20.17.0"
+    "node": "20.17.0"
   },
   "scripts": {
     "dev": "yarn workspaces foreach -A --include backend --include app --parallel -v -i run start",
@@ -41,6 +41,12 @@
   "devDependencies": {
     "@backstage/cli": "^0.30.0",
     "@backstage/e2e-test-utils": "^0.1.1",
+    "@backstage/plugin-catalog-backend": "1.30.0",
+    "@backstage/plugin-catalog-backend-module-logs": "0.1.6",
+    "@backstage/plugin-catalog-backend-module-scaffolder-entity-model": "0.2.4",
+    "@backstage/plugin-catalog-backend-module-unprocessed": "0.5.4",
+    "@backstage/plugin-scaffolder": "1.27.5",
+    "@backstage/plugin-scaffolder-backend": "1.29.0",
     "@backstage/repo-tools": "^0.13.0",
     "@changesets/cli": "^2.28.1",
     "@eslint/js": "^9.19.0",

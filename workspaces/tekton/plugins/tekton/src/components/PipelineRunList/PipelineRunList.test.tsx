@@ -13,18 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-import { BrowserRouter } from 'react-router-dom';
-
 import { usePermission } from '@backstage/plugin-permission-react';
-
-import { render } from '@testing-library/react';
 
 import { ComputedStatus } from '@janus-idp/shared-react';
 
 import { mockKubernetesPlrResponse } from '../../__fixtures__/1-pipelinesData';
 import { TektonResourcesContext } from '../../hooks/TektonResourcesContext';
 import PipelineRunList from './PipelineRunList';
+import { renderInTestApp } from '@backstage/test-utils';
 
 jest.mock('@backstage/plugin-catalog-react', () => ({
   useEntity: () => ({
@@ -58,7 +54,7 @@ describe('PipelineRunList', () => {
     mockUsePermission.mockReturnValue({ loading: false, allowed: true });
   });
 
-  it('should render PipelineRunList if available', () => {
+  it('should render PipelineRunList if available', async () => {
     const mockContextData = {
       watchResourcesData: {
         pipelineruns: {
@@ -78,18 +74,16 @@ describe('PipelineRunList', () => {
       setIsExpanded: () => {},
     };
 
-    const { queryByText } = render(
+    const { queryByText } = await renderInTestApp(
       <TektonResourcesContext.Provider value={mockContextData}>
-        <BrowserRouter>
-          <PipelineRunList />
-        </BrowserRouter>
+        <PipelineRunList />
       </TektonResourcesContext.Provider>,
     );
 
     expect(queryByText(/No Pipeline Runs found/i)).toBeNull();
   });
 
-  it('should render loading if data has not been loaded', () => {
+  it('should render loading if data has not been loaded', async () => {
     const mockContextData = {
       watchResourcesData: {},
       loaded: false,
@@ -102,7 +96,7 @@ describe('PipelineRunList', () => {
       setIsExpanded: () => {},
     };
 
-    const { getByTestId } = render(
+    const { getByTestId } = await renderInTestApp(
       <TektonResourcesContext.Provider value={mockContextData}>
         <PipelineRunList />
       </TektonResourcesContext.Provider>,
@@ -110,7 +104,7 @@ describe('PipelineRunList', () => {
     expect(getByTestId('tekton-progress')).not.toBeNull();
   });
 
-  it('should show empty state if no data is available', () => {
+  it('should show empty state if no data is available', async () => {
     const mockContextData = {
       watchResourcesData: {
         pipelineruns: {
@@ -130,7 +124,7 @@ describe('PipelineRunList', () => {
       setIsExpanded: () => {},
     };
 
-    const { getByText } = render(
+    const { getByText } = await renderInTestApp(
       <TektonResourcesContext.Provider value={mockContextData}>
         <PipelineRunList />
       </TektonResourcesContext.Provider>,
@@ -138,7 +132,7 @@ describe('PipelineRunList', () => {
     expect(getByText(/No Pipeline Runs found/i)).not.toBeNull();
   });
 
-  it('should show empty state with no cluster selector if there are error in fetching resources and no clusters', () => {
+  it('should show empty state with no cluster selector if there are error in fetching resources and no clusters', async () => {
     const mockContextData = {
       watchResourcesData: {
         pipelineruns: {
@@ -159,7 +153,7 @@ describe('PipelineRunList', () => {
       setIsExpanded: () => {},
     };
 
-    const { getByText, queryByText } = render(
+    const { getByText, queryByText } = await renderInTestApp(
       <TektonResourcesContext.Provider value={mockContextData}>
         <PipelineRunList />
       </TektonResourcesContext.Provider>,
@@ -168,7 +162,7 @@ describe('PipelineRunList', () => {
     expect(queryByText(/Cluster/)).toBeNull();
   });
 
-  it('should show empty state with cluster selector if there are error in fetching resources and cluster(s) are fetched', () => {
+  it('should show empty state with cluster selector if there are error in fetching resources and cluster(s) are fetched', async () => {
     const mockContextData = {
       watchResourcesData: {
         pipelineruns: {
@@ -189,7 +183,7 @@ describe('PipelineRunList', () => {
       setIsExpanded: () => {},
     };
 
-    const { getByText, queryByText } = render(
+    const { getByText, queryByText } = await renderInTestApp(
       <TektonResourcesContext.Provider value={mockContextData}>
         <PipelineRunList />
       </TektonResourcesContext.Provider>,
@@ -198,7 +192,7 @@ describe('PipelineRunList', () => {
     expect(queryByText(/Cluster/)).not.toBeNull();
   });
 
-  it('should render filtered PipelineRunList based on selected status', () => {
+  it('should render filtered PipelineRunList based on selected status', async () => {
     const mockContextData = {
       watchResourcesData: {
         pipelineruns: {
@@ -218,18 +212,16 @@ describe('PipelineRunList', () => {
       setIsExpanded: () => {},
     };
 
-    const { queryByText } = render(
+    const { queryByText } = await renderInTestApp(
       <TektonResourcesContext.Provider value={mockContextData}>
-        <BrowserRouter>
-          <PipelineRunList />
-        </BrowserRouter>
+        <PipelineRunList />
       </TektonResourcesContext.Provider>,
     );
 
     expect(queryByText('pipelinerun-with-scanner-task')).not.toBeNull();
   });
 
-  it('should show empty state if no PipelineRuns matches selected status', () => {
+  it('should show empty state if no PipelineRuns matches selected status', async () => {
     const mockContextData = {
       watchResourcesData: {
         pipelineruns: {
@@ -249,11 +241,9 @@ describe('PipelineRunList', () => {
       setIsExpanded: () => {},
     };
 
-    const { queryByText } = render(
+    const { queryByText } = await renderInTestApp(
       <TektonResourcesContext.Provider value={mockContextData}>
-        <BrowserRouter>
-          <PipelineRunList />
-        </BrowserRouter>
+        <PipelineRunList />
       </TektonResourcesContext.Provider>,
     );
 

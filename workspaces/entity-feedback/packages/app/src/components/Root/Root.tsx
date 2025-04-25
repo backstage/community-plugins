@@ -30,6 +30,7 @@ import {
   Link,
 } from '@backstage/core-components';
 import MenuIcon from '@material-ui/icons/Menu';
+import { NotificationsSidebarItem } from '@backstage/plugin-notifications';
 
 const useSidebarLogoStyles = makeStyles({
   root: {
@@ -67,6 +68,7 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
       <SidebarGroup label="Menu" icon={<MenuIcon />}>
         <SidebarItem icon={HomeIcon} to="catalog" text="Home" />
         <SidebarDivider />
+        <NotificationsSidebarItem />
       </SidebarGroup>
       <SidebarSpace />
     </Sidebar>

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { SetStateAction, Dispatch } from 'react';
 
 import {
   getDefaultRule,
@@ -29,10 +29,8 @@ type ConditionRuleProps = {
   onRuleChange: (newCondition: ConditionsData) => void;
   criteria: string;
   conditionRulesData?: RulesData;
-  setErrors: React.Dispatch<
-    React.SetStateAction<AccessConditionsErrors | undefined>
-  >;
-  setRemoveAllClicked: React.Dispatch<React.SetStateAction<boolean>>;
+  setErrors: Dispatch<SetStateAction<AccessConditionsErrors | undefined>>;
+  setRemoveAllClicked: Dispatch<SetStateAction<boolean>>;
 };
 
 export const ConditionRule = ({

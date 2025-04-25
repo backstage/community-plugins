@@ -24,7 +24,6 @@ import {
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { TestApiRegistry, renderInTestApp } from '@backstage/test-utils';
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
-import React from 'react';
 import {
   splunkOnCallApiRef,
   SplunkOnCallClient,

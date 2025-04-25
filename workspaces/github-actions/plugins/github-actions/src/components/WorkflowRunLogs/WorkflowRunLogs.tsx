@@ -27,7 +27,7 @@ import Zoom from '@material-ui/core/Zoom';
 import { makeStyles } from '@material-ui/core/styles';
 import DescriptionIcon from '@material-ui/icons/Description';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import React from 'react';
+import { useState } from 'react';
 import { getProjectNameFromEntity } from '../getProjectNameFromEntity';
 import { useDownloadWorkflowRunLogs } from './useDownloadWorkflowRunLogs';
 import { getHostnameFromEntity } from '../getHostnameFromEntity';
@@ -83,7 +83,7 @@ export const WorkflowRunLogs = ({
     id: runId,
   });
   const logText = jobLogs.value ? String(jobLogs.value) : undefined;
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   const handleOpen = () => {
     setOpen(true);

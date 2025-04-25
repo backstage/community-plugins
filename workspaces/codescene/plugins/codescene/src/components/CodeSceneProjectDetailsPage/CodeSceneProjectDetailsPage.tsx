@@ -28,7 +28,6 @@ import { configApiRef, useApi, useApp } from '@backstage/core-plugin-api';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Alert from '@material-ui/lab/Alert';
-import React from 'react';
 import { useParams } from 'react-router-dom';
 import { CodeHealthKpisCard } from '../CodeHealthKpisCard/CodeHealthKpisCard';
 import { useAnalyses } from '../../hooks/useAnalyses';

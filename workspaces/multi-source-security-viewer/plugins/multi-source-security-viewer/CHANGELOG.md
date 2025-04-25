@@ -1,5 +1,23 @@
 # @backstage-community/plugin-multi-source-security-viewer
 
+## 0.2.3
+
+### Patch Changes
+
+- 4b13a33: Fix installation documentation
+
+## 0.2.2
+
+### Patch Changes
+
+- bb1d492: Updated dependency `@backstage-community/plugin-jenkins` to `^0.18.0`.
+
+## 0.2.1
+
+### Patch Changes
+
+- 262f9d9: Updated dependency `@backstage-community/plugin-github-actions` to `^0.9.0`.
+
 ## 0.2.0
 
 ### Minor Changes

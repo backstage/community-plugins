@@ -29,7 +29,8 @@ export const KialiHeaderEntity = () => {
     <div style={{ marginLeft: '20px' }}>
       <Grid container spacing={0}>
         <Grid item xs={5}>
-          <NamespaceSelector />
+          {kialiState.namespaces.items &&
+            kialiState.namespaces.items?.length > 1 && <NamespaceSelector />}
         </Grid>
         <Grid item xs={6}>
           <div

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { createDevApp } from '@backstage/dev-utils';
 import { techRadarPlugin, TechRadarPage } from '../src';
 
@@ -22,6 +21,6 @@ createDevApp()
   .registerPlugin(techRadarPlugin)
   .addPage({
     title: 'Tech Radar',
-    element: <TechRadarPage width={1280} height={720} />,
+    element: <TechRadarPage />,
   })
   .render();

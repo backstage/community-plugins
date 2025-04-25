@@ -20,6 +20,7 @@ import {
 import { PFColorVal } from '../components/Pf/PfColors';
 import { TimeInSeconds } from './Common';
 import { ProxyStatus } from './Health';
+import { TypeMeta } from './Kubernetes';
 import { Namespace } from './Namespace';
 import { ServicePort } from './ServiceInfo';
 
@@ -64,9 +65,11 @@ export interface K8sMetadata {
   clusterName?: string;
 }
 
-export interface IstioObject {
-  kind?: string;
-  apiVersion?: string;
+export interface K8sResource extends TypeMeta {
+  metadata: K8sMetadata;
+}
+
+export interface IstioObject extends TypeMeta {
   metadata: K8sMetadata;
   status?: IstioStatus;
 }
@@ -112,6 +115,12 @@ export const IstioLevelToSeverity = {
   INFO: ValidationTypes.Info,
 };
 
+export interface GroupVersionKind {
+  Group: string;
+  Kind: string;
+  Version: string;
+}
+
 export interface ObjectValidation {
   name: string;
   objectType: string;
@@ -128,9 +137,9 @@ export interface ObjectCheck {
 }
 
 export interface ObjectReference {
-  objectType: string;
   name: string;
   namespace: string;
+  objectGVK: GroupVersionKind;
 }
 
 export interface PodReference {
@@ -591,6 +600,8 @@ export interface DestinationRule extends IstioObject {
 export class DestinationRuleC implements DestinationRule {
   metadata: K8sMetadata = { name: '' };
   spec: DestinationRuleSpec = {};
+  apiVersion: string = '';
+  kind: string = '';
 
   constructor(dr: DestinationRule) {
     Object.assign(this, dr);

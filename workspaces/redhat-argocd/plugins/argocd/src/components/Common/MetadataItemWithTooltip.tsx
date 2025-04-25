@@ -17,16 +17,16 @@ import { Typography, Tooltip } from '@material-ui/core';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import IconButton from '@mui/material/IconButton';
 import { FlexItem } from '@patternfly/react-core';
-import * as React from 'react';
+import type { ReactNode, FC } from 'react';
 import { HTMLAttributes } from 'react';
 
 interface MetadataItemWithTooltipProps extends HTMLAttributes<HTMLDivElement> {
   title: string;
   tooltipText: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
-const MetadataItemWithTooltip: React.FC<MetadataItemWithTooltipProps> = ({
+const MetadataItemWithTooltip: FC<MetadataItemWithTooltipProps> = ({
   title,
   tooltipText,
   children,

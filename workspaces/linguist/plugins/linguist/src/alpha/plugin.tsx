@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import {
   ApiBlueprint,
   createApiFactory,
@@ -26,11 +25,13 @@ import {
 import { LinguistClient, linguistApiRef } from '../api';
 import { compatWrapper } from '@backstage/core-compat-api';
 import { EntityCardBlueprint } from '@backstage/plugin-catalog-react/alpha';
+import { isLinguistAvailable } from '../plugin';
 
 /** @alpha */
 export const entityLinguistCard = EntityCardBlueprint.make({
   name: 'languages',
   params: {
+    filter: isLinguistAvailable,
     loader: async () =>
       import('../components/LinguistCard').then(m =>
         compatWrapper(<m.LinguistCard />),
