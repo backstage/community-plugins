@@ -13,14 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { FC } from 'react';
+
+import { Fragment } from 'react';
 import { renderInTestApp } from '@backstage/test-utils';
 import { screen } from '@testing-library/react';
 import { DialogLauncher } from './DialogLauncher';
 
 describe('DialogLauncher', () => {
-  const TestComponent: React.FC<{ greeting: string }> = ({ greeting }) => {
-    return <React.Fragment>Hello {greeting}</React.Fragment>;
+  const TestComponent: FC<{ greeting: string }> = ({ greeting }) => {
+    return <Fragment>Hello {greeting}</Fragment>;
   };
 
   it('should render the component as dialog', async () => {

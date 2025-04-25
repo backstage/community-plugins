@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { FC } from 'react';
+
+import { useState, Fragment } from 'react';
 import { PipelineRunStepper } from './PipelineRunStepper';
 import { Paper, Box } from '@material-ui/core';
 import Grid from '@mui/material/Grid';
@@ -26,19 +28,14 @@ type PipelineRunLogsProps = {
   step?: number;
 };
 
-export const PipelineRunLogs: React.FC<PipelineRunLogsProps> = ({
-  pr,
-  step,
-}) => {
-  const [activeStep, setActiveStep] = React.useState(
-    step && step !== -1 ? step : 0,
-  );
+export const PipelineRunLogs: FC<PipelineRunLogsProps> = ({ pr, step }) => {
+  const [activeStep, setActiveStep] = useState(step && step !== -1 ? step : 0);
   const handleStepChange = (value: number) => {
     setActiveStep(value);
   };
 
   return (
-    <React.Fragment>
+    <Fragment>
       <Box data-testid="dialog-logs">
         <Grid container>
           <Grid item xs={12}>
@@ -60,6 +57,6 @@ export const PipelineRunLogs: React.FC<PipelineRunLogsProps> = ({
           </Grid>
         </Grid>
       </Box>
-    </React.Fragment>
+    </Fragment>
   );
 };

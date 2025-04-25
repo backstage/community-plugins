@@ -23,17 +23,18 @@ import {
   IconButton,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
-import React from 'react';
+import type { FC } from 'react';
+import { Fragment } from 'react';
 
 type DialogLauncherProps = {
-  component: React.FC<any>;
+  component: FC<any>;
   componentProps?: Record<string, any>;
   title: string;
   open: boolean;
   onClose: () => void;
 } & DialogProps;
 
-export const DialogLauncher: React.FC<DialogLauncherProps> = ({
+export const DialogLauncher: FC<DialogLauncherProps> = ({
   open,
   onClose,
   component: Component,
@@ -42,7 +43,7 @@ export const DialogLauncher: React.FC<DialogLauncherProps> = ({
   ...rest
 }) => {
   return (
-    <React.Fragment>
+    <Fragment>
       <Dialog open={open} onClose={onClose} {...rest}>
         <DialogTitle>
           <Box
@@ -62,6 +63,6 @@ export const DialogLauncher: React.FC<DialogLauncherProps> = ({
           </ErrorBoundary>
         </DialogContent>
       </Dialog>
-    </React.Fragment>
+    </Fragment>
   );
 };
