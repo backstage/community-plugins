@@ -15,7 +15,7 @@
  */
 import { Tooltip } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
-import * as React from 'react';
+import { default as React } from 'react';
 import { KialiIcon } from '../../config/KialiIcon';
 import { kialiStyle } from '../../styles/StyleUtils';
 import { Label } from './Label';

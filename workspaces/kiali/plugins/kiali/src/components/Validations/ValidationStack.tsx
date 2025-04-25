@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { default as React } from 'react';
 import { kialiStyle } from '../../styles/StyleUtils';
 import { ObjectCheck, ValidationTypes } from '../../types/IstioObjects';
 import { highestSeverity } from '../../types/ServiceInfo';

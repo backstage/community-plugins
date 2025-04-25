@@ -20,7 +20,7 @@ import {
   Tooltip,
   Typography,
 } from '@material-ui/core';
-import * as React from 'react';
+import { default as React } from 'react';
 import { AmbientLabel } from '../../components/Ambient/AmbientLabel';
 import { DetailDescription } from '../../components/DetailDescription/DetailDescription';
 import { HealthIndicator } from '../../components/Health/HealthIndicator';

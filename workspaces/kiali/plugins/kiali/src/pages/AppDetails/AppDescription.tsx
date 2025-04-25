@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { Card, CardContent, CardHeader, Typography } from '@material-ui/core';
-import * as React from 'react';
+import { default as React } from 'react';
 import { DetailDescription } from '../../components/DetailDescription/DetailDescription';
 import { HealthIndicator } from '../../components/Health/HealthIndicator';
 import { Labels } from '../../components/Label/Labels';

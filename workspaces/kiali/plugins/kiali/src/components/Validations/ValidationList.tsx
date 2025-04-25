@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { Tooltip } from '@material-ui/core';
-import React from 'react';
+import { default as React } from 'react';
 import { ObjectCheck, ValidationTypes } from '../../types/IstioObjects';
 import { highestSeverity } from '../../types/ServiceInfo';
 import { Validation } from './Validation';

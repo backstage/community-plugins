@@ -87,9 +87,9 @@ kubernetes:
 
 kiali:
   providers:
-    - name: default
+    - name: Kubernetes
       # See the README file for configuration
-      url: ${KIALI_BASE_URL}
+      url: http://localhost:20001/kiali/
       # Optional. Kiali public URL to redirect to standalone Kiali. When not specified, url will be used.
       # urlExternal: ''
       # Optional. Required by token authentication
@@ -102,9 +102,9 @@ kiali:
       # caFile: ''
       # Optional. Time in seconds that session is enabled, defaults to 1 minute.
       sessionTime: 60
-    - name: kubernetes
+    - name: default
       # See the README file for configuration
-      url: http://localhost:20001/kiali/
+      url: ${KIALI_BASE_URL}
       # Optional. Kiali public URL to redirect to standalone Kiali. When not specified, url will be used.
       # urlExternal: ''
       # Optional. Required by token authentication

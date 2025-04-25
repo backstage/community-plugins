@@ -21,7 +21,7 @@ import {
   TableCellProps,
   Typography,
 } from '@material-ui/core';
-import * as React from 'react';
+import { default as React } from 'react';
 import { cardsHeight } from '../../styles/StyleUtils';
 import { IstioConfigItem } from '../../types/IstioConfigList';
 import {

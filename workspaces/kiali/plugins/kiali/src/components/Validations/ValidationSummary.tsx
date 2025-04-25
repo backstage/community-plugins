@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { Tooltip, Typography } from '@material-ui/core';
-import * as React from 'react';
 import { CSSProperties } from 'react';
 import { kialiStyle } from '../../styles/StyleUtils';
 import { StatusCondition, ValidationTypes } from '../../types/IstioObjects';

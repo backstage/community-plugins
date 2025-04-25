@@ -28,7 +28,7 @@ import {
   EmptyStateVariant,
 } from '@patternfly/react-core';
 import { CubesIcon, ErrorCircleOIcon } from '@patternfly/react-icons';
-import * as React from 'react';
+import { default as React } from 'react';
 import { PFColors } from '../../components/Pf/PfColors';
 import { KialiIcon } from '../../config/KialiIcon';
 import { kialiStyle } from '../../styles/StyleUtils';

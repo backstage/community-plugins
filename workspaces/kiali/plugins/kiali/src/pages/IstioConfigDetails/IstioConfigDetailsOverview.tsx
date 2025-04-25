@@ -21,7 +21,7 @@ import {
   Tooltip,
   Typography,
 } from '@material-ui/core';
-import React from 'react';
+import { default as React } from 'react';
 import { HistoryManager } from '../../app/History';
 import { Labels } from '../../components/Label/Labels';
 import { PFBadge } from '../../components/Pf/PfBadges';

@@ -32,7 +32,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import { Alert } from '@material-ui/lab';
 import memoize from 'micro-memoize';
 import moment from 'moment';
-import * as React from 'react';
+import { default as React } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useAsyncFn, useDebounce } from 'react-use';
 import screenfull, { Screenfull } from 'screenfull';

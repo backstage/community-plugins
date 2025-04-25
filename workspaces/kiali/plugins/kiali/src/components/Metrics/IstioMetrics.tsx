@@ -15,7 +15,7 @@
  */
 import { useApi } from '@backstage/core-plugin-api';
 import { Checkbox, FormControlLabel, Toolbar } from '@material-ui/core';
-import * as React from 'react';
+import { default as React } from 'react';
 import { useAsyncFn, useDebounce } from 'react-use';
 import { history, URLParam } from '../../app/History';
 import { Dashboard } from '../../components/Charts/Dashboard';
@@ -212,13 +212,17 @@ export const IstioMetrics = (props: Props) => {
   const refresh = (): void => {
     fetchMetrics();
     if (tracingIntegration) {
-      spanOverlay.fetch({
-        namespace: props.namespace,
-        cluster: props.cluster,
-        target: props.object,
-        targetKind: props.objectType,
-        range: timeRange,
-      });
+      spanOverlay.fetch(
+        {
+          namespace: props.namespace,
+          cluster: props.cluster,
+          target: props.object,
+          targetKind: props.objectType,
+          range: timeRange,
+        },
+        kialiClient,
+        kialiState,
+      );
     }
   };
 

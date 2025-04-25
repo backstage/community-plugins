@@ -16,7 +16,6 @@
 import { Entity } from '@backstage/catalog-model';
 import { Content, Page } from '@backstage/core-components';
 import { useEntity } from '@backstage/plugin-catalog-react';
-import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { AppDetailsPage } from '../pages/AppDetails/AppDetailsPage';
 import { AppListPage } from '../pages/AppList/AppListPage';

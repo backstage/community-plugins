@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { Breadcrumbs } from '@material-ui/core';
-import * as React from 'react';
 import { Location, useLocation } from 'react-router-dom';
 import { HistoryManager } from '../../app/History';
 import { Paths } from '../../config';

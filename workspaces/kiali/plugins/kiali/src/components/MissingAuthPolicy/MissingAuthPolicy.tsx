@@ -15,7 +15,7 @@
  */
 import { Tooltip, TooltipPosition } from '@patternfly/react-core';
 import { SVGIconProps } from '@patternfly/react-icons/dist/js/createIcon';
-import * as React from 'react';
+import { default as React } from 'react';
 import { icons } from '../../config/Icons';
 import { KialiIcon } from '../../config/KialiIcon';
 import { isIstioNamespace } from '../../config/ServerConfig';

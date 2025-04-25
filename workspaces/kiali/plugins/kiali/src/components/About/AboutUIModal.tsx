@@ -29,7 +29,7 @@ import {
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { Alert } from '@material-ui/lab';
-import * as React from 'react';
+import { default as React } from 'react';
 import { config, KialiIcon, KialiLogo } from '../../config';
 import { kialiStyle } from '../../styles/StyleUtils';
 import {
