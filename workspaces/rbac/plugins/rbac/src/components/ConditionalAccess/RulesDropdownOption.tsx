@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { HTMLAttributes } from 'react';
 
 import Typography from '@mui/material/Typography';
 
@@ -22,7 +22,7 @@ import { RulesData } from './types';
 type RulesDropdownOptionProps = {
   label: string;
   rulesData?: RulesData;
-  props: React.HTMLAttributes<HTMLLIElement>;
+  props: HTMLAttributes<HTMLLIElement>;
 };
 
 export const RulesDropdownOption = ({

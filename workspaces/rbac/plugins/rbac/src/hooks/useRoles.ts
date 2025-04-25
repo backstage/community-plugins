@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useAsync, useAsyncRetry, useInterval } from 'react-use';
 
 import { useApi } from '@backstage/core-plugin-api';
@@ -56,12 +56,11 @@ export const useRoles = (
   retry: { roleRetry: () => void; policiesRetry: () => void };
 } => {
   const rbacApi = useApi(rbacApiRef);
-  const [newRoles, setNewRoles] = React.useState<
-    RoleWithConditionalPoliciesCount[]
-  >([]);
-  const [firstLoad, setFirstLoad] = React.useState(true);
-  const [roleConditionError, setRoleConditionError] =
-    React.useState<string>('');
+  const [newRoles, setNewRoles] = useState<RoleWithConditionalPoliciesCount[]>(
+    [],
+  );
+  const [firstLoad, setFirstLoad] = useState(true);
+  const [roleConditionError, setRoleConditionError] = useState<string>('');
   const {
     loading: loadingRoles,
     value: roles,
@@ -109,8 +108,8 @@ export const useRoles = (
     policyEntityCreatePermissionResult.allowed && canReadUsersAndGroups;
 
   const [loadingConditionalPermission, setLoadingConditionalPermission] =
-    React.useState<boolean>(false);
-  React.useEffect(() => {
+    useState<boolean>(false);
+  useEffect(() => {
     const fetchAllPermissionPolicies = async () => {
       if (!Array.isArray(roles)) return;
       setLoadingConditionalPermission(true);
@@ -160,7 +159,7 @@ export const useRoles = (
     fetchAllPermissionPolicies();
   }, [roles, rbacApi]);
 
-  const data: RolesData[] = React.useMemo(
+  const data: RolesData[] = useMemo(
     () =>
       Array.isArray(newRoles) && newRoles?.length > 0
         ? newRoles.reduce(
