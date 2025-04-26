@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 6.2.1
+
+### Patch Changes
+
+- 10b9919: Avoid filter's args duplication.
+
 ## 6.2.0
 
 ### Minor Changes
