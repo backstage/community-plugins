@@ -42,6 +42,9 @@ import Alert, { Color } from '@material-ui/lab/Alert';
 import { Entity } from '@backstage/catalog-model';
 import Button from '@material-ui/core/Button';
 
+import { WorkflowRunsTableView } from '../WorkflowRunsTable';
+import { getStatusDescription } from '../WorkflowRunStatus/WorkflowRunStatus';
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     card: {
@@ -64,18 +67,6 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-type WorkflowRunsCardViewProps = {
-  runs?: WorkflowRun[];
-  searchTerm: string;
-  loading: boolean;
-  onChangePageSize: (pageSize: number) => void;
-  onChangePage: (page: number) => void;
-  page: number;
-  total: number;
-  pageSize: number;
-  projectName: string;
-};
-
 const statusColors: Record<string, string> = {
   skipped: 'warning',
   canceled: 'info',
@@ -87,13 +78,27 @@ const statusColors: Record<string, string> = {
 const matchesSearchTerm = (run: WorkflowRun, searchTerm: string) => {
   const lowerCaseSearchTerm = searchTerm.toLocaleLowerCase();
   return (
+    getStatusDescription({ status: run.status, conclusion: run.conclusion })
+      .toLocaleLowerCase()
+      .includes(lowerCaseSearchTerm) ||
+    run.message?.toLocaleLowerCase().includes(lowerCaseSearchTerm) ||
     run.workflowName?.toLocaleLowerCase().includes(lowerCaseSearchTerm) ||
     run.source.branchName?.toLocaleLowerCase().includes(lowerCaseSearchTerm) ||
-    run.status?.toLocaleLowerCase().includes(lowerCaseSearchTerm) ||
     run.id?.toLocaleLowerCase().includes(lowerCaseSearchTerm)
   );
 };
 
+type WorkflowRunsCardViewProps = {
+  runs?: WorkflowRun[];
+  searchTerm: string;
+  loading: boolean;
+  onChangePageSize: (pageSize: number) => void;
+  onChangePage: (page: number) => void;
+  page: number;
+  total: number;
+  pageSize: number;
+  projectName: string;
+};
 export const WorkflowRunsCardView = ({
   runs,
   searchTerm,
@@ -252,10 +257,6 @@ export const WorkflowRunsCardView = ({
   );
 };
 
-type WorkflowRunsCardProps = {
-  entity: Entity;
-};
-
 const WorkflowRunsCardSearch = ({
   searchTerm,
   handleSearch,
@@ -287,7 +288,14 @@ const WorkflowRunsCardSearch = ({
   );
 };
 
-export const WorkflowRunsCard = ({ entity }: WorkflowRunsCardProps) => {
+type WorkflowRunsCardProps = {
+  entity: Entity;
+  tableMode?: boolean;
+};
+export const WorkflowRunsCard = ({
+  entity,
+  tableMode,
+}: WorkflowRunsCardProps) => {
   const projectName = getProjectNameFromEntity(entity);
   const hostname = getHostnameFromEntity(entity);
   const [owner, repo] = (projectName ?? '/').split('/');
@@ -325,6 +333,8 @@ export const WorkflowRunsCard = ({ entity }: WorkflowRunsCardProps) => {
   useEffect(() => {
     setBranch(defaultBranch);
   }, [defaultBranch]);
+
+  const filteredRuns = runs?.filter(run => matchesSearchTerm(run, searchTerm));
 
   return (
     <Grid item>
@@ -383,17 +393,32 @@ export const WorkflowRunsCard = ({ entity }: WorkflowRunsCardProps) => {
           </Box>
         }
       >
-        <WorkflowRunsCardView
-          runs={runs}
-          loading={cardProps.loading}
-          onChangePageSize={setPageSize}
-          onChangePage={setPage}
-          page={cardProps.page}
-          total={cardProps.total}
-          pageSize={cardProps.pageSize}
-          searchTerm={searchTerm}
-          projectName={projectName}
-        />
+        {tableMode ? (
+          <WorkflowRunsTableView
+            projectName={projectName}
+            loading={cardProps.loading}
+            pageSize={cardProps.pageSize}
+            page={cardProps.page}
+            retry={retry}
+            runs={filteredRuns}
+            onChangePage={setPage}
+            onChangePageSize={setPageSize}
+            total={cardProps.total}
+            enableToolbar={false}
+          />
+        ) : (
+          <WorkflowRunsCardView
+            runs={runs}
+            loading={cardProps.loading}
+            onChangePageSize={setPageSize}
+            onChangePage={setPage}
+            page={cardProps.page}
+            total={cardProps.total}
+            pageSize={cardProps.pageSize}
+            searchTerm={searchTerm}
+            projectName={projectName}
+          />
+        )}
       </InfoCard>
     </Grid>
   );
