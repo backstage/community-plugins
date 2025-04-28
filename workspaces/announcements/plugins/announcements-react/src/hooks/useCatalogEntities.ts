@@ -15,7 +15,7 @@
  */
 import { useApi } from '@backstage/core-plugin-api';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
-import { parseEntityRef } from '@backstage/catalog-model';
+import { Entity, parseEntityRef } from '@backstage/catalog-model';
 import useAsyncRetry from 'react-use/esm/useAsyncRetry';
 
 /**
@@ -48,8 +48,18 @@ export const useCatalogEntities = (refs: string[]) => {
       };
     });
 
-    const response = await catalogApi.getEntities({ filter });
-    return response.items;
+    const items: Entity[] = [];
+    let response = await catalogApi.queryEntities({ filter });
+    items.push(...response.items);
+
+    while (response.pageInfo.nextCursor && response.items.length > 0) {
+      response = await catalogApi.queryEntities({
+        cursor: response.pageInfo.nextCursor,
+      });
+      items.push(...response.items);
+    }
+
+    return items;
   }, [catalogApi, refs]);
 
   return { entities: entities ?? [], loading, error, retry };

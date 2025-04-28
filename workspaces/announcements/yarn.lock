@@ -2701,6 +2701,7 @@ __metadata:
   resolution: "@backstage-community/plugin-announcements-react@workspace:plugins/announcements-react"
   dependencies:
     "@backstage-community/plugin-announcements-common": "workspace:^"
+    "@backstage/catalog-model": "npm:^1.7.3"
     "@backstage/cli": "npm:^0.32.0"
     "@backstage/core-app-api": "npm:^1.16.1"
     "@backstage/core-plugin-api": "npm:^1.10.6"
