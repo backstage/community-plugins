@@ -1,5 +1,11 @@
 # @backstage-community/plugin-multi-source-security-viewer
 
+## 0.3.1
+
+### Patch Changes
+
+- d4061d7: Fix issue where patternfly overrides plugin css
+
 ## 0.3.0
 
 ### Minor Changes
