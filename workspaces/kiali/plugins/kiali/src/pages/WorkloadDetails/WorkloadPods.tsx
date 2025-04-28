@@ -21,7 +21,7 @@ import {
   Tooltip,
   Typography,
 } from '@material-ui/core';
-import * as React from 'react';
+import { default as React } from 'react';
 import { Labels } from '../../components/Label/Labels';
 import { PFBadge, PFBadges } from '../../components/Pf/PfBadges';
 import { SimpleTable, tRow } from '../../components/SimpleTable';

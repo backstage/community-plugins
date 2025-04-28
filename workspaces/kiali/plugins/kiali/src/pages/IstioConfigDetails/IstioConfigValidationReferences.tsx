@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { List, ListItem, Typography } from '@material-ui/core';
-import React from 'react';
 import { ReferenceIstioObjectLink } from '../../components/Link/IstioObjectLink';
 import { ObjectReference } from '../../types/IstioObjects';
 

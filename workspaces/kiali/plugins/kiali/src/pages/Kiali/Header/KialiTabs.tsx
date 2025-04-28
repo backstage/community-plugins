@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { HeaderTabs } from '@backstage/core-components';
-import React, { useCallback, useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { matchRoutes, useNavigate, useParams } from 'react-router-dom';
 import { pluginName } from '../../../plugin';
 import {

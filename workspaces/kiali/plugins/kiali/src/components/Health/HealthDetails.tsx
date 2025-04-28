@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { Typography } from '@material-ui/core';
-import * as React from 'react';
+import { default as React } from 'react';
 import { KialiIcon } from '../../config';
 import * as H from '../../types/Health';
 import { PFColors } from '../Pf/PfColors';

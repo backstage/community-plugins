@@ -16,7 +16,7 @@
 import { Tooltip } from '@material-ui/core';
 import { ResourcesFullIcon } from '@patternfly/react-icons';
 import { SVGIconProps } from '@patternfly/react-icons/dist/esm/createIcon';
-import * as React from 'react';
+import { default as React } from 'react';
 import { ComponentStatus, Status } from '../../types/IstioStatus';
 import { PFColors } from '../Pf/PfColors';
 import { IstioStatusList } from './IstioStatusList';

@@ -19,7 +19,7 @@ import {
   ExclamationTriangleIcon,
   MinusCircleIcon,
 } from '@patternfly/react-icons';
-import * as React from 'react';
+import { default as React } from 'react';
 import { ComponentStatus } from '../../types/IstioStatus';
 import { IstioStatus } from './IstioStatus';
 

@@ -25,7 +25,7 @@ import {
 } from '@material-ui/core';
 import ExpandMoreRounded from '@material-ui/icons/ExpandMoreRounded';
 import { InfoIcon } from '@patternfly/react-icons';
-import * as React from 'react';
+import { default as React } from 'react';
 import { KialiAppAction } from '../../actions/KialiAppAction';
 import { MessageCenterState } from '../../store';
 import { kialiStyle } from '../../styles/StyleUtils';

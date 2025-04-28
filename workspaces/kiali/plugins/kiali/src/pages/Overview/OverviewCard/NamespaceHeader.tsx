@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { CardHeader, Chip } from '@material-ui/core';
-import React from 'react';
 import { serverConfig } from '../../../config';
 import { CanaryUpgradeStatus } from '../../../types/IstioObjects';
 import { ComponentStatus } from '../../../types/IstioStatus';

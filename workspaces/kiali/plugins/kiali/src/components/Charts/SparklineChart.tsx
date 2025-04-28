@@ -25,7 +25,7 @@ import {
   ChartThreshold,
   ChartVoronoiContainer,
 } from '@patternfly/react-charts';
-import * as React from 'react';
+import { default as React } from 'react';
 import {
   RichDataPoint,
   VCDataPoint,

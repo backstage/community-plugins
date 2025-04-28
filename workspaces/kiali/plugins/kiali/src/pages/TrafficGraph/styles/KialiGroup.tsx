@@ -22,7 +22,7 @@ import {
   WithSelectionProps,
 } from '@patternfly/react-topology';
 import useDetailsLevel from '@patternfly/react-topology/dist/esm/hooks/useDetailsLevel';
-import React from 'react';
+import { default as React } from 'react';
 import { PFColors } from '../../../components/Pf/PfColors';
 
 const ICON_PADDING = 20;

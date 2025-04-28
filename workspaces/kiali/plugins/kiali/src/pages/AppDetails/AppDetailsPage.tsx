@@ -17,7 +17,7 @@ import { Content, EmptyState } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { CircularProgress, Tab, Tabs } from '@material-ui/core';
 import { AxiosError } from 'axios';
-import * as React from 'react';
+import { default as React } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAsyncFn, useDebounce } from 'react-use';
 import { HistoryManager } from '../../app/History';

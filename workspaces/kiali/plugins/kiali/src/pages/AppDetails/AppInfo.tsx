@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { Grid } from '@material-ui/core';
-import React from 'react';
 import { App } from '../../types/App';
 import { DurationInSeconds } from '../../types/Common';
 import { AppHealth } from '../../types/Health';

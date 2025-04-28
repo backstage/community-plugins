@@ -19,7 +19,6 @@ import {
   ChartLabel,
   ChartThemeColor,
 } from '@patternfly/react-charts';
-import * as React from 'react';
 import { KialiIcon } from '../../../config/KialiIcon';
 import { kialiStyle } from '../../../styles/StyleUtils';
 import { CanaryUpgradeStatus } from '../../../types/IstioObjects';

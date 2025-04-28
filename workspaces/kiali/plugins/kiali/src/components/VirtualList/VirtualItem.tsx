@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 import { TableRow } from '@material-ui/core';
-import * as React from 'react';
-import { CSSProperties } from 'react';
+import { CSSProperties, default as React } from 'react';
 import { useLinkStyle } from '../../styles/StyleUtils';
 import { hasHealth, Health } from '../../types/Health';
 import { IstioConfigItem } from '../../types/IstioConfigList';

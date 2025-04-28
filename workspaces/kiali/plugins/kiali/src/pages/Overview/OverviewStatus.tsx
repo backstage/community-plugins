@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { Tooltip } from '@material-ui/core';
-import * as React from 'react';
+import { default as React } from 'react';
 import { healthFilter } from '../../components/Filters/CommonFilters';
 import { FilterSelected } from '../../components/Filters/StatefulFilters';
 import { healthIndicatorStyle } from '../../components/Health/HealthStyle';

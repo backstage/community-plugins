@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { Card, CardContent, Grid } from '@material-ui/core';
-import React from 'react';
+import { default as React } from 'react';
 import * as FilterHelper from '../../../components/FilterList/FilterHelper';
 import { NamespaceMTLSStatus } from '../../../components/MTls/NamespaceMTLSStatus';
 import { TLSInfo } from '../../../components/Overview/TLSInfo';
@@ -28,13 +28,9 @@ import {
 } from '../../../types/Common';
 import {
   CanaryUpgradeStatus,
-  OutboundTrafficPolicy,
   ValidationStatus,
 } from '../../../types/IstioObjects';
-import {
-  ComponentStatus,
-  IstiodResourceThresholds,
-} from '../../../types/IstioStatus';
+import { ComponentStatus } from '../../../types/IstioStatus';
 import { NamespaceInfo, NamespaceInfoStatus } from '../NamespaceInfo';
 import { DirectionType, OverviewType } from '../OverviewToolbar';
 import { CanaryUpgradeProgress } from './CanaryUpgradeProgress';
@@ -55,14 +51,13 @@ type OverviewCardProps = {
   direction: DirectionType;
   certsInfo: CertsInfo[];
   minTLS: string;
-  outboundTrafficPolicy: OutboundTrafficPolicy;
-  istiodResourceThresholds?: IstiodResourceThresholds;
   istioStatus: ComponentStatus[];
   healthNs?: NamespaceInfoStatus;
 };
 
 export const OverviewCard = (props: OverviewCardProps) => {
   const isIstioSystem = serverConfig.istioNamespace === props.namespace.name;
+
   const hasCanaryUpgradeConfigured = (): boolean => {
     return props.canaryUpgradeStatus
       ? props.canaryUpgradeStatus.pendingNamespaces.length > 0 ||
@@ -82,7 +77,6 @@ export const OverviewCard = (props: OverviewCardProps) => {
         metrics={props.namespace.metrics}
         errorMetrics={props.namespace.errorMetrics}
         controlPlaneMetrics={props.namespace.controlPlaneMetrics}
-        istiodResourceThresholds={props.istiodResourceThresholds}
       />
     );
     const canaryConfigured = hasCanaryUpgradeConfigured();
@@ -160,18 +154,8 @@ export const OverviewCard = (props: OverviewCardProps) => {
             {!props.entity && <NamespaceStatus {...props} />}
             {isIstioSystem && (
               <>
-                <ControlPlaneNamespaceStatus
-                  outboundTrafficPolicy={props.outboundTrafficPolicy}
-                  namespace={props.namespace}
-                />
-                <TLSInfo
-                  certificatesInformationIndicators={
-                    serverConfig.kialiFeatureFlags
-                      .certificatesInformationIndicators.enabled
-                  }
-                  certsInfo={props.certsInfo}
-                  version={props.minTLS}
-                />
+                <ControlPlaneNamespaceStatus namespace={props.namespace} />
+                <TLSInfo version={props.minTLS} />
               </>
             )}
           </Grid>
