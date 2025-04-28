@@ -15,7 +15,8 @@
  */
 import React from 'react';
 import { AnnouncementsCardContent } from '../AnnouncementsCardContent';
+import type { AnnouncementsHomepageProps } from './types';
 
-export const Content = () => {
-  return <AnnouncementsCardContent />;
+export const Content = (props: AnnouncementsHomepageProps) => {
+  return <AnnouncementsCardContent {...props} />;
 };

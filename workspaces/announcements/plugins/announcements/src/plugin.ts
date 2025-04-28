@@ -34,6 +34,10 @@ import {
   AnnouncementsClient,
 } from '@backstage-community/plugin-announcements-react';
 import { createCardExtension } from '@backstage/plugin-home-react';
+import {
+  AnnouncemtsHomepageCardSettings,
+  type AnnouncementsHomepageProps,
+} from './components/AnnouncementsHomepage/types';
 
 /**
  * @public
@@ -146,13 +150,14 @@ export const AnnouncementSearchResultListItem: (
  * @public
  */
 export const HomepageAnnouncements = announcementsPlugin.provide(
-  createCardExtension<{}>({
+  createCardExtension<AnnouncementsHomepageProps>({
     name: 'HomepageAnnouncements',
     title: 'Announcements',
     layout: {
       height: { minRows: 2 },
       width: { minColumns: 4 },
     },
+    settings: AnnouncemtsHomepageCardSettings,
     components: () => import('./components/AnnouncementsHomepage'),
   }),
 );
