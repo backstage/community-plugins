@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { FC } from 'react';
 import { TableBody } from '@material-ui/core';
 import { PipelineRunTableRow } from './PipelineRunTableRow';
 import { PipelineRunResult } from '../../models/pipelineRunResult';
@@ -22,7 +22,7 @@ type PipelineRunTableRowsProps = {
   data: PipelineRunResult[] | null;
 };
 
-export const PipelineRunTableBody: React.FC<PipelineRunTableRowsProps> = ({
+export const PipelineRunTableBody: FC<PipelineRunTableRowsProps> = ({
   data,
 }) => {
   return (

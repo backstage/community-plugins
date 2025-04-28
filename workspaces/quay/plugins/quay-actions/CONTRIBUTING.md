@@ -19,6 +19,6 @@
            - allow: [Template]
    ```
 
-4. Run `yarn dev`
+4. Run `yarn start`
 5. If you don't have a Quay account created yet you can create one for free on the [quay](https://quay.io) website
 6. Start using the Quay actions in your templates

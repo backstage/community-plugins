@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { FocusEventHandler } from 'react';
 import { useAsync } from 'react-use';
 
 import { Progress } from '@backstage/core-components';
@@ -41,7 +41,7 @@ type PermissionPoliciesFormProps = {
     shouldValidate?: boolean,
   ) => Promise<FormikErrors<RoleFormValues>> | Promise<void>;
   setFieldError: (field: string, value: string | undefined) => void;
-  handleBlur: React.FocusEventHandler<HTMLInputElement | HTMLTextAreaElement>;
+  handleBlur: FocusEventHandler<HTMLInputElement | HTMLTextAreaElement>;
   selectedPluginsError: string;
 };
 

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { JSX } from 'react';
 import {
   RELATION_API_CONSUMED_BY,
   RELATION_API_PROVIDED_BY,
@@ -394,7 +394,7 @@ const domainPage = (
   </EntityLayout>
 );
 
-export const entityPage: React.JSX.Element = (
+export const entityPage: JSX.Element = (
   <EntitySwitch>
     <EntitySwitch.Case if={isKind('component')} children={componentPage} />
     <EntitySwitch.Case if={isKind('api')} children={apiPage} />

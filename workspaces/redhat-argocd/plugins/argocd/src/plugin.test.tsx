@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { ReactNode } from 'react';
 import { Route, Routes } from 'react-router-dom';
 
 import { configApiRef } from '@backstage/core-plugin-api';
@@ -79,7 +79,7 @@ describe('argocd', () => {
       appLocatorMethods: [],
     },
   });
-  const Wrapper = ({ children }: { children: React.ReactNode }) => {
+  const Wrapper = ({ children }: { children: ReactNode }) => {
     return (
       <TestApiProvider
         apis={[

@@ -13,12 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { FC } from 'react';
+
+import { Fragment } from 'react';
 import { Box, CircularProgress } from '@material-ui/core';
 
-export const EmptyStateSpinner: React.FC = () => {
+export const EmptyStateSpinner: FC = () => {
   return (
-    <React.Fragment>
+    <Fragment>
       <Box
         sx={{
           display: 'flex',
@@ -28,6 +30,6 @@ export const EmptyStateSpinner: React.FC = () => {
       >
         <CircularProgress data-testid="spinner" />
       </Box>
-    </React.Fragment>
+    </Fragment>
   );
 };

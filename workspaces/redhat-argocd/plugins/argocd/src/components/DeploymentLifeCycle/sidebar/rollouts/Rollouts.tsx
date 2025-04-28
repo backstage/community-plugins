@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { FC } from 'react';
 
 import { Grid, makeStyles, Theme, Typography } from '@material-ui/core';
 
@@ -29,7 +29,7 @@ const useRolloutStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const Rollouts: React.FC = () => {
+const Rollouts: FC = () => {
   const { rollouts } = useArgoResources();
   const rolloutClasses = useRolloutStyles();
 

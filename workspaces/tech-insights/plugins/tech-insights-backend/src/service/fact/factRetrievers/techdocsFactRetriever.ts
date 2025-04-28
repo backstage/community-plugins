@@ -21,6 +21,7 @@ import {
 import { CatalogClient } from '@backstage/catalog-client';
 import { Entity } from '@backstage/catalog-model';
 import { entityHasAnnotation, generateAnnotationFactName } from './utils';
+import { DateTime } from 'luxon';
 
 const techdocsAnnotation = 'backstage.io/techdocs-ref';
 const techdocsEntityAnnotation = 'backstage.io/techdocs-entity';
@@ -81,6 +82,7 @@ export const techdocsFactRetriever: FactRetriever = {
             techdocsEntityAnnotation,
           ),
         },
+        timestamp: DateTime.now(),
       };
     });
   },

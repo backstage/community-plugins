@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useContext, useState } from 'react';
 
 import { Select, SelectedItems } from '@backstage/core-components';
 import { BackstageTheme } from '@backstage/theme';
@@ -39,7 +39,7 @@ export const ClusterSelector = () => {
     clusters: k8sClusters,
     selectedCluster,
     setSelectedCluster: setClusterContext,
-  } = React.useContext(TektonResourcesContext);
+  } = useContext(TektonResourcesContext);
   const clusterOptions = k8sClusters.map(cluster => ({
     value: cluster,
     label: cluster,
@@ -51,7 +51,7 @@ export const ClusterSelector = () => {
       : k8sClusters?.[0];
 
   const [clusterSelected, setClusterSelected] =
-    React.useState<SelectedItems>(curCluster);
+    useState<SelectedItems>(curCluster);
 
   const onClusterChange = (arg: SelectedItems) => {
     const index = k8sClusters.findIndex(cluster => cluster === arg);

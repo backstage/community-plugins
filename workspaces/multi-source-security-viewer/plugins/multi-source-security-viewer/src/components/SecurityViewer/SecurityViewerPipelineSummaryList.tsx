@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useState, Fragment } from 'react';
 import { ApiRef } from '@backstage/core-plugin-api';
 import { PipelineRunList } from '../PipelineRunList/PipelineRunList';
 import { usePipelineSummary } from '../../hooks/usePipelineSummary';
@@ -24,8 +24,8 @@ export const SecurityViewerPipelineSummary = ({
 }: {
   apiRef: ApiRef<MssvApi>;
 }) => {
-  const [page, setPage] = React.useState<number>(0);
-  const [pageSize, setPageSize] = React.useState<number>(5);
+  const [page, setPage] = useState<number>(0);
+  const [pageSize, setPageSize] = useState<number>(5);
   const [pipelineSummary, totalCount, loading, error] = usePipelineSummary(
     apiRef,
     page,
@@ -37,7 +37,7 @@ export const SecurityViewerPipelineSummary = ({
   };
 
   return (
-    <React.Fragment>
+    <Fragment>
       <PipelineRunList
         data={pipelineSummary}
         totalCount={totalCount}
@@ -45,6 +45,6 @@ export const SecurityViewerPipelineSummary = ({
         error={error}
         onUpdatePagination={onUpdatePagination}
       />
-    </React.Fragment>
+    </Fragment>
   );
 };

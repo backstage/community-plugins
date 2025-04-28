@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { useRouteRef } from '@backstage/core-plugin-api';
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { DateTime } from 'luxon';
 import { announcementViewRouteRef } from '../../routes';

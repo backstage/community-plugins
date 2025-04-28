@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { FC } from 'react';
 
 import { IconButton } from '@material-ui/core';
 import ExternalLinkIcon from '@patternfly/react-icons/dist/esm/icons/external-link-alt-icon';
@@ -21,7 +21,7 @@ import ExternalLinkIcon from '@patternfly/react-icons/dist/esm/icons/external-li
 import { useArgocdConfig } from '../../hooks/useArgocdConfig';
 import { Application } from '@backstage-community/plugin-redhat-argocd-common';
 
-const DeploymentLifecycleHeader: React.FC<{ app: Application }> = ({ app }) => {
+const DeploymentLifecycleHeader: FC<{ app: Application }> = ({ app }) => {
   const { instances, baseUrl } = useArgocdConfig();
 
   const supportsMultipleArgoInstances = !!instances.length;

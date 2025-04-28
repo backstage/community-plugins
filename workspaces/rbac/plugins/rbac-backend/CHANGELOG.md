@@ -1,5 +1,29 @@
 ### Dependencies
 
+## 6.2.1
+
+### Patch Changes
+
+- 10b9919: Avoid filter's args duplication.
+
+## 6.2.0
+
+### Minor Changes
+
+- e8755f6: Backstage version bump to v1.38.1
+
+### Patch Changes
+
+- Updated dependencies [e8755f6]
+  - @backstage-community/plugin-rbac-common@1.16.0
+  - @backstage-community/plugin-rbac-node@1.11.0
+
+## 6.1.1
+
+### Patch Changes
+
+- 10a0d31: Fixes an issue where the correct permission name was not selected while processing new conditional policies to be added. This scenario happens whenever a plugin exports multiple permissions that have different resource types but similar actions. What would end up happening is the first matched action would be the one selected during processing even though it was not the correct permission and used for the conditional policy. This problem has been fixed and now the correct permission name and action are selected.
+
 ## 6.1.0
 
 ### Minor Changes
