@@ -28,7 +28,7 @@ import {
   MenuToggleElement,
 } from '@patternfly/react-core';
 import isEqual from 'lodash/isEqual';
-import * as React from 'react';
+import { default as React } from 'react';
 import { classes } from 'typestyle';
 import { history, URLParam } from '../../app/History';
 import { KialiIcon } from '../../config/KialiIcon';

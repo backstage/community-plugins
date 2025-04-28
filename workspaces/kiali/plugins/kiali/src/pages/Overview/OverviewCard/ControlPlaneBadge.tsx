@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { Chip, makeStyles } from '@material-ui/core';
-import * as React from 'react';
+import { default as React } from 'react';
 import { AmbientBadge } from '../../../components/Ambient/AmbientBadge';
 import { IstioStatusInline } from '../../../components/IstioStatus/IstioStatusInline';
 import { serverConfig } from '../../../config';

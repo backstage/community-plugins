@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { List, Typography } from '@material-ui/core';
-import * as React from 'react';
 import { ComponentStatus, Status } from '../../types/IstioStatus';
 import { IstioComponentStatus } from './IstioComponentStatus';
 

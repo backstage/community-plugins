@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { Tooltip } from '@material-ui/core';
-import * as React from 'react';
+import { default as React } from 'react';
 import { HistoryManager, URLParam } from '../../app/History';
 import { KialiIcon } from '../../config/KialiIcon';
 import { kialiStyle } from '../../styles/StyleUtils';

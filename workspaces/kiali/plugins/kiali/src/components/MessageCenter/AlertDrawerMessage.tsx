@@ -23,7 +23,7 @@ import {
 } from '@material-ui/core';
 import ExpandMoreRounded from '@material-ui/icons/ExpandMoreRounded';
 import moment from 'moment';
-import * as React from 'react';
+import { default as React } from 'react';
 import { MessageCenterActions } from '../../actions/MessageCenterActions';
 import { KialiIcon } from '../../config/KialiIcon';
 import { KialiAppState, KialiContext } from '../../store';

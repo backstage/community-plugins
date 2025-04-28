@@ -18,7 +18,6 @@ import {
   MissingAnnotationEmptyState,
   Page,
 } from '@backstage/core-components';
-import React from 'react';
 import { ANNOTATION_SUPPORTED } from '../../components/Router';
 
 export const KialiNoAnnotation = () => {

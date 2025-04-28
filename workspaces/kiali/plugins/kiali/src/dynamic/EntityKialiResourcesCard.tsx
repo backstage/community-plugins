@@ -21,8 +21,7 @@ import {
 } from '@backstage/core-components';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { Box } from '@material-ui/core';
-import * as React from 'react';
-import { useRef } from 'react';
+import { default as React, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { AppListPage } from '../pages/AppList/AppListPage';
 import { ServiceListPage } from '../pages/ServiceList/ServiceListPage';

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { EmptyState } from '@backstage/core-components';
-import React from 'react';
 
 const containerStyle = { width: '100%', height: '100%' };
 

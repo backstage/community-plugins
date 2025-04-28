@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
+import { default as React } from 'react';
 import { StatefulFilters } from '../../components/Filters/StatefulFilters';
 import { serverConfig } from '../../config';
 import { isGateway, isWaypoint } from '../../helpers/LabelFilterHelper';

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { Icon } from '@patternfly/react-core';
-import * as React from 'react';
+import { default as React } from 'react';
 import { kialiStyle } from '../../styles/StyleUtils';
 import { Status } from '../../types/Health';
 

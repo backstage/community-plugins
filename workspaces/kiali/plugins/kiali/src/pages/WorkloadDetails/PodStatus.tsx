@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { Tooltip } from '@material-ui/core';
-import React from 'react';
+import { default as React } from 'react';
 import { ValidationStack } from '../../components/Validations/ValidationStack';
 import { createIcon } from '../../config/KialiIcon';
 import {

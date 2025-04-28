@@ -16,7 +16,7 @@
 import { Content, InfoCard } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { CircularProgress } from '@material-ui/core';
-import * as React from 'react';
+import { default as React } from 'react';
 import { useAsyncFn, useDebounce } from 'react-use';
 import { DefaultSecondaryMasthead } from '../../components/DefaultSecondaryMasthead/DefaultSecondaryMasthead';
 import { KIALI_PROVIDER } from '../../components/Router';

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { Grid } from '@material-ui/core';
-import React from 'react';
 import { IstioConfigCard } from '../../components/IstioConfigCard/IstioConfigCard';
 import { DurationInSeconds } from '../../types/Common';
 import {

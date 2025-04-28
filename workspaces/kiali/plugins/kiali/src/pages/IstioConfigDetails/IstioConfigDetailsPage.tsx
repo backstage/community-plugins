@@ -17,7 +17,7 @@ import { Content } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { Grid } from '@material-ui/core';
 import jsYaml from 'js-yaml';
-import * as React from 'react';
+import { default as React } from 'react';
 import AceEditor from 'react-ace';
 import { useLocation } from 'react-router-dom';
 import {

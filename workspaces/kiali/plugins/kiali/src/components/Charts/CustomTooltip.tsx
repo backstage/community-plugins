@@ -20,7 +20,7 @@ import {
   ChartTooltip,
   ChartTooltipProps,
 } from '@patternfly/react-charts';
-import * as React from 'react';
+import { default as React } from 'react';
 import { VCDataPoint } from '../../types/VictoryChartInfo';
 import { toLocaleStringWithConditionalDate } from '../../utils/Date';
 

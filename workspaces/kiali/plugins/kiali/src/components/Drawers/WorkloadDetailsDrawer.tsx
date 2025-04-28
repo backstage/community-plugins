@@ -15,7 +15,7 @@
  */
 import { useApi } from '@backstage/core-plugin-api';
 import { CircularProgress } from '@material-ui/core';
-import * as React from 'react';
+import { default as React } from 'react';
 import { useAsyncFn, useDebounce } from 'react-use';
 import { WorkloadInfo } from '../../pages/WorkloadDetails/WorkloadInfo';
 import { kialiApiRef } from '../../services/Api';

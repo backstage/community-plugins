@@ -6,7 +6,7 @@
 /// <reference types="react" />
 
 import { BackstagePlugin } from '@backstage/core-plugin-api';
-import { JSX as JSX_2 } from 'react';
+import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { default as KialiIcon } from '@mui/icons-material/Troubleshoot';
 import { RouteRef } from '@backstage/core-plugin-api';
 import { SubRouteRef } from '@backstage/core-plugin-api';

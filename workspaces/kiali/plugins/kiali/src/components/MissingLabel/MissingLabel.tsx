@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { Tooltip } from '@material-ui/core';
-import * as React from 'react';
+import { default as React } from 'react';
 import { icons } from '../../config/Icons';
 import { KialiIcon } from '../../config/KialiIcon';
 import { serverConfig } from '../../config/ServerConfig';

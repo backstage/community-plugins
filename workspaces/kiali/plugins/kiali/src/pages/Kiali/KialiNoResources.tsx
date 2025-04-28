@@ -21,7 +21,6 @@ import {
   Page,
 } from '@backstage/core-components';
 import { Box } from '@material-ui/core';
-import React from 'react';
 import { ANNOTATION_SUPPORTED } from '../../components/Router';
 
 export const KialiNoResources = (props: { entity: Entity }) => {

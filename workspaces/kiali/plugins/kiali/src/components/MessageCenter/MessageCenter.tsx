@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { Badge, Button, Drawer } from '@material-ui/core';
-import * as React from 'react';
+import { default as React } from 'react';
 import { KialiIcon } from '../../config/KialiIcon';
 import { KialiAppState, KialiContext } from '../../store';
 import { kialiStyle } from '../../styles/StyleUtils';

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { List, ListItem, Tooltip, Typography } from '@material-ui/core';
-import React from 'react';
 import { Validation } from '../../components/Validations/Validation';
 import { KialiIcon } from '../../config/KialiIcon';
 import { kialiStyle } from '../../styles/StyleUtils';
