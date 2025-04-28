@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import '@patternfly/patternfly/utilities/Accessibility/accessibility.css';
 import '@patternfly/react-core/dist/styles/base-no-reset.css';
-import '@patternfly/patternfly/patternfly.css';
 
 import {
   configApiRef,
