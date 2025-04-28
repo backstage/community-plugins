@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -22,6 +21,8 @@ import {
   useAnnouncementsTranslation,
   useCatalogEntities,
 } from '@backstage-community/plugin-announcements-react';
+import useAsync from 'react-use/esm/useAsync';
+import { useMemo } from 'react';
 
 type OnBehalfTeamDropdownProps = {
   selectedTeam: string;
@@ -34,24 +35,17 @@ export default function OnBehalfTeamDropdown({
 }: OnBehalfTeamDropdownProps) {
   const { t } = useAnnouncementsTranslation();
   const identityApi = useApi(identityApiRef);
-  const [userOwns, setUserOwns] = React.useState<string[]>([]);
 
-  React.useEffect(() => {
-    const fetchIdentity = async () => {
-      try {
-        const identity = await identityApi.getBackstageIdentity();
-        setUserOwns([identity.userEntityRef]);
-      } catch (error) {
-        setUserOwns([]);
-      }
-    };
-    fetchIdentity();
+  const { value: userOwns } = useAsync(async () => {
+    const identity = await identityApi.getBackstageIdentity();
+    return [identity.userEntityRef, ...identity.ownershipEntityRefs];
   }, [identityApi]);
 
-  const { entities: teams, loading: teamsLoading } =
-    useCatalogEntities(userOwns);
+  const { entities: teams, loading: teamsLoading } = useCatalogEntities(
+    userOwns ?? [],
+  );
 
-  const teamOptions = React.useMemo(() => {
+  const teamOptions = useMemo(() => {
     return teams.flatMap(
       team =>
         team.relations
@@ -62,7 +56,6 @@ export default function OnBehalfTeamDropdown({
 
   return (
     <Autocomplete
-      // fullWidth
       value={selectedTeam || null}
       onChange={(_, newValue) => {
         onChange(typeof newValue === 'string' ? newValue : '');
