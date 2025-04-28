@@ -21,6 +21,7 @@ import {
 import { CatalogClient } from '@backstage/catalog-client';
 import { Entity } from '@backstage/catalog-model';
 import isEmpty from 'lodash/isEmpty';
+import { DateTime } from 'luxon';
 
 /**
  * Generates facts which indicate the completeness of entity metadata.
@@ -72,6 +73,7 @@ export const entityMetadataFactRetriever: FactRetriever = {
           hasDescription: Boolean(entity.metadata?.description),
           hasTags: !isEmpty(entity.metadata?.tags),
         },
+        timestamp: DateTime.now(),
       };
     });
   },
