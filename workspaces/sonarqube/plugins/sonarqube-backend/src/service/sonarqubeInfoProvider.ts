@@ -108,6 +108,10 @@ export interface SonarqubeInstanceConfig {
    * Access token to access the sonarqube instance as generated in user profile.
    */
   apiKey: string;
+  /**
+   * The type of API Key used in apiKey. Can be Bearer or Basic. Defaults to Basic if not set or invalid.
+   */
+  tokenKind?: string;
 }
 
 interface ComponentWrapper {
@@ -142,6 +146,7 @@ export class SonarqubeConfig {
         baseUrl: c.getString('baseUrl'),
         externalBaseUrl: c.getOptionalString('externalBaseUrl'),
         apiKey: c.getString('apiKey'),
+        tokenKind: c.getOptionalString('tokenKind'),
       })) || [];
 
     // load unnamed default config
@@ -154,6 +159,7 @@ export class SonarqubeConfig {
     const externalBaseUrl =
       sonarqubeConfig.getOptionalString('externalBaseUrl');
     const apiKey = sonarqubeConfig.getOptionalString('apiKey');
+    const tokenKind = sonarqubeConfig.getOptionalString('tokenKind');
 
     if (hasNamedDefault && (baseUrl || externalBaseUrl || apiKey)) {
       throw new Error(
@@ -171,12 +177,19 @@ export class SonarqubeConfig {
 
     if (unnamedAllPresent) {
       const unnamedInstanceConfig = [
-        { name: DEFAULT_SONARQUBE_NAME, baseUrl, externalBaseUrl, apiKey },
+        {
+          name: DEFAULT_SONARQUBE_NAME,
+          baseUrl,
+          externalBaseUrl,
+          apiKey,
+          tokenKind,
+        },
       ] as {
         name: string;
         baseUrl: string;
         externalBaseUrl?: string;
         apiKey: string;
+        tokenKind?: 'Bearer' | 'Basic';
       }[];
 
       return new SonarqubeConfig([
@@ -263,6 +276,7 @@ export class DefaultSonarqubeInfoProvider implements SonarqubeInfoProvider {
   private async getSupportedMetrics(
     instanceUrl: string,
     token: string,
+    tokenKind: 'Bearer' | 'Basic',
   ): Promise<string[]> {
     const metrics: string[] = [];
     let nextPage: number = 1;
@@ -271,7 +285,10 @@ export class DefaultSonarqubeInfoProvider implements SonarqubeInfoProvider {
       const result = await this.callApi<{
         metrics: Array<{ key: string }>;
         total: number;
-      }>(instanceUrl, 'api/metrics/search', token, { ps: 500, p: nextPage });
+      }>(instanceUrl, 'api/metrics/search', token, tokenKind, {
+        ps: 500,
+        p: nextPage,
+      });
       metrics.push(...(result?.metrics?.map(m => m.key) ?? []));
 
       if (result && metrics.length < result.total) {
@@ -296,14 +313,14 @@ export class DefaultSonarqubeInfoProvider implements SonarqubeInfoProvider {
     url: string,
     path: string,
     authToken: string,
+    tokenKind: 'Bearer' | 'Basic',
     query: { [key in string]: any },
   ): Promise<T | undefined> {
     const fullUrl = `${url}/${path}?${new URLSearchParams(query).toString()}`;
-
     const response = await fetch(fullUrl, {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${authToken}`,
+        Authorization: `${tokenKind} ${authToken}`,
       },
     });
     if (!response.ok) {
@@ -335,6 +352,15 @@ export class DefaultSonarqubeInfoProvider implements SonarqubeInfoProvider {
     };
   }
 
+  private static convertTokenKind(tokenKind?: string): 'Bearer' | 'Basic' {
+    // If a user really wants Bearer, they can pick it, since it was not the original default.
+    if (tokenKind?.toLowerCase() === 'bearer') {
+      return 'Bearer';
+    }
+    // The original default was Basic, so if not specified, or not valid, use Basic to maintain original behavior.
+    return 'Basic';
+  }
+
   /**
    * {@inheritDoc SonarqubeInfoProvider.getFindings}
    * @throws Error If configuration can't be retrieved.
@@ -344,15 +370,19 @@ export class DefaultSonarqubeInfoProvider implements SonarqubeInfoProvider {
     instanceName?: string;
   }): Promise<SonarqubeFindings | undefined> {
     const { componentKey, instanceName } = options;
-    const { baseUrl, apiKey } = this.config.getInstanceConfig({
+    const { baseUrl, apiKey, tokenKind } = this.config.getInstanceConfig({
       sonarqubeName: instanceName,
     });
+
+    const cleanTokenKind =
+      DefaultSonarqubeInfoProvider.convertTokenKind(tokenKind);
 
     // get component info to retrieve analysis date
     const component = await this.callApi<ComponentWrapper>(
       baseUrl,
       'api/components/show',
       apiKey,
+      cleanTokenKind,
       {
         component: componentKey,
       },
@@ -362,7 +392,11 @@ export class DefaultSonarqubeInfoProvider implements SonarqubeInfoProvider {
     }
 
     // select the metrics that are supported by the SonarQube instance
-    const supportedMetrics = await this.getSupportedMetrics(baseUrl, apiKey);
+    const supportedMetrics = await this.getSupportedMetrics(
+      baseUrl,
+      apiKey,
+      cleanTokenKind,
+    );
     const wantedMetrics: string[] = [
       'alert_status',
       'bugs',
@@ -387,6 +421,7 @@ export class DefaultSonarqubeInfoProvider implements SonarqubeInfoProvider {
       baseUrl,
       'api/measures/component',
       apiKey,
+      cleanTokenKind,
       {
         component: componentKey,
         metricKeys: metricsToQuery.join(','),
