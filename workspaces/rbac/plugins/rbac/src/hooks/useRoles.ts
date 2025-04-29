@@ -42,7 +42,11 @@ type RoleWithConditionalPoliciesCount = Role & {
 export const useRoles = (
   pollInterval?: number,
   useDefaultPermissions = false,
-  customDefaultPermissions?: Array<{permission: string; policy: string; effect: string}>,
+  customDefaultPermissions?: Array<{
+    permission: string;
+    policy: string;
+    effect: string;
+  }>,
 ): {
   loading: boolean;
   data: RolesData[];
@@ -225,6 +229,7 @@ export const useRoles = (
       permissionPolicies,
       canReadUsersAndGroups,
       customDefaultPermissions,
+      useDefaultPermissions,
     ],
   );
   const loading =
