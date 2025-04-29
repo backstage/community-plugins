@@ -24,11 +24,32 @@ export class EntityService {
     this.catalogApi = catalogApi;
   }
 
-  async fetchEntities(): Promise<Entity[]> {
-    const response = await this.catalogApi.getEntities({
-      filter: [{ kind: 'User' }, { kind: 'Group' }],
-    });
-    return response.items;
+  async fetchEntities(
+    searchTerm: string,
+    limit: number = 10,
+    offset: number = 0,
+  ): Promise<{ items: Entity[]; totalItems: number }> {
+    const queryOptions: any = {
+      filter: [{ kind: 'group' }, { kind: 'user' }],
+      limit: limit,
+      offset: offset,
+      orderFields: { field: 'metadata.name', order: 'asc' },
+    };
+
+    if (searchTerm && searchTerm.trim() !== '') {
+      queryOptions.fullTextFilter = {
+        term: searchTerm,
+        fields: [
+          'metadata.name',
+          'kind',
+          'spec.profile.displayName',
+          'metadata.title',
+        ],
+      };
+    }
+
+    const response = await this.catalogApi.queryEntities(queryOptions);
+    return { items: response.items, totalItems: response.totalItems };
   }
 
   async fetchGroupMembers(groupName: string): Promise<Entity[]> {

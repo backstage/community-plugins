@@ -68,3 +68,4 @@ yarn.lock                                                               @backsta
 /workspaces/tekton                                                      @backstage/community-plugins-maintainers  @caugello @cryptorodeo
 /workspaces/topology                                                    @backstage/community-plugins-maintainers  @christoph-jerolimov @ciiay @debsmita1 @divyanshiGupta
 /workspaces/multi-source-security-viewer                                @backstage/community-plugins-maintainers  @caugello @cryptorodeo
+/workspaces/wheel-of-names                                              @backstage/community-plugins-maintainers  @philippeckelintive @johannes-kirchner

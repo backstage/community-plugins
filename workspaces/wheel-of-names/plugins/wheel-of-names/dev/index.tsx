@@ -55,6 +55,25 @@ const mockUsers: Entity[] = [
   },
 ];
 
+// Add 20 more users for pagination tests
+for (let i = 1; i <= 20; i++) {
+  mockUsers.push({
+    apiVersion: 'backstage.io/v1alpha1',
+    kind: 'User',
+    metadata: {
+      name: `user-${i + 2}`,
+      uid: `user-${i + 2}`,
+      title: `Test User ${i}`,
+    },
+    spec: {
+      profile: {
+        displayName: `Test User ${i}`,
+        email: `user${i}@example.com`,
+      },
+    },
+  });
+}
+
 const mockGroups: Entity[] = [
   {
     apiVersion: 'backstage.io/v1alpha1',
@@ -75,6 +94,26 @@ const mockGroups: Entity[] = [
         type: 'hasMember',
         targetRef: 'user:default/john-doe',
       },
+      {
+        type: 'hasMember',
+        targetRef: 'user:default/jane-smith',
+      },
+      {
+        type: 'hasMember',
+        targetRef: 'user:default/user-3',
+      },
+      {
+        type: 'hasMember',
+        targetRef: 'user:default/user-4',
+      },
+      {
+        type: 'hasMember',
+        targetRef: 'user:default/user-5',
+      },
+      {
+        type: 'hasMember',
+        targetRef: 'user:default/user-6',
+      },
     ],
   },
 ];
@@ -88,36 +127,35 @@ const mockCatalogApi = {
       | { kind?: string; 'relations.memberOf'?: string[] }
       | Array<{ kind: string }>;
   }) => {
-    // Simplified filtering logic for the mock
     if (filter) {
       if (Array.isArray(filter)) {
-        // Handle array filter (used in fetchEntities)
         const kindFilters = filter.map(f => f.kind);
         const filteredEntities = [...mockUsers, ...mockGroups].filter(entity =>
           kindFilters.includes(entity.kind),
         );
         return { items: filteredEntities };
       }
-      // Handle object filter (used in fetchGroupMembers)
       if (filter.kind === 'User' && filter['relations.memberOf']) {
-        // Mock group membership filtering
         const groupRef = filter['relations.memberOf'][0];
         const groupName = groupRef.split('/')[1];
-        // Find users who are members of this group
-        const groupMembers = mockUsers.filter(user => {
-          // In real data, we'd check relations, but for mocking we'll just simulate
-          if (
-            groupName === 'engineering' &&
-            user.metadata.name === 'john-doe'
-          ) {
-            return true;
-          }
-          return false;
-        });
-        return { items: groupMembers };
+
+        // Return all members of the Engineering group
+        if (groupName === 'engineering') {
+          const memberRefs = mockGroups[0]
+            .relations!.filter(rel => rel.type === 'hasMember')
+            .map(rel => rel.targetRef);
+
+          const memberNames = memberRefs.map(ref => ref.split('/')[1]);
+
+          const groupMembers = mockUsers.filter(user =>
+            memberNames.includes(user.metadata.name),
+          );
+
+          return { items: groupMembers };
+        }
+        return { items: [] };
       }
     }
-    // Default: return all entities
     return { items: [...mockUsers, ...mockGroups] };
   },
   getEntityByRef: async (ref: any) => {
@@ -130,6 +168,30 @@ const mockCatalogApi = {
           e.metadata.name === name,
       ) || undefined
     );
+  },
+  queryEntities: async (query: any) => {
+    // All entities
+    const allEntities = [...mockUsers, ...mockGroups];
+
+    // Extract paging parameters
+    const limit = query.limit || 10;
+    const offset = query.offset || 0;
+
+    // Apply pagination
+    const paginatedItems = allEntities.slice(offset, offset + limit);
+
+    return {
+      items: paginatedItems,
+      totalItems: allEntities.length, // Changed from totalCount to totalItems
+      pageInfo: {
+        limit,
+        offset,
+        nextCursor:
+          offset + limit < allEntities.length
+            ? String(offset + limit)
+            : undefined,
+      },
+    };
   },
 };
 

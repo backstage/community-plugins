@@ -59,11 +59,10 @@ export const useParticipantsStyles = makeStyles(theme => ({
     alignItems: 'center',
   },
   selectedParticipantsContainer: {
-    maxHeight: '100vh',
     marginTop: theme.spacing(3),
   },
   selectedParticipantsList: {
-    maxHeight: '90vh',
+    maxHeight: '250px',
     overflow: 'auto',
     backgroundColor: theme.palette.background.paper,
   },
@@ -86,5 +85,54 @@ export const useParticipantsStyles = makeStyles(theme => ({
     display: 'flex',
     justifyContent: 'center',
     marginTop: theme.spacing(2),
+  },
+  searchResults: {
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2),
+    maxHeight: 300, // Begrenzte Höhe für Scrolling
+    overflow: 'hidden',
+  },
+  searchResultsHeader: {
+    padding: theme.spacing(1, 2),
+    backgroundColor: theme.palette.background.default,
+    position: 'sticky',
+    top: 0,
+    zIndex: 1,
+  },
+  searchResultsTitle: {
+    fontWeight: 'bold',
+  },
+  searchResultsList: {
+    maxHeight: 250, // Reduziere um Header-Höhe
+    overflowY: 'auto',
+    padding: 0,
+  },
+  noResults: {
+    padding: theme.spacing(2),
+    textAlign: 'center',
+  },
+  userAvatar: {
+    backgroundColor: theme.palette.primary.main,
+    marginRight: theme.spacing(1),
+  },
+  groupAvatar: {
+    backgroundColor: theme.palette.secondary.main,
+    marginRight: theme.spacing(1),
+  },
+  processingContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: theme.spacing(1),
+    marginTop: theme.spacing(1),
+  },
+  participantsContainer: {
+    marginTop: theme.spacing(2),
+  },
+  participantsTitle: {
+    marginBottom: theme.spacing(1),
+    fontWeight: 'bold',
+  },
+  alert: {
+    marginBottom: theme.spacing(2),
   },
 }));

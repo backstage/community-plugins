@@ -20,15 +20,16 @@ import {
   Paper,
   List,
   ListItem,
-  ListItemIcon,
   ListItemText,
   ListItemSecondaryAction,
   IconButton,
   Divider,
+  Avatar,
 } from '@material-ui/core';
 import PersonIcon from '@material-ui/icons/Person';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { useParticipantsStyles } from './Styles';
+import { Entity } from '@backstage/catalog-model';
 
 interface Participant {
   id: string;
@@ -44,12 +45,15 @@ interface ParticipantsListProps {
   isProcessing: boolean;
 }
 
-export const ParticipantsList = ({
-  participants,
-  onRemoveParticipant,
-  onClearAll,
-  isProcessing,
-}: ParticipantsListProps) => {
+export const ParticipantsList = (
+  {
+    participants,
+    onRemoveParticipant,
+    onClearAll,
+    isProcessing,
+  }: ParticipantsListProps,
+  entity: Entity,
+) => {
   const classes = useParticipantsStyles();
 
   const getParticipantClassName = (participant: Participant) => {
@@ -86,9 +90,15 @@ export const ParticipantsList = ({
           {participants.map(participant => (
             <React.Fragment key={participant.id}>
               <ListItem className={getParticipantClassName(participant)}>
-                <ListItemIcon>
-                  <PersonIcon className={classes.entityIcon} />
-                </ListItemIcon>
+                <Avatar
+                  className={
+                    entity.kind === 'Group'
+                      ? classes.groupAvatar
+                      : classes.userAvatar
+                  }
+                >
+                  <PersonIcon />
+                </Avatar>
                 <ListItemText
                   primary={participant.displayName || participant.name}
                   secondary={
