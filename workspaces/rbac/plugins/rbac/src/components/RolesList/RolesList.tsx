@@ -39,14 +39,18 @@ export const RolesList = () => {
   useLocationToast(setToastMessage);
   const [searchText, setSearchText] = useState<string>();
   const configApi = useApi(configApiRef);
-  
+
   // Read RBAC default permissions configuration
-  const useDefaultPermissions = configApi.getOptionalBoolean('permission.rbac.defaultUserAccess.enabled') || false;
+  const useDefaultPermissions =
+    configApi.getOptionalBoolean('permission.rbac.defaultUserAccess.enabled') ||
+    false;
   let defaultPermissions;
-  
+
   if (useDefaultPermissions) {
     // Read the permissions array
-    const defaultPermissionsConfig = configApi.getOptionalConfigArray('permission.rbac.defaultUserAccess.defaultPermissions');
+    const defaultPermissionsConfig = configApi.getOptionalConfigArray(
+      'permission.rbac.defaultUserAccess.defaultPermissions',
+    );
     if (defaultPermissionsConfig && defaultPermissionsConfig.length > 0) {
       // Using the detailed format with array of permissions
       defaultPermissions = defaultPermissionsConfig.map(item => ({

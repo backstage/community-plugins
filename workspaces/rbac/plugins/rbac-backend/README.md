@@ -254,7 +254,7 @@ permission:
   rbac:
     defaultUserAccess:
       enabled: true # Enable/disable the default access feature
-      defaultPermissions:  
+      defaultPermissions:
         - permission: catalog-entity # Resource type
           policy: read
           effect: allow
