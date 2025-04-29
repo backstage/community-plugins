@@ -53,33 +53,13 @@ import {
 } from '../types';
 import { getMembersCount } from './create-role-utils';
 
-export const getPermissionsArray = (
-  role: string,
-  policies: RoleBasedPolicy[] | undefined,
-  useDefaultPermissions = false,
-  customPermissions?: Array<{permission: string; policy: string; effect: string}>,
-): RoleBasedPolicy[] => {
-  if (!policies || policies?.length === 0 || !Array.isArray(policies)) {
-    return [];
-  }
-  
-  // Filter policies for the specific role with non-deny effect
-  const userPolicies = policies.filter(
-    (policy: RoleBasedPolicy) =>
-      policy.entityReference === role && policy.effect !== 'deny',
-  );
-  
-  // If user has no policies and default permissions are enabled, provide default access
-  if (userPolicies.length === 0 && useDefaultPermissions) {
-    return getDefaultPermissions(role, customPermissions);
-  }
-  
-  return userPolicies;
-};
-
 export const getDefaultPermissions = (
   role: string,
-  customPermissions?: Array<{permission: string; policy: string; effect: string}>,
+  customPermissions?: Array<{
+    permission: string;
+    policy: string;
+    effect: string;
+  }>,
 ): RoleBasedPolicy[] => {
   // If custom permissions are provided, use them
   if (customPermissions && customPermissions.length > 0) {
@@ -93,7 +73,7 @@ export const getDefaultPermissions = (
       },
     }));
   }
-  
+
   // Default fallback if no custom permissions are provided
   return [
     {
@@ -104,17 +84,54 @@ export const getDefaultPermissions = (
       metadata: {
         source: 'default',
       },
-    }
+    },
   ];
+};
+
+export const getPermissionsArray = (
+  role: string,
+  policies: RoleBasedPolicy[] | undefined,
+  useDefaultPermissions = false,
+  customPermissions?: Array<{
+    permission: string;
+    policy: string;
+    effect: string;
+  }>,
+): RoleBasedPolicy[] => {
+  if (!policies || policies?.length === 0 || !Array.isArray(policies)) {
+    return [];
+  }
+
+  // Filter policies for the specific role with non-deny effect
+  const userPolicies = policies.filter(
+    (policy: RoleBasedPolicy) =>
+      policy.entityReference === role && policy.effect !== 'deny',
+  );
+
+  // If user has no policies and default permissions are enabled, provide default access
+  if (userPolicies.length === 0 && useDefaultPermissions) {
+    return getDefaultPermissions(role, customPermissions);
+  }
+
+  return userPolicies;
 };
 
 export const getPermissions = (
   role: string,
   policies: RoleBasedPolicy[] | undefined,
   useDefaultPermissions = false,
-  customPermissions?: Array<{permission: string; policy: string; effect: string}>,
+  customPermissions?: Array<{
+    permission: string;
+    policy: string;
+    effect: string;
+  }>,
 ): number => {
-  return getPermissionsArray(role, policies, useDefaultPermissions, customPermissions).length;
+  return getPermissionsArray(
+    role,
+    policies,
+    useDefaultPermissions,
+    customPermissions,
+  ).length;
 };
 
 export const getMembersString = (res: {
@@ -262,6 +279,10 @@ export const getPermissionsData = (
   policies: RoleBasedPolicy[] | undefined,
   permissionPolicies: PluginPermissionMetaData[],
 ): PermissionsData[] => {
+  if (!policies || !Array.isArray(policies)) {
+    return [];
+  }
+
   const data = policies.reduce(
     (acc: PermissionsDataSet[], policy: RoleBasedPolicy) => {
       if (policy?.effect === 'allow') {
