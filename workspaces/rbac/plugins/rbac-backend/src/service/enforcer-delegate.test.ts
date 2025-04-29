@@ -925,22 +925,21 @@ describe('EnforcerDelegate', () => {
         );
 
       const secondGroupingPolicyWithOldRole = ['user:default/tim', oldRoleName];
-      const firstRolePolicy = [oldRoleName, 'catalog-entity', 'read', 'allow'];
-      const secondRolePolicy = [
+      const policyWithOldRole = [
         oldRoleName,
         'catalog-entity',
-        'write',
+        'delete',
         'allow',
       ];
       const expectedPolicies = [
-        policy,
-        [newRoleName, 'catalog-entity', 'read', 'allow'],
-        [newRoleName, 'catalog-entity', 'write', 'allow'],
+        secondPolicy,
+        [newRoleName, 'policy-entity', 'read', 'allow'],
+        [newRoleName, 'catalog-entity', 'delete', 'allow'],
       ];
 
       const enfDelegate = await createEnfDelegate(
-        [policy, firstRolePolicy, secondRolePolicy],
-        [groupingPolicy, secondGroupingPolicyWithOldRole],
+        [policy, secondPolicy, policyWithOldRole],
+        [groupingPolicy, secondGroupingPolicy, secondGroupingPolicyWithOldRole],
       );
 
       const groupingPolicyWithRenamedRole = ['user:default/tom', newRoleName];
@@ -961,9 +960,10 @@ describe('EnforcerDelegate', () => {
       );
 
       const storedPolicies = await enfDelegate.getGroupingPolicy();
-      expect(storedPolicies.length).toEqual(2);
-      expect(storedPolicies[0]).toEqual(groupingPolicyWithRenamedRole);
-      expect(storedPolicies[1]).toEqual(secondGroupingPolicyWithRenamedRole);
+      expect(storedPolicies.length).toEqual(3);
+      expect(storedPolicies[0]).toEqual(secondGroupingPolicy); // different role remained unchanged
+      expect(storedPolicies[1]).toEqual(groupingPolicyWithRenamedRole);
+      expect(storedPolicies[2]).toEqual(secondGroupingPolicyWithRenamedRole);
 
       expect(enfRemoveGroupingPoliciesSpy).toHaveBeenCalledWith([
         groupingPolicy,
