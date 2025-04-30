@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { ReactNode, SetStateAction, Dispatch } from 'react';
+
+import { useState, useMemo, useCallback } from 'react';
 
 import { BaseNode } from '@patternfly/react-topology';
 
@@ -21,21 +23,21 @@ import TopologySideBar from '../components/Topology/TopologySideBar/TopologySide
 import { TYPE_VM, TYPE_WORKLOAD } from '../const';
 
 export const useSideBar = (): [
-  React.ReactNode,
+  ReactNode,
   boolean,
   string,
-  React.Dispatch<React.SetStateAction<boolean>>,
-  React.Dispatch<React.SetStateAction<BaseNode | null>>,
+  Dispatch<SetStateAction<boolean>>,
+  Dispatch<SetStateAction<BaseNode | null>>,
   () => void,
 ] => {
   const { search } = window.location;
-  const [sideBarOpen, setSideBarOpen] = React.useState<boolean>(false);
-  const [selectedNode, setSelectedNode] = React.useState<BaseNode | null>(null);
+  const [sideBarOpen, setSideBarOpen] = useState<boolean>(false);
+  const [selectedNode, setSelectedNode] = useState<BaseNode | null>(null);
 
-  const params = React.useMemo(() => new URLSearchParams(search), [search]);
+  const params = useMemo(() => new URLSearchParams(search), [search]);
   const selectedId = params.get('selectedId') ?? '';
 
-  const removeSelectedIdParam = React.useCallback(() => {
+  const removeSelectedIdParam = useCallback(() => {
     params.delete('selectedId');
     const url = new URL(window.location.href);
     history.replaceState(

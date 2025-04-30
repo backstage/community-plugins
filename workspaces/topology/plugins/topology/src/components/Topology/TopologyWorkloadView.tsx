@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { memo } from 'react';
 
 import {
   ComponentFactory,
@@ -25,7 +25,7 @@ import TopologyComponentFactory from '../Graph/TopologyComponentFactory';
 import defaultLayoutFactory from '../layouts/defaultLayoutFactory';
 import TopologyViewWorkloadComponent from './TopologyViewWorkloadComponent';
 
-export const TopologyWorkloadView = React.memo(() => {
+export const TopologyWorkloadView = memo(() => {
   const controller = new Visualization();
   controller.registerLayoutFactory(defaultLayoutFactory);
   controller.registerComponentFactory(

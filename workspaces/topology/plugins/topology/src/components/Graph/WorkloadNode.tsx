@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { MouseEvent } from 'react';
+
+import { useContext } from 'react';
 
 import {
   GraphElement,
@@ -87,7 +89,7 @@ const InnerWorkloadNode = observer(
     const workloadData = data.data;
     const donutStatus = workloadData.podsData;
     const [hover, hoverRef] = useHover();
-    const { filters } = React.useContext(FilterContext);
+    const { filters } = useContext(FilterContext);
     const size = Math.min(width, height);
     const { radius, decoratorRadius } = calculateRadius(size);
     const cx = width / 2;
@@ -95,7 +97,7 @@ const InnerWorkloadNode = observer(
     const controller = useVisualizationController();
     const detailsLevel = controller.getGraph().getDetailsLevel();
     const showDetails = hover || detailsLevel !== ScaleDetailsLevel.low;
-    const onNodeSelect = (e: React.MouseEvent) => {
+    const onNodeSelect = (e: MouseEvent) => {
       const params = new URLSearchParams(window.location.search);
       params.set('selectedId', element.getId());
       history.replaceState(null, '', `?${params.toString()}`);

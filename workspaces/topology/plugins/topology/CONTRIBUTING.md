@@ -15,7 +15,7 @@ Then, to start the Backstage development session, you need to run the following 
 ```console
 cd workspaces/topology
 yarn install
-yarn dev
+yarn start
 ```
 
 You will notice that when running the Backstage development session with mock data, the Topology tab will not show any data. To view live data from a Kubernetes cluster using the toplology plugin, you will need to [add annotations to your Kubernetes resources](./README.md#Entity%20annotation%2Flabel). Once added, you should be able to see the data in the Topology tab.

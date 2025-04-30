@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { ReactElement } from 'react';
+
+import { useState, useRef, useMemo, memo } from 'react';
 
 import { ChartDonut } from '@patternfly/react-charts/victory';
 import { Tooltip } from '@patternfly/react-core';
@@ -48,9 +50,9 @@ interface PodStatusProps {
   data: any[];
   showTooltip?: boolean;
   title?: string;
-  titleComponent?: React.ReactElement;
+  titleComponent?: ReactElement;
   subTitle?: string;
-  subTitleComponent?: React.ReactElement;
+  subTitleComponent?: ReactElement;
 }
 
 const { podStatusInnerRadius, podStatusOuterRadius } = calculateRadius(130); // default value of size is 130
@@ -78,12 +80,12 @@ const PodStatus = ({
   subTitleComponent,
   data,
 }: PodStatusProps) => {
-  const [updateOnEnd, setUpdateOnEnd] = React.useState<boolean>(false);
+  const [updateOnEnd, setUpdateOnEnd] = useState<boolean>(false);
   const forceUpdate = useForceUpdate();
-  const prevVData = React.useRef<PodData[] | null>(null);
-  const chartTriggerRef = React.useRef<SVGGElement | null>(null);
+  const prevVData = useRef<PodData[] | null>(null);
+  const chartTriggerRef = useRef<SVGGElement | null>(null);
 
-  const vData = React.useMemo(() => {
+  const vData = useMemo(() => {
     const updateVData: PodData[] = podStatus.map((pod: any) => ({
       x: pod,
       y: _.sumBy(data, (d: any) => +(getPodStatus(d) === pod)) || 0,
@@ -118,7 +120,7 @@ const PodStatus = ({
   const truncSubTitle = subTitle
     ? _.truncate(subTitle, { length: MAX_POD_TITLE_LENGTH })
     : undefined;
-  const chartDonut = React.useMemo(() => {
+  const chartDonut = useMemo(() => {
     return (
       <ChartDonut
         ariaTitle={`${title}${subTitle && ` ${subTitle}`}`}
@@ -204,4 +206,4 @@ const PodStatus = ({
   return chartDonut;
 };
 
-export default React.memo((props: PodStatusProps) => <PodStatus {...props} />);
+export default memo((props: PodStatusProps) => <PodStatus {...props} />);
