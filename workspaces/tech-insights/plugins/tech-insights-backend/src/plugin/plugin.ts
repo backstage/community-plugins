@@ -103,6 +103,8 @@ export const techInsightsPlugin = createBackendPlugin({
         scheduler: coreServices.scheduler,
         auth: coreServices.auth,
         urlReader: coreServices.urlReader,
+        httpAuth: coreServices.httpAuth,
+        permissions: coreServices.permissions,
       },
       async init({
         config,
@@ -113,6 +115,8 @@ export const techInsightsPlugin = createBackendPlugin({
         scheduler,
         auth,
         urlReader,
+        httpAuth,
+        permissions,
       }) {
         const factRetrievers: FactRetrieverRegistration[] = Object.entries(
           addedFactRetrievers,
@@ -145,6 +149,8 @@ export const techInsightsPlugin = createBackendPlugin({
             ...context,
             config,
             logger,
+            permissions,
+            httpAuth,
           }),
         );
       },
