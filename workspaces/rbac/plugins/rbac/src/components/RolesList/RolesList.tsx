@@ -61,7 +61,7 @@ export const RolesList = () => {
       }));
     }
   }
-  const [searchText, setSearchText] = useState<string>();
+
   const { loading, data, retry, createRoleAllowed, createRoleLoading, error } =
     useRoles(undefined, useDefaultPermissions, defaultPermissions);
 
