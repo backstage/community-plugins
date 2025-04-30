@@ -1,5 +1,11 @@
 # @backstage-community/plugin-npm
 
+## 1.5.1
+
+### Patch Changes
+
+- c1bcca6: Update docs to install correct npm backend plugin
+
 ## 1.5.0
 
 ### Minor Changes
