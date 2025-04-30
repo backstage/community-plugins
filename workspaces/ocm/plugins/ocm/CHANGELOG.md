@@ -1,5 +1,13 @@
 ### Dependencies
 
+## 5.4.4
+
+### Patch Changes
+
+- 1ac3b94: remove @spotify/prettier-config direct dependency
+- Updated dependencies [1ac3b94]
+  - @backstage-community/plugin-ocm-common@3.8.3
+
 ## 5.4.3
 
 ### Patch Changes
