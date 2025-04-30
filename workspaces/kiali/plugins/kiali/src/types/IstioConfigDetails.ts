@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import type { Namespace } from '@backstage-community/plugin-kiali-common/types';
 import { AceOptions } from 'react-ace/types';
 import {
   HelpMessage,
@@ -22,7 +23,6 @@ import {
   ObjectValidation,
   References,
 } from './IstioObjects';
-import { Namespace } from './Namespace';
 import { ResourcePermissions } from './Permissions';
 
 export interface IstioConfigId {

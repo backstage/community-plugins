@@ -15,7 +15,8 @@
     "pluginId": "kiali",
     "pluginPackages": [
       "@backstage-community/plugin-kiali",
-      "@backstage-community/plugin-kiali-backend"
+      "@backstage-community/plugin-kiali-backend",
+      "@backstage-community/plugin-kiali-common"
     ]
   },
   "sideEffects": false,
@@ -29,6 +30,7 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
+    "@backstage-community/plugin-kiali-common": "workspace:^",
     "@backstage/catalog-model": "^1.7.3",
     "@backstage/core-components": "^0.17.1",
     "@backstage/core-plugin-api": "^1.10.6",

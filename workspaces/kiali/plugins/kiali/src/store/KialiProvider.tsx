@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { KIALI_PROVIDER } from '@backstage-community/plugin-kiali-common';
 import { Entity } from '@backstage/catalog-model';
 import { useApi } from '@backstage/core-plugin-api';
 import { CircularProgress } from '@material-ui/core';
@@ -28,7 +29,6 @@ import { IstioCertsInfoActions } from '../actions/IstioCertsInfoActions';
 import { IstioStatusActions } from '../actions/IstioStatusActions';
 import { MeshTlsActions } from '../actions/MeshTlsActions';
 import { ProviderActions } from '../actions/ProviderAction';
-import { KIALI_PROVIDER } from '../components/Router';
 import { setServerConfig } from '../config/ServerConfig';
 import { KialiHelper } from '../pages/Kiali/KialiHelper';
 import { KialiNoResources } from '../pages/Kiali/KialiNoResources';
