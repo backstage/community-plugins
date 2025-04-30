@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 6.2.3
+
+### Patch Changes
+
+- 9436665: Reduce rbac-backend requests to credentials API.
+
 ## 6.2.2
 
 ### Patch Changes
