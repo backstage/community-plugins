@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
+import type { ReactElement, ReactNode } from 'react';
 
 import {
   Node,
@@ -30,7 +30,7 @@ const getDecoratorForQuadrant = (
   centerY: number,
   nodeRadius: number,
   decoratorRadius: number,
-): React.ReactElement | null => {
+): ReactElement | null => {
   let x: number;
   let y: number;
   const deltaX = nodeRadius > 0 ? nodeRadius : 0;
@@ -71,7 +71,7 @@ export const getNodeDecorators = (
   centerY: number,
   nodeRadius: number, // -1 to use width/height
   decoratorRadius: number,
-): React.ReactNode => {
+): ReactNode => {
   return (
     <>
       {decorators.map(decorator =>

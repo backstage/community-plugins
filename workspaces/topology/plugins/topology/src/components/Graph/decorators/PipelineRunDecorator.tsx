@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useRef } from 'react';
 
 import { Tooltip, TooltipPosition } from '@patternfly/react-core';
 
@@ -39,7 +39,7 @@ export const PipelineRunDecorator = ({
   x: number;
   y: number;
 }) => {
-  const decoratorRef = React.useRef<SVGGElement | null>(null);
+  const decoratorRef = useRef<SVGGElement | null>(null);
 
   const latestPipelineRun = getLatestPipelineRun(
     pipelinesData.pipelineRuns,

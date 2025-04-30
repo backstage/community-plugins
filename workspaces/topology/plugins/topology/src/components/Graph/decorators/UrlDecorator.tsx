@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useRef } from 'react';
 
 import { Tooltip, TooltipPosition } from '@patternfly/react-core';
 
@@ -28,7 +28,7 @@ interface DefaultDecoratorProps {
 }
 
 export const UrlDecorator = ({ url, radius, x, y }: DefaultDecoratorProps) => {
-  const decoratorRef = React.useRef<SVGGElement | null>(null);
+  const decoratorRef = useRef<SVGGElement | null>(null);
 
   if (!url) {
     return null;

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { PropsWithChildren } from 'react';
 
 import { fireEvent, render, screen } from '@testing-library/react';
 
@@ -23,7 +23,7 @@ import PodLogsDownload from './PodLogsDownload';
 
 jest.mock('@mui/material', () => ({
   ...jest.requireActual('@mui/material'),
-  IconButton: ({ children, ...rest }: React.PropsWithChildren<any>) => (
+  IconButton: ({ children, ...rest }: PropsWithChildren<any>) => (
     <button {...rest}>{children}</button>
   ),
 }));

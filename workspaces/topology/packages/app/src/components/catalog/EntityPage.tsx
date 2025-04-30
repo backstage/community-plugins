@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 
@@ -96,7 +95,6 @@ const cicdContent = (
         <EntityGithubActionsContent />
       </EntitySwitch.Case>
      */}
-
     <EntitySwitch.Case>
       <EmptyState
         title="No CI/CD available for this entity"

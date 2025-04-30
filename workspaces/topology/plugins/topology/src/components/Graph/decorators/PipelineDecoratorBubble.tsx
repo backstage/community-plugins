@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
+import type { ComponentProps, ReactNode, FC } from 'react';
 
 import Decorator from './Decorator';
 
-type PipelineDecoratorBubbleProps = React.ComponentProps<typeof Decorator> & {
-  children: React.ReactNode;
+type PipelineDecoratorBubbleProps = ComponentProps<typeof Decorator> & {
+  children: ReactNode;
   radius: number;
   x: number;
   y: number;
 };
 
-const PipelineDecoratorBubble: React.FC<PipelineDecoratorBubbleProps> = ({
+const PipelineDecoratorBubble: FC<PipelineDecoratorBubbleProps> = ({
   children,
   radius,
   x,

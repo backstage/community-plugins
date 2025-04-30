@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { ReactNode } from 'react';
 
 import { V1Container } from '@kubernetes/client-node';
 import MenuItem from '@mui/material/MenuItem';
@@ -24,7 +24,7 @@ import ResourceName from '../../../../common/components/ResourceName';
 type ContainerSelectorType = {
   containersList: V1Container[];
   containerSelected: string;
-  onContainerChange: (event: SelectChangeEvent, child: React.ReactNode) => void;
+  onContainerChange: (event: SelectChangeEvent, child: ReactNode) => void;
 };
 
 export const ContainerSelector = ({

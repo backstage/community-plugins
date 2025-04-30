@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useLayoutEffect } from 'react';
 
 import { useTheme } from '@mui/material/styles';
 
@@ -42,7 +42,7 @@ export const TopologyComponent = () => {
   const {
     palette: { mode },
   } = useTheme();
-  React.useLayoutEffect(() => {
+  useLayoutEffect(() => {
     const htmlTagElement = document.documentElement;
 
     const scalprumStyles = Array.from(
