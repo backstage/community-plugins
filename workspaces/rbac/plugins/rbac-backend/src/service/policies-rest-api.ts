@@ -112,7 +112,7 @@ export class PoliciesServer {
       permission !== policyEntityReadPermission
     ) {
       throw new NotAllowedError(
-        `Only creadential principal with type 'user' permitted to modify permissions`,
+        `Only credential principal with type 'user' permitted to modify permissions`,
       );
     }
 
