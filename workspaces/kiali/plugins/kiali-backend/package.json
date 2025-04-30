@@ -13,7 +13,8 @@
     "pluginId": "kiali",
     "pluginPackages": [
       "@backstage-community/plugin-kiali",
-      "@backstage-community/plugin-kiali-backend"
+      "@backstage-community/plugin-kiali-backend",
+      "@backstage-community/plugin-kiali-common"
     ]
   },
   "exports": {
