@@ -1,5 +1,14 @@
 ### Dependencies
 
+## 5.5.4
+
+### Patch Changes
+
+- 1ac3b94: remove @spotify/prettier-config direct dependency
+- 5d032e5: Updated dependency `@openapitools/openapi-generator-cli` to `2.19.1`.
+- Updated dependencies [1ac3b94]
+  - @backstage-community/plugin-ocm-common@3.8.3
+
 ## 5.5.3
 
 ### Patch Changes
