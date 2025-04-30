@@ -325,7 +325,6 @@ export class RBACPermissionPolicy implements PermissionPolicy {
 
         this.auditor.createEvent({
           eventId: 'permission.debug.defaultAccess',
-          message: `Checking default permissions for ${permissionName}`,
           meta: permissionDebug,
         });
 
@@ -349,7 +348,6 @@ export class RBACPermissionPolicy implements PermissionPolicy {
         if (defaultPermission) {
           this.auditor.createEvent({
             eventId: 'permission.debug.defaultAccess.applied',
-            message: `Applied default permission for ${userEntityRef}`,
             meta: { defaultPermission, result: 'allow' },
           });
           status = defaultPermission.effect === 'allow';
