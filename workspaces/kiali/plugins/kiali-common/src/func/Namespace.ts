@@ -13,22 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ANNOTATION_SUPPORTED } from '@backstage-community/plugin-kiali-common';
-import {
-  Content,
-  MissingAnnotationEmptyState,
-  Page,
-} from '@backstage/core-components';
 
-export const KialiNoAnnotation = () => {
-  return (
-    <Page themeId="tool">
-      <Content>
-        <MissingAnnotationEmptyState
-          annotation={ANNOTATION_SUPPORTED}
-          readMoreUrl="https://github.com/backstage/community-plugins/blob/main/workspaces/kiali/README.md"
-        />
-      </Content>
-    </Page>
-  );
+import { Namespace } from '../types';
+
+/** @public */
+export const namespaceFromString = (namespace: string) => ({ name: namespace });
+
+/** @public */
+export const namespacesFromString = (namespaces: string) => {
+  return namespaces.split(',').map(name => namespaceFromString(name));
 };
+
+/** @public */
+export const namespacesToString = (namespaces: Namespace[]) =>
+  namespaces.map(namespace => namespace.name).join(',');

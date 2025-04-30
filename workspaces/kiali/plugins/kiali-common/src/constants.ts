@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2021 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,22 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ANNOTATION_SUPPORTED } from '@backstage-community/plugin-kiali-common';
-import {
-  Content,
-  MissingAnnotationEmptyState,
-  Page,
-} from '@backstage/core-components';
 
-export const KialiNoAnnotation = () => {
-  return (
-    <Page themeId="tool">
-      <Content>
-        <MissingAnnotationEmptyState
-          annotation={ANNOTATION_SUPPORTED}
-          readMoreUrl="https://github.com/backstage/community-plugins/blob/main/workspaces/kiali/README.md"
-        />
-      </Content>
-    </Page>
-  );
-};
+/** @public */
+export const pluginId = 'kiali';
+/** @public */
+export const KIALI_APP = 'kiali.io/id';
+/** @public */
+export const KIALI_NAMESPACE = 'kiali.io/namespace';
+/** @public */
+export const KIALI_PROVIDER = 'kiali.io/provider';
+/** @public */
+export const KIALI_LABEL_SELECTOR_QUERY_ANNOTATION = 'kiali.io/selector';
+
+/** @public */
+export const ANNOTATION_SUPPORTED = [KIALI_NAMESPACE, KIALI_PROVIDER];
