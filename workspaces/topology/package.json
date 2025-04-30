@@ -8,7 +8,7 @@
   "scripts": {
     "tsc": "tsc",
     "tsc:full": "tsc --skipLibCheck true --incremental false",
-    "dev": "yarn workspaces foreach -A --include backend --include app --parallel -v -i run start",
+    "start": "backstage-cli repo start",
     "build:all": "backstage-cli repo build --all",
     "build:api-reports": "yarn build:api-reports:only",
     "build:api-reports:only": "backstage-repo-tools api-reports -o ae-wrong-input-file-type,ae-undocumented --validate-release-tags",
@@ -34,9 +34,9 @@
     "directory": "workspaces/topology"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.30.0",
+    "@backstage/cli": "^0.32.0",
     "@backstage/e2e-test-utils": "^0.1.1",
-    "@backstage/repo-tools": "^0.13.0",
+    "@backstage/repo-tools": "^0.13.2",
     "@changesets/cli": "^2.27.1",
     "knip": "^5.27.4",
     "node-gyp": "^9.0.0",

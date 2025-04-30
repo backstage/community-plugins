@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
+import type { PropsWithChildren } from 'react';
 
 import { V1OwnerReference } from '@kubernetes/client-node';
 import { Timestamp, TimestampFormat } from '@patternfly/react-core';
@@ -25,7 +25,7 @@ import TopologySideBarDetailsItem from './TopologySideBarDetailsItem';
 const TopologyWorkloadDetails = ({
   resource,
   children,
-}: React.PropsWithChildren<{ resource: K8sWorkloadResource }>) => {
+}: PropsWithChildren<{ resource: K8sWorkloadResource }>) => {
   return (
     <dl style={{ maxWidth: '100%' }}>
       <TopologySideBarDetailsItem label="Name">

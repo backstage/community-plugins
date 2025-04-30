@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import { CodeSnippet } from '@backstage/core-components';
 
 import { V1Ingress } from '@kubernetes/client-node';

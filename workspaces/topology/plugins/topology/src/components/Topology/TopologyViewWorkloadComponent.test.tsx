@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { FC } from 'react';
 
 import { usePermission } from '@backstage/plugin-permission-react';
 
@@ -54,7 +54,7 @@ jest.mock('@patternfly/react-topology', () => ({
   useEventListener: () => {},
   action: () => {},
   createTopologyControlButtons: () => {},
-  observer: (a: React.FC) => a,
+  observer: (a: FC) => a,
   VisualizationSurface: () => <div>VisualizationSurface</div>,
   TopologyView: () => <div>TopologyView</div>,
 }));

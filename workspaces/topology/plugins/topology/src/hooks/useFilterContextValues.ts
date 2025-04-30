@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
+import { useState } from 'react';
 
 import { TOPOLOGY_FILTERS } from '../const';
 import { DisplayFilters, FilterContextType } from '../types/types';
 
 export const useFilterContextValues = (): FilterContextType => {
-  const [filters, setFilters] =
-    React.useState<DisplayFilters>(TOPOLOGY_FILTERS);
+  const [filters, setFilters] = useState<DisplayFilters>(TOPOLOGY_FILTERS);
 
   return { filters, setAppliedTopologyFilters: setFilters };
 };
