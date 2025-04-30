@@ -1,5 +1,11 @@
 # @backstage-community/plugin-multi-source-security-viewer
 
+## 0.3.2
+
+### Patch Changes
+
+- d346a7e: Include Azure Pipelines pre-requisite link
+
 ## 0.3.1
 
 ### Patch Changes
