@@ -40,14 +40,15 @@ export const RolesList = () => {
   const [searchText, setSearchText] = useState<string>();
   const configApi = useApi(configApiRef);
 
-  // Read RBAC default permissions configuration
-  const useDefaultPermissions =
-    configApi.getOptionalBoolean('permission.rbac.defaultUserAccess.enabled') ||
-    false;
+  // Get the raw boolean value without strict comparison
+  const useDefaultPermissions = configApi.getOptionalBoolean(
+    'permission.rbac.defaultUserAccess.enabled',
+  );
+
   let defaultPermissions;
 
   if (useDefaultPermissions) {
-    // Read the permissions array
+    // Only load permissions if enabled
     const defaultPermissionsConfig = configApi.getOptionalConfigArray(
       'permission.rbac.defaultUserAccess.defaultPermissions',
     );
