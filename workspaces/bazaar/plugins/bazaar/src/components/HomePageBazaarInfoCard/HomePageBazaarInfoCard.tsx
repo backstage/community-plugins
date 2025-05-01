@@ -74,12 +74,14 @@ type Props = {
   initProject: BazaarProject;
   handleClose: () => void;
   initEntity: Entity;
+  allCatalogEntities?: Entity[] | null;
 };
 
 export const HomePageBazaarInfoCard = ({
   initProject,
   handleClose,
   initEntity,
+  allCatalogEntities = null,
 }: Props) => {
   const classes = useStyles();
   const entityLink = useRouteRef(entityRouteRef);
@@ -93,7 +95,12 @@ export const HomePageBazaarInfoCard = ({
   const [isMember, setIsMember] = useState(false);
 
   const [catalogEntities, fetchCatalogEntities] = useAsyncFn(async () => {
-    const entities = await fetchCatalogItems(catalogApi);
+    let entities = [];
+    if (allCatalogEntities) {
+      entities = allCatalogEntities;
+    } else {
+      entities = await fetchCatalogItems(catalogApi);
+    }
     const bazaarProjects = await bazaarApi.getProjects();
     const bazaarLinkedRefs: string[] = bazaarProjects.data
       .filter((entity: any) => entity.entity_ref !== null)
