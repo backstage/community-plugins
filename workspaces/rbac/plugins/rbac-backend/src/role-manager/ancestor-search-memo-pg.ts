@@ -26,14 +26,6 @@ export class AncestorSearchMemoPG extends AncestorSearchMemo<Relation> {
     super();
   }
 
-  async doesRelationTableExist(): Promise<boolean> {
-    try {
-      return await this.catalogDBClient.schema.hasTable('relations');
-    } catch (error) {
-      return false;
-    }
-  }
-
   async getAllASMGroups(): Promise<Relation[]> {
     try {
       const rows = await this.catalogDBClient('relations')

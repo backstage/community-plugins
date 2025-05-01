@@ -17,7 +17,7 @@ import type { AuthService } from '@backstage/backend-plugin-api';
 import type { CatalogApi } from '@backstage/catalog-client';
 import type { Entity } from '@backstage/catalog-model';
 
-import { AncestorSearchMemo, Relation } from './ancestor-search-memo';
+import { AncestorSearchMemo } from './ancestor-search-memo';
 
 export class AncestorSearchMemoSQLite extends AncestorSearchMemo<Entity> {
   constructor(
@@ -85,32 +85,6 @@ export class AncestorSearchMemoSQLite extends AncestorSearchMemo<Entity> {
       if (super.isAcyclic()) {
         this.traverse(parentGroup, allGroups, depth);
       }
-    }
-  }
-
-  traverseRelations(
-    relation: Relation,
-    allRelations: Relation[],
-    current_depth: number,
-  ) {
-    // We add one to the maxDepth here because the user is considered the starting node
-    if (this.maxDepth !== undefined && current_depth >= this.maxDepth + 1) {
-      return;
-    }
-    const depth = current_depth + 1;
-
-    if (!super.hasEntityRef(relation.source_entity_ref)) {
-      super.setNode(relation.source_entity_ref);
-    }
-
-    super.setEdge(relation.target_entity_ref, relation.source_entity_ref);
-
-    const parentGroup = allRelations.find(
-      g => g.source_entity_ref === relation.target_entity_ref,
-    );
-
-    if (parentGroup && super.isAcyclic()) {
-      this.traverseRelations(parentGroup, allRelations, depth);
     }
   }
 
