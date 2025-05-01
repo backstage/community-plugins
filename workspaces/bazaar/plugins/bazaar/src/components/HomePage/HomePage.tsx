@@ -17,6 +17,7 @@
 import { Header, RoutedTabs } from '@backstage/core-components';
 import { SortView } from '../SortView';
 import { About } from '../About';
+import { Entity } from '@backstage/catalog-model';
 
 /** @public */
 export type HomePageProps = {
@@ -24,16 +25,29 @@ export type HomePageProps = {
   subtitle?: string;
   fullWidth?: boolean;
   fullHeight?: boolean;
+  catalogEntities?: Entity[] | null;
 };
 
 export const HomePage = (props: HomePageProps) => {
-  const { title, subtitle, fullWidth, fullHeight } = props;
+  const {
+    title,
+    subtitle,
+    fullWidth,
+    fullHeight,
+    catalogEntities = null,
+  } = props;
 
   const tabContent = [
     {
       path: '/',
       title: 'Home',
-      children: <SortView fullWidth={fullWidth} fullHeight={fullHeight} />,
+      children: (
+        <SortView
+          fullWidth={fullWidth}
+          fullHeight={fullHeight}
+          allCatalogEntities={catalogEntities}
+        />
+      ),
     },
     {
       path: '/about',
