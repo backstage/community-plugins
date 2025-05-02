@@ -52,7 +52,7 @@ yarn.lock                                                               @backsta
 /workspaces/pingidentity                                                @backstage/community-plugins-maintainers  @jessicajhee
 /workspaces/playlist                                                    @backstage/community-plugins-maintainers  @kuangp
 /workspaces/quay                                                        @backstage/community-plugins-maintainers  @caugello @cryptorodeo
-/workspaces/rbac                                                        @backstage/community-plugins-maintainers  @AndrienkoAleksandr @christoph-jerolimov @divyanshiGupta @PatAKnight
+/workspaces/rbac                                                        @backstage/community-plugins-maintainers  @AndrienkoAleksandr @christoph-jerolimov @divyanshiGupta @PatAKnight @dzemanov
 /workspaces/redhat-argocd                                               @backstage/community-plugins-maintainers  @caugello @cryptorodeo
 /workspaces/redhat-resource-optimization                                @backstage/community-plugins-maintainers  @jkilzi @preetiw @christoph-jerolimov
 /workspaces/report-portal                                               @backstage/community-plugins-maintainers  @yashoswalyo @deshmukhmayur @riginoommen
