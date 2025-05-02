@@ -14,19 +14,16 @@
  * limitations under the License.
  */
 import { Entity } from '@backstage/catalog-model';
-import {
-  AZURE_DEVOPS_BUILD_DEFINITION_ANNOTATION,
-  AZURE_DEVOPS_REPO_ANNOTATION,
-} from '@backstage-community/plugin-azure-devops-common';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
+import { getAnnotationValuesFromEntity } from '../../../../utils';
 
 export const EmptyBuildResults = ({ entity }: { entity?: Entity }) => {
-  const buildDefinitionName =
-    entity?.metadata?.annotations?.[AZURE_DEVOPS_BUILD_DEFINITION_ANNOTATION] ??
-    'unknown';
-  const repoName =
-    entity?.metadata?.annotations?.[AZURE_DEVOPS_REPO_ANNOTATION] ?? 'unknown';
+  const annotations = entity
+    ? getAnnotationValuesFromEntity(entity)
+    : undefined;
+  const repoName = annotations?.repo;
+  const buildDefinition = annotations?.definition;
 
   return (
     <Box padding={2}>
@@ -34,8 +31,9 @@ export const EmptyBuildResults = ({ entity }: { entity?: Entity }) => {
         No records to display
       </Typography>
       <Typography component="p" align="center" variant="body2">
-        The repo name "{repoName}" or build definition "{buildDefinitionName}"
-        you have specified could not be found.
+        No builds could be found with repository name{' '}
+        {repoName ?? '(no value provided)'} or build definition{' '}
+        {buildDefinition ?? '(no value provided)'}.
       </Typography>
     </Box>
   );
