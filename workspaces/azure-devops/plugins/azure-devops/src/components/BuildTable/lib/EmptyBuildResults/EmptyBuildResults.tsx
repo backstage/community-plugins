@@ -20,7 +20,6 @@ import {
 } from '@backstage-community/plugin-azure-devops-common';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
-import React from 'react';
 
 export const EmptyBuildResults = ({ entity }: { entity?: Entity }) => {
   const buildDefinitionName =
