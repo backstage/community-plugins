@@ -1,5 +1,17 @@
 # @backstage-community/plugin-manage
 
+## 0.2.0
+
+### Minor Changes
+
+- d8b448d: Remove extra content padding on manage page
+
+### Patch Changes
+
+- d8b448d: Bump backastage dependencies to 1.37.0
+- Updated dependencies [d8b448d]
+  - @backstage-community/plugin-manage-react@0.1.2
+
 ## 0.1.1
 
 ### Patch Changes
