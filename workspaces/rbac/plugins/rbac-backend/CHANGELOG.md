@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 6.2.4
+
+### Patch Changes
+
+- 298b1d4: Avoid unnecessary query to check 'relations' table in the role manager
+
 ## 6.2.3
 
 ### Patch Changes
