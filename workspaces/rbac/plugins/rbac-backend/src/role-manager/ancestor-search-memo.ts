@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2025 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { AuthService, LoggerService } from '@backstage/backend-plugin-api';
-import type { CatalogApi } from '@backstage/catalog-client';
+import type { LoggerService } from '@backstage/backend-plugin-api';
 import type { Entity } from '@backstage/catalog-model';
 
 import { alg, Graph } from '@dagrejs/graphlib';
-import { Knex } from 'knex';
 
 export interface Relation {
   source_entity_ref: string;
@@ -31,29 +29,11 @@ export type ASMGroup = Relation | Entity;
 // It supports search group entity reference link in the graph.
 // Also AncestorSearchMemo supports detection cycle dependencies between groups in the graph.
 //
-export class AncestorSearchMemo {
-  private graph: Graph;
+export abstract class AncestorSearchMemo<T extends ASMGroup> {
+  protected graph: Graph;
 
-  private catalogApi: CatalogApi;
-  private catalogDBClient: Knex;
-  private auth: AuthService;
-
-  private userEntityRef: string;
-  private maxDepth?: number;
-
-  constructor(
-    userEntityRef: string,
-    catalogApi: CatalogApi,
-    catalogDBClient: Knex,
-    auth: AuthService,
-    maxDepth?: number,
-  ) {
+  constructor() {
     this.graph = new Graph({ directed: true });
-    this.userEntityRef = userEntityRef;
-    this.catalogApi = catalogApi;
-    this.catalogDBClient = catalogDBClient;
-    this.auth = auth;
-    this.maxDepth = maxDepth;
   }
 
   isAcyclic(): boolean {
@@ -89,145 +69,15 @@ export class AncestorSearchMemo {
     return this.graph.nodes();
   }
 
-  async doesRelationTableExist(): Promise<boolean> {
-    try {
-      return await this.catalogDBClient.schema.hasTable('relations');
-    } catch (error) {
-      return false;
-    }
-  }
-
-  async getAllGroups(): Promise<ASMGroup[]> {
-    const { token } = await this.auth.getPluginRequestToken({
-      onBehalfOf: await this.auth.getOwnServiceCredentials(),
-      targetPluginId: 'catalog',
-    });
-
-    const { items } = await this.catalogApi.getEntities(
-      {
-        filter: { kind: 'Group' },
-        fields: ['metadata.name', 'metadata.namespace', 'spec.parent'],
-      },
-      { token },
-    );
-    return items;
-  }
-
-  async getAllRelations(): Promise<ASMGroup[]> {
-    try {
-      const rows = await this.catalogDBClient('relations')
-        .select('source_entity_ref', 'target_entity_ref')
-        .where('type', 'childOf');
-      return rows;
-    } catch (error) {
-      return [];
-    }
-  }
-
-  async getUserGroups(): Promise<ASMGroup[]> {
-    const { token } = await this.auth.getPluginRequestToken({
-      onBehalfOf: await this.auth.getOwnServiceCredentials(),
-      targetPluginId: 'catalog',
-    });
-    const { items } = await this.catalogApi.getEntities(
-      {
-        filter: { kind: 'Group', 'relations.hasMember': this.userEntityRef },
-        fields: ['metadata.name', 'metadata.namespace', 'spec.parent'],
-      },
-      { token },
-    );
-    return items;
-  }
-
-  async getUserRelations(): Promise<ASMGroup[]> {
-    try {
-      const rows = await this.catalogDBClient('relations')
-        .select('source_entity_ref', 'target_entity_ref')
-        .where({ type: 'memberOf', source_entity_ref: this.userEntityRef });
-      return rows;
-    } catch (error) {
-      return [];
-    }
-  }
-
-  traverseGroups(
-    memo: AncestorSearchMemo,
-    group: Entity,
-    allGroups: Entity[],
+  abstract traverse(
+    relation: T,
+    allRelations: T[],
     current_depth: number,
-  ) {
-    const groupName = `group:${group.metadata.namespace?.toLocaleLowerCase(
-      'en-US',
-    )}/${group.metadata.name.toLocaleLowerCase('en-US')}`;
-    if (!memo.hasEntityRef(groupName)) {
-      memo.setNode(groupName);
-    }
+  ): void;
 
-    if (this.maxDepth !== undefined && current_depth >= this.maxDepth) {
-      return;
-    }
-    const depth = current_depth + 1;
+  abstract buildUserGraph(): Promise<void>;
 
-    const parent = group.spec?.parent as string;
-    const parentGroup = allGroups.find(g => g.metadata.name === parent);
+  abstract getUserASMGroups(): Promise<T[]>;
 
-    if (parentGroup) {
-      const parentName = `group:${group.metadata.namespace?.toLocaleLowerCase(
-        'en-US',
-      )}/${parentGroup.metadata.name.toLocaleLowerCase('en-US')}`;
-      memo.setEdge(parentName, groupName);
-
-      if (memo.isAcyclic()) {
-        this.traverseGroups(memo, parentGroup, allGroups, depth);
-      }
-    }
-  }
-
-  traverseRelations(
-    memo: AncestorSearchMemo,
-    relation: Relation,
-    allRelations: Relation[],
-    current_depth: number,
-  ) {
-    // We add one to the maxDepth here because the user is considered the starting node
-    if (this.maxDepth !== undefined && current_depth >= this.maxDepth + 1) {
-      return;
-    }
-    const depth = current_depth + 1;
-
-    if (!memo.hasEntityRef(relation.source_entity_ref)) {
-      memo.setNode(relation.source_entity_ref);
-    }
-
-    memo.setEdge(relation.target_entity_ref, relation.source_entity_ref);
-
-    const parentGroup = allRelations.find(
-      g => g.source_entity_ref === relation.target_entity_ref,
-    );
-
-    if (parentGroup && memo.isAcyclic()) {
-      this.traverseRelations(memo, parentGroup, allRelations, depth);
-    }
-  }
-
-  async buildUserGraph(memo: AncestorSearchMemo) {
-    if (await this.doesRelationTableExist()) {
-      const userRelations = await this.getUserRelations();
-      const allRelations = await this.getAllRelations();
-      userRelations.forEach(group =>
-        this.traverseRelations(
-          memo,
-          group as Relation,
-          allRelations as Relation[],
-          0,
-        ),
-      );
-    } else {
-      const userGroups = await this.getUserGroups();
-      const allGroups = await this.getAllGroups();
-      userGroups.forEach(group =>
-        this.traverseGroups(memo, group as Entity, allGroups as Entity[], 0),
-      );
-    }
-  }
+  abstract getAllASMGroups(): Promise<T[]>;
 }
