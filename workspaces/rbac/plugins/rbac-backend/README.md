@@ -241,3 +241,31 @@ More information about group hierarchy can be found in the doc: [Group hierarchy
 ### Optional RBAC provider module support
 
 We also include the ability to create and load in RBAC backend plugin modules that can be used to make connections to third part access management tools. For more information, consult the [RBAC Providers documentation](./docs/providers.md).
+
+### Configure default permissions
+
+By default, users who don't have any permissions assigned won't be able to access any resources. However, you can configure default permissions that apply to such users, ensuring a minimum level of access for everyone.
+
+#### Detailed format (multiple specific permissions):
+
+```YAML
+permission:
+  enabled: true
+  rbac:
+    defaultUserAccess:
+      enabled: true # Enable/disable the default access feature
+      defaultPermissions:
+        - permission: catalog-entity # Resource type
+          policy: read
+          effect: allow
+        - permission: scaffolder.template.step.read # Permission name
+          policy: read
+          effect: allow
+    admin:
+      users:
+        - name: user:default/alice
+```
+
+The detailed format allows you to specify any permission from the [permissions documentation](./docs/permissions.md), giving you fine-grained control over default access. You can use either resource types (e.g., `catalog-entity`) or permission names (e.g., `catalog.entity.read`).
+
+Note: When `defaultUserAccess.enabled` is set to false, no default permissions will be applied, and users will need explicit permission assignments to access resources.

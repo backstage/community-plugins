@@ -30,14 +30,40 @@ import { useToast } from '../ToastContext';
 import DeleteRoleDialog from './DeleteRoleDialog';
 import { columns } from './RolesListColumns';
 import { RolesListToolbar } from './RolesListToolbar';
+import { useApi } from '@backstage/core-plugin-api';
+import { configApiRef } from '@backstage/core-plugin-api';
 
 export const RolesList = () => {
   const { toastMessage, setToastMessage } = useToast();
   const { openDialog, setOpenDialog, deleteComponent } = useDeleteDialog();
   useLocationToast(setToastMessage);
   const [searchText, setSearchText] = useState<string>();
+  const configApi = useApi(configApiRef);
+
+  // Get the raw boolean value without strict comparison
+  const useDefaultPermissions = configApi.getOptionalBoolean(
+    'permission.rbac.defaultUserAccess.enabled',
+  );
+
+  let defaultPermissions;
+
+  if (useDefaultPermissions) {
+    // Only load permissions if enabled
+    const defaultPermissionsConfig = configApi.getOptionalConfigArray(
+      'permission.rbac.defaultUserAccess.defaultPermissions',
+    );
+    if (defaultPermissionsConfig && defaultPermissionsConfig.length > 0) {
+      // Using the detailed format with array of permissions
+      defaultPermissions = defaultPermissionsConfig.map(item => ({
+        permission: item.getString('permission'),
+        policy: item.getString('policy'),
+        effect: item.getString('effect') || 'allow',
+      }));
+    }
+  }
+
   const { loading, data, retry, createRoleAllowed, createRoleLoading, error } =
-    useRoles();
+    useRoles(undefined, useDefaultPermissions, defaultPermissions);
 
   const closeDialog = () => {
     setOpenDialog(false);

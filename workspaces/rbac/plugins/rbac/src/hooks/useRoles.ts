@@ -41,6 +41,12 @@ type RoleWithConditionalPoliciesCount = Role & {
 
 export const useRoles = (
   pollInterval?: number,
+  useDefaultPermissions = false,
+  customDefaultPermissions?: Array<{
+    permission: string;
+    policy: string;
+    effect: string;
+  }>,
 ): {
   loading: boolean;
   data: RolesData[];
@@ -165,6 +171,8 @@ export const useRoles = (
               const permissions = getPermissions(
                 role.name,
                 policies as RoleBasedPolicy[],
+                useDefaultPermissions,
+                customDefaultPermissions,
               );
 
               let accPls = role.accessiblePlugins;
@@ -176,6 +184,8 @@ export const useRoles = (
                 const pls = getPermissionsArray(
                   role.name,
                   policies as RoleBasedPolicy[],
+                  useDefaultPermissions,
+                  customDefaultPermissions,
                 ).map(
                   po =>
                     getPluginInfo(
@@ -218,6 +228,8 @@ export const useRoles = (
       permissionPoliciesError,
       permissionPolicies,
       canReadUsersAndGroups,
+      customDefaultPermissions,
+      useDefaultPermissions,
     ],
   );
   const loading =

@@ -59,6 +59,12 @@ import { PluginPermissionMetadataCollector } from '../service/plugin-endpoints';
 
 export class RBACPermissionPolicy implements PermissionPolicy {
   private readonly superUserList?: string[];
+  private readonly defaultUserAccessEnabled: boolean;
+  private readonly defaultPermissions: Array<{
+    permission: string;
+    policy: string;
+    effect: string;
+  }>;
 
   public static async build(
     logger: LoggerService,
@@ -90,6 +96,51 @@ export class RBACPermissionPolicy implements PermissionPolicy {
     const conditionalPoliciesFile = configApi.getOptionalString(
       'permission.rbac.conditionalPoliciesFile',
     );
+
+    // Read default user access configuration - properly handle Boolean values
+    const defaultUserAccessEnabled = configApi.getOptionalBoolean(
+      'permission.rbac.defaultUserAccess.enabled',
+    );
+    // Explicitly log the actual config value to help diagnose issues
+    logger.info(
+      `Default user access config value: ${defaultUserAccessEnabled}`,
+    );
+    logger.info(
+      `Default user access enabled: ${Boolean(defaultUserAccessEnabled)}`,
+    );
+
+    // Read default permissions if enabled
+    const defaultPermissions: Array<{
+      permission: string;
+      policy: string;
+      effect: string;
+    }> = [];
+
+    if (defaultUserAccessEnabled) {
+      // Only proceed if explicitly enabled
+      const defaultPermissionsConfig = configApi.getOptionalConfigArray(
+        'permission.rbac.defaultUserAccess.defaultPermissions',
+      );
+
+      if (defaultPermissionsConfig && defaultPermissionsConfig.length > 0) {
+        for (const item of defaultPermissionsConfig) {
+          defaultPermissions.push({
+            permission: item.getString('permission'),
+            policy: item.getString('policy'),
+            effect: item.getString('effect') || 'allow',
+          });
+        }
+        logger.info(
+          `Loaded ${defaultPermissions.length} default permissions: ${JSON.stringify(
+            defaultPermissions,
+          )}`,
+        );
+      } else {
+        logger.warn(
+          'Default user access is enabled but no permissions are defined',
+        );
+      }
+    }
 
     if (superUsers && superUsers.length > 0) {
       for (const user of superUsers) {
@@ -155,6 +206,8 @@ export class RBACPermissionPolicy implements PermissionPolicy {
       auditor,
       conditionalStorage,
       superUserList,
+      defaultUserAccessEnabled, // Pass the raw boolean value without conversion
+      defaultPermissions,
     );
   }
 
@@ -163,8 +216,16 @@ export class RBACPermissionPolicy implements PermissionPolicy {
     private readonly auditor: AuditorService,
     private readonly conditionStorage: ConditionalStorage,
     superUserList?: string[],
+    defaultUserAccessEnabled = false,
+    defaultPermissions: Array<{
+      permission: string;
+      policy: string;
+      effect: string;
+    }> = [],
   ) {
     this.superUserList = superUserList;
+    this.defaultUserAccessEnabled = defaultUserAccessEnabled;
+    this.defaultPermissions = defaultPermissions;
   }
 
   async handle(
@@ -249,6 +310,48 @@ export class RBACPermissionPolicy implements PermissionPolicy {
           action,
           roles,
         );
+      }
+
+      // Handle default user access if enabled
+      if (!status && this.defaultUserAccessEnabled && roles.length === 0) {
+        // Add logging for debugging without using console.log
+        const permissionDebug = {
+          user: userEntityRef,
+          permissionName,
+          action,
+          defaultsEnabled: this.defaultUserAccessEnabled,
+          defaultPermissions: this.defaultPermissions,
+        };
+
+        this.auditor.createEvent({
+          eventId: 'permission.debug.defaultAccess',
+          meta: permissionDebug,
+        });
+
+        // First check by permission name (higher priority)
+        let defaultPermission = this.defaultPermissions.find(
+          dp =>
+            dp.permission === permissionName &&
+            (dp.policy === action || dp.policy === 'use'),
+        );
+
+        // If not found and it's a resourced permission, check by resource type
+        if (!defaultPermission && isResourcePermission(request.permission)) {
+          const resourceType = request.permission.resourceType;
+          defaultPermission = this.defaultPermissions.find(
+            dp =>
+              dp.permission === resourceType &&
+              (dp.policy === action || dp.policy === 'use'),
+          );
+        }
+
+        if (defaultPermission) {
+          this.auditor.createEvent({
+            eventId: 'permission.debug.defaultAccess.applied',
+            meta: { defaultPermission, result: 'allow' },
+          });
+          status = defaultPermission.effect === 'allow';
+        }
       }
 
       const result = status ? AuthorizeResult.ALLOW : AuthorizeResult.DENY;
