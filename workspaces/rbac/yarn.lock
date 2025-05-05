@@ -2776,7 +2776,7 @@ __metadata:
     "@mui/icons-material": "npm:5.16.14"
     "@mui/material": "npm:^5.14.18"
     "@mui/styles": "npm:^6.1.7"
-    "@playwright/test": "npm:1.52.0"
+    "@playwright/test": "npm:^1.52.0"
     "@redhat-developer/red-hat-developer-hub-theme": "npm:0.4.0"
     "@rjsf/core": "npm:^5.21.2"
     "@rjsf/mui": "npm:^5.21.2"
@@ -9607,7 +9607,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@playwright/test@npm:1.52.0, @playwright/test@npm:^1.32.3":
+"@playwright/test@npm:^1.32.3, @playwright/test@npm:^1.52.0":
   version: 1.52.0
   resolution: "@playwright/test@npm:1.52.0"
   dependencies:
