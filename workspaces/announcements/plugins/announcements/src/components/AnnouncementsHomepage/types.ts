@@ -15,6 +15,12 @@ import type { CardSettings } from '@backstage/plugin-home-react';
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * Props for AnnouncemtsHomepageCard
+ *
+ * @public
+ */
 export interface AnnouncementsHomepageProps {
   max?: number;
   category?: string;
@@ -64,10 +70,8 @@ export const AnnouncemtsHomepageCardSettings: CardSettings = {
         default: true,
       },
       sortBy: {
-        // type: 'string',
         title: 'Sort By',
         $ref: '#/definitions/sortBy',
-        // enum: ['created_at', 'start_at'],
         default: 'created_at',
       },
       order: {

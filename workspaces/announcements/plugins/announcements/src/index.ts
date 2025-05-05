@@ -18,4 +18,5 @@ export * from './plugin';
 export type {
   AnnouncementsTimelineProps,
   AnnouncementSearchResultProps,
+  AnnouncementsHomepageProps,
 } from './components';
