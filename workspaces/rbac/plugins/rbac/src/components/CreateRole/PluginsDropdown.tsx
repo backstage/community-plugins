@@ -96,6 +96,11 @@ const PluginsDropdown = ({
           error={!!selectedPluginsError}
           helperText={selectedPluginsError ?? ''}
           onBlur={handleBlur}
+          onKeyDown={event => {
+            if (event.key === 'Backspace' && params.inputProps.value === '') {
+              event.stopPropagation();
+            }
+          }}
           required
         />
       )}

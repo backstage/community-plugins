@@ -159,6 +159,11 @@ export const AddMembersForm = ({
             error={!!selectedMembersError}
             helperText={selectedMembersError ?? ''}
             required
+            onKeyDown={event => {
+              if (event.key === 'Backspace' && params.inputProps.value === '') {
+                event.stopPropagation();
+              }
+            }}
             InputProps={{
               ...params.InputProps,
               endAdornment: (
