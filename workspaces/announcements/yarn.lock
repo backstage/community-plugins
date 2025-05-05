@@ -2732,6 +2732,8 @@ __metadata:
     "@backstage/frontend-plugin-api": "npm:^0.10.1"
     "@backstage/frontend-test-utils": "npm:^0.3.1"
     "@backstage/plugin-catalog-react": "npm:^1.17.0"
+    "@backstage/plugin-home": "npm:^0.8.6"
+    "@backstage/plugin-home-react": "npm:^0.1.24"
     "@backstage/plugin-permission-react": "npm:^0.4.33"
     "@backstage/plugin-search-common": "npm:^1.2.17"
     "@backstage/plugin-search-react": "npm:^1.8.8"
@@ -4335,7 +4337,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-home-react@npm:^0.1.25":
+"@backstage/plugin-home-react@npm:^0.1.24, @backstage/plugin-home-react@npm:^0.1.25":
   version: 0.1.25
   resolution: "@backstage/plugin-home-react@npm:0.1.25"
   dependencies:
@@ -4356,7 +4358,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-home@npm:^0.8.7":
+"@backstage/plugin-home@npm:^0.8.6, @backstage/plugin-home@npm:^0.8.7":
   version: 0.8.7
   resolution: "@backstage/plugin-home@npm:0.8.7"
   dependencies:

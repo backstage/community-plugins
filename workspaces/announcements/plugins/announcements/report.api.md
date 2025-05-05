@@ -6,6 +6,7 @@
 /// <reference types="react" />
 
 import { BackstagePlugin } from '@backstage/core-plugin-api';
+import { CardExtensionProps } from '@backstage/plugin-home-react';
 import { IndexableDocument } from '@backstage/plugin-search-common';
 import { InfoCardVariants } from '@backstage/core-components';
 import { JSX as JSX_2 } from 'react/jsx-runtime';
@@ -60,6 +61,22 @@ export interface AnnouncementSearchResultProps {
   result?: IndexableDocument;
 }
 
+// @public
+export interface AnnouncementsHomepageProps {
+  // (undocumented)
+  active?: boolean;
+  // (undocumented)
+  category?: string;
+  // (undocumented)
+  hideStartAt?: boolean;
+  // (undocumented)
+  max?: number;
+  // (undocumented)
+  order?: 'asc' | 'desc';
+  // (undocumented)
+  sortBy?: 'created_at' | 'start_at';
+}
+
 // @public (undocumented)
 export const AnnouncementsPage: (props: {
   themeId?: string | undefined;
@@ -109,6 +126,11 @@ export type AnnouncementsTimelineProps = {
   sortBy?: 'created_at' | 'start_at';
   order?: 'asc' | 'desc';
 };
+
+// @public (undocumented)
+export const HomepageAnnouncements: (
+  props: CardExtensionProps<AnnouncementsHomepageProps>,
+) => JSX_2.Element;
 
 // @public (undocumented)
 export const NewAnnouncementBanner: (props: {

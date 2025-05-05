@@ -30,6 +30,7 @@ import {
 } from '@backstage/plugin-catalog-react';
 import { AnnouncementsTimeline, AdminPortal } from '../src/components';
 import { signalsPlugin } from '@backstage/plugin-signals';
+import { HomepageCompositionRoot, homePlugin } from '@backstage/plugin-home';
 import { Grid, Typography } from '@material-ui/core';
 
 const mockCatalogApi = {
@@ -69,6 +70,7 @@ createDevApp()
   .registerPlugin(fakeCatalogPlugin)
   .registerPlugin(announcementsPlugin)
   .registerPlugin(signalsPlugin)
+  .registerPlugin(homePlugin)
   .addPage({
     element: (
       <AnnouncementsPage
@@ -111,5 +113,10 @@ createDevApp()
     ),
     title: 'Components',
     path: '/announcements/card',
+  })
+  .addPage({
+    element: <HomepageCompositionRoot />,
+    title: 'Root Page',
+    path: '/',
   })
   .render();

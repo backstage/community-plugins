@@ -33,6 +33,11 @@ import {
   announcementsApiRef,
   AnnouncementsClient,
 } from '@backstage-community/plugin-announcements-react';
+import { createCardExtension } from '@backstage/plugin-home-react';
+import {
+  AnnouncemtsHomepageCardSettings,
+  type AnnouncementsHomepageProps,
+} from './components/AnnouncementsHomepage/types';
 
 /**
  * @public
@@ -138,5 +143,21 @@ export const AnnouncementSearchResultListItem: (
         m => m.AnnouncementSearchResultListItem,
       ),
     predicate: result => result.type === 'announcements',
+  }),
+);
+
+/**
+ * @public
+ */
+export const HomepageAnnouncements = announcementsPlugin.provide(
+  createCardExtension<AnnouncementsHomepageProps>({
+    name: 'HomepageAnnouncements',
+    title: 'Announcements',
+    layout: {
+      height: { minRows: 2 },
+      width: { minColumns: 4 },
+    },
+    settings: AnnouncemtsHomepageCardSettings,
+    components: () => import('./components/AnnouncementsHomepage'),
   }),
 );
