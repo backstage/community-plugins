@@ -86,6 +86,11 @@ export const PermissionsCard = ({
     },
   ];
 
+  let title = 'Permission Policies';
+  if (!loading && data.length > 0) {
+    title = `${numberOfPolicies} permission${numberOfPolicies !== 1 ? 's' : ''}`;
+  }
+
   return (
     <Box>
       {error?.name && error.name !== 404 && (
@@ -99,11 +104,7 @@ export const PermissionsCard = ({
       )}
       <StyledTableWrapper>
         <Table
-          title={
-            !loading && data.length > 0
-              ? `${numberOfPolicies} permissions`
-              : 'Permission Policies'
-          }
+          title={title}
           actions={actions}
           options={{ padding: 'default', search: true, paging: true }}
           data={data}
