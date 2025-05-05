@@ -109,9 +109,9 @@ export interface SonarqubeInstanceConfig {
    */
   apiKey: string;
   /**
-   * The type of API Key used in apiKey. Can be Bearer or Basic. Defaults to Basic if not set or invalid.
+   * The type of API Key used in apiKey. Can be Bearer or Basic. Defaults to Basic if not set.
    */
-  tokenKind?: string;
+  tokenKind?: 'Bearer' | 'Basic';
 }
 
 interface ComponentWrapper {
@@ -146,7 +146,8 @@ export class SonarqubeConfig {
         baseUrl: c.getString('baseUrl'),
         externalBaseUrl: c.getOptionalString('externalBaseUrl'),
         apiKey: c.getString('apiKey'),
-        tokenKind: c.getOptionalString('tokenKind'),
+        tokenKind:
+          (c.getOptionalString('tokenKind') as 'Bearer' | 'Basic') ?? 'Basic',
       })) || [];
 
     // load unnamed default config
@@ -159,7 +160,9 @@ export class SonarqubeConfig {
     const externalBaseUrl =
       sonarqubeConfig.getOptionalString('externalBaseUrl');
     const apiKey = sonarqubeConfig.getOptionalString('apiKey');
-    const tokenKind = sonarqubeConfig.getOptionalString('tokenKind');
+    const tokenKind =
+      (sonarqubeConfig.getOptionalString('tokenKind') as 'Bearer' | 'Basic') ??
+      'Basic';
 
     if (hasNamedDefault && (baseUrl || externalBaseUrl || apiKey)) {
       throw new Error(
@@ -352,7 +355,7 @@ export class DefaultSonarqubeInfoProvider implements SonarqubeInfoProvider {
     };
   }
 
-  private static convertTokenKind(tokenKind?: string): 'Bearer' | 'Basic' {
+  public static convertTokenKind(tokenKind?: string): 'Bearer' | 'Basic' {
     // If a user really wants Bearer, they can pick it, since it was not the original default.
     if (tokenKind?.toLowerCase() === 'bearer') {
       return 'Bearer';

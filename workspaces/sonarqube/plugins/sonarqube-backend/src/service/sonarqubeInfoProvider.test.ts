@@ -30,6 +30,7 @@ describe('SonarqubeConfig', () => {
   const SONARQUBE_DEFAULT_INSTANCE_NAME = 'default';
   const DUMMY_SONAR_URL = 'https://sonarqube.example.com';
   const DUMMY_SONAR_APIKEY = '123456789abcdef0123456789abcedf012';
+  const DEFAULT_TOKEN_KIND = 'Basic';
 
   const DUMMY_SIMPLE_OBJECT_FOR_DEFAULT_SONARQUBE_CONFIG = {
     name: SONARQUBE_DEFAULT_INSTANCE_NAME,
@@ -65,6 +66,7 @@ describe('SonarqubeConfig', () => {
           name: SONARQUBE_DEFAULT_INSTANCE_NAME,
           baseUrl: DUMMY_SONAR_URL,
           apiKey: DUMMY_SONAR_APIKEY,
+          tokenKind: DEFAULT_TOKEN_KIND,
         },
       ]);
     });
@@ -79,6 +81,7 @@ describe('SonarqubeConfig', () => {
           name: SONARQUBE_DEFAULT_INSTANCE_NAME,
           baseUrl: DUMMY_SONAR_URL,
           apiKey: DUMMY_SONAR_APIKEY,
+          tokenKind: DEFAULT_TOKEN_KIND,
         },
       ]);
     });
@@ -97,6 +100,7 @@ describe('SonarqubeConfig', () => {
                 name: 'other',
                 baseUrl: 'https://sonarqube-other.example.com',
                 apiKey: 'abcdef0123456789abcedf0123456789abc',
+                tokenKind: DEFAULT_TOKEN_KIND,
               },
             ],
           },
@@ -108,11 +112,13 @@ describe('SonarqubeConfig', () => {
           name: SONARQUBE_DEFAULT_INSTANCE_NAME,
           baseUrl: DUMMY_SONAR_URL,
           apiKey: DUMMY_SONAR_APIKEY,
+          tokenKind: DEFAULT_TOKEN_KIND,
         },
         {
           name: 'other',
           baseUrl: 'https://sonarqube-other.example.com',
           apiKey: 'abcdef0123456789abcedf0123456789abc',
+          tokenKind: DEFAULT_TOKEN_KIND,
         },
       ]);
     });
@@ -129,6 +135,7 @@ describe('SonarqubeConfig', () => {
                   name: SONARQUBE_DEFAULT_INSTANCE_NAME,
                   baseUrl: DUMMY_SONAR_URL,
                   apiKey: DUMMY_SONAR_APIKEY,
+                  tokenKind: DEFAULT_TOKEN_KIND,
                 },
               ],
             },
