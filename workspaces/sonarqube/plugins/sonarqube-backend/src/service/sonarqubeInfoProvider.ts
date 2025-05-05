@@ -355,15 +355,6 @@ export class DefaultSonarqubeInfoProvider implements SonarqubeInfoProvider {
     };
   }
 
-  public static convertTokenKind(tokenKind?: string): 'Bearer' | 'Basic' {
-    // If a user really wants Bearer, they can pick it, since it was not the original default.
-    if (tokenKind?.toLowerCase() === 'bearer') {
-      return 'Bearer';
-    }
-    // The original default was Basic, so if not specified, or not valid, use Basic to maintain original behavior.
-    return 'Basic';
-  }
-
   /**
    * {@inheritDoc SonarqubeInfoProvider.getFindings}
    * @throws Error If configuration can't be retrieved.
@@ -377,15 +368,12 @@ export class DefaultSonarqubeInfoProvider implements SonarqubeInfoProvider {
       sonarqubeName: instanceName,
     });
 
-    const cleanTokenKind =
-      DefaultSonarqubeInfoProvider.convertTokenKind(tokenKind);
-
     // get component info to retrieve analysis date
     const component = await this.callApi<ComponentWrapper>(
       baseUrl,
       'api/components/show',
       apiKey,
-      cleanTokenKind,
+      tokenKind ?? 'Basic',
       {
         component: componentKey,
       },
@@ -398,7 +386,7 @@ export class DefaultSonarqubeInfoProvider implements SonarqubeInfoProvider {
     const supportedMetrics = await this.getSupportedMetrics(
       baseUrl,
       apiKey,
-      cleanTokenKind,
+      tokenKind ?? 'Basic',
     );
     const wantedMetrics: string[] = [
       'alert_status',
@@ -424,7 +412,7 @@ export class DefaultSonarqubeInfoProvider implements SonarqubeInfoProvider {
       baseUrl,
       'api/measures/component',
       apiKey,
-      cleanTokenKind,
+      tokenKind ?? 'Basic',
       {
         component: componentKey,
         metricKeys: metricsToQuery.join(','),

@@ -13,8 +13,6 @@ export function createRouter(options: RouterOptions): Promise<express.Router>;
 
 // @public
 export class DefaultSonarqubeInfoProvider implements SonarqubeInfoProvider {
-  // (undocumented)
-  static convertTokenKind(tokenKind?: string): 'Bearer' | 'Basic';
   static fromConfig(
     config: Config,
     logger: LoggerService,
