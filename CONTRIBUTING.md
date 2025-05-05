@@ -190,7 +190,7 @@ By migrating a plugin to this repository you will need to ensure you can meet ce
 1. Prepare your environment by cloning both the repository you are migrating from and the `backstage/community-plugins` repository:
 
 ```sh
-git clone https://github.com/source-repo/existing-plugins.git
+git clone https://github.com/<source-repo>/existing-plugins.git
 git clone https://github.com/backstage/community-plugins.git
 ```
 
