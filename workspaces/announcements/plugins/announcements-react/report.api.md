@@ -158,8 +158,8 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'announcementsPage.genericNew': 'New';
     readonly 'announcementsPage.card.by': 'By';
     readonly 'announcementsPage.card.in': 'in';
-    readonly 'announcementsPage.card.delete': 'DELETE';
-    readonly 'announcementsPage.card.edit': 'EDIT';
+    readonly 'announcementsPage.card.delete': 'Delete';
+    readonly 'announcementsPage.card.edit': 'Edit';
     readonly 'announcementsPage.card.occurred': 'Occurred ';
     readonly 'announcementsPage.card.scheduled': 'Scheduled ';
     readonly 'announcementsPage.card.today': 'Today';
@@ -278,8 +278,8 @@ export const useAnnouncementsTranslation: () => {
     readonly 'announcementsPage.genericNew': 'New';
     readonly 'announcementsPage.card.by': 'By';
     readonly 'announcementsPage.card.in': 'in';
-    readonly 'announcementsPage.card.delete': 'DELETE';
-    readonly 'announcementsPage.card.edit': 'EDIT';
+    readonly 'announcementsPage.card.delete': 'Delete';
+    readonly 'announcementsPage.card.edit': 'Edit';
     readonly 'announcementsPage.card.occurred': 'Occurred ';
     readonly 'announcementsPage.card.scheduled': 'Scheduled ';
     readonly 'announcementsPage.card.today': 'Today';
