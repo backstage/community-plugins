@@ -18,12 +18,12 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
+import Typography from '@mui/material/Typography';
 
 import { getDefaultRule } from '../../utils/conditional-access-utils';
 import { tooltipTitle } from './AddNestedConditionButton';
 import { criterias } from './const';
 import { Condition, ConditionsData } from './types';
-import Typography from '@mui/material/Typography';
 
 type ComplexConditionRowButtonsProps = {
   conditionRow: ConditionsData;
