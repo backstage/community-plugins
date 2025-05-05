@@ -1,5 +1,11 @@
 # @backstage-community/plugin-announcements-react
 
+## 0.4.4
+
+### Patch Changes
+
+- dd1aed2: fix(ui): Respect MUI theme options for typography, colors
+
 ## 0.4.3
 
 ### Patch Changes
