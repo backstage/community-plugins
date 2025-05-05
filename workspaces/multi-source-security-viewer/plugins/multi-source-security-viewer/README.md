@@ -63,6 +63,7 @@ To enable the PipelineRun list in the Security tab on the entity view page, add 
 - [Jenkins](../../../jenkins/plugins/jenkins/README.md)
 - [Github Actions]([../../../github-actions/plugins/github-actions/README.md)
 - [Gitlab CI](https://github.com/immobiliare/backstage-plugin-gitlab?tab=readme-ov-file#annotations)
+- [Azure Pipelines](../../../azure-devops/plugins/azure-devops/README.md)
 
 ### Procedure
 

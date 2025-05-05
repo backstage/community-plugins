@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { MouseEvent, Ref } from 'react';
+
+import { useContext, useState } from 'react';
 
 import { LabelGroup, ToolbarItem, Label } from '@patternfly/react-core';
 import {
@@ -33,20 +35,19 @@ type TopologyToolbarProps = {
 
 const TopologyToolbar = ({ showFilters }: TopologyToolbarProps) => {
   const { clusters: k8sClusters, setSelectedCluster: setClusterContext } =
-    React.useContext(K8sResourcesContext);
+    useContext(K8sResourcesContext);
 
-  const { filters, setAppliedTopologyFilters } =
-    React.useContext(FilterContext);
+  const { filters, setAppliedTopologyFilters } = useContext(FilterContext);
   const clusterOptions = k8sClusters.map(cluster => ({
     value: cluster,
     disabled: false,
   }));
   const [clusterFilterIsExpanded, setClusterFilterIsExpanded] =
-    React.useState<boolean>(false);
+    useState<boolean>(false);
   const [displayOptionsIsExpanded, setDisplayOptionsIsExpanded] =
-    React.useState<boolean>(false);
+    useState<boolean>(false);
 
-  const [clusterSelected, setClusterSelected] = React.useState<
+  const [clusterSelected, setClusterSelected] = useState<
     string | number | undefined
   >();
 
@@ -59,7 +60,7 @@ const TopologyToolbar = ({ showFilters }: TopologyToolbarProps) => {
   };
 
   const onClusterChange = (
-    _e: React.MouseEvent | undefined,
+    _e: MouseEvent | undefined,
     selection: string | number | undefined,
   ) => {
     const index = k8sClusters.findIndex(cluster => cluster === selection);
@@ -69,7 +70,7 @@ const TopologyToolbar = ({ showFilters }: TopologyToolbarProps) => {
   };
 
   const onDisplayOptionChange = (
-    e: React.MouseEvent | undefined,
+    e: MouseEvent | undefined,
     selection: string | number | undefined,
   ) => {
     if (filters && filters.length !== 0 && selection && e) {
@@ -94,7 +95,7 @@ const TopologyToolbar = ({ showFilters }: TopologyToolbarProps) => {
           onOpenChange={onClusterFilterToggle}
           onSelect={onClusterChange}
           isOpen={clusterFilterIsExpanded}
-          toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+          toggle={(toggleRef: Ref<MenuToggleElement>) => (
             <MenuToggle
               ref={toggleRef}
               isExpanded={clusterFilterIsExpanded}
@@ -124,7 +125,7 @@ const TopologyToolbar = ({ showFilters }: TopologyToolbarProps) => {
             onOpenChange={onDisplayOptionsToggle}
             onSelect={(event, value) => onDisplayOptionChange(event, value)}
             isOpen={displayOptionsIsExpanded}
-            toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+            toggle={(toggleRef: Ref<MenuToggleElement>) => (
               <MenuToggle
                 ref={toggleRef}
                 isExpanded={displayOptionsIsExpanded}

@@ -15,7 +15,7 @@
  */
 import { useApi } from '@backstage/core-plugin-api';
 import { CircularProgress, Grid } from '@material-ui/core';
-import React from 'react';
+import { default as React } from 'react';
 import { useAsyncFn, useDebounce } from 'react-use';
 import { IstioConfigCard } from '../../components/IstioConfigCard/IstioConfigCard';
 import { isIstioNamespace, serverConfig } from '../../config';

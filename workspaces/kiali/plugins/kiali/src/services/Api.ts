@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import type { Namespace } from '@backstage-community/plugin-kiali-common/types';
 import { Entity } from '@backstage/catalog-model';
 import {
   createApiRef,
@@ -50,20 +51,14 @@ import {
   IstioConfigsMapQuery,
 } from '../types/IstioConfigList';
 import {
-  CanaryUpgradeStatus,
   LogLevelQuery,
-  OutboundTrafficPolicy,
   PodLogs,
   PodLogsQuery,
   ValidationStatus,
 } from '../types/IstioObjects';
-import {
-  ComponentStatus,
-  IstiodResourceThresholds,
-} from '../types/IstioStatus';
+import { ComponentStatus } from '../types/IstioStatus';
 import { IstioMetricsMap } from '../types/Metrics';
 import { IstioMetricsOptions } from '../types/MetricsOptions';
-import { Namespace } from '../types/Namespace';
 import { KialiCrippledFeatures, ServerConfig } from '../types/ServerConfig';
 import { ServiceDetailsInfo, ServiceDetailsQuery } from '../types/ServiceInfo';
 import { ServiceList, ServiceListQuery } from '../types/ServiceList';
@@ -161,9 +156,6 @@ export interface KialiApi {
   ): Promise<AppList>;
   getMeshTls(cluster?: string): Promise<TLSStatus>;
   getNamespaceTls(namespace: string, cluster?: string): Promise<TLSStatus>;
-  getOutboundTrafficPolicyMode(): Promise<OutboundTrafficPolicy>;
-  getCanaryUpgradeStatus(): Promise<CanaryUpgradeStatus>;
-  getIstiodResourceThresholds(): Promise<IstiodResourceThresholds>;
   getConfigValidations(cluster?: string): Promise<ValidationStatus>;
   getAllIstioConfigs(
     objects: string[],
@@ -615,33 +607,6 @@ export class KialiApiClient implements KialiApi {
     ).then(resp => resp);
   };
 
-  getOutboundTrafficPolicyMode = (): Promise<OutboundTrafficPolicy> => {
-    return this.newRequest<OutboundTrafficPolicy>(
-      HTTP_VERBS.GET,
-      urls.outboundTrafficPolicyMode(),
-      {},
-      {},
-    ).then(resp => resp);
-  };
-
-  getCanaryUpgradeStatus = (): Promise<CanaryUpgradeStatus> => {
-    return this.newRequest<CanaryUpgradeStatus>(
-      HTTP_VERBS.GET,
-      urls.canaryUpgradeStatus(),
-      {},
-      {},
-    ).then(resp => resp);
-  };
-
-  getIstiodResourceThresholds = (): Promise<IstiodResourceThresholds> => {
-    return this.newRequest<IstiodResourceThresholds>(
-      HTTP_VERBS.GET,
-      urls.istiodResourceThresholds(),
-      {},
-      {},
-    ).then(resp => resp);
-  };
-
   getConfigValidations = (cluster?: string): Promise<ValidationStatus> => {
     const queryParams: any = {};
     if (cluster) {
@@ -748,6 +713,10 @@ export class KialiApiClient implements KialiApi {
 
   setEntity = (entity?: Entity) => {
     this.annotations = entity?.metadata.annotations || {};
+  };
+
+  setProvider = (cluster: string) => {
+    this.setAnnotation(KIALI_PROVIDER, cluster);
   };
 
   setAnnotation = (key: string, value: string) => {

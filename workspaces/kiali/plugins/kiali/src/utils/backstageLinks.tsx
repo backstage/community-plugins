@@ -15,7 +15,7 @@
  */
 import { Link } from '@backstage/core-components';
 import { SubRouteRef } from '@backstage/core-plugin-api';
-import * as React from 'react';
+import { default as React } from 'react';
 import { isMultiCluster } from '../config';
 import {
   appDetailRouteRef,

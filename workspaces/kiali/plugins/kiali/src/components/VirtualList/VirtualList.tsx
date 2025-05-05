@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import type { Namespace } from '@backstage-community/plugin-kiali-common/types';
 import {
   Box,
   CircularProgress,
@@ -26,9 +27,8 @@ import {
   TableRow,
   TableSortLabel,
 } from '@material-ui/core';
-import * as React from 'react';
+import { default as React } from 'react';
 import { kialiStyle } from '../../styles/StyleUtils';
-import { Namespace } from '../../types/Namespace';
 import { NamespaceInfo } from '../../types/NamespaceInfo';
 import { SortField } from '../../types/SortFilters';
 import { DRAWER, ENTITY } from '../../types/types';

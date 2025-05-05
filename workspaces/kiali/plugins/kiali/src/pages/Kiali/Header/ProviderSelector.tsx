@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { KIALI_PROVIDER } from '@backstage-community/plugin-kiali-common';
 import { useApi } from '@backstage/core-plugin-api';
 import { InputLabel, MenuItem, Select } from '@material-ui/core';
-import React from 'react';
+import { default as React } from 'react';
 import { NamespaceActions } from '../../../actions';
 import { ProviderActions } from '../../../actions/ProviderAction';
-import { KIALI_PROVIDER } from '../../../components/Router';
 import { kialiApiRef } from '../../../services/Api';
 import { KialiAppState, KialiContext } from '../../../store';
 
@@ -37,10 +37,15 @@ export const ProviderSelector = (props: { page?: boolean }) => {
       .getNamespaces()
       .then(data => {
         kialiState.dispatch.namespaceDispatch(
-          NamespaceActions.receiveList([...data], new Date()),
+          NamespaceActions.receiveList(
+            [...data.filter(ns => ns.cluster === (value as string))],
+            new Date(),
+          ),
         );
         kialiState.dispatch.namespaceDispatch(
-          NamespaceActions.setActiveNamespaces([...data]),
+          NamespaceActions.setActiveNamespaces([
+            ...data.filter(ns => ns.cluster === (value as string)),
+          ]),
         );
       })
       .catch(_ => {

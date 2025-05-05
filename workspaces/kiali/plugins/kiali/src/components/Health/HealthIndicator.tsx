@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { PopoverPosition, Tooltip } from '@patternfly/react-core';
-import * as React from 'react';
+import { default as React } from 'react';
 import { createTooltipIcon } from '../../config/KialiIcon';
 import * as H from '../../types/Health';
 import { HealthDetails } from './HealthDetails';

@@ -354,7 +354,7 @@ describe('REST policies api', () => {
       expect(result.statusCode).toBe(403);
       expect(result.body.error).toEqual({
         name: 'NotAllowedError',
-        message: `Only creadential principal with type 'user' permitted to modify permissions`,
+        message: `Only credential principal with type 'user' permitted to modify permissions`,
       });
     });
 

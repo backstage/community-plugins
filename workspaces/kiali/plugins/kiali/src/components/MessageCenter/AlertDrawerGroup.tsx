@@ -15,7 +15,7 @@
  */
 import { Button, Card, CardActions, CardContent } from '@material-ui/core';
 import { InfoIcon } from '@patternfly/react-icons';
-import * as React from 'react';
+import { default as React } from 'react';
 import { MessageCenterActions } from '../../actions';
 import { KialiAppState, KialiContext } from '../../store';
 import { NotificationGroup } from '../../types/MessageCenter';

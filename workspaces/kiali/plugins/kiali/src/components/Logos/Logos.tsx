@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { default as React } from 'react';
 import GraphqlIcon from '../../assets/img/api/graphql.svg';
 import GrpcIcon from '../../assets/img/api/grpc.svg';
 import RestIcon from '../../assets/img/api/rest.svg';

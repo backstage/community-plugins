@@ -1,5 +1,23 @@
 ### Dependencies
 
+## 6.2.4
+
+### Patch Changes
+
+- 298b1d4: Avoid unnecessary query to check 'relations' table in the role manager
+
+## 6.2.3
+
+### Patch Changes
+
+- 9436665: Reduce rbac-backend requests to credentials API.
+
+## 6.2.2
+
+### Patch Changes
+
+- c92a50c: Fixed a bug where updating a role name via the `PUT </api/permission/roles/:kind/:namespace/:name>` endpoint did not propagate changes to metadata, permissions and conditions, leaving them mapped to the old role name.
+
 ## 6.2.1
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-azure-sites-common",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Common functionalities for the azure plugin",
   "backstage": {
     "role": "common-library",
@@ -47,6 +47,6 @@
     "@backstage/plugin-permission-common": "^0.8.4"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.31.0"
+    "@backstage/cli": "^0.32.0"
   }
 }

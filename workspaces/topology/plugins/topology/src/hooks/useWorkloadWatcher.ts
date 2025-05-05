@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useState, useContext, useCallback, useEffect } from 'react';
 
 import { Model } from '@patternfly/react-topology';
 
@@ -30,11 +30,11 @@ export const useWorkloadsWatcher = (): {
   loaded: boolean;
   dataModel: any;
 } => {
-  const [loaded, setLoaded] = React.useState<boolean>(false);
-  const [dataModel, setDataModel] = React.useState<Model | null>(null);
-  const k8sResponseData = React.useContext(K8sResourcesContext);
+  const [loaded, setLoaded] = useState<boolean>(false);
+  const [dataModel, setDataModel] = useState<Model | null>(null);
+  const k8sResponseData = useContext(K8sResourcesContext);
 
-  const updateResults = React.useCallback(
+  const updateResults = useCallback(
     async ({
       watchResourcesData,
       loading,
@@ -57,7 +57,7 @@ export const useWorkloadsWatcher = (): {
 
   const debouncedUpdateResources = useDebounceCallback(updateResults, 250);
 
-  React.useEffect(() => {
+  useEffect(() => {
     debouncedUpdateResources(k8sResponseData);
   }, [debouncedUpdateResources, k8sResponseData]);
 

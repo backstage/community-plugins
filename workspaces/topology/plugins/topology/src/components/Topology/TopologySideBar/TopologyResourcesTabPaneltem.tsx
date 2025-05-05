@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { PropsWithChildren } from 'react';
 
 import './TopologyResourcesTabPanelItem.css';
 
@@ -28,7 +28,7 @@ const TopologyResourcesTabPanelItem = ({
   children,
   dataTest,
   showResCount,
-}: React.PropsWithChildren<TopologyResourcesTabPanelItemProps>) => {
+}: PropsWithChildren<TopologyResourcesTabPanelItemProps>) => {
   const emptyState = (
     <span className="bs-topology-text-muted">{`No ${resourceLabel} found for this resource.`}</span>
   );

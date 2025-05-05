@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { pluginId } from '@backstage-community/plugin-kiali-common';
 import { Content, InfoCard, Page } from '@backstage/core-components';
 import { createRoutableExtension } from '@backstage/core-plugin-api';
 import { createDevApp } from '@backstage/dev-utils';
@@ -21,12 +22,11 @@ import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { TestApiProvider } from '@backstage/test-utils';
 import { Grid } from '@material-ui/core';
 import { getAllThemes } from '@redhat-developer/red-hat-developer-hub-theme';
-import React from 'react';
 import { EntityKialiResourcesCard, kialiPlugin } from '../src';
 import { KialiHelper } from '../src/pages/Kiali/KialiHelper';
 import { KialiNoAnnotation } from '../src/pages/Kiali/KialiNoAnnotation';
 import { KialiNoResources } from '../src/pages/Kiali/KialiNoResources';
-import { EntityKialiGraphCard, pluginName } from '../src/plugin';
+import { EntityKialiGraphCard } from '../src/plugin';
 import { rootRouteRef } from '../src/routes';
 import { kialiApiRef } from '../src/services/Api';
 import { KialiChecker, ValidationCategory } from '../src/store/KialiProvider';
@@ -158,7 +158,7 @@ createDevApp()
   .addPage({
     element: <KialiMock />,
     title: 'KialiPage',
-    path: `/${pluginName}`,
+    path: `/${pluginId}`,
   })
   .addPage({
     element: <MockKialiError />,

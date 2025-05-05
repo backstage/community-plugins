@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { Chip } from '@material-ui/core';
-import * as React from 'react';
+import { default as React } from 'react';
 
 type Props = {
   version: string;

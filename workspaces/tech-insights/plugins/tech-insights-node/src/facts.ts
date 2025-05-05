@@ -89,7 +89,7 @@ export type FlatTechInsightFact = TechInsightFact & {
  * The context can be used to construct logic to retrieve entities, contact integration points
  * and fetch and calculate fact values from external sources.
  */
-export type FactRetrieverContext = {
+export type FactRetrieverContext<TExtension = {}> = {
   config: Config;
   discovery: DiscoveryService;
   logger: LoggerService;
@@ -98,14 +98,16 @@ export type FactRetrieverContext = {
   entityFilter?:
     | Record<string, string | symbol | (string | symbol)[]>[]
     | Record<string, string | symbol | (string | symbol)[]>;
-};
+} & TExtension;
 
 /**
  * FactRetriever interface
  *
  * @public
  */
-export interface FactRetriever {
+export interface FactRetriever<
+  TContext extends FactRetrieverContext = FactRetrieverContext,
+> {
   /**
    * A unique identifier of the retriever.
    * Used to identify and store individual facts returned from this retriever
@@ -137,7 +139,7 @@ export interface FactRetriever {
    * @param ctx - FactRetrieverContext which can be used to retrieve config and contact integrations
    * @returns - A collection of TechInsightFacts grouped by entities.
    */
-  handler: (ctx: FactRetrieverContext) => Promise<TechInsightFact[]>;
+  handler: (ctx: TContext) => Promise<TechInsightFact[]>;
 
   /**
    * A fact schema defining the shape of data returned from the handler method for each entity
@@ -199,11 +201,13 @@ export type FactSchemaDefinition = Omit<FactRetriever, 'handler'>;
  *
  * @public
  */
-export type FactRetrieverRegistration = {
+export type FactRetrieverRegistration<
+  TContext extends FactRetrieverContext = FactRetrieverContext,
+> = {
   /**
    * Actual FactRetriever implementation
    */
-  factRetriever: FactRetriever;
+  factRetriever: FactRetriever<TContext>;
 
   /**
    * Cron expression to indicate when the retriever should be triggered.
@@ -238,7 +242,9 @@ export type FactRetrieverRegistration = {
  * @public
  */
 export interface FactRetrieverRegistry {
-  register(registration: FactRetrieverRegistration): Promise<void>;
+  register<TContext extends FactRetrieverContext = FactRetrieverContext>(
+    registration: FactRetrieverRegistration<TContext>,
+  ): Promise<void>;
   get(retrieverReference: string): Promise<FactRetrieverRegistration>;
   listRetrievers(): Promise<FactRetriever[]>;
   listRegistrations(): Promise<FactRetrieverRegistration[]>;

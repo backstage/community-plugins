@@ -21,8 +21,9 @@ import type { Config } from '@backstage/config';
 import { RoleManager } from 'casbin';
 import { Knex } from 'knex';
 
-import { AncestorSearchMemo } from './ancestor-search-memo';
+import { AncestorSearchMemo, ASMGroup } from './ancestor-search-memo';
 import { RoleMemberList } from './member-list';
+import { AncestorSearchFactory } from './ancestor-search-factory';
 
 export class BackstageRoleManager implements RoleManager {
   private allRoles: Map<string, RoleMemberList>;
@@ -148,14 +149,16 @@ export class BackstageRoleManager implements RoleManager {
 
     // if it is a group, then we will have to build the graph,
     if (kind.toLocaleLowerCase() === 'group') {
-      const memo = new AncestorSearchMemo(
+      const memo = await AncestorSearchFactory.createAncestorSearchMemo(
         name1,
+        this.config,
         this.catalogApi,
         this.catalogDBClient,
         this.auth,
         this.maxDepth,
       );
-      await memo.buildUserGraph(memo);
+
+      await memo.buildUserGraph();
       memo.debugNodesAndEdges(this.logger, name1);
 
       if (!memo.isAcyclic()) {
@@ -218,14 +221,15 @@ export class BackstageRoleManager implements RoleManager {
   async getRoles(name: string, ..._domain: string[]): Promise<string[]> {
     const { kind } = parseEntityRef(name);
     if (kind === 'user') {
-      const memo = new AncestorSearchMemo(
+      const memo = await AncestorSearchFactory.createAncestorSearchMemo(
         name,
+        this.config,
         this.catalogApi,
         this.catalogDBClient,
         this.auth,
         this.maxDepth,
       );
-      await memo.buildUserGraph(memo);
+      await memo.buildUserGraph();
       memo.debugNodesAndEdges(this.logger, name);
 
       // Account for the user not being in the graph (this can happen during direct assignment to roles)
@@ -321,7 +325,7 @@ export class BackstageRoleManager implements RoleManager {
    */
   private hasMember(
     role: RoleMemberList | undefined,
-    memo: AncestorSearchMemo,
+    memo: AncestorSearchMemo<ASMGroup>,
   ): boolean {
     if (role === undefined) {
       return false;

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import type { Namespace } from '@backstage-community/plugin-kiali-common/types';
 import {
   KIALI_RELATED_LABEL,
   KIALI_WIZARD_LABEL,
@@ -21,7 +22,6 @@ import { PFColorVal } from '../components/Pf/PfColors';
 import { TimeInSeconds } from './Common';
 import { ProxyStatus } from './Health';
 import { TypeMeta } from './Kubernetes';
-import { Namespace } from './Namespace';
 import { ServicePort } from './ServiceInfo';
 
 // Common types

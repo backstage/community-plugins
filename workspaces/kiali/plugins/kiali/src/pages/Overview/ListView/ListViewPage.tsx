@@ -15,7 +15,7 @@
  */
 import { Entity } from '@backstage/catalog-model';
 import { CardTab, TabbedCard } from '@backstage/core-components';
-import * as React from 'react';
+import { default as React } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { ENTITY } from '../../../types/types';
 import { AppListPage } from '../../AppList/AppListPage';

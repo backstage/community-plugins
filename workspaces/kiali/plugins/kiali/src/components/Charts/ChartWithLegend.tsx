@@ -28,7 +28,7 @@ import {
 } from '@patternfly/react-charts';
 import { Button, ButtonVariant } from '@patternfly/react-core';
 import { format as d3Format } from 'd3-format';
-import * as React from 'react';
+import { default as React } from 'react';
 import regression from 'regression';
 import { VictoryBoxPlot } from 'victory-box-plot';
 import { VictoryPortal } from 'victory-core';
