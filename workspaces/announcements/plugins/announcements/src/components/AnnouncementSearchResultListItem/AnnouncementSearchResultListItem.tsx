@@ -35,7 +35,6 @@ const useStyles = makeStyles({
     display: 'block',
     marginTop: '0.2rem',
     marginBottom: '0.8rem',
-    fontSize: '0.8rem',
   },
   excerpt: {
     lineHeight: '1.55',
