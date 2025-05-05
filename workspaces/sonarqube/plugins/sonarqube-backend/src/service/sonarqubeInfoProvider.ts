@@ -192,7 +192,7 @@ export class SonarqubeConfig {
         baseUrl: string;
         externalBaseUrl?: string;
         apiKey: string;
-        tokenKind?: 'Bearer' | 'Basic';
+        tokenKind: 'Bearer' | 'Basic';
       }[];
 
       return new SonarqubeConfig([
@@ -320,10 +320,16 @@ export class DefaultSonarqubeInfoProvider implements SonarqubeInfoProvider {
     query: { [key in string]: any },
   ): Promise<T | undefined> {
     const fullUrl = `${url}/${path}?${new URLSearchParams(query).toString()}`;
+
+    const encodedAuthToken =
+      tokenKind === 'Bearer'
+        ? Buffer.from(`${authToken}:`).toString('base64')
+        : authToken;
+
     const response = await fetch(fullUrl, {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `${tokenKind} ${authToken}`,
+        Authorization: `${tokenKind} ${encodedAuthToken}`,
       },
     });
     if (!response.ok) {

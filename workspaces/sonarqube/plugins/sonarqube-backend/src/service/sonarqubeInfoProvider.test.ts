@@ -366,9 +366,15 @@ describe('DefaultSonarqubeInfoProvider', () => {
       tokenType: 'Bearer' | 'Basic' = 'Basic',
     ) => {
       if (req.headers && req.headers.has('Authorization')) {
-        expect(req.headers.get('Authorization')).toEqual(
-          `${tokenType} 123456789abcdef0123456789abcedf012`,
-        );
+        if (tokenType === 'Basic') {
+          expect(req.headers.get('Authorization')).toEqual(
+            `${tokenType} 123456789abcdef0123456789abcedf012`,
+          );
+        } else {
+          expect(req.headers.get('Authorization')).toEqual(
+            `${tokenType} MTIzNDU2Nzg5YWJjZGVmMDEyMzQ1Njc4OWFiY2VkZjAxMjo=`,
+          );
+        }
       } else {
         throw new Error('Token not provided');
       }
