@@ -3,7 +3,7 @@
 This plugin lists `// TODO` comments in source code. It currently exports a single component extension for use on entity pages.
 
 ## Prerequisite
-For this plugin to work, you must first install and configure the Todo Backend plugin by following the instructions provided in [this readme file](../todo-backend/README.md)
+For this plugin to work, you must first install and configure the [Todo Backend plugin]((../todo-backend).
 
 
 ## Installation
