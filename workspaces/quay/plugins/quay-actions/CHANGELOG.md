@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 2.7.1
+
+### Patch Changes
+
+- 1d7aaba: Update supported version metadata to 1.38.1
+
 ## 2.7.0
 
 ### Minor Changes
