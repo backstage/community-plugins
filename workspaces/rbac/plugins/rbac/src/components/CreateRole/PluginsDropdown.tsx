@@ -65,6 +65,7 @@ const PluginsDropdown = ({
       multiple
       disableCloseOnSelect
       getOptionLabel={option => option.label}
+      noOptionsText="No plugins found."
       style={{ width: '30%', flexGrow: '1' }}
       value={selectedPlugins || null}
       onChange={(_e, selPlugins, reason, selOption) => {
