@@ -17,7 +17,7 @@ import type { PermissionEvaluator } from '@backstage/plugin-permission-common';
 import { PermissionPolicy } from '@backstage/plugin-permission-node';
 import type { PermissionsRegistryService } from '@backstage/backend-plugin-api';
 import { PluginIdProvider } from '@backstage-community/plugin-rbac-node';
-import { RBACProvider } from '@backstage-community/plugin-rbac-node';
+import type { RBACProvider } from '@backstage-community/plugin-rbac-node';
 import type { Router } from 'express';
 import type { UserInfoService } from '@backstage/backend-plugin-api';
 
