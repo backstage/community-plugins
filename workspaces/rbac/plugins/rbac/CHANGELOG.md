@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.41.2
+
+### Patch Changes
+
+- fa53ba5: Updated dependency `@playwright/test` to `1.52.0`.
+
 ## 1.41.1
 
 ### Patch Changes
