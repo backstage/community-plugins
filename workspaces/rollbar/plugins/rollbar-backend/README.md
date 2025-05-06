@@ -93,5 +93,5 @@ access account token._
 
 ## Links
 
-- [Frontend part of the plugin](https://github.com/backstage/backstage/tree/master/plugins/rollbar)
+- [Frontend part of the plugin](https://github.com/backstage/community-plugins/tree/main/workspaces/rollbar/plugins/rollbar)
 - [The Backstage homepage](https://backstage.io)
