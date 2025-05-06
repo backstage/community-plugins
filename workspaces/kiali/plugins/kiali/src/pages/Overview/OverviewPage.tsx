@@ -14,6 +14,22 @@
  * limitations under the License.
  */
 import { KIALI_PROVIDER } from '@backstage-community/plugin-kiali-common';
+import {
+  Health,
+  NamespaceAppHealth,
+  NamespaceServiceHealth,
+  NamespaceWorkloadHealth,
+  nsWideMTLSStatus,
+} from '@backstage-community/plugin-kiali-common/func';
+import {
+  DEGRADED,
+  DurationInSeconds,
+  FAILURE,
+  HEALTHY,
+  IstioMetricsOptions,
+  NOT_READY,
+  SortField,
+} from '@backstage-community/plugin-kiali-common/types';
 import { Entity } from '@backstage/catalog-model';
 import {
   CardTab,
@@ -32,20 +48,6 @@ import { getErrorString, kialiApiRef } from '../../services/Api';
 import { computePrometheusRateParams } from '../../services/Prometheus';
 import { KialiAppState, KialiContext } from '../../store';
 import { baseStyle } from '../../styles/StyleUtils';
-import { DurationInSeconds } from '../../types/Common';
-import {
-  DEGRADED,
-  FAILURE,
-  Health,
-  HEALTHY,
-  NamespaceAppHealth,
-  NamespaceServiceHealth,
-  NamespaceWorkloadHealth,
-  NOT_READY,
-} from '../../types/Health';
-import { IstioMetricsOptions } from '../../types/MetricsOptions';
-import { SortField } from '../../types/SortFilters';
-import { nsWideMTLSStatus } from '../../types/TLSStatus';
 import { PromisesRegistry } from '../../utils/CancelablePromises';
 import { NamespaceInfo, NamespaceInfoStatus } from './NamespaceInfo';
 import { OverviewCard } from './OverviewCard';

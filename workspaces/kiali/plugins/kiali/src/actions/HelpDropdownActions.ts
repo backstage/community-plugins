@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import type { StatusState } from '@backstage-community/plugin-kiali-common/types';
 import { ActionType, createAction } from 'typesafe-actions';
-import { StatusState } from '../types/StatusState';
 import { ActionKeys } from './ActionKeys';
 
 export const HelpDropdownActions: { [key: string]: any } = {

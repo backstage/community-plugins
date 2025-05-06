@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { presenceValues } from '../../components/Filters/CommonFilters';
 import {
   ActiveFiltersInfo,
   AllFilterTypes,
   FILTER_ACTION_APPEND,
   FILTER_ACTION_UPDATE,
   FilterType,
+  NamespaceInfo,
   RunnableFilter,
-} from '../../types/Filters';
-import { NamespaceInfo } from '../../types/NamespaceInfo';
+} from '@backstage-community/plugin-kiali-common/types';
+import { presenceValues } from '../../components/Filters/CommonFilters';
 
 export const appLabelFilter: FilterType = {
   category: 'App Label',

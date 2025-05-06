@@ -15,6 +15,12 @@
  */
 import type { Namespace } from '@backstage-community/plugin-kiali-common/types';
 import {
+  DRAWER,
+  ENTITY,
+  NamespaceInfo,
+  SortField,
+} from '@backstage-community/plugin-kiali-common/types';
+import {
   Box,
   CircularProgress,
   Paper,
@@ -29,9 +35,6 @@ import {
 } from '@material-ui/core';
 import { default as React } from 'react';
 import { kialiStyle } from '../../styles/StyleUtils';
-import { NamespaceInfo } from '../../types/NamespaceInfo';
-import { SortField } from '../../types/SortFilters';
-import { DRAWER, ENTITY } from '../../types/types';
 import { StatefulFiltersProps } from '../Filters/StatefulFilters';
 import { config, RenderResource, Resource, ResourceType } from './Config';
 import { VirtualItem } from './VirtualItem';

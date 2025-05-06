@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 import type { Namespace } from '@backstage-community/plugin-kiali-common/types';
-import { EdgeLabelMode, GraphType, TrafficRate } from '../../../types/Graph';
+import {
+  EdgeLabelMode,
+  GraphType,
+  TrafficRate,
+} from '@backstage-community/plugin-kiali-common/types';
 
 export type GraphPFSettings = {
   activeNamespaces: Namespace[];

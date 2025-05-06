@@ -13,9 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {
+  BoxByType,
+  GraphType,
+  NodeType,
+  UNKNOWN,
+} from '@backstage-community/plugin-kiali-common/types';
 import { NodeModel } from '@patternfly/react-topology';
 import { PFBadges, PFBadgeType } from '../../../components/Pf/PfBadges';
-import { BoxByType, GraphType, NodeType, UNKNOWN } from '../../../types/Graph';
 import { GraphPFSettings } from '../types/GraphPFSettings';
 import { NodeData } from '../types/NodeData';
 import { NodeMap } from '../types/NodeMap';

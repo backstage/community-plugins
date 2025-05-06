@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import _isEqual from 'lodash/isEqual';
 import {
   JaegerTrace,
   KeyValuePair,
@@ -21,7 +20,8 @@ import {
   Span,
   SpanData,
   TraceData,
-} from '../../types/TracingInfo';
+} from '@backstage-community/plugin-kiali-common/types';
+import _isEqual from 'lodash/isEqual';
 import { extractSpanInfo, getWorkloadFromSpan } from './TracingHelper';
 
 class TreeNode {

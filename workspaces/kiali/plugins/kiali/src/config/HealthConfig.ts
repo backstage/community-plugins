@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-import { HealthConfig, RegexConfig } from '../types/ServerConfig';
+import {
+  HealthConfig,
+  RegexConfig,
+} from '@backstage-community/plugin-kiali-common/types';
 
 const allMatch = new RegExp('.*');
 

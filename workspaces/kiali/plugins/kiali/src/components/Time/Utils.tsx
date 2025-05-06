@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { TimeInMilliseconds } from '../../types/Common';
+import { TimeInMilliseconds } from '@backstage-community/plugin-kiali-common/types';
 
 const defaultOptions = {
   month: 'short',
