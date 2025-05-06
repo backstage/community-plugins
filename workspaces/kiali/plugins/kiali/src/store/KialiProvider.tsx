@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 import { KIALI_PROVIDER } from '@backstage-community/plugin-kiali-common';
+import {
+  AuthInfo,
+  MessageType,
+} from '@backstage-community/plugin-kiali-common/types';
 import { Entity } from '@backstage/catalog-model';
 import { useApi } from '@backstage/core-plugin-api';
 import { CircularProgress } from '@material-ui/core';
@@ -44,8 +48,6 @@ import {
 import { MeshTlsStateReducer } from '../reducers/MeshTlsState';
 import { ProviderStateReducer } from '../reducers/Provider';
 import { kialiApiRef } from '../services/Api';
-import { AuthInfo } from '../types/Auth';
-import { MessageType } from '../types/MessageCenter';
 import { AlertUtils } from '../utils/Alertutils';
 import { PromisesRegistry } from '../utils/CancelablePromises';
 import { initialStore } from './ConfigStore';

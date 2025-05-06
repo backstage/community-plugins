@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 import {
+  MessageType,
+  NotificationMessage,
+} from '@backstage-community/plugin-kiali-common/types';
+import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
@@ -27,7 +31,6 @@ import { default as React } from 'react';
 import { MessageCenterActions } from '../../actions/MessageCenterActions';
 import { KialiIcon } from '../../config/KialiIcon';
 import { KialiAppState, KialiContext } from '../../store';
-import { MessageType, NotificationMessage } from '../../types/MessageCenter';
 
 const getIcon = (type: MessageType) => {
   switch (type) {

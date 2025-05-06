@@ -13,19 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {
+  DEFAULT_LABEL_OPERATION,
+  ID_LABEL_OPERATION,
+} from '@backstage-community/plugin-kiali-common/types';
+import type {
+  ActiveFilter,
+  ActiveFiltersInfo,
+  FilterType,
+  LabelOperation,
+  RunnableFilter,
+  SortField,
+} from '@backstage-community/plugin-kiali-common/types';
 import { camelCase } from 'lodash';
 import { history, HistoryManager, URLParam } from '../../app/History';
 import { config } from '../../config';
-import {
-  ActiveFilter,
-  ActiveFiltersInfo,
-  DEFAULT_LABEL_OPERATION,
-  FilterType,
-  ID_LABEL_OPERATION,
-  LabelOperation,
-  RunnableFilter,
-} from '../../types/Filters';
-import { SortField } from '../../types/SortFilters';
 
 export const perPageOptions: number[] = [5, 10, 15];
 const defaultDuration = 600;

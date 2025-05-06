@@ -13,6 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {
+  ActiveFilter,
+  DEFAULT_LABEL_OPERATION,
+  DurationInSeconds,
+  IntervalInMilliseconds,
+  Status,
+} from '@backstage-community/plugin-kiali-common/types';
 import { Tooltip } from '@material-ui/core';
 import { default as React } from 'react';
 import { healthFilter } from '../../components/Filters/CommonFilters';
@@ -20,9 +27,6 @@ import { FilterSelected } from '../../components/Filters/StatefulFilters';
 import { healthIndicatorStyle } from '../../components/Health/HealthStyle';
 import { createIcon } from '../../components/Health/Helper';
 import { Paths } from '../../config';
-import { DurationInSeconds, IntervalInMilliseconds } from '../../types/Common';
-import { ActiveFilter, DEFAULT_LABEL_OPERATION } from '../../types/Filters';
-import { Status } from '../../types/Health';
 
 type Props = {
   id: string;

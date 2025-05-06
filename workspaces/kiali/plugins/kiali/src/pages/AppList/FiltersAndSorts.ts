@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ObjectReference } from '../../types/IstioObjects';
+import { ObjectReference } from '@backstage-community/plugin-kiali-common/types';
 
 export const compareObjectReference = (
   a: ObjectReference,

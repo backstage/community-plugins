@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 import {
+  BoxByType,
+  DecoratedGraphNodeData,
+  DEGRADED,
+  FAILURE,
+  NodeType,
+} from '@backstage-community/plugin-kiali-common/types';
+import {
   BadgeLocation,
   GraphElement,
   LabelPosition,
   NodeShape,
   NodeStatus,
 } from '@patternfly/react-topology';
-import {
-  BoxByType,
-  DecoratedGraphNodeData,
-  NodeType,
-} from '../../../types/Graph';
-import { DEGRADED, FAILURE } from '../../../types/Health';
 
 export type NodeData = DecoratedGraphNodeData & {
   // These are node.data fields that have an impact on the PFT rendering of the node.

@@ -6,6 +6,11 @@
 // @public (undocumented)
 export const ANNOTATION_SUPPORTED: string[];
 
+// Warning: (ae-forgotten-export) The symbol "DurationInSeconds" needs to be exported by the entry point index.d.ts
+//
+// @public (undocumented)
+export const defaultMetricsDuration: DurationInSeconds;
+
 // @public (undocumented)
 export const KIALI_APP = 'kiali.io/id';
 
@@ -17,6 +22,12 @@ export const KIALI_NAMESPACE = 'kiali.io/namespace';
 
 // @public (undocumented)
 export const KIALI_PROVIDER = 'kiali.io/provider';
+
+// @public (undocumented)
+export const KIALI_RELATED_LABEL = 'kiali_wizard_related';
+
+// @public (undocumented)
+export const KIALI_WIZARD_LABEL = 'kiali_wizard';
 
 // @public (undocumented)
 export const pluginId = 'kiali';

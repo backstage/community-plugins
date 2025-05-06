@@ -14,6 +14,16 @@
  * limitations under the License.
  */
 import { KIALI_PROVIDER } from '@backstage-community/plugin-kiali-common';
+import {
+  filterByName,
+  filterByNamespaces,
+  toIstioItems,
+} from '@backstage-community/plugin-kiali-common/func';
+import {
+  ENTITY,
+  IstioConfigItem,
+  NamespaceInfo,
+} from '@backstage-community/plugin-kiali-common/types';
 import { Content, InfoCard } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { CircularProgress } from '@material-ui/core';
@@ -26,14 +36,6 @@ import { nsEqual } from '../../helpers/namespaces';
 import { kialiApiRef } from '../../services/Api';
 import { KialiAppState, KialiContext } from '../../store';
 import { baseStyle } from '../../styles/StyleUtils';
-import {
-  filterByName,
-  filterByNamespaces,
-  IstioConfigItem,
-  toIstioItems,
-} from '../../types/IstioConfigList';
-import { NamespaceInfo } from '../../types/NamespaceInfo';
-import { ENTITY } from '../../types/types';
 import { getNamespaces } from '../Overview/OverviewPage';
 
 export const IstioConfigListPage = (props: {

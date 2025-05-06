@@ -13,18 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { PFColors } from '../../components/Pf/PfColors';
-import { KialiApi } from '../../services/Api';
-import { KialiAppState } from '../../store';
 import {
   durationToBounds,
   guardTimeRange,
+} from '@backstage-community/plugin-kiali-common/func';
+import {
+  LineInfo,
+  MetricsObjectTypes,
+  Overlay,
+  OverlayInfo,
+  Span,
   TimeRange,
-} from '../../types/Common';
-import { MetricsObjectTypes } from '../../types/Metrics';
-import { Overlay, OverlayInfo } from '../../types/Overlay';
-import { Span, TracingQuery } from '../../types/Tracing';
-import { LineInfo } from '../../types/VictoryChartInfo';
+  TracingQuery,
+} from '@backstage-community/plugin-kiali-common/types';
+import { PFColors } from '../../components/Pf/PfColors';
+import { KialiApi } from '../../services/Api';
+import { KialiAppState } from '../../store';
 import { toOverlay } from '../../utils/VictoryChartsUtils';
 import { defaultMetricsDuration } from './Helper';
 

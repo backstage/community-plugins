@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { DurationInSeconds } from '@backstage-community/plugin-kiali-common/types';
 import { serverConfig } from '../config/ServerConfig';
-import { DurationInSeconds } from '../types/Common';
 
 // The step needs to minimally cover 2 datapoints to get any sort of average. So 2*scrape is the bare
 // minimum.  We set rateInterval=step which basically gives us the rate() of each disjoint set.

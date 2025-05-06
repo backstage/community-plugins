@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import type { RichDataPoint } from '@backstage-community/plugin-kiali-common/types';
 import { format as d3Format } from 'd3-format';
 import { DomainTuple } from 'victory-core';
 import { VictoryVoronoiContainerProps } from 'victory-voronoi-container';
-import { RichDataPoint } from '../../types/VictoryChartInfo';
 import { getFormatter } from '../../utils/Formatter';
 
 type BrushDomain = { x: DomainTuple; y: DomainTuple };

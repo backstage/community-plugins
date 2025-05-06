@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import type { VCDataPoint } from '@backstage-community/plugin-kiali-common/types';
 import {
   ChartCursorFlyout,
   ChartLabel,
@@ -21,7 +22,6 @@ import {
   ChartTooltipProps,
 } from '@patternfly/react-charts';
 import { default as React } from 'react';
-import { VCDataPoint } from '../../types/VictoryChartInfo';
 import { toLocaleStringWithConditionalDate } from '../../utils/Date';
 
 const dy = 15;
