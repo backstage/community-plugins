@@ -52,8 +52,13 @@ const AnnouncementDetails = ({
   const subHeader = (
     <Typography>
       By{' '}
-      <EntityPeekAheadPopover entityRef={announcement.on_behalf_of || announcement.publisher}>
-        <EntityRefLink entityRef={announcement.on_behalf_of || announcement.publisher} hideIcon />
+      <EntityPeekAheadPopover
+        entityRef={announcement.on_behalf_of || announcement.publisher}
+      >
+        <EntityRefLink
+          entityRef={announcement.on_behalf_of || announcement.publisher}
+          hideIcon
+        />
       </EntityPeekAheadPopover>
       , {DateTime.fromISO(announcement.created_at).toRelative()}
     </Typography>

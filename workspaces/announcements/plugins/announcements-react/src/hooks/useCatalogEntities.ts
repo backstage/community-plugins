@@ -15,52 +15,77 @@
  */
 import { useApi } from '@backstage/core-plugin-api';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
-import { Entity, parseEntityRef } from '@backstage/catalog-model';
+import { parseEntityRef } from '@backstage/catalog-model';
 import useAsyncRetry from 'react-use/esm/useAsyncRetry';
 
 /**
  * Hook to fetch catalog entities based on entity references.
  *
  * @param refs - An array of entity reference strings.
- * @returns An object containing the fetched entities, loading state, error, and a retry function.
+ * @param searchTerm - A string to filter entities by a search term.
+ * @param limit - The maximum number of entities to fetch.
+ * @param offset - The number of entities to skip before starting to fetch.
+ * @returns An object containing the fetched entities, total items count, loading state, error, and a retry function.
  *
  * @public
  */
-export const useCatalogEntities = (refs: string[]) => {
+export const useCatalogEntities = (
+  refs: string[],
+  searchTerm: string = '',
+  limit: number = 10,
+  offset: number = 0,
+) => {
   const catalogApi = useApi(catalogApiRef);
+
+  const fetchEntities = async () => {
+    const queryOptions: any = {
+      filter: refs.map(refString => {
+        const { kind, namespace, name } = parseEntityRef(refString);
+        return {
+          kind,
+          'metadata.namespace': namespace,
+          'metadata.name': name,
+        };
+      }),
+      limit,
+      offset,
+      orderFields: { field: 'metadata.name', order: 'asc' },
+    };
+
+    if (searchTerm.trim() !== '') {
+      queryOptions.fullTextFilter = {
+        term: searchTerm,
+        fields: [
+          'metadata.name',
+          'kind',
+          'spec.profile.displayName',
+          'metadata.title',
+        ],
+      };
+    }
+
+    const response = await catalogApi.queryEntities(queryOptions);
+    return { items: response.items, totalItems: response.totalItems };
+  };
 
   const {
     value: entities,
     loading,
     error,
     retry,
-  } = useAsyncRetry(async () => {
-    if (!refs.length) {
-      return [];
-    }
+  } = useAsyncRetry(fetchEntities, [
+    catalogApi,
+    refs,
+    searchTerm,
+    limit,
+    offset,
+  ]);
 
-    const filter = refs.map(refString => {
-      const { kind, namespace, name } = parseEntityRef(refString);
-      return {
-        kind,
-        'metadata.namespace': namespace,
-        'metadata.name': name,
-      };
-    });
-
-    const items: Entity[] = [];
-    let response = await catalogApi.queryEntities({ filter });
-    items.push(...response.items);
-
-    while (response.pageInfo.nextCursor && response.items.length > 0) {
-      response = await catalogApi.queryEntities({
-        cursor: response.pageInfo.nextCursor,
-      });
-      items.push(...response.items);
-    }
-
-    return items;
-  }, [catalogApi, refs]);
-
-  return { entities: entities ?? [], loading, error, retry };
+  return {
+    entities: entities?.items ?? [],
+    totalItems: entities?.totalItems ?? 0,
+    loading,
+    error,
+    retry,
+  };
 };
