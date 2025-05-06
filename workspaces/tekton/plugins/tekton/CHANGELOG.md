@@ -1,5 +1,13 @@
 ### Dependencies
 
+## 3.25.2
+
+### Patch Changes
+
+- 1d7aaba: Update supported version metadata to 1.38.1
+- Updated dependencies [1d7aaba]
+  - @backstage-community/plugin-tekton-common@1.9.1
+
 ## 3.25.1
 
 ### Patch Changes
