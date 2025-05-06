@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { MessageType } from '@backstage-community/plugin-kiali-common/types';
 import { ActionType, createAction } from 'typesafe-actions';
-import { MessageType } from '../types/MessageCenter';
 import { ActionKeys } from './ActionKeys';
 
 const DEFAULT_GROUP_ID = 'default';

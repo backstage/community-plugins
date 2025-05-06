@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {
+  MessageType,
+  NotificationGroup,
+  NotificationMessage,
+} from '@backstage-community/plugin-kiali-common/types';
 import { Badge, Button, Drawer } from '@material-ui/core';
 import { default as React } from 'react';
 import { KialiIcon } from '../../config/KialiIcon';
 import { KialiAppState, KialiContext } from '../../store';
 import { kialiStyle } from '../../styles/StyleUtils';
-import {
-  MessageType,
-  NotificationGroup,
-  NotificationMessage,
-} from '../../types/MessageCenter';
 import { AlertDrawer } from './AlertDrawer';
 
 const bell = kialiStyle({

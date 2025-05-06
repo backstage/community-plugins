@@ -13,6 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {
+  calculateErrorRate,
+  hasHealth,
+} from '@backstage-community/plugin-kiali-common/func';
+import {
+  ActiveFiltersInfo,
+  AllFilterTypes,
+  FILTER_ACTION_APPEND,
+  FilterType,
+  ServiceListItem,
+  SortField,
+  ToggleType,
+} from '@backstage-community/plugin-kiali-common/types';
 import { TextInputTypes } from '@patternfly/react-core';
 import {
   filterByHealth,
@@ -25,17 +38,6 @@ import {
 import { hasMissingSidecar } from '../../components/VirtualList/Config';
 import { serverConfig } from '../../config';
 import { filterByLabel } from '../../helpers/LabelFilterHelper';
-import { calculateErrorRate } from '../../types/ErrorRate';
-import {
-  ActiveFiltersInfo,
-  AllFilterTypes,
-  FILTER_ACTION_APPEND,
-  FilterType,
-  ToggleType,
-} from '../../types/Filters';
-import { hasHealth } from '../../types/Health';
-import { ServiceListItem } from '../../types/ServiceList';
-import { SortField } from '../../types/SortFilters';
 import { compareObjectReferences } from '../AppList/FiltersAndSorts';
 import { istioConfigTypeFilter } from '../IstioConfigList/FiltersAndSorts';
 
@@ -145,12 +147,14 @@ export const sortFields: SortField<ServiceListItem>[] = [
             a.name,
             'service',
             a.health.requests,
+            serverConfig,
           ).errorRatio.global.status.value;
           const ratioB = calculateErrorRate(
             b.namespace,
             b.name,
             'service',
             b.health.requests,
+            serverConfig,
           ).errorRatio.global.status.value;
           return ratioA === ratioB
             ? a.name.localeCompare(b.name)

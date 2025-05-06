@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { StatusState } from '@backstage-community/plugin-kiali-common/types';
 import { getType } from 'typesafe-actions';
 import { HelpDropdownActions } from '../actions/HelpDropdownActions';
 import { KialiAppAction } from '../actions/KialiAppAction';
-import { StatusState } from '../types/StatusState';
 
 export const INITIAL_STATUS_STATE: StatusState = {
   status: {},

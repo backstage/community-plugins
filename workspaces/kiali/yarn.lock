@@ -2778,6 +2778,15 @@ __metadata:
   resolution: "@backstage-community/plugin-kiali-common@workspace:plugins/kiali-common"
   dependencies:
     "@backstage/cli": "npm:^0.32.0"
+    "@material-ui/core": "npm:^4.9.13"
+    "@patternfly/react-icons": "npm:^5.1.1"
+    "@types/lodash": "npm:^4.14.151"
+    axios: "npm:^1.7.4"
+    deep-freeze: "npm:0.0.1"
+    js-yaml: "npm:^3.13.1"
+    lodash: "npm:^4.17.21"
+    react-ace: "npm:9.5.0"
+    typestyle: "npm:^2.4.0"
   languageName: unknown
   linkType: soft
 

@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 
+import {
+  MILLISECONDS,
+  UNIT_TIME,
+} from '@backstage-community/plugin-kiali-common/types';
 import deepFreeze from 'deep-freeze';
-import { MILLISECONDS, UNIT_TIME } from '../types/Common';
 
 // We assume this is always defined in the .env file
 const documentationUrl = process.env.REACT_APP_KIALI_DOC_URL!;
