@@ -1,5 +1,11 @@
 # @backstage-community/plugin-redhat-argocd-common
 
+## 1.5.1
+
+### Patch Changes
+
+- 1d7aaba: Update supported version metadata to 1.38.1
+
 ## 1.5.0
 
 ### Minor Changes
