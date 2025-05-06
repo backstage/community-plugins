@@ -331,8 +331,14 @@ export const useAnnouncementsTranslation: () => {
 };
 
 // @public
-export const useCatalogEntities: (refs: string[]) => {
+export const useCatalogEntities: (
+  refs: string[],
+  searchTerm?: string,
+  limit?: number,
+  offset?: number,
+) => {
   entities: Entity[];
+  totalItems: number;
   loading: boolean;
   error: Error | undefined;
   retry: (() => void) | (() => void) | (() => void) | (() => void);
