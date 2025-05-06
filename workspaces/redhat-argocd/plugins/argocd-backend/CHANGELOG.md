@@ -1,5 +1,13 @@
 # @backstage-community/plugin-redhat-argocd-backend
 
+## 0.6.1
+
+### Patch Changes
+
+- 1d7aaba: Update supported version metadata to 1.38.1
+- Updated dependencies [1d7aaba]
+  - @backstage-community/plugin-redhat-argocd-common@1.5.1
+
 ## 0.6.0
 
 ### Minor Changes
