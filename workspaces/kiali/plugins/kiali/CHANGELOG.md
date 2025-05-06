@@ -1,5 +1,19 @@
 ### Dependencies
 
+## 1.38.0
+
+### Minor Changes
+
+- 8cb76ee: Migrate types to kiali-common
+- fe9f230: Fix provider selector
+- e53d4ba: Create a common library
+
+### Patch Changes
+
+- 29fb22e: remove unused dependency `@playwright/test`
+- Updated dependencies [8cb76ee]
+  - @backstage-community/plugin-kiali-common@0.2.0
+
 ## 1.37.0
 
 ### Minor Changes

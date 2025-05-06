@@ -1,5 +1,11 @@
 # @backstage-community/plugin-kiali-backend
 
+## 1.22.0
+
+### Minor Changes
+
+- 8cb76ee: Migrate types to kiali-common
+
 ## 1.21.0
 
 ### Minor Changes
