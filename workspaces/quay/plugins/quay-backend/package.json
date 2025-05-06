@@ -16,7 +16,7 @@
   },
   "backstage": {
     "role": "backend-plugin",
-    "supported-versions": "1.35.0",
+    "supported-versions": "1.38.1",
     "pluginId": "quay",
     "pluginPackages": [
       "@backstage-community/plugin-quay",
