@@ -28,6 +28,8 @@ jobs:
     strategy:
       matrix: ${{ fromJson(needs.prepare.outputs.matrix) }}
     steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
       - name: Delay batches (5 min between)
         if: ${{ strategy.job-index != 0 }}
         run: |
