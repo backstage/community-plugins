@@ -29,6 +29,7 @@ import { RBACPermissionPolicy } from '../policies/permission-policy';
 import { PluginPermissionMetadataCollector } from './plugin-endpoints';
 import { PoliciesServer } from './policies-rest-api';
 import { PolicyBuilder } from './policy-builder';
+import { mockPermissionRegistry } from '../../__fixtures__/mock-utils';
 
 const enforcerMock: Partial<Enforcer> = {
   loadPolicy: jest.fn().mockImplementation(async () => {}),
@@ -147,6 +148,7 @@ describe('PolicyBuilder', () => {
         httpAuth: mockServices.httpAuth.mock(),
         auditor: mockServices.auditor.mock(),
         lifecycle: mockServices.lifecycle.mock(),
+        permissionsRegistry: mockPermissionRegistry,
       },
       backendPluginIDsProviderMock,
     );
@@ -189,6 +191,7 @@ describe('PolicyBuilder', () => {
         httpAuth: mockServices.httpAuth.mock(),
         auditor: mockServices.auditor.mock(),
         lifecycle: mockServices.lifecycle.mock(),
+        permissionsRegistry: mockPermissionRegistry,
       },
       backendPluginIDsProviderMock,
       [providerMock],
@@ -233,6 +236,7 @@ describe('PolicyBuilder', () => {
         httpAuth: mockServices.httpAuth.mock(),
         auditor: mockServices.auditor.mock(),
         lifecycle: mockServices.lifecycle.mock(),
+        permissionsRegistry: mockPermissionRegistry,
       },
       backendPluginIDsProviderMock,
     );
@@ -278,6 +282,7 @@ describe('PolicyBuilder', () => {
         httpAuth: mockServices.httpAuth.mock(),
         auditor: mockServices.auditor.mock(),
         lifecycle: mockServices.lifecycle.mock(),
+        permissionsRegistry: mockPermissionRegistry,
       },
       pluginIdProvider,
     );
@@ -325,6 +330,7 @@ describe('PolicyBuilder', () => {
         httpAuth: mockServices.httpAuth.mock(),
         auditor: mockServices.auditor.mock(),
         lifecycle: mockServices.lifecycle.mock(),
+        permissionsRegistry: mockPermissionRegistry,
       },
       pluginIdProvider,
     );
@@ -370,6 +376,7 @@ describe('PolicyBuilder', () => {
       httpAuth: mockServices.httpAuth.mock(),
       auditor: mockServices.auditor.mock(),
       lifecycle: mockServices.lifecycle.mock(),
+      permissionsRegistry: mockPermissionRegistry,
     });
     expect(CasbinDBAdapterFactory).toHaveBeenCalled();
     expect(enforcerMock.loadPolicy).toHaveBeenCalled();
