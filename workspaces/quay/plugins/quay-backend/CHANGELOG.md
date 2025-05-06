@@ -1,5 +1,13 @@
 # @backstage-community/plugin-quay-backend
 
+## 1.2.1
+
+### Patch Changes
+
+- 1d7aaba: Update supported version metadata to 1.38.1
+- Updated dependencies [1d7aaba]
+  - @backstage-community/plugin-quay-common@1.8.1
+
 ## 1.2.0
 
 ### Minor Changes
