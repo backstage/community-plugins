@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { JSX } from 'react';
 
 import { Entity } from '@backstage/catalog-model';
 import { createApiFactory } from '@backstage/core-plugin-api';
@@ -49,7 +49,7 @@ const clusterEntity = (name: string): Entity => ({
   },
 });
 
-const clusterEntityPage = (name: string): React.JSX.Element => (
+const clusterEntityPage = (name: string): JSX.Element => (
   <EntityProvider entity={clusterEntity(name)}>
     <ClusterContextProvider>
       <Grid container direction="column" xs={6}>
