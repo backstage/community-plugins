@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { Entity } from '@backstage/catalog-model';
-import { CatalogApi } from '@backstage/catalog-client';
+import { CatalogApi, QueryEntitiesRequest } from '@backstage/catalog-client';
 import { createParticipant } from './utils/participantUtils';
 
 export class EntityService {
@@ -29,7 +29,7 @@ export class EntityService {
     limit: number = 10,
     offset: number = 0,
   ): Promise<{ items: Entity[]; totalItems: number }> {
-    const queryOptions: any = {
+    const queryOptions: QueryEntitiesRequest = {
       filter: [{ kind: 'group' }, { kind: 'user' }],
       limit: limit,
       offset: offset,
