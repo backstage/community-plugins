@@ -1,5 +1,5 @@
 ---
-'@backstage-community/plugin-tech-insights-backend': major
+'@backstage-community/plugin-tech-insights-backend': minor
 ---
 
 This version includes breaking changes related to permissions. Please review the changes carefully before upgrading:
