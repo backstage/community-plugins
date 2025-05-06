@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import ResourceName from '../../../../common/components/ResourceName';
 import { IngressModel } from '../../../../models';
 import { IngressData } from '../../../../types/ingresses';

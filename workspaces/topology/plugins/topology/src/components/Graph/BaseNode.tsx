@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { ReactNode, PropsWithChildren, Ref, LegacyRef } from 'react';
 
 import {
   BadgeLocation,
@@ -41,7 +41,7 @@ type BaseNodeProps = {
   innerRadius?: number;
   icon?: string;
   kind?: string;
-  labelIcon?: React.ReactNode;
+  labelIcon?: ReactNode;
   labelIconPadding?: number;
   badge?: string;
   badgeColor?: string;
@@ -49,7 +49,7 @@ type BaseNodeProps = {
   badgeBorderColor?: string;
   badgeClassName?: string;
   badgeLocation?: BadgeLocation;
-  attachments?: React.ReactNode;
+  attachments?: ReactNode;
   element: Node;
   hoverRef?: (node: Element) => () => void;
   dragging?: boolean;
@@ -70,11 +70,11 @@ const BaseNode = ({
   children,
   alertVariant,
   ...rest
-}: React.PropsWithChildren<BaseNodeProps>) => {
+}: PropsWithChildren<BaseNodeProps>) => {
   const [hover, internalHoverRef] = useHover();
   const nodeHoverRefs = useCombineRefs(
     internalHoverRef,
-    hoverRef as React.Ref<Element>,
+    hoverRef as Ref<Element>,
   );
   const { width, height } = element.getDimensions();
   const cx = width / 2;
@@ -96,7 +96,7 @@ const BaseNode = ({
   return (
     <Layer id={hover ? TOP_LAYER : DEFAULT_LAYER}>
       <g
-        ref={nodeHoverRefs as React.LegacyRef<SVGGElement>}
+        ref={nodeHoverRefs as LegacyRef<SVGGElement>}
         data-test-id={element.getLabel()}
       >
         <DefaultNode

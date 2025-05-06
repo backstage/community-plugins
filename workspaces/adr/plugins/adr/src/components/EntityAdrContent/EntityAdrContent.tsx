@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+
+import * as React from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import useAsync from 'react-use/esm/useAsync';
 

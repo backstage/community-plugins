@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
+import type { FC } from 'react';
+
+import { useState, useCallback } from 'react';
 
 import {
   ExpandableSection,
@@ -26,15 +28,12 @@ import { deviceKey, deviceLabel } from '../../../utils/vm-utils';
 
 import './boot-order.css';
 
-export const BootOrderEmptySummary: React.FC<BootOrderEmptySummaryProps> = ({
+export const BootOrderEmptySummary: FC<BootOrderEmptySummaryProps> = ({
   devices,
 }) => {
-  const [isExpanded, setIsExpanded] = React.useState<boolean>(false);
+  const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const options = devices.filter(device => !device.value.bootOrder);
-  const onToggle = React.useCallback(
-    () => setIsExpanded(!isExpanded),
-    [isExpanded],
-  );
+  const onToggle = useCallback(() => setIsExpanded(!isExpanded), [isExpanded]);
 
   // Note(Yaacov):
   // className='text-secondary' is a hack to fix TextVariants being overriden.

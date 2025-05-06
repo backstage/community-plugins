@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/** @public */
 export interface Namespace {
   name: string;
   cluster?: string;
@@ -20,12 +21,3 @@ export interface Namespace {
   labels?: { [key: string]: string };
   annotations?: { [key: string]: string };
 }
-
-export const namespaceFromString = (namespace: string) => ({ name: namespace });
-
-export const namespacesFromString = (namespaces: string) => {
-  return namespaces.split(',').map(name => namespaceFromString(name));
-};
-
-export const namespacesToString = (namespaces: Namespace[]) =>
-  namespaces.map(namespace => namespace.name).join(',');

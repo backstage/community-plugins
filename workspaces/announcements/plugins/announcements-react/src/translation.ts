@@ -39,8 +39,8 @@ export const announcementsTranslationRef = createTranslationRef({
       card: {
         by: 'By',
         in: 'in',
-        edit: 'EDIT',
-        delete: 'DELETE',
+        edit: 'Edit',
+        delete: 'Delete',
         occurred: 'Occurred ',
         scheduled: 'Scheduled ',
         today: 'Today',

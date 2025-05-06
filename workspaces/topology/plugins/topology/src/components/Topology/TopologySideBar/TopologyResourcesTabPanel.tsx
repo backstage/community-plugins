@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import { V1Pod, V1Service, V1ServicePort } from '@kubernetes/client-node';
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import { ChartLabel } from '@patternfly/react-charts/victory';

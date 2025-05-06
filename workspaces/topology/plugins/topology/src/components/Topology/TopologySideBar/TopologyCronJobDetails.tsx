@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
+import type { FC } from 'react';
 
 import { V1CronJob } from '@kubernetes/client-node';
 import { Timestamp, TimestampFormat } from '@patternfly/react-core';
@@ -21,9 +21,7 @@ import { Timestamp, TimestampFormat } from '@patternfly/react-core';
 import TopologySideBarDetailsItem from './TopologySideBarDetailsItem';
 import TopologyWorkloadDetails from './TopologyWorkloadDetails';
 
-const TopologyCronJobDetails: React.FC<{ resource: V1CronJob }> = ({
-  resource,
-}) => {
+const TopologyCronJobDetails: FC<{ resource: V1CronJob }> = ({ resource }) => {
   return (
     <TopologyWorkloadDetails resource={resource}>
       <TopologySideBarDetailsItem label="Schedule">

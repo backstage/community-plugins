@@ -15,6 +15,9 @@
  */
 import type {
   AuditorService,
+  BackstageCredentials,
+  BackstageServicePrincipal,
+  BackstageUserPrincipal,
   PermissionsService,
 } from '@backstage/backend-plugin-api';
 import {
@@ -22,7 +25,6 @@ import {
   InputError,
   NotAllowedError,
   NotFoundError,
-  ServiceUnavailableError,
 } from '@backstage/errors';
 import { createRouter } from '@backstage/plugin-permission-backend';
 import {
@@ -94,7 +96,12 @@ export class PoliciesServer {
   private async authorizeConditional(
     request: Request,
     permission: ResourcePermission<'policy-entity'> | BasicPermission,
-  ): Promise<PolicyDecision> {
+  ): Promise<{
+    decision: PolicyDecision;
+    credentials: BackstageCredentials<
+      BackstageUserPrincipal | BackstageServicePrincipal
+    >;
+  }> {
     const credentials = await this.options.httpAuth.credentials(request, {
       allow: ['user', 'service'],
     });
@@ -105,7 +112,7 @@ export class PoliciesServer {
       permission !== policyEntityReadPermission
     ) {
       throw new NotAllowedError(
-        `Only creadential principal with type 'user' permitted to modify permissions`,
+        `Only credential principal with type 'user' permitted to modify permissions`,
       );
     }
 
@@ -124,19 +131,17 @@ export class PoliciesServer {
       )[0];
     }
 
-    return decision;
+    if (decision.result === AuthorizeResult.DENY) {
+      throw new NotAllowedError(); // 403
+    }
+
+    return { decision, credentials };
   }
 
   async serve(): Promise<express.Router> {
     const router = await createRouter(this.options);
 
-    const { httpAuth, logger } = this.options;
-
-    if (!httpAuth) {
-      throw new ServiceUnavailableError(
-        'httpAuth not found, ensure the correct configuration for the RBAC plugin',
-      );
-    }
+    const { logger } = this.options;
 
     const policyPermissionsIntegrationRouter =
       createPermissionIntegrationRouter({
@@ -160,14 +165,8 @@ export class PoliciesServer {
     }
 
     router.get('/', async (request, response) => {
-      const decision = await this.authorizeConditional(
-        request,
-        policyEntityReadPermission,
-      );
+      await this.authorizeConditional(request, policyEntityReadPermission);
 
-      if (decision.result === AuthorizeResult.DENY) {
-        throw new NotAllowedError(); // 403
-      }
       response.send({ status: 'Authorized' });
     });
 
@@ -178,14 +177,10 @@ export class PoliciesServer {
       logAuditorEvent(this.auditor),
       async (request, response) => {
         let conditionsFilter: RBACFilters | undefined;
-        const decision = await this.authorizeConditional(
+        const { decision } = await this.authorizeConditional(
           request,
           policyEntityReadPermission,
         );
-
-        if (decision.result === AuthorizeResult.DENY) {
-          throw new NotAllowedError(); // 403
-        }
 
         if (decision.result === AuthorizeResult.CONDITIONAL) {
           conditionsFilter = transformConditions(decision.conditions);
@@ -243,14 +238,10 @@ export class PoliciesServer {
       logAuditorEvent(this.auditor),
       async (request, response) => {
         let conditionsFilter: RBACFilters | undefined;
-        const decision = await this.authorizeConditional(
+        const { decision } = await this.authorizeConditional(
           request,
           policyEntityReadPermission,
         );
-
-        if (decision.result === AuthorizeResult.DENY) {
-          throw new NotAllowedError(); // 403
-        }
 
         if (decision.result === AuthorizeResult.CONDITIONAL) {
           conditionsFilter = transformConditions(decision.conditions);
@@ -295,14 +286,10 @@ export class PoliciesServer {
       logAuditorEvent(this.auditor),
       async (request, response) => {
         let conditionsFilter: RBACFilters | undefined;
-        const decision = await this.authorizeConditional(
+        const { decision } = await this.authorizeConditional(
           request,
           policyEntityDeletePermission,
         );
-
-        if (decision.result === AuthorizeResult.DENY) {
-          throw new NotAllowedError(); // 403
-        }
 
         if (decision.result === AuthorizeResult.CONDITIONAL) {
           conditionsFilter = transformConditions(decision.conditions);
@@ -338,14 +325,7 @@ export class PoliciesServer {
       '/policies',
       logAuditorEvent(this.auditor),
       async (request, response) => {
-        const decision = await this.authorizeConditional(
-          request,
-          policyEntityCreatePermission,
-        );
-
-        if (decision.result === AuthorizeResult.DENY) {
-          throw new NotAllowedError(); // 403
-        }
+        await this.authorizeConditional(request, policyEntityCreatePermission);
 
         const policyRaw: RoleBasedPolicy[] = request.body;
 
@@ -379,14 +359,10 @@ export class PoliciesServer {
       logAuditorEvent(this.auditor),
       async (request, response) => {
         let conditionsFilter: RBACFilters | undefined;
-        const decision = await this.authorizeConditional(
+        const { decision } = await this.authorizeConditional(
           request,
           policyEntityUpdatePermission,
         );
-
-        if (decision.result === AuthorizeResult.DENY) {
-          throw new NotAllowedError(); // 403
-        }
 
         if (decision.result === AuthorizeResult.CONDITIONAL) {
           conditionsFilter = transformConditions(decision.conditions);
@@ -468,14 +444,10 @@ export class PoliciesServer {
       logAuditorEvent(this.auditor),
       async (request, response) => {
         let conditionsFilter: RBACFilters | undefined;
-        const decision = await this.authorizeConditional(
+        const { decision } = await this.authorizeConditional(
           request,
           policyEntityReadPermission,
         );
-
-        if (decision.result === AuthorizeResult.DENY) {
-          throw new NotAllowedError(); // 403
-        }
 
         if (decision.result === AuthorizeResult.CONDITIONAL) {
           conditionsFilter = transformConditions(decision.conditions);
@@ -493,14 +465,10 @@ export class PoliciesServer {
       logAuditorEvent(this.auditor),
       async (request, response) => {
         let conditionsFilter: RBACFilters | undefined;
-        const decision = await this.authorizeConditional(
+        const { decision } = await this.authorizeConditional(
           request,
           policyEntityReadPermission,
         );
-
-        if (decision.result === AuthorizeResult.DENY) {
-          throw new NotAllowedError(); // 403
-        }
 
         if (decision.result === AuthorizeResult.CONDITIONAL) {
           conditionsFilter = transformConditions(decision.conditions);
@@ -527,14 +495,10 @@ export class PoliciesServer {
       logAuditorEvent(this.auditor),
       async (request, response) => {
         const uniqueItems = new Set<string>();
-        const decision = await this.authorizeConditional(
+        const { credentials } = await this.authorizeConditional(
           request,
           policyEntityCreatePermission,
         );
-
-        if (decision.result === AuthorizeResult.DENY) {
-          throw new NotAllowedError(); // 403
-        }
 
         const roleRaw: Role = request.body;
         let err = validateRole(roleRaw);
@@ -573,10 +537,9 @@ export class PoliciesServer {
           }
         }
 
-        const credentials = await httpAuth.credentials(request, {
-          allow: ['user'],
-        });
-        const modifiedBy = credentials.principal.userEntityRef;
+        const modifiedBy = (
+          credentials as BackstageCredentials<BackstageUserPrincipal>
+        ).principal.userEntityRef;
         const metadata: RoleMetadataDao = {
           roleEntityRef: roleRaw.name,
           source: 'rest',
@@ -600,14 +563,10 @@ export class PoliciesServer {
       async (request, response) => {
         const uniqueItems = new Set<string>();
         let conditionsFilter: RBACFilters | undefined;
-        const decision = await this.authorizeConditional(
+        const { decision, credentials } = await this.authorizeConditional(
           request,
           policyEntityUpdatePermission,
         );
-
-        if (decision.result === AuthorizeResult.DENY) {
-          throw new NotAllowedError(); // 403
-        }
 
         if (decision.result === AuthorizeResult.CONDITIONAL) {
           conditionsFilter = transformConditions(decision.conditions);
@@ -645,15 +604,14 @@ export class PoliciesServer {
         const newRole = this.transformRoleToArray(newRoleRaw);
         // todo shell we allow newRole with an empty array?...
 
-        const credentials = await httpAuth.credentials(request, {
-          allow: ['user'],
-        });
-
+        const modifiedBy = (
+          credentials as BackstageCredentials<BackstageUserPrincipal>
+        ).principal.userEntityRef;
         const newMetadata: RoleMetadataDao = {
           ...newRoleRaw.metadata,
           source: newRoleRaw.metadata?.source ?? 'rest',
           roleEntityRef: newRoleRaw.name,
-          modifiedBy: credentials.principal.userEntityRef,
+          modifiedBy,
           owner: newRoleRaw.metadata?.owner ?? '',
         };
 
@@ -757,14 +715,10 @@ export class PoliciesServer {
       logAuditorEvent(this.auditor),
       async (request, response) => {
         let conditionsFilter: RBACFilters | undefined;
-        const decision = await this.authorizeConditional(
+        const { decision, credentials } = await this.authorizeConditional(
           request,
           policyEntityDeletePermission,
         );
-
-        if (decision.result === AuthorizeResult.DENY) {
-          throw new NotAllowedError(); // 403
-        }
 
         if (decision.result === AuthorizeResult.CONDITIONAL) {
           conditionsFilter = transformConditions(decision.conditions);
@@ -814,14 +768,13 @@ export class PoliciesServer {
           }
         }
 
-        const credentials = await httpAuth.credentials(request, {
-          allow: ['user'],
-        });
-
+        const modifiedBy = (
+          credentials as BackstageCredentials<BackstageUserPrincipal>
+        ).principal.userEntityRef;
         const metadata: RoleMetadataDao = {
           roleEntityRef,
           source: 'rest',
-          modifiedBy: credentials.principal.userEntityRef,
+          modifiedBy,
         };
 
         await this.enforcer.removeGroupingPolicies(
@@ -843,14 +796,7 @@ export class PoliciesServer {
       '/plugins/policies',
       logAuditorEvent(this.auditor),
       async (request, response) => {
-        const decision = await this.authorizeConditional(
-          request,
-          policyEntityReadPermission,
-        );
-
-        if (decision.result === AuthorizeResult.DENY) {
-          throw new NotAllowedError(); // 403
-        }
+        await this.authorizeConditional(request, policyEntityReadPermission);
 
         const body = await this.pluginPermMetaData.getPluginPolicies(
           this.options.auth,
@@ -864,14 +810,7 @@ export class PoliciesServer {
       '/plugins/condition-rules',
       logAuditorEvent(this.auditor),
       async (request, response) => {
-        const decision = await this.authorizeConditional(
-          request,
-          policyEntityReadPermission,
-        );
-
-        if (decision.result === AuthorizeResult.DENY) {
-          throw new NotAllowedError(); // 403
-        }
+        await this.authorizeConditional(request, policyEntityReadPermission);
 
         const body = await this.pluginPermMetaData.getPluginConditionRules(
           this.options.auth,
@@ -886,14 +825,10 @@ export class PoliciesServer {
       logAuditorEvent(this.auditor),
       async (request, response) => {
         let conditionsFilter: RBACFilters | undefined;
-        const decision = await this.authorizeConditional(
+        const { decision } = await this.authorizeConditional(
           request,
           policyEntityReadPermission,
         );
-
-        if (decision.result === AuthorizeResult.DENY) {
-          throw new NotAllowedError(); // 403
-        }
 
         if (decision.result === AuthorizeResult.CONDITIONAL) {
           conditionsFilter = transformConditions(decision.conditions);
@@ -935,14 +870,7 @@ export class PoliciesServer {
       '/roles/conditions',
       logAuditorEvent(this.auditor),
       async (request, response) => {
-        const decision = await this.authorizeConditional(
-          request,
-          policyEntityCreatePermission,
-        );
-
-        if (decision.result === AuthorizeResult.DENY) {
-          throw new NotAllowedError(); // 403
-        }
+        await this.authorizeConditional(request, policyEntityCreatePermission);
 
         const roleConditionPolicy: RoleConditionalPolicyDecision<PermissionAction> =
           request.body;
@@ -970,14 +898,10 @@ export class PoliciesServer {
       logAuditorEvent(this.auditor),
       async (request, response) => {
         let conditionsFilter: RBACFilters | undefined;
-        const decision = await this.authorizeConditional(
+        const { decision } = await this.authorizeConditional(
           request,
           policyEntityReadPermission,
         );
-
-        if (decision.result === AuthorizeResult.DENY) {
-          throw new NotAllowedError(); // 403
-        }
 
         const id: number = parseInt(request.params.id, 10);
         if (isNaN(id)) {
@@ -1019,14 +943,10 @@ export class PoliciesServer {
       logAuditorEvent(this.auditor),
       async (request, response) => {
         let conditionsFilter: RBACFilters | undefined;
-        const decision = await this.authorizeConditional(
+        const { decision } = await this.authorizeConditional(
           request,
           policyEntityDeletePermission,
         );
-
-        if (decision.result === AuthorizeResult.DENY) {
-          throw new NotAllowedError(); // 403
-        }
 
         if (decision.result === AuthorizeResult.CONDITIONAL) {
           conditionsFilter = transformConditions(decision.conditions);
@@ -1067,14 +987,10 @@ export class PoliciesServer {
       logAuditorEvent(this.auditor),
       async (request, response) => {
         let conditionsFilter: RBACFilters | undefined;
-        const decision = await this.authorizeConditional(
+        const { decision } = await this.authorizeConditional(
           request,
           policyEntityUpdatePermission,
         );
-
-        if (decision.result === AuthorizeResult.DENY) {
-          throw new NotAllowedError(); // 403
-        }
 
         if (decision.result === AuthorizeResult.CONDITIONAL) {
           conditionsFilter = transformConditions(decision.conditions);
@@ -1122,14 +1038,7 @@ export class PoliciesServer {
       '/refresh/:id',
       logAuditorEvent(this.auditor),
       async (request, response) => {
-        const decision = await this.authorizeConditional(
-          request,
-          policyEntityCreatePermission,
-        );
-
-        if (decision.result === AuthorizeResult.DENY) {
-          throw new NotAllowedError(); // 403
-        }
+        await this.authorizeConditional(request, policyEntityCreatePermission);
 
         if (!this.rbacProviders) {
           throw new NotFoundError(`No RBAC providers were found`);

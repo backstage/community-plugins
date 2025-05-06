@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import type { Namespace } from '@backstage-community/plugin-kiali-common/types';
 import { getType } from 'typesafe-actions';
 import { KialiAppAction } from '../actions/KialiAppAction';
 import { NamespaceActions } from '../actions/NamespaceAction';
 import { NamespaceState } from '../store/Store';
-import { Namespace } from '../types/Namespace';
 import { updateState } from '../utils/Reducer';
 
 function filterDuplicateNamespaces(namespaces: Namespace[]): Namespace[] {

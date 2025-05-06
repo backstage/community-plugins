@@ -5,6 +5,7 @@ metadata:
   name: run-pipeline-example
   title: Run Azure Pipeline Example
 spec:
+  type: service
   parameters:
     - title: Choose a location
       required:

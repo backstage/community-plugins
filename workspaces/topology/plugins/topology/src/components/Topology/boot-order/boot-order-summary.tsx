@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
+import type { FC } from 'react';
 
 import * as _ from 'lodash';
 
@@ -22,9 +22,7 @@ import { deviceKey, deviceLabel } from '../../../utils/vm-utils';
 import { BootOrderEmptySummary } from './boot-order-empty-summary';
 
 // NOTE(yaacov): using <ol> because '@patternfly/react-core' <List> currently miss isOrder parameter.
-export const BootOrderSummary: React.FC<BootOrderSummaryProps> = ({
-  devices,
-}) => {
+export const BootOrderSummary: FC<BootOrderSummaryProps> = ({ devices }) => {
   const sources = _.sortBy(
     devices.filter(device => device.value.bootOrder),
     'value.bootOrder',

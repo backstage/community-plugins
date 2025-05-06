@@ -23,9 +23,52 @@ import {
   PersistenceContext,
   TechInsightsStore,
 } from '@backstage-community/plugin-tech-insights-node';
+import { AuthorizeResult } from '@backstage/plugin-permission-common';
 import { DateTime } from 'luxon';
 import { mockServices } from '@backstage/backend-test-utils';
 import { DefaultSchedulerService } from '@backstage/backend-defaults/scheduler';
+
+const setupRouter = async (
+  mockPersistenceContext: PersistenceContext,
+  allow: boolean,
+) => {
+  const database = mockServices.database.mock({
+    migrations: { skip: true },
+  });
+  const logger = mockServices.logger.mock();
+  const urlReader = mockServices.urlReader.mock();
+  const techInsightsContext = await buildTechInsightsContext({
+    database,
+    logger,
+    factRetrievers: [],
+    scheduler: DefaultSchedulerService.create({ database, logger }),
+    config: ConfigReader.fromConfigs([]),
+    discovery: {
+      getBaseUrl: (_: string) => Promise.resolve('http://mock.url'),
+      getExternalBaseUrl: (_: string) => Promise.resolve('http://mock.url'),
+    },
+    auth: mockServices.auth(),
+    urlReader,
+  });
+
+  const router = await createRouter({
+    logger,
+    config: ConfigReader.fromConfigs([]),
+    ...techInsightsContext,
+    persistenceContext: mockPersistenceContext,
+    permissions: mockServices.permissions.mock({
+      authorize: async () => [
+        { result: allow ? AuthorizeResult.ALLOW : AuthorizeResult.DENY },
+      ],
+      authorizeConditional: async () => [
+        { result: allow ? AuthorizeResult.ALLOW : AuthorizeResult.DENY },
+      ],
+    }),
+    httpAuth: mockServices.httpAuth(),
+  });
+
+  return router;
+};
 
 describe('Tech Insights router tests', () => {
   let app: express.Express;
@@ -46,32 +89,8 @@ describe('Tech Insights router tests', () => {
     jest.resetAllMocks();
   });
 
-  beforeAll(async () => {
-    const database = mockServices.database.mock({
-      migrations: { skip: true },
-    });
-    const logger = mockServices.logger.mock();
-    const urlReader = mockServices.urlReader.mock();
-    const techInsightsContext = await buildTechInsightsContext({
-      database,
-      logger,
-      factRetrievers: [],
-      scheduler: DefaultSchedulerService.create({ database, logger }),
-      config: ConfigReader.fromConfigs([]),
-      discovery: {
-        getBaseUrl: (_: string) => Promise.resolve('http://mock.url'),
-        getExternalBaseUrl: (_: string) => Promise.resolve('http://mock.url'),
-      },
-      auth: mockServices.auth(),
-      urlReader,
-    });
-
-    const router = await createRouter({
-      logger,
-      config: ConfigReader.fromConfigs([]),
-      ...techInsightsContext,
-      persistenceContext: mockPersistenceContext,
-    });
+  beforeEach(async () => {
+    const router = await setupRouter(mockPersistenceContext, true);
 
     app = express().use(router);
   });
@@ -79,6 +98,12 @@ describe('Tech Insights router tests', () => {
     it('should be able to retrieve latest schemas', async () => {
       await request(app).get('/fact-schemas').expect(200);
       expect(latestSchemasMock).toHaveBeenCalled();
+    });
+
+    it('should not allow access when not authorized', async () => {
+      const router = await setupRouter(mockPersistenceContext, false);
+      app = express().use(router);
+      await request(app).get('/fact-schemas').expect(403);
     });
   });
 
@@ -112,6 +137,20 @@ describe('Tech Insights router tests', () => {
         })
         .expect(200);
       expect(latestFactsByIdsMock).toHaveBeenCalledWith(['secondId'], 'a:a/a');
+    });
+
+    it('should not allow access when not authorized', async () => {
+      const router = await setupRouter(mockPersistenceContext, false);
+
+      app = express().use(router);
+
+      await request(app)
+        .get('/facts/latest')
+        .query({
+          entity: 'a:a/a',
+          ids: ['firstId', 'secondId'],
+        })
+        .expect(403);
     });
   });
 
@@ -163,6 +202,14 @@ describe('Tech Insights router tests', () => {
         DateTime.fromISO('2021-12-12T12:12:12.000+00:00'),
         DateTime.fromISO('2022-11-11T11:11:11.000+00:00'),
       );
+    });
+
+    it('should not allow access when not authorized', async () => {
+      const router = await setupRouter(mockPersistenceContext, false);
+
+      app = express().use(router);
+
+      await request(app).get('/facts/range').expect(403);
     });
   });
 });
