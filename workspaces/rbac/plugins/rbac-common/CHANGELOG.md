@@ -1,5 +1,11 @@
 ## @backstage-community/plugin-rbac-common [1.8.2](https://github.com/janus-idp/backstage-plugins/compare/@backstage-community/plugin-rbac-common@1.8.1...@backstage-community/plugin-rbac-common@1.8.2) (2024-08-06)
 
+## 1.16.1
+
+### Patch Changes
+
+- 658c51c: chore: Remove usage of @spotify/prettier-config
+
 ## 1.16.0
 
 ### Minor Changes

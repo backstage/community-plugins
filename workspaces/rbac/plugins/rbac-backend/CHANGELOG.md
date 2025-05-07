@@ -1,5 +1,14 @@
 ### Dependencies
 
+## 6.2.5
+
+### Patch Changes
+
+- 658c51c: chore: Remove usage of @spotify/prettier-config
+- Updated dependencies [658c51c]
+  - @backstage-community/plugin-rbac-common@1.16.1
+  - @backstage-community/plugin-rbac-node@1.11.1
+
 ## 6.2.4
 
 ### Patch Changes
