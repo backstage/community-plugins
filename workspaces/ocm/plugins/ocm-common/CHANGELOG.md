@@ -1,5 +1,11 @@
 ## @backstage-community/plugin-ocm-common [3.3.0](https://github.com/janus-idp/backstage-plugins/compare/@backstage-community/plugin-ocm-common@3.2.0...@backstage-community/plugin-ocm-common@3.3.0) (2024-07-26)
 
+## 3.9.0
+
+### Minor Changes
+
+- fde918d: Backstage version bump to v1.38.1
+
 ## 3.8.3
 
 ### Patch Changes
