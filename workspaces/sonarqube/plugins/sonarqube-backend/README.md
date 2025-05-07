@@ -103,7 +103,7 @@ sonarqube:
   baseUrl: https://sonarqube.example.com
   instanceKey: mySonarqube
   apiKey: 123456789abcdef0123456789abcedf012
-  tokenKind: Bearer # this defaults to Basic, which maintains the pre-0.7.0 behavior. It can be set to Bearer or Basic
+  apiKeyKind: Bearer # this defaults to Basic, which maintains the pre-0.7.0 behavior. It can be set to Bearer or Basic
 ```
 
 ##### Catalog

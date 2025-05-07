@@ -71,7 +71,7 @@ export interface Config {
        * If not set, it defaults to "Basic".
        * @visibility frontend
        */
-      tokenKind?: 'Bearer' | 'Basic';
+      apiKeyKind?: 'Bearer' | 'Basic';
     }>;
   };
 }

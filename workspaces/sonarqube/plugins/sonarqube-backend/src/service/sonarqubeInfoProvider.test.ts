@@ -66,7 +66,7 @@ describe('SonarqubeConfig', () => {
           name: SONARQUBE_DEFAULT_INSTANCE_NAME,
           baseUrl: DUMMY_SONAR_URL,
           apiKey: DUMMY_SONAR_APIKEY,
-          tokenKind: DEFAULT_TOKEN_KIND,
+          apiKeyKind: DEFAULT_TOKEN_KIND,
         },
       ]);
     });
@@ -81,7 +81,7 @@ describe('SonarqubeConfig', () => {
           name: SONARQUBE_DEFAULT_INSTANCE_NAME,
           baseUrl: DUMMY_SONAR_URL,
           apiKey: DUMMY_SONAR_APIKEY,
-          tokenKind: DEFAULT_TOKEN_KIND,
+          apiKeyKind: DEFAULT_TOKEN_KIND,
         },
       ]);
     });
@@ -100,7 +100,7 @@ describe('SonarqubeConfig', () => {
                 name: 'other',
                 baseUrl: 'https://sonarqube-other.example.com',
                 apiKey: 'abcdef0123456789abcedf0123456789abc',
-                tokenKind: DEFAULT_TOKEN_KIND,
+                apiKeyKind: DEFAULT_TOKEN_KIND,
               },
             ],
           },
@@ -112,13 +112,13 @@ describe('SonarqubeConfig', () => {
           name: SONARQUBE_DEFAULT_INSTANCE_NAME,
           baseUrl: DUMMY_SONAR_URL,
           apiKey: DUMMY_SONAR_APIKEY,
-          tokenKind: DEFAULT_TOKEN_KIND,
+          apiKeyKind: DEFAULT_TOKEN_KIND,
         },
         {
           name: 'other',
           baseUrl: 'https://sonarqube-other.example.com',
           apiKey: 'abcdef0123456789abcedf0123456789abc',
-          tokenKind: DEFAULT_TOKEN_KIND,
+          apiKeyKind: DEFAULT_TOKEN_KIND,
         },
       ]);
     });
@@ -135,7 +135,7 @@ describe('SonarqubeConfig', () => {
                   name: SONARQUBE_DEFAULT_INSTANCE_NAME,
                   baseUrl: DUMMY_SONAR_URL,
                   apiKey: DUMMY_SONAR_APIKEY,
-                  tokenKind: DEFAULT_TOKEN_KIND,
+                  apiKeyKind: DEFAULT_TOKEN_KIND,
                 },
               ],
             },
@@ -481,7 +481,7 @@ describe('DefaultSonarqubeInfoProvider', () => {
         sonarqube: {
           baseUrl: MOCK_BASE_URL,
           apiKey: '123456789abcdef0123456789abcedf012',
-          tokenKind: 'Bearer',
+          apiKeyKind: 'Bearer',
         },
       });
       expect(
