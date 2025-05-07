@@ -1,5 +1,11 @@
 # @backstage-community/plugin-tech-insights-common
 
+## 0.6.0
+
+### Minor Changes
+
+- ac739ca: Adds permissions for use by the `tech-insights` apis.
+
 ## 0.5.0
 
 ### Minor Changes
