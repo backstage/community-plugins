@@ -59,8 +59,6 @@
     "directory": "workspaces/scaffolder-backend-module-kubernetes/plugins/kubernetes-actions"
   },
   "keywords": [
-    "support:tech-preview",
-    "lifecycle:active",
     "backstage",
     "backend-plugin-module"
   ],
