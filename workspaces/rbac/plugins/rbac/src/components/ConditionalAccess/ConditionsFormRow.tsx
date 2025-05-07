@@ -54,6 +54,7 @@ import {
   NestedCriteriaErrors,
   NotConditionType,
 } from './types';
+import Typography from '@mui/material/Typography';
 
 export const ConditionsFormRow = ({
   conditionRulesData,
@@ -497,7 +498,7 @@ export const ConditionsFormRow = ({
             {selectedNestedConditionCriteria !== criterias.not && (
               <Button
                 sx={{
-                  mt: 1,
+                  mt: 2,
                   color: theme.palette.primary.light,
                 }}
                 size="small"
@@ -509,7 +510,9 @@ export const ConditionsFormRow = ({
                 }
                 startIcon={<AddIcon fontSize="small" />}
               >
-                Add rule
+                <Typography variant="body2" component="span">
+                  Add rule
+                </Typography>
               </Button>
             )}
           </Box>
