@@ -101,10 +101,6 @@ export class RBACPermissionPolicy implements PermissionPolicy {
     const defaultUserAccessEnabled = configApi.getOptionalBoolean(
       'permission.rbac.defaultUserAccess.enabled',
     );
-    // Explicitly log the actual config value to help diagnose issues
-    logger.info(
-      `Default user access config value: ${defaultUserAccessEnabled}`,
-    );
     logger.info(
       `Default user access enabled: ${Boolean(defaultUserAccessEnabled)}`,
     );

@@ -63,6 +63,38 @@ export interface Config {
        * @visibility frontend
        */
       maxDepth?: number;
+      /**
+       * Optional configuration for default user permissions
+       * @visibility frontend
+       */
+      defaultUserAccess?: {
+        /**
+         * Enable or disable the default access feature
+         * @visibility frontend
+         */
+        enabled: boolean;
+        /**
+         * The list of default permissions to apply to users with no explicit permissions
+         * @visibility frontend
+         */
+        defaultPermissions: Array<{
+          /**
+           * The permission resource type or permission name
+           * @visibility frontend
+           */
+          permission: string;
+          /**
+           * The policy type (e.g., read, write, delete)
+           * @visibility frontend
+           */
+          policy: string;
+          /**
+           * The effect of the permission (allow or deny)
+           * @visibility frontend
+           */
+          effect: 'allow' | 'deny';
+        }>;
+      };
     };
   };
 }
