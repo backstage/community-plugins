@@ -1,5 +1,5 @@
 ---
-'@backstage-community/plugin-github-actions': minor
+'@backstage-community/plugin-github-actions': patch
 ---
 
-Changed useWorkflowRuns to allow fetching all branches only when required by the view.
+Fixed an issue where branches were fetched unnecessarily by certain components.
