@@ -1045,7 +1045,6 @@ export class PoliciesServer {
       },
     );
 
-    // todo handle audit log...
     router.get(
       '/plugin-ids',
       logAuditorEvent(this.auditor),
@@ -1059,7 +1058,6 @@ export class PoliciesServer {
       },
     );
 
-    // todo handle audit log...
     router.post(
       '/plugin-ids',
       logAuditorEvent(this.auditor),
@@ -1069,13 +1067,13 @@ export class PoliciesServer {
         const pluginIds: PluginIds = request.body;
         // todo check multi-threading
         this.pluginPermMetaData.addPluginId(pluginIds.ids);
+        response.locals.meta = pluginIds;
 
         const actualList = this.pluginPermMetaData.getAdditionalPluginIds();
         response.status(201).json(actualList);
       },
     );
 
-    // todo handle audit log...
     router.delete(
       '/plugin-ids',
       logAuditorEvent(this.auditor),
@@ -1085,6 +1083,7 @@ export class PoliciesServer {
         const pluginIds: PluginIds = request.body;
         // todo check multi-threading
         this.pluginPermMetaData.removePluginId(pluginIds.ids);
+        response.locals.meta = pluginIds;
 
         const actualList = this.pluginPermMetaData.getAdditionalPluginIds();
         response.status(200).json(actualList);
