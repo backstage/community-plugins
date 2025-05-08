@@ -150,6 +150,15 @@ components:
             source:
               type: string
               description: The source from which the permission policy was defined.
+    PluginIds:
+      type: object
+      properties:
+        ids:
+          type: array
+          description: List of plugin ids, which support Backstage permission framework.
+          items:
+            type: string
+
   parameters:
     nameParam:
       name: name
@@ -680,3 +689,68 @@ paths:
           description: Refusal to authorize
         '404':
           description: Could not find resource.
+  /api/permission/refresh/{id}:
+    post:
+      description: >-
+        Refreshes RBAC permission policies provider by id.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Request was successful
+        '403':
+          description: Refusal to authorize
+        '404':
+          description: Could not find resource.
+  /api/permission/plugin-ids:
+    get:
+      description: Returns plugin IDs that support the Backstage permission framework.
+      responses:
+        '200':
+          description: Request was successful
+          content:
+            application/json:
+              schema:
+                '$ref': '#/components/schemas/PluginIds'
+        '403':
+          description: Refusal to authorize
+
+    post:
+      description: Add more additional plugin IDs.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              '$ref': '#/components/schemas/PluginIds'
+      responses:
+        '201':
+          description: Plugin IDs were successfully added. Returns updated list.
+          content:
+            application/json:
+              schema:
+                '$ref': '#/components/schemas/PluginIds'
+        '403':
+          description: Refusal to authorize
+
+    delete:
+      description: Delete some additional plugin IDs.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              '$ref': '#/components/schemas/PluginIds'
+      responses:
+        '200':  # or '204' if you really want no body
+          description: Plugin IDs were successfully removed. Returns updated list.
+          content:
+            application/json:
+              schema:
+                '$ref': '#/components/schemas/PluginIds'
+        '403':
+          description: Refusal to authorize

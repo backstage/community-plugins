@@ -42,6 +42,7 @@ import type { ParsedQs } from 'qs';
 
 import {
   PermissionAction,
+  PluginIds,
   policyEntityCreatePermission,
   policyEntityDeletePermission,
   policyEntityPermissions,
@@ -1057,6 +1058,52 @@ export class PoliciesServer {
 
         await idProvider.refresh();
         response.status(200).end();
+      },
+    );
+
+    // todo handle audit log...
+    router.get(
+      '/plugin-ids',
+      logAuditorEvent(this.auditor),
+      async (request, response) => {
+        // todo: do we need separated permission ? Maybe no...
+        await this.authorizeConditional(request, policyEntityReadPermission);
+
+        const pluginIds = this.pluginPermMetaData.getAdditionalPluginIds();
+        const result: PluginIds = { ids: pluginIds };
+        response.json(result);
+      },
+    );
+
+    // todo handle audit log...
+    router.post(
+      '/plugin-ids',
+      logAuditorEvent(this.auditor),
+      async (request, response) => {
+        // todo: do we need separated permission ? Maybe no...
+        await this.authorizeConditional(request, policyEntityCreatePermission);
+        const pluginIds: PluginIds = request.body;
+        // todo check multi-threading
+        this.pluginPermMetaData.addPluginId(pluginIds.ids);
+
+        const actualList = this.pluginPermMetaData.getAdditionalPluginIds();
+        response.status(201).json(actualList);
+      },
+    );
+
+    // todo handle audit log...
+    router.delete(
+      '/plugin-ids',
+      logAuditorEvent(this.auditor),
+      async (request, response) => {
+        // todo: do we need separated permission ? Maybe no...
+        await this.authorizeConditional(request, policyEntityDeletePermission);
+        const pluginIds: PluginIds = request.body;
+        // todo check multi-threading
+        this.pluginPermMetaData.removePluginId(pluginIds.ids);
+
+        const actualList = this.pluginPermMetaData.getAdditionalPluginIds();
+        response.status(200).json(actualList);
       },
     );
 
