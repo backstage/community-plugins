@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { IstioConfigDetails } from '@backstage-community/plugin-kiali-common/types';
 import { Content } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { Grid } from '@material-ui/core';
 import jsYaml from 'js-yaml';
-import * as React from 'react';
+import { default as React } from 'react';
 import AceEditor from 'react-ace';
 import { useLocation } from 'react-router-dom';
 import {
@@ -28,19 +29,16 @@ import { DefaultSecondaryMasthead } from '../../components/DefaultSecondaryMasth
 import { kialiApiRef } from '../../services/Api';
 import { KialiAppState, KialiContext } from '../../store';
 import { baseStyle } from '../../styles/StyleUtils';
-import { IstioConfigDetails } from '../../types/IstioConfigDetails';
 import { getIstioObject } from '../../utils/IstioConfigUtils';
 // Enables ACE editor YAML themes
 import 'ace-builds/src-noconflict/ace';
 import 'ace-builds/src-noconflict/mode-yaml';
 import 'ace-builds/src-noconflict/theme-eclipse';
 import 'ace-builds/src-noconflict/theme-twilight';
+import { parseKialiValidations } from '@backstage-community/plugin-kiali-common/func';
+import type { AceValidations } from '@backstage-community/plugin-kiali-common/types';
 import { useTheme } from '@material-ui/core/styles';
 import { useCallback, useEffect } from 'react';
-import {
-  AceValidations,
-  parseKialiValidations,
-} from '../../types/AceValidations';
 import { IstioConfigDetailsOverview } from './IstioConfigDetailsOverview';
 
 export const IstioConfigDetailsPage = (props: {

@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import type { BoundsInMilliseconds } from '@backstage-community/plugin-kiali-common/types';
 import {
   createBrowserHistory,
   createHashHistory,
   createMemoryHistory,
 } from 'history';
 import { toValidDuration } from '../config/ServerConfig';
-import { BoundsInMilliseconds } from '../types/Common';
 
 const historyMode = (window as any).HISTORY_MODE
   ? (window as any).HISTORY_MODE

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { FC } from 'react';
 
 import { AppHealthIcon } from '../../../AppStatus/StatusIcons';
 import { HealthStatus } from '@backstage-community/plugin-redhat-argocd-common';
@@ -22,7 +22,7 @@ interface ResourceHealthStatusProps {
   healthStatus: string;
 }
 
-export const ResourceHealthStatus: React.FC<ResourceHealthStatusProps> = ({
+export const ResourceHealthStatus: FC<ResourceHealthStatusProps> = ({
   healthStatus,
 }) => {
   return (

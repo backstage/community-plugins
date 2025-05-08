@@ -16,7 +16,7 @@
 
 import { Progress } from '@backstage/core-components';
 import { errorApiRef, useApi } from '@backstage/core-plugin-api';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import useAsync from 'react-use/esm/useAsync';
 import { techRadarApiRef } from '../api';
 import {
@@ -63,6 +63,13 @@ function matchFilter(filter?: string): (entry: RadarEntry) => boolean {
   };
 }
 
+function calculateDimensions(width: number, height: number) {
+  return {
+    width: width * 0.85,
+    height: height * 0.7,
+  };
+}
+
 /**
  * Properties of {@link TechRadarComponent}
  *
@@ -78,13 +85,13 @@ export interface TechRadarComponentProps {
    */
   id?: string;
   /**
-   * Width of Tech Radar
+   * Width of Tech Radar. Dynamically calculated if not supplied
    */
-  width: number;
+  width?: number;
   /**
-   * Height of Tech Radar
+   * Height of Tech Radar. Dynamically calculated if not supplied
    */
-  height: number;
+  height?: number;
   /**
    * Custom React props to the `<svg>` element created for Tech Radar
    */
@@ -106,6 +113,18 @@ export interface TechRadarComponentProps {
  */
 export function RadarComponent(props: TechRadarComponentProps) {
   const { loading, error, value: data } = useTechRadarLoader(props.id);
+  const [dimensions, setDimensions] = useState(
+    calculateDimensions(window.innerWidth, window.innerHeight),
+  );
+
+  useEffect(() => {
+    const handleResize = () => {
+      setDimensions(calculateDimensions(window.innerWidth, window.innerHeight));
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const mapToEntries = (
     loaderResponse: TechRadarLoaderResponse,
@@ -140,6 +159,8 @@ export function RadarComponent(props: TechRadarComponentProps) {
       {!loading && !error && data && (
         <Radar
           {...props}
+          width={props.width || dimensions.width}
+          height={props.height || dimensions.height}
           rings={data.rings}
           quadrants={data.quadrants}
           entries={mapToEntries(data)}

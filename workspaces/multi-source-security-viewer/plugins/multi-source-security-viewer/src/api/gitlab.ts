@@ -104,8 +104,9 @@ export class MssvGitlabCIClient implements Partial<MssvApi> {
     const projectId =
       entity.metadata.annotations?.[GITLAB_ANNOTATION_PROJECT_ID];
 
-    const projectSlug =
-      entity.metadata.annotations?.[GITLAB_ANNOTATION_PROJECT_SLUG];
+    const projectSlug = encodeURIComponent(
+      entity.metadata.annotations?.[GITLAB_ANNOTATION_PROJECT_SLUG] ?? '',
+    );
 
     const [sliceStart, sliceEnd] = [
       page * pageSize,

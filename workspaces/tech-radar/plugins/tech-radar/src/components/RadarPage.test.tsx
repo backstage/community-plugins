@@ -39,7 +39,12 @@ describe('RadarPage', () => {
     async load(): Promise<TechRadarLoaderResponse> {
       return {
         entries: [],
-        quadrants: [],
+        quadrants: [
+          { id: 'infrastructure', name: 'Infrastructure' },
+          { id: 'frameworks', name: 'Frameworks' },
+          { id: 'languages', name: 'Languages' },
+          { id: 'process', name: 'Process' },
+        ],
         rings: [],
       };
     }
@@ -53,7 +58,12 @@ describe('RadarPage', () => {
         await new Promise<void>(resolve => setTimeout(resolve, 1000));
         return {
           entries: [],
-          quadrants: [],
+          quadrants: [
+            { id: 'infrastructure', name: 'Infrastructure' },
+            { id: 'frameworks', name: 'Frameworks' },
+            { id: 'languages', name: 'Languages' },
+            { id: 'process', name: 'Process' },
+          ],
           rings: [],
         };
       }

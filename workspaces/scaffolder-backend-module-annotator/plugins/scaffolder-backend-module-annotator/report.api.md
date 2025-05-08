@@ -6,7 +6,6 @@
 import { BackendFeature } from '@backstage/backend-plugin-api';
 import { JsonObject } from '@backstage/types/index';
 import { TemplateAction } from '@backstage/plugin-scaffolder-node';
-import { TemplateAction as TemplateAction_2 } from '@backstage/plugin-scaffolder-node/index';
 
 // Warning: (ae-missing-release-tag) "createAnnotatorAction" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -59,13 +58,14 @@ export const createAnnotatorAction: (
       | undefined;
     writeToFile?: string | undefined;
   },
-  JsonObject
+  JsonObject,
+  'v1'
 >;
 
 // Warning: (ae-missing-release-tag) "createScaffoldedFromAction" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export const createScaffoldedFromAction: () => TemplateAction_2<
+export const createScaffoldedFromAction: () => TemplateAction<
   {
     labels?:
       | {
@@ -90,13 +90,14 @@ export const createScaffoldedFromAction: () => TemplateAction_2<
       | undefined;
     writeToFile?: string | undefined;
   },
-  JsonObject
+  JsonObject,
+  'v1'
 >;
 
 // Warning: (ae-missing-release-tag) "createTimestampAction" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export const createTimestampAction: () => TemplateAction_2<
+export const createTimestampAction: () => TemplateAction<
   {
     labels?:
       | {
@@ -121,7 +122,8 @@ export const createTimestampAction: () => TemplateAction_2<
       | undefined;
     writeToFile?: string | undefined;
   },
-  JsonObject
+  JsonObject,
+  'v1'
 >;
 
 // Warning: (tsdoc-characters-after-block-tag) The token "@backstage" looks like a TSDoc tag but contains an invalid character "/"; if it is not a tag, use a backslash to escape the "@"

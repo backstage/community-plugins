@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import { useDeleteDialog } from '@janus-idp/shared-react';
 import Delete from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
@@ -62,8 +60,11 @@ const DeleteRole = ({
           aria-label="Delete"
           disabled={disable}
           title={tooltip ?? 'Delete Role'}
-          style={{ padding: '0.5rem', borderRadius: '50%' }}
-          sx={{ '&:hover': { borderRadius: '50%' } }}
+          sx={{
+            p: 1,
+            borderRadius: '50%',
+            '&:hover': { borderRadius: '50%' },
+          }}
         >
           <Delete />
         </IconButton>

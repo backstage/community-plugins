@@ -13,16 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {
+  Datapoint,
+  DurationInSeconds,
+  IstiodResourceThresholds,
+  Metric,
+  RichDataPoint,
+  VCLine,
+} from '@backstage-community/plugin-kiali-common/types';
 import { Card, CardContent, Grid, Tooltip } from '@material-ui/core';
-import * as React from 'react';
+import { default as React } from 'react';
 import { SparklineChart } from '../../../components/Charts/SparklineChart';
 import { PFColors } from '../../../components/Pf/PfColors';
 import { KialiIcon } from '../../../config/KialiIcon';
 import { kialiStyle } from '../../../styles/StyleUtils';
-import { DurationInSeconds } from '../../../types/Common';
-import { IstiodResourceThresholds } from '../../../types/IstioStatus';
-import { Datapoint, Metric } from '../../../types/Metrics';
-import { RichDataPoint, VCLine } from '../../../types/VictoryChartInfo';
 import { toLocaleStringWithConditionalDate } from '../../../utils/Date';
 import { getName } from '../../../utils/RateIntervals';
 import { toVCLine } from '../../../utils/VictoryChartsUtils';

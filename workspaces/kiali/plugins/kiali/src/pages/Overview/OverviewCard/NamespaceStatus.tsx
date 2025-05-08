@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-import { Paths } from '../../../config';
 import {
+  DEGRADED,
   DurationInSeconds,
+  FAILURE,
+  HEALTHY,
   IntervalInMilliseconds,
-} from '../../../types/Common';
-import { DEGRADED, FAILURE, HEALTHY, NOT_READY } from '../../../types/Health';
+  NOT_READY,
+} from '@backstage-community/plugin-kiali-common/types';
+import { Paths } from '../../../config';
 import { NamespaceInfo } from '../NamespaceInfo';
 import { switchType } from '../OverviewHelper';
 import { OverviewStatus } from '../OverviewStatus';

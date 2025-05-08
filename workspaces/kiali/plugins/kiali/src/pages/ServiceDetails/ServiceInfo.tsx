@@ -13,10 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Grid } from '@material-ui/core';
-import React from 'react';
-import { IstioConfigCard } from '../../components/IstioConfigCard/IstioConfigCard';
-import { DurationInSeconds } from '../../types/Common';
 import {
   drToIstioItems,
   gwToIstioItems,
@@ -25,17 +21,21 @@ import {
   seToIstioItems,
   validationKey,
   vsToIstioItems,
-} from '../../types/IstioConfigList';
+} from '@backstage-community/plugin-kiali-common/func';
 import {
+  DRAWER,
+  DurationInSeconds,
+  ENTITY,
   Gateway,
   K8sGateway,
   ObjectValidation,
   PeerAuthentication,
+  ServiceDetailsInfo,
+  ServiceId,
   Validations,
-} from '../../types/IstioObjects';
-import { ServiceId } from '../../types/ServiceId';
-import { ServiceDetailsInfo } from '../../types/ServiceInfo';
-import { DRAWER, ENTITY } from '../../types/types';
+} from '@backstage-community/plugin-kiali-common/types';
+import { Grid } from '@material-ui/core';
+import { IstioConfigCard } from '../../components/IstioConfigCard/IstioConfigCard';
 import { ServiceDescription } from './ServiceDescription';
 import { ServiceNetwork } from './ServiceNetwork';
 

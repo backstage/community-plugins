@@ -1,5 +1,40 @@
 # @backstage-community/plugin-multi-source-security-viewer
 
+## 0.4.0
+
+### Minor Changes
+
+- 682570b: URL encode the repository slug
+
+## 0.3.2
+
+### Patch Changes
+
+- d346a7e: Include Azure Pipelines pre-requisite link
+
+## 0.3.1
+
+### Patch Changes
+
+- d4061d7: Fix issue where patternfly overrides plugin css
+
+## 0.3.0
+
+### Minor Changes
+
+- 5477f85: Bump backstage version to v1.38.1
+
+### Patch Changes
+
+- Updated dependencies [5477f85]
+  - @backstage-community/plugin-multi-source-security-viewer-common@0.2.0
+
+## 0.2.3
+
+### Patch Changes
+
+- 4b13a33: Fix installation documentation
+
 ## 0.2.2
 
 ### Patch Changes

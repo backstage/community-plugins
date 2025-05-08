@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { DRAWER } from '@backstage-community/plugin-kiali-common/types';
 import {
   CardTab,
   CodeSnippet,
@@ -21,14 +22,12 @@ import {
 } from '@backstage/core-components';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { Box } from '@material-ui/core';
-import * as React from 'react';
-import { useRef } from 'react';
+import { default as React, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { AppListPage } from '../pages/AppList/AppListPage';
 import { ServiceListPage } from '../pages/ServiceList/ServiceListPage';
 import { WorkloadListPage } from '../pages/WorkloadList/WorkloadListPage';
 import { KialiProvider } from '../store/KialiProvider';
-import { DRAWER } from '../types/types';
 
 const tabStyle: React.CSSProperties = {
   maxHeight: '400px',

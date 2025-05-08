@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
+import type { MouseEvent } from 'react';
 
 import {
   makeStyles,
@@ -30,7 +30,7 @@ import { tektonTranslationRef } from '../../translation';
 
 type EnhancedTableProps = {
   onRequestSort: (
-    event: React.MouseEvent<unknown>,
+    event: MouseEvent<unknown>,
     property: string,
     id: string,
   ) => void;
@@ -58,7 +58,7 @@ export const EnhancedTableHead = ({
   onRequestSort,
 }: EnhancedTableProps) => {
   const createSortHandler =
-    (property: string, id: string) => (event: React.MouseEvent<unknown>) => {
+    (property: string, id: string) => (event: MouseEvent<unknown>) => {
       onRequestSort(event, property, id);
     };
   const classes = useStyles();

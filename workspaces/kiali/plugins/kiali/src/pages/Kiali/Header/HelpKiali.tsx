@@ -15,7 +15,7 @@
  */
 import { Button } from '@material-ui/core';
 import { QuestionCircleIcon } from '@patternfly/react-icons';
-import React from 'react';
+import { default as React } from 'react';
 import { AboutUIModal } from '../../../components/About/AboutUIModal';
 import { KialiAppState, KialiContext } from '../../../store';
 

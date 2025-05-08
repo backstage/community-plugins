@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { ErrorCircleOIcon } from '@patternfly/react-icons';
-import * as React from 'react';
 
 export const canRender = (value: any): boolean => {
   return typeof value !== 'object';

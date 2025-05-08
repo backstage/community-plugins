@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { IntervalInMilliseconds } from '@backstage-community/plugin-kiali-common/types';
 import { config } from '../config';
 import { serverConfig } from '../config/ServerConfig';
-import { IntervalInMilliseconds } from '../types/Common';
 
 export const getName = (durationSeconds: number): string => {
   const name = serverConfig.durations[durationSeconds];

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 import { DateTime } from 'luxon';
 import { Link } from '@backstage/core-components';
 import {
@@ -36,7 +35,6 @@ const useStyles = makeStyles({
     display: 'block',
     marginTop: '0.2rem',
     marginBottom: '0.8rem',
-    fontSize: '0.8rem',
   },
   excerpt: {
     lineHeight: '1.55',

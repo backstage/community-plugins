@@ -3,25 +3,25 @@
   "version": "1.0.0",
   "private": true,
   "engines": {
-    "node": "22"
+    "node": "20"
   },
   "scripts": {
-    "start:backstage": "concurrently -c auto -n \"fe,be\" -p \"{name}:{pid}\" \"yarn start-app\" \"yarn start-backend\"",
+    "start": "backstage-cli repo start",
     "start-app": "yarn workspace app start",
     "start-backend": "yarn workspace backend start",
     "tsc": "tsc",
     "tsc:full": "tsc --skipLibCheck true --incremental false",
-    "build:all": "backstage-cli repo build --all",
+    "build:all": "CI=true backstage-cli repo build --all",
     "build:api-reports": "yarn build:api-reports:only",
     "build:api-reports:only": "backstage-repo-tools api-reports --allow-all-warnings -o ae-wrong-input-file-type,ae-undocumented --validate-release-tags",
     "clean": "backstage-cli repo clean",
     "test": "backstage-cli repo test",
     "test:all": "backstage-cli repo test --coverage",
-    "fix": "backstage-cli repo fix",
+    "fix": "backstage-cli repo fix --publish",
     "lint": "backstage-cli repo lint --since origin/main",
     "lint:all": "backstage-cli repo lint",
-    "prettier:check": "prettier --check .",
-    "prettier:write": "prettier --write .",
+    "prettier:check": "CI=true prettier --check .",
+    "prettier:write": "CI=true prettier --write .",
     "new": "backstage-cli new --scope @backstage-community",
     "postinstall": "cd ../../ && yarn install"
   },
@@ -37,9 +37,9 @@
     "directory": "workspaces/kiali"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.31.1",
+    "@backstage/cli": "^0.32.0",
     "@backstage/e2e-test-utils": "^0.1.1",
-    "@backstage/repo-tools": "^0.13.1",
+    "@backstage/repo-tools": "^0.13.2",
     "@changesets/cli": "^2.27.1",
     "@ianvs/prettier-plugin-sort-imports": "^4.3.1",
     "@types/deep-freeze": "^0.1.5",

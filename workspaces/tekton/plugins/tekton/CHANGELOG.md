@@ -1,5 +1,30 @@
 ### Dependencies
 
+## 3.25.2
+
+### Patch Changes
+
+- 1d7aaba: Update supported version metadata to 1.38.1
+- Updated dependencies [1d7aaba]
+  - @backstage-community/plugin-tekton-common@1.9.1
+
+## 3.25.1
+
+### Patch Changes
+
+- fa53ba5: Updated dependency `@playwright/test` to `1.52.0`.
+
+## 3.25.0
+
+### Minor Changes
+
+- 692fc75: Backstage version bump to v1.38.1
+
+### Patch Changes
+
+- Updated dependencies [692fc75]
+  - @backstage-community/plugin-tekton-common@1.9.0
+
 ## 3.24.0
 
 ### Minor Changes

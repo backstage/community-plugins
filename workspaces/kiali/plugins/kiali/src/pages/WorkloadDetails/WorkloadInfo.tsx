@@ -13,29 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useApi } from '@backstage/core-plugin-api';
-import { CircularProgress, Grid } from '@material-ui/core';
-import React from 'react';
-import { useAsyncFn, useDebounce } from 'react-use';
-import { IstioConfigCard } from '../../components/IstioConfigCard/IstioConfigCard';
-import { isIstioNamespace, serverConfig } from '../../config';
-import { kialiApiRef } from '../../services/Api';
-import { WorkloadHealth } from '../../types/Health';
 import {
+  toIstioItems,
+  WorkloadHealth,
+} from '@backstage-community/plugin-kiali-common/func';
+import type {
+  ContainerInfo,
   IstioConfigItem,
   IstioConfigList,
-  toIstioItems,
-} from '../../types/IstioConfigList';
-import {
-  ContainerInfo,
   ObjectCheck,
   ObjectValidation,
   Pod,
   Validations,
+  Workload,
+} from '@backstage-community/plugin-kiali-common/types';
+import {
+  DRAWER,
+  ENTITY,
   ValidationTypes,
-} from '../../types/IstioObjects';
-import { DRAWER, ENTITY } from '../../types/types';
-import { Workload } from '../../types/Workload';
+} from '@backstage-community/plugin-kiali-common/types';
+import { useApi } from '@backstage/core-plugin-api';
+import { CircularProgress, Grid } from '@material-ui/core';
+import { default as React } from 'react';
+import { useAsyncFn, useDebounce } from 'react-use';
+import { IstioConfigCard } from '../../components/IstioConfigCard/IstioConfigCard';
+import { isIstioNamespace, serverConfig } from '../../config';
+import { kialiApiRef } from '../../services/Api';
 import { WorkloadPods } from './WorkloadPods';
 import { WorkloadDescription } from './WorkloadsDescription';
 

@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { FC } from 'react';
 
 import { Application } from '@backstage-community/plugin-redhat-argocd-common';
 import AppHealthStatus from './AppHealthStatus';
 import AppSyncStatus from './AppSyncStatus';
 
-const StatusHeading: React.FC<{ app: Application }> = ({ app }) => {
+const StatusHeading: FC<{ app: Application }> = ({ app }) => {
   if (!app) {
     return null;
   }

@@ -13,10 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {
+  Gateway,
+  K8sGateway,
+  MetricsObjectTypes,
+  PeerAuthentication,
+  ServiceDetailsInfo,
+  Validations,
+} from '@backstage-community/plugin-kiali-common/types';
 import { Content, EmptyState } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { CircularProgress, Tab, Tabs } from '@material-ui/core';
-import * as React from 'react';
+import { default as React } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAsyncFn, useDebounce } from 'react-use';
 import { HistoryManager } from '../../app/History';
@@ -33,14 +41,6 @@ import { getErrorString, kialiApiRef } from '../../services/Api';
 import { KialiContext } from '../../store';
 import { KialiAppState } from '../../store/Store';
 import { baseStyle } from '../../styles/StyleUtils';
-import {
-  Gateway,
-  K8sGateway,
-  PeerAuthentication,
-  Validations,
-} from '../../types/IstioObjects';
-import { MetricsObjectTypes } from '../../types/Metrics';
-import { ServiceDetailsInfo } from '../../types/ServiceInfo';
 import { ServiceInfo } from './ServiceInfo';
 
 export const ServiceDetailsPage = (props: { entity?: boolean }) => {

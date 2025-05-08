@@ -13,13 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
+import type { CSSProperties, ReactElement } from 'react';
 
-const CheIcon = ({
-  style,
-}: {
-  style: React.CSSProperties;
-}): React.ReactElement => {
+const CheIcon = ({ style }: { style: CSSProperties }): ReactElement => {
   return (
     <svg
       height="1em"

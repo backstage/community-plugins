@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 
+import {
+  MILLISECONDS,
+  UNIT_TIME,
+} from '@backstage-community/plugin-kiali-common/types';
 import deepFreeze from 'deep-freeze';
-import { MILLISECONDS, UNIT_TIME } from '../types/Common';
 
 // We assume this is always defined in the .env file
 const documentationUrl = process.env.REACT_APP_KIALI_DOC_URL!;
@@ -146,7 +149,6 @@ const conf = {
         `api/namespaces/${namespace}/apps/${app}/dashboard`,
       appSpans: (namespace: string, app: string) =>
         `api/namespaces/${namespace}/apps/${app}/spans`,
-      canaryUpgradeStatus: () => 'api/mesh/canaries/status',
       clusters: 'api/clusters',
       clustersHealth: () => `api/clusters/health`,
       clustersWorkloads: () => `api/clusters/workloads`,
@@ -200,10 +202,8 @@ const conf = {
         `api/namespaces/${namespace}/validations`,
       configValidations: () => `api/istio/validations`,
       meshTls: () => 'api/mesh/tls',
-      outboundTrafficPolicyMode: () => 'api/mesh/outbound_traffic_policy/mode',
       istioStatus: () => 'api/istio/status',
       istioCertsInfo: () => 'api/istio/certs',
-      istiodResourceThresholds: () => 'api/mesh/resources/thresholds',
       pod: (namespace: string, pod: string) =>
         `api/namespaces/${namespace}/pods/${pod}`,
       podLogs: (namespace: string, pod: string) =>

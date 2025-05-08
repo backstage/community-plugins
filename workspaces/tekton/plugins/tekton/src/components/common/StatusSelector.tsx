@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useContext } from 'react';
 
 import { Select, SelectedItems } from '@backstage/core-components';
 
@@ -52,7 +52,7 @@ export const statusOptions = Object.entries(ComputedStatus)
 
 export const StatusSelector = () => {
   const classes = useStyles();
-  const { selectedStatus, setSelectedStatus } = React.useContext(
+  const { selectedStatus, setSelectedStatus } = useContext(
     TektonResourcesContext,
   );
 

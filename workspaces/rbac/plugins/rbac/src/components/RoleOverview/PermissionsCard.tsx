@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useState, useMemo } from 'react';
 
 import { parseEntityRef } from '@backstage/catalog-model';
 import { Table, WarningPanel } from '@backstage/core-components';
@@ -25,6 +25,7 @@ import { usePermissionPolicies } from '../../hooks/usePermissionPolicies';
 import { filterTableData } from '../../utils/filter-table-data';
 import EditRole from '../EditRole';
 import { columns } from './PermissionsListColumns';
+import { StyledTableWrapper } from './StyledTableWrapper';
 
 type PermissionsCardProps = {
   entityReference: string;
@@ -51,9 +52,9 @@ export const PermissionsCard = ({
 }: PermissionsCardProps) => {
   const { data, loading, retry, error } =
     usePermissionPolicies(entityReference);
-  const [searchText, setSearchText] = React.useState<string>();
+  const [searchText, setSearchText] = useState<string>();
 
-  const numberOfPolicies = React.useMemo(() => {
+  const numberOfPolicies = useMemo(() => {
     const filteredPermissions = filterTableData({ data, columns, searchText });
     let policies = 0;
     filteredPermissions.forEach(p => {
@@ -85,6 +86,11 @@ export const PermissionsCard = ({
     },
   ];
 
+  let title = 'Permission Policies';
+  if (!loading && data.length > 0) {
+    title = `${numberOfPolicies} permission${numberOfPolicies !== 1 ? 's' : ''}`;
+  }
+
   return (
     <Box>
       {error?.name && error.name !== 404 && (
@@ -96,27 +102,25 @@ export const PermissionsCard = ({
           />
         </Box>
       )}
-      <Table
-        title={
-          !loading && data.length > 0
-            ? `Permission Policies (${numberOfPolicies})`
-            : 'Permission Policies'
-        }
-        actions={actions}
-        options={{ padding: 'default', search: true, paging: true }}
-        data={data}
-        columns={columns}
-        isLoading={loading}
-        emptyContent={
-          <Box
-            data-testid="permission-table-empty"
-            sx={{ display: 'flex', justifyContent: 'center', p: 2 }}
-          >
-            No records found
-          </Box>
-        }
-        onSearchChange={setSearchText}
-      />
+      <StyledTableWrapper>
+        <Table
+          title={title}
+          actions={actions}
+          options={{ padding: 'default', search: true, paging: true }}
+          data={data}
+          columns={columns}
+          isLoading={loading}
+          emptyContent={
+            <Box
+              data-testid="permission-table-empty"
+              sx={{ display: 'flex', justifyContent: 'center', p: 2 }}
+            >
+              No records found
+            </Box>
+          }
+          onSearchChange={setSearchText}
+        />
+      </StyledTableWrapper>
     </Box>
   );
 };

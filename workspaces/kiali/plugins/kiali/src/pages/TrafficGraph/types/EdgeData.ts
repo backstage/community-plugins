@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 import {
+  DecoratedGraphEdgeData,
+  Span,
+} from '@backstage-community/plugin-kiali-common/types';
+import {
   EdgeTerminalType,
   GraphElement,
   NodeStatus,
 } from '@patternfly/react-topology';
-import { DecoratedGraphEdgeData } from '../../../types/Graph';
-import { Span } from '../../../types/Tracing';
 
 export type EdgeData = DecoratedGraphEdgeData & {
   endTerminalType: EdgeTerminalType;

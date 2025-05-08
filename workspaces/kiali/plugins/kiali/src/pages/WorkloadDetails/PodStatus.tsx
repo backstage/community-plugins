@@ -13,20 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Tooltip } from '@material-ui/core';
-import React from 'react';
-import { ValidationStack } from '../../components/Validations/ValidationStack';
-import { createIcon } from '../../config/KialiIcon';
+import {
+  highestSeverity,
+  isProxyStatusSynced,
+  mergeStatus,
+  validationToHealth,
+} from '@backstage-community/plugin-kiali-common/func';
 import {
   DEGRADED,
   HEALTHY,
-  isProxyStatusSynced,
-  mergeStatus,
+  ObjectCheck,
   ProxyStatus,
   Status,
-} from '../../types/Health';
-import { ObjectCheck, ValidationTypes } from '../../types/IstioObjects';
-import { highestSeverity, validationToHealth } from '../../types/ServiceInfo';
+  ValidationTypes,
+} from '@backstage-community/plugin-kiali-common/types';
+import { Tooltip } from '@material-ui/core';
+import { default as React } from 'react';
+import { ValidationStack } from '../../components/Validations/ValidationStack';
+import { createIcon } from '../../config/KialiIcon';
 import { ProxyStatusList } from './ProxyStatusList';
 
 type PodStatusProps = {

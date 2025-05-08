@@ -1,5 +1,11 @@
 # @backstage-community/plugin-azure-resources-node
 
+## 0.2.0
+
+### Minor Changes
+
+- 4e2c33d: Backstage version bump to v1.38.1
+
 ## 0.1.2
 
 ### Patch Changes

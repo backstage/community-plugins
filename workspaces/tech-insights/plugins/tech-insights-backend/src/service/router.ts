@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import express from 'express';
+import express, { Request } from 'express';
 import Router from 'express-promise-router';
 import { Config } from '@backstage/config';
 import {
@@ -25,6 +25,9 @@ import {
 import {
   CheckResult,
   Check,
+  techInsightsCheckReadPermission,
+  techInsightsCheckUpdatePermission,
+  techInsightsFactRetrieverReadPermission,
 } from '@backstage-community/plugin-tech-insights-common';
 import { DateTime } from 'luxon';
 import {
@@ -33,8 +36,17 @@ import {
   stringifyEntityRef,
 } from '@backstage/catalog-model';
 import { serializeError } from '@backstage/errors';
-import { LoggerService } from '@backstage/backend-plugin-api';
+import {
+  LoggerService,
+  PermissionsService,
+  HttpAuthService,
+} from '@backstage/backend-plugin-api';
 import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
+import {
+  AuthorizeResult,
+  BasicPermission,
+} from '@backstage/plugin-permission-common';
+import { NotAllowedError } from '@backstage/errors';
 import pLimit from 'p-limit';
 
 /**
@@ -67,6 +79,16 @@ export interface RouterOptions<
    * Implementation of Winston logger
    */
   logger: LoggerService;
+
+  /**
+   * Implementation of PermissionsService
+   */
+  permissions: PermissionsService;
+
+  /**
+   * Implementation of HttpAuthService
+   */
+  httpAuth: HttpAuthService;
 }
 
 /**
@@ -84,19 +106,49 @@ export async function createRouter<
   CheckResultType extends CheckResult,
 >(options: RouterOptions<CheckType, CheckResultType>): Promise<express.Router> {
   const router = Router();
+
   router.use(express.json());
-  const { persistenceContext, factChecker, logger, config } = options;
+
+  const {
+    persistenceContext,
+    factChecker,
+    logger,
+    config,
+    permissions,
+    httpAuth,
+  } = options;
   const { techInsightsStore } = persistenceContext;
 
   const factory = MiddlewareFactory.create({ logger, config });
 
+  const authorize = async (request: Request, permission: BasicPermission) => {
+    const decision = (
+      await permissions.authorize([{ permission: permission }], {
+        credentials: await httpAuth.credentials(request),
+      })
+    )[0];
+
+    return decision;
+  };
+
   if (factChecker) {
     logger.info('Fact checker configured. Enabling fact checking endpoints.');
-    router.get('/checks', async (_req, res) => {
+    router.get('/checks', async (req, res) => {
+      const decision = await authorize(req, techInsightsCheckReadPermission);
+
+      if (decision.result === AuthorizeResult.DENY) {
+        throw new NotAllowedError('Unauthorized');
+      }
       return res.json(await factChecker.getChecks());
     });
 
     router.post('/checks/run/:namespace/:kind/:name', async (req, res) => {
+      const decision = await authorize(req, techInsightsCheckUpdatePermission);
+
+      if (decision.result === AuthorizeResult.DENY) {
+        throw new NotAllowedError('Unauthorized');
+      }
+
       const { namespace, kind, name } = req.params;
       const { checks }: { checks: string[] } = req.body;
       const entityTriplet = stringifyEntityRef({ namespace, kind, name });
@@ -107,6 +159,11 @@ export async function createRouter<
     const checksRunConcurrency =
       config.getOptionalNumber('techInsights.checksRunConcurrency') || 100;
     router.post('/checks/run', async (req, res) => {
+      const decision = await authorize(req, techInsightsCheckUpdatePermission);
+
+      if (decision.result === AuthorizeResult.DENY) {
+        throw new NotAllowedError('Unauthorized');
+      }
       const checks: string[] = req.body.checks;
       let entities: CompoundEntityRef[] = req.body.entities;
       if (entities.length === 0) {
@@ -144,6 +201,15 @@ export async function createRouter<
   }
 
   router.get('/fact-schemas', async (req, res) => {
+    const decision = await authorize(
+      req,
+      techInsightsFactRetrieverReadPermission,
+    );
+
+    if (decision.result === AuthorizeResult.DENY) {
+      throw new NotAllowedError('Unauthorized');
+    }
+
     const ids = req.query.ids as string[];
     return res.json(await techInsightsStore.getLatestSchemas(ids));
   });
@@ -152,6 +218,14 @@ export async function createRouter<
    * /facts/latest?entity=component:default/mycomponent&ids[]=factRetrieverId1&ids[]=factRetrieverId2
    */
   router.get('/facts/latest', async (req, res) => {
+    const decision = await authorize(
+      req,
+      techInsightsFactRetrieverReadPermission,
+    );
+
+    if (decision.result === AuthorizeResult.DENY) {
+      throw new NotAllowedError('Unauthorized');
+    }
     const { entity } = req.query;
     const { namespace, kind, name } = parseEntityRef(entity as string);
 
@@ -173,6 +247,15 @@ export async function createRouter<
    * /facts/range?entity=component:default/mycomponent&startDateTime=2021-12-24T01:23:45&endDateTime=2021-12-31T23:59:59&ids[]=factRetrieverId1&ids[]=factRetrieverId2
    */
   router.get('/facts/range', async (req, res) => {
+    const decision = await authorize(
+      req,
+      techInsightsFactRetrieverReadPermission,
+    );
+
+    if (decision.result === AuthorizeResult.DENY) {
+      throw new NotAllowedError('Unauthorized');
+    }
+
     const { entity } = req.query;
     const { namespace, kind, name } = parseEntityRef(entity as string);
 

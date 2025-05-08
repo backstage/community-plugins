@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useState, useMemo } from 'react';
 
 import { parseEntityRef } from '@backstage/catalog-model';
 import { Table, WarningPanel } from '@backstage/core-components';
@@ -26,6 +26,7 @@ import { filterTableData } from '../../utils/filter-table-data';
 import { getMembers } from '../../utils/rbac-utils';
 import EditRole from '../EditRole';
 import { columns } from './MembersListColumns';
+import { StyledTableWrapper } from './StyledTableWrapper';
 
 type MembersCardProps = {
   roleName: string;
@@ -48,7 +49,7 @@ const getEditIcon = (isAllowed: boolean, roleName: string) => {
 
 export const MembersCard = ({ roleName, membersInfo }: MembersCardProps) => {
   const { data, loading, retry, error, canReadUsersAndGroups } = membersInfo;
-  const [searchText, setSearchText] = React.useState<string>();
+  const [searchText, setSearchText] = useState<string>();
 
   const actions = [
     {
@@ -68,7 +69,7 @@ export const MembersCard = ({ roleName, membersInfo }: MembersCardProps) => {
     },
   ];
 
-  const filteredData = React.useMemo(
+  const filteredData = useMemo(
     () => filterTableData({ data, columns, searchText }),
     [data, searchText],
   );
@@ -84,27 +85,29 @@ export const MembersCard = ({ roleName, membersInfo }: MembersCardProps) => {
           />
         </Box>
       )}
-      <Table
-        title={
-          !loading && data?.length
-            ? `Users and groups (${getMembers(filteredData)})`
-            : 'Users and groups'
-        }
-        actions={actions}
-        options={{ padding: 'default', search: true, paging: true }}
-        data={data ?? []}
-        isLoading={loading}
-        columns={columns}
-        emptyContent={
-          <Box
-            data-testid="members-table-empty"
-            sx={{ display: 'flex', justifyContent: 'center', p: 2 }}
-          >
-            No records found
-          </Box>
-        }
-        onSearchChange={setSearchText}
-      />
+      <StyledTableWrapper>
+        <Table
+          title={
+            !loading && data?.length
+              ? `${getMembers(filteredData)}`
+              : 'Users and groups'
+          }
+          actions={actions}
+          options={{ padding: 'default', search: true, paging: true }}
+          data={data ?? []}
+          isLoading={loading}
+          columns={columns}
+          emptyContent={
+            <Box
+              data-testid="members-table-empty"
+              sx={{ display: 'flex', justifyContent: 'center', p: 2 }}
+            >
+              No records found
+            </Box>
+          }
+          onSearchChange={setSearchText}
+        />
+      </StyledTableWrapper>
     </Box>
   );
 };

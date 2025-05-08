@@ -2,10 +2,6 @@
 
 The backend plugin for Tech Insights.
 
-It provides the API for the frontend tech insights, scorecards and fact visualization functionality, as well as a framework to run fact retrievers and store fact values in to a data store.
-
-Looking for the old backend installation docs? Visit [here](./docs/old-backend-system.md).
-
 ## Installation
 
 ### Install the package

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useContext, useEffect } from 'react';
 
 import { InfoCard, Progress } from '@backstage/core-components';
 
@@ -51,7 +51,7 @@ const TopologyViewWorkloadComponent = ({
   const layout = 'ColaNoForce';
   const { loaded, dataModel } = useWorkloadsWatcher();
   const { clusters, selectedClusterErrors, responseError } =
-    React.useContext(K8sResourcesContext);
+    useContext(K8sResourcesContext);
   const graphDimensions = controller.hasGraph()
     ? controller.getGraph().getDimensions()
     : undefined;
@@ -69,7 +69,7 @@ const TopologyViewWorkloadComponent = ({
     ...(selectedClusterErrors ?? []),
   ];
 
-  React.useEffect(() => {
+  useEffect(() => {
     const model = {
       graph: {
         id: 'g1',
@@ -80,13 +80,13 @@ const TopologyViewWorkloadComponent = ({
     controller.fromModel(model);
   }, [controller]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (graphDimensions && loaded && dataModel) {
       controller.fromModel(dataModel, true);
     }
   }, [graphDimensions, layout, loaded, dataModel, controller]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (dataModel) {
       const selectedNode: BaseNode | null = selectedId
         ? (controller.getElementById(selectedId) as BaseNode)

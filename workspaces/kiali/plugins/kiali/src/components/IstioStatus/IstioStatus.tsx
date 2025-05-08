@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import type { ComponentStatus } from '@backstage-community/plugin-kiali-common/types';
+import { StatusTypes as Status } from '@backstage-community/plugin-kiali-common/types';
 import { Tooltip } from '@material-ui/core';
 import { ResourcesFullIcon } from '@patternfly/react-icons';
 import { SVGIconProps } from '@patternfly/react-icons/dist/esm/createIcon';
-import * as React from 'react';
-import { ComponentStatus, Status } from '../../types/IstioStatus';
+import { default as React } from 'react';
 import { PFColors } from '../Pf/PfColors';
 import { IstioStatusList } from './IstioStatusList';
 

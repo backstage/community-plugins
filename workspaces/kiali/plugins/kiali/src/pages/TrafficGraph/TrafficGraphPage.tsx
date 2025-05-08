@@ -13,6 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { KIALI_PROVIDER } from '@backstage-community/plugin-kiali-common';
+import {
+  EdgeLabelMode,
+  ENTITY,
+  GraphDefinition,
+  GraphType,
+  TrafficRate,
+} from '@backstage-community/plugin-kiali-common/types';
 import { Entity } from '@backstage/catalog-model';
 import { Content, InfoCard } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
@@ -28,23 +36,15 @@ import {
   VisualizationProvider,
   VisualizationSurface,
 } from '@patternfly/react-topology';
-import React, { useRef, useState } from 'react';
+import { default as React, useRef, useState } from 'react';
 import { useAsyncFn, useDebounce } from 'react-use';
 import { DefaultSecondaryMasthead } from '../../components/DefaultSecondaryMasthead/DefaultSecondaryMasthead';
 import * as FilterHelper from '../../components/FilterList/FilterHelper';
-import { KIALI_PROVIDER } from '../../components/Router';
 import { TimeDurationComponent } from '../../components/Time/TimeDurationComponent';
 import { getEntityNs, nsEqual } from '../../helpers/namespaces';
 import { getErrorString, kialiApiRef } from '../../services/Api';
 import { KialiAppState, KialiContext } from '../../store';
 import { kialiStyle } from '../../styles/StyleUtils';
-import {
-  EdgeLabelMode,
-  GraphDefinition,
-  GraphType,
-  TrafficRate,
-} from '../../types/Graph';
-import { ENTITY } from '../../types/types';
 import { KialiComponentFactory } from './factories/KialiComponentFactory';
 import { KialiLayoutFactory } from './factories/KialiLayoutFactory';
 import { decorateGraphData } from './util/GraphDecorator';

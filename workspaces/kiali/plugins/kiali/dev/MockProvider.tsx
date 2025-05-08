@@ -13,12 +13,62 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {
+  AppHealth,
+  NamespaceAppHealth,
+  NamespaceServiceHealth,
+  NamespaceWorkloadHealth,
+  ServiceHealth,
+  WorkloadHealth,
+} from '@backstage-community/plugin-kiali-common/func';
+import type {
+  App,
+  AppList,
+  AppListQuery,
+  AppQuery,
+  AuthInfo,
+  CanaryUpgradeStatus,
+  CertsInfo,
+  ClusterWorkloadsResponse,
+  ComponentStatus,
+  DashboardModel,
+  DurationInSeconds,
+  GrafanaInfo,
+  GraphDefinition,
+  GraphElementsQuery,
+  IstioConfigDetails,
+  IstioConfigList,
+  IstioConfigsMapQuery,
+  IstiodResourceThresholds,
+  IstioMetricsMap,
+  IstioMetricsOptions,
+  KialiCrippledFeatures,
+  Namespace,
+  OutboundTrafficPolicy,
+  PodLogs,
+  ServerConfig,
+  ServiceDetailsInfo,
+  ServiceList,
+  ServiceListQuery,
+  Span,
+  StatusState,
+  TimeInSeconds,
+  TLSStatus,
+  TracingQuery,
+  ValidationStatus,
+  Workload,
+  WorkloadListItem,
+  WorkloadNamespaceResponse,
+  WorkloadOverview,
+  WorkloadQuery,
+} from '@backstage-community/plugin-kiali-common/types';
 import { Entity } from '@backstage/catalog-model';
 import { Content, HeaderTabs, Page } from '@backstage/core-components';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { TestApiProvider } from '@backstage/test-utils';
-import React from 'react';
+import { default as React } from 'react';
 import { getEntityRoutes } from '../src/components/Router';
+import { serverConfig } from '../src/config';
 import { AppDetailsPage } from '../src/pages/AppDetails/AppDetailsPage';
 import { AppListPage } from '../src/pages/AppList/AppListPage';
 import { IstioConfigDetailsPage } from '../src/pages/IstioConfigDetails/IstioConfigDetailsPage';
@@ -33,54 +83,6 @@ import { WorkloadDetailsPage } from '../src/pages/WorkloadDetails/WorkloadDetail
 import { WorkloadListPage } from '../src/pages/WorkloadList/WorkloadListPage';
 import { KialiApi, kialiApiRef, QueryParams } from '../src/services/Api';
 import { KialiProvider } from '../src/store/KialiProvider';
-import { App, AppQuery } from '../src/types/App';
-import { AppList, AppListQuery } from '../src/types/AppList';
-import { AuthInfo } from '../src/types/Auth';
-import { CertsInfo } from '../src/types/CertsInfo';
-import { DurationInSeconds, TimeInSeconds } from '../src/types/Common';
-import { DashboardModel } from '../src/types/Dashboards';
-import { GrafanaInfo } from '../src/types/GrafanaInfo';
-import { GraphDefinition, GraphElementsQuery } from '../src/types/Graph';
-import {
-  AppHealth,
-  NamespaceAppHealth,
-  NamespaceServiceHealth,
-  NamespaceWorkloadHealth,
-  ServiceHealth,
-  WorkloadHealth,
-} from '../src/types/Health';
-import { IstioConfigDetails } from '../src/types/IstioConfigDetails';
-import {
-  IstioConfigList,
-  IstioConfigsMapQuery,
-} from '../src/types/IstioConfigList';
-import {
-  CanaryUpgradeStatus,
-  OutboundTrafficPolicy,
-  PodLogs,
-  ValidationStatus,
-} from '../src/types/IstioObjects';
-import {
-  ComponentStatus,
-  IstiodResourceThresholds,
-} from '../src/types/IstioStatus';
-import { IstioMetricsMap } from '../src/types/Metrics';
-import { IstioMetricsOptions } from '../src/types/MetricsOptions';
-import { Namespace } from '../src/types/Namespace';
-import { KialiCrippledFeatures, ServerConfig } from '../src/types/ServerConfig';
-import { ServiceDetailsInfo } from '../src/types/ServiceInfo';
-import { ServiceList, ServiceListQuery } from '../src/types/ServiceList';
-import { StatusState } from '../src/types/StatusState';
-import { TLSStatus } from '../src/types/TLSStatus';
-import { Span, TracingQuery } from '../src/types/Tracing';
-import {
-  ClusterWorkloadsResponse,
-  Workload,
-  WorkloadListItem,
-  WorkloadNamespaceResponse,
-  WorkloadOverview,
-  WorkloadQuery,
-} from '../src/types/Workload';
 import { filterNsByAnnotation } from '../src/utils/entityFilter';
 import { kialiData } from './__fixtures__';
 import { mockEntity } from './mockEntity';
@@ -171,11 +173,17 @@ export class MockKialiClient implements KialiApi {
           labels: w.labels,
           istioReferences: w.istioReferences,
           notCoveredAuthPolicy: w.notCoveredAuthPolicy,
-          health: WorkloadHealth.fromJson(namespace, w.name, w.health, {
-            rateInterval: duration,
-            hasSidecar: w.istioSidecar,
-            hasAmbient: w.istioAmbient,
-          }),
+          health: WorkloadHealth.fromJson(
+            namespace,
+            w.name,
+            w.health,
+            {
+              rateInterval: duration,
+              hasSidecar: w.istioSidecar,
+              hasAmbient: w.istioAmbient,
+            },
+            serverConfig,
+          ),
         };
       },
     );
@@ -221,11 +229,17 @@ export class MockKialiClient implements KialiApi {
     };
     const data = kialiData.namespacesData[namespace].health[params.type];
     Object.keys(data).forEach(k => {
-      ret[k] = AppHealth.fromJson(namespace, k, data[k], {
-        rateInterval: duration,
-        hasSidecar: true,
-        hasAmbient: false,
-      });
+      ret[k] = AppHealth.fromJson(
+        namespace,
+        k,
+        data[k],
+        {
+          rateInterval: duration,
+          hasSidecar: true,
+          hasAmbient: false,
+        },
+        serverConfig,
+      );
     });
     return ret;
   }
@@ -245,11 +259,17 @@ export class MockKialiClient implements KialiApi {
     };
     const data = kialiData.namespacesData[namespace].health[params.type];
     Object.keys(data).forEach(k => {
-      ret[k] = ServiceHealth.fromJson(namespace, k, data[k], {
-        rateInterval: duration,
-        hasSidecar: true,
-        hasAmbient: false,
-      });
+      ret[k] = ServiceHealth.fromJson(
+        namespace,
+        k,
+        data[k],
+        {
+          rateInterval: duration,
+          hasSidecar: true,
+          hasAmbient: false,
+        },
+        serverConfig,
+      );
     });
     return ret;
   }
@@ -269,11 +289,17 @@ export class MockKialiClient implements KialiApi {
     };
     const data = kialiData.namespacesData[namespace].health[params.type];
     Object.keys(data).forEach(k => {
-      ret[k] = WorkloadHealth.fromJson(namespace, k, data[k], {
-        rateInterval: duration,
-        hasSidecar: true,
-        hasAmbient: false,
-      });
+      ret[k] = WorkloadHealth.fromJson(
+        namespace,
+        k,
+        data[k],
+        {
+          rateInterval: duration,
+          hasSidecar: true,
+          hasAmbient: false,
+        },
+        serverConfig,
+      );
     });
     return ret;
   }
@@ -434,11 +460,17 @@ export class MockKialiClient implements KialiApi {
 
     if (info.health) {
       // Default rate interval in backend = 600s
-      info.health = ServiceHealth.fromJson(namespace, service, info.health, {
-        rateInterval: rateInterval ?? 600,
-        hasSidecar: info.istioSidecar,
-        hasAmbient: info.isAmbient,
-      });
+      info.health = ServiceHealth.fromJson(
+        namespace,
+        service,
+        info.health,
+        {
+          rateInterval: rateInterval ?? 600,
+          hasSidecar: info.istioSidecar,
+          hasAmbient: info.isAmbient,
+        },
+        serverConfig,
+      );
     }
     return info;
   }

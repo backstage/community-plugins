@@ -20,7 +20,7 @@ import {
   makeStyles,
   Theme,
 } from '@material-ui/core';
-import React from 'react';
+import { Fragment } from 'react';
 
 type PipelineRunTableColumn = Record<
   string,
@@ -65,7 +65,7 @@ export const PipelineRunTableColumns = () => {
   const classes = useStyles();
 
   return (
-    <React.Fragment>
+    <Fragment>
       <TableHead>
         <TableRow>
           {Object.entries(columns).map(([key, value]) => (
@@ -79,6 +79,6 @@ export const PipelineRunTableColumns = () => {
           ))}
         </TableRow>
       </TableHead>
-    </React.Fragment>
+    </Fragment>
   );
 };

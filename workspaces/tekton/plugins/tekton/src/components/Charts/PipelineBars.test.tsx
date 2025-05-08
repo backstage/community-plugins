@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import { mockKubernetesPlrResponse } from '../../__fixtures__/1-pipelinesData';
 import PipelineBars from './PipelineBars';
 import { renderInTestApp } from '@backstage/test-utils';

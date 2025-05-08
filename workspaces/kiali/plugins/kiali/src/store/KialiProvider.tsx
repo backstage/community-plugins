@@ -13,11 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { KIALI_PROVIDER } from '@backstage-community/plugin-kiali-common';
+import {
+  AuthInfo,
+  MessageType,
+} from '@backstage-community/plugin-kiali-common/types';
 import { Entity } from '@backstage/catalog-model';
 import { useApi } from '@backstage/core-plugin-api';
 import { CircularProgress } from '@material-ui/core';
 import axios from 'axios';
-import React from 'react';
+import { default as React } from 'react';
 import { useAsyncFn, useDebounce } from 'react-use';
 import {
   HelpDropdownActions,
@@ -28,7 +33,6 @@ import { IstioCertsInfoActions } from '../actions/IstioCertsInfoActions';
 import { IstioStatusActions } from '../actions/IstioStatusActions';
 import { MeshTlsActions } from '../actions/MeshTlsActions';
 import { ProviderActions } from '../actions/ProviderAction';
-import { KIALI_PROVIDER } from '../components/Router';
 import { setServerConfig } from '../config/ServerConfig';
 import { KialiHelper } from '../pages/Kiali/KialiHelper';
 import { KialiNoResources } from '../pages/Kiali/KialiNoResources';
@@ -44,8 +48,6 @@ import {
 import { MeshTlsStateReducer } from '../reducers/MeshTlsState';
 import { ProviderStateReducer } from '../reducers/Provider';
 import { kialiApiRef } from '../services/Api';
-import { AuthInfo } from '../types/Auth';
-import { MessageType } from '../types/MessageCenter';
 import { AlertUtils } from '../utils/Alertutils';
 import { PromisesRegistry } from '../utils/CancelablePromises';
 import { initialStore } from './ConfigStore';
@@ -129,7 +131,7 @@ export const KialiProvider: React.FC<Props> = ({
   const kialiClient = useApi(kialiApiRef);
   kialiClient.setEntity(entity);
   const alertUtils = new AlertUtils(messageDispatch);
-  const fetchNamespaces = async () => {
+  const fetchNamespaces = async (provider: string) => {
     if (!namespaceState || !namespaceState.isFetching) {
       namespaceDispatch(NamespaceActions.requestStarted());
       return kialiClient
@@ -143,14 +145,21 @@ export const KialiProvider: React.FC<Props> = ({
           } else {
             setNotHaveResources(true);
           }
-          namespaceDispatch(NamespaceActions.setActiveNamespaces([...data]));
+          namespaceDispatch(
+            NamespaceActions.receiveList([...data], new Date()),
+          );
+          namespaceDispatch(
+            NamespaceActions.setActiveNamespaces([
+              ...data.filter(ns => ns.cluster === provider),
+            ]),
+          );
         })
         .catch(() => namespaceDispatch(NamespaceActions.requestFailed()));
     }
     return () => {};
   };
 
-  const fetchPostLogin = async () => {
+  const fetchPostLogin = async (provider: string) => {
     try {
       const getAuthpromise = promises
         .register('getAuth', kialiClient.getAuthInfo())
@@ -176,7 +185,7 @@ export const KialiProvider: React.FC<Props> = ({
       const getIstioStatus = promises
         .register('getIstiostatus', kialiClient.getIstioStatus())
         .then(resp => istioStatusDispatch(IstioStatusActions.setinfo(resp)));
-
+      await fetchNamespaces(provider);
       await Promise.all([
         getAuthpromise,
         getStatusPromise,
@@ -185,7 +194,6 @@ export const KialiProvider: React.FC<Props> = ({
         getIstioCerts,
         getIstioStatus,
       ]);
-      await fetchNamespaces();
     } catch (err) {
       let errDetails: string | undefined = undefined;
       if (axios.isAxiosError(err)) {
@@ -218,7 +226,7 @@ export const KialiProvider: React.FC<Props> = ({
           );
           kialiClient.setAnnotation(KIALI_PROVIDER, status.providers[0]);
         }
-        fetchPostLogin();
+        fetchPostLogin(status.providers[0]);
       }
     } catch (err) {
       let errDetails: string | undefined = undefined;

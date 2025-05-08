@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { IstioConfigItem } from '@backstage-community/plugin-kiali-common/types';
 import { EmptyState } from '@backstage/core-components';
 import {
   Card,
@@ -21,9 +22,8 @@ import {
   TableCellProps,
   Typography,
 } from '@material-ui/core';
-import * as React from 'react';
+import { default as React } from 'react';
 import { cardsHeight } from '../../styles/StyleUtils';
-import { IstioConfigItem } from '../../types/IstioConfigList';
 import {
   getGVKTypeString,
   getIstioObjectGVK,

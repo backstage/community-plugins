@@ -14,14 +14,20 @@
  * limitations under the License.
  */
 import {
-  ActiveFiltersInfo,
   AllFilterTypes,
+  DEGRADED,
+  FAILURE,
   FILTER_ACTION_APPEND,
   FILTER_ACTION_UPDATE,
+  HEALTHY,
+  NA,
+  NOT_READY,
+} from '@backstage-community/plugin-kiali-common/types';
+import type {
+  ActiveFiltersInfo,
   FilterType,
   FilterValue,
-} from '../../types/Filters';
-import { DEGRADED, FAILURE, HEALTHY, NA, NOT_READY } from '../../types/Health';
+} from '@backstage-community/plugin-kiali-common/types';
 import { removeDuplicatesArray } from '../../utils/Common';
 
 export const presenceValues: FilterValue[] = [

@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { pluginId } from '@backstage-community/plugin-kiali-common';
 import { HeaderTabs } from '@backstage/core-components';
-import React, { useCallback, useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { matchRoutes, useNavigate, useParams } from 'react-router-dom';
-import { pluginName } from '../../../plugin';
 import {
   appsRouteRef,
   istioConfigRouteRef,
@@ -45,13 +45,13 @@ export const KialiTabs = () => {
   const navigate = useNavigate();
   const handleTabChange = useCallback(
     (index: number) => {
-      navigate(`/${pluginName}${tabs[index].path}`);
+      navigate(`/${pluginId}${tabs[index].path}`);
     },
     [navigate],
   );
   useEffect(() => {
     if (currentTabIndex === 0) {
-      navigate(`/${pluginName}${tabs[0].path}`);
+      navigate(`/${pluginId}${tabs[0].path}`);
     }
   }, [currentTabIndex, navigate]);
 

@@ -13,19 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ChartModel, XAxisType } from '../types/Dashboards';
-import { Datapoint, Metric } from '../types/Metrics';
-import { Overlay, OverlayInfo } from '../types/Overlay';
+import { makeLegend } from '@backstage-community/plugin-kiali-common/func';
 import {
   BucketDataPoint,
+  ChartModel,
+  Datapoint,
   LegendItem,
   LineInfo,
-  makeLegend,
+  Metric,
+  Overlay,
+  OverlayInfo,
   RichDataPoint,
   VCDataPoint,
   VCLine,
   VCLines,
-} from '../types/VictoryChartInfo';
+  XAxisType,
+} from '@backstage-community/plugin-kiali-common/types';
 import { filterAndRenameMetric, LabelsInfo } from './TimeSeriesUtils';
 
 export const toVCDatapoints = (

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
+import type { FC } from 'react';
 
 import { useEntity } from '@backstage/plugin-catalog-react';
 
@@ -67,7 +67,7 @@ const useDrawerStyles = makeStyles<Theme>(theme =>
     },
   }),
 );
-const DeploymentLifecycleDrawer: React.FC<DeploymentLifecycleDrawerProps> = ({
+const DeploymentLifecycleDrawer: FC<DeploymentLifecycleDrawerProps> = ({
   isOpen,
   onClose,
 }) => {

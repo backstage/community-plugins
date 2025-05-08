@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { memo } from 'react';
 
 import { PodRCData } from '../../types/pods';
 import { usePodRingLabel } from '../../utils/pod-ring-utils';
@@ -76,7 +76,7 @@ export const podSetInnerRadius = (size: number, data?: PodRCData) => {
   return radius - innerStrokeWidth - podStatusInset;
 };
 
-const PodSet = React.memo(function PodSet({
+const PodSet = memo(function PodSet({
   size,
   data,
   x = 0,

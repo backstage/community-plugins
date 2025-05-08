@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
-import { PFColors } from '../../components/Pf/PfColors';
-import { kialiStyle } from '../../styles/StyleUtils';
 import {
   isProxyStatusComponentSynced,
   isProxyStatusSynced,
-  ProxyStatus,
-} from '../../types/Health';
+} from '@backstage-community/plugin-kiali-common/func';
+import { ProxyStatus } from '@backstage-community/plugin-kiali-common/types';
+import { default as React } from 'react';
+import { PFColors } from '../../components/Pf/PfColors';
+import { kialiStyle } from '../../styles/StyleUtils';
 
 type Props = {
   status?: ProxyStatus;

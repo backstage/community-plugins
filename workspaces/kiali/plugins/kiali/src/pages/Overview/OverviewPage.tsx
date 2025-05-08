@@ -13,6 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { KIALI_PROVIDER } from '@backstage-community/plugin-kiali-common';
+import {
+  Health,
+  NamespaceAppHealth,
+  NamespaceServiceHealth,
+  NamespaceWorkloadHealth,
+  nsWideMTLSStatus,
+} from '@backstage-community/plugin-kiali-common/func';
+import {
+  DEGRADED,
+  DurationInSeconds,
+  FAILURE,
+  HEALTHY,
+  IstioMetricsOptions,
+  NOT_READY,
+  SortField,
+} from '@backstage-community/plugin-kiali-common/types';
 import { Entity } from '@backstage/catalog-model';
 import {
   CardTab,
@@ -23,35 +40,14 @@ import {
 import { useApi } from '@backstage/core-plugin-api';
 import { CircularProgress, Grid } from '@material-ui/core';
 import _ from 'lodash';
-import React, { useRef, useState } from 'react';
+import { default as React, useRef, useState } from 'react';
 import * as FilterHelper from '../../components/FilterList/FilterHelper';
-import { KIALI_PROVIDER } from '../../components/Router';
 import { isMultiCluster, serverConfig } from '../../config';
 import { nsEqual } from '../../helpers/namespaces';
 import { getErrorString, kialiApiRef } from '../../services/Api';
 import { computePrometheusRateParams } from '../../services/Prometheus';
 import { KialiAppState, KialiContext } from '../../store';
 import { baseStyle } from '../../styles/StyleUtils';
-import { DurationInSeconds } from '../../types/Common';
-import {
-  DEGRADED,
-  FAILURE,
-  Health,
-  HEALTHY,
-  NamespaceAppHealth,
-  NamespaceServiceHealth,
-  NamespaceWorkloadHealth,
-  NOT_READY,
-} from '../../types/Health';
-import {
-  CanaryUpgradeStatus,
-  OutboundTrafficPolicy,
-} from '../../types/IstioObjects';
-import { IstiodResourceThresholds } from '../../types/IstioStatus';
-import { MessageType } from '../../types/MessageCenter';
-import { IstioMetricsOptions } from '../../types/MetricsOptions';
-import { SortField } from '../../types/SortFilters';
-import { nsWideMTLSStatus } from '../../types/TLSStatus';
 import { PromisesRegistry } from '../../utils/CancelablePromises';
 import { NamespaceInfo, NamespaceInfoStatus } from './NamespaceInfo';
 import { OverviewCard } from './OverviewCard';
@@ -108,13 +104,6 @@ export const OverviewPage = (props: { entity?: Entity }) => {
   const prevActiveNs = useRef(activeNsName);
   const promises = new PromisesRegistry();
   const [namespaces, setNamespaces] = React.useState<NamespaceInfo[]>([]);
-  const [outboundTrafficPolicy, setOutboundTrafficPolicy] =
-    React.useState<OutboundTrafficPolicy>({});
-  const [canaryUpgradeStatus, setCanaryUpgradeStatus] = React.useState<
-    CanaryUpgradeStatus | undefined
-  >(undefined);
-  const [istiodResourceThresholds, setIstiodResourceThresholds] =
-    React.useState<IstiodResourceThresholds>({ memory: 0, cpu: 0 });
   const [duration, setDuration] = React.useState<number>(
     FilterHelper.currentDuration(),
   );
@@ -300,56 +289,6 @@ export const OverviewPage = (props: { entity?: Entity }) => {
     });
   };
 
-  const fetchOutboundTrafficPolicyMode = () => {
-    kialiClient
-      .getOutboundTrafficPolicyMode()
-      .then(response => {
-        setOutboundTrafficPolicy({ mode: response.mode });
-      })
-      .catch(error => {
-        kialiState.alertUtils!.addError(
-          'Error fetching Mesh OutboundTrafficPolicy.Mode.',
-          error,
-          'default',
-          MessageType.ERROR,
-        );
-      });
-  };
-
-  const fetchCanariesStatus = () =>
-    kialiClient
-      .getCanaryUpgradeStatus()
-      .then(response => {
-        setCanaryUpgradeStatus({
-          currentVersion: response.currentVersion,
-          upgradeVersion: response.upgradeVersion,
-          migratedNamespaces: response.migratedNamespaces,
-          pendingNamespaces: response.pendingNamespaces,
-        });
-      })
-      .catch(error => {
-        kialiState.alertUtils!.addError(
-          'Error fetching canary upgrade status.',
-          error,
-          'default',
-          MessageType.ERROR,
-        );
-      });
-
-  const fetchIstiodResourceThresholds = () => {
-    kialiClient
-      .getIstiodResourceThresholds()
-      .then(response => setIstiodResourceThresholds(response))
-      .catch(error => {
-        kialiState.alertUtils!.addError(
-          'Error fetching Istiod resource thresholds.',
-          error,
-          'default',
-          MessageType.ERROR,
-        );
-      });
-  };
-
   const fetchValidationResultForCluster = async (
     nss: NamespaceInfo[],
     cluster: string,
@@ -495,9 +434,6 @@ export const OverviewPage = (props: { entity?: Entity }) => {
         fetchHealth(isAscending, sortField, overviewType, sortNs);
         fetchTLS(sortNs, isAscending, sortField);
         fetchValidations(sortNs, isAscending, sortField);
-        fetchOutboundTrafficPolicyMode();
-        fetchCanariesStatus();
-        fetchIstiodResourceThresholds();
         fetchMetrics(sortNs);
         setNamespaces(sortNs);
         promises.waitAll();
@@ -543,7 +479,6 @@ export const OverviewPage = (props: { entity?: Entity }) => {
                 <OverviewCard
                   entity
                   namespace={ns}
-                  canaryUpgradeStatus={canaryUpgradeStatus}
                   istioAPIEnabled={
                     kialiState.statusState.istioEnvironment.istioAPIEnabled
                   }
@@ -553,9 +488,7 @@ export const OverviewPage = (props: { entity?: Entity }) => {
                   refreshInterval={kialiState.userSettings.refreshInterval}
                   certsInfo={kialiState.istioCertsInfo}
                   minTLS={kialiState.meshTLSStatus.minTLS}
-                  istiodResourceThresholds={istiodResourceThresholds}
                   istioStatus={kialiState.istioStatus}
-                  outboundTrafficPolicy={outboundTrafficPolicy}
                 />
               </CardTab>
             ))}
@@ -586,7 +519,6 @@ export const OverviewPage = (props: { entity?: Entity }) => {
                     >
                       <OverviewCard
                         namespace={ns}
-                        canaryUpgradeStatus={canaryUpgradeStatus}
                         istioAPIEnabled={
                           kialiState.statusState.istioEnvironment
                             .istioAPIEnabled
@@ -599,9 +531,7 @@ export const OverviewPage = (props: { entity?: Entity }) => {
                         }
                         certsInfo={kialiState.istioCertsInfo}
                         minTLS={kialiState.meshTLSStatus.minTLS}
-                        istiodResourceThresholds={istiodResourceThresholds}
                         istioStatus={kialiState.istioStatus}
-                        outboundTrafficPolicy={outboundTrafficPolicy}
                       />
                     </Grid>
                   ))}

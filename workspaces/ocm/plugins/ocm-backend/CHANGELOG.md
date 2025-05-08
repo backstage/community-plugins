@@ -1,5 +1,25 @@
 ### Dependencies
 
+## 5.6.0
+
+### Minor Changes
+
+- fde918d: Backstage version bump to v1.38.1
+
+### Patch Changes
+
+- Updated dependencies [fde918d]
+  - @backstage-community/plugin-ocm-common@3.9.0
+
+## 5.5.4
+
+### Patch Changes
+
+- 1ac3b94: remove @spotify/prettier-config direct dependency
+- 5d032e5: Updated dependency `@openapitools/openapi-generator-cli` to `2.19.1`.
+- Updated dependencies [1ac3b94]
+  - @backstage-community/plugin-ocm-common@3.8.3
+
 ## 5.5.3
 
 ### Patch Changes

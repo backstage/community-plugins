@@ -15,7 +15,7 @@
  */
 import { Grid, IconButton, Tooltip } from '@material-ui/core';
 import Refresh from '@material-ui/icons/Refresh';
-import React from 'react';
+import { default as React } from 'react';
 
 type DefaultProps = {
   hideNamespaceSelector?: boolean;

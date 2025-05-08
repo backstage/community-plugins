@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { SetStateAction, Dispatch } from 'react';
+
+import { useState, useEffect } from 'react';
 
 import IconButton from '@mui/material/IconButton';
 import { PermissionsData } from '../../types';
@@ -50,7 +52,7 @@ type PermissionPoliciesFormRowProps = {
   ) => void;
   onRemovePermission: (index: number) => void;
   onRemovePlugin: (plugin: string) => void;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setOpen: Dispatch<SetStateAction<boolean>>;
   onAddConditions: (index: number, conditions?: ConditionsData) => void;
 };
 
@@ -65,9 +67,9 @@ const PermissionPoliciesFormRow = ({
   onRemovePlugin,
   onAddConditions,
 }: PermissionPoliciesFormRowProps) => {
-  const [currentOpen, setCurrentOpen] = React.useState<boolean>(false);
+  const [currentOpen, setCurrentOpen] = useState<boolean>(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setCurrentOpen(open);
   }, [open]);
 

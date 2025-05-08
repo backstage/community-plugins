@@ -21,6 +21,14 @@ spec:
           type: string
           description: Unique name of the component
           ui:field: EntityNamePicker
+        label:
+          title: Label
+          type: string
+          description: Custom label.
+        annotation:
+          title: Annotation
+          type: string
+          description: Custom annotation.
         description:
           title: Description
           type: string
@@ -72,7 +80,7 @@ spec:
           custom: ${{ parameters.label }}
           other: 'test-label'
         annotations:
-          custom.io/annotation: ${{ parameters.label }}
+          custom.io/annotation: ${{ parameters.annotation }}
           custom.io/other: 'value'
 
     # this step is an example of using the `catalog:scaffolded-from` action

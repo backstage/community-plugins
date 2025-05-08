@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useAsyncRetry, useInterval } from 'react-use';
 
 import { useApi } from '@backstage/core-plugin-api';
@@ -42,14 +42,14 @@ export const useApplications = ({
   error: Error | undefined;
   loading: boolean;
 } => {
-  const [loadingData, setLoadingData] = React.useState<boolean>(true);
-  const [, setAppSelector] = React.useState<string>(appSelector ?? '');
-  const [, setAppName] = React.useState<string | undefined>(appName ?? '');
-  const [apps, setApps] = React.useState<Application[]>([]);
+  const [loadingData, setLoadingData] = useState<boolean>(true);
+  const [, setAppSelector] = useState<string>(appSelector ?? '');
+  const [, setAppName] = useState<string | undefined>(appName ?? '');
+  const [apps, setApps] = useState<Application[]>([]);
 
   const api = useApi(argoCDApiRef);
 
-  const getApplications = React.useCallback(async () => {
+  const getApplications = useCallback(async () => {
     return await api
       .listApps({
         url: `/argoInstance/${instanceName}`,
@@ -60,7 +60,7 @@ export const useApplications = ({
       .then(applications => setApps(applications?.items ?? []));
   }, [api, appSelector, instanceName, projectName, appNamespace]);
 
-  const getApplication = React.useCallback(async () => {
+  const getApplication = useCallback(async () => {
     return await api
       .getApplication({
         url: `/argoInstance/${instanceName}`,
@@ -79,7 +79,7 @@ export const useApplications = ({
 
   useInterval(() => retry(), intervalMs);
 
-  React.useEffect(() => {
+  useEffect(() => {
     let mounted = true;
     if (!loading && mounted) {
       if (appSelector) {

@@ -21,7 +21,7 @@ This plugin enables you to visualize pipeline security information from multiple
 1. Install the plugin using the following command:
 
 ```
-yarn workspace app add @backstage-community/multi-source-security-viewer
+yarn workspace app add @backstage-community/plugin-multi-source-security-viewer
 ```
 
 To enable the PipelineRun list in the Security tab on the entity view page, add the following snippet in the packages/app/src/components/catalog/EntityPage.tsx.
@@ -63,6 +63,7 @@ To enable the PipelineRun list in the Security tab on the entity view page, add 
 - [Jenkins](../../../jenkins/plugins/jenkins/README.md)
 - [Github Actions]([../../../github-actions/plugins/github-actions/README.md)
 - [Gitlab CI](https://github.com/immobiliare/backstage-plugin-gitlab?tab=readme-ov-file#annotations)
+- [Azure Pipelines](../../../azure-devops/plugins/azure-devops/README.md)
 
 ### Procedure
 

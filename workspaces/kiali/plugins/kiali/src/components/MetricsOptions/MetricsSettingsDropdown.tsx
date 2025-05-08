@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { PromLabel } from '@backstage-community/plugin-kiali-common/types';
 import {
   Divider,
   FormControlLabel,
@@ -28,13 +29,12 @@ import {
   MenuToggleElement,
 } from '@patternfly/react-core';
 import isEqual from 'lodash/isEqual';
-import * as React from 'react';
+import { default as React } from 'react';
 import { classes } from 'typestyle';
 import { history, URLParam } from '../../app/History';
 import { KialiIcon } from '../../config/KialiIcon';
 import { titleStyle } from '../../styles/DropdownStyles';
 import { kialiStyle } from '../../styles/StyleUtils';
-import { PromLabel } from '../../types/Metrics';
 import {
   combineLabelsSettings,
   mergeLabelFilter,

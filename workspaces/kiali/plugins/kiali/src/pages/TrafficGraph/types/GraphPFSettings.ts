@@ -13,8 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { EdgeLabelMode, GraphType, TrafficRate } from '../../../types/Graph';
-import { Namespace } from '../../../types/Namespace';
+import type { Namespace } from '@backstage-community/plugin-kiali-common/types';
+import {
+  EdgeLabelMode,
+  GraphType,
+  TrafficRate,
+} from '@backstage-community/plugin-kiali-common/types';
 
 export type GraphPFSettings = {
   activeNamespaces: Namespace[];

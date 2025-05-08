@@ -20,6 +20,7 @@ import {
 } from '@backstage-community/plugin-tech-insights-node';
 import { CatalogClient } from '@backstage/catalog-client';
 import { Entity } from '@backstage/catalog-model';
+import { DateTime } from 'luxon';
 
 /**
  * Generates facts which indicate the quality of data in the spec.owner field.
@@ -72,6 +73,7 @@ export const entityOwnershipFactRetriever: FactRetriever = {
               !(entity.spec?.owner as string).startsWith('user:'),
           ),
         },
+        timestamp: DateTime.now(),
       };
     });
   },

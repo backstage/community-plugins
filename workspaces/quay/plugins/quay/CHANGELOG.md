@@ -1,5 +1,38 @@
 ### Dependencies
 
+## 1.20.2
+
+### Patch Changes
+
+- 1d7aaba: Update supported version metadata to 1.38.1
+- Updated dependencies [1d7aaba]
+  - @backstage-community/plugin-quay-common@1.8.1
+
+## 1.20.1
+
+### Patch Changes
+
+- fa53ba5: Updated dependency `@playwright/test` to `1.52.0`.
+
+## 1.20.0
+
+### Minor Changes
+
+- e172aba: Bump backstage version to v1.38.1
+
+### Patch Changes
+
+- Updated dependencies [e172aba]
+  - @backstage-community/plugin-quay-common@1.8.0
+
+## 1.19.2
+
+### Patch Changes
+
+- 16c57cc: chore: Remove usage of @spotify/prettier-config
+- Updated dependencies [16c57cc]
+  - @backstage-community/plugin-quay-common@1.7.2
+
 ## 1.19.1
 
 ### Patch Changes

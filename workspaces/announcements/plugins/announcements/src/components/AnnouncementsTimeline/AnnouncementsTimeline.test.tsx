@@ -18,7 +18,6 @@ import {
   AnnouncementsTimeline,
   AnnouncementsTimelineProps,
 } from './AnnouncementsTimeline';
-import React from 'react';
 import { TestApiProvider, renderInTestApp } from '@backstage/test-utils';
 import { rootRouteRef } from '../../routes';
 import { AnnouncementsList } from '@backstage-community/plugin-announcements-common';

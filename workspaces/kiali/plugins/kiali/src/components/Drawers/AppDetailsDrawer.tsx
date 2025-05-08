@@ -13,17 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { AppHealth } from '@backstage-community/plugin-kiali-common/func';
+import { DRAWER } from '@backstage-community/plugin-kiali-common/types';
+import type {
+  App,
+  AppQuery,
+} from '@backstage-community/plugin-kiali-common/types';
 import { useApi } from '@backstage/core-plugin-api';
 import { CircularProgress } from '@material-ui/core';
 import { AxiosError } from 'axios';
-import * as React from 'react';
+import { default as React } from 'react';
 import { useAsyncFn, useDebounce } from 'react-use';
 import { HistoryManager } from '../../app/History';
+import { serverConfig } from '../../config';
 import { AppInfo } from '../../pages/AppDetails/AppInfo';
 import { kialiApiRef } from '../../services/Api';
-import { App, AppQuery } from '../../types/App';
-import { AppHealth } from '../../types/Health';
-import { DRAWER } from '../../types/types';
 
 type Props = {
   namespace: string;
@@ -53,6 +57,7 @@ export const AppDetailsDrawer = (props: Props) => {
             hasSidecar: appResponse.workloads.some(w => w.istioSidecar),
             hasAmbient: appResponse.workloads.some(w => w.istioAmbient),
           },
+          serverConfig,
         );
         setAppItem(appResponse);
         setHealth(healthR);

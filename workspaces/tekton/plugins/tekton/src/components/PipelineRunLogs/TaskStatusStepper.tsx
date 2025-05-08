@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useState, memo } from 'react';
 import useInterval from 'react-use/lib/useInterval';
 
 import {
@@ -69,7 +69,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const StepTimeTicker = ({ step }: { step: TaskStep }) => {
-  const [time, setTime] = React.useState('');
+  const [time, setTime] = useState('');
 
   useInterval(() => {
     if (!step.startedAt) {
@@ -137,7 +137,7 @@ type TaskStatusStepperProps = {
   };
 };
 
-export const TaskStatusStepper = React.memo((props: TaskStatusStepperProps) => {
+export const TaskStatusStepper = memo((props: TaskStatusStepperProps) => {
   const { steps, currentStepId, onUserStepChange } = props;
   const classes = useStyles(props);
   const { t } = useTranslationRef(tektonTranslationRef);

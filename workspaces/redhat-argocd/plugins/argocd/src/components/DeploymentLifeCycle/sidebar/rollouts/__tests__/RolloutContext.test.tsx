@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { ReactNode } from 'react';
 
 import { render, screen, renderHook } from '@testing-library/react';
 
@@ -59,9 +59,7 @@ describe('ArgoResourcesProvider', () => {
   it('should throw an error if useArgoResources is used outside of the provider', () => {
     expect(() =>
       renderHook(() => useArgoResources(), {
-        wrapper: ({ children }: { children: React.ReactNode }) => (
-          <>{children}</>
-        ),
+        wrapper: ({ children }: { children: ReactNode }) => <>{children}</>,
       }),
     ).toThrow(
       new Error(

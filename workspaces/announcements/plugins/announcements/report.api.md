@@ -7,8 +7,8 @@
 
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { IndexableDocument } from '@backstage/plugin-search-common';
-import { InfoCardVariants } from '@backstage/core-components/*';
-import { JSX as JSX_2 } from 'react';
+import { InfoCardVariants } from '@backstage/core-components';
+import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { ResultHighlight } from '@backstage/plugin-search-common';
 import { RouteRef } from '@backstage/core-plugin-api';
 import { SearchResultListItemExtensionProps } from '@backstage/plugin-search-react';
@@ -33,6 +33,7 @@ export const AnnouncementsCard: ({
   variant,
   sortBy,
   order,
+  hideStartAt,
 }: {
   title?: string | undefined;
   max?: number | undefined;
@@ -41,6 +42,7 @@ export const AnnouncementsCard: ({
   variant?: InfoCardVariants | undefined;
   sortBy?: 'created_at' | 'start_at' | undefined;
   order?: 'desc' | 'asc' | undefined;
+  hideStartAt?: boolean | undefined;
 }) => JSX_2.Element;
 
 // @public (undocumented)
@@ -76,6 +78,7 @@ export const AnnouncementsPage: (props: {
       }
     | undefined;
   hideInactive?: boolean | undefined;
+  hideStartAt?: boolean | undefined;
 }) => JSX_2.Element;
 
 // @public (undocumented)
