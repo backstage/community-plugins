@@ -9,8 +9,7 @@
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { Cluster } from '@backstage-community/plugin-ocm-common';
 import { IconComponent } from '@backstage/core-plugin-api';
-import { JSX as JSX_2 } from 'react';
-import { default as React_2 } from 'react';
+import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { ReactNode } from 'react';
 import { RouteRef } from '@backstage/core-plugin-api';
 
@@ -18,7 +17,7 @@ import { RouteRef } from '@backstage/core-plugin-api';
 export const ClusterAvailableResourceCard: () => any;
 
 // @public (undocumented)
-export const ClusterContextProvider: (props: any) => React_2.JSX.Element;
+export const ClusterContextProvider: (props: any) => JSX_2.Element;
 
 // @public (undocumented)
 export type ClusterContextType = {
@@ -28,7 +27,7 @@ export type ClusterContextType = {
 };
 
 // @public (undocumented)
-export const ClusterInfoCard: () => React_2.JSX.Element | null;
+export const ClusterInfoCard: () => JSX_2.Element | null;
 
 // @public (undocumented)
 export const OcmIcon: IconComponent;

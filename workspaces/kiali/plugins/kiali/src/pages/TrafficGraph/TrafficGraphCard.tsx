@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 import '@backstage/core-components';
+import { ENTITY } from '@backstage-community/plugin-kiali-common/types';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { Card, CardHeader } from '@material-ui/core';
-import { ENTITY } from '../../types/types';
 import TrafficGraphPage from './TrafficGraphPage';
 
 export const TrafficGraphCard = () => {

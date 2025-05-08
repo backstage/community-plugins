@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { TLSStatus } from '@backstage-community/plugin-kiali-common/types';
 import { getType } from 'typesafe-actions';
 import { KialiAppAction } from '../actions/KialiAppAction';
 import { MeshTlsActions } from '../actions/MeshTlsActions';
-import { TLSStatus } from '../types/TLSStatus';
 
 export const INITIAL_MESH_TLS_STATE: TLSStatus = {
   status: '',

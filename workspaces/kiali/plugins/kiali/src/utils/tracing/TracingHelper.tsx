@@ -13,15 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import _round from 'lodash/round';
-import moment from 'moment';
-import { retrieveTimeRange } from '../../components/Time/TimeRangeHelper';
 import {
-  DurationInSeconds,
   durationToBounds,
   guardTimeRange,
-} from '../../types/Common';
-import {
+} from '@backstage-community/plugin-kiali-common/func';
+import type {
+  DurationInSeconds,
   EnvoySpanInfo,
   JaegerTrace,
   KeyValuePair,
@@ -29,7 +26,10 @@ import {
   OpenTracingHTTPInfo,
   OpenTracingTCPInfo,
   Span,
-} from '../../types/TracingInfo';
+} from '@backstage-community/plugin-kiali-common/types';
+import _round from 'lodash/round';
+import moment from 'moment';
+import { retrieveTimeRange } from '../../components/Time/TimeRangeHelper';
 import { spansSort } from './TraceTransform';
 
 export const defaultTracingDuration: DurationInSeconds = 600;

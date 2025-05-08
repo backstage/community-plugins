@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { parseEntityRef } from '@backstage/catalog-model';
-import { Link } from '@backstage/core-components';
 
 import EditIcon from '@mui/icons-material/Edit';
 import IconButton from '@mui/material/IconButton';
@@ -22,6 +21,7 @@ import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { usePermission } from '@backstage/plugin-permission-react';
 import { policyEntityUpdatePermission } from '@backstage-community/plugin-rbac-common';
+import { useNavigate } from 'react-router-dom';
 
 type EditRoleProps = {
   roleName: string;
@@ -38,6 +38,7 @@ const EditRole = ({
   tooltip,
   to,
 }: EditRoleProps) => {
+  const navigate = useNavigate();
   const { name, namespace, kind } = parseEntityRef(roleName);
 
   const editPermissionResult = usePermission({
@@ -55,13 +56,17 @@ const EditRole = ({
     <Tooltip title={tooltip ?? tooltipText}>
       <Typography component="span" data-testid={dataTestId ?? dataTestIdText}>
         <IconButton
-          component={Link}
+          onClick={() => {
+            navigate(to ?? `../role/${kind}/${namespace}/${name}`);
+          }}
           aria-label="Update"
           disabled={disable}
           title={tooltip ?? 'Edit Role'}
-          to={to ?? `../role/${kind}/${namespace}/${name}`}
-          style={{ padding: '0.5rem', color: 'inherit', borderRadius: '50%' }}
-          sx={{ '&:hover': { borderRadius: '50%' } }}
+          sx={{
+            p: 1,
+            borderRadius: '50%',
+            '&:hover': { borderRadius: '50%' },
+          }}
         >
           <EditIcon />
         </IconButton>

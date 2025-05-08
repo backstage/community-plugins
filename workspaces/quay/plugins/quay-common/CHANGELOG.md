@@ -1,5 +1,11 @@
 # @backstage-community/plugin-quay-common
 
+## 1.8.1
+
+### Patch Changes
+
+- 1d7aaba: Update supported version metadata to 1.38.1
+
 ## 1.8.0
 
 ### Minor Changes

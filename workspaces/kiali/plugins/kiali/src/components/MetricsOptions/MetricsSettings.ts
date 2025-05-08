@@ -17,7 +17,7 @@ import {
   LabelDisplayName,
   PromLabel,
   SingleLabelValues,
-} from '../../types/Metrics';
+} from '@backstage-community/plugin-kiali-common/types';
 
 export type Quantiles = '0.5' | '0.95' | '0.99' | '0.999';
 export const allQuantiles: Quantiles[] = ['0.5', '0.95', '0.99', '0.999'];

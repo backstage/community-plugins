@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { TimeRange } from '@backstage-community/plugin-kiali-common/types';
 import { HistoryManager, URLParam } from '../../app/History';
-import { TimeRange } from '../../types/Common';
 
 export const retrieveTimeRange = (): TimeRange => {
   const urlBounds = HistoryManager.getTimeBounds();

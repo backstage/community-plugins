@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 import { KIALI_PROVIDER } from '@backstage-community/plugin-kiali-common';
+import type { AppListItem } from '@backstage-community/plugin-kiali-common/types';
+import { DRAWER, ENTITY } from '@backstage-community/plugin-kiali-common/types';
 import { Entity } from '@backstage/catalog-model';
 import { Content, InfoCard } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
@@ -28,8 +30,6 @@ import { getEntityNs, nsEqual } from '../../helpers/namespaces';
 import { getErrorString, kialiApiRef } from '../../services/Api';
 import { KialiAppState, KialiContext } from '../../store';
 import { baseStyle } from '../../styles/StyleUtils';
-import { AppListItem } from '../../types/AppList';
-import { DRAWER, ENTITY } from '../../types/types';
 import { NamespaceInfo } from '../Overview/NamespaceInfo';
 import { getNamespaces } from '../Overview/OverviewPage';
 import * as AppListClass from './AppListClass';

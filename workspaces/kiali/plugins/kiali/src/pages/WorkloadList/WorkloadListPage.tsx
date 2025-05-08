@@ -14,6 +14,16 @@
  * limitations under the License.
  */
 import { KIALI_PROVIDER } from '@backstage-community/plugin-kiali-common';
+import {
+  validationKey,
+  WorkloadHealth,
+} from '@backstage-community/plugin-kiali-common/func';
+import {
+  ClusterWorkloadsResponse,
+  DRAWER,
+  ENTITY,
+  WorkloadListItem,
+} from '@backstage-community/plugin-kiali-common/types';
 import { Entity } from '@backstage/catalog-model';
 import { Content, InfoCard } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
@@ -24,19 +34,12 @@ import { DefaultSecondaryMasthead } from '../../components/DefaultSecondaryMasth
 import * as FilterHelper from '../../components/FilterList/FilterHelper';
 import { TimeDurationComponent } from '../../components/Time/TimeDurationComponent';
 import { VirtualList } from '../../components/VirtualList/VirtualList';
-import { isMultiCluster } from '../../config';
+import { isMultiCluster, serverConfig } from '../../config';
 import { useKialiEntityContext } from '../../dynamic/KialiContext';
 import { getEntityNs, nsEqual } from '../../helpers/namespaces';
 import { getErrorString, kialiApiRef } from '../../services/Api';
 import { KialiAppState, KialiContext } from '../../store';
 import { baseStyle } from '../../styles/StyleUtils';
-import { WorkloadHealth } from '../../types/Health';
-import { validationKey } from '../../types/IstioConfigList';
-import { DRAWER, ENTITY } from '../../types/types';
-import {
-  ClusterWorkloadsResponse,
-  WorkloadListItem,
-} from '../../types/Workload';
 import { hasMissingAuthPolicy } from '../../utils/IstioConfigUtils';
 import { sortIstioReferences } from '../AppList/FiltersAndSorts';
 import { NamespaceInfo } from '../Overview/NamespaceInfo';
@@ -89,6 +92,7 @@ export const WorkloadListPage = (props: { view?: string; entity?: Entity }) => {
             hasSidecar: deployment.istioSidecar,
             hasAmbient: deployment.istioAmbient,
           },
+          serverConfig,
         ),
         labels: deployment.labels,
         istioReferences: sortIstioReferences(deployment.istioReferences, true),
@@ -144,7 +148,6 @@ export const WorkloadListPage = (props: { view?: string; entity?: Entity }) => {
         kialiState.providers.activeProvider,
     );
     const uniqueClusters = new Set<string>();
-    const serverConfig = await kialiClient.getServerConfig();
 
     Object.keys(serverConfig.clusters).forEach(cluster => {
       uniqueClusters.add(cluster);

@@ -14,6 +14,14 @@
  * limitations under the License.
  */
 import {
+  IstioConfigDetails,
+  ObjectReference,
+  ServiceReference,
+  ValidationMessage,
+  ValidationTypes,
+  WorkloadReference,
+} from '@backstage-community/plugin-kiali-common/types';
+import {
   Card,
   CardContent,
   List,
@@ -30,14 +38,6 @@ import { ValidationObjectSummary } from '../../components/Validations/Validation
 import { GVKToBadge } from '../../components/VirtualList/Config';
 import { KialiIcon } from '../../config/KialiIcon';
 import { kialiStyle } from '../../styles/StyleUtils';
-import { IstioConfigDetails } from '../../types/IstioConfigDetails';
-import {
-  ObjectReference,
-  ServiceReference,
-  ValidationMessage,
-  ValidationTypes,
-  WorkloadReference,
-} from '../../types/IstioObjects';
 import {
   getGVKTypeString,
   getIstioObject,

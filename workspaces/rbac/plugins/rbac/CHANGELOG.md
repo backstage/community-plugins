@@ -1,5 +1,34 @@
 ### Dependencies
 
+## 1.41.4
+
+### Patch Changes
+
+- eebc68d: UI Enhancements:
+
+  - Added vertical spacing between buttons in the side drawer for improved usability.
+  - Fixed layout issue in the Users and Groups table where adding a row caused unexpected height changes.
+  - Aligned action icon colors in the Roles table for visual consistency.
+  - Simplified label formatting in the Overview table for a cleaner look.
+  - Improved dropdown behavior in Users, Groups, and Permissions sections — selecting an option no longer clears the input text.
+  - Conditionally hid input field labels when validation errors are present to reduce visual clutter.
+  - Aligned “No options” placeholder text across the Users and Groups and Plugin selection dropdowns.
+  - Prevented backspace from unintentionally removing selected items in the Users and Groups and Plugin dropdowns.
+
+## 1.41.3
+
+### Patch Changes
+
+- 658c51c: chore: Remove usage of @spotify/prettier-config
+- Updated dependencies [658c51c]
+  - @backstage-community/plugin-rbac-common@1.16.1
+
+## 1.41.2
+
+### Patch Changes
+
+- fa53ba5: Updated dependency `@playwright/test` to `1.52.0`.
+
 ## 1.41.1
 
 ### Patch Changes
