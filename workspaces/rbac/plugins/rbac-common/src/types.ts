@@ -203,3 +203,11 @@ export class UnauthorizedError extends NotAllowedError {
     super('Unauthorized');
   }
 }
+
+/**
+ * @public
+ * List of plugin ids that are supports Backstage permission framework.
+ */
+export type PluginIds = {
+  ids: string[];
+};

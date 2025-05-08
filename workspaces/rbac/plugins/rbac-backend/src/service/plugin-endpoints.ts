@@ -42,6 +42,7 @@ import {
 } from '@backstage-community/plugin-rbac-common';
 import type { PluginIdProvider } from '@backstage-community/plugin-rbac-node';
 import { rbacRules } from '../permissions';
+import { union } from 'lodash';
 
 type PluginMetadataResponse = {
   pluginId: string;
@@ -60,6 +61,8 @@ const rbacPermissionMetadata: MetadataResponse = {
 
 export class PluginPermissionMetadataCollector {
   private readonly pluginIds: string[];
+  // additionalPluginIds provided with help of REST API
+  private readonly additionalPluginIds: string[] = [];
   private readonly discovery: DiscoveryService;
   private readonly logger: LoggerService;
   private readonly urlReader: UrlReaderService;
@@ -89,6 +92,27 @@ export class PluginPermissionMetadataCollector {
         logger,
         factories: [PluginPermissionMetadataCollector.permissionFactory],
       });
+  }
+
+  getAdditionalPluginIds(): string[] {
+    return this.additionalPluginIds;
+  }
+
+  async addPluginId(pluginIds: string[]) {
+    for (const pluginId of pluginIds) {
+      if (!this.additionalPluginIds.includes(pluginId)) {
+        this.additionalPluginIds.push(pluginId);
+      }
+    }
+  }
+
+  async removePluginId(pluginIds: string[]) {
+    for (const pluginId of pluginIds) {
+      const index = this.additionalPluginIds.indexOf(pluginId);
+      if (index > -1) {
+        this.additionalPluginIds.splice(index, 1);
+      }
+    }
   }
 
   async getPluginConditionRules(
@@ -132,7 +156,11 @@ export class PluginPermissionMetadataCollector {
   ): Promise<PluginMetadataResponse[]> {
     let pluginResponses: PluginMetadataResponse[] = [];
 
-    for (const pluginId of this.pluginIds) {
+    const allPluginIds: string[] = union(
+      this.pluginIds,
+      this.additionalPluginIds,
+    );
+    for (const pluginId of allPluginIds) {
       try {
         const { token } = await auth.getPluginRequestToken({
           onBehalfOf: await auth.getOwnServiceCredentials(),
