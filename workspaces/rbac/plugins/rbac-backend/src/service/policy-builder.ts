@@ -52,6 +52,7 @@ import { PoliciesServer } from './policies-rest-api';
 import { policyEntityPermissions } from '@backstage-community/plugin-rbac-common';
 import { rules } from '../permissions';
 import { permissionMetadataResourceRef } from '../permissions/resource';
+import { DataBaseExtraPermissionEnabledPluginsStorage } from '../database/extra-permission-enabled-plugins-storage';
 
 /**
  * @public
@@ -175,10 +176,13 @@ export class PolicyBuilder {
       };
     }
 
+    const extraPluginsIdStorage =
+      new DataBaseExtraPermissionEnabledPluginsStorage(databaseClient);
     const pluginPermMetaData = new PluginPermissionMetadataCollector({
       deps: {
         discovery: env.discovery,
         pluginIdProvider: pluginIdProvider,
+        extraPluginsIdStorage,
         logger: env.logger,
         config: env.config,
       },

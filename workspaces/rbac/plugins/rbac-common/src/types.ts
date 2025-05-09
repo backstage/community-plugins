@@ -206,8 +206,8 @@ export class UnauthorizedError extends NotAllowedError {
 
 /**
  * @public
- * List of plugin ids that are supports Backstage permission framework.
+ * List of plugins that are supports Backstage permission framework.
  */
-export type PluginIds = {
+export type PermissionEnabledPluginList = {
   ids: string[];
 };
