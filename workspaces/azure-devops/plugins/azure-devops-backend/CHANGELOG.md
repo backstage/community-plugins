@@ -1,5 +1,15 @@
 # @backstage-community/plugin-azure-devops-backend
 
+## 0.16.0
+
+### Minor Changes
+
+- 8e54e8e: **BREAKING** If the specified build definition is not found, return no results and display a message explaining why.
+
+### Patch Changes
+
+- 6c0f6ee: Update README links to point to community-plugins repository.
+
 ## 0.15.0
 
 ### Minor Changes

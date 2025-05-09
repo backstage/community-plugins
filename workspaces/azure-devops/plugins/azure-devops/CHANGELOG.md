@@ -1,5 +1,11 @@
 # @backstage-community/plugin-azure-devops
 
+## 0.15.0
+
+### Minor Changes
+
+- 8e54e8e: **BREAKING** If the specified build definition is not found, return no results and display a message explaining why.
+
 ## 0.14.0
 
 ### Minor Changes
