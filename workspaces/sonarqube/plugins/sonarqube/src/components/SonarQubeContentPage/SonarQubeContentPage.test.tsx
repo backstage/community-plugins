@@ -16,7 +16,7 @@
 
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
-import React from 'react';
+import { PropsWithChildren } from 'react';
 import {
   SonarQubeApi,
   sonarQubeApiRef,
@@ -27,7 +27,7 @@ import {
 const Providers = ({
   annotation,
   children,
-}: { annotation: string } & React.PropsWithChildren<any>): JSX.Element => (
+}: { annotation: string } & PropsWithChildren<any>): JSX.Element => (
   <TestApiProvider apis={[[sonarQubeApiRef, {} as SonarQubeApi]]}>
     <EntityProvider
       entity={{
