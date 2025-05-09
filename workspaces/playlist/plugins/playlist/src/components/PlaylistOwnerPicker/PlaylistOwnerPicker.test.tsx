@@ -18,7 +18,6 @@ import { parseEntityRef } from '@backstage/catalog-model';
 import { humanizeEntityRef } from '@backstage/plugin-catalog-react';
 import { Playlist } from '@backstage-community/plugin-playlist-common';
 import { fireEvent, render } from '@testing-library/react';
-import React from 'react';
 import { MockPlaylistListProvider } from '../../testUtils';
 import {
   PlaylistOwnerFilter,

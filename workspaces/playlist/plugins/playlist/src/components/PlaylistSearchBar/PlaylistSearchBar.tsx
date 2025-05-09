@@ -23,7 +23,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import { makeStyles } from '@material-ui/core/styles';
 import Clear from '@material-ui/icons/Clear';
 import Search from '@material-ui/icons/Search';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import useDebounce from 'react-use/esm/useDebounce';
 
 import { usePlaylistList } from '../../hooks';

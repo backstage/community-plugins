@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { fireEvent, render, waitFor } from '@testing-library/react';
 import { DefaultPlaylistFilters } from '../../hooks';
 import { MockPlaylistListProvider } from '../../testUtils';

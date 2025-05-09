@@ -45,7 +45,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import ClearButton from '@material-ui/icons/Clear';
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
 import SearchIcon from '@material-ui/icons/Search';
-import React, { useCallback, useEffect, useState } from 'react';
+import { Fragment, useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAsyncFn from 'react-use/esm/useAsyncFn';
 
@@ -248,7 +248,7 @@ export const EntityPlaylistDialog = (props: EntityPlaylistDialogProps) => {
                       .includes(search.toLocaleLowerCase('en-US')),
                 )
                 .map(list => (
-                  <React.Fragment key={list.id}>
+                  <Fragment key={list.id}>
                     <ListItem
                       button
                       disabled={addEntityLoading}
@@ -273,7 +273,7 @@ export const EntityPlaylistDialog = (props: EntityPlaylistDialogProps) => {
                         }
                       />
                     </ListItem>
-                  </React.Fragment>
+                  </Fragment>
                 ))}
             </List>
           )}
