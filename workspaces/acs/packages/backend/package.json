@@ -33,7 +33,7 @@
     "@backstage/plugin-catalog-backend-module-scaffolder-entity-model": "0.2.4",
     "@backstage/plugin-catalog-backend-module-unprocessed": "0.5.4",
     "@backstage/plugin-kubernetes-backend": "^0.19.2",
-    "@backstage/plugin-permission-backend": "^0.5.53",
+    "@backstage/plugin-permission-backend": "^0.6.0",
     "@backstage/plugin-permission-backend-module-allow-all-policy": "^0.2.4",
     "@backstage/plugin-permission-common": "^0.8.4",
     "@backstage/plugin-permission-node": "^0.8.7",
