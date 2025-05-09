@@ -32,7 +32,12 @@ export const EntityPageAzurePipelines = (props: { defaultLimit?: number }) => {
       resourceRef={stringifyEntityRef(entity)}
       errorPage={null}
     >
-      <BuildTable items={items} loading={loading} error={error} />
+      <BuildTable
+        items={items}
+        loading={loading}
+        error={error}
+        entity={entity}
+      />
     </RequirePermission>
   );
 };
