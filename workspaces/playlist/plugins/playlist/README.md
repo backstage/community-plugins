@@ -10,7 +10,7 @@ The following sections will help you get the Playlist plugin setup and running
 
 ### Backend
 
-You need to setup the [Playlist backend plugin](https://github.com/backstage/backstage/tree/master/plugins/playlist-backend) before you move forward with any of these steps if you haven't already
+You need to setup the [Playlist backend plugin](https://github.com/backstage/community-plugins/tree/main/workspaces/playlist/plugins/playlist-backend) before you move forward with any of these steps if you haven't already
 
 ### Installation
 
