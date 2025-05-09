@@ -31,6 +31,11 @@ export const announcementsTranslationRef = createTranslationRef({
         create: 'Create',
         label: 'Category',
       },
+      tagsInput: {
+        create: 'Create',
+        label: 'Tags',
+      },
+      tagsLabel: 'Tags',
     },
     announcementsPage: {
       newAnnouncement: 'New announcement',
@@ -50,6 +55,7 @@ export const announcementsTranslationRef = createTranslationRef({
       contextMenu: {
         admin: 'Admin',
         categories: 'Categories',
+        tags: 'Tags',
       },
     },
     deleteDialog: {
@@ -94,6 +100,38 @@ export const announcementsTranslationRef = createTranslationRef({
       title: 'Categories',
       subtitle: 'Manage announcement categories',
     },
+    tagsForm: {
+      newTag: 'New tag',
+      editTag: 'Edit tag',
+      titleLabel: 'Title',
+      submit: 'Submit',
+      errors: {
+        alreadyExists: 'A tag with this name already exists.',
+        invalidTitle: 'Title is required.',
+        tooLong: 'Title exceeds maximum length.',
+      },
+    },
+    newTagDialog: {
+      createdMessage: 'Tag created.',
+      newTag: 'New tag',
+      title: 'Title',
+      cancelButton: 'Cancel',
+      createButton: 'Create',
+    },
+
+    tagsPage: {
+      title: 'Tags',
+      subtitle: 'Manage announcement tags',
+    },
+
+    tagsTable: {
+      tagDeleted: 'Tag deleted.',
+      slug: 'Slug',
+      title: 'Title',
+      actions: 'Actions',
+      addTooltip: 'Add',
+      noTagsFound: 'No tags found.',
+    },
     createAnnouncementPage: {
       alertMessage: 'Announcement created.',
       alertMessageWithNewCategory: 'with new category',
@@ -117,6 +155,7 @@ export const announcementsTranslationRef = createTranslationRef({
       adminPortal: {
         announcementsLabels: 'Announcements',
         categoriesLabel: 'Categories',
+        tagsLabel: 'Tags',
         title: 'Admin Portal for Announcements',
         subtitle: 'Manage announcements and categories',
       },
@@ -132,6 +171,7 @@ export const announcementsTranslationRef = createTranslationRef({
           body: 'Body',
           publisher: 'Publisher',
           category: 'Category',
+          tags: 'Tags',
           status: 'Status',
           actions: 'Actions',
           active: 'Active',
@@ -152,6 +192,20 @@ export const announcementsTranslationRef = createTranslationRef({
           actions: 'Actions',
           addTooltip: 'Add',
           noCategoriesFound: 'No categories found.',
+        },
+      },
+      tagsContent: {
+        createdMessage: 'created',
+        deletedMessage: 'Tag deleted.',
+        cancelButton: 'Cancel',
+        createButton: 'Create tag',
+        table: {
+          tagDeleted: 'Tag deleted.',
+          slug: 'Slug',
+          title: 'Title',
+          actions: 'Actions',
+          addTooltip: 'Add',
+          noTagsFound: 'No tags found.',
         },
       },
     },

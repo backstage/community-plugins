@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2025 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,35 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Announcement } from '@backstage-community/plugin-announcements-common';
+exports.up = async function up(knex) {
+  await knex.schema.createTable('tags', table => {
+    table.string('slug').notNullable().primary().comment('Tag slug');
+    table.string('title').notNullable().comment('Title of the tag');
+  });
 
-/**
- * Request to create an announcement
- *
- * @public
- */
-export type CreateAnnouncementRequest = Omit<
-  Announcement,
-  'id' | 'category' | 'tags' | 'created_at'
-> & {
-  category?: string;
-  tags?: string[];
+  await knex.schema.alterTable('announcements', table => {
+    table.specificType('tags', 'TEXT[]');
+  });
 };
 
-/**
- * Request to create a category
- *
- * @public
- */
-export type CreateCategoryRequest = {
-  title: string;
-};
+exports.down = async function down(knex) {
+  await knex.schema.alterTable('announcements', table => {
+    table.dropColumn('tags');
+  });
 
-/**
- * Request to create a tag
- *
- * @public
- */
-export type CreateTagRequest = {
-  title: string;
+  await knex.schema.dropTable('tags');
 };
