@@ -76,11 +76,16 @@ const getUnlinkedCatalogEntities = (
 export type SortViewProps = {
   fullWidth?: boolean;
   fullHeight?: boolean;
+  allCatalogEntities?: Entity[] | null;
 };
 
 /** @public */
 export const SortView = (props: SortViewProps) => {
-  const { fullWidth = true, fullHeight = true } = props;
+  const {
+    fullWidth = true,
+    fullHeight = true,
+    allCatalogEntities = null,
+  } = props;
   const bazaarApi = useApi(bazaarApiRef);
   const catalogApi = useApi(catalogApiRef);
   const classes = useStyles();
@@ -97,6 +102,7 @@ export const SortView = (props: SortViewProps) => {
     useState<Entity[]>();
 
   const [catalogEntities, fetchCatalogEntities] = useAsyncFn(async () => {
+    if (allCatalogEntities) return allCatalogEntities;
     return await fetchCatalogItems(catalogApi);
   });
 

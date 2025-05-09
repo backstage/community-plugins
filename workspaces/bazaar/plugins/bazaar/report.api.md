@@ -31,6 +31,7 @@ export type BazaarPageProps = {
   subtitle?: string;
   fullWidth?: boolean;
   fullHeight?: boolean;
+  catalogEntities?: Entity[] | null;
 };
 
 // @public (undocumented)
@@ -60,6 +61,7 @@ export const SortView: (props: SortViewProps) => JSX_2.Element;
 export type SortViewProps = {
   fullWidth?: boolean;
   fullHeight?: boolean;
+  allCatalogEntities?: Entity[] | null;
 };
 
 // (No @packageDocumentation comment for this package)
