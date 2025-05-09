@@ -42,8 +42,9 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "Triggering version bump for batch ${{ strategy.job-index }}"
+          json_input=${{ toJson(matrix.batch) }}
           gh workflow run version-bump.yml \
             --ref main \
             --field release_line=main \
-            --field workspace_input="${{ toJson(matrix.batch) }}" \
+            --field workspace_input="$json_input" \
             --field version-bump-type=minor
