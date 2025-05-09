@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-explore",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "A Backstage plugin for building an exploration page of your software ecosystem",
   "backstage": {
     "role": "frontend-plugin",

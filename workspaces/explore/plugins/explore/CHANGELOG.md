@@ -1,5 +1,11 @@
 # @backstage-community/plugin-explore
 
+## 0.9.1
+
+### Patch Changes
+
+- 6c0f6ee: Update README links to point to community-plugins repository.
+
 ## 0.9.0
 
 ### Minor Changes
