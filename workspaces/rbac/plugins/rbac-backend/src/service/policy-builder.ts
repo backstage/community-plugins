@@ -48,6 +48,7 @@ import { EnforcerDelegate } from './enforcer-delegate';
 import { MODEL } from './permission-model';
 import { PluginPermissionMetadataCollector } from './plugin-endpoints';
 import { PoliciesServer } from './policies-rest-api';
+import { DataBaseExtraPermissionEnabledPluginsStorage } from '../database/extra-permission-enabled-plugins-storage';
 
 /**
  * @public
@@ -157,10 +158,13 @@ export class PolicyBuilder {
       };
     }
 
+    const extraPluginsIdStorage =
+      new DataBaseExtraPermissionEnabledPluginsStorage(databaseClient);
     const pluginPermMetaData = new PluginPermissionMetadataCollector({
       deps: {
         discovery: env.discovery,
         pluginIdProvider: pluginIdProvider,
+        extraPluginsIdStorage,
         logger: env.logger,
         config: env.config,
       },
