@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 import { createDevApp } from '@backstage/dev-utils';
 import { MatomoAnalyticsApi } from '../src';
 import { Playground } from './Playground';
