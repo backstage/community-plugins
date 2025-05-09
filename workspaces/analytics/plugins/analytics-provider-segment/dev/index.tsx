@@ -16,7 +16,6 @@
 
 import { createDevApp } from '@backstage/dev-utils';
 import { getAllThemes } from '@redhat-developer/red-hat-developer-hub-theme';
-import React from 'react';
 import { analyticsModuleSegment } from '../src';
 import { Playground } from './Playground';
 
