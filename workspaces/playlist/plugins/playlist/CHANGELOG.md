@@ -1,5 +1,17 @@
 # @backstage-community/plugin-playlist
 
+## 0.7.0
+
+### Minor Changes
+
+- 79ebcc3: Backstage version bump to v1.38.1
+
+### Patch Changes
+
+- 6c0f6ee: Update README links to point to community-plugins repository.
+- Updated dependencies [79ebcc3]
+  - @backstage-community/plugin-playlist-common@0.6.0
+
 ## 0.6.1
 
 ### Patch Changes
