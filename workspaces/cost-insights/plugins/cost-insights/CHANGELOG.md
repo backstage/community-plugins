@@ -1,5 +1,12 @@
 # @backstage-community/plugin-cost-insights
 
+## 0.15.2
+
+### Patch Changes
+
+- Updated dependencies [6c0f6ee]
+  - @backstage-community/plugin-cost-insights-common@0.4.1
+
 ## 0.15.1
 
 ### Patch Changes
