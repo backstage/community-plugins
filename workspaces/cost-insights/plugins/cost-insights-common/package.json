@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-cost-insights-common",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Common functionalities for the cost-insights plugin",
   "backstage": {
     "role": "common-library",
