@@ -28,7 +28,7 @@ import { permissions } from '@backstage-community/plugin-playlist-common';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import DeleteIcon from '@material-ui/icons/Delete';
 import SearchIcon from '@material-ui/icons/Search';
-import React, { forwardRef, useCallback, useEffect, useState } from 'react';
+import { forwardRef, useCallback, useEffect, useState } from 'react';
 import useAsyncFn from 'react-use/esm/useAsyncFn';
 
 import { playlistApiRef } from '../../api';
