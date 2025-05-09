@@ -18,12 +18,7 @@ import { useApi } from '@backstage/core-plugin-api';
 import { Playlist } from '@backstage-community/plugin-playlist-common';
 import { compact, isEqual } from 'lodash';
 import qs from 'qs';
-import React, {
-  PropsWithChildren,
-  useCallback,
-  useMemo,
-  useState,
-} from 'react';
+import { PropsWithChildren, useCallback, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import useAsyncFn from 'react-use/esm/useAsyncFn';
 import useDebounce from 'react-use/esm/useDebounce';
