@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.13.2
+
+### Patch Changes
+
+- fcc57ec: Updated dependency `@types/node` to `22.14.1`.
+
 ## 1.13.1
 
 ### Patch Changes
