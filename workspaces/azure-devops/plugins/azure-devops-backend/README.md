@@ -53,5 +53,5 @@ Here's how to get the backend up and running:
 
 ## Links
 
-- [Frontend part of the plugin](https://github.com/backstage/backstage/tree/master/plugins/azure-devops)
+- [Frontend part of the plugin](https://github.com/backstage/community-plugins/tree/main/workspaces/azure-devops/plugins/azure-devops)
 - [The Backstage homepage](https://backstage.io)
