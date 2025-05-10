@@ -64,8 +64,8 @@ This scaffolder requires the path to a Jenkins job config.xml file. config.xml i
 
 ## Supported Action
 
-| Action      | Description                   |
-| ----------- | ----------------------------- |
+| Action              | Description          |
+| ------------------- | -------------------- |
 | jenking:job:build   | Run a job            |
 | jenking:job:copy    | Copy an existing job |
 | jenkins:job:create  | Create a job         |
