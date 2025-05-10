@@ -3,10 +3,11 @@
 This plugin lists `// TODO` comments in source code. It currently exports a single component extension for use on entity pages.
 
 ## Prerequisite
-For this plugin to work, you must first install and configure the [Todo Backend plugin]((../todo-backend).
 
+For this plugin to work, you must first install and configure the [Todo Backend plugin](../todo-backend).
 
 ## Installation
+
 From the root of your Backstage project, run the following command:
 
 ```bash
@@ -25,6 +26,8 @@ const serviceEntityPage = (
     <EntityLayout.Route path="/todo" title="Todo">
       <EntityTodoContent />
     </EntityLayout.Route>
+  </EntityLayout>
+);
 ```
 
 ## Format
