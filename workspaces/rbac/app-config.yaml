@@ -116,3 +116,18 @@ permission:
     admin:
       users:
         - name: user:development/guest
+    defaultUserAccess:
+      enabled: false # Enable/disable the default access feature
+      defaultPermissions:
+        - permission: catalog-entity # Resource type
+          policy: read
+          effect: allow
+        - permission: catalog.entity.read # Permission name has priority
+          policy: read
+          effect: allow
+        - permission: scaffolder.template.step.read
+          policy: read
+          effect: allow
+        - permission: scaffolder.task.create
+          policy: create
+          effect: allow

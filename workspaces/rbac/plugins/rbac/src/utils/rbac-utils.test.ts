@@ -31,9 +31,11 @@ import {
   getConditionalPermissionsData,
   getConditionsData,
   getConditionUpperCriteria,
+  getDefaultPermissions,
   getMembers,
   getMembersFromGroup,
   getPermissions,
+  getPermissionsArray,
   getPermissionsData,
   getPluginInfo,
   getPoliciesData,
@@ -498,5 +500,73 @@ describe('getConditionalPermissionsData', () => {
     expect(allOfConditions[0]).toHaveProperty('allOf');
     expect(allOfConditions[1]).toHaveProperty('params');
     expect(result[0].conditions).toEqual(expectedResultConditions);
+  });
+});
+
+describe('getPermissionsArray', () => {
+  it('should return empty array if policies is undefined', () => {
+    expect(getPermissionsArray('role:default/guests', undefined)).toEqual([]);
+  });
+
+  it('should return empty array if policies is empty', () => {
+    expect(getPermissionsArray('role:default/guests', [])).toEqual([]);
+  });
+
+  it('should return filtered policies for a role', () => {
+    const result = getPermissionsArray('user:default/xyz', mockPolicies);
+    expect(result.length).toBe(5);
+    expect(result[0].permission).toBe('policy.entity.read');
+  });
+
+  it('should return default permissions when user has no policies and useDefaultPermissions is true', () => {
+    const result = getPermissionsArray(
+      'user:default/new-user',
+      mockPolicies,
+      true,
+    );
+    expect(result.length).toBe(1);
+    expect(result[0].permission).toBe('catalog-entity');
+    expect(result[0].policy).toBe('read');
+    expect(result[0].effect).toBe('allow');
+    expect(result[0].metadata?.source).toBe('default');
+  });
+
+  it('should not return default permissions when useDefaultPermissions is false', () => {
+    const result = getPermissionsArray(
+      'user:default/new-user',
+      mockPolicies,
+      false,
+    );
+    expect(result.length).toBe(0);
+  });
+});
+
+describe('getDefaultPermissions', () => {
+  it('should return default catalog read permission for the provided role', () => {
+    const role = 'user:default/test-user';
+    const result = getDefaultPermissions(role);
+
+    expect(result.length).toBe(1);
+    expect(result[0]).toEqual({
+      entityReference: role,
+      permission: 'catalog-entity',
+      policy: 'read',
+      effect: 'allow',
+      metadata: {
+        source: 'default',
+      },
+    });
+  });
+});
+
+describe('getPermissions', () => {
+  it('should return the count of permissions with default fallback', () => {
+    expect(
+      getPermissions('user:default/not-existing', mockPolicies, true),
+    ).toBe(1);
+    expect(
+      getPermissions('user:default/not-existing', mockPolicies, false),
+    ).toBe(0);
+    expect(getPermissions('user:default/xyz', mockPolicies, true)).toBe(5);
   });
 });
