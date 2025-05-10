@@ -113,6 +113,7 @@ body:
         - todo
         - topology
         - vault
+        - wheel-of-names
         - xcmetrics
       default: 0
     validations:
