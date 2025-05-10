@@ -48,6 +48,7 @@ import {
   mockUserInfoService,
   pluginMetadataCollectorMock,
   roleMetadataStorageMock,
+  mockPermissionRegistry,
 } from '../../__fixtures__/mock-utils';
 import request from 'supertest';
 import { RoleMetadataDao } from '../database/role-metadata';
@@ -74,9 +75,10 @@ jest.mock('../validation/condition-validation', () => {
 
 jest.mock('../permissions/conditions', () => {
   return {
-    transformConditions: jest.fn().mockReturnValue({
-      anyOf: [{ key: 'owners', values: ['user:default/mock'] }],
-    }),
+    conditionTransformerFunc: () =>
+      jest.fn().mockReturnValue({
+        anyOf: [{ key: 'owners', values: ['user:default/mock'] }],
+      }),
   };
 });
 
@@ -314,6 +316,7 @@ describe('REST policies api with conditions', () => {
         mockAuthService,
       ),
       userInfo: mockUserInfoService,
+      permissionsRegistry: mockPermissionRegistry,
     };
 
     server = new PoliciesServer(

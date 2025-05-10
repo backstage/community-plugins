@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { RESOURCE_TYPE_POLICY_ENTITY } from '@backstage-community/plugin-rbac-common';
 import {
   ConditionTransformer,
   createConditionExports,
@@ -21,10 +20,11 @@ import {
 } from '@backstage/plugin-permission-node';
 
 import { rules, RBACFilter } from './rules';
+import { PermissionsRegistryService } from '@backstage/backend-plugin-api';
+import { permissionMetadataResourceRef } from './resource';
 
 const { conditions, createConditionalDecision } = createConditionExports({
-  pluginId: 'permission',
-  resourceType: RESOURCE_TYPE_POLICY_ENTITY,
+  resourceRef: permissionMetadataResourceRef,
   rules,
 });
 
@@ -32,5 +32,11 @@ export const rbacConditions = conditions;
 
 export const createRBACConditionalDecision = createConditionalDecision;
 
-export const transformConditions: ConditionTransformer<RBACFilter> =
-  createConditionTransformer(Object.values(rules));
+export const conditionTransformerFunc: (
+  permissionRegistry: PermissionsRegistryService,
+) => ConditionTransformer<RBACFilter> = (
+  permissionRegistry: PermissionsRegistryService,
+) =>
+  createConditionTransformer(
+    permissionRegistry.getPermissionRuleset(permissionMetadataResourceRef),
+  );
