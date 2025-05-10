@@ -46,6 +46,23 @@ When patching an older release, follow the steps below to ensure the correct wor
    - Ensure that a branch named `workspace/${workspace}` exists, with appropriate branch protections in place. This branch will be used for patch releases.
    - The `${workspace}` should correspond to the specific plugin or component you are patching.
 
+   <details>
+   <summary>Community Plugins Maintainers - Branch Protection Settings</summary>
+
+   In **GitHub > Repo > Settings > Branches**, add a rule for the requested `workspace/${workspace}` branch and apply these settings:
+
+   - ☑ Require pull request before merging
+     - ☑ Require approvals
+     - ☑ Dismiss stale approvals when new commits are pushed
+     - ☑ Require review from Code Owners
+   - ☑ Require status checks to pass before merging
+   - ☑ Restrict who can push: **CODEOWNERS for the workspace**
+   - ☑ Restrict pushes that create matching branches
+   - ☑ Allow force pushes
+     - ☑ Specify who can force push: **CODEOWNERS for the workspace**
+
+   </details>
+
 2. Reset the `workspace` branch:
 
    - Reset the `workspace/${workspace}` branch to the version of the plugin you need to patch.
