@@ -22,7 +22,7 @@ import {
   TestApiProvider,
 } from '@backstage/test-utils';
 
-import { getAllThemes } from '@redhat-developer/red-hat-developer-hub-theme';
+import { getAllThemes } from '@red-hat-developer-hub/backstage-plugin-theme';
 
 import {
   PermissionAction,
