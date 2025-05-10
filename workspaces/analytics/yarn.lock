@@ -1793,7 +1793,7 @@ __metadata:
     "@backstage/dev-utils": "npm:^1.1.9"
     "@redhat-developer/red-hat-developer-hub-theme": "npm:0.4.0"
     "@testing-library/jest-dom": "npm:6.6.3"
-    "@types/node": "npm:18.19.68"
+    "@types/node": "npm:18.19.98"
     cross-fetch: "npm:4.0.0"
     msw: "npm:1.3.5"
   peerDependencies:
@@ -1843,7 +1843,7 @@ __metadata:
     "@testing-library/jest-dom": "npm:6.6.3"
     "@testing-library/react": "npm:14.3.1"
     "@testing-library/user-event": "npm:14.6.1"
-    "@types/node": "npm:18.19.68"
+    "@types/node": "npm:18.19.98"
     "@types/react": "npm:18.3.20"
     cross-fetch: "npm:4.0.0"
     msw: "npm:1.3.5"
@@ -6966,12 +6966,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:18.19.68, @types/node@npm:^18.11.9":
-  version: 18.19.68
-  resolution: "@types/node@npm:18.19.68"
+"@types/node@npm:18.19.98, @types/node@npm:^18.11.9":
+  version: 18.19.98
+  resolution: "@types/node@npm:18.19.98"
   dependencies:
     undici-types: "npm:~5.26.4"
-  checksum: 10/024a4a8eeca21c0d1eaa575036dbc44528eae180821de71b77868ddc24d18032b988582046db4f7ea2643970a5169d790e1884153472145de07d629bc2ce2ec6
+  checksum: 10/00a891077a47c31f7bee2a8a8a84755bb391d11788241957577814c78c1bc4fe300f90bb280d7f6c06443f124b11328d4d1e5f87d3d7e0d7fbed19fd8942851d
   languageName: node
   linkType: hard
 
