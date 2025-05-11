@@ -42,7 +42,7 @@ import type { ParsedQs } from 'qs';
 
 import {
   PermissionAction,
-  PermissionEnabledPluginList,
+  PermissionDependentPluginList,
   policyEntityCreatePermission,
   policyEntityDeletePermission,
   policyEntityPermissions,
@@ -81,7 +81,7 @@ import { EnforcerDelegate } from './enforcer-delegate';
 import { PluginPermissionMetadataCollector } from './plugin-endpoints';
 import { RBACRouterOptions } from './policy-builder';
 import { RBACFilters, rules, transformConditions } from '../permissions';
-import { ExtraPermissionEnabledPluginEntity } from '../database/extra-permission-enabled-plugins-storage';
+import { PermissionDependentPluginDTO } from '../database/extra-permission-enabled-plugins-storage';
 
 export class PoliciesServer {
   constructor(
@@ -830,7 +830,8 @@ export class PoliciesServer {
         await this.authorizeConditional(request, policyEntityReadPermission);
 
         const actualPluginDtos = await extraPluginsIdStorage.getPlugins();
-        const result = this.dtoToPermissionEnabledPluginList(actualPluginDtos);
+        const result =
+          this.dtoToPermissionDependentPluginList(actualPluginDtos);
         response.json(result);
       },
     );
@@ -841,15 +842,16 @@ export class PoliciesServer {
       async (request, response) => {
         // todo: do we need separated permission ? Maybe no...
         await this.authorizeConditional(request, policyEntityCreatePermission);
-        const pluginIds: PermissionEnabledPluginList = request.body;
+        const pluginIds: PermissionDependentPluginList = request.body;
         // todo validate pluginIds object
-        const pluginDtos = this.permissionEnabledPluginListToDto(pluginIds);
+        const pluginDtos = this.permissionDependentPluginListToDTO(pluginIds);
         await extraPluginsIdStorage.addPlugins(pluginDtos);
         response.locals.meta = pluginIds;
         this.pluginPermMetaData.setExtraPluginIds(pluginIds.ids);
 
         const actualPluginDtos = await extraPluginsIdStorage.getPlugins();
-        const result = this.dtoToPermissionEnabledPluginList(actualPluginDtos);
+        const result =
+          this.dtoToPermissionDependentPluginList(actualPluginDtos);
         response.status(201).json(result);
       },
     );
@@ -860,7 +862,7 @@ export class PoliciesServer {
       async (request, response) => {
         // todo: do we need separated permission ? Maybe no...
         await this.authorizeConditional(request, policyEntityDeletePermission);
-        const pluginIds: PermissionEnabledPluginList = request.body;
+        const pluginIds: PermissionDependentPluginList = request.body;
         // todo validate pluginIds object
         await extraPluginsIdStorage.deletePlugins(pluginIds.ids);
         response.locals.meta = pluginIds;
@@ -869,7 +871,8 @@ export class PoliciesServer {
         this.pluginPermMetaData.setExtraPluginIds(
           actualPluginDtos.map(dto => dto.pluginId),
         );
-        const result = this.dtoToPermissionEnabledPluginList(actualPluginDtos);
+        const result =
+          this.dtoToPermissionDependentPluginList(actualPluginDtos);
         response.status(200).json(result);
       },
     );
@@ -1346,17 +1349,17 @@ export class PoliciesServer {
     return 0;
   }
 
-  private permissionEnabledPluginListToDto(
-    pluginList: PermissionEnabledPluginList,
-  ): ExtraPermissionEnabledPluginEntity[] {
+  private permissionDependentPluginListToDTO(
+    pluginList: PermissionDependentPluginList,
+  ): PermissionDependentPluginDTO[] {
     return pluginList.ids.map(pluginId => {
       return { pluginId };
     });
   }
 
-  private dtoToPermissionEnabledPluginList(
-    dao: ExtraPermissionEnabledPluginEntity[],
-  ): PermissionEnabledPluginList {
+  private dtoToPermissionDependentPluginList(
+    dao: PermissionDependentPluginDTO[],
+  ): PermissionDependentPluginList {
     return {
       ids: dao.map(item => item.pluginId),
     };

@@ -15,39 +15,36 @@
  */
 import { Knex } from 'knex';
 
-// todo rename Entity to dto.
-export interface ExtraPermissionEnabledPluginEntity {
+export interface PermissionDependentPluginDTO {
   pluginId: string;
 }
 
-export interface ExtraPermissionEnabledPluginsStorage {
+export interface PermissionDependentPluginStore {
   // Fetches the extra plugin list from database.
   // This list contains information about extra plugins that supports Backstage permissions framework.
-  getPlugins(): Promise<ExtraPermissionEnabledPluginEntity[]>;
+  getPlugins(): Promise<PermissionDependentPluginDTO[]>;
 
   // Adds the plugins to the database.
-  addPlugins(plugins: ExtraPermissionEnabledPluginEntity[]): Promise<void>;
+  addPlugins(plugins: PermissionDependentPluginDTO[]): Promise<void>;
 
   // Removes plugins from the database by pluginIds.
   deletePlugins(pluginIds: string[]): Promise<void>;
 }
 
-export class DataBaseExtraPermissionEnabledPluginsStorage
-  implements ExtraPermissionEnabledPluginsStorage
+export class PermissionDependentPluginDatabaseStore
+  implements PermissionDependentPluginStore
 {
   private readonly CONDITIONAL_TABLE = 'extra_permission_enabled_plugins';
 
   public constructor(private readonly knex: Knex<any, any[]>) {}
 
-  async getPlugins(): Promise<ExtraPermissionEnabledPluginEntity[]> {
+  async getPlugins(): Promise<PermissionDependentPluginDTO[]> {
     return await this.knex
       .table(this.CONDITIONAL_TABLE)
-      .select<ExtraPermissionEnabledPluginEntity[]>('pluginId');
+      .select<PermissionDependentPluginDTO[]>('pluginId');
   }
 
-  async addPlugins(
-    plugins: ExtraPermissionEnabledPluginEntity[],
-  ): Promise<void> {
+  async addPlugins(plugins: PermissionDependentPluginDTO[]): Promise<void> {
     await this.knex
       .table(this.CONDITIONAL_TABLE)
       .insert(plugins)

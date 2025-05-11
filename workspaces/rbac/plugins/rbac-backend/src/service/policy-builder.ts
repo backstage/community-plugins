@@ -49,8 +49,8 @@ import { MODEL } from './permission-model';
 import { PluginPermissionMetadataCollector } from './plugin-endpoints';
 import { PoliciesServer } from './policies-rest-api';
 import {
-  DataBaseExtraPermissionEnabledPluginsStorage,
-  ExtraPermissionEnabledPluginsStorage,
+  PermissionDependentPluginDatabaseStore,
+  PermissionDependentPluginStore,
 } from '../database/extra-permission-enabled-plugins-storage';
 
 /**
@@ -79,7 +79,7 @@ export type RBACRouterOptions = {
   auth: AuthService;
   httpAuth: HttpAuthService;
   userInfo: UserInfoService;
-  extraPluginsIdStorage: ExtraPermissionEnabledPluginsStorage;
+  extraPluginsIdStorage: PermissionDependentPluginStore;
 };
 
 /**
@@ -194,8 +194,9 @@ export class PolicyBuilder {
       policy = new AllowAllPolicy();
     }
 
-    const extraPluginsIdStorage =
-      new DataBaseExtraPermissionEnabledPluginsStorage(databaseClient);
+    const extraPluginsIdStorage = new PermissionDependentPluginDatabaseStore(
+      databaseClient,
+    );
 
     const options: RBACRouterOptions = {
       config: env.config,
