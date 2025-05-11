@@ -52,7 +52,10 @@ import { PoliciesServer } from './policies-rest-api';
 import { policyEntityPermissions } from '@backstage-community/plugin-rbac-common';
 import { rules } from '../permissions';
 import { permissionMetadataResourceRef } from '../permissions/resource';
-import { DataBaseExtraPermissionEnabledPluginsStorage } from '../database/extra-permission-enabled-plugins-storage';
+import {
+  DataBaseExtraPermissionEnabledPluginsStorage,
+  ExtraPermissionEnabledPluginsStorage,
+} from '../database/extra-permission-enabled-plugins-storage';
 
 /**
  * @public
@@ -82,6 +85,7 @@ export type RBACRouterOptions = {
   httpAuth: HttpAuthService;
   userInfo: UserInfoService;
   permissionsRegistry: PermissionsRegistryService;
+  extraPluginsIdStorage: ExtraPermissionEnabledPluginsStorage;
 };
 
 /**
@@ -176,13 +180,10 @@ export class PolicyBuilder {
       };
     }
 
-    const extraPluginsIdStorage =
-      new DataBaseExtraPermissionEnabledPluginsStorage(databaseClient);
     const pluginPermMetaData = new PluginPermissionMetadataCollector({
       deps: {
         discovery: env.discovery,
         pluginIdProvider: pluginIdProvider,
-        extraPluginsIdStorage,
         logger: env.logger,
         config: env.config,
       },
@@ -211,6 +212,9 @@ export class PolicyBuilder {
       policy = new AllowAllPolicy();
     }
 
+    const extraPluginsIdStorage =
+      new DataBaseExtraPermissionEnabledPluginsStorage(databaseClient);
+
     const options: RBACRouterOptions = {
       config: env.config,
       logger: env.logger,
@@ -220,6 +224,7 @@ export class PolicyBuilder {
       httpAuth: env.httpAuth,
       userInfo: env.userInfo,
       permissionsRegistry: env.permissionsRegistry,
+      extraPluginsIdStorage: extraPluginsIdStorage,
     };
 
     const server = new PoliciesServer(

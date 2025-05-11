@@ -45,7 +45,6 @@ import {
   policyEntityReadPermission,
   policyEntityUpdatePermission,
   type PermissionAction,
-  type PermissionEnabledPluginList,
   type Role,
   type RoleBasedPolicy,
   type RoleConditionalPolicyDecision,
@@ -1045,6 +1044,7 @@ export class PoliciesServer {
       },
     );
 
+    // todo handle audit log...
     router.get(
       '/plugin-ids',
       logAuditorEvent(this.auditor),
@@ -1052,43 +1052,41 @@ export class PoliciesServer {
         // todo: do we need separated permission ? Maybe no...
         await this.authorizeConditional(request, policyEntityReadPermission);
 
-        const pluginIds = await this.pluginPermMetaData.getExtraPluginIds();
-        const result: PermissionEnabledPluginList = { ids: pluginIds };
+        const pluginIds = this.pluginPermMetaData.getAdditionalPluginIds();
+        const result: PluginIds = { ids: pluginIds };
         response.json(result);
       },
     );
 
+    // todo handle audit log...
     router.post(
       '/plugin-ids',
       logAuditorEvent(this.auditor),
       async (request, response) => {
         // todo: do we need separated permission ? Maybe no...
         await this.authorizeConditional(request, policyEntityCreatePermission);
-        const pluginIds: PermissionEnabledPluginList = request.body;
-        await this.pluginPermMetaData.addExtraPluginIds(pluginIds.ids);
-        response.locals.meta = pluginIds;
+        const pluginIds: PluginIds = request.body;
+        // todo check multi-threading
+        this.pluginPermMetaData.addPluginId(pluginIds.ids);
 
-        const actualPluginIds =
-          await this.pluginPermMetaData.getExtraPluginIds();
-        const result: PermissionEnabledPluginList = { ids: actualPluginIds };
-        response.status(201).json(result);
+        const actualList = this.pluginPermMetaData.getAdditionalPluginIds();
+        response.status(201).json(actualList);
       },
     );
 
+    // todo handle audit log...
     router.delete(
       '/plugin-ids',
       logAuditorEvent(this.auditor),
       async (request, response) => {
         // todo: do we need separated permission ? Maybe no...
         await this.authorizeConditional(request, policyEntityDeletePermission);
-        const pluginIds: PermissionEnabledPluginList = request.body;
-        await this.pluginPermMetaData.removeExtraPluginIds(pluginIds.ids);
-        response.locals.meta = pluginIds;
+        const pluginIds: PluginIds = request.body;
+        // todo check multi-threading
+        this.pluginPermMetaData.removePluginId(pluginIds.ids);
 
-        const actualPluginIds =
-          await this.pluginPermMetaData.getExtraPluginIds();
-        const result: PermissionEnabledPluginList = { ids: actualPluginIds };
-        response.status(200).json(result);
+        const actualList = this.pluginPermMetaData.getAdditionalPluginIds();
+        response.status(200).json(actualList);
       },
     );
 
@@ -1097,7 +1095,7 @@ export class PoliciesServer {
     return router;
   }
 
-  private getEntityReference(request: Request, role?: boolean): string {
+  getEntityReference(request: Request, role?: boolean): string {
     const kind = request.params.kind;
     const namespace = request.params.namespace;
     const name = request.params.name;
@@ -1111,7 +1109,7 @@ export class PoliciesServer {
     return entityRef;
   }
 
-  private async transformPolicyArray(
+  async transformPolicyArray(
     ...policies: string[][]
   ): Promise<RoleBasedPolicy[]> {
     const roleToSourceMap = await buildRoleSourceMap(
@@ -1134,7 +1132,7 @@ export class PoliciesServer {
     return roleBasedPolices;
   }
 
-  private async transformRoleArray(
+  async transformRoleArray(
     filter?: RBACFilters,
     ...roles: string[][]
   ): Promise<Role[]> {
@@ -1167,7 +1165,7 @@ export class PoliciesServer {
     return filteredResult;
   }
 
-  private transformPolicyToArray(policy: RoleBasedPolicy): string[] {
+  transformPolicyToArray(policy: RoleBasedPolicy): string[] {
     return [
       policy.entityReference!,
       policy.permission!,
@@ -1190,7 +1188,7 @@ export class PoliciesServer {
     );
   }
 
-  private getActionQueries(
+  getActionQueries(
     queryValue: string | string[] | ParsedQs | ParsedQs[] | undefined,
   ): PermissionAction[] | undefined {
     if (!queryValue) {
@@ -1240,7 +1238,7 @@ export class PoliciesServer {
     throw new InputError(`This api doesn't support nested query`);
   }
 
-  private isPolicyFilterEnabled(request: Request): boolean {
+  isPolicyFilterEnabled(request: Request): boolean {
     return (
       !!request.query.entityRef ||
       !!request.query.permission ||
@@ -1249,7 +1247,7 @@ export class PoliciesServer {
     );
   }
 
-  private async processPolicies(
+  async processPolicies(
     policyArray: RoleBasedPolicy[],
     isOld?: boolean,
     errorMessage?: string,
@@ -1314,7 +1312,7 @@ export class PoliciesServer {
     return policies;
   }
 
-  private nameSort(nameA: string, nameB: string): number {
+  nameSort(nameA: string, nameB: string): number {
     if (nameA.toLocaleUpperCase('en-US') < nameB.toLocaleUpperCase('en-US')) {
       return -1;
     }
@@ -1323,10 +1321,4 @@ export class PoliciesServer {
     }
     return 0;
   }
-
-  // private dtoToPermissionEnabledPluginList(dao: ExtraPermissionEnabledPluginEntity[]): PermissionEnabledPluginList {
-  //   return {
-  //       ids: dao.map(item => item.pluginId)
-  //   }
-  // }
 }
