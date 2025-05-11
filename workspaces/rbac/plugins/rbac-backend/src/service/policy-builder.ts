@@ -53,8 +53,8 @@ import { policyEntityPermissions } from '@backstage-community/plugin-rbac-common
 import { rules } from '../permissions';
 import { permissionMetadataResourceRef } from '../permissions/resource';
 import {
-  DataBaseExtraPermissionEnabledPluginsStorage,
-  ExtraPermissionEnabledPluginsStorage,
+  PermissionDependentPluginDatabaseStore,
+  PermissionDependentPluginStore,
 } from '../database/extra-permission-enabled-plugins-storage';
 
 /**
@@ -85,7 +85,7 @@ export type RBACRouterOptions = {
   httpAuth: HttpAuthService;
   userInfo: UserInfoService;
   permissionsRegistry: PermissionsRegistryService;
-  extraPluginsIdStorage: ExtraPermissionEnabledPluginsStorage;
+  extraPluginsIdStorage: PermissionDependentPluginStore;
 };
 
 /**
@@ -212,8 +212,9 @@ export class PolicyBuilder {
       policy = new AllowAllPolicy();
     }
 
-    const extraPluginsIdStorage =
-      new DataBaseExtraPermissionEnabledPluginsStorage(databaseClient);
+    const extraPluginsIdStorage = new PermissionDependentPluginDatabaseStore(
+      databaseClient,
+    );
 
     const options: RBACRouterOptions = {
       config: env.config,
