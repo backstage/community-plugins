@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 import type {
-  AuditorService,
   BackstageCredentials,
   BackstageServicePrincipal,
   BackstageUserPrincipal,
-  PermissionsService,
 } from '@backstage/backend-plugin-api';
 import {
   ConflictError,
@@ -42,7 +40,6 @@ import type { ParsedQs } from 'qs';
 
 import {
   PermissionAction,
-  PermissionDependentPluginList,
   policyEntityCreatePermission,
   policyEntityDeletePermission,
   policyEntityPermissions,
@@ -81,69 +78,70 @@ import { EnforcerDelegate } from './enforcer-delegate';
 import { PluginPermissionMetadataCollector } from './plugin-endpoints';
 import { RBACRouterOptions } from './policy-builder';
 import { RBACFilters, rules, transformConditions } from '../permissions';
-import { PermissionDependentPluginDTO } from '../database/extra-permission-enabled-plugins-storage';
+import { createPermissionDefinitionRoutes } from './permission-definition-routes';
+
+export async function authorizeConditional(
+  request: Request,
+  permission: ResourcePermission<'policy-entity'> | BasicPermission,
+  options: RBACRouterOptions,
+): Promise<{
+  decision: PolicyDecision;
+  credentials: BackstageCredentials<
+    BackstageUserPrincipal | BackstageServicePrincipal
+  >;
+}> {
+  const { auth, httpAuth, permissions } = options;
+
+  const credentials = await httpAuth.credentials(request, {
+    allow: ['user', 'service'],
+  });
+
+  // allow service to service communication, but only with read permission
+  if (
+    auth.isPrincipal(credentials, 'service') &&
+    permission !== policyEntityReadPermission
+  ) {
+    throw new NotAllowedError(
+      `Only credential principal with type 'user' permitted to modify permissions`,
+    );
+  }
+
+  let decision: PolicyDecision;
+  if (permission.type === 'resource') {
+    decision = (
+      await permissions.authorizeConditional([{ permission }], {
+        credentials,
+      })
+    )[0];
+  } else {
+    decision = (
+      await permissions.authorize([{ permission }], {
+        credentials,
+      })
+    )[0];
+  }
+
+  if (decision.result === AuthorizeResult.DENY) {
+    throw new NotAllowedError(); // 403
+  }
+
+  return { decision, credentials };
+}
 
 export class PoliciesServer {
   constructor(
-    private readonly permissions: PermissionsService,
     private readonly options: RBACRouterOptions,
     private readonly enforcer: EnforcerDelegate,
     private readonly conditionalStorage: ConditionalStorage,
     private readonly pluginPermMetaData: PluginPermissionMetadataCollector,
     private readonly roleMetadata: RoleMetadataStorage,
-    private readonly auditor: AuditorService,
     private readonly rbacProviders?: RBACProvider[],
   ) {}
-
-  private async authorizeConditional(
-    request: Request,
-    permission: ResourcePermission<'policy-entity'> | BasicPermission,
-  ): Promise<{
-    decision: PolicyDecision;
-    credentials: BackstageCredentials<
-      BackstageUserPrincipal | BackstageServicePrincipal
-    >;
-  }> {
-    const credentials = await this.options.httpAuth.credentials(request, {
-      allow: ['user', 'service'],
-    });
-
-    // allow service to service communication, but only with read permission
-    if (
-      this.options.auth.isPrincipal(credentials, 'service') &&
-      permission !== policyEntityReadPermission
-    ) {
-      throw new NotAllowedError(
-        `Only credential principal with type 'user' permitted to modify permissions`,
-      );
-    }
-
-    let decision: PolicyDecision;
-    if (permission.type === 'resource') {
-      decision = (
-        await this.permissions.authorizeConditional([{ permission }], {
-          credentials,
-        })
-      )[0];
-    } else {
-      decision = (
-        await this.permissions.authorize([{ permission }], {
-          credentials,
-        })
-      )[0];
-    }
-
-    if (decision.result === AuthorizeResult.DENY) {
-      throw new NotAllowedError(); // 403
-    }
-
-    return { decision, credentials };
-  }
 
   async serve(): Promise<express.Router> {
     const router = await createRouter(this.options);
 
-    const { logger, extraPluginsIdStorage } = this.options;
+    const { logger, auditor, auth, extraPluginsIdStorage } = this.options;
 
     const policyPermissionsIntegrationRouter =
       createPermissionIntegrationRouter({
@@ -167,7 +165,11 @@ export class PoliciesServer {
     }
 
     router.get('/', async (request, response) => {
-      await this.authorizeConditional(request, policyEntityReadPermission);
+      await authorizeConditional(
+        request,
+        policyEntityReadPermission,
+        this.options,
+      );
 
       response.send({ status: 'Authorized' });
     });
@@ -176,12 +178,13 @@ export class PoliciesServer {
 
     router.get(
       '/policies',
-      logAuditorEvent(this.auditor),
+      logAuditorEvent(auditor),
       async (request, response) => {
         let conditionsFilter: RBACFilters | undefined;
-        const { decision } = await this.authorizeConditional(
+        const { decision } = await authorizeConditional(
           request,
           policyEntityReadPermission,
+          this.options,
         );
 
         if (decision.result === AuthorizeResult.CONDITIONAL) {
@@ -237,12 +240,13 @@ export class PoliciesServer {
 
     router.get(
       '/policies/:kind/:namespace/:name',
-      logAuditorEvent(this.auditor),
+      logAuditorEvent(auditor),
       async (request, response) => {
         let conditionsFilter: RBACFilters | undefined;
-        const { decision } = await this.authorizeConditional(
+        const { decision } = await authorizeConditional(
           request,
           policyEntityReadPermission,
+          this.options,
         );
 
         if (decision.result === AuthorizeResult.CONDITIONAL) {
@@ -285,12 +289,13 @@ export class PoliciesServer {
 
     router.delete(
       '/policies/:kind/:namespace/:name',
-      logAuditorEvent(this.auditor),
+      logAuditorEvent(auditor),
       async (request, response) => {
         let conditionsFilter: RBACFilters | undefined;
-        const { decision } = await this.authorizeConditional(
+        const { decision } = await authorizeConditional(
           request,
           policyEntityDeletePermission,
+          this.options,
         );
 
         if (decision.result === AuthorizeResult.CONDITIONAL) {
@@ -325,9 +330,13 @@ export class PoliciesServer {
 
     router.post(
       '/policies',
-      logAuditorEvent(this.auditor),
+      logAuditorEvent(auditor),
       async (request, response) => {
-        await this.authorizeConditional(request, policyEntityCreatePermission);
+        await authorizeConditional(
+          request,
+          policyEntityCreatePermission,
+          this.options,
+        );
 
         const policyRaw: RoleBasedPolicy[] = request.body;
 
@@ -358,12 +367,13 @@ export class PoliciesServer {
 
     router.put(
       '/policies/:kind/:namespace/:name',
-      logAuditorEvent(this.auditor),
+      logAuditorEvent(auditor),
       async (request, response) => {
         let conditionsFilter: RBACFilters | undefined;
-        const { decision } = await this.authorizeConditional(
+        const { decision } = await authorizeConditional(
           request,
           policyEntityUpdatePermission,
+          this.options,
         );
 
         if (decision.result === AuthorizeResult.CONDITIONAL) {
@@ -443,12 +453,13 @@ export class PoliciesServer {
 
     router.get(
       '/roles',
-      logAuditorEvent(this.auditor),
+      logAuditorEvent(auditor),
       async (request, response) => {
         let conditionsFilter: RBACFilters | undefined;
-        const { decision } = await this.authorizeConditional(
+        const { decision } = await authorizeConditional(
           request,
           policyEntityReadPermission,
+          this.options,
         );
 
         if (decision.result === AuthorizeResult.CONDITIONAL) {
@@ -464,12 +475,13 @@ export class PoliciesServer {
 
     router.get(
       '/roles/:kind/:namespace/:name',
-      logAuditorEvent(this.auditor),
+      logAuditorEvent(auditor),
       async (request, response) => {
         let conditionsFilter: RBACFilters | undefined;
-        const { decision } = await this.authorizeConditional(
+        const { decision } = await authorizeConditional(
           request,
           policyEntityReadPermission,
+          this.options,
         );
 
         if (decision.result === AuthorizeResult.CONDITIONAL) {
@@ -494,12 +506,13 @@ export class PoliciesServer {
 
     router.post(
       '/roles',
-      logAuditorEvent(this.auditor),
+      logAuditorEvent(auditor),
       async (request, response) => {
         const uniqueItems = new Set<string>();
-        const { credentials } = await this.authorizeConditional(
+        const { credentials } = await authorizeConditional(
           request,
           policyEntityCreatePermission,
+          this.options,
         );
 
         const roleRaw: Role = request.body;
@@ -561,13 +574,14 @@ export class PoliciesServer {
 
     router.put(
       '/roles/:kind/:namespace/:name',
-      logAuditorEvent(this.auditor),
+      logAuditorEvent(auditor),
       async (request, response) => {
         const uniqueItems = new Set<string>();
         let conditionsFilter: RBACFilters | undefined;
-        const { decision, credentials } = await this.authorizeConditional(
+        const { decision, credentials } = await authorizeConditional(
           request,
           policyEntityUpdatePermission,
+          this.options,
         );
 
         if (decision.result === AuthorizeResult.CONDITIONAL) {
@@ -714,12 +728,13 @@ export class PoliciesServer {
 
     router.delete(
       '/roles/:kind/:namespace/:name',
-      logAuditorEvent(this.auditor),
+      logAuditorEvent(auditor),
       async (request, response) => {
         let conditionsFilter: RBACFilters | undefined;
-        const { decision, credentials } = await this.authorizeConditional(
+        const { decision, credentials } = await authorizeConditional(
           request,
           policyEntityDeletePermission,
+          this.options,
         );
 
         if (decision.result === AuthorizeResult.CONDITIONAL) {
@@ -795,96 +810,14 @@ export class PoliciesServer {
     );
 
     router.get(
-      '/plugins/policies',
-      logAuditorEvent(this.auditor),
-      async (request, response) => {
-        await this.authorizeConditional(request, policyEntityReadPermission);
-
-        const body = await this.pluginPermMetaData.getPluginPolicies(
-          this.options.auth,
-        );
-
-        response.json(body);
-      },
-    );
-
-    router.get(
-      '/plugins/condition-rules',
-      logAuditorEvent(this.auditor),
-      async (request, response) => {
-        await this.authorizeConditional(request, policyEntityReadPermission);
-
-        const body = await this.pluginPermMetaData.getPluginConditionRules(
-          this.options.auth,
-        );
-
-        response.json(body);
-      },
-    );
-
-    router.get(
-      '/plugin-ids',
-      logAuditorEvent(this.auditor),
-      async (request, response) => {
-        // todo: do we need separated permission ? Maybe no...
-        await this.authorizeConditional(request, policyEntityReadPermission);
-
-        const actualPluginDtos = await extraPluginsIdStorage.getPlugins();
-        const result =
-          this.dtoToPermissionDependentPluginList(actualPluginDtos);
-        response.json(result);
-      },
-    );
-
-    router.post(
-      '/plugin-ids',
-      logAuditorEvent(this.auditor),
-      async (request, response) => {
-        // todo: do we need separated permission ? Maybe no...
-        await this.authorizeConditional(request, policyEntityCreatePermission);
-        const pluginIds: PermissionDependentPluginList = request.body;
-        // todo validate pluginIds object
-        const pluginDtos = this.permissionDependentPluginListToDTO(pluginIds);
-        await extraPluginsIdStorage.addPlugins(pluginDtos);
-        response.locals.meta = pluginIds;
-        this.pluginPermMetaData.setExtraPluginIds(pluginIds.ids);
-
-        const actualPluginDtos = await extraPluginsIdStorage.getPlugins();
-        const result =
-          this.dtoToPermissionDependentPluginList(actualPluginDtos);
-        response.status(201).json(result);
-      },
-    );
-
-    router.delete(
-      '/plugin-ids',
-      logAuditorEvent(this.auditor),
-      async (request, response) => {
-        // todo: do we need separated permission ? Maybe no...
-        await this.authorizeConditional(request, policyEntityDeletePermission);
-        const pluginIds: PermissionDependentPluginList = request.body;
-        // todo validate pluginIds object
-        await extraPluginsIdStorage.deletePlugins(pluginIds.ids);
-        response.locals.meta = pluginIds;
-
-        const actualPluginDtos = await extraPluginsIdStorage.getPlugins();
-        this.pluginPermMetaData.setExtraPluginIds(
-          actualPluginDtos.map(dto => dto.pluginId),
-        );
-        const result =
-          this.dtoToPermissionDependentPluginList(actualPluginDtos);
-        response.status(200).json(result);
-      },
-    );
-
-    router.get(
       '/roles/conditions',
-      logAuditorEvent(this.auditor),
+      logAuditorEvent(auditor),
       async (request, response) => {
         let conditionsFilter: RBACFilters | undefined;
-        const { decision } = await this.authorizeConditional(
+        const { decision } = await authorizeConditional(
           request,
           policyEntityReadPermission,
+          this.options,
         );
 
         if (decision.result === AuthorizeResult.CONDITIONAL) {
@@ -925,9 +858,13 @@ export class PoliciesServer {
 
     router.post(
       '/roles/conditions',
-      logAuditorEvent(this.auditor),
+      logAuditorEvent(auditor),
       async (request, response) => {
-        await this.authorizeConditional(request, policyEntityCreatePermission);
+        await authorizeConditional(
+          request,
+          policyEntityCreatePermission,
+          this.options,
+        );
 
         const roleConditionPolicy: RoleConditionalPolicyDecision<PermissionAction> =
           request.body;
@@ -936,7 +873,7 @@ export class PoliciesServer {
         const conditionToCreate = await processConditionMapping(
           roleConditionPolicy,
           this.pluginPermMetaData,
-          this.options.auth,
+          auth,
         );
 
         const id =
@@ -952,12 +889,13 @@ export class PoliciesServer {
 
     router.get(
       '/roles/conditions/:id',
-      logAuditorEvent(this.auditor),
+      logAuditorEvent(auditor),
       async (request, response) => {
         let conditionsFilter: RBACFilters | undefined;
-        const { decision } = await this.authorizeConditional(
+        const { decision } = await authorizeConditional(
           request,
           policyEntityReadPermission,
+          this.options,
         );
 
         const id: number = parseInt(request.params.id, 10);
@@ -997,12 +935,13 @@ export class PoliciesServer {
 
     router.delete(
       '/roles/conditions/:id',
-      logAuditorEvent(this.auditor),
+      logAuditorEvent(auditor),
       async (request, response) => {
         let conditionsFilter: RBACFilters | undefined;
-        const { decision } = await this.authorizeConditional(
+        const { decision } = await authorizeConditional(
           request,
           policyEntityDeletePermission,
+          this.options,
         );
 
         if (decision.result === AuthorizeResult.CONDITIONAL) {
@@ -1041,12 +980,13 @@ export class PoliciesServer {
 
     router.put(
       '/roles/conditions/:id',
-      logAuditorEvent(this.auditor),
+      logAuditorEvent(auditor),
       async (request, response) => {
         let conditionsFilter: RBACFilters | undefined;
-        const { decision } = await this.authorizeConditional(
+        const { decision } = await authorizeConditional(
           request,
           policyEntityUpdatePermission,
+          this.options,
         );
 
         if (decision.result === AuthorizeResult.CONDITIONAL) {
@@ -1080,7 +1020,7 @@ export class PoliciesServer {
         const conditionToUpdate = await processConditionMapping(
           roleConditionPolicy,
           this.pluginPermMetaData,
-          this.options.auth,
+          auth,
         );
 
         await this.conditionalStorage.updateCondition(id, conditionToUpdate);
@@ -1093,9 +1033,13 @@ export class PoliciesServer {
 
     router.post(
       '/refresh/:id',
-      logAuditorEvent(this.auditor),
+      logAuditorEvent(auditor),
       async (request, response) => {
-        await this.authorizeConditional(request, policyEntityCreatePermission);
+        await authorizeConditional(
+          request,
+          policyEntityCreatePermission,
+          this.options,
+        );
 
         if (!this.rbacProviders) {
           throw new NotFoundError(`No RBAC providers were found`);
@@ -1115,6 +1059,14 @@ export class PoliciesServer {
         await idProvider.refresh();
         response.status(200).end();
       },
+    );
+
+    router.use(
+      createPermissionDefinitionRoutes(
+        this.pluginPermMetaData,
+        extraPluginsIdStorage,
+        this.options,
+      ),
     );
 
     router.use(setAuditorError());
@@ -1347,21 +1299,5 @@ export class PoliciesServer {
       return 1;
     }
     return 0;
-  }
-
-  private permissionDependentPluginListToDTO(
-    pluginList: PermissionDependentPluginList,
-  ): PermissionDependentPluginDTO[] {
-    return pluginList.ids.map(pluginId => {
-      return { pluginId };
-    });
-  }
-
-  private dtoToPermissionDependentPluginList(
-    dao: PermissionDependentPluginDTO[],
-  ): PermissionDependentPluginList {
-    return {
-      ids: dao.map(item => item.pluginId),
-    };
   }
 }

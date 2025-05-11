@@ -706,7 +706,7 @@ paths:
           description: Refusal to authorize
         '404':
           description: Could not find resource.
-  /api/permission/plugin-ids:
+  /api/permission/plugins/id:
     get:
       description: Returns plugin IDs that support the Backstage permission framework.
       responses:
