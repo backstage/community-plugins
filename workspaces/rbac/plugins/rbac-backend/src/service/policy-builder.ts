@@ -22,6 +22,7 @@ import type {
   LifecycleService,
   LoggerService,
   PermissionsRegistryService,
+  PermissionsService,
   UserInfoService,
 } from '@backstage/backend-plugin-api';
 import { CatalogClient } from '@backstage/catalog-client';
@@ -84,7 +85,9 @@ export type RBACRouterOptions = {
   auth: AuthService;
   httpAuth: HttpAuthService;
   userInfo: UserInfoService;
+  permissions: PermissionsService;
   permissionsRegistry: PermissionsRegistryService;
+  auditor: AuditorService;
   extraPluginsIdStorage: PermissionDependentPluginStore;
 };
 
@@ -224,18 +227,18 @@ export class PolicyBuilder {
       auth: env.auth,
       httpAuth: env.httpAuth,
       userInfo: env.userInfo,
+      permissions: env.permissions,
       permissionsRegistry: env.permissionsRegistry,
+      auditor: env.auditor,
       extraPluginsIdStorage: extraPluginsIdStorage,
     };
 
     const server = new PoliciesServer(
-      env.permissions,
       options,
       enforcerDelegate,
       conditionStorage,
       pluginPermMetaData,
       roleMetadataStorage,
-      env.auditor,
       rbacProviders,
     );
     return server.serve();
