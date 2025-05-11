@@ -15,6 +15,7 @@
  */
 import { Knex } from 'knex';
 
+// todo rename Entity to dto.
 export interface ExtraPermissionEnabledPluginEntity {
   pluginId: string;
 }

@@ -43,7 +43,6 @@ import {
 import type { PluginIdProvider } from '@backstage-community/plugin-rbac-node';
 import { rbacRules } from '../permissions';
 import { union } from 'lodash';
-import { DataBaseExtraPermissionEnabledPluginsStorage } from '../database/extra-permission-enabled-plugins-storage';
 
 type PluginMetadataResponse = {
   pluginId: string;
@@ -62,7 +61,7 @@ const rbacPermissionMetadata: MetadataResponse = {
 
 export class PluginPermissionMetadataCollector {
   private readonly pluginIds: string[];
-  protected extraPluginsIdStorage: DataBaseExtraPermissionEnabledPluginsStorage;
+  private extraPlugins: string[] = [];
   private readonly discovery: DiscoveryService;
   private readonly logger: LoggerService;
   private readonly urlReader: UrlReaderService;
@@ -74,7 +73,6 @@ export class PluginPermissionMetadataCollector {
     deps: {
       discovery: DiscoveryService;
       pluginIdProvider: PluginIdProvider;
-      extraPluginsIdStorage: DataBaseExtraPermissionEnabledPluginsStorage;
       logger: LoggerService;
       config: Config;
     };
@@ -84,7 +82,6 @@ export class PluginPermissionMetadataCollector {
   }) {
     const { discovery, pluginIdProvider, logger, config } = deps;
     this.pluginIds = pluginIdProvider.getPluginIds();
-    this.extraPluginsIdStorage = deps.extraPluginsIdStorage;
     this.discovery = discovery;
     this.logger = logger;
     this.urlReader =
@@ -96,18 +93,9 @@ export class PluginPermissionMetadataCollector {
       });
   }
 
-  async getExtraPluginIds(): Promise<string[]> {
-    const extraPlugins = await this.extraPluginsIdStorage.getPlugins();
-    return extraPlugins.map(plugin => plugin.pluginId);
-  }
-
-  async addExtraPluginIds(pluginIds: string[]): Promise<void> {
-    const plugins = pluginIds.map(pluginId => ({ pluginId }));
-    await this.extraPluginsIdStorage.addPlugins(plugins);
-  }
-
-  async removeExtraPluginIds(pluginIds: string[]) {
-    await this.extraPluginsIdStorage.deletePlugins(pluginIds);
+  setExtraPluginIds(pluginIds: string[]): void {
+    // shallow copy to protect internal state
+    this.extraPlugins = [...pluginIds];
   }
 
   async getPluginConditionRules(
@@ -151,8 +139,7 @@ export class PluginPermissionMetadataCollector {
   ): Promise<PluginMetadataResponse[]> {
     let pluginResponses: PluginMetadataResponse[] = [];
 
-    const additionalPluginIds = await this.getExtraPluginIds();
-    const allPluginIds: string[] = union(this.pluginIds, additionalPluginIds);
+    const allPluginIds: string[] = union(this.pluginIds, this.extraPlugins);
     for (const pluginId of allPluginIds) {
       try {
         const { token } = await auth.getPluginRequestToken({
