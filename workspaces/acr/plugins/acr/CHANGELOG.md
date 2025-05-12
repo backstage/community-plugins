@@ -1,5 +1,12 @@
 ### Dependencies
 
+## 1.13.0
+
+### Minor Changes
+
+- 87e3c32: Added functionality to define multiple ACR registries within Backstage.
+- cfdcd07: Limit returned images to 100 and sort latest first.
+
 ## 1.12.1
 
 ### Patch Changes
