@@ -13,14 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import { createDevApp } from '@backstage/dev-utils';
 import { TestApiProvider } from '@backstage/test-utils';
 import { Page, Header, TabbedLayout } from '@backstage/core-components';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
-
-import { getAllThemes } from '@redhat-developer/red-hat-developer-hub-theme';
 
 import { mockAcrTagsData } from '../src/__fixtures__/acrTagsObject';
 import { mockEntity } from '../src/__fixtures__/mockEntity';
@@ -47,7 +43,6 @@ class MockAzureContainerRegistryApiClient
 
 createDevApp()
   .registerPlugin(acrPlugin)
-  .addThemes(getAllThemes())
   .addPage({
     element: (
       <TestApiProvider

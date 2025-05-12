@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import { ErrorPanel, Table } from '@backstage/core-components';
 import { Box } from '@material-ui/core';
 import { formatDate } from '@janus-idp/shared-react';

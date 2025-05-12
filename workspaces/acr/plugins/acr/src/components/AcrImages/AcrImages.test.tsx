@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import { ErrorPanelProps } from '@backstage/core-components';
 import { renderInTestApp } from '@backstage/test-utils';
 
