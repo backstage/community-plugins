@@ -526,6 +526,54 @@ paths:
                                       $ref: '#/components/schemas/PropertyObject'
         '403':
           description: Refusal to authorize
+  /api/permission/plugins/id:
+    get:
+      description: Returns plugin IDs that support the Backstage permission framework.
+      responses:
+        '200':
+          description: Request was successful
+          content:
+            application/json:
+              schema:
+                '$ref': '#/components/schemas/PluginIds'
+        '403':
+          description: Refusal to authorize
+
+    post:
+      description: Add more additional plugin IDs.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              '$ref': '#/components/schemas/PluginIds'
+      responses:
+        '201':
+          description: Plugin IDs were successfully added. Returns updated list.
+          content:
+            application/json:
+              schema:
+                '$ref': '#/components/schemas/PluginIds'
+        '403':
+          description: Refusal to authorize
+
+    delete:
+      description: Delete some additional plugin IDs.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              '$ref': '#/components/schemas/PluginIds'
+      responses:
+        '200':  # or '204' if you really want no body
+          description: Plugin IDs were successfully removed. Returns updated list.
+          content:
+            application/json:
+              schema:
+                '$ref': '#/components/schemas/PluginIds'
+        '403':
+          description: Refusal to authorize
   /api/permission/roles/conditions:
     get:
       description: Lists all conditions
@@ -706,51 +754,3 @@ paths:
           description: Refusal to authorize
         '404':
           description: Could not find resource.
-  /api/permission/plugins/id:
-    get:
-      description: Returns plugin IDs that support the Backstage permission framework.
-      responses:
-        '200':
-          description: Request was successful
-          content:
-            application/json:
-              schema:
-                '$ref': '#/components/schemas/PluginIds'
-        '403':
-          description: Refusal to authorize
-
-    post:
-      description: Add more additional plugin IDs.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              '$ref': '#/components/schemas/PluginIds'
-      responses:
-        '201':
-          description: Plugin IDs were successfully added. Returns updated list.
-          content:
-            application/json:
-              schema:
-                '$ref': '#/components/schemas/PluginIds'
-        '403':
-          description: Refusal to authorize
-
-    delete:
-      description: Delete some additional plugin IDs.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              '$ref': '#/components/schemas/PluginIds'
-      responses:
-        '200':  # or '204' if you really want no body
-          description: Plugin IDs were successfully removed. Returns updated list.
-          content:
-            application/json:
-              schema:
-                '$ref': '#/components/schemas/PluginIds'
-        '403':
-          description: Refusal to authorize
