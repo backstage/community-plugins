@@ -117,7 +117,7 @@ const expectedConditions: RoleConditionalPolicyDecision<PermissionAction>[] = [
 
 const modifiedBy = 'user:default/some-admin';
 
-describe('REST policies api', () => {
+describe('REST policies API', () => {
   let app: express.Express;
   let config = mockServices.rootConfig({
     data: {

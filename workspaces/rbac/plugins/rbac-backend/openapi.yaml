@@ -566,7 +566,7 @@ paths:
             schema:
               '$ref': '#/components/schemas/PluginIds'
       responses:
-        '200':  # or '204' if you really want no body
+        '200': # or '204' if you really want no body
           description: Plugin IDs were successfully removed. Returns updated list.
           content:
             application/json:

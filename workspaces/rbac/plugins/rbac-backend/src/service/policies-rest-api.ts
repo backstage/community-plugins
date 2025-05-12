@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 import type {
+  AuthService,
   BackstageCredentials,
   BackstageServicePrincipal,
   BackstageUserPrincipal,
+  HttpAuthService,
+  PermissionsService,
 } from '@backstage/backend-plugin-api';
 import {
   ConflictError,
@@ -80,14 +83,18 @@ import { createPermissionDefinitionRoutes } from './permission-definition-routes
 export async function authorizeConditional(
   request: Request,
   permission: ResourcePermission<'policy-entity'> | BasicPermission,
-  options: RBACRouterOptions,
+  deps: {
+    auth: AuthService;
+    httpAuth: HttpAuthService;
+    permissions: PermissionsService;
+  },
 ): Promise<{
   decision: PolicyDecision;
   credentials: BackstageCredentials<
     BackstageUserPrincipal | BackstageServicePrincipal
   >;
 }> {
-  const { auth, httpAuth, permissions } = options;
+  const { auth, httpAuth, permissions } = deps;
 
   const credentials = await httpAuth.credentials(request, {
     allow: ['user', 'service'],
