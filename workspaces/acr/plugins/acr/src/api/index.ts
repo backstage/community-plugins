@@ -78,6 +78,8 @@ export class AzureContainerRegistryApiClient
   async getTags(repo: string) {
     const proxyUrl = await this.getBaseUrl();
 
-    return (await this.fetcher(`${proxyUrl}/${repo}/_tags`)) as TagsResponse;
+    return (await this.fetcher(
+      `${proxyUrl}/${repo}/_tags?orderby=timedesc&n=100`,
+    )) as TagsResponse;
   }
 }
