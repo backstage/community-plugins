@@ -55,12 +55,13 @@ import {
   mockedAuthorizeConditional,
   mockHttpAuth,
   mockLoggerService,
-  mockPermissionEvaluator,
   mockUserInfoService,
+  mockPermissionEvaluator,
   pluginMetadataCollectorMock,
   providerMock,
   roleMetadataStorageMock,
   mockedAuthorize,
+  permissionDependentPluginStoreMock,
 } from '../../__fixtures__/mock-utils';
 
 jest.setTimeout(60000);
@@ -258,16 +259,17 @@ describe('REST policies api', () => {
         mockAuthService,
       ),
       userInfo: mockUserInfoService,
+      auditor: mockAuditorService,
+      permissions: mockPermissionEvaluator,
+      extraPluginsIdStorage: permissionDependentPluginStoreMock,
     };
 
     server = new PoliciesServer(
-      mockPermissionEvaluator,
       options,
       enforcerDelegateMock as EnforcerDelegate,
       conditionalStorageMock,
       pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
       roleMetadataStorageMock,
-      mockAuditorService,
     );
     const router = await server.serve();
     app = express().use(router);
@@ -3839,16 +3841,17 @@ describe('REST policies api', () => {
           mockAuthService,
         ),
         userInfo: mockUserInfoService,
+        auditor: mockAuditorService,
+        permissions: mockPermissionEvaluator,
+        extraPluginsIdStorage: permissionDependentPluginStoreMock,
       };
 
       server = new PoliciesServer(
-        mockPermissionEvaluator,
         options,
         enforcerDelegateMock as EnforcerDelegate,
         conditionalStorageMock,
         pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
         roleMetadataStorageMock,
-        mockAuditorService,
         [providerMock],
       );
       const router = await server.serve();

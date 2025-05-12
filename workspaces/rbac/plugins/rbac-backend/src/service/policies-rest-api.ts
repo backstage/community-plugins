@@ -1111,7 +1111,7 @@ export class PoliciesServer {
     return roleBasedPolices;
   }
 
-  private async transformRoleArray(
+  async transformRoleArray(
     filter?: RBACFilters,
     ...roles: string[][]
   ): Promise<Role[]> {
