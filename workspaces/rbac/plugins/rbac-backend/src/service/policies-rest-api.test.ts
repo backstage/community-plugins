@@ -25,7 +25,6 @@ import request from 'supertest';
 import {
   PermissionAction,
   PermissionInfo,
-  PluginPermissionMetaData,
   policyEntityCreatePermission,
   policyEntityDeletePermission,
   policyEntityReadPermission,
