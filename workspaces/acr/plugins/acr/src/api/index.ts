@@ -57,7 +57,7 @@ export class AzureContainerRegistryApiClient
       this.configApi.getOptionalString('acr.proxyPath') || DEFAULT_PROXY_PATH;
 
     const proxyPath = registryName
-      ? `/acr/custom/api/${registryName}`
+      ? `/acr/custom/api/${encodeURIComponent(registryName)}`
       : defaultPath;
 
     return `${await this.discoveryApi.getBaseUrl('proxy')}${proxyPath}`;
@@ -84,7 +84,7 @@ export class AzureContainerRegistryApiClient
     const proxyUrl = await this.getBaseUrl(registryName);
 
     return (await this.fetcher(
-      `${proxyUrl}/${repo}/_tags?orderby=timedesc&n=100`,
+      `${proxyUrl}/${encodeURIComponent(repo)}/_tags?orderby=timedesc&n=100`,
     )) as TagsResponse;
   }
 }

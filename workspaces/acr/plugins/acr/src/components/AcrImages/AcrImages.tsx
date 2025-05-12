@@ -31,11 +31,11 @@ type AcrImagesProps = {
 };
 
 export const AcrImages = ({ image, registryName }: AcrImagesProps) => {
-  const AzureContainerRegistryClient = useApi(AzureContainerRegistryApiRef);
+  const apiClient = useApi(AzureContainerRegistryApiRef);
 
   const title = `Azure Container Registry Repository: ${image}`;
   const { loading, value, error } = useAsync(() =>
-    AzureContainerRegistryClient.getTags(image, registryName),
+    apiClient.getTags(image, registryName),
   );
 
   // TODO: it should be possible to just pass the tags to the table.
