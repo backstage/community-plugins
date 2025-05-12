@@ -20,7 +20,10 @@ import {
   useEntity,
 } from '@backstage/plugin-catalog-react';
 
-import { AZURE_CONTAINER_REGISTRY_ANNOTATION_IMAGE_NAME } from '../../annotations';
+import {
+  AZURE_CONTAINER_REGISTRY_ANNOTATION_IMAGE_NAME,
+  AZURE_CONTAINER_REGISTRY_ANNOTATION_REGISTRY_NAME,
+} from '../../annotations';
 import { AcrImages } from '../AcrImages';
 
 export const AcrImagesEntityContent = () => {
@@ -28,6 +31,11 @@ export const AcrImagesEntityContent = () => {
   const imageName =
     entity.metadata.annotations?.[
       AZURE_CONTAINER_REGISTRY_ANNOTATION_IMAGE_NAME
+    ];
+
+  const registryName =
+    entity.metadata.annotations?.[
+      AZURE_CONTAINER_REGISTRY_ANNOTATION_REGISTRY_NAME
     ];
 
   if (!imageName) {
@@ -38,5 +46,5 @@ export const AcrImagesEntityContent = () => {
     );
   }
 
-  return <AcrImages image={imageName} />;
+  return <AcrImages image={imageName} registryName={registryName} />;
 };

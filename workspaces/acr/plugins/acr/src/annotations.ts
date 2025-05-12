@@ -15,3 +15,6 @@
  */
 export const AZURE_CONTAINER_REGISTRY_ANNOTATION_IMAGE_NAME =
   'azure-container-registry/repository-name';
+
+export const AZURE_CONTAINER_REGISTRY_ANNOTATION_REGISTRY_NAME =
+  'azure-container-registry/registry-name';
