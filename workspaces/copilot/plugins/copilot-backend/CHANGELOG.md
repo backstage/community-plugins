@@ -1,5 +1,11 @@
 # @backstage-community/plugin-copilot-backend
 
+## 0.9.3
+
+### Patch Changes
+
+- 6c0f6ee: Update README links to point to community-plugins repository.
+
 ## 0.9.2
 
 ### Patch Changes

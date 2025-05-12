@@ -44,7 +44,7 @@ out of the box, this plugin will not work when you test it.
 
 ### Backend
 
-You need to setup the [Entity Feedback backend plugin](https://github.com/backstage/backstage/tree/master/plugins/entity-feedback-backend) before you move forward with any of these steps if you haven't already
+You need to setup the [Entity Feedback backend plugin](https://github.com/backstage/community-plugins/tree/main/workspaces/entity-feedback/plugins/entity-feedback-backend) before you move forward with any of these steps if you haven't already
 
 ### Installation
 

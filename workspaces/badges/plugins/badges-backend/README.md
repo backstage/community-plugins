@@ -201,7 +201,7 @@ The badges backend api exposes two main endpoints for entity badges. The
 
 - `/badges/entity/:namespace/:kind/:name/badge-specs` List all defined badges
   for a particular entity, in json format. See
-  [BadgeSpec](https://github.com/backstage/backstage/tree/master/plugins/badges/src/api/types.ts)
+  [BadgeSpec](https://github.com/backstage/community-plugins/blob/main/workspaces/badges/plugins/badges/src/api/types.ts)
   from the frontend plugin for a type declaration.
 
 - `/badges/entity/:namespace/:kind/:name/badge/:badgeId` Get the entity badge as
@@ -220,7 +220,7 @@ The badges backend api exposes two main endpoints for entity badges. The
 
 - `/badge/entity/:entityUuid/badge-specs` List all defined badges for a
   particular entity, in json format. See
-  [BadgeSpec](https://github.com/backstage/backstage/tree/master/plugins/badges/src/api/types.ts)
+  [BadgeSpec](https://github.com/backstage/community-plugins/blob/main/workspaces/badges/plugins/badges/src/api/types.ts)
   from the frontend plugin for a type declaration.
 
 ### Custom badge styles

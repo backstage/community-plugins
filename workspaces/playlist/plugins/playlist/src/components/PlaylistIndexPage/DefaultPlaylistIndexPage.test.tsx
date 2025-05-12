@@ -20,7 +20,6 @@ import {
   PermissionApi,
   permissionApiRef,
 } from '@backstage/plugin-permission-react';
-import React from 'react';
 
 import { PlaylistApi, playlistApiRef } from '../../api';
 import { playlistRouteRef, rootRouteRef } from '../../routes';
