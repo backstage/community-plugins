@@ -19,7 +19,7 @@ import {
   policyEntityDeletePermission,
   policyEntityReadPermission,
 } from '@backstage-community/plugin-rbac-common';
-import express from 'express';
+import Router from 'express-promise-router';
 import { logAuditorEvent, setAuditorError } from '../auditor/rest-interceptor';
 import {
   dtoToPermissionDependentPluginList,
@@ -27,24 +27,34 @@ import {
 } from './permission-dto-converter';
 import { PluginPermissionMetadataCollector } from './plugin-endpoints';
 import { PermissionDependentPluginStore } from '../database/extra-permission-enabled-plugins-storage';
-import { RBACRouterOptions } from './policy-builder';
 import { authorizeConditional } from './policies-rest-api';
+import {
+  AuditorService,
+  AuthService,
+  HttpAuthService,
+  PermissionsService,
+} from '@backstage/backend-plugin-api';
 
 // todo: do we need separated permissions to set up extra plugin ids  ?
 export function createPermissionDefinitionRoutes(
   pluginPermMetaData: PluginPermissionMetadataCollector,
   extraPluginsIdStorage: PermissionDependentPluginStore,
-  options: RBACRouterOptions,
+  deps: {
+    auth: AuthService;
+    httpAuth: HttpAuthService;
+    auditor: AuditorService;
+    permissions: PermissionsService;
+  },
 ) {
-  const router = express.Router();
+  const router = Router();
 
-  const { auth, auditor } = options;
+  const { auth, auditor } = deps;
 
   router.get(
     '/plugins/policies',
     logAuditorEvent(auditor),
     async (request, response) => {
-      await authorizeConditional(request, policyEntityReadPermission, options);
+      await authorizeConditional(request, policyEntityReadPermission, deps);
 
       const body = await pluginPermMetaData.getPluginPolicies(auth);
 
@@ -56,7 +66,7 @@ export function createPermissionDefinitionRoutes(
     '/plugins/condition-rules',
     logAuditorEvent(auditor),
     async (request, response) => {
-      await authorizeConditional(request, policyEntityReadPermission, options);
+      await authorizeConditional(request, policyEntityReadPermission, deps);
 
       const body = await pluginPermMetaData.getPluginConditionRules(auth);
 
@@ -68,7 +78,7 @@ export function createPermissionDefinitionRoutes(
     '/plugins/id',
     logAuditorEvent(auditor),
     async (request, response) => {
-      await authorizeConditional(request, policyEntityReadPermission, options);
+      await authorizeConditional(request, policyEntityReadPermission, deps);
 
       const actualPluginDtos = await extraPluginsIdStorage.getPlugins();
       const result = dtoToPermissionDependentPluginList(actualPluginDtos);
@@ -80,11 +90,7 @@ export function createPermissionDefinitionRoutes(
     '/plugins/id',
     logAuditorEvent(auditor),
     async (request, response) => {
-      await authorizeConditional(
-        request,
-        policyEntityCreatePermission,
-        options,
-      );
+      await authorizeConditional(request, policyEntityCreatePermission, deps);
       const pluginIds: PermissionDependentPluginList = request.body;
       // todo validate pluginIds object
       const pluginDtos = permissionDependentPluginListToDTO(pluginIds);
@@ -102,11 +108,7 @@ export function createPermissionDefinitionRoutes(
     '/plugins/id',
     logAuditorEvent(auditor),
     async (request, response) => {
-      await authorizeConditional(
-        request,
-        policyEntityDeletePermission,
-        options,
-      );
+      await authorizeConditional(request, policyEntityDeletePermission, deps);
       const pluginIds: PermissionDependentPluginList = request.body;
       // todo validate pluginIds object
       await extraPluginsIdStorage.deletePlugins(pluginIds.ids);

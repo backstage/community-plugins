@@ -78,6 +78,7 @@ export const pluginMetadataCollectorMock: Partial<PluginPermissionMetadataCollec
     getPluginConditionRules: jest.fn().mockImplementation(),
     getPluginPolicies: jest.fn().mockImplementation(),
     getMetadataByPluginId: jest.fn().mockImplementation(),
+    setExtraPluginIds: jest.fn().mockImplementation(),
   };
 
 export const permissionDependentPluginStoreMock: PermissionDependentPluginStore =
