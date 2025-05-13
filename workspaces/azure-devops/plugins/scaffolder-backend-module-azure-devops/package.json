@@ -45,7 +45,8 @@
     "@backstage/integration": "^1.16.2",
     "@backstage/plugin-scaffolder-node": "^0.8.0",
     "azure-devops-node-api": "^14.1.0",
-    "yaml": "^2.6.0"
+    "yaml": "^2.6.0",
+    "zod": "^3.24.2"
   },
   "devDependencies": {
     "@backstage/cli": "^0.31.0",
