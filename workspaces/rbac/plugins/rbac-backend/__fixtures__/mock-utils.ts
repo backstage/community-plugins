@@ -83,7 +83,12 @@ export const pluginMetadataCollectorMock: Partial<PluginPermissionMetadataCollec
 
 export const permissionDependentPluginStoreMock: PermissionDependentPluginStore =
   {
-    getPlugins: jest.fn().mockImplementation(),
+    getPlugins: jest
+      .fn()
+      .mockImplementation(async () => [
+        { pluginId: 'jenkins' },
+        { pluginId: 'sonarqube' },
+      ]),
     addPlugins: jest.fn().mockImplementation(),
     deletePlugins: jest.fn().mockImplementation(),
   };
