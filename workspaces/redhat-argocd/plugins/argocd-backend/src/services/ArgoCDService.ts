@@ -179,7 +179,24 @@ export class ArgoCDService {
         this.logger.warn(message);
       }
 
-      return data;
+      // Add instance metadata
+      const applications = {
+        ...data,
+        items:
+          data?.items?.map((app: Application) => {
+            return {
+              ...app,
+              metadata: {
+                ...app.metadata,
+                instance: {
+                  name: matchedInstance.name,
+                },
+              },
+            };
+          }) || [],
+      };
+
+      return applications;
     } catch (error) {
       const baseMessage = formatOperationMessage(
         'Failed to retrieve ArgoCD Applications',
@@ -286,7 +303,18 @@ export class ArgoCDService {
       this.logger.info(logMsg);
       const data = await makeArgoRequest(url, token);
 
-      return data;
+      // Add instance metadata
+      const application = {
+        ...data,
+        metadata: {
+          ...data.metadata,
+          instance: {
+            name: matchedInstance.name,
+          },
+        },
+      };
+
+      return application;
     } catch (error) {
       const baseMessage = formatOperationMessage(
         'Failed to fetch Application',
