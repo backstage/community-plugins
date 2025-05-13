@@ -79,6 +79,7 @@ import { PluginPermissionMetadataCollector } from './plugin-endpoints';
 import { RBACRouterOptions } from './policy-builder';
 import { conditionTransformerFunc, RBACFilters } from '../permissions';
 import { createPermissionDefinitionRoutes } from './permission-definition-routes';
+import { PermissionDependentPluginStore } from '../database/extra-permission-enabled-plugins-storage';
 
 export async function authorizeConditional(
   request: Request,
@@ -139,13 +140,14 @@ export class PoliciesServer {
     private readonly conditionalStorage: ConditionalStorage,
     private readonly pluginPermMetaData: PluginPermissionMetadataCollector,
     private readonly roleMetadata: RoleMetadataStorage,
+    private readonly extraPluginsIdStorage: PermissionDependentPluginStore,
     private readonly rbacProviders?: RBACProvider[],
   ) {}
 
   async serve(): Promise<express.Router> {
     const router = await createRouter(this.options);
 
-    const { logger, auditor, auth, permissionsRegistry, extraPluginsIdStorage } = this.options;
+    const { logger, auditor, auth, permissionsRegistry } = this.options;
 
     const isPluginEnabled =
       this.options.config.getOptionalBoolean('permission.enabled');
@@ -1055,7 +1057,7 @@ export class PoliciesServer {
     router.use(
       createPermissionDefinitionRoutes(
         this.pluginPermMetaData,
-        extraPluginsIdStorage,
+        this.extraPluginsIdStorage,
         this.options,
       ),
     );

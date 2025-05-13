@@ -262,7 +262,6 @@ describe('REST policies API', () => {
       permissionsRegistry: mockPermissionRegistry,
       auditor: mockAuditorService,
       permissions: mockPermissionEvaluator,
-      extraPluginsIdStorage: permissionDependentPluginStoreMock,
     };
 
     server = new PoliciesServer(
@@ -271,6 +270,7 @@ describe('REST policies API', () => {
       conditionalStorageMock,
       pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
       roleMetadataStorageMock,
+      permissionDependentPluginStoreMock,
     );
     const router = await server.serve();
     app = express().use(router);
@@ -3845,7 +3845,6 @@ describe('REST policies API', () => {
         permissionsRegistry: mockPermissionRegistry,
         auditor: mockAuditorService,
         permissions: mockPermissionEvaluator,
-        extraPluginsIdStorage: permissionDependentPluginStoreMock,
       };
 
       server = new PoliciesServer(
@@ -3854,6 +3853,7 @@ describe('REST policies API', () => {
         conditionalStorageMock,
         pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
         roleMetadataStorageMock,
+        permissionDependentPluginStoreMock,
         [providerMock],
       );
       const router = await server.serve();

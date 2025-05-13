@@ -230,7 +230,7 @@ export class PolicyBuilder {
       permissions: env.permissions,
       permissionsRegistry: env.permissionsRegistry,
       auditor: env.auditor,
-      extraPluginsIdStorage: extraPluginsIdStorage,
+      extraPluginsIdStorage,
     };
 
     const server = new PoliciesServer(
@@ -239,6 +239,7 @@ export class PolicyBuilder {
       conditionStorage,
       pluginPermMetaData,
       roleMetadataStorage,
+      extraPluginsIdStorage,
       rbacProviders,
     );
     return server.serve();

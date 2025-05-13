@@ -19,6 +19,9 @@ export interface PermissionDependentPluginDTO {
   pluginId: string;
 }
 
+/**
+ * This interface defines the methods for managing the extra permission-enabled plugins in the database.
+ */
 export interface PermissionDependentPluginStore {
   // Fetches the extra plugin list from database.
   // This list contains information about extra plugins that supports Backstage permissions framework.
