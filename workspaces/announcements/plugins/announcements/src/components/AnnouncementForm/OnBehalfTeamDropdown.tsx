@@ -68,8 +68,6 @@ export default function OnBehalfTeamDropdown({
           {...params}
           id="team"
           label={t('announcementForm.onBehalfOf')}
-          variant="standard"
-          fullWidth
           InputProps={{
             ...params.InputProps,
             endAdornment: (

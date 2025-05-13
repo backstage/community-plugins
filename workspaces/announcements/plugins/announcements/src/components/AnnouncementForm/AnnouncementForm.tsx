@@ -117,7 +117,7 @@ export const AnnouncementForm = ({
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={4}>
               <CategoryInput
                 setForm={setForm}
                 form={form}
@@ -125,7 +125,14 @@ export const AnnouncementForm = ({
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={4}>
+              <OnBehalfTeamDropdown
+                selectedTeam={onBehalfOfSelectedTeam}
+                onChange={setOnBehalfOfSelectedTeam}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={4}>
               <TextField
                 variant="outlined"
                 label={t('announcementForm.startAt')}
@@ -183,12 +190,6 @@ export const AnnouncementForm = ({
                   }
                   label={t('announcementForm.active')}
                 />
-                <Box mr={2} style={{ minWidth: '250px' }}>
-                  <OnBehalfTeamDropdown
-                    selectedTeam={onBehalfOfSelectedTeam}
-                    onChange={setOnBehalfOfSelectedTeam}
-                  />
-                </Box>
                 <Button
                   variant="contained"
                   color="primary"
