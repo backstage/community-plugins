@@ -317,7 +317,6 @@ describe('REST policies api with conditions', () => {
       userInfo: mockUserInfoService,
       auditor: mockAuditorService,
       permissions: mockPermissionEvaluator,
-      extraPluginsIdStorage: permissionDependentPluginStoreMock,
     };
 
     server = new PoliciesServer(
@@ -326,6 +325,7 @@ describe('REST policies api with conditions', () => {
       conditionalStorageMock,
       pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
       roleMetadataStorageMock,
+      permissionDependentPluginStoreMock,
     );
 
     const router = await server.serve();
