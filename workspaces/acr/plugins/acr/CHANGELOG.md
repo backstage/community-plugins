@@ -1,5 +1,12 @@
 ### Dependencies
 
+## 1.14.1
+
+### Patch Changes
+
+- 86fc9e2: remove product specific theme (dev dependency only)
+- 86fc9e2: remove react import
+
 ## 1.14.0
 
 ### Minor Changes
