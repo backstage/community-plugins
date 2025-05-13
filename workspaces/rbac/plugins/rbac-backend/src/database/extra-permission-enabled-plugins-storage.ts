@@ -15,6 +15,8 @@
  */
 import { Knex } from 'knex';
 
+export const PLUGINS_TABLE = 'extra_permission_enabled_plugins';
+
 export interface PermissionDependentPluginDTO {
   pluginId: string;
 }
@@ -37,30 +39,22 @@ export interface PermissionDependentPluginStore {
 export class PermissionDependentPluginDatabaseStore
   implements PermissionDependentPluginStore
 {
-  private readonly CONDITIONAL_TABLE = 'extra_permission_enabled_plugins';
-
   public constructor(private readonly knex: Knex<any, any[]>) {}
 
   async getPlugins(): Promise<PermissionDependentPluginDTO[]> {
     return await this.knex
-      .table(this.CONDITIONAL_TABLE)
+      .table(PLUGINS_TABLE)
       .select<PermissionDependentPluginDTO[]>('pluginId');
   }
 
   async addPlugins(plugins: PermissionDependentPluginDTO[]): Promise<void> {
-    await this.knex
-      .table(this.CONDITIONAL_TABLE)
-      .insert(plugins)
-      .onConflict('pluginId')
-      .ignore();
+    await this.knex.table(PLUGINS_TABLE).insert(plugins);
   }
 
   async deletePlugins(pluginIds: string[]): Promise<void> {
     await this.knex
-      .table(this.CONDITIONAL_TABLE)
+      .table(PLUGINS_TABLE)
       .whereIn('pluginId', pluginIds)
-      .delete()
-      .onConflict('pluginId')
-      .ignore();
+      .delete();
   }
 }
