@@ -102,7 +102,7 @@ export function createAzureDevopsRunPipelineAction(options: {
           d
             .boolean()
             .describe(
-              'True is the pipeline did not complete within the defined timespan.',
+              'True if the pipeline did not complete within the defined timespan.',
             ),
         pipelineOutput: d =>
           d
