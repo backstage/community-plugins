@@ -17,6 +17,7 @@ import {
   credentials,
   mockAuditorService,
   mockAuthService,
+  mockedAuthorize,
   mockedAuthorizeConditional,
   mockHttpAuth,
   mockLoggerService,
@@ -30,13 +31,13 @@ import { PluginMetadataResponseSerializedRule } from './plugin-endpoints';
 import { AuthorizeResult } from '@backstage/plugin-permission-common';
 import {
   PluginPermissionMetaData,
+  policyEntityCreatePermission,
+  policyEntityDeletePermission,
   policyEntityReadPermission,
 } from '@backstage-community/plugin-rbac-common';
 import request from 'supertest';
 import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 import { mockServices } from '@backstage/backend-test-utils';
-
-jest.setTimeout(30000);
 
 describe('REST plugin policies metadata API', () => {
   let app: express.Express;
@@ -54,7 +55,9 @@ describe('REST plugin policies metadata API', () => {
         permissions: mockPermissionEvaluator,
       },
     );
-    app = express().use(router);
+    app = express();
+    app.use(express.json());
+    app.use(router);
     app.use(
       MiddlewareFactory.create({ logger: mockLoggerService, config }).error(),
     );
@@ -64,7 +67,7 @@ describe('REST plugin policies metadata API', () => {
     jest.clearAllMocks();
   });
 
-  describe('list plugin permissions and condition rules', () => {
+  describe('list plugin permissions and condition rules API', () => {
     it('should return list plugins permission', async () => {
       const pluginMetadata: PluginPermissionMetaData[] = [
         {
@@ -168,5 +171,157 @@ describe('REST plugin policies metadata API', () => {
         message: '',
       });
     });
+  });
+
+  describe('plugin ids API', () => {
+    it('should return a status of Unauthorized for /plugins/id GET', async () => {
+      mockedAuthorizeConditional.mockImplementationOnce(async () => [
+        { result: AuthorizeResult.DENY },
+      ]);
+      const result = await request(app).get('/plugins/id').send();
+
+      expect(mockedAuthorizeConditional).toHaveBeenCalledWith(
+        [
+          {
+            permission: policyEntityReadPermission,
+          },
+        ],
+        {
+          credentials: credentials,
+        },
+      );
+      expect(result.statusCode).toBe(403);
+      expect(result.body.error).toEqual({
+        name: 'NotAllowedError',
+        message: '',
+      });
+    });
+  });
+
+  it('should return list plugin ids object /plugins/id GET', async () => {
+    const result = await request(app).get('/plugins/id').send();
+
+    expect(mockedAuthorizeConditional).toHaveBeenCalledWith(
+      [
+        {
+          permission: policyEntityReadPermission,
+        },
+      ],
+      {
+        credentials: credentials,
+      },
+    );
+    expect(result.statusCode).toBe(200);
+    expect(result.body).toBeDefined();
+    expect(result.body.ids).toContain('jenkins');
+    expect(result.body.ids).toContain('sonarqube');
+  });
+
+  it('should return a status of Unauthorized for /plugins/id POST', async () => {
+    mockedAuthorize.mockImplementationOnce(async () => [
+      { result: AuthorizeResult.DENY },
+    ]);
+    const result = await request(app)
+      .post('/plugins/id')
+      .send({ ids: ['catalog'] });
+
+    expect(mockedAuthorize).toHaveBeenCalledWith(
+      [
+        {
+          permission: policyEntityCreatePermission,
+        },
+      ],
+      {
+        credentials: credentials,
+      },
+    );
+    expect(result.statusCode).toBe(403);
+    expect(result.body.error).toEqual({
+      name: 'NotAllowedError',
+      message: '',
+    });
+  });
+
+  it('should should add more plugin ids with help of /plugins/id POST', async () => {
+    mockedAuthorize.mockImplementationOnce(async () => [
+      { result: AuthorizeResult.ALLOW },
+    ]);
+    (
+      permissionDependentPluginStoreMock.getPlugins as jest.Mock
+    ).mockImplementationOnce(async () => [
+      { pluginId: 'jenkins' },
+      { pluginId: 'catalog' },
+    ]);
+    const result = await request(app)
+      .post('/plugins/id')
+      .send({ ids: ['catalog'] });
+
+    expect(mockedAuthorize).toHaveBeenCalledWith(
+      [
+        {
+          permission: policyEntityCreatePermission,
+        },
+      ],
+      {
+        credentials: credentials,
+      },
+    );
+    expect(permissionDependentPluginStoreMock.addPlugins).toHaveBeenCalledWith([
+      { pluginId: 'catalog' },
+    ]);
+    expect(result.statusCode).toBe(201);
+    expect(result.body).toBeDefined();
+    expect(result.body.ids).toContain('jenkins');
+    expect(result.body.ids).toContain('catalog');
+  });
+
+  it('should return a status of Unauthorized for /plugins/id DELETE', async () => {
+    mockedAuthorizeConditional.mockImplementationOnce(async () => [
+      { result: AuthorizeResult.DENY },
+    ]);
+    const result = await request(app).delete('/plugins/id').send();
+
+    expect(mockedAuthorizeConditional).toHaveBeenCalledWith(
+      [
+        {
+          permission: policyEntityDeletePermission,
+        },
+      ],
+      {
+        credentials: credentials,
+      },
+    );
+    expect(result.statusCode).toBe(403);
+    expect(result.body.error).toEqual({
+      name: 'NotAllowedError',
+      message: '',
+    });
+  });
+
+  it('should delete plugin id with help of /plugins/id DELETE', async () => {
+    mockedAuthorizeConditional.mockImplementationOnce(async () => [
+      { result: AuthorizeResult.ALLOW },
+    ]);
+    const result = await request(app)
+      .delete('/plugins/id')
+      .send({ ids: ['catalog'] });
+
+    expect(mockedAuthorizeConditional).toHaveBeenCalledWith(
+      [
+        {
+          permission: policyEntityDeletePermission,
+        },
+      ],
+      {
+        credentials: credentials,
+      },
+    );
+    expect(
+      permissionDependentPluginStoreMock.deletePlugins,
+    ).toHaveBeenCalledWith(['catalog']);
+    expect(result.statusCode).toBe(200);
+    expect(result.body).toBeDefined();
+    expect(result.body.ids).toContain('jenkins');
+    expect(result.body.ids).toContain('sonarqube');
   });
 });
