@@ -127,7 +127,6 @@ export function createAzureDevopsRunPipelineAction(options: {
         templateParameters,
         pollingInterval,
         pipelineTimeout,
-        token,
       } = ctx.input;
 
       const url = `https://${host}/${organization}`;
@@ -135,15 +134,15 @@ export function createAzureDevopsRunPipelineAction(options: {
         DefaultAzureDevOpsCredentialsProvider.fromIntegrations(integrations);
       const credentials = await credentialProvider.getCredentials({ url: url });
 
-      if (credentials === undefined && token === undefined) {
+      if (credentials === undefined && ctx.input.token === undefined) {
         throw new InputError(
           `No credentials provided ${url}, please check your integrations config`,
         );
       }
 
       const authHandler =
-        token || credentials?.type === 'pat'
-          ? getPersonalAccessTokenHandler(credentials!.token)
+        ctx.input.token || credentials?.type === 'pat'
+          ? getPersonalAccessTokenHandler(ctx.input.token ?? credentials!.token)
           : getBearerHandler(credentials!.token);
 
       const webApi = new WebApi(url, authHandler);
