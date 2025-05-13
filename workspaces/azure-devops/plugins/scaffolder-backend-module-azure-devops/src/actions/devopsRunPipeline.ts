@@ -19,8 +19,6 @@ import {
   ScmIntegrationRegistry,
 } from '@backstage/integration';
 import { examples } from './devopsRunPipeline.examples';
-import yaml from 'yaml';
-import { z } from 'zod';
 
 import { InputError } from '@backstage/errors';
 import {
@@ -84,7 +82,7 @@ export function createAzureDevopsRunPipelineAction(options: {
             .optional(),
         templateParameters: d =>
           d
-            .record(z.string(), z.string())
+            .record(d.string(), d.string())
             .describe(
               'Azure DevOps pipeline template parameters in key-value pairs.',
             )
