@@ -1,5 +1,19 @@
 # @backstage-community/plugin-tech-insights-backend
 
+## 2.3.0
+
+### Minor Changes
+
+- ac739ca: This version adds `techInsightsCheckReadPermission`, `techInsightsCheckUpdatePermission`, and `techInsightsFactRetrieverReadPermission`, which can be used to permission Tech Insights functionalities.
+
+### Patch Changes
+
+- 0a26736: fix null timestamp error when using tech-insights with maturity plugin
+- Updated dependencies [375612d]
+- Updated dependencies [ac739ca]
+  - @backstage-community/plugin-tech-insights-node@2.4.0
+  - @backstage-community/plugin-tech-insights-common@0.6.0
+
 ## 2.2.1
 
 ### Patch Changes
