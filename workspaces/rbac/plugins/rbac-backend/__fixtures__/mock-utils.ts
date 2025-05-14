@@ -35,6 +35,7 @@ import {
 import { PluginPermissionMetadataCollector } from '../src/service/plugin-endpoints';
 import { AuthorizeResult } from '@backstage/plugin-permission-common';
 import { PermissionDependentPluginStore } from '../src/database/extra-permission-enabled-plugins-storage';
+import { ExtendablePluginIdProvider } from '../src/service/extendable-id-provider';
 
 // TODO: Move to 'catalogServiceMock' from '@backstage/plugin-catalog-node/testUtils'
 // once '@backstage/plugin-catalog-node' is upgraded
@@ -78,7 +79,6 @@ export const pluginMetadataCollectorMock: Partial<PluginPermissionMetadataCollec
     getPluginConditionRules: jest.fn().mockImplementation(),
     getPluginPolicies: jest.fn().mockImplementation(),
     getMetadataByPluginId: jest.fn().mockImplementation(),
-    setExtraPluginIds: jest.fn().mockImplementation(),
   };
 
 export const permissionDependentPluginStoreMock: PermissionDependentPluginStore =
@@ -91,6 +91,12 @@ export const permissionDependentPluginStoreMock: PermissionDependentPluginStore 
       ]),
     addPlugins: jest.fn().mockImplementation(),
     deletePlugins: jest.fn().mockImplementation(),
+  };
+
+export const extandablePluginIdProviderMock: Partial<ExtendablePluginIdProvider> =
+  {
+    isConfiguredPluginId: jest.fn().mockImplementation(),
+    getPluginIds: jest.fn().mockImplementation(async () => ['catalog']),
   };
 
 export const roleEventEmitterMock: RoleEventEmitter<RoleEvents> = {

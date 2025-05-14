@@ -50,6 +50,7 @@ import { MODEL } from './permission-model';
 import { PluginPermissionMetadataCollector } from './plugin-endpoints';
 import { PoliciesServer } from './policies-rest-api';
 import { PermissionDependentPluginDatabaseStore } from '../database/extra-permission-enabled-plugins-storage';
+import { ExtendablePluginIdProvider } from './extendable-id-provider';
 
 /**
  * @public
@@ -148,23 +149,18 @@ export class PolicyBuilder {
       );
     }
 
-    const pluginIdsConfig = env.config.getOptionalStringArray(
-      'permission.rbac.pluginsWithPermission',
+    const extraPluginsIdStorage = new PermissionDependentPluginDatabaseStore(
+      databaseClient,
     );
-    if (pluginIdsConfig) {
-      const pluginIds = new Set([
-        ...pluginIdsConfig,
-        ...pluginIdProvider.getPluginIds(),
-      ]);
-      pluginIdProvider.getPluginIds = () => {
-        return [...pluginIds];
-      };
-    }
-
+    const extendablePluginIdProvider = new ExtendablePluginIdProvider(
+      extraPluginsIdStorage,
+      pluginIdProvider,
+      env.config,
+    );
     const pluginPermMetaData = new PluginPermissionMetadataCollector({
       deps: {
         discovery: env.discovery,
-        pluginIdProvider: pluginIdProvider,
+        pluginIdProvider: extendablePluginIdProvider,
         logger: env.logger,
         config: env.config,
       },
@@ -193,10 +189,6 @@ export class PolicyBuilder {
       policy = new AllowAllPolicy();
     }
 
-    const extraPluginsIdStorage = new PermissionDependentPluginDatabaseStore(
-      databaseClient,
-    );
-
     const options: RBACRouterOptions = {
       config: env.config,
       logger: env.logger,
@@ -216,6 +208,7 @@ export class PolicyBuilder {
       pluginPermMetaData,
       roleMetadataStorage,
       extraPluginsIdStorage,
+      extendablePluginIdProvider,
       rbacProviders,
     );
     return server.serve();
