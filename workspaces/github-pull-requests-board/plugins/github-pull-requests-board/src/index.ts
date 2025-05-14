@@ -17,7 +17,6 @@ export {
   EntityTeamPullRequestsCard,
   EntityTeamPullRequestsContent,
   HomePageTeamPullRequestsCard,
-  githubPullRequestsBoardPlugin,
 } from './plugin';
 export type { EntityTeamPullRequestsCardProps } from './components/EntityTeamPullRequestsCard';
 export type { EntityTeamPullRequestsContentProps } from './components/EntityTeamPullRequestsContent';

@@ -22,7 +22,7 @@ import { rootRouteRef } from './routes';
 import { createCardExtension } from '@backstage/plugin-home-react';
 import { homePlugin } from '@backstage/plugin-home';
 
-export const githubPullRequestsBoardPlugin = createPlugin({
+const githubPullRequestsBoardPlugin = createPlugin({
   id: 'github-pull-requests-board',
   routes: {
     root: rootRouteRef,

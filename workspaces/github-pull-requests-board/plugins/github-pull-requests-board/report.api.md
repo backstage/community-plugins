@@ -5,11 +5,9 @@
 ```ts
 /// <reference types="react" />
 
-import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { CardExtensionProps } from '@backstage/plugin-home-react';
 import { JSX as JSX_2 } from 'react';
 import { JSX as JSX_3 } from 'react/jsx-runtime';
-import { RouteRef } from '@backstage/core-plugin-api';
 
 // @public (undocumented)
 export const EntityTeamPullRequestsCard: (
@@ -32,17 +30,6 @@ export interface EntityTeamPullRequestsContentProps {
   // (undocumented)
   pullRequestLimit?: number;
 }
-
-// Warning: (ae-missing-release-tag) "githubPullRequestsBoardPlugin" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
-export const githubPullRequestsBoardPlugin: BackstagePlugin<
-  {
-    root: RouteRef<undefined>;
-  },
-  {},
-  {}
->;
 
 // @public (undocumented)
 export const HomePageTeamPullRequestsCard: (

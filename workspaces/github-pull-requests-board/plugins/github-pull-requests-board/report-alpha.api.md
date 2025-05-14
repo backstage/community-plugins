@@ -121,9 +121,11 @@ const _default: FrontendPlugin<
         defaultTitle: string;
         defaultGroup?:
           | (string & {})
+          | 'overview'
           | 'documentation'
           | 'development'
           | 'deployment'
+          | 'operation'
           | 'observability'
           | undefined;
         routeRef?: RouteRef<AnyRouteRefParams> | undefined;
