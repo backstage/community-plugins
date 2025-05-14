@@ -1165,9 +1165,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/identity@npm:4.8.0, @azure/identity@npm:^4.0.0":
-  version: 4.8.0
-  resolution: "@azure/identity@npm:4.8.0"
+"@azure/identity@npm:4.9.1, @azure/identity@npm:^4.0.0":
+  version: 4.9.1
+  resolution: "@azure/identity@npm:4.9.1"
   dependencies:
     "@azure/abort-controller": "npm:^2.0.0"
     "@azure/core-auth": "npm:^1.9.0"
@@ -1177,13 +1177,10 @@ __metadata:
     "@azure/core-util": "npm:^1.11.0"
     "@azure/logger": "npm:^1.0.0"
     "@azure/msal-browser": "npm:^4.2.0"
-    "@azure/msal-node": "npm:^3.2.3"
-    events: "npm:^3.0.0"
-    jws: "npm:^4.0.0"
+    "@azure/msal-node": "npm:^3.5.0"
     open: "npm:^10.1.0"
-    stoppable: "npm:^1.1.0"
     tslib: "npm:^2.2.0"
-  checksum: 10/55f5e8f8fb5478d32942f66f656bf14768a2348a998624c6491f9fc1b72c6fad569c13bb03186daa11ae67bbf009bd51d4712ad14948d9f607c4d66c7f6660a0
+  checksum: 10/55afd98f3ba554917b1a474ea2f573456fdfc773677cf1814e2b62cf6479d3d87659cd17ef05e214e4625afa5fdca73cce6add0df161fa459ba58a8a2bd9de49
   languageName: node
   linkType: hard
 
@@ -1212,14 +1209,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/msal-node@npm:^3.2.3":
-  version: 3.3.0
-  resolution: "@azure/msal-node@npm:3.3.0"
+"@azure/msal-common@npm:15.6.0":
+  version: 15.6.0
+  resolution: "@azure/msal-common@npm:15.6.0"
+  checksum: 10/975ad7821fa5bdc682c9ef08e02642923571b715f199e94c9fbda17248b301caae5cf9cddfa2fdf37f4a05cce7eaf3ddebaef28f83909d78f452caf72367022a
+  languageName: node
+  linkType: hard
+
+"@azure/msal-node@npm:^3.5.0":
+  version: 3.5.3
+  resolution: "@azure/msal-node@npm:3.5.3"
   dependencies:
-    "@azure/msal-common": "npm:15.2.1"
+    "@azure/msal-common": "npm:15.6.0"
     jsonwebtoken: "npm:^9.0.0"
     uuid: "npm:^8.3.0"
-  checksum: 10/4ec1e1a5b089c5a1b0360ae2c4f3057db7bacfa56e7ec488e695a08bccb3454c6924f27483440e8272ed2e0c1882e904ad55b57602178f2d0dea9c207926ccef
+  checksum: 10/58c3755c67cdbe06e8319e48b3917086331738de00ddd3dc44f682e7b776f48425d785c5450413982830a36a73961cd72d868b3ec0f9acc39435050d328b61f4
   languageName: node
   linkType: hard
 
@@ -2729,7 +2733,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-azure-storage-explorer-backend@workspace:plugins/azure-storage-backend"
   dependencies:
-    "@azure/identity": "npm:4.8.0"
+    "@azure/identity": "npm:4.9.1"
     "@azure/storage-blob": "npm:12.27.0"
     "@backstage/backend-defaults": "npm:^0.9.0"
     "@backstage/backend-plugin-api": "npm:^1.3.0"
