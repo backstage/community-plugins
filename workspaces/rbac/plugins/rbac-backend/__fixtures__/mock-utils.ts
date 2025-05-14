@@ -93,6 +93,10 @@ export const permissionDependentPluginStoreMock: PermissionDependentPluginStore 
     deletePlugins: jest.fn().mockImplementation(),
   };
 
+export const pluginIdProviderMock = {
+  getPluginIds: jest.fn().mockImplementation(() => []),
+};
+
 export const extandablePluginIdProviderMock: Partial<ExtendablePluginIdProvider> =
   {
     isConfiguredPluginId: jest.fn().mockImplementation(),
