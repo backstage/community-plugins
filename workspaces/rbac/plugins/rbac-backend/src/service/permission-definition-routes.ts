@@ -106,7 +106,7 @@ export function createPermissionDefinitionRoutes(
       );
       if (conflictedIds.length > 0) {
         throw new ConflictError(
-          `Plugin ids ${JSON.stringify(conflictedIds)} already exist in the system. Please use a different set of plugin ids.`,
+          `Plugin IDs ${JSON.stringify(conflictedIds)} already exist in the system. Please use a different set of plugin ids.`,
         );
       }
       await extraPluginsIdStorage.addPlugins(pluginDtos);
@@ -129,7 +129,7 @@ export function createPermissionDefinitionRoutes(
       );
       if (configuredPluginIds.length > 0) {
         throw new NotAllowedError(
-          `Plugin ids ${JSON.stringify(pluginIds.ids)} can be removed only with help of configuration.`,
+          `Plugin IDs ${JSON.stringify(pluginIds.ids)} can be removed only with help of configuration.`,
         );
       }
 
@@ -139,7 +139,7 @@ export function createPermissionDefinitionRoutes(
       );
       if (notFoundPlugins.length > 0) {
         throw new NotFoundError(
-          `Plugin ids ${JSON.stringify(notFoundPlugins)} was not found.`,
+          `Plugin IDs ${JSON.stringify(notFoundPlugins)} were not found.`,
         );
       }
 

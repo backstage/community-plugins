@@ -244,7 +244,7 @@ describe('REST plugin policies metadata API', () => {
     });
   });
 
-  it('should should add more plugin ids with help of /plugins/id POST', async () => {
+  it('should add more plugin ids with help of /plugins/id POST', async () => {
     mockedAuthorize.mockImplementationOnce(async () => [
       { result: AuthorizeResult.ALLOW },
     ]);
@@ -274,6 +274,46 @@ describe('REST plugin policies metadata API', () => {
     expect(result.body.ids).toContain('jenkins');
     expect(result.body.ids).toContain('catalog');
     expect(result.body.ids).toContain('scaffolder');
+  });
+
+  it('should fail to add more plugin ids, because of ConflictError', async () => {
+    mockedAuthorize.mockImplementationOnce(async () => [
+      { result: AuthorizeResult.ALLOW },
+    ]);
+    (
+      extandablePluginIdProviderMock.getPluginIds as jest.Mock
+    ).mockResolvedValueOnce(['jenkins', 'catalog', 'scaffolder']);
+
+    const result = await request(app)
+      .post('/plugins/id')
+      .send({ ids: ['scaffolder'] });
+
+    expect(mockedAuthorize).toHaveBeenCalledWith(
+      [
+        {
+          permission: policyEntityCreatePermission,
+        },
+      ],
+      {
+        credentials: credentials,
+      },
+    );
+    expect(
+      permissionDependentPluginStoreMock.addPlugins,
+    ).not.toHaveBeenCalledWith([{ pluginId: 'scaffolder' }]);
+    expect(result.statusCode).toBe(409);
+    expect(result.body).toEqual({
+      error: {
+        message:
+          'Plugin IDs ["scaffolder"] already exist in the system. Please use a different set of plugin ids.',
+        name: 'ConflictError',
+      },
+      request: {
+        method: 'POST',
+        url: '/plugins/id',
+      },
+      response: { statusCode: 409 },
+    });
   });
 
   it('should return a status of Unauthorized for /plugins/id DELETE', async () => {
@@ -329,5 +369,79 @@ describe('REST plugin policies metadata API', () => {
     expect(result.body.ids).toContain('jenkins');
     expect(result.body.ids).toContain('sonarqube');
     expect(result.body.ids).not.toContain('catalog');
+  });
+
+  it('should fail to delete plugin id with NotFoundError', async () => {
+    mockedAuthorizeConditional.mockImplementationOnce(async () => [
+      { result: AuthorizeResult.ALLOW },
+    ]);
+    const result = await request(app)
+      .delete('/plugins/id')
+      .send({ ids: ['jenkins'] });
+
+    expect(mockedAuthorizeConditional).toHaveBeenCalledWith(
+      [
+        {
+          permission: policyEntityDeletePermission,
+        },
+      ],
+      {
+        credentials: credentials,
+      },
+    );
+    expect(
+      permissionDependentPluginStoreMock.deletePlugins,
+    ).not.toHaveBeenCalledWith(['jenkins']);
+    expect(result.statusCode).toBe(404);
+    expect(result.body).toEqual({
+      error: {
+        message: 'Plugin IDs ["jenkins"] were not found.',
+        name: 'NotFoundError',
+      },
+      request: {
+        method: 'DELETE',
+        url: '/plugins/id',
+      },
+      response: { statusCode: 404 },
+    });
+  });
+
+  it('should fail to deletion plugin id, because it was configured', async () => {
+    mockedAuthorizeConditional.mockImplementationOnce(async () => [
+      { result: AuthorizeResult.ALLOW },
+    ]);
+    (
+      extandablePluginIdProviderMock.isConfiguredPluginId as jest.Mock
+    ).mockReturnValueOnce(true);
+    const result = await request(app)
+      .delete('/plugins/id')
+      .send({ ids: ['jenkins'] });
+
+    expect(mockedAuthorizeConditional).toHaveBeenCalledWith(
+      [
+        {
+          permission: policyEntityDeletePermission,
+        },
+      ],
+      {
+        credentials: credentials,
+      },
+    );
+    expect(
+      permissionDependentPluginStoreMock.deletePlugins,
+    ).not.toHaveBeenCalledWith(['jenkins']);
+    expect(result.statusCode).toBe(403);
+    expect(result.body).toEqual({
+      error: {
+        message:
+          'Plugin IDs ["jenkins"] can be removed only with help of configuration.',
+        name: 'NotAllowedError',
+      },
+      request: {
+        method: 'DELETE',
+        url: '/plugins/id',
+      },
+      response: { statusCode: 403 },
+    });
   });
 });
