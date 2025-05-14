@@ -21,12 +21,11 @@ import {
 } from '@backstage-community/plugin-rbac-common';
 import Router from 'express-promise-router';
 import { logAuditorEvent, setAuditorError } from '../auditor/rest-interceptor';
-import {
-  dtoToPermissionDependentPluginList,
-  permissionDependentPluginListToDTO,
-} from './permission-dto-converter';
 import { PluginPermissionMetadataCollector } from './plugin-endpoints';
-import { PermissionDependentPluginStore } from '../database/extra-permission-enabled-plugins-storage';
+import {
+  PermissionDependentPluginDTO,
+  PermissionDependentPluginStore,
+} from '../database/extra-permission-enabled-plugins-storage';
 import { authorizeConditional } from './policies-rest-api';
 import {
   AuditorService,
@@ -34,10 +33,17 @@ import {
   HttpAuthService,
   PermissionsService,
 } from '@backstage/backend-plugin-api';
+import { ExtendablePluginIdProvider } from './extendable-id-provider';
+import {
+  ConflictError,
+  NotAllowedError,
+  NotFoundError,
+} from '@backstage/errors';
 
 // todo: do we need separated permissions to set up extra plugin ids  ?
 export function createPermissionDefinitionRoutes(
   pluginPermMetaData: PluginPermissionMetadataCollector,
+  pluginIdProvider: ExtendablePluginIdProvider,
   extraPluginsIdStorage: PermissionDependentPluginStore,
   deps: {
     auth: AuthService;
@@ -80,9 +86,8 @@ export function createPermissionDefinitionRoutes(
     async (request, response) => {
       await authorizeConditional(request, policyEntityReadPermission, deps);
 
-      const actualPluginDtos = await extraPluginsIdStorage.getPlugins();
-      const result = dtoToPermissionDependentPluginList(actualPluginDtos);
-      response.json(result);
+      const actualPluginIds = await pluginIdProvider.getPluginIds();
+      response.status(200).json(pluginIdsToResponse(actualPluginIds));
     },
   );
 
@@ -94,13 +99,21 @@ export function createPermissionDefinitionRoutes(
       const pluginIds: PermissionDependentPluginList = request.body;
       // todo validate pluginIds object
       const pluginDtos = permissionDependentPluginListToDTO(pluginIds);
+
+      let actualPluginIds = await pluginIdProvider.getPluginIds();
+      const conflictedIds = pluginIds.ids.filter(id =>
+        actualPluginIds.includes(id),
+      );
+      if (conflictedIds.length > 0) {
+        throw new ConflictError(
+          `Plugin ids ${JSON.stringify(conflictedIds)} already exist in the system. Please use a different set of plugin ids.`,
+        );
+      }
       await extraPluginsIdStorage.addPlugins(pluginDtos);
       response.locals.meta = pluginIds;
-      pluginPermMetaData.setExtraPluginIds(pluginIds.ids);
 
-      const actualPluginDtos = await extraPluginsIdStorage.getPlugins();
-      const result = dtoToPermissionDependentPluginList(actualPluginDtos);
-      response.status(201).json(result);
+      actualPluginIds = await pluginIdProvider.getPluginIds();
+      response.status(201).json(pluginIdsToResponse(actualPluginIds));
     },
   );
 
@@ -111,19 +124,48 @@ export function createPermissionDefinitionRoutes(
       await authorizeConditional(request, policyEntityDeletePermission, deps);
       const pluginIds: PermissionDependentPluginList = request.body;
       // todo validate pluginIds object
+      const configuredPluginIds = pluginIds.ids.filter(pluginId =>
+        pluginIdProvider.isConfiguredPluginId(pluginId),
+      );
+      if (configuredPluginIds.length > 0) {
+        throw new NotAllowedError(
+          `Plugin ids ${JSON.stringify(pluginIds.ids)} can be removed only with help of configuration.`,
+        );
+      }
+
+      let actualPluginIds = await pluginIdProvider.getPluginIds();
+      const notFoundPlugins = pluginIds.ids.filter(
+        pluginToDel => !actualPluginIds.includes(pluginToDel),
+      );
+      if (notFoundPlugins.length > 0) {
+        throw new NotFoundError(
+          `Plugin ids ${JSON.stringify(notFoundPlugins)} was not found.`,
+        );
+      }
+
       await extraPluginsIdStorage.deletePlugins(pluginIds.ids);
       response.locals.meta = pluginIds;
 
-      const actualPluginDtos = await extraPluginsIdStorage.getPlugins();
-      pluginPermMetaData.setExtraPluginIds(
-        actualPluginDtos.map(dto => dto.pluginId),
-      );
-      const result = dtoToPermissionDependentPluginList(actualPluginDtos);
-      response.status(200).json(result);
+      actualPluginIds = await pluginIdProvider.getPluginIds();
+      response.status(200).json(pluginIdsToResponse(actualPluginIds));
     },
   );
 
   router.use(setAuditorError());
 
   return router;
+}
+
+export function pluginIdsToResponse(
+  pluginIds: string[],
+): PermissionDependentPluginList {
+  return { ids: pluginIds };
+}
+
+export function permissionDependentPluginListToDTO(
+  pluginList: PermissionDependentPluginList,
+): PermissionDependentPluginDTO[] {
+  return pluginList.ids.map(pluginId => {
+    return { pluginId };
+  });
 }

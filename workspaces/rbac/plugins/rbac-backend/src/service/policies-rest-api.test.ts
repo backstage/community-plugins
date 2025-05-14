@@ -62,7 +62,9 @@ import {
   mockedAuthorize,
   mockPermissionRegistry,
   permissionDependentPluginStoreMock,
+  extandablePluginIdProviderMock,
 } from '../../__fixtures__/mock-utils';
+import { ExtendablePluginIdProvider } from './extendable-id-provider';
 
 jest.setTimeout(60000);
 
@@ -271,6 +273,7 @@ describe('REST policies API', () => {
       pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
       roleMetadataStorageMock,
       permissionDependentPluginStoreMock,
+      extandablePluginIdProviderMock as ExtendablePluginIdProvider,
     );
     const router = await server.serve();
     app = express().use(router);
@@ -3854,6 +3857,7 @@ describe('REST policies API', () => {
         pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
         roleMetadataStorageMock,
         permissionDependentPluginStoreMock,
+        extandablePluginIdProviderMock as ExtendablePluginIdProvider,
         [providerMock],
       );
       const router = await server.serve();

@@ -15,6 +15,7 @@
  */
 import {
   credentials,
+  extandablePluginIdProviderMock,
   mockAuditorService,
   mockAuthService,
   mockedAuthorize,
@@ -38,6 +39,7 @@ import {
 import request from 'supertest';
 import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 import { mockServices } from '@backstage/backend-test-utils';
+import { ExtendablePluginIdProvider } from './extendable-id-provider';
 
 describe('REST plugin policies metadata API', () => {
   let app: express.Express;
@@ -47,6 +49,7 @@ describe('REST plugin policies metadata API', () => {
   beforeEach(async () => {
     const router = await createPermissionDefinitionRoutes(
       pluginMetadataCollectorMock as any,
+      extandablePluginIdProviderMock as ExtendablePluginIdProvider,
       permissionDependentPluginStoreMock,
       {
         auth: mockAuthService,
@@ -213,8 +216,7 @@ describe('REST plugin policies metadata API', () => {
     );
     expect(result.statusCode).toBe(200);
     expect(result.body).toBeDefined();
-    expect(result.body.ids).toContain('jenkins');
-    expect(result.body.ids).toContain('sonarqube');
+    expect(result.body.ids).toContain('catalog');
   });
 
   it('should return a status of Unauthorized for /plugins/id POST', async () => {
@@ -246,15 +248,13 @@ describe('REST plugin policies metadata API', () => {
     mockedAuthorize.mockImplementationOnce(async () => [
       { result: AuthorizeResult.ALLOW },
     ]);
-    (
-      permissionDependentPluginStoreMock.getPlugins as jest.Mock
-    ).mockImplementationOnce(async () => [
-      { pluginId: 'jenkins' },
-      { pluginId: 'catalog' },
-    ]);
+    (extandablePluginIdProviderMock.getPluginIds as jest.Mock)
+      .mockResolvedValueOnce(['jenkins', 'catalog'])
+      .mockResolvedValueOnce(['jenkins', 'catalog', 'scaffolder']);
+
     const result = await request(app)
       .post('/plugins/id')
-      .send({ ids: ['catalog'] });
+      .send({ ids: ['scaffolder'] });
 
     expect(mockedAuthorize).toHaveBeenCalledWith(
       [
@@ -267,12 +267,13 @@ describe('REST plugin policies metadata API', () => {
       },
     );
     expect(permissionDependentPluginStoreMock.addPlugins).toHaveBeenCalledWith([
-      { pluginId: 'catalog' },
+      { pluginId: 'scaffolder' },
     ]);
     expect(result.statusCode).toBe(201);
     expect(result.body).toBeDefined();
     expect(result.body.ids).toContain('jenkins');
     expect(result.body.ids).toContain('catalog');
+    expect(result.body.ids).toContain('scaffolder');
   });
 
   it('should return a status of Unauthorized for /plugins/id DELETE', async () => {
@@ -302,6 +303,10 @@ describe('REST plugin policies metadata API', () => {
     mockedAuthorizeConditional.mockImplementationOnce(async () => [
       { result: AuthorizeResult.ALLOW },
     ]);
+    (extandablePluginIdProviderMock.getPluginIds as jest.Mock)
+      .mockResolvedValueOnce(['jenkins', 'sonarqube', 'catalog'])
+      .mockResolvedValueOnce(['jenkins', 'sonarqube']);
+
     const result = await request(app)
       .delete('/plugins/id')
       .send({ ids: ['catalog'] });
@@ -323,5 +328,6 @@ describe('REST plugin policies metadata API', () => {
     expect(result.body).toBeDefined();
     expect(result.body.ids).toContain('jenkins');
     expect(result.body.ids).toContain('sonarqube');
+    expect(result.body.ids).not.toContain('catalog');
   });
 });

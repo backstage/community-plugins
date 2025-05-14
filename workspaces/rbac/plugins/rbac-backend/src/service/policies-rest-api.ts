@@ -80,6 +80,7 @@ import { RBACRouterOptions } from './policy-builder';
 import { conditionTransformerFunc, RBACFilters } from '../permissions';
 import { createPermissionDefinitionRoutes } from './permission-definition-routes';
 import { PermissionDependentPluginStore } from '../database/extra-permission-enabled-plugins-storage';
+import { ExtendablePluginIdProvider } from './extendable-id-provider';
 
 export async function authorizeConditional(
   request: Request,
@@ -141,6 +142,7 @@ export class PoliciesServer {
     private readonly pluginPermMetaData: PluginPermissionMetadataCollector,
     private readonly roleMetadata: RoleMetadataStorage,
     private readonly extraPluginsIdStorage: PermissionDependentPluginStore,
+    private readonly pluginIdProvider: ExtendablePluginIdProvider,
     private readonly rbacProviders?: RBACProvider[],
   ) {}
 
@@ -1057,6 +1059,7 @@ export class PoliciesServer {
     router.use(
       createPermissionDefinitionRoutes(
         this.pluginPermMetaData,
+        this.pluginIdProvider,
         this.extraPluginsIdStorage,
         this.options,
       ),
