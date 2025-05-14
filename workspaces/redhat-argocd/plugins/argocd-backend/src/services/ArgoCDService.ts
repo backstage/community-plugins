@@ -177,6 +177,8 @@ export class ArgoCDService {
           options,
         );
         this.logger.warn(message);
+
+        return data;
       }
 
       // Add instance metadata
@@ -190,6 +192,7 @@ export class ArgoCDService {
                 ...app.metadata,
                 instance: {
                   name: matchedInstance.name,
+                  url: matchedInstance.url,
                 },
               },
             };
@@ -310,6 +313,7 @@ export class ArgoCDService {
           ...data.metadata,
           instance: {
             name: matchedInstance.name,
+            url: matchedInstance.url,
           },
         },
       };
