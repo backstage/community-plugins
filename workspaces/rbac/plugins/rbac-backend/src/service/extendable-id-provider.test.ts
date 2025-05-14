@@ -98,4 +98,24 @@ describe('ExtendableIdProvider', () => {
     expect(pluginIds).toContain('argocd');
     expect(pluginIds).toContain('jenkins');
   });
+
+  it('should detect if plugin id is configured', () => {
+    (permissionDependentPluginStoreMock.getPlugins as jest.Mock).mockReset();
+    (
+      permissionDependentPluginStoreMock.getPlugins as jest.Mock
+    ).mockResolvedValueOnce([{ pluginId: 'scaffolder' }]);
+    pluginIdProviderMock.getPluginIds.mockReturnValueOnce(['jenkins']);
+
+    const extendableIdProvider = createProvider();
+    let isConfiguredPluginId =
+      extendableIdProvider.isConfiguredPluginId('argocd');
+    expect(isConfiguredPluginId).toBe(true);
+
+    isConfiguredPluginId = extendableIdProvider.isConfiguredPluginId('jenkins');
+    expect(isConfiguredPluginId).toBe(true);
+
+    isConfiguredPluginId =
+      extendableIdProvider.isConfiguredPluginId('scaffolder');
+    expect(isConfiguredPluginId).toBe(false);
+  });
 });
