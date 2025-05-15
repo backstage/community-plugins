@@ -36,6 +36,7 @@ import { sonarqubeTranslationRef } from '../../translation';
 
 type MetricInsightsProps = {
   value: FindingSummary | any;
+  compact?: boolean;
   title?: string;
   sonarQubeComponentKey?: string;
 };
@@ -44,8 +45,11 @@ const useStyles = makeStyles(theme => ({
   badgeLabel: {
     color: theme.palette.common.white,
   },
-  badgeError: {
+  badgeCompact: {
     margin: 0,
+    height: 28,
+  },
+  badgeError: {
     backgroundColor: theme.palette.error.main,
   },
   badgeSuccess: {
@@ -82,6 +86,7 @@ export const QualityBadge = (props: MetricInsightsProps) => {
     <Chip
       label={gateLabel}
       {...clickableAttrs}
+      className={props.compact ? classes.badgeCompact : ''}
       classes={{ root: gateColor, label: classes.badgeLabel }}
     />
   );
@@ -92,10 +97,11 @@ export const BugReportRatingCard = (props: MetricInsightsProps) => {
   const { value, title } = props;
   return (
     <RatingCard
+      compact={props.compact}
       titleIcon={<BugReport />}
       title={title}
       link={value.getIssuesUrl('BUG')}
-      leftSlot={<Value value={value.metrics.bugs} />}
+      leftSlot={<Value value={value.metrics.bugs} compact={props.compact} />}
       rightSlot={<Rating rating={value.metrics.reliability_rating} />}
     />
   );
@@ -105,12 +111,15 @@ export const VulnerabilitiesRatingCard = (props: MetricInsightsProps) => {
   const { value, title } = props;
   return (
     <RatingCard
+      compact={props.compact}
       titleIcon={
         value.metrics.vulnerabilities === '0' ? <Lock /> : <LockOpen />
       }
       title={title}
       link={value.getIssuesUrl('VULNERABILITY')}
-      leftSlot={<Value value={value.metrics.vulnerabilities} />}
+      leftSlot={
+        <Value value={value.metrics.vulnerabilities} compact={props.compact} />
+      }
       rightSlot={<Rating rating={value.metrics.security_rating} />}
     />
   );
@@ -120,6 +129,7 @@ export const CodeSmellsRatingCard = (props: MetricInsightsProps) => {
   const { value, title } = props;
   return (
     <RatingCard
+      compact={props.compact}
       titleIcon={
         value.metrics.code_smells === '0' ? (
           <SentimentVerySatisfied />
@@ -129,7 +139,9 @@ export const CodeSmellsRatingCard = (props: MetricInsightsProps) => {
       }
       title={title}
       link={value.getIssuesUrl('CODE_SMELL')}
-      leftSlot={<Value value={value.metrics.code_smells} />}
+      leftSlot={
+        <Value value={value.metrics.code_smells} compact={props.compact} />
+      }
       rightSlot={<Rating rating={value.metrics.sqale_rating} />}
     />
   );
@@ -140,6 +152,7 @@ export const HotspotsReviewed = (props: MetricInsightsProps) => {
   return (
     value.metrics.security_review_rating && (
       <RatingCard
+        compact={props.compact}
         titleIcon={<Security />}
         title={title}
         link={value.getSecurityHotspotsUrl()}
@@ -150,6 +163,7 @@ export const HotspotsReviewed = (props: MetricInsightsProps) => {
                 ? `${value.metrics.security_hotspots_reviewed}%`
                 : '—'
             }
+            compact={props.compact}
           />
         }
         rightSlot={<Rating rating={value.metrics.security_review_rating} />}
@@ -162,12 +176,14 @@ export const CoverageRatingCard = (props: MetricInsightsProps) => {
   const { value, title } = props;
   return (
     <RatingCard
+      compact={props.compact}
       link={value.getComponentMeasuresUrl('COVERAGE')}
       title={title}
       leftSlot={<Percentage value={value.metrics.coverage} />}
       rightSlot={
         <Value
           value={value.metrics.coverage ? `${value.metrics.coverage}%` : '—'}
+          compact={props.compact}
         />
       }
     />
@@ -194,10 +210,16 @@ export const DuplicationsRatingCard = (props: MetricInsightsProps) => {
 
   return (
     <RatingCard
+      compact={props.compact}
       title={title}
       link={value.getComponentMeasuresUrl('DUPLICATED_LINES_DENSITY')}
       leftSlot={<Rating rating={duplicationRating} hideValue />}
-      rightSlot={<Value value={`${value.metrics.duplicated_lines_density}%`} />}
+      rightSlot={
+        <Value
+          value={`${value.metrics.duplicated_lines_density}%`}
+          compact={props.compact}
+        />
+      }
     />
   );
 };
