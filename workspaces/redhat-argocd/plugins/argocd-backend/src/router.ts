@@ -91,8 +91,12 @@ export async function createRouter(
     '/argoInstance/:instanceName/applications/:appName',
     async (req: express.Request, res: express.Response) => {
       const { instanceName, appName } = req.params;
+      const { appNamespace, project } = req.query;
+
       const result = await service.getApplication(instanceName, {
-        appName: appName,
+        appName,
+        appNamespace: appNamespace as string,
+        project: project as string,
       });
       return res.json(result);
     },

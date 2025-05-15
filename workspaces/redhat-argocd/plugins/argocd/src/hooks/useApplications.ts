@@ -66,9 +66,10 @@ export const useApplications = ({
         url: `/argoInstance/${instanceName}`,
         appName: appName as string,
         appNamespace,
+        project: projectName,
       })
       .then(application => setApps([application]));
-  }, [api, appName, appNamespace, instanceName]);
+  }, [api, appName, appNamespace, projectName, instanceName]);
 
   const { error, loading, retry } = useAsyncRetry(async () => {
     if (appName) {
