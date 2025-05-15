@@ -18,18 +18,11 @@ import { FindingSummary } from '@backstage-community/plugin-sonarqube-react';
 export interface SonarQubeTableRow {
   resolved: {
     name: string;
+    entityRef?: string;
     isSonarQubeAnnotationEnabled?: boolean;
     findings?: FindingSummary;
   };
   id: string;
-}
-
-export interface EntityLinkProps {
-  entityRef: string;
-  title: string;
-  url: string;
-  kind: string;
-  namespace: string;
 }
 
 /** @public */

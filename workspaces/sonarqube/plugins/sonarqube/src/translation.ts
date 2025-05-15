@@ -48,7 +48,6 @@ export const sonarqubeTranslationRef = createTranslationRef({
       },
     },
     sonarQubeTable: {
-      entityLinkTitle: 'View Component details',
       columnsTitle: {
         component: 'Component',
         qualityGate: 'Quality Gate',
