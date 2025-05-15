@@ -153,7 +153,7 @@ export class SonarQubeClient implements SonarQubeApi {
     });
 
     for await (const summary of summaries) {
-      if (!map.has(summary.title)) {
+      if (summary?.title && !map.has(summary.title)) {
         map.set(summary.title, summary);
       }
     }
