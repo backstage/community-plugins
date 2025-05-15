@@ -23,13 +23,20 @@ const useStyles = makeStyles(theme => {
       fontSize: '1.5rem',
       fontWeight: theme.typography.fontWeightMedium,
     },
+    compact: {
+      lineHeight: '1.0',
+    },
   };
 });
 
-export const Value = (props: { value?: string }) => {
+export const Value = (props: { value?: string; compact?: boolean }) => {
   const classes = useStyles();
   return (
-    <Typography component="span" className={classes.value}>
+    <Typography
+      component="span"
+      className={props.compact ? classes.compact : ''}
+      classes={{ root: classes.value }}
+    >
       {props.value}
     </Typography>
   );

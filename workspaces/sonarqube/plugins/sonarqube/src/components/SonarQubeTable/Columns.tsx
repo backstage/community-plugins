@@ -129,7 +129,7 @@ export const getColumns = (
       width: '7%',
       render: ({ resolved }) =>
         resolved?.findings?.metrics && (
-          <QualityBadge value={resolved?.findings} />
+          <QualityBadge value={resolved?.findings} compact />
         ),
     },
     {
@@ -140,7 +140,7 @@ export const getColumns = (
       width: '7%',
       render: ({ resolved }) =>
         resolved?.findings?.metrics && (
-          <BugReportRatingCard value={resolved?.findings} />
+          <BugReportRatingCard value={resolved?.findings} compact />
         ),
     },
     {
@@ -151,7 +151,7 @@ export const getColumns = (
       type: 'numeric',
       render: ({ resolved }) =>
         resolved?.findings?.metrics && (
-          <VulnerabilitiesRatingCard value={resolved?.findings} />
+          <VulnerabilitiesRatingCard value={resolved?.findings} compact />
         ),
     },
     {
@@ -162,7 +162,7 @@ export const getColumns = (
       width: '7%',
       render: ({ resolved }) =>
         resolved?.findings?.metrics && (
-          <CodeSmellsRatingCard value={resolved?.findings} />
+          <CodeSmellsRatingCard value={resolved?.findings} compact />
         ),
     },
     {
@@ -173,7 +173,7 @@ export const getColumns = (
       width: '7%',
       render: ({ resolved }) =>
         resolved?.findings?.metrics && (
-          <HotspotsReviewed value={resolved?.findings} />
+          <HotspotsReviewed value={resolved?.findings} compact />
         ),
     },
     {
@@ -184,7 +184,7 @@ export const getColumns = (
       width: '7%',
       render: ({ resolved }) =>
         resolved?.findings?.metrics && (
-          <CoverageRatingCard value={resolved?.findings} />
+          <CoverageRatingCard value={resolved?.findings} compact />
         ),
     },
     {
@@ -195,7 +195,7 @@ export const getColumns = (
       width: '7%',
       render: ({ resolved }) =>
         resolved?.findings?.metrics && (
-          <DuplicationsRatingCard value={resolved?.findings} />
+          <DuplicationsRatingCard value={resolved?.findings} compact />
         ),
     },
   ];
