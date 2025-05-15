@@ -69,7 +69,9 @@ describe('<SonarQubeContentPage />', () => {
     expect(rendered.getByText('SonarQube Dashboard')).toBeInTheDocument();
     expect(rendered.getByText('No information to display')).toBeInTheDocument();
     expect(
-      rendered.getByText("There is no SonarQube project with key 'bar'."),
+      rendered.getByText(
+        "There is no SonarQube project with key 'bar', check that project exists and permissions.",
+      ),
     ).toBeInTheDocument();
   }, 15000);
 
