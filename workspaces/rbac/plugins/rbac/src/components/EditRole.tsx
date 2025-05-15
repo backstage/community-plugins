@@ -41,29 +41,6 @@ const EditRole = ({
   const navigate = useNavigate();
   const { name, namespace, kind } = parseEntityRef(roleName);
 
-  // const editPermissionResult = usePermission({
-  //   permission: policyEntityUpdatePermission,
-  //   resourceRef: roleName,
-  // });
-
-  // const isLoading = editPermissionResult.loading;
-  // const isAllowed = editPermissionResult.allowed;
-  // const disable = !(isAllowed && canEdit);
-
-  // const getTooltipText = () => {
-  //   if (isLoading) {
-  //     return 'Checking permissions…';
-  //   }
-  //   if (disable) {
-  //     return 'Unauthorized to edit';
-  //   }
-  //   return tooltip ?? 'Edit Role';
-  // };
-
-  // const dataTestIdText = disable
-  //   ? `disable-update-role-${roleName}`
-  //   : `update-role-${roleName}`;
-
   const { disable, tooltipText, testIdText } = useActionPermissionTooltip({
     permission: policyEntityUpdatePermission,
     resourceRef: roleName,
