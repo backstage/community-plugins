@@ -18,7 +18,6 @@ import { parseEntityRef } from '@backstage/catalog-model';
 import EditIcon from '@mui/icons-material/Edit';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-import { usePermission } from '@backstage/plugin-permission-react';
 import { policyEntityUpdatePermission } from '@backstage-community/plugin-rbac-common';
 import { useNavigate } from 'react-router-dom';
 import { useActionPermissionTooltip } from '../hooks/useActionPermissionTooltip';
