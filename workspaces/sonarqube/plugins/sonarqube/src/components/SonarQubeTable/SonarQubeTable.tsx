@@ -52,7 +52,11 @@ export const SonarQubeTable = ({
     >
       <div>
         <Table
-          title={<div>{`(${tableContent.length}) ${title}`}</div>}
+          title={
+            <div>{`${title ?? t('sonarQubeCard.title')} (${
+              tableContent.length
+            })`}</div>
+          }
           options={options}
           data={tableContent || []}
           columns={getColumns(t)}
