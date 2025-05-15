@@ -42,7 +42,6 @@ export const getColumns = (
       field: 'resolved.name',
       type: 'string',
       highlight: true,
-      width: '25%',
       render: ({ resolved }) => {
         if (!resolved?.name) {
           return null;
@@ -57,25 +56,25 @@ export const getColumns = (
       },
     },
     {
-      title: t('sonarQubeTable.columnsTitle.lastAnalysis'),
-      field: 'resolved?.findings?.metrics.lastAnalysis',
-      type: 'datetime',
-      width: '20%',
+      title: t('sonarQubeTable.columnsTitle.qualityGate'),
+      field: 'resolved.findings.metrics.alert_status',
+      type: 'string',
       render: ({ resolved, id }) => {
         if (resolved?.findings?.metrics) {
-          return <LastAnalyzedRatingCard value={resolved?.findings} />;
+          return <QualityBadge value={resolved?.findings} compact />;
         }
         return <NoSonarQubeCard value={resolved} sonarQubeComponentKey={id} />;
       },
     },
     {
-      title: t('sonarQubeTable.columnsTitle.qualityGate'),
-      field: 'resolved?.findings?.metrics.alert_status',
-      type: 'string',
-      width: '7%',
+      title: t('sonarQubeTable.columnsTitle.lastAnalysis'),
+      field: 'resolved.findings.metrics.lastAnalysis',
+      align: 'right',
+      type: 'datetime',
+      width: '8%',
       render: ({ resolved }) =>
         resolved?.findings?.metrics && (
-          <QualityBadge value={resolved?.findings} compact />
+          <LastAnalyzedRatingCard value={resolved?.findings} />
         ),
     },
     {
