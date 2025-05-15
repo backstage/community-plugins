@@ -45,25 +45,17 @@ export const SonarQubeTable = ({
     return <ErrorPanel error={Error('Table could not be rendered')} />;
   }
   return (
-    <Box
-      sx={{
-        overflow: 'auto',
-      }}
-    >
-      <div>
-        <Table
-          title={
-            <div>{`${title ?? t('sonarQubeCard.title')} (${
-              tableContent.length
-            })`}</div>
-          }
-          options={options}
-          data={tableContent || []}
-          columns={getColumns(t)}
-          emptyContent={emptyContent}
-          localization={localization}
-        />
-      </div>
-    </Box>
+    <Table
+      title={
+        <div>{`${title ?? t('sonarQubeCard.title')} (${
+          tableContent.length
+        })`}</div>
+      }
+      options={options}
+      data={tableContent || []}
+      columns={getColumns(t)}
+      emptyContent={emptyContent}
+      localization={localization}
+    />
   );
 };

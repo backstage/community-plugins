@@ -50,6 +50,7 @@ export const sonarqubeTranslationRef = createTranslationRef({
       columnsTitle: {
         name: 'Name',
         qualityGate: 'Quality Gate',
+        lastAnalysis: 'Last Analysis',
         bugs: 'Bugs',
         vulnerabilities: 'Vulnerabilities',
         codeSmells: 'Code Smells',

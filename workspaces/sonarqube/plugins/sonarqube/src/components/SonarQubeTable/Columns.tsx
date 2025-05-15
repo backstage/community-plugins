@@ -42,12 +42,7 @@ export const getColumns = (
       field: 'resolved.name',
       type: 'string',
       highlight: true,
-      align: 'center',
       width: '25%',
-      cellStyle: {
-        wordBreak: 'inherit',
-        padding: '10px 20px',
-      },
       render: ({ resolved }) => {
         if (!resolved?.name) {
           return null;
@@ -62,31 +57,33 @@ export const getColumns = (
       },
     },
     {
-      title: t('sonarQubeTable.columnsTitle.qualityGate'),
-      field: 'resolved?.findings?.metrics.alert_status',
-      type: 'string',
-      align: 'center',
-      sorting: false,
-      width: '35%',
+      title: t('sonarQubeTable.columnsTitle.lastAnalysis'),
+      field: 'resolved?.findings?.metrics.lastAnalysis',
+      type: 'datetime',
+      width: '20%',
       render: ({ resolved, id }) => {
         if (resolved?.findings?.metrics) {
-          return (
-            <div>
-              <QualityBadge value={resolved?.findings} />
-              <br />
-              <LastAnalyzedRatingCard value={resolved?.findings} />
-            </div>
-          );
+          return <LastAnalyzedRatingCard value={resolved?.findings} />;
         }
         return <NoSonarQubeCard value={resolved} sonarQubeComponentKey={id} />;
       },
+    },
+    {
+      title: t('sonarQubeTable.columnsTitle.qualityGate'),
+      field: 'resolved?.findings?.metrics.alert_status',
+      type: 'string',
+      width: '7%',
+      render: ({ resolved }) =>
+        resolved?.findings?.metrics && (
+          <QualityBadge value={resolved?.findings} />
+        ),
     },
     {
       title: t('sonarQubeTable.columnsTitle.bugs'),
       field: 'resolved.findings.metrics.bugs',
       align: 'center',
       type: 'numeric',
-      width: '5%',
+      width: '7%',
       render: ({ resolved }) =>
         resolved?.findings?.metrics && (
           <BugReportRatingCard value={resolved?.findings} />
@@ -96,7 +93,7 @@ export const getColumns = (
       title: t('sonarQubeTable.columnsTitle.vulnerabilities'),
       field: 'resolved.findings.metrics.vulnerabilities',
       align: 'center',
-      width: '5%',
+      width: '7%',
       type: 'numeric',
       render: ({ resolved }) =>
         resolved?.findings?.metrics && (
@@ -108,7 +105,7 @@ export const getColumns = (
       field: 'resolved.findings.metrics.code_smells',
       align: 'center',
       type: 'numeric',
-      width: '5%',
+      width: '7%',
       render: ({ resolved }) =>
         resolved?.findings?.metrics && (
           <CodeSmellsRatingCard value={resolved?.findings} />
@@ -119,7 +116,7 @@ export const getColumns = (
       field: 'resolved.findings.metrics.security_hotspots_reviewed',
       align: 'center',
       type: 'numeric',
-      width: '5%',
+      width: '7%',
       render: ({ resolved }) =>
         resolved?.findings?.metrics && (
           <HotspotsReviewed value={resolved?.findings} />
@@ -130,7 +127,7 @@ export const getColumns = (
       field: 'resolved.findings.metrics.coverage',
       align: 'center',
       type: 'numeric',
-      width: '10%',
+      width: '7%',
       render: ({ resolved }) =>
         resolved?.findings?.metrics && (
           <CoverageRatingCard value={resolved?.findings} />
@@ -139,8 +136,9 @@ export const getColumns = (
     {
       title: t('sonarQubeTable.columnsTitle.duplications'),
       field: 'resolved.findings.metrics.duplicated_lines_density',
+      align: 'center',
       type: 'numeric',
-      width: '10%',
+      width: '7%',
       render: ({ resolved }) =>
         resolved?.findings?.metrics && (
           <DuplicationsRatingCard value={resolved?.findings} />
