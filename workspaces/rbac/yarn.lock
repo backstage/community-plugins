@@ -2774,7 +2774,6 @@ __metadata:
     "@mui/material": "npm:^5.14.18"
     "@mui/styles": "npm:^6.1.7"
     "@playwright/test": "npm:^1.52.0"
-    "@red-hat-developer-hub/backstage-plugin-theme": "npm:0.6.0"
     "@rjsf/core": "npm:^5.21.2"
     "@rjsf/mui": "npm:^5.21.2"
     "@rjsf/utils": "npm:^5.21.2"
@@ -8523,22 +8522,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mui/icons-material@npm:^5.17.1":
-  version: 5.17.1
-  resolution: "@mui/icons-material@npm:5.17.1"
-  dependencies:
-    "@babel/runtime": "npm:^7.23.9"
-  peerDependencies:
-    "@mui/material": ^5.0.0
-    "@types/react": ^17.0.0 || ^18.0.0 || ^19.0.0
-    react: ^17.0.0 || ^18.0.0 || ^19.0.0
-  peerDependenciesMeta:
-    "@types/react":
-      optional: true
-  checksum: 10/5a076981e244d0a698799c8c298402e008b36583ab2211bebad57e9b7b26e112be81272ce5a833f7d9b48f95880d2c2195eccb28e7964d1698d0e891cf1acd99
-  languageName: node
-  linkType: hard
-
 "@mui/material@npm:^5.12.2, @mui/material@npm:^5.14.18, @mui/material@npm:^5.15.17":
   version: 5.16.14
   resolution: "@mui/material@npm:5.16.14"
@@ -10302,22 +10285,6 @@ __metadata:
     js-cookie:
       optional: true
   checksum: 10/6a841c648edbc54b11fd90de9bb61c3059255598fc4a714c508c269a03c4ca9bbf32cf017d3bd2b3a1bf7cd1d9bf4bb56028f64ad455f796079632f4a7cd4f00
-  languageName: node
-  linkType: hard
-
-"@red-hat-developer-hub/backstage-plugin-theme@npm:0.6.0":
-  version: 0.6.0
-  resolution: "@red-hat-developer-hub/backstage-plugin-theme@npm:0.6.0"
-  dependencies:
-    "@mui/icons-material": "npm:^5.17.1"
-  peerDependencies:
-    "@backstage/core-plugin-api": ^1.10.4
-    "@backstage/theme": ^0.6.4
-    "@material-ui/icons": ^4.11.3
-    "@mui/icons-material": ^5.17.1
-    "@mui/material": ^5.0.0
-    react: ^16.13.1 || ^17.0.0 || ^18.0.0
-  checksum: 10/8b35107c42218e1aeb8dd15c74ef701ba267377056f7d07b2f4b28cfc54ed3be7751a222803f873e54f0f67dc1494aa117515d76cf38766e1f94152782f2a709
   languageName: node
   linkType: hard
 

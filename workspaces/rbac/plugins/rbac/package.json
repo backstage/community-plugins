@@ -68,7 +68,6 @@
     "@backstage/dev-utils": "^1.1.9",
     "@backstage/test-utils": "^1.7.7",
     "@playwright/test": "^1.52.0",
-    "@red-hat-developer-hub/backstage-plugin-theme": "0.6.0",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^15.0.0",
