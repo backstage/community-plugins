@@ -28,12 +28,11 @@ export const sonarqubeTranslationRef = createTranslationRef({
       emptyState: {
         title: 'No information to display',
         description:
-          "There is no SonarQube project with key '{{ projectTitle }}'.",
+          "There is no SonarQube project with key '{{ projectTitle }}', check that project exists and permissions.",
       },
       noSonarQubeError: {
-        hasAnnotation:
-          'Unable to access SonarQube project "{{project}}": Check project exists and permissions',
-        noAnnotation: '{{name}} has no DX-Hub annotation for SonarQube',
+        hasAnnotation: "There is no SonarQube project with key '{{project}}'",
+        noAnnotation: 'No SonarQube annotation found',
       },
       bugReportRatingCardTitle: 'Bugs',
       vulnerabilitiesRatingCardTitle: 'Vulnerabilities',
@@ -49,7 +48,7 @@ export const sonarqubeTranslationRef = createTranslationRef({
     },
     sonarQubeTable: {
       columnsTitle: {
-        component: 'Component',
+        name: 'Name',
         qualityGate: 'Quality Gate',
         bugs: 'Bugs',
         vulnerabilities: 'Vulnerabilities',

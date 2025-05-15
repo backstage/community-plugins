@@ -38,7 +38,7 @@ export const getColumns = (
 ): TableColumn<SonarQubeTableRow>[] => {
   return [
     {
-      title: t('sonarQubeTable.columnsTitle.component'),
+      title: t('sonarQubeTable.columnsTitle.name'),
       field: 'resolved.name',
       type: 'string',
       highlight: true,
