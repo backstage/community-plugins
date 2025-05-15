@@ -27,6 +27,7 @@ type CategoryInputProps = {
   setForm: (
     value: SetStateAction<{
       category: string | undefined;
+      tags: string[] | undefined;
       id: string;
       publisher: string;
       title: string;
@@ -39,6 +40,7 @@ type CategoryInputProps = {
   ) => void;
   form: {
     category: string | undefined;
+    tags: string[] | undefined;
     id: string;
     publisher: string;
     title: string;
