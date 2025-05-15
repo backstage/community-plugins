@@ -32,7 +32,10 @@ import {
   isKind,
   isOrphan,
 } from '@backstage/plugin-catalog';
-import { EntitySonarQubeCard } from '@backstage-community/plugin-sonarqube';
+import {
+  EntitySonarQubeCard,
+  SonarQubeRelatedEntitiesOverview,
+} from '@backstage-community/plugin-sonarqube';
 import {
   EntityGroupProfileCard,
   EntityMembersListCard,
@@ -40,6 +43,7 @@ import {
   EntityUserProfileCard,
 } from '@backstage/plugin-org';
 import { EmptyState } from '@backstage/core-components';
+import { RELATION_HAS_PART } from '@backstage/catalog-model';
 
 const cicdContent = (
   // This is an example of how you can implement your company's logic in entity page.
@@ -229,6 +233,13 @@ const systemPage = (
           <EntityHasResourcesCard variant="gridItem" />
         </Grid>
       </Grid>
+    </EntityLayout.Route>
+
+    <EntityLayout.Route path="/sonarqube" title="Code Quality">
+      <SonarQubeRelatedEntitiesOverview
+        relationType={RELATION_HAS_PART}
+        entityKind="component"
+      />
     </EntityLayout.Route>
   </EntityLayout>
 );
