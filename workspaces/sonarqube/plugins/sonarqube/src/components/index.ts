@@ -20,6 +20,7 @@ import {
 } from '@backstage-community/plugin-sonarqube-react';
 
 export { SonarQubeCard } from './SonarQubeCard';
+export { SonarQubeRelatedEntitiesOverview } from './SonarQubeRelatedEntitiesOverview';
 export type { DuplicationRating } from './SonarQubeCard';
 export type { SonarQubeContentPageProps } from './SonarQubeContentPage';
 export * from './SonarQubeTable';
