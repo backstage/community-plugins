@@ -204,11 +204,12 @@ export const DuplicationsRatingCard = (props: MetricInsightsProps) => {
 export const LastAnalyzedRatingCard = (props: MetricInsightsProps) => {
   const { value } = props;
   return (
-    <div>
-      Last analyzed on{' '}
-      {DateTime.fromISO(value.lastAnalysis).toLocaleString(
+    <div
+      title={DateTime.fromISO(value.lastAnalysis).toLocaleString(
         DateTime.DATETIME_MED,
       )}
+    >
+      {DateTime.fromISO(value.lastAnalysis).toRelative()}
     </div>
   );
 };
@@ -217,15 +218,13 @@ export const NoSonarQubeCard = (props: MetricInsightsProps) => {
   const { value, sonarQubeComponentKey } = props;
   const { t } = useTranslationRef(sonarqubeTranslationRef);
   return (
-    <Typography color="error" variant="subtitle2">
+    <Typography color="textSecondary" variant="subtitle2">
       {value?.isSonarQubeAnnotationEnabled &&
         t('sonarQubeCard.noSonarQubeError.hasAnnotation', {
           project: sonarQubeComponentKey || '',
         })}
       {!value?.isSonarQubeAnnotationEnabled &&
-        t('sonarQubeCard.noSonarQubeError.noAnnotation', {
-          name: value?.name,
-        })}
+        t('sonarQubeCard.noSonarQubeError.noAnnotation')}
     </Typography>
   );
 };
