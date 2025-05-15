@@ -2796,29 +2796,39 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage-community/plugin-azure-devops-backend@npm:^0.14.0":
-  version: 0.14.0
-  resolution: "@backstage-community/plugin-azure-devops-backend@npm:0.14.0"
+"@backstage-community/plugin-azure-devops-backend@npm:^0.15.0":
+  version: 0.15.0
+  resolution: "@backstage-community/plugin-azure-devops-backend@npm:0.15.0"
   dependencies:
-    "@backstage-community/plugin-azure-devops-common": "npm:^0.9.0"
-    "@backstage/backend-defaults": "npm:^0.8.2"
-    "@backstage/backend-plugin-api": "npm:^1.2.1"
+    "@backstage-community/plugin-azure-devops-common": "npm:^0.10.0"
+    "@backstage/backend-defaults": "npm:^0.9.0"
+    "@backstage/backend-plugin-api": "npm:^1.3.0"
     "@backstage/catalog-model": "npm:^1.7.3"
     "@backstage/config": "npm:^1.3.2"
     "@backstage/errors": "npm:^1.2.7"
-    "@backstage/integration": "npm:^1.16.2"
-    "@backstage/plugin-auth-node": "npm:^0.6.1"
+    "@backstage/integration": "npm:^1.16.3"
+    "@backstage/plugin-auth-node": "npm:^0.6.2"
     "@backstage/plugin-catalog-common": "npm:^1.1.3"
-    "@backstage/plugin-catalog-node": "npm:^1.16.1"
+    "@backstage/plugin-catalog-node": "npm:^1.16.3"
     "@backstage/plugin-permission-common": "npm:^0.8.4"
-    "@backstage/plugin-permission-node": "npm:^0.9.0"
+    "@backstage/plugin-permission-node": "npm:^0.9.1"
     "@types/express": "npm:^4.17.6"
     azure-devops-node-api: "npm:^13.0.0"
     express: "npm:^4.17.1"
     express-promise-router: "npm:^4.1.0"
     mime-types: "npm:^2.1.27"
     p-limit: "npm:^3.1.0"
-  checksum: 10/fd573873758a0a5dcba71cb0a7ff2061d551fcb9610583eb1c8b2b41803b165c6e0f7a331d4f2a20ed2535034c1572d45a0f94c63d38aa1458439e3c3e01abc3
+  checksum: 10/74e9f27eddaa284a1d78dd1aab08c70a3394ebcfd05898e1ceeaccd84f943935a4d4f6e52e39efe8f3da711b5347051cc2aa983d28d97a0a48fe7bc88ed6d794
+  languageName: node
+  linkType: hard
+
+"@backstage-community/plugin-azure-devops-common@npm:^0.10.0":
+  version: 0.10.0
+  resolution: "@backstage-community/plugin-azure-devops-common@npm:0.10.0"
+  dependencies:
+    "@backstage/plugin-catalog-common": "npm:^1.1.3"
+    "@backstage/plugin-permission-common": "npm:^0.8.4"
+  checksum: 10/a7e6721fbe6e50c889161c9a4eaab5cbeb1394ff21b1a05da8b1686f347768993c4e1b5eaa51e2c5b13345a91872ebec9f7529c78a5a940e216b1be66efcdb19
   languageName: node
   linkType: hard
 
@@ -15853,7 +15863,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "backend@workspace:packages/backend"
   dependencies:
-    "@backstage-community/plugin-azure-devops-backend": "npm:^0.14.0"
+    "@backstage-community/plugin-azure-devops-backend": "npm:^0.15.0"
     "@backstage-community/plugin-jenkins-backend": "npm:^0.13.0"
     "@backstage/backend-defaults": "npm:^0.9.0"
     "@backstage/cli": "npm:^0.32.0"
