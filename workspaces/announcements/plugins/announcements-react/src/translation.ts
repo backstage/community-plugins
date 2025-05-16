@@ -27,6 +27,7 @@ export const announcementsTranslationRef = createTranslationRef({
       editAnnouncement: 'Edit announcement',
       newAnnouncement: 'New announcement',
       startAt: 'Announcement start date',
+      onBehalfOf: 'On behalf of',
       categoryInput: {
         create: 'Create',
         label: 'Category',
@@ -131,6 +132,7 @@ export const announcementsTranslationRef = createTranslationRef({
           title: 'Title',
           body: 'Body',
           publisher: 'Publisher',
+          onBehalfOf: 'On behalf of',
           category: 'Category',
           status: 'Status',
           actions: 'Actions',

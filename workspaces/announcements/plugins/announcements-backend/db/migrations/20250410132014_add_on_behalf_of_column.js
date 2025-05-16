@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2025 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,10 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export {
-  useAnnouncements,
-  type AnnouncementsOptions,
-} from './useAnnouncements';
-export { useCategories } from './useCategories';
-export { useAnnouncementsTranslation } from './useAnnouncementsTranslation';
-export { useCatalogEntities } from './useCatalogEntities';
+
+exports.up = async function up(knex) {
+  await knex.schema.alterTable('announcements', table => {
+    table
+      .string('on_behalf_of')
+      .nullable()
+      .comment(
+        'Optional Backstage team name shown when announcements are made on behalf of a team',
+      );
+  });
+};
+
+/**
+ * @param { import("knex").Knex } knex
+ * @returns { Promise<void> }
+ */
+exports.down = async function down(knex) {
+  await knex.schema.alterTable('announcements', table => {
+    table.dropColumn('on_behalf_of');
+  });
+};
