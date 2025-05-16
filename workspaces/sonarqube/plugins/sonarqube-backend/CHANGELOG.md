@@ -1,5 +1,11 @@
 # @backstage-community/plugin-sonarqube-backend
 
+## 0.8.0
+
+### Minor Changes
+
+- 8be1894: Upgraded to Backstage release 1.38
+
 ## 0.7.0
 
 ### Minor Changes
