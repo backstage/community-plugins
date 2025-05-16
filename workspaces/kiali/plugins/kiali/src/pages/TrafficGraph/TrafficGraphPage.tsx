@@ -21,21 +21,12 @@ import {
   GraphType,
   TrafficRate,
 } from '@backstage-community/plugin-kiali-common/types';
+import { TrafficGraph } from '@backstage-community/plugin-kiali-react';
 import { Entity } from '@backstage/catalog-model';
 import { Content, InfoCard } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { CircularProgress, useTheme } from '@material-ui/core';
-import {
-  action,
-  createTopologyControlButtons,
-  defaultControlButtonsOptions,
-  Model,
-  TopologyControlBar,
-  TopologyView,
-  Visualization,
-  VisualizationProvider,
-  VisualizationSurface,
-} from '@patternfly/react-topology';
+import { Model, Visualization } from '@patternfly/react-topology';
 import { default as React, useRef, useState } from 'react';
 import { useAsyncFn, useDebounce } from 'react-use';
 import { DefaultSecondaryMasthead } from '../../components/DefaultSecondaryMasthead/DefaultSecondaryMasthead';
@@ -241,41 +232,7 @@ function TrafficGraphPage(props: { view?: string; entity?: Entity }) {
               onRefresh={refresh}
             />
           )}
-          <TopologyView
-            controlBar={
-              <TopologyControlBar
-                controlButtons={createTopologyControlButtons({
-                  ...defaultControlButtonsOptions,
-                  zoomInCallback: action(() => {
-                    controller.getGraph().scaleBy(4 / 3);
-                  }),
-                  zoomOutCallback: action(() => {
-                    controller.getGraph().scaleBy(0.75);
-                  }),
-                  fitToScreenCallback: action(() => {
-                    controller.getGraph().fit(80);
-                  }),
-                  resetViewCallback: action(() => {
-                    controller.getGraph().reset();
-                    controller.getGraph().layout();
-                  }),
-                  legend: false,
-                  zoomInAriaLabel: '',
-                  zoomOutAriaLabel: '',
-                  fitToScreenAriaLabel: '',
-                  resetViewAriaLabel: '',
-                  zoomInTip: '',
-                  zoomOutTip: '',
-                  fitToScreenTip: '',
-                  resetViewTip: '',
-                })}
-              />
-            }
-          >
-            <VisualizationProvider controller={controller}>
-              <VisualizationSurface state={model} />
-            </VisualizationProvider>
-          </TopologyView>
+          <TrafficGraph model={model} />
         </>
       )}
     </Content>
