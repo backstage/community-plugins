@@ -16,6 +16,7 @@ export type Announcement = {
   created_at: string;
   active: boolean;
   start_at: string;
+  on_behalf_of?: string;
 };
 
 // @public

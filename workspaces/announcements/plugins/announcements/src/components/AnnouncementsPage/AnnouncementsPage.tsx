@@ -128,8 +128,13 @@ const AnnouncementCard = ({
     <>
       <Typography variant="body2" color="textSecondary" component="span">
         {t('announcementsPage.card.by')}{' '}
-        <EntityPeekAheadPopover entityRef={announcement.publisher}>
-          <EntityRefLink entityRef={announcement.publisher} hideIcon />
+        <EntityPeekAheadPopover
+          entityRef={announcement.on_behalf_of || announcement.publisher}
+        >
+          <EntityRefLink
+            entityRef={announcement.on_behalf_of || announcement.publisher}
+            hideIcon
+          />
         </EntityPeekAheadPopover>
         {announcement.category && (
           <>

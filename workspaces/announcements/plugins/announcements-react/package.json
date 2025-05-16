@@ -38,9 +38,11 @@
   },
   "dependencies": {
     "@backstage-community/plugin-announcements-common": "workspace:^",
+    "@backstage/catalog-model": "^1.7.3",
     "@backstage/core-app-api": "^1.16.1",
     "@backstage/core-plugin-api": "^1.10.6",
     "@backstage/errors": "^1.2.7",
+    "@backstage/plugin-catalog-react": "^1.16.0",
     "luxon": "^3.4.4",
     "react-use": "^17.2.4"
   },
