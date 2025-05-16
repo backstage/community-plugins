@@ -45,7 +45,7 @@ acs/deployment-name: "deployment-1,deployment-2,deployment-3"
 
 Here's what that will look like in action:
 
-# Example catalog-info.yaml entity definition file
+### Example catalog-info.yaml entity definition file
 
 ```
 apiVersion: backstage.io/v1alpha1
