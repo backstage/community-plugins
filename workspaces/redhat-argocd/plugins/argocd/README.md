@@ -190,7 +190,7 @@ const cicdcontent = (
 
   > [!Note] > **You should not add both the annotations in the same catalog, adding both annotations will result in error in the plugin.**
 
-Using the `argocd/app-selector` annotation gives you access to these additional annotations:
+You can use these additional annotations with the base annotations:
 
 - `argocd/project-name`: The name of the Application's project
 - `argocd/app-namespace`: The namespace of the Application

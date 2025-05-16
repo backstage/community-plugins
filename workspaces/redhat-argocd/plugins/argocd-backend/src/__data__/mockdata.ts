@@ -145,7 +145,6 @@ export const mockApplications: Application[] = [
       uid: 'abcd1234-5678-90ef-ghij-klmnopqrstuv',
       resourceVersion: '405389',
       generation: 408,
-      creationTimestamp: new Date('2025-02-20T16:39:18Z'),
       labels: {
         app: 'fullstack',
       },

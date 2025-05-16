@@ -279,6 +279,7 @@ export class ArgoCDService {
    * @param {Object} [options] - Request options
    * @param {string} [options.appNamespace] - ArgoCD Application namespace
    * @param {string} [options.appName] - Application name
+   * @param {string} [options.project] - The project the ArgoCD Application lives in
    * @returns {Promise<Application | void>} Application data or void if error occurs
    */
   async getApplication(
@@ -286,9 +287,10 @@ export class ArgoCDService {
     options?: {
       appNamespace?: string;
       appName?: string;
+      project?: string;
     },
   ): Promise<Application | void> {
-    const { appName, appNamespace } = options ?? {};
+    const { appName, appNamespace, project } = options ?? {};
     try {
       const matchedInstance = this.validateInstance(instanceName);
       const token =
@@ -297,6 +299,7 @@ export class ArgoCDService {
       const path = appName ? `applications/${appName}` : 'applications';
       const url = buildArgoUrl(matchedInstance.url, path, {
         ...(appNamespace && { appNamespace }),
+        ...(project && { project }),
       });
       const logMsg = formatOperationMessage(
         'Fetching Application',
