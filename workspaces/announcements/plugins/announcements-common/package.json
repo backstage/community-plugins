@@ -1,7 +1,7 @@
 {
   "name": "@backstage-community/plugin-announcements-common",
   "description": "Common functionalities for the announcements plugin",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "license": "Apache-2.0",
