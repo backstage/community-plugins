@@ -61,7 +61,7 @@ describe('EditRole', () => {
 
   it('renders the button with correct tooltip and enabled state', () => {
     mockUsePermission.mockReturnValue({ loading: false, allowed: true });
-    const tooltipText = 'Edit Role Tooltip';
+    const tooltipText = 'Update';
     const dataTestIdText = 'edit-role-btn';
     render(
       <Router>
@@ -75,7 +75,7 @@ describe('EditRole', () => {
     );
 
     expect(screen.getByTestId('edit-role-btn')).toHaveAttribute(
-      'aria-label',
+      'title',
       tooltipText,
     );
     expect(screen.getByRole('button', { name: 'Update' })).not.toBeDisabled();

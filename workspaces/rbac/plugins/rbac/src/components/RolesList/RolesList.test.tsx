@@ -187,7 +187,7 @@ describe('RolesList', () => {
     expect(
       getByTestId('disable-delete-role-role:default/guests'),
     ).not.toBeNull();
-    expect(getByTestId('update-role-role:default/guests')).not.toBeNull();
+    expect(getByTestId('edit-role-role:default/guests')).not.toBeNull();
   });
 
   it('should show disabled edit icon if user is not authorized to update roles', async () => {
@@ -223,9 +223,7 @@ describe('RolesList', () => {
       createRoleLoading: false,
     });
     const { getByTestId } = await renderInTestApp(<RolesList />);
-    expect(
-      getByTestId('disable-update-role-role:default/guests'),
-    ).not.toBeNull();
+    expect(getByTestId('disable-edit-role-role:default/guests')).not.toBeNull();
     expect(getByTestId('delete-role-role:default/rbac_admin')).not.toBeNull();
   });
 
