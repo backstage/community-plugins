@@ -160,20 +160,32 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
 
   async getFilteredPolicy(
     fieldIndex: number,
-    ...filter: string[]
+    ...filter: string[] | string[][]
   ): Promise<string[][]> {
     const tempModel = newModelFromString(MODEL);
 
-    const filterObj: Record<string, string> = { ptype: 'p' };
-    for (let i = 0; i < filter.length; i++) {
-      if (filter[i]) {
-        filterObj[`v${i + fieldIndex}`] = filter[i];
+    let twoLevelFilter: string[][];
+    // convert one level filter(string[]) to two level filter(string[][])
+    if (filter.length > 0 && typeof filter[0] === 'string') {
+      twoLevelFilter = [filter as string[]];
+    } else {
+      twoLevelFilter = filter as string[][];
+    }
+
+    const filterArgs: Record<string, string>[] = [];
+    for (const nestedFilter of twoLevelFilter) {
+      const filterObj: Record<string, string> = { ptype: 'p' };
+      for (let i = 0; i < nestedFilter.length; i++) {
+        if (nestedFilter[i]) {
+          filterObj[`v${i + fieldIndex}`] = nestedFilter[i];
+          filterArgs.push(filterObj);
+        }
       }
     }
 
     await (this.enforcer.getAdapter() as FilteredAdapter).loadFilteredPolicy(
       tempModel,
-      [filterObj],
+      filterArgs,
     );
 
     return await tempModel.getPolicy('p', 'p');
@@ -181,20 +193,32 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
 
   async getFilteredGroupingPolicy(
     fieldIndex: number,
-    ...filter: string[]
+    ...filter: string[] | string[][]
   ): Promise<string[][]> {
     const tempModel = newModelFromString(MODEL);
 
-    const filterObj: Record<string, string> = { ptype: 'g' };
-    for (let i = 0; i < filter.length; i++) {
-      if (filter[i]) {
-        filterObj[`v${i + fieldIndex}`] = filter[i];
+    let twoLevelFilter: string[][];
+    // convert one level filter(string[]) to two level filter(string[][])
+    if (filter.length > 0 && typeof filter[0] === 'string') {
+      twoLevelFilter = [filter as string[]];
+    } else {
+      twoLevelFilter = filter as string[][];
+    }
+
+    const filterArgs: Record<string, string>[] = [];
+    for (const nestedFilter of twoLevelFilter) {
+      const filterObj: Record<string, string> = { ptype: 'g' };
+      for (let i = 0; i < nestedFilter.length; i++) {
+        if (nestedFilter[i]) {
+          filterObj[`v${i + fieldIndex}`] = nestedFilter[i];
+          filterArgs.push(filterObj);
+        }
       }
     }
 
     await (this.enforcer.getAdapter() as FilteredAdapter).loadFilteredPolicy(
       tempModel,
-      [filterObj],
+      filterArgs,
     );
 
     return await tempModel.getPolicy('g', 'g');
@@ -679,15 +703,15 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
     const model = newModelFromString(MODEL);
     let policies: string[][] = [];
     if (roles.length > 0) {
+      const rolePermissionFilter: string[][] = [];
       for (const role of roles) {
-        const filteredPolicy = await this.getFilteredPolicy(
-          0,
-          role,
-          resourceType,
-          action,
-        );
-        policies.push(...filteredPolicy);
+        rolePermissionFilter.push([role, resourceType, action]);
       }
+      const filteredPolicy = await this.getFilteredPolicy(
+        0,
+        ...rolePermissionFilter,
+      );
+      policies.push(...filteredPolicy);
     } else {
       const enforcePolicies = await this.getFilteredPolicy(
         1,

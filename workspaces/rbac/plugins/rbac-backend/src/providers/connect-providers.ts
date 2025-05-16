@@ -67,12 +67,11 @@ export class Connection implements RBACProviderConnection {
     const providerRoles = await this.getProviderRoles();
 
     await this.enforcer.loadPolicy();
-    // Get the roles for this provider coming from rbac plugin
-    for (const providerRole of providerRoles) {
-      providerRolesforRemoval.push(
-        ...(await this.enforcer.getFilteredGroupingPolicy(1, providerRole)),
-      );
-    }
+
+    const rolePermFilter = providerRoles.map(role => [role]);
+    providerRolesforRemoval.push(
+      ...(await this.enforcer.getFilteredGroupingPolicy(1, ...rolePermFilter)),
+    );
 
     // Remove role
     // role exists in rbac but does not exist in provider
@@ -97,11 +96,10 @@ export class Connection implements RBACProviderConnection {
 
     await this.enforcer.loadPolicy();
     // Get the roles for this provider coming from rbac plugin
-    for (const providerRole of providerRoles) {
-      providerPermissions.push(
-        ...(await this.enforcer.getFilteredPolicy(0, providerRole)),
-      );
-    }
+    const providerRolePermFilter = providerRoles.map(role => [role]);
+    providerPermissions.push(
+      ...(await this.enforcer.getFilteredPolicy(0, ...providerRolePermFilter)),
+    );
 
     await this.removePermissions(providerPermissions, tempEnforcer);
 
