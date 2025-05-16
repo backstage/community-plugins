@@ -21,7 +21,6 @@ import { catalogApiRef, EntityProvider } from '@backstage/plugin-catalog-react';
 import {
   sonarQubeApiRef,
   SONARQUBE_PROJECT_KEY_ANNOTATION,
-  FindingSummary,
 } from '@backstage-community/plugin-sonarqube-react';
 import { SonarQubeRelatedEntitiesOverview } from './SonarQubeRelatedEntitiesOverview.tsx';
 
@@ -66,7 +65,7 @@ jest.mock('@backstage/plugin-catalog-react', () => ({
   EntityRefLink: jest.fn(() => <div>Mocked EntityRefLink</div>),
 }));
 
-function createMockEntity(relationName): Entity {
+function createMockEntity(relationName: string): Entity {
   return {
     metadata: {
       name: 'mock',
@@ -142,16 +141,14 @@ describe('<SonarQubeRelatedEntitiesOverview />', () => {
       SONARQUBE_PROJECT_KEY_ANNOTATION,
     );
     catalogApi.getEntitiesByRefs.mockResolvedValue({ items: [mockEntity] });
-    const mockMetrics: FindingSummary = {
+    const mockMetrics = {
       getComponentMeasuresUrl: () => '',
       getIssuesUrl: () => '',
       metrics: {
         alert_status: 'OK',
       },
     };
-    const mockData = new Map<string, FindingSummary>([
-      ['foo/bar', mockMetrics],
-    ]);
+    const mockData = new Map<string, any>([['foo/bar', mockMetrics]]);
     sonarQubeApi.getFindingSummaries.mockResolvedValue(mockData);
 
     const rendered = await renderInTestApp(
