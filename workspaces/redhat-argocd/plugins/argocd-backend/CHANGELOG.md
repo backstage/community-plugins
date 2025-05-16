@@ -1,5 +1,11 @@
 # @backstage-community/plugin-redhat-argocd-backend
 
+## 0.6.2
+
+### Patch Changes
+
+- 9c78a8d: Fix issue where backend does not return instance url in the metadata
+
 ## 0.6.1
 
 ### Patch Changes
