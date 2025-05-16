@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { createElement } from 'react';
 import { convertLegacyRouteRefs } from '@backstage/core-compat-api';
 import { createFrontendPlugin } from '@backstage/frontend-plugin-api';
 import {
@@ -43,7 +43,7 @@ const confluenceSearchFilterResultType = SearchFilterResultTypeBlueprint.make({
   params: {
     value: 'confluence',
     name: 'Confluence',
-    icon: React.createElement(ConfluenceSearchIcon),
+    icon: createElement(ConfluenceSearchIcon),
   },
 });
 
