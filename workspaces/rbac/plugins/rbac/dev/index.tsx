@@ -22,8 +22,6 @@ import {
   TestApiProvider,
 } from '@backstage/test-utils';
 
-import { getAllThemes } from '@redhat-developer/red-hat-developer-hub-theme';
-
 import {
   PermissionAction,
   PluginPermissionMetaData,
@@ -173,7 +171,6 @@ const mockConfigApi = new MockConfigApi({
 
 createDevApp()
   .registerPlugin(rbacPlugin)
-  .addThemes(getAllThemes())
   .addPage({
     element: (
       <TestApiProvider
