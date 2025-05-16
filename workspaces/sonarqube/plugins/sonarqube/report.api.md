@@ -38,6 +38,12 @@ export const EntitySonarQubeContentPage: (
 // @public @deprecated (undocumented)
 export const isSonarQubeAvailable: (entity: Entity) => boolean;
 
+// @public (undocumented)
+export type SonarOverviewProps = {
+  relationType: string;
+  entityKind: string;
+};
+
 // @public @deprecated (undocumented)
 export const SONARQUBE_PROJECT_KEY_ANNOTATION = 'sonarqube.org/project-key';
 
@@ -85,6 +91,11 @@ export type SonarQubeContentPageProps = {
 export const sonarQubePlugin: BackstagePlugin<{}, {}, {}>;
 
 // @public (undocumented)
+export const SonarQubeRelatedEntitiesOverview: (
+  props: SonarOverviewProps,
+) => React_2.JSX.Element;
+
+// @public (undocumented)
 export const SonarQubeTable: ({
   tableContent,
   title,
@@ -116,17 +127,17 @@ export const sonarqubeTranslationRef: TranslationRef<
     readonly 'sonarQubeCard.coverageRatingCardTitle': 'Coverage';
     readonly 'sonarQubeCard.duplicationsRatingCard': 'Duplications';
     readonly 'sonarQubeCard.emptyState.title': 'No information to display';
-    readonly 'sonarQubeCard.emptyState.description': "There is no SonarQube project with key '{{ projectTitle }}'.";
-    readonly 'sonarQubeCard.noSonarQubeError.hasAnnotation': 'Unable to access SonarQube project "{{project}}": Check project exists and permissions';
-    readonly 'sonarQubeCard.noSonarQubeError.noAnnotation': '{{name}} has no DX-Hub annotation for SonarQube';
+    readonly 'sonarQubeCard.emptyState.description': "There is no SonarQube project with key '{{ projectTitle }}', check that project exists and permissions.";
+    readonly 'sonarQubeCard.noSonarQubeError.hasAnnotation': "There is no SonarQube project with key '{{project}}'";
+    readonly 'sonarQubeCard.noSonarQubeError.noAnnotation': 'No SonarQube annotation found';
     readonly 'sonarQubeCard.qualityBadgeLabel.notComputed': 'Not computed';
     readonly 'sonarQubeCard.qualityBadgeLabel.gatePassed': 'Gate passed';
     readonly 'sonarQubeCard.qualityBadgeLabel.gateFailed': 'Gate failed';
-    readonly 'sonarQubeTable.entityLinkTitle': 'View Component details';
-    readonly 'sonarQubeTable.columnsTitle.component': 'Component';
+    readonly 'sonarQubeTable.columnsTitle.name': 'Name';
     readonly 'sonarQubeTable.columnsTitle.vulnerabilities': 'Vulnerabilities';
     readonly 'sonarQubeTable.columnsTitle.bugs': 'Bugs';
     readonly 'sonarQubeTable.columnsTitle.coverage': 'Coverage';
+    readonly 'sonarQubeTable.columnsTitle.lastAnalysis': 'Last Analysis';
     readonly 'sonarQubeTable.columnsTitle.qualityGate': 'Quality Gate';
     readonly 'sonarQubeTable.columnsTitle.codeSmells': 'Code Smells';
     readonly 'sonarQubeTable.columnsTitle.hotspotsReviewed': 'Hotspots Reviewed';

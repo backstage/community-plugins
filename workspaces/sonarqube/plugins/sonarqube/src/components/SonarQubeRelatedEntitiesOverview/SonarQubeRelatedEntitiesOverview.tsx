@@ -25,11 +25,17 @@ import {
 } from '@backstage-community/plugin-sonarqube-react';
 import { SonarQubeTable } from '../index.ts';
 
+/**
+ * @public
+ */
 export type SonarOverviewProps = {
   relationType: string;
   entityKind: string;
 };
 
+/**
+ * @public
+ */
 export const SonarQubeRelatedEntitiesOverview = (props: SonarOverviewProps) => {
   const sonarQubeApi = useApi(sonarQubeApiRef);
   const { entity: parentEntity } = useEntity();
