@@ -21,6 +21,7 @@ import type {
   HttpAuthService,
   LifecycleService,
   LoggerService,
+  PermissionsRegistryService,
   UserInfoService,
 } from '@backstage/backend-plugin-api';
 import { CatalogClient } from '@backstage/catalog-client';
@@ -48,6 +49,9 @@ import { EnforcerDelegate } from './enforcer-delegate';
 import { MODEL } from './permission-model';
 import { PluginPermissionMetadataCollector } from './plugin-endpoints';
 import { PoliciesServer } from './policies-rest-api';
+import { policyEntityPermissions } from '@backstage-community/plugin-rbac-common';
+import { rules } from '../permissions';
+import { permissionMetadataResourceRef } from '../permissions/resource';
 
 /**
  * @public
@@ -62,6 +66,7 @@ export type EnvOptions = {
   auditor: AuditorService;
   userInfo: UserInfoService;
   lifecycle: LifecycleService;
+  permissionsRegistry: PermissionsRegistryService;
 };
 
 /**
@@ -75,6 +80,7 @@ export type RBACRouterOptions = {
   auth: AuthService;
   httpAuth: HttpAuthService;
   userInfo: UserInfoService;
+  permissionsRegistry: PermissionsRegistryService;
 };
 
 /**
@@ -133,6 +139,18 @@ export class PolicyBuilder {
       roleMetadataStorage,
       databaseClient,
     );
+
+    env.permissionsRegistry.addResourceType({
+      resourceRef: permissionMetadataResourceRef,
+      getResources: resourceRefs =>
+        Promise.all(
+          resourceRefs.map(ref => {
+            return roleMetadataStorage.findRoleMetadata(ref);
+          }),
+        ),
+      permissions: policyEntityPermissions,
+      rules: Object.values(rules),
+    });
 
     if (rbacProviders) {
       await connectRBACProviders(
@@ -197,6 +215,7 @@ export class PolicyBuilder {
       auth: env.auth,
       httpAuth: env.httpAuth,
       userInfo: env.userInfo,
+      permissionsRegistry: env.permissionsRegistry,
     };
 
     const server = new PoliciesServer(

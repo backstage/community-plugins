@@ -72,6 +72,7 @@ export const rbacPlugin = createBackendPlugin({
         auditor: coreServices.auditor,
         userInfo: coreServices.userInfo,
         lifecycle: coreServices.lifecycle,
+        permissionsRegistry: coreServices.permissionsRegistry,
       },
       async init({
         http,
@@ -84,6 +85,7 @@ export const rbacPlugin = createBackendPlugin({
         auditor,
         userInfo,
         lifecycle,
+        permissionsRegistry: permissionsRegistry,
       }) {
         http.use(
           await PolicyBuilder.build(
@@ -97,6 +99,7 @@ export const rbacPlugin = createBackendPlugin({
               auditor,
               userInfo,
               lifecycle,
+              permissionsRegistry: permissionsRegistry,
             },
             {
               getPluginIds: () =>

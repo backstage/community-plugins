@@ -15,6 +15,7 @@ import type { LifecycleService } from '@backstage/backend-plugin-api';
 import type { LoggerService } from '@backstage/backend-plugin-api';
 import type { PermissionEvaluator } from '@backstage/plugin-permission-common';
 import { PermissionPolicy } from '@backstage/plugin-permission-node';
+import type { PermissionsRegistryService } from '@backstage/backend-plugin-api';
 import { PluginIdProvider } from '@backstage-community/plugin-rbac-node';
 import type { RBACProvider } from '@backstage-community/plugin-rbac-node';
 import type { Router } from 'express';
@@ -34,6 +35,7 @@ export type EnvOptions = {
     auditor: AuditorService;
     userInfo: UserInfoService;
     lifecycle: LifecycleService;
+    permissionsRegistry: PermissionsRegistryService;
 };
 
 export { PluginIdProvider }
@@ -57,6 +59,7 @@ export type RBACRouterOptions = {
     auth: AuthService;
     httpAuth: HttpAuthService;
     userInfo: UserInfoService;
+    permissionsRegistry: PermissionsRegistryService;
 };
 
 // @public (undocumented)

@@ -140,6 +140,19 @@ export const credentials = mockCredentials.user();
 export const mockLoggerService = mockServices.logger.mock();
 export const mockUserInfoService = mockServices.userInfo();
 export const mockDiscovery = mockServices.discovery.mock();
+export const mockPermissionRegistry = mockServices.permissionsRegistry.mock({
+  getPermissionRuleset: jest.fn(resourceRef => {
+    return {
+      getRules: () => [
+        {
+          resourceRef,
+          rules: [],
+        },
+      ],
+      getRuleByName: jest.fn(),
+    };
+  }),
+});
 
 export const mockedAuthorize = jest.fn().mockImplementation(async () => [
   {
