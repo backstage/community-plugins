@@ -2710,7 +2710,7 @@ __metadata:
     "@types/express": "npm:4.17.21"
     "@types/knex": "npm:^0.16.1"
     "@types/lodash": "npm:^4.14.151"
-    "@types/node": "npm:22.14.1"
+    "@types/node": "npm:22.15.18"
     "@types/supertest": "npm:2.0.16"
     casbin: "npm:^5.27.1"
     chokidar: "npm:^3.6.0"
@@ -2784,7 +2784,7 @@ __metadata:
     "@testing-library/react-hooks": "npm:8.0.1"
     "@testing-library/user-event": "npm:14.6.1"
     "@types/autosuggest-highlight": "npm:3.2.3"
-    "@types/node": "npm:22.14.1"
+    "@types/node": "npm:22.15.18"
     "@types/react": "npm:^18.2.58"
     autosuggest-highlight: "npm:^3.3.4"
     formik: "npm:^2.4.5"
@@ -13341,12 +13341,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:22.14.1, @types/node@npm:>=13.7.0, @types/node@npm:^22.0.0":
-  version: 22.14.1
-  resolution: "@types/node@npm:22.14.1"
+"@types/node@npm:*, @types/node@npm:22.15.18, @types/node@npm:>=13.7.0, @types/node@npm:^22.0.0":
+  version: 22.15.18
+  resolution: "@types/node@npm:22.15.18"
   dependencies:
     undici-types: "npm:~6.21.0"
-  checksum: 10/561b1ad98ef5176d6da856ffbbe494f16655149f6a7d561de0423c8784910c81267d7d6459f59d68a97b3cbae9b5996b3b5dfe64f4de3de2239d295dcf4a4dcc
+  checksum: 10/89c8c638beade806753b6fb2f25ed45b0e06f9f7375422137da5752be5c29fa9c75932b942fd55ae7de2b4288e8496912af3e029df45cc93735ac5eb49ece01e
   languageName: node
   linkType: hard
 
