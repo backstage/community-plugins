@@ -13,8 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import React from 'react';
+import { PropsWithChildren } from 'react';
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
 import { Entity, RELATION_HAS_PART } from '@backstage/catalog-model';
 import { catalogApiRef, EntityProvider } from '@backstage/plugin-catalog-react';
@@ -32,7 +31,7 @@ const catalogApi = {
   getEntitiesByRefs: jest.fn(),
 };
 
-const Providers = ({ children }: React.PropsWithChildren<any>): JSX.Element => (
+const Providers = ({ children }: PropsWithChildren<any>): JSX.Element => (
   <TestApiProvider
     apis={[
       [catalogApiRef, catalogApi],
