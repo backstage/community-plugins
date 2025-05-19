@@ -70,6 +70,13 @@ confluence:
 
 Documentation about CQL can be found [here](https://developer.atlassian.com/server/confluence/advanced-searching-using-cql)
 
+**Behavior of `spaces` and `query`:**
+
+- If both `spaces` and `query` are provided, they will be combined with an `AND` operator. For example, if `spaces` is `["SPACE1", "SPACE2"]` and `query` is `type = page`, the resulting CQL will be `(space="SPACE1" or space="SPACE2") and (type = page)`.
+- If only `spaces` is provided, only pages from those spaces will be indexed. For example, if `spaces` is `["SPACE1", "SPACE2"]`, the resulting CQL will be `space="SPACE1" or space="SPACE2"`.
+- If only `query` is provided, the query will be applied to all accessible spaces. For example, if `query` is `type = page`, the resulting CQL will be `type = page`.
+- If neither `spaces` nor `query` is provided, all pages, blogposts, comments, and attachments from all accessible spaces will be indexed. The default CQL in this case is `type IN (page, blogpost, comment, attachment)`.
+
 The sections below will go into more details about the Base URL and Auth Methods.
 
 #### Base URL
