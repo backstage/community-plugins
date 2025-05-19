@@ -90,7 +90,7 @@ export const sonarQubePlugin: BackstagePlugin<{}, {}, {}>;
 // @public (undocumented)
 export const SonarQubeRelatedEntitiesOverview: (
   props: SonarOverviewProps,
-) => React_2.JSX.Element;
+) => JSX_2.Element;
 
 // @public (undocumented)
 export const SonarQubeTable: ({
