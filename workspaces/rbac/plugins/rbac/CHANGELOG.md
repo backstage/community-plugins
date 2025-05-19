@@ -1,5 +1,13 @@
 ### Dependencies
 
+## 1.41.5
+
+### Patch Changes
+
+- fcc57ec: Updated dependency `@types/node` to `22.14.1`.
+- 4d8a8e9: Removed theme package "@redhat-developer/red-hat-developer-hub-theme" in dev.
+- 79213e4: Fixed role actions tooltip delay issue.
+
 ## 1.41.4
 
 ### Patch Changes
