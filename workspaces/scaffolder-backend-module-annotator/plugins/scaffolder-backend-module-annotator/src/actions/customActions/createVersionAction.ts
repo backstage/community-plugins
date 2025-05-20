@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import { createAnnotatorAction } from '../annotator/annotator';
+import { examples } from './createVersionAction.examples';
 
 export const createVersionAction = () => {
   return createAnnotatorAction(
@@ -29,5 +30,6 @@ export const createVersionAction = () => {
         },
       };
     },
+    examples,
   );
 };
