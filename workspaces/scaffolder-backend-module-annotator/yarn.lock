@@ -2721,6 +2721,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@backstage/catalog-model@npm:^1.7.4":
+  version: 1.7.4
+  resolution: "@backstage/catalog-model@npm:1.7.4"
+  dependencies:
+    "@backstage/errors": "npm:^1.2.7"
+    "@backstage/types": "npm:^1.2.1"
+    ajv: "npm:^8.10.0"
+    lodash: "npm:^4.17.21"
+  checksum: 10/48c2db2a8144e891319879cec6cae1980088165a910a757b8ebc07dc337b4d8d5c743fbaa3fa916cdd1b5e06635b3a3edbd1e7d8519ac135824f1ba37c5e3ce2
+  languageName: node
+  linkType: hard
+
 "@backstage/cli-common@npm:^0.1.15":
   version: 0.1.15
   resolution: "@backstage/cli-common@npm:0.1.15"
@@ -2877,6 +2889,29 @@ __metadata:
     backstage-cli: bin/backstage-cli
     backstage-cli-alpha: bin/backstage-cli-alpha
   checksum: 10/8675aaf0a33d10d3f7620ca89f6a2a7f2c7e35e86c49bf3e8d56ff71ddc7e888e53a1e99c8bd476c9d67c911ae6552d674b4944a93ab120e32d910fe36db6c1d
+  languageName: node
+  linkType: hard
+
+"@backstage/config-loader@npm:^1.10.1":
+  version: 1.10.1
+  resolution: "@backstage/config-loader@npm:1.10.1"
+  dependencies:
+    "@backstage/cli-common": "npm:^0.1.15"
+    "@backstage/config": "npm:^1.3.2"
+    "@backstage/errors": "npm:^1.2.7"
+    "@backstage/types": "npm:^1.2.1"
+    "@types/json-schema": "npm:^7.0.6"
+    ajv: "npm:^8.10.0"
+    chokidar: "npm:^3.5.2"
+    fs-extra: "npm:^11.2.0"
+    json-schema: "npm:^0.4.0"
+    json-schema-merge-allof: "npm:^0.8.1"
+    json-schema-traverse: "npm:^1.0.0"
+    lodash: "npm:^4.17.21"
+    minimist: "npm:^1.2.5"
+    typescript-json-schema: "npm:^0.65.0"
+    yaml: "npm:^2.0.0"
+  checksum: 10/61f66e65bf747b07f72c3475a3875c5409442087ca541c749a1ecff6668cb0564294f6b760a2e76e135871bdaf61f2b8bcb2e62d4786d12693400c57422f3b85
   languageName: node
   linkType: hard
 
