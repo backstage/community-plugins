@@ -14,39 +14,47 @@
  * limitations under the License.
  */
 import { resolveSafeChildPath } from '@backstage/backend-plugin-api';
-import { mockServices } from '@backstage/backend-test-utils';
+import { createMockDirectory } from '@backstage/backend-test-utils';
+import { createMockActionContext } from '@backstage/plugin-scaffolder-node-test-utils';
 
 import * as fs from 'fs-extra';
 import * as yaml from 'yaml';
 
-import { PassThrough } from 'stream';
-
 import { createTimestampAction } from './createTimestampAction';
 
+const catalogEntity =
+  'plugins/scaffolder-backend-module-annotator/src/actions/annotator/mocks';
+
+const catalogEntityContent = fs.readFileSync(
+  resolveSafeChildPath(catalogEntity, './catalog-info.yaml'),
+  'utf8',
+);
+
 describe('catalog annotator', () => {
-  const workspacePath =
-    'plugins/scaffolder-backend-module-annotator/src/actions/annotator/mocks';
+  const mockDir = createMockDirectory();
+  const workspacePath = mockDir.resolve('workspace');
 
   afterEach(() => {
     jest.resetAllMocks();
+    mockDir.clear();
   });
 
   it('should call action to annotate with timestamp', async () => {
+    mockDir.setContent({
+      [workspacePath]: {
+        'catalog-info.yaml': catalogEntityContent,
+      },
+    });
+
     const action = createTimestampAction();
 
-    const logger = mockServices.logger.mock();
-    jest.spyOn(logger, 'info');
-
-    await action.handler({
+    const ctx = createMockActionContext({
       workspacePath,
-      logger,
-      logStream: new PassThrough(),
-      output: jest.fn(),
-      createTemporaryDirectory() {
-        // Usage of createMockDirectory is recommended for testing of filesystem operations
-        throw new Error('Not implemented');
-      },
-    } as any);
+    });
+
+    ctx.logger.info = jest.fn();
+
+    await action.handler(ctx);
 
     const updatedCatalogInfoYaml = await fs.readFile(
       resolveSafeChildPath(workspacePath, './catalog-info.yaml'),
@@ -55,19 +63,11 @@ describe('catalog annotator', () => {
 
     const entity = yaml.parse(updatedCatalogInfoYaml);
 
-    expect(logger.info).toHaveBeenCalledWith(
+    expect(ctx.logger.info).toHaveBeenCalledWith(
       'Annotating catalog-info.yaml with current timestamp',
     );
     expect(
       entity?.metadata?.annotations?.['backstage.io/createdAt'],
     ).toBeTruthy();
-
-    // undo catalog-info.yaml file changes
-    delete entity?.metadata?.annotations?.['backstage.io/createdAt'];
-    await fs.writeFile(
-      resolveSafeChildPath(workspacePath, './catalog-info.yaml'),
-      yaml.stringify(entity),
-      'utf8',
-    );
   });
 });

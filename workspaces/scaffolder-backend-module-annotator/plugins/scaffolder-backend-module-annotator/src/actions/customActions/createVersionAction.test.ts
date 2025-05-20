@@ -14,48 +14,58 @@
  * limitations under the License.
  */
 import { resolveSafeChildPath } from '@backstage/backend-plugin-api';
-import { mockServices } from '@backstage/backend-test-utils';
+import { createMockDirectory } from '@backstage/backend-test-utils';
+import { createMockActionContext } from '@backstage/plugin-scaffolder-node-test-utils';
 
 import * as fs from 'fs-extra';
 import * as yaml from 'yaml';
 
-import { PassThrough } from 'stream';
 import { createVersionAction } from './createVersionAction';
 
+const catalogEntity =
+  'plugins/scaffolder-backend-module-annotator/src/actions/annotator/mocks';
+
+const catalogEntityContent = fs.readFileSync(
+  resolveSafeChildPath(catalogEntity, './catalog-info.yaml'),
+  'utf8',
+);
+
 describe('catalog annotator', () => {
-  const workspacePath =
-    'plugins/scaffolder-backend-module-annotator/src/actions/annotator/mocks';
+  const mockDir = createMockDirectory();
+  const workspacePath = mockDir.resolve('workspace');
 
   afterEach(() => {
     jest.resetAllMocks();
+    mockDir.clear();
   });
 
   it('should call action to annotate with template version', async () => {
+    mockDir.setContent({
+      [workspacePath]: {
+        'catalog-info.yaml': catalogEntityContent,
+      },
+    });
+
     const versionAction = createVersionAction();
 
-    const logger = mockServices.logger.mock();
-    jest.spyOn(logger, 'info');
-
-    await versionAction.handler({
+    const ctx = createMockActionContext({
       workspacePath,
-      logger,
-      logStream: new PassThrough(),
       templateInfo: {
         entityRef: 'test-entityRef',
         entity: {
           metadata: {
+            name: 'test-entityRef',
             annotations: {
               'backstage.io/template-version': '0.0.1',
             },
           },
         },
       },
-      output: jest.fn(),
-      createTemporaryDirectory() {
-        // Usage of createMockDirectory is recommended for testing of filesystem operations
-        throw new Error('Not implemented');
-      },
-    } as any);
+    });
+
+    ctx.logger.info = jest.fn();
+
+    await versionAction.handler(ctx);
 
     const updatedCatalogInfoYaml = await fs.readFile(
       resolveSafeChildPath(workspacePath, './catalog-info.yaml'),
@@ -64,32 +74,25 @@ describe('catalog annotator', () => {
 
     const entity = yaml.parse(updatedCatalogInfoYaml);
 
-    expect(logger.info).toHaveBeenCalledWith(
+    expect(ctx.logger.info).toHaveBeenCalledWith(
       'Annotating catalog-info.yaml with the version of the scaffolder template',
     );
     expect(entity?.metadata.annotations['backstage.io/template-version']).toBe(
       '0.0.1',
     );
-
-    // undo catalog-info.yaml file changes
-    delete entity?.metadata?.annotations?.['backstage.io/template-version'];
-    await fs.writeFile(
-      resolveSafeChildPath(workspacePath, './catalog-info.yaml'),
-      yaml.stringify(entity),
-      'utf8',
-    );
   });
 
   it('should call action to annotate with template version where a version is passed as input', async () => {
+    mockDir.setContent({
+      [workspacePath]: {
+        'catalog-info.yaml': catalogEntityContent,
+      },
+    });
+
     const versionAction = createVersionAction();
 
-    const logger = mockServices.logger.mock();
-    jest.spyOn(logger, 'info');
-
-    await versionAction.handler({
+    const ctx = createMockActionContext({
       workspacePath,
-      logger,
-      logStream: new PassThrough(),
       input: {
         annotations: {
           'backstage.io/template-version': '0.0.2',
@@ -99,18 +102,18 @@ describe('catalog annotator', () => {
         entityRef: 'test-entityRef',
         entity: {
           metadata: {
+            name: 'test-entityRef',
             annotations: {
               'backstage.io/template-version': '0.0.1',
             },
           },
         },
       },
-      output: jest.fn(),
-      createTemporaryDirectory() {
-        // Usage of createMockDirectory is recommended for testing of filesystem operations
-        throw new Error('Not implemented');
-      },
-    } as any);
+    });
+
+    ctx.logger.info = jest.fn();
+
+    await versionAction.handler(ctx);
 
     const updatedCatalogInfoYaml = await fs.readFile(
       resolveSafeChildPath(workspacePath, './catalog-info.yaml'),
@@ -119,19 +122,11 @@ describe('catalog annotator', () => {
 
     const entity = yaml.parse(updatedCatalogInfoYaml);
 
-    expect(logger.info).toHaveBeenCalledWith(
+    expect(ctx.logger.info).toHaveBeenCalledWith(
       'Annotating catalog-info.yaml with the version of the scaffolder template',
     );
     expect(entity?.metadata.annotations['backstage.io/template-version']).toBe(
       '0.0.2',
-    );
-
-    // undo catalog-info.yaml file changes
-    delete entity?.metadata?.annotations?.['backstage.io/template-version'];
-    await fs.writeFile(
-      resolveSafeChildPath(workspacePath, './catalog-info.yaml'),
-      yaml.stringify(entity),
-      'utf8',
     );
   });
 });
