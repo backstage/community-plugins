@@ -63,11 +63,13 @@ describe('PermissionsCard', () => {
     mockUsePermission.mockReturnValue({ loading: false, allowed: true });
     mockPermissionPolicies.mockReturnValue({
       loading: false,
-      data: usePermissionPoliciesMockData,
+      rolePolicies: usePermissionPoliciesMockData,
+      defaultPolicies: [],
       retry: {
         policiesRetry: jest.fn(),
         permissionPoliciesRetry: jest.fn(),
         conditionalPoliciesRetry: jest.fn(),
+        defaultPermissionsRetry: jest.fn(),
       },
       error: new Error(''),
     });
@@ -85,11 +87,13 @@ describe('PermissionsCard', () => {
     mockUsePermission.mockReturnValue({ loading: false, allowed: true });
     mockPermissionPolicies.mockReturnValue({
       loading: false,
-      data: [],
+      rolePolicies: [],
+      defaultPolicies: [],
       retry: {
         policiesRetry: jest.fn(),
         permissionPoliciesRetry: jest.fn(),
         conditionalPoliciesRetry: jest.fn(),
+        defaultPermissionsRetry: jest.fn(),
       },
       error: new Error(''),
     });
@@ -106,11 +110,13 @@ describe('PermissionsCard', () => {
     mockUsePermission.mockReturnValue({ loading: false, allowed: true });
     mockPermissionPolicies.mockReturnValue({
       loading: false,
-      data: [],
+      rolePolicies: [],
+      defaultPolicies: [],
       retry: {
         policiesRetry: jest.fn(),
         permissionPoliciesRetry: jest.fn(),
         conditionalPoliciesRetry: jest.fn(),
+        defaultPermissionsRetry: jest.fn(),
       },
       error: { message: '404', name: 'Not Found' },
     });
@@ -132,12 +138,14 @@ describe('PermissionsCard', () => {
     mockUsePermission.mockReturnValue({ loading: false, allowed: true });
     mockPermissionPolicies.mockReturnValue({
       loading: false,
-      data: [],
+      rolePolicies: [],
+      defaultPolicies: [],
       error: new Error(''),
       retry: {
         policiesRetry: jest.fn(),
         permissionPoliciesRetry: jest.fn(),
         conditionalPoliciesRetry: jest.fn(),
+        defaultPermissionsRetry: jest.fn(),
       },
     });
     const { getByTestId } = await renderInTestApp(
@@ -153,12 +161,14 @@ describe('PermissionsCard', () => {
     mockUsePermission.mockReturnValue({ loading: false, allowed: false });
     mockPermissionPolicies.mockReturnValue({
       loading: false,
-      data: [],
+      rolePolicies: [],
+      defaultPolicies: [],
       error: new Error(''),
       retry: {
         policiesRetry: jest.fn(),
         permissionPoliciesRetry: jest.fn(),
         conditionalPoliciesRetry: jest.fn(),
+        defaultPermissionsRetry: jest.fn(),
       },
     });
     const { queryByTestId } = await renderInTestApp(
@@ -174,14 +184,16 @@ describe('PermissionsCard', () => {
     mockUsePermission.mockReturnValue({ loading: false, allowed: true });
     mockPermissionPolicies.mockReturnValue({
       loading: false,
-      data: [
+      rolePolicies: [
         ...usePermissionPoliciesMockData,
         ...mockFormInitialValues.permissionPoliciesRows,
       ],
+      defaultPolicies: [],
       retry: {
         policiesRetry: jest.fn(),
         permissionPoliciesRetry: jest.fn(),
         conditionalPoliciesRetry: jest.fn(),
+        defaultPermissionsRetry: jest.fn(),
       },
       error: new Error(''),
     });

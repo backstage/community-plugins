@@ -81,7 +81,9 @@ export const PermissionsCard = ({
         }
       } else if (p.policies && Array.isArray(p.policies)) {
         // Role-specific policies
-        policies += p.policies.filter(pol => pol.effect === 'allow').length;
+        policies += p.policies.filter(
+          (pol: { effect: string }) => pol.effect === 'allow',
+        ).length;
       }
     });
     return policies;

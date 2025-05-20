@@ -50,7 +50,7 @@ describe('usePermissionPolicies', () => {
     );
     await waitFor(() => {
       expect(result.current.loading).toBeFalsy();
-      expect(result.current.data).toHaveLength(9);
+      expect(result.current.rolePolicies).toHaveLength(9);
     });
   });
 
@@ -60,7 +60,7 @@ describe('usePermissionPolicies', () => {
     );
     await waitFor(() => {
       expect(result.current.loading).toBeFalsy();
-      expect(result.current.data).toHaveLength(0);
+      expect(result.current.rolePolicies).toHaveLength(0);
     });
   });
 

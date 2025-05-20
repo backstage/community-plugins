@@ -21,10 +21,11 @@ import { useApi } from '@backstage/core-plugin-api';
 import { rbacApiRef } from '../api/RBACBackendClient';
 import { getPluginsPermissionPoliciesData } from '../utils/create-role-utils';
 import {
-  RoleBasedPolicy, // Ensure RoleBasedPolicy is imported if not already
   getConditionalPermissionsData,
   getPermissionsData,
 } from '../utils/rbac-utils';
+// Import RoleBasedPolicy from rbac-common package
+import { RoleBasedPolicy } from '@backstage-community/plugin-rbac-common';
 
 const getErrorText = (
   policies: any,
