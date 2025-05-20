@@ -16,12 +16,18 @@
 import { useState, useMemo } from 'react';
 
 import { parseEntityRef } from '@backstage/catalog-model';
-import { Table, WarningPanel } from '@backstage/core-components';
+import {
+  Table,
+  WarningPanel,
+  type TableColumn,
+} from '@backstage/core-components';
 
 import CachedIcon from '@mui/icons-material/Cached';
 import Box from '@mui/material/Box';
 
 import { usePermissionPolicies } from '../../hooks/usePermissionPolicies';
+import { type PermissionsData } from '../../types';
+import { type RoleBasedPolicy } from '@backstage-community/plugin-rbac-common';
 import { filterTableData } from '../../utils/filter-table-data';
 import EditRole from '../EditRole';
 import { columns } from './PermissionsListColumns';
@@ -53,7 +59,7 @@ export const PermissionsCard = ({
     usePermissionPolicies(entityReference);
   const [searchText, setSearchText] = useState<string>();
 
-  const combinedData = useMemo(() => {
+  const combinedData: (PermissionsData | RoleBasedPolicy)[] = useMemo(() => {
     const roles = Array.isArray(rolePolicies) ? rolePolicies : [];
     const defaults = Array.isArray(defaultPolicies) ? defaultPolicies : [];
     return [...roles, ...defaults];
@@ -62,24 +68,24 @@ export const PermissionsCard = ({
   const numberOfPolicies = useMemo(() => {
     const filteredPermissions = filterTableData({
       data: combinedData,
-      columns,
+      columns: columns as TableColumn<PermissionsData | RoleBasedPolicy>[],
       searchText,
     });
     let policies = 0;
     filteredPermissions.forEach(p => {
-      if (p.conditions) {
+      if ('conditions' in p && p.conditions) {
         // Conditional policies (typically from rolePolicies)
         policies++;
         return;
       }
       // Default policies are structured like: { entityReference: '<default>', permission: string, policy: string (action), effect: string, metadata: { source: 'default' } }
       // Role-specific non-conditional policies are structured: { policies: [{ effect: string, ... }], ... }
-      if (p.metadata?.source === 'default') {
+      if ('metadata' in p && p.metadata?.source === 'default') {
         if (p.effect === 'allow') {
           // Default policies have effect directly
           policies++;
         }
-      } else if (p.policies && Array.isArray(p.policies)) {
+      } else if ('policies' in p && p.policies && Array.isArray(p.policies)) {
         // Role-specific policies
         policies += p.policies.filter(
           (pol: { effect: string }) => pol.effect === 'allow',
@@ -129,7 +135,7 @@ export const PermissionsCard = ({
         actions={actions}
         options={{ padding: 'default', search: true, paging: true }}
         data={combinedData}
-        columns={columns}
+        columns={columns as TableColumn<PermissionsData | RoleBasedPolicy>[]}
         isLoading={loading}
         emptyContent={
           <Box
