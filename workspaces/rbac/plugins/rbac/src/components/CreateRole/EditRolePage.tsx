@@ -32,6 +32,11 @@ import { RoleFormValues } from './types';
 export const EditRolePage = () => {
   const { roleName, roleNamespace, roleKind } = useParams();
   const [queryParamState] = useQueryParamState<number>('activeStep');
+
+  const roleEntityRef = roleName
+    ? `${roleKind}:${roleNamespace}/${roleName}`
+    : '';
+
   const {
     selectedMembers,
     members,
@@ -40,30 +45,10 @@ export const EditRolePage = () => {
     roleError,
     membersError,
     canReadUsersAndGroups,
-  } = useSelectedMembers(
-    roleName ? `${roleKind}:${roleNamespace}/${roleName}` : '',
-  );
+  } = useSelectedMembers(roleEntityRef);
 
-  const { data, loading: loadingPolicies } = usePermissionPolicies(
-    `${roleKind}:${roleNamespace}/${roleName}`,
-  );
-
-  const initialValues: RoleFormValues = {
-    name: roleName || '',
-    namespace: roleNamespace || 'default',
-    kind: roleKind || 'role',
-    description: role?.metadata?.description ?? '',
-    owner: role?.metadata?.owner ?? '',
-    selectedMembers,
-    selectedPlugins: data
-      .map(pp => pp.plugin)
-      .filter((p, i, ar) => ar.indexOf(p) === i)
-      .map(sp => ({
-        label: sp.charAt(0).toLocaleUpperCase('en-US') + sp.substring(1),
-        value: sp,
-      })),
-    permissionPoliciesRows: data,
-  };
+  const { rolePolicies, loading: loadingPolicies } =
+    usePermissionPolicies(roleEntityRef);
 
   if (loadingMembers || loadingPolicies) {
     return <Progress />;
@@ -73,6 +58,29 @@ export const EditRolePage = () => {
       <ErrorPage status={roleError.name} statusMessage={roleError.message} />
     );
   }
+
+  const initialValues: RoleFormValues = {
+    name: roleName || '',
+    namespace: roleNamespace || 'default',
+    kind: roleKind || 'role',
+    description: role?.metadata?.description ?? '',
+    owner: role?.metadata?.owner ?? '',
+    selectedMembers,
+    selectedPlugins: (rolePolicies || [])
+      .map((pp: { permission: string }) => {
+        const permissionString = pp.permission || '';
+        const pluginId = permissionString.split('.')[0];
+        return pluginId;
+      })
+      .filter((pluginId: string) => !!pluginId)
+      .filter((p: string, i: number, ar: string[]) => ar.indexOf(p) === i)
+      .map((sp: string) => ({
+        label: sp.charAt(0).toLocaleUpperCase('en-US') + sp.substring(1),
+        value: sp,
+      })),
+    permissionPoliciesRows: rolePolicies || [],
+  };
+
   if (!canReadUsersAndGroups) {
     return <ErrorPage statusMessage="Unauthorized to edit role" />;
   }

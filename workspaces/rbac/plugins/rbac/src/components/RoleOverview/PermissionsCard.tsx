@@ -49,22 +49,43 @@ export const PermissionsCard = ({
   entityReference,
   canReadUsersAndGroups,
 }: PermissionsCardProps) => {
-  const { data, loading, retry, error } =
+  const { rolePolicies, defaultPolicies, loading, retry, error } =
     usePermissionPolicies(entityReference);
   const [searchText, setSearchText] = useState<string>();
 
+  const combinedData = useMemo(() => {
+    const roles = Array.isArray(rolePolicies) ? rolePolicies : [];
+    const defaults = Array.isArray(defaultPolicies) ? defaultPolicies : [];
+    return [...roles, ...defaults];
+  }, [rolePolicies, defaultPolicies]);
+
   const numberOfPolicies = useMemo(() => {
-    const filteredPermissions = filterTableData({ data, columns, searchText });
+    const filteredPermissions = filterTableData({
+      data: combinedData,
+      columns,
+      searchText,
+    });
     let policies = 0;
     filteredPermissions.forEach(p => {
       if (p.conditions) {
+        // Conditional policies (typically from rolePolicies)
         policies++;
         return;
       }
-      policies += p.policies.filter(pol => pol.effect === 'allow').length;
+      // Default policies are structured like: { entityReference: '<default>', permission: string, policy: string (action), effect: string, metadata: { source: 'default' } }
+      // Role-specific non-conditional policies are structured: { policies: [{ effect: string, ... }], ... }
+      if (p.metadata?.source === 'default') {
+        if (p.effect === 'allow') {
+          // Default policies have effect directly
+          policies++;
+        }
+      } else if (p.policies && Array.isArray(p.policies)) {
+        // Role-specific policies
+        policies += p.policies.filter(pol => pol.effect === 'allow').length;
+      }
     });
     return policies;
-  }, [data, searchText]);
+  }, [combinedData, searchText]); // Removed 'columns' from dependency array
 
   const actions = [
     {
@@ -75,6 +96,7 @@ export const PermissionsCard = ({
         retry.permissionPoliciesRetry();
         retry.policiesRetry();
         retry.conditionalPoliciesRetry();
+        retry.defaultPermissionsRetry(); // Add this line
       },
     },
     {
@@ -98,13 +120,13 @@ export const PermissionsCard = ({
       )}
       <Table
         title={
-          !loading && data.length > 0
+          !loading && combinedData.length > 0
             ? `Permission Policies (${numberOfPolicies})`
             : 'Permission Policies'
         }
         actions={actions}
         options={{ padding: 'default', search: true, paging: true }}
-        data={data}
+        data={combinedData}
         columns={columns}
         isLoading={loading}
         emptyContent={

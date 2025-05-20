@@ -80,6 +80,7 @@ import { EnforcerDelegate } from './enforcer-delegate';
 import { PluginPermissionMetadataCollector } from './plugin-endpoints';
 import { RBACRouterOptions } from './policy-builder';
 import { RBACFilters, rules, transformConditions } from '../permissions';
+import { RBACPermissionPolicy } from '../policies/permission-policy';
 
 export class PoliciesServer {
   constructor(
@@ -1031,6 +1032,28 @@ export class PoliciesServer {
         response.locals.meta = { condition: roleConditionPolicy }; // auditor
 
         response.status(200).end();
+      },
+    );
+
+    router.get(
+      '/default-permissions',
+      logAuditorEvent(this.auditor),
+      async (request, response) => {
+        await this.authorizeConditional(request, policyEntityReadPermission);
+
+        const currentPolicy = this.options.policy;
+        // Import RBACPermissionPolicy from '../policies/permission-policy'
+        if (currentPolicy instanceof RBACPermissionPolicy) {
+          const defaults = currentPolicy.getDefaultPermissions();
+          response.json(defaults);
+        } else {
+          // If it's not RBACPermissionPolicy (e.g., AllowAllPolicy),
+          // there are no "defaultPermissions" in the same sense.
+          this.options.logger.info(
+            "'/default-permissions' endpoint called, but current policy is not RBACPermissionPolicy. Returning empty list.",
+          );
+          response.json([]);
+        }
       },
     );
 

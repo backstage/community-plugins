@@ -224,6 +224,14 @@ export class RBACPermissionPolicy implements PermissionPolicy {
     this.defaultPermissions = defaultPermissions;
   }
 
+  public getDefaultPermissions(): Array<{
+    permission: string;
+    policy: string;
+    effect: string;
+  }> {
+    return this.defaultPermissions;
+  }
+
   async handle(
     request: PolicyQuery,
     user?: PolicyQueryUser,
@@ -308,45 +316,100 @@ export class RBACPermissionPolicy implements PermissionPolicy {
         );
       }
 
-      // Handle default user access if enabled
-      if (!status && this.defaultUserAccessEnabled && roles.length === 0) {
-        // Add logging for debugging without using console.log
-        const permissionDebug = {
-          user: userEntityRef,
-          permissionName,
-          action,
-          defaultsEnabled: this.defaultUserAccessEnabled,
-          defaultPermissions: this.defaultPermissions,
-        };
+      // New deny-checking logic block
+      if (!status && this.defaultUserAccessEnabled) {
+        const resourceTypeDeny = isResourcePermission(request.permission)
+          ? request.permission.resourceType
+          : undefined;
 
-        this.auditor.createEvent({
-          eventId: 'permission.debug.defaultAccess',
-          meta: permissionDebug,
-        });
-
-        // First check by permission name (higher priority)
-        let defaultPermission = this.defaultPermissions.find(
-          dp =>
-            dp.permission === permissionName &&
-            (dp.policy === action || dp.policy === 'use'),
-        );
-
-        // If not found and it's a resourced permission, check by resource type
-        if (!defaultPermission && isResourcePermission(request.permission)) {
-          const resourceType = request.permission.resourceType;
-          defaultPermission = this.defaultPermissions.find(
-            dp =>
-              dp.permission === resourceType &&
-              (dp.policy === action || dp.policy === 'use'),
+        const permDeny = hasNamedPermission
+          ? permissionName
+          : (resourceTypeDeny ?? permissionName);
+        const denyPermissions: string[][] = [];
+        for (const role of roles) {
+          // Assuming getFilteredPolicy params are (fieldIndex, fieldValue0, fieldValue1, fieldValue2, fieldValue3)
+          // For deny check, the effect is the 4th parameter (index 3) for the policy rule.
+          // So we expect: enforcer.getFilteredPolicy(0, role, permDeny, action, 'deny')
+          // The Casbin API getFilteredPolicy(fieldIndex, ...fieldValues) means it filters starting from fieldIndex.
+          // If we want to match ptype, v0, v1, v2, v3 (e.g., 'p', role, permDeny, action, 'deny')
+          // and our policy has 5 parts (ptype, v0, v1, v2, v3), then:
+          // fieldIndex 0 is ptype, fieldIndex 1 is v0 (role), fieldIndex 2 is v1 (permDeny),
+          // fieldIndex 3 is v2 (action), fieldIndex 4 is v3 (effect, 'deny')
+          // So, to filter for role, permDeny, action, 'deny':
+          // We need to provide role, permDeny, action, 'deny' as fieldValues.
+          // The enforcer.getFilteredPolicy in Casbin node adapter expects (fieldIndex, ...fieldValues)
+          // If the policy is (role, object, action, effect), then:
+          // getFilteredPolicy(0, role, permDeny, action, 'deny') should work if 'effect' is the 4th part of the policy rule.
+          // Let's assume the underlying enforcer's getFilteredPolicy handles this as intended by the example.
+          // The existing code uses getFilteredPolicy(0, role, permissionName, action) for allow checks, implying effect is not the last param or is handled differently.
+          // Given the problem description's `this.enforcer.getFilteredPolicy(0, ...[role, permDeny, action, 'deny'])`
+          // this suggests the policy rule structure might be [role, permDeny, action, 'deny'] for the purpose of this call.
+          // Let's stick to the provided snippet's structure.
+          const denyPerm = await this.enforcer.getFilteredPolicy(
+            0,
+            role,
+            permDeny,
+            action,
+            'deny',
           );
+          denyPermissions.push(...denyPerm);
         }
 
-        if (defaultPermission) {
+        if (denyPermissions.length === 0) {
+          // NO DENY RULES FOUND
+          const permissionDebug = {
+            user: userEntityRef,
+            permissionName,
+            action,
+            defaultsEnabled: this.defaultUserAccessEnabled,
+            defaultPermissions: this.defaultPermissions,
+          };
+
           this.auditor.createEvent({
-            eventId: 'permission.debug.defaultAccess.applied',
-            meta: { defaultPermission, result: 'allow' },
+            eventId: 'permission.debug.defaultAccess.noDeny',
+            meta: permissionDebug,
           });
-          status = defaultPermission.effect === 'allow';
+
+          // First check by permission name (higher priority)
+          let defaultPermission = this.defaultPermissions.find(
+            dp =>
+              dp.permission === permissionName &&
+              (dp.policy === action || dp.policy === 'use'),
+          );
+
+          // If not found and it's a resourced permission, check by resource type
+          if (!defaultPermission && isResourcePermission(request.permission)) {
+            // Ensure 'request.permission.resourceType' is valid here.
+            // 'isResourcePermission' acts as a type guard.
+            const resourceTypeDefault = request.permission.resourceType;
+            defaultPermission = this.defaultPermissions.find(
+              dp =>
+                dp.permission === resourceTypeDefault &&
+                (dp.policy === action || dp.policy === 'use'),
+            );
+          }
+
+          if (defaultPermission) {
+            this.auditor.createEvent({
+              eventId: 'permission.debug.defaultAccess.applied',
+              meta: { defaultPermission, result: 'allow' },
+            });
+            status = defaultPermission.effect === 'allow'; // This will set status to true if effect is 'allow'
+          }
+        } else {
+          // DENY RULES WERE FOUND
+          this.auditor.createEvent({
+            eventId: 'permission.debug.defaultAccess.deniedByPolicy',
+            meta: {
+              user: userEntityRef,
+              permissionName,
+              action,
+              permDeny,
+              roles,
+              denyPermissions,
+            },
+          });
+          // 'status' is already false and remains false.
         }
       }
 

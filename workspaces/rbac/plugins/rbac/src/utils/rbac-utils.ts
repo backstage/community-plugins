@@ -298,18 +298,20 @@ export const getPermissionsData = (
           permissionName,
           usingResourceType,
         } = getPluginInfo(permissionPolicies, policy);
-        acc.push({
-          permission: permissionName,
-          plugin: pluginId,
-          policyString: policyString.add(policyTitleCase || 'Use'),
-          policies: policiesSet.add({
-            policy: policyTitleCase || 'Use',
-            effect: policy.effect,
-          }),
-          isResourced,
-          resourceType,
-          usingResourceType,
-        });
+        if (pluginId !== '-' && permissionName !== '-') {
+          acc.push({
+            permission: permissionName,
+            plugin: pluginId,
+            policyString: policyString.add(policyTitleCase || 'Use'),
+            policies: policiesSet.add({
+              policy: policyTitleCase || 'Use',
+              effect: policy.effect,
+            }),
+            isResourced,
+            resourceType,
+            usingResourceType,
+          });
+        }
       }
       return acc;
     },
