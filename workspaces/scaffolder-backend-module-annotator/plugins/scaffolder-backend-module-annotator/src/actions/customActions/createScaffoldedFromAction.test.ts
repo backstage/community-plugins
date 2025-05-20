@@ -24,7 +24,8 @@ import { PassThrough } from 'stream';
 import { createScaffoldedFromAction } from './createScaffoldedFromAction';
 
 describe('catalog annotator', () => {
-  const workspacePath = 'src/actions/annotator/mocks';
+  const workspacePath =
+    'plugins/scaffolder-backend-module-annotator/src/actions/annotator/mocks';
 
   afterEach(() => {
     jest.resetAllMocks();
