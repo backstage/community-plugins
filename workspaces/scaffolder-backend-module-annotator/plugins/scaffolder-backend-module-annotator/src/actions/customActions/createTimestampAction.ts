@@ -15,6 +15,7 @@
  */
 import { getCurrentTimestamp } from '../../utils/getCurrentTimestamp';
 import { createAnnotatorAction } from '../annotator/annotator';
+import { examples } from './createTimestampAction.examples';
 
 export const createTimestampAction = () => {
   return createAnnotatorAction(
@@ -26,5 +27,6 @@ export const createTimestampAction = () => {
         annotations: { 'backstage.io/createdAt': getCurrentTimestamp() },
       };
     },
+    examples,
   );
 };
