@@ -21,6 +21,7 @@ import * as yaml from 'yaml';
 
 import { getObjectToAnnotate } from '../../utils/getObjectToAnnotate';
 import { resolveSpec, Value } from '../../utils/resolveSpec';
+import { resolveAnnotation } from '../../utils/resolveAnnotation';
 
 /**
  * Creates a new Scaffolder action to annotate an entity object with specified label(s), annotation(s) and spec property(ies).
@@ -32,7 +33,7 @@ export const createAnnotatorAction = (
   actionDescription?: string,
   loggerInfoMsg?: string,
   annotateEntityObjectProvider?: () => {
-    annotations?: { [key: string]: string };
+    annotations?: { [key: string]: Value };
     labels?: { [key: string]: string };
     spec?: { [key: string]: Value };
   },
@@ -119,6 +120,7 @@ export const createAnnotatorAction = (
           annotations: {
             ...(objToAnnotate.metadata.annotations || {}),
             ...(annotateEntityObject?.annotations || {}),
+            ...resolveAnnotation(annotateEntityObject?.annotations, ctx),
             ...(ctx.input?.annotations || {}),
           },
           labels: {

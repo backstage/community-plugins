@@ -15,3 +15,4 @@
  */
 export * from './createTimestampAction';
 export * from './createScaffoldedFromAction';
+export * from './createVersionAction';

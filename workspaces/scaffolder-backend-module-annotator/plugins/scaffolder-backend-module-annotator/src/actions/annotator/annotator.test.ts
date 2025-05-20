@@ -25,8 +25,7 @@ import { getCurrentTimestamp } from '../../utils/getCurrentTimestamp';
 import { createAnnotatorAction } from './annotator';
 
 describe('catalog annotator', () => {
-  const workspacePath =
-    'plugins/scaffolder-backend-module-annotator/src/actions/annotator/mocks';
+  const workspacePath = 'src/actions/annotator/mocks';
 
   afterEach(() => {
     jest.resetAllMocks();
