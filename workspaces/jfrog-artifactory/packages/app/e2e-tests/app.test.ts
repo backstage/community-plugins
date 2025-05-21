@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2020 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useEntity } from '@backstage/plugin-catalog-react';
 
-import { JfrogArtifactoryRepository } from '../JfrogArtifactoryRepository';
-import { useJfrogArtifactoryAppData } from '../useJfrogArtifactoryAppData';
+import { expect, test } from '@playwright/test';
 
-export const JfrogArtifactoryDashboardPage = () => {
-  const { entity } = useEntity();
-  const { imageName } = useJfrogArtifactoryAppData({ entity });
+test('App should render the welcome page', async ({ page }) => {
+  await page.goto('/');
 
-  return <JfrogArtifactoryRepository image={imageName} />;
-};
+  const enterButton = page.getByRole('button', { name: 'Enter' });
+  await expect(enterButton).toBeVisible();
+  await enterButton.click();
+
+  await expect(page.getByText('My Company Catalog')).toBeVisible();
+});

@@ -1,0 +1,9 @@
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: its-mitesh-kumar
+spec:
+  profile:
+    # Intentional no displayName for testing
+    email: itsmiteshkumar98@gmail.com
+  memberOf: [temp-team-a]

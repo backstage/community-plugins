@@ -13,14 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useEntity } from '@backstage/plugin-catalog-react';
+import {
+  AnyApiFactory,
+  configApiRef,
+  createApiFactory,
+} from '@backstage/core-plugin-api';
+import {
+  ScmAuth,
+  ScmIntegrationsApi,
+  scmIntegrationsApiRef,
+} from '@backstage/integration-react';
 
-import { JfrogArtifactoryRepository } from '../JfrogArtifactoryRepository';
-import { useJfrogArtifactoryAppData } from '../useJfrogArtifactoryAppData';
-
-export const JfrogArtifactoryDashboardPage = () => {
-  const { entity } = useEntity();
-  const { imageName } = useJfrogArtifactoryAppData({ entity });
-
-  return <JfrogArtifactoryRepository image={imageName} />;
-};
+export const apis: AnyApiFactory[] = [
+  createApiFactory({
+    api: scmIntegrationsApiRef,
+    deps: { configApi: configApiRef },
+    factory: ({ configApi }) => ScmIntegrationsApi.fromConfig(configApi),
+  }),
+  ScmAuth.createDefaultApiFactory(),
+];
