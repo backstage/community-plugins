@@ -48,10 +48,13 @@ import {
   mockUserInfoService,
   pluginMetadataCollectorMock,
   roleMetadataStorageMock,
+  permissionDependentPluginStoreMock,
+  extandablePluginIdProviderMock,
 } from '../../__fixtures__/mock-utils';
 import request from 'supertest';
 import { RoleMetadataDao } from '../database/role-metadata';
 import { RBACFilters } from '../permissions/rules';
+import { ExtendablePluginIdProvider } from './extendable-id-provider';
 
 jest.setTimeout(60000);
 
@@ -314,16 +317,18 @@ describe('REST policies api with conditions', () => {
         mockAuthService,
       ),
       userInfo: mockUserInfoService,
+      auditor: mockAuditorService,
+      permissions: mockPermissionEvaluator,
     };
 
     server = new PoliciesServer(
-      mockPermissionEvaluator,
       options,
       enforcerDelegateMock as EnforcerDelegate,
       conditionalStorageMock,
       pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
       roleMetadataStorageMock,
-      mockAuditorService,
+      permissionDependentPluginStoreMock,
+      extandablePluginIdProviderMock as ExtendablePluginIdProvider,
     );
 
     const router = await server.serve();

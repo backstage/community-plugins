@@ -21,6 +21,7 @@ import type {
   HttpAuthService,
   LifecycleService,
   LoggerService,
+  PermissionsService,
   UserInfoService,
 } from '@backstage/backend-plugin-api';
 import { CatalogClient } from '@backstage/catalog-client';
@@ -48,6 +49,8 @@ import { EnforcerDelegate } from './enforcer-delegate';
 import { MODEL } from './permission-model';
 import { PluginPermissionMetadataCollector } from './plugin-endpoints';
 import { PoliciesServer } from './policies-rest-api';
+import { PermissionDependentPluginDatabaseStore } from '../database/extra-permission-enabled-plugins-storage';
+import { ExtendablePluginIdProvider } from './extendable-id-provider';
 
 /**
  * @public
@@ -74,7 +77,9 @@ export type RBACRouterOptions = {
   policy: PermissionPolicy;
   auth: AuthService;
   httpAuth: HttpAuthService;
+  permissions: PermissionsService;
   userInfo: UserInfoService;
+  auditor: AuditorService;
 };
 
 /**
@@ -144,23 +149,18 @@ export class PolicyBuilder {
       );
     }
 
-    const pluginIdsConfig = env.config.getOptionalStringArray(
-      'permission.rbac.pluginsWithPermission',
+    const extraPluginsIdStorage = new PermissionDependentPluginDatabaseStore(
+      databaseClient,
     );
-    if (pluginIdsConfig) {
-      const pluginIds = new Set([
-        ...pluginIdsConfig,
-        ...pluginIdProvider.getPluginIds(),
-      ]);
-      pluginIdProvider.getPluginIds = () => {
-        return [...pluginIds];
-      };
-    }
-
+    const extendablePluginIdProvider = new ExtendablePluginIdProvider(
+      extraPluginsIdStorage,
+      pluginIdProvider,
+      env.config,
+    );
     const pluginPermMetaData = new PluginPermissionMetadataCollector({
       deps: {
         discovery: env.discovery,
-        pluginIdProvider: pluginIdProvider,
+        pluginIdProvider: extendablePluginIdProvider,
         logger: env.logger,
         config: env.config,
       },
@@ -196,17 +196,19 @@ export class PolicyBuilder {
       policy,
       auth: env.auth,
       httpAuth: env.httpAuth,
+      permissions: env.permissions,
       userInfo: env.userInfo,
+      auditor: env.auditor,
     };
 
     const server = new PoliciesServer(
-      env.permissions,
       options,
       enforcerDelegate,
       conditionStorage,
       pluginPermMetaData,
       roleMetadataStorage,
-      env.auditor,
+      extraPluginsIdStorage,
+      extendablePluginIdProvider,
       rbacProviders,
     );
     return server.serve();
