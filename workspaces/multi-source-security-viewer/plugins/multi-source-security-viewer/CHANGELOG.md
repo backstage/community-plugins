@@ -1,5 +1,11 @@
 # @backstage-community/plugin-multi-source-security-viewer
 
+## 0.4.3
+
+### Patch Changes
+
+- bec7d2b: Updated dependency `@backstage-community/plugin-jenkins` to `^0.19.0`.
+
 ## 0.4.2
 
 ### Patch Changes
