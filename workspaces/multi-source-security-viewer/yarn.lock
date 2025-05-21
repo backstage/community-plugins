@@ -2832,16 +2832,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage-community/plugin-azure-devops-common@npm:^0.9.0":
-  version: 0.9.0
-  resolution: "@backstage-community/plugin-azure-devops-common@npm:0.9.0"
-  dependencies:
-    "@backstage/plugin-catalog-common": "npm:^1.1.3"
-    "@backstage/plugin-permission-common": "npm:^0.8.4"
-  checksum: 10/16037cfb4d69b758c0d1049ef2cf77bb92bc73830e6c35e382710e18433aec58d1f0d3e4a428f8788b929f9fcb87c67db552e2d20b9cd2bd5036394f0492ff5e
-  languageName: node
-  linkType: hard
-
 "@backstage-community/plugin-azure-devops@npm:^0.14.0":
   version: 0.14.0
   resolution: "@backstage-community/plugin-azure-devops@npm:0.14.0"
@@ -2971,7 +2961,7 @@ __metadata:
   dependencies:
     "@aonic-ui/pipelines": "npm:^3.1.1"
     "@backstage-community/plugin-azure-devops": "npm:^0.14.0"
-    "@backstage-community/plugin-azure-devops-common": "npm:^0.9.0"
+    "@backstage-community/plugin-azure-devops-common": "npm:^0.10.0"
     "@backstage-community/plugin-github-actions": "npm:^0.10.0"
     "@backstage-community/plugin-jenkins": "npm:^0.18.0"
     "@backstage-community/plugin-multi-source-security-viewer-common": "workspace:^"
