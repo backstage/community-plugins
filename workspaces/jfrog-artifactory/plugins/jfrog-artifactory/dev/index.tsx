@@ -32,7 +32,7 @@ const mockEntity: Entity = {
     name: 'backstage',
     description: 'backstage.io',
     annotations: {
-      'jfrog-artifactory/image-name': 'hello-world',
+      'jfrog-artifactory/image-name': 'backstage',
     },
   },
   spec: {
