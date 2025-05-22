@@ -258,3 +258,21 @@ Failed events contain `error` information.
 **Plugins Event fail/success meta:**
 
 - source: string (source emitting the event, `rest`)
+
+### Plugin IDs events
+
+-**`plugin-ids-read`**: Lists the plugins that support the Backstage permission framework.
+
+-**`plugin-ids-write`**: Updates the list of plugins that support the Backstage permission framework.
+
+**Plugins IDs Event meta:**
+
+- source: string (source emitting the event, `rest`)
+
+**Plugins IDs Event fail/success meta:**
+
+- source: string (source emitting the event, `rest`)
+
+for `plugin-ids-write` will be included also:
+
+- ids: string[]
