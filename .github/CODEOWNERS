@@ -73,7 +73,7 @@ yarn.lock                                                               @backsta
 /workspaces/mend                                                        @backstage/community-plugins-maintainers  @dariuszsobkowicz
 /workspaces/microsoft-calendar                                          @backstage/community-plugins-maintainers
 /workspaces/mta                                                         @backstage/community-plugins-maintainers  @ibolton336
-/workspaces/multi-source-security-viewer                                @backstage/community-plugins-maintainers
+/workspaces/multi-source-security-viewer                                @backstage/community-plugins-maintainers  @caugello @cryptorodeo
 /workspaces/newrelic                                                    @backstage/community-plugins-maintainers
 /workspaces/nexus-repository-manager                                    @backstage/community-plugins-maintainers  @schultzp2020
 /workspaces/nomad                                                       @backstage/community-plugins-maintainers
