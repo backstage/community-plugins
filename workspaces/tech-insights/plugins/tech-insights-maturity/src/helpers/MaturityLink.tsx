@@ -22,7 +22,7 @@ import { Link } from '@backstage/core-components';
 import { createRouteRef, useRouteRef } from '@backstage/core-plugin-api';
 import { EntityDisplayName } from '@backstage/plugin-catalog-react';
 import { getOrCreateGlobalSingleton } from '@backstage/version-bridge';
-import React, { PropsWithChildren } from 'react';
+import { PropsWithChildren } from 'react';
 
 const entityRouteRef = getOrCreateGlobalSingleton(
   'catalog:entity-route-ref',

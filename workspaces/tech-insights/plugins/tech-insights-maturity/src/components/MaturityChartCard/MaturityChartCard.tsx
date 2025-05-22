@@ -22,7 +22,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { styled } from '@mui/material/styles';
 import { useDrawingArea } from '@mui/x-charts/hooks';
 import { PieChart } from '@mui/x-charts/PieChart';
-import React from 'react';
+import type { ReactNode } from 'react';
 import useAsyncRetry from 'react-use/lib/useAsync';
 import { maturityApiRef } from '../../api';
 import { getRankColor } from '../../helpers/utils';
@@ -43,7 +43,7 @@ const StyledText = styled('text')(({ theme }) => ({
   fontSize: 20,
 }));
 
-function PieCenterLabel({ children }: { children: React.ReactNode }) {
+function PieCenterLabel({ children }: { children: ReactNode }) {
   const { width, height, left, top } = useDrawingArea();
   return (
     <StyledText x={left + width / 2} y={top + height / 2}>
