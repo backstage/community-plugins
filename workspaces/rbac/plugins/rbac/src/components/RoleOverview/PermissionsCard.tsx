@@ -116,11 +116,6 @@ export const PermissionsCard = ({
     },
   ];
 
-  let title = 'Permission Policies';
-  if (!loading && data.length > 0) {
-    title = `${numberOfPolicies} permission${numberOfPolicies !== 1 ? 's' : ''}`;
-  }
-
   return (
     <Box>
       {error?.name && error.name !== 404 && (

@@ -28,19 +28,21 @@ import {
   RoleConditionalPolicyDecision,
 } from '@backstage-community/plugin-rbac-common';
 
-// Add this type definition near other similar types
-export interface DefaultPermissionPolicy {
-  permission: string;
-  policy: string; // This is the action (e.g., 'read', 'use', 'create')
-  effect: string; // 'allow' or 'deny'
-}
-
 import {
   MemberEntity,
   PluginConditionRules,
   RoleBasedConditions,
   RoleError,
 } from '../types';
+
+/**
+ * @public
+ */
+export interface DefaultPermissionPolicy {
+  permission: string;
+  policy: string; // This is the action (e.g., 'read', 'use', 'create')
+  effect: string; // 'allow' or 'deny'
+}
 
 /**
  * @public

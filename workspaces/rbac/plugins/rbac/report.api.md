@@ -35,6 +35,16 @@ export type ConditionRule = {
 };
 
 // @public (undocumented)
+export interface DefaultPermissionPolicy {
+    // (undocumented)
+    effect: string;
+    // (undocumented)
+    permission: string;
+    // (undocumented)
+    policy: string;
+}
+
+// @public (undocumented)
 export type MemberEntity = UserEntity | GroupEntity;
 
 // @public (undocumented)
@@ -65,6 +75,7 @@ export type RBACAPI = {
     getRoleConditions: (roleRef: string) => Promise<RoleConditionalPolicyDecision<PermissionAction>[] | Response>;
     updateConditionalPolicies: (conditionId: number, data: RoleBasedConditions) => Promise<RoleError | Response>;
     deleteConditionalPolicies: (conditionId: number) => Promise<RoleError | Response>;
+    getDefaultPermissions: () => Promise<DefaultPermissionPolicy[] | Response>;
 };
 
 // @public (undocumented)
