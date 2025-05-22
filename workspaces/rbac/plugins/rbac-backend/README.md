@@ -87,10 +87,14 @@ For more information on the available API endpoints accessible to the policy adm
 
 ### Configure plugins with permission
 
-In order for the RBAC UI to display available permissions provided by installed plugins, add the corresponding
-plugin IDs to the `app-config.yaml`.
+In order for the RBAC UI to display the available permissions provided by installed plugins, you must supply the corresponding list of plugin IDs. There are two ways to achieve this:
 
-You can specify the plugins with permission in your application configuration as follows:
+- Application configuration(`app-config.yaml`)
+- REST API
+
+#### Configure plugins with Application configuration
+
+You can specify the plugins with permissions in your application configuration as follows:
 
 ```YAML
 permission:
@@ -104,6 +108,38 @@ permission:
       users:
         - name: user:default/alice
         - name: group:default/admins
+```
+
+#### Configure plugins with REST API
+
+You can specify the plugins with permissions using the corresponding [REST API](./docs/apis.md#plugin-ids-that-support-the-backstage-permission-framework).
+
+Curl Examples:
+
+Get the object containing the list of plugin IDs:
+
+```
+curl -X GET "http://localhost:7007/api/permission/plugins/id" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $token" -v
+```
+
+Add more plugin IDs:
+
+```
+curl -X POST "http://localhost:7007/api/permission/plugins/id" \
+  -d '{ "ids": [ "permission", "scaffolder" ] }' \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $token" -v
+```
+
+Remove plugin IDs:
+
+```
+curl -X DELETE "http://localhost:7007/api/permission/plugins/id" \
+  -d '{ "ids": [ "permission", "scaffolder" ] }' \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $token" -v
 ```
 
 For more information on the available permissions, refer to the [RBAC permissions documentation](./docs/permissions.md).
