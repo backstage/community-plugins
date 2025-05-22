@@ -540,7 +540,7 @@ paths:
           description: Refusal to authorize
 
     post:
-      description: Add more additional plugin IDs.
+      description: Add additional plugin IDs.
       requestBody:
         required: true
         content:
@@ -548,12 +548,14 @@ paths:
             schema:
               '$ref': '#/components/schemas/PluginIds'
       responses:
-        '201':
+        '200':
           description: Plugin IDs were successfully added. Returns updated list.
           content:
             application/json:
               schema:
                 '$ref': '#/components/schemas/PluginIds'
+        '409':
+          description: Conflict with current state and target resource.
         '403':
           description: Refusal to authorize
 
@@ -572,6 +574,8 @@ paths:
             application/json:
               schema:
                 '$ref': '#/components/schemas/PluginIds'
+        '404':
+          description: Could not find resource
         '403':
           description: Refusal to authorize
   /api/permission/roles/conditions:
@@ -740,7 +744,7 @@ paths:
   /api/permission/refresh/{id}:
     post:
       description: >-
-        Refreshes RBAC permission policies provider by id.
+        Refreshes RBAC permission policies by provider id.
       parameters:
         - name: id
           in: path
