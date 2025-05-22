@@ -1,5 +1,14 @@
 # @backstage-community/plugin-tech-insights
 
+## 0.5.3
+
+### Patch Changes
+
+- 01640b2: Makes minor change to API report.
+- Updated dependencies [d6411fe]
+  - @backstage-community/plugin-tech-insights-common@0.7.0
+  - @backstage-community/plugin-tech-insights-react@1.1.2
+
 ## 0.5.2
 
 ### Patch Changes
