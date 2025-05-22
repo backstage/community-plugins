@@ -142,6 +142,8 @@ curl -X DELETE "http://localhost:7007/api/permission/plugins/id" \
   -H "Authorization: Bearer $token" -v
 ```
 
+Notice: The REST API does not allow deletion of plugin IDs that were provided via application configuration, in order to prevent an inconsistent state after a deployment restart. These ID values can only be removed through the configuration file.
+
 For more information on the available permissions, refer to the [RBAC permissions documentation](./docs/permissions.md).
 
 ### Configuring policies via file
