@@ -28,6 +28,8 @@ jobs:
     strategy:
       matrix: ${{ fromJson(needs.prepare.outputs.matrix) }}
     steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
       - name: Delay batches (5 min between)
         if: ${{ strategy.job-index != 0 }}
         run: |
@@ -40,8 +42,10 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "Triggering version bump for batch ${{ strategy.job-index }}"
+          json_input='${{ toJson(matrix.batch) }}'
+          echo "Rendered json_input: $json_input"
           gh workflow run version-bump.yml \
             --ref main \
             --field release_line=main \
-            --field workspace_input="${{ toJson(matrix.batch) }}" \
+            --field workspace_input="$json_input" \
             --field version-bump-type=minor

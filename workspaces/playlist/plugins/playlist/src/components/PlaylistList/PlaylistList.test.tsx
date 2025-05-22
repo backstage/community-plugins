@@ -18,7 +18,6 @@ import { ConfigApi, configApiRef } from '@backstage/core-plugin-api';
 import { Playlist } from '@backstage-community/plugin-playlist-common';
 import { TestApiProvider } from '@backstage/test-utils';
 import { render } from '@testing-library/react';
-import React from 'react';
 
 import { MockPlaylistListProvider } from '../../testUtils';
 import { PlaylistList } from './PlaylistList';

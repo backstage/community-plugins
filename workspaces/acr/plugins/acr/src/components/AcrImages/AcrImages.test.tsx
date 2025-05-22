@@ -13,73 +13,63 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-import useAsync from 'react-use/esm/useAsync';
-
 import { ErrorPanelProps } from '@backstage/core-components';
-
-import { render } from '@testing-library/react';
+import { renderInTestApp } from '@backstage/test-utils';
 
 import { mockAcrTagsData } from '../../__fixtures__/acrTagsObject';
+
 import { AcrImages } from './AcrImages';
+import { useTags } from '../../hooks/useTags';
 
 jest.mock('@backstage/core-components', () => ({
   ...jest.requireActual('@backstage/core-components'),
   ErrorPanel: ({ error }: ErrorPanelProps) => <div>{error.toString()}</div>,
 }));
 
-jest.mock('@backstage/core-plugin-api', () => ({
-  ...jest.requireActual('@backstage/core-plugin-api'),
-  useApi: jest.fn().mockReturnValue({
-    getTags: jest.fn(),
-  }),
+jest.mock('../../hooks/useTags', () => ({
+  useTags: jest.fn(),
 }));
 
-jest.mock('@material-ui/core', () => ({
-  ...jest.requireActual('@material-ui/core'),
-  makeStyles: () => jest.fn().mockReturnValue({ chip: '' }),
-}));
-
-jest.mock('react-use/esm/useAsync', () =>
-  jest.fn().mockReturnValue({ loading: true }),
-);
+const useTagsMock = useTags as jest.Mock;
 
 describe('AcrImages', () => {
   beforeEach(() => {
-    (useAsync as jest.Mock).mockClear();
+    jest.clearAllMocks();
   });
 
-  it('should render repository view', () => {
+  it('should render repository view', async () => {
     const mockAsyncData = {
       loading: false,
       value: {
         tags: mockAcrTagsData.tags,
       },
     };
-    (useAsync as jest.Mock).mockReturnValue(mockAsyncData);
-    const { queryByRole, getByText } = render(
+    useTagsMock.mockReturnValue(mockAsyncData);
+    const { queryAllByRole, getByText } = await renderInTestApp(
       <AcrImages image="sample/node" />,
     );
-    expect(queryByRole('progressbar')).not.toBeInTheDocument();
+    expect(queryAllByRole('progressbar')).toHaveLength(0);
     expect(getByText('1.0.0')).toBeInTheDocument();
   });
 
-  it('should show loading', () => {
+  it('should show loading', async () => {
     const mockAsyncData = {
       loading: true,
     };
-    (useAsync as jest.Mock).mockReturnValue(mockAsyncData);
-    const { queryByRole } = render(<AcrImages image="sample/node" />);
+    useTagsMock.mockReturnValue(mockAsyncData);
+    const { queryByRole } = await renderInTestApp(
+      <AcrImages image="sample/node" />,
+    );
     expect(queryByRole('progressbar')).toBeInTheDocument();
   });
 
-  it('should show error', () => {
+  it('should show error', async () => {
     const mockAsyncData = {
       loading: false,
       error: 'something went wrong!!',
     };
-    (useAsync as jest.Mock).mockReturnValue(mockAsyncData);
-    const { queryByRole, getByText } = render(
+    useTagsMock.mockReturnValue(mockAsyncData);
+    const { queryByRole, getByText } = await renderInTestApp(
       <AcrImages image="sample/node" />,
     );
     expect(queryByRole('progressbar')).not.toBeInTheDocument();

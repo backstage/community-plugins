@@ -13,7 +13,7 @@ Each of the entries in the table will direct you to the error details in your de
 
 ## Setup
 
-1. Configure the [periskop backend plugin](https://github.com/backstage/backstage/tree/master/plugins/periskop-backend/)
+1. Configure the [periskop backend plugin](https://github.com/backstage/community-plugins/tree/main/workspaces/periskop/plugins/periskop-backend)
 
 2. Install the plugin by running:
 

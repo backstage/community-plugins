@@ -1,5 +1,22 @@
 # @backstage-community/plugin-azure-sites-backend
 
+## 0.9.1
+
+### Patch Changes
+
+- 6c0f6ee: Update README links to point to community-plugins repository.
+
+## 0.9.0
+
+### Minor Changes
+
+- 554b8d9: Backstage version bump to v1.38.1
+
+### Patch Changes
+
+- Updated dependencies [554b8d9]
+  - @backstage-community/plugin-azure-sites-common@0.6.0
+
 ## 0.8.0
 
 ### Minor Changes

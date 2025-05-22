@@ -13,21 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import _ from 'lodash';
-import { IstioConfigDetails } from '../types/IstioConfigDetails';
 import {
   dicTypeToGVK,
-  gvkType,
-  IstioConfigItem,
-} from '../types/IstioConfigList';
-import {
   GroupVersionKind,
+  gvkType,
+  IstioConfigDetails,
+  IstioConfigItem,
   IstioObject,
   ObjectCheck,
   OutlierDetection,
   StatusCondition,
   Validations,
-} from '../types/IstioObjects';
+} from '@backstage-community/plugin-kiali-common/types';
+import _ from 'lodash';
 
 export const mergeJsonPatch = (
   objectModified: object,

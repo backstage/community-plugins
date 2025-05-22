@@ -31,6 +31,7 @@ import { RoleFormValues } from './types';
 import PermissionPoliciesFormTable from './PermissionPoliciesFormTable';
 import PluginsDropdown from './PluginsDropdown';
 import Box from '@mui/material/Box';
+import { capitalizeFirstLetter } from '../../utils/string-utils';
 
 type PermissionPoliciesFormProps = {
   permissionPoliciesRows: PermissionsData[];
@@ -138,7 +139,7 @@ export const PermissionPoliciesForm = ({
     let allPlugins: SelectedPlugin[] = [];
     if (permissionPoliciesData?.plugins) {
       allPlugins = permissionPoliciesData.plugins.map(p => ({
-        label: p.charAt(0).toLocaleUpperCase('en-US') + p.substring(1),
+        label: capitalizeFirstLetter(p),
         value: p,
       }));
     }

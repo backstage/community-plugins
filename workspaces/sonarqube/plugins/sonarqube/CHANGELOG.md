@@ -1,5 +1,16 @@
 # @backstage-community/plugin-sonarqube
 
+## 0.12.0
+
+### Minor Changes
+
+- 8be1894: Upgraded to Backstage release 1.38
+
+### Patch Changes
+
+- Updated dependencies [8be1894]
+  - @backstage-community/plugin-sonarqube-react@0.6.0
+
 ## 0.11.2
 
 ### Patch Changes

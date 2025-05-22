@@ -15,7 +15,6 @@
  */
 
 import { CatalogClient } from '@backstage/catalog-client';
-import { parseEntityRef } from '@backstage/catalog-model';
 import { NotAllowedError } from '@backstage/errors';
 import { IdentityApi } from '@backstage/plugin-auth-node';
 import {
@@ -218,15 +217,6 @@ export async function createRouter(
       return;
     }
 
-    const filter = entityRefs.map(ref => {
-      const compoundRef = parseEntityRef(ref);
-      return {
-        kind: compoundRef.kind,
-        'metadata.namespace': compoundRef.namespace,
-        'metadata.name': compoundRef.name,
-      };
-    });
-
     const { token } = await auth.getPluginRequestToken({
       onBehalfOf: await httpAuth.credentials(req),
       targetPluginId: 'catalog',
@@ -237,8 +227,9 @@ export async function createRouter(
     // via catalog events (https://github.com/backstage/backstage/issues/8219)
     //
     // Note: This will also enforce catalog permissions and will only return entities for which the current user has access to
-    const entities = (await catalogClient.getEntities({ filter }, { token }))
-      .items;
+    const entities = (
+      await catalogClient.getEntitiesByRefs({ entityRefs }, { token })
+    ).items.filter(Boolean);
 
     res.json(entities);
   });

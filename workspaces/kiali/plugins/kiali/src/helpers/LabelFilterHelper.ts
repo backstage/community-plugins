@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { AppListItem } from '../types/AppList';
-import { ServiceListItem } from '../types/ServiceList';
-import { WorkloadListItem } from '../types/Workload';
+import type { AppListItem } from '@backstage-community/plugin-kiali-common/types';
+import {
+  ServiceListItem,
+  WorkloadListItem,
+} from '@backstage-community/plugin-kiali-common/types';
 
 type itemsType = AppListItem | ServiceListItem | WorkloadListItem;
 

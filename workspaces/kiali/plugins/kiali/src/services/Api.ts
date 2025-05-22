@@ -13,7 +13,59 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { Namespace } from '@backstage-community/plugin-kiali-common/types';
+import {
+  AppHealth,
+  NamespaceAppHealth,
+  NamespaceServiceHealth,
+  NamespaceWorkloadHealth,
+  ServiceHealth,
+  WorkloadHealth,
+} from '@backstage-community/plugin-kiali-common/func';
+import type {
+  App,
+  AppList,
+  AppListQuery,
+  AppQuery,
+  AuthInfo,
+  CertsInfo,
+  DashboardModel,
+  DurationInSeconds,
+  GrafanaInfo,
+  GraphDefinition,
+  GraphElementsQuery,
+  Namespace,
+  TimeInSeconds,
+} from '@backstage-community/plugin-kiali-common/types';
+import {
+  ClusterWorkloadsResponse,
+  ComponentStatus,
+  HTTP_VERBS,
+  IstioConfigDetails,
+  IstioConfigDetailsQuery,
+  IstioConfigList,
+  IstioConfigListQuery,
+  IstioConfigsMapQuery,
+  IstioMetricsMap,
+  IstioMetricsOptions,
+  KialiCrippledFeatures,
+  LogLevelQuery,
+  NamespaceHealthQuery,
+  PodLogs,
+  PodLogsQuery,
+  ServerConfig,
+  ServiceDetailsInfo,
+  ServiceDetailsQuery,
+  ServiceList,
+  ServiceListQuery,
+  Span,
+  StatusState,
+  TLSStatus,
+  TracingQuery,
+  ValidationStatus,
+  Workload,
+  WorkloadListQuery,
+  WorkloadQuery,
+} from '@backstage-community/plugin-kiali-common/types';
 import { Entity } from '@backstage/catalog-model';
 import {
   createApiRef,
@@ -23,54 +75,7 @@ import {
 import { AxiosError } from 'axios';
 import { Record } from 'victory-core/lib/victory-util/immutable-types';
 import { KIALI_PROVIDER } from '../components/Router';
-import { config } from '../config';
-import { App, AppQuery } from '../types/App';
-import { AppList, AppListQuery } from '../types/AppList';
-import { AuthInfo } from '../types/Auth';
-import { CertsInfo } from '../types/CertsInfo';
-import { DurationInSeconds, HTTP_VERBS, TimeInSeconds } from '../types/Common';
-import { DashboardModel } from '../types/Dashboards';
-import { GrafanaInfo } from '../types/GrafanaInfo';
-import { GraphDefinition, GraphElementsQuery } from '../types/Graph';
-import {
-  AppHealth,
-  NamespaceAppHealth,
-  NamespaceHealthQuery,
-  NamespaceServiceHealth,
-  NamespaceWorkloadHealth,
-  ServiceHealth,
-  WorkloadHealth,
-} from '../types/Health';
-import {
-  IstioConfigDetails,
-  IstioConfigDetailsQuery,
-} from '../types/IstioConfigDetails';
-import {
-  IstioConfigList,
-  IstioConfigListQuery,
-  IstioConfigsMapQuery,
-} from '../types/IstioConfigList';
-import {
-  LogLevelQuery,
-  PodLogs,
-  PodLogsQuery,
-  ValidationStatus,
-} from '../types/IstioObjects';
-import { ComponentStatus } from '../types/IstioStatus';
-import { IstioMetricsMap } from '../types/Metrics';
-import { IstioMetricsOptions } from '../types/MetricsOptions';
-import { KialiCrippledFeatures, ServerConfig } from '../types/ServerConfig';
-import { ServiceDetailsInfo, ServiceDetailsQuery } from '../types/ServiceInfo';
-import { ServiceList, ServiceListQuery } from '../types/ServiceList';
-import { StatusState } from '../types/StatusState';
-import { TLSStatus } from '../types/TLSStatus';
-import { Span, TracingQuery } from '../types/Tracing';
-import {
-  ClusterWorkloadsResponse,
-  Workload,
-  WorkloadListQuery,
-  WorkloadQuery,
-} from '../types/Workload';
+import { config, serverConfig } from '../config';
 import { filterNsByAnnotation } from '../utils/entityFilter';
 
 export const ANONYMOUS_USER = 'anonymous';
@@ -943,11 +948,17 @@ export class KialiApiClient implements KialiApi {
 
       if (info.health) {
         // Default rate interval in backend = 600s
-        info.health = ServiceHealth.fromJson(namespace, service, info.health, {
-          rateInterval: rateInterval ?? 600,
-          hasSidecar: info.istioSidecar,
-          hasAmbient: info.isAmbient,
-        });
+        info.health = ServiceHealth.fromJson(
+          namespace,
+          service,
+          info.health,
+          {
+            rateInterval: rateInterval ?? 600,
+            hasSidecar: info.istioSidecar,
+            hasAmbient: info.isAmbient,
+          },
+          serverConfig,
+        );
       }
       return info;
     });

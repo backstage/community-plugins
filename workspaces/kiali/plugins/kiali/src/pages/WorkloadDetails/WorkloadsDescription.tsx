@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 import {
+  Health,
+  validationKey,
+} from '@backstage-community/plugin-kiali-common/func';
+import type { Workload } from '@backstage-community/plugin-kiali-common/types';
+import {
   Card,
   CardContent,
   CardHeader,
@@ -36,13 +41,10 @@ import { isMultiCluster, serverConfig } from '../../config';
 import { KialiIcon } from '../../config/KialiIcon';
 import { isGateway, isWaypoint } from '../../helpers/LabelFilterHelper';
 import { cardsHeight, kialiStyle } from '../../styles/StyleUtils';
-import * as H from '../../types/Health';
-import { validationKey } from '../../types/IstioConfigList';
-import { Workload } from '../../types/Workload';
 import { hasMissingAuthPolicy } from '../../utils/IstioConfigUtils';
 
 type WorkloadDescriptionProps = {
-  health?: H.Health;
+  health?: Health;
   entity?: boolean;
   namespace: string;
   workload: Workload;

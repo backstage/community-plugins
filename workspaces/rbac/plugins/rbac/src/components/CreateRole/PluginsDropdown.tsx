@@ -15,7 +15,7 @@
  */
 import Autocomplete from '@mui/material/Autocomplete';
 import type { FocusEventHandler } from 'react';
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { SelectedPlugin } from '../../types';
 import { PluginsDropdownOption } from './PluginsDropdownOption';
 import TextField from '@mui/material/TextField';
@@ -45,6 +45,7 @@ const PluginsDropdown = ({
   onRemoveAllPlugins,
   selectedPluginsError,
 }: PluginsDropdownProps) => {
+  const [inputValue, setInputValue] = useState('');
   useEffect(() => {
     if (selectedPlugins.length === allPlugins.length - 1)
       setFieldValue(`selectedPlugins`, allPlugins, true);
@@ -53,11 +54,18 @@ const PluginsDropdown = ({
   return (
     <Autocomplete
       options={allPlugins}
+      inputValue={inputValue}
+      onInputChange={(_, newInputValue, reason) => {
+        if (reason !== 'reset') {
+          setInputValue(newInputValue);
+        }
+      }}
       renderTags={() => ''}
       isOptionEqualToValue={(option, value) => option.label === value.label}
       multiple
       disableCloseOnSelect
       getOptionLabel={option => option.label}
+      noOptionsText="No plugins found."
       style={{ width: '30%', flexGrow: '1' }}
       value={selectedPlugins || null}
       onChange={(_e, selPlugins, reason, selOption) => {
@@ -89,6 +97,11 @@ const PluginsDropdown = ({
           error={!!selectedPluginsError}
           helperText={selectedPluginsError ?? ''}
           onBlur={handleBlur}
+          onKeyDown={event => {
+            if (event.key === 'Backspace' && params.inputProps.value === '') {
+              event.stopPropagation();
+            }
+          }}
           required
         />
       )}

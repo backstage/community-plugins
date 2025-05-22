@@ -1,5 +1,11 @@
 ## @backstage-community/plugin-rbac-node [1.4.0](https://github.com/janus-idp/backstage-plugins/compare/@backstage-community/plugin-rbac-node@1.3.1...@backstage-community/plugin-rbac-node@1.4.0) (2024-07-26)
 
+## 1.11.1
+
+### Patch Changes
+
+- 658c51c: chore: Remove usage of @spotify/prettier-config
+
 ## 1.11.0
 
 ### Minor Changes

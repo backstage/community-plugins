@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import type { DurationInSeconds } from './types/';
+
 /** @public */
 export const pluginId = 'kiali';
 /** @public */
@@ -27,3 +29,10 @@ export const KIALI_LABEL_SELECTOR_QUERY_ANNOTATION = 'kiali.io/selector';
 
 /** @public */
 export const ANNOTATION_SUPPORTED = [KIALI_NAMESPACE, KIALI_PROVIDER];
+
+/** @public */
+export const KIALI_WIZARD_LABEL = 'kiali_wizard';
+/** @public */
+export const KIALI_RELATED_LABEL = 'kiali_wizard_related';
+/** @public */
+export const defaultMetricsDuration: DurationInSeconds = 600;

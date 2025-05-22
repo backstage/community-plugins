@@ -31,6 +31,7 @@ import { type RoleBasedPolicy } from '@backstage-community/plugin-rbac-common';
 import { filterTableData } from '../../utils/filter-table-data';
 import EditRole from '../EditRole';
 import { columns } from './PermissionsListColumns';
+import { StyledTableWrapper } from './StyledTableWrapper';
 
 type PermissionsCardProps = {
   entityReference: string;
@@ -114,6 +115,11 @@ export const PermissionsCard = ({
       onClick: () => {},
     },
   ];
+
+  let title = 'Permission Policies';
+  if (!loading && data.length > 0) {
+    title = `${numberOfPolicies} permission${numberOfPolicies !== 1 ? 's' : ''}`;
+  }
 
   return (
     <Box>

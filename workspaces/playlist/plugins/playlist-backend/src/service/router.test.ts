@@ -45,13 +45,13 @@ const sampleEntities = [
     },
   },
 ];
-const mockGetEntties = jest
+const mockGetEntitiesByRefs = jest
   .fn()
   .mockImplementation(async () => ({ items: sampleEntities }));
 jest.mock('@backstage/catalog-client', () => ({
   CatalogClient: jest
     .fn()
-    .mockImplementation(() => ({ getEntities: mockGetEntties })),
+    .mockImplementation(() => ({ getEntitiesByRefs: mockGetEntitiesByRefs })),
 }));
 
 const mockConditionFilter = { key: 'test', values: ['test-val'] };
@@ -410,7 +410,7 @@ describe('createRouter', () => {
         { credentials: mockCredentials.user() },
       );
       expect(mockDbHandler.getPlaylistEntities).not.toHaveBeenCalled();
-      expect(mockGetEntties).not.toHaveBeenCalled();
+      expect(mockGetEntitiesByRefs).not.toHaveBeenCalled();
       expect(response.status).toEqual(403);
     });
 
@@ -419,20 +419,9 @@ describe('createRouter', () => {
       expect(mockDbHandler.getPlaylistEntities).toHaveBeenCalledWith(
         'playlist-id',
       );
-      expect(mockGetEntties).toHaveBeenCalledWith(
+      expect(mockGetEntitiesByRefs).toHaveBeenCalledWith(
         {
-          filter: [
-            {
-              kind: 'component',
-              'metadata.namespace': 'default',
-              'metadata.name': 'test-ent',
-            },
-            {
-              kind: 'system',
-              'metadata.namespace': 'default',
-              'metadata.name': 'test-ent-system',
-            },
-          ],
+          entityRefs: mockEntities,
         },
         {
           token: mockCredentials.service.token({

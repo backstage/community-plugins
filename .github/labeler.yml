@@ -295,6 +295,9 @@ workspace/topology:
 workspace/vault:
   - "Workspace\\s*vault"
 
+workspace/wheel-of-names:
+  - "Workspace\\s*wheel-of-names"
+
 workspace/xcmetrics:
   - "Workspace\\s*xcmetrics"
 

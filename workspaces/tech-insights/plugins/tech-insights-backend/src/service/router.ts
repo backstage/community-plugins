@@ -27,7 +27,6 @@ import {
   Check,
   techInsightsCheckReadPermission,
   techInsightsCheckUpdatePermission,
-  techInsightsPermissions,
   techInsightsFactRetrieverReadPermission,
 } from '@backstage-community/plugin-tech-insights-common';
 import { DateTime } from 'luxon';
@@ -47,7 +46,6 @@ import {
   AuthorizeResult,
   BasicPermission,
 } from '@backstage/plugin-permission-common';
-import { createPermissionIntegrationRouter } from '@backstage/plugin-permission-node';
 import { NotAllowedError } from '@backstage/errors';
 import pLimit from 'p-limit';
 
@@ -109,12 +107,7 @@ export async function createRouter<
 >(options: RouterOptions<CheckType, CheckResultType>): Promise<express.Router> {
   const router = Router();
 
-  const permissionsIntegrationRouter = createPermissionIntegrationRouter({
-    permissions: techInsightsPermissions,
-  });
-
   router.use(express.json());
-  router.use(permissionsIntegrationRouter);
 
   const {
     persistenceContext,

@@ -13,13 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {
+  MessageType,
+  NotificationMessage,
+} from '@backstage-community/plugin-kiali-common/types';
 import _ from 'lodash';
 import { getType } from 'typesafe-actions';
 import { KialiAppAction } from '../actions/KialiAppAction';
 import { LoginActions } from '../actions/LoginActions';
 import { MessageCenterActions } from '../actions/MessageCenterActions';
 import { MessageCenterState } from '../store/Store';
-import { MessageType, NotificationMessage } from '../types/MessageCenter';
 import { updateState } from '../utils/Reducer';
 
 export const INITIAL_MESSAGE_CENTER_STATE: MessageCenterState = {

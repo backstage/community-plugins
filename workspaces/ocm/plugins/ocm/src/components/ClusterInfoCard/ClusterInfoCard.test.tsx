@@ -13,9 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
-import { render } from '@testing-library/react';
+import { renderInTestApp } from '@backstage/test-utils';
 
 import data from '../../../__fixtures__/cluster1.json';
 import { useCluster } from '../ClusterContext';
@@ -46,9 +44,9 @@ describe('ClusterInfoCard', () => {
     jest.resetAllMocks();
   });
 
-  it('should render the table', () => {
+  it('should render the table', async () => {
     (useCluster as jest.Mock).mockReturnValue({ data: data });
-    const { getByText } = render(<ClusterInfoCard />);
+    const { getByText } = await renderInTestApp(<ClusterInfoCard />);
 
     expect(getByText('foo')).toBeInTheDocument();
     expect(getByText('Ready')).toBeInTheDocument();
@@ -60,9 +58,9 @@ describe('ClusterInfoCard', () => {
     expect(getByText('BareMetal')).toBeInTheDocument();
   });
 
-  it('should render nothing when there is no cluster data', () => {
+  it('should render nothing when there is no cluster data', async () => {
     (useCluster as jest.Mock).mockReturnValue({});
-    const { queryByText } = render(<ClusterInfoCard />);
+    const { queryByText } = await renderInTestApp(<ClusterInfoCard />);
 
     expect(queryByText('foo')).toBeNull();
     expect(queryByText('Ready')).toBeNull();

@@ -13,6 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {
+  NotificationGroup,
+  NotificationMessage,
+} from '@backstage-community/plugin-kiali-common/types';
 import { ItemCardHeader } from '@backstage/core-components';
 import {
   Accordion,
@@ -29,10 +33,6 @@ import { default as React } from 'react';
 import { KialiAppAction } from '../../actions/KialiAppAction';
 import { MessageCenterState } from '../../store';
 import { kialiStyle } from '../../styles/StyleUtils';
-import {
-  NotificationGroup,
-  NotificationMessage,
-} from '../../types/MessageCenter';
 import { AlertDrawerGroup } from './AlertDrawerGroup';
 
 type AlertDrawerProps = {

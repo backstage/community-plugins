@@ -17,9 +17,8 @@ import { useDeleteDialog } from '@janus-idp/shared-react';
 import Delete from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-import Typography from '@mui/material/Typography';
 import { policyEntityDeletePermission } from '@backstage-community/plugin-rbac-common';
-import { usePermission } from '@backstage/plugin-permission-react';
+import { useActionPermissionTooltip } from '../../hooks/useActionPermissionTooltip';
 
 type DeleteRoleProps = {
   roleName: string;
@@ -41,31 +40,31 @@ const DeleteRole = ({
     setOpenDialog(true);
   };
 
-  const deletePermissionResult = usePermission({
+  const { disable, tooltipText, testIdText } = useActionPermissionTooltip({
     permission: policyEntityDeletePermission,
     resourceRef: roleName,
+    canAct: canEdit,
+    action: 'delete',
+    dataTestId: dataTestId,
+    fallbackTooltip: tooltip,
   });
 
-  const disable = !(deletePermissionResult.allowed && canEdit);
-  const dataTestIdText = disable
-    ? `disable-delete-role-${roleName}`
-    : `delete-role-${roleName}`;
-  const tooltipText = disable ? 'Role cannot be deleted' : '';
-
   return (
-    <Tooltip title={tooltip ?? tooltipText}>
-      <Typography component="span" data-testid={dataTestId ?? dataTestIdText}>
-        <IconButton
-          onClick={() => openDialog(roleName)}
-          aria-label="Delete"
-          disabled={disable}
-          title={tooltip ?? 'Delete Role'}
-          style={{ padding: '0.5rem', borderRadius: '50%' }}
-          sx={{ '&:hover': { borderRadius: '50%' } }}
-        >
-          <Delete />
-        </IconButton>
-      </Typography>
+    <Tooltip title={tooltipText}>
+      <IconButton
+        onClick={() => openDialog(roleName)}
+        data-testid={testIdText}
+        aria-label="Delete"
+        disabled={disable}
+        title={tooltip ?? 'Delete Role'}
+        sx={{
+          p: 1,
+          borderRadius: '50%',
+          '&:hover': { borderRadius: '50%' },
+        }}
+      >
+        <Delete />
+      </IconButton>
     </Tooltip>
   );
 };
