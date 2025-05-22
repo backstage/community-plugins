@@ -33,7 +33,6 @@ import {
   PolicyDecision,
   ResourcePermission,
 } from '@backstage/plugin-permission-common';
-import { createPermissionIntegrationRouter } from '@backstage/plugin-permission-node';
 
 import express from 'express';
 import type { Request } from 'express-serve-static-core';
@@ -41,16 +40,14 @@ import { isEmpty, isEqual } from 'lodash';
 import type { ParsedQs } from 'qs';
 
 import {
-  PermissionAction,
   policyEntityCreatePermission,
   policyEntityDeletePermission,
-  policyEntityPermissions,
   policyEntityReadPermission,
   policyEntityUpdatePermission,
-  RESOURCE_TYPE_POLICY_ENTITY,
-  Role,
-  RoleBasedPolicy,
-  RoleConditionalPolicyDecision,
+  type PermissionAction,
+  type Role,
+  type RoleBasedPolicy,
+  type RoleConditionalPolicyDecision,
 } from '@backstage-community/plugin-rbac-common';
 import type { RBACProvider } from '@backstage-community/plugin-rbac-node';
 
@@ -79,7 +76,7 @@ import {
 import { EnforcerDelegate } from './enforcer-delegate';
 import { PluginPermissionMetadataCollector } from './plugin-endpoints';
 import { RBACRouterOptions } from './policy-builder';
-import { RBACFilters, rules, transformConditions } from '../permissions';
+import { conditionTransformerFunc, RBACFilters } from '../permissions';
 
 export class PoliciesServer {
   constructor(
@@ -141,28 +138,15 @@ export class PoliciesServer {
   async serve(): Promise<express.Router> {
     const router = await createRouter(this.options);
 
-    const { logger } = this.options;
-
-    const policyPermissionsIntegrationRouter =
-      createPermissionIntegrationRouter({
-        resourceType: RESOURCE_TYPE_POLICY_ENTITY,
-        getResources: resourceRefs =>
-          Promise.all(
-            resourceRefs.map(ref => {
-              return this.roleMetadata.findRoleMetadata(ref);
-            }),
-          ),
-        permissions: policyEntityPermissions,
-        rules: Object.values(rules),
-      });
-
-    router.use(policyPermissionsIntegrationRouter);
+    const { logger, permissionsRegistry } = this.options;
 
     const isPluginEnabled =
       this.options.config.getOptionalBoolean('permission.enabled');
     if (!isPluginEnabled) {
       return router;
     }
+
+    const transformConditions = conditionTransformerFunc(permissionsRegistry);
 
     router.get('/', async (request, response) => {
       await this.authorizeConditional(request, policyEntityReadPermission);
