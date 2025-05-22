@@ -39,8 +39,8 @@ import {
   NotAllowedError,
   NotFoundError,
 } from '@backstage/errors';
+import { validatePermissionDependentPlugin } from '../validation/plugin-validation';
 
-// todo: do we need separated permissions to set up extra plugin ids  ?
 export function createPermissionDefinitionRoutes(
   pluginPermMetaData: PluginPermissionMetadataCollector,
   pluginIdProvider: ExtendablePluginIdProvider,
@@ -97,7 +97,7 @@ export function createPermissionDefinitionRoutes(
     async (request, response) => {
       await authorizeConditional(request, policyEntityCreatePermission, deps);
       const pluginIds: PermissionDependentPluginList = request.body;
-      // todo validate pluginIds object
+      validatePermissionDependentPlugin(pluginIds);
       const pluginDtos = permissionDependentPluginListToDTO(pluginIds);
 
       let actualPluginIds = await pluginIdProvider.getPluginIds();
@@ -123,7 +123,7 @@ export function createPermissionDefinitionRoutes(
     async (request, response) => {
       await authorizeConditional(request, policyEntityDeletePermission, deps);
       const pluginIds: PermissionDependentPluginList = request.body;
-      // todo validate pluginIds object
+      validatePermissionDependentPlugin(pluginIds);
       const configuredPluginIds = pluginIds.ids.filter(pluginId =>
         pluginIdProvider.isConfiguredPluginId(pluginId),
       );

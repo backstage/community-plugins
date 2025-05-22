@@ -20,7 +20,7 @@ import { NotFoundError } from '@backstage/errors';
 import { PluginPermissionMetadataCollector } from './plugin-endpoints';
 import { policyEntityPermissions } from '@backstage-community/plugin-rbac-common';
 import { rbacRules } from '../permissions';
-import { extandablePluginIdProviderMock } from '../../__fixtures__/mock-utils';
+import { extendablePluginIdProviderMock } from '../../__fixtures__/mock-utils';
 import { ExtendablePluginIdProvider } from './extendable-id-provider';
 
 describe('plugin-endpoint', () => {
@@ -36,7 +36,7 @@ describe('plugin-endpoint', () => {
         deps: {
           discovery: mockPluginEndpointDiscovery,
           pluginIdProvider:
-            extandablePluginIdProviderMock as ExtendablePluginIdProvider,
+            extendablePluginIdProviderMock as ExtendablePluginIdProvider,
           logger: mockServices.logger.mock(),
           config: mockServices.rootConfig(),
         },
@@ -65,7 +65,7 @@ describe('plugin-endpoint', () => {
         deps: {
           discovery: mockPluginEndpointDiscovery,
           pluginIdProvider:
-            extandablePluginIdProviderMock as ExtendablePluginIdProvider,
+            extendablePluginIdProviderMock as ExtendablePluginIdProvider,
           logger: mockServices.logger.mock(),
           config: mockServices.rootConfig(),
         },
@@ -103,7 +103,7 @@ describe('plugin-endpoint', () => {
         deps: {
           discovery: mockPluginEndpointDiscovery,
           pluginIdProvider:
-            extandablePluginIdProviderMock as ExtendablePluginIdProvider,
+            extendablePluginIdProviderMock as ExtendablePluginIdProvider,
           logger: mockServices.logger.mock(),
           config: mockServices.rootConfig(),
         },
@@ -125,7 +125,7 @@ describe('plugin-endpoint', () => {
 
     it('should log warning for not found endpoint', async () => {
       (
-        extandablePluginIdProviderMock.getPluginIds as jest.Mock
+        extendablePluginIdProviderMock.getPluginIds as jest.Mock
       ).mockReturnValueOnce(['catalog', 'unknown-plugin-id']);
 
       const mockUrlReaderService = mockServices.urlReader.mock({
@@ -152,7 +152,7 @@ describe('plugin-endpoint', () => {
         deps: {
           discovery: mockPluginEndpointDiscovery,
           pluginIdProvider:
-            extandablePluginIdProviderMock as ExtendablePluginIdProvider,
+            extendablePluginIdProviderMock as ExtendablePluginIdProvider,
           logger,
           config: mockServices.rootConfig(),
         },
@@ -179,7 +179,7 @@ describe('plugin-endpoint', () => {
 
     it('should log error when it is not possible to retrieve permission metadata for known endpoint', async () => {
       (
-        extandablePluginIdProviderMock.getPluginIds as jest.Mock
+        extendablePluginIdProviderMock.getPluginIds as jest.Mock
       ).mockResolvedValueOnce(['scaffolder', 'catalog']);
 
       const mockUrlReaderService = mockServices.urlReader.mock({
@@ -206,7 +206,7 @@ describe('plugin-endpoint', () => {
         deps: {
           discovery: mockPluginEndpointDiscovery,
           pluginIdProvider:
-            extandablePluginIdProviderMock as ExtendablePluginIdProvider,
+            extendablePluginIdProviderMock as ExtendablePluginIdProvider,
           logger,
           config: mockServices.rootConfig(),
         },
@@ -234,7 +234,7 @@ describe('plugin-endpoint', () => {
 
     it('should not log error caused by non json permission metadata for known endpoint', async () => {
       (
-        extandablePluginIdProviderMock.getPluginIds as jest.Mock
+        extendablePluginIdProviderMock.getPluginIds as jest.Mock
       ).mockReturnValueOnce(['scaffolder', 'catalog']);
 
       const mockUrlReaderService = mockServices.urlReader.mock({
@@ -272,7 +272,7 @@ describe('plugin-endpoint', () => {
         deps: {
           discovery: mockPluginEndpointDiscovery,
           pluginIdProvider:
-            extandablePluginIdProviderMock as ExtendablePluginIdProvider,
+            extendablePluginIdProviderMock as ExtendablePluginIdProvider,
           logger: mockServices.logger.mock(),
           config: mockServices.rootConfig(),
         },
@@ -300,14 +300,14 @@ describe('plugin-endpoint', () => {
   describe('Test list plugin condition rules', () => {
     it('should return empty condition rule list', async () => {
       (
-        extandablePluginIdProviderMock.getPluginIds as jest.Mock
+        extendablePluginIdProviderMock.getPluginIds as jest.Mock
       ).mockReturnValueOnce([]);
 
       const collector = new PluginPermissionMetadataCollector({
         deps: {
           discovery: mockPluginEndpointDiscovery,
           pluginIdProvider:
-            extandablePluginIdProviderMock as ExtendablePluginIdProvider,
+            extendablePluginIdProviderMock as ExtendablePluginIdProvider,
           logger: mockServices.logger.mock(),
           config: mockServices.rootConfig(),
         },
@@ -321,7 +321,7 @@ describe('plugin-endpoint', () => {
 
     it('should return non empty condition rule list', async () => {
       (
-        extandablePluginIdProviderMock.getPluginIds as jest.Mock
+        extendablePluginIdProviderMock.getPluginIds as jest.Mock
       ).mockReturnValueOnce(['catalog']);
 
       const mockUrlReaderService = mockServices.urlReader.mock({
@@ -340,7 +340,7 @@ describe('plugin-endpoint', () => {
         deps: {
           discovery: mockPluginEndpointDiscovery,
           pluginIdProvider:
-            extandablePluginIdProviderMock as ExtendablePluginIdProvider,
+            extendablePluginIdProviderMock as ExtendablePluginIdProvider,
           logger: mockServices.logger.mock(),
           config: mockServices.rootConfig(),
         },
@@ -377,7 +377,7 @@ describe('plugin-endpoint', () => {
   describe('Test get plugin metadata by id', () => {
     it('should return metadata by id', async () => {
       (
-        extandablePluginIdProviderMock.getPluginIds as jest.Mock
+        extendablePluginIdProviderMock.getPluginIds as jest.Mock
       ).mockReturnValueOnce(['catalog']);
 
       const mockUrlReaderService = mockServices.urlReader.mock({
@@ -396,7 +396,7 @@ describe('plugin-endpoint', () => {
         deps: {
           discovery: mockPluginEndpointDiscovery,
           pluginIdProvider:
-            extandablePluginIdProviderMock as ExtendablePluginIdProvider,
+            extendablePluginIdProviderMock as ExtendablePluginIdProvider,
           logger: mockServices.logger.mock(),
           config: mockServices.rootConfig(),
         },
@@ -439,7 +439,7 @@ describe('plugin-endpoint', () => {
 
     it('should return metadata by id (rbac-plugin)', async () => {
       (
-        extandablePluginIdProviderMock.getPluginIds as jest.Mock
+        extendablePluginIdProviderMock.getPluginIds as jest.Mock
       ).mockReturnValue(['permission']);
 
       const mockUrlReaderService = mockServices.urlReader.mock({
@@ -452,7 +452,7 @@ describe('plugin-endpoint', () => {
         deps: {
           discovery: mockPluginEndpointDiscovery,
           pluginIdProvider:
-            extandablePluginIdProviderMock as ExtendablePluginIdProvider,
+            extendablePluginIdProviderMock as ExtendablePluginIdProvider,
           logger: mockServices.logger.mock(),
           config: mockServices.rootConfig(),
         },

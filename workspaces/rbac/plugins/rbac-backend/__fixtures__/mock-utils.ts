@@ -97,7 +97,7 @@ export const pluginIdProviderMock = {
   getPluginIds: jest.fn().mockImplementation(() => []),
 };
 
-export const extandablePluginIdProviderMock: Partial<ExtendablePluginIdProvider> =
+export const extendablePluginIdProviderMock: Partial<ExtendablePluginIdProvider> =
   {
     isConfiguredPluginId: jest.fn().mockImplementation(),
     getPluginIds: jest.fn().mockImplementation(async () => ['catalog']),

@@ -61,7 +61,7 @@ import {
   roleMetadataStorageMock,
   mockedAuthorize,
   permissionDependentPluginStoreMock,
-  extandablePluginIdProviderMock,
+  extendablePluginIdProviderMock,
 } from '../../__fixtures__/mock-utils';
 import { ExtendablePluginIdProvider } from './extendable-id-provider';
 
@@ -271,7 +271,7 @@ describe('REST policies API', () => {
       pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
       roleMetadataStorageMock,
       permissionDependentPluginStoreMock,
-      extandablePluginIdProviderMock as ExtendablePluginIdProvider,
+      extendablePluginIdProviderMock as ExtendablePluginIdProvider,
     );
     const router = await server.serve();
     app = express().use(router);
@@ -3854,7 +3854,7 @@ describe('REST policies API', () => {
         pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
         roleMetadataStorageMock,
         permissionDependentPluginStoreMock,
-        extandablePluginIdProviderMock as ExtendablePluginIdProvider,
+        extendablePluginIdProviderMock as ExtendablePluginIdProvider,
         [providerMock],
       );
       const router = await server.serve();
