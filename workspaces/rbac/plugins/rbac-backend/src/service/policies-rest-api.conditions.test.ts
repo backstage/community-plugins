@@ -50,7 +50,7 @@ import {
   roleMetadataStorageMock,
   mockPermissionRegistry,
   permissionDependentPluginStoreMock,
-  extandablePluginIdProviderMock,
+  extendablePluginIdProviderMock,
 } from '../../__fixtures__/mock-utils';
 import request from 'supertest';
 import { RoleMetadataDao } from '../database/role-metadata';
@@ -331,7 +331,7 @@ describe('REST policies api with conditions', () => {
       pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
       roleMetadataStorageMock,
       permissionDependentPluginStoreMock,
-      extandablePluginIdProviderMock as ExtendablePluginIdProvider,
+      extendablePluginIdProviderMock as ExtendablePluginIdProvider,
     );
 
     const router = await server.serve();

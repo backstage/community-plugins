@@ -15,7 +15,7 @@
  */
 import {
   credentials,
-  extandablePluginIdProviderMock,
+  extendablePluginIdProviderMock,
   mockAuditorService,
   mockAuthService,
   mockedAuthorize,
@@ -49,7 +49,7 @@ describe('REST plugin policies metadata API', () => {
   beforeEach(async () => {
     const router = await createPermissionDefinitionRoutes(
       pluginMetadataCollectorMock as any,
-      extandablePluginIdProviderMock as ExtendablePluginIdProvider,
+      extendablePluginIdProviderMock as ExtendablePluginIdProvider,
       permissionDependentPluginStoreMock,
       {
         auth: mockAuthService,
@@ -248,7 +248,7 @@ describe('REST plugin policies metadata API', () => {
     mockedAuthorize.mockImplementationOnce(async () => [
       { result: AuthorizeResult.ALLOW },
     ]);
-    (extandablePluginIdProviderMock.getPluginIds as jest.Mock)
+    (extendablePluginIdProviderMock.getPluginIds as jest.Mock)
       .mockResolvedValueOnce(['jenkins', 'catalog'])
       .mockResolvedValueOnce(['jenkins', 'catalog', 'scaffolder']);
 
@@ -281,7 +281,7 @@ describe('REST plugin policies metadata API', () => {
       { result: AuthorizeResult.ALLOW },
     ]);
     (
-      extandablePluginIdProviderMock.getPluginIds as jest.Mock
+      extendablePluginIdProviderMock.getPluginIds as jest.Mock
     ).mockResolvedValueOnce(['jenkins', 'catalog', 'scaffolder']);
 
     const result = await request(app)
@@ -343,7 +343,7 @@ describe('REST plugin policies metadata API', () => {
     mockedAuthorizeConditional.mockImplementationOnce(async () => [
       { result: AuthorizeResult.ALLOW },
     ]);
-    (extandablePluginIdProviderMock.getPluginIds as jest.Mock)
+    (extendablePluginIdProviderMock.getPluginIds as jest.Mock)
       .mockResolvedValueOnce(['jenkins', 'sonarqube', 'catalog'])
       .mockResolvedValueOnce(['jenkins', 'sonarqube']);
 
@@ -411,7 +411,7 @@ describe('REST plugin policies metadata API', () => {
       { result: AuthorizeResult.ALLOW },
     ]);
     (
-      extandablePluginIdProviderMock.isConfiguredPluginId as jest.Mock
+      extendablePluginIdProviderMock.isConfiguredPluginId as jest.Mock
     ).mockReturnValueOnce(true);
     const result = await request(app)
       .delete('/plugins/id')
