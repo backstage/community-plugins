@@ -24,7 +24,7 @@
     "@backstage-community/plugin-tech-insights-backend": "workspace:^",
     "@backstage-community/plugin-tech-insights-backend-module-jsonfc": "workspace:^",
     "@backstage-community/plugin-tech-insights-node": "workspace:^",
-    "@backstage/backend-defaults": "^0.7.0",
+    "@backstage/backend-defaults": "^0.10.0",
     "@backstage/backend-plugin-api": "^1.1.1",
     "@backstage/catalog-client": "^1.9.1",
     "@backstage/catalog-model": "^1.7.3",
