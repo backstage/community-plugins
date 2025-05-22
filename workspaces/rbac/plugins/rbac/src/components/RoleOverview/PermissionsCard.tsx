@@ -126,27 +126,29 @@ export const PermissionsCard = ({
           />
         </Box>
       )}
-      <Table
-        title={
-          !loading && combinedData.length > 0
-            ? `Permission Policies (${numberOfPolicies})`
-            : 'Permission Policies'
-        }
-        actions={actions}
-        options={{ padding: 'default', search: true, paging: true }}
-        data={combinedData}
-        columns={columns as TableColumn<PermissionsData | RoleBasedPolicy>[]}
-        isLoading={loading}
-        emptyContent={
-          <Box
-            data-testid="permission-table-empty"
-            sx={{ display: 'flex', justifyContent: 'center', p: 2 }}
-          >
-            No records found
-          </Box>
-        }
-        onSearchChange={setSearchText}
-      />
+      <StyledTableWrapper>
+        <Table
+          title={
+            !loading && combinedData.length > 0
+              ? `Permission Policies (${numberOfPolicies})`
+              : 'Permission Policies'
+          }
+          actions={actions}
+          options={{ padding: 'default', search: true, paging: true }}
+          data={combinedData}
+          columns={columns as TableColumn<PermissionsData | RoleBasedPolicy>[]}
+          isLoading={loading}
+          emptyContent={
+            <Box
+              data-testid="permission-table-empty"
+              sx={{ display: 'flex', justifyContent: 'center', p: 2 }}
+            >
+              No records found
+            </Box>
+          }
+          onSearchChange={setSearchText}
+        />
+      </StyledTableWrapper>
     </Box>
   );
 };

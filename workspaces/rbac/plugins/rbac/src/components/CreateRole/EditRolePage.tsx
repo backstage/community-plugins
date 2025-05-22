@@ -66,15 +66,10 @@ export const EditRolePage = () => {
     description: role?.metadata?.description ?? '',
     owner: role?.metadata?.owner ?? '',
     selectedMembers,
-    selectedPlugins: (rolePolicies || [])
-      .map((pp: { permission: string }) => {
-        const permissionString = pp.permission || '';
-        const pluginId = permissionString.split('.')[0];
-        return pluginId;
-      })
-      .filter((pluginId: string) => !!pluginId)
-      .filter((p: string, i: number, ar: string[]) => ar.indexOf(p) === i)
-      .map((sp: string) => ({
+    selectedPlugins: rolePolicies
+      .map(pp => pp.plugin)
+      .filter((p, i, ar) => ar.indexOf(p) === i)
+      .map(sp => ({
         label: sp.charAt(0).toLocaleUpperCase('en-US') + sp.substring(1),
         value: sp,
       })),
