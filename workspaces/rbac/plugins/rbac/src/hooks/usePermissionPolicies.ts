@@ -24,11 +24,14 @@ import {
   getConditionalPermissionsData,
   getPermissionsData,
 } from '../utils/rbac-utils';
+// Import RoleBasedPolicy from rbac-common package
+import { RoleBasedPolicy } from '@backstage-community/plugin-rbac-common';
 
 const getErrorText = (
   policies: any,
   permissionPolicies: any,
   conditionalPolicies: any,
+  defaultPermissionsVal: any, // Add defaultPermissionsVal
 ): { name: number; message: string } | undefined => {
   if (!Array.isArray(policies) && (policies as Response)?.statusText) {
     return {
@@ -53,6 +56,16 @@ const getErrorText = (
       name: (conditionalPolicies as Response).status,
       message: `Error fetching the conditional permission policies. ${
         (conditionalPolicies as Response).statusText
+      }`,
+    };
+  } else if (
+    !Array.isArray(defaultPermissionsVal) && // Check for defaultPermissionsVal
+    (defaultPermissionsVal as Response)?.statusText
+  ) {
+    return {
+      name: (defaultPermissionsVal as Response).status,
+      message: `Error fetching default permissions. ${
+        (defaultPermissionsVal as Response).statusText
       }`,
     };
   }
@@ -88,11 +101,42 @@ export const usePermissionPolicies = (
     return await rbacApi.listPermissions();
   });
 
+  const {
+    value: defaultPermissionsData, // Renamed to defaultPermissionsData for clarity
+    retry: defaultPermissionsRetry,
+    error: defaultPermissionsError,
+  } = useAsyncRetry(async () => {
+    try {
+      const result = await rbacApi.getDefaultPermissions();
+      // Check if result is a Response object (error case from client)
+      if (result instanceof Response) {
+        if (!result.ok) {
+          // This will likely be caught by defaultPermissionsError via useAsyncRetry's mechanics
+          // but logging it here can be useful.
+          // To ensure it's treated as an error by useAsyncRetry, we might need to throw.
+          throw new Error(
+            `Failed to fetch default permissions: ${result.status}`,
+          );
+        }
+        // If it's a Response but somehow OK (shouldn't happen based on client logic)
+        const data = await result.json();
+        return data;
+      }
+      return result;
+    } catch (e) {
+      throw e; // Re-throw to be caught by useAsyncRetry
+    }
+  }, [rbacApi]); // Added rbacApi to dependency array
+
   const loading =
     !permissionPoliciesError &&
     !policiesError &&
     !conditionalPoliciesError &&
-    (!permissionPolicies || !policies || !conditionalPolicies);
+    !defaultPermissionsError && // Add this
+    (!permissionPolicies ||
+      !policies ||
+      !conditionalPolicies ||
+      !defaultPermissionsData); // Add !defaultPermissionsData
 
   const allPermissionPolicies = useMemo(
     () => (Array.isArray(permissionPolicies) ? permissionPolicies : []),
@@ -125,17 +169,47 @@ export const usePermissionPolicies = (
       policiesRetry();
       permissionPoliciesRetry();
       conditionalPoliciesRetry();
+      defaultPermissionsRetry(); // Add this
     },
     loading ? null : pollInterval || null,
   );
+
+  const processedDefaultPermissions = useMemo(() => {
+    if (Array.isArray(defaultPermissionsData)) {
+      return defaultPermissionsData.map(
+        dp =>
+          ({
+            entityReference: '<default>', // Special marker for default policies
+            permission: dp.permission,
+            policy: dp.policy, // 'policy' from default is 'action' in RoleBasedPolicy
+            effect: dp.effect,
+            metadata: { source: 'default' }, // Indicate source
+          }) as RoleBasedPolicy,
+      ); // Cast to RoleBasedPolicy or a compatible type
+    }
+    return [];
+  }, [defaultPermissionsData]);
+
   return {
     loading,
-    data: [...conditionsData, ...data],
-    retry: { policiesRetry, permissionPoliciesRetry, conditionalPoliciesRetry },
+    rolePolicies: [...conditionsData, ...data], // Existing combined data
+    defaultPolicies: processedDefaultPermissions, // New field for defaults
+    retry: {
+      policiesRetry,
+      permissionPoliciesRetry,
+      conditionalPoliciesRetry,
+      defaultPermissionsRetry,
+    },
     error:
       policiesError ||
       permissionPoliciesError ||
       conditionalPoliciesError ||
-      getErrorText(policies, permissionPolicies, conditionalPolicies),
+      defaultPermissionsError || // Add this
+      getErrorText(
+        policies,
+        permissionPolicies,
+        conditionalPolicies,
+        defaultPermissionsData,
+      ), // Pass defaultPermissionsData
   };
 };

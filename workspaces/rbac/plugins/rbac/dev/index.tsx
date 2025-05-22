@@ -35,7 +35,11 @@ import { mockConditions } from '../src/__fixtures__/mockConditions';
 import { mockMembers } from '../src/__fixtures__/mockMembers';
 import { mockPermissionPolicies } from '../src/__fixtures__/mockPermissionPolicies';
 import { mockPolicies } from '../src/__fixtures__/mockPolicies';
-import { RBACAPI, rbacApiRef } from '../src/api/RBACBackendClient';
+import {
+  DefaultPermissionPolicy,
+  RBACAPI,
+  rbacApiRef,
+} from '../src/api/RBACBackendClient';
 import { RbacPage, rbacPlugin } from '../src/plugin';
 import { MemberEntity, RoleBasedConditions, RoleError } from '../src/types';
 
@@ -50,6 +54,21 @@ class MockRBACApi implements RBACAPI {
   }
   async downloadStatistics(): Promise<Response> {
     return { status: 200 } as Response;
+  }
+
+  async getDefaultPermissions(): Promise<DefaultPermissionPolicy[]> {
+    return [
+      {
+        permission: 'catalog.entity.read',
+        policy: 'read',
+        effect: 'allow',
+      },
+      {
+        permission: 'scaffolder.template.read',
+        policy: 'read',
+        effect: 'allow',
+      },
+    ];
   }
 
   async getRoles(): Promise<Role[]> {

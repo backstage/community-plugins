@@ -33,6 +33,11 @@ import { capitalizeFirstLetter } from '../../utils/string-utils';
 export const EditRolePage = () => {
   const { roleName, roleNamespace, roleKind } = useParams();
   const [queryParamState] = useQueryParamState<number>('activeStep');
+
+  const roleEntityRef = roleName
+    ? `${roleKind}:${roleNamespace}/${roleName}`
+    : '';
+
   const {
     selectedMembers,
     members,
@@ -41,30 +46,10 @@ export const EditRolePage = () => {
     roleError,
     membersError,
     canReadUsersAndGroups,
-  } = useSelectedMembers(
-    roleName ? `${roleKind}:${roleNamespace}/${roleName}` : '',
-  );
+  } = useSelectedMembers(roleEntityRef);
 
-  const { data, loading: loadingPolicies } = usePermissionPolicies(
-    `${roleKind}:${roleNamespace}/${roleName}`,
-  );
-
-  const initialValues: RoleFormValues = {
-    name: roleName || '',
-    namespace: roleNamespace || 'default',
-    kind: roleKind || 'role',
-    description: role?.metadata?.description ?? '',
-    owner: role?.metadata?.owner ?? '',
-    selectedMembers,
-    selectedPlugins: data
-      .map(pp => pp.plugin)
-      .filter((p, i, ar) => ar.indexOf(p) === i)
-      .map(sp => ({
-        label: capitalizeFirstLetter(sp),
-        value: sp,
-      })),
-    permissionPoliciesRows: data,
-  };
+  const { rolePolicies, loading: loadingPolicies } =
+    usePermissionPolicies(roleEntityRef);
 
   if (loadingMembers || loadingPolicies) {
     return <Progress />;
@@ -74,6 +59,24 @@ export const EditRolePage = () => {
       <ErrorPage status={roleError.name} statusMessage={roleError.message} />
     );
   }
+
+  const initialValues: RoleFormValues = {
+    name: roleName || '',
+    namespace: roleNamespace || 'default',
+    kind: roleKind || 'role',
+    description: role?.metadata?.description ?? '',
+    owner: role?.metadata?.owner ?? '',
+    selectedMembers,
+    selectedPlugins: rolePolicies
+      .map(pp => pp.plugin)
+      .filter((p, i, ar) => ar.indexOf(p) === i)
+      .map(sp => ({
+        label: capitalizeFirstLetter(sp),
+        value: sp,
+      })),
+    permissionPoliciesRows: rolePolicies || [],
+  };
+
   if (!canReadUsersAndGroups) {
     return <ErrorPage statusMessage="Unauthorized to edit role" />;
   }

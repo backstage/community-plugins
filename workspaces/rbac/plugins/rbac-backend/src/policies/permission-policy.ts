@@ -59,6 +59,12 @@ import { PluginPermissionMetadataCollector } from '../service/plugin-endpoints';
 
 export class RBACPermissionPolicy implements PermissionPolicy {
   private readonly superUserList?: string[];
+  private readonly defaultUserAccessEnabled: boolean;
+  private readonly defaultPermissions: Array<{
+    permission: string;
+    policy: string;
+    effect: string;
+  }>;
 
   public static async build(
     logger: LoggerService,
@@ -90,6 +96,47 @@ export class RBACPermissionPolicy implements PermissionPolicy {
     const conditionalPoliciesFile = configApi.getOptionalString(
       'permission.rbac.conditionalPoliciesFile',
     );
+
+    // Read default user access configuration - properly handle Boolean values
+    const defaultUserAccessEnabled = configApi.getOptionalBoolean(
+      'permission.rbac.defaultUserAccess.enabled',
+    );
+    logger.info(
+      `Default user access enabled: ${Boolean(defaultUserAccessEnabled)}`,
+    );
+
+    // Read default permissions if enabled
+    const defaultPermissions: Array<{
+      permission: string;
+      policy: string;
+      effect: string;
+    }> = [];
+
+    if (defaultUserAccessEnabled) {
+      // Only proceed if explicitly enabled
+      const defaultPermissionsConfig = configApi.getOptionalConfigArray(
+        'permission.rbac.defaultUserAccess.defaultPermissions',
+      );
+
+      if (defaultPermissionsConfig && defaultPermissionsConfig.length > 0) {
+        for (const item of defaultPermissionsConfig) {
+          defaultPermissions.push({
+            permission: item.getString('permission'),
+            policy: item.getString('policy'),
+            effect: item.getString('effect') || 'allow',
+          });
+        }
+        logger.info(
+          `Loaded ${defaultPermissions.length} default permissions: ${JSON.stringify(
+            defaultPermissions,
+          )}`,
+        );
+      } else {
+        logger.warn(
+          'Default user access is enabled but no permissions are defined',
+        );
+      }
+    }
 
     if (superUsers && superUsers.length > 0) {
       for (const user of superUsers) {
@@ -155,6 +202,8 @@ export class RBACPermissionPolicy implements PermissionPolicy {
       auditor,
       conditionalStorage,
       superUserList,
+      defaultUserAccessEnabled, // Pass the raw boolean value without conversion
+      defaultPermissions,
     );
   }
 
@@ -163,8 +212,24 @@ export class RBACPermissionPolicy implements PermissionPolicy {
     private readonly auditor: AuditorService,
     private readonly conditionStorage: ConditionalStorage,
     superUserList?: string[],
+    defaultUserAccessEnabled = false,
+    defaultPermissions: Array<{
+      permission: string;
+      policy: string;
+      effect: string;
+    }> = [],
   ) {
     this.superUserList = superUserList;
+    this.defaultUserAccessEnabled = defaultUserAccessEnabled;
+    this.defaultPermissions = defaultPermissions;
+  }
+
+  public getDefaultPermissions(): Array<{
+    permission: string;
+    policy: string;
+    effect: string;
+  }> {
+    return this.defaultPermissions;
   }
 
   async handle(
@@ -249,6 +314,103 @@ export class RBACPermissionPolicy implements PermissionPolicy {
           action,
           roles,
         );
+      }
+
+      // New deny-checking logic block
+      if (!status && this.defaultUserAccessEnabled) {
+        const resourceTypeDeny = isResourcePermission(request.permission)
+          ? request.permission.resourceType
+          : undefined;
+
+        const permDeny = hasNamedPermission
+          ? permissionName
+          : (resourceTypeDeny ?? permissionName);
+        const denyPermissions: string[][] = [];
+        for (const role of roles) {
+          // Assuming getFilteredPolicy params are (fieldIndex, fieldValue0, fieldValue1, fieldValue2, fieldValue3)
+          // For deny check, the effect is the 4th parameter (index 3) for the policy rule.
+          // So we expect: enforcer.getFilteredPolicy(0, role, permDeny, action, 'deny')
+          // The Casbin API getFilteredPolicy(fieldIndex, ...fieldValues) means it filters starting from fieldIndex.
+          // If we want to match ptype, v0, v1, v2, v3 (e.g., 'p', role, permDeny, action, 'deny')
+          // and our policy has 5 parts (ptype, v0, v1, v2, v3), then:
+          // fieldIndex 0 is ptype, fieldIndex 1 is v0 (role), fieldIndex 2 is v1 (permDeny),
+          // fieldIndex 3 is v2 (action), fieldIndex 4 is v3 (effect, 'deny')
+          // So, to filter for role, permDeny, action, 'deny':
+          // We need to provide role, permDeny, action, 'deny' as fieldValues.
+          // The enforcer.getFilteredPolicy in Casbin node adapter expects (fieldIndex, ...fieldValues)
+          // If the policy is (role, object, action, effect), then:
+          // getFilteredPolicy(0, role, permDeny, action, 'deny') should work if 'effect' is the 4th part of the policy rule.
+          // Let's assume the underlying enforcer's getFilteredPolicy handles this as intended by the example.
+          // The existing code uses getFilteredPolicy(0, role, permissionName, action) for allow checks, implying effect is not the last param or is handled differently.
+          // Given the problem description's `this.enforcer.getFilteredPolicy(0, ...[role, permDeny, action, 'deny'])`
+          // this suggests the policy rule structure might be [role, permDeny, action, 'deny'] for the purpose of this call.
+          // Let's stick to the provided snippet's structure.
+          const denyPerm = await this.enforcer.getFilteredPolicy(
+            0,
+            role,
+            permDeny,
+            action,
+            'deny',
+          );
+          denyPermissions.push(...denyPerm);
+        }
+
+        if (denyPermissions.length === 0) {
+          // NO DENY RULES FOUND
+          const permissionDebug = {
+            user: userEntityRef,
+            permissionName,
+            action,
+            defaultsEnabled: this.defaultUserAccessEnabled,
+            defaultPermissions: this.defaultPermissions,
+          };
+
+          this.auditor.createEvent({
+            eventId: 'permission.debug.defaultAccess.noDeny',
+            meta: permissionDebug,
+          });
+
+          // First check by permission name (higher priority)
+          let defaultPermission = this.defaultPermissions.find(
+            dp =>
+              dp.permission === permissionName &&
+              (dp.policy === action || dp.policy === 'use'),
+          );
+
+          // If not found and it's a resourced permission, check by resource type
+          if (!defaultPermission && isResourcePermission(request.permission)) {
+            // Ensure 'request.permission.resourceType' is valid here.
+            // 'isResourcePermission' acts as a type guard.
+            const resourceTypeDefault = request.permission.resourceType;
+            defaultPermission = this.defaultPermissions.find(
+              dp =>
+                dp.permission === resourceTypeDefault &&
+                (dp.policy === action || dp.policy === 'use'),
+            );
+          }
+
+          if (defaultPermission) {
+            this.auditor.createEvent({
+              eventId: 'permission.debug.defaultAccess.applied',
+              meta: { defaultPermission, result: 'allow' },
+            });
+            status = defaultPermission.effect === 'allow'; // This will set status to true if effect is 'allow'
+          }
+        } else {
+          // DENY RULES WERE FOUND
+          this.auditor.createEvent({
+            eventId: 'permission.debug.defaultAccess.deniedByPolicy',
+            meta: {
+              user: userEntityRef,
+              permissionName,
+              action,
+              permDeny,
+              roles,
+              denyPermissions,
+            },
+          });
+          // 'status' is already false and remains false.
+        }
       }
 
       const result = status ? AuthorizeResult.ALLOW : AuthorizeResult.DENY;

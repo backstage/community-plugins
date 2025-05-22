@@ -15,7 +15,7 @@
  */
 export { rbacPlugin, RbacPage, Administration } from './plugin';
 export { rbacApiRef } from './api/RBACBackendClient';
-export type { RBACAPI } from './api/RBACBackendClient';
+export type { RBACAPI, DefaultPermissionPolicy } from './api/RBACBackendClient';
 
 export { default as AdminPanelSettingsOutlinedIcon } from '@mui/icons-material/AdminPanelSettingsOutlined';
 export { default as RbacIcon } from '@mui/icons-material/VpnKeyOutlined';

@@ -71,6 +71,13 @@ export type PermissionsData = {
   conditions?: ConditionsData;
   resourceType?: string;
   usingResourceType?: boolean;
+  // New fields for default policies
+  effect?: string;
+  metadata?: {
+    source?: string;
+    // other metadata fields can be added if needed
+  };
+  entityReference?: string; // For '<default>' or actual role entityRef
 };
 
 /**

@@ -99,11 +99,13 @@ beforeEach(() => {
 
   usePermissionPoliciesMock.mockReturnValue({
     loading: false,
-    data: usePermissionPoliciesMockData,
+    rolePolicies: usePermissionPoliciesMockData,
+    defaultPolicies: [],
     retry: {
       policiesRetry: jest.fn(),
       permissionPoliciesRetry: jest.fn(),
       conditionalPoliciesRetry: jest.fn(),
+      defaultPermissionsRetry: jest.fn(),
     },
     error: new Error(''),
   });

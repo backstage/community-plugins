@@ -39,7 +39,10 @@ import type {
 import { CasbinDBAdapterFactory } from '../database/casbin-adapter-factory';
 import { DataBaseConditionalStorage } from '../database/conditional-storage';
 import { migrate } from '../database/migration';
-import { DataBaseRoleMetadataStorage } from '../database/role-metadata';
+import {
+  DataBaseRoleMetadataStorage,
+  RoleMetadataDao,
+} from '../database/role-metadata';
 import { AllowAllPolicy } from '../policies/allow-all-policy';
 import { RBACPermissionPolicy } from '../policies/permission-policy';
 import { connectRBACProviders } from '../providers/connect-providers';
@@ -187,6 +190,92 @@ export class PolicyBuilder {
       );
 
       policy = new AllowAllPolicy();
+    }
+
+    if (isPluginEnabled && policy instanceof RBACPermissionPolicy) {
+      // New logic starts here
+      const defaultUserAccessEnabled = env.config.getOptionalBoolean(
+        'permission.rbac.defaultUserAccess.enabled',
+      );
+      if (defaultUserAccessEnabled) {
+        const defaults = policy.getDefaultPermissions();
+        if (defaults && defaults.length > 0) {
+          const defaultPolicyEntityRef = 'role:default/system_default_policy';
+          const casbinPolicies = defaults.map(dp => [
+            defaultPolicyEntityRef,
+            dp.permission,
+            dp.policy, // action
+            dp.effect,
+          ]);
+
+          if (casbinPolicies.length > 0) {
+            try {
+              // Assuming enforcerDelegate.addPolicies handles underlying casbin operations
+              // and doesn't throw if policies already exist (casbin default is to not add duplicates)
+              await enforcerDelegate.addPolicies(casbinPolicies);
+              env.logger.info(
+                `Ensured ${casbinPolicies.length} default permissions are present in Casbin under entity ${defaultPolicyEntityRef}`,
+              );
+
+              // Start: Metadata handling for defaultPolicyEntityRef
+              const desiredMetadata: RoleMetadataDao = {
+                roleEntityRef: defaultPolicyEntityRef,
+                source: 'system_default',
+                description:
+                  'System Default Permissions. These policies are automatically applied if defaultUserAccess is enabled and no specific deny policies exist for a user/role.',
+                author: 'system',
+                modifiedBy: 'system',
+                owner: 'backstage/admins', // Or a more appropriate system/admin group
+              };
+
+              let existingMetadata: RoleMetadataDao | undefined;
+              try {
+                existingMetadata = await roleMetadataStorage.findRoleMetadata(
+                  defaultPolicyEntityRef,
+                );
+              } catch (e: any) {
+                env.logger.warn(
+                  `Could not fetch existing metadata for ${defaultPolicyEntityRef}, assuming it does not exist: ${e.message}`,
+                );
+                // Proceed as if it doesn't exist
+              }
+
+              if (!existingMetadata) {
+                try {
+                  await databaseClient.transaction(async trx => {
+                    await roleMetadataStorage.createRoleMetadata(
+                      desiredMetadata,
+                      trx,
+                    );
+                  });
+                  env.logger.info(
+                    `Created metadata for system default policy entity: ${defaultPolicyEntityRef}`,
+                  );
+                } catch (e: any) {
+                  env.logger.error(
+                    `Failed to create metadata for ${defaultPolicyEntityRef}: ${e.message}`,
+                  );
+                }
+              } else {
+                env.logger.info(
+                  `Metadata for ${defaultPolicyEntityRef} already exists. Source: ${existingMetadata.source}. Description: ${existingMetadata.description}`,
+                );
+                // Example update (optional, if you want to ensure fields are up-to-date):
+                // if (existingMetadata.source !== desiredMetadata.source || existingMetadata.description !== desiredMetadata.description) {
+                //   await roleMetadataStorage.updateRoleMetadata({ ...existingMetadata, ...desiredMetadata }); // updateRoleMetadata might not exist, this is conceptual
+                //   env.logger.info(`Updated metadata for ${defaultPolicyEntityRef}`);
+                // }
+              }
+              // End: Metadata handling
+            } catch (e: any) {
+              env.logger.error(
+                `Failed to add default policies to Casbin for ${defaultPolicyEntityRef}: ${e.message}`,
+              );
+            }
+          }
+        }
+      }
+      // New logic ends here
     }
 
     const options: RBACRouterOptions = {
