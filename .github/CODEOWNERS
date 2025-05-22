@@ -112,6 +112,5 @@ yarn.lock                                                               @backsta
 /workspaces/todo                                                        @backstage/community-plugins-maintainers
 /workspaces/topology                                                    @backstage/community-plugins-maintainers  @christoph-jerolimov @ciiay @debsmita1 @divyanshiGupta @its-mitesh-kumar @logonoff
 /workspaces/vault                                                       @backstage/community-plugins-maintainers
-/workspaces/multi-source-security-viewer                                @backstage/community-plugins-maintainers  @caugello @cryptorodeo
 /workspaces/wheel-of-names                                              @backstage/community-plugins-maintainers  @philippeckelintive @johannes-kirchner
 /workspaces/xcmetrics                                                   @backstage/community-plugins-maintainers
