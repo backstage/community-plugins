@@ -61,6 +61,7 @@ import {
   providerMock,
   roleMetadataStorageMock,
   mockedAuthorize,
+  mockPermissionRegistry,
 } from '../../__fixtures__/mock-utils';
 
 jest.setTimeout(60000);
@@ -258,6 +259,7 @@ describe('REST policies api', () => {
         mockAuthService,
       ),
       userInfo: mockUserInfoService,
+      permissionsRegistry: mockPermissionRegistry,
     };
 
     server = new PoliciesServer(
@@ -3839,6 +3841,7 @@ describe('REST policies api', () => {
           mockAuthService,
         ),
         userInfo: mockUserInfoService,
+        permissionsRegistry: mockPermissionRegistry,
       };
 
       server = new PoliciesServer(
