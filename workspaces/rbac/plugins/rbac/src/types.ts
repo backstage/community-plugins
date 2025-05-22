@@ -23,6 +23,9 @@ import {
 } from '@backstage-community/plugin-rbac-common';
 
 import { ConditionsData } from './components/ConditionalAccess/types';
+
+export type { ConditionsData }; // Export ConditionsData
+
 import { RowPolicy } from './components/CreateRole/types';
 
 export type RolesData = {

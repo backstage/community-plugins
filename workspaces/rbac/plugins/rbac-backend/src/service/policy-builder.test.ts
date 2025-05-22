@@ -94,11 +94,17 @@ jest.mock('./policies-rest-api', () => {
 });
 
 jest.mock('../policies/permission-policy', () => {
+  const originalModule = jest.requireActual('../policies/permission-policy');
+
   return {
-    RBACPermissionPolicy: {
-      build: jest.fn((): Promise<RBACPermissionPolicy> => {
-        return Promise.resolve({} as RBACPermissionPolicy);
-      }),
+    ...originalModule,
+    RBACPermissionPolicy: class MockRBACPermissionPolicy {
+      static build = jest.fn((): Promise<RBACPermissionPolicy> => {
+        return Promise.resolve(
+          new MockRBACPermissionPolicy() as unknown as RBACPermissionPolicy,
+        );
+      });
+      getDefaultPermissions = jest.fn(() => []);
     },
   };
 });

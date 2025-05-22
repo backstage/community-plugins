@@ -18,7 +18,7 @@ import { renderInTestApp } from '@backstage/test-utils';
 
 import { mockFormInitialValues } from '../../__fixtures__/mockFormValues';
 import { usePermissionPolicies } from '../../hooks/usePermissionPolicies';
-import { PermissionsData } from '../../types';
+import { PermissionsData, ConditionsData } from '../../types';
 import { PermissionsCard } from './PermissionsCard';
 
 jest.mock('../../hooks/usePermissionPolicies', () => ({
@@ -33,7 +33,7 @@ const usePermissionPoliciesMockData: PermissionsData[] = [
   {
     permission: 'policy-entity',
     plugin: 'permission',
-    policyString: ['Read', ', Create', ', Delete'],
+    policyString: ['Read', ', Create', ', Delete'], // This will be joined to "Read, Create, Delete"
     policies: [
       {
         policy: 'read',
@@ -51,6 +51,23 @@ const usePermissionPoliciesMockData: PermissionsData[] = [
   },
 ];
 
+// Mock for mockFormInitialValues.permissionPoliciesRows
+const mockPermissionPoliciesRowsConditional: PermissionsData[] = [
+  {
+    permission: 'conditional-policy',
+    plugin: 'catalog',
+    policyString: ['Use'],
+    policies: [{ policy: 'use', effect: 'allow' }],
+    conditions: {
+      condition: {
+        rule: 'IS_ENTITY_OWNER',
+        resourceType: 'catalog-entity',
+        params: {},
+      },
+    } as ConditionsData,
+  },
+];
+
 const mockPermissionPolicies = usePermissionPolicies as jest.MockedFunction<
   typeof usePermissionPolicies
 >;
@@ -63,7 +80,7 @@ describe('PermissionsCard', () => {
     mockUsePermission.mockReturnValue({ loading: false, allowed: true });
     mockPermissionPolicies.mockReturnValue({
       loading: false,
-      rolePolicies: usePermissionPoliciesMockData,
+      rolePolicies: usePermissionPoliciesMockData, // Should lead to 3 policies
       defaultPolicies: [],
       retry: {
         policiesRetry: jest.fn(),
@@ -185,8 +202,8 @@ describe('PermissionsCard', () => {
     mockPermissionPolicies.mockReturnValue({
       loading: false,
       rolePolicies: [
-        ...usePermissionPoliciesMockData,
-        ...mockFormInitialValues.permissionPoliciesRows,
+        ...usePermissionPoliciesMockData, // 3 policies
+        ...mockPermissionPoliciesRowsConditional, // 1 conditional policy
       ],
       defaultPolicies: [],
       retry: {

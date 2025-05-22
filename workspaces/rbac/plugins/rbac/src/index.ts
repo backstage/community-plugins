@@ -25,4 +25,5 @@ export type {
   PluginConditionRules,
   RoleBasedConditions,
   ConditionRule,
+  ConditionsData,
 } from './types';

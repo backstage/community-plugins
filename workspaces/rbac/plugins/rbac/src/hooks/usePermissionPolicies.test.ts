@@ -28,11 +28,13 @@ jest.mock('@backstage/core-plugin-api', () => ({
       getAssociatedPolicies: jest.fn().mockReturnValue(mockAssociatedPolicies),
       listPermissions: jest.fn().mockReturnValue(mockPermissionPolicies),
       getRoleConditions: jest.fn().mockReturnValue(mockConditions),
+      getDefaultPermissions: jest.fn().mockResolvedValue([]), // Added mock for getDefaultPermissions
     })
     .mockReturnValueOnce({
       getAssociatedPolicies: jest.fn().mockReturnValue(mockAssociatedPolicies),
       listPermissions: jest.fn().mockReturnValue([]),
       getRoleConditions: jest.fn().mockReturnValue([]),
+      getDefaultPermissions: jest.fn().mockResolvedValue([]), // Added mock for getDefaultPermissions
     })
     .mockReturnValue({
       getAssociatedPolicies: jest
@@ -40,6 +42,11 @@ jest.mock('@backstage/core-plugin-api', () => ({
         .mockReturnValue({ status: '403', statusText: 'Unauthorized' }),
       listPermissions: jest.fn().mockReturnValue(mockPermissionPolicies),
       getRoleConditions: jest.fn().mockReturnValue([]),
+      getDefaultPermissions: jest
+        .fn()
+        .mockRejectedValue(
+          new TypeError('rbacApi.getDefaultPermissions is not a function'),
+        ), // Mock for the error case, or adjust as needed
     }),
 }));
 
