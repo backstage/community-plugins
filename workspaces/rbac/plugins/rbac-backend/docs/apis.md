@@ -818,6 +818,100 @@ Deletes condition by id.
 
 Returns a status code of 204 upon success.
 
+---
+
+## Refresh permission policies provider API
+
+The API to update permissions allows triggering the Provider to refresh the permissions list.
+
+### POST RBAC permission policies
+
+POST </api/permission/refresh/:id>
+
+Refreshes RBAC permission policies by provider id.
+
+Request Parameters: provider 'id' in the url path.
+
+Returns a status code of 200 upon success.
+
+---
+
+## Plugin IDs that support the Backstage permission framework
+
+API to manage the list of permission IDs that support the Backstage permission framework at runtime without a server restart. This API is important to control rendering the plugin list in the UI.
+
+List plugins IDs stored in the object:
+
+| Parameter name | Description      | Type         |
+| -------------- | ---------------- | ------------ |
+| ids            | list plugins IDs | String Array |
+
+### GET object with list plugin IDs
+
+GET </api/permission/plugins/id>
+
+Returns object with list plugin IDs:
+
+```json
+{
+  "ids": ["catalog", "permission"]
+}
+```
+
+Returns a status code of 200 upon success.
+
+---
+
+### POST object with list plugin IDs
+
+POST </api/permission/plugins/id>
+
+Add more plugins IDs defined in the request object.
+
+Request Parameters: object in json format described above.
+
+body:
+
+```json
+{
+  "ids": ["scaffolder"]
+}
+```
+
+Returns a status code of 200 and json with actual object stored in the server:
+
+```json
+{
+  "ids": ["catalog", "permission", "scaffolder"]
+}
+```
+
+---
+
+### DELETE plugin IDs
+
+DELETE </api/permission/plugins/id>
+
+Delete plugins IDs defined in the request object.
+
+Request Parameters: object in json format described above.
+
+body:
+
+```json
+{
+  "ids": ["scaffolder"]
+}
+```
+
+Returns a status code of 200 and json with actual object stored in the server:
+
+```json
+{
+  "ids": ["catalog", "permission"]
+}
+```
+
 ## HTTP status codes
 
 | Code | Descriptions                                    |

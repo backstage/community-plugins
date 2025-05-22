@@ -269,7 +269,7 @@ describe('REST plugin policies metadata API', () => {
     expect(permissionDependentPluginStoreMock.addPlugins).toHaveBeenCalledWith([
       { pluginId: 'scaffolder' },
     ]);
-    expect(result.statusCode).toBe(201);
+    expect(result.statusCode).toBe(200);
     expect(result.body).toBeDefined();
     expect(result.body.ids).toContain('jenkins');
     expect(result.body.ids).toContain('catalog');

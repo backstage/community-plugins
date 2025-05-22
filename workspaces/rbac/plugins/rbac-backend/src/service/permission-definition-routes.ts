@@ -113,7 +113,7 @@ export function createPermissionDefinitionRoutes(
       response.locals.meta = pluginIds;
 
       actualPluginIds = await pluginIdProvider.getPluginIds();
-      response.status(201).json(pluginIdsToResponse(actualPluginIds));
+      response.status(200).json(pluginIdsToResponse(actualPluginIds));
     },
   );
 
