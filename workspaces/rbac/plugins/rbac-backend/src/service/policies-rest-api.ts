@@ -170,9 +170,8 @@ export class PoliciesServer {
           conditionsFilter = transformConditions(decision.conditions);
         }
 
-        const roleMetadata = await this.roleMetadata.filterForOwnerRoleMetadata(
-          conditionsFilter,
-        );
+        const roleMetadata =
+          await this.roleMetadata.filterForOwnerRoleMetadata(conditionsFilter);
 
         let policies: string[][] = [];
         if (this.isPolicyFilterEnabled(request)) {
@@ -209,14 +208,7 @@ export class PoliciesServer {
           ) {
             policy.permission = 'policy.entity.create';
             logger.warn(
-              `Permission policy with resource type 'policy-entity' and action 'create' has been removed. Please consider updating policy ${[
-                policy.entityReference,
-                'policy-entity',
-                policy.policy,
-                policy.effect,
-              ]} to use 'policy.entity.create' instead of 'policy-entity' from source ${
-                policy.metadata?.source
-              }`,
+              `Permission policy with resource type 'policy-entity' and action 'create' has been removed. Please consider updating policy ${[policy.entityReference, 'policy-entity', policy.policy, policy.effect]} to use 'policy.entity.create' instead of 'policy-entity' from source ${policy.metadata?.source}`,
             );
           }
         });
@@ -239,9 +231,8 @@ export class PoliciesServer {
           conditionsFilter = transformConditions(decision.conditions);
         }
 
-        const roleMetadata = await this.roleMetadata.filterForOwnerRoleMetadata(
-          conditionsFilter,
-        );
+        const roleMetadata =
+          await this.roleMetadata.filterForOwnerRoleMetadata(conditionsFilter);
 
         const matchedRoleName = roleMetadata.flatMap(role => {
           return role.roleEntityRef;
@@ -262,14 +253,7 @@ export class PoliciesServer {
             ) {
               bodyPolicy.permission = 'policy.entity.create';
               logger.warn(
-                `Permission policy with resource type 'policy-entity' and action 'create' has been removed. Please consider updating policy ${[
-                  bodyPolicy.entityReference,
-                  'policy-entity',
-                  bodyPolicy.policy,
-                  bodyPolicy.effect,
-                ]} to use 'policy.entity.create' instead of 'policy-entity' from source ${
-                  bodyPolicy.metadata?.source
-                }`,
+                `Permission policy with resource type 'policy-entity' and action 'create' has been removed. Please consider updating policy ${[bodyPolicy.entityReference, 'policy-entity', bodyPolicy.policy, bodyPolicy.effect]} to use 'policy.entity.create' instead of 'policy-entity' from source ${bodyPolicy.metadata?.source}`,
               );
             }
           });
@@ -340,9 +324,8 @@ export class PoliciesServer {
         );
 
         const entityRef = processedPolicies[0][0];
-        const roleMetadata = await this.roleMetadata.findRoleMetadata(
-          entityRef,
-        );
+        const roleMetadata =
+          await this.roleMetadata.findRoleMetadata(entityRef);
         if (entityRef.startsWith('role:default') && !roleMetadata) {
           throw new Error(`Corresponding role ${entityRef} was not found`);
         }
@@ -421,9 +404,8 @@ export class PoliciesServer {
           conditionsFilter,
         );
 
-        const roleMetadata = await this.roleMetadata.findRoleMetadata(
-          entityRef,
-        );
+        const roleMetadata =
+          await this.roleMetadata.findRoleMetadata(entityRef);
         if (entityRef.startsWith('role:default') && !roleMetadata) {
           throw new Error(`Corresponding role ${entityRef} was not found`);
         }
@@ -617,9 +599,8 @@ export class PoliciesServer {
           owner: newRoleRaw.metadata?.owner ?? '',
         };
 
-        const oldMetadata = await this.roleMetadata.findRoleMetadata(
-          roleEntityRef,
-        );
+        const oldMetadata =
+          await this.roleMetadata.findRoleMetadata(roleEntityRef);
         if (!oldMetadata) {
           throw new NotFoundError(
             `Unable to find metadata for ${roleEntityRef}`,
@@ -729,9 +710,8 @@ export class PoliciesServer {
 
         const roleEntityRef = this.getEntityReference(request, true);
 
-        const currentMetadata = await this.roleMetadata.findRoleMetadata(
-          roleEntityRef,
-        );
+        const currentMetadata =
+          await this.roleMetadata.findRoleMetadata(roleEntityRef);
 
         if (!matches(currentMetadata, conditionsFilter)) {
           throw new NotAllowedError(); // 403
@@ -838,9 +818,8 @@ export class PoliciesServer {
           conditionsFilter = transformConditions(decision.conditions);
         }
 
-        const roleMetadata = await this.roleMetadata.filterForOwnerRoleMetadata(
-          conditionsFilter,
-        );
+        const roleMetadata =
+          await this.roleMetadata.filterForOwnerRoleMetadata(conditionsFilter);
 
         const matchedRoleName = roleMetadata.flatMap(role => {
           return role.roleEntityRef;
@@ -887,9 +866,8 @@ export class PoliciesServer {
           this.options.auth,
         );
 
-        const id = await this.conditionalStorage.createCondition(
-          conditionToCreate,
-        );
+        const id =
+          await this.conditionalStorage.createCondition(conditionToCreate);
 
         const body = { id: id };
 
@@ -923,9 +901,8 @@ export class PoliciesServer {
           conditionsFilter = transformConditions(decision.conditions);
         }
 
-        const roleMetadata = await this.roleMetadata.filterForOwnerRoleMetadata(
-          conditionsFilter,
-        );
+        const roleMetadata =
+          await this.roleMetadata.filterForOwnerRoleMetadata(conditionsFilter);
 
         const matchedRoleName = roleMetadata.flatMap(role => {
           return role.roleEntityRef;
