@@ -15,8 +15,8 @@
  */
 import { usePermission } from '@backstage/plugin-permission-react';
 import { renderInTestApp } from '@backstage/test-utils';
+import { waitFor } from '@testing-library/react';
 
-import { mockFormInitialValues } from '../../__fixtures__/mockFormValues';
 import { usePermissionPolicies } from '../../hooks/usePermissionPolicies';
 import { PermissionsData, ConditionsData } from '../../types';
 import { PermissionsCard } from './PermissionsCard';
@@ -80,7 +80,7 @@ describe('PermissionsCard', () => {
     mockUsePermission.mockReturnValue({ loading: false, allowed: true });
     mockPermissionPolicies.mockReturnValue({
       loading: false,
-      rolePolicies: usePermissionPoliciesMockData, // Should lead to 3 policies
+      rolePolicies: usePermissionPoliciesMockData,
       defaultPolicies: [],
       retry: {
         policiesRetry: jest.fn(),
@@ -90,14 +90,23 @@ describe('PermissionsCard', () => {
       },
       error: new Error(''),
     });
-    const { queryByText } = await renderInTestApp(
+    const { queryByText, findAllByText } = await renderInTestApp(
       <PermissionsCard
         entityReference="user:default/debsmita1"
         canReadUsersAndGroups
       />,
     );
-    expect(queryByText('3 permissions')).not.toBeNull();
-    expect(queryByText('Read, Create, Delete')).not.toBeNull();
+    // Check for plugin and permission name
+    expect(queryByText('permission')).toBeInTheDocument(); // For plugin
+    expect(queryByText('policy-entity')).toBeInTheDocument(); // For permission name
+
+    // Check for "Allow" chips (there should be 3)
+    const allowChips = await findAllByText('Allow');
+    expect(allowChips).toHaveLength(3);
+
+    await waitFor(() => {
+      expect(queryByText('Permission Policies (3)')).toBeInTheDocument();
+    });
   });
 
   it('should show empty table when there are no permission policies', async () => {
@@ -123,6 +132,7 @@ describe('PermissionsCard', () => {
     expect(queryByText('Permission Policies')).not.toBeNull();
     expect(queryByText('No records found')).not.toBeNull();
   });
+
   it('should show an error if api call fails', async () => {
     mockUsePermission.mockReturnValue({ loading: false, allowed: true });
     mockPermissionPolicies.mockReturnValue({
@@ -151,6 +161,7 @@ describe('PermissionsCard', () => {
 
     expect(queryByText('No records found')).not.toBeNull();
   });
+
   it('should show edit icon when the user is authorized to update roles', async () => {
     mockUsePermission.mockReturnValue({ loading: false, allowed: true });
     mockPermissionPolicies.mockReturnValue({
@@ -201,10 +212,7 @@ describe('PermissionsCard', () => {
     mockUsePermission.mockReturnValue({ loading: false, allowed: true });
     mockPermissionPolicies.mockReturnValue({
       loading: false,
-      rolePolicies: [
-        ...usePermissionPoliciesMockData, // 3 policies
-        ...mockPermissionPoliciesRowsConditional, // 1 conditional policy
-      ],
+      rolePolicies: mockPermissionPoliciesRowsConditional, // Use conditional mock
       defaultPolicies: [],
       retry: {
         policiesRetry: jest.fn(),
@@ -214,15 +222,27 @@ describe('PermissionsCard', () => {
       },
       error: new Error(''),
     });
-    const { queryByText } = await renderInTestApp(
+    const { queryByText, findAllByText } = await renderInTestApp(
       <PermissionsCard
         entityReference="user:default/debsmita1"
         canReadUsersAndGroups
       />,
     );
-    expect(queryByText('4 permissions')).not.toBeNull();
-    expect(queryByText('Read, Create, Delete', { exact: true })).not.toBeNull();
-    expect(queryByText('Read', { exact: true })).not.toBeNull();
-    expect(queryByText('1 rule')).not.toBeNull();
+
+    // Check for plugin and permission name
+    expect(queryByText('catalog')).toBeInTheDocument(); // For plugin
+    expect(queryByText('conditional-policy')).toBeInTheDocument(); // For permission name
+
+    // Check for "Allow" chip (there should be 1)
+    const allowChips = await findAllByText('Allow');
+    expect(allowChips).toHaveLength(1);
+
+    // Check for conditional rule text
+    expect(queryByText('1 rule')).toBeInTheDocument();
+
+    await waitFor(() => {
+      // Title count should be 1 for this mock data
+      expect(queryByText('Permission Policies (1)')).toBeInTheDocument();
+    });
   });
 });

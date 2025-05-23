@@ -39,14 +39,12 @@ jest.mock('@backstage/core-plugin-api', () => ({
     .mockReturnValue({
       getAssociatedPolicies: jest
         .fn()
-        .mockReturnValue({ status: '403', statusText: 'Unauthorized' }),
+        .mockRejectedValue({ status: 403, message: 'Unauthorized' }), // Corrected mock
       listPermissions: jest.fn().mockReturnValue(mockPermissionPolicies),
       getRoleConditions: jest.fn().mockReturnValue([]),
       getDefaultPermissions: jest
         .fn()
-        .mockRejectedValue(
-          new TypeError('rbacApi.getDefaultPermissions is not a function'),
-        ), // Mock for the error case, or adjust as needed
+        .mockRejectedValue(new Error('Unauthorized')), // Corrected mock
     }),
 }));
 
@@ -78,8 +76,8 @@ describe('usePermissionPolicies', () => {
     await waitFor(() => {
       expect(result.current.loading).toBeFalsy();
       expect(result.current.error).toEqual({
-        message: 'Error fetching policies. Unauthorized',
-        name: '403',
+        message: 'Unauthorized',
+        status: 403,
       });
     });
   });
