@@ -109,7 +109,7 @@ jobs:
 
       - name: check knip reports
         if: ${{ steps.bcp.outputs.knip_reports == 'true' }}
-        run: yarn backstage-repo-tools knip-reports --ci
+        run: yarn build:knip-reports --ci
 
       - name: check api reports and generate API reference
         run: yarn build:api-reports:only --ci
