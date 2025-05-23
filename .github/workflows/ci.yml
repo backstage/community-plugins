@@ -92,6 +92,20 @@ jobs:
 
       - name: prettier
         run: yarn prettier:check
+      
+      - name: read knip-reports flag from bcp.json
+        id: bcp
+        run: |
+          if [ -f workspaces/${{ matrix.workspace }}/bcp.json ]; then
+            KNIP_REPORTS=$(jq -r '.["knip-reports"]' workspaces/${{ matrix.workspace }}/bcp.json)
+            echo "knip_reports=$KNIP_REPORTS" >> $GITHUB_OUTPUT
+          else
+            echo "knip_reports=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: check knip reports
+        if: ${{ steps.bcp.outputs.knip_reports == 'true' }}
+        run: yarn backstage-repo-tools knip-reports --ci
 
       - name: check api reports and generate API reference
         run: yarn build:api-reports:only --ci
