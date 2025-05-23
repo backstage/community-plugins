@@ -24,6 +24,7 @@
     "new": "backstage-cli new --scope @backstage-community",
     "build:api-reports": "yarn build:api-reports:only --tsc",
     "build:api-reports:only": "backstage-repo-tools api-reports -o ae-wrong-input-file-type,ae-undocumented --validate-release-tags",
+    "build:knip-reports": "backstage-repo-tools knip-reports",
     "postinstall": "cd ../../ && yarn install"
   },
   "workspaces": {
