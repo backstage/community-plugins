@@ -197,6 +197,12 @@ describe('SonarQubeClient', () => {
             const componentKey = new URL(input.toString()).searchParams.get(
               'componentKey',
             );
+            if (componentKey === 'unknown') {
+              return {
+                status: 200,
+                json: '',
+              };
+            }
             const findings = {
               analysisDate:
                 componentKey === 'component-1'
@@ -297,6 +303,26 @@ describe('SonarQubeClient', () => {
       const summaries = await client.getFindingSummaries([]);
 
       expect(summaries.size).toBe(0);
+    });
+
+    it('should handle incorrect component keys', async () => {
+      const client = new SonarQubeClient({
+        discoveryApi,
+        fetchApi,
+      });
+
+      const summaries = await client.getFindingSummaries([
+        { projectInstance: 'instance-1', componentKey: 'component-1' },
+        { projectInstance: 'instance-2', componentKey: 'unknown' },
+      ]);
+
+      expect(summaries.size).toBe(1);
+      const summary1 = summaries.get('component-1');
+      expect(summary1).toEqual(
+        expect.objectContaining({
+          projectUrl: 'https://sonarcloud.io/dashboard?id=component-1',
+        }),
+      );
     });
   });
 });
