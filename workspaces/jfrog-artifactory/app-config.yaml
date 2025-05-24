@@ -37,3 +37,23 @@ backend:
   database:
     client: better-sqlite3
     connection: ':memory:'
+
+techdocs:
+  builder: 'local'
+  generator:
+    runIn: 'docker'
+  publisher:
+    type: 'local'
+
+auth:
+  # see https://backstage.io/docs/auth/ to learn about auth providers
+  providers:
+    # See https://backstage.io/docs/auth/guest/provider
+    guest: {}
+# catalog:
+#   import:
+#     entityFilename: catalog-info.yaml
+#     pullRequestBranchName: backstage-integration
+#   rules:
+#     - allow: [Component, System, API, Resource, Location, User, Group, Template]
+

@@ -13,14 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useEntity } from '@backstage/plugin-catalog-react';
+import '@backstage/cli/asset-types';
+import ReactDOM from 'react-dom/client';
+import App from './App';
 
-import { JfrogArtifactoryRepository } from '../JfrogArtifactoryRepository';
-import { useJfrogArtifactoryAppData } from '../useJfrogArtifactoryAppData';
-
-export const JfrogArtifactoryDashboardPage = () => {
-  const { entity } = useEntity();
-  const { imageName } = useJfrogArtifactoryAppData({ entity });
-
-  return <JfrogArtifactoryRepository image={imageName} />;
-};
+ReactDOM.createRoot(document.getElementById('root')!).render(<App />);
