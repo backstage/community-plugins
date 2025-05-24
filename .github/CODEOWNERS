@@ -12,60 +12,105 @@ yarn.lock                                                               @backsta
 /workspaces/acr                                                         @backstage/community-plugins-maintainers  @christoph-jerolimov @ciiay @debsmita1 @divyanshiGupta @its-mitesh-kumar @logonoff
 /workspaces/acs                                                         @backstage/community-plugins-maintainers  @sachaudh @alwayshooin @dvail @maknop
 /workspaces/adr                                                         @backstage/community-plugins-maintainers  @kuangp
+/workspaces/airbrake                                                    @backstage/community-plugins-maintainers
+/workspaces/allure                                                      @backstage/community-plugins-maintainers
 /workspaces/amplication                                                 @backstage/community-plugins-maintainers  @itainathaniel
 /workspaces/analytics                                                   @backstage/community-plugins-maintainers
 /workspaces/analytics/plugins/analytics-module-matomo                   @backstage/community-plugins-maintainers  @deshmukhmayur @yashoswalyo @riginoommen
 /workspaces/analytics/plugins/analytics-module-newrelic-browser         @backstage/community-plugins-maintainers  @jmezach
 /workspaces/analytics/plugins/analytics-provider-segment                @backstage/community-plugins-maintainers  @AndrienkoAleksandr @PatAKnight @dzemanov
 /workspaces/announcements                                               @backstage/community-plugins-maintainers  @kurtaking @gaelgoth
+/workspaces/apache-airflow                                              @backstage/community-plugins-maintainers
+/workspaces/apollo-explorer                                             @backstage/community-plugins-maintainers
 /workspaces/azure-devops                                                @backstage/community-plugins-maintainers  @awanlin
+/workspaces/azure-resources                                             @backstage/community-plugins-maintainers  @sarabadu
 /workspaces/azure-sites                                                 @backstage/community-plugins-maintainers  @deepan10 @sarabadu
 /workspaces/azure-storage-explorer                                      @backstage/community-plugins-maintainers  @deepan10
-/workspaces/azure-resources                                             @backstage/community-plugins-maintainers  @sarabadu
+/workspaces/badges                                                      @backstage/community-plugins-maintainers
+/workspaces/bazaar                                                      @backstage/community-plugins-maintainers
 /workspaces/bitrise                                                     @backstage/community-plugins-maintainers  @backstage/sda-se-reviewers
 /workspaces/blackduck                                                   @backstage/community-plugins-maintainers  @deepan10
+/workspaces/cicd-statistics                                             @backstage/community-plugins-maintainers
+/workspaces/cloudbuild                                                  @backstage/community-plugins-maintainers
+/workspaces/code-climate                                                @backstage/community-plugins-maintainers
 /workspaces/code-coverage                                               @backstage/community-plugins-maintainers  @alde
+/workspaces/codescene                                                   @backstage/community-plugins-maintainers
 /workspaces/confluence                                                  @backstage/community-plugins-maintainers  @fjudith
 /workspaces/copilot                                                     @backstage/community-plugins-maintainers  @esw-afabiano
 /workspaces/cost-insights                                               @backstage/community-plugins-maintainers  @backstage/silver-lining
+/workspaces/dynatrace                                                   @backstage/community-plugins-maintainers
 /workspaces/entity-feedback                                             @backstage/community-plugins-maintainers  @kuangp
+/workspaces/entity-validation                                           @backstage/community-plugins-maintainers
 /workspaces/explore                                                     @backstage/community-plugins-maintainers  @backstage/sda-se-reviewers
 /workspaces/feedback                                                    @backstage/community-plugins-maintainers  @riginoommen @deshmukhmayur @yashoswalyo
+/workspaces/firehydrant                                                 @backstage/community-plugins-maintainers
 /workspaces/fossa                                                       @backstage/community-plugins-maintainers  @backstage/sda-se-reviewers
+/workspaces/gcalendar                                                   @backstage/community-plugins-maintainers
+/workspaces/gcp-projects                                                @backstage/community-plugins-maintainers
 /workspaces/git-release-manager                                         @backstage/community-plugins-maintainers  @erikengervall
+/workspaces/github-actions                                              @backstage/community-plugins-maintainers
+/workspaces/github-deployments                                          @backstage/community-plugins-maintainers
 /workspaces/github-discussions                                          @backstage/community-plugins-maintainers  @minkimcello @taras
+/workspaces/github-issues                                               @backstage/community-plugins-maintainers
 /workspaces/github-pull-requests-board                                  @backstage/community-plugins-maintainers  @gregorytalita
+/workspaces/gitops-profiles                                             @backstage/community-plugins-maintainers
+/workspaces/gocd                                                        @backstage/community-plugins-maintainers
+/workspaces/grafana                                                     @backstage/community-plugins-maintainers
+/workspaces/graphiql                                                    @backstage/community-plugins-maintainers
+/workspaces/graphql-voyager                                             @backstage/community-plugins-maintainers
+/workspaces/ilert                                                       @backstage/community-plugins-maintainers
+/workspaces/jaeger                                                      @backstage/community-plugins-maintainers
+/workspaces/jenkins                                                     @backstage/community-plugins-maintainers
 /workspaces/jfrog-artifactory                                           @backstage/community-plugins-maintainers  @BethGriggs
 /workspaces/kafka                                                       @backstage/community-plugins-maintainers  @andrewthauer
 /workspaces/keycloak                                                    @backstage/community-plugins-maintainers  @AndrienkoAleksandr @schultzp2020 @dzemanov
 /workspaces/kiali                                                       @backstage/community-plugins-maintainers  @aljesusg @josunect @leandroberetta
+/workspaces/lighthouse                                                  @backstage/community-plugins-maintainers
 /workspaces/linguist                                                    @backstage/community-plugins-maintainers  @awanlin
+/workspaces/linkerd                                                     @backstage/community-plugins-maintainers
 /workspaces/manage                                                      @backstage/community-plugins-maintainers  @grantila
 /workspaces/matomo                                                      @backstage/community-plugins-maintainers  @yashoswalyo @deshmukhmayur @riginoommen
 /workspaces/mend                                                        @backstage/community-plugins-maintainers  @dariuszsobkowicz
+/workspaces/microsoft-calendar                                          @backstage/community-plugins-maintainers
 /workspaces/mta                                                         @backstage/community-plugins-maintainers  @ibolton336
+/workspaces/multi-source-security-viewer                                @backstage/community-plugins-maintainers  @caugello @cryptorodeo
+/workspaces/newrelic                                                    @backstage/community-plugins-maintainers
 /workspaces/nexus-repository-manager                                    @backstage/community-plugins-maintainers  @schultzp2020
+/workspaces/nomad                                                       @backstage/community-plugins-maintainers
+/workspaces/noop                                                        @backstage/community-plugins-maintainers
 /workspaces/npm                                                         @backstage/community-plugins-maintainers  @christoph-jerolimov @ciiay @karthikjeeyar
-/workspaces/odo                                                         @backstage/community-plugins-maintainers  @rm3l
 /workspaces/ocm                                                         @backstage/community-plugins-maintainers  @christoph-jerolimov @ciiay @debsmita1 @divyanshiGupta @its-mitesh-kumar @logonoff
 /workspaces/octopus-deploy                                              @backstage/community-plugins-maintainers  @jmezach
+/workspaces/odo                                                         @backstage/community-plugins-maintainers  @rm3l
+/workspaces/opencost                                                    @backstage/community-plugins-maintainers
+/workspaces/periskop                                                    @backstage/community-plugins-maintainers
 /workspaces/pingidentity                                                @backstage/community-plugins-maintainers  @jessicajhee
 /workspaces/playlist                                                    @backstage/community-plugins-maintainers  @kuangp
+/workspaces/puppetdb                                                    @backstage/community-plugins-maintainers
 /workspaces/quay                                                        @backstage/community-plugins-maintainers  @caugello @cryptorodeo
 /workspaces/rbac                                                        @backstage/community-plugins-maintainers  @AndrienkoAleksandr @christoph-jerolimov @divyanshiGupta @PatAKnight @dzemanov
 /workspaces/redhat-argocd                                               @backstage/community-plugins-maintainers  @caugello @cryptorodeo
 /workspaces/redhat-resource-optimization                                @backstage/community-plugins-maintainers  @jkilzi @preetiw @christoph-jerolimov
+/workspaces/repo-tools                                                  @backstage/community-plugins-maintainers
 /workspaces/report-portal                                               @backstage/community-plugins-maintainers  @yashoswalyo @deshmukhmayur @riginoommen
 /workspaces/rollbar                                                     @backstage/community-plugins-maintainers  @andrewthauer
 /workspaces/scaffolder-backend-module-annotator                         @backstage/community-plugins-maintainers  @BethGriggs @debsmita1
 /workspaces/scaffolder-backend-module-kubernetes                        @backstage/community-plugins-maintainers  @BethGriggs @debsmita1
-/workspaces/scaffolder-backend-module-sonarqube                         @backstage/community-plugins-maintainers  @04kash @schultzp2020
-/workspaces/scaffolder-backend-module-servicenow                        @backstage/community-plugins-maintainers  @schultzp2020
 /workspaces/scaffolder-backend-module-regex                             @backstage/community-plugins-maintainers  @04kash
+/workspaces/scaffolder-backend-module-servicenow                        @backstage/community-plugins-maintainers  @schultzp2020
+/workspaces/scaffolder-backend-module-sonarqube                         @backstage/community-plugins-maintainers  @04kash @schultzp2020
 /workspaces/scaffolder-relation-processor                               @backstage/community-plugins-maintainers  @04kash
+/workspaces/sentry                                                      @backstage/community-plugins-maintainers
+/workspaces/shortcuts                                                   @backstage/community-plugins-maintainers
 /workspaces/sonarqube                                                   @backstage/community-plugins-maintainers  @backstage/sda-se-reviewers
+/workspaces/splunk                                                      @backstage/community-plugins-maintainers
+/workspaces/stack-overflow                                              @backstage/community-plugins-maintainers
+/workspaces/stackstorm                                                  @backstage/community-plugins-maintainers
 /workspaces/tech-insights                                               @backstage/community-plugins-maintainers  @xantier @punkle
+/workspaces/tech-radar                                                  @backstage/community-plugins-maintainers
 /workspaces/tekton                                                      @backstage/community-plugins-maintainers  @caugello @cryptorodeo
+/workspaces/todo                                                        @backstage/community-plugins-maintainers
 /workspaces/topology                                                    @backstage/community-plugins-maintainers  @christoph-jerolimov @ciiay @debsmita1 @divyanshiGupta @its-mitesh-kumar @logonoff
-/workspaces/multi-source-security-viewer                                @backstage/community-plugins-maintainers  @caugello @cryptorodeo
+/workspaces/vault                                                       @backstage/community-plugins-maintainers
 /workspaces/wheel-of-names                                              @backstage/community-plugins-maintainers  @philippeckelintive @johannes-kirchner
+/workspaces/xcmetrics                                                   @backstage/community-plugins-maintainers
