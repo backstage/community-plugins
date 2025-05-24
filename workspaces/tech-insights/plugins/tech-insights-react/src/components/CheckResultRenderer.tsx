@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import type { ReactElement } from 'react';
 import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
 import { BooleanCheck, isBooleanCheckFailed } from './BooleanCheck';
 
@@ -25,8 +25,8 @@ import { BooleanCheck, isBooleanCheckFailed } from './BooleanCheck';
  */
 export type CheckResultRenderer = {
   type: string;
-  component: (check: CheckResult) => React.ReactElement;
-  description?: (check: CheckResult) => string | React.ReactElement;
+  component: (check: CheckResult) => ReactElement;
+  description?: (check: CheckResult) => string | ReactElement;
   isFailed?: (check: CheckResult) => boolean;
 };
 

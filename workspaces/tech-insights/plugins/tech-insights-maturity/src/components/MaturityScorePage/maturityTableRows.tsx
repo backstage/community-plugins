@@ -36,7 +36,8 @@ import Stack from '@mui/material/Stack';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { makeStyles, styled } from '@mui/styles';
-import React from 'react';
+import type { SyntheticEvent } from 'react';
+import { useState } from 'react';
 import { MaturityRankAvatar } from '../MaturityRankAvatar';
 import { InsightFacts } from '@backstage-community/plugin-tech-insights-common';
 
@@ -92,14 +93,13 @@ const MaturityCheckTableRow = ({
   checkResult: MaturityCheckResult;
   updated: string;
 }) => {
-  const [expanded, setExpanded] = React.useState<boolean>(
+  const [expanded, setExpanded] = useState<boolean>(
     checkResult.result === false,
   );
 
-  const handleChange =
-    () => (_event: React.SyntheticEvent, newExpanded: boolean) => {
-      setExpanded(newExpanded);
-    };
+  const handleChange = () => (_event: SyntheticEvent, newExpanded: boolean) => {
+    setExpanded(newExpanded);
+  };
 
   const useStyles = makeStyles({
     check: {
@@ -207,13 +207,10 @@ export const MaturityCheckTable = ({
   facts,
 }: Props) => {
   // Expand only the next rank Category needed to level up
-  const [expanded, setExpanded] = React.useState<boolean>(
-    rank.rank + 1 === category,
-  );
-  const handleChange =
-    () => (_event: React.SyntheticEvent, newExpanded: boolean) => {
-      setExpanded(newExpanded);
-    };
+  const [expanded, setExpanded] = useState<boolean>(rank.rank + 1 === category);
+  const handleChange = () => (_event: SyntheticEvent, newExpanded: boolean) => {
+    setExpanded(newExpanded);
+  };
 
   if (checks.length === 0) return <></>;
 

@@ -23,7 +23,6 @@ import LinearProgress from '@mui/material/LinearProgress';
 import Stack from '@mui/material/Stack';
 import Tooltip from '@mui/material/Tooltip';
 import { Line } from 'rc-progress';
-import React from 'react';
 import { getNextRankColor, pluralize } from './utils';
 import { MaturityRankAvatar } from '../components/MaturityRankAvatar';
 

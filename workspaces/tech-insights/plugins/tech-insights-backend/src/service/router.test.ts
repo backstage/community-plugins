@@ -37,11 +37,19 @@ const setupRouter = async (
   });
   const logger = mockServices.logger.mock();
   const urlReader = mockServices.urlReader.mock();
+  const rootLifecycle = mockServices.rootLifecycle.mock();
+  const httpRouter = mockServices.httpRouter.mock();
   const techInsightsContext = await buildTechInsightsContext({
     database,
     logger,
     factRetrievers: [],
-    scheduler: DefaultSchedulerService.create({ database, logger }),
+    scheduler: DefaultSchedulerService.create({
+      database,
+      logger,
+      rootLifecycle,
+      httpRouter,
+      pluginMetadata: { getId: () => 'plugin-id' },
+    }),
     config: ConfigReader.fromConfigs([]),
     discovery: {
       getBaseUrl: (_: string) => Promise.resolve('http://mock.url'),

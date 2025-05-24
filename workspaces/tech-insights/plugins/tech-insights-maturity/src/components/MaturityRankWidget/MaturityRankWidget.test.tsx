@@ -22,7 +22,6 @@ import {
   MaturityRank,
   Rank,
 } from '@backstage-community/plugin-tech-insights-maturity-common';
-import React from 'react';
 import { MaturityRankWidget } from './MaturityRankWidget';
 import { MaturityApi, maturityApiRef } from '../../api';
 

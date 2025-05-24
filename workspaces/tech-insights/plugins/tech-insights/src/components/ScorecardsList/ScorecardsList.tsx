@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { useApi } from '@backstage/core-plugin-api';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';

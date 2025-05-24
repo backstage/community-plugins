@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 import useAsyncRetry from 'react-use/lib/useAsync';
 
 import { InfoCard } from '@backstage/core-components';

@@ -16,7 +16,6 @@
 import { Link } from '@backstage/core-components';
 import Tooltip from '@mui/material/Tooltip';
 import HelpOutline from '@mui/icons-material/HelpOutline';
-import React from 'react';
 
 export const MaturityHelp = () => (
   <Tooltip title="Click here to learn more about Maturity!">

@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, {
+import type { ReactElement } from 'react';
+
+import {
   ElementType,
   MouseEventHandler,
   PropsWithChildren,
@@ -118,7 +120,7 @@ export const ResultCheckIcon = <P extends ResultCheckIconBaseComponentProps>(
     menu?.open(event.currentTarget);
   };
 
-  const wrapActions = (inner: React.ReactElement): ReactNode => {
+  const wrapActions = (inner: ReactElement): ReactNode => {
     if (!menu) {
       if (component) {
         const Component =

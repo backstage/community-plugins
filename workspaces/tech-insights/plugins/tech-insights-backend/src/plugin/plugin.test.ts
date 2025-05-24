@@ -46,6 +46,6 @@ describe('techInsightsPlugin', () => {
       ],
     });
 
-    expect(httpRouterMock.use).toHaveBeenCalledTimes(2);
+    expect(httpRouterMock.use).toHaveBeenCalledTimes(4);
   });
 });
