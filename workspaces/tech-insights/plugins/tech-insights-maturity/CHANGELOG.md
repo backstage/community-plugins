@@ -1,5 +1,15 @@
 # @backstage-community/plugin-tech-insights-maturity
 
+## 0.2.3
+
+### Patch Changes
+
+- 01640b2: Minor update to the API report.
+- Updated dependencies [d6411fe]
+  - @backstage-community/plugin-tech-insights-common@0.7.0
+  - @backstage-community/plugin-tech-insights-maturity-common@0.2.2
+  - @backstage-community/plugin-tech-insights-react@1.1.2
+
 ## 0.2.2
 
 ### Patch Changes
