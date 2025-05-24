@@ -29,9 +29,10 @@ const announcementsTable = 'announcements';
  */
 type AnnouncementUpsert = Omit<
   Announcement,
-  'category' | 'created_at' | 'start_at'
+  'category' | 'tags' | 'created_at' | 'start_at'
 > & {
   category?: string;
+  tags?: string[];
   created_at: DateTime;
   start_at: DateTime;
 };
@@ -39,8 +40,9 @@ type AnnouncementUpsert = Omit<
 /**
  * @internal
  */
-type DbAnnouncement = Omit<Announcement, 'category' | 'start_at'> & {
+type DbAnnouncement = Omit<Announcement, 'category' | 'tags' | 'start_at'> & {
   category?: string;
+  tags?: string | string[];
   start_at: string;
 };
 
@@ -76,6 +78,32 @@ export const timestampToDateTime = (input: Date | string): DateTime => {
 };
 
 /**
+ * Parse tags from database string or array to string array
+ * @internal
+ */
+const parseTagsFromDb = (
+  tags: string | string[] | null | undefined,
+): string[] => {
+  if (!tags) return [];
+
+  if (typeof tags === 'string') {
+    try {
+      const parsed = JSON.parse(tags);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (e) {
+      // Fallback for legacy format, e.g., '{tag1,tag2}'
+      return tags
+        .replace(/^\{|\}$/g, '')
+        .split(',')
+        .map(tag => tag.trim())
+        .filter(Boolean);
+    }
+  }
+
+  return Array.isArray(tags) ? tags : [];
+};
+
+/**
  * @internal
  */
 const announcementUpsertToDB = (
@@ -96,6 +124,7 @@ const announcementUpsertToDB = (
     active: announcement.active,
     start_at: announcement.start_at.toSQL()!,
     on_behalf_of: announcement.on_behalf_of,
+    tags: announcement.tags ? `{${announcement.tags.join(',')}}` : '{}',
   };
 };
 
@@ -105,6 +134,8 @@ const announcementUpsertToDB = (
 const DBToAnnouncementWithCategory = (
   announcementDb: DbAnnouncementWithCategory,
 ): AnnouncementModel => {
+  const parsedTags = parseTagsFromDb(announcementDb.tags);
+
   return {
     id: announcementDb.id,
     category:
@@ -114,6 +145,10 @@ const DBToAnnouncementWithCategory = (
             title: announcementDb.category_title,
           }
         : undefined,
+    tags: parsedTags.map(tag => ({
+      slug: tag,
+      title: tag,
+    })),
     title: announcementDb.title,
     excerpt: announcementDb.excerpt,
     body: announcementDb.body,
@@ -140,6 +175,7 @@ export class AnnouncementsDatabase {
       offset,
       max,
       active,
+      tags,
       sortBy = 'created_at',
       order = 'desc',
     } = request;
@@ -152,8 +188,13 @@ export class AnnouncementsDatabase {
       if (category) {
         qb.where('category', category);
       }
-      if (active) {
+      if (active !== undefined) {
         qb.where('active', active);
+      }
+      if (tags?.length) {
+        tags.forEach(tag => {
+          qb.whereRaw('? = ANY(tags)', [tag]);
+        });
       }
     };
 
@@ -182,18 +223,36 @@ export class AnnouncementsDatabase {
         'active',
         'start_at',
         'on_behalf_of',
+        'tags',
       )
       .orderBy(sortBy, order)
       .leftJoin('categories', 'announcements.category', 'categories.slug');
     filterState(queryBuilder);
     filterRange(queryBuilder);
-    const results = (await queryBuilder.select()).map(
-      DBToAnnouncementWithCategory,
+
+    const announcementRows = await queryBuilder;
+
+    const results = await Promise.all(
+      announcementRows.map(async row => {
+        const announcement = DBToAnnouncementWithCategory(row);
+        const parsedTags = (announcement.tags || []).map(t => t.slug);
+        if (parsedTags.length > 0) {
+          const tagDetails = await this.db('tags')
+            .select('slug', 'title')
+            .whereIn('slug', parsedTags);
+          announcement.tags = parsedTags.map(slug => {
+            const found = tagDetails.find(t => t.slug === slug);
+            return { slug, title: found ? found.title : slug };
+          });
+        }
+        return announcement;
+      }),
     );
 
-    const countQueryBuilder = this.db<DbAnnouncement>(announcementsTable).count<
-      Record<string, number>
-    >('id', { as: 'total' });
+    const countQueryBuilder = this.db<DbAnnouncement>(announcementsTable).count(
+      'id',
+      { as: 'total' },
+    );
     filterState(countQueryBuilder);
     const countResult = await countQueryBuilder.first();
     const count =
@@ -222,6 +281,7 @@ export class AnnouncementsDatabase {
           'active',
           'start_at',
           'on_behalf_of',
+          'tags',
         )
         .leftJoin('categories', 'announcements.category', 'categories.slug')
         .where('id', id)
@@ -230,11 +290,31 @@ export class AnnouncementsDatabase {
       return undefined;
     }
 
-    return DBToAnnouncementWithCategory(dbAnnouncement);
+    const parsedTags = parseTagsFromDb(dbAnnouncement.tags);
+    let tagObjects: { slug: string; title: string }[] = [];
+
+    if (parsedTags.length > 0) {
+      const tagTitles = await this.db('tags')
+        .select('slug', 'title')
+        .whereIn('slug', parsedTags);
+
+      tagObjects = parsedTags.map(tagSlug => {
+        const tagInfo = tagTitles.find(t => t.slug === tagSlug);
+        return {
+          slug: tagSlug,
+          title: tagInfo?.title || tagSlug,
+        };
+      });
+    }
+
+    return {
+      ...DBToAnnouncementWithCategory(dbAnnouncement),
+      tags: tagObjects,
+    };
   }
 
   async deleteAnnouncementByID(id: string): Promise<void> {
-    return this.db<DbAnnouncement>(announcementsTable).where('id', id).delete();
+    await this.db<DbAnnouncement>(announcementsTable).where('id', id).delete();
   }
 
   async insertAnnouncement(
@@ -260,6 +340,12 @@ export class AnnouncementsDatabase {
       .where('id', announcement.id)
       .update(announcementUpsertToDB(announcement));
 
-    return (await this.announcementByID(announcement.id))!;
+    const updatedAnnouncement = await this.announcementByID(announcement.id);
+
+    if (!updatedAnnouncement) {
+      throw new Error('Failed to retrieve updated announcement');
+    }
+
+    return updatedAnnouncement;
   }
 }
