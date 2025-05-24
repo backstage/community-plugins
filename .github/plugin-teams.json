@@ -1,0 +1,15 @@
+{
+  "teams": [
+    {
+      "name": "community-plugins-rbac",
+      "description": "Maintainers of community RBAC team",
+      "members": [
+        "@AndrienkoAleksandr",
+        "@christoph-jerolimov",
+        "@divyanshiGupta",
+        "@PatAKnight",
+        "@dzemanov"
+      ]
+    }
+  ]
+}
