@@ -1,5 +1,48 @@
 ### Dependencies
 
+## 1.41.5
+
+### Patch Changes
+
+- fcc57ec: Updated dependency `@types/node` to `22.14.1`.
+- 4d8a8e9: Removed theme package "@redhat-developer/red-hat-developer-hub-theme" in dev.
+- 79213e4: Fixed role actions tooltip delay issue.
+
+## 1.41.4
+
+### Patch Changes
+
+- eebc68d: UI Enhancements:
+
+  - Added vertical spacing between buttons in the side drawer for improved usability.
+  - Fixed layout issue in the Users and Groups table where adding a row caused unexpected height changes.
+  - Aligned action icon colors in the Roles table for visual consistency.
+  - Simplified label formatting in the Overview table for a cleaner look.
+  - Improved dropdown behavior in Users, Groups, and Permissions sections — selecting an option no longer clears the input text.
+  - Conditionally hid input field labels when validation errors are present to reduce visual clutter.
+  - Aligned “No options” placeholder text across the Users and Groups and Plugin selection dropdowns.
+  - Prevented backspace from unintentionally removing selected items in the Users and Groups and Plugin dropdowns.
+
+## 1.41.3
+
+### Patch Changes
+
+- 658c51c: chore: Remove usage of @spotify/prettier-config
+- Updated dependencies [658c51c]
+  - @backstage-community/plugin-rbac-common@1.16.1
+
+## 1.41.2
+
+### Patch Changes
+
+- fa53ba5: Updated dependency `@playwright/test` to `1.52.0`.
+
+## 1.41.1
+
+### Patch Changes
+
+- c92a50c: Fixed a bug where updating a role name via the `PUT </api/permission/roles/:kind/:namespace/:name>` endpoint did not propagate changes to metadata, permissions and conditions, leaving them mapped to the old role name.
+
 ## 1.41.0
 
 ### Minor Changes

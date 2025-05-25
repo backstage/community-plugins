@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { GroupVersionKind } from '@backstage-community/plugin-kiali-common/types';
 import { Tooltip } from '@material-ui/core';
-import React from 'react';
+import { default as React } from 'react';
 import { KialiIcon } from '../../config';
 import { kialiStyle } from '../../styles/StyleUtils';
-import { GroupVersionKind } from '../../types/IstioObjects';
 import { BackstageObjectLink } from '../../utils/backstageLinks';
 import { getGVKTypeString } from '../../utils/IstioConfigUtils';
 import { PFBadge } from '../Pf/PfBadges';

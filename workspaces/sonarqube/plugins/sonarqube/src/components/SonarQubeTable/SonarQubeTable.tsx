@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { ReactNode } from 'react';
 import Box from '@material-ui/core/Box';
 import { ErrorPanel, Table } from '@backstage/core-components';
 import { getColumns } from './Columns';
@@ -27,7 +27,7 @@ export type SonarQubeTableProps = {
   tableContent: any[] | undefined;
   title?: string;
   options?: any | undefined;
-  emptyContent?: React.ReactNode;
+  emptyContent?: ReactNode;
   localization?: any;
 };
 /**

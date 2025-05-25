@@ -32,7 +32,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import PlaylistPlayIcon from '@material-ui/icons/PlaylistPlay';
 import SettingsIcon from '@material-ui/icons/Settings';
 import { compact } from 'lodash';
-import React, { Fragment, useEffect, useMemo, useState } from 'react';
+import { Fragment, useEffect, useMemo, useState } from 'react';
 import useAsync from 'react-use/esm/useAsync';
 
 import { usePlaylistList } from '../../hooks';

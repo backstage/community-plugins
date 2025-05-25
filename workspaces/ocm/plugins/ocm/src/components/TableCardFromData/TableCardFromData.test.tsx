@@ -13,15 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
-import { render } from '@testing-library/react';
+import { renderInTestApp } from '@backstage/test-utils';
 
 import data from '../../../__fixtures__/cluster1.json';
 import { TableCardFromData } from './TableCardFromData';
 
 describe('TableCardFromData', () => {
-  it('should render the cluster info', () => {
+  it('should render the cluster info', async () => {
     const clusterInfoNameMap = new Map<string, string>([
       ['name', 'Name'],
       ['kubernetesVersion', 'Kubernetes version'],
@@ -30,7 +28,7 @@ describe('TableCardFromData', () => {
       ['platform', 'Platform'],
     ]);
 
-    const { getByText } = render(
+    const { getByText } = await renderInTestApp(
       <TableCardFromData
         data={data}
         title="Cluster Info"
@@ -47,14 +45,14 @@ describe('TableCardFromData', () => {
     expect(getByText('BareMetal')).toBeInTheDocument();
   });
 
-  it('should render the available resources', () => {
+  it('should render the available resources', async () => {
     const availableNameMap = new Map<string, string>([
       ['cpuCores', 'CPU cores'],
       ['memorySize', 'Memory size'],
       ['numberOfPods', 'Number of pods'],
     ]);
 
-    const { getByText } = render(
+    const { getByText } = await renderInTestApp(
       <TableCardFromData
         data={data.availableResources}
         title="Available"
@@ -67,10 +65,10 @@ describe('TableCardFromData', () => {
     expect(getByText('750')).toBeInTheDocument();
   });
 
-  it('should render nothing if there is an empty name map', () => {
+  it('should render nothing if there is an empty name map', async () => {
     const availableNameMap = new Map<string, string>([]);
 
-    const { queryByText } = render(
+    const { queryByText } = await renderInTestApp(
       <TableCardFromData
         data={data.availableResources}
         title="Available"
@@ -83,14 +81,14 @@ describe('TableCardFromData', () => {
     expect(queryByText('750')).toBeNull();
   });
 
-  it('should ignore unknown keys in name map', () => {
+  it('should ignore unknown keys in name map', async () => {
     const availableNameMap = new Map<string, string>([
       ['cpuCores', 'CPU cores'],
       ['memorySize', 'Memory size'],
       ['numberOfProds', 'Number of prods'],
     ]);
 
-    const { queryByText } = render(
+    const { queryByText } = await renderInTestApp(
       <TableCardFromData
         data={data.availableResources}
         title="Available"

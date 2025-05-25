@@ -26,6 +26,7 @@ import { filterTableData } from '../../utils/filter-table-data';
 import { getMembers } from '../../utils/rbac-utils';
 import EditRole from '../EditRole';
 import { columns } from './MembersListColumns';
+import { StyledTableWrapper } from './StyledTableWrapper';
 
 type MembersCardProps = {
   roleName: string;
@@ -84,27 +85,29 @@ export const MembersCard = ({ roleName, membersInfo }: MembersCardProps) => {
           />
         </Box>
       )}
-      <Table
-        title={
-          !loading && data?.length
-            ? `Users and groups (${getMembers(filteredData)})`
-            : 'Users and groups'
-        }
-        actions={actions}
-        options={{ padding: 'default', search: true, paging: true }}
-        data={data ?? []}
-        isLoading={loading}
-        columns={columns}
-        emptyContent={
-          <Box
-            data-testid="members-table-empty"
-            sx={{ display: 'flex', justifyContent: 'center', p: 2 }}
-          >
-            No records found
-          </Box>
-        }
-        onSearchChange={setSearchText}
-      />
+      <StyledTableWrapper>
+        <Table
+          title={
+            !loading && data?.length
+              ? `${getMembers(filteredData)}`
+              : 'Users and groups'
+          }
+          actions={actions}
+          options={{ padding: 'default', search: true, paging: true }}
+          data={data ?? []}
+          isLoading={loading}
+          columns={columns}
+          emptyContent={
+            <Box
+              data-testid="members-table-empty"
+              sx={{ display: 'flex', justifyContent: 'center', p: 2 }}
+            >
+              No records found
+            </Box>
+          }
+          onSearchChange={setSearchText}
+        />
+      </StyledTableWrapper>
     </Box>
   );
 };

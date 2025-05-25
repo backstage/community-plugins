@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
-import { history, HistoryManager } from '../../app/History';
 import {
   ActiveFilter,
   ActiveFiltersInfo,
@@ -22,7 +20,9 @@ import {
   FilterType,
   LabelOperation,
   ToggleType,
-} from '../../types/Filters';
+} from '@backstage-community/plugin-kiali-common/types';
+import { default as React } from 'react';
+import { history, HistoryManager } from '../../app/History';
 import * as FilterHelper from '../FilterList/FilterHelper';
 
 export class FilterSelected {

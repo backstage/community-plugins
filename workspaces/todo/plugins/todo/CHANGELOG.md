@@ -1,5 +1,11 @@
 # @backstage-community/plugin-todo
 
+## 0.8.0
+
+### Minor Changes
+
+- d644a5e: todo documentation updated
+
 ## 0.7.0
 
 ### Minor Changes

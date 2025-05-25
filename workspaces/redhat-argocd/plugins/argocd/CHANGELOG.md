@@ -1,5 +1,29 @@
 ## @backstage-community/plugin-redhat-argocd
 
+## 1.20.0
+
+### Minor Changes
+
+- 90b54c9: allow appNamespace and project to be used with appName
+
+### Patch Changes
+
+- 9c78a8d: Fix issue where backend does not return instance url in the metadata
+
+## 1.19.2
+
+### Patch Changes
+
+- 1d7aaba: Update supported version metadata to 1.38.1
+- Updated dependencies [1d7aaba]
+  - @backstage-community/plugin-redhat-argocd-common@1.5.1
+
+## 1.19.1
+
+### Patch Changes
+
+- fa53ba5: Updated dependency `@playwright/test` to `1.52.0`.
+
 ## 1.19.0
 
 ### Minor Changes

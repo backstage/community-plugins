@@ -19,3 +19,4 @@ export {
 } from './useAnnouncements';
 export { useCategories } from './useCategories';
 export { useAnnouncementsTranslation } from './useAnnouncementsTranslation';
+export { useCatalogEntities } from './useCatalogEntities';

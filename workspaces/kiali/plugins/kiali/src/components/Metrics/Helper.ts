@@ -13,22 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { history, URLParam } from '../../app/History';
-import { computePrometheusRateParams } from '../../services/Prometheus';
 import {
   boundsToDuration,
-  DurationInSeconds,
   guardTimeRange,
-  TimeRange,
-} from '../../types/Common';
-import { AggregationModel, DashboardModel } from '../../types/Dashboards';
+} from '@backstage-community/plugin-kiali-common/func';
 import {
+  AggregationModel,
   AllPromLabelsValues,
+  DashboardModel,
+  DurationInSeconds,
   Metric,
+  MetricsQuery,
   PromLabel,
   SingleLabelValues,
-} from '../../types/Metrics';
-import { MetricsQuery } from '../../types/MetricsOptions';
+  TimeRange,
+} from '@backstage-community/plugin-kiali-common/types';
+import { history, URLParam } from '../../app/History';
+import { computePrometheusRateParams } from '../../services/Prometheus';
 import { responseFlags } from '../../utils/ResponseFlags';
 import {
   LabelSettings,

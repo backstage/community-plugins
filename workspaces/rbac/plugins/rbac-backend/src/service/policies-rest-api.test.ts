@@ -61,6 +61,7 @@ import {
   providerMock,
   roleMetadataStorageMock,
   mockedAuthorize,
+  mockPermissionRegistry,
 } from '../../__fixtures__/mock-utils';
 
 jest.setTimeout(60000);
@@ -258,6 +259,7 @@ describe('REST policies api', () => {
         mockAuthService,
       ),
       userInfo: mockUserInfoService,
+      permissionsRegistry: mockPermissionRegistry,
     };
 
     server = new PoliciesServer(
@@ -354,7 +356,7 @@ describe('REST policies api', () => {
       expect(result.statusCode).toBe(403);
       expect(result.body.error).toEqual({
         name: 'NotAllowedError',
-        message: `Only creadential principal with type 'user' permitted to modify permissions`,
+        message: `Only credential principal with type 'user' permitted to modify permissions`,
       });
     });
 
@@ -3839,6 +3841,7 @@ describe('REST policies api', () => {
           mockAuthService,
         ),
         userInfo: mockUserInfoService,
+        permissionsRegistry: mockPermissionRegistry,
       };
 
       server = new PoliciesServer(

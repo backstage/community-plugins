@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { List, ListItem, Typography } from '@material-ui/core';
-import React from 'react';
-import { ReferenceIstioObjectLink } from '../../components/Link/IstioObjectLink';
-import { ServiceLink } from '../../components/Link/ServiceLink';
-import { WorkloadLink } from '../../components/Link/WorkloadLink';
 import {
   ObjectReference,
   ServiceReference,
   WorkloadReference,
-} from '../../types/IstioObjects';
+} from '@backstage-community/plugin-kiali-common/types';
+import { List, ListItem, Typography } from '@material-ui/core';
+import { ReferenceIstioObjectLink } from '../../components/Link/IstioObjectLink';
+import { ServiceLink } from '../../components/Link/ServiceLink';
+import { WorkloadLink } from '../../components/Link/WorkloadLink';
 
 interface IstioConfigReferencesProps {
   objectReferences: ObjectReference[];

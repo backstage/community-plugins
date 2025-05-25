@@ -13,12 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {
+  KIALI_NAMESPACE,
+  KIALI_PROVIDER,
+} from '@backstage-community/plugin-kiali-common';
 import { useApi } from '@backstage/core-plugin-api';
 import { useEntity } from '@backstage/plugin-catalog-react';
-import React, { createContext, useContext, useMemo } from 'react';
+import { createContext, useContext, useMemo } from 'react';
 import useAsyncFn from 'react-use/lib/useAsyncFn';
 import useDebounce from 'react-use/lib/useDebounce';
-import { KIALI_NAMESPACE, KIALI_PROVIDER } from '../components/Router';
 import { NamespaceInfo } from '../pages/Overview/NamespaceInfo';
 import { getNamespaces } from '../pages/Overview/OverviewPage';
 import { kialiApiRef } from '../services/Api';

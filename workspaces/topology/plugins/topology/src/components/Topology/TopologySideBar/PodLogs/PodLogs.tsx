@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { SetStateAction, Dispatch } from 'react';
+
+import { useEffect } from 'react';
 
 import { DismissableBanner, LogViewer } from '@backstage/core-components';
 
@@ -25,7 +27,7 @@ import { ContainerScope } from './types';
 
 type PodLogsProps = {
   podScope: ContainerScope;
-  setLogText: React.Dispatch<React.SetStateAction<string>>;
+  setLogText: Dispatch<SetStateAction<string>>;
   stopPolling: boolean;
 };
 
@@ -39,7 +41,7 @@ export const PodLogs = ({
     stopPolling,
   });
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!loading && value !== undefined) setLogText(value.text);
   }, [loading, setLogText, value]);
 

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useContext } from 'react';
 
 import { Status } from '@janus-idp/shared-react';
 
@@ -50,7 +50,7 @@ type TopologyVirtualMachineDetailsProps = {
 const TopologyVirtualMachineDetails = ({
   vm,
 }: TopologyVirtualMachineDetailsProps) => {
-  const resources = React.useContext(K8sResourcesContext);
+  const resources = useContext(K8sResourcesContext);
   const allPods = resources?.watchResourcesData?.pods?.data?.filter(isV1Pod);
   const allVMIs =
     resources?.watchResourcesData?.virtualmachineinstances?.data?.filter(

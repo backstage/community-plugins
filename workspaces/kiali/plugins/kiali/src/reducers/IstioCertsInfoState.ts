@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { CertsInfo } from '@backstage-community/plugin-kiali-common/types';
 import { getType } from 'typesafe-actions';
 import { IstioCertsInfoActions } from '../actions/IstioCertsInfoActions';
 import { KialiAppAction } from '../actions/KialiAppAction';
-import { CertsInfo } from '../types/CertsInfo';
 
 export const INITIAL_ISTIO_CERTS_INFO_STATE: CertsInfo[] = [];
 

@@ -13,12 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { AppHealth } from '@backstage-community/plugin-kiali-common/func';
+import type { App } from '@backstage-community/plugin-kiali-common/types';
+import {
+  DRAWER,
+  DurationInSeconds,
+  ENTITY,
+} from '@backstage-community/plugin-kiali-common/types';
 import { Grid } from '@material-ui/core';
-import React from 'react';
-import { App } from '../../types/App';
-import { DurationInSeconds } from '../../types/Common';
-import { AppHealth } from '../../types/Health';
-import { DRAWER, ENTITY } from '../../types/types';
 import { AppDescription } from './AppDescription';
 
 type AppInfoProps = {

@@ -1,5 +1,11 @@
 # @backstage-community/plugin-badges-backend
 
+## 0.11.1
+
+### Patch Changes
+
+- 6c0f6ee: Update README links to point to community-plugins repository.
+
 ## 0.11.0
 
 ### Minor Changes

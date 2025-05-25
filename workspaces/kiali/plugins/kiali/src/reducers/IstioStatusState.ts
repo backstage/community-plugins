@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { ComponentStatus } from '@backstage-community/plugin-kiali-common/types';
 import { getType } from 'typesafe-actions';
 import { IstioStatusActions } from '../actions/IstioStatusActions';
 import { KialiAppAction } from '../actions/KialiAppAction';
-import { ComponentStatus } from '../types/IstioStatus';
 
 export const INITIAL_ISTIO_STATUS_STATE: ComponentStatus[] = [];
 

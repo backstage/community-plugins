@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { NotificationGroup } from '@backstage-community/plugin-kiali-common/types';
 import { Button, Card, CardActions, CardContent } from '@material-ui/core';
 import { InfoIcon } from '@patternfly/react-icons';
-import * as React from 'react';
+import { default as React } from 'react';
 import { MessageCenterActions } from '../../actions';
 import { KialiAppState, KialiContext } from '../../store';
-import { NotificationGroup } from '../../types/MessageCenter';
 import { AlertDrawerMessage } from './AlertDrawerMessage';
 
 type AlertDrawerGroupProps = {

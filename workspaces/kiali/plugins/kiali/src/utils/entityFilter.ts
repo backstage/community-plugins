@@ -13,18 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import {
-  KIALI_ANNOTATION,
+  KIALI_APP,
   KIALI_LABEL_SELECTOR_QUERY_ANNOTATION,
   KIALI_NAMESPACE,
-} from '../components/Router';
-import { Namespace } from '../types/Namespace';
+} from '@backstage-community/plugin-kiali-common';
+import type { Namespace } from '@backstage-community/plugin-kiali-common/types';
 
 const filterById = (ns: Namespace[], value: string): Namespace[] => {
   const values = value.split(',');
-  return ns.filter(
-    n => n.labels && values.includes(n.labels[KIALI_ANNOTATION]),
-  );
+  return ns.filter(n => n.labels && values.includes(n.labels[KIALI_APP]));
 };
 
 const filterBySelector = (ns: Namespace[], value: string): Namespace[] => {
@@ -52,8 +51,8 @@ export const filterNsByAnnotation = (
   }
 
   let nsFilter = ns;
-  nsFilter = annotations[KIALI_ANNOTATION]
-    ? filterById(nsFilter, decodeURIComponent(annotations[KIALI_ANNOTATION]))
+  nsFilter = annotations[KIALI_APP]
+    ? filterById(nsFilter, decodeURIComponent(annotations[KIALI_APP]))
     : nsFilter;
   nsFilter = annotations[KIALI_LABEL_SELECTOR_QUERY_ANNOTATION]
     ? filterBySelector(

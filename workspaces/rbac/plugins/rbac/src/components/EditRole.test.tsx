@@ -13,15 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router, useNavigate } from 'react-router-dom';
 
 import { usePermission } from '@backstage/plugin-permission-react';
 
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 
 import '@testing-library/jest-dom';
 
 import EditRole from './EditRole';
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: jest.fn(),
+}));
 
 jest.mock('@backstage/catalog-model', () => ({
   ...jest.requireActual('@backstage/catalog-model'),
@@ -51,16 +56,12 @@ describe('EditRole', () => {
         <EditRole roleName="roleName" canEdit={isAllowed} />
       </Router>,
     );
-
-    expect(screen.getByRole('link', { name: 'Update' })).toHaveAttribute(
-      'aria-disabled',
-      'true',
-    );
+    expect(screen.getByRole('button', { name: 'Update' })).toBeDisabled();
   });
 
   it('renders the button with correct tooltip and enabled state', () => {
     mockUsePermission.mockReturnValue({ loading: false, allowed: true });
-    const tooltipText = 'Edit Role Tooltip';
+    const tooltipText = 'Update';
     const dataTestIdText = 'edit-role-btn';
     render(
       <Router>
@@ -74,15 +75,15 @@ describe('EditRole', () => {
     );
 
     expect(screen.getByTestId('edit-role-btn')).toHaveAttribute(
-      'aria-label',
+      'title',
       tooltipText,
     );
-    expect(screen.getByRole('link', { name: 'Update' })).not.toHaveAttribute(
-      'aria-disabled',
-    );
+    expect(screen.getByRole('button', { name: 'Update' })).not.toBeDisabled();
   });
 
-  it('sets the correct link path when "to" prop is provided', () => {
+  it('sets the correct navigation path when "to" prop is provided', () => {
+    const mockNavigate = jest.fn();
+    (useNavigate as jest.Mock).mockReturnValue(mockNavigate);
     const toPath = '/custom/path';
     render(
       <Router>
@@ -90,19 +91,23 @@ describe('EditRole', () => {
       </Router>,
     );
 
-    expect(screen.getByRole('link')).toHaveAttribute('href', toPath);
+    const button = screen.getByRole('button', { name: /update/i });
+    fireEvent.click(button);
+
+    expect(mockNavigate).toHaveBeenCalledWith(toPath);
   });
 
-  it('sets the correct default link path based on roleName', () => {
+  it('sets the correct default navigation path based on roleName', () => {
+    const mockNavigate = jest.fn();
+    (useNavigate as jest.Mock).mockReturnValue(mockNavigate);
     render(
       <Router>
         <EditRole roleName="roleName" canEdit={isAllowed} />
       </Router>,
     );
+    const button = screen.getByRole('button', { name: /update/i });
+    fireEvent.click(button);
 
-    expect(screen.getByRole('link')).toHaveAttribute(
-      'href',
-      expect.stringContaining('/role/Role/default/roleName'),
-    );
+    expect(mockNavigate).toHaveBeenCalledWith('../role/Role/default/roleName');
   });
 });

@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import type {
+  DurationInSeconds,
+  IntervalInMilliseconds,
+  TimeInMilliseconds,
+  TimeRange,
+} from '@backstage-community/plugin-kiali-common/types';
 import {
   ActionType,
   createAction,
   createStandardAction,
 } from 'typesafe-actions';
-import {
-  DurationInSeconds,
-  IntervalInMilliseconds,
-  TimeInMilliseconds,
-  TimeRange,
-} from '../types/Common';
 import { ActionKeys } from './ActionKeys';
 
 export const UserSettingsActions = {

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { pluginId } from '@backstage-community/plugin-kiali-common';
 import {
   createRouteRef,
   createSubRouteRef,
@@ -20,7 +21,7 @@ import {
 } from '@backstage/core-plugin-api';
 
 export const rootRouteRef = createRouteRef({
-  id: 'kiali',
+  id: pluginId,
 });
 
 /* Kiali Page Routes */
@@ -61,25 +62,25 @@ export const trafficGraphRouteRef = createSubRouteRef({
 });
 
 export const workloadsDetailRouteRef = createSubRouteRef({
-  id: 'kiali/workloads/details',
+  id: `${pluginId}/workloads/details`,
   parent: rootRouteRef,
   path: '/workloads/:namespace/:workload',
 });
 
 export const servicesDetailRouteRef = createSubRouteRef({
-  id: 'kiali/services/details',
+  id: `${pluginId}/services/details`,
   parent: rootRouteRef,
   path: '/services/:namespace/:service',
 });
 
 export const appDetailRouteRef = createSubRouteRef({
-  id: 'kiali/applications/details',
+  id: `${pluginId}/applications/details`,
   parent: rootRouteRef,
   path: '/applications/:namespace/:app',
 });
 
 export const istioConfigDetailRouteRef = createSubRouteRef({
-  id: 'kiali/istio/details',
+  id: `${pluginId}/istio/details`,
   parent: rootRouteRef,
   path: '/istio/:namespace/:objectType/:object',
 });

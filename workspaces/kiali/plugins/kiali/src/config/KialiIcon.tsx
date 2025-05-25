@@ -72,7 +72,7 @@ import {
   WarningTriangleIcon,
 } from '@patternfly/react-icons';
 import { SVGIconProps } from '@patternfly/react-icons/dist/js/createIcon';
-import * as React from 'react';
+import { default as React } from 'react';
 import { classes } from 'typestyle';
 import { PFColors } from '../components/Pf/PfColors';
 import { kialiStyle } from '../styles/StyleUtils';

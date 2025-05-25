@@ -1,5 +1,42 @@
 # @backstage-community/plugin-multi-source-security-viewer
 
+## 0.4.3
+
+### Patch Changes
+
+- bec7d2b: Updated dependency `@backstage-community/plugin-jenkins` to `^0.19.0`.
+
+## 0.4.2
+
+### Patch Changes
+
+- ca224e7: Updated dependency `@backstage-community/plugin-azure-devops-common` to `^0.10.0`.
+
+## 0.4.1
+
+### Patch Changes
+
+- ea85387: Updated dependency `@backstage-community/plugin-azure-devops` to `^0.14.0`.
+- 496aa2f: Updated dependency `@backstage-community/plugin-github-actions` to `^0.10.0`.
+
+## 0.4.0
+
+### Minor Changes
+
+- 682570b: URL encode the repository slug
+
+## 0.3.2
+
+### Patch Changes
+
+- d346a7e: Include Azure Pipelines pre-requisite link
+
+## 0.3.1
+
+### Patch Changes
+
+- d4061d7: Fix issue where patternfly overrides plugin css
+
 ## 0.3.0
 
 ### Minor Changes

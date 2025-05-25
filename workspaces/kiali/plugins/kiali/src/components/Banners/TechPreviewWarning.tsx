@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { Alert } from '@material-ui/lab';
-import * as React from 'react';
 
 type defaultProps = {
   message?: string;

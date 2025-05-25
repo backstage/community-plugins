@@ -13,10 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { highestSeverity } from '@backstage-community/plugin-kiali-common/func';
+import {
+  ObjectCheck,
+  ValidationTypes,
+} from '@backstage-community/plugin-kiali-common/types';
+import { default as React } from 'react';
 import { kialiStyle } from '../../styles/StyleUtils';
-import { ObjectCheck, ValidationTypes } from '../../types/IstioObjects';
-import { highestSeverity } from '../../types/ServiceInfo';
 import { PFColors } from '../Pf/PfColors';
 import { Validation } from './Validation';
 

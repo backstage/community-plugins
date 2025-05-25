@@ -20,7 +20,7 @@ import {
   MenuItem,
   Select,
 } from '@material-ui/core';
-import React from 'react';
+import { default as React } from 'react';
 import { NamespaceActions } from '../../../actions';
 import { KialiAppState, KialiContext } from '../../../store';
 
@@ -33,9 +33,11 @@ export const NamespaceSelector = (props: { page?: boolean }) => {
     } = event;
     kialiState.dispatch.namespaceDispatch(
       NamespaceActions.setActiveNamespaces(
-        (kialiState.namespaces.items || []).filter(ns =>
-          (value as string[]).includes(ns.name),
-        ),
+        (
+          kialiState.namespaces.items?.filter(
+            ns => ns.cluster === kialiState.providers.activeProvider,
+          ) || []
+        ).filter(ns => (value as string[]).includes(ns.name)),
       ),
     );
   };

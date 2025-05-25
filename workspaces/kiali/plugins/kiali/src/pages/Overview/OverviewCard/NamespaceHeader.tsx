@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import type {
+  CanaryUpgradeStatus,
+  ComponentStatus,
+} from '@backstage-community/plugin-kiali-common/types';
 import { CardHeader, Chip } from '@material-ui/core';
-import React from 'react';
 import { serverConfig } from '../../../config';
-import { CanaryUpgradeStatus } from '../../../types/IstioObjects';
-import { ComponentStatus } from '../../../types/IstioStatus';
 import { NamespaceInfo } from '../NamespaceInfo';
 import { ControlPlaneBadge } from './ControlPlaneBadge';
 import { ControlPlaneVersionBadge } from './ControlPlaneVersionBadge';

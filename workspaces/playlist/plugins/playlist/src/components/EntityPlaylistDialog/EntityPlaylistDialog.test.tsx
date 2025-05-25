@@ -25,7 +25,6 @@ import {
 } from '@backstage/plugin-permission-react';
 import Button from '@material-ui/core/Button';
 import { fireEvent, getByRole, waitFor, act } from '@testing-library/react';
-import React from 'react';
 import { SWRConfig } from 'swr';
 import { PlaylistApi, playlistApiRef } from '../../api';
 import { playlistRouteRef, rootRouteRef } from '../../routes';

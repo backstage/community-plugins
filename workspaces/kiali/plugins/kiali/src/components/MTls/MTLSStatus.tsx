@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { TooltipPosition } from '@patternfly/react-core';
-import * as React from 'react';
+import { default as React } from 'react';
 import { MTLSIcon } from './MTLSIcon';
 
 type Props = {

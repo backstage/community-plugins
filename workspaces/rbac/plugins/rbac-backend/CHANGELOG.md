@@ -1,5 +1,38 @@
 ### Dependencies
 
+## 6.2.6
+
+### Patch Changes
+
+- fcc57ec: Updated dependency `@types/node` to `22.14.1`.
+
+## 6.2.5
+
+### Patch Changes
+
+- 658c51c: chore: Remove usage of @spotify/prettier-config
+- Updated dependencies [658c51c]
+  - @backstage-community/plugin-rbac-common@1.16.1
+  - @backstage-community/plugin-rbac-node@1.11.1
+
+## 6.2.4
+
+### Patch Changes
+
+- 298b1d4: Avoid unnecessary query to check 'relations' table in the role manager
+
+## 6.2.3
+
+### Patch Changes
+
+- 9436665: Reduce rbac-backend requests to credentials API.
+
+## 6.2.2
+
+### Patch Changes
+
+- c92a50c: Fixed a bug where updating a role name via the `PUT </api/permission/roles/:kind/:namespace/:name>` endpoint did not propagate changes to metadata, permissions and conditions, leaving them mapped to the old role name.
+
 ## 6.2.1
 
 ### Patch Changes

@@ -27,6 +27,7 @@ export const announcementsTranslationRef = createTranslationRef({
       editAnnouncement: 'Edit announcement',
       newAnnouncement: 'New announcement',
       startAt: 'Announcement start date',
+      onBehalfOf: 'On behalf of',
       categoryInput: {
         create: 'Create',
         label: 'Category',
@@ -38,8 +39,8 @@ export const announcementsTranslationRef = createTranslationRef({
       card: {
         by: 'By',
         in: 'in',
-        edit: 'EDIT',
-        delete: 'DELETE',
+        edit: 'Edit',
+        delete: 'Delete',
         occurred: 'Occurred ',
         scheduled: 'Scheduled ',
         today: 'Today',
@@ -131,6 +132,7 @@ export const announcementsTranslationRef = createTranslationRef({
           title: 'Title',
           body: 'Body',
           publisher: 'Publisher',
+          onBehalfOf: 'On behalf of',
           category: 'Category',
           status: 'Status',
           actions: 'Actions',

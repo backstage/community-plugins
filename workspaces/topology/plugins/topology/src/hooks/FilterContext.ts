@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
+import { createContext } from 'react';
 
 import { FilterContextType } from '../types/types';
 
-export const FilterContext = React.createContext<FilterContextType>({});
+export const FilterContext = createContext<FilterContextType>({});

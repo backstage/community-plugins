@@ -47,6 +47,7 @@ export type GetApplicationOptions = {
   url: string;
   appName: string;
   appNamespace?: string;
+  project?: string;
   instance?: string;
 };
 export interface ArgoCDApi {
@@ -150,6 +151,7 @@ export class ArgoCDApiClient implements ArgoCDApi {
     const proxyUrl = await this.getBaseUrl();
     const query = this.getQueryParams({
       appNamespace: options.appNamespace,
+      project: options.project,
     });
     return this.fetcher(
       `${proxyUrl}${options.url}/applications/${encodeURIComponent(

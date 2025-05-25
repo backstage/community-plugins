@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
+import {
+  MeshCluster,
+  ServerConfig,
+} from '@backstage-community/plugin-kiali-common/types';
 import _ from 'lodash';
-import { MeshCluster } from '../types/Mesh';
-import { ServerConfig } from '../types/ServerConfig';
 import { parseHealthConfig } from './HealthConfig';
 
 export type Durations = { [key: number]: string };

@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { serverConfig } from '../../config';
 import {
   AllFilterTypes,
   FILTER_ACTION_APPEND,
   FilterType,
+  IstioConfigItem,
+  SortField,
   ToggleType,
-} from '../../types/Filters';
-import { IstioConfigItem } from '../../types/IstioConfigList';
-import { SortField } from '../../types/SortFilters';
+} from '@backstage-community/plugin-kiali-common/types';
+import { serverConfig } from '../../config';
 import { compareValidations } from '../ServiceList/FiltersAndSorts';
 
 export const sortFields: SortField<IstioConfigItem>[] = [

@@ -13,6 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import type {
+  LegendItem,
+  LineInfo,
+  Overlay,
+  RawOrBucket,
+  RichDataPoint,
+  VCDataPoint,
+  VCLines,
+  XAxisType,
+} from '@backstage-community/plugin-kiali-common/types';
 import { Tooltip } from '@material-ui/core';
 import {
   Chart,
@@ -28,7 +38,7 @@ import {
 } from '@patternfly/react-charts';
 import { Button, ButtonVariant } from '@patternfly/react-core';
 import { format as d3Format } from 'd3-format';
-import * as React from 'react';
+import { default as React } from 'react';
 import regression from 'regression';
 import { VictoryBoxPlot } from 'victory-box-plot';
 import { VictoryPortal } from 'victory-core';
@@ -36,16 +46,6 @@ import { VictoryVoronoiContainer } from 'victory-voronoi-container';
 import { PFColors } from '../../components/Pf/PfColors';
 import { KialiIcon } from '../../config/KialiIcon';
 import { kialiStyle } from '../../styles/StyleUtils';
-import { XAxisType } from '../../types/Dashboards';
-import { Overlay } from '../../types/Overlay';
-import {
-  LegendItem,
-  LineInfo,
-  RawOrBucket,
-  RichDataPoint,
-  VCDataPoint,
-  VCLines,
-} from '../../types/VictoryChartInfo';
 import { getFormatter, getUnit } from '../../utils/Formatter';
 import { toBuckets } from '../../utils/VictoryChartsUtils';
 import { addLegendEvent, VCEvent } from '../../utils/VictoryEvents';

@@ -13,9 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
-import { render } from '@testing-library/react';
+import { renderInTestApp } from '@backstage/test-utils';
 
 import abortedCluster from '../../../__fixtures__/aborted-cluster.json';
 import clusterOne from '../../../__fixtures__/cluster1.json';
@@ -42,27 +40,33 @@ describe('ClusterAvailableResourceCard', () => {
     jest.resetAllMocks();
   });
 
-  it('should render the table', () => {
+  it('should render the table', async () => {
     (useCluster as jest.Mock).mockReturnValue({ data: clusterOne });
-    const { getByText } = render(<ClusterAvailableResourceCard />);
+    const { getByText } = await renderInTestApp(
+      <ClusterAvailableResourceCard />,
+    );
 
     expect(getByText('96')).toBeInTheDocument();
     expect(getByText('503 Gi')).toBeInTheDocument();
     expect(getByText('750')).toBeInTheDocument();
   });
 
-  it('should render nothing when there is no cluster data', () => {
+  it('should render nothing when there is no cluster data', async () => {
     (useCluster as jest.Mock).mockReturnValue({});
-    const { queryByText } = render(<ClusterAvailableResourceCard />);
+    const { queryByText } = await renderInTestApp(
+      <ClusterAvailableResourceCard />,
+    );
 
     expect(queryByText('96')).toBeNull();
     expect(queryByText('503 Gi')).toBeNull();
     expect(queryByText('750')).toBeNull();
   });
 
-  it('should render nothing when available resources are missing', () => {
+  it('should render nothing when available resources are missing', async () => {
     (useCluster as jest.Mock).mockReturnValue({ data: abortedCluster });
-    const { queryByText } = render(<ClusterAvailableResourceCard />);
+    const { queryByText } = await renderInTestApp(
+      <ClusterAvailableResourceCard />,
+    );
 
     expect(queryByText('96')).toBeNull();
     expect(queryByText('503 Gi')).toBeNull();

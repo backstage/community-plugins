@@ -22,7 +22,6 @@ import {
 import { SearchApi, searchApiRef } from '@backstage/plugin-search-react';
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
 import { fireEvent, getByText, act } from '@testing-library/react';
-import React from 'react';
 
 import { AddEntitiesDrawer } from './AddEntitiesDrawer';
 

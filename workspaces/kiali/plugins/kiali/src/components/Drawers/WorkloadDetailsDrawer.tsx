@@ -13,15 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { WorkloadHealth } from '@backstage-community/plugin-kiali-common/func';
+import { DRAWER } from '@backstage-community/plugin-kiali-common/types';
+import type {
+  Workload,
+  WorkloadQuery,
+} from '@backstage-community/plugin-kiali-common/types';
 import { useApi } from '@backstage/core-plugin-api';
 import { CircularProgress } from '@material-ui/core';
-import * as React from 'react';
+import { default as React } from 'react';
 import { useAsyncFn, useDebounce } from 'react-use';
+import { serverConfig } from '../../config';
 import { WorkloadInfo } from '../../pages/WorkloadDetails/WorkloadInfo';
 import { kialiApiRef } from '../../services/Api';
-import { WorkloadHealth } from '../../types/Health';
-import { DRAWER } from '../../types/types';
-import { Workload, WorkloadQuery } from '../../types/Workload';
 
 type Props = {
   namespace: string;
@@ -57,6 +61,7 @@ export const WorkloadDetailsDrawer = (props: Props) => {
             hasSidecar: workloadResponse.istioSidecar,
             hasAmbient: workloadResponse.istioAmbient,
           },
+          serverConfig,
         );
         setHealth(wkHealth);
       })

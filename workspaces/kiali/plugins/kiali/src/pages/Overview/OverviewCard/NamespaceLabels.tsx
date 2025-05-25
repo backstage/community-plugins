@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { Tooltip } from '@material-ui/core';
-import React from 'react';
 import { KialiIcon } from '../../../config';
 import { infoStyle } from './CanaryUpgradeProgress';
 

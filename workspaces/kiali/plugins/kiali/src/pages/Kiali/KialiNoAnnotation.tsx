@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { ANNOTATION_SUPPORTED } from '@backstage-community/plugin-kiali-common';
 import {
   Content,
   MissingAnnotationEmptyState,
   Page,
 } from '@backstage/core-components';
-import React from 'react';
-import { ANNOTATION_SUPPORTED } from '../../components/Router';
 
 export const KialiNoAnnotation = () => {
   return (

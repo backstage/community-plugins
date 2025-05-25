@@ -3,25 +3,25 @@
   "version": "1.0.0",
   "private": true,
   "engines": {
-    "node": "20"
+    "node": "22"
   },
   "scripts": {
-    "start:backstage": "concurrently -c auto -n \"fe,be\" -p \"{name}:{pid}\" \"yarn start-app\" \"yarn start-backend\"",
+    "start": "backstage-cli repo start",
     "start-app": "yarn workspace app start",
     "start-backend": "yarn workspace backend start",
     "tsc": "tsc",
     "tsc:full": "tsc --skipLibCheck true --incremental false",
-    "build:all": "backstage-cli repo build --all",
+    "build:all": "CI=true backstage-cli repo build --all",
     "build:api-reports": "yarn build:api-reports:only",
     "build:api-reports:only": "backstage-repo-tools api-reports --allow-all-warnings -o ae-wrong-input-file-type,ae-undocumented --validate-release-tags",
     "clean": "backstage-cli repo clean",
     "test": "backstage-cli repo test",
     "test:all": "backstage-cli repo test --coverage",
-    "fix": "backstage-cli repo fix",
+    "fix": "backstage-cli repo fix --publish",
     "lint": "backstage-cli repo lint --since origin/main",
     "lint:all": "backstage-cli repo lint",
-    "prettier:check": "prettier --check .",
-    "prettier:write": "prettier --write .",
+    "prettier:check": "CI=true prettier --check .",
+    "prettier:write": "CI=true prettier --write .",
     "new": "backstage-cli new --scope @backstage-community",
     "postinstall": "cd ../../ && yarn install"
   },

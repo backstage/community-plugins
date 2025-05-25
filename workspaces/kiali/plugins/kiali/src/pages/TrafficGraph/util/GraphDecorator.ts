@@ -13,7 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { isIstioNamespace } from '../../../config';
+import {
+  AppHealth,
+  hasProtocolTraffic,
+  ServiceHealth,
+  WorkloadHealth,
+} from '@backstage-community/plugin-kiali-common/func';
 import {
   DecoratedGraphEdgeData,
   DecoratedGraphEdgeWrapper,
@@ -23,14 +28,9 @@ import {
   GraphEdgeWrapper,
   GraphElements,
   GraphNodeWrapper,
-  hasProtocolTraffic,
-} from '../../../types/Graph';
-import {
-  AppHealth,
   NA,
-  ServiceHealth,
-  WorkloadHealth,
-} from '../../../types/Health';
+} from '@backstage-community/plugin-kiali-common/types';
+import { isIstioNamespace, serverConfig } from '../../../config';
 
 const toSafeCyFieldName = (fieldName: string): string => {
   const alnumString = /^[a-zA-Z0-9]*$/;
@@ -202,6 +202,7 @@ export const decorateGraphData = (
                 hasSidecar: true,
                 hasAmbient: false,
               },
+              serverConfig,
             );
             decoratedNode.data.healthStatus =
               decoratedNode.data.health.getGlobalStatus().name;
@@ -215,6 +216,7 @@ export const decorateGraphData = (
                 hasSidecar: true,
                 hasAmbient: false,
               },
+              serverConfig,
             );
             decoratedNode.data.healthStatus =
               decoratedNode.data.health.getGlobalStatus().name;
@@ -228,6 +230,7 @@ export const decorateGraphData = (
                 hasSidecar: true,
                 hasAmbient: false,
               },
+              serverConfig,
             );
             decoratedNode.data.healthStatus =
               decoratedNode.data.health.getGlobalStatus().name;

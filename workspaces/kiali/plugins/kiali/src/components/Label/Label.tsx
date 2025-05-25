@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { Label as PfLabel } from '@patternfly/react-core';
-import * as React from 'react';
+import { default as React } from 'react';
 import { kialiStyle } from '../../styles/StyleUtils';
 import { canRender } from '../../utils/SafeRender';
 

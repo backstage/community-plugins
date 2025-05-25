@@ -18,8 +18,10 @@ import { FactLifecycle } from '@backstage-community/plugin-tech-insights-node';
 import { FactRetriever } from '@backstage-community/plugin-tech-insights-node';
 import { FactRetrieverRegistration } from '@backstage-community/plugin-tech-insights-node';
 import { FactRetrieverRegistry as FactRetrieverRegistry_2 } from '@backstage-community/plugin-tech-insights-node';
+import { HttpAuthService } from '@backstage/backend-plugin-api';
 import { HumanDuration } from '@backstage/types';
 import { LoggerService } from '@backstage/backend-plugin-api';
+import { PermissionsService } from '@backstage/backend-plugin-api';
 import { PersistenceContext as PersistenceContext_2 } from '@backstage-community/plugin-tech-insights-node';
 import { SchedulerService } from '@backstage/backend-plugin-api';
 import { UrlReaderService } from '@backstage/backend-plugin-api';
@@ -90,7 +92,9 @@ export interface RouterOptions<
 > {
   config: Config;
   factChecker?: FactChecker<CheckType, CheckResultType>;
+  httpAuth: HttpAuthService;
   logger: LoggerService;
+  permissions: PermissionsService;
   persistenceContext: PersistenceContext_2;
 }
 

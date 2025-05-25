@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { Select } from '@backstage/core-components';
-import * as React from 'react';
+import { default as React } from 'react';
 import { HistoryManager, URLParam } from '../../app/History';
 import { getDurationType } from '../../pages/Overview/OverviewToolbar';
 

@@ -13,10 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { highestSeverity } from '@backstage-community/plugin-kiali-common/func';
+import {
+  ObjectCheck,
+  ValidationTypes,
+} from '@backstage-community/plugin-kiali-common/types';
 import { Tooltip } from '@material-ui/core';
-import React from 'react';
-import { ObjectCheck, ValidationTypes } from '../../types/IstioObjects';
-import { highestSeverity } from '../../types/ServiceInfo';
+import { default as React } from 'react';
 import { Validation } from './Validation';
 
 type ValidationListProps = {

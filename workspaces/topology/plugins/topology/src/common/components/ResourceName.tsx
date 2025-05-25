@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { ReactNode } from 'react';
 
 import classNames from 'classnames';
 
@@ -63,7 +63,7 @@ export const ResourceIcon = ({ className, kind }: ResourceIconProps) => {
 
 export type ResourceNameProps = {
   kind: string;
-  name: React.ReactNode;
+  name: ReactNode;
   large?: boolean;
 };
 

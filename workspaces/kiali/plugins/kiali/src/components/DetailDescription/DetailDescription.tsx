@@ -13,19 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Health as HealthT } from '@backstage-community/plugin-kiali-common/func';
+import { DRAWER } from '@backstage-community/plugin-kiali-common/types';
+import type {
+  AppWorkload,
+  HealthSubItem,
+  Workload,
+} from '@backstage-community/plugin-kiali-common/types';
 import { Tooltip } from '@material-ui/core';
-import * as React from 'react';
+import { default as React } from 'react';
 import { Link } from 'react-router-dom';
 import { isMultiCluster, serverConfig } from '../../config';
 import { createIcon, KialiIcon } from '../../config/KialiIcon';
 import { isGateway, isWaypoint } from '../../helpers/LabelFilterHelper';
 import { healthIndicatorStyle } from '../../styles/HealthStyle';
 import { kialiStyle } from '../../styles/StyleUtils';
-import { AppWorkload } from '../../types/App';
-import * as H from '../../types/Health';
-import { HealthSubItem } from '../../types/Health';
-import { DRAWER } from '../../types/types';
-import { Workload } from '../../types/Workload';
 import { BackstageObjectLink } from '../../utils/backstageLinks';
 import { renderTrafficStatus } from '../Health/HealthDetails';
 import { MissingSidecar } from '../MissingSidecar/MissingSidecar';
@@ -35,7 +37,7 @@ type Props = {
   entity?: boolean;
   apps?: string[];
   cluster?: string;
-  health?: H.Health;
+  health?: HealthT;
   namespace: string;
   services?: string[];
   waypointWorkloads?: Workload[];

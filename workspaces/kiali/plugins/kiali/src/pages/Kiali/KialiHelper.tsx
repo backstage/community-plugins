@@ -20,7 +20,6 @@ import {
   WarningPanel,
 } from '@backstage/core-components';
 import HelpRounded from '@material-ui/icons/HelpRounded';
-import React from 'react';
 import { KialiChecker } from '../../store/KialiProvider';
 
 export const KialiHelper = (props: { check: KialiChecker }) => {

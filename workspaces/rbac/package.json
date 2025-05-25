@@ -40,7 +40,6 @@
     "@backstage/repo-tools": "^0.13.2",
     "@changesets/cli": "^2.27.1",
     "@ianvs/prettier-plugin-sort-imports": "^4.3.1",
-    "@spotify/prettier-config": "^15.0.0",
     "knip": "^5.27.4",
     "node-gyp": "^9.0.0",
     "prettier": "^3.3.3",
@@ -51,7 +50,7 @@
     "@types/react-dom": "^18",
     "prettier": "3.x.x"
   },
-  "prettier": "@spotify/prettier-config",
+  "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {
     "*.{js,jsx,ts,tsx,mjs,cjs}": [
       "eslint --fix",

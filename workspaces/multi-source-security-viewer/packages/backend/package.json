@@ -21,7 +21,7 @@
     "build-image": "docker build ../.. -f Dockerfile --tag backstage"
   },
   "dependencies": {
-    "@backstage-community/plugin-azure-devops-backend": "^0.14.0",
+    "@backstage-community/plugin-azure-devops-backend": "^0.15.0",
     "@backstage-community/plugin-jenkins-backend": "^0.13.0",
     "@backstage/backend-defaults": "^0.9.0",
     "@backstage/config": "^1.3.2",

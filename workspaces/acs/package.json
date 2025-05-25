@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "engines": {
-    "node": "20.17.0"
+    "node": "20.x"
   },
   "scripts": {
     "dev": "yarn workspaces foreach -A --include backend --include app --parallel -v -i run start",
