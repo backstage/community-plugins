@@ -59,8 +59,8 @@ export type RBACRouterOptions = {
     policy: PermissionPolicy;
     auth: AuthService;
     httpAuth: HttpAuthService;
-    permissions: PermissionsService;
     userInfo: UserInfoService;
+    permissions: PermissionsService;
     permissionsRegistry: PermissionsRegistryService;
     auditor: AuditorService;
 };
