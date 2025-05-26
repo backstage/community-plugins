@@ -53,9 +53,8 @@ import { PoliciesServer } from './policies-rest-api';
 import { policyEntityPermissions } from '@backstage-community/plugin-rbac-common';
 import { rules } from '../permissions';
 import { permissionMetadataResourceRef } from '../permissions/resource';
-import { PermissionDependentPluginDatabaseStore, PermissionDependentPluginStore } from '../database/extra-permission-enabled-plugins-storage';
+import { PermissionDependentPluginDatabaseStore } from '../database/extra-permission-enabled-plugins-storage';
 import { ExtendablePluginIdProvider } from './extendable-id-provider';
-
 
 /**
  * @public
@@ -87,7 +86,6 @@ export type RBACRouterOptions = {
   permissions: PermissionsService;
   permissionsRegistry: PermissionsRegistryService;
   auditor: AuditorService;
-  extraPluginsIdStorage: PermissionDependentPluginStore;
 };
 
 /**
@@ -220,7 +218,6 @@ export class PolicyBuilder {
       permissions: env.permissions,
       permissionsRegistry: env.permissionsRegistry,
       auditor: env.auditor,
-      extraPluginsIdStorage,
     };
 
     const server = new PoliciesServer(
