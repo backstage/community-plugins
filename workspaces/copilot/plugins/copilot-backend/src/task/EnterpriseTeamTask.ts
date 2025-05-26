@@ -178,9 +178,25 @@ export async function discoverEnterpriseTeamMetrics({
           );
         }
       } catch (error) {
-        logger.error(
-          `[discoverEnterpriseTeamMetrics] Error processing metrics for team ${team.slug}: ${error}`,
-        );
+        let actualError = error;
+        if (error instanceof Promise) {
+          try {
+            await error;
+          } catch (inner) {
+            actualError = inner;
+          }
+        }
+        if (actualError instanceof Error) {
+          logger.error(
+            `[discoverEnterpriseTeamMetrics] Error processing metrics for team ${team.slug}: ${actualError.message}\n${actualError.stack}`,
+          );
+        } else {
+          logger.error(
+            `[discoverEnterpriseTeamMetrics] Error processing metrics for team ${
+              team.slug
+            }: ${JSON.stringify(actualError)}`,
+          );
+        }
       }
     }
   } catch (error) {

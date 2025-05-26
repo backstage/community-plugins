@@ -54,13 +54,22 @@ export default class TaskManagement {
       try {
         await task();
       } catch (e) {
-        if (e instanceof Error) {
+        // If e is a Promise, await it to get the actual error
+        let error = e;
+        if (e instanceof Promise) {
+          try {
+            await e;
+          } catch (inner) {
+            error = inner;
+          }
+        }
+        if (error instanceof Error) {
           this.options.logger.error(
-            `[TaskManagement] Failed to process task: ${e.message}`,
+            `[TaskManagement] Failed to process task: ${error.message}\n${error.stack}`,
           );
         } else {
           this.options.logger.error(
-            `[TaskManagement] Failed to process task: ${e}`,
+            `[TaskManagement] Failed to process task: ${JSON.stringify(error)}`,
           );
         }
       }

@@ -153,9 +153,25 @@ export async function discoverOrganizationMetrics({
       );
     }
   } catch (error) {
-    logger.error(
-      `[discoverOrganizationMetrics] An error occurred while processing Github Copilot metrics: ${error}`,
-    );
+    let actualError = error;
+    if (error instanceof Promise) {
+      try {
+        await error;
+      } catch (inner) {
+        actualError = inner;
+      }
+    }
+    if (actualError instanceof Error) {
+      logger.error(
+        `[discoverOrganizationMetrics] An error occurred while processing Github Copilot metrics: ${actualError.message}\n${actualError.stack}`,
+      );
+    } else {
+      logger.error(
+        `[discoverOrganizationMetrics] An error occurred while processing Github Copilot metrics: ${JSON.stringify(
+          actualError,
+        )}`,
+      );
+    }
     throw error;
   }
 }
