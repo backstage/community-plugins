@@ -19,8 +19,7 @@ import {
   policyEntityDeletePermission,
   policyEntityReadPermission,
 } from '@backstage-community/plugin-rbac-common';
-import Router from 'express-promise-router';
-import { logAuditorEvent, setAuditorError } from '../auditor/rest-interceptor';
+import { logAuditorEvent } from '../auditor/rest-interceptor';
 import { PluginPermissionMetadataCollector } from './plugin-endpoints';
 import {
   PermissionDependentPluginDTO,
@@ -40,8 +39,10 @@ import {
   NotFoundError,
 } from '@backstage/errors';
 import { validatePermissionDependentPlugin } from '../validation/plugin-validation';
+import express from 'express';
 
-export function createPermissionDefinitionRoutes(
+export function registerPermissionDefinitionRoutes(
+  router: express.Router,
   pluginPermMetaData: PluginPermissionMetadataCollector,
   pluginIdProvider: ExtendablePluginIdProvider,
   extraPluginsIdStorage: PermissionDependentPluginStore,
@@ -52,8 +53,6 @@ export function createPermissionDefinitionRoutes(
     permissions: PermissionsService;
   },
 ) {
-  const router = Router();
-
   const { auth, auditor } = deps;
 
   router.get(
@@ -150,10 +149,6 @@ export function createPermissionDefinitionRoutes(
       response.status(200).json(pluginIdsToResponse(actualPluginIds));
     },
   );
-
-  router.use(setAuditorError());
-
-  return router;
 }
 
 export function pluginIdsToResponse(

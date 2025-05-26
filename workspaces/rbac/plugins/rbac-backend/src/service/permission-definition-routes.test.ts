@@ -21,12 +21,11 @@ import {
   mockedAuthorize,
   mockedAuthorizeConditional,
   mockHttpAuth,
-  mockLoggerService,
   mockPermissionEvaluator,
   permissionDependentPluginStoreMock,
   pluginMetadataCollectorMock,
 } from '../../__fixtures__/mock-utils';
-import { createPermissionDefinitionRoutes } from './permission-definition-routes';
+import { registerPermissionDefinitionRoutes } from './permission-definition-routes';
 import express from 'express';
 import { PluginMetadataResponseSerializedRule } from './plugin-endpoints';
 import { AuthorizeResult } from '@backstage/plugin-permission-common';
@@ -40,14 +39,18 @@ import request from 'supertest';
 import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 import { mockServices } from '@backstage/backend-test-utils';
 import { ExtendablePluginIdProvider } from './extendable-id-provider';
+import Router from 'express-promise-router';
 
 describe('REST plugin policies metadata API', () => {
   let app: express.Express;
 
-  const config = mockServices.rootConfig();
-
   beforeEach(async () => {
-    const router = await createPermissionDefinitionRoutes(
+    const router = Router();
+
+    router.use(express.json());
+
+    registerPermissionDefinitionRoutes(
+      router,
       pluginMetadataCollectorMock as any,
       extendablePluginIdProviderMock as ExtendablePluginIdProvider,
       permissionDependentPluginStoreMock,
@@ -58,12 +61,14 @@ describe('REST plugin policies metadata API', () => {
         permissions: mockPermissionEvaluator,
       },
     );
-    app = express();
-    app.use(express.json());
-    app.use(router);
-    app.use(
-      MiddlewareFactory.create({ logger: mockLoggerService, config }).error(),
-    );
+
+    const middleware = MiddlewareFactory.create({
+      logger: mockServices.logger.mock(),
+      config: mockServices.rootConfig(),
+    });
+    router.use(middleware.error());
+
+    app = express().use(router);
   });
 
   afterEach(() => {

@@ -78,7 +78,7 @@ import { EnforcerDelegate } from './enforcer-delegate';
 import { PluginPermissionMetadataCollector } from './plugin-endpoints';
 import { RBACRouterOptions } from './policy-builder';
 import { conditionTransformerFunc, RBACFilters } from '../permissions';
-import { createPermissionDefinitionRoutes } from './permission-definition-routes';
+import { registerPermissionDefinitionRoutes } from './permission-definition-routes';
 import { PermissionDependentPluginStore } from '../database/extra-permission-enabled-plugins-storage';
 import { ExtendablePluginIdProvider } from './extendable-id-provider';
 
@@ -1056,13 +1056,12 @@ export class PoliciesServer {
       },
     );
 
-    router.use(
-      createPermissionDefinitionRoutes(
-        this.pluginPermMetaData,
-        this.pluginIdProvider,
-        this.extraPluginsIdStorage,
-        this.options,
-      ),
+    registerPermissionDefinitionRoutes(
+      router,
+      this.pluginPermMetaData,
+      this.pluginIdProvider,
+      this.extraPluginsIdStorage,
+      this.options,
     );
 
     router.use(setAuditorError());
