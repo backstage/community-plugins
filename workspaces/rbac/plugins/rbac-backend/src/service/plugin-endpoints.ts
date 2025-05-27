@@ -59,7 +59,7 @@ const rbacPermissionMetadata: MetadataResponse = {
 };
 
 export class PluginPermissionMetadataCollector {
-  private readonly pluginProider: ExtendablePluginIdProvider;
+  private readonly pluginIdProvider: ExtendablePluginIdProvider;
   private readonly discovery: DiscoveryService;
   private readonly logger: LoggerService;
   private readonly urlReader: UrlReaderService;
@@ -78,14 +78,9 @@ export class PluginPermissionMetadataCollector {
       urlReader?: UrlReaderService;
     };
   }) {
-    const {
-      discovery,
-      logger,
-      config,
-      pluginIdProvider: pluginProvider,
-    } = deps;
+    const { discovery, logger, config, pluginIdProvider } = deps;
     this.discovery = discovery;
-    this.pluginProider = pluginProvider;
+    this.pluginIdProvider = pluginIdProvider;
     this.logger = logger;
     this.urlReader =
       optional?.urlReader ??
@@ -137,7 +132,7 @@ export class PluginPermissionMetadataCollector {
   ): Promise<PluginMetadataResponse[]> {
     let pluginResponses: PluginMetadataResponse[] = [];
 
-    const pluginIds = await this.pluginProider.getPluginIds();
+    const pluginIds = await this.pluginIdProvider.getPluginIds();
     for (const pluginId of pluginIds) {
       try {
         const { token } = await auth.getPluginRequestToken({
