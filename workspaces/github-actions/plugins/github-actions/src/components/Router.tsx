@@ -23,8 +23,8 @@ import { Routes, Route } from 'react-router-dom';
 import { buildRouteRef } from '../routes';
 import { WorkflowRunDetails } from './WorkflowRunDetails';
 import { WorkflowRuns } from './WorkflowRuns';
-import { WorkflowRunsTable } from './WorkflowRunsTable';
 import { WorkflowRunsCard } from './WorkflowRunsCard';
+import { WorkflowRunsTable } from './WorkflowRunsTable';
 import { GITHUB_ACTIONS_ANNOTATION } from './getProjectNameFromEntity';
 import { RouterProps } from '../api/types';
 
@@ -35,7 +35,6 @@ export const isGithubActionsAvailable = (entity: Entity) =>
 /** @public */
 export const Router = (props: RouterProps) => {
   const { view = 'table' } = props;
-  //  const { view = 'cards' } = props;
   const { entity } = useEntity();
 
   if (!isGithubActionsAvailable(entity)) {
