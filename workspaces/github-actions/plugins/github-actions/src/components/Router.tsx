@@ -22,6 +22,8 @@ import {
 import { Routes, Route } from 'react-router-dom';
 import { buildRouteRef } from '../routes';
 import { WorkflowRunDetails } from './WorkflowRunDetails';
+import { WorkflowRuns } from './WorkflowRuns';
+import { WorkflowRunsTable } from './WorkflowRunsTable';
 import { WorkflowRunsCard } from './WorkflowRunsCard';
 import { GITHUB_ACTIONS_ANNOTATION } from './getProjectNameFromEntity';
 import { RouterProps } from '../api/types';
@@ -33,6 +35,7 @@ export const isGithubActionsAvailable = (entity: Entity) =>
 /** @public */
 export const Router = (props: RouterProps) => {
   const { view = 'table' } = props;
+  //  const { view = 'cards' } = props;
   const { entity } = useEntity();
 
   if (!isGithubActionsAvailable(entity)) {
@@ -41,16 +44,21 @@ export const Router = (props: RouterProps) => {
     );
   }
 
+  const workflowRunsComponentNG = (
+    <WorkflowRuns entity={entity} viewType={view} />
+  );
+
   const workflowRunsComponent =
     view === 'cards' ? (
       <WorkflowRunsCard entity={entity} />
     ) : (
-      <WorkflowRunsCard entity={entity} tableMode />
+      <WorkflowRunsTable entity={entity} />
     );
 
   return (
     <Routes>
       <Route path="/" element={workflowRunsComponent} />
+      <Route path="/ng" element={workflowRunsComponentNG} />
       <Route
         path={`${buildRouteRef.path}`}
         element={<WorkflowRunDetails entity={entity} />}

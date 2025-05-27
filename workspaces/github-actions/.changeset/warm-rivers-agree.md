@@ -2,4 +2,4 @@
 '@backstage-community/plugin-github-actions': minor
 ---
 
-Refactor `WorkflowRunsTable` to leverage `WorkflowRunsCard` filter and search capabilities
+New `WorkflowRuns` component to replace `WorkflowRunsCard` and `WorkflowRunsTable` to unify filter and search capabilities

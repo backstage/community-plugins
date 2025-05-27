@@ -13,7 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+// React
 import { ChangeEvent, useEffect, useState } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
+
+// Material
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import IconButton from '@material-ui/core/IconButton';
@@ -26,21 +31,31 @@ import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { LinkButton, Link, InfoCard } from '@backstage/core-components';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import RetryIcon from '@material-ui/icons/Replay';
 import SyncIcon from '@material-ui/icons/Sync';
 import ExternalLinkIcon from '@material-ui/icons/Launch';
+import Alert, { Color } from '@material-ui/lab/Alert';
+import Button from '@material-ui/core/Button';
+
+// Backstage
+import { Entity } from '@backstage/catalog-model';
 import { useRouteRef } from '@backstage/core-plugin-api';
+import { buildRouteRef } from '../../routes';
+import {
+  Table,
+  TableColumn,
+  LinkButton,
+  Link,
+  InfoCard,
+} from '@backstage/core-components';
+
+// github-actions plugin
 import { useWorkflowRuns, WorkflowRun } from '../useWorkflowRuns';
 import { WorkflowRunStatus } from '../WorkflowRunStatus';
-import { buildRouteRef } from '../../routes';
 import { getProjectNameFromEntity } from '../getProjectNameFromEntity';
 import { getHostnameFromEntity } from '../getHostnameFromEntity';
-
-import Alert, { Color } from '@material-ui/lab/Alert';
-import { Entity } from '@backstage/catalog-model';
-import Button from '@material-ui/core/Button';
+import { getStatusDescription } from '../WorkflowRunStatus/WorkflowRunStatus';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -64,18 +79,6 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-type WorkflowRunsCardViewProps = {
-  runs?: WorkflowRun[];
-  searchTerm: string;
-  loading: boolean;
-  onChangePageSize: (pageSize: number) => void;
-  onChangePage: (page: number) => void;
-  page: number;
-  total: number;
-  pageSize: number;
-  projectName: string;
-};
-
 const statusColors: Record<string, string> = {
   skipped: 'warning',
   canceled: 'info',
@@ -87,13 +90,161 @@ const statusColors: Record<string, string> = {
 const matchesSearchTerm = (run: WorkflowRun, searchTerm: string) => {
   const lowerCaseSearchTerm = searchTerm.toLocaleLowerCase();
   return (
+    getStatusDescription({ status: run.status, conclusion: run.conclusion })
+      .toLocaleLowerCase()
+      .includes(lowerCaseSearchTerm) ||
+    run.message?.toLocaleLowerCase().includes(lowerCaseSearchTerm) ||
     run.workflowName?.toLocaleLowerCase().includes(lowerCaseSearchTerm) ||
     run.source.branchName?.toLocaleLowerCase().includes(lowerCaseSearchTerm) ||
-    run.status?.toLocaleLowerCase().includes(lowerCaseSearchTerm) ||
     run.id?.toLocaleLowerCase().includes(lowerCaseSearchTerm)
   );
 };
 
+// Utility function to truncate string at the first newline character
+const truncateAtNewline = (str: string) => {
+  const newlineIndex = str.indexOf('\n');
+  return newlineIndex !== -1 ? str.substring(0, newlineIndex) : str;
+};
+
+const generatedColumns: TableColumn<Partial<WorkflowRun>>[] = [
+  {
+    title: 'ID',
+    field: 'id',
+    type: 'numeric',
+    width: '150px',
+  },
+  {
+    title: 'Message',
+    field: 'message',
+    highlight: true,
+    render: row => {
+      const LinkWrapper = () => {
+        const routeLink = useRouteRef(buildRouteRef);
+        const truncatedMessage = truncateAtNewline(row.message!);
+        return (
+          <Link
+            component={RouterLink}
+            to={routeLink({ id: row.id! })}
+            title={row.message} // display full message on hover
+          >
+            {truncatedMessage}
+          </Link>
+        );
+      };
+
+      return <LinkWrapper />;
+    },
+  },
+  {
+    title: 'Source',
+    render: row => (
+      <Typography variant="body2" noWrap>
+        <Typography paragraph variant="body2">
+          {row.source?.branchName}
+        </Typography>
+        <Typography paragraph variant="body2">
+          {row.source?.commit.hash}
+        </Typography>
+      </Typography>
+    ),
+  },
+  {
+    title: 'Workflow',
+    field: 'workflowName',
+  },
+  {
+    title: 'Status',
+    customSort: (d1, d2) => {
+      return getStatusDescription(d1).localeCompare(getStatusDescription(d2));
+    },
+    render: row => (
+      <Box display="flex" alignItems="center">
+        <WorkflowRunStatus status={row.status} conclusion={row.conclusion} />
+      </Box>
+    ),
+  },
+  {
+    title: 'Actions',
+    render: (row: Partial<WorkflowRun>) => (
+      <Tooltip title="Rerun workflow">
+        <IconButton onClick={row.onReRunClick}>
+          <RetryIcon />
+        </IconButton>
+      </Tooltip>
+    ),
+    width: '10%',
+  },
+];
+type WorkflowRunsTableViewProps = {
+  loading: boolean;
+  retry: () => void;
+  runs?: WorkflowRun[];
+  projectName: string;
+  page: number;
+  onChangePage: (page: number) => void;
+  total: number;
+  pageSize: number;
+  onChangePageSize: (pageSize: number) => void;
+  enableToolbar: boolean;
+};
+export const WorkflowRunsTableView = ({
+  projectName,
+  loading,
+  pageSize,
+  page,
+  retry,
+  runs,
+  onChangePage,
+  onChangePageSize,
+  total,
+  enableToolbar,
+}: WorkflowRunsTableViewProps) => {
+  return (
+    <Table
+      isLoading={loading}
+      options={{
+        paging: true,
+        pageSize,
+        padding: 'dense',
+        toolbar: enableToolbar,
+      }}
+      totalCount={total}
+      page={page}
+      actions={[
+        {
+          icon: () => <SyncIcon />,
+          tooltip: 'Reload workflow runs',
+          isFreeAction: true,
+          onClick: () => retry(),
+        },
+      ]}
+      data={runs ?? []}
+      onPageChange={onChangePage}
+      onRowsPerPageChange={onChangePageSize}
+      style={{ width: '100%' }}
+      title={
+        <Box display="flex" alignItems="center">
+          <GitHubIcon />
+          <Box mr={1} />
+          <Typography variant="h6">{projectName}</Typography>
+        </Box>
+      }
+      columns={generatedColumns}
+    />
+  );
+};
+
+type WorkflowRunsCardViewProps = {
+  runs?: WorkflowRun[];
+  searchTerm: string;
+  loading: boolean;
+  onChangePageSize: (pageSize: number) => void;
+  onChangePage: (page: number) => void;
+  page: number;
+  total: number;
+  pageSize: number;
+  projectName: string;
+};
 export const WorkflowRunsCardView = ({
   runs,
   searchTerm,
@@ -252,10 +403,6 @@ export const WorkflowRunsCardView = ({
   );
 };
 
-type WorkflowRunsCardProps = {
-  entity: Entity;
-};
-
 const WorkflowRunsCardSearch = ({
   searchTerm,
   handleSearch,
@@ -287,7 +434,11 @@ const WorkflowRunsCardSearch = ({
   );
 };
 
-export const WorkflowRunsCard = ({ entity }: WorkflowRunsCardProps) => {
+type WorkflowRunsProps = {
+  entity: Entity;
+  viewType?: string;
+};
+export const WorkflowRuns = ({ entity, viewType }: WorkflowRunsProps) => {
   const projectName = getProjectNameFromEntity(entity);
   const hostname = getHostnameFromEntity(entity);
   const [owner, repo] = (projectName ?? '/').split('/');
@@ -309,7 +460,7 @@ export const WorkflowRunsCard = ({ entity }: WorkflowRunsCardProps) => {
     branch: branch === 'all' ? undefined : branch,
   });
 
-  const handleMenuChange = (
+  const handleBranchFilterChange = (
     event: ChangeEvent<{ name?: string; value: unknown }>,
   ) => {
     const selectedValue = event.target.value as string;
@@ -326,6 +477,8 @@ export const WorkflowRunsCard = ({ entity }: WorkflowRunsCardProps) => {
     setBranch(defaultBranch);
   }, [defaultBranch]);
 
+  const filteredRuns = runs?.filter(run => matchesSearchTerm(run, searchTerm));
+
   return (
     <Grid item>
       <InfoCard
@@ -339,7 +492,7 @@ export const WorkflowRunsCard = ({ entity }: WorkflowRunsCardProps) => {
               value={branch}
               key={branch}
               label="Branch"
-              onChange={handleMenuChange}
+              onChange={handleBranchFilterChange}
               data-testid="menu-control"
               style={{
                 marginLeft: '30px',
@@ -383,20 +536,35 @@ export const WorkflowRunsCard = ({ entity }: WorkflowRunsCardProps) => {
           </Box>
         }
       >
-        <WorkflowRunsCardView
-          runs={runs}
-          loading={cardProps.loading}
-          onChangePageSize={setPageSize}
-          onChangePage={setPage}
-          page={cardProps.page}
-          total={cardProps.total}
-          pageSize={cardProps.pageSize}
-          searchTerm={searchTerm}
-          projectName={projectName}
-        />
+        {viewType === 'table' ? (
+          <WorkflowRunsTableView
+            projectName={projectName}
+            loading={cardProps.loading}
+            pageSize={cardProps.pageSize}
+            page={cardProps.page}
+            retry={retry}
+            runs={filteredRuns}
+            onChangePage={setPage}
+            onChangePageSize={setPageSize}
+            total={cardProps.total}
+            enableToolbar={false}
+          />
+        ) : (
+          <WorkflowRunsCardView
+            runs={runs}
+            loading={cardProps.loading}
+            onChangePageSize={setPageSize}
+            onChangePage={setPage}
+            page={cardProps.page}
+            total={cardProps.total}
+            pageSize={cardProps.pageSize}
+            searchTerm={searchTerm}
+            projectName={projectName}
+          />
+        )}
       </InfoCard>
     </Grid>
   );
 };
 
-export default WorkflowRunsCard;
+export default WorkflowRuns;

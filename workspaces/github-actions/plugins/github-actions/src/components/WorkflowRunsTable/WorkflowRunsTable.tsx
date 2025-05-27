@@ -124,7 +124,6 @@ type Props = {
   total: number;
   pageSize: number;
   onChangePageSize: (pageSize: number) => void;
-  enableToolbar: boolean;
 };
 
 export const WorkflowRunsTableView = ({
@@ -137,17 +136,11 @@ export const WorkflowRunsTableView = ({
   onChangePage,
   onChangePageSize,
   total,
-  enableToolbar,
 }: Props) => {
   return (
     <Table
       isLoading={loading}
-      options={{
-        paging: true,
-        pageSize,
-        padding: 'dense',
-        toolbar: enableToolbar,
-      }}
+      options={{ paging: true, pageSize, padding: 'dense' }}
       totalCount={total}
       page={page}
       actions={[
@@ -218,7 +211,6 @@ export const WorkflowRunsTable = ({
       retry={retry}
       onChangePageSize={setPageSize}
       onChangePage={setPage}
-      enableToolbar
     />
   );
 };
