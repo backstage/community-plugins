@@ -49,6 +49,7 @@ export async function discoverEnterpriseTeamMetrics({
   const type: MetricsType = 'enterprise';
 
   try {
+    await api.createEnterpriseOctokit();
     const teams = await api.fetchEnterpriseTeams();
     logger.info(
       `[discoverEnterpriseTeamMetrics] Fetched ${teams.length} teams`,

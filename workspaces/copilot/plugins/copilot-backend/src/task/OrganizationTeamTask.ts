@@ -50,6 +50,7 @@ export async function discoverOrganizationTeamMetrics({
   const type: MetricsType = 'organization';
 
   try {
+    await api.createOrganizationOctokit();
     const teams = await api.fetchOrganizationTeams();
     logger.info(
       `[discoverOrganizationTeamMetrics] Fetched ${teams.length} teams`,

@@ -49,6 +49,7 @@ export async function discoverOrganizationMetrics({
   const type: MetricsType = 'organization';
 
   try {
+    await api.createOrganizationOctokit();
     const copilotMetrics = await api.fetchOrganizationCopilotMetrics();
     logger.info(
       `[discoverOrganizationMetrics] Fetched ${copilotMetrics.length} metrics`,
