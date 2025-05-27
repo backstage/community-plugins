@@ -57,6 +57,5 @@ catalog:
   rules:
     - allow: [Component, System, API, Resource, Location, User, Group, Template]
   locations:
-    - type: file 
+    - type: file
       target: ../../catalog-info.yaml
-

@@ -2,10 +2,10 @@ apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: jfrog-artifactory
-  labels: 
+  labels:
     component: jfrog-artifactory
   annotations:
-    jfrog-artifactory/image-name:  ${repo-name} # e.g., hello-world
+    jfrog-artifactory/image-name: ${repo-name} # e.g., hello-world
 spec:
   type: service
   lifecycle: john@example.com
