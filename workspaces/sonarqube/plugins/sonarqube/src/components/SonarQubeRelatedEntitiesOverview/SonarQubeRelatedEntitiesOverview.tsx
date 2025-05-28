@@ -47,7 +47,10 @@ export const SonarQubeRelatedEntitiesOverview = (props: SonarOverviewProps) => {
     kind: props.entityKind,
   });
 
-  const findingsRequest: any[] = [];
+  const findingsRequest: Array<{
+    projectInstance: string | undefined;
+    componentKey: string;
+  }> = [];
   const entityNameToProjectKey: { [key: string]: string } = {};
   for (const entity of entities || []) {
     const projectKey =
