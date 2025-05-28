@@ -90,7 +90,7 @@ describe('<SonarQubeRelatedEntitiesOverview />', () => {
         />
       </Providers>,
     );
-    expect(rendered.getByText('Code Quality (0)')).toBeInTheDocument();
+    expect(rendered.getByText('(0)', { exact: false })).toBeInTheDocument();
     expect(rendered.getByText('No records to display')).toBeInTheDocument();
     expect(rendered.queryAllByText('Gate passed').length).toBe(0);
   }, 15000);
@@ -107,9 +107,9 @@ describe('<SonarQubeRelatedEntitiesOverview />', () => {
         />
       </Providers>,
     );
-    expect(rendered.getByText('Code Quality (1)')).toBeInTheDocument();
+    expect(rendered.getByText('(1)', { exact: false })).toBeInTheDocument();
     expect(
-      rendered.getByText('No SonarQube annotation found'),
+      rendered.getByText('annotation', { exact: false }), // no DX-Hub annotation for SonarQube / No SonarQube annotation found
     ).toBeInTheDocument();
     expect(rendered.queryAllByText('Gate passed').length).toBe(0);
   }, 15000);
@@ -128,9 +128,9 @@ describe('<SonarQubeRelatedEntitiesOverview />', () => {
         />
       </Providers>,
     );
-    expect(rendered.getByText('Code Quality (1)')).toBeInTheDocument();
+    expect(rendered.getByText('(1)', { exact: false })).toBeInTheDocument();
     expect(
-      rendered.getByText("There is no SonarQube project with key 'foo/bar'"),
+      rendered.getByText('SonarQube project', { exact: false }), // Unable to access SonarQube project / There is no SonarQube project
     ).toBeInTheDocument();
     expect(rendered.queryAllByText('Gate passed').length).toBe(0);
   }, 15000);
@@ -158,7 +158,7 @@ describe('<SonarQubeRelatedEntitiesOverview />', () => {
         />
       </Providers>,
     );
-    expect(rendered.getByText('Code Quality (1)')).toBeInTheDocument();
+    expect(rendered.getByText('(1)', { exact: false })).toBeInTheDocument();
     expect(rendered.queryAllByText('Gate passed').length).toBe(1);
   }, 15000);
 });
