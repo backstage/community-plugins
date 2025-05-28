@@ -188,7 +188,9 @@ describe('SegmentAnalytics', () => {
       }),
     } as unknown as IdentityApi;
     it('track identify calls', async () => {
-      const api = SegmentAnalytics.fromConfig(basicValidConfig, identityApi);
+      const api = SegmentAnalytics.fromConfig(basicValidConfig, {
+        identityApi,
+      });
       await api.captureEvent({
         action: 'identify',
         subject: 'jdoe',
