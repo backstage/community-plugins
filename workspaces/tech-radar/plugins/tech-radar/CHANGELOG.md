@@ -1,5 +1,16 @@
 # @backstage-community/plugin-tech-radar
 
+## 1.7.0
+
+### Minor Changes
+
+- ae2b8d3: Backstage version bump to v1.39.0
+
+### Patch Changes
+
+- Updated dependencies [ae2b8d3]
+  - @backstage-community/plugin-tech-radar-common@1.6.0
+
 ## 1.6.1
 
 ### Patch Changes
