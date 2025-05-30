@@ -24,6 +24,7 @@
     "new": "backstage-cli new --scope internal",
     "build:api-reports": "exit 0",
     "build:api-reports:only": "exit 0",
+    "build:knip-reports": "backstage-repo-tools knip-reports",
     "postinstall": "cd ../../ && yarn install"
   },
   "prettier": "@backstage/cli/config/prettier",
