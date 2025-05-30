@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-playlist-common",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Common functionalities for the playlist plugin",
   "backstage": {
     "role": "common-library",
