@@ -9,7 +9,7 @@ import { AnyApiFactory } from '@backstage/core-plugin-api';
 import { AnyExtensionDataRef } from '@backstage/frontend-plugin-api';
 import { AnyRouteRefParams } from '@backstage/frontend-plugin-api';
 import { ConfigurableExtensionDataRef } from '@backstage/frontend-plugin-api';
-import { Entity } from '@backstage/catalog-model/index';
+import { Entity } from '@backstage/catalog-model';
 import { EntityCardType } from '@backstage/plugin-catalog-react/alpha';
 import { EntityPredicate } from '@backstage/plugin-catalog-react/alpha';
 import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
@@ -25,7 +25,7 @@ const _default: FrontendPlugin<
   },
   {},
   {
-    'api:jenkins/jenkins': ExtensionDefinition<{
+    [x: `api:${string}/jenkins`]: ExtensionDefinition<{
       kind: 'api';
       name: 'jenkins';
       config: {};
@@ -40,7 +40,7 @@ const _default: FrontendPlugin<
         factory: AnyApiFactory;
       };
     }>;
-    'entity-card:jenkins/latest-run': ExtensionDefinition<{
+    [x: `entity-card:${string}/latest-run`]: ExtensionDefinition<{
       config: {
         branch: string;
         variant: 'flex' | 'fullHeight' | 'gridItem' | undefined;
@@ -95,7 +95,7 @@ const _default: FrontendPlugin<
         type?: EntityCardType | undefined;
       };
     }>;
-    'entity-content:jenkins/projects': ExtensionDefinition<{
+    [x: `entity-content:${string}/projects`]: ExtensionDefinition<{
       kind: 'entity-content';
       name: 'projects';
       config: {
