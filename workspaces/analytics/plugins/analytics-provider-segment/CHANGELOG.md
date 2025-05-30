@@ -1,5 +1,18 @@
 ### Dependencies
 
+## 1.15.0
+
+### Minor Changes
+
+- 8b665f9: Backstage version bump to v1.38.1
+
+### Patch Changes
+
+- df57926: Updated dependency `@types/node` to `18.19.103`.
+- 66db576: Updated dependency `@types/node` to `18.19.100`.
+- 66db576: Updated dependency `@types/node` to `18.19.100`.
+- 9d260e1: Updated dependency `@types/react` to `18.3.23`.
+
 ## 1.14.4
 
 ### Patch Changes
