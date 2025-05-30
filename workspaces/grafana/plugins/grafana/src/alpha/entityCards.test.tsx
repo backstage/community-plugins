@@ -24,7 +24,6 @@ import * as cards from './entityCards';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { GrafanaApi, grafanaApiRef } from '../api';
 import { GRAFANA_ANNOTATION_OVERVIEW_DASHBOARD } from '../constants';
-import React from 'react';
 
 jest.mock('@backstage/plugin-catalog-react', () => ({
   ...jest.requireActual('@backstage/plugin-catalog-react'),
