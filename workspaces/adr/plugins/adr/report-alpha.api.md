@@ -9,7 +9,7 @@ import { AnyApiFactory } from '@backstage/core-plugin-api';
 import { AnyExtensionDataRef } from '@backstage/frontend-plugin-api';
 import { AnyRouteRefParams } from '@backstage/frontend-plugin-api';
 import { ConfigurableExtensionDataRef } from '@backstage/frontend-plugin-api';
-import { Entity } from '@backstage/catalog-model/index';
+import { Entity } from '@backstage/catalog-model';
 import { EntityPredicate } from '@backstage/plugin-catalog-react/alpha';
 import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { ExtensionInput } from '@backstage/frontend-plugin-api';
@@ -150,7 +150,7 @@ const _default: FrontendPlugin<
   {},
   {},
   {
-    'api:adr/adr-api': ExtensionDefinition<{
+    [x: `api:${string}/adr-api`]: ExtensionDefinition<{
       kind: 'api';
       name: 'adr-api';
       config: {};
@@ -165,7 +165,7 @@ const _default: FrontendPlugin<
         factory: AnyApiFactory;
       };
     }>;
-    'entity-content:adr/entity': ExtensionDefinition<{
+    [x: `entity-content:${string}/entity`]: ExtensionDefinition<{
       kind: 'entity-content';
       name: 'entity';
       config: {
@@ -234,7 +234,7 @@ const _default: FrontendPlugin<
         filter?: EntityPredicate | ((entity: Entity) => boolean) | undefined;
       };
     }>;
-    'search-result-list-item:adr': ExtensionDefinition<{
+    [x: `search-result-list-item:${string}`]: ExtensionDefinition<{
       config: {
         lineClamp: number;
       } & {
