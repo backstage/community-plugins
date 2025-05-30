@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 2.8.0
+
+### Minor Changes
+
+- 4dfe2ff: Add examples
+
 ## 2.7.1
 
 ### Patch Changes
