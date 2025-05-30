@@ -1,5 +1,11 @@
 # @backstage-community/plugin-entity-validation
 
+## 0.8.0
+
+### Minor Changes
+
+- ceb95ab: Backstage version bump to v1.39.0
+
 ## 0.7.0
 
 ### Minor Changes
