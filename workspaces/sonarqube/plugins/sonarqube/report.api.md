@@ -5,7 +5,7 @@
 ```ts
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { DiscoveryApi } from '@backstage/core-plugin-api';
-import { Entity } from '@backstage/catalog-model/index';
+import { Entity } from '@backstage/catalog-model';
 import { FetchApi } from '@backstage/core-plugin-api';
 import { FindingSummary } from '@backstage-community/plugin-sonarqube-react';
 import { InfoCardVariants } from '@backstage/core-components';
