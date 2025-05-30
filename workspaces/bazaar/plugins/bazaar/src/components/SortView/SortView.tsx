@@ -78,15 +78,11 @@ export type SortViewProps = {
   fullWidth?: boolean;
   fullHeight?: boolean;
   /**
-   * A list of catalog entities to display as entity page link options. If provided, this will take priority over the `filter` prop.
+   * A list of {@link @backstage/catalog-model#Entity} to display as entity page link options. If provided, this will take priority over the `filter` prop.
    */
   allCatalogEntities?: Entity[] | null;
   /**
-   * An EntityFilterQuery used to filter catalog entities. Ignored if `allCatalogEntities` is provided.
-   * Example:
-   * {
-      kind: ['Component'],
-    }
+   * An {@link @backstage/catalog-client#EntityFilterQuery} used to filter catalog entities. Ignored if `allCatalogEntities` is provided.
    */
   filter?: EntityFilterQuery | undefined;
 };
