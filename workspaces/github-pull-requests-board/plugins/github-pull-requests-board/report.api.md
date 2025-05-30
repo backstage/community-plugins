@@ -5,7 +5,9 @@
 ```ts
 /// <reference types="react" />
 
+import { CardExtensionProps } from '@backstage/plugin-home-react';
 import { JSX as JSX_2 } from 'react';
+import { JSX as JSX_3 } from 'react/jsx-runtime';
 
 // @public (undocumented)
 export const EntityTeamPullRequestsCard: (
@@ -28,6 +30,11 @@ export interface EntityTeamPullRequestsContentProps {
   // (undocumented)
   pullRequestLimit?: number;
 }
+
+// @public (undocumented)
+export const HomePageTeamPullRequestsCard: (
+  props: CardExtensionProps<unknown>,
+) => JSX_3.Element;
 
 // (No @packageDocumentation comment for this package)
 ```

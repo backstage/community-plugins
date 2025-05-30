@@ -19,6 +19,8 @@ import {
   createRoutableExtension,
 } from '@backstage/core-plugin-api';
 import { rootRouteRef } from './routes';
+import { createCardExtension } from '@backstage/plugin-home-react';
+import { homePlugin } from '@backstage/plugin-home';
 
 const githubPullRequestsBoardPlugin = createPlugin({
   id: 'github-pull-requests-board',
@@ -52,3 +54,17 @@ export const EntityTeamPullRequestsContent =
       mountPoint: rootRouteRef,
     }),
   );
+
+/** @public */
+export const HomePageTeamPullRequestsCard = homePlugin.provide(
+  createCardExtension({
+    name: 'HomePageTeamPullRequestsCard',
+    title: 'GitHub Team Pull Requests',
+    components: () => import('./components/HomePageTeamPullRequestsCard'),
+    description: 'Display GitHub pull requests for a team',
+    layout: {
+      height: { minRows: 4 },
+      width: { minColumns: 12 },
+    },
+  }),
+);
