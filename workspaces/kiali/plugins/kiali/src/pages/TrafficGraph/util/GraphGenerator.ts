@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { DecoratedGraphElements } from '@backstage-community/plugin-kiali-common/types';
 import {
   EdgeAnimationSpeed,
   EdgeModel,
   EdgeStyle,
   NodeModel,
 } from '@patternfly/react-topology';
-import { DecoratedGraphElements } from '../../../types/Graph';
 import { EdgeData } from '../types/EdgeData';
 import { getNodeShape, getNodeStatus, NodeData } from '../types/NodeData';
 import { assignEdgeHealth, setEdgeOptions } from './EdgeLabels';

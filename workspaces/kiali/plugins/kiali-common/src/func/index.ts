@@ -13,4 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+export * from './AceValidations';
+export * from './Common';
+export * from './ErrorRate';
+export * from './Graph';
+export * from './Health';
+export * from './HealthAnnotation';
+export * from './IstioConfigList';
+export * from './IstioObjects';
+export * from './MetricsOptions';
 export * from './Namespace';
+export * from './Permissions';
+export * from './ServiceInfo';
+export * from './TLSStatus';
+export * from './types';
+export * from './VictoryChartInfo';

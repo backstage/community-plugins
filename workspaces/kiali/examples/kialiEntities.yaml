@@ -46,7 +46,7 @@ metadata:
     - core
     - servicemesh
   annotations:
-    kiali.io/provider: kubernetes
+    kiali.io/provider: Kubernetes
     kiali.io/namespace: bookinfo
 spec:
   type: service

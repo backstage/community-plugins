@@ -23,6 +23,7 @@ import {
 } from '@backstage-community/plugin-announcements-react';
 import { Announcement } from '@backstage-community/plugin-announcements-common';
 import CategoryInput from './CategoryInput';
+import OnBehalfTeamDropdown from './OnBehalfTeamDropdown';
 import {
   TextField,
   FormGroup,
@@ -49,7 +50,6 @@ export const AnnouncementForm = ({
   const identityApi = useApi(identityApiRef);
   const { t } = useAnnouncementsTranslation();
 
-  // Ensure `start_at` is properly formatted as an ISO date string
   const formattedStartAt = initialData.start_at
     ? DateTime.fromISO(initialData.start_at).toISODate()
     : DateTime.now().toISODate();
@@ -60,6 +60,9 @@ export const AnnouncementForm = ({
     start_at: formattedStartAt || '',
   });
   const [loading, setLoading] = useState(false);
+  const [onBehalfOfSelectedTeam, setOnBehalfOfSelectedTeam] = useState(
+    initialData.on_behalf_of || '',
+  );
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setForm({
@@ -84,6 +87,7 @@ export const AnnouncementForm = ({
       ...form,
       ...{
         publisher: userIdentity.userEntityRef,
+        on_behalf_of: onBehalfOfSelectedTeam,
       },
     };
 
@@ -113,7 +117,7 @@ export const AnnouncementForm = ({
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={4}>
               <CategoryInput
                 setForm={setForm}
                 form={form}
@@ -121,7 +125,14 @@ export const AnnouncementForm = ({
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={4}>
+              <OnBehalfTeamDropdown
+                selectedTeam={onBehalfOfSelectedTeam}
+                onChange={setOnBehalfOfSelectedTeam}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={4}>
               <TextField
                 variant="outlined"
                 label={t('announcementForm.startAt')}

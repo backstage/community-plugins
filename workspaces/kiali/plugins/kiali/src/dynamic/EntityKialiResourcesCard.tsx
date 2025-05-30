@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { DRAWER } from '@backstage-community/plugin-kiali-common/types';
 import {
   CardTab,
   CodeSnippet,
@@ -27,7 +28,6 @@ import { AppListPage } from '../pages/AppList/AppListPage';
 import { ServiceListPage } from '../pages/ServiceList/ServiceListPage';
 import { WorkloadListPage } from '../pages/WorkloadList/WorkloadListPage';
 import { KialiProvider } from '../store/KialiProvider';
-import { DRAWER } from '../types/types';
 
 const tabStyle: React.CSSProperties = {
   maxHeight: '400px',

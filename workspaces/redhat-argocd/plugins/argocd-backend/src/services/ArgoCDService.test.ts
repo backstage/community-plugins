@@ -51,7 +51,9 @@ describe('ArgoCDService', () => {
       metadata: {
         resourceVersion: '12345',
       },
-      items: mockApplications,
+      items: mockApplications.filter(
+        a => a.metadata.instance.name === 'test-instance',
+      ),
     };
 
     it('should fetch applications successfully', async () => {
@@ -79,7 +81,9 @@ describe('ArgoCDService', () => {
         metadata: {
           resourceVersion: '12345',
         },
-        items: mockApplications[0],
+        items: mockApplications.filter(
+          a => a.metadata?.labels?.test === 'true',
+        ),
       };
       fetchMock.mockResolvedValue({
         ok: true,
@@ -352,17 +356,19 @@ describe('ArgoCDService', () => {
     });
 
     it('should fetch application details with appNamespace successfully', async () => {
-      const expectedApplication = mockApplications[0];
+      const expectedApplication = mockApplications.find(
+        a => a.metadata.namespace === 'staging',
+      );
       fetchMock.mockResolvedValue({
         ok: true,
         json: async () => expectedApplication,
       });
       const result = await service.getApplication('staging-instance', {
-        appNamespace: 'test',
+        appNamespace: 'staging',
       });
       expect(result).toEqual(expectedApplication);
       expect(fetchMock).toHaveBeenCalledWith(
-        'https://argocd.staging.example.com/api/v1/applications?appNamespace=test',
+        'https://argocd.staging.example.com/api/v1/applications?appNamespace=staging',
         {
           method: 'GET',
           headers: {

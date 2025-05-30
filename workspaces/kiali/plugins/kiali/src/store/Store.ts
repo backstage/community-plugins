@@ -13,15 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { Namespace } from '@backstage-community/plugin-kiali-common/types';
+import type {
+  CertsInfo,
+  ComponentStatus,
+  JaegerTrace,
+  Namespace,
+  NotificationGroup,
+  RawDate,
+  StatusState,
+  TimeRange,
+  TLSStatus,
+  TracingInfo,
+  UserName,
+} from '@backstage-community/plugin-kiali-common/types';
 import { KialiAppAction } from '../actions/KialiAppAction';
-import { CertsInfo } from '../types/CertsInfo';
-import { RawDate, TimeRange, UserName } from '../types/Common';
-import { ComponentStatus } from '../types/IstioStatus';
-import { NotificationGroup } from '../types/MessageCenter';
-import { StatusState } from '../types/StatusState';
-import { TLSStatus } from '../types/TLSStatus';
-import { JaegerTrace, TracingInfo } from '../types/TracingInfo';
 import { AlertUtils } from '../utils/Alertutils';
 
 export interface ProviderState {

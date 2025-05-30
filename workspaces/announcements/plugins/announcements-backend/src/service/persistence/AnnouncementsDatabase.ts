@@ -95,6 +95,7 @@ const announcementUpsertToDB = (
     created_at: announcement.created_at.toSQL()!,
     active: announcement.active,
     start_at: announcement.start_at.toSQL()!,
+    on_behalf_of: announcement.on_behalf_of,
   };
 };
 
@@ -120,6 +121,7 @@ const DBToAnnouncementWithCategory = (
     created_at: timestampToDateTime(announcementDb.created_at),
     active: announcementDb.active,
     start_at: timestampToDateTime(announcementDb.start_at),
+    on_behalf_of: announcementDb.on_behalf_of,
   };
 };
 
@@ -179,6 +181,7 @@ export class AnnouncementsDatabase {
         'categories.title as category_title',
         'active',
         'start_at',
+        'on_behalf_of',
       )
       .orderBy(sortBy, order)
       .leftJoin('categories', 'announcements.category', 'categories.slug');
@@ -218,6 +221,7 @@ export class AnnouncementsDatabase {
           'categories.title as category_title',
           'active',
           'start_at',
+          'on_behalf_of',
         )
         .leftJoin('categories', 'announcements.category', 'categories.slug')
         .where('id', id)

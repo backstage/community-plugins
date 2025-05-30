@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { PromLabel } from '@backstage-community/plugin-kiali-common/types';
 import {
   Divider,
   FormControlLabel,
@@ -34,7 +35,6 @@ import { history, URLParam } from '../../app/History';
 import { KialiIcon } from '../../config/KialiIcon';
 import { titleStyle } from '../../styles/DropdownStyles';
 import { kialiStyle } from '../../styles/StyleUtils';
-import { PromLabel } from '../../types/Metrics';
 import {
   combineLabelsSettings,
   mergeLabelFilter,

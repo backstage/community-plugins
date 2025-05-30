@@ -1,5 +1,23 @@
 # @backstage-community/plugin-announcements-react
 
+## 0.5.0
+
+### Minor Changes
+
+- 9c94358: Added support for submitting announcements on behalf of a team the user is a member of.
+  This field is optional. if not specified, the announcement will be submitted using the current publisher user.
+
+### Patch Changes
+
+- Updated dependencies [9c94358]
+  - @backstage-community/plugin-announcements-common@0.4.0
+
+## 0.4.4
+
+### Patch Changes
+
+- dd1aed2: fix(ui): Respect MUI theme options for typography, colors
+
 ## 0.4.3
 
 ### Patch Changes

@@ -48,6 +48,18 @@ import type { Namespace } from '@backstage-community/plugin-kiali-common/types';
 import { namespaceFromString } from '@backstage-community/plugin-kiali-common/func';
 ```
 
+## Importing utils
+
+```ts
+import { getRefreshIntervalName } from '@backstage-community/plugin-kiali-common/utils';
+```
+
+## Importing config
+
+```ts
+import { defaultServerConfig } from '@backstage-community/plugin-kiali-common/config';
+```
+
 ## Using constants
 
 ```ts

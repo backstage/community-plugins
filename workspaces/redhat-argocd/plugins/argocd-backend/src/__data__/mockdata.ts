@@ -48,7 +48,6 @@ export const mockApplications: Application[] = [
       instance: {
         name: 'test-instance',
         url: 'https://argocd.example.com',
-        token: 'test-token',
       },
       labels: {
         test: 'true',
@@ -97,8 +96,7 @@ export const mockApplications: Application[] = [
       namespace: 'staging',
       instance: {
         name: 'staging-instance',
-        url: 'https://argocd.example.com',
-        token: 'test-token',
+        url: 'https://argocd.staging.example.com',
       },
       labels: {
         clusterName: 'microk8s',
@@ -147,14 +145,12 @@ export const mockApplications: Application[] = [
       uid: 'abcd1234-5678-90ef-ghij-klmnopqrstuv',
       resourceVersion: '405389',
       generation: 408,
-      creationTimestamp: new Date('2025-02-20T16:39:18Z'),
       labels: {
         app: 'fullstack',
       },
       instance: {
-        name: 'staging-instance',
+        name: 'test-instance',
         url: 'https://argocd.example.com',
-        token: 'test-token',
       },
     },
     spec: {

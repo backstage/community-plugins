@@ -13,29 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-import useAsync from 'react-use/esm/useAsync';
-
 import { ErrorPanel, Table } from '@backstage/core-components';
-import { useApi } from '@backstage/core-plugin-api';
 import { Box } from '@material-ui/core';
-
 import { formatDate } from '@janus-idp/shared-react';
 
-import { AzureContainerRegistryApiRef } from '../../api';
+import { useTags } from '../../hooks/useTags';
 import { Tag, TagRow } from '../../types';
 import { columns } from './tableHeading';
 
 type AcrImagesProps = {
   image: string;
+  registryName?: string;
 };
 
-export const AcrImages = ({ image }: AcrImagesProps) => {
-  const AzureContainerRegistryClient = useApi(AzureContainerRegistryApiRef);
+export const AcrImages = ({ image, registryName }: AcrImagesProps) => {
   const title = `Azure Container Registry Repository: ${image}`;
-  const { loading, value, error } = useAsync(() =>
-    AzureContainerRegistryClient.getTags(image),
-  );
+
+  const { loading, value, error } = useTags(image, registryName);
 
   // TODO: it should be possible to just pass the tags to the table.
   const tags = value?.tags || [];

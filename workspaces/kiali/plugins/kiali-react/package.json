@@ -1,0 +1,63 @@
+{
+  "name": "@backstage-community/plugin-kiali-react",
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "private": true,
+  "description": "Web library for the kiali plugin",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.esm.js",
+    "types": "dist/index.d.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/kiali/plugins/kiali-react"
+  },
+  "backstage": {
+    "role": "web-library",
+    "pluginId": "kiali",
+    "pluginPackages": [
+      "@backstage-community/plugin-kiali",
+      "@backstage-community/plugin-kiali-backend",
+      "@backstage-community/plugin-kiali-common",
+      "@backstage-community/plugin-kiali-react"
+    ]
+  },
+  "sideEffects": false,
+  "scripts": {
+    "start": "backstage-cli package start",
+    "build": "backstage-cli package build",
+    "lint": "backstage-cli package lint",
+    "test": "backstage-cli package test",
+    "clean": "backstage-cli package clean",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack"
+  },
+  "dependencies": {
+    "@backstage-community/plugin-kiali-common": "workspace:^",
+    "@backstage/core-plugin-api": "^1.10.6",
+    "@material-ui/core": "^4.9.13",
+    "@patternfly/react-core": "^5.1.1",
+    "@patternfly/react-icons": "^5.1.1",
+    "@patternfly/react-topology": "5.4.1",
+    "typestyle": "^2.4.0"
+  },
+  "peerDependencies": {
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0"
+  },
+  "devDependencies": {
+    "@backstage/cli": "^0.32.0",
+    "@backstage/dev-utils": "^1.1.9",
+    "@backstage/test-utils": "^1.7.7",
+    "@redhat-developer/red-hat-developer-hub-theme": "0.4.0",
+    "@testing-library/jest-dom": "^6.0.0",
+    "@testing-library/react": "^14.0.0",
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0"
+  },
+  "files": [
+    "dist"
+  ]
+}

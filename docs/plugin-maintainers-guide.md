@@ -8,6 +8,7 @@
     - [PR Reviews \& Merging](#pr-reviews--merging)
     - [Issue Triage](#issue-triage)
   - [Version Bumping](#version-bumping)
+- [Opt-in to Automatic Version Bump PRs](#opt-in-to-automatic-version-bump-prs)
   - [Maintaining and patching an older release line](#maintaining-and-patching-an-older-release-line)
     - [Patching an older release](#patching-an-older-release)
 
@@ -31,6 +32,16 @@ Plugin owners should triage issues related to their plugin as needed. The `@back
 
 Plugin owners are expected to run the Version Bump script for their workspace. The process follows the guidance outlined in the [Version Bumping Documentation](https://github.com/backstage/community-plugins/blob/main/docs/version-bump.md).
 
+# Opt-in to Automatic Version Bump PRs
+
+Plugin owners can opt in to automatic version bump PRs by creating an empty .auto-version-bump file in the root of their workspace (`workspaces/${WORKSPACE}/.auto-version-bump`). This signals that your plugin should be included in the batch version bump workflow, which is triggered manually by one of the `@backstage/community-plugins-maintainers` .
+
+These automated PRs are intended as a convenience to open the version bump for you. As the plugin maintainer, you would still be required to:
+
+- Review the PR
+- Make any necessary patches to adopt the upgrade
+- Merge the PR once it's ready
+
 ## Maintaining and patching an older release line
 
 It may be necessary to patch a prior release line of a plugin when users depend on an older, but stable version and while a newer, incompatible, major version of the plugin exists. Typically for these older releases, only major bugs and security issues will need to be remediated. Not every plugin will need this workflow.
@@ -45,6 +56,23 @@ When patching an older release, follow the steps below to ensure the correct wor
 
    - Ensure that a branch named `workspace/${workspace}` exists, with appropriate branch protections in place. This branch will be used for patch releases.
    - The `${workspace}` should correspond to the specific plugin or component you are patching.
+
+   <details>
+   <summary>Community Plugins Maintainers - Branch Protection Settings</summary>
+
+   In **GitHub > Repo > Settings > Branches**, add a rule for the requested `workspace/${workspace}` branch and apply these settings:
+
+   - ☑ Require pull request before merging
+     - ☑ Require approvals
+     - ☑ Dismiss stale approvals when new commits are pushed
+     - ☑ Require review from Code Owners
+   - ☑ Require status checks to pass before merging
+   - ☑ Restrict who can push: **CODEOWNERS for the workspace**
+   - ☑ Restrict pushes that create matching branches
+   - ☑ Allow force pushes
+     - ☑ Specify who can force push: **CODEOWNERS for the workspace**
+
+   </details>
 
 2. Reset the `workspace` branch:
 

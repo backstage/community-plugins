@@ -156,6 +156,52 @@ describe('router', () => {
         },
       );
     });
+
+    it('should return application with appNamespace query param', async () => {
+      const expectedApplicationResponse = mockApplications.filter(
+        application => application.metadata.namespace === 'test',
+      );
+      mockArgoCDService.getApplication.mockResolvedValue(
+        expectedApplicationResponse,
+      );
+      const response = await request(app)
+        .get(
+          '/argoInstance/test-instance/applications/test-app?appNamespace=test',
+        )
+        .expect(200);
+
+      expect(response.body).toEqual(expectedApplicationResponse);
+      expect(mockArgoCDService.getApplication).toHaveBeenCalledWith(
+        'test-instance',
+        {
+          appName: 'test-app',
+          appNamespace: 'test',
+        },
+      );
+    });
+
+    it('should return application with project query param', async () => {
+      const expectedApplicationResponse = mockApplications.filter(
+        application => application.spec.project === 'demo',
+      );
+      mockArgoCDService.getApplication.mockResolvedValue(
+        expectedApplicationResponse,
+      );
+      const response = await request(app)
+        .get(
+          '/argoInstance/test-instance/applications/multi-source-app?project=demo',
+        )
+        .expect(200);
+
+      expect(response.body).toEqual(expectedApplicationResponse);
+      expect(mockArgoCDService.getApplication).toHaveBeenCalledWith(
+        'test-instance',
+        {
+          appName: 'multi-source-app',
+          project: 'demo',
+        },
+      );
+    });
   });
 
   describe('GET /argoInstance/:instanceName/applications/name/:appName/revisions/:revisionID/metadata', () => {

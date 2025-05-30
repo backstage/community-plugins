@@ -1,5 +1,11 @@
 # @backstage-community/plugin-tech-radar
 
+## 1.6.1
+
+### Patch Changes
+
+- b1d92df: Corrected link to detailed example
+
 ## 1.6.0
 
 ### Minor Changes

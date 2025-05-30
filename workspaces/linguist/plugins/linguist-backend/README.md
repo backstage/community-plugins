@@ -130,5 +130,5 @@ linguist:
 
 ## Links
 
-- [Frontend part of the plugin](https://github.com/backstage/backstage/tree/master/plugins/linguist)
+- [Frontend part of the plugin](https://github.com/backstage/community-plugins/tree/main/workspaces/linguist/plugins/linguist)
 - [The Backstage homepage](https://backstage.io)

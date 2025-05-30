@@ -545,6 +545,11 @@ export class AzureDevOpsApi {
         host,
         org,
       );
+
+      if (buildDefinitions.length === 0) {
+        return [];
+      }
+
       definitions = buildDefinitions
         .map(bd => bd.id)
         .filter((bd): bd is number => Boolean(bd));

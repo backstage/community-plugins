@@ -13,6 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import type {
+  ExternalServiceInfo,
+  StatusMap,
+} from '@backstage-community/plugin-kiali-common/types';
+import { StatusKey } from '@backstage-community/plugin-kiali-common/types';
 import { Link } from '@backstage/core-components';
 import {
   Card,
@@ -32,14 +37,9 @@ import { Alert } from '@material-ui/lab';
 import { default as React } from 'react';
 import { config, KialiIcon, KialiLogo } from '../../config';
 import { kialiStyle } from '../../styles/StyleUtils';
-import {
-  ExternalServiceInfo,
-  Status,
-  StatusKey,
-} from '../../types/StatusState';
 
 type AboutUIModalProps = {
-  status: Status;
+  status: StatusMap;
   externalServices: ExternalServiceInfo[];
   warningMessages: string[];
   showModal: boolean;

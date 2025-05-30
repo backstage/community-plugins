@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-import React, { Dispatch, useEffect, useState } from 'react';
+import type { SetStateAction, MouseEvent } from 'react';
+
+import { Dispatch, useEffect, useState } from 'react';
 import Box from '@material-ui/core/Box';
 import Card from '@material-ui/core/Card';
 import Chip from '@material-ui/core/Chip';
@@ -120,7 +122,7 @@ const ActionButtons = ({
   onMenuItemClick,
 }: {
   value: AzureSite;
-  onMenuItemClick: Dispatch<React.SetStateAction<string | null>>;
+  onMenuItemClick: Dispatch<SetStateAction<string | null>>;
 }) => {
   const azureApi = useApi(azureSiteApiRef);
   const { entity } = useEntity();
@@ -129,7 +131,7 @@ const ActionButtons = ({
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
-  const handleOpen = (event: React.MouseEvent<HTMLElement>) => {
+  const handleOpen = (event: MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {

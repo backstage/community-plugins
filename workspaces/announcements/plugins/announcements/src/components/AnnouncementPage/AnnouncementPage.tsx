@@ -23,18 +23,15 @@ import {
   Content,
   MarkdownContent,
   InfoCard,
-  Link,
 } from '@backstage/core-components';
 import {
   useApi,
   useRouteRef,
   useRouteRefParams,
 } from '@backstage/core-plugin-api';
-import { parseEntityRef } from '@backstage/catalog-model';
 import {
-  EntityDisplayName,
   EntityPeekAheadPopover,
-  entityRouteRef,
+  EntityRefLink,
 } from '@backstage/plugin-catalog-react';
 import { announcementViewRouteRef, rootRouteRef } from '../../routes';
 import { announcementsApiRef } from '@backstage-community/plugin-announcements-react';
@@ -48,20 +45,20 @@ const AnnouncementDetails = ({
   announcement: Announcement;
 }) => {
   const announcementsLink = useRouteRef(rootRouteRef);
-  const entityLink = useRouteRef(entityRouteRef);
   const deepLink = {
     link: announcementsLink(),
     title: 'Back to announcements',
   };
-
-  const publisherRef = parseEntityRef(announcement.publisher);
   const subHeader = (
     <Typography>
       By{' '}
-      <EntityPeekAheadPopover entityRef={announcement.publisher}>
-        <Link to={entityLink(publisherRef)}>
-          <EntityDisplayName entityRef={announcement.publisher} hideIcon />
-        </Link>
+      <EntityPeekAheadPopover
+        entityRef={announcement.on_behalf_of || announcement.publisher}
+      >
+        <EntityRefLink
+          entityRef={announcement.on_behalf_of || announcement.publisher}
+          hideIcon
+        />
       </EntityPeekAheadPopover>
       , {DateTime.fromISO(announcement.created_at).toRelative()}
     </Typography>

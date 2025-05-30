@@ -14,40 +14,40 @@
  * limitations under the License.
  */
 import {
+  aggregate,
+  ascendingThresholdCheck,
+  checkExpr,
+  getRateHealthConfig,
+  RateHealth,
+  transformEdgeResponses,
+} from '@backstage-community/plugin-kiali-common/func';
+import {
+  DecoratedGraphEdgeData,
+  DecoratedGraphNodeData,
+  DEGRADED,
+  EdgeLabelMode,
+  FAILURE,
+  HEALTHY,
+  NA,
+  numLabels,
+  Protocol,
+  Rate,
+  RATIO_NA,
+  RequestTolerance,
+  Responses,
+  ThresholdStatus,
+  ToleranceConfig,
+  TrafficRate,
+} from '@backstage-community/plugin-kiali-common/types';
+import {
   EdgeModel,
   EdgeTerminalType,
   NodeStatus,
 } from '@patternfly/react-topology';
 import _ from 'lodash';
 import { PFColors } from '../../../components/Pf/PfColors';
+import { serverConfig } from '../../../config';
 import { icons } from '../../../config/Icons';
-import { Rate, RequestTolerance } from '../../../types/ErrorRate/types';
-import {
-  aggregate,
-  checkExpr,
-  getRateHealthConfig,
-  transformEdgeResponses,
-} from '../../../types/ErrorRate/utils';
-import {
-  DecoratedGraphEdgeData,
-  DecoratedGraphNodeData,
-  EdgeLabelMode,
-  numLabels,
-  Protocol,
-  Responses,
-  TrafficRate,
-} from '../../../types/Graph';
-import {
-  ascendingThresholdCheck,
-  DEGRADED,
-  FAILURE,
-  HEALTHY,
-  NA,
-  RATIO_NA,
-  ThresholdStatus,
-} from '../../../types/Health';
-import { RateHealth } from '../../../types/HealthAnnotation';
-import { ToleranceConfig } from '../../../types/ServerConfig';
 import { EdgeData } from '../types/EdgeData';
 import { GraphPFSettings } from '../types/GraphPFSettings';
 import { NodeData } from '../types/NodeData';
@@ -358,16 +358,24 @@ export const getEdgeHealth = (
   const configSource =
     annotationSource && annotationSource.toleranceConfig
       ? annotationSource.toleranceConfig
-      : getRateHealthConfig(source.namespace, source.nodeType, source.nodeType)
-          .tolerance;
+      : getRateHealthConfig(
+          source.namespace,
+          source.nodeType,
+          source.nodeType,
+          serverConfig,
+        ).tolerance;
   const annotationTarget = target.hasHealthConfig
     ? new RateHealth(target.hasHealthConfig)
     : undefined;
   const configTarget =
     annotationTarget && annotationTarget.toleranceConfig
       ? annotationTarget.toleranceConfig
-      : getRateHealthConfig(target.namespace, target.nodeType, target.nodeType)
-          .tolerance;
+      : getRateHealthConfig(
+          target.namespace,
+          target.nodeType,
+          target.nodeType,
+          serverConfig,
+        ).tolerance;
 
   // If there is not tolerances with this configuration we'll use defaults
   const tolerancesSource = configSource.filter(tol =>

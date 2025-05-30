@@ -1,5 +1,25 @@
 ### Dependencies
 
+## 1.14.1
+
+### Patch Changes
+
+- 86fc9e2: remove product specific theme (dev dependency only)
+- 86fc9e2: remove react import
+
+## 1.14.0
+
+### Minor Changes
+
+- ba585fb: Backstage version bump to v1.38.1
+
+## 1.13.0
+
+### Minor Changes
+
+- 87e3c32: Added functionality to define multiple ACR registries within Backstage.
+- cfdcd07: Limit returned images to 100 and sort latest first.
+
 ## 1.12.1
 
 ### Patch Changes

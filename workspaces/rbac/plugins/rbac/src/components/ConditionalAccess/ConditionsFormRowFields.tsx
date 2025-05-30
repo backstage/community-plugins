@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import type { SetStateAction, Dispatch } from 'react';
+import { useState } from 'react';
 
 import { PermissionCondition } from '@backstage/plugin-permission-common';
 
@@ -68,16 +69,24 @@ type ConditionFormRowFieldsProps = {
 
 interface StyleProps {
   isNotSimpleCondition: boolean;
+  hasError: boolean;
 }
 
 const makeConditionsFormRowFieldsStyles = makeStyles<Theme, StyleProps>(() => ({
-  inputFieldContainer: {
+  leftInputFieldContainer: {
     display: 'flex',
     flexFlow: 'row',
-    gap: '10px',
+    gap: '1rem',
     flexGrow: 1,
+    paddingLeft: 0,
     margin: ({ isNotSimpleCondition }) =>
       isNotSimpleCondition ? '-1.5rem 0 0 1.85rem' : '0',
+  },
+  rightInputFieldContainer: {
+    width: '50%',
+    '& span > h6': {
+      display: ({ hasError }) => (hasError ? 'none' : 'block'),
+    },
   },
 }));
 
@@ -139,8 +148,10 @@ export const ConditionsFormRowFields = ({
   const isNotSimpleCondition =
     criteria === criterias.not && !nestedConditionCriteria;
   const theme = useTheme();
+  const [hasError, setHasError] = useState(false);
   const classes = makeConditionsFormRowFieldsStyles({
     isNotSimpleCondition,
+    hasError,
   });
 
   const rules = conditionRulesData?.rules ?? [];
@@ -264,6 +275,11 @@ export const ConditionsFormRowFields = ({
   };
 
   const handleTransformErrors = (errors: RJSFValidationError[]) => {
+    if (errors.length > 0) {
+      setHasError(true);
+    } else {
+      setHasError(false);
+    }
     // criteria: condition or not simple-condition
     if (
       criteria === criterias.condition ||
@@ -373,7 +389,7 @@ export const ConditionsFormRowFields = ({
   };
 
   return (
-    <Box className={classes.inputFieldContainer}>
+    <Box className={classes.leftInputFieldContainer}>
       <Autocomplete
         style={{ width: '50%', marginTop: '26px' }}
         sx={getTextFieldStyles(theme)}
@@ -406,7 +422,7 @@ export const ConditionsFormRowFields = ({
           />
         )}
       />
-      <Box style={{ width: '50%' }}>
+      <Box className={classes.rightInputFieldContainer}>
         {schema ? (
           <Form
             schema={paramsSchema}

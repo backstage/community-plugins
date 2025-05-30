@@ -20,7 +20,6 @@ import {
   renderInTestApp,
 } from '@backstage/frontend-test-utils';
 import { entitySonarQubeCard } from './entityCard';
-import React from 'react';
 import { SonarQubeClient } from '../api';
 import {
   sonarQubeApiRef,

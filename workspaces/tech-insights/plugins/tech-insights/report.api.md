@@ -10,7 +10,7 @@ import { BooleanCheck } from '@backstage-community/plugin-tech-insights-react';
 import { Check } from '@backstage-community/plugin-tech-insights-common';
 import { CheckResult } from '@backstage-community/plugin-tech-insights-common';
 import { CheckResultRenderer } from '@backstage-community/plugin-tech-insights-react';
-import { Entity } from '@backstage/catalog-model/index';
+import { Entity } from '@backstage/catalog-model';
 import { InsightFacts } from '@backstage-community/plugin-tech-insights-common';
 import { jsonRulesEngineCheckResultRenderer } from '@backstage-community/plugin-tech-insights-react';
 import { JSX as JSX_2 } from 'react';

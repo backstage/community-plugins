@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { AuthConfig, AuthStrategy } from '../types/Auth';
+import {
+  AuthConfig,
+  AuthStrategy,
+} from '@backstage-community/plugin-kiali-common/types';
 
 export const authenticationConfig: AuthConfig = {
   strategy: AuthStrategy.token,

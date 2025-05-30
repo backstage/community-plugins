@@ -800,6 +800,33 @@ describe('AzureDevOpsApi', () => {
     ]);
   });
 
+  it('should not return build runs if the build definition does not exist', async () => {
+    const mockBuildClient = {
+      getBuilds: jest.fn().mockResolvedValue([]),
+      getDefinitions: jest.fn().mockResolvedValue([]),
+    };
+
+    const mockApi = {
+      getBuildApi: jest.fn().mockReturnValue(mockBuildClient),
+    };
+
+    (WebApi as unknown as jest.Mock).mockImplementation(() => mockApi);
+
+    const api = AzureDevOpsApi.fromConfig(mockConfig, {
+      logger: mockLogger,
+      urlReader: mockUrlReader,
+    });
+
+    const result = await api.getBuildRuns(
+      'project',
+      10,
+      undefined,
+      'definition-not-exist',
+    );
+
+    expect(result).toEqual([]);
+  });
+
   it('should get the build logs', async () => {
     const getBuildLogsResultMock = [
       {

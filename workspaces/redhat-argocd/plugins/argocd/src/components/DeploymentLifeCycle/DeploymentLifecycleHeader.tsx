@@ -33,6 +33,13 @@ const DeploymentLifecycleHeader: FC<{ app: Application }> = ({ app }) => {
     }
     return baseUrl;
   };
+
+  const appUrl = app?.metadata?.namespace
+    ? `${getBaseUrl(app)}/applications/${app.metadata.namespace}/${
+        app.metadata.name
+      }`
+    : `${getBaseUrl(app)}/applications/${app.metadata.name}`;
+
   return (
     <>
       {app.metadata.name}{' '}
@@ -41,7 +48,7 @@ const DeploymentLifecycleHeader: FC<{ app: Application }> = ({ app }) => {
         color="primary"
         size="small"
         target="_blank"
-        href={`${getBaseUrl(app)}/applications/${app.metadata.name}`}
+        href={appUrl}
         onClick={e => e.stopPropagation()}
       >
         <ExternalLinkIcon />

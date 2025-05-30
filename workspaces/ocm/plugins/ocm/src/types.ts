@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { ReactElement } from 'react';
 
 import { EntityRefLinkProps } from '@backstage/plugin-catalog-react';
 
@@ -29,9 +29,9 @@ export type versionDetails = {
 };
 
 export type ClusterStatusRowData = {
-  name: React.ReactElement<EntityRefLinkProps>;
-  status: React.ReactElement<{ status: ClusterStatus }>;
+  name: ReactElement<EntityRefLinkProps>;
+  status: ReactElement<{ status: ClusterStatus }>;
   infrastructure: string;
-  version: React.ReactElement<{ data: versionDetails }>;
-  nodes: React.ReactElement<{ nodes: Array<ClusterNodesStatus> }>;
+  version: ReactElement<{ data: versionDetails }>;
+  nodes: ReactElement<{ nodes: Array<ClusterNodesStatus> }>;
 };

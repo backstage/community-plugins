@@ -13,6 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {
+  CanaryUpgradeStatus,
+  CertsInfo,
+  DurationInSeconds,
+  IntervalInMilliseconds,
+  ValidationStatus,
+} from '@backstage-community/plugin-kiali-common/types';
+import type { ComponentStatus } from '@backstage-community/plugin-kiali-common/types';
 import { Card, CardContent, Grid } from '@material-ui/core';
 import { default as React } from 'react';
 import * as FilterHelper from '../../../components/FilterList/FilterHelper';
@@ -21,16 +29,6 @@ import { TLSInfo } from '../../../components/Overview/TLSInfo';
 import { PFBadge, PFBadges } from '../../../components/Pf/PfBadges';
 import { ValidationSummary } from '../../../components/Validations/ValidationSummary';
 import { isMultiCluster, serverConfig } from '../../../config';
-import { CertsInfo } from '../../../types/CertsInfo';
-import {
-  DurationInSeconds,
-  IntervalInMilliseconds,
-} from '../../../types/Common';
-import {
-  CanaryUpgradeStatus,
-  ValidationStatus,
-} from '../../../types/IstioObjects';
-import { ComponentStatus } from '../../../types/IstioStatus';
 import { NamespaceInfo, NamespaceInfoStatus } from '../NamespaceInfo';
 import { DirectionType, OverviewType } from '../OverviewToolbar';
 import { CanaryUpgradeProgress } from './CanaryUpgradeProgress';

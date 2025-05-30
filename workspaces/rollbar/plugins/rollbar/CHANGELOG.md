@@ -1,5 +1,11 @@
 # @backstage-community/plugin-rollbar
 
+## 0.7.2
+
+### Patch Changes
+
+- 6c0f6ee: Update README links to point to community-plugins repository.
+
 ## 0.7.1
 
 ### Patch Changes

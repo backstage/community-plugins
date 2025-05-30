@@ -11,7 +11,7 @@ The following sections will help you get the Explore plugin setup and running.
 ### Backend
 
 You need to setup the
-[Explore backend plugin](https://github.com/backstage/backstage/tree/master/plugins/explore-backend)
+[Explore backend plugin](https://github.com/backstage/community-plugins/tree/main/workspaces/explore/plugins/explore-backend)
 before you move forward with any of these steps if you haven't already.
 
 ### Installation

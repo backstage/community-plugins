@@ -42,9 +42,10 @@ describe('techInsightsPlugin', () => {
           },
         }),
         mockServices.scheduler.factory(),
+        mockServices.permissionsRegistry.factory(),
       ],
     });
 
-    expect(httpRouterMock.use).toHaveBeenCalledTimes(1);
+    expect(httpRouterMock.use).toHaveBeenCalledTimes(2);
   });
 });
