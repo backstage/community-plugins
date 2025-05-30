@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 6.3.0
+
+### Minor Changes
+
+- 3e3f346: Migrate rbac-backend to use permission registry service.
+
 ## 6.2.6
 
 ### Patch Changes
