@@ -15,6 +15,7 @@
  */
 import { AnnouncementsDatabase } from './AnnouncementsDatabase';
 import { CategoriesDatabase } from './CategoriesDatabase';
+import { TagsDatabase } from './TagsDatabase';
 import {
   DatabaseService,
   resolvePackagePath,
@@ -33,6 +34,7 @@ const migrationsDir = resolvePackagePath(
 export type PersistenceContext = {
   announcementsStore: AnnouncementsDatabase;
   categoriesStore: CategoriesDatabase;
+  tagsStore: TagsDatabase;
 };
 
 /**
@@ -54,5 +56,6 @@ export const initializePersistenceContext = async (
   return {
     announcementsStore: new AnnouncementsDatabase(client),
     categoriesStore: new CategoriesDatabase(client),
+    tagsStore: new TagsDatabase(client),
   };
 };

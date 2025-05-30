@@ -20,23 +20,26 @@ import { identityApiRef, useApi } from '@backstage/core-plugin-api';
 import {
   CreateAnnouncementRequest,
   useAnnouncementsTranslation,
+  announcementsApiRef,
 } from '@backstage-community/plugin-announcements-react';
 import { Announcement } from '@backstage-community/plugin-announcements-common';
 import CategoryInput from './CategoryInput';
 import OnBehalfTeamDropdown from './OnBehalfTeamDropdown';
+import TagsInput from './TagsInput';
 import {
-  TextField,
-  FormGroup,
-  FormControlLabel,
-  Switch,
-  Button,
   Box,
-  Grid,
-  Typography,
+  Button,
   Divider,
+  FormControlLabel,
+  FormGroup,
+  Grid,
+  Switch,
+  TextField,
+  Typography,
 } from '@material-ui/core';
 import SaveAltIcon from '@material-ui/icons/SaveAlt';
 import { DateTime } from 'luxon';
+import slugify from 'slugify';
 
 type AnnouncementFormProps = {
   initialData: Announcement;
@@ -48,6 +51,7 @@ export const AnnouncementForm = ({
   onSubmit,
 }: AnnouncementFormProps) => {
   const identityApi = useApi(identityApiRef);
+  const announcementsApi = useApi(announcementsApiRef);
   const { t } = useAnnouncementsTranslation();
 
   const formattedStartAt = initialData.start_at
@@ -58,6 +62,7 @@ export const AnnouncementForm = ({
     ...initialData,
     category: initialData.category?.slug,
     start_at: formattedStartAt || '',
+    tags: initialData.tags?.map(tag => tag.slug) || undefined,
   });
   const [loading, setLoading] = useState(false);
   const [onBehalfOfSelectedTeam, setOnBehalfOfSelectedTeam] = useState(
@@ -83,16 +88,49 @@ export const AnnouncementForm = ({
     event.preventDefault();
 
     const userIdentity = await identityApi.getBackstageIdentity();
-    const createRequest = {
-      ...form,
-      ...{
-        publisher: userIdentity.userEntityRef,
-        on_behalf_of: onBehalfOfSelectedTeam,
-      },
+
+    if (form.tags && form.tags.length > 0) {
+      const existingTags = await announcementsApi.tags();
+
+      const processedTags = [];
+
+      for (const tagValue of form.tags) {
+        const slugifiedTag = slugify(tagValue.trim(), { lower: true });
+
+        if (existingTags.some(tag => tag.slug === slugifiedTag)) {
+          processedTags.push(slugifiedTag);
+        } else {
+          try {
+            await announcementsApi.createTag({ title: tagValue });
+            processedTags.push(slugifiedTag);
+          } catch (error) {
+            if (error.status === 409) {
+              processedTags.push(slugifiedTag);
+            } else {
+              throw error;
+            }
+          }
+        }
+      }
+
+      form.tags = processedTags;
+    }
+
+    const { id, created_at, ...announcementData } = form;
+
+    const createRequest: CreateAnnouncementRequest = {
+      ...announcementData,
+      publisher: userIdentity.userEntityRef,
+      on_behalf_of: onBehalfOfSelectedTeam,
     };
 
-    await onSubmit(createRequest);
-    setLoading(false);
+    try {
+      await onSubmit(createRequest);
+    } catch (error) {
+      throw error;
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -117,7 +155,7 @@ export const AnnouncementForm = ({
               />
             </Grid>
 
-            <Grid item xs={12} sm={4}>
+            <Grid item xs={12} sm={3}>
               <CategoryInput
                 setForm={setForm}
                 form={form}
@@ -125,14 +163,18 @@ export const AnnouncementForm = ({
               />
             </Grid>
 
-            <Grid item xs={12} sm={4}>
+            <Grid item xs={12} sm={3}>
+              <TagsInput setForm={setForm} form={form} />
+            </Grid>
+
+            <Grid item xs={12} sm={3}>
               <OnBehalfTeamDropdown
                 selectedTeam={onBehalfOfSelectedTeam}
                 onChange={setOnBehalfOfSelectedTeam}
               />
             </Grid>
 
-            <Grid item xs={12} sm={4}>
+            <Grid item xs={12} sm={3}>
               <TextField
                 variant="outlined"
                 label={t('announcementForm.startAt')}
@@ -183,7 +225,7 @@ export const AnnouncementForm = ({
                   control={
                     <Switch
                       name="active"
-                      checked={form.active}
+                      checked={!!form.active}
                       onChange={handleChangeActive}
                       color="primary"
                     />
