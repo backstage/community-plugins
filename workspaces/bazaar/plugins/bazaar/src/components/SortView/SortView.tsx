@@ -37,6 +37,7 @@ import {
 import { SortMethodSelector } from '../SortMethodSelector';
 import { fetchCatalogItems } from '../../util/fetchMethods';
 import { parseBazaarProject } from '../../util/parseMethods';
+import { EntityFilterQuery } from '@backstage/catalog-client';
 
 const useStyles = makeStyles({
   button: { minWidth: '11rem' },
@@ -76,11 +77,24 @@ const getUnlinkedCatalogEntities = (
 export type SortViewProps = {
   fullWidth?: boolean;
   fullHeight?: boolean;
+  /**
+   * A list of {@link @backstage/catalog-model#Entity} to display as entity page link options. If provided, this will take priority over the `filter` prop.
+   */
+  allCatalogEntities?: Entity[] | null;
+  /**
+   * An {@link @backstage/catalog-client#EntityFilterQuery} used to filter catalog entities. Ignored if `allCatalogEntities` is provided.
+   */
+  filter?: EntityFilterQuery | undefined;
 };
 
 /** @public */
 export const SortView = (props: SortViewProps) => {
-  const { fullWidth = true, fullHeight = true } = props;
+  const {
+    fullWidth = true,
+    fullHeight = true,
+    allCatalogEntities = null,
+    filter = undefined,
+  } = props;
   const bazaarApi = useApi(bazaarApiRef);
   const catalogApi = useApi(catalogApiRef);
   const classes = useStyles();
@@ -97,7 +111,8 @@ export const SortView = (props: SortViewProps) => {
     useState<Entity[]>();
 
   const [catalogEntities, fetchCatalogEntities] = useAsyncFn(async () => {
-    return await fetchCatalogItems(catalogApi);
+    if (allCatalogEntities) return allCatalogEntities;
+    return await fetchCatalogItems(catalogApi, filter);
   });
 
   const [bazaarProjects, fetchBazaarProjects] = useAsyncFn(async () => {
