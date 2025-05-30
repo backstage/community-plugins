@@ -1,5 +1,11 @@
 # @backstage-community/plugin-sonarqube
 
+## 0.12.1
+
+### Patch Changes
+
+- f737a01: Fixed handling of wrong component keys in getFindingSummaries
+
 ## 0.12.0
 
 ### Minor Changes
