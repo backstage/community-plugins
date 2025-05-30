@@ -18,6 +18,7 @@ import { Header, RoutedTabs } from '@backstage/core-components';
 import { SortView } from '../SortView';
 import { About } from '../About';
 import { Entity } from '@backstage/catalog-model';
+import { EntityFilterQuery } from '@backstage/catalog-client';
 
 /** @public */
 export type HomePageProps = {
@@ -25,7 +26,18 @@ export type HomePageProps = {
   subtitle?: string;
   fullWidth?: boolean;
   fullHeight?: boolean;
+  /**
+   * A list of catalog entities to display as entity page link options. If provided, this will take priority over the `filter` prop.
+   */
   catalogEntities?: Entity[] | null;
+  /**
+   * An EntityFilterQuery used to filter catalog entities. Ignored if `catalogEntities` is provided.
+   * Example:
+   * {
+      kind: ['Component'],
+    }
+   */
+  filter?: EntityFilterQuery | undefined;
 };
 
 export const HomePage = (props: HomePageProps) => {
@@ -35,6 +47,7 @@ export const HomePage = (props: HomePageProps) => {
     fullWidth,
     fullHeight,
     catalogEntities = null,
+    filter = undefined,
   } = props;
 
   const tabContent = [
@@ -46,6 +59,7 @@ export const HomePage = (props: HomePageProps) => {
           fullWidth={fullWidth}
           fullHeight={fullHeight}
           allCatalogEntities={catalogEntities}
+          filter={filter}
         />
       ),
     },

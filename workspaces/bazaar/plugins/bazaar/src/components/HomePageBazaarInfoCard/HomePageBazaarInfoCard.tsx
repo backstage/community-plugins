@@ -46,6 +46,7 @@ import { bazaarApiRef } from '../../api';
 import Alert from '@material-ui/lab/Alert';
 import useAsyncFn from 'react-use/esm/useAsyncFn';
 import { catalogApiRef, entityRouteRef } from '@backstage/plugin-catalog-react';
+import { EntityFilterQuery } from '@backstage/catalog-client';
 
 import {
   stringifyEntityRef,
@@ -74,7 +75,18 @@ type Props = {
   initProject: BazaarProject;
   handleClose: () => void;
   initEntity: Entity;
+  /**
+   * A list of catalog entities to display as entity page link options. If provided, this will take priority over the `filter` prop.
+   */
   allCatalogEntities?: Entity[] | null;
+  /**
+   * An EntityFilterQuery used to filter catalog entities. Ignored if `allCatalogEntities` is provided.
+   * Example:
+   * {
+      kind: ['Component'],
+    }
+   */
+  filter?: EntityFilterQuery | undefined;
 };
 
 export const HomePageBazaarInfoCard = ({
@@ -82,6 +94,7 @@ export const HomePageBazaarInfoCard = ({
   handleClose,
   initEntity,
   allCatalogEntities = null,
+  filter = undefined,
 }: Props) => {
   const classes = useStyles();
   const entityLink = useRouteRef(entityRouteRef);
@@ -99,7 +112,7 @@ export const HomePageBazaarInfoCard = ({
     if (allCatalogEntities) {
       entities = allCatalogEntities;
     } else {
-      entities = await fetchCatalogItems(catalogApi);
+      entities = await fetchCatalogItems(catalogApi, filter);
     }
     const bazaarProjects = await bazaarApi.getProjects();
     const bazaarLinkedRefs: string[] = bazaarProjects.data
