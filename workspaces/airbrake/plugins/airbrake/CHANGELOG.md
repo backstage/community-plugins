@@ -1,5 +1,11 @@
 # @backstage-community/plugin-airbrake
 
+## 0.9.0
+
+### Minor Changes
+
+- 56bc30a: Backstage version bump to v1.39.0
+
 ## 0.8.0
 
 ### Minor Changes
