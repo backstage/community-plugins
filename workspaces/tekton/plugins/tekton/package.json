@@ -83,7 +83,7 @@
     "@types/lodash": "4.17.16",
     "cross-fetch": "4.0.0",
     "msw": "1.3.5",
-    "start-server-and-test": "2.0.11"
+    "start-server-and-test": "2.0.12"
   },
   "files": [
     "app-config.dynamic.yaml",
