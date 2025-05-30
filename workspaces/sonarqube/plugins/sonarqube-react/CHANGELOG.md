@@ -1,5 +1,11 @@
 # @backstage-community/plugin-sonarqube-react
 
+## 0.7.0
+
+### Minor Changes
+
+- f3284e7: Backstage version bump to v1.39.0
+
 ## 0.6.0
 
 ### Minor Changes
