@@ -8,7 +8,7 @@
 import { AnyApiFactory } from '@backstage/core-plugin-api';
 import { AnyRouteRefParams } from '@backstage/frontend-plugin-api';
 import { ConfigurableExtensionDataRef } from '@backstage/frontend-plugin-api';
-import { Entity } from '@backstage/catalog-model/index';
+import { Entity } from '@backstage/catalog-model';
 import { EntityCardType } from '@backstage/plugin-catalog-react/alpha';
 import { EntityPredicate } from '@backstage/plugin-catalog-react/alpha';
 import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
@@ -21,7 +21,7 @@ const _default: FrontendPlugin<
   {},
   {},
   {
-    'api:azure-devops': ExtensionDefinition<{
+    [x: `api:${string}`]: ExtensionDefinition<{
       kind: 'api';
       name: undefined;
       config: {};
@@ -36,7 +36,7 @@ const _default: FrontendPlugin<
         factory: AnyApiFactory;
       };
     }>;
-    'entity-card:azure-devops/readme': ExtensionDefinition<{
+    [x: `entity-card:${string}/readme`]: ExtensionDefinition<{
       kind: 'entity-card';
       name: 'readme';
       config: {
@@ -77,7 +77,7 @@ const _default: FrontendPlugin<
         type?: EntityCardType | undefined;
       };
     }>;
-    'entity-content:azure-devops/git-tags': ExtensionDefinition<{
+    [x: `entity-content:${string}/git-tags`]: ExtensionDefinition<{
       kind: 'entity-content';
       name: 'git-tags';
       config: {
@@ -146,7 +146,7 @@ const _default: FrontendPlugin<
         filter?: EntityPredicate | ((entity: Entity) => boolean) | undefined;
       };
     }>;
-    'entity-content:azure-devops/pipelines': ExtensionDefinition<{
+    [x: `entity-content:${string}/pipelines`]: ExtensionDefinition<{
       kind: 'entity-content';
       name: 'pipelines';
       config: {
@@ -215,7 +215,7 @@ const _default: FrontendPlugin<
         filter?: EntityPredicate | ((entity: Entity) => boolean) | undefined;
       };
     }>;
-    'entity-content:azure-devops/pull-requests': ExtensionDefinition<{
+    [x: `entity-content:${string}/pull-requests`]: ExtensionDefinition<{
       kind: 'entity-content';
       name: 'pull-requests';
       config: {
@@ -284,7 +284,7 @@ const _default: FrontendPlugin<
         filter?: EntityPredicate | ((entity: Entity) => boolean) | undefined;
       };
     }>;
-    'page:azure-devops': ExtensionDefinition<{
+    [x: `page:${string}`]: ExtensionDefinition<{
       kind: 'page';
       name: undefined;
       config: {
