@@ -13,7 +13,7 @@ import { CheckResultRenderer } from '@backstage-community/plugin-tech-insights-r
 import { Entity } from '@backstage/catalog-model';
 import { InsightFacts } from '@backstage-community/plugin-tech-insights-common';
 import { jsonRulesEngineCheckResultRenderer } from '@backstage-community/plugin-tech-insights-react';
-import { JSX as JSX_2 } from 'react';
+import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { PropsWithChildren } from 'react';
 import { ReactNode } from 'react';
 import { ResultCheckIconBaseComponentProps } from '@backstage-community/plugin-tech-insights-react';

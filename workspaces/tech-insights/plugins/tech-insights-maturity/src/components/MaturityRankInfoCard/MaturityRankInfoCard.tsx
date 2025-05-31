@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { Fragment } from 'react';
 import { InfoCard } from '@backstage/core-components';
 import {
   MaturitySummary,
@@ -85,10 +85,10 @@ export const MaturityRankInfoCard = ({ summary }: Props) => {
   return (
     <InfoCard
       title={
-        <React.Fragment>
+        <Fragment>
           Maturity Rank
           <MaturityHelp />
-        </React.Fragment>
+        </Fragment>
       }
     >
       <CardContent>

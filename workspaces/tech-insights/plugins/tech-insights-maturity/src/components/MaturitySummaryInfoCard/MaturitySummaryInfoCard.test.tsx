@@ -22,7 +22,6 @@ import {
   MaturitySummary,
   Rank,
 } from '@backstage-community/plugin-tech-insights-maturity-common';
-import React from 'react';
 import { MaturitySummaryInfoCard } from './MaturitySummaryInfoCard';
 import { MaturityApi, maturityApiRef } from '../../api';
 

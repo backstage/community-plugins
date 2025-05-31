@@ -18,7 +18,6 @@ import {
   MaturitySummary,
   Rank,
 } from '@backstage-community/plugin-tech-insights-maturity-common';
-import React from 'react';
 import { MaturityRankInfoCard } from './MaturityRankInfoCard';
 
 describe('<MaturityRankInfoCard />', () => {
