@@ -1,5 +1,14 @@
 # @backstage-community/plugin-tech-insights-backend-module-jsonfc
 
+## 0.5.2
+
+### Patch Changes
+
+- 01640b2: Fixes import of `backstage-plugin-api`.
+- Updated dependencies [d6411fe]
+  - @backstage-community/plugin-tech-insights-common@0.7.0
+  - @backstage-community/plugin-tech-insights-node@2.4.1
+
 ## 0.5.1
 
 ### Patch Changes

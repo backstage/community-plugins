@@ -1,5 +1,12 @@
 # @backstage-community/plugin-tech-insights-react
 
+## 1.1.2
+
+### Patch Changes
+
+- Updated dependencies [d6411fe]
+  - @backstage-community/plugin-tech-insights-common@0.7.0
+
 ## 1.1.1
 
 ### Patch Changes
