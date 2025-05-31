@@ -49,6 +49,7 @@ export async function discoverEnterpriseMetrics({
   const type: MetricsType = 'enterprise';
 
   try {
+    await api.createEnterpriseOctokit();
     const copilotMetrics = await api.fetchEnterpriseCopilotMetrics();
     logger.info(
       `[discoverEnterpriseMetrics] Fetched ${copilotMetrics.length} metrics`,
@@ -151,9 +152,25 @@ export async function discoverEnterpriseMetrics({
       logger.info('[discoverEnterpriseMetrics] No new metrics found to insert');
     }
   } catch (error) {
-    logger.error(
-      `[discoverEnterpriseMetrics] An error occurred while processing Github Copilot metrics: ${error}`,
-    );
+    let actualError = error;
+    if (error instanceof Promise) {
+      try {
+        await error;
+      } catch (inner) {
+        actualError = inner;
+      }
+    }
+    if (actualError instanceof Error) {
+      logger.error(
+        `[discoverEnterpriseMetrics] An error occurred while processing Github Copilot metrics: ${actualError.message}\n${actualError.stack}`,
+      );
+    } else {
+      logger.error(
+        `[discoverEnterpriseMetrics] An error occurred while processing Github Copilot metrics: ${JSON.stringify(
+          actualError,
+        )}`,
+      );
+    }
     throw error;
   }
 }
