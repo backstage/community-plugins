@@ -107,6 +107,9 @@ jobs:
   release:
     name: Release workspace ${{ inputs.workspace }} on branch ${{ inputs.branch }}
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # needed for publish provenance
     needs: changesets-pr
     if: needs.changesets-pr.outputs.needs_release == 'true' || inputs.force_release == true
     defaults:
@@ -154,7 +157,7 @@ jobs:
       - name: publish
         run: |
           yarn config set -H 'npmAuthToken' "${{secrets.NPM_TOKEN}}"
-          yarn workspaces foreach -W -v --no-private npm publish --access public --tolerate-republish
+          yarn workspaces foreach -W -v --no-private npm publish --access public --provenance --tolerate-republish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
