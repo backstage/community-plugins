@@ -6,6 +6,7 @@
     "node": "20 || 22"
   },
   "scripts": {
+    "start": "yarn workspaces foreach -A --include backend --include app --parallel -v -i run start",
     "tsc": "tsc",
     "tsc:full": "tsc --skipLibCheck true --incremental false",
     "build:all": "backstage-cli repo build --all",
@@ -20,7 +21,9 @@
     "prettier:check": "prettier --check .",
     "prettier:fix": "prettier --write .",
     "new": "backstage-cli new --scope @backstage-community",
-    "postinstall": "cd ../../ && yarn install"
+    "postinstall": "cd ../../ && yarn install",
+    "lint:check": "backstage-cli package lint",
+    "lint:fix": "backstage-cli package lint --fix"
   },
   "workspaces": {
     "packages": [
@@ -34,9 +37,9 @@
     "directory": "workspaces/jfrog-artifactory"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.30.0",
+    "@backstage/cli": "^0.32.0",
     "@backstage/e2e-test-utils": "^0.1.1",
-    "@backstage/repo-tools": "^0.13.0",
+    "@backstage/repo-tools": "^0.13.2",
     "@changesets/cli": "^2.27.1",
     "knip": "^5.27.4",
     "node-gyp": "^9.0.0",
