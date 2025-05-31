@@ -14,13 +14,17 @@
  * limitations under the License.
  */
 import { resolveSafeChildPath } from '@backstage/backend-plugin-api';
-import { createTemplateAction } from '@backstage/plugin-scaffolder-node';
+import {
+  createTemplateAction,
+  TemplateExample,
+} from '@backstage/plugin-scaffolder-node';
 
 import * as fs from 'fs-extra';
 import * as yaml from 'yaml';
 
 import { getObjectToAnnotate } from '../../utils/getObjectToAnnotate';
 import { resolveSpec, Value } from '../../utils/resolveSpec';
+import { resolveAnnotation } from '../../utils/resolveAnnotation';
 
 /**
  * Creates a new Scaffolder action to annotate an entity object with specified label(s), annotation(s) and spec property(ies).
@@ -32,10 +36,11 @@ export const createAnnotatorAction = (
   actionDescription?: string,
   loggerInfoMsg?: string,
   annotateEntityObjectProvider?: () => {
-    annotations?: { [key: string]: string };
+    annotations?: { [key: string]: Value };
     labels?: { [key: string]: string };
     spec?: { [key: string]: Value };
   },
+  examples?: TemplateExample[],
 ) => {
   return createTemplateAction<{
     labels?: { [key: string]: string };
@@ -46,6 +51,7 @@ export const createAnnotatorAction = (
     writeToFile?: string;
   }>({
     id: actionId,
+    examples,
     description:
       actionDescription ||
       'Creates a new scaffolder action to annotate the entity object with specified label(s), annotation(s) and spec property(ies).',
@@ -119,6 +125,7 @@ export const createAnnotatorAction = (
           annotations: {
             ...(objToAnnotate.metadata.annotations || {}),
             ...(annotateEntityObject?.annotations || {}),
+            ...resolveAnnotation(annotateEntityObject?.annotations, ctx),
             ...(ctx.input?.annotations || {}),
           },
           labels: {

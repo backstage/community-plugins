@@ -20,6 +20,7 @@ import {
   createAnnotatorAction,
   createScaffoldedFromAction,
   createTimestampAction,
+  createVersionAction,
 } from './actions';
 
 /***/
@@ -40,6 +41,7 @@ export const scaffolderCustomActionsScaffolderModule = createBackendModule({
         scaffolder.addActions(createScaffoldedFromAction());
         scaffolder.addActions(createTimestampAction());
         scaffolder.addActions(createAnnotatorAction());
+        scaffolder.addActions(createVersionAction());
       },
     });
   },

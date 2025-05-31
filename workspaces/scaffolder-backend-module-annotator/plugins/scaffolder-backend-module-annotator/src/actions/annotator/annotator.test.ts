@@ -14,25 +14,39 @@
  * limitations under the License.
  */
 import { resolveSafeChildPath } from '@backstage/backend-plugin-api';
-import { mockServices } from '@backstage/backend-test-utils';
+import { createMockDirectory } from '@backstage/backend-test-utils';
+import { createMockActionContext } from '@backstage/plugin-scaffolder-node-test-utils';
 
 import * as fs from 'fs-extra';
 import * as yaml from 'yaml';
 
-import { PassThrough } from 'stream';
-
 import { getCurrentTimestamp } from '../../utils/getCurrentTimestamp';
 import { createAnnotatorAction } from './annotator';
 
+const catalogEntity =
+  'plugins/scaffolder-backend-module-annotator/src/actions/annotator/mocks';
+
+const catalogEntityContent = fs.readFileSync(
+  resolveSafeChildPath(catalogEntity, './catalog-info.yaml'),
+  'utf8',
+);
+
 describe('catalog annotator', () => {
-  const workspacePath =
-    'plugins/scaffolder-backend-module-annotator/src/actions/annotator/mocks';
+  const mockDir = createMockDirectory();
+  const workspacePath = mockDir.resolve('workspace');
 
   afterEach(() => {
     jest.resetAllMocks();
+    mockDir.clear();
   });
 
   it('should call action to annotate with timestamp', async () => {
+    mockDir.setContent({
+      [workspacePath]: {
+        'catalog-info.yaml': catalogEntityContent,
+      },
+    });
+
     const action = createAnnotatorAction(
       'catalog:timestamping',
       'Creates a new `catalog:timestamping` Scaffolder action to annotate scaffolded entities with creation timestamp.',
@@ -44,19 +58,13 @@ describe('catalog annotator', () => {
       },
     );
 
-    const logger = mockServices.logger.mock();
-    jest.spyOn(logger, 'info');
-
-    await action.handler({
+    const ctx = createMockActionContext({
       workspacePath,
-      logger,
-      logStream: new PassThrough(),
-      output: jest.fn(),
-      createTemporaryDirectory() {
-        // Usage of createMockDirectory is recommended for testing of filesystem operations
-        throw new Error('Not implemented');
-      },
-    } as any);
+    });
+
+    ctx.logger.info = jest.fn();
+
+    await action.handler(ctx);
 
     const updatedCatalogInfoYaml = await fs.readFile(
       resolveSafeChildPath(workspacePath, './catalog-info.yaml'),
@@ -65,25 +73,19 @@ describe('catalog annotator', () => {
 
     const entity = yaml.parse(updatedCatalogInfoYaml);
 
-    expect(logger.info).toHaveBeenCalledWith('some logger info msg');
+    expect(ctx.logger.info).toHaveBeenCalledWith('some logger info msg');
     expect(
       entity?.metadata?.annotations?.['backstage.io/createdAt'],
     ).toBeTruthy();
-
-    // undo catalog-info.yaml file changes
-    delete entity?.metadata?.annotations?.['backstage.io/createdAt'];
-    await fs.writeFile(
-      resolveSafeChildPath(workspacePath, './catalog-info.yaml'),
-      yaml.stringify(entity),
-      'utf8',
-    );
   });
 
   it('should call action to annotate catalog-info.yaml', async () => {
-    const catalogInfoYaml = await fs.readFile(
-      resolveSafeChildPath(workspacePath, './catalog-info.yaml'),
-      'utf8',
-    );
+    mockDir.setContent({
+      [workspacePath]: {
+        'catalog-info.yaml': catalogEntityContent,
+      },
+    });
+
     const action = createAnnotatorAction(
       'catalog:test-annotate',
       'Creates a new `catalog:test-annotate` Scaffolder action to annotate catalog-info.yaml with labels and annotations.',
@@ -93,13 +95,8 @@ describe('catalog annotator', () => {
       },
     );
 
-    const logger = mockServices.logger.mock();
-    jest.spyOn(logger, 'info');
-
-    const mockContext = {
+    const ctx = createMockActionContext({
       workspacePath,
-      logger,
-      logStream: new PassThrough(),
       input: {
         labels: {
           label1: 'value1',
@@ -112,39 +109,42 @@ describe('catalog annotator', () => {
           annotation3: 'value3',
         },
       },
-      output: jest.fn(),
-      createTemporaryDirectory() {
-        // Usage of createMockDirectory is recommended for testing of filesystem operations
-        throw new Error('Not implemented');
-      },
-    };
+    });
 
-    await action.handler(mockContext as any);
+    ctx.logger.info = jest.fn();
 
-    let entity: { [key: string]: any } = yaml.parse(catalogInfoYaml);
+    await action.handler(ctx);
+
+    let entity: { [key: string]: any } = yaml.parse(catalogEntityContent);
     entity = {
       ...entity,
       metadata: {
         ...entity.metadata,
         labels: {
           ...entity.metadata.labels,
-          ...mockContext.input.labels,
+          ...ctx.input.labels,
         },
         annotations: {
           ...entity.metadata.annotations,
-          ...mockContext.input.annotations,
+          ...ctx.input.annotations,
         },
       },
     };
 
-    expect(logger.info).toHaveBeenCalledWith('Annotating your object');
-    expect(mockContext.output).toHaveBeenCalledWith(
+    expect(ctx.logger.info).toHaveBeenCalledWith('Annotating your object');
+    expect(ctx.output).toHaveBeenCalledWith(
       'annotatedObject',
       yaml.stringify(entity),
     );
   });
 
   it('should call action to annotate any obj', async () => {
+    mockDir.setContent({
+      [workspacePath]: {
+        'catalog-info.yaml': catalogEntityContent,
+      },
+    });
+
     const action = createAnnotatorAction(
       'catalog:test-annotate-obj',
       'Creates a new `catalog:test-annotate-obj` Scaffolder action to annotate any object yaml with labels and annotations.',
@@ -153,9 +153,6 @@ describe('catalog annotator', () => {
         return {};
       },
     );
-
-    const logger = mockServices.logger.mock();
-    jest.spyOn(logger, 'info');
 
     const obj: { [key: string]: any } = {
       apiVersion: 'backstage.io/v1alpha1',
@@ -171,10 +168,8 @@ describe('catalog annotator', () => {
       spec: {},
     };
 
-    const mockContext = {
+    const ctx = createMockActionContext({
       workspacePath,
-      logger,
-      logStream: new PassThrough(),
       input: {
         labels: {
           label1: 'value1',
@@ -188,14 +183,11 @@ describe('catalog annotator', () => {
         },
         objectYaml: obj,
       },
-      output: jest.fn(),
-      createTemporaryDirectory() {
-        // Usage of createMockDirectory is recommended for testing of filesystem operations
-        throw new Error('Not implemented');
-      },
-    };
+    });
 
-    await action.handler(mockContext as any);
+    ctx.logger.info = jest.fn();
+
+    await action.handler(ctx);
 
     const entity = {
       ...obj,
@@ -203,23 +195,29 @@ describe('catalog annotator', () => {
         ...obj.metadata,
         labels: {
           ...(obj.metadata.labels || {}),
-          ...mockContext.input.labels,
+          ...ctx.input.labels,
         },
         annotations: {
           ...(obj.metadata.annotations || {}),
-          ...mockContext.input.annotations,
+          ...ctx.input.annotations,
         },
       },
     };
 
-    expect(logger.info).toHaveBeenCalledWith('some logger info message');
-    expect(mockContext.output).toHaveBeenCalledWith(
+    expect(ctx.logger.info).toHaveBeenCalledWith('some logger info message');
+    expect(ctx.output).toHaveBeenCalledWith(
       'annotatedObject',
       yaml.stringify(entity),
     );
   });
 
   it('should call action to annotate with template entityRef', async () => {
+    mockDir.setContent({
+      [workspacePath]: {
+        'catalog-info.yaml': catalogEntityContent,
+      },
+    });
+
     const action = createAnnotatorAction(
       'catalog:entityRef',
       'Some description',
@@ -229,22 +227,16 @@ describe('catalog annotator', () => {
       },
     );
 
-    const logger = mockServices.logger.mock();
-    jest.spyOn(logger, 'info');
-
-    await action.handler({
+    const ctx = createMockActionContext({
       workspacePath,
-      logger,
-      logStream: new PassThrough(),
       templateInfo: {
         entityRef: 'test-entityRef',
       },
-      output: jest.fn(),
-      createTemporaryDirectory() {
-        // Usage of createMockDirectory is recommended for testing of filesystem operations
-        throw new Error('Not implemented');
-      },
-    } as any);
+    });
+
+    ctx.logger.info = jest.fn();
+
+    await action.handler(ctx);
 
     const updatedCatalogInfoYaml = await fs.readFile(
       resolveSafeChildPath(workspacePath, './catalog-info.yaml'),
@@ -253,19 +245,17 @@ describe('catalog annotator', () => {
 
     const entity = yaml.parse(updatedCatalogInfoYaml);
 
-    expect(logger.info).toHaveBeenCalledWith('some logger info msg');
+    expect(ctx.logger.info).toHaveBeenCalledWith('some logger info msg');
     expect(entity?.spec?.scaffoldedFrom).toBe('testt-ref');
-
-    // undo catalog-info.yaml file changes
-    delete entity?.spec?.scaffoldedFrom;
-    await fs.writeFile(
-      resolveSafeChildPath(workspacePath, './catalog-info.yaml'),
-      yaml.stringify(entity),
-      'utf8',
-    );
   });
 
   it('should call action to annotate with template entityRef where the entityRef is read from the context', async () => {
+    mockDir.setContent({
+      [workspacePath]: {
+        'catalog-info.yaml': catalogEntityContent,
+      },
+    });
+
     const action = createAnnotatorAction(
       'catalog:entityRef',
       'Some description',
@@ -279,22 +269,16 @@ describe('catalog annotator', () => {
       },
     );
 
-    const logger = mockServices.logger.mock();
-    jest.spyOn(logger, 'info');
-
-    await action.handler({
+    const ctx = createMockActionContext({
       workspacePath,
-      logger,
-      logStream: new PassThrough(),
       templateInfo: {
         entityRef: 'test-entityRef',
       },
-      output: jest.fn(),
-      createTemporaryDirectory() {
-        // Usage of createMockDirectory is recommended for testing of filesystem operations
-        throw new Error('Not implemented');
-      },
-    } as any);
+    });
+
+    ctx.logger.info = jest.fn();
+
+    await action.handler(ctx);
 
     const updatedCatalogInfoYaml = await fs.readFile(
       resolveSafeChildPath(workspacePath, './catalog-info.yaml'),
@@ -303,15 +287,7 @@ describe('catalog annotator', () => {
 
     const entity = yaml.parse(updatedCatalogInfoYaml);
 
-    expect(logger.info).toHaveBeenCalledWith('some logger info msg');
+    expect(ctx.logger.info).toHaveBeenCalledWith('some logger info msg');
     expect(entity?.spec?.scaffoldedFrom).toBe('test-entityRef');
-
-    // undo catalog-info.yaml file changes
-    delete entity?.spec?.scaffoldedFrom;
-    await fs.writeFile(
-      resolveSafeChildPath(workspacePath, './catalog-info.yaml'),
-      yaml.stringify(entity),
-      'utf8',
-    );
   });
 });
