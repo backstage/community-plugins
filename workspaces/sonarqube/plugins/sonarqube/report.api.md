@@ -35,6 +35,12 @@ export const EntitySonarQubeContentPage: (
 // @public @deprecated (undocumented)
 export const isSonarQubeAvailable: (entity: Entity) => boolean;
 
+// @public (undocumented)
+export type SonarOverviewProps = {
+  relationType: string;
+  entityKind: string;
+};
+
 // @public @deprecated (undocumented)
 export const SONARQUBE_PROJECT_KEY_ANNOTATION = 'sonarqube.org/project-key';
 
@@ -80,6 +86,11 @@ export type SonarQubeContentPageProps = {
 
 // @public (undocumented)
 export const sonarQubePlugin: BackstagePlugin<{}, {}, {}>;
+
+// @public (undocumented)
+export const SonarQubeRelatedEntitiesOverview: (
+  props: SonarOverviewProps,
+) => JSX_2.Element;
 
 // @public (undocumented)
 export const SonarQubeTable: ({

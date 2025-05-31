@@ -22,6 +22,7 @@ import {
 export { SonarQubeCard } from './SonarQubeCard';
 export type { DuplicationRating } from './SonarQubeCard';
 export type { SonarQubeContentPageProps } from './SonarQubeContentPage';
+export * from './SonarQubeRelatedEntitiesOverview';
 export * from './SonarQubeTable';
 /**
  * @public
