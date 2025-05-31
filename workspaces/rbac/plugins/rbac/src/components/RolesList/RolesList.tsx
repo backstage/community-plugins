@@ -36,8 +36,10 @@ export const RolesList = () => {
   const { openDialog, setOpenDialog, deleteComponent } = useDeleteDialog();
   useLocationToast(setToastMessage);
   const [searchText, setSearchText] = useState<string>();
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(5);
   const { loading, data, retry, createRoleAllowed, createRoleLoading, error } =
-    useRoles();
+    useRoles(page, pageSize);
 
   const closeDialog = () => {
     setOpenDialog(false);
@@ -117,6 +119,11 @@ export const RolesList = () => {
           </Box>
         }
         onSearchChange={setSearchText}
+        onPageChange={setPage}
+        onRowsPerPageChange={newPageSize => {
+          setPageSize(newPageSize);
+          setPage(0);
+        }}
       />
       {isLicensePluginEnabled.isEnabled && <DownloadCSVLink />}
       {openDialog && (
