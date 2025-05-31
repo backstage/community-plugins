@@ -40,6 +40,11 @@ export type PermissionAction = (typeof PermissionActionValues)[number];
 // @public
 export const PermissionActionValues: readonly ["create", "read", "update", "delete", "use"];
 
+// @public
+export type PermissionDependentPluginList = {
+    ids: string[];
+};
+
 // @public (undocumented)
 export type PermissionInfo = {
     name: string;
