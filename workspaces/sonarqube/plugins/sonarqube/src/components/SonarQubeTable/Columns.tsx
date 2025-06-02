@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 import { TableColumn } from '@backstage/core-components';
-import { EntityRefLink } from '@backstage/plugin-catalog-react';
+import {
+  EntityPeekAheadPopover,
+  EntityRefLink,
+} from '@backstage/plugin-catalog-react';
 import {
   BugReportRatingCard,
   CodeSmellsRatingCard,
@@ -49,12 +52,12 @@ export const getColumns = (
         if (!resolved?.name) {
           return null;
         }
+        const entityRef =
+          resolved.entityRef || `component:default/${resolved.name}`;
         return (
-          <EntityRefLink
-            entityRef={
-              resolved.entityRef || `component:default/${resolved.name}`
-            }
-          />
+          <EntityPeekAheadPopover entityRef={entityRef}>
+            <EntityRefLink entityRef={entityRef} />
+          </EntityPeekAheadPopover>
         );
       },
     },
