@@ -307,6 +307,7 @@ export const WorkflowRunsCard = ({ entity }: WorkflowRunsCardProps) => {
     owner,
     repo,
     branch: branch === 'all' ? undefined : branch,
+    fetchAllBranches: true,
   });
 
   const handleMenuChange = (
