@@ -85,10 +85,10 @@ spec:
           custom.io/annotation: ${{ parameters.annotation }}
           custom.io/other: 'value'
 
-    # this step is an example of using the `catalog:version` action
+    # this step is an example of using the `catalog:template:version` action
     - id: version-templateRef
       name: Append the version of this template to the entityRef
-      action: catalog:version
+      action: catalog:template:version
 
     # this step is an example of using the `catalog:scaffolded-from` action
     - id: append-templateRef
