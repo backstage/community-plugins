@@ -1,5 +1,11 @@
 # @backstage-community/plugin-github-actions
 
+## 0.11.1
+
+### Patch Changes
+
+- dd3519b: Fixed an issue where branches were fetched unnecessarily by certain components.
+
 ## 0.11.0
 
 ### Minor Changes
