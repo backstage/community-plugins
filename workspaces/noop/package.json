@@ -7,6 +7,7 @@
   "scripts": {
     "backstage-cli": "exit 0",
     "build:api-reports:only": "exit 0",
+    "build:knip-reports": "backstage-repo-tools knip-reports",
     "fix": "exit 0",
     "postinstall": "cd ../../ && yarn install",
     "prettier:check": "exit 0",
