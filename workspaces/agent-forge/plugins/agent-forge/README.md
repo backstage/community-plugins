@@ -4,11 +4,11 @@ This plugin is part of the AGNTCY(agntcy.org) community effort to provide the ri
 It allows the integration of any agent supporting ACP (Agent Communication Protocol) or A2A (Agent2Agent Protocol) especially the platfrom related agents released under the CNOE (Cloud Native Operational Excellence)
 open source organization:
 
-agent-template (https://github.com/cnoe-io/agent-template) - template to be used as a starting point for creating new ACP agents
+- agent-template (https://github.com/cnoe-io/agent-template) - template to be used as a starting point for creating new ACP agents
 
-agent-argocd (https://github.com/cnoe-io/agent-argocd) - agent for interacting with ArgoCD
+- agent-argocd (https://github.com/cnoe-io/agent-argocd) - agent for interacting with ArgoCD
 
-agent-atlassian (https://github.com/cnoe-io/agent-atlassian) - agent for managing JIRA
+- agent-atlassian (https://github.com/cnoe-io/agent-atlassian) - agent for managing JIRA
 
 ## Configuration
 
