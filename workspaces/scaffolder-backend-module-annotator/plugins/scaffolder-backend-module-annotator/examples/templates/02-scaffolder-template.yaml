@@ -33,12 +33,11 @@ spec:
           description: Custom annotation.
         version:
           title: Version
-          type: array
+          type: string
           description: Choose what version
-          items:
-            enum:
-              - '0.0.1'
-              - '0.0.2'
+          enum:
+            - '0.0.1'
+            - '0.0.2'
         description:
           title: Description
           type: string
@@ -93,10 +92,10 @@ spec:
           custom.io/annotation: ${{ parameters.annotation }}
           custom.io/other: 'value'
 
-    # this step is an example of using the `catalog:version` action
+    # this step is an example of using the `catalog:template:version` action
     - id: version-templateRef
       name: Append the version of this template to the entityRef
-      action: catalog:version
+      action: catalog:template:version
       input:
         annotations:
           backstage.io/template-version: ${{ parameters.version }}

@@ -8,12 +8,12 @@ This module allows users to create custom actions for annotating their entity ob
 
 ### Available custom actions
 
-| Action                     |                                               Description                                               |
-| -------------------------- | :-----------------------------------------------------------------------------------------------------: |
-| `catalog:timestamping`     |   Adds the `backstage.io/createdAt` annotation containing the current timestamp to your entity object   |
-| `catalog:scaffolded-from`  |           Adds `scaffoldedFrom` spec containing the template entityRef to your entity object            |
-| `catalog:annotate`         | Allows you to annotate your entity object with specified label(s), annotation(s) and spec property(ies) |
-| `catalog:template:version` |                Allows you to annotate the version of your template to your entity object                |
+| Action                     |                                                    Description                                                    |
+| -------------------------- | :---------------------------------------------------------------------------------------------------------------: |
+| `catalog:timestamping`     |        Adds the `backstage.io/createdAt` annotation containing the current timestamp to your entity object        |
+| `catalog:scaffolded-from`  |                Adds `scaffoldedFrom` spec containing the template entityRef to your entity object                 |
+| `catalog:annotate`         |      Allows you to annotate your entity object with specified label(s), annotation(s) and spec property(ies)      |
+| `catalog:template:version` | Adds the `backstage.io/template-version` annotation containing the version of your template to your entity object |
 
 To begin, install the module package into the backend workspace of your backstage instance:
 
@@ -111,7 +111,7 @@ To annotate the entity file, add your custom action to your template file after 
 
 ## Software Template Versioning
 
-This section explains how to version your software templates using the preloaded custom actions `catalog:scaffolded-from` and `catalog:template:version` within the scaffolder backend module. But using the actions together, you can both track the version of you scaffolder template and the corresponding version of the entities created from it, facilitating better lifecycle management.
+This section explains how to version your software templates using the preloaded custom actions `catalog:scaffolded-from` and `catalog:template:version` within the scaffolder backend module. But using the actions together, you can both track the version of your scaffolder template and the corresponding version of the entities created from it, facilitating better lifecycle management.
 
 ### catalog:scaffolded-from action
 
@@ -130,7 +130,7 @@ There are two methods to version your templates:
 ```yaml
 - id: version-templateRef
   name: Append the version of this template to the entityRef
-  action: catalog:version
+  action: catalog:template:version
   input:
     annotations:
       backstage.io/template-version: ${{ parameters.version }}
