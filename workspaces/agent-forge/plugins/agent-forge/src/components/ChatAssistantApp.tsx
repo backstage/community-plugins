@@ -59,16 +59,11 @@ function ChatAssistantApp() {
     // console.log(`[ChatAssistantApp] ${message}`);
   };
   const backendUrl =
-    process.env.AGENTFORGE_BACKEND_URL ||
     config.getOptionalString('agentForge.baseUrl') ||
     config.getString('backend.baseUrl');
   logWithContext(`backendUrl determined: ${backendUrl}`);
 
-  if (process.env.AGENTFORGE_BACKEND_URL) {
-    logWithContext(
-      `Using AGENTFORGE_BACKEND_URL from environment: ${process.env.AGENTFORGE_BACKEND_URL}`,
-    );
-  } else if (config.getOptionalString('agentForge.baseUrl')) {
+  if (config.getOptionalString('agentForge.baseUrl')) {
     logWithContext(
       `Using agentForge.baseUrl from config: ${config.getOptionalString(
         'agentForge.baseUrl',

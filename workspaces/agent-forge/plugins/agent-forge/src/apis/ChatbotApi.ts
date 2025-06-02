@@ -51,7 +51,7 @@ export class ChatbotApi implements IChatbotApi {
     _?: IChatbotApiOptions,
   ) {
     if (!this.apiBaseUrl) {
-      throw new Error('AGENTFORGE_BACKEND_URL is not provided');
+      throw new Error('Agent URL is not provided');
     }
     if (!this.agentId) {
       this.client = new A2AClient(this.apiBaseUrl);
