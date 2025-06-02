@@ -1,5 +1,11 @@
 # @backstage-community/plugin-redhat-resource-optimization
 
+## 1.1.1
+
+### Patch Changes
+
+- 73fea5b: update plugin README
+
 ## 1.1.0
 
 ### Minor Changes
