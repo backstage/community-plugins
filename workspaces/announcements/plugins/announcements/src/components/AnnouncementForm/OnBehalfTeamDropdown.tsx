@@ -23,11 +23,29 @@ import {
 } from '@backstage-community/plugin-announcements-react';
 import useAsync from 'react-use/esm/useAsync';
 import { useMemo } from 'react';
+import { stringifyEntityRef } from '@backstage/catalog-model';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 
 type OnBehalfTeamDropdownProps = {
   selectedTeam: string;
   onChange: (team: string) => void;
 };
+
+function getTeamDisplayName(team: any): string {
+  if (
+    typeof team === 'object' &&
+    team !== null &&
+    team.spec &&
+    typeof team.spec === 'object' &&
+    team.spec.profile &&
+    typeof team.spec.profile === 'object' &&
+    'displayName' in team.spec.profile
+  ) {
+    return String(team.spec.profile.displayName ?? '');
+  }
+  return '';
+}
 
 export default function OnBehalfTeamDropdown({
   selectedTeam,
@@ -42,27 +60,46 @@ export default function OnBehalfTeamDropdown({
   }, [identityApi]);
 
   const { entities: teams, loading: teamsLoading } = useCatalogEntities(
-    userOwns ?? [],
+    userOwns ?? [], // refs
+    '', // searchTerm
+    10, // limit
+    0, // offset
+    'Group', // kind
   );
 
   const teamOptions = useMemo(() => {
-    return teams.flatMap(
-      team =>
-        team.relations
-          ?.filter(relation => relation.type === 'memberOf')
-          .map(relation => relation.targetRef) || [],
-    );
+    return teams.map(team => ({
+      id: stringifyEntityRef(team),
+      displayName: getTeamDisplayName(team),
+    }));
   }, [teams]);
+
+  const selectedTeamOption = useMemo(() => {
+    return teamOptions.find(team => team.id === selectedTeam) || null;
+  }, [teamOptions, selectedTeam]);
 
   return (
     <Autocomplete
-      value={selectedTeam || null}
+      value={selectedTeamOption}
       onChange={(_, newValue) => {
-        onChange(typeof newValue === 'string' ? newValue : '');
+        onChange(newValue?.id || '');
       }}
       options={teamOptions}
+      getOptionLabel={team => team.id}
       loading={teamsLoading}
       id="team-dropdown-field"
+      renderOption={(props, team) => (
+        <Box component="li" {...props}>
+          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+            <Typography variant="body1">{team.id}</Typography>
+            {team.displayName && (
+              <Typography variant="caption" color="text.secondary">
+                {team.displayName}
+              </Typography>
+            )}
+          </Box>
+        </Box>
+      )}
       renderInput={params => (
         <TextField
           {...params}
