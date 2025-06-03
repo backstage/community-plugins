@@ -179,25 +179,18 @@ export async function discoverEnterpriseTeamMetrics({
           );
         }
       } catch (error) {
-        let actualError = error;
-        if (error instanceof Promise) {
-          try {
-            await error;
-          } catch (inner) {
-            actualError = inner;
-          }
-        }
-        if (actualError instanceof Error) {
+        if (error instanceof Error) {
           logger.error(
-            `[discoverEnterpriseTeamMetrics] Error processing metrics for team ${team.slug}: ${actualError.message}\n${actualError.stack}`,
+            `[discoverEnterpriseTeamMetrics] An error occurred while processing Github Copilot metrics: ${error.message}\n${error.stack}`,
           );
         } else {
           logger.error(
-            `[discoverEnterpriseTeamMetrics] Error processing metrics for team ${
-              team.slug
-            }: ${JSON.stringify(actualError)}`,
+            `[discoverEnterpriseTeamMetrics] An error occurred while processing Github Copilot metrics: ${JSON.stringify(
+              error,
+            )}`,
           );
         }
+        throw error;
       }
     }
   } catch (error) {

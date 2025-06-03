@@ -115,7 +115,7 @@ export class GithubClient implements GithubApi {
       const response = await octokit.request(`GET ${path}`);
       return response.data as CopilotMetrics[];
     } catch (error) {
-      throw ResponseError.fromResponse(error.response || error);
+      throw await ResponseError.fromResponse(error.response || error);
     }
   }
 
@@ -129,7 +129,7 @@ export class GithubClient implements GithubApi {
       const response = await octokit.request(`GET ${path}`);
       return response.data as CopilotMetrics[];
     } catch (error) {
-      throw ResponseError.fromResponse(error.response || error);
+      throw await ResponseError.fromResponse(error.response || error);
     }
   }
 
@@ -143,7 +143,7 @@ export class GithubClient implements GithubApi {
       });
       return teams as TeamInfo[];
     } catch (error) {
-      throw ResponseError.fromResponse(error.response || error);
+      throw await ResponseError.fromResponse(error.response || error);
     }
   }
 
@@ -158,7 +158,7 @@ export class GithubClient implements GithubApi {
 
       return this.mergePaginationResult(seats as CopilotSeats[]);
     } catch (error) {
-      throw ResponseError.fromResponse(error.response || error);
+      throw await ResponseError.fromResponse(error.response || error);
     }
   }
 
@@ -170,7 +170,7 @@ export class GithubClient implements GithubApi {
       const response = await octokit.request(`GET ${path}`);
       return response.data as CopilotMetrics[];
     } catch (error) {
-      throw ResponseError.fromResponse(error.response || error);
+      throw await ResponseError.fromResponse(error.response || error);
     }
   }
 
@@ -184,7 +184,7 @@ export class GithubClient implements GithubApi {
       const response = await octokit.request(`GET ${path}`);
       return response.data as CopilotMetrics[];
     } catch (error) {
-      throw ResponseError.fromResponse(error.response || error);
+      throw await ResponseError.fromResponse(error.response || error);
     }
   }
 
@@ -198,7 +198,7 @@ export class GithubClient implements GithubApi {
       });
       return teams as TeamInfo[];
     } catch (error) {
-      throw ResponseError.fromResponse(error.response || error);
+      throw await ResponseError.fromResponse(error.response || error);
     }
   }
 
@@ -213,7 +213,7 @@ export class GithubClient implements GithubApi {
 
       return this.mergePaginationResult(seats as CopilotSeats[]);
     } catch (error) {
-      throw ResponseError.fromResponse(error.response || error);
+      throw await ResponseError.fromResponse(error.response || error);
     }
   }
 

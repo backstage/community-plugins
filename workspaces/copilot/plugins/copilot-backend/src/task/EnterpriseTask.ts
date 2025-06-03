@@ -152,22 +152,14 @@ export async function discoverEnterpriseMetrics({
       logger.info('[discoverEnterpriseMetrics] No new metrics found to insert');
     }
   } catch (error) {
-    let actualError = error;
-    if (error instanceof Promise) {
-      try {
-        await error;
-      } catch (inner) {
-        actualError = inner;
-      }
-    }
-    if (actualError instanceof Error) {
+    if (error instanceof Error) {
       logger.error(
-        `[discoverEnterpriseMetrics] An error occurred while processing Github Copilot metrics: ${actualError.message}\n${actualError.stack}`,
+        `[discoverEnterpriseMetrics] An error occurred while processing Github Copilot metrics: ${error.message}\n${error.stack}`,
       );
     } else {
       logger.error(
         `[discoverEnterpriseMetrics] An error occurred while processing Github Copilot metrics: ${JSON.stringify(
-          actualError,
+          error,
         )}`,
       );
     }
