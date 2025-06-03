@@ -166,7 +166,7 @@ plugins:
 To get the integrity has perform the following:
 
 ```bash
-npm view {npm-registry-package} dist.integrity
+npm view {npm-registry-package@version} dist.integrity
 ```
 
 For example to get the integrity has for the backend plugin version 0.4.0 do the following:
