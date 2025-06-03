@@ -41,7 +41,7 @@ export const mtaPlugin = createBackendPlugin({
         // Setup OpenID Authentication Client
         const backstageBaseURL = config.getString('backend.baseUrl');
         const frontEndBaseURL = config.getString('app.baseUrl');
-        const baseUrl = config.getString('mta.url');
+        const baseUrl = config.getString('mta.url').replace(/\/+$/, '');
         const baseURLHub = `${baseUrl}/hub`;
         const realm = config.getString('mta.providerAuth.realm');
         const clientID = config.getString('mta.providerAuth.clientID');
