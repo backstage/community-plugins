@@ -27,13 +27,13 @@ These plugins are designed to work in unison to provide a means to create and an
 
   - Create a Tackle instance in the cluster. This can be done by running the following command:
 
-  ```
+  ```bash
   kubectl apply -f https://raw.githubusercontent.com/konveyor/tackle2-operator/main/tackle-k8s.yaml
   ```
 
   - Once the tackle instance is running, you can create a Tackle CR to configure the tackle instance. You can apply the CR by running the following command:
 
-  ```
+  ```bash
   cat << EOF | kubectl apply -f -
   kind: Tackle
   apiVersion: tackle.konveyor.io/v1alpha1
@@ -45,14 +45,10 @@ These plugins are designed to work in unison to provide a means to create and an
   EOF
   ```
 
-```
+- Obtain the URL for the tackle instance by running the following command:
 
-  - Obtain the URL for the tackle instance by running the following command:
-
-```
-
+```bash
 oc get routes
-
 ```
 
 You will need the URL for the tackle instance to configure the MTA plugin. This URL needs to be added to the app-config configmap [here](app-config-rhdh.example.yaml) under the `mta` key. Be sure to add the `http://` or `https://` prefix to the URL.
@@ -93,10 +89,8 @@ You will need the URL for the tackle instance to configure the MTA plugin. This 
 
 - Once you have made necessary modification to the configmap and secrets, you can compile the plugin by running the following commands in the plugin directory.
 
-```
-
+```bash
 ./rebuild-script.sh
-
 ```
 
 This script will:
@@ -110,4 +104,89 @@ This script will:
 - Create the plugin registry for the dynamic plugins.
 - Apply the app-config and dynamic-plugins configmaps to the cluster.
 - Create the backstage instance using the RHDH operator.
+
+## Using Released Plugins in Red Hat Developer Hub (via Dynamic Plugins)
+
+If you want to use the released MTA plugin in **Red Hat Developer Hub (RHDH)** via the **dynamic plugin system**, here’s how you can do it.
+
+### 1. Identify the Plugin Package
+
+The following are listed in public NPM registry:
+
+- @backstage-community/backstage-plugin-mta-backend
+- @backstage-community/backstage-plugin-mta-frontend
+- @backstage-community/backstage-plugin-catalog-backend-module-mta-entity-provider
+- @backstage-community/backstage-plugin-scaffolder-backend-module-mta
+
+### 2. Add the Plugins to `dynamic-plugins.yaml`
+
+Here’s an example snippet of what your `dynamic-plugins.yaml` might look like:
+
+```yaml
+includes:
+  - dynamic-plugins.default.yaml
+plugins:
+  - package: '@backstage-community/backstage-plugin-mta-backend@0.4.0'
+    disabled: false
+    integrity: 'sha512-d0Z1H9yfJBd6Z+3AIgnFPbxWBArkVBzX94L9s0zaO7n8oX3DH2itB7TZLRHXzQ4+6bhq0K2JsRbMGBbJ6KskTw=='
+  - package: '@backstage-community/backstage-plugin-mta-frontend@0.3.0'
+    disabled: false
+    integrity: 'sha512-PeU+Y8NsIuaAlrEGOl3lErz2pT7s8b1KX1ZeXdBrgTyt39MbpA1DranNb9TehJYzDvJj1KTJWBzpNauJGmcV4A=='
+    pluginConfig:
+      dynamicPlugins:
+        frontend:
+          backstage-community.backstage-plugin-mta-frontend:
+            entityTabs:
+              - path: /mta
+                title: MTA
+                mountPoint: entity.page.mta
+            mountPoints:
+              - mountPoint: entity.page.mta/cards
+                importName: EntityMTAContent
+                config:
+                  layout:
+                    gridColumn:
+                      lg: 'span 12'
+                      md: 'span 8'
+                      xs: 'span 6'
+                  if:
+                    allOf:
+                      - isKind: component
+                      - isType: service
+  - package: '@backstage-community/backstage-plugin-catalog-backend-module-mta-entity-provider@0.3.0'
+    disabled: false
+    integrity: 'sha512-BqfQL0hZm6JwXb1JNVJS9oZroOgm+n79UXsNb/PKZDijl4lYW2nc/UAKHi3Zg7aX4fHfYfXrPk/xtWABcvix3A=='
+  - package: '@backstage-community/backstage-plugin-scaffolder-backend-module-mta@0.4.0'
+    disabled: false
+    integrity: 'sha512-vwKyHvGDu0Zf5fgrHcl/1IXTuZmkoWV3G+8o6agX2+s6NHAOH9xRx+U5ZhOcs4eKNkcNf7XHKa2K2Y2pNkZbhg=='
 ```
+
+**NOTE:** Check the [npm registry](https://www.npmjs.com/package/@backstage-community/backstage-plugin-mta-backend) for the latest versions and update both the version number and integrity hash
+
+To get the integrity has perform the following:
+
+```bash
+npm view {npm-registry-package} dist.integrity
+```
+
+For example to get the integrity has for the backend plugin version 0.4.0 do the following:
+
+```bash
+npm view '@backstage-community/backstage-plugin-scaffolder-backend-module-mta@0.4.0' dist.integrity
+```
+
+## For Users
+
+Open the RHDH Application and select a component from the catalog.
+
+**NOTE:** You may need to choose all under "My Org" to see any components imported from MTA or created with the template
+![catalog](./images/mta-screenshot-catalog.png)
+
+Select a catalog component and choose the MTA tab
+![mta-details](./images/mta-screenshot-01.png)
+This is where you can update information about the application such as the repository URL, Source Credentials or Maven Credentials. In the "Advanced Details" you can also see any Tags, Risk Level and Effort as well as link directly to the Issues ("View Issues") found with the last analysis.
+
+Choosing the `Analysis` tab shows the following:
+![mat-analysis](./images/mta-screenshot-02.png)
+
+Here you can run an Analyze on the application or see the details of previous analysis
