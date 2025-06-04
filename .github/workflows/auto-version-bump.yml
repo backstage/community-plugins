@@ -33,7 +33,7 @@ jobs:
       - name: Delay batches (5 min between)
         if: ${{ strategy.job-index != 0 }}
         run: |
-          delay=$(( strategy.job-index * 300 ))
+          delay=$(( ${{ strategy.job-index }} * 300 ))
           echo "Sleeping $delay seconds before triggering batch ${{ strategy.job-index }}..."
           sleep $delay
 

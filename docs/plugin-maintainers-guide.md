@@ -8,6 +8,7 @@
     - [PR Reviews \& Merging](#pr-reviews--merging)
     - [Issue Triage](#issue-triage)
   - [Version Bumping](#version-bumping)
+- [Opt-in to Automatic Version Bump PRs](#opt-in-to-automatic-version-bump-prs)
   - [Maintaining and patching an older release line](#maintaining-and-patching-an-older-release-line)
     - [Patching an older release](#patching-an-older-release)
 
@@ -30,6 +31,16 @@ Plugin owners should triage issues related to their plugin as needed. The `@back
 ## Version Bumping
 
 Plugin owners are expected to run the Version Bump script for their workspace. The process follows the guidance outlined in the [Version Bumping Documentation](https://github.com/backstage/community-plugins/blob/main/docs/version-bump.md).
+
+# Opt-in to Automatic Version Bump PRs
+
+Plugin owners can opt in to automatic version bump PRs by creating an empty .auto-version-bump file in the root of their workspace (`workspaces/${WORKSPACE}/.auto-version-bump`). This signals that your plugin should be included in the batch version bump workflow, which is triggered manually by one of the `@backstage/community-plugins-maintainers` .
+
+These automated PRs are intended as a convenience to open the version bump for you. As the plugin maintainer, you would still be required to:
+
+- Review the PR
+- Make any necessary patches to adopt the upgrade
+- Merge the PR once it's ready
 
 ## Maintaining and patching an older release line
 

@@ -183,6 +183,7 @@ export const WorkflowRunsTable = ({
       owner,
       repo,
       branch,
+      fetchAllBranches: false,
     });
 
   const githubHost = hostname || 'github.com';

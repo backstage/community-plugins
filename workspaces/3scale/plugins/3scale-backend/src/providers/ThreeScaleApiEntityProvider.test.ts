@@ -65,6 +65,7 @@ describe('ThreeScaleApiEntityProvider', () => {
             test: {
               baseUrl: 'test',
               accessToken: 'test',
+              ownerLabel: 'test',
             },
           },
         },
@@ -321,7 +322,7 @@ function createExpectedEntity(
         type: 'openapi',
         lifecycle: 'test',
         system: '3scale',
-        owner: '3scale',
+        owner: 'test',
         definition: JSON.stringify(
           readTestJSONFile(fileWithExpectedOpenAPISpec),
           null,

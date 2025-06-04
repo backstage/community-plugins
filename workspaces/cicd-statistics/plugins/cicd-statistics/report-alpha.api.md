@@ -7,7 +7,7 @@
 
 import { AnyRouteRefParams } from '@backstage/frontend-plugin-api';
 import { ConfigurableExtensionDataRef } from '@backstage/frontend-plugin-api';
-import { Entity } from '@backstage/catalog-model/index';
+import { Entity } from '@backstage/catalog-model';
 import { EntityPredicate } from '@backstage/plugin-catalog-react/alpha';
 import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { FrontendPlugin } from '@backstage/frontend-plugin-api';
@@ -21,7 +21,7 @@ const _default: FrontendPlugin<
   },
   {},
   {
-    'entity-content:cicd-statistics/entity': ExtensionDefinition<{
+    [x: `entity-content:${string}/entity`]: ExtensionDefinition<{
       kind: 'entity-content';
       name: 'entity';
       config: {

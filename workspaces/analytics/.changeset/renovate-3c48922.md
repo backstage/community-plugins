@@ -3,4 +3,4 @@
 '@backstage-community/plugin-analytics-provider-segment': patch
 ---
 
-Updated dependency `@types/node` to `18.19.100`.
+Updated dependency `@types/node` to `22.15.29`.
