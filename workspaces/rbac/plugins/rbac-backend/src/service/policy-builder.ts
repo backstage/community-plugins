@@ -175,6 +175,7 @@ export class PolicyBuilder {
       pluginIdProvider,
       env.config,
     );
+    await extendablePluginIdProvider.handleConflictedPluginIds();
     const pluginPermMetaData = new PluginPermissionMetadataCollector({
       deps: {
         discovery: env.discovery,

@@ -118,4 +118,21 @@ describe('ExtendableIdProvider', () => {
       extendableIdProvider.isConfiguredPluginId('scaffolder');
     expect(isConfiguredPluginId).toBe(false);
   });
+
+  it('should remove conflicted plugin id, which came from database', async () => {
+    (permissionDependentPluginStoreMock.getPlugins as jest.Mock).mockReset();
+    (
+      permissionDependentPluginStoreMock.getPlugins as jest.Mock
+    ).mockResolvedValueOnce([{ pluginId: 'scaffolder' }]);
+    pluginIdProviderMock.getPluginIds.mockReturnValueOnce([
+      'jenkins',
+      'scaffolder',
+    ]);
+
+    const extendableIdProvider = createProvider();
+    await extendableIdProvider.handleConflictedPluginIds();
+    expect(
+      permissionDependentPluginStoreMock.deletePlugins,
+    ).toHaveBeenCalledWith(['scaffolder']);
+  });
 });

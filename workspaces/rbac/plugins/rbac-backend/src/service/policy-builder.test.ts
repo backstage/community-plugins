@@ -26,7 +26,10 @@ import { RBACPermissionPolicy } from '../policies/permission-policy';
 import { PluginPermissionMetadataCollector } from './plugin-endpoints';
 import { PoliciesServer } from './policies-rest-api';
 import { PolicyBuilder } from './policy-builder';
-import { mockPermissionRegistry } from '../../__fixtures__/mock-utils';
+import {
+  extendablePluginIdProviderMock,
+  mockPermissionRegistry,
+} from '../../__fixtures__/mock-utils';
 
 const enforcerMock: Partial<Enforcer> = {
   loadPolicy: jest.fn().mockImplementation(async () => {}),
@@ -101,6 +104,14 @@ jest.mock('../policies/permission-policy', () => {
   };
 });
 
+jest.mock('./extendable-id-provider', () => {
+  return {
+    ExtendablePluginIdProvider: jest
+      .fn()
+      .mockImplementation(() => extendablePluginIdProviderMock),
+  };
+});
+
 const providerMock: RBACProvider = {
   getProviderName: jest.fn().mockImplementation(),
   connect: jest.fn().mockImplementation(),
@@ -161,6 +172,9 @@ describe('PolicyBuilder', () => {
     expect(mockLoggerService.info).toHaveBeenCalledWith(
       'RBAC backend plugin was enabled',
     );
+    expect(
+      extendablePluginIdProviderMock.handleConflictedPluginIds,
+    ).toHaveBeenCalled();
   });
 
   it('should build policy server with rbac providers', async () => {

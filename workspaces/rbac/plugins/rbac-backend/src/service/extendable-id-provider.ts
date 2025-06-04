@@ -39,6 +39,13 @@ export class ExtendablePluginIdProvider {
     return this.configurationPluginIds.includes(pluginId);
   }
 
+  async handleConflictedPluginIds(): Promise<void> {
+    const conflictedIds = await (
+      await this.pluginStore.getPlugins()
+    ).filter(pId => this.configurationPluginIds.includes(pId.pluginId));
+    await this.pluginStore.deletePlugins(conflictedIds.map(p => p.pluginId));
+  }
+
   async getPluginIds(): Promise<string[]> {
     const extraPlugins = await this.pluginStore.getPlugins();
     return union(

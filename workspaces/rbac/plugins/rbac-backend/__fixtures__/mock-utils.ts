@@ -101,6 +101,7 @@ export const extendablePluginIdProviderMock: Partial<ExtendablePluginIdProvider>
   {
     isConfiguredPluginId: jest.fn().mockImplementation(),
     getPluginIds: jest.fn().mockImplementation(async () => ['catalog']),
+    handleConflictedPluginIds: jest.fn().mockImplementation(),
   };
 
 export const roleEventEmitterMock: RoleEventEmitter<RoleEvents> = {
