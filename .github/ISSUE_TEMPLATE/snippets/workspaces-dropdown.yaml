@@ -82,7 +82,6 @@ attributes:
     - quay
     - rbac
     - redhat-argocd
-    - redhat-resource-optimization
     - report-portal
     - rollbar
     - scaffolder-backend-module-annotator
