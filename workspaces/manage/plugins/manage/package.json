@@ -7,6 +7,9 @@
     "pluginId": "manage",
     "pluginPackages": [
       "@backstage-community/plugin-manage",
+      "@backstage-community/plugin-manage-backend",
+      "@backstage-community/plugin-manage-common",
+      "@backstage-community/plugin-manage-node",
       "@backstage-community/plugin-manage-react"
     ]
   },

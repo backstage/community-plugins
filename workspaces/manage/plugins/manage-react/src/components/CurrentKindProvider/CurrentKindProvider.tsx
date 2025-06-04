@@ -20,7 +20,7 @@ import React, {
   useMemo,
 } from 'react';
 
-import { useOwnedKinds } from '../OwnedEntitiesProvider/OwnedEntitiesProvider';
+import { useOwnedKinds } from '../OwnedProvider/OwnedProvider';
 import { pluralizeKind } from '../../utils';
 import { KindStarred, KindStarredType } from './types';
 

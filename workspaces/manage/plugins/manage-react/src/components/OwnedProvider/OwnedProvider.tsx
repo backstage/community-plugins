@@ -20,7 +20,7 @@ import React, {
   useMemo,
 } from 'react';
 
-import useAsync, { AsyncState } from 'react-use/lib/useAsync';
+import useAsync from 'react-use/lib/useAsync';
 
 import { useApi } from '@backstage/core-plugin-api';
 import {
@@ -30,19 +30,18 @@ import {
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import { ErrorPanel, Progress } from '@backstage/core-components';
 
-import { useOwners } from '../OwnedGroupsProvider';
 import { useKindOrder } from '../KindOrder';
 import { arrayify, joinKinds } from '../../utils';
-import { getOwnedEntities } from './catalog';
 import { defaultKinds } from './types';
 import {
   type KindStarredType,
   KindStarred,
 } from '../CurrentKindProvider/types';
+import { Owners, manageApiRef } from '../../api';
 
 interface OwnedEntitiesProviderContext {
   kinds: string[];
-  asyncEntities: AsyncState<Entity[]>;
+  owners: Owners;
   entities: Entity[];
   starredEntities: Entity[];
 }
@@ -50,27 +49,22 @@ interface OwnedEntitiesProviderContext {
 const ctx = createContext<OwnedEntitiesProviderContext>(undefined as any);
 const { Provider } = ctx;
 
-export interface OwnedEntitiesProviderProps {
+export interface OwnedProviderProps {
   kinds?: string[];
 }
 
-export function OwnedEntitiesProvider(
-  props: PropsWithChildren<OwnedEntitiesProviderProps>,
-) {
+export function OwnedProvider(props: PropsWithChildren<OwnedProviderProps>) {
   const { kinds = defaultKinds } = props;
 
   const { starredEntities: starredEntityRefs } = useStarredEntities();
 
   const catalogApi = useApi(catalogApiRef);
-  const owners = useOwners();
+  const manageApi = useApi(manageApiRef);
 
-  const entities = useAsync(async (): Promise<Entity[]> => {
-    if (owners.ownedEntityRefs.length === 0) {
-      return [];
-    }
-
-    return getOwnedEntities(catalogApi, kinds, owners.ownedEntityRefs);
-  }, [kinds, owners.ownedEntityRefs]);
+  const asyncState = useAsync(
+    async () => manageApi.getOwnersAndEntities(kinds),
+    [kinds],
+  );
 
   const starredEntityRefList = Array.from(starredEntityRefs);
   const starredEntities = useAsync(async (): Promise<Entity[]> => {
@@ -84,20 +78,29 @@ export function OwnedEntitiesProvider(
   const value = useMemo(
     (): OwnedEntitiesProviderContext => ({
       kinds,
-      asyncEntities: entities,
-      entities: entities.value ?? [],
+      owners: asyncState.value?.owners ?? { groups: [], ownedEntityRefs: [] },
+      entities: asyncState.value?.ownedEntities ?? [],
       starredEntities: starredEntities.value ?? [],
     }),
-    [kinds, entities, starredEntities],
+    [kinds, asyncState.value, starredEntities],
   );
 
-  if (value.asyncEntities.loading || starredEntities.loading) {
+  if (asyncState.loading || starredEntities.loading) {
     return <Progress />;
-  } else if (value.asyncEntities.error) {
-    return <ErrorPanel error={value.asyncEntities.error} />;
+  } else if (asyncState.error) {
+    return <ErrorPanel error={asyncState.error} />;
   }
 
   return <Provider value={value}>{props.children}</Provider>;
+}
+
+/**
+ * Returns the owners of the current user.
+ *
+ * @public
+ */
+export function useOwners(): Owners {
+  return useContext(ctx).owners;
 }
 
 /**

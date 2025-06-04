@@ -15,10 +15,32 @@
  */
 import type { ComponentType, ReactNode } from 'react';
 
+import type { Entity } from '@backstage/catalog-model';
+
 /** @public */
 export type ManageProvider = ComponentType<{
   children?: ReactNode | undefined;
 }>;
+
+/**
+ * This type contains the owned groups and all owner entity refs.
+ *
+ * @public
+ */
+export interface Owners {
+  groups: Entity[];
+  ownedEntityRefs: string[];
+}
+
+/**
+ * This type contains owners and all owned entities
+ *
+ * @public
+ */
+export interface OwnersAndEntities {
+  ownedEntities: Entity[];
+  owners: Owners;
+}
 
 /** @public */
 export interface ManageApi {
@@ -33,4 +55,9 @@ export interface ManageApi {
    * Get the list of registered Providers for the manage page
    */
   getProviders(): Iterable<ManageProvider>;
+
+  /**
+   * Get owner entities and owned entities
+   */
+  getOwnersAndEntities(kinds?: readonly string[]): Promise<OwnersAndEntities>;
 }

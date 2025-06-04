@@ -11,7 +11,9 @@ import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { CircularProgressProps } from '@mui/material/CircularProgress';
 import { ComponentProps } from 'react';
 import type { ComponentType } from 'react';
+import { DiscoveryApi } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
+import { FetchApi } from '@backstage/core-plugin-api';
 import { GaugeCard as GaugeCard_2 } from '@backstage/core-components';
 import { GaugePropsGetColor } from '@backstage/core-components';
 import { GridOwnProps } from '@mui/material/Grid';
@@ -59,7 +61,8 @@ export function createManageApiFactory(options?: ApiFactoryOptions): ApiFactory<
   ManageApi,
   DefaultManageApi,
   {
-    [x: string]: any;
+    discoveryApi: DiscoveryApi;
+    fetchApi: FetchApi;
   }
 >;
 
@@ -93,7 +96,16 @@ export function CurrentKindProvider(
 
 // @public
 export class DefaultManageApi implements ManageApi {
-  constructor({ kindOrder, providers }: DefaultManageApiOptions);
+  constructor({
+    discoveryApi,
+    fetchApi,
+    kindOrder,
+    providers,
+  }: DefaultManageApiOptions);
+  // (undocumented)
+  getOwnersAndEntities: (
+    kinds: readonly string[],
+  ) => Promise<OwnersAndEntities>;
   // (undocumented)
   getProviders: () => readonly ManageProvider[];
   // (undocumented)
@@ -102,6 +114,10 @@ export class DefaultManageApi implements ManageApi {
 
 // @public (undocumented)
 export interface DefaultManageApiOptions {
+  // (undocumented)
+  discoveryApi: DiscoveryApi;
+  // (undocumented)
+  fetchApi: FetchApi;
   kindOrder?: string[];
   providers: Iterable<ManageModuleApi>;
 }
@@ -163,6 +179,7 @@ export interface ManageAccordionProps {
 
 // @public (undocumented)
 export interface ManageApi {
+  getOwnersAndEntities(kinds?: readonly string[]): Promise<OwnersAndEntities>;
   getProviders(): Iterable<ManageProvider>;
   readonly kindOrder: string[];
 }
@@ -253,7 +270,7 @@ export type ManageModuleApiRef = ApiRef<ManageModuleApi>;
 
 // @public
 export function ManageOwnedProvider(
-  props: PropsWithChildren<OwnedEntitiesProviderProps>,
+  props: PropsWithChildren<OwnedProviderProps>,
 ): React_2.JSX.Element;
 
 // @public (undocumented)
@@ -277,13 +294,13 @@ export function ManageTabContentFullHeight({
 }: PropsWithChildren<TabContentFullHeightProps>): React_2.JSX.Element;
 
 // @public (undocumented)
-export interface OwnedEntitiesProviderProps {
+export const OwnedProvider: ManageOwnedProvider;
+
+// @public (undocumented)
+export interface OwnedProviderProps {
   // (undocumented)
   kinds?: string[];
 }
-
-// @public (undocumented)
-export const OwnedProvider: ManageOwnedProvider;
 
 // @public
 export interface Owners {
@@ -291,6 +308,14 @@ export interface Owners {
   groups: Entity[];
   // (undocumented)
   ownedEntityRefs: string[];
+}
+
+// @public
+export interface OwnersAndEntities {
+  // (undocumented)
+  ownedEntities: Entity[];
+  // (undocumented)
+  owners: Owners;
 }
 
 // @public
