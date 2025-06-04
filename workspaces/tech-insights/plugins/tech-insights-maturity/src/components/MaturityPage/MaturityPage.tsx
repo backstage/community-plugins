@@ -17,7 +17,6 @@ import { Content, Header, Page } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import Grid from '@mui/material/Grid';
-import React from 'react';
 import useAsyncRetry from 'react-use/lib/useAsync';
 import { MaturityChartCard } from '../MaturityChartCard';
 

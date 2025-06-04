@@ -27,7 +27,6 @@ import { useTheme } from '@mui/material/styles';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { Circle, Line } from 'rc-progress';
-import React from 'react';
 
 import useAsyncRetry from 'react-use/lib/useAsync';
 import { maturityApiRef } from '../../api';

@@ -137,8 +137,16 @@ describe('FactRetrieverEngine', () => {
     const logger = mockServices.logger.mock();
     const urlReader = mockServices.urlReader.mock();
     const lifecycle = mockServices.lifecycle.mock();
+    const rootLifecycle = mockServices.rootLifecycle.mock();
+    const httpRouter = mockServices.httpRouter.mock();
     const database = manager.forPlugin('tech-insights', { logger, lifecycle });
-    const scheduler = DefaultSchedulerService.create({ database, logger });
+    const scheduler = DefaultSchedulerService.create({
+      database,
+      logger,
+      rootLifecycle,
+      httpRouter,
+      pluginMetadata: { getId: () => 'plugin-id' },
+    });
     return await DefaultFactRetrieverEngine.create({
       factRetrieverContext: {
         logger,

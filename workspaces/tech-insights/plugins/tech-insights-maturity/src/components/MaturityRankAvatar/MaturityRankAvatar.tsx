@@ -22,7 +22,7 @@ import Avatar from '@mui/material/Avatar';
 import Chip from '@mui/material/Chip';
 import Tooltip from '@mui/material/Tooltip';
 import { Circle } from 'rc-progress';
-import React from 'react';
+import type { JSX } from 'react';
 import getRankImg from '../../helpers/Rank';
 import { getNextRankColor, pluralize } from '../../helpers/utils';
 import { MaturityLink } from '../../helpers/MaturityLink';
@@ -33,7 +33,7 @@ const ChipWrapper = ({
   size,
   isMaxRank,
 }: {
-  children: React.JSX.Element;
+  children: JSX.Element;
   rank: Rank;
   size: number;
   isMaxRank?: boolean;

@@ -15,22 +15,23 @@ import { Entity } from '@backstage/catalog-model';
 import { FactSchema } from '@backstage-community/plugin-tech-insights-common';
 import { IdentityApi } from '@backstage/core-plugin-api';
 import { InsightFacts } from '@backstage-community/plugin-tech-insights-common';
+import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { MouseEventHandler } from 'react';
 import { PropsWithChildren } from 'react';
-import { default as React_2 } from 'react';
+import type { ReactElement } from 'react';
 import { ReactNode } from 'react';
 import { TechInsightsClient as TechInsightsClient_2 } from '@backstage-community/plugin-tech-insights-common/client';
 
 // @public
 export const BooleanCheck: (props: {
   checkResult: CheckResult;
-}) => React_2.JSX.Element;
+}) => JSX_2.Element;
 
 // @public
 export type CheckResultRenderer = {
   type: string;
-  component: (check: CheckResult) => React_2.ReactElement;
-  description?: (check: CheckResult) => string | React_2.ReactElement;
+  component: (check: CheckResult) => ReactElement;
+  description?: (check: CheckResult) => string | ReactElement;
   isFailed?: (check: CheckResult) => boolean;
 };
 
@@ -43,7 +44,7 @@ export const jsonRulesEngineCheckResultRenderer: CheckResultRenderer;
 // @public
 export const ResultCheckIcon: <P extends ResultCheckIconBaseComponentProps>(
   props: ResultCheckIconProps<P>,
-) => React_2.JSX.Element;
+) => JSX_2.Element;
 
 // @public (undocumented)
 export type ResultCheckIconBaseComponentProps = PropsWithChildren<{
@@ -65,12 +66,12 @@ export interface ResultCheckIconProps<
 
 // @public
 export const ResultLinksMenu: (
-  props: React_2.PropsWithChildren<{
+  props: PropsWithChildren<{
     result: CheckResult;
     entity?: Entity | undefined;
     setMenu(opener: ResultLinksMenuInfo | undefined): void;
   }>,
-) => React_2.JSX.Element | null;
+) => JSX_2.Element | null;
 
 // @public
 export type ResultLinksMenuInfo = {
