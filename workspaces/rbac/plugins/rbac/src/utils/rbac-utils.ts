@@ -27,7 +27,7 @@ import {
   PermissionCriteria,
 } from '@backstage/plugin-permission-common';
 
-import { getTitleCase } from '@janus-idp/shared-react';
+import { capitalizeFirstLetter } from './string-utils';
 
 import {
   isResourcedPolicy,
@@ -205,7 +205,7 @@ const getAllPolicies = (
       )
     ) {
       acc.push({
-        policy: getTitleCase(p.policy) || 'Use',
+        policy: capitalizeFirstLetter(p.policy) || 'Use',
         effect: 'deny',
       });
     }
@@ -223,7 +223,7 @@ export const getPermissionsData = (
       if (policy?.effect === 'allow') {
         const policyStr =
           policy?.policy ?? getPolicy(policy.permission as string);
-        const policyTitleCase = getTitleCase(policyStr);
+        const policyTitleCase = capitalizeFirstLetter(policyStr);
         const policyString = new Set<string>();
         const policiesSet = new Set<{ policy: string; effect: string }>();
         const {
