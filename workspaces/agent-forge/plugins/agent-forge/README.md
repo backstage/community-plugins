@@ -1,7 +1,7 @@
 # AgentForge Backstage Frontend Plugin
 
 This plugin is part of the AGNTCY(agntcy.org) community effort to provide the right tools & protocols for agent to agent communication.
-It allows the integration of any agent supporting ACP (Agent Communication Protocol) or A2A (Agent2Agent Protocol) especially the platfrom related agents released under the CNOE (Cloud Native Operational Excellence)
+It allows the integration of any agent supporting A2A (Agent2Agent Protocol) especially the platfrom related agents released under the CNOE (Cloud Native Operational Excellence)
 open source organization:
 
 - agent-template (https://github.com/cnoe-io/agent-template) - template to be used as a starting point for creating new ACP agents
@@ -12,19 +12,11 @@ open source organization:
 
 ## Configuration
 
-### ACP agents
-
-To configure the plugin to connect to any of the CNOE agents there are 3 config values that need to be specified in the backstage portal config file:
-
-**baseUrl** - url of the running agent
-
-**agentId** - the agent ID
-
-**apiKey** - the agent API Key
-
 ### A2A agents
 
-If only the **baseUrl** config value is specified, the plugin will try to connect to the agent using the A2A protocol
+To configure the plugin to connect to any of the CNOE agents you need to configure the url of the running agent in the backstage portal config file:
+
+**baseUrl** - url of the running agent
 
 ## Getting started
 

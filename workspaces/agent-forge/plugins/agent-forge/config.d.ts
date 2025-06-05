@@ -19,13 +19,5 @@ export interface Config {
      * @visibility frontend
      */
     baseUrl: string;
-    /**
-     * @visibility frontend
-     */
-    apiKey?: string;
-    /**
-     * @visibility frontend
-     */
-    agentId?: string;
   };
 }

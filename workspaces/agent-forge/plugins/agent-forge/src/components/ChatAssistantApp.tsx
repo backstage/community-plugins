@@ -77,10 +77,8 @@ function ChatAssistantApp() {
     );
   }
 
-  const apiKey = config.getOptionalString('agentForge.apiKey') || '';
-  const agentId = config.getOptionalString('agentForge.agentId') || '';
   const chatbotApi = useMemo(
-    () => new ChatbotApi(backendUrl, agentId, apiKey),
+    () => new ChatbotApi(backendUrl),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [backendUrl],
   );
@@ -290,29 +288,15 @@ function ChatAssistantApp() {
       default: {
         createChatId();
         startQuestion();
+        addIntentionalTypingDelay();
         try {
-          // console.log('Using Chat ID:', getChatId);
-
-          if (agentId !== '') {
-            const { chat_id, run_id } = await chatbotApi.submitQuestion(
-              chatId,
-              input,
-            );
-            // console.log(
-            //  'Jarvis backend submitQuestion response chatId:',
-            //  chat_id,
-            // );
-            await addIntentionalTypingDelay();
-            await sendAnswerMessage(await chatbotApi.getAnswer(chatId, run_id));
-          } else {
-            const result = await chatbotApi.submitA2ATask(input);
-            addBotMessage({
-              text: result,
-              suggestions: [],
-              isUser: false,
-              timestamp,
-            });
-          }
+          const result = await chatbotApi.submitA2ATask(input);
+          addBotMessage({
+            text: result,
+            suggestions: [],
+            isUser: false,
+            timestamp,
+          });
         } catch (error) {
           const err = error as Error;
           await addBotMessage({
