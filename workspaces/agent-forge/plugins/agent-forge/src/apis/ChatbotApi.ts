@@ -54,17 +54,13 @@ export class ChatbotApi {
         },
       };
       // Method now returns Task | null directly
-      const taskResult: Task | null = await this.client.sendTask(sendParams);
-      // console.log("Send Task Result:", taskResult);
-
-      const status = taskResult.status.state;
-
-      // console.log(status);
+      const taskResult: Task | null = await this.client.sendMessage(sendParams);
+      const status = taskResult.result.status.state;
       let result = '';
       if (status === 'completed') {
-        result = taskResult.artifacts[0].parts[0].text;
+        result = taskResult.result.artifacts[0].parts[0].text;
       } else {
-        result = taskResult.status.message.parts[0].text;
+        result = taskResult.result.status.message.parts[0].text;
       }
 
       return result;
