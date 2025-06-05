@@ -1,4 +1,3 @@
-import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { useAsync } from 'react-use';
 
@@ -8,6 +7,9 @@ import {
   getAssetVariants,
   NexusRepositoryManager,
 } from './NexusRepositoryManager';
+import { TestApiProvider, MockErrorApi, mockApis } from '@backstage/test-utils';
+import { errorApiRef } from '@backstage/core-plugin-api';
+import { translationApiRef } from '@backstage/core-plugin-api/alpha';
 
 jest.mock('react-use', () => ({
   ...jest.requireActual('react-use'),
@@ -54,9 +56,16 @@ describe('NexusRepositoryManager', () => {
   it('should show empty table if loaded and value is not present', () => {
     (useAsync as jest.Mock).mockReturnValue({ loading: false, value: [] });
     const { getByTestId } = render(
-      <BrowserRouter>
-        <NexusRepositoryManager />
-      </BrowserRouter>,
+      <TestApiProvider
+        apis={[
+          [errorApiRef, new MockErrorApi()],
+          [translationApiRef, mockApis.translation()],
+        ]}
+      >
+        <BrowserRouter>
+          <NexusRepositoryManager />
+        </BrowserRouter>
+      </TestApiProvider>,
     );
     expect(getByTestId('nexus-repository-manager-table')).not.toBeNull();
     expect(getByTestId('nexus-repository-manager-empty-table')).not.toBeNull();
@@ -157,9 +166,16 @@ describe('NexusRepositoryManager', () => {
       ],
     });
     const { queryByTestId } = render(
-      <BrowserRouter>
-        <NexusRepositoryManager />
-      </BrowserRouter>,
+      <TestApiProvider
+        apis={[
+          [errorApiRef, new MockErrorApi()],
+          [translationApiRef, mockApis.translation()],
+        ]}
+      >
+        <BrowserRouter>
+          <NexusRepositoryManager />
+        </BrowserRouter>
+      </TestApiProvider>,
     );
     expect(queryByTestId('nexus-repository-manager-table')).not.toBeNull();
     expect(queryByTestId('nexus-repository-manager-empty-table')).toBeNull();
@@ -234,9 +250,16 @@ describe('NexusRepositoryManager', () => {
       ],
     });
     const { queryByTestId } = render(
-      <BrowserRouter>
-        <NexusRepositoryManager />
-      </BrowserRouter>,
+      <TestApiProvider
+        apis={[
+          [errorApiRef, new MockErrorApi()],
+          [translationApiRef, mockApis.translation()],
+        ]}
+      >
+        <BrowserRouter>
+          <NexusRepositoryManager />
+        </BrowserRouter>
+      </TestApiProvider>,
     );
     expect(
       queryByTestId('nexus-repository-manager-table')?.querySelectorAll(
@@ -312,9 +335,16 @@ describe('NexusRepositoryManager', () => {
     });
 
     const { queryByTestId } = render(
-      <BrowserRouter>
-        <NexusRepositoryManager />
-      </BrowserRouter>,
+      <TestApiProvider
+        apis={[
+          [errorApiRef, new MockErrorApi()],
+          [translationApiRef, mockApis.translation()],
+        ]}
+      >
+        <BrowserRouter>
+          <NexusRepositoryManager />
+        </BrowserRouter>
+      </TestApiProvider>,
     );
 
     // hash of the jar, which is second
