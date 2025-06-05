@@ -6,9 +6,7 @@ organization:
   name: Cisco
 
 agentForge:
-  baseUrl: http://127.0.0.1:10000
-  #agentId: 
-  #apiKey: 
+  baseUrl: http://127.0.0.1:8000
 
 backend:
   baseUrl: http://localhost:7007
