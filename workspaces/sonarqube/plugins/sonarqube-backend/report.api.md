@@ -68,6 +68,7 @@ export interface SonarqubeInstanceConfig {
   baseUrl: string;
   externalBaseUrl?: string;
   name: string;
+  tokenType?: string;
 }
 
 // @public
