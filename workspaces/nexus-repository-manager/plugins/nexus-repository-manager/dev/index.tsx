@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { createDevApp } from '@backstage/dev-utils';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { TestApiProvider } from '@backstage/test-utils';
