@@ -25,6 +25,7 @@ import {
   ActionType,
   ConditionEvents,
   ListConditionEvents,
+  ListPluginIDsEvents,
   ListPluginPoliciesEvents,
   PermissionEvents,
   RoleEvents,
@@ -62,6 +63,11 @@ const eventMap: {
   },
   '/plugins/condition-rules': {
     GET: ListConditionEvents.CONDITION_RULES_READ,
+  },
+  '/plugins/id': {
+    GET: ListPluginIDsEvents.PLUGIN_IDS_READ,
+    POST: ListPluginIDsEvents.PLUGIN_IDS_WRITE,
+    DELETE: ListPluginIDsEvents.PLUGIN_IDS_WRITE,
   },
 };
 
