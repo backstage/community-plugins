@@ -1,5 +1,17 @@
 # @backstage-community/plugin-tech-insights-maturity-common
 
+## 0.3.0
+
+### Minor Changes
+
+- a01ae4e: Backstage version bump to v1.39.0
+
+### Patch Changes
+
+- Updated dependencies [d6411fe]
+- Updated dependencies [a01ae4e]
+  - @backstage-community/plugin-tech-insights-common@0.7.0
+
 ## 0.2.1
 
 ### Patch Changes

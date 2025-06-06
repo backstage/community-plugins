@@ -1,5 +1,12 @@
 # @backstage-community/plugin-tech-insights-common
 
+## 0.7.0
+
+### Minor Changes
+
+- d6411fe: run bulk checks in chunks (a 750)
+- a01ae4e: Backstage version bump to v1.39.0
+
 ## 0.6.0
 
 ### Minor Changes
