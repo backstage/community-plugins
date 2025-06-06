@@ -37,6 +37,12 @@ export interface Config {
     apiKey?: string;
 
     /**
+     * The token type to access the sonarqube instance under baseUrl.
+     * @visibility secret
+     */
+    tokenType?: string;
+
+    /**
      * The optional sonarqube instances.
      * @visibility frontend
      */
@@ -65,6 +71,12 @@ export interface Config {
        * @visibility secret
        */
       apiKey: string;
+
+      /**
+       * The token type to access the sonarqube instance under baseUrl.
+       * @visibility secret
+       */
+      tokenType?: string;
     }>;
   };
 }

@@ -192,6 +192,7 @@ describe('SonarqubeConfig', () => {
           name: 'other',
           baseUrl: 'https://sonarqube-other.example.com',
           apiKey: '123456789abcdef0123456789abcedf012',
+          tokenType: 'Basic',
         },
       ]);
 
@@ -199,6 +200,7 @@ describe('SonarqubeConfig', () => {
         name: 'other',
         baseUrl: 'https://sonarqube-other.example.com',
         apiKey: '123456789abcdef0123456789abcedf012',
+        tokenType: 'Basic',
       });
     });
 
@@ -354,7 +356,7 @@ describe('DefaultSonarqubeInfoProvider', () => {
     const DUMMY_ANALYSIS_DATE = '2022-01-01T00:00:00Z';
     const DUMMY_API_KEY = '123456789abcdef0123456789abcedf012';
 
-    const checkBasicAuthToken = (req: RestRequest<never>) => {
+    const checkBearerAuthToken = (req: RestRequest<never>) => {
       if (req.headers && req.headers.has('Authorization')) {
         expect(req.headers.get('Authorization')).toEqual(
           `Bearer 123456789abcdef0123456789abcedf012`,
@@ -364,10 +366,20 @@ describe('DefaultSonarqubeInfoProvider', () => {
       }
     };
 
+    const checkBasicAuthToken = (req: RestRequest<never>) => {
+      if (req.headers && req.headers.has('Authorization')) {
+        expect(req.headers.get('Authorization')).toEqual(
+          `Basic MTIzNDU2Nzg5YWJjZGVmMDEyMzQ1Njc4OWFiY2VkZjAxMjo=`,
+        );
+      } else {
+        throw new Error('Basic token not provided');
+      }
+    };
+
     const setupComponentHandler = () => {
       server.use(
         rest.get(`${MOCK_BASE_URL}/api/components/show`, (req, res, ctx) => {
-          checkBasicAuthToken(req);
+          checkBearerAuthToken(req);
           expect(req.url.searchParams.toString()).toBe(
             `component=${DUMMY_COMPONENT_KEY}`,
           );
@@ -382,7 +394,7 @@ describe('DefaultSonarqubeInfoProvider', () => {
     const setupMetricsHandler = () => {
       server.use(
         rest.get(`${MOCK_BASE_URL}/api/metrics/search`, (req, res, ctx) => {
-          checkBasicAuthToken(req);
+          checkBearerAuthToken(req);
           return res(
             ctx.json({
               total: 4,
@@ -400,7 +412,7 @@ describe('DefaultSonarqubeInfoProvider', () => {
     const setupMeasureHandler = () => {
       server.use(
         rest.get(`${MOCK_BASE_URL}/api/measures/component`, (req, res, ctx) => {
-          checkBasicAuthToken(req);
+          checkBearerAuthToken(req);
           expect(req.url.searchParams.toString()).toBe(
             `component=${DUMMY_COMPONENT_KEY}&metricKeys=vulnerabilities%2Ccode_smells%2Ccoverage`,
           );
@@ -450,10 +462,10 @@ describe('DefaultSonarqubeInfoProvider', () => {
       });
     });
 
-    it('Provide undefined as finding if component API answer code is not 200', async () => {
+    it('Provide undefined as finding if component API answer code is not 200 with bearer token', async () => {
       server.use(
         rest.get(`${MOCK_BASE_URL}/api/components/show`, (req, res, ctx) => {
-          checkBasicAuthToken(req);
+          checkBearerAuthToken(req);
           expect(req.url.searchParams.toString()).toBe(
             `component=${DUMMY_COMPONENT_KEY}`,
           );
@@ -474,10 +486,37 @@ describe('DefaultSonarqubeInfoProvider', () => {
         }),
       ).toBeUndefined();
     });
-    it('Provide undefined as finding if component API answer incorrectly', async () => {
+
+    it('Provide undefined as finding if component API answer code is not 200 with basic token', async () => {
       server.use(
         rest.get(`${MOCK_BASE_URL}/api/components/show`, (req, res, ctx) => {
           checkBasicAuthToken(req);
+          expect(req.url.searchParams.toString()).toBe(
+            `component=${DUMMY_COMPONENT_KEY}`,
+          );
+          return res(ctx.status(500));
+        }),
+      );
+
+      const provider = configureProvider({
+        sonarqube: {
+          baseUrl: MOCK_BASE_URL,
+          apiKey: '123456789abcdef0123456789abcedf012',
+          tokenType: 'Basic',
+        },
+      });
+      expect(
+        await provider.getFindings({
+          componentKey: DUMMY_COMPONENT_KEY,
+          instanceName: 'default',
+        }),
+      ).toBeUndefined();
+    });
+
+    it('Provide undefined as finding if component API answer incorrectly', async () => {
+      server.use(
+        rest.get(`${MOCK_BASE_URL}/api/components/show`, (req, res, ctx) => {
+          checkBearerAuthToken(req);
           expect(req.url.searchParams.toString()).toBe(
             `component=${DUMMY_COMPONENT_KEY}`,
           );
@@ -503,7 +542,7 @@ describe('DefaultSonarqubeInfoProvider', () => {
       // custom metrics handler that provide two pages
       server.use(
         rest.get(`${MOCK_BASE_URL}/api/metrics/search`, (req, res, ctx) => {
-          checkBasicAuthToken(req);
+          checkBearerAuthToken(req);
           if (req.url.searchParams.get('p') === '1')
             return res(
               ctx.json({
@@ -542,7 +581,7 @@ describe('DefaultSonarqubeInfoProvider', () => {
       // custom metrics handler that provide two pages
       server.use(
         rest.get(`${MOCK_BASE_URL}/api/measures/component`, (req, res, ctx) => {
-          checkBasicAuthToken(req);
+          checkBearerAuthToken(req);
           expect(req.url.searchParams.toString()).toBe(
             `component=${DUMMY_COMPONENT_KEY}&metricKeys=vulnerabilities%2Ccode_smells%2Ccoverage`,
           );
@@ -565,7 +604,7 @@ describe('DefaultSonarqubeInfoProvider', () => {
       // custom metrics handler that provide two pages
       server.use(
         rest.get(`${MOCK_BASE_URL}/api/measures/component`, (req, res, ctx) => {
-          checkBasicAuthToken(req);
+          checkBearerAuthToken(req);
           expect(req.url.searchParams.toString()).toBe(
             `component=${DUMMY_COMPONENT_KEY}&metricKeys=vulnerabilities%2Ccode_smells%2Ccoverage`,
           );
