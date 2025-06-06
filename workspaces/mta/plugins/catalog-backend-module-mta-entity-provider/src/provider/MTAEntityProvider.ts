@@ -198,43 +198,149 @@ export class MTAProvider implements EntityProvider {
     // Example mapping logic, which you should customize based on your application structure
     const name = application.name.replace(/ /g, '-');
     const encodedAppName = encodeURIComponent(JSON.stringify(application.name));
-    const issuesUrl = `${this.config.getString(
-      'mta.url',
-    )}/issues?i%3Afilters=%7B%22application.name%22%3A%5B${encodedAppName}%5D%7D&i%3AitemsPerPage=10&i%3ApageNumber=1&i%3AsortColumn=description&i%3AsortDirection=asc`;
-    const tasksUrl = `${this.config.getString(
-      'mta.url',
-    )}/tasks?i%3Afilters=%7B%22application%22%3A%5B${encodedAppName}%5D%7D&i%3AitemsPerPage=10&i%3ApageNumber=1&i%3AsortColumn=description&i%3AsortDirection=asc`;
+
+    const baseUrl = this.config.getString('mta.url');
+    const entityMappings = this.config
+      .getOptionalConfig('mta.entityMappings')
+      ?.get();
+    const owner = application.owner || 'unknown';
+    let sourceLocation = '';
+    if (application.repository && application.repository.url) {
+      sourceLocation = `url:${application.repository.url}`;
+    }
+
+    let techdocsRef = '';
+    if (application.repository && application.repository.url) {
+      techdocsRef = `url:${application.repository.url}`;
+    }
+
+    const tags = (application.tags || []).map((tag: any) => tag.name);
+
+    const entity: any = {
+      apiVersion: 'backstage.io/v1alpha1',
+      kind: 'Component',
+      metadata: {
+        annotations: {
+          'backstage.io/managed-by-location': `url:${baseUrl}/application/${application.id}`,
+          'backstage.io/managed-by-origin-location': `url:${baseUrl}/application/${application.id}`,
+          ...(sourceLocation && {
+            'backstage.io/source-location': sourceLocation,
+          }),
+          ...(techdocsRef && { 'backstage.io/techdocs-ref': techdocsRef }),
+        },
+        namespace: 'default',
+        tags: tags,
+      },
+      spec: {
+        type: 'service',
+        lifecycle: 'experimental',
+        owner: owner,
+      },
+    };
+
+    if (entityMappings) {
+      for (const [entityKey, appKeyPath] of Object.entries(entityMappings)) {
+        const value = this.getPropertyByPath(application, appKeyPath);
+        if (value !== undefined) {
+          this.setPropertyByPath(entity, entityKey, value);
+        }
+      }
+    }
+
+    // Set some defaults that the user shouldn't override
+    entity.metadata.annotations['issues-url'] =
+      `${baseUrl}/issues?i%3Afilters=%7B%22application.name%22%3A%5B${encodedAppName}%5D%7D&i%3AitemsPerPage=10&i%3ApageNumber=1&i%3AsortColumn=description&i%3AsortDirection=asc`;
+    entity.metadata.annotations['tasks-url'] =
+      `${baseUrl}/tasks?i%3Afilters=%7B%22application%22%3A%5B${encodedAppName}%5D%7D&i%3AitemsPerPage=10&i%3ApageNumber=1&i%3AsortColumn=description&i%3AsortDirection=asc`;
+    entity.metadata.annotations['mta-url'] = baseUrl;
+
+    entity.metadata.name = name;
+    entity.metadata.id = application.id;
+    entity.metadata.namespace = 'default';
+    entity.metadata.application = application;
 
     return {
       key: application.id,
       locationKey: this.getProviderName(),
-      entity: {
-        apiVersion: 'backstage.io/v1alpha1',
-        kind: 'Component',
-        metadata: {
-          annotations: {
-            'backstage.io/managed-by-location': `url:${this.config.getString(
-              'mta.url',
-            )}/application/${application.id}`,
-            'backstage.io/managed-by-origin-location': `url:${this.config.getString(
-              'mta.url',
-            )}/application/${application.id}`,
-            'issues-url': issuesUrl,
-            'tasks-url': tasksUrl,
-            'mta-url': `${this.config.getString('mta.url')}`,
-          },
-          name: name,
-          id: application.id,
-          namespace: 'default',
-          application: application,
-        },
-        spec: {
-          type: 'service',
-          lifecycle: 'experimental',
-          owner: 'unknown',
-        },
-      },
+      entity,
     };
+
+    // const issuesUrl = `${this.config.getString(
+    //   'mta.url',
+    // )}/issues?i%3Afilters=%7B%22application.name%22%3A%5B${encodedAppName}%5D%7D&i%3AitemsPerPage=10&i%3ApageNumber=1&i%3AsortColumn=description&i%3AsortDirection=asc`;
+    // const tasksUrl = `${this.config.getString(
+    //   'mta.url',
+    // )}/tasks?i%3Afilters=%7B%22application%22%3A%5B${encodedAppName}%5D%7D&i%3AitemsPerPage=10&i%3ApageNumber=1&i%3AsortColumn=description&i%3AsortDirection=asc`;
+
+    // return {
+    //   key: application.id,
+    //   locationKey: this.getProviderName(),
+    //   entity: {
+    //     apiVersion: 'backstage.io/v1alpha1',
+    //     kind: 'Component',
+    //     metadata: {
+    //       annotations: {
+    //         'backstage.io/managed-by-location': `url:${this.config.getString(
+    //           'mta.url',
+    //         )}/application/${application.id}`,
+    //         'backstage.io/managed-by-origin-location': `url:${this.config.getString(
+    //           'mta.url',
+    //         )}/application/${application.id}`,
+    //         'backstage.io/source-location': `url:${application.repository.url}`,
+    //         'backstage.io/techdocs-ref': `url:${application.repository.url}`,
+    //         'issues-url': issuesUrl,
+    //         'tasks-url': tasksUrl,
+    //         'mta-url': `${this.config.getString('mta.url')}`,
+    //       },
+    //       name: name,
+    //       id: application.id,
+    //       namespace: 'default',
+    //       application: application,
+    //     },
+    //     spec: {
+    //       type: 'service',
+    //       lifecycle: 'experimental',
+    //       owner: `${application.owner}`,
+    //     },
+    //   },
+    // };
+  }
+
+  /**
+   * Utility to get nested properties by path
+   */
+  private getPropertyByPath(obj: any, path: string): any {
+    return path.split('.').reduce((o, p) => (o ? o[p] : undefined), obj);
+  }
+
+  /**
+   * Utility to set nested properties by path (handles dot-notation keys)
+   */
+  private setPropertyByPath(obj: any, path: string, value: any) {
+    const keys = path.split('.');
+    let current = obj;
+
+    keys.forEach((key, index) => {
+      // Handle annotations or labels with special keys like "metadata.annotations.\"backstage.io/source-location\""
+      const cleanKey = key.replace(/["\\]/g, '');
+      if (index === keys.length - 1) {
+        if (
+          cleanKey.startsWith('annotations.') ||
+          cleanKey.startsWith('labels.')
+        ) {
+          const [prefix, suffix] = cleanKey.split('.');
+          current[prefix] = current[prefix] || {};
+          current[prefix][suffix] = value;
+        } else {
+          current[cleanKey] = value;
+        }
+      } else {
+        if (!current[cleanKey]) {
+          current[cleanKey] = {};
+        }
+        current = current[cleanKey];
+      }
+    });
   }
 
   async refreshData(entities: any) {
