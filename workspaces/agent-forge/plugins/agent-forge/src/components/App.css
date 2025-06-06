@@ -1,0 +1,698 @@
+/*app.css*/
+body.light-mode {
+  --background: white;
+  --input-container: #282828;
+  --bot-response: #e9e9e9;
+  --user-response: #a7e4fa;
+  --greeting-text-color: #282828;
+  --tab-bg: white;
+  --tab-text: #0078d4;
+  --tab-hover-bg: linear-gradient(to right, #00cad1, #0075ab);
+  --tab-hover-text: rgb(255, 255, 255);
+  --assistant-message-bg: #282828;
+  --assistant-message-text: white;
+  --feedback-button-bg: linear-gradient(to right, #00cad1, #0075ab);
+  --feedback-button-text: white;
+  --input-bg: #ffffff;
+  --input-text: #4d4b4b;
+}
+
+body.dark-mode {
+  --background: #1d1d1d;
+  --input-container: linear-gradient(to right, #1896d1, #0c4d6b);
+  --bot-response: #3a3939;
+  --user-response: #525151;
+  --greeting-text-color: white;
+  --tab-bg: #282828;
+  --tab-outline: linear-gradient(to right, #00cad1, #0075ab);
+  --tab-text: white;
+  --tab-hover-bg: linear-gradient(to right, #00cad1, #0075ab);
+  --tab-hover-text: white;
+  --assistant-message-bg: linear-gradient(to right, #1896d1, #0c4d6b);
+  --assistant-message-text: white;
+  --outline-color: black;
+  --feedback-button-bg: #0078d4;
+  --feedback-button-text: white;
+  --input-bg: #282828;
+  --input-text: lightgrey;
+  --feedback-option-bg: #3a3939;
+  --feedback-option-text: white;
+  --feedback-option-selected-bg: #3a3939;
+  --feedback-option-selected-border: white;
+}
+
+body.light-mode .chat-panel {
+  background-color: var(--background);
+  outline: 0px solid var(--outline-color);
+}
+
+body.dark-mode .chat-panel {
+  background-color: var(--background);
+  outline: 0px solid var(--outline-color);
+}
+
+body.light-mode .input-container {
+  background-color: var(--input-container);
+}
+
+body.dark-mode .input-container {
+  background: var(--input-container);
+}
+
+body.light-mode .bot-message {
+  background-color: var(--bot-response);
+}
+
+body.dark-mode .bot-message {
+  background-color: var(--bot-response);
+}
+
+body.light-mode .user-message {
+  background-color: var(--user-response);
+}
+
+body.dark-mode .user-message {
+  background-color: var(--user-response);
+}
+
+.greeting-text {
+  color: var(--greeting-text-color);
+}
+
+.tab-button {
+  width: 80%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 2px solid transparent;
+  /* Ensure there's space for the gradient */
+  border-radius: 50px;
+  cursor: pointer;
+  text-align: center;
+  font-size: 16px;
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+  position: relative;
+  /* For pseudo-element positioning */
+}
+
+body.light-mode .tab-button {
+  background-color: var(--tab-bg);
+  color: var(--tab-text);
+  border: 2px solid var(--tab-text);
+  /* Adjust border color for light mode */
+}
+
+body.light-mode .tab-button:hover {
+  background: var(--tab-hover-bg);
+  color: var(--tab-hover-text);
+  /* This will turn the text white */
+}
+
+body.dark-mode .tab-button {
+  background-color: var(--tab-bg);
+  color: var(--tab-text);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  /* This makes sure the gradient doesn't cover the padding */
+}
+
+body.dark-mode .tab-button::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  /* Matches the border width */
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: var(--tab-outline);
+  z-index: -1;
+  /* Place behind the actual button */
+  border-radius: 50px;
+  /* Match the button's border radius */
+}
+
+.tab-button:hover {
+  background: var(--tab-hover-bg);
+  color: var(--tab-hover-text);
+}
+
+.tab-button.clicked {
+  background: var(--tab-hover-bg);
+  color: var(--tab-hover-text);
+}
+
+.assistant-message-bottom {
+  background: var(--assistant-message-bg);
+  color: var(--assistant-message-text);
+}
+
+/* Style for the chat open button */
+.button-open-chat {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: url('../icons/webex-logo.png') no-repeat center center;
+  background-size: cover;
+  width: 100px;
+  height: 100px;
+  border: none;
+  cursor: pointer;
+  z-index: 1000;
+}
+
+/* Style for the close chat button */
+.close-chat-button {
+  background: none;
+  border: none;
+  font-size: 30px;
+  cursor: pointer;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: white;
+}
+
+/* Style for the clear chat button */
+.clear-chat-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: absolute;
+  top: 14px;
+  right: 50px;
+}
+
+/* Style for the clear chat button image */
+.clear-chat-button img {
+  width: 28px;
+  height: 25px;
+}
+
+/* Style for the dark mode button */
+.dark-mode-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: absolute;
+  top: 14px;
+  right: 105px;
+}
+
+/* Style for the dark mode button image */
+.dark-mode-button img {
+  width: 28px;
+  height: 25px;
+}
+
+/* Style for the chat panel */
+.chat-panel {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  width: 425px;
+  height: 80%;
+  background-color: var(--background);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  outline: 1px solid var(--outline-color);
+}
+
+/* Style when chat panel is open */
+.chat-panel.open {
+  transform: translateY(0);
+}
+
+/* Additional style for the assistant message at the bottom */
+.assistant-message-bottom {
+  text-align: center;
+  font-size: 10px;
+  padding: 4px 0;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Style for the chat panel header */
+.chat-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: left;
+  height: 8%;
+  background: linear-gradient(to right, #1896d1, #0c4d6b);
+  border: none;
+  color: #ffffff;
+  margin: 0;
+  padding: 15px;
+  font-size: 10px;
+  font-weight: bold;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Style for the greeting section */
+.greeting-section {
+  text-align: center;
+  margin-top: 80px;
+  margin-bottom: 20px;
+}
+
+/* Style for the greeting logo */
+.greeting-logo {
+  width: 120px;
+  height: 120px;
+}
+
+/* Style for the greeting text */
+.greeting-text {
+  font-size: 24px;
+  margin-top: 20px;
+  font-weight: bold;
+}
+
+/* Style for the tabs */
+.tabs {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 30px;
+}
+
+/* Style for each tab button */
+.tab-button {
+  width: 80%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 2px solid #0078d4;
+  border-radius: 50px;
+  cursor: pointer;
+  text-align: center;
+  font-size: 16px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* Style for the chat container */
+.chat {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  overflow-y: auto;
+  flex-grow: 1;
+  margin-bottom: 75px;
+}
+
+/* Style for the input container */
+.input-container {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  height: 75px;
+}
+
+body.dark-mode .input-container {
+  background: var(--input-container);
+}
+
+/* Style for the input field */
+.input-container input {
+  flex: 1;
+  padding: 10px;
+  height: 35px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  margin-right: 10px;
+  background: var(--input-bg);
+  color: var(--input-text);
+}
+
+/* Style for the send button */
+.send-button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: -20px;
+}
+
+/* Style for the send button image */
+.send-button img {
+  width: 40px;
+  height: 40px;
+}
+
+/* Style for user messages */
+.user-message {
+  background-color: var(--user-response);
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  align-self: flex-end;
+  text-align: left;
+  max-width: 80%;
+}
+
+body.dark-mode .user-message {
+  background-color: var(--user-response);
+}
+
+/* Style for bot messages */
+.bot-message {
+  background-color: var(--bot-response);
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  align-self: flex-start;
+  text-align: left;
+  max-width: 80%;
+  position: relative;
+  max-width: 300px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+/* Style for hyperlinks inside bot messages */
+.bot-message a {
+  color: blue;
+  /* Replace this with your desired color */
+  text-decoration: underline;
+  /* Optional: makes the links underlined */
+}
+
+/* Optional: Add a hover effect for the links */
+.bot-message a:hover {
+  color: purple;
+  /* Replace this with your desired hover color */
+  text-decoration: underline;
+  /* Optional: remove underline on hover */
+}
+
+body.dark-mode .bot-message {
+  background-color: var(--bot-response);
+}
+
+/* Style for the timestamp separator */
+.bot-message .timestamp-separator {
+  border: none;
+  border-top: 1px solid #999;
+  margin: 5px 0;
+}
+
+/* Style for the "Today" label */
+.today-label {
+  text-align: center;
+  margin: 10px 0;
+  color: gray;
+  font-size: 12px;
+}
+
+.typing-indicator.visible {
+  display: flex;
+}
+
+/* Style for the typing indicator */
+.typing-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  font-size: 24px;
+  color: #999;
+  margin-top: 10px;
+}
+
+/* Style for each dot in the typing indicator */
+.dot {
+  width: 8px;
+  height: 8px;
+  background-color: #049fd9;
+  border-radius: 50%;
+  margin: 0 2px;
+  animation: blink 1s infinite;
+}
+
+/* Keyframes for the blink animation */
+@keyframes blink {
+  0% {
+    opacity: 0.2;
+  }
+
+  20% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0.2;
+  }
+}
+
+/* Delay animation for each dot */
+.dot:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+/* Style for the confirmation buttons */
+.confirmation-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+/* Style for each confirmation button */
+.confirmation-buttons button {
+  padding: 5px 10px;
+  border: none;
+  background-color: #049fd9;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+/* Style for confirmation button on hover */
+.confirmation-buttons button:hover {
+  background-color: #0056b3;
+}
+
+/* Style for the bot logo */
+.bot-logo {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+}
+
+/* Style for the timestamp */
+.timestamp {
+  font-size: 12px;
+  color: #999;
+  text-align: left;
+  margin-top: 5px;
+}
+
+/* Style for the timestamp separator */
+.timestamp-separator {
+  border: none;
+  border-top: 1px solid #999;
+  margin: 5px 0;
+}
+
+/* Style for the "Today" label container */
+.today-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px 0;
+}
+
+/* Style for the line next to the "Today" label */
+.today-line {
+  flex: 1;
+  height: 1px;
+  background-color: #ccc;
+  margin: 0 10px;
+}
+
+/* Style for the "Today" label */
+.today-text {
+  font-size: 12px;
+  color: #999;
+}
+
+/* Style for the line above the timestamp */
+.line-above-timestamp {
+  border: none;
+  border-top: 1px solid #999;
+  margin: 5px 0;
+}
+
+/* Style for the feedback icons */
+.feedback-icons {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+/* Style for each feedback icon */
+.feedback-icons img {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+/* Style for the feedback options container */
+.feedback-options {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.feedback-reasons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.feedback-reason {
+  padding: 5px 10px;
+  border: 2px solid #5d5d5d;
+  /* Border color for non-selected state */
+  border-radius: 50px;
+  background-color: #ffffff;
+  /* Light grey background for non-selected state */
+  color: #303030;
+  /* Text color for non-selected state */
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+.feedback-reason.selected {
+  background-color: #2b2b2b;
+  /* Darker background color for the selected state */
+  color: #ffffff;
+  /* White text color for the selected state */
+  border: 2px solid #282828;
+  /* Keep border color the same */
+}
+
+.feedback-reason:hover:not(.selected) {
+  background-color: #434343;
+  /* Slightly darker grey for the hover state */
+  color: #ffffff;
+  /* Keep the text color black */
+  border: 2px solid #282828;
+  /* Keep the border color the same */
+}
+
+/* Style for the feedback options textarea */
+.feedback-options textarea {
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* Style for the feedback options button */
+.feedback-options button {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #0078d4;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Style for the feedback options button on hover */
+.feedback-options button:hover {
+  background-color: #0056b3;
+}
+
+body.dark-mode .feedback-reason {
+  padding: 5px 10px;
+  border: 2px solid #3a3a3a;
+  /* Border color for non-selected state */
+  border-radius: 50px;
+  background-color: #6a6a6a;
+  /* Darker background for non-selected state */
+  color: #ffffff;
+  /* Light grey text color for non-selected state */
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+body.dark-mode .feedback-reason.selected {
+  background-color: #6d6d6d;
+  /* Slightly lighter background color for the selected state */
+  color: #ffffff;
+  /* White text color for the selected state */
+  border: 2px solid #606060;
+  /* Border matches the selected background */
+}
+
+body.dark-mode .feedback-reason:hover:not(.selected) {
+  background-color: #555555;
+  /* Slightly lighter grey for the hover state */
+  color: #ffffff;
+  /* Keep the text color white */
+  border: 2px solid #5d5d5d;
+  /* Border color for hover state */
+}
+
+/* App.css */
+.options-container {
+  margin: 10px 0;
+}
+
+.option-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.option-container input[type='radio'] {
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.option-container label {
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* Light Mode Styles */
+.submit-button {
+  background-color: #007bff;
+  /* Blue background color for light mode */
+  color: white;
+  /* White text color */
+  padding: 10px 20px;
+  /* Padding around the text */
+  border: none;
+  /* No border */
+  border-radius: 5px;
+  /* Rounded corners */
+  font-size: 16px;
+  /* Font size */
+  font-weight: bold;
+  /* Bold text */
+  cursor: pointer;
+  /* Pointer cursor on hover */
+  transition: background-color 0.3s ease;
+  /* Smooth transition for background color */
+}
