@@ -33,16 +33,8 @@ type OnBehalfTeamDropdownProps = {
 };
 
 function getTeamDisplayName(team: any): string {
-  if (
-    typeof team === 'object' &&
-    team !== null &&
-    team.spec &&
-    typeof team.spec === 'object' &&
-    team.spec.profile &&
-    typeof team.spec.profile === 'object' &&
-    'displayName' in team.spec.profile
-  ) {
-    return String(team.spec.profile.displayName ?? '');
+  if (team.kind && team.kind.toLowerCase() === 'group') {
+    return team.spec?.profile?.displayName ?? '';
   }
   return '';
 }
@@ -69,29 +61,29 @@ export default function OnBehalfTeamDropdown({
 
   const teamOptions = useMemo(() => {
     return teams.map(team => ({
-      id: stringifyEntityRef(team),
+      entityRef: stringifyEntityRef(team),
       displayName: getTeamDisplayName(team),
     }));
   }, [teams]);
 
   const selectedTeamOption = useMemo(() => {
-    return teamOptions.find(team => team.id === selectedTeam) || null;
+    return teamOptions.find(team => team.entityRef === selectedTeam) || null;
   }, [teamOptions, selectedTeam]);
 
   return (
     <Autocomplete
       value={selectedTeamOption}
       onChange={(_, newValue) => {
-        onChange(newValue?.id || '');
+        onChange(newValue?.entityRef || '');
       }}
       options={teamOptions}
-      getOptionLabel={team => team.id}
+      getOptionLabel={team => team.entityRef}
       loading={teamsLoading}
       id="team-dropdown-field"
       renderOption={(props, team) => (
         <Box component="li" {...props}>
           <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-            <Typography variant="body1">{team.id}</Typography>
+            <Typography variant="body1">{team.entityRef}</Typography>
             {team.displayName && (
               <Typography variant="caption" color="text.secondary">
                 {team.displayName}
