@@ -53,11 +53,11 @@
   },
   "dependencies": {
     "@backstage-community/plugin-tech-insights-common": "workspace:^",
-    "@backstage/repo-tools": "^0.13.0",
+    "@backstage/repo-tools": "^0.13.3",
     "msw": "2.7.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.29.6"
+    "@backstage/cli": "^0.32.1"
   },
   "files": [
     "dist"

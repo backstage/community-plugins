@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useAsync } from 'react-use';
 
 import { Link, Progress, Table } from '@backstage/core-components';

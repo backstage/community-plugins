@@ -1,5 +1,11 @@
 # @backstage-community/plugin-announcements
 
+## 0.6.1
+
+### Patch Changes
+
+- e4bd3e6: remove direct dependency on '@types/node'
+
 ## 0.6.0
 
 ### Minor Changes

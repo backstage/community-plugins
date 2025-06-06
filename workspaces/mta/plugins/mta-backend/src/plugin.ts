@@ -58,8 +58,11 @@ export const mtaPlugin = createBackendPlugin({
         dotenv.config();
         const isDevelopment = process.env.NODE_ENV === 'development';
 
+        // Get version from package.json
+        const { version } = require('../package.json');
+
         const mtaVersion =
-          config.getOptionalString('mta.backendPluginVersion') ?? '0.2.2'; // Set in config
+          config.getOptionalString('mta.backendPluginVersion') ?? version; // Set in config
         const defaultBase = process.env.APP_ROOT ?? '/opt/app-root';
         const defaultPluginRoot = path.join(
           defaultBase,

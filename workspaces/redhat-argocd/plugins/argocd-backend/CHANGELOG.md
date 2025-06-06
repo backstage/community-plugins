@@ -1,5 +1,12 @@
 # @backstage-community/plugin-redhat-argocd-backend
 
+## 0.7.1
+
+### Patch Changes
+
+- Updated dependencies [6cb63d0]
+  - @backstage-community/plugin-redhat-argocd-common@1.5.2
+
 ## 0.7.0
 
 ### Minor Changes
