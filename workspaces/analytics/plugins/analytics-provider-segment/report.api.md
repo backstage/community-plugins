@@ -7,8 +7,8 @@ import { AnalyticsApi } from '@backstage/core-plugin-api';
 import { AnalyticsEvent } from '@backstage/core-plugin-api';
 import { ApiFactory } from '@backstage/core-plugin-api';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
-import { Config } from '@backstage/config';
-import { Config as Config_2 } from '@backstage/config/index';
+import { Config } from '@backstage/config/index';
+import { ConfigApi } from '@backstage/core-plugin-api';
 import { IdentityApi } from '@backstage/core-plugin-api';
 
 // @public
@@ -19,8 +19,10 @@ export class SegmentAnalytics implements AnalyticsApi {
   // (undocumented)
   captureEvent(event: AnalyticsEvent): Promise<void>;
   static fromConfig(
-    config: Config,
-    identityApi?: IdentityApi,
+    config: ConfigApi,
+    options?: {
+      identityApi?: IdentityApi;
+    },
   ): SegmentAnalytics;
 }
 
@@ -29,7 +31,7 @@ export const SegmentAnalyticsApi: ApiFactory<
   AnalyticsApi,
   SegmentAnalytics,
   {
-    configApi: Config_2;
+    configApi: Config;
     identityApi: IdentityApi;
   }
 >;
