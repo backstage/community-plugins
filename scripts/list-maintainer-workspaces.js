@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-import fs from 'fs-extra';
 import { resolve } from 'path';
 import * as url from 'url';
 import * as codeowners from 'codeowners-utils';
@@ -44,6 +43,11 @@ async function main() {
       .flat();
 
     if (owners.length === 0) {
+      maintainerWorkspaces.push(workspace);
+    } else if (
+      owners.length === 1 &&
+      owners[0] === '@backstage/community-plugins-maintainers'
+    ) {
       maintainerWorkspaces.push(workspace);
     }
   }
