@@ -1,5 +1,22 @@
 # @backstage-community/plugin-sonarqube
 
+## 0.13.0
+
+### Minor Changes
+
+- f3284e7: Backstage version bump to v1.39.0
+
+### Patch Changes
+
+- Updated dependencies [f3284e7]
+  - @backstage-community/plugin-sonarqube-react@0.7.0
+
+## 0.12.1
+
+### Patch Changes
+
+- f737a01: Fixed handling of wrong component keys in getFindingSummaries
+
 ## 0.12.0
 
 ### Minor Changes

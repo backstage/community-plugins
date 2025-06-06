@@ -15,6 +15,8 @@
  */
 import { createTemplateAction } from '@backstage/plugin-scaffolder-node';
 
+import { examples } from './quay-actions.examples';
+
 export interface ResponseBody {
   namespace: string;
   name: string;
@@ -82,6 +84,7 @@ const isValueValid = (
 export function createQuayRepositoryAction() {
   return createTemplateAction<TemplateActionParameters>({
     id: 'quay:create-repository',
+    examples,
     description: 'Create an quay image repository',
     schema: {
       input: {

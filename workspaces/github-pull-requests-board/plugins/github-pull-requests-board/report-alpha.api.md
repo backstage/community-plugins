@@ -7,7 +7,7 @@
 
 import { AnyRouteRefParams } from '@backstage/frontend-plugin-api';
 import { ConfigurableExtensionDataRef } from '@backstage/frontend-plugin-api';
-import { Entity } from '@backstage/catalog-model/index';
+import { Entity } from '@backstage/catalog-model';
 import { EntityCardType } from '@backstage/plugin-catalog-react/alpha';
 import { EntityPredicate } from '@backstage/plugin-catalog-react/alpha';
 import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
@@ -22,7 +22,7 @@ const _default: FrontendPlugin<
   },
   {},
   {
-    'entity-card:github-pull-requests-board/overview': ExtensionDefinition<{
+    [x: `entity-card:${string}/overview`]: ExtensionDefinition<{
       kind: 'entity-card';
       name: 'overview';
       config: {
@@ -63,7 +63,7 @@ const _default: FrontendPlugin<
         type?: EntityCardType | undefined;
       };
     }>;
-    'entity-content:github-pull-requests-board/entity': ExtensionDefinition<{
+    [x: `entity-content:${string}/entity`]: ExtensionDefinition<{
       kind: 'entity-content';
       name: 'entity';
       config: {
@@ -121,9 +121,11 @@ const _default: FrontendPlugin<
         defaultTitle: string;
         defaultGroup?:
           | (string & {})
+          | 'overview'
           | 'documentation'
           | 'development'
           | 'deployment'
+          | 'operation'
           | 'observability'
           | undefined;
         routeRef?: RouteRef<AnyRouteRefParams> | undefined;

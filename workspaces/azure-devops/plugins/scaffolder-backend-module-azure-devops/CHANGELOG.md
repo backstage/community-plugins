@@ -1,5 +1,17 @@
 # @backstage-community/plugin-scaffolder-backend-module-azure-devops
 
+## 0.10.0
+
+### Minor Changes
+
+- dd67a17: Backstage version bump to v1.39.0
+
+## 0.9.0
+
+### Minor Changes
+
+- 6f19535: Added ability to wait for pipeline to complete and to get output variables
+
 ## 0.8.1
 
 ### Patch Changes

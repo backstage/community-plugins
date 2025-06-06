@@ -90,7 +90,6 @@ yarn.lock                                                               @backsta
 /workspaces/quay                                                        @backstage/community-plugins-maintainers  @caugello @cryptorodeo
 /workspaces/rbac                                                        @backstage/community-plugins-maintainers  @AndrienkoAleksandr @christoph-jerolimov @divyanshiGupta @PatAKnight @dzemanov
 /workspaces/redhat-argocd                                               @backstage/community-plugins-maintainers  @caugello @cryptorodeo
-/workspaces/redhat-resource-optimization                                @backstage/community-plugins-maintainers  @jkilzi @preetiw @christoph-jerolimov
 /workspaces/repo-tools                                                  @backstage/community-plugins-maintainers
 /workspaces/report-portal                                               @backstage/community-plugins-maintainers  @yashoswalyo @deshmukhmayur @riginoommen
 /workspaces/rollbar                                                     @backstage/community-plugins-maintainers  @andrewthauer

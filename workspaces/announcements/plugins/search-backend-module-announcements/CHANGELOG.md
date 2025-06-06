@@ -1,5 +1,13 @@
 # @backstage-community/plugin-search-backend-module-announcements
 
+## 0.3.4
+
+### Patch Changes
+
+- Updated dependencies [9c94358]
+  - @backstage-community/plugin-announcements-common@0.4.0
+  - @backstage-community/plugin-announcements-node@0.3.4
+
 ## 0.3.3
 
 ### Patch Changes

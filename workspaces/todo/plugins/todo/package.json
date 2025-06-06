@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-todo",
-  "version": "0.7.0",
+  "version": "0.9.0",
   "description": "A Backstage plugin that lets you browse TODO comments in your source code",
   "backstage": {
     "role": "frontend-plugin",
@@ -39,18 +39,18 @@
     "test": "backstage-cli package test"
   },
   "dependencies": {
-    "@backstage/catalog-model": "^1.7.3",
-    "@backstage/core-components": "^0.17.1",
-    "@backstage/core-plugin-api": "^1.10.6",
+    "@backstage/catalog-model": "^1.7.4",
+    "@backstage/core-components": "^0.17.2",
+    "@backstage/core-plugin-api": "^1.10.7",
     "@backstage/errors": "^1.2.7",
-    "@backstage/plugin-catalog-react": "^1.17.0",
+    "@backstage/plugin-catalog-react": "^1.18.0",
     "@material-ui/icons": "^4.9.1",
     "@types/react": "^16.13.1 || ^17.0.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.32.0",
-    "@backstage/dev-utils": "^1.1.9",
-    "@backstage/test-utils": "^1.7.7",
+    "@backstage/cli": "^0.32.1",
+    "@backstage/dev-utils": "^1.1.10",
+    "@backstage/test-utils": "^1.7.8",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^15.0.0",

@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import React, {
+import {
+  useState,
   PropsWithChildren,
   useCallback,
   useEffect,
@@ -73,9 +74,7 @@ export const ResultLinksMenu = (
     entity ? stringifyEntityRef(entity) : 'unknown'
   }`;
 
-  const [anchorEl, setAnchorEl] = React.useState<Element | undefined>(
-    undefined,
-  );
+  const [anchorEl, setAnchorEl] = useState<Element | undefined>(undefined);
 
   useEffect(() => {
     if (links.length === 0) {
