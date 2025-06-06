@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 3.11.1
+
+### Patch Changes
+
+- 66fc757: ensure subgroups are fetched from the correct realm
+
 ## 3.11.0
 
 ### Minor Changes
