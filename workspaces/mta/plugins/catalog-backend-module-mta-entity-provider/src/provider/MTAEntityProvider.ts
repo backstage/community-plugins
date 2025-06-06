@@ -203,7 +203,12 @@ export class MTAProvider implements EntityProvider {
     const entityMappings = this.config
       .getOptionalConfig('mta.entityMappings')
       ?.get();
-    const owner = application.owner || 'unknown';
+    const owner =
+      application.owner &&
+      application.owner.name &&
+      application.owner.name.trim()
+        ? application.owner.name
+        : 'unknown';
     let sourceLocation = '';
     if (application.repository && application.repository.url) {
       sourceLocation = `url:${application.repository.url}`;
@@ -214,7 +219,18 @@ export class MTAProvider implements EntityProvider {
       techdocsRef = `url:${application.repository.url}`;
     }
 
-    const tags = (application.tags || []).map((tag: any) => tag.name);
+    const tags = Array.from(
+      new Set(
+        application.tags.map(
+          (t: any) =>
+            t.name
+              .toLowerCase()
+              .replace(/[^a-z0-9+#]+/g, '-') // Replace disallowed characters/spaces with -
+              .replace(/^-+|-+$/g, '') // Trim leading/trailing -
+              .slice(0, 63), // Truncate to 63 chars
+        ),
+      ),
+    );
 
     const entity: any = {
       apiVersion: 'backstage.io/v1alpha1',
@@ -228,6 +244,9 @@ export class MTAProvider implements EntityProvider {
           }),
           ...(techdocsRef && { 'backstage.io/techdocs-ref': techdocsRef }),
         },
+        ...(application.description && {
+          description: application.description,
+        }),
         namespace: 'default',
         tags: tags,
       },
