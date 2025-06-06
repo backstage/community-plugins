@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Button,
   FormControl,
@@ -7,6 +7,8 @@ import {
   Select,
   CircularProgress,
   Grid,
+  Typography,
+  Paper,
 } from '@material-ui/core';
 import { useForm, Controller } from 'react-hook-form';
 import { useFetchTargets, useAnalyzeApplication } from '../../queries/mta';
@@ -26,12 +28,21 @@ export const AnalysisPage = () => {
       targetList: [],
     },
   });
-  const [isAnalyzing, setIsAnalyzing] = React.useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [authError, setAuthError] = useState(false);
   const entity = useEntity();
 
-  const { targets } = useFetchTargets();
+  const { targets, isError: targetsError } = useFetchTargets();
 
-  const { mutate: analyzeApp } = useAnalyzeApplication({});
+  const { mutate: analyzeApp } = useAnalyzeApplication({
+    onError: (error: any) => {
+      // Check if it's an authentication error
+      if (error?.response?.status === 401) {
+        setAuthError(true);
+      }
+      setIsAnalyzing(false);
+    },
+  });
 
   const labelOptions = targets
     ? targets?.flatMap(target =>
@@ -46,7 +57,12 @@ export const AnalysisPage = () => {
   const enableAnalysis = type && targetList.length > 0;
 
   const onSubmit = (data: IFormInput, event: any) => {
-    event.preventDefault();
+    // Ensure we prevent default behavior and stop propagation
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+
     setIsAnalyzing(true);
     const app = entity.entity.metadata.application as unknown as Application;
     const analysisParams = {
@@ -58,11 +74,61 @@ export const AnalysisPage = () => {
       },
     };
 
-    analyzeApp(analysisParams);
+    // Wrap in try/catch to handle any errors silently
+    try {
+      analyzeApp(analysisParams);
+    } catch (error) {
+      // Silently handle error - we don't want to log to console due to ESLint rules
+      setIsAnalyzing(false);
+    }
+
+    // Use setTimeout to ensure UI feedback even if the operation is quick
     setTimeout(() => {
       setIsAnalyzing(false);
-    }, 5000); // Simulates 2 seconds of analysis
+    }, 5000); // Simulates 5 seconds of analysis
+
+    // Return false to ensure no navigation occurs
+    return false;
   };
+  // Show authentication error message if there's an auth error
+  if (authError || targetsError) {
+    return (
+      <Grid item xs={12} md={6}>
+        <Paper style={{ padding: '16px', backgroundColor: '#fff3f3' }}>
+          <Typography variant="h6" color="error">
+            Authentication Error (401 Unauthorized)
+          </Typography>
+          <Typography variant="body1">
+            Unable to connect to the MTA server. This is likely because your Backstage client in
+            Keycloak is missing the required scopes.
+          </Typography>
+          <Typography variant="body2" style={{ marginTop: '8px' }}>
+            Please ensure a Backstage client is added to your Keycloak realm with the necessary
+            scopes (applications:get, analyses:post, tasks:get, etc.) to make requests against MTA.
+          </Typography>
+          <Typography variant="body2" style={{ marginTop: '8px' }}>
+            See{' '}
+            <a href="../KEYCLOAK_SETUP.md" target="_blank" rel="noopener noreferrer">
+              KEYCLOAK_SETUP.md
+            </a>{' '}
+            for detailed instructions.
+          </Typography>
+          <Button
+            variant="contained"
+            color="primary"
+            style={{ marginTop: '16px' }}
+            onClick={() => {
+              setAuthError(false);
+              window.location.reload();
+            }}
+          >
+            Retry
+          </Button>
+        </Paper>
+      </Grid>
+    );
+  }
+
   return (
     <Grid item xs={12} md={6}>
       <InfoCard title="Analyze Application">
@@ -117,11 +183,7 @@ export const AnalysisPage = () => {
             style={{ display: 'flex', marginTop: '15px' }}
           >
             <Grid item>
-              <Button
-                type="submit"
-                variant="contained"
-                disabled={!enableAnalysis}
-              >
+              <Button type="submit" variant="contained" disabled={!enableAnalysis}>
                 Analyze
               </Button>
             </Grid>

@@ -5,14 +5,17 @@ metadata:
 spec:
   application:
     appConfig:
-      # configMaps:
-      #   - name: app-config-rhdh
+      configMaps:
+        - name: app-config-rhdh
       mountPath: /opt/app-root/src
-    # dynamicPluginsConfigMapName: dynamic-plugins-rhdh
+    dynamicPluginsConfigMapName: dynamic-plugins-rhdh
     extraFiles:
       mountPath: /opt/app-root/src
     replicas: 1
     route:
       enabled: true
+    extraEnvs:
+      secrets:
+        - name: github-secret
   database:
     enableLocalDb: true
