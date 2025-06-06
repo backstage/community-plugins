@@ -1,8 +1,4 @@
-import {
-  DiscoveryApi,
-  IdentityApi,
-  createApiRef,
-} from '@backstage/core-plugin-api';
+import { DiscoveryApi, IdentityApi, createApiRef } from '@backstage/core-plugin-api';
 
 export type TaskState =
   | 'not supported'
@@ -36,12 +32,34 @@ export interface TaskDashboard {
 }
 export class AuthenticationError extends Error {
   public loginUrl: string;
+  public shouldRedirect: boolean;
 
-  constructor(loginUrl: string) {
-    window.location.href = loginUrl;
+  constructor(loginUrl: string, shouldRedirect: boolean = true) {
     super(`Authentication required at ${loginUrl}`);
     this.name = 'AuthenticationError';
     this.loginUrl = loginUrl;
+    this.shouldRedirect = shouldRedirect;
+
+    // Redirect to login URL immediately if shouldRedirect is true
+    if (shouldRedirect) {
+      // Direct redirect without setTimeout
+      window.location.href = loginUrl;
+    }
+  }
+
+  // Helper method to handle authentication errors
+  static handleAuthError(error: any): boolean {
+    // Check if it's an authentication error
+    if (error instanceof AuthenticationError) {
+      // If the error has a login URL but shouldn't redirect automatically,
+      // we can manually redirect here if needed
+      if (!error.shouldRedirect && error.loginUrl) {
+        // For now, we're not redirecting automatically to prevent navigation issues
+        // We could log this, but avoiding console statements due to ESLint rules
+        return true;
+      }
+    }
+    return false;
   }
 }
 
@@ -121,12 +139,7 @@ export interface Target {
   ruleset: Ruleset;
   provider?: string;
 }
-export type IdentityKind =
-  | 'source'
-  | 'maven'
-  | 'proxy'
-  | 'basic-auth'
-  | 'bearer';
+export type IdentityKind = 'source' | 'maven' | 'proxy' | 'basic-auth' | 'bearer';
 
 export interface Identity {
   id: number;
@@ -164,10 +177,7 @@ export type Application = {
 export interface MTAApi {
   getTargets(): Promise<Target[]>;
   getIdentities(): Promise<Identity[]>;
-  analyzeMTAApplications(
-    applicationId: number,
-    analysisOptions: any,
-  ): Promise<any>;
+  analyzeMTAApplications(applicationId: number, analysisOptions: any): Promise<any>;
   updateApplication(application: Application): Promise<Application>;
   getTasks(): Promise<TaskDashboard[]>;
 }
@@ -196,14 +206,13 @@ export class DefaultMtaApi implements MTAApi {
 
     if (response.status === 401) {
       const j = await response.json();
+      // Redirect to login URL
       throw new AuthenticationError(j.loginURL);
     }
 
     if (!response.ok) {
       throw new APIError(
-        `Request failed with status ${
-          response.status
-        }: ${await response.text()}`,
+        `Request failed with status ${response.status}: ${await response.text()}`,
         response.status,
       );
     }
@@ -227,14 +236,13 @@ export class DefaultMtaApi implements MTAApi {
 
     if (response.status === 401) {
       const j = await response.json();
+      // Redirect to login URL
       throw new AuthenticationError(j.loginURL);
     }
 
     if (!response.ok) {
       throw new APIError(
-        `Request failed with status ${
-          response.status
-        }: ${await response.text()}`,
+        `Request failed with status ${response.status}: ${await response.text()}`,
         response.status,
       );
     }
@@ -263,14 +271,13 @@ export class DefaultMtaApi implements MTAApi {
 
     if (response.status === 401) {
       const j = await response.json();
+      // Redirect to login URL
       throw new AuthenticationError(j.loginURL);
     }
 
     if (!response.ok) {
       throw new APIError(
-        `Request failed with status ${
-          response.status
-        }: ${await response.text()}`,
+        `Request failed with status ${response.status}: ${await response.text()}`,
         response.status,
       );
     }
@@ -294,14 +301,13 @@ export class DefaultMtaApi implements MTAApi {
 
     if (response.status === 401) {
       const j = await response.json();
+      // Redirect to login URL
       throw new AuthenticationError(j.loginURL);
     }
 
     if (!response.ok) {
       throw new APIError(
-        `Request failed with status ${
-          response.status
-        }: ${await response.text()}`,
+        `Request failed with status ${response.status}: ${await response.text()}`,
         response.status,
       );
     }
@@ -309,46 +315,36 @@ export class DefaultMtaApi implements MTAApi {
     return await response.json();
   }
 
-  async analyzeMTAApplications(
-    applicationId: number,
-    analysisOptions: any,
-  ): Promise<Application> {
+  async analyzeMTAApplications(applicationId: number, analysisOptions: any): Promise<Application> {
     const url = await this.discoveryApi.getBaseUrl('mta');
     const { token: idToken } = await this.identityApi.getCredentials();
 
-    const response = await fetch(
-      `${url}/analyze-application/${applicationId}`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(idToken && { Authorization: `Bearer ${idToken}` }),
-        },
-        body: JSON.stringify(analysisOptions),
-        referrerPolicy: 'no-referrer-when-downgrade',
+    const response = await fetch(`${url}/analyze-application/${applicationId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(idToken && { Authorization: `Bearer ${idToken}` }),
       },
-    );
+      body: JSON.stringify(analysisOptions),
+      referrerPolicy: 'no-referrer-when-downgrade',
+    });
 
     if (response.status === 401) {
       const jsonResponse = await response.json();
+      // Redirect to login URL
       throw new AuthenticationError(jsonResponse.loginURL);
     }
 
     if (!response.ok) {
       throw new APIError(
-        `Request failed with status ${
-          response.status
-        }: ${await response.text()}`,
+        `Request failed with status ${response.status}: ${await response.text()}`,
         response.status,
       );
     }
     return await response.json();
   }
 
-  constructor(options: {
-    discoveryApi: DiscoveryApi;
-    identityApi: IdentityApi;
-  }) {
+  constructor(options: { discoveryApi: DiscoveryApi; identityApi: IdentityApi }) {
     this.discoveryApi = options.discoveryApi;
     this.identityApi = options.identityApi;
   }

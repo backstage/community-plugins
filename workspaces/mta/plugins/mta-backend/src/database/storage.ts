@@ -7,20 +7,12 @@ const OAUTH_MAPPING_TABLE = 'oauth-mapping';
 export interface EntityApplicationStorage {
   getAllEntities(): Promise<any[]>;
   getApplicationIDForEntity(entityUID: string): Promise<number | undefined>;
-  saveApplicationIDForEntity(
-    entityID: string,
-    applicationID: string,
-  ): Promise<boolean | void>;
-  saveRefreshTokenForUser(
-    backstageID: string,
-    refreshToken: string,
-  ): Promise<boolean | undefined>;
+  saveApplicationIDForEntity(entityID: string, applicationID: string): Promise<boolean | void>;
+  saveRefreshTokenForUser(backstageID: string, refreshToken: string): Promise<boolean | undefined>;
   getRefreshTokenForUser(backstageID: string): Promise<string | undefined>;
 }
 
-export class DataBaseEntityApplicationStorage
-  implements EntityApplicationStorage
-{
+export class DataBaseEntityApplicationStorage implements EntityApplicationStorage {
   private constructor(
     private readonly knex: Knex<any, any[]>,
     private readonly logger: LoggerService,
@@ -46,9 +38,7 @@ export class DataBaseEntityApplicationStorage
     return this.knex.table(ENTITY_APPLICATION_TABLE).select('*');
   }
 
-  async getApplicationIDForEntity(
-    entityUID: string,
-  ): Promise<number | undefined> {
+  async getApplicationIDForEntity(entityUID: string): Promise<number | undefined> {
     if (!entityUID) {
       return undefined;
     }
@@ -95,9 +85,7 @@ export class DataBaseEntityApplicationStorage
     return inserted.length === 1;
   }
 
-  async getRefreshTokenForUser(
-    backstageID: string,
-  ): Promise<string | undefined> {
+  async getRefreshTokenForUser(backstageID: string): Promise<string | undefined> {
     if (!backstageID) {
       return undefined;
     }

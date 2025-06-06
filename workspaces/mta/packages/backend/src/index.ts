@@ -23,15 +23,11 @@ backend.add(import('@backstage/plugin-auth-backend-module-guest-provider'));
 
 // catalog plugin
 backend.add(import('@backstage/plugin-catalog-backend'));
-backend.add(
-  import('@backstage/plugin-catalog-backend-module-scaffolder-entity-model'),
-);
+backend.add(import('@backstage/plugin-catalog-backend-module-scaffolder-entity-model'));
 
 // permission plugin
 backend.add(import('@backstage/plugin-permission-backend'));
-backend.add(
-  import('@backstage/plugin-permission-backend-module-allow-all-policy'),
-);
+backend.add(import('@backstage/plugin-permission-backend-module-allow-all-policy'));
 
 // search plugin
 backend.add(import('@backstage/plugin-search-backend'));
@@ -41,13 +37,9 @@ backend.add(import('@backstage/plugin-search-backend-module-techdocs/alpha'));
 // new plugin
 
 backend.add(
-  import(
-    '@backstage-community/backstage-plugin-catalog-backend-module-mta-entity-provider'
-  ),
+  import('@backstage-community/backstage-plugin-catalog-backend-module-mta-entity-provider'),
 );
-backend.add(
-  import('@backstage-community/backstage-plugin-scaffolder-backend-module-mta'),
-);
+backend.add(import('@backstage-community/backstage-plugin-scaffolder-backend-module-mta'));
 backend.add(import('@backstage-community/backstage-plugin-mta-backend'));
 
 backend.start();

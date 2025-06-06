@@ -35,13 +35,6 @@ backend:
     #   directory: /tmp/backstage-backend
   # workingDirectory: /tmp # Use this to configure a working directory for the scaffolder, defaults to the OS temp-dir
 
-# mta:
-#   url: https://mta-openshift-mta.apps.shurley-virt.rep1.p1.openshiftapps.com
-#   providerAuth:
-#     realm: mta
-#     secret: qOQJZjS4JXgmohi7PCZ1KxfuQyCJjPtF
-#     clientID: backstage-provider
-
 mta:
   url: https://tackle-konveyor-tackle.ibolton2-3626522b15eedb880d7b99992e225c1b-0000.us-east.containers.appdomain.cloud
   providerAuth:

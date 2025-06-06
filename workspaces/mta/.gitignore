@@ -58,6 +58,12 @@ e2e-test-report/
 
 #App config 
 
-app-config-rhdh.yaml
 dist-dynamic/
 deploy/
+
+dist-scalprum/
+dynamic-plugins.yaml
+github-secret.yaml
+update-mta-plugin.sh
+app-config-rhdh.yaml
+backstage-operator.yaml

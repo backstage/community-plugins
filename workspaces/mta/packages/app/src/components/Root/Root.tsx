@@ -77,11 +77,7 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
       </SidebarGroup>
       <SidebarSpace />
       <SidebarDivider />
-      <SidebarGroup
-        label="Settings"
-        icon={<UserSettingsSignInAvatar />}
-        to="/settings"
-      >
+      <SidebarGroup label="Settings" icon={<UserSettingsSignInAvatar />} to="/settings">
         <SidebarSettings />
       </SidebarGroup>
     </Sidebar>

@@ -24,15 +24,7 @@ export const mtaPlugin = createBackendPlugin({
         httpAuth: coreServices.httpAuth,
         http: coreServices.httpRouter, // Automatically mounts at `/api/mta`
       },
-      async init({
-        logger,
-        config,
-        database,
-        userInfo,
-        cache,
-        httpAuth,
-        http,
-      }) {
+      async init({ logger, config, database, userInfo, cache, httpAuth, http }) {
         logger.info('Initializing MTA plugin');
 
         const router = Router();
@@ -61,8 +53,7 @@ export const mtaPlugin = createBackendPlugin({
         // Get version from package.json
         const { version } = require('../package.json');
 
-        const mtaVersion =
-          config.getOptionalString('mta.backendPluginVersion') ?? version; // Set in config
+        const mtaVersion = config.getOptionalString('mta.backendPluginVersion') ?? version; // Set in config
         const defaultBase = process.env.APP_ROOT ?? '/opt/app-root';
         const defaultPluginRoot = path.join(
           defaultBase,
@@ -71,25 +62,18 @@ export const mtaPlugin = createBackendPlugin({
           `backstage-community-backstage-plugin-mta-backend-${mtaVersion}`,
         );
 
-        const pluginRootFromConfig = config.getOptionalString(
-          'mta.backendPluginRoot',
-        );
+        const pluginRootFromConfig = config.getOptionalString('mta.backendPluginRoot');
         const pluginRoot = isDevelopment
-          ? resolvePackagePath(
-              '@backstage-community/backstage-plugin-mta-backend',
-            )
-          : process.env.PLUGIN_ROOT ||
-            pluginRootFromConfig ||
-            defaultPluginRoot;
+          ? resolvePackagePath('@backstage-community/backstage-plugin-mta-backend')
+          : process.env.PLUGIN_ROOT || pluginRootFromConfig || defaultPluginRoot;
 
         const migrationsDir = path.join(pluginRoot, 'migrations');
         const databaseClient = await database.getClient();
-        const entityApplicationStorage =
-          await DataBaseEntityApplicationStorage.create(
-            databaseClient,
-            logger,
-            migrationsDir,
-          );
+        const entityApplicationStorage = await DataBaseEntityApplicationStorage.create(
+          databaseClient,
+          logger,
+          migrationsDir,
+        );
 
         // OpenID Code Challenge
         const code_verifier = generators.codeVerifier();
@@ -99,10 +83,7 @@ export const mtaPlugin = createBackendPlugin({
           try {
             logger.info(`Incoming request: ${request.path}`);
 
-            if (
-              request.path.includes('/cb') ||
-              request.path.includes('/health')
-            ) {
+            if (request.path.includes('/cb') || request.path.includes('/health')) {
               next(); // Pass request through for health and callback routes
               return;
             }
@@ -110,9 +91,7 @@ export const mtaPlugin = createBackendPlugin({
             const credentials = await httpAuth.credentials(request, {
               allow: ['user'],
             });
-            logger.info(
-              `Credentials extracted: ${JSON.stringify(credentials)}`,
-            );
+            logger.info(`Credentials extracted: ${JSON.stringify(credentials)}`);
 
             const backstageID = await userInfo.getUserInfo(credentials);
             logger.info(`Backstage user info: ${JSON.stringify(backstageID)}`);
@@ -125,8 +104,7 @@ export const mtaPlugin = createBackendPlugin({
             );
 
             if (!accessToken) {
-              const refreshToken =
-                await entityApplicationStorage.getRefreshTokenForUser(userId);
+              const refreshToken = await entityApplicationStorage.getRefreshTokenForUser(userId);
 
               if (refreshToken) {
                 logger.info(`Refresh token found for user: ${userId}`);
@@ -134,27 +112,20 @@ export const mtaPlugin = createBackendPlugin({
                 if (isTokenExpired(refreshToken)) {
                   logger.warn(`Refresh token expired for user: ${userId}`);
                 } else {
-                  const tokenSet = await authClient.refresh(
-                    String(refreshToken),
-                  );
+                  const tokenSet = await authClient.refresh(String(refreshToken));
                   if (tokenSet?.access_token) {
                     accessToken = tokenSet.access_token;
                     await cache.set(String(userId), accessToken, {
                       ttl: tokenSet.expires_in ?? 60 * 1000,
                     });
 
-                    if (
-                      tokenSet.refresh_token !== refreshToken &&
-                      tokenSet.refresh_token
-                    ) {
+                    if (tokenSet.refresh_token !== refreshToken && tokenSet.refresh_token) {
                       await entityApplicationStorage.saveRefreshTokenForUser(
                         String(userId),
                         tokenSet.refresh_token,
                       );
                     }
-                    logger.info(
-                      `Access token refreshed successfully for user: ${userId}`,
-                    );
+                    logger.info(`Access token refreshed successfully for user: ${userId}`);
                   }
                 }
               } else {
@@ -169,9 +140,7 @@ export const mtaPlugin = createBackendPlugin({
                 code_challenge_method: 'S256',
               });
 
-              logger.info(
-                `Redirecting user ${userId} to login: ${authorizationURL}`,
-              );
+              logger.info(`Redirecting user ${userId} to login: ${authorizationURL}`);
               response.status(401).json({ loginURL: authorizationURL });
               return; // Ensures function exits after response is sent
             }
@@ -189,16 +158,12 @@ export const mtaPlugin = createBackendPlugin({
         // Callback Routes
         router.get('/cb/:username', async (request, response) => {
           try {
-            logger.info(
-              `Callback triggered for user: ${request.params.username}`,
-            );
+            logger.info(`Callback triggered for user: ${request.params.username}`);
 
             const encodedUser = request.params.username;
             const user = decodeURIComponent(encodedUser);
             const params = authClient.callbackParams(request);
-            logger.info(
-              `OAuth callback params received: ${JSON.stringify(params)}`,
-            );
+            logger.info(`OAuth callback params received: ${JSON.stringify(params)}`);
 
             const callbackUrl = new URL(
               `${backstageBaseURL}/api/mta/cb/${encodeURIComponent(user)}`,
@@ -206,17 +171,11 @@ export const mtaPlugin = createBackendPlugin({
 
             logger.info(`OAuth callback URL: ${callbackUrl}`);
 
-            const tokenSet = await authClient.callback(
-              callbackUrl.toString(),
-              params,
-              {
-                code_verifier,
-              },
-            );
+            const tokenSet = await authClient.callback(callbackUrl.toString(), params, {
+              code_verifier,
+            });
 
-            logger.info(
-              `OAuth token set received: ${JSON.stringify(tokenSet)}`,
-            );
+            logger.info(`OAuth token set received: ${JSON.stringify(tokenSet)}`);
 
             if (!tokenSet.access_token || !tokenSet.refresh_token) {
               logger.error('Missing access or refresh token in callback');
@@ -229,15 +188,10 @@ export const mtaPlugin = createBackendPlugin({
               ttl: tokenSet.expires_in ?? 60 * 1000,
             });
 
-            await entityApplicationStorage.saveRefreshTokenForUser(
-              user,
-              tokenSet.refresh_token,
-            );
+            await entityApplicationStorage.saveRefreshTokenForUser(user, tokenSet.refresh_token);
 
             logger.info(`Tokens stored for user: ${user}`);
-            response.redirect(
-              request.query.continueTo?.toString() ?? frontEndBaseURL,
-            );
+            response.redirect(request.query.continueTo?.toString() ?? frontEndBaseURL);
           } catch (error: any) {
             logger.error('Error handling OAuth callback', error);
             response.status(500).json({ error: 'Internal Server Error' });
@@ -246,16 +200,13 @@ export const mtaPlugin = createBackendPlugin({
 
         // API Routes
         router.get('/tasks', async (_, response) => {
-          const fetchResponse = await fetch(
-            `${baseURLHub}/tasks/report/dashboard`,
-            {
-              credentials: 'include',
-              headers: {
-                Accept: 'application/json',
-                Authorization: `Bearer ${response.locals.accessToken}`,
-              },
+          const fetchResponse = await fetch(`${baseURLHub}/tasks/report/dashboard`, {
+            credentials: 'include',
+            headers: {
+              Accept: 'application/json',
+              Authorization: `Bearer ${response.locals.accessToken}`,
             },
-          );
+          });
 
           const text = await fetchResponse.text();
           const json = text ? JSON.parse(text) : {};
@@ -308,173 +259,159 @@ export const mtaPlugin = createBackendPlugin({
           response.status(fetchResponse.status).json(json);
         });
 
-        router.post(
-          '/analyze-application/:applicationId',
-          async (request, response) => {
-            const applicationId = request.params.applicationId;
-            const analysisOptions = request.body; // Assuming all other required options are passed in the body
-            const { application, targetList } = analysisOptions;
+        router.post('/analyze-application/:applicationId', async (request, response) => {
+          const applicationId = request.params.applicationId;
+          const analysisOptions = request.body; // Assuming all other required options are passed in the body
+          const { application, targetList } = analysisOptions;
 
-            logger.info('Received request to analyze application:', {
-              applicationId,
-              application,
-              targetList,
+          logger.info('Received request to analyze application:', {
+            applicationId,
+            application,
+            targetList,
+          });
+
+          const TASKGROUPS = `${baseURLHub}/taskgroups`;
+          // Step 1: Create a task group
+
+          const defaultTaskData: TaskData = {
+            tagger: {
+              enabled: true,
+            },
+            verbosity: 0,
+            mode: {
+              binary: false,
+              withDeps: false,
+              artifact: '',
+            },
+            targets: [],
+            sources: [],
+            scope: {
+              withKnownLibs: false,
+              packages: {
+                included: [],
+                excluded: [],
+              },
+            },
+          };
+
+          const defaultTaskgroup = {
+            name: `taskgroup.analyzer`,
+            data: {
+              ...defaultTaskData,
+            },
+            tasks: [],
+            kind: 'analyzer',
+          };
+
+          const createTaskgroup = async (obj: Taskgroup) => {
+            console.log('obj', obj);
+            const createTaskgroupResponse = await fetch(TASKGROUPS, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json, text/plain, */*',
+
+                Authorization: `Bearer ${response.locals.accessToken}`,
+              },
+              body: JSON.stringify(obj),
             });
 
-            const TASKGROUPS = `${baseURLHub}/taskgroups`;
-            // Step 1: Create a task group
+            // Correct use of response status from the fetch call
+            if (!createTaskgroupResponse.ok) {
+              const contentType = createTaskgroupResponse.headers.get('content-type');
+              let errorText;
 
-            const defaultTaskData: TaskData = {
-              tagger: {
-                enabled: true,
-              },
-              verbosity: 0,
-              mode: {
-                binary: false,
-                withDeps: false,
-                artifact: '',
-              },
-              targets: [],
-              sources: [],
-              scope: {
-                withKnownLibs: false,
-                packages: {
-                  included: [],
-                  excluded: [],
-                },
-              },
-            };
-
-            const defaultTaskgroup = {
-              name: `taskgroup.analyzer`,
-              data: {
-                ...defaultTaskData,
-              },
-              tasks: [],
-              kind: 'analyzer',
-            };
-
-            const createTaskgroup = async (obj: Taskgroup) => {
-              console.log('obj', obj);
-              const createTaskgroupResponse = await fetch(TASKGROUPS, {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                  Accept: 'application/json, text/plain, */*',
-
-                  Authorization: `Bearer ${response.locals.accessToken}`,
-                },
-                body: JSON.stringify(obj),
-              });
-
-              // Correct use of response status from the fetch call
-              if (!createTaskgroupResponse.ok) {
-                const contentType =
-                  createTaskgroupResponse.headers.get('content-type');
-                let errorText;
-
-                // Check if the response is text/html which might indicate a redirection or an error page
-                if (contentType && contentType.includes('text/html')) {
-                  errorText =
-                    'Received HTML response instead of JSON. Possible authorization or redirect issue.';
-                } else {
-                  errorText = await createTaskgroupResponse.text();
-                }
-
-                logger.error(
-                  `Unable to call hub, status: ${createTaskgroupResponse.status}, message: ${errorText}`,
-                );
-                throw new Error(
-                  `HTTP error! status: ${createTaskgroupResponse.status}, body: ${errorText}`,
-                );
+              // Check if the response is text/html which might indicate a redirection or an error page
+              if (contentType && contentType.includes('text/html')) {
+                errorText =
+                  'Received HTML response instead of JSON. Possible authorization or redirect issue.';
+              } else {
+                errorText = await createTaskgroupResponse.text();
               }
 
-              try {
-                return await createTaskgroupResponse.json();
-              } catch (e) {
-                throw new Error('Failed to parse JSON response.');
-              }
-            };
-
-            const submitTaskgroup = async (obj: Taskgroup) => {
-              const submitTaskgroupResponse = await fetch(
-                `${TASKGROUPS}/${obj.id}/submit`,
-                {
-                  method: 'PUT',
-                  headers: {
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json, text/plain, */*',
-                    Authorization: `Bearer ${response.locals.accessToken}`,
-                  },
-                  body: JSON.stringify(obj),
-                },
+              logger.error(
+                `Unable to call hub, status: ${createTaskgroupResponse.status}, message: ${errorText}`,
               );
-
-              if (!submitTaskgroupResponse.ok) {
-                const errorText = await submitTaskgroupResponse.text();
-                logger.info(
-                  `Unable to call hub, status: ${submitTaskgroupResponse.status}, message: ${errorText}`,
-                );
-                throw new Error(
-                  `HTTP error! status: ${submitTaskgroupResponse.status}, body: ${errorText}`,
-                );
-              }
-              // Return the status code to indicate success or no content
-              logger.info(
-                `Operation successful, status code: ${submitTaskgroupResponse.status}`,
+              throw new Error(
+                `HTTP error! status: ${createTaskgroupResponse.status}, body: ${errorText}`,
               );
-              return {
-                status: submitTaskgroupResponse.status,
-                message: 'Submission successful',
-              };
-            };
+            }
 
             try {
-              const taskgroupResponse = await createTaskgroup(defaultTaskgroup);
-              taskgroupResponse.tasks = [
-                {
-                  name: `taskgroup.analyzer.${application.name}`,
-                  data: {},
-                  application: {
-                    id: application.id as number,
-                    name: application.name,
-                  },
-                },
-              ];
-              taskgroupResponse.data.mode = {
-                binary: false,
-                withDeps: true,
-                artifact: '',
-              };
-              taskgroupResponse.data.rules = {
-                labels: {
-                  excluded: [],
-                  // included: [
-                  //   'konveyor.io/target=eap8',
-                  //   'konveyor.io/target=cloud-readiness',
-                  //   'konveyor.io/target=quarkus',
-                  // ],
-                  included: targetList,
-                },
-              };
-              console.log('submitted taskgroup', taskgroupResponse);
-              await submitTaskgroup(taskgroupResponse);
-              logger.info(
-                `Taskgroup submitted. Status: ${response?.status ?? 'unknown'}`,
-              );
-              await new Promise(resolve => setTimeout(resolve, 1000));
-            } catch (error: any) {
-              logger.error(
-                `Error submitting taskgroup: app ID: ${applicationId}`,
-                error,
-              );
-              response.status(500).json({
-                error: 'Internal Server Error',
-                details: error.message,
-              });
+              return await createTaskgroupResponse.json();
+            } catch (e) {
+              throw new Error('Failed to parse JSON response.');
             }
-          },
-        );
+          };
+
+          const submitTaskgroup = async (obj: Taskgroup) => {
+            const submitTaskgroupResponse = await fetch(`${TASKGROUPS}/${obj.id}/submit`, {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json, text/plain, */*',
+                Authorization: `Bearer ${response.locals.accessToken}`,
+              },
+              body: JSON.stringify(obj),
+            });
+
+            if (!submitTaskgroupResponse.ok) {
+              const errorText = await submitTaskgroupResponse.text();
+              logger.info(
+                `Unable to call hub, status: ${submitTaskgroupResponse.status}, message: ${errorText}`,
+              );
+              throw new Error(
+                `HTTP error! status: ${submitTaskgroupResponse.status}, body: ${errorText}`,
+              );
+            }
+            // Return the status code to indicate success or no content
+            logger.info(`Operation successful, status code: ${submitTaskgroupResponse.status}`);
+            return {
+              status: submitTaskgroupResponse.status,
+              message: 'Submission successful',
+            };
+          };
+
+          try {
+            const taskgroupResponse = await createTaskgroup(defaultTaskgroup);
+            taskgroupResponse.tasks = [
+              {
+                name: `taskgroup.analyzer.${application.name}`,
+                data: {},
+                application: {
+                  id: application.id as number,
+                  name: application.name,
+                },
+              },
+            ];
+            taskgroupResponse.data.mode = {
+              binary: false,
+              withDeps: true,
+              artifact: '',
+            };
+            taskgroupResponse.data.rules = {
+              labels: {
+                excluded: [],
+                // included: [
+                //   'konveyor.io/target=eap8',
+                //   'konveyor.io/target=cloud-readiness',
+                //   'konveyor.io/target=quarkus',
+                // ],
+                included: targetList,
+              },
+            };
+            console.log('submitted taskgroup', taskgroupResponse);
+            await submitTaskgroup(taskgroupResponse);
+            logger.info(`Taskgroup submitted. Status: ${response?.status ?? 'unknown'}`);
+            await new Promise(resolve => setTimeout(resolve, 1000));
+          } catch (error: any) {
+            logger.error(`Error submitting taskgroup: app ID: ${applicationId}`, error);
+            response.status(500).json({
+              error: 'Internal Server Error',
+              details: error.message,
+            });
+          }
+        });
         ///
 
         router.get('/issues/:id', async (request, response) => {

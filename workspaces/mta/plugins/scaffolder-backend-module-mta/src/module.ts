@@ -1,7 +1,4 @@
-import {
-  coreServices,
-  createBackendModule,
-} from '@backstage/backend-plugin-api';
+import { coreServices, createBackendModule } from '@backstage/backend-plugin-api';
 import { scaffolderActionsExtensionPoint } from '@backstage/plugin-scaffolder-node/alpha';
 import { createMTAApplicationAction } from './actions/mta/create-application';
 /*
