@@ -25,6 +25,7 @@ import useAsyncRetry from 'react-use/esm/useAsyncRetry';
  * @param searchTerm - A string to filter entities by a search term.
  * @param limit - The maximum number of entities to fetch.
  * @param offset - The number of entities to skip before starting to fetch.
+ * @param kind - The kind of entities to fetch.
  * @returns An object containing the fetched entities, total items count, loading state, error, and a retry function.
  *
  * @public
@@ -34,19 +35,22 @@ export const useCatalogEntities = (
   searchTerm: string = '',
   limit: number = 10,
   offset: number = 0,
+  kind: string | undefined = undefined,
 ) => {
   const catalogApi = useApi(catalogApiRef);
 
   const fetchEntities = async () => {
+    const filterArray = refs.map(refString => {
+      const { kind: refKind, namespace, name } = parseEntityRef(refString);
+      return {
+        kind: refKind,
+        'metadata.namespace': namespace,
+        'metadata.name': name,
+      };
+    });
+
     const queryOptions: any = {
-      filter: refs.map(refString => {
-        const { kind, namespace, name } = parseEntityRef(refString);
-        return {
-          kind,
-          'metadata.namespace': namespace,
-          'metadata.name': name,
-        };
-      }),
+      filter: kind ? filterArray.map(f => ({ ...f, kind })) : filterArray,
       limit,
       offset,
       orderFields: { field: 'metadata.name', order: 'asc' },
@@ -79,6 +83,7 @@ export const useCatalogEntities = (
     searchTerm,
     limit,
     offset,
+    kind,
   ]);
 
   return {
