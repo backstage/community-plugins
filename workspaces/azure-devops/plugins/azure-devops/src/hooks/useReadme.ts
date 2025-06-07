@@ -35,7 +35,7 @@ export function useReadme(entity: Entity): {
 
     if (readmePath?.startsWith('.')) {
       throw new Error(
-        `The 'dev.azure.com/readme-path' annotation does not support relative paths, please correct this annotation. The value provided was: ${readmePath}`,
+        `The "dev.azure.com/readme-path" annotation does not support relative paths, please correct this annotation. The value provided was: "${readmePath}"`,
       );
     }
 
