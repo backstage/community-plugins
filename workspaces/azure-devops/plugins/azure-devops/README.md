@@ -97,6 +97,8 @@ dev.azure.com/build-definition: <build-definition-name>
 
 In this case `<project-name>` will be the name of your Team Project and `<build-definition-name>` will be the name of the Build Definition you would like to see Builds for, and it's possible to add more Builds separated by a comma. If the Build Definition name has spaces in it make sure to put quotes around it.
 
+> Note: If you are unsure what your Build Definition name is you can confirm this value by going to the [Pipeline Settings in Azure DevOps](https://learn.microsoft.com/en-us/azure/devops/pipelines/customize-pipeline?view=azure-devops#pipeline-settings) and clicking on "Rename/move" from the context menu. The current Build Definition name will be in the dialog box that opens, use this value. It will not be `<some-definition-name>.yml`.
+
 #### Multiple Organizations
 
 If you have multiple organizations you'll need to also add this annotation:
