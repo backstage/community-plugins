@@ -83,6 +83,29 @@ describe('useReadme', () => {
     ).toThrow('Expected "dev.azure.com" annotations were not found');
   });
 
+  it('should return throw when annotation uses relative path', async () => {
+    const entity: Entity = {
+      apiVersion: 'backstage.io/v1alpha1',
+      kind: 'Component',
+      metadata: {
+        namespace: 'default',
+        name: 'project-repo',
+        annotations: {
+          'dev.azure.com/project-repo': 'projectName/repoName',
+          'dev.azure.com/readme-path': './docs/index.md',
+        },
+      },
+    };
+
+    expect(() =>
+      renderHook(() => useReadme(entity), {
+        wrapper: Wrapper,
+      }),
+    ).toThrow(
+      'The "dev.azure.com/readme-path" annotation does not support relative paths, please correct this annotation. The value provided was: "./docs/index.md"',
+    );
+  });
+
   it('should return throw when annotation invalid', async () => {
     const entity: Entity = {
       apiVersion: 'backstage.io/v1alpha1',
