@@ -1,5 +1,12 @@
 # @backstage-community/backstage-plugin-mta-backend
 
+## 0.4.1
+
+### Patch Changes
+
+- ff34bd4: Added logic to strip off any trailing forward slash in the mta.url string
+- 1612393: Add ability to dynamically detect plugin version instead of requiring it in the configuration
+
 ## 0.4.0
 
 ### Minor Changes
