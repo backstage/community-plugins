@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export type {
-  Owners,
-  OwnersAndEntities,
-  ManageProvider,
-  ManageApi,
-} from './ManageApi';
+import {
+  BackstageCredentials,
+  BackstageUserPrincipal,
+} from '@backstage/backend-plugin-api';
 
-export type { ManageModuleApi, ManageModuleApiRef } from './types';
+import { OwnersAndOwnedEntities } from '@backstage-community/plugin-manage-common';
 
-export type { DefaultManageApiOptions } from './DefaultManageApi';
-export { DefaultManageApi } from './DefaultManageApi';
-
-export type { ApiFactoryOptions } from './api';
-export { manageApiRef, createManageApiFactory } from './api';
+export interface ManageService {
+  getOwnersAndOwnedEntities(
+    ownershipEntityRefs: string[],
+    kinds: readonly string[],
+    credentials: BackstageCredentials<BackstageUserPrincipal>,
+  ): Promise<OwnersAndOwnedEntities>;
+}
