@@ -22,6 +22,7 @@ import {
 import { Routes, Route } from 'react-router-dom';
 import { buildRouteRef } from '../routes';
 import { WorkflowRunDetails } from './WorkflowRunDetails';
+import { WorkflowRuns } from './WorkflowRuns';
 import { WorkflowRunsCard } from './WorkflowRunsCard';
 import { WorkflowRunsTable } from './WorkflowRunsTable';
 import { GITHUB_ACTIONS_ANNOTATION } from './getProjectNameFromEntity';
@@ -42,6 +43,10 @@ export const Router = (props: RouterProps) => {
     );
   }
 
+  const workflowRunsComponentNG = (
+    <WorkflowRuns entity={entity} viewType={view} />
+  );
+
   const workflowRunsComponent =
     view === 'cards' ? (
       <WorkflowRunsCard entity={entity} />
@@ -52,6 +57,7 @@ export const Router = (props: RouterProps) => {
   return (
     <Routes>
       <Route path="/" element={workflowRunsComponent} />
+      <Route path="/ng" element={workflowRunsComponentNG} />
       <Route
         path={`${buildRouteRef.path}`}
         element={<WorkflowRunDetails entity={entity} />}
