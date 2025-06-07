@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 1.15.1
+
+### Patch Changes
+
+- e958f2f: Updated dependency `@types/node` to `22.15.29`.
+
 ## 1.15.0
 
 ### Minor Changes
