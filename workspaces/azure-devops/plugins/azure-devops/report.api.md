@@ -113,7 +113,7 @@ export interface AzureDevOpsApi {
   }>;
   // (undocumented)
   getReadme(opts: ReadmeConfig): Promise<Readme>;
-  // (undocumented)
+  // @deprecated (undocumented)
   getRepoBuilds(
     projectName: string,
     repoName: string,
@@ -185,7 +185,7 @@ export class AzureDevOpsClient implements AzureDevOpsApi {
   }>;
   // (undocumented)
   getReadme(opts: ReadmeConfig): Promise<Readme>;
-  // (undocumented)
+  // @deprecated (undocumented)
   getRepoBuilds(
     projectName: string,
     repoName: string,

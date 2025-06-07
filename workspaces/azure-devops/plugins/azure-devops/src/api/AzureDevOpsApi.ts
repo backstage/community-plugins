@@ -37,6 +37,9 @@ export const azureDevOpsApiRef = createApiRef<AzureDevOpsApi>({
 
 /** @public */
 export interface AzureDevOpsApi {
+  /**
+   * @deprecated This method has no usages and will be removed in a future release
+   */
   getRepoBuilds(
     projectName: string,
     repoName: string,
