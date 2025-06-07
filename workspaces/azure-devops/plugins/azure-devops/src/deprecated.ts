@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 The Backstage Authors
+ * Copyright 2025 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 
-export * from './types';
-export * from './constants';
-export * from './permissions';
-export * from './utils';
+import { getAnnotationValuesFromEntity as getAnnotationValuesFromEntityCommon } from '@backstage-community/plugin-azure-devops-common';
+
+/**
+ * @public
+ * @deprecated Import this from `@backstage-community/plugin-azure-devops-common` instead
+ */
+export const getAnnotationValuesFromEntity =
+  getAnnotationValuesFromEntityCommon;
