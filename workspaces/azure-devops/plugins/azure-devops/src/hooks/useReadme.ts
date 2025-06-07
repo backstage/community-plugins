@@ -32,6 +32,13 @@ export function useReadme(entity: Entity): {
   const { value, loading, error } = useAsync(() => {
     const { project, repo, host, org, readmePath } =
       getAnnotationValuesFromEntity(entity);
+
+    if (readmePath?.startsWith('.')) {
+      throw new Error(
+        `The 'dev.azure.com/readme-path' annotation does not support relative paths, please correct this annotation. The value provided was: ${readmePath}`,
+      );
+    }
+
     const entityRef = stringifyEntityRef(entity);
     return api.getReadme({
       project,

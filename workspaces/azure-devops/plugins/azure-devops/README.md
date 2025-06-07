@@ -76,6 +76,8 @@ Then to display the `README` file that belongs to each entity you would do this:
 dev.azure.com/readme-path: /<path-to>/<my-readme-file>.md
 ```
 
+> Note: this annotation does not support relative paths as the API we use from Azure DevOps power this feature does not support relative paths. IF you use something like this `dev.azure.com/readme-path: ./docs/index.md` the frontend will throw an error with details about why.
+
 #### Pipeline in different project to repo
 
 If your pipeline is in a different project to the source code, you will need to specify this in the project annotation.
