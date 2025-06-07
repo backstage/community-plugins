@@ -1,5 +1,12 @@
 ### Dependencies
 
+## 1.41.6
+
+### Patch Changes
+
+- e958f2f: Updated dependency `@types/node` to `22.15.29`.
+- 7d6d70f: Updated dependency `start-server-and-test` to `2.0.12`.
+
 ## 1.41.5
 
 ### Patch Changes
