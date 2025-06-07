@@ -11,6 +11,7 @@ import { DashboardPullRequest } from '@backstage-community/plugin-azure-devops-c
 import { DiscoveryApi } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
 import { FetchApi } from '@backstage/core-plugin-api';
+import { getAnnotationValuesFromEntity as getAnnotationValuesFromEntity_2 } from '@backstage-community/plugin-azure-devops-common';
 import { GitTag } from '@backstage-community/plugin-azure-devops-common';
 import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { PullRequest } from '@backstage-community/plugin-azure-devops-common';
@@ -317,15 +318,8 @@ export enum FilterType {
   CreatedByUser = 'CreatedByUser',
 }
 
-// @public (undocumented)
-export function getAnnotationValuesFromEntity(entity: Entity): {
-  project: string;
-  repo?: string;
-  definition?: string;
-  host?: string;
-  org?: string;
-  readmePath?: string;
-};
+// @public @deprecated (undocumented)
+export const getAnnotationValuesFromEntity: typeof getAnnotationValuesFromEntity_2;
 
 // @public (undocumented)
 export const isAzureDevOpsAvailable: (entity: Entity) => boolean;

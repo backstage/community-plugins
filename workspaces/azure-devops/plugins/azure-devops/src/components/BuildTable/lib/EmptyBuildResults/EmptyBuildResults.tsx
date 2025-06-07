@@ -16,7 +16,7 @@
 import { Entity } from '@backstage/catalog-model';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
-import { getAnnotationValuesFromEntity } from '../../../../utils';
+import { getAnnotationValuesFromEntity } from '@backstage-community/plugin-azure-devops-common';
 
 export const EmptyBuildResults = ({ entity }: { entity?: Entity }) => {
   const annotations = entity

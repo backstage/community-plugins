@@ -2692,6 +2692,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-azure-devops-common@workspace:plugins/azure-devops-common"
   dependencies:
+    "@backstage/catalog-model": "npm:^1.7.4"
     "@backstage/cli": "npm:^0.32.1"
     "@backstage/plugin-catalog-common": "npm:^1.1.4"
     "@backstage/plugin-permission-common": "npm:^0.9.0"

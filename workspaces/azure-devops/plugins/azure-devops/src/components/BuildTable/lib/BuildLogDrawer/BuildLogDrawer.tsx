@@ -23,7 +23,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import CloseIcon from '@material-ui/icons/Close';
 import { useApi } from '@backstage/core-plugin-api';
 import { azureDevOpsApiRef } from '../../../../api';
-import { getAnnotationValuesFromEntity } from '../../../../utils';
+import { getAnnotationValuesFromEntity } from '@backstage-community/plugin-azure-devops-common';
 import { stringifyEntityRef } from '@backstage/catalog-model';
 import { useEntity } from '@backstage/plugin-catalog-react';
 

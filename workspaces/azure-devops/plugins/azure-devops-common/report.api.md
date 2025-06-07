@@ -4,6 +4,7 @@
 
 ```ts
 import { BasicPermission } from '@backstage/plugin-permission-common';
+import { Entity } from '@backstage/catalog-model';
 import { ResourcePermission } from '@backstage/plugin-permission-common';
 
 // @public (undocumented)
@@ -128,6 +129,16 @@ export interface DashboardPullRequest {
   // (undocumented)
   title?: string;
 }
+
+// @public (undocumented)
+export function getAnnotationValuesFromEntity(entity: Entity): {
+  project: string;
+  repo?: string;
+  definition?: string;
+  host?: string;
+  org?: string;
+  readmePath?: string;
+};
 
 // @public (undocumented)
 export type GitTag = {
