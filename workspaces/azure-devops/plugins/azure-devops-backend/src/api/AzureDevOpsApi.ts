@@ -458,6 +458,9 @@ export class AzureDevOpsApi {
     }));
   }
 
+  /**
+   * @deprecated This method has no usages and will be removed in a future release
+   */
   public async getBuildDefinitions(
     projectName: string,
     definitionName: string,

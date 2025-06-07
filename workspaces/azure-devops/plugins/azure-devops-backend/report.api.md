@@ -32,7 +32,7 @@ export class AzureDevOpsApi {
   ): AzureDevOpsApi;
   // (undocumented)
   getAllTeams(options?: { limit?: number }): Promise<Team[]>;
-  // (undocumented)
+  // @deprecated (undocumented)
   getBuildDefinitions(
     projectName: string,
     definitionName: string,
