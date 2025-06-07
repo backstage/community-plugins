@@ -144,6 +144,34 @@ dev.azure.com/host-org: server.company.com/yet-another-org
 
 **Note:** To save you time, effort, and confusion setting up these annotations manually you can use the `AzureDevOpsAnnotatorProcessor` processor which will add the `dev.azure.com/host-org` and `dev.azure.com/project-repo` annotations for you with the correct values. The Azure DevOps Annotator Processor backend module for the Catalog plugin has details on how to [add this processor](https://github.com/backstage/community-plugins/tree/main/workspaces/azure-devops/plugins/catalog-backend-module-azure-devops-annotator-processor).
 
+#### Project Names and Repository Names with Spaces
+
+Regarding spaces in project names or repository names, though the author of this plugin often says "spaces are the devil", these have been tested with this plugin and will work as is in the annotations. They will also be added correctly for you when using the `AzureDevOpsAnnotatorProcessor`.
+
+Given a project name like "Has Spaces" and a repository name of "With Space" the `dev.azure.com/project-repo` annotation would look like this:
+
+```yaml
+dev.azure.com/project-repo: Has Spaces/With Space
+```
+
+Alternatively you can put quotes around the value which would work as well, like this:
+
+```yaml
+dev.azure.com/project-repo: 'Has Spaces/With Space'
+```
+
+the same would apply to the `dev.azure.com/project` annotation using "Has Spaces" as the project name would look like this:
+
+```yaml
+dev.azure.com/project: Has Spaces
+```
+
+Or using quootes, like this:
+
+```yaml
+dev.azure.com/project: 'Has Spaces'
+```
+
 ### Azure Pipelines Component
 
 To get the Azure Pipelines component working you'll need to do the following two steps:
