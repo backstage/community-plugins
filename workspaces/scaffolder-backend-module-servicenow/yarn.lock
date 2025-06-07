@@ -2536,7 +2536,7 @@ __metadata:
     "@backstage/plugin-scaffolder-node": "npm:^0.8.1"
     "@backstage/plugin-scaffolder-node-test-utils": "npm:^0.2.1"
     "@backstage/types": "npm:^1.2.1"
-    "@hey-api/openapi-ts": "npm:0.67.3"
+    "@hey-api/openapi-ts": "npm:0.70.0"
     "@types/node-fetch": "npm:2.6.12"
     abort-controller: "npm:^3.0.0"
     axios: "npm:^1.7.4"
@@ -3913,31 +3913,33 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hey-api/json-schema-ref-parser@npm:1.0.5":
-  version: 1.0.5
-  resolution: "@hey-api/json-schema-ref-parser@npm:1.0.5"
+"@hey-api/json-schema-ref-parser@npm:1.0.6":
+  version: 1.0.6
+  resolution: "@hey-api/json-schema-ref-parser@npm:1.0.6"
   dependencies:
     "@jsdevtools/ono": "npm:^7.1.3"
     "@types/json-schema": "npm:^7.0.15"
     js-yaml: "npm:^4.1.0"
     lodash: "npm:^4.17.21"
-  checksum: 10/745f1d27e4338af3f94d4b6704012a9d94014be2c0a02f2fe1ac9cf42e4f02158c393b240479eb93681b830f451393fbbcd9df4fb39ffa666fdc2d3202614eea
+  checksum: 10/a55c59f0ad6933b0ede43b462eb30320fdb3da6ef186fa5c47c681b4ee59fa2f54642fe982f897eef0d6a631d521fcfbea237036f3833255fd17f96c0ee021db
   languageName: node
   linkType: hard
 
-"@hey-api/openapi-ts@npm:0.67.3":
-  version: 0.67.3
-  resolution: "@hey-api/openapi-ts@npm:0.67.3"
+"@hey-api/openapi-ts@npm:0.70.0":
+  version: 0.70.0
+  resolution: "@hey-api/openapi-ts@npm:0.70.0"
   dependencies:
-    "@hey-api/json-schema-ref-parser": "npm:1.0.5"
+    "@hey-api/json-schema-ref-parser": "npm:1.0.6"
+    ansi-colors: "npm:4.1.3"
     c12: "npm:2.0.1"
+    color-support: "npm:1.1.3"
     commander: "npm:13.0.0"
     handlebars: "npm:4.7.8"
   peerDependencies:
     typescript: ^5.5.3
   bin:
     openapi-ts: bin/index.cjs
-  checksum: 10/59919b3b267b2ec745510580c88c0c75aa1ce32d46d91fdfb6765fee8858787c110c929b4506fe637e5a2cc33b6ad44a85fb631b38a7509d3e8b8b06f36050e1
+  checksum: 10/9c7960988accd90f479a839b7c72222489b1cb1e08cc19a8a7adb5f4db9936320d790d4ceed8bb2ed89e4eb6405147c779cb354983079beff0f68151f56b8139
   languageName: node
   linkType: hard
 
@@ -8339,7 +8341,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ansi-colors@npm:^4.1.1, ansi-colors@npm:^4.1.3":
+"ansi-colors@npm:4.1.3, ansi-colors@npm:^4.1.1, ansi-colors@npm:^4.1.3":
   version: 4.1.3
   resolution: "ansi-colors@npm:4.1.3"
   checksum: 10/43d6e2fc7b1c6e4dc373de708ee76311ec2e0433e7e8bd3194e7ff123ea6a747428fc61afdcf5969da5be3a5f0fd054602bec56fc0ebe249ce2fcde6e649e3c2
@@ -9888,7 +9890,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"color-support@npm:^1.1.3":
+"color-support@npm:1.1.3, color-support@npm:^1.1.3":
   version: 1.1.3
   resolution: "color-support@npm:1.1.3"
   bin:
