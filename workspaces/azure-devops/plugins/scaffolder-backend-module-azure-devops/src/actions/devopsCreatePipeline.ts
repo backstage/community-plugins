@@ -119,8 +119,9 @@ export function createAzureDevopsCreatePipelineAction(options: {
         yamlFilename: pipelineYamlFile,
       };
 
-      // According to the source code of the Azure DevOps Terraform provider, the trigger settings
-      // should be the following for a Yaml pipeline:
+      // According to the source code of the Azure DevOps Terraform provider,
+      // https://github.com/microsoft/terraform-provider-azuredevops/blob/3299931b38e00cc3c573023b577783880137b447/azuredevops/internal/service/build/resource_build_definition.go#L1179,
+      // the trigger settings should be the following for a Yaml pipeline:
       const continuousIntegrationTrigger: ContinuousIntegrationTrigger = {
         branchFilters: [],
         batchChanges: false,
