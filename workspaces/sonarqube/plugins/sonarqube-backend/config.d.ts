@@ -37,6 +37,13 @@ export interface Config {
     apiKey?: string;
 
     /**
+     * The type of authentication key used for the SonarQube instance.
+     * Can be 'basic' for basic authentication or 'token' for token-based authentication.
+     * Defaults to 'token'.
+     */
+    authType?: 'basic' | 'token';
+
+    /**
      * The optional sonarqube instances.
      * @visibility frontend
      */
@@ -65,6 +72,13 @@ export interface Config {
        * @visibility secret
        */
       apiKey: string;
+
+      /**
+       * The type of authentication key used for the SonarQube instance.
+       * Can be 'basic' for basic authentication or 'token' for token-based authentication.
+       * Defaults to 'token'.
+       */
+      authType?: 'basic' | 'token';
     }>;
   };
 }

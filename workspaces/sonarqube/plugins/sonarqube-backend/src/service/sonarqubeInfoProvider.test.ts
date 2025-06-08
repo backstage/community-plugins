@@ -148,6 +148,93 @@ describe('SonarqubeConfig', () => {
         ),
       ).toThrow(Error);
     });
+
+    it('Reads config with authType token', async () => {
+      const config = SonarqubeConfig.fromConfig(
+        new ConfigReader({
+          sonarqube: {
+            baseUrl: DUMMY_SONAR_URL,
+            apiKey: DUMMY_SONAR_APIKEY,
+            authType: 'token',
+          },
+        }),
+      );
+
+      expect(config.instances).toEqual([
+        {
+          name: SONARQUBE_DEFAULT_INSTANCE_NAME,
+          baseUrl: DUMMY_SONAR_URL,
+          apiKey: DUMMY_SONAR_APIKEY,
+          authType: 'token',
+        },
+      ]);
+    });
+
+    it('Reads config with authType basic', async () => {
+      const config = SonarqubeConfig.fromConfig(
+        new ConfigReader({
+          sonarqube: {
+            baseUrl: DUMMY_SONAR_URL,
+            apiKey: DUMMY_SONAR_APIKEY,
+            authType: 'basic',
+          },
+        }),
+      );
+
+      expect(config.instances).toEqual([
+        {
+          name: SONARQUBE_DEFAULT_INSTANCE_NAME,
+          baseUrl: DUMMY_SONAR_URL,
+          apiKey: DUMMY_SONAR_APIKEY,
+          authType: 'basic',
+        },
+      ]);
+    });
+
+    it('Reads named config with authType', async () => {
+      const config = SonarqubeConfig.fromConfig(
+        new ConfigReader({
+          sonarqube: {
+            instances: [
+              {
+                name: SONARQUBE_DEFAULT_INSTANCE_NAME,
+                baseUrl: DUMMY_SONAR_URL,
+                apiKey: DUMMY_SONAR_APIKEY,
+                authType: 'basic',
+              },
+            ],
+          },
+        }),
+      );
+
+      expect(config.instances).toEqual([
+        {
+          name: SONARQUBE_DEFAULT_INSTANCE_NAME,
+          baseUrl: DUMMY_SONAR_URL,
+          apiKey: DUMMY_SONAR_APIKEY,
+          authType: 'basic',
+        },
+      ]);
+    });
+
+    it('Defaults to undefined authType when not specified', async () => {
+      const config = SonarqubeConfig.fromConfig(
+        new ConfigReader({
+          sonarqube: {
+            baseUrl: DUMMY_SONAR_URL,
+            apiKey: DUMMY_SONAR_APIKEY,
+          },
+        }),
+      );
+
+      expect(config.instances).toEqual([
+        {
+          name: SONARQUBE_DEFAULT_INSTANCE_NAME,
+          baseUrl: DUMMY_SONAR_URL,
+          apiKey: DUMMY_SONAR_APIKEY,
+        },
+      ]);
+    });
   });
 
   describe('getInstanceConfig', () => {
@@ -580,6 +667,90 @@ describe('DefaultSonarqubeInfoProvider', () => {
           instanceName: 'default',
         }),
       ).toEqual({
+        analysisDate: DUMMY_ANALYSIS_DATE,
+        measures: [],
+      });
+    });
+
+    it('Uses Bearer token auth for token authType', async () => {
+      const provider = configureProvider({
+        sonarqube: {
+          baseUrl: MOCK_BASE_URL,
+          apiKey: DUMMY_API_KEY,
+          authType: 'token',
+        },
+      });
+
+      const checkTokenAuth = (req: RestRequest<never>) => {
+        expect(req.headers.get('Authorization')).toEqual(
+          `Bearer ${DUMMY_API_KEY}`,
+        );
+      };
+
+      server.use(
+        rest.get(`${MOCK_BASE_URL}/api/components/show`, (req, res, ctx) => {
+          checkTokenAuth(req);
+          return res(
+            ctx.json({ component: { analysisDate: DUMMY_ANALYSIS_DATE } }),
+          );
+        }),
+        rest.get(`${MOCK_BASE_URL}/api/metrics/search`, (req, res, ctx) => {
+          checkTokenAuth(req);
+          return res(ctx.json({ total: 0, metrics: [] }));
+        }),
+        rest.get(`${MOCK_BASE_URL}/api/measures/component`, (req, res, ctx) => {
+          checkTokenAuth(req);
+          return res(ctx.json({ component: { measures: [] } }));
+        }),
+      );
+
+      const result = await provider.getFindings({
+        componentKey: DUMMY_COMPONENT_KEY,
+      });
+      expect(result).toEqual({
+        analysisDate: DUMMY_ANALYSIS_DATE,
+        measures: [],
+      });
+    });
+
+    it('Uses Basic auth for basic authType', async () => {
+      const provider = configureProvider({
+        sonarqube: {
+          baseUrl: MOCK_BASE_URL,
+          apiKey: DUMMY_API_KEY,
+          authType: 'basic',
+        },
+      });
+
+      const expectedBasicAuth = `Basic ${Buffer.from(
+        `${DUMMY_API_KEY}:`,
+      ).toString('base64')}`;
+
+      const checkBasicAuth = (req: RestRequest<never>) => {
+        expect(req.headers.get('Authorization')).toEqual(expectedBasicAuth);
+      };
+
+      server.use(
+        rest.get(`${MOCK_BASE_URL}/api/components/show`, (req, res, ctx) => {
+          checkBasicAuth(req);
+          return res(
+            ctx.json({ component: { analysisDate: DUMMY_ANALYSIS_DATE } }),
+          );
+        }),
+        rest.get(`${MOCK_BASE_URL}/api/metrics/search`, (req, res, ctx) => {
+          checkBasicAuth(req);
+          return res(ctx.json({ total: 0, metrics: [] }));
+        }),
+        rest.get(`${MOCK_BASE_URL}/api/measures/component`, (req, res, ctx) => {
+          checkBasicAuth(req);
+          return res(ctx.json({ component: { measures: [] } }));
+        }),
+      );
+
+      const result = await provider.getFindings({
+        componentKey: DUMMY_COMPONENT_KEY,
+      });
+      expect(result).toEqual({
         analysisDate: DUMMY_ANALYSIS_DATE,
         measures: [],
       });

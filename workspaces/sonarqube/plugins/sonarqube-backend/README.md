@@ -103,6 +103,8 @@ sonarqube:
   baseUrl: https://sonarqube.example.com
   instanceKey: mySonarqube
   apiKey: 123456789abcdef0123456789abcedf012
+  # Optional to use old basic authentication in Sonarqube < v10.5
+  # authType: basic
 ```
 
 ##### Catalog
@@ -129,6 +131,8 @@ sonarqube:
       instanceKey: mySonarqube
       baseUrl: https://default-sonarqube.example.com
       apiKey: 123456789abcdef0123456789abcedf012
+      # Optional to use old basic authentication in Sonarqube < v10.5
+      # authType: basic
     - name: specialProject
       instanceKey: mySonarqube
       baseUrl: https://special-project-sonarqube.example.com

@@ -88,6 +88,13 @@ export interface SonarqubeMeasure {
 }
 
 /**
+ * Type of authentication used for the SonarQube instance.
+ * Can be 'basic' for basic authentication or 'token' for token-based authentication.
+ * @public
+ */
+export type SonarqubeAuthType = 'basic' | 'token';
+
+/**
  * Information about a Sonarqube instance.
  * @public
  */
@@ -108,6 +115,12 @@ export interface SonarqubeInstanceConfig {
    * Access token to access the sonarqube instance as generated in user profile.
    */
   apiKey: string;
+  /**
+   * Type of authentication used for the SonarQube instance.
+   * Can be 'basic' for basic authentication or 'token' for token-based authentication.
+   * Defaults to 'token'.
+   */
+  authType?: SonarqubeAuthType;
 }
 
 interface ComponentWrapper {
@@ -136,12 +149,13 @@ export class SonarqubeConfig {
     const sonarqubeConfig = config.getConfig('sonarqube');
 
     // load all named instance config
-    const namedInstanceConfig =
+    const namedInstanceConfig: SonarqubeInstanceConfig[] =
       sonarqubeConfig.getOptionalConfigArray('instances')?.map(c => ({
         name: c.getString('name'),
         baseUrl: c.getString('baseUrl'),
         externalBaseUrl: c.getOptionalString('externalBaseUrl'),
         apiKey: c.getString('apiKey'),
+        authType: c.getOptionalString('authType') as SonarqubeAuthType,
       })) || [];
 
     // load unnamed default config
@@ -154,6 +168,7 @@ export class SonarqubeConfig {
     const externalBaseUrl =
       sonarqubeConfig.getOptionalString('externalBaseUrl');
     const apiKey = sonarqubeConfig.getOptionalString('apiKey');
+    const authType = sonarqubeConfig.getOptionalString('authType');
 
     if (hasNamedDefault && (baseUrl || externalBaseUrl || apiKey)) {
       throw new Error(
@@ -170,13 +185,20 @@ export class SonarqubeConfig {
     }
 
     if (unnamedAllPresent) {
-      const unnamedInstanceConfig = [
-        { name: DEFAULT_SONARQUBE_NAME, baseUrl, externalBaseUrl, apiKey },
+      const unnamedInstanceConfig: SonarqubeInstanceConfig[] = [
+        {
+          name: DEFAULT_SONARQUBE_NAME,
+          baseUrl,
+          externalBaseUrl,
+          apiKey,
+          authType,
+        },
       ] as {
         name: string;
         baseUrl: string;
         externalBaseUrl?: string;
         apiKey: string;
+        authType?: SonarqubeAuthType;
       }[];
 
       return new SonarqubeConfig([
@@ -257,12 +279,14 @@ export class DefaultSonarqubeInfoProvider implements SonarqubeInfoProvider {
    *
    * @param instanceUrl - URL of the sonarqube instance
    * @param token - token to access the sonarqube instance
+   * @param authType - Type of authentication used for the SonarQube instance
    * @returns The list of supported metrics, if no metrics are supported an empty list is provided in the promise
    */
   // TODO(awanlin) - Add @private back
   private async getSupportedMetrics(
     instanceUrl: string,
     token: string,
+    authType: SonarqubeAuthType | undefined,
   ): Promise<string[]> {
     const metrics: string[] = [];
     let nextPage: number = 1;
@@ -271,7 +295,10 @@ export class DefaultSonarqubeInfoProvider implements SonarqubeInfoProvider {
       const result = await this.callApi<{
         metrics: Array<{ key: string }>;
         total: number;
-      }>(instanceUrl, 'api/metrics/search', token, { ps: 500, p: nextPage });
+      }>(instanceUrl, 'api/metrics/search', token, authType, {
+        ps: 500,
+        p: nextPage,
+      });
       metrics.push(...(result?.metrics?.map(m => m.key) ?? []));
 
       if (result && metrics.length < result.total) {
@@ -288,6 +315,7 @@ export class DefaultSonarqubeInfoProvider implements SonarqubeInfoProvider {
    * @param url - URL of the API to call
    * @param path - path to call
    * @param authToken - token used as basic auth user without password
+   * @param authType - Type of authentication used for the SonarQube instance
    * @param query - parameters to provide to the call
    * @returns A promise on the answer to the API call if the answer status code is 200, undefined otherwise.
    */
@@ -296,14 +324,26 @@ export class DefaultSonarqubeInfoProvider implements SonarqubeInfoProvider {
     url: string,
     path: string,
     authToken: string,
+    authType: SonarqubeAuthType | undefined,
     query: { [key in string]: any },
   ): Promise<T | undefined> {
     const fullUrl = `${url}/${path}?${new URLSearchParams(query).toString()}`;
 
+    // Sonarqube >= v10.4 uses token-based authentication
+    let authHeader = `Bearer ${authToken}`;
+
+    // Sonarqube <= v10.4 uses basic auth with an base64 encode password and no username
+    // but standard dictate the colon (separator) need to stay here despite the
+    // lack of password
+    if (authType === 'basic') {
+      const encodedAuthToken = Buffer.from(`${authToken}:`).toString('base64');
+      authHeader = `Basic ${encodedAuthToken}`;
+    }
+
     const response = await fetch(fullUrl, {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${authToken}`,
+        Authorization: authHeader,
       },
     });
     if (!response.ok) {
@@ -344,7 +384,7 @@ export class DefaultSonarqubeInfoProvider implements SonarqubeInfoProvider {
     instanceName?: string;
   }): Promise<SonarqubeFindings | undefined> {
     const { componentKey, instanceName } = options;
-    const { baseUrl, apiKey } = this.config.getInstanceConfig({
+    const { baseUrl, apiKey, authType } = this.config.getInstanceConfig({
       sonarqubeName: instanceName,
     });
 
@@ -353,6 +393,7 @@ export class DefaultSonarqubeInfoProvider implements SonarqubeInfoProvider {
       baseUrl,
       'api/components/show',
       apiKey,
+      authType,
       {
         component: componentKey,
       },
@@ -362,7 +403,11 @@ export class DefaultSonarqubeInfoProvider implements SonarqubeInfoProvider {
     }
 
     // select the metrics that are supported by the SonarQube instance
-    const supportedMetrics = await this.getSupportedMetrics(baseUrl, apiKey);
+    const supportedMetrics = await this.getSupportedMetrics(
+      baseUrl,
+      apiKey,
+      authType,
+    );
     const wantedMetrics: string[] = [
       'alert_status',
       'bugs',
@@ -387,6 +432,7 @@ export class DefaultSonarqubeInfoProvider implements SonarqubeInfoProvider {
       baseUrl,
       'api/measures/component',
       apiKey,
+      authType,
       {
         component: componentKey,
         metricKeys: metricsToQuery.join(','),
