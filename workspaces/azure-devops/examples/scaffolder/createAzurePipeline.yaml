@@ -43,7 +43,7 @@ spec:
           type: string
           default: Azure Pipelines
           description: The name of the agent pool to use for the pipeline.
-      
+
   # These steps are executed in the scaffolder backend, using data that we gathered
   # via the parameters above.
   steps:
