@@ -4,6 +4,8 @@ This plugin is part of the AGNTCY(agntcy.org) community effort to provide the ri
 It allows the integration of any agent supporting A2A (Agent2Agent Protocol) especially the platfrom related agents released under the CNOE (Cloud Native Operational Excellence)
 open source organization:
 
+Please take a look here for detailed documentation on those agents: https://github.com/cnoe-io/agentic-ai/wiki/Getting%E2%80%90Started
+
 - agent-template (https://github.com/cnoe-io/agent-template) - template to be used as a starting point for creating new ACP agents
 
 - agent-argocd (https://github.com/cnoe-io/agent-argocd) - agent for interacting with ArgoCD
@@ -11,8 +13,6 @@ open source organization:
 - agent-atlassian (https://github.com/cnoe-io/agent-atlassian) - agent for managing JIRA
 
 - agent-github (https://github.com/cnoe-io/agent-github) - agent for managing github
-
-- agent-backstage (https://github.com/cnoe-io/agent-backstage) - agent for managing backstage
 
 - agent-slack (https://github.com/cnoe-io/agent-slack) - agent for interacting with slack
 
