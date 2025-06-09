@@ -15,11 +15,6 @@
  */
 import type { LoggerService } from '@backstage/backend-plugin-api';
 import { mockServices } from '@backstage/backend-test-utils';
-import {
-  GroupEntityV1alpha1,
-  parseEntityRef,
-  UserEntityV1alpha1,
-} from '@backstage/catalog-model';
 import { Config } from '@backstage/config';
 import {
   AuthorizeResult,
@@ -42,17 +37,15 @@ import { MockClient } from 'knex-mock-client';
 
 import { resolve } from 'path';
 
-import { GROUPS_FOR_TESTS } from '../../__fixtures__/data/hierarchy/groups';
-import { USERS_FOR_TEST } from '../../__fixtures__/data/hierarchy/users';
 import {
   mockAuditorService,
-  catalogApiMock,
   conditionalStorageMock,
   csvPermFile,
   mockAuthService,
   mockClientKnex,
   pluginMetadataCollectorMock,
   roleMetadataStorageMock,
+  catalogMock,
 } from '../../__fixtures__/mock-utils';
 import { CasbinDBAdapterFactory } from '../database/casbin-adapter-factory';
 import { RoleMetadataStorage } from '../database/role-metadata';
@@ -75,24 +68,8 @@ type PermissionAction = 'create' | 'read' | 'update' | 'delete';
  */
 describe('Policy checks for users and groups', () => {
   let policy: RBACPermissionPolicy;
-  const testUsers = convertUsersToEntity();
-  const testGroups = convertGroupsToEntity();
 
   beforeEach(async () => {
-    catalogApiMock.getEntities.mockImplementation((arg: any) => {
-      const hasMember = arg.filter['relations.hasMember'];
-      if (hasMember) {
-        const filtered = testGroups.filter(group => {
-          const foundUser = testUsers.find(
-            user => user.metadata.name === parseEntityRef(hasMember).name,
-          );
-          return foundUser?.spec.memberOf?.includes(group.metadata.name);
-        });
-        return { items: filtered };
-      }
-      return { items: testGroups };
-    });
-
     const policyChecksCSV = resolve(
       __dirname,
       '../../__fixtures__/data/hierarchy/rbac-policy.csv',
@@ -103,10 +80,6 @@ describe('Policy checks for users and groups', () => {
     const enfDelegate = await newEnforcerDelegate(adapter, config);
 
     policy = await newPermissionPolicy(config, enfDelegate);
-  });
-
-  afterEach(() => {
-    (catalogApiMock.getEntities as jest.Mock).mockReset();
   });
 
   // Simple user to role tests
@@ -1084,7 +1057,7 @@ async function createEnforcer(
   const enf = await newEnforcer(theModel, adapter);
 
   const rm = new BackstageRoleManager(
-    catalogApiMock,
+    catalogMock,
     logger,
     catalogDBClient,
     rbacDBClient,
@@ -1145,47 +1118,4 @@ async function newPermissionPolicy(
   );
   clearAuditorMock();
   return permissionPolicy;
-}
-
-function convertGroupsToEntity(): GroupEntityV1alpha1[] {
-  const groupsMocked = GROUPS_FOR_TESTS.map(group => {
-    const entityMock: GroupEntityV1alpha1 = {
-      apiVersion: 'backstage.io/v1alpha1',
-      kind: 'Group',
-      metadata: {
-        name: group.name,
-        namespace: 'default',
-        title: group.title,
-      },
-      spec: {
-        children: group.children,
-        parent: group.parent!,
-        type: 'team',
-      },
-    };
-    return entityMock;
-  });
-  return groupsMocked;
-}
-
-function convertUsersToEntity(): UserEntityV1alpha1[] {
-  const usersMocked = USERS_FOR_TEST.map(user => {
-    const entityMock: UserEntityV1alpha1 = {
-      apiVersion: 'backstage.io/v1alpha1',
-      kind: 'User',
-      metadata: {
-        name: user.name,
-        namespace: 'default',
-      },
-      spec: {
-        memberOf: user.memberOf,
-        profile: {
-          displayName: user.displayName,
-          email: user.email,
-        },
-      },
-    };
-    return entityMock;
-  });
-  return usersMocked;
 }
