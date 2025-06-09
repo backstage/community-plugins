@@ -43,6 +43,7 @@ import { MODEL } from '../service/permission-model';
 import { CSVFileWatcher } from './csv-file-watcher';
 import { mockAuditorService } from '../../__fixtures__/mock-utils';
 import { conditionalStorageMock } from '../../__fixtures__/mock-utils';
+import { catalogServiceMock } from '@backstage/plugin-catalog-node/testUtils';
 
 const legacyPermission = [
   'role:default/legacy',
@@ -70,25 +71,6 @@ const configPermission = [
 ];
 
 const configRole = ['user:default/guest', 'role:default/config'];
-
-// TODO: Move to 'catalogServiceMock' from '@backstage/plugin-catalog-node/testUtils'
-// once '@backstage/plugin-catalog-node' is upgraded
-const catalogApiMock = {
-  getEntityAncestors: jest.fn().mockImplementation(),
-  getLocationById: jest.fn().mockImplementation(),
-  getEntities: jest.fn().mockImplementation(),
-  getEntitiesByRefs: jest.fn().mockImplementation(),
-  queryEntities: jest.fn().mockImplementation(),
-  getEntityByRef: jest.fn().mockImplementation(),
-  refreshEntity: jest.fn().mockImplementation(),
-  getEntityFacets: jest.fn().mockImplementation(),
-  addLocation: jest.fn().mockImplementation(),
-  getLocationByRef: jest.fn().mockImplementation(),
-  removeLocationById: jest.fn().mockImplementation(),
-  removeEntityByUid: jest.fn().mockImplementation(),
-  validateEntity: jest.fn().mockImplementation(),
-  getLocationByEntity: jest.fn().mockImplementation(),
-};
 
 const mockLoggerService = mockServices.logger.mock();
 
@@ -810,7 +792,7 @@ async function createEnforcer(
   const config = newConfig();
 
   const rm = new BackstageRoleManager(
-    catalogApiMock,
+    catalogServiceMock.mock(),
     logger,
     catalogDBClient,
     rbacDBClient,

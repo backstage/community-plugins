@@ -36,7 +36,6 @@ import { MODEL } from '../src/service/permission-model';
 import { PluginPermissionMetadataCollector } from '../src/service/plugin-endpoints';
 import {
   mockAuditorService,
-  catalogApiMock,
   conditionalStorageMock,
   csvPermFile,
   mockAuthService,
@@ -45,6 +44,14 @@ import {
   roleMetadataStorageMock,
 } from './mock-utils';
 import { clearAuditorMock } from './auditor-test-utils';
+import { catalogServiceMock } from '@backstage/plugin-catalog-node/testUtils';
+import { USERS_FOR_TEST } from './data/hierarchy/users';
+import {
+  Entity,
+  GroupEntityV1alpha1,
+  UserEntityV1alpha1,
+} from '@backstage/catalog-model';
+import { GROUPS_FOR_TESTS } from './data/hierarchy/groups';
 
 export function newConfig(
   permFile?: string,
@@ -100,7 +107,7 @@ export async function createEnforcer(
   const enf = await newEnforcer(theModel, adapter);
 
   const rm = new BackstageRoleManager(
-    catalogApiMock,
+    catalogServiceMock.mock(),
     logger,
     catalogDBClient,
     rbacDBClient,
@@ -161,4 +168,66 @@ export async function newPermissionPolicy(
   );
   clearAuditorMock();
   return permissionPolicy;
+}
+
+export function convertGroupsToEntity(
+  groups?: {
+    name: string;
+    title: string;
+    children: never[];
+    parent: string | null;
+    hasMember: string[];
+  }[],
+): Entity[] {
+  const groupsForTests = groups ?? GROUPS_FOR_TESTS;
+  const groupsMocked = groupsForTests.map(group => {
+    const entityMock: GroupEntityV1alpha1 = {
+      apiVersion: 'backstage.io/v1alpha1',
+      kind: 'Group',
+      metadata: {
+        name: group.name,
+        namespace: 'default',
+        title: group.title,
+      },
+      spec: {
+        children: group.children,
+        parent: group.parent!,
+        type: 'team',
+      },
+      relations: [
+        ...group.hasMember.map(member => ({
+          type: 'hasMember',
+          targetRef: member,
+        })),
+      ],
+    };
+    return entityMock;
+  });
+  return groupsMocked;
+}
+
+export function convertUsersToEntity(): Entity[] {
+  const usersMocked = USERS_FOR_TEST.map(user => {
+    const entityMock: UserEntityV1alpha1 = {
+      apiVersion: 'backstage.io/v1alpha1',
+      kind: 'User',
+      metadata: {
+        name: user.name,
+        namespace: 'default',
+      },
+      spec: {
+        memberOf: user.memberOf,
+        profile: {
+          displayName: user.displayName,
+          email: user.email,
+        },
+      },
+      relations: user.memberOf.map(member => ({
+        type: 'memberOf',
+        targetRef: member,
+      })),
+    };
+    return entityMock;
+  });
+  return usersMocked;
 }
