@@ -10,6 +10,12 @@ open source organization:
 
 - agent-atlassian (https://github.com/cnoe-io/agent-atlassian) - agent for managing JIRA
 
+- agent-github (https://github.com/cnoe-io/agent-github) - agent for managing github
+
+- agent-backstage (https://github.com/cnoe-io/agent-backstage) - agent for managing backstage
+
+- agent-slack (https://github.com/cnoe-io/agent-slack) - agent for interacting with slack
+
 ## Configuration
 
 ### A2A agents

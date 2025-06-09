@@ -40,9 +40,6 @@ import { v4 as uuidv4 } from 'uuid';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 
-// eslint-disable-next-line
-import process from 'process';
-
 interface IChatFeedback {
   [key: number]: Feedback;
 }
@@ -102,6 +99,12 @@ function ChatAssistantApp() {
   const closeChat = () => setIsOpen(false);
   const fullScreen = () => setIsFullScreen(prev => !prev);
 
+  const resetChatId = () => {
+    const newChatId = uuidv4();
+    setChatId(newChatId);
+    return newChatId;
+  };
+
   const resetChat = () => {
     setMessages(_ => []);
     setFeedback({});
@@ -109,6 +112,7 @@ function ChatAssistantApp() {
     setIsTyping(false);
     setHasQuestion(false);
     setIsInitialState(true);
+    resetChatId();
   };
 
   const startQuestion = () => setHasQuestion(true);
@@ -170,42 +174,19 @@ function ChatAssistantApp() {
     messages.length,
   ]);
 
-  const createChatId = () => {
-    if (chatId) {
-      // console.log('Using existing Chat ID:', chatId);
-      return chatId;
-    }
-    // console.log('Creating Chat ID:', chatId);
-    const newChatId = uuidv4();
-    setChatId(newChatId);
-    return newChatId;
-  };
-
   useEffect(() => {
-    createChatId();
+    resetChatId();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const resetChatId = () => {
-    // console.log('Resetting Chat ID');
-    setChatId('');
-  };
-
   const getChatId = () => {
-    // console.log('getChatId:', chatId);
+    if (!chatId && chatId.length === 0) {
+      resetChatId();
+    }
     return chatId;
   };
 
   async function sendAnswerMessage(response: IQuestionResponse): Promise<void> {
-    if (isSuggestions(response)) {
-      await addBotMessage({
-        text: 'Please select an option:',
-        isUser: false,
-        options: response.suggestions,
-        timestamp: createTimestamp(),
-      });
-      return;
-    }
     if (isAnswer(response)) {
       await addBotMessage({
         text: response.answer,
@@ -217,28 +198,7 @@ function ChatAssistantApp() {
     }
   }
 
-  async function handleOptionSelection(confirmation: string): Promise<void> {
-    try {
-      setIsTyping(true);
-      startQuestion();
-      const response = await chatbotApi.confirmQuestion(chatId, confirmation);
-      if (isAnswer(response)) {
-        sendAnswerMessage(response);
-      } else {
-        await addIntentionalTypingDelay();
-        sendAnswerMessage(await chatbotApi.getAnswer(chatId));
-      }
-    } catch (error) {
-      const err = error as Error;
-      addBotMessage({
-        text: `Error submitting the option: ${err.message}`,
-        isUser: false,
-        timestamp: createTimestamp(),
-      });
-    } finally {
-      setIsTyping(false);
-    }
-  }
+  async function handleOptionSelection(confirmation: string): Promise<void> {}
 
   async function handleMessageSubmit(msg?: string) {
     const input = userInput || msg;
@@ -246,10 +206,6 @@ function ChatAssistantApp() {
       return;
     }
     setIsInitialState(false);
-
-    if (!chatId) {
-      createChatId();
-    }
 
     await addUserMessage({ text: input, isUser: true });
     const timestamp = createTimestamp();
@@ -275,7 +231,7 @@ function ChatAssistantApp() {
         closeChat();
         break;
       case UserResponse.NEW:
-        createChatId();
+        getChatId();
         addBotMessage({
           text: 'I am Jarvis, your AI Platform Engineer. How can I help you today?',
           // Add welcome message suggestions:
@@ -286,11 +242,11 @@ function ChatAssistantApp() {
         break;
       case UserResponse.CONTINUE:
       default: {
-        createChatId();
+        getChatId();
         startQuestion();
         addIntentionalTypingDelay();
         try {
-          const result = await chatbotApi.submitA2ATask(input);
+          const result = await chatbotApi.submitA2ATask(chatId, input);
           addBotMessage({
             text: result,
             suggestions: [],
