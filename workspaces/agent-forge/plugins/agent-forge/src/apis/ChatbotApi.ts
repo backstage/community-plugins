@@ -40,10 +40,9 @@ export class ChatbotApi {
     this.client = new A2AClient(this.apiBaseUrl);
   }
 
-  public async submitA2ATask(msg) {
+  public async submitA2ATask(taskId, msg) {
     try {
       // Send a simple task (pass only params)
-      const taskId = uuidv4();
       const msgId = uuidv4();
       const sendParams: TaskSendParams = {
         id: taskId,
