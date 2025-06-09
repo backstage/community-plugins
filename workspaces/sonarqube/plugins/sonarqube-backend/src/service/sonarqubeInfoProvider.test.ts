@@ -30,7 +30,7 @@ describe('SonarqubeConfig', () => {
   const SONARQUBE_DEFAULT_INSTANCE_NAME = 'default';
   const DUMMY_SONAR_URL = 'https://sonarqube.example.com';
   const DUMMY_SONAR_APIKEY = '123456789abcdef0123456789abcedf012';
-  const DEFAULT_TOKEN_KIND = 'Basic';
+  const DEFAULT_AUTH_TYPE = 'Basic';
 
   const DUMMY_SIMPLE_OBJECT_FOR_DEFAULT_SONARQUBE_CONFIG = {
     name: SONARQUBE_DEFAULT_INSTANCE_NAME,
@@ -66,7 +66,7 @@ describe('SonarqubeConfig', () => {
           name: SONARQUBE_DEFAULT_INSTANCE_NAME,
           baseUrl: DUMMY_SONAR_URL,
           apiKey: DUMMY_SONAR_APIKEY,
-          apiKeyKind: DEFAULT_TOKEN_KIND,
+          authType: DEFAULT_AUTH_TYPE,
         },
       ]);
     });
@@ -81,7 +81,7 @@ describe('SonarqubeConfig', () => {
           name: SONARQUBE_DEFAULT_INSTANCE_NAME,
           baseUrl: DUMMY_SONAR_URL,
           apiKey: DUMMY_SONAR_APIKEY,
-          apiKeyKind: DEFAULT_TOKEN_KIND,
+          authType: DEFAULT_AUTH_TYPE,
         },
       ]);
     });
@@ -100,7 +100,7 @@ describe('SonarqubeConfig', () => {
                 name: 'other',
                 baseUrl: 'https://sonarqube-other.example.com',
                 apiKey: 'abcdef0123456789abcedf0123456789abc',
-                apiKeyKind: DEFAULT_TOKEN_KIND,
+                authType: DEFAULT_AUTH_TYPE,
               },
             ],
           },
@@ -112,13 +112,13 @@ describe('SonarqubeConfig', () => {
           name: SONARQUBE_DEFAULT_INSTANCE_NAME,
           baseUrl: DUMMY_SONAR_URL,
           apiKey: DUMMY_SONAR_APIKEY,
-          apiKeyKind: DEFAULT_TOKEN_KIND,
+          authType: DEFAULT_AUTH_TYPE,
         },
         {
           name: 'other',
           baseUrl: 'https://sonarqube-other.example.com',
           apiKey: 'abcdef0123456789abcedf0123456789abc',
-          apiKeyKind: DEFAULT_TOKEN_KIND,
+          authType: DEFAULT_AUTH_TYPE,
         },
       ]);
     });
@@ -135,7 +135,7 @@ describe('SonarqubeConfig', () => {
                   name: SONARQUBE_DEFAULT_INSTANCE_NAME,
                   baseUrl: DUMMY_SONAR_URL,
                   apiKey: DUMMY_SONAR_APIKEY,
-                  apiKeyKind: DEFAULT_TOKEN_KIND,
+                  authType: DEFAULT_AUTH_TYPE,
                 },
               ],
             },
@@ -481,7 +481,7 @@ describe('DefaultSonarqubeInfoProvider', () => {
         sonarqube: {
           baseUrl: MOCK_BASE_URL,
           apiKey: '123456789abcdef0123456789abcedf012',
-          apiKeyKind: 'Bearer',
+          authType: 'Bearer',
         },
       });
       expect(
