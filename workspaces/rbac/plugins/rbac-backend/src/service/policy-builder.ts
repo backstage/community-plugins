@@ -23,12 +23,10 @@ import type {
   LoggerService,
   PermissionsRegistryService,
   PermissionsService,
-  UserInfoService,
 } from '@backstage/backend-plugin-api';
 import { CatalogClient } from '@backstage/catalog-client';
 import type { Config } from '@backstage/config';
 import type { PermissionEvaluator } from '@backstage/plugin-permission-common';
-import { PermissionPolicy } from '@backstage/plugin-permission-node';
 
 import { newEnforcer, newModelFromString } from 'casbin';
 import type { Router } from 'express';
@@ -55,6 +53,7 @@ import { rules } from '../permissions';
 import { permissionMetadataResourceRef } from '../permissions/resource';
 import { PermissionDependentPluginDatabaseStore } from '../database/extra-permission-enabled-plugins-storage';
 import { ExtendablePluginIdProvider } from './extendable-id-provider';
+import { PolicyExtensionPoint } from '@backstage/plugin-permission-node/alpha';
 
 /**
  * @public
@@ -67,9 +66,9 @@ export type EnvOptions = {
   auth: AuthService;
   httpAuth: HttpAuthService;
   auditor: AuditorService;
-  userInfo: UserInfoService;
   lifecycle: LifecycleService;
   permissionsRegistry: PermissionsRegistryService;
+  policy: PolicyExtensionPoint;
 };
 
 /**
@@ -78,11 +77,8 @@ export type EnvOptions = {
 export type RBACRouterOptions = {
   config: Config;
   logger: LoggerService;
-  discovery: DiscoveryService;
-  policy: PermissionPolicy;
   auth: AuthService;
   httpAuth: HttpAuthService;
-  userInfo: UserInfoService;
   permissions: PermissionsService;
   permissionsRegistry: PermissionsRegistryService;
   auditor: AuditorService;
@@ -97,8 +93,6 @@ export class PolicyBuilder {
     pluginIdProvider: PluginIdProvider = { getPluginIds: () => [] },
     rbacProviders?: Array<RBACProvider>,
   ): Promise<Router> {
-    let policy: PermissionPolicy;
-
     const databaseManager = DatabaseManager.fromConfig(env.config).forPlugin(
       'permission',
       { logger: env.logger, lifecycle: env.lifecycle },
@@ -189,33 +183,32 @@ export class PolicyBuilder {
     if (isPluginEnabled) {
       env.logger.info('RBAC backend plugin was enabled');
 
-      policy = await RBACPermissionPolicy.build(
-        env.logger,
-        env.auditor,
-        env.config,
-        conditionStorage,
-        enforcerDelegate,
-        roleMetadataStorage,
-        databaseClient,
-        pluginPermMetaData,
-        env.auth,
+      env.policy.setPolicy(
+        await RBACPermissionPolicy.build(
+          env.logger,
+          env.auditor,
+          env.config,
+          conditionStorage,
+          enforcerDelegate,
+          roleMetadataStorage,
+          databaseClient,
+          pluginPermMetaData,
+          env.auth,
+        ),
       );
     } else {
       env.logger.warn(
         'RBAC backend plugin was disabled by application config permission.enabled: false',
       );
 
-      policy = new AllowAllPolicy();
+      env.policy.setPolicy(new AllowAllPolicy());
     }
 
     const options: RBACRouterOptions = {
       config: env.config,
       logger: env.logger,
-      discovery: env.discovery,
-      policy,
       auth: env.auth,
       httpAuth: env.httpAuth,
-      userInfo: env.userInfo,
       permissions: env.permissions,
       permissionsRegistry: env.permissionsRegistry,
       auditor: env.auditor,

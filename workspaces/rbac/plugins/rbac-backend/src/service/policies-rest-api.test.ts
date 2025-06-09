@@ -35,7 +35,6 @@ import {
 } from '@backstage-community/plugin-rbac-common';
 
 import { RoleMetadataDao } from '../database/role-metadata';
-import { RBACPermissionPolicy } from '../policies/permission-policy';
 import { EnforcerDelegate } from './enforcer-delegate';
 import {
   PluginMetadataResponseSerializedRule,
@@ -49,12 +48,9 @@ import {
   credentials,
   enforcerDelegateMock,
   mockAuthService,
-  mockClientKnex,
-  mockDiscovery,
   mockedAuthorizeConditional,
   mockHttpAuth,
   mockLoggerService,
-  mockUserInfoService,
   mockPermissionEvaluator,
   pluginMetadataCollectorMock,
   providerMock,
@@ -246,21 +242,8 @@ describe('REST policies API', () => {
     const options: RBACRouterOptions = {
       config: config,
       logger: mockLoggerService,
-      discovery: mockDiscovery,
       httpAuth: mockHttpAuth,
       auth: mockAuthService,
-      policy: await RBACPermissionPolicy.build(
-        mockLoggerService,
-        mockAuditorService,
-        config,
-        conditionalStorageMock,
-        enforcerDelegateMock as EnforcerDelegate,
-        roleMetadataStorageMock,
-        mockClientKnex,
-        pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
-        mockAuthService,
-      ),
-      userInfo: mockUserInfoService,
       permissionsRegistry: mockPermissionRegistry,
       auditor: mockAuditorService,
       permissions: mockPermissionEvaluator,
@@ -711,7 +694,7 @@ describe('REST policies API', () => {
         },
       ]);
       expect(mockLoggerService.warn).toHaveBeenNthCalledWith(
-        2,
+        1,
         `Permission policy with resource type 'policy-entity' and action 'create' has been removed. Please consider updating policy ${deprecatedPolicy} to use 'policy.entity.create' instead of 'policy-entity' from source rest`,
       );
     });
@@ -896,7 +879,7 @@ describe('REST policies API', () => {
         },
       ]);
       expect(mockLoggerService.warn).toHaveBeenNthCalledWith(
-        2,
+        1,
         `Permission policy with resource type 'policy-entity' and action 'create' has been removed. Please consider updating policy ${deprecatedPolicy} to use 'policy.entity.create' instead of 'policy-entity' from source rest`,
       );
     });
@@ -3830,21 +3813,8 @@ describe('REST policies API', () => {
       const options: RBACRouterOptions = {
         config: config,
         logger: mockLoggerService,
-        discovery: mockDiscovery,
         httpAuth: mockHttpAuth,
         auth: mockAuthService,
-        policy: await RBACPermissionPolicy.build(
-          mockLoggerService,
-          mockAuditorService,
-          config,
-          conditionalStorageMock,
-          enforcerDelegateMock as EnforcerDelegate,
-          roleMetadataStorageMock,
-          mockClientKnex,
-          pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
-          mockAuthService,
-        ),
-        userInfo: mockUserInfoService,
         permissionsRegistry: mockPermissionRegistry,
         auditor: mockAuditorService,
         permissions: mockPermissionEvaluator,

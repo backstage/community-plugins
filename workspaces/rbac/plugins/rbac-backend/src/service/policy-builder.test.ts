@@ -31,6 +31,8 @@ import {
   mockPermissionRegistry,
 } from '../../__fixtures__/mock-utils';
 
+import { PolicyExtensionPoint } from '@backstage/plugin-permission-node/alpha';
+
 const enforcerMock: Partial<Enforcer> = {
   loadPolicy: jest.fn().mockImplementation(async () => {}),
   enableAutoSave: jest.fn().mockImplementation(() => {}),
@@ -118,6 +120,10 @@ const providerMock: RBACProvider = {
   refresh: jest.fn().mockImplementation(),
 };
 
+const policyExtensionPointMock: PolicyExtensionPoint = {
+  setPolicy: jest.fn().mockImplementation(),
+};
+
 describe('PolicyBuilder', () => {
   const backendPluginIDsProviderMock = {
     getPluginIds: jest.fn().mockImplementation(() => {
@@ -151,12 +157,12 @@ describe('PolicyBuilder', () => {
         logger: mockLoggerService,
         discovery: mockServices.discovery.mock(),
         permissions: mockServices.permissions.mock(),
-        userInfo: mockServices.userInfo.mock(),
         auth: mockServices.auth.mock(),
         httpAuth: mockServices.httpAuth.mock(),
         auditor: mockServices.auditor.mock(),
         lifecycle: mockServices.lifecycle.mock(),
         permissionsRegistry: mockPermissionRegistry,
+        policy: policyExtensionPointMock,
       },
       backendPluginIDsProviderMock,
     );
@@ -197,12 +203,12 @@ describe('PolicyBuilder', () => {
         logger: mockLoggerService,
         discovery: mockServices.discovery.mock(),
         permissions: mockServices.permissions.mock(),
-        userInfo: mockServices.userInfo.mock(),
         auth: mockServices.auth.mock(),
         httpAuth: mockServices.httpAuth.mock(),
         auditor: mockServices.auditor.mock(),
         lifecycle: mockServices.lifecycle.mock(),
         permissionsRegistry: mockPermissionRegistry,
+        policy: policyExtensionPointMock,
       },
       backendPluginIDsProviderMock,
       [providerMock],
@@ -242,12 +248,12 @@ describe('PolicyBuilder', () => {
         logger: mockLoggerService,
         discovery: mockServices.discovery.mock(),
         permissions: mockServices.permissions.mock(),
-        userInfo: mockServices.userInfo.mock(),
         auth: mockServices.auth.mock(),
         httpAuth: mockServices.httpAuth.mock(),
         auditor: mockServices.auditor.mock(),
         lifecycle: mockServices.lifecycle.mock(),
         permissionsRegistry: mockPermissionRegistry,
+        policy: policyExtensionPointMock,
       },
       backendPluginIDsProviderMock,
     );
