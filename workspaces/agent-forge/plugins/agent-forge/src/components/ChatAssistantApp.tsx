@@ -17,7 +17,7 @@ import ChatFeedback from './ChatFeedback';
 import ChatHeader from './ChatHeader';
 import ChatInput from './ChatInput';
 import ChatTabs from './ChatTabs';
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import WebexLogo from '../icons/jarvis.png';
 import useStyles from './useStyles';
 import { ChatSuggestionOptions } from './ChatSuggestionOptions';
@@ -40,9 +40,6 @@ import { v4 as uuidv4 } from 'uuid';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 
-// eslint-disable-next-line
-import process from 'process';
-
 interface IChatFeedback {
   [key: number]: Feedback;
 }
@@ -56,7 +53,9 @@ function ChatAssistantApp() {
     appThemeApi.getActiveThemeId(),
   );
   const logWithContext = (message: string) => {
-    // console.log(`[ChatAssistantApp] ${message}`);
+    // TODO: we should find a better way to handle this down the road
+    // eslint-disable-next-line no-console
+    console.log(`[ChatAssistantApp] ${message}`);
   };
   const backendUrl =
     config.getOptionalString('agentForge.baseUrl') ||
@@ -189,11 +188,6 @@ function ChatAssistantApp() {
   const resetChatId = () => {
     // console.log('Resetting Chat ID');
     setChatId('');
-  };
-
-  const getChatId = () => {
-    // console.log('getChatId:', chatId);
-    return chatId;
   };
 
   async function sendAnswerMessage(response: IQuestionResponse): Promise<void> {

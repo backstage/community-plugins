@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 import logo from '../icons/jarvis.png';
 import useStyles from './useStyles';
 import Box from '@mui/material/Box';

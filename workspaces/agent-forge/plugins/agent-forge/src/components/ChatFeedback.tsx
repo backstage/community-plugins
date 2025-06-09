@@ -13,15 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 import { Message, Feedback } from '../types';
 import ChatMessages from './ChatMessages';
 import { alertApiRef, useApi } from '@backstage/core-plugin-api';
-import { IChatbotApi } from '../apis';
+import { ChatbotApi } from '../apis';
 
 interface ChatFeedbackProps {
   handleMessageSubmit: (msg?: string) => void;
-  chatbotApi: IChatbotApi;
+  chatbotApi: ChatbotApi;
   messages: Message[];
   feedback: { [key: number]: Feedback };
   isTyping: boolean;

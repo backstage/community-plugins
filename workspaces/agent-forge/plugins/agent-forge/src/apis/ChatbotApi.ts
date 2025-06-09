@@ -13,21 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import axios, { AxiosError } from 'axios';
-import {
-  IQuestionSubmitResponse,
-  ApiStatus,
-  IAnswerResponse,
-  IQuestionTask,
-} from '../types';
 
-import {
-  A2AClient,
-  Task,
-  TaskQueryParams,
-  TaskSendParams,
-} from '../a2a/client'; // Import necessary types
+import { A2AClient, Task } from '../a2a/client'; // Import necessary types
 import { v4 as uuidv4 } from 'uuid'; // Example for generating task IDs
+import { MessageSendParams } from '../a2a/schema';
+import { Feedback, IQuestionResponse, Message } from '../types';
 
 export interface IChatbotApiOptions {}
 
@@ -40,21 +30,23 @@ export class ChatbotApi {
     this.client = new A2AClient(this.apiBaseUrl);
   }
 
-  public async submitA2ATask(msg) {
+  public async submitA2ATask(msg: string) {
     try {
       // Send a simple task (pass only params)
       const taskId = uuidv4();
       const msgId = uuidv4();
-      const sendParams: TaskSendParams = {
+      const sendParams: MessageSendParams = {
         id: taskId,
         message: {
           messageId: msgId,
           role: 'user',
-          parts: [{ text: msg, type: 'text' }],
+          parts: [{ text: msg, kind: 'text' }],
         },
       };
       // Method now returns Task | null directly
-      const taskResult: Task | null = await this.client.sendMessage(sendParams);
+      const taskResult: Task | null = await this.client?.sendMessage(
+        sendParams,
+      );
       const status = taskResult.result.status.state;
       let result = '';
       if (status === 'completed') {
@@ -68,5 +60,23 @@ export class ChatbotApi {
       // console.error("A2A Client Error:", error);
       return '';
     }
+  }
+
+  public async confirmQuestion(
+    _chatId: string,
+    _confirmation: string,
+  ): Promise<IQuestionResponse> {
+    throw new Error('Not implemented');
+  }
+
+  public async getAnswer(_chatId: string): Promise<IQuestionResponse> {
+    throw new Error('Not implemented');
+  }
+
+  public async submitFeedback(
+    _message: Message,
+    _feedback: Feedback,
+  ): Promise<IQuestionResponse> {
+    throw new Error('Not implemented');
   }
 }

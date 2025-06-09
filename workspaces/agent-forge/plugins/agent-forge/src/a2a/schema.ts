@@ -16,6 +16,7 @@
 
 // This file sourced form the A2A official client js sample - https://github.com/google-a2a/a2a-samples/blob/main/samples/js/src/schema.ts
 /* eslint-disable */
+// @ts-nocheck
 
 // === JSON-RPC Base Structures ===
 
