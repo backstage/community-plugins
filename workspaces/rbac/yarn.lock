@@ -2717,6 +2717,7 @@ __metadata:
     chokidar: "npm:^3.6.0"
     csv-parse: "npm:^5.5.5"
     express: "npm:^4.18.2"
+    express-promise-router: "npm:^4.1.0"
     js-yaml: "npm:^4.1.0"
     knex: "npm:^3.0.0"
     knex-mock-client: "npm:2.0.1"

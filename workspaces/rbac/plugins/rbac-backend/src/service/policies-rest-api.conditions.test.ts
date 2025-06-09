@@ -29,7 +29,6 @@ import {
   RoleConditionalPolicyDecision,
 } from '@backstage-community/plugin-rbac-common';
 
-import { RBACPermissionPolicy } from '../policies/permission-policy';
 import { EnforcerDelegate } from './enforcer-delegate';
 import { PluginPermissionMetadataCollector } from './plugin-endpoints';
 import { PoliciesServer } from './policies-rest-api';
@@ -40,12 +39,9 @@ import {
   credentials,
   enforcerDelegateMock,
   mockAuthService,
-  mockClientKnex,
-  mockDiscovery,
   mockedAuthorize,
   mockHttpAuth,
   mockLoggerService,
-  mockUserInfoService,
   pluginMetadataCollectorMock,
   roleMetadataStorageMock,
   mockPermissionRegistry,
@@ -304,21 +300,8 @@ describe('REST policies api with conditions', () => {
     const options: RBACRouterOptions = {
       config: config,
       logger: mockLoggerService,
-      discovery: mockDiscovery,
       httpAuth: mockHttpAuth,
       auth: mockAuthService,
-      policy: await RBACPermissionPolicy.build(
-        mockLoggerService,
-        mockAuditorService,
-        config,
-        conditionalStorageMock,
-        enforcerDelegateMock as EnforcerDelegate,
-        roleMetadataStorageMock,
-        mockClientKnex,
-        pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
-        mockAuthService,
-      ),
-      userInfo: mockUserInfoService,
       permissionsRegistry: mockPermissionRegistry,
       auditor: mockAuditorService,
       permissions: mockPermissionEvaluator,

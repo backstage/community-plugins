@@ -27,7 +27,6 @@ import {
   NotAllowedError,
   NotFoundError,
 } from '@backstage/errors';
-import { createRouter } from '@backstage/plugin-permission-backend';
 import {
   AuthorizeResult,
   BasicPermission,
@@ -81,6 +80,7 @@ import { conditionTransformerFunc, RBACFilters } from '../permissions';
 import { registerPermissionDefinitionRoutes } from './permission-definition-routes';
 import { PermissionDependentPluginStore } from '../database/extra-permission-enabled-plugins-storage';
 import { ExtendablePluginIdProvider } from './extendable-id-provider';
+import { createRouter } from './router';
 
 export async function authorizeConditional(
   request: Request,

@@ -146,8 +146,6 @@ export const mockAuditorService = mockServices.auditor.mock({
 
 export const credentials = mockCredentials.user();
 export const mockLoggerService = mockServices.logger.mock();
-export const mockUserInfoService = mockServices.userInfo();
-export const mockDiscovery = mockServices.discovery.mock();
 export const mockPermissionRegistry = mockServices.permissionsRegistry.mock({
   getPermissionRuleset: jest.fn(resourceRef => {
     return {
