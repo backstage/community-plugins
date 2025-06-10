@@ -16,12 +16,7 @@
 import { RbacPage } from '@backstage-community/plugin-rbac';
 import { createApp } from '@backstage/app-defaults';
 import { AppRouter, FlatRoutes } from '@backstage/core-app-api';
-import {
-  AlertDisplay,
-  OAuthRequestDialog,
-  SignInPage,
-} from '@backstage/core-components';
-import { githubAuthApiRef } from '@backstage/core-plugin-api';
+import { AlertDisplay, OAuthRequestDialog } from '@backstage/core-components';
 import { apiDocsPlugin, ApiExplorerPage } from '@backstage/plugin-api-docs';
 import {
   CatalogEntityPage,
@@ -51,6 +46,7 @@ import { apis } from './apis';
 import { entityPage } from './components/catalog/EntityPage';
 import { Root } from './components/Root';
 import { searchPage } from './components/search/SearchPage';
+import { SignInPage } from './components/SignInPage/SignInPage';
 
 const app = createApp({
   apis,
@@ -72,21 +68,7 @@ const app = createApp({
     });
   },
   components: {
-    SignInPage: props => (
-      <SignInPage
-        {...props}
-        auto
-        providers={[
-          {
-            id: 'github-auth-provider',
-            title: 'GitHub',
-            message: 'Sign in using GitHub',
-            apiRef: githubAuthApiRef,
-          },
-          'guest',
-        ]}
-      />
-    ),
+    SignInPage: props => <SignInPage {...props} />,
   },
 });
 
