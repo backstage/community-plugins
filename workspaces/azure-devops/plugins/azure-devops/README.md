@@ -166,7 +166,7 @@ the same would apply to the `dev.azure.com/project` annotation using "Has Spaces
 dev.azure.com/project: Has Spaces
 ```
 
-Or using quootes, like this:
+Or using quotes, like this:
 
 ```yaml
 dev.azure.com/project: 'Has Spaces'
