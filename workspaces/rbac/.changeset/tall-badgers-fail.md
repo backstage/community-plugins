@@ -8,8 +8,8 @@ Recent changes to the @backstage/plugin-permission-backend resulted in the depre
 
 Changes required to `packages/backend/src/index.ts`
 
-```ts
+```diff
 // permission plugin
-backend.add(import('@backstage/plugin-permission-backend'));
++ backend.add(import('@backstage/plugin-permission-backend'));
 backend.add(import('@backstage-community/plugin-rbac-backend'));
 ```
