@@ -13,16 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { OAuth2 } from '@backstage/core-app-api';
 import {
   AnyApiFactory,
   configApiRef,
   createApiFactory,
+  createApiRef,
+  discoveryApiRef,
+  oauthRequestApiRef,
+  type ApiRef,
+  type BackstageIdentityApi,
+  type OAuthApi,
+  type OpenIdConnectApi,
+  type ProfileInfoApi,
+  type SessionApi,
 } from '@backstage/core-plugin-api';
 import {
   ScmAuth,
   ScmIntegrationsApi,
   scmIntegrationsApiRef,
 } from '@backstage/integration-react';
+
+type CustomAuthApiRefType = OAuthApi &
+  OpenIdConnectApi &
+  ProfileInfoApi &
+  BackstageIdentityApi &
+  SessionApi;
+
+export const oidcAuthApiRef: ApiRef<CustomAuthApiRefType> = createApiRef({
+  id: 'internal.auth.oidc',
+});
 
 export const apis: AnyApiFactory[] = [
   createApiFactory({
@@ -31,4 +51,24 @@ export const apis: AnyApiFactory[] = [
     factory: ({ configApi }) => ScmIntegrationsApi.fromConfig(configApi),
   }),
   ScmAuth.createDefaultApiFactory(),
+  createApiFactory({
+    api: oidcAuthApiRef,
+    deps: {
+      discoveryApi: discoveryApiRef,
+      oauthRequestApi: oauthRequestApiRef,
+      configApi: configApiRef,
+    },
+    factory: ({ discoveryApi, oauthRequestApi, configApi }) =>
+      OAuth2.create({
+        configApi,
+        discoveryApi,
+        oauthRequestApi,
+        provider: {
+          id: 'oidc',
+          title: 'OIDC',
+          icon: () => null,
+        },
+        environment: configApi.getOptionalString('auth.environment'),
+      }),
+  }),
 ];

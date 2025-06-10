@@ -15425,6 +15425,7 @@ __metadata:
     "@backstage/plugin-auth-backend": "npm:^0.24.5"
     "@backstage/plugin-auth-backend-module-github-provider": "npm:^0.3.2"
     "@backstage/plugin-auth-backend-module-guest-provider": "npm:^0.2.7"
+    "@backstage/plugin-auth-backend-module-oidc-provider": "npm:^0.4.2"
     "@backstage/plugin-auth-node": "npm:^0.6.2"
     "@backstage/plugin-catalog-backend": "npm:^1.32.1"
     "@backstage/plugin-catalog-backend-module-logs": "npm:^0.1.9"
