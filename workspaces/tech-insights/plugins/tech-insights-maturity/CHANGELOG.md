@@ -1,5 +1,20 @@
 # @backstage-community/plugin-tech-insights-maturity
 
+## 0.3.0
+
+### Minor Changes
+
+- a01ae4e: Backstage version bump to v1.39.0
+
+### Patch Changes
+
+- 01640b2: Minor update to the API report.
+- Updated dependencies [d6411fe]
+- Updated dependencies [a01ae4e]
+  - @backstage-community/plugin-tech-insights-common@0.7.0
+  - @backstage-community/plugin-tech-insights-maturity-common@0.3.0
+  - @backstage-community/plugin-tech-insights-react@1.2.0
+
 ## 0.2.2
 
 ### Patch Changes
