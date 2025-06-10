@@ -1,5 +1,11 @@
 # @backstage-community/plugin-sonarqube-backend
 
+## 0.9.1
+
+### Patch Changes
+
+- 65ea416: **BREAKING** This undoes the breaking Authorization header change introduced in v0.7.0 and allows configuring Bearer tokens, while maintaining the old default of Basic. This change will impact SonarQube Cloud users, [details on the config changes needed](https://github.com/backstage/community-plugins/tree/main/workspaces/sonarqube/plugins/sonarqube-backend) in this case are in the `README`.
+
 ## 0.9.0
 
 ### Minor Changes

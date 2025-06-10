@@ -7,8 +7,10 @@
   - [Plugin Owner Expectations](#plugin-owner-expectations)
     - [PR Reviews \& Merging](#pr-reviews--merging)
     - [Issue Triage](#issue-triage)
+    - [Stepping Down as a Plugin Owner](#stepping-down-as-a-plugin-owner)
   - [Version Bumping](#version-bumping)
-- [Opt-in to Automatic Version Bump PRs](#opt-in-to-automatic-version-bump-prs)
+  - [Opt-in to Automatic Version Bump PRs](#opt-in-to-automatic-version-bump-prs)
+  - [Opt-in to Knip Reports Check](#opt-in-to-knip-reports-check)
   - [Maintaining and patching an older release line](#maintaining-and-patching-an-older-release-line)
     - [Patching an older release](#patching-an-older-release)
 
@@ -26,13 +28,32 @@ It is also helpful for workspace owners to review and add approvals to PRs that 
 
 ### Issue Triage
 
-Plugin owners should triage issues related to their plugin as needed. The `@backstage/community-plugin-maintainers` group may tag the listed owners on relevant issues.
+Plugin owners should triage issues related to their plugin as needed. The `@backstage/community-plugin-maintainers` group may tag the listed owners on relevant issues. Issues are labeled as `workspace/<workspace_name>` based on their related workspace automatically by a workflow. Plugin maintainers can use these labels to easily filter and track issues relevant to their plugins.
+
+### Stepping Down as a Plugin Owner
+
+It's okay to step down as a plugin owner — priorities, roles, and availability naturally change over time. It’s better to reflect current reality than to appear active when you’re not available. If you remain listed as a CODEOWNER, GitHub will continue to assign you to issues and reviews, which can lead to confusion or delays for contributors.
+
+If you are no longer maintaining a plugin, please take the following steps to formally step down:
+
+1. Remove yourself from the CODEOWNERS file:
+
+   - Edit the [CODEOWNERS](https://github.com/backstage/community-plugins/blob/main/.github/CODEOWNERS) file to remove your GitHub handle from the plugin or workspace you no longer maintain.
+   - Open a pull request with a description stating that you are stepping down as a maintainer.
+
+2. Leave any associated GitHub teams:
+
+   - If you were added to any GitHub teams specifically for plugin ownership or maintenance, please leave those teams.
+
+3. If you are the last remaining CODEOWNER:
+   - The `@backstage/community-plugins-maintainers` group will provide best-effort support for issues and maintenance. Without a dedicated owner, plugin updates and support may be slower or limited.
+   - To help with this, opt into automatic version bump PRs by creating an empty `.auto-version-bump` file in the plugin’s workspace (i.e., `workspaces/${WORKSPACE}/.auto-version-bump`).
 
 ## Version Bumping
 
 Plugin owners are expected to run the Version Bump script for their workspace. The process follows the guidance outlined in the [Version Bumping Documentation](https://github.com/backstage/community-plugins/blob/main/docs/version-bump.md).
 
-# Opt-in to Automatic Version Bump PRs
+## Opt-in to Automatic Version Bump PRs
 
 Plugin owners can opt in to automatic version bump PRs by creating an empty .auto-version-bump file in the root of their workspace (`workspaces/${WORKSPACE}/.auto-version-bump`). This signals that your plugin should be included in the batch version bump workflow, which is triggered manually by one of the `@backstage/community-plugins-maintainers` .
 
@@ -41,6 +62,12 @@ These automated PRs are intended as a convenience to open the version bump for y
 - Review the PR
 - Make any necessary patches to adopt the upgrade
 - Merge the PR once it's ready
+
+## Opt-in to Knip Reports Check
+
+Plugin owners can opt in to Knip reports check in CI by creating a `bcp.json` file in the root of their workspace (`workspaces/${WORKSPACE}/.auto-version-bump`) and adding `"knip-reports": true`. This ensures that knip reports in your workspace stay up to date.
+
+[Knip](https://knip.dev/) is a tool that helps with clean-up and maintenance by identifying unused dependencies within workspaces. Regularly reviewing and addressing these reports can significantly improve code quality and reduce bloat.
 
 ## Maintaining and patching an older release line
 

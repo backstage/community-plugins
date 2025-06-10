@@ -112,7 +112,7 @@ export class AzureDevOpsApi {
     url: string;
     content: string;
   }>;
-  // (undocumented)
+  // @deprecated (undocumented)
   getRepoBuilds(
     projectName: string,
     repoName: string,
