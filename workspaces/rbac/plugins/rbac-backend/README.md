@@ -34,7 +34,7 @@ Add the RBAC plugin packages as dependencies by running the following command.
 yarn workspace backend add @backstage-community/plugin-rbac-backend
 ```
 
-**NOTE**: If you are using Red Hat Developer Hub backend plugin is pre-installed and you do not need this step.
+**NOTE**: If you are using Red Hat Developer Hub, backend plugin is pre-installed and you do not need this step.
 
 ### Configuring the Backend
 
@@ -42,11 +42,11 @@ yarn workspace backend add @backstage-community/plugin-rbac-backend
 
 The RBAC plugin supports the integration with the new backend system.
 
-Add the RBAC plugin to the `packages/backend/src/index.ts` file and remove the Permission backend plugin and Allow All Permission policy module.
+Add the RBAC plugin to the `packages/backend/src/index.ts` file and remove the Allow All Permission policy module.
 
 ```diff
 // permission plugin
-- backend.add(import('@backstage/plugin-permission-backend/alpha'));
+backend.add(import('@backstage/plugin-permission-backend'));
 - backend.add(
 -    import('@backstage/plugin-permission-backend-module-allow-all-policy'),
 -  );
