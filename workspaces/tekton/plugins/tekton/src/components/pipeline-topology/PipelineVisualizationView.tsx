@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useContext, useMemo } from 'react';
 
 import { EmptyState, Progress } from '@backstage/core-components';
 
@@ -34,12 +34,12 @@ type PipelineVisualizationViewProps = {
 export const PipelineVisualizationView = ({
   pipelineRun,
 }: PipelineVisualizationViewProps) => {
-  const { loaded, responseError, watchResourcesData } = React.useContext(
+  const { loaded, responseError, watchResourcesData } = useContext(
     TektonResourcesContext,
   );
   const { t } = useTranslationRef(tektonTranslationRef);
 
-  const pipelineRunResource = React.useMemo(
+  const pipelineRunResource = useMemo(
     () =>
       getPipelineRun(watchResourcesData?.pipelineruns?.data ?? [], pipelineRun),
     [watchResourcesData, pipelineRun],

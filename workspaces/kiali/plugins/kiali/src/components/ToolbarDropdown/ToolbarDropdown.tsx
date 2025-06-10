@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { MenuItem, Select, Tooltip } from '@material-ui/core';
-import * as React from 'react';
+import { default as React } from 'react';
 import { kialiStyle } from '../../styles/StyleUtils';
 
 const dropdownTitle = kialiStyle({

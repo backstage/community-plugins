@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-cost-insights",
-  "version": "0.15.1",
+  "version": "0.15.2",
   "description": "A Backstage plugin that helps you keep track of your cloud spend",
   "backstage": {
     "role": "frontend-plugin",

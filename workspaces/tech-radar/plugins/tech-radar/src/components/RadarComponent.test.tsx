@@ -38,7 +38,12 @@ describe('RadarComponent', () => {
       await new Promise(resolve => setTimeout(resolve, this.delay));
       return {
         entries: [],
-        quadrants: [],
+        quadrants: [
+          { id: 'infrastructure', name: 'Infrastructure' },
+          { id: 'frameworks', name: 'Frameworks' },
+          { id: 'languages', name: 'Languages' },
+          { id: 'process', name: 'Process' },
+        ],
         rings: [],
       };
     }

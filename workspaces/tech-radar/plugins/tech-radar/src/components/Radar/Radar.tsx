@@ -17,7 +17,15 @@
 import { useMemo, useRef, useState } from 'react';
 import type { Entry, Quadrant, Ring } from '../../utils/types';
 import RadarPlot from '../RadarPlot';
-import { adjustEntries, adjustQuadrants, adjustRings } from './utils';
+import {
+  adjustEntries,
+  adjustQuadrants,
+  adjustRings,
+  determineColumnCount,
+  determineColumnWidth,
+  determineLegendWidth,
+  margin,
+} from './utils';
 
 export type Props = {
   width: number;
@@ -36,10 +44,9 @@ const Radar = ({
   entries,
   ...props
 }: Props): JSX.Element => {
-  // Radius with optional buffer for the footer if rings have descriptions
-  const radius =
-    Math.min(width, height) / 2 -
-    (rings.some(ring => ring.description) ? 16 : 0);
+  const columnWidth = determineColumnWidth(width);
+  const legendWidth = determineLegendWidth(width, columnWidth);
+  const columnCount = determineColumnCount(legendWidth, columnWidth);
 
   // State
   const [activeEntry, setActiveEntry] = useState<Entry>();
@@ -47,9 +54,18 @@ const Radar = ({
 
   // Adjusted props
   const adjustedQuadrants = useMemo(
-    () => adjustQuadrants(quadrants, radius, width, height),
-    [quadrants, radius, width, height],
+    () => adjustQuadrants(quadrants, width, legendWidth, height),
+    [quadrants, width, legendWidth, height],
   );
+
+  const rightMostPoint = adjustedQuadrants[3].legendX + legendWidth;
+  const leftMostPoint = adjustedQuadrants[2].legendX;
+
+  const midpoint = (rightMostPoint + leftMostPoint) / 2;
+  const widthBetween =
+    rightMostPoint - legendWidth - (leftMostPoint + legendWidth);
+  const radius = Math.min(widthBetween, height) / 2 - margin;
+
   const adjustedRings = useMemo(
     () => adjustRings(rings, radius),
     [radius, rings],
@@ -69,9 +85,10 @@ const Radar = ({
   return (
     <svg ref={node} width={width} height={height} {...props.svgProps}>
       <RadarPlot
-        width={width}
+        width={midpoint * 2}
         height={height}
         radius={radius}
+        columnCount={columnCount}
         entries={adjustedEntries}
         quadrants={adjustedQuadrants}
         rings={adjustedRings}

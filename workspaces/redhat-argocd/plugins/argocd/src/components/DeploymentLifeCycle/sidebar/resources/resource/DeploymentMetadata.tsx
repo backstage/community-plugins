@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { Link, makeStyles, Theme } from '@material-ui/core';
-import React from 'react';
 import { useDrawerContext } from '../../../DrawerContext';
 import { Resource } from '@backstage-community/plugin-redhat-argocd-common';
 import { isAppHelmChartType } from '../../../../../utils/utils';

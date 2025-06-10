@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { LineInfo, RawOrBucket } from '../types/VictoryChartInfo';
+import {
+  LineInfo,
+  RawOrBucket,
+} from '@backstage-community/plugin-kiali-common/types';
 
 interface EventItem {
   legendName: string;

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useAsync, useAsyncRetry, useInterval } from 'react-use';
 
 import { useApi } from '@backstage/core-plugin-api';
@@ -40,6 +40,8 @@ type RoleWithConditionalPoliciesCount = Role & {
 };
 
 export const useRoles = (
+  page = 0,
+  pageSize = 5,
   pollInterval?: number,
 ): {
   loading: boolean;
@@ -54,12 +56,11 @@ export const useRoles = (
   retry: { roleRetry: () => void; policiesRetry: () => void };
 } => {
   const rbacApi = useApi(rbacApiRef);
-  const [newRoles, setNewRoles] = React.useState<
-    RoleWithConditionalPoliciesCount[]
-  >([]);
-  const [firstLoad, setFirstLoad] = React.useState(true);
-  const [roleConditionError, setRoleConditionError] =
-    React.useState<string>('');
+  const [newRoles, setNewRoles] = useState<RoleWithConditionalPoliciesCount[]>(
+    [],
+  );
+  const [firstLoad, setFirstLoad] = useState(true);
+  const [roleConditionError, setRoleConditionError] = useState<string>('');
   const {
     loading: loadingRoles,
     value: roles,
@@ -107,13 +108,17 @@ export const useRoles = (
     policyEntityCreatePermissionResult.allowed && canReadUsersAndGroups;
 
   const [loadingConditionalPermission, setLoadingConditionalPermission] =
-    React.useState<boolean>(false);
-  React.useEffect(() => {
+    useState<boolean>(false);
+  useEffect(() => {
     const fetchAllPermissionPolicies = async () => {
       if (!Array.isArray(roles)) return;
       setLoadingConditionalPermission(true);
       const failedFetchConditionRoles: string[] = [];
-      const conditionPromises = roles.map(async role => {
+
+      const startIndex = page * pageSize;
+      const endIndex = startIndex + pageSize;
+      const paginatedRoles = roles.slice(startIndex, endIndex);
+      const conditionPromises = paginatedRoles.map(async role => {
         try {
           const conditionalPolicies = await rbacApi.getRoleConditions(
             role.name,
@@ -150,15 +155,33 @@ export const useRoles = (
         }
       });
 
-      const updatedRoles = await Promise.all(conditionPromises);
+      const settledResults = await Promise.allSettled(conditionPromises);
+      const updatedPageRoles = settledResults.map((result, index) => {
+        if (result.status === 'fulfilled') {
+          return result.value;
+        }
+        const role = paginatedRoles[index];
+        return {
+          ...role,
+          conditionalPoliciesCount: 0,
+          accessiblePlugins: [],
+        };
+      });
+      const updatedRoles = roles.map(role => {
+        const updated = updatedPageRoles.find(r => r.name === role.name);
+        return updated
+          ? updated
+          : { ...role, conditionalPoliciesCount: 0, accessiblePlugins: [] };
+      });
+
       setNewRoles(updatedRoles);
       setLoadingConditionalPermission(false);
     };
 
     fetchAllPermissionPolicies();
-  }, [roles, rbacApi]);
+  }, [roles, rbacApi, page, pageSize]);
 
-  const data: RolesData[] = React.useMemo(
+  const data: RolesData[] = useMemo(
     () =>
       Array.isArray(newRoles) && newRoles?.length > 0
         ? newRoles.reduce(

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { PropsWithChildren } from 'react';
 
 import './TopologySideBarDetailsItem.css';
 
@@ -26,7 +26,7 @@ const TopologySideBarDetailsItem = ({
   label,
   children,
   emptyText,
-}: React.PropsWithChildren<TopologySideBarDetailsItemProps>) => {
+}: PropsWithChildren<TopologySideBarDetailsItemProps>) => {
   return (
     <div className="topology-side-bar-details-item">
       <dt>{label}</dt>

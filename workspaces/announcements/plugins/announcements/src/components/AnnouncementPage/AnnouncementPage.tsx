@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import useAsync from 'react-use/lib/useAsync';
 import { DateTime } from 'luxon';
 import {
@@ -23,18 +23,15 @@ import {
   Content,
   MarkdownContent,
   InfoCard,
-  Link,
 } from '@backstage/core-components';
 import {
   useApi,
   useRouteRef,
   useRouteRefParams,
 } from '@backstage/core-plugin-api';
-import { parseEntityRef } from '@backstage/catalog-model';
 import {
-  EntityDisplayName,
   EntityPeekAheadPopover,
-  entityRouteRef,
+  EntityRefLink,
 } from '@backstage/plugin-catalog-react';
 import { announcementViewRouteRef, rootRouteRef } from '../../routes';
 import { announcementsApiRef } from '@backstage-community/plugin-announcements-react';
@@ -48,20 +45,20 @@ const AnnouncementDetails = ({
   announcement: Announcement;
 }) => {
   const announcementsLink = useRouteRef(rootRouteRef);
-  const entityLink = useRouteRef(entityRouteRef);
   const deepLink = {
     link: announcementsLink(),
     title: 'Back to announcements',
   };
-
-  const publisherRef = parseEntityRef(announcement.publisher);
   const subHeader = (
     <Typography>
       By{' '}
-      <EntityPeekAheadPopover entityRef={announcement.publisher}>
-        <Link to={entityLink(publisherRef)}>
-          <EntityDisplayName entityRef={announcement.publisher} hideIcon />
-        </Link>
+      <EntityPeekAheadPopover
+        entityRef={announcement.on_behalf_of || announcement.publisher}
+      >
+        <EntityRefLink
+          entityRef={announcement.on_behalf_of || announcement.publisher}
+          hideIcon
+        />
       </EntityPeekAheadPopover>
       , {DateTime.fromISO(announcement.created_at).toRelative()}
     </Typography>
@@ -93,7 +90,7 @@ export const AnnouncementPage = (props: AnnouncementPageProps) => {
   );
 
   let title = props.title;
-  let content: React.ReactNode;
+  let content: ReactNode;
 
   if (loading) {
     content = <Progress />;

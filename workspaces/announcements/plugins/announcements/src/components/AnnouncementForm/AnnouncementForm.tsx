@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useState } from 'react';
+import { useState, type ChangeEvent, type FormEvent } from 'react';
 import MDEditor from '@uiw/react-md-editor';
 import { InfoCard } from '@backstage/core-components';
 import { identityApiRef, useApi } from '@backstage/core-plugin-api';
@@ -23,6 +23,7 @@ import {
 } from '@backstage-community/plugin-announcements-react';
 import { Announcement } from '@backstage-community/plugin-announcements-common';
 import CategoryInput from './CategoryInput';
+import OnBehalfTeamDropdown from './OnBehalfTeamDropdown';
 import {
   TextField,
   FormGroup,
@@ -49,33 +50,35 @@ export const AnnouncementForm = ({
   const identityApi = useApi(identityApiRef);
   const { t } = useAnnouncementsTranslation();
 
-  // Ensure `start_at` is properly formatted as an ISO date string
   const formattedStartAt = initialData.start_at
     ? DateTime.fromISO(initialData.start_at).toISODate()
     : DateTime.now().toISODate();
 
-  const [form, setForm] = React.useState({
+  const [form, setForm] = useState({
     ...initialData,
     category: initialData.category?.slug,
     start_at: formattedStartAt || '',
   });
   const [loading, setLoading] = useState(false);
+  const [onBehalfOfSelectedTeam, setOnBehalfOfSelectedTeam] = useState(
+    initialData.on_behalf_of || '',
+  );
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setForm({
       ...form,
       [event.target.id]: event.target.value,
     });
   };
 
-  const handleChangeActive = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeActive = (event: ChangeEvent<HTMLInputElement>) => {
     setForm({
       ...form,
       [event.target.name]: event.target.checked,
     });
   };
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     setLoading(true);
     event.preventDefault();
 
@@ -84,6 +87,7 @@ export const AnnouncementForm = ({
       ...form,
       ...{
         publisher: userIdentity.userEntityRef,
+        on_behalf_of: onBehalfOfSelectedTeam,
       },
     };
 
@@ -113,7 +117,7 @@ export const AnnouncementForm = ({
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={4}>
               <CategoryInput
                 setForm={setForm}
                 form={form}
@@ -121,7 +125,14 @@ export const AnnouncementForm = ({
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={4}>
+              <OnBehalfTeamDropdown
+                selectedTeam={onBehalfOfSelectedTeam}
+                onChange={setOnBehalfOfSelectedTeam}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={4}>
               <TextField
                 variant="outlined"
                 label={t('announcementForm.startAt')}

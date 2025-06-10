@@ -13,16 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
+import { Health } from '@backstage-community/plugin-kiali-common/func';
+import {
+  dicTypeToGVK,
+  IstioConfigItem,
+  NamespaceInfo,
+  ServiceListItem,
+  WorkloadListItem,
+} from '@backstage-community/plugin-kiali-common/types';
+import type { AppListItem } from '@backstage-community/plugin-kiali-common/types';
+import { default as React } from 'react';
 import { StatefulFilters } from '../../components/Filters/StatefulFilters';
 import { serverConfig } from '../../config';
 import { isGateway, isWaypoint } from '../../helpers/LabelFilterHelper';
-import { AppListItem } from '../../types/AppList';
-import { Health } from '../../types/Health';
-import { dicTypeToGVK, IstioConfigItem } from '../../types/IstioConfigList';
-import { NamespaceInfo } from '../../types/NamespaceInfo';
-import { ServiceListItem } from '../../types/ServiceList';
-import { WorkloadListItem } from '../../types/Workload';
 import {
   getGVKTypeString,
   kindToStringIncludeK8s,

@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import { usePermission } from '@backstage/plugin-permission-react';
 import { renderInTestApp } from '@backstage/test-utils';
 
@@ -79,7 +77,7 @@ describe('PermissionsCard', () => {
         canReadUsersAndGroups
       />,
     );
-    expect(queryByText('Permission Policies (3)')).not.toBeNull();
+    expect(queryByText('3 permissions')).not.toBeNull();
     expect(queryByText('Read, Create, Delete')).not.toBeNull();
   });
 
@@ -193,7 +191,7 @@ describe('PermissionsCard', () => {
         canReadUsersAndGroups
       />,
     );
-    expect(queryByText('Permission Policies (4)')).not.toBeNull();
+    expect(queryByText('4 permissions')).not.toBeNull();
     expect(queryByText('Read, Create, Delete', { exact: true })).not.toBeNull();
     expect(queryByText('Read', { exact: true })).not.toBeNull();
     expect(queryByText('1 rule')).not.toBeNull();

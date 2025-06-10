@@ -1,5 +1,16 @@
 # @backstage-community/plugin-catalog-backend-module-linguist-tags-processor
 
+## 0.9.0
+
+### Minor Changes
+
+- adc3ea9: Backstage version bump to v1.39.0
+
+### Patch Changes
+
+- Updated dependencies [adc3ea9]
+  - @backstage-community/plugin-linguist-common@0.8.0
+
 ## 0.8.0
 
 ### Minor Changes

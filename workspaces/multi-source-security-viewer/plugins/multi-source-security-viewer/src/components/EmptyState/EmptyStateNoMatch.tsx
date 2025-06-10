@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { FunctionComponent } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import { EmptyState } from './EmptyState';
 
@@ -21,7 +21,7 @@ type EmptyStateNoMatchFoundProps = {
   actionFn: () => void;
 };
 
-export const EmptyStateNoMatchFound: React.FunctionComponent<
+export const EmptyStateNoMatchFound: FunctionComponent<
   EmptyStateNoMatchFoundProps
 > = ({ actionFn }) => (
   <EmptyState

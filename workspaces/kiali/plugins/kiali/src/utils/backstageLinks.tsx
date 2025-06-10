@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { GroupVersionKind } from '@backstage-community/plugin-kiali-common/types';
 import { Link } from '@backstage/core-components';
 import { SubRouteRef } from '@backstage/core-plugin-api';
-import * as React from 'react';
+import { default as React } from 'react';
 import { isMultiCluster } from '../config';
 import {
   appDetailRouteRef,
@@ -27,7 +28,6 @@ import {
   workloadsDetailRouteRef,
   workloadsRouteRef,
 } from '../routes';
-import { GroupVersionKind } from '../types/IstioObjects';
 
 // type routeRefParams = undefined | { [key: string]: string };
 export const backstageRoutesObject: {

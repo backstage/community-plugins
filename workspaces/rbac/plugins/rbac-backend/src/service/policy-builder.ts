@@ -21,6 +21,8 @@ import type {
   HttpAuthService,
   LifecycleService,
   LoggerService,
+  PermissionsRegistryService,
+  PermissionsService,
   UserInfoService,
 } from '@backstage/backend-plugin-api';
 import { CatalogClient } from '@backstage/catalog-client';
@@ -48,6 +50,11 @@ import { EnforcerDelegate } from './enforcer-delegate';
 import { MODEL } from './permission-model';
 import { PluginPermissionMetadataCollector } from './plugin-endpoints';
 import { PoliciesServer } from './policies-rest-api';
+import { policyEntityPermissions } from '@backstage-community/plugin-rbac-common';
+import { rules } from '../permissions';
+import { permissionMetadataResourceRef } from '../permissions/resource';
+import { PermissionDependentPluginDatabaseStore } from '../database/extra-permission-enabled-plugins-storage';
+import { ExtendablePluginIdProvider } from './extendable-id-provider';
 
 /**
  * @public
@@ -62,6 +69,7 @@ export type EnvOptions = {
   auditor: AuditorService;
   userInfo: UserInfoService;
   lifecycle: LifecycleService;
+  permissionsRegistry: PermissionsRegistryService;
 };
 
 /**
@@ -75,6 +83,9 @@ export type RBACRouterOptions = {
   auth: AuthService;
   httpAuth: HttpAuthService;
   userInfo: UserInfoService;
+  permissions: PermissionsService;
+  permissionsRegistry: PermissionsRegistryService;
+  auditor: AuditorService;
 };
 
 /**
@@ -129,9 +140,22 @@ export class PolicyBuilder {
     const enforcerDelegate = new EnforcerDelegate(
       enf,
       env.auditor,
+      conditionStorage,
       roleMetadataStorage,
       databaseClient,
     );
+
+    env.permissionsRegistry.addResourceType({
+      resourceRef: permissionMetadataResourceRef,
+      getResources: resourceRefs =>
+        Promise.all(
+          resourceRefs.map(ref => {
+            return roleMetadataStorage.findRoleMetadata(ref);
+          }),
+        ),
+      permissions: policyEntityPermissions,
+      rules: Object.values(rules),
+    });
 
     if (rbacProviders) {
       await connectRBACProviders(
@@ -143,23 +167,19 @@ export class PolicyBuilder {
       );
     }
 
-    const pluginIdsConfig = env.config.getOptionalStringArray(
-      'permission.rbac.pluginsWithPermission',
+    const extraPluginsIdStorage = new PermissionDependentPluginDatabaseStore(
+      databaseClient,
     );
-    if (pluginIdsConfig) {
-      const pluginIds = new Set([
-        ...pluginIdsConfig,
-        ...pluginIdProvider.getPluginIds(),
-      ]);
-      pluginIdProvider.getPluginIds = () => {
-        return [...pluginIds];
-      };
-    }
-
+    const extendablePluginIdProvider = new ExtendablePluginIdProvider(
+      extraPluginsIdStorage,
+      pluginIdProvider,
+      env.config,
+    );
+    await extendablePluginIdProvider.handleConflictedPluginIds();
     const pluginPermMetaData = new PluginPermissionMetadataCollector({
       deps: {
         discovery: env.discovery,
-        pluginIdProvider: pluginIdProvider,
+        pluginIdProvider: extendablePluginIdProvider,
         logger: env.logger,
         config: env.config,
       },
@@ -196,16 +216,19 @@ export class PolicyBuilder {
       auth: env.auth,
       httpAuth: env.httpAuth,
       userInfo: env.userInfo,
+      permissions: env.permissions,
+      permissionsRegistry: env.permissionsRegistry,
+      auditor: env.auditor,
     };
 
     const server = new PoliciesServer(
-      env.permissions,
       options,
       enforcerDelegate,
       conditionStorage,
       pluginPermMetaData,
       roleMetadataStorage,
-      env.auditor,
+      extraPluginsIdStorage,
+      extendablePluginIdProvider,
       rbacProviders,
     );
     return server.serve();

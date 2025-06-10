@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 import { screen } from '@testing-library/react';
 import { AnnouncementsCard } from './AnnouncementsCard';
 import {
@@ -41,6 +40,27 @@ const renderAnnouncementsCard = async (announcements: AnnouncementsList) => {
       ]}
     >
       <AnnouncementsCard />
+    </TestApiProvider>,
+    {
+      mountedRoutes: {
+        '/announcements': rootRouteRef,
+      },
+    },
+  );
+};
+
+const renderAnnouncementsCardWithProps = async (
+  announcements: AnnouncementsList,
+  props: any = {},
+) => {
+  await renderInTestApp(
+    <TestApiProvider
+      apis={[
+        [announcementsApiRef, mockAnnouncementsApi(announcements)],
+        [permissionApiRef, mockApis.permission()],
+      ]}
+    >
+      <AnnouncementsCard {...props} />
     </TestApiProvider>,
     {
       mountedRoutes: {
@@ -115,5 +135,29 @@ describe('AnnouncementsCard', () => {
 
     await renderAnnouncementsCard(announcementsList);
     expect(screen.getByText(/Scheduled Today/i)).toBeInTheDocument();
+  });
+
+  it('does not display start time when hideStartAt is true', async () => {
+    const announcementsList: AnnouncementsList = {
+      count: 1,
+      results: [
+        {
+          id: '1',
+          title: 'Hidden Start Time Announcement',
+          excerpt: 'This announcement hides start time',
+          body: 'Body 1',
+          publisher: 'Publisher 1',
+          created_at: '2025-01-01',
+          active: true,
+          start_at: '2025-01-01',
+        },
+      ],
+    };
+
+    await renderAnnouncementsCardWithProps(announcementsList, {
+      hideStartAt: true,
+    });
+
+    expect(screen.queryByText(/Scheduled/i)).not.toBeInTheDocument();
   });
 });

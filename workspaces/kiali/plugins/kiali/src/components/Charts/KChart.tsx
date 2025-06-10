@@ -13,6 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import type {
+  ChartModel,
+  LineInfo,
+  Overlay,
+  RawOrBucket,
+  RichDataPoint,
+  VCLines,
+} from '@backstage-community/plugin-kiali-common/types';
 import {
   ChartArea,
   ChartBar,
@@ -28,18 +36,10 @@ import {
   EmptyStateVariant,
 } from '@patternfly/react-core';
 import { CubesIcon, ErrorCircleOIcon } from '@patternfly/react-icons';
-import * as React from 'react';
+import { default as React } from 'react';
 import { PFColors } from '../../components/Pf/PfColors';
 import { KialiIcon } from '../../config/KialiIcon';
 import { kialiStyle } from '../../styles/StyleUtils';
-import { ChartModel } from '../../types/Dashboards';
-import { Overlay } from '../../types/Overlay';
-import {
-  LineInfo,
-  RawOrBucket,
-  RichDataPoint,
-  VCLines,
-} from '../../types/VictoryChartInfo';
 import {
   ChartWithLegend,
   LEGEND_HEIGHT,

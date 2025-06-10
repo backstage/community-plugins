@@ -1,5 +1,22 @@
 # @backstage-community/plugin-azure-devops
 
+## 0.16.0
+
+### Minor Changes
+
+- dd67a17: Backstage version bump to v1.39.0
+
+### Patch Changes
+
+- Updated dependencies [dd67a17]
+  - @backstage-community/plugin-azure-devops-common@0.11.0
+
+## 0.15.0
+
+### Minor Changes
+
+- 8e54e8e: **BREAKING** If the specified build definition is not found, return no results and display a message explaining why.
+
 ## 0.14.0
 
 ### Minor Changes

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { FocusEventHandler } from 'react';
 import { useAsync } from 'react-use';
 
 import { Progress } from '@backstage/core-components';
@@ -31,6 +31,7 @@ import { RoleFormValues } from './types';
 import PermissionPoliciesFormTable from './PermissionPoliciesFormTable';
 import PluginsDropdown from './PluginsDropdown';
 import Box from '@mui/material/Box';
+import { capitalizeFirstLetter } from '../../utils/string-utils';
 
 type PermissionPoliciesFormProps = {
   permissionPoliciesRows: PermissionsData[];
@@ -41,7 +42,7 @@ type PermissionPoliciesFormProps = {
     shouldValidate?: boolean,
   ) => Promise<FormikErrors<RoleFormValues>> | Promise<void>;
   setFieldError: (field: string, value: string | undefined) => void;
-  handleBlur: React.FocusEventHandler<HTMLInputElement | HTMLTextAreaElement>;
+  handleBlur: FocusEventHandler<HTMLInputElement | HTMLTextAreaElement>;
   selectedPluginsError: string;
 };
 
@@ -138,7 +139,7 @@ export const PermissionPoliciesForm = ({
     let allPlugins: SelectedPlugin[] = [];
     if (permissionPoliciesData?.plugins) {
       allPlugins = permissionPoliciesData.plugins.map(p => ({
-        label: p.charAt(0).toLocaleUpperCase('en-US') + p.substring(1),
+        label: capitalizeFirstLetter(p),
         value: p,
       }));
     }

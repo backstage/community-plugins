@@ -87,7 +87,13 @@ export interface Config {
      * many things are being processed concurrently.
      *
      * Defaults to `15`.
+     * @deprecated Use `maxRequestsPerSecond` instead.
      */
     parallelismLimit?: number;
+    /**
+     * The maximum number of requests per second to make to the Confluence API.
+     * @visibility backend
+     */
+    maxRequestsPerSecond?: number;
   };
 }

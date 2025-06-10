@@ -15,7 +15,7 @@
  */
 import { Chip, Grid, Tooltip } from '@material-ui/core';
 import { ClusterIcon } from '@patternfly/react-icons';
-import React from 'react';
+import { default as React } from 'react';
 import { MessageCenter } from '../../../components/MessageCenter/MessageCenter';
 import { homeCluster } from '../../../config';
 import { KialiAppState, KialiContext } from '../../../store';

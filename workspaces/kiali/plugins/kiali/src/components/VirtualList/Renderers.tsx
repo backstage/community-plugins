@@ -13,6 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Health } from '@backstage-community/plugin-kiali-common/func';
+import {
+  ComponentStatus,
+  DRAWER,
+  ENTITY,
+  IstioConfigItem,
+  NamespaceInfo,
+  ServiceListItem,
+  ValidationStatus,
+  WorkloadListItem,
+} from '@backstage-community/plugin-kiali-common/types';
 import { Link } from '@backstage/core-components';
 import {
   Button,
@@ -24,20 +35,12 @@ import {
 } from '@material-ui/core';
 // eslint-disable-next-line no-restricted-imports
 import { Close } from '@material-ui/icons';
-import * as React from 'react';
+import { default as React } from 'react';
 import { KialiIcon, serverConfig } from '../../config';
 import { isWaypoint } from '../../helpers/LabelFilterHelper';
 import { infoStyle } from '../../pages/Overview/OverviewCard/CanaryUpgradeProgress';
 import { ControlPlaneBadge } from '../../pages/Overview/OverviewCard/ControlPlaneBadge';
 import { OverviewCardSparklineCharts } from '../../pages/Overview/OverviewCard/OverviewCardSparklineCharts';
-import { Health } from '../../types/Health';
-import { IstioConfigItem } from '../../types/IstioConfigList';
-import { ValidationStatus } from '../../types/IstioObjects';
-import { ComponentStatus } from '../../types/IstioStatus';
-import { NamespaceInfo } from '../../types/NamespaceInfo';
-import { ServiceListItem } from '../../types/ServiceList';
-import { DRAWER, ENTITY } from '../../types/types';
-import { WorkloadListItem } from '../../types/Workload';
 import { BackstageObjectLink } from '../../utils/backstageLinks';
 import {
   getIstioObjectGVK,

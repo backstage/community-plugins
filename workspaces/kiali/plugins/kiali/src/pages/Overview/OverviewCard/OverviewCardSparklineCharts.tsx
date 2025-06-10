@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
+import {
+  ControlPlaneMetricsMap,
+  DurationInSeconds,
+  IstiodResourceThresholds,
+  Metric,
+} from '@backstage-community/plugin-kiali-common/types';
 import { serverConfig } from '../../../config';
-import { DurationInSeconds } from '../../../types/Common';
-import { IstiodResourceThresholds } from '../../../types/IstioStatus';
-import { ControlPlaneMetricsMap, Metric } from '../../../types/Metrics';
 import { DirectionType } from '../OverviewToolbar';
 import {
   isRemoteCluster,

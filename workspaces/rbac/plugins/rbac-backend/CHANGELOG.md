@@ -1,5 +1,62 @@
 ### Dependencies
 
+## 6.2.6
+
+### Patch Changes
+
+- fcc57ec: Updated dependency `@types/node` to `22.14.1`.
+
+## 6.2.5
+
+### Patch Changes
+
+- 658c51c: chore: Remove usage of @spotify/prettier-config
+- Updated dependencies [658c51c]
+  - @backstage-community/plugin-rbac-common@1.16.1
+  - @backstage-community/plugin-rbac-node@1.11.1
+
+## 6.2.4
+
+### Patch Changes
+
+- 298b1d4: Avoid unnecessary query to check 'relations' table in the role manager
+
+## 6.2.3
+
+### Patch Changes
+
+- 9436665: Reduce rbac-backend requests to credentials API.
+
+## 6.2.2
+
+### Patch Changes
+
+- c92a50c: Fixed a bug where updating a role name via the `PUT </api/permission/roles/:kind/:namespace/:name>` endpoint did not propagate changes to metadata, permissions and conditions, leaving them mapped to the old role name.
+
+## 6.2.1
+
+### Patch Changes
+
+- 10b9919: Avoid filter's args duplication.
+
+## 6.2.0
+
+### Minor Changes
+
+- e8755f6: Backstage version bump to v1.38.1
+
+### Patch Changes
+
+- Updated dependencies [e8755f6]
+  - @backstage-community/plugin-rbac-common@1.16.0
+  - @backstage-community/plugin-rbac-node@1.11.0
+
+## 6.1.1
+
+### Patch Changes
+
+- 10a0d31: Fixes an issue where the correct permission name was not selected while processing new conditional policies to be added. This scenario happens whenever a plugin exports multiple permissions that have different resource types but similar actions. What would end up happening is the first matched action would be the one selected during processing even though it was not the correct permission and used for the conditional policy. This problem has been fixed and now the correct permission name and action are selected.
+
 ## 6.1.0
 
 ### Minor Changes

@@ -13,12 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {
+  hasHealth,
+  Health,
+} from '@backstage-community/plugin-kiali-common/func';
+import type { IstioConfigItem } from '@backstage-community/plugin-kiali-common/types';
 import { TableRow } from '@material-ui/core';
-import * as React from 'react';
-import { CSSProperties } from 'react';
+import { CSSProperties, default as React } from 'react';
 import { useLinkStyle } from '../../styles/StyleUtils';
-import { hasHealth, Health } from '../../types/Health';
-import { IstioConfigItem } from '../../types/IstioConfigList';
 import {
   getGVKTypeString,
   getIstioObjectGVK,

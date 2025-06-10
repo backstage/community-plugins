@@ -172,3 +172,24 @@ spec:
           projectRepo: ${{ (parameters.repoUrl | parseRepoUrl)['repo'] }}
           sampleTemplateParameterKey: sampleTemplateParameterValue
 ```
+
+### Example running a pipeline, waiting for it to complete, and printing the output using the `azure:pipeline:run` action
+
+```yaml
+spec:
+  steps:
+    - id: runAzurePipeline
+      name: Run Pipeline
+      action: azure:pipeline:run
+      input:
+        #[...]
+        pollingInterval: 10 # Poll for pipeline run status every 10 second
+        pipelineTimeout: 300 # Timeout after 5 minutes
+  output:
+    text:
+      - title: Pipeline run info
+        content: |
+          **pipelineRunStatus:** `${{ steps['runAzurePipeline'].output.pipelineRunStatus }}` }}
+          **pipelineRunId:** `${{ steps['runAzurePipeline'].output.pipelineRunId }}` }}
+          **pipeline output:** `${{ steps['runAzurePipeline'].output.pipelineOutput['myOutputVar'].value }}` }}
+```

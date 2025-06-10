@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
+import { SetStateAction } from 'react';
 import TextField from '@mui/material/TextField';
 import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
 import { Category } from '@backstage-community/plugin-announcements-common';
@@ -25,7 +25,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 type CategoryInputProps = {
   setForm: (
-    value: React.SetStateAction<{
+    value: SetStateAction<{
       category: string | undefined;
       id: string;
       publisher: string;

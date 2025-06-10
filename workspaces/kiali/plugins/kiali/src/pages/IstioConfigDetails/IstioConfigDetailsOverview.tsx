@@ -14,6 +14,14 @@
  * limitations under the License.
  */
 import {
+  IstioConfigDetails,
+  ObjectReference,
+  ServiceReference,
+  ValidationMessage,
+  ValidationTypes,
+  WorkloadReference,
+} from '@backstage-community/plugin-kiali-common/types';
+import {
   Card,
   CardContent,
   List,
@@ -21,7 +29,7 @@ import {
   Tooltip,
   Typography,
 } from '@material-ui/core';
-import React from 'react';
+import { default as React } from 'react';
 import { HistoryManager } from '../../app/History';
 import { Labels } from '../../components/Label/Labels';
 import { PFBadge } from '../../components/Pf/PfBadges';
@@ -30,14 +38,6 @@ import { ValidationObjectSummary } from '../../components/Validations/Validation
 import { GVKToBadge } from '../../components/VirtualList/Config';
 import { KialiIcon } from '../../config/KialiIcon';
 import { kialiStyle } from '../../styles/StyleUtils';
-import { IstioConfigDetails } from '../../types/IstioConfigDetails';
-import {
-  ObjectReference,
-  ServiceReference,
-  ValidationMessage,
-  ValidationTypes,
-  WorkloadReference,
-} from '../../types/IstioObjects';
 import {
   getGVKTypeString,
   getIstioObject,

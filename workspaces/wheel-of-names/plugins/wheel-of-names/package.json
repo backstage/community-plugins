@@ -1,0 +1,69 @@
+{
+  "name": "@backstage-community/plugin-wheel-of-names",
+  "version": "0.2.0",
+  "description": "A Backstage plugin that provides a wheel of names",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.esm.js",
+    "types": "dist/index.d.ts"
+  },
+  "homepage": "https://backstage.io",
+  "backstage": {
+    "role": "frontend-plugin",
+    "pluginId": "wheel-of-names",
+    "pluginPackages": [
+      "@backstage-community/plugin-wheel-of-names"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/wheel-of-names/plugins/wheel-of-names"
+  },
+  "sideEffects": false,
+  "scripts": {
+    "start": "backstage-cli package start",
+    "build": "backstage-cli package build",
+    "lint": "backstage-cli package lint",
+    "test": "backstage-cli package test",
+    "clean": "backstage-cli package clean",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack"
+  },
+  "dependencies": {
+    "@backstage/catalog-client": "^1.9.1",
+    "@backstage/catalog-model": "^1.7.3",
+    "@backstage/core-components": "^0.16.4",
+    "@backstage/core-plugin-api": "^1.10.4",
+    "@backstage/plugin-catalog-react": "^1.16.0",
+    "@backstage/theme": "^0.6.4",
+    "@material-ui/core": "^4.9.13",
+    "@material-ui/icons": "^4.9.1",
+    "@material-ui/lab": "^4.0.0-alpha.61",
+    "canvas-confetti": "^1.9.3",
+    "react-dom": "^17.0.0 || ^18.0.0",
+    "react-router-dom": "^7.4.0",
+    "react-use": "^17.2.4"
+  },
+  "peerDependencies": {
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0"
+  },
+  "devDependencies": {
+    "@backstage/cli": "^0.30.0",
+    "@backstage/core-app-api": "^1.15.5",
+    "@backstage/dev-utils": "^1.1.7",
+    "@backstage/test-utils": "^1.7.5",
+    "@testing-library/jest-dom": "^6.0.0",
+    "@testing-library/react": "^14.0.0",
+    "@testing-library/user-event": "^14.0.0",
+    "@types/canvas-confetti": "^1.9.0",
+    "msw": "^1.0.0",
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0"
+  },
+  "files": [
+    "dist"
+  ]
+}

@@ -13,11 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { AppHealth } from '@backstage-community/plugin-kiali-common/func';
+import type {
+  App,
+  AppQuery,
+} from '@backstage-community/plugin-kiali-common/types';
+import { MetricsObjectTypes } from '@backstage-community/plugin-kiali-common/types';
 import { Content, EmptyState } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { CircularProgress, Tab, Tabs } from '@material-ui/core';
 import { AxiosError } from 'axios';
-import * as React from 'react';
+import { default as React } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAsyncFn, useDebounce } from 'react-use';
 import { HistoryManager } from '../../app/History';
@@ -30,13 +36,11 @@ import * as FilterHelper from '../../components/FilterList/FilterHelper';
 import { IstioMetrics } from '../../components/Metrics/IstioMetrics';
 import { a11yProps, TabPanel, useStyles } from '../../components/Tab/TabPanel';
 import { TimeDurationComponent } from '../../components/Time/TimeDurationComponent';
+import { serverConfig } from '../../config';
 import { getErrorString, kialiApiRef } from '../../services/Api';
 import { KialiContext } from '../../store';
 import { KialiAppState } from '../../store/Store';
 import { baseStyle } from '../../styles/StyleUtils';
-import { App, AppQuery } from '../../types/App';
-import { AppHealth } from '../../types/Health';
-import { MetricsObjectTypes } from '../../types/Metrics';
 import { AppInfo } from './AppInfo';
 
 export const AppDetailsPage = (props: { entity?: boolean }) => {
@@ -86,11 +90,17 @@ export const AppDetailsPage = (props: { entity?: boolean }) => {
     kialiClient
       .getApp(namespace, app, params, cluster)
       .then((appResponse: App) => {
-        const healthR = AppHealth.fromJson(namespace, app, appResponse.health, {
-          rateInterval: duration,
-          hasSidecar: appResponse.workloads.some(w => w.istioSidecar),
-          hasAmbient: appResponse.workloads.some(w => w.istioAmbient),
-        });
+        const healthR = AppHealth.fromJson(
+          namespace,
+          app,
+          appResponse.health,
+          {
+            rateInterval: duration,
+            hasSidecar: appResponse.workloads.some(w => w.istioSidecar),
+            hasAmbient: appResponse.workloads.some(w => w.istioAmbient),
+          },
+          serverConfig,
+        );
         setAppItem(appResponse);
         setHealth(healthR);
       })

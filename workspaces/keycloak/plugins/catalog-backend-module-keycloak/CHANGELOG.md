@@ -1,5 +1,17 @@
 ### Dependencies
 
+## 3.11.1
+
+### Patch Changes
+
+- 66fc757: ensure subgroups are fetched from the correct realm
+
+## 3.11.0
+
+### Minor Changes
+
+- 02c9383: Backstage version bump to v1.38.1
+
 ## 3.10.1
 
 ### Patch Changes

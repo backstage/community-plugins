@@ -1,5 +1,18 @@
 # @backstage-community/plugin-announcements-common
 
+## 0.4.0
+
+### Minor Changes
+
+- 9c94358: Added support for submitting announcements on behalf of a team the user is a member of.
+  This field is optional. if not specified, the announcement will be submitted using the current publisher user.
+
+## 0.3.2
+
+### Patch Changes
+
+- 11be6bb: chore(deps): Upgrade to Backstage 1.38
+
 ## 0.3.1
 
 ### Patch Changes

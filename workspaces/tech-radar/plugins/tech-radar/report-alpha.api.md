@@ -23,7 +23,7 @@ const _default: FrontendPlugin<
   },
   {},
   {
-    'api:tech-radar': ExtensionDefinition<{
+    [x: `api:${string}`]: ExtensionDefinition<{
       kind: 'api';
       name: undefined;
       config: {};
@@ -38,7 +38,7 @@ const _default: FrontendPlugin<
         factory: AnyApiFactory;
       };
     }>;
-    'nav-item:tech-radar': ExtensionDefinition<{
+    [x: `nav-item:${string}`]: ExtensionDefinition<{
       kind: 'nav-item';
       name: undefined;
       config: {};
@@ -59,13 +59,13 @@ const _default: FrontendPlugin<
         routeRef: RouteRef<undefined>;
       };
     }>;
-    'page:tech-radar': ExtensionDefinition<{
+    [x: `page:${string}`]: ExtensionDefinition<{
       config: {
         title: string;
         subtitle: string;
         pageTitle: string;
-        width: number;
-        height: number;
+        width: number | undefined;
+        height: number | undefined;
       } & {
         path: string | undefined;
       };
@@ -151,8 +151,8 @@ export const techRadarPage: ExtensionDefinition<{
     title: string;
     subtitle: string;
     pageTitle: string;
-    width: number;
-    height: number;
+    width: number | undefined;
+    height: number | undefined;
   } & {
     path: string | undefined;
   };

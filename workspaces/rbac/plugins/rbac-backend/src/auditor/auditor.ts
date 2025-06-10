@@ -57,6 +57,11 @@ export const ListConditionEvents = {
   CONDITION_RULES_READ: 'condition-rules-read',
 };
 
+export const ListPluginIDsEvents = {
+  PLUGIN_IDS_READ: 'plugin-ids-read',
+  PLUGIN_IDS_WRITE: 'plugin-ids-write',
+};
+
 export type EvaluationAuditInfo = {
   userEntityRef: string;
   permissionName: string;

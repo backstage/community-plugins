@@ -1,5 +1,29 @@
 ### Dependencies
 
+## 2.8.0
+
+### Minor Changes
+
+- 4dfe2ff: Add examples
+
+## 2.7.1
+
+### Patch Changes
+
+- 1d7aaba: Update supported version metadata to 1.38.1
+
+## 2.7.0
+
+### Minor Changes
+
+- e172aba: Bump backstage version to v1.38.1
+
+## 2.6.2
+
+### Patch Changes
+
+- 16c57cc: chore: Remove usage of @spotify/prettier-config
+
 ## 2.6.1
 
 ### Patch Changes

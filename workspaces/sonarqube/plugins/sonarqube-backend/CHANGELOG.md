@@ -1,5 +1,31 @@
 # @backstage-community/plugin-sonarqube-backend
 
+## 0.9.1
+
+### Patch Changes
+
+- 65ea416: **BREAKING** This undoes the breaking Authorization header change introduced in v0.7.0 and allows configuring Bearer tokens, while maintaining the old default of Basic. This change will impact SonarQube Cloud users, [details on the config changes needed](https://github.com/backstage/community-plugins/tree/main/workspaces/sonarqube/plugins/sonarqube-backend) in this case are in the `README`.
+
+## 0.9.0
+
+### Minor Changes
+
+- f3284e7: Backstage version bump to v1.39.0
+
+## 0.8.0
+
+### Minor Changes
+
+- 8be1894: Upgraded to Backstage release 1.38
+
+## 0.7.0
+
+### Minor Changes
+
+- 5399669: Switch from basic auth to recommended<sup>[[1]](https://docs.sonarsource.com/sonarqube-cloud/advanced-setup/web-api/#authenticate-to-api), [[2]](https://docs.sonarsource.com/sonarqube-server/2025.1/extension-guide/web-api/#authenticate-to-api)</sup> bearer auth in order to also support SonarQube Cloud.
+
+  Basic auth as used previously is exlusively [supported](https://docs.sonarsource.com/sonarqube-server/10.8/user-guide/managing-tokens/#using-a-token) by Sonarqube Server.
+
 ## 0.6.0
 
 ### Minor Changes

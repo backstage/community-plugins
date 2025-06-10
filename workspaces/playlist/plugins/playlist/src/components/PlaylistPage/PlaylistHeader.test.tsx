@@ -31,7 +31,6 @@ import {
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
 import Button from '@material-ui/core/Button';
 import { fireEvent, waitFor, act } from '@testing-library/react';
-import React from 'react';
 import { SWRConfig } from 'swr';
 import { PlaylistApi, playlistApiRef } from '../../api';
 import { rootRouteRef } from '../../routes';

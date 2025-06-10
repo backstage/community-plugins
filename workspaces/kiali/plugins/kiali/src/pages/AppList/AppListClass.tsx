@@ -13,8 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { AppList, AppListItem } from '../../types/AppList';
-import { AppHealth } from '../../types/Health';
+import { AppHealth } from '@backstage-community/plugin-kiali-common/func';
+import type {
+  AppList,
+  AppListItem,
+} from '@backstage-community/plugin-kiali-common/types';
+import { serverConfig } from '../../config';
 import { sortIstioReferences } from './FiltersAndSorts';
 
 export const getAppItems = (
@@ -27,11 +31,17 @@ export const getAppItems = (
       name: app.name,
       istioSidecar: app.istioSidecar,
       istioAmbient: app.istioAmbient,
-      health: AppHealth.fromJson(app.namespace, app.name, app.health, {
-        rateInterval: rateInterval,
-        hasSidecar: app.istioSidecar,
-        hasAmbient: app.istioAmbient,
-      }),
+      health: AppHealth.fromJson(
+        app.namespace,
+        app.name,
+        app.health,
+        {
+          rateInterval: rateInterval,
+          hasSidecar: app.istioSidecar,
+          hasAmbient: app.istioAmbient,
+        },
+        serverConfig,
+      ),
       labels: app.labels,
       istioReferences: sortIstioReferences(app.istioReferences, true),
       cluster: app.cluster,

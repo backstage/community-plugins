@@ -28,7 +28,7 @@
 
 ```bash
     export KIALI_BASE_URL=https://kiali-istio-system.apps-crc.testing;`
-    yarn start:backstage
+    yarn start
 ```
 
 ## Configure auth

@@ -15,7 +15,6 @@
  */
 import { Content, Link, Page, WarningPanel } from '@backstage/core-components';
 import { useRouteRef } from '@backstage/core-plugin-api';
-import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { rootRouteRef } from '../../routes';
 

@@ -25,7 +25,6 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import { LinkButton } from '@backstage/core-components';
 import classNames from 'classnames';
-import React from 'react';
 
 // TODO: Align styling between Domain and ToolCard
 

@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 import {
+  Gateway,
+  ObjectCheck,
+  ObjectValidation,
+  ServiceDetailsInfo,
+  VirtualService,
+} from '@backstage-community/plugin-kiali-common/types';
+import {
   Card,
   CardContent,
   CardHeader,
   Tooltip,
   Typography,
 } from '@material-ui/core';
-import * as React from 'react';
+import { default as React } from 'react';
 import { ValidationList } from '../../components/Validations/ValidationList';
 import { KialiIcon } from '../../config/KialiIcon';
 import { cardsHeight, kialiStyle } from '../../styles/StyleUtils';
-import {
-  Gateway,
-  ObjectCheck,
-  ObjectValidation,
-  VirtualService,
-} from '../../types/IstioObjects';
-import { ServiceDetailsInfo } from '../../types/ServiceInfo';
 
 type ServiceNetworkProps = {
   gateways: Gateway[];

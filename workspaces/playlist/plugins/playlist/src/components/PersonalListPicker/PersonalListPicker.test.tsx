@@ -25,7 +25,6 @@ import {
 import { Playlist } from '@backstage-community/plugin-playlist-common';
 import { MockStorageApi, TestApiRegistry } from '@backstage/test-utils';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import React from 'react';
 
 import { MockPlaylistListProvider } from '../../testUtils';
 import { PlaylistOwnerFilter } from '../PlaylistOwnerPicker';

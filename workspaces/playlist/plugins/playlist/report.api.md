@@ -10,15 +10,14 @@ import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { DiscoveryApi } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
 import { FetchApi } from '@backstage/core-plugin-api';
-import { JSX as JSX_2 } from 'react';
+import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { Playlist } from '@backstage-community/plugin-playlist-common';
 import { PlaylistMetadata } from '@backstage-community/plugin-playlist-common';
 import { PropsWithChildren } from 'react';
-import { default as React_2 } from 'react';
 import { RouteRef } from '@backstage/core-plugin-api';
 
 // @public (undocumented)
-export const CreatePlaylistButton: () => React_2.JSX.Element;
+export const CreatePlaylistButton: () => JSX_2.Element;
 
 // @public (undocumented)
 export type DefaultPlaylistFilters = {
@@ -29,7 +28,7 @@ export type DefaultPlaylistFilters = {
 };
 
 // @public (undocumented)
-export const DefaultPlaylistIndexPage: () => React_2.JSX.Element;
+export const DefaultPlaylistIndexPage: () => JSX_2.Element;
 
 // @public (undocumented)
 export const EntityPlaylistDialog: (
@@ -86,7 +85,7 @@ export const enum PersonalListFilterValue {
 }
 
 // @public (undocumented)
-export const PersonalListPicker: () => React_2.JSX.Element;
+export const PersonalListPicker: () => JSX_2.Element;
 
 // @public (undocumented)
 export interface PlaylistApi {
@@ -157,14 +156,14 @@ export type PlaylistFilter = {
 export const PlaylistIndexPage: () => JSX_2.Element;
 
 // @public (undocumented)
-export const PlaylistList: () => React_2.JSX.Element;
+export const PlaylistList: () => JSX_2.Element;
 
 // @public (undocumented)
 export const PlaylistListProvider: <
   PlaylistFilters extends DefaultPlaylistFilters,
 >({
   children,
-}: PropsWithChildren<{}>) => React_2.JSX.Element;
+}: PropsWithChildren<{}>) => JSX_2.Element;
 
 // @public (undocumented)
 export class PlaylistOwnerFilter implements PlaylistFilter {
@@ -178,7 +177,7 @@ export class PlaylistOwnerFilter implements PlaylistFilter {
 }
 
 // @public (undocumented)
-export const PlaylistOwnerPicker: () => React_2.JSX.Element | null;
+export const PlaylistOwnerPicker: () => JSX_2.Element | null;
 
 // @public (undocumented)
 export const PlaylistPage: () => JSX_2.Element;
@@ -193,10 +192,10 @@ export const playlistPlugin: BackstagePlugin<
 >;
 
 // @public (undocumented)
-export const PlaylistSearchBar: () => React_2.JSX.Element;
+export const PlaylistSearchBar: () => JSX_2.Element;
 
 // @public (undocumented)
-export const PlaylistSortPicker: () => React_2.JSX.Element;
+export const PlaylistSortPicker: () => JSX_2.Element;
 
 // @public (undocumented)
 export class PlaylistTextFilter implements PlaylistFilter {

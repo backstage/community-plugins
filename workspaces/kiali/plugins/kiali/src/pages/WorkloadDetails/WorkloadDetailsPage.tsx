@@ -13,10 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { WorkloadHealth } from '@backstage-community/plugin-kiali-common/func';
+import {
+  MetricsObjectTypes,
+  TimeRange,
+  Workload,
+  WorkloadQuery,
+} from '@backstage-community/plugin-kiali-common/types';
 import { Content, EmptyState } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { CircularProgress, Tab, Tabs } from '@material-ui/core';
-import * as React from 'react';
+import { default as React } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAsyncFn, useDebounce } from 'react-use';
 import {
@@ -28,13 +35,10 @@ import * as FilterHelper from '../../components/FilterList/FilterHelper';
 import { IstioMetrics } from '../../components/Metrics/IstioMetrics';
 import { a11yProps, TabPanel, useStyles } from '../../components/Tab/TabPanel';
 import { TimeDurationComponent } from '../../components/Time/TimeDurationComponent';
+import { serverConfig } from '../../config';
 import { getErrorString, kialiApiRef } from '../../services/Api';
 import { KialiAppState, KialiContext } from '../../store';
 import { baseStyle } from '../../styles/StyleUtils';
-import { TimeRange } from '../../types/Common';
-import { WorkloadHealth } from '../../types/Health';
-import { MetricsObjectTypes } from '../../types/Metrics';
-import { Workload, WorkloadQuery } from '../../types/Workload';
 import { WorkloadInfo } from './WorkloadInfo';
 import { WorkloadPodLogs } from './WorkloadPodLogs';
 
@@ -96,6 +100,7 @@ export const WorkloadDetailsPage = (props: { entity?: boolean }) => {
             hasSidecar: workloadResponse.istioSidecar,
             hasAmbient: workloadResponse.istioAmbient,
           },
+          serverConfig,
         );
         setHealth(wkHealth);
       })

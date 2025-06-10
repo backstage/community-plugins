@@ -92,7 +92,6 @@ body:
         - quay
         - rbac
         - redhat-argocd
-        - redhat-resource-optimization
         - report-portal
         - rollbar
         - scaffolder-backend-module-annotator
@@ -113,6 +112,7 @@ body:
         - todo
         - topology
         - vault
+        - wheel-of-names
         - xcmetrics
       default: 0
     validations:

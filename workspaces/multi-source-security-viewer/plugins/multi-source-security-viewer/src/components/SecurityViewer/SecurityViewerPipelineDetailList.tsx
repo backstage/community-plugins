@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { FC } from 'react';
+
+import { useState, Fragment } from 'react';
 import { PipelineRunList } from '../PipelineRunList/PipelineRunList';
 import { usePipelineDetail } from '../../hooks/usePipelineDetail';
 import { ApiRef } from '@backstage/core-plugin-api';
@@ -24,11 +26,11 @@ type SecurityViewerPipelineDetailListProps = {
   apiRef: ApiRef<MssvApi>;
 };
 
-export const SecurityViewerPipelineDetailList: React.FC<
+export const SecurityViewerPipelineDetailList: FC<
   SecurityViewerPipelineDetailListProps
 > = ({ jobRef, apiRef }) => {
-  const [page, setPage] = React.useState(0);
-  const [pageSize, setPageSize] = React.useState(5);
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(5);
   const [pipelineDetailRuns, totalCount, loading, error] = usePipelineDetail(
     apiRef,
     jobRef,
@@ -42,7 +44,7 @@ export const SecurityViewerPipelineDetailList: React.FC<
   };
 
   return (
-    <React.Fragment>
+    <Fragment>
       <PipelineRunList
         data={pipelineDetailRuns}
         totalCount={totalCount}
@@ -50,6 +52,6 @@ export const SecurityViewerPipelineDetailList: React.FC<
         error={error}
         onUpdatePagination={onUpdatePagination}
       />
-    </React.Fragment>
+    </Fragment>
   );
 };

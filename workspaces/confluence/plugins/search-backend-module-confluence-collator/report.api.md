@@ -38,6 +38,7 @@ export type ConfluenceCollatorFactoryOptions = {
   spaces?: string[];
   query?: string;
   parallelismLimit?: number;
+  maxRequestsPerSecond?: number;
   logger: LoggerService;
 };
 

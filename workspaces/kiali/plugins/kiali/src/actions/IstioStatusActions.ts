@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import type { ComponentStatus } from '@backstage-community/plugin-kiali-common/types';
 import { ActionType, createStandardAction } from 'typesafe-actions';
-import { ComponentStatus } from '../types/IstioStatus';
 import { ActionKeys } from './ActionKeys';
 
 export const IstioStatusActions = {

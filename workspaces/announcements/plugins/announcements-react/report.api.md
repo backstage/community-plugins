@@ -10,6 +10,7 @@ import { ApiRef } from '@backstage/core-plugin-api';
 import { Category } from '@backstage-community/plugin-announcements-common';
 import { DateTime } from 'luxon';
 import { DiscoveryApi } from '@backstage/core-plugin-api';
+import { Entity } from '@backstage/catalog-model';
 import { ErrorApi } from '@backstage/core-plugin-api';
 import { FetchApi } from '@backstage/core-plugin-api';
 import { IdentityApi } from '@backstage/core-plugin-api';
@@ -126,6 +127,7 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'admin.announcementsContent.table.start_at': 'Start';
     readonly 'admin.announcementsContent.table.category': 'Category';
     readonly 'admin.announcementsContent.table.publisher': 'Publisher';
+    readonly 'admin.announcementsContent.table.onBehalfOf': 'On behalf of';
     readonly 'admin.announcementsContent.announcements': 'Announcements';
     readonly 'admin.announcementsContent.alertMessage': 'Announcement created.';
     readonly 'admin.announcementsContent.alertMessageWithNewCategory': 'with new category';
@@ -149,6 +151,7 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'announcementForm.editAnnouncement': 'Edit announcement';
     readonly 'announcementForm.newAnnouncement': 'New announcement';
     readonly 'announcementForm.startAt': 'Announcement start date';
+    readonly 'announcementForm.onBehalfOf': 'On behalf of';
     readonly 'announcementForm.categoryInput.label': 'Category';
     readonly 'announcementForm.categoryInput.create': 'Create';
     readonly 'announcementsPage.grid.announcementDeleted': 'Announcement deleted.';
@@ -158,8 +161,8 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'announcementsPage.genericNew': 'New';
     readonly 'announcementsPage.card.by': 'By';
     readonly 'announcementsPage.card.in': 'in';
-    readonly 'announcementsPage.card.delete': 'DELETE';
-    readonly 'announcementsPage.card.edit': 'EDIT';
+    readonly 'announcementsPage.card.delete': 'Delete';
+    readonly 'announcementsPage.card.edit': 'Edit';
     readonly 'announcementsPage.card.occurred': 'Occurred ';
     readonly 'announcementsPage.card.scheduled': 'Scheduled ';
     readonly 'announcementsPage.card.today': 'Today';
@@ -246,6 +249,7 @@ export const useAnnouncementsTranslation: () => {
     readonly 'admin.announcementsContent.table.start_at': 'Start';
     readonly 'admin.announcementsContent.table.category': 'Category';
     readonly 'admin.announcementsContent.table.publisher': 'Publisher';
+    readonly 'admin.announcementsContent.table.onBehalfOf': 'On behalf of';
     readonly 'admin.announcementsContent.announcements': 'Announcements';
     readonly 'admin.announcementsContent.alertMessage': 'Announcement created.';
     readonly 'admin.announcementsContent.alertMessageWithNewCategory': 'with new category';
@@ -269,6 +273,7 @@ export const useAnnouncementsTranslation: () => {
     readonly 'announcementForm.editAnnouncement': 'Edit announcement';
     readonly 'announcementForm.newAnnouncement': 'New announcement';
     readonly 'announcementForm.startAt': 'Announcement start date';
+    readonly 'announcementForm.onBehalfOf': 'On behalf of';
     readonly 'announcementForm.categoryInput.label': 'Category';
     readonly 'announcementForm.categoryInput.create': 'Create';
     readonly 'announcementsPage.grid.announcementDeleted': 'Announcement deleted.';
@@ -278,8 +283,8 @@ export const useAnnouncementsTranslation: () => {
     readonly 'announcementsPage.genericNew': 'New';
     readonly 'announcementsPage.card.by': 'By';
     readonly 'announcementsPage.card.in': 'in';
-    readonly 'announcementsPage.card.delete': 'DELETE';
-    readonly 'announcementsPage.card.edit': 'EDIT';
+    readonly 'announcementsPage.card.delete': 'Delete';
+    readonly 'announcementsPage.card.edit': 'Edit';
     readonly 'announcementsPage.card.occurred': 'Occurred ';
     readonly 'announcementsPage.card.scheduled': 'Scheduled ';
     readonly 'announcementsPage.card.today': 'Today';
@@ -323,6 +328,20 @@ export const useAnnouncementsTranslation: () => {
     readonly 'newCategoryDialog.cancelButton': 'Cancel';
     readonly 'newCategoryDialog.createButton': 'Create';
   }>;
+};
+
+// @public
+export const useCatalogEntities: (
+  refs: string[],
+  searchTerm?: string,
+  limit?: number,
+  offset?: number,
+) => {
+  entities: Entity[];
+  totalItems: number;
+  loading: boolean;
+  error: Error | undefined;
+  retry: (() => void) | (() => void) | (() => void) | (() => void);
 };
 
 // @public

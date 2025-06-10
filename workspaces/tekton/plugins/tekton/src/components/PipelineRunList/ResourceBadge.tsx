@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { ReactNode } from 'react';
 
 import { Split, SplitItem } from '@patternfly/react-core';
 
@@ -28,7 +28,7 @@ const ResourceBadge = ({
   color: string;
   abbr: string;
   name: string;
-  suffix?: React.ReactNode;
+  suffix?: ReactNode;
 }) => {
   return (
     <Split className="bs-tkn-pipeline-visualization__label">

@@ -13,17 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import { usePermission } from '@backstage/plugin-permission-react';
 
-import {
-  fireEvent,
-  render,
-  screen,
-  waitFor,
-  within,
-} from '@testing-library/react';
+import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 
 import { mockApplication, mockEntity } from '../../../../dev/__data__';
 import { useApplications } from '../../../hooks/useApplications';
@@ -33,6 +25,7 @@ import {
   History,
 } from '@backstage-community/plugin-redhat-argocd-common';
 import DeploymentSummary from '../DeploymentSummary';
+import { renderInTestApp } from '@backstage/test-utils';
 
 jest.mock('../../../hooks/useArgocdConfig', () => ({
   useArgocdConfig: jest.fn(),
@@ -81,7 +74,7 @@ describe('DeploymentSummary', () => {
       error: undefined,
     });
 
-    render(<DeploymentSummary />);
+    await renderInTestApp(<DeploymentSummary />);
 
     await waitFor(() => {
       expect(screen.getByRole('progressbar')).toBeInTheDocument();
@@ -102,7 +95,7 @@ describe('DeploymentSummary', () => {
       instanceName: 'main',
     });
 
-    render(<DeploymentSummary />);
+    await renderInTestApp(<DeploymentSummary />);
 
     await waitFor(() => {
       expect(screen.queryByText('No records to display')).toBeInTheDocument();
@@ -111,7 +104,7 @@ describe('DeploymentSummary', () => {
   test('should not render deployment summary table when the user does not have view permission', async () => {
     mockUsePermission.mockReturnValue({ loading: false, allowed: false });
 
-    render(<DeploymentSummary />);
+    await renderInTestApp(<DeploymentSummary />);
 
     await waitFor(() => {
       expect(screen.queryByText('Deployment summary')).not.toBeInTheDocument();
@@ -125,7 +118,7 @@ describe('DeploymentSummary', () => {
       error: new Error('500: Internal server error'),
     });
 
-    render(<DeploymentSummary />);
+    await renderInTestApp(<DeploymentSummary />);
 
     await waitFor(() => {
       expect(screen.queryByText('Deployment summary')).not.toBeInTheDocument();
@@ -139,7 +132,7 @@ describe('DeploymentSummary', () => {
       instanceName: 'test',
     });
 
-    render(<DeploymentSummary />);
+    await renderInTestApp(<DeploymentSummary />);
 
     await waitFor(() => {
       expect(screen.queryAllByText('quarkus-app-dev')).toBeDefined();
@@ -149,7 +142,7 @@ describe('DeploymentSummary', () => {
   });
 
   test('should link the application to instance url', async () => {
-    render(<DeploymentSummary />);
+    await renderInTestApp(<DeploymentSummary />);
 
     await waitFor(() => {
       expect(
@@ -168,8 +161,7 @@ describe('DeploymentSummary', () => {
       intervalMs: 10000,
       instanceName: 'main',
     });
-
-    render(<DeploymentSummary />);
+    await renderInTestApp(<DeploymentSummary />);
 
     await waitFor(() => {
       screen.getByText('Healthy');
@@ -208,8 +200,7 @@ describe('DeploymentSummary', () => {
       loading: false,
       error: undefined,
     });
-
-    render(<DeploymentSummary />);
+    await renderInTestApp(<DeploymentSummary />);
     const lastDeployedHeader = screen.getByRole('button', {
       name: 'Last deployed',
     });
@@ -249,8 +240,7 @@ describe('DeploymentSummary', () => {
       loading: false,
       error: undefined,
     });
-
-    render(<DeploymentSummary />);
+    await renderInTestApp(<DeploymentSummary />);
 
     const lastDeployedHeader = screen.getByRole('button', {
       name: 'Last deployed',
@@ -290,8 +280,7 @@ describe('DeploymentSummary', () => {
       loading: false,
       error: undefined,
     });
-
-    render(<DeploymentSummary />);
+    await renderInTestApp(<DeploymentSummary />);
     const syncStatusHeader = screen.getByRole('button', {
       name: 'Sync status',
     });
@@ -333,8 +322,8 @@ describe('DeploymentSummary', () => {
       loading: false,
       error: undefined,
     });
+    await renderInTestApp(<DeploymentSummary />);
 
-    render(<DeploymentSummary />);
     const healthStatusHeader = screen.getByRole('button', {
       name: 'Health status',
     });

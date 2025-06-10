@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { ENTITY } from '@backstage-community/plugin-kiali-common/types';
 import { Entity } from '@backstage/catalog-model';
 import { CardTab, TabbedCard } from '@backstage/core-components';
-import * as React from 'react';
+import { default as React } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { ENTITY } from '../../../types/types';
 import { AppListPage } from '../../AppList/AppListPage';
 import { ServiceListPage } from '../../ServiceList/ServiceListPage';
 import { WorkloadListPage } from '../../WorkloadList/WorkloadListPage';

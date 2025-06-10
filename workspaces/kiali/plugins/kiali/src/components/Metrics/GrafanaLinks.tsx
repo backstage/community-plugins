@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {
+  ExternalLink,
+  MetricsObjectTypes,
+} from '@backstage-community/plugin-kiali-common/types';
 import { ToolbarItem } from '@patternfly/react-core';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
-import * as React from 'react';
-import { ExternalLink } from '../../types/Dashboards';
-import { MetricsObjectTypes } from '../../types/Metrics';
+import { default as React } from 'react';
 
 type Props = {
   links: ExternalLink[];

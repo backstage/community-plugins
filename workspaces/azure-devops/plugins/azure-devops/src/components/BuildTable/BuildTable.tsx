@@ -39,6 +39,8 @@ import { AzurePipelinesIcon } from '../AzurePipelinesIcon';
 import { DateTime } from 'luxon';
 import { getDurationFromDates } from '../../utils/getDurationFromDates';
 import { BuildLogDrawer } from './lib/BuildLogDrawer';
+import { EmptyBuildResults } from './lib/EmptyBuildResults';
+import { Entity } from '@backstage/catalog-model';
 
 export const getBuildResultComponent = (result: number | undefined) => {
   switch (result) {
@@ -121,9 +123,15 @@ type BuildTableProps = {
   items?: BuildRun[];
   loading: boolean;
   error?: Error;
+  entity?: Entity;
 };
 
-export const BuildTable = ({ items, loading, error }: BuildTableProps) => {
+export const BuildTable = ({
+  items,
+  loading,
+  error,
+  entity,
+}: BuildTableProps) => {
   // State for log drawer
   const [selectedBuildId, setSelectedBuildId] = useState<number | undefined>(
     undefined,
@@ -246,6 +254,7 @@ export const BuildTable = ({ items, loading, error }: BuildTableProps) => {
           </Box>
         }
         data={items ?? []}
+        emptyContent={<EmptyBuildResults entity={entity} />}
       />
 
       <BuildLogDrawer

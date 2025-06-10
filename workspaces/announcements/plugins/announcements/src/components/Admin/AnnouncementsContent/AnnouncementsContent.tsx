@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   ErrorPanel,
   Progress,
@@ -190,6 +190,17 @@ export const AnnouncementsContent = () => {
       field: 'publisher',
       render: rowData => rowData.publisher,
     },
+    {
+      title: (
+        <Typography>
+          {t('admin.announcementsContent.table.onBehalfOf')}
+        </Typography>
+      ),
+      sorting: true,
+      field: 'on_behalf_of',
+      render: rowData => rowData.on_behalf_of,
+    },
+
     {
       title: (
         <Typography>

@@ -36,7 +36,6 @@ import {
 } from '@backstage/plugin-search-react';
 import { TechDocsSearchResultListItem } from '@backstage/plugin-techdocs';
 import { Grid, makeStyles, Paper, Theme } from '@material-ui/core';
-import React from 'react';
 
 const useStyles = makeStyles((theme: Theme) => ({
   bar: {

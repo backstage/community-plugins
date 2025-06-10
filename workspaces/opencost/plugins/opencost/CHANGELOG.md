@@ -1,5 +1,11 @@
 # @backstage-community/plugin-opencost
 
+## 0.8.0
+
+### Minor Changes
+
+- e81a2e2: Backstage version bump to v1.39.0
+
 ## 0.7.0
 
 ### Minor Changes

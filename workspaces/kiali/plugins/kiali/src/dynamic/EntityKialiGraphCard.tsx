@@ -16,7 +16,6 @@
 import { CodeSnippet, EmptyState } from '@backstage/core-components';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { Box } from '@material-ui/core';
-import * as React from 'react';
 import { TrafficGraphCard } from '../pages/TrafficGraph/TrafficGraphCard';
 import { KialiProvider } from '../store/KialiProvider';
 

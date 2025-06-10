@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import Box from '@mui/material/Box';
 import Tooltip from '@mui/material/Tooltip';
@@ -45,7 +43,7 @@ export const AddNestedConditionButton = () => {
       }}
     >
       <Typography variant="body1" component="span">
-        Add Nested Condition
+        Add nested condition
       </Typography>
       <Tooltip title={tooltipTitle()} placement="top">
         <HelpOutlineIcon fontSize="inherit" style={{ marginLeft: '0.25rem' }} />

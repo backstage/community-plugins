@@ -1,5 +1,58 @@
 # @backstage-community/plugin-announcements
 
+## 0.6.1
+
+### Patch Changes
+
+- e4bd3e6: remove direct dependency on '@types/node'
+
+## 0.6.0
+
+### Minor Changes
+
+- 9c94358: Added support for submitting announcements on behalf of a team the user is a member of.
+  This field is optional. if not specified, the announcement will be submitted using the current publisher user.
+
+### Patch Changes
+
+- Updated dependencies [9c94358]
+  - @backstage-community/plugin-announcements-common@0.4.0
+  - @backstage-community/plugin-announcements-react@0.5.0
+
+## 0.5.10
+
+### Patch Changes
+
+- dd1aed2: fix(ui): Respect MUI theme options for typography, colors
+- Updated dependencies [dd1aed2]
+  - @backstage-community/plugin-announcements-react@0.4.4
+
+## 0.5.9
+
+### Patch Changes
+
+- ecfbf02: Remove legacy React packages in preparation for React 19 upgrade.
+
+## 0.5.8
+
+### Patch Changes
+
+- 11be6bb: chore(deps): Upgrade to Backstage 1.38
+- Updated dependencies [11be6bb]
+  - @backstage-community/plugin-announcements-common@0.3.2
+  - @backstage-community/plugin-announcements-react@0.4.3
+
+## 0.5.7
+
+### Patch Changes
+
+- 32b99b3: - Add `hideStartAt` React prop to allow hiding the "Start at" date label on announcements card
+
+  ```diff
+  - <AnnouncementsCard max={2} />
+  + <AnnouncementsCard max={2} hideStartAt />
+  ```
+
 ## 0.5.6
 
 ### Patch Changes

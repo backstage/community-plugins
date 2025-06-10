@@ -16,7 +16,7 @@ const _default: FrontendPlugin<
   {},
   {},
   {
-    'api:stack-overflow': ExtensionDefinition<{
+    [x: `api:${string}`]: ExtensionDefinition<{
       kind: 'api';
       name: undefined;
       config: {};
@@ -31,7 +31,7 @@ const _default: FrontendPlugin<
         factory: AnyApiFactory;
       };
     }>;
-    'search-result-list-item:stack-overflow': ExtensionDefinition<{
+    [x: `search-result-list-item:${string}`]: ExtensionDefinition<{
       kind: 'search-result-list-item';
       name: undefined;
       config: {

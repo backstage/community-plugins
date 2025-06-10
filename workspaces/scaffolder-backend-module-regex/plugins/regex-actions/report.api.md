@@ -5,7 +5,6 @@
 ```ts
 
 import { BackendFeature } from '@backstage/backend-plugin-api';
-import { JsonObject } from '@backstage/types/index';
 import { TemplateAction } from '@backstage/plugin-scaffolder-node';
 
 // @public (undocumented)
@@ -19,7 +18,7 @@ pattern: string;
 replacement: string;
 flags?: ("g" | "m" | "i" | "y" | "u" | "s" | "d")[] | undefined;
 }[];
-}, JsonObject>;
+}, any, "v1">;
 
 // @public (undocumented)
 const scaffolderModuleRegexActions: BackendFeature;

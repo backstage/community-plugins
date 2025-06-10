@@ -21,7 +21,7 @@ import {
   WithSelectionProps,
 } from '@patternfly/react-topology';
 import useDetailsLevel from '@patternfly/react-topology/dist/esm/hooks/useDetailsLevel';
-import * as React from 'react';
+import { default as React } from 'react';
 import { classes } from 'typestyle';
 import { PFColors } from '../../../components/Pf/PfColors';
 import { kialiStyle } from '../../../styles/StyleUtils';

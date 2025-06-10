@@ -232,9 +232,6 @@ workspace/rbac:
 workspace/redhat-argocd:
   - "Workspace\\s*redhat-argocd"
 
-workspace/redhat-resource-optimization:
-  - "Workspace\\s*redhat-resource-optimization"
-
 workspace/report-portal:
   - "Workspace\\s*report-portal"
 
@@ -294,6 +291,9 @@ workspace/topology:
 
 workspace/vault:
   - "Workspace\\s*vault"
+
+workspace/wheel-of-names:
+  - "Workspace\\s*wheel-of-names"
 
 workspace/xcmetrics:
   - "Workspace\\s*xcmetrics"
