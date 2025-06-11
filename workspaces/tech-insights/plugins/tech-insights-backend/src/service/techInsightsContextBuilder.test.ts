@@ -47,7 +47,15 @@ describe('buildTechInsightsContext', () => {
     getBaseUrl: (_: string) => Promise.resolve('http://mock.url'),
     getExternalBaseUrl: (_: string) => Promise.resolve('http://mock.url'),
   };
-  const scheduler = DefaultSchedulerService.create({ database, logger });
+  const rootLifecycle = mockServices.rootLifecycle.mock();
+  const httpRouter = mockServices.httpRouter.mock();
+  const scheduler = DefaultSchedulerService.create({
+    database,
+    logger,
+    rootLifecycle,
+    httpRouter,
+    pluginMetadata: { getId: () => 'plugin-id' },
+  });
 
   beforeEach(() => {
     jest.clearAllMocks();

@@ -41,7 +41,7 @@ export const mtaPlugin = createBackendPlugin({
         // Setup OpenID Authentication Client
         const backstageBaseURL = config.getString('backend.baseUrl');
         const frontEndBaseURL = config.getString('app.baseUrl');
-        const baseUrl = config.getString('mta.url');
+        const baseUrl = config.getString('mta.url').replace(/\/+$/, '');
         const baseURLHub = `${baseUrl}/hub`;
         const realm = config.getString('mta.providerAuth.realm');
         const clientID = config.getString('mta.providerAuth.clientID');
@@ -58,8 +58,11 @@ export const mtaPlugin = createBackendPlugin({
         dotenv.config();
         const isDevelopment = process.env.NODE_ENV === 'development';
 
+        // Get version from package.json
+        const { version } = require('../package.json');
+
         const mtaVersion =
-          config.getOptionalString('mta.backendPluginVersion') ?? '0.2.2'; // Set in config
+          config.getOptionalString('mta.backendPluginVersion') ?? version; // Set in config
         const defaultBase = process.env.APP_ROOT ?? '/opt/app-root';
         const defaultPluginRoot = path.join(
           defaultBase,

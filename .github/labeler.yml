@@ -232,9 +232,6 @@ workspace/rbac:
 workspace/redhat-argocd:
   - "Workspace\\s*redhat-argocd"
 
-workspace/redhat-resource-optimization:
-  - "Workspace\\s*redhat-resource-optimization"
-
 workspace/report-portal:
   - "Workspace\\s*report-portal"
 

@@ -43,7 +43,9 @@ export class AzureDevOpsClient implements AzureDevOpsApi {
     this.discoveryApi = options.discoveryApi;
     this.fetchApi = options.fetchApi;
   }
-
+  /**
+   * @deprecated This method has no usages and will be removed in a future release
+   */
   public async getRepoBuilds(
     projectName: string,
     repoName: string,

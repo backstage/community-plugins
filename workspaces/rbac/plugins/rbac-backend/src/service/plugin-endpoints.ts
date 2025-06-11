@@ -40,8 +40,8 @@ import {
   type PluginPermissionMetaData,
   type PolicyDetails,
 } from '@backstage-community/plugin-rbac-common';
-import type { PluginIdProvider } from '@backstage-community/plugin-rbac-node';
 import { rbacRules } from '../permissions';
+import { ExtendablePluginIdProvider } from './extendable-id-provider';
 
 type PluginMetadataResponse = {
   pluginId: string;
@@ -59,7 +59,7 @@ const rbacPermissionMetadata: MetadataResponse = {
 };
 
 export class PluginPermissionMetadataCollector {
-  private readonly pluginIds: string[];
+  private readonly pluginIdProvider: ExtendablePluginIdProvider;
   private readonly discovery: DiscoveryService;
   private readonly logger: LoggerService;
   private readonly urlReader: UrlReaderService;
@@ -70,7 +70,7 @@ export class PluginPermissionMetadataCollector {
   }: {
     deps: {
       discovery: DiscoveryService;
-      pluginIdProvider: PluginIdProvider;
+      pluginIdProvider: ExtendablePluginIdProvider;
       logger: LoggerService;
       config: Config;
     };
@@ -78,9 +78,9 @@ export class PluginPermissionMetadataCollector {
       urlReader?: UrlReaderService;
     };
   }) {
-    const { discovery, pluginIdProvider, logger, config } = deps;
-    this.pluginIds = pluginIdProvider.getPluginIds();
+    const { discovery, logger, config, pluginIdProvider } = deps;
     this.discovery = discovery;
+    this.pluginIdProvider = pluginIdProvider;
     this.logger = logger;
     this.urlReader =
       optional?.urlReader ??
@@ -132,7 +132,8 @@ export class PluginPermissionMetadataCollector {
   ): Promise<PluginMetadataResponse[]> {
     let pluginResponses: PluginMetadataResponse[] = [];
 
-    for (const pluginId of this.pluginIds) {
+    const pluginIds = await this.pluginIdProvider.getPluginIds();
+    for (const pluginId of pluginIds) {
       try {
         const { token } = await auth.getPluginRequestToken({
           onBehalfOf: await auth.getOwnServiceCredentials(),

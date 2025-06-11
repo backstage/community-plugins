@@ -40,6 +40,8 @@ type RoleWithConditionalPoliciesCount = Role & {
 };
 
 export const useRoles = (
+  page = 0,
+  pageSize = 5,
   pollInterval?: number,
 ): {
   loading: boolean;
@@ -112,7 +114,11 @@ export const useRoles = (
       if (!Array.isArray(roles)) return;
       setLoadingConditionalPermission(true);
       const failedFetchConditionRoles: string[] = [];
-      const conditionPromises = roles.map(async role => {
+
+      const startIndex = page * pageSize;
+      const endIndex = startIndex + pageSize;
+      const paginatedRoles = roles.slice(startIndex, endIndex);
+      const conditionPromises = paginatedRoles.map(async role => {
         try {
           const conditionalPolicies = await rbacApi.getRoleConditions(
             role.name,
@@ -149,13 +155,31 @@ export const useRoles = (
         }
       });
 
-      const updatedRoles = await Promise.all(conditionPromises);
+      const settledResults = await Promise.allSettled(conditionPromises);
+      const updatedPageRoles = settledResults.map((result, index) => {
+        if (result.status === 'fulfilled') {
+          return result.value;
+        }
+        const role = paginatedRoles[index];
+        return {
+          ...role,
+          conditionalPoliciesCount: 0,
+          accessiblePlugins: [],
+        };
+      });
+      const updatedRoles = roles.map(role => {
+        const updated = updatedPageRoles.find(r => r.name === role.name);
+        return updated
+          ? updated
+          : { ...role, conditionalPoliciesCount: 0, accessiblePlugins: [] };
+      });
+
       setNewRoles(updatedRoles);
       setLoadingConditionalPermission(false);
     };
 
     fetchAllPermissionPolicies();
-  }, [roles, rbacApi]);
+  }, [roles, rbacApi, page, pageSize]);
 
   const data: RolesData[] = useMemo(
     () =>
