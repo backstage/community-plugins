@@ -4462,8 +4462,8 @@ __metadata:
   linkType: hard
 
 "@backstage/repo-tools@npm:^0.13.3":
-  version: 0.13.3
-  resolution: "@backstage/repo-tools@npm:0.13.3"
+  version: 0.13.4
+  resolution: "@backstage/repo-tools@npm:0.13.4"
   dependencies:
     "@apidevtools/swagger-parser": "npm:^10.1.0"
     "@apisyouwonthate/style-guide": "npm:^1.4.0"
@@ -4521,7 +4521,7 @@ __metadata:
       optional: true
   bin:
     backstage-repo-tools: bin/backstage-repo-tools
-  checksum: 10/f27aa2753859ebfb7adcc9642b7e3d06f1beebe89b5f7519d99a07f4fe7e53f6a8e4eace668c04b35555028bc5a452efd3277a828952450b24cdb428d365b640
+  checksum: 10/af21a66e55cae21e1f570972bab9236f459f1d1425c57c683247349d2029a6d190c46c1e623d9ee9a6b7493a66b6dd16b3665aefa2cbf17d0af53c796a36d39c
   languageName: node
   linkType: hard
 

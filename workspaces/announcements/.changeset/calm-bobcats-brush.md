@@ -7,4 +7,4 @@
 '@backstage-community/plugin-announcements': minor
 ---
 
-Backstage version bump to v1.39.0
+Backstage version bump to v1.39.1
