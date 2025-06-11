@@ -1,5 +1,16 @@
 ### Dependencies
 
+## 3.26.0
+
+### Minor Changes
+
+- 40d7a3b: Bump to backstage version 1.39.1
+
+### Patch Changes
+
+- Updated dependencies [40d7a3b]
+  - @backstage-community/plugin-tekton-common@1.10.0
+
 ## 3.25.3
 
 ### Patch Changes
