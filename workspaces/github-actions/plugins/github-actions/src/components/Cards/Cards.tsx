@@ -93,6 +93,7 @@ export const LatestWorkflowRunCard = (props: {
     owner,
     repo,
     branch,
+    fetchAllBranches: false,
   });
   const lastRun = runs?.[0] ?? ({} as WorkflowRun);
   useEffect(() => {

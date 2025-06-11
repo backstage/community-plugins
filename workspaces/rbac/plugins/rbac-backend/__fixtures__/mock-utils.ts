@@ -34,6 +34,8 @@ import {
 } from '../src/service/enforcer-delegate';
 import { PluginPermissionMetadataCollector } from '../src/service/plugin-endpoints';
 import { AuthorizeResult } from '@backstage/plugin-permission-common';
+import { PermissionDependentPluginStore } from '../src/database/extra-permission-enabled-plugins-storage';
+import { ExtendablePluginIdProvider } from '../src/service/extendable-id-provider';
 
 // TODO: Move to 'catalogServiceMock' from '@backstage/plugin-catalog-node/testUtils'
 // once '@backstage/plugin-catalog-node' is upgraded
@@ -77,6 +79,29 @@ export const pluginMetadataCollectorMock: Partial<PluginPermissionMetadataCollec
     getPluginConditionRules: jest.fn().mockImplementation(),
     getPluginPolicies: jest.fn().mockImplementation(),
     getMetadataByPluginId: jest.fn().mockImplementation(),
+  };
+
+export const permissionDependentPluginStoreMock: PermissionDependentPluginStore =
+  {
+    getPlugins: jest
+      .fn()
+      .mockImplementation(async () => [
+        { pluginId: 'jenkins' },
+        { pluginId: 'sonarqube' },
+      ]),
+    addPlugins: jest.fn().mockImplementation(),
+    deletePlugins: jest.fn().mockImplementation(),
+  };
+
+export const pluginIdProviderMock = {
+  getPluginIds: jest.fn().mockImplementation(() => []),
+};
+
+export const extendablePluginIdProviderMock: Partial<ExtendablePluginIdProvider> =
+  {
+    isConfiguredPluginId: jest.fn().mockImplementation(),
+    getPluginIds: jest.fn().mockImplementation(async () => ['catalog']),
+    handleConflictedPluginIds: jest.fn().mockImplementation(),
   };
 
 export const roleEventEmitterMock: RoleEventEmitter<RoleEvents> = {
@@ -140,6 +165,19 @@ export const credentials = mockCredentials.user();
 export const mockLoggerService = mockServices.logger.mock();
 export const mockUserInfoService = mockServices.userInfo();
 export const mockDiscovery = mockServices.discovery.mock();
+export const mockPermissionRegistry = mockServices.permissionsRegistry.mock({
+  getPermissionRuleset: jest.fn(resourceRef => {
+    return {
+      getRules: () => [
+        {
+          resourceRef,
+          rules: [],
+        },
+      ],
+      getRuleByName: jest.fn(),
+    };
+  }),
+});
 
 export const mockedAuthorize = jest.fn().mockImplementation(async () => [
   {

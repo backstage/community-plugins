@@ -1,5 +1,11 @@
 ## @janus-idp/backstage-plugin-3scale-backend [1.8.0](https://github.com/janus-idp/backstage-plugins/compare/@janus-idp/backstage-plugin-3scale-backend@1.7.1...@janus-idp/backstage-plugin-3scale-backend@1.8.0) (2024-07-25)
 
+## 3.5.0
+
+### Minor Changes
+
+- 321413c: Use the existing config values systemLabel and ownerLabel to ingest entities correctly
+
 ## 3.4.0
 
 ### Minor Changes

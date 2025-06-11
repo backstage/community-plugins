@@ -15,7 +15,6 @@
  */
 import { CatalogApi, catalogApiRef } from '@backstage/plugin-catalog-react';
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
-import React from 'react';
 
 import { MaturityPage } from './MaturityPage';
 import { MaturityApi, maturityApiRef } from '../../api';

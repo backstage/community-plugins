@@ -28,6 +28,9 @@ import {
   GitPullRequest,
 } from 'azure-devops-node-api/interfaces/GitInterfaces';
 
+/**
+ * @deprecated This method has no usages and will be removed in a future release
+ */
 export function mappedRepoBuild(build: Build): RepoBuild {
   return {
     id: build.id,

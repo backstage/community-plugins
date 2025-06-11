@@ -65,6 +65,13 @@ export interface Config {
        * @visibility secret
        */
       apiKey: string;
+
+      /**
+       * This is an optional descriptor of the type of token used to access the Sonarqube server.
+       * If not set, it defaults to "Basic".
+       * @visibility frontend
+       */
+      authType?: 'Bearer' | 'Basic';
     }>;
   };
 }

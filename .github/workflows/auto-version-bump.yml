@@ -33,7 +33,7 @@ jobs:
       - name: Delay batches (5 min between)
         if: ${{ strategy.job-index != 0 }}
         run: |
-          delay=$(( strategy.job-index * 300 ))
+          delay=$(( ${{ strategy.job-index }} * 300 ))
           echo "Sleeping $delay seconds before triggering batch ${{ strategy.job-index }}..."
           sleep $delay
 
@@ -42,7 +42,8 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "Triggering version bump for batch ${{ strategy.job-index }}"
-          json_input=${{ toJson(matrix.batch) }}
+          json_input='${{ toJson(matrix.batch) }}'
+          echo "Rendered json_input: $json_input"
           gh workflow run version-bump.yml \
             --ref main \
             --field release_line=main \

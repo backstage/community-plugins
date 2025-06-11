@@ -13,36 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { makeCreatePermissionRule } from '@backstage/plugin-permission-node';
-import {
-  RESOURCE_TYPE_POLICY_ENTITY,
-  RoleMetadata,
-} from '@backstage-community/plugin-rbac-common';
+import { createPermissionRule } from '@backstage/plugin-permission-node';
+import type { RoleMetadata } from '@backstage-community/plugin-rbac-common';
 import { z } from 'zod';
 import zodToJsonSchema from 'zod-to-json-schema';
+import { permissionMetadataResourceRef } from './resource';
 
+/**
+ * The RBACFilter is a simple filter without any conditional criteria.
+ *
+ */
 export type RBACFilter = {
   key: string;
   values: any[];
 };
 
+/**
+ * The RBACFilters type is a recursive type that can be used to create complex filter structures.
+ * It can be used to create filters that are a combination of other filters, or a negation of a filter.
+ *
+ */
 export type RBACFilters =
   | { anyOf: RBACFilters[] }
   | { allOf: RBACFilters[] }
   | { not: RBACFilters }
   | RBACFilter;
 
-const createRBACPermissionRule = makeCreatePermissionRule<
-  RoleMetadata,
-  RBACFilter,
-  typeof RESOURCE_TYPE_POLICY_ENTITY
->();
-
-const isOwner = createRBACPermissionRule({
+const isOwner = createPermissionRule({
   name: 'IS_OWNER',
   description:
     'Should allow access to RBAC roles and Permissions through ownership',
-  resourceType: RESOURCE_TYPE_POLICY_ENTITY,
+  resourceRef: permissionMetadataResourceRef,
   paramsSchema: z.object({
     owners: z.string().array().describe('List of entity refs to match against'),
   }),

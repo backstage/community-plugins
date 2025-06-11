@@ -13549,12 +13549,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:22.14.1, @types/node@npm:>=13.7.0, @types/node@npm:^22.0.0":
-  version: 22.14.1
-  resolution: "@types/node@npm:22.14.1"
+"@types/node@npm:*, @types/node@npm:22.15.29, @types/node@npm:>=13.7.0, @types/node@npm:^22.0.0":
+  version: 22.15.29
+  resolution: "@types/node@npm:22.15.29"
   dependencies:
     undici-types: "npm:~6.21.0"
-  checksum: 10/561b1ad98ef5176d6da856ffbbe494f16655149f6a7d561de0423c8784910c81267d7d6459f59d68a97b3cbae9b5996b3b5dfe64f4de3de2239d295dcf4a4dcc
+  checksum: 10/3426790c5aa22df445213d7f37e57ea261cf3013030fe9b3025d87c302097799a9db3b848e2a9bdb07cab8ec6c7e9947ac770cf11e12e420148296b63d63e7db
   languageName: node
   linkType: hard
 
@@ -14962,9 +14962,9 @@ __metadata:
     "@redhat-developer/red-hat-developer-hub-theme": "npm:0.4.0"
     "@testing-library/jest-dom": "npm:6.6.3"
     "@testing-library/react": "npm:14.3.1"
-    "@types/node": "npm:22.14.1"
-    "@types/react": "npm:18.3.20"
-    "@types/react-dom": "npm:18.3.6"
+    "@types/node": "npm:22.15.29"
+    "@types/react": "npm:18.3.23"
+    "@types/react-dom": "npm:18.3.7"
     react: "npm:^18.0.0"
     react-dom: "npm:^18.0.0"
     react-router: "npm:^6.23.0"

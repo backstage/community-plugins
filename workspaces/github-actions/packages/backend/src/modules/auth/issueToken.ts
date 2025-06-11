@@ -18,7 +18,7 @@ import {
   stringifyEntityRef,
   DEFAULT_NAMESPACE,
 } from '@backstage/catalog-model';
-import { getDefaultOwnershipEntityRefs } from '@backstage/plugin-auth-backend';
+
 import { AuthResolverContext } from '@backstage/plugin-auth-node';
 
 export const issueToken = async (
@@ -37,7 +37,8 @@ export const issueToken = async (
       },
     });
     entity = result.entity;
-    membership = getDefaultOwnershipEntityRefs(result.entity);
+    membership = (await ctx.resolveOwnershipEntityRefs(result.entity))
+      .ownershipEntityRefs;
   } catch (e) {
     // ignored; no catalog user, proceed with empty membership
   }

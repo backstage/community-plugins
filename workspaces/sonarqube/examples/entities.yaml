@@ -26,10 +26,22 @@ spec:
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
+  name: example-service
+  # intentionally no sonarqube.org/project-key
+spec:
+  type: service
+  lifecycle: experimental
+  owner: guests
+  system: examples
+---
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
   name: example-website
   annotations:
     jenkins.io/job-full-name: folder/job
-    sonarqube.org/project-key: backstage
+    sonarqube.org/project-key: wrong-project-key
 spec:
   type: website
   lifecycle: experimental

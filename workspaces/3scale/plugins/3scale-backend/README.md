@@ -27,6 +27,8 @@ yarn workspace backend add @backstage-community/plugin-3scale-backend
          dev:
            baseUrl: https://<TENANT>-admin.3scale.net
            accessToken: <ACCESS_TOKEN>
+           systemLabel: 3scale # optional; default is "3scale"; used to apply a custom system label to api entities
+           ownerLabel: 3scale # optional; default is "3scale"; used to apply a custom owner label to api entities
            schedule: # optional; same options as in TaskScheduleDefinition
              # supports cron, ISO duration, "human duration" as used in code
              frequency: { minutes: 30 }

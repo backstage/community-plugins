@@ -20,6 +20,7 @@
     "new": "backstage-cli new --scope @backstage-community",
     "build:api-reports": "yarn build:api-reports:only --tsc",
     "build:api-reports:only": "backstage-repo-tools api-reports -o ae-wrong-input-file-type,ae-undocumented --validate-release-tags",
+    "build:knip-reports": "backstage-repo-tools knip-reports",
     "postinstall": "cd ../../ && yarn install"
   },
   "workspaces": {
@@ -34,9 +35,9 @@
     "directory": "workspaces/badges"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.32.0",
+    "@backstage/cli": "^0.32.1",
     "@backstage/e2e-test-utils": "^0.1.1",
-    "@backstage/repo-tools": "^0.13.2",
+    "@backstage/repo-tools": "^0.13.3",
     "@changesets/cli": "^2.27.1",
     "knip": "^5.27.4",
     "node-gyp": "^10.0.0",

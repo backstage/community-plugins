@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { getTitleCase } from '@janus-idp/shared-react';
 import * as yup from 'yup';
 
 import {
@@ -39,6 +38,7 @@ import {
   RoleBasedConditions,
   UpdatedConditionsData,
 } from '../types';
+import { capitalizeFirstLetter } from './string-utils';
 
 export const uniqBy = (arr: string[], iteratee: (arg: string) => any) => {
   return arr.filter(
@@ -133,7 +133,10 @@ export const getPermissionPolicies = (
             if (permission === perm)
               return {
                 policies: uniqBy(
-                  [...policiesAcc.policies, getTitleCase(pol.policy as string)],
+                  [
+                    ...policiesAcc.policies,
+                    capitalizeFirstLetter(pol.policy as string),
+                  ],
                   val => val,
                 ),
                 isResourced: isResourcedPolicy(pol),
