@@ -20,7 +20,7 @@ exports.up = async function up(knex) {
   });
 
   await knex.schema.alterTable('announcements', table => {
-    table.specificType('tags', 'TEXT[]');
+table.json('tags').comment('Array of tag slugs');
   });
 };
 
