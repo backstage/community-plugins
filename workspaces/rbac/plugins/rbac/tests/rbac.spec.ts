@@ -26,8 +26,8 @@ test.describe('RBAC plugin', () => {
   let page: Page;
   let common: Common;
   const RoleOverviewPO = {
-    updatePolicies: 'span[data-testid="update-policies"]',
-    updateMembers: 'span[data-testid="update-members"]',
+    updatePolicies: 'button[data-testid="update-policies"]',
+    updateMembers: 'button[data-testid="update-members"]',
   };
 
   const navigateToRole = async (roleName: string) => {
@@ -106,7 +106,7 @@ test.describe('RBAC plugin', () => {
     await verifyCellsInTable(userGroupCellIdentifier, page);
 
     // verify permission policy table
-    await common.verifyHeading('Permission policies (9)');
+    await common.verifyHeading('9 permissions');
     await verifyColumnHeading(['Plugin', 'Permission', 'Policies'], page);
     const policies =
       /^(?:(Read|Create|Update|Delete)(?:, (?:Read|Create|Update|Delete))*|Use)$/;
