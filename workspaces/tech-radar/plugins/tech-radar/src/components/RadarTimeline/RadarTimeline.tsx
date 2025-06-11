@@ -87,7 +87,14 @@ const RadarTimeline = (props: Props): JSX.Element => {
                     : ''}
                 </TableCell>
                 <TableCell align="left">
-                  {timeEntry.description ? <MarkdownContent linkTarget="_blank" content={timeEntry.description} /> : ''}
+                  {timeEntry.description ? (
+                    <MarkdownContent
+                      linkTarget="_blank"
+                      content={timeEntry.description}
+                    />
+                  ) : (
+                    ''
+                  )}
                 </TableCell>
               </TableRow>
             ))}
