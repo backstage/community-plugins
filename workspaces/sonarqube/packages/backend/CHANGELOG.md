@@ -1,5 +1,12 @@
 # backend
 
+## 0.0.13
+
+### Patch Changes
+
+- Updated dependencies [65c9891]
+  - @backstage-community/plugin-sonarqube-backend@0.9.2
+
 ## 0.0.12
 
 ### Patch Changes
