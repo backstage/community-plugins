@@ -232,6 +232,7 @@ export class MTAProvider implements EntityProvider {
       ),
     );
 
+    // First set any defaults
     const entity: any = {
       apiVersion: 'backstage.io/v1alpha1',
       kind: 'Component',
@@ -257,16 +258,24 @@ export class MTAProvider implements EntityProvider {
       },
     };
 
+    // Now apply any user mappings
     if (entityMappings) {
       for (const [entityKey, appKeyPath] of Object.entries(entityMappings)) {
         const value = this.getPropertyByPath(application, appKeyPath);
-        if (value !== undefined) {
+        if (value !== undefined && value !== null) {
+          this.logger.debug(
+            `Dynamic mapping: setting '${entityKey}' to: ${JSON.stringify(value)}`,
+          );
           this.setPropertyByPath(entity, entityKey, value);
+        } else {
+          this.logger.error(
+            `MTA plugin: Application property '${appKeyPath}' not found, skipping entity key '${entityKey}'.`,
+          );
         }
       }
     }
 
-    // Set some defaults that the user shouldn't override
+    // Next ensure these aren't overwritten and set to what we want
     entity.metadata.annotations['issues-url'] =
       `${baseUrl}/issues?i%3Afilters=%7B%22application.name%22%3A%5B${encodedAppName}%5D%7D&i%3AitemsPerPage=10&i%3ApageNumber=1&i%3AsortColumn=description&i%3AsortDirection=asc`;
     entity.metadata.annotations['tasks-url'] =
@@ -275,7 +284,6 @@ export class MTAProvider implements EntityProvider {
 
     entity.metadata.name = name;
     entity.metadata.id = application.id;
-    entity.metadata.namespace = 'default';
     entity.metadata.application = application;
 
     return {
@@ -283,53 +291,15 @@ export class MTAProvider implements EntityProvider {
       locationKey: this.getProviderName(),
       entity,
     };
-
-    // const issuesUrl = `${this.config.getString(
-    //   'mta.url',
-    // )}/issues?i%3Afilters=%7B%22application.name%22%3A%5B${encodedAppName}%5D%7D&i%3AitemsPerPage=10&i%3ApageNumber=1&i%3AsortColumn=description&i%3AsortDirection=asc`;
-    // const tasksUrl = `${this.config.getString(
-    //   'mta.url',
-    // )}/tasks?i%3Afilters=%7B%22application%22%3A%5B${encodedAppName}%5D%7D&i%3AitemsPerPage=10&i%3ApageNumber=1&i%3AsortColumn=description&i%3AsortDirection=asc`;
-
-    // return {
-    //   key: application.id,
-    //   locationKey: this.getProviderName(),
-    //   entity: {
-    //     apiVersion: 'backstage.io/v1alpha1',
-    //     kind: 'Component',
-    //     metadata: {
-    //       annotations: {
-    //         'backstage.io/managed-by-location': `url:${this.config.getString(
-    //           'mta.url',
-    //         )}/application/${application.id}`,
-    //         'backstage.io/managed-by-origin-location': `url:${this.config.getString(
-    //           'mta.url',
-    //         )}/application/${application.id}`,
-    //         'backstage.io/source-location': `url:${application.repository.url}`,
-    //         'backstage.io/techdocs-ref': `url:${application.repository.url}`,
-    //         'issues-url': issuesUrl,
-    //         'tasks-url': tasksUrl,
-    //         'mta-url': `${this.config.getString('mta.url')}`,
-    //       },
-    //       name: name,
-    //       id: application.id,
-    //       namespace: 'default',
-    //       application: application,
-    //     },
-    //     spec: {
-    //       type: 'service',
-    //       lifecycle: 'experimental',
-    //       owner: `${application.owner}`,
-    //     },
-    //   },
-    // };
   }
 
   /**
    * Utility to get nested properties by path
    */
   private getPropertyByPath(obj: any, path: string): any {
-    return path.split('.').reduce((o, p) => (o ? o[p] : undefined), obj);
+    return path
+      .split('.')
+      .reduce((o, p) => (o && o[p] !== undefined ? o[p] : undefined), obj);
   }
 
   /**
