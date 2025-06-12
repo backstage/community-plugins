@@ -24,8 +24,6 @@ import { createStyles, Link, makeStyles, Theme } from '@material-ui/core';
 import DownloadIcon from '@mui/icons-material/FileDownloadOutlined';
 import classNames from 'classnames';
 
-import { downloadLogFile } from '@janus-idp/shared-react';
-
 import { TektonResourcesContext } from '../../hooks/TektonResourcesContext';
 import { ContainerScope } from '../../hooks/usePodLogsOfPipelineRun';
 import {
@@ -35,6 +33,7 @@ import {
 import { getPodLogs } from '../../utils/log-downloader-utils';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { tektonTranslationRef } from '../../translation';
+import { downloadLogFile } from '../../utils/download-log-file-utils';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
