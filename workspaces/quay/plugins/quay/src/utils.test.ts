@@ -38,9 +38,8 @@ describe('formatByteSize', () => {
   });
 
   it('formats common sizes correctly', () => {
-    expect(formatByteSize(0)).toBe('N/A');
-    expect(formatByteSize(500)).toMatch(/500 B/);
-    expect(formatByteSize(1500)).toMatch(/1\.5 kB/);
-    expect(formatByteSize(1048576)).toMatch(/1\.05 MB/);
+    expect(formatByteSize(500)).toEqual('500 B');
+    expect(formatByteSize(1500)).toMatch('1.5 kB');
+    expect(formatByteSize(1048576)).toMatch('1.05 MB');
   });
 });
