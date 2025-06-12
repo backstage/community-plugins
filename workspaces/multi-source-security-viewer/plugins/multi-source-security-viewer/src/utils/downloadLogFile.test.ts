@@ -35,21 +35,16 @@ describe('downloadLogFile', () => {
   it('should trigger a file download with correct filename and content', () => {
     const clickMock = jest.fn();
     const link = document.createElement('a');
+    link.click = clickMock;
 
-    jest.spyOn(document, 'createElement').mockImplementation(() => {
-      link.click = clickMock;
-      return link;
-    });
-
-    const appendChildSpy = jest.spyOn(document.body, 'appendChild');
-    const removeChildSpy = jest.spyOn(document.body, 'removeChild');
+    jest.spyOn(document, 'createElement').mockReturnValue(link);
 
     downloadLogFile('hello world', 'log.txt');
 
     expect(URL.createObjectURL).toHaveBeenCalled();
+    expect(link.download).toBe('log.txt');
+    expect(link.href).toBe('blob:http://localhost/blobid');
     expect(clickMock).toHaveBeenCalled();
-    expect(appendChildSpy).toHaveBeenCalledWith(link);
-    expect(removeChildSpy).toHaveBeenCalledWith(link);
     expect(URL.revokeObjectURL).toHaveBeenCalled();
   });
 });
