@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-// This file sourced form the A2A official client js sample - https://github.com/google-a2a/a2a-samples/blob/main/samples/js/src/client/client.ts
+/* This file sourced form the A2A official client js sample - https://github.com/google-a2a/a2a-samples/blob/main/samples/js/src/client/client.ts*/
 /* eslint-disable */
 
 import {
@@ -75,7 +75,7 @@ export class A2AClient {
    */
   constructor(agentBaseUrl: string) {
     this.agentBaseUrl = agentBaseUrl.replace(/\/$/, ''); // Remove trailing slash if any
-    this.agentCardPromise = this._fetchAndCacheAgentCard();
+    //this.agentCardPromise = this._fetchAndCacheAgentCard();
   }
 
   /**

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-// This file sourced form the A2A official client js sample - https://github.com/google-a2a/a2a-samples/blob/main/samples/js/src/schema.ts
+/* This file sourced form the A2A official client js sample - https://github.com/google-a2a/a2a-samples/blob/main/samples/js/src/schema.ts*/
 /* eslint-disable */
 
 // === JSON-RPC Base Structures ===

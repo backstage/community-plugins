@@ -12,6 +12,38 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@agentic-profile/a2a-client@npm:^0.6.2":
+  version: 0.6.2
+  resolution: "@agentic-profile/a2a-client@npm:0.6.2"
+  dependencies:
+    "@agentic-profile/auth": "npm:^0.6.0"
+    "@agentic-profile/common": "npm:^0.6.0"
+  checksum: 10/12e208fd0d79931bd50e5afdc19f21b1a1948ce9b0f9bf146eaef804943be3272db2d6f608b2f128b0c71843da30c48f27c8395f25463bd34148bc3b9828b302
+  languageName: node
+  linkType: hard
+
+"@agentic-profile/auth@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "@agentic-profile/auth@npm:0.6.0"
+  dependencies:
+    "@agentic-profile/common": "npm:^0.6.0"
+    "@noble/ed25519": "npm:^2.2.3"
+    did-resolver: "npm:^4.1.0"
+    loglevel: "npm:^1.9.2"
+  checksum: 10/c30f263b9278f807470b1f2ceff5ee1fb49142a018e5f7997324ec8db09e0a696e8c86344c72238776cce41585a392c57911f8dcfc762f94a168bdae2a97074d
+  languageName: node
+  linkType: hard
+
+"@agentic-profile/common@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "@agentic-profile/common@npm:0.6.0"
+  dependencies:
+    did-resolver: "npm:^4.1.0"
+    loglevel: "npm:^1.9.2"
+  checksum: 10/5997b057695565d3dfddb784830160532c02c0b2d381c396c6cd7915b25fa174d11dd7f0061580d55caea486ec3cd1451b9ff5c2114824caa263d8fabb767499
+  languageName: node
+  linkType: hard
+
 "@ampproject/remapping@npm:^2.2.0":
   version: 2.3.0
   resolution: "@ampproject/remapping@npm:2.3.0"
@@ -3505,6 +3537,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@internal/backstage-plugin-agent-forge@workspace:plugins/agent-forge"
   dependencies:
+    "@agentic-profile/a2a-client": "npm:^0.6.2"
     "@backstage/cli": "npm:^0.31.1"
     "@backstage/core-app-api": "npm:^1.16.0"
     "@backstage/core-components": "npm:^0.17.0"
@@ -4928,6 +4961,13 @@ __metadata:
     "@nestjs/websockets":
       optional: true
   checksum: 10/88f8a3c52a98c059e6d93c5faf9194daee4667b1a855f88233582acf51e3be9aedb3e3f7f992da46e0e45df31ad4e045e0296e6e35ea14e2245d4069176711c0
+  languageName: node
+  linkType: hard
+
+"@noble/ed25519@npm:^2.2.3":
+  version: 2.3.0
+  resolution: "@noble/ed25519@npm:2.3.0"
+  checksum: 10/3b12a7ac401ac625c59ab4b597d415aea3b855cdfa2563529863c9848b6c143b29fb1f0e462acec947bd20ab4fac0d8cfe892231566cbdcf6bdd13532241191b
   languageName: node
   linkType: hard
 
@@ -10494,6 +10534,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"did-resolver@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "did-resolver@npm:4.1.0"
+  checksum: 10/22c306007133213c8a7316137e174d08904db6cddebc55baa6d6fdbe7414ec2d2b031ba72fad449d069c1261468bc80963b08f47990a9eb5825b7535ee5ce252
+  languageName: node
+  linkType: hard
+
 "diff-sequences@npm:^29.6.3":
   version: 29.6.3
   resolution: "diff-sequences@npm:29.6.3"
@@ -15525,6 +15572,13 @@ __metadata:
     rfdc: "npm:^1.3.0"
     streamroller: "npm:^3.1.5"
   checksum: 10/421fb9c1e5a8859a810a40c9ee01fb8e4dfc2fed838049946e67c0064d197bdf76ca43b8fc45df50c5d709e6fc4f218d314f189a0feb8be0c48bdae80cb0934c
+  languageName: node
+  linkType: hard
+
+"loglevel@npm:^1.9.2":
+  version: 1.9.2
+  resolution: "loglevel@npm:1.9.2"
+  checksum: 10/6153d8db308323f7ee20130bc40309e7a976c30a10379d8666b596d9c6441965c3e074c8d7ee3347fe5cfc059c0375b6f3e8a10b93d5b813cc5547f5aa412a29
   languageName: node
   linkType: hard
 

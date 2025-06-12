@@ -121,6 +121,7 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
     const isLiked = feedback[index]?.type === 'like';
     const showFeedbackOptions = feedback[index]?.showFeedbackOptions;
     const feedbackSubmitted = feedback[index]?.submitted;
+    const showFeedback = false;
 
     if (message.isUser)
       // eslint-disable-next-line
@@ -275,18 +276,20 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
               </div>
             </div>
           )}
+          {showFeedback && (
+            <div className={styles.feedbackIcons}>
+              <FeedbackButton
+                enabled={!feedbackSubmitted}
+                feedback={feedback[index]?.type}
+                handleFeedback={fb => handleFeedback(index, fb)}
+                handleCopyToClipBoard={() => {
+                  setCopyConfirm(true);
+                  window.navigator.clipboard.writeText(message.text);
+                }}
+              />
+            </div>
+          )}
 
-          <div className={styles.feedbackIcons}>
-            <FeedbackButton
-              enabled={!feedbackSubmitted}
-              feedback={feedback[index]?.type}
-              handleFeedback={fb => handleFeedback(index, fb)}
-              handleCopyToClipBoard={() => {
-                setCopyConfirm(true);
-                window.navigator.clipboard.writeText(message.text);
-              }}
-            />
-          </div>
           {showFeedbackOptions && (
             <div className={styles.feedbackOptions}>
               <div className={styles.feedbackReasons}>
