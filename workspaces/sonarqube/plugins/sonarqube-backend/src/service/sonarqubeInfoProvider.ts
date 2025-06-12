@@ -322,7 +322,7 @@ export class DefaultSonarqubeInfoProvider implements SonarqubeInfoProvider {
     const fullUrl = `${url}/${path}?${new URLSearchParams(query).toString()}`;
 
     const encodedAuthToken =
-      authType === 'Bearer'
+      authType === 'Basic'
         ? Buffer.from(`${authToken}:`).toString('base64')
         : authToken;
 
