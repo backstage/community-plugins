@@ -19,15 +19,12 @@
  * @param data - The content to download
  * @param filename - The name of the file to save as
  */
-export const downloadLogFile = (data: string, filename: string): void => {
+export const downloadLogFile = (data: string, filename: string) => {
   const blob = new Blob([data], { type: 'text/plain;charset=utf-8' });
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;
   link.download = filename;
-
-  document.body.appendChild(link); // Required for Firefox
   link.click();
-  document.body.removeChild(link);
   URL.revokeObjectURL(url);
 };
