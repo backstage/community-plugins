@@ -240,6 +240,7 @@ export const useCatalogEntities: (
   searchTerm?: string,
   limit?: number,
   offset?: number,
+  kind?: string | undefined,
 ) => {
   entities: Entity[];
   totalItems: number;

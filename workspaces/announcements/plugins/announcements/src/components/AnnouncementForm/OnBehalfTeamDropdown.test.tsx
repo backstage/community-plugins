@@ -22,10 +22,14 @@ jest.mock('@backstage-community/plugin-announcements-react', () => ({
   useCatalogEntities: () => ({
     entities: [
       {
-        relations: [
-          { type: 'memberOf', targetRef: 'group:default/team-a' },
-          { type: 'memberOf', targetRef: 'group:default/team-b' },
-        ],
+        kind: 'Group',
+        metadata: { name: 'team-a', namespace: 'default' },
+        spec: { profile: { displayName: 'Team A' } },
+      },
+      {
+        kind: 'Group',
+        metadata: { name: 'team-b', namespace: 'default' },
+        spec: { profile: { displayName: 'Team B' } },
       },
     ],
     loading: false,
