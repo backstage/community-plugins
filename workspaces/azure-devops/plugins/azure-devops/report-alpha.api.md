@@ -21,7 +21,7 @@ const _default: FrontendPlugin<
   {},
   {},
   {
-    [x: `api:${string}`]: ExtensionDefinition<{
+    'api:azure-devops': ExtensionDefinition<{
       kind: 'api';
       name: undefined;
       config: {};
@@ -36,7 +36,7 @@ const _default: FrontendPlugin<
         factory: AnyApiFactory;
       };
     }>;
-    [x: `entity-card:${string}/readme`]: ExtensionDefinition<{
+    'entity-card:azure-devops/readme': ExtensionDefinition<{
       kind: 'entity-card';
       name: 'readme';
       config: {
@@ -77,7 +77,7 @@ const _default: FrontendPlugin<
         type?: EntityCardType | undefined;
       };
     }>;
-    [x: `entity-content:${string}/git-tags`]: ExtensionDefinition<{
+    'entity-content:azure-devops/git-tags': ExtensionDefinition<{
       kind: 'entity-content';
       name: 'git-tags';
       config: {
@@ -146,7 +146,7 @@ const _default: FrontendPlugin<
         filter?: EntityPredicate | ((entity: Entity) => boolean) | undefined;
       };
     }>;
-    [x: `entity-content:${string}/pipelines`]: ExtensionDefinition<{
+    'entity-content:azure-devops/pipelines': ExtensionDefinition<{
       kind: 'entity-content';
       name: 'pipelines';
       config: {
@@ -215,7 +215,7 @@ const _default: FrontendPlugin<
         filter?: EntityPredicate | ((entity: Entity) => boolean) | undefined;
       };
     }>;
-    [x: `entity-content:${string}/pull-requests`]: ExtensionDefinition<{
+    'entity-content:azure-devops/pull-requests': ExtensionDefinition<{
       kind: 'entity-content';
       name: 'pull-requests';
       config: {
@@ -284,7 +284,7 @@ const _default: FrontendPlugin<
         filter?: EntityPredicate | ((entity: Entity) => boolean) | undefined;
       };
     }>;
-    [x: `page:${string}`]: ExtensionDefinition<{
+    'page:azure-devops': ExtensionDefinition<{
       kind: 'page';
       name: undefined;
       config: {
