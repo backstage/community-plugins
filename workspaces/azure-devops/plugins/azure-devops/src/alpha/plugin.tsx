@@ -119,7 +119,7 @@ export const azureDevOpsReadmeEntityCard = EntityCardBlueprint.make({
 
 /** @alpha */
 export default createFrontendPlugin({
-  id: 'azure-devops',
+  pluginId: 'azure-devops',
   extensions: [
     azureDevOpsApi,
     azureDevOpsReadmeEntityCard,
