@@ -53,6 +53,8 @@ import PipelineRunLogDialog from '../PipelineRunLogs/PipelineRunLogDialog';
 import { PipelineVisualizationStepList } from './PipelineVisualizationStepList';
 
 import './PipelineTaskNode.css';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { tektonTranslationRef } from '../../translation';
 
 type PipelineTaskNodeProps = {
   element: Node;
@@ -70,6 +72,7 @@ const PipelineTaskNode = ({
   const { watchResourcesData } = useContext<TektonResourcesContextData>(
     TektonResourcesContext,
   );
+  const { t } = useTranslationRef(tektonTranslationRef);
   const data = element.getData();
   const triggerRef = useRef<SVGGElement | null>(null);
 
@@ -95,7 +98,7 @@ const PipelineTaskNode = ({
   const taskStatus = getTaskStatus(data.pipelineRun, data.task);
 
   const stepStatusList: StepStatus[] = stepList.map((step: { name: string }) =>
-    createStepStatus(step, taskStatus),
+    createStepStatus(step, taskStatus, t),
   );
   const succeededStepsCount = stepStatusList.filter(
     ({ status }) => status === RunStatus.Succeeded,

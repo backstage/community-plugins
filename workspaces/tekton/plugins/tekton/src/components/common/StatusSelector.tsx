@@ -36,20 +36,6 @@ const useStyles = makeStyles<Theme>(theme => ({
   },
 }));
 
-export const statusOptions = Object.entries(ComputedStatus)
-  .sort(([keyA], [keyB]) => {
-    if (keyA === keyB) {
-      return 0;
-    } else if (keyA < keyB) {
-      return -1;
-    }
-    return 1;
-  })
-  .map(([key, value]) => ({
-    value: key,
-    label: value,
-  }));
-
 export const StatusSelector = () => {
   const classes = useStyles();
   const { selectedStatus, setSelectedStatus } = useContext(
@@ -60,6 +46,19 @@ export const StatusSelector = () => {
     setSelectedStatus(status as ComputedStatus);
   };
   const { t } = useTranslationRef(tektonTranslationRef);
+  const statusOptions = Object.entries(ComputedStatus)
+    .sort(([keyA], [keyB]) => {
+      if (keyA === keyB) {
+        return 0;
+      } else if (keyA < keyB) {
+        return -1;
+      }
+      return 1;
+    })
+    .map(([key, value]) => ({
+      value: key,
+      label: t(`pipelineRunStatus.${key}` as any, { defaultValue: value }),
+    }));
 
   return (
     <div className="bs-tkn-status-selector">

@@ -44,12 +44,12 @@ export const tektonTranslationRef: TranslationRef<
     readonly 'pipelineRunList.vulnerabilitySeverityTitle.high': 'High';
     readonly 'pipelineRunList.vulnerabilitySeverityTitle.medium': 'Medium';
     readonly 'pipelineRunList.vulnerabilitySeverityTitle.low': 'Low';
-    readonly 'pipelineRunList.tableHeaderTitle.status': 'STATUS';
-    readonly 'pipelineRunList.tableHeaderTitle.startTime': 'STARTED';
     readonly 'pipelineRunList.tableHeaderTitle.name': 'NAME';
-    readonly 'pipelineRunList.tableHeaderTitle.duration': 'DURATION';
     readonly 'pipelineRunList.tableHeaderTitle.vulnerabilities': 'VULNERABILITIES';
+    readonly 'pipelineRunList.tableHeaderTitle.status': 'STATUS';
     readonly 'pipelineRunList.tableHeaderTitle.taskStatus': 'TASK STATUS';
+    readonly 'pipelineRunList.tableHeaderTitle.startTime': 'STARTED';
+    readonly 'pipelineRunList.tableHeaderTitle.duration': 'DURATION';
     readonly 'pipelineRunList.tableHeaderTitle.actions': 'ACTIONS';
     readonly 'pipelineRunLogs.title': 'PipelineRun Logs';
     readonly 'pipelineRunLogs.noLogs': 'No logs found';
@@ -60,6 +60,26 @@ export const tektonTranslationRef: TranslationRef<
     readonly 'pipelineRunLogs.taskStatusStepper.skipped': 'Skipped';
     readonly 'pipelineRunOutput.title': 'PipelineRun Output';
     readonly 'pipelineRunOutput.noOutput': 'No output';
+    readonly 'pipelineRunStatus.Skipped': 'Skipped';
+    readonly 'pipelineRunStatus.All': 'All';
+    readonly 'pipelineRunStatus.Cancelling': 'Cancelling';
+    readonly 'pipelineRunStatus.Succeeded': 'Succeeded';
+    readonly 'pipelineRunStatus.Failed': 'Failed';
+    readonly 'pipelineRunStatus.Running': 'Running';
+    readonly 'pipelineRunStatus.In Progress': 'In Progress';
+    readonly 'pipelineRunStatus.FailedToStart': 'FailedToStart';
+    readonly 'pipelineRunStatus.PipelineNotStarted': 'PipelineNotStarted';
+    readonly 'pipelineRunStatus.Cancelled': 'Cancelled';
+    readonly 'pipelineRunStatus.Pending': 'Pending';
+    readonly 'pipelineRunStatus.Idle': 'Idle';
+    readonly 'pipelineRunStatus.Other': 'Other';
+    readonly 'pipelineRunDuration.lessThanSec': 'less than a sec';
+    readonly 'pipelineRunDuration.hour_one': '{{count}} hour';
+    readonly 'pipelineRunDuration.hour_other': '{{count}} hours';
+    readonly 'pipelineRunDuration.minute_one': '{{count}} minute';
+    readonly 'pipelineRunDuration.minute_other': '{{count}} minutes';
+    readonly 'pipelineRunDuration.second_one': '{{count}} second';
+    readonly 'pipelineRunDuration.second_other': '{{count}} seconds';
   }
 >;
 
