@@ -1,5 +1,11 @@
 # @backstage-community/plugin-sonarqube
 
+## 0.13.1
+
+### Patch Changes
+
+- df41249: Support all entity kinds in the tabular view
+
 ## 0.13.0
 
 ### Minor Changes
