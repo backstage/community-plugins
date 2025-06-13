@@ -1,5 +1,17 @@
 # @backstage-community/plugin-announcements-react
 
+## 0.6.0
+
+### Minor Changes
+
+- 7e38fa0: Backstage version bump to v1.39.1
+
+### Patch Changes
+
+- dc57fe9: Optimize query by filtering only entries with `kind: group`. Add `displayName` to the "On behalf of" dropdown for easier group identification and selection.
+- Updated dependencies [7e38fa0]
+  - @backstage-community/plugin-announcements-common@0.5.0
+
 ## 0.5.0
 
 ### Minor Changes
