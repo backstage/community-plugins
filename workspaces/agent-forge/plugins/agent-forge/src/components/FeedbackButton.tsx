@@ -20,7 +20,7 @@ import ThumbUpFilledIcon from '../icons/thumb-up-filled-icon.png';
 import ThumbDownIcon from '../icons/thumb-down-icon.png';
 import ThumbDownFilledIcon from '../icons/thumb-down-filled-icon.png';
 import CopyIcon from '../icons/copy.svg';
-import React from 'react';
+
 import useStyles from './useStyles';
 
 export enum Feedback {

@@ -56,8 +56,5 @@
     "*.{json,md}": [
       "prettier --write"
     ]
-  },
-  "dependencies": {
-    "react-router-dom": "^7.6.0"
   }
 }

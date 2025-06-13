@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+
 import clearIcon from '../icons/clear-icon.png';
 import useStyles from './useStyles';
 import { useHeaderStyles } from './useHeaderStyles';
@@ -21,6 +21,7 @@ import MoreInfoIcon from '../icons/more-info.svg';
 import './App.css';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
+import { useState } from 'react';
 
 interface ChatHeaderProps {
   clearChat: () => void;
@@ -35,7 +36,7 @@ function ChatHeader({
 }: ChatHeaderProps) {
   const styles = useStyles();
   const headerStyles = useHeaderStyles();
-  const [isFullScreen, setIsFullScreen] = React.useState(false);
+  const [isFullScreen, setIsFullScreen] = useState(false);
   const goFullScreen = () => {
     setIsFullScreen(!isFullScreen);
     handleFullScreenToggle();

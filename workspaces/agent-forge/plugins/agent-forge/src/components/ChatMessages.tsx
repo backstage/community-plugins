@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import WebexLogo from '../icons/jarvis.png';
 import TypingIndicator from './TypingIndicator';
 import { FeedbackButton } from './FeedbackButton';
@@ -22,11 +22,11 @@ import { Feedback, Message } from '../types';
 import useStyles from './useStyles';
 import { MarkdownContent } from '@backstage/core-components';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Box';
-import TextField from '@mui/material/Box';
-import MenuItem from '@mui/material/Box';
-import Button from '@mui/material/Box';
-import Snackbar from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import TextField from '@mui/material/TextField';
+import MenuItem from '@mui/material/MenuItem';
+import Button from '@mui/material/Button';
+import Snackbar from '@mui/material/Snackbar';
 import { useAsync } from 'react-use';
 import { identityApiRef, useApi } from '@backstage/core-plugin-api';
 import { isProviderField, isModelField } from '../utils/helpers';

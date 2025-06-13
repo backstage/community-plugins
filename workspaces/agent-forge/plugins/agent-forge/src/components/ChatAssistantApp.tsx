@@ -17,7 +17,7 @@ import ChatFeedback from './ChatFeedback';
 import ChatHeader from './ChatHeader';
 import ChatInput from './ChatInput';
 import ChatTabs from './ChatTabs';
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import WebexLogo from '../icons/jarvis.png';
 import useStyles from './useStyles';
 import { ChatSuggestionOptions } from './ChatSuggestionOptions';
@@ -27,13 +27,7 @@ import {
   configApiRef,
   useApi,
 } from '@backstage/core-plugin-api';
-import {
-  createTimestamp,
-  delay,
-  isAnswer,
-  isSuggestions,
-  makeLinksClickable,
-} from '../utils';
+import { createTimestamp, delay, isAnswer, makeLinksClickable } from '../utils';
 import { ChatbotApi } from '../apis';
 import { useObservable } from 'react-use';
 import { v4 as uuidv4 } from 'uuid';
@@ -53,7 +47,9 @@ function ChatAssistantApp() {
     appThemeApi.getActiveThemeId(),
   );
   const logWithContext = (message: string) => {
-    // console.log(`[ChatAssistantApp] ${message}`);
+    // TODO: we should find a better way to handle this down the road
+    // eslint-disable-next-line no-console
+    console.log(`[ChatAssistantApp] ${message}`);
   };
   const backendUrl =
     config.getOptionalString('agentForge.baseUrl') ||
@@ -91,7 +87,7 @@ function ChatAssistantApp() {
   const [isPromptShown, setShowPrompt] = useState<boolean>(false);
   const [isInitialState, setIsInitialState] = useState<boolean>(true);
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
-  const [providerModelsMap, setProviderModelsMap] = useState<{
+  const [providerModelsMap] = useState<{
     [key: string]: string[];
   }>({});
 
@@ -186,19 +182,7 @@ function ChatAssistantApp() {
     return chatId;
   };
 
-  async function sendAnswerMessage(response: IQuestionResponse): Promise<void> {
-    if (isAnswer(response)) {
-      await addBotMessage({
-        text: response.answer,
-        isUser: false,
-        timestamp: createTimestamp(),
-        metadata: response.metadata,
-      });
-      return;
-    }
-  }
-
-  async function handleOptionSelection(confirmation: string): Promise<void> {}
+  async function handleOptionSelection(_confirmation: string): Promise<void> {}
 
   async function handleMessageSubmit(msg?: string) {
     const input = userInput || msg;
