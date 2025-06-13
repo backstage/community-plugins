@@ -119,7 +119,6 @@ export const sonarqubeTranslationRef: TranslationRef<
     readonly 'sonarQubeCard.qualityBadgeLabel.notComputed': 'Not computed';
     readonly 'sonarQubeCard.qualityBadgeLabel.gatePassed': 'Gate passed';
     readonly 'sonarQubeCard.qualityBadgeLabel.gateFailed': 'Gate failed';
-    readonly 'sonarQubeTable.entityLinkTitle': 'View Component details';
     readonly 'sonarQubeTable.columnsTitle.component': 'Component';
     readonly 'sonarQubeTable.columnsTitle.vulnerabilities': 'Vulnerabilities';
     readonly 'sonarQubeTable.columnsTitle.bugs': 'Bugs';
