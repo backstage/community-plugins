@@ -17,9 +17,8 @@ import type { PropsWithChildren } from 'react';
 
 import { fireEvent, render, screen } from '@testing-library/react';
 
-import { downloadLogFile } from '@janus-idp/shared-react';
-
 import PodLogsDownload from './PodLogsDownload';
+import { downloadLogFile } from '../../../../utils/download-log-file-utils';
 
 jest.mock('@mui/material', () => ({
   ...jest.requireActual('@mui/material'),
@@ -30,7 +29,7 @@ jest.mock('@mui/material', () => ({
 
 jest.mock('@mui/icons-material/GetApp', () => () => <div>DownloadIcon</div>);
 
-jest.mock('@janus-idp/shared-react', () => ({
+jest.mock('../../../../utils/download-log-file-utils', () => ({
   downloadLogFile: jest.fn(),
 }));
 
