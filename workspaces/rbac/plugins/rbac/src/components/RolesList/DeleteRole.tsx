@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useDeleteDialog } from '@janus-idp/shared-react';
+
 import Delete from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import { policyEntityDeletePermission } from '@backstage-community/plugin-rbac-common';
 import { useActionPermissionTooltip } from '../../hooks/useActionPermissionTooltip';
+import { useDeleteDialog } from '../DeleteDialogContext';
 
 type DeleteRoleProps = {
   roleName: string;
