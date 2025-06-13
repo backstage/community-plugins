@@ -20,7 +20,7 @@ const _default: FrontendPlugin<
   {},
   {},
   {
-    [x: `api:${string}`]: ExtensionDefinition<{
+    'api:linguist': ExtensionDefinition<{
       kind: 'api';
       name: undefined;
       config: {};
@@ -35,7 +35,7 @@ const _default: FrontendPlugin<
         factory: AnyApiFactory;
       };
     }>;
-    [x: `entity-card:${string}/languages`]: ExtensionDefinition<{
+    'entity-card:linguist/languages': ExtensionDefinition<{
       kind: 'entity-card';
       name: 'languages';
       config: {

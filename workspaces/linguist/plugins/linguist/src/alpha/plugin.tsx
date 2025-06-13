@@ -56,6 +56,6 @@ export const linguistApi = ApiBlueprint.make({
 
 /** @alpha */
 export default createFrontendPlugin({
-  id: 'linguist',
+  pluginId: 'linguist',
   extensions: [linguistApi, entityLinguistCard],
 });
