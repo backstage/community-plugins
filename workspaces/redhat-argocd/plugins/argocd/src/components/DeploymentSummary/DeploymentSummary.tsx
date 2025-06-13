@@ -69,17 +69,21 @@ const DeploymentSummary = () => {
     return baseUrl;
   };
 
+  const buildAppUrl = (row: any): string | undefined => {
+    const appBaseUrl = getBaseUrl(row);
+
+    return row?.metadata?.namespace
+      ? `${appBaseUrl}/applications/${row.metadata.namespace}/${row.metadata.name}`
+      : `${appBaseUrl}/applications/${row.metadata.name}`;
+  };
+
   const columns: TableColumn<Application>[] = [
     {
       title: 'ArgoCD App',
       field: 'name',
       render: (row: Application): ReactNode =>
         getBaseUrl(row) ? (
-          <Link
-            href={`${getBaseUrl(row)}/applications/${row?.metadata?.name}`}
-            target="_blank"
-            rel="noopener"
-          >
+          <Link href={`${buildAppUrl(row)}`} target="_blank" rel="noopener">
             {row.metadata.name}{' '}
             <IconButton color="primary" size="small">
               <ExternalLinkIcon />
