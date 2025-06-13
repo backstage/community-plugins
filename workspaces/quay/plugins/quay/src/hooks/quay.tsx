@@ -20,11 +20,12 @@ import { Entity } from '@backstage/catalog-model';
 import { useApi } from '@backstage/core-plugin-api';
 import { useEntity } from '@backstage/plugin-catalog-react';
 
-import { formatByteSize, formatDate } from '@janus-idp/shared-react';
+import { formatDate } from '@janus-idp/shared-react';
 import { Box, Chip, makeStyles } from '@material-ui/core';
 
 import { quayApiRef } from '../api';
 import { Layer, QuayTagData, Tag } from '../types';
+import { formatByteSize } from '../utils';
 
 const useLocalStyles = makeStyles({
   chip: {

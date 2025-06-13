@@ -1,5 +1,11 @@
 # @backstage-community/plugin-sonarqube-backend
 
+## 0.9.2
+
+### Patch Changes
+
+- 65c9891: Fixed a bug in v0.9.1 where basic and bearer auth token types were reversed
+
 ## 0.9.1
 
 ### Patch Changes

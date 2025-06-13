@@ -76,6 +76,8 @@ Then to display the `README` file that belongs to each entity you would do this:
 dev.azure.com/readme-path: /<path-to>/<my-readme-file>.md
 ```
 
+> Note: this annotation does not support relative paths as the API we use from Azure DevOps to power this feature does not support relative paths. If you use something like this `dev.azure.com/readme-path: ./docs/index.md` the frontend will throw an error with details about why.
+
 #### Pipeline in different project to repo
 
 If your pipeline is in a different project to the source code, you will need to specify this in the project annotation.
@@ -350,33 +352,16 @@ To get the README component working you'll need to do the following two steps:
 
 ## Permission Framework
 
-Azure DevOps plugin supports the permission framework for PRs, GitTags, Pipelines and Readme features.
+Azure DevOps plugin supports the permission framework for PRs, GitTags, Pipelines and Readme features. To use these permissions you'll need to add the `@backstage-community/plugin-azure-devops-common` to the same location as your [Permission Policy](https://backstage.io/docs/permissions/writing-a-policy). This example assumes that your Permission Policy lives in your `packages/backend`:
 
 ```bash
 # From your Backstage root directory
 yarn --cwd packages/backend add @backstage-community/plugin-azure-devops-common
 ```
 
-New Backend you can skip the below and proceed with [permission configuration](#configure-permission)
-
-To enable permissions for the legacy backend system in `packages/backend/src/plugins/azure-devops.ts` add the following.
-
-```diff
-export default async function createPlugin(
-  env: PluginEnvironment,
-): Promise<Router> {
-  return createRouter({
-    logger: env.logger,
-    config: env.config,
-    reader: env.reader,
-+   permissions: env.permissions,
-  });
-}
-```
-
 ### Configure Permission
 
-To apply the permission rules add the following in `packages/backend/src/plugins/permissions.ts`.
+To apply the permission rules add the following in to your [Permission Policy](https://backstage.io/docs/permissions/writing-a-policy).
 
 > Note: the following is just an example of how you might want to setup permissions, as an Adopter you can configure this to fit your needs. Also all the permissions are Resource Permissions as they work with an Entity with the exception of `azureDevOpsPullRequestDashboardReadPermission`.
 

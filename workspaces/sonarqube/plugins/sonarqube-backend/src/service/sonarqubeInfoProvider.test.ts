@@ -368,11 +368,11 @@ describe('DefaultSonarqubeInfoProvider', () => {
       if (req.headers && req.headers.has('Authorization')) {
         if (tokenType === 'Basic') {
           expect(req.headers.get('Authorization')).toEqual(
-            `${tokenType} 123456789abcdef0123456789abcedf012`,
+            `${tokenType} MTIzNDU2Nzg5YWJjZGVmMDEyMzQ1Njc4OWFiY2VkZjAxMjo=`,
           );
         } else {
           expect(req.headers.get('Authorization')).toEqual(
-            `${tokenType} MTIzNDU2Nzg5YWJjZGVmMDEyMzQ1Njc4OWFiY2VkZjAxMjo=`,
+            `${tokenType} ${DUMMY_API_KEY}`,
           );
         }
       } else {
