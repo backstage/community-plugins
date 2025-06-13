@@ -15,7 +15,7 @@
  */
 
 import { identityApiRef, useApi } from '@backstage/core-plugin-api';
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import useStyles from './useStyles';
 
 function ChatAssistantToken() {

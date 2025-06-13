@@ -13,6 +13,5 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { chatbotDisplayAppRootElement } from './extensions';
 export { default as ChatAssistantPage } from './components/ChatAssistantApp';
 export { default as ChatAssistantToken } from './components/ChatAssistantToken';

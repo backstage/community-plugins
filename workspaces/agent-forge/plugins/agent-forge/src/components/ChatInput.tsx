@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+
 import sendIcon from '../icons/send-icon.svg';
 import useStyles from './useStyles';
 import IconButton from '@mui/material/IconButton';
