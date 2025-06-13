@@ -16,10 +16,10 @@
 import type { FC } from 'react';
 
 import { Fragment } from 'react';
-import { downloadLogFile } from '@janus-idp/shared-react';
 import { Box, createStyles, makeStyles, Link, Theme } from '@material-ui/core';
 import DownloadIcon from '@mui/icons-material/FileDownloadOutlined';
 import { PipelineRunResult } from '../../models/pipelineRunResult';
+import { downloadLogFile } from '../../utils/downloadLogFile';
 
 interface PipelineRunLogsDowloaderProps {
   pr: PipelineRunResult;
