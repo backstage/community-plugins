@@ -1,5 +1,14 @@
 # @backstage-community/plugin-azure-devops
 
+## 0.16.1
+
+### Patch Changes
+
+- 837d67f: Updated `README` with details regarding spaces in project and repo names
+- 9cf745c: Updated permissions section in `README` to remove legacy backend references and to make the instructions more clear
+- 3622b13: Deprecated `getRepoBuilds` on the frontend and backend along with related code. The are no usages of this method as it was replaced by `getBuildRuns` well over a year ago. This will be removed in a future release.
+- 764e1ef: Added a check to validate that the `dev.azure.com/readme-path` annotation value does not have a relative path and throw an error with details if it does as this is not supported by the Azure DevOps API used for this feature.
+
 ## 0.16.0
 
 ### Minor Changes
