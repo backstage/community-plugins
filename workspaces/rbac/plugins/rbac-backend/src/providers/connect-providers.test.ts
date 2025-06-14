@@ -259,6 +259,7 @@ describe('Connection', () => {
         ['user:default/Adam', 'role:default/test-provider'], // to add
       ];
 
+      await provider.applyRoles(roles);
       const roleMeta = {
         createdAt: new Date().toUTCString(),
         lastModified: new Date().toUTCString(),
@@ -266,8 +267,6 @@ describe('Connection', () => {
         source: 'test',
         roleEntityRef: roles[0][1],
       };
-
-      await provider.applyRoles(roles);
       expect(enfAddGroupingPolicySpy).toHaveBeenNthCalledWith(
         1,
         ['user:default/test', 'role:default/test-provider'],
@@ -378,6 +377,11 @@ describe('Connection', () => {
 
       const failingRoleToAdd = `user:default/test,role:default/`;
       const roleToAdd = [['user:default/test', 'role:default/test-provider']];
+
+      await provider.applyRoles(roles);
+      expect(mockLoggerService.warn).toHaveBeenCalledWith(
+        `Failed to validate group policy ${failingRoleToAdd}. Cause: Entity reference "role:default/" was not on the form [<kind>:][<namespace>/]<name>`,
+      );
       const roleMeta = {
         createdAt: new Date().toUTCString(),
         lastModified: new Date().toUTCString(),
@@ -385,11 +389,6 @@ describe('Connection', () => {
         source: 'test',
         roleEntityRef: roleToAdd[0][1],
       };
-
-      await provider.applyRoles(roles);
-      expect(mockLoggerService.warn).toHaveBeenCalledWith(
-        `Failed to validate group policy ${failingRoleToAdd}. Cause: Entity reference "role:default/" was not on the form [<kind>:][<namespace>/]<name>`,
-      );
       expect(enfAddGroupingPolicySpy).toHaveBeenCalledWith(
         ...roleToAdd,
         roleMeta,
