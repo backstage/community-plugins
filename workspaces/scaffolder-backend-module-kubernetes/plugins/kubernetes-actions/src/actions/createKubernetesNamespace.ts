@@ -25,6 +25,7 @@ import {
   CoreV1ApiCreateNamespaceRequest,
   KubeConfig,
 } from '@kubernetes/client-node';
+import { z } from 'zod';
 
 const KUBERNETES_API_URL_ANNOTATION = 'kubernetes.io/api-server';
 const KUBERNETES_CLUSTER_TYPE = 'kubernetes-cluster';
@@ -126,52 +127,45 @@ export function createKubernetesNamespaceAction(catalogClient: CatalogClient) {
     id: 'kubernetes:create-namespace',
     description: 'Creates a kubernetes namespace',
     schema: {
-      input: {
-        type: 'object',
-        oneOf: [
-          { required: ['namespace', 'token', 'url'] },
-          { required: ['namespace', 'token', 'clusterRef'] },
-        ],
-        properties: {
-          namespace: {
-            title: 'Namespace name',
-            description: 'Name of the namespace to be created',
-            type: 'string',
-          },
-          clusterRef: {
-            title: 'Cluster entity reference',
-            description: 'Cluster resource entity reference from the catalog',
-            type: 'string',
-          },
-          url: {
-            title: 'Url',
-            description:
+      input: z
+        .object({
+          namespace: z.string().describe('Name of the namespace to be created'),
+          token: z.string().describe('Bearer token to authenticate with'),
+          clusterRef: z
+            .string()
+            .optional()
+            .describe('Cluster resource entity reference from the catalog'),
+          url: z
+            .string()
+            .optional()
+            .describe(
               'Url of the kubernetes API, will be used if clusterRef is not provided',
-            type: 'string',
-          },
-          token: {
-            title: 'Token',
-            description: 'Bearer token to authenticate with',
-            type: 'string',
-          },
-          skipTLSVerify: {
-            title: 'Skip TLS verification',
-            description:
+            ),
+          skipTLSVerify: z
+            .boolean()
+            .optional()
+            .default(false)
+            .describe(
               'Skip TLS certificate verification, not recommended to use in production environment, defaults to false',
-            type: 'boolean',
-          },
-          caData: {
-            title: 'CA Data',
-            description: 'Certificate Authority base64 encoded certificate',
-            type: 'string',
-          },
-          labels: {
-            title: 'Labels',
-            description: 'Labels that will be applied to the namespace.',
-            type: 'string',
-          },
-        },
-      },
+            ),
+          caData: z
+            .string()
+            .optional()
+            .describe('Certificate Authority base64 encoded certificate'),
+          labels: z
+            .string()
+            .optional()
+            .describe('Labels that will be applied to the namespace.'),
+        })
+        .superRefine((data, ctx) => {
+          if (!data.clusterRef && !data.url) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: 'Either clusterRef or url must be provided',
+              path: ['clusterRef', 'url'],
+            });
+          }
+        }),
     },
     async handler(ctx) {
       const {
