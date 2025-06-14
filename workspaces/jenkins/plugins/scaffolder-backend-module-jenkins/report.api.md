@@ -5,10 +5,9 @@
 ```ts
 import { BackendFeature } from '@backstage/backend-plugin-api';
 
-// @public (undocumented)
-const jenkinsJobCreate: BackendFeature;
-export default jenkinsJobCreate;
-export { jenkinsJobCreate };
+// @public
+const scaffolderBackendModuleJenkins: BackendFeature;
+export default scaffolderBackendModuleJenkins;
 
 // (No @packageDocumentation comment for this package)
 ```
