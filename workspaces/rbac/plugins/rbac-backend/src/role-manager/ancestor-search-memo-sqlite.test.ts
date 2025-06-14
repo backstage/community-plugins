@@ -14,42 +14,31 @@
  * limitations under the License.
  */
 import { mockServices } from '@backstage/backend-test-utils';
-import type { Entity, GroupEntity } from '@backstage/catalog-model';
+import type { GroupEntity } from '@backstage/catalog-model';
 
 import { AncestorSearchMemoSQLite } from './ancestor-search-memo-sqlite';
+import { catalogMock, testGroups } from '../../__fixtures__/mock-utils';
+import { convertGroupsToEntity } from '../../__fixtures__/test-utils';
 
 const mockAuthService = mockServices.auth();
 
 describe('ancestor-search-memo', () => {
-  const testGroups = [
-    createGroupEntity('team-a', 'team-b', [], ['adam']),
-    createGroupEntity('team-b', 'team-c', [], []),
-    createGroupEntity('team-c', '', [], []),
-    createGroupEntity('team-d', 'team-e', [], ['george']),
-    createGroupEntity('team-e', 'team-f', [], []),
-    createGroupEntity('team-f', '', [], []),
-  ];
-
-  const testUserGroups = [createGroupEntity('team-a', 'team-b', [], ['adam'])];
-
-  // TODO: Move to 'catalogServiceMock' from '@backstage/plugin-catalog-node/testUtils'
-  // once '@backstage/plugin-catalog-node' is upgraded
-  const catalogApiMock: any = {
-    getEntities: jest.fn().mockImplementation((arg: any) => {
-      const hasMember = arg.filter['relations.hasMember'];
-      if (hasMember && hasMember === 'user:default/adam') {
-        return { items: testUserGroups };
-      }
-      return { items: testGroups };
-    }),
-  };
+  const testUserGroups = convertGroupsToEntity([
+    {
+      name: 'team-d',
+      title: 'Team D',
+      parent: 'team-a',
+      children: [],
+      hasMember: ['user:default/george', 'user:default/john'],
+    },
+  ]);
 
   let asm: AncestorSearchMemoSQLite;
 
   beforeEach(() => {
     asm = new AncestorSearchMemoSQLite(
-      'user:default/adam',
-      catalogApiMock,
+      'user:default/george',
+      catalogMock,
       mockAuthService,
     );
   });
@@ -69,7 +58,7 @@ describe('ancestor-search-memo', () => {
   });
 
   describe('traverseGroups', () => {
-    // user:default/adam -> group:default/team-a -> group:default/team-b -> group:default/team-c
+    // user:default/george -> group:default/team-d -> group:default/team-a -> group:default/root-group
     it('should build a graph for a particular user', async () => {
       const userGroupsTest = await asm.getUserASMGroups();
 
@@ -79,19 +68,19 @@ describe('ancestor-search-memo', () => {
         asm.traverse(group as GroupEntity, allGroupsTest as GroupEntity[], 0),
       );
 
+      expect(asm.hasEntityRef('group:default/team-d')).toBeTruthy();
       expect(asm.hasEntityRef('group:default/team-a')).toBeTruthy();
-      expect(asm.hasEntityRef('group:default/team-b')).toBeTruthy();
-      expect(asm.hasEntityRef('group:default/team-c')).toBeTruthy();
-      expect(asm.hasEntityRef('group:default/team-d')).toBeFalsy();
+      expect(asm.hasEntityRef('group:default/root-group')).toBeTruthy();
+      expect(asm.hasEntityRef('group:default/team-b')).toBeFalsy();
     });
 
     // maxDepth of one                                  stops here
     //                                                       |
-    // user:default/adam -> group:default/team-a -> group:default/team-b -> group:default/team-c
+    // user:default/george -> group:default/team-d -> group:default/team-a -> group:default/root-group
     it('should build the graph but stop based on the maxDepth', async () => {
       const asmMaxDepth = new AncestorSearchMemoSQLite(
-        'user:default/adam',
-        catalogApiMock,
+        'user:default/george',
+        catalogMock,
         mockAuthService,
         1,
       );
@@ -108,41 +97,10 @@ describe('ancestor-search-memo', () => {
         ),
       );
 
+      expect(asmMaxDepth.hasEntityRef('group:default/team-d')).toBeTruthy();
       expect(asmMaxDepth.hasEntityRef('group:default/team-a')).toBeTruthy();
-      expect(asmMaxDepth.hasEntityRef('group:default/team-b')).toBeTruthy();
-      expect(asmMaxDepth.hasEntityRef('group:default/team-c')).toBeFalsy();
-      expect(asmMaxDepth.hasEntityRef('group:default/team-d')).toBeFalsy();
+      expect(asmMaxDepth.hasEntityRef('group:default/root-group')).toBeFalsy();
+      expect(asmMaxDepth.hasEntityRef('group:default/team-b')).toBeFalsy();
     });
   });
-
-  function createGroupEntity(
-    name: string,
-    parent?: string,
-    children?: string[],
-    members?: string[],
-  ): Entity {
-    const entity: Entity = {
-      apiVersion: 'v1',
-      kind: 'Group',
-      metadata: {
-        name,
-        namespace: 'default',
-      },
-      spec: {},
-    };
-
-    if (children) {
-      entity.spec!.children = children;
-    }
-
-    if (members) {
-      entity.spec!.members = members;
-    }
-
-    if (parent) {
-      entity.spec!.parent = parent;
-    }
-
-    return entity;
-  }
 });

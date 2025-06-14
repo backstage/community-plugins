@@ -14,13 +14,12 @@ import type { HttpAuthService } from '@backstage/backend-plugin-api';
 import type { LifecycleService } from '@backstage/backend-plugin-api';
 import type { LoggerService } from '@backstage/backend-plugin-api';
 import type { PermissionEvaluator } from '@backstage/plugin-permission-common';
-import { PermissionPolicy } from '@backstage/plugin-permission-node';
 import type { PermissionsRegistryService } from '@backstage/backend-plugin-api';
 import type { PermissionsService } from '@backstage/backend-plugin-api';
 import { PluginIdProvider } from '@backstage-community/plugin-rbac-node';
+import { PolicyExtensionPoint } from '@backstage/plugin-permission-node/alpha';
 import type { RBACProvider } from '@backstage-community/plugin-rbac-node';
 import type { Router } from 'express';
-import type { UserInfoService } from '@backstage/backend-plugin-api';
 
 // @public (undocumented)
 export function createRouter(options: RouterOptions): Promise<express.Router>;
@@ -34,9 +33,9 @@ export type EnvOptions = {
     auth: AuthService;
     httpAuth: HttpAuthService;
     auditor: AuditorService;
-    userInfo: UserInfoService;
     lifecycle: LifecycleService;
     permissionsRegistry: PermissionsRegistryService;
+    policy: PolicyExtensionPoint;
 };
 
 export { PluginIdProvider }
@@ -55,11 +54,8 @@ export default rbacPlugin;
 export type RBACRouterOptions = {
     config: Config;
     logger: LoggerService;
-    discovery: DiscoveryService;
-    policy: PermissionPolicy;
     auth: AuthService;
     httpAuth: HttpAuthService;
-    userInfo: UserInfoService;
     permissions: PermissionsService;
     permissionsRegistry: PermissionsRegistryService;
     auditor: AuditorService;
