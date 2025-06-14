@@ -1,5 +1,13 @@
 ### Dependencies
 
+## 1.13.2
+
+### Patch Changes
+
+- 31b91ce: Updated dependency `@hey-api/openapi-ts` to `0.67.3`.
+- e958f2f: Updated dependency `@types/node` to `22.15.29`.
+- fcc57ec: Updated dependency `@types/node` to `22.14.1`.
+
 ## 1.13.1
 
 ### Patch Changes
