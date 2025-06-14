@@ -56,7 +56,7 @@ describe('SegmentAnalytics', () => {
     it('throws when missing writeKey', () => {
       const config = new ConfigReader({ app: { analytics: { segment: {} } } });
       expect(() => SegmentAnalytics.fromConfig(config)).toThrow(
-        /Missing required config value/,
+        /Segment Write Key is missing from config! Analytics events won\'t be captured without it./,
       );
     });
 
@@ -188,7 +188,9 @@ describe('SegmentAnalytics', () => {
       }),
     } as unknown as IdentityApi;
     it('track identify calls', async () => {
-      const api = SegmentAnalytics.fromConfig(basicValidConfig, identityApi);
+      const api = SegmentAnalytics.fromConfig(basicValidConfig, {
+        identityApi,
+      });
       await api.captureEvent({
         action: 'identify',
         subject: 'jdoe',

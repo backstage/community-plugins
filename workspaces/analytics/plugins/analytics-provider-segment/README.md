@@ -37,7 +37,7 @@ This plugin contains no other functionality.
        api: analyticsApiRef,
        deps: { configApi: configApiRef, identityApi: identityApiRef },
        factory: ({ configApi, identityApi }) =>
-         SegmentAnalytics.fromConfig(configApi, identityApi),
+         SegmentAnalytics.fromConfig(configApi, { identityApi }),
      }),
      /* highlight-add-end */
    ];
