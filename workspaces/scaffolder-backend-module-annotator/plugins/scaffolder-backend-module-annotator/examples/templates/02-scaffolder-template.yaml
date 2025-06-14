@@ -1,9 +1,9 @@
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
-  name: create-react-app-template-with-timestamp-entityRef
-  title: Create React App Template
-  description: Create a new CRA website project
+  name: create-react-app-template-priority-versioning
+  title: Create React App Template priority Versioning
+  description: Create a new CRA website project priority Versioning
   annotations:
     backstage.io/template-version: 0.0.1
   tags:
@@ -31,6 +31,13 @@ spec:
           title: Annotation
           type: string
           description: Custom annotation.
+        version:
+          title: Version
+          type: string
+          description: Choose what version
+          enum:
+            - '0.0.1'
+            - '0.0.2'
         description:
           title: Description
           type: string
@@ -89,6 +96,9 @@ spec:
     - id: version-templateRef
       name: Append the version of this template to the entityRef
       action: catalog:template:version
+      input:
+        annotations:
+          backstage.io/template-version: ${{ parameters.version }}
 
     # this step is an example of using the `catalog:scaffolded-from` action
     - id: append-templateRef
