@@ -7,6 +7,9 @@
     "pluginId": "manage",
     "pluginPackages": [
       "@backstage-community/plugin-manage",
+      "@backstage-community/plugin-manage-backend",
+      "@backstage-community/plugin-manage-common",
+      "@backstage-community/plugin-manage-node",
       "@backstage-community/plugin-manage-react"
     ]
   },
@@ -41,6 +44,7 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
+    "@backstage-community/plugin-manage-common": "workspace:^",
     "@backstage/catalog-model": "^1.7.3",
     "@backstage/core-components": "^0.17.0",
     "@backstage/core-plugin-api": "^1.10.5",

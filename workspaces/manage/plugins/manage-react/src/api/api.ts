@@ -13,7 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { createApiFactory, createApiRef } from '@backstage/core-plugin-api';
+import {
+  createApiFactory,
+  createApiRef,
+  discoveryApiRef,
+  fetchApiRef,
+} from '@backstage/core-plugin-api';
 
 import type { ManageApi } from './ManageApi';
 import { DefaultManageApi } from './DefaultManageApi';
@@ -59,11 +64,14 @@ export function createManageApiFactory(options?: ApiFactoryOptions) {
 
   return createApiFactory({
     api: manageApiRef,
-    deps: apiDeps,
+    deps: { ...apiDeps, discoveryApi: discoveryApiRef, fetchApi: fetchApiRef },
     factory(deps) {
+      const { discoveryApi, fetchApi, ...providers } = deps;
       return new DefaultManageApi({
+        discoveryApi,
+        fetchApi,
         kindOrder,
-        providers: Object.values(deps),
+        providers: Object.values(providers),
       });
     },
   });
