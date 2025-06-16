@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 3.26.2
+
+### Patch Changes
+
+- 8fa8ece: Updated dependency `@types/lodash` to `4.17.17`.
+
 ## 3.26.1
 
 ### Patch Changes
