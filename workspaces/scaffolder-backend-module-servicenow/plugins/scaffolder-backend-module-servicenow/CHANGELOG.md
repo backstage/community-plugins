@@ -1,5 +1,11 @@
 ### Dependencies
 
+## 2.6.3
+
+### Patch Changes
+
+- fd39ec9: Updated dependency `@hey-api/openapi-ts` to `0.72.2`.
+
 ## 2.6.2
 
 ### Patch Changes
