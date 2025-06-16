@@ -1,5 +1,19 @@
 ### Dependencies
 
+## 1.14.0
+
+### Minor Changes
+
+- 227dae4: Bump to backstage version 1.39.1
+
+### Patch Changes
+
+- 19d4246: Replaced internal usage of `formatByteSize` with a local implementation using the `filesize` library, matching the original output format.
+- 31b91ce: Updated dependency `@hey-api/openapi-ts` to `0.67.3`.
+- e958f2f: Updated dependency `@types/node` to `22.15.29`.
+- fd39ec9: Updated dependency `@hey-api/openapi-ts` to `0.72.2`.
+- fcc57ec: Updated dependency `@types/node` to `22.14.1`.
+
 ## 1.13.1
 
 ### Patch Changes
