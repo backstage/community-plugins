@@ -1,5 +1,16 @@
 # @backstage-community/plugin-multi-source-security-viewer
 
+## 0.5.0
+
+### Minor Changes
+
+- 2284286: Bump version to 1.39.1
+
+### Patch Changes
+
+- Updated dependencies [2284286]
+  - @backstage-community/plugin-multi-source-security-viewer-common@0.3.0
+
 ## 0.4.3
 
 ### Patch Changes
