@@ -26,6 +26,7 @@ import {
   KubeConfig,
 } from '@kubernetes/client-node';
 import { z } from 'zod';
+import { examples } from './createKubernetesNamespace.examples';
 
 const KUBERNETES_API_URL_ANNOTATION = 'kubernetes.io/api-server';
 const KUBERNETES_CLUSTER_TYPE = 'kubernetes-cluster';
@@ -126,6 +127,7 @@ export function createKubernetesNamespaceAction(catalogClient: CatalogClient) {
   return createTemplateAction<TemplateActionParameters>({
     id: 'kubernetes:create-namespace',
     description: 'Creates a kubernetes namespace',
+    examples,
     schema: {
       input: z
         .object({
