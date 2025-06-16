@@ -123,6 +123,9 @@ export const convertLabelsToObject = (
   return result;
 };
 
+/**
+ * @public
+ */
 export function createKubernetesNamespaceAction(catalogClient: CatalogClient) {
   return createTemplateAction<TemplateActionParameters>({
     id: 'kubernetes:create-namespace',

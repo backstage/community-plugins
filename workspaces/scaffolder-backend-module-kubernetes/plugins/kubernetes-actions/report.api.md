@@ -7,20 +7,12 @@ import { BackendFeature } from '@backstage/backend-plugin-api';
 import { CatalogClient } from '@backstage/catalog-client';
 import { TemplateAction } from '@backstage/plugin-scaffolder-node';
 
-// Warning: (ae-missing-release-tag) "createKubernetesNamespaceAction" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export function createKubernetesNamespaceAction(
   catalogClient: CatalogClient,
 ): TemplateAction<any, any, 'v1'>;
 
-// Warning: (ae-missing-release-tag) "scaffolderModuleKubernetesAction" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 const scaffolderModuleKubernetesAction: BackendFeature;
 export default scaffolderModuleKubernetesAction;
-
-// Warnings were encountered during analysis:
-//
-// src/index.d.ts:2:30 - (tsdoc-characters-after-block-tag) The token "@backstage" looks like a TSDoc tag but contains an invalid character "/"; if it is not a tag, use a backslash to escape the "@"
 ```
