@@ -10,4 +10,4 @@ This workspace contains a plugin for integrating [JFrog Artifactory](https://jfr
 
 - Requires configuring a proxy to the Artifactory server in `app-config.yaml`.
 
-For detailed installation and usage instructions, see the plugin-specific [README](./plugin-jfrog-artifactory/README.md).
+For detailed installation and usage instructions, see the plugin-specific [README](./plugins/jfrog-artifactory/README.md).
