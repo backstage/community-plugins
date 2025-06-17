@@ -88,7 +88,7 @@ function ChatFeedback({
     }
 
     try {
-      chatbotApi.submitFeedback(messages[index], feedbackData);
+      // chatbotApi.submitFeedback(messages[index], feedbackData);
       alertApi.post({
         severity: 'success',
         message: 'Thank you for your feedback!',

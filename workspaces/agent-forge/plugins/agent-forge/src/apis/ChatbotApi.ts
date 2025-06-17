@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { A2AClient, Task } from '../a2a/client'; // Import necessary types
+import { A2AClient } from '../a2a/client'; // Import necessary types
 import { v4 as uuidv4 } from 'uuid'; // Example for generating task IDs
 import { MessageSendParams } from '../a2a/schema';
 

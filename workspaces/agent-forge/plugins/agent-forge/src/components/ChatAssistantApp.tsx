@@ -42,14 +42,17 @@ function ChatAssistantApp() {
   const styles = useStyles();
   const config = useApi(configApiRef);
   const appThemeApi = useApi(appThemeApiRef);
+  const logEnabled = false;
   const activeThemeId = useObservable(
     appThemeApi.activeThemeId$(),
     appThemeApi.getActiveThemeId(),
   );
   const logWithContext = (message: string) => {
     // TODO: we should find a better way to handle this down the road
-    // eslint-disable-next-line no-console
-    // console.log(`[ChatAssistantApp] ${message}`);
+    if (logEnabled) {
+      // eslint-disable-next-line
+      console.log(`[ChatAssistantApp] ${message}`);
+    }
   };
   const backendUrl =
     config.getOptionalString('agentForge.baseUrl') ||
