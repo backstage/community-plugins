@@ -40,6 +40,7 @@ interface IChatFeedback {
   [key: number]: Feedback;
 }
 
+/** @public */
 function ChatAssistantApp() {
   const styles = useStyles();
   const config = useApi(configApiRef);
@@ -410,4 +411,5 @@ function ChatAssistantApp() {
   );
 }
 
+/** @public */
 export default ChatAssistantApp;

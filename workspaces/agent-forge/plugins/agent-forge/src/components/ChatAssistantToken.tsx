@@ -18,6 +18,7 @@ import { identityApiRef, useApi } from '@backstage/core-plugin-api';
 import { useState, useEffect } from 'react';
 import useStyles from './useStyles';
 
+/** @public */
 function ChatAssistantToken() {
   const styles = useStyles();
   const [message, setMessage] = useState('');
@@ -67,4 +68,5 @@ function ChatAssistantToken() {
   return <div className={styles.todayLine}>{message}</div>;
 }
 
+/** @public */
 export default ChatAssistantToken;
