@@ -1,5 +1,11 @@
 # @backstage-community/plugin-scaffolder-backend-module-azure-devops
 
+## 0.10.1
+
+### Patch Changes
+
+- 28b2765: Add a new action (azure:pipeline:create) to create pipeline definition from a YAML file.
+
 ## 0.10.0
 
 ### Minor Changes
