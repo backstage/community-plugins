@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Config } from '@backstage/config';
 import {
   AnalyticsApi,
   AnalyticsEvent,
+  ConfigApi,
   IdentityApi,
 } from '@backstage/core-plugin-api';
 import { AnalyticsBrowser } from '@segment/analytics-next';
@@ -49,14 +49,26 @@ export class SegmentAnalytics implements AnalyticsApi {
   /**
    * Instantiate a fully configured Segment API implementation.
    */
-  static fromConfig(config: Config, identityApi?: IdentityApi) {
+  static fromConfig(
+    config: ConfigApi,
+    options?: { identityApi?: IdentityApi },
+  ) {
     const testMode =
       config.getOptionalBoolean('app.analytics.segment.testMode') ?? false;
     const writeKey = testMode
       ? ''
-      : config.getString('app.analytics.segment.writeKey');
+      : config.getOptionalString('app.analytics.segment.writeKey') ?? '';
     const maskIP =
       config.getOptionalBoolean('app.analytics.segment.maskIP') ?? false;
+
+    if (!writeKey && !testMode) {
+      const error = new Error(
+        "Segment Write Key is missing from config! Analytics events won't be captured without it.",
+      );
+      // eslint-disable-next-line no-console
+      console.error(error);
+      throw error;
+    }
 
     return new SegmentAnalytics(
       {
@@ -64,7 +76,7 @@ export class SegmentAnalytics implements AnalyticsApi {
         testMode,
         maskIP,
       },
-      identityApi,
+      options?.identityApi,
     );
   }
 
