@@ -21,18 +21,18 @@ import { useState, useEffect, useRef, useMemo } from 'react';
 import WebexLogo from '../icons/jarvis.png';
 import useStyles from './useStyles';
 import { ChatSuggestionOptions } from './ChatSuggestionOptions';
-import { Message, Feedback, UserResponse, IQuestionResponse } from '../types';
+import { Message, Feedback, UserResponse } from '../types';
 import {
   appThemeApiRef,
   configApiRef,
   useApi,
 } from '@backstage/core-plugin-api';
-import { createTimestamp, delay, isAnswer, makeLinksClickable } from '../utils';
+import { createTimestamp, delay, makeLinksClickable } from '../utils';
 import { ChatbotApi } from '../apis';
 import { useObservable } from 'react-use';
-import { v4 as uuidv4 } from 'uuid';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import React from 'react';
 
 interface IChatFeedback {
   [key: number]: Feedback;
@@ -49,7 +49,7 @@ function ChatAssistantApp() {
   const logWithContext = (message: string) => {
     // TODO: we should find a better way to handle this down the road
     // eslint-disable-next-line no-console
-    console.log(`[ChatAssistantApp] ${message}`);
+    // console.log(`[ChatAssistantApp] ${message}`);
   };
   const backendUrl =
     config.getOptionalString('agentForge.baseUrl') ||
@@ -77,7 +77,7 @@ function ChatAssistantApp() {
   );
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const inactivityTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const [chatId, setChatId] = useState<string>('');
+  const [newContext, setNewContext] = useState<boolean>(true);
   const [feedback, setFeedback] = useState<IChatFeedback>({});
   const [isTyping, setIsTyping] = useState<boolean>(false);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -95,10 +95,8 @@ function ChatAssistantApp() {
   const closeChat = () => setIsOpen(false);
   const fullScreen = () => setIsFullScreen(prev => !prev);
 
-  const resetChatId = () => {
-    const newChatId = uuidv4();
-    setChatId(newChatId);
-    return newChatId;
+  const resetChatContext = () => {
+    setNewContext(true);
   };
 
   const resetChat = () => {
@@ -108,7 +106,7 @@ function ChatAssistantApp() {
     setIsTyping(false);
     setHasQuestion(false);
     setIsInitialState(true);
-    resetChatId();
+    resetChatContext();
   };
 
   const startQuestion = () => setHasQuestion(true);
@@ -171,16 +169,9 @@ function ChatAssistantApp() {
   ]);
 
   useEffect(() => {
-    resetChatId();
+    resetChatContext();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const getChatId = () => {
-    if (!chatId && chatId.length === 0) {
-      resetChatId();
-    }
-    return chatId;
-  };
 
   async function handleOptionSelection(_confirmation: string): Promise<void> {}
 
@@ -203,7 +194,7 @@ function ChatAssistantApp() {
           timestamp,
         });
         // Reset task to allow for new message / input
-        resetChatId();
+        resetChatContext();
         await delay(500);
         addBotMessage({
           text: 'Cleaning up previous chat. Minimizing Jarvis...',
@@ -215,7 +206,7 @@ function ChatAssistantApp() {
         closeChat();
         break;
       case UserResponse.NEW:
-        getChatId();
+        resetChatContext();
         addBotMessage({
           text: 'I am Jarvis, your AI Platform Engineer. How can I help you today?',
           // Add welcome message suggestions:
@@ -226,11 +217,11 @@ function ChatAssistantApp() {
         break;
       case UserResponse.CONTINUE:
       default: {
-        getChatId();
         startQuestion();
         addIntentionalTypingDelay();
         try {
-          const result = await chatbotApi.submitA2ATask(chatId, input);
+          const result = await chatbotApi.submitA2ATask(newContext, input);
+          setNewContext(false);
           addBotMessage({
             text: result,
             suggestions: [],

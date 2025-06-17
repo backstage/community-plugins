@@ -17,13 +17,14 @@
 import { A2AClient, Task } from '../a2a/client'; // Import necessary types
 import { v4 as uuidv4 } from 'uuid'; // Example for generating task IDs
 import { MessageSendParams } from '../a2a/schema';
-import { Feedback, IQuestionResponse, Message } from '../types';
 
 export interface IChatbotApiOptions {}
 
 export class ChatbotApi {
   private client: A2AClient | null = null;
+  private contextId: string;
   constructor(private apiBaseUrl: string, _?: IChatbotApiOptions) {
+    this.contextId = '';
     if (!this.apiBaseUrl) {
       throw new Error('Agent URL is not provided');
     }
@@ -34,7 +35,7 @@ export class ChatbotApi {
     }
   }
 
-  public async submitA2ATask(msg: string) {
+  public async submitA2ATask(newContext: boolean, msg: string) {
     try {
       // Send a simple task (pass only params)
       const msgId = uuidv4();
@@ -46,10 +47,14 @@ export class ChatbotApi {
           kind: 'message',
         },
       };
+      if (!newContext && this.contextId !== undefined) {
+        sendParams.message.contextId = this.contextId;
+      }
       // Method now returns Task | null directly
       const taskResult: Task | null = await this.client?.sendMessage(
         sendParams,
       );
+      this.contextId = taskResult.result.contextId;
       const status = taskResult.result.status.state;
       let result = '';
       if (status === 'completed') {
@@ -62,23 +67,5 @@ export class ChatbotApi {
     } catch (error) {
       return 'Error connecting to agent';
     }
-  }
-
-  public async confirmQuestion(
-    _chatId: string,
-    _confirmation: string,
-  ): Promise<IQuestionResponse> {
-    throw new Error('Not implemented');
-  }
-
-  public async getAnswer(_chatId: string): Promise<IQuestionResponse> {
-    throw new Error('Not implemented');
-  }
-
-  public async submitFeedback(
-    _message: Message,
-    _feedback: Feedback,
-  ): Promise<IQuestionResponse> {
-    throw new Error('Not implemented');
   }
 }

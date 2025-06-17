@@ -49,7 +49,7 @@ import {
   TaskResubscriptionRequest,
   A2AError,
   SendMessageSuccessResponse,
-} from './schema.js'; // Assuming schema.ts is in the same directory or appropriately pathed
+} from './schema'; // Assuming schema.ts is in the same directory or appropriately pathed
 
 // Helper type for the data yielded by streaming methods
 type A2AStreamEventData =
@@ -76,7 +76,7 @@ export class A2AClient {
    */
   constructor(agentBaseUrl: string) {
     this.agentBaseUrl = agentBaseUrl.replace(/\/$/, ''); // Remove trailing slash if any
-    //this.agentCardPromise = this._fetchAndCacheAgentCard();
+    this.agentCardPromise = this._fetchAndCacheAgentCard();
   }
 
   /**
@@ -96,6 +96,7 @@ export class A2AClient {
         );
       }
       const agentCard: AgentCard = await response.json();
+      console.log(agentCard);
       if (!agentCard.url) {
         throw new Error(
           "Fetched Agent Card does not contain a valid 'url' for the service endpoint.",
@@ -618,5 +619,3 @@ export class A2AClient {
     }
   }
 }
-
-export { Task };
